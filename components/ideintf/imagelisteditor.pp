@@ -30,7 +30,7 @@ uses
   Classes, SysUtils, Math,
   // LCL
   LCLIntf, LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  ExtDlgs, ColorBox, Buttons, ButtonPanel, ImgList, LCLTaskDialog, ComCtrls,
+  ExtDlgs, ColorBox, Buttons, ButtonPanel, ImgList, ComCtrls,
   Menus, ActnList,
   // LazUtils
   GraphType, LazLoggerBase,
@@ -504,41 +504,44 @@ end;
 
 procedure TImageListEditorDlg.acDeleteResolutionExecute(Sender: TObject);
 var
-  TD: LCLTaskDialog.TTaskDialog;
+  TD: TTaskDialog;
   R: TCustomImageListResolution;
   RA: array of Integer;
   ResItem: string;
+  Res: TModalResult;
 begin
-  FillChar(TD{%H-}, SizeOf(LCLTaskDialog.TTaskDialog), 0);
-  SetLength(RA, 0);
-  for R in ImageList.Resolutions do
-  begin
-    if R.Width=ImageList.Width then // cannot delete default resolution
-      continue;
+  TD := TTaskDialog.Create(nil);
+  TD.Flags := TD.Flags + [tfQuery];
+  TD.Title := sccsILEdtDeleteResolutionConfirmation;
+  try
+    for R in ImageList.Resolutions do
+    begin
+      if R.Width=ImageList.Width then // cannot delete default resolution
+        continue;
+      ResItem := ResolutionToString(R);
+      TD.QueryChoices.Add(ResItem);
+      SetLength(RA, Length(RA)+1);
+      RA[High(RA)] := R.Width;
+    end;
+    if TD.QueryChoices.Count = 0 then
+    begin
+      MessageDlg(sccsILEdtCannotDeleteResolution, mtError, [mbOK], 0);
+      Exit;
+    end;
 
-    if TD.Selection<>'' then
-      TD.Selection += sLineBreak;
-    ResItem := ResolutionToString(R);
-    TD.Selection += ResItem;
-    if TD.Query='' then
-      TD.Query := ResItem;
-    SetLength(RA, Length(RA)+1);
-    RA[High(RA)] := R.Width;
-  end;
-
-  if TD.Selection='' then
-  begin
-    MessageDlg(sccsILEdtCannotDeleteResolution, mtError, [mbOK], 0);
-    Exit;
-  end;
-
-  TD.Inst := sccsILEdtDeleteResolutionConfirmation;
-  if TD.Execute([cbOK, cbCancel]) = mrOK then
-  begin
-    ImageList.DeleteResolution(RA[TD.SelectionRes]);
-    ImageListBox.Repaint;
-    UpdatePreviewImage;
-    UpdateMenus;
+    if TD.Execute then
+    begin
+      Res := TD.ModalResult;
+      if Res = mrOk then
+      begin
+        ImageList.DeleteResolution(RA[TD.QueryItemIndex]);
+        ImageListBox.Repaint;
+        UpdatePreviewImage;
+        UpdateMenus;
+      end;
+    end;
+  finally
+    TD.Free;
   end;
 end;
 

@@ -9,7 +9,7 @@ object ImageListEditorDlg: TImageListEditorDlg
   ClientWidth = 553
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -214,21 +214,21 @@ object ImageListEditorDlg: TImageListEditorDlg
     end
     object tbSeparator1: TToolButton
       Left = 197
-      Height = 5
+      Height = 40
       Top = 0
       Caption = 'tbSeparator1'
       Style = tbsDivider
     end
     object tbSeparator2: TToolButton
       Left = 348
-      Height = 5
+      Height = 40
       Top = 0
       Caption = 'tbSeparator2'
       Style = tbsDivider
     end
     object tbSeparator3: TToolButton
       Left = 407
-      Height = 5
+      Height = 40
       Top = 0
       Caption = 'tbSeparator3'
       Style = tbsDivider
@@ -260,7 +260,6 @@ object ImageListEditorDlg: TImageListEditorDlg
   end
   object SaveDialog: TSavePictureDialog
     FilterIndex = 0
-    Options = [ofEnableSizing, ofViewDetail, ofAutoPreview]
     Left = 352
     Top = 144
   end
