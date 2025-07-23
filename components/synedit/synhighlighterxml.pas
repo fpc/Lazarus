@@ -121,6 +121,7 @@ type
     {$endif}
   private
     fCommentSymbolAttri: TSynHighlighterAttributes;
+    FQuotesUseAttribValueAttri: Boolean;
     fRange: TRangeState;
     fRangeFlags: TRangeFlags;
     fLine: PChar;
@@ -233,6 +234,8 @@ type
       write fSpaceAttri;
     property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
       write fSymbolAttri;
+    property QuotesUseAttribValueAttri: Boolean read FQuotesUseAttribValueAttri
+      write FQuotesUseAttribValueAttri default False;
     property WantBracesParsed : Boolean read FWantBracesParsed
       write FWantBracesParsed default True;
   end;
@@ -626,7 +629,14 @@ begin
   if (fLine[Run] in [#34, #39]) then
   begin
     fRangeFlags := fRangeFlags - [rfSingleQuote, rfNameSpace];
-    fTokenID := tkSymbol;
+    if FQuotesUseAttribValueAttri then begin
+      if rfNameSpace in fRangeFlags then
+        fTokenID := tknsAttrValue
+      else
+        fTokenID := tkAttrValue;
+    end
+    else
+      fTokenID := tkSymbol;
     fRange := rsAttribute;
     Inc(Run);
     Exit;
@@ -663,10 +673,14 @@ begin
       Exit;
     end else if (fLine[Run] in [#34, #39]) then
     begin
+      if FQuotesUseAttribValueAttri and (Run > fTokenPos) then
+        exit;
       if (fLine[Run] = #39) then
         Include(fRangeFlags, rfSingleQuote);
       fRange := rsAttrValue;
       Inc(Run);
+      if FQuotesUseAttribValueAttri then
+        AttributeValueProc;
       Exit;
     end;
     Inc(Run);
@@ -699,6 +713,9 @@ begin
     if fLine[Run] <> #34 then
       Exit;
   end;
+
+  if FQuotesUseAttribValueAttri then
+    inc(Run);
 
   fRange := rsAttribute;
   Exclude(fRangeFlags, rfSingleQuote);

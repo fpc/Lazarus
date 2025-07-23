@@ -50,5 +50,15 @@ Some symbols may have their own Attributes. They may use this setting as a fallb
   <link id="TSynXMLSyn.ProcessingInstructionSymbolAttri">ProcessingInstructionSymbolAttri</link>
 </seealso>
 </element>
+<element name="TSynXMLSyn.QuotesUseAttribValueAttri">
+<short>Highlight quotes with the attributes for <var>AttributeValueAttri</var> instead of <var>SymbolAttry</var> </short>
+<descr>Quotes around xml-attribute values are by default highlighted as Symbols.
+If this option is set, the use the same highlight as the attribute value.
+</descr>
+<seealso>
+  <link id="TSynXMLSyn.SymbolAttri">SymbolAttri</link>
+  <link id="TSynXMLSyn.AttributeValueAttri">AttributeValueAttri</link>
+</seealso>
+</element>
 </module></package>
 </fpdoc-descriptions>
