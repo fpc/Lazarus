@@ -61,32 +61,32 @@ uses
   LazEditTextAttributes;
 
 type
-  TtkTokenKind = (tkAposAttrValue, tkAposEntityRef, tkAttribute, tkCDATA,
+  TtkTokenKind = (tkAposAttrValue, tkAttribute, tkCDATA,
     tkComment, tkCommentSym, tkElement, tkEntityRef, tkEqual, tkNull, tkProcessingInstruction,
-    tkQuoteAttrValue, tkQuoteEntityRef, tkSpace, tkSymbol, tkText,
+    tkQuoteAttrValue, tkSpace, tkSymbol, tkText,
     //
-    tknsAposAttrValue, tknsAposEntityRef, tknsAttribute, tknsEqual,
-    tknsQuoteAttrValue, tknsQuoteEntityRef,
+    tknsAposAttrValue, tknsAttribute, tknsEqual, tknsQuoteAttrValue,
     //These are unused at the moment
     tkDocType
-    {tkDocTypeAposAttrValue, tkDocTypeAposEntityRef, tkDocTypeAttribute,
-     tkDocTypeElement, tkDocTypeEqual tkDocTypeQuoteAttrValue,
-     tkDocTypeQuoteEntityRef}
+    {tkDocTypeAposAttrValue, tkDocTypeAttribute,
+     tkDocTypeElement, tkDocTypeEqual tkDocTypeQuoteAttrValue
+    }
   );
 
-  TRangeState = (rsAposAttrValue, rsAPosEntityRef, rsAttribute, rsCDATA,
-    rsComment, rsElement, rsCloseElement, rsOpenElement, rsEntityRef, rsEqual,
-    rsQuoteAttrValue, rsQuoteEntityRef, rsText,
+  TRangeState = (rsAposAttrValue, rsAttribute, rsCDATA,
+    rsComment, rsElement, rsCloseElement, rsOpenElement, rsEqual,
+    rsQuoteAttrValue, rsText,
     //
-    rsnsAposAttrValue, rsnsAPosEntityRef, rsnsEqual, rsnsQuoteAttrValue,
-    rsnsQuoteEntityRef,
+    rsnsAposAttrValue, rsnsEqual, rsnsQuoteAttrValue,
     //These are unused at the moment
     rsDocType, rsDocTypeSquareBraces                                           //ek 2001-11-11
-    {rsDocTypeAposAttrValue, rsDocTypeAposEntityRef, rsDocTypeAttribute,
-     rsDocTypeElement, rsDocTypeEqual, rsDocTypeQuoteAttrValue,
-     rsDocTypeQuoteEntityRef}
+    {rsDocTypeAposAttrValue, rsDocTypeAttribute,
+     rsDocTypeElement, rsDocTypeEqual, rsDocTypeQuoteAttrValue
+    }
   );
-  TRangeFlag = (rsProcessingInstruction);
+  TRangeFlag = (rfProcessingInstruction,  // At/Inside <? .. ?>
+                rfEntityRef               // In Entity &gt;  OVERRIDES whatever is in fRange
+               );
   TRangeFlags = set of TRangeFlag;
 
  TXmlCodeFoldBlockType = (
@@ -166,8 +166,6 @@ type
     procedure MakeMethodTables;
     function NextTokenIs(T: String): Boolean;
     procedure EntityRefProc;
-    procedure QEntityRefProc;
-    procedure AEntityRefProc;
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource : String; override;
@@ -421,10 +419,10 @@ end;
 
 procedure TSynXMLSyn.QuestionMarkProc;
 begin
-  if (rsProcessingInstruction in fRangeFlags) and (fLine[Run+1] = '>') then begin
+  if (rfProcessingInstruction in fRangeFlags) and (fLine[Run+1] = '>') then begin
     fTokenID := tkProcessingInstruction;
     fRange := rsText;
-    Exclude(fRangeFlags, rsProcessingInstruction);
+    Exclude(fRangeFlags, rfProcessingInstruction);
     Inc(Run, 2);
     if TopXmlCodeFoldBlockType = cfbtXmlProcess then
       EndXmlCodeFoldBlock;
@@ -468,7 +466,7 @@ begin
   end else if fLine[Run]= '?' then begin
     fTokenID := tkProcessingInstruction;
     fRange := rsElement;
-    Include(fRangeFlags, rsProcessingInstruction);
+    Include(fRangeFlags, rfProcessingInstruction);
     StartXmlCodeFoldBlock(cfbtXmlProcess);
     Inc(Run);
   end else begin
@@ -695,10 +693,7 @@ begin
 
   if fLine[Run] = '&' then
   begin
-    if fRange = rsnsQuoteAttrValue then
-      fRange := rsnsQuoteEntityRef
-    else
-      fRange := rsQuoteEntityRef;
+    Include(fRangeFlags, rfEntityRef);
     Exit;
   end else if fLine[Run] <> #34 then
   begin
@@ -719,10 +714,7 @@ begin
 
   if fLine[Run] = '&' then
   begin
-    if fRange = rsnsAPosAttrValue then
-      fRange := rsnsAPosEntityRef
-    else
-      fRange := rsAPosEntityRef;
+    Include(fRangeFlags, rfEntityRef);
     Exit;
   end else if fLine[Run] <> #39 then
   begin
@@ -744,7 +736,7 @@ begin
   while not (fLine[Run] in StopSet) do Inc(Run);
 
   if (fLine[Run] = '&') then begin
-    fRange := rsEntityRef;
+    Include(fRangeFlags, rfEntityRef);
     Exit;
   end;
 end;
@@ -752,42 +744,12 @@ end;
 procedure TSynXMLSyn.EntityRefProc;
 begin
   fTokenID := tkEntityRef;
-  fRange := rsEntityRef;
-  while not (fLine[Run] in [#0..#32, ';']) do Inc(Run);
-  if (fLine[Run] = ';') then Inc(Run);
-  fRange := rsText;
-end;
+  while not (fLine[Run] in [#0..#32, ';', '''', '"', '>']) do
+    Inc(Run);
+  if (fLine[Run] = ';') then
+    Inc(Run);
 
-procedure TSynXMLSyn.QEntityRefProc;
-begin
-  if fRange = rsnsQuoteEntityRef then
-    fTokenID := tknsQuoteEntityRef
-  else
-    fTokenID := tkQuoteEntityRef;
-
-  while not (fLine[Run] in [#0..#32, ';']) do Inc(Run);
-  if (fLine[Run] = ';') then Inc(Run);
-
-  if fRange = rsnsQuoteEntityRef then
-    fRange := rsnsQuoteAttrValue
-  else
-    fRange := rsQuoteAttrValue;
-end;
-
-procedure TSynXMLSyn.AEntityRefProc;
-begin
-  if fRange = rsnsAPosEntityRef then
-    fTokenID := tknsAPosEntityRef
-  else
-    fTokenID := tkAPosEntityRef;
-
-  while not (fLine[Run] in [#0..#32, ';']) do Inc(Run);
-  if (fLine[Run] = ';') then Inc(Run);
-
-  if fRange = rsnsAPosEntityRef then
-    fRange := rsnsAPosAttrValue
-  else
-    fRange := rsAPosAttrValue;
+  Exclude(fRangeFlags, rfEntityRef);
 end;
 
 function TSynXMLSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
@@ -802,6 +764,11 @@ end;
 
 procedure TSynXMLSyn.IdentProc;
 begin
+  if rfEntityRef in fRangeFlags then begin
+    EntityRefProc;
+    exit;
+  end;
+
   case fRange of
   rsElement, rsOpenElement, rsCloseElement:
     begin
@@ -823,18 +790,6 @@ begin
     begin
       AAttributeValueProc();
     end;
-  rsQuoteEntityRef, rsnsQuoteEntityRef:
-    begin
-      QEntityRefProc();
-    end;
-  rsAposEntityRef, rsnsAPosEntityRef:
-    begin
-      AEntityRefProc();
-    end;
-  rsEntityRef:
-    begin
-      EntityRefProc();
-    end;
   else ;
   end;
 end;
@@ -843,6 +798,10 @@ procedure TSynXMLSyn.Next;
 begin
   fTokenPos := Run;
   while fTokenPos = Run do begin
+    if rfEntityRef in fRangeFlags then begin
+      EntityRefProc;
+    end
+    else
     case fRange of
     rsText:
       begin
@@ -936,10 +895,6 @@ case fTokenID of
     tkText: Result:= fTextAttri;
     tkCDATA: Result:= fCDATAAttri;
     tkEntityRef: Result:= fEntityRefAttri;
-    tkQuoteEntityRef: Result:= fEntityRefAttri;
-    tkAposEntityRef: Result:= fEntityRefAttri;
-    tknsQuoteEntityRef: Result:= fEntityRefAttri;
-    tknsAposEntityRef: Result:= fEntityRefAttri;
     tkProcessingInstruction:
       if fProcessingInstructionSymbolAttri.IsEnabled then
         Result:= fProcessingInstructionSymbolAttri
@@ -966,7 +921,7 @@ var
 begin
   Result := GetTokenAttribute;
 
-  if (rsProcessingInstruction in fRangeFlags) or
+  if (rfProcessingInstruction in fRangeFlags) or
      (fTokenID = tkProcessingInstruction)
   then begin
     x1 := ToPos(fTokenPos);
@@ -976,9 +931,9 @@ begin
     fProcessingInstructionAttriResult.CleanupMergeInfo;
     fProcessingInstructionAttriResult.Merge(Result, LeftCol, RightCol);
 
-    if (not(rsProcessingInstruction in fRangeFlags)) or (fTokenID <> tkProcessingInstruction) then
+    if (not(rfProcessingInstruction in fRangeFlags)) or (fTokenID <> tkProcessingInstruction) then
       x1 := 1;
-    if (rsProcessingInstruction in fRangeFlags) then
+    if (rfProcessingInstruction in fRangeFlags) then
       x2 := Length(CurrentLineText) + 1;
     fProcessingInstructionAttri.SetFrameBoundsLog(x1, x2);
     fProcessingInstructionAttriResult.Merge(fProcessingInstructionAttri, LeftCol, RightCol);
