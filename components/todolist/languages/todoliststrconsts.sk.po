@@ -14,19 +14,19 @@ msgstr ""
 
 #: todoliststrconsts.attribgroupname
 msgid "ToDo comments"
-msgstr ""
+msgstr "ToDo komentáre"
 
 #: todoliststrconsts.attribnamedone
 msgid "Done comment"
-msgstr ""
+msgstr "Done komentár"
 
 #: todoliststrconsts.attribnamenote
 msgid "Note comment"
-msgstr ""
+msgstr "Note komentár"
 
 #: todoliststrconsts.attribnametodo
 msgid "ToDo comment"
-msgstr ""
+msgstr "ToDo komentár"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
@@ -54,11 +54,11 @@ msgstr ""
 
 #: todoliststrconsts.liscoloroptions
 msgid "Color Options"
-msgstr ""
+msgstr "Voľby farieb"
 
 #: todoliststrconsts.liscolors
 msgid "Colors"
-msgstr ""
+msgstr "Farby"
 
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
@@ -66,7 +66,7 @@ msgstr "Vložiť makro"
 
 #: todoliststrconsts.lisedit
 msgid "Edit"
-msgstr ""
+msgstr "Upraviť"
 
 #: todoliststrconsts.lisfilteritem0
 msgid "All"
@@ -102,7 +102,7 @@ msgstr "Pomoc"
 
 #: todoliststrconsts.lisinclude
 msgid "Include"
-msgstr ""
+msgstr "Zahrnúť"
 
 #: todoliststrconsts.lispackages
 msgid "Packages"
@@ -136,7 +136,7 @@ msgstr "Pridať jednotky v editore zdrojového kódu"
 
 #: todoliststrconsts.listddedittodo
 msgid "Edit the ToDo/Done/Note"
-msgstr ""
+msgstr "Upraviť ToDo/Done/Note"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert a ToDo/Done/Note"
@@ -144,7 +144,7 @@ msgstr "Vložiť ToDo/Done/Note"
 
 #: todoliststrconsts.listodocolorsareattheendofcolorlist
 msgid "ToDo colors are at the end of color list"
-msgstr ""
+msgstr "ToDo farby sú na konci zoznamu farieb"
 
 #: todoliststrconsts.listodoexport
 msgid "Export"
@@ -180,7 +180,7 @@ msgstr "Pridať jednotky uvedené v inšpektorovi projektu/editore balíčkov"
 
 #: todoliststrconsts.listodolistedit
 msgid "Edit selected item"
-msgstr ""
+msgstr "Upraviť vybratú položku"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"

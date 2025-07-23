@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: projectgroupstrconst\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2024-09-04 13:32+0200\n"
+"PO-Revision-Date: 2025-07-23 14:41+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +14,11 @@ msgstr ""
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
-msgstr "Zrušiť"
+msgstr "Prerušiť"
 
 #: projectgroupstrconst.lisabortloadingprojectgroup
 msgid "Abort loading project group"
-msgstr "Zrušiť načítanie projektu"
+msgstr "Prerušiť načítanie projektu"
 
 #: projectgroupstrconst.lisactivetarget
 #, object-pascal-format
@@ -424,11 +424,11 @@ msgstr "Preložiť (vyčistiť)"
 
 #: projectgroupstrconst.listargetcompilecleanfromhere
 msgid "Compile clean from here"
-msgstr ""
+msgstr "Preložiť (vyčistiť) odtiaľto"
 
 #: projectgroupstrconst.listargetcompilecleanhint
 msgid "Compile selected target clean"
-msgstr ""
+msgstr "Preložiť (vyčistiť) vybraný cieľ"
 
 #: projectgroupstrconst.listargetcompilefromhere
 msgid "Compile from here"
@@ -568,7 +568,7 @@ msgstr "Nie je možné načítať súbor \"%s\""
 #: projectgroupstrconst.lisunabletowriteprojectgroupfile
 #, object-pascal-format
 msgid "Unable to write project group file \"%s\"%s%s"
-msgstr ""
+msgstr "Nie je možné zapísať súbor skupiny projektov \"%s\"%s%s"
 
 #: projectgroupstrconst.lisundo
 msgid "Undo"
