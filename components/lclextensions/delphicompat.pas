@@ -37,6 +37,11 @@ unit DelphiCompat;
 
 interface
 
+{$IFDEF LCLNoGUI}
+implementation
+end.
+{$ENDIF}
+
 uses
   LMessages, Types, Classes, LCLType, LCLVersion,
   LazLoggerBase;
@@ -134,7 +139,6 @@ function ToAscii({%H-}uVirtKey, {%H-}uScanCode:LongWord; {%H-}lpKeyState: PByte;
 function UpdateWindow({%H-}Handle: HWND): Boolean;
 
 implementation
-
 
 uses
 {$i uses.inc}

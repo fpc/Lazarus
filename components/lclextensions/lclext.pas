@@ -36,6 +36,11 @@ unit LclExt;
 
 interface
 
+{$IFDEF LCLNoGUI}
+implementation
+end.
+{$ENDIF}
+
 uses
   Classes, SysUtils, LCLType, Graphics;
 
