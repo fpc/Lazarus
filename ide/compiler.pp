@@ -803,7 +803,7 @@ begin
     if Opt.Value <> '' then
       case Opt.EditKind of
         oeSetElem  : s := s + Opt.Option;
-        oeSetValue: s := s + Opt.Option+Opt.Value;
+        oeSetValue: s := s + Opt.Option+Opt.Suffix;
       end;
   end;
   if s <> '' then begin
@@ -846,9 +846,7 @@ end;
 function TCompilerOptSet.SelectOptions(aOptAndValue: string): boolean;
 // Select options in this set based on the given characters.
 // -Criot
-// ToDo: disable, e.g. -Cr-i-o
-// ToDo: The -vm can appear in a -v set and switches to the -vm format
-// e.g. -vbnm6060,5087
+// -vbnm6060,5087
 var
   i, Start, j: Integer;
   OneOpt, NumberValue: string;
