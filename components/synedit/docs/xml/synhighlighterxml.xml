@@ -21,6 +21,38 @@ Those markers are highlighted as normal symbols. But if any property in this <va
   <link id="TSynXMLSyn.CommentAttri">CommentAttri</link>
 </seealso>
 </element>
+<element name="TSynXMLSyn.NamespaceColonAttri">
+<short>Overlay Highlight info for colon separator in names with namespace</short>
+<descr>If an Element or Attribute has a namespace this can be used to add extra highlight to the separating colon.
+</descr>
+<seealso>
+  <link id="TSynXMLSyn.ElementAttri">ElementAttri</link>
+  <link id="TSynXMLSyn.AttributeAttri">AttributeAttri</link>
+  <link id="TSynXMLSyn.NamespaceDefinitionAttri">NamespaceDefinitionAttri</link>
+  <link id="TSynXMLSyn.fNamespacePrefixAttri">fNamespacePrefixAttri</link>
+</seealso>
+</element>
+<element name="TSynXMLSyn.fNamespacePrefixAttri">
+<short>Overlay Highlight info for the namespace part of an identifier</short>
+<descr>If an Element or Attribute has a namespace this can be used to add extra highlight to the leading namespace part.
+</descr>
+<seealso>
+  <link id="TSynXMLSyn.ElementAttri">ElementAttri</link>
+  <link id="TSynXMLSyn.AttributeAttri">AttributeAttri</link>
+  <link id="TSynXMLSyn.NamespaceDefinitionAttri">NamespaceDefinitionAttri</link>
+  <link id="TSynXMLSyn.NamespaceColonAttri">NamespaceColonAttri</link>
+</seealso>
+</element>
+<element name="TSynXMLSyn.NamespaceDefinitionAttri">
+<short>Overlay Highlight info for the namespace part of an identifier</short>
+<descr>If a namespace is defined using <var>xmlns</var> this can add extra highlight to the namespace part.
+</descr>
+<seealso>
+  <link id="TSynXMLSyn.AttributeAttri">AttributeAttri</link>
+  <link id="TSynXMLSyn.fNamespacePrefixAttri">fNamespacePrefixAttri</link>
+  <link id="TSynXMLSyn.NamespaceColonAttri">NamespaceColonAttri</link>
+</seealso>
+</element>
 <element name="TSynXMLSyn.ProcessingInstructionSymbolAttri">
 <short>Highlight info for processing instruction markers (symbols) &lt;? and ?&gt; in XML</short>
 <descr>Color and style to be used for the symbols starting and ending a processing instruction. &lt;? and ?&gt;

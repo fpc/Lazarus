@@ -304,6 +304,18 @@ msgstr "Vardų srities atributo pavadinimas"
 msgid "Namespace Attribute Value"
 msgstr "Vardų srities atributo vertė"
 
+#: syneditstrconst.syns_attrnamespacecolon
+msgid "Namespace Colon"
+msgstr ""
+
+#: syneditstrconst.syns_attrnamespaceidentdef
+msgid "Namespace Ident Definition"
+msgstr ""
+
+#: syneditstrconst.syns_attrnamespaceidentprefix
+msgid "Namespace Ident Prefix"
+msgstr ""
+
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
 msgstr "Skirtumų nauja eilutė"

@@ -303,6 +303,18 @@ msgstr "Névtér tulajdonság neve"
 msgid "Namespace Attribute Value"
 msgstr "Névtér tulajdonság értéke"
 
+#: syneditstrconst.syns_attrnamespacecolon
+msgid "Namespace Colon"
+msgstr ""
+
+#: syneditstrconst.syns_attrnamespaceidentdef
+msgid "Namespace Ident Definition"
+msgstr ""
+
+#: syneditstrconst.syns_attrnamespaceidentprefix
+msgid "Namespace Ident Prefix"
+msgstr ""
+
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
 msgstr "Diff - új fájl"

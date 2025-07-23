@@ -303,6 +303,18 @@ msgstr "Nom de l'attribut de nommage"
 msgid "Namespace Attribute Value"
 msgstr "Valeur de l'attribut de nommage"
 
+#: syneditstrconst.syns_attrnamespacecolon
+msgid "Namespace Colon"
+msgstr ""
+
+#: syneditstrconst.syns_attrnamespaceidentdef
+msgid "Namespace Ident Definition"
+msgstr ""
+
+#: syneditstrconst.syns_attrnamespaceidentprefix
+msgid "Namespace Ident Prefix"
+msgstr ""
+
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
 msgstr "Nouveau fichier (Diff)"
