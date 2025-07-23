@@ -934,7 +934,11 @@ case fTokenID of
     tknsAposEntityRef: Result:= fEntityRefAttri;
     tkProcessingInstruction: Result:= fSymbolAttri;
     tkComment: Result:= fCommentAttri;
-    tkCommentSym: Result:= fCommentSymbolAttri;
+    tkCommentSym:
+      if fCommentSymbolAttri.IsEnabled then
+        Result:= fCommentSymbolAttri
+      else
+        Result:= fSymbolAttri;
     tkDocType: Result:= fDocTypeAttri;
     tkSymbol: Result:= fSymbolAttri;
     tkSpace: Result:= fSpaceAttri;
