@@ -1695,7 +1695,7 @@ var
     cl := Attr.Foreground; if cl = clDefault then cl := ForegroundColor;
     FTextDrawer.ForeColor := cl;
     cl := Attr.Background; if cl = clDefault then cl := BackgroundColor;
-    FTextDrawer.BackColor := Attr.Background;
+    FTextDrawer.BackColor := cl;
     FTextDrawer.Style     := Attr.Style;
     HasFrame := False;
     for s := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
