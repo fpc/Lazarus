@@ -26,6 +26,7 @@ type
   published
     property ModifiedColor: TColor read GetModifiedColor write SetModifiedColor;
     property SavedColor: TColor read GetSavedColor write SetSavedColor;
+    property MarkupInfo;
     property MarkupInfoCurrentLine;
   end;
 
