@@ -70,6 +70,7 @@ type
     // Max amount of marks show in addition to ColumnCount
     property MaxExtraMarksColums: Integer read FMaxExtraMarksColums write FMaxExtraMarksColums;
     property Options: TSynGutterMarksOptions read FOptions write FOptions;
+    property MarkupInfo;
     property MarkupInfoCurrentLine;
   end;
 
