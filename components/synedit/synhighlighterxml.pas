@@ -61,30 +61,31 @@ uses
   LazEditTextAttributes;
 
 type
-  TtkTokenKind = (tkAposAttrValue, tkAttribute, tkCDATA,
+  TtkTokenKind = (tkAttribute, tkAttrValue, tkCDATA,
     tkComment, tkCommentSym, tkElement, tkEntityRef, tkEqual, tkNull, tkProcessingInstruction,
-    tkQuoteAttrValue, tkSpace, tkSymbol, tkText,
+    tkSpace, tkSymbol, tkText,
     //
-    tknsAposAttrValue, tknsAttribute, tknsEqual, tknsQuoteAttrValue,
+    tknsAttribute, tknsAttrValue, tknsEqual,
     //These are unused at the moment
     tkDocType
-    {tkDocTypeAposAttrValue, tkDocTypeAttribute,
-     tkDocTypeElement, tkDocTypeEqual tkDocTypeQuoteAttrValue
+    {tkDocTypeAttrValue, tkDocTypeAttribute,
+     tkDocTypeElement, tkDocTypeEqual
     }
   );
 
-  TRangeState = (rsAposAttrValue, rsAttribute, rsCDATA,
+  TRangeState = (rsAttribute, rsAttrValue, rsCDATA,
     rsComment, rsElement, rsCloseElement, rsOpenElement, rsEqual,
-    rsQuoteAttrValue, rsText,
+    rsText,
     //
-    rsnsAposAttrValue, rsnsEqual, rsnsQuoteAttrValue,
+    rsnsEqual, rsnsAttrValue,
     //These are unused at the moment
     rsDocType, rsDocTypeSquareBraces                                           //ek 2001-11-11
-    {rsDocTypeAposAttrValue, rsDocTypeAttribute,
-     rsDocTypeElement, rsDocTypeEqual, rsDocTypeQuoteAttrValue
+    {rsDocTypeAttrValue, rsDocTypeAttribute,
+     rsDocTypeElement, rsDocTypeEqual
     }
   );
   TRangeFlag = (rfProcessingInstruction,  // At/Inside <? .. ?>
+                rfSingleQuote,            // Only used when frange in rsAttrValue, rsnsAttrValue
                 rfEntityRef               // In Entity &gt;  OVERRIDES whatever is in fRange
                );
   TRangeFlags = set of TRangeFlag;
@@ -159,8 +160,7 @@ type
     procedure TextProc;
     procedure ElementProc;
     procedure AttributeProc;
-    procedure QAttributeValueProc;
-    procedure AAttributeValueProc;
+    procedure AttributeValueProc;
     procedure EqualProc;
     procedure IdentProc;
     procedure MakeMethodTables;
@@ -433,6 +433,7 @@ end;
 
 procedure TSynXMLSyn.LessThanProc;
 begin
+  fRangeFlags := fRangeFlags - [rfSingleQuote];
   Inc(Run);
   if (fLine[Run] = '/') then begin
     Inc(Run);
@@ -477,6 +478,7 @@ end;
 
 procedure TSynXMLSyn.GreaterThanProc;
 begin
+  fRangeFlags := fRangeFlags - [rfSingleQuote];
   if (Run > 0) and (fLine[Run - 1] = '/') then
     if TopXmlCodeFoldBlockType = cfbtXmlNode then
       EndXmlNodeCodeFoldBlock;
@@ -661,20 +663,14 @@ begin
       fRange := rsElement;
       Inc(Run);
       Exit;
-    end else if (fLine[Run] = #34) then
+    end else if (fLine[Run] in [#34, #39]) then
     begin
+      if (fLine[Run] = #39) then
+        Include(fRangeFlags, rfSingleQuote);
       if fRange = rsnsEqual then
-        fRange := rsnsQuoteAttrValue
+        fRange := rsnsAttrValue
       else
-        fRange := rsQuoteAttrValue;
-      Inc(Run);
-      Exit;
-    end else if (fLine[Run] = #39) then
-    begin
-      if fRange = rsnsEqual then
-        fRange := rsnsAPosAttrValue
-      else
-        fRange := rsAPosAttrValue;
+        fRange := rsAttrValue;
       Inc(Run);
       Exit;
     end;
@@ -682,46 +678,35 @@ begin
   end;
 end;
 
-procedure TSynXMLSyn.QAttributeValueProc;
+procedure TSynXMLSyn.AttributeValueProc;
 begin
-  if fRange = rsnsQuoteAttrValue then
-    fTokenID := tknsQuoteAttrValue
+  if fRange = rsnsAttrValue then
+    fTokenID := tknsAttrValue
   else
-    fTokenID := tkQuoteAttrValue;
+    fTokenID := tkAttrValue;
 
-  while not (fLine[Run] in [#0, #10, #13, '&', #34]) do Inc(Run);
+  if rfSingleQuote in fRangeFlags then
+    while not (fLine[Run] in [#0, #10, #13, '&', #39]) do Inc(Run)
+  else
+    while not (fLine[Run] in [#0, #10, #13, '&', #34]) do Inc(Run);
 
   if fLine[Run] = '&' then
   begin
     Include(fRangeFlags, rfEntityRef);
     Exit;
-  end else if fLine[Run] <> #34 then
-  begin
-    Exit;
+  end;
+
+  if rfSingleQuote in fRangeFlags then begin
+    if fLine[Run] <> #39 then
+      Exit;
+  end
+  else begin
+    if fLine[Run] <> #34 then
+      Exit;
   end;
 
   fRange := rsAttribute;
-end;
-
-procedure TSynXMLSyn.AAttributeValueProc;
-begin
-  if fRange = rsnsAPosAttrValue then
-    fTokenID := tknsAPosAttrValue
-  else
-    fTokenID := tkAPosAttrValue;
-
-  while not (fLine[Run] in [#0, #10, #13, '&', #39]) do Inc(Run);
-
-  if fLine[Run] = '&' then
-  begin
-    Include(fRangeFlags, rfEntityRef);
-    Exit;
-  end else if fLine[Run] <> #39 then
-  begin
-    Exit;
-  end;
-
-  fRange := rsAttribute;
+  Exclude(fRangeFlags, rfSingleQuote);
 end;
 
 procedure TSynXMLSyn.TextProc;
@@ -782,13 +767,9 @@ begin
     begin
       EqualProc();
     end;
-  rsQuoteAttrValue, rsnsQuoteAttrValue:
+  rsAttrValue, rsnsAttrValue:
     begin
-      QAttributeValueProc();
-    end;
-  rsAposAttrValue, rsnsAPosAttrValue:
-    begin
-      AAttributeValueProc();
+      AttributeValueProc();
     end;
   else ;
   end;
@@ -888,10 +869,8 @@ case fTokenID of
     tknsAttribute: Result:= fnsAttributeAttri;
     tkEqual: Result:= fSymbolAttri;
     tknsEqual: Result:= fSymbolAttri;
-    tkQuoteAttrValue: Result:= fAttributeValueAttri;
-    tkAPosAttrValue: Result:= fAttributeValueAttri;
-    tknsQuoteAttrValue: Result:= fnsAttributeValueAttri;
-    tknsAPosAttrValue: Result:= fnsAttributeValueAttri;
+    tkAttrValue: Result:= fAttributeValueAttri;
+    tknsAttrValue: Result:= fnsAttributeValueAttri;
     tkText: Result:= fTextAttri;
     tkCDATA: Result:= fCDATAAttri;
     tkEntityRef: Result:= fEntityRefAttri;
