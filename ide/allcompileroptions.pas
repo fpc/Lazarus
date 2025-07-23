@@ -196,7 +196,7 @@ begin
       if FInitialRender then
       begin
         txtErrorMsg.Caption := lisCheckCompilerPath;
-        txtErrorMsg.Visible := FOptionsReader.RootOptGroup.CompilerOpts.Count <= 0;
+        txtErrorMsg.Visible := FOptionsReader.RootOptGroup.Count <= 0;
       end;
     end;
 
@@ -330,8 +330,8 @@ var
     cb: TComboBox;
     i: Integer;
   begin
-    for i := 0 to aParentGroup.CompilerOpts.Count-1 do begin
-      Opt := TCompilerOpt(aParentGroup.CompilerOpts[i]);
+    for i := 0 to aParentGroup.Count-1 do begin
+      Opt := aParentGroup[i];
       if Opt.Ignored or not Opt.Visible then Continue;  // Maybe filtered out
       case Opt.EditKind of
         oeGroup, oeSet: begin                   // Label for group or set
@@ -352,7 +352,7 @@ var
           TCheckBox(Cntrl).OnMouseWheel := @sbMouseWheel;
           Cntrl.OnClick := @CheckBoxClick;
         end;
-        oeNumber, oeText, oeSetNumber: begin    // Edit
+        oeNumber, oeText, oeSetValue: begin    // Edit
           Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, lIndentPixs {3});
           TLabel(Lbl).OnMouseWheel := @sbMouseWheel;
           Cntrl := MakeEditCntrl(Lbl, TEdit);
