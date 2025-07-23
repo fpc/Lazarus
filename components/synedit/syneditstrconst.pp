@@ -104,8 +104,8 @@ resourcestring
   SYNS_AttrMiscellaneous        =  'Miscellaneous';
   SYNS_AttrNamespaceAttrName    =  'Namespace Attribute Name';
   SYNS_AttrNamespaceAttrValue   =  'Namespace Attribute Value';
-  SYNS_AttrNamespaceIdentDef    =  'Namespace Ident Definition';
-  SYNS_AttrNamespaceIdentPrefix =  'Namespace Ident Prefix';
+  SYNS_AttrNamespaceIdentDef    =  'Namespace Identifier Definition';
+  SYNS_AttrNamespaceIdentPrefix =  'Namespace Identifier Prefix';
   SYNS_AttrNamespaceColon       =  'Namespace Colon';
   SYNS_AttrNonReservedKeyword   =  'Non-reserved keyword';
   SYNS_AttrNull                 =  'Null';

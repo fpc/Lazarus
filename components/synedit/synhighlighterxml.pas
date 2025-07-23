@@ -74,7 +74,7 @@ type
   );
 
   TtkTokenDecorator = (tdNone,
-    tdNameSpacePrefix, tdNameSpaceColon, tdNameSpaceDefintion,
+    tdNameSpacePrefix, tdNameSpaceColon, tdNameSpaceDefinition,
     tdNameSpaceNoneStart, tdNameSpaceNoneEnd // no decoratar / used for merge-bounds
     );
 
@@ -755,7 +755,7 @@ begin
   while (fLine[Run] in NameChars) do Inc(Run);
   if (rfNameSpace in fRangeFlags) then begin
     fTokenID := tknsAttribute;
-    fTokenDecorator := tdNameSpaceDefintion;
+    fTokenDecorator := tdNameSpaceDefinition;
   end
   else begin
     fTokenID := tkAttribute;
@@ -1032,7 +1032,7 @@ var
         tdNameSpacePrefix,
         tdNameSpaceNoneStart:  begin         b := fLineLen + 1; end;
         tdNameSpaceColon:      begin a := 1; b := fLineLen + 1; end;
-        tdNameSpaceDefintion,
+        tdNameSpaceDefinition,
         tdNameSpaceNoneEnd:    begin a := 1;                    end;
       end;
       Result.SetFrameBoundsLog(a, b);
@@ -1070,7 +1070,7 @@ begin
       fNamespaceColonAttri.SetFrameBoundsLog(x1, x2);
       fProcessingInstructionAttriResult.Merge(fNamespaceColonAttri, LeftCol, RightCol);
     end;
-    tdNameSpaceDefintion: begin
+    tdNameSpaceDefinition: begin
       InitMergeRes;
       fNamespaceDefinitionAttri.SetFrameBoundsLog(x1, x2);
       fProcessingInstructionAttriResult.Merge(fNamespaceDefinitionAttri, LeftCol, RightCol);
