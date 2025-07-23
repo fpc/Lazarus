@@ -65,7 +65,7 @@ type
     tkComment, tkCommentSym, tkElement, tkEntityRef, tkEqual, tkNull, tkProcessingInstruction,
     tkSpace, tkSymbol, tkText,
     //
-    tknsAttribute, tknsAttrValue, tknsEqual,
+    tknsAttribute, tknsAttrValue,
     //These are unused at the moment
     tkDocType
     {tkDocTypeAttrValue, tkDocTypeAttribute,
@@ -76,8 +76,6 @@ type
   TRangeState = (rsAttribute, rsAttrValue, rsCDATA,
     rsComment, rsElement, rsCloseElement, rsOpenElement, rsEqual,
     rsText,
-    //
-    rsnsEqual, rsnsAttrValue,
     //These are unused at the moment
     rsDocType, rsDocTypeSquareBraces                                           //ek 2001-11-11
     {rsDocTypeAttrValue, rsDocTypeAttribute,
@@ -85,7 +83,8 @@ type
     }
   );
   TRangeFlag = (rfProcessingInstruction,  // At/Inside <? .. ?>
-                rfSingleQuote,            // Only used when frange in rsAttrValue, rsnsAttrValue
+                rfSingleQuote,            // Only used when frange = rsAttrValue
+                rfNameSpace,              // in xmlns:foo-".."
                 rfEntityRef               // In Entity &gt;  OVERRIDES whatever is in fRange
                );
   TRangeFlags = set of TRangeFlag;
@@ -422,7 +421,7 @@ begin
   if (rfProcessingInstruction in fRangeFlags) and (fLine[Run+1] = '>') then begin
     fTokenID := tkProcessingInstruction;
     fRange := rsText;
-    Exclude(fRangeFlags, rfProcessingInstruction);
+    fRangeFlags := fRangeFlags - [rfSingleQuote, rfNameSpace, rfProcessingInstruction];
     Inc(Run, 2);
     if TopXmlCodeFoldBlockType = cfbtXmlProcess then
       EndXmlCodeFoldBlock;
@@ -433,7 +432,7 @@ end;
 
 procedure TSynXMLSyn.LessThanProc;
 begin
-  fRangeFlags := fRangeFlags - [rfSingleQuote];
+  fRangeFlags := fRangeFlags - [rfSingleQuote, rfNameSpace];
   Inc(Run);
   if (fLine[Run] = '/') then begin
     Inc(Run);
@@ -478,7 +477,7 @@ end;
 
 procedure TSynXMLSyn.GreaterThanProc;
 begin
-  fRangeFlags := fRangeFlags - [rfSingleQuote];
+  fRangeFlags := fRangeFlags - [rfSingleQuote, rfNameSpace];
   if (Run > 0) and (fLine[Run - 1] = '/') then
     if TopXmlCodeFoldBlockType = cfbtXmlNode then
       EndXmlNodeCodeFoldBlock;
@@ -626,6 +625,7 @@ begin
   //Check if we are starting on a closing quote
   if (fLine[Run] in [#34, #39]) then
   begin
+    fRangeFlags := fRangeFlags - [rfSingleQuote, rfNameSpace];
     fTokenID := tkSymbol;
     fRange := rsAttribute;
     Inc(Run);
@@ -640,8 +640,9 @@ begin
        ((fLine + fTokenPos + 5)^ in [':', '=', #10, #13, #9, #32, #0])
      )
   then begin
+    Include(fRangeFlags, rfNameSpace);
     fTokenID := tknsAttribute;
-    fRange := rsnsEqual;
+    fRange := rsEqual;
   end else begin
     fTokenID := tkAttribute;
     fRange := rsEqual;
@@ -650,10 +651,7 @@ end;
 
 procedure TSynXMLSyn.EqualProc;
 begin
-  if fRange = rsnsEqual then
-    fTokenID := tknsEqual
-  else
-    fTokenID := tkEqual;
+  fTokenID := tkEqual;
 
   while not (fLine[Run] in [#0, #10, #13]) do
   begin
@@ -667,10 +665,7 @@ begin
     begin
       if (fLine[Run] = #39) then
         Include(fRangeFlags, rfSingleQuote);
-      if fRange = rsnsEqual then
-        fRange := rsnsAttrValue
-      else
-        fRange := rsAttrValue;
+      fRange := rsAttrValue;
       Inc(Run);
       Exit;
     end;
@@ -680,7 +675,7 @@ end;
 
 procedure TSynXMLSyn.AttributeValueProc;
 begin
-  if fRange = rsnsAttrValue then
+  if rfNameSpace in fRangeFlags then
     fTokenID := tknsAttrValue
   else
     fTokenID := tkAttrValue;
@@ -707,6 +702,7 @@ begin
 
   fRange := rsAttribute;
   Exclude(fRangeFlags, rfSingleQuote);
+  Exclude(fRangeFlags, rfNameSpace);
 end;
 
 procedure TSynXMLSyn.TextProc;
@@ -763,11 +759,11 @@ begin
     begin
       AttributeProc();
     end;
-  rsEqual, rsnsEqual:
+  rsEqual:
     begin
       EqualProc();
     end;
-  rsAttrValue, rsnsAttrValue:
+  rsAttrValue:
     begin
       AttributeValueProc();
     end;
@@ -868,7 +864,6 @@ case fTokenID of
     tkAttribute: Result:= fAttributeAttri;
     tknsAttribute: Result:= fnsAttributeAttri;
     tkEqual: Result:= fSymbolAttri;
-    tknsEqual: Result:= fSymbolAttri;
     tkAttrValue: Result:= fAttributeValueAttri;
     tknsAttrValue: Result:= fnsAttributeValueAttri;
     tkText: Result:= fTextAttri;
