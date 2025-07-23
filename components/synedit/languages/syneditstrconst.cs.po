@@ -383,6 +383,10 @@ msgstr ""
 msgid "Processing Instruction"
 msgstr "Instrukce zpracování"
 
+#: syneditstrconst.syns_attrprocessinginstrsym
+msgid "Processing Instruction Symbol"
+msgstr ""
+
 #: syneditstrconst.syns_attrpropertyname
 msgid "Property name"
 msgstr ""

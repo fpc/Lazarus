@@ -113,6 +113,7 @@ resourcestring
   SYNS_AttrPragma               =  'Pragma';
   SYNS_AttrPreprocessor         =  'Preprocessor';
   SYNS_AttrProcessingInstr      =  'Processing Instruction';
+  SYNS_AttrProcessingInstrSym   =  'Processing Instruction Symbol';
   SYNS_AttrQualifier            =  'Qualifier';
   SYNS_AttrRegister             =  'Register';
   SYNS_AttrReservedWord         =  'Reserved word';
@@ -250,6 +251,7 @@ const
   SYNS_XML_AttrPragma               =  'Pragma';
   SYNS_XML_AttrPreprocessor         =  'Preprocessor';
   SYNS_XML_AttrProcessingInstr      =  'Processing Instruction';
+  SYNS_XML_AttrProcessingInstrSym   =  'Processing Instruction Symbol';
   SYNS_XML_AttrQualifier            =  'Qualifier';
   SYNS_XML_AttrRegister             =  'Register';
   SYNS_XML_AttrReservedWord         =  'Reserved word';

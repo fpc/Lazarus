@@ -384,6 +384,10 @@ msgstr "过程头值"
 msgid "Processing Instruction"
 msgstr "处理指令"
 
+#: syneditstrconst.syns_attrprocessinginstrsym
+msgid "Processing Instruction Symbol"
+msgstr ""
+
 #: syneditstrconst.syns_attrpropertyname
 msgid "Property name"
 msgstr "属性名称"

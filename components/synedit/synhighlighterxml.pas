@@ -135,6 +135,7 @@ type
     fEntityRefAttri: TSynHighlighterAttributes;
     fProcessingInstructionAttri: TSynHighlighterAttributesModifier;
     fProcessingInstructionAttriResult: TSynSelectedColorMergeResult;
+    fProcessingInstructionSymbolAttri: TSynHighlighterAttributes;
     fCDATAAttri: TSynHighlighterAttributes;
     fCommentAttri: TSynHighlighterAttributes;
     fDocTypeAttri: TSynHighlighterAttributes;
@@ -223,6 +224,8 @@ type
       write fEntityRefAttri;
     property ProcessingInstructionAttri: TSynHighlighterAttributesModifier
       read fProcessingInstructionAttri write fProcessingInstructionAttri;
+    property ProcessingInstructionSymbolAttri: TSynHighlighterAttributes
+      read fProcessingInstructionSymbolAttri write fProcessingInstructionSymbolAttri;
     property CommentAttri: TSynHighlighterAttributes read fCommentAttri
       write fCommentAttri;
     property CommentSymbolAttri: TSynHighlighterAttributes read fCommentSymbolAttri
@@ -254,6 +257,7 @@ begin
   fEntityRefAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrEntityReference, SYNS_XML_AttrEntityReference);
   fProcessingInstructionAttri:= TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcessingInstr, SYNS_XML_AttrProcessingInstr);
   fProcessingInstructionAttriResult := TSynSelectedColorMergeResult.Create;
+  fProcessingInstructionSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrProcessingInstrSym, SYNS_XML_AttrProcessingInstrSym);
   fCDATAAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCDATASection, SYNS_XML_AttrCDATASection);
   fCommentAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCommentSym, SYNS_XML_AttrCommentSym);
@@ -283,6 +287,9 @@ begin
   fProcessingInstructionAttri.StyleMask:= [low(TFontStyle)..high(TFontStyle)];
   fProcessingInstructionAttri.SetAllPriorities(100);
 
+  fProcessingInstructionSymbolAttri.Foreground:= clblue;
+  fProcessingInstructionSymbolAttri.SetAllPriorities(150);
+
   fTextAttri.Foreground:= clBlack;
   fTextAttri.Style:= [fsBold];
 
@@ -308,6 +315,7 @@ begin
 
   AddAttribute(fSymbolAttri);
   AddAttribute(fProcessingInstructionAttri);
+  AddAttribute(fProcessingInstructionSymbolAttri);
   AddAttribute(fDocTypeAttri);
   AddAttribute(fCommentAttri);
   AddAttribute(fCommentSymbolAttri);
@@ -932,7 +940,11 @@ case fTokenID of
     tkAposEntityRef: Result:= fEntityRefAttri;
     tknsQuoteEntityRef: Result:= fEntityRefAttri;
     tknsAposEntityRef: Result:= fEntityRefAttri;
-    tkProcessingInstruction: Result:= fSymbolAttri;
+    tkProcessingInstruction:
+      if fProcessingInstructionSymbolAttri.IsEnabled then
+        Result:= fProcessingInstructionSymbolAttri
+      else
+        Result:= fSymbolAttri;
     tkComment: Result:= fCommentAttri;
     tkCommentSym:
       if fCommentSymbolAttri.IsEnabled then
