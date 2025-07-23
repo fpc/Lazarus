@@ -580,6 +580,7 @@ begin
         RE.Expression:='\b'+SearchFor+'\b'
       else
         RE.Expression:=SearchFor;
+      lCaseMismatchCheckCompleted := True;
     end else begin
       // convert case if necessary
       if not (sesoMatchCase in Flags) then begin
