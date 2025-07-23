@@ -308,11 +308,15 @@ msgid "Namespace Colon"
 msgstr "Двоеточие пространства имён"
 
 #: syneditstrconst.syns_attrnamespaceidentdef
-msgid "Namespace Ident Definition"
+#, fuzzy
+#| msgid "Namespace Ident Definition"
+msgid "Namespace Identifier Definition"
 msgstr "Идентификатор в объявлении пространства имён"
 
 #: syneditstrconst.syns_attrnamespaceidentprefix
-msgid "Namespace Ident Prefix"
+#, fuzzy
+#| msgid "Namespace Ident Prefix"
+msgid "Namespace Identifier Prefix"
 msgstr "Идентификатор-префикс пространства имён"
 
 #: syneditstrconst.syns_attrnewfile

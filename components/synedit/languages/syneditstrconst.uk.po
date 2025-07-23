@@ -311,11 +311,11 @@ msgid "Namespace Colon"
 msgstr ""
 
 #: syneditstrconst.syns_attrnamespaceidentdef
-msgid "Namespace Ident Definition"
+msgid "Namespace Identifier Definition"
 msgstr ""
 
 #: syneditstrconst.syns_attrnamespaceidentprefix
-msgid "Namespace Ident Prefix"
+msgid "Namespace Identifier Prefix"
 msgstr ""
 
 #: syneditstrconst.syns_attrnewfile
