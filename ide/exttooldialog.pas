@@ -39,7 +39,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils,
-  Controls, Forms, StdCtrls, ComCtrls, Dialogs, ButtonPanel, Menus,
+  Controls, Forms, StdCtrls, ComCtrls, Dialogs, ButtonPanel, Menus, LCLStrConsts,
   FileUtil,
   IDEImagesIntf, IDEDialogs, IDECommands,
   ExtToolEditDlg, TransferMacros,
@@ -269,7 +269,13 @@ end;
 
 procedure TExternalToolDialog.RemoveButtonClick(Sender: TObject);
 begin
-  if Listbox.ItemIndex<0 then exit;
+  if Listbox.ItemIndex<0 then
+    exit;
+  if IDEMessageDialog(rsMtConfirmation, Format(lisExtToolConfirmRemoving, [Listbox.Items[Listbox.ItemIndex]]),
+    mtConfirmation, mbYesNoCancel) <> mrYes
+  then
+    exit;
+
   fExtToolList.Delete(Listbox.ItemIndex);
   ListBox.Items.Delete(Listbox.ItemIndex);
   EnableButtons;

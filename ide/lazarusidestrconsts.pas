@@ -4202,6 +4202,7 @@ resourcestring
   lisRemoveThem = 'Remove them';
   lisExtToolMaximumToolsReached = 'Maximum Tools reached';
   lisExtToolThereIsAMaximumOfTools = 'There is a maximum of %s tools.';
+  lisExtToolConfirmRemoving = 'Do you want to delete the tool "%s"?';
 
   // edit external tools
   lisEdtExtToolEditTool = 'Edit Tool';
