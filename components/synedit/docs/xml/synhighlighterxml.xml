@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="SynEdit"><module name="SynHighlighterXML">
+<element name="TSynXMLSyn.CommentAttri">
+<short>Highlight info for comments in XML</short>
+<descr>Color and style to be used for comments.
+
+This does not include the comment-marker &lt;!-- and --&gt;. Those are symbols, but can have their own attributes.
+</descr>
+<seealso>
+  <link id="TSynXMLSyn.CommentSymbolAttri">CommentSymbolAttri</link>
+</seealso>
+</element>
+<element name="TSynXMLSyn.CommentSymbolAttri">
+<short>Highlight info for comment markers (symbols) in XML</short>
+<descr>Color and style to be used for the symbols starting and ending a comment. &lt;!-- and --&gt;
+
+Those markers are highlighted as normal symbols. But if any property in this <var>CommentSymbolAttri</var> is set, then the colors from this attribute will be used.
+</descr>
+<seealso>
+  <link id="TSynXMLSyn.SymbolAttri">SymbolAttri</link>
+  <link id="TSynXMLSyn.CommentAttri">CommentAttri</link>
+</seealso>
+</element>
+<element name="TSynXMLSyn.ProcessingInstructionSymbolAttri">
+<short>Highlight info for processing instruction markers (symbols) &lt;? and ?&gt; in XML</short>
+<descr>Color and style to be used for the symbols starting and ending a processing instruction. &lt;? and ?&gt;
+
+Those markers are highlighted as normal symbols. But if any property in this <var>ProcessingInstructionSymbolAttri</var> is set, then the colors from this attribute will be used.
+</descr>
+<seealso>
+  <link id="TSynXMLSyn.SymbolAttri">SymbolAttri</link>
+</seealso>
+</element>
+<element name="TSynXMLSyn.ProcessingInstructionAttri">
+<short>Overlay highlight info for entire processing instruction in XML</short>
+<descr>Additional Color and style to be used for entire processing instruction. Between and including &lt;? and ?&gt;
+
+The settings from this Attribute can overlay other attributes that apply to different parts of such an instruction.
+They can replace them by priority, or merge using an Alpha channel.
+</descr>
+</element>
+<element name="TSynXMLSyn.SymbolAttri">
+<short>Highlight info for symbols in XML</short>
+<descr>Color and style to be used for symbols. E.g. &lt;&gt;!?/=" and combinations of those.
+
+Some symbols may have their own Attributes. They may use this setting as a fallback, if they have no setting at all. That is "fallback" is not per color/style, but for the entire TSynHighlighterAttribute (if the alternative has no single property set).
+</descr>
+<seealso>
+  <link id="TSynXMLSyn.CommentSymbolAttri">CommentSymbolAttri</link>
+  <link id="TSynXMLSyn.ProcessingInstructionSymbolAttri">ProcessingInstructionSymbolAttri</link>
+</seealso>
+</element>
+</module></package>
+</fpdoc-descriptions>
