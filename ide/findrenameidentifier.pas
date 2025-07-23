@@ -90,7 +90,7 @@ type
     FIsPrivate: boolean;
     FNode: TCodeTreeNode;
     FNodesDeletedChangeStep: integer;
-    FTool: TCodeTool;
+    FTool: TCodeTool; // of FNode
     FFiles: TStringList;
     procedure SetAllowRename(const AValue: boolean);
     procedure SetIsPrivate(const AValue: boolean);
@@ -1833,6 +1833,8 @@ begin
 end;
 
 function TFindRenameIdentifierDialog.NewIdentifierIsConflicted(var ErrMsg: string): boolean;
+// checking if there are existing other identifiers conflited with the new
+// will be executed when "Rename all References" button is clicked
 var
   i: integer;
   anItem: TIdentifierListItem;
@@ -1872,14 +1874,11 @@ begin
     ErrMsg:='Matches unit "'+ExtractFileName(aFilename)+'"';
     exit(true);
   end;
-
-  // checking if there are existing other identifiers conflited with the new
-  // will be executed when "Rename all References" button is clicked
 end;
 
 function TFindRenameIdentifierDialog.IsNodeInvalid(const Msg: string): boolean;
 begin
-  if FNode=nil then exit(false);
+  if FNode=nil then exit(true);
   if FTool.NodesDeletedChangeStep=FNodesDeletedChangeStep then exit(false);
   Result:=true;
   debugln([Msg,' nodes deleted New=',FTool.NodesDeletedChangeStep,' Old=',FNodesDeletedChangeStep]);
