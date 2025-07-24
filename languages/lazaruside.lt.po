@@ -10093,6 +10093,11 @@ msgstr ""
 msgid "Extremely Verbose"
 msgstr "Ypatingai išsamiai"
 
+#: lazarusidestrconsts.lisexttoolconfirmremoving
+#, object-pascal-format
+msgid "Do you want to delete the tool \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisexttoolexternaltools
 msgid "External Tools"
 msgstr "Išorės įrankiai"

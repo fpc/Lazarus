@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-07-17 16:09+0300\n"
+"PO-Revision-Date: 2025-07-24 16:26+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -9854,6 +9854,11 @@ msgstr "Передать дополнительные параметры ком�
 #: lazarusidestrconsts.lisextremelyverbose
 msgid "Extremely Verbose"
 msgstr "Крайне подробное"
+
+#: lazarusidestrconsts.lisexttoolconfirmremoving
+#, object-pascal-format
+msgid "Do you want to delete the tool \"%s\"?"
+msgstr "Вы хотите удалить средство \"%s\"?"
 
 #: lazarusidestrconsts.lisexttoolexternaltools
 msgid "External Tools"

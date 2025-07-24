@@ -9897,6 +9897,11 @@ msgstr "Passe des options supplémentaires au compilateur. Peut être fourni plu
 msgid "Extremely Verbose"
 msgstr "Très verbeux"
 
+#: lazarusidestrconsts.lisexttoolconfirmremoving
+#, object-pascal-format
+msgid "Do you want to delete the tool \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisexttoolexternaltools
 msgid "External Tools"
 msgstr "Outils externes"
