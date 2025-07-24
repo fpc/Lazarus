@@ -746,6 +746,17 @@ begin
     StartIDE(false);
     Key := 0;
   end
+  // tabs
+  else if (Key = VK_TAB) and (Shift = [ssCtrl]) then
+  begin
+    PropertiesPageControl.SelectNextPage(true);
+    Key := 0;
+  end
+  else if (Key = VK_TAB) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    PropertiesPageControl.SelectNextPage(false);
+    Key := 0;
+  end
 end;
 
 procedure TInitialSetupDialog.StartIDEBitBtnClick(Sender: TObject);
