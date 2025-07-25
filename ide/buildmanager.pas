@@ -51,7 +51,7 @@ uses
   // IDEIntf
   IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf, InputHistory,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, DialogProcs,
   // IdeConfig
   LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
   IDEProcs, etMakeMsgParser, etFPCMsgFilePool, ParsedCompilerOpts, CompilerOptions,
@@ -59,7 +59,7 @@ uses
   // IdePackager
   IdePackagerStrConsts,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, ProjectResources,
+  LazarusIDEStrConsts, ProjectResources,
   MiscOptions, ExtTools, etFPCMsgParser, etPas2jsMsgParser, Compiler,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
   ApplicationBundle, IdeTransferMacros, SearchPathProcs, RunParamOptions;
@@ -188,6 +188,7 @@ type
     procedure OnProjectDestroy(Sender: TObject);
     procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
     function GetProjectDefaultNamespace: string; // read .lpr file
+    procedure WriteError(const Msg: string);
   protected
     // command line overrides
     OverrideTargetOS: string;
@@ -614,6 +615,13 @@ begin
   tr('EncloseBracket', lisTMFunctionEncloseBrackets);
 end;
 
+procedure TBuildManager.WriteError(const Msg: string);
+begin
+  DebugLn(Msg,' [TBuildManager.WriteError]');
+  if IDEMessagesWindow<>nil then
+    IDEMessagesWindow.AddCustomMessage(mluError,Msg);
+end;
+
 procedure TBuildManager.SetupExternalTools(aToolsClass: TExternalToolsClass);
 var
   Tools: TExternalTools;
@@ -635,6 +643,7 @@ end;
 procedure TBuildManager.SetupCompilerInterface;
 begin
   TheCompiler := TCompiler.Create;
+  TheCompiler.OnWriteError := @WriteError;
 end;
 
 procedure TBuildManager.SetupInputHistories(aInputHist: TInputHistories);

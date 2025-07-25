@@ -44,22 +44,21 @@ uses
   // Codetools
   DefineTemplates, LinkScanner, CodeToolManager,
   // BuildIntf
-  IDEExternToolIntf,
-  // IdeIntf
-  IDEMsgIntf, LazIDEIntf, CompOptsIntf,
+  IDEExternToolIntf, CompOptsIntf,
   // IdeConfig
   TransferMacros, IDECmdLine, CompilerOptions,
   // IDE
   LazarusIDEStrConsts, Project;
 
 type
-  TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
+  //TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
+  TOnWriteError = procedure(const Msg: string) of object;
 
   { TCompiler }
 
   TCompiler = class(TObject)
   private
-    procedure WriteError(const Msg: string);
+    FOnWriteError: TOnWriteError;
   public
     constructor Create;
     destructor Destroy; override;
@@ -67,6 +66,7 @@ type
                      const WorkingDir, CompilerFilename: string; CompilerParams: TStrings;
                      BuildAll, SkipLinking, SkipAssembler, CurrentDirectoryIsTestDir: boolean;
                      const aCompileHint: string): TModalResult;
+    property OnWriteError: TOnWriteError read FOnWriteError write FOnWriteError;
   end;
 
   // Following classes are for compiler options parsed from "fpc -h" and "fpc -i".
@@ -296,9 +296,10 @@ begin
     CheckIfFileIsExecutable(CompilerFilename);
   except
     on E: Exception do begin
-      WriteError(Format(lisCompilerErrorInvalidCompiler, [E.Message]));
-      if CompilerFilename='' then begin
-        WriteError(lisCompilerHintYouCanSetTheCompilerPath);
+      if Assigned(OnWriteError) then begin
+        OnWriteError(Format(lisCompilerErrorInvalidCompiler, [E.Message]));
+        if CompilerFilename='' then
+          OnWriteError(lisCompilerHintYouCanSetTheCompilerPath);
       end;
       exit;
     end;
@@ -354,13 +355,6 @@ begin
   end;
   if ConsoleVerbosity>=0 then
     DebugLn('Info: (lazarus) [TCompiler.Compile] end');
-end;
-
-procedure TCompiler.WriteError(const Msg: string);
-begin
-  DebugLn(Msg,' [TCompiler.WriteError]');
-  if IDEMessagesWindow<>nil then
-    IDEMessagesWindow.AddCustomMessage(mluError,Msg);
 end;
 
 // Compiler options parsed from "fpc -h" and "fpc -i".
@@ -848,9 +842,9 @@ function TCompilerOptSet.SelectOptions(aOptAndValue: string): boolean;
 // -Criot
 // -vbnm6060,5087
 var
-  i, Start, j: Integer;
-  OneOpt, NumberValue: string;
-  OptOk, Negate: Boolean;
+  i, j: Integer;
+  NumberValue: string;
+  Negate: Boolean;
   c: Char;
   Item, NumberOpt: TCompilerOpt;
   Bools: array of char; // '+' = on, '-' = off, else not set
@@ -1496,7 +1490,7 @@ procedure TCompilerOptThread.StartParsing;
 begin
   if fStartedOnce then
     WaitFor;
-  fReader.CompilerExecutable:=LazarusIDE.GetCompilerFilename;
+  Assert(fReader.CompilerExecutable<>'', 'TCompilerOptThread.StartParsing: CompilerExecutable should be set by caller.');
   fReader.UpdateTargetParam;
   Start;
   fStartedOnce:=true;

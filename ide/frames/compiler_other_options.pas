@@ -38,7 +38,7 @@ uses
   // BuildIntf
   IDEOptionsIntf, CompOptsIntf,
   // IdeIntf
-  IDEOptEditorIntf, IDECommands,
+  IDEOptEditorIntf, IDECommands, LazIDEIntf,
   // SynEdit
   SynEdit, SynEditKeyCmds, SynCompletion,
   // IdeConfig
@@ -409,6 +409,7 @@ begin
       end;
     end
     else begin
+      FOptionsReader.CompilerExecutable:=LazarusIDE.GetCompilerFilename;
       fOptionsThread := TCompilerOptThread.Create(FOptionsReader);
       fOptionsThread.StartParsing;
     end;
