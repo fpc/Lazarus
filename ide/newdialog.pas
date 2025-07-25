@@ -238,7 +238,12 @@ begin
               ModalResult:=mrNone;
               Exit;
             end;
-            LazarusIDE.DoSaveProject([]);
+            if LazarusIDE.DoSaveProject([]) <> mrOK then
+            begin
+              FNewItem := nil;
+              ModalResult:=mrNone;
+              exit;
+            end;
           end;
           InputHistories.NewProjectType:=FNewItem.Name;
 
