@@ -270,6 +270,14 @@ msgstr "指令"
 msgid "Enable capitalisation fixing"
 msgstr "启用大写处理(capitalisation fixing)"
 
+#: jcfuiconsts.liscapsfloatingpointnumbers
+msgid "Floating point numbers"
+msgstr ""
+
+#: jcfuiconsts.liscapshexadecimalnumbers
+msgid "Hexadecimal numbers"
+msgstr ""
+
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
 msgstr "标识符"

@@ -277,6 +277,14 @@ msgstr "Директиви"
 msgid "Enable capitalisation fixing"
 msgstr "Ввімкнути виправлення регістру"
 
+#: jcfuiconsts.liscapsfloatingpointnumbers
+msgid "Floating point numbers"
+msgstr ""
+
+#: jcfuiconsts.liscapshexadecimalnumbers
+msgid "Hexadecimal numbers"
+msgstr ""
+
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
 msgstr "Ідентифікатори"

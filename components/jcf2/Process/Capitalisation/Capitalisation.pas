@@ -58,11 +58,6 @@ uses
 
 procedure FixCaps(const pct: TSourceToken; const caps: TCapitalisationType);
 begin
-  if pct = nil then
-    exit;
-  if pct.SourceCode = '' then
-    exit;
-
   { if it's covered by specific word caps, then don't touch it
     This was happening with 'true' not coming out as 'True'
     even though specific word caps specifically said it was doing that change
@@ -97,10 +92,12 @@ end;
 function TCapitalisation.EnabledVisitSourceToken(const pcNode: TObject): Boolean;
 var
   lcSourceToken: TSourceToken;
+  lsTemp: string;
 begin
   Result := False;
   lcSourceToken := TSourceToken(pcNode);
-
+  if (lcSourceToken = nil) or (lcSourceToken.SourceCode = '') then
+    exit;
 
   if IsInsideAsm(lcSourceToken) then
   begin
@@ -112,7 +109,22 @@ begin
   end
   else
   begin
-
+    if lcSourceToken.TokenType = ttNumber then
+    begin
+      if lcSourceToken.SourceCode[1] = '$' then   //Hexadecimal number
+      begin
+        FixCaps(lcSourceToken, FormattingSettings.Caps.HexadecimalNumbers);
+        if (FormattingSettings.Caps.HexadecimalNumbers = ctMixed) and (Length(lcSourceToken.SourceCode) > 1) then
+        begin
+          lsTemp := lcSourceToken.SourceCode;
+          lsTemp[2] := UpCase(lsTemp[2]);
+          lcSourceToken.SourceCode := lsTemp;
+        end;
+      end
+      else
+        FixCaps(lcSourceToken, FormattingSettings.Caps.FloatingPointNumbers);
+      exit;
+    end;
     case lcSourceToken.WordType of
       wtReservedWord:
         FixCaps(lcSourceToken, FormattingSettings.Caps.ReservedWords);

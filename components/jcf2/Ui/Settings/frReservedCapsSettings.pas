@@ -43,6 +43,8 @@ type
     cbNormalizeIdentifiers: TCheckBox;
     cbNormalizeNotIdentifiers: TCheckBox;
     gbNormalizeCapitalisation: TGroupBox;
+    rgHexadecimalNumbers: TRadioGroup;
+    rgFloatingPointNumbers: TRadioGroup;
     rgReservedWords: TRadioGroup;
     rgOperators: TRadioGroup;
     rgTypes: TRadioGroup;
@@ -115,6 +117,19 @@ begin
   cbNormalizeIdentifiers.Caption := lisCapsIdentifiersIdentifiers;
   cbNormalizeNotIdentifiers.Caption := lisCapsNotIdentifiersNotIdentifiers;
   cbNormalizeCapitalisationOneNamespace.Caption := lisCapsNormalizeCapitalisationOneNamespace;
+
+  rgHexadecimalNumbers.Caption := lisCapsHexadecimalNumbers;
+  rgHexadecimalNumbers.Items[0] := lisObfsAllCapitals;
+  rgHexadecimalNumbers.Items[1] := lisObfsAllLowerCase;
+  rgHexadecimalNumbers.Items[2] := lisObfsMixedCase;
+  rgHexadecimalNumbers.Items[3] := lisObfsLeaveAlone;
+
+  rgFloatingPointNumbers.Caption := lisCapsFloatingPointNumbers;
+  rgFloatingPointNumbers.Items[0] := lisObfsAllCapitals;
+  rgFloatingPointNumbers.Items[1] := lisObfsAllLowerCase;
+  rgFloatingPointNumbers.Items[2] := lisObfsMixedCase;
+  rgFloatingPointNumbers.Items[3] := lisObfsLeaveAlone;
+  rgFloatingPointNumbers.Controls[2].Enabled := False;
 end;
 
 procedure TfrReservedCapsSettings.cbEnableClick(Sender: TObject);
@@ -125,6 +140,8 @@ begin
   rgOperators.Enabled := cbEnable.Checked;
   rgTypes.Enabled := cbEnable.Checked;
   gbNormalizeCapitalisation.Enabled := cbEnable.Checked;
+  rgHexadecimalNumbers.Enabled := cbEnable.Checked;
+  rgFloatingPointNumbers.Enabled := cbEnable.Checked;
 end;
 
 procedure TfrReservedCapsSettings.FrameResize(Sender:TObject);
@@ -143,6 +160,8 @@ begin
     rgDirectives.ItemIndex := Ord(Directives);
     rgOperators.ItemIndex := Ord(Operators);
     rgTypes.ItemIndex := Ord(Types);
+    rgHexadecimalNumbers.ItemIndex := Ord(HexadecimalNumbers);
+    rgFloatingPointNumbers.ItemIndex := Ord(FloatingPointNumbers);
     cbNormalizeIdentifiers.Checked := IdentifiersNormalizeCapitalisation;
     cbNormalizeNotIdentifiers.Checked := NotIdentifiersNormalizeCapitalisation;
     cbNormalizeCapitalisationOneNamespace.Checked := NormalizeCapitalisationOneNamespace;
@@ -160,6 +179,8 @@ begin
     Directives := TCapitalisationType(rgDirectives.ItemIndex);
     Operators := TCapitalisationType(rgOperators.ItemIndex);
     Types := TCapitalisationType(rgTypes.ItemIndex);
+    HexadecimalNumbers := TCapitalisationType(rgHexadecimalNumbers.ItemIndex);
+    FloatingPointNumbers := TCapitalisationType(rgFloatingPointNumbers.ItemIndex);
     IdentifiersNormalizeCapitalisation := cbNormalizeIdentifiers.Checked;
     NotIdentifiersNormalizeCapitalisation := cbNormalizeNotIdentifiers.Checked;
     NormalizeCapitalisationOneNamespace := cbNormalizeCapitalisationOneNamespace.Checked;

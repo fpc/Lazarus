@@ -46,7 +46,8 @@ type
     fbIdentifiersNormalizeCapitalisation: boolean; // change the case to be equal of the word first use.
     fbNotIdentifiersNormalizeCapitalisation: boolean; // change the case to be equal of the word first use.
     fbNormalizeCapitalisationOneNamespace: boolean;
-
+    feHexadecimalNumbers: TCapitalisationType;
+    feFloatingPointNumbers: TCapitalisationType;
   protected
   public
     constructor Create;
@@ -67,7 +68,8 @@ type
     property IdentifiersNormalizeCapitalisation: boolean Read fbIdentifiersNormalizeCapitalisation Write fbIdentifiersNormalizeCapitalisation; // for words not in the list, change the case to be equal of the word first use.
     property NotIdentifiersNormalizeCapitalisation: boolean Read fbNotIdentifiersNormalizeCapitalisation Write fbNotIdentifiersNormalizeCapitalisation; // for words not in the list, change the case to be equal of the word first use.
     property NormalizeCapitalisationOneNamespace: boolean Read fbNormalizeCapitalisationOneNamespace Write fbNormalizeCapitalisationOneNamespace; // share word list for identifiers and not identifiers.
-
+    property HexadecimalNumbers: TCapitalisationType read feHexadecimalNumbers write feHexadecimalNumbers;
+    property FloatingPointNumbers: TCapitalisationType read feFloatingPointNumbers write feFloatingPointNumbers;
   end;
 
 
@@ -80,6 +82,8 @@ const
   REG_DIRECTIVES = 'Directives';
   REG_CONSTANTS  = 'Constants';
   REG_TYPES      = 'Types';
+  REG_HEX_NUM    = 'HexadecimalNumbers';
+  REG_FLOAT_NUM  = 'FloatingPointNumbers';
 
   REG_IDENTIFIERSNORMALIZECAPITALISATION    = 'IdentifiersNormalizeCapitalisation';
   REG_NOTIDENTIFIERSNORMALIZECAPITALISATION = 'NotIdentifiersNormalizeCapitalisation';
@@ -107,6 +111,8 @@ begin
   feDirectives := TCapitalisationType(pcStream.Read(REG_DIRECTIVES, Ord(ctLower)));
   feConstants := TCapitalisationType(pcStream.Read(REG_CONSTANTS, Ord(ctLower)));
   feTypes := TCapitalisationType(pcStream.Read(Reg_TYPES, Ord(ctLower)));
+  feHexadecimalNumbers := TCapitalisationType(pcStream.Read(Reg_HEX_NUM, Ord(ctLeaveAlone)));
+  feFloatingPointNumbers := TCapitalisationType(pcStream.Read(Reg_FLOAT_NUM, Ord(ctLeaveAlone)));
 end;
 
 procedure TSetCaps.WriteToStream(const pcOut: TSettingsOutput);
@@ -123,6 +129,8 @@ begin
   pcOut.Write(REG_DIRECTIVES, Ord(feDirectives));
   pcOut.Write(REG_CONSTANTS, Ord(feConstants));
   pcOut.Write(REG_TYPES, Ord(feTypes));
+  pcOut.Write(REG_HEX_NUM, Ord(feHexadecimalNumbers));
+  pcOut.Write(REG_FLOAT_NUM, Ord(feFloatingPointNumbers));
 end;
 
 end.

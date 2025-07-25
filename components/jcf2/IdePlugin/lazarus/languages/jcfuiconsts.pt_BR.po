@@ -274,6 +274,14 @@ msgstr "Diretivas"
 msgid "Enable capitalisation fixing"
 msgstr "Ativar correção maiúsculas/minúsculas"
 
+#: jcfuiconsts.liscapsfloatingpointnumbers
+msgid "Floating point numbers"
+msgstr ""
+
+#: jcfuiconsts.liscapshexadecimalnumbers
+msgid "Hexadecimal numbers"
+msgstr ""
+
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
 msgstr "Identificadores"

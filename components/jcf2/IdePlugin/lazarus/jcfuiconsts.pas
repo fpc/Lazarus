@@ -233,6 +233,8 @@ resourcestring
   lisCapsDirectives = 'Directives';
   lisCapsConstants = 'Constants';
   lisCapsTypes = 'Types';
+  lisCapsHexadecimalNumbers = 'Hexadecimal numbers';
+  lisCapsFloatingPointNumbers = 'Floating point numbers';
 
   //Any Word Capitalisation tab
   lisCapsAnyWordAnyWord = 'Any Word';

@@ -269,6 +269,14 @@ msgstr "Anweisungen"
 msgid "Enable capitalisation fixing"
 msgstr "Schreibweisen korrigieren"
 
+#: jcfuiconsts.liscapsfloatingpointnumbers
+msgid "Floating point numbers"
+msgstr ""
+
+#: jcfuiconsts.liscapshexadecimalnumbers
+msgid "Hexadecimal numbers"
+msgstr ""
+
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
 msgstr "Schlüsselwörter"
