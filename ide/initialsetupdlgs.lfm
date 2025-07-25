@@ -7,10 +7,12 @@ object InitialSetupDialog: TInitialSetupDialog
   Caption = 'InitialSetupDialog'
   ClientHeight = 520
   ClientWidth = 640
+  KeyPreview = True
   Position = poScreenCenter
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   object PropertiesTreeView: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = WelcomePaintBox
@@ -63,13 +65,17 @@ object InitialSetupDialog: TInitialSetupDialog
     object StartIDEBitBtn: TBitBtn
       Left = 520
       Height = 25
+      Hint = '[Ctrl+Enter]'
       Top = 0
       Width = 100
       Align = alRight
       AutoSize = True
       Caption = 'StartIDEBitBtn'
       Constraints.MinWidth = 100
+      Default = True
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnClick = StartIDEBitBtnClick
     end

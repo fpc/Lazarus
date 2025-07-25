@@ -44,6 +44,7 @@ uses
   Classes, SysUtils, fgl, pkgglobals, fpmkunit,
   // LCL
   Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls,
+  LCLType,
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates,
   // LazUtils
@@ -141,6 +142,7 @@ type
     procedure CompilerComboBoxExit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FPCSrcDirBrowseButtonClick(Sender: TObject);
     procedure FPCSrcDirComboBoxChange(Sender: TObject);
     procedure LazDirBrowseButtonClick(Sender: TObject);
@@ -178,6 +180,7 @@ type
     FSelectingPage: boolean;
     FCandidates: array[TSDFilenameType] of TSDFileInfoList; // list of TSDFileInfo
     fSearchFpcSourceThread: TSearchFpcSourceThread;
+    procedure StartIDE(aCheckErrors: boolean);
     procedure DoDbgFrameStateChanged(AState: TSDFilenameQuality);
     procedure FrameStateChanged(AnSender: ISetupDlgFrame; AState: TInitSetupDlgFrameState; AnAction: TInitSetupDlgFrameAction);
     procedure SetGroupCaption(AGroupId, AName: String);
@@ -729,29 +732,67 @@ begin
     SelectPage(PropertiesTreeView.Selected, True);
 end;
 
+procedure TInitialSetupDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  // normal start
+  if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
+  begin
+    StartIDE(true);
+    Key := 0;
+  end
+  // start ignoring errors
+  else if (Key = VK_RETURN) and (Shift = [ssCtrl, ssAlt, ssShift]) then
+  begin
+    StartIDE(false);
+    Key := 0;
+  end
+  // tabs
+  else if (Key = VK_TAB) and (Shift = [ssCtrl]) then
+  begin
+    PropertiesPageControl.SelectNextPage(true);
+    Key := 0;
+  end
+  else if (Key = VK_TAB) and (Shift = [ssCtrl, ssShift]) then
+  begin
+    PropertiesPageControl.SelectNextPage(false);
+    Key := 0;
+  end
+end;
+
 procedure TInitialSetupDialog.StartIDEBitBtnClick(Sender: TObject);
+begin
+  StartIDE(true);
+end;
+
+procedure TInitialSetupDialog.StartIDE(aCheckErrors: boolean);
 var
   Node: TTreeNode;
   s: String;
   MsgResult: TModalResult;
   i: Integer;
 begin
-  Node:=FirstErrorNode;
-  s:='';
-  if Node=TVNodeLazarus then
-    s:=lisWithoutAProperLazarusDirectoryYouWillGetALotOfWarn
-  else if Node=TVNodeCompiler then
-    s:=lisWithoutAProperCompilerTheCodeBrowsingAndCompilingW
-  else if Node=TVNodeFPCSources then
-    s:=lisWithoutTheProperFPCSourcesCodeBrowsingAndCompletio
-  else if Node=TVNodeMakeExe then
-    s:=lisWithoutAProperMakeExecutableTheCompilingOfTheIDEIs
-  else if Node=TVNodeDebugger then
-    s:=lisWithoutAProperDebuggerDebuggingWillBeDisappointing;
-  if s<>'' then begin
-    MsgResult:=MessageDlg(lisCCOWarningCaption, s, mtWarning, [mbIgnore,
-      mbCancel], 0);
-    if MsgResult<>mrIgnore then exit;
+  if not StartIDEBitBtn.IsEnabled then
+    exit;
+
+  if aCheckErrors then
+  begin
+    Node:=FirstErrorNode;
+    s:='';
+    if Node=TVNodeLazarus then
+      s:=lisWithoutAProperLazarusDirectoryYouWillGetALotOfWarn
+    else if Node=TVNodeCompiler then
+      s:=lisWithoutAProperCompilerTheCodeBrowsingAndCompilingW
+    else if Node=TVNodeFPCSources then
+      s:=lisWithoutTheProperFPCSourcesCodeBrowsingAndCompletio
+    else if Node=TVNodeMakeExe then
+      s:=lisWithoutAProperMakeExecutableTheCompilingOfTheIDEIs
+    else if Node=TVNodeDebugger then
+      s:=lisWithoutAProperDebuggerDebuggingWillBeDisappointing;
+    if s<>'' then begin
+      MsgResult:=MessageDlg(lisCCOWarningCaption, s, mtWarning, [mbIgnore,
+        mbCancel], 0);
+      if MsgResult<>mrIgnore then exit;
+    end;
   end;
 
   s:=LazDirComboBox.Text;
