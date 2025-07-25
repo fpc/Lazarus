@@ -1691,12 +1691,12 @@ begin
       col:=UrgencyStyles[Line.Urgency].Color;
       if col=clDefault then
         col:=TextColor;
-      if (j=FCursorLine) and (fSelectedView=View) then begin
+      if (j=FCursorLine) and (fSelectedView=View) and (mcsFocused in FStates) then begin
         Canvas.Pen.Style:=psDash;                           // Dash line top
         Canvas.Line(NodeRect.Left,NodeRect.Top,NodeRect.Right,NodeRect.Top);
       end;
       DrawText(NodeRect,GetLineText(Line),IsSelected,col);  // Text
-      if (j=FCursorLine) and (fSelectedView=View) then begin
+      if (j=FCursorLine) and (fSelectedView=View) and (mcsFocused in FStates) then begin
         Canvas.Line(NodeRect.Left,NodeRect.Bottom,NodeRect.Right,NodeRect.Bottom);
         Canvas.Pen.Style:=psSolid;                          // Dash line bottom
       end;
