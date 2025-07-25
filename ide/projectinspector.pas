@@ -69,7 +69,9 @@ uses
   ProjPackIntf, ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
   IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
-  IdeIntfStrConsts, MenuIntf, FormEditingIntf, SrcEditorIntf, InputHistory,
+  IdeIntfStrConsts, MenuIntf, FormEditingIntf, SrcEditorIntf,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, TransferMacros, IDEProcs,
   // IDE

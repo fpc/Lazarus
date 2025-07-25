@@ -32,9 +32,12 @@ uses
   FileUtil, LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, LazUTF8,
   // DebuggerIntf
   DbgIntfDebuggerBase,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  PropEdits, ObjectInspector, IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
-  IdeIntfStrConsts, InputHistory,
+  PropEdits, ObjectInspector, IDEOptEditorIntf, IDEUtils, IdeIntfStrConsts,
+  // IdeUtils
+  InputHistory, DialogProcs,
   // LazDebuggerGDBMI
   GDBMIDebugger, DividerBevel,
   // IdeDebugger
@@ -42,7 +45,7 @@ uses
   // IdeConfig
   EnvironmentOpts, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, PathEditorDlg, DialogProcs, DebugManager, EnvGuiOptions;
+  LazarusIDEStrConsts, PathEditorDlg, DebugManager, EnvGuiOptions;
 
 type
 

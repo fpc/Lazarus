@@ -39,11 +39,12 @@ uses
   SourceLog, BasicCodeTools, FileProcs,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazTracer, LazUTF8,
+  // BuildIntf
+  ProjectIntf, ProjectGroupIntf,
   // IDEIntf
   IdeIntfStrConsts, IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
-  ProjectGroupIntf, ProjectIntf, InputHistory,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
   SearchPathProcs,
   // IDE

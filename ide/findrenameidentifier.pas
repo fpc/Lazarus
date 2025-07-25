@@ -43,9 +43,9 @@ uses
   LazFileUtils, FileUtil, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree, LazLoggerBase,
   // IdeIntf
   IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf, ProjectIntf,
-  IDEDialogs, InputHistory,
+  IDEDialogs,
   // IdeUtils
-  DialogProcs,
+  DialogProcs, InputHistory,
   // LazConfig
   TransferMacros, IDEProcs, SearchPathProcs, EnvironmentOpts,
   // IDE

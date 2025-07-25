@@ -65,19 +65,22 @@ uses
   CodeToolManager,
   // SynEdit
   SynEditKeyCmds,
+  // BuildIntf
+  ProjectIntf,
   // IDEIntf
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf, PackageIntf,
-  IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf, ObjectInspector,
+  IDECommands, IDEWindowIntf, ToolBarIntf, ObjectInspector,
   PropEdits, IDEDialogs, IDEUtils, EditorSyntaxHighlighterDef, IdeIntfStrConsts,
+  // IdeUtils
   InputHistory,
   // IDEDebugger
   IdeDebuggerStringConstants,
   // IdeConfig
   LazConf, EnvironmentOpts, CompilerOptions,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, EnvGuiOptions,
-  Project, SourceEditor, SourceSynEditor, FindInFilesDlg,
-  Splash, MainBar, MainIntf, Designer, Debugger, RunParamsOpts, FindInFilesWnd, RunParamOptions;
+  LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, Project,
+  SourceEditor, SourceSynEditor, FindInFilesDlg, Splash, MainBar, MainIntf,
+  Designer, Debugger, RunParamsOpts, FindInFilesWnd, RunParamOptions;
 
 type
   TResetToolFlag = (

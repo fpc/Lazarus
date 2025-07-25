@@ -40,9 +40,9 @@ uses
   // BuildIntf
   ProjPackIntf, CompOptsIntf, PublishModuleIntf,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, IDEImagesIntf, LazIDEIntf, InputHistory,
+  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, IDEImagesIntf, LazIDEIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, RecentListProcs,
   // IDE

@@ -59,10 +59,12 @@ uses
   IdeIntfStrConsts, IDEDialogs, IDEImagesIntf, IDEWindowIntf,
   // IdeProject
   RunParamOptions,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // IDE
-  InputHistory, MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts
+  MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts
   {$IFnDef LCLNoGui}, BaseDebugManager {$ENDIF} ;
 
 type

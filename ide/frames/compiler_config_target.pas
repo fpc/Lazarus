@@ -39,10 +39,12 @@ uses
   IDEOptionsIntf, MacroIntf,
   // IdeIntf
   IDEOptEditorIntf, IDEDialogs, IDEUtils,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   RecentListProcs, TransferMacros, CompilerOptions,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, Project, InputHistory, compiler_parsing_options;
+  LazarusIDEStrConsts, PackageDefs, Project, compiler_parsing_options;
 
 type
 

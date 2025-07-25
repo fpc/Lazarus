@@ -12,7 +12,7 @@ uses
   Forms,
   // LazUtils
   LazFileUtils, LazFileCache, LazMethodList, LazLoggerBase,
-  // IdeIntf
+  // BuildIntf
   PackageIntf, ProjectIntf, IDEExternToolIntf;
 
 Type

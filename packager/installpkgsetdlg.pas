@@ -50,9 +50,9 @@ uses
   // BuildIntf
   PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IdeIntf
-  IDEImagesIntf, IdeIntfStrConsts, IDEDialogs, IDEWindowIntf, InputHistory,
+  IDEImagesIntf, IdeIntfStrConsts, IDEDialogs, IDEWindowIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeProject
   IdeProjectStrConsts,
   // IdeConfig

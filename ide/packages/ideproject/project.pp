@@ -58,10 +58,10 @@ uses
   BaseIDEIntf, ProjPackIntf, ProjectIntf, PackageIntf, MacroIntf, MacroDefIntf,
   CompOptsIntf, IDEOptionsIntf,
   // IDEIntf
-  PropEdits, UnitResources, EditorSyntaxHighlighterDef, InputHistory, SrcEditorIntf,
+  PropEdits, UnitResources, EditorSyntaxHighlighterDef, SrcEditorIntf,
   IDEOptEditorIntf, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   IDECmdLine, IDEProcs, CompOptsModes, ModeMatrixOpts,

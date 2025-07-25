@@ -69,7 +69,9 @@ uses
   // BuildIntf
   ProjectIntf, CompOptsIntf,
   // IDEIntf
-  ObjectInspector, MenuIntf, SrcEditorIntf, LazIDEIntf, IDEWindowIntf, InputHistory,
+  ObjectInspector, MenuIntf, SrcEditorIntf, LazIDEIntf, IDEWindowIntf,
+  // IDEUtils
+  InputHistory,
   // IdeConfig
   LazConf,
   // IDE

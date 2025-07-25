@@ -37,11 +37,11 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazUTF8,
   // BuildIntf
-  ComponentReg,
+  ComponentReg, NewItemIntf, PackageIntf,
   // IDEIntf
-  NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, IDEDialogs, InputHistory,
+  FormEditingIntf, IDEWindowIntf, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
   EnvironmentOpts,
   // IDE

@@ -39,13 +39,13 @@ uses
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf
-  IDEOptEditorIntf, IDEDialogs, IDEUtils, InputHistory,
+  IDEOptEditorIntf, IDEDialogs, IDEUtils,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, DialogProcs, InputHistory,
   // IdeConfig
   EnvironmentOpts, LazConf,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, InitialSetupProc, EnvGuiOptions;
+  LazarusIDEStrConsts, InitialSetupProc, EnvGuiOptions;
 
 type
 

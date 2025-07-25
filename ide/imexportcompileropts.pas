@@ -38,7 +38,9 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, Laz2_XMLCfg,
   // IdeIntf
-  IDEOptEditorIntf, IDEImagesIntf, InputHistory,
+  IDEOptEditorIntf, IDEImagesIntf,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   RecentListProcs, CompilerOptions,
   // IDE

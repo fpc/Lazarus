@@ -44,7 +44,7 @@ uses
   StdCtrls, ButtonPanel, Forms, Clipbrd,
   // SynEdit
   SynEdit,
-  // IdeIntf
+  // IdeUtils
   InputHistory,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,

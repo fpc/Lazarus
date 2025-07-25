@@ -40,7 +40,9 @@ uses
   // SynEdit
   SynEdit,
   // IdeIntf
-  IDEWindowIntf, InputHistory,
+  IDEWindowIntf,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   RecentListProcs, EnvironmentOpts,
   // IDE

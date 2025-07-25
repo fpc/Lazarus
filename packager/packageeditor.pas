@@ -47,12 +47,14 @@ uses
   ProjectIntf, PackageDependencyIntf, PackageIntf, PackageLinkIntf,
   IDEOptionsIntf, NewItemIntf, ComponentReg,
   // IDEIntf
-  IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, InputHistory,
+  IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf,
   IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, IDEOptEditorIntf, SrcEditorIntf,
+  // IDEUtils
+  InputHistory, DialogProcs,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  MainBase, DialogProcs, LazarusIDEStrConsts, IDEDefs, EditablePackage,
+  MainBase, LazarusIDEStrConsts, IDEDefs, EditablePackage,
   PackageSystem, PackageDefs, AddToPackageDlg, AddPkgDependencyDlg, ComponentPalette,
   AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor, CleanPkgDeps,
   MissingPkgFilesDlg, ProjPackFilePropGui, ProjPackEditing, BasePkgManager;

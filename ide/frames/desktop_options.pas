@@ -32,9 +32,12 @@ uses
   FileUtil, LazUTF8, LazLoggerBase, Translations,
   // LazControls
   DividerBevel,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  IdeIntfStrConsts, IDEOptionsIntf, IDEOptEditorIntf, IDEWindowIntf,
-  IDEUtils, IDEDialogs, InputHistory,
+  IdeIntfStrConsts, IDEOptEditorIntf, IDEWindowIntf, IDEUtils, IDEDialogs,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   EnvironmentOpts,
   // IDE

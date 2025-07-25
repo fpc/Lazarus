@@ -44,7 +44,9 @@ uses
   // LazUtils
   LazClasses,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, IdeDebuggerWatchValueIntf, InputHistory,
+  IDEWindowIntf, IDEImagesIntf, IdeDebuggerWatchValueIntf,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // DebuggerIntf

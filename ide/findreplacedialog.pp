@@ -35,7 +35,8 @@ uses
   Classes, SysUtils, RegExpr,
   LCLType, Controls, StdCtrls, Forms, Buttons, ExtCtrls, Dialogs, Graphics, ButtonPanel,
   SynEditTypes, SynEdit,
-  IDEImagesIntf, IDEWindowIntf, IDEDialogs, InputHistory,
+  IDEImagesIntf, IDEWindowIntf, IDEDialogs,
+  InputHistory,
   EnvironmentOpts,
   LazarusIdeStrConsts;
 

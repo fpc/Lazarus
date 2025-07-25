@@ -11,7 +11,9 @@ uses
   // LazUtils
   LazUTF8,
   // IdeIntf
-  IdeIntfStrConsts, InputHistory,
+  IdeIntfStrConsts,
+  // IdeUtils
+  InputHistory,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeConfig

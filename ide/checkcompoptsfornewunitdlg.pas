@@ -33,12 +33,17 @@ interface
 uses
   SysUtils,
   Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
+  // CodeTools
   BasicCodeTools, DefineTemplates,
+  // BuildIntf
   CompOptsIntf,
+  // IdeIntf
+  IdeIntfStrConsts, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
-  IDEDialogs, InputHistory, IdeIntfStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
+  // IdeConfig
   TransferMacros,
+  // IDE
   Project, LazarusIDEStrConsts;
 
 type

@@ -24,11 +24,12 @@ uses
   LazFileUtils, LazLoggerBase,
   // SynEdit
   SynEditTypes, SynEdit,
+  // BuildIntf
+  MacroIntf, ProjectGroupIntf,
   // IdeIntf
-  MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEDialogs,
-  IdeIntfStrConsts, ProjectGroupIntf, InputHistory,
+  IDEWindowIntf, SrcEditorIntf, IDEDialogs, IdeIntfStrConsts,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs,
   // IDE

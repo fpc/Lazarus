@@ -46,7 +46,9 @@ uses
   // LazUtils
   LazUTF8, LazUtilities, LazFileUtils, LazLoggerBase, LazTracer, LazStringUtils,
   // IdeIntf
-  IDEImagesIntf, IDECommands, InputHistory,
+  IDEImagesIntf, IDECommands,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   IDEOptionDefs,
   // IDE

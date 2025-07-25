@@ -12,7 +12,9 @@ uses
   // LazUtils
   Laz2_XMLCfg, LazLoggerBase,
   // IdeIntf
-  IDEImagesIntf, ToolBarIntf, IDEWindowIntf, IDEDialogs, InputHistory,
+  IDEImagesIntf, ToolBarIntf, IDEWindowIntf, IDEDialogs,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs,
   // IDE

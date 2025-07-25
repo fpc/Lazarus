@@ -47,9 +47,9 @@ uses
   // CodeTools
   CodeToolManager, CodeToolsStructs, CodeCache,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, InputHistory,
+  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
   RecentListProcs,
   // IDE

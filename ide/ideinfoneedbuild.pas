@@ -38,7 +38,9 @@ uses
   // BuildIntf
   ProjectIntf, PackageIntf,
   // IdeIntf
-  IDEWindowIntf, LazIDEIntf, InputHistory,
+  IDEWindowIntf, LazIDEIntf,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEProcs,
   // IDE

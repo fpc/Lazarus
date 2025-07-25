@@ -13,9 +13,12 @@ uses
   FileProcs, DefineTemplates, CodeToolManager, LinkScanner,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8,
+  // BuildIntf
+  IDEOptionsIntf, CompOptsIntf, IDEExternToolIntf,
   // IDEIntf
-  IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, IDEExternToolIntf,
-  IDEDialogs, IDEUtils, InputHistory,
+  IDEOptEditorIntf, IDEDialogs, IDEUtils,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   LazConf, EnvironmentOpts, RecentListProcs, CompilerOptions,
   // IDE

@@ -52,10 +52,12 @@ uses
   ProjectIntf, CompOptsIntf,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, IdeIntfStrConsts, IDEDialogs,
-  ToolBarIntf, InputHistory, IdeDebuggerWatchValueIntf,
+  ToolBarIntf, IdeDebuggerWatchValueIntf,
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
   IdeDebuggerValueFormatterIntf,
   {$ENDIF}
+  // IdeUtils
+  InputHistory,
   // DebuggerIntf
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
   DbgIntfBaseTypes,

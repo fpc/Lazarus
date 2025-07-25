@@ -49,9 +49,9 @@ uses
   BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, PublishModuleIntf,
   IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
   // IDEIntf
-  IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf, InputHistory,
+  IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts, DialogProcs,
+  IdeUtilsPkgStrConsts, DialogProcs, InputHistory,
   // IdeConfig
   LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
   IDEProcs, etMakeMsgParser, etFPCMsgFilePool, ParsedCompilerOpts, CompilerOptions,

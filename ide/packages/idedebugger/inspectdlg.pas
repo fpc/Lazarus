@@ -34,6 +34,7 @@ uses
   ExtCtrls, Buttons, Clipbrd, LMessages,
   // IdeIntf
   IDEWindowIntf, ObjectInspector, PropEdits, IdeDebuggerWatchValueIntf,
+  // IdeUtils
   InputHistory,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,

@@ -39,7 +39,9 @@ uses
   // LazUtils
   LazFileUtils,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, LazIDEIntf, InputHistory,
+  IDEWindowIntf, IDEImagesIntf, LazIDEIntf,
+  // IdeUtils
+  InputHistory,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeDebugger

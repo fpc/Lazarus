@@ -35,7 +35,7 @@ uses
   Classes, SysUtils,
   // LazUtils
   LazConfigStorage, LazFileUtils, LazLoggerBase,
-  // IdeIntf
+  // BuildIntf
   BaseIDEIntf,
   // IdeConfig
   LazConf;

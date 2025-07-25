@@ -47,7 +47,9 @@ uses
   // SynEdit
   SynEdit, SynHighlighterDiff,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, InputHistory,
+  IDEWindowIntf, IDEImagesIntf,
+  // IdeUtils
+  InputHistory,
   // IDE
   LazarusIDEStrConsts, EditorOptions, DiffPatch, SourceEditor, EnvironmentOpts;
 

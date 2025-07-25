@@ -36,9 +36,9 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, Laz2_XMLCfg, LazStringUtils, LazLoggerBase,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, InputHistory,
+  IdeIntfStrConsts, IDEWindowIntf, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
   RecentListProcs, LazConf, EnvironmentOpts, TransferMacros,
   // IDE

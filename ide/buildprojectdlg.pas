@@ -35,10 +35,12 @@ uses
   LazFileUtils, LazFileCache, LazStringUtils, AvgLvlTree,
   // codetools
   FileProcs, CodeToolManager, DirectoryCacher,
+  // BuildIntf
+  PackageIntf,
   // IDEIntf
-  IdeIntfStrConsts, IDEDialogs, IDEImagesIntf, PackageIntf, InputHistory,
+  IdeIntfStrConsts, IDEDialogs, IDEImagesIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // IDE

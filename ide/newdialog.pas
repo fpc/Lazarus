@@ -46,9 +46,12 @@ uses
   ListViewFilterEdit, TreeFilterEdit,
   // LazUtils
   LazUTF8, FileUtil,
+  // BuildIntf
+  NewItemIntf, ProjectIntf,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, NewItemIntf, ProjectIntf,
-  IdeIntfStrConsts, LazIDEIntf, IDEDialogs, InputHistory,
+  IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts, LazIDEIntf, IDEDialogs,
+  // IdeUtils
+  InputHistory,
   // IDE
   LazarusIDEStrConsts, Project, MainIntf;
 

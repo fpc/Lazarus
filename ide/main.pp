@@ -85,7 +85,9 @@ uses
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
   IDECommands, IDEWindowIntf, IDEDialogs, SrcEditorIntf, IDEMsgIntf,
   MenuIntf, LazIDEIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors,
-  IdeIntfStrConsts, ToolBarIntf, SelEdits, InputHistory,
+  IdeIntfStrConsts, ToolBarIntf, SelEdits,
+  // IdeUtils
+  InputHistory,
   // protocol
   IDEProtocol,
   // compile

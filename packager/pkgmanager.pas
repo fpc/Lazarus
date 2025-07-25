@@ -62,9 +62,9 @@ uses
   // IdeIntf
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   IdeIntfStrConsts, ComponentEditors, PropEdits, IDEDialogs,
-  UnitResources, InputHistory,
+  UnitResources,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, InputHistory, DialogProcs,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs, SearchPathProcs,
   TransferMacros, IDECmdLine, IDEProcs, ParsedCompilerOpts, CompilerOptions,
@@ -73,7 +73,7 @@ uses
   // FCL registration
   LazarusPackageIntf,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, MiscOptions, Project, ProjPackEditing,
+  LazarusIDEStrConsts, MiscOptions, Project, ProjPackEditing,
   AddToPackageDlg, PackageDefs, EditablePackage, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
   IDETranslations, BuildLazDialog, NewDialog, FindInFilesDlg,

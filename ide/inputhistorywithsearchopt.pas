@@ -33,7 +33,7 @@ uses
   Laz2_XMLCfg,
   // SynEdit
   SynEditTypes,
-  // IDE
+  // IdeUtils
   InputHistory;
 
 type

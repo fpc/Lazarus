@@ -14,8 +14,12 @@ uses
   LazFileUtils, LazStringUtils, LazTracer,
   // CodeTools
   BasicCodeTools,
+  // BuildIntf
+  MacroDefIntf,
   // IdeIntf
-  IdeIntfStrConsts, MacroDefIntf, LazIDEIntf, IDEUtils, InputHistory,
+  IdeIntfStrConsts, LazIDEIntf, IDEUtils,
+  // IdeUtils
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, TransferMacros,
   // IDE

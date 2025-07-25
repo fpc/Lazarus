@@ -51,25 +51,25 @@ uses
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
-  UnitResources, InputHistory,
+  UnitResources,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, DialogProcs, InputHistory,
   // IdeConfig
   EnvironmentOpts, SearchPathProcs, TransferMacros, RecentListProcs, IDEProcs,
   ParsedCompilerOpts, CompilerOptions,
   // IdePackager
-  IdePackagerStrConsts,
+  IdePackagerStrConsts, PackageDefs, PackageSystem,
   // IdeProject
-  IdeProjectStrConsts,
+  IdeProjectStrConsts, Project, ProjectDefs,
   // IDE
-  DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
-  NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,
-  ProjectInspector, SourceSynEditor, SourceEditor, ComCtrls,
+  IDEProtocol, LazarusIDEStrConsts, NewDialog,
+  NewProjectDlg, MainBase, MainBar, MainIntf,
+  ProjectInspector, SourceSynEditor, SourceEditor,
   EditorOptions, CustomFormEditor, ControlSelection,
   FormEditor, EmptyMethodsDlg, BaseDebugManager, BuildManager,
   EditorMacroListViewer, BuildModesManager, ViewUnit_Dlg, CheckLFMDlg,
   etMessagesWnd, DebugManager, EnvGuiOptions, ConvCodeTool,
-  BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
+  BasePkgManager, Designer, DesignerProcs;
 
 type
 

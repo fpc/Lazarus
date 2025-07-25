@@ -45,8 +45,10 @@ uses
   LazConfigStorage,
   // IdeConfig
   DiffPatch, LazConf, RecentListProcs, IdeXmlConfigProcs,
+  // BuildIntf
+  ProjectIntf,
   // IdeIntf
-  ProjectIntf, IDEDialogs;
+  IDEDialogs;
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}
