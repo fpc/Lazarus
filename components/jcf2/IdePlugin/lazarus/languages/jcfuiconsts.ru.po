@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.3.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
 
 #: jcfuiconsts.format_about_menu
 msgid "&About ..."
@@ -271,11 +271,11 @@ msgstr "Исправлять регистр"
 
 #: jcfuiconsts.liscapsfloatingpointnumbers
 msgid "Floating point numbers"
-msgstr ""
+msgstr "Числа с плавающей точкой"
 
 #: jcfuiconsts.liscapshexadecimalnumbers
 msgid "Hexadecimal numbers"
-msgstr ""
+msgstr "Шестнадцатеричные числа"
 
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
