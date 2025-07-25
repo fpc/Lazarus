@@ -256,10 +256,6 @@
         <UnitName Value="OIFavoriteProperties"/>
       </Item>
       <Item>
-        <Filename Value="projectgroupintf.pp"/>
-        <UnitName Value="ProjectGroupIntf"/>
-      </Item>
-      <Item>
         <Filename Value="propedits.pp"/>
         <UnitName Value="PropEdits"/>
       </Item>

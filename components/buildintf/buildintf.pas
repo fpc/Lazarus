@@ -12,7 +12,7 @@ uses
   IDEExternToolIntf, IDEOptionsIntf, LazMsgWorker, MacroDefIntf, MacroIntf, 
   NewItemIntf, PackageDependencyIntf, PackageIntf, PackageLinkIntf, 
   ProjectIntf, ProjectResourcesIntf, ProjPackIntf, PublishModuleIntf, 
-  LazarusPackageIntf;
+  ProjectGroupIntf, LazarusPackageIntf;
 
 implementation
 

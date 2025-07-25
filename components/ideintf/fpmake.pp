@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 12.03.2024
+   This file was generated on 25.07.2025
 }
 
 {$ifndef ALLPACKAGES} 
@@ -35,7 +35,6 @@ begin
     P.Flags.Add('LazarusDsgnPkg');
 
     D := P.Dependencies.Add('debuggerintf');
-    D := P.Dependencies.Add('lazdebuggerintf');
     D := P.Dependencies.Add('buildintf');
     D := P.Dependencies.Add('lazcontrols');
     P.Options.Add('-MObjFPC');
@@ -91,7 +90,6 @@ begin
     t.Dependencies.AddUnit('objectinspector');
     t.Dependencies.AddUnit('objinspstrconsts');
     t.Dependencies.AddUnit('oifavoriteproperties');
-    t.Dependencies.AddUnit('projectgroupintf');
     t.Dependencies.AddUnit('propedits');
     t.Dependencies.AddUnit('propeditutils');
     t.Dependencies.AddUnit('srceditorintf');
@@ -151,7 +149,6 @@ begin
     T:=P.Targets.AddUnit('objectinspector.pp');
     T:=P.Targets.AddUnit('objinspstrconsts.pas');
     T:=P.Targets.AddUnit('oifavoriteproperties.pas');
-    T:=P.Targets.AddUnit('projectgroupintf.pp');
     T:=P.Targets.AddUnit('propedits.pp');
     T:=P.Targets.AddUnit('propeditutils.pp');
     T:=P.Targets.AddUnit('srceditorintf.pas');

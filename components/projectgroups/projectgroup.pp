@@ -209,6 +209,7 @@ type
 
   TIDEProjectGroupManager = Class(TProjectGroupManager)
   private
+    FEditor: TForm;
     FIdleConnected: boolean;
     FOnEditorOptionsChanged: TNotifyEvent;
     FUndoList: TObjectList; // list of TPGUndoItem
@@ -255,6 +256,7 @@ type
     function SaveProjectGroup: boolean; override;
     function GetSrcPaths: string; override;
   public
+    property Editor: TForm read FEditor write FEditor;
     property Options: TIDEProjectGroupOptions read FOptions;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property OnEditorOptionsChanged: TNotifyEvent read FOnEditorOptionsChanged write FOnEditorOptionsChanged;
@@ -1265,13 +1267,13 @@ begin
     end;
     // todo sub groups
   end;
-  if Result then
-    if ProjectGroupManager.Editor<>nil then
-      ProjectGroupManager.Editor.Invalidate;
+  if Result
+  and (ProjectGroupManager is TIDEProjectGroupManager)
+  and (TIDEProjectGroupManager(ProjectGroupManager).Editor<>nil) then
+    TIDEProjectGroupManager(ProjectGroupManager).Editor.Invalidate;
 end;
 
-function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions
-  ): Boolean;
+function TIDEProjectGroup.LoadFromFile(Options: TProjectGroupLoadOptions): Boolean;
 Var
   ARoot: String;
   TargetFileName: String;

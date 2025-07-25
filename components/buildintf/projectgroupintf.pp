@@ -8,8 +8,6 @@ interface
 
 uses
   Classes, SysUtils,
-  // LCL
-  Forms,
   // LazUtils
   LazFileUtils, LazFileCache, LazMethodList, LazLoggerBase,
   // BuildIntf
@@ -220,7 +218,6 @@ Type
   private
     FHandlers: array[TPGManagerHandler] of TMethodList;
   protected
-    FEditor: TForm;
     function CallRunLazbuildHandlers(Target: TPGCompileTarget;
                                  Tool: TAbstractExternalTool): boolean; virtual;
     function GetCurrentProjectGroup: TProjectGroup; virtual; abstract;
@@ -236,7 +233,6 @@ Type
     procedure Undo; virtual; abstract;
     procedure Redo; virtual; abstract;
     property CurrentProjectGroup: TProjectGroup Read GetCurrentProjectGroup; // Always top-level.
-    property Editor: TForm read FEditor write FEditor;
   public
     // handlers
     procedure RemoveAllHandlersOfObject(AnObject: TObject);

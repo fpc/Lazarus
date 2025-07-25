@@ -17,12 +17,11 @@ uses
   IDEImagesIntf, IDEMsgIntf, IDEOptEditorIntf, IDETextConverter, IDEUtils, 
   IDEWindowIntf, ImageListEditor, KeyValPropEditDlg, LazIDEIntf, 
   LazStringGridEdit, ListViewPropEdit, MaskPropEdit, MenuIntf, NewField, 
-  ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, ProjectGroupIntf, 
-  PropEdits, PropEditUtils, SrcEditorIntf, StatusBarPropEdit, 
-  StringsPropEditDlg, TextTools, ToolBarIntf, TreeViewPropEdit, UnitResources, 
-  bufdatasetdsgn, selectdatasetdlg, SelEdits, IdeIntfStrConsts, 
-  PropEditConfig, IdeDebuggerWatchValueIntf, IdeDebuggerValueFormatterIntf, 
-  LazarusPackageIntf;
+  ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, PropEdits, 
+  PropEditUtils, SrcEditorIntf, StatusBarPropEdit, StringsPropEditDlg, 
+  TextTools, ToolBarIntf, TreeViewPropEdit, UnitResources, bufdatasetdsgn, 
+  selectdatasetdlg, SelEdits, IdeIntfStrConsts, PropEditConfig, 
+  IdeDebuggerWatchValueIntf, IdeDebuggerValueFormatterIntf, LazarusPackageIntf;
 
 implementation
 

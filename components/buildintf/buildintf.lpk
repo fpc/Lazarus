@@ -89,6 +89,10 @@
         <Filename Value="publishmoduleintf.pas"/>
         <UnitName Value="PublishModuleIntf"/>
       </Item>
+      <Item>
+        <Filename Value="projectgroupintf.pp"/>
+        <UnitName Value="ProjectGroupIntf"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

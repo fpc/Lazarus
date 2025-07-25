@@ -647,7 +647,8 @@ begin
   ProjectGroup:=nil;
   if ProjectGroupEditorForm=Self then
     ProjectGroupEditorForm:=nil;
-  ProjectGroupManager.Editor:=Self;
+  if ProjectGroupManager is TIDEProjectGroupManager then
+    TIDEProjectGroupManager(ProjectGroupManager).Editor:=nil;
   if (PGEditMenuSectionMisc<>nil)
   and (IDEMenuRoots <> nil) // it is RegisterIDEMenuSection, and will be freed by the IDE, but PGEditMenuSectionMisc will not be nil
   and (PGEditMenuSectionMisc.MenuItem=PopupMenuMore.Items) then

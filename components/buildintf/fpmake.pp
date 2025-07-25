@@ -3,7 +3,7 @@
 
    fpmake.pp for BuildIntf 1.0
 
-   This file was generated on 12.03.2024
+   This file was generated on 25.07.2025
 }
 
 {$ifndef ALLPACKAGES} 
@@ -35,7 +35,6 @@ begin
     P.Flags.Add('LazarusDsgnPkg');
 
     D := P.Dependencies.Add('lazutils');
-    D := P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
@@ -63,6 +62,7 @@ begin
     t.Dependencies.AddUnit('projectresourcesintf');
     t.Dependencies.AddUnit('projpackintf');
     t.Dependencies.AddUnit('publishmoduleintf');
+    t.Dependencies.AddUnit('projectgroupintf');
 
     T:=P.Targets.AddUnit('baseideintf.pas');
     T:=P.Targets.AddUnit('buildstrconsts.pas');
@@ -82,6 +82,7 @@ begin
     T:=P.Targets.AddUnit('projectresourcesintf.pas');
     T:=P.Targets.AddUnit('projpackintf.pas');
     T:=P.Targets.AddUnit('publishmoduleintf.pas');
+    T:=P.Targets.AddUnit('projectgroupintf.pp');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('buildintf.compiled');
