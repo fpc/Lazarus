@@ -1737,8 +1737,90 @@ begin
 end;
 
 type
-  TTaskDialogAccess = class(TCustomTaskDialog)
+  //TTaskDialogAccess = class(TCustomTaskDialog)
+  //end;
+
+  { TTsakDialogHelper }
+
+  TTsakDialogHelper = class helper for TCustomTaskDialog
+  public
+    procedure _InternalSetDialogHandle(AHandle: THandle);
+    procedure _DoOnDialogConstructed;
+    procedure _DoOnDialogCreated;
+    procedure _DoOnDialogDestroyed;
+    procedure _DoOnButtonClicked(AModalResult: Integer; var ACanClose: Boolean);
+    procedure _DoOnHyperlinkClicked(const AURL: string);
+    procedure _DoOnNavigated;
+    procedure _DoOnTimer(TickCount: Cardinal; var Reset: Boolean);
+    procedure _DoOnverificationClicked(Checked: Boolean);
+    procedure _DoOnExpandButtonClicked(Expanded: Boolean);
+    procedure _DoOnRadioButtonClicked(ButtonID: Integer);
+    procedure _DoOnHelp;
   end;
+
+{ TTsakDialogHelper }
+
+procedure TTsakDialogHelper._InternalSetDialogHandle(AHandle: THandle);
+begin
+  InternalSetDialogHandle(AHandle);
+end;
+
+procedure TTsakDialogHelper._DoOnDialogConstructed;
+begin
+  DoOnDialogConstructed;
+end;
+
+procedure TTsakDialogHelper._DoOnDialogCreated;
+begin
+  DoOnDialogCreated;
+end;
+
+procedure TTsakDialogHelper._DoOnDialogDestroyed;
+begin
+  DoOnDialogDestroyed;
+end;
+
+procedure TTsakDialogHelper._DoOnButtonClicked(AModalResult: Integer;
+  var ACanClose: Boolean);
+begin
+  DoOnButtonClicked(AModalResult, ACanClose);
+end;
+
+procedure TTsakDialogHelper._DoOnHyperlinkClicked(const AURL: string);
+begin
+  DoOnHyperlinkClicked(AURL);
+end;
+
+procedure TTsakDialogHelper._DoOnNavigated;
+begin
+  DoOnNavigated;
+end;
+
+procedure TTsakDialogHelper._DoOnTimer(TickCount: Cardinal; var Reset: Boolean);
+begin
+  DoOnTimer(TickCount, Reset);
+end;
+
+procedure TTsakDialogHelper._DoOnverificationClicked(Checked: Boolean);
+begin
+  DoOnverificationClicked(Checked);
+end;
+
+procedure TTsakDialogHelper._DoOnExpandButtonClicked(Expanded: Boolean);
+begin
+  DoOnExpandButtonClicked(Expanded);
+end;
+
+procedure TTsakDialogHelper._DoOnRadioButtonClicked(ButtonID: Integer);
+begin
+  DoOnRadioButtonClicked(ButtonID);
+end;
+
+procedure TTsakDialogHelper._DoOnHelp;
+begin
+  DoOnHelp;
+end;
+
 
 function TaskDialogCallbackProc({%H-}hwnd: HWND; uNotification: UINT;
   wParam: WPARAM; {%H-}lParam: LPARAM; dwRefData: Long_Ptr): HRESULT; stdcall;
@@ -1752,41 +1834,41 @@ begin
     TDN_DIALOG_CONSTRUCTED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      {$PUSH}
-      {$ObjectChecks OFF}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
       //testing shows that hwnd is the same in all notifications
       //and since TDN_DIALOG_CONSTRUCTED comes first, just set it here
       //so any OnTaskDialogxxx event will have access to the correct handle.
-      TTaskDialogAccess(Dlg).InternalSetDialogHandle(hwnd);
-      TTaskDialogAccess(Dlg).DoOnDialogConstructed;
-      {$POP}
+      Dlg._InternalSetDialogHandle(hwnd);
+      Dlg._DoOnDialogConstructed;
+      //{$POP}
     end;
     TDN_CREATED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnDialogCreated;
-      {$POP}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnDialogCreated;
+      //{$POP}
     end;
     TDN_DESTROYED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnDialogDestroyed;
-      {$POP}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnDialogDestroyed;
+      //{$POP}
     end;
     TDN_BUTTON_CLICKED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
       CanClose := True;
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnButtonClicked(Dlg.ButtonIDToModalResult(wParam), CanClose);
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnButtonClicked(Dlg.ButtonIDToModalResult(wParam), CanClose);
       if not CanClose then
         Result := S_FALSE;
-      {$POP}
+      //{$POP}
     end;
     TDN_HYPERLINK_CLICKED:
     begin
@@ -1796,10 +1878,10 @@ begin
       Return value: The return value is ignored.
       }
       AUrl := Utf16ToUtf8(PWideChar(lParam)); //  <== can this be done safely and passed to OnUrlClicked if AUrls is a local variable here??
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnHyperlinkClicked(AUrl);
-      {$POP}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnHyperlinkClicked(AUrl);
+      //{$POP}
     end;
     TDN_NAVIGATED:
     begin
@@ -1809,10 +1891,10 @@ begin
       Return value: The return value is ignored.
       }
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnNavigated;
-      {$POP}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnNavigated;
+      //{$POP}
     end;
     TDN_TIMER:
     begin
@@ -1823,28 +1905,28 @@ begin
       }
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
       ResetTimer := False;
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnTimer(Cardinal(wParam), ResetTimer);
-      {$POP}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnTimer(Cardinal(wParam), ResetTimer);
+      //{$POP}
       if ResetTimer then
         Result := S_FALSE;
     end;
     TDN_VERIFICATION_CLICKED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnverificationClicked(BOOL(wParam));
-      {$POP}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnverificationClicked(BOOL(wParam));
+      //{$POP}
     end;
     TDN_EXPANDO_BUTTON_CLICKED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnExpandButtonClicked(BOOL(wParam));
-      {$POP}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnExpandButtonClicked(BOOL(wParam));
+      //{$POP}
     end;
     TDN_RADIO_BUTTON_CLICKED:
     begin
@@ -1853,18 +1935,18 @@ begin
       lParam: Must be zero.
       Return value: The return value is ignored.
       }
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnRadioButtonClicked(wParam);
-      {$POP}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnRadioButtonClicked(wParam);
+      //{$POP}
     end;
     TDN_HELP:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      {$PUSH}
-      {$ObjectChecks OFF}
-      TTaskDialogAccess(Dlg).DoOnHelp;
-      {$POP}
+      //{$PUSH}
+      //{$ObjectChecks OFF}
+      Dlg._DoOnHelp;
+      //{$POP}
     end;
   end;
 end;
