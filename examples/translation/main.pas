@@ -174,9 +174,9 @@ var
   lang: String;
 begin
   // Switch language - this is in LCLTranslator
-  ALang := SetDefaultLang(ALang);
+  lang := SetDefaultLang(ALang);
 
-  if ALang <> '' then
+  if lang <> '' then
   begin
     // Switch default settings by calling the procedure provided in BasicLocalizedForm.pas.
     UpdateFormatSettings(ALang);
