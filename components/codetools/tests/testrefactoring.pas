@@ -102,6 +102,7 @@ type
     procedure TestRenameAlsoLFM_SetProperty;
     procedure TestRenameAlsoLFM_AnonymousSetProperty;
     procedure TestRenameAlsoLFM_ComponentProperty;
+    procedure TestRenameAlsoLFM_Property_FromOtherUnit;
     // todo: procedure TestRenameAlsoLFM_ComponentProperty_Foreign;  from another root component, e.g. DataModule
     // todo: procedure TestRenameAlsoLFM_CollectionProperty;
     procedure TestRenameAlsoLFM_ListProperty;
@@ -2581,6 +2582,74 @@ begin
   end;
 end;
 
+procedure TTestRefactoring.TestRenameAlsoLFM_Property_FromOtherUnit;
+var
+  Test1LFM: TCodeBuffer;
+  Unit2: TCodeBuffer;
+begin
+  Test1LFM:=CodeToolBoss.CreateFile(ChangeFileExt(Code.Filename,'.lfm'));
+  Unit2:=CodeToolBoss.CreateFile(ExtractFilePath(Code.Filename)+'Unit2.pas');
+
+  try
+    Unit2.Source:=LinesToStr([
+    'unit Unit2;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'type',
+      '  TComponent = class end;',
+      '  TForm2 = class(TComponent)',
+      '    property Checked: boolean;',
+      '  end;',
+      '  TButton = class(TComponent)',
+      '    property Checked: boolean;',
+      '  end;',
+      'implementation',
+      'end.']);
+
+    Test1LFM.Source:=LinesToStr([
+      'object Form1: TForm1',
+      '  Checked = False',
+      '  object Button1: TButton',
+      '    Checked = True',
+      '  end',
+      'end']);
+
+    Add(LinesToStr([
+      'unit Test1;',
+      '{$mode objfpc}{$H+}',
+      'interface',
+      'uses Unit2;',
+      'type',
+      '  TForm1 = class(TForm2)',
+      '    Button1: TButton;',
+      '    procedure ActivateMe(Sender: TObject);',
+      '  end;',
+      'var',
+      '  Form1: TForm1;',
+      'implementation',
+      'procedure TForm1.ActivateMe(Sender: TObject);',
+      'begin',
+      '  Checked;',
+      '  Button1.Checked{#Rename};',
+      'end;',
+
+      'end.']));
+
+    RenameReferences('Activated',[frfIncludingLFM]);
+    CheckDiff(Test1LFM,[
+      'object Form1: TForm1',
+      '  Checked = False',
+      '  object Button1: TButton',
+      '    Activated = True',
+      '  end',
+      'end']);
+
+  finally
+    Test1LFM.IsDeleted:=true;
+    Unit2.IsDeleted:=true;
+  end;
+end;
+
 procedure TTestRefactoring.TestRenameAlsoLFM_ListProperty;
 var
   Test1LFM: TCodeBuffer;
@@ -2626,7 +2695,6 @@ begin
   finally
     Test1LFM.IsDeleted:=true;
   end;
-
 end;
 
 procedure TTestRefactoring.TestRenameAlsoLFM_ComponentClass;

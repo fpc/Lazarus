@@ -3276,7 +3276,7 @@ var
 
     //DebugLn(['CheckChildObject A LFMObjectName="',LFMObjectName,'"']);
     if LFMObjectName='' then begin
-      debugln(['Error: CheckLFMChildObject [20250715122827] object without name ',LFMObject.GetPath]);
+      debugln(['Error: CheckLFMChildObject [20250715122827] object without name ',LFMObject.GetPath,' TypeName="',LFMObject.TypeName,'"']);
       exit;
     end;
     LFMObjectTypeName:=LFMObject.TypeName;
