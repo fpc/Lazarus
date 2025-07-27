@@ -1475,11 +1475,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
-      <Unit>
-        <Filename Value="../packager/editablepackage.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="EditablePackage"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

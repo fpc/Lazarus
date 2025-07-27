@@ -276,6 +276,7 @@ type
     // package editor
     FPackageEditorSortAlphabetically: boolean;
     FPackageEditorShowDirHierarchy: boolean;
+    FPackageEditorShowProps: boolean;
     // procedure list
     FProcedureListFilterStart: boolean;
     FAskSaveSessionOnly: boolean;
@@ -416,6 +417,8 @@ type
                                                      write FPackageEditorSortAlphabetically;
     property PackageEditorShowDirHierarchy: boolean read FPackageEditorShowDirHierarchy
                                                    write FPackageEditorShowDirHierarchy;
+    property PackageEditorShowProps: boolean read FPackageEditorShowProps
+                                            write FPackageEditorShowProps;
     // procedure list
     property ProcedureListFilterStart: boolean read FProcedureListFilterStart
                                               write FProcedureListFilterStart;
@@ -695,6 +698,7 @@ begin
   // package editor
   FPackageEditorSortAlphabetically:=false;
   FPackageEditorShowDirHierarchy:=false;
+  FPackageEditorShowProps:=true;
   // procedure list
   FProcedureListFilterStart:=false;
   FCheckDiskChangesWithLoading:=false;
@@ -1029,6 +1033,7 @@ begin
     // package editor
     FPackageEditorSortAlphabetically:=FXMLCfg.GetValue(Path+'PackageEditorSortAlphabetically/Value',false);
     FPackageEditorShowDirHierarchy:=FXMLCfg.GetValue(Path+'PackageEditorShowDirHierarchy/Value',false);
+    FPackageEditorShowProps:=FXMLCfg.GetValue(Path+'PackageEditorShowPropsPanel/Value',true);
     // procedure list
     FProcedureListFilterStart:=FXMLCfg.GetValue(Path+'ProcedureListFilterStart/Value',false);
     FCheckDiskChangesWithLoading:=FXMLCfg.GetValue(Path+'CheckDiskChangesWithLoading/Value',false);
@@ -1231,6 +1236,7 @@ begin
     // package editor
     FXMLCfg.SetDeleteValue(Path+'PackageEditorSortAlphabetically/Value',FPackageEditorSortAlphabetically,false);
     FXMLCfg.SetDeleteValue(Path+'PackageEditorShowDirHierarchy/Value',FPackageEditorShowDirHierarchy,false);
+    FXMLCfg.SetDeleteValue(Path+'PackageEditorShowPropsPanel/Value',FPackageEditorShowProps,true);
     // procedure list
     FXMLCfg.SetDeleteValue(Path+'ProcedureListFilterStart/Value',FProcedureListFilterStart,false);
     FXMLCfg.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',FCheckDiskChangesWithLoading,false);

@@ -54,7 +54,7 @@ uses
   // IdeConfig
   EnvironmentOpts, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
   // IDE
-  MainBase, LazarusIDEStrConsts, IDEDefs, EditablePackage,
+  MainBase, LazarusIDEStrConsts, IDEDefs, EditablePackage, EnvGuiOptions,
   PackageSystem, PackageDefs, AddToPackageDlg, AddPkgDependencyDlg, ComponentPalette,
   AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor, CleanPkgDeps,
   MissingPkgFilesDlg, ProjPackFilePropGui, ProjPackEditing, BasePkgManager;
@@ -168,6 +168,7 @@ type
     FilterPanel: TPanel;
     AddPopupMenu: TPopupMenu;
     SortAlphabeticallyButton: TSpeedButton;
+    ShowPropsPanelButton: TSpeedButton;
     Splitter1: TSplitter;
     // toolbar
     ToolBar: TToolBar;
@@ -249,6 +250,7 @@ type
     procedure SetDepDefaultFilenameMenuItemClick(Sender: TObject);
     procedure SetDepPreferredFilenameMenuItemClick(Sender: TObject);
     procedure ShowMissingFilesMenuItemClick(Sender: TObject);
+    procedure ShowPropsPanelButtonClick(Sender: TObject);
     procedure SortAlphabeticallyButtonClick(Sender: TObject);
     procedure SortFilesMenuItemClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
@@ -270,6 +272,7 @@ type
     FPlugins: TStringList; // ComponentClassName, Objects=TPkgComponent
     FPropGui: TProjPackFilePropGui;
     FShowDirectoryHierarchy: boolean;
+    FShowPropertiesPanel: boolean;
     FSortAlphabetically: boolean;
     FDirSummaryLabel: TLabel;
     FOptionsShownOfFile: TPkgFile;
@@ -282,6 +285,7 @@ type
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetIdleConnected(AValue: boolean);
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
+    procedure SetShowPropertiesPanel(AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     procedure CreatePackageFileEditors;
@@ -372,6 +376,7 @@ type
     //property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
     property ShowDirectoryHierarchy: boolean read FShowDirectoryHierarchy write SetShowDirectoryHierarchy;
+    property ShowPropertiesPanel: boolean read FShowPropertiesPanel write SetShowPropertiesPanel;
     property FilesNode: TTreeNode read FFilesNode;
     property RequiredPackagesNode: TTreeNode read FRequiredPackagesNode;
   end;
@@ -1474,6 +1479,8 @@ begin
   SetupComponents;
   SortAlphabetically := EnvironmentOptions.PackageEditorSortAlphabetically;
   ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;
+  FShowPropertiesPanel := True; // default state, needed for a proper GUI update
+  ShowPropertiesPanel := EnvironmentOptions.PackageEditorShowProps;
   if OPMInterface <> nil then
     OPMInterface.AddPackageListNotification(@PackageListAvailable);
 end;
@@ -1486,6 +1493,7 @@ begin
   FreeAndNil(FNextSelectedPart);
   EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
   EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
+  EnvironmentOptions.PackageEditorShowProps := ShowPropertiesPanel;
   FilterEdit.ForceFilter('');
   if PackageEditorMenuRoot.MenuItem=ItemsPopupMenu.Items then
     PackageEditorMenuRoot.MenuItem:=nil;
@@ -1640,6 +1648,11 @@ begin
   DoShowMissingFiles;
 end;
 
+procedure TPackageEditorForm.ShowPropsPanelButtonClick(Sender: TObject);
+begin
+  ShowPropertiesPanel := not ShowPropertiesPanel;
+end;
+
 procedure TPackageEditorForm.UninstallClick(Sender: TObject);
 begin
   PackageEditors.UninstallPackage(LazPackage);
@@ -1673,7 +1686,6 @@ end;
 procedure TPackageEditorForm.mnuAddDiskFileClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
-  i: Integer;
 begin
   // is readonly
   if TPkgFileCheck.ReadOnlyOk(LazPackage)<>mrOK then exit;
@@ -2001,6 +2013,8 @@ begin
   IDEImages.AssignImage(SortAlphabeticallyButton, 'pkg_sortalphabetically');
   DirectoryHierarchyButton.Hint:=lisPEShowDirectoryHierarchy;
   IDEImages.AssignImage(DirectoryHierarchyButton, 'pkg_hierarchical');
+  ShowPropsPanelButton.Hint:=lisPEShowPropsPanel;
+  IDEImages.AssignImage(ShowPropsPanelButton, 'item_todo');
 
   // Up / Down buttons
   IDEImages.AssignImage(MoveUpBtn, 'arrow_up');
@@ -2091,6 +2105,15 @@ begin
   FShowDirectoryHierarchy:=AValue;
   DirectoryHierarchyButton.Down:=FShowDirectoryHierarchy;
   FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
+end;
+
+procedure TPackageEditorForm.SetShowPropertiesPanel(AValue: boolean);
+begin
+  if FShowPropertiesPanel=AValue then Exit;
+  FShowPropertiesPanel:=AValue;
+  ShowPropsPanelButton.Down:=AValue;
+  Splitter1.Visible:=AValue;
+  PropsGroupBox.Visible:=AValue;
 end;
 
 procedure TPackageEditorForm.SetSortAlphabetically(const AValue: boolean);

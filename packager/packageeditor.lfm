@@ -32,19 +32,19 @@ object PackageEditorForm: TPackageEditorForm
   end
   object PropsGroupBox: TGroupBox
     Left = 0
-    Height = 216
-    Top = 216
+    Height = 144
+    Top = 288
     Width = 464
     Align = alBottom
     Caption = 'PropsGroupBox'
-    ClientHeight = 196
+    ClientHeight = 114
     ClientWidth = 460
     Constraints.MinHeight = 20
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 4
     object PropsPageControl: TPageControl
       Left = 0
-      Height = 196
+      Height = 114
       Top = 0
       Width = 460
       ActivePage = CommonOptionsTabSheet
@@ -71,7 +71,7 @@ object PackageEditorForm: TPackageEditorForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 211
+    Top = 283
     Width = 464
     Align = alBottom
     ResizeAnchor = akBottom
@@ -131,15 +131,15 @@ object PackageEditorForm: TPackageEditorForm
       OnClick = SortAlphabeticallyButtonClick
     end
     object FilterEdit: TTreeFilterEdit
-      AnchorSideLeft.Control = MoveDownBtn
+      AnchorSideLeft.Control = ShowPropsPanelButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = SortAlphabeticallyButton
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
-      Left = 163
-      Height = 23
-      Top = 3
-      Width = 300
+      Left = 199
+      Height = 32
+      Top = -2
+      Width = 264
       OnAfterFilter = FilterEditAfterFilter
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight]
@@ -207,10 +207,29 @@ object PackageEditorForm: TPackageEditorForm
       ParentShowHint = False
       OnClick = MoveDownBtnClick
     end
+    object ShowPropsPanelButton: TSpeedButton
+      AnchorSideLeft.Control = MoveDownBtn
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = OpenButton
+      AnchorSideTop.Side = asrCenter
+      Left = 163
+      Height = 25
+      Top = 2
+      Width = 25
+      AllowAllUp = True
+      BorderSpacing.Left = 11
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 25
+      Down = True
+      GroupIndex = 3
+      ShowHint = True
+      ParentShowHint = False
+      OnClick = ShowPropsPanelButtonClick
+    end
   end
   object ItemsTreeView: TTreeView
     Left = 0
-    Height = 134
+    Height = 206
     Top = 77
     Width = 464
     Align = alClient
