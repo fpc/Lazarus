@@ -3083,8 +3083,6 @@ var
   NewInFilename: String;
   NewCompiledUnitname: String;
   ErrMsg: string;
-  curSrc: string;
-  Node:TCodeTreeNode;
 begin
   {$IF defined(ShowTriedFiles) or defined(ShowTriedUnits)}
   DebugLn('TFindDeclarationTool.FindUnitSource Self="',MainFilename,'" AnUnitName="',AnUnitName,'" AnUnitInFilename="',AnUnitInFilename,'"');
@@ -6699,7 +6697,7 @@ var
     IdentStripped: string;
     aComment: string;
     UnitInFilename: ansistring;
-    Node, aClassNode, ProcNode: TCodeTreeNode;
+    Node: TCodeTreeNode;
     IsDotted: boolean;
     dLen: integer;
   begin
@@ -7521,7 +7519,7 @@ var
   function CheckComment(var StartPos: integer; MaxPos: integer): boolean;
   var
     c: Char;
-    AtomStart, CommentLvl, l: Integer;
+    AtomStart, CommentLvl: Integer;
     InStrConst, LastTokenWasPoint, IsDirective: Boolean;
   begin
     Result:=true;
@@ -7633,7 +7631,7 @@ var
   function CheckSource(MinPos, MaxPos: integer): boolean;
   var
     StartPos, AtomStart: Integer;
-    LastTokenWasPoint, LastCommentTokenWasPoint: Boolean;
+    LastTokenWasPoint: Boolean;
   begin
     Result:=true;
     if MinPos<LocalSrcNamePos then
@@ -7712,7 +7710,6 @@ var
   var
     i, p: Integer;
     CodePos: TCodeXYPosition;
-    Node: TAVLTreeNode;
   begin
     for i:=0 to CleanPosCount-1 do begin
       p:=CleanPositions[i];
@@ -10506,7 +10503,6 @@ var
   procedure ResolveIdentifier;
   var
     ProcNode: TCodeTreeNode;
-    SrcNameNode: TCodeTreeNode;
     Node: TCodeTreeNode;
     OldFlags: TFindDeclarationFlags;
     ResultNode: TCodeTreeNode;
@@ -10515,8 +10511,6 @@ var
     IsEnd: Boolean;
     SearchForwardToo: Boolean;
     IdentFound: boolean;
-    IdentLength, DotsNumber, i: integer;
-    SrcNameString, IdentifierString: string;
   begin
     // for example  'AnObject[3]'
 
@@ -12276,7 +12270,6 @@ var
   ClassNode, Node, FirstParameterNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
   SearchParamTypes: TExprTypeList;
-  AncestorNode: Boolean;
   Identifier, CurIdentifier: PChar;
   CurTool: TFindDeclarationTool;
   CompListSize: Integer;

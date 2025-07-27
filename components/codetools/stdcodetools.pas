@@ -3266,7 +3266,6 @@ var
     ChildContext: TFindContext;
     ClassContext: TFindContext;
     IdentifierFound: Boolean;
-    Caret: TPoint;
   begin
     if not NodeContainsCandidate(LFMObject) then exit;
 
@@ -3478,17 +3477,11 @@ var
   // ParentContext is the context, where properties are searched.
   //               This can be a class or a property.
   var
-    i, TopLine: Integer;
+    i: Integer;
     CurName: string;
     CurPropertyContext: TFindContext;
     SearchContext: TFindContext;
     PropDeclNode: TCodeTreeNode;
-    AnUnitName: string;
-    Caret: TPoint;
-    CodeXYPosition, NewCodeXYPosition: TCodeXYPosition;
-    NewTool: TFindDeclarationTool;
-    NewNode: TCodeTreeNode;
-
   begin
     // find complete property name
     {$IFDEF VerboseCheckLFM}
@@ -3578,7 +3571,6 @@ var
     LookupRootLFMNode: TLFMObjectNode;
     LookupRootTypeName, LookupRootTypeUnitName, CurUnitName: String;
     RootClassNode: TCodeTreeNode;
-    Caret: TPoint;
   begin
     Result:=false;
 
