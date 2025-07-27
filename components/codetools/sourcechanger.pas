@@ -713,7 +713,6 @@ function TSourceChangeCache.ReplaceEx(FrontGap, AfterGap: TGapTyp;
   end;
   
 var
-  NewEntry: TSourceChangeCacheEntry;
   p: pointer;
   IsDirectChange: boolean;
   IntersectionEntry: TSourceChangeCacheEntry;

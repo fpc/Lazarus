@@ -5320,7 +5320,6 @@ end;
 function DottedIdentifierLength(Identifier: PChar): integer;
 var
   p: PChar;
-  c: Char;
 begin
   Result:=0;
   if Identifier=nil then exit;

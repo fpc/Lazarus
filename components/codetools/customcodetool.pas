@@ -374,7 +374,7 @@ end;
 function IdentifierHasKeywords(const Identifier: string; cm: TCompilerMode; out
   AmpIdentifier: string): boolean;
 var
-  p, StartP: Integer;
+  p: Integer;
   KeyWords: TKeyWordFunctionList;
 begin
   Result:=false;

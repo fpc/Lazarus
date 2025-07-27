@@ -3073,7 +3073,7 @@ function TCodeToolManager.FindSourceNameReferences(TargetFilename: string; Files
   SkipComments: boolean; out ListOfSrcNameRefs: TObjectList; WithDuplicates: boolean): boolean;
 var
   i, j, InFilenameCleanPos: Integer;
-  Filename, TargetUnitName, InFilename, LocalSrcName, CurUnitName: String;
+  Filename, TargetUnitName, LocalSrcName: String;
   Code: TCodeBuffer;
   Tools: TFPList;
   DirCaches: TPointerToPointerTree;
@@ -3215,7 +3215,7 @@ var
   i: Integer;
   Param: TSrcNameRefs;
   Tool: TChangeDeclarationTool;
-  NewTargetSrcName, OldTargetUnitName: string;
+  OldTargetUnitName: string;
 begin
   Result:=true;
   if (ListOfSrcNameRefs=nil) or (ListOfSrcNameRefs.Count=0) then exit;
