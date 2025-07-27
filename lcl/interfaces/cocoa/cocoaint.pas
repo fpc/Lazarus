@@ -193,6 +193,7 @@ type
     PrevLCLMenu : TMenu;
     CurLCLMenu: TMenu;
     PrevMenuEnabled: Boolean; // previous mainmenu status
+    MainFormMenu: NSMenu;
 
     constructor Create; override;
     destructor Destroy; override;
@@ -802,7 +803,7 @@ var
   i: Integer;
   lCurItem: TMenuItem;
   lMenuObj: NSObject;
-  lNSMenu: NSMenu absolute AMenu;
+  lCocoaMenu: TCocoaMenu absolute AMenu;
   appleMenuFound: Boolean = false;
 begin
   if Assigned(PrevMenu) then PrevMenu.release;
@@ -812,8 +813,15 @@ begin
   PrevLCLMenu := CurLCLMenu;
   CurLCLMenu := ALCLMenu;
 
+  if NOT Assigned(self.MainFormMenu) then begin
+    self.MainFormMenu:= AMenu;
+  end;
+
   if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then begin
-    NSApp.setMainMenu(lNSMenu);
+    lCocoaMenu:= TCocoaMenu( self.MainFormMenu );
+    if NOT Assigned(lCocoaMenu) then
+      lCocoaMenu:= TCocoaMenu.new.autorelease;
+    NSApp.setMainMenu( lCocoaMenu );
     Exit;
   end;
 
@@ -824,48 +832,45 @@ begin
   for i := 0 to ALCLMenu.Items.Count-1 do
   begin
     lCurItem := ALCLMenu.Items.Items[i];
-    if not lNSMenu.isKindOfClass_(TCocoaMenu) then Break;
+    if not AMenu.isKindOfClass_(TCocoaMenu) then Break;
     if not lCurItem.HandleAllocated then Continue;
 
     lMenuObj := NSObject(lCurItem.Handle);
     if not lMenuObj.isKindOfClass_(TCocoaMenuItem) then Continue;
     if TCocoaMenuItem(lMenuObj).isValidAppleMenu() then
     begin
-      TCocoaMenu(lNSMenu).overrideAppleMenu(TCocoaMenuItem(lMenuObj));
+      lCocoaMenu.overrideAppleMenu(TCocoaMenuItem(lMenuObj));
       appleMenuFound:= true;
       Break;
     end;
   end;
 
-  if lNSMenu.isKindOfClass(TCocoaMenu) then begin
+  if AMenu.isKindOfClass(TCocoaMenu) then begin
     if NOT appleMenuFound then
-      TCocoaMenu(lNSMenu).createAppleMenu();
-    TCocoaMenu(lNSMenu).attachAppleMenu();
+      lCocoaMenu.createAppleMenu();
+    lCocoaMenu.attachAppleMenu();
   end;
 
-  NSApp.setMainMenu(lNSMenu);
+  NSApp.setMainMenu( AMenu );
 end;
 
 procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
 begin
-  if AMenu<>0 then
+  DoSetMainMenu(NSMenu(AMenu), ALCLMenu);
+
+  PrevMenuEnabled := MainMenuEnabled;
+  MainMenuEnabled := true;
+  ToggleAppMenu(true);
+  //if not Assigned(ACustomForm.Menu) then ToggleAppMenu(false);
+
+  // for modal windows work around bug, but doesn't work :(
+  {$ifdef COCOA_USE_NATIVE_MODAL}
+  {if CurModalForm <> nil then
+  for i := 0 to lNSMenu.numberOfItems()-1 do
   begin
-    DoSetMainMenu(NSMenu(AMenu), ALCLMenu);
-
-    PrevMenuEnabled := MainMenuEnabled;
-    MainMenuEnabled := true;
-    ToggleAppMenu(true);
-    //if not Assigned(ACustomForm.Menu) then ToggleAppMenu(false);
-
-    // for modal windows work around bug, but doesn't work :(
-    {$ifdef COCOA_USE_NATIVE_MODAL}
-    {if CurModalForm <> nil then
-    for i := 0 to lNSMenu.numberOfItems()-1 do
-    begin
-      lNSMenu.itemAtIndex(i).setTarget(TCocoaWSCustomForm.GetWindowFromHandle(CurModalForm));
-    end;}
-    {$endif}
-  end;
+    lNSMenu.itemAtIndex(i).setTarget(TCocoaWSCustomForm.GetWindowFromHandle(CurModalForm));
+  end;}
+  {$endif}
 end;
 
 function TCocoaWidgetSet.StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
