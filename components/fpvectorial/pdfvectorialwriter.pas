@@ -136,6 +136,7 @@ type
     procedure AddImage(AImage: TvRasterImage; ABox: TvBoundBox);
   public
     constructor Create; override;
+    destructor Destroy; override;
     procedure WriteToFile(AFileName: String; AData: TvVectorialDocument); override;
     procedure WriteToStream(AStream: TStream; AData: TvVectorialDocument); override;
   end;
@@ -808,6 +809,12 @@ begin
   // build font cache
   gTTFontCache.SearchPath.Add(FONT_DIR);
   gTTFontCache.BuildFontCache;
+end;
+
+destructor TvPDFVectorialWriter.Destroy;
+begin
+  inherited;
+  FDocument.Free;
 end;
 
 procedure TvPDFVectorialWriter.WriteToFile(AFileName: String; AData: TvVectorialDocument);
