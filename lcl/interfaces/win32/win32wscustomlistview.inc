@@ -50,7 +50,15 @@ type
 
 type
   TCustomListViewAccess = class(TCustomListView);
-  TListColumnAccess = class(TListColumn);
+  TListColumnHelper = class helper for TListColumn
+  public
+    function _GetStoredWidth: Integer;
+  end;
+
+function TListColumnHelper._GetStoredWidth: Integer;
+begin
+  Result := GetStoredWidth;
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Msg handlers
@@ -389,7 +397,7 @@ begin
       ListView_SetColumnWidth(ALV.Handle, AIndex, CaptionSize.cx + CaptionSize.cy);
     end
     else
-      ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(ALV.Column[AIndex]).GetStoredWidth);
+      ListView_SetColumnWidth(ALV.Handle, AIndex, ALV.Column[AIndex]._GetStoredWidth);
   end;
 end;
 
@@ -513,7 +521,7 @@ begin
 
   if AAutoSize
   then ColumnDoAutosize(ALV, AIndex)
-  else ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(AColumn).GetStoredWidth);
+  else ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn._GetStoredWidth);
 end;
 
 class procedure TWin32WSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
@@ -592,7 +600,7 @@ begin
   if AVisible
   then if AColumn.AutoSize
     then ColumnDoAutosize(ALV, AIndex)
-    else ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(AColumn).GetStoredWidth)
+    else ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn._GetStoredWidth)
   else ListView_SetColumnWidth(ALV.Handle, AIndex, 0);
 end;
 
