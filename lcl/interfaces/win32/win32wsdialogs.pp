@@ -1740,9 +1740,9 @@ type
   //TTaskDialogAccess = class(TCustomTaskDialog)
   //end;
 
-  { TTsakDialogHelper }
+  { TTaskDialogHelper }
 
-  TTsakDialogHelper = class helper for TCustomTaskDialog
+  TTaskDialogHelper = class helper for TCustomTaskDialog
   public
     procedure _InternalSetDialogHandle(AHandle: THandle);
     procedure _DoOnDialogConstructed;
@@ -1760,63 +1760,63 @@ type
 
 { TTsakDialogHelper }
 
-procedure TTsakDialogHelper._InternalSetDialogHandle(AHandle: THandle);
+procedure TTaskDialogHelper._InternalSetDialogHandle(AHandle: THandle);
 begin
   InternalSetDialogHandle(AHandle);
 end;
 
-procedure TTsakDialogHelper._DoOnDialogConstructed;
+procedure TTaskDialogHelper._DoOnDialogConstructed;
 begin
   DoOnDialogConstructed;
 end;
 
-procedure TTsakDialogHelper._DoOnDialogCreated;
+procedure TTaskDialogHelper._DoOnDialogCreated;
 begin
   DoOnDialogCreated;
 end;
 
-procedure TTsakDialogHelper._DoOnDialogDestroyed;
+procedure TTaskDialogHelper._DoOnDialogDestroyed;
 begin
   DoOnDialogDestroyed;
 end;
 
-procedure TTsakDialogHelper._DoOnButtonClicked(AModalResult: Integer;
+procedure TTaskDialogHelper._DoOnButtonClicked(AModalResult: Integer;
   var ACanClose: Boolean);
 begin
   DoOnButtonClicked(AModalResult, ACanClose);
 end;
 
-procedure TTsakDialogHelper._DoOnHyperlinkClicked(const AURL: string);
+procedure TTaskDialogHelper._DoOnHyperlinkClicked(const AURL: string);
 begin
   DoOnHyperlinkClicked(AURL);
 end;
 
-procedure TTsakDialogHelper._DoOnNavigated;
+procedure TTaskDialogHelper._DoOnNavigated;
 begin
   DoOnNavigated;
 end;
 
-procedure TTsakDialogHelper._DoOnTimer(TickCount: Cardinal; var Reset: Boolean);
+procedure TTaskDialogHelper._DoOnTimer(TickCount: Cardinal; var Reset: Boolean);
 begin
   DoOnTimer(TickCount, Reset);
 end;
 
-procedure TTsakDialogHelper._DoOnverificationClicked(Checked: Boolean);
+procedure TTaskDialogHelper._DoOnverificationClicked(Checked: Boolean);
 begin
   DoOnverificationClicked(Checked);
 end;
 
-procedure TTsakDialogHelper._DoOnExpandButtonClicked(Expanded: Boolean);
+procedure TTaskDialogHelper._DoOnExpandButtonClicked(Expanded: Boolean);
 begin
   DoOnExpandButtonClicked(Expanded);
 end;
 
-procedure TTsakDialogHelper._DoOnRadioButtonClicked(ButtonID: Integer);
+procedure TTaskDialogHelper._DoOnRadioButtonClicked(ButtonID: Integer);
 begin
   DoOnRadioButtonClicked(ButtonID);
 end;
 
-procedure TTsakDialogHelper._DoOnHelp;
+procedure TTaskDialogHelper._DoOnHelp;
 begin
   DoOnHelp;
 end;
