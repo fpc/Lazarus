@@ -49,12 +49,91 @@ type
 
 
 type
-  TCustomListViewAccess = class(TCustomListView);
+  { TTCustomListViewHelper }
+
+  TTCustomListViewHelper = class helper for TCustomListView
+  private
+    function GetColumnClick: Boolean;
+    function GetColumns: TListColumns;
+    function GetFWinControl: TWinControlFlags;
+    function GetStateImages: TCustomImageList;
+  public
+    property _ColumnClick: Boolean read GetColumnClick;
+    property _Columns: TListColumns read GetColumns;
+    property _FWinControlFlags: TWinControlFlags read GetFWinControl;
+    property _StateImages: TCustomImageList read GetStateImages;
+
+    function _CanChange(AItem: TListItem; AChange: Integer): Boolean;
+    function _DoOwnerDataFind(AFind: TItemFind; const AFindString: string; const AFindPosition: TPoint; AFindData: Pointer; AStartIndex: Integer;
+            ADirection: TSearchDirection; AWrap: Boolean): Integer;
+    function _DoOwnerDataHint(AStartIndex, AEndIndex: Integer): Boolean;
+    function _GetUpdateCount: Integer;
+    function _IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;
+    function _IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean;
+  end;
+
   TListColumnHelper = class helper for TListColumn
   public
     function _GetStoredWidth: Integer;
   end;
 
+{ TTCustomListViewHelper }
+
+function TTCustomListViewHelper.GetColumnClick: Boolean;
+begin
+  Result := ColumnClick;
+end;
+
+function TTCustomListViewHelper.GetColumns: TListColumns;
+begin
+  Result := Columns;
+end;
+
+function TTCustomListViewHelper.GetFWinControl: TWinControlFlags;
+begin
+  Result := FWinControlFlags;
+end;
+
+function TTCustomListViewHelper.GetStateImages: TCustomImageList;
+begin
+  Result := StateImages;
+end;
+
+function TTCustomListViewHelper._CanChange(AItem: TListItem; AChange: Integer): Boolean;
+begin
+  Result := CanChange(AItem, AChange);
+end;
+
+function TTCustomListViewHelper._DoOwnerDataFind(AFind: TItemFind;
+  const AFindString: string; const AFindPosition: TPoint; AFindData: Pointer;
+  AStartIndex: Integer; ADirection: TSearchDirection; AWrap: Boolean): Integer;
+begin
+  Result := DoOwnerDataFind(AFind,  AFindString, AFindPosition, AFindData, AStartIndex, ADirection, AWrap);
+end;
+
+function TTCustomListViewHelper._DoOwnerDataHint(AStartIndex, AEndIndex: Integer): Boolean;
+begin
+  Result := DoOwnerDataHint(AStartIndex, AEndIndex);
+end;
+
+function TTCustomListViewHelper._GetUpdateCount: Integer;
+begin
+  Result := GetUpdateCount;
+end;
+
+function TTCustomListViewHelper._IntfCustomDraw(ATarget: TCustomDrawTarget;
+  AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState;
+  const ARect: PRect): TCustomDrawResult;
+begin
+ Result := IntfCustomDraw(ATarget, AStage, AItem, ASubItem, AState, ARect);
+end;
+
+function TTCustomListViewHelper._IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean;
+begin
+  Result := IsCustomDrawn(ATarget, AStage);
+end;
+
+{  TLisColumnHelper }
 function TListColumnHelper._GetStoredWidth: Integer;
 begin
   Result := GetStoredWidth;
@@ -97,7 +176,7 @@ var
     Result := Windows.PointToSmallPoint(P);
   end;
 
-  procedure HandleListViewOwnerData(ALV: TCustomListViewAccess);
+  procedure HandleListViewOwnerData(ALV: TCustomListView);
   var
     DataInfo: PNMLVOwnerData; // absolute NMHdr;
     txt: String;
@@ -149,7 +228,7 @@ var
         else
           DataInfo^.item.iImage := -1;
       end;
-      if Assigned(ALV.StateImages) then
+      if Assigned(ALV._StateImages) then
       begin
         DataInfo^.item.state := IndexToStateImageMask(listitem.StateIndex + 1);
         DataInfo^.item.stateMask := $F000; // States start from 12 bit
@@ -158,7 +237,7 @@ var
     end;
   end;
 
-  procedure HandleListViewCustomDraw(ALV: TCustomListViewAccess);
+  procedure HandleListViewCustomDraw(ALV: TCustomListView);
     function ConvState(const State: uint): TCustomDrawState;
     begin
       Result := [];
@@ -191,7 +270,7 @@ var
   begin
     MsgResult := CDRF_DODEFAULT;
     WinProcess := False;
-    if not ALV.IsCustomDrawn(dtControl, cdPrePaint) then
+    if not ALV._IsCustomDrawn(dtControl, cdPrePaint) then
       exit;
 
     case DrawInfo^.nmcd.dwDrawStage and $7 of //Get drawing state
@@ -212,16 +291,16 @@ var
     begin
       // subitem 0 is handled by dtItem
       if DrawInfo^.iSubItem = 0 then Exit;
-      DrawResult := ALV.IntfCustomDraw(dtSubItem, Stage,
+      DrawResult := ALV._IntfCustomDraw(dtSubItem, Stage,
         DrawInfo^.nmcd.dwItemSpec, DrawInfo^.iSubItem,
         ConvState(DrawInfo^.nmcd.uItemState), nil);
     end
     else
     if DrawInfo^.nmcd.dwDrawStage and CDDS_ITEM <> 0 then
-      DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.nmcd.dwItemSpec,
+      DrawResult := ALV._IntfCustomDraw(dtItem, Stage, DrawInfo^.nmcd.dwItemSpec,
         -1, ConvState(DrawInfo^.nmcd.uItemState), nil)
     else
-      DrawResult := ALV.IntfCustomDraw(dtControl, Stage, -1, -1, [], @DrawInfo^.nmcd.rc); //Whole control
+      DrawResult := ALV._IntfCustomDraw(dtControl, Stage, -1, -1, [], @DrawInfo^.nmcd.rc); //Whole control
 
     if DrawResult <> [] then
       MsgResult := 0;
@@ -245,7 +324,7 @@ var
     See: 
     - https://docs.microsoft.com/de-DE/windows/win32/api/commctrl/ns-commctrl-nmlvfinditema
     - https://docs.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-lvfindinfoa }
-  procedure HandleListViewFindItem(ALV: TCustomlistViewAccess);
+  procedure HandleListViewFindItem(ALV: TCustomlistView);
   var
     findItem: PNMLVFindItem; 
     itemFind: TItemFind;
@@ -298,19 +377,19 @@ var
         end;
         findstart := findItem^.iStart;
         findWrap := findItem^.lvfi.flags and LVFI_WRAP <> 0;
-        MsgResult := ALV.DoOwnerDataFind(itemFind, findStr, findPt, findData, findStart, findDir, findWrap);
+        MsgResult := ALV._DoOwnerDataFind(itemFind, findStr, findPt, findData, findStart, findDir, findWrap);
         WinProcess := false;
       end;
     end;
   end;
 
-  procedure HandleListViewChanging(ALV: TCustomListViewAccess);
+  procedure HandleListViewChanging(ALV: TCustomListView);
   var
     nm: PNMListView;
     Item: TListItem;
   begin
     //debugln(['HandleListChanging: HandleAllocated=',ALV.HandleAllocated,', (wcfInitializing in FWinControlFlags)=',Dbgs(wcfInitializing in ALV.FWinControlFlags)]);
-    if (wcfInitializing in ALV.FWinControlFlags) then Exit;
+    if (wcfInitializing in ALV._FWinControlFlags) then Exit;
     nm := PNMListView(NMHdr);
     if nm^.iItem < 0 then
       Item := nil
@@ -322,7 +401,7 @@ var
       //https://learn.microsoft.com/en-us/windows/win32/controls/lvn-itemchanging
       //Returns TRUE to prevent the change, or FALSE to allow the change
       //So the opposite of the result of CanChange function
-      if ALV.CanChange(Item, nm^.uChanged) then
+      if ALV._CanChange(Item, nm^.uChanged) then
         MsgResult := 0 //Ord(BOOL(False))
       else
         MsgResult := 1; //Ord(BOOL(True))
@@ -330,7 +409,7 @@ var
     WinProcess := False;
   end;
 
-  procedure HandleListViewOwnerDataHint(ALV: TCustomListViewAccess);
+  procedure HandleListViewOwnerDataHint(ALV: TCustomListView);
   var
     DataHintInfo: PNMLVCACHEHINT;
   begin
@@ -338,7 +417,7 @@ var
     DataHintInfo := PNMLVCACHEHINT(LPARAM);
     if not Assigned(DataHintInfo) or (not ALV.OwnerData) then
       Exit;
-    ALV.DoOwnerDataHint(DataHintInfo^.iFrom, DataHintInfo^.iTo);
+    ALV._DoOwnerDataHint(DataHintInfo^.iFrom, DataHintInfo^.iTo);
   end;
 
 begin
@@ -348,19 +427,19 @@ begin
     begin
       case PNMHdr(LParam)^.code of
         LVN_GETDISPINFOA, LVN_GETDISPINFOW:
-          HandleListViewOwnerData(TCustomListViewAccess(AWinControl));
+          HandleListViewOwnerData(TCustomListView(AWinControl));
         NM_CUSTOMDRAW:
-          HandleListViewCustomDraw(TCustomListViewAccess(AWinControl));
+          HandleListViewCustomDraw(TCustomListView(AWinControl));
         LVN_BEGINDRAG, LVN_BEGINRDRAG: begin
             if ListViewWindProcInfo.ActiveListView = AWinControl then
               ListViewWindProcInfo.NoMouseUp := True;
           end;
         LVN_ODFINDITEM:
-          HandleListViewFindItem(TCustomListViewAccess(AWinControl));
+          HandleListViewFindItem(TCustomListView(AWinControl));
         LVN_ITEMCHANGING:
-          HandleListViewChanging(TCustomListViewAccess(AWinControl));
+          HandleListViewChanging(TCustomListView(AWinControl));
         LVN_ODCACHEHINT:
-          HandleListViewOwnerDataHint(TCustomListViewAccess(AWinControl));
+          HandleListViewOwnerDataHint(TCustomListView(AWinControl));
       end;
     end;
   end;
@@ -875,7 +954,7 @@ begin
   // We will therefore postpone all autosizing until EndUpdate where we do
   // it only once per column.
 
-  if (ASubIndex >= 0) and (ASubIndex < ALV.ColumnCount) and ALV.Column[ASubIndex].AutoSize and (TCustomListViewAccess(ALV).GetUpdateCount = 0) then
+  if (ASubIndex >= 0) and (ASubIndex < ALV.ColumnCount) and ALV.Column[ASubIndex].AutoSize and (ALV._GetUpdateCount = 0) then
     ColumnDoAutosize(ALV, ASubIndex);
 end;
 
@@ -1004,7 +1083,7 @@ begin
       Flags := Flags or LVS_OWNERDRAWFIXED;
     if TCustomListView(AWinControl).BorderStyle = bsSingle then
       FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-    if not TCustomListViewAccess(AWinControl).ColumnClick then
+    if not TCustomListView(AWinControl)._ColumnClick then
       Flags := Flags or LVS_NOSORTHEADER;
   end;
   // create window
@@ -1045,7 +1124,7 @@ begin
 
   // we have skipped all column resizing in ItemSetText()
   // for performance reasons, so now we need to do it here.
-  for ColIndex := 0 to TCustomListViewAccess(ALV).Columns.Count - 1 do
+  for ColIndex := 0 to ALV._Columns.Count - 1 do
     if ALV.Column[ColIndex].AutoSize
     then ColumnDoAutosize(ALV, ColIndex);
 
