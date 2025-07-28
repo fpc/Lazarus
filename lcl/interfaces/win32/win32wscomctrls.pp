@@ -290,7 +290,27 @@ const
 {$I win32treeview.inc}
 
 type
-  TStatusPanelAccess = class(TStatusPanel);
+
+  { TStatusPanelHelper }
+
+  TStatusPanelHelper = class helper for TStatusPanel
+  private
+    function GetFIntfFlag: Integer;
+    procedure SetFIntfFlag(AValue: Integer);
+  public
+    property _FIntfFlag: Integer read GetFIntfFlag write SetFIntfFlag;
+  end;
+
+function TStatusPanelHelper.GetFIntfFlag: Integer;
+begin
+  Result := FIntfFlag;
+end;
+
+procedure TStatusPanelHelper.SetFIntfFlag(AValue: Integer);
+begin
+  FIntfFlag := AValue;
+end;
+
 
 {$I win32wscustomlistview.inc }
 
@@ -490,9 +510,9 @@ begin
   begin
     // we store a flag that we need to update panel in the IntfFlag property
     for PanelIndex := 0 to AStatusBar.Panels.Count - 1 do
-      if TStatusPanelAccess(AStatusBar.Panels[PanelIndex]).FIntfFlag <> 1 then
+      if AStatusBar.Panels[PanelIndex]._FIntfFlag <> 1 then
       begin
-        TStatusPanelAccess(AStatusBar.Panels[PanelIndex]).FIntfFlag := 1;
+        AStatusBar.Panels[PanelIndex]._FIntfFlag := 1;
         UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
       end;
   end;
@@ -529,7 +549,7 @@ var
   ARect: TRect;
 begin
   UpdateStatusBarPanelWidths(AStatusBar);
-  TStatusPanelAccess(AStatusBar.Panels[PanelIndex]).FIntfFlag := 0;
+  AStatusBar.Panels[PanelIndex]._FIntfFlag := 0;
   SetUpdated(AStatusBar, False);
   // request invalidate of only panel rectange
   SendMessage(AStatusBar.Handle, SB_GETRECT, PanelIndex, LParam(@ARect));
@@ -623,7 +643,7 @@ begin
   begin
     UpdateStatusBarPanelWidths(AStatusBar);
     for i := 0 to AStatusBar.Panels.Count - 1 do
-      TStatusPanelAccess(AStatusBar.Panels[i]).FIntfFlag := 0;
+      AStatusBar.Panels[i]._FIntfFlag := 0;
   end;
 
   // To reduce statusbar flickering it is suggested to wait for WM_PAINT message and
