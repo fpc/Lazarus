@@ -1491,9 +1491,6 @@ begin
     OPMInterface.RemovePackageListNotification(@PackageListAvailable);
   IdleConnected:=false;
   FreeAndNil(FNextSelectedPart);
-  EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
-  EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
-  EnvironmentOptions.PackageEditorShowProps := ShowPropertiesPanel;
   FilterEdit.ForceFilter('');
   if PackageEditorMenuRoot.MenuItem=ItemsPopupMenu.Items then
     PackageEditorMenuRoot.MenuItem:=nil;
@@ -2100,7 +2097,9 @@ end;
 
 procedure TPackageEditorForm.SetShowDirectoryHierarchy(const AValue: boolean);
 begin
-  //debugln(['TPackageEditorForm.SetShowDirectoryHierachy Old=',FShowDirectoryHierarchy,' New=',AValue]);
+  // remember new value (for config file and new windows)
+  EnvironmentOptions.PackageEditorShowDirHierarchy:=AValue;
+  // apply changes to this window
   if FShowDirectoryHierarchy=AValue then exit;
   FShowDirectoryHierarchy:=AValue;
   DirectoryHierarchyButton.Down:=FShowDirectoryHierarchy;
@@ -2109,6 +2108,9 @@ end;
 
 procedure TPackageEditorForm.SetShowPropertiesPanel(AValue: boolean);
 begin
+  // remember new value (for config file and new windows)
+  EnvironmentOptions.PackageEditorShowProps:=AValue;
+  // apply changes to this window
   if FShowPropertiesPanel=AValue then Exit;
   FShowPropertiesPanel:=AValue;
   ShowPropsPanelButton.Down:=AValue;
@@ -2118,6 +2120,9 @@ end;
 
 procedure TPackageEditorForm.SetSortAlphabetically(const AValue: boolean);
 begin
+  // remember new value (for config file and new windows)
+  EnvironmentOptions.PackageEditorSortAlphabetically:=AValue;
+  // apply changes to this window
   if FSortAlphabetically=AValue then exit;
   FSortAlphabetically:=AValue;
   SortAlphabeticallyButton.Down:=FSortAlphabetically;
