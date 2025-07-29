@@ -1741,6 +1741,8 @@ type
   //end;
 
   { TTaskDialogHelper }
+  // Provides access to protected methods and properties of TCustomTaskDialog, without using a typecast hack,
+  // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
 
   TTaskDialogHelper = class helper for TCustomTaskDialog
   public

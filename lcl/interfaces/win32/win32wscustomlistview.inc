@@ -50,6 +50,8 @@ type
 
 type
   { TTCustomListViewHelper }
+  // Provides access to protected methods and properties of TCustomListView, without using a typecast hack,
+  // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
 
   TTCustomListViewHelper = class helper for TCustomListView
   private
@@ -72,6 +74,9 @@ type
     function _IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean;
   end;
 
+  { TListColumnHelper }
+  // Provides access to protected methods and properties of TListColumn, without using a typecast hack,
+  // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
   TListColumnHelper = class helper for TListColumn
   public
     function _GetStoredWidth: Integer;

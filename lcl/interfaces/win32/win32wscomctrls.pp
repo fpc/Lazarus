@@ -292,6 +292,8 @@ const
 type
 
   { TStatusPanelHelper }
+  // Provides access to protected methods and properties of TStatusPanel, without using a typecast hack,
+  // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
 
   TStatusPanelHelper = class helper for TStatusPanel
   private

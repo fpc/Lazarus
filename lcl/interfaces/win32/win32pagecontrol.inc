@@ -11,6 +11,8 @@
 type
 
   { TCustomPageHelper }
+  // Provides access to protected methods and properties of TCustomPage, without using a typecast hack,
+  // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
 
   TCustomPageHelper = class helper for TCustomPage
   private
