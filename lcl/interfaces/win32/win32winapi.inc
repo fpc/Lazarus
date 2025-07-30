@@ -1325,7 +1325,7 @@ begin
     RequestedEnable := BEnable and GetParentEnabled(lWinControl);
 
   Result := Boolean(Windows.EnableWindow(HWnd, RequestedEnable));
-  if (wcfInitializing in TWinControlAccess(lWinControl).FWinControlFlags) or IsForm then
+  if (wcfInitializing in lWinControl._FWinControlFlags) or IsForm then
     Exit;
   // Result contains WS_DISABLED style. True means disabled
   if (Result <> RequestedEnable) or (lWinControl.ControlCount < 1) then

@@ -126,10 +126,6 @@ procedure AdjustFormClientToWindowSize(const AForm: TCustomForm; var ioSize: TSi
 
 implementation
 
-type
-  TWinControlAccess = class(TWinControl)
-  end;
-
 { TWin32WSScrollBox }
 
 class function TWin32WSScrollBox.CreateHandle(const AWinControl: TWinControl;
@@ -672,7 +668,7 @@ begin
 
     // we are calling setbounds in TWinControl.Initialize
     // if position is default it will be changed to designed. We do not want this.
-    if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then
+    if wcfInitializing in AWinControl._FWinControlFlags then
     begin
       if GetWindowRect(AForm.Handle, CurRect) then
       begin

@@ -358,8 +358,6 @@ const
 
 {$I win32memostrings.inc}
 
-type
-  TWinControlAccess = class(TWinControl);
 
 {------------------------------------------------------------------------------
  Function: ComboBoxWindowProc
@@ -739,11 +737,11 @@ var
 begin
   TWin32WSWinControl.SetFont(AWinControl, AFont);
 
-  TWinControlAccess(AWinControl).InvalidateBoundsRealized;
+  AWinControl._InvalidateBoundsRealized;
   for I := 0 to AWinControl.ControlCount-1 do
     if AWinControl.Controls[I] is TWinControl then
-      TWinControlAccess(AWinControl.Controls[I]).InvalidateBoundsRealized;
-  TWinControlAccess(AWinControl).RealizeBoundsRecursive;
+      TWinControl(AWinControl.Controls[I])._InvalidateBoundsRealized;
+  AWinControl._RealizeBoundsRecursive;
 end;
 
 class procedure TWin32WSCustomGroupBox.SetText(const AWinControl: TWinControl;
@@ -1093,7 +1091,7 @@ begin
   if TCustomComBoBox(AWInControl).Style = csSimple then
   begin
     Params.Flags := Params.Flags or CBS_NOINTEGRALHEIGHT;
-    Include(TWinControlAccess(AWinControl).FWinControlFlags, wcfEraseBackground);
+    AWinControl._FWinControlFlags := AWinControl._FWinControlFlags + [wcfEraseBackground];
   end;
 
   // create window
@@ -2069,7 +2067,7 @@ begin
       else
         // ToDo: Handle TToggleBox separately from TCheckbox
         details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
-      with ThemeServices.GetDetailSizeForWindow(details, TWinControlAccess(AWinControl).WindowHandle) do
+      with ThemeServices.GetDetailSizeForWindow(details, AWinControl._WindowHandle) do
       begin
         iconWidth := CX;
         iconHeight := CY;

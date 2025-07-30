@@ -57,12 +57,10 @@ type
   private
     function GetColumnClick: Boolean;
     function GetColumns: TListColumns;
-    function GetFWinControl: TWinControlFlags;
     function GetStateImages: TCustomImageList;
   public
     property _ColumnClick: Boolean read GetColumnClick;
     property _Columns: TListColumns read GetColumns;
-    property _FWinControlFlags: TWinControlFlags read GetFWinControl;
     property _StateImages: TCustomImageList read GetStateImages;
 
     function _CanChange(AItem: TListItem; AChange: Integer): Boolean;
@@ -92,11 +90,6 @@ end;
 function TTCustomListViewAccessHelper.GetColumns: TListColumns;
 begin
   Result := Columns;
-end;
-
-function TTCustomListViewAccessHelper.GetFWinControl: TWinControlFlags;
-begin
-  Result := FWinControlFlags;
 end;
 
 function TTCustomListViewAccessHelper.GetStateImages: TCustomImageList;

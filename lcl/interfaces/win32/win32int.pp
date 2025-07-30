@@ -282,6 +282,28 @@ function OpenThemeDataForDpi(hwnd: HWND; pszClassList: LPCWSTR; dpi: UINT): HTHE
 procedure AdjustFormClientToWindowSize(const AHandle: HANDLE; var ioSize: TSize); overload;
 procedure AdjustFormClientToWindowSize(aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; dpi: UINT; var ioSize: TSize); overload;
 
+type
+
+  { TWinControlAccessHelper }
+  // Provides access to protected methods and properties of TWinControl, without using a typecast hack,
+  // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
+  TWinControlAccessHelper = class helper for TWinControl
+  private
+    function GetDragKind: TDragKind;
+    function GetDragMode: TDragMode;
+    function GetWinControlFlags: TWinControlFlags;
+    function GetWindowHandle: HWND;
+    procedure SetWinControlFlags(AValue: TWinControlFlags);
+  public
+    property _WindowHandle: HWND read GetWindowHandle;
+    property _FWinControlFlags: TWinControlFlags read GetWinControlFlags write SetWinControlFlags;
+    property _DragKind: TDragKind read GetDragKind;
+    property _DragMode: TDragMode read GetDragMode;
+    procedure _InvalidateBoundsRealized;
+    procedure _RealizeBoundsRecursive;
+  end;
+
+
 implementation
 
 uses
@@ -523,6 +545,46 @@ end;
 {$I win32object.inc}
 {$I win32winapi.inc}
 {$I win32lclintf.inc}
+
+
+{ TWinControlAccessHelper }
+
+function TWinControlAccessHelper.GetDragKind: TDragKind;
+begin
+  Result := DragKind;
+end;
+
+function TWinControlAccessHelper.GetDragMode: TDragMode;
+begin
+  Result := DragMode;
+end;
+
+function TWinControlAccessHelper.GetWinControlFlags: TWinControlFlags;
+begin
+  Result := FWincontrolFlags
+end;
+
+function TWinControlAccessHelper.GetWindowHandle: HWND;
+begin
+  Result := WindowHandle;
+end;
+
+procedure TWinControlAccessHelper.SetWinControlFlags(AValue: TWinControlFlags);
+begin
+  FWinControlFlags := AValue;
+end;
+
+procedure TWinControlAccessHelper._InvalidateBoundsRealized;
+begin
+  InvalidateBoundsRealized;
+end;
+
+procedure TWinControlAccessHelper._RealizeBoundsRecursive;
+begin
+  RealizeBoundsRecursive;
+end;
+
+
 
 var
   S : String;
