@@ -4,6 +4,14 @@ msgstr ""
 "Last-Translator: ACTom <i@actom.me>\n"
 "X-Generator: TyPoEditor 0.2\n"
 
+#: charactermapfrm.lisbmponly
+msgid "BMP Only"
+msgstr ""
+
+#: charactermapfrm.lisbmponlyhint
+msgid "Basic Multilingual Plane Only"
+msgstr ""
+
 #: charactermapfrm.lischaractermap
 msgid "Character Map"
 msgstr "字符映射表"
@@ -23,6 +31,10 @@ msgstr "从字符映射表插入 ..."
 #: charactermapfrm.lisrange
 msgid "Range"
 msgstr "范围"
+
+#: charactermapfrm.lisscript
+msgid "Script"
+msgstr ""
 
 #: charactermapfrm.lissortunicoderangelistalphabetically
 msgid "Sort Unicode range list alphabetically"

@@ -57,6 +57,9 @@ type
     AnsiCharInfoLabel: TLabel;
     cbUniRange: TComboBox;
     AnsiSizeLabel: TLabel;
+    cbUniScripts: TComboBox;
+    chbBMPOnly: TCheckBox;
+    ScriptsLabel: TLabel;
     UniSizeLabel: TLabel;
     seUniSize: TSpinEdit;
     SortUniRangeListButton: TSpeedButton;
@@ -69,6 +72,8 @@ type
     UnicodeGrid: TStringGrid;
     pgAnsi: TTabSheet;
     pgUnicode: TTabSheet;
+    procedure cbUniScriptsSelect(Sender: TObject);
+    procedure chbBMPOnlyChange(Sender: TObject);
     procedure GridPrepareCanvas(sender: TObject; {%H-}aCol, {%H-}aRow: Integer;
       {%H-}aState: TGridDrawState);
     procedure cbCodePageSelect(Sender: TObject);
@@ -96,12 +101,14 @@ type
     procedure DoStatusAnsiGrid(ACol, ARow: integer);
     procedure DoStatusUnicodeGrid(ACol, ARow: integer);
     procedure FillAnsiGrid;
+    procedure FillScripts;
     procedure FillUnicodeGrid;
-    procedure FillUniRangeList(ASorted: Boolean);
+    procedure FillUniRangeList;
     function GetActivePage: TCharMapPage;
     function GetAlphaSort: Boolean;
     function GetDropDownCount: Integer;
     function GetFontSize: Integer;
+    procedure ScriptSelect;
     function UnicodeBlockIndexByName(AName: String): Integer;
     function UnicodeBlockSelected: Boolean;
     procedure SelectSystemCP;
@@ -126,6 +133,9 @@ var
 resourcestring
   lisCharacterMap = 'Character Map';
   lisRange = 'Range';
+  lisScript = 'Script';
+  lisBMPOnly = 'BMP Only';
+  lisBMPOnlyHint = 'Basic Multilingual Plane Only';
   lisSortUnicodeRangeListAlphabetically = 'Sort Unicode range list alphabetically';
   lisInsertCharacter = 'Insert from Character Map...';
   lisCharSize = 'Character Size';
@@ -157,6 +167,9 @@ procedure TCharacterMapForm.FormCreate(Sender: TObject);
 begin
   Caption := lisCharacterMap;
   RangeLabel.Caption := lisRange;
+  ScriptsLabel.Caption:=lisScript;
+  chbBMPOnly.Caption:=lisBMPOnly;
+  chbBMPOnly.Hint:=lisBMPOnlyHint;
   UniSizeLabel.Caption := lisCharSize;
   CodePageLabel.Caption := lisCodePage;
   AnsiSizeLabel.Caption := lisCharSize;
@@ -260,7 +273,8 @@ begin
   AnsiGrid.AutoFillColumns := true;
 
   FUnicodeBlockIndex:=NOT_SELECTED;
-  FillUniRangeList(SortUniRangeListButton.Down);
+  FillScripts;
+  FillUniRangeList;
   FillUnicodeGrid;
 end;
 
@@ -278,7 +292,7 @@ end;
 
 procedure TCharacterMapForm.SortUniRangeListButtonClick(Sender: TObject);
 begin
-  FillUniRangeList(SortUniRangeListButton.Down);
+  FillUniRangeList;
 end;
 
 procedure TCharacterMapForm.AnsiGridSelectCell(Sender: TObject; aCol,
@@ -360,6 +374,22 @@ begin
   end;
 end;
 
+procedure TCharacterMapForm.ScriptSelect;
+begin
+  FillUniRangeList;
+  FillUnicodeGrid;
+end;
+
+procedure TCharacterMapForm.chbBMPOnlyChange(Sender: TObject);
+begin
+  ScriptSelect;
+end;
+
+procedure TCharacterMapForm.cbUniScriptsSelect(Sender: TObject);
+begin
+  ScriptSelect;
+end;
+
 procedure TCharacterMapForm.DoStatusUnicodeGrid(ACol, ARow: integer);
 var
   S: Cardinal;
@@ -433,19 +463,46 @@ begin
   UnicodeGrid.AutoSizeColumns;
 end;
 
-procedure TCharacterMapForm.FillUniRangeList(ASorted: Boolean);
+
+procedure TCharacterMapForm.FillScripts;
 var
-  BlockIdx: Integer;
+  ScriptsIdx: Integer;
 begin
+  cbUniScripts.Items.Clear;
+  cbUniScripts.Items.Add('All');
+  for ScriptsIdx:=Low(Scripts) to High(Scripts)-4 do
+    cbUniScripts.Items.Add(Scripts[ScriptsIdx]);
+
+  cbUniScripts.ItemIndex:=0;
+  cbUniScripts.Text:=cbUniScripts.Items[cbUniScripts.ItemIndex];
+end;
+
+procedure TCharacterMapForm.FillUniRangeList;
+var
+  UniBlock: TUnicodeBlock;
+  BlockIdx, NewItemIndex: Integer;
+  Txt: string;
+begin
+  Txt:=cbUniRange.Text;
   cbUniRange.Items.Clear;
-  cbUniRange.Sorted:=ASorted;
-
+  cbUniRange.Sorted:=SortUniRangeListButton.Down;
+  NewItemIndex:=-1;
   for BlockIdx:=Low(UnicodeBlocks) to High(UnicodeBlocks) do
-    cbUniRange.Items.Append(UnicodeBlocks[BlockIdx].PG);
-
-  if not UnicodeBlockSelected then
-    FUnicodeBlockIndex:=Low(UnicodeBlocks);
-  cbUniRange.Text:=UnicodeBlocks[FUnicodeBlockIndex].PG;
+  begin
+    UniBlock:=UnicodeBlocks[BlockIdx];
+    if ((UniBlock.PL=0) or not chbBMPOnly.Checked)
+    and ((UniBlock.SC=cbUniScripts.ItemIndex-1) or (cbUniScripts.ItemIndex=0))
+    then begin
+      cbUniRange.Items.Append(UniBlock.PG);
+      if UniBlock.PG=Txt then
+        NewItemIndex:=cbUniRange.Items.Count-1;
+    end;
+  end;
+  if NewItemIndex>-1 then
+    cbUniRange.ItemIndex:=NewItemIndex
+  else
+    cbUniRange.ItemIndex:=0;
+  FUnicodeBlockIndex:=UnicodeBlockIndexByName(cbUniRange.Text);
 end;
 
 function TCharacterMapForm.GetActivePage: TCharMapPage;

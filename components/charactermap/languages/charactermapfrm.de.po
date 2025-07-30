@@ -11,6 +11,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.2\n"
 
+#: charactermapfrm.lisbmponly
+msgid "BMP Only"
+msgstr "Nur BMP"
+
+#: charactermapfrm.lisbmponlyhint
+msgid "Basic Multilingual Plane Only"
+msgstr "Nur Basic Multilingual Plane"
+
 #: charactermapfrm.lischaractermap
 msgid "Character Map"
 msgstr "Zeichentabelle"
@@ -30,6 +38,10 @@ msgstr "Aus der Zeichentabelle einfügen ..."
 #: charactermapfrm.lisrange
 msgid "Range"
 msgstr "Bereich"
+
+#: charactermapfrm.lisscript
+msgid "Script"
+msgstr "Script"
 
 #: charactermapfrm.lissortunicoderangelistalphabetically
 msgid "Sort Unicode range list alphabetically"

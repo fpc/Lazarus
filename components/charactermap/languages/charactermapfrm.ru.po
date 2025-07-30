@@ -11,6 +11,14 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.4.3\n"
 
+#: charactermapfrm.lisbmponly
+msgid "BMP Only"
+msgstr ""
+
+#: charactermapfrm.lisbmponlyhint
+msgid "Basic Multilingual Plane Only"
+msgstr ""
+
 #: charactermapfrm.lischaractermap
 msgid "Character Map"
 msgstr "Таблица символов"
@@ -30,6 +38,10 @@ msgstr "Вставить из таблицы символов ..."
 #: charactermapfrm.lisrange
 msgid "Range"
 msgstr "Диапазон"
+
+#: charactermapfrm.lisscript
+msgid "Script"
+msgstr ""
 
 #: charactermapfrm.lissortunicoderangelistalphabetically
 msgid "Sort Unicode range list alphabetically"

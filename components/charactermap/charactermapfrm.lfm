@@ -1,12 +1,12 @@
 object CharacterMapForm: TCharacterMapForm
-  Left = 258
-  Height = 477
-  Top = 197
-  Width = 590
+  Left = 1238
+  Height = 567
+  Top = 206
+  Width = 621
   BorderStyle = bsSizeToolWin
   Caption = 'CharacterMapForm'
-  ClientHeight = 477
-  ClientWidth = 590
+  ClientHeight = 567
+  ClientWidth = 621
   FormStyle = fsStayOnTop
   Icon.Data = {
     B84701000000010005000000000001002000A220000056000000808000000100
@@ -2633,15 +2633,15 @@ object CharacterMapForm: TCharacterMapForm
     0000D380680200006C0600000000D3806DB6D6256DB62B5900002AFF
   }
   KeyPreview = True
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '3.99.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 445
-    Width = 578
+    Height = 29
+    Top = 532
+    Width = 609
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.Enabled = False
@@ -2663,9 +2663,9 @@ object CharacterMapForm: TCharacterMapForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 433
+    Height = 520
     Top = 6
-    Width = 578
+    Width = 609
     ActivePage = pgUnicode
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
@@ -2673,16 +2673,16 @@ object CharacterMapForm: TCharacterMapForm
     TabOrder = 0
     object pgUnicode: TTabSheet
       Caption = 'Unicode'
-      ClientHeight = 405
-      ClientWidth = 570
+      ClientHeight = 488
+      ClientWidth = 605
       object UnicodeCharInfoLabel: TLabel
-        AnchorSideLeft.Control = Owner
+        AnchorSideLeft.Control = UnicodeGrid
         AnchorSideTop.Control = cbUniRange
         AnchorSideTop.Side = asrCenter
         Left = 6
-        Height = 15
-        Top = 351
-        Width = 118
+        Height = 18
+        Top = 427
+        Width = 137
         BorderSpacing.Around = 6
         Caption = 'UnicodeCharInfoLabel'
       end
@@ -2691,11 +2691,11 @@ object CharacterMapForm: TCharacterMapForm
         AnchorSideTop.Control = pgUnicode
         AnchorSideRight.Control = pgUnicode
         AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = cbUniRange
+        AnchorSideBottom.Control = cbUniScripts
         Left = 0
-        Height = 341
+        Height = 385
         Top = 0
-        Width = 570
+        Width = 605
         Anchors = [akTop, akLeft, akRight, akBottom]
         AutoFillColumns = True
         ColCount = 16
@@ -2712,48 +2712,48 @@ object CharacterMapForm: TCharacterMapForm
         OnPrepareCanvas = GridPrepareCanvas
         OnSelectCell = UnicodeGridSelectCell
         ColWidths = (
-          36
-          36
-          36
-          36
-          36
-          36
-          35
-          35
-          35
-          35
-          35
-          35
-          35
-          35
-          35
-          35
+          38
+          38
+          38
+          38
+          38
+          38
+          38
+          38
+          38
+          38
+          38
+          37
+          37
+          37
+          37
+          37
         )
       end
       object cbUniRange: TComboBox
         AnchorSideTop.Control = UnicodeGrid
         AnchorSideRight.Control = SortUniRangeListButton
         AnchorSideBottom.Control = seUniSize
-        Left = 242
-        Height = 23
-        Top = 347
+        Left = 277
+        Height = 26
+        Top = 423
         Width = 291
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
         DropDownCount = 25
-        ItemHeight = 15
-        OnSelect = cbUniRangeSelect
+        ItemHeight = 26
         Style = csDropDownList
         TabOrder = 1
+        OnSelect = cbUniRangeSelect
       end
       object RangeLabel: TLabel
         AnchorSideTop.Control = cbUniRange
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cbUniRange
-        Left = 203
-        Height = 15
-        Top = 351
-        Width = 33
+        Left = 232
+        Height = 18
+        Top = 427
+        Width = 39
         Anchors = [akTop, akRight]
         Caption = 'Range'
       end
@@ -2763,17 +2763,17 @@ object CharacterMapForm: TCharacterMapForm
         AnchorSideRight.Control = pgUnicode
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = pgUnicode
-        Left = 539
+        Left = 574
         Height = 25
-        Top = 346
+        Top = 424
         Width = 25
         AllowAllUp = True
         Anchors = [akTop, akRight]
         BorderSpacing.Around = 6
         GroupIndex = 1
-        OnClick = SortUniRangeListButtonClick
         ShowHint = True
         ParentShowHint = False
+        OnClick = SortUniRangeListButtonClick
       end
       object seUniSize: TSpinEdit
         AnchorSideLeft.Control = cbUniRange
@@ -2781,9 +2781,9 @@ object CharacterMapForm: TCharacterMapForm
         AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Control = pgUnicode
         AnchorSideBottom.Side = asrBottom
-        Left = 242
-        Height = 23
-        Top = 376
+        Left = 277
+        Height = 27
+        Top = 455
         Width = 80
         Alignment = taRightJustify
         Anchors = [akLeft, akBottom]
@@ -2792,28 +2792,73 @@ object CharacterMapForm: TCharacterMapForm
         BorderSpacing.Bottom = 6
         MaxValue = 32
         MinValue = 8
-        OnChange = seUniSizeChange
         TabOrder = 2
         Value = 12
+        OnChange = seUniSizeChange
       end
       object UniSizeLabel: TLabel
         AnchorSideTop.Control = seUniSize
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = RangeLabel
         AnchorSideRight.Side = asrBottom
-        Left = 162
-        Height = 15
-        Top = 380
-        Width = 74
+        Left = 184
+        Height = 18
+        Top = 459
+        Width = 87
         Anchors = [akTop, akRight]
         Caption = 'Character Size'
         FocusControl = seUniSize
       end
+      object cbUniScripts: TComboBox
+        AnchorSideTop.Control = UnicodeGrid
+        AnchorSideRight.Control = SortUniRangeListButton
+        AnchorSideBottom.Control = cbUniRange
+        Left = 277
+        Height = 26
+        Top = 391
+        Width = 291
+        Anchors = [akRight, akBottom]
+        BorderSpacing.Around = 6
+        DropDownCount = 25
+        ItemHeight = 26
+        Style = csDropDownList
+        TabOrder = 3
+        OnSelect = cbUniScriptsSelect
+      end
+      object ScriptsLabel: TLabel
+        AnchorSideTop.Control = cbUniScripts
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbUniScripts
+        Left = 236
+        Height = 18
+        Top = 395
+        Width = 35
+        Anchors = [akTop, akRight]
+        Caption = 'Script'
+      end
+      object chbBMPOnly: TCheckBox
+        AnchorSideLeft.Control = UnicodeGrid
+        AnchorSideTop.Control = cbUniScripts
+        AnchorSideRight.Control = ScriptsLabel
+        Left = 5
+        Height = 24
+        Hint = 'Basic Multilingual Plane Only'
+        Top = 391
+        Width = 85
+        BorderSpacing.Left = 5
+        Caption = 'BMP Only'
+        Color = clDefault
+        ParentColor = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
+        OnChange = chbBMPOnlyChange
+      end
     end
     object pgAnsi: TTabSheet
       Caption = 'ANSI'
-      ClientHeight = 405
-      ClientWidth = 570
+      ClientHeight = 488
+      ClientWidth = 605
       object AnsiCharInfoLabel: TLabel
         AnchorSideLeft.Control = pgAnsi
         AnchorSideTop.Control = cbCodePage
@@ -2823,9 +2868,9 @@ object CharacterMapForm: TCharacterMapForm
         AnchorSideBottom.Control = pgAnsi
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 15
-        Top = 351
-        Width = 97
+        Height = 18
+        Top = 427
+        Width = 113
         BorderSpacing.Around = 6
         Caption = 'AnsiCharInfoLabel'
       end
@@ -2836,9 +2881,9 @@ object CharacterMapForm: TCharacterMapForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = cbCodePage
         Left = 0
-        Height = 341
+        Height = 417
         Top = 0
-        Width = 570
+        Width = 605
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 17
         DefaultColWidth = 16
@@ -2876,14 +2921,14 @@ object CharacterMapForm: TCharacterMapForm
         AnchorSideRight.Control = pgAnsi
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = seAnsiSize
-        Left = 242
-        Height = 23
-        Top = 347
+        Left = 277
+        Height = 26
+        Top = 423
         Width = 322
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
         DropDownCount = 25
-        ItemHeight = 15
+        ItemHeight = 18
         Items.Strings = (
           'cp1250 - Central and East European Latin'
           'cp1251 - Cyrillic'
@@ -2918,19 +2963,19 @@ object CharacterMapForm: TCharacterMapForm
           'iso885915 - ISO Latin-9 (Western Europe)'
           'iso885916 - ISO Latin-10 (South Eastern Europe)'
         )
-        OnSelect = cbCodePageSelect
         Style = csDropDownList
         TabOrder = 1
+        OnSelect = cbCodePageSelect
       end
       object CodePageLabel: TLabel
         AnchorSideLeft.Control = AnsiCharInfoLabel
         AnchorSideTop.Control = cbCodePage
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cbCodePage
-        Left = 179
-        Height = 15
-        Top = 351
-        Width = 57
+        Left = 205
+        Height = 18
+        Top = 427
+        Width = 66
         Anchors = [akTop, akRight]
         Caption = 'Code page'
       end
@@ -2939,10 +2984,10 @@ object CharacterMapForm: TCharacterMapForm
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = CodePageLabel
         AnchorSideRight.Side = asrBottom
-        Left = 162
-        Height = 15
-        Top = 380
-        Width = 74
+        Left = 184
+        Height = 18
+        Top = 459
+        Width = 87
         Anchors = [akTop, akRight]
         Caption = 'Character Size'
         FocusControl = seAnsiSize
@@ -2953,9 +2998,9 @@ object CharacterMapForm: TCharacterMapForm
         AnchorSideTop.Side = asrBottom
         AnchorSideBottom.Control = pgAnsi
         AnchorSideBottom.Side = asrBottom
-        Left = 242
-        Height = 23
-        Top = 376
+        Left = 277
+        Height = 27
+        Top = 455
         Width = 80
         Alignment = taRightJustify
         Anchors = [akLeft, akBottom]
@@ -2964,9 +3009,9 @@ object CharacterMapForm: TCharacterMapForm
         BorderSpacing.Bottom = 6
         MaxValue = 32
         MinValue = 8
-        OnChange = seAnsiSizeChange
         TabOrder = 2
         Value = 12
+        OnChange = seAnsiSizeChange
       end
     end
   end
