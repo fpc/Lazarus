@@ -10,11 +10,11 @@
 
 type
 
-  { TCustomPageHelper }
+  { TCustomPageAccessHelper }
   // Provides access to protected methods and properties of TCustomPage, without using a typecast hack,
   // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
 
-  TCustomPageHelper = class helper for TCustomPage
+  TCustomPageAccessHelper = class helper for TCustomPage
   private
     function _GetFlags: TPageFlags;
   public
@@ -24,12 +24,12 @@ type
   end;
 
 
-function TCustomPageHelper._GetFlags: TPageFlags;
+function TCustomPageAccessHelper._GetFlags: TPageFlags;
 begin
   Result := Flags;
 end;
 
-function TCustomPageHelper._FindNextControl(CurrentControl: TWinControl;
+function TCustomPageAccessHelper._FindNextControl(CurrentControl: TWinControl;
   GoForward, CheckTabStop, CheckParent: Boolean): TWinControl;
 begin
   Result := FindNextControl(CurrentControl, GoForward, CheckTabStop, CheckParent);

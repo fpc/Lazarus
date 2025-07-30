@@ -49,11 +49,11 @@ type
 
 
 type
-  { TTCustomListViewHelper }
+  { TTCustomListViewAccessHelper }
   // Provides access to protected methods and properties of TCustomListView, without using a typecast hack,
   // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
 
-  TTCustomListViewHelper = class helper for TCustomListView
+  TTCustomListViewAccessHelper = class helper for TCustomListView
   private
     function GetColumnClick: Boolean;
     function GetColumns: TListColumns;
@@ -74,72 +74,72 @@ type
     function _IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean;
   end;
 
-  { TListColumnHelper }
+  { TListColumnAccessHelper }
   // Provides access to protected methods and properties of TListColumn, without using a typecast hack,
   // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
-  TListColumnHelper = class helper for TListColumn
+  TListColumnAccessHelper = class helper for TListColumn
   public
     function _GetStoredWidth: Integer;
   end;
 
 { TTCustomListViewHelper }
 
-function TTCustomListViewHelper.GetColumnClick: Boolean;
+function TTCustomListViewAccessHelper.GetColumnClick: Boolean;
 begin
   Result := ColumnClick;
 end;
 
-function TTCustomListViewHelper.GetColumns: TListColumns;
+function TTCustomListViewAccessHelper.GetColumns: TListColumns;
 begin
   Result := Columns;
 end;
 
-function TTCustomListViewHelper.GetFWinControl: TWinControlFlags;
+function TTCustomListViewAccessHelper.GetFWinControl: TWinControlFlags;
 begin
   Result := FWinControlFlags;
 end;
 
-function TTCustomListViewHelper.GetStateImages: TCustomImageList;
+function TTCustomListViewAccessHelper.GetStateImages: TCustomImageList;
 begin
   Result := StateImages;
 end;
 
-function TTCustomListViewHelper._CanChange(AItem: TListItem; AChange: Integer): Boolean;
+function TTCustomListViewAccessHelper._CanChange(AItem: TListItem; AChange: Integer): Boolean;
 begin
   Result := CanChange(AItem, AChange);
 end;
 
-function TTCustomListViewHelper._DoOwnerDataFind(AFind: TItemFind;
+function TTCustomListViewAccessHelper._DoOwnerDataFind(AFind: TItemFind;
   const AFindString: string; const AFindPosition: TPoint; AFindData: Pointer;
   AStartIndex: Integer; ADirection: TSearchDirection; AWrap: Boolean): Integer;
 begin
   Result := DoOwnerDataFind(AFind,  AFindString, AFindPosition, AFindData, AStartIndex, ADirection, AWrap);
 end;
 
-function TTCustomListViewHelper._DoOwnerDataHint(AStartIndex, AEndIndex: Integer): Boolean;
+function TTCustomListViewAccessHelper._DoOwnerDataHint(AStartIndex, AEndIndex: Integer): Boolean;
 begin
   Result := DoOwnerDataHint(AStartIndex, AEndIndex);
 end;
 
-function TTCustomListViewHelper._GetUpdateCount: Integer;
+function TTCustomListViewAccessHelper._GetUpdateCount: Integer;
 begin
   Result := GetUpdateCount;
 end;
 
-function TTCustomListViewHelper._IntfCustomDraw(ATarget: TCustomDrawTarget;
+function TTCustomListViewAccessHelper._IntfCustomDraw(ATarget: TCustomDrawTarget;
   AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState;
   const ARect: PRect): TCustomDrawResult;
 begin
  Result := IntfCustomDraw(ATarget, AStage, AItem, ASubItem, AState, ARect);
 end;
 
-function TTCustomListViewHelper._IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean;
+function TTCustomListViewAccessHelper._IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean;
 begin
   Result := IsCustomDrawn(ATarget, AStage);
 end;
 
 {  TLisColumnHelper }
-function TListColumnHelper._GetStoredWidth: Integer;
+function TListColumnAccessHelper._GetStoredWidth: Integer;
 begin
   Result := GetStoredWidth;
 end;

@@ -291,11 +291,11 @@ const
 
 type
 
-  { TStatusPanelHelper }
+  { TStatusPanelAccessHelper }
   // Provides access to protected methods and properties of TStatusPanel, without using a typecast hack,
   // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
 
-  TStatusPanelHelper = class helper for TStatusPanel
+  TStatusPanelAccessHelper = class helper for TStatusPanel
   private
     function GetFIntfFlag: Integer;
     procedure SetFIntfFlag(AValue: Integer);
@@ -303,12 +303,12 @@ type
     property _FIntfFlag: Integer read GetFIntfFlag write SetFIntfFlag;
   end;
 
-function TStatusPanelHelper.GetFIntfFlag: Integer;
+function TStatusPanelAccessHelper.GetFIntfFlag: Integer;
 begin
   Result := FIntfFlag;
 end;
 
-procedure TStatusPanelHelper.SetFIntfFlag(AValue: Integer);
+procedure TStatusPanelAccessHelper.SetFIntfFlag(AValue: Integer);
 begin
   FIntfFlag := AValue;
 end;

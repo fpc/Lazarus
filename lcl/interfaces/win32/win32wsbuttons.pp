@@ -71,17 +71,17 @@ uses
   Win32Int, Win32Proc;
 
 type
-  { TCustomBitBtnHelper }
+  { TCustomBitBtnAccessHelper }
   // Provides access to protected methods and properties of TCustomBitBtn, without using a typecast hack,
   // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
-  TCustomBitBtnHelper = class helper for TCustomBitBtn
+  TCustomBitBtnAccessHelper = class helper for TCustomBitBtn
   private
     function GetFButtonGlyph: TButtonGlyph;
   public
     property _FButtonGlyph: TButtonGlyph read GetFButtonGlyph;
   end;
 
-function TCustomBitBtnHelper.GetFButtonGlyph: TButtonGlyph;
+function TCustomBitBtnAccessHelper.GetFButtonGlyph: TButtonGlyph;
 begin
   Result := FButtonGlyph;
 end;
