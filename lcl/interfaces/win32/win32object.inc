@@ -405,8 +405,9 @@ begin
       begin
         if AMessage.message = WM_QUIT then
         begin
-          PostQuitMessage(AMessage.wParam);
-          break;
+          ExitCode := AMessage.wParam;
+          Application.Terminate;
+          Exit;
         end;
         // Handle MDI form accelerators
         if Assigned(Application) and
