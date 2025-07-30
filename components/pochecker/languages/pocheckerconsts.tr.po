@@ -83,6 +83,10 @@ msgstr "İtalyan"
 msgid "Japanese"
 msgstr "Japonca"
 
+#: pocheckerconsts.rs_lang_ko
+msgid "Korean"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_lt
 msgid "Lithuanian"
 msgstr "Litvanya"

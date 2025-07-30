@@ -79,6 +79,10 @@ msgstr "Italiano"
 msgid "Japanese"
 msgstr "Japonés"
 
+#: pocheckerconsts.rs_lang_ko
+msgid "Korean"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_lt
 msgid "Lithuanian"
 msgstr "Lituano"
