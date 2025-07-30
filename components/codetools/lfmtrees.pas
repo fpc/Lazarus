@@ -34,7 +34,7 @@ uses
   // LazUtils
   LazUtilities,
   // Codetools
-  FileProcs, BasicCodeTools, CodeCache;
+  FileProcs, BasicCodeTools, CodeCache, KeywordFuncLists;
   
 type
   { TLFMTreeNode }
@@ -245,19 +245,49 @@ type
     function IsMissingObjectType: boolean;
     function GetNodePath: string;
   end;
-  
+
+  TLFMTokenKind = (
+    ltkNone,
+    ltkSymbol,
+    ltkIdentifier,
+    ltkUnicodeIdentifier,
+    ltkHexNumber,
+    ltkInteger,
+    ltkFloat,
+    ltkString
+    );
+  TLFMTokenKinds = set of TLFMTokenKind;
+
   TLFMTrees = class;
-  
+
   { TLFMTree }
 
   TLFMTree = class
+  private
+    function GetColumn: integer;
+    function GetSourcePos: integer;
   protected
-    Parser: TParser;
-    TokenStart: LongInt;
+    FLineNumber: integer;
+    FLineStart: PChar;
+    FTokenStart: PChar;
+    FTokenEnd: PChar;
+    FTokenChar: Char;
+    FTokenKind: TLFMTokenKind;
+    FSourceStart: PChar;
+    FSourceEnd: PChar;
+    procedure ParseError(const ErrorMessage: string);
+    procedure ParseErrorExp(const Expected: string);
     function NextToken: Char;
+    procedure HandleAlphaNum;
+    procedure HandleHexNumber;
+    procedure HandleNumber;
+    procedure HandleString;
+    procedure HandleUnknown;
     procedure ProcessValue;
     procedure ProcessProperty;
     procedure ProcessObject;
+    procedure ProcessDottedIdentifier;
+    procedure SkipBOM;
     procedure CreateChildNode(NodeClass: TLFMTreeNodeClass);
     procedure CloseChildNode;
   public
@@ -286,6 +316,22 @@ type
 
     function FindProperty(PropertyPath: string;
                           ContextNode: TLFMTreeNode): TLFMPropertyNode;
+
+    function TokenIsSymbol(const s: Shortstring): boolean;
+    function TokenIsIdentifier(const s: Shortstring): boolean;
+    function GetTokenString: string;
+    function GetTokenInteger: int64;
+
+    property SourcePos: integer read GetSourcePos; // 1-based absolute position in source
+    property LineNumber: integer read FLineNumber; // 1-based
+    property Column: integer read GetColumn; // 1-based
+    property LineStart: PChar read FLineStart;
+    property TokenStart: PChar read FTokenStart;
+    property TokenEnd: PChar read FTokenEnd;
+    property TokenChar: Char read FTokenChar;
+    property TokenKind: TLFMTokenKind read FTokenKind;
+    property SourceStart: PChar read FSourceStart;
+    property SourceEnd: PChar read FSourceEnd;
 
     procedure WriteDebugReport;
   end;
@@ -388,7 +434,13 @@ end;
 procedure TLFMTree.Clear;
 begin
   // do not set LFMBuffer to nil
-  TokenStart:=0;
+  FTokenStart:=nil;
+  FTokenEnd:=nil;
+  FTokenKind:=ltkNone;
+  FTokenChar:=#0;
+  FLineNumber:=1;
+  FSourceStart:=nil;
+  FSourceEnd:=nil;
   CurNode:=nil;
   ClearErrors;
   while Root<>nil do Root.Free;
@@ -421,22 +473,31 @@ begin
     LFMStream.Write(Src[1],length(Src));
     LFMStream.Position:=0;
   end;
-  Parser := TParser.Create(LFMStream);
+
+  FSourceStart:=LFMStream.Memory;
+  if FSourceStart=nil then begin
+    ParseError('stream is empty');
+    exit;
+  end;
+  FSourceEnd:=FSourceStart+LFMStream.Size;
+  FTokenStart:=FSourceStart;
+  FTokenEnd:=FSourceStart;
+  FLineStart:=FSourceStart;
+
   try
     try
-      while Parser.TokenSymbolIs('OBJECT')
-          or Parser.TokenSymbolIs('INHERITED')
-          or Parser.TokenSymbolIs('INLINE') do
+      SkipBOM;
+      NextToken;
+      while TokenIsIdentifier('OBJECT')
+          or TokenIsIdentifier('INHERITED')
+          or TokenIsIdentifier('INLINE') do
         ProcessObject;
       Result:=true;
     except
       on E: EParserError do begin
-        AddError(lfmeParseError,CurNode,E.Message,Parser.SourcePos);
       end;
     end;
   finally
-    Parser.Free;
-    Parser:=nil;
     LFMStream.Free;
   end;
 end;
@@ -571,24 +632,272 @@ begin
   WriteNode('',Root);
 end;
 
-function TLFMTree.NextToken: Char;
+function TLFMTree.GetColumn: integer;
 begin
-  TokenStart:=Parser.SourcePos+1;
-  while (TokenStart<=LFMBuffer.SourceLength)
-  and (LFMBuffer.Source[TokenStart] in [' ',#9,#10,#13]) do
-    inc(TokenStart);
-  Result:=Parser.NextToken;
+  if FTokenStart=nil then
+    Result:=1
+  else
+    Result:=FTokenStart-FLineStart+1;
+end;
+
+function TLFMTree.GetSourcePos: integer;
+begin
+  if FTokenStart=nil then
+    Result:=1
+  else
+    Result:=FTokenStart-FSourceStart+1;
+end;
+
+procedure TLFMTree.ParseError(const ErrorMessage: string);
+begin
+  AddError(lfmeParseError,nil,ErrorMessage,FTokenStart-FSourceStart+1);
+
+  raise EParserError.Create(ErrorMessage);
+end;
+
+procedure TLFMTree.ParseErrorExp(const Expected: string);
+var
+  s: String;
+  Cnt: SizeInt;
+begin
+  s:='';
+  debugln(['TLFMTree.AddParseErrorExp ',PtrInt(FTokenStart-FSourceStart),'-',PtrInt(FTokenEnd-FSourceStart),' Char=',ord(FTokenChar),' Kind=',FTokenKind]);
+  case FTokenChar of
+  #0:
+    s:='end of file';
+  #32..#126:
+    begin
+      Cnt:=FTokenEnd-FTokenStart;
+      if Cnt>30 then begin
+        SetLength(s,30);
+        System.Move(FTokenStart^,s[1],14);
+        s[15]:='.';
+        s[16]:='.';
+        s[17]:='.';
+        System.Move(FTokenEnd[-13],s[18],13);
+      end else begin
+        SetLength(s,cnt);
+        System.Move(FTokenStart^,s[1],Cnt);
+      end;
+      if FTokenChar in ['a'..'z','A'..'Z'] then
+        s:='"'+s+'"';
+    end;
+  else
+    s:='symbol';
+  end;
+  s:='expected '+Expected+', but found '+s;
+  ParseError(s);
+end;
+
+function TLFMTree.NextToken: Char;
+var
+  c: Char;
+begin
+  // skip whitespace
+  FTokenStart:=FTokenEnd;
+  repeat
+    if FTokenStart=FSourceEnd then begin
+      FTokenChar:=#0;
+      FTokenKind:=ltkNone;
+      exit(#0);
+    end;
+    case FTokenStart^ of
+    #0:
+      begin
+        FTokenEnd:=FTokenStart;
+        FTokenChar:=#0;
+        FTokenKind:=ltkNone;
+        exit(#0);
+      end;
+    ' ',#9: inc(FTokenStart);
+    #10,#13:
+      begin
+        c:=FTokenStart^;
+        inc(FTokenStart);
+        if (FTokenStart<FSourceEnd) and (FTokenStart^ in [#10,#13]) and (c<>FTokenStart^) then
+          inc(FTokenStart);
+        FLineStart:=FTokenStart;
+        inc(FLineNumber);
+      end;
+    else
+      break;
+    end;
+  until false;
+
+  c:=FTokenStart^;
+  FTokenChar:=c;
+  case c of
+  '_','A'..'Z','a'..'z' : HandleAlphaNum;
+  '$'                   : HandleHexNumber;
+  '-','0'..'9'          : HandleNumber;
+  '''','#'              : HandleString;
+  else
+    HandleUnknown;
+  end;
+  Result:=FTokenChar;
+end;
+
+procedure TLFMTree.HandleAlphaNum;
+begin
+  FTokenKind:=ltkIdentifier;
+  FTokenEnd:=FTokenStart+1;
+  while (FTokenEnd<FSourceEnd) and IsIdentChar[FTokenEnd^] do
+    inc(FTokenEnd);
+  //writeln('TLFMTree.HandleAlphaNum ',PtrInt(FTokenStart-FSourceStart),' ',PtrInt(FTokenEnd-FSourceStart),' ',PtrInt(FSourceEnd-FSourceStart));
+end;
+
+procedure TLFMTree.HandleHexNumber;
+begin
+  // first char is $
+  FTokenKind:=ltkHexNumber;
+  FTokenEnd:=FTokenStart+1;
+  while (FTokenEnd<FSourceEnd) and IsHexNumberChar[FTokenEnd^] do
+    inc(FTokenEnd);
+  if FTokenEnd-FTokenStart=1 then
+  begin
+    FTokenKind:=ltkSymbol;
+    AddError(lfmeParseError,nil,'expected hex number',FTokenStart-FSourceStart);
+  end else begin
+    FTokenKind:=ltkHexNumber;
+  end;
+end;
+
+procedure TLFMTree.HandleNumber;
+var
+  c: Char;
+  OldEnd: PChar;
+begin
+  // For example: 1  or  -1.2e-3
+  FTokenKind:=ltkInteger;
+  FTokenEnd:=FTokenStart+1;
+  if FTokenChar='-' then begin
+    if (FTokenEnd=FSourceEnd) or not (FTokenEnd^ in ['0'..'9']) then
+    begin
+      // minus without number
+      FTokenKind:=ltkSymbol;
+      exit;
+    end;
+    inc(FTokenEnd);
+  end;
+  while (FTokenEnd<FSourceEnd) do begin
+    c:=FTokenEnd^;
+    case c of
+    '0'..'9':
+      inc(FTokenEnd);
+    '.':
+      if FTokenKind=ltkInteger then begin
+        inc(FTokenEnd);
+        if (FTokenEnd=FSourceEnd) or not (FTokenEnd^ in ['0'..'9','e','E']) then
+        begin
+          dec(FTokenEnd);
+          exit;
+        end;
+        FTokenKind:=ltkFloat;
+      end else
+        exit;
+    'e','E':
+      begin
+        OldEnd:=FTokenEnd;
+        inc(FTokenEnd);
+        if (FTokenEnd=FSourceEnd) then begin
+          // 1E<missing number>
+          FTokenEnd:=OldEnd;
+          exit;
+        end;
+        c:=FTokenEnd^;
+        if c='-' then
+          inc(FTokenEnd);
+        if (FTokenEnd=FSourceEnd) or not (FTokenEnd^ in ['0'..'9']) then
+        begin
+          // 1E<missing number>
+          FTokenEnd:=OldEnd;
+          exit;
+        end;
+        FTokenKind:=ltkFloat;
+        repeat
+          inc(FTokenEnd);
+        until (FTokenEnd=FSourceEnd) or not (FTokenEnd^ in ['0'..'9']);
+        exit;
+      end;
+    else
+      exit;
+    end;
+  end;
+end;
+
+procedure TLFMTree.HandleString;
+var
+  c: Char;
+begin
+  FTokenEnd:=FTokenStart;
+  FTokenKind:=ltkString;
+  repeat
+    c:=FTokenEnd^;
+    case c of
+    '''':
+      begin
+        repeat
+          inc(FTokenEnd);
+          if FTokenEnd=FSourceEnd then
+          begin
+            ParseError('missing closing apostroph');
+            exit;
+          end;
+          c:=FTokenEnd^;
+          case c of
+          #0,#10,#13:
+            begin
+              ParseError('missing closing apostroph');
+              exit;
+            end;
+          '''':
+            begin
+              inc(FTokenEnd);
+              break;
+            end;
+          end;
+        until false;
+        if FTokenEnd=FSourceEnd then exit;
+      end;
+    '#':
+      begin
+        inc(FTokenEnd);
+        if (FTokenEnd=FSourceEnd) or not (FTokenEnd^ in ['0'..'9']) then
+        begin
+          ParseError('missing decimal after #');
+          if FTokenStart+1=FTokenEnd then begin
+            FTokenKind:=ltkSymbol;
+            exit;
+          end else begin
+            dec(FTokenEnd);
+            exit;
+          end;
+        end;
+        repeat
+          inc(FTokenEnd);
+          if (FTokenEnd=FSourceEnd) then
+            exit;
+        until not (FTokenEnd^ in ['0'..'9']);
+      end;
+    else
+      exit;
+    end;
+  until false;
+end;
+
+procedure TLFMTree.HandleUnknown;
+begin
+  FTokenKind:=ltkSymbol;
+  FTokenEnd:=FTokenStart+1;
 end;
 
 procedure TLFMTree.ProcessValue;
 var
-  s: String;
-  MemStream: TMemoryStream;
   SymbolNode: TLFMValueNodeSymbol;
 begin
-  case Parser.Token of
+  case FTokenKind of
   
-  toInteger:
+  ltkInteger:
     begin
       CreateChildNode(TLFMValueNode);
       TLFMValueNode(CurNode).ValueType:=lfmvInteger;
@@ -596,7 +905,7 @@ begin
       CloseChildNode;
     end;
     
-  toFloat:
+  ltkFloat:
     begin
       CreateChildNode(TLFMValueNode);
       TLFMValueNode(CurNode).ValueType:=lfmvFloat;
@@ -604,109 +913,139 @@ begin
       CloseChildNode;
     end;
     
-  Classes.toString, toWString:
+  ltkString:
     begin
       CreateChildNode(TLFMValueNode);
       TLFMValueNode(CurNode).ValueType:=lfmvString;
       while NextToken = '+' do begin
         NextToken;   // Get next string fragment
-        if not (Parser.Token in [Classes.toString,toWString]) then
-          Parser.CheckToken(Classes.toString);
+        if FTokenKind<>ltkString then
+          ParseErrorExp('string literal');
       end;
       CloseChildNode;
     end;
     
-  toSymbol:
+  ltkIdentifier:
     begin
       CreateChildNode(TLFMValueNodeSymbol);
       SymbolNode:=TLFMValueNodeSymbol(CurNode);
-      if SymbolNode=nil then ;
-      s := Parser.TokenString;
-      if SysUtils.CompareText(s, 'End') = 0 then
+      if TokenIsIdentifier('end') then
         SymbolNode.SymbolType:=lfmsNone
-      else if SysUtils.CompareText(s, 'True') = 0 then
+      else if TokenIsIdentifier('True') then
         SymbolNode.SymbolType:=lfmsTrue
-      else if SysUtils.CompareText(s, 'False') = 0 then
+      else if TokenIsIdentifier('False') then
         SymbolNode.SymbolType:=lfmsFalse
-      else if SysUtils.CompareText(s, 'nil') = 0 then
+      else if TokenIsIdentifier('nil') then
         SymbolNode.SymbolType:=lfmsNil
       else
       begin
         SymbolNode.SymbolType:=lfmsIdentifier;
-        Parser.TokenComponentIdent;
+        ProcessDottedIdentifier;
       end;
       if SymbolNode.SymbolType<>lfmsNone then
         NextToken;
       CloseChildNode;
     end;
-    
-  // Set
-  '[':
-    begin
-      CreateChildNode(TLFMValueNodeSet);
-      NextToken;
-      if Parser.Token <> ']' then
-        while True do
-        begin
-          CreateChildNode(TLFMEnumNode);
-          Parser.CheckToken(toSymbol);
-          CloseChildNode;
-          NextToken;
-          if Parser.Token = ']' then
-            break;
-          Parser.CheckToken(',');
-          NextToken;
-        end;
-      NextToken;
-      CloseChildNode;
-    end;
-    
-  // List
-  '(':
-    begin
-      CreateChildNode(TLFMValueNodeList);
-      NextToken;
-      while Parser.Token <> ')' do
-        ProcessValue;
-      NextToken;
-      CloseChildNode;
-    end;
-    
-  // Collection
-  '<':
-    begin
-      CreateChildNode(TLFMValueNodeCollection);
-      NextToken;
-      while Parser.Token <> '>' do
+
+  ltkSymbol:
+    case fTokenChar of
+    // Set
+    '[':
       begin
-        Parser.CheckTokenSymbol('item');
+        CreateChildNode(TLFMValueNodeSet);
         NextToken;
-        CreateChildNode(TLFMValueNodeList);
-        while not Parser.TokenSymbolIs('end') do
-          ProcessProperty;
-        NextToken;   // Skip 'end'
+        if FTokenChar <> ']' then
+          while True do
+          begin
+            CreateChildNode(TLFMEnumNode);
+            if FTokenKind<>ltkIdentifier then
+              ParseErrorExp('identifier');
+            CloseChildNode;
+            NextToken;
+            if FTokenChar = ']' then
+              break
+            else if FTokenChar<>',' then
+              ParseErrorExp(',');
+            NextToken;
+          end;
+        NextToken;
         CloseChildNode;
       end;
-      NextToken;
-      CloseChildNode;
-    end;
     
-  // Binary data
-  '{':
-    begin
-      CreateChildNode(TLFMValueNodeBinary);
-      MemStream := TMemoryStream.Create;
-      try
-        Parser.HexToBinary(MemStream);
-      finally
-        MemStream.Free;
+    // List
+    '(':
+      begin
+        CreateChildNode(TLFMValueNodeList);
+        NextToken;
+        while FTokenChar <> ')' do
+          ProcessValue;
+        NextToken;
+        CloseChildNode;
       end;
-      NextToken;
-      CloseChildNode;
-    end;
-    
+
+    // Collection
+    '<':
+      begin
+        CreateChildNode(TLFMValueNodeCollection);
+        NextToken;
+        while FTokenChar <> '>' do
+        begin
+          if not TokenIsIdentifier('item') then
+            ParseErrorExp('"item"');
+          NextToken;
+          CreateChildNode(TLFMValueNodeList);
+          while not TokenIsIdentifier('end') do
+            ProcessProperty;
+          NextToken;   // Skip 'end'
+          CloseChildNode;
+        end;
+        NextToken;
+        CloseChildNode;
+      end;
+
+    // Binary data
+    '{':
+      begin
+        CreateChildNode(TLFMValueNodeBinary);
+        // skip white space and hexnumbers until }
+        inc(FTokenStart);
+        repeat
+          if FTokenStart=FSourceEnd then begin
+            FTokenEnd:=FTokenStart;
+            FTokenChar:=#0;
+            ParseErrorExp('}');
+          end;
+          FTokenChar:=FTokenStart^;
+          case FTokenChar of
+          '}':
+            begin
+              inc(FTokenStart);
+              FTokenEnd:=FTokenStart;
+              break;
+            end;
+          ' ','a'..'f','A'..'F','0'..'9':
+            inc(FTokenStart);
+          #10,#13:
+            begin
+              inc(FTokenStart);
+              if (FTokenStart<FSourceEnd) and (FTokenStart^ in [#10,#13])
+                  and (FTokenChar<>FTokenStart^) then
+                inc(FTokenStart);
+              inc(FLineNumber);
+              FLineStart:=FTokenStart;
+            end;
+          else
+            FTokenEnd:=FTokenStart+1;
+            ParseErrorExp('}');
+          end;
+        until false;
+        NextToken;
+        CloseChildNode;
+      end;
+    end
+
   else
-    Parser.Error('invalid property');
+    ParseError('invalid property');
   end;
 end;
 
@@ -716,18 +1055,21 @@ var
 begin
   CreateChildNode(TLFMPropertyNode);
   PropertyNode:=TLFMPropertyNode(CurNode);
-  if PropertyNode=nil then ;
-  // Get name of property
-  Parser.CheckToken(toSymbol);
-  PropertyNode.Add(Parser.TokenString,TokenStart);
+  // Get (dotted) name of property
+  if FTokenKind<>ltkIdentifier then
+    ParseErrorExp('property name');
+
+  PropertyNode.Add(GetTokenString,SourcePos);
   while True do begin
     NextToken;
-    if Parser.Token <> '.' then break;
+    if FTokenChar <> '.' then break;
     NextToken;
-    Parser.CheckToken(toSymbol);
-    PropertyNode.Add(Parser.TokenString,TokenStart);
+    if FTokenKind<>ltkIdentifier then
+      ParseErrorExp('identifier');
+    PropertyNode.Add(GetTokenString,SourcePos);
   end;
-  Parser.CheckToken('=');
+  if FTokenChar<>'=' then
+    ParseErrorExp('=');
   NextToken;
   ProcessValue;
   CloseChildNode;
@@ -741,18 +1083,19 @@ var
 begin
   CreateChildNode(TLFMObjectNode);
   ObjectNode:=TLFMObjectNode(CurNode);
-  if Parser.TokenSymbolIs('OBJECT') then
+  if TokenIsIdentifier('OBJECT') then
     ObjectNode.IsInherited := False
-  else if Parser.TokenSymbolIs('INHERITED') then
+  else if TokenIsIdentifier('INHERITED') then
     ObjectNode.IsInherited := True
-  else begin
-    Parser.CheckTokenSymbol('INLINE');
-    ObjectNode.IsInline := True;
-  end;
+  else if TokenIsIdentifier('INLINE') then
+    ObjectNode.IsInline := True
+  else
+    ParseErrorExp('"object"');
   NextToken;
-  Parser.CheckToken(toSymbol);
-  if not Parser.TokenSymbolIs('END') then begin
-    ObjectStartLine:=Parser.SourceLine;
+  if FTokenKind<>ltkIdentifier then
+    ParseErrorExp('identifier');
+  if not TokenIsIdentifier('END') then begin
+    ObjectStartLine:=LineNumber;
 
     // read TypeName
     //   or ClassName.TypeName
@@ -762,72 +1105,80 @@ begin
     //   or Name:UnitName/TypeName
     //   or Name:Namespace.UnitName/ClassName.TypeName
     ObjectNode.Name := '';
-    ObjectNode.TypeName := Parser.TokenString;
-    ObjectNode.TypeNamePosition:=TokenStart;
+    ObjectNode.TypeName := GetTokenString;
+    ObjectNode.TypeNamePosition := SourcePos;
     ObjectNode.ChildPos := -1;
     NextToken;
     HasDot:=false;
-    while Parser.Token = '.' do begin
+    while FTokenChar = '.' do begin
       HasDot:=true;
       NextToken;
-      Parser.CheckToken(toSymbol);
-      ObjectNode.TypeName := ObjectNode.TypeName+'.'+Parser.TokenString;
+      if FTokenKind<>ltkIdentifier then
+        ParseErrorExp('identifier');
+      ObjectNode.TypeName := ObjectNode.TypeName+'.'+GetTokenString;
       NextToken;
     end;
 
-    if (not HasDot) and (Parser.Token = ':') then begin
+    if (not HasDot) and (FTokenChar = ':') then begin
       // Name:TypeName
       NextToken;
-      Parser.CheckToken(toSymbol);
+      if FTokenKind<>ltkIdentifier then
+        ParseErrorExp('identifier');
       ObjectNode.Name := ObjectNode.TypeName;
-      ObjectNode.NamePosition:=ObjectNode.TypeNamePosition;
-      ObjectNode.TypeName := Parser.TokenString;
-      ObjectNode.TypeNamePosition:=TokenStart;
+      ObjectNode.NamePosition := ObjectNode.TypeNamePosition;
+      ObjectNode.TypeName := GetTokenString;
+      ObjectNode.TypeNamePosition := SourcePos;
       NextToken;
-      while Parser.Token = '.' do begin
+      while FTokenChar = '.' do begin
         NextToken;
-        Parser.CheckToken(toSymbol);
-        ObjectNode.TypeName := ObjectNode.TypeName+'.'+Parser.TokenString;
+        if FTokenKind<>ltkIdentifier then
+          ParseErrorExp('identifier');
+        ObjectNode.TypeName := ObjectNode.TypeName+'.'+GetTokenString;
         NextToken;
       end;
     end;
 
-    if Parser.Token = '/' then begin
+    if FTokenChar = '/' then begin
       // TypeUnitName/TypeName
       NextToken;
-      Parser.CheckToken(toSymbol);
+      if FTokenKind<>ltkIdentifier then
+        ParseErrorExp('identifier');
       ObjectNode.TypeUnitName := ObjectNode.TypeName;
-      ObjectNode.TypeUnitNamePosition:=ObjectNode.TypeNamePosition;
-      ObjectNode.TypeName := Parser.TokenString;
-      ObjectNode.TypeNamePosition:=TokenStart;
+      ObjectNode.TypeUnitNamePosition := ObjectNode.TypeNamePosition;
+      ObjectNode.TypeName := GetTokenString;
+      ObjectNode.TypeNamePosition := SourcePos;
       NextToken;
-      while Parser.Token = '.' do begin
+      while FTokenChar = '.' do begin
         NextToken;
-        Parser.CheckToken(toSymbol);
-        ObjectNode.TypeName := ObjectNode.TypeName+'.'+Parser.TokenString;
+        if FTokenKind<>ltkIdentifier then
+          ParseErrorExp('identifier');
+        ObjectNode.TypeName := ObjectNode.TypeName+'.'+GetTokenString;
         NextToken;
       end;
     end;
 
-    if Parser.Token = '[' then begin
+    if FTokenChar = '[' then begin
       NextToken;
-      ObjectNode.ChildPos := Parser.TokenInt;
+      if FTokenKind<>ltkInteger then
+        ParseErrorExp('integer');
+      ObjectNode.ChildPos := GetTokenInteger;
       NextToken;
-      Parser.CheckToken(']');
+      if FTokenChar<>']' then
+        ParseErrorExp(']');
       NextToken;
     end;
 
     // read property list
-    while not (Parser.TokenSymbolIs('END')
-    or Parser.TokenSymbolIs('OBJECT')
-    or Parser.TokenSymbolIs('INHERITED')
-    or Parser.TokenSymbolIs('INLINE')) do
+    while not (TokenIsIdentifier('END')
+        or TokenIsIdentifier('OBJECT')
+        or TokenIsIdentifier('INHERITED')
+        or TokenIsIdentifier('INLINE')) do
       ProcessProperty;
 
     // read child objects
-    while not Parser.TokenSymbolIs('END') do begin
-      if Parser.Token=toEOF then begin
-        Parser.Error('END not found for'
+    while not TokenIsIdentifier('END') do begin
+      if FTokenChar=#0 then begin
+        ParseError('END not found for'
           +' object='+ObjectNode.GetFullName
           +' starting at line '+IntToStr(ObjectStartLine));
       end;
@@ -839,13 +1190,85 @@ begin
   CloseChildNode;
 end;
 
+procedure TLFMTree.ProcessDottedIdentifier;
+begin
+  while (FTokenEnd<FSourceEnd) and (FTokenEnd^='.') do begin
+    inc(FTokenEnd);
+    while (FTokenEnd<FSourceEnd) and (IsIdentChar[FTokenEnd^]) do inc(FTokenEnd);
+  end;
+end;
+
+procedure TLFMTree.SkipBOM;
+begin
+  while (FTokenStart^=#$EF) and (FTokenStart[1]=#$BB) and (FTokenStart[2]=#$BF) do
+    inc(FTokenStart,3);
+  FTokenEnd:=FTokenStart;
+  FLineStart:=FTokenStart;
+end;
+
+function TLFMTree.TokenIsSymbol(const s: Shortstring): boolean;
+var
+  p, q: PChar;
+  l: SizeInt;
+begin
+  Result:=false;
+  l:=length(s);
+  if l=0 then exit;
+  if l<>FTokenEnd-FTokenStart then exit;
+  p:=FTokenStart;
+  q:=@s[1];
+  repeat
+    if p^<>q^ then exit;
+    inc(p);
+    inc(q);
+  until p=FTokenEnd;
+  Result:=true;
+end;
+
+function TLFMTree.TokenIsIdentifier(const s: Shortstring): boolean;
+var
+  p, q: PChar;
+  l: SizeInt;
+begin
+  Result:=false;
+  l:=length(s);
+  if l=0 then exit;
+  if l<>FTokenEnd-FTokenStart then exit;
+  p:=FTokenStart;
+  q:=@s[1];
+  repeat
+    if (p^<>q^) and (UpChars[p^]<>UpChars[q^]) then exit;
+    inc(p);
+    inc(q);
+  until p=FTokenEnd;
+  Result:=true;
+end;
+
+function TLFMTree.GetTokenString: string;
+var
+  l: SizeInt;
+begin
+  if FTokenChar=#0 then exit('');
+  l:=FTokenEnd-FTokenStart;
+  SetLength(Result,l);
+  Move(FTokenStart^,Result[1],l);
+end;
+
+function TLFMTree.GetTokenInteger: int64;
+begin
+  Result:=0;
+  if FTokenKind in [ltkHexNumber,ltkInteger] then
+    if not TryStrToInt64(GetTokenString,Result) then
+      Result:=0;
+end;
+
 procedure TLFMTree.CreateChildNode(NodeClass: TLFMTreeNodeClass);
 var
   NewNode: TLFMTreeNode;
 begin
   NewNode:=NodeClass.CreateVirtual;
   NewNode.Tree:=Self;
-  NewNode.StartPos:=TokenStart;
+  NewNode.StartPos:=fTokenStart-FSourceStart+1;
   NewNode.EndPos:=0;
   if CurNode<>nil then begin
     CurNode.AddChild(NewNode);
@@ -858,7 +1281,7 @@ end;
 procedure TLFMTree.CloseChildNode;
 begin
   if CurNode.EndPos<1 then
-    CurNode.EndPos:=TokenStart;
+    CurNode.EndPos:=fTokenStart-FSourceStart+1;
   CurNode:=CurNode.Parent;
 end;
 

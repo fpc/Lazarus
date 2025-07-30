@@ -18,12 +18,14 @@ type
     FLFMCode: TCodeBuffer;
     FUnitCode: TCodeBuffer;
     FSources: TFPList; // list of TCodeBuffer
+    procedure CodeToolBossFindDefineProperty(Sender: TObject; const PersistentClassName,
+      AncestorClassName, Identifier: string; var IsDefined: boolean);
     function GetSourceCount: integer;
     function GetSources(Index: integer): TCodeBuffer;
   protected
     procedure SetUp; override;
     procedure TearDown; override;
-    function AddControls(const aFilename: string = 'controls.pas'): TCodeBuffer;
+    function AddControls(const aFilename: string = 'controls.pas'; AddCollection: boolean = false): TCodeBuffer;
     function AddFormUnit(const Fields: array of string;
       const aFormClass: string = 'TForm';
       const aFilename: string = 'unit1.pas'): TCodeBuffer;
@@ -32,7 +34,8 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure CheckLFM;
-    procedure CheckLFMParseError(ErrorType: TLFMErrorType; const CursorPos: TCodeXYPosition; ErrorMsg: string);
+    procedure CheckLFMExpectedError(ErrorType: TLFMErrorType; const CursorPos: TCodeXYPosition; ErrorMsg: string);
+    procedure ParseLFM;
     procedure WriteSource(const CursorPos: TCodeXYPosition);
     property SourceCount: integer read GetSourceCount;
     property Sources[Index: integer]: TCodeBuffer read GetSources;
@@ -51,6 +54,12 @@ type
     procedure LFM_RootUnitnameWrong;
     procedure LFM_ChildUnitnameWrong;
     procedure LFM_BinaryData;
+    procedure LFM_Set;
+    procedure LFM_List;
+    procedure LFM_Collection;
+
+    // unicode
+    procedure LFMParseUnicode; // todo
   end;
 
 implementation
@@ -62,6 +71,18 @@ begin
   Result:=FSources.Count;
 end;
 
+procedure TCustomTestLFMTrees.CodeToolBossFindDefineProperty(Sender: TObject;
+  const PersistentClassName, AncestorClassName, Identifier: string; var IsDefined: boolean);
+begin
+  if AncestorClassName='' then ;
+  if SameText(PersistentClassName,'TStrings') then begin
+    if SameText(Identifier,'Strings') then
+      IsDefined:=true;
+  end;
+  if not IsDefined then
+    debugln(['TCustomTestLFMTrees.CodeToolBossFindDefineProperty PersistentClassName="',PersistentClassName,'" Identifier="',Identifier,'"']);
+end;
+
 function TCustomTestLFMTrees.GetSources(Index: integer): TCodeBuffer;
 begin
   Result:=TCodeBuffer(FSources[Index]);
@@ -70,6 +91,7 @@ end;
 procedure TCustomTestLFMTrees.SetUp;
 begin
   inherited SetUp;
+  CodeToolBoss.OnFindDefineProperty:=@CodeToolBossFindDefineProperty;
 end;
 
 procedure TCustomTestLFMTrees.TearDown;
@@ -88,9 +110,12 @@ begin
   inherited TearDown;
 end;
 
-function TCustomTestLFMTrees.AddControls(const aFilename: string): TCodeBuffer;
+function TCustomTestLFMTrees.AddControls(const aFilename: string; AddCollection: boolean
+  ): TCodeBuffer;
+var
+  Src: String;
 begin
-  FControlsCode:=AddSource(aFilename,LinesToStr([
+  Src:=LinesToStr([
     'unit Controls;',
     '{$mode objfpc}{$H+}',
     'interface',
@@ -107,8 +132,6 @@ begin
     '    property Caption: TCaption;',
     '    property Left: integer;',
     '    property Top: integer;',
-    //'    property Width: integer;',
-    //'    property Height: integer;',
     '    property OnClick: TNotifyEvent;',
     '  end;',
     '',
@@ -118,17 +141,36 @@ begin
     '  published',
     '    property Default: Boolean;',
     '    property Glyph: TBitmap;',
+    '    property Lines: TStrings;',
     '  end;',
     '',
     '  TFormStyle = (fsNormal, fsMDIChild, fsMDIForm, fsStayOnTop, fsSplash, fsSystemStayOnTop);',
+    '  TFormStyles = set of TFormStyle;',
     '  TForm = class(TControl)',
     '  published',
     '    property FormStyle: TFormStyle;',
+    '    property Styles: TFormStyles;',
     '  end;',
-    'end.',
+    '']);
+  if AddCollection then begin
+    Src:=Src+LinesToStr([
+    '  TColumn = class(TCollectionItem)',
+    '  published',
+    '    published Width: integer;',
+    '  end;',
+    '  TColumns = class(TCollection)',
+    '  end;',
+    '  TGrid = class(TControl)',
+    '  published',
+    '    property Columns: TColumns;',
+    '  end;',
+    '']);
+  end;
+  Src:=Src+LinesToStr([
     'implementation',
     'end.'
-    ]));
+    ]);
+  FControlsCode:=AddSource(aFilename,Src);
   Result:=FControlsCode;
 end;
 
@@ -198,7 +240,7 @@ begin
   end;
 end;
 
-procedure TCustomTestLFMTrees.CheckLFMParseError(ErrorType: TLFMErrorType;
+procedure TCustomTestLFMTrees.CheckLFMExpectedError(ErrorType: TLFMErrorType;
   const CursorPos: TCodeXYPosition; ErrorMsg: string);
 var
   LFMTree: TLFMTree;
@@ -236,6 +278,28 @@ begin
       LFMErr:=LFMErr.NextError;
     end;
     Fail('TCustomTestLFMTrees.CheckLFMParseError Missing '+LFMErrorTypeNames[ErrorType]+': '+CursorPos.Code.Filename+'('+IntToStr(CursorPos.Y)+','+IntToStr(CursorPos.X)+'): '+ErrorMsg);
+  finally
+    LFMTree.Free;
+  end;
+end;
+
+procedure TCustomTestLFMTrees.ParseLFM;
+var
+  LFMTree: TLFMTree;
+  LFMErr: TLFMError;
+begin
+  LFMTree:=nil;
+  try
+    if CodeToolBoss.ParseLFM(LFMCode,LFMTree) then exit;
+    WriteSource(CodeXYPosition(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine,CodeToolBoss.ErrorCode));
+    if LFMTree<>nil then begin
+      LFMErr:=LFMTree.FirstError;
+      while LFMErr<>nil do begin
+        writeln('LFM Error: (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage);
+        LFMErr:=LFMErr.NextError;
+      end;
+    end;
+    Fail('CheckLFM error "'+CodeToolBoss.ErrorMessage+'"');
   finally
     LFMTree.Free;
   end;
@@ -328,7 +392,7 @@ begin
     '  end',
     'end'
     ]));
-  CheckLFMParseError(lfmeMissingRoot,CodeXYPosition(15,1,FLFMCode),'unitname Fool mismatch');
+  CheckLFMExpectedError(lfmeMissingRoot,CodeXYPosition(15,1,FLFMCode),'unitname Fool mismatch');
 end;
 
 procedure TTestLFMTrees.LFM_ChildUnitnameWrong;
@@ -341,7 +405,7 @@ begin
     '  end',
     'end'
     ]));
-  CheckLFMParseError(lfmeObjectIncompatible,CodeXYPosition(19,2,FLFMCode),'Controls expected, but Fool found. See unit1.pas(7,5)');
+  CheckLFMExpectedError(lfmeObjectIncompatible,CodeXYPosition(19,2,FLFMCode),'Controls expected, but Fool found. See unit1.pas(7,5)');
 end;
 
 procedure TTestLFMTrees.LFM_BinaryData;
@@ -360,7 +424,73 @@ begin
     '  end',
     'end'
     ]));
-  CheckLFMParseError(lfmeIdentifierNotFound,CodeXYPosition(11,3,FLFMCode),'identifier Data not found in class "TBitmap"');
+  CheckLFMExpectedError(lfmeIdentifierNotFound,CodeXYPosition(11,3,FLFMCode),'identifier Data not found in class "TBitmap"');
+end;
+
+procedure TTestLFMTrees.LFM_Set;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  FormStyle = fsNormal',
+    '  Styles = []',
+    '  Styles = [fsNormal]',
+    '  Styles = [fsNormal,fsStayOnTop]',
+    'end'
+    ]));
+  CheckLFM;
+end;
+
+procedure TTestLFMTrees.LFM_List;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '    Lines.Strings = (',
+    '      ''Memo1''',
+    '      ''Foo''',
+    '    )',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+end;
+
+procedure TTestLFMTrees.LFM_Collection;
+begin
+  AddControls('controls.pas',true);
+  AddFormUnit(['Grid1: TGrid']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Grid1: TGrid',
+    '    Columns = <',
+    '      item',
+    '        Title.Caption = ''Title''',
+    '        Width = 10',
+    '      end',
+    '      item',
+    '        Width = 10',
+    '      end>',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+end;
+
+procedure TTestLFMTrees.LFMParseUnicode;
+begin
+  exit;
+
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Förmchen1: TFörmchen1',
+    '  object Knöpfchen1: TKnöpfchen',
+    '  end',
+    'end'
+    ]));
+  ParseLFM;
 end;
 
 initialization

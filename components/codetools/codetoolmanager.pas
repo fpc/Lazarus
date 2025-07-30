@@ -6276,12 +6276,10 @@ var
   AncestorClassName: String;
 begin
   if Assigned(OnFindDefineProperty) then begin
-    PersistentClassName:=ClassContext.Tool.ExtractClassName(
-                                                       ClassContext.Node,false);
+    PersistentClassName:=ClassContext.Tool.ExtractClassName(ClassContext.Node,false);
     AncestorClassName:='';
     if AncestorClassContext.Tool<>nil then
-     AncestorClassName:=AncestorClassContext.Tool.ExtractClassName(
-                                               AncestorClassContext.Node,false);
+      AncestorClassName:=AncestorClassContext.Tool.ExtractClassName(AncestorClassContext.Node,false);
     OnFindDefineProperty(ClassContext.Tool,
                          PersistentClassName,AncestorClassName,IdentName,
                          IsDefined);

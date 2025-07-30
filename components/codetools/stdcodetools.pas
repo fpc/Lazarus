@@ -2372,7 +2372,7 @@ var
             Params.SetIdentifier(ClassContext.Tool,PChar(Pointer(IdentName)),nil);
             if not CurContext.Tool.FindIdentifierInContext(Params) then
             begin
-              DebugLn(['FindLFMIdentifier ERROR ancestor of '+LFMNode.GetPath+' not found: ',FindContextToString(IdentContext),' IdentName=',IdentName]);
+              //DebugLn(['Note: FindLFMIdentifier ancestor of '+LFMNode.GetPath+' not found: ',FindContextToString(IdentContext),' IdentName=',IdentName]);
               break;
             end;
           until Params.NewNode=nil;
