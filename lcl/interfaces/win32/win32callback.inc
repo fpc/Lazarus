@@ -13,8 +13,24 @@
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
+
 type
-  TApplicationAccess = class(TApplication);
+  { TApplicationAccessHelper }
+  // Provides access to protected methods and properties of TWinControl, without using a typecast hack,
+  // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
+  TApplicationAccessHelper = class helper for TApplication
+  public
+    procedure _ProcessAsyncCallQueue;
+  end;
+
+{ TApplicationAccessHelper }
+
+procedure TApplicationAccessHelper._ProcessAsyncCallQueue;
+begin
+  ProcessAsyncCallQueue;
+end;
+
+
 {*************************************************************}
 {            callback routines                                }
 {*************************************************************}
@@ -2064,7 +2080,7 @@ begin
         CheckSynchronize;
         TWin32Widgetset(Widgetset).CheckPipeEvents;
         if Assigned(Application) then
-          TApplicationAccess(Application).ProcessAsyncCallQueue;
+          Application._ProcessAsyncCallQueue;
       end;
     WM_ENTERIDLE: Application.Idle(False);
     WM_ACTIVATE:  SetLMessageAndParams(LM_ACTIVATE);
