@@ -45,9 +45,6 @@
   Example:
     Angle1 = 10*16, Angle2 = 30*16 will draw an arc from 10 to 40 degree.
 
-  But note that due to the elliptic eccetricity these angles are not the
-  same as "real" polar angles, but only correspond to the parameter t in the
-  parametric ellipse equations:  x = a * cos(t);  y = b * sin(t)
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.Arc(DC: HDC; Left, top, right, bottom, angle1,
   angle2: Integer): Boolean;
@@ -104,9 +101,6 @@ end;
   negative values mean clockwise direction. Zero degrees is at the 3'o clock
   position.
 
-  But note that in the case of an eccentric ellipse the angles are not "true"
-  polar angles, but only the parameter t of the paramatric ellipse equation
-  (x = a * cos(t), y = b * sin(t), where a and b are the ellipse half axes).
 ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.AngleChord(DC: HDC;
   x1, y1, x2, y2, angle1, angle2: Integer): Boolean;

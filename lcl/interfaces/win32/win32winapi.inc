@@ -49,7 +49,7 @@
 
   But note that due to the elliptic eccetricity these angles are not the
   same as "real" polar angles, but only correspond to the parameter t in the
-  parametric ellipse equations:  x = a * cos(t);  y = b * sin(t)
+  ellipse equations:  x = a * cos(t);  y = b * sin(t)
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, Angle16Deg, Angle16DegLength: Integer): Boolean;
 var
@@ -58,17 +58,11 @@ var
   EX: LongInt = 0;
   EY: LongInt = 0;
   OldArcDirection: Longint;
-  t1, t2: Extended;
 begin
   if Angle16DegLength < 0 then OldArcDirection := Windows.SetArcDirection(DC, AD_CLOCKWISE)
   else OldArcDirection := Windows.SetArcDirection(DC, AD_COUNTERCLOCKWISE);
 
-  t1 := pi * Angle16Deg / (180*16);
-  if Angle16DegLength > 360*16 then
-    t2 := t1 + pi*2.0
-  else
-    t2 := pi * (Angle16Deg + Angle16DegLength) / (180*16);
-  EllipseParams2Coords(Left, Top, Right - Left, Bottom - Top, t1, t2, SX, SY, EX, EY);
+  EllipseParams2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX, SY, EX, EY);
   Result := Boolean(Windows.Arc(DC, Left, Top, Right, Bottom, SX, SY, EX, EY));
   // Revert the arc direction to the previous value
   Windows.SetArcDirection(DC, OldArcDirection);
@@ -85,25 +79,13 @@ end;
   negative values mean clockwise direction. Zero degrees is at the 3'o clock
   position.
 
-  But note that in the case of an eccentric ellipse the angles are not "true"
-  polar angles, but only the parameter t of the paramatric ellipse equation
-  (x = a * cos(t), y = b * sin(t), where a and b are the ellipse half axes).
 ------------------------------------------------------------------------------}
 function TWin32WidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1,
   angle2: Integer): Boolean;
 var
   SX, SY, EX, EY : Longint;
-  t1, t2: Extended;
 begin
-  t1 := pi * angle1 / (180*16);
-  if angle2 > 360*16 then
-    t2 := t1 + pi*2.0
-  else
-    t2 := pi * (angle1 + angle2) / (180*16);
-  if angle2 >= 0 then
-    EllipseParams2Coords(x1, y1, x2-x1, y2-y1, t1, t2, SX, SY, EX, EY)
-  else
-    EllipseParams2Coords(x1, y1, x2-x1, y2-y1, t2, t1, SX, SY, EX, EY);
+  Angles2Coords(x1, y1, x2-x1, y2-y1, Angle1, Angle2, SX{%H-}, SY{%H-}, EX{%H-}, EY{%H-});
   Result := Boolean(Windows.Chord(DC, x1, y1, x2, y2, SX, SY, EX, EY));
 end;
 
