@@ -1106,7 +1106,6 @@ var
   s: String;
   M: TEditorMacro;
   UnitInfo: TUnitInfo;
-  i: Integer;
 begin
   if lbMacroView.ItemIndex < 0 then exit;
   M := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];

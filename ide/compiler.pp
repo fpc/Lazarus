@@ -570,7 +570,6 @@ function TCompilerOptGroup.FindOption(aOptStr: string): TCompilerOpt;
   function FindOptionSub(aRoot: TCompilerOpt): boolean; // false if invalid
   var
     i: Integer;
-    Opt: Boolean;
     aGroup: TCompilerOptGroup;
   begin
     Result := true;

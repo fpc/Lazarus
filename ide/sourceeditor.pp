@@ -5047,8 +5047,6 @@ var
   aha: TAdditionalHilightAttribute;
   CurMarks: PSourceMark;
   CurMarkCount: integer;
-  CurFG: TColor;
-  CurBG: TColor;
 begin
   aha := ahaNone;
   Special := False;
