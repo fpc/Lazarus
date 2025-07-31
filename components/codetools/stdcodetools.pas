@@ -2855,7 +2855,7 @@ var
   procedure AddReferenceXY(const RefPos: TCodeXYPosition);
   begin
     ListOfReferences.Add(RefPos);
-    debugln(FoundReference); // when code stabilized will be commented out
+    //debugln(FoundReference);
   end;
 
   procedure AddReferenceP(RefPos: integer);
