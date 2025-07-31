@@ -120,7 +120,7 @@ procedure TCustomTestRefactoring.RenameReferences(NewIdentifier: string; const F
 var
   Marker: TFDMarker;
   Tool: TCodeTool;
-  DeclX, DeclY, DeclTopLine, i: integer;
+  DeclX, DeclY, DeclTopLine, i, BlockTopLine, BlockBottomLine: integer;
   DeclCode, LFMCode, CurCode: TCodeBuffer;
   Files: TStringList;
   Graph: TUsesGraph;
@@ -151,14 +151,15 @@ begin
   if not CodeToolBoss.Explore(Code,Tool,true,false) then
     Fail('CodeToolBoss.Explore failed');
   Code.AbsoluteToLineCol(Marker.NameStartPos,DeclarationCaretXY.Y,DeclarationCaretXY.X);
-  if not CodeToolBoss.FindMainDeclaration(Code,
+  if not CodeToolBoss.FindDeclaration(Code,
     DeclarationCaretXY.X,DeclarationCaretXY.Y,
-    DeclCode,DeclX,DeclY,DeclTopLine) then
+    DeclCode,DeclX,DeclY,DeclTopLine,BlockTopLine,BlockBottomLine,
+    [fsfFindMainDeclaration,fsfSkipPropertyWithoutType]) then
   begin
-    Fail('CodeToolBoss.FindMainDeclaration failed '+dbgs(DeclarationCaretXY)+' File='+Code.Filename);
+    Fail('CodeToolBoss.FindDeclaration failed '+dbgs(DeclarationCaretXY)+' File='+Code.Filename);
   end;
 
-  //debugln(['TCustomTestRefactoring.RenameReferences X=',DeclX,' Y=',DeclY,' "',DeclCode.GetLine(DeclY-1,false),'"']);
+  debugln(['TCustomTestRefactoring.RenameReferences X=',DeclX,' Y=',DeclY,' "',DeclCode.GetLine(DeclY-1,false),'"']);
 
   DeclarationCaretXY:=Point(DeclX,DeclY);
 
@@ -2600,8 +2601,14 @@ begin
       '  TForm2 = class(TComponent)',
       '    property Checked: boolean;',
       '  end;',
-      '  TButton = class(TComponent)',
+      '  TCustomButton = class(TComponent)',
       '    property Checked: boolean;',
+      '  end;',
+      '  TButton = class(TCustomButton)',
+      '    property Checked stored true;',
+      '  end;',
+      '  TMyButton = class(TButton)',
+      '    property Checked;',
       '  end;',
       'implementation',
       'end.']);
@@ -2609,7 +2616,7 @@ begin
     Test1LFM.Source:=LinesToStr([
       'object Form1: TForm1',
       '  Checked = False',
-      '  object Button1: TButton',
+      '  object Button1: TMyButton',
       '    Checked = True',
       '  end',
       'end']);
@@ -2621,7 +2628,7 @@ begin
       'uses Unit2;',
       'type',
       '  TForm1 = class(TForm2)',
-      '    Button1: TButton;',
+      '    Button1: TMyButton;',
       '    procedure ActivateMe(Sender: TObject);',
       '  end;',
       'var',
@@ -2639,7 +2646,7 @@ begin
     CheckDiff(Test1LFM,[
       'object Form1: TForm1',
       '  Checked = False',
-      '  object Button1: TButton',
+      '  object Button1: TMyButton',
       '    Activated = True',
       '  end',
       'end']);

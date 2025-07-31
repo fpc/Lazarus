@@ -684,8 +684,11 @@ type
   TFindSmartFlag = (
     fsfIncludeDirective, // search for include file
     fsfFindMainDeclaration, // stop if already on a declaration, otherwise search previous declaration with same identifier
+                            // for parameter: search the corresponding of the forward declaration (e.g. in the interface or class)
+                            // for procedure: search the corresponding of the forward declaration
     fsfSearchSourceName, // if searching for a unit name, return the source name node
-    fsfSkipClassForward  // when a forward class was found, jump further to the class
+    fsfSkipClassForward, // when a forward class was found, jump further to the class
+    fsfSkipPropertyWithoutType
     );
   TFindSmartFlags = set of TFindSmartFlag;
 const
@@ -973,6 +976,7 @@ type
       out NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
     function FindDeclarationWithMainUsesSection(const Identifier: string;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+    function FindMainDeclarationNode(DeclNode: TCodeTreeNode; SkipPropertyWithoutType: boolean): TFindContext;
 
     function FindClassMember(aClassNode: TCodeTreeNode;
       const Identifier: String; SearchInAncestors: boolean): TFindContext;
@@ -981,6 +985,7 @@ type
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
       out NewPos: TCodeXYPosition; out NewTopLine: integer;
       IgnoreTypeLess: boolean = false): boolean;
+    function FindPropertyWithType(aPropertyNode: TCodeTreeNode; out aPropertyCtx: TFindContext): boolean;
 
     function FindDeclarationNodeInInterface(const Identifier: string;
       BuildTheTree: Boolean): TCodeTreeNode;// search for type, const, var, proc, prop
@@ -2016,8 +2021,9 @@ var
   NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode;
 begin
-  Result:=FindDeclaration(CursorPos,[fsfFindMainDeclaration,fsfSearchSourceName],NewTool,NewNode,
-                          NewPos,NewTopLine);
+  Result:=FindDeclaration(CursorPos,
+              [fsfFindMainDeclaration,fsfSearchSourceName,fsfSkipPropertyWithoutType],
+              NewTool,NewNode,NewPos,NewTopLine);
 end;
 
 function TFindDeclarationTool.FindDeclarationOfIdentifier(
@@ -2332,35 +2338,15 @@ begin
       begin
         //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier ',CursorNode.DescAsString]);
         NewExprType.Desc:=xtContext;
-        NewExprType.Context.Tool:=Self;
-        NewExprType.Context.Node:=CursorNode;
-        CleanCursorPos:=GetIdentStartPosition(Src,CleanCursorPos);
-        if CursorNode.Desc=ctnVarDefinition then begin
-          // if this is a parameter, try to find the corresponding declaration
-          NewExprType.Context.Node:=FindCorrespondingProcParamNode(NewExprType.Context.Node,[],cpsUp);
-          if (NewExprType.Context.Node<>nil) and (NewExprType.Context.Node.StartPos<CursorNode.StartPos) then
-            CleanCursorPos:=NewExprType.Context.Node.StartPos
-          else
-            NewExprType.Context.Node:=CursorNode;
-        end;
-        if (CursorNode.Desc=ctnProcedureHead)
-        and (NodeIsMethodBody(CursorNode.Parent)) then begin
-          // if this is a procedure body, try to find the corresponding declaration
-          NewExprType.Context.Node:=FindCorrespondingProcNode(CursorNode.Parent,[],cpsUp);
-          if (NewExprType.Context.Node<>nil) and (NewExprType.Context.Node.Desc=ctnProcedure) then
-            NewExprType.Context.Node:=NewExprType.Context.Node.FirstChild;
-          if (NewExprType.Context.Node<>nil) and (NewExprType.Context.Node.StartPos<CursorNode.StartPos) then begin
-            CleanCursorPos:=NewExprType.Context.Node.StartPos;
-          end
-          else
-            NewExprType.Context.Node:=CursorNode;
-        end;
+        NewExprType.Context:=FindMainDeclarationNode(CursorNode,
+                                          fsfSkipPropertyWithoutType in SearchSmartFlags);
+        CleanCursorPos:=NewExprType.Context.Tool.GetNodeMainPos(NewExprType.Context.Node);
 
-        Result:=JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
+        Result:= NewExprType.Context.Tool.JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
                                NewPos,NewTopLine,BlockTopLine,BlockBottomLine,false);
         {$IFDEF VerboseFindDeclarationFail}
         if not Result then begin
-          debugln(['TFindDeclarationTool.FindDeclaration cursor at declaration, but JumpToCleanPos failed']);
+          debugln(['TFindDeclarationTool.FindDeclaration 20250731120202 cursor at declaration, but JumpToCleanPos failed']);
         end;
         {$ENDIF}
         exit;
@@ -2494,6 +2480,25 @@ begin
           {$ENDIF}
         end;
         if Result then begin
+
+          if (fsfFindMainDeclaration in SearchSmartFlags)
+              and (NewExprType.Desc=xtContext) then
+          begin
+            NewExprType.Context:=NewExprType.Context.Tool.FindMainDeclarationNode(
+                                       NewExprType.Context.Node,
+                                       fsfSkipPropertyWithoutType in SearchSmartFlags);
+            CleanCursorPos:=NewExprType.Context.Tool.GetNodeMainPos(NewExprType.Context.Node);
+
+            Result:= NewExprType.Context.Tool.JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
+                                   NewPos,NewTopLine,BlockTopLine,BlockBottomLine,false);
+            {$IFDEF VerboseFindDeclarationFail}
+            if not Result then begin
+              debugln(['TFindDeclarationTool.FindDeclaration 20250731154134 cursor at declaration, but JumpToCleanPos failed']);
+            end;
+            {$ENDIF}
+            exit;
+          end;
+
           Params.PrettifyResult;
           Params.ConvertResultCleanPosToCaretPos;
           NewPos:=Params.NewPos;
@@ -2610,6 +2615,38 @@ begin
   finally
     Params.Free;
     DeactivateGlobalWriteLock;
+  end;
+end;
+
+function TFindDeclarationTool.FindMainDeclarationNode(DeclNode: TCodeTreeNode;
+  SkipPropertyWithoutType: boolean): TFindContext;
+begin
+  Result.Tool:=Self;
+  Result.Node:=DeclNode;
+  if DeclNode=nil then exit;
+
+  if DeclNode.Desc=ctnVarDefinition then begin
+    // if this is a parameter, try to find the corresponding declaration
+    Result.Node:=FindCorrespondingProcParamNode(DeclNode,[],cpsUp);
+    if (Result.Node=nil) or (Result.Node.StartPos>DeclNode.StartPos) then
+      Result.Node:=DeclNode;
+  end else if (DeclNode.Desc=ctnProcedureHead)
+      and NodeIsMethodBody(DeclNode.Parent) then
+  begin
+    // if this is a procedure body, try to find the corresponding declaration
+    Result.Node:=FindCorrespondingProcNode(DeclNode.Parent,[],cpsUp);
+    if (Result.Node<>nil) and (Result.Node.Desc=ctnProcedure) then
+      Result.Node:=Result.Node.FirstChild;
+    if (Result.Node=nil) or (Result.Node.StartPos>DeclNode.StartPos) then
+      Result.Node:=DeclNode;
+  end else if (DeclNode.Desc=ctnProperty) and SkipPropertyWithoutType then
+  begin
+    // if this property has no type, try to find the ancestor property with a type
+    FindPropertyWithType(DeclNode,Result);
+    if Result.Node=nil then begin
+      Result.Node:=DeclNode;
+      Result.Tool:=Self;
+    end;
   end;
 end;
 
@@ -2776,6 +2813,52 @@ begin
   Result:=FindDeclarationOfPropertyPath(PropertyPath,Context,IgnoreTypeLess);
   if not Result then exit;
   Result:=Context.Tool.JumpToNode(Context.Node,NewPos,NewTopLine,false);
+end;
+
+function TFindDeclarationTool.FindPropertyWithType(aPropertyNode: TCodeTreeNode; out
+  aPropertyCtx: TFindContext): boolean;
+// find property ancestor until it has a type
+// aPropertyCtx contains the last found
+// true if aPropertyCtx is a property with type
+var
+  Params: TFindDeclarationParams;
+  aClassNode: TCodeTreeNode;
+  Nodes: array of TCodeTreeNode;
+  Tool: TFindDeclarationTool;
+  i: Integer;
+begin
+  Result:=false;
+  aPropertyCtx:=Default(TFindContext);
+  if (aPropertyNode=nil) or (aPropertyNode.Desc<>ctnProperty) then exit;
+
+  Tool:=Self;
+  Params:=TFindDeclarationParams.Create(Self,aPropertyNode.Parent);
+  try
+    Nodes:=[];
+    repeat
+      if not Tool.MoveCursorToPropName(aPropertyNode) then exit;
+      Params.SetIdentifier(Tool,@Tool.Src[Tool.CurPos.StartPos],nil);
+      Params.Flags:=[fdfSearchInAncestors]+(fdfGlobalsSameIdent*Params.Flags);
+      aClassNode:=aPropertyNode.Parent.Parent;
+      if not Tool.FindIdentifierInAncestors(aClassNode,Params) then exit;
+      aPropertyNode:=Params.NewNode;
+      if aPropertyNode.Desc<>ctnProperty then exit;
+      Tool:=Params.NewCodeTool;
+      aPropertyCtx.Node:=aPropertyNode;
+      aPropertyCtx.Tool:=Tool;
+      if not Tool.PropNodeIsTypeLess(aPropertyNode) then
+        exit(true); // found property with type
+      for i:=0 to length(Nodes)-1 do
+        if Nodes[i]=aPropertyNode then begin
+          debugln(['Warning: TFindDeclarationTool.FindPropertyWithType cycle: ',Tool.CleanPosToStr(aPropertyNode.StartPos,true)]);
+          exit;
+        end;
+      Insert(aPropertyNode,Nodes,length(Nodes));
+      Params.Clear;
+    until false;
+  finally
+    Params.Free;
+  end;
 end;
 
 function TFindDeclarationTool.FindDeclarationNodeInInterface(
@@ -5851,7 +5934,7 @@ begin
           if not MoveCursorToPropName(Result.Node) then break;
           OldPos:=CurPos.StartPos;
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
-          Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors,fdfSearchInHelpers]
+          Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors]
                        +(fdfGlobalsSameIdent*Params.Flags);
           FindIdentifierInAncestors(Result.Node.Parent.Parent,Params);
           TestContext.Tool:=Params.NewCodeTool;
@@ -15534,34 +15617,9 @@ end;
 
 procedure TFindDeclarationParams.PrettifyResult;
 begin
+  if NewNode=nil then exit;
   // adjust result for nicer position
-  if (NewNode<>nil) then begin
-    {$IFDEF CheckNodeTool}
-    if NewCodeTool<>nil then
-      NewCodeTool.CheckNodeTool(NewNode);
-    {$ENDIF}
-    case NewNode.Desc of
-    ctnProcedure:
-      if (NewNode.FirstChild<>nil)
-      and (NewNode.FirstChild.Desc=ctnProcedureHead) then begin
-        // Instead of jumping to the procedure keyword,
-        // jump to the procedure name
-        NewNode:=NewNode.FirstChild;
-        NewCleanPos:=NewNode.StartPos;
-      end;
-    ctnGenericType:
-      if (NewNode.FirstChild<>nil) then begin
-        // Instead of jumping to the generic keyword,
-        // jump to the name
-        NewNode:=NewNode.FirstChild;
-        NewCleanPos:=NewNode.StartPos;
-      end;
-    ctnProperty:
-      // jump to the name of the property
-      if NewCodeTool.MoveCursorToPropName(NewNode) then
-        NewCleanPos:=NewCodeTool.CurPos.StartPos;
-    end;
-  end;
+  NewCleanPos:=NewCodeTool.GetNodeMainPos(NewNode);
 end;
 
 procedure TFindDeclarationParams.SetResult(

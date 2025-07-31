@@ -97,10 +97,7 @@ type
     CachedSourceName: string;
     procedure RaiseStrConstExpected(id: int64);
   public
-    // comments
-    function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
-        out CommentStart, CommentEnd: integer;
-        OuterCommentBounds: boolean = true): boolean;
+    function GetNodeMainPos(Node: TCodeTreeNode): integer;
 
     // general extraction
     function ExtractNode(ANode: TCodeTreeNode;
@@ -123,6 +120,8 @@ type
     function ReadStringConstantValue(StartPos: integer): string;
     function GetNodeIdentifier(Node: TCodeTreeNode): PChar;
     function GetHintModifiers(Node: TCodeTreeNode): TPascalHintModifiers;
+    function GetNodeNamePath(Node: TCodeTreeNode; WithLineCol: boolean = false; WithFilename: boolean = false): string; // for debugging
+
     procedure ForEachIdentifierInCleanSrc(StartPos, EndPos: integer;
         SkipComments: boolean; Node: TCodeTreeNode;
         const OnIdentifier: TOnEachPRIdentifier; Data: pointer;
@@ -131,7 +130,6 @@ type
         const OnIdentifier: TOnEachPRIdentifier; Data: Pointer; var Abort: boolean); // node and child nodes
     procedure ForEachIdentifier(SkipComments: boolean;
         const OnIdentifier: TOnEachPRIdentifier; Data: Pointer); // whole unit/program
-    function GetNodeNamePath(Node: TCodeTreeNode; WithLineCol: boolean = false; WithFilename: boolean = false): string; // for debugging
 
     // properties
     function ExtractPropType(PropNode: TCodeTreeNode;
@@ -310,6 +308,9 @@ type
     function ReadAndCompareUsedUnit(const AnUnitName: string): boolean;
 
     // comments
+    function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
+        out CommentStart, CommentEnd: integer;
+        OuterCommentBounds: boolean = true): boolean;
     function FindCommentInFront(const StartPos: TCodeXYPosition;
           const CommentText: string; InvokeBuildTree, SearchInParentNode,
           WithCommentBounds, CaseSensitive, IgnoreSpaces,
@@ -415,6 +416,37 @@ end;
 procedure TPascalReaderTool.RaiseStrConstExpected(id: int64);
 begin
   RaiseExceptionFmt(id,ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+end;
+
+function TPascalReaderTool.GetNodeMainPos(Node: TCodeTreeNode): integer;
+begin
+  // adjust result for nicer position
+  if Node=nil then exit(1);
+  Result:=Node.StartPos;
+  {$IFDEF CheckNodeTool}
+  CheckNodeTool(Node);
+  {$ENDIF}
+  case Node.Desc of
+  ctnProcedure:
+    if (Node.FirstChild<>nil)
+    and (Node.FirstChild.Desc=ctnProcedureHead) then begin
+      // Instead of jumping to the procedure keyword,
+      // jump to the procedure name
+      Node:=Node.FirstChild;
+      Result:=Node.StartPos;
+    end;
+  ctnGenericType:
+    if (Node.FirstChild<>nil) then begin
+      // Instead of jumping to the generic keyword,
+      // jump to the name
+      Node:=Node.FirstChild;
+      Result:=Node.StartPos;
+    end;
+  ctnProperty:
+    // jump to the name of the property
+    if MoveCursorToPropName(Node) then
+      Result:=CurPos.StartPos;
+  end;
 end;
 
 function TPascalReaderTool.CleanPosIsInComment(CleanPos,
