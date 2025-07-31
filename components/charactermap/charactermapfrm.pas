@@ -425,18 +425,19 @@ var
   R, C, p: Integer;
   cp: String;
 begin
-  cp := cbCodePage.Items[cbCodePage.ItemIndex];
-  p := pos(' ', cp);
-  if p > 0 then SetLength(cp, p-1);
-  for R := 0 to Pred(AnsiGrid.RowCount) do
+  cp:=cbCodePage.Items[cbCodePage.ItemIndex];
+  p:=pos(' ', cp);
+  if p>0 then
+    SetLength(cp, p-1);
+  for R:=0 to Pred(AnsiGrid.RowCount) do
   begin
-    if R <> 0 then  AnsiGrid.Cells[0, R] := Format('%.3d +', [Succ(R) * 16]);
-    for C := 1 to Pred(AnsiGrid.ColCount) do
-    begin
-      if R = 0 then AnsiGrid.Cells[C, R] := Format('%.2d', [Pred(C)])
+    if R<>0 then
+      AnsiGrid.Cells[0, R]:=Format('%.3d +', [Succ(R) * 16]);
+    for C:=1 to Pred(AnsiGrid.ColCount) do
+      if R=0 then
+        AnsiGrid.Cells[C, R]:=Format('%.2d', [Pred(C)])
       else
-        AnsiGrid.Cells[C, R] := ConvertEncoding(Chr(Succ(R) * 16 + Pred(C)), cp, 'utf8');
-    end;
+        AnsiGrid.Cells[C, R]:=ConvertEncoding(Chr(Succ(R) * 16 + Pred(C)), cp, 'utf8');
   end;
 end;
 
@@ -486,7 +487,7 @@ begin
   Txt:=cbUniRange.Text;
   cbUniRange.Items.Clear;
   cbUniRange.Sorted:=SortUniRangeListButton.Down;
-  NewItemIndex:=-1;
+  NewItemIndex:=0;
   for BlockIdx:=Low(UnicodeBlocks) to High(UnicodeBlocks) do
   begin
     UniBlock:=UnicodeBlocks[BlockIdx];
@@ -498,10 +499,7 @@ begin
         NewItemIndex:=cbUniRange.Items.Count-1;
     end;
   end;
-  if NewItemIndex>-1 then
-    cbUniRange.ItemIndex:=NewItemIndex
-  else
-    cbUniRange.ItemIndex:=0;
+  cbUniRange.ItemIndex:=NewItemIndex;
   FUnicodeBlockIndex:=UnicodeBlockIndexByName(cbUniRange.Text);
 end;
 
