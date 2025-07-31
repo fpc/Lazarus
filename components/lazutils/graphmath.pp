@@ -72,10 +72,8 @@ function Distance(const Pt, SP, EP : TFloatPoint) : Extended; overload;
 
 function EccentricAngle(const PT : TPoint; const Rect : TRect) : Extended;
 
-procedure EllipseParams2Coords(X, Y, Width, Height: Integer;
-  Angle1, Angle2: Integer; var SX, SY, EX, EY: Integer);
-
 function EllipseRadialLength(const Rect : TRect; EccentricAngle : Extended) : Longint;
+function EllipseRadialLengthFromPolarAngle(const Rect : TRect; PolarAngle : Extended) : Longint;
 function EllipsePolygon(const aRect: TRect): TPointArray;
 
 function FloatPoint(AX,AY : Extended): TFloatPoint; inline;
@@ -341,41 +339,6 @@ begin
   SY := SP.Y;
   EX := EP.X;
   EY := EP.Y;
-end;
-
-{-------------------------------------------------------------------------------
-  Method:   EllipseParams2Coords
-  Params:   x, y, width, height, angle1, angle2, sx, sy, ex, ey
-  Returns:  Nothing
-
-  In parametric form, the ellipse equation for every point (x, y) along the
-  perimeter is
-    x = a * cos (t),  y = b * sin(t)
-  where a and b are the major and minor half-axes of the ellipse, and t is
-  an "angle" parameter ranging between 0 and 2*pi.
-
-  This procedure used by the Windows Arc method calculates the start and end
-  points, (SX, SY) and (EX, EY), respectively, of an arc beginning at
-  parameter t = angle1 and ending at parameter t = angle1 + angle2.
-  But note that angle1 and angle2 are expressed as multiples of 1/16 degree.
-  Positive values of the angles are in counter-clockwise, negative values in
-  clockwise direction.
-  Zero degrees is at 3'o clock position.
--------------------------------------------------------------------------------}
-procedure EllipseParams2Coords(X, Y, Width, Height: Integer;
-  Angle1, Angle2: Integer; var SX, SY, EX, EY: Integer);
-var
-  sinAngle1, cosAngle1, sinAngle2, cosAngle2: Extended;
-  a, b: Integer;
-begin
-  SinCos(DegToRad(Angle1/16), sinAngle1, cosAngle1);
-  SinCos(DegToRad((Angle1 + Angle2)/16), sinAngle2, cosAngle2);
-  a := Width div 2;
-  b := Height div 2;
-  SX := X + a + round(cosAngle1 * a);
-  SY := Y + b - round(sinAngle1 * b);
-  EX := X + a + round(cosAngle2 * a);
-  EY := Y + b - round(sinAngle2 * b);
 end;
 
 {------------------------------------------------------------------------------
@@ -772,51 +735,53 @@ end;
   Params:   Pt, Rect
   Returns:  Extended
 
-  Use EccentricAngle to get the Eccentric( aka Radial ) Angle of a given
-  point on any non-rotated ellipse. It is primarily for use in Coords2Angles.
+  Use EccentricAngle to get the eccentric angle of a given point on any
+  non-rotated ellipse. The eccentric angle is the argument phi to be used in
+  the parametric ellipse equations x = a*cos(phi) and y = b*sin(phi).
+  The function is primarily for use in Coords2Angles.
   The result is in 1/16th of a degree. For example, a full circle equals
-  5760 (16*360).  Zero degrees is at the 3'o clock position.
+  5760 (16*360).  Zero degrees is at the 3 o'clock position.
 
 ------------------------------------------------------------------------------}
 function EccentricAngle(const PT : TPoint; const Rect : TRect) : Extended;
 var
   CenterPt : TPoint;
-  Quad : Integer;
   Theta : Extended;
+  a, b: Extended;
 begin
   CenterPt := CenterPoint(Rect);
-  Quad := Quadrant(Pt,CenterPt);
-  Theta := -1;
-  Case Quad of
-    1..4:
-      begin
-        Theta := Distance(CenterPt,Pt);
-        If Theta > 0 then
-          Theta := RadToDeg(ArcSin(ABS(PT.Y - CenterPt.Y) / Theta));
-      end;
-  end;
-  Case Quad of
-    0:{ 0, 0}
-      Theta := -1;
-    1:{ X, Y}
-      Theta := Theta;
-    2:{-X, Y}
-      Theta := 180 - Theta;
-    3:{-X,-Y}
-      Theta := 180 + Theta;
-    4:{ X,-Y}
-      Theta := 360 - Theta;
-    5:{ 0, Y}
-      Theta := 90;
-    6:{ X, 0}
-      Theta := 0;
-    7:{ 0,-Y}
-      Theta := 270;
-    8:{-X, 0}
-      Theta := 180;
-  end;
-  Result := Theta*16;
+  a := Rect.Right - Rect.Left;
+  b := Rect.Bottom - Rect.Top;
+  Theta := ArcTan2((CenterPt.Y - PT.Y) * a, (PT.X - CenterPt.X) * b);
+  Result := RadToDeg(Theta) * 16;
 end;
+
+{-------------------------------------------------------------------------------
+  Method:   Eccentric2PolarAngle(EccentricAngle, a, b: Extended): Extended
+  Params:   EccentricAngle, a, b
+  Returns:  Extended
+
+  Given an ellipse with horizontal and vertical half axes,a and b, respectively.
+  Converts an eccentric angle for this ellipse to a polar angle.
+  Eccentric angle is the argument phi to be used in the ellipse equations
+  x = a*cos(phi) and y = b*sin(phi) to define an ellipse point P.
+  Polar angle is the angle between the x axis and the connection line from the
+  ellipse center to the point P.
+
+  Angles are given here in radians.
+
+-------------------------------------------------------------------------------}
+function Eccentric2PolarAngle(EccentricAngle, a, b: Extended): Extended;
+var
+  sinAngle, cosAngle: Extended;
+  P: TFloatPoint;
+begin
+  SinCos(EccentricAngle, sinAngle, cosAngle);
+  P.X := cosAngle * a;
+  P.Y := sinAngle * b;
+  Result := Arctan2(P.Y, P.X);
+end;
+
 
 {------------------------------------------------------------------------------
   Method:   EllipseRadialLength
@@ -824,13 +789,44 @@ end;
   Returns:  Longint
 
   Use EllipseRadialLength to get the Radial-Length of non-rotated ellipse at
-  any given Eccentric( aka Radial ) Angle. It is primarily for use in other
-  routines such as RadialPoint. The Eccentric angle is in 1/16th of a degree.
-  For example, a full circle equals 5760 (16*360).  Zero degrees is at the
-  3'o clock position.
+  any given eccentric angle. It is primarily for use in other
+  routines such as RadialPoint. The eccentric angle is the argument phi to be
+  used in the ellipse equations x = a*cos(phi) and y = b*sin(phi). It is given
+  here in 1/16th of a degree. For example, a full circle equals 5760 (16*360).
+  Zero degrees is at the 3 o'clock position.
 
 ------------------------------------------------------------------------------}
 function EllipseRadialLength(const Rect : TRect; EccentricAngle : Extended) : Longint;
+var
+  a, b, R : Extended;
+  polarAngle, sinAngle, cosAngle: Extended;
+begin
+  a := (Rect.Right - Rect.Left) div 2;
+  b := (Rect.Bottom - Rect.Top) div 2;
+  R := Sqr(a)*Sqr(b);
+  if R <> 0 then
+  begin
+    polarAngle := Eccentric2PolarAngle(DegToRad(EccentricAngle/16), a, b);
+    SinCos(polarAngle, sinAngle, cosAngle);
+    R := Sqrt(R / (sqr(b*cosAngle) + sqr(a*sinAngle)));
+  end;
+  Result := TruncToInt(R);
+end;
+
+{------------------------------------------------------------------------------
+  Method:   EllipseRadialLengthPolarAngle
+  Params:   Rect, PolarAngle
+  Returns:  Longint
+
+  Use EllipseRadialLength to get the Radial-Length of non-rotated ellipse at
+  any given polar angle. The polar angle is the angle between the x axis and
+  the connection line between ellipse center and an ellipse perimeter point.
+  It is given her in 1/16th of a degree. For example, a full circle equals
+  5760 (16*360).  Zero degrees is at the 3 o'clock position.
+
+------------------------------------------------------------------------------}
+function EllipseRadialLengthFromPolarAngle(const Rect : TRect;
+  PolarAngle : Extended) : Longint;
 var
   a, b, R : Extended;
   sinAngle, cosAngle: Extended;
@@ -840,7 +836,7 @@ begin
   R := Sqr(a)*Sqr(b);
   if R <> 0 then
   begin
-    SinCos(DegToRad(EccentricAngle/16), sinAngle, cosAngle);
+    SinCos(DegToRad(PolarAngle/16), sinAngle, cosAngle);
     R := Sqrt(R / (sqr(b*cosAngle) + sqr(a*sinAngle)));
   end;
   Result := TruncToInt(R);
@@ -1223,22 +1219,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   RadialPointAngle
+  Method:   RadialPoint
   Params:   EccentricAngle, Rect
   Returns:  TPoint
 
-  Use RadialPoint to get the Radial-Point at any given Eccentric( aka Radial )
-  angle on any non-rotated ellipse. It is primarily for use in Angles2Coords.
-  The EccentricAngle is in 1/16th of a degree. For example, a full circle
-  equals 5760 (16*360).  Zero degrees is at the 3'o clock position.
+  Use RadialPoint to get the Radial-Point at any given eccentric angle on any
+  non-rotated ellipse. The eccentric angle is the angle phi used in the
+  parameterized ellipse equations x = a*cos(phi) and y = b*sin(phi).
+  It is given here in 1/16th of a degree. For example, a full circle equals to
+  5760 (16*360). Zero degrees is at the 3 o#clock position.
+  The function is primarily for use in Angles2Coords.
 
 ------------------------------------------------------------------------------}
 function RadialPoint(EccentricAngle : Extended; const Rect : TRect) : TPoint;
 var
-  R : Longint;
+  a, b: Double;
+  sinAngle, cosAngle: Extended;
+  CenterPt: TPoint;
 Begin
-  R := EllipseRadialLength(Rect,EccentricAngle);
-  Result := LineEndPoint(CenterPoint(Rect), EccentricAngle, R);
+  CenterPt := CenterPoint(Rect);
+  a := (Rect.Right - Rect.Left) / 2;
+  b := (Rect.Bottom - Rect.Top) / 2;
+  SinCos(DegToRad(EccentricAngle / 16), sinAngle, cosAngle);
+  Result := CenterPt + Point(RoundToInt(cosAngle * a), -RoundToInt(sinAngle * b));
 end;
 
 {-------------------------------------------------------------------------------

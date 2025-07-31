@@ -62,7 +62,7 @@ begin
   if Angle16DegLength < 0 then OldArcDirection := Windows.SetArcDirection(DC, AD_CLOCKWISE)
   else OldArcDirection := Windows.SetArcDirection(DC, AD_COUNTERCLOCKWISE);
 
-  EllipseParams2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX, SY, EX, EY);
+  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX, SY, EX, EY);
   Result := Boolean(Windows.Arc(DC, Left, Top, Right, Bottom, SX, SY, EX, EY));
   // Revert the arc direction to the previous value
   Windows.SetArcDirection(DC, OldArcDirection);
