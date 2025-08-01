@@ -1678,10 +1678,11 @@ begin
         SelfParam := GetSelfParameter;
         if (SelfParam <> nil) then begin
           // TODO: only valid, as long as context is valid, because if context is freed, then self is lost too
+          // ADbgValue may be nil, if this is in a "class procedure" in this case the search still ends as the class field still hides other values
+          // TODO: flag the error as "class method can't access..."
           ADbgValue := SelfParam.MemberByName[AName];
-          assert(ADbgValue <> nil, 'FindSymbol: SelfParam.MemberByName[AName]');
-        end;
-        if ADbgValue = nil then begin // Todo: abort the searh /SetError
+        end
+        else begin
           ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
         end;
         break;
