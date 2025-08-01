@@ -1128,7 +1128,7 @@ type
     procedure FrameRect(const ARect: TRect); virtual; // border using brush
     procedure FrameRect(X1,Y1,X2,Y2: Integer); // border using brush
     function  GetTextMetrics(out TM: TLCLTextMetric): boolean; virtual;
-    procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
+    procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure RadialPie(x1, y1, x2, y2,
                         StartAngle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
