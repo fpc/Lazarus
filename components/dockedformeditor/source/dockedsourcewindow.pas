@@ -55,7 +55,7 @@ type
     destructor Destroy; override;
     procedure AddPageCtrl(APageControl: TSourcePageControl);
     procedure AdjustPageControl;
-    procedure NoteBookPageChanged(Sender: TObject);
+    procedure NoteBookPageChanged(Sender: TObject; SkipFocus: Boolean = False);
     function  FindPageControl(ASourceEditor: TSourceEditorInterface): TSourcePageControl;
     procedure RemoveActiveDesignForm;
     procedure RemovePageCtrl(ASourceEditor: TSourceEditorInterface);
@@ -107,7 +107,7 @@ implementation
 
 { TSourceWindow }
 
-procedure TSourceWindow.NoteBookPageChanged(Sender: TObject);
+procedure TSourceWindow.NoteBookPageChanged(Sender: TObject; SkipFocus: Boolean);
 var
   LPageCtrl: TSourcePageControl;
 begin
@@ -117,11 +117,13 @@ begin
   if LPageCtrl.DesignerPageActive then
   begin
     LPageCtrl.AdjustPage;
-    {$IF DEFINED(LCLGtk2)}
-      LPageCtrl.DesignerSetFocusAsync;
-    {$ELSE}
-      LPageCtrl.DesignerSetFocus;
-    {$ENDIF}
+    if not SkipFocus then begin
+      {$IF DEFINED(LCLGtk2)}
+        LPageCtrl.DesignerSetFocusAsync;
+      {$ELSE}
+        LPageCtrl.DesignerSetFocus;
+      {$ENDIF}
+    end;
   end;
 end;
 

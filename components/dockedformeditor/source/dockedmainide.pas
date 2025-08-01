@@ -498,7 +498,7 @@ begin
 
     w := SourceWindows.SourceWindow[LSourceWindowIntf];
     if w <> nil then
-      w.NoteBookPageChanged(nil);
+      w.NoteBookPageChanged(nil, not w.SourceWindowIntf.Active);
   end else begin
     {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.EditorActivated [' + DbgSName(Sender) + '] - not a Source Editor!');{$ENDIF}
   end;
