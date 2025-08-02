@@ -3600,13 +3600,14 @@ begin
   CalcScrollbarsRange;
 end;
 
+// accepts only ssHorizontal and ssVertical
 function TCustomGrid.ScrollBarAutomatic(Which: TScrollStyle): boolean;
 begin
-  result:=false;
-  if (Which=ssVertical)or(Which=ssHorizontal) then begin
-    if Which=ssVertical then Which:=ssAutoVertical
-    else Which:=ssAutoHorizontal;
-    Result:= FScrollBars in [Which, ssAutoBoth];
+  case Which of
+    ssHorizontal: result := FScrollBars in [ssAutoBoth, ssAutoHorizontal];
+    ssVertical  : result := FScrollBars in [ssAutoBoth, ssAutoVertical  ];
+  else
+    result := false;
   end;
 end;
 
