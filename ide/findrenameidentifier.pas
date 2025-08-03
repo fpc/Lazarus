@@ -1645,15 +1645,20 @@ begin
   Options.SearchInComments:=ScopeCommentsCheckBox.Checked;
   Options.Overrides:=ScopeOverridesCheckBox.Checked;
   Options.IncludeLFMs:=ScopeIncludeLFMs.Checked;
-  if ScopeRadioGroup.Enabled then
-    case ScopeRadioGroup.ItemIndex of
-    0: Options.Scope:=frCurrentUnit;
-    1: Options.Scope:=frProject;
-    2: Options.Scope:=frOwnerProjectPackage;
-    else Options.Scope:=frAllOpenProjectsAndPackages;
-    end
-  else
-    Options.Scope:=frCurrentUnit;
+  if IsPrivate then begin
+    // when the identifier is private, the only scope allowed is 'current unit'
+    // -> keep Options.Scope, so that next time renaming a non private identifier the scope is back
+  end else begin
+    if ScopeRadioGroup.Enabled then
+      case ScopeRadioGroup.ItemIndex of
+      0: Options.Scope:=frCurrentUnit;
+      1: Options.Scope:=frProject;
+      2: Options.Scope:=frOwnerProjectPackage;
+      else Options.Scope:=frAllOpenProjectsAndPackages;
+      end
+    else
+      Options.Scope:=frCurrentUnit;
+  end;
 end;
 
 procedure TFindRenameIdentifierDialog.SetIdentifier(const NewIdentifierFilename: string;
