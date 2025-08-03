@@ -119,7 +119,7 @@ begin
   Result := -1;
   if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) and
      assigned(FriendEdit) and FriendEdit.HandleAllocated and
-     (FColumnWidth > 0)
+     (FBookMarkOpt.BookmarkImages.Width > 0)
   then
     Result := GetImgListRes(FriendEdit.Canvas, FBookMarkOpt.BookmarkImages).Width;
 end;
