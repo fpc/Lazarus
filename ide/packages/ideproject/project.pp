@@ -430,7 +430,7 @@ type
     property Component: TComponent read fComponent write SetComponent;
     property ComponentName: string read fComponentName write fComponentName;
     property ComponentResourceName: string read fComponentResourceName
-                                           write fComponentResourceName;
+                                           write fComponentResourceName; // can differ from ComponentName after a rename and the IDE has not yet (or failed) updated the resource file
     property ComponentTypesToClasses: TStringToPointerTree read FComponentTypesToClasses
       write FComponentTypesToClasses; // classname to TComponentClass, for not registered and ambiguous classes in lfm
     property ComponentVarsToClasses: TStringToPointerTree read FComponentVarsToClasses
@@ -2169,8 +2169,10 @@ end;
 function TUnitInfo.ComponentLFMOnDiskHasChanged: boolean;
 // Associated LFM resource file on disk has changed since last load/save
 begin
-  if SourceLFM=nil then Exit(false);
-  if SourceLFM.FileOnDiskHasChanged then exit(true);
+  if SourceLFM=nil then
+    Result:=false
+  else
+    Result:=SourceLFM.FileOnDiskHasChanged;
 end;
 
 function TUnitInfo.GetAutoReferenceSourceDir: boolean;

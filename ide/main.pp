@@ -8965,7 +8965,9 @@ begin
             Result:=OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
                       CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
             // Reload the form file in designer if there is one
-            if Assigned(CurUnit.Component) and (AIgnoreList.IndexOf(CurUnit.SourceLFM)<0) then
+            if Assigned(CurUnit.Component)
+                and (LFMLoaded.IndexOf(CurUnit.SourceLFM)<0)
+                and (AIgnoreList.IndexOf(CurUnit.SourceLFM)<0) then
             begin
               LFMLoaded.Add(CurUnit.SourceLFM);
               LoadLFM(CurUnit,[ofOnlyIfExists,ofRevert],[]);
