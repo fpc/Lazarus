@@ -25,13 +25,13 @@ type
 
   TExpTokenInfo = record
     ExpKind: Integer;
-    ExpAttr: TSynHighlighterAttributes;
+    ExpAttr: TLazEditTextAttribute;
     Flags: set of (etiKind, etiAttr);
   end;
 
 operator := (a: Integer) : TExpTokenInfo;
-operator := (a: TSynHighlighterAttributes) : TExpTokenInfo;
-operator + (a: Integer; b: TSynHighlighterAttributes) : TExpTokenInfo;
+operator := (a: TLazEditTextAttribute) : TExpTokenInfo;
+operator + (a: Integer; b: TLazEditTextAttribute) : TExpTokenInfo;
 
 type
 
@@ -68,14 +68,14 @@ begin
   result.Flags := [etiKind];
 end;
 
-operator := (a: TSynHighlighterAttributes) : TExpTokenInfo;
+operator := (a: TLazEditTextAttribute) : TExpTokenInfo;
 begin
   result := default(TExpTokenInfo);
   result.ExpAttr := a;
   result.Flags := [etiAttr];
 end;
 
-operator + (a: Integer; b: TSynHighlighterAttributes) : TExpTokenInfo;
+operator + (a: Integer; b: TLazEditTextAttribute) : TExpTokenInfo;
 begin
   result := default(TExpTokenInfo);
   result.ExpKind := a;
@@ -103,9 +103,9 @@ begin
     //DebugLn(['# ', i, ' ', FTheHighLighter.Attribute[i].StoredName]);
     FTheHighLighter.Attribute[i].Foreground := 10000 + i; // unique foreground colors
     FTheHighLighter.Attribute[i].Foreground := 10000 + i; // unique foreground colors
-    if FTheHighLighter.Attribute[i] is TSynHighlighterAttributesModifier then begin
-      TSynHighlighterAttributesModifier(FTheHighLighter.Attribute[i]).ForeAlpha := 0;
-      TSynHighlighterAttributesModifier(FTheHighLighter.Attribute[i]).ForePriority := 100+i;
+    if FTheHighLighter.Attribute[i] is TLazEditTextAttributeModifier then begin
+      TLazEditTextAttributeModifier(FTheHighLighter.Attribute[i]).ForeAlpha := 0;
+      TLazEditTextAttributeModifier(FTheHighLighter.Attribute[i]).ForePriority := 100+i;
     end;
   end;
 end;

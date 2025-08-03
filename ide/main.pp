@@ -178,7 +178,7 @@ uses
   SourceFileManager, EditorToolbarStatic, IDEInstances,
   WordCompletion, EnvGuiOptions, EnvDebuggerOptions, IdeDebuggerValueFormatter, ProjectDebugLink,
   // main ide
-  MainBar, MainIntf, MainBase, SearchPathProcs;
+  MainBar, MainIntf, MainBase, SearchPathProcs, LazEditTextAttributes;
 
 type
   { TMainIDE }
@@ -4054,7 +4054,7 @@ var
   CurWordAtCursor, TokenTxt: string;
   FindDeclarationCmd: TIDECommand;
   i, TokenType, Start: Integer;
-  Attri: TSynHighlighterAttributes;
+  Attri: TLazEditTextAttribute;
   xy: TPoint;
 begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);

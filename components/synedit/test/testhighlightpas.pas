@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, testregistry, TestBase, Forms, LazLoggerBase,
   TestHighlightFoldBase, SynEdit, SynEditTypes, SynHighlighterPas,
-  SynEditHighlighterFoldBase, SynEditHighlighter;
+  SynEditHighlighterFoldBase, SynEditHighlighter, LazEditTextAttributes;
 
 type
 
@@ -110,7 +110,7 @@ begin
   result.Flags := [etiKind];
 end;
 
-operator + (a: TtkTokenKind; b: TSynHighlighterAttributes) : TExpTokenInfo;
+operator + (a: TtkTokenKind; b: TLazEditTextAttribute) : TExpTokenInfo;
 begin
   result := default(TExpTokenInfo);
   result.ExpKind := ord(a);
@@ -1608,7 +1608,7 @@ end;
 
 procedure TTestHighlighterPas.TestContextForProcedure;
 var
-  AtP, AtI, AtK: TSynHighlighterAttributes;
+  AtP, AtI, AtK: TLazEditTextAttribute;
 var
   AFolds: TPascalCodeFoldBlockTypes;
   i: Integer;

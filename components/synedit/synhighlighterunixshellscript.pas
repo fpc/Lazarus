@@ -60,7 +60,7 @@ uses
   SynEditHighlighter,
   SysUtils,
   Classes,
-  SynEditStrConst;
+  SynEditStrConst, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSecondKey,
@@ -137,7 +137,7 @@ type
     function IsSecondKeyWord(aToken: string): Boolean;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override; /////TL: Added 2003-06-11
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -753,7 +753,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynUNIXShellScriptSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynUNIXShellScriptSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case fTokenID of
     tkComment: Result := fCommentAttri;

@@ -30,7 +30,7 @@ type
     FCurRange: Integer;
   public
     procedure Next; override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
   public
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -51,7 +51,7 @@ begin
     dec(FCurRange);
 end;
 
-function TSynDemoHlContext.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynDemoHlContext.GetTokenAttribute: TLazEditTextAttribute;
 begin
   Result := inherited GetTokenAttribute;
   if (Result = SpecialAttri) and (FCurRange > 0) then

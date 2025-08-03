@@ -213,7 +213,7 @@ type
     procedure SetLine(const NewValue: string; LineNumber:Integer); override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenAttributeEx: TLazCustomEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -973,7 +973,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynXMLSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynXMLSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
 case fTokenID of
     tkElement: Result:= fElementAttri;

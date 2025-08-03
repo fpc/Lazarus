@@ -328,7 +328,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: integer): TLazEditTextAttribute;
       override;
     function GetEOL: Boolean; override;
     function GetRange: Pointer; override;
@@ -336,7 +336,7 @@ type
     ////TL Added the following 3 lines... and the implementation procedure
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override; ////TL: Added 2003-06-11
 
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenID: Integer;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -1718,7 +1718,7 @@ begin
   Result :=1;// CODE_REVIEW fCurrToken.ID;
 end;
 
-function TSynUniSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynUniSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
  Result:=fCurrToken.Attr;
 end;

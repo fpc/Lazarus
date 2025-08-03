@@ -228,10 +228,10 @@ type
 
   TSynMarkupIdentComplWindow = class // don't inherit from TSynEditMarkup, no regular markup
   private
-    FColor: array[TIdentWindowAhaColorRange] of TSynHighlighterAttributes;
+    FColor: array[TIdentWindowAhaColorRange] of TLazEditTextAttribute;
     FUseRecent: boolean;
 
-    function GetColor(AnIndex: TIdentWindowAhaColorRange): TSynHighlighterAttributes;
+    function GetColor(AnIndex: TIdentWindowAhaColorRange): TLazEditTextAttribute;
     function GetForegroundColor(AnIndex: TAdditionalHilightAttribute): TColor;
     function GetBackgroundColor(AnIndex: TAdditionalHilightAttribute): TColor;
   public
@@ -240,7 +240,7 @@ type
     procedure  Clear;
     procedure  Merge(AColors: TSynMarkupIdentComplWindow);
   public
-    property Color [AnIndex: TIdentWindowAhaColorRange]: TSynHighlighterAttributes read GetColor; default;
+    property Color [AnIndex: TIdentWindowAhaColorRange]: TLazEditTextAttribute read GetColor; default;
 
     property TextColor:               TColor index ahaIdentComplWindow read GetForegroundColor;
     property BackgroundColor:         TColor index ahaIdentComplWindow read GetBackgroundColor;
@@ -594,7 +594,7 @@ implementation
 { TSynMarkupIdentComplWindow }
 
 function TSynMarkupIdentComplWindow.GetColor(AnIndex: TIdentWindowAhaColorRange
-  ): TSynHighlighterAttributes;
+  ): TLazEditTextAttribute;
 begin
   Result := FColor[AnIndex];
 end;
@@ -618,7 +618,7 @@ begin
   inherited Create;
 
   for i := low(TIdentWindowAhaColorRange) to high(TIdentWindowAhaColorRange) do
-    FColor[i] := TSynHighlighterAttributes.Create;
+    FColor[i] := TLazEditTextAttribute.Create;
   Clear;
 end;
 

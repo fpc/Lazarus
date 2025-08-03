@@ -56,7 +56,7 @@ uses
   LCLIntf, LCLType,
   Controls, Graphics,
   SynEditTypes, SynEditHighlighter, SynEditStrConst,
-  SynHighlighterHashEntries;
+  SynHighlighterHashEntries, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkComment, tkDatatype, tkDefaultPackage, tkException,         // DJLP 2000-08-11
@@ -157,7 +157,7 @@ type
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
 
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -1872,7 +1872,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynSQLSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynSQLSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case GetTokenID of
     tkComment: Result := fCommentAttri;

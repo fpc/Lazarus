@@ -86,7 +86,7 @@ type
   // TSynPositionHighlighter - minimum implementation needed.
   TNonSrcIDEHighlighter = class(TSynPositionHighlighter); // Hold colors, not related to SourceEditor
 
-  TSynHighlightElement = TSynHighlighterAttributes;
+  TSynHighlightElement = TLazEditTextAttribute deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
   TCustomSynClass = class of TSrcIDEHighlighter;
 
   TLazSynPluginTemplateMultiCaret = class(TForm)   end;
@@ -352,7 +352,7 @@ type
     constructor Create(ASchemeLang: TColorSchemeLanguage; attribName: PString;
                        const aStoredName: String = '');
     function IsEnabled: boolean; override;
-    procedure ApplyTo(aDest: TSynHighlighterAttributes; aDefault: TColorSchemeAttribute = nil);
+    procedure ApplyTo(aDest: TLazEditTextAttribute; aDefault: TColorSchemeAttribute = nil);
     procedure Assign(Src: TPersistent); override;
     function Equals(Other: TColorSchemeAttribute): Boolean; reintroduce;
     function GetStoredValuesForAttrib: TColorSchemeAttribute; // The IDE default colors from the resources
@@ -509,7 +509,7 @@ type
     function GetEol: Boolean; override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenPos: Integer; override;
     function GetTokenKind: integer; override;
     procedure Next; override;
@@ -7140,7 +7140,7 @@ end;
 
 procedure TColorSchemeAttribute.ApplyTo(aDest: TObject);
 begin
-  ApplyTo(aDest as TSynHighlighterAttributes, nil);
+  ApplyTo(aDest as TLazEditTextAttribute, nil);
 end;
 
 procedure TColorSchemeAttribute.Init;
@@ -7208,7 +7208,7 @@ begin
   Result := (inherited IsEnabled) or (FMarkupFoldLineColor <> clNone);
 end;
 
-procedure TColorSchemeAttribute.ApplyTo(aDest: TSynHighlighterAttributes;
+procedure TColorSchemeAttribute.ApplyTo(aDest: TLazEditTextAttribute;
   aDefault: TColorSchemeAttribute);
 // aDefault (if supplied) is usually the Schemes agnDefault / DefaultAttribute
 var
@@ -7233,10 +7233,10 @@ begin
         aDest.StyleMask  := [low(TFontStyle)..high(TFontStyle)];
     end;
 
-    if aDest is TSynHighlighterAttributesModifier then begin
-      TSynHighlighterAttributesModifier(aDest).ForeAlpha := Src.ForeAlpha;
-      TSynHighlighterAttributesModifier(aDest).BackAlpha := Src.BackAlpha;
-      TSynHighlighterAttributesModifier(aDest).FrameAlpha := Src.FrameAlpha;
+    if aDest is TLazEditTextAttributeModifier then begin
+      TLazEditTextAttributeModifier(aDest).ForeAlpha := Src.ForeAlpha;
+      TLazEditTextAttributeModifier(aDest).BackAlpha := Src.BackAlpha;
+      TLazEditTextAttributeModifier(aDest).FrameAlpha := Src.FrameAlpha;
       if aDest is TSynHighlighterLazCustomPasAttribute then begin
         TSynHighlighterLazCustomPasAttribute(aDest).CustomWords.Assign(CustomWords);
         TSynHighlighterLazCustomPasAttribute(aDest).CustomWordTokenKind := CustomWordTokenKind;
@@ -7252,7 +7252,7 @@ begin
       aDest.UnderlinePriority := Src.UnderlinePriority;
     end;
 
-    if not (aDest is TSynHighlighterAttributesModifier) then begin
+    if not (aDest is TLazEditTextAttributeModifier) then begin
       if aDefault <> nil then begin
         if aDefault.IsUsingSchemeGlobals then
           aDefault := aDefault.GetSchemeGlobal;
@@ -7286,7 +7286,7 @@ begin
                 hafStyle, hafFrameStyle, hafFrameEdges, hafPrior];
   if Src is TSynHighlighterLazCustomPasAttribute then
     FAttrFeatures := FAttrFeatures + [hafCustomWords];
-  if Src is TSynHighlighterAttributesModifier then
+  if Src is TLazEditTextAttributeModifier then
     FAttrFeatures := FAttrFeatures + [hafAlpha, hafStyleMask];
 
   if Src is TColorSchemeAttribute then begin
@@ -7496,7 +7496,7 @@ constructor TColorSchemeLanguage.CreateFromXml(AGroup: TColorScheme;
   const aPath: String; IsSchemeDefault: Boolean;
   aPascalScheme: TColorSchemeLanguage; MappedAttributes: TStringList);
 var
-  hla: TSynHighlighterAttributes;
+  hla: TLazEditTextAttribute;
   csa, pasattr: TColorSchemeAttribute;
   aha: TAdditionalHilightAttribute;
   FormatVersion, i: Integer;
@@ -7517,7 +7517,7 @@ begin
         if hla is TSynHighlighterLazCustomPasAttribute then
           csa.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask, hafCustomWords]
         else
-        if hla is TSynHighlighterAttributesModifier then
+        if hla is TLazEditTextAttributeModifier then
           csa.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask]
         else
           csa.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle];
@@ -8013,7 +8013,7 @@ procedure TColorSchemeLanguage.ApplyTo(AHLighter: TSynCustomHighlighter);
 var
   i: Integer;
   Attr: TColorSchemeAttribute;
-  hlattrs: TSynHighlighterAttributes;
+  hlattrs: TLazEditTextAttribute;
 begin
   AHLighter.BeginUpdate;
   try
@@ -8276,8 +8276,8 @@ begin
     csa := TColorSchemeAttribute.Create(csl, AName, AStoredName);
     csa.Clear;
     if ADefaults <> nil then begin
-      csa.AssignSupportedFeaturesFrom(ADefaults as TSynHighlighterAttributes);
-      csa.AssignColors(ADefaults as TSynHighlighterAttributes);
+      csa.AssignSupportedFeaturesFrom(ADefaults as TLazEditTextAttribute);
+      csa.AssignColors(ADefaults as TLazEditTextAttribute);
     end;
     csa.InternalSaveDefaultValues;
     csa.FDefaultSynFeatures := csa.Features;
@@ -8457,7 +8457,7 @@ begin
   TokenLength := Length(FLineText);
 end;
 
-function TIDESynTextSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TIDESynTextSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   Result := nil;
 end;

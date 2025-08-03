@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils,
   Graphics,
-  SynEditTypes, SynEditHighlighter, SynEditStrConst;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkComment, tkText, tkKey, tkNull, tkSpace, tkString,
@@ -89,7 +89,7 @@ type
     procedure SetLine(const NewValue: String; LineNumber:Integer); override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -339,7 +339,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynPoSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynPoSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case fTokenID of
     tkComment: Result := fCommentAttri;

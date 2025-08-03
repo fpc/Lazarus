@@ -49,7 +49,7 @@ interface
 
 uses
   SysUtils, Classes, Math, Graphics, SynEditTypes, SynEditHighlighter,
-  SynEditHighlighterXMLBase, SynEditHighlighterFoldBase, SynEditStrConst;
+  SynEditHighlighterXMLBase, SynEditHighlighterFoldBase, SynEditStrConst, LazEditTextAttributes;
 
 const
   MAX_ESCAPEAMPS = 159;
@@ -478,7 +478,7 @@ type
     procedure SetLine(const NewValue: string; LineNumber:Integer); override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -2708,7 +2708,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynHTMLSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynHTMLSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case fTokenID of
     tkAmpersand: Result := fAndAttri;

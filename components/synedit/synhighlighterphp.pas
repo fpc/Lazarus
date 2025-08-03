@@ -52,7 +52,7 @@ uses
   SysUtils, Classes,
   LCLIntf, LCLType,
   Controls, Graphics,
-  SynEditTypes, SynEditHighlighter, SynEditStrConst;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkInvalidSymbol, tkKey, tkNull,
@@ -195,7 +195,7 @@ type
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
 
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -1355,7 +1355,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynPHPSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynPHPSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case GetTokenID of
     tkComment: Result := fCommentAttri;

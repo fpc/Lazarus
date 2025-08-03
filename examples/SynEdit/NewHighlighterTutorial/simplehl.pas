@@ -78,7 +78,7 @@ type
     procedure Next; override;
     function  GetEol: Boolean; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function  GetTokenAttribute: TSynHighlighterAttributes; override;
+    function  GetTokenAttribute: TLazEditTextAttribute; override;
   public
     function GetToken: String; override;
     function GetTokenPos: Integer; override;
@@ -192,7 +192,7 @@ begin
   TokenLength := FTokenEnd - FTokenPos;
 end;
 
-function TSynDemoHl.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynDemoHl.GetTokenAttribute: TLazEditTextAttribute;
 begin
   // Match the text, specified by FTokenPos and FTokenEnd
 

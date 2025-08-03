@@ -23,7 +23,7 @@ implementation
 
 procedure TTestPaintColorMerging.MergeAttrib;
 
-  procedure SetAttrib(AnAttrib: TSynHighlighterAttributes;
+  procedure SetAttrib(AnAttrib: TLazEditTextAttribute;
     AFore, ABack, AFrame: TColor;
     AStyle: TFontStyles = []; AStyleMask: TFontStyles = [];
     AFrameSides: TSynFrameEdges = sfeAround; AFrameStyle: TSynLineStyle = slsSolid;
@@ -33,12 +33,12 @@ procedure TTestPaintColorMerging.MergeAttrib;
     AnAttrib.Background := ABack;
     AnAttrib.FrameColor := AFrame;
     AnAttrib.Style      := AStyle;
-    if AnAttrib is TSynHighlighterAttributesModifier then
+    if AnAttrib is TLazEditTextAttributeModifier then
       AnAttrib.StyleMask  := AStyleMask;
     AnAttrib.FrameEdges := AFrameSides;
     AnAttrib.FrameStyle := AFrameStyle;
-    if AnAttrib is TSynSelectedColor then begin
-      TSynSelectedColor(AnAttrib).SetFrameBoundsPhys(AStartX, AEndX);
+    if AnAttrib is TLazEditTextAttribute then begin
+      TLazEditTextAttribute(AnAttrib).SetFrameBoundsPhys(AStartX, AEndX);
     end;
   end;
 

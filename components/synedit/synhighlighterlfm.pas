@@ -49,8 +49,8 @@ unit SynHighlighterLFM;
 interface
 
 uses
-  SysUtils, Classes, FileUtil, Graphics,
-  SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase, SynEditStrConst;
+  SysUtils, Classes, FileUtil, Graphics, SynEditTypes, SynEditHighlighter,
+  SynEditHighlighterFoldBase, SynEditStrConst, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
@@ -140,7 +140,7 @@ type
       LineNumber: Integer); override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -564,7 +564,7 @@ begin
   TokenStart:=FLine + fTokenPos;
 end;
 
-function TSynLFMSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynLFMSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case fTokenID of
     tkComment: Result := fCommentAttri;

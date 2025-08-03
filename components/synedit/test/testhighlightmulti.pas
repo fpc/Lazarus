@@ -18,8 +18,8 @@ type
     FMultiHl: TSynMultiSyn;
     FXmlHl: TSynXMLSyn;
     {FEmptyScheme, }FPasScheme: TSynHighlighterMultiScheme;
-    FAtXmlEl, FAtXmlSym, FAtXmlTxt: TSynHighlighterAttributes;
-    FAtPasMark, FAtPasSym, FAtPasId, FAtPasKey, {FAtPasSp, }FAtPasCom: TSynHighlighterAttributes;
+    FAtXmlEl, FAtXmlSym, FAtXmlTxt: TLazEditTextAttribute;
+    FAtPasMark, FAtPasSym, FAtPasId, FAtPasKey, {FAtPasSp, }FAtPasCom: TLazEditTextAttribute;
     FPasHl: TSynPasSyn;
 
     procedure InitMultiEMpty;
@@ -42,7 +42,7 @@ type
     procedure DumpRanges(ARangeList: TSynHighlighterRangeList);
     procedure DumpAll(Hl: TSynMultiSyn);
     procedure CheckTokensForLine(Name: String; HL: TSynCustomHighlighter;
-                                 LineIdx: Integer; ExpAttr: Array of TSynHighlighterAttributes);
+                                 LineIdx: Integer; ExpAttr: Array of TLazEditTextAttribute);
   published
     procedure TestSectionList;
     procedure TestVirtualLines;
@@ -261,7 +261,7 @@ begin  // ensure CurrentLines are set
 end;
 
 procedure TTestHighlightMulti.CheckTokensForLine(Name: String; HL: TSynCustomHighlighter;
-  LineIdx: Integer; ExpAttr: array of TSynHighlighterAttributes);
+  LineIdx: Integer; ExpAttr: array of TLazEditTextAttribute);
 var
   c: Integer;
   tk: TLazCustomEditTextAttribute;
@@ -276,8 +276,8 @@ begin
     end;
     //DebugLn([HL.GetToken,' (',HL.GetTokenID ,') at ', HL.GetTokenPos]);
     tk := HL.GetTokenAttributeEx;
-    if (tk <> nil) and (tk is TSynHighlighterAttributes)
-    then tkName := TSynHighlighterAttributes(tk).StoredName
+    if (tk <> nil) and (tk is TLazEditTextAttribute)
+    then tkName := TLazEditTextAttribute(tk).StoredName
     else tkName := '<nil>';
     AssertTrue(Format('%s Attrib Line=%d pos=%d exp=%s got=%s',
                       [Name, LineIdx, c,  ExpAttr[c].StoredName, tkName]),

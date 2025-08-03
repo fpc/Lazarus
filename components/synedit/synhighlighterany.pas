@@ -58,7 +58,7 @@ interface
 
 uses
   SysUtils, Classes, LazUTF8, LazFileUtils, Controls, Graphics, Registry,
-  SynEditTypes, SynEditHighlighter, SynEditStrConst;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
@@ -177,7 +177,7 @@ type
     function GetTokenID: TtkTokenKind;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     function IsKeyword(const AKeyword: string): boolean; override;              //mh 2000-11-08
@@ -819,7 +819,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynAnySyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynAnySyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case fTokenID of
     tkComment: Result := fCommentAttri;
@@ -851,7 +851,7 @@ begin
   Result := fTokenPos;
 end;
 
-procedure TSynAnySyn.ReSetRange;
+procedure TSynAnySyn.ResetRange;
 begin
   fRange := rsUnknown;
 end;

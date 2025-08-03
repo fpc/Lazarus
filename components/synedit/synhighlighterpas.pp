@@ -969,7 +969,7 @@ type
     function GetRange: Pointer; override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenAttributeEx: TLazCustomEditTextAttribute; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenKind: integer; override;
@@ -5533,8 +5533,7 @@ begin
   FIsInNextToEOL := True;
 end;
 
-function TSynPasSyn.GetDefaultAttribute(Index: integer):
-  TSynHighlighterAttributes;
+function TSynPasSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -5581,7 +5580,7 @@ begin
 end;
 
 
-function TSynPasSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynPasSyn.GetTokenAttribute: TLazEditTextAttribute;
 var
   x1, x2: Integer;
 begin
@@ -5621,7 +5620,7 @@ var
   tid: TtkTokenKind;
   i, x1, x2: Integer;
   LeftCol, RightCol: TLazSynDisplayTokenBound;
-  attr: TSynHighlighterAttributesModifier;
+  attr: TLazEditTextAttributeModifier;
 
   procedure InitMergeRes(AMergeRes: TSynSelectedColorMergeResult; AnAttr: TLazCustomEditTextAttribute);
   begin

@@ -1039,10 +1039,10 @@ type
       const AChar: TUTF8Char; Data: pointer); virtual;
 
     function GetHighlighterAttriAtRowCol(XY: TPoint; out Token: string;
-      out Attri: TSynHighlighterAttributes): boolean;
+      out Attri: TLazEditTextAttribute): boolean;
     function GetHighlighterAttriAtRowColEx(XY: TPoint; out Token: string;
       out TokenType, Start: Integer;
-      out Attri: TSynHighlighterAttributes;
+      out Attri: TLazEditTextAttribute;
       ContinueIfPossible: boolean = False): boolean;
     function GetHighlighterAttriAtRowColEx(XY: TPoint; out TokenType: Integer; ContinueIfPossible: boolean = False): boolean;
     procedure CaretAtIdentOrString(XY: TPoint; out AtIdent, NearString: Boolean);
@@ -10032,7 +10032,7 @@ var
   // for ContextMatch
   BracketKind, TmpStart: Integer;
   SearchingForward: Boolean;
-  TmpAttr : TSynHighlighterAttributes;
+  TmpAttr : TLazEditTextAttribute;
   // for IsContextBracket
   MaxKnownTokenPos, LastUsedTokenIdx, TokenListCnt: Integer;
   TokenPosList: Array of TokenPos;
@@ -10308,7 +10308,7 @@ end;
 
                                                                                  //L505 begin
 function TCustomSynEdit.GetHighlighterAttriAtRowCol(XY: TPoint;
-  out Token: string; out Attri: TSynHighlighterAttributes): boolean;
+  out Token: string; out Attri: TLazEditTextAttribute): boolean;
 var
   TmpType, TmpStart: Integer;
 begin
@@ -10316,7 +10316,7 @@ begin
 end;
 
 function TCustomSynEdit.GetHighlighterAttriAtRowColEx(XY: TPoint; out Token: string; out
-  TokenType, Start: Integer; out Attri: TSynHighlighterAttributes; ContinueIfPossible: boolean
+  TokenType, Start: Integer; out Attri: TLazEditTextAttribute; ContinueIfPossible: boolean
   ): boolean;
 var
   PosX, PosY: integer;
@@ -10393,7 +10393,7 @@ procedure TCustomSynEdit.CaretAtIdentOrString(XY: TPoint; out AtIdent, NearStrin
 var
   PosX, PosY, Start: integer;
   Line, Token: string;
-  Attri, PrevAttri: TSynHighlighterAttributes;
+  Attri, PrevAttri: TLazEditTextAttribute;
 begin
   PosY := XY.Y -1;
   PrevAttri := nil;

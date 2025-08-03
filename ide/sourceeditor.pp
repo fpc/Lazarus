@@ -84,7 +84,7 @@ uses
   EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,
   SourceMarks, SearchFrm, MultiPasteDlg, EditorMacroListViewer,
   EditorToolbarStatic, editortoolbar_options, InputhistoryWithSearchOpt,
-  FPDocHints, MainIntf, GotoFrm;
+  FPDocHints, MainIntf, GotoFrm, LazEditTextAttributes;
 
 type
   TSourceNotebook = class;
@@ -6646,7 +6646,7 @@ end;
 function TSourceEditor.GetCodeAttributeName(LogXY: TPoint): String;
 var
   Token: string;
-  Attri: TSynHighlighterAttributes;
+  Attri: TLazEditTextAttribute;
 begin
     Result := '';
     if EditorComponent.GetHighlighterAttriAtRowCol(LogXY,Token,Attri)

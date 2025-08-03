@@ -51,7 +51,7 @@ interface
 uses
   IniFiles, //THashedStringList
   LCLIntf, LCLType,
-  SynEditHighlighter, SynEditTypes, SynEditStrConst,
+  SynEditHighlighter, SynEditTypes, SynEditStrConst, LazEditTextAttributes,
   Graphics, SysUtils, Classes;
 
 const
@@ -139,7 +139,7 @@ type
                       LineNumber: Integer); override;
     function GetKeywordIdentifiers: TStringList; virtual;
     function GetToken: string; override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -1177,7 +1177,7 @@ begin
   Result := fTokenId;
 end;
 
-function TSynPythonSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynPythonSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case fTokenID of
     tkComment: Result := fCommentAttri;

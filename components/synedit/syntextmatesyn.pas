@@ -11,7 +11,7 @@ uses
   LazFileUtils,
   Laz2_XMLRead, Laz2_DOM, LazStringUtils,
   // LazEdit
-  TextMateGrammar,
+  TextMateGrammar, LazEditTextAttributes,
   // SynEdit
   SynEditHighlighter, SynEditHighlighterFoldBase, SynEditTypes, SynEditTextBase;
 
@@ -60,7 +60,7 @@ type
     FRangeInfo: TSynTextMateRangeInfo;
     FCurrentTokenPos, FCurrentTokenLen: Integer;
     FCurrentTokenKind: integer;
-    FCurrentAttrib: TSynHighlighterAttributes;
+    FCurrentAttrib: TLazEditTextAttribute;
     function GetParserError: String;
 
   protected
@@ -82,7 +82,7 @@ type
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenPos: Integer; override;
     function GetTokenKind: integer; override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     //
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
 
@@ -214,7 +214,7 @@ procedure TSynTextMateSyn.DoCheckAttributeInfo(Sender: TTextMatePattern;
 begin
   AnUseId := AnAttribInfo.TokId >= 0;
   AnUseObject := (AnAttribInfo.TokObject <> nil) and
-                 (TSynHighlighterAttributes(AnAttribInfo.TokObject).IsEnabled);
+                 (TLazEditTextAttribute(AnAttribInfo.TokObject).IsEnabled);
 end;
 
 function TSynTextMateSyn.GetParserError: String;
@@ -306,7 +306,7 @@ begin
   else begin
     FTextMateGrammar.First;
     FCurrentTokenKind := FTextMateGrammar.CurrentTokenKind;
-    FCurrentAttrib    := TSynHighlighterAttributes(FTextMateGrammar.CurrentAttrib);
+    FCurrentAttrib    := TLazEditTextAttribute(FTextMateGrammar.CurrentAttrib);
     FCurrentTokenPos  := FTextMateGrammar.CurrentTokenPos;
     FCurrentTokenLen  := FTextMateGrammar.CurrentTokenLen;
   end;
@@ -318,7 +318,7 @@ procedure TSynTextMateSyn.Next;
 begin
   FTextMateGrammar.Next;
   FCurrentTokenKind := FTextMateGrammar.CurrentTokenKind;
-  FCurrentAttrib    := TSynHighlighterAttributes(FTextMateGrammar.CurrentAttrib);
+  FCurrentAttrib    := TLazEditTextAttribute(FTextMateGrammar.CurrentAttrib);
   FCurrentTokenPos  := FTextMateGrammar.CurrentTokenPos;
   FCurrentTokenLen  := FTextMateGrammar.CurrentTokenLen;
   //FCurrentRange     := FTextMateGrammar.CurrentPatternIndex;
@@ -401,13 +401,12 @@ begin
   Result := FCurrentTokenKind;
 end;
 
-function TSynTextMateSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynTextMateSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   Result := FCurrentAttrib;
 end;
 
-function TSynTextMateSyn.GetDefaultAttribute(Index: integer
-  ): TSynHighlighterAttributes;
+function TSynTextMateSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
 begin
   Result := FAttriMap.Data[FTextMateGrammar.RootPattern.AttribInfo.TokId];
 end;

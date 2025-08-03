@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditStrConst, SynEditTypes,
-  SynEditHighlighter;
+  SynEditHighlighter, LazEditTextAttributes;
 
 const
   tkNone   = 0;
@@ -84,7 +84,7 @@ type
     function GetRange: Pointer; override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -109,8 +109,8 @@ type
       );
     function CreateTokenID(const aName: string; Foreground, BackGround: TColor;
                            Style: TFontStyles): TtkTokenKind;
-    function GetCopiedTokenID(Attr: TSynHighlighterAttributes): TtkTokenKind;
-    function GetCopiedAttribute(TokenID: TtkTokenKind): TSynHighlighterAttributes;
+    function GetCopiedTokenID(Attr: TLazEditTextAttribute): TtkTokenKind;
+    function GetCopiedAttribute(TokenID: TtkTokenKind): TLazEditTextAttribute;
     property Tokens[TheLineNumber: integer]: PPositionTokens read GetTokens;
   published
     property TextAttri: TSynHighlighterAttributes read fTextAttri write fTextAttri;
@@ -203,7 +203,7 @@ begin
   end;
 end;
 
-function TSynPositionHighlighter.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynPositionHighlighter.GetTokenAttribute: TLazEditTextAttribute;
 var
   t: TtkTokenKind;
 begin
@@ -368,7 +368,7 @@ var
   RelLine: integer;
   nTokenLen: integer;
   sToken: PChar;
-  Attr: TSynHighlighterAttributes;
+  Attr: TLazEditTextAttribute;
   TokenID: integer;
 begin
   if (Lines=nil) or (Lines.Count=0) or (Highlighter=nil) then exit;
@@ -395,9 +395,9 @@ function TSynPositionHighlighter.CreateTokenID(const aName: string;
   Foreground, BackGround: TColor;
   Style: TFontStyles): TtkTokenKind;
 var
-  Attr: TSynHighlighterAttributes;
+  Attr: TLazEditTextAttribute;
 begin
-  Attr:=TSynHighlighterAttributes.Create(aName);
+  Attr:=TLazEditTextAttribute.Create(aName);
   Attr.Foreground:=Foreground;
   Attr.Background:=BackGround;
   Attr.Style:=Style;
@@ -405,15 +405,14 @@ begin
   Attr.Free;
 end;
 
-function TSynPositionHighlighter.GetCopiedTokenID(
-  Attr: TSynHighlighterAttributes): TtkTokenKind;
+function TSynPositionHighlighter.GetCopiedTokenID(Attr: TLazEditTextAttribute): TtkTokenKind;
 var
   i: Integer;
-  CurAttr: TSynHighlighterAttributes;
+  CurAttr: TLazEditTextAttribute;
 begin
   i:=fCopiedAttributes.Count-1;
   while i>=0 do begin
-    CurAttr:=TSynHighlighterAttributes(fCopiedAttributes[i]);
+    CurAttr:=TLazEditTextAttribute(fCopiedAttributes[i]);
     if (Attr.ForeGround=CurAttr.ForeGround)
     and (Attr.BackGround=CurAttr.BackGround)
     and (Attr.Style=CurAttr.Style) then begin
@@ -424,17 +423,16 @@ begin
     dec(i);
   end;
   // create new attribute
-  CurAttr:=TSynHighlighterAttributes.Create(nil);
+  CurAttr:=TLazEditTextAttribute.Create(nil);
   CurAttr.Assign(Attr);
   fCopiedAttributes.Add(CurAttr);
   Result:= -fCopiedAttributes.Count;
 end;
 
-function TSynPositionHighlighter.GetCopiedAttribute(TokenID: TtkTokenKind
-  ): TSynHighlighterAttributes;
+function TSynPositionHighlighter.GetCopiedAttribute(TokenID: TtkTokenKind): TLazEditTextAttribute;
 begin
   if (TokenID<0) and (fCopiedAttributes.Count>=-TokenID) then
-    Result:=TSynHighlighterAttributes(fCopiedAttributes[-TokenID-1])
+    Result:=TLazEditTextAttribute(fCopiedAttributes[-TokenID-1])
   else
     Result:=nil;
 end;

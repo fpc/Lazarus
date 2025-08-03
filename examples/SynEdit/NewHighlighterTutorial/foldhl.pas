@@ -47,7 +47,7 @@ type
     procedure Next; override;
     function  GetEol: Boolean; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function  GetTokenAttribute: TSynHighlighterAttributes; override;
+    function  GetTokenAttribute: TLazEditTextAttribute; override;
   public
     function GetToken: String; override;
     function GetTokenPos: Integer; override;
@@ -78,7 +78,7 @@ type
     FCurRange: Integer;
   public
     procedure Next; override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
   public
   (* The below needed to be changed and are in TSynDemoHlFold
      TSynDemoHlContextFoldBase uses Ranges itself.
@@ -242,7 +242,7 @@ begin
   TokenLength := FTokenEnd - FTokenPos;
 end;
 
-function TSynDemoHlFoldBase.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynDemoHlFoldBase.GetTokenAttribute: TLazEditTextAttribute;
 begin
   // Match the text, specified by FTokenPos and FTokenEnd
 
@@ -307,7 +307,7 @@ begin
     dec(FCurRange);
 end;
 
-function TSynDemoHlContextFoldBase.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynDemoHlContextFoldBase.GetTokenAttribute: TLazEditTextAttribute;
 begin
   Result := inherited GetTokenAttribute;
   if (Result = SpecialAttri) and (FCurRange > 0) then

@@ -31,7 +31,7 @@ uses
   // SynEdit
   SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll,
   SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText, SynEditMiscProcs,
-  SynEditMarkup, SynEditPointClasses, SynEditHighlighter;
+  SynEditMarkup, SynEditPointClasses, SynEditHighlighter, LazEditTextAttributes;
 
 type
 
@@ -328,7 +328,7 @@ type
     //TODO, move to highlighter
     function GetHighlighterAttriAtRowColEx(XY: TPoint; out Token: string;
       out TokenType, Start: Integer;
-      out Attri: TSynHighlighterAttributes): boolean;                           //L505
+      out Attri: TLazEditTextAttribute): boolean;                           //L505
 
 
     procedure MaybeRequestNodeStates(var ANode: TSynMarkupHighIfDefLinesNodeInfo);
@@ -2361,7 +2361,7 @@ begin
 end;
 
 function TSynMarkupHighIfDefLinesTree.GetHighlighterAttriAtRowColEx(XY: TPoint; out
-  Token: string; out TokenType, Start: Integer; out Attri: TSynHighlighterAttributes): boolean;
+  Token: string; out TokenType, Start: Integer; out Attri: TLazEditTextAttribute): boolean;
 var
   PosX, PosY: integer;
   Line: string;
@@ -2499,7 +2499,7 @@ var
   var
     len, i, c, tk, x: Integer;
     dummy: String;
-    attr: TSynHighlighterAttributes;
+    attr: TLazEditTextAttribute;
     r: TSynCustomHighlighterRange;
     f: TRangeStates;
   begin

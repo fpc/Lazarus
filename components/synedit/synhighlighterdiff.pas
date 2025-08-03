@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, Graphics, math, SynEditStrConst,
-  SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditHighlighter, SynEditHighlighterFoldBase, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkNull, tkUnknown, tkSpace,
@@ -130,7 +130,7 @@ type
 
     function  GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function  GetTokenAttribute: TSynHighlighterAttributes; override;
+    function  GetTokenAttribute: TLazEditTextAttribute; override;
     function  GetTokenKind: integer; override;
     function  GetTokenPos: Integer; override;
     function  GetTokenID: TtkTokenKind;
@@ -556,7 +556,7 @@ begin
   TokenStart:=FLine + fTokenPos;
 end;
 
-function TSynDiffSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynDiffSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case fTokenID of
     tkNull:            Result := FUnknownAttri;

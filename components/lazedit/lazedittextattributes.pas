@@ -36,7 +36,7 @@ type
     Offset: Integer;        // default 0. MultiWidth (e.g. Tab), if token starts in the middle of char
 
     function HasValue: boolean; inline;
-    function Init(APhys, ALog: Integer; AnOffs: Integer = 0): boolean; inline;
+    procedure Init(APhys, ALog: Integer; AnOffs: Integer = 0); inline;
   end;
 
 
@@ -244,7 +244,7 @@ type
     property Caption: PString read FCaption;                        // will never be nil
     property StoredName: string read FStoredName write FStoredName; // name for storage (e.g. xml)
 
-  published
+  public
     property Foreground stored GetColorStored;
     property Background stored GetColorStored;
     property FrameColor stored GetColorStored;
@@ -292,7 +292,7 @@ type
     function IsEnabled: boolean; override;
     procedure InternalSaveDefaultValues; override;
 
-  published
+  public
     property BackAlpha  stored GetAlphaStored;
     property ForeAlpha  stored GetAlphaStored;
     property FrameAlpha stored GetAlphaStored;
@@ -360,7 +360,7 @@ begin
   Result := (Physical > 0) or (Logical > 0);
 end;
 
-function TLazEditDisplayTokenBound.Init(APhys, ALog: Integer; AnOffs: Integer): boolean;
+procedure TLazEditDisplayTokenBound.Init(APhys, ALog: Integer; AnOffs: Integer);
 begin
   Physical := APhys;
   Logical := ALog;

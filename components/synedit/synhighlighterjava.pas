@@ -50,7 +50,7 @@ interface
 uses
   SysUtils, Classes,
   LCLIntf, LCLType, Graphics,
-  SynEditTypes, SynEditHighlighter, SynEditStrConst;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkComment, tkDocument, tkIdentifier, tkInvalid, tkKey,
@@ -195,7 +195,7 @@ type
     class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;    
+    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
@@ -204,7 +204,7 @@ type
       LineNumber:Integer); override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -1301,7 +1301,7 @@ begin
   Result := Pointer(PtrInt(fRange));
 end;
 
-procedure TSynJavaSyn.ReSetRange;
+procedure TSynJavaSyn.ResetRange;
 begin
   fRange := rsUnknown;
 end;
@@ -1339,7 +1339,7 @@ begin
     Result := xtkNonSymbol;
 end;
 
-function TSynJavaSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynJavaSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case fTokenID of
     tkAnnotation: Result := fAnnotationAttri;

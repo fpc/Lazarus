@@ -55,7 +55,7 @@ uses
   Graphics,
   SynEditTypes,
   SynEditHighlighter,  SynEditHighlighterFoldBase,
-  SysUtils, Classes, SynEditStrConst;
+  SysUtils, Classes, SynEditStrConst, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
@@ -287,7 +287,7 @@ type
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     procedure SetLine(const NewValue: String; LineNumber: Integer); override;
     function GetToken: String; override;
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
@@ -1845,7 +1845,7 @@ begin
   TokenStart:=FLine + fTokenPos;
 end;
 
-function TSynJScriptSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynJScriptSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case GetTokenID of
     tkComment: Result := fCommentAttri;

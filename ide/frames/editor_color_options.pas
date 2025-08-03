@@ -37,7 +37,7 @@ uses
   SynEditTypes, SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynEditStrConst,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
-  EditorSyntaxHighlighterDef,
+  EditorSyntaxHighlighterDef, LazEditTextAttributes,
   // IdeConfig
   IDEProcs, LazConf,
   // IDE
@@ -476,7 +476,7 @@ procedure TEditorColorOptionsFrame.ColorPreviewMouseUp(Sender: TObject;
 var
   i: Integer;
   Token: String;
-  Attri: TSynHighlightElement;
+  Attri: TLazEditTextAttribute;
   MouseXY, XY: TPoint;
   AddAttr: TAdditionalHilightAttribute;
   NewNode: TTreeNode;

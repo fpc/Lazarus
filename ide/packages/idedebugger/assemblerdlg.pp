@@ -112,7 +112,7 @@ type
     procedure pbAsmMouseUp(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X,
       {%H-}Y: Integer);
     procedure pbAsmMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
-    procedure GetColors(ASrc: TSynHighlighterAttributes; AMod: array of TSynHighlighterAttributesModifier; out AText, ABack, AFrame: TColor; out AStyle: TFontStyles);
+    procedure GetColors(ASrc: TLazEditTextAttribute; AMod: array of TLazEditTextAttributeModifier; out AText, ABack, AFrame: TColor; out AStyle: TFontStyles);
     procedure pbAsmPaint(Sender: TObject);
     procedure popCopyAddrClick(Sender: TObject);
     procedure sbHorizontalChange(Sender: TObject);
@@ -798,8 +798,8 @@ begin
   pbAsm.Invalidate;
 end;
 
-procedure TAssemblerDlg.GetColors(ASrc: TSynHighlighterAttributes;
-  AMod: array of TSynHighlighterAttributesModifier; out AText, ABack,
+procedure TAssemblerDlg.GetColors(ASrc: TLazEditTextAttribute;
+  AMod: array of TLazEditTextAttributeModifier; out AText, ABack,
   AFrame: TColor; out AStyle: TFontStyles);
 var
   i: Integer;
@@ -829,7 +829,7 @@ var
   TextStyle: TTextStyle;
   Fore, Back, Frame: TColor;
   St: TFontStyles;
-  m0, m1, m2, m3: TSynHighlighterAttributesModifier;
+  m0, m1, m2, m3: TLazEditTextAttributeModifier;
 begin
   R := pbAsm.ClientRect;
   TextStyle := pbAsm.Canvas.TextStyle;

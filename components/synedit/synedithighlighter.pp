@@ -71,8 +71,58 @@ type
   end;
 
   TLazSynCustomTextAttributes = TLazEditTextAttribute deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-  TSynHighlighterAttributes = TLazEditTextAttribute;
-  TSynHighlighterAttributesModifier = TLazEditTextAttributeModifier;
+  TSynHighlighterAttributes = class(TLazEditTextAttribute)
+  published
+    property Foreground;
+    property Background;
+    property FrameColor;
+
+    property ForePriority;
+    property BackPriority;
+    property FramePriority;
+
+    property FrameStyle;
+    property FrameEdges;
+
+    property Style;
+    property BoldPriority;
+    property ItalicPriority;
+    property UnderlinePriority;
+    property StrikeOutPriority;
+
+    property Features;
+
+    property OnChange;
+  end;
+  TSynHighlighterAttributesModifier = class(TLazEditTextAttributeModifier)
+  published
+    property Foreground;
+    property Background;
+    property FrameColor;
+
+    property ForePriority;
+    property BackPriority;
+    property FramePriority;
+
+    property FrameStyle;
+    property FrameEdges;
+
+    property Style;
+    property BoldPriority;
+    property ItalicPriority;
+    property UnderlinePriority;
+    property StrikeOutPriority;
+
+    property Features;
+
+    property OnChange;
+  published
+    property BackAlpha;
+    property ForeAlpha;
+    property FrameAlpha;
+
+    property StyleMask;
+  end;
 
   { TSynHighlighterAttributesHelper }
 
@@ -200,11 +250,11 @@ type
     fUpdateChange: boolean;                                                     //mh 2001-09-13
     FIsInNextToEOL: Boolean;
     function GetInstanceLanguageName: string; virtual;
-    procedure AddAttribute(AAttrib: TSynHighlighterAttributes); override;
+    procedure AddAttribute(AAttrib: TLazEditTextAttribute); override;
     procedure RemoveAttribute(AAttrib: TLazEditTextAttribute); override;
     procedure FreeHighlighterAttributes;                                        //mh 2001-09-13
     function GetAttribCount: integer; virtual;
-    function GetAttribute(idx: integer): TSynHighlighterAttributes; virtual;
+    function GetAttribute(idx: integer): TLazEditTextAttribute; virtual;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       virtual; abstract;
     function GetDefaultFilter: string; virtual;
@@ -242,9 +292,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function AddSpecialAttribute(const aCaption: string;
-                     const aStoredName: String = ''): TSynHighlighterAttributes;
+                     const aStoredName: String = ''): TLazEditTextAttribute;
     function AddSpecialAttribute(const aCaption: PString;
-                     const aStoredName: String = ''): TSynHighlighterAttributes;
+                     const aStoredName: String = ''): TLazEditTextAttribute;
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -260,9 +310,9 @@ type
      * GetTokenAttributeEx / GetEndOfLineAttributeEx
        The final attribute with merged modifiers (if HL has modifiers)
     *)
-    function GetEndOfLineAttribute: TSynHighlighterAttributes; virtual; // valid after line was scanned to EOL
+    function GetEndOfLineAttribute: TLazEditTextAttribute; virtual; // valid after line was scanned to EOL
     function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; virtual; // valid after line was scanned to EOL
-    function GetTokenAttribute: TSynHighlighterAttributes; virtual; abstract;
+    function GetTokenAttribute: TLazEditTextAttribute; virtual; abstract;
     function GetTokenAttributeEx: TLazCustomEditTextAttribute; virtual;
     function GetTokenKind: integer; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract; // 0-based
@@ -310,7 +360,7 @@ type
     property LanguageName: string read GetInstanceLanguageName;
   public
     property AttrCount: integer read GetAttribCount;
-    property Attribute[idx: integer]: TSynHighlighterAttributes read GetAttribute;
+    property Attribute[idx: integer]: TLazEditTextAttribute read GetAttribute;
     property Capabilities: TSynHighlighterCapabilities read FCapabilities;
     property SampleSource: string read GetSampleSource write SetSampleSource;
     // The below should be depricated and moved to those HL that actually implement them.
@@ -797,7 +847,7 @@ var
 begin
   if fAttributes <> nil then begin
     for i := fAttributes.Count - 1 downto 0 do
-      TSynHighlighterAttributes(fAttributes[i]).Free;
+      TLazEditTextAttribute(fAttributes[i]).Free;
     fAttributes.Clear;
   end;
 end;
@@ -806,7 +856,7 @@ procedure TSynCustomHighlighter.Assign(Source: TPersistent);
 var
   Src: TSynCustomHighlighter;
   i, j: integer;
-  SrcAttri: TSynHighlighterAttributes;
+  SrcAttri: TLazEditTextAttribute;
   StoredName: String;
 begin
   if Source is TSynCustomHighlighter then begin
@@ -918,7 +968,7 @@ begin
   end;
 end;
 
-procedure TSynCustomHighlighter.AddAttribute(AAttrib: TSynHighlighterAttributes);
+procedure TSynCustomHighlighter.AddAttribute(AAttrib: TLazEditTextAttribute);
 begin
   fAttributes.Add(AAttrib);
 end;
@@ -929,14 +979,14 @@ begin
 end;
 
 function TSynCustomHighlighter.AddSpecialAttribute(const aCaption: string;
-  const aStoredName: String): TSynHighlighterAttributes;
+  const aStoredName: String): TLazEditTextAttribute;
 begin
   result := TSynHighlighterAttributes.Create(aCaption,aStoredName);
   AddAttribute(result);
 end;
 
 function TSynCustomHighlighter.AddSpecialAttribute(const aCaption: PString;
-  const aStoredName: String): TSynHighlighterAttributes;
+  const aStoredName: String): TLazEditTextAttribute;
 begin
   Result := TSynHighlighterAttributes.Create(aCaption,aStoredName);
   AddAttribute(result);
@@ -958,11 +1008,11 @@ begin
   Result := fAttributes.Count;
 end;
 
-function TSynCustomHighlighter.GetAttribute(idx: integer): TSynHighlighterAttributes;
+function TSynCustomHighlighter.GetAttribute(idx: integer): TLazEditTextAttribute;
 begin
   Result := nil;
   if (idx >= 0) and (idx < fAttributes.Count) then
-    Result := TSynHighlighterAttributes(fAttributes[idx]);
+    Result := TLazEditTextAttribute(fAttributes[idx]);
 end;
 
 class function TSynCustomHighlighter.GetCapabilities: TSynHighlighterCapabilities;
@@ -980,7 +1030,7 @@ begin
   Result := ['_', 'A'..'Z', 'a'..'z', '0'..'9'];
 end;
 
-function TSynCustomHighlighter.GetEndOfLineAttribute: TSynHighlighterAttributes;
+function TSynCustomHighlighter.GetEndOfLineAttribute: TLazEditTextAttribute;
 begin
   Result := nil;
 end;
@@ -1099,10 +1149,10 @@ procedure TSynCustomHighlighter.SetAttributesOnChange(AEvent: TNotifyEvent);
    after all Attributes where created  *)
 var
   i: integer;
-  Attri: TSynHighlighterAttributes;
+  Attri: TLazEditTextAttribute;
 begin
   for i := fAttributes.Count - 1 downto 0 do begin
-    Attri := TSynHighlighterAttributes(fAttributes[i]);
+    Attri := TLazEditTextAttribute(fAttributes[i]);
     if Attri <> nil then begin
       Attri.OnChange := AEvent;
       Attri.InternalSaveDefaultValues;
