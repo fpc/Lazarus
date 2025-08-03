@@ -1874,6 +1874,8 @@ begin
   // [Ctrl-A]
   else if (Key = VK_A) and (Shift = [ssCtrl]) then
   begin
+    if SelectedView=nil then
+      SelectFirst(true,true);
     Select(SelectedView,-1,false,false);
     ExtendSelection(SelectedView,SelectedView.Lines.Count-1);
     Key := 0;
