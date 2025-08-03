@@ -718,7 +718,8 @@ type
   // flags for FindReferences
   TFindRefsFlag = (
     frfMethodOverrides, // continue search on method overrides
-    frfIncludingLFM     // find references in LFM files
+    frfIncludingLFM,    // find references in LFM files
+    frfRename           // for rename
     );
   TFindRefsFlags = set of TFindRefsFlag;
 
