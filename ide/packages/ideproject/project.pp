@@ -1789,7 +1789,8 @@ procedure TUnitInfo.ClearComponentDependencies;
 begin
   while FFirstRequiredComponent<>nil do FFirstRequiredComponent.Free;
   while FFirstUsedByComponent<>nil do FFirstUsedByComponent.Free;
-  SourceLFM:=nil;
+  if (SourceLFM<>nil) and (not FileExistsCached(SourceLFM.Filename)) then
+    SourceLFM:=nil;
 end;
 
 procedure TUnitInfo.WriteDebugReportUnitComponentDependencies(Prefix: string);
@@ -2193,7 +2194,7 @@ end;
 procedure TUnitInfo.SetTimeStamps;
 begin
   if FSource<>nil then
-    fSourceChangeStep:=FSource.ChangeStep  // Indicates any change is source
+    fSourceChangeStep:=FSource.ChangeStep  // Indicates any change in source
   else
     fSourceChangeStep:=LUInvalidChangeStamp;
 end;
@@ -2460,6 +2461,8 @@ begin
     if (fProject<>nil) and (fProject.MainUnitInfo=Self) then
       fProject.MainSourceFilenameChanged;
   end;
+  // whenever the Source filename changes, nil the SourceLFM
+  SourceLFM:=nil;
 end;
 
 procedure TUnitInfo.SetSourceLFM(const AValue: TCodeBuffer);
