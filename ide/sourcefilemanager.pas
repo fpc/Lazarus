@@ -8316,7 +8316,7 @@ function ShowSaveProjectAsDialog(Flags: TSaveFlags=[]): TModalResult;
 var
   SaveDialog: TSaveDialog;
   NewProgramName: String;
-  NewPath, NewLPIFilename, NewProgramFN: String;
+  NewLPIFilename, NewProgramFN: String;
   AFilename, Ext, AText, ACaption, OldProjectDir: string;
 begin
   if Flags=[] then ;
