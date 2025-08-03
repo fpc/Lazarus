@@ -158,7 +158,7 @@ function GatherLFMsReferences(Files:TStringList;
   DeclNode: TCodeTreeNode;
   var ListOfReferences: TCodeXYPositions;
   const Flags: TFindRefsFlags): TModalResult;
-function DeclarationCanBeInLFM(DeclNode: TCodeTreeNode): boolean;
+function DeclarationCanBeInLFM(DeclTool: TCodeTool; DeclNode: TCodeTreeNode): boolean;
 
 implementation
 
@@ -297,22 +297,63 @@ begin
 end;
 
 procedure CheckDeclOfDesigner(const Identifier: string; DeclTool: TCodeTool; DeclNode: TCodeTreeNode);
+
+  function NodeIsRootClassComponent(aNode: TCodeTreeNode; RootComp: TComponent): boolean;
+  var
+    NodeName: String;
+  begin
+    Result:=false;
+    if aNode.Desc<>ctnTypeDefinition then exit;
+    if not (ANode.Parent.Desc in AllMainSections) then exit;
+    NodeName:=DeclTool.ExtractIdentifier(aNode.StartPos);
+    Result:=SameText(NodeName,RootComp.ClassName);
+  end;
+
 var
   UnitInfo: TUnitInfo;
-  aComponent: TComponent;
+  Node, ParentNode: TCodeTreeNode;
 begin
-  UnitInfo:=Project1.UnitInfoWithFilename(DeclTool.MainFilename);
-  if UnitInfo=nil then exit;
-  aComponent:=UnitInfo.Component;
-  if aComponent=nil then exit;
+  // Note:
+  // When a designer is open, the UnitInfo.Component is the root component
+  // The IDE also opens all needed ancestors and frames.
 
-  if DeclNode.Desc=ctnVarDefinition then begin
-    if (DeclNode.Parent.Desc in [ctnImplementation,ctnProgram])
-        and SameText(Identifier,aComponent.Name) then
-    begin
-      // renaming a designer root component
-      // todo
+  UnitInfo:=Project1.UnitInfoWithFilename(DeclTool.MainFilename);
+  if (UnitInfo<>nil) and (UnitInfo.Component<>nil) then begin
+
+    if DeclNode.Desc=ctnProcedureHead then
+      DeclNode:=DeclNode.Parent;
+    ParentNode:=DeclNode.Parent;
+    if DeclNode.Desc=ctnVarDefinition then begin
+      if (ParentNode.Desc in AllMainSections)
+          and SameText(Identifier,UnitInfo.Component.Name) then
+      begin
+        // renaming a designer root component
+        // todo
+        exit;
+      end;
+
+      if (ParentNode.Desc in [ctnClassPublic,ctnClassPublished])
+          and (ParentNode.Parent.Desc=ctnClass) then
+      begin
+        Node:=ParentNode.Parent.Parent;
+        if NodeIsRootClassComponent(Node,UnitInfo.Component) then begin
+          // renaming a published field of the designer component class
+          // todo
+        end;
+      end;
+    end else if DeclNode.Desc=ctnProcedure then begin
+      if (ParentNode.Desc in AllClassBaseSections)
+          and (ParentNode.Parent.Desc=ctnClass) then
+      begin
+        Node:=ParentNode.Parent.Parent;
+        if NodeIsRootClassComponent(Node,UnitInfo.Component) then begin
+          // renaming a method of the designer component class
+          // todo
+        end;
+      end;
     end;
+  end else begin
+    //
   end;
 end;
 
@@ -335,7 +376,7 @@ begin
   DeclFilename:=DeclTool.MainFilename;
   if not FilenameIsPascalUnit(DeclTool.MainFilename) then exit;
 
-  if not DeclarationCanBeInLFM(DeclNode) then exit;
+  if not DeclarationCanBeInLFM(DeclTool,DeclNode) then exit;
 
   {$IFNDEF EnableFindLFMRefs}
   exit;
@@ -387,7 +428,7 @@ begin
   Result:= mrOK;
 end;
 
-function DeclarationCanBeInLFM(DeclNode: TCodeTreeNode): boolean;
+function DeclarationCanBeInLFM(DeclTool: TCodeTool; DeclNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
   if DeclNode.HasParentOfType(ctnImplementation) then
@@ -398,11 +439,25 @@ begin
   ctnProperty:
     ; // even private properties can later be made published -> must be searched
   ctnVarDefinition:
-    if not (DeclNode.Parent.Desc in AllClassBaseSections) then
-      exit; // not a field, e.g. a parameter or local var
+    case DeclNode.Parent.Desc of
+    ctnClassPublic: ; // maybe possible due to $RTTI
+    ctnClassPublished: ;
+    else
+      exit; // not a public field, e.g. a parameter or local var
+    end;
   ctnProcedure:
-    if not (DeclNode.Parent.Desc in AllClassBaseSections) then
+    case DeclNode.Parent.Desc of
+    ctnClassPublic: ; // maybe possible due to $RTTI
+    ctnClassPublished: ;
+    ctnClassPrivate,ctnClassProtected,ctnClassRequired,ctnClassOptional:
+      if DeclTool.ProcNodeHasSpecifier(DeclNode,psVirtual)
+          or DeclTool.ProcNodeHasSpecifier(DeclNode,psOverride) then
+        // an override could be published
+      else
+        exit;
+    else
       exit; // not a method
+    end;
   ctnTypeDefinition: ;
   ctnEnumIdentifier: ;
   else

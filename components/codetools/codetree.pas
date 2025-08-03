@@ -175,6 +175,7 @@ const
      [ctnUnit];
   AllCodeSections = AllSourceTypes
      + [ctnInterface, ctnImplementation, ctnInitialization, ctnFinalization];
+  AllMainSections = [ctnProgram,ctnPackage,ctnLibrary,ctnInterface];
   AllClassBaseSections =
      [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected,
       ctnClassRequired,ctnClassOptional];
