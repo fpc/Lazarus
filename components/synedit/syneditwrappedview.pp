@@ -1022,7 +1022,7 @@ begin
   FMarkupInfoWrapIndent.Clear;
   FMarkupInfoWrapEol.Clear;
   FMarkupInfoWrapIndent.FrameEdges := sfeLeft;
-  FMarkupInfoWrapIndent.OnChange := @DoMarkupChanged;
+  FMarkupInfoWrapIndent.AddChangeHandler(@DoMarkupChanged);
 
   FKeystrokes := TSynEditLineMapKeyStrokes.Create(Self);
 

@@ -326,10 +326,10 @@ begin
   FOnChangeHandler := TMethodList.Create;
 
   FColor := TSynGutterDefColorAttributesModifier.Create;
-  FColor.OnChange := @DoColorChanged;
+  FColor.AddChangeHandler(@DoColorChanged);
 
   FCurrentLineColor := TSynGutterColorAttributesModifier.Create;
-  FCurrentLineColor.OnChange := @DoColorChanged;
+  FCurrentLineColor.AddChangeHandler(@DoColorChanged);
   FMarkupInfoCurLineMerged := TSynSelectedColorMergeResult.Create;
 
   inherited Create;
@@ -917,8 +917,8 @@ begin
   FRightOffset := 0;
   Inherited Create(AnOwner); // Todo: Lock the DoChange from RegisterItem, and call DoChange at the end (after/in autosize)
 
-  FMarkupInfo.OnChange := @DoColorChanged;
-  FMarkupInfoCurrentLine.OnChange := @DoColorChanged;
+  FMarkupInfo.AddChangeHandler(@DoColorChanged);
+  FMarkupInfoCurrentLine.AddChangeHandler(@DoColorChanged);
   UpdateInternalColors;
 end;
 

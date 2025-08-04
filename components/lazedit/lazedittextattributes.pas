@@ -23,7 +23,7 @@ unit LazEditTextAttributes;
 interface
 
 uses
-  Classes, SysUtils, Graphics;
+  Classes, SysUtils, Graphics, LazMethodList;
 
 type
   // TODO: TLazEditDisplayTokenBound is not yet supporting wrapped text - The Physical value may change
@@ -198,6 +198,7 @@ type
   TLazEditTextAttribute = class(TLazCustomEditTextAttribute)
   private
     FOnChange: TNotifyEvent;
+    FChangeHandlers: TMethodList;
     FStoredName, FFixedCaption: string;
     FCaption: PString;
 
@@ -240,10 +241,14 @@ type
     constructor Create(ACaption: string; AStoredName: String; ASupportedFeatures: TLazTextAttributeFeatures);
     constructor Create(ACaption: PString; AStoredName: String = ''); // e.g. pointer to resourcestring. (Must be global var/const)
     constructor Create(ACaption: PString; AStoredName: String; ASupportedFeatures: TLazTextAttributeFeatures); // e.g. pointer to resourcestring. (Must be global var/const)
+    destructor Destroy; override;
     procedure SetCaption(ACaption: String);
 
     procedure InternalSaveDefaultValues; virtual;
     procedure SetAllPriorities(APriority: integer); override;
+
+    procedure AddChangeHandler(AnHandler: TNotifyEvent);
+    procedure RemoveChangeHandler(AnHandler: TNotifyEvent);
 
     property Caption: PString read FCaption;                        // will never be nil
     property StoredName: string read FStoredName write FStoredName; // name for storage (e.g. xml)
@@ -753,6 +758,8 @@ begin
   inherited DoChanged;
   if FOnChange <> nil then
     FOnChange(Self);
+  if FChangeHandlers <> nil then
+    FChangeHandlers.CallNotifyEvents(Self);
 end;
 
 procedure TLazEditTextAttribute.Init;
@@ -844,6 +851,12 @@ begin
     FStoredName := FCaption^;
 end;
 
+destructor TLazEditTextAttribute.Destroy;
+begin
+  inherited Destroy;
+  FChangeHandlers.Free;
+end;
+
 procedure TLazEditTextAttribute.InternalSaveDefaultValues;
 begin
   FDefaultColors        := FColors;
@@ -864,6 +877,20 @@ begin
     FPriority[c] := APriority;
   for f := low(TFontStyle) to high(TFontStyle) do
     FStylePriority[f] := APriority;
+end;
+
+procedure TLazEditTextAttribute.AddChangeHandler(AnHandler: TNotifyEvent);
+begin
+  if FChangeHandlers = nil then
+    FChangeHandlers := TMethodList.Create;
+  FChangeHandlers.Add(TMethod(AnHandler));
+end;
+
+procedure TLazEditTextAttribute.RemoveChangeHandler(AnHandler: TNotifyEvent);
+begin
+  if FChangeHandlers = nil then
+    exit;
+  FChangeHandlers.Remove(TMethod(AnHandler));
 end;
 
 { TLazEditTextAttributeModifier }
@@ -1039,9 +1066,10 @@ begin
   case Action of
     cnAdded: begin
       FOwner.AddAttribute(TheItem.Attribute);
-      TheItem.Attribute.OnChange := @DoAttribChaged;
+      TheItem.Attribute.AddChangeHandler(@DoAttribChaged);
     end;
     cnExtracting, cnDeleting: begin
+      TheItem.Attribute.RemoveChangeHandler(@DoAttribChaged);
       FOwner.RemoveAttribute(TheItem.Attribute);
     end;
   end;

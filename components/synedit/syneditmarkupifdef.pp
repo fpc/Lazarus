@@ -648,10 +648,10 @@ begin
   MarkupInfoTempEnabled.ForePriority := 99999+1;
   MarkupInfoTempDisabled.ForePriority := 99999+1;
 
-  MarkupInfoDisabled.OnChange := @MarkupChanged;
-  MarkupInfoEnabled.OnChange := @MarkupChanged;
-  MarkupInfoTempEnabled.OnChange := @MarkupChanged;
-  MarkupInfoTempDisabled.OnChange := @MarkupChanged;
+  MarkupInfoDisabled.AddChangeHandler(@MarkupChanged);
+  MarkupInfoEnabled.AddChangeHandler(@MarkupChanged);
+  MarkupInfoTempEnabled.AddChangeHandler(@MarkupChanged);
+  MarkupInfoTempDisabled.AddChangeHandler(@MarkupChanged);
 end;
 
 destructor TSynEditMarkupIfDefNodes.Destroy;
@@ -3993,13 +3993,13 @@ begin
   MarkupInfoTempDisabled.ForeAlpha := 140;
   MarkupInfoTempDisabled.ForePriority := 99999;
 
-  FMarkupEnabled.MarkupInfo.OnChange := @MarkupChanged;
-  FMarkupTemp.MarkupInfo.OnChange := @MarkupChanged;
-  FMarkupEnabledTemp.MarkupInfo.OnChange := @MarkupChanged;
-  FMarkupNodes.MarkupInfoDisabled.OnChange := @MarkupChanged;
-  FMarkupNodes.MarkupInfoEnabled.OnChange := @MarkupChanged;
-  FMarkupNodes.MarkupInfoTempDisabled.OnChange := @MarkupChanged;
-  FMarkupNodes.MarkupInfoTempEnabled.OnChange := @MarkupChanged;
+  FMarkupEnabled.MarkupInfo.AddChangeHandler(@MarkupChanged);
+  FMarkupTemp.MarkupInfo.AddChangeHandler(@MarkupChanged);
+  FMarkupEnabledTemp.MarkupInfo.AddChangeHandler(@MarkupChanged);
+  FMarkupNodes.MarkupInfoDisabled.AddChangeHandler(@MarkupChanged);
+  FMarkupNodes.MarkupInfoEnabled.AddChangeHandler(@MarkupChanged);
+  FMarkupNodes.MarkupInfoTempDisabled.AddChangeHandler(@MarkupChanged);
+  FMarkupNodes.MarkupInfoTempEnabled.AddChangeHandler(@MarkupChanged);
 
   DecPaintLock;
 end;

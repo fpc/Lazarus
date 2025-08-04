@@ -3875,9 +3875,9 @@ begin
 
   CompilerMode:=pcmDelphi;
   SetAttributesOnChange(@DefHighlightChange);
-  fPasDocKeyWordAttri.OnChange := @PasDocAttrChanged;
-  fPasDocSymbolAttri.OnChange := @PasDocAttrChanged;
-  fPasDocUnknownAttr.OnChange := @PasDocAttrChanged;
+  fPasDocKeyWordAttri.AddChangeHandler(@PasDocAttrChanged);
+  fPasDocSymbolAttri.AddChangeHandler(@PasDocAttrChanged);
+  fPasDocUnknownAttr.AddChangeHandler(@PasDocAttrChanged);
 
   InitIdent;
   MakeMethodTables;
@@ -7517,7 +7517,7 @@ end;
 constructor TSynPasSynCustomToken.Create;
 begin
     FMarkup := TSynHighlighterAttributesModifier.Create;
-    FMarkup.OnChange := @DoMarkupChaged;
+    FMarkup.AddChangeHandler(@DoMarkupChaged);
     FTokens := TStringList.Create;
     TStringList(FTokens).OnChange := @DoTokensChanged;
     FMatchTokenKinds := [];

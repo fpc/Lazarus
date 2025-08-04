@@ -968,7 +968,7 @@ begin
   for i := FColorCount to AValue - 1 do begin
     fMarkupColors[i] := TSynSelectedColor.Create;
     fMarkupColors[i].Clear;
-    fMarkupColors[i].OnChange := @ColorChanged;
+    fMarkupColors[i].AddChangeHandler(@ColorChanged);
     fLineColors[i] := TMarkupFoldColorsLineColor.Create;
     fLineColors[i].OnChange := @ColorChanged;
   end;

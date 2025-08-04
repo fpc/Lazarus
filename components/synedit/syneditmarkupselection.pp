@@ -125,8 +125,8 @@ begin
   FMarkupInfoSelection.FrameStyle := slsSolid;
   FMarkupInfoSelection.FrameEdges := sfeAround;
   FMarkupInfoSelection.InternalSaveDefaultValues;
+  FMarkupInfoSelection.AddChangeHandler(@MarkupChangedIntern);
 
-  FMarkupInfoSelection.OnChange := @MarkupChangedIntern;
   FMarkupInfoIncr := TSynHighlighterAttributesModifier_Eol.Create;
   FMarkupInfoIncr.Background := clHighLight;
   FMarkupInfoIncr.Foreground := clHighLightText;
@@ -134,8 +134,7 @@ begin
   FMarkupInfoIncr.FrameStyle := slsSolid;
   FMarkupInfoIncr.FrameEdges := sfeAround;
   FMarkupInfoIncr.InternalSaveDefaultValues;
-
-  FMarkupInfoIncr.OnChange := @MarkupChangedIntern;
+  FMarkupInfoIncr.AddChangeHandler(@MarkupChangedIntern);
   FColorTillEol := false;
 
   MarkupInfo.Style := [];

@@ -1873,7 +1873,7 @@ begin
   FEndExprScanner := TRegExpr.Create;
   fCaseSensitive := True;
   fMarkerAttri := TSynHighlighterAttributes.Create(@SYNS_AttrMarker, SYNS_XML_AttrMarker);
-  fMarkerAttri.OnChange := @MarkerAttriChanged;
+  fMarkerAttri.AddChangeHandler(@MarkerAttriChanged);
   MarkerAttri.Background := clYellow;
   MarkerAttri.Style := [fsBold];
   MarkerAttri.InternalSaveDefaultValues;

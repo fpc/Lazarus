@@ -426,7 +426,7 @@ begin
   FEnabled := true;
   FTempEnable := 0;
   fMarkupInfo := TSynSelectedColor.Create;
-  fMarkupInfo.OnChange := @MarkupChanged;
+  fMarkupInfo.AddChangeHandler(@MarkupChanged);
 end;
 
 destructor TSynEditMarkup.Destroy;

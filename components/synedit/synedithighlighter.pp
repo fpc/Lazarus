@@ -1160,7 +1160,7 @@ begin
   for i := fAttributes.Count - 1 downto 0 do begin
     Attri := TLazEditTextAttribute(fAttributes[i]);
     if Attri <> nil then begin
-      Attri.OnChange := AEvent;
+      Attri.AddChangeHandler(AEvent);
       Attri.InternalSaveDefaultValues;
     end;
   end;

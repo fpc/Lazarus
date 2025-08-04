@@ -471,7 +471,7 @@ begin
   ViewedTextBuffer.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
   ViewedTextBuffer.AddNotifyHandler(senrBeforeDecPaintLock, @DoIncPaintLock);
   ViewedTextBuffer.AddNotifyHandler(senrAfterDecPaintLock, @DoDecPaintLock);
-  FMarkupInfoCurrentFold.OnChange := @ColorChanged;
+  FMarkupInfoCurrentFold.AddChangeHandler(@ColorChanged);
   UpdateInternalColors;
 end;
 

@@ -661,9 +661,9 @@ constructor TSynPluginSyncronizedEditMarkup.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create(ASynEdit);
   fMarkupInfoCurrent := TSynSelectedColor.Create;
-  fMarkupInfoCurrent.OnChange := @MarkupChanged;
+  fMarkupInfoCurrent.AddChangeHandler(@MarkupChanged);
   fMarkupInfoSync := TSynSelectedColor.Create;
-  fMarkupInfoSync.OnChange := @MarkupChanged;
+  fMarkupInfoSync.AddChangeHandler(@MarkupChanged);
   FPreparedRow := -1;
 end;
 
@@ -856,13 +856,13 @@ end;
 constructor TSynPluginSyncronizedEditBase.Create(AOwner: TComponent);
 begin
   fMarkupInfo := TSynSelectedColor.Create;
-  fMarkupInfo.OnChange := @MarkupChanged;
+  fMarkupInfo.AddChangeHandler(@MarkupChanged);
   fMarkupInfoSync := TSynSelectedColor.Create;
-  fMarkupInfoSync.OnChange := @MarkupChanged;
+  fMarkupInfoSync.AddChangeHandler(@MarkupChanged);
   fMarkupInfoCurrent := TSynSelectedColor.Create;
-  fMarkupInfoCurrent.OnChange := @MarkupChanged;
+  fMarkupInfoCurrent.AddChangeHandler(@MarkupChanged);
   fMarkupInfoArea := TSynSelectedColor.Create;
-  fMarkupInfoArea.OnChange := @MarkupChanged;
+  fMarkupInfoArea.AddChangeHandler(@MarkupChanged);
 
   MarkupInfo.FrameColor := clMaroon;
   MarkupInfo.Background := clNone;
