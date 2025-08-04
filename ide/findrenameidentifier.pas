@@ -332,8 +332,7 @@ begin
         exit;
       end;
 
-      if (ParentNode.Desc in [ctnClassPublic,ctnClassPublished])
-          and (ParentNode.Parent.Desc=ctnClass) then
+      if (ParentNode.Desc=ctnClassPublished) and (ParentNode.Parent.Desc=ctnClass) then
       begin
         Node:=ParentNode.Parent.Parent;
         if NodeIsRootClassComponent(Node,UnitInfo.Component) then begin
@@ -342,12 +341,11 @@ begin
         end;
       end;
     end else if DeclNode.Desc=ctnProcedure then begin
-      if (ParentNode.Desc in AllClassBaseSections)
-          and (ParentNode.Parent.Desc=ctnClass) then
+      if (ParentNode.Desc=ctnClassPublished) and (ParentNode.Parent.Desc=ctnClass) then
       begin
         Node:=ParentNode.Parent.Parent;
         if NodeIsRootClassComponent(Node,UnitInfo.Component) then begin
-          // renaming a method of the designer component class
+          // renaming a published method of the designer component class
           // todo
         end;
       end;
