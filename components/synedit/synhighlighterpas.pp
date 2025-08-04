@@ -600,9 +600,9 @@ type
     PSynPasSynCustomTokenInfoListEx = ^TSynPasSynCustomTokenInfoListEx;
   private
     FCaseLabelAttriMatchesElseOtherwise: Boolean;
-    FCommentAnsiAttri: TSynHighlighterAttributesModifier;
-    FCommentCurlyAttri: TSynHighlighterAttributesModifier;
-    FCommentSlashAttri: TSynHighlighterAttributesModifier;
+    FCommentAnsiAttri: TSynHighlighterAttributesModifier_Eol;
+    FCommentCurlyAttri: TSynHighlighterAttributesModifier_Eol;
+    FCommentSlashAttri: TSynHighlighterAttributesModifier_Eol;
     FNestedBracketAttribs: TLazEditTextAttributeModifierCollection;
     FNestedBracketMergedMarkup: TSynSelectedColorMergeResult;
     FHighNestedBracketAttrib: integer;
@@ -669,18 +669,18 @@ type
     FTokenTypeDeclExtraAttrib, FLastTokenTypeDeclExtraAttrib: TTokenTypeDeclExtraAttrib;
     FTokenIsCaseLabel: Boolean;
     FTokenIsValueOrTypeName: Boolean;
-    fStringAttri: TSynHighlighterAttributes;
+    fStringAttri: TSynHighlighterAttributes_Eol;
     fNumberAttri: TSynHighlighterAttributes;
     fKeyAttri: TSynHighlighterAttributes;
     fModifierAttri: TSynHighlighterAttributes;
     fSymbolAttri: TSynHighlighterAttributes;
     fAsmAttri: TSynHighlighterAttributes;
-    fCommentAttri: TSynHighlighterAttributes;
-    FIDEDirectiveAttri: TSynHighlighterAttributesModifier;
+    fCommentAttri: TSynHighlighterAttributes_Eol;
+    FIDEDirectiveAttri: TSynHighlighterAttributesModifier_Eol;
     fIdentifierAttri: TSynHighlighterAttributes;
     fSpaceAttri: TSynHighlighterAttributes;
     FCaseLabelAttri: TSynHighlighterAttributesModifier;
-    fDirectiveAttri: TSynHighlighterAttributes;
+    fDirectiveAttri: TSynHighlighterAttributes_Eol;
     FCompilerMode: TPascalCompilerMode;
     FModeSwitches: TPascalCompilerModeSwitches;
     FModeSwitchesLoaded: Boolean;
@@ -1013,12 +1013,12 @@ type
     property TypeHelpers: boolean read GetTypeHelpers write SetTypeHelpers stored False; deprecated 'Use ModeSwitches / Will be removed in 5.99';
   published
     property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
+    property CommentAttri: TSynHighlighterAttributes_Eol read fCommentAttri
       write fCommentAttri;
-    property CommentAnsiAttri: TSynHighlighterAttributesModifier read FCommentAnsiAttri write FCommentAnsiAttri;
-    property CommentCurlyAttri: TSynHighlighterAttributesModifier read FCommentCurlyAttri write FCommentCurlyAttri;
-    property CommentSlashAttri: TSynHighlighterAttributesModifier read FCommentSlashAttri write FCommentSlashAttri;
-    property IDEDirectiveAttri: TSynHighlighterAttributesModifier read FIDEDirectiveAttri
+    property CommentAnsiAttri: TSynHighlighterAttributesModifier_Eol read FCommentAnsiAttri write FCommentAnsiAttri;
+    property CommentCurlyAttri: TSynHighlighterAttributesModifier_Eol read FCommentCurlyAttri write FCommentCurlyAttri;
+    property CommentSlashAttri: TSynHighlighterAttributesModifier_Eol read FCommentSlashAttri write FCommentSlashAttri;
+    property IDEDirectiveAttri: TSynHighlighterAttributesModifier_Eol read FIDEDirectiveAttri
       write FIDEDirectiveAttri;
     property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
       write fIdentifierAttri;
@@ -1028,7 +1028,7 @@ type
       write fNumberAttri;
     property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
       write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
+    property StringAttri: TSynHighlighterAttributes_Eol read fStringAttri
       write fStringAttri;
     property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
       write fSymbolAttri;
@@ -1063,7 +1063,7 @@ type
 
     property CaseLabelAttri: TSynHighlighterAttributesModifier read FCaseLabelAttri
       write FCaseLabelAttri;
-    property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
+    property DirectiveAttri: TSynHighlighterAttributes_Eol read fDirectiveAttri
       write fDirectiveAttri;
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write SetModeSwitches;
@@ -3785,19 +3785,19 @@ begin
   fD4syntax := true;
   fAsmAttri := TSynHighlighterAttributes.Create(@SYNS_AttrAssembler, SYNS_XML_AttrAssembler);
   AddAttribute(fAsmAttri);
-  fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment, [lafPastEOL]);
+  fCommentAttri := TSynHighlighterAttributes_Eol.Create(@SYNS_AttrComment, SYNS_XML_AttrComment, [lafPastEOL]);
   fCommentAttri.Style:= [fsItalic];
   fCommentAttri.Features:= [lafPastEOL];
   AddAttribute(fCommentAttri);
-  FCommentAnsiAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentAnsi, SYNS_XML_AttrCommentAnsi, [lafPastEOL]);
+  FCommentAnsiAttri := TSynHighlighterAttributesModifier_Eol.Create(@SYNS_AttrCommentAnsi, SYNS_XML_AttrCommentAnsi, [lafPastEOL]);
   FCommentAnsiAttri.Features:= [lafPastEOL];
   AddAttribute(FCommentAnsiAttri);
-  FCommentCurlyAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentCurly, SYNS_XML_AttrCommentCurly, [lafPastEOL]);
+  FCommentCurlyAttri := TSynHighlighterAttributesModifier_Eol.Create(@SYNS_AttrCommentCurly, SYNS_XML_AttrCommentCurly, [lafPastEOL]);
   FCommentCurlyAttri.Features:= [lafPastEOL];
   AddAttribute(FCommentCurlyAttri);
-  FCommentSlashAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCommentSlash, SYNS_XML_AttrCommentSlash, [lafPastEOL]);
+  FCommentSlashAttri := TSynHighlighterAttributesModifier_Eol.Create(@SYNS_AttrCommentSlash, SYNS_XML_AttrCommentSlash, [lafPastEOL]);
   AddAttribute(FCommentSlashAttri);
-  FIDEDirectiveAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective, [lafPastEOL]);
+  FIDEDirectiveAttri := TSynHighlighterAttributesModifier_Eol.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective, [lafPastEOL]);
   FIDEDirectiveAttri.Features:= [lafPastEOL];
   AddAttribute(FIDEDirectiveAttri);
   FCurIDEDirectiveAttri := TSynSelectedColorMergeResult.Create;
@@ -3813,7 +3813,7 @@ begin
   AddAttribute(fNumberAttri);
   fSpaceAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
   AddAttribute(fSpaceAttri);
-  fStringAttri := TSynHighlighterAttributes.Create(@SYNS_AttrString, SYNS_XML_AttrString);
+  fStringAttri := TSynHighlighterAttributes_Eol.Create(@SYNS_AttrString, SYNS_XML_AttrString);
   AddAttribute(fStringAttri);
   fSymbolAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
@@ -3849,7 +3849,7 @@ begin
   AddAttribute(FCaseLabelAttri);
   FCurCaseLabelAttri := TSynSelectedColorMergeResult.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   FCurProcTypeDeclExtraAttr := TSynSelectedColorMergeResult.Create(@SYNS_AttrProcedureHeaderName, SYNS_XML_AttrProcedureHeaderName);
-  fDirectiveAttri := TSynHighlighterAttributes.Create(@SYNS_AttrDirective, SYNS_XML_AttrDirective, [lafPastEOL]);
+  fDirectiveAttri := TSynHighlighterAttributes_Eol.Create(@SYNS_AttrDirective, SYNS_XML_AttrDirective, [lafPastEOL]);
   fDirectiveAttri.Style:= [fsItalic];
   fDirectiveAttri.Features:= [lafPastEOL];
   AddAttribute(fDirectiveAttri);

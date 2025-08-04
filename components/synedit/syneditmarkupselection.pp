@@ -37,8 +37,8 @@ type
   private
     FSelection: TSynEditSelection;
     FColorTillEol: boolean; // colorize selection only till EOL
-    FMarkupInfoIncr: TSynHighlighterAttributesModifier; // Markup during incremental search
-    FMarkupInfoSelection: TSynHighlighterAttributesModifier; // Markup for normal Selection
+    FMarkupInfoIncr: TSynHighlighterAttributesModifier_Eol; // Markup during incremental search
+    FMarkupInfoSelection: TSynHighlighterAttributesModifier_Eol; // Markup for normal Selection
     FUseIncrementalColor : Boolean;
     nSelStart, nSelEnd: integer; // start, end of selected area in current line (physical)
     procedure SetColorTillEol(AValue: boolean);
@@ -64,8 +64,8 @@ type
 
     property ColorTillEol: boolean read FColorTillEol write SetColorTillEol;
     property UseIncrementalColor : Boolean read FUseIncrementalColor write SetUseIncrementalColor;
-    property MarkupInfoSeletion : TSynHighlighterAttributesModifier read FMarkupInfoSelection;
-    property MarkupInfoIncr : TSynHighlighterAttributesModifier read FMarkupInfoIncr;
+    property MarkupInfoSeletion : TSynHighlighterAttributesModifier_Eol read FMarkupInfoSelection;
+    property MarkupInfoIncr : TSynHighlighterAttributesModifier_Eol read FMarkupInfoIncr;
   end;
 
 implementation
@@ -117,10 +117,24 @@ constructor TSynEditMarkupSelection.Create(ASynEdit : TSynEditBase; ASelection: 
 begin
   inherited Create(ASynEdit);
   FSelection := ASelection;
-  FMarkupInfoSelection := TSynSelectedColor.Create([lafPastEOL]);
+  FMarkupInfoSelection := TSynHighlighterAttributesModifier_Eol.Create([lafPastEOL]);
   FMarkupInfoSelection.Features := [lafPastEOL];
+  FMarkupInfoSelection.Background := clHighLight;
+  FMarkupInfoSelection.Foreground := clHighLightText;
+  FMarkupInfoSelection.FrameColor := clNone;
+  FMarkupInfoSelection.FrameStyle := slsSolid;
+  FMarkupInfoSelection.FrameEdges := sfeAround;
+  FMarkupInfoSelection.InternalSaveDefaultValues;
+
   FMarkupInfoSelection.OnChange := @MarkupChangedIntern;
-  FMarkupInfoIncr := TSynSelectedColor.Create;
+  FMarkupInfoIncr := TSynHighlighterAttributesModifier_Eol.Create;
+  FMarkupInfoIncr.Background := clHighLight;
+  FMarkupInfoIncr.Foreground := clHighLightText;
+  FMarkupInfoIncr.FrameColor := clNone;
+  FMarkupInfoIncr.FrameStyle := slsSolid;
+  FMarkupInfoIncr.FrameEdges := sfeAround;
+  FMarkupInfoIncr.InternalSaveDefaultValues;
+
   FMarkupInfoIncr.OnChange := @MarkupChangedIntern;
   FColorTillEol := false;
 

@@ -90,8 +90,6 @@ type
     property UnderlinePriority;
     property StrikeOutPriority;
 
-    property Features;
-
     property OnChange;
   end;
   TSynHighlighterAttributesModifier = class(TLazEditTextAttributeModifier)
@@ -113,8 +111,6 @@ type
     property UnderlinePriority;
     property StrikeOutPriority;
 
-    property Features;
-
     property OnChange;
   published
     property BackAlpha;
@@ -122,6 +118,16 @@ type
     property FrameAlpha;
 
     property StyleMask;
+  end;
+
+  TSynHighlighterAttributes_Eol = class(TSynHighlighterAttributes)
+  published
+    property ExtendPastEol;
+  end;
+
+  TSynHighlighterAttributesModifier_Eol = class(TSynHighlighterAttributesModifier)
+  published
+    property ExtendPastEol;
   end;
 
   { TSynHighlighterAttributesHelper }

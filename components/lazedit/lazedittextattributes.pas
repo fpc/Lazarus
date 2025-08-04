@@ -116,6 +116,7 @@ type
     function GetStyle: TFontStyles; inline;
     function GetStyleMask: TFontStyles; virtual;
     function GetStylePriority({%H-}AnIndex: TFontStyle): integer; virtual;
+    function GetFeature({%H-}AnIndex: TLazTextAttributeFeature): Boolean;
     procedure SetColor(AnIndex: TLazTextAttributeColor; AValue: TColor);
     procedure SetAlpha({%H-}AnIndex: TLazTextAttributeColor; {%H-}AValue: byte); virtual;
     procedure SetPriority({%H-}AnIndex: TLazTextAttributeColor; {%H-}AValue: integer); virtual;
@@ -124,6 +125,7 @@ type
     procedure SetStyle(AValue: TFontStyles);
     procedure SetStyleMask({%H-}AValue: TFontStyles); virtual;
     procedure SetStylePriority({%H-}AnIndex: TFontStyle; {%H-}AValue: integer); virtual;
+    procedure SetFeature(AnIndex: TLazTextAttributeFeature; AValue: Boolean);
     procedure SetFeatures(AValue: TLazTextAttributeFeatures);
   protected
     procedure Changed;
@@ -187,6 +189,8 @@ type
     property StrikeOutPriority: integer index fsStrikeOut read GetStylePriority write SetStylePriority;
 
     property Features: TLazTextAttributeFeatures read FFeatures write SetFeatures;
+
+    property ExtendPastEol: boolean index lafPastEOL read GetFeature write SetFeature;
   end;
 
   { TLazEditTextAttribute }
@@ -425,6 +429,11 @@ begin
   Result := 0;
 end;
 
+function TLazCustomEditTextAttribute.GetFeature(AnIndex: TLazTextAttributeFeature): Boolean;
+begin
+  Result := AnIndex in Features;
+end;
+
 procedure TLazCustomEditTextAttribute.SetColor(AnIndex: TLazTextAttributeColor; AValue: TColor);
 begin
   if FColors[AnIndex] = AValue then
@@ -479,6 +488,15 @@ procedure TLazCustomEditTextAttribute.SetStylePriority(AnIndex: TFontStyle; AVal
 begin
   assert(false, 'TLazCustomEditTextAttribute.SetStylePriority: abstract');
   //raise exception.Create('abstract');
+end;
+
+procedure TLazCustomEditTextAttribute.SetFeature(AnIndex: TLazTextAttributeFeature; AValue: Boolean
+  );
+begin
+  if AValue then
+    Features := Features + [AnIndex]
+  else
+    Features := Features - [AnIndex];
 end;
 
 procedure TLazCustomEditTextAttribute.SetFeatures(AValue: TLazTextAttributeFeatures);
