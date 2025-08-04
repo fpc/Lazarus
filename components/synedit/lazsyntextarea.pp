@@ -129,7 +129,7 @@ type
     FHighlighter: TSynCustomHighlighter;
     FMarkupManager: TSynEditMarkupManager;
     FTokenBreaker: TLazSynPaintTokenBreaker;
-    FPaintLineColor, FPaintLineColor2: TSynSelectedColor;
+    FPaintLineColor, FPaintLineColor2: TLazEditTextAttributeModifier;
     FForegroundColor: TColor;
     FBackgroundColor: TColor;
     FRightEdgeColor: TColor;

@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls,
-  SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditHighlighter, SynEditHighlighterFoldBase, LazEditTextAttributes;
 
 type
 
@@ -55,7 +55,7 @@ type
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
     procedure DoEnabledChanged(Sender: TObject); override;
     procedure DoVisibleChanged(AVisible: Boolean); override;
     procedure InvalidateCurrentHighlight;
@@ -65,7 +65,7 @@ type
 
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -326,7 +326,7 @@ begin
   InvalidateCurrentHighlight;
 end;
 
-procedure TSynEditMarkupWordGroup.DoMarkupChanged(AMarkup: TSynSelectedColor);
+procedure TSynEditMarkupWordGroup.DoMarkupChanged(AMarkup: TLazEditTextAttribute);
 begin
   FForceInvalidate := True;
   InvalidateCurrentHighlight;
@@ -396,7 +396,7 @@ begin
 end;
 
 function TSynEditMarkupWordGroup.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 begin
   Result := nil;
   if (FHighlightPos1.y = aRow) and

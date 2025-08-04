@@ -33,8 +33,9 @@ uses
   // LazControls
   DividerBevel,
   // SynEdit
-  SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber,
-  SynEditTypes, SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynEditStrConst,
+  SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
+  SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynEditStrConst,
+  SynEditMarkupSpecialLine,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
   EditorSyntaxHighlighterDef, LazEditTextAttributes,
@@ -172,8 +173,8 @@ type
     procedure ApplyCurrentScheme;
 
     procedure StatusChange(Sender: TObject; {%H-}Changes: TSynStatusChanges);
-    procedure SpecialLineMarkup(Sender: TObject; Line: Integer;
-      var Special: boolean; aMarkup: TSynSelectedColor);
+    procedure SpecialLineMarkup(Sender: TObject; const Info: TSpecialLineMarkupExInfo;
+      var Special: boolean; aMarkup: TLazEditTextAttributeModifier);
 
     function GeneralPage: TEditorGeneralOptionsFrame;
     function DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
@@ -1684,7 +1685,7 @@ begin
     for i := Low(PreviewEdits) to High(PreviewEdits) do
     begin
       PreviewEdits[i].OnStatusChange := @StatusChange;
-      PreviewEdits[i].OnSpecialLineMarkup := @SpecialLineMarkup;
+      PreviewEdits[i].OnSpecialLineMarkupEx := @SpecialLineMarkup;
     end;
 
   with AOptions as TEditorOptions do
@@ -1831,14 +1832,15 @@ begin
 end;
 
 procedure TEditorColorOptionsFrame.SpecialLineMarkup(Sender: TObject;
-  Line: Integer; var Special: boolean; aMarkup: TSynSelectedColor);
+  const Info: TSpecialLineMarkupExInfo; var Special: boolean;
+  aMarkup: TLazEditTextAttributeModifier);
 var
   e: TColorSchemeAttribute;
   AddAttr: TAdditionalHilightAttribute;
 begin
   if CurLanguageID < 0 then
     exit;
-  AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(Line);
+  AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(Info.Line);
   if (AddAttr <> ahaNone) and (AddAttr <> ahaFoldedCode) then begin
     e := FCurrentColorScheme.AttributeByEnum[AddAttr];
     if e <> nil then begin

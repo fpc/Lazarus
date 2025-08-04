@@ -35,7 +35,7 @@ type
     FSkipStartLine, FSkipEndLine: integer;
     FNxtIdx, FMrkIdx: integer;
     function GetStartOfComment(var ALineNum: integer; out ALogX: integer): boolean;
-    function MarkupFor(AKind: TToDoType): TSynSelectedColor;
+    function MarkupFor(AKind: TToDoType): TLazEditTextAttributeModifier;
   public
     procedure BeginMarkup; override;
     procedure PrepareMarkupForRow(aRow: Integer); override;
@@ -44,9 +44,9 @@ type
       ANextPhys, ANextLog: Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
       const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo
-      ): TSynSelectedColor; override;
+      ): TLazEditTextAttributeModifier; override;
     function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
-      const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor; override;
+      const aWrapCol: TLazSynDisplayTokenBound): TLazEditTextAttributeModifier; override;
     function CursorInsideToDo(aSrcPos: TPoint; out aToDo: TFoundTodo): boolean;
   end;
 
@@ -146,7 +146,7 @@ end;
 
 { TSynEditTodoMarkup }
 
-function TSynEditTodoMarkup.MarkupFor(AKind: TToDoType): TSynSelectedColor;
+function TSynEditTodoMarkup.MarkupFor(AKind: TToDoType): TLazEditTextAttributeModifier;
 begin
   case AKind of
     tdTodo: Result := CommentAttribTodo;
@@ -572,7 +572,7 @@ end;
 
 function TSynEditTodoMarkup.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo
-  ): TSynSelectedColor;
+  ): TLazEditTextAttributeModifier;
 begin
   Result := nil;
   while (Result = nil) and (FMrkIdx < Length(FFoundPos)) do begin
@@ -597,7 +597,7 @@ begin
 end;
 
 function TSynEditTodoMarkup.GetMarkupAttributeAtWrapEnd(const aRow: Integer;
-  const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor;
+  const aWrapCol: TLazSynDisplayTokenBound): TLazEditTextAttributeModifier;
 begin
   Result := nil;
   if aWrapCol.Logical > FLineLen then

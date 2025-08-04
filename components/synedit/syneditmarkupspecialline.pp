@@ -26,12 +26,19 @@ unit SynEditMarkupSpecialLine;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses;
+  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, SynEditHighlighter,
+  LazEditTextAttributes;
 
 type
+  TSpecialLineMarkupExInfo = record
+    Line: integer;
+    IsCurrent, HasCurrentMarkup: boolean;
+  end;
 
   TSpecialLineMarkupEvent = procedure(Sender: TObject; Line: integer;
-    var Special: boolean; Markup: TSynSelectedColor) of object;
+    var Special: boolean; Markup: TSynSelectedColor) of object deprecated; // 'kept for LFM';
+  TSpecialLineMarkupExEvent = procedure(Sender: TObject; const Info: TSpecialLineMarkupExInfo;
+    var Special: boolean; Markup: TLazEditTextAttributeModifier) of object;
   TSpecialLineColorsEvent = procedure(Sender: TObject; Line: integer;
     var Special: boolean; var FG, BG: TColor) of object;
 
@@ -39,9 +46,11 @@ type
 
   TSynEditMarkupSpecialLine = class(TSynEditMarkup)
   private
-    FMarkupLineHighlightInfo: TSynSelectedColor;
+    FMarkupLineHighlightInfo: TSynHighlighterAttributesModifier;
+    FInternalEventColors: TSynSelectedColor;
     FOnSpecialLineColors: TSpecialLineColorsEvent;
     FOnSpecialLineMarkup: TSpecialLineMarkupEvent;
+    FOnSpecialLineMarkupEx: TSpecialLineMarkupExEvent;
     FSpecialLine : Boolean;
     FHighlightedLine: Integer;
   protected
@@ -51,7 +60,7 @@ type
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
     procedure DoEnabledChanged(Sender: TObject); override;
   public
     constructor Create(ASynEdit: TSynEditBase);
@@ -60,23 +69,25 @@ type
     procedure PrepareMarkupForRow(ARow: Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
     function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
-      const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor; override;
+      const aWrapCol: TLazSynDisplayTokenBound): TLazEditTextAttributeModifier; override;
     function RealEnabled: Boolean; override;
 
     procedure InvalidateLineHighlight;
 
-    property MarkupLineHighlightInfo: TSynSelectedColor read FMarkupLineHighlightInfo;
+    property MarkupLineHighlightInfo: TSynHighlighterAttributesModifier read FMarkupLineHighlightInfo;
 
     property OnSpecialLineColors: TSpecialLineColorsEvent
       read FOnSpecialLineColors write FOnSpecialLineColors;
     property OnSpecialLineMarkup: TSpecialLineMarkupEvent
-      read FOnSpecialLineMarkup write FOnSpecialLineMarkup;
+      read FOnSpecialLineMarkup write FOnSpecialLineMarkup; deprecated;
+    property OnSpecialLineMarkupEx: TSpecialLineMarkupExEvent
+      read FOnSpecialLineMarkupEx write FOnSpecialLineMarkupEx;
   end;
 
 implementation
@@ -120,7 +131,7 @@ begin
   InvalidateLineHighlight;
 end;
 
-procedure TSynEditMarkupSpecialLine.DoMarkupChanged(AMarkup: TSynSelectedColor);
+procedure TSynEditMarkupSpecialLine.DoMarkupChanged(AMarkup: TLazEditTextAttribute);
 begin
   InvalidateLineHighlight;
 end;
@@ -134,6 +145,7 @@ function TSynEditMarkupSpecialLine.RealEnabled: Boolean;
 begin
   Result := Enabled and (not IsTempDisabled) and
     (Assigned(FOnSpecialLineMarkup) or Assigned(FOnSpecialLineColors) or
+     Assigned(FOnSpecialLineMarkupEx) or
      HasLineHighlight
     );
 end;
@@ -148,6 +160,8 @@ begin
   FMarkupLineHighlightInfo.Foreground := clNone;
   FMarkupLineHighlightInfo.OnChange := @DoMarkupLineHighlightInfoChange;
 
+  FInternalEventColors := TSynSelectedColor.Create;
+
   MarkupInfo.Style := [];
   MarkupInfo.StyleMask := [];
 end;
@@ -155,17 +169,29 @@ end;
 destructor TSynEditMarkupSpecialLine.Destroy;
 begin
   FMarkupLineHighlightInfo.Free;
+  FInternalEventColors.Free;
   inherited Destroy;
 end;
 
 procedure TSynEditMarkupSpecialLine.PrepareMarkupForRow(ARow: Integer);
 var
   colFg, colBg: TColor;
+  Info: TSpecialLineMarkupExInfo;
 begin
   FSpecialLine := False;
-  if Assigned(FOnSpecialLineMarkup) then
-    FOnSpecialLineMarkup(SynEdit, ARow, FSpecialLine, MarkupInfo);
-    
+  if Assigned(FOnSpecialLineMarkup) then begin
+    FInternalEventColors.Assign(MarkupInfo);
+    FOnSpecialLineMarkup(SynEdit, ARow, FSpecialLine, FInternalEventColors);
+    MarkupInfo.Assign(FInternalEventColors);
+  end;
+
+  if Assigned(FOnSpecialLineMarkupEx) then begin
+    info.Line := ARow;
+    info.IsCurrent        := FHighlightedLine = ARow;
+    Info.HasCurrentMarkup := HasLineHighlight;
+    FOnSpecialLineMarkupEx(SynEdit, Info, FSpecialLine, MarkupInfo);
+  end;
+
   if Assigned(FOnSpecialLineColors) then
   begin
     if FSpecialLine then
@@ -195,7 +221,7 @@ begin
 end;
 
 function TSynEditMarkupSpecialLine.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 begin
   Result := nil;
   MarkupInfo.SetFrameBoundsPhys(1, MaxInt);
@@ -213,7 +239,7 @@ end;
 
 function TSynEditMarkupSpecialLine.GetMarkupAttributeAtWrapEnd(
   const aRow: Integer; const aWrapCol: TLazSynDisplayTokenBound
-  ): TSynSelectedColor;
+  ): TLazEditTextAttributeModifier;
 begin
   Result := nil;
   MarkupInfo.SetFrameBoundsPhys(1, MaxInt);

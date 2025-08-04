@@ -34,7 +34,7 @@ uses
   // SynEdit
   SynEditMarkup, SynEditTypes, SynEditSearch, SynEditMiscClasses,
   SynEditHighlighter, SynEditPointClasses, SynEditMiscProcs,
-  SynEditTextBase, LazSynEditText;
+  SynEditTextBase, LazSynEditText, LazEditTextAttributes;
 
 type
 
@@ -114,7 +114,7 @@ type
     function  HasDisplayAbleMatches: Boolean; virtual;
     function  CreateMatchList: TSynMarkupHighAllMatchList; virtual;
     function  MarkupIdForMatch(Idx: Integer): Integer; virtual;
-    function  MarkupInfoForId(Idx: Integer): TSynSelectedColor; virtual;
+    function  MarkupInfoForId(Idx: Integer): TSynHighlighterAttributesModifier; virtual;
     property  Matches: TSynMarkupHighAllMatchList read FMatches;
 
     function  GetMarkupAttrIdAtRowCol(const aRow: Integer; const aStartCol: TLazSynDisplayTokenBound;
@@ -127,7 +127,7 @@ type
     procedure EndMarkup; override;
     function  GetMarkupAttributeAtRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                         const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -139,21 +139,21 @@ type
 
   TSynEditMarkupHighlightMultiMatches = class(TSynEditMarkupHighlightMatches)
   private
-    FMarkupInfos: array of TSynSelectedColor;
+    FMarkupInfos: array of TSynHighlighterAttributesModifier;
     function GetMarkupInfoCount: integer;
-    function GetMarkupInfos(AnIndex: Integer): TSynSelectedColor;
+    function GetMarkupInfos(AnIndex: Integer): TSynHighlighterAttributesModifier;
     function GetMatches: TSynMarkupHighAllMultiMatchList;
     procedure SetMarkupInfoCount(AValue: integer);
   protected
     function  CreateMatchList: TSynMarkupHighAllMatchList; override;
     function  MarkupIdForMatch(Idx: Integer): Integer; override;
-    function  MarkupInfoForId(Idx: Integer): TSynSelectedColor; override;
+    function  MarkupInfoForId(Idx: Integer): TSynHighlighterAttributesModifier; override;
 
     property  Matches: TSynMarkupHighAllMultiMatchList read GetMatches;
   public
     destructor Destroy; override;
     property MarkupInfoCount: integer read GetMarkupInfoCount write SetMarkupInfoCount;
-    property MarkupInfos[AnIndex: Integer]: TSynSelectedColor read GetMarkupInfos;
+    property MarkupInfos[AnIndex: Integer]: TSynHighlighterAttributesModifier read GetMarkupInfos;
   end;
 
 
@@ -190,7 +190,7 @@ type
 
     procedure DoTopLineChanged(OldTopLine : Integer); override;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); override;
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
     procedure DoEnabledChanged(Sender: TObject); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override; // 1 based
     procedure DoVisibleChanged(AVisible: Boolean); override;
@@ -456,7 +456,7 @@ type
     procedure SelectionChanged(Sender: TObject);
     procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
     procedure DoOptionsChanged;override;
     procedure RestartTimer;
     procedure ScrollTimerHandler(Sender: TObject);
@@ -503,7 +503,7 @@ begin
   Result := 0;
 end;
 
-function TSynEditMarkupHighlightMatches.MarkupInfoForId(Idx: Integer): TSynSelectedColor;
+function TSynEditMarkupHighlightMatches.MarkupInfoForId(Idx: Integer): TSynHighlighterAttributesModifier;
 begin
   Result := MarkupInfo;
 end;
@@ -597,7 +597,7 @@ end;
 
 function TSynEditMarkupHighlightMatches.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound;
-  const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 var
   i, s, e: Integer;
 begin
@@ -646,7 +646,7 @@ begin
   Result := Length(FMarkupInfos);
 end;
 
-function TSynEditMarkupHighlightMultiMatches.GetMarkupInfos(AnIndex: Integer): TSynSelectedColor;
+function TSynEditMarkupHighlightMultiMatches.GetMarkupInfos(AnIndex: Integer): TSynHighlighterAttributesModifier;
 begin
   Result := FMarkupInfos[AnIndex];
 end;
@@ -683,7 +683,7 @@ begin
   Result := Matches.GetMarkupId(Idx);
 end;
 
-function TSynEditMarkupHighlightMultiMatches.MarkupInfoForId(Idx: Integer): TSynSelectedColor;
+function TSynEditMarkupHighlightMultiMatches.MarkupInfoForId(Idx: Integer): TSynHighlighterAttributesModifier;
 begin
   if (Idx < 0) or (Idx >= Length(FMarkupInfos)) then
     Result := MarkupInfo
@@ -2089,7 +2089,7 @@ begin
   ValidateMatches(True);
 end;
 
-procedure TSynEditMarkupHighlightAllBase.DoMarkupChanged(AMarkup : TSynSelectedColor);
+procedure TSynEditMarkupHighlightAllBase.DoMarkupChanged(AMarkup : TLazEditTextAttribute);
 begin
   If (not FMarkupEnabled) and MarkupInfo.IsEnabled then
     Invalidate
@@ -2798,7 +2798,7 @@ begin
   inherited;
 end;
 
-procedure TSynEditMarkupHighlightAllCaret.DoMarkupChanged(AMarkup: TSynSelectedColor);
+procedure TSynEditMarkupHighlightAllCaret.DoMarkupChanged(AMarkup: TLazEditTextAttribute);
 begin
   IncPaintLock;
   try

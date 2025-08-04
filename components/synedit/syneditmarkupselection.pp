@@ -26,8 +26,8 @@ unit SynEditMarkupSelection;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls,
-  SynEditMarkup, SynEditMiscClasses, SynEditPointClasses, SynEditTypes, LazEditTextAttributes;
+  Classes, SysUtils, Graphics, Controls, SynEditMarkup, SynEditMiscClasses, SynEditPointClasses,
+  SynEditTypes, SynEditHighlighter, LazEditTextAttributes;
 
 type
 
@@ -37,15 +37,15 @@ type
   private
     FSelection: TSynEditSelection;
     FColorTillEol: boolean; // colorize selection only till EOL
-    FMarkupInfoIncr: TSynSelectedColor; // Markup during incremental search
-    FMarkupInfoSelection: TSynSelectedColor; // Markup for normal Selection
+    FMarkupInfoIncr: TSynHighlighterAttributesModifier; // Markup during incremental search
+    FMarkupInfoSelection: TSynHighlighterAttributesModifier; // Markup for normal Selection
     FUseIncrementalColor : Boolean;
     nSelStart, nSelEnd: integer; // start, end of selected area in current line (physical)
     procedure SetColorTillEol(AValue: boolean);
     procedure SetUseIncrementalColor(const AValue : Boolean);
     procedure MarkupChangedIntern(AMarkup: TObject);
   protected
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
     procedure DoEnabledChanged(Sender: TObject); override;
   public
     constructor Create(ASynEdit : TSynEditBase; ASelection: TSynEditSelection);
@@ -54,18 +54,18 @@ type
     procedure PrepareMarkupForRow(aRow : Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
     function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
-      const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor; override;
+      const aWrapCol: TLazSynDisplayTokenBound): TLazEditTextAttributeModifier; override;
 
     property ColorTillEol: boolean read FColorTillEol write SetColorTillEol;
     property UseIncrementalColor : Boolean read FUseIncrementalColor write SetUseIncrementalColor;
-    property MarkupInfoSeletion : TSynSelectedColor read FMarkupInfoSelection;
-    property MarkupInfoIncr : TSynSelectedColor read FMarkupInfoIncr;
+    property MarkupInfoSeletion : TSynHighlighterAttributesModifier read FMarkupInfoSelection;
+    property MarkupInfoIncr : TSynHighlighterAttributesModifier read FMarkupInfoIncr;
   end;
 
 implementation
@@ -95,7 +95,7 @@ begin
   else MarkupInfo.Assign(FMarkupInfoSelection);
 end;
 
-procedure TSynEditMarkupSelection.DoMarkupChanged(AMarkup: TSynSelectedColor);
+procedure TSynEditMarkupSelection.DoMarkupChanged(AMarkup: TLazEditTextAttribute);
 var
   p1, p2 : TPoint;
 begin
@@ -194,7 +194,7 @@ begin
 end;
 
 function TSynEditMarkupSelection.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 begin
   result := nil;
 
@@ -219,7 +219,7 @@ end;
 
 function TSynEditMarkupSelection.GetMarkupAttributeAtWrapEnd(
   const aRow: Integer; const aWrapCol: TLazSynDisplayTokenBound
-  ): TSynSelectedColor;
+  ): TLazEditTextAttributeModifier;
 begin
   result := nil;
 

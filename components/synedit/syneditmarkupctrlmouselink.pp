@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, SynEditMarkup, SynEditMiscClasses,
-  SynEditMouseCmds, LazSynEditText, SynEditTypes;
+  SynEditMouseCmds, LazSynEditText, SynEditTypes, LazEditTextAttributes;
 
 type
 
@@ -54,7 +54,7 @@ type
     var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject);
   protected
     procedure SetLines(const AValue : TSynEditStringsLinked); override;
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
     procedure DoEnabledChanged(Sender: TObject); override;
   public
     procedure UpdateCtrlState(aShift: TShiftState);
@@ -66,7 +66,7 @@ type
 
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -268,7 +268,7 @@ begin
   end;
 end;
 
-procedure TSynEditMarkupCtrlMouseLink.DoMarkupChanged(AMarkup: TSynSelectedColor
+procedure TSynEditMarkupCtrlMouseLink.DoMarkupChanged(AMarkup: TLazEditTextAttribute
   );
 begin
   inherited DoMarkupChanged(AMarkup);
@@ -284,7 +284,7 @@ begin
 end;
 
 function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 begin
   Result := nil;
   if (not FCtrlLinkable) or (aRow <> FCtrlMouseLine) or

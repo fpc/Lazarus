@@ -585,7 +585,7 @@ type
     FLeftGutter, FRightGutter: TSynGutter;
     fTabWidth: integer;
     fTextDrawer: TLazEditTextGridPainter;
-    FPaintLineColor, FPaintLineColor2: TSynSelectedColor;
+    FPaintLineColor, FPaintLineColor2: TLazEditTextAttributeModifier;
     fStateFlags: TSynStateFlags;
     fStatusChanges: TSynStatusChanges;
     fTSearch: TSynEditSearch;
@@ -626,6 +626,8 @@ type
 
     procedure DoTopViewChanged(Sender: TObject);
     function GetIsStickySelecting: Boolean;
+    function GetOnSpecialLineMarkupEx: TSpecialLineMarkupExEvent;
+    procedure SetOnSpecialLineMarkupEx(AValue: TSpecialLineMarkupExEvent);
     procedure SetScrollOnEditLeftOptions(AValue: TSynScrollOnEditOptions);
     procedure SetScrollOnEditRightOptions(AValue: TSynScrollOnEditOptions);
     procedure SetTabViewClass(AValue: TSynEditStringTabExpanderClass);
@@ -633,26 +635,26 @@ type
     procedure AquirePrimarySelection;
     function GetChangeStamp: int64;
     function GetDefSelectionMode: TSynSelectionMode;
-    function GetFoldedCodeLineColor: TSynSelectedColor;
+    function GetFoldedCodeLineColor: TSynHighlighterAttributesModifier;
     function GetFoldState: String;
-    function GetHiddenCodeLineColor: TSynSelectedColor;
+    function GetHiddenCodeLineColor: TSynHighlighterAttributesModifier;
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TLazSynEditPlugin;
     function GetRightEdge: Integer;
     function GetRightEdgeColor: TColor;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
     procedure SetBlockTabIndent(AValue: integer);
-    procedure SetBracketMatchColor(AValue: TSynSelectedColor);
+    procedure SetBracketMatchColor(AValue: TSynHighlighterAttributesModifier);
     procedure SetTextCursor(AValue: TCursor);
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
-    procedure SetFoldedCodeColor(AValue: TSynSelectedColor);
-    procedure SetFoldedCodeLineColor(AValue: TSynSelectedColor);
+    procedure SetFoldedCodeColor(AValue: TSynHighlighterAttributesModifier);
+    procedure SetFoldedCodeLineColor(AValue: TSynHighlighterAttributesModifier);
     procedure SetFoldState(const AValue: String);
-    procedure SetHiddenCodeLineColor(AValue: TSynSelectedColor);
-    procedure SetHighlightAllColor(AValue: TSynSelectedColor);
-    procedure SetIncrementColor(AValue: TSynSelectedColor);
-    procedure SetLineHighlightColor(AValue: TSynSelectedColor);
-    procedure SetMouseLinkColor(AValue: TSynSelectedColor);
+    procedure SetHiddenCodeLineColor(AValue: TSynHighlighterAttributesModifier);
+    procedure SetHighlightAllColor(AValue: TSynHighlighterAttributesModifier);
+    procedure SetIncrementColor(AValue: TSynHighlighterAttributesModifier);
+    procedure SetLineHighlightColor(AValue: TSynHighlighterAttributesModifier);
+    procedure SetMouseLinkColor(AValue: TSynHighlighterAttributesModifier);
     procedure SetOffTextCursor(AValue: TCursor);
     procedure SetPaintLockOwner(const AValue: TSynEditBase);
     procedure SetShareOptions(const AValue: TSynEditorShareOptions);
@@ -672,16 +674,16 @@ type
     function FindHookedCmdEvent(AHandlerProc: THookedCommandEvent): integer;
     function GetBracketHighlightStyle: TSynEditBracketHighlightStyle;
     function GetCanPaste: Boolean;
-    function GetFoldedCodeColor: TSynSelectedColor;
+    function GetFoldedCodeColor: TSynHighlighterAttributesModifier;
     function GetMarkup(Index: integer): TSynEditMarkup;
     function GetMarkupByClass(Index: TSynEditMarkupClass): TSynEditMarkup;
     function GetCaretUndo: TSynEditUndoItem;
-    function GetHighlightAllColor : TSynSelectedColor;
-    function GetIncrementColor : TSynSelectedColor;
-    function GetLineHighlightColor: TSynSelectedColor;
+    function GetHighlightAllColor : TSynHighlighterAttributesModifier;
+    function GetIncrementColor : TSynHighlighterAttributesModifier;
+    function GetLineHighlightColor: TSynHighlighterAttributesModifier;
     function GetOnGutterClick : TGutterClickEvent;
-    function GetBracketMatchColor : TSynSelectedColor;
-    function GetMouseLinkColor : TSynSelectedColor;
+    function GetBracketMatchColor : TSynHighlighterAttributesModifier;
+    function GetMouseLinkColor : TSynHighlighterAttributesModifier;
     function GetTrimSpaceType: TSynEditStringTrimmingType;
     procedure SetBracketHighlightStyle(const AValue: TSynEditBracketHighlightStyle);
     procedure SetOnGutterClick(const AValue : TGutterClickEvent);
@@ -890,7 +892,7 @@ type
     function GetCaretObj: TSynEditCaret; override;
     function GetHighlighterObj: TObject; override;
     function GetMarksObj: TObject; override;
-    function GetSelectedColor : TSynSelectedColor; override;
+    function GetSelectedColor : TSynHighlighterAttributesModifier; override;
     function GetTextViewsManager: TSynTextViewsManager; override;
     procedure FontChanged(Sender: TObject); override;
     procedure HighlighterAttrChanged(Sender: TObject);
@@ -915,7 +917,7 @@ type
     procedure SetName(const Value: TComponentName); override;
     procedure SetOptions(Value: TSynEditorOptions); override;
     procedure SetOptions2(Value: TSynEditorOptions2); override;
-    procedure SetSelectedColor(const AValue : TSynSelectedColor); override;
+    procedure SetSelectedColor(const AValue : TSynHighlighterAttributesModifier); override;
     procedure SetSelTextExternal(const Value: string); override;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
       AddToUndoList: Boolean = false);
@@ -1207,14 +1209,14 @@ type
     property Color default clWhite;
     property Cursor: TCursor read FTextCursor write SetTextCursor default crIBeam;
     property OffTextCursor: TCursor read FOffTextCursor write SetOffTextCursor default crDefault;
-    property IncrementColor: TSynSelectedColor read GetIncrementColor write SetIncrementColor;
-    property HighlightAllColor: TSynSelectedColor read GetHighlightAllColor write SetHighlightAllColor;
-    property BracketMatchColor: TSynSelectedColor read GetBracketMatchColor write SetBracketMatchColor;
-    property MouseLinkColor: TSynSelectedColor read GetMouseLinkColor write SetMouseLinkColor;
-    property LineHighlightColor: TSynSelectedColor read GetLineHighlightColor write SetLineHighlightColor;
-    property FoldedCodeColor: TSynSelectedColor read GetFoldedCodeColor write SetFoldedCodeColor;
-    property FoldedCodeLineColor: TSynSelectedColor read GetFoldedCodeLineColor write SetFoldedCodeLineColor;
-    property HiddenCodeLineColor: TSynSelectedColor read GetHiddenCodeLineColor write SetHiddenCodeLineColor;
+    property IncrementColor: TSynHighlighterAttributesModifier read GetIncrementColor write SetIncrementColor;
+    property HighlightAllColor: TSynHighlighterAttributesModifier read GetHighlightAllColor write SetHighlightAllColor;
+    property BracketMatchColor: TSynHighlighterAttributesModifier read GetBracketMatchColor write SetBracketMatchColor;
+    property MouseLinkColor: TSynHighlighterAttributesModifier read GetMouseLinkColor write SetMouseLinkColor;
+    property LineHighlightColor: TSynHighlighterAttributesModifier read GetLineHighlightColor write SetLineHighlightColor;
+    property FoldedCodeColor: TSynHighlighterAttributesModifier read GetFoldedCodeColor write SetFoldedCodeColor;
+    property FoldedCodeLineColor: TSynHighlighterAttributesModifier read GetFoldedCodeLineColor write SetFoldedCodeLineColor;
+    property HiddenCodeLineColor: TSynHighlighterAttributesModifier read GetHiddenCodeLineColor write SetHiddenCodeLineColor;
 
     property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
     property BlockIndent: integer read FBlockIndent write SetBlockIndent default 2;
@@ -1256,7 +1258,8 @@ type
     property OnCommandProcessed: TProcessCommandEvent read fOnCommandProcessed write fOnCommandProcessed;
     property OnReplaceText: TReplaceTextEvent read fOnReplaceText write fOnReplaceText;
     property OnSpecialLineColors: TSpecialLineColorsEvent read FOnSpecialLineColors write SetSpecialLineColors;  deprecated;
-    property OnSpecialLineMarkup: TSpecialLineMarkupEvent read FOnSpecialLineMarkup write SetSpecialLineMarkup;
+    property OnSpecialLineMarkup: TSpecialLineMarkupEvent read FOnSpecialLineMarkup write SetSpecialLineMarkup; deprecated;
+    property OnSpecialLineMarkupEx: TSpecialLineMarkupExEvent read GetOnSpecialLineMarkupEx write SetOnSpecialLineMarkupEx;
     property OnStatusChange: TStatusChangeEvent read fOnStatusChange write fOnStatusChange;
   end;
 
@@ -1925,7 +1928,7 @@ begin
   Result := FBlockSelection.SelectionMode;
 end;
 
-function TCustomSynEdit.GetFoldedCodeLineColor: TSynSelectedColor;
+function TCustomSynEdit.GetFoldedCodeLineColor: TSynHighlighterAttributesModifier;
 begin
   Result := FFoldedLinesView.MarkupInfoFoldedCodeLine;
 end;
@@ -1935,7 +1938,7 @@ begin
   Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
 end;
 
-function TCustomSynEdit.GetHiddenCodeLineColor: TSynSelectedColor;
+function TCustomSynEdit.GetHiddenCodeLineColor: TSynHighlighterAttributesModifier;
 begin
   Result := FFoldedLinesView.MarkupInfoHiddenCodeLine;
 end;
@@ -2068,7 +2071,7 @@ begin
   FBlockTabIndent := AValue;
 end;
 
-procedure TCustomSynEdit.SetBracketMatchColor(AValue: TSynSelectedColor);
+procedure TCustomSynEdit.SetBracketMatchColor(AValue: TSynHighlighterAttributesModifier);
 begin
   fMarkupBracket.MarkupInfo.Assign(AValue);
 end;
@@ -2092,12 +2095,12 @@ begin
   FBlockSelection.SelectionMode := AValue; // Includes active
 end;
 
-procedure TCustomSynEdit.SetFoldedCodeColor(AValue: TSynSelectedColor);
+procedure TCustomSynEdit.SetFoldedCodeColor(AValue: TSynHighlighterAttributesModifier);
 begin
   FFoldedLinesView.MarkupInfoFoldedCode.Assign(AValue);
 end;
 
-procedure TCustomSynEdit.SetFoldedCodeLineColor(AValue: TSynSelectedColor);
+procedure TCustomSynEdit.SetFoldedCodeLineColor(AValue: TSynHighlighterAttributesModifier);
 begin
   FFoldedLinesView.MarkupInfoFoldedCodeLine.Assign(AValue);
 end;
@@ -2263,6 +2266,16 @@ end;
 function TCustomSynEdit.GetIsStickySelecting: Boolean;
 begin
   Result := FBlockSelection.StickyAutoExtend;
+end;
+
+function TCustomSynEdit.GetOnSpecialLineMarkupEx: TSpecialLineMarkupExEvent;
+begin
+  Result := fMarkupSpecialLine.OnSpecialLineMarkupEx;
+end;
+
+procedure TCustomSynEdit.SetOnSpecialLineMarkupEx(AValue: TSpecialLineMarkupExEvent);
+begin
+  fMarkupSpecialLine.OnSpecialLineMarkupEx := AValue;
 end;
 
 procedure TCustomSynEdit.SetScrollOnEditLeftOptions(
@@ -2991,7 +3004,7 @@ begin
   Result := fMarkupManager.MarkupByClass[Index];
 end;
 
-function TCustomSynEdit.GetHighlightAllColor : TSynSelectedColor;
+function TCustomSynEdit.GetHighlightAllColor : TSynHighlighterAttributesModifier;
 begin
   result := fMarkupHighAll.MarkupInfo;
 end;
@@ -3001,12 +3014,12 @@ begin
   Result := fHighlighter;
 end;
 
-function TCustomSynEdit.GetIncrementColor : TSynSelectedColor;
+function TCustomSynEdit.GetIncrementColor : TSynHighlighterAttributesModifier;
 begin
   result := fMarkupSelection.MarkupInfoIncr;
 end;
 
-function TCustomSynEdit.GetLineHighlightColor: TSynSelectedColor;
+function TCustomSynEdit.GetLineHighlightColor: TSynHighlighterAttributesModifier;
 begin
   Result := fMarkupSpecialLine.MarkupLineHighlightInfo;
 end;
@@ -3016,12 +3029,12 @@ begin
   Result := FLeftGutter.OnGutterClick;
 end;
 
-function TCustomSynEdit.GetSelectedColor : TSynSelectedColor;
+function TCustomSynEdit.GetSelectedColor : TSynHighlighterAttributesModifier;
 begin
   result := fMarkupSelection.MarkupInfoSeletion;
 end;
 
-procedure TCustomSynEdit.SetSelectedColor(const AValue : TSynSelectedColor);
+procedure TCustomSynEdit.SetSelectedColor(const AValue : TSynHighlighterAttributesModifier);
 begin
   fMarkupSelection.MarkupInfoSeletion.Assign(AValue);
 end;
@@ -3038,12 +3051,12 @@ begin
   fMarkupSpecialLine.OnSpecialLineMarkup := AValue;
 end;
 
-function TCustomSynEdit.GetBracketMatchColor : TSynSelectedColor;
+function TCustomSynEdit.GetBracketMatchColor : TSynHighlighterAttributesModifier;
 begin
   Result := fMarkupBracket.MarkupInfo;
 end;
 
-function TCustomSynEdit.GetMouseLinkColor : TSynSelectedColor;
+function TCustomSynEdit.GetMouseLinkColor : TSynHighlighterAttributesModifier;
 begin
   Result := fMarkupCtrlMouse.MarkupInfo;
 end;
@@ -5018,7 +5031,7 @@ begin
   Result := FCaret.LineCharPos;
 end;
 
-function TCustomSynEdit.GetFoldedCodeColor: TSynSelectedColor;
+function TCustomSynEdit.GetFoldedCodeColor: TSynHighlighterAttributesModifier;
 begin
   Result := FFoldedLinesView.MarkupInfoFoldedCode;
 end;
@@ -6346,22 +6359,22 @@ begin
   FPendingFoldState := '';
 end;
 
-procedure TCustomSynEdit.SetHiddenCodeLineColor(AValue: TSynSelectedColor);
+procedure TCustomSynEdit.SetHiddenCodeLineColor(AValue: TSynHighlighterAttributesModifier);
 begin
   FFoldedLinesView.MarkupInfoHiddenCodeLine.Assign(AValue);
 end;
 
-procedure TCustomSynEdit.SetHighlightAllColor(AValue: TSynSelectedColor);
+procedure TCustomSynEdit.SetHighlightAllColor(AValue: TSynHighlighterAttributesModifier);
 begin
   fMarkupHighAll.MarkupInfo.Assign(AValue);
 end;
 
-procedure TCustomSynEdit.SetIncrementColor(AValue: TSynSelectedColor);
+procedure TCustomSynEdit.SetIncrementColor(AValue: TSynHighlighterAttributesModifier);
 begin
   fMarkupSelection.MarkupInfoIncr.Assign(AValue);
 end;
 
-procedure TCustomSynEdit.SetLineHighlightColor(AValue: TSynSelectedColor);
+procedure TCustomSynEdit.SetLineHighlightColor(AValue: TSynHighlighterAttributesModifier);
 begin
   fMarkupSpecialLine.MarkupLineHighlightInfo.Assign(AValue);
 end;
@@ -6371,7 +6384,7 @@ begin
   FMouseActions.UserActions := AValue;
 end;
 
-procedure TCustomSynEdit.SetMouseLinkColor(AValue: TSynSelectedColor);
+procedure TCustomSynEdit.SetMouseLinkColor(AValue: TSynHighlighterAttributesModifier);
 begin
   fMarkupCtrlMouse.MarkupInfo.Assign(AValue);
 end;
@@ -11046,6 +11059,9 @@ begin
   RegisterPropertyToSkip(TSynSelectedColor, 'OnChange', '', '');
   RegisterPropertyToSkip(TSynSelectedColor, 'StartX', '', '');
   RegisterPropertyToSkip(TSynSelectedColor, 'EndX', '', '');
+  RegisterPropertyToSkip(TLazEditTextAttributeModifier, 'OnChange', '', '');
+  RegisterPropertyToSkip(TLazEditTextAttributeModifier, 'StartX', '', '');
+  RegisterPropertyToSkip(TLazEditTextAttributeModifier, 'EndX', '', '');
 
   RegisterPropertyToSkip(TSynGutter, 'ShowCodeFolding', '', '');
   RegisterPropertyToSkip(TSynGutter, 'CodeFoldingWidth', '', '');

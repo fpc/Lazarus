@@ -27,14 +27,14 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls,
-  SynEditMarkup, SynEditMiscClasses, SynEditMarks;
+  SynEditMarkup, SynEditMiscClasses, SynEditMarks, SynEditHighlighter, LazEditTextAttributes;
 
 type
 
   TMarkSection = record
     StartX, EndX: Integer;  // Physical
     Priority: Integer;
-    Markup: TSynSelectedColor;
+    Markup: TSynHighlighterAttributesModifier;
   end;
   PMarkSection = ^TMarkSection;
 
@@ -42,9 +42,9 @@ type
 
   TSynEditMarkupMark = class(TSynEditMark)
   private
-    FSourceMarkup: TSynSelectedColor;
+    FSourceMarkup: TSynHighlighterAttributesModifier;
   public
-    property SourceMarkup: TSynSelectedColor read FSourceMarkup write FSourceMarkup;
+    property SourceMarkup: TSynHighlighterAttributesModifier read FSourceMarkup write FSourceMarkup;
   end;
 
 
@@ -56,14 +56,14 @@ type
     FRowData: Array of TMarkSection;
     FWordBreaker: TSynWordBreaker;
   protected
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
   public
     constructor Create(ASynEdit: TSynEditBase; AWordBreaker: TSynWordBreaker);
 
     procedure PrepareMarkupForRow(ARow: Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -74,7 +74,7 @@ implementation
 
 { TSynEditMarkupGutterMark }
 
-procedure TSynEditMarkupGutterMark.DoMarkupChanged(AMarkup: TSynSelectedColor);
+procedure TSynEditMarkupGutterMark.DoMarkupChanged(AMarkup: TLazEditTextAttribute);
 begin
   inherited DoMarkupChanged(AMarkup);
   SynEdit.Invalidate;
@@ -139,7 +139,7 @@ begin
 end;
 
 function TSynEditMarkupGutterMark.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 var
   i, FoundPri: Integer;
   Section: PMarkSection;

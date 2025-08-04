@@ -388,9 +388,9 @@ type
     fCaret: TSynEditCaret;
     FFoldProvider: TSynEditFoldProvider;
     fFoldTree : TSynTextFoldAVLTree;   // Folds are stored 1-based (the 1st line is 1)
-    FMarkupInfoFoldedCode: TSynSelectedColor;
-    FMarkupInfoFoldedCodeLine: TSynSelectedColor;
-    FMarkupInfoHiddenCodeLine: TSynSelectedColor;
+    FMarkupInfoFoldedCode: TSynHighlighterAttributesModifier;
+    FMarkupInfoFoldedCodeLine: TSynHighlighterAttributesModifier;
+    FMarkupInfoHiddenCodeLine: TSynHighlighterAttributesModifier;
     fTopViewPos : TLinePos;
     fLinesInWindow : Integer;          // there may be an additional part visible line
     fFoldTypeList : Array of TSynEditFoldLineMapInfo; // Index 0 means one line *above* fTopViewPos
@@ -481,9 +481,9 @@ type
     property LinesInWindow : integer                    (* Fully Visible lines in Window; There may be one half visible line *)
       read fLinesInWindow write SetLinesInWindow;
 
-    property MarkupInfoFoldedCode: TSynSelectedColor read FMarkupInfoFoldedCode;
-    property MarkupInfoFoldedCodeLine: TSynSelectedColor read FMarkupInfoFoldedCodeLine;
-    property MarkupInfoHiddenCodeLine: TSynSelectedColor read FMarkupInfoHiddenCodeLine;
+    property MarkupInfoFoldedCode: TSynHighlighterAttributesModifier read FMarkupInfoFoldedCode;
+    property MarkupInfoFoldedCodeLine: TSynHighlighterAttributesModifier read FMarkupInfoFoldedCodeLine;
+    property MarkupInfoHiddenCodeLine: TSynHighlighterAttributesModifier read FMarkupInfoHiddenCodeLine;
   public
     procedure Lock;
     procedure UnLock;

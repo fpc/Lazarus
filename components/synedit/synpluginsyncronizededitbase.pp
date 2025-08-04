@@ -26,9 +26,9 @@ unit SynPluginSyncronizedEditBase;
 interface
 
 uses
-  Classes, SysUtils, Graphics, StrUtils,
-  SynEditMiscClasses, SynEdit, SynEditMarkup, SynEditMiscProcs, LazSynEditText,
-  SynEditTextTrimmer, SynEditKeyCmds, SynEditTextBase, LazUTF8, LazEditMiscProcs;
+  Classes, SysUtils, Graphics, StrUtils, SynEditMiscClasses, SynEdit, SynEditMarkup,
+  SynEditMiscProcs, LazSynEditText, SynEditTextTrimmer, SynEditKeyCmds, SynEditTextBase,
+  SynEditHighlighter, LazUTF8, LazEditMiscProcs, LazEditTextAttributes;
 
 type
 
@@ -105,8 +105,8 @@ type
   TSynPluginSyncronizedEditMarkup = class(TSynPluginSyncronizedEditMarkupBase)
   private
     FCurrentCell: Integer;
-    fMarkupInfoCurrent: TSynSelectedColor;
-    fMarkupInfoSync: TSynSelectedColor;
+    fMarkupInfoCurrent: TSynHighlighterAttributesModifier;
+    fMarkupInfoSync: TSynHighlighterAttributesModifier;
     FPreparedRow: Integer;
     FPreparedCellFrom, FPreparedCellTo: Integer;
     FPreparedCellTop, FPreparedCellBottom: Integer;
@@ -119,7 +119,7 @@ type
     destructor Destroy; override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -127,8 +127,8 @@ type
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     Procedure EndMarkup; override;
 
-    property MarkupInfoCurrent: TSynSelectedColor read fMarkupInfoCurrent;
-    property MarkupInfoSync: TSynSelectedColor read fMarkupInfoSync;
+    property MarkupInfoCurrent: TSynHighlighterAttributesModifier read fMarkupInfoCurrent;
+    property MarkupInfoSync: TSynHighlighterAttributesModifier read fMarkupInfoSync;
   end;
 
   { TSynPluginSyncronizedEditMarkupArea }
@@ -141,7 +141,7 @@ type
   public
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -210,10 +210,10 @@ type
     FOwnPaintLock: Integer;
     FTextBufferChanging: Boolean;
 
-    fMarkupInfo: TSynSelectedColor;
-    fMarkupInfoSync: TSynSelectedColor;
-    fMarkupInfoCurrent: TSynSelectedColor;
-    fMarkupInfoArea: TSynSelectedColor;
+    fMarkupInfo: TSynHighlighterAttributesModifier;
+    fMarkupInfoSync: TSynHighlighterAttributesModifier;
+    fMarkupInfoCurrent: TSynHighlighterAttributesModifier;
+    fMarkupInfoArea: TSynHighlighterAttributesModifier;
     FOnActivate: TNotifyEvent;
     FOnDeactivate: TNotifyEvent;
     FPreActive: Boolean;
@@ -226,10 +226,10 @@ type
     procedure SetAreaMarkupEnabled(const AValue: Boolean);
     procedure SetEnabled(const AValue: Boolean);
     procedure SetMarkupEnabled(const AValue: Boolean);
-    procedure SetMarkupInfo(AValue: TSynSelectedColor);
-    procedure SetMarkupInfoArea(AValue: TSynSelectedColor);
-    procedure SetMarkupInfoCurrent(AValue: TSynSelectedColor);
-    procedure SetMarkupInfoSync(AValue: TSynSelectedColor);
+    procedure SetMarkupInfo(AValue: TSynHighlighterAttributesModifier);
+    procedure SetMarkupInfoArea(AValue: TSynHighlighterAttributesModifier);
+    procedure SetMarkupInfoCurrent(AValue: TSynHighlighterAttributesModifier);
+    procedure SetMarkupInfoSync(AValue: TSynHighlighterAttributesModifier);
     function IsCellFromCaretAmbigious: Boolean;
   protected
     FMarkup: TSynPluginSyncronizedEditMarkup;
@@ -267,10 +267,10 @@ type
     property Active: Boolean read GetActive write SetActive;
     property PreActive: Boolean read FPreActive write FPreActive;           // e.g. collecting words => Reacts to LinesEdited
 
-    property MarkupInfo: TSynSelectedColor read FMarkupInfo write SetMarkupInfo;
-    property MarkupInfoCurrent: TSynSelectedColor read FMarkupInfoCurrent write SetMarkupInfoCurrent;
-    property MarkupInfoSync: TSynSelectedColor read FMarkupInfoSync write SetMarkupInfoSync;
-    property MarkupInfoArea: TSynSelectedColor read FMarkupInfoArea write SetMarkupInfoArea;
+    property MarkupInfo: TSynHighlighterAttributesModifier read FMarkupInfo write SetMarkupInfo;
+    property MarkupInfoCurrent: TSynHighlighterAttributesModifier read FMarkupInfoCurrent write SetMarkupInfoCurrent;
+    property MarkupInfoSync: TSynHighlighterAttributesModifier read FMarkupInfoSync write SetMarkupInfoSync;
+    property MarkupInfoArea: TSynHighlighterAttributesModifier read FMarkupInfoArea write SetMarkupInfoArea;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
   end;
@@ -675,7 +675,7 @@ begin
 end;
 
 function TSynPluginSyncronizedEditMarkup.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 var
   i: Integer;
   s, e: Integer;
@@ -785,7 +785,7 @@ begin
 end;
 
 function TSynPluginSyncronizedEditMarkupArea.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 var
   ac: TSynPluginSyncronizedEditCell;
 begin
@@ -1026,7 +1026,7 @@ begin
     FMarkup.Enabled := (Active or PreActive) and FMarkupEnabled;
 end;
 
-procedure TSynPluginSyncronizedEditBase.SetMarkupInfo(AValue: TSynSelectedColor
+procedure TSynPluginSyncronizedEditBase.SetMarkupInfo(AValue: TSynHighlighterAttributesModifier
   );
 begin
   if FMarkupInfo=AValue then Exit;
@@ -1034,21 +1034,21 @@ begin
 end;
 
 procedure TSynPluginSyncronizedEditBase.SetMarkupInfoArea(
-  AValue: TSynSelectedColor);
+  AValue: TSynHighlighterAttributesModifier);
 begin
   if FMarkupInfoArea=AValue then Exit;
   FMarkupInfoArea.Assign(AValue);
 end;
 
 procedure TSynPluginSyncronizedEditBase.SetMarkupInfoCurrent(
-  AValue: TSynSelectedColor);
+  AValue: TSynHighlighterAttributesModifier);
 begin
   if FMarkupInfoCurrent=AValue then Exit;
   FMarkupInfoCurrent.Assign(AValue);
 end;
 
 procedure TSynPluginSyncronizedEditBase.SetMarkupInfoSync(
-  AValue: TSynSelectedColor);
+  AValue: TSynHighlighterAttributesModifier);
 begin
   if FMarkupInfoSync=AValue then Exit;
   FMarkupInfoSync.Assign(AValue);

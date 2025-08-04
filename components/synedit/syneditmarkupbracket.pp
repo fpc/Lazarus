@@ -26,7 +26,8 @@ unit SynEditMarkupBracket;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, SynEditMarkup, SynEditMiscClasses, SynEditTypes;
+  Classes, SysUtils, Graphics, Controls, SynEditMarkup, SynEditMiscClasses, SynEditTypes,
+  LazEditTextAttributes;
 
 type
   TSynEditBracketHighlightStyle = (
@@ -48,7 +49,7 @@ type
     procedure FindMatchingBracketPair(LogCaret: TPoint; var StartBracket, EndBracket: TPoint); virtual;
     procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
     procedure DoEnabledChanged(Sender: TObject); override;
     procedure DoVisibleChanged(AVisible: Boolean); override;
   public
@@ -57,7 +58,7 @@ type
 
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -155,7 +156,7 @@ begin
   InvalidateBracketHighlight;
 end;
 
-procedure TSynEditMarkupBracket.DoMarkupChanged(AMarkup: TSynSelectedColor);
+procedure TSynEditMarkupBracket.DoMarkupChanged(AMarkup: TLazEditTextAttribute);
 begin
   InvalidateBracketHighlight;
 end;
@@ -229,7 +230,7 @@ begin
 end;
 
 function TSynEditMarkupBracket.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 begin
   Result := nil;
   if ((FBracketHighlightPos.y = aRow) and  (FBracketHighlightPos.x = aStartCol.Logical))

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math, testregistry, TestBase, TestHighlightPas, Forms,
   LCLType, SynEdit, SynHighlighterPas, SynEditMarkupFoldColoring,
-  SynEditMiscClasses, SynEditMarkup, SynEditHighlighterFoldBase;
+  SynEditMiscClasses, SynEditMarkup, SynEditHighlighterFoldBase, LazEditTextAttributes;
 
 type
 
@@ -157,7 +157,7 @@ var
   i, nextP, nextL, srow: Integer;
   rtl: TLazSynDisplayRtlInfo;
   startCol: TLazSynDisplayTokenBound;
-  gotColor: TSynSelectedColor;
+  gotColor: TLazEditTextAttributeModifier;
 begin
   aName := aName + '; row=' + IntToStr(aRow);
   if FOnlyTestVisibleRows then begin

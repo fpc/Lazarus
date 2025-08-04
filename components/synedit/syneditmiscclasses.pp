@@ -165,7 +165,7 @@ type
     function GetMarksObj: TObject; virtual; abstract;
     function GetSelText: string;
     function GetSelAvail: Boolean;
-    function GetSelectedColor: TSynSelectedColor; virtual; abstract;
+    function GetSelectedColor: TSynHighlighterAttributesModifier; virtual; abstract;
     function GetTextViewsManager: TSynTextViewsManager; virtual; abstract;
     procedure SetLines(Value: TStrings); virtual; abstract;
     function GetViewedTextBuffer: TSynEditStringsLinked; virtual; abstract;
@@ -178,7 +178,7 @@ type
     procedure StatusChanged(AChanges: TSynStatusChanges); virtual; abstract;
     procedure SetOptions(AOptions: TSynEditorOptions); virtual; abstract;
     procedure SetOptions2(AOptions2: TSynEditorOptions2); virtual; abstract;
-    procedure SetSelectedColor(const aSelectedColor: TSynSelectedColor); virtual; abstract;
+    procedure SetSelectedColor(const aSelectedColor: TSynHighlighterAttributesModifier); virtual; abstract;
 
     function GetCharsInWindow: Integer; virtual; abstract;
     function GetCharWidth: integer; virtual; abstract;
@@ -373,7 +373,7 @@ type
 
     property TextViewsManager: TSynTextViewsManager read GetTextViewsManager; experimental; // Only use to Add/remove views
 
-    property SelectedColor: TSynSelectedColor read GetSelectedColor write SetSelectedColor;
+    property SelectedColor: TSynHighlighterAttributesModifier read GetSelectedColor write SetSelectedColor;
     property SelAvail: Boolean read GetSelAvail;
     property HideSelection: boolean read fHideSelection write SetHideSelection default false;
 
@@ -1488,10 +1488,7 @@ procedure TSynSelectedColorMergeResult.MergeFrames(Other: TLazCustomEditTextAttr
 
   function HasFrameBound(AnAttr: TLazCustomEditTextAttribute; const ABnd: TLazSynDisplayTokenBound): boolean;
   begin
-    (* Highlighter Attribs (NON-TSynSelectedColor) did NOT have a StartX/EndX
-       So theire frames would be drawn at any location
-    *)
-    Result := (Other is TSynSelectedColor) or ABnd.HasValue;
+    Result := (Other is TLazEditTextAttributeModifier) or ABnd.HasValue;
   end;
 
 begin

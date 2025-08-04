@@ -1940,7 +1940,7 @@ type
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure SetMarkupColor(Syn: TSrcIDEHighlighter;
                              AddHilightAttr: TAdditionalHilightAttribute;
-                             aMarkup: TSynSelectedColor);
+                             aMarkup: TLazEditTextAttributeModifier);
     procedure SetMarkupColors(aSynEd: TSynEdit);
     procedure ApplyFontSettingsTo(ASynEdit: TSynEdit);
     procedure ApplyTabFontSettingsTo(APageCtrl: TPageControl);
@@ -6692,7 +6692,7 @@ begin
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
-  AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
+  AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TLazEditTextAttributeModifier);
 var
   SchemeGrp: TColorScheme;
   Scheme: TColorSchemeLanguage;
@@ -7792,7 +7792,7 @@ begin
 end;
 
 procedure TColorSchemeLanguage.ApplyTo(ASynEdit: TSynEdit);
-  procedure SetMarkupColor(aha: TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
+  procedure SetMarkupColor(aha: TAdditionalHilightAttribute; aMarkup : TLazEditTextAttributeModifier);
   var Attrib: TColorSchemeAttribute;
   begin
     Attrib := AttributeByEnum[aha];

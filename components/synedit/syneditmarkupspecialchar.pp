@@ -26,8 +26,8 @@ unit SynEditMarkupSpecialChar;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls,
-  SynEditMarkup, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs, LazEditMiscProcs;
+  Classes, SysUtils, Graphics, Controls, SynEditMarkup, SynEditTypes, SynEditMiscClasses,
+  SynEditMiscProcs, LazEditMiscProcs, LazEditTextAttributes;
 
 type
 
@@ -41,7 +41,7 @@ type
     FCurStart, FCurEnd: integer;
     procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars);
   protected
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
     procedure DoEnabledChanged(Sender: TObject); override;
     function IsSpecial(pos: Integer): Boolean; inline;
   public
@@ -51,7 +51,7 @@ type
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
-                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
+                                        const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -71,7 +71,7 @@ begin
   SynEdit.Invalidate;
 end;
 
-procedure TSynEditMarkupSpecialChar.DoMarkupChanged(AMarkup: TSynSelectedColor);
+procedure TSynEditMarkupSpecialChar.DoMarkupChanged(AMarkup: TLazEditTextAttribute);
 begin
   inherited DoMarkupChanged(AMarkup);
   FHasMarkup := RealEnabled;
@@ -115,7 +115,7 @@ begin
 end;
 
 function TSynEditMarkupSpecialChar.GetMarkupAttributeAtRowCol(const aRow: Integer;
-  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 begin
   Result := nil;
   if (FCurLine='') or (not (FHasMarkup and (FVisibleSpecialChars <> []))) then exit;

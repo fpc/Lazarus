@@ -58,12 +58,11 @@ uses
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree, SourceChanger, IdentCompletionTool,
   // synedit
-  SynEditLines, SynEditStrConst, SynEditTypes, SynEdit,
-  SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
-  SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
-  SynBeautifier, SynPluginMultiCaret,
-  SynPluginSyncronizedEditBase, SourceSynEditor,
-  SynExportHTML, SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef, SynBeautifierPascal,
+  SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynEditHighlighter, SynEditAutoComplete,
+  SynEditKeyCmds, SynCompletion, SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
+  SynBeautifier, SynPluginMultiCaret, SynPluginSyncronizedEditBase, SourceSynEditor, SynExportHTML,
+  SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef, SynBeautifierPascal,
+  SynEditMarkupSpecialLine,
   // IdeIntf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs, IDECommands,
@@ -349,8 +348,8 @@ type
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
-    procedure EditorSpecialLineColor(Sender: TObject; Line: integer;
-         var Special: boolean; Markup: TSynSelectedColor);
+    procedure EditorSpecialLineColor(Sender: TObject; const Info: TSpecialLineMarkupExInfo;
+         var Special: boolean; Markup: TLazEditTextAttributeModifier);
     function RefreshEditorSettings: Boolean;
     function GetModified: Boolean; override;
     procedure SetModified(const NewValue: Boolean); override;
@@ -5040,8 +5039,9 @@ begin
   ShowHelpOrErrorForSourcePosition(Filename,FEditor.LogicalCaretXY);
 end;
 
-procedure TSourceEditor.EditorSpecialLineColor(Sender: TObject; Line: integer;
-  var Special: boolean; Markup: TSynSelectedColor);
+procedure TSourceEditor.EditorSpecialLineColor(Sender: TObject;
+  const Info: TSpecialLineMarkupExInfo; var Special: boolean; Markup: TLazEditTextAttributeModifier
+  );
 var
   i:integer;
   aha: TAdditionalHilightAttribute;
@@ -5051,13 +5051,13 @@ begin
   aha := ahaNone;
   Special := False;
 
-  if ErrorLine = Line then begin
+  if ErrorLine = Info.Line then begin
     EditorOpts.SetMarkupColor(TCustomSynEdit(Sender).Highlighter, ahaErrorLine, Markup);
     Special := Markup.IsEnabled;
   end;
 
   if not Special then begin
-    SourceEditorMarks.GetMarksForLine(Self, Line, CurMarks, CurMarkCount);
+    SourceEditorMarks.GetMarksForLine(Self, Info.Line, CurMarks, CurMarkCount);
     if CurMarkCount > 0 then begin
       for i := 0 to CurMarkCount - 1 do begin
         if not CurMarks[i].Visible then
@@ -5461,7 +5461,7 @@ Begin
       OnProcessUserCommand := @ProcessUserCommand;
       OnCommandProcessed := @UserCommandProcessed;
       OnReplaceText := @ReplaceTxtHandler;
-      OnSpecialLineMarkup := @EditorSpecialLineColor;
+      OnSpecialLineMarkupEx := @EditorSpecialLineColor;
       OnMouseMove := @EditorMouseMoved;
       OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;

@@ -43,7 +43,7 @@ uses
   KeywordFuncLists,
   // SynEdit
   SynEditMarkupGutterMark,
-  SynEditMarks, SynEditMiscClasses, SynEditTypes, SynEdit, LazSynEditText,
+  SynEditMarks, SynEditMiscClasses, SynEditTypes, SynEdit, LazSynEditText, SynEditHighlighter,
   // IdeIntf
   IDEExternToolIntf;
 
@@ -55,7 +55,7 @@ type
   private
     FColor: TColor;
     FImageIndex: integer;
-    FSourceMarkup: TSynSelectedColor;
+    FSourceMarkup: TSynHighlighterAttributesModifier;
     FUrgency: TMessageLineUrgency;
     procedure SetColor(AValue: TColor);
   public
@@ -64,7 +64,7 @@ type
     property Urgency: TMessageLineUrgency read FUrgency;
     property Color: TColor read FColor write SetColor;
     property ImageIndex: integer read FImageIndex write FImageIndex;
-    property SourceMarkup: TSynSelectedColor read FSourceMarkup;
+    property SourceMarkup: TSynHighlighterAttributesModifier read FSourceMarkup;
   end;
 
   TETMarks = class;

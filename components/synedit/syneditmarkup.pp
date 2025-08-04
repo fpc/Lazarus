@@ -26,8 +26,8 @@ unit SynEditMarkup;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, LazLoggerBase, SynEditTypes,
-  LazSynEditText, SynEditPointClasses, SynEditMiscClasses, SynEditHighlighter;
+  Classes, SysUtils, Graphics, Controls, LazLoggerBase, SynEditTypes, LazSynEditText,
+  SynEditPointClasses, SynEditMiscClasses, SynEditHighlighter, LazEditTextAttributes;
 
 type
   TLazSynDisplayRtlInfo = record
@@ -42,7 +42,7 @@ type
 
   TSynEditMarkup = class(TObject)
   private
-    FMarkupInfo : TSynSelectedColor;
+    FMarkupInfo : TSynHighlighterAttributesModifier;
     FLines : TSynEditStringsLinked;
     FCaret : TSynEditCaret;
     FTopLine, FLinesInWindow : Integer;
@@ -79,7 +79,7 @@ type
     procedure DoTopLineChanged(OldTopLine : Integer); virtual;
     procedure DoLinesInWindoChanged(OldLinesInWindow : Integer); virtual;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); virtual; // 1 based
-    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); virtual;
+    procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); virtual;
     procedure DoVisibleChanged(AVisible: Boolean); virtual;
 
     procedure InvalidateSynLines(FirstLine, LastLine: integer); // Call Synedt to invalidate lines
@@ -106,7 +106,7 @@ type
     Procedure EndMarkup; virtual;
     Function  GetMarkupAttributeAtRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnRtlInfo: TLazSynDisplayRtlInfo) : TSynSelectedColor; virtual; abstract;
+                                         const AnRtlInfo: TLazSynDisplayRtlInfo) : TLazEditTextAttributeModifier; virtual; abstract;
     Procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                           const aStartCol: TLazSynDisplayTokenBound;
                                           const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -117,7 +117,7 @@ type
                                            AMarkup: TSynSelectedColorMergeResult); virtual;
 
     function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
-                                         const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor; virtual;
+                                         const aWrapCol: TLazSynDisplayTokenBound): TLazEditTextAttributeModifier; virtual;
                                          // experimental; // params may still change
     procedure MergeMarkupAttributeAtWrapEnd(const aRow: Integer;
                                            const aWrapCol: TLazSynDisplayTokenBound;
@@ -132,7 +132,7 @@ type
     procedure DecPaintLock; virtual;
     function  RealEnabled: Boolean; virtual;
 
-    property MarkupInfo : TSynSelectedColor read fMarkupInfo;
+    property MarkupInfo : TSynHighlighterAttributesModifier read fMarkupInfo;
     property FGColor : TColor read GetFGColor;
     property BGColor : TColor read GetBGColor;
     property FrameColor: TColor read GetFrameColor;
@@ -181,7 +181,7 @@ type
     Procedure EndMarkup; override;
     Function  GetMarkupAttributeAtRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
-                                         const AnRtlInfo: TLazSynDisplayRtlInfo) : TSynSelectedColor; override;
+                                         const AnRtlInfo: TLazSynDisplayRtlInfo) : TLazEditTextAttributeModifier; override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                           const aStartCol: TLazSynDisplayTokenBound;
                                           const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -268,7 +268,7 @@ end;
 
 procedure TSynEditMarkup.MarkupChanged(AMarkup : TObject);
 begin
-  DoMarkupChanged(AMarkup as TSynSelectedColor);
+  DoMarkupChanged(AMarkup as TLazEditTextAttributeModifier);
 end;
 
 procedure TSynEditMarkup.SetLines(const AValue: TSynEditStringsLinked);
@@ -341,7 +341,7 @@ procedure TSynEditMarkup.DoTextChanged(StartLine, EndLine, ACountDiff: Integer);
 begin
 end;
 
-procedure TSynEditMarkup.DoMarkupChanged(AMarkup : TSynSelectedColor);
+procedure TSynEditMarkup.DoMarkupChanged(AMarkup : TLazEditTextAttribute);
 begin
 end;
 
@@ -453,7 +453,7 @@ procedure TSynEditMarkup.MergeMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol, AEndCol: TLazSynDisplayTokenBound;
   const AnRtlInfo: TLazSynDisplayRtlInfo; AMarkup: TSynSelectedColorMergeResult);
 var
-  c: TSynSelectedColor;
+  c: TLazEditTextAttribute;
 begin
   c := GetMarkupAttributeAtRowCol(aRow, aStartCol, AnRtlInfo);
   if assigned(c) then
@@ -461,7 +461,7 @@ begin
 end;
 
 function TSynEditMarkup.GetMarkupAttributeAtWrapEnd(const aRow: Integer;
-  const aWrapCol: TLazSynDisplayTokenBound): TSynSelectedColor;
+  const aWrapCol: TLazSynDisplayTokenBound): TLazEditTextAttributeModifier;
 begin
   Result := nil;
 end;
@@ -470,7 +470,7 @@ procedure TSynEditMarkup.MergeMarkupAttributeAtWrapEnd(const aRow: Integer;
   const aWrapCol: TLazSynDisplayTokenBound;
   AMarkup: TSynSelectedColorMergeResult);
 var
-  c: TSynSelectedColor;
+  c: TLazEditTextAttribute;
 begin
   c := GetMarkupAttributeAtWrapEnd(aRow, aWrapCol);
   if assigned(c) then
@@ -644,7 +644,7 @@ end;
 
 function TSynEditMarkupManager.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound;
-  const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor;
+  const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 begin
   assert(false);
   Result := MarkupInfo;

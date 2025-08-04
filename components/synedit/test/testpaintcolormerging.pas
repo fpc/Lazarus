@@ -58,7 +58,7 @@ procedure TTestPaintColorMerging.MergeAttrib;
 var
   Merger: TSynSelectedColorMergeResult;
   Base: TSynHighlighterAttributes;
-  Modifier: TSynSelectedColor;
+  Modifier: TLazEditTextAttributeModifier;
   b1, b2: TLazSynDisplayTokenBound;
 begin
   b1.Logical := -1;

@@ -278,7 +278,7 @@ type
     FSrcSynCaretChangedLock, FSrcSynCaretChangedNeeded: boolean;
     FExtraMarkupLine: TSynEditMarkupSpecialLine;
     FExtraMarkupMgr: TSynEditMarkupManager;
-    FTopInfoMarkup: TSynSelectedColor;
+    FTopInfoMarkup: TLazEditTextAttributeModifier;
     FUserWordsList: TFPList;
 
     function CatchMouseForTopInforLine(var AnInfo: TSynEditMouseActionInfo;
@@ -291,13 +291,13 @@ type
     function GetIsInMultiCaretMainExecution: Boolean;
     function GetIsInMultiCaretRepeatExecution: Boolean;
     function GetOnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand;
-    procedure GetTopInfoMarkupForLine(Sender: TObject; {%H-}Line: integer; var Special: boolean;
-      aMarkup: TSynSelectedColor);
+    procedure GetTopInfoMarkupForLine(Sender: TObject; {%H-}const Info: TSpecialLineMarkupExInfo; var Special: boolean;
+      aMarkup: TLazEditTextAttributeModifier);
     procedure SetCaretColor(AValue: TColor);
     procedure SetHighlightUserWordCount(AValue: Integer);
     procedure SetOnMultiCaretBeforeCommand(AValue: TSynMultiCaretBeforeCommand);
     procedure SetShowTopInfo(AValue: boolean);
-    procedure SetTopInfoMarkup(AValue: TSynSelectedColor);
+    procedure SetTopInfoMarkup(AValue: TLazEditTextAttributeModifier);
     procedure DoHighlightChanged(Sender: TSynEditStrings; {%H-}AIndex, {%H-}ACount : Integer);
     function GetWordWrapEnabled: Boolean;
     procedure SetWordWrapCaretWrapPos(AValue: TLazSynEditWrapCaretPos);
@@ -334,7 +334,7 @@ type
     property SyncroEdit: TSynPluginSyncroEdit read FSyncroEdit;
     property MultiCaret: TSynPluginMultiCaret read FMultiCaret;
     //////
-    property TopInfoMarkup: TSynSelectedColor read FTopInfoMarkup write SetTopInfoMarkup;
+    property TopInfoMarkup: TLazEditTextAttributeModifier read FTopInfoMarkup write SetTopInfoMarkup;
     property ShowTopInfo: boolean read FShowTopInfo write SetShowTopInfo;
     {$IFDEF WinIME}
     procedure CreateMinimumIme;
@@ -1823,8 +1823,9 @@ begin
   {$pop}
 end;
 
-procedure TIDESynEditor.GetTopInfoMarkupForLine(Sender: TObject; Line: integer;
-  var Special: boolean; aMarkup: TSynSelectedColor);
+procedure TIDESynEditor.GetTopInfoMarkupForLine(Sender: TObject;
+  const Info: TSpecialLineMarkupExInfo; var Special: boolean;
+  aMarkup: TLazEditTextAttributeModifier);
 begin
   Special := True;
   aMarkup.Assign(FTopInfoMarkup);
@@ -1894,7 +1895,7 @@ begin
   end;
 end;
 
-procedure TIDESynEditor.SetTopInfoMarkup(AValue: TSynSelectedColor);
+procedure TIDESynEditor.SetTopInfoMarkup(AValue: TLazEditTextAttributeModifier);
 begin
   if FTopInfoMarkup = AValue then Exit;
   FTopInfoMarkup.Assign(AValue);
@@ -2091,14 +2092,14 @@ begin
   FTopInfoNestList.FoldGroup := FOLDGROUP_PASCAL;
   FTopInfoNestList.FoldFlags := [sfbIncludeDisabled];
   FTopInfoNestList.IncludeOpeningOnLine := False;
-  FTopInfoMarkup := TSynSelectedColor.Create;
+  FTopInfoMarkup := TSynSelectedColor.Create; // must be for event
   FTopInfoMarkup.Clear;
 
   ViewedTextBuffer.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
 
   // Markup for top info hint
   FExtraMarkupLine := TSynEditMarkupSpecialLine.Create(Self);
-  FExtraMarkupLine.OnSpecialLineMarkup  := @GetTopInfoMarkupForLine;
+  FExtraMarkupLine.OnSpecialLineMarkupEx := @GetTopInfoMarkupForLine;
   FExtraMarkupMgr := TSynEditMarkupManager.Create(Self);
   FExtraMarkupMgr.AddMarkUp(TSynEditMarkup(MarkupMgr));
   FExtraMarkupMgr.AddMarkUp(FExtraMarkupLine);

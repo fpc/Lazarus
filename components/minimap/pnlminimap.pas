@@ -16,7 +16,7 @@ interface
 uses
   Classes, SysUtils, Controls, ExtCtrls, SynEdit, SrcEditorIntf, Graphics, lclType,
   SynEditMarkupSpecialLine, SynEditTypes, SynEditMiscClasses, SynEditMarkupBracket, LazLogger,
-  LazLoggerBase;
+  LazLoggerBase, LazEditTextAttributes;
 
 Const
   DefaultViewFontSize        = 3;
@@ -44,7 +44,7 @@ Type
     procedure SyncMiniMapProps;
   Protected
     // Event handlers
-    procedure HandleLineMarkup(Sender: TObject; Line: integer; var Special: boolean; Markup: TSynSelectedColor); virtual;
+    procedure HandleLineMarkup(Sender: TObject; const Info: TSpecialLineMarkupExInfo; var Special: boolean; Markup: TLazEditTextAttributeModifier); virtual;
     procedure HandleStatusChange(Sender: TObject; {%H-}Changes: TSynStatusChanges); virtual;
     Procedure HandleClick({%H-}aSender : TObject); virtual;
     Procedure SyncViewWindow;
@@ -67,8 +67,8 @@ uses SynEditKeyCmds;
 
 { TMiniMapControl }
 
-procedure TMiniMapControl.HandleLineMarkup(Sender: TObject; Line: integer;
-  var Special: boolean; Markup: TSynSelectedColor);
+procedure TMiniMapControl.HandleLineMarkup(Sender: TObject; const Info: TSpecialLineMarkupExInfo;
+  var Special: boolean; Markup: TLazEditTextAttributeModifier);
 
 var
   TopLine,BottomLine: Integer;
@@ -76,7 +76,7 @@ var
 begin
   TopLine:=FSourceSynEdit.TopLine;
   BottomLine:=FSourceSynEdit.BottomLine;
-  if (Line>=TopLine) and (Line<=BottomLine) then
+  if (Info.Line>=TopLine) and (Info.Line<=BottomLine) then
     begin
     Markup.Background:=FViewWindowColor;
     Markup.Foreground:=FViewWindowTextColor;
@@ -229,7 +229,7 @@ begin
   FMiniSynEdit.ReadOnly := True;
   FMiniSynEdit.Gutter.Visible := False;
   FMiniSynEdit.OnClick := @HandleClick;
-  FMiniSynEdit.OnSpecialLineMarkup := @HandleLineMarkup;
+  FMiniSynEdit.OnSpecialLineMarkupEx := @HandleLineMarkup;
   FMiniSynEdit.Options:=[eoNoCaret,eoNoSelection];
   FMiniSynEdit.Options2:=[];
   FMiniSynEdit.BookMarkOptions.EnableKeys:=False;
