@@ -7792,7 +7792,7 @@ begin
 end;
 
 procedure TColorSchemeLanguage.ApplyTo(ASynEdit: TSynEdit);
-  procedure SetMarkupColor(aha: TAdditionalHilightAttribute; aMarkup : TLazEditTextAttributeModifier);
+  procedure SetMarkupColor(aha: TAdditionalHilightAttribute; aMarkup : TLazEditTextAttribute);
   var Attrib: TColorSchemeAttribute;
   begin
     Attrib := AttributeByEnum[aha];

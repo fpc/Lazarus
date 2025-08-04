@@ -78,8 +78,8 @@ type
       aCount: Integer);
     procedure DoIncPaintLock(Sender: TObject);
   private
-    FMarkupInfoCurrentFold: TSynGutterColorAttributesModifier;
-    FMarkupInfoCurrentFoldInternal: TLazEditTextAttributeModifier;
+    FMarkupInfoCurrentFold: TSynGutterColorAttributes;
+    FMarkupInfoCurrentFoldInternal: TLazEditTextAttribute;
     FMouseActionsCollapsed: TSynEditMouseInternalActions;
     FMouseActionsExpanded: TSynEditMouseInternalActions;
     FPopUp: TPopupMenu;
@@ -92,7 +92,7 @@ type
     function GetFoldView: TSynEditFoldedView;
     function GetMouseActionsCollapsed: TSynEditMouseActions;
     function GetMouseActionsExpanded: TSynEditMouseActions;
-    procedure SetMarkupInfoCurrentFold(AValue: TSynGutterColorAttributesModifier);
+    procedure SetMarkupInfoCurrentFold(AValue: TSynGutterColorAttributes);
     procedure SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
     procedure SetMouseActionsExpanded(const AValue: TSynEditMouseActions);
     function  FoldTypeForLine(AScreenLine: Integer): TSynEditFoldLineCapability;
@@ -133,7 +133,7 @@ type
   published
     property MarkupInfo;
     property MarkupInfoCurrentLine;
-    property MarkupInfoCurrentFold: TSynGutterColorAttributesModifier read FMarkupInfoCurrentFold write SetMarkupInfoCurrentFold;
+    property MarkupInfoCurrentFold: TSynGutterColorAttributes read FMarkupInfoCurrentFold write SetMarkupInfoCurrentFold;
     property MouseActionsExpanded: TSynEditMouseActions
       read GetMouseActionsExpanded write SetMouseActionsExpanded;
     property MouseActionsCollapsed: TSynEditMouseActions
@@ -166,7 +166,7 @@ begin
 end;
 
 procedure TSynGutterCodeFolding.SetMarkupInfoCurrentFold(
-  AValue: TSynGutterColorAttributesModifier);
+  AValue: TSynGutterColorAttributes);
 begin
   FMarkupInfoCurrentFold.Assign(AValue);
 end;
@@ -456,8 +456,8 @@ begin
   FReversePopMenuOrder := true;
   FMouseActionsExpanded := TSynEditMouseActionsGutterFoldExpanded.Create(self);
   FMouseActionsCollapsed := TSynEditMouseActionsGutterFoldCollapsed.Create(self);
-  FMarkupInfoCurrentFold := TSynGutterColorAttributesModifier.Create;
-  FMarkupInfoCurrentFoldInternal := TLazEditTextAttributeModifier.Create;
+  FMarkupInfoCurrentFold := TSynGutterColorAttributes.Create;
+  FMarkupInfoCurrentFoldInternal := TLazEditTextAttribute.Create;
   FInnerFoldCaretY := -1;
   FInnerFoldStart := -1;
 
@@ -887,7 +887,7 @@ var
   rcCodeFold: TRect;
   tmp: TSynEditFoldLineCapability;
   LineHeight, TextHeight, LineOffset, HalfBoxSize, aRow: Integer;
-  CurMarkUp: TLazEditTextAttributeModifier;
+  CurMarkUp: TLazEditTextAttribute;
 
   procedure DrawNodeBox(rcCodeFold: TRect; NodeType: TSynEditFoldLineCapability);
   var

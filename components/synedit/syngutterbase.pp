@@ -16,6 +16,28 @@ uses
 
 type
 
+  TSynGutterColorAttributes = class(TLazEditTextAttribute)
+  published
+    property Foreground;
+    property Background;
+    property FrameColor;
+
+    property ForePriority;
+    property BackPriority;
+    property FramePriority;
+
+    property FrameStyle;
+    property FrameEdges;
+
+    property Style;
+    property BoldPriority;
+    property ItalicPriority;
+    property UnderlinePriority;
+    property StrikeOutPriority;
+
+    property OnChange;
+  end;
+
   { TSynGutterColorAttributesModifier }
 
   TSynGutterColorAttributesModifier = class(TLazEditTextAttributeModifier)
@@ -36,8 +58,6 @@ type
     property ItalicPriority;
     property UnderlinePriority;
     property StrikeOutPriority;
-
-    //property Features; // not for gutter
 
     property OnChange;
   published
@@ -209,7 +229,7 @@ type
     FVisible: Boolean;
     FSynEdit: TSynEditBase;
     FGutter: TSynGutterBase;
-    FMarkupInfo: TSynGutterColorAttributesModifier;
+    FMarkupInfo: TSynGutterColorAttributes;
     FMarkupInfoInternal: TLazEditTextAttributeModifier;
     FMarkupInfoCurrentLine: TSynGutterColorAttributesModifier;
     FMarkupInfoCurLineMerged: TSynSelectedColorMergeResult;
@@ -224,7 +244,7 @@ type
     function GetGutterParts: TSynGutterPartListBase;
     function GetMouseActions: TSynEditMouseActions;
     procedure SetLeftOffset(AValue: integer);
-    procedure SetMarkupInfo(const AValue: TSynGutterColorAttributesModifier);
+    procedure SetMarkupInfo(const AValue: TSynGutterColorAttributes);
     procedure SetMarkupInfoCurrentLine(AValue: TSynGutterColorAttributesModifier);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetRightOffset(AValue: integer);
@@ -278,7 +298,7 @@ type
       read FOnGutterClick write FOnGutterClick;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
-    property MarkupInfo: TSynGutterColorAttributesModifier read FMarkupInfo write SetMarkupInfo;
+    property MarkupInfo: TSynGutterColorAttributes read FMarkupInfo write SetMarkupInfo;
     property MarkupInfoCurrentLine: TSynGutterColorAttributesModifier read FMarkupInfoCurrentLine write SetMarkupInfoCurrentLine;
   published
     property AutoSize: boolean read FAutoSize write SetAutoSize default True;
@@ -730,7 +750,7 @@ begin
   Result := Gutter.CaretRow;
 end;
 
-procedure TSynGutterPartBase.SetMarkupInfo(const AValue: TSynGutterColorAttributesModifier);
+procedure TSynGutterPartBase.SetMarkupInfo(const AValue: TSynGutterColorAttributes);
 begin
   FMarkupInfo.Assign(AValue);
 end;
@@ -876,7 +896,7 @@ begin
   if (AnOwner = nil) or not(AnOwner is TSynGutterPartListBase) then
     raise Exception.Create('Invalid Owner');
 
-  FMarkupInfo := TSynGutterColorAttributesModifier.Create;
+  FMarkupInfo := TSynGutterColorAttributes.Create;
   FMarkupInfo.Background := clBtnFace;
   FMarkupInfo.Foreground := clNone;
   FMarkupInfo.FrameColor := clNone;

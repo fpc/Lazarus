@@ -11059,9 +11059,12 @@ begin
   RegisterPropertyToSkip(TSynSelectedColor, 'OnChange', '', '');
   RegisterPropertyToSkip(TSynSelectedColor, 'StartX', '', '');
   RegisterPropertyToSkip(TSynSelectedColor, 'EndX', '', '');
-  RegisterPropertyToSkip(TLazEditTextAttributeModifier, 'OnChange', '', '');
   RegisterPropertyToSkip(TLazEditTextAttributeModifier, 'StartX', '', '');
   RegisterPropertyToSkip(TLazEditTextAttributeModifier, 'EndX', '', '');
+  RegisterPropertyToSkip(TSynGutterColorAttributes, 'BackAlpha', '', '');
+  RegisterPropertyToSkip(TSynGutterColorAttributes, 'ForeAlpha', '', '');
+  RegisterPropertyToSkip(TSynGutterColorAttributes, 'FrameAlpha', '', '');
+  RegisterPropertyToSkip(TSynGutterColorAttributes, 'StyleMask', '', '');
 
   RegisterPropertyToSkip(TSynGutter, 'ShowCodeFolding', '', '');
   RegisterPropertyToSkip(TSynGutter, 'CodeFoldingWidth', '', '');
