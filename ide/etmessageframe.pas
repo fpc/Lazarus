@@ -1859,8 +1859,10 @@ begin
   begin
     if SelectedView=nil then
       SelectFirst(true,true);
-    Select(SelectedView,-1,false,false);
-    ExtendSelection(SelectedView,SelectedView.Lines.Count-1);
+    if SelectedView<>nil then begin
+      Select(SelectedView,-1,false,false);
+      ExtendSelection(SelectedView,SelectedView.Lines.Count-1);
+    end;
     Key := 0;
   end
   // [Up]
