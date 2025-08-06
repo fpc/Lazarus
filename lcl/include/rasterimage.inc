@@ -99,6 +99,13 @@ begin
       end;
     end;
 
+    if SrcImage.FTransparentDelayed then
+    begin
+      SrcImage.ApplyTransparent;
+      SrcImage.MaskHandleNeeded;
+      SrcImage.FTransparentDelayed := false;
+    end;
+
     if SrcImage.MaskHandleAllocated
     then CopyMask(SrcImage.MaskHandle);
 
@@ -233,6 +240,16 @@ begin
 
   BitmapHandleNeeded;
   if not BitmapHandleAllocated then Exit;
+
+  if FTransparentDelayed then
+  begin
+    ApplyTransparent;
+    if FTransparentColor = clDefault then
+      Mask(RequestTransparentColor)
+    else
+      Mask(FTransparentColor);
+    FTransparentDelayed := false;
+  end;
 
   if Masked then
     UseMaskHandle:=MaskHandle
@@ -716,6 +733,9 @@ var
 begin
   lTransparent := GetTransparent();
   if AValue = lTransparent then Exit;
+
+  if not HandleAllocated then
+    FTransparentDelayed := true;
 
   FTransparentPending := AValue;
   ApplyTransparent;

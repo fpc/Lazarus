@@ -1246,6 +1246,7 @@ type
     FUpdateCanvasOnly: Boolean;
     FMasked: Boolean;
     FTransparentPending: Boolean;
+    FTransparentDelayed: Boolean;
 
     procedure CanvasChanging(Sender: TObject);
     procedure CreateCanvas;
