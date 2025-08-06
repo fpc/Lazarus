@@ -215,9 +215,9 @@ type
 
   TMessageLines = class
   private
+    FBaseDirectory: string;
     FChangeStamp: int64;
     FCritSec: TRTLCriticalSection;
-    FBaseDirectory: string;
     fItems: TFPList; // list of TMessageLine
     FMessageLineClass: TMessageLineClass;
     FOnMarksFixed: TETMarksFixedEvent;
@@ -233,14 +233,11 @@ type
     UrgencyCounts: array[TMessageLineUrgency] of integer;
     constructor Create(aOwner: TObject; aMsgLineClass: TMessageLineClass);
     destructor Destroy; override;
-    property Owner: TObject read FOwner;
     procedure EnterCriticalSection; // always use before access
     procedure LeaveCriticalSection;
     function Count: integer; inline;
     procedure Clear;
-    property Items[Index: integer]: TMessageLine read GetItems; default;
     function GetLastLine: TMessageLine;
-    property BaseDirectory: string read FBaseDirectory write SetBaseDirectory; // always trimmed and with trailing /
     function CreateLine(OutputIndex: integer): TMessageLine; // create, but do not yet add it
     procedure Add(MsgLine: TMessageLine);
     procedure Remove(MsgLine: TMessageLine);
@@ -250,19 +247,24 @@ type
     procedure FetchAll(SrcLines: TMessageLines);
     procedure SourceLinesInserted(Filename: string; Line, InsertedCount: integer);
     procedure SourceLinesDeleted(Filename: string; FirstLine, DeletedCount: integer);
-    property MessageLineClass: TMessageLineClass read FMessageLineClass;
-    property OnMarksFixed: TETMarksFixedEvent read FOnMarksFixed write FOnMarksFixed;
-    property ChangeStamp: int64 read FChangeStamp;
     procedure IncreaseChangeStamp; inline;
     function IndexOfOutputIndex(OutputIndex: integer): integer;
     function EnumerateFile(aFilename: string;
       MinLine: integer = 0; MaxLine: integer = High(integer)): TMessageLineEnumerator;
-    property UpdateSortedSrcPos: boolean // disable this while updating many Filename,Line,Col without changes the order
-      read FUpdateSortedSrcPos write FUpdateSortedSrcPos;
     procedure AddChangedHandler(const OnLineChanged: TNotifyEvent;
       AsFirst: boolean = false);
     procedure RemoveChangedHandler(const OnLineChanged: TNotifyEvent);
     procedure ConsistencyCheck;
+  public
+    // always trimmed and with trailing /
+    property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
+    property ChangeStamp: int64 read FChangeStamp;
+    property Items[Index: integer]: TMessageLine read GetItems; default;
+    property MessageLineClass: TMessageLineClass read FMessageLineClass;
+    property Owner: TObject read FOwner;
+    property OnMarksFixed: TETMarksFixedEvent read FOnMarksFixed write FOnMarksFixed;
+    // disable this while updating many Filename,Line,Col without changes the order
+    property UpdateSortedSrcPos: boolean read FUpdateSortedSrcPos write FUpdateSortedSrcPos;
   end;
 
   { The output is parsed in chunks (multiple lines) at a time.
