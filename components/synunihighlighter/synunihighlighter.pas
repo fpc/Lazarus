@@ -53,7 +53,7 @@ uses
   Classes, SysUtils,
   Graphics,
   GraphType, FileUtil,
-  SynEditTypes, SynEditHighlighter;
+  SynEditTypes, SynEditHighlighter, LazEditTextAttributes;
 
 Const
   _Root='Root';
@@ -328,7 +328,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TLazEditTextAttribute;
+    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       override;
     function GetEOL: Boolean; override;
     function GetRange: Pointer; override;
