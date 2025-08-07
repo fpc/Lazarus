@@ -162,12 +162,11 @@ end;
 
 procedure UpdateCustomMakefiles;
 const
-  Dirs: array[1..7] of string = (
+  Dirs: array[1..6] of string = (
     'lcl/interfaces',
     'components/virtualtreeview',
     'components/chmhelp/lhelp',
     'components',
-    'lcl/interfaces',
     'ide',
     'tools'
     );
