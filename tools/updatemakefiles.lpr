@@ -96,12 +96,12 @@ begin
     writeln('NOTE: no lpk found in ',CreateRelativePath(Dir,LazarusDir),' for ',MainSrc,'. Probably this requires a custom Makefile.');
 end;
 
-procedure CheckMakefileCompiled(MakefileCompiledFilename: string; LPKFiles: TStrings);
+procedure CheckMakefileCompiled(MakefileCompiledFilename: string; LPKFiles, ExtraMakefiles: TStrings);
 var
   MakefileCompiled: TXMLConfig;
   MainSrcFilename: String;
   p: Integer;
-  LPKFilename: String;
+  LPKFilename, MakeFilename: String;
   HasConditionals: boolean;
 begin
   //writeln('CheckMakefileCompiled ',MakefileCompiledFilename);
@@ -115,17 +115,17 @@ begin
     LPKFilename:=FindLPK(ExtractFilePath(MakefileCompiledFilename),MainSrcFilename,HasConditionals);
     //writeln('  MakefileCompiled=',CreateRelativePath(MakefileCompiledFilename,LazarusDir),' MainSrc=',MainSrcFilename,' lpk=',CreateRelativePath(LPKFilename,LazarusDir),' HasConditionals=',HasConditionals);
     if (LPKFilename='') then exit;
-    if HasConditionals then begin
-      writeln('Skipping ',LPKFilename,' due to conditionals');
-      exit;
-    end;
-    LPKFiles.Add(CreateRelativePath(LPKFilename,LazarusDir));
+    MakeFilename:=ChangeFileExt(MakefileCompiledFilename,'');
+    if HasConditionals then
+      ExtraMakefiles.Add(MakeFilename)
+    else
+      LPKFiles.Add(CreateRelativePath(LPKFilename,LazarusDir));
   finally
     MakefileCompiled.Free;
   end;
 end;
 
-procedure FindLPKFilesWithMakefiles(Dir: string; LPKFiles: TStrings);
+procedure FindLPKFilesWithMakefiles(Dir: string; LPKFiles, ExtraMakefiles: TStrings);
 var
   FileInfo: TSearchRec;
 begin
@@ -135,9 +135,9 @@ begin
       if (FileInfo.Name='') or (FileInfo.Name='.') or (FileInfo.Name='..') then
         continue;
       if (FileInfo.Attr and faDirectory)<>0 then
-        FindLPKFilesWithMakefiles(Dir+FileInfo.Name,LPKFiles)
+        FindLPKFilesWithMakefiles(Dir+FileInfo.Name,LPKFiles,ExtraMakefiles)
       else if FileInfo.Name='Makefile.compiled' then
-        CheckMakefileCompiled(Dir+FileInfo.Name,LPKFiles);
+        CheckMakefileCompiled(Dir+FileInfo.Name,LPKFiles,ExtraMakefiles);
     until FindNextUTF8(FileInfo)<>0;
   end;
   FindCloseUTF8(FileInfo);
@@ -160,19 +160,17 @@ begin
   Lines.Free;
 end;
 
-procedure UpdateCustomMakefiles;
+procedure UpdateCustomMakefiles(ExtraMakefiles: TStrings);
 const
-  Dirs: array[1..7] of string = (
+  Dirs: array[1..5] of string = (
     'lcl/interfaces',
-    'components/virtualtreeview',
     'components/chmhelp/lhelp',
     'components',
-    'lcl/interfaces',
     'ide',
     'tools'
     );
 var
-  Dir: String;
+  Dir, Filename: String;
   Lines: TStringList;
 begin
   for Dir in Dirs do begin
@@ -181,11 +179,17 @@ begin
     //writeln(Lines.Text);
     Lines.Free;
   end;
+  for Filename in ExtraMakefiles do begin
+    writeln(Filename);
+    Lines:=RunTool(FPCMake,'-TAll',ExtractFilePath(Filename));
+    //writeln(Lines.Text);
+    Lines.Free;
+  end;
 end;
 
 var
   LPKFiles: TStringList;
-  LazbuildOut: TStringList;
+  LazbuildOut, ExtraMakefiles: TStringList;
   LazbuildExe: String;
 begin
   if Paramcount>0 then begin
@@ -204,8 +208,11 @@ begin
   LazarusDir:=AppendPathDelim(LazarusDir);
 
   LPKFiles:=TStringList.Create;
-  FindLPKFilesWithMakefiles(LazarusDir,LPKFiles);
+  ExtraMakefiles:=TStringList.Create;
+
+  FindLPKFilesWithMakefiles(LazarusDir,LPKFiles,ExtraMakefiles);
   writeln(LPKFiles.Text);
+  writeln(ExtraMakefiles.Text);
   LPKFiles.StrictDelimiter:=true;
   LPKFiles.Delimiter:=' ';
   LazbuildExe:=SetDirSeparators(LazarusDir+'lazbuild'+ExeExt);
@@ -214,11 +221,17 @@ begin
     writeln('Error: missing ',LazbuildExe);
     Halt(1);
   end;
+
+  // run lazbuild
   LazbuildOut:=RunTool(SetDirSeparators(LazarusDir+'lazbuild'+ExeExt),'--lazarusdir="'+LazarusDir+'" --create-makefile '+LPKFiles.DelimitedText,LazarusDir);
   writeln(LazbuildOut.Text);
+
+  // update custom Makefiles
+
   LazbuildOut.Free;
   LPKFiles.Free;
 
-  UpdateCustomMakefiles;
+  UpdateCustomMakefiles(ExtraMakefiles);
+  ExtraMakefiles.Free;
 end.
 
