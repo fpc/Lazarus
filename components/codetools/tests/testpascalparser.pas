@@ -47,6 +47,8 @@ type
   TTestPascalParser = class(TCustomTestPascalParser)
   published
     procedure TestAtomRing;
+    procedure TestIF_DIV;
+
     procedure TestRecord_ClassOperators;
     procedure TestRecord_Nonkeywords;
     procedure TestRecord_Align;
@@ -365,6 +367,19 @@ begin
       R.Free;
     end;
   end;
+end;
+
+procedure TTestPascalParser.TestIF_DIV;
+begin
+  StartProgram;
+  Add([
+  '{$if (1 + VarSizeQuant - 1) div VarSizeQuant}',
+  'xxx',
+  '{$else}',
+  'const good = true;',
+  '{$endif}',
+  'begin']);
+  ParseModule;
 end;
 
 procedure TTestPascalParser.TestRecord_ClassOperators;

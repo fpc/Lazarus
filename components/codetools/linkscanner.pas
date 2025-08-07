@@ -4787,8 +4787,13 @@ begin
   Result:=true;
   //DebugLn(['TLinkScanner.InternalIfDirective ExprResult=',ExprResult]);
   if Values.ErrorPosition>=0 then begin
-    inc(SrcPos,Values.ErrorPosition);
-    RaiseException(20170422130200,Values.ErrorMsg)
+    //debugln(['Hint: TLinkScanner.InternalIfDirective: eval error: ',Values.ErrorMsg,' at ',CleanedPosToStr(SrcPos)]);
+
+    // expression evaluates to error, e.g. div by zero -> skip this block
+    SkipTillEndifElse(lssdTillElse);
+
+    // inc(SrcPos,Values.ErrorPosition);
+    // RaiseException(20170422130200,Values.ErrorMsg)
   end else if ExprResult then begin
     // expression evaluates to true => stop skipping and parse block
     if FDirectivesCount>0 then
