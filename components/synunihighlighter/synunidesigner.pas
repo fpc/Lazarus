@@ -66,7 +66,8 @@ uses
   SynEdit,
   SynEditHighlighter,
   SynUniHighlighter,
-  synunistrconst;
+  synunistrconst,
+  LazEditTextAttributes;
 
 type
   TNodeText = String;
