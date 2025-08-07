@@ -19,7 +19,7 @@ unit ContextHL;
 interface
 
 uses
-  SynEditHighlighter, SimpleHl;
+  SynEditHighlighter, LazEditTextAttributes, SimpleHl;
 
 type
 

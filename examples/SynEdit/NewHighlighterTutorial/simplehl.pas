@@ -52,7 +52,7 @@ unit SimpleHl;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter;
+  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, LazEditTextAttributes;
 
 type
 
@@ -231,7 +231,7 @@ end;
 
 function TSynDemoHl.GetTokenKind: integer;
 var
-  a: TSynHighlighterAttributes;
+  a: TLazEditTextAttribute;
 begin
   // Map Attribute into a unique number
   a := GetTokenAttribute;

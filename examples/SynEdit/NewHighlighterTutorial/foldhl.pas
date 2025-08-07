@@ -17,7 +17,8 @@ unit FoldHl;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase, ContextHL;
+  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase,
+  LazEditTextAttributes, ContextHL;
 
 type
 
@@ -281,7 +282,7 @@ end;
 
 function TSynDemoHlFoldBase.GetTokenKind: integer;
 var
-  a: TSynHighlighterAttributes;
+  a: TLazEditTextAttribute;
 begin
   // Map Attribute into a unique number
   a := GetTokenAttribute;
