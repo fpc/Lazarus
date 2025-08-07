@@ -64,6 +64,7 @@ type
     procedure SetCapacity(const AValue: Integer); virtual;
     procedure SetCount(const AValue: Integer); virtual;
     procedure Move(AFrom, ATo, ALen: Integer); virtual;
+    procedure InitMem(var AFirstItem; AByteCount: Integer); virtual;
 
     property Mem: PByte read FMem;
     property ItemPointer[Index: Integer]: Pointer read GetItemPointer;
@@ -875,7 +876,7 @@ begin
   if FCapacity = AValue then exit;
   FMem := ReallocMem(FMem, AValue * ItemSize);
   if AValue > FCapacity then
-    FillChar((FMem+FCapacity*ItemSize)^, (AValue-FCapacity)*ItemSize, 0);
+    InitMem((FMem+FCapacity*ItemSize)^, (AValue-FCapacity)*ItemSize);
   FCapacity := AValue;
 end;
 
@@ -939,12 +940,17 @@ begin
   if ATo < AFrom then begin
     Len := Min(ALen, AFrom-ATo);
     System.Move((FMem+AFrom*ItemSize)^, (FMem+ATo*ItemSize)^, Alen*ItemSize);
-    FillChar((FMem+(AFrom+ALen-Len)*ItemSize)^, Len*ItemSize, 0);
+    InitMem((FMem+(AFrom+ALen-Len)*ItemSize)^, Len*ItemSize);
   end else begin
     Len := Min(ALen, ATo-AFrom);
     System.Move((FMem+AFrom*ItemSize)^, (FMem+ATo*ItemSize)^, Alen*ItemSize);
-    FillChar((FMem+AFrom*ItemSize)^, Len*ItemSize, 0);
+    InitMem((FMem+AFrom*ItemSize)^, Len*ItemSize);
   end;
+end;
+
+procedure TSynEditStorageMem.InitMem(var AFirstItem; AByteCount: Integer);
+begin
+  FillChar(AFirstItem, AByteCount, 0);
 end;
 
 { TSynManagedStorageMem }

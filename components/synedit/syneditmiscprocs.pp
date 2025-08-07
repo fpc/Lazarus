@@ -49,8 +49,8 @@ type
   TIntArray = array[0..MaxListSize - 1] of integer;
 
 function MulDiv(Factor1,Factor2,Divisor:integer):integer;{$IFDEF HasInline}inline;{$ENDIF}
-function Max(x, y: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
-function Min(x, y: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
+function Max(x, y: integer): integer;{$IFDEF HasInline}inline;{$ENDIF} overload;
+function Min(x, y: integer): integer;{$IFDEF HasInline}inline;{$ENDIF} overload;
 function MinMax(x, mi, ma: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
 procedure SwapInt(var l, r: integer);{$IFDEF HasInline}inline;{$ENDIF}
 function maxPoint(P1, P2: TPoint): TPoint;

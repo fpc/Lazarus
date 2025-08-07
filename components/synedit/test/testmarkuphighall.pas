@@ -6,7 +6,7 @@ unit TestMarkupHighAll;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, Controls, Graphics, LazLoggerBase,
+  Classes, SysUtils, testregistry, TestBase, Controls, Graphics, LazLoggerBase, IntegerList,
   SynEdit, SynEditMarkupHighAll, SynEditMiscProcs;
 
 type
@@ -19,25 +19,47 @@ type
     function p2: TPoint;
   end;
 
+  { TTestSynEditMarkupHighlightAllMulti }
+
+  TTestSynEditMarkupHighlightAllMulti = class(TSynEditMarkupHighlightAllMulti)
+  public
+    procedure BeginSendingInvalidation; override;
+    procedure EndSendingInvalidation; override;
+    procedure TestAddMatch(const m: TMatchLoc);
+    procedure TestAddMatches(const m: array of TMatchLoc);
+    procedure TestClearAndAddMatches(const m: array of TMatchLoc);
+    property Matches;
+  end;
+
   { TTestMarkupHighAll }
 
   TTestMarkupHighAll = class(TTestBase)
   private
+    FTestMarkup: TTestSynEditMarkupHighlightAllMulti;
     FMatchList: Array of record
         p: PChar;
         l: Integer;
       end;
     FStopAtMatch, FNoMatchCount: Integer;
+    FReceivedInvalidateLines: TIntegerList;
     procedure DoDictMatch(Match: PChar; MatchIdx: Integer; var IsMatch: Boolean;
       var StopSeach: Boolean);
+    procedure DoReceiveInvalidateLine(FirstLine, LastLine: integer);
+    procedure CheckReceiveInvalidateLine(const AName: String; const ALines: array of integer);
   protected
     procedure SetLinesInWindow(ALinesInWindow: Integer);
-    //procedure SetUp; override; 
-    //procedure TearDown; override; 
+    procedure TestHasMatches(AName: String; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
+    procedure TestHasMCount(AName: String; AExpMin: Integer; AExpMax: Integer = -1);
+    procedure TestHasMatches(AName: String; AExpCount: Integer; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
+    procedure TestHasMatches(AName: String; AExpCountMin, AExpCountMax: Integer; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
+    //procedure SetUp; override;
+    procedure TearDown; override;
     //procedure ReCreateEdit; reintroduce;
     //function TestText1: TStringArray;
   published
+    procedure TestMatchList;
     procedure TestMatchListIndex;
+    procedure TestValidList;
     procedure TestDictionary;
     procedure TestValidateMatches;
   end; 
@@ -68,21 +90,12 @@ end;
 
 type
 
-    { TTestSynEditMarkupHighlightAllMulti }
+  { TSynMarkupHighAllMatchListHelper }
 
-    TTestSynEditMarkupHighlightAllMulti = class(TSynEditMarkupHighlightAllMulti)
-    private
-      FScannedLineCount: Integer;
-    protected
-      function FindMatches(AStartPoint, AEndPoint: TPoint; var AIndex: Integer;
-        AStopAfterLine: Integer = - 1; ABackward: Boolean = False): TPoint; override;
-    public
-      procedure TestAddMatch(const m: TMatchLoc);
-      procedure TestAddMatches(const m: array of TMatchLoc);
-      procedure ResetScannedCount;
-      property Matches;
-      property ScannedLineCount: Integer read FScannedLineCount;
-    end;
+  TSynMarkupHighAllMatchListHelper = class helper for TSynMarkupHighAllMatchList
+    procedure TestStartValidation(AnFirstInvalidMatchLine, AnLastInvalidMatchLine, AnMatchLinesDiffCount: Integer); // create gap
+    procedure TestEndValidation; // limit gap size
+  end;
 
 { TMatchLoc }
 
@@ -98,18 +111,15 @@ end;
 
 { TTestSynEditMarkupHighlightAllMulti }
 
-function TTestSynEditMarkupHighlightAllMulti.FindMatches(AStartPoint, AEndPoint: TPoint;
-  var AIndex: Integer; AStopAfterLine: Integer; ABackward: Boolean): TPoint;
+procedure TTestSynEditMarkupHighlightAllMulti.BeginSendingInvalidation;
 begin
-  FScannedLineCount := FScannedLineCount + AEndPoint.y - AStartPoint.y + 1;
-  Result := inherited FindMatches(AStartPoint, AEndPoint, AIndex, AStopAfterLine, ABackward);
+  inherited BeginSendingInvalidation;
 end;
 
-procedure TTestSynEditMarkupHighlightAllMulti.ResetScannedCount;
+procedure TTestSynEditMarkupHighlightAllMulti.EndSendingInvalidation;
 begin
-  FScannedLineCount := 0;
+  inherited EndSendingInvalidation;
 end;
-
 
 procedure TTestSynEditMarkupHighlightAllMulti.TestAddMatch(const m: TMatchLoc);
 begin
@@ -122,6 +132,28 @@ var
 begin
   for i := low(m) to high(m) do
     TestAddMatch(m[i]);
+end;
+
+procedure TTestSynEditMarkupHighlightAllMulti.TestClearAndAddMatches(const m: array of TMatchLoc);
+begin
+  Matches.Clear;
+  TestAddMatches(m);
+end;
+
+{ TSynMarkupHighAllMatchListHelper }
+
+procedure TSynMarkupHighAllMatchListHelper.TestStartValidation(AnFirstInvalidMatchLine,
+  AnLastInvalidMatchLine, AnMatchLinesDiffCount: Integer);
+var
+  p1, p2: TPoint;
+begin
+  StartValidation(AnFirstInvalidMatchLine, AnLastInvalidMatchLine,
+      AnMatchLinesDiffCount, p1, p2);
+end;
+
+procedure TSynMarkupHighAllMatchListHelper.TestEndValidation;
+begin
+  EndValidation;
 end;
 
 { TTestMarkupHighAll }
@@ -142,6 +174,33 @@ DebugLn([copy(Match, 1, MatchIdx)]);
   dec(FNoMatchCount);
 end;
 
+procedure TTestMarkupHighAll.DoReceiveInvalidateLine(FirstLine, LastLine: integer);
+var
+  i: Integer;
+begin
+  if FReceivedInvalidateLines = nil then
+    exit;
+
+  for i := FirstLine to LastLine do begin
+    //AssertTrue(FReceivedInvalidateLines.IndexOf());
+    if FReceivedInvalidateLines.IndexOf(i) < 0 then
+      FReceivedInvalidateLines.Add(i);
+  end;
+end;
+
+procedure TTestMarkupHighAll.CheckReceiveInvalidateLine(const AName: String;
+  const ALines: array of integer);
+var
+  i: Integer;
+begin
+  FReceivedInvalidateLines.Sort;
+  AssertEquals(AName, Length(ALines), FReceivedInvalidateLines.Count);
+
+  for i := 0 to Length(ALines) - 1 do
+    AssertEquals(AName, ALines[i], FReceivedInvalidateLines[i]);
+  FReceivedInvalidateLines.Clear;
+end;
+
 procedure TTestMarkupHighAll.SetLinesInWindow(ALinesInWindow: Integer);
 var
   offs: Integer;
@@ -152,11 +211,297 @@ begin
   AssertEquals('LinesInWindow', ALinesInWindow, SynEdit.LinesInWindow);
 end;
 
+procedure TTestMarkupHighAll.TestHasMatches(AName: String; AExp: array of TMAtchLoc;
+  ExpMusNotExist: Boolean);
+var
+  i, j: Integer;
+begin
+  for i := 0 to High(AExp) do begin
+    if AExp[i].y1 = -2 then continue;
+    j := FTestMarkup.Matches.Count - 1;
+    while (j >= 0) and
+      ( (FTestMarkup.Matches.StartPoint[j].y <> AExp[i].y1) or (FTestMarkup.Matches.StartPoint[j].x <> AExp[i].x1) or
+        (FTestMarkup.Matches.EndPoint[j].y <> AExp[i].y2) or (FTestMarkup.Matches.EndPoint[j].x <> AExp[i].x2) )
+    do
+      dec(j);
+    AssertEquals(BaseTestName+' '+AName+'('+IntToStr(i)+')', not ExpMusNotExist, j >= 0);
+  end;
+  // check: no duplicates
+  for j := 0 to FTestMarkup.Matches.Count - 1 do begin
+    AssertTrue('Not zero len', CompareCarets(FTestMarkup.Matches.StartPoint[j], FTestMarkup.Matches.EndPoint[j]) > 0);
+    if j > 0 then
+      AssertTrue('no overlap', CompareCarets(FTestMarkup.Matches.EndPoint[j-1], FTestMarkup.Matches.StartPoint[j]) >= 0);
+  end;
+end;
+
+procedure TTestMarkupHighAll.TestHasMCount(AName: String; AExpMin: Integer; AExpMax: Integer);
+begin
+  AName := AName + '(CNT)';
+  if AExpMax < 0 then begin
+    AssertEquals(BaseTestName+' '+AName, AExpMin, FTestMarkup.Matches.Count);
+  end
+  else begin
+    AssertTrue(BaseTestName+' '+AName+ '(Min)', AExpMin <= FTestMarkup.Matches.Count);
+    AssertTrue(BaseTestName+' '+AName+ '(Max)', AExpMax >= FTestMarkup.Matches.Count);
+  end;
+end;
+
+procedure TTestMarkupHighAll.TestHasMatches(AName: String; AExpCount: Integer;
+  AExp: array of TMAtchLoc; ExpMusNotExist: Boolean);
+begin
+  TestHasMatches(AName, AExp, ExpMusNotExist);
+  TestHasMCount(AName, AExpCount);
+end;
+
+procedure TTestMarkupHighAll.TestHasMatches(AName: String; AExpCountMin, AExpCountMax: Integer;
+  AExp: array of TMAtchLoc; ExpMusNotExist: Boolean);
+begin
+  TestHasMatches(AName, AExp, ExpMusNotExist);
+  TestHasMCount(AName, AExpCountMin, AExpCountMax);
+end;
+
+procedure TTestMarkupHighAll.TearDown;
+begin
+  FreeAndNil(FReceivedInvalidateLines);
+  inherited TearDown;
+end;
+
+procedure TTestMarkupHighAll.TestMatchList;
+  procedure Init;
+  begin
+    FTestMarkup.Matches.Clear;
+  end;
+  procedure StartInv(AnFirstInvalidMatchLine, AnLastInvalidMatchLine, AnMatchLinesDiffCount: Integer);
+  begin
+    FreeAndNil(FReceivedInvalidateLines);
+    FReceivedInvalidateLines := TIntegerList.Create;
+    FTestMarkup.BeginSendingInvalidation;
+    FTestMarkup.Matches.TestStartValidation(AnFirstInvalidMatchLine, AnLastInvalidMatchLine, AnMatchLinesDiffCount);
+  end;
+  procedure EndInv;
+  begin
+    FTestMarkup.Matches.TestEndValidation;
+    FTestMarkup.EndSendingInvalidation;
+  end;
+  procedure ValidationAdd(const m: array of TMatchLoc);
+  begin
+    FTestMarkup.TestAddMatches(m);
+    EndInv;
+  end;
+
+  var
+    TheName: string;
+  procedure RunOne(const n: string;
+    const AnInitMatches: array of TMatchLoc;
+    const AnInvalStart, AnInvalEnd, AnInvalDiff: integer;
+    const AnExpAfterInval: array of TMatchLoc;
+    const AnAddMatches: array of TMatchLoc;
+    const AnExpLinesSent: array of integer;
+    const AnExpAfterAdd: array of TMatchLoc
+    );
+  begin
+    Init;
+    TheName := n;
+    FTestMarkup.TestAddMatches(AnInitMatches);
+    StartInv(AnInvalStart, AnInvalEnd, AnInvalDiff);
+    TestHasMatches(n+': After inval', length(AnExpAfterInval), AnExpAfterInval);
+    ValidationAdd(AnAddMatches);
+    CheckReceiveInvalidateLine(n+': inval line sent', AnExpLinesSent);
+    TestHasMatches(n+': After add', length(AnExpAfterAdd), AnExpAfterAdd);
+  end;
+
+  procedure RunMore(n: string;
+    const AnInvalStart, AnInvalEnd, AnInvalDiff: integer;
+    const AnExpAfterInval: array of TMatchLoc;
+    const AnAddMatches: array of TMatchLoc;
+    const AnExpLinesSent: array of integer;
+    const AnExpAfterAdd: array of TMatchLoc
+  );
+  begin
+    n := TheName + n;
+    StartInv(AnInvalStart, AnInvalEnd, AnInvalDiff);
+    TestHasMatches(n+': After inval', length(AnExpAfterInval), AnExpAfterInval);
+    ValidationAdd(AnAddMatches);
+    CheckReceiveInvalidateLine(n+': inval line sent', AnExpLinesSent);
+    TestHasMatches(n+': After add', length(AnExpAfterAdd), AnExpAfterAdd);
+  end;
+
+var
+  m1, m3, m3a, m5, m5a, m6, m6a, m7, m9, m10, m11: TMatchLoc;
+begin
+  FTestMarkup := TTestSynEditMarkupHighlightAllMulti.Create(SynEdit);
+  FTestMarkup.InvalidateLinesMethod := @DoReceiveInvalidateLine;
+(* TODO: check first last point by StartValidation(...out xxx) *)
+
+  m1  := l(1, 2,3);
+  m3  := l(3, 5,6);  m3a := l(3, 8,9);
+  m5  := l(5, 7,8);  m5a := l(5, 11,18);
+  m6  := l(6, 8,9);  m6a := l(6, 12,19);
+  m7  := l(7, 9,10);
+  m9  := l(9, 9,11);
+  m10 := l(10, 8,9);
+  m11 := l(11, 4,10);
+
+  RunOne('Invalidate ONE line (new match on same line, but diff)',
+         [m3],   1,5,0, // init / inval lines
+         [],
+         [m3a], [3],    // (re-)add / exp inval lines
+         [m3a]
+  );
+
+  RunOne('Invalidate NO line (new match is SAME as old)',
+         [m3],   1,5,0, // init / inval lines
+         [],
+         [m3], [],      // (re-)add / exp inval lines
+         [m3]
+  );
+
+  RunOne('Invalidate ONE lines (new match on new line)',
+         [m3],   1,5,0, // init / inval lines
+         [],
+         [m7], [3,7],   // (re-)add / exp inval lines
+         [m7]
+  );
+
+
+  // Tests with several matches / replace some
+
+  RunOne('Invalidate TWO lines (new match on same line, but diff)',
+         [m3, m5, m6, m7],   4,6,0, // init / inval lines
+         [m3, m7],
+         [m5a, m6a], [5,6],    // (re-)add / exp inval lines
+         [m3, m5a, m6a, m7]
+  );
+
+  RunOne('Invalidate TWO lines (new match on same line, ONLY ONE diff)',
+         [m3, m5, m6, m7],   4,6,0, // init / inval lines
+         [m3, m7],
+         [m5a, m6], [5],    // (re-)add / exp inval lines
+         [m3, m5a, m6, m7]
+  );
+
+  RunOne('Invalidate TWO lines (new match BOTH SAME as old)',
+         [m3, m5, m6, m7],   4,6,0, // init / inval lines
+         [m3, m7],
+         [m5, m6], [],    // (re-)add / exp inval lines
+         [m3, m5, m6, m7]
+  );
+
+
+
+
+  RunOne('Invalidate ONE lines - insert outside GAP (before)',
+         [m3, m5, m6, m7],   6,6,0, // init / inval lines
+         [m3, m5, m7],
+         [m3a], [3,6],    // (re-)add / exp inval lines
+         [m3, m3a, m5, m7]
+  );
+
+  RunOne('Invalidate ONE lines - insert outside GAP (after)',
+         [m3, m5, m6, m7],   5,5,0, // init / inval lines
+         [m3, m6, m7],
+         [m6a], [5,6],    // (re-)add / exp inval lines
+         [m3, m6, m6a, m7]
+  );
+
+  RunOne('Invalidate LAST line - insert outside GAP (FIRST)',
+         [m3, m5, m6, m7],   7,7,0, // init / inval lines
+         [m3, m5, m6],
+         [m1], [1,7],    // (re-)add / exp inval lines
+         [m1, m3, m5, m6]
+  );
+  RunMore(' / Invalidate FIRST line - insert outside GAP (LAST)',
+         1,1,0,
+         [m3, m5, m6],
+         [m11], [1,11],
+         [m3, m5, m6, m11]
+  );
+  RunMore(' / Invalidate ALL',
+         1,99,0,
+         [],
+         [m6a], [3,5,6,11],
+         [m6a]
+  );
+
+  RunOne('Invalidate FIRST line - insert outside GAP (LAST)',
+         [m3, m5, m6, m7],   3,3,0, // init / inval lines
+         [m5, m6, m7],
+         [m11], [3,11],
+         [m5, m6, m7, m11]
+  );
+  RunMore(' / Invalidate LAST line - insert outside GAP (FIRST)',
+         11,11,0,
+         [m5, m6, m7],
+         [m1], [1,11],
+         [m1, m5, m6, m7]
+  );
+  RunMore(' / Invalidate ALL - no new added',
+         1,99,0,
+         [],
+         [], [1,5,6,7],
+         []
+  );
+  RunMore(' / Invalidate ALL',
+         1,99,0,
+         [],
+         [m6a], [6],
+         [m6a]
+  );
+
+
+
+
+  RunOne('Invalidate TWO, restore 1, leave gap of 1',
+         [m3, m5, m6, m7],   4,6,0,
+         [m3, m7],
+         [m5], [6],
+         [m3, m5, m7]
+  );
+  RunMore(' / Inval empty, Add SAME value into existing gap',
+         6,6,0,
+         [m3, m5, m7],
+         [m6], [6],
+         [m3, m5, m6, m7]
+  );
+
+  RunOne('Invalidate TWO, restore 1, leave gap of 1',
+         [m3, m5, m6, m7, m9, m11],   4,6,0,
+         [m3, m7, m9, m11],
+         [m5], [6],
+         [m3, m5, m7, m9, m11]
+  );
+  RunMore(' / Inval one more, Add NEW value on new line',
+         9,9,0,
+         [m3, m5, m7, m11],
+         [m10], [9,10],
+         [m3, m5, m7, m10, m11]
+  );
+
+
+  // checks for GAP // multiple iterations of Inval/Add // MOVE GAP
+  RunOne('Invalidate TWO, restore 1, leave gap of 1',
+         [m3, m5, m6, m7, m9, m11],   4,6,0,
+         [m3, m7, m9, m11],
+         [m5], [6],
+         [m3, m5, m7, m9, m11]
+  );
+  RunMore(' / Inval empty, Add NEW value on new line',
+         10,10,0,
+         [m3, m5, m7, m9, m11],
+         [m10], [10],
+         [m3, m5, m7, m9, m10, m11]
+  );
+
+
+
+  FreeAndNil(FReceivedInvalidateLines);
+  FreeAndNil(FTestMarkup);
+end;
+
 procedure TTestMarkupHighAll.TestMatchListIndex;
 var
   v0, v1, v2, v3, v4, v5, v6: TMatchLoc;
   m: TSynMarkupHighAllMatchList;
-  FTestMarkup: TTestSynEditMarkupHighlightAllMulti;
 begin
   FTestMarkup := TTestSynEditMarkupHighlightAllMulti.Create(SynEdit);
   m := FTestMarkup.Matches;
@@ -174,7 +519,7 @@ begin
 
   FTestMarkup.Clear;
   FTestMarkup.TestAddMatches([v0, v1, v2, v3, v4, v5, v6]);
-  //TestHasMatches('', [v0, v1, v2, v3, v4, v5, v6]);
+  TestHasMatches('', [v0, v1, v2, v3, v4, v5, v6]);
 
   AssertEquals('idx for  1, 1 ', 0, m.IndexOf(Point( 1, 1)));
   AssertEquals('idx for  2,10 ', 0, m.IndexOf(Point( 2,10)));
@@ -269,6 +614,454 @@ begin
 
 
   FreeAndNil(FTestMarkup);
+end;
+
+procedure TTestMarkupHighAll.TestValidList;
+var
+  L: TSynMarkupHighAllValidRanges;
+
+  procedure TestValid(AName: String; const AExp: Array of TMatchLoc);
+  var
+    i: Integer;
+  begin
+    AssertEquals('%s Count', [AName], Length(AExp), l.Count);
+    for i := 0 to Length(AExp) - 1 do begin
+      AssertEquals('%s: %d Start Y', [AName, i], AExp[i].y1, l[i].StartPoint.y);
+      AssertEquals('%s: %d Start X', [AName, i], AExp[i].x1, l[i].StartPoint.x);
+      AssertEquals('%s: %d End Y',   [AName, i], AExp[i].y2, l[i].EndPoint.y);
+      AssertEquals('%s: %d End X',   [AName, i], AExp[i].x2, l[i].EndPoint.x);
+    end;
+  end;
+
+  procedure TestGap(AName: String; APoint: TPoint; AReturnNext: Boolean; AnExpIdx: Integer; AnExpGap: TMatchLoc);
+  var
+    i: Integer;
+    r: TSynMarkupHighAllValidRange;
+  begin
+    i := L.FindGapFor(APoint, AReturnNext);
+    AssertEquals('%s idx', [AName], AnExpIdx, i);
+    if i < 0 then exit;
+    r := L.Gap[i];
+    AssertEquals('%s Start Y', [AName], AnExpGap.y1, r.StartPoint.y);
+    AssertEquals('%s Start X', [AName], AnExpGap.x1, r.StartPoint.x);
+    AssertEquals('%s End Y',   [AName], AnExpGap.y2, r.EndPoint.y);
+    AssertEquals('%s End X',   [AName], AnExpGap.x2, r.EndPoint.x);
+  end;
+
+  procedure InitValid(const AList: array of TMatchLoc);
+  var
+    i: Integer;
+  begin
+    L := nil;
+    for i := 0 to Length(AList) - 1 do
+      L.MarkValid(AList[i].p1, AList[i].p2);
+    TestValid('init', AList);
+  end;
+
+const
+  LOC_E: TMatchLoc = (y1: -1; y2: -1; x1: -1; x2: -1);
+  LOC_A: TMatchLoc = (y1: 1; y2: MaxInt; x1: 1; x2: 1);
+var
+  v1, v2, v3, v4, v5: TMatchLoc;
+begin
+
+  L := nil;
+  TestValid('Empty', []);
+
+  TestGap('', Point(9,9), False, 0, LOC_A);
+  TestGap('', Point(9,9), True,  0, LOC_A);
+
+  v1 := p2(5,10, 2,12);
+  L.MarkValid(v1.p1, v1.p2);
+  TestValid('one', [v1]);
+
+  v4 := p2(5,10, 2,12); // same again
+  L.MarkValid(v4.p1, v4.p2);
+  TestValid('one', [v1]);
+  v4 := p2(9,10, 3,11); // subset
+  L.MarkValid(v4.p1, v4.p2);
+  TestValid('one', [v1]);
+
+  TestGap('', Point(9,9), False, 0, p2(1,1,  5,10));
+  TestGap('', Point(9,9), True,  0, p2(1,1,  5,10));
+  TestGap('', Point(4,10), False, 0, p2(1,1,  5,10));
+  TestGap('', Point(4,10), True,  0, p2(1,1,  5,10));
+
+  TestGap('', Point(5,10), False, -1, LOC_E);
+  TestGap('', Point(5,10), True,  1, p2(2,12,  1,MaxInt));
+  TestGap('', Point(9,11), False, -1, LOC_E);
+  TestGap('', Point(9,11), True,  1, p2(2,12,  1,MaxInt));
+
+  TestGap('', Point(2,12), False, 1, p2(2,12,  1,MaxInt));
+  TestGap('', Point(2,12), True,  1, p2(2,12,  1,MaxInt));
+  TestGap('', Point(9,19), False, 1, p2(2,12,  1,MaxInt));
+  TestGap('', Point(9,19), True,  1, p2(2,12,  1,MaxInt));
+
+
+  v2 := p2(5,20, 3,22);
+  L.MarkValid(v2.p1, v2.p2);
+  TestValid('two', [v1, v2]);
+
+  TestGap('', Point(4,10), False, 0, p2(1,1,  5,10));
+  TestGap('', Point(4,10), True,  0, p2(1,1,  5,10));
+
+  TestGap('', Point(5,10), False, -1, LOC_E);
+  TestGap('', Point(5,10), True,  1, p2(2,12,  5,20));
+
+  TestGap('', Point(2,12), False, 1, p2(2,12,  5,20));
+  TestGap('', Point(2,12), True,  1, p2(2,12,  5,20));
+  TestGap('', Point(4,20), False, 1, p2(2,12,  5,20));
+  TestGap('', Point(4,20), True,  1, p2(2,12,  5,20));
+
+  TestGap('', Point(5,20), False, -1, LOC_E);
+  TestGap('', Point(5,20), True,  2, p2(3,22,  1,MaxInt));
+
+  TestGap('', Point(2,22), False, -1, LOC_E);
+  TestGap('', Point(2,22), True,  2, p2(3,22,  1,MaxInt));
+
+  TestGap('', Point(3,22), False, 2, p2(3,22,  1,MaxInt));
+  TestGap('', Point(3,22), True,  2, p2(3,22,  1,MaxInt));
+  TestGap('', Point(5,25), False, 2, p2(3,22,  1,MaxInt));
+  TestGap('', Point(5,25), True,  2, p2(3,22,  1,MaxInt));
+
+
+  v3 := p2(5,30, 3,32);
+  L.MarkValid(v3.p1, v3.p2);
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(5,30, 3,32); // same again
+  L.MarkValid(v4.p1, v4.p2);
+  TestValid('two', [v1, v2, v3]);
+  v4 := p2(6,31, 1,32); // subset
+  L.MarkValid(v4.p1, v4.p2);
+  TestValid('two', [v1, v2, v3]);
+  // repeat first point
+  v4 := p2(5,10, 2,12); // same again
+  L.MarkValid(v4.p1, v4.p2);
+  TestValid('two', [v1, v2, v3]);
+  v4 := p2(9,10, 3,11); // subset
+  L.MarkValid(v4.p1, v4.p2);
+  TestValid('two', [v1, v2, v3]);
+
+
+  // modify end
+
+  v4 := p2(3,32, 3,34);
+  L.MarkValid(v4.p1, v4.p2);
+  v3 := p2(5,30, 3,34); // merge end of 3
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(3,33, 1,36);
+  L.MarkValid(v4.p1, v4.p2);
+  v3 := p2(5,30, 1,36); // merge overlap end of 3
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(2,36, 3,36); // leave gap after end of 3
+  L.MarkValid(v4.p1, v4.p2);
+  TestValid('two', [v1, v2, v3, v4]);
+  v5 := p2(1,36, 1,36); // insert empty
+  L.MarkValid(v5.p1, v5.p2);
+  TestValid('two', [v1, v2, v3, v4]);
+  v4 := p2(1,36, 2,36);
+  L.MarkValid(v4.p1, v4.p2);
+  v3 := p2(5,30, 3,36); // fill gap after end of 3
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(9,29, 5,30);
+  L.MarkValid(v4.p1, v4.p2);
+  v3 := p2(9,29, 3,36); // merge begin of 3
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(6,29, 1,31);
+  L.MarkValid(v4.p1, v4.p2);
+  v3 := p2(6,29, 3,36); // merge overlap begin of 3
+  TestValid('two', [v1, v2, v3]);
+
+  v3 := p2(1,29, 1,37); // replace 3 with bigger
+  L.MarkValid(v3.p1, v3.p2);
+  TestValid('two', [v1, v2, v3]);
+
+
+  // modify middle
+
+  v4 := p2(3,22, 5,22);
+  L.MarkValid(v4.p1, v4.p2);
+  v2 := p2(5,20, 5,22); // merge end of 2
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(1,22, 1,23);
+  L.MarkValid(v4.p1, v4.p2);
+  v2 := p2(5,20, 1,23); // merge overlap end of 2
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(2,20, 5,20);
+  L.MarkValid(v4.p1, v4.p2);
+  v2 := p2(2,20, 1,23); // merge begin of 2
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(8,19, 1,21);
+  L.MarkValid(v4.p1, v4.p2);
+  v2 := p2(8,19, 1,23); // merge overlap begin of 2
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(6,19, 7,19); // gap begin of 2
+  L.MarkValid(v4.p1, v4.p2);
+  TestValid('two', [v1, v4, v2, v3]);
+  v5 := p2(4,19, 5,19); // 2nd gap begin of 2
+  L.MarkValid(v5.p1, v5.p2);
+  TestValid('two', [v1, v5, v4, v2, v3]);
+  v4 := p2(5,19, 8,19); // close gap begin of 2
+  L.MarkValid(v4.p1, v4.p2);
+  v2 := p2(4,19, 1,23);
+  TestValid('two', [v1, v2, v3]);
+
+  // modify start
+
+  v4 := p2(2,12, 5,12);
+  L.MarkValid(v4.p1, v4.p2);
+  v1 := p2(5,10, 5,12); // merge end of 1
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(1,11, 2,13);
+  L.MarkValid(v4.p1, v4.p2);
+  v1 := p2(5,10, 2,13); // merge overlap end of 1
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(2,10, 5,10);
+  L.MarkValid(v4.p1, v4.p2);
+  v1 := p2(2,10, 2,13); // merge begin of 1
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(11,9, 1,13);
+  L.MarkValid(v4.p1, v4.p2);
+  v1 := p2(11,9, 2,13); // merge overlap begin of 1
+  TestValid('two', [v1, v2, v3]);
+
+  v4 := p2(9,9, 2,13);
+  L.MarkValid(v4.p1, v4.p2);
+  v1 := p2(9,9, 2,13); // merge overlap begin of 1
+  TestValid('two', [v1, v2, v3]);
+
+
+  v4 := p2(1,9, 2,9); // before begin / gap
+  L.MarkValid(v4.p1, v4.p2);
+  TestValid('two', [v4, v1, v2, v3]);
+  v5 := p2(1,8, 2,8); // before begin / gap
+  L.MarkValid(v5.p1, v5.p2);
+  TestValid('two', [v5, v4, v1, v2, v3]);
+  v4 := p2(3,7, 2,10); // close gap before begin / overlap
+  L.MarkValid(v4.p1, v4.p2);
+  v1 := p2(3,7, 2,13); // merge overlap begin of 1
+  TestValid('two', [v1, v2, v3]);
+
+  v1 := p2(3,2, 2,50); // merge all
+  L.MarkValid(v1.p1, v1.p2);
+  TestValid('one', [v1]);
+
+  // remove before
+
+  v1 := p2(3,2, 2,50);
+  InitValid([v1]);
+
+  L.RemoveBefore(Point(3,1));
+  TestValid('remove before', [v1]);
+  L.RemoveBefore(Point(3,2));
+  TestValid('remove before', [v1]);
+
+  L.RemoveBefore(Point(4,2));
+  v1 := p2(4,2, 2,50);
+  TestValid('remove before', [v1]);
+
+  L.RemoveBefore(Point(2,50));
+  TestValid('remove before', []);
+  L.RemoveBefore(Point(2,50));
+  TestValid('remove before', []);
+
+  v1 := p2(3,12, 2,15);
+  v2 := p2(1,22, 1,25);
+  InitValid([v1, v2]);
+
+  L.RemoveBefore(Point(2,14));
+  v1 := p2(2,14, 2,15);
+  TestValid('remove before', [v1, v2]);
+
+  L.RemoveBefore(Point(2,15));
+  TestValid('remove before', [v2]);
+
+  v1 := p2(3,12, 2,15);
+  v2 := p2(1,22, 1,25);
+  InitValid([v1, v2]);
+  L.RemoveBefore(Point(3,22));
+  v2 := p2(3,22, 1,25);
+  TestValid('remove before', [v2]);
+
+  v1 := p2(3,12, 2,15);
+  v2 := p2(1,22, 1,25);
+  InitValid([v1, v2]);
+  L.RemoveBefore(Point(1,25));
+  TestValid('remove before', []);
+
+  InitValid([v1, v2]);
+  L.RemoveBefore(Point(2,25));
+  TestValid('remove before', []);
+
+  // remove after
+
+  v1 := p2(3,2, 2,50);
+  InitValid([v1]);
+
+  L.RemoveAfter(Point(3,50));
+  TestValid('remove after', [v1]);
+  L.RemoveAfter(Point(2,50));
+  TestValid('remove after', [v1]);
+
+  L.RemoveAfter(Point(1,50));
+  v1 := p2(3,2, 1,50);
+  TestValid('remove after', [v1]);
+
+  L.RemoveAfter(Point(3,2));
+  TestValid('remove after', []);
+  L.RemoveAfter(Point(3,2));
+  TestValid('remove after', []);
+
+  v1 := p2(3,12, 2,15);
+  v2 := p2(1,22, 1,25);
+  InitValid([v1, v2]);
+
+  L.RemoveAfter(Point(2,24));
+  v2 := p2(1,22, 2,24);
+  TestValid('remove after', [v1, v2]);
+
+  L.RemoveAfter(Point(1,22));
+  TestValid('remove after', [v1]);
+
+  v1 := p2(3,12, 2,15);
+  v2 := p2(1,22, 1,25);
+  InitValid([v1, v2]);
+  L.RemoveAfter(Point(3,14));
+  v1 := p2(3,12, 3,14);
+  TestValid('remove after', [v1]);
+
+  v1 := p2(3,12, 2,15);
+  v2 := p2(1,22, 1,25);
+  InitValid([v1, v2]);
+  L.RemoveAfter(Point(3,12));
+  TestValid('remove after', []);
+
+  InitValid([v1, v2]);
+  L.RemoveAfter(Point(2,12));
+  TestValid('remove after', []);
+
+  // remove between
+
+  v1 := p2(3,2, 2,50);
+  InitValid([v1]);
+  L.RemoveBetween(Point(3,50), Point(3,51));
+  TestValid('remove between', [v1]);
+  L.RemoveBetween(Point(3,1), Point(1,2));
+  TestValid('remove between', [v1]);
+  L.RemoveBetween(Point(3,1), Point(1,55));
+  TestValid('remove between', []);
+  L.RemoveBetween(Point(3,1), Point(1,55));
+  TestValid('remove between', []);
+
+  v1 := p2(3,2, 2,50);
+  InitValid([v1]);
+  L.RemoveBetween(Point(2,50), Point(3,51));
+  TestValid('remove between', [v1]);
+  L.RemoveBetween(Point(1,50), Point(3,51));
+  v1 := p2(3,2, 1,50);
+  TestValid('remove between', [v1]);
+
+  L.RemoveBetween(Point(1,1), Point(3,2));
+  TestValid('remove between', [v1]);
+  L.RemoveBetween(Point(1,1), Point(3,3));
+  v1 := p2(3,3, 1,50);
+  TestValid('remove between', [v1]);
+
+  L.RemoveBetween(Point(1,10), Point(2,10));
+  v1 := p2(3,3, 1,10);
+  v2 := p2(2,10, 1,50);
+  TestValid('remove between', [v1, v2]);
+  L.RemoveBetween(Point(3,1), Point(1,55));
+  TestValid('remove between', []);
+
+  v1 := p2(3,3, 1,11);
+  v2 := p2(2,15, 1,17);
+  v3 := p2(2,20, 1,25);
+  InitValid([v1, v2, v3]);
+  L.RemoveBetween(Point(1,10), Point(2,20));
+  v1 := p2(3,3, 1,10);
+  TestValid('remove between', [v1, v3]);
+
+  v1 := p2(3,3, 1,11);
+  v2 := p2(2,15, 1,17);
+  v3 := p2(2,20, 1,25);
+  InitValid([v1, v2, v3]);
+  L.RemoveBetween(Point(1,11), Point(2,21));
+  v3 := p2(2,21, 1,25);
+  TestValid('remove between', [v1, v3]);
+
+  v1 := p2(3,3, 1,11);
+  v2 := p2(2,15, 1,17);
+  v3 := p2(2,20, 1,25);
+  InitValid([v1, v2, v3]);
+  L.RemoveBetween(Point(1,10), Point(2,21));
+  v1 := p2(3,3, 1,10);
+  v3 := p2(2,21, 1,25);
+  TestValid('remove between', [v1, v3]);
+
+  // AdjustForLinesChanged
+
+  v1 := p2(3,3, 1,11);
+  v2 := p2(2,15, 2,17);
+  v3 := p2(2,20, 1,25);
+  InitValid([v1, v2, v3]);
+  L.AdjustForLinesChanged(16, 1);
+  v2 := p2(2,15, 2,18);
+  v3 := p2(2,21, 1,26);
+  TestValid('adjust', [v1, v2, v3]);
+
+  v1 := p2(3,3, 1,11);
+  v2 := p2(2,15, 2,17);
+  v3 := p2(2,20, 1,25);
+  InitValid([v1, v2, v3]);
+  L.AdjustForLinesChanged(16, -1);
+  v2 := p2(2,15, 2,16);
+  v3 := p2(2,19, 1,24);
+  TestValid('adjust', [v1, v2, v3]);
+
+  v1 := p2(3,3, 1,11);
+  v2 := p2(2,15, 2,17);
+  v3 := p2(2,20, 1,25);
+  InitValid([v1, v2, v3]);
+  L.AdjustForLinesChanged(16, -3);
+  v2 := p2(2,15, 1,16);
+  v3 := p2(2,17, 1,22);
+  TestValid('adjust', [v1, v2, v3]);
+
+  v1 := p2(3,3, 1,11);
+  v2 := p2(2,15, 2,17);
+  v3 := p2(2,20, 1,25);
+  InitValid([v1, v2, v3]);
+  L.AdjustForLinesChanged(15, -3);
+  v3 := p2(2,17, 1,22);
+  TestValid('adjust', [v1, v3]);
+
+  v1 := p2(3,3, 1,11);
+  v2 := p2(2,15, 2,17);
+  v3 := p2(2,20, 1,25);
+  InitValid([v1, v2, v3]);
+  L.AdjustForLinesChanged(15, -6);
+  v3 := p2(1,15, 1,19);
+  TestValid('adjust', [v1, v3]);
+
+  v1 := p2(3,3, 1,11);
+  v2 := p2(2,15, 2,17);
+  v3 := p2(2,20, 1,25);
+  InitValid([v1, v2, v3]);
+  L.AdjustForLinesChanged(15, -10);
+  TestValid('adjust', [v1]);
 end;
 
 procedure TTestMarkupHighAll.TestDictionary;
@@ -646,9 +1439,6 @@ Dict.Add('uložit', 0);
 end;
 
 procedure TTestMarkupHighAll.TestValidateMatches;
-var
-  M: TTestSynEditMarkupHighlightAllMulti;
-
   function Mtxt(i: Integer): String;
   begin
     Result := 'a'+IntToStr(i)+'a';
@@ -664,68 +1454,11 @@ var
     i: Integer;
   begin
     SynEdit.BeginUpdate;
-    M.Clear;
+    FTestMarkup.Clear;
     for i := 0 to high(Words) do
-      M.AddSearchTerm(Words[i]);
+      FTestMarkup.AddSearchTerm(Words[i]);
     SynEdit.EndUpdate;
-    m.MarkupInfo.Foreground := clRed;
-  end;
-
-  Procedure TestHasMCount(AName: String; AExpMin: Integer; AExpMax: Integer = -1);
-  begin
-    AName := AName + '(CNT)';
-    if AExpMax < 0 then begin
-      AssertEquals(BaseTestName+' '+AName, AExpMin, M.Matches.Count);
-    end
-    else begin
-      AssertTrue(BaseTestName+' '+AName+ '(Min)', AExpMin <= M.Matches.Count);
-      AssertTrue(BaseTestName+' '+AName+ '(Max)', AExpMax >= M.Matches.Count);
-    end;
-  end;
-
-  Procedure TestHasMatches(AName: String; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
-  var
-    i, j: Integer;
-  begin
-    for i := 0 to High(AExp) do begin
-      j := M.Matches.Count - 1;
-      while (j >= 0) and
-        ( (M.Matches.StartPoint[j].y <> AExp[i].y1) or (M.Matches.StartPoint[j].x <> AExp[i].x1) or
-          (M.Matches.EndPoint[j].y <> AExp[i].y2) or (M.Matches.EndPoint[j].x <> AExp[i].x2) )
-      do
-        dec(j);
-      AssertEquals(BaseTestName+' '+AName+'('+IntToStr(i)+')', not ExpMusNotExist, j >= 0);
-    end;
-    // check: no duplicates
-    for j := 0 to M.Matches.Count - 1 do begin
-      AssertTrue('Not zero len', CompareCarets(m.Matches.StartPoint[j], m.Matches.EndPoint[j]) > 0);
-      if j > 0 then
-        AssertTrue('no overlap', CompareCarets(m.Matches.EndPoint[j-1], m.Matches.StartPoint[j]) >= 0);
-    end;
-  end;
-
-  Procedure TestHasMatches(AName: String; AExpCount: Integer; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
-  begin
-    TestHasMatches(AName, AExp, ExpMusNotExist);
-    TestHasMCount(AName, AExpCount);
-  end;
-
-  Procedure TestHasMatches(AName: String; AExpCountMin, AExpCountMax: Integer; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
-  begin
-    TestHasMatches(AName, AExp, ExpMusNotExist);
-    TestHasMCount(AName, AExpCountMin, AExpCountMax);
-  end;
-
-  Procedure TestHasScanCnt(AName: String; AExpMin: Integer; AExpMax: Integer = -1);
-  begin
-    AName := AName + '(SCANNED)';
-    if AExpMax < 0 then begin
-      AssertEquals(BaseTestName+' '+AName, AExpMin, M.ScannedLineCount);
-    end
-    else begin
-      AssertTrue(BaseTestName+' '+AName+ '(Min)', AExpMin <= M.ScannedLineCount);
-      AssertTrue(BaseTestName+' '+AName+ '(Max)', AExpMax >= M.ScannedLineCount);
-    end;
+    FTestMarkup.MarkupInfo.Foreground := clRed;
   end;
 
   procedure SetText(ATopLine: Integer = 1; HideSingle: Boolean = False);
@@ -744,9 +1477,9 @@ var
 
     SetLinesInWindow(40);
 
-    M := TTestSynEditMarkupHighlightAllMulti.Create(SynEdit);
-    M.HideSingleMatch := HideSingle;
-    SynEdit.MarkupMgr.AddMarkUp(M);
+    FTestMarkup := TTestSynEditMarkupHighlightAllMulti.Create(SynEdit);
+    FTestMarkup.HideSingleMatch := HideSingle;
+    SynEdit.MarkupMgr.AddMarkUp(FTestMarkup);
     SynEdit.TopLine := ATopLine;
   end;
 
@@ -783,7 +1516,6 @@ var
   procedure ScrollAndMatch(ATopLine: Integer; AExp: Array of TMAtchLoc; AExpMax: Integer;
     AName: String = '');
   begin
-    M.ResetScannedCount;
     SynEdit.TopLine := ATopLine;
     TestHasMatches(AName + ' scrolled ', length(AExp), AExpMax, AExp);
   end;
@@ -797,7 +1529,6 @@ var
   procedure HeightAndMatch(ALineCnt: Integer; AExp: Array of TMAtchLoc; AExpMax: Integer;
     AName: String = '');
   begin
-    M.ResetScannedCount;
     SetLinesInWindow(ALineCnt);
     TestHasMatches(AName + ' height ', length(AExp), AExpMax, AExp);
   end;
@@ -811,7 +1542,6 @@ var
   procedure EditReplaceAndMatch(Y, X, Y2, X2: Integer; ATxt: String; AExp: Array of TMAtchLoc; AExpMax: Integer;
     AName: String = '');
   begin
-    M.ResetScannedCount;
     SynEdit.TextBetweenPoints[point(X, Y), point(X2, Y2)] := ATxt;
     SynEdit.SimulatePaintText;
     TestHasMatches(AName + ' inserted ', length(AExp), AExpMax, AExp);
@@ -876,7 +1606,7 @@ begin
     SetTextAndMatch(250, True, ['a290a', 'a249a'],           [l(290, 3, 8), l(249, 3, 8)], 'Look for 2nd match before startpoint (first match at lastline)');
     SetTextAndMatch(250, True, ['a250a', 'a151a'],           [l(250, 3, 8), l(151, 3, 8)], 'Look for 2nd match FAR (99l) before startpoint (first match at topline)');
     SetTextAndMatch(250, True, ['a290a', 'a151a'],           [l(290, 3, 8), l(151, 3, 8)], 'Look for 2nd match FAR (99l) before startpoint (first match at lastline)');
-    SetTextAndMatch(250, True, ['a250a', 'a200a', 'a210a'],  [l(250, 3, 8), l(210, 3, 8)], 'Look for 2nd match before startpoint, find ONE of TWO');
+    SetTextAndMatch(250, True, ['a250a', 'a200a', 'a210a'],  [l(250, 3, 8), l( -2, 0, 0)], 'Look for 2nd match before startpoint, find ONE of TWO');
 
     // TODO: Not extend too far...
 
@@ -897,38 +1627,29 @@ begin
 
     SetTextAndMatch(250, False, ['a249a'], [], 'Not Found before first line');
     ScrollAndMatch (251,                   [], 'Not Found before first line (250=>251)');
-    TestHasScanCnt('Not Found before first line (250=>251)', 1, 2); // Allow some range
 
     ScrollAndMatch(249,                   [l(249, 3, 8)], 'Found on first line (251=>249)');
-    TestHasScanCnt('Found on first line (251=>249)', 1, 2); // Allow some range
-
 
 
     SetTextAndMatch(250, False, ['a291a'], [], 'Not Found after last line');
     ScrollAndMatch (249,                   [], 'Not Found after last line (250=>249)');
-    TestHasScanCnt('Not Found after last line (250=>249)', 1, 2); // Allow some range
 
     ScrollAndMatch (251,                   [l(291, 3, 8)], 'Found on last line (249=>251)');
-    TestHasScanCnt('Found on last line (249=>251)', 1, 2); // Allow some range
 
 
     SetTextAndMatch(250, False, ['a291a'], [], 'Not Found after last line');
     HeightAndMatch (41,                    [l(291, 3, 8)], 'Found on last line (40=>41)' );
-    TestHasScanCnt('Found on last line (40=>41)', 1, 2); // Allow some range
-
 
     PopPushBaseName('HideSingleMatch=True');
 
     SetTextAndMatch(250, True, ['a249a', 'a248a'], [], 'Not Found before first line');
     ScrollAndMatch (251,                           [], 'Not Found before first line (250=>251)');
-    TestHasScanCnt('Not Found before first line (250=>251)', 1, 2); // Allow some range
 
     ScrollAndMatch (249,                           [l(249, 3, 8), l(248, 3, 8)], 'Found on first line+ext (251=>249)');
 
 
     SetTextAndMatch(250, True, ['a291a', 'a292a'], [], 'Not Found after last line');
     ScrollAndMatch (249,                           [], 'Not Found after last line (250=>249)');
-    TestHasScanCnt('Not Found after last line (250=>249)', 1, 2); // Allow some range
 
     ScrollAndMatch (251,                           [l(291, 3, 8), l(292, 3, 8)], 'Found on last line+ext (249=>251)');
 
@@ -973,12 +1694,6 @@ begin
       N := 'Edit at '+IntToStr(i)+' / NO match';
       SetTextAndMatch(250, False,   ['DontMatchMe'], [],  N+' init/found');
       EditInsertAndMatch(i,1,'X',                    [],  N+' Found after edit');
-      if (i >= 250) and (i <= 290)
-      then TestHasScanCnt(N+' Found after edit', 1, 3)
-      else
-      if (i < 247) or (i > 293)
-      then TestHasScanCnt(N+' Found after edit', 0)
-      else TestHasScanCnt(N+' Found after edit', 0, 3);
 
 
       N := 'Edit (new line) at '+IntToStr(i)+' / NO match';
@@ -1012,12 +1727,6 @@ begin
         else
           EditInsertAndMatch(i,1,'X', [],  N+' still not found after edit');
 
-        if (i >= 250) and (i <= 290)
-        then TestHasScanCnt(N+' Found after edit', 1, 3)
-        else
-        if (i < 247) or (i > 293)
-        then TestHasScanCnt(N+' Found after edit', 0)
-        else TestHasScanCnt(N+' Found after edit', 0, 3);
       end;
 
 
@@ -1028,7 +1737,6 @@ begin
         then TestHasMatches(N+' init/found',   1,   [l(j, 3, 8)])
         else TestHasMCount (N+' init/not found', 0);
 
-        M.ResetScannedCount;
         SynEdit.BeginUpdate;
         SynEdit.TextBetweenPoints[point(1, i), point(1, i)] := LineEnding;
         SynEdit.TopLine := 250;
@@ -1043,13 +1751,6 @@ begin
         end
         else
           TestHasMCount (N+' still not Found after edit', 0);
-
-        //if (i >= 250) and (i <= 290)
-        //then TestHasScanCnt(N+' Found after edit', 1, 3)
-        //else
-        //if (i < 247) or (i > 293)
-        //then TestHasScanCnt(N+' Found after edit', 0)
-        //else TestHasScanCnt(N+' Found after edit', 0, 3);
       end;
 
     end;
@@ -1072,18 +1773,11 @@ begin
         SetTextAndMatch(250, False,   ['a'+IntToStr(a)+'a', 'a'+IntToStr(b)+'a']);
         TestHasMatches(N+' init/found',   2,  [l(a, 3, 8), l(b, 3,8)]);
 
-        M.ResetScannedCount;
         SynEdit.TextBetweenPoints[point(10, i), point(10, i)] := 'X';
         SynEdit.SimulatePaintText;
         TestHasMCount (N+' Found after edit', 2);
         TestHasMatches(N+' init/found', [l(a, 3, 8), l(b, 3,8)]);
 
-        if (i >= 250) and (i <= 290)
-        then TestHasScanCnt(N+' Found after edit', 1, 3)
-        else
-        if (i < 247) or (i > 293)
-        then TestHasScanCnt(N+' Found after edit', 0)
-        else TestHasScanCnt(N+' Found after edit', 0, 3);
       end;
     end;
 
@@ -1091,7 +1785,6 @@ begin
     N := 'Edit/Topline/LastLine ';
     SetTextAndMatch(250, False,   ['a265a', 'a275a']);
     TestHasMatches(N+' init/found',   2,  [l(265, 3, 8), l(275, 3,8)]);
-    M.ResetScannedCount;
     SynEdit.BeginUpdate;
     SynEdit.TextBetweenPoints[point(10, i), point(10, i)] := 'X';
     SynEdit.TopLine := 248; // 2 new lines
@@ -1099,13 +1792,11 @@ begin
     SynEdit.EndUpdate;
     SynEdit.SimulatePaintText;
     TestHasMatches(N+' Found after edit',   2,  [l(265, 3, 8), l(275, 3,8)]);
-    TestHasScanCnt(N+' Found after edit', 1, 12);
 
 
     N := 'Edit/Topline/LastLine find new points';
     SetTextAndMatch(250, False,   ['a265a', 'a275a', 'a248a', 'a292a']);
     TestHasMatches(N+' init/found',   2,  [l(265, 3, 8), l(275, 3,8)]);
-    M.ResetScannedCount;
     SynEdit.BeginUpdate;
     SynEdit.TextBetweenPoints[point(10, i), point(10, i)] := 'X';
     SynEdit.TopLine := 248; // 2 new lines
@@ -1113,11 +1804,6 @@ begin
     SynEdit.EndUpdate;
     SynEdit.SimulatePaintText;
     TestHasMatches(N+' Found after edit',   4,  [l(265, 3, 8), l(275, 3,8), l(248, 3,8), l(292, 3,8)]);
-    TestHasScanCnt(N+' Found after edit', 1, 12);
-
-
-
-
 
     PopBaseName;
   {%endregion}

@@ -37,11 +37,13 @@ function CountLeadWhiteSpace(AText: PChar; out AnHasTab: boolean): integer; inli
 function CountChars(AText: PChar; AByteLen: integer): integer;
 function CountBytes(AText: PChar; ACharLen: Integer; AMaxBytes: integer = high(Integer)): integer;
 
-Operator =  (P1, P2 : TPoint) : Boolean;
-Operator <  (P1, P2 : TPoint) : Boolean;
-Operator <= (P1, P2 : TPoint) : Boolean;
-Operator >  (P1, P2 : TPoint) : Boolean;
-Operator >= (P1, P2 : TPoint) : Boolean;
+Operator =  (P1, P2 : TPoint) : Boolean; inline;
+Operator <  (P1, P2 : TPoint) : Boolean; inline;
+Operator <= (P1, P2 : TPoint) : Boolean; inline;
+Operator >  (P1, P2 : TPoint) : Boolean; inline;
+Operator >= (P1, P2 : TPoint) : Boolean; inline;
+function Min(P1, P2 : TPoint) : TPoint; inline; overload;
+function Max(P1, P2 : TPoint) : TPoint; inline; overload;
 
 implementation
 
@@ -175,6 +177,20 @@ end;
 Operator >= (P1, P2 : TPoint) : Boolean;
 begin
   Result := (P1.Y > P2.Y) or ( (P1.Y = P2.Y) and (P1.X >= P2.X) );
+end;
+
+function Min(P1, P2: TPoint): TPoint;
+begin
+  if P1 < P2
+  then Result := P1
+  else Result := P2;
+end;
+
+function Max(P1, P2: TPoint): TPoint;
+begin
+  if P1 > P2
+  then Result := P1
+  else Result := P2;
 end;
 
 end.

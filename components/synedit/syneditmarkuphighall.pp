@@ -22,6 +22,8 @@ of this file under either the MPL or the GPL.
 unit SynEditMarkupHighAll;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch advancedrecords}
+{$ModeSwitch typehelpers}
 
 interface
 
@@ -30,7 +32,7 @@ uses
   // LCL
   LCLProc, Controls, ExtCtrls,
   // LazUtils
-  LazClasses, LazUTF8, LazMethodList,
+  LazClasses, LazUTF8, LazMethodList, LazLoggerBase,
   // LazEdit
   LazEditMiscProcs, LazSynEditText, LazEditTextAttributes,
   // SynEdit
@@ -48,12 +50,43 @@ type
   end;
   PSynMarkupHighAllMatch = ^TSynMarkupHighAllMatch;
 
+  { TSynEditGapStorageMem }
+
+  TSynEditGapStorageMem = class(TSynEditStorageMem)
+  strict private
+    FGapStartIndex, FGapEndIndex: integer; // FGapEndIndex is first AFTER gap
+    FIgnoreGapLock: integer;
+    function GetCount: Integer;
+    function GetItemPointer(Index: Integer): Pointer; reintroduce; inline;
+    function GetItemPointerRaw(Index: Integer): Pointer;
+  protected
+    procedure SetCount(const AValue: Integer); override;
+    procedure Move(AFrom, ATo, ALen: Integer); override;
+    procedure MoveRaw(AFrom, ATo, ALen: Integer); inline; // handle gap as data
+    procedure InitMem(var AFirstItem; AByteCount: Integer); override;
+    function CountRaw: integer; inline;
+
+    property ItemPointer[Index: Integer]: Pointer read GetItemPointer;
+    property ItemPointerRaw[Index: Integer]: Pointer read GetItemPointerRaw;
+    property GapStartIndex: integer read FGapStartIndex write FGapStartIndex;
+    property GapEndIndex: integer read FGapEndIndex write FGapEndIndex;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    // TODO: insert/delete: move into/from gap
+    procedure InsertRows(AIndex, ACount: Integer); override;
+    procedure DeleteRows(AIndex, ACount: Integer); override;
+    //property Capacity: Integer read FCapacity write SetCapacity;
+    property Count: Integer read GetCount write SetCount;
+  end;
+
   { TSynMarkupHighAllMatchList }
 
-  TSynMarkupHighAllMatchList = class(TSynEditStorageMem)
-  private
+  TSynMarkupHighAllMatchList = class(TSynEditGapStorageMem)
+  strict private
     FChangeStamp: int64;
     FOwner: TSynEditMarkupHighlightMatches;
+
     function GetEndPoint(const AnIndex : Integer) : TPoint;
     function GetPoint(const AnIndex : Integer) : TPoint;
     function GetPointCount : Integer;
@@ -65,9 +98,15 @@ type
   protected
     function  GetInintialForItemSize: Integer; override;
     procedure SetCount(const AValue : Integer); override;
+
+    function  StartValidation(AnFirstInvalidMatchLine, AnLastInvalidMatchLine, AnMatchLinesDiffCount: Integer; // create gap
+                              out AFirstInvalidPoint, ALastInvalidPoint: TPoint): integer;
+    procedure EndValidation; // limit gap size
+    property Owner: TSynEditMarkupHighlightMatches read FOwner;
   public
     constructor Create(AnOwner: TSynEditMarkupHighlightMatches = nil);
     Function MaybeReduceCapacity : Boolean;
+
     (* IndexOfFirstMatchForLine
        AnIndex for the first Item (match) that ENDS AT/AFTER the ALine
        That is either it - includes ALine
@@ -114,6 +153,42 @@ type
     function GetInintialForItemSize: Integer; override;
   public
     property MarkupId[AnIndex: Integer]: Integer read GetMarkupId write SetMarkupId;
+  end;
+
+  { TSynMarkupHighAllValidRange }
+  TSynMarkupHighAllValidRange = Record
+    StartPoint, EndPoint : TPoint;
+  end;
+
+  TSynMarkupHighAllValidRanges = array of TSynMarkupHighAllValidRange;
+
+  { TSynMarkupHighAllValidRangesHelper }
+
+  TSynMarkupHighAllValidRangesHelper = type helper for TSynMarkupHighAllValidRanges
+  private
+    function GetGap(AnIndex: Integer): TSynMarkupHighAllValidRange;
+  public
+    procedure Delete(AnIndex, ACnt: integer);
+    procedure Insert(AnIndex, ACnt: integer);
+    procedure RemoveBefore(APoint: TPoint);
+    procedure RemoveAfter(APoint: TPoint);
+    procedure RemoveBetween(AStartPoint, AnEndPoint: TPoint);
+    procedure AdjustForLinesChanged(AStartLine, ALineDiff: integer);
+    procedure MarkValid(AStartPoint, AnEndPoint: TPoint);
+    function  FindGapFor(APoint: TPoint; AReturnNext: boolean = False): Integer;
+    function Count: integer;
+    (* Gap
+       0: before first block
+       1..count-1: between blocks
+       count: after last block
+    *)
+    property Gap[AnIndex: Integer]: TSynMarkupHighAllValidRange read GetGap;
+  end;
+
+  { TSynMarkupHighAllPointHelper }
+
+  TSynMarkupHighAllPointHelper = type helper for TPoint
+    function HasData: boolean;
   end;
 
   { TSynEditMarkupHighlightMatches }
@@ -182,24 +257,30 @@ type
   { TSynEditMarkupHighlightAllBase }
 
   TSynEditMarkupHighlightAllBase = class(TSynEditMarkupHighlightMatches)
+  strict private
+    FFirstInvalidMatchLine, FLastInvalidMatchLine, FMatchLinesDiffCount: Integer;
   private
     FNeedValidate, FNeedValidatePaint: Boolean;
     FMarkupEnabled: Boolean;
 
-    FStartPoint : TPoint;        // First found position, before TopLine of visible area
-    FSearchedEnd: TPoint;
-    FFirstInvalidLine, FLastInvalidLine: Integer;
+    FValidRanges: TSynMarkupHighAllValidRanges;
+
     FHideSingleMatch: Boolean;
-    FInvalidationHasHiddenMatch: boolean;
+    FInvalidationStartedWithHiddenMatch,
+    FInvalidationStartedWithManyatches: boolean;
 
     function GetMatchCount: Integer;
     procedure SetHideSingleMatch(AValue: Boolean);
     procedure DoFoldChanged(Sender: TSynEditStrings; AnIndex, aCount: Integer);
 
+    Procedure InvalidateMatches(AFirstLine, ALastLine, ALineDiffCount: Integer);
+    procedure AssertGapsValid;
+    Procedure ValidateFillGaps;
     Procedure ValidateMatches(SkipPaint: Boolean = False);
 
   protected
     procedure BeginSendingInvalidation; override;
+    procedure EndSendingInvalidation; override;
     procedure SendMatchLineInvalidation(AStartIndex, AnEndIndex: Integer); override;
     procedure SetLines(const AValue: TSynEditStringsLinked); override;
     function  HasSearchData: Boolean; virtual; abstract;
@@ -229,7 +310,6 @@ type
 
     // AFirst/ ALast are 1 based
     Procedure Invalidate(SkipPaint: Boolean = False);
-    Procedure InvalidateLines(AFirstLine: Integer = 0; ALastLine: Integer = 0; SkipPaint: Boolean = False);
     Procedure SendLineInvalidation(AFirstIndex: Integer = -1;ALastIndex: Integer = -1); //deprecated 'use invalidation via FMatches';
 
     property HideSingleMatch: Boolean read FHideSingleMatch write SetHideSingleMatch;
@@ -506,10 +586,424 @@ type
 implementation
 
 const
-  SEARCH_START_OFFS = 100; // Search n lises before/after visible area. (Before applies only, if no exact offset can not be calculated from searchtext)
-  MATCHES_CLEAN_CNT_THRESHOLD = 2500; // Remove matches out of range, only if more Matches are present
-  MATCHES_CLEAN_LINE_THRESHOLD = 300; // Remove matches out of range, only if they are at least n lines from visible area.
-  MATCHES_CLEAN_LINE_KEEP = 200; // LinesKept, if cleaning. MUST be LESS than MATCHES_CLEAN_LINE_THRESHOLD
+  DEFAULT_MULTILINE_SEARCH_OFFS =  100; // Search n lises before/after visible area. (Applies only, if "SearchStringMaxLines" return negative)
+  AVOID_GAP_MAX_OFFS            =   50; // Don't create/levae a gap smaller than this before/after visible area.
+  MATCHES_CLEAN_CNT_THRESHOLD   = 2500; // Remove matches out of range, only if more Matches are present
+  MATCHES_CLEAN_LINE_THRESHOLD  =  300; // Remove matches out of range, only if they are at least n lines from visible area.
+  MATCHES_CLEAN_LINE_KEEP       = 200; // LinesKept, if cleaning. MUST be LESS than MATCHES_CLEAN_LINE_THRESHOLD
+
+function dbgs(const VR: TSynMarkupHighAllValidRange): String; overload;
+begin
+  Result := dbgs(VR.StartPoint) + '..' + dbgs(VR.EndPoint);
+end;
+
+function dbgs(const VR: TSynMarkupHighAllValidRanges): String; overload;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := 0 to VR.Count - 2 do
+    Result := Result + dbgs(VR[i]) + ', ';
+  i := VR.Count - 1;
+  if i >= 0 then
+    Result := Result + dbgs(VR[i]);
+end;
+
+{ TSynMarkupHighAllValidRangesHelper }
+
+function TSynMarkupHighAllValidRangesHelper.GetGap(AnIndex: Integer): TSynMarkupHighAllValidRange;
+begin
+  Result.StartPoint := Point(1, 1);
+  Result.EndPoint   := Point(1, MaxInt);
+  if Count = 0 then
+    exit;
+
+  if (AnIndex < Count) then
+    Result.EndPoint := Self[AnIndex].StartPoint;
+  if (AnIndex > 0) then
+    Result.StartPoint := Self[AnIndex-1].EndPoint;
+
+  if (Result.StartPoint >= Result.EndPoint) then begin
+    Result.StartPoint := Point(-1, -1);
+    Result.EndPoint   := Point(-1, -1);
+  end;
+end;
+
+procedure TSynMarkupHighAllValidRangesHelper.Delete(AnIndex, ACnt: integer);
+var
+  i: Integer;
+  c: SizeInt;
+begin
+  i := AnIndex + ACnt;
+  c := Length(Self) - i;
+  if c > 0 then
+    move(Self[i], Self[AnIndex], SizeOf(Self[0]) * c);
+  SetLength(Self, Length(Self) - ACnt);
+end;
+
+procedure TSynMarkupHighAllValidRangesHelper.Insert(AnIndex, ACnt: integer);
+var
+  i: Integer;
+  c: SizeInt;
+begin
+  i := AnIndex + ACnt;
+  SetLength(Self, Length(Self) + ACnt);
+  c := Length(Self) - i;
+  if c > 0 then
+    move(Self[AnIndex], Self[i], SizeOf(Self[0]) * c);
+end;
+
+procedure TSynMarkupHighAllValidRangesHelper.RemoveBefore(APoint: TPoint);
+var
+  i: Integer;
+begin
+  i := 0;
+  while (i < Count) and (Self[i].EndPoint <= APoint) do
+    inc(i);
+  if i > 0 then
+    Delete(0, i);
+  if (Count > 0) and (Self[0].StartPoint < APoint) then
+    Self[0].StartPoint := APoint;
+end;
+
+procedure TSynMarkupHighAllValidRangesHelper.RemoveAfter(APoint: TPoint);
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while (i >= 0) and (Self[i].StartPoint >= APoint) do
+    dec(i);
+  inc(i);
+  if i < Count then
+    Delete(i, Count - i);
+  dec(i);
+  if (i >= 0) and (Self[i].EndPoint > APoint) then
+    Self[i].EndPoint := APoint;
+end;
+
+procedure TSynMarkupHighAllValidRangesHelper.RemoveBetween(AStartPoint, AnEndPoint: TPoint);
+var
+  i, j: Integer;
+  p: TPoint;
+begin
+  i := 0;
+  while (i < Count) and (Self[i].EndPoint <= AStartPoint) do
+    inc(i);
+  if i = Count then
+    exit;
+
+  if (Self[i].StartPoint < AStartPoint) then begin
+    p := Self[i].EndPoint;
+    Self[i].EndPoint := AStartPoint;
+    inc(i);
+
+    if (p > AnEndPoint) then begin
+      Insert(i, 1);
+      Self[i].StartPoint := AnEndPoint;
+      Self[i].EndPoint   := p;
+      exit;
+    end;
+  end;
+
+  j := i;
+  while (j < Count) and (Self[j].EndPoint <= AnEndPoint) do
+    inc(j);
+
+  if j > i then
+    Delete(i, j-i);
+
+  if (i < Count) and (Self[i].StartPoint < AnEndPoint) then
+    Self[i].StartPoint := AnEndPoint;
+end;
+
+procedure TSynMarkupHighAllValidRangesHelper.AdjustForLinesChanged(AStartLine, ALineDiff: integer);
+var
+  i: Integer;
+begin
+  i := 0;
+  while (i < Count) and (Self[i].EndPoint.y < AStartLine) do
+    inc(i);
+  if i = Count then
+    exit;
+
+  if (Self[i].StartPoint.y < AStartLine) then begin
+    Self[i].EndPoint.Y := Self[i].EndPoint.Y + ALineDiff;
+    if Self[i].EndPoint.Y < AStartLine then
+      Self[i].EndPoint := Point(1, AStartLine);
+
+    if Self[i].EndPoint.Y <= Self[i].StartPoint.Y then
+      Delete(i, 1)
+    else
+      inc(i);
+  end;
+
+  while (i < Count) do begin
+    Self[i].StartPoint.Y := Self[i].StartPoint.Y + ALineDiff;
+    if Self[i].StartPoint.Y < AStartLine then
+      Self[i].StartPoint := Point(1, AStartLine);
+    Self[i].EndPoint.Y   := Self[i].EndPoint.Y   + ALineDiff;
+
+    if Self[i].EndPoint.Y <= Self[i].StartPoint.Y then
+      Delete(i, 1)
+    else
+      inc(i);
+  end;
+end;
+
+procedure TSynMarkupHighAllValidRangesHelper.MarkValid(AStartPoint, AnEndPoint: TPoint);
+var
+  i, j: Integer;
+begin
+  i := 0;
+  while (i < Count) and (Self[i].EndPoint < AStartPoint) do
+    inc(i);
+
+  if (i = Count) or (Self[i].StartPoint > AnEndPoint)
+  then begin
+    Insert(i, 1);
+    Self[i].StartPoint := AStartPoint;
+    Self[i].EndPoint   := AnEndPoint;
+    exit;
+  end;
+
+  if (Self[i].StartPoint > AStartPoint) then
+    Self[i].StartPoint := AStartPoint;
+  if Self[i].EndPoint >= AnEndPoint then
+    exit;
+  Self[i].EndPoint := AnEndPoint;
+  inc(i);
+
+  j := i;
+  while (j < Count) and (Self[j].StartPoint <= AnEndPoint) do
+    inc(j);
+  if j > i then begin
+    if (Self[j-1].EndPoint > AnEndPoint) then
+      Self[i-1].EndPoint := Self[j-1].EndPoint;
+
+    Delete(i, j-i);
+  end;
+end;
+
+function TSynMarkupHighAllValidRangesHelper.FindGapFor(APoint: TPoint; AReturnNext: boolean
+  ): Integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (Self[Result].StartPoint > APoint) do
+    dec(Result);
+
+  if (not AReturnNext) and (Result >= 0) and (Self[Result].EndPoint > APoint) then
+    exit(-1);
+
+  inc(Result);
+end;
+
+function TSynMarkupHighAllValidRangesHelper.Count: integer;
+begin
+  Result := Length(Self);
+end;
+
+{ TSynMarkupHighAllPointHelper }
+
+function TSynMarkupHighAllPointHelper.HasData: boolean;
+begin
+  Result := Self.Y >= 0;
+end;
+
+{ TSynEditGapStorageMem }
+
+function TSynEditGapStorageMem.GetCount: Integer;
+begin
+  if FIgnoreGapLock > 0 then
+    Result := inherited Count
+  else
+    Result := inherited Count - (FGapEndIndex - FGapStartIndex);
+end;
+
+function TSynEditGapStorageMem.GetItemPointer(Index: Integer): Pointer;
+begin
+  assert(FIgnoreGapLock = 0, 'TSynEditGapStorageMem.GetItemPointer: FIgnoreGapLock = 0');
+  if Index >= FGapStartIndex then
+    Index := Index + (FGapEndIndex - FGapStartIndex);
+  Result := inherited ItemPointer[Index];
+end;
+
+function TSynEditGapStorageMem.GetItemPointerRaw(Index: Integer): Pointer;
+begin
+  assert(FIgnoreGapLock = 0, 'TSynEditGapStorageMem.GetItemPointerRaw: FIgnoreGapLock = 0');
+  Result := inherited ItemPointer[Index];
+end;
+
+procedure TSynEditGapStorageMem.SetCount(const AValue: Integer);
+begin
+  if FIgnoreGapLock > 0 then
+    inherited SetCount(AValue)
+  else
+    inherited SetCount(AValue + (FGapEndIndex - FGapStartIndex));
+end;
+
+procedure TSynEditGapStorageMem.Move(AFrom, ATo, ALen: Integer);
+  procedure SkipGap(var i: integer); inline;
+  begin
+    if i >= FGapStartIndex then
+      i := i + (FGapEndIndex - FGapStartIndex);
+  end;
+  procedure SkipAtGapOnly(var i: integer); inline;
+  begin
+    if i = FGapStartIndex then
+      i := i + (FGapEndIndex - FGapStartIndex);
+  end;
+  procedure UnSkipAtGapOnly(var i: integer); inline;
+  begin
+    if i = FGapEndIndex then
+      i := i - (FGapEndIndex - FGapStartIndex);
+  end;
+
+  procedure MoveSectionUp(var f, t, l1, l2: integer); inline;
+  var
+    l: Integer;
+  begin
+    l := Min(l1, l2);
+    if l > 0 then begin
+      inherited Move(f, t, l);
+      inc(f, l);    SkipAtGapOnly(f);
+      inc(t, l);    SkipAtGapOnly(t);
+      dec(l1, l);
+      dec(l2, l);
+    end;
+  end;
+
+  procedure MoveSectionDown(var f, t, l1, l2: integer); inline;
+  var
+    l: Integer;
+  begin
+    l := Min(l1, l2);
+    if l > 0 then begin
+      dec(f, l);
+      dec(t, l);
+      inherited Move(f, t, l);
+      UnSkipAtGapOnly(f);
+      UnSkipAtGapOnly(t);
+      dec(l1, l);
+      dec(l2, l);
+    end;
+  end;
+var
+  SrcLen1, SrcLen2, DstLen1, DstLen2: Integer;
+begin
+  if FIgnoreGapLock > 0 then begin
+    inherited Move(AFrom, ATo, ALen);
+    exit;
+  end;
+
+  SrcLen1 := ALen;
+  SrcLen2 := 0;
+  DstLen1 := ALen;
+  DstLen2 := 0;
+
+  SkipGap(AFrom);
+  SkipGap(ATo);
+
+  if (AFrom < FGapStartIndex) and (AFrom + ALen > FGapStartIndex) then begin
+    SrcLen1 := FGapStartIndex - AFrom;
+    SrcLen2 := ALen - SrcLen1;
+  end;
+  if (ATo < FGapStartIndex) and (ATo + ALen > FGapStartIndex) then begin
+    DstLen1 := FGapStartIndex - ATo;
+    DstLen2 := ALen - DstLen1;
+  end;
+
+  if AFrom > ATo then begin
+    // move down
+    MoveSectionUp(AFrom, ATo, SrcLen1, DstLen1);
+    MoveSectionUp(AFrom, ATo, SrcLen1, DstLen1);
+    MoveSectionUp(AFrom, ATo, SrcLen2, DstLen2);
+    MoveSectionUp(AFrom, ATo, SrcLen2, DstLen2);
+  end
+  else begin
+    // move up / start at end
+    Inc(AFrom, ALen);
+    inc(ATo, ALen);
+    MoveSectionDown(AFrom, ATo, SrcLen2, DstLen2);
+    MoveSectionDown(AFrom, ATo, SrcLen2, DstLen2);
+    MoveSectionDown(AFrom, ATo, SrcLen1, DstLen1);
+    MoveSectionDown(AFrom, ATo, SrcLen1, DstLen1);
+  end;
+end;
+
+procedure TSynEditGapStorageMem.MoveRaw(AFrom, ATo, ALen: Integer);
+begin
+  assert(FIgnoreGapLock = 0, 'TSynEditGapStorageMem.MoveRaw: FIgnoreGapLock = 0');
+  inherited Move(AFrom, ATo, ALen);
+end;
+
+procedure TSynEditGapStorageMem.InitMem(var AFirstItem; AByteCount: Integer);
+begin
+  FillChar(AFirstItem, AByteCount, 255);
+end;
+
+function TSynEditGapStorageMem.CountRaw: integer;
+begin
+  assert(FIgnoreGapLock = 0, 'TSynEditGapStorageMem.CountRaw: FIgnoreGapLock = 0');
+  Result := inherited Count;
+end;
+
+constructor TSynEditGapStorageMem.Create;
+begin
+  FGapStartIndex := -1;
+  FGapEndIndex := -1;
+  inherited Create;
+end;
+
+destructor TSynEditGapStorageMem.Destroy;
+begin
+  FGapStartIndex := -1;
+  FGapEndIndex   := -1;
+  inherited Destroy;
+end;
+
+procedure TSynEditGapStorageMem.InsertRows(AIndex, ACount: Integer);
+begin
+  assert(FIgnoreGapLock = 0, 'TSynEditGapStorageMem.InsertRows: FIgnoreGapLock = 0');
+  if AIndex >= FGapStartIndex then begin
+    AIndex := AIndex + (FGapEndIndex - FGapStartIndex);
+  end
+  else begin
+    // move gap
+    FGapStartIndex := FGapStartIndex + ACount;
+    FGapEndIndex   := FGapEndIndex   + ACount;
+  end;
+
+  inc(FIgnoreGapLock);
+  inherited InsertRows(AIndex, ACount);
+  dec(FIgnoreGapLock);
+end;
+
+procedure TSynEditGapStorageMem.DeleteRows(AIndex, ACount: Integer);
+var
+  l: Integer;
+begin
+  assert(FIgnoreGapLock = 0, 'TSynEditGapStorageMem.DeleteRows: FIgnoreGapLock = 0');
+  if AIndex >= FGapStartIndex then begin
+    AIndex := AIndex + (FGapEndIndex - FGapStartIndex);
+  end
+  else begin
+    // move gap
+    if (AIndex + ACount > FGapStartIndex) then begin
+      l := ACount;
+      ACount := FGapStartIndex - AIndex;  // delete in front of gap
+      FGapStartIndex := AIndex;           // move gap down
+      FGapEndIndex := FGapEndIndex - ACount + (l - ACount); // extend gap at end
+    end
+    else begin
+      FGapStartIndex := FGapStartIndex - ACount;
+      FGapEndIndex   := FGapEndIndex   - ACount;
+    end;
+  end;
+
+  inc(FIgnoreGapLock);
+  inherited DeleteRows(AIndex, ACount);
+  dec(FIgnoreGapLock);
+end;
 
 { TSynEditMarkupHighlightMatches }
 
@@ -563,6 +1057,7 @@ begin
   for i := AStartIndex to AnEndIndex do begin
     m := FMatches.Match[i];
     L1 := m.StartPoint.Y;
+    if L1 < 0 then Continue;
     L2 := m.EndPoint.Y;
 
     if (L1 >= FPendingInvalidationStartLine) then begin
@@ -1772,7 +2267,7 @@ begin
       if (AStopAfterLine >= 0) and (AStartPoint.Y-1 > AStopAfterLine) and
          (FFindInsertIndex > AnIndex)
       then begin
-        AnEndPoint := point(LineLen, AStartPoint.Y-1);
+        AnEndPoint := point(LineLen + 1, AStartPoint.Y-1);
         break;
       end;
     end;
@@ -2017,14 +2512,12 @@ end;
 
 function TSynMarkupHighAllMatchList.IndexOf(APoint: TPoint): Integer;
 var
-  C, l, h: Integer;
-  E: TPoint;
+  l, h: Integer;
 begin
-  C := Count;
-  if Count = 0 then
+  h := Count -1;
+  if h < 0 then
     exit(0);
   l := 0;
-  h := Count -1;
   Result := (l+h) div 2;
   while (h > l) do begin
     if PSynMarkupHighAllMatch(ItemPointer[Result])^.EndPoint <= APoint then
@@ -2039,8 +2532,12 @@ end;
 
 procedure TSynMarkupHighAllMatchList.Clear;
 begin
+  GapStartIndex := -1;
+  GapEndIndex := -1;
+
   if (FOwner <> nil) and (Count > 0) then
     FOwner.SendMatchLineInvalidation(0, Count-1);
+
   Count := 0;
 end;
 
@@ -2063,20 +2560,49 @@ begin
 end;
 
 procedure TSynMarkupHighAllMatchList.Insert(AnIndex: Integer; ACount: Integer);
+var
+  i: Integer;
 begin
   if AnIndex > Count then
     exit;
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
+
+  if AnIndex = GapStartIndex then begin
+    i := GapEndIndex - GapStartIndex;
+    GapStartIndex := GapStartIndex + ACount;
+    if ACount < i then
+      exit;
+    if ACount = i then begin
+      GapStartIndex := -1;
+      GapEndIndex   := -1;
+      exit;
+    end;
+    ACount := ACount - i;
+  end;
+
   InsertRows(AnIndex, ACount);
 end;
 
 procedure TSynMarkupHighAllMatchList.Insert(AnIndex: Integer; AStartPoint, AnEndPoint: TPoint);
 var
   p: PSynMarkupHighAllMatch;
+  g: Boolean;
 begin
   {$PUSH}{$R-}{$Q-}FChangeStamp := FChangeStamp+1;{$POP}
+  g := AnIndex = GapStartIndex;
   Insert(AnIndex);
   p := PSynMarkupHighAllMatch(ItemPointer[AnIndex]);
+  if g then begin
+    if (p^.StartPoint = AStartPoint) and
+       (p^.EndPoint   = AnEndPoint) and
+       (ItemSize = SizeOf(TSynMarkupHighAllMatch))
+    then
+      exit;
+
+    if (FOwner <> nil) then
+      FOwner.SendMatchLineInvalidation(AnIndex, AnIndex);
+  end;
+
   p^.StartPoint := AStartPoint;
   p^.EndPoint   := AnEndPoint;
   if FOwner <> nil then
@@ -2122,6 +2648,111 @@ begin
   end;
 end;
 
+function TSynMarkupHighAllMatchList.StartValidation(AnFirstInvalidMatchLine,
+  AnLastInvalidMatchLine, AnMatchLinesDiffCount: Integer; out AFirstInvalidPoint,
+  ALastInvalidPoint: TPoint): integer;
+var
+  NewGapStart, NewGapEnd, d, sz, i: Integer;
+  p: Pointer;
+begin
+  Result := -1;
+  AFirstInvalidPoint := classes.Point(-1, -1);
+  ALastInvalidPoint  := classes.Point(-1, -1);
+
+  if AnFirstInvalidMatchLine < 0 then
+    exit;
+
+  NewGapStart := IndexOfFirstMatchForLine(AnFirstInvalidMatchLine);
+  Result := NewGapStart;
+  if NewGapStart >= Count then
+    exit;
+  NewGapEnd := IndexOfLastMatchForLine(AnLastInvalidMatchLine) + 1;
+  if NewGapEnd <= NewGapStart then
+    exit;
+
+  // the first/last newly invalidated point
+  AFirstInvalidPoint := StartPoint[NewGapStart];
+  ALastInvalidPoint  := EndPoint[NewGapEnd - 1];
+
+  if GapStartIndex >= 0 then begin
+    // adjust new gap (raw index values)
+    if GapStartIndex < NewGapStart then
+      NewGapStart := NewGapStart + (GapEndIndex - GapStartIndex);
+    if GapStartIndex < NewGapEnd then
+      NewGapEnd := NewGapEnd + (GapEndIndex - GapStartIndex);
+
+    // deal with old gap
+    if GapStartIndex < NewGapStart then begin   // OLD gap in FRONT
+      if GapEndIndex >= NewGapStart then begin   // overlap
+        NewGapStart := GapStartIndex;
+      end
+      else begin                                 // move old gap // revalidation start at the new gap
+        sz := NewGapStart - GapEndIndex;
+        MoveRaw(GapEndIndex, GapStartIndex, sz);
+        NewGapStart := NewGapStart - (GapEndIndex - GapStartIndex);
+      end;
+    end
+    else begin                                 // OLD gap BEHIND -- or INSIDE
+      if GapStartIndex <= NewGapEnd then begin  // overlap
+        if GapEndIndex > NewGapEnd then
+          NewGapEnd := GapEndIndex;
+      end
+      else begin                                 // move old gap // revalidation start at the new gap
+        sz := GapStartIndex - NewGapEnd;
+        assert(sz > 0, 'TSynMarkupHighAllMatchList.StartValidation: sz > 0');
+        MoveRaw(NewGapEnd, GapEndIndex - sz, sz);
+        NewGapEnd := NewGapEnd + (GapEndIndex - GapStartIndex);
+      end;
+    end;
+  end;
+
+  GapStartIndex := NewGapStart;
+  GapEndIndex := NewGapEnd;
+
+  d := AnMatchLinesDiffCount;
+  if d > 0 then begin
+    p := ItemPointerRaw[NewGapEnd];
+    sz := ItemSize;
+    for i := NewGapEnd to CountRaw - 1 do begin
+      inc(PSynMarkupHighAllMatch(p)^.StartPoint.Y, d);
+      inc(PSynMarkupHighAllMatch(p)^.EndPoint.Y, d);
+      inc(p, sz);
+    end;
+  end;
+end;
+
+procedure TSynMarkupHighAllMatchList.EndValidation;
+const
+  MAX_GAP_SIZE = 100;
+var
+  s, e, i: Integer;
+begin
+  assert(GapEndIndex >= GapStartIndex, 'TSynMarkupHighAllMatchList.EndValidation: GapEndIndex >= GapStartIndex');
+
+  if GapEndIndex > GapStartIndex then begin
+    s := GapStartIndex;
+    e := GapEndIndex;
+    GapStartIndex := -1;
+    GapEndIndex   := -1;
+
+    if FOwner <> nil then
+      FOwner.SendMatchLineInvalidation(s, e-1);
+
+    if e > s + MAX_GAP_SIZE then begin
+      i := e;
+      e := s + MAX_GAP_SIZE;
+      MoveRaw(i, e, CountRaw - i);
+      Count := Count - (i - e);
+    end;
+
+    for i := s to e-1 do
+      PSynMarkupHighAllMatch(ItemPointer[i])^.StartPoint.Y := -1;
+
+    GapStartIndex := s;
+    GapEndIndex   := e;
+  end;
+end;
+
 function TSynMarkupHighAllMatchList.GetPointCount : Integer;
 begin
   result := Count * 2;
@@ -2131,7 +2762,7 @@ function TSynMarkupHighAllMatchList.GetPoint(const AnIndex : Integer) : TPoint;
 begin
   if (AnIndex and 1) = 0
   then Result := PSynMarkupHighAllMatch(ItemPointer[AnIndex>>1])^.StartPoint
-  else Result := PSynMarkupHighAllMatch(ItemPointer[AnIndex>>1])^.EndPoint
+  else Result := PSynMarkupHighAllMatch(ItemPointer[AnIndex>>1])^.EndPoint;
 end;
 
 function TSynMarkupHighAllMatchList.GetStartPoint(const AnIndex : Integer) : TPoint;
@@ -2203,7 +2834,8 @@ begin
   if p^ = AValue then
     exit;
   p^ := AValue;
-  FOwner.SendMatchLineInvalidation(AnIndex, AnIndex);
+  if (Owner <> nil) then
+    Owner.SendMatchLineInvalidation(AnIndex, AnIndex);
 end;
 
 function TSynMarkupHighAllMultiMatchList.GetInintialForItemSize: Integer;
@@ -2218,10 +2850,8 @@ end;
 constructor TSynEditMarkupHighlightAllBase.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create(ASynEdit);
-  fStartPoint.y := -1;
-  FSearchedEnd.y := -1;
-  FFirstInvalidLine := 1;
-  FLastInvalidLine := MaxInt;
+  FFirstInvalidMatchLine := -1;
+  FLastInvalidMatchLine := -1;
   FHideSingleMatch := False;
   FMarkupEnabled := MarkupInfo.IsEnabled;
 end;
@@ -2242,13 +2872,11 @@ end;
 
 procedure TSynEditMarkupHighlightAllBase.DoTopLineChanged(OldTopLine : Integer);
 begin
-  // {TODO: Only do a partial search on the new area}
   ValidateMatches(True);
 end;
 
 procedure TSynEditMarkupHighlightAllBase.DoLinesInWindoChanged(OldLinesInWindow : Integer);
 begin
-  // {TODO: Only do a partial search on the new area}
   ValidateMatches(True);
 end;
 
@@ -2291,208 +2919,246 @@ end;
 procedure TSynEditMarkupHighlightAllBase.DoFoldChanged(Sender: TSynEditStrings;
   AnIndex, aCount: Integer);
 begin
-  InvalidateLines(AnIndex+1, MaxInt, True);
+  ValidateMatches(True);
+end;
+
+procedure TSynEditMarkupHighlightAllBase.InvalidateMatches(AFirstLine, ALastLine,
+  ALineDiffCount: Integer);
+begin
+  if AFirstLine < 1 then
+    AFirstLine := 1;
+  if (ALastLine < 1) then
+    ALastLine := MaxInt
+  else
+  if ALastLine < AFirstLine then
+    ALastLine := AFirstLine;
+
+  if (AFirstLine < FFirstInvalidMatchLine) or (FFirstInvalidMatchLine <= 0) then
+    FFirstInvalidMatchLine := AFirstLine;
+  if (ALastLine > FLastInvalidMatchLine) then
+    FLastInvalidMatchLine := ALastLine;
+
+  FMatchLinesDiffCount := FMatchLinesDiffCount + ALineDiffCount;
+end;
+
+procedure TSynEditMarkupHighlightAllBase.AssertGapsValid;
+var
+  i, j: Integer;
+  g: TSynMarkupHighAllValidRange;
+begin
+  for i := 0 to FValidRanges.Count do begin
+    g := FValidRanges.Gap[i];
+    if (not g.StartPoint.HasData) or (g.StartPoint >= g.EndPoint) then continue;
+    j := FMatches.IndexOf(g.StartPoint);
+    assert((j>=FMatches.Count) or (j<0) or (FMatches.StartPoint[j] >= g.EndPoint), 'AssertGapsValid: before '+IntToStr(j));
+    assert((j<=0) or (FMatches.EndPoint[j-1] <= g.StartPoint), 'AssertGapsValid: after'+IntToStr(j));
+  end;
+end;
+
+procedure TSynEditMarkupHighlightAllBase.ValidateFillGaps;
+var
+  LastTextLine, OffsetForMultiLine: Integer;     // Last visible
+
+  procedure RepairMatches(AFirstBrokenIndex: integer; AGap: TSynMarkupHighAllValidRange);
+  var
+    IdxEnd: Integer;
+  begin
+    assert(False, 'RepairMatches');
+    DebugLn('RepairMatches');
+    IdxEnd := FMatches.IndexOf(AGap.EndPoint);
+    if IdxEnd <= AFirstBrokenIndex then
+      FMatches.Clear
+    else
+      FMatches.DeleteRows(AFirstBrokenIndex, IdxEnd - AFirstBrokenIndex);
+  end;
+
+  function FillGap(AGap: TSynMarkupHighAllValidRange; AStopAfterLine: integer): boolean;
+  var
+    i: Integer;
+  begin
+    Result := False;
+    assert(AGap.StartPoint.HasData, 'FillGap: AGap.StartPoint.HasData');
+    if not AGap.StartPoint.HasData then
+      exit;
+
+    if (AStopAfterLine > 0) and (AGap.StartPoint.Y > AStopAfterLine) then
+      exit;
+
+    if AGap.EndPoint.y > LastTextLine then begin
+      AGap.EndPoint := min(AGap.EndPoint, Point(1, LastTextLine+1));
+      if AGap.EndPoint = AGap.StartPoint then
+        exit;
+    end;
+    assert(AGap.EndPoint > AGap.StartPoint, 'FillGap: AGap.EndPoint > AGap.StartPoint');
+
+
+    i := FMatches.IndexOf(AGap.StartPoint);
+    Assert((i<=0) or (Matches.EndPoint[i-1] <= AGap.StartPoint), 'after prev point');
+    Assert((i>=FMatches.Count) or (Matches.StartPoint[i] >= AGap.EndPoint), 'before next point');
+    if ( (i > 0) and (Matches.EndPoint[i-1] > AGap.StartPoint) ) or
+       ( (i < FMatches.Count) and (Matches.StartPoint[i] < AGap.EndPoint) )
+    then begin
+      RepairMatches(i, AGap);
+      i := FMatches.IndexOf(AGap.StartPoint);
+    end;
+
+    if OffsetForMultiLine > 0 then begin
+      AGap.StartPoint := Point(1, max(1, AGap.StartPoint.y - OffsetForMultiLine));
+      if i > 0 then
+        AGap.StartPoint := max(FMatches.EndPoint[i-1], AGap.StartPoint);
+      AGap.EndPoint := Point(1, min(LastTextLine+1, AGap.EndPoint.y + OffsetForMultiLine + 1));
+      if i < FMatches.Count then
+        AGap.EndPoint := min(FMatches.StartPoint[i], AGap.EndPoint)
+    end;
+    if AStopAfterLine > AGap.EndPoint.Y then
+      AStopAfterLine := -1;
+
+    AGap.EndPoint := FindMatches(AGap.StartPoint, AGap.EndPoint, i, AStopAfterLine, False);
+
+    assert(AGap.EndPoint.x >= 1, 'FillGap: AGap.EndPoint.x >= 1');
+    if AGap.EndPoint.x = 0 then AGap.EndPoint.x := 1;
+    assert(AGap.EndPoint > AGap.StartPoint, 'FillGap: AGap.EndPoint > AGap.StartPoint');
+    FValidRanges.MarkValid(AGap.StartPoint, AGap.EndPoint);
+    Result := True;
+  end;
+
+var
+  TopScreenLine, LastScreenLine, LastScreenLineAdj, t, t2: Integer;
+  CurrentGapIdx: Integer;
+  CurrentGap: TSynMarkupHighAllValidRange;
+begin
+  FindInitialize;
+
+  TopScreenLine := TopLine;
+  LastTextLine   := SynEdit.Lines.Count;
+  LastScreenLine := SynEdit.PartialBottomLine;
+  OffsetForMultiLine := SearchStringMaxLines - 1;
+  if OffsetForMultiLine < 0 then
+    OffsetForMultiLine := DEFAULT_MULTILINE_SEARCH_OFFS;
+
+  (* Search in on-screen lines first  *)
+
+  CurrentGapIdx := FValidRanges.FindGapFor(Point(1, TopScreenLine), True);
+  if CurrentGapIdx >= 0 then begin
+    LastScreenLineAdj := LastScreenLine + OffsetForMultiLine + AVOID_GAP_MAX_OFFS;
+
+    CurrentGap := FValidRanges.Gap[CurrentGapIdx];
+    if CurrentGap.StartPoint.y < Max(1, TopScreenLine - OffsetForMultiLine - AVOID_GAP_MAX_OFFS) then begin
+      // FillGap will substract OffsetForMultiLine => but that still keeps AVOID_GAP_MAX_OFFS
+      CurrentGap.StartPoint := Point(1, TopScreenLine);
+      assert(CurrentGap.StartPoint < CurrentGap.EndPoint, 'TSynEditMarkupHighlightAllBase.ValidateMatches: CurrentGap.StartPoint < CurrentGap.EndPoint');
+    end;
+
+    repeat
+      if CurrentGap.StartPoint.Y > LastScreenLine then
+        break;
+      if CurrentGap.EndPoint.y > LastScreenLineAdj then
+        CurrentGap.EndPoint := Point(1, LastScreenLine+1); // FillGap will add OffsetForMultiLine;
+
+      if not FillGap(CurrentGap, LastScreenLine) then
+        break;
+      CurrentGapIdx := FValidRanges.FindGapFor(Point(1, TopScreenLine), True);
+      if CurrentGapIdx < 0 then
+        break;
+      CurrentGap := FValidRanges.Gap[CurrentGapIdx];
+    until False;
+  end;
+
+
+  (* Search 2nd match for HideSingleMatch  *)
+
+  if HideSingleMatch and (FMatches.Count = 1) then begin
+    // find before/after screen
+    t  := Max(1, TopScreenLine - 2 * DEFAULT_MULTILINE_SEARCH_OFFS);
+    t2 := LastScreenLine + 2 * DEFAULT_MULTILINE_SEARCH_OFFS;
+
+    CurrentGapIdx := FValidRanges.FindGapFor(point(1, t), True);
+    if CurrentGapIdx >= 0 then begin
+      CurrentGap := FValidRanges.Gap[CurrentGapIdx];
+      if CurrentGap.StartPoint.y < Max(1, t - OffsetForMultiLine - AVOID_GAP_MAX_OFFS) then begin
+        CurrentGap.StartPoint := Point(1, t);    // FillGap will substract OffsetForMultiLine => but that still keeps AVOID_GAP_MAX_OFFS
+        assert(CurrentGap.StartPoint < CurrentGap.EndPoint, 'TSynEditMarkupHighlightAllBase.ValidateMatches: CurrentGap.StartPoint < CurrentGap.EndPoint');
+      end;
+
+      repeat
+        if CurrentGap.StartPoint.Y > t2 then
+          break;
+        if CurrentGap.EndPoint.y > t2 + OffsetForMultiLine + AVOID_GAP_MAX_OFFS then
+          CurrentGap.EndPoint := Point(1, t2 + 1);
+
+        if not FillGap(CurrentGap, 0) then
+          break;
+
+        if FMatches.Count > 1 then
+          break;
+
+        CurrentGapIdx := FValidRanges.FindGapFor(point(1, t), True);
+        if CurrentGapIdx < 0 then
+          break;
+        CurrentGap := FValidRanges.Gap[CurrentGapIdx];
+      until False;
+    end;
+
+    //// search all
+    //CurrentGapIdx := FValidRanges.FindGapFor(Point(1, 1), True);
+    //while (CurrentGapIdx >= 0) and (FMatches.Count = 1) do begin
+    //  CurrentGap := FValidRanges.Gap[CurrentGapIdx];
+    //  if not FillGap(CurrentGap, 0) then
+    //    break;
+    //
+    //  CurrentGapIdx := FValidRanges.FindGapFor(Point(1, 1), True);
+    //end;
+  end;
+
 end;
 
 procedure TSynEditMarkupHighlightAllBase.ValidateMatches(SkipPaint: Boolean);
 var
-  LastScreenLine : Integer;     // Last visible
-  UnsentLineInvalidation: Integer;
-
-  function IsPosValid(APos: TPoint): Boolean; // Check if point is in invalid range
-  begin
-    Result := (APos.y > 0) and
-       ( (FFirstInvalidLine < 1) or (APos.y < FFirstInvalidLine) or
-         ( (FLastInvalidLine > 0) and (APos.y > FLastInvalidLine) )
-       );
-  end;
-
-  function IsStartAtMatch0: Boolean; // Check if FStartPoint = FMatches[0]
-  begin
-    Result := (FMatches.Count > 0) and
-              (FStartPoint.y = FMatches.StartPoint[0].y)and (FStartPoint.x = FMatches.StartPoint[0].x);
-  end;
-
-  function AdjustedSearchStrMaxLines: Integer;
-  begin
-    Result := SearchStringMaxLines - 1;
-    if Result < 0 then Result := SEARCH_START_OFFS;
-  end;
+  LastScreenLine: Integer;     // Last visible
+  FirstKeptValidIdx: Integer; // The first index, kept after the removed invalidated range
 
   procedure MaybeDropOldMatches;
   var
     Idx: Integer;
   begin
     // remove matches, that are too far off the current visible area
-    if (FMatches.Count > MATCHES_CLEAN_CNT_THRESHOLD) then begin
-      if TopLine - FMatches.EndPoint[0].y > MATCHES_CLEAN_LINE_THRESHOLD then begin
-        Idx := FMatches.IndexOfFirstMatchForLine(TopLine - MATCHES_CLEAN_LINE_KEEP);
-        // Using the Idx as Count => Delete only "up to before that Idx"
-        if Idx > 0 then begin
-          FMatches.Delete(0, Idx);
-          if FMatches.Count > 0 then begin
-            FStartPoint := FMatches.StartPoint[0];
-          end
-          else begin
-            FStartPoint.y := -1;
-            FSearchedEnd.y := -1;
-            exit;
-          end;
-        end;
-      end;
-      if FMatches.StartPoint[FMatches.Count-1].y - LastScreenLine > MATCHES_CLEAN_LINE_THRESHOLD then begin
-        Idx := FMatches.IndexOfLastMatchForLine(LastScreenLine  + MATCHES_CLEAN_LINE_KEEP) + 1;
-        // Deleting above the Idx (Idx is already "+ 1")
-        if Idx < FMatches.Count then begin
-          FMatches.Delete(Idx, FMatches.Count - Idx);
-          if FMatches.Count > 0
-          then FSearchedEnd := FMatches.EndPoint[FMatches.Count-1]
-          else FSearchedEnd.y := -1;
-        end;
-      end;
-    end;
-  end;
+    if (FMatches.Count <= MATCHES_CLEAN_CNT_THRESHOLD) then
+      exit;
 
-  function DeleteInvalidMatches: Integer;
-  var
-    FirstInvalIdx, LastInvalIdx: Integer;
-  begin
-    // Delete Matches from the invalidated line range
-    FirstInvalIdx := -1;
-    LastInvalIdx  := -1;
-    if (FFirstInvalidLine > 0) or (FLastInvalidLine > 0) then begin
-      FirstInvalIdx := FMatches.IndexOfFirstMatchForLine(FFirstInvalidLine);
-      if FirstInvalIdx < FMatches.Count then begin
-        LastInvalIdx  := FMatches.IndexOfLastMatchForLine(FLastInvalidLine);
-        if FirstInvalIdx <= LastInvalIdx then begin
-          FMatches.Delete(FirstInvalIdx, LastInvalIdx-FirstInvalIdx+1);
-          if FirstInvalIdx > FMatches.Count then
-            FirstInvalIdx := FMatches.Count;
-        end;
-      end;
-    end;
-    Result := FirstInvalIdx;
-  end;
-
-  function FindStartPoint(var AFirstKeptValidIdx: Integer): Boolean;
-  var
-    Idx : Integer;
-  begin
-    Result := False; // No Gap at start to fill
-
-    if (FMatches.Count > 0) and (FMatches.StartPoint[0].y < TopLine) then begin
-      // New StartPoint from existing matches
-      Result := True;
-      FStartPoint := FMatches.StartPoint[0];
-    end
-
-    else begin
-      if SearchStringMaxLines > 0 then
-        // New StartPoint at fixed offset
-        FStartPoint := Point(1, TopLine - (SearchStringMaxLines - 1))
-      else begin
-        // New StartPoint Search backward
-        Idx := 0;
-        FindMatches(Point(1, Max(1, TopLine-SEARCH_START_OFFS)),
-                    Point(1, TopLine),
-                    Idx, 0, True); // stopAfterline=0, do only ONE find
-        if Idx > 0 then begin
-          FStartPoint := FMatches.StartPoint[0];
-          if (AFirstKeptValidIdx >= 0) then
-            inc(AFirstKeptValidIdx, Idx);
-        end
+    if TopLine - FMatches.EndPoint[0].y > MATCHES_CLEAN_LINE_THRESHOLD then begin
+      Idx := FMatches.IndexOfFirstMatchForLine(TopLine - MATCHES_CLEAN_LINE_KEEP);
+      // Using the Idx as Count => Delete only "up to before that Idx"
+      if Idx > 0 then begin
+        FMatches.Delete(0, Idx);
+        if FMatches.Count > 0 then
+          FValidRanges.RemoveBefore(FMatches.StartPoint[0])
         else
-          FStartPoint := Point(1, TopLine)     // no previous match found
+          FValidRanges := nil;
+        if FirstKeptValidIdx >= Idx then
+          FirstKeptValidIdx := max(0, FirstKeptValidIdx - Idx);
+          {$IFOPT C+} AssertGapsValid; {$ENDIF}
+        if FMatches.Count = 0 then
+          exit
       end;
     end;
-  end;
-
-  procedure MaybeExtendForHideSingle;
-  var
-    EndOffsLine: Integer;
-    Idx: Integer;
-    ch: Int64;
-  begin
-    // Check, if there is exactly one match in the visible lines
-    if (not HideSingleMatch) or (Matches.Count <> 1) or
-       (FMatches.StartPoint[0].y < TopLine) or (FMatches.StartPoint[0].y > LastScreenLine)
-    then
-      exit;
-
-    // search 2nd, if HideSingleMatch;
-    EndOffsLine := min(LastScreenLine+Max(SEARCH_START_OFFS, AdjustedSearchStrMaxLines), Lines.Count);
-    if EndOffsLine > FSearchedEnd.y then begin
-      FSearchedEnd.y := FSearchedEnd.y - AdjustedSearchStrMaxLines;
-      if ComparePoints(FSearchedEnd, FMatches.EndPoint[0]) < 0 then
-        FSearchedEnd := FMatches.EndPoint[0];
-      Idx := 1;
-      ch := FMatches.ChangeStamp;
-      FSearchedEnd := FindMatches(FSearchedEnd,
-                                  Point(Length(Lines[EndOffsLine - 1])+1, EndOffsLine),
-                                  Idx, LastScreenLine);
-      if Idx > 1 then
-        exit;
-    end;
-
-    // search back from start
-    if FStartPoint.y < TopLine-SEARCH_START_OFFS then
-      exit;
-    Idx := 0;
-    FindMatches(Point(1, Max(1, TopLine-SEARCH_START_OFFS)), FStartPoint,
-                Idx, 0, True); // stopAfterline=0, do only ONE find // Search backwards
-    if Idx > 0 then begin
-      if ComparePoints(FStartPoint, FMatches.StartPoint[0]) = 0 then begin
-        // bad search: did return endpoint
-        FMatches.Delete(0);
-        exit;
+    if FMatches.StartPoint[FMatches.Count-1].y - LastScreenLine > MATCHES_CLEAN_LINE_THRESHOLD then begin
+      Idx := FMatches.IndexOfLastMatchForLine(LastScreenLine  + MATCHES_CLEAN_LINE_KEEP) + 1;
+      // Deleting above the Idx (Idx is already "+ 1")
+      if Idx < FMatches.Count then begin
+        FMatches.Delete(Idx, FMatches.Count - Idx);
+        if FMatches.Count > 0 then
+          FValidRanges.RemoveAfter(FMatches.EndPoint[FMatches.Count-1])
+        else
+          FValidRanges := nil;
+        if FirstKeptValidIdx >= Idx then
+          FirstKeptValidIdx := Idx;
+        {$IFOPT C+} AssertGapsValid; {$ENDIF}
       end;
-      FStartPoint := FMatches.StartPoint[0];
-    end
-  end;
-
-  procedure FinishValidate;
-  begin
-    FFirstInvalidLine := 0;
-    FLastInvalidLine := 0;
-  end;
-
-  procedure DoFullSearch(NeedStartPoint: Boolean);
-  var
-    dummy: Integer;
-    EndOffsLine: Integer;
-    Idx, Idx2: Integer;
-    p: TPoint;
-  begin
-    FMatches.Count := 0;
-    dummy := -1;
-    if NeedStartPoint then
-      FindStartPoint(dummy);
-
-    EndOffsLine := min(LastScreenLine+AdjustedSearchStrMaxLines, Lines.Count);
-
-    if IsStartAtMatch0 then begin
-      Idx := 1;
-      p := FMatches.EndPoint[0];
-    end else begin
-      Idx := 0;
-      p := FStartPoint;
     end;
-    Idx2 := Idx;
-    FSearchedEnd := FindMatches(p,
-                                Point(Length(Lines[EndOffsLine - 1])+1, EndOffsLine),
-                                Idx, LastScreenLine);
-
-    MaybeExtendForHideSingle;
-    FinishValidate;
   end;
 
 var
-  OldStartPoint, OldEndPoint, GapStartPoint, GapEndPoint: TPoint;
-  i, j, EndOffsLine : Integer;  // Stop search (LastScreenLine + Offs)
-  Idx, Idx2 : Integer;
-  FirstKeptValidIdx: Integer; // The first index, kept after the removed invalidated range
-  p, WorkStartPoint: TPoint;
-  FindStartPointUsedExistingMatch: Boolean;
+  GapStartPoint, GapEndPoint: TPoint;
 begin
   FCurrentRowNextPosIdx := -1;
   FCurrentRow := -1;
@@ -2510,214 +3176,68 @@ begin
   BeginSendingInvalidation;
   try
 
-  if (not HasSearchData) or (not MarkupInfo.IsEnabled) then begin
+    if (not HasSearchData) or (not MarkupInfo.IsEnabled) then begin
       fMatches.Clear;
-    exit;
-  end;
-
-  LastScreenLine := SynEdit.PartialBottomLine;
-  UnsentLineInvalidation := -1;
-
-  MaybeDropOldMatches;
-  FirstKeptValidIdx := DeleteInvalidMatches;
-  //DebugLnEnter(['>>> ValidateMatches ', FFirstInvalidLine, '-',FLastInvalidLine, ' 1stKeepIdx: ', FirstKeptValidIdx, ' __Cnt=',FMatches.Count, '__   StartP=',dbgs(FStartPoint), ' SearchedToP=', dbgs(FSearchedEnd),  '  -- ', SynEdit.Name,'.',ClassName]); try
-  FindInitialize;
-
-  // Get old valid range as OldStartPoint to OldEndPoint
-  OldStartPoint := FStartPoint;
-  OldEndPoint   := FSearchedEnd;
-
-  if not IsPosValid(FSearchedEnd) then
-    FSearchedEnd.y := -1;
-
-  if (OldStartPoint.y >= 0) and not IsPosValid(OldStartPoint) then
-    OldStartPoint := Point(1,
-      Min(FLastInvalidLine, MaxInt - AdjustedSearchStrMaxLines) + AdjustedSearchStrMaxLines);
-  if (OldStartPoint.y < 0) and (FMatches.Count > 0) then
-    OldStartPoint := FMatches.StartPoint[0];
-
-  if (OldEndPoint.y >= 0) and not IsPosValid(OldEndPoint) then
-    OldEndPoint := Point(1, FFirstInvalidLine - AdjustedSearchStrMaxLines);
-  if (OldEndPoint.y < 0) and (FMatches.Count > 0) then
-    OldEndPoint := FMatches.EndPoint[FMatches.Count-1];
-
-  if (OldEndPoint.y <= OldStartPoint.y) or
-     (OldEndPoint.y < 0) or (OldStartPoint.y < 0) or
-     (OldStartPoint.y > LastScreenLine + MATCHES_CLEAN_LINE_KEEP) or
-     (OldEndPoint.y   < TopLine  - MATCHES_CLEAN_LINE_KEEP)
-  then begin
-    DoFullSearch(True);
-    exit;
-  end;
-
-  // Find the minimum gap that needs to be recalculated for invalidated lines
-  GapStartPoint.y := -1;
-  GapEndPoint.y   := -1;
-  if FFirstInvalidLine > 0 then begin
-    i := AdjustedSearchStrMaxLines;
-
-    GapStartPoint := point(1, Max(1, FFirstInvalidLine - i));
-    if (FirstKeptValidIdx > 0) and
-       (ComparePoints(GapStartPoint, FMatches.EndPoint[FirstKeptValidIdx-1]) < 0)
-    then
-      GapStartPoint := FMatches.EndPoint[FirstKeptValidIdx-1];  // GapStartPoint  is before known good point
-
-    j := Min(FLastInvalidLine, FLastInvalidLine-i) + i;
-    GapEndPoint := point(length(SynEdit.Lines[j-1])+1, j);
-    if (FirstKeptValidIdx >= 0) and (FirstKeptValidIdx < FMatches.Count) and
-       (ComparePoints(GapEndPoint, FMatches.EndPoint[FirstKeptValidIdx]) > 0)
-    then
-      GapEndPoint := FMatches.EndPoint[FirstKeptValidIdx];  // GapEndPoint  is after known good point
-
-    // Merge ranges (all points are valid / y >= 0)
-    if (ComparePoints(GapEndPoint, OldStartPoint) <= 0) or
-       (ComparePoints(OldEndPoint, GapStartPoint) <= 0)
-    then begin
-      // gap outside valid range
-      GapStartPoint.y := -1;
-      GapEndPoint.y   := -1;
-    end
-    else
-    if (ComparePoints(OldStartPoint, GapStartPoint) >= 0) then begin
-      // gap starts before valid range, move start point
-      OldStartPoint := GapEndPoint;
-      GapStartPoint.y := -1;
-      GapEndPoint.y   := -1;
-    end
-    else
-    if (ComparePoints(OldEndPoint, GapEndPoint) <= 0) then begin
-      // gap ends after valid range, move end point
-      OldEndPoint := GapStartPoint;
-      GapStartPoint.y := -1;
-      GapEndPoint.y   := -1;
-    end;
-
-    if (OldEndPoint.y <= OldStartPoint.y) or
-       (OldEndPoint.y < 0) or (OldStartPoint.y < 0)
-    then begin
-      DoFullSearch(True);
-      exit;
-    end;
-  end;
-
-  // There is some valid range
-  // There may be a gap (the gap needs to be inserted at FirstKeptValidIdx)
-  //DebugLn(['valid: ',dbgs(OldStartPoint),' - ',dbgs(OldEndPoint), '   gap: ',dbgs(GapStartPoint),' - ',dbgs(GapEndPoint)]);
-
-  if not ( IsPosValid(FStartPoint) and
-           ( (IsStartAtMatch0 and (FStartPoint.y < TopLine)) or
-             ( ( (FStartPoint.y < TopLine - AdjustedSearchStrMaxLines) or
-                 ((FStartPoint.y = TopLine - AdjustedSearchStrMaxLines) and (FStartPoint.x = 1))
-               ) and
-               (FStartPoint.y > TopLine - Max(MATCHES_CLEAN_LINE_THRESHOLD, 2*AdjustedSearchStrMaxLines) )
-             )
-           )
-         )
-  then begin
-    FindStartPointUsedExistingMatch := FindStartPoint(FirstKeptValidIdx);
-
-    //, existing point must be in valid range, otherwise:
-    if not FindStartPointUsedExistingMatch then begin
-      if IsStartAtMatch0 then begin
-        Idx := 1;
-        WorkStartPoint := FMatches.EndPoint[0];
-      end else begin
-        Idx := 0;
-        WorkStartPoint := FStartPoint;
-      end;
-
-      if ComparePoints(WorkStartPoint, OldEndPoint) >= 1 then begin
-        // Behind valid range
-        DoFullSearch(False);
-        exit;
-      end;
-
-      if ComparePoints(WorkStartPoint, OldStartPoint) < 1 then begin
-        // Gap before valid range
-        if OldStartPoint.y > LastScreenLine+SEARCH_START_OFFS then begin
-           // Delete all, except StartPoint: New search has smaller range than gap
-          DoFullSearch(False);
-          exit;
-        end
-        else begin
-          // *** Fill gap at start
-          Idx2 := Idx;
-          FindMatches(WorkStartPoint, OldStartPoint, Idx);
-          //WorkStartPoint := OldStartPoint;
-          if (FirstKeptValidIdx >= 0) and (Idx > Idx2) then
-            inc(FirstKeptValidIdx, Idx-Idx2);
-        end;
-      end;
-
-    end;
-  end;
-
-  FSearchedEnd := OldEndPoint;
-
-  // Search for the Gap
-  if (GapStartPoint.y >= 0) then begin
-    Assert((FirstKeptValidIdx >= 0) or (FMatches.Count = 0), 'FirstKeptValidIdx > 0');
-    if FirstKeptValidIdx < 0 then
-      FirstKeptValidIdx := 0;
-    if (GapStartPoint.y > LastScreenLine) and
-       ((not HideSingleMatch) or  (FirstKeptValidIdx > 1))
-    then begin
-      // no need to search, done with visible area
-      FMatches.Delete(FirstKeptValidIdx, FMatches.Count);
-      FSearchedEnd := GapStartPoint;
-      FinishValidate;
+      FValidRanges := nil;
       exit;
     end;
 
-    Idx := FirstKeptValidIdx;
-    GapStartPoint := FindMatches(GapStartPoint, GapEndPoint, Idx, LastScreenLine);
+    LastScreenLine := SynEdit.PartialBottomLine;
 
-    if (ComparePoints(GapStartPoint, GapEndPoint) < 0) and
-       HideSingleMatch and (FirstKeptValidIdx < 2)
-    then
-      GapStartPoint := FindMatches(GapStartPoint, GapEndPoint, Idx, LastScreenLine);
+    FirstKeptValidIdx := FMatches.StartValidation(FFirstInvalidMatchLine, FLastInvalidMatchLine, FMatchLinesDiffCount, GapStartPoint, GapEndPoint);
+    FValidRanges.AdjustForLinesChanged(FLastInvalidMatchLine, FMatchLinesDiffCount);
 
-    if (ComparePoints(GapStartPoint, GapEndPoint) < 0) and
-       ((not HideSingleMatch) or (FirstKeptValidIdx > 1))
-    then begin
-      // searched stopped in gap
-      assert(GapStartPoint.y >= LastScreenLine, 'GapStartPoint.y >= LastScreenLine');
-      FSearchedEnd := GapStartPoint;
-      FinishValidate;
-      exit;
+    MaybeDropOldMatches;
+
+    if FFirstInvalidMatchLine > 0 then begin
+      Assert(FirstKeptValidIdx >= 0, 'ValidateMatches: FirstKeptValidIdx >= 0');
+      // remove extra valid lines before the gap, in case a multiline match now goes into the gap
+      if (not GapStartPoint.HasData) or (GapEndPoint.Y >= FFirstInvalidMatchLine) then begin
+        GapStartPoint := point(1, FFirstInvalidMatchLine);
+        assert((FirstKeptValidIdx=0) or (FMatches.EndPoint[FirstKeptValidIdx-1] < GapStartPoint), 'TSynEditMarkupHighlightAllBase.ValidateMatches: (FirstKeptValidIdx=0) or (FMatches.EndPoint[FirstKeptValidIdx-1] < GapStartPoint)');
+      end;
+
+      // remove extra valid lines after the gap, in case a multiline match now starts in the end of the gap
+      if (not GapEndPoint.HasData) or (GapEndPoint.Y <= FLastInvalidMatchLine) then begin
+        if FLastInvalidMatchLine >= MaxInt - 2 then
+          FLastInvalidMatchLine := MaxInt - 2;
+        GapEndPoint := point(1, FLastInvalidMatchLine + 1);
+        assert((FirstKeptValidIdx = FMatches.Count) or (GapEndPoint <= FMatches.StartPoint[FirstKeptValidIdx]), 'TSynEditMarkupHighlightAllBase.ValidateMatches: (FirstKeptValidIdx = FMatches.Count) or (GapEndPoint <= FMatches.StartPoint[FirstKeptValidIdx])');
+      end;
+
+      FValidRanges.RemoveBetween(GapStartPoint, GapEndPoint);
     end;
-  end;
 
-  // Check at end
-  if (OldEndPoint.y <= LastScreenLine) then begin
-    EndOffsLine := min(LastScreenLine+AdjustedSearchStrMaxLines, Lines.Count); // Search only for visible new matches
-    Idx  := FMatches.Count;
-    Idx2 := Idx;
-    OldEndPoint.y := OldEndPoint.y - AdjustedSearchStrMaxLines;
-    if (FMatches.Count > 0) and (ComparePoints(OldEndPoint, FMatches.EndPoint[Idx-1]) < 0) then
-      OldEndPoint := FMatches.EndPoint[Idx-1];
-    p := Point(Length(Lines[EndOffsLine - 1])+1, EndOffsLine);
-    if ComparePoints(OldEndPoint, p) < 0 then begin
-      FSearchedEnd := FindMatches(OldEndPoint, p, Idx, LastScreenLine);
-    end;
-  end;
+    ValidateFillGaps;
 
-  MaybeExtendForHideSingle;
-  FinishValidate;
-  //finally  DebugLnExit(['  < ValidateMatches Cnt=',FMatches.Count, '  <<< # ', dbgs(FStartPoint), ' - ', dbgs(FSearchedEnd)]); end;
   finally
+    FFirstInvalidMatchLine := -1;
+    FLastInvalidMatchLine  := -1;
+    FMatchLinesDiffCount   := 0;
+
+    FMatches.EndValidation;
     EndSendingInvalidation;
     if SkipPaint then
       EndSkipSendingInvalidation;
-end;
+    {$IFOPT C+} AssertGapsValid; {$ENDIF}
+  end;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.BeginSendingInvalidation;
 begin
   inherited BeginSendingInvalidation;
   if SendingInvalidationLock = 1 then begin
-    FInvalidationHasHiddenMatch := (FMatches.Count = 1) and FHideSingleMatch;
+    FInvalidationStartedWithHiddenMatch := (FMatches.Count = 1) and FHideSingleMatch;
+    FInvalidationStartedWithManyatches  := (FMatches.Count > 1);
   end;
+end;
+
+procedure TSynEditMarkupHighlightAllBase.EndSendingInvalidation;
+begin
+  if (FMatches.Count = 1) and FHideSingleMatch and FInvalidationStartedWithManyatches then begin
+    inherited SendMatchLineInvalidation(0,0);
+  end;
+  inherited EndSendingInvalidation;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.SendMatchLineInvalidation(AStartIndex, AnEndIndex: Integer
@@ -2726,22 +3246,14 @@ begin
   if (SkipSendingInvalidationLock > 0) then
     exit;
 
-  if FInvalidationHasHiddenMatch then begin
+  if FInvalidationStartedWithHiddenMatch then begin
     if FMatches.Count > 1 then begin
-      FInvalidationHasHiddenMatch := False;
-      inherited SendMatchLineInvalidation(0,0);
-    end
-    else
-      exit;
+      FInvalidationStartedWithHiddenMatch := False;
+      inherited SendMatchLineInvalidation(0, FMatches.Count-1);
+    end;
   end
   else
-  if FHideSingleMatch then begin
-    if FMatches.Count <= 1 then begin
-      FInvalidationHasHiddenMatch := True;
-      exit;
-    end;
-  end;
-  inherited SendMatchLineInvalidation(AStartIndex, AnEndIndex);
+    inherited SendMatchLineInvalidation(AStartIndex, AnEndIndex);
 end;
 
 procedure TSynEditMarkupHighlightAllBase.SetLines(
@@ -2765,9 +3277,11 @@ procedure TSynEditMarkupHighlightAllBase.DoTextChanged(StartLine, EndLine,
 begin
   if (not HasSearchData) then exit;
   if ACountDiff = 0 then
-    InvalidateLines(StartLine, EndLine+1)
+    InvalidateMatches(StartLine, EndLine+1, ACountDiff)
   else
-    InvalidateLines(StartLine, MaxInt); // LineCount changed
+    InvalidateMatches(StartLine, MaxInt, ACountDiff); // LineCount changed
+
+  ValidateMatches;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.DoVisibleChanged(AVisible: Boolean);
@@ -2780,30 +3294,6 @@ end;
 function TSynEditMarkupHighlightAllBase.HasVisibleMatch: Boolean;
 begin
   Result := HasDisplayAbleMatches;
-end;
-
-procedure TSynEditMarkupHighlightAllBase.InvalidateLines(AFirstLine: Integer;
-  ALastLine: Integer; SkipPaint: Boolean);
-begin
-  if AFirstLine < 1 then
-    AFirstLine := 1;
-  if (ALastLine < 1) then
-    ALastLine := MaxInt
-  else
-  if ALastLine < AFirstLine then
-    ALastLine := AFirstLine;
-
-
-  if ( (FStartPoint.y < 0) or (ALastLine >= FStartPoint.y) ) and
-     ( (FSearchedEnd.y < 0) or (AFirstLine <= FSearchedEnd.y) )
-  then begin
-    if (AFirstLine < FFirstInvalidLine) or (FFirstInvalidLine <= 0) then
-      FFirstInvalidLine := AFirstLine;
-    if (ALastLine > FLastInvalidLine) then
-      FLastInvalidLine := ALastLine;
-  end;
-
-  ValidateMatches(SkipPaint);
 end;
 
 procedure TSynEditMarkupHighlightAllBase.SendLineInvalidation(AFirstIndex: Integer;
@@ -2848,12 +3338,10 @@ begin
     BeginSkipSendingInvalidation;
   BeginSendingInvalidation;
   try
-  FStartPoint.y := -1;
-  FSearchedEnd.y := -1;
-      FMatches.Clear;
-  FFirstInvalidLine := 1;
-  FLastInvalidLine := MaxInt;
-  ValidateMatches(SkipPaint);
+    FValidRanges := nil;
+    FMatches.Clear;
+    InvalidateMatches(1, MaxInt, 0);
+    ValidateMatches(SkipPaint);
   finally
     EndSendingInvalidation;
     if SkipPaint then
