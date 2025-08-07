@@ -1955,9 +1955,13 @@ begin
       DrawText(NodeRect,GetLineText(Line),IsSelected,col);
       // cursor line
       if (j=View.FCursorLine) and (fSelectedView=View) and (mcsFocused in FStates) then begin
+        // setup pen
         Canvas.Pen.Style:=psDash;                           // Dash line top
+        Canvas.Pen.Color:=Font.Color;
+        // draw line focus
         Canvas.Line(NodeRect.Left,NodeRect.Top,NodeRect.Right,NodeRect.Top);
         Canvas.Line(NodeRect.Left,NodeRect.Bottom-1,NodeRect.Right,NodeRect.Bottom-1);
+        // restore pen
         Canvas.Pen.Style:=psSolid;                          // Dash line bottom
       end;
       // next item
