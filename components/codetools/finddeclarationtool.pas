@@ -3564,6 +3564,8 @@ begin
 
     if Node.Desc = ctnGenericName then
       Node := Node.Parent;
+    if Node.Desc in AllPascalTypes then
+      Node := Node.Parent;
     case Node.Desc of
     ctnIdentifier:
       if Assigned(Node.Parent) and (Node.Parent.Desc = ctnProcedureHead) then
