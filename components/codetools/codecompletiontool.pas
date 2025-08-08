@@ -6571,7 +6571,7 @@ function TCodeCompletionCodeTool.GuessTypeOfIdentifier(
    <something>:=aclass.identifier
    <something>:=<something>+aclass.identifier
    for identifier in <something>
-   ToDo: <proc>(,,aclass.identifier)
+   <proc>(,,aclass.identifier)
 
  checks where the identifier is already defined or is a keyword
  checks if the identifier is a sub identifier (e.g. A.identifier)

@@ -152,6 +152,7 @@ type
     procedure TestFindDeclaration_Arrays;
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_GuessType;
+    procedure TestFindDeclaration_GuessType_Set;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
@@ -1237,6 +1238,22 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_GuessType;
 begin
   FindDeclarations('moduletests/fdt_guesstype1.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GuessType_Set;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TColor = (red,green,blue);',
+  '  TColors = set of TColor;',
+  'const',
+  '  Tomato = [red];',
+  '  TomatoSalad = Tomato+[green];',
+  'begin',
+  '  Bla{guesstype:TColors} := TomatoSalad+[blue];',
+  'end.']);
+  FindDeclarations(Code);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_Attributes;
