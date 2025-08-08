@@ -9225,6 +9225,7 @@ begin
   repeat
     // read operand
     CurExprType:=ReadOperandTypeAtCursor(Params,EndPos,CurAliasType);
+    // cursor is now on next atom, i.e. the operator
     {$IFDEF ShowExprEval}
     DebugLn(['[TFindDeclarationTool.FindExpressionResultType] Operand: ',
       ExprTypeToString(CurExprType),' Alias=',FindContextToString(CurAliasType)]);
@@ -9241,8 +9242,7 @@ begin
       StackEntry^.Operand.AliasType:=CleanFindContext;
     StackEntry^.theOperator.StartPos:=-1;
     StackEntry^.OperatorLvl:=5;
-    // read operator
-    ReadNextAtom;
+    // check operator
     {$IFDEF ShowExprEval}
     DebugLn('[TFindDeclarationTool.FindExpressionResultType] Operator: ',
       GetAtom,' CurPos.EndPos=',dbgs(CurPos.EndPos),' EndPos=',dbgs(EndPos));
@@ -11589,8 +11589,6 @@ begin
       // range type -> convert to special expression type
       // for example: type c = 1..3;
 
-      // ToDo: ppu, dcu files
-
       Tool.MoveCursorToNodeStart(Node);
 
       // ToDo: check for cycles
@@ -11599,7 +11597,6 @@ begin
       Params.ContextNode:=Node;
       Result:=Tool.ReadOperandTypeAtCursor(Params,-1,CurAliasType);
       Params.Load(OldInput,true);
-      Result.Context:=CreateFindContext(Tool,Node);
     end;
     
   ctnConstDefinition:
@@ -11621,7 +11618,6 @@ begin
       Params.ContextNode:=Node;
       Result:=Tool.ReadOperandTypeAtCursor(Params,-1,CurAliasType);
       Params.Load(OldInput,true);
-      Result.Context:=CreateFindContext(Tool,Node);
     end;
     
   ctnIdentifier:
@@ -11671,17 +11667,26 @@ var EndPos, SubStartPos: integer;
   
   var
     aNode: TCodeTreeNode;
+    LastAtom: TAtomPosition;
   begin
     // 'set' constant
     SubStartPos:=CurPos.StartPos;
     ReadNextAtom;
-    if not AtomIsChar(']') then begin
-      Result:=ReadOperandTypeAtCursor(Params);
+    if CurPos.Flag=cafEdgedBracketClose then begin
+      // empty set '[]'
+      Result.Desc:=xtNone;
+      ReadNextAtom;
+    end else begin
+      Result:=ReadOperandTypeAtCursor(Params,MaxEndPos);
+      if CurPos.Flag=cafEdgedBracketClose then
+        ReadNextAtom;
       if (Result.Desc=xtContext) then begin
         aNode:=Result.Context.Node;
         if aNode.Desc in [ctnEnumIdentifier,ctnEnumerationType] then begin
           // [enum] -> search Set of enum
+          LastAtom:=CurPos;
           aNode:=Result.Context.Tool.FindSetOfEnumerationType(aNode);
+          MoveCursorToAtomPos(LastAtom);
           if aNode<>nil then begin
             Result.Context.Node:=aNode;
             exit;
@@ -11695,16 +11700,9 @@ var EndPos, SubStartPos: integer;
       if Result.Desc=xtContext then
         DebugLn('  Result.Context.Node=',Result.Context.Node.DescAsString);
       {$ENDIF}
-    end else begin
-      // empty set '[]'
-      Result.Desc:=xtNone;
     end;
     Result.SubDesc:=Result.Desc;
     Result.Desc:=xtConstSet;
-    MoveCursorToCleanPos(SubStartPos);
-    ReadNextAtom;
-    ReadTilBracketClose(true);
-    MoveCursorToCleanPos(CurPos.EndPos);
   end;
   
   procedure RaiseIdentExpected;
@@ -11720,7 +11718,10 @@ begin
   if AliasType<>nil then
     AliasType^:=CleanFindContext;
 
-  if CurPos.StartPos=CurPos.EndPos then ReadNextAtom;
+  if CurPos.StartPos=CurPos.EndPos then
+    ReadNextAtom;
+  if MaxEndPos<0 then MaxEndPos:=SrcLen;
+
   // read unary operators which have no effect on the type: +, -, not
   while AtomIsChar('+') or AtomIsChar('-') or UpAtomIs('NOT') do
     ReadNextAtom;
@@ -11745,6 +11746,7 @@ begin
     Result:=FindExpressionTypeOfTerm(SubStartPos,EndPos,Params,true,AliasType);
     Params.Flags:=OldFlags;
     MoveCursorToCleanPos(EndPos);
+    ReadNextAtom;
   end
   else if UpAtomIs('NIL') then begin
     Result.Desc:=xtNil;
@@ -11761,6 +11763,7 @@ begin
       Result.Desc:=xtConstString;
     MoveCursorToCleanPos(CurPos.StartPos);
     ReadAsStringConstant;
+    ReadNextAtom;
   end
   else if AtomIsNumber then begin
     // ordinal or real constant
@@ -11768,7 +11771,7 @@ begin
       Result.Desc:=xtConstReal
     else
       Result.Desc:=xtConstOrdInteger;
-    MoveCursorToCleanPos(CurPos.EndPos);
+    ReadNextAtom;
   end
   else if AtomIsChar('@') then begin
     // a simple pointer or a PChar or an event
@@ -11783,6 +11786,7 @@ begin
       Result:=FindExpressionTypeOfTerm(SubStartPos,EndPos,Params,true,AliasType);
       Params.Flags:=OldFlags;
       MoveCursorToCleanPos(EndPos);
+      ReadNextAtom;
     end else begin
       MoveCursorToCleanPos(CurPos.StartPos);
       Result:=ReadOperandTypeAtCursor(Params);
