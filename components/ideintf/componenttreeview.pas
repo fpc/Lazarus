@@ -680,6 +680,7 @@ begin
   FRoot2CollapasedMap:=TPointerToPointerTree.Create;
   Options := Options + [tvoAllowMultiselect, tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly];
   MultiSelectStyle := MultiSelectStyle + [msShiftSelect];
+  RightClickSelect := true;
   ImgIndexForm := IDEImages.GetImageIndex('oi_form');
   ImgIndexComponent := IDEImages.GetImageIndex('oi_comp');
   ImgIndexControl := IDEImages.GetImageIndex('oi_control');
