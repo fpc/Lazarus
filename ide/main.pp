@@ -4338,7 +4338,7 @@ begin
   SourceEditorManager.ActiveOrNewSourceWindow;
   for i := 0 to SourceEditorManager.SourceWindowCount - 1 do
     SourceEditorManager.SourceWindows[i].Show;
-  SourceEditorManager.ShowActiveWindowOnTop(False);
+  SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
 {------------------------------------------------------------------------------}
