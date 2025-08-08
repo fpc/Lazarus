@@ -1364,7 +1364,7 @@ var
   
 var
   NewItem: TIdentifierListItem;
-  Node: TCodeTreeNode;
+  Node, SubNode: TCodeTreeNode;
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
   HasLowerVisibility: Boolean;
@@ -1392,23 +1392,24 @@ begin
   HasLowerVisibility:=False;
 
   ProtectedForeignClass:=false;
+  Node:=FoundContext.Node;
   if FoundContext.Tool=Self then begin
     // identifier is in the same unit
     //DebugLn('::: COLLECT IDENT in SELF ',FoundContext.Node.DescAsString,
     //  ' "',dbgstr(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"'
     //  ,' fdfIgnoreUsedUnits='+dbgs(fdfIgnoreUsedUnits in Params.Flags));
-    if (FoundContext.Node=CurrentIdentifierList.StartContext.Node)
-    or (FoundContext.Node=CurrentIdentifierList.Context.Node)
-    or (FoundContext.Node.StartPos=CurrentIdentifierList.StartAtom.StartPos)
+    if (Node=CurrentIdentifierList.StartContext.Node)
+    or (Node=CurrentIdentifierList.Context.Node)
+    or (Node.StartPos=CurrentIdentifierList.StartAtom.StartPos)
     then begin
-      // found identifier is in cursor node
+      // found identifier is cursor node
       // => do not show it
       exit;
     end;
   end
-  else if FoundContext.Node<>nil then begin
+  else if Node<>nil then begin
     // identifier is in another unit
-    Node:=FoundContext.Node.Parent;
+    Node:=Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassSubSections) then
       Node:=Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassBaseSections) then begin
@@ -1419,10 +1420,7 @@ begin
         in ([ctnProcedure,ctnProcedureHead,ctnProperty]+AllClassSections))
       then begin
         // the user wants to override a method or property
-        // => ignore all with a higher visibility, because fpc does not allow
-        //    to downgrade the visibility and will give a hint when trying
-        //---- No, allow visibility downgrading to reduce confusion tha CodeTools do not list those functions.
-        //---- FPC actually allows it although it shows a warning
+        // Note that although FPC gives a warning when downgrading visibility, it is allowed.
         //debugln(['TIdentCompletionTool.CollectAllIdentifiers skipping member, because it would downgrade: ',dbgstr(FoundContext.Tool.ExtractNode(FoundContext.Node,[]),1,30)]);
         HasLowerVisibility:=True;
       end;
@@ -1452,6 +1450,7 @@ begin
       end;
     end;
   end;
+
   Node:=FoundContext.Node;
   Ident:=nil;
   PlaceForDotted:='';
@@ -1459,20 +1458,17 @@ begin
   
   ctnTypeDefinition,ctnGenericType:
     begin
-      Node:=FoundContext.Node.FirstChild;
+      SubNode:=FoundContext.Node.FirstChild;
       if FoundContext.Node.Desc=ctnTypeDefinition then
         Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos]
       else begin
         // generic
-        if Node=nil then exit;
-        Ident:=@FoundContext.Tool.Src[Node.StartPos];
+        if SubNode=nil then exit;
+        Ident:=@FoundContext.Tool.Src[SubNode.StartPos];
       end;
-      if Node=nil then begin
-        // type without definition
-      end;
-      if (Node<>nil)
-      and (Node.Desc in AllClasses)
-      and ((ctnsForwardDeclaration and Node.SubDesc)>0)
+      if (SubNode<>nil)
+      and (SubNode.Desc in AllClasses)
+      and ((ctnsForwardDeclaration and SubNode.SubDesc)>0)
       then begin
         // forward definition of a class
         if CurrentIdentifierList.FindIdentifier(Ident,'')<>nil then begin

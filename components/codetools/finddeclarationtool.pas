@@ -3712,9 +3712,6 @@ begin
 
     ctnProcedure,ctnProcedureHead:
       begin
-
-        // ToDo: ppu, dcu files
-
         Result+=ExtractProcHead(Node,
           [phpAddClassName,phpWithStart,phpWithVarModifiers,phpWithParameterNames,
            phpWithDefaultValues,phpWithResultType,phpWithOfObject,phpCommentsToSpace]);
@@ -3723,9 +3720,6 @@ begin
     ctnProperty,ctnGlobalProperty:
       begin
         IdentNode:=Node;
-
-        // ToDo: ppu, dcu files
-
         Result+='property ';
         MoveCursorToNodeStart(IdentNode);
         ReadNextAtom;
@@ -3773,9 +3767,6 @@ begin
     ctnProgram,ctnUnit,ctnPackage,ctnLibrary:
       begin
         IdentNode:=Node;
-
-        // ToDo: ppu, dcu files
-
         MoveCursorToNodeStart(IdentNode);
         ReadNextAtom;
         if (IdentNode.Desc=ctnProgram) and not UpAtomIs('PROGRAM') then begin

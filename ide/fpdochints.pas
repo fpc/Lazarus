@@ -138,22 +138,8 @@ begin
     if (Item.Tool.Scanner=nil) then exit;
     //DebugLn(['TFPDocHintProvider.DoUpdateHint Src={',copy(Item.Tool.Src,Node.StartPos,30),'} ',Node.DescAsString]);
     
-    // search the position of the identifier, not the keyword
-    CleanPos:=Node.StartPos;
-    case Node.Desc of
-    ctnProcedure:
-      begin
-        Item.Tool.MoveCursorToProcName(Node,true);
-        CleanPos:=Item.Tool.CurPos.StartPos;
-      end;
-    ctnProperty:
-      begin
-        if Item.Tool.MoveCursorToPropName(Node) then
-          CleanPos:=Item.Tool.CurPos.StartPos;
-      end;
-    end;
-    
     // get help text
+    CleanPos:=Node.StartPos;
     if (not Item.Tool.CleanPosToCaret(CleanPos,Caret)) then begin
       DebugLn(['TFPDocHintProvider.DoUpdateHint FAILED CleanPosToCaret Tool=',Item.Tool.MainFilename,' CleanPos=',CleanPos,' SrcLen=',Item.Tool.SrcLen]);
       exit;
