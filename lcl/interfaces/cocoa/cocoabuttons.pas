@@ -143,25 +143,59 @@ end;
 
 procedure TCocoaStepper.stepperAction(sender: NSObject);
 var
-  newval      : Double;
   allowChange : Boolean;
   updownpress : Boolean;
+
+  function upOrDownWithoutWrap: Boolean;
+  begin
+    if self.doubleValue > self.lastValue then begin
+      Result:= True;
+    end else if self.doubleValue > self.lastValue then begin
+      Result:= False;
+    end else begin
+      if self.doubleValue = self.maxValue then
+        Result:= True
+      else
+        Result:= False;
+    end;
+  end;
+
+  function upOrDownWithWrap: Boolean;
+  begin
+    if (self.doubleValue=self.minValue) and (self.lastValue=self.maxValue) then
+      Result:= True
+    else if (self.doubleValue=self.maxValue) and (self.lastValue=self.minValue) then
+      Result:= False
+    else if self.doubleValue > self.lastValue then
+      Result:= True
+    else
+      Result:= False;
+  end;
+
+  function upOrDown: Boolean;
+  begin
+    if self.valueWraps then
+      Result:= upOrDownWithWrap
+    else
+      Result:= upOrDownWithoutWrap;
+  end;
+
 begin
-  newval := doubleValue;
-  allowChange := true;
-  updownpress := newval > lastValue;
+  allowChange:= true;
+  updownpress:= upOrDown;
 
   if Assigned(callback) then begin
-    callback.BeforeChange(allowChange);
-    callback.Change(newval, updownpress, allowChange);
+    callback.BeforeChange( allowChange );
+    callback.Change(self.doubleValue, updownpress, allowChange);
   end;
 
   if not allowChange then
-    setDoubleValue(lastValue)
+    setDoubleValue( self.lastValue )
   else
-    lastValue := doubleValue;
+    self.lastValue:= doubleValue;
 
-  if Allowchange and Assigned(callback) then callback.UpdownClick(updownpress);
+  if allowChange and Assigned(callback) then
+    callback.UpdownClick( updownpress );
 end;
 
 procedure TCocoaStepper.mouseDown(event: NSEvent);
