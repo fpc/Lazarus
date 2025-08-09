@@ -221,7 +221,10 @@ begin
     //lResult.setControlSize(NSSmallControlSize);
     lResult.setTarget(lResult);
     lResult.setAction(objcselector('stepperAction:'));
-
+    lResult.setMinValue( 0 );
+    lResult.setMaxValue( 100 );
+    lResult.setValueWraps( False );
+    lResult.setAutorepeat( True );
   end;
   Result := TLCLHandle(lResult);
 end;
