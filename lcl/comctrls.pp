@@ -458,13 +458,13 @@ type
                                               write SetActivePageComponent;
     property ActivePage: String read GetActivePage write SetActivePage
                                                       stored IsStoredActivePage;
-  protected //elevated visibility for un/paged
+  protected // elevated visibility for un/paged
     function GetPage(AIndex: Integer): TCustomPage; virtual;
     function GetPageCount : integer; virtual;
     procedure InsertPage(APage: TCustomPage; Index: Integer); virtual;
     procedure RemovePage(Index: Integer); virtual;
     procedure MaybeSelectFirstControlOnPage(APage: TCustomPage) virtual;
-  //Delphi compatible properties
+    // Delphi compatible properties
     function CanChange: Boolean; virtual;
     property DisplayRect: TRect read GetDisplayRect;
     property Tabs: TStrings read FAccess write SetPages;

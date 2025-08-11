@@ -1871,14 +1871,10 @@ begin
               ' IsControlVisible=',AWinControl.IsControlVisible,
               ' Enabled=',AWinControl.Enabled]);
       while AWinControl<>nil do begin
-        debugln(['  ',DbgSName(AWinControl),' IsControlVisible=',AWinControl.IsControlVisible,' Enabled=',AWinControl.Enabled,' CanFocus=',AWinControl.CanFocus]);
+        debugln(['  ',DbgSName(AWinControl),' IsControlVisible=',AWinControl.IsControlVisible,' Enabled=',AWinControl.Enabled,' CanFocus=',AWinControl.CanFocus,' HandleVisib=',AWinControl.HandleAllocated and IsWindowVisible(AWinControl.Handle)]);
         AWinControl:=AWinControl.Parent;
       end;
-      {$IFDEF VerboseFocus}
-      RaiseGDBException(Format(SCannotFocus,[AWinControl.Name+':'+AWinControl.ClassName]));
-      {$ELSE}
       raise EInvalidOperation.Create(Format(SCannotFocus,[AWinControl.Name+':'+AWinControl.ClassName]));
-      {$ENDIF}
     end;
   end;
   {$IFDEF VerboseFocus}
@@ -2463,7 +2459,7 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
   begin
     // send cm_exit, cm_enter messages
     // cm_exit must be sent to all controls from lastfocusedcontrol to the first parent which contains control
-    // cm_enter must be sent from the control we stoped up to control
+    // cm_enter must be sent from the control we stopped to control
     // if during this loop something happens with focus (another control or form has aquired it) we need to stop it
 
     if (FLastFocusedControl<>nil) and (not ContainsControl(FLastFocusedControl)) then

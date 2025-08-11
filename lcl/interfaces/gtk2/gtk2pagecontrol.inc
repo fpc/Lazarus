@@ -135,10 +135,10 @@ begin
       begin
         for i := 0 to Pg.ControlCount - 1 do
         begin
-          if (pg.Controls[i] is TWinControl) and
-            (TWinControl(pg.Controls[i]).Focused) then
+          if (Pg.Controls[i] is TWinControl) and
+            (TWinControl(Pg.Controls[i]).Focused) then
           begin
-            ACtl := TWinControl(pg.Controls[i]);
+            ACtl := TWinControl(Pg.Controls[i]);
             break;
           end;
         end;
@@ -213,7 +213,6 @@ begin
       Exit;
     end;
   end;
-
 end;
 
 class procedure TGtk2WSCustomTabControl.SetCallbacks(

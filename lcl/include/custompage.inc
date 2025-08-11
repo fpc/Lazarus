@@ -227,7 +227,9 @@ begin
     Exit(True);
   Result := inherited IsControlVisible;
   if Result and (Parent is TCustomTabControl) then
+  begin
     Result := PageIndex = TCustomTabControl(Parent).PageIndex;
+  end;
 end;
 
 function TCustomPage.HandleObjectShouldBeVisible: boolean;
