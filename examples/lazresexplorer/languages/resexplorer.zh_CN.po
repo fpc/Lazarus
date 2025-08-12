@@ -32,6 +32,10 @@ msgstr "构建日期："
 msgid "Carbon widget set"
 msgstr "Carbon 组件集"
 
+#: reconstsunit.scocoawidgetset
+msgid "Cocoa widget set"
+msgstr ""
+
 #: reconstsunit.sexit
 msgid "Exit"
 msgstr "退出"
@@ -49,12 +53,22 @@ msgid "FpGUI widget set"
 msgstr "FpGUI 组件集"
 
 #: reconstsunit.sgtk2widgetset
-msgid "GTK 2 widget set"
+#, fuzzy
+#| msgid "GTK 2 widget set"
+msgid "GTK2 widget set"
 msgstr "GTK 2 组件集"
+
+#: reconstsunit.sgtk3widgetset
+msgid "GTK3 widget set"
+msgstr ""
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
 msgstr "GTK 组件集"
+
+#: reconstsunit.sheight
+msgid "Height:"
+msgstr ""
 
 #: reconstsunit.shelp
 msgid "Help"
@@ -64,6 +78,15 @@ msgstr "帮助"
 msgid "Image"
 msgstr "图片"
 
+#: reconstsunit.simageindex
+msgid "Image index:"
+msgstr ""
+
+#: reconstsunit.sindexofcount
+#, object-pascal-format
+msgid "%d of %d"
+msgstr ""
+
 #: reconstsunit.slclversion
 msgid "LCL Version: "
 msgstr "LCL 版本："
@@ -72,6 +95,10 @@ msgstr "LCL 版本："
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "本程序是 GNU GPL 2 许可下的自由软件，参见 COPYING 文件"
 
+#: reconstsunit.snextimage
+msgid "Next image"
+msgstr ""
+
 #: reconstsunit.sopen
 msgid "Open ..."
 msgstr "打开..."
@@ -79,6 +106,22 @@ msgstr "打开..."
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
 msgstr "其他图形界面"
+
+#: reconstsunit.spixelformat
+msgid "Pixel format:"
+msgstr ""
+
+#: reconstsunit.sprevimage
+msgid "Previous image"
+msgstr ""
+
+#: reconstsunit.sqt5widgetset
+msgid "QT5 widget set"
+msgstr ""
+
+#: reconstsunit.sqt6widgetset
+msgid "QT6 widget set"
+msgstr ""
 
 #: reconstsunit.sqtwidgetset
 msgid "QT widget set"
@@ -107,6 +150,10 @@ msgstr "目标 CPU:"
 #: reconstsunit.stargetos
 msgid "Target OS: "
 msgstr "目标操作系统："
+
+#: reconstsunit.swidth
+msgid "Width:"
+msgstr ""
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"

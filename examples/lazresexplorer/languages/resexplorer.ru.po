@@ -30,6 +30,10 @@ msgstr "Дата сборки: "
 msgid "Carbon widget set"
 msgstr "Библиотека виджетов Carbon"
 
+#: reconstsunit.scocoawidgetset
+msgid "Cocoa widget set"
+msgstr ""
+
 #: reconstsunit.sexit
 msgctxt "reconstsunit.sexit"
 msgid "Exit"
@@ -49,12 +53,22 @@ msgid "FpGUI widget set"
 msgstr "Библиотека виджетов FpGUI"
 
 #: reconstsunit.sgtk2widgetset
-msgid "GTK 2 widget set"
+#, fuzzy
+#| msgid "GTK 2 widget set"
+msgid "GTK2 widget set"
 msgstr "Библиотека виджетов GTK 2"
+
+#: reconstsunit.sgtk3widgetset
+msgid "GTK3 widget set"
+msgstr ""
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
 msgstr "Библиотека виджетов GTK"
+
+#: reconstsunit.sheight
+msgid "Height:"
+msgstr ""
 
 #: reconstsunit.shelp
 msgctxt "reconstsunit.shelp"
@@ -66,6 +80,15 @@ msgctxt "reconstsunit.simage"
 msgid "Image"
 msgstr "Изображение"
 
+#: reconstsunit.simageindex
+msgid "Image index:"
+msgstr ""
+
+#: reconstsunit.sindexofcount
+#, object-pascal-format
+msgid "%d of %d"
+msgstr ""
+
 #: reconstsunit.slclversion
 msgid "LCL Version: "
 msgstr "Версия LCL: "
@@ -73,6 +96,10 @@ msgstr "Версия LCL: "
 #: reconstsunit.slicense
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Это свободное ПО, распространяющееся под лицензией GNU GPL версии 2 (см. файл COPYING)."
+
+#: reconstsunit.snextimage
+msgid "Next image"
+msgstr ""
 
 #: reconstsunit.sopen
 msgctxt "reconstsunit.sopen"
@@ -82,6 +109,22 @@ msgstr "Открыть ..."
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
 msgstr "Другая библиотека виджетов"
+
+#: reconstsunit.spixelformat
+msgid "Pixel format:"
+msgstr ""
+
+#: reconstsunit.sprevimage
+msgid "Previous image"
+msgstr ""
+
+#: reconstsunit.sqt5widgetset
+msgid "QT5 widget set"
+msgstr ""
+
+#: reconstsunit.sqt6widgetset
+msgid "QT6 widget set"
+msgstr ""
 
 #: reconstsunit.sqtwidgetset
 msgid "QT widget set"
@@ -111,6 +154,10 @@ msgstr "Целевой процессор: "
 #: reconstsunit.stargetos
 msgid "Target OS: "
 msgstr "Целевая ОС: "
+
+#: reconstsunit.swidth
+msgid "Width:"
+msgstr ""
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"

@@ -32,6 +32,10 @@ msgstr "Date de création : "
 msgid "Carbon widget set"
 msgstr "Jeu graphique Carbon"
 
+#: reconstsunit.scocoawidgetset
+msgid "Cocoa widget set"
+msgstr ""
+
 #: reconstsunit.sexit
 msgid "Exit"
 msgstr "Quitter"
@@ -49,12 +53,22 @@ msgid "FpGUI widget set"
 msgstr "Jeu graphique FpGUI"
 
 #: reconstsunit.sgtk2widgetset
-msgid "GTK 2 widget set"
+#, fuzzy
+#| msgid "GTK 2 widget set"
+msgid "GTK2 widget set"
 msgstr "Jeu graphique GTK 2"
+
+#: reconstsunit.sgtk3widgetset
+msgid "GTK3 widget set"
+msgstr ""
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
 msgstr "Jeu graphique GTK 1"
+
+#: reconstsunit.sheight
+msgid "Height:"
+msgstr ""
 
 #: reconstsunit.shelp
 msgid "Help"
@@ -64,6 +78,15 @@ msgstr "Aide"
 msgid "Image"
 msgstr "Image"
 
+#: reconstsunit.simageindex
+msgid "Image index:"
+msgstr ""
+
+#: reconstsunit.sindexofcount
+#, object-pascal-format
+msgid "%d of %d"
+msgstr ""
+
 #: reconstsunit.slclversion
 msgid "LCL Version: "
 msgstr "Version LCL : "
@@ -72,6 +95,10 @@ msgstr "Version LCL : "
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Ce programme est libre et édité sous la licence GNU GPL 2 (voir le fichier COPYING)"
 
+#: reconstsunit.snextimage
+msgid "Next image"
+msgstr ""
+
 #: reconstsunit.sopen
 msgid "Open ..."
 msgstr "Ouvrir..."
@@ -79,6 +106,22 @@ msgstr "Ouvrir..."
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
 msgstr "Autre GUI"
+
+#: reconstsunit.spixelformat
+msgid "Pixel format:"
+msgstr ""
+
+#: reconstsunit.sprevimage
+msgid "Previous image"
+msgstr ""
+
+#: reconstsunit.sqt5widgetset
+msgid "QT5 widget set"
+msgstr ""
+
+#: reconstsunit.sqt6widgetset
+msgid "QT6 widget set"
+msgstr ""
 
 #: reconstsunit.sqtwidgetset
 msgid "QT widget set"
@@ -107,6 +150,10 @@ msgstr "Processeur cible : "
 #: reconstsunit.stargetos
 msgid "Target OS: "
 msgstr "OS cible : "
+
+#: reconstsunit.swidth
+msgid "Width:"
+msgstr ""
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"

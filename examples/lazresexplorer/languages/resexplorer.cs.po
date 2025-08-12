@@ -34,6 +34,10 @@ msgstr "Datum sestavení : "
 msgid "Carbon widget set"
 msgstr "Sada widgetů Carbon"
 
+#: reconstsunit.scocoawidgetset
+msgid "Cocoa widget set"
+msgstr ""
+
 #: reconstsunit.sexit
 msgid "Exit"
 msgstr "Konec"
@@ -53,12 +57,22 @@ msgid "FpGUI widget set"
 msgstr "Sada widgetů FpGUI"
 
 #: reconstsunit.sgtk2widgetset
-msgid "GTK 2 widget set"
+#, fuzzy
+#| msgid "GTK 2 widget set"
+msgid "GTK2 widget set"
 msgstr "Sada widgetů GTK 2"
+
+#: reconstsunit.sgtk3widgetset
+msgid "GTK3 widget set"
+msgstr ""
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
 msgstr "Sada widgetů GTK"
+
+#: reconstsunit.sheight
+msgid "Height:"
+msgstr ""
 
 #: reconstsunit.shelp
 msgid "Help"
@@ -68,6 +82,15 @@ msgstr "Nápověda"
 msgid "Image"
 msgstr "Obrázek"
 
+#: reconstsunit.simageindex
+msgid "Image index:"
+msgstr ""
+
+#: reconstsunit.sindexofcount
+#, object-pascal-format
+msgid "%d of %d"
+msgstr ""
+
 #: reconstsunit.slclversion
 msgid "LCL Version: "
 msgstr "Verze LCL: "
@@ -75,6 +98,10 @@ msgstr "Verze LCL: "
 #: reconstsunit.slicense
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Tento program je svobodný software pod licencí GNU GPL 2, podívejte se do souboru COPYING"
+
+#: reconstsunit.snextimage
+msgid "Next image"
+msgstr ""
 
 #: reconstsunit.sopen
 #, fuzzy
@@ -85,6 +112,22 @@ msgstr "Otevřít..."
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
 msgstr "Jiné GUI"
+
+#: reconstsunit.spixelformat
+msgid "Pixel format:"
+msgstr ""
+
+#: reconstsunit.sprevimage
+msgid "Previous image"
+msgstr ""
+
+#: reconstsunit.sqt5widgetset
+msgid "QT5 widget set"
+msgstr ""
+
+#: reconstsunit.sqt6widgetset
+msgid "QT6 widget set"
+msgstr ""
 
 #: reconstsunit.sqtwidgetset
 msgid "QT widget set"
@@ -119,6 +162,10 @@ msgstr "Cílový CPU : "
 #| msgid "Target OS : "
 msgid "Target OS: "
 msgstr "Cílový OS : "
+
+#: reconstsunit.swidth
+msgid "Width:"
+msgstr ""
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"

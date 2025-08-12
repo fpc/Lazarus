@@ -7,22 +7,30 @@ object reAboutForm: TreAboutForm
   Caption = 'reAboutForm'
   ClientHeight = 471
   ClientWidth = 527
-  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 425
+    Height = 34
+    Top = 431
     Width = 515
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 0
     ShowButtons = [pbClose, pbHelp]
   end
   object Label2: TLabel
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 18
-    Top = 24
+    Height = 15
+    Top = 27
     Width = 527
     Align = alTop
     Alignment = taCenter
@@ -32,7 +40,7 @@ object reAboutForm: TreAboutForm
   object lblLicense: TLabel
     AnchorSideTop.Control = Label2
     Left = 0
-    Height = 18
+    Height = 15
     Top = 42
     Width = 527
     Align = alTop
@@ -44,8 +52,8 @@ object reAboutForm: TreAboutForm
   object lblBuildDate: TLabel
     AnchorSideTop.Control = lblLicense
     Left = 0
-    Height = 18
-    Top = 66
+    Height = 15
+    Top = 63
     Width = 527
     Align = alTop
     Alignment = taCenter
@@ -56,8 +64,8 @@ object reAboutForm: TreAboutForm
   object lblLCLVersion: TLabel
     AnchorSideTop.Control = lblBuildDate
     Left = 0
-    Height = 18
-    Top = 84
+    Height = 15
+    Top = 78
     Width = 527
     Align = alTop
     Alignment = taCenter
@@ -67,8 +75,8 @@ object reAboutForm: TreAboutForm
   object lblFPCVersion: TLabel
     AnchorSideTop.Control = lblLCLVersion
     Left = 0
-    Height = 18
-    Top = 102
+    Height = 15
+    Top = 93
     Width = 527
     Align = alTop
     Alignment = taCenter
@@ -78,8 +86,8 @@ object reAboutForm: TreAboutForm
   object lblTargCPU: TLabel
     AnchorSideTop.Control = lblFPCVersion
     Left = 0
-    Height = 18
-    Top = 120
+    Height = 15
+    Top = 108
     Width = 527
     Align = alTop
     Alignment = taCenter
@@ -88,8 +96,8 @@ object reAboutForm: TreAboutForm
   end
   object lblTargetOS: TLabel
     Left = 0
-    Height = 18
-    Top = 138
+    Height = 15
+    Top = 123
     Width = 527
     Align = alTop
     Alignment = taCenter
@@ -99,8 +107,8 @@ object reAboutForm: TreAboutForm
   object lblWidgetName: TLabel
     AnchorSideTop.Control = lblTargetOS
     Left = 0
-    Height = 18
-    Top = 156
+    Height = 15
+    Top = 138
     Width = 527
     Align = alTop
     Alignment = taCenter
@@ -108,25 +116,28 @@ object reAboutForm: TreAboutForm
     ParentColor = False
   end
   object ListBox1: TListBox
-    Left = 0
-    Height = 245
-    Top = 174
-    Width = 527
+    Left = 6
+    Height = 266
+    Top = 159
+    Width = 515
     Align = alClient
+    BorderSpacing.Around = 6
     ItemHeight = 0
     TabOrder = 1
-    TopIndex = -1
   end
   object lblAppName: TLabel
     AnchorSideTop.Control = Label2
     Left = 0
-    Height = 18
+    Height = 21
     Top = 6
     Width = 527
     Align = alTop
     Alignment = taCenter
     BorderSpacing.Top = 6
     Caption = 'App name'
+    Font.Height = -16
+    Font.Style = [fsBold]
     ParentColor = False
+    ParentFont = False
   end
 end

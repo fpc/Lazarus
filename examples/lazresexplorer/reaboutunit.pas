@@ -25,7 +25,7 @@ type
     lblAppName: TLabel;
     procedure FormCreate(Sender: TObject);
   private
-    procedure ParceVersionInfo(V:TVersionResource);
+    procedure ParseVersionInfo(V:TVersionResource);
   public
     { public declarations }
   end; 
@@ -84,12 +84,12 @@ begin
       V:=Res[i] as TVersionResource;
   end;
   if Assigned(V) then
-    ParceVersionInfo(V);
+    ParseVersionInfo(V);
   Res.Free;
   Reader.Free;
 end;
 
-procedure TreAboutForm.ParceVersionInfo(V: TVersionResource);
+procedure TreAboutForm.ParseVersionInfo(V: TVersionResource);
 var
   i,j:integer;
 begin

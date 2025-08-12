@@ -17,7 +17,13 @@ resourcestring
   sStrings          = 'Strings';
   sImage            = 'Image';
   sLicense          = 'This program is free software under GNU GPL 2 license, see COPYING file';
-
+  sWidth            = 'Width:';
+  sHeight           = 'Height:';
+  sPixelformat      = 'Pixel format:';
+  sImageIndex       = 'Image index:';
+  sIndexOfCount     = '%d of %d';
+  sNextImage        = 'Next image';
+  sPrevImage        = 'Previous image';
 
   sLCLVersion          = 'LCL Version: ';
   sBuildDate           = 'Build date: ';
@@ -25,11 +31,15 @@ resourcestring
   sTargetCPU           = 'Target CPU: ';
   sTargetOS            = 'Target OS: ';
   sGTKWidgetSet        = 'GTK widget set';
-  sGTK2WidgetSet       = 'GTK 2 widget set';
+  sGTK2WidgetSet       = 'GTK2 widget set';
+  sGTK3WidgetSet       = 'GTK3 widget set';
   sWin32_64WidgetSet   = 'Win32/Win64 widget set';
   sWinCEWidgetSet      = 'WinCE widget set';
   sCarbonWidgetSet     = 'Carbon widget set';
+  sCocoaWidgetSet      = 'Cocoa widget set';
   sQTWidgetSet         = 'QT widget set';
+  sQT5WidgetSet        = 'QT5 widget set';
+  sQT6WidgetSet        = 'QT6 widget set';
   sFpGUIWidgetSet      = 'FpGUI widget set';
   sOtherGUIWidgetSet   = 'Other gui';
   sAllFilesExcutableFilesExeExeDLLDllDll = 'All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll';
@@ -46,11 +56,15 @@ begin
   case WidgetSet.LCLPlatform of
     lpGtk:Result:=sGTKWidgetSet;
     lpGtk2:Result:=sGTK2WidgetSet;
+    lpGtk3: Result := sGTK3WidgetSet;
     lpWin32:Result:=sWin32_64WidgetSet;
     lpWinCE:Result:=sWinCEWidgetSet;
     lpCarbon:Result:=sCarbonWidgetSet;
+    lpCocoa: Result := sCocoaWidgetSet;
     lpQT:Result:=sQTWidgetSet;
-    lpfpGUI:Result:=sFpGUIWidgetSet;
+    lpQT5: Result := sQT5WidgetSet;
+    lpQT6: Result := sQT6WidgetSet;
+    lpfpGUI: Result := sFpGUIWidgetSet;
   else
     Result:=sOtherGUIWidgetSet;
   end;

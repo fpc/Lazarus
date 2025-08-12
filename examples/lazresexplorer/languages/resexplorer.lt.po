@@ -32,6 +32,10 @@ msgstr "Darymo data:"
 msgid "Carbon widget set"
 msgstr "Valdikliai „Carbon“"
 
+#: reconstsunit.scocoawidgetset
+msgid "Cocoa widget set"
+msgstr ""
+
 #: reconstsunit.sexit
 msgid "Exit"
 msgstr "Baigti darbą"
@@ -49,12 +53,22 @@ msgid "FpGUI widget set"
 msgstr "Valdikliai „FpGUI“"
 
 #: reconstsunit.sgtk2widgetset
-msgid "GTK 2 widget set"
+#, fuzzy
+#| msgid "GTK 2 widget set"
+msgid "GTK2 widget set"
 msgstr "Valdikliai „GTK2“"
+
+#: reconstsunit.sgtk3widgetset
+msgid "GTK3 widget set"
+msgstr ""
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
 msgstr "Valdikliai „GTK“"
+
+#: reconstsunit.sheight
+msgid "Height:"
+msgstr ""
 
 #: reconstsunit.shelp
 msgid "Help"
@@ -64,6 +78,15 @@ msgstr "Žinynas"
 msgid "Image"
 msgstr "Paveikslas"
 
+#: reconstsunit.simageindex
+msgid "Image index:"
+msgstr ""
+
+#: reconstsunit.sindexofcount
+#, object-pascal-format
+msgid "%d of %d"
+msgstr ""
+
 #: reconstsunit.slclversion
 msgid "LCL Version: "
 msgstr "LCL laida: "
@@ -72,6 +95,10 @@ msgstr "LCL laida: "
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Tai laisvoji programinė įranga, kuriai taikoma GNU GPL 2 licencija (žvilgtelėkite į COPYING failą)"
 
+#: reconstsunit.snextimage
+msgid "Next image"
+msgstr ""
+
 #: reconstsunit.sopen
 msgid "Open ..."
 msgstr "Atverti…"
@@ -79,6 +106,22 @@ msgstr "Atverti…"
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
 msgstr "Kita grafinė sąsaja"
+
+#: reconstsunit.spixelformat
+msgid "Pixel format:"
+msgstr ""
+
+#: reconstsunit.sprevimage
+msgid "Previous image"
+msgstr ""
+
+#: reconstsunit.sqt5widgetset
+msgid "QT5 widget set"
+msgstr ""
+
+#: reconstsunit.sqt6widgetset
+msgid "QT6 widget set"
+msgstr ""
 
 #: reconstsunit.sqtwidgetset
 msgid "QT widget set"
@@ -107,6 +150,10 @@ msgstr "Paskirties procesorius: "
 #: reconstsunit.stargetos
 msgid "Target OS: "
 msgstr "Paskirties OS: "
+
+#: reconstsunit.swidth
+msgid "Width:"
+msgstr ""
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"

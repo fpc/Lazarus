@@ -5,15 +5,17 @@ unit reMainUnit;
 interface
 
 uses
-  SysUtils, resource, LazUTF8, SynEdit, Forms, Controls, Dialogs, ComCtrls,
-  ActnList, Menus, ExtCtrls, Grids, bitmapresource, versionresource,
-  groupiconresource, Classes;
+  SysUtils, Classes, Math, resource, TypInfo, fpImage, fpReadPNG, fpReadJPEG,
+  LazUTF8, Graphics, SynEdit, Forms, Controls, Dialogs, ComCtrls, ActnList, Menus,
+  ExtCtrls, Grids, Buttons, StdCtrls,
+  BitmapResource, VersionResource, GroupIconResource, GroupCursorResource;
 
 type
 
   { TreMainForm }
 
   TreMainForm = class(TForm)
+    Bevel1: TBevel;
     fileSave: TAction;
     HeaderControl1: THeaderControl;
     hlpAbout: TAction;
@@ -22,6 +24,14 @@ type
     ActionList1: TActionList;
     Image1: TImage;
     ImageList1: TImageList;
+    lblWidth: TLabel;
+    lblHeight: TLabel;
+    lblPixelformat: TLabel;
+    lblImageIndexCount: TLabel;
+    infoWidth: TLabel;
+    infoHeight: TLabel;
+    infoPixelformat: TLabel;
+    infoImageIndexCount: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
@@ -31,6 +41,10 @@ type
     MenuItem6: TMenuItem;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
+    IconNavigatorPanel: TPanel;
+    ImagePropsPanel: TPanel;
+    btnPrevImage: TSpeedButton;
+    btnNextImage: TSpeedButton;
     Splitter1: TSplitter;
     StatusBar1: TStatusBar;
     StringGrid1: TStringGrid;
@@ -46,20 +60,27 @@ type
     TreeView1: TTreeView;
     procedure fileExitExecute(Sender: TObject);
     procedure fileOpenExecute(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure HeaderControl1SectionResize(HeaderControl: TCustomHeaderControl;
       Section: THeaderSection);
     procedure hlpAboutExecute(Sender: TObject);
+    procedure btnPrevImageClick(Sender: TObject);
+    procedure btnNextImageClick(Sender: TObject);
     procedure Splitter1ChangeBounds(Sender: TObject);
     procedure TreeView1SelectionChanged(Sender: TObject);
   private
     Res:TResources;
+    FActivated: Boolean;
     procedure ClearDisplay;
     procedure LoadVersionResource(V:TVersionResource);
     procedure LoadBitmapResource(B:TBitmapResource);
+    procedure LoadGroupCursorResource(G: TGroupCursorResource);
     procedure LoadGroupIconResource(G:TGroupIconResource);
     procedure LoadResourceAsBinary(R: TAbstractResource);
+    function ResourceIsImage(S: TStream): Boolean;
+    procedure UpdatePictureInfo(Pic: TPicture; IsIcon: Boolean);
   public
     procedure OpenFile(const AFileName:string);
   end;
@@ -87,6 +108,19 @@ begin
     OpenFile(UTF8ToSys(OpenDialog1.FileName));
 end;
 
+procedure TreMainForm.FormActivate(Sender: TObject);
+var
+  wmax: Integer;
+begin
+  if not FActivated then
+  begin
+    FActivated := true;
+    wmax := Max(lblWidth.Width, lblHeight.Width);
+    wmax := Max(lblPixelFormat.Width, Max(lblImageIndexCount.Width, wmax));
+    infoWidth.BorderSpacing.Left := wmax; // + 16;
+  end;
+end;
+
 procedure TreMainForm.FormCreate(Sender: TObject);
 begin
   Caption:=sResourceExplorer;
@@ -100,6 +134,12 @@ begin
   tabString.Caption:=sStrings;
   tabImage.Caption:=sImage;
   HeaderControl1.Sections[0].Text := sResources;
+  lblWidth.Caption := sWidth;
+  lblHeight.Caption := sHeight;
+  lblPixelFormat.Caption := sPixelFormat;
+  lblImageIndexCount.Caption := sImageIndex;
+  btnPrevImage.Hint := sPrevImage;
+  btnNextImage.Hint := sNextImage;
 
   {$IFDEF Windows}
   OpenDialog1.Filter := sAllFilesExcutableFilesExeExeDLLDllDll;
@@ -108,7 +148,11 @@ begin
   {$ENDIF}
   Splitter1ChangeBounds(nil);
   SynEdit1.Gutter.Visible := False;
+  SynEdit1.Font.Quality := fqClearType;
   ClearDisplay;
+
+  if ParamCount > 0 then
+    OpenFile(ParamStr(1));
 end;
 
 procedure TreMainForm.FormDestroy(Sender: TObject);
@@ -119,8 +163,8 @@ end;
 procedure TreMainForm.HeaderControl1SectionResize(
   HeaderControl: TCustomHeaderControl; Section: THeaderSection);
 begin
-  TreeView1.Width:=HeaderControl1.Sections[0].Width;
-  HeaderControl1.Sections[1].Width:=Width -  TreeView1.Width;
+  TreeView1.Width := HeaderControl1.Sections[0].Width;
+  HeaderControl1.Sections[1].Width := Width - TreeView1.Width;
 end;
 
 procedure TreMainForm.hlpAboutExecute(Sender: TObject);
@@ -128,6 +172,30 @@ begin
   reAboutForm:=TreAboutForm.Create(Application);
   reAboutForm.ShowModal;
   reAboutForm.Free;
+end;
+
+procedure TreMainForm.btnPrevImageClick(Sender: TObject);
+begin
+  if Image1.Picture.Graphic is TIcon then
+  begin
+    if Image1.Picture.Icon.Current > 0 then
+    begin
+      Image1.Picture.Icon.Current := Image1.Picture.Icon.Current - 1;
+      UpdatePictureInfo(Image1.Picture, true);
+    end;
+  end;
+end;
+
+procedure TreMainForm.btnNextImageClick(Sender: TObject);
+begin
+  if Image1.Picture.Graphic is TIcon then
+  begin
+    if Image1.Picture.Icon.Current < Image1.Picture.Icon.Count-1 then
+    begin
+      Image1.Picture.Icon.Current := Image1.Picture.Icon.Current + 1;
+      UpdatePictureInfo(Image1.Picture, true);
+    end;
+  end;
 end;
 
 procedure TreMainForm.Splitter1ChangeBounds(Sender: TObject);
@@ -153,6 +221,9 @@ begin
     else
     if ResItem is TGroupIconResource then
       LoadGroupIconResource(ResItem as TGroupIconResource)
+    else
+    if ResItem is TGroupCursorResource then
+      LoadGroupCursorResource(ResItem as TGroupCursorResource)
     else
       LoadResourceAsBinary(ResItem);
   end;
@@ -193,13 +264,60 @@ begin
   PageControl1.ActivePage:=tabImage;
   B.BitmapData.Position:=0;
   Image1.Picture.Bitmap.LoadFromStream(B.BitmapData);
-  //
+  UpdatePictureInfo(Image1.Picture, false);
+end;
+
+procedure TreMainForm.LoadGroupCursorResource(G: TGroupCursorResource);
+var
+  img: TCursorImage;
+begin
+  PageControl1.ActivePage := tabImage;
+  G.ItemData.Position := 0;
+  img := TCursorImage.Create;
+  img.LoadFromStream(G.ItemData);
+  Image1.Picture.Assign(img);
+  img.Free;
+  UpdatePictureInfo(Image1.Picture, false);
 end;
 
 procedure TreMainForm.LoadGroupIconResource(G: TGroupIconResource);
 begin
-  //ToDo: implement proper method to display
-  LoadResourceAsBinary(G);
+  PageControl1.ActivePage := tabImage;
+  G.ItemData.Position := 0;
+  Image1.Picture.Icon.LoadFromStream(G.ItemData);
+  UpdatePictureInfo(Image1.Picture, true);
+end;
+
+procedure TreMainForm.UpdatePictureInfo(Pic: TPicture; IsIcon: Boolean);
+begin
+  if Pic = nil then
+    ImagePropsPanel.Hide
+  else
+  begin
+    ImagePropsPanel.Show;
+    infoWidth.Caption := IntToStr(Pic.Width);
+    infoHeight.Caption := IntToStr(Pic.Height);
+    infoPixelFormat.Caption := GetEnumName(TypeInfo(TPixelformat), Integer(TRasterImage(Pic.Graphic).Pixelformat));
+    if IsIcon then
+      infoImageIndexCount.Caption := Format(sIndexOfCount, [Pic.Icon.Current + 1, Pic.Icon.Count]);
+    IconNavigatorPanel.Visible := isIcon;
+    infoImageIndexCount.Visible := isIcon;
+    lblImageIndexCount.Visible := isIcon;
+  end;
+end;
+
+function TreMainForm.ResourceIsImage(S: TStream): Boolean;
+var
+  readerClass: TFPCustomImageReaderClass;
+begin
+  Result := true;
+
+  S.Position := 0;
+  readerClass := TFPCustomImage.FindReaderFromStream(S);
+  if readerClass <> nil then
+    exit;
+
+  Result := false;
 end;
 
 procedure TreMainForm.LoadResourceAsBinary(R: TAbstractResource);
@@ -250,6 +368,14 @@ begin
     end;
   finally
     SynEdit1.Lines.EndUpdate;
+  end;
+
+  // Check whether the resource is a non-RT_BITMAP image and try to display it
+  // in the "Image" tab.
+  if ResourceIsImage(R.RawData) then
+  begin
+    Image1.Picture.LoadFromStream(R.RawData);
+    UpdatePictureInfo(Image1.Picture, false);
   end;
 end;
 

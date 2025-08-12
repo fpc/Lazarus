@@ -13,6 +13,8 @@ uses
 {$R resexplorer.res}
 
 begin
+  Application.Scaled:=True;
+  Application.Title:='';
   Application.Initialize;
   Application.CreateForm(TreMainForm, reMainForm);
   if Paramcount>0 then

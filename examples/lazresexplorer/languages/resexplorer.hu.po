@@ -31,6 +31,10 @@ msgstr "Építés dátuma: "
 msgid "Carbon widget set"
 msgstr "Carbon vezérlőkészlet"
 
+#: reconstsunit.scocoawidgetset
+msgid "Cocoa widget set"
+msgstr ""
+
 #: reconstsunit.sexit
 msgid "Exit"
 msgstr "Kilépés"
@@ -48,12 +52,22 @@ msgid "FpGUI widget set"
 msgstr "FpGUI vezérlőkészlet"
 
 #: reconstsunit.sgtk2widgetset
-msgid "GTK 2 widget set"
+#, fuzzy
+#| msgid "GTK 2 widget set"
+msgid "GTK2 widget set"
 msgstr "GTK 2 vezérlőkészlet"
+
+#: reconstsunit.sgtk3widgetset
+msgid "GTK3 widget set"
+msgstr ""
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
 msgstr "GTK vezérlőkészlet"
+
+#: reconstsunit.sheight
+msgid "Height:"
+msgstr ""
 
 #: reconstsunit.shelp
 msgid "Help"
@@ -63,6 +77,15 @@ msgstr "Súgó"
 msgid "Image"
 msgstr "Kép"
 
+#: reconstsunit.simageindex
+msgid "Image index:"
+msgstr ""
+
+#: reconstsunit.sindexofcount
+#, object-pascal-format
+msgid "%d of %d"
+msgstr ""
+
 #: reconstsunit.slclversion
 msgid "LCL Version: "
 msgstr "LCL változat:"
@@ -71,6 +94,10 @@ msgstr "LCL változat:"
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Ez a program szabad szoftver GNU GPL 2 licenc alatt, lásd a COPYING fájlt!"
 
+#: reconstsunit.snextimage
+msgid "Next image"
+msgstr ""
+
 #: reconstsunit.sopen
 msgid "Open ..."
 msgstr "Megnyitás ..."
@@ -78,6 +105,22 @@ msgstr "Megnyitás ..."
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
 msgstr "Egyéb GUI"
+
+#: reconstsunit.spixelformat
+msgid "Pixel format:"
+msgstr ""
+
+#: reconstsunit.sprevimage
+msgid "Previous image"
+msgstr ""
+
+#: reconstsunit.sqt5widgetset
+msgid "QT5 widget set"
+msgstr ""
+
+#: reconstsunit.sqt6widgetset
+msgid "QT6 widget set"
+msgstr ""
 
 #: reconstsunit.sqtwidgetset
 msgid "QT widget set"
@@ -106,6 +149,10 @@ msgstr "Cél CPU: "
 #: reconstsunit.stargetos
 msgid "Target OS: "
 msgstr "Cél OS: "
+
+#: reconstsunit.swidth
+msgid "Width:"
+msgstr ""
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"

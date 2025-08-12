@@ -33,6 +33,10 @@ msgstr "Дата збирання : "
 msgid "Carbon widget set"
 msgstr "Набір віджетів Carbon"
 
+#: reconstsunit.scocoawidgetset
+msgid "Cocoa widget set"
+msgstr ""
+
 #: reconstsunit.sexit
 msgid "Exit"
 msgstr "Вийти"
@@ -50,12 +54,22 @@ msgid "FpGUI widget set"
 msgstr "Набір віджетів FpGUI"
 
 #: reconstsunit.sgtk2widgetset
-msgid "GTK 2 widget set"
+#, fuzzy
+#| msgid "GTK 2 widget set"
+msgid "GTK2 widget set"
 msgstr "Набір віджетів GTK 2"
+
+#: reconstsunit.sgtk3widgetset
+msgid "GTK3 widget set"
+msgstr ""
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
 msgstr "Набір віджетів GTK"
+
+#: reconstsunit.sheight
+msgid "Height:"
+msgstr ""
 
 #: reconstsunit.shelp
 msgid "Help"
@@ -65,6 +79,15 @@ msgstr "Довідка"
 msgid "Image"
 msgstr "Зображення"
 
+#: reconstsunit.simageindex
+msgid "Image index:"
+msgstr ""
+
+#: reconstsunit.sindexofcount
+#, object-pascal-format
+msgid "%d of %d"
+msgstr ""
+
 #: reconstsunit.slclversion
 msgid "LCL Version: "
 msgstr "Версія LCL: "
@@ -73,6 +96,10 @@ msgstr "Версія LCL: "
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Ця програма є вільним ПЗ, ліцензованим згідно ліцензії GNU GPL 2, див. файл COPYING"
 
+#: reconstsunit.snextimage
+msgid "Next image"
+msgstr ""
+
 #: reconstsunit.sopen
 msgid "Open ..."
 msgstr "Відкрити ..."
@@ -80,6 +107,22 @@ msgstr "Відкрити ..."
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
 msgstr "Інший ГІК"
+
+#: reconstsunit.spixelformat
+msgid "Pixel format:"
+msgstr ""
+
+#: reconstsunit.sprevimage
+msgid "Previous image"
+msgstr ""
+
+#: reconstsunit.sqt5widgetset
+msgid "QT5 widget set"
+msgstr ""
+
+#: reconstsunit.sqt6widgetset
+msgid "QT6 widget set"
+msgstr ""
 
 #: reconstsunit.sqtwidgetset
 msgid "QT widget set"
@@ -108,6 +151,10 @@ msgstr "Цільовий процесор: "
 #: reconstsunit.stargetos
 msgid "Target OS: "
 msgstr "Цільова ОС: "
+
+#: reconstsunit.swidth
+msgid "Width:"
+msgstr ""
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"

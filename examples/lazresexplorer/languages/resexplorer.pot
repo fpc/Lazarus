@@ -21,6 +21,10 @@ msgstr ""
 msgid "Carbon widget set"
 msgstr ""
 
+#: reconstsunit.scocoawidgetset
+msgid "Cocoa widget set"
+msgstr ""
+
 #: reconstsunit.sexit
 msgid "Exit"
 msgstr ""
@@ -38,11 +42,19 @@ msgid "FpGUI widget set"
 msgstr ""
 
 #: reconstsunit.sgtk2widgetset
-msgid "GTK 2 widget set"
+msgid "GTK2 widget set"
+msgstr ""
+
+#: reconstsunit.sgtk3widgetset
+msgid "GTK3 widget set"
 msgstr ""
 
 #: reconstsunit.sgtkwidgetset
 msgid "GTK widget set"
+msgstr ""
+
+#: reconstsunit.sheight
+msgid "Height:"
 msgstr ""
 
 #: reconstsunit.shelp
@@ -53,6 +65,15 @@ msgstr ""
 msgid "Image"
 msgstr ""
 
+#: reconstsunit.simageindex
+msgid "Image index:"
+msgstr ""
+
+#: reconstsunit.sindexofcount
+#, object-pascal-format
+msgid "%d of %d"
+msgstr ""
+
 #: reconstsunit.slclversion
 msgid "LCL Version: "
 msgstr ""
@@ -61,12 +82,32 @@ msgstr ""
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr ""
 
+#: reconstsunit.snextimage
+msgid "Next image"
+msgstr ""
+
 #: reconstsunit.sopen
 msgid "Open ..."
 msgstr ""
 
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
+msgstr ""
+
+#: reconstsunit.spixelformat
+msgid "Pixel format:"
+msgstr ""
+
+#: reconstsunit.sprevimage
+msgid "Previous image"
+msgstr ""
+
+#: reconstsunit.sqt5widgetset
+msgid "QT5 widget set"
+msgstr ""
+
+#: reconstsunit.sqt6widgetset
+msgid "QT6 widget set"
 msgstr ""
 
 #: reconstsunit.sqtwidgetset
@@ -95,6 +136,10 @@ msgstr ""
 
 #: reconstsunit.stargetos
 msgid "Target OS: "
+msgstr ""
+
+#: reconstsunit.swidth
+msgid "Width:"
 msgstr ""
 
 #: reconstsunit.swin32_64widgetset
