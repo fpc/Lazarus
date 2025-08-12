@@ -500,7 +500,7 @@ begin
     'object Form1: TForm1',
     '  object Button1: TButton',
     '    Lines.Strings = (',
-    '      ''Memo1''',
+    '      ''Mem''''o1''',
     '      ''Foo''+',
     '      ''Bar''#10''ABC''',
     '    )',
@@ -510,7 +510,7 @@ begin
   CheckLFM;
   Node:=CheckPropertyType('Form1.Button1.Lines.Strings',lfmvList);
   StrNode:=Node.FirstChild as TLFMValueNode;
-  AssertEquals('First Line','Memo1',StrNode.ReadString);
+  AssertEquals('First Line','Mem''o1',StrNode.ReadString);
   StrNode:=StrNode.NextSibling as TLFMValueNode;
   AssertEquals('Second Line','FooBar'#10'ABC',StrNode.ReadString);
 end;

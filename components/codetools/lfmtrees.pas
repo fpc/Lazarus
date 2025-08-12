@@ -374,7 +374,18 @@ const
     'PropertyHasNoSubProperties',
     'EndNotFound'
     );
-    
+
+  LFMTokenKindNames: array[TLFMTokenKind] of string = (
+    'None',
+    'Symbol',
+    'Identifier',
+    'UnicodeIdentifier',
+    'HexNumber',
+    'Integer',
+    'Float',
+    'String'
+    );
+
   LFMNodeTypeNames: array[TLFMNodeType] of string = (
     'Object',
     'Property',
@@ -671,7 +682,7 @@ var
   Cnt: SizeInt;
 begin
   s:='';
-  debugln(['TLFMTree.AddParseErrorExp ',PtrInt(FTokenStart-FSourceStart),'-',PtrInt(FTokenEnd-FSourceStart),' Char=',ord(FTokenChar),' Kind=',FTokenKind]);
+  debugln(['TLFMTree.AddParseErrorExp ',LFMBuffer.AbsoluteToLineColStr(integer(FTokenStart-FSourceStart+1)),'..',LFMBuffer.AbsoluteToLineColStr(integer(FTokenEnd-FSourceStart+1)),' Char=',ord(FTokenChar),' Kind=',LFMTokenKindNames[FTokenKind]]);
   case FTokenChar of
   #0:
     s:='end of file';
@@ -863,7 +874,10 @@ begin
           '''':
             begin
               inc(FTokenEnd);
-              break;
+              if FTokenEnd^='''' then
+                inc(FTokenEnd)
+              else
+                break;
             end;
           end;
         until false;
@@ -1590,7 +1604,16 @@ begin
         StartP:=p;
         repeat
           if p=EndPos then exit; // error
-          if Src[p]='''' then break;
+          if Src[p]='''' then begin
+            if (p+2<EndPos) and (Src[p+1]='''') then begin
+              Result:=Result+copy(Src,StartP,p-StartP)+'''';
+              inc(p,2);
+              StartP:=p;
+              continue;
+            end else begin
+              break;
+            end;
+          end;
           inc(p);
         until false;
         Result:=Result+copy(Src,StartP,p-StartP);
