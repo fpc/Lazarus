@@ -874,10 +874,7 @@ begin
           '''':
             begin
               inc(FTokenEnd);
-              if FTokenEnd^='''' then
-                inc(FTokenEnd)
-              else
-                break;
+              break;
             end;
           end;
         until false;
@@ -1596,6 +1593,7 @@ begin
   if ValueType<>lfmvString then exit;
   Src:=Tree.LFMBuffer.Source;
   p:=StartPos;
+  // writeln('TLFMValueNode.ReadString [',copy(Src,StartPos,EndPos-StartPos),']');
   while p<EndPos do begin
     case Src[p] of
     '''':
@@ -1605,8 +1603,8 @@ begin
         repeat
           if p=EndPos then exit; // error
           if Src[p]='''' then begin
-            if (p+2<EndPos) and (Src[p+1]='''') then begin
-              Result:=Result+copy(Src,StartP,p-StartP)+'''';
+            if (p+1<EndPos) and (Src[p+1]='''') then begin
+              Result:=Result+copy(Src,StartP,p-StartP+1);
               inc(p,2);
               StartP:=p;
               continue;
