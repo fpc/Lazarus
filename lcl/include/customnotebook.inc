@@ -253,6 +253,7 @@ begin
   FImageListChangeLink.OnChange := @DoImageListChange;
   FImageListChangeLink.OnDestroyResolutionHandle := @DoImageListDestroyResolutionHandle;
   FPageIndex := -1;
+  FSwitchingToPageIndex := -3;
   ControlStyle := []; // do not add csAcceptsControls
   TabPosition := tpTop;
   TabStop := true;
@@ -1113,6 +1114,7 @@ begin
     case NMHdr^.code of
       TCN_SELCHANGE:
         begin
+          FSwitchingToPageIndex := -7;
           // set the page from the NMHDR^.idfrom
           if (not FAddingPages) and not
              (csDestroyingHandle in ControlState) then
@@ -1135,15 +1137,19 @@ begin
               end;
             end;
           end;
+          //debugln('TCustomTabControl.CNNotify ',DbgSName(Self),' TCN_SELCHANGE ToPage=',IntToStr(FSwitchingToPageIndex));
         end;
       TCN_SELCHANGING:
         begin
-          if CanChangePageIndex and not
-          (csDestroyingHandle in ControlState) then
-            Result := 0
-          else
+          if CanChangePageIndex and not (csDestroyingHandle in ControlState) then
+          begin
+            Result := 0;
+            FSwitchingToPageIndex := NMHdr^.idFrom;
+          end else begin
             Result := 1;
-          //debugln('TCustomTabControl.CNNotify ',DbgSName(Self),' TCN_SELCHANGING Result=',dbgs(Result));
+            FSwitchingToPageIndex := -5;
+          end;
+          //debugln('TCustomTabControl.CNNotify ',DbgSName(Self),' TCN_SELCHANGING ToPage=',IntToStr(FSwitchingToPageIndex),' Result=',dbgs(Result));
         end;
     else
       begin

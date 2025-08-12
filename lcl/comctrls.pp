@@ -390,6 +390,7 @@ type
     FRaggedRight: Boolean;
     FScrollOpposite: Boolean;
     FShowTabs: Boolean;
+    FSwitchingToPageIndex: integer;
     FStyle: TTabStyle;
     FTabHeight: Smallint;
     FTabPosition: TTabPosition;
@@ -458,6 +459,7 @@ type
                                               write SetActivePageComponent;
     property ActivePage: String read GetActivePage write SetActivePage
                                                       stored IsStoredActivePage;
+    property SwitchingToPageIndex: integer read FSwitchingToPageIndex;
   protected // elevated visibility for un/paged
     function GetPage(AIndex: Integer): TCustomPage; virtual;
     function GetPageCount : integer; virtual;

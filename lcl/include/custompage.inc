@@ -220,15 +220,28 @@ begin
 end;
 
 function TCustomPage.IsControlVisible: Boolean;
+var
+  MyIndex: Integer;
+  TabControl: TCustomTabControl;
 begin
   // when autosizing, need this to return True so that the sizes of non-active
   // pages will be considered in parent's GetPreferredSize()
   if AutoSizingAll then
     Exit(True);
   Result := inherited IsControlVisible;
-  if Result and (Parent is TCustomTabControl) then
+  if Parent is TCustomTabControl then
   begin
-    Result := PageIndex = TCustomTabControl(Parent).PageIndex;
+    TabControl := TCustomTabControl(Parent);
+    MyIndex := PageIndex;
+    //debugln(['TCustomPage.IsControlVisible "',Name,'" "',TabControl.Name,'" Visible=',Visible,' Result=',Result,' MyIndex=',MyIndex,' PageIndex=',TabControl.PageIndex,' ToPage=',TabControl.SwitchingToPageIndex]);
+    if MyIndex<0 then
+      Result := false
+    else if MyIndex = TabControl.PageIndex then
+      // use inherited
+    else if MyIndex = TabControl.FSwitchingToPageIndex then
+      Result := true
+    else
+      Result := false;
   end;
 end;
 
