@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="pg_active.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_add_project.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>colors</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_add_project_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>colors</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_add_project_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>colors</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_add_project_from_file.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>colors</keyword>
+        <keyword>document</keyword>
+        <keyword>file</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_add_project_from_file_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>colors</keyword>
+        <keyword>document</keyword>
+        <keyword>file</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_add_project_from_file_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>colors</keyword>
+        <keyword>document</keyword>
+        <keyword>file</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_item.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>colors</keyword>
+        <keyword>group</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_item_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>colors</keyword>
+        <keyword>group</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_item_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>colors</keyword>
+        <keyword>group</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_new.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>colors</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_new_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>colors</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_new_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>colors</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_open.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>group</keyword>
+        <keyword>open</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_open_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>group</keyword>
+        <keyword>open</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_open_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>group</keyword>
+        <keyword>open</keyword>
+        <keyword>project</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_open_recent.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>colors</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>group</keyword>
+        <keyword>project</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_open_recent_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>colors</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>group</keyword>
+        <keyword>project</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_open_recent_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>clock</keyword>
+        <keyword>colors</keyword>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>group</keyword>
+        <keyword>project</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_open_simple.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_open_simple_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_open_simple_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>disk</keyword>
+        <keyword>group</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>disk</keyword>
+        <keyword>group</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>disk</keyword>
+        <keyword>group</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_as.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>disk</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_as_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>disk</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_as_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>disk</keyword>
+        <keyword>group</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>project</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_as_simple.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>disk</keyword>
+        <keyword>file</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_as_simple_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>disk</keyword>
+        <keyword>file</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_as_simple_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>disk</keyword>
+        <keyword>file</keyword>
+        <keyword>new</keyword>
+        <keyword>plus</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_simple.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>disk</keyword>
+        <keyword>file</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_simple_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>disk</keyword>
+        <keyword>file</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="pg_save_simple_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>disk</keyword>
+        <keyword>file</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="projectgroup.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

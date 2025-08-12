@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="00 Repository.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>computer</keyword>
+        <keyword>hardware</keyword>
+        <keyword>modem</keyword>
+        <keyword>network</keyword>
+        <keyword>technology</keyword>
+      </keywords>
+    </icon>
+    <icon filename="00 Repository_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>computer</keyword>
+        <keyword>hardware</keyword>
+        <keyword>modem</keyword>
+        <keyword>network</keyword>
+        <keyword>technology</keyword>
+      </keywords>
+    </icon>
+    <icon filename="00 Repository_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>computer</keyword>
+        <keyword>hardware</keyword>
+        <keyword>modem</keyword>
+        <keyword>network</keyword>
+        <keyword>technology</keyword>
+      </keywords>
+    </icon>
+    <icon filename="01 PackageName.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="01 PackageName_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="01 PackageName_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>add</keyword>
+        <keyword>insert</keyword>
+        <keyword>new</keyword>
+        <keyword>package</keyword>
+        <keyword>plus</keyword>
+      </keywords>
+    </icon>
+    <icon filename="02 PackageFile.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="02 PackageFile_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="02 PackageFile_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>package</keyword>
+      </keywords>
+    </icon>
+    <icon filename="03 Description.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>hand</keyword>
+        <keyword>page</keyword>
+        <keyword>paper</keyword>
+        <keyword>properties</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="03 Description_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>hand</keyword>
+        <keyword>page</keyword>
+        <keyword>paper</keyword>
+        <keyword>properties</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="03 Description_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>hand</keyword>
+        <keyword>page</keyword>
+        <keyword>paper</keyword>
+        <keyword>properties</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="04 Author.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>user</keyword>
+      </keywords>
+    </icon>
+    <icon filename="04 Author_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>user</keyword>
+      </keywords>
+    </icon>
+    <icon filename="04 Author_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>user</keyword>
+      </keywords>
+    </icon>
+    <icon filename="05 LazCompatibility.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>icon</keyword>
+        <keyword>lazarus</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="05 LazCompatibility_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>icon</keyword>
+        <keyword>lazarus</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="05 LazCompatibility_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>icon</keyword>
+        <keyword>lazarus</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="06 FPCCompatibility.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>fpc</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="06 FPCCompatibility_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>fpc</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="06 FPCCompatibility_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>fpc</keyword>
+        <keyword>pascal</keyword>
+      </keywords>
+    </icon>
+    <icon filename="07 WidgetSet.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>widgetset</keyword>
+      </keywords>
+    </icon>
+    <icon filename="07 WidgetSet_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>widgetset</keyword>
+      </keywords>
+    </icon>
+    <icon filename="07 WidgetSet_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>widgetset</keyword>
+      </keywords>
+    </icon>
+    <icon filename="08 PackageType.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>description</keyword>
+        <keyword>package</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="08 PackageType_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>description</keyword>
+        <keyword>package</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="08 PackageType_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>description</keyword>
+        <keyword>package</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="09 Dependencies.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="09 Dependencies_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="09 Dependencies_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>puzzle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="10 License.png" width="16" height="16" style="outline">
+      <keywords>
+        <keyword>copyright</keyword>
+      </keywords>
+    </icon>
+    <icon filename="10 License_150.png" width="24" height="24" style="outline">
+      <keywords>
+        <keyword>copyright</keyword>
+      </keywords>
+    </icon>
+    <icon filename="10 License_200.png" width="32" height="32" style="outline">
+      <keywords>
+        <keyword>copyright</keyword>
+      </keywords>
+    </icon>
+    <icon filename="11 Miscellaneous.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="11 Miscellaneous_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="11 Miscellaneous_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="12 Category.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>category</keyword>
+        <keyword>colors</keyword>
+        <keyword>stack</keyword>
+      </keywords>
+    </icon>
+    <icon filename="12 Category_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>category</keyword>
+        <keyword>colors</keyword>
+        <keyword>stack</keyword>
+      </keywords>
+    </icon>
+    <icon filename="12 Category_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>category</keyword>
+        <keyword>colors</keyword>
+        <keyword>stack</keyword>
+      </keywords>
+    </icon>
+    <icon filename="13 RepositoryFile.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>document</keyword>
+        <keyword>file</keyword>
+        <keyword>page</keyword>
+        <keyword>paper</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="13 RepositoryFile_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>document</keyword>
+        <keyword>file</keyword>
+        <keyword>page</keyword>
+        <keyword>paper</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="13 RepositoryFile_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>document</keyword>
+        <keyword>file</keyword>
+        <keyword>page</keyword>
+        <keyword>paper</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="14 RepositorySize.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>chart</keyword>
+        <keyword>contributions</keyword>
+        <keyword>pie</keyword>
+        <keyword>series</keyword>
+        <keyword>statistics</keyword>
+      </keywords>
+    </icon>
+    <icon filename="14 RepositorySize_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>chart</keyword>
+        <keyword>contributions</keyword>
+        <keyword>pie</keyword>
+        <keyword>series</keyword>
+        <keyword>statistics</keyword>
+      </keywords>
+    </icon>
+    <icon filename="14 RepositorySize_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>chart</keyword>
+        <keyword>contributions</keyword>
+        <keyword>pie</keyword>
+        <keyword>series</keyword>
+        <keyword>statistics</keyword>
+      </keywords>
+    </icon>
+    <icon filename="15 RepositoryHash.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>hash</keyword>
+      </keywords>
+    </icon>
+    <icon filename="15 RepositoryHash_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>hash</keyword>
+      </keywords>
+    </icon>
+    <icon filename="15 RepositoryHash_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>comment</keyword>
+        <keyword>hash</keyword>
+      </keywords>
+    </icon>
+    <icon filename="16 RepositoryDate.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>date</keyword>
+      </keywords>
+    </icon>
+    <icon filename="16 RepositoryDate_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>date</keyword>
+      </keywords>
+    </icon>
+    <icon filename="16 RepositoryDate_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>date</keyword>
+      </keywords>
+    </icon>
+    <icon filename="17 HomePage.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>home</keyword>
+      </keywords>
+    </icon>
+    <icon filename="17 HomePage_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>home</keyword>
+      </keywords>
+    </icon>
+    <icon filename="17 HomePage_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>home</keyword>
+      </keywords>
+    </icon>
+    <icon filename="18 DownloadLink.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>disk</keyword>
+        <keyword>download</keyword>
+        <keyword>hardware</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="18 DownloadLink_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>disk</keyword>
+        <keyword>download</keyword>
+        <keyword>hardware</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="18 DownloadLink_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>disk</keyword>
+        <keyword>download</keyword>
+        <keyword>hardware</keyword>
+        <keyword>save</keyword>
+      </keywords>
+    </icon>
+    <icon filename="19 SVN.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>divert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="19 SVN_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>divert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="19 SVN_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>divert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="20 UpToDate.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>checkbox</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="20 UpToDate_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>checkbox</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="20 UpToDate_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>checkbox</keyword>
+        <keyword>ok</keyword>
+        <keyword>yes</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Clear.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>clean</keyword>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Clear_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>clean</keyword>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Clear_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>brush</keyword>
+        <keyword>clean</keyword>
+        <keyword>clear</keyword>
+        <keyword>delete</keyword>
+        <keyword>erase</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Confirmation.png" width="50" height="50" style="classic">
+      <keywords>
+        <keyword>ask</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Database_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>database</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Error.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+        <keyword>stop</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Error_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+        <keyword>stop</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Error_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>forbidden</keyword>
+        <keyword>minus</keyword>
+        <keyword>remove</keyword>
+        <keyword>stop</keyword>
+      </keywords>
+    </icon>
+    <icon filename="FileVersion.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>program</keyword>
+        <keyword>version</keyword>
+      </keywords>
+    </icon>
+    <icon filename="FileVersion_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>program</keyword>
+        <keyword>version</keyword>
+      </keywords>
+    </icon>
+    <icon filename="FileVersion_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>code</keyword>
+        <keyword>program</keyword>
+        <keyword>version</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Info.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>information</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Info_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>information</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Info_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>information</keyword>
+      </keywords>
+    </icon>
+    <icon filename="magnifier-minus.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>minus</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="magnifier-minus_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>minus</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="magnifier-minus_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>minus</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="magnifier-plus.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>plus</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="magnifier-plus_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>plus</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="magnifier-plus_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>plus</keyword>
+        <keyword>zoom</keyword>
+      </keywords>
+    </icon>
+    <icon filename="New_Package.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="New_Package_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="New_Package_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>execute</keyword>
+        <keyword>flash</keyword>
+        <keyword>run</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Ok.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>checkmark</keyword>
+        <keyword>ok</keyword>
+        <keyword>post</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Ok_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>checkmark</keyword>
+        <keyword>ok</keyword>
+        <keyword>post</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Ok_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>accept</keyword>
+        <keyword>checkmark</keyword>
+        <keyword>ok</keyword>
+        <keyword>post</keyword>
+      </keywords>
+    </icon>
+    <icon filename="package_del.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="package_del_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="package_del_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>cancel</keyword>
+        <keyword>cross</keyword>
+        <keyword>delete</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="package_minus.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="package_minus_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="package_minus_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>delete</keyword>
+        <keyword>minus</keyword>
+        <keyword>package</keyword>
+        <keyword>remove</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Refresh.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Refresh1.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Refresh1_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Refresh1_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Refresh_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Refresh_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarEmpty.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarEmpty_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarEmpty_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarFull.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarFull_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarFull_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>start</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarFull_Blue.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarFull_Blue_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarFull_Blue_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarHalfFull.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarHalfFull_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+    <icon filename="StarHalfFull_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>star</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

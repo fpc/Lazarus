@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="arrow-left.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>back</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow-left_150.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>back</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow-left_200.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>back</keyword>
+        <keyword>left</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow-right.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>forward</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow-right_150.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>forward</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="arrow-right_200.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>arrow</keyword>
+        <keyword>forward</keyword>
+        <keyword>right</keyword>
+      </keywords>
+    </icon>
+    <icon filename="home.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>home</keyword>
+      </keywords>
+    </icon>
+    <icon filename="home_150.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>home</keyword>
+      </keywords>
+    </icon>
+    <icon filename="home_200.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>home</keyword>
+      </keywords>
+    </icon>
+    <icon filename="lhelp.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="lhelp16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="lhelp32.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="lhelp_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="lhelp_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="open.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="open_150.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="open_200.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>file</keyword>
+        <keyword>folder</keyword>
+        <keyword>open</keyword>
+        <keyword>page</keyword>
+      </keywords>
+    </icon>
+    <icon filename="table_close.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="table_close_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="table_close_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="table_item.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="table_item_150.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="table_item_200.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="table_open.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="table_open_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+    <icon filename="table_open_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>book</keyword>
+        <keyword>help</keyword>
+        <keyword>question</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

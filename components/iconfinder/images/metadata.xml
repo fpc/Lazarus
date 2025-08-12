@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="add_icon_from_finder.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>icon</keyword>
+        <keyword>image</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>picture</keyword>
+      </keywords>
+    </icon>
+    <icon filename="add_icon_from_finder_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>icon</keyword>
+        <keyword>image</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>picture</keyword>
+      </keywords>
+    </icon>
+    <icon filename="add_icon_from_finder_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>icon</keyword>
+        <keyword>image</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>picture</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ovl_H_12.png" width="12" height="12" style="flat">
+      <keywords>
+        <keyword>corner</keyword>
+        <keyword>marker</keyword>
+        <keyword>triangle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ovl_H_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>corner</keyword>
+        <keyword>marker</keyword>
+        <keyword>triangle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ovl_H_8.png" width="8" height="8" style="flat">
+      <keywords>
+        <keyword>corner</keyword>
+        <keyword>marker</keyword>
+        <keyword>triangle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="replace_by_finder.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>icon</keyword>
+        <keyword>image</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>picture</keyword>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="replace_by_finder_150.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>icon</keyword>
+        <keyword>image</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>picture</keyword>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+    <icon filename="replace_by_finder_200.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>find</keyword>
+        <keyword>icon</keyword>
+        <keyword>image</keyword>
+        <keyword>magnifier</keyword>
+        <keyword>picture</keyword>
+        <keyword>refresh</keyword>
+        <keyword>repeat</keyword>
+        <keyword>revert</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>

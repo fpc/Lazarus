@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="tcheckboxthemed.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>components</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckboxthemed_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>components</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tcheckboxthemed_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>checkbox</keyword>
+        <keyword>components</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdividerbevel.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>divider</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdividerbevel_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>divider</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tdividerbevel_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>divider</keyword>
+        <keyword>palette</keyword>
+        <keyword>text</keyword>
+      </keywords>
+    </icon>
+    <icon filename="textendednotebook.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>notebook</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabs</keyword>
+      </keywords>
+    </icon>
+    <icon filename="textendednotebook_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>notebook</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabs</keyword>
+      </keywords>
+    </icon>
+    <icon filename="textendednotebook_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>notebook</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabs</keyword>
+      </keywords>
+    </icon>
+    <icon filename="textendedtabcontrol.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabs</keyword>
+      </keywords>
+    </icon>
+    <icon filename="textendedtabcontrol_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabs</keyword>
+      </keywords>
+    </icon>
+    <icon filename="textendedtabcontrol_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>palette</keyword>
+        <keyword>tabs</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfloatspineditex.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfloatspineditex_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tfloatspineditex_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistfilteredit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>filter</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistfilteredit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>filter</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistfilteredit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>filter</keyword>
+        <keyword>listbox</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistviewfilteredit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>files</keyword>
+        <keyword>filter</keyword>
+        <keyword>list</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistviewfilteredit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>files</keyword>
+        <keyword>filter</keyword>
+        <keyword>list</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlistviewfilteredit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>files</keyword>
+        <keyword>filter</keyword>
+        <keyword>list</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlvlgraphcontrol.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>hierarchy</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlvlgraphcontrol_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>hierarchy</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlvlgraphcontrol_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>hierarchy</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshortpathedit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>components</keyword>
+        <keyword>filter</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshortpathedit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>components</keyword>
+        <keyword>filter</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tshortpathedit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>combobox</keyword>
+        <keyword>components</keyword>
+        <keyword>filter</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tspineditex.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tspineditex_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tspineditex_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+        <keyword>spin</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttreefilteredit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>files</keyword>
+        <keyword>filter</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttreefilteredit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>files</keyword>
+        <keyword>filter</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="ttreefilteredit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>files</keyword>
+        <keyword>filter</keyword>
+        <keyword>palette</keyword>
+        <keyword>tree</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlazintegeredit.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlazintegeredit_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+    <icon filename="tlazintegeredit_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>components</keyword>
+        <keyword>edit</keyword>
+        <keyword>number</keyword>
+        <keyword>palette</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>
