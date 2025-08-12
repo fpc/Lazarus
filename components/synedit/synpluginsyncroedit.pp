@@ -29,7 +29,7 @@ uses
   Classes, Controls, SysUtils, Forms, Graphics, SynEditMiscClasses, LCLType,
   SynEdit, SynPluginSyncronizedEditBase, SynEditMiscProcs,
   SynEditMouseCmds, SynEditKeyCmds, SynEditTypes, SynEditHighlighter, LCLIntf,
-  LazUTF8, LazLoggerBase;
+  LazUTF8, LazLoggerBase, LazEditMiscProcs;
 
 type
 
@@ -289,31 +289,6 @@ const
   MAX_SYNC_ED_WORDS = 50;// 250;
   MAX_WORDS_PER_SCAN = 5000;
   MIN_PROCESS_MSG_TIME = (1/86400)/15;
-
-Operator = (P1, P2 : TPoint) : Boolean;
-begin
-  Result := (P1.Y = P2.Y) and (P1.X = P2.X);
-end;
-
-Operator < (P1, P2 : TPoint) : Boolean;
-begin
-  Result := (P1.Y < P2.Y) or ( (P1.Y = P2.Y) and (P1.X < P2.X) );
-end;
-
-Operator <= (P1, P2 : TPoint) : Boolean;
-begin
-  Result := (P1.Y < P2.Y) or ( (P1.Y = P2.Y) and (P1.X <= P2.X) );
-end;
-
-Operator > (P1, P2 : TPoint) : Boolean;
-begin
-  Result := (P1.Y > P2.Y) or ( (P1.Y = P2.Y) and (P1.X > P2.X) );
-end;
-
-Operator >= (P1, P2 : TPoint) : Boolean;
-begin
-  Result := (P1.Y > P2.Y) or ( (P1.Y = P2.Y) and (P1.X >= P2.X) );
-end;
 
 { TSynPluginSyncroEditWordsList }
 

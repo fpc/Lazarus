@@ -53,7 +53,7 @@ interface
 uses
   Classes, Graphics, SysUtils, Math, RegExpr,
   SynEditStrConst, SynEditTypes, SynEditTextBase,
-  SynEditHighlighter, LazEditTextAttributes,
+  SynEditHighlighter, LazEditTextAttributes, LazEditMiscProcs,
   {$IFDEF SynDebugMultiHL}LazLoggerBase{$ELSE}LazLoggerDummy{$ENDIF}, LazUTF8
   ;
 
@@ -350,21 +350,6 @@ var
 
 const
   TokenKindPerHighlighter = 100;
-
-operator > (p1, p2 : TPoint) b : boolean;
-begin
-  Result := (p1.y > p2.y) or ( (p1.y = p2.y) and (p1.x > p2.x) );
-end;
-
-operator >= (p1, p2 : TPoint) b : boolean;
-begin
-  Result := (p1.y > p2.y) or ( (p1.y = p2.y) and (p1.x >= p2.x) );
-end;
-
-operator < (p1, p2 : TPoint) b : boolean;
-begin
-  Result := (p1.y < p2.y) or ( (p1.y = p2.y) and (p1.x < p2.x) );
-end;
 
 function dbgs(const ASect: TSynHLightMultiVirtualSection): String;
 begin
