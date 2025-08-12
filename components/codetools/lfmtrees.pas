@@ -1023,8 +1023,15 @@ begin
               FTokenEnd:=FTokenStart;
               break;
             end;
-          ' ','a'..'f','A'..'F','0'..'9':
+          ' ',#9:
             inc(FTokenStart);
+          'a'..'f','A'..'F','0'..'9':
+            repeat
+              inc(FTokenStart);
+              if (FTokenStart=FSourceEnd) or not IsHexNumberChar[FTokenStart^] then
+                ParseError('binary must have even number of digits');
+              inc(FTokenStart);
+            until (FTokenStart=FSourceEnd) or not IsHexNumberChar[FTokenStart^];
           #10,#13:
             begin
               inc(FTokenStart);

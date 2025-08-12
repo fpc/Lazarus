@@ -54,6 +54,7 @@ type
     procedure LFM_RootUnitnameWrong;
     procedure LFM_ChildUnitnameWrong;
     procedure LFM_BinaryData;
+    procedure LFM_BinaryData_OddError;
     procedure LFM_Set;
     procedure LFM_List;
     procedure LFM_Collection;
@@ -410,6 +411,8 @@ end;
 
 procedure TTestLFMTrees.LFM_BinaryData;
 begin
+  // Note: binary is streamed via DefineProperties, so codetools can't know Data
+  // test that at least the binary is parsed, even though it cannot be resolved
   AddControls;
   AddFormUnit(['Button1: TButton']);
   FLFMCode:=AddSource('unit1.lfm',LinesToStr([
@@ -425,6 +428,26 @@ begin
     'end'
     ]));
   CheckLFMExpectedError(lfmeIdentifierNotFound,CodeXYPosition(11,3,FLFMCode),'identifier Data not found in class "TBitmap"');
+end;
+
+procedure TTestLFMTrees.LFM_BinaryData_OddError;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: TForm1',
+    '  object Button1: TButton',
+    '    Glyph.Data = {',
+    // the hexnumber has an odd number of digits
+    '      36E040000424D3604000000000000360000002800000010000000100000000100',
+    '      49EE000000000004000064000000640000000000000000000000000000000000',
+    '    }',
+    '    Caption = ''ClickMe''',
+    '    Default = True',
+    '  end',
+    'end'
+    ]));
+  CheckLFMExpectedError(lfmeParseError,CodeXYPosition(72,4,FLFMCode),'binary must have even number of digits');
 end;
 
 procedure TTestLFMTrees.LFM_Set;
@@ -461,6 +484,8 @@ end;
 
 procedure TTestLFMTrees.LFM_Collection;
 begin
+  // Note: the TCollectionItem is unknown to codetools
+  // test that at least the collection is parsed, even though it cannot be resolved
   AddControls('controls.pas',true);
   AddFormUnit(['Grid1: TGrid']);
   FLFMCode:=AddSource('unit1.lfm',LinesToStr([
