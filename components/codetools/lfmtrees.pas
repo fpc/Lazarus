@@ -93,6 +93,7 @@ type
     constructor CreateVirtual; override;
     function GetFullName(UnitNameSep: char = '/'; WithName: boolean = true): string;
     function GetIdentifier: string; override;
+    function GetPropertyPath: string;
   end;
 
   { TLFMNameParts }
@@ -123,6 +124,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Add(const Name: string; NamePosition: integer);
+    function GetPropertyPath: string;
   end;
 
 
@@ -144,7 +146,8 @@ type
   public
     ValueType: TLFMValueType;
     constructor CreateVirtual; override;
-    function ReadString: string;
+    function ReadString: string; // for a string value
+    procedure ReadLines(List: TStrings);
   end;
 
 
@@ -315,7 +318,7 @@ type
     function FirstErrorAsString: string;
 
     function FindProperty(PropertyPath: string;
-                          ContextNode: TLFMTreeNode): TLFMPropertyNode;
+                          ContextNode: TLFMTreeNode = nil): TLFMPropertyNode;
 
     function TokenIsSymbol(const s: Shortstring): boolean;
     function TokenIsIdentifier(const s: Shortstring): boolean;
@@ -372,7 +375,14 @@ const
     'EndNotFound'
     );
     
-  TLFMValueTypeNames: array[TLFMValueType] of string = (
+  LFMNodeTypeNames: array[TLFMNodeType] of string = (
+    'Object',
+    'Property',
+    'Value',
+    'Enum'
+    );
+
+  LFMValueTypeNames: array[TLFMValueType] of string = (
     'None',
     'Integer',
     'Float',
@@ -977,8 +987,11 @@ begin
       begin
         CreateChildNode(TLFMValueNodeList);
         NextToken;
-        while FTokenChar <> ')' do
+        while FTokenChar <> ')' do begin
+          if FTokenKind<>ltkString then
+            ParseErrorExp('string');
           ProcessValue;
+        end;
         NextToken;
         CloseChildNode;
       end;
@@ -1502,6 +1515,19 @@ begin
   Result:=GetFullName;
 end;
 
+function TLFMObjectNode.GetPropertyPath: string;
+var
+  Node: TLFMTreeNode;
+begin
+  Result:=Name;
+  Node:=Parent;
+  while Node<>nil do begin
+    if Node is TLFMObjectNode then
+      Result:=TLFMObjectNode(Node).Name+'.'+Result;
+    Node:=Node.Parent;
+  end;
+end;
+
 { TLFMPropertyNode }
 
 constructor TLFMPropertyNode.CreateVirtual;
@@ -1532,6 +1558,13 @@ begin
     CompleteName:=Name;
 end;
 
+function TLFMPropertyNode.GetPropertyPath: string;
+begin
+  Result:=CompleteName;
+  if Parent is TLFMObjectNode then
+    Result:=TLFMObjectNode(Parent).GetPropertyPath+'.'+Result;
+end;
+
 { TLFMValueNode }
 
 constructor TLFMValueNode.CreateVirtual;
@@ -1542,30 +1575,62 @@ end;
 
 function TLFMValueNode.ReadString: string;
 var
-  p: LongInt;
   Src: String;
-  i: integer;
-  AtomStart: LongInt;
+  p, StartP, i: integer;
 begin
   Result:='';
   if ValueType<>lfmvString then exit;
-  p:=StartPos;
-  AtomStart:=p;
   Src:=Tree.LFMBuffer.Source;
-  repeat
-    ReadRawNextPascalAtom(Src,p,AtomStart);
-    if AtomStart>length(Src) then exit;
-    if Src[AtomStart]='''' then begin
-      Result:=Result+copy(Src,AtomStart+1,p-AtomStart-2)
-    end else if Src[AtomStart]='+' then begin
-      // skip
-    end else if Src[AtomStart]='#' then begin
-      i:=StrToIntDef(copy(Src,AtomStart+1,p-AtomStart-1),-1);
-      if (i<0) or (i>255) then exit;
-      Result:=Result+chr(i);
-    end else
-      exit;
-  until false;
+  p:=StartPos;
+  while p<EndPos do begin
+    case Src[p] of
+    '''':
+      begin
+        inc(p);
+        StartP:=p;
+        repeat
+          if p=EndPos then exit; // error
+          if Src[p]='''' then break;
+          inc(p);
+        until false;
+        Result:=Result+copy(Src,StartP,p-StartP);
+        inc(p);
+      end;
+    '+':
+      inc(p); // one string broken into several lines
+    '#':
+      begin
+        i:=0;
+        inc(p);
+        while (p<EndPos) and (Src[p] in ['0'..'9']) do begin
+          i:=i*10 + ord(Src[p])-ord('0');
+          if i>255 then
+            exit; // error
+          inc(p);
+        end;
+        Result:=Result+chr(i);
+      end;
+    ' ',#9,#10,#13: inc(p);
+    else
+      exit; // error
+    end;
+  end;
+end;
+
+procedure TLFMValueNode.ReadLines(List: TStrings);
+var
+  Node: TLFMValueNode;
+begin
+  if ValueType=lfmvString then
+    List.Add(ReadString)
+  else if ValueType=lfmvList then begin
+    Node:=FirstChild as TLFMValueNode;
+    while Node<>nil do begin
+      if Node.ValueType=lfmvString then
+        List.Add(Node.ReadString);
+      Node:=TLFMValueNode(Node.NextSibling);
+    end;
+  end;
 end;
 
 { TLFMValueNodeSymbol }
