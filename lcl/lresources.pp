@@ -614,6 +614,17 @@ implementation
 const
   LineEnd: ShortString = LineEnding;
 
+  Res32bitHeader: array[0..31] of byte = (
+    0,0,0,0,
+    32,0,0,0,
+    255,255,0,0,
+    255,255,0,0,
+    0,0,0,0,
+    0,0,0,0,
+    0,0,0,0,
+    0,0,0,0
+    );
+
 var
   ByteToStr: array[char] of shortstring;
   ByteToStrValid: boolean=false;
@@ -2625,18 +2636,31 @@ begin
 end;
 
 function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
+const
+  FirstTextChars = ['o','O','i','I',' ',#13,#11,#9];
 var
   Pos: TStreamSeekType;
-  Signature: TFilerSignature;
+  Header: array[0..3] of byte;
 begin
   Pos := Stream.Position;
-  Signature[1] := #0; // initialize, in case the stream is at its end
-  Stream.Read(Signature, length(Signature));
+  FillByte(Header[0],4,0); // initialize, in case the stream is at its end
+  Stream.Read(Header[0], 4);
   Stream.Position := Pos;
-  if (Signature[1] = #$FF) or (Signature = FilerSignature) then
+  if (Header[0] = $FF) and (Header[1] = 10) and (Header[2] = 0) then
+    // Delphi binary dfm format
     Result := sofBinary
+  else if CompareMem(@Header[0],@FilerSignature[1],4) then
+    // plain object format without header
+    Result := sofBinary
+  else if CompareMem(@Header[0],@Res32bitHeader[0],4) then
+    // old 32-bit resource header
+    Result := sofBinary
+  else if chr(Header[0]) in FirstTextChars then
     // text format may begin with "object", "inherited", or whitespace
-  else if Signature[1] in ['o','O','i','I',' ',#13,#11,#9] then
+    Result := sofText
+  else if (Header[0]=$ef) and (Header[1]=$bb) and (Header[2]=$bf)
+      and (chr(Header[3]) in FirstTextChars) then
+    // text format with UTF-8 BOM
     Result := sofText
   else
     Result := sofUnknown;
@@ -3067,8 +3091,38 @@ begin
 end;
 
 procedure LRSObjectResourceToText(Input, Output: TStream);
+var
+  Pos: TStreamSeekType;
+  Header: array[0..31] of byte;
+  Cnt: LongInt;
+  DWords: array[0..2] of DWORD;
 begin
-  Input.ReadResHeader;
+  Pos := Input.Position;
+  FillByte(Header[0],32,0); // initialize, in case the stream is at its end
+  Cnt:=Input.Read(Header[0],32);
+  if CompareMem(@Header[0],@FilerSignature[1],4) then begin
+    // plain object format without header
+    Input.Position:=Pos
+  end
+  else if (Header[0] = $FF) and (Header[1] = 10) and (Header[2] = 0) then
+  begin
+    // Windows resource (Delphi binary dfm) -> skip header
+    Input.Position:=Pos;
+    Input.ReadResHeader;
+  end
+  else if CompareMem(@Header[0],@Res32bitHeader[0],32) then
+  begin
+    // old 32-bit resource header
+    Pos:=Input.Position;
+    Cnt:=Input.Read(DWords[0],12);
+    if Cnt<12 then
+      raise EInvalidImage.Create(SInvalidImage);
+    if LEtoN(DWords[2])<>$000AFFFF then
+      raise EInvalidImage.Create(SInvalidImage);
+    Input.Position:=Pos+LEtoN(DWords[1]);
+  end else
+    raise EInvalidImage.Create(SInvalidImage);
+
   LRSObjectBinaryToText(Input, Output);
 end;
 
