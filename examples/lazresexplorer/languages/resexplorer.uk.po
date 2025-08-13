@@ -25,17 +25,13 @@ msgstr "Всі файли (*.*)|*.*|Виконувані файли (*.exe)|*.ex
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr "Всі файли (*)|*|Спільні бібліотеки (*.so)|*.so"
 
+#: reconstsunit.sbinary
+msgid "Binary view"
+msgstr ""
+
 #: reconstsunit.sbuilddate
 msgid "Build date: "
 msgstr "Дата збирання : "
-
-#: reconstsunit.scarbonwidgetset
-msgid "Carbon widget set"
-msgstr "Набір віджетів Carbon"
-
-#: reconstsunit.scocoawidgetset
-msgid "Cocoa widget set"
-msgstr ""
 
 #: reconstsunit.sexit
 msgid "Exit"
@@ -48,24 +44,6 @@ msgstr "Файл"
 #: reconstsunit.sfpcversion
 msgid "FPC version: "
 msgstr "Версія FPC: "
-
-#: reconstsunit.sfpguiwidgetset
-msgid "FpGUI widget set"
-msgstr "Набір віджетів FpGUI"
-
-#: reconstsunit.sgtk2widgetset
-#, fuzzy
-#| msgid "GTK 2 widget set"
-msgid "GTK2 widget set"
-msgstr "Набір віджетів GTK 2"
-
-#: reconstsunit.sgtk3widgetset
-msgid "GTK3 widget set"
-msgstr ""
-
-#: reconstsunit.sgtkwidgetset
-msgid "GTK widget set"
-msgstr "Набір віджетів GTK"
 
 #: reconstsunit.sheight
 msgid "Height:"
@@ -105,7 +83,9 @@ msgid "Open ..."
 msgstr "Відкрити ..."
 
 #: reconstsunit.sotherguiwidgetset
-msgid "Other gui"
+#, fuzzy
+#| msgid "Other gui"
+msgid "Other GUI"
 msgstr "Інший ГІК"
 
 #: reconstsunit.spixelformat
@@ -115,18 +95,6 @@ msgstr ""
 #: reconstsunit.sprevimage
 msgid "Previous image"
 msgstr ""
-
-#: reconstsunit.sqt5widgetset
-msgid "QT5 widget set"
-msgstr ""
-
-#: reconstsunit.sqt6widgetset
-msgid "QT6 widget set"
-msgstr ""
-
-#: reconstsunit.sqtwidgetset
-msgid "QT widget set"
-msgstr "Набір віджетів QT"
 
 #: reconstsunit.sresourceexplorer
 msgid "Resource explorer"
@@ -152,15 +120,12 @@ msgstr "Цільовий процесор: "
 msgid "Target OS: "
 msgstr "Цільова ОС: "
 
+#: reconstsunit.swidgetset
+#, object-pascal-format
+msgid "%s widget set"
+msgstr ""
+
 #: reconstsunit.swidth
 msgid "Width:"
 msgstr ""
-
-#: reconstsunit.swin32_64widgetset
-msgid "Win32/Win64 widget set"
-msgstr "Набір віджетів Win32/Win64"
-
-#: reconstsunit.swincewidgetset
-msgid "WinCE widget set"
-msgstr "Набір віджетів WinCE"
 

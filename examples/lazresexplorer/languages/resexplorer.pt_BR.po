@@ -23,17 +23,13 @@ msgstr "Todos arquivos (*.*)|*.*|Arquivos executáveis (*.exe)|*.exe|DLL (*.dll)
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr "Todos arquivos (*)|*|Bibliotecas compartilhadas (*.so)|*.so"
 
+#: reconstsunit.sbinary
+msgid "Binary view"
+msgstr ""
+
 #: reconstsunit.sbuilddate
 msgid "Build date: "
 msgstr "Data construção:"
-
-#: reconstsunit.scarbonwidgetset
-msgid "Carbon widget set"
-msgstr "Conjunto \"widget\" Carbon"
-
-#: reconstsunit.scocoawidgetset
-msgid "Cocoa widget set"
-msgstr ""
 
 #: reconstsunit.sexit
 msgid "Exit"
@@ -46,24 +42,6 @@ msgstr "Arquivo"
 #: reconstsunit.sfpcversion
 msgid "FPC version: "
 msgstr "Versão FPC:"
-
-#: reconstsunit.sfpguiwidgetset
-msgid "FpGUI widget set"
-msgstr "Conjunto \"widget\" FpGUI"
-
-#: reconstsunit.sgtk2widgetset
-#, fuzzy
-#| msgid "GTK 2 widget set"
-msgid "GTK2 widget set"
-msgstr "Conjunto \"widget\" GTK2"
-
-#: reconstsunit.sgtk3widgetset
-msgid "GTK3 widget set"
-msgstr ""
-
-#: reconstsunit.sgtkwidgetset
-msgid "GTK widget set"
-msgstr "Conjunto \"widget\" GTK"
 
 #: reconstsunit.sheight
 msgid "Height:"
@@ -103,7 +81,9 @@ msgid "Open ..."
 msgstr "Abrir ..."
 
 #: reconstsunit.sotherguiwidgetset
-msgid "Other gui"
+#, fuzzy
+#| msgid "Other gui"
+msgid "Other GUI"
 msgstr "Outro \"gui\""
 
 #: reconstsunit.spixelformat
@@ -113,18 +93,6 @@ msgstr ""
 #: reconstsunit.sprevimage
 msgid "Previous image"
 msgstr ""
-
-#: reconstsunit.sqt5widgetset
-msgid "QT5 widget set"
-msgstr ""
-
-#: reconstsunit.sqt6widgetset
-msgid "QT6 widget set"
-msgstr ""
-
-#: reconstsunit.sqtwidgetset
-msgid "QT widget set"
-msgstr "Conjunto \"widget\" QT"
 
 #: reconstsunit.sresourceexplorer
 msgid "Resource explorer"
@@ -150,15 +118,12 @@ msgstr "CPU Alvo:"
 msgid "Target OS: "
 msgstr "SO Alvo:"
 
+#: reconstsunit.swidgetset
+#, object-pascal-format
+msgid "%s widget set"
+msgstr ""
+
 #: reconstsunit.swidth
 msgid "Width:"
 msgstr ""
-
-#: reconstsunit.swin32_64widgetset
-msgid "Win32/Win64 widget set"
-msgstr "Conjunto \"widget\" Win32/Win64"
-
-#: reconstsunit.swincewidgetset
-msgid "WinCE widget set"
-msgstr "Conjunto \"widget\" WinCE"
 

@@ -24,19 +24,15 @@ msgstr ""
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr ""
 
+#: reconstsunit.sbinary
+msgid "Binary view"
+msgstr ""
+
 #: reconstsunit.sbuilddate
 #, fuzzy
 #| msgid "Build date : "
 msgid "Build date: "
 msgstr "Datum sestavení : "
-
-#: reconstsunit.scarbonwidgetset
-msgid "Carbon widget set"
-msgstr "Sada widgetů Carbon"
-
-#: reconstsunit.scocoawidgetset
-msgid "Cocoa widget set"
-msgstr ""
 
 #: reconstsunit.sexit
 msgid "Exit"
@@ -51,24 +47,6 @@ msgstr "Soubor"
 #| msgid "FPC version : "
 msgid "FPC version: "
 msgstr "Verze FPC : "
-
-#: reconstsunit.sfpguiwidgetset
-msgid "FpGUI widget set"
-msgstr "Sada widgetů FpGUI"
-
-#: reconstsunit.sgtk2widgetset
-#, fuzzy
-#| msgid "GTK 2 widget set"
-msgid "GTK2 widget set"
-msgstr "Sada widgetů GTK 2"
-
-#: reconstsunit.sgtk3widgetset
-msgid "GTK3 widget set"
-msgstr ""
-
-#: reconstsunit.sgtkwidgetset
-msgid "GTK widget set"
-msgstr "Sada widgetů GTK"
 
 #: reconstsunit.sheight
 msgid "Height:"
@@ -110,7 +88,9 @@ msgid "Open ..."
 msgstr "Otevřít..."
 
 #: reconstsunit.sotherguiwidgetset
-msgid "Other gui"
+#, fuzzy
+#| msgid "Other gui"
+msgid "Other GUI"
 msgstr "Jiné GUI"
 
 #: reconstsunit.spixelformat
@@ -120,18 +100,6 @@ msgstr ""
 #: reconstsunit.sprevimage
 msgid "Previous image"
 msgstr ""
-
-#: reconstsunit.sqt5widgetset
-msgid "QT5 widget set"
-msgstr ""
-
-#: reconstsunit.sqt6widgetset
-msgid "QT6 widget set"
-msgstr ""
-
-#: reconstsunit.sqtwidgetset
-msgid "QT widget set"
-msgstr "Sada widgetů QT"
 
 #: reconstsunit.sresourceexplorer
 msgid "Resource explorer"
@@ -163,15 +131,12 @@ msgstr "Cílový CPU : "
 msgid "Target OS: "
 msgstr "Cílový OS : "
 
+#: reconstsunit.swidgetset
+#, object-pascal-format
+msgid "%s widget set"
+msgstr ""
+
 #: reconstsunit.swidth
 msgid "Width:"
 msgstr ""
-
-#: reconstsunit.swin32_64widgetset
-msgid "Win32/Win64 widget set"
-msgstr "Sada widgetů Win32/Win64"
-
-#: reconstsunit.swincewidgetset
-msgid "WinCE widget set"
-msgstr "Sada widgetů WinCE"
 

@@ -13,16 +13,12 @@ msgstr ""
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr ""
 
+#: reconstsunit.sbinary
+msgid "Binary view"
+msgstr ""
+
 #: reconstsunit.sbuilddate
 msgid "Build date: "
-msgstr ""
-
-#: reconstsunit.scarbonwidgetset
-msgid "Carbon widget set"
-msgstr ""
-
-#: reconstsunit.scocoawidgetset
-msgid "Cocoa widget set"
 msgstr ""
 
 #: reconstsunit.sexit
@@ -35,22 +31,6 @@ msgstr ""
 
 #: reconstsunit.sfpcversion
 msgid "FPC version: "
-msgstr ""
-
-#: reconstsunit.sfpguiwidgetset
-msgid "FpGUI widget set"
-msgstr ""
-
-#: reconstsunit.sgtk2widgetset
-msgid "GTK2 widget set"
-msgstr ""
-
-#: reconstsunit.sgtk3widgetset
-msgid "GTK3 widget set"
-msgstr ""
-
-#: reconstsunit.sgtkwidgetset
-msgid "GTK widget set"
 msgstr ""
 
 #: reconstsunit.sheight
@@ -91,7 +71,7 @@ msgid "Open ..."
 msgstr ""
 
 #: reconstsunit.sotherguiwidgetset
-msgid "Other gui"
+msgid "Other GUI"
 msgstr ""
 
 #: reconstsunit.spixelformat
@@ -100,18 +80,6 @@ msgstr ""
 
 #: reconstsunit.sprevimage
 msgid "Previous image"
-msgstr ""
-
-#: reconstsunit.sqt5widgetset
-msgid "QT5 widget set"
-msgstr ""
-
-#: reconstsunit.sqt6widgetset
-msgid "QT6 widget set"
-msgstr ""
-
-#: reconstsunit.sqtwidgetset
-msgid "QT widget set"
 msgstr ""
 
 #: reconstsunit.sresourceexplorer
@@ -138,15 +106,12 @@ msgstr ""
 msgid "Target OS: "
 msgstr ""
 
+#: reconstsunit.swidgetset
+#, object-pascal-format
+msgid "%s widget set"
+msgstr ""
+
 #: reconstsunit.swidth
 msgid "Width:"
-msgstr ""
-
-#: reconstsunit.swin32_64widgetset
-msgid "Win32/Win64 widget set"
-msgstr ""
-
-#: reconstsunit.swincewidgetset
-msgid "WinCE widget set"
 msgstr ""
 

@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
 
 #: reconstsunit.sabout
 msgctxt "reconstsunit.sabout"
@@ -22,17 +24,13 @@ msgstr "Все файлы (*.*)|*.*|Исполнимые файлы (*.exe)|*.ex
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr "Все файлы (*)|*|Динамические библиотеки (*.so)|*.so"
 
+#: reconstsunit.sbinary
+msgid "Binary view"
+msgstr "Двоичное представление"
+
 #: reconstsunit.sbuilddate
 msgid "Build date: "
 msgstr "Дата сборки: "
-
-#: reconstsunit.scarbonwidgetset
-msgid "Carbon widget set"
-msgstr "Библиотека виджетов Carbon"
-
-#: reconstsunit.scocoawidgetset
-msgid "Cocoa widget set"
-msgstr ""
 
 #: reconstsunit.sexit
 msgctxt "reconstsunit.sexit"
@@ -48,27 +46,9 @@ msgstr "Файл"
 msgid "FPC version: "
 msgstr "Версия FPC: "
 
-#: reconstsunit.sfpguiwidgetset
-msgid "FpGUI widget set"
-msgstr "Библиотека виджетов FpGUI"
-
-#: reconstsunit.sgtk2widgetset
-#, fuzzy
-#| msgid "GTK 2 widget set"
-msgid "GTK2 widget set"
-msgstr "Библиотека виджетов GTK 2"
-
-#: reconstsunit.sgtk3widgetset
-msgid "GTK3 widget set"
-msgstr ""
-
-#: reconstsunit.sgtkwidgetset
-msgid "GTK widget set"
-msgstr "Библиотека виджетов GTK"
-
 #: reconstsunit.sheight
 msgid "Height:"
-msgstr ""
+msgstr "Высота:"
 
 #: reconstsunit.shelp
 msgctxt "reconstsunit.shelp"
@@ -82,12 +62,12 @@ msgstr "Изображение"
 
 #: reconstsunit.simageindex
 msgid "Image index:"
-msgstr ""
+msgstr "Индекс изображения:"
 
 #: reconstsunit.sindexofcount
 #, object-pascal-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d из %d"
 
 #: reconstsunit.slclversion
 msgid "LCL Version: "
@@ -99,7 +79,7 @@ msgstr "Это свободное ПО, распространяющееся п�
 
 #: reconstsunit.snextimage
 msgid "Next image"
-msgstr ""
+msgstr "Следующее изображение"
 
 #: reconstsunit.sopen
 msgctxt "reconstsunit.sopen"
@@ -107,28 +87,16 @@ msgid "Open ..."
 msgstr "Открыть ..."
 
 #: reconstsunit.sotherguiwidgetset
-msgid "Other gui"
+msgid "Other GUI"
 msgstr "Другая библиотека виджетов"
 
 #: reconstsunit.spixelformat
 msgid "Pixel format:"
-msgstr ""
+msgstr "Формат пикселя:"
 
 #: reconstsunit.sprevimage
 msgid "Previous image"
-msgstr ""
-
-#: reconstsunit.sqt5widgetset
-msgid "QT5 widget set"
-msgstr ""
-
-#: reconstsunit.sqt6widgetset
-msgid "QT6 widget set"
-msgstr ""
-
-#: reconstsunit.sqtwidgetset
-msgid "QT widget set"
-msgstr "Библиотека виджетов Qt"
+msgstr "Предыдущее изображение"
 
 #: reconstsunit.sresourceexplorer
 msgid "Resource explorer"
@@ -155,15 +123,12 @@ msgstr "Целевой процессор: "
 msgid "Target OS: "
 msgstr "Целевая ОС: "
 
+#: reconstsunit.swidgetset
+#, object-pascal-format
+msgid "%s widget set"
+msgstr "Библиотека виджетов %s"
+
 #: reconstsunit.swidth
 msgid "Width:"
-msgstr ""
-
-#: reconstsunit.swin32_64widgetset
-msgid "Win32/Win64 widget set"
-msgstr "Библиотека виджетов Win32/Win64"
-
-#: reconstsunit.swincewidgetset
-msgid "WinCE widget set"
-msgstr "Библиотека виджетов WinCE"
+msgstr "Ширина:"
 

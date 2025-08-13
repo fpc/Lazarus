@@ -24,17 +24,13 @@ msgstr "所有文件 (*.*)|*.*|可执行文件 (*.exe)|*.exe|DLL (*.dll)|*.dll"
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr "所有文件 (*)|*|共享库 (*.so)|*.so"
 
+#: reconstsunit.sbinary
+msgid "Binary view"
+msgstr ""
+
 #: reconstsunit.sbuilddate
 msgid "Build date: "
 msgstr "构建日期："
-
-#: reconstsunit.scarbonwidgetset
-msgid "Carbon widget set"
-msgstr "Carbon 组件集"
-
-#: reconstsunit.scocoawidgetset
-msgid "Cocoa widget set"
-msgstr ""
 
 #: reconstsunit.sexit
 msgid "Exit"
@@ -47,24 +43,6 @@ msgstr "文件"
 #: reconstsunit.sfpcversion
 msgid "FPC version: "
 msgstr "FPC 版本："
-
-#: reconstsunit.sfpguiwidgetset
-msgid "FpGUI widget set"
-msgstr "FpGUI 组件集"
-
-#: reconstsunit.sgtk2widgetset
-#, fuzzy
-#| msgid "GTK 2 widget set"
-msgid "GTK2 widget set"
-msgstr "GTK 2 组件集"
-
-#: reconstsunit.sgtk3widgetset
-msgid "GTK3 widget set"
-msgstr ""
-
-#: reconstsunit.sgtkwidgetset
-msgid "GTK widget set"
-msgstr "GTK 组件集"
 
 #: reconstsunit.sheight
 msgid "Height:"
@@ -104,7 +82,9 @@ msgid "Open ..."
 msgstr "打开..."
 
 #: reconstsunit.sotherguiwidgetset
-msgid "Other gui"
+#, fuzzy
+#| msgid "Other gui"
+msgid "Other GUI"
 msgstr "其他图形界面"
 
 #: reconstsunit.spixelformat
@@ -114,18 +94,6 @@ msgstr ""
 #: reconstsunit.sprevimage
 msgid "Previous image"
 msgstr ""
-
-#: reconstsunit.sqt5widgetset
-msgid "QT5 widget set"
-msgstr ""
-
-#: reconstsunit.sqt6widgetset
-msgid "QT6 widget set"
-msgstr ""
-
-#: reconstsunit.sqtwidgetset
-msgid "QT widget set"
-msgstr "QT 组件集"
 
 #: reconstsunit.sresourceexplorer
 msgid "Resource explorer"
@@ -151,15 +119,12 @@ msgstr "目标 CPU:"
 msgid "Target OS: "
 msgstr "目标操作系统："
 
+#: reconstsunit.swidgetset
+#, object-pascal-format
+msgid "%s widget set"
+msgstr ""
+
 #: reconstsunit.swidth
 msgid "Width:"
 msgstr ""
-
-#: reconstsunit.swin32_64widgetset
-msgid "Win32/Win64 widget set"
-msgstr "Win32/Win64 组件集"
-
-#: reconstsunit.swincewidgetset
-msgid "WinCE widget set"
-msgstr "WinCE 组件集"
 

@@ -24,17 +24,13 @@ msgstr "Tous les fichiers (*.*)|*.*|Exécutables (*.exe)|*.exe|DLL (*.dll)|*.dll
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr "Tous les fichiers (*)|*|Bibliothèques partagées (*.so)|*.so"
 
+#: reconstsunit.sbinary
+msgid "Binary view"
+msgstr ""
+
 #: reconstsunit.sbuilddate
 msgid "Build date: "
 msgstr "Date de création : "
-
-#: reconstsunit.scarbonwidgetset
-msgid "Carbon widget set"
-msgstr "Jeu graphique Carbon"
-
-#: reconstsunit.scocoawidgetset
-msgid "Cocoa widget set"
-msgstr ""
 
 #: reconstsunit.sexit
 msgid "Exit"
@@ -47,24 +43,6 @@ msgstr "Fichier"
 #: reconstsunit.sfpcversion
 msgid "FPC version: "
 msgstr "Version FPC : "
-
-#: reconstsunit.sfpguiwidgetset
-msgid "FpGUI widget set"
-msgstr "Jeu graphique FpGUI"
-
-#: reconstsunit.sgtk2widgetset
-#, fuzzy
-#| msgid "GTK 2 widget set"
-msgid "GTK2 widget set"
-msgstr "Jeu graphique GTK 2"
-
-#: reconstsunit.sgtk3widgetset
-msgid "GTK3 widget set"
-msgstr ""
-
-#: reconstsunit.sgtkwidgetset
-msgid "GTK widget set"
-msgstr "Jeu graphique GTK 1"
 
 #: reconstsunit.sheight
 msgid "Height:"
@@ -104,7 +82,9 @@ msgid "Open ..."
 msgstr "Ouvrir..."
 
 #: reconstsunit.sotherguiwidgetset
-msgid "Other gui"
+#, fuzzy
+#| msgid "Other gui"
+msgid "Other GUI"
 msgstr "Autre GUI"
 
 #: reconstsunit.spixelformat
@@ -114,18 +94,6 @@ msgstr ""
 #: reconstsunit.sprevimage
 msgid "Previous image"
 msgstr ""
-
-#: reconstsunit.sqt5widgetset
-msgid "QT5 widget set"
-msgstr ""
-
-#: reconstsunit.sqt6widgetset
-msgid "QT6 widget set"
-msgstr ""
-
-#: reconstsunit.sqtwidgetset
-msgid "QT widget set"
-msgstr "Jeu graphique QT"
 
 #: reconstsunit.sresourceexplorer
 msgid "Resource explorer"
@@ -151,15 +119,12 @@ msgstr "Processeur cible : "
 msgid "Target OS: "
 msgstr "OS cible : "
 
+#: reconstsunit.swidgetset
+#, object-pascal-format
+msgid "%s widget set"
+msgstr ""
+
 #: reconstsunit.swidth
 msgid "Width:"
 msgstr ""
-
-#: reconstsunit.swin32_64widgetset
-msgid "Win32/Win64 widget set"
-msgstr "Jeu graphique Win32/Win64"
-
-#: reconstsunit.swincewidgetset
-msgid "WinCE widget set"
-msgstr "Jeu graphique WinCE"
 
