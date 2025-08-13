@@ -4,7 +4,7 @@ unit reConstsUnit;
 
 interface
 
-uses Translations, LCLPlatformDef, InterfaceBase;
+uses SysUtils, Translations, LCLPlatformDef, InterfaceBase;
 
 resourcestring
   sResourceExplorer = 'Resource explorer';
@@ -16,6 +16,7 @@ resourcestring
   sHelp             = 'Help';
   sStrings          = 'Strings';
   sImage            = 'Image';
+  sBinary           = 'Binary view';
   sLicense          = 'This program is free software under GNU GPL 2 license, see COPYING file';
   sWidth            = 'Width:';
   sHeight           = 'Height:';
@@ -30,18 +31,8 @@ resourcestring
   sFpcVersion          = 'FPC version: ';
   sTargetCPU           = 'Target CPU: ';
   sTargetOS            = 'Target OS: ';
-  sGTKWidgetSet        = 'GTK widget set';
-  sGTK2WidgetSet       = 'GTK2 widget set';
-  sGTK3WidgetSet       = 'GTK3 widget set';
-  sWin32_64WidgetSet   = 'Win32/Win64 widget set';
-  sWinCEWidgetSet      = 'WinCE widget set';
-  sCarbonWidgetSet     = 'Carbon widget set';
-  sCocoaWidgetSet      = 'Cocoa widget set';
-  sQTWidgetSet         = 'QT widget set';
-  sQT5WidgetSet        = 'QT5 widget set';
-  sQT6WidgetSet        = 'QT6 widget set';
-  sFpGUIWidgetSet      = 'FpGUI widget set';
-  sOtherGUIWidgetSet   = 'Other gui';
+  sWidgetSet           = '%s widget set';
+  sOtherGUIWidgetSet   = 'Other GUI';
   sAllFilesExcutableFilesExeExeDLLDllDll = 'All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll';
   sAllFilesSharedLibSoSo = 'All files (*)|*|Shared libraries (*.so)|*.so';
   sResources = 'Resources';
@@ -54,17 +45,17 @@ implementation
 function LCLVersionStr: string;
 begin
   case WidgetSet.LCLPlatform of
-    lpGtk:Result:=sGTKWidgetSet;
-    lpGtk2:Result:=sGTK2WidgetSet;
-    lpGtk3: Result := sGTK3WidgetSet;
-    lpWin32:Result:=sWin32_64WidgetSet;
-    lpWinCE:Result:=sWinCEWidgetSet;
-    lpCarbon:Result:=sCarbonWidgetSet;
-    lpCocoa: Result := sCocoaWidgetSet;
-    lpQT:Result:=sQTWidgetSet;
-    lpQT5: Result := sQT5WidgetSet;
-    lpQT6: Result := sQT6WidgetSet;
-    lpfpGUI: Result := sFpGUIWidgetSet;
+    lpGtk:Result:=Format(sWidgetSet, ['GTK']);
+    lpGtk2:Result:=Format(sWidgetSet, ['GTK2']);
+    lpGtk3: Result:=Format(sWidgetSet, ['GTK3']);
+    lpWin32:Result:=Format(sWidgetSet, ['Win32/Win64']);
+    lpWinCE:Result:=Format(sWidgetSet, ['WinCE']);
+    lpCarbon:Result:=Format(sWidgetSet, ['Carbon']);
+    lpCocoa: Result:=Format(sWidgetSet, ['Cocoa']);
+    lpQT:Result:=Format(sWidgetSet, ['Qt']);
+    lpQT5: Result:=Format(sWidgetSet, ['Qt5']);
+    lpQT6: Result:=Format(sWidgetSet, ['Qt6']);
+    lpfpGUI: Result:=Format(sWidgetSet, ['FpGUI']);
   else
     Result:=sOtherGUIWidgetSet;
   end;

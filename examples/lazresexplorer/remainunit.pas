@@ -133,6 +133,7 @@ begin
   MenuItem2.Caption:=sHelp;
   tabString.Caption:=sStrings;
   tabImage.Caption:=sImage;
+  tabBinary.Caption:=sBinary;
   HeaderControl1.Sections[0].Text := sResources;
   lblWidth.Caption := sWidth;
   lblHeight.Caption := sHeight;
