@@ -998,11 +998,8 @@ begin
       begin
         CreateChildNode(TLFMValueNodeList);
         NextToken;
-        while FTokenChar <> ')' do begin
-          if FTokenKind<>ltkString then
-            ParseErrorExp('string');
+        while FTokenChar <> ')' do
           ProcessValue;
-        end;
         NextToken;
         CloseChildNode;
       end;
