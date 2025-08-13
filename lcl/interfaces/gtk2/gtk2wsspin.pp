@@ -24,7 +24,7 @@ uses
   // RTL
   glib2, gtk2, SysUtils, Classes, Math,
   // LCL
-  Controls, LCLType, LCLProc, LMessages, LazUTF8, Spin, StdCtrls,
+  Controls, LCLType, LCLProc, LazUTF8, Spin, StdCtrls,
   // Widgetset
   Gtk2Extra, Gtk2Def, Gtk2WSStdCtrls,
   Gtk2Proc, WSLCLClasses, WSProc, WSSpin;

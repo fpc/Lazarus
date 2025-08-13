@@ -46,7 +46,7 @@ uses
   Gtk2WinApiWindow, Gtk2Globals, Gtk2Proc, Gtk2Def, Gtk2FontCache, Gtk2Extra, Gtk2MsgQueue,
   // LazUtils
   GraphType, GraphMath, LazFileUtils, LazUTF8, DynHashArray, Maps, IntegerList,
-  LazLoggerBase, LazTracer, LazUtilities, LazStringUtils;
+  LazLoggerBase, LazTracer, LazUtilities;
 
 type
 

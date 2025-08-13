@@ -29,7 +29,7 @@ uses
   Gtk2, Glib2, Gdk2,
   Classes, SysUtils,
   // LCL
-  LCLType, LMessages, LCLProc, Controls, Forms,
+  LCLType, LCLProc, Controls, Forms,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface

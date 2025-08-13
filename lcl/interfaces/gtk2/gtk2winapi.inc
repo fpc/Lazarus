@@ -1305,7 +1305,7 @@ var
   RegionObj: PGdkRegion;
 begin
   Points:=EllipsePolygon(Rect(X1,Y1,X2,Y2));
-  SetLength(gPoints,length(Points));
+  SetLength(gPoints{%H-},length(Points));
   for i:=0 to length(Points)-1 do begin
     gPoints[i].x:=Points[i].x;
     gPoints[i].y:=Points[i].y;
