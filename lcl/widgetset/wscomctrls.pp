@@ -833,12 +833,14 @@ begin
           Exit(ALV.Items[AIndex]);
       end;
     sdBelow:
-      while AIndex < ACount-1 do
-      begin
-        inc(AIndex);
-        if States <= ALV.Items[AIndex].GetStates then
-          Exit(ALV.Items[AIndex]);
-      end;
+      if (States <> [lisSelected]) or (not ALV.GetNextSelected(AIndex, Result)) then
+        // GetNextSelected() can only help in (OwnerData and Multiselect) mode but is much faster
+        while AIndex < ACount-1 do
+        begin
+          inc(AIndex);
+          if States <= ALV.Items[AIndex].GetStates then
+            Exit(ALV.Items[AIndex]);
+        end;
     sdAll:
       while True do
       begin

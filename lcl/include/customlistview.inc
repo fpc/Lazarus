@@ -1423,6 +1423,34 @@ begin
      Result := TWSCustomListViewClass(WidgetSetClass).GetNextItem(Self, StartItem, Direction, States);
 end;
 
+function TCustomListView.GetNextSelected(LVIndex: integer; var AItem: TListItem): boolean;
+var
+  MultiIndex : integer;           // an index into LV.
+begin
+  if (not OwnerData) or (not MultiSelect) then
+    exit(false);
+
+  if (FMultiSelList = Nil) or (FMultiSelList.Count = 0) then
+    exit(true);
+
+  AItem := Nil;
+  if LVIndex = 0 then begin            // Must be first call
+     if Items[0].Selected then
+       MultiIndex := 1                 // second entry in FMultiSelList
+     else
+       MultiIndex := 0;
+  end
+  else
+    MultiIndex := FMultiSelList.IndexOf(LVIndex) + 1;
+  while MultiIndex <  FMultiSelList.Count do
+    if Items[FMultiSelList.Items[MultiIndex]].Selected then begin
+      AItem := Items[FMultiSelList.Items[MultiIndex]];
+      exit(True)
+    end else
+      inc(MultiIndex);
+  Result := True;
+end;
+
 procedure TCustomListView.ClearSelection;
 begin
   Self.BeginUpdate;
@@ -1811,6 +1839,12 @@ var
 begin
   AProp := TListViewProperty(ALvpOrd);
   if (AProp in FProperties) = AIsSet then Exit;
+
+   if (AProp = lvpMultiselect) and ( AIsSet)  then begin
+     FreeAndNil(FMultiSelList);
+     if (FSelectedIdx > -1) and (HandleAllocated) then
+       UpdateMultiSelList(Items[FSelectedIdx], true);
+   end;
 
   if AIsSet
   then Include(FProperties, AProp)
