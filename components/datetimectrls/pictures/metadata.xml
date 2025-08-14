@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <icons>
+    <icon filename="TDateTimePicker.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>components</keyword>
+        <keyword>date</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="TDateTimePicker_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>components</keyword>
+        <keyword>date</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="TDateTimePicker_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>components</keyword>
+        <keyword>date</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="TDBDateTimePicker.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>components</keyword>
+        <keyword>database</keyword>
+        <keyword>date</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="TDBDateTimePicker_150.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>components</keyword>
+        <keyword>database</keyword>
+        <keyword>date</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+    <icon filename="TDBDateTimePicker_200.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>calendar</keyword>
+        <keyword>components</keyword>
+        <keyword>database</keyword>
+        <keyword>date</keyword>
+        <keyword>time</keyword>
+      </keywords>
+    </icon>
+  </icons>
+</metadata>
