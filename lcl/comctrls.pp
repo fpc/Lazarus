@@ -1637,7 +1637,6 @@ type
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetItemAt(x,y: integer): TListItem;
 
-
     {GetNearestItem is used to locate a list item from a position specified in
      pixel coordinates relative to the top left corner of the list view.
      It starts looking at the position specified by the Point parameter,
@@ -1650,6 +1649,9 @@ type
      Only items in the state indicated by the States parameter are considered.
      If no item is found Nil is returned.}
     function GetNextItem(StartItem: TListItem; Direction: TSearchDirection; States: TListItemStates): TListItem;
+
+    {Returns True if it has, authoritivly, set AItem to the next selected Item. }
+    function GetNextSelected(LVIndex: integer; var AItem: TListItem): boolean;
 
     procedure ClearSelection;
     procedure SelectAll;
