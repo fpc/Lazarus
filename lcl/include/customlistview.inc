@@ -1178,6 +1178,7 @@ begin
   FreeAndNil(FCanvas);
   inherited Destroy;
   FreeAndNil(FColumns);
+  FreeAndNil(FMultiSelList);
   for lvil := Low(TListViewImageList) to High(TListViewImageList) do
     FreeAndNil(FImageChangeLinks[lvil]);
   FreeAndNil(FOwnerDataItem);
