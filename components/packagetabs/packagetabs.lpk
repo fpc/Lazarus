@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="packagetabs"/>
     <Type Value="DesignTime"/>
@@ -34,25 +34,29 @@
       <Item1>
         <Filename Value="packagetabs_impl.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="packagetabs_impl"/>
+        <UnitName Value="PackageTabs_impl"/>
       </Item1>
       <Item2>
         <Filename Value="packagetabsstr.pas"/>
-        <UnitName Value="packagetabsstr"/>
+        <UnitName Value="PackageTabsStr"/>
       </Item2>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
       <EnableI18NForLFM Value="True"/>
     </i18n>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="IdePackager"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

@@ -36,6 +36,8 @@ uses
   Graphics, Menus, Clipbrd,
   // LazUtils
   LazUtilities, LazFileUtils, Laz2_XMLCfg, LazUTF8,
+  // IdePackager
+  PackageDefs,
   // IdeIntf
   SrcEditorIntf, PackageIntf, LazIDEIntf, IDEImagesIntf, IDECommands,
   IDEOptEditorIntf, ProjectIntf,
@@ -89,6 +91,12 @@ type
   TPackageTabFlowPanel = class(TFlowPanel)
   public
     constructor Create(aOwner: TComponent); override;
+  end;
+
+  TFileItem = class
+  public
+    Editor: TSourceEditorInterface;
+    MainFile: Boolean; // editor is main project or package file
   end;
 
   TGroupType = (gtProject, gtPackage, gtOther);
@@ -600,6 +608,7 @@ begin
   Files := TStringListUTF8Fast.Create;
   Files.Sorted := True;
   Files.Duplicates := dupAccept;
+  Files.OwnsObjects := True;
 end;
 
 destructor TGroupItem.Destroy;
@@ -853,6 +862,7 @@ var
   xGroupTitle, xCaptionToSort: string;
   xGroupType: TGroupType;
   xProjectFile: TLazProjectFile;
+  xFileItem: TFileItem;
 begin
   xActBtn := nil;
   FRecreateToolBar.FLastFiles.Clear;
@@ -867,14 +877,18 @@ begin
     try
       for I := 0 to FWindow.Count-1 do
       begin
+        xFileItem := TFileItem.Create;
         xEditor := FWindow.Items[I];
+        xFileItem.Editor := xEditor;
         FRecreateToolBar.FLastFiles.Add(xEditor.FileName);
         xPackage := nil;
         xProjectFile := xEditor.GetProjectFile;
+        xCaptionToSort := xEditor.PageCaption;
         if (xProjectFile<>nil) and xProjectFile.IsPartOfProject then
         begin
           xGroupType := gtProject;
-          xGroupTitle := LazarusIDE.ActiveProject.GetTitleOrName
+          xGroupTitle := LazarusIDE.ActiveProject.GetTitleOrName;
+          xFileItem.MainFile := SameFileName(LazarusIDE.ActiveProject.MainFile.Filename, xEditor.FileName);
         end else
         begin
           PackageEditingInterface.GetPackageOfSourceEditor(xPackage, xEditor);
@@ -882,6 +896,7 @@ begin
           begin
             xGroupType := gtPackage;
             xGroupTitle := xPackage.Name;
+            xFileItem.MainFile := (xPackage is TLazPackage) and SameFileName(TLazPackage(xPackage).GetSrcFilename, xEditor.FileName);
           end else
           begin
             xGroupType := gtOther;
@@ -890,10 +905,11 @@ begin
         end;
         if not xPackages.Find(xGroupType, xPackage, xPkgIndex) then
           xPkgIndex := xPackages.Add(TGroupItem.Create(xGroupType, xGroupTitle, xPackage));
-        xCaptionToSort := xEditor.PageCaption;
+        if xFileItem.MainFile then
+          xCaptionToSort := '0';
         if (xCaptionToSort<>'') and (xCaptionToSort[1] in ['*', '#']) then // delete modified or locked flag
           Delete(xCaptionToSort, 1, 1);
-        xPackages.Items[xPkgIndex].Files.AddObject(xCaptionToSort, xEditor);
+        xPackages.Items[xPkgIndex].Files.AddObject(xCaptionToSort, xFileItem);
       end;
 
       xNewIndex := 0;
@@ -938,7 +954,8 @@ begin
         end;
         for L := 0 to xPkgItem.Files.Count-1 do
         begin
-          xEditor := TSourceEditorInterface(xPkgItem.Files.Objects[L]);
+          xFileItem := TFileItem(xPkgItem.Files.Objects[L]);
+          xEditor := xFileItem.Editor;
           if FWindow.FindSourceEditorWithPageIndex(xNewIndex, FNoteBook) <> xEditor then // speed things up - check correct index
           begin
             xOldIndex := FWindow.FindPageWithEditor(xEditor, FNoteBook);
@@ -956,6 +973,8 @@ begin
           xBtn.OnMouseDown := @TabButtonMouseDown;
           xBtn.PopupMenu := FTabButtonMenu;
           xBtn.Down := xEditor = xOldActive;
+          if xFileItem.MainFile then
+            xBtn.Font.Style := xBtn.Font.Style + [fsItalic];
           if xBtn.Down then
             xActBtn := xBtn;
           xBtn.IsOtherFile := xPkgItem.&Type = gtOther;
