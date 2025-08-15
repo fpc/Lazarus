@@ -88,7 +88,7 @@ uses
   FormatFlags, SettingsTypes;
 
 const
-  BreakWords: TTokenTypeSet = [ttThen, ttDo, ttElse, ttEnd];
+  BreakWords: TTokenTypeSet = [ttThen, ttDo, ttElse, ttEnd, ttOtherwise];
 
 function GetStyle(const pt: TSourceToken): TTriOptionStyle;
 var
@@ -124,7 +124,7 @@ begin
         Result := FormattingSettings.Returns.LabelStyle;
     end;
   end
-  else if (pt.TokenType = ttElse) then
+  else if (pt.TokenType in [ttElse,ttOtherwise]) then
   begin
 
     if pt.HasParentNode(nElseCase, 1) then
