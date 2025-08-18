@@ -41,6 +41,18 @@ msgstr "שגיאה בטעינת s% מ s%s%s%s%"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "שגיאה בשמירת s% ל s%s%s%s%"
 
+#: ideutilspkgstrconsts.liserrorupdatingfrom
+#, object-pascal-format
+msgid ""
+"Error updating\n"
+"%s\n"
+"from\n"
+"%s.\n"
+"\n"
+"Error message:\n"
+"%s"
+msgstr ""
+
 #: ideutilspkgstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"

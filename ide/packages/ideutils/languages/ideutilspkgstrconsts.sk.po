@@ -40,6 +40,18 @@ msgstr "Chyba načítania %s z%s%s%s%s"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "Chyba pri ukladaní %s do%s%s%s%s"
 
+#: ideutilspkgstrconsts.liserrorupdatingfrom
+#, object-pascal-format
+msgid ""
+"Error updating\n"
+"%s\n"
+"from\n"
+"%s.\n"
+"\n"
+"Error message:\n"
+"%s"
+msgstr ""
+
 #: ideutilspkgstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"

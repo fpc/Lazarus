@@ -40,6 +40,18 @@ msgstr "%s%s%s%s adresinden %s yüklenirken hata oluştu"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "%s, %s %s %s %s'ye kaydedilirken hata oluştu"
 
+#: ideutilspkgstrconsts.liserrorupdatingfrom
+#, object-pascal-format
+msgid ""
+"Error updating\n"
+"%s\n"
+"from\n"
+"%s.\n"
+"\n"
+"Error message:\n"
+"%s"
+msgstr ""
+
 #: ideutilspkgstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"

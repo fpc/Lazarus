@@ -46,6 +46,25 @@ msgstr "Ошибка при загрузке %s из%s%s%s%s"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "Ошибка при сохранении %s в%s%s%s%s"
 
+#: ideutilspkgstrconsts.liserrorupdatingfrom
+#, object-pascal-format
+msgid ""
+"Error updating\n"
+"%s\n"
+"from\n"
+"%s.\n"
+"\n"
+"Error message:\n"
+"%s"
+msgstr ""
+"Ошибка обновления\n"
+"%s\n"
+"из\n"
+"%s.\n"
+"\n"
+"Сообщение об ошибке:\n"
+"%s"
+
 #: ideutilspkgstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"

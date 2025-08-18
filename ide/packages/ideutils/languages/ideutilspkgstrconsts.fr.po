@@ -40,6 +40,18 @@ msgstr "Erreur de chargement de %s depuis %s%s%s%s"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "Erreur d'enregistrement de %s dans%s%s%s%s"
 
+#: ideutilspkgstrconsts.liserrorupdatingfrom
+#, object-pascal-format
+msgid ""
+"Error updating\n"
+"%s\n"
+"from\n"
+"%s.\n"
+"\n"
+"Error message:\n"
+"%s"
+msgstr ""
+
 #: ideutilspkgstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
