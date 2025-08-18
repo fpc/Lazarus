@@ -4673,9 +4673,8 @@ begin
       Result := mrOk;
     except
       on E:EPOFileError do begin
-        IDEMessageDialog(lisCCOErrorCaption, Format(lisErrorLoadingFrom,
-          [ 'Update PO file '+E.POFileName, LineEnding, E.ResFileName,
-            LineEnding+LineEnding, E.Message]), mtError, [mbOk]);
+        IDEMessageDialog(lisCCOErrorCaption, Format(lisErrorUpdatingFrom,
+          [E.POFileName, E.ResFileName, E.Message]), mtError, [mbOk]);
       end;
     end;
 

@@ -67,6 +67,7 @@ resourcestring
   lisCodeToolsDefsWriteError = 'Write error';
   lisCCOErrorCaption = 'Error';
   lisErrorLoadingFrom = 'Error loading %s from%s%s%s%s';
+  lisErrorUpdatingFrom = 'Error updating'+LineEnding+'%s'+LineEnding+'from'+LineEnding+'%s.'+LineEnding+LineEnding+'Error message:'+LineEnding+'%s';
   lisErrorSavingTo = 'Error saving %s to%s%s%s%s';
   lisXMLError = 'XML Error';
   lisXMLParserErrorInFileError = 'XML parser error in file %s%sError: %s';
