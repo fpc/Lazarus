@@ -550,16 +550,15 @@ end;
 
 procedure TCocoaReadOnlyComboBoxList.Put(Index: Integer; const S: string);
 var
-  astr: NSString;
-  mn  : NSMenuItem;
+  selectedIndex: NSInteger;
 begin
   inherited Put(Index, S);
-  if ((index >= 0) and (Index <= FOwner.numberOfItems)) then
+  if ((index >= 0) and (Index < FOwner.numberOfItems)) then
   begin
-    mn := FOwner.itemAtIndex(Index);
-    astr := NSStringUtf8(S);
-    mn.setTitle(astr);
-    astr.release;
+    selectedIndex:= FOwner.indexOfSelectedItem;
+    FOwner.removeItemAtIndex(Index);
+    self.InsertItem(Index,S,nil);
+    FOwner.selectItemAtIndex(selectedIndex);
   end;
 end;
 
