@@ -375,6 +375,7 @@ var
   SrcBuf: TCodeBuffer;
   SrcLines: TStringList;
   OldChangeStep: Integer;
+  E: EPOFileError;
 begin
   POBuf:=CodeToolBoss.LoadFile(POFilename,true,false);
   SrcLines:=TStringList.Create;
@@ -400,7 +401,19 @@ begin
       SrcBuf:=CodeToolBoss.LoadFile(Filename,true,false);
       if SrcBuf=nil then continue;
       SrcLines.Text:=SrcBuf.Source;
-      BasePOFile.UpdateStrings(SrcLines,FileType);
+      try
+        BasePOFile.UpdateStrings(SrcLines,FileType);
+      except
+        on Ex: Exception do begin
+          // free
+          FreeAndNil(BasePOFile);
+          // raise
+          E := EPOFileError.Create(Ex.Message);
+          E.ResFileName:=Filename;
+          E.POFileName:=POFilename;
+          raise E;
+        end;
+      end;
     end;
     // once all rst/rsj/lrj files are processed, remove all unneeded (missing in them) items
     BasePOFile.RemoveTaggedItems(0);
