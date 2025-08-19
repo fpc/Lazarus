@@ -329,6 +329,7 @@ begin
   if SrcEdit.ReadOnly then exit;
   SynEdt := SrcEdit.EditorControl as TSynEdit;
   MarkUp := SynEdt.MarkupManager.MarkupByClass[TSynEditTodoMarkup] as TSynEditTodoMarkup;
+  if MarkUp = nil then exit;
   if MarkUp.CursorInsideToDo(SrcEdit.CursorTextXY, ToDoLoc) then begin
     ACaption := lisTDDEditToDo;
     Txt := SynEdt.TextBetweenPoints[ToDoLoc.StartPos, ToDoLoc.EndPos];
