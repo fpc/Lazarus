@@ -850,7 +850,7 @@ begin
 
   FDocument.StartDocument;
   AddFonts(AData);
-  FDocument.Options := FDocument.Options + [poPageOriginAtTop, poNoEmbeddedFonts];
+  FDocument.Options := FDocument.Options + [poPageOriginAtTop];
   FSection := FDocument.Sections.AddSection;
   AData.GuessDocumentSize();
   for i := 0 to AData.GetPageCount - 1 do  // iterate through pages
