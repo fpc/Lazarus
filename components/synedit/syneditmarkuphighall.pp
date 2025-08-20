@@ -31,10 +31,12 @@ uses
   LCLProc, Controls, ExtCtrls,
   // LazUtils
   LazClasses, LazUTF8, LazMethodList,
+  // LazEdit
+  LazEditMiscProcs, LazSynEditText, LazEditTextAttributes,
   // SynEdit
   SynEditMarkup, SynEditTypes, SynEditSearch, SynEditMiscClasses,
   SynEditHighlighter, SynEditPointClasses, SynEditMiscProcs,
-  SynEditTextBase, LazSynEditText, LazEditTextAttributes;
+  SynEditTextBase;
 
 type
 
@@ -78,7 +80,11 @@ type
     *)
     function IndexOfFirstMatchForLine(ALine: Integer): Integer;
     function IndexOfLastMatchForLine(ALine: Integer): Integer;
-    function IndexOf(APoint: TPoint): Integer; // Either containing APoint, or first after APoint
+    (* IndexOf 0..count
+       - if in GAP, or at End-Of-Match: Next match after the GAP for APoint
+       - if in Match (excluding end): Index of thah match
+    *)
+    function IndexOf(APoint: TPoint): Integer;
     procedure Delete(AIndex: Integer; ACount: Integer = 1);
     procedure Insert(AIndex: Integer; ACount: Integer = 1);
     procedure Insert(AIndex: Integer; AStartPoint, AEndPoint: TPoint);
@@ -1914,18 +1920,24 @@ end;
 
 function TSynMarkupHighAllMatchList.IndexOf(APoint: TPoint): Integer;
 var
-  C: Integer;
-  S: TPoint;
+  C, l, h: Integer;
+  E: TPoint;
 begin
-  Result := IndexOfFirstMatchForLine(APoint.Y);
   C := Count;
-  while (Result < C) do begin
-    S := StartPoint[Result];
-    if (S.Y = APoint.Y) and (S.X < APoint.X) then
-      inc(Result)
+  if Count = 0 then
+    exit(0);
+  l := 0;
+  h := Count -1;
+  Result := (l+h) div 2;
+  while (h > l) do begin
+    if PSynMarkupHighAllMatch(ItemPointer[Result])^.EndPoint <= APoint then
+      l := Result + 1
     else
-      break;
+      h := Result;
+    Result := (l+h) div 2;
   end;
+  if (PSynMarkupHighAllMatch(ItemPointer[Result])^.EndPoint <= APoint) then
+    inc(Result);
 end;
 
 procedure TSynMarkupHighAllMatchList.Delete(AIndex: Integer; ACount: Integer);

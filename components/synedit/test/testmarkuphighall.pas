@@ -1,6 +1,7 @@
 unit TestMarkupHighAll;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch advancedrecords}
 
 interface
 
@@ -9,6 +10,14 @@ uses
   SynEdit, SynEditMarkupHighAll, SynEditMiscProcs;
 
 type
+
+  { TMatchLoc }
+
+  TMatchLoc = record
+    y1, y2, x1, x2: Integer;
+    function p1: TPoint;
+    function p2: TPoint;
+  end;
 
   { TTestMarkupHighAll }
 
@@ -28,13 +37,36 @@ type
     //procedure ReCreateEdit; reintroduce;
     //function TestText1: TStringArray;
   published
+    procedure TestMatchListIndex;
     procedure TestDictionary;
     procedure TestValidateMatches;
   end; 
 
 implementation
 
-  type
+function l(y, x1, x2: Integer) : TMatchLoc;
+begin
+  Result.y1 := y;
+  Result.x1 := x1;
+  Result.y2 := y;
+  Result.x2 := x2;
+end;
+function l(y, x, y2,x2: Integer) : TMatchLoc;
+begin
+  Result.y1 := y;
+  Result.x1 := x;
+  Result.y2 := y2;
+  Result.x2 := x2;
+end;
+function p2(x,y, x2,y2: Integer) : TMatchLoc;
+begin
+  Result.y1 := y;
+  Result.x1 := x;
+  Result.y2 := y2;
+  Result.x2 := x2;
+end;
+
+type
 
     { TTestSynEditMarkupHighlightAllMulti }
 
@@ -45,10 +77,24 @@ implementation
       function FindMatches(AStartPoint, AEndPoint: TPoint; var AIndex: Integer;
         AStopAfterLine: Integer = - 1; ABackward: Boolean = False): TPoint; override;
     public
+      procedure TestAddMatch(const m: TMatchLoc);
+      procedure TestAddMatches(const m: array of TMatchLoc);
       procedure ResetScannedCount;
       property Matches;
       property ScannedLineCount: Integer read FScannedLineCount;
     end;
+
+{ TMatchLoc }
+
+function TMatchLoc.p1: TPoint;
+begin
+  Result := Point(x1, y1);
+end;
+
+function TMatchLoc.p2: TPoint;
+begin
+  Result := Point(x2, y2);
+end;
 
 { TTestSynEditMarkupHighlightAllMulti }
 
@@ -64,6 +110,19 @@ begin
   FScannedLineCount := 0;
 end;
 
+
+procedure TTestSynEditMarkupHighlightAllMulti.TestAddMatch(const m: TMatchLoc);
+begin
+  Matches.Insert(Point(m.x1,m.y1), Point(m.x2,m.y2));
+end;
+
+procedure TTestSynEditMarkupHighlightAllMulti.TestAddMatches(const m: array of TMatchLoc);
+var
+  i: Integer;
+begin
+  for i := low(m) to high(m) do
+    TestAddMatch(m[i]);
+end;
 
 { TTestMarkupHighAll }
 
@@ -91,6 +150,125 @@ begin
   AssertTrue('Clientheight <= height', offs >= 0);
   SynEdit.Height := SynEdit.LineHeight * ALinesInWindow + SynEdit.LineHeight div 2 + offs;
   AssertEquals('LinesInWindow', ALinesInWindow, SynEdit.LinesInWindow);
+end;
+
+procedure TTestMarkupHighAll.TestMatchListIndex;
+var
+  v0, v1, v2, v3, v4, v5, v6: TMatchLoc;
+  m: TSynMarkupHighAllMatchList;
+  FTestMarkup: TTestSynEditMarkupHighlightAllMulti;
+begin
+  FTestMarkup := TTestSynEditMarkupHighlightAllMulti.Create(SynEdit);
+  m := FTestMarkup.Matches;
+
+  v0 := p2(2,10,  4,10);
+
+  v1 := p2(2,15,  4,15);
+  v2 := p2(7,15,  9,15);
+
+  v3 := p2(2,20,  3,22);
+
+  v4 := p2(2,30,  3,32);
+  v5 := p2(5,32,  7,32);
+  v6 := p2(9,32,  7,34);
+
+  FTestMarkup.Clear;
+  FTestMarkup.TestAddMatches([v0, v1, v2, v3, v4, v5, v6]);
+  //TestHasMatches('', [v0, v1, v2, v3, v4, v5, v6]);
+
+  AssertEquals('idx for  1, 1 ', 0, m.IndexOf(Point( 1, 1)));
+  AssertEquals('idx for  2,10 ', 0, m.IndexOf(Point( 2,10)));
+  AssertEquals('idx for  3,10 ', 0, m.IndexOf(Point( 3,10)));
+  AssertEquals('idx for  4,10 ', 1, m.IndexOf(Point( 4,10)));
+  AssertEquals('idx for  5,10 ', 1, m.IndexOf(Point( 5,10)));
+  AssertEquals('idx for  1,11 ', 1, m.IndexOf(Point( 1,11)));
+
+  AssertEquals('idx for  1,15 ', 1, m.IndexOf(Point( 1,15)));
+  AssertEquals('idx for  2,15 ', 1, m.IndexOf(Point( 2,15)));
+  AssertEquals('idx for  3,15 ', 1, m.IndexOf(Point( 3,15)));
+  AssertEquals('idx for  4,15 ', 2, m.IndexOf(Point( 4,15)));
+  AssertEquals('idx for  5,15 ', 2, m.IndexOf(Point( 5,15)));
+  AssertEquals('idx for  6,15 ', 2, m.IndexOf(Point( 6,15)));
+  AssertEquals('idx for  7,15 ', 2, m.IndexOf(Point( 7,15)));
+  AssertEquals('idx for  8,15 ', 2, m.IndexOf(Point( 8,15)));
+  AssertEquals('idx for  9,15 ', 3, m.IndexOf(Point( 9,15)));
+  AssertEquals('idx for 10,15 ', 3, m.IndexOf(Point(10,15)));
+
+  AssertEquals('idx for  1,20 ', 3, m.IndexOf(Point( 1,20)));
+  AssertEquals('idx for  2,20 ', 3, m.IndexOf(Point( 2,20)));
+  AssertEquals('idx for  3,20 ', 3, m.IndexOf(Point( 3,20)));
+  AssertEquals('idx for  1,21 ', 3, m.IndexOf(Point( 1,21)));
+  AssertEquals('idx for  2,22 ', 3, m.IndexOf(Point( 2,22)));
+  AssertEquals('idx for  3,22 ', 4, m.IndexOf(Point( 3,22)));
+  AssertEquals('idx for  4,22 ', 4, m.IndexOf(Point( 4,22)));
+
+  AssertEquals('idx for  1,30 ', 4, m.IndexOf(Point( 1,30)));
+  AssertEquals('idx for  2,30 ', 4, m.IndexOf(Point( 2,30)));
+  AssertEquals('idx for  3,30 ', 4, m.IndexOf(Point( 3,30)));
+  AssertEquals('idx for  2,32 ', 4, m.IndexOf(Point( 2,32)));
+  AssertEquals('idx for  3,32 ', 5, m.IndexOf(Point( 3,32)));
+  AssertEquals('idx for  4,32 ', 5, m.IndexOf(Point( 4,32)));
+  AssertEquals('idx for  5,32 ', 5, m.IndexOf(Point( 5,32)));
+  AssertEquals('idx for  6,32 ', 5, m.IndexOf(Point( 6,32)));
+  AssertEquals('idx for  7,32 ', 6, m.IndexOf(Point( 7,32)));
+  AssertEquals('idx for  8,32 ', 6, m.IndexOf(Point( 8,32)));
+  AssertEquals('idx for  9,32 ', 6, m.IndexOf(Point( 9,32)));
+  AssertEquals('idx for 10,32 ', 6, m.IndexOf(Point(10,32)));
+  AssertEquals('idx for  1,34 ', 6, m.IndexOf(Point( 1,34)));
+  AssertEquals('idx for  6,34 ', 6, m.IndexOf(Point( 6,34)));
+  AssertEquals('idx for  7,34 ', 7, m.IndexOf(Point( 7,34)));
+  AssertEquals('idx for  8,34 ', 7, m.IndexOf(Point( 8,34)));
+
+
+  AssertEquals('idx first for  1', 0, m.IndexOfFirstMatchForLine( 1));
+  AssertEquals('idx first for  9', 0, m.IndexOfFirstMatchForLine( 9));
+  AssertEquals('idx first for 10', 0, m.IndexOfFirstMatchForLine(10));
+  AssertEquals('idx first for 11', 1, m.IndexOfFirstMatchForLine(11));
+
+  AssertEquals('idx first for 14', 1, m.IndexOfFirstMatchForLine(14));
+  AssertEquals('idx first for 15', 1, m.IndexOfFirstMatchForLine(15));
+  AssertEquals('idx first for 16', 3, m.IndexOfFirstMatchForLine(16));
+
+  AssertEquals('idx first for 19', 3, m.IndexOfFirstMatchForLine(19));
+  AssertEquals('idx first for 20', 3, m.IndexOfFirstMatchForLine(20));
+  AssertEquals('idx first for 21', 3, m.IndexOfFirstMatchForLine(21));
+  AssertEquals('idx first for 22', 3, m.IndexOfFirstMatchForLine(22));
+  AssertEquals('idx first for 23', 4, m.IndexOfFirstMatchForLine(23));
+
+  AssertEquals('idx first for 29', 4, m.IndexOfFirstMatchForLine(29));
+  AssertEquals('idx first for 30', 4, m.IndexOfFirstMatchForLine(30));
+  AssertEquals('idx first for 31', 4, m.IndexOfFirstMatchForLine(31));
+  AssertEquals('idx first for 32', 4, m.IndexOfFirstMatchForLine(32));
+  AssertEquals('idx first for 33', 6, m.IndexOfFirstMatchForLine(33));
+  AssertEquals('idx first for 34', 6, m.IndexOfFirstMatchForLine(34));
+  AssertEquals('idx first for 35', 7, m.IndexOfFirstMatchForLine(35));  // no item
+
+
+  AssertEquals('idx last for  1',-1, m.IndexOfLastMatchForLine( 1));  // no item
+  AssertEquals('idx last for  9',-1, m.IndexOfLastMatchForLine( 9));  // no item
+  AssertEquals('idx last for 10', 0, m.IndexOfLastMatchForLine(10));
+  AssertEquals('idx last for 11', 0, m.IndexOfLastMatchForLine(11));
+
+  AssertEquals('idx last for 14', 0, m.IndexOfLastMatchForLine(14));
+  AssertEquals('idx last for 15', 2, m.IndexOfLastMatchForLine(15));
+  AssertEquals('idx last for 16', 2, m.IndexOfLastMatchForLine(16));
+
+  AssertEquals('idx last for 19', 2, m.IndexOfLastMatchForLine(19));
+  AssertEquals('idx last for 20', 3, m.IndexOfLastMatchForLine(20));
+  AssertEquals('idx last for 21', 3, m.IndexOfLastMatchForLine(21));
+  AssertEquals('idx last for 22', 3, m.IndexOfLastMatchForLine(22));
+  AssertEquals('idx last for 23', 3, m.IndexOfLastMatchForLine(23));
+
+  AssertEquals('idx last for 29', 3, m.IndexOfLastMatchForLine(29));
+  AssertEquals('idx last for 30', 4, m.IndexOfLastMatchForLine(30));
+  AssertEquals('idx last for 31', 4, m.IndexOfLastMatchForLine(31));
+  AssertEquals('idx last for 32', 6, m.IndexOfLastMatchForLine(32));
+  AssertEquals('idx last for 33', 6, m.IndexOfLastMatchForLine(33));
+  AssertEquals('idx last for 34', 6, m.IndexOfLastMatchForLine(34));
+  AssertEquals('idx last for 35', 6, m.IndexOfLastMatchForLine(35));
+
+
+  FreeAndNil(FTestMarkup);
 end;
 
 procedure TTestMarkupHighAll.TestDictionary;
@@ -468,10 +646,6 @@ Dict.Add('uložit', 0);
 end;
 
 procedure TTestMarkupHighAll.TestValidateMatches;
-type
-  TMatchLoc = record
-    y1, y2, x1, x2: Integer;
-  end;
 var
   M: TTestSynEditMarkupHighlightAllMulti;
 
@@ -480,13 +654,6 @@ var
     Result := 'a'+IntToStr(i)+'a';
   end;
 
-  function l(y, x1, x2: Integer) : TMatchLoc;
-  begin
-    Result.y1 := y;
-    Result.x1 := x1;
-    Result.y2 := y;
-    Result.x2 := x2;
-  end;
   function l_a(n: Integer) : TMatchLoc; // location for a match of a123a
   begin
     Result := l(n, 3, 3+Length(Mtxt(n)));
