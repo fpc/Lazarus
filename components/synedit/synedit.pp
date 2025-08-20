@@ -2726,6 +2726,7 @@ begin
       FLines.FlushNotificationCache;
       ScanChangedLines(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff,
                  FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
+      Exclude(FInDecPaintLockState, dplNoAfterLoadFromFile);
       if sfAfterLoadFromFileNeeded in fStateFlags then
         AfterLoadFromFile;
       if FChangedLinesStart > 0 then begin
