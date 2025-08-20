@@ -9347,7 +9347,7 @@ end;
 procedure TCustomSynEdit.DestroyWnd;
 begin
   {$IFDEF SynCheckPaintLock}
-  if (FPaintLock > 0) then begin
+  if (FPaintLock > 0) and not(csDestroying in ComponentState) then begin
     debugln(['TCustomSynEdit.DestroyWnd: Paintlock=', FPaintLock, ' FInvalidateRect=', dbgs(FInvalidateRect)]);
     DumpStack;
   end;
