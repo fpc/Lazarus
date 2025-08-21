@@ -2202,12 +2202,14 @@ begin
   end
   else if (Key = VK_END) and (Shift = [ssShift]) then
   begin
-    ExtendSelection(SelectedView.Lines.Count-1);
+    if assigned(SelectedView) then
+      ExtendSelection(SelectedView.Lines.Count-1);
     Key := 0;
   end
   else if (Key = VK_END) and (Shift = [ssCtrl]) then
   begin
-    MoveWithoutSelecting(SelectedView.Lines.Count-1);
+    if assigned(SelectedView) then
+      MoveWithoutSelecting(SelectedView.Lines.Count-1);
     Key := 0;
   end
   // [PageUp]
@@ -2260,6 +2262,8 @@ end;
 procedure TMessagesCtrl.ExtendSelection(LineNumber: integer);
 // ToDo: Support selection over many views.
 begin
+  if SelectedView = nil then
+    exit;
   BeginUpdate;
   SelectedView.ExtendSelection(LineNumber);
   ScrollToLine(SelectedView,LineNumber,True);
@@ -2276,6 +2280,8 @@ end;
 procedure TMessagesCtrl.ExtendSelByOffset(Offset: integer);
 // ToDo: Support selection over many views.
 begin
+  if SelectedView = nil then
+    exit;
   BeginUpdate;
   SelectedView.ExtendSelByOffset(Offset);
   ScrollToLine(SelectedView,SelectedView.FCursorLine,True);
@@ -2286,6 +2292,8 @@ end;
 procedure TMessagesCtrl.MoveWithoutSelecting(LineNumber: integer);
 // ToDo: Support selection over many views.
 begin
+  if SelectedView = nil then
+    exit;
   SelectedView.MoveWithoutSelecting(LineNumber);
   ScrollToLine(SelectedView,SelectedView.FCursorLine,True);
   Invalidate;
@@ -2294,6 +2302,8 @@ end;
 procedure TMessagesCtrl.MoveWithoutSelectByOffs(Offset: integer);
 // ToDo: Support selection over many views.
 begin
+  if SelectedView = nil then
+    exit;
   SelectedView.MoveWithoutSelectByOffs(Offset);
   ScrollToLine(SelectedView,SelectedView.FCursorLine,True);
   Invalidate;
@@ -2301,6 +2311,8 @@ end;
 
 procedure TMessagesCtrl.ToggleCursorLine;
 begin
+  if SelectedView = nil then
+    exit;
   BeginUpdate;
   SelectedView.ToggleCursorLine;
   Invalidate;
@@ -2309,6 +2321,8 @@ end;
 
 procedure TMessagesCtrl.ToggleSelectedLine(View: TLMsgWndView; LineNumber: integer);
 begin
+  if View = nil then
+    exit;
   BeginUpdate;
   SelectedView:=View;
   View.ToggleSelectedLine(LineNumber);
@@ -2319,6 +2333,8 @@ end;
 procedure TMessagesCtrl.Select(View: TLMsgWndView; LineNumber: integer;
   DoScroll, FullyVisible: boolean);
 begin
+  if View = nil then
+    exit;
   BeginUpdate;
   ClearSelections;
   SelectedView:=View;
@@ -2362,10 +2378,14 @@ end;
 function TMessagesCtrl.SelectNextOccurrence(Downwards: boolean): boolean;
 var
   View: TLMsgWndView;
-  LineNumber: integer;
+  LineNumber, FirstSelLine: integer;
 begin
   StoreSelectedAsSearchStart;
-  Result:=SearchNext(SelectedView,SelectedView.SelLineFirst,true,Downwards,View,LineNumber);
+  if assigned(SelectedView) then
+    FirstSelLine := SelectedView.SelLineFirst
+  else
+    FirstSelLine := -1;
+  Result:=SearchNext(SelectedView,FirstSelLine,true,Downwards,View,LineNumber);
   if not Result then exit;
   Select(View,LineNumber,true,true);
 end;
@@ -2388,10 +2408,12 @@ begin
     {$ENDIF}
     if SelectedView=nil then begin
       if Offset>0 then begin
-        SelectFirst(true,true);
+        if not SelectFirst(true,true) then
+          exit;
         dec(Offset);
       end else begin
-        SelectLast(true,true);
+        if not SelectLast(true,true) then
+          exit;
         Inc(Offset);
       end;
       Result:=true;
@@ -2722,10 +2744,14 @@ function TMessagesCtrl.SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
   WithSrcPos: boolean; Downwards: boolean): boolean;
 var
   View: TLMsgWndView;
-  LineNumber: integer;
+  LineNumber, FirstSelLine: integer;
 begin
   Result:=false;
-  if not SearchNextUrgent(SelectedView,SelectedView.SelLineFirst,true,Downwards,
+  if assigned(SelectedView) then
+    FirstSelLine:=SelectedView.SelLineFirst
+  else
+    FirstSelLine:=-1;
+  if not SearchNextUrgent(SelectedView,FirstSelLine,true,Downwards,
     aMinUrgency,WithSrcPos,View,LineNumber)
   then exit;
   Select(View,LineNumber,true,true);
@@ -2984,7 +3010,10 @@ procedure TMessagesCtrl.StoreSelectedAsSearchStart;
 begin
   fLastLoSearchText:=UTF8LowerCase(FSearchText);
   fLastSearchStartView:=FSelectedView;
-  fLastSearchStartLine:=FSelectedView.SelLineFirst;
+  if assigned(FSelectedView) then
+    fLastSearchStartLine:=FSelectedView.SelLineFirst
+  else
+    fLastSearchStartLine:=-1;
 end;
 
 function TMessagesCtrl.OpenSelection: boolean;
