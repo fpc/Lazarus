@@ -1893,7 +1893,10 @@ end;
 
 function TCustomSynEdit.GetFoldState: String;
 begin
-  Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
+  if (FPendingFoldState <> '') then
+    Result := FPendingFoldState
+  else
+    Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
 end;
 
 function TCustomSynEdit.GetHiddenCodeLineColor: TSynSelectedColor;
