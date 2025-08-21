@@ -305,8 +305,6 @@ type
       WithSrcPos: boolean; Downwards: boolean): boolean;
 
     // scroll
-    function IsLineVisible(View: TLMsgWndView; LineNumber: integer): boolean;
-    function IsLastLineVisible(View: TLMsgWndView): boolean;
     procedure ScrollToLine(View: TLMsgWndView; LineNumber: integer; FullyVisible: boolean);
     function GetLineTop(View: TLMsgWndView; LineNumber: integer; Scrolled: boolean): integer;
     property ScrollLeft: integer read FScrollLeft write SetScrollLeft;
@@ -2732,25 +2730,6 @@ begin
   then exit;
   Select(View,LineNumber,true,true);
   Result:=true;
-end;
-
-function TMessagesCtrl.IsLineVisible(View: TLMsgWndView; LineNumber: integer): boolean;
-var
-  y: Integer;
-begin
-  Result:=false;
-  if View=nil then exit;
-  y:=GetLineTop(View,LineNumber,true);
-  if (y+ItemHeight>0) and (y<ClientHeight) then
-    Result:=true;
-end;
-
-function TMessagesCtrl.IsLastLineVisible(View: TLMsgWndView): boolean;
-var
-  LineNumber: Integer;
-begin
-  LineNumber:=View.GetShownLineCount(false,true)-1;
-  Result:=IsLineVisible(View,LineNumber);
 end;
 
 function TMessagesCtrl.GetLineText(Line: TMessageLine): string;
