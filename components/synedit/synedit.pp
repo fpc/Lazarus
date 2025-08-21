@@ -5939,6 +5939,9 @@ begin
   InvalidateLines(StartLine, StartLine + ACount - 1);
   InvalidateGutterLines(AIndex + 1, AIndex + 1 + ACount);
   FFoldedLinesView.FixFoldingAtTextIndex(AIndex, AIndex + ACount);
+  if sfAfterLoadFromFileNeeded in fStateFlags then
+    AfterLoadFromFile
+  else
   if FPendingFoldState <> '' then
     SetFoldState(FPendingFoldState);
 end;
@@ -8156,7 +8159,9 @@ end;
 
 procedure TCustomSynEdit.AfterLoadFromFile;
 begin
-  if WaitingForInitialSize or
+  if ( WaitingForInitialSize and
+       ( (fHighlighter = nil) or (fHighlighter.NeedScan) )
+     ) or
      (FPaintLock > 1) or
      ( (FPaintLock = 1) and
        not(FInDecPaintLockState * [dplNoNewPaintLock, dplNoAfterLoadFromFile] = [dplNoNewPaintLock]) )
