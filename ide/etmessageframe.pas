@@ -3417,12 +3417,12 @@ begin
     Key := 0;
   end
 
-  else if (Key = VK_F3) and (Shift = []) then
+  else if (Key in [VK_RETURN, VK_F3]) and (Shift = []) then
   begin
     MessagesCtrl.SelectNextOccurrence(true);
     Key := 0;
   end
-  else if (Key = VK_F3) and (Shift = [ssShift]) then
+  else if (Key in [VK_RETURN, VK_F3]) and (Shift = [ssShift]) then
   begin
     MessagesCtrl.SelectNextOccurrence(false);
     Key := 0;
