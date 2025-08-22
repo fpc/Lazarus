@@ -3560,6 +3560,7 @@ procedure TMessagesFrame.FindMenuItemClick(Sender: TObject);
 begin
   MessagesCtrl.StoreSelectedAsSearchStart;
   SearchPanel.Visible:=true;
+  SearchEditChange(Sender);
   SearchEdit.SetFocus;
 end;
 
