@@ -2243,6 +2243,27 @@ begin
   begin
     MoveWithoutSelectByOffs(+Max(1, ClientHeight div ItemHeight));
     Key := 0;
+  end
+
+  { search }
+
+  // hide search panel (handle shortcut only if visible)
+  else if (Key = VK_ESCAPE) and (Shift = []) and
+          (TMessagesFrame(Owner).SearchPanel.Visible) then
+  begin
+    TMessagesFrame(Owner).HideSearch;
+    Key := 0;
+  end
+  // search next
+  else if (Key = VK_F3) and (Shift = []) then
+  begin
+    SelectNextOccurrence(true);
+    Key := 0;
+  end
+  else if (Key = VK_F3) and (Shift = [ssShift]) then
+  begin
+    SelectNextOccurrence(false);
+    Key := 0;
   end;
 
   { Inherited }
