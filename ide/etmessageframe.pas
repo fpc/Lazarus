@@ -2254,6 +2254,12 @@ begin
     TMessagesFrame(Owner).HideSearch;
     Key := 0;
   end
+  // search, needed because Find menu shortcut is initialized only at popup event.
+  else if (Key = VK_F) and (Shift = [ssCtrl]) then
+  begin
+    TMessagesFrame(Owner).FindMenuItemClick(nil);
+    Key := 0;
+  end
   // search next
   else if (Key = VK_F3) and (Shift = []) then
   begin
@@ -3466,7 +3472,6 @@ begin
     HideSearch;
     Key := 0;
   end
-
   else if (Key in [VK_RETURN, VK_F3]) and (Shift = []) then
   begin
     MessagesCtrl.SelectNextOccurrence(true);
@@ -3476,7 +3481,10 @@ begin
   begin
     MessagesCtrl.SelectNextOccurrence(false);
     Key := 0;
-  end;
+  end
+  // Eat Ctrl-F
+  else if (Key = VK_F) and (Shift = [ssCtrl]) then
+    Key := 0;
 end;
 
 procedure TMessagesFrame.SearchNextSpeedButtonClick(Sender: TObject);
