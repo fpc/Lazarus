@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Controls, ExtCtrls,
+  LCLProc, Controls, ExtCtrls, Forms,
   // LazUtils
   LazClasses, LazUTF8, LazMethodList, LazLoggerBase,
   // LazEdit
@@ -254,6 +254,34 @@ type
   end;
 
 
+  TSynEditMarkupHighlightAllScanMode = (
+    (* All "Direct" modes
+       - Scan visilble screen area immediately (non-async)
+       - If "HideSingle" needs a 2nd match:
+         Search immediately (non async) withing "ScanOffScreenLimit" lines before & after the visible screen area
+     * "ForceAll" modes
+       - Always scan all lines (e.g. for display in overview)
+       - Ignores "ScanOffScreenLimit" (i.e does/may not search those first)
+     * Any mode
+       - Already found nodes may be kept, even outside the given limits (until they become invalide, or exceed "keep limits"
+    *)
+    smsmDirect,            //
+    smsmDirectForceAll,    // Scan always ALL lines ("ScanOffScreenLimit" has no effect)
+
+    smsmDirectExtendASync, // If "HideSingle" needs a 2nd match:
+                           // Search "ScanOffScreenLimit" Immediately (non async)
+                           // Continue ASYNC outside "ScanOffScreenLimit" until ONE is found.
+    smsmDirectForceAllASync, // If "HideSingle" needs a 2nd match:
+                           // Search "ScanOffScreenLimit" Immediately (non async)
+                           // ALWAYS search ALL remaining lines (async)
+
+    smsmASync,             // Scan visible area (non async)
+                           // If "HideSingle" needs a 2nd match:
+                           // ASync search "ScanOffScreenLimit" until one is found.
+    smsmASyncForceAll      // Scan visible area (non async)
+                           // Then scan all lines ASync ("ScanOffScreenLimit" has no effect)
+  );
+
   { TSynEditMarkupHighlightAllBase }
 
   TSynEditMarkupHighlightAllBase = class(TSynEditMarkupHighlightMatches)
@@ -264,6 +292,7 @@ type
   private
     FNeedValidate, FNeedValidatePaint: Boolean;
     FMarkupEnabled: Boolean;
+    FScanMode: TSynEditMarkupHighlightAllScanMode;
     FScanOffScreenLimit: integer;
 
     FValidRanges: TSynMarkupHighAllValidRanges;
@@ -271,6 +300,7 @@ type
     FHideSingleMatch: Boolean;
     FInvalidationStartedWithHiddenMatch,
     FInvalidationStartedWithManyatches: boolean;
+    FFlags: set of (smfNeedAsync, smfAsyncSkipPaint);
 
     function GetMatchCount: Integer;
     procedure SetHideSingleMatch(AValue: Boolean);
@@ -279,7 +309,8 @@ type
 
     Procedure InvalidateMatches(AFirstLine, ALastLine, ALineDiffCount: Integer);
     procedure AssertGapsValid;
-    Procedure ValidateFillGaps;
+    procedure DoAsyncScan(Data: PtrInt);
+    function ValidateFillGaps: boolean;
     Procedure ValidateMatches(SkipPaint: Boolean = False);
 
   protected
@@ -318,6 +349,7 @@ type
 
     property HideSingleMatch: Boolean read FHideSingleMatch write SetHideSingleMatch;
 
+    property ScanMode: TSynEditMarkupHighlightAllScanMode read FScanMode write FScanMode default smsmDirect;
     (* ScanOffScreenLimit: Search for 2nd match, if HideSingleMatch is True
         1..MaxInt: Line-limit before and after visible area
         0: Don't search
@@ -2862,6 +2894,7 @@ end;
 constructor TSynEditMarkupHighlightAllBase.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create(ASynEdit);
+  FScanMode := smsmDirect;
   FScanOffScreenLimit := DEFAULT_SCAN_OFFSCREEN_LIMIT;
   FFirstInvalidMatchLine := -1;
   FLastInvalidMatchLine := -1;
@@ -2871,6 +2904,7 @@ end;
 
 destructor TSynEditMarkupHighlightAllBase.Destroy;
 begin
+  Application.RemoveAsyncCalls(Self);
   if Lines <> nil then
     Lines.RemoveChangeHandler(senrLineMappingChanged, @DoFoldChanged);
   inherited Destroy;
@@ -2879,8 +2913,13 @@ end;
 procedure TSynEditMarkupHighlightAllBase.DecPaintLock;
 begin
   inherited DecPaintLock;
-  if (FPaintLock = 0) and FNeedValidate then
-    ValidateMatches(not FNeedValidatePaint);
+  if (FPaintLock = 0) then begin
+    if FNeedValidate then
+      ValidateMatches(not FNeedValidatePaint)
+    else
+    if smfNeedAsync in FFlags then
+      Application.QueueAsyncCall(@DoAsyncScan, 0);
+  end;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.DoTopLineChanged(OldTopLine : Integer);
@@ -2948,6 +2987,9 @@ end;
 procedure TSynEditMarkupHighlightAllBase.InvalidateMatches(AFirstLine, ALastLine,
   ALineDiffCount: Integer);
 begin
+  Application.RemoveAsyncCalls(Self);
+  Exclude(FFlags, smfNeedAsync);
+
   if AFirstLine < 1 then
     AFirstLine := 1;
   if (ALastLine < 1) then
@@ -2978,9 +3020,31 @@ begin
   end;
 end;
 
-procedure TSynEditMarkupHighlightAllBase.ValidateFillGaps;
+procedure TSynEditMarkupHighlightAllBase.DoAsyncScan(Data: PtrInt);
+var
+  r, SkipPaint: Boolean;
+begin
+  if FPaintLock > 0 then begin
+    Include(FFlags, smfNeedAsync);
+    exit;
+  end;
+  Exclude(FFlags, smfNeedAsync);
+
+  SkipPaint := (smfAsyncSkipPaint in FFlags) or (not FHideSingleMatch) or (FMatches.Count > 1);
+  if SkipPaint then
+    BeginSkipSendingInvalidation;
+  r := ValidateFillGaps;
+  if SkipPaint then
+    EndSkipSendingInvalidation;
+  if not r then begin
+    Application.QueueAsyncCall(@DoAsyncScan, 0);
+  end;
+end;
+
+function TSynEditMarkupHighlightAllBase.ValidateFillGaps: boolean;
 var
   LastTextLine, OffsetForMultiLine: Integer;     // Last visible
+  DoneSearch: boolean;
 
   procedure RepairMatches(AFirstBrokenIndex: integer; AGap: TSynMarkupHighAllValidRange);
   var
@@ -3014,6 +3078,7 @@ var
     end;
     assert(AGap.EndPoint > AGap.StartPoint, 'FillGap: AGap.EndPoint > AGap.StartPoint');
 
+    DoneSearch := True;
 
     i := FMatches.IndexOf(AGap.StartPoint);
     Assert((i<=0) or (Matches.EndPoint[i-1] <= AGap.StartPoint), 'after prev point');
@@ -3048,10 +3113,12 @@ var
 var
   TopScreenLine, LastScreenLine, LastScreenLineAdj: Integer;
   ExtStartLine, ExtEndLine, ExtEndLineAdj: integer;
-  CurrentGapIdx: Integer;
+  CurrentGapIdx, CntASync, Lim: Integer;
   CurrentGap: TSynMarkupHighAllValidRange;
   ExtStartPoint: TPoint;
 begin
+  Result := True; // All done
+  DoneSearch := False;
   FindInitialize;
 
   TopScreenLine := TopLine;
@@ -3082,17 +3149,27 @@ begin
 
       if not FillGap(CurrentGap, LastScreenLine) then
         break;
+
       CurrentGapIdx := FValidRanges.FindGapFor(Point(1, TopScreenLine), True);
       if CurrentGapIdx < 0 then
         break;
       CurrentGap := FValidRanges.Gap[CurrentGapIdx];
     until False;
+
+    if DoneSearch then begin
+      if ( (ScanMode in [smsmASync]) and HideSingleMatch and (FMatches.Count = 1) ) or
+         ( (ScanMode in [smsmASyncForceAll]) )
+      then
+        exit(False); // maybe more to do
+    end;
   end;
 
 
   (* Search 2nd match for HideSingleMatch  *)
 
-  if HideSingleMatch and (FMatches.Count = 1) and (FScanOffScreenLimit <> 0) then begin
+  if HideSingleMatch and (FMatches.Count = 1) and (FScanOffScreenLimit <> 0) and
+     not(ScanMode in [smsmDirectForceAll, smsmASyncForceAll])
+  then begin
     // find before/after screen
     if (FScanOffScreenLimit = -1) or (FScanOffScreenLimit >= TopScreenLine) then
       ExtStartLine := 1
@@ -3135,18 +3212,48 @@ begin
         CurrentGap := FValidRanges.Gap[CurrentGapIdx];
       until False;
     end;
-
-    //// search all
-    //CurrentGapIdx := FValidRanges.FindGapFor(Point(1, 1), True);
-    //while (CurrentGapIdx >= 0) and (FMatches.Count = 1) do begin
-    //  CurrentGap := FValidRanges.Gap[CurrentGapIdx];
-    //  if not FillGap(CurrentGap, 0) then
-    //    break;
-    //
-    //  CurrentGapIdx := FValidRanges.FindGapFor(Point(1, 1), True);
-    //end;
   end;
 
+  if (ScanMode in [smsmDirect, smsmASync]) or
+     ( (ScanMode = smsmDirectExtendASync) and not(HideSingleMatch and (FMatches.Count = 1)) )
+  then
+    exit;
+
+  if DoneSearch and not (ScanMode in [smsmDirectForceAll]) then
+    exit(False); // maybe more to do
+
+
+  (* Search all *)
+
+  CntASync := 1000;
+  if (ScanMode in [smsmDirectForceAll, smsmDirectForceAllASync, smsmASyncForceAll]) or
+     ( (ScanMode = smsmDirectExtendASync) and HideSingleMatch and (FMatches.Count = 1) )
+  then begin
+    Lim := -1;
+    if ScanMode = smsmDirectExtendASync then
+      Lim := 0; // only find ONE
+    // search all
+    CurrentGapIdx := FValidRanges.FindGapFor(Point(1, 1), True);
+    while (CurrentGapIdx >= 0) do begin
+      CurrentGap := FValidRanges.Gap[CurrentGapIdx];
+
+      if not (ScanMode in [smsmDirectForceAll]) then begin
+        // limit search range
+        if CurrentGap.EndPoint.Y > CurrentGap.StartPoint.y + CntASync + OffsetForMultiLine + AVOID_GAP_MAX_OFFS then
+          CurrentGap.EndPoint := Point(1, CurrentGap.StartPoint.y + CntASync + 1);
+        CntASync := CntASync - (CurrentGap.EndPoint.Y - CurrentGap.StartPoint.y);
+      end;
+
+      if not FillGap(CurrentGap, Lim) then
+        break;
+
+      if CntASync < 100 then
+        break;
+      CurrentGapIdx := FValidRanges.FindGapFor(Point(1, 1), True);
+    end;
+    if DoneSearch then
+      Result := False; // maybe more to do
+  end;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.ValidateMatches(SkipPaint: Boolean);
@@ -3197,6 +3304,9 @@ var
 var
   GapStartPoint, GapEndPoint: TPoint;
 begin
+  Application.RemoveAsyncCalls(Self);
+  FFlags := FFlags - [smfNeedAsync, smfAsyncSkipPaint];
+
   FCurrentRowNextPosIdx := -1;
   FCurrentRow := -1;
   if (FPaintLock > 0) or (not SynEdit.IsVisible) then begin
@@ -3224,7 +3334,8 @@ begin
     FirstKeptValidIdx := FMatches.StartValidation(FFirstInvalidMatchLine, FLastInvalidMatchLine, FMatchLinesDiffCount, GapStartPoint, GapEndPoint);
     FValidRanges.AdjustForLinesChanged(FLastInvalidMatchLine, FMatchLinesDiffCount);
 
-    MaybeDropOldMatches;
+    if ScanMode in [smsmDirect, smsmDirectExtendASync, smsmASync] then
+      MaybeDropOldMatches;
 
     if FFirstInvalidMatchLine > 0 then begin
       Assert(FirstKeptValidIdx >= 0, 'ValidateMatches: FirstKeptValidIdx >= 0');
@@ -3245,7 +3356,11 @@ begin
       FValidRanges.RemoveBetween(GapStartPoint, GapEndPoint);
     end;
 
-    ValidateFillGaps;
+    if not ValidateFillGaps then begin
+      if SkipPaint then
+        Include(FFlags, smfAsyncSkipPaint);
+      Application.QueueAsyncCall(@DoAsyncScan, 0);
+    end;
 
   finally
     FFirstInvalidMatchLine := -1;
