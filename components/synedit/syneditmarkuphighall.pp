@@ -257,11 +257,14 @@ type
   { TSynEditMarkupHighlightAllBase }
 
   TSynEditMarkupHighlightAllBase = class(TSynEditMarkupHighlightMatches)
+  public const
+    DEFAULT_SCAN_OFFSCREEN_LIMIT = 200;
   strict private
     FFirstInvalidMatchLine, FLastInvalidMatchLine, FMatchLinesDiffCount: Integer;
   private
     FNeedValidate, FNeedValidatePaint: Boolean;
     FMarkupEnabled: Boolean;
+    FScanOffScreenLimit: integer;
 
     FValidRanges: TSynMarkupHighAllValidRanges;
 
@@ -272,6 +275,7 @@ type
     function GetMatchCount: Integer;
     procedure SetHideSingleMatch(AValue: Boolean);
     procedure DoFoldChanged(Sender: TSynEditStrings; AnIndex, aCount: Integer);
+    procedure SetScanOffScreenLimit(AValue: integer);
 
     Procedure InvalidateMatches(AFirstLine, ALastLine, ALineDiffCount: Integer);
     procedure AssertGapsValid;
@@ -313,6 +317,14 @@ type
     Procedure SendLineInvalidation(AFirstIndex: Integer = -1;ALastIndex: Integer = -1); //deprecated 'use invalidation via FMatches';
 
     property HideSingleMatch: Boolean read FHideSingleMatch write SetHideSingleMatch;
+
+    (* ScanOffScreenLimit: Search for 2nd match, if HideSingleMatch is True
+        1..MaxInt: Line-limit before and after visible area
+        0: Don't search
+       -1: Search entire text
+       -2 and below: RESERVED
+    *)
+    property ScanOffScreenLimit: integer read FScanOffScreenLimit write SetScanOffScreenLimit default DEFAULT_SCAN_OFFSCREEN_LIMIT;
   end;
 
   { TSynEditMarkupHighlightAll }
@@ -2850,6 +2862,7 @@ end;
 constructor TSynEditMarkupHighlightAllBase.Create(ASynEdit : TSynEditBase);
 begin
   inherited Create(ASynEdit);
+  FScanOffScreenLimit := DEFAULT_SCAN_OFFSCREEN_LIMIT;
   FFirstInvalidMatchLine := -1;
   FLastInvalidMatchLine := -1;
   FHideSingleMatch := False;
@@ -2920,6 +2933,16 @@ procedure TSynEditMarkupHighlightAllBase.DoFoldChanged(Sender: TSynEditStrings;
   AnIndex, aCount: Integer);
 begin
   ValidateMatches(True);
+end;
+
+procedure TSynEditMarkupHighlightAllBase.SetScanOffScreenLimit(AValue: integer);
+begin
+  if AValue < -1 then
+    raise Exception.Create('invalide limit');
+  if FScanOffScreenLimit = AValue then
+    exit;
+  FScanOffScreenLimit := AValue;
+  ValidateMatches(True); // Should only need to extend off screen
 end;
 
 procedure TSynEditMarkupHighlightAllBase.InvalidateMatches(AFirstLine, ALastLine,
@@ -3023,9 +3046,11 @@ var
   end;
 
 var
-  TopScreenLine, LastScreenLine, LastScreenLineAdj, t, t2: Integer;
+  TopScreenLine, LastScreenLine, LastScreenLineAdj: Integer;
+  ExtStartLine, ExtEndLine, ExtEndLineAdj: integer;
   CurrentGapIdx: Integer;
   CurrentGap: TSynMarkupHighAllValidRange;
+  ExtStartPoint: TPoint;
 begin
   FindInitialize;
 
@@ -3067,24 +3092,36 @@ begin
 
   (* Search 2nd match for HideSingleMatch  *)
 
-  if HideSingleMatch and (FMatches.Count = 1) then begin
+  if HideSingleMatch and (FMatches.Count = 1) and (FScanOffScreenLimit <> 0) then begin
     // find before/after screen
-    t  := Max(1, TopScreenLine - 2 * DEFAULT_MULTILINE_SEARCH_OFFS);
-    t2 := LastScreenLine + 2 * DEFAULT_MULTILINE_SEARCH_OFFS;
+    if (FScanOffScreenLimit = -1) or (FScanOffScreenLimit >= TopScreenLine) then
+      ExtStartLine := 1
+    else
+      ExtStartLine := TopScreenLine - FScanOffScreenLimit;
+    ExtStartPoint := point(1, ExtStartLine);
+    if (FScanOffScreenLimit = -1) or (FScanOffScreenLimit >= high(LastScreenLine) - 2 - LastScreenLine) then
+      ExtEndLine := high(LastScreenLine) - 2
+    else
+      ExtEndLine := LastScreenLine + FScanOffScreenLimit;
+    {$PUSH}{$R-}{$Q-}
+    ExtEndLineAdj := ExtEndLine + OffsetForMultiLine + AVOID_GAP_MAX_OFFS;
+    if ExtEndLineAdj < ExtEndLine then
+      ExtEndLineAdj := high(ExtEndLineAdj);
+    {$POP}
 
-    CurrentGapIdx := FValidRanges.FindGapFor(point(1, t), True);
+    CurrentGapIdx := FValidRanges.FindGapFor(ExtStartPoint, True);
     if CurrentGapIdx >= 0 then begin
       CurrentGap := FValidRanges.Gap[CurrentGapIdx];
-      if CurrentGap.StartPoint.y < Max(1, t - OffsetForMultiLine - AVOID_GAP_MAX_OFFS) then begin
-        CurrentGap.StartPoint := Point(1, t);    // FillGap will substract OffsetForMultiLine => but that still keeps AVOID_GAP_MAX_OFFS
+      if CurrentGap.StartPoint.y < Max(1, ExtStartLine - OffsetForMultiLine - AVOID_GAP_MAX_OFFS) then begin
+        CurrentGap.StartPoint := Point(1, ExtStartLine);    // FillGap will substract OffsetForMultiLine => but that still keeps AVOID_GAP_MAX_OFFS
         assert(CurrentGap.StartPoint < CurrentGap.EndPoint, 'TSynEditMarkupHighlightAllBase.ValidateMatches: CurrentGap.StartPoint < CurrentGap.EndPoint');
       end;
 
       repeat
-        if CurrentGap.StartPoint.Y > t2 then
+        if CurrentGap.StartPoint.Y > ExtEndLine then
           break;
-        if CurrentGap.EndPoint.y > t2 + OffsetForMultiLine + AVOID_GAP_MAX_OFFS then
-          CurrentGap.EndPoint := Point(1, t2 + 1);
+        if CurrentGap.EndPoint.y > ExtEndLineAdj then
+          CurrentGap.EndPoint := Point(1, ExtEndLine + 1);
 
         if not FillGap(CurrentGap, 0) then
           break;
@@ -3092,7 +3129,7 @@ begin
         if FMatches.Count > 1 then
           break;
 
-        CurrentGapIdx := FValidRanges.FindGapFor(point(1, t), True);
+        CurrentGapIdx := FValidRanges.FindGapFor(ExtStartPoint, True);
         if CurrentGapIdx < 0 then
           break;
         CurrentGap := FValidRanges.Gap[CurrentGapIdx];
