@@ -3730,6 +3730,7 @@ begin
   FStateChanged := False;
   FValidateNeeded := False;
   HideSingleMatch := True;
+  FScanMode := smsmDirectExtendASync;
   FFullWord := False;
   FWaitTime := 1500;
   FTrim := True;
