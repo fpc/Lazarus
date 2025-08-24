@@ -345,6 +345,9 @@ function CustomTabControlWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam
 var
   Control: TWinControl;
   LMessage: TLMessage;
+  APageIdx, APagesCount: Integer;
+  NMHdr: TNMHdr;
+  LMNotify: TLMNotify;
 begin
   case Msg of
     WM_ERASEBKGND:
@@ -361,6 +364,33 @@ begin
           Exit;
         end;
       end;
+    WM_MOUSEWHEEL:
+    begin
+      Result := WindowProc(Window, Msg, WParam, LParam);
+      if Result = 0 then
+      begin
+        Control := GetWin32WindowInfo(Window)^.WinControl;
+        if Assigned(Control) and (Control is TCustomTabControl) then
+        begin
+          APageIdx := SendMessage(Window, TCM_GETCURSEL, 0, 0);
+          NMHdr.code := TCN_SELCHANGING;
+          NMHdr.hwndFrom := Window;
+          NMHdr.idFrom := APageIdx;
+          LMNotify.Msg := LM_NOTIFY;
+          LMNotify.IDCtrl := APageIdx;
+          LMNotify.NMHdr := @NMHdr;
+          DeliverMessage(Control, LMNotify);
+          if LMNotify.Result = 1 then Exit;
+          APagesCount := SendMessage(Window, TCM_GETITEMCOUNT, 0, 0);
+          if HiWord(WParam) > $7FFF then
+            APageIdx := Min(APageIdx + 1, APagesCount - 1)
+          else
+            APageIdx := Max(0, APageIdx - 1);
+          TWin32WSCustomTabControl.SetPageIndex(TCustomTabControl(Control), APageIdx);
+        end;
+      end;
+      Exit;
+    end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
 end;
@@ -683,20 +713,11 @@ end;
 
 class function TWin32WSCustomTabControl.GetDesignInteractive(
   const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
-var
-  hittestInfo: TC_HITTESTINFO;
-  AIndex, ACurIndex: Integer;
 begin
-  if AWinControl is TTabControl then begin
-    Result := inherited GetDesignInteractive(AWinControl, AClientPos);
-    exit;
-  end;
-
-  hittestInfo.pt.x := AClientPos.x;
-  hittestInfo.pt.y := AClientPos.y;
-  AIndex := Windows.SendMessage(AWinControl.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
-  ACurIndex := SendMessage(AWinControl.Handle, TCM_GETCURSEL, 0, 0);
-  Result := (AIndex <> -1) and (AIndex <> ACurIndex);
+  if AWinControl is TTabControl then
+    Result := inherited GetDesignInteractive(AWinControl, AClientPos)
+  else
+    Result := True;
 end;
 
 class procedure TWin32WSCustomTabControl.SetTabSize(
