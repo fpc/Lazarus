@@ -3191,7 +3191,7 @@ end;
 
 function TForm.LCLVersionIsStored: boolean;
 begin
-  Result:=Parent=nil;
+  Result := csDesignInstance in ComponentState;
 end;
 
 class procedure TForm.WSRegisterClass;
