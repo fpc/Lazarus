@@ -2772,7 +2772,7 @@ begin
 
   t := GetCurrentText;
   if (SearchString = t) and (SearchOptions = GetCurrentOption) then begin
-    SearchString := t; // Update old bounds
+    SearchStringChanged; // Update old bounds
     exit;
   end;
 
