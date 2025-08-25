@@ -122,33 +122,17 @@ type
     procedure TestFindDeclaration_Basic;
     procedure TestFindDeclaration_Proc_BaseTypes;
     procedure TestFindDeclaration_ProcNested;
+    procedure TestFindDeclaration_ResultType;
     procedure TestFindDeclaration_With;
-    procedure TestFindDeclaration_WithResult;
+    procedure TestFindDeclaration_WithResult; // todo
     procedure TestFindDeclaration_ClassOf;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_NestedAliasClass;
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
 
-    // darwin objc
-    procedure TestFindDeclaration_ObjCClass;
-    procedure TestFindDeclaration_ObjCCategory;
-
-    // generics
-    procedure TestFindDeclaration_GenericFunction;
-    procedure TestFindDeclaration_Generics_Enumerator;
-    procedure TestFindDeclaration_Generics;
-    procedure TestFindDeclaration_Generics_GuessType;
-    procedure TestFindDeclaration_Generics_GuessType2;
-    procedure TestFindDeclaration_Generics_FindDeclaration;
-    procedure TestFindDeclaration_GenericsDelphi_InterfaceAncestor;
-    procedure TestFindDeclaration_GenericsDelphi_FuncParam;
-    procedure TestFindDeclaration_GenericsDelphi_PublicProcType;
-    procedure TestFindDeclaration_GenericsDelphi_MultiGenParams;
-
     procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
-    procedure TestFindDeclaration_CBlocks;
     procedure TestFindDeclaration_Arrays;
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_GuessType;
@@ -162,6 +146,23 @@ type
     procedure TestFindDeclaration_PointerForwardVsUses;
     procedure TestFindDeclaration_AutoDeref;
     procedure TestFindDeclaration_Variant;
+
+    // darwin objc
+    procedure TestFindDeclaration_ObjCClass;
+    procedure TestFindDeclaration_ObjCCategory;
+    procedure TestFindDeclaration_CBlocks;
+
+    // generics
+    procedure TestFindDeclaration_GenericFunction;
+    procedure TestFindDeclaration_Generics_Enumerator;
+    procedure TestFindDeclaration_Generics;
+    procedure TestFindDeclaration_Generics_GuessType;
+    procedure TestFindDeclaration_Generics_GuessType2;
+    procedure TestFindDeclaration_Generics_FindDeclaration;
+    procedure TestFindDeclaration_GenericsDelphi_InterfaceAncestor;
+    procedure TestFindDeclaration_GenericsDelphi_FuncParam;
+    procedure TestFindDeclaration_GenericsDelphi_PublicProcType;
+    procedure TestFindDeclaration_GenericsDelphi_MultiGenParams;
 
     // ampersands
     procedure TestFindDeclaration_Ampersand;
@@ -808,7 +809,7 @@ begin
   '  procedure Sub1;',
   '  var Size: byte;',
   '  begin',
-  '    Size{ declaration:Fly.Sub1.Size}:=3;',
+  '    Size{declaration:Fly.Sub1.Size}:=3;',
   '  end;',
   '',
   '  procedure Sub2(Size: word);',
@@ -817,6 +818,32 @@ begin
   '  end;',
   'begin',
   '  Size{declaration:Fly.Size}:=Size{ declaration:Fly.Size}+1;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ResultType;
+begin
+  StartProgram;
+  Add([
+  '{$mode objfpc}',
+  'function Simple: boolean;',
+  '',
+  '  procedure Sub1;',
+  '  begin',
+  '    if Result{declaration:Simple} then ;',
+  '  end;',
+  '',
+  '  function Sub2: word;',
+  '  begin',
+  '    Result{declaration:Simple.Sub2}:=3;',
+  '  end;',
+  'begin',
+  '  Result{declaration:Simple}:=4;',
   'end;',
   '',
   'begin',
@@ -844,7 +871,7 @@ begin
   'begin',
   '  Result{declaration:Fly}:=1;',
   '  with Bird do begin',
-  //'    Result{declaration:TBird.Result}:=3;',
+  '    Result{ declaration:TBird.Result}:=3;',
   '  end;',
   'end;',
   'begin',
