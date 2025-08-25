@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Controls, ExtCtrls, Forms,
+  LCLProc, Controls, ExtCtrls, Forms, Graphics,
   // LazUtils
   LazClasses, LazUTF8, LazMethodList, LazLoggerBase,
   // LazEdit
@@ -38,7 +38,7 @@ uses
   // SynEdit
   SynEditMarkup, SynEditTypes, SynEditSearch, SynEditMiscClasses,
   SynEditHighlighter, SynEditPointClasses, SynEditMiscProcs,
-  SynEditTextBase;
+  SynEditTextBase, SynGutterLineOverview;
 
 type
 
@@ -153,6 +153,29 @@ type
     function GetInintialForItemSize: Integer; override;
   public
     property MarkupId[AnIndex: Integer]: Integer read GetMarkupId write SetMarkupId;
+  end;
+
+  TSynEditMarkupHighlightAllBase = class;
+
+  { TSynGutterLOvProviderMarkupHighAll }
+
+  TSynGutterLOvProviderMarkupHighAll = class(specialize TFreeNotifyingGeneric<TSynGutterLineOverviewProvider>)
+  private
+    FColor, FRGBColor: TColor;
+    FMarkup: TSynEditMarkupHighlightAllBase;
+    FPixLines: Array of TColor;
+    //FFirstTextLineChanged, FLastTextLineChanged: Integer;
+    procedure SetColor(AValue: TColor);
+  protected
+    procedure Paint(Canvas: TCanvas; AClip: TRect; TopOffset: integer); override;
+    procedure FillPixLines(out AFirstPixLineChanged, ALastPixLineChanged: integer);
+    procedure ReCalc; override;
+  public
+    //constructor Create(AOwner: TComponent); override;
+    destructor  Destroy; override;
+    property Markup: TSynEditMarkupHighlightAllBase read FMarkup write FMarkup;
+  published
+    property Color: TColor read FColor write SetColor;
   end;
 
   { TSynMarkupHighAllValidRange }
@@ -289,9 +312,11 @@ type
     DEFAULT_SCAN_OFFSCREEN_LIMIT = 200;
   strict private
     FFirstInvalidMatchLine, FLastInvalidMatchLine, FMatchLinesDiffCount: Integer;
+    procedure DoOverViewGutterFreed(Sender: TObject);
   private
     FNeedValidate, FNeedValidatePaint: Boolean;
     FMarkupEnabled: Boolean;
+    FOverViewGutterPart: TSynGutterLOvProviderMarkupHighAll;
     FScanMode: TSynEditMarkupHighlightAllScanMode;
     FScanOffScreenLimit: integer;
 
@@ -346,6 +371,7 @@ type
     // AFirst/ ALast are 1 based
     Procedure Invalidate(SkipPaint: Boolean = False);
     Procedure SendLineInvalidation(AFirstIndex: Integer = -1;ALastIndex: Integer = -1); //deprecated 'use invalidation via FMatches';
+    procedure CreateOverviewGutterPart(AnOverviewGutter: TSynGutterLineOverview; APriority: integer); experimental;
 
     property HideSingleMatch: Boolean read FHideSingleMatch write SetHideSingleMatch;
 
@@ -357,6 +383,8 @@ type
        -2 and below: RESERVED
     *)
     property ScanOffScreenLimit: integer read FScanOffScreenLimit write SetScanOffScreenLimit default DEFAULT_SCAN_OFFSCREEN_LIMIT;
+
+    property OverViewGutterPart: TSynGutterLOvProviderMarkupHighAll read FOverViewGutterPart;
   end;
 
   { TSynEditMarkupHighlightAll }
@@ -2889,6 +2917,152 @@ begin
   Result := FParentItemSize + SizeOf(Integer);
 end;
 
+{ TSynGutterLOvProviderMarkupHighAll }
+
+procedure TSynGutterLOvProviderMarkupHighAll.SetColor(AValue: TColor);
+begin
+  if FColor = AValue then Exit;
+  FColor := AValue;
+  FRGBColor := TColor(ColorToRGB(AValue));
+  DoChange(Self);
+end;
+
+procedure TSynGutterLOvProviderMarkupHighAll.Paint(Canvas: TCanvas; AClip: TRect;
+  TopOffset: integer);
+var
+  i, i2, imax: Integer;
+  Cl: TColor;
+begin
+  if (FColor = clNone) then
+    exit;
+
+  AClip.Left := AClip.Left + 2;
+  AClip.Right := AClip.Right - 1;
+
+  i := AClip.Top - TopOffset;
+  imax := AClip.Bottom - TopOffset;
+
+  if imax > high(FPixLines) then imax := high(FPixLines);
+  while i <= imax do begin
+    i2 := i+1;
+    Cl := FPixLines[i];
+    while (i2 <= imax) and (FPixLines[i2] = Cl) do
+      inc(i2);
+
+    if Cl <> clNone then begin
+      AClip.Top    := i;
+      AClip.Bottom := i2;
+      Canvas.Brush.Color := Cl;
+      Canvas.FillRect(AClip);
+    end;
+
+    i := i2;
+  end;
+end;
+
+procedure TSynGutterLOvProviderMarkupHighAll.FillPixLines(out AFirstPixLineChanged,
+  ALastPixLineChanged: integer);
+var
+  Hght: integer;
+  Matches: TSynMarkupHighAllMatchList;
+
+  procedure GetNextPixRange(var AMatchIdx: integer; out APixStart, APixEnd: integer);
+  var
+    M: TSynMarkupHighAllMatch;
+    PixStart2: Integer;
+  begin
+    M := Matches.Match[AMatchIdx];
+    APixStart := Min(Hght, TextLineToPixel(M.StartPoint.y));
+    APixEnd   := Min(Hght, TextLineToPixelEnd(M.EndPoint.y));
+    inc(AMatchIdx);
+
+    while AMatchIdx < Matches.Count do begin
+      M := Matches.Match[AMatchIdx];
+      PixStart2 := TextLineToPixel(M.StartPoint.y);
+      if PixStart2 > APixEnd then
+        break;
+
+      APixEnd   := TextLineToPixelEnd(M.EndPoint.y); // extend
+      inc(AMatchIdx);
+    end;
+  end;
+
+var
+  MatchIdx, LineIdx, PixStart, PixEnd, y: Integer;
+begin
+  AFirstPixLineChanged := -1;
+  ALastPixLineChanged := -1;
+  Hght := Height - 1;
+
+  if (Length(FPixLines) = 0) or (Length(FPixLines) <> Hght + 1) or
+     (FColor = clNone)
+  then
+    exit;
+
+  Matches := FMarkup.Matches;
+  if FMarkup.HideSingleMatch and (Matches.Count <= 1) then
+    Matches := nil;
+
+  MatchIdx := 0;
+  LineIdx := 0;
+  PixEnd := -1;
+  if Matches <> nil then begin
+    while MatchIdx < Matches.Count do begin
+      GetNextPixRange(MatchIdx, PixStart, PixEnd);
+
+      for y := LineIdx to PixStart - 1 do begin
+        if (FPixLines[y] <> clNone) then begin
+          ALastPixLineChanged := y;
+          if (AFirstPixLineChanged < 0) then
+            AFirstPixLineChanged := y;
+        end;
+        FPixLines[y] := clNone;
+      end;
+
+      for y := PixStart to PixEnd do begin
+        if (FPixLines[y] <> FRGBColor) then begin
+          ALastPixLineChanged := y;
+          if (AFirstPixLineChanged < 0) then
+            AFirstPixLineChanged := y;
+        end;
+        FPixLines[y] := FRGBColor;
+      end;
+
+      LineIdx := PixEnd + 1;
+    end;
+  end;
+
+  for y := PixEnd + 1 to Length(FPixLines) - 1 do begin
+    if (FPixLines[y] <> clNone) then begin
+      ALastPixLineChanged := y;
+      if (AFirstPixLineChanged < 0) then
+        AFirstPixLineChanged := y;
+    end;
+    FPixLines[y] := clNone;
+  end;
+
+  if AFirstPixLineChanged >= 0 then begin
+    AFirstPixLineChanged := Max(0, PixelLineToText(AFirstPixLineChanged) - 1);
+    ALastPixLineChanged  := PixelLineToText(ALastPixLineChanged+1) + 1;
+  end;
+end;
+
+procedure TSynGutterLOvProviderMarkupHighAll.ReCalc;
+var
+  y1, y2: integer;
+begin
+  //inherited ReCalc;
+  SetLength(FPixLines, Height);
+  FillPixLines(y1, y2);
+  if y1 >= 0 then
+    InvalidateTextLines(y1, y2);
+end;
+
+destructor TSynGutterLOvProviderMarkupHighAll.Destroy;
+begin
+  DoDestroy; // instead of inherited Destroy;
+end;
+
 { TSynEditMarkupHighlightAllBase }
 
 constructor TSynEditMarkupHighlightAllBase.Create(ASynEdit : TSynEditBase);
@@ -2907,6 +3081,9 @@ begin
   Application.RemoveAsyncCalls(Self);
   if Lines <> nil then
     Lines.RemoveChangeHandler(senrLineMappingChanged, @DoFoldChanged);
+
+  if FOverViewGutterPart <> nil then
+    FreeAndNil(FOverViewGutterPart);
   inherited Destroy;
 end;
 
@@ -2944,6 +3121,11 @@ end;
 procedure TSynEditMarkupHighlightAllBase.DoEnabledChanged(Sender: TObject);
 begin
   Invalidate;
+end;
+
+procedure TSynEditMarkupHighlightAllBase.DoOverViewGutterFreed(Sender: TObject);
+begin
+  FOverViewGutterPart := nil;
 end;
 
 function TSynEditMarkupHighlightAllBase.GetMatchCount: Integer;
@@ -3038,6 +3220,10 @@ begin
     EndSkipSendingInvalidation;
   if not r then begin
     Application.QueueAsyncCall(@DoAsyncScan, 0);
+  end
+  else begin
+    if FOverViewGutterPart <> nil then
+      FOverViewGutterPart.ReCalc;
   end;
 end;
 
@@ -3326,6 +3512,8 @@ begin
     if (not HasSearchData) or (not MarkupInfo.IsEnabled) then begin
       fMatches.Clear;
       FValidRanges := nil;
+      if FOverViewGutterPart <> nil then
+        FOverViewGutterPart.ReCalc;
       exit;
     end;
 
@@ -3360,7 +3548,9 @@ begin
       if SkipPaint then
         Include(FFlags, smfAsyncSkipPaint);
       Application.QueueAsyncCall(@DoAsyncScan, 0);
-    end;
+    end
+    else if FOverViewGutterPart <> nil then
+      FOverViewGutterPart.ReCalc;
 
   finally
     FFirstInvalidMatchLine := -1;
@@ -3482,6 +3672,15 @@ begin
   end;
 
   InvalidateSynLines(Line1, Line2);
+end;
+
+procedure TSynEditMarkupHighlightAllBase.CreateOverviewGutterPart(
+  AnOverviewGutter: TSynGutterLineOverview; APriority: integer);
+begin
+  FOverViewGutterPart := TSynGutterLOvProviderMarkupHighAll.Create(AnOverviewGutter.Providers);
+  FOverViewGutterPart.Priority := APriority;
+  FOverViewGutterPart.AddFreeNotification(@DoOverViewGutterFreed);
+  FOverViewGutterPart.Markup := Self;
 end;
 
 procedure TSynEditMarkupHighlightAllBase.Invalidate(SkipPaint: Boolean);
