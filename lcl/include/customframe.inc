@@ -224,7 +224,7 @@ end;
 
 function TFrame.LCLVersionIsStored: boolean;
 begin
-  Result := Parent = nil;
+  Result := csDesignInstance in ComponentState;
 end;
 
 constructor TFrame.Create(TheOwner: TComponent);
