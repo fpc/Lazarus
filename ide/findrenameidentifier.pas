@@ -537,6 +537,15 @@ var
     Result:=true;
   end;
 
+  function CheckPredefinedIdentifiers: boolean;
+  begin
+    Result:=true;
+    if DeclTool.NodeIsResultType(DeclNode) then begin
+      debugln(['CheckPredefinedIdentifiers is function Result type']);
+      AllowRename:=false;
+    end;
+  end;
+
   function AddExtraFiles(Files: TStrings): boolean;
   // TODO: replace Files: TStringsList with a AVL tree
   var
@@ -658,6 +667,7 @@ begin
   DeclTool:=nil;
   if not UpdateCodeNode then exit;
   if not CheckUsesNode then exit;
+  if not CheckPredefinedIdentifiers then exit;
 
   DeclXY:=Point(DeclCodeXY.X,DeclCodeXY.Y);
   Result:=LazarusIDE.DoOpenFileAndJumpToPos(DeclCodeXY.Code.Filename, DeclXY,
