@@ -471,6 +471,8 @@ var
   DeclTool: TCodeTool;
   DeclNode: TCodeTreeNode;
   DeclCodeXY: TCodeXYPosition;
+  StartSrcCode: TCodeBuffer;
+  StartCaretXY: TPoint;
 
   procedure Err(id: int64; Msg: string);
   begin
@@ -537,12 +539,24 @@ var
     Result:=true;
   end;
 
+  function GetStartIdentifier: string;
+  var
+    p: integer;
+  begin
+    Result:='';
+    StartSrcCode.LineColToPosition(StartCaretXY.Y,StartCaretXY.X,p);
+    if p<1 then exit;
+    Result:=GetIdentifier(@StartSrcCode.Source[p]);
+  end;
+
   function CheckPredefinedIdentifiers: boolean;
   begin
     Result:=true;
     if DeclTool.NodeIsResultType(DeclNode) then begin
-      debugln(['CheckPredefinedIdentifiers is function Result type']);
-      AllowRename:=false;
+      if SameText(GetStartIdentifier,'Result') then begin
+        //debugln(['CheckPredefinedIdentifiers is function Result type']);
+        AllowRename:=false;
+      end;
     end;
   end;
 
@@ -629,9 +643,9 @@ var
 
 var
   StartSrcEdit: TSourceEditorInterface;
-  StartSrcCode, LastCode, Code: TCodeBuffer;
+  LastCode, Code: TCodeBuffer;
   DeclTopLine, StartTopLine, i, j: integer;
-  StartCaretXY, DeclXY: TPoint;
+  DeclXY: TPoint;
   OwnerList, ListOfLazFPDocNode: TFPList;
   ExtraFiles: TStrings;
   Files: TStringList;
