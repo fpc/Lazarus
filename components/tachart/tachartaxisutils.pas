@@ -161,6 +161,7 @@ type
   strict private
     FArrow: TChartArrow;
     FGrid: TChartAxisGridPen;
+    FGridCentered: Boolean;
     FTickColor: TColor;
     FTickInnerLength: Integer;
     FTickLength: Integer;
@@ -169,6 +170,7 @@ type
     function GetIntervals: TChartAxisIntervalParams;
     procedure SetArrow(AValue: TChartArrow);
     procedure SetGrid(AValue: TChartAxisGridPen);
+    procedure SetGridCentered(AValue: Boolean);
     procedure SetIntervals(AValue: TChartAxisIntervalParams);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickInnerLength(AValue: Integer);
@@ -197,6 +199,7 @@ type
     property Marks: TCustomChartAxisMarks read FMarks write SetMarks;
   published
     property Grid: TChartAxisGridPen read FGrid write SetGrid;
+    property GridCentered: Boolean read FGridCentered write SetGridCentered default false;
     property Intervals: TChartAxisIntervalParams
       read GetIntervals write SetIntervals;
     property TickColor: TColor read FTickColor write SetTickColor default clDefault;
@@ -214,6 +217,7 @@ type
     FPrevLabelPoly: TPointArray;
   strict protected
     procedure BarZ(AX1, AY1, AX2, AY2: Integer); inline;
+    procedure DrawGridLine(ACoord: Integer);
     procedure DrawLabel(ALabelCenter: TPoint; const AText: String); inline;
     procedure DrawLabelAndTick(
       ACoord, AFixedCoord: Integer; const AText: String); virtual; abstract;
@@ -247,6 +251,8 @@ type
     constructor Create; virtual;
     procedure DrawAxisLine(
       APen: TChartPen; AFixedCoord: Integer); virtual; abstract;
+    procedure DrawCenteredMark(
+      AFixedCoord: Integer; AMark1, AMark2: Double; const AText: String);
     procedure DrawMark(
       AFixedCoord: Integer; AMark: Double; const AText: String);
     procedure EndDrawing; virtual; abstract;
@@ -341,10 +347,44 @@ begin
   inherited; // Empty -- just to enforce a virtual constructor.
 end;
 
+procedure TAxisDrawHelper.DrawGridLine(ACoord: Integer);
+begin
+  FDrawer.Pen := FAxis.Grid;
+  if (FAxis.Grid.Color = clDefault) then
+    FDrawer.SetPenColor(GetDefaultPenColor)
+  else
+    FDrawer.SetPenColor(FAxis.Grid.Color);
+  FDrawer.SetBrushParams(bsClear, clTAColor);
+  GridLine(ACoord);
+end;
+
 procedure TAxisDrawHelper.DrawLabel(ALabelCenter: TPoint; const AText: String);
 begin
   ALabelCenter += FZOffset;
   FAxis.Marks.DrawLabel(FDrawer, ALabelCenter, ALabelCenter, AText, FPrevLabelPoly);
+end;
+
+procedure TAxisDrawHelper.DrawCenteredMark(
+  AFixedCoord: Integer; AMark1, AMark2: Double; const AText: String);
+var
+  centerMark: Double;
+  coord: Integer;
+begin
+  if not IsNaN(AMark1) then
+  begin
+    centerMark := (AMark1 + AMark2) / 2.0;
+    coord := GraphToImage(centerMark);
+    if IsInClipRange(coord) and
+      ((FValueMax < FValueMin) or InRangeUlps(centerMark, FValueMin, FValueMax, 2)) and
+      ((FValueMax >= FValueMin) or InRangeUlps(centerMark, FValueMax, FValueMin, 2)) and
+      (inRangeUlps(centerMark, FMinForMarks, FMaxForMarks, 2)) and
+      FAxis.Grid.Visible then
+    begin
+      DrawGridLine(coord);
+    end;
+  end;
+
+  DrawMark(AFixedCoord, AMark2, AText);
 end;
 
 procedure TAxisDrawHelper.DrawMark(
@@ -361,14 +401,8 @@ begin
     (not inRangeUlps(AMark, FMinForMarks, FMaxForMarks, 2))
   then exit;
 
-  if FAxis.Grid.Visible then begin
-    FDrawer.Pen := FAxis.Grid;
-    if (FAxis.Grid.Color = clDefault) then
-      FDrawer.SetPenColor(GetDefaultPenColor)
-    else
-      FDrawer.SetPenColor(FAxis.Grid.Color);
-    FDrawer.SetBrushParams(bsClear, clTAColor);
-    GridLine(coord);
+  if FAxis.Grid.Visible and (not FAxis.GridCentered) then begin
+    DrawGridLine(coord);
     FPrevCoord := coord;
   end;
 
@@ -795,6 +829,13 @@ end;
 procedure TChartBasicAxis.SetGrid(AValue: TChartAxisGridPen);
 begin
   FGrid.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartBasicAxis.SetGridCentered(AValue: Boolean);
+begin
+  if FGridCentered = AValue then exit;
+  FGridCentered := AValue;
   StyleChanged(Self);
 end;
 

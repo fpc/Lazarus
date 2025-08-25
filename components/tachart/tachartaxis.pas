@@ -522,7 +522,8 @@ function TChartAxis.GetHitTestInfoAt(APoint: TPoint; ADelta: Integer;
 var
   R, Rax, Rline: TRect;
   dist, loc: Integer;
-  p: Integer;
+  p, prev: Integer;
+  pt: Double;
   t: TChartValueText;
 begin
   Result := [];
@@ -578,9 +579,17 @@ begin
   begin
     R := Rax;
     if IsPointInRect(APoint, R) and Grid.Visible then
+    begin
+      pt := SafeNaN;      // "previous t"
       for t in FMarkValues do
       begin
         p := FHelper.GraphToImage(FHelper.FAxisTransf(t.FValue));
+        if GridCentered and not IsNaN(pt) then
+        begin
+          prev := FHelper.GraphToImage(FHelper.FAxisTransf(pt));
+          p := (p + prev) div 2;
+          pt := t.FValue;
+        end;
         if IsVertical then
         begin
           R.Top := p - ADelta;
@@ -596,6 +605,7 @@ begin
           exit;
         end;
       end;
+    end;
   end;
 
   if Result = [] then
@@ -695,24 +705,39 @@ procedure TChartAxis.Draw;
   end;
 
 var
-  fixedCoord: Integer;
-  pv, v: Double;
+  fixedCoord, i: Integer;
   t: TChartValueText;
+  v, pv, ppv: Double;          // Untransformed mark values
+  trV, prevTrV: Double;        // Transformed mark values
 begin
   if not Visible then exit;
   FHelper.FDrawer.SetTransparency(0);
   if Marks.Visible then
     FHelper.FDrawer.Font := Marks.LabelFont;
   fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
+  prevTrV := SafeNaN;
   pv := SafeNaN;
+  ppv := SafeNaN;
   FHelper.BeginDrawing;
-  FHelper.DrawAxisLine(AxisPen, fixedCoord);
+
   for t in FMarkValues do begin
-    v := FHelper.FAxisTransf(t.FValue);
-    FHelper.DrawMark(fixedCoord, v, t.FText);
-    DrawMinors(fixedCoord, pv, t.FValue);
-    pv := t.FValue;
+    trV := FHelper.FAxisTransf(t.FValue);
+    if GridCentered then
+    begin
+      FHelper.DrawCenteredMark(fixedCoord, prevTrV, trV, t.FText);
+      DrawMinors(fixedCoord, (ppv + pv)/2, (pv + t.FValue)/2);
+      // ToDo: Fix missing minor at t.FValue
+      ppv := pv;
+    end else
+    begin
+      FHelper.DrawMark(fixedCoord, trV, t.FText);
+      DrawMinors(fixedCoord, pv, t.FValue);
+    end;
+    pv := t.FValue;    // "previous t.FValue"
+    prevTrV := trV;    // "previous transformed t.FValue"
   end;
+
+  FHelper.DrawAxisLine(AxisPen, fixedCoord);
   FHelper.EndDrawing;
 end;
 

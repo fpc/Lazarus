@@ -1714,7 +1714,7 @@ begin
     Result.b.X += (ofs + w);
   end else begin
     i := 0;
-    x := NearestXNumber(i, +1);       // --> x is in graph units
+    x := NearestXNumber(i, +1);       // x is in graph units
     if not IsNan(x) then begin
       BarOffsetWidth(x, i, ofs, w);
       x := GraphToAxisX(x + ofs - w); // x is in graph units, Extent in axis units!
