@@ -1482,7 +1482,8 @@ begin
   if losLineCountChanged in FState then begin
     for i := 0 to FProviders.Count - 1 do
       FProviders[i].ReCalc;
-    FLineMarks.ReBuild;
+    if not (losResized in FState) then
+      FLineMarks.ReBuild;
   end;
 
   if losResized in FState then begin
