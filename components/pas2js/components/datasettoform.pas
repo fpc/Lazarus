@@ -318,6 +318,8 @@ begin
   if V<>'' then
     Result:=Result+Format(' value="%s"',[V]);
   Result:=Indent+Result+'>'+D+'</option>';
+
+  if aEntry=nil then ;
 end;
 
 function TDataFormGenerator.GetInputClasses(aEntry: TDataFieldEntryItem) : string;
@@ -351,6 +353,7 @@ function TDataFormGenerator.GetTextAreaTag(aEntry: TDataFieldEntryItem; aBaseAtt
 
 begin
   Result:=Format('<textarea %s class="%s" %s></textarea>',[aBaseAttributes,aClasses,aExtraAttributes]);
+  if aEntry=nil then ;
 end;
 
 constructor TDataFormGenerator.Create(aOwner: TComponent);
@@ -499,6 +502,7 @@ begin
   Result:='';
   if SeparatorClasses<>'' then
     Result:=Result+Format(' class="%s" ',[SeparatorClasses]);
+  if aEntry=nil then ;
 end;
 
 function TSimpleFormGenerator.GetCellattributes(aEntry: TDataFieldEntryItem; IsLabel : boolean): String;
@@ -513,6 +517,7 @@ begin
     aClass:=EntryCellClass;
   if aClass<>'' then
     Result:=Result+Format(' class="%s"',[aClass]);
+  if aEntry=nil then ;
 end;
 
 function TSimpleFormGenerator.GenerateFieldHTML(aEntry: TDataFieldEntryItem): String;

@@ -2216,7 +2216,6 @@ var
     SrcCodes: TAVLTree;
     SrcNode: TAVLTreeNode;
   begin
-    CTDumpStack;
     debugln(['TFindDeclarationTool.FindDeclaration failed',
       ' CursorPos=X=',CursorPos.X,',Y=',CursorPos.Y,
       ',File=',CursorPos.Code.Filename,
@@ -7201,6 +7200,8 @@ var
         end;
       end;
     end;
+
+    if Kind=kResultWord then ;
 
     DeclarationFound:=true;
     Result:=true;

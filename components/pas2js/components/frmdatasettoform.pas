@@ -129,6 +129,7 @@ end;
 procedure TfrmDatasetToHTMLForm.LBFieldsSelectionChange(Sender: TObject; User: boolean);
 begin
   ShowSelectedField;
+  if User then ;
 end;
 
 procedure TfrmDatasetToHTMLForm.PCHTMLChange(Sender: TObject);
