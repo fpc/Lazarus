@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Spin, TAGraph, TASeries, TASources, TAStyles, TAChartUtils;
+  Spin, TAGraph, TASeries, TACustomSource, TASources, TAStyles, TAChartUtils;
 
 type
 
@@ -19,11 +19,13 @@ type
     ChartStyles1: TChartStyles;
     cbRotated: TCheckBox;
     cbShowLabels: TCheckBox;
+    cbGridCentered: TCheckBox;
     cmbShape: TComboBox;
     lblShape: TLabel;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
     procedure cb3DChange(Sender: TObject);
+    procedure cbGridCenteredChange(Sender: TObject);
     procedure cbRotatedChange(Sender: TObject);
     procedure cbShowLabelsChange(Sender: TObject);
     procedure cmbShapeChange(Sender: TObject);
@@ -49,6 +51,14 @@ begin
     BarSeries.Depth := 20
   else
     BarSeries.Depth := 0;
+  cbGridCenteredChange(nil);
+  cbGridCentered.Enabled := not cb3D.Checked;
+end;
+
+procedure TForm1.cbGridCenteredChange(Sender: TObject);
+begin
+  Chart1.BottomAxis.GridCentered := cbGridCentered.Checked and not cb3D.Checked;
+  Chart1.BottomAxis.Grid.Visible := Chart1.BottomAxis.GridCentered;
 end;
 
 procedure TForm1.cbRotatedChange(Sender: TObject);
@@ -100,6 +110,9 @@ begin
       s := s + ';' + RandomString(1 + Random(4));
     BarSeries.AddXY(i, 20+Random*100, [20+Random*100, 20+Random*100], s);
   end;
+
+  // Set up bottom axis such that only ticks are displayed at the bars.
+  Chart1.BottomAxis.Intervals.Options := Chart1.BottomAxis.Intervals.Options + [aipInteger];
 end;
 
 end.

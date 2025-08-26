@@ -6,7 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 384
   ClientWidth = 633
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   object Chart1: TChart
     Left = 0
@@ -22,6 +22,7 @@ object Form1: TForm1
         Title.LabelBrush.Style = bsClear
       end    
       item
+        Grid.Color = clSilver
         Grid.Visible = False
         Intervals.MaxLength = 150
         Intervals.MinLength = 50
@@ -121,8 +122,7 @@ object Form1: TForm1
     object cbRotated: TCheckBox
       AnchorSideLeft.Control = cb3D
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = cmbShape
-      AnchorSideTop.Side = asrCenter
+      AnchorSideTop.Control = cb3D
       Left = 264
       Height = 19
       Top = 8
@@ -135,8 +135,7 @@ object Form1: TForm1
     object cbShowLabels: TCheckBox
       AnchorSideLeft.Control = cbRotated
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = Panel1
-      AnchorSideTop.Side = asrCenter
+      AnchorSideTop.Control = cb3D
       Left = 335
       Height = 19
       Top = 8
@@ -145,6 +144,20 @@ object Form1: TForm1
       Caption = 'Show labels'
       TabOrder = 3
       OnChange = cbShowLabelsChange
+    end
+    object cbGridCentered: TCheckBox
+      AnchorSideLeft.Control = cbShowLabels
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cb3D
+      Left = 427
+      Height = 19
+      Top = 8
+      Width = 98
+      BorderSpacing.Left = 12
+      Caption = 'Centered x grid'
+      Enabled = False
+      TabOrder = 4
+      OnChange = cbGridCenteredChange
     end
   end
   object RandomChartSource1: TRandomChartSource

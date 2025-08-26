@@ -381,10 +381,12 @@ begin
       FAxis.Grid.Visible then
     begin
       DrawGridLine(coord);
+      FPrevCoord := coord;
     end;
   end;
 
   DrawMark(AFixedCoord, AMark2, AText);
+
 end;
 
 procedure TAxisDrawHelper.DrawMark(

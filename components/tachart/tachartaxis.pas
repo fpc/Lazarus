@@ -719,7 +719,6 @@ begin
   pv := SafeNaN;
   ppv := SafeNaN;
   FHelper.BeginDrawing;
-
   for t in FMarkValues do begin
     trV := FHelper.FAxisTransf(t.FValue);
     if GridCentered then
@@ -736,7 +735,6 @@ begin
     pv := t.FValue;    // "previous t.FValue"
     prevTrV := trV;    // "previous transformed t.FValue"
   end;
-
   FHelper.DrawAxisLine(AxisPen, fixedCoord);
   FHelper.EndDrawing;
 end;
