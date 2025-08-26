@@ -17,7 +17,7 @@
           <ahaLineHighlight ForePriority="500" BackPriority="500" FramePriority="500"/>
           <ahaWordGroup FrameColor="clRed" ForePriority="3000" BackPriority="3000" FramePriority="3000"/>
           <ahaBracketMatch Style="fsBold" ForePriority="3000" BackPriority="3000" FramePriority="3000"/>
-          <ahaHighlightWord Background="3158064" FrameColor="clSilver" ForePriority="3000" BackPriority="3000" FramePriority="3000"/>
+          <ahaHighlightWord Background="3158064" FrameColor="clSilver" ForePriority="3000" BackPriority="3000" FramePriority="3000" MarkupAllOverviewColor="clFuchsia"/>
           <ahaIncrementalSearch Background="3199088" Foreground="clWhite" ForePriority="4000" BackPriority="4000" FramePriority="4000"/>
           <ahaHighlightAll Background="clYellow" ForePriority="4000" BackPriority="4000" FramePriority="4000"/>
           <ahaTemplateEditCur FrameColor="clAqua" ForePriority="6000" BackPriority="6000" FramePriority="6000"/>
