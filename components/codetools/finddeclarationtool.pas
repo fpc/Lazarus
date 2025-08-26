@@ -70,6 +70,7 @@ interface
 { $DEFINE VerboseFindFileAtCursor}
 { $DEFINE VerboseFindRefMethodOverrides}
 { $DEFINE VerboseFindSourceNameReferences}
+{ $DEFINE VerboseFindReferences}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
@@ -2215,6 +2216,7 @@ var
     SrcCodes: TAVLTree;
     SrcNode: TAVLTreeNode;
   begin
+    CTDumpStack;
     debugln(['TFindDeclarationTool.FindDeclaration failed',
       ' CursorPos=X=',CursorPos.X,',Y=',CursorPos.Y,
       ',File=',CursorPos.Code.Filename,
@@ -2543,7 +2545,8 @@ begin
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
     {$IFDEF VerboseFindDeclarationFail}
-    WriteFailReport;
+    if not Result then
+      WriteFailReport;
     {$ENDIF}
   end;
 end;
@@ -6630,9 +6633,15 @@ end;
 -------------------------------------------------------------------------------}
 function TFindDeclarationTool.FindReferences(const CursorPos: TCodeXYPosition;
   SkipComments: boolean; out ListOfPCodeXYPosition: TFPList; Flags: TFindRefsFlags): boolean;
+type
+  TKind = (
+    kDeclaration,
+    kResultWord
+    );
 var
   DeclarationFound: boolean;
   Identifier: string;
+  Kind: TKind;
   CleanDeclCursorPos: integer;
   DeclarationTool: TFindDeclarationTool;
   DeclarationNode: TCodeTreeNode; // in DeclarationTool
@@ -7097,15 +7106,20 @@ var
     DeclarationTool.BuildTreeAndGetCleanPos(CursorPos,CleanDeclCursorPos);
     DeclarationNode:=DeclarationTool.BuildSubTreeAndFindDeepestNodeAtPos(
                                            CleanDeclCursorPos,true);
-    Identifier:=DeclarationTool.ExtractIdentifier(CleanDeclCursorPos);
-    if Identifier='' then begin
-      //debugln('FindDeclarationNode Identifier="',Identifier,'"');
-      exit;
-    end;
-    UseProcHead(DeclarationNode);
-    if DeclarationTool=Self then begin
-      //debugln(['FindDeclarationNode adding DeclarationNode ...']);
-      AddNodeReference(DeclarationNode);
+    if NodeIsResultType(DeclarationNode) then begin
+      Kind:=kResultWord;
+      Identifier:='Result';
+    end else begin
+      Identifier:=DeclarationTool.ExtractIdentifier(CleanDeclCursorPos);
+      if Identifier='' then begin
+        //debugln('FindDeclarationNode Identifier="',Identifier,'"');
+        exit;
+      end;
+      UseProcHead(DeclarationNode);
+      if DeclarationTool=Self then begin
+        //debugln(['FindDeclarationNode adding DeclarationNode ...']);
+        AddNodeReference(DeclarationNode);
+      end;
     end;
 
     // find alias declaration node
@@ -7171,9 +7185,9 @@ var
     // search comment in front of declaration
     //debugln(['FindDeclarationNode search comment in front: ',DeclarationTool=Self,' SkipComments=',SkipComments,' Identifier=',Identifier]);
     if (DeclarationTool=Self)
-    and (not SkipComments)
-    and FindCommentInFront(DeclarationNode.StartPos,Identifier,
-      true,false,false,true,true,CommentStart,CommentEnd)
+        and (not SkipComments)
+        and FindCommentInFront(DeclarationNode.StartPos,Identifier,
+          true,false,false,true,true,CommentStart,CommentEnd)
     then begin
       //debugln(['FindDeclarationNode Comment="',dbgstr(copy(Src,CommentStart,CommentEnd)),'"']);
       p:=CommentStart;
@@ -7275,6 +7289,7 @@ begin
   DeclarationFound:=false;
   OverrideProcNodes:=[];
   NotOverrideProcNodes:=[];
+  Kind:=kDeclaration;
 
   ActivateGlobalWriteLock;
   try

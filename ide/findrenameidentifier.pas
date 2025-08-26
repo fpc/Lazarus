@@ -53,6 +53,13 @@ uses
   CodeHelp, SourceFileManager, Project;
 
 type
+  TFRIdentifierKind = (
+    friDeclaration,
+    friSourceName,
+    friFunctionResultWord,
+    friClassSelfWord
+    );
+  TFRIdentifierKinds = set of TFRIdentifierKind;
 
   { TFindRenameIdentifierDialog }
 
@@ -82,8 +89,8 @@ type
   private
     FAllowRename: boolean;
     FIdentifierFilename: string;
+    FIdentifierKind: TFRIdentifierKind;
     FIdentifierPosition: TPoint;
-    FIsSourceName: boolean;
     FOldIdentifier: string;
     FNewIdentifier: string;
     FConflictUnitNames: TStringList; // already defined identifiers in scope
@@ -106,21 +113,21 @@ type
     procedure LoadFromOptions(Options: TFindRenameIdentifierOptions);
     procedure SaveToOptions(Options: TFindRenameIdentifierOptions);
     procedure SetIdentifier(const NewIdentifierFilename: string;
-                            var NewIdentifierPosition: TPoint; IsSrcName: boolean);
+                            var NewIdentifierPosition: TPoint;
+                            anIdentifierKind: TFRIdentifierKind);
 
     property IdentifierFilename: string read FIdentifierFilename;
     property IdentifierPosition: TPoint read FIdentifierPosition;
     property AllowRename: boolean read FAllowRename write SetAllowRename;
     property IsPrivate: boolean read FIsPrivate write SetIsPrivate;
-    property IsSourceName: boolean read FIsSourceName write FIsSourceName;
+    property IdentifierKind: TFRIdentifierKind read FIdentifierKind;
   end;
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
   var Position: TPoint;
   AllowRename: boolean; // allow user to disable/enable rename
   SetRenameActive: boolean; // check rename
-  Options: TFindRenameIdentifierOptions;
-  IsSourceName: boolean): TModalResult;
+  IdentifierKind: TFRIdentifierKind): TModalResult;
 function DoFindRenameIdentifier(
   AllowRename: boolean; // allow user to disable/enable rename
   SetRenameActive: boolean; // check rename
@@ -166,22 +173,17 @@ implementation
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
   var Position: TPoint; AllowRename: boolean; SetRenameActive: boolean;
-  Options: TFindRenameIdentifierOptions; IsSourceName: boolean): TModalResult;
+  IdentifierKind: TFRIdentifierKind): TModalResult;
 var
   FindRenameIdentifierDialog: TFindRenameIdentifierDialog;
 begin
   FindRenameIdentifierDialog:=TFindRenameIdentifierDialog.Create(nil);
   try
     FindRenameIdentifierDialog.LoadFromConfig;
-    FindRenameIdentifierDialog.SetIdentifier(Filename,Position,IsSourceName);
+    FindRenameIdentifierDialog.SetIdentifier(Filename,Position,IdentifierKind);
     FindRenameIdentifierDialog.AllowRename:=AllowRename;
     FindRenameIdentifierDialog.RenameCheckBox.Checked:=SetRenameActive and AllowRename;
-    if Options<>nil then
-      FindRenameIdentifierDialog.ShowResultCheckBox.Checked:=Options.RenameShowResult and AllowRename;
     Result:=FindRenameIdentifierDialog.ShowModal;
-    if Result=mrOk then
-      if Options<>nil then
-        FindRenameIdentifierDialog.SaveToOptions(Options);
   finally
     FindRenameIdentifierDialog.Free;
     FindRenameIdentifierDialog:=nil;
@@ -467,12 +469,13 @@ end;
 function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
   Options: TFindRenameIdentifierOptions): TModalResult;
 var
+  StartSrcCode: TCodeBuffer;
+  StartCaretXY: TPoint;
   DeclCleanPos: integer;
   DeclTool: TCodeTool;
   DeclNode: TCodeTreeNode;
   DeclCodeXY: TCodeXYPosition;
-  StartSrcCode: TCodeBuffer;
-  StartCaretXY: TPoint;
+  Kind: TFRIdentifierKind;
 
   procedure Err(id: int64; Msg: string);
   begin
@@ -503,6 +506,7 @@ var
     // renaming a uses -> rename the unit
     // find unit
     Result:=false;
+    Kind:=friSourceName;
     aUnitName:=RemoveAmpersands(DeclTool.ExtractUsedUnitName(DeclNode,@InFilename));
     if aUnitName='' then begin
       Err(20250206143851,'ExtractUsedUnitName failed');
@@ -539,25 +543,21 @@ var
     Result:=true;
   end;
 
-  function GetStartIdentifier: string;
-  var
-    p: integer;
-  begin
-    Result:='';
-    StartSrcCode.LineColToPosition(StartCaretXY.Y,StartCaretXY.X,p);
-    if p<1 then exit;
-    Result:=GetIdentifier(@StartSrcCode.Source[p]);
-  end;
-
-  function CheckPredefinedIdentifiers: boolean;
+  function CheckPredefinedIdentifiers(out Identifier: string): boolean;
   begin
     Result:=true;
     if DeclTool.NodeIsResultType(DeclNode) then begin
-      if SameText(GetStartIdentifier,'Result') then begin
+      CodeToolBoss.GetIdentifierAt(StartSrcCode,StartCaretXY.X,StartCaretXY.Y,Identifier);
+      if SameText(Identifier,'Result') then begin
         //debugln(['CheckPredefinedIdentifiers is function Result type']);
         AllowRename:=false;
+        Kind:=friFunctionResultWord;
+
+        debugln(['CheckPredefinedIdentifiers 20250826103451 find references of Result word is not yet fully implemented']);
+        exit(false);
       end;
     end;
+    CodeToolBoss.GetIdentifierAt(DeclCodeXY.Code,DeclCodeXY.X,DeclCodeXY.Y,Identifier);
   end;
 
   function AddExtraFiles(Files: TStrings): boolean;
@@ -679,9 +679,10 @@ begin
     exit(mrCancel);
   end;
   DeclTool:=nil;
+  Kind:=friDeclaration;
   if not UpdateCodeNode then exit;
   if not CheckUsesNode then exit;
-  if not CheckPredefinedIdentifiers then exit;
+  if not CheckPredefinedIdentifiers(Identifier) then exit;
 
   DeclXY:=Point(DeclCodeXY.X,DeclCodeXY.Y);
   Result:=LazarusIDE.DoOpenFileAndJumpToPos(DeclCodeXY.Code.Filename, DeclXY,
@@ -689,7 +690,6 @@ begin
   if Result<>mrOk then
     exit;
 
-  CodeToolBoss.GetIdentifierAt(DeclCodeXY.Code,DeclCodeXY.X,DeclCodeXY.Y,Identifier);
   Files:=nil;
   OwnerList:=nil;
   PascalReferences:=nil;
@@ -701,7 +701,7 @@ begin
   try
     // let user choose the search scope
     Result:=ShowFindRenameIdentifierDialog(DeclCodeXY.Code.Filename,DeclXY,
-      AllowRename,SetRenameActive,nil,DeclNode.Desc=ctnSrcName);
+      AllowRename,SetRenameActive,Kind);
     if Result<>mrOk then begin
       debugln('Error: (lazarus) DoFindRenameIdentifier failed: user cancelled dialog');
       exit;
@@ -710,7 +710,7 @@ begin
     Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
     if Options.Rename then begin
       OldFileName:=DeclCodeXY.Code.Filename;
-      if DeclNode.Desc=ctnSrcName then
+      if Kind=friSourceName then
       begin
         // rename unit/program
         DoLowercase:=false;
@@ -903,7 +903,7 @@ begin
         // todo: check for conflicts and show user list
         IsConflicted:=false;
         Result:=mrOk;
-        if DeclNode.Desc=ctnSrcName then begin
+        if Kind=friSourceName then begin
           if not CodeToolBoss.RenameSourceNameReferences(OldFileName,NewFilename,
               Options.RenameTo,PascalReferences) then
             Result:=mrCancel;
@@ -1470,7 +1470,7 @@ begin
       Err:=lisIdentifierCannotBeEmpty
     else
       Err:= format(lisIdentifierIsInvalid,[FNewIdentifier]);
-  end else if not IsSourceName and (Pos('.',FNewIdentifier)>0) then
+  end else if (IdentifierKind<>friSourceName) and (Pos('.',FNewIdentifier)>0) then
   begin
     ok:=false;
     Err:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
@@ -1792,7 +1792,7 @@ begin
 end;
 
 procedure TFindRenameIdentifierDialog.SetIdentifier(const NewIdentifierFilename: string;
-  var NewIdentifierPosition: TPoint; IsSrcName: boolean);
+  var NewIdentifierPosition: TPoint; anIdentifierKind: TFRIdentifierKind);
 var
   s: String;
   ACodeBuffer, CurCode: TCodeBuffer;
@@ -1802,9 +1802,10 @@ var
   CleanPos: integer;
   Node: TCodeTreeNode;
 begin
-  IsSourceName:=IsSrcName;
+  FIdentifierKind:=anIdentifierKind;
   FIdentifierFilename:=NewIdentifierFilename;
   FIdentifierPosition:=NewIdentifierPosition;
+  FOldIdentifier:='';
   FNode:=nil;
   FTool:=nil;
   Node:=nil;
@@ -1815,13 +1816,12 @@ begin
   CurrentListBox.Items.Add(s);
   LoadCodeBuffer(ACodeBuffer,IdentifierFileName,[lbfCheckIfText],false);
   IsPrivate:=false;
-  FOldIdentifier:='';
   if ACodeBuffer=nil then begin
     CurrentGroupBox.Caption:='?file not found?';
     exit;
   end;
 
-  // Check if this is an include file and list files this unit/program
+  // Check if this is an include file and list all files up to the unit/program
   CodeToolBoss.GetIncludeCodeChain(ACodeBuffer,true,ListOfCodeBuffer);
   if ListOfCodeBuffer<>nil then begin
     for i:=0 to ListOfCodeBuffer.Count-1 do begin
@@ -1853,6 +1853,10 @@ begin
     CurrentGroupBox.Caption:= Format(lisFRIIdentifier,[''])+LCLEncodeAmps(FOldIdentifier);
   end else
     FOldIdentifier:='';
+  case IdentifierKind of
+  friFunctionResultWord: FOldIdentifier:='Result';
+  friClassSelfWord:      FOldIdentifier:='Self';
+  end;
   FNodesDeletedChangeStep:=FTool.NodesDeletedChangeStep;
   NewEdit.Text:=FOldIdentifier;
 end;
@@ -1972,7 +1976,7 @@ begin
   if not AllowRename then exit;
   if IsNodeInvalid('TFindRenameIdentifierDialog.NewIdentifierIsConflicted') then exit;
 
-  if not IsSourceName and (Pos('.',FNewIdentifier)>0) then
+  if (IdentifierKind<>friSourceName) and (Pos('.',FNewIdentifier)>0) then
   begin
     ErrMsg:=Format(lisIdentifierCannotBeDotted,[FNewIdentifier]);
     exit(true);
