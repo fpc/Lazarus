@@ -487,6 +487,8 @@ type
   { TIDESynGutter }
 
   TIDESynGutter = class(TSynGutter)
+  private
+    FOverviewGutterPart: TSynGutterLineOverview;
   protected
     procedure CreateDefaultGutterParts; override;
   public
@@ -2049,6 +2051,7 @@ end;
 constructor TIDESynEditor.Create(AOwner: TComponent);
 var
   MarkupFoldColors: TSynEditMarkupFoldColors;
+  MarkupCaret: TSynEditMarkupHighlightAllCaret;
 begin
   inherited Create(AOwner);
   FFoldView := TSynEditFoldedView(TextViewsManager.SynTextViewByClass[TSynEditFoldedView]);
@@ -2109,6 +2112,11 @@ begin
 
   TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.TextArea.MarkupManager :=
     FExtraMarkupMgr;
+
+  MarkupCaret := TSynEditMarkupHighlightAllCaret(MarkupByClass[TSynEditMarkupHighlightAllCaret]);
+  MarkupCaret.CreateOverviewGutterPart(TIDESynGutter(RightGutter).FOverviewGutterPart, 15);
+  MarkupCaret.ScanMode := smsmASyncForceAll;
+
   {$IFDEF WithSynDebugGutter}
   TIDESynGutter(RightGutter).DebugGutter.TheLinesView := ViewedTextBuffer;
   {$ENDIF}
@@ -2638,7 +2646,8 @@ begin
       {$ENDIF}
       with TSynGutterSeparator.Create(Parts) do
         Name := 'SynGutterSeparatorR2';
-      with TSynGutterLineOverview.Create(Parts) do begin
+      FOverviewGutterPart := TSynGutterLineOverview.Create(Parts);
+      with FOverviewGutterPart do begin
         Name := 'SynGutterLineOverview1';
         with TIDESynGutterLOvProviderIDEMarks.Create(Providers) do
           Priority := 20;

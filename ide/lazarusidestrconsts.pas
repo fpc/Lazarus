@@ -1956,6 +1956,7 @@ resourcestring
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Text-mark';
   dlgMarkupFoldColor = 'Vertical-mark';
+  dlgMarkupAllOverviewGutter = 'Overview-gutter';
   dlgTextStyle = 'Text-Style';
   dlgUnsavedLineColor = 'Unsaved line';
   dlgSavedLineColor = 'Saved line';

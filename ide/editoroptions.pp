@@ -239,7 +239,7 @@ const
     { ahaModifiedLine }       [hafBackColor, hafForeColor, hafFrameColor],
     { ahaCodeFoldingTree }    [hafBackColor, hafForeColor, hafFrameColor],
     { ahaCodeFoldingTreeCurrent } [hafForeColor, hafFrameColor],
-    { ahaHighlightWord }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaHighlightWord }      [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupAllOverview],
     { ahaFoldedCode }         [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaFoldedCodeLine }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaHiddenCodeLine }     [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
@@ -334,12 +334,14 @@ type
     FMarkupFoldLineAlpha: Byte;
     FMarkupFoldLineColor: TColor;
     FMarkupFoldLineStyle: TSynLineStyle;
+    FMarkupAllOverviewColor: TColor;
     FOwner: TColorSchemeLanguage;
     FAlreadyGotSchemeGlobal: Boolean;
     FSchemeGlobalCache: TColorSchemeAttribute;
     FUseSchemeGlobals: Boolean;
     function GetGroupName: String;
     function GetIsUsingSchemeGlobals: Boolean;
+    procedure SetMarkupAllOverviewColor(AValue: TColor);
     procedure SetMarkupFoldLineAlpha(AValue: Byte);
     procedure SetMarkupFoldLineColor(AValue: TColor);
     procedure SetMarkupFoldLineStyle(AValue: TSynLineStyle);
@@ -371,6 +373,8 @@ type
     property MarkupFoldLineColor: TColor read FMarkupFoldLineColor write SetMarkupFoldLineColor default clNone; // clDefault will take Color[].Frame or Color[].Foreground
     property MarkupFoldLineStyle: TSynLineStyle read FMarkupFoldLineStyle write SetMarkupFoldLineStyle default slsSolid;
     property MarkupFoldLineAlpha: Byte read FMarkupFoldLineAlpha write SetMarkupFoldLineAlpha default 0;
+    // For overview gutter (MarkupHighlightAll)
+    property MarkupAllOverviewColor: TColor read FMarkupAllOverviewColor write SetMarkupAllOverviewColor default clNone;
   end;
 
   { TColorSchemeLanguage }
@@ -7148,6 +7152,7 @@ begin
   inherited Init;
   FAttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges, hafPrior];
   FMarkupFoldLineColor := clNone;
+  FMarkupAllOverviewColor := clNone;
   FMarkupFoldLineStyle := slsSolid;
   FMarkupFoldLineAlpha := 0;
 end;
@@ -7162,12 +7167,20 @@ begin
     FMarkupFoldLineColor := SrcAttr.FMarkupFoldLineColor;
     FMarkupFoldLineStyle := SrcAttr.FMarkupFoldLineStyle;
     FMarkupFoldLineAlpha := SrcAttr.FMarkupFoldLineAlpha;
+    FMarkupAllOverviewColor := SrcAttr.FMarkupAllOverviewColor;
   end;
 end;
 
 function TColorSchemeAttribute.GetIsUsingSchemeGlobals: Boolean;
 begin
   Result := FUseSchemeGlobals and (GetSchemeGlobal <> nil);
+end;
+
+procedure TColorSchemeAttribute.SetMarkupAllOverviewColor(AValue: TColor);
+begin
+  if FMarkupAllOverviewColor = AValue then Exit;
+  FMarkupAllOverviewColor := AValue;
+  Changed;
 end;
 
 function TColorSchemeAttribute.GetGroupName: String;
@@ -7205,7 +7218,8 @@ end;
 
 function TColorSchemeAttribute.IsEnabled: boolean;
 begin
-  Result := (inherited IsEnabled) or (FMarkupFoldLineColor <> clNone);
+  Result := (inherited IsEnabled) or (FMarkupFoldLineColor <> clNone) or
+            (FMarkupAllOverviewColor <> clNone);
 end;
 
 procedure TColorSchemeAttribute.ApplyTo(aDest: TLazEditTextAttribute;
@@ -7298,6 +7312,7 @@ begin
     FMarkupFoldLineStyle := SrcAttr.FMarkupFoldLineStyle;
     FMarkupFoldLineAlpha := SrcAttr.FMarkupFoldLineAlpha;
     FDefaultSynFeatures  := SrcAttr.FDefaultSynFeatures;
+    FMarkupAllOverviewColor := SrcAttr.FMarkupAllOverviewColor;
   end;
 end;
 
@@ -7826,6 +7841,7 @@ var
   col: TColor;
   OGutter: TSynGutterLineOverview;
   OGutterProv: TSynGutterLineOverviewProvider;
+  MarkupCaret: TSynEditMarkupHighlightAllCaret;
 begin
   ASynEdit.BeginUpdate;
   try
@@ -7882,6 +7898,22 @@ begin
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
     SetMarkupColorByClass(ahaWordGroup,     TSynEditMarkupWordGroup);
     SetMarkupColorByClass(ahaSpecialVisibleChars, TSynEditMarkupSpecialChar);
+
+    MarkupCaret := TSynEditMarkupHighlightAllCaret(ASynEdit.MarkupByClass[TSynEditMarkupHighlightAllCaret]);
+    if (MarkupCaret <> nil) and (MarkupCaret.OverViewGutterPart <> nil) then begin
+      Attri := GetUsedAttr(ahaHighlightWord);
+      if Attri <> nil then
+        MarkupCaret.OverViewGutterPart.Color := Attri.MarkupAllOverviewColor
+      else
+        MarkupCaret.OverViewGutterPart.Color := clNone;
+
+      MarkupCaret.ScanOffScreenLimit := MaxInt;
+      if MarkupCaret.OverViewGutterPart.Color = clNone then
+        MarkupCaret.ScanMode := smsmASync
+      else
+        MarkupCaret.ScanMode := smsmASyncForceAll;
+    end;
+
     if ASynEdit is TIDESynEditor then begin
       with TIDESynEditor(ASynEdit) do begin
         Attri := AttributeByEnum[ahaIfDefBlockInactive];

@@ -195,9 +195,15 @@ begin
   end;
   if Sender = MarkupFoldColorBox then
   begin
-    FCurHighlightElement.MarkupFoldLineColor := DefaultToNone(MarkupFoldColorBox.Selected);
+    if hafMarkupAllOverview in FCurHighlightElement.AttrFeatures then begin
+      FCurHighlightElement.MarkupAllOverviewColor := DefaultToNone(MarkupFoldColorBox.Selected);
+    end
+    else
+    if hafMarkupFoldColor in FCurHighlightElement.AttrFeatures then begin
+      FCurHighlightElement.MarkupFoldLineColor := DefaultToNone(MarkupFoldColorBox.Selected);
+      MarkupFoldStyleBox.Enabled := MarkupFoldColorBox.Selected <> clDefault;
+    end;
     MarkupFoldColorUseDefaultCheckBox.Checked := MarkupFoldColorBox.Selected <> clDefault;
-    MarkupFoldStyleBox.Enabled := MarkupFoldColorBox.Selected <> clDefault;
   end;
   if Sender = FrameEdgesBox then
   begin
@@ -209,7 +215,8 @@ begin
   end;
   if Sender = MarkupFoldStyleBox then
   begin
-    FCurHighlightElement.MarkupFoldLineStyle := TSynLineStyle(MarkupFoldStyleBox.ItemIndex);
+    if hafMarkupFoldColor in FCurHighlightElement.AttrFeatures then
+      FCurHighlightElement.MarkupFoldLineStyle := TSynLineStyle(MarkupFoldStyleBox.ItemIndex);
   end;
 
   UpdatingColor := False;
@@ -240,7 +247,8 @@ begin
   if Sender = FrameAlphaSpin then
     FCurHighlightElement.FrameAlpha := v;
   if Sender = MarkupFoldAlphaSpin then
-    FCurHighlightElement.MarkupFoldLineAlpha := v;
+    if hafMarkupFoldColor in FCurHighlightElement.AttrFeatures then
+      FCurHighlightElement.MarkupFoldLineAlpha := v;
 
   DoChanged;
 end;
@@ -436,11 +444,19 @@ begin
         FrameStyleBox.Enabled := TCheckBox(Sender).Checked;
         DoChanged;
       end;
-      if (Sender = MarkupFoldColorUseDefaultCheckBox) and
-         (DefaultToNone(MarkupFoldColorBox.Selected) <> FCurHighlightElement.MarkupFoldLineColor)
-      then begin
-        FCurHighlightElement.MarkupFoldLineColor := DefaultToNone(MarkupFoldColorBox.Selected);
-        MarkupFoldStyleBox.Enabled := MarkupFoldColorBox.Selected <> clDefault;
+      if (Sender = MarkupFoldColorUseDefaultCheckBox) then begin
+        if (hafMarkupAllOverview in FCurHighlightElement.AttrFeatures) and
+           (DefaultToNone(MarkupFoldColorBox.Selected) <> FCurHighlightElement.MarkupAllOverviewColor)
+        then begin
+          FCurHighlightElement.MarkupAllOverviewColor := DefaultToNone(MarkupFoldColorBox.Selected);
+        end
+        else
+        if (hafMarkupFoldColor in FCurHighlightElement.AttrFeatures) and
+           (DefaultToNone(MarkupFoldColorBox.Selected) <> FCurHighlightElement.MarkupFoldLineColor)
+        then begin
+          FCurHighlightElement.MarkupFoldLineColor := DefaultToNone(MarkupFoldColorBox.Selected);
+          MarkupFoldStyleBox.Enabled := MarkupFoldColorBox.Selected <> clDefault;
+        end;
       end;
     end;
 
@@ -724,13 +740,22 @@ begin
     FramePriorSpin.Value    := FCurHighlightElement.FramePriority;
 
     // Markup Fold
-    MarkupFoldColorUseDefaultCheckBox.Visible := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
-    MarkupFoldColorBox.Visible                := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
+    MarkupFoldColorUseDefaultCheckBox.Visible := FCurHighlightElement.AttrFeatures * [hafMarkupFoldColor, hafMarkupAllOverview] <> [];
+    MarkupFoldColorBox.Visible                := FCurHighlightElement.AttrFeatures * [hafMarkupFoldColor, hafMarkupAllOverview] <> [];
     MarkupFoldAlphaLabel.Visible             := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
     MarkupFoldAlphaSpin.Visible              := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
     MarkupFoldStyleBox.Visible               := hafMarkupFoldColor in FCurHighlightElement.AttrFeatures;
 
-    MarkupFoldColorBox.Selected := NoneToDefault(FCurHighlightElement.MarkupFoldLineColor);
+    if hafMarkupFoldColor in FCurHighlightElement.AttrFeatures then begin
+      MarkupFoldColorUseDefaultCheckBox.Caption := dlgMarkupFoldColor;
+      MarkupFoldColorBox.Selected := NoneToDefault(FCurHighlightElement.MarkupFoldLineColor);
+    end
+    else
+    if hafMarkupAllOverview in FCurHighlightElement.AttrFeatures then begin
+      MarkupFoldColorBox.Selected := NoneToDefault(FCurHighlightElement.MarkupAllOverviewColor);
+      MarkupFoldColorUseDefaultCheckBox.Caption := dlgMarkupAllOverviewGutter;
+    end;
+
     if MarkupFoldColorBox.Selected = clDefault then
       MarkupFoldColorBox.Tag := MarkupFoldColorBox.DefaultColorColor
     else

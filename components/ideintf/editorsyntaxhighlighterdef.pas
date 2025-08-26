@@ -80,6 +80,7 @@ type
       hafStyle, hafStyleMask,
       hafFrameStyle, hafFrameEdges,
       hafMarkupFoldColor, // for the MarkupFoldColor module
+      hafMarkupAllOverview, // for indicator in overview-gutter
       hafCustomWords
     );
   TColorSchemeAttributeFeatures = set of TColorSchemeAttributeFeature;
