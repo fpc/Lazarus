@@ -42,7 +42,7 @@ unit SynEditKeyCmds;
 interface
 
 uses
-  Classes, Menus, SysUtils, LCLIntf, LCLType, LCLProc, SynEditStrConst;
+  Classes, Menus, SysUtils, Types, LCLIntf, LCLType, LCLProc, SynEditStrConst;
 
 const
   //****************************************************************************
@@ -400,6 +400,7 @@ type
     function Add: TSynEditKeyStroke;
     procedure Assign(Source: TPersistent); override;
     function FindCommand(Cmd: TSynEditorCommand): integer;
+    function FindCommandAll(Cmd: TSynEditorCommand): TIntegerDynArray;
     function FindKeycode(Code: word; SS: TShiftState): integer;
     function FindKeycodeEx(Code: word; SS: TShiftState; var Data: pointer;
                            out IsStartOfCombo: boolean;
@@ -919,6 +920,23 @@ begin
       Result := x;
       break;
     end;
+end;
+
+function TSynEditKeyStrokes.FindCommandAll(Cmd: TSynEditorCommand): TIntegerDynArray;
+var
+  x, c: integer;
+begin
+  Result := nil;
+  c := 0;
+  for x := 0 to Count-1 do
+    if Items[x].Command = Cmd then
+    begin
+      if Length(Result) <= c then
+        SetLength(Result, c+4);
+      Result[c] := x;
+      inc(c);
+    end;
+  SetLength(Result, c);
 end;
 
 function TSynEditKeyStrokes.FindKeycode(Code: word; SS: TShiftState): integer;
