@@ -106,14 +106,16 @@ end;
 
 procedure TForm1.BtnDesignClick(Sender: TObject);
 begin
-  // method 1. load the report before opening designer
   if radLoadFromRecord.Checked then begin
+
+    // method 1. load the report before opening designer
+    //
 
     // Save any pending updates first
     if reportsDB.State in [dsEdit, dsInsert] then
       reportsDB.Post;
 
-    if (reportsDB.RecordCount=0) or reportsDB.FieldByName('Report').IsNull) then
+    if (reportsDB.RecordCount=0) or (reportsDB.FieldByName('Report').IsNull) then
 
       // 'mark' the report as new
       frReport1.FileName:= SUntitled
