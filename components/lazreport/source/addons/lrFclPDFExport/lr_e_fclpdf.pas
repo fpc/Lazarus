@@ -1009,15 +1009,31 @@ var
 begin
   if (View is TfrMemoView) and Assigned(FCurFont) then
   begin
-    if TfrMemoView(View).FirstLine then
-      W:=TfrMemoView(View).Width - TfrMemoView(View).ParagraphGap - InternalGapX * 2
-    else
-      W:=TfrMemoView(View).Width - InternalGapX * 2;
+    case TfrMemoView(View).Angle of
+      90, 180:
+        if TfrMemoView(View).FirstLine then
+          W:=FCurFont.TextHeight(Text)
+        else
+          W:=FCurFont.TextHeight(Text);
+      else
+        if TfrMemoView(View).FirstLine then
+          W:=TfrMemoView(View).Width - TfrMemoView(View).ParagraphGap - InternalGapX * 2
+        else
+          W:=TfrMemoView(View).Width - InternalGapX * 2
+    end;
 
-    if TfrMemoView(View).Justify and not TfrMemoView(View).LastLine then
-      WriteTextRectJustify(FCurFont, X + InternalGapX, Y, W, View.dy, Text, true)
-    else
-      WriteTextRect(FCurFont, X + InternalGapX, Y, W, Text, TfrMemoView(View).Alignment, TfrMemoView(View).Angle);
+    case TfrMemoView(View).Angle of
+      90, 180:
+        if TfrMemoView(View).Justify and not TfrMemoView(View).LastLine then
+          WriteTextRectJustify(FCurFont, X + InternalGapX + FCurFont.FontSize, Y - FCurFont.FontSize, W, View.dy, Text, true)
+        else
+          WriteTextRect(FCurFont, X + InternalGapX + FCurFont.FontSize, Y - FCurFont.FontSize, W, Text, TfrMemoView(View).Alignment, TfrMemoView(View).Angle);
+      else
+        if TfrMemoView(View).Justify and not TfrMemoView(View).LastLine then
+          WriteTextRectJustify(FCurFont, X + InternalGapX, Y, W, View.dy, Text, true)
+        else
+          WriteTextRect(FCurFont, X + InternalGapX, Y, W, Text, TfrMemoView(View).Alignment, TfrMemoView(View).Angle);
+    end;
   end;
 end;
 
