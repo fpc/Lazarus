@@ -1,0 +1,284 @@
+object Form1: TForm1
+  Left = 628
+  Height = 588
+  Top = 207
+  Width = 837
+  Caption = 'Form1'
+  ClientHeight = 588
+  ClientWidth = 837
+  LCLVersion = '4.99.0.0'
+  OnCloseQuery = FormCloseQuery
+  OnShow = FormShow
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 23
+    Top = 0
+    Width = 837
+    AutoSize = True
+    Caption = 'ToolBar1'
+    EdgeBorders = []
+    List = True
+    ShowCaptions = True
+    TabOrder = 0
+    object BtnDesign: TToolButton
+      Left = 1
+      Top = 0
+      Caption = 'Design'
+      OnClick = BtnDesignClick
+    end
+    object BtnPreview: TToolButton
+      Left = 48
+      Top = 0
+      Caption = 'Preview'
+      OnClick = BtnPreviewClick
+    end
+    object Label1: TLabel
+      Left = 100
+      Height = 22
+      Top = 0
+      Width = 100
+      AutoSize = False
+    end
+    object radLoadFromRecord: TRadioButton
+      Left = 200
+      Height = 23
+      Top = 0
+      Width = 125
+      Caption = 'Load from Record'
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+    end
+    object radLoadFromDesigner: TRadioButton
+      Left = 325
+      Height = 23
+      Top = 0
+      Width = 137
+      Caption = 'Load from Designer'
+      TabOrder = 1
+    end
+  end
+  object Memo1: TMemo
+    Left = 0
+    Height = 90
+    Top = 498
+    Width = 837
+    Align = alBottom
+    Lines.Strings = (
+      'Add new reports:'
+      '1. Add a data row'
+      '2. Click [Design]'
+      '3. Click Save in the Report Designer to save the report.'
+    )
+    TabOrder = 1
+  end
+  object Panel1: TPanel
+    Left = 255
+    Height = 475
+    Top = 23
+    Width = 582
+    Align = alClient
+    Caption = 'Panel1'
+    ClientHeight = 475
+    ClientWidth = 582
+    TabOrder = 2
+    object gridMushrooms: TDBGrid
+      Left = 1
+      Height = 160
+      Top = 27
+      Width = 580
+      Align = alTop
+      AutoFillColumns = True
+      Color = clWindow
+      Columns = <      
+        item
+          Title.Caption = 'Scientific_Name'
+          Width = 207
+          FieldName = 'Scientific_Name'
+        end      
+        item
+          Title.Caption = 'Common_Name'
+          Width = 206
+          FieldName = 'Common_Name'
+        end      
+        item
+          SizePriority = 0
+          Title.Caption = 'Order'
+          Width = 70
+          FieldName = 'Order'
+        end      
+        item
+          SizePriority = 0
+          Title.Caption = 'Genus'
+          Width = 70
+          FieldName = 'Genus'
+        end>
+      DataSource = mushroomsDS
+      TabOrder = 0
+    end
+    object Notes: TDBMemo
+      Left = 1
+      Height = 90
+      Top = 187
+      Width = 580
+      Align = alTop
+      DataSource = mushroomsDS
+      TabOrder = 1
+    end
+    object Img: TDBImage
+      Left = 1
+      Height = 197
+      Top = 277
+      Width = 580
+      Align = alClient
+      Center = True
+      DataSource = mushroomsDS
+    end
+    object ToolBar3: TToolBar
+      Left = 1
+      Height = 26
+      Top = 1
+      Width = 580
+      Caption = 'ToolBar3'
+      Indent = 200
+      TabOrder = 2
+      object DBNavigator1: TDBNavigator
+        Left = 200
+        Height = 22
+        Top = 2
+        Width = 241
+        BevelOuter = bvNone
+        ChildSizing.EnlargeHorizontal = crsScaleChilds
+        ChildSizing.EnlargeVertical = crsScaleChilds
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 100
+        ClientHeight = 22
+        ClientWidth = 241
+        DataSource = mushroomsDS
+        Options = []
+        TabOrder = 0
+      end
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 475
+    Top = 23
+    Width = 250
+    Align = alLeft
+    Caption = 'Panel2'
+    ClientHeight = 475
+    ClientWidth = 250
+    TabOrder = 3
+    object ToolBar2: TToolBar
+      Left = 1
+      Height = 26
+      Top = 1
+      Width = 248
+      Caption = 'ToolBar2'
+      TabOrder = 0
+      object DBNavigator2: TDBNavigator
+        Left = 1
+        Height = 22
+        Top = 2
+        Width = 241
+        BevelOuter = bvNone
+        ChildSizing.EnlargeHorizontal = crsScaleChilds
+        ChildSizing.EnlargeVertical = crsScaleChilds
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 100
+        ClientHeight = 22
+        ClientWidth = 241
+        DataSource = reportsDS
+        Options = []
+        TabOrder = 0
+      end
+    end
+    object gridReports: TDBGrid
+      Left = 1
+      Height = 447
+      Top = 27
+      Width = 248
+      Align = alClient
+      AutoFillColumns = True
+      Color = clWindow
+      Columns = <      
+        item
+          SizePriority = 0
+          Title.Caption = 'Key'
+          Width = 30
+          FieldName = 'Key'
+        end      
+        item
+          Title.Caption = 'Report Name'
+          Width = 191
+          FieldName = 'Title'
+        end>
+      DataSource = reportsDS
+      TabOrder = 1
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 250
+    Height = 475
+    Top = 23
+    Width = 5
+  end
+  object mushroomsDB: TBufDataset
+    FieldDefs = <>
+    Left = 400
+    Top = 304
+  end
+  object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit, pbSettings, pbPageSetup]
+    DataType = dtDataSet
+    Left = 136
+    Top = 160
+  end
+  object mushroomsDS: TDataSource
+    DataSet = mushroomsDB
+    Left = 528
+    Top = 304
+  end
+  object frDesigner1: TfrDesigner
+    OnLoadReport = frDesigner1LoadReport
+    OnSaveReport = frDesigner1SaveReport
+    Left = 136
+    Top = 224
+  end
+  object frDbMushrooms: TfrDBDataSet
+    DataSet = mushroomsDB
+    Left = 528
+    Top = 376
+  end
+  object reportsDB: TBufDataset
+    FieldDefs = <    
+      item
+        Name = 'reportsDBField1'
+        DataType = ftAutoInc
+      end    
+      item
+        Name = 'reportsDBField2'
+        DataType = ftString
+        Size = 100
+      end    
+      item
+        Name = 'fd'
+        DataType = ftMemo
+      end>
+    AfterScroll = reportsDBAfterScroll
+    Left = 136
+    Top = 384
+  end
+  object reportsDS: TDataSource
+    DataSet = reportsDB
+    Left = 32
+    Top = 384
+  end
+end
