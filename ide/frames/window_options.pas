@@ -35,7 +35,7 @@ uses
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, EnvGuiOptions, Classes;
+  LazarusIDEStrConsts, EnvGuiOptions;
 
 type
   { TWindowOptionsFrame }
@@ -48,7 +48,6 @@ type
     lbTitlePreview: TLabel;
     lblTitleBar: TLabel;
     pnlTitlePreview: TPanel;
-    ProjectInspectorShowPropsCheckBox: TCheckBox;
     lblShowingWindows: TDividerBevel;
     NameForDesignedFormListCheckBox: TCheckBox;
     AutoAdjustIDEHeightCheckBox: TCheckBox;
@@ -140,7 +139,6 @@ begin
   AutoAdjustIDEHeightCheckBox.Hint:=lisAutoAdjustIDEHeightHint;
   AutoAdjustIDEHeightFullCompPalCheckBox.Caption:=lisAutoAdjustIDEHeightFullComponentPalette;
   AutoAdjustIDEHeightFullCompPalCheckBox.Hint:=lisAutoAdjustIDEHeightFullComponentPaletteHint;
-  ProjectInspectorShowPropsCheckBox.Caption:=lisProjectInspectorShowProps;
   lbTitlePreviewHeader.Caption := dlgWRDPreview;
   lbTitlePreviewHeader.Visible := GlobalMacroList <> nil;
   pnlTitlePreview.Visible := GlobalMacroList <> nil;
@@ -174,7 +172,6 @@ begin
     NameForDesignedFormListCheckBox.Checked := IDENameForDesignedFormList;
     AutoAdjustIDEHeightCheckBox.Checked := AutoAdjustIDEHeight;
     AutoAdjustIDEHeightFullCompPalCheckBox.Checked := AutoAdjustIDEHeightFullCompPal;
-    ProjectInspectorShowPropsCheckBox.Checked := ProjectInspectorShowProps;
   end;
   EdTitleBarChange(nil);
 end;
@@ -196,7 +193,6 @@ begin
     IDENameForDesignedFormList := NameForDesignedFormListCheckBox.Checked;
     AutoAdjustIDEHeight := AutoAdjustIDEHeightCheckBox.Checked;
     AutoAdjustIDEHeightFullCompPal := AutoAdjustIDEHeightFullCompPalCheckBox.Checked;
-    ProjectInspectorShowProps := ProjectInspectorShowPropsCheckBox.Checked;
   end;
 end;
 

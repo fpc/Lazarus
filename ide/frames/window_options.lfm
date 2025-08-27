@@ -5,6 +5,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
   Width = 573
   ClientHeight = 585
   ClientWidth = 573
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 349
   DesignTop = 181
@@ -14,9 +15,9 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 15
-    Width = 179
+    Height = 22
+    Top = 18
+    Width = 211
     Caption = 'SingleTaskBarButtonCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -28,9 +29,9 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 34
-    Width = 150
+    Height = 22
+    Top = 40
+    Width = 176
     Caption = 'HideIDEOnRunCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -41,9 +42,9 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Control = HideIDEOnRunCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 53
-    Width = 215
+    Height = 22
+    Top = 62
+    Width = 252
     Caption = 'NameForDesignedFormListCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -54,9 +55,9 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Control = NameForDesignedFormListCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 72
-    Width = 184
+    Height = 22
+    Top = 84
+    Width = 214
     Caption = 'AutoAdjustIDEHeightCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -67,39 +68,27 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Control = AutoAdjustIDEHeightCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 91
-    Width = 252
+    Height = 22
+    Top = 106
+    Width = 290
     Caption = 'AutoAdjustIDEHeightFullCompPalCheckBox'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
   end
-  object ProjectInspectorShowPropsCheckBox: TCheckBox
-    AnchorSideLeft.Control = AutoAdjustIDEHeightFullCompPalCheckBox
-    AnchorSideTop.Control = AutoAdjustIDEHeightFullCompPalCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 19
-    Top = 110
-    Width = 216
-    Caption = 'ProjectInspectorShowPropsCheckBox'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 5
-  end
   object bvWindowTitle: TDividerBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ProjectInspectorShowPropsCheckBox
+    AnchorSideTop.Control = AutoAdjustIDEHeightFullCompPalCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 15
-    Top = 129
+    Height = 18
+    Top = 134
     Width = 573
     Caption = 'bvWindowTitle'
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     Font.Style = [fsBold]
     ParentFont = False
   end
@@ -108,13 +97,13 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Control = bvWindowTitle
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 144
-    Width = 184
+    Height = 22
+    Top = 152
+    Width = 216
     Caption = 'TitleStartsWithProjectCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 6
+    TabOrder = 5
     OnChange = TitleStartsWithProjectCheckBoxChange
   end
   object lblShowingWindows: TDividerBevel
@@ -123,7 +112,7 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 15
+    Height = 18
     Top = 0
     Width = 573
     Caption = 'lblShowingWindows'
@@ -136,9 +125,9 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideTop.Control = TitleStartsWithProjectCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 15
-    Top = 166
-    Width = 52
+    Height = 18
+    Top = 177
+    Width = 63
     BorderSpacing.Top = 3
     Caption = 'lblTitleBar'
   end
@@ -149,16 +138,16 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
-    Top = 183
+    Height = 32
+    Top = 197
     Width = 572
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
     BorderSpacing.Right = 1
-    ItemHeight = 15
+    ItemHeight = 24
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 6
     OnChange = EdTitleBarChange
   end
   object lbTitlePreviewHeader: TLabel
@@ -168,8 +157,8 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 15
-    Top = 216
+    Height = 18
+    Top = 239
     Width = 573
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 10
@@ -182,26 +171,26 @@ object WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 25
-    Top = 231
+    Height = 28
+    Top = 257
     Width = 573
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 25
+    ClientHeight = 28
     ClientWidth = 573
     Color = clWindow
     ParentBackground = False
     ParentColor = False
-    TabOrder = 8
+    TabOrder = 7
     object lbTitlePreview: TLabel
       AnchorSideLeft.Control = pnlTitlePreview
       AnchorSideTop.Control = pnlTitlePreview
       AnchorSideRight.Control = pnlTitlePreview
       AnchorSideRight.Side = asrBottom
       Left = 5
-      Height = 15
+      Height = 18
       Top = 5
       Width = 563
       Anchors = [akTop, akLeft, akRight]
