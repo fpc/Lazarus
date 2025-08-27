@@ -3801,10 +3801,13 @@ begin
 
   if Assigned(frDesignerComp) and Assigned(frDesignerComp.FOnLoadReport) then
   begin
+    ClearUndoBuffer;
     FRepName:='';
     frDesignerComp.FOnLoadReport(CurReport, FRepName);
     FCurDocFileType := dtLazReportForm;
     CurDocName := FRepName;
+    Modified := False;
+    CurPage := 0;
   end
   else
   with OpenDialog1 do
