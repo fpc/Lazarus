@@ -16183,10 +16183,6 @@ msgstr "Путь поиска включаемых файлов проекта"
 msgid "Project info file detected"
 msgstr "Обнаружен файл сведений о проекте"
 
-#: lazarusidestrconsts.lisprojectinspectorshowprops
-msgid "Show properties pane in Project Inspector"
-msgstr "Показывать панель свойств в инспекторе проекта"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Проект является запускаемым"

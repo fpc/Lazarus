@@ -16533,10 +16533,6 @@ msgstr "プロジェクトのインクルードパス"
 msgid "Project info file detected"
 msgstr "プロジェクト情報ファイルが検出されました"
 
-#: lazarusidestrconsts.lisprojectinspectorshowprops
-msgid "Show properties pane in Project Inspector"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "プロジェクトは実行可能"

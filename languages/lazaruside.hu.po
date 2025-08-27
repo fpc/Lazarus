@@ -16360,10 +16360,6 @@ msgstr "Projekt beemelhető fájljainak útvonala"
 msgid "Project info file detected"
 msgstr "Projekt információs fájl törölve"
 
-#: lazarusidestrconsts.lisprojectinspectorshowprops
-msgid "Show properties pane in Project Inspector"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "A projekt futtatható"
