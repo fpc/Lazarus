@@ -30,7 +30,7 @@ uses
   // IDEIntf
   PropEdits,
   // LazReport
-  LR_View, LR_Pars, LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, DbCtrls
+  LR_View, LR_Pars, LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const
   {$IFDEF LCLNOGUI}
   ,lr_ngcanvas
   {$ENDIF}
@@ -147,6 +147,7 @@ type
   TFormPageBookmarksEvent = procedure(Sender: TfrReport; Backup: boolean) of object;
   TExecScriptEvent = procedure(frObject:TfrObject; AScript:TfrScriptStrings) of object;
   TBeforePreviewFormEvent = procedure( var PrForm : TfrPreviewForm ) of Object;
+  TOnDBImageRead = procedure(Sender: TObject; S: TStream; var GraphExt : string) of object; //it was in DBCtrls.
 
   TfrHighlightAttr = packed record
     FontStyle: Word;
@@ -1290,7 +1291,9 @@ type
     procedure SaveToXMLStream(const Stream: TStream);
 
     procedure LoadFromDB(Table: TDataSet; DocN: Integer);
+    procedure LoadFromDB(AField: TField);
     procedure SaveToDB(Table: TDataSet; DocN: Integer);
+    procedure SaveToDB(AField: TField);
 
     procedure LoadTemplate(const fname: String; comm: TStrings;
       Bmp: TBitmap; Load: Boolean);
@@ -10804,23 +10807,32 @@ begin
 end;
 
 procedure TfrReport.LoadFromDB(Table: TDataSet; DocN: Integer);
-var
-  Stream: TMemoryStream;
 begin
   Table.First;
   while not Table.Eof do
   begin
     if Table.Fields[0].AsInteger = DocN then
     begin
-      Stream := TMemoryStream.Create;
-      TfrTBlobField(Table.Fields[1]).SaveToStream(Stream);
-      Stream.Position := 0;
-      LoadFromStream(Stream);
-      Stream.Free;
+      LoadFromDB(Table.Fields[1]);
       Exit;
     end;
     Table.Next;
   end;
+end;
+
+procedure TfrReport.LoadFromDB(AField: TField);
+var
+  Stream: TMemoryStream;
+  v: Byte;
+begin
+  Stream := TMemoryStream.Create;
+  TfrTBlobField(AField).SaveToStream(Stream);
+  Stream.Position := 0;
+  Stream.Read(v, 1);
+  Stream.Position := 0;
+  if v=60 then LoadFromXMLStream(Stream) // 60='<' from <?xml
+  else LoadFromStream(Stream);
+  Stream.Free;
 end;
 
 procedure TfrReport.SaveToDB(Table: TDataSet; DocN: Integer);
@@ -10850,6 +10862,27 @@ begin
   TfrTBlobField(Table.Fields[1]).LoadFromStream(Stream);
   Stream.Free;
   Table.Post;
+end;
+
+procedure TfrReport.SaveToDB(AField: TField);
+var
+  Stream: TMemoryStream;
+  Ext   : string;
+begin
+  Ext:=lowercase(ExtractFileExt(FileName));
+  if (Ext='') or (Ext='.') then
+    Ext:='.lrf';
+
+  Stream := TMemoryStream.Create;
+  if Ext='.lrf' then
+    SaveToXMLStream(Stream)
+  else
+    SaveToStream(Stream);
+
+  Stream.Position := 0;
+  AField.DataSet.Edit;
+  TfrTBlobField(AField).LoadFromStream(Stream);
+  Stream.Free
 end;
 
 procedure TfrReport.LoadPreparedReport(const FName: String);
