@@ -147,6 +147,7 @@ type
     procedure WriteAssign(const LHS, RHS: string); virtual;
     procedure WriteWithDo(const Expr: string); virtual;
     procedure WriteWithEnd; virtual;
+    procedure WriteError(const InstanceName, PropName, ErrorMsg: string); virtual;
     function GetComponentPath(Component: TComponent): string; virtual;
     function GetBoolLiteral(b: boolean): string; virtual;
     function GetCharLiteral(c: integer): string; virtual;
@@ -845,8 +846,9 @@ begin
               // set property value
               Name:=GetComponentPath(Component);
               if Name='' then
-                raise EWriteError.Create('cannot write property "'+DbgSName(Instance)+'.'+PropName+'"');
-              WriteAssign(PropName,Name);
+                WriteError(DbgsName(Instance), PropName, 'Cannot write property')
+              else
+                WriteAssign(PropName,Name);
             end; //(ObjValue <> AncestorObj)
           end // ObjValue.InheritsFrom(TComponent)
           else
@@ -1004,7 +1006,7 @@ var
       else
         InstancePath:='';
       if InstancePath='' then
-        raise EWriteError.Create('cannot write DefineProperties of "'+DbgSName(Instance)+'"');
+        WriteError(DbgsName(Instance),'', 'Cannot write DefineProperties');
     end;
     Result:=InstancePath;
   end;
@@ -1585,6 +1587,18 @@ begin
   Unindent;
   if not (cwpoNoWithBlocks in Options) then
     WriteStatement('end;');
+end;
+
+procedure TCompWriterPas.WriteError(const InstanceName, PropName, ErrorMsg: string);
+begin
+  WriteIndent;
+  Write('// Error: '+errorMsg+' ');
+  Write(InstanceName);
+  if PropName<>'' then begin
+    Write('.');
+    Write(PropName);
+  end;
+  WriteLn;
 end;
 
 function TCompWriterPas.CreatedByAncestor(Component: TComponent): boolean;
