@@ -161,14 +161,13 @@ var
 begin
 
   // Ask the user for the new report name
-  nameChanged := (reportsDB.RecordCount=0) or (reportsDB.FieldByName('Title').IsNull);
+  nameChanged := (reportsDB.RecordCount=0) or (reportsDB.FieldByName('Title').IsNull or SaveAs);
   if nameChanged then begin
     if not InputQuery('Report name', 'Report Name', ReportName) then begin
       Saved := false;
       exit;
     end;
   end;
-
 
   if SaveAs then begin //add new report
 
