@@ -361,6 +361,7 @@ var
   I, DepCount: Integer;
   PackageName: String;
   MinVer, MaxVer: String;
+  IsLegacyList: Boolean;
 begin
   Result := False;
   BasePath := 'Package/';
@@ -372,12 +373,14 @@ begin
     AData^.FAuthor := String(XMLConfig.GetValue(BasePath + 'Author/Value', ''));
     AData^.FLicense := String(XMLConfig.GetValue(BasePath + 'License/Value', ''));
     AData^.FVersionAsString := GetVersion(XMLConfig, BasePath + 'Version');
-    DepCount := XMLConfig.GetValue(BasePath + 'RequiredPkgs/Count', 0);
-    for I := 0 to DepCount - 1 do
+
+    IsLegacyList := XMLConfig.IsLegacyList(BasePath + 'RequiredPkgs/');
+    DepCount := XMLConfig.GetListItemCount(BasePath + 'RequiredPkgs/', 'Item', IsLegacyList);
+    for I := 0 to DepCount-1 do
     begin
       MinVer := '';
       MaxVer := '';
-      Path := BasePath + 'RequiredPkgs/Item' + IntToStr(I + 1) + '/';
+      Path := BasePath + 'RequiredPkgs/' + XMLConfig.GetListItemXPath('Item', I, IsLegacyList, True) + '/';
       PackageName := XMLConfig.GetValue(Path + 'PackageName/Value', '');
       if XMLConfig.GetValue(Path + 'MinVersion/Valid', False) then
       begin
