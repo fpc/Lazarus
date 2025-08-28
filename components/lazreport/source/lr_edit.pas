@@ -91,6 +91,8 @@ begin
   {$IFDEF DebugLR}
   DebugLn('TfrEditorForm.FormShow INIT HandleAllocated=', dbgs(HandleAllocated));
   {$ENDIF}
+  Font.Color := clDefault;
+
   CB1Click(nil);
   CB2Click(nil);
   CB3Click(nil);
@@ -117,6 +119,9 @@ begin
 
   if edtScriptFontSize > 0 then
     M2.Font.Size:=edtScriptFontSize;
+
+  M1.Font.Color := clWindowText;
+  M2.Font.Color := clWindowText;
 
   {$IFDEF DebugLR}
   DebugLn('TfrEditorForm.FormShow END');
