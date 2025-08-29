@@ -3794,21 +3794,14 @@ end;
 procedure TfrDesignerForm.FileOpenExecute(Sender: TObject);
 var
   FRepName:string;
+  aFilterIndex: integer;
 begin
   if CheckFileModified=mrCancel then
     exit;
 
 
   if Assigned(frDesignerComp) and Assigned(frDesignerComp.FOnLoadReport) then
-  begin
-    ClearUndoBuffer;
-    FRepName:='';
-    frDesignerComp.FOnLoadReport(CurReport, FRepName);
-    FCurDocFileType := dtLazReportForm;
-    CurDocName := FRepName;
-    Modified := False;
-    CurPage := 0;
-  end
+    aFilterIndex:=100 //Load with frDesignerComp.FOnLoadReport
   else
   with OpenDialog1 do
   begin
@@ -3827,29 +3820,42 @@ begin
     FileName := CurDocName;
     FilterIndex := 2;
     if Execute then
-    begin
-      ClearUndoBuffer;
-      CurDocName := OpenDialog1.FileName;
-      case FilterIndex of
-        1: // fastreport form format
-          begin
-            FLastOpenDirectory := ExtractFilePath(CurDocName);
-            CurReport.LoadFromFile(CurDocName);
-            FCurDocFileType := dtFastReportForm;
-          end;
-        2: // lasreport form xml format
-          begin
-            FLastOpenDirectory := ExtractFilePath(CurDocName);
-            CurReport.LoadFromXMLFile(CurDocName);
-            FCurDocFileType := dtLazReportForm;
-          end;
-        else
-          raise Exception.Create('Unrecognized file format');
-      end;
-      //FileModified := False;
-      Modified := False;
-      CurPage := 0; // do all
+      aFilterIndex:=FilterIndex
+    else
+      aFilterIndex:=-1; //Cancel
+  end;
+
+  if aFilterIndex>-1 then
+  begin
+    ClearUndoBuffer;
+    case aFilterIndex of
+      1: // fastreport form format
+        begin
+          CurDocName := OpenDialog1.FileName;
+          FLastOpenDirectory := ExtractFilePath(CurDocName);
+          CurReport.LoadFromFile(CurDocName);
+          FCurDocFileType := dtFastReportForm;
+        end;
+      2: // lasreport form xml format
+        begin
+          CurDocName := OpenDialog1.FileName;
+          FLastOpenDirectory := ExtractFilePath(CurDocName);
+          CurReport.LoadFromXMLFile(CurDocName);
+          FCurDocFileType := dtLazReportForm;
+        end;
+      100: // Load with frDesignerComp.FOnLoadReport
+        begin
+          FRepName := '';
+          frDesignerComp.FOnLoadReport(CurReport, FRepName);
+          FCurDocFileType := dtLazReportForm;
+          CurDocName := FRepName;
+        end;
+      else
+        raise Exception.Create('Unrecognized file format');
     end;
+    //FileModified := False;
+    Modified := False;
+    CurPage := 0; // do all
   end;
 end;
 
