@@ -91,6 +91,7 @@ type
                         {%H-}WithThemeSpace: Boolean); override;
 
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; {%H-}SizeGrip: Boolean); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TGtk3WSTabSheet }
@@ -1257,18 +1258,29 @@ end;
 class procedure TGtk3WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
   PanelIndex: integer);
 begin
+  if not WSCheckHandleAllocated(AStatusBar, 'PanelUpdate') then
+    Exit;
   // inherited PanelUpdate(AStatusBar, PanelIndex);
+  writeln('WARNING: TGtk3WSStatusBar.PanelUpdate PanelIndex=',PanelIndex,' NOT IMPLEMENTED YET.');
 end;
 
 class procedure TGtk3WSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
   PanelIndex: integer);
 begin
+  if not WSCheckHandleAllocated(AStatusBar, 'SetPanelText') then
+    Exit;
   // inherited SetPanelText(AStatusBar, PanelIndex);
+  //writeln('TGtk3WSStatusBar.SetPanelText PanelIndex=',PanelIndex);
+  TGtk3StatusBar(AStatusBar.Handle).SetPanelText(AStatusBar.Panels[PanelIndex].Text, PanelIndex);
 end;
 
 class procedure TGtk3WSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
   // inherited Update(AStatusBar);
+  if not WSCheckHandleAllocated(AStatusBar, 'Update') then
+    Exit;
+  //writeln('TGtk3WSStatusBar.Update ');
+  TGtk3StatusBar(AStatusBar.Handle).UpdateStatusBar(AStatusBar);
 end;
 
 class procedure TGtk3WSStatusBar.GetPreferredSize(
@@ -1282,7 +1294,18 @@ end;
 class procedure TGtk3WSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
   SizeGrip: Boolean);
 begin
+ if not WSCheckHandleAllocated(AStatusBar, 'SetSizeGrip') then
+    Exit;
   // inherited SetSizeGrip(AStatusBar, SizeGrip);
+end;
+
+class procedure TGtk3WSStatusBar.SetText(const AWinControl: TWinControl;
+  const AText: String);
+begin
+ if not WSCheckHandleAllocated(AWinControl, 'SetText') then
+    Exit;
+ if TStatusBar(AWinControl).SimplePanel then
+   TGtk3StatusBar(AWinControl.Handle).SetSimpleText(TStatusBar(AWinControl).SimpleText);
 end;
 
 { TGtk3WSCustomTabControl }

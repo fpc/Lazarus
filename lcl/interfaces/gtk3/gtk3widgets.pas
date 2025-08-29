@@ -728,11 +728,49 @@ type
 
   end;
 
+  { TGtk3StatusBarPanel }
+
+  TGtk3StatusBarPanel = class(TCollectionItem)
+  private
+    //FFixed: PGtkFixed;
+    FLabel: PGtkLabel;
+    function GetPanelText: string;
+    function GetPanelWidth: integer;
+    procedure SetPanelText(AValue: string);
+    procedure SetPanelWidth(AValue: integer);
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    property PanelText: string read GetPanelText write SetPanelText;
+    property PanelWidth: integer read GetPanelWidth write SetPanelWidth;
+  end;
+
+  { TGtk3StatusBarPanels }
+
+  TGtk3StatusBarPanels = class(TCollection)
+  private
+    function GetPanel(AIndex: integer): TGtk3StatusBarPanel;
+  protected
+    FStatusBar: TGtk3Widget;
+  public
+    constructor Create(AStatusBar: TGtk3Widget);
+    function Add: TGtk3StatusBarPanel;
+    function AddPanel(APanel: TStatusPanel; ABox: PGtkBox): TGtk3StatusBarPanel;
+    property Panels[AIndex: integer]: TGtk3StatusBarPanel read GetPanel;
+  end;
+
   { TGtk3StatusBar }
 
   TGtk3StatusBar = class(TGtk3Box)
   protected
+    FPanels: TGtk3StatusBarPanels;
+    FSimplePanel: PGtkLabel;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
+  public
+    destructor Destroy; override;
+    procedure SetPanelText(const AText: string; const APanelIndex: integer);
+    procedure SetSimpleText(const AText: string);
+    procedure UpdateStatusBar(AStatusBar: TStatusBar);
   end;
 
   { TGtk3Panel }
@@ -3450,15 +3488,171 @@ begin
   end;
 end;
 
+{ TGtk3StatusBarPanel }
+
+function TGtk3StatusBarPanel.GetPanelText: string;
+begin
+  Result := '';
+  if Assigned(FLabel) then
+    Result := StrPas(gtk_label_get_text(FLabel));
+end;
+
+function TGtk3StatusBarPanel.GetPanelWidth: integer;
+begin
+  Result := 0;
+  if Assigned(FLabel) then
+  begin
+    Result := gtk_widget_get_allocated_width(FLabel);
+  end;
+end;
+
+procedure TGtk3StatusBarPanel.SetPanelText(AValue: string);
+begin
+  gtk_label_set_text(FLabel,PgChar(AValue));
+end;
+
+procedure TGtk3StatusBarPanel.SetPanelWidth(AValue: integer);
+begin
+  gtk_widget_set_size_request(FLabel, AValue, -1);
+end;
+
+constructor TGtk3StatusBarPanel.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+end;
+
+destructor TGtk3StatusBarPanel.Destroy;
+begin
+  if Assigned(FLabel) then
+  begin
+    gtk_widget_hide(FLabel);
+    FLabel^.destroy_;
+    FLabel := nil;
+  end;
+  inherited Destroy;
+end;
+
+{ TGtk3StatusBarPanels }
+
+function TGtk3StatusBarPanels.GetPanel(AIndex: integer): TGtk3StatusBarPanel;
+begin
+  Result := Items[AIndex] as TGtk3StatusBarPanel;
+end;
+
+constructor TGtk3StatusBarPanels.Create(AStatusBar: TGtk3Widget);
+begin
+  inherited Create(TGtk3StatusBarPanel);
+  FStatusBar := AStatusBar;
+end;
+
+function TGtk3StatusBarPanels.Add: TGtk3StatusBarPanel;
+begin
+  Result := inherited Add as TGtk3StatusBarPanel;
+end;
+
+function TGtk3StatusBarPanels.AddPanel(APanel: TStatusPanel; ABox: PGtkBox
+  ): TGtk3StatusBarPanel;
+var
+  argba: TGdkRGBA;
+begin
+  Result := Self.Add;
+  Result.FLabel := gtk_label_new(PgChar(APanel.Text));
+  Result.FLabel^.set_size_request(APanel.Width, -1);
+  Result.FLabel^.set_xalign(0.00);
+  Result.FLabel^.set_ellipsize(PANGO_ELLIPSIZE_END);
+  Result.FLabel^.set_line_wrap(False);
+  gtk_widget_set_halign(Result.FLabel, GTK_ALIGN_FILL);
+  gtk_widget_set_valign(Result.FLabel, GTK_ALIGN_CENTER);
+  Result.FLabel^.set_hexpand(False);
+  gtk_box_pack_start(ABox, Result.FLabel, False, False, 0);
+  Result.FLabel^.show_all;
+end;
+
 { TGtk3StatusBar }
 
 function TGtk3StatusBar.CreateWidget(const Params: TCreateParams): PGtkWidget;
+var
+  AContext: PGtkStyleContext;
+  i: Integer;
 begin
   Result := TGtkEventBox.new;
   FCentralWidget := TGtkHBox.new(GTK_ORIENTATION_HORIZONTAL, 1);
-  PGtkBox(FCentralWidget)^.set_homogeneous(True);
+  PGtkBox(FCentralWidget)^.set_homogeneous(False);
   PGtkEventBox(Result)^.add(FCentralWidget);
-  //TODO: add routines to set panels
+  AContext := gtk_widget_get_style_context(FCentralWidget);
+  gtk_style_context_add_class(AContext, 'statusbar');
+  FPanels := TGtk3StatusBarPanels.Create(Self);
+  if TStatusBar(LCLObject).SimplePanel then
+  begin
+    FSimplePanel := TGtkLabel.New(nil);
+    gtk_widget_set_halign(FSimplePanel, GTK_ALIGN_START);
+    gtk_widget_set_hexpand(FSimplePanel, True);
+    FSimplePanel^.set_ellipsize(PANGO_ELLIPSIZE_END);
+    gtk_box_pack_start(PGtkBox(FCentralWidget), FSimplePanel, True, True, 0);
+    FSimplePanel^.show;
+  end else
+  begin
+    for i := 0 to TStatusBar(LCLObject).Panels.Count - 1 do
+      FPanels.AddPanel(TStatusBar(LCLObject).Panels[i], PGtkBox(FCentralWidget));
+  end;
+end;
+
+destructor TGtk3StatusBar.Destroy;
+begin
+  if Assigned(FPanels) then
+    FPanels.Free;
+  inherited Destroy;
+end;
+
+procedure TGtk3StatusBar.SetPanelText(const AText: string;
+  const APanelIndex: integer);
+begin
+  with FPanels.Items[APanelIndex] as TGtk3StatusBarPanel do
+    PanelText := AText;
+end;
+
+procedure TGtk3StatusBar.SetSimpleText(const AText: string);
+begin
+  {%H-}FSimplePanel^.set_text(PgChar(AText));
+end;
+
+procedure TGtk3StatusBar.UpdateStatusBar(AStatusBar: TStatusBar);
+var
+  i: Integer;
+  APanel: TGtk3StatusBarPanel;
+begin
+  if AStatusBar.SimplePanel then
+  begin
+    if Assigned(FPanels) and (FPanels.Count > 0) then
+      FPanels.Clear;
+    if not Assigned(FSimplePanel) then
+      FSimplePanel := TGtkLabel.New(nil);
+    gtk_widget_set_halign(FSimplePanel, GTK_ALIGN_START);
+    gtk_widget_set_hexpand(FSimplePanel, True);
+    FSimplePanel^.set_ellipsize(PANGO_ELLIPSIZE_END);
+    gtk_box_pack_start(PGtkBox(FCentralWidget), FSimplePanel, True, True, 0);
+    FSimplePanel^.show;
+    {%H-}FSimplePanel^.set_text(PgChar(AStatusBar.SimpleText));
+  end else
+  begin
+   if Assigned(FSimplePanel) then
+    begin
+      FSimplePanel^.hide;
+      FSimplePanel^.destroy_;
+      FSimplePanel := nil;
+    end;
+    while FPanels.Count > AStatusBar.Panels.Count do
+      FPanels.Delete(FPanels.Count -1);
+    for i := 0 to AStatusBar.Panels.Count - 1 do
+    begin
+      if FPanels.Count - 1 < i then
+        APanel := FPanels.AddPanel(AStatusBar.Panels[i], PGtkBox(FCentralWidget))
+      else
+        APanel := FPanels.Items[i] as TGtk3StatusBarPanel;
+      APanel.SetPanelWidth(AStatusBar.Panels[i].Width);
+      APanel.SetPanelText(AStatusBar.Panels[i].Text);
+    end;
+  end;
 end;
 
 { TGtk3Panel }
