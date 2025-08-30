@@ -89,6 +89,7 @@ type
     procedure ReadFromFile(const psFileName: string; const pbMustExist: boolean);
     procedure ReadDefaults;
     procedure Write;
+    procedure WriteToFile(const psFileName: string);
 
     procedure MakeConsistent;
 
@@ -284,10 +285,21 @@ begin
   end;
 end;
 
+procedure TFormattingSettings.WriteToFile(const psFileName:string);
+var
+  lcFile: TSettingsStreamOutput;
+begin
+  lcFile := TSettingsStreamOutput.Create(psFileName);
+  try
+    ToStream(lcFile);
+  finally
+    lcFile.Free;
+  end;
+end;
+
 procedure TFormattingSettings.Write;
 var
   lcReg: TJCFRegistrySettings;
-  lcFile: TSettingsStreamOutput;
 begin
    if not Dirty then
     exit;
@@ -310,15 +322,9 @@ begin
 
   try
     // use the Settings file name
-    lcFile := TSettingsStreamOutput.Create(GetRegSettings.FormatConfigFileName);
-    try
-      ToStream(lcFile);
-
-      // not dirty any more
-      fbDirty := False;
-    finally
-      lcFile.Free;
-    end;
+    WriteToFile(GetRegSettings.FormatConfigFileName);
+    // not dirty any more
+    fbDirty := False;
   except
     on e: Exception do
     begin
