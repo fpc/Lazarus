@@ -20430,10 +20430,16 @@ begin
                   end;
                   Bar.SetValue(Bar.getValue - XStep);
                 end;
+
                 if (AWidget.ChildOfComplexWidget in [ccwCustomControl, ccwScrollingWinControl]) then
-                  TQtCustomControl(AWidget).viewport.scroll(XStep, YStep)
+                begin
+                  if (AWidget.ChildOfComplexWidget = ccwScrollingWinControl) and
+                    (LCLObject is TCustomForm) and (LCLObject.Parent <> nil) then
+                  // issue #41780, embedded form should not call scroll at all while designing.
+                  else
+                    TQtCustomControl(AWidget).viewport.scroll(XStep, YStep);
                 {$IFDEF QTSCROLLABLEFORMS}
-                else
+                end else
                 if (aWidget is TQtWindowArea) then
                   TQtWindowArea(aWidget).scroll(XStep, YStep);
                 {$ENDIF}
