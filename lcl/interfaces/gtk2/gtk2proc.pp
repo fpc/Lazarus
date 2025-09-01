@@ -216,7 +216,7 @@ procedure Gtk2RangeValueChanged(ARange: PGTKRange; data: GPointer); cdecl;
 
 function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow;
   AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
-function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem;
+function Gtk2CheckMenuToggledCB(AMenuItem: PGTKCheckMenuItem;
                                 AData: gPointer): GBoolean; cdecl;
 function GTKKeySnooper({%H-}Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
