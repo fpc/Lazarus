@@ -340,6 +340,8 @@ begin
 
     g_signal_connect(PGTKObject(Widget), 'toggled',
       TGTKSignalFunc(@Gtk2MenuItemToggled), Pointer(AMenuItem));
+    g_signal_connect_after(PGTKObject(Widget), 'toggled',
+      TGTKSignalFunc(@Gtk2CheckMenuToggledCB), Pointer(AMenuItem));
   end;
 
   // set attributes (enabled and rightjustify)

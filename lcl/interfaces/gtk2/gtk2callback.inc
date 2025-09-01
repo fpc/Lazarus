@@ -350,7 +350,7 @@ begin
   Result := CallBackDefaultReturn;
 end;
 
-function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem; AData: gPointer): GBoolean; cdecl;
+function Gtk2CheckMenuToggledCB(AMenuItem: PGTKCheckMenuItem; AData: gPointer): GBoolean; cdecl;
 // AData --> LCLMenuItem
 var
   LCLMenuItem: TMenuItem;
@@ -363,7 +363,7 @@ begin
   LCLMenuItem := TMenuItem(AData);
   // some sanity checks
   if LCLMenuItem = nil then Exit;
-  if not LCLMenuItem.IsCheckItem then Exit; // ???
+  if not LCLMenuItem.IsCheckItem then Exit;
 
   // the gtk always toggles the check flag
   // -> restore 'checked' flag if needed
