@@ -27,7 +27,7 @@ uses
   FpDbgCommon, FpdMemoryTools,
   FpErrorMessages,
   FpImgReaderBase,
-  FpDbgCpuX86;
+  FpDbgCpuX86, LazDebuggerIntfFloatTypes;
 
 type
   user_regs_struct64 = record
@@ -854,6 +854,7 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(FUserRegs.regs64[gs], IntToStr(FUserRegs.regs64[gs]),8,47);
 
     if FFpRegsAvail then begin
+      DisableFloatExceptions;
       FRegisterValueList.DbgRegisterAutoCreate['st0'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 0*4])^),10,500);
       FRegisterValueList.DbgRegisterAutoCreate['st1'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 1*4])^),10,501);
       FRegisterValueList.DbgRegisterAutoCreate['st2'].SetValue(0, FloatToStr(PExtended(@FFpRegs.st_space[ 2*4])^),10,502);
@@ -883,6 +884,7 @@ begin
 
       FRegisterValueList.DbgRegisterAutoCreate['mxcsr'].SetValue(FFpRegs.fos, IntToStr(FFpRegs.mxcsr),4,620);
 
+      EnableFloatExceptions;
     end;
   end;
   FRegisterValueListValid:=true;

@@ -125,7 +125,7 @@ uses
   FpDbgLoader, FpDbgDisasX86,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, UTF8Process,
-  FpDbgCommon, FpdMemoryTools, FpErrorMessages, FpDbgCpuX86;
+  FpDbgCommon, FpdMemoryTools, FpErrorMessages, FpDbgCpuX86, LazDebuggerIntfFloatTypes;
 
 type
 
@@ -1815,7 +1815,6 @@ var
   Xmm, Ymm: PM128A;
   FeatureLength, FeatureLength2: DWORD;
   i: Integer;
-  EM, SEM: TFPUExceptionMask;
   r: TDbgRegisterValue;
 begin
   {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.LoadRegisterValues');{$ENDIF}
@@ -1825,15 +1824,8 @@ begin
     if not ReadThreadState then
       exit;
 
-  EM := GetExceptionMask;
-  {$IF FPC_Fullversion>30202}{$ifNdef cpui386}
-  SEM := softfloat_exception_mask;
-  {$endif}{$ENDIF}
+  DisableFloatExceptions;
   try
-  SetExceptionMask(EM + [exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
-  {$IF FPC_Fullversion>30202}{$ifNdef cpui386}
-  softfloat_exception_mask := SEM + [exInvalidOp, exDenormalized, exZeroDivide,exOverflow, exUnderflow, exPrecision];
-  {$endif}{$ENDIF}
 
   {$ifdef cpui386}
   with FCurrentContext^.def do
@@ -2076,10 +2068,7 @@ begin
 
   finally
     FRegisterValueListValid:=true;
-    SetExceptionMask(EM);
-    {$IF FPC_Fullversion>30202}{$ifNdef cpui386}
-    softfloat_exception_mask := SEM;
-    {$endif}{$ENDIF}
+    EnableFloatExceptions;
   end;
 end;
 

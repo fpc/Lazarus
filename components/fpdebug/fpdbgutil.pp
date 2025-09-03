@@ -43,7 +43,7 @@ uses
   {$IFDEF WINDOWS} Windows, {$ENDIF}
   Classes, SysUtils, fgl, math, LazUTF8, lazCollections, UTF8Process,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
-  DbgIntfDebuggerBase, FpdMemoryTools, LazDebuggerUtils, syncobjs;
+  DbgIntfDebuggerBase, FpdMemoryTools, LazDebuggerUtils, LazDebuggerIntfFloatTypes, syncobjs;
 
 type
   TFPDMode = (dm32, dm64);
@@ -470,6 +470,7 @@ end;
 
 function XmmToString(const xmm: M128A): String;
 begin
+  DisableFloatExceptions;
   Result := format('{"D": [%s, %s], "S": [%s, %s, %s, %s], "I64": [%s, %s], "I32": [%s, %s, %s, %s], "I16": [%s, %s, %s, %s, %s, %s, %s, %s], "I8": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s]}', [
     FloatToStr(PDouble(@xmm+0)^), FloatToStr(PDouble(@xmm+8)^),
 
@@ -495,10 +496,12 @@ begin
     IntToStr(PInt8(@xmm+12)^), IntToStr(PInt8(@xmm+13)^),
     IntToStr(PInt8(@xmm+14)^), IntToStr(PInt8(@xmm+15)^)
     ]);
+  EnableFloatExceptions;
 end;
 
 function YmmToString(const Xmm, Ymm: M128A): String;
 begin
+  DisableFloatExceptions;
   Result := format('{"D": [%s, %s, %s, %s], "S": [%s, %s, %s, %s, %s, %s, %s, %s], "I64": [%s, %s, %s, %s], "I32": [%s, %s, %s, %s, %s, %s, %s, %s], "I16": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s], "I8": [%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s]}', [
     FloatToStr(PDouble(@xmm+0)^), FloatToStr(PDouble(@xmm+8)^),
     FloatToStr(PDouble(@ymm+0)^), FloatToStr(PDouble(@ymm+8)^),
@@ -542,7 +545,7 @@ begin
     IntToStr(PInt8(@ymm+12)^), IntToStr(PInt8(@ymm+13)^),
     IntToStr(PInt8(@ymm+14)^), IntToStr(PInt8(@ymm+15)^)
     ]);
-
+  EnableFloatExceptions;
 end;
 
 function XmmToFormat(AReg: TDbgRegisterValue; AFormat: TRegisterDisplayFormat): String;
