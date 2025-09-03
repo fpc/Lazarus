@@ -11,7 +11,7 @@ uses
   FpdMemoryTools, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarf,
   FpDbgClasses,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
-  LazUTF8, LazClasses;
+  LazUTF8, LazClasses, LazDebuggerIntfFloatTypes;
 
 type
 
@@ -1060,7 +1060,9 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
 
   procedure DoFloat;
   begin
+    DisableFloatExceptions;
     APrintedValue := FloatToStr(AValue.AsFloat);
+    EnableFloatExceptions;
     if (ppvCreateDbgType in AFlags) then begin
       ADBGTypeInfo^ := TDBGType.Create(skSimple, ResTypeName);
     end;
