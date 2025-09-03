@@ -2309,7 +2309,9 @@ msgid "Fppkg configuration file (e.g. fppkg.cfg)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Text-mark"
+#, fuzzy
+#| msgid "Text-mark"
+msgid "Text mark"
 msgstr "テキストの周り"
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2859,13 +2861,17 @@ msgstr "マージンとガター"
 msgid "Marker color"
 msgstr "マーカーの色"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
-msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4552,7 +4558,7 @@ msgid "Directory for building test projects"
 msgstr "テストプロジェクトを構築するディレクトリ"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+msgid "Text Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtexttofind

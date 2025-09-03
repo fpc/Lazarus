@@ -2229,7 +2229,9 @@ msgid "Fppkg configuration file (e.g. fppkg.cfg)"
 msgstr "Fppkg yapılandırma dosyası (örn. fppkg. cfg)"
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Text-mark"
+#, fuzzy
+#| msgid "Text-mark"
+msgid "Text mark"
 msgstr "Metin işareti"
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2761,13 +2763,19 @@ msgstr "Kenar boşluğu ve oluk"
 msgid "Marker color"
 msgstr "İşaretçi rengi"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
-msgid "Vertical-mark"
+#, fuzzy
+#| msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr "Dikey-işaret"
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4412,7 +4420,9 @@ msgid "Directory for building test projects"
 msgstr "Test projeleri hazırlama klasörü"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+#, fuzzy
+#| msgid "Text-Style"
+msgid "Text Style"
 msgstr "Yazı Stili"
 
 #: lazarusidestrconsts.dlgtexttofind

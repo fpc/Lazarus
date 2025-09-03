@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-07-24 16:26+0300\n"
+"PO-Revision-Date: 2025-09-03 16:50+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2241,7 +2241,7 @@ msgid "Fppkg configuration file (e.g. fppkg.cfg)"
 msgstr "Файл настройки Fppkg (например, fppkg.cfg)"
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Text-mark"
+msgid "Text mark"
 msgstr "Рамка"
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2764,13 +2764,17 @@ msgstr "Границы"
 msgid "Marker color"
 msgstr "Маркер"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr "Поле обзора"
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
 msgstr "(задержка в %s сек. после перемещения курсора)"
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
-msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr "Вертикальная черта"
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4409,7 +4413,7 @@ msgid "Directory for building test projects"
 msgstr "Каталог для сборки пробных проектов"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+msgid "Text Style"
 msgstr "Начертание"
 
 #: lazarusidestrconsts.dlgtexttofind

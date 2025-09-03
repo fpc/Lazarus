@@ -2234,7 +2234,9 @@ msgid "Fppkg configuration file (e.g. fppkg.cfg)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Text-mark"
+#, fuzzy
+#| msgid "Text-mark"
+msgid "Text mark"
 msgstr "Tekstimerkki"
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2776,13 +2778,19 @@ msgstr "Marginaali ja reunapalkki"
 msgid "Marker color"
 msgstr "Merkattu väri"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
-msgid "Vertical-mark"
+#, fuzzy
+#| msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr "Pysty-merkki"
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4448,7 +4456,7 @@ msgid "Directory for building test projects"
 msgstr "Kansio testiprojektien kokoamiseen"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+msgid "Text Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtexttofind

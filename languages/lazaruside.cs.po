@@ -2277,7 +2277,9 @@ msgid "Fppkg configuration file (e.g. fppkg.cfg)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Text-mark"
+#, fuzzy
+#| msgid "Text-mark"
+msgid "Text mark"
 msgstr "Textová značka"
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2821,13 +2823,19 @@ msgstr "Okraj a žlábek"
 msgid "Marker color"
 msgstr "Barva značkovače"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
-msgid "Vertical-mark"
+#, fuzzy
+#| msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr "Svislá-značka"
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4494,7 +4502,9 @@ msgid "Directory for building test projects"
 msgstr "Adresář pro sestavení pokusných projektů"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+#, fuzzy
+#| msgid "Text-Style"
+msgid "Text Style"
 msgstr "Styl textu"
 
 #: lazarusidestrconsts.dlgtexttofind

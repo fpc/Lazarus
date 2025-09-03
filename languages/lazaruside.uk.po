@@ -2252,7 +2252,9 @@ msgid "Fppkg configuration file (e.g. fppkg.cfg)"
 msgstr "Файл конфігурації fppkg (наприклад, fppkg.cfg)"
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Text-mark"
+#, fuzzy
+#| msgid "Text-mark"
+msgid "Text mark"
 msgstr "Відмітка"
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2786,13 +2788,19 @@ msgstr "Межі і смужка"
 msgid "Marker color"
 msgstr "Маркери"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
-msgid "Vertical-mark"
+#, fuzzy
+#| msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr "Вертикальна позначка"
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4445,7 +4453,9 @@ msgid "Directory for building test projects"
 msgstr "Тека для збирання пробних проєктів"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+#, fuzzy
+#| msgid "Text-Style"
+msgid "Text Style"
 msgstr "Стиль тексту"
 
 #: lazarusidestrconsts.dlgtexttofind

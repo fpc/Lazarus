@@ -2311,7 +2311,9 @@ msgid "Fppkg configuration file (e.g. fppkg.cfg)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Text-mark"
+#, fuzzy
+#| msgid "Text-mark"
+msgid "Text mark"
 msgstr "Teksto žymėjimas"
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2861,13 +2863,17 @@ msgstr "Paraštės"
 msgid "Marker color"
 msgstr "Žymeklio spalva"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
-msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4554,7 +4560,7 @@ msgid "Directory for building test projects"
 msgstr "Aplankas testo projektų darymui"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+msgid "Text Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtexttofind

@@ -2300,7 +2300,7 @@ msgid "Fppkg configuration file (e.g. fppkg.cfg)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Text-mark"
+msgid "Text mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2856,13 +2856,17 @@ msgstr "Margin dan saluran"
 msgid "Marker color"
 msgstr "Warna Penanda"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
-msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4547,7 +4551,7 @@ msgid "Directory for building test projects"
 msgstr "Direktori untuk pembangunan proyek tes"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+msgid "Text Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtexttofind

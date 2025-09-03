@@ -2312,7 +2312,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgframecolor
 #, fuzzy
 #| msgid "Frame color"
-msgid "Text-mark"
+msgid "Text mark"
 msgstr "Tekst"
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2863,6 +2863,10 @@ msgstr "Margines i pasek ikon"
 msgid "Marker color"
 msgstr "Kolor zaznaczenia"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
@@ -2870,7 +2874,8 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 #, fuzzy
-msgid "Vertical-mark"
+#| msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr "&Pionowo"
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4557,7 +4562,9 @@ msgid "Directory for building test projects"
 msgstr "Katalog do budowania testowych projektów"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+#, fuzzy
+#| msgid "Text-Style"
+msgid "Text Style"
 msgstr "Styl tekstu"
 
 #: lazarusidestrconsts.dlgtexttofind

@@ -2242,7 +2242,9 @@ msgid "Fppkg configuration file (e.g. fppkg.cfg)"
 msgstr "Fppkg配置文件（例如 fppkg.cfg）"
 
 #: lazarusidestrconsts.dlgframecolor
-msgid "Text-mark"
+#, fuzzy
+#| msgid "Text-mark"
+msgid "Text mark"
 msgstr "文本标记"
 
 #: lazarusidestrconsts.dlgfrmeditor
@@ -2765,13 +2767,19 @@ msgstr "边界和边栏"
 msgid "Marker color"
 msgstr "标记颜色"
 
+#: lazarusidestrconsts.dlgmarkupalloverviewgutter
+msgid "Overview gutter"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupcurrentworddelayinsec
 #, object-pascal-format
 msgid "(%s sec delay after caret move)"
 msgstr "(%s 秒后光标移动延迟)"
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
-msgid "Vertical-mark"
+#, fuzzy
+#| msgid "Vertical-mark"
+msgid "Vertical mark"
 msgstr "垂直标记"
 
 #: lazarusidestrconsts.dlgmarkupgroup
@@ -4409,7 +4417,9 @@ msgid "Directory for building test projects"
 msgstr "项目构建测试的目录"
 
 #: lazarusidestrconsts.dlgtextstyle
-msgid "Text-Style"
+#, fuzzy
+#| msgid "Text-Style"
+msgid "Text Style"
 msgstr "文本样式"
 
 #: lazarusidestrconsts.dlgtexttofind
