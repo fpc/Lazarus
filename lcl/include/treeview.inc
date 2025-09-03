@@ -4578,6 +4578,8 @@ begin
       if (fScrollBars in [ssAutoBoth, ssAutoHorizontal])
       and (ScrollInfo.nPage>=cardinal(ScrollInfo.nMax)) then begin
         //DebugLn(['TCustomTreeView.UpdateScrollbars Hide Horizontal.']);
+        ScrollInfo.nPos := 0;
+        SetScrollInfo(Handle, SB_HORZ, ScrollInfo, False);
         FLastHorzScrollInfo.cbSize:=0;
         SetShowScrollBar(SB_HORZ, false);
       end else begin
