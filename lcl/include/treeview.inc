@@ -6538,6 +6538,7 @@ procedure TCustomTreeView.Resize;
 begin
   FStates:=FStates+[tvsScrollbarChanged,tvsBottomItemNeedsUpdate];
   inherited Resize;
+  if AutoSizeDelayed then exit;
   UpdateScrollbars;
 end;
 
