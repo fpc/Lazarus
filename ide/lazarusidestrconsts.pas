@@ -1954,13 +1954,13 @@ resourcestring
   dlgMsgWinColorUrgentPanic     = 'Panic';
 
   dlgForecolor = 'Foreground';
-  dlgFrameColor = 'Text-mark';
-  dlgMarkupFoldColor = 'Vertical-mark';
-  dlgMarkupAllOverviewGutter = 'Overview-gutter';
-  dlgTextStyle = 'Text-Style';
+  dlgFrameColor = 'Text mark';
+  dlgMarkupFoldColor = 'Vertical mark';
+  dlgMarkupAllOverviewGutter = 'Overview gutter';
+  dlgTextStyle = 'Text Style';
   dlgUnsavedLineColor = 'Unsaved line';
   dlgSavedLineColor = 'Saved line';
-  dlgColorFeatPastEol        = 'Extend past EOL';
+  dlgColorFeatPastEol = 'Extend past EOL';
   dlgGutterCollapsedColor = 'Collapsed';
   dlgCaretForeColor = 'Main or primary caret';
   dlgCaretBackColor = 'Secondary carets (multi-caret mode)';
