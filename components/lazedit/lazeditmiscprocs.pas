@@ -361,6 +361,11 @@ begin
             #$A5:
               if (AChar[3] in [#$84..#$8A]) then Result := True;              // 1E944..1E94A
           end;
+        #$9F:
+          case AChar[2] of
+            #$8F:
+              if (AChar[3] in [#$BB..#$BF]) then Result := True;              // 1F3FB..1F3FF // EMOJI modifier
+          end;
       end;
   end;
 end;
