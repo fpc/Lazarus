@@ -3844,17 +3844,22 @@ var
   procedure DoTextOut(X,Y : Integer; Str: Pchar; CurCount: Integer);
   var
     CurScreenX: LongInt;
-    CharLen: LongInt;
+    CharLen, i: LongInt;
   begin
     if (Dx <> nil) then
     begin
       CurScreenX := X;
       while CurCount > 0 do
       begin
-        CharLen := UTF8CodepointSize(CurStr);
+        CharLen := 0;
+        i := 0;
+        repeat
+          CharLen := CharLen + UTF8CodepointSize(CurStr + CharLen);
+          inc(i);
+        until (CharLen >= CurCount) or ((CurDx+i)^ <> 0);
         DevCtx.DrawTextWithColors(CurStr, CharLen, CurScreenX, Y, Foreground, BackgroundColor);
         inc(CurScreenX, CurDx^);
-        inc(CurDx);
+        inc(CurDx, i);
         inc(CurStr, CharLen);
         dec(CurCount, CharLen);
       end;
