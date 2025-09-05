@@ -41,7 +41,7 @@ uses
   LazIDEIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, ProjectDefs, LazConf, Project, KeyMapping,
-  KeyMapShortCutDlg, MainIntf, ToolBarIntf, ProjectIntf;
+  KeyMapShortCutDlg, MainIntf, EditorOptions, ToolBarIntf, ProjectIntf;
 
 type
   TSynEditorMacro = class(TSynMacroRecorder)
@@ -1278,6 +1278,7 @@ begin
     if ShowKeyMappingEditForm(i, (IDECommandList as TKeyCommandRelationList)) = mrOK then begin
       if CurrentEditorMacroList = EditorMacroListProj then Project1.Modified := True;
       if CurrentEditorMacroList = EditorMacroListGlob then MainIDEInterface.SaveEnvironment(False);
+      EditorOpts.Save;
     end;
   UpdateDisplay;
   if OnKeyMapReloaded <> nil then OnKeyMapReloaded();
