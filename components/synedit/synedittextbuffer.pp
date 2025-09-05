@@ -151,6 +151,7 @@ type
     FModifiedNotifyStart, FModifiedNotifyNewCount, FModifiedNotifyOldCount: Integer;
 
     FIsInEditAction: Integer;
+    FMarkModifiedLock: integer;
     FIgnoreSendNotification: array [TSynEditNotifyReason] of Integer;
     fDosFileFormat: boolean;
     fIndexOfLongestLine: integer;
@@ -324,10 +325,11 @@ type
   TSynEditUndoTxtLineJoin = class(TSynEditUndoItem)
   private
     FPosX, FPosY: Integer;
+    FFlags: TSynEditStringFlags;
   protected
     function DebugString: String; override;
   public
-    constructor Create(APosX, APosY: Integer);
+    constructor Create(APosX, APosY: Integer; AFlags: TSynEditStringFlags);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
@@ -348,10 +350,11 @@ type
   TSynEditUndoTxtLinesDel = class(TSynEditUndoItem)
   private
     FPosY, FCount: Integer;
+    FFlagsList: array of TSynEditStringFlags;
   protected
     function DebugString: String; override;
   public
-    constructor Create(ALine, ACount: Integer);
+    constructor Create(ALine, ACount: Integer; Caller: TSynEditStringList);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
@@ -539,10 +542,11 @@ begin
   Result := 'X='+dbgs(FPosX) + ' Y='+ dbgs(FPosY);
 end;
 
-constructor TSynEditUndoTxtLineJoin.Create(APosX, APosY: Integer);
+constructor TSynEditUndoTxtLineJoin.Create(APosX, APosY: Integer; AFlags: TSynEditStringFlags);
 begin
   FPosX := APosX;
   FPosY := APosY;
+  FFlags := AFlags;
   {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
@@ -550,8 +554,10 @@ function TSynEditUndoTxtLineJoin.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
   {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
-  if Result then
-    TSynEditStringList(Caller).EditLineBreak(FPosX, FPosY)
+  if Result then begin
+    TSynEditStringList(Caller).EditLineBreak(FPosX, FPosY);
+    TSynEditStringList(Caller).Flags[FPosY] := FFlags;  // ToIdx(FPosY) + 1
+  end;
 end;
 
 { TSynEditUndoTxtLinesIns }
@@ -581,19 +587,31 @@ begin
   Result := 'Y='+dbgs(FPosY) + ' Cnt='+ dbgs(FCount);
 end;
 
-constructor TSynEditUndoTxtLinesDel.Create(ALine, ACount: Integer);
+constructor TSynEditUndoTxtLinesDel.Create(ALine, ACount: Integer; Caller: TSynEditStringList);
+var
+  i: Integer;
 begin
   FPosY  := ALine;
   FCount := ACount;
+  SetLength(FFlagsList, ACount);
+  ALine := ToIdx(ALine);
+  for i := 0 to ACount - 1 do
+    FFlagsList[i] := Caller.Flags[ALine + i];
   {$IFDEF SynUndoDebugItems}debugln(['---  Undo Insert ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtLinesDel.PerformUndo(Caller: TObject): Boolean;
+var
+  y, i: Integer;
 begin
   Result := Caller is TSynEditStringList;
   {$IFDEF SynUndoDebugItems}if Result then debugln(['---  Undo Perform ',DbgSName(self), ' ', dbgs(Self), ' - ', DebugString]);{$ENDIF}
-  if Result then
-    TSynEditStringList(Caller).EditLinesInsert(FPosY, FCount)
+  if Result then begin
+    TSynEditStringList(Caller).EditLinesInsert(FPosY, FCount);
+    y := ToIdx(FPosY);
+    for i := 0 to Length(FFlagsList) - 1 do
+      TSynEditStringList(Caller).Flags[Y + i] := FFlagsList[i];
+  end;
 end;
 
 { TSynEditUndoMarkModified }
@@ -1313,7 +1331,7 @@ var
   WasSaved: TSynEditStringFlagsArray;
   NeedUndo: Boolean;
 begin
-  if IsUndoing or IsRedoing then
+  if IsUndoing or IsRedoing or (FMarkModifiedLock > 0) then
     exit;
   AFirst := ToIdx(AFirst);
   ALast := ToIdx(ALast);
@@ -1535,7 +1553,7 @@ begin
   if FillText <> ''  then
     EditInsert(1 + Length(t), LogY, FillText);
   CurUndoList.AddChange(TSynEditUndoTxtLineJoin.Create(1 + Length(Strings[LogY-1]),
-                                                    LogY));
+                                                    LogY, Flags[LogY])); // ToIdx(LogY) + 1
   t := t + FillText;
   Strings[LogY - 1] := t + Strings[LogY] ;
   Delete(LogY);
@@ -1562,10 +1580,12 @@ var
   i: Integer;
 begin
   IncIsInEditAction;
+  inc(FMarkModifiedLock);
   for i := LogY to LogY + ACount - 1 do
     EditDelete(1, i, length(Strings[i-1]));
+  dec(FMarkModifiedLock);
+  CurUndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount, Self));
   DeleteLines(LogY - 1, ACount);
-  CurUndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
   i := LogY;
   if i >= Count then dec(i);
   if i > 0 then
@@ -1583,7 +1603,7 @@ end;
 
 procedure TSynEditStringList.UndoEditLinesDelete(LogY, ACount: Integer);
 begin
-  CurUndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
+  CurUndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount, Self));
   DeleteLines(LogY - 1, ACount);
   SendNotification(senrEditAction, self, LogY, -ACount, 1, 0, '');
 end;
