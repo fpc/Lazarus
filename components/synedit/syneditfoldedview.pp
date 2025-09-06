@@ -2516,7 +2516,7 @@ function TSynTextFoldAVLTree.LastFoldedLine: integer;
 var
   n: TSynTextFoldAVLNode;
 begin
-  n := FindFirstFold;
+  n := FindLastFold;
   if not n.IsInFold then exit(0);
   Result := n.StartLine + n.MergedLineCount - 1;
 end;
