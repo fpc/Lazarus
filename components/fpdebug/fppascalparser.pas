@@ -2842,7 +2842,8 @@ begin
 
   Expr := AParams.Items[HighIdx];
   Result := Expr.GetResultValue;
-  Result.AddReference;
+  if Result <> nil then
+    Result.AddReference;
 end;
 
 function TFpPascalExpressionPartIntrinsic.DoTryN(
@@ -2882,7 +2883,8 @@ begin
 
   Expr := AParams.Items[HighIdx];
   Result := Expr.GetResultValue;
-  Result.AddReference;
+  if Result <> nil then
+    Result.AddReference;
 end;
 
 function TFpPascalExpressionPartIntrinsic.DoObj(AParams: TFpPascalExpressionPartBracketArgumentList
