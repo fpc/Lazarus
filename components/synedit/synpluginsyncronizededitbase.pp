@@ -361,6 +361,9 @@ function TSynPluginSyncronizedEditUndoCurrentCell.PerformUndo(Caller: TObject
 var
   i: Integer;
 begin
+  Result := Caller is TCustomSynEdit;
+  if not Result then
+    exit;
   i := TCustomSynEdit(Caller).PluginCount;
   Result := False;
   while (i > 0) and (not Result) do begin
