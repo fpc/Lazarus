@@ -27,7 +27,6 @@ Anastassya
 Andrej
 Andres
 Andy
-Angeliquê
 Angelo
 Ann
 Anna
@@ -54,7 +53,6 @@ Aswin
 Audrey
 Augusto
 Aulone
-Aurélie
 Axelle
 Ayub
 Barry
@@ -70,7 +68,6 @@ Bieke
 Bilal
 Birgit
 Bjorn
-Björn
 Bonnie
 Bonny
 Bono
@@ -159,7 +156,6 @@ Erdzan
 Erik
 Erika
 Ester
-Estébane
 Eva
 Eveline
 Evi
@@ -175,7 +171,6 @@ Florije
 Fouad
 Fouhad
 Frederik
-Fredéric
 Gaetan
 Gareth
 Geoffrey
@@ -191,7 +186,6 @@ Givana
 Glenn
 Gregory
 Gricha
-Grégory
 Gunne
 Gwen
 Gwendolyne
@@ -373,7 +367,6 @@ Michaël
 Michel
 Michelle
 Michiel
-Michèle
 Mickey
 Mieke
 Miguel
@@ -387,7 +380,6 @@ Moo
 Morris
 Mustapha
 MwavuaShabani
-Mylène
 Nadine
 Nadir
 Nadja
@@ -411,7 +403,6 @@ Nidae
 Niels
 Niki
 Nikki
-NilsonJosé
 Nina
 Nolan
 Norredine
@@ -487,7 +478,6 @@ Sebastiaan
 Sebastien
 Sekandar
 Selina
-Selène
 Semih
 Senick
 Senna
@@ -513,7 +503,6 @@ Sinem
 Sinya
 Siska
 Sofie
-Solaïman
 Soliman
 Sonja
 Sophie
@@ -556,14 +545,12 @@ Tivi
 Tom
 Tommy
 Uschi
-Valérie
 Veerle
 Veronique
 Vicky
 Vienna
 Vincent
 Volkan
-Véronique
 Wanda
 Wendy
 Werner
@@ -594,4 +581,3 @@ Yunus
 Yuri
 Yusuf
 Yves
-ZoÃ«

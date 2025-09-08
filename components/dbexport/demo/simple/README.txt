@@ -1,4 +1,4 @@
-This directory contains a demonstration programs for the 
+This directory contains a demonstration program for the 
 export components. See also stdexports.
 
 The simple directory contains a program which demonstrates how

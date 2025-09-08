@@ -99,7 +99,7 @@ begin
     TIn:=EncodeTime(8,30+Random(10)-10,Random(60),0);
     //  Exit
     Tout:=EncodeTime(17,30+Random(10)-10,Random(60),0);
-    DoTrack((ID-1)*DayCount+I,ID,FN,LN,D,TIn,Tout);
+    DoTrack((ID-1)*DayCount+I,ID,FN,LN,D,D+TIn,D+Tout);
     end;
   If Assigned(FOnProgress) then
     FOnProgress(Self);
@@ -116,7 +116,6 @@ procedure TDatagenerator.GenerateData;
 Var
   FN,LN : TStrings;
   PFN,PLN : String;
-  F : Text;
   I : Integer;
   
 begin
@@ -130,17 +129,11 @@ begin
       LN:=TStringList.Create;
       Try
         LN.LoadFromFile(UTF8ToAnsi(FLastNamesFile));
-        Assign(F,FOutputFile);
-        Rewrite(F);
-        Try
-          For I:=1 to PersonCount do
-            begin
-            PFN:=FN[Random(FN.Count)];
-            PLN:=LN[Random(LN.Count)];
-            DoPerson(I,PFN,PLN);
-          end;
-        Finally
-          Close(F);
+        For I:=1 to PersonCount do
+        begin
+          PFN:=FN[Random(FN.Count)];
+          PLN:=LN[Random(LN.Count)];
+          DoPerson(I,PFN,PLN);
         end;
       Finally
         LN.Free;
@@ -175,6 +168,7 @@ begin
     Add('TimeOut',ftDateTime,0);
     end;
   DS.TableName:=OutputFile;
+  DS.TableLevel:=7;
   DS.CreateTable;
   DS.Exclusive := true;
   DS.Open;

@@ -238,12 +238,17 @@ begin
 end;
 
 procedure TMainForm.OpenDataset(AFileName : String);
-
+var
+  F: TField;
 begin
   DBFData.Close;
   DBFData.TableName:=AFileName;
   DBFData.Open;
   Caption:=Format('%s (%s)',[FDesignCaption,AFileName]);
+
+  for F in DBFData.Fields do
+    if (F is TDateTimeField) and ((F.FieldName = 'TIMEIN') or (F.FieldName = 'TIMEOUT')) then
+      TDateTimeField(F).Displayformat := 'hh:nn';
 end;
 
 end.

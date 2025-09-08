@@ -69,7 +69,6 @@ Bogaerts
 Bollen
 Bollengier
 Boniatian
-Bonné
 Borkus
 Borremans
 Boschman
@@ -139,7 +138,6 @@ Coremans
 Corremans
 Coveliers
 Cox
-Crabbé
 Crul
 Crève
 Cuesta
@@ -238,7 +236,6 @@ El Harouti
 El Louzati
 El Mourabet
 El Ouamari
-El-Aïssati
 El-Ouamari
 Elewaut
 Elmas
@@ -295,11 +292,9 @@ Groom
 Grumbach
 Guiette
 Guldentops
-Gunsüren
 Gusani
 Gys
 Gysels
-Gül
 Hada
 Haddouchi
 Hagens
@@ -347,7 +342,6 @@ Kashama
 Kasse
 Katchiyants
 Kavoma
-Kaçar
 Keeble
 Kelber
 Kemani
@@ -383,7 +377,6 @@ Larosse
 Laroye
 Lathouders
 Laureys
-Laârbi
 Le Bastard
 Leclercq
 Ledoux
@@ -422,7 +415,6 @@ Massaoudi
 Masson
 Mattheeussen
 Matthijs
-Matthé
 Matysen
 Mc Whinnie
 Meert
@@ -457,7 +449,6 @@ Nagels
 Nanikashivili
 Negers
 Neirynck
-Nicolaï
 Nieuwenhuysen
 Nijsmans
 Nuyens
@@ -591,7 +582,6 @@ Thiel
 Thijs
 Thoelen
 Tielemans
-Totté
 Toujani
 Truyens
 Tufanoglu
@@ -770,7 +760,6 @@ Walschaerts
 Wauters
 Weckseler
 Wenmaekers
-Wené
 Westhof
 Weyns
 Weyts
