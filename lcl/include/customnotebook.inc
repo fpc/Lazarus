@@ -263,6 +263,7 @@ begin
   // Accessibility
   AccessibleDescription := rsTCustomTabControlAccessibilityDescription;
   AccessibleRole := larTabControl;
+  FWheelSelectPage := False;
 end;
 
 {------------------------------------------------------------------------------

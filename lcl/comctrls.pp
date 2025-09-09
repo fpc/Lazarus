@@ -395,6 +395,7 @@ type
     FTabHeight: Smallint;
     FTabPosition: TTabPosition;
     FTabWidth: Smallint;
+    FWheelSelectPage: Boolean;
     procedure DoSendPageIndex;
     procedure DoSendShowTabs;
     procedure DoSendTabPosition;
@@ -511,6 +512,7 @@ type
     property TabHeight: Smallint read FTabHeight write SetTabHeight stored TabHeightIsStored;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
     property TabWidth: Smallint read FTabWidth write SetTabWidth stored TabWidthIsStored;
+    property WheelSelectPage: Boolean read FWheelSelectPage write FWheelSelectPage default True; experimental;
   published
     property TabStop default true;
   end;

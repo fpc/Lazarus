@@ -372,6 +372,8 @@ begin
         Control := GetWin32WindowInfo(Window)^.WinControl;
         if Assigned(Control) and (Control is TCustomTabControl) then
         begin
+          if not TCustomTabControl(Control).WheelSelectPage then
+            exit;
           APageIdx := SendMessage(Window, TCM_GETCURSEL, 0, 0);
           NMHdr.code := TCN_SELCHANGING;
           NMHdr.hwndFrom := Window;
