@@ -1167,7 +1167,7 @@ var
   TrimCnt: Integer;
   ANode: TAVLTreeNode;
   CaretXY: TCodeXYPosition;
-  i, Len: integer;
+  i, Len, LastLine, Drift: integer;
   CleanPos: integer;
   EndPos: integer;
   CodeTool: TCodeTool;
@@ -1190,6 +1190,8 @@ begin
         CurIdentifier:=Identifier;
 
       ANode:=Tree.FindHighest;
+      LastLine:=-1;
+      Drift:=0;
       while ANode<>nil do begin
         CodePos:=PCodeXYPosition(ANode.Data);
         ANode:=Tree.FindPrecessor(ANode);
@@ -1207,15 +1209,23 @@ begin
           if CodeTool.CaretToCleanPos(CaretXY,CleanPos)<>0 then
             continue;
           CodeTool.ExtractIdentifierWithPointsOutEndPos(CleanPos,EndPos,
-            length(Identifier));
+            length(CurIdentifier));
           Len:=EndPos-CleanPos;
         end;
+
+        if LastLine=CodePos^.Y then
+          inc(Drift,Len-length(Identifier))
+        else begin
+          Drift:=0;
+          LastLine:=CodePos^.Y;
+        end;
+
         SearchResultsView.AddMatch(SearchPageIndex,
                                    CodePos^.Code.Filename,
                                    Point(CodePos^.X,CodePos^.Y),
                                    Point(CodePos^.X+Len,CodePos^.Y),
                                    TrimmedLine,
-                                   CodePos^.X-TrimCnt, Len);
+                                   CodePos^.X-TrimCnt+Drift, Len);
       end;
     end;
   end;
@@ -1245,7 +1255,7 @@ begin
                                  Point(CodePos^.X,CodePos^.Y),
                                  Point(CodePos^.X+Len,CodePos^.Y),
                                  TrimmedLine,
-                                 CodePos^.X-TrimCnt, Len);
+                                 CodePos^.X-TrimCnt, Len); // no drift expected
     end;
     Tree.Free;
   end;
@@ -1574,31 +1584,28 @@ procedure TFindRenameIdentifierDialog.FindOrRenameButtonClick(Sender: TObject);
 var
   ACodeBuffer:TCodeBuffer;
   X,Y: integer;
-  ContextPos: integer;
   ErrInfo: string;
 
-  function GetCodePos(var aPos: integer; out X,Y:integer;
-    pushBack: boolean = true):boolean;
+  function GetContextEndCodePos(ANode:TCodeTreeNode; out X,Y:integer):boolean;
   var
     CodeTool: TCodeTool;
     CaretXY: TCodeXYPosition;
-    aTop: integer;
+    aPos,aTop: integer;
   begin
     X:=0;
     Y:=0;
     Result:=false;
     CodeToolBoss.Explore(ACodeBuffer,CodeTool,true);
     if CodeTool<>nil then begin
-      CodeTool.MoveCursorToCleanPos(aPos);
+      CodeTool.MoveCursorToCleanPos(ANode.EndPos);
       CodeTool.ReadNextAtom;
-      if pushBack then begin
+
+      CodeTool.ReadPriorAtom;
+      if not (CodeTool.CurPos.Flag in [cafWord, cafEnd]) and (CodeTool.CurPos.StartPos>0) then
         CodeTool.ReadPriorAtom;
-        if not (CodeTool.CurPos.Flag in [cafWord, cafEnd]) and (CodeTool.CurPos.StartPos>0) then
-          CodeTool.ReadPriorAtom;
-        if (CodeTool.CurPos.Flag=cafEnd) and (CodeTool.CurPos.StartPos>0) then
-          CodeTool.ReadPriorAtom;
-        CodeTool.ReadNextAtom;
-      end;
+      if (CodeTool.CurPos.Flag=cafEnd) and (CodeTool.CurPos.StartPos>0) then
+        CodeTool.ReadPriorAtom;
+
       aPos:=CodeTool.CurPos.StartPos;
 
       if CodeTool.CleanPosToCaretAndTopLine(aPos, CaretXY, aTop) then begin
@@ -1618,7 +1625,6 @@ var
       (CompareDottedIdentifiers(PChar(FOldIdentifier), PChar(FNewIdentifier))<>0);
     if Result then begin
       if anItem.Node<>nil then begin
-        ContextPos:=anItem.Node.StartPos;
         ErrInfo:= Format(lisIdentifierIsAlreadyUsed2,[FNewIdentifier]);
       end else begin
         if anItem.ResultType='' then
@@ -1698,11 +1704,11 @@ begin
     while tmpNode<>nil do begin
       if (tmpNode.Parent<>nil) and (tmpNode.Parent.Desc in AllFindContextDescs)
       then begin
-        ContextPos:=tmpNode.Parent.EndPos;//can point at the end of "end;"
-        if GetCodePos(ContextPos,X,Y) then
+        if GetContextEndCodePos(tmpNode.Parent,X,Y) then begin
           CodeToolBoss.GatherIdentifiers(ACodeBuffer, X, Y);
-        FindConflict; //ErrInfo is set inside the function
-        break;
+          FindConflict; //ErrInfo is set inside the function
+          break;
+        end;
       end;
       tmpNode:=tmpNode.Parent;
     end;
