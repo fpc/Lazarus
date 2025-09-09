@@ -592,7 +592,7 @@ msgid "All files"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesexport
-msgid "Export..."
+msgid "Export"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesexportdlgtitle
@@ -612,7 +612,7 @@ msgid "File not found"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesimport
-msgid "Import..."
+msgid "Import"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesimportdlgtitle

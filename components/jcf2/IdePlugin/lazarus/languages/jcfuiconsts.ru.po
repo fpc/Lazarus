@@ -603,15 +603,15 @@ msgstr "Описание:"
 
 #: jcfuiconsts.lisfrfilesdlgfilterall
 msgid "All files"
-msgstr ""
+msgstr "Все файлы"
 
 #: jcfuiconsts.lisfrfilesexport
-msgid "Export..."
-msgstr ""
+msgid "Export"
+msgstr "Экспортировать"
 
 #: jcfuiconsts.lisfrfilesexportdlgtitle
 msgid "Export JCF format settings"
-msgstr ""
+msgstr "Экспортировать параметры форматирования JCF"
 
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
@@ -626,12 +626,12 @@ msgid "File not found"
 msgstr "Файл не найден"
 
 #: jcfuiconsts.lisfrfilesimport
-msgid "Import..."
-msgstr ""
+msgid "Import"
+msgstr "Импортировать"
 
 #: jcfuiconsts.lisfrfilesimportdlgtitle
 msgid "Import JCF format settings"
-msgstr ""
+msgstr "Импортировать параметры форматирования JCF"
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"
