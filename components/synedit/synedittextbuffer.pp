@@ -1052,6 +1052,11 @@ end;
 
 procedure TSynEditStringList.DetachSynEdit(AEdit: TSynEditBase);
 begin
+  if (fUndoList <> nil) and (TMethod(FUndoList.OnNeedCaretUndo).Data = Pointer(AEdit)) then
+    FUndoList.OnNeedCaretUndo := nil;
+  if (fRedoList <> nil) and (TMethod(fRedoList.OnNeedCaretUndo).Data = Pointer(AEdit)) then
+    fRedoList.OnNeedCaretUndo := nil;
+
   FAttachedSynEditList.Remove(AEdit);
 end;
 
