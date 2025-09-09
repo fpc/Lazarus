@@ -607,6 +607,18 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
+#: jcfuiconsts.lisfrfilesdlgfilterall
+msgid "All files"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexport
+msgid "Export..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexportdlgtitle
+msgid "Export JCF format settings"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
 msgstr ""
@@ -617,6 +629,14 @@ msgstr ""
 
 #: jcfuiconsts.lisfrfilesfilenotfound
 msgid "File not found"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesimport
+msgid "Import..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesimportdlgtitle
+msgid "Import JCF format settings"
 msgstr ""
 
 #: jcfuiconsts.lisfrfilesopenfolder

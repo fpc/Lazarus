@@ -36,6 +36,12 @@ resourcestring
   lisFrFilesVersionThatWroteThisFile = 'Version that wrote this file: %s';
   lisFrFilesDescription = 'Description:';
   lisFrFilesSettingsFile = 'Settings File';
+  lisFrFilesImport = 'Import...';
+  lisFrFilesExport = 'Export...';
+  lisFrFilesDlgFilterAll = 'All files';
+  lisFrFilesImportDlgTitle = 'Import JCF format settings';
+  lisFrFilesExportDlgTitle = 'Export JCF format settings';
+
 
   //Obfuscate settings tab
   lisObfsObfuscate = 'Obfuscate';

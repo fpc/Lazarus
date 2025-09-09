@@ -609,6 +609,18 @@ msgstr "A fájl írásának időpontja: %s"
 msgid "Description:"
 msgstr "Leírás:"
 
+#: jcfuiconsts.lisfrfilesdlgfilterall
+msgid "All files"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexport
+msgid "Export..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexportdlgtitle
+msgid "Export JCF format settings"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
 msgstr "A fájl csak olvasható"
@@ -620,6 +632,14 @@ msgstr "A fájl írható"
 #: jcfuiconsts.lisfrfilesfilenotfound
 msgid "File not found"
 msgstr "A fájl nem található"
+
+#: jcfuiconsts.lisfrfilesimport
+msgid "Import..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesimportdlgtitle
+msgid "Import JCF format settings"
+msgstr ""
 
 # A gomb fix mérete miatt csak ennyi
 #: jcfuiconsts.lisfrfilesopenfolder

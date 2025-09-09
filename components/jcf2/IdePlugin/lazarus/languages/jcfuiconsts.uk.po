@@ -612,6 +612,18 @@ msgstr "Дата запису файлу: %s"
 msgid "Description:"
 msgstr "Опис:"
 
+#: jcfuiconsts.lisfrfilesdlgfilterall
+msgid "All files"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexport
+msgid "Export..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexportdlgtitle
+msgid "Export JCF format settings"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
 msgstr "Файл доступний лише для читання"
@@ -623,6 +635,14 @@ msgstr "Файл доступний для запису"
 #: jcfuiconsts.lisfrfilesfilenotfound
 msgid "File not found"
 msgstr "Файл не знайдено"
+
+#: jcfuiconsts.lisfrfilesimport
+msgid "Import..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesimportdlgtitle
+msgid "Import JCF format settings"
+msgstr ""
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"

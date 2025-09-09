@@ -609,6 +609,18 @@ msgstr "Data gravação arquivo: %s"
 msgid "Description:"
 msgstr "Descrição:"
 
+#: jcfuiconsts.lisfrfilesdlgfilterall
+msgid "All files"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexport
+msgid "Export..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexportdlgtitle
+msgid "Export JCF format settings"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
 msgstr "Arquivo é apenas leitura"
@@ -620,6 +632,14 @@ msgstr "Arquivo é gravável"
 #: jcfuiconsts.lisfrfilesfilenotfound
 msgid "File not found"
 msgstr "Arquivo não encontrado"
+
+#: jcfuiconsts.lisfrfilesimport
+msgid "Import..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesimportdlgtitle
+msgid "Import JCF format settings"
+msgstr ""
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"

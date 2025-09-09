@@ -602,6 +602,18 @@ msgstr "文件写入日期：%s"
 msgid "Description:"
 msgstr "描述："
 
+#: jcfuiconsts.lisfrfilesdlgfilterall
+msgid "All files"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexport
+msgid "Export..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexportdlgtitle
+msgid "Export JCF format settings"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
 msgstr "文件为只读"
@@ -613,6 +625,14 @@ msgstr "文件是可写的"
 #: jcfuiconsts.lisfrfilesfilenotfound
 msgid "File not found"
 msgstr "文件未找到"
+
+#: jcfuiconsts.lisfrfilesimport
+msgid "Import..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesimportdlgtitle
+msgid "Import JCF format settings"
+msgstr ""
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"

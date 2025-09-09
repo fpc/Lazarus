@@ -32,7 +32,7 @@ interface
 uses
   SysUtils,
   Controls, StdCtrls, Graphics, Dialogs, LCLIntf,
-  LazFileUtils,
+  LazFileUtils, FileUtil,
   IDEOptionsIntf, IDEOptEditorIntf;
 
 type
@@ -40,6 +40,8 @@ type
   { TfFiles }
 
   TfFiles = class(TAbstractIDEOptionsEditor)
+    bExport: TButton;
+    bImport: TButton;
     bOpenFolder: TButton;
     cbConfirmFormat: TCheckBox;
     edFormatFile: TEdit;
@@ -49,6 +51,8 @@ type
     lblDescription: TLabel;
     mDescription: TMemo;
     lblSettingsFileName: TLabel;
+    procedure bExportClick(Sender: TObject);
+    procedure bImportClick(Sender: TObject);
     procedure bOpenFolderClick(Sender: TObject);
     procedure FrameResize(Sender: TObject);
   public
@@ -65,7 +69,7 @@ implementation
 
 uses
   { local }
-  JcfRegistrySettings, JcfSettings, JcfUIConsts, JcfIdeRegister;
+  JcfRegistrySettings, JcfSettings, JcfUIConsts, JcfIdeRegister, Math;
 
 procedure TfFiles.ReadSettings(AOptions: TAbstractIDEOptions);
 var
@@ -80,6 +84,8 @@ begin
   lblSettingsFileName.Caption := lisFrFilesSettingsFileIs;
   edFormatFile.Text := lcSet.FormatConfigFileName;
   bOpenFolder.Caption := lisFrFilesOpenFolder;
+  bImport.Caption := lisFrFilesImport;
+  bExport.Caption := lisFrFilesExport;
 
   lblDate.Caption := '';
   lblVersion.Caption := '';
@@ -122,8 +128,13 @@ end;
 procedure TfFiles.FrameResize(Sender: TObject);
 const
   SPACING = 8;
+var
+  liButtonsMaxWidth: integer;
 begin
   inherited;
+  liButtonsMaxWidth := Max(bImport.Width, bExport.Width);
+  liButtonsMaxWidth := Max(liButtonsMaxWidth, bOpenFolder.Width);
+
   cbConfirmFormat.Left := SPACING;
   cbConfirmFormat.Top := 2;
 
@@ -131,7 +142,7 @@ begin
   lblSettingsFileName.Top := cbConfirmFormat.Top + cbConfirmFormat.Height + SPACING;
 
   edFormatFile.Left := lblSettingsFileName.Left + lblSettingsFileName.Width + 3;
-  edFormatFile.Width := ClientWidth - (lblSettingsFileName.Left +lblSettingsFileName.Width + bOpenFolder.Width + 2*SPACING);
+  edFormatFile.Width := ClientWidth - (lblSettingsFileName.Left +lblSettingsFileName.Width + liButtonsMaxWidth + 2*SPACING);
   edFormatFile.Top := lblSettingsFileName.Top - (edFormatFile.Height - lblSettingsFileName.Height) div 2;
 
   bOpenFolder.Left := edFormatFile.Left + edFormatFile.Width + 3;
@@ -163,6 +174,50 @@ end;
 procedure TfFiles.bOpenFolderClick(Sender: TObject);
 begin
   OpenDocument(ExtractFilePath(edFormatFile.Text));
+end;
+
+procedure TfFiles.bImportClick(Sender: TObject);
+var
+  lcOpenDialog: TOpenDialog;
+  lsFilter: string;
+begin
+  lcOpenDialog := TOpenDialog.Create(nil);
+  try
+    lcOpenDialog.Title := lisFrFilesImportDlgTitle;
+    lcOpenDialog.Options := lcOpenDialog.Options + [ofPathMustExist, ofFileMustExist];
+    lcOpenDialog.DefaultExt := '.jcf';
+    lsFilter := lisJCFFormatSettings + ' (*.jcf)|*.jcf';
+    lsFilter := lsFilter + '|' + lisFrFilesDlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    lcOpenDialog.Filter := lsFilter;
+    if lcOpenDialog.Execute then
+    begin
+      FormattingSettings.ReadFromFile(lcOpenDialog.FileName, True);
+      mDescription.Text := FormattingSettings.Description;
+    end;
+  finally
+    lcOpenDialog.Free;
+  end;
+end;
+
+procedure TfFiles.bExportClick(Sender: TObject);
+var
+  lcSaveDialog: TSaveDialog;
+  lsFilter: string;
+begin
+  lcSaveDialog := TSaveDialog.Create(nil);
+  try
+    lcSaveDialog.Title := lisFrFilesExportDlgTitle;
+    lcSaveDialog.DefaultExt := '.jcf';
+    lsFilter := lisJCFFormatSettings + ' (*.jcf)|*.jcf';
+    lsFilter := lsFilter + '|' + lisFrFilesDlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    lcSaveDialog.Filter := lsFilter;
+    if lcSaveDialog.Execute then
+    begin
+      FormattingSettings.WriteToFile(lcSaveDialog.FileName);
+    end;
+  finally
+    lcSaveDialog.Free;
+  end;
 end;
 
 function TfFiles.GetTitle: String;

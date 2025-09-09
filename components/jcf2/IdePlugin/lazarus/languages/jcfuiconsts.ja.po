@@ -609,6 +609,18 @@ msgstr "ファイルの更新日時：%s"
 msgid "Description:"
 msgstr "説明："
 
+#: jcfuiconsts.lisfrfilesdlgfilterall
+msgid "All files"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexport
+msgid "Export..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexportdlgtitle
+msgid "Export JCF format settings"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
 msgstr "読み取り専用ファイルです"
@@ -620,6 +632,14 @@ msgstr "書き込み可能ファイルです"
 #: jcfuiconsts.lisfrfilesfilenotfound
 msgid "File not found"
 msgstr "ファイルがありません"
+
+#: jcfuiconsts.lisfrfilesimport
+msgid "Import..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesimportdlgtitle
+msgid "Import JCF format settings"
+msgstr ""
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"

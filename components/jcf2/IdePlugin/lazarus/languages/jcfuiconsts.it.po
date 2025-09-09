@@ -610,6 +610,18 @@ msgstr "Scritto file di data: %s"
 msgid "Description:"
 msgstr "Descrizione:"
 
+#: jcfuiconsts.lisfrfilesdlgfilterall
+msgid "All files"
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexport
+msgid "Export..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesexportdlgtitle
+msgid "Export JCF format settings"
+msgstr ""
+
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
 msgstr "Il file è a sola lettura"
@@ -621,6 +633,14 @@ msgstr "Il file è scrivibile"
 #: jcfuiconsts.lisfrfilesfilenotfound
 msgid "File not found"
 msgstr "File non trovato"
+
+#: jcfuiconsts.lisfrfilesimport
+msgid "Import..."
+msgstr ""
+
+#: jcfuiconsts.lisfrfilesimportdlgtitle
+msgid "Import JCF format settings"
+msgstr ""
 
 #: jcfuiconsts.lisfrfilesopenfolder
 msgid "Open folder"
