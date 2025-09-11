@@ -10020,91 +10020,109 @@
     </icon>
     <icon filename="Flag_02_16.png" width="16" height="16" style="outline">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_02_24.png" width="24" height="24" style="outline">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_02_32.png" width="32" height="32" style="outline">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_02_36.png" width="36" height="36" style="outline">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_02_48.png" width="48" height="48" style="outline">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_02_64.png" width="64" height="64" style="outline">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_03_16.png" width="16" height="16" style="outline 2-color">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_03_24.png" width="24" height="24" style="outline 2-color">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_03_32.png" width="32" height="32" style="outline 2-color">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_03_36.png" width="36" height="36" style="outline 2-color">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_03_48.png" width="48" height="48" style="outline 2-color">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_03_64.png" width="64" height="64" style="outline 2-color">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_04_16.png" width="16" height="16" style="classic">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_04_24.png" width="24" height="24" style="classic">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_04_32.png" width="32" height="32" style="classic">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_04_36.png" width="36" height="36" style="classic">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_04_48.png" width="48" height="48" style="classic">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
     <icon filename="Flag_04_64.png" width="64" height="64" style="classic">
       <keywords>
+        <keyword>destination</keyword>
         <keyword>flag</keyword>
       </keywords>
     </icon>
@@ -26194,40 +26212,52 @@
         <keyword>update</keyword>
       </keywords>
     </icon>
-    <icon filename="Car_01_16.png" width="16" height="16" style="outline">
+    <icon filename="Car_01_16.png" width="16" height="16" style="flat">
       <keywords>
+        <keyword>automobile</keyword>
         <keyword>car</keyword>
         <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
       </keywords>
     </icon>
-    <icon filename="Car_01_24.png" width="24" height="24" style="outline">
+    <icon filename="Car_01_24.png" width="24" height="24" style="flat">
       <keywords>
+        <keyword>automobile</keyword>
         <keyword>car</keyword>
         <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
       </keywords>
     </icon>
-    <icon filename="Car_01_32.png" width="32" height="32" style="outline">
+    <icon filename="Car_01_32.png" width="32" height="32" style="flat">
       <keywords>
+        <keyword>automobile</keyword>
         <keyword>car</keyword>
         <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
       </keywords>
     </icon>
-    <icon filename="Car_01_36.png" width="36" height="36" style="outline">
+    <icon filename="Car_01_36.png" width="36" height="36" style="flat">
       <keywords>
+        <keyword>automobile</keyword>
         <keyword>car</keyword>
         <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
       </keywords>
     </icon>
-    <icon filename="Car_01_48.png" width="48" height="48" style="outline">
+    <icon filename="Car_01_48.png" width="48" height="48" style="flat">
       <keywords>
+        <keyword>automobile</keyword>
         <keyword>car</keyword>
         <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
       </keywords>
     </icon>
-    <icon filename="Car_01_64.png" width="64" height="64" style="outline">
+    <icon filename="Car_01_64.png" width="64" height="64" style="flat">
       <keywords>
+        <keyword>automobile</keyword>
         <keyword>car</keyword>
         <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
       </keywords>
     </icon>
     <icon filename="Charge_01_16.png" width="16" height="16" style="outline 2-color">
@@ -31004,6 +31034,120 @@
       <keywords>
         <keyword>overlay</keyword>
         <keyword>user</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Bicycle_01_016.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>bicycle</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Bicycle_01_024.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>bicycle</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Bicycle_01_032.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>bicycle</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Bicycle_01_036.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>bicycle</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Bicycle_01_048.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>bicycle</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Bicycle_01_064.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>bicycle</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_05_024.png" width="24" height="24" style="classic">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_05_032.png" width="32" height="32" style="classic">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_05_036.png" width="36" height="36" style="classic">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_05_048.png" width="48" height="48" style="classic">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_05_064.png" width="64" height="64" style="classic">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_05_16.png" width="16" height="16" style="classic">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_06_024.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_06_032.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_06_036.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_06_048.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_06_064.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Flag_06_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>destination</keyword>
+        <keyword>flag</keyword>
       </keywords>
     </icon>
   </icons>
