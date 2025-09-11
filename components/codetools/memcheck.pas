@@ -732,7 +732,9 @@ end;
 
 function TraceReAllocMem(var p:pointer;size:ptruint):Pointer;
 var
+  newP: pointer;
   allocsize,
+  movesize,
   i  : ptruint;
   oldbp,
   bp : pointer;
@@ -797,7 +799,29 @@ begin
 {$endif cpuarm}
   if add_tail then
    inc(allocsize,sizeof(ptruint));
-  { Resize the block. }
+  { Try to resize the block, if not possible we need to do a
+    getmem, move data, freemem }
+  if @loc_info^.heap_free_todo<>pp^.todolist then
+   begin
+     { get a new block }
+     newP := TraceGetMem(size);
+     { move the data }
+     if newP <> nil then
+      begin
+        movesize:=TraceMemSize(p);
+        {if the old size is larger than the new size,
+         move only the new size}
+        if movesize>size then
+          movesize:=size;
+        move(p^,newP^,movesize);
+      end;
+     { release p }
+     traceFreeMem(p);
+     { return the new pointer }
+     p:=newp;
+     traceReAllocMem := newp;
+     exit;
+   end;
   SysReAllocMem(pp,allocsize);
 { Recreate the info block }
   pp^.sig:=$DEADBEEF;
