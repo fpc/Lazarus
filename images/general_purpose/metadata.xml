@@ -31150,5 +31150,143 @@
         <keyword>flag</keyword>
       </keywords>
     </icon>
+    <icon filename="Car_02_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>automobile</keyword>
+        <keyword>car</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Car_02_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>automobile</keyword>
+        <keyword>car</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Car_02_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>automobile</keyword>
+        <keyword>car</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Car_02_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>automobile</keyword>
+        <keyword>car</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Car_02_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>automobile</keyword>
+        <keyword>car</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Car_02_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>automobile</keyword>
+        <keyword>car</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Pedestrian_01_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>pedestrian</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Pedestrian_01_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>pedestrian</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Pedestrian_01_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>pedestrian</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Pedestrian_01_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>pedestrian</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Pedestrian_01_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>pedestrian</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Pedestrian_01_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>pedestrian</keyword>
+        <keyword>traffic</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Train_01_16.png" width="16" height="16" style="flat">
+      <keywords>
+        <keyword>railway</keyword>
+        <keyword>traffic</keyword>
+        <keyword>train</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Train_01_24.png" width="24" height="24" style="flat">
+      <keywords>
+        <keyword>railway</keyword>
+        <keyword>traffic</keyword>
+        <keyword>train</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Train_01_32.png" width="32" height="32" style="flat">
+      <keywords>
+        <keyword>railway</keyword>
+        <keyword>traffic</keyword>
+        <keyword>train</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Train_01_36.png" width="36" height="36" style="flat">
+      <keywords>
+        <keyword>railway</keyword>
+        <keyword>traffic</keyword>
+        <keyword>train</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Train_01_48.png" width="48" height="48" style="flat">
+      <keywords>
+        <keyword>railway</keyword>
+        <keyword>traffic</keyword>
+        <keyword>train</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
+    <icon filename="Train_01_64.png" width="64" height="64" style="flat">
+      <keywords>
+        <keyword>railway</keyword>
+        <keyword>traffic</keyword>
+        <keyword>train</keyword>
+        <keyword>vehicle</keyword>
+      </keywords>
+    </icon>
   </icons>
 </metadata>
