@@ -123,6 +123,7 @@ type
     procedure TestFindDeclaration_Proc_BaseTypes;
     procedure TestFindDeclaration_ProcNested;
     procedure TestFindDeclaration_ResultType;
+    procedure TestFindDeclaration_ResultField;
     procedure TestFindDeclaration_With;
     procedure TestFindDeclaration_WithResult; // todo
     procedure TestFindDeclaration_ClassOf;
@@ -844,6 +845,28 @@ begin
   '  end;',
   'begin',
   '  Result{declaration:Simple}:=4;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_ResultField;
+begin
+  StartProgram;
+  Add([
+  '{$mode objfpc}',
+  'type',
+  '  TBird = class',
+  '  public',
+  '    Result: boolean;',
+  '    function Fly: word;',
+  '  end;',
+  'function TBird.Fly: word;',
+  'begin',
+  '  Result{declaration:TBird.Fly}:=4;',
   'end;',
   '',
   'begin',
