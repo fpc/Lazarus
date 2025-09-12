@@ -867,6 +867,7 @@ begin
   'function TBird.Fly: word;',
   'begin',
   '  Result{declaration:TBird.Fly}:=4;',
+  '  Self.Result{declaration:TBird.Result}:=true;',
   'end;',
   '',
   'begin',
