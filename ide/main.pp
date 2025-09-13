@@ -7392,6 +7392,7 @@ begin
               False, CodeTemplateHistoryIndex, PChar(CodeTemplates[I].Key),
               CodeTemplateLevel, nil, nil, ctnCodeTemplate);
       New.Comment := CodeTemplates[I].Comment;
+      Include(New.Flags,iliTemplate);
       CodeToolBoss.IdentifierList.Add(New);
     end;
 end;

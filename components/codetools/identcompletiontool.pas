@@ -90,6 +90,7 @@ type
     iliIsDestructor,
     iliIsDestructorValid,
     iliKeyword,
+    iliTemplate,
     iliResultTypeValid,
     iliHasIndexValid,
     iliHasIndex,

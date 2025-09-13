@@ -1624,6 +1624,7 @@ var
     Result:=(anItem<>nil) and
       (CompareDottedIdentifiers(PChar(FOldIdentifier), PChar(FNewIdentifier))<>0);
     if Result then begin
+      if iliTemplate in anItem.Flags then exit(False); //template name can be used
       if anItem.Node<>nil then begin
         ErrInfo:= Format(lisIdentifierIsAlreadyUsed2,[FNewIdentifier]);
       end else begin
@@ -1706,9 +1707,9 @@ begin
       then begin
         if GetContextEndCodePos(tmpNode.Parent,X,Y) then begin
           CodeToolBoss.GatherIdentifiers(ACodeBuffer, X, Y);
-          FindConflict; //ErrInfo is set inside the function
-          break;
-        end;
+          FindConflict; // ErrInfo is set inside the function
+        end; // gathering identifiers may fail
+        break;
       end;
       tmpNode:=tmpNode.Parent;
     end;
