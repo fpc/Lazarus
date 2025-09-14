@@ -77,6 +77,7 @@ procedure TfReplace.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   cbEnable.Caption := lisFindReplaceEnableFindAndReplace;
   lblWordList.Caption := lisFindReplaceWordList;
+  JCFOptionsFrameDialogs[JCFOptionFindAndReplace] := Self;
 end;
 
 procedure TfReplace.ReadSettings(AOptions: TAbstractIDEOptions);

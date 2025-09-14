@@ -130,6 +130,7 @@ begin
   rgFloatingPointNumbers.Items[2] := lisObfsMixedCase;
   rgFloatingPointNumbers.Items[3] := lisObfsLeaveAlone;
   rgFloatingPointNumbers.Controls[2].Enabled := False;
+  JCFOptionsFrameDialogs[JCFOptionObjectPascal] := Self;
 end;
 
 procedure TfrReservedCapsSettings.cbEnableClick(Sender: TObject);

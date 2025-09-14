@@ -80,6 +80,7 @@ begin
   lblSymbols.Caption := lisPrpSymbolsDefinedForConditionalCompilation;
   lblCompilerOptions.Caption := lisPrpCompilerOptionsDefinedForConditionalCompilation;
   cbEnableChange(cbEnable);
+  JCFOptionsFrameDialogs[JCFOptionPreProcessor] := Self;
 end;
 
 procedure TfPreProcessor.ReadSettings(AOptions: TAbstractIDEOptions);

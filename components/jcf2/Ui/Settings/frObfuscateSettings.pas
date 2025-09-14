@@ -101,6 +101,7 @@ begin
   cbRemoveIndent.Caption := lisObfsRemoveIndent;
   cbRebreak.Caption := lisObfsRebreakLines;
   cbEnabledChange(cbEnabled);
+  JCFOptionsFrameDialogs[JCFOptionObfuscate] := Self;
 end;
 
 procedure TfObfuscateSettings.ReadSettings(AOptions: TAbstractIDEOptions);

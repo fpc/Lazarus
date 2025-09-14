@@ -128,6 +128,7 @@ begin
   cbIndentExtraTryBlockKeywords.Caption := lisIndentTryFinallyExcept;
   cbIndentEndTryBlockAsCode.Caption := lisIndentEndTryBlockAsCode;
   cbIndentExtraOrphanTryBlocks.Caption := lisIndentExtraOrphanTryBlocks;
+  JCFOptionsFrameDialogs[JCFOptionIndentation] := Self;
 end;
 
 {-------------------------------------------------------------------------------

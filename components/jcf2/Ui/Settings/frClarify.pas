@@ -78,6 +78,7 @@ begin
   rgRunOnceOffs.Items[0] := lisClarifyDoNotRun;
   rgRunOnceOffs.Items[1] := lisClarifyDoRun;
   rgRunOnceOffs.Items[2] := lisClarifyRunOnlyThese;
+  JCFOptionsFrameDialogs[JCFOptionClarify] := Self;
 end;
 
 

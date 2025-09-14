@@ -77,8 +77,8 @@ begin
   rgRebreakLongLines.Caption := lisLBBreakLinesThatAreLongerThanMaxLineLength;
   rgRebreakLongLines.Items[0] := lisLBNever;
   rgRebreakLongLines.Items[1] := lisLBSometimesIfAGoodPlaceToBreakIsFound;
-  rgRebreakLongLines.Items[2] :=
-    lisLBUsuallyUnlessThereIsNoAcceptablePlaceToBreak;
+  rgRebreakLongLines.Items[2] := lisLBUsuallyUnlessThereIsNoAcceptablePlaceToBreak;
+  JCFOptionsFrameDialogs[JCFOptionLongLines] := Self;
 end;
 
 {-------------------------------------------------------------------------------

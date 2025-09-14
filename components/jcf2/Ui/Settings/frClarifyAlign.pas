@@ -105,6 +105,7 @@ begin
   Label6.Caption := lisAlignMaxVariance;
   Label2.Caption := lisAlignMaxVarianceInterface;
   Label1.Caption := lisAlignMaxUnaligned;
+  JCFOptionsFrameDialogs[JCFOptionAlign] := Self;
 end;
 
 

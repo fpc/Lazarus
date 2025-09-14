@@ -92,6 +92,7 @@ begin
   cbRemoveConsecutiveBlankLines.Caption := lisBLRemoveConsecutiveBlankLines;
   Label2.Caption := lisBLMaxConsecutiveBlankLinesAnywhere;
   Label3.Caption := lisBLLinesBeforeProcedure;
+  JCFOptionsFrameDialogs[JCFOptionBlankLines] := Self;
 end;
 
 procedure TfBlankLines.ReadSettings(AOptions: TAbstractIDEOptions);

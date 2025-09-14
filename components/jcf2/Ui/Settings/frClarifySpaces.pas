@@ -149,6 +149,7 @@ begin
   Label3.Caption := lisSpacesSpacesForTab;
 
   cbMaxSpaces.Caption := lisSpacesMaxSpacesInCode;
+  JCFOptionsFrameDialogs[JCFOptionSpaces] := Self;
 end;
 
 {-------------------------------------------------------------------------------

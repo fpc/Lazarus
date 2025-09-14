@@ -99,6 +99,7 @@ begin
   gbBreaksAfterLabel.Caption := lisAsmBreaksAfterLabel;
   cbBreaksAfterLabelEnabled.Caption := lisAsmEnAbled3;
   Label7.Caption := lisAsmNUmberOfBreaks;
+  JCFOptionsFrameDialogs[JCFOptionAsm] := Self;
 end;
 
 procedure TfAsm.ReadSettings(AOptions: TAbstractIDEOptions);

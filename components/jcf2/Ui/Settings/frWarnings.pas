@@ -79,6 +79,7 @@ begin
   cbWarnUnusedParams.Caption := lisWarningsWarnAboutUnusedParameters;
   Label1.Caption := lisWarningsIgnoreUnusedParametersNamed;
   cbWarningsOnChange(cbWarningsOn);
+  JCFOptionsFrameDialogs[JCFOptionWarnings] := Self;
 end;
 
 procedure TfWarnings.ReadSettings(AOptions: TAbstractIDEOptions);

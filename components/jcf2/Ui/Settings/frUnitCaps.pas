@@ -73,6 +73,7 @@ procedure TfrUnitNameCaps.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   cbEnableAnyWords.Caption := lisCapsAnyWordEnable;
   Label1.Caption := lisCapsUnitNamesSetCapitalisationOnTheseUnitNames;
+  JCFOptionsFrameDialogs[JCFOptionUnitName] := Self;
 end;
 
 procedure TfrUnitNameCaps.ReadSettings(AOptions: TAbstractIDEOptions);

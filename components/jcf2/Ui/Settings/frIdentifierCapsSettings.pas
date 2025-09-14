@@ -75,6 +75,7 @@ procedure TfIdentifierCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   cbEnableAnyWords.Caption := lisCapsAnyWordEnable;
   Label1.Caption := lisCapsIdentifiersSetCapitalisationOnTheseIdentifiers;
+  JCFOptionsFrameDialogs[JCFOptionIdentifiers] := Self;
 end;
 
 

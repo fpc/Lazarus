@@ -84,6 +84,7 @@ begin
       if rgImbalancedCommentAction.Items[i] = 'Warn' then
         rgImbalancedCommentAction.Items[i] := lisWarnAct;
   end;
+  JCFOptionsFrameDialogs[JCFOptionComments] := Self;
 end;
 
 procedure TfComments.ReadSettings(AOptions: TAbstractIDEOptions);

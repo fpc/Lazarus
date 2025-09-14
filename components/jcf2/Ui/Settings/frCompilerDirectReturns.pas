@@ -116,6 +116,7 @@ begin
   rgAfterGeneral.Items[0] := lisCaseBlocksAlways;
   rgAfterGeneral.Items[1] := lisCaseBlocksLeaveAsIs;
   rgAfterGeneral.Items[2] := lisCaseBlocksNever;
+  JCFOptionsFrameDialogs[JCFOptionCompilerDirectives] := Self;
 end;
 
 procedure TfCompilerDirectReturns.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -80,14 +80,14 @@ type
     fdtWriteDateTime: TDateTime;
     fsWriteVersion: string;
     fsConfirmFormat: Boolean;
-
-    procedure FromStream(const pcStream: TSettingsInput);
   public
     constructor Create(const pbReadRegFile: boolean);
     destructor Destroy; override;
     procedure Read;
     procedure ReadFromFile(const psFileName: string; const pbMustExist: boolean);
     procedure ReadDefaults;
+    procedure FromStream(const pcStream: TSettingsInput);
+
     procedure Write;
     procedure WriteToFile(const psFileName: string);
 
@@ -156,10 +156,9 @@ const
   JCFOptionUnitName = 19;
   JCFOptionFindAndReplace = 20;
   JCFOptionUses = 21;
-  JCFOptionBasic = 22;
-  JCFOptionTransform = 23;
-  JCFOptionAsm = 24;
-  JCFOptionPreProcessor = 25;
+  JCFOptionTransform = 22;
+  JCFOptionAsm = 23;
+  JCFOptionPreProcessor = 24;
 
 const
   GUI_PAD = 3;

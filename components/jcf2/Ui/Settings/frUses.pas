@@ -86,6 +86,7 @@ begin
   cbInsertInterface.Caption := lisUsesInsertIntoInterface;
   cbInsertImplementation.Caption := lisUsesInsertIntoImplementation;
   cbFindReplace.Caption := lisUsesReplace;
+  JCFOptionsFrameDialogs[JCFOptionUses] := Self;
 end;
 
 

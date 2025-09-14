@@ -75,6 +75,7 @@ procedure TfrAnyCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   cbEnableAnyWords.Caption := lisCapsAnyWordEnable;
   Label1.Caption := lisCapsAnyWordSetCapitalisationOnTheseWords;
+  JCFOptionsFrameDialogs[JCFOptionAnyWord] := Self;
 end;
 
 

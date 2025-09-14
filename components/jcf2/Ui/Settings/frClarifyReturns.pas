@@ -101,6 +101,7 @@ begin
   rgReturnChars.Items[0] := lisReturnsLeaveAsIs;
   rgReturnChars.Items[1] := lisReturnsConvertToCarriageReturn;
   rgReturnChars.Items[2] := lisReturnsConvertToCarriageReturnLinefeed;
+  JCFOptionsFrameDialogs[JCFOptionReturns] := Self;
 end;
 
 {-------------------------------------------------------------------------------

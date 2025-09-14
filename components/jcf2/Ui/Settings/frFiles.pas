@@ -30,7 +30,7 @@ unit frFiles;
 interface
 
 uses
-  SysUtils,
+  SysUtils, Classes,
   Controls, StdCtrls, Graphics, Dialogs, LCLIntf,
   LazFileUtils, FileUtil,
   IDEOptionsIntf, IDEOptEditorIntf;
@@ -69,7 +69,7 @@ implementation
 
 uses
   { local }
-  JcfRegistrySettings, JcfSettings, JcfUIConsts, JcfIdeRegister, Math;
+  JcfRegistrySettings, JcfSettings, JcfUIConsts, JcfIdeRegister, SettingsStream, Math;
 
 procedure TfFiles.ReadSettings(AOptions: TAbstractIDEOptions);
 var
@@ -180,6 +180,9 @@ procedure TfFiles.bImportClick(Sender: TObject);
 var
   lcOpenDialog: TOpenDialog;
   lsFilter: string;
+  lcOldSettings: TStringStream;
+  lcOS: TSettingsStreamOutput;
+  lcIn: TSettingsInputString;
 begin
   lcOpenDialog := TOpenDialog.Create(nil);
   try
@@ -191,8 +194,24 @@ begin
     lcOpenDialog.Filter := lsFilter;
     if lcOpenDialog.Execute then
     begin
-      FormattingSettings.ReadFromFile(lcOpenDialog.FileName, True);
-      mDescription.Text := FormattingSettings.Description;
+      lcOS := nil;
+      lcIn := nil;
+      lcOldSettings := TStringStream.Create;
+      lcOS := TSettingsStreamOutput.Create(lcOldSettings);
+      try
+        FormattingSettings.ToStream(lcOS);
+        FormattingSettings.ReadFromFile(lcOpenDialog.FileName, True);
+        ReloadJCFOptionsDialogs;
+        lcOldSettings.Position := 0;
+        lcIn := TSettingsInputString.Create(lcOldSettings.DataString);
+        FormattingSettings.FromStream(lcIn);
+        { settings are now in need of saving }
+        FormattingSettings.Dirty := True;
+      finally
+        lcIn.Free;
+        lcOS.Free;
+        lcOldSettings.Free;
+      end;
     end;
   finally
     lcOpenDialog.Free;
@@ -227,7 +246,7 @@ end;
 
 procedure TfFiles.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  // nothing
+  JCFOptionsFrameDialogs[JCFOptionFormatFile] := Self;
 end;
 
 class function TfFiles.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -45,6 +45,7 @@ uses
   IDEOptionsIntf, IDEOptEditorIntf;
 
 type
+
   TIDEFormattingSettings = class(TAbstractIDEEnvironmentOptions)
   public
     {$push}{$warn 5024 off}
@@ -56,7 +57,13 @@ type
     procedure DoAfterWrite({%H-}Restore: boolean); override;
   end;
 
+var
+  // pointers to the frames, needed to reload data when importing.
+  // assigned in the setup/create of each frame.
+  JCFOptionsFrameDialogs:Array[1..24] of TAbstractIDEOptionsEditor;
+
 procedure Register;
+procedure ReloadJCFOptionsDialogs;
 
 implementation
 
@@ -158,6 +165,17 @@ begin
   SubSection := RegisterIDEMenuSection(fcMainMenu, FORMAT_MENU_SECTION2);
   RegisterIDEMenuCommand(fcMainMenu, FORMAT_ABOUT_MENU_NAME, FORMAT_ABOUT_MENU,
     lcJCFIDE.DoAbout);
+end;
+
+procedure ReloadJCFOptionsDialogs;
+var
+  lcFd:TAbstractIDEOptionsEditor;
+begin
+  for lcFd in JCFOptionsFrameDialogs do
+  begin
+    if  lcFd <> nil then
+      lcFd.ReadSettings(nil);
+  end;
 end;
 
 var

@@ -126,6 +126,7 @@ begin
     ShowAdvancedSettings(True);
     btnAdvancedSettings.Enabled := False;
   end;
+  JCFOptionsFrameDialogs[JCFOptionTransform] := Self;
 end;
 
 procedure TfTransform.ReadSettings(AOptions: TAbstractIDEOptions);

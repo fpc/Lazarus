@@ -75,6 +75,7 @@ procedure TfNotIdentifierCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialo
 begin
   cbEnableAnyWords.Caption := lisCapsAnyWordEnable;
   Label1.Caption := lisCapsNotIdentifiersSetCapitalisationOnTheseNonIdentifiers;
+  JCFOptionsFrameDialogs[JCFOptionNotIdentifiers] := Self;
 end;
 
 

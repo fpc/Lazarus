@@ -111,6 +111,7 @@ begin
   rgElseCase.Items[0] := lisCaseBlocksAlways;
   rgElseCase.Items[1] := lisCaseBlocksLeaveAsIs;
   rgElseCase.Items[2] := lisCaseBlocksNever;
+  JCFOptionsFrameDialogs[JCFOptionCaseBlocks] := Self;
 end;
 
 
