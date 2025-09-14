@@ -7172,6 +7172,7 @@ Begin
     EditorOpts.ApplyTabFontSettingsTo(FNotebook);
     TabStop := false;
     Align := alClient;
+    WheelSelectPage := True;
     APage:=TTabSheet.Create(FNotebook);
     APage.Caption:='unit1';
     APage.Parent:=FNotebook;

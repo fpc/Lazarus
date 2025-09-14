@@ -345,9 +345,10 @@ function CustomTabControlWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam
 var
   Control: TWinControl;
   LMessage: TLMessage;
-  APageIdx, APagesCount: Integer;
+  APageIdx, AOldPageIdx, ANewPageIdx: Integer;
   NMHdr: TNMHdr;
   LMNotify: TLMNotify;
+  AParentIsTabCtl, AWheelSelectPage: Boolean;
 begin
   case Msg of
     WM_ERASEBKGND:
@@ -366,32 +367,98 @@ begin
       end;
     WM_MOUSEWHEEL:
     begin
-      Result := WindowProc(Window, Msg, WParam, LParam);
-      if Result = 0 then
+      Control := GetWin32WindowInfo(Window)^.WinControl;
+      if Assigned(Control) and (Control is TCustomTabControl) then
       begin
-        Control := GetWin32WindowInfo(Window)^.WinControl;
-        if Assigned(Control) and (Control is TCustomTabControl) then
+        AWheelSelectPage := TCustomTabControl(Control).WheelSelectPage;
+        // TTabControl consists of two elements, the visible TPageControl,
+        // which contains tabs and is internal, and the parent TTabControl.
+        // Therefore, the WheelSelectPage property must be queried from the parent.
+        AParentIsTabCtl := (csNoDesignSelectable in Control.ControlStyle) and
+          Assigned(Control.Parent) and (Control.Parent is TTabControl);
+        if AParentIsTabCtl then
+          AWheelSelectPage := TCustomTabControl(Control.Parent).WheelSelectPage;
+        if TCustomTabControl(Control).PageCount = 0 then
+          AWheelSelectPage := False;
+        if AWheelSelectPage then
         begin
-          if not TCustomTabControl(Control).WheelSelectPage then
-            exit;
-          APageIdx := SendMessage(Window, TCM_GETCURSEL, 0, 0);
-          NMHdr.code := TCN_SELCHANGING;
-          NMHdr.hwndFrom := Window;
-          NMHdr.idFrom := APageIdx;
-          LMNotify.Msg := LM_NOTIFY;
-          LMNotify.IDCtrl := APageIdx;
-          LMNotify.NMHdr := @NMHdr;
-          DeliverMessage(Control, LMNotify);
-          if LMNotify.Result = 1 then Exit;
-          APagesCount := SendMessage(Window, TCM_GETITEMCOUNT, 0, 0);
-          if HiWord(WParam) > $7FFF then
-            APageIdx := Min(APageIdx + 1, APagesCount - 1)
+          // Calculate whether it is possible to change the Tab index.
+          APageIdx := TCustomTabControl(Control).PageIndex;
+          if (APageIdx < 0) then APageIdx := 0;
+          if (APageIdx >= TCustomTabControl(Control).PageCount) then
+            APageIdx := TCustomTabControl(Control).PageCount - 1;
+          if Control is TPageControl then
+          begin
+            ANewPageIdx := APageIdx;
+            repeat
+              AOldPageIdx := ANewPageIdx;
+              if Integer(WParam) < 0 then
+                ANewPageIdx := Min(AOldPageIdx + 1, TCustomTabControl(Control).PageCount - 1)
+              else
+                ANewPageIdx := Max(0, AOldPageIdx - 1);
+              if TPageControl(Control).Pages[ANewPageIdx].TabVisible then
+                Break;
+            until AOldPageIdx = ANewPageIdx;
+            if not TPageControl(Control).Pages[ANewPageIdx].TabVisible then
+              ANewPageIdx := APageIdx;
+          end
           else
-            APageIdx := Max(0, APageIdx - 1);
-          TWin32WSCustomTabControl.SetPageIndex(TCustomTabControl(Control), APageIdx);
+            if Integer(WParam) < 0 then
+              ANewPageIdx := Min(APageIdx + 1, TCustomTabControl(Control).PageCount - 1)
+            else
+              ANewPageIdx := Max(0, APageIdx - 1);
+
+          if APageIdx <> ANewPageIdx then
+          begin
+            // Call the OnMouseWheel event and check Handled.
+            LMessage.msg := Msg;
+            LMessage.wParam := WParam;
+            LMessage.lParam := LParam;
+            LMessage.Result := 2; // blocks the transfer of control to the parent
+            if AParentIsTabCtl then
+              // The OnMouseWheel call should go directly to the parent.
+              Result := DeliverMessage(Control.Parent, LMessage)
+            else
+              Result := DeliverMessage(Control, LMessage);
+            if Result = 1 then Exit;
+
+            // Call the OnChanging event and check AllowChange.
+            NMHdr.code := TCN_SELCHANGING;
+            NMHdr.hwndFrom := Window;
+            NMHdr.idFrom := PtrUInt(APageIdx);
+            LMNotify.Msg := LM_NOTIFY;
+            LMNotify.IDCtrl := APageIdx;
+            LMNotify.NMHdr := @NMHdr;
+            LMNotify.Result := 0;
+            DeliverMessage(Control, LMNotify);
+            if LMNotify.Result = 1 then Exit;
+
+            TWin32WSCustomTabControl.SetPageIndex(
+              TCustomTabControl(Control), ANewPageIdx);
+            Result := 1;
+          end;
+          Exit;
         end;
       end;
-      Exit;
+    end;
+    WM_NCHITTEST:
+    begin
+      Control := GetWin32WindowInfo(Window)^.WinControl;
+      if Assigned(Control) and (Control is TCustomTabControl) then
+      begin
+        AWheelSelectPage := TCustomTabControl(Control).WheelSelectPage;
+        if (csNoDesignSelectable in Control.ControlStyle) and
+          Assigned(Control.Parent) and (Control.Parent is TTabControl) then
+          AWheelSelectPage := TCustomTabControl(Control.Parent).WheelSelectPage;
+        if AWheelSelectPage then
+        begin
+          Result := WindowProc(Window, Msg, WParam, LParam);
+          // Allow scrolling in the header area to the right of the tab group
+          if Result = HTTRANSPARENT then
+            Result := HTCLIENT;
+          Exit;
+        end;
+      end;
     end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
