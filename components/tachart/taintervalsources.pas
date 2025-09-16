@@ -336,6 +336,7 @@ begin
     if bestCount <= maxCount then
       exit;
   end;
+//  bestCount := 0;
   if aipUseNiceSteps in Params.Options then begin
     s := AParams.CountToStep(minCount)  * 10;
     while s >= Max(AParams.CountToStep(maxCount), AParams.FMinStep) do begin
