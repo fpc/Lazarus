@@ -82,7 +82,7 @@ type
     FDesignerBaseClasses: TFPList; // list of TComponentClass
     FDesignerMediatorClasses: TFPList;// list of TDesignerMediatorClass
     FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
-    FDesignerBaseClassesCanCreateForm: TFPList; // list of TComponentClass
+    FDesignerBaseClassesCanAppCreateForm: TFPList; // list of TComponentClass which can "Applicaton.CreateForm"
     function GetPropertyEditorHook: TPropertyEditorHook;
     function FindDefinePropertyNode(const APersistentClassName: string
                                     ): TAvlTreeNode;
@@ -508,7 +508,7 @@ begin
   FNonFormForms := TAvlTree.Create(@CompareNonFormDesignerForms);
   FSelection := TPersistentSelectionList.Create;
   FDesignerBaseClasses:=TFPList.Create;
-  FDesignerBaseClassesCanCreateForm:=TFPList.Create;
+  FDesignerBaseClassesCanAppCreateForm:=TFPList.Create;
   FDesignerMediatorClasses:=TFPList.Create;
   for l:=0 to StandardDesignerBaseClassesCount - 1 do
     FDesignerBaseClasses.Add(StandardDesignerBaseClasses[l]);
@@ -541,7 +541,7 @@ begin
   FreeAndNil(JITFormList);
   FreeAndNil(JITNonFormList);
   FreeAndNil(FDesignerMediatorClasses);
-  FreeAndNil(FDesignerBaseClassesCanCreateForm);
+  FreeAndNil(FDesignerBaseClassesCanAppCreateForm);
   FreeAndNil(FDesignerBaseClasses);
   FreeAndNil(FSelection);
   FreeAndNil(FNonFormForms);
@@ -1899,7 +1899,7 @@ begin
     if AClass.InheritsFrom(TClass(FDesignerBaseClasses[i])) then
     begin
       if (Result<0)
-          or (TClass(FDesignerBaseClassesCanCreateForm[i]).InheritsFrom(TClass(FDesignerBaseClasses[Result]))) then
+          or (AClass.InheritsFrom(TClass(FDesignerBaseClasses[Result]))) then
         Result:=i;
     end;
   end;
@@ -2237,11 +2237,12 @@ begin
   if CheckInherited and (AClass.InheritsFrom(TCustomForm) or AClass.InheritsFrom(TDataModule)) then
     exit(true);
   // check addons
-  Result:=FDesignerBaseClassesCanCreateForm.IndexOf(AClass)>=0;
+  if FDesignerBaseClassesCanAppCreateForm.IndexOf(AClass)>=0 then
+    exit(true);
   if CheckInherited then
   begin
-    for i:=0 to FDesignerBaseClassesCanCreateForm.Count-1 do
-      if AClass.InheritsFrom(TComponentClass(FDesignerBaseClassesCanCreateForm[i])) then
+    for i:=0 to FDesignerBaseClassesCanAppCreateForm.Count-1 do
+      if AClass.InheritsFrom(TComponentClass(FDesignerBaseClassesCanAppCreateForm[i])) then
         exit(true);
   end;
 end;
@@ -2251,11 +2252,11 @@ procedure TCustomFormEditor.SetDesignerBaseClassCanAppCreateForm(
 begin
   if AValue then
   begin
-    if FDesignerBaseClassesCanCreateForm.IndexOf(AClass)>=0 then exit;
-    FDesignerBaseClassesCanCreateForm.Add(AClass);
+    if FDesignerBaseClassesCanAppCreateForm.IndexOf(AClass)>=0 then exit;
+    FDesignerBaseClassesCanAppCreateForm.Add(AClass);
   end else begin
-    if FDesignerBaseClassesCanCreateForm.IndexOf(AClass)<0 then exit;
-    FDesignerBaseClassesCanCreateForm.Remove(AClass);
+    if FDesignerBaseClassesCanAppCreateForm.IndexOf(AClass)<0 then exit;
+    FDesignerBaseClassesCanAppCreateForm.Remove(AClass);
   end;
 end;
 
