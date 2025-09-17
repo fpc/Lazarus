@@ -6134,7 +6134,6 @@ var
     SetMenuItemLabelText(LCLMenuItem, MenuItemWidget);
     //gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(LabelWidget), MenuItemWidget);
     gtk_label_set_use_underline(LabelWidget, True);
-    gtk_label_set_use_markup(LabelWidget, True);
     gtk_widget_show(PGtkWidget(LabelWidget));
   end;
   
