@@ -559,11 +559,12 @@ object fClarifySpaces: TfClarifySpaces
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = rgOperators
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 460
     Height = 157
     Top = 181
-    Width = 454
+    Width = 442
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -578,7 +579,7 @@ object fClarifySpaces: TfClarifySpaces
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 120
-    ClientWidth = 450
+    ClientWidth = 438
     Items.Strings = (
       'Always'
       'Leave as is'
