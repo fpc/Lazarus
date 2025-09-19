@@ -77,6 +77,7 @@ type
     eSpacesBeforeColonRecordField: TSpinEdit;
     lblSpacesBeforeColonRecordField: TLabel;
     cbMoveSpacesToBeforeColon: TCheckBox;
+    rgAssign: TRadioGroup;
     procedure cbTabsToSpacesClick(Sender: TObject);
     procedure cbSpacesToTabsClick(Sender: TObject);
     procedure cbMaxSpacesClick(Sender: TObject);
@@ -183,6 +184,7 @@ begin
     edtMaxSpacesInCode.Value := MaxSpacesInCode;
 
     rgOperators.ItemIndex := Ord(SpaceForOperator);
+    rgAssign.ItemIndex := Ord(SpaceForAssign);
 
     cbInsertSpaceBeforeBracketinFunctionDeclaration.Checked := SpaceBeforeOpenBracketsInFunctionDeclaration;
     cbInsertSpaceBeforeBracketinFunctionCall.Checked := SpaceBeforeOpenBracketsInFunctionCall;
@@ -230,6 +232,7 @@ begin
     MaxSpacesInCode    := edtMaxSpacesInCode.Value;
 
     SpaceForOperator := TTriOptionStyle(rgOperators.ItemIndex);
+    SpaceForAssign := TTriOptionStyle(rgAssign.ItemIndex);
 
     SpaceBeforeOpenBracketsInFunctionDeclaration := cbInsertSpaceBeforeBracketinFunctionDeclaration.Checked;
     SpaceBeforeOpenBracketsInFunctionCall := cbInsertSpaceBeforeBracketinFunctionCall.Checked;

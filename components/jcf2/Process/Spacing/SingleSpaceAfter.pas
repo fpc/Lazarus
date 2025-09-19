@@ -55,8 +55,7 @@ uses
   FormatFlags, TokenUtils, SettingsTypes;
 
 const
-  SingleSpaceAfterTokens: TTokenTypeSet = [ttColon, ttAssign, ttComma,
-    ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign];
+  SingleSpaceAfterTokens: TTokenTypeSet = [ttColon, ttComma];
 
   SingleSpaceAfterWords: TTokenTypeSet = [
     ttProcedure, ttFunction,
@@ -143,6 +142,14 @@ begin
     if (lcPrev <> nil) and (lcPrev.TokenType = ttDot) then // operaror  typename.:=( )  .+= .*=
       exit(false);
     exit(True);
+  end;
+
+  if (pt.TokenType in AssignmentDirectives) then
+  begin
+    lcPrev := pt.PriorSolidToken;
+    if (lcPrev <> nil) and (lcPrev.TokenType = ttDot) then // operaror  typename.:=( )  .+= .*=
+      exit(False);
+    exit(FormattingSettings.Spaces.SpaceForAssign=eAlways);
   end;
 
   if pt.TokenType = ttOpenBracket then

@@ -120,6 +120,10 @@ begin
   then
     if (ptNext.TokenType in [ttOpenBracket, ttSemiColon]) then
       exit(True);
+
+  if (pt.TokenType in AssignmentDirectives) then
+    exit(FormattingSettings.Spaces.SpaceForAssign=eNever);
+
 end;
 
 constructor TNoSpaceAfter.Create;
