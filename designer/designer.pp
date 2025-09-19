@@ -160,6 +160,7 @@ type
     function GetShowGrid: boolean;
     function GetSnapToGrid: boolean;
     procedure HintTimer(Sender : TObject);
+    procedure SaveChangesForUndo;
     //procedure InvalidateWithParent(AComponent: TComponent);
     procedure SetDefaultFormBounds(const AValue: TRect);
     procedure SetGridColor(const AValue: TColor);
@@ -2154,6 +2155,49 @@ begin
   end;
 end;
 
+procedure TDesigner.SaveChangesForUndo;
+// update undo list stored component bounds (Left, Top, Width, Height)
+// see TControlSelection.EndResizing
+// the list of all TComponent, Left,Top,Width,Height
+// Note: not every component has all four properties.
+var
+  SelectedPersistent: TSelectedControl;
+  i, j: Integer;
+begin
+  j := FUndoCurr - 1;
+  i := Selection.Count-1;
+  while i>=0 do
+  begin
+    SelectedPersistent:=Selection.Items[i];
+    if SelectedPersistent.IsTComponent then
+    begin
+      while (j>=0) do
+      begin
+        if FUndoList[j].compName <> TComponent(SelectedPersistent.Persistent).Name
+        then begin
+          // this is not a list of bounds -> stop
+          i:=0;
+          break;
+        end;
+        if (FUndoList[j].fieldName = 'Width') then
+          FUndoList[j].newVal := SelectedPersistent.Width
+        else if (FUndoList[j].fieldName = 'Height') then
+          FUndoList[j].newVal := SelectedPersistent.Height
+        else if (FUndoList[j].fieldName = 'Left') then
+          FUndoList[j].newVal := SelectedPersistent.Left
+        else if (FUndoList[j].fieldName = 'Top') then
+          FUndoList[j].newVal := SelectedPersistent.Top
+        else begin
+          i:=0;          // this is not a list of bounds -> stop
+          break;
+        end;
+        dec(j);
+      end;
+    end;
+    dec(i);
+  end;
+end;
+
 function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize): Boolean;
 begin
   Result := True;
@@ -2201,13 +2245,19 @@ begin
   SetCaptureControl(nil);
   DesignSender := GetDesignControl(Sender);
   ParentForm := GetDesignerForm(DesignSender);
-  //DebugLn(['TDesigner.MouseDownOnControl DesignSender=',dbgsName(DesignSender),' ParentForm=',dbgsName(ParentForm)]);
+  {$IFDEF VerboseDesigner}
+  DebugLn('************************************************************');
+  DebugLn(['MouseDownOnControl DesignSender=',dbgsName(DesignSender),' ParentForm=',dbgsName(ParentForm)]);
+  {$ENDIF}
   if (ParentForm = nil) then exit;
   
   MouseDownPos := GetFormRelativeMousePosition(Form);
   LastMouseMovePos := MouseDownPos;
   MouseDownSender := nil;
   MouseDownComponent := ComponentAtPos(MouseDownPos.X, MouseDownPos.Y, True, True);
+  {$IFDEF VerboseDesigner}
+  debugln(['MouseDownOnControl MouseDownComponent=', MouseDownComponent]);
+  {$ENDIF}
   if (MouseDownComponent = nil) then exit;
 
   if ComponentIsIcon(MouseDownComponent) then
@@ -2227,7 +2277,6 @@ begin
   MouseDownShift:=Shift;
 
   {$IFDEF VerboseDesigner}
-  DebugLn('************************************************************');
   DbgOut('MouseDownOnControl');
   DbgOut(' Sender=',dbgsName(Sender),' DesignSender=',dbgsName(DesignSender));
   //write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
@@ -2304,7 +2353,6 @@ begin
           end;
         end else begin
           // no shift key (single selection or keeping multiselection)
-
           if (CompIndex<0) then begin
             // select only this component
             Selection.AssignPersistent(MouseDownComponent);
@@ -2391,7 +2439,9 @@ var
       NewWidth:=0;
       NewHeight:=0;
     end;
-    //DebugLn(['AddComponent ',dbgsName(NewComponentClass)]);
+    {$IFDEF VerboseDesigner}
+    DebugLn(['DoAddComponent ',dbgsName(NewComponentClass)]);
+    {$ENDIF}
     if NewComponentClass = nil then exit;
     AddComponent(SelectedCompClass,NewComponentClass,NewParent,NewLeft,NewTop,NewWidth,NewHeight);
   end;
@@ -2432,21 +2482,19 @@ var
     end;
     Selection.RubberbandActive:=false;
     {$IFDEF VerboseDesigner}
-    DebugLn('RubberbandSelect ',DbgS(ControlSelection.Grabbers[0]));
+    DebugLn('RubberbandSelect ',DbgS(TheControlSelection.Grabbers[0]));
     {$ENDIF}
     Form.Invalidate;
   end;
 
 var
   SenderParentForm: TCustomForm;
-  SelectedPersistent: TSelectedControl;
   DesignSender, MouseDownControl: TControl;
   RubberBandWasActive, Handled: Boolean;
   p: TPoint;
   {$IFDEF EnableDesignerPopupRightClick}
   PopupPos: TPoint;
   {$ENDIF}
-  i, j: Integer;
 begin
   FHintTimer.Enabled := False;
   FHintWindow.Visible := False;
@@ -2504,53 +2552,17 @@ begin
   Selection.BeginUpdate;
   if Button=mbLeft then
   begin
-    if SelectedCompClass = nil then
-    begin
-      if (FUndoState = ucsSaveChange) then
-      begin
-        // update undo list stored component bounds (Left, Top, Width, Height)
-        // see TControlSelection.EndResizing
-        // the list of all TComponent, Left,Top,Width,Height
-        // Note: not every component has all four properties.
-        j := FUndoCurr - 1;
-        i := Selection.Count-1;
-        while i>=0 do
-        begin
-          SelectedPersistent:=Selection.Items[i];
-          if SelectedPersistent.IsTComponent then
-          begin
-            while (j>=0) do
-            begin
-              if (FUndoList[j].compName <> TComponent(SelectedPersistent.Persistent).Name)
-              then begin
-                // this is not a list of bounds -> stop
-                i:=0;
-                break;
-              end;
-              if (FUndoList[j].fieldName = 'Width') then
-                FUndoList[j].newVal := SelectedPersistent.Width
-              else if (FUndoList[j].fieldName = 'Height') then
-                FUndoList[j].newVal := SelectedPersistent.Height
-              else if (FUndoList[j].fieldName = 'Left') then
-                FUndoList[j].newVal := SelectedPersistent.Left
-              else if (FUndoList[j].fieldName = 'Top') then
-                FUndoList[j].newVal := SelectedPersistent.Top
-              else begin
-                // this is not a list of bounds -> stop
-                i:=0;
-                break;
-              end;
-              dec(j);
-            end;
-          end;
-          dec(i);
-        end;
-      end;
+    if SelectedCompClass <> nil then
+      DoAddComponent         // create new a component on the form
+    else begin
+      if FUndoState = ucsSaveChange then
+        SaveChangesForUndo;
       FUndoState := ucsNone;
 
       // layout mode (selection, moving and resizing)
-      if not (dfHasSized in FFlags) then
-      begin
+      if dfHasSized in FFlags then
+        Selection.UpdateBounds
+      else begin
         // new selection
         if RubberBandWasActive then
           RubberbandSelect     // rubberband selection
@@ -2566,11 +2578,8 @@ begin
             PopupMenuComponentEditor.Edit;
           end;
         end;
-      end
-      else
-        Selection.UpdateBounds;
-    end else
-      DoAddComponent;  // create new a component on the form
+      end;
+    end;
   end
   else if Button=mbRight then
   begin
