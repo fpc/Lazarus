@@ -4605,6 +4605,9 @@ begin
   if Identifier=nil then exit(-1);
   if (Search=nil) or (Search^=#0) then exit(0);
   Result:=0;
+  // skip first char if ident is escaped with &
+  if Identifier[Result]='&' then
+    Inc(Result);
   while (IsIdentChar[Identifier[Result]]) do begin
     if UpChars[Search^]=UpChars[Identifier[Result]] then begin
       i:=1;
