@@ -2489,6 +2489,8 @@ begin
     or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0) then
     begin
       TControlAccess(MouseDownComponent).MouseUp(Button, Shift, p.X, p.Y);
+      MouseDownComponent:=nil;
+      MouseDownSender:=nil;
       Exit;
     end;
   end
