@@ -2299,11 +2299,9 @@ begin
     MouseDownControl:=TControl(MouseDownComponent);
     p:=MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseDownPos));
     if (csDesignInteractive in MouseDownControl.ControlStyle)
-    or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0) then
-    begin
+    or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0)
+    then
       TControlAccess(MouseDownComponent).MouseDown(Button, Shift, p.X, p.Y);
-      Exit;
-    end;
   end
   else
     p:=Point(0,0);
@@ -2533,11 +2531,9 @@ begin
     MouseDownControl:=TControl(MouseDownComponent);
     p:=MouseDownControl.ScreenToClient(Form.ClientToScreen(MouseUpPos));
     if (csDesignInteractive in MouseDownControl.ControlStyle)
-    or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0) then
-    begin
+    or (MouseDownControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0)
+    then
       TControlAccess(MouseDownComponent).MouseUp(Button, Shift, p.X, p.Y);
-      Exit;
-    end;
   end
   else
     p:=Point(0,0);
@@ -2662,11 +2658,9 @@ begin
     MouseMoveControl:=TControl(MouseMoveComponent);
     p:=MouseMoveControl.ScreenToClient(Form.ClientToScreen(LastMouseMovePos));
     if (csDesignInteractive in MouseMoveControl.ControlStyle)
-    or (MouseMoveControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0) then
-    begin
+    or (MouseMoveControl.Perform(CM_DESIGNHITTEST, TheMessage.Keys, Longint(SmallPoint(p.X, p.Y))) > 0)
+    then
       TControlAccess(MouseMoveComponent).MouseMove(Shift, p.X, p.Y);
-      Exit;
-    end;
   end;
 
   if Mediator <> nil then
