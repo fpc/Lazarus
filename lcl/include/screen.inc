@@ -75,7 +75,8 @@ begin
   FCustomForms := TFPList.Create;
   FCustomFormsZOrdered := TFPList.Create;
   FFormList := TFPList.Create;
-  FDataModuleList := TFPList.Create;
+  FDataModuleList := TThreadList.Create;
+  FDataModuleList.Duplicates := dupError; // Duplicate DataModules should not happen.
   FPixelsPerInch := ScreenInfo.PixelsPerInchX;
   FSaveFocusedList := TFPList.Create;
   FMagnetManager := TWindowMagnetManager.Create;
@@ -254,28 +255,40 @@ function TScreen.FindNonDesignerDataModule(const DataModuleName: string
   ): TDataModule;
 var
   i: Integer;
+  LocList: TList;
 begin
-  for i:=0 to FDataModuleList.Count-1 do
-  begin
-    Result:=TDataModule(FDataModuleList[i]);
-    if (not (csDesigning in Result.ComponentState))
-    and (CompareText(Result.Name, DataModuleName) = 0) then
-      Exit;
+  LocList:=FDataModuleList.LockList;
+  try
+    for i:=0 to LocList.Count-1 do
+    begin
+      Result:=TDataModule(LocList[i]);
+      if (not (csDesigning in Result.ComponentState))
+      and (CompareText(Result.Name, DataModuleName) = 0) then
+        Exit;
+    end;
+    Result := nil;
+  finally
+    FDataModuleList.UnlockList;
   end;
-  Result := nil;
 end;
 
 function TScreen.FindDataModule(const DataModuleName: string): TDataModule;
 var
   i: Integer;
+  LocList: TList;
 begin
-  for i:=0 to FDataModuleList.Count-1 do
-  begin
-    Result:=TDataModule(FDataModuleList[i]);
-    if (CompareText(Result.Name, DataModuleName) = 0) then
-      Exit;
+  LocList:=FDataModuleList.LockList;
+  try
+    for i:=0 to LocList.Count-1 do
+    begin
+      Result:=TDataModule(LocList[i]);
+      if (CompareText(Result.Name, DataModuleName) = 0) then
+        Exit;
+    end;
+    Result := nil;
+  finally
+    FDataModuleList.UnlockList;
   end;
-  Result := nil;
 end;
 
 procedure TScreen.UpdateScreen;
@@ -721,12 +734,14 @@ end;
 
 function TScreen.GetDataModuleCount: Integer;
 begin
-  Result := FDataModuleList.Count;
+  Result := FDataModuleList.LockList.Count;
+  FDataModuleList.UnlockList;
 end;
 
 function TScreen.GetDataModules(AIndex: Integer): TDataModule;
 begin
-  Result := TDataModule(FDataModuleList.Items[AIndex]);
+  Result := TDataModule(FDataModuleList.LockList.Items[AIndex]);
+  FDataModuleList.UnlockList;
 end;
 
 function TScreen.GetDesktopHeight: Integer;
