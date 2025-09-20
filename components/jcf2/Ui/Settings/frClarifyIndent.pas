@@ -44,6 +44,7 @@ type
     cbIndentCaseLabels: TCheckBox;
     cbIndentInterfaceGuid: TCheckBox;
     cbIndentLabels: TComboBox;
+    cbIndentBeginEndBlocks: TCheckBox;
     eIndentTryFinallyExceptSpaces: TSpinEdit;
     Label2: TLabel;
     edtIndentSpaces: TSpinEdit;
@@ -128,6 +129,7 @@ begin
   cbIndentExtraTryBlockKeywords.Caption := lisIndentTryFinallyExcept;
   cbIndentEndTryBlockAsCode.Caption := lisIndentEndTryBlockAsCode;
   cbIndentExtraOrphanTryBlocks.Caption := lisIndentExtraOrphanTryBlocks;
+  cbIndentBeginEndBlocks.Caption := lisIndentBeginEndBlocks;
   JCFOptionsFrameDialogs[JCFOptionIndentation] := Self;
 end;
 
@@ -166,6 +168,7 @@ begin
     eIndentTryFinallyExceptSpaces.Enabled := IndentExtraTryBlockKeyWords;
     cbIndentEndTryBlockAsCode.Checked := IndentEndTryBlockAsCode;
     cbIndentExtraOrphanTryBlocks.Checked := IndentExtraOrphanTryBlocks;
+    cbIndentBeginEndBlocks.Checked := IndentBeginEndBlocks;
   end;
 
   cbIndentBeginEndClick(nil);
@@ -204,7 +207,7 @@ begin
     IndentExtraTryBlockKeyWordsSpaces := eIndentTryFinallyExceptSpaces.Value;
     IndentEndTryBlockAsCode := cbIndentEndTryBlockAsCode.Checked;
     IndentExtraOrphanTryBlocks := cbIndentExtraOrphanTryBlocks.Checked;
-
+    IndentBeginEndBlocks := cbIndentBeginEndBlocks.Checked;
   end;
 end;
 

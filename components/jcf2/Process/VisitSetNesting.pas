@@ -61,7 +61,7 @@ implementation
 
 uses
   ParseTreeNode, ParseTreeNodeType,
-  Tokens, SourceToken;
+  Tokens, SourceToken, JcfSettings;
 
 constructor TVisitSetNestings.Create;
 begin
@@ -192,6 +192,31 @@ begin
     begin
       leNestType   := nlBlock;
       lbHasNesting := True;
+    end
+    else
+    begin
+      if FormattingSettings.Indent.IndentBeginEndBlocks then   // GNU style.
+      begin
+        lcNode := lcNode.Parent;      //nStatement
+        lcNode := lcNode.Parent;
+        if (lcNode<>nil) then
+        begin
+          if (lcNode.NodeType in [nIfBlock, nElseBlock,nWhileStatement,nForStatement,nWithStatement,nCaseSelector,nOnExceptionHandler]) then
+          begin
+            leNestType   := nlBlock;
+            lbHasNesting := True;
+          end
+          else
+          begin
+            lcNode := lcNode.Parent;
+            if (lcNode <> nil) and (lcNode.NodeType = nElseCase) then
+            begin
+              leNestType   := nlBlock;
+              lbHasNesting := True;
+            end;
+          end;
+        end;
+      end;
     end;
   end;
 

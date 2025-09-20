@@ -644,6 +644,10 @@ msgstr ""
 msgid "Imbalanced comment action"
 msgstr ""
 
+#: jcfuiconsts.lisindentbeginendblocks
+msgid "Indent Begin...End blocks (GNU style)"
+msgstr ""
+
 #: jcfuiconsts.lisindentblockindentationspaces
 msgid "Block indentation spaces"
 msgstr ""

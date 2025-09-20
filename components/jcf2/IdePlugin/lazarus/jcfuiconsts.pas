@@ -131,6 +131,7 @@ resourcestring
   lisIndentTryFinallyExcept = 'Indent try/finally/except';
   lisIndentEndTryBlockAsCode = 'Indent end try block as code';
   lisIndentExtraOrphanTryBlocks = 'Extra Indent for orphan try blocks';
+  lisIndentBeginEndBlocks = 'Indent Begin...End blocks (GNU style)';
 
   //Blank lines tab
   lisBLBlankLines = 'Blank Lines';

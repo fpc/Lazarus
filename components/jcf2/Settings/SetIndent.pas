@@ -60,6 +60,7 @@ type
     fiIndentExtraTryBlockKeyWordsSpaces:integer;
     fbIndentEndTryBlockAsCode:boolean;
     fbIndentExtraOrphanTryBlocks:boolean;
+    fbIndentBeginEndBlocks:boolean;          //GNU style
   protected
   public
     constructor Create;
@@ -102,6 +103,7 @@ type
     property IndentExtraTryBlockKeyWordsSpaces:integer read fiIndentExtraTryBlockKeyWordsSpaces write fiIndentExtraTryBlockKeyWordsSpaces;
     property IndentEndTryBlockAsCode:boolean read fbIndentEndTryBlockAsCode write fbIndentEndTryBlockAsCode;
     property IndentExtraOrphanTryBlocks:boolean read fbIndentExtraOrphanTryBlocks write fbIndentExtraOrphanTryBlocks;
+    property IndentBeginEndBlocks:boolean read fbIndentBeginEndBlocks write fbIndentBeginEndBlocks;
   end;
 
 implementation
@@ -134,6 +136,7 @@ const
   REG_INDENT_EXTRA_TRY_BLOCK_KEYWORDS_SPACES = 'IndentExtraTryBlockKeyWordsSpaces';
   REG_INDENT_END_TRY_BLOCK_AS_CODE = 'IndentEndTryBlockAsCode';
   REG_INDENT_EXTRA_ORPHAN_TRY_BLOCKS = 'IndentExtraOrphanTryBlocks';
+  REG_INDENT_BEGIN_END_BLOCKS = 'IndentBeginEndBlocks';
 
 constructor TSetIndent.Create;
 begin
@@ -186,6 +189,7 @@ begin
   fbIndentLabels := TIndentLabels(pcStream.Read(REG_INDENT_LABELS,Ord(eLabelIndentStatement)));
   fbIndentEndTryBlockAsCode := pcStream.Read(REG_INDENT_END_TRY_BLOCK_AS_CODE, False);
   fbIndentExtraOrphanTryBlocks := pcStream.Read(REG_INDENT_EXTRA_ORPHAN_TRY_BLOCKS, False);
+  fbIndentBeginEndBlocks := pcStream.Read(REG_INDENT_BEGIN_END_BLOCKS, False);
 end;
 
 procedure TSetIndent.WriteToStream(const pcOut: TSettingsOutput);
@@ -220,6 +224,7 @@ begin
   pcOut.Write(REG_INDENT_LABELS, Ord(fbIndentLabels));
   pcOut.Write(REG_INDENT_END_TRY_BLOCK_AS_CODE, fbIndentEndTryBlockAsCode);
   pcOut.Write(REG_INDENT_EXTRA_ORPHAN_TRY_BLOCKS, fbIndentExtraOrphanTryBlocks);
+  pcOut.Write(REG_INDENT_BEGIN_END_BLOCKS, fbIndentBeginEndBlocks);
 end;
 
 function TSetIndent.SpacesForIndentLevel(const piLevel: integer): integer;
