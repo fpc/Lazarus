@@ -222,6 +222,7 @@ begin
   lbComDescr.Caption := rsMainFrm_VSTText_CommunityDescription + ':';
   lbExternalDependencies.Caption := rsMainFrm_VSTText_ExternalDeps + ':';
   cbOrphanedPackage.Caption := rsMainFrm_VSTText_OrphanedPackage1 + ' (' + rsMainFrm_VSTText_OrphanedPackage2 + ')';
+  cbJSONForUpdates.Caption := rsMainFrm_miCreateJSONForUpdates;
   bHelp.Caption := rsCreateRepositoryPackageFrm_bHelp_Caption;
   bHelp.Hint := rsCreateRepositoryPackageFrm_bHelp_Hint;
   bOptions.Caption := rsCreateRepositoryPackageFrm_bOptions_Caption;

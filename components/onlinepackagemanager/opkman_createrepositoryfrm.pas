@@ -53,7 +53,7 @@ type
   { TCreateRepositoryFrm }
 
   TCreateRepositoryFrm = class(TForm)
-    bCancel: TButton;
+    bClose: TButton;
     bAdd: TBitBtn;
     bDelete: TBitBtn;
     bOpen: TButton;
@@ -175,8 +175,8 @@ begin
   bDelete.Hint := rsCreateRepositoryFrm_bDelete_Hint;
   bDelete.Images := MainDM.Images;
   bDelete.ImageIndex := IMG_PKG_MINUS;
-  bCancel.Caption := rsCreateRepositoryFrm_bCancel_Caption;
-  bCancel.Hint := rsCreateRepositoryFrm_bCancel_Hint;
+  bClose.Caption := rsCreateRepositoryFrm_bClose_Caption;
+  bClose.Hint := rsCreateRepositoryFrm_bClose_Hint;
   miRepDetails.Caption := rsCreateRepositoryFrm_miRepDetails_Caption;
   FSortDirection := sdAscending;
   EnableDisableButtons(True);
@@ -574,7 +574,7 @@ begin
   bOpen.Enabled := AEnable;
   bCreate.Enabled := AEnable;
   bAdd.Enabled := AEnable and FileExists(Trim(FRepository.FPath));
-  bCancel.Enabled := AEnable;
+  bClose.Enabled := AEnable;
   if Assigned(FVSTPackages) then
   begin
     Node := FVSTPackages.GetFirstSelected;

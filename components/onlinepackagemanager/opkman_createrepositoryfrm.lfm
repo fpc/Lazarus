@@ -9,12 +9,12 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
   ClientWidth = 900
   Constraints.MinHeight = 450
   Constraints.MinWidth = 650
+  PopupMode = pmExplicit
+  Position = poOwnerFormCenter
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  PopupMode = pmExplicit
-  Position = poOwnerFormCenter
-  LCLVersion = '2.1.0.0'
   object pnButtons: TPanel
     Left = 0
     Height = 41
@@ -33,10 +33,10 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
       Top = 4
       Width = 85
       Caption = 'Open'
-      OnClick = bOpenClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
+      OnClick = bOpenClick
     end
     object bCreate: TButton
       Left = 16
@@ -44,21 +44,21 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
       Top = 4
       Width = 85
       Caption = 'Create'
-      OnClick = bCreateClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
+      OnClick = bCreateClick
     end
-    object bCancel: TButton
+    object bClose: TButton
       Left = 800
       Height = 27
       Top = 4
       Width = 85
       Anchors = [akTop, akRight]
       BorderSpacing.Around = 1
-      Caption = 'Cancel'
+      Caption = 'Close'
       Constraints.MinWidth = 80
-      ModalResult = 2
+      ModalResult = 11
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
@@ -70,10 +70,10 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
       Width = 85
       Caption = 'Add'
       GlyphShowMode = gsmAlways
-      OnClick = bAddClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
+      OnClick = bAddClick
     end
     object bDelete: TBitBtn
       Left = 396
@@ -82,10 +82,10 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
       Width = 85
       Caption = 'Delete'
       GlyphShowMode = gsmAlways
-      OnClick = bDeleteClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
+      OnClick = bDeleteClick
     end
   end
   object pnPackages: TPanel

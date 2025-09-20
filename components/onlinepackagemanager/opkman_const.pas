@@ -460,8 +460,8 @@ resourcestring
   rsCreateRepositoryFrm_bAdd_Hint = 'Add package to the current repository';
   rsCreateRepositoryFrm_bDelete_Caption = 'Delete';
   rsCreateRepositoryFrm_bDelete_Hint = 'Delete package from the current repository';
-  rsCreateRepositoryFrm_bCancel_Caption = 'Cancel';
-  rsCreateRepositoryFrm_bCancel_Hint = 'Close this dialog';
+  rsCreateRepositoryFrm_bClose_Caption = 'Close';
+  rsCreateRepositoryFrm_bClose_Hint = 'Close this dialog';
   rsCreateRepositoryFrm_miRepDetails_Caption = 'Edit repository details';
   rsCreateRepositoryFrm_VSTPackages_Column0 = 'Repository/Packages';
   rsCreateRepositoryFrm_VSTDetails_Column0 = 'Description';

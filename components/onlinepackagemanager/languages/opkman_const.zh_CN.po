@@ -159,13 +159,13 @@ msgstr "添加"
 msgid "Add package to the current repository"
 msgstr "在当前存储库增加软件包"
 
-#: opkman_const.rscreaterepositoryfrm_bcancel_caption
-msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_caption"
-msgid "Cancel"
-msgstr "取消"
+#: opkman_const.rscreaterepositoryfrm_bclose_caption
+msgid "Close"
+msgstr ""
 
-#: opkman_const.rscreaterepositoryfrm_bcancel_hint
-msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_hint"
+#: opkman_const.rscreaterepositoryfrm_bclose_hint
+#, fuzzy
+msgctxt "opkman_const.rscreaterepositoryfrm_bclose_hint"
 msgid "Close this dialog"
 msgstr "关闭对话框"
 

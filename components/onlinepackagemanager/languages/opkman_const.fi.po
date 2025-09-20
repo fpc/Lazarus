@@ -152,13 +152,13 @@ msgstr "Lisää"
 msgid "Add package to the current repository"
 msgstr "Lisää paketti nykyiseen säilöön"
 
-#: opkman_const.rscreaterepositoryfrm_bcancel_caption
-msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_caption"
-msgid "Cancel"
-msgstr "Peru"
+#: opkman_const.rscreaterepositoryfrm_bclose_caption
+msgid "Close"
+msgstr ""
 
-#: opkman_const.rscreaterepositoryfrm_bcancel_hint
-msgctxt "opkman_const.rscreaterepositoryfrm_bcancel_hint"
+#: opkman_const.rscreaterepositoryfrm_bclose_hint
+#, fuzzy
+msgctxt "opkman_const.rscreaterepositoryfrm_bclose_hint"
 msgid "Close this dialog"
 msgstr "Sulje tämä ikkuna"
 
