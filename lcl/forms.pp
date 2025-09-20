@@ -1137,7 +1137,8 @@ type
     FFocusedForm: TCustomForm;
     FFonts : TStringList;
     FFormList: TFPList;
-    FDataModuleList: TFPList;
+    // A web server can create a DataModule per thread. The list must be thread safe.
+    FDataModuleList: TThreadList;
     FIconFont: TFont;
     FMenuFont: TFont;
     FScreenHandlers: array[TScreenNotification] of TMethodList;
