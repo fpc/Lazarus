@@ -4,9 +4,9 @@ program noguidemo;
 
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads} cthreads, {$ENDIF}{$ENDIF}
-  Interfaces, Classes, tachartlazaruspkg { you can add units after this },
+  Interfaces, Classes, { you can add units after this }
   FPCanvas, FPImage, FPImgCanv,
-  TAGraph, TASeries, TADrawerFPCanvas {in '../../TADrawerFPCanvas.pas'}, TADrawerCanvas, TADrawUtils;
+  TAGraph, TASeries, TADrawerFPCanvas, TADrawerCanvas, TADrawUtils;
 
 const
   FONT_NAME = 'LiberationSans-Regular.ttf';
