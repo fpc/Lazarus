@@ -61,6 +61,8 @@ type
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
     function GetPenColor: TChartColor;
+    function GetPenStyle: TFPPenStyle;
+    function GetPenWidth: Integer;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint); overload;
     procedure LineTo(AX, AY: Integer); override;
@@ -81,6 +83,7 @@ type
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
+    procedure SetPenStyle(AStyle: TFPPenStyle);
     procedure SetPenWidth(AWidth: Integer);
 
   end experimental;
@@ -216,6 +219,16 @@ end;
 function TFPVectorialDrawer.GetPenColor: TChartColor;
 begin
   Result := FPColorToChartColor(FPenColor);
+end;
+
+function TFPVectorialDrawer.GetPenStyle: TFPPenStyle;
+begin
+  Result := FPenStyle;
+end;
+
+function TFPVectorialDrawer.GetPenWidth: Integer;
+begin
+  Result := FPenWidth;
 end;
 
 function TFPVectorialDrawer.InvertY(AY: Integer): Integer;
@@ -434,6 +447,11 @@ begin
   FPenStyle := AStyle;
   FPenWidth := AWidth;
   FPenColor := FChartColorToFPColorFunc(AColor);
+end;
+
+procedure TFPVectorialDrawer.SetPenStyle(AStyle: TFPPenStyle);
+begin
+  FPenStyle := AStyle;
 end;
 
 procedure TFPVectorialDrawer.SetPenWidth(AWidth: Integer);
