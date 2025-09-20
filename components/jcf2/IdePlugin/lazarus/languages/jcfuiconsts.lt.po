@@ -1032,9 +1032,17 @@ msgstr "Tarpo simbolis prieš klasės pa&veldėjimą"
 msgid "Spaces"
 msgstr "Tarpo simboliai"
 
+#: jcfuiconsts.lisspacesspacesafterassign
+msgid "Spaces after assign"
+msgstr ""
+
 #: jcfuiconsts.lisspacesspacesaroundoperators
 msgid "Spaces around &operators"
 msgstr "Tarpo simboliai &operatorių galuose"
+
+#: jcfuiconsts.lisspacesspacesbeforeassign
+msgid "Spaces before &assign"
+msgstr ""
 
 #: jcfuiconsts.lisspacesspacesbeforecolonin
 msgid "Spaces &before colon in"

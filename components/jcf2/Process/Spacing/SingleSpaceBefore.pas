@@ -140,7 +140,7 @@ begin
     lcPrev := pt.PriorSolidToken;
     if (lcPrev <> nil) and (lcPrev.TokenType = ttDot) then // operaror  typename.:=( )
       exit(false);
-    exit(FormattingSettings.Spaces.SpaceForAssign=eAlways);
+    exit(FormattingSettings.Spaces.SpaceBeforeAssign=eAlways);
   end;
 
   if IsHintDirective(pt) then

@@ -1023,8 +1023,16 @@ msgstr ""
 msgid "Spaces"
 msgstr ""
 
+#: jcfuiconsts.lisspacesspacesafterassign
+msgid "Spaces after assign"
+msgstr ""
+
 #: jcfuiconsts.lisspacesspacesaroundoperators
 msgid "Spaces around &operators"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesbeforeassign
+msgid "Spaces before &assign"
 msgstr ""
 
 #: jcfuiconsts.lisspacesspacesbeforecolonin

@@ -96,6 +96,8 @@ resourcestring
   lisSpacesTurnSpacesToTabs = 'Turn spaces to tabs';
   lisSpacesSpacesForTab = 'Spaces for tab';
   lisSpacesMaxSpacesInCode = '&Max spaces in code';
+  lisSpacesSpacesBeforeAssign = 'Spaces before &assign';
+  lisSpacesSpacesAfterAssign = 'Spaces after assign';
 
   //Indentation tab
   lisIndentIndentation = 'Indentation';

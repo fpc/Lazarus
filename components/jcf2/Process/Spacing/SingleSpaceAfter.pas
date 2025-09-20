@@ -149,7 +149,7 @@ begin
     lcPrev := pt.PriorSolidToken;
     if (lcPrev <> nil) and (lcPrev.TokenType = ttDot) then // operaror  typename.:=( )  .+= .*=
       exit(False);
-    exit(FormattingSettings.Spaces.SpaceForAssign=eAlways);
+    exit(FormattingSettings.Spaces.SpaceAfterAssign=eAlways);
   end;
 
   if pt.TokenType = ttOpenBracket then

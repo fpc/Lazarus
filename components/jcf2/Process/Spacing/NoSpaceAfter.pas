@@ -122,7 +122,7 @@ begin
       exit(True);
 
   if (pt.TokenType in AssignmentDirectives) then
-    exit(FormattingSettings.Spaces.SpaceForAssign=eNever);
+    exit(FormattingSettings.Spaces.SpaceAfterAssign=eNever);
 
 end;
 
