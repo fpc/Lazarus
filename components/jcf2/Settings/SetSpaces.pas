@@ -68,6 +68,7 @@ type
     fbMoveSpaceToBeforeColon: boolean;
 
     feSpaceForOperator: TTriOptionStyle;
+    feSpaceForAssign: TTriOptionStyle;
 
   protected
   public
@@ -110,6 +111,7 @@ type
     property UseMaxSpacesInCode: boolean read fbUseMaxSpacesInCode write fbUseMaxSpacesInCode;
 
     property SpaceForOperator: TTriOptionStyle read feSpaceForOperator write feSpaceForOperator;
+    property SpaceForAssign: TTriOptionStyle read feSpaceForAssign write feSpaceForAssign;
 
     property SpaceBeforeOpenBracketsInFunctionDeclaration: boolean
       read fbSpaceBeforeOpenBracketsInFunctionDeclaration write fbSpaceBeforeOpenBracketsInFunctionDeclaration;
@@ -149,6 +151,7 @@ const
   SET_USE_MAX_SPACES_IN_CODE = 'UseMaxSpacesInCode';
 
   SET_SPACE_FOR_OPERATOR = 'SpaceForOperator';
+  SET_SPACE_FOR_ASSIGN = 'SpaceForAssign';
 
   SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_DECLARATION = 'SpaceBeforeOpenBracketsInFunctionDeclaration';
   SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_CALL = 'SpaceBeforeOpenBracketsInFunctionCall';
@@ -194,6 +197,7 @@ begin
   fbUseMaxSpacesInCode := pcStream.Read(SET_USE_MAX_SPACES_IN_CODE, False);
 
   feSpaceForOperator := TTriOptionStyle(pcStream.Read(SET_SPACE_FOR_OPERATOR, Ord(eAlways)));
+  feSpaceForAssign := TTriOptionStyle(pcStream.Read(SET_SPACE_FOR_ASSIGN, Ord(eAlways)));
 
   fbSpaceBeforeOpenBracketsInFunctionDeclaration := pcStream.Read(SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_DECLARATION, False);
   fbSpaceBeforeOpenBracketsInFunctionCall := pcStream.Read(SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_CALL, False);
@@ -232,6 +236,7 @@ begin
   pcOut.Write(SET_USE_MAX_SPACES_IN_CODE, fbUseMaxSpacesInCode);
 
   pcOut.Write(SET_SPACE_FOR_OPERATOR, ord(feSpaceForOperator));
+  pcOut.Write(SET_SPACE_FOR_ASSIGN, ord(feSpaceForAssign));
 
   pcOut.Write(SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_DECLARATION, fbSpaceBeforeOpenBracketsInFunctionDeclaration);
   pcOut.Write(SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_CALL, fbSpaceBeforeOpenBracketsInFunctionCall);
