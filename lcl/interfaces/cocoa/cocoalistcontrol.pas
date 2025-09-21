@@ -61,19 +61,21 @@ type
     function selectionIndexSet: NSMutableIndexSet; virtual;
     function checkedIndexSet: NSMutableIndexSet; virtual;
     function mixedCheckedIndexSet: NSMutableIndexSet; virtual;
-    function GetItemCheckedAt( row: Integer; var CheckState: Integer): Boolean; virtual;
-    procedure SetItemCheckedAt( row: Integer; CheckState: Integer); virtual;
-    function getItemStableSelection(ARow: Integer): Boolean; virtual;
+    function getItemStableSelection(ARow: Integer ): Boolean; virtual;
+    function getInternalCheckState( row: Integer; var CheckState: Integer ): Boolean; virtual;
+    procedure setInternalCheckState( row: Integer; CheckState: Integer ); virtual;
   public
     function ItemsCount: Integer; virtual; abstract;
     procedure GetRowHeight(rowidx: Integer; var height: Integer); virtual; abstract;
     function GetBorderStyle: TBorderStyle; virtual; abstract;
 
     function GetImageListType( out lvil: TListViewImageList ): Boolean; virtual; abstract;
-    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean; virtual; abstract;
-    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean; virtual; abstract;
+    function GetItemTextAt(ARow, ACol: Integer; var Text: String ): Boolean; virtual; abstract;
+    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer ): Boolean; virtual; abstract;
     function GetImageFromIndex(imgIdx: Integer): NSImage; virtual; abstract;
-    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String); virtual; abstract;
+    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String ); virtual; abstract;
+    function GetItemCheckedAt( row: Integer; var CheckState: Integer ): Boolean; virtual;
+    procedure SetItemCheckedAt( row: Integer; CheckState: Integer ); virtual;
 
     function shouldSelectionChange(NewSel: Integer): Boolean; virtual; abstract;
     procedure ColumnClicked(ACol: Integer); virtual; abstract;
@@ -162,7 +164,7 @@ begin
   Result:= _mixedCheckedIndexSet;
 end;
 
-function TLCLListControlCallback.GetItemCheckedAt(row: Integer;
+function TLCLListControlCallback.getInternalCheckState(row: Integer;
   var CheckState: Integer): Boolean;
 var
   checkStateArray : array [Boolean] of Integer = (NSOffState, NSOnState);
@@ -174,7 +176,7 @@ begin
   Result := true;
 end;
 
-procedure TLCLListControlCallback.SetItemCheckedAt(row: Integer;
+procedure TLCLListControlCallback.setInternalCheckState(row: Integer;
   CheckState: Integer);
 begin
   case CheckState of
@@ -191,6 +193,18 @@ begin
       self.mixedCheckedIndexSet.removeIndex( row );
     end;
   end;
+end;
+
+function TLCLListControlCallback.GetItemCheckedAt(row: Integer;
+  var CheckState: Integer): Boolean;
+begin
+  Result:= self.getInternalCheckState( row, CheckState );
+end;
+
+procedure TLCLListControlCallback.SetItemCheckedAt(row: Integer;
+  CheckState: Integer);
+begin
+  self.setInternalCheckState( row, CheckState );
 end;
 
 function TLCLListControlCallback.getItemStableSelection(ARow: Integer): Boolean;

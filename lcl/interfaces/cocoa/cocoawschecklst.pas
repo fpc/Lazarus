@@ -229,7 +229,7 @@ begin
     Exit;
 
   checkState:= checkStateArray[AState];
-  lclcb.SetItemCheckedAt( AIndex, checkState );
+  lclcb.setInternalCheckState( AIndex, checkState );
 
   cocoaTLV:= getTableViewFromLCLListBox( ACheckListBox );
   cocoaTLV.reloadDataForRow_column( AIndex, 0 );
