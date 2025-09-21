@@ -1487,6 +1487,7 @@ begin
   FBrush.AddRef;
   FPen := DefaultPen;
   FPen.AddRef;
+  FFont := DefaultFont;
   FRegion := TCocoaRegion.CreateDefault;
   FClipRegion := FRegion;
   FClipRegion.AddRef;
