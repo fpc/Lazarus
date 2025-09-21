@@ -660,7 +660,7 @@ msgstr "Действие с несбалансированным коммент�
 
 #: jcfuiconsts.lisindentbeginendblocks
 msgid "Indent Begin...End blocks (GNU style)"
-msgstr ""
+msgstr "Отступ блоков Begin...End (стиль GNU)"
 
 #: jcfuiconsts.lisindentblockindentationspaces
 msgid "Block indentation spaces"
@@ -1028,7 +1028,7 @@ msgstr "Пробелы"
 
 #: jcfuiconsts.lisspacesspacesafterassign
 msgid "Spaces after assign"
-msgstr ""
+msgstr "Пробелы после присваивания"
 
 #: jcfuiconsts.lisspacesspacesaroundoperators
 msgid "Spaces around &operators"
@@ -1036,7 +1036,7 @@ msgstr "Пробе&лы вокруг операторов"
 
 #: jcfuiconsts.lisspacesspacesbeforeassign
 msgid "Spaces before &assign"
-msgstr ""
+msgstr "Пробелы пере&д присваиванием"
 
 #: jcfuiconsts.lisspacesspacesbeforecolonin
 msgid "Spaces &before colon in"
