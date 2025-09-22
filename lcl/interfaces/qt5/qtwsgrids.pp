@@ -48,7 +48,7 @@ var
   TextHeight: Integer;
 begin
   Result:=ACellRect;
-  Inc(Result.Right);
+  Dec(Result.Right);
   Dec(Result.Bottom);
   TextHeight := ACanvas.TextHeight(' ');
   case AColumnLayout of
