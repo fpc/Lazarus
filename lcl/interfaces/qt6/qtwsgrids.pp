@@ -52,9 +52,9 @@ begin
   Dec(Result.Bottom);
   TextHeight := ACanvas.TextHeight(' ');
   case AColumnLayout of
-    tlTop: EditorTop:=Result.Top+constCellPadding;
-    tlCenter: EditorTop:=Result.Top+Round((Result.Bottom-Result.Top-TextHeight+1) div 2);
-    tlBottom: EditorTop:=Result.Bottom-constCellPadding-TextHeight+1;
+    tlTop: EditorTop:=Result.Top+varCellPadding;
+    tlCenter: EditorTop:=Result.Top+(Result.Bottom-Result.Top-TextHeight+1) div 2;
+    tlBottom: EditorTop:=Result.Bottom-varCellPadding-TextHeight+1;
   end;
   if EditorTop>Result.Top then Result.Top:=EditorTop;
   Result.Bottom:=Result.Top+TextHeight;
