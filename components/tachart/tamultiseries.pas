@@ -195,42 +195,17 @@ type
 
   TOHLCBrushKind = (obkCandleUp, obkCandleDown);
   TOHLCPenKind = (opkCandleUp, opkCandleDown, opkCandleLine, opkLineUp, opkLineDown);
-
-  TOHLCBrush = class(TBrush)
-  private
-    const
-      DEFAULT_COLORS: array[TOHLCBrushKind] of TColor = (clLime, clRed);
-  private
-    FBrushKind: TOHLCBrushKind;
-    function IsColorStored: Boolean;
-    procedure SetBrushKind(AValue: TOHLCBrushKind);
-  public
-    property BrushKind: TOHLCBrushKind read FBrushKind write SetBrushKind;
-  published
-    property Color stored IsColorStored;
-  end;
-
-  TOHLCPen = class(TPen)
-  private
-    const
-      DEFAULT_COLORS: array[TOHLCPenKind] of TColor = (clGreen, clMaroon, clDefault, clLime, clRed);
-  private
-    FPenKind: TOHLCPenKind;
-    function IsColorStored: Boolean;
-    procedure SetPenKind(AValue: TOHLCPenKind);
-  public
-    property PenKind: TOHLCPenKind read FPenKind write SetPenKind;
-  published
-    property Color stored IsColorStored;
-  end;
-
   TOHLCMode = (mOHLC, mCandleStick);
   TTickWidthStyle = (twsPercent, twsPercentMin);
 
   TOpenHighLowCloseSeries = class(TBasicPointSeries)
   private
-    FPen: array[TOHLCPenKind] of TOHLCPen;
-    FBrush: array[TOHLCBrushKind] of TOHLCBrush;
+    const
+      OHLC_BRUSH_COLORS: array[TOHLCBrushKind] of TColor = (clLime, clRed);
+      OHLC_PEN_COLORS: array[TOHLCPenKind] of TColor = (clGreen, clMaroon, clDefault, clLime, clRed);
+  private
+    FPen: array[TOHLCPenKind] of TPen;
+    FBrush: array[TOHLCBrushKind] of TBrush;
     FTickWidth: Integer;
     FTickWidthStyle: TTickWidthStyle;
     FYIndexClose: Integer;
@@ -238,10 +213,12 @@ type
     FYIndexLow: Integer;
     FYIndexOpen: Integer;
     FMode: TOHLCMode;
-    function GetBrush(AIndex: TOHLCBrushKind): TOHLCBrush;
-    function GetPen(AIndex: TOHLCPenKind): TOHLCPen;
-    procedure SetBrush(AIndex: TOHLCBrushKind; AValue: TOHLCBrush);
-    procedure SetPen(AIndex: TOHLCPenKind; AValue: TOHLCPen);
+    function GetBrush(AIndex: TOHLCBrushKind): TBrush;
+    function GetPen(AIndex: TOHLCPenKind): TPen;
+    function IsBrushStored(AIndex: TOHLCBrushKind): Boolean;
+    function IsPenStored(AIndex: TOHLCPenKind): Boolean;
+    procedure SetBrush(AIndex: TOHLCBrushKind; AValue: TBrush);
+    procedure SetPen(AIndex: TOHLCPenKind; AValue: TPen);
     procedure SetOHLCMode(AValue: TOHLCMode);
     procedure SetTickWidth(AValue: Integer);
     procedure SetTickWidthStyle(AValue: TTickWidthStyle);
@@ -272,13 +249,20 @@ type
     function GetNearestPoint(const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
   published
-    property CandlestickDownBrush: TOHLCBrush index obkCandleDown read GetBrush write SetBrush;
-    property CandlestickDownPen: TOHLCPen index opkCandleDown read GetPen write SetPen;
-    property CandlestickLinePen: TOHLCPen index opkCandleLine read GetPen write SetPen;
-    property CandlestickUpBrush: TOHLCBrush index obkCandleUp read GetBrush write SetBrush;
-    property CandlestickUpPen: TOHLCPen index opkCandleUp read GetPen write Setpen;
-    property DownLinePen: TOHLCPen index opkLineDown read GetPen write SetPen;
-    property LinePen: TOHLCPen index opkLineUp read GetPen write SetPen;
+    property CandlestickDownBrush: TBrush index obkCandleDown
+      read GetBrush write SetBrush stored IsBrushStored;
+    property CandlestickDownPen: TPen index opkCandleDown
+      read GetPen write SetPen stored IsPenStored;
+    property CandlestickLinePen: TPen index opkCandleLine
+      read GetPen write SetPen stored IsPenStored;
+    property CandlestickUpBrush: TBrush index obkCandleUp
+      read GetBrush write SetBrush stored IsBrushStored;
+    property CandlestickUpPen: TPen index opkCandleUp
+      read GetPen write SetPen stored IsPenStored;
+    property DownLinePen: TPen index opkLineDown
+      read GetPen write SetPen stored IsPenStored;
+    property LinePen: TPen index opkLineUp
+      read GetPen write SetPen stored IsPenStored;
     property Mode: TOHLCMode read FMode write SetOHLCMode default mOHLC;
     property TickWidth: integer
       read FTickWidth write SetTickWidth default DEF_OHLC_TICK_WIDTH;
@@ -1674,32 +1658,33 @@ begin
     FYDataLayout := bwlCustom;
 end;
 
+(*
 { TOHLCBrush }
 
 function TOHLCBrush.IsColorStored: Boolean;
 begin
-  Result := (Color = DEFAULT_COLORS[FBrushKind]);
+  Result := (Color <> DEFAULT_COLORS[FBrushKind]);
 end;
 
 procedure TOHLCBrush.SetBrushKind(AValue: TOHLCBrushKind);
 begin
   FBrushKind := AValue;
-  Color := DEFAULT_COLORS[FBrushKind];
+  //Color := DEFAULT_COLORS[FBrushKind];
 end;
 
 { TOHLCPen }
 
 function TOHLCPen.IsColorStored: Boolean;
 begin
-  Result := (Color = DEFAULT_COLORS[FPenKind]);
+  Result := (Color <> DEFAULT_COLORS[FPenKind]);
 end;
 
 procedure TOHLCPen.SetPenKind(AValue: TOHLCPenKind);
 begin
   FPenKind := AValue;
-  Color := DEFAULT_COLORS[FPenKind];
+  //Color := DEFAULT_COLORS[FPenKind];
 end;
-
+       *)
 { TOpenHighLowCloseSeries }
 
 function TOpenHighLowCloseSeries.AddXOHLC(
@@ -1763,32 +1748,32 @@ begin
   FYIndexOpen := DEF_YINDEX_OPEN;
 
   // Candlestick up brush
-  FBrush[obkCandleUp] := TOHLCBrush.Create;
-  FBrush[obkCandleUp].BrushKind := obkCandleUp;
+  FBrush[obkCandleUp] := TBrush.Create;
+  FBrush[obkCandleUp].Color := OHLC_BRUSH_COLORS[obkCandleUp];
   FBrush[obkCandleUp].OnChange := @StyleChanged;
   // Candlestick down brush
-  FBrush[obkCandleDown] := TOHLCBrush.Create;
-  FBrush[obkCandleDown].BrushKind := obkCandleDown;
+  FBrush[obkCandleDown] := TBrush.Create;
+  FBrush[obkCandleDown].Color := OHLC_BRUSH_COLORS[obkCandleDown];
   FBrush[obkCandleDown].OnChange := @StyleChanged;
   // Candlestick up border pen
-  FPen[opkCandleUp] := TOHLCPen.Create;
-  FPen[opkCandleUp].PenKind := opkCandleUp;
+  FPen[opkCandleUp] := TPen.Create;
+  FPen[opkCandleUp].Color := OHLC_PEN_COLORS[opkCandleUp];
   FPen[opkCandleUp].OnChange := @StyleChanged;
   // Candlestick down border pen
-  FPen[opkCandleDown] := TOHLCPen.Create;
-  FPen[opkCandleDown].PenKind := opkCandleDown;
+  FPen[opkCandleDown] := TPen.Create;
+  FPen[opkCandleDown].Color := OHLC_PEN_COLORS[opkCandleDown];
   FPen[opkCandleDown].OnChange := @StyleChanged;
   // Candlestick range pen
-  FPen[opkCandleLine] := TOHLCPen.Create;
-  FPen[opkCandleLine].PenKind := opkCandleLine;
+  FPen[opkCandleLine] := TPen.Create;
+  FPen[opkCandleLine].Color := OHLC_PEN_COLORS[opkCandleLine];
   FPen[opkCandleLine].OnChange := @StyleChanged;
   // OHLC up pen
-  FPen[opkLineUp] := TOHLCPen.Create;
-  FPen[opkLineUp].PenKind := opkLineUp;
+  FPen[opkLineUp] := TPen.Create;
+  FPen[opkLineUp].Color := OHLC_PEN_COLORS[opkLineUp];
   FPen[opkLineUp].OnChange := @StyleChanged;
   // OHLC down pen
-  FPen[opkLineDown] := TOHLCPen.Create;
-  FPen[opkLineDown].PenKind := opkLineDown;
+  FPen[opkLineDown] := TPen.Create; //TOHLCPen.Create;
+  FPen[opkLineDown].Color := OHLC_PEN_COLORS[opkLineDown];
   FPen[opkLineDown].OnChange := @StyleChanged;
 end;
 
@@ -1979,7 +1964,7 @@ begin
 //  Result.b.X := Max(Result.b.X, x + tw);
 end;
 
-function TOpenHighLowCloseSeries.GetBrush(AIndex: TOHLCBrushKind): TOHLCBrush;
+function TOpenHighLowCloseSeries.GetBrush(AIndex: TOHLCBrushKind): TBrush;
 begin
   Result := FBrush[AIndex];
 end;
@@ -2062,7 +2047,7 @@ begin
   Result := AResults.FIndex > -1;
 end;
 
-function TOpenHighLowCloseSeries.GetPen(AIndex: TOHLCPenKind): TOHLCPen;
+function TOpenHighLowCloseSeries.GetPen(AIndex: TOHLCPenKind): TPen;
 begin
   Result := FPen[AIndex];
 end;
@@ -2078,14 +2063,35 @@ begin
   AYCount := 4;
 end;
 
-procedure TOpenHighLowCloseSeries.SetBrush(AIndex: TOHLCBrushKind; AValue: TOHLCBrush);
+function TOpenHighLowCloseSeries.IsBrushStored(AIndex: TOHLCBrushKind): Boolean;
+begin
+  Result := not (
+    (FBrush[AIndex].Color = OHLC_BRUSH_COLORS[AIndex]) and
+    (FBrush[AIndex].Style = bsSolid)
+  );
+end;
+
+function TOpenHighLowCloseSeries.IsPenStored(AIndex: TOHLCPenKind): Boolean;
+begin
+  Result := not (
+    (FPen[AIndex].Color = OHLC_PEN_COLORS[AIndex]) and
+    FPen[AIndex].Cosmetic and
+    (FPen[AIndex].EndCap = pecRound) and
+    (FPen[AIndex].JoinStyle = pjsRound) and
+    (FPen[AIndex].Mode = pmCopy) and
+    (FPen[AIndex].Style = psSolid) and
+    (FPen[AIndex].Width = 1)
+  );
+end;
+
+procedure TOpenHighLowCloseSeries.SetBrush(AIndex: TOHLCBrushKind; AValue: TBrush);
 begin
   if GetBrush(AIndex) = AValue then exit;
   FBrush[AIndex].Assign(AValue);
   UpdateParentChart;
 end;
 
-procedure TOpenHighLowCloseSeries.SetPen(AIndex: TOHLCPenKind; AValue: TOHLCPen);
+procedure TOpenHighLowCloseSeries.SetPen(AIndex: TOHLCPenKind; AValue: TPen);
 begin
   if GetPen(AIndex) = AValue then exit;
   FPen[AIndex].Assign(AValue);
