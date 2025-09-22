@@ -2823,9 +2823,6 @@ begin
           else begin
             if (Button=mbLeft) or (dgAnyButtonCanSelect in Options) then
               ClearSelection(true);
-            // Select row before popupmenu
-            if (Button=mbRight) and Assigned(PopupMenu) and not FSelectedRows.CurrentRowSelected then
-              ToggleSelectedRow;
             doMoveToColumn;
           end;
         end;
