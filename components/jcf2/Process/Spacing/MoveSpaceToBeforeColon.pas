@@ -34,7 +34,7 @@ interface
   SF Bug request #2173842
 }
 
-uses SwitchableVisitor, SettingsTypes;
+uses SwitchableVisitor;
 
 type
   TMoveSpaceToBeforeColon = class(TSwitchableVisitor)
@@ -51,7 +51,7 @@ type
 implementation
 
 uses
-  FormatFlags, SourceToken, Tokens, TokenUtils, JcfSettings;
+  FormatFlags, SourceToken, Tokens, TokenUtils, JcfSettings, SettingsTypes;
 
 constructor TMoveSpaceToBeforeColon.Create;
 begin
