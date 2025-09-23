@@ -34,7 +34,7 @@ interface
   SF Bug request #2173842
 }
 
-uses SwitchableVisitor;
+uses SwitchableVisitor, SettingsTypes;
 
 type
   TMoveSpaceToBeforeColon = class(TSwitchableVisitor)
@@ -102,7 +102,8 @@ end;
 
 function TMoveSpaceToBeforeColon.IsIncludedInSettings: boolean;
 begin
-  Result := FormattingSettings.Spaces.MoveSpaceToBeforeColon;
+  Result := FormattingSettings.Spaces.MoveSpaceToBeforeColon
+     and (FormattingSettings.Spaces.SpaceBeforeColon<>eNever);
 end;
 
 end.

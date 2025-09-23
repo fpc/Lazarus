@@ -55,8 +55,6 @@ uses
   FormatFlags, TokenUtils, SettingsTypes;
 
 const
-  SingleSpaceAfterTokens: TTokenTypeSet = [ttColon, ttComma];
-
   SingleSpaceAfterWords: TTokenTypeSet = [
     ttProcedure, ttFunction,
     ttConstructor, ttDestructor, ttProperty,
@@ -99,8 +97,12 @@ begin
 
   if pt.HasParentNode(nGeneric, 2) then
   begin
-    if pt.TokenType in [ttComma, ttColon, ttSemiColon] then
-      Result := true;
+    if pt.TokenType = ttComma then
+      Result := (FormattingSettings.Spaces.SpaceAfterComma=eAlways);
+    if pt.TokenType = ttColon then
+      Result := (FormattingSettings.Spaces.SpaceAfterColon=eAlways);
+    if pt.TokenType = ttSemicolon then
+      Result := (FormattingSettings.Spaces.SpaceAfterSemicolon=eAlways);
     exit;
   end;
 
@@ -114,35 +116,16 @@ begin
 
     { semciolon as a record field seperator in a const record declaration
      has no newline (See ReturnAfter.pas), just a single space }
-    if (pt.HasParentNode(nRecordConstant)) then
-      exit(True);
-
+    if (pt.HasParentNode(nRecordConstant))
     { semicolon  in param  declaration list }
-    if (pt.HasParentNode(nFormalParams)) then
-      exit(True);
-
+    or (pt.HasParentNode(nFormalParams))
     { semicolon in param lists in proc type def. as above }
-    if (pt.HasParentNode(nProcedureType)) then
-      exit(True);
-
+    or (pt.HasParentNode(nProcedureType))
     { semicolon in procedure directives }
-    if (pt.HasParentNode(nProcedureDirectives)) then
-      exit(True);
+    or (pt.HasParentNode(nProcedureDirectives)) then
+      exit(FormattingSettings.Spaces.SpaceAfterSemicolon=eAlways);
 
   end;// semicolon
-
-  { function foo: integer; has single space after the colon
-    single space after colon - anywhere? }
-  if pt.TokenType = ttColon then
-    Result := True;
-
-  if (pt.TokenType in SingleSpaceAfterTokens) then
-  begin
-    lcPrev := pt.PriorSolidToken;
-    if (lcPrev <> nil) and (lcPrev.TokenType = ttDot) then // operaror  typename.:=( )  .+= .*=
-      exit(false);
-    exit(True);
-  end;
 
   if (pt.TokenType in AssignmentDirectives) then
   begin
@@ -250,6 +233,12 @@ begin
         exit(True);
     end;
   end;
+
+  if pt.TokenType = ttComma then
+    exit(FormattingSettings.Spaces.SpaceAfterComma=eAlways);
+
+  if pt.TokenType = ttColon then
+    exit(FormattingSettings.Spaces.SpaceAfterColon=eAlways);
 
 end;
 

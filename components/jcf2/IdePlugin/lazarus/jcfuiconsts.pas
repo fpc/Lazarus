@@ -89,7 +89,6 @@ resourcestring
   lisSpacesInsertSpaceInsideBrackets = 'Insert space inside brackets';
   lisSpacesAfterOpen = 'After open';
   lisSpacesBeforeEnd = 'Before end';
-  lisSpacesMoveSpacesToBeforeColon = 'Move spaces to before colon';
   lisSpacesTabCharacters = '&Tab characters';
   lisSpacesTurnTabsToSpaces = 'Turn tabs to spaces';
   lisSpacesSpacesPerTab = 'Spaces per tab';
@@ -98,6 +97,12 @@ resourcestring
   lisSpacesMaxSpacesInCode = '&Max spaces in code';
   lisSpacesSpacesBeforeAssign = 'Spaces before &assign';
   lisSpacesSpacesAfterAssign = 'Spaces after assign';
+  lisSpacesSpacesBeforeComma = 'Spaces before comma';
+  lisSpacesSpacesAfterComma = 'Spaces after comma';
+  lisSpacesSpacesBeforeColon = 'Spaces before colon';
+  lisSpacesSpacesAfterColon = 'Spaces after colon';
+  lisSpacesSpacesBeforeSemicolon = 'Spaces before semicolon';
+  lisSpacesSpacesAfterSemicolon = 'Spaces after semicolon';
 
   //Indentation tab
   lisIndentIndentation = 'Indentation';
