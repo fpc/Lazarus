@@ -180,9 +180,6 @@ begin
   then
     exit(True);
 
-  if pt.TokenType = ttEquals then
-    exit(True);
-
   { 'in' in the uses clause }
   if (pt.TokenType = ttIn) and (pt.HasParentNode(nUses)) then
     exit(True);

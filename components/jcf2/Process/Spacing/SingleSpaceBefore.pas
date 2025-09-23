@@ -64,8 +64,7 @@ uses
 
 const
   // space before all operators
-  SingleSpaceBeforeWords: TTokenTypeSet = [ttEquals, ttThen, ttOf, ttDo,
-    ttTo, ttDownTo];
+  SingleSpaceBeforeWords: TTokenTypeSet = [ttThen, ttOf, ttDo, ttTo, ttDownTo];
 
   NoSpaceAfterTokens: TTokenTypeSet = [ttOpenBracket, ttOpenSquareBracket];
 
