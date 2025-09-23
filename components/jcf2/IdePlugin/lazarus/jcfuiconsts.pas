@@ -89,6 +89,7 @@ resourcestring
   lisSpacesInsertSpaceInsideBrackets = 'Insert space inside brackets';
   lisSpacesAfterOpen = 'After open';
   lisSpacesBeforeEnd = 'Before end';
+  lisSpacesMoveSpacesToBeforeColon = 'Move spaces to before colon';
   lisSpacesTabCharacters = '&Tab characters';
   lisSpacesTurnTabsToSpaces = 'Turn tabs to spaces';
   lisSpacesSpacesPerTab = 'Spaces per tab';

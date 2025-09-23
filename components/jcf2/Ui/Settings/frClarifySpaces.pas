@@ -142,6 +142,8 @@ begin
   lbSpacesBeforeLabel.Caption := lisSpacesLabel;
   lblSpacesBeforeColonGeneric.Caption := lisSpacesInGeneric;
 
+  cbMoveSpacesToBeforeColon.Caption := lisSpacesMoveSpacesToBeforeColon;
+
   lbSpacesAroundOperators.Caption := lisSpacesSpacesAroundOperators;
   cbSpacesAroundOperators.Items[0] := lisSpacesAlways;
   cbSpacesAroundOperators.Items[1] := lisSpacesLeaveAsIs;
