@@ -157,6 +157,8 @@ begin
   cbInsertSpaceAfterOpen.Caption := lisSpacesAfterOpen;
   CheckBoxInsertSpaceBeforeEnd.Caption := lisSpacesBeforeEnd;
 
+  cbMoveSpacesToBeforeColon.Caption := lisSpacesMoveSpacesToBeforeColon;
+
   gbTabs.Caption := lisSpacesTabCharacters;
   cbTabsToSpaces.Caption := lisSpacesTurnTabsToSpaces;
   Label1.Caption := lisSpacesSpacesPerTab;
