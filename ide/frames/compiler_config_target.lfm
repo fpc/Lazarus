@@ -43,7 +43,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       BorderSpacing.Top = 3
       Caption = 'chkWriteConfigFile'
       OnClick = chkWriteConfigFileClick
-      TabOrder = 3
+      TabOrder = 1
     end
     object edtWriteConfigFilePath: TEdit
       AnchorSideLeft.Control = chkWriteConfigFile
@@ -60,7 +60,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       BorderSpacing.Top = 1
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 3
-      TabOrder = 4
+      TabOrder = 2
       Text = 'edtWriteConfigFilePath'
     end
     object chkCustomConfigFile: TCheckBox
@@ -74,7 +74,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       BorderSpacing.Top = 3
       Caption = 'chkCustomConfigFile'
       OnClick = chkCustomConfigFileClick
-      TabOrder = 1
+      TabOrder = 3
     end
     object edtCustomConfigPath: TEdit
       AnchorSideLeft.Control = chkCustomConfigFile
@@ -91,7 +91,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       BorderSpacing.Top = 1
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 3
-      TabOrder = 2
+      TabOrder = 4
       Text = 'edtCustomConfigPath'
     end
   end
@@ -212,7 +212,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       BorderSpacing.Bottom = 3
       ItemHeight = 26
       Style = csDropDownList
-      TabOrder = 3
+      TabOrder = 2
       Text = '0'
     end
     object SubtargetComboBox: TComboBox
@@ -232,7 +232,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       ItemHeight = 19
-      TabOrder = 2
+      TabOrder = 3
       Text = '0'
     end
   end
