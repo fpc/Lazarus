@@ -51,7 +51,7 @@ type
 implementation
 
 uses
-  FormatFlags, SourceToken, Tokens, TokenUtils, JcfSettings;
+  FormatFlags, SourceToken, Tokens, TokenUtils, JcfSettings, SettingsTypes;
 
 constructor TMoveSpaceToBeforeColon.Create;
 begin
@@ -102,7 +102,8 @@ end;
 
 function TMoveSpaceToBeforeColon.IsIncludedInSettings: boolean;
 begin
-  Result := FormattingSettings.Spaces.MoveSpaceToBeforeColon;
+  Result := FormattingSettings.Spaces.MoveSpaceToBeforeColon
+     and (FormattingSettings.Spaces.SpaceBeforeColon<>eNever);
 end;
 
 end.

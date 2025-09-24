@@ -70,7 +70,12 @@ type
     feSpaceForOperator: TTriOptionStyle;
     feSpaceBeforeAssign: TTriOptionStyle;
     feSpaceAfterAssign: TTriOptionStyle;
-
+    feSpaceBeforeComma: TTriOptionStyle;
+    feSpaceAfterComma: TTriOptionStyle;
+    feSpaceBeforeColon: TTriOptionStyle;
+    feSpaceAfterColon: TTriOptionStyle;
+    feSpaceBeforeSemicolon: TTriOptionStyle;
+    feSpaceAfterSemicolon: TTriOptionStyle;
   protected
   public
     constructor Create;
@@ -115,6 +120,14 @@ type
     property SpaceBeforeAssign: TTriOptionStyle read feSpaceBeforeAssign write feSpaceBeforeAssign;
     property SpaceAfterAssign: TTriOptionStyle read feSpaceAfterAssign write feSpaceAfterAssign;
 
+    property SpaceBeforeComma: TTriOptionStyle read feSpaceBeforeComma write feSpaceBeforeComma;
+    property SpaceAfterComma: TTriOptionStyle read feSpaceAfterComma write feSpaceAfterComma;
+    property SpaceBeforeColon: TTriOptionStyle read feSpaceBeforeColon write feSpaceBeforeColon;
+    property SpaceAfterColon: TTriOptionStyle read feSpaceAfterColon write feSpaceAfterColon;
+    property SpaceBeforeSemicolon: TTriOptionStyle read feSpaceBeforeSemicolon write feSpaceBeforeSemicolon;
+    property SpaceAfterSemicolon: TTriOptionStyle read feSpaceAfterSemicolon write feSpaceAfterSemicolon;
+
+
     property SpaceBeforeOpenBracketsInFunctionDeclaration: boolean
       read fbSpaceBeforeOpenBracketsInFunctionDeclaration write fbSpaceBeforeOpenBracketsInFunctionDeclaration;
     property SpaceBeforeOpenBracketsInFunctionCall: boolean read fbSpaceBeforeOpenBracketsInFunctionCall write fbSpaceBeforeOpenBracketsInFunctionCall;
@@ -155,6 +168,12 @@ const
   SET_SPACE_FOR_OPERATOR = 'SpaceForOperator';
   SET_SPACE_BEFORE_ASSIGN = 'SpaceBeforeAssign';
   SET_SPACE_AFTER_ASSIGN = 'SpaceAfterAssign';
+  SET_SPACE_BEFORE_COMMA = 'SpaceBeforeComma';
+  SET_SPACE_AFTER_COMMA = 'SpaceAfterComma';
+  SET_SPACE_BEFORE_COLON = 'SpaceBeforeColon';
+  SET_SPACE_AFTER_COLON = 'SpaceAfterColon';
+  SET_SPACE_BEFORE_SEMICOLON = 'SpaceBeforeSemicolon';
+  SET_SPACE_AFTER_SEMICOLON = 'SpaceAfterSemicolon';
 
   SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_DECLARATION = 'SpaceBeforeOpenBracketsInFunctionDeclaration';
   SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_CALL = 'SpaceBeforeOpenBracketsInFunctionCall';
@@ -200,8 +219,14 @@ begin
   fbUseMaxSpacesInCode := pcStream.Read(SET_USE_MAX_SPACES_IN_CODE, False);
 
   feSpaceForOperator := TTriOptionStyle(pcStream.Read(SET_SPACE_FOR_OPERATOR, Ord(eAlways)));
-  feSpaceBeforeAssign := TTriOptionStyle(pcStream.Read(SET_SPACE_BEFORE_ASSIGN, Ord(feSpaceForOperator)));
-  feSpaceAfterAssign := TTriOptionStyle(pcStream.Read(SET_SPACE_AFTER_ASSIGN, Ord(feSpaceForOperator)));
+  feSpaceBeforeAssign := TTriOptionStyle(pcStream.Read(SET_SPACE_BEFORE_ASSIGN, Ord(eAlways)));
+  feSpaceAfterAssign := TTriOptionStyle(pcStream.Read(SET_SPACE_AFTER_ASSIGN, Ord(eAlways)));
+  feSpaceBeforeComma := TTriOptionStyle(pcStream.Read(SET_SPACE_BEFORE_COMMA, ord(eNever)));
+  feSpaceAfterComma := TTriOptionStyle(pcStream.Read(SET_SPACE_AFTER_COMMA, ord(eAlways)));
+  feSpaceBeforeColon := TTriOptionStyle(pcStream.Read(SET_SPACE_BEFORE_COLON, ord(eAlways)));
+  feSpaceAfterColon := TTriOptionStyle(pcStream.Read(SET_SPACE_AFTER_COLON, ord(eAlways)));
+  feSpaceBeforeSemicolon := TTriOptionStyle(pcStream.Read(SET_SPACE_BEFORE_SEMICOLON, ord(eNever)));
+  feSpaceAfterSemicolon := TTriOptionStyle(pcStream.Read(SET_SPACE_AFTER_SEMICOLON, ord(eAlways)));
 
   fbSpaceBeforeOpenBracketsInFunctionDeclaration := pcStream.Read(SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_DECLARATION, False);
   fbSpaceBeforeOpenBracketsInFunctionCall := pcStream.Read(SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_CALL, False);
@@ -242,6 +267,12 @@ begin
   pcOut.Write(SET_SPACE_FOR_OPERATOR, ord(feSpaceForOperator));
   pcOut.Write(SET_SPACE_BEFORE_ASSIGN, ord(feSpaceBeforeAssign));
   pcOut.Write(SET_SPACE_AFTER_ASSIGN, ord(feSpaceAfterAssign));
+  pcOut.Write(SET_SPACE_BEFORE_COMMA, ord(feSpaceBeforeComma));
+  pcOut.Write(SET_SPACE_AFTER_COMMA, ord(feSpaceAfterComma));
+  pcOut.Write(SET_SPACE_BEFORE_COLON, ord(feSpaceBeforeColon));
+  pcOut.Write(SET_SPACE_AFTER_COLON, ord(feSpaceAfterColon));
+  pcOut.Write(SET_SPACE_BEFORE_SEMICOLON, ord(feSpaceBeforeSemicolon));
+  pcOut.Write(SET_SPACE_AFTER_SEMICOLON, ord(feSpaceAfterSemicolon));
 
   pcOut.Write(SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_DECLARATION, fbSpaceBeforeOpenBracketsInFunctionDeclaration);
   pcOut.Write(SET_SPACE_BEFORE_OPEN_BRACKETS_IN_FUNCTION_CALL, fbSpaceBeforeOpenBracketsInFunctionCall);

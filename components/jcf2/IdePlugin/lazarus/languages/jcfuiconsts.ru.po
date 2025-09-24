@@ -1030,6 +1030,18 @@ msgstr "Пробелы"
 msgid "Spaces after assign"
 msgstr "Пробелы после присваивания"
 
+#: jcfuiconsts.lisspacesspacesaftercolon
+msgid "Spaces after colon"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesaftercomma
+msgid "Spaces after comma"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesaftersemicolon
+msgid "Spaces after semicolon"
+msgstr ""
+
 #: jcfuiconsts.lisspacesspacesaroundoperators
 msgid "Spaces around &operators"
 msgstr "Пробе&лы вокруг операторов"
@@ -1038,9 +1050,21 @@ msgstr "Пробе&лы вокруг операторов"
 msgid "Spaces before &assign"
 msgstr "Пробелы пере&д присваиванием"
 
+#: jcfuiconsts.lisspacesspacesbeforecolon
+msgid "Spaces before colon"
+msgstr ""
+
 #: jcfuiconsts.lisspacesspacesbeforecolonin
 msgid "Spaces &before colon in"
 msgstr "&Пробелы перед двоеточием для"
+
+#: jcfuiconsts.lisspacesspacesbeforecomma
+msgid "Spaces before comma"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesbeforesemicolon
+msgid "Spaces before semicolon"
+msgstr ""
 
 #: jcfuiconsts.lisspacesspacesfortab
 msgid "Spaces for tab"

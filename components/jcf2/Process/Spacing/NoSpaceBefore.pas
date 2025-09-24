@@ -55,8 +55,7 @@ uses JcfSettings, SourceToken, Tokens, ParseTreeNodeType,
   FormatFlags, TokenUtils, SettingsTypes;
 
 const
-  NoSpaceAnywhere: TTokenTypeSet = [ttDot, ttComma,
-    ttCloseSquareBracket, ttCloseBracket];
+  NoSpaceAnywhere: TTokenTypeSet = [ttDot,ttCloseSquareBracket, ttCloseBracket];
 
 function HasNoSpaceBefore(const pt: TSourceToken): boolean;
 var
@@ -106,7 +105,8 @@ begin
     begin
       Result := True;
       exit;
-    end;
+    end else
+      exit(FormattingSettings.Spaces.SpaceBeforeSemicolon=eNever);
   end;
 
   { hat (dereference) in expression is unary postfix operator - so no space before it }
@@ -123,12 +123,9 @@ begin
     exit;
   end;
 
-  { no space before colon -- anywhere? }
+  { no space before colon }
   if pt.TokenType = ttColon then
-  begin
-    Result := True;
-    exit;
-  end;
+    exit(FormattingSettings.Spaces.SpaceBeforeColon=eNever);
 
   if (FormattingSettings.Spaces.SpaceForOperator = eNever) then
   begin
@@ -142,6 +139,10 @@ begin
     Result := True;
     exit;
   end;
+
+  { no space before comma }
+  if pt.TokenType = ttComma then
+    exit(FormattingSettings.Spaces.SpaceBeforeComma=eNever);
 
   if (pt.TokenType in AssignmentDirectives) then
     exit(FormattingSettings.Spaces.SpaceBeforeAssign=eNever);

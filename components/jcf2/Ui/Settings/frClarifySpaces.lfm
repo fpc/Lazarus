@@ -1,10 +1,11 @@
 object fClarifySpaces: TfClarifySpaces
   Left = 0
-  Height = 580
+  Height = 1083
   Top = 0
-  Width = 411
-  ClientHeight = 580
-  ClientWidth = 411
+  Width = 862
+  ClientHeight = 1083
+  ClientWidth = 862
+  DesignTimePPI = 192
   LCLVersion = '4.99.0.0'
   ParentFont = False
   TabOrder = 0
@@ -14,50 +15,49 @@ object fClarifySpaces: TfClarifySpaces
   object cbFixSpacing: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    Left = 6
-    Height = 19
-    Top = 6
-    Width = 76
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
+    Left = 12
+    Height = 36
+    Top = 12
+    Width = 148
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
     Caption = 'Fix &spacing'
     TabOrder = 0
   end
   object cbSpaceClassHeritage: TCheckBox
-    AnchorSideLeft.Control = cbMoveSpacesToBeforeColon
-    AnchorSideTop.Control = cbMoveSpacesToBeforeColon
+    AnchorSideTop.Control = gbColon
     AnchorSideTop.Side = asrBottom
-    Left = 12
-    Height = 19
-    Top = 351
-    Width = 160
-    BorderSpacing.Top = 6
+    Left = 24
+    Height = 36
+    Top = 650
+    Width = 322
+    BorderSpacing.Top = 12
     Caption = 'Space before class &heritage'
-    TabOrder = 3
+    TabOrder = 2
   end
   object gbColon: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = cbFixSpacing
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = gbTabs
-    Left = 6
-    Height = 289
-    Top = 31
-    Width = 218
-    BorderSpacing.Around = 6
+    Left = 12
+    Height = 578
+    Top = 60
+    Width = 436
+    BorderSpacing.Around = 12
     Caption = 'Spaces &before colon in'
-    ClientHeight = 269
-    ClientWidth = 214
+    ClientHeight = 541
+    ClientWidth = 432
     TabOrder = 1
     object lblSpaceBeforeColonVar: TLabel
       AnchorSideLeft.Control = gbColon
       AnchorSideTop.Control = eSpaceBeforeColonVar
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 10
-      Width = 84
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 32
+      Top = 16
+      Width = 168
+      BorderSpacing.Left = 12
       Caption = '&Var declarations'
       FocusControl = eSpaceBeforeColonVar
       ParentColor = False
@@ -66,11 +66,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbColon
       AnchorSideTop.Control = eSpacesBeforeColonClassVar
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 126
-      Width = 76
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 32
+      Top = 224
+      Width = 153
+      BorderSpacing.Left = 12
       Caption = '&Class variables'
       FocusControl = eSpacesBeforeColonClassVar
       ParentColor = False
@@ -79,11 +79,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbColon
       AnchorSideTop.Control = eSpaceBeforeColonFn
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 97
-      Width = 113
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 32
+      Top = 172
+      Width = 229
+      BorderSpacing.Left = 12
       Caption = '&Function return types'
       FocusControl = eSpaceBeforeColonFn
       ParentColor = False
@@ -92,11 +92,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbColon
       AnchorSideTop.Control = eSpaceBeforeColonParam
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 68
-      Width = 116
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 32
+      Top = 120
+      Width = 234
+      BorderSpacing.Left = 12
       Caption = '&Procedure parameters'
       FocusControl = eSpaceBeforeColonParam
       ParentColor = False
@@ -105,11 +105,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbColon
       AnchorSideTop.Control = eSpacesBeforeCaseLabel
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 184
-      Width = 53
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 32
+      Top = 328
+      Width = 108
+      BorderSpacing.Left = 12
       Caption = 'Case l&abel'
       FocusControl = eSpacesBeforeCaseLabel
       ParentColor = False
@@ -118,11 +118,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbColon
       AnchorSideTop.Control = eSpacesBeforeLabel
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 213
-      Width = 28
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 32
+      Top = 380
+      Width = 56
+      BorderSpacing.Left = 12
       Caption = '&Label'
       FocusControl = eSpacesBeforeLabel
       ParentColor = False
@@ -131,11 +131,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbColon
       AnchorSideTop.Control = eSpacesBeforeColonGeneric
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 242
-      Width = 52
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 32
+      Top = 432
+      Width = 106
+      BorderSpacing.Left = 12
       Caption = 'In &generic'
       FocusControl = eSpacesBeforeColonGeneric
       ParentColor = False
@@ -144,11 +144,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbColon
       AnchorSideTop.Control = eSpaceBeforeColonConst
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 39
-      Width = 98
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 32
+      Top = 68
+      Width = 196
+      BorderSpacing.Left = 12
       Caption = 'C&onst declarations'
       FocusControl = eSpaceBeforeColonConst
       ParentColor = False
@@ -157,11 +157,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbColon
       AnchorSideTop.Control = eSpacesBeforeColonRecordField
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 155
-      Width = 68
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 32
+      Top = 276
+      Width = 137
+      BorderSpacing.Left = 12
       Caption = '&Record fields'
       FocusControl = eSpacesBeforeColonRecordField
       ParentColor = False
@@ -170,12 +170,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Control = gbColon
       AnchorSideRight.Control = gbColon
       AnchorSideRight.Side = asrBottom
-      Left = 158
-      Height = 23
-      Top = 6
-      Width = 50
+      Left = 320
+      Height = 40
+      Top = 12
+      Width = 100
       Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 12
       TabOrder = 0
     end
     object eSpaceBeforeColonParam: TSpinEdit
@@ -183,12 +183,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbColon
       AnchorSideRight.Side = asrBottom
-      Left = 158
-      Height = 23
-      Top = 64
-      Width = 50
+      Left = 320
+      Height = 40
+      Top = 116
+      Width = 100
       Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 12
       TabOrder = 2
     end
     object eSpaceBeforeColonFn: TSpinEdit
@@ -196,12 +196,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbColon
       AnchorSideRight.Side = asrBottom
-      Left = 158
-      Height = 23
-      Top = 93
-      Width = 50
+      Left = 320
+      Height = 40
+      Top = 168
+      Width = 100
       Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 12
       TabOrder = 3
     end
     object eSpacesBeforeColonClassVar: TSpinEdit
@@ -209,12 +209,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbColon
       AnchorSideRight.Side = asrBottom
-      Left = 158
-      Height = 23
-      Top = 122
-      Width = 50
+      Left = 320
+      Height = 40
+      Top = 220
+      Width = 100
       Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 12
       TabOrder = 4
     end
     object eSpacesBeforeCaseLabel: TSpinEdit
@@ -222,12 +222,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbColon
       AnchorSideRight.Side = asrBottom
-      Left = 158
-      Height = 23
-      Top = 180
-      Width = 50
+      Left = 320
+      Height = 40
+      Top = 324
+      Width = 100
       Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 12
       TabOrder = 6
     end
     object eSpacesBeforeLabel: TSpinEdit
@@ -235,12 +235,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbColon
       AnchorSideRight.Side = asrBottom
-      Left = 158
-      Height = 23
-      Top = 209
-      Width = 50
+      Left = 320
+      Height = 40
+      Top = 376
+      Width = 100
       Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 12
       TabOrder = 7
     end
     object eSpacesBeforeColonGeneric: TSpinEdit
@@ -248,12 +248,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbColon
       AnchorSideRight.Side = asrBottom
-      Left = 158
-      Height = 23
-      Top = 238
-      Width = 50
+      Left = 320
+      Height = 40
+      Top = 428
+      Width = 100
       Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 12
       TabOrder = 8
     end
     object eSpaceBeforeColonConst: TSpinEdit
@@ -261,12 +261,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbColon
       AnchorSideRight.Side = asrBottom
-      Left = 158
-      Height = 23
-      Top = 35
-      Width = 50
+      Left = 320
+      Height = 40
+      Top = 64
+      Width = 100
       Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 12
       TabOrder = 1
     end
     object eSpacesBeforeColonRecordField: TSpinEdit
@@ -274,12 +274,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbColon
       AnchorSideRight.Side = asrBottom
-      Left = 158
-      Height = 23
-      Top = 151
-      Width = 50
+      Left = 320
+      Height = 40
+      Top = 272
+      Width = 100
       Anchors = [akTop, akRight]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 12
       TabOrder = 5
     end
   end
@@ -289,27 +289,27 @@ object fClarifySpaces: TfClarifySpaces
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 6
-    Height = 84
-    Top = 480
-    Width = 399
+    Left = 12
+    Height = 153
+    Top = 814
+    Width = 838
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
-    BorderSpacing.Around = 6
+    BorderSpacing.Around = 12
     Caption = '&Tab characters'
-    ClientHeight = 64
-    ClientWidth = 395
-    TabOrder = 6
+    ClientHeight = 116
+    ClientWidth = 834
+    TabOrder = 5
     object Label1: TLabel
       AnchorSideTop.Control = edtSpacesPerTab
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = edtSpacesPerTab
-      Left = 258
-      Height = 15
-      Top = 10
-      Width = 76
+      Left = 556
+      Height = 32
+      Top = 16
+      Width = 156
       Anchors = [akTop, akRight]
-      BorderSpacing.Right = 6
+      BorderSpacing.Right = 12
       Caption = 'Spaces per tab'
       ParentColor = False
     end
@@ -317,12 +317,12 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Control = edtSpacesForTab
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = edtSpacesForTab
-      Left = 260
-      Height = 15
-      Top = 39
-      Width = 74
+      Left = 561
+      Height = 32
+      Top = 68
+      Width = 151
       Anchors = [akTop, akRight]
-      BorderSpacing.Right = 6
+      BorderSpacing.Right = 12
       Caption = 'Spaces for tab'
       ParentColor = False
     end
@@ -330,11 +330,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbTabs
       AnchorSideTop.Control = edtSpacesPerTab
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 19
-      Top = 8
-      Width = 120
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 36
+      Top = 14
+      Width = 237
+      BorderSpacing.Left = 12
       Caption = 'Turn tabs to spaces'
       TabOrder = 0
       OnClick = cbTabsToSpacesClick
@@ -343,11 +343,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = gbTabs
       AnchorSideTop.Control = edtSpacesForTab
       AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 19
-      Top = 37
-      Width = 120
-      BorderSpacing.Left = 6
+      Left = 12
+      Height = 36
+      Top = 66
+      Width = 237
+      BorderSpacing.Left = 12
       Caption = 'Turn spaces to tabs'
       TabOrder = 2
       OnClick = cbSpacesToTabsClick
@@ -356,13 +356,13 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Control = gbTabs
       AnchorSideRight.Control = gbTabs
       AnchorSideRight.Side = asrBottom
-      Left = 340
-      Height = 23
-      Top = 6
-      Width = 49
+      Left = 724
+      Height = 40
+      Top = 12
+      Width = 98
       Anchors = [akTop, akRight]
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
+      BorderSpacing.Top = 12
+      BorderSpacing.Right = 12
       MaxValue = 12
       TabOrder = 1
     end
@@ -371,29 +371,29 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbTabs
       AnchorSideRight.Side = asrBottom
-      Left = 340
-      Height = 23
-      Top = 35
-      Width = 49
+      Left = 724
+      Height = 40
+      Top = 64
+      Width = 98
       Anchors = [akTop, akRight]
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      BorderSpacing.Bottom = 6
+      BorderSpacing.Top = 12
+      BorderSpacing.Right = 12
+      BorderSpacing.Bottom = 12
       MaxValue = 12
       TabOrder = 3
     end
   end
   object cbMaxSpaces: TCheckBox
     AnchorSideLeft.Control = cbSpaceClassHeritage
-    AnchorSideTop.Control = cbSpaceClassHeritage
+    AnchorSideTop.Control = cbMoveSpacesToBeforeColon
     AnchorSideTop.Side = asrBottom
-    Left = 12
-    Height = 19
-    Top = 376
-    Width = 120
-    BorderSpacing.Top = 6
+    Left = 24
+    Height = 36
+    Top = 746
+    Width = 239
+    BorderSpacing.Top = 12
     Caption = '&Max spaces in code'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = cbMaxSpacesClick
   end
   object edtMaxSpacesInCode: TSpinEdit
@@ -405,75 +405,43 @@ object fClarifySpaces: TfClarifySpaces
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 162
-    Height = 23
-    Top = 374
-    Width = 50
+    Left = 324
+    Height = 40
+    Top = 744
+    Width = 100
     Anchors = [akTop, akRight]
-    BorderSpacing.Left = 6
-    BorderSpacing.Right = 6
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 12
+    BorderSpacing.Right = 12
+    BorderSpacing.Around = 12
     MaxValue = 99
-    TabOrder = 5
-  end
-  object rgOperators: TRadioGroup
-    AnchorSideLeft.Control = gbColon
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 230
-    Height = 89
-    Top = 6
-    Width = 175
-    Anchors = [akTop, akLeft, akRight]
-    AutoFill = True
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Spaces around &operators'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 1
-    ClientHeight = 69
-    ClientWidth = 171
-    Items.Strings = (
-      'Always'
-      'Leave as is'
-      'Never'
-    )
-    TabOrder = 7
+    TabOrder = 4
   end
   object GroupBoxInsertSpaceBeforeBracket: TGroupBox
     AnchorSideLeft.Control = gbColon
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = rgAfterAssign
+    AnchorSideTop.Control = cbAfterSemicolon
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 230
-    Height = 101
-    Top = 291
-    Width = 175
+    Left = 460
+    Height = 193
+    Top = 452
+    Width = 390
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
-    BorderSpacing.Around = 6
+    BorderSpacing.Around = 12
     Caption = '&Insert space before bracket'
-    ClientHeight = 81
-    ClientWidth = 171
-    TabOrder = 10
+    ClientHeight = 156
+    ClientWidth = 386
+    TabOrder = 6
     object cbInsertSpaceBeforeBracketinFunctionDeclaration: TCheckBox
       AnchorSideLeft.Control = GroupBoxInsertSpaceBeforeBracket
       AnchorSideTop.Control = GroupBoxInsertSpaceBeforeBracket
-      Left = 6
-      Height = 19
-      Top = 6
-      Width = 138
-      BorderSpacing.Around = 6
+      Left = 12
+      Height = 36
+      Top = 12
+      Width = 272
+      BorderSpacing.Around = 12
       Caption = 'In function &declaration'
       TabOrder = 0
     end
@@ -481,11 +449,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = GroupBoxInsertSpaceBeforeBracket
       AnchorSideTop.Control = cbInsertSpaceBeforeBracketinFunctionDeclaration
       AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 31
-      Width = 97
-      BorderSpacing.Around = 6
+      Left = 12
+      Height = 36
+      Top = 60
+      Width = 189
+      BorderSpacing.Around = 12
       Caption = 'In function &call'
       TabOrder = 1
     end
@@ -493,11 +461,11 @@ object fClarifySpaces: TfClarifySpaces
       AnchorSideLeft.Control = GroupBoxInsertSpaceBeforeBracket
       AnchorSideTop.Control = cbInsertSpaceBeforeBracketinFunctionCall
       AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 56
-      Width = 130
-      BorderSpacing.Around = 6
+      Left = 12
+      Height = 36
+      Top = 108
+      Width = 262
+      BorderSpacing.Around = 12
       Caption = 'Before [ in expression'
       TabOrder = 2
     end
@@ -509,117 +477,383 @@ object fClarifySpaces: TfClarifySpaces
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 230
-    Height = 76
-    Top = 398
-    Width = 175
+    Left = 460
+    Height = 145
+    Top = 657
+    Width = 390
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
-    BorderSpacing.Around = 6
+    BorderSpacing.Around = 12
     Caption = 'Insert space inside brackets'
-    ClientHeight = 56
-    ClientWidth = 171
-    TabOrder = 11
+    ClientHeight = 108
+    ClientWidth = 386
+    TabOrder = 7
     object CheckBoxInsertSpaceBeforeEnd: TCheckBox
       AnchorSideLeft.Control = GroupBoxSpacesInsideBrackets
       AnchorSideTop.Control = cbInsertSpaceAfterOpen
       AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 31
-      Width = 75
-      BorderSpacing.Around = 6
+      Left = 12
+      Height = 36
+      Top = 60
+      Width = 149
+      BorderSpacing.Around = 12
       Caption = 'Before end'
       TabOrder = 0
     end
     object cbInsertSpaceAfterOpen: TCheckBox
       AnchorSideLeft.Control = GroupBoxSpacesInsideBrackets
       AnchorSideTop.Control = GroupBoxSpacesInsideBrackets
-      Left = 6
-      Height = 19
-      Top = 6
-      Width = 74
-      BorderSpacing.Around = 6
+      Left = 12
+      Height = 36
+      Top = 12
+      Width = 145
+      BorderSpacing.Around = 12
       Caption = 'After open'
       TabOrder = 1
     end
   end
-  object cbMoveSpacesToBeforeColon: TCheckBox
-    AnchorSideLeft.Control = gbColon
-    AnchorSideTop.Control = gbColon
-    AnchorSideTop.Side = asrBottom
-    Left = 12
-    Height = 19
-    Top = 326
-    Width = 170
-    BorderSpacing.Around = 6
-    Caption = 'Move spaces to before colon'
-    TabOrder = 2
-  end
-  object rgBeforeAssign: TRadioGroup
+  object lbSpacesAroundOperators: TLabel
     AnchorSideLeft.Control = gbColon
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = rgOperators
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Control = cbSpacesAroundOperators
+    AnchorSideBottom.Side = asrBottom
+    Left = 460
+    Height = 32
+    Top = 24
+    Width = 264
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 24
+    Caption = 'Spaces around operators'
+  end
+  object cbSpacesAroundOperators: TComboBox
+    AnchorSideLeft.Control = lbSpacesAroundOperators
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbSpacesAroundOperators
+    AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 230
-    Height = 89
-    Top = 101
-    Width = 175
+    Left = 736
+    Height = 40
+    Top = 20
+    Width = 114
     Anchors = [akTop, akLeft, akRight]
-    AutoFill = True
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Spaces before &assign'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 1
-    ClientHeight = 69
-    ClientWidth = 171
+    BorderSpacing.Around = 12
+    ItemHeight = 32
     Items.Strings = (
       'Always'
       'Leave as is'
       'Never'
     )
+    Style = csDropDownList
     TabOrder = 8
   end
-  object rgAfterAssign: TRadioGroup
-    AnchorSideLeft.Control = gbColon
+  object cbBeforeAssign: TComboBox
+    AnchorSideLeft.Control = lbBeforeAssign
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = rgBeforeAssign
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = lbBeforeAssign
+    AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 230
-    Height = 89
-    Top = 196
-    Width = 175
+    Left = 695
+    Height = 40
+    Top = 68
+    Width = 155
     Anchors = [akTop, akLeft, akRight]
-    AutoFill = True
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Spaces after &assign'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 1
-    ClientHeight = 69
-    ClientWidth = 171
+    BorderSpacing.Around = 12
+    ItemHeight = 32
     Items.Strings = (
       'Always'
       'Leave as is'
       'Never'
     )
+    Style = csDropDownList
     TabOrder = 9
+  end
+  object lbBeforeAssign: TLabel
+    AnchorSideLeft.Control = gbColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbSpacesAroundOperators
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = cbBeforeAssign
+    AnchorSideBottom.Side = asrBottom
+    Left = 460
+    Height = 32
+    Top = 72
+    Width = 223
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
+    Caption = 'Spaces before assign'
+  end
+  object cbAfterAssign: TComboBox
+    AnchorSideLeft.Control = lbAfterAssign
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbAfterAssign
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 674
+    Height = 40
+    Top = 116
+    Width = 176
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 12
+    ItemHeight = 32
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    Style = csDropDownList
+    TabOrder = 10
+  end
+  object lbAfterAssign: TLabel
+    AnchorSideLeft.Control = gbColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbBeforeAssign
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = cbAfterAssign
+    AnchorSideBottom.Side = asrBottom
+    Left = 460
+    Height = 32
+    Top = 120
+    Width = 202
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
+    Caption = 'Spaces after assign'
+  end
+  object lbBeforeComma: TLabel
+    AnchorSideLeft.Control = gbColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbAfterAssign
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = cbBeforeComma
+    AnchorSideBottom.Side = asrBottom
+    Left = 460
+    Height = 32
+    Top = 164
+    Width = 236
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
+    Caption = 'Spaces before comma'
+  end
+  object cbBeforeComma: TComboBox
+    AnchorSideLeft.Control = lbBeforeComma
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbBeforeComma
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 708
+    Height = 40
+    Top = 160
+    Width = 142
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 12
+    ItemHeight = 32
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    Style = csDropDownList
+    TabOrder = 11
+  end
+  object lbAfterComma: TLabel
+    AnchorSideLeft.Control = gbColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbBeforeComma
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = cbAfterComma
+    AnchorSideBottom.Side = asrBottom
+    Left = 460
+    Height = 32
+    Top = 212
+    Width = 215
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
+    Caption = 'Spaces after comma'
+  end
+  object cbAfterComma: TComboBox
+    AnchorSideLeft.Control = lbAfterComma
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbAfterComma
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 687
+    Height = 40
+    Top = 208
+    Width = 163
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 12
+    ItemHeight = 32
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    Style = csDropDownList
+    TabOrder = 12
+  end
+  object lbBeforeColon: TLabel
+    AnchorSideLeft.Control = gbColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbAfterComma
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = cbBeforeColon
+    AnchorSideBottom.Side = asrBottom
+    Left = 460
+    Height = 32
+    Top = 260
+    Width = 216
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
+    Caption = 'Spaces before colon'
+  end
+  object cbBeforeColon: TComboBox
+    AnchorSideLeft.Control = lbBeforeColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbBeforeColon
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 688
+    Height = 40
+    Top = 256
+    Width = 162
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 12
+    ItemHeight = 32
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    Style = csDropDownList
+    TabOrder = 13
+  end
+  object lbAfterColon: TLabel
+    AnchorSideLeft.Control = gbColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbBeforeColon
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = cbAfterColon
+    AnchorSideBottom.Side = asrBottom
+    Left = 460
+    Height = 32
+    Top = 308
+    Width = 195
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
+    Caption = 'Spaces after colon'
+  end
+  object cbAfterColon: TComboBox
+    AnchorSideLeft.Control = lbAfterColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbAfterColon
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 667
+    Height = 40
+    Top = 304
+    Width = 183
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 12
+    ItemHeight = 32
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    Style = csDropDownList
+    TabOrder = 14
+  end
+  object lbBeforeSemicolon: TLabel
+    AnchorSideLeft.Control = gbColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbAfterColon
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = cbBeforeSemicolon
+    AnchorSideBottom.Side = asrBottom
+    Left = 460
+    Height = 32
+    Top = 356
+    Width = 266
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
+    Caption = 'Spaces before semicolon'
+  end
+  object cbBeforeSemicolon: TComboBox
+    AnchorSideLeft.Control = lbBeforeSemicolon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbBeforeSemicolon
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 738
+    Height = 40
+    Top = 352
+    Width = 112
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 12
+    ItemHeight = 32
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    Style = csDropDownList
+    TabOrder = 15
+  end
+  object lbAfterSemicolon: TLabel
+    AnchorSideLeft.Control = gbColon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbBeforeSemicolon
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = cbAfterSemicolon
+    AnchorSideBottom.Side = asrBottom
+    Left = 460
+    Height = 32
+    Top = 404
+    Width = 245
+    BorderSpacing.Left = 12
+    BorderSpacing.Top = 12
+    Caption = 'Spaces after semicolon'
+  end
+  object cbAfterSemicolon: TComboBox
+    AnchorSideLeft.Control = lbAfterSemicolon
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lbAfterSemicolon
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 717
+    Height = 40
+    Top = 400
+    Width = 133
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 12
+    ItemHeight = 32
+    Items.Strings = (
+      'Always'
+      'Leave as is'
+      'Never'
+    )
+    Style = csDropDownList
+    TabOrder = 16
+  end
+  object cbMoveSpacesToBeforeColon: TCheckBox
+    AnchorSideLeft.Control = gbColon
+    AnchorSideTop.Control = cbSpaceClassHeritage
+    AnchorSideTop.Side = asrBottom
+    Left = 24
+    Height = 36
+    Top = 698
+    Width = 341
+    BorderSpacing.Around = 12
+    Caption = 'Move spaces to before colon'
+    TabOrder = 17
   end
 end

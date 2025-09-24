@@ -38,9 +38,27 @@ type
   { TfClarifySpaces }
 
   TfClarifySpaces = class(TAbstractIDEOptionsEditor)
+    cbAfterAssign: TComboBox;
+    cbAfterSemicolon: TComboBox;
+    cbAfterComma: TComboBox;
+    cbAfterColon: TComboBox;
+    cbBeforeSemicolon: TComboBox;
+    cbBeforeComma: TComboBox;
+    cbBeforeColon: TComboBox;
     cbFixSpacing: TCheckBox;
+    cbMoveSpacesToBeforeColon: TCheckBox;
+    cbSpacesAroundOperators: TComboBox;
     cbSpaceClassHeritage: TCheckBox;
+    cbBeforeAssign: TComboBox;
     gbColon: TGroupBox;
+    lbAfterAssign: TLabel;
+    lbAfterSemicolon: TLabel;
+    lbAfterComma: TLabel;
+    lbAfterColon: TLabel;
+    lbBeforeSemicolon: TLabel;
+    lbBeforeComma: TLabel;
+    lbBeforeColon: TLabel;
+    lbSpacesAroundOperators: TLabel;
     lblSpaceBeforeColonVar: TLabel;
     lblSpacesBeforeColonClassVar: TLabel;
     lblSpaceBeforeColonFn: TLabel;
@@ -59,11 +77,10 @@ type
     eSpacesBeforeCaseLabel: TSpinEdit;
     eSpacesBeforeLabel: TSpinEdit;
     lblSpacesBeforeCaseLabel: TLabel;
+    lbBeforeAssign: TLabel;
     lbSpacesBeforeLabel: TLabel;
     cbMaxSpaces: TCheckBox;
     edtMaxSpacesInCode: TSpinEdit;
-    rgAfterAssign: TRadioGroup;
-    rgOperators: TRadioGroup;
     GroupBoxInsertSpaceBeforeBracket: TGroupBox;
     cbInsertSpaceBeforeBracketinFunctionDeclaration: TCheckBox;
     cbInsertSpaceBeforeBracketinFunctionCall: TCheckBox;
@@ -77,8 +94,6 @@ type
     lblSpaceBeforeColonConst: TLabel;
     eSpacesBeforeColonRecordField: TSpinEdit;
     lblSpacesBeforeColonRecordField: TLabel;
-    cbMoveSpacesToBeforeColon: TCheckBox;
-    rgBeforeAssign: TRadioGroup;
     procedure cbTabsToSpacesClick(Sender: TObject);
     procedure cbSpacesToTabsClick(Sender: TObject);
     procedure cbMaxSpacesClick(Sender: TObject);
@@ -127,10 +142,12 @@ begin
   lbSpacesBeforeLabel.Caption := lisSpacesLabel;
   lblSpacesBeforeColonGeneric.Caption := lisSpacesInGeneric;
 
-  rgOperators.Caption := lisSpacesSpacesAroundOperators;
-  rgOperators.Items[0] := lisSpacesAlways;
-  rgOperators.Items[1] := lisSpacesLeaveAsIs;
-  rgOperators.Items[2] := lisSpacesNever;
+  cbMoveSpacesToBeforeColon.Caption := lisSpacesMoveSpacesToBeforeColon;
+
+  lbSpacesAroundOperators.Caption := lisSpacesSpacesAroundOperators;
+  cbSpacesAroundOperators.Items[0] := lisSpacesAlways;
+  cbSpacesAroundOperators.Items[1] := lisSpacesLeaveAsIs;
+  cbSpacesAroundOperators.Items[2] := lisSpacesNever;
 
   GroupBoxInsertSpaceBeforeBracket.Caption := lisSpacesInsertSpaceBeforeBracket;
   cbInsertSpaceBeforeBracketinFunctionDeclaration.Caption :=
@@ -142,8 +159,6 @@ begin
   cbInsertSpaceAfterOpen.Caption := lisSpacesAfterOpen;
   CheckBoxInsertSpaceBeforeEnd.Caption := lisSpacesBeforeEnd;
 
-  cbMoveSpacesToBeforeColon.Caption := lisSpacesMoveSpacesToBeforeColon;
-
   gbTabs.Caption := lisSpacesTabCharacters;
   cbTabsToSpaces.Caption := lisSpacesTurnTabsToSpaces;
   Label1.Caption := lisSpacesSpacesPerTab;
@@ -152,15 +167,45 @@ begin
 
   cbMaxSpaces.Caption := lisSpacesMaxSpacesInCode;
 
-  rgBeforeAssign.Caption := lisSpacesSpacesBeforeAssign;
-  rgBeforeAssign.Items[0] := lisSpacesAlways;
-  rgBeforeAssign.Items[1] := lisSpacesLeaveAsIs;
-  rgBeforeAssign.Items[2] := lisSpacesNever;
+  lbBeforeAssign.Caption := lisSpacesSpacesBeforeAssign;
+  cbBeforeAssign.Items[0] := lisSpacesAlways;
+  cbBeforeAssign.Items[1] := lisSpacesLeaveAsIs;
+  cbBeforeAssign.Items[2] := lisSpacesNever;
 
-  rgAfterAssign.Caption := lisSpacesSpacesAfterAssign;
-  rgAfterAssign.Items[0] := lisSpacesAlways;
-  rgAfterAssign.Items[1] := lisSpacesLeaveAsIs;
-  rgAfterAssign.Items[2] := lisSpacesNever;
+  lbAfterAssign.Caption := lisSpacesSpacesAfterAssign;
+  cbAfterAssign.Items[0] := lisSpacesAlways;
+  cbAfterAssign.Items[1] := lisSpacesLeaveAsIs;
+  cbAfterAssign.Items[2] := lisSpacesNever;
+
+  lbBeforeComma.Caption := lisSpacesSpacesBeforeComma;
+  cbBeforeComma.Items[0] := lisSpacesAlways;
+  cbBeforeComma.Items[1] := lisSpacesLeaveAsIs;
+  cbBeforeComma.Items[2] := lisSpacesNever;
+
+  lbAfterComma.Caption := lisSpacesSpacesAfterComma;
+  cbAfterComma.Items[0] := lisSpacesAlways;
+  cbAfterComma.Items[1] := lisSpacesLeaveAsIs;
+  cbAfterComma.Items[2] := lisSpacesNever;
+
+  lbBeforeColon.Caption := lisSpacesSpacesBeforeColon;
+  cbBeforeColon.Items[0] := lisSpacesAlways;
+  cbBeforeColon.Items[1] := lisSpacesLeaveAsIs;
+  cbBeforeColon.Items[2] := lisSpacesNever;
+
+  lbAfterColon.Caption := lisSpacesSpacesAfterColon;
+  cbAfterColon.Items[0] := lisSpacesAlways;
+  cbAfterColon.Items[1] := lisSpacesLeaveAsIs;
+  cbAfterColon.Items[2] := lisSpacesNever;
+
+  lbBeforeSemicolon.Caption := lisSpacesSpacesBeforeSemicolon;
+  cbBeforeSemicolon.Items[0] := lisSpacesAlways;
+  cbBeforeSemicolon.Items[1] := lisSpacesLeaveAsIs;
+  cbBeforeSemicolon.Items[2] := lisSpacesNever;
+
+  lbAfterSemicolon.Caption := lisSpacesSpacesAfterSemicolon;
+  cbAfterSemicolon.Items[0] := lisSpacesAlways;
+  cbAfterSemicolon.Items[1] := lisSpacesLeaveAsIs;
+  cbAfterSemicolon.Items[2] := lisSpacesNever;
 
   JCFOptionsFrameDialogs[JCFOptionSpaces] := Self;
 end;
@@ -195,9 +240,15 @@ begin
     cbMaxSpaces.Checked      := UseMaxSpacesInCode;
     edtMaxSpacesInCode.Value := MaxSpacesInCode;
 
-    rgOperators.ItemIndex := Ord(SpaceForOperator);
-    rgBeforeAssign.ItemIndex := Ord(SpaceBeforeAssign);
-    rgAfterAssign.ItemIndex := Ord(SpaceAfterAssign);
+    cbSpacesAroundOperators.ItemIndex := Ord(SpaceForOperator);
+    cbBeforeAssign.ItemIndex := Ord(SpaceBeforeAssign);
+    cbAfterAssign.ItemIndex := Ord(SpaceAfterAssign);
+    cbBeforeComma.ItemIndex := Ord(SpaceBeforeComma);
+    cbAfterComma.ItemIndex := Ord(SpaceAfterComma);
+    cbBeforeColon.ItemIndex := Ord(SpaceBeforeColon);
+    cbAfterColon.ItemIndex := Ord(SpaceAfterColon);
+    cbBeforeSemicolon.ItemIndex := Ord(SpaceBeforeSemicolon);
+    cbAfterSemicolon.ItemIndex := Ord(SpaceAfterSemicolon);
 
     cbInsertSpaceBeforeBracketinFunctionDeclaration.Checked := SpaceBeforeOpenBracketsInFunctionDeclaration;
     cbInsertSpaceBeforeBracketinFunctionCall.Checked := SpaceBeforeOpenBracketsInFunctionCall;
@@ -244,9 +295,16 @@ begin
     UseMaxSpacesInCode := cbMaxSpaces.Checked;
     MaxSpacesInCode    := edtMaxSpacesInCode.Value;
 
-    SpaceForOperator := TTriOptionStyle(rgOperators.ItemIndex);
-    SpaceBeforeAssign := TTriOptionStyle(rgBeforeAssign.ItemIndex);
-    SpaceAfterAssign := TTriOptionStyle(rgAfterAssign.ItemIndex);
+    SpaceForOperator := TTriOptionStyle(cbSpacesAroundOperators.ItemIndex);
+    SpaceBeforeAssign := TTriOptionStyle(cbBeforeAssign.ItemIndex);
+    SpaceAfterAssign := TTriOptionStyle(cbAfterAssign.ItemIndex);
+    SpaceBeforeComma := TTriOptionStyle(cbBeforeComma.ItemIndex);
+    SpaceAfterComma := TTriOptionStyle(cbAfterComma.ItemIndex);
+    SpaceBeforeColon := TTriOptionStyle(cbBeforeColon.ItemIndex);
+    SpaceAfterColon := TTriOptionStyle(cbAfterColon.ItemIndex);
+    SpaceBeforeSemicolon := TTriOptionStyle(cbBeforeSemicolon.ItemIndex);
+    SpaceAfterSemicolon := TTriOptionStyle(cbAfterSemicolon.ItemIndex);
+
 
     SpaceBeforeOpenBracketsInFunctionDeclaration := cbInsertSpaceBeforeBracketinFunctionDeclaration.Checked;
     SpaceBeforeOpenBracketsInFunctionCall := cbInsertSpaceBeforeBracketinFunctionCall.Checked;

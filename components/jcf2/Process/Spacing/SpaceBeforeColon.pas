@@ -50,7 +50,7 @@ implementation
 uses
   { local }
   JcfStringUtils,
-  JcfSettings, SetSpaces, SourceToken, Tokens, ParseTreeNodeType,
+  JcfSettings, SettingsTypes, SetSpaces, SourceToken, Tokens, ParseTreeNodeType,
   FormatFlags, TokenUtils;
 
 function SpacesBefore(const pt: TSourceToken): integer;
@@ -196,7 +196,8 @@ end;
 
 function TSpaceBeforeColon.IsIncludedInSettings: boolean;
 begin
-  Result := FormattingSettings.Spaces.FixSpacing;
+  Result := FormattingSettings.Spaces.FixSpacing
+    and (FormattingSettings.Spaces.SpaceBeforeColon=eAlways);
 end;
 
 end.

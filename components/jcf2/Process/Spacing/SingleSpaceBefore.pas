@@ -64,8 +64,7 @@ uses
 
 const
   // space before all operators
-  SingleSpaceBeforeWords: TTokenTypeSet = [ttEquals, ttThen, ttOf, ttDo,
-    ttTo, ttDownTo];
+  SingleSpaceBeforeWords: TTokenTypeSet = [ttThen, ttOf, ttDo, ttTo, ttDownTo];
 
   NoSpaceAfterTokens: TTokenTypeSet = [ttOpenBracket, ttOpenSquareBracket];
 
@@ -146,8 +145,12 @@ begin
   if IsHintDirective(pt) then
     exit(True);
 
-  if (pt.TokenType in AllDirectives) and (pt.HasParentNode(DirectiveNodes)) then
+  if (pt.TokenType in AllDirectives) and (pt.HasParentNode(DirectiveNodes)) then begin
+    lcPrev := pt.PriorSolidToken;
+    if (lcPrev <> nil) and (lcPrev.TokenType = ttSemicolon) then
+      exit(FormattingSettings.Spaces.SpaceAfterSemicolon<>eNever);
     exit(True);
+  end;
 
   if (pt.TokenType in SingleSpaceBeforeWords) then
     exit(True);
@@ -215,6 +218,30 @@ begin
 
   if pt.TokenType in [ttNear,ttFar,ttHuge] then
     exit(True);
+
+  if pt.TokenType = ttComma then
+    exit(FormattingSettings.Spaces.SpaceBeforeComma=eAlways);
+
+  {Handled in SpacesBeforeColon.pas}
+  //if pt.TokenType = ttColon then
+  //  exit(FormattingSettings.Spaces.SpaceBeforeColon=eAlways);
+
+  if pt.TokenType = ttSemiColon then
+  begin
+
+    { semciolon as a record field seperator in a const record declaration
+     has no newline (See ReturnAfter.pas), just a single space }
+    if (pt.HasParentNode(nRecordConstant))
+    { semicolon  in param  declaration list }
+    or (pt.HasParentNode(nFormalParams))
+    { semicolon in param lists in proc type def. as above }
+    or (pt.HasParentNode(nProcedureType))
+    { semicolon in procedure directives }
+    or (pt.HasParentNode(nProcedureDirectives)) then
+      exit(FormattingSettings.Spaces.SpaceBeforeSemicolon=eAlways);
+
+  end;// semicolon
+
 
 end;
 

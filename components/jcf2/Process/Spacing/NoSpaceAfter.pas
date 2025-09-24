@@ -121,6 +121,15 @@ begin
     if (ptNext.TokenType in [ttOpenBracket, ttSemiColon]) then
       exit(True);
 
+  if pt.TokenType = ttComma then
+    exit(FormattingSettings.Spaces.SpaceAfterComma=eNever);
+
+  if pt.TokenType = ttColon then
+    exit(FormattingSettings.Spaces.SpaceAfterColon=eNever);
+
+  if pt.TokenType = ttSemiColon then
+    exit(FormattingSettings.Spaces.SpaceAfterSemicolon=eNever);
+
   if (pt.TokenType in AssignmentDirectives) then
     exit(FormattingSettings.Spaces.SpaceAfterAssign=eNever);
 
