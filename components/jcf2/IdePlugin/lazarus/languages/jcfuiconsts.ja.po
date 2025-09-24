@@ -1040,6 +1040,18 @@ msgstr "空白"
 msgid "Spaces after assign"
 msgstr ""
 
+#: jcfuiconsts.lisspacesspacesaftercolon
+msgid "Spaces after colon"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesaftercomma
+msgid "Spaces after comma"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesaftersemicolon
+msgid "Spaces after semicolon"
+msgstr ""
+
 #: jcfuiconsts.lisspacesspacesaroundoperators
 msgid "Spaces around &operators"
 msgstr "演算子前後の空白(&o)"
@@ -1048,9 +1060,21 @@ msgstr "演算子前後の空白(&o)"
 msgid "Spaces before &assign"
 msgstr ""
 
+#: jcfuiconsts.lisspacesspacesbeforecolon
+msgid "Spaces before colon"
+msgstr ""
+
 #: jcfuiconsts.lisspacesspacesbeforecolonin
 msgid "Spaces &before colon in"
 msgstr "以下の場所におけるコロンの前の空白(&b)"
+
+#: jcfuiconsts.lisspacesspacesbeforecomma
+msgid "Spaces before comma"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesbeforesemicolon
+msgid "Spaces before semicolon"
+msgstr ""
 
 #: jcfuiconsts.lisspacesspacesfortab
 msgid "Spaces for tab"

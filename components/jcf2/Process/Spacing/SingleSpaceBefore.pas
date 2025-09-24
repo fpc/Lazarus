@@ -222,8 +222,9 @@ begin
   if pt.TokenType = ttComma then
     exit(FormattingSettings.Spaces.SpaceBeforeComma=eAlways);
 
-  if pt.TokenType = ttColon then
-    exit(FormattingSettings.Spaces.SpaceBeforeColon=eAlways);
+  {Handled in SpacesBeforeColon.pas}
+  //if pt.TokenType = ttColon then
+  //  exit(FormattingSettings.Spaces.SpaceBeforeColon=eAlways);
 
   if pt.TokenType = ttSemiColon then
   begin

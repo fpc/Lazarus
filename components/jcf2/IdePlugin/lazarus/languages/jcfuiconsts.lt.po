@@ -1040,6 +1040,18 @@ msgstr "Tarpo simboliai"
 msgid "Spaces after assign"
 msgstr ""
 
+#: jcfuiconsts.lisspacesspacesaftercolon
+msgid "Spaces after colon"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesaftercomma
+msgid "Spaces after comma"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesaftersemicolon
+msgid "Spaces after semicolon"
+msgstr ""
+
 #: jcfuiconsts.lisspacesspacesaroundoperators
 msgid "Spaces around &operators"
 msgstr "Tarpo simboliai &operatorių galuose"
@@ -1048,9 +1060,21 @@ msgstr "Tarpo simboliai &operatorių galuose"
 msgid "Spaces before &assign"
 msgstr ""
 
+#: jcfuiconsts.lisspacesspacesbeforecolon
+msgid "Spaces before colon"
+msgstr ""
+
 #: jcfuiconsts.lisspacesspacesbeforecolonin
 msgid "Spaces &before colon in"
 msgstr "Tarpo simboliai &prieš dvitaški, esantį"
+
+#: jcfuiconsts.lisspacesspacesbeforecomma
+msgid "Spaces before comma"
+msgstr ""
+
+#: jcfuiconsts.lisspacesspacesbeforesemicolon
+msgid "Spaces before semicolon"
+msgstr ""
 
 #: jcfuiconsts.lisspacesspacesfortab
 msgid "Spaces for tab"

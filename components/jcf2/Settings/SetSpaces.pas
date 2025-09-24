@@ -223,7 +223,7 @@ begin
   feSpaceAfterAssign := TTriOptionStyle(pcStream.Read(SET_SPACE_AFTER_ASSIGN, Ord(eAlways)));
   feSpaceBeforeComma := TTriOptionStyle(pcStream.Read(SET_SPACE_BEFORE_COMMA, ord(eNever)));
   feSpaceAfterComma := TTriOptionStyle(pcStream.Read(SET_SPACE_AFTER_COMMA, ord(eAlways)));
-  feSpaceBeforeColon := TTriOptionStyle(pcStream.Read(SET_SPACE_BEFORE_COLON, ord(eNever)));
+  feSpaceBeforeColon := TTriOptionStyle(pcStream.Read(SET_SPACE_BEFORE_COLON, ord(eAlways)));
   feSpaceAfterColon := TTriOptionStyle(pcStream.Read(SET_SPACE_AFTER_COLON, ord(eAlways)));
   feSpaceBeforeSemicolon := TTriOptionStyle(pcStream.Read(SET_SPACE_BEFORE_SEMICOLON, ord(eNever)));
   feSpaceAfterSemicolon := TTriOptionStyle(pcStream.Read(SET_SPACE_AFTER_SEMICOLON, ord(eAlways)));
