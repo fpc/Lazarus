@@ -132,6 +132,7 @@ type
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
 
+    procedure TestFindDeclaration_Proc_ArgSet;
     procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_Arrays;
@@ -927,6 +928,29 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_TypeHelper;
 begin
   FindDeclarations('moduletests/fdt_typehelper.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Proc_ArgSet;
+begin
+  StartProgram;
+  Add([
+  '{$mode objfpc}',
+  'type',
+  '  TColor = (red, gree, blue);',
+  '  TColors = set of TColor;',
+  'procedure Fly(w: word; Col: TColors);',
+  'begin',
+  'end;',
+  'procedure Fly(b: boolean; Col: TColors);',
+  'begin',
+  'end;',
+  'begin',
+  //'  Fly{declaration:Fly}(3,[red]);',
+  '  Fly{declaration:Fly}(3,[blue,red]);',
+  //'  Fly{declaration:Fly}(true,[red,green]);',
+  'end.',
+  '']);
+  FindDeclarations(Code);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_ObjCClass;

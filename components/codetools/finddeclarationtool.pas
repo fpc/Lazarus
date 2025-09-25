@@ -9213,7 +9213,7 @@ var
 var
   OldFlags: TFindDeclarationFlags;
   StackEntry: POperandAndOperator;
-  IsEnd, IsBinOpError: Boolean;
+  IsEnd, IsBinOpMissing: Boolean;
 begin
   {$IFDEF ShowExprEval}
   DebugLn(['[TFindDeclarationTool.FindExpressionResultType] Start',
@@ -9237,7 +9237,7 @@ begin
     // cursor is now on next atom, i.e. the operator
     {$IFDEF ShowExprEval}
     DebugLn(['[TFindDeclarationTool.FindExpressionResultType] Operand: ',
-      ExprTypeToString(CurExprType),' Alias=',FindContextToString(CurAliasType)]);
+      ExprTypeToString(CurExprType),' Alias=',FindContextToString(CurAliasType),' Atom=',GetAtom]);
     {$ENDIF}
     // put operand on stack
     inc(StackPtr);
@@ -9258,12 +9258,12 @@ begin
     {$ENDIF}
     IsEnd := (CurPos.EndPos>EndPos) or (CurExprType.Desc=xtNone);
     if not IsEnd then
-      IsBinOpError := not WordIsBinaryOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
+      IsBinOpMissing := not WordIsBinaryOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos)
     else
-      IsBinOpError := False;
+      IsBinOpMissing := False;
     // check if expression is completely parsed
-    if IsEnd or (IsBinOpError and (fdfIgnoreOperatorError in Params.Flags)) then
+    if IsEnd or (IsBinOpMissing and (fdfIgnoreOperatorError in Params.Flags)) then
     begin
       // -> execute complete stack
       ExecuteStack(true);
@@ -9273,7 +9273,7 @@ begin
       Params.Flags:=OldFlags;
       exit;
     end;
-    if IsBinOpError then
+    if IsBinOpMissing then
       RaiseBinaryOperatorNotFound;
     // put operator on stack
     ExprStack[StackPtr].theOperator:=CurPos;
@@ -11688,7 +11688,15 @@ var EndPos, SubStartPos: integer;
     end else begin
       Result:=ReadOperandTypeAtCursor(Params,MaxEndPos);
       if CurPos.Flag=cafEdgedBracketClose then
+        ReadNextAtom
+      else begin
+        //debugln(['ReadEdgedBracketOperand skip to closing bracket...']);
+        MoveCursorToCleanPos(SubStartPos);
         ReadNextAtom;
+        ReadTilBracketCloseOrUnexpected(false,sbcStopOnAll);
+        if CurPos.Flag=cafEdgedBracketClose then
+          ReadNextAtom;
+      end;
       if (Result.Desc=xtContext) then begin
         aNode:=Result.Context.Node;
         if aNode.Desc in [ctnEnumIdentifier,ctnEnumerationType] then begin
