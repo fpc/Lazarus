@@ -88,6 +88,7 @@ uses
   IdeIntfStrConsts, ToolBarIntf, SelEdits, ComponentTreeView,
   // IdeUtils
   InputHistory,
+  LazEditTextAttributes,
   // protocol
   IDEProtocol,
   // compile
@@ -159,7 +160,7 @@ uses
   package_usage_options, package_description_options, package_integration_options,
   package_provides_options, package_i18n_options,
   // rest of the ide
-  IdeDebuggerStringConstants,
+  IdeDebuggerStringConstants, SearchPathProcs,
   Splash, IDEDefs, LazarusIDEStrConsts, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, KeyMapping,
@@ -178,7 +179,7 @@ uses
   SourceFileManager, EditorToolbarStatic, IDEInstances,
   WordCompletion, EnvGuiOptions, EnvDebuggerOptions, IdeDebuggerValueFormatter, ProjectDebugLink,
   // main ide
-  MainBar, MainIntf, MainBase, SearchPathProcs, LazEditTextAttributes;
+  MainBar, MainIntf, MainBase;
 
 type
   { TMainIDE }
