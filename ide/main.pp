@@ -10391,9 +10391,8 @@ var
   aFilename: String;
 begin
   Result:=mrCancel;
-  aFilename:=Filename;
-  if not (jfDoNotExpandFilename in Flags) then
-    aFilename:=TrimAndExpandFilename(aFilename);
+  aFilename:=TrimFilename(Filename);
+  // Note: do not use ExpandFilename, as it would expand relative filenames with CurrentDirectory
   CodeBuffer:=CodeToolBoss.LoadFile(aFilename,true,false);
   if CodeBuffer=nil then exit;
   Result:=DoJumpToCodePosition(nil,nil,CodeBuffer,NewX,NewY,NewTopLine, Flags);

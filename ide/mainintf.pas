@@ -110,7 +110,6 @@ type
     jfFocusEditor,
     jfMarkLine,
     jfMapLineFromDebug,
-    jfDoNotExpandFilename,
     jfSearchVirtualFullPath
   );
   TJumpToCodePosFlags = set of TJumpToCodePosFlag;

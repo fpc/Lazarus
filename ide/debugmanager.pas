@@ -1003,21 +1003,30 @@ end;
 procedure TDebugManager.JumpToUnitSource(AFileName: String; ALine: Integer;
   AMapLineFromDebug: Boolean);
 var
-  ok: Boolean;
   JmpFlags: TJumpToCodePosFlags;
+  AbsFilename: String;
 begin
   debugln(DBG_LOCATION_INFO, ['JumpToUnitSource Filename =', AFileName ]);
-  // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
+  // avoid any process-messages, so this proc can not be re-entered (avoid opening one file many times)
   LockCommandProcessing;
   try
-    ok := false;
     JmpFlags := [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfSearchVirtualFullPath];
     if AMapLineFromDebug then
       JmpFlags := JmpFlags + [jfMapLineFromDebug];
-    if FilenameIsAbsolute(AFilename) then
-      ok := MainIDEInterface.DoJumpToSourcePosition(AFilename, 0, ALine, 0, JmpFlags) = mrOK;
-    if not ok then
-      MainIDEInterface.DoJumpToSourcePosition(AFilename, 0, ALine, 0, JmpFlags+[jfDoNotExpandFilename]);
+    AFilename := TrimFilename(AFileName);
+    if not FilenameIsAbsolute(AFilename) then
+    begin
+      AbsFilename := MainIDE.FindSourceFile(AFilename, Project1.Directory,
+                    [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
+                     fsfMapTempToVirtualFiles]);
+      if AbsFilename='' then
+      begin
+        debugln(['Note: TDebugManager.JumpToUnitSource: file not found: "',AFileName,'"']);
+        exit;
+      end;
+      AFileName:=AbsFilename;
+    end;
+    MainIDEInterface.DoJumpToSourcePosition(AFilename, 0, ALine, 0, JmpFlags);
   finally
     UnLockCommandProcessing;
   end;
@@ -1027,7 +1036,6 @@ procedure TDebugManager.JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo;
   ALine: Integer; AMapLineFromDebug: Boolean);
 var
   Filename: String;
-  ok: Boolean;
   JmpFlags: TJumpToCodePosFlags;
 begin
   if AnUnitInfo = nil then exit;
@@ -1035,22 +1043,15 @@ begin
   // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
   LockCommandProcessing;
   try
-  (* Maybe trim the filename here and use jfDoNotExpandFilename
-     ExpandFilename works with the current IDE path, and may be wrong
-  *)
   // TODO: better detection of unsaved project files
     if GetFullFilename(AnUnitInfo, Filename, False) then
     begin
-      ok := false;
       if ALine <= 0 then
         ALine := AnUnitInfo.SrcLine;
       JmpFlags := [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfSearchVirtualFullPath];
       if AMapLineFromDebug then
         JmpFlags := JmpFlags + [jfMapLineFromDebug];
-      if FilenameIsAbsolute(Filename) then
-        ok := MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JmpFlags) = mrOK;
-      if not ok then
-        MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JmpFlags+[jfDoNotExpandFilename]);
+      MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JmpFlags);
     end;
   finally
     UnLockCommandProcessing;
