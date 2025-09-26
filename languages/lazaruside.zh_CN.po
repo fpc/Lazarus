@@ -8428,7 +8428,9 @@ msgid "Create project"
 msgstr "创建项目"
 
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
-msgid "Create/update .po file when saving a lfm file"
+#, fuzzy
+#| msgid "Create/update .po file when saving a lfm file"
+msgid "Extract translatable strings from a form when saving its LFM file"
 msgstr "当保存 lfm 文件时创建/更新 .po 文件"
 
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-09-03 16:50+0300\n"
+"PO-Revision-Date: 2025-09-26 22:45+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -8411,8 +8411,8 @@ msgid "Create project"
 msgstr "Создать проект"
 
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
-msgid "Create/update .po file when saving a lfm file"
-msgstr "Создавать/обновлять файлы PO при сохранении файла LFM"
+msgid "Extract translatable strings from a form when saving its LFM file"
+msgstr "Извлекать подлежащие переводу строки из формы при сохранении её файла LFM"
 
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 #, object-pascal-format
