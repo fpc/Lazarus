@@ -2657,8 +2657,7 @@ resourcestring
   rsI18nOptions = 'i18n Options';
   rsPOOutputDirectory = 'PO Output Directory:';
   lisDirectoryWhereTheIDEPutsThePoFiles = 'Directory where the IDE puts the .po files';
-  lisCreateUpdatePoFileWhenSavingALfmFile = 'Create/update .po file when '
-    +'saving a lfm file';
+  lisCreateUpdatePoFileWhenSavingALfmFile = 'Extract translatable strings from a form when saving its LFM file';
   lisYouCanDisableThisForIndividualFormsViaThePackageEd = 'You can disable '
     +'this for individual forms via the package editor';
   lisYouCanDisableThisForIndividualFormsViaThePopupMenu = 'You can disable '
