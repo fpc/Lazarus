@@ -52,7 +52,7 @@ uses
   SynEditHighlighterXMLBase, SynEditHighlighterFoldBase, SynEditStrConst, LazEditTextAttributes;
 
 const
-  MAX_ESCAPEAMPS = 159;
+  MAX_ESCAPEAMPS = 109;
 
   EscapeAmps: array[0..MAX_ESCAPEAMPS - 1] of PChar = (
     ('&amp;'),               {   &   }
@@ -163,58 +163,8 @@ const
     ('&ndash;'),
     ('&mdash;'),
     ('&bull;'),
-    //used by very old HTML editors
-    ('&#9;'),                {  TAB  }
-    ('&#127;'),              {      }
-    ('&#128;'),              {      }
-    ('&#129;'),              {      }
-    ('&#130;'),              {      }
-    ('&#131;'),              {      }
-    ('&#132;'),              {      }
-    ('&ldots;'),             {      }
-    ('&#134;'),              {      }
-    ('&#135;'),              {      }
-    ('&#136;'),              {      }
-    ('&#137;'),              {      }
-    ('&#138;'),              {      }
-    ('&#139;'),              {      }
-    ('&#140;'),              {      }
-    ('&#141;'),              {      }
-    ('&#142;'),              {      }
-    ('&#143;'),              {      }
-    ('&#144;'),              {      }
-    ('&#152;'),              {      }
-    ('&#153;'),              {      }
-    ('&#154;'),              {      }
-    ('&#155;'),              {      }
-    ('&#156;'),              {      }
-    ('&#157;'),              {      }
-    ('&#158;'),              {      }
-    ('&#159;'),              {      }
-    ('&#161;'),              {   ¡   }
-    ('&#162;'),              {   ¢   }
-    ('&#163;'),              {   £   }
-    ('&#164;'),              {   ¤   }
-    ('&#165;'),              {   ¥   }
-    ('&#166;'),              {   ¦   }
-    ('&#167;'),              {   §   }
-    ('&#168;'),              {   ¨   }
-    ('&#170;'),              {   ª   }
-    ('&#175;'),              {   »   }
-    ('&#176;'),              {   °   }
-    ('&#177;'),              {   ±   }
-    ('&#178;'),              {   ²   }
-    ('&#180;'),              {   ´   }
-    ('&#181;'),              {   µ   }
-    ('&#183;'),              {   ·   }
-    ('&#184;'),              {   ¸   }
-    ('&#185;'),              {   ¹   }
-    ('&#186;'),              {   º   }
-    ('&#188;'),              {   ¼   }
-    ('&#189;'),              {   ½   }
-    ('&#190;'),              {   ¾   }
-    ('&#191;'),              {   ¿   }
-    ('&#215;'));             {   Ô   }
+    ('&ldots;')
+    );
 
 type
   TtkTokenKind = (tkAmpersand, tkASP, tkCDATA, tkComment, tkIdentifier, tkKey, tkNull,
@@ -2590,11 +2540,30 @@ begin
     while not (fLine[Run] in StopSet) do Inc(Run);
 
     if (fLine[Run] = '&') then begin
-      For i:=Low(EscapeAmps) To High(EscapeAmps) do begin
-        if (StrLIComp((fLine + Run), PChar(EscapeAmps[i]), StrLen(EscapeAmps[i])) = 0) then begin
-          fAndCode := i;
+      if (fLine[Run+1] = '#') then begin
+        if (fLine[Run+2] = 'x') then begin
+          i := 3;
+          while fLine[Run+i] in ['0'..'9', 'a'..'f', 'A'..'F'] do inc(i);
+        end
+        else begin
+          i := 2;
+          while fLine[Run+i] in ['0'..'9'] do inc(i);
+        end;
+        if (fLine[Run+i] = ';') and
+           (fLine[Run+i-1] in ['0'..'9', 'a'..'f', 'A'..'F'])
+        then begin
+          fAndCode := -i-1;
           fRange := rsAmpersand;
           Exit;
+        end;
+      end
+      else begin
+        For i:=Low(EscapeAmps) To High(EscapeAmps) do begin
+          if (StrLIComp((fLine + Run), PChar(EscapeAmps[i]), StrLen(EscapeAmps[i])) = 0) then begin
+            fAndCode := i;
+            fRange := rsAmpersand;
+            Exit;
+          end;
         end;
       end;
 
@@ -2608,13 +2577,23 @@ end;
 
 procedure TSynHTMLSyn.AmpersandProc;
 begin
+  fTokenID := tkText; // got here in error
+
+  if fAndCode < -2 then begin
+    fTokenID := tkAmpersand;
+    Inc(Run, -fAndCode);
+  end
+  else
   case fAndCode of
   Low(EscapeAmps)..High(EscapeAmps):
     begin
       fTokenID := tkAmpersand;
       Inc(Run, StrLen(EscapeAmps[fAndCode]));
     end;
+  else
+    inc(Run, 1);
   end;
+
   fAndCode := -1;
   fRange := rsText;
 end;
@@ -2748,12 +2727,14 @@ procedure TSynHTMLSyn.SetRange(Value: Pointer);
 begin
   inherited;
   fRange := TRangeState(Integer(PtrUInt(CodeFoldRange.RangeType)));
+  fAndCode := -1;
 end;
 
 procedure TSynHTMLSyn.ReSetRange;
 begin
   inherited;
   fRange:= rsText;
+  fAndCode := -1;
 end;
 
 function TSynHTMLSyn.GetIdentChars: TSynIdentChars;
