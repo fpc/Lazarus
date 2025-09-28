@@ -38,6 +38,7 @@ type
     property LineMappingData;
   public
     constructor Create(AWrapPlugin: TLazSynEditLineWrapPlugin);
+    function GetLengthOfLongestLine: integer; override;
     procedure InternalGetInfoForViewedXY(AViewedXY: TViewedPoint;
       AFlags: TViewedXYInfoFlags; out AViewedXYInfo: TViewedXYInfo;
       ALogPhysConvertor: TSynLogicalPhysicalConvertor); override;
@@ -1135,6 +1136,11 @@ constructor TLazSynWordWrapView.Create(AWrapPlugin: TLazSynEditLineWrapPlugin);
 begin
   FWrapPlugin := AWrapPlugin;
   inherited Create;
+end;
+
+function TLazSynWordWrapView.GetLengthOfLongestLine: integer;
+begin
+  Result := Max(1, FWrapPlugin.WrapColumn);
 end;
 
 procedure TLazSynWordWrapView.InternalGetInfoForViewedXY(AViewedXY: TViewedPoint;
