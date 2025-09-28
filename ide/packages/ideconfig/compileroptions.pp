@@ -2383,7 +2383,7 @@ var
 begin
   Result:=TStringListUTF8Fast.Create;
 
-  Quiet:=ConsoleVerbosity<=-3; // if "-q" is specified more than twice (lazbuild or lazarus)
+  Quiet:=ConsoleVerbosity<=-2; // if "-q" is specified more than once
 
   CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
   if CompilerFilename<>'' then begin
