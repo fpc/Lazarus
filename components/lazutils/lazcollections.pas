@@ -401,7 +401,6 @@ constructor TLazThreadedQueue.create(AQueueDepth: Integer; PushTimeout: cardinal
 begin
   FMonitor:=TLazMonitor.create;
   FFifoQueue := CreateFifoQueue(AQueueDepth);
-  Grow(AQueueDepth);
   FHasRoomEvent:=RTLEventCreate;
   RTLeventSetEvent(FHasRoomEvent);
   FHasItemEvent:=RTLEventCreate;
