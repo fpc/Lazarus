@@ -192,7 +192,7 @@ procedure TDBMemo.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
 
-  if not FieldCanAcceptKey(FDataLink.Field, Key) or not FDatalink.Edit then
+  if (Key<>^C) and not (FieldCanAcceptKey(FDataLink.Field, Key) and FDatalink.Edit) then
     Key := #0;
 
   case key of
