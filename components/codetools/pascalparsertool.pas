@@ -4475,26 +4475,32 @@ var
 begin
   if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
     ReadSpecialize(CreateNodes,Extract,Copying,Attr);
-    while CurPos.Flag=cafPoint do begin
-      // e.g. atype<params>.subtype
-      Next;
-      AtomIsIdentifierSaveE(20180411194209);
-      Next;
+    if CurPos.Flag<>cafPoint then
+      exit;
+    CreateNodes := False; // TODO
+    // e.g. atype<params>.subtype
+    // e.g. atype<params>.subtype.specialize<x>
+  end
+  else begin
+    if CreateNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnIdentifier;
+      CurNode.EndPos:=CurPos.EndPos;
     end;
-    exit;
+    Next;
   end;
-  if CreateNodes then begin
-    CreateChildNode;
-    CurNode.Desc:=ctnIdentifier;
-    CurNode.EndPos:=CurPos.EndPos;
-  end;
-  Next;
   Cnt:=1;
   while CurPos.Flag=cafPoint do begin
     Next;
-    AtomIsIdentifierSaveE(20180411194207);
-    Next;
-    inc(Cnt,2);
+    if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
+      ReadSpecialize(CreateNodes,Extract,Copying,Attr);
+      inc(Cnt,1);
+    end
+    else begin
+      AtomIsIdentifierSaveE(20180411194207);
+      Next;
+      inc(Cnt,2);
+    end;
   end;
   if AtomIsChar('<') then begin
     if ((Cnt=1) and LastUpAtomIs(1,'STRING'))

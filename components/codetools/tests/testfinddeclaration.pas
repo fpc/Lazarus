@@ -161,6 +161,7 @@ type
     procedure TestFindDeclaration_Generics_GuessType;
     procedure TestFindDeclaration_Generics_GuessType2;
     procedure TestFindDeclaration_Generics_FindDeclaration;
+    procedure TestFindDeclaration_GenericsObjFpc_ClassAncestor;
     procedure TestFindDeclaration_GenericsDelphi_InterfaceAncestor;
     procedure TestFindDeclaration_GenericsDelphi_FuncParam;
     procedure TestFindDeclaration_GenericsDelphi_PublicProcType;
@@ -1037,6 +1038,39 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_Generics_FindDeclaration;
 begin
   FindDeclarations('moduletests/fdt_generics_finddeclaration.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GenericsObjFpc_ClassAncestor;
+begin
+  StartProgram;
+  Add([
+    //'program Project1;{$Mode objfpc}',
+    'type',
+    'TX = class',
+    'public type',
+    'generic TNGen<A: TX> = class',
+    'public type',
+    'F = A;',
+    'end;',
+    'end;',
+    '',
+    'generic TGen<A: TX> = class',
+    'public type',
+    'F = A;',
+    'end;',
+    '',
+    'TY = class(TX.specialize TNGen<TX{declaration:TX}>)',
+    'end;',
+    'TY2 = class(TX.specialize TNGen<TX>.F.specialize TNGen<TX{declaration:TX}>)',
+    'end;',
+    '',
+    'TY3 = class(specialize TGen<TX>.F.specialize TNGen<TX{declaration:TX}>)',
+    'end;',
+    '',
+    '',
+    'begin',
+    'end.']);
+  FindDeclarations(Code);
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_GenericsDelphi_InterfaceAncestor;
