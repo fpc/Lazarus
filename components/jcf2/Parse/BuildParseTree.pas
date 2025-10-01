@@ -3733,7 +3733,7 @@ begin
   PopNode;
 
   { semicolon is optional in the last case before the else }
-  if not (fcTokenList.FirstSolidTokenType in [ttElse, ttEnd]) then
+  if not (fcTokenList.FirstSolidTokenType in [ttElse, ttEnd, ttOtherwise]) then
   begin
     RecogniseStatement;
 
