@@ -477,6 +477,7 @@ begin
     begin
       openDlg.setCanChooseDirectories(True);
       openDlg.setCanChooseFiles(False);
+      openDlg.setCanCreateDirectories(True);
       openDlg.setAccessoryView(nil);
     end
     else
