@@ -301,9 +301,8 @@ var
 
   isMenuOn: Boolean;
 
-  oldMainMenu: NSMenu = nil;
   oldEditMenu: NSMenuItem = nil;
-  editMenuIndex: NSInteger;
+  editMenuIndex: NSInteger = -1;
 
   // setup panel and its accessory view
   procedure CreateAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
@@ -413,22 +412,11 @@ var
   class procedure ReplaceEditMenu();
   var
     mainMenu: NSMenu;
-    appMenu: NSMenuItem;
-    editMenu: NSMenuItem;
-    editSubmenu: NSMenu;
     editMenuTitle: NSString;
   begin
-    oldMainMenu:= NSApplication(NSApp).mainMenu;
-    mainMenu:= oldMainMenu;
-    if NOT Assigned(mainMenu) then begin
-      mainMenu:= NSMenu.alloc.init;
-      NSApplication(NSApp).setMainMenu(mainMenu);
-      mainMenu.release;
-
-      appMenu:= NSMenuItem.alloc.init;
-      mainMenu.addItem(appMenu);
-      appMenu.release;
-    end;
+    mainMenu:= NSApplication(NSApp).mainMenu;
+    if NOT Assigned(mainMenu) or (mainMenu.numberOfItems=0) then
+      Exit;
 
     oldEditMenu:= FindEditMenu(mainMenu, CocoaConst.NSSTR_EDIT_MENU);
     if Assigned(oldEditMenu) then begin
@@ -449,12 +437,12 @@ var
     mainMenu: NSMenu;
   begin
     mainMenu:= NSApplication(NSApp).mainMenu;
-    mainMenu.removeItemAtIndex(editMenuIndex);
+    if editMenuIndex > 0 then
+      mainMenu.removeItemAtIndex(editMenuIndex);
     if Assigned(oldEditMenu) then begin
       mainMenu.insertItem_atIndex(oldEditMenu, editMenuIndex);
       oldEditMenu.release;
     end;
-    NSApplication(NSApp).setMainMenu(oldMainMenu);
   end;
 
 begin
@@ -547,7 +535,6 @@ begin
         FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
     end;
     FileDialog.DoClose;
-
 
     // release everything
     saveDlg.release;
