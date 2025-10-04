@@ -368,7 +368,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ClientHeight = 19
       ClientWidth = 481
       ParentBackground = False
-      ParentColor = False
       ParentFont = False
       TabOrder = 1
       object rbNumDec: TRadioButton
@@ -379,7 +378,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbNumDec'
         Checked = True
-        ParentColor = False
         TabOrder = 0
         TabStop = True
         OnChange = FormatRadioChanged
@@ -867,7 +865,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ClientHeight = 19
       ClientWidth = 481
       ParentBackground = False
-      ParentColor = False
       ParentFont = False
       TabOrder = 1
       object cbNum2Visibile: TCheckBox
@@ -912,7 +909,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
         ClientHeight = 19
         ClientWidth = 481
         ParentBackground = False
-        ParentColor = False
         ParentFont = False
         TabOrder = 0
         object rbNum2Dec: TRadioButton
@@ -923,7 +919,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
           AutoSize = False
           Caption = 'rbNumDec'
           Checked = True
-          ParentColor = False
           TabOrder = 0
           TabStop = True
           OnChange = FormatRadioChanged
@@ -1390,7 +1385,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ClientHeight = 20
       ClientWidth = 481
       ParentBackground = False
-      ParentColor = False
       ParentFont = False
       TabOrder = 2
       object rbENumDec: TRadioButton
@@ -1401,7 +1395,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbNumDec'
         Checked = True
-        ParentColor = False
         TabOrder = 0
         TabStop = True
         OnChange = FormatRadioChanged
@@ -1707,7 +1700,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
       ClientHeight = 20
       ClientWidth = 481
       ParentBackground = False
-      ParentColor = False
       ParentFont = False
       TabOrder = 2
       object rbENumValDec: TRadioButton
@@ -1718,7 +1710,6 @@ object DisplayFormatFrame: TDisplayFormatFrame
         AutoSize = False
         Caption = 'rbNumDec'
         Checked = True
-        ParentColor = False
         TabOrder = 0
         TabStop = True
         OnChange = FormatRadioChanged
