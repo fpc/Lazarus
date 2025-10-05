@@ -67,6 +67,7 @@ type
     fcTokenList: TSourceTokenList;
 
     fiTokenCount: integer;
+    procedure ChangeFirstSolidTokenType(peNewTokenType: TTokenType);
     function IsEndOfTypeSection: Boolean;
     procedure RecogniseTypeHelper;
     procedure SplitGreaterThanOrEqual;
@@ -193,6 +194,7 @@ type
     procedure RecogniseCaseStmnt;
     procedure RecogniseForStmnt;
     procedure RecogniseIfStmnt;
+    procedure RecogniseIfExpr;
     procedure RecogniseRepeatStmnt;
     procedure RecogniseStructStmnt;
     procedure RecogniseWhileStmnt;
@@ -1124,6 +1126,15 @@ begin
   RecogniseHintDirectives;
 
   PopNode;
+end;
+
+procedure TBuildParseTree.ChangeFirstSolidTokenType(peNewTokenType: TTokenType);
+var
+  lc: TSourceToken;
+begin
+  lc := fcTokenList.FirstSolidToken;
+  if lc <> nil then
+    lc.TokenType := peNewTokenType;
 end;
 
 function TBuildParseTree.IsEndOfTypeSection: Boolean;
@@ -2865,6 +2876,7 @@ begin
     -> NOT Factor
     -> SetConstructor
     -> TypeId '(' Expression ')'
+    -> Ternary operator 'if' Expression 'then' Expression 'else' Expression
 
     What is that second line??
 
@@ -2933,6 +2945,10 @@ begin
     end;
 
     Recognise(ttCloseBracket);
+  end
+  else if (lt =  ttIf) then  // ternary operator  x:=  if expr then expr else expr
+  begin
+    RecogniseIfExpr;
   end
   else if (lt = ttNot) then
   begin
@@ -3547,6 +3563,24 @@ begin
       RecogniseExpr(True);
     end;
   end;
+end;
+
+procedure TBuildParseTree.RecogniseIfExpr;
+begin
+  // ternary operator  x:=  if expr then expr else expr
+  ChangeFirstSolidTokenType(ttMultiWordOperator);
+  Recognise(ttMultiWordOperator);
+  RecogniseExpr(True);
+  if fcTokenList.FirstSolidTokenType <> ttThen then
+    RaiseParseError(lisMsgUnexpectedTokenInFactor, fcTokenList.FirstSolidToken);
+  ChangeFirstSolidTokenType(ttMultiWordOperator);
+  Recognise(ttMultiWordOperator);
+  RecogniseExpr(True);
+  if fcTokenList.FirstSolidTokenType <> ttElse then
+    RaiseParseError(lisMsgUnexpectedTokenInFactor, fcTokenList.FirstSolidToken);
+  ChangeFirstSolidTokenType(ttMultiWordOperator);
+  Recognise(ttMultiWordOperator);
+  RecogniseExpr(True);
 end;
 
 procedure TBuildParseTree.RecogniseInline;
@@ -6131,7 +6165,9 @@ end;
 procedure TBuildParseTree.RecogniseActualParam;
 const
   EXPR_TYPES = [ttNumber, ttIdentifier, ttQuotedLiteralString,
-    ttPlus, ttMinus, ttOpenBracket, ttOpenSquareBracket, ttNot, ttInherited];
+    ttPlus, ttMinus, ttOpenBracket, ttOpenSquareBracket, ttNot, ttInherited,
+    ttIf   {start of ternary operator}
+    ];
 var
   lc: TSourceToken;
 begin

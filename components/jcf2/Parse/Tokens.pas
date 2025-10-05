@@ -292,8 +292,8 @@ type
     ttAnd,
     ttAs,
     ttDiv,
-    ttIn,
-    ttIs,
+    ttIn,       // "in" and "not in".
+    ttIs,       // "is" and "is not".
     ttMod,
     ttNot,
     ttOr,
@@ -323,7 +323,12 @@ type
     ttShl_ll,         // <<
     ttShr_gg,         // >>
     ttSetSymDif,
-    ttBackSlash { legal in char literals }
+    ttBackSlash, { legal in char literals }
+
+    // If, Then, Else, ... in expressions have different formatting rules.
+    // to not waste token type slots (we are near the 256 limit) put all in one token type.
+    // type assigned on parsing, changing ttIf, ttThen, ttElse, ... to ttMultiWordOperator.
+    ttMultiWordOperator    // ternary operator. if then else,...
     );
 
   TTokenTypeSet = set of TTokenType;
@@ -1074,12 +1079,12 @@ begin
     end;
     ttComment:
     begin
-      Result  := 'comment';
+      Result  := 'Comment';
       lbFound := True;
     end;
     ttConditionalCompilationRemoved:
     begin
-      Result  := 'cond compilation removed';
+      Result  := 'Cond compilation removed';
       lbFound := True;
     end
     else

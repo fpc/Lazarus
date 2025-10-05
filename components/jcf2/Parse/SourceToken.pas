@@ -141,6 +141,9 @@ const
 begin
   if TokenType = ttIdentifier then
     Result := SourceCode
+  // is, is not, in, not in,  ternary operator, ...
+  else if TokenType in [ttIs, ttIn, ttMultiWordOperator] then
+    Result := UpperCase(SourceCode)
   else
   begin
     Result := TokenTypeToString(TokenType);

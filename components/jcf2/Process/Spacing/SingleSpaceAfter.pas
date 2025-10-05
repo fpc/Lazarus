@@ -136,8 +136,12 @@ begin
   end;
 
   if pt.TokenType = ttOpenBracket then
+  begin
     if FormattingSettings.Spaces.SpaceAfterOpenBrackets then
       exit(true);
+  end
+  else if pt.TokenType = ttMultiWordOperator then
+    exit(True);
 
   { 'absolute' as a var directive }
   if (pt.TokenType = ttAbsolute) and pt.HasParentNode(nVarAbsolute) then

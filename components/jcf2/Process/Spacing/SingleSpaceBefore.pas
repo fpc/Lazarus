@@ -117,7 +117,9 @@ begin
       if pt.HasParentNode(nExpression) then
         exit(True);
     end;
-  end;
+  end
+  else if pt.TokenType = ttMultiWordOperator then
+    exit(True);
 
   if pt.HasParentNode(nLiteralString) then
     exit(False);

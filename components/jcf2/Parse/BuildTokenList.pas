@@ -657,8 +657,35 @@ begin
   { try to recognise the word as built in }
   pcToken.TokenType := TypeOfToken(pcToken.SourceCode);
   if pcToken.TokenType = ttUnknown then
-    pcToken.TokenType := ttIdentifier;
-
+    pcToken.TokenType := ttIdentifier
+  else if pcToken.TokenType = ttNot then    // maybe "not in" delphi 13+ operator
+  begin
+    if ForwardChar(0) = ' ' then  //I guess it only allow ONE space in between. ???
+    begin
+      if (UpCase(ForwardChar(1)) = 'I') and
+         (UpCase(ForwardChar(2)) = 'N') and
+         (not (CharIsWordChar(ForwardChar(3)) or CharIsDigit(ForwardChar(3)))) then
+      begin
+        pcToken.TokenType := ttIn;
+        pcToken.SourceCode := pcToken.SourceCode + ForwardChars(0,3);
+        Consume(3);
+      end;
+    end;
+  end
+  else if pcToken.TokenType = ttIs then     // maybe "is not" delphi 13+ operator
+  begin
+    if ForwardChar(0) = ' ' then  //I guess it only allow ONE space in between. ???
+    begin
+      if (UpCase(ForwardChar(1)) = 'N') and
+         (UpCase(ForwardChar(2)) = 'O') and
+         (UpCase(ForwardChar(3)) = 'T') and
+         (not (CharIsWordChar(ForwardChar(4)) or CharIsDigit(ForwardChar(4)))) then
+      begin
+        pcToken.SourceCode := pcToken.SourceCode + ForwardChars(0,4);
+        Consume(4);
+      end;
+    end;
+  end;
   Result := True;
 end;
 
@@ -1130,7 +1157,10 @@ end;
 
 function TBuildTokenList.ForwardChar(const piOffset: integer): Char;
 begin
-  Result := fsSourceCode[fiCurrentIndex + piOffset];
+  if (fiCurrentIndex + piOffset) <= Length(fsSourceCode) then
+    Result := fsSourceCode[fiCurrentIndex + piOffset]
+  else
+    Result := #0;
 end;
 
 function TBuildTokenList.ForwardChars(const piOffset, piCount: integer): String;
