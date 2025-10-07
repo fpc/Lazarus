@@ -120,6 +120,8 @@ type
   published
     procedure TestFindDeclaration_Program;
     procedure TestFindDeclaration_Basic;
+    procedure TestFindDeclaration_UnitIntfBeforeImplUses;
+    // todo: test impl uses unit name hides unit intf identifier
     procedure TestFindDeclaration_Proc_BaseTypes;
     procedure TestFindDeclaration_ProcNested;
     procedure TestFindDeclaration_ResultType;
@@ -795,6 +797,38 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_Basic;
 begin
   FindDeclarations('moduletests/fdt_basic.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_UnitIntfBeforeImplUses;
+var
+  Unit2: TCodeBuffer;
+begin
+  Unit2:=nil;
+  try
+    Unit2:=CodeToolBoss.CreateFile('unit2.pp');
+    Unit2.Source:='unit unit2;'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TBird = word;'+LineEnding
+      +'  test1 = word;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    StartUnit;
+    Add([
+    'type TBird = boolean;',
+    'implementation',
+    'uses unit2;',
+    'type'+LineEnding,
+    '  TEagle = TBird{declaration:test1.TBird};',
+    '  TRobin = test1.TBird{declaration:test1.TBird};',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    if Unit2<>nil then
+      Unit2.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_Proc_BaseTypes;

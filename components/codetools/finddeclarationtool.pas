@@ -5355,7 +5355,21 @@ begin
             if SearchInProperty then exit;
 
           ctnUsesSection:
-            begin
+            if ContextNode.Parent.Desc=ctnImplementation then begin
+              // implementation uses section:
+              // first search in own interface, then impl uses
+              if FindIdentifierInInterface(Self,Params)
+              and CheckResult(true,false) then
+                exit;
+              if FindIdentifierInUsesSection(ContextNode,Params,True)
+              and CheckResult(true,false) then
+                exit;
+              // continue in interface uses section or unit name
+              ContextNode:=FindMainUsesNode;
+              if ContextNode=nil then
+                ContextNode:=GetSourceNameNode;
+            end else begin
+              // program or unit interface uses section
               if FindIdentifierInUsesSection(ContextNode,Params,True)
               and CheckResult(true,false) then
                 exit;
