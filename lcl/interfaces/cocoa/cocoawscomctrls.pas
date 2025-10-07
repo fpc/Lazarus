@@ -528,22 +528,39 @@ begin
 end;
 
 class function TCocoaWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
-var
-  lControl: TCocoaTabControl;
-  lTabControl: TCustomTabControl = nil;
-  lTabStyle: NSTabViewType = NSTopTabsBezelBorder;
-begin
-  lTabControl := TCustomTabControl(AWinControl);
-  lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
-  lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
-  lControl.setTabViewType(lTabStyle);
-  lControl.lclEnabled := AWinControl.Enabled;
-  Result := TLCLHandle(lControl);
-  if Result <> 0 then
+  function CreateTabControl: TLCLHandle;
+  var
+    lControl: TCocoaTabControl;
+    lTabControl: TCustomTabControl = nil;
+    lTabStyle: NSTabViewType = NSTopTabsBezelBorder;
   begin
-    lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
-    lControl.setDelegate(lControl);
+    lTabControl := TCustomTabControl(AWinControl);
+    lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
+    lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
+    lControl.setTabViewType(lTabStyle);
+    lControl.lclEnabled := AWinControl.Enabled;
+    Result := TLCLHandle(lControl);
+    if Result <> 0 then
+    begin
+      lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
+      lControl.setDelegate(lControl);
+    end;
   end;
+
+  function CreateContainer: TLCLHandle;
+  var
+    contianer: TCocoaTabControlContainer;
+  begin
+    contianer:= TCocoaTabControlContainer.new;
+    contianer.lclInitWithCreateParams( AParams );
+    Result:= TLCLHandle( contianer );
+  end;
+
+begin
+  if AWinControl is TTabControl then
+    Result:= CreateContainer
+  else
+    Result:= CreateTabControl;
 end;
 
 class procedure TCocoaWSCustomTabControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
@@ -752,9 +769,12 @@ var
   dx, dy : double;
   cb: ICommonCallback;
 begin
-  if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  lTabControl := TCocoaTabControl(ATabControl.Handle);
+  if not Assigned(ATabControl) or not ATabControl.HandleAllocated then
+    Exit;
+  if ATabControl is TTabControl then
+    Exit;
 
+  lTabControl := TCocoaTabControl(ATabControl.Handle);
   lTabStyle := LCLTabPosToNSTabStyle(AShowTabs, ATabControl.BorderWidth, ATabControl.TabPosition);
   pr := lTabControl.lclGetFrameToLayoutDelta;
   lTabControl.setTabViewType(lTabStyle);

@@ -134,6 +134,20 @@ type
     procedure setFrame(arect: NSRect); override;
   end;
 
+  { TCocoaTabControlContainer }
+
+  // according to TTabControl (not Ancestors, not descendants)
+  // it's not a real Tab Control, just a contianer
+  // the real Tab Control is TNoteBookStringsTabControl
+
+  TCocoaTabControlContainer = objcclass(NSView)
+  private
+    _boxView: NSBox;
+  public
+    function init: id; override;
+    procedure setFrame(newValue: NSRect); override;
+  end;
+
 function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
 
 // Hack: The function attempts to determine the tabs view
@@ -421,6 +435,29 @@ begin
     arect.size.height := superView.frame.size.height;
 
   inherited setFrame(arect);
+end;
+
+{ TCocoaTabControlContainer }
+
+function TCocoaTabControlContainer.init: id;
+begin
+  Result:=inherited init;
+  _boxView:= TCocoaGroupBox.new;
+  _boxView.setTitle( NSString.string_ );
+  _boxView.setBorderType( NSLineBorder );
+  self.addSubview( _boxView );
+  _boxView.release;
+end;
+
+procedure TCocoaTabControlContainer.setFrame(newValue: NSRect);
+var
+  lclRect: TRect;
+begin
+  inherited;
+  newValue.origin:= NSZeroPoint;
+  newValue.size.height:= newValue.size.height + 4;
+  NSToLCLRect( newValue, self.frame.size.height, lclRect );
+  _boxView.lclSetFrame( lclRect );
 end;
 
 { TCocoaTabPage }
