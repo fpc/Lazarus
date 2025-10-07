@@ -1496,6 +1496,48 @@ end;
 
 {$endif}
 
+procedure UpdateColors(AWinControl: TWinControl);
+var
+  I: Integer;
+  control: TControl;
+  OrigColor: TColor;
+begin
+  for I := 0 to AWinControl.ControlCount-1 do
+  begin
+    control := AWinControl.Controls[I];
+    if control is TWinControl then
+    begin
+      OrigColor := control.Color;
+      control.Color := clDefault;
+      control.Color := OrigColor;
+      OrigColor := control.Font.Color;
+      control.Font.Color := clDefault;
+      control.Font.Color := OrigColor;
+      UpdateColors(TWinControl(control));
+    end;
+  end;
+end;
+
+procedure ThemeChange({%H-}ASettings: PGtkSettings; {%H-}pspec: PGParamSpec; {%H-}info: Pointer); cdecl;
+var
+  I: Integer;
+  form: TForm;
+begin
+  ReleaseAllStyles;
+  Gtk2WidgetSet.FreeStockItems;
+  Gtk2WidgetSet.FreeSystemBrushes;
+  Gtk2WidgetSet.InitSystemColors;
+  Gtk2WidgetSet.InitSystemBrushes;
+  Gtk2WidgetSet.InitStockItems;
+  for I := 0 to Screen.FormCount-1 do
+  begin
+    form := Screen.Forms[I];
+    UpdateColors(form);
+    form.NotifyControls(CM_PARENTCOLORCHANGED);
+  end;
+  ThemeServices.IntfDoOnThemeChange;
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtk2WidgetSet.Create
   Params:  None
@@ -1626,6 +1668,7 @@ begin
 {$endif}
 {$endif}
 
+  g_signal_connect_after(gtk_settings_get_default(), 'notify::gtk-theme-name', TGCallback(@ThemeChange), nil);
   GTK2WidgetSet := Self;
 end;
 
