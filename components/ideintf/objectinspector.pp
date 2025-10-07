@@ -3035,7 +3035,6 @@ var
 
   procedure DrawWidgetsets;
   var
-    OldFont: TFont;
     X, Y: Integer;
     lclPlatform: TLCLPlatform;
     ImagesRes: TScaledImageListResolution;
@@ -3043,9 +3042,6 @@ var
     ImagesRes := IDEImages.Images_16.ResolutionForPPI[0, Font.PixelsPerInch, GetCanvasScaleFactor];
     X := NameRect.Right - 2;
     Y := (NameRect.Top + NameRect.Bottom - ImagesRes.Height) div 2;
-    OldFont:=Canvas.Font;
-    Canvas.Font:=FNameFont;
-    Canvas.Font.Color := clRed;
     for lclPlatform := High(TLCLPlatform) downto Low(TLCLPlatform) do
     begin
       if lclPlatform in CurRow.FWidgetSets then
@@ -3055,7 +3051,6 @@ var
           IDEImages.LoadImage('issue_'+LCLPlatformDirNames[lclPlatform]));
       end;
     end;
-    Canvas.Font:=OldFont;
   end;
 
   procedure DrawValue(DrawState: TPropEditDrawState);
