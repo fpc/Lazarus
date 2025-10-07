@@ -3540,7 +3540,13 @@ begin
       Include(AState,pedsInComboList);
 
     if not(odBackgroundPainted in State) then
+      ValueComboBox.Canvas.FillRect(ARect)
+    else
+    if not(odSelected in State) then
+    begin
+      ValueComboBox.Canvas.Brush.Color:=clWindow;
       ValueComboBox.Canvas.FillRect(ARect);
+    end;
 
     FontColor := ValueComboBox.Canvas.Font.Color;
     ValueComboBox.Canvas.Font.Assign(FDefaultValueFont);
