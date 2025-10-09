@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   // aissist
-  AIClient, FrmAixplain, StrAIssist, LazLoggerBase, CTXMLFixFragment;
+  LLM.Client, FrmAixplain, StrAIssist, LazLoggerBase, CTXMLFixFragment;
 
 const
   SDescribeProcPrompt = 'Explain the following function in one sentence:';
@@ -23,10 +23,10 @@ type
   protected
     FSource: string;
     procedure CreatePrompt; override;
-    procedure HandleAIResponse(Sender: TObject; aResponses: TPromptResponseArray); override;
+    procedure HandlePromptResult(Sender: TObject; aResult: TSendPromptResult);
   public
     Description: string;
-    function Describe(aAIClient: TAIClient; const Src: string; out aDescription: string): boolean; virtual;
+    function Describe(aLLMClient: TLLMClient; const Src: string; out aDescription: string): boolean; virtual;
   end;
 
 var
@@ -70,7 +70,8 @@ begin
   end;
 end;
 
-procedure TAIssistFPDocEditDlg.HandleAIResponse(Sender: TObject; aResponses: TPromptResponseArray);
+
+procedure TAIssistFPDocEditDlg.HandlePromptResult(Sender: TObject; aResult: TSendPromptResult);
 
 var
   S : TStrings;
@@ -78,14 +79,14 @@ var
 begin
   FBusy:=False;
   ActivateResponse;
-  if Length(AResponses)=0 then
+  if (not aResult.Success) or (Length(AResult.Value)=0) then
     begin
     Description:='';
     mExplain.Lines.Add(SNoExplanation);
     end
   else
     begin
-    Description:=aResponses[0].Response;
+    Description:=aResult.Value[0].Text;
 
     FixFPDocFragment(Description,true,true,nil,[fffRemoveWrongCloseTags]);
 
@@ -101,16 +102,14 @@ begin
   DebugLn(['TAIssistFPDocEditDlg.HandleAIResponse Description="',Description,'"']);
 end;
 
-function TAIssistFPDocEditDlg.Describe(aAIClient: TAIClient; const Src: string; out
+function TAIssistFPDocEditDlg.Describe(aLLMClient: TLLMClient; const Src: string; out
   aDescription: string): boolean;
 begin
   Result:=false;
   FSource:=Src;
   aDescription:='';
-
-  FAIClient:=aAIClient;
-  FAIClient.OnError:=@HandleAIError;
-  FAIClient.SynchronizeCallBacks:=True;
+  FLLMClient:=aLLMClient;
+  FLLMClient.SynchronizeCallBacks:=True;
   CreatePrompt;
   SendPrompt;
 

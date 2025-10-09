@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="lazllms"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="Claude;ChatGPT;OLLama;Gemini;3_2_X"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="Claude/claude.Dto.pas"/>
+        <UnitName Value="claude.Dto"/>
+      </Item>
+      <Item>
+        <Filename Value="Claude/claude.Serializer.pas"/>
+        <UnitName Value="claude.Serializer"/>
+      </Item>
+      <Item>
+        <Filename Value="Claude/claude.Service.Impl.pas"/>
+        <UnitName Value="claude.Service.Impl"/>
+      </Item>
+      <Item>
+        <Filename Value="Claude/claude.Service.Intf.pas"/>
+        <UnitName Value="claude.Service.Intf"/>
+      </Item>
+      <Item>
+        <Filename Value="ChatGPT/chatgpt.Dto.pas"/>
+        <UnitName Value="chatgpt.Dto"/>
+      </Item>
+      <Item>
+        <Filename Value="ChatGPT/chatgpt.Serializer.pas"/>
+        <UnitName Value="chatgpt.Serializer"/>
+      </Item>
+      <Item>
+        <Filename Value="ChatGPT/chatgpt.Service.Impl.pas"/>
+        <UnitName Value="chatgpt.Service.Impl"/>
+      </Item>
+      <Item>
+        <Filename Value="ChatGPT/chatgpt.Service.Intf.pas"/>
+        <UnitName Value="chatgpt.Service.Intf"/>
+      </Item>
+      <Item>
+        <Filename Value="OLLama/ollama.Dto.pas"/>
+        <UnitName Value="ollama.Dto"/>
+      </Item>
+      <Item>
+        <Filename Value="OLLama/ollama.Serializer.pas"/>
+        <UnitName Value="ollama.Serializer"/>
+      </Item>
+      <Item>
+        <Filename Value="OLLama/ollama.Service.Impl.pas"/>
+        <UnitName Value="ollama.Service.Impl"/>
+      </Item>
+      <Item>
+        <Filename Value="OLLama/ollama.Service.Intf.pas"/>
+        <UnitName Value="ollama.Service.Intf"/>
+      </Item>
+      <Item>
+        <Filename Value="Gemini/Gemini.Dto.pas"/>
+        <UnitName Value="Gemini.Dto"/>
+      </Item>
+      <Item>
+        <Filename Value="Gemini/Gemini.Persister.pas"/>
+        <UnitName Value="Gemini.Persister"/>
+      </Item>
+      <Item>
+        <Filename Value="Gemini/Gemini.Service.Impl.pas"/>
+        <UnitName Value="Gemini.Service.Impl"/>
+      </Item>
+      <Item>
+        <Filename Value="Gemini/Gemini.Service.Intf.pas"/>
+        <UnitName Value="Gemini.Service.Intf"/>
+      </Item>
+      <Item>
+        <Filename Value="llm.client.pas"/>
+        <UnitName Value="LLM.Client"/>
+      </Item>
+      <Item>
+        <Filename Value="OLLama/llm.ollama.pas"/>
+        <UnitName Value="llm.ollama"/>
+      </Item>
+      <Item>
+        <Filename Value="Claude/llm.claude.pas"/>
+        <UnitName Value="llm.claude"/>
+      </Item>
+      <Item>
+        <Filename Value="ChatGPT/llm.chatgpt.pas"/>
+        <UnitName Value="llm.chatgpt"/>
+      </Item>
+      <Item>
+        <Filename Value="Gemini/llm.gemini.pas"/>
+        <UnitName Value="llm.gemini"/>
+      </Item>
+      <Item>
+        <Filename Value="reglazllm.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="reglazllm"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

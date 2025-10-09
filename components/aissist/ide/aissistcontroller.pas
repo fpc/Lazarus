@@ -22,7 +22,7 @@ uses
   LazConfigStorage, LazLoggerBase, CodeTree, CodeToolManager, PascalParserTool,
   PascalReaderTool,
   // aissist
-  AIClient, JanAIProtocol,
+  LLM.Client, LLM.ollama, llm.chatgpt, llm.claude, llm.gemini,
   // laz_aissist
   StrAIssist, FrmAixplain, FrmAIssistFPDocEdit;
 
@@ -34,7 +34,7 @@ Type
   TAIssistController = Class(TComponent)
   private
     FConfigFrame: TAbstractIDEOptionsEditorClass;
-    FSettings: TAIServerSettings;
+    FSettings: TLLMServerSettings;
     class var _Instance: TAIssistController;
   Public
     class constructor Init;
@@ -47,17 +47,19 @@ Type
     Function ShowConfig: Boolean;
     Procedure LoadConfig;
     Procedure SaveConfig;
-    Function CreateAIClient : TAIClient;
+    Function CreateLLMClient : TLLMClient;
     Function ExplainCurrentSelection (aEdit : TSourceEditorInterface): Boolean;
     Procedure FPDocEditorInsertTextClick(var Params: TFPDocEditorTxtBtnParams);
     Function Configured : Boolean;
-    Property Settings : TAIServerSettings Read FSettings;
+    Property Settings : TLLMServerSettings Read FSettings;
     Property ConfigFrame : TAbstractIDEOptionsEditorClass Read FConfigFrame Write FConfigFrame;
   end;
 
 Function AIController : TAIssistController;
 
 implementation
+
+uses strutils;
 
 const
   DefaultMaxLength = 2048;
@@ -82,8 +84,8 @@ end;
 constructor TAIssistController.Create(aOwner: TComponent);
 begin
   inherited create(aOwner);
-  FSettings:=TAIServerSettings.Create;
-  FSettings.Protocol:=TJanAIServerProtocol.protocolname;
+  FSettings:=TLLMServerSettings.Create;
+  FSettings.Protocol:=TOLLamaProtocol.ProtocolName;
 end;
 
 destructor TAIssistController.Destroy;
@@ -105,6 +107,7 @@ end;
 procedure TAIssistController.LoadConfig;
 var
   Storage : TConfigStorage;
+  S : String;
 begin
   Storage:=GetIDEConfigStorage(SConfigFile, True);
   with Storage do
@@ -113,6 +116,12 @@ begin
       Settings.BaseURL := GetValue(KeyServerURL,'');
       Settings.DefaultModel:= GetValue(KeyDefaultModel,'');
       Settings.DefaultMaxLength:= GetValue(KeyDefaultMaxLength,DefaultMaxLength);
+      // Trivial Decode
+      S:=GetValue(KeyAuthorizationKey,'');
+      if S<>'' then
+        Settings.AuthorizationKey:=XorDecode('FPC',S)
+      else
+        Settings.AuthorizationKey:='';
     finally
       Free;
     end;
@@ -121,24 +130,31 @@ end;
 procedure TAIssistController.SaveConfig;
 var
   Storage : TConfigStorage;
+  S : String;
 begin
   Storage:=GetIDEConfigStorage(SConfigFile, True);
   with Storage do
     try
       SetDeleteValue(KeyServerURL,Settings.BaseURL,'');
-      SetDeleteValue(KeyProtocol,Settings.Protocol,TJanAIServerProtocol.protocolname);
+      SetDeleteValue(KeyProtocol,Settings.Protocol,TOLLamaProtocol.ProtocolName);
       SetDeleteValue(KeyDefaultModel,Settings.DefaultModel,'');
       SetDeleteValue(KeyDefaultMaxLength,Settings.DefaultMaxLength, DefaultMaxLength);
+      // trivial encode
+      if Settings.AuthorizationKey<>'' then
+        S:=XorEncode('FPC',Settings.AuthorizationKey)
+      else
+        S:='';
+      SetDeleteValue(KeyAuthorizationKey,S,'');
     finally
       Free;
     end;
 end;
 
-function TAIssistController.CreateAIClient: TAIClient;
+function TAIssistController.CreateLLMClient: TLLMClient;
 begin
   Result:=Nil;
   If Not Configured then exit;
-  Result:=TAIClient.Create(Self);
+  Result:=TLLMClient.Create(Self);
   Result.Settings:=Self.Settings;
 end;
 
@@ -146,7 +162,7 @@ function TAIssistController.ExplainCurrentSelection(aEdit : TSourceEditorInterfa
 
 var
   frm : TAIxplainForm;
-  Clnt : TAIClient;
+  Clnt : TLLMClient;
   lPos,Caret : TPoint;
 
 begin
@@ -158,7 +174,7 @@ begin
   Caret:=aEdit.CursorScreenXY;
   lPos:=aEdit.EditorControl.ClientToScreen(aEdit.ScreenToPixelPosition(Caret));
   Frm.SetBounds(lPos.X,lPos.Y,Frm.Width,Frm.Height);
-  Clnt:=CreateAIClient;
+  Clnt:=CreateLLMClient;
   Frm.Explain(aEdit,Clnt);
   frm.Show;
 end;
@@ -175,7 +191,7 @@ var
   Node, ProcNode: TCodeTreeNode;
   Src, NewTxt: String;
   aForm: TAIssistFPDocEditDlg;
-  aClient: TAIClient;
+  aClient: TLLMClient;
 begin
   Params.Success:=false;
   Tool:=TCodeTool(Params.CodeTool);
@@ -211,7 +227,7 @@ begin
 
   aForm:=TAissistFPDocEditDlg.Create(nil);
   try
-    aClient:=CreateAIClient;
+    aClient:=CreateLLMClient;
     if aForm.Describe(aClient,Src,NewTxt) then
     begin
       Params.Selection:=NewTxt;
@@ -225,7 +241,7 @@ end;
 function TAIssistController.Configured: Boolean;
 begin
   Result:=(Settings.BaseURL<>'');
-  Result:=Result and ((Settings.Protocol<>'') and (TAIClient.FindProtocolClass(Settings.Protocol)<>Nil));
+  Result:=Result and ((Settings.Protocol<>'') and (TLLMClient.FindProtocolClass(Settings.Protocol)<>Nil));
   Result:=Result and (Settings.DefaultModel<>'');
   Result:=Result and (Settings.DefaultMaxLength>500);
 end;

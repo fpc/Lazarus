@@ -19,7 +19,7 @@ unit JanAIProtocol;
 interface
 
 uses
-  Classes, SysUtils, fpjson, AIClient, JanAI_V1;
+  Classes, SysUtils, fpjson, fpwebclient, AIClient, JanAI_V1;
 
 type
 
@@ -27,7 +27,8 @@ type
 
   TJanAIServerProtocol = Class(TAIProtocol)
   public
-    function CreatePromptRequest(const aModel, aPrompt: string; aMaxResponseLength: Cardinal): TJSONData; override;
+    procedure AuthenticateRequest(const aRequest: TWebClientRequest; const aKey : String); override;
+    function CreatePromptRequest(const aPrompt: string; aMaxResponseLength: Cardinal): TJSONData; override;
     function ResponseToPromptResponses(aResponse: TJSONData; out Responses: TPromptResponseArray): boolean; override;
     function ResponseToModels(aResponse: TJSONData; out Models: TModelDataArray): boolean; override;
     function GetAIURL(aURL: TAIURL): String; override;
@@ -81,9 +82,18 @@ begin
     auListModels : Result:='models';
     auPrompt : Result:='chat/completions';
   end;
+  Result:=BaseURL+Result;
 end;
 
-function TJanAIServerProtocol.CreatePromptRequest(const aModel, aPrompt: string; aMaxResponseLength: Cardinal): TJSONData;
+procedure TJanAIServerProtocol.AuthenticateRequest(const aRequest: TWebClientRequest; const aKey: String);
+begin
+  inherited AuthenticateRequest(aRequest, aKey);
+  Writeln('Adding key',aKey);
+  if aKey<>'' then
+    aRequest.Headers.Add('Authorization: Bearer '+aKey);
+end;
+
+function TJanAIServerProtocol.CreatePromptRequest(const aPrompt: string; aMaxResponseLength: Cardinal): TJSONData;
 
 var
   Prompt : TCompletionRequest;
@@ -101,7 +111,7 @@ begin
     Msgs[0]:=Item;
     Prompt.messages:=Msgs;
     Prompt.max_tokens:=aMaxResponseLength;
-    Prompt.model:=aModel;
+    Prompt.model:=Self.Model;
     Result:=Prompt.SaveToJSON;
   finally
     Prompt.Free;

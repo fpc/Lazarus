@@ -25,6 +25,7 @@ const
   KeyProtocol = 'Protocol';
   KeyDefaultModel = 'DefaultModel';
   KeyDefaultMaxLength = 'DefaultMaxLength';
+  KeyAuthorizationKey = 'AuthorizationKey';
 
 Resourcestring
   SAIssistChatMenuCaption = 'AIssist chat';

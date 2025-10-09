@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ButtonPanel,
   ComCtrls, Buttons,
-  typingindicator, SrcEditorIntf, AIClient;
+  typingindicator, SrcEditorIntf, LLM.Client;
 
 type
 
@@ -27,18 +27,17 @@ type
     procedure pnlThinkingClick(Sender: TObject); virtual;
     procedure SBRefreshClick(Sender: TObject); virtual;
   protected
-    FAIClient: TAIClient;
+    FLLMClient: TLLMClient;
     FBusy : Boolean;
     FEditor: TSourceEditorInterface;
     FTyping : TTypingIndicator;
     procedure ActivateResponse; virtual;
     procedure CreatePrompt; virtual;
     function GetPrompt: string; virtual;
-    procedure HandleAIError(Sender: TObject; aErrorData: TAIRequestErrorData); virtual;
-    procedure HandleAIResponse(Sender: TObject; aResponses: TPromptResponseArray); virtual;
+    procedure HandlePromptResult(Sender: TObject; aResult: TSendPromptResult);
     procedure SendPrompt; virtual;
   public
-    procedure Explain(aEditor: TSourceEditorInterface; aAIClient: TAIClient); virtual;
+    procedure Explain(aEditor: TSourceEditorInterface; aLLMClient: TLLMClient); virtual;
   end;
 
 var
@@ -107,7 +106,7 @@ begin
   sbRefresh.Caption:=EditPromptCaption;
 end;
 
-procedure TAIxplainForm.HandleAIResponse(Sender: TObject; aResponses: TPromptResponseArray);
+procedure TAIxplainForm.HandlePromptResult(Sender: TObject; aResult: TSendPromptResult);
 
 var
   S : TStrings;
@@ -115,7 +114,7 @@ var
 begin
   FBusy:=False;
   ActivateResponse;
-  if (Length(AResponses)=0) then
+  if (not aResult.Success) or (Length(aResult.Value)=0) then
     begin
     mExplain.Lines.Add(SNoExplanation);
     end
@@ -124,7 +123,7 @@ begin
     mExplain.Lines.Add(SAIExplanation);
     S:=TStringList.Create;
     try
-      S.Text:=aResponses[0].Response;
+      S.Text:=aResult.Value[0].Text;
       mExplain.Lines.AddStrings(S);
     finally
       S.Free;
@@ -132,23 +131,13 @@ begin
     end;
 end;
 
-procedure TAIxplainForm.HandleAIError(Sender: TObject; aErrorData: TAIRequestErrorData);
-begin
-  ActivateResponse;
-  FBusy:=False;
-  mExplain.Lines.Add(SErrorTitle);
-  mExplain.Lines.Add(SErrorIntro);
-  mExplain.Lines.Add(SErrorInfo,[aErrorData.Error]);
-  mExplain.Lines.Add(SErrorContext,[aErrorData.Method,aErrorData.URL]);
-  // Body ?
-end;
-
-procedure TAIxplainForm.Explain(aEditor: TSourceEditorInterface; aAIClient: TAIClient);
+procedure TAIxplainForm.Explain(aEditor: TSourceEditorInterface; aLLMClient: TLLMClient);
 begin
   FEditor:=aEditor;
-  FAIClient:=aAIClient;
-  FAIClient.OnError:=@HandleAIError;
-  FAIClient.SynchronizeCallBacks:=True;
+  FLLMClient:=aLLMClient;
+  FLLMClient.OnPromptResult:=@HandlePromptResult;
+  FLLMClient.UseThreads:=True;
+  FLLMClient.SynchronizeCallBacks:=True;
   CreatePrompt;
   SendPrompt;
 end;
@@ -165,7 +154,7 @@ begin
   if FBusy then
     exit;
   FBusy:=True;
-  FAIClient.SendPrompt(@HandleAIResponse,GetPrompt);
+  FLLMClient.SendPrompt(GetPrompt,@HandlePromptResult);
   mExplain.Clear;
   mExplain.Visible:=False;
   SBRefresh.Visible:=False;

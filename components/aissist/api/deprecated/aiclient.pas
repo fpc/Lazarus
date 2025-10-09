@@ -28,6 +28,7 @@ Type
 
   TAIServerSettings = class(TPersistent)
   private
+    FAuthorizationKey: String;
     FBaseURL: String;
     FDefaultMaxLength: Integer;
     FDefaultModel: String;
@@ -43,6 +44,7 @@ Type
     Property BaseURL : String Read FBaseURL Write SetBaseURL;
     Property DefaultModel : String Read FDefaultModel Write FDefaultModel;
     Property DefaultMaxLength : Integer Read FDefaultMaxLength Write FDefaultMaxLength;
+    Property AuthorizationKey : String Read FAuthorizationKey Write FAuthorizationKey;
     Property Protocol : String Read FProtocol Write SetProtocol;
   end;
 
@@ -54,7 +56,7 @@ Type
   TModelDataArray = Array of TModelData;
 
   TPromptResponse = record
-    // For now only response text ?
+    Role : string;
     Response : string;
   end;
   TPromptResponseArray  = Array of TPromptResponse;
@@ -81,17 +83,34 @@ Type
 
   TAIProtocol = Class(TObject)
   private
+    FBaseURL: String;
     FClient: TCustomAIClient;
+    FModel : String;
+  protected
+    procedure SetBaseURL(const aValue: String); virtual;
+    procedure SetModel(const aModel : String); virtual;
   public
     constructor Create(aClient : TCustomAIClient); virtual;
     // Convert responses to user data
+    // Response to model
     Function ResponseToModels(aResponse : TJSONData; out Models: TModelDataArray) : boolean; virtual; abstract;
+    // Response to prompt response(s)
     Function ResponseToPromptResponses(aResponse : TJSONData; out Responses: TPromptResponseArray) : boolean; virtual; abstract;
-    function CreatePromptRequest(const aModel,aPrompt : string; aMaxResponseLength : Cardinal) : TJSONData; virtual; abstract;
-    // All URLS are relative to the base URL, they MUST NOT start with /
+    // Create a prompt request
+    function CreatePromptRequest(const aPrompt : string; aMaxResponseLength : Cardinal) : TJSONData; virtual; abstract;
+    // Returned URL must be complete URL starting at BaseURL
     function GetAIURL(aURL : TAiUrl) : String; virtual; abstract;
+    // set the authorization key as required by the AI server API.
+    procedure AuthenticateRequest(const aRequest: TWebClientRequest; const aKey : String); virtual;
+    // User selected model
+    property Model : String Read FModel write SetModel;
+    // Sets the base URL as specified by user
+    property BaseURL : String Read FBaseURL Write SetBaseURL;
+    // Protocol name
     class function ProtocolName : string; virtual;
+    // Default base URL to specify to the user.
     class function DefaultURL : String; virtual;
+    // AI client that is controlling this protocol instance.
     property Client : TCustomAIClient Read FClient;
   end;
   TAIProtocolClass = Class of TAIProtocol;
@@ -206,6 +225,7 @@ begin
     FDefaultMaxLength:=aSource.FDefaultMaxLength;
     FBaseURL:=aSource.BaseURL;
     Protocol:=aSource.FProtocol; // trigger onchange
+    AuthorizationKey:=aSource.AuthorizationKey;
   end else
     inherited Assign(Source);
 end;
@@ -215,6 +235,22 @@ end;
 constructor TAIProtocol.Create(aClient: TCustomAIClient);
 begin
   FClient:=aClient;
+end;
+
+procedure TAIProtocol.SetBaseURL(const aValue: String);
+begin
+  if FBaseURL=aValue then Exit;
+  FBaseURL:=aValue;
+end;
+
+procedure TAIProtocol.SetModel(const aModel: String);
+begin
+  FModel:=aModel;
+end;
+
+procedure TAIProtocol.AuthenticateRequest(const aRequest: TWebClientRequest; const aKey: String);
+begin
+  // Do nothing
 end;
 
 class function TAIProtocol.ProtocolName: string;
@@ -299,6 +335,7 @@ begin
   CheckProtocol;
   json:=Nil;
   try
+    Writeln('Response : ',aResponse.Response.GetContentAsString);
     JSON:=GetJSON(aResponse.Response.GetContentAsString);
     if Protocol.ResponseToModels(JSON,aList) then
       begin
@@ -337,6 +374,7 @@ begin
   Context.Request:=FWebClient.CreateRequest;
   Context.Method:=aMethod;
   Context.URL:=aURL;
+  Protocol.AuthenticateRequest(Context.Request,Settings.AuthorizationKey);
   Data:=TAIRequestData.Create(Context);
   // AI specific
   Data.UserCallbackMethod:=aUserCallBack;
@@ -416,6 +454,7 @@ begin
   Context.Client:=FWebClient;
   Context.Request:=FWebClient.CreateRequest;
   Context.Request.SetContentFromString(aJSON.AsJSON);
+  Protocol.AuthenticateRequest(Context.Request,Settings.AuthorizationKey);
 //  Writeln('Request: ',Context.Request.GetContentAsString);
 
   Context.Request.Headers.Values['Content-Type']:='application/json';
@@ -602,7 +641,8 @@ begin
   lModel:=aModel;
   if lModel='' then
     lModel:=Settings.DefaultModel;
-  JSON:=Protocol.CreatePromptRequest(lModel,aPrompt,lMaxLen);
+  Protocol.SetModel(lModel);
+  JSON:=Protocol.CreatePromptRequest(aPrompt,lMaxLen);
   try
     ServerDataRequest('POST',RequestURL,JSON,@HandlePromptResponse,TMethod(aCallBack));
   finally

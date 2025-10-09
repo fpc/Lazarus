@@ -16,7 +16,7 @@
     <Files>
       <Item>
         <Filename Value="frmaissistchat.pas"/>
-        <UnitName Value="frmaissistchat"/>
+        <UnitName Value="FrmAIssistChat"/>
       </Item>
       <Item>
         <Filename Value="reglazaissist.pas"/>
@@ -37,14 +37,17 @@
       </Item>
       <Item>
         <Filename Value="frmaixplain.pas"/>
-        <UnitName Value="frmaixplain"/>
+        <UnitName Value="FrmAixplain"/>
       </Item>
       <Item>
         <Filename Value="frmaissistfpdocedit.pas"/>
-        <UnitName Value="frmaissistfpdocedit"/>
+        <UnitName Value="FrmAIssistFPDocEdit"/>
       </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="lazllms"/>
+      </Item>
       <Item>
         <PackageName Value="CodeTools"/>
       </Item>
@@ -53,12 +56,6 @@
       </Item>
       <Item>
         <PackageName Value="LazControlDsgn"/>
-      </Item>
-      <Item>
-        <PackageName Value="janai"/>
-      </Item>
-      <Item>
-        <PackageName Value="aissist"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>

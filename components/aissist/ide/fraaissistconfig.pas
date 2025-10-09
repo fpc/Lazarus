@@ -16,7 +16,7 @@ unit fraAIssistConfig;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, AIClient,
+  Classes, SysUtils, Forms, Controls, StdCtrls, llm.Client,
   IDEOptionsIntf, IDEOptEditorIntf, LazNumEdit;
 
 type
@@ -27,7 +27,9 @@ type
     btnRefresh: TButton;
     CBProtocol: TComboBox;
     cbModel: TComboBox;
+    edtAPIKey: TEdit;
     edtURL: TEdit;
+    Label1: TLabel;
     lblProtocol: TLabel;
     lblModel: TLabel;
     edtMaxResponseLength: TLazIntegerEdit;
@@ -37,11 +39,11 @@ type
     procedure HandleRefreshClick(Sender: TObject);
   private
     FBusy : Boolean;
-    FClient : TAIClient;
+    FClient : TLLMClient;
     procedure CheckURL;
     function ExtractModelID(const S: String): string;
     procedure GetModelNames;
-    procedure HandleModels(Sender: TObject; aModels: TModelDataArray);
+    procedure HandleModels(Sender: TObject; aModels: TGetModelsResult);
   public
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -59,21 +61,25 @@ uses StrAIssist, AIssistController;
 
 { TAIAssistentConfigFrame }
 
-procedure TAIAssistentConfigFrame.HandleModels(Sender: TObject; aModels: TModelDataArray);
+procedure TAIAssistentConfigFrame.HandleModels(Sender: TObject; aModels: TGetModelsResult);
 
 var
   aModel : TModelData;
   Idx,I : Integer;
+  lItem : string;
 begin
+  Writeln('Handling models');
   FBusy:=False;
   Idx:=-1;
   With cbModel.Items do
     begin
     BeginUpdate;
     Clear;
-    For aModel in aModels do
+    For aModel in aModels.Value do
       begin
-      I:=Add('['+aModel.ID+'] '+aModel.Name);
+      lItem:='['+aModel.ID+'] '+aModel.Name;
+      Writeln('Adding ',lItem);
+      I:=Add(lItem);
       if SameText(aModel.ID,AIController.Settings.DefaultModel) then
         Idx:=I;
       end;
@@ -91,13 +97,14 @@ end;
 procedure TAIAssistentConfigFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   if ADialog<>Nil then ; // Silence compiler warning
-  TAIClient.GetProtocolList(CBProtocol.Items);
+  TLLMClient.GetProtocolList(CBProtocol.Items);
 end;
 
 procedure TAIAssistentConfigFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   CBProtocol.ItemIndex:=CBProtocol.Items.IndexOf(AIController.Settings.Protocol);
   EdtURL.Text:=AIController.Settings.BaseURL;
+  edtAPIKey.Text:=AIController.Settings.AuthorizationKey;
   CheckURL;
   cbModel.Text:=AIController.Settings.DefaultModel;
   edtMaxResponseLength.Value:=AIController.Settings.DefaultMaxLength;
@@ -119,12 +126,12 @@ end;
 procedure TAIAssistentConfigFrame.CheckURL;
 
 var
-  lClass : TAIProtocolClass;
+  lClass : TLLMProtocolClass;
 
 begin
   if edtURL.Text<>'' then
     exit;
-  lClass:=TAIClient.FindProtocolClass(CBProtocol.Text);
+  lClass:=TLLMClient.FindProtocolClass(CBProtocol.Text);
   if lClass<>Nil then
     edtURL.Text:=lClass.DefaultURL;
 end;
@@ -133,9 +140,10 @@ procedure TAIAssistentConfigFrame.GetModelNames;
 begin
   if FBusy then exit;
   if not Assigned(FClient) then
-    FClient:=TAIClient.Create(Self);
+    FClient:=TLLMClient.Create(Self);
   FClient.Settings.Protocol:=cbProtocol.Text;
   FClient.Settings.BaseURL:=edtURL.Text;
+  FClient.Settings.AuthorizationKey:=edtAPIKey.Text;
   FClient.SynchronizeCallBacks:=True;
   FBusy:=True;
   FClient.GetModels(@HandleModels);
@@ -159,6 +167,7 @@ procedure TAIAssistentConfigFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   AIController.Settings.Protocol:=cbProtocol.Text;
   AIController.Settings.BaseURL := EdtURL.Text;
+  AIController.Settings.AuthorizationKey := edtAPIKey.Text;
   AIController.Settings.DefaultModel := ExtractModelID(cbModel.Text);
   AIController.Settings.DefaultMaxLength := edtMaxResponseLength.Value;
   AIController.SaveConfig;
