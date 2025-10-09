@@ -23,7 +23,7 @@ unit LLM.Client;
 interface
 
 uses
-  Types, Classes, SysUtils, fpjson, fpwebclient, fpasyncwebclient;
+  Types, Classes, SysUtils, fpjson, fpwebclient;
 
 Type
   ELLMServer = Class(Exception);
