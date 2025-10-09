@@ -1620,7 +1620,6 @@ var
 
 begin
   GC:=TGtkDeviceContext(DC).GC;
-  GDIColor:=nil;
   with TGtkDeviceContext(DC) do
   begin
     case ColorType of
@@ -1628,24 +1627,12 @@ begin
       dccCurrentTextColor: GDIColor:=@CurrentTextColor;
       dccGDIBrushColor   : GDIColor:=@(GetBrush^.GDIBrushColor);
       dccGDIPenColor     : GDIColor:=@(GetPen^.GDIPenColor);
+      else exit;
     end;
-  end;
-  if GDIColor=nil then exit;
-  
-  // FPC bug workaround:
-  // clScrollbar = $80000000 can't be used in case statements
-  if TColor(GDIColor^.ColorRef)=clScrollbar then
-  begin
-    //often have a BK Pixmap
-    if IsSolidBrush then
-      EnsureAsGCValues
-    else
-      EnsureAsColor;//GC's with Pixmaps can't work w/Hatch's (yet)
-    exit;
   end;
 
   case TColor(GDIColor^.ColorRef) of
-    //clScrollbar: see above
+    clScrollbar,
     clInfoBk,
     clMenu,
     clHighlight,
