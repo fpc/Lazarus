@@ -3818,37 +3818,29 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Function: ExtTextOut
-  Params:  none
-  Returns: Nothing
+function FindLineLen(p: PChar; Max: integer): integer;
+begin  // Find the index of linefeed or -1 if there is none.
+  Result:=0;
+  while Result<Max do begin
+    if p[Result] in [#10,#13] then exit;
+    inc(Result);
+  end;
+  Result:=-1;
+end;
 
-    gdk_drawable_get_size(pixmap, @Width, @Height);
-
- ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   DevCtx: TGtkDeviceContext absolute DC;
-  
-  LineStart, LineEnd, StrEnd: PChar;
-  Width, Height: Integer;
-  TopY, LineLen, LineHeight, SavedDC: Integer;
-  TxtPt: TPoint;
-  DCOrigin: TPoint;
-  Foreground, BackgroundColor: PGDKColor;
-  CurDx: PInteger;
-  CurStr: PChar;
-  R: TRect;
+  Foreground, Background: PGDKColor;
 
-  procedure DoTextOut(X,Y : Integer; Str: Pchar; CurCount: Integer);
+  procedure DoTextOut(CurStr: Pchar; CurCount: Integer);
   var
-    CurScreenX: LongInt;
-    CharLen, i: LongInt;
+    ScrX, CharLen, i: LongInt;
   begin
-    if (Dx <> nil) then
+    if Dx <> nil then
     begin
-      CurScreenX := X;
+      ScrX := X;
       while CurCount > 0 do
       begin
         CharLen := 0;
@@ -3856,25 +3848,31 @@ var
         repeat
           CharLen := CharLen + UTF8CodepointSize(CurStr + CharLen);
           inc(i);
-        until (CharLen >= CurCount) or ((CurDx+i)^ <> 0);
-        DevCtx.DrawTextWithColors(CurStr, CharLen, CurScreenX, Y, Foreground, BackgroundColor);
-        inc(CurScreenX, CurDx^);
-        inc(CurDx, i);
+        until (CharLen >= CurCount) or ((Dx+i)^ <> 0);
+        DevCtx.DrawTextWithColors(CurStr, CharLen, ScrX, Y, Foreground, Background);
+        inc(ScrX, Dx^);
+        inc(Dx, i);
         inc(CurStr, CharLen);
         dec(CurCount, CharLen);
       end;
     end
     else
-      DevCtx.DrawTextWithColors(Str, Count, X, Y, Foreground, BackgroundColor);
+      DevCtx.DrawTextWithColors(CurStr, CurCount, X, Y, Foreground, Background);
   end;
 
+var
+  LineStart, LineEnd, StrEnd: PChar;
+  LineLen, LineHeight, SavedDC: Integer;
+  DCOrigin: TPoint;
+  R: TRect;
 begin
   //DebugLn(['TGtk2WidgetSet.ExtTextOut X=',X,' Y=',Y,' Str="',copy(Str,1,Count),'" Count=',Count,' DX=',dbgs(DX)]);
   //DebugLn(Format('trace:> [TGtk2WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
   if not Result then Exit;
-  
   if DevCtx.GC <> nil then; // create GC
+  // to reduce flickering calculate first and then paint
+  DCOrigin := DevCtx.Offset;
 
   if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
   begin
@@ -3884,13 +3882,6 @@ begin
     DrawText(DC, Str, Count, R, DT_SINGLELINE or DT_CALCRECT);
     Rect := @R;
   end;
-
-  BackgroundColor := nil;
-
-  // to reduce flickering calculate first and then paint
-
-  DCOrigin := DevCtx.Offset;
-
   if (Options and ETO_CLIPPED) <> 0 then
   begin
     SavedDC := SaveDC(DC);
@@ -3904,64 +3895,47 @@ begin
     DevCtx.TransfPoint(X, Y);
   end;
 
-  LineLen := FindLineLen(Str,Count);
-  TopY := Y;
   UpdateDCTextMetric(DevCtx);
-  TxtPt.X := X + DCOrigin.X;
-  LineHeight := DevCtx.DCTextMetric.TextMetric.tmHeight;
-  TxtPt.Y := TopY + DCOrigin.Y;
-
   DevCtx.SelectedColors := dcscCustom;
 
-  if ((Options and ETO_OPAQUE) <> 0) then
+  if (Options and ETO_OPAQUE) <> 0 then
   begin
-    Width := Rect^.Right - Rect^.Left;
-    Height := Rect^.Bottom - Rect^.Top;
     EnsureGCColor(DC, dccCurrentBackColor, True, False);
     DevCtx.RemovePixbuf;
     gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 1,
                        Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
-                       Width, Height);
+                       Rect^.Right-Rect^.Left, Rect^.Bottom-Rect^.Top);
   end;
-
-
-  if (DevCtx.BkMode = OPAQUE) then
+  if DevCtx.BkMode = OPAQUE then
   begin
     AllocGDIColor(DC, @DevCtx.CurrentBackColor);
-    BackGroundColor := @DevCtx.CurrentBackColor.Color;
-  end;
+    Background := @DevCtx.CurrentBackColor.Color;
+  end
+  else
+    Background := nil;
 
+  Foreground := nil;  //StyleForegroundColor(CurrentTextColor.ColorRef, nil);
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
-  Foreground := nil;//StyleForegroundColor(CurrentTextColor.ColorRef, nil);
-
-  CurDx:=Dx;
-  CurStr:=Str;
-  LineStart:=Str;
-  if LineLen < 0 then
-  begin
-    LineLen:=Count;
-    if Count> 0 then
-      DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
-  end else
-  begin  //write multiple lines
-    StrEnd := Str + Count;
-    while LineStart < StrEnd do
-    begin
-      LineEnd := LineStart + LineLen;
-      if LineLen>0 then
-        DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
-      inc(TxtPt.Y, LineHeight);
-      //writeln('TGtk2WidgetSet.ExtTextOut ',LineHeight,' ',DevCtx.DCTextMetric.TextMetric.tmAscent,' ',DevCtx.DCTextMetric.TextMetric.tmDescent);
-      LineStart := LineEnd + 1; // skip #13
-      if (LineStart<StrEnd) and (LineStart^ in [#10,#13])
-      and (LineStart^ <> LineEnd^) then
+  Inc(X, DCOrigin.X);
+  Inc(Y, DCOrigin.Y);
+  StrEnd := Str + Count;
+  LineHeight := DevCtx.DCTextMetric.TextMetric.tmHeight;
+  LineStart := Str;
+  repeat
+    LineLen := FindLineLen(LineStart, Count);
+    if LineLen < 0 then
+      LineLen := Count;
+    LineEnd := LineStart + LineLen;
+    if LineLen>0 then
+      DoTextOut(LineStart, LineLen);
+    LineStart := LineEnd + 1; // skip #13
+    if LineStart < StrEnd then begin
+      if (LineStart^ in [#10,#13]) and (LineStart^ <> LineEnd^) then
         inc(LineStart); // skip #10
-      Count := StrEnd - LineStart;
-      LineLen := FindLineLen(LineStart, Count);
-      if LineLen < 0 then
-        LineLen := Count;
+      inc(Y, LineHeight);
     end;
-  end;
+    Count := StrEnd - LineStart;
+  until Count < 0;
 
   if (Options and ETO_CLIPPED) <> 0 then
     RestoreDC(DC, SavedDC);

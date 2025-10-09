@@ -304,18 +304,12 @@ procedure BeginGDKErrorTrap;
 procedure EndGDKErrorTrap;
 function dbgGRect(const ARect: PGDKRectangle): string; overload;
 
-
 // gtk resources
 procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);
 
 // messages
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 function DeliverMessage(const Target: Pointer; var AMessage): PtrInt;
-
-// PChar
-//function CreatePChar(const s: string): PChar;
-function FindChar(c: char; p:PChar; Max: integer): integer;
-function FindLineLen(p:PChar; Max: integer): integer;
 
 // flags
 function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
