@@ -1583,116 +1583,55 @@ begin
   end;
 end;
 
+function FindLineLen(p: PChar; Max: integer): integer;
+begin    // Find the index of linefeed or -1 if there is none.
+  Result:=0;
+  while Result<Max do begin
+    if p[Result] in [#10,#13] then exit;
+    inc(Result);
+  end;
+  Result:=-1;
+end;
+
 function TGtk3WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   GtkDC: TGtk3DeviceContext absolute DC;
-  AHWND: HWND;
-  AOffset: TPoint;
-  AScrollinfo: TScrollInfo;
-var
-  DevCtx: TGtk3DeviceContext absolute DC;
-
-  LineStart, LineEnd, StrEnd: PChar;
-  Width, Height: Integer;
-  TopY, LineLen, LineHeight, SavedDC: Integer;
-  TxtPt: TPoint;
-  DCOrigin: TPoint;
-  Foreground, BackgroundColor: PGDKColor;
-  CurDx: PInteger;
-  CurStr: PChar;
-  R: TRect;
-
-  function FindLineLen(p: PChar; Max: integer): integer;
-  begin
-    Result:=0;
-    while Result<Max do begin
-      if p[Result] in [#10,#13] then exit;
-      inc(Result);
-    end;
-    Result:=-1;
-  end;
-
-  procedure DoTextOut(X,Y : Integer; Str: Pchar; CurCount: Integer);
-  var
-    CurScreenX: LongInt;
-    CharLen: LongInt;
-  begin
-    if (Dx <> nil) then
-    begin
-      CurScreenX := X;
-      while CurCount > 0 do
-      begin
-        CharLen := UTF8CodepointSize(CurStr);
-        DevCtx.drawText(CurScreenX, Y, CurStr, CharLen, (DevCtx.BkMode = OPAQUE) and Assigned(DevCtx.BgBrush));
-        inc(CurScreenX, CurDx^);
-        inc(CurDx);
-        inc(CurStr, CharLen);
-        dec(CurCount, CharLen);
-      end;
-    end
-    else begin
-      DevCtx.drawText(X, Y, Str, Count, (DevCtx.BkMode = OPAQUE) and Assigned(DevCtx.BgBrush));
-    end;
-  end;
-
+  ScrX, CharLen: LongInt;
 begin
   Result := False;
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn(Format('TGtk3WidgetSet.ExtTextOut x=%d y=%d Text=%s count=%d ',[X, Y, String(Str), Count]));
   {$ENDIF}
-
-  if IsValidDC(DC)then
+  if not IsValidDC(DC) then exit;
+  GtkDC.Save;
+  if Options and ETO_CLIPPED = ETO_CLIPPED then
   begin
-    GtkDC.Save;
-    if Options and ETO_CLIPPED = ETO_CLIPPED then
-    begin
-      cairo_rectangle(GtkDc.pcr, Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
-      cairo_clip(GtkDc.pcr);
-    end;
-    if Options and ETO_OPAQUE = ETO_OPAQUE then
-      DevCtx.fillRect(Rect, HBRUSH(DevCtx.BgBrush)); // use Color from setBkMode
-
-    LineLen := FindLineLen(Str,Count);
-    TopY := Y;
-    TxtPt.X := X;;
-    LineHeight := DevCtx.CurrentPen.Width; // Cairo assumes Heigh = Width
-    TxtPt.Y := TopY;;
-
-    CurDx:=Dx;
-    CurStr:=Str;
-    LineStart:=Str;
-    if LineLen < 0 then
-    begin
-      LineLen:=Count;
-      if Count> 0 then
-        DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
-    end else
-    begin  //write multiple lines
-      StrEnd := Str + Count;
-      while LineStart < StrEnd do
-      begin
-        LineEnd := LineStart + LineLen;
-        if LineLen>0 then
-          DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
-        inc(TxtPt.Y, LineHeight);
-        LineStart := LineEnd + 1; // skip #13
-        if (LineStart<StrEnd) and (LineStart^ in [#10,#13])
-        and (LineStart^ <> LineEnd^) then
-          inc(LineStart); // skip #10
-        Count := StrEnd - LineStart;
-        LineLen := FindLineLen(LineStart, Count);
-        if LineLen < 0 then
-          LineLen := Count;
-      end;
-    end;
-    GtkDC.Restore;
-    Result := True;
+    cairo_rectangle(GtkDc.pcr, Rect^.Left, Rect^.Top, Rect^.Right-Rect^.Left, Rect^.Bottom-Rect^.Top);
+    cairo_clip(GtkDc.pcr);
   end;
+  if Options and ETO_OPAQUE = ETO_OPAQUE then
+    GtkDC.fillRect(Rect, HBRUSH(GtkDC.BgBrush)); // use Color from setBkMode
+  if Dx <> nil then
+  begin
+    ScrX := X;
+    while Count > 0 do
+    begin
+      CharLen := UTF8CodepointSize(Str);
+      GtkDC.drawText(ScrX,Y,Str,CharLen, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
+      inc(ScrX, Dx^);
+      inc(Dx);
+      inc(Str, CharLen);
+      dec(Count, CharLen);
+    end;
+  end
+  else
+    GtkDC.drawText(X,Y,Str,Count, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
+  GtkDC.Restore;
+  Result := True;
 end;
 
-function TGtk3WidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH
-  ): Boolean;
+function TGtk3WidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 begin
   Result := False;
   if IsValidDC(DC) then
