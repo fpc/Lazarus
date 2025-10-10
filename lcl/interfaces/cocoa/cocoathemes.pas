@@ -211,7 +211,7 @@ begin
       SetButtonCellToDetails(b, Details);
       CellDrawStart(DC, R, cur, nsr);
       // don't set backgroundColor for PushButton
-      if Details.Part <> BP_PUSHBUTTON then
+      if (Details.Part<>BP_PUSHBUTTON) and (Details.Part<>BP_CHECKBOX) then
         b.setBackgroundColor( NSColor.controlBackgroundColor );
       CellDrawFrame(b, nsr);
       CellDrawEnd(DC, cur);
