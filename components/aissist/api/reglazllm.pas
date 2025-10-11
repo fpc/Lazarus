@@ -26,7 +26,7 @@ procedure register;
 begin
   if DefaultWebClientClass=Nil then
     DefaultWebClientClass:=TFPHTTPWebClient;
-  RegisterComponents('LLM',[TLLMClient]);
+  RegisterComponents('AI',[TLLMClient]);
   RegisterPropertyEditor(TypeInfo(String),TLLMServerSettings,'Protocol',TProtocolEditor);
 end;
 
