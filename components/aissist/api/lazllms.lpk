@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <OtherUnitFiles Value="Claude;ChatGPT;OLLama;Gemini;3_2_X"/>
+        <OtherUnitFiles Value="Claude;ChatGPT;OLLama;Gemini;3_2_X;Perplexity"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
@@ -100,8 +100,31 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="reglazllm"/>
       </Item>
+      <Item>
+        <Filename Value="Perplexity/perplexity.Serializer.pas"/>
+        <UnitName Value="perplexity.Serializer"/>
+      </Item>
+      <Item>
+        <Filename Value="Perplexity/perplexity.Service.Impl.pas"/>
+        <UnitName Value="perplexity.Service.Impl"/>
+      </Item>
+      <Item>
+        <Filename Value="Perplexity/perplexity.Service.Intf.pas"/>
+        <UnitName Value="perplexity.Service.Intf"/>
+      </Item>
+      <Item>
+        <Filename Value="Perplexity/perplexity.Dto.pas"/>
+        <UnitName Value="perplexity.Dto"/>
+      </Item>
+      <Item>
+        <Filename Value="Perplexity/llm.perplexity.pas"/>
+        <UnitName Value="llm.perplexity"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="CodeTools"/>
+      </Item>
       <Item>
         <PackageName Value="IDEIntf"/>
       </Item>

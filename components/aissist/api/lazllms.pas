@@ -8,10 +8,13 @@ unit lazllms;
 interface
 
 uses
-  claude.Dto, claude.Serializer, claude.Service.Impl, claude.Service.Intf, chatgpt.Dto, chatgpt.Serializer, chatgpt.Service.Impl, 
-  chatgpt.Service.Intf, ollama.Dto, ollama.Serializer, ollama.Service.Impl, ollama.Service.Intf, Gemini.Dto, Gemini.Persister, 
-  Gemini.Service.Impl, Gemini.Service.Intf, LLM.Client, llm.ollama, llm.claude, llm.chatgpt, llm.gemini, reglazllm, 
-  LazarusPackageIntf;
+ claude.Dto, claude.Serializer, claude.Service.Impl, claude.Service.Intf, 
+ chatgpt.Dto, chatgpt.Serializer, chatgpt.Service.Impl, chatgpt.Service.Intf, 
+ ollama.Dto, ollama.Serializer, ollama.Service.Impl, ollama.Service.Intf, 
+ Gemini.Dto, Gemini.Persister, Gemini.Service.Impl, Gemini.Service.Intf, 
+ LLM.Client, llm.ollama, llm.claude, llm.chatgpt, llm.gemini, reglazllm, 
+ perplexity.Serializer, perplexity.Service.Impl, perplexity.Service.Intf, 
+ perplexity.Dto, llm.perplexity, LazarusPackageIntf;
 
 implementation
 

@@ -6,7 +6,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, LLM.Client,
-  llm.ollama, jsonparser, fpwebclient, fphttpwebclient ;
+  // Add all units so we compile in support for all supported backends
+  llm.claude, llm.chatgpt, llm.gemini, llm.perplexity, llm.ollama, 
+  opensslsockets, jsonparser, fpwebclient, fphttpwebclient ;
 
 type
 

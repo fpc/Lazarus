@@ -1,0 +1,119 @@
+{"id": "83020634-b4df-4346-9826-d2680d1cd876", "model": "sonar", "created": 1760044049, "usage": {"prompt_tokens": 12, "completion_tokens": 84, "total_tokens": 96, "search_context_size": "low", "cost": {"input_tokens_cost": 0.0, "output_tokens_cost": 0.0, "request_cost": 0.005, "total_cost": 0.005}}, "citations": ["https://home.adelphi.edu/~ca19535/page%204.html", "https://readlang.com/library/58ae8134fdd4f57b799e93db", "https://www.britannica.com/place/France", "https://www.brainzilla.com/brain-teasers/riddles/Zoymb2O5/besides-paris-what-is-the-capital-of-france/", "https://en.wikipedia.org/wiki/List_of_capitals_of_France", "https://en.wikipedia.org/wiki/Paris", "https://www.britannica.com/place/Paris", "https://www.cia-france.com/french-kids-teenage-courses/paris-school/visit-paris", "http://www.paris-city.fr/GB/paris-city/au-fil-du-temps/histoire.php"], "search_results": [{"title": "Paris facts: the capital of France in history", "url": "https://home.adelphi.edu/~ca19535/page%204.html", "date": "2000-01-01", "last_updated": "2025-10-02", "snippet": "Paris is the capital of France, the largest country of Europe with 550 000 km2 (65 millions inhabitants). Paris has 2.234 million inhabitants end 2011.", "source": "web"}, {"title": "Learn English with \"Why is Paris the capital of France?\"", "url": "https://readlang.com/library/58ae8134fdd4f57b799e93db", "date": null, "last_updated": "2025-05-19", "snippet": "Why is Paris the capital of France? A: QUICK ANSWER Paris is the capital of France because Clovis I made the city his seat of government in 508 A.D. His ...", "source": "web"}, {"title": "France | History, Maps, Flag, Population, Cities, Capital, & Facts", "url": "https://www.britannica.com/place/France", "date": "2025-10-08", "last_updated": "2025-10-09", "snippet": "The capital and by far the most important city of France is Paris, one of the world's preeminent cultural and commercial centres.", "source": "web"}, {"title": "Besides Paris, what is the capital of France? Riddle - Brainzilla", "url": "https://www.brainzilla.com/brain-teasers/riddles/Zoymb2O5/besides-paris-what-is-the-capital-of-france/", "date": null, "last_updated": "2025-07-27", "snippet": "Besides Paris, what is the capital of France? - Answer: F.", "source": "web"}, {"title": "List of capitals of France - Wikipedia", "url": "https://en.wikipedia.org/wiki/List_of_capitals_of_France", "date": "2003-01-15", "last_updated": "2025-10-04", "snippet": "This is a chronological list of capitals of France. The capital of France has been Paris since its liberation in 1944.", "source": "web"}, {"title": "Paris - Wikipedia", "url": "https://en.wikipedia.org/wiki/Paris", "date": "2001-11-06", "last_updated": "2025-10-05", "snippet": "Paris is the capital and largest city of France, with an estimated city population of 2,048,472 in an area of 105.4 km2 (40.7 sq mi), and a metropolitan ...", "source": "web"}, {"title": "Paris | Definition, Map, Population, Facts, & History - Britannica", "url": "https://www.britannica.com/place/Paris", "date": "2025-10-07", "last_updated": "2025-10-09", "snippet": "Paris, city and capital of France, located along the Seine River, in the north-central part of the country. Paris is one of the world's most important and ...", "source": "web"}, {"title": "Discover the city of Paris | Paris the capital city of France", "url": "https://www.cia-france.com/french-kids-teenage-courses/paris-school/visit-paris", "date": "2022-12-01", "last_updated": "2025-08-29", "snippet": "Paris is the city of romance par excellence, the fashion capital and the best example of French art de vivre. Exploring Paris is an essential rite of passage ...", "source": "web"}, {"title": "The birth of the french capital - History of Paris city", "url": "http://www.paris-city.fr/GB/paris-city/au-fil-du-temps/histoire.php", "date": "2006-01-01", "last_updated": "2025-09-19", "snippet": "Paris was founded by Celts in the 3rd century BC, later became the capital of France in the Middle Ages, and was made capital of the Kingdom of the Francs in ...", "source": "web"}], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "The capital of France is **Paris**. \n\nParis is the largest and most populous city in France, located along the Seine River in the north-central part of the country. It has been the capital since 508 AD when Clovis I made it his seat of government, and except for brief interruptions, it has remained France\u2019s political and cultural center ever since[1][2][3][6][7]."}, "delta": {"role": "assistant", "content": ""}}]}
+
+{
+    "id": "83020634-b4df-4346-9826-d2680d1cd876",
+    "model": "sonar",
+    "created": 1760044049,
+    "usage": {
+        "prompt_tokens": 12,
+        "completion_tokens": 84,
+        "total_tokens": 96,
+        "search_context_size": "low",
+        "cost": {
+            "input_tokens_cost": 0,
+            "output_tokens_cost": 0,
+            "request_cost": 0.005,
+            "total_cost": 0.005
+        }
+    },
+    "citations": [
+        "https://home.adelphi.edu/~ca19535/page%204.html",
+        "https://readlang.com/library/58ae8134fdd4f57b799e93db",
+        "https://www.britannica.com/place/France",
+        "https://www.brainzilla.com/brain-teasers/riddles/Zoymb2O5/besides-paris-what-is-the-capital-of-france/",
+        "https://en.wikipedia.org/wiki/List_of_capitals_of_France",
+        "https://en.wikipedia.org/wiki/Paris",
+        "https://www.britannica.com/place/Paris",
+        "https://www.cia-france.com/french-kids-teenage-courses/paris-school/visit-paris",
+        "http://www.paris-city.fr/GB/paris-city/au-fil-du-temps/histoire.php"
+    ],
+    "search_results": [
+        {
+            "title": "Paris facts: the capital of France in history",
+            "url": "https://home.adelphi.edu/~ca19535/page%204.html",
+            "date": "2000-01-01",
+            "last_updated": "2025-10-02",
+            "snippet": "Paris is the capital of France, the largest country of Europe with 550 000 km2 (65 millions inhabitants). Paris has 2.234 million inhabitants end 2011.",
+            "source": "web"
+        },
+        {
+            "title": "Learn English with \"Why is Paris the capital of France?\"",
+            "url": "https://readlang.com/library/58ae8134fdd4f57b799e93db",
+            "date": null,
+            "last_updated": "2025-05-19",
+            "snippet": "Why is Paris the capital of France? A: QUICK ANSWER Paris is the capital of France because Clovis I made the city his seat of government in 508 A.D. His ...",
+            "source": "web"
+        },
+        {
+            "title": "France | History, Maps, Flag, Population, Cities, Capital, & Facts",
+            "url": "https://www.britannica.com/place/France",
+            "date": "2025-10-08",
+            "last_updated": "2025-10-09",
+            "snippet": "The capital and by far the most important city of France is Paris, one of the world's preeminent cultural and commercial centres.",
+            "source": "web"
+        },
+        {
+            "title": "Besides Paris, what is the capital of France? Riddle - Brainzilla",
+            "url": "https://www.brainzilla.com/brain-teasers/riddles/Zoymb2O5/besides-paris-what-is-the-capital-of-france/",
+            "date": null,
+            "last_updated": "2025-07-27",
+            "snippet": "Besides Paris, what is the capital of France? - Answer: F.",
+            "source": "web"
+        },
+        {
+            "title": "List of capitals of France - Wikipedia",
+            "url": "https://en.wikipedia.org/wiki/List_of_capitals_of_France",
+            "date": "2003-01-15",
+            "last_updated": "2025-10-04",
+            "snippet": "This is a chronological list of capitals of France. The capital of France has been Paris since its liberation in 1944.",
+            "source": "web"
+        },
+        {
+            "title": "Paris - Wikipedia",
+            "url": "https://en.wikipedia.org/wiki/Paris",
+            "date": "2001-11-06",
+            "last_updated": "2025-10-05",
+            "snippet": "Paris is the capital and largest city of France, with an estimated city population of 2,048,472 in an area of 105.4 km2 (40.7 sq mi), and a metropolitan ...",
+            "source": "web"
+        },
+        {
+            "title": "Paris | Definition, Map, Population, Facts, & History - Britannica",
+            "url": "https://www.britannica.com/place/Paris",
+            "date": "2025-10-07",
+            "last_updated": "2025-10-09",
+            "snippet": "Paris, city and capital of France, located along the Seine River, in the north-central part of the country. Paris is one of the world's most important and ...",
+            "source": "web"
+        },
+        {
+            "title": "Discover the city of Paris | Paris the capital city of France",
+            "url": "https://www.cia-france.com/french-kids-teenage-courses/paris-school/visit-paris",
+            "date": "2022-12-01",
+            "last_updated": "2025-08-29",
+            "snippet": "Paris is the city of romance par excellence, the fashion capital and the best example of French art de vivre. Exploring Paris is an essential rite of passage ...",
+            "source": "web"
+        },
+        {
+            "title": "The birth of the french capital - History of Paris city",
+            "url": "http://www.paris-city.fr/GB/paris-city/au-fil-du-temps/histoire.php",
+            "date": "2006-01-01",
+            "last_updated": "2025-09-19",
+            "snippet": "Paris was founded by Celts in the 3rd century BC, later became the capital of France in the Middle Ages, and was made capital of the Kingdom of the Francs in ...",
+            "source": "web"
+        }
+    ],
+    "object": "chat.completion",
+    "choices": [
+        {
+            "index": 0,
+            "finish_reason": "stop",
+            "message": {
+                "role": "assistant",
+                "content": "The capital of France is **Paris**. \n\nParis is the largest and most populous city in France, located along the Seine River in the north-central part of the country. It has been the capital since 508 AD when Clovis I made it his seat of government, and except for brief interruptions, it has remained France\u2019s political and cultural center ever since[1][2][3][6][7]."
+            },
+            "delta": {
+                "role": "assistant",
+                "content": ""
+            }
+        }
+    ]
+}

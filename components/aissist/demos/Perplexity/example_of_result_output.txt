@@ -1,0 +1,10 @@
+Perplexity API Demo - Completions Request
+======================================
+Sending request to Perplexity API...
+Model: sonar
+Messages: role:user, content:What is the capital of France? Answer in one sentence.
+
+Max tokens: 100
+Temperature: 0.7
+
+Model response: The capital of France is **Paris**[1][2][3][4].
