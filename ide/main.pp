@@ -3832,6 +3832,8 @@ function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
   AComponent: TComponent): TCustomForm;
 var
   DesignerForm: TCustomForm;
+  aDesigner: TDesigner;
+  Code: TCodeBuffer;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('[TMainIDE.CreateDesignerForComponent] A ',AComponent.Name,':',AComponent.ClassName);
@@ -3851,7 +3853,9 @@ begin
     TControl(AComponent).ControlStyle:=
       TControl(AComponent).ControlStyle-[csNoDesignVisible];
   // create designer
-  DesignerForm.Designer := TDesigner.Create(DesignerForm, TheControlSelection);
+  aDesigner:=TDesigner.Create(DesignerForm, TheControlSelection);;
+  DesignerForm.Designer := aDesigner;
+  aDesigner.SetProjectFile(AnUnitInfo);
   {$IFDEF IDE_DEBUG}
   debugln('[TMainIDE.CreateDesignerForComponent] B');
   {$ENDIF}

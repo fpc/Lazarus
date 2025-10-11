@@ -29,7 +29,7 @@ uses
   ComponentReg,
   // IdeIntf
   LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg,
-  PropEdits, PropEditUtils, ObjInspStrConsts;
+  ProjectIntf, PropEdits, PropEditUtils, ObjInspStrConsts;
 
 type
   { TComponentEditorDesigner }
@@ -61,6 +61,7 @@ type
     FChangeStamp: int64;
   protected
     FForm: TCustomForm;
+    FProjectFile: TLazProjectFile;
     {$IFDEF EnableCompEditorHookHandlers}
     FHandlers: array[TComponentEditorDesignerHookType] of TMethodList;
     function GetHandlerCount(HookType: TComponentEditorDesignerHookType): integer;
@@ -111,6 +112,7 @@ type
                                        ): string; virtual; abstract;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
     property Form: TCustomForm read FForm;
+    property ProjectFile: TLazProjectFile read FProjectFile;
     property ChangeStamp: int64 read FChangeStamp;// increased on calling Modified
     procedure DisconnectComponent; virtual;
   public        // Handlers

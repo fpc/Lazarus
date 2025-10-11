@@ -290,6 +290,7 @@ type
     procedure PrepareFreeDesigner(AFreeComponent: boolean); override;
     procedure DisconnectComponent; override;
     destructor Destroy; override;
+    procedure SetProjectFile(aFile: TLazProjectFile);
 
     procedure Modified; override;
     procedure SelectOnlyThisComponent(AComponent: TComponent); override;
@@ -864,6 +865,11 @@ begin
   FreeAndNil(DDC);
   FreeAndNil(DeletingPersistent);
   inherited Destroy;
+end;
+
+procedure TDesigner.SetProjectFile(aFile: TLazProjectFile);
+begin
+  FProjectFile:=aFile;
 end;
 
 procedure TDesigner.NudgePosition(DiffX, DiffY : Integer);
