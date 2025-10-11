@@ -3833,7 +3833,6 @@ function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
 var
   DesignerForm: TCustomForm;
   aDesigner: TDesigner;
-  Code: TCodeBuffer;
 begin
   {$IFDEF IDE_DEBUG}
   debugln('[TMainIDE.CreateDesignerForComponent] A ',AComponent.Name,':',AComponent.ClassName);
