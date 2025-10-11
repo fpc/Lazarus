@@ -22,6 +22,7 @@ uses
 type
 
   { TAIssistChatForm }
+
   TChatState = (csUnconfigured,csWaiting,csAIThinking);
 
   TAIssistChatForm = class(TForm)
@@ -51,16 +52,14 @@ type
     procedure HandleRequestError(aErrorData: TLLMRestStatusInfo);
     procedure SetState(AValue: TChatState);
   public
-    { public declarations }
     property State : TChatState Read FChatState Write SetState;
     property OnConfigure : TNotifyEvent Read FOnConfigure Write FOnConfigure;
   end;
 
-
-
 implementation
 
-uses ClipBrd,StrAIssist, AIssistController;
+uses
+  ClipBrd, StrAIssist, AIssistController;
 
 {$R *.lfm}
 
@@ -187,7 +186,7 @@ var
 
 begin
   lPt:=pmChat.PopupPoint;
-  lpt:=FChat.ScreenToClient(lpt);
+  lPt:=FChat.ScreenToClient(lPt);
   Item:=FChat.GetItemAt(lPt.X,lPt.Y);
   if Item<>Nil then
     Clipboard.AsText:=Item.Text;
@@ -201,7 +200,7 @@ var
 
 begin
   lPt:=pmChat.PopupPoint;
-  lpt:=FChat.ScreenToClient(lpt);
+  lPt:=FChat.ScreenToClient(lPt);
   Item:=FChat.GetItemAt(lPt.X,lPt.Y);
   HaveItem:=Item<>Nil;
   MICopy.Enabled:=HaveItem;

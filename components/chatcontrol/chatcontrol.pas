@@ -12,14 +12,14 @@
   for details about the license.
  *****************************************************************************
 }
-unit chatcontrol;
+unit ChatControl;
 
 {$mode ObjFPC}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Contnrs, Graphics, Controls, ExtCtrls, StdCtrls, forms, typingindicator;
+  Classes, SysUtils, Contnrs, Graphics, Controls, ExtCtrls, StdCtrls, Forms, TypingIndicator;
 
 Const
   DefaultBackground : TColor = $00CDEBD0;
@@ -45,9 +45,10 @@ Type
   end;
   TChatItemArray = Array of TChatItem;
 
+  TItemClickEvent = procedure(Sender : TObject; aItem : TChatItem) of object;
 
   { TChatControl }
-  TItemClickEvent = procedure(Sender : TObject; aItem : TChatItem) of object;
+
   TChatControl = class(TScrollingWinControl)
   Protected
     Type
@@ -92,7 +93,7 @@ Type
       TDisplayChatItem = class(TChatItem)
       Private
         Type
-         TColorKind = (ckBackground,ckBackgroundPen,ckBackgroundBrush,ckLabelFont,ckLabelBack);
+          TColorKind = (ckBackground,ckBackgroundPen,ckBackgroundBrush,ckLabelFont,ckLabelBack);
       Private
         FBackground: TShape;
         FLabel: TLabel;
@@ -118,8 +119,9 @@ Type
         Property TextBackGround : TShape Read FBackground Write SetBackground;
         Property Selected : Boolean read FSelected Write SetSelected;
       end;
+
     procedure DoItemClick(Sender: TObject);
-    Procedure SelectItem(aItem : TDisplayChatItem; IsSelect,aAddToSelection : Boolean);
+    procedure SelectItem(aItem : TDisplayChatItem; IsSelect,aAddToSelection : Boolean);
     function CreateChatLabel(aParent: TWinControl): TLabel; virtual;
     function CreateTypingIndicator(aSide: TTextSide): TTypingIndicator; virtual;
     function DoCreateItem(aText: String; aSide: TTextSide): TDisplayChatItem; virtual;
@@ -132,9 +134,9 @@ Type
     Property Typing [aIndex : TTextSide] : TTypingIndicator Read GetTyping;
     Property DisplayItems[aIndex: Integer] : TDisplayChatItem Read GetDisplayItem;
   Public
-    constructor create(aOwner : TComponent); override;
-    destructor destroy; override;
-    procedure clear;
+    constructor Create(aOwner : TComponent); override;
+    destructor Destroy; override;
+    procedure Clear;
     procedure CopySelectionToClipBoard;
     Procedure AddText(const aText : String; aSide : TTextSide);
     Procedure SelectItem(aIndex : Integer; aAddToSelection : Boolean);
@@ -159,7 +161,7 @@ Type
     Property ItemMargin : Integer Read FItemMargin Write SetItemMargin;
     Property LeftTypingIndicator : TTypingDotIndicatorSettings Index Ord(tsLeft) Read GetIndicatorSettings Write SetIndicatorSettings;
     Property RightTypingIndicator : TTypingDotIndicatorSettings Index Ord(tsRight) Read GetIndicatorSettings Write SetIndicatorSettings;
- Published
+  Published
     property Align;
     property Anchors;
     property AutoSize;
@@ -220,7 +222,8 @@ Type
 
 implementation
 
-uses lcltype, clipbrd;
+uses
+  LCLType, Clipbrd;
 
 { TChatItem }
 
@@ -229,7 +232,6 @@ begin
   FText:=aText;
   FSide:=aSide;
 end;
-
 
 { TChatControl }
 
@@ -266,7 +268,6 @@ begin
     Result:=Bottom+ItemSpacing;
     end;
 end;
-
 
 procedure TChatControl.LayoutItems;
 
@@ -519,7 +520,7 @@ begin
   Result.Active:=False;
 end;
 
-constructor TChatControl.create(aOwner: TComponent);
+constructor TChatControl.Create(aOwner: TComponent);
 begin
   Inherited;
   fCompStyle:= csScrollBox;
@@ -541,7 +542,7 @@ begin
 end;
 
 
-destructor TChatControl.destroy;
+destructor TChatControl.Destroy;
 begin
   FreeAndNil(FTyping[tsLeft]);
   FreeAndNil(FTyping[tsRight]);
@@ -549,7 +550,7 @@ begin
   inherited destroy;
 end;
 
-procedure TChatControl.clear;
+procedure TChatControl.Clear;
 begin
   FChatList.Clear;
   Invalidate;
