@@ -1583,16 +1583,6 @@ begin
   end;
 end;
 
-function FindLineLen(p: PChar; Max: integer): integer;
-begin    // Find the index of linefeed or -1 if there is none.
-  Result:=0;
-  while Result<Max do begin
-    if p[Result] in [#10,#13] then exit;
-    inc(Result);
-  end;
-  Result:=-1;
-end;
-
 function TGtk3WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
