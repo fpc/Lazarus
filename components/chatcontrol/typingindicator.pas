@@ -120,9 +120,9 @@ Type
     Property Dot2Color : TColor Index 1 Read GetDotColor;
     Property Dot3Color : TColor Index 2 Read GetDotColor;
   Public
-    constructor create(aOwner: TComponent); override;
-    destructor destroy; override;
-    Procedure Paint; override;
+    constructor Create(aOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Paint; override;
   Published
     Property Active : Boolean Read FActive Write SetActive;
     Property DotSettings : TTypingDotIndicatorSettings Read FSettings Write SetSettings;
@@ -334,7 +334,7 @@ begin
   Result:=FSettings.MinMargin;
 end;
 
-constructor TTypingIndicator.create(aOwner: TComponent);
+constructor TTypingIndicator.Create(aOwner: TComponent);
 
 var i : Integer;
 
@@ -349,7 +349,7 @@ begin
     FColors[i]:=FSettings.GetDotColor(i);
 end;
 
-destructor TTypingIndicator.destroy;
+destructor TTypingIndicator.Destroy;
 begin
   FreeAndNil(FTimer);
   inherited destroy;
