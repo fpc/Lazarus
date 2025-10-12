@@ -1380,8 +1380,8 @@ begin
                     [LineEnding, AExceptionLocation.Address]);
   end;
 
-  if (AExceptionType in [deInternal, deRunError]) then begin
-    AContinue := ExecuteExceptionDialog(msg, Ignore, AExceptionType in [deInternal, deRunError]) = mrCancel;
+  if (AExceptionType in [deInternal, deRunError, deExternal]) then begin
+    AContinue := ExecuteExceptionDialog(msg, Ignore, AExceptionType in [deInternal, deRunError, deExternal]) = mrCancel;
     if Ignore then begin
       Exceptions.AddIfNeeded(ExpClassName);
       Exceptions.Find(ExpClassName).Enabled := True;
