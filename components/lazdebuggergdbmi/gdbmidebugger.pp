@@ -6386,6 +6386,11 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
+    if FTheDebugger.Exceptions.IgnoreAll then begin
+      Result := True; //ExecuteCommand('-exec-continue')
+      exit;
+    end;
+
     ExceptName := Format('RunError(%d)', [ErrorNo]);
     ExceptItem := FTheDebugger.Exceptions.Find(ExceptName);
     if (ExceptItem <> nil) and (ExceptItem.Enabled)
@@ -6426,6 +6431,11 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
+    if FTheDebugger.Exceptions.IgnoreAll then begin
+      Result := True; //ExecuteCommand('-exec-continue')
+      exit;
+    end;
+
     ExceptName := Format('RunError(%d)', [ErrorNo]);
     ExceptItem := FTheDebugger.Exceptions.Find(ExceptName);
     if (ExceptItem <> nil) and (ExceptItem.Enabled)
@@ -6452,6 +6462,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     S, F: String;
     {$IFdef MSWindows}
     fixed: Boolean;
+    ExceptItem: TBaseException;
     {$ENDIF}
   begin
     // TODO: check to run (un)handled
@@ -6496,8 +6507,25 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       SetDebuggerState(dsPause);
     end;
 
-    if not SigInt
-    then FTheDebugger.DoException(deExternal, 'External: ' + S, FTheDebugger.FCurrentLocation, '', CanContinue);
+    if not SigInt then begin
+      if FTheDebugger.Exceptions.IgnoreAll then begin
+        Result := True; //ExecuteCommand('-exec-continue')
+        exit;
+      end;
+      S := 'External: ' + S;
+      ExceptItem := FTheDebugger.Exceptions.Find(S);
+      if (ExceptItem <> nil) and (ExceptItem.Enabled)
+      then begin
+        Result := True; //ExecuteCommand('-exec-continue')
+        exit;
+      end;
+
+      FTheDebugger.DoException(deExternal, S, FTheDebugger.FCurrentLocation, '', CanContinue);
+      if CanContinue then begin
+        Result := True; //ExecuteCommand('-exec-continue')
+        exit;
+      end;
+    end;
 
     FTheDebugger.QueueExecuteLock;
     try
