@@ -588,6 +588,8 @@ begin
     if ImageIndex >= 0 then
     begin
       GetImageList(iml, imw);
+      if Assigned(Screen.ActiveForm) then
+        imw:= Round(imw * Screen.ActiveForm.GetCanvasScaleFactor());
       if (iml <> nil) and (ImageIndex < iml.Count) then
         iml.ResolutionForPPI[imw, 96, 1].Resolution.GetBitmap(ImageIndex, FBitmap);
     end;
