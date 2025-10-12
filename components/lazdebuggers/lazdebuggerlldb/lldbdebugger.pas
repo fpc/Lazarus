@@ -882,6 +882,12 @@ const
     else
       ExcMsg := '<Unknown Message>'; // TODO: move to IDE
 
+    if Debugger.Exceptions.IgnoreAll then begin
+      FState := crStoppedRaise;
+      ContinueRunning;
+      exit;
+    end;
+
     ExceptItem := Debugger.Exceptions.Find(ExcClass);
     if (ExceptItem <> nil) and (ExceptItem.Enabled)
     then begin
@@ -926,6 +932,12 @@ const
       ErrNo := FCurrentExceptionInfo.FObjAddress;
     ErrNo := ErrNo and $FFFF;
 
+    if Debugger.Exceptions.IgnoreAll then begin
+      FState := crStoppedRaise;
+      ContinueRunning;
+      exit;
+    end;
+
     ExceptName := Format('RunError(%d)', [ErrNo]);
     ExceptItem := Debugger.Exceptions.Find(ExceptName);
     if (ExceptItem <> nil) and (ExceptItem.Enabled)
@@ -949,8 +961,31 @@ const
   procedure DoUnknownStopReason(AStopReason: String);
   var
     CanContinue: Boolean;
+    ExceptName: String;
+    ExceptItem: TBaseException;
   begin
-    Debugger.DoException(deExternal, Format('Process stopped with reason: %s', [AStopReason]), Debugger.FCurrentLocation, '', CanContinue);
+    if Debugger.Exceptions.IgnoreAll then begin
+      FState := crStoppedRaise;
+      ContinueRunning;
+      exit;
+    end;
+
+    ExceptName := Format('External: %s', [AStopReason]);
+    ExceptItem := Debugger.Exceptions.Find(ExceptName);
+    if (ExceptItem <> nil) and (ExceptItem.Enabled)
+    then begin
+      FState := crStoppedRaise;
+      ContinueRunning;
+      exit;
+    end;
+
+    Debugger.DoException(deExternal, Format('External: %s', [AStopReason]), Debugger.FCurrentLocation, '', CanContinue);
+    if CanContinue
+    then begin
+      FState := crStoppedRaise;
+      ContinueRunning;
+      exit;
+    end;
 
     SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
   end;
