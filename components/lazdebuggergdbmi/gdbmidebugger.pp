@@ -6460,9 +6460,9 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   var
     SigInt, CanContinue: Boolean;
     S, F: String;
+    ExceptItem: TBaseException;
     {$IFdef MSWindows}
     fixed: Boolean;
-    ExceptItem: TBaseException;
     {$ENDIF}
   begin
     // TODO: check to run (un)handled
