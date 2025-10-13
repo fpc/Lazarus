@@ -2651,13 +2651,19 @@ begin
 end;
 
 function TSynPasSyn.Func72: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
-  if KeyCompU('STATIC') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
+  tfb := TopPascalCodeFoldBlockType;
+  if KeyCompU('STATIC') and (tfb in [cfbtClass, cfbtClassSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsAfterEqualOrColon, rsInProcHeader, rsProperty] = []) and
      (fRange * [rsAfterClassMembers, rsAfterClassField] <> []) and
      (PasCodeFoldRange.BracketNestLevel = 0)
   then
     Result := tkModifier
+  else
+  if IsCallingConventionModifier('WINAPI', tfb) then
+    Result := DoCallingConventionModifier
   else
     Result := tkIdentifier;
 end;
