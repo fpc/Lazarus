@@ -30,7 +30,7 @@ interface
 {$mode delphi}
 uses
   GLib2, LazGtk3, LazGdkPixbuf2, gtk3widgets,
-  Classes, SysUtils, dynlibs,
+  Classes, SysUtils, ayatana_appindicator,
   Graphics, Controls, Forms, ExtCtrls, WSExtCtrls, LCLType, LazUTF8,
   FileUtil;
 
@@ -43,62 +43,15 @@ type
     class function GetPosition(const {%H-}ATrayIcon: TCustomTrayIcon): TPoint; override;
   end;
 
-{ Gtk3AppIndicatorInit returns true if a LibAppIndicator3 library has been loaded }
-function Gtk3AppIndicatorInit: Boolean;
-
 implementation
 
 {X$define DEBUGAPPIND}
 
 uses gtk3objects;     // TGtk3Image
 
-const
-  libappindicator_3 = 'libappindicator3.so.1';              // Unity or Canonical libappindicator3-1
-  LibAyatanaAppIndicator = 'libayatana-appindicator3.so.1'; // Ayatana - typically called libayatana-appindicator3-1
-  IconType = 'png';
-
-type
-  TAppIndicatorCategory = (
-    APP_INDICATOR_CATEGORY_APPLICATION_STATUS,
-    APP_INDICATOR_CATEGORY_COMMUNICATIONS,
-    APP_INDICATOR_CATEGORY_SYSTEM_SERVICES,
-    APP_INDICATOR_CATEGORY_HARDWARE,
-    APP_INDICATOR_CATEGORY_OTHER
-  );
-
-  TAppIndicatorStatus = (
-    APP_INDICATOR_STATUS_PASSIVE,
-    APP_INDICATOR_STATUS_ACTIVE,
-    APP_INDICATOR_STATUS_ATTENTION
-  );
-
-  PAppIndicator = Pointer;
 
 var
   IconThemePath : string;                    // We must write our icon to a file.
-  { GlobalAppIndicator creation routines }
-  app_indicator_get_type: function: GType; cdecl;
-  app_indicator_new: function(id, icon_name: PGChar; category: TAppIndicatorCategory): PAppIndicator; cdecl;
-  app_indicator_new_with_path: function(id, icon_name: PGChar; category: TAppIndicatorCategory; icon_theme_path: PGChar): PAppIndicator; cdecl;
-  { Set properties }
-  app_indicator_set_status: procedure(self: PAppIndicator; status: TAppIndicatorStatus); cdecl;
-  app_indicator_set_attention_icon: procedure(self: PAppIndicator; icon_name: PGChar); cdecl;
-  app_indicator_set_menu: procedure(self: PAppIndicator; menu: PGtkMenu); cdecl;
-  app_indicator_set_icon: procedure(self: PAppIndicator; icon_name: PGChar); cdecl;
-  app_indicator_set_label: procedure(self: PAppIndicator; _label, guide: PGChar); cdecl;
-  app_indicator_set_icon_theme_path: procedure(self: PAppIndicator; icon_theme_path: PGChar); cdecl;
-  app_indicator_set_ordering_index: procedure(self: PAppIndicator; ordering_index: guint32); cdecl;
-  { Get properties }
-  app_indicator_get_id: function(self: PAppIndicator): PGChar; cdecl;
-  app_indicator_get_category: function(self: PAppIndicator): TAppIndicatorCategory; cdecl;
-  app_indicator_get_status: function(self: PAppIndicator): TAppIndicatorStatus; cdecl;
-  app_indicator_get_icon: function(self: PAppIndicator): PGChar; cdecl;
-  app_indicator_get_icon_theme_path: function(self: PAppIndicator): PGChar; cdecl;
-  app_indicator_get_attention_icon: function(self: PAppIndicator): PGChar; cdecl;
-  app_indicator_get_menu: function(self: PAppIndicator): PGtkMenu; cdecl;
-  app_indicator_get_label: function(self: PAppIndicator): PGChar; cdecl;
-  app_indicator_get_label_guide: function(self: PAppIndicator): PGChar; cdecl;
-  app_indicator_get_ordering_index: function(self: PAppIndicator): guint32; cdecl;
 
 { TAppIndTrayIconHandle }
 
