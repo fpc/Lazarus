@@ -432,6 +432,7 @@ type
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     procedure DestroyWidget; override;
   public
+    destructor Destroy; override;
     function ClientToScreen(var P:TPoint):boolean; override;
     function getClientOffset:TPoint; override;
     function getClientRect: TRect; override;
@@ -5200,6 +5201,12 @@ begin
   // unref it to allow it to be destroyed
   FPageBox^.unref;
   inherited DestroyWidget;
+end;
+
+destructor TGtk3Page.Destroy;
+begin
+  g_idle_remove_by_data(fCentralWidget);
+  inherited Destroy;
 end;
 
 function TGtk3Page.ClientToScreen(var P: TPoint): boolean;
