@@ -232,14 +232,23 @@ begin
 end;
 
 procedure TCocoaCustomControl.scrollWheel(event: NSEvent);
+var
+  eatEvent: Boolean;
 begin
   if Assigned(self.lclGetTarget) and (self.lclGetTarget is TScrollingWinControl) then begin
     inherited scrollWheel(event);
     if Assigned(callback) then
       callback.scrollWheel(event);
   end else begin
-    if NOT Assigned(callback) or NOT callback.scrollWheel(event) then
+    if NOT Assigned(callback) or NOT callback.scrollWheel(event) then begin
       inherited scrollWheel(event);
+    end else begin
+      eatEvent:= NSAppKitVersionNumber < (NSAppKitVersionNumber14_0+1);
+      if eatEvent then
+        Exit;
+      if Assigned(self.enclosingScrollView) then
+        self.enclosingScrollView.scrollWheel(event);
+    end
   end;
 end;
 
