@@ -865,6 +865,9 @@ begin
   begin
     if Assigned(v.lclGetCallback) and not v.lclGetCallback.MouseUpDownEvent(event) then
     begin
+      v := GetEditBox(Self);
+      if NOT Assigned(v) then
+        Exit;
       inherited mouseDown(event);
       // NSTextView runs internal mouse-tracking loop in it's mouseDown implemenation.
       // Thus "inherited mouseDown" only returns after the mouse has been released.
