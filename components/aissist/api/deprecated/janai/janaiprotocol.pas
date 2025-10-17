@@ -88,7 +88,7 @@ end;
 procedure TJanAIServerProtocol.AuthenticateRequest(const aRequest: TWebClientRequest; const aKey: String);
 begin
   inherited AuthenticateRequest(aRequest, aKey);
-  Writeln('Adding key',aKey);
+  //Writeln('Adding key',aKey);
   if aKey<>'' then
     aRequest.Headers.Add('Authorization: Bearer '+aKey);
 end;

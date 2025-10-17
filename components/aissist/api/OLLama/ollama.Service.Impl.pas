@@ -168,7 +168,7 @@ begin
   lURL:=BuildEndPointURL(lMethodURL);
   lResponse:=ExecuteRequest('post',lURL,aRequest.Serialize);
   Result:=Tapi_ChatResponseServiceResult.Create(lResponse);
-  Writeln('----------------- Got : ',lResponse.Content);
+  //Writeln('----------------- Got : ',lResponse.Content);
   if Result.Success then
     Result.Value:=Tapi_ChatResponse.Deserialize(lResponse.Content);
 end;

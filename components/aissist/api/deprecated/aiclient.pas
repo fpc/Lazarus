@@ -335,7 +335,7 @@ begin
   CheckProtocol;
   json:=Nil;
   try
-    Writeln('Response : ',aResponse.Response.GetContentAsString);
+    //Writeln('Response : ',aResponse.Response.GetContentAsString);
     JSON:=GetJSON(aResponse.Response.GetContentAsString);
     if Protocol.ResponseToModels(JSON,aList) then
       begin

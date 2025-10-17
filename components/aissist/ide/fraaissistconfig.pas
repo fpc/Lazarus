@@ -68,7 +68,7 @@ var
   Idx,I : Integer;
   lItem : string;
 begin
-  Writeln('Handling models');
+  //Writeln('Handling models');
   FBusy:=False;
   Idx:=-1;
   With cbModel.Items do
@@ -78,7 +78,7 @@ begin
     For aModel in aModels.Value do
       begin
       lItem:='['+aModel.ID+'] '+aModel.Name;
-      Writeln('Adding ',lItem);
+      //Writeln('Adding ',lItem);
       I:=Add(lItem);
       if SameText(aModel.ID,AIController.Settings.DefaultModel) then
         Idx:=I;
