@@ -55,9 +55,7 @@ uses
 type
   TFRIdentifierKind = (
     friDeclaration,
-    friSourceName,
-    friFunctionResultWord,
-    friClassSelfWord
+    friSourceName
     );
   TFRIdentifierKinds = set of TFRIdentifierKind;
 
@@ -497,6 +495,10 @@ var
     NewTool: TCodeTool;
   begin
     case DeclNode.Desc of
+    ctnSrcName: begin
+      Kind:=friSourceName;
+      exit(true);
+    end;
     ctnUseUnit: ;
     ctnUseUnitNamespace,ctnUseUnitClearName:
       DeclNode:=DeclNode.Parent;
@@ -541,23 +543,6 @@ var
     end;
     DeclTool.CleanPosToCaret(DeclNode.StartPos,DeclCodeXY);
     Result:=true;
-  end;
-
-  function CheckPredefinedIdentifiers(out Identifier: string): boolean;
-  begin
-    Result:=true;
-    if DeclTool.NodeIsResultType(DeclNode) then begin
-      CodeToolBoss.GetIdentifierAt(StartSrcCode,StartCaretXY.X,StartCaretXY.Y,Identifier);
-      if SameText(Identifier,'Result') then begin
-        //debugln(['CheckPredefinedIdentifiers is function Result type']);
-        AllowRename:=false;
-        Kind:=friFunctionResultWord;
-
-        debugln(['CheckPredefinedIdentifiers 20250826103451 find references of Result word is not yet fully implemented']);
-        exit(false);
-      end;
-    end;
-    CodeToolBoss.GetIdentifierAt(DeclCodeXY.Code,DeclCodeXY.X,DeclCodeXY.Y,Identifier);
   end;
 
   function AddExtraFiles(Files: TStrings): boolean;
@@ -681,8 +666,8 @@ begin
   DeclTool:=nil;
   Kind:=friDeclaration;
   if not UpdateCodeNode then exit;
-  if not CheckUsesNode then exit;
-  if not CheckPredefinedIdentifiers(Identifier) then exit;
+  if not CheckUsesNode then exit; // also allows source name
+  CodeToolBoss.GetIdentifierAt(DeclCodeXY.Code,DeclCodeXY.X,DeclCodeXY.Y,Identifier);
 
   DeclXY:=Point(DeclCodeXY.X,DeclCodeXY.Y);
   Result:=LazarusIDE.DoOpenFileAndJumpToPos(DeclCodeXY.Code.Filename, DeclXY,
@@ -1487,13 +1472,13 @@ begin
   end;
 
   if ok
-      and (FNode.Desc=ctnBeginBlock) // 'Result'
+      and (FNode.Desc=ctnBeginBlock) // 'Result', 'Self'
       and (CompareIdentifiers(PChar(FNewIdentifier),
                               PChar(FOldIdentifier))<>0) // only case change allowed
   then begin
-    // Result inside function
+    // Result inside function or Self inside a procedure/function in class or record
     ok:=false;
-    Err:=Format(lisIdentifierIsReservedWord,['Result']);
+    Err:=Format(lisIdentifierIsReservedWord,[FOldIdentifier]);
   end;
 
   if ok and (FTool<>nil) then begin
@@ -1860,10 +1845,6 @@ begin
     CurrentGroupBox.Caption:= Format(lisFRIIdentifier,[''])+LCLEncodeAmps(FOldIdentifier);
   end else
     FOldIdentifier:='';
-  case IdentifierKind of
-  friFunctionResultWord: FOldIdentifier:='Result';
-  friClassSelfWord:      FOldIdentifier:='Self';
-  end;
   FNodesDeletedChangeStep:=FTool.NodesDeletedChangeStep;
   NewEdit.Text:=FOldIdentifier;
 end;
