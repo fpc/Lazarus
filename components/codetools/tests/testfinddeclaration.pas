@@ -128,6 +128,7 @@ type
     procedure TestFindDeclaration_ResultField;
     procedure TestFindDeclaration_With;
     procedure TestFindDeclaration_WithResult; // todo
+    procedure TestFindDeclaration_DelphiNoImplResultType; // todo
     procedure TestFindDeclaration_ClassOf;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_NestedAliasClass;
@@ -935,6 +936,24 @@ begin
   '  end;',
   'end;',
   'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_DelphiNoImplResultType;
+begin
+  exit; // todo
+
+  StartUnit;
+  Add([
+  '{$mode delphi}',
+  'function Fly: word;',
+  'implementation',
+  'function Fly;',
+  'begin',
+  '  Result{declaration:Fly}:=1;',
+  'end;',
   'end.',
   '']);
   FindDeclarations(Code);

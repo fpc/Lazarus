@@ -55,7 +55,7 @@ interface
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowTriedUnits}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowForInEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowNodeCache}
@@ -10695,17 +10695,22 @@ var
             if IsEnd and (fdfFindVariable in StartFlags) then begin
               BuildSubTreeForProcHead(ProcNode);
               ResultNode:=GetProcResultNode(ProcNode);
-              ExprType.Desc:=xtContext;
-              ExprType.Context.Node:=ResultNode;
-              ExprType.Context.Tool:=Self;
-              exit;
+              if ResultNode<>nil then begin
+                ExprType.Desc:=xtContext;
+                ExprType.Context.Node:=ResultNode;
+                ExprType.Context.Tool:=Self;
+                exit;
+              end;
             end else begin
               OldFlags:=Params.Flags;
               Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChildren];
               ExprType.Context:=FindBaseTypeOfNode(Params,ProcNode);
-              ExprType.Desc:=xtContext;
+              if ExprType.Context.Node<>nil then begin
+                ExprType.Desc:=xtContext;
+                Params.Flags:=OldFlags;
+                exit;
+              end;
               Params.Flags:=OldFlags;
-              exit;
             end;
           end;
         end;
