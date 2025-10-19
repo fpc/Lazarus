@@ -33,7 +33,9 @@ uses
   // LCL
   LCLType,
   // IdeIntf
-  MenuIntf, IDECommands, ToolBarIntf, PackageLinkIntf;
+  MenuIntf, IDECommands, ToolBarIntf, PackageLinkIntf,
+  // OPM
+  opkman_serializablepackages;
 
 procedure Register;
 
@@ -42,6 +44,8 @@ uses opkman_const, opkman_mainfrm, opkman_maindm, opkman_intf;
 
 procedure IDEMenuSectionClicked(Sender: TObject);
 begin
+  if SerializablePackages = nil then
+    exit;
   MainFrm := TMainFrm.Create(nil);
   try
     MainFrm.ShowModal;
