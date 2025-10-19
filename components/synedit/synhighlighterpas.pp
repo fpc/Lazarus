@@ -5624,7 +5624,7 @@ end;
 function TSynPasSyn.GetTokenAttributeEx: TLazCustomEditTextAttribute;
 var
   tid: TtkTokenKind;
-  i, x1, x2: Integer;
+  i, x1, x2, x1b, x2b: Integer;
   LeftCol, RightCol: TLazSynDisplayTokenBound;
   attr: TLazEditTextAttributeModifier;
 
@@ -5649,15 +5649,14 @@ begin
   x2 := ToPos(Run);
   LeftCol.Init(-1, x1);
   RightCol.Init(-1, x2);
-  if tid in [tkIDEDirective, tkComment] then begin
-    if not GetTokenIsCommentStart(True) then x1 := 1;
-    if (not GetTokenIsCommentEnd)       then x2 := fLineLen;
-    Result.SetFrameBoundsLog(x1, x2);
-  end;
-
 
   if tid = tkIDEDirective then begin
-    FCurIDEDirectiveAttri.Assign(FCommentAttri);
+    FCurIDEDirectiveAttri.Assign(Result);
+    FTokenID := tkComment; // for IsCommentStart/End
+    x1b := x1;  if not GetTokenIsCommentStart(True) then x1b := 1;
+    x2b := x2;  if (not GetTokenIsCommentEnd)       then x2b := fLineLen;
+    FTokenID := tkIDEDirective; // restore
+    FIDEDirectiveAttri.SetFrameBoundsLog(x1b, x2b);
     FCurIDEDirectiveAttri.Merge(FIDEDirectiveAttri, LeftCol, RightCol);
     Result := FCurIDEDirectiveAttri;
   end;
@@ -5668,29 +5667,30 @@ begin
     )
   then begin
     FCurCaseLabelAttri.Assign(Result);
+    FCaseLabelAttri.SetFrameBoundsLog(x1, x2);
     FCurCaseLabelAttri.Merge(FCaseLabelAttri, LeftCol, RightCol);
     Result := FCurCaseLabelAttri;
   end;
 
   if FIsPasDocKey then begin
     InitMergeRes(FCurPasDocAttri, Result);
+    fPasDocKeyWordAttri.SetFrameBoundsLog(x1, x2);
     FCurPasDocAttri.Merge(fPasDocKeyWordAttri, LeftCol, RightCol);
     Result := FCurPasDocAttri;
-    Result.SetFrameBoundsLog(x1, x2);
   end
   else
   if FIsPasDocSym then begin
     InitMergeRes(FCurPasDocAttri, Result);
+    fPasDocSymbolAttri.SetFrameBoundsLog(x1, x2);
     FCurPasDocAttri.Merge(fPasDocSymbolAttri, LeftCol, RightCol);
     Result := FCurPasDocAttri;
-    Result.SetFrameBoundsLog(x1, x2);
   end
   else
   if FIsPasUnknown then begin
     InitMergeRes(FCurPasDocAttri, Result);
+    fPasDocUnknownAttr.SetFrameBoundsLog(x1, x2);
     FCurPasDocAttri.Merge(fPasDocUnknownAttr, LeftCol, RightCol);
     Result := FCurPasDocAttri;
-    Result.SetFrameBoundsLog(x1, x2);
   end;
 
   case FTokenTypeDeclExtraAttrib of
@@ -5701,52 +5701,62 @@ begin
            (PasCodeFoldRange.BracketNestLevel = 0)
         then begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FProcedureHeaderNameAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderNameAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
         end;
       end;
     eaPropertyName: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FPropertyNameAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FPropertyNameAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaProcParam: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FProcedureHeaderParamAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderParamAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaProcType: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FProcedureHeaderTypeAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderTypeAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaProcValue: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FProcedureHeaderValueAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderValueAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaProcResult: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FProcedureHeaderResultAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderResultAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaDeclVarName: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FDeclarationVarConstNameAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FDeclarationVarConstNameAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaDeclTypeName: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FDeclarationTypeNameAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FDeclarationTypeNameAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaDeclType: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FDeclarationTypeAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FDeclarationTypeAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
     eaDeclValue: begin
           FCurProcTypeDeclExtraAttr.Assign(Result);
+          FDeclarationValueAttr.SetFrameBoundsLog(x1, x2);
           FCurProcTypeDeclExtraAttr.Merge(FDeclarationValueAttr, LeftCol, RightCol);
           Result := FCurProcTypeDeclExtraAttr;
       end;
@@ -5754,6 +5764,7 @@ begin
 
   if eaStructMemeber in FTokenExtraAttribs then begin
     FCurStructMemberExtraAttri.Assign(Result);
+    FStructMemberAttr.SetFrameBoundsLog(x1, x2);
     FCurStructMemberExtraAttri.Merge(FStructMemberAttr, LeftCol, RightCol);
     Result := FCurStructMemberExtraAttri;
   end;
@@ -5766,6 +5777,7 @@ begin
   end;
   if FCustomTokenMarkup <> nil then begin
     InitMergeRes(FCustomTokenMergedMarkup, Result);
+    FCustomTokenMarkup.SetFrameBoundsLog(x1, x2);
     FCustomTokenMergedMarkup.Merge(FCustomTokenMarkup, LeftCol, RightCol);
     Result := FCustomTokenMergedMarkup;
   end;
@@ -5781,6 +5793,7 @@ begin
       attr := FNestedBracketAttribs.Attribs[i];
       if attr.IsEnabled then begin
         FNestedBracketMergedMarkup.Assign(Result);
+        attr.SetFrameBoundsLog(x1, x2);
         FNestedBracketMergedMarkup.Merge(attr);
         Result := FNestedBracketMergedMarkup;
       end;
