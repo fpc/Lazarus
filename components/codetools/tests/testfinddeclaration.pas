@@ -129,6 +129,8 @@ type
     procedure TestFindDeclaration_With;
     procedure TestFindDeclaration_WithResult; // todo
     procedure TestFindDeclaration_DelphiNoImplResultType; // todo
+    procedure TestFindDeclaration_WithSelfFPC;
+    procedure TestFindDeclaration_WithSelfDelphi; // todo
     procedure TestFindDeclaration_ClassOf;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_NestedAliasClass;
@@ -932,7 +934,7 @@ begin
   'begin',
   '  Result{declaration:Fly}:=1;',
   '  with Bird do begin',
-  '    Result{ declaration:TBird.Result}:=3;',
+  '    Result{ declaration:TBird.Result}:=3;', // ToDo
   '  end;',
   'end;',
   'begin',
@@ -954,6 +956,63 @@ begin
   'begin',
   '  Result{declaration:Fly}:=1;',
   'end;',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_WithSelfFPC;
+begin
+  StartProgram;
+  Add([
+  '{$mode objfpc}',
+  'type',
+  '  TAnt = class',
+  '    Self: word;',
+  '    procedure Proc(var o); virtual; abstract;',
+  '  end;',
+  '  TBird = class',
+  '    Self: word;',
+  '    procedure Fly;',
+  '  end;',
+  'procedure TBird.Fly;',
+  'var Ant: TAnt;',
+  'begin',
+  '  Self{declaration:TBird}.Self{declaration:TBird.Self}:=3;', // access field
+  '  with Ant do begin',
+  '    Proc(Self{declaration:TBird});', // mode objfpc: pass myself
+  '  end;',
+  'end;',
+  'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_WithSelfDelphi;
+begin
+  exit; // todo
+
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'type',
+  '  TAnt = class',
+  '    Self: word;',
+  '  end;',
+  '  TBird = class',
+  '    Self: word;',
+  '    procedure Fly;',
+  '  end;',
+  'procedure TBird.Fly;',
+  'var Ant: TAnt;',
+  'begin',
+  '  Self{declaration:TBird}.Self{declaration:TBird.Self}:=3;', // access field
+  '  with Ant do begin',
+  '    Self{declaration:TAnt.Self}:=4;', // todo: mode delphi: strict with scope
+  '  end;',
+  'end;',
+  'begin',
   'end.',
   '']);
   FindDeclarations(Code);
