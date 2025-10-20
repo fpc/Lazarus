@@ -893,6 +893,7 @@ begin
   or Selection.LookupRootSelected then exit;
   Selection.SizeSelection(DiffX, DiffY);
   Modified;
+  Form.Invalidate;
 end;
 
 function ComponentsSortByLeft(Item1, Item2: Pointer): Integer;
