@@ -14437,7 +14437,7 @@ begin
     ReadNextAtom;
     // maybe all this syntax check is redundant
     if not AtomIsChar('<') then
-      RaiseExceptionFmt(20170421200701,ctsStrExpectedButAtomFound,['<']);
+      RaiseExceptionFmt(20170421200701,ctsStrExpectedButAtomFound,['<', GetAtom]);
     ReadNextAtom;
     if CurPos.Flag<>cafWord then
       RaiseExceptionFmt(20170421200703,ctsIdentExpectedButAtomFound,[GetAtom]);
@@ -14446,7 +14446,7 @@ begin
       if AtomIsChar('>') then
         RaiseException(20170421200705,ctsNotEnoughGenParams);
       if not AtomIsChar(',') then
-        RaiseExceptionFmt(20170421200707,ctsStrExpectedButAtomFound,['>']);
+        RaiseExceptionFmt(20170421200707,ctsStrExpectedButAtomFound,['>', GetAtom]);
       ReadNextAtom;
       if CurPos.Flag<>cafWord then
         RaiseExceptionFmt(20170421200710,ctsIdentExpectedButAtomFound,[GetAtom]);
