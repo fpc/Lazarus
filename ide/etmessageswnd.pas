@@ -257,7 +257,7 @@ end;
 
 procedure TMessagesView.SelectMsgLine(Msg: TMessageLine);
 begin
-  MessagesFrame1.SelectMsgLine(Msg,true);
+  MessagesFrame1.SelectMsgLine(Msg);
 end;
 
 function TMessagesView.SelectFirstUrgentMessage(

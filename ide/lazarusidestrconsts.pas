@@ -405,7 +405,7 @@ resourcestring
   lisPackageOption = 'Package "%s" Option';
   lisAbout2 = 'About %s';
   lisCopySelectedMessagesToClipboard = 'Copy Selected Messages to Clipboard';
-  lisCopyFileNameToClipboard = 'Copy File Name to Clipboard';
+  lisCopyFileNamesToClipboard = 'Copy File Names to Clipboard';
   lisFind = 'Find ...';
   lisAbout = 'About';
   lisRemoveCompilerOptionHideMessage = 'Remove Compiler Option Hide Message';
