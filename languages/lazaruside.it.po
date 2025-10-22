@@ -4376,7 +4376,7 @@ msgstr "Mostra tutto"
 
 #: lazarusidestrconsts.dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
-msgstr "Mostra info sll'eseguibile (solo Win32)"
+msgstr "Mostra info sull'eseguibile (solo Win32)"
 
 #: lazarusidestrconsts.dlgshowfilenameincaption
 msgid "Show file name in caption"
