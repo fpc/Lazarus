@@ -16,6 +16,7 @@ unit Cocoa_Extra;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$modeswitch cblocks}
 {$include cocoadefines.inc}
 
 interface
@@ -769,6 +770,26 @@ const
   NSTableViewStyleInset = 2;
   NSTableViewStyleSourceList = 3;
   NSTableViewStylePlain = 4;
+
+const
+  NSFileManagerUnmountAllPartitionsAndEjectDisk = 1 shl 0;
+  NSFileManagerUnmountWithoutUI                 = 1 shl 1;
+
+type
+  NSFileManagerUnmountOptions = NSInteger;
+
+type
+  TCocoaCompletionHandlerWithNSError = reference to procedure(error:NSError) cblock; cdecl;
+
+type
+  NSFileManagerFix = objccategory external (NSFileManager)
+     procedure unmountVolumeAtURL_options_completionHandler(
+         url:NSUrl;
+         options:NSFileManagerUnmountOptions;
+         completionHandler:TCocoaCompletionHandlerWithNSError );
+       message 'unmountVolumeAtURL:options:completionHandler:';  { available in 10_11 }
+  end;
+
 
 implementation
 
