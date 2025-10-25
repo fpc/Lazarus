@@ -7038,17 +7038,76 @@ to by Formats and Datas or would be written if either Formats or Datas are
 
 <element name="TPicture.SaveToStreamWithFileExt">
 <short>
-Saves the graphic to a stream using the class type for the specified file 
+Saves graphic image data to a stream using the specified format and file 
 extension.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SaveToStreamWithFileExt</var> is a method used to store image data found 
+in the Graphic property to the TStream instance specified in 
+<var>Stream</var>. It ensures that supported TGraphicClass class types in 
+Graphic are handled properly when accessing and storing the image data.
+</p>
+<p>
+No actions are performed in the method if the Graphic property has not been 
+assigned (contains <b>Nil</b>).
+</p>
+<p>
+<var>FileExt</var> is the file extension for the graphics class used to write 
+the image data to the specified stream. It can differ from the format used in 
+Graphics, and can contain any of the graphics classes supported in the LCL 
+implementation. It must include the '.' separator for the file extension. For 
+example: '.jpg', '.png', or '.ico'.
+</p>
+<p>
+The FindGraphicClassWithFileExt method is used to get a graphic class when a 
+file extension has been provided in FileExt. An EInvalidGraphic exception is 
+raised if FileExt contains an invalid graphics format for the current platform.
+</p>
+<p>
+When FileExt is omitted, or contains the same extension used in Graphic, the 
+SaveToStream method in the TGraphic instance is called to store the image 
+data. No conversion is needed for the values written to Stream.
+</p>
+<p>
+SaveToStreamWithFileExt provides support for conversion of image data for 
+TFPImageBitmap descendants using their GetWriterClass methods. The raw image 
+data is accessed and stored to Stream using the SaveToStream method found in 
+the writer class.
+</p>
+<p>
+If Graphic is derived from TCustomIcon, support is provided for converting the 
+current icon image in Graphic to the specified file extension. The 
+TCustomIcon.ExportImage method is used to write the icon image data.
+</p>
+<p>
+An Exception is raised if Graphic does not support conversion to the file 
+extension specified in the FileExt argument.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.2 to save individual images in TCustomIcon to 
+another raster image format. 
+</version>
+<seealso>
+<link id="TPicture.Graphic"/>
+<link id="TPicture.FindGraphicClassWithFileExt"/>
+<link id="TCustomIcon"/>
+<link id="TCustomIcon.ExportImage"/>
+<link id="TCustomIcon.Current"/>
+<link id="TFPImageBitmap"/>
+<link id="TGraphicClass"/>
+</seealso>
 </element>
 <element name="TPicture.SaveToStreamWithFileExt.Stream">
-<short/>
+<short>
+Stream instance where the image data for the picture is stored.	
+</short>
 </element>
 <element name="TPicture.SaveToStreamWithFileExt.FileExt">
-<short/>
+<short>
+File extension for the format used to write image data to the specified stream.
+</short>
 </element>
 
 <element name="TPicture.SupportsClipboardFormat">
@@ -17483,6 +17542,52 @@ Ordinal position for the image, or -1 when no images are available.
 <element name="TCustomIcon.GetBestIndexForSize.ASize">
 <short>
 TSize instance with the height and width for the requested image size.
+</short>
+</element>
+
+<element name="TCustomIcon.ExportImage">
+<short>
+Exports the image for the icon at the specified index to another 
+TFPImageBitmap class instance.
+</short>
+<descr>
+<p>
+<var>ExportImage</var> creates a new instance of the bitmap image class 
+specified in <var>AImageClass</var>, then calls its LoadFromRawImage method to 
+load the raw image data for the shared icon. AIndex specifies the ordinal 
+position in the Images for the the shared icon instance.
+</p>
+<remark>
+To avoid memory leaks, the bitmap instance created in the return value must be 
+destroyed in the calling routine.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomIcon.Count"/>
+<link id="TRasterImage.FSharedImage"/>
+<link id="TRasterImage.LoadFromRawImage"/>
+<link id="TPicture.SaveToStreamWithFileExt"/>
+</seealso>
+<version>
+Added in LCL version 4.2.
+</version>
+</element>
+
+<element name="TCustomIcon.ExportImage.AIndex">
+<short>
+Ordinal position for the icon exported in the method.
+</short>
+</element>
+
+<element name="TCustomIcon.ExportImage.AImageClass">
+<short>
+Graphics class for the exported image.
+</short>
+</element>
+
+<element name="TCustomIcon.ExportImage.Result">
+<short>
+Image instance created in the method where the exported icon is stored.
 </short>
 </element>
 
