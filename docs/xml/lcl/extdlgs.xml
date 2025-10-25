@@ -302,6 +302,36 @@ The property value is unassigned (contains <b>Nil</b>) prior to calling
 </seealso>
 </element>
 
+<element name="DefaultOpenDialogPictureOptions">
+<short>
+Defines the default dialog options used in TOpenPictureDialog.
+</short>
+<descr>
+<p>
+<var>DefaultOpenDialogPictureOptions</var> is the default set of dialog 
+options used in the TOpenPictureDialog class. DefaultOpenDialogPictureOptions 
+includes the options defined in DefaultOpenDialogOptions, and adds the value 
+<var>ofAutoPreview</var> to enable the automatic preview feature in the 
+dialog. It is enabled by default because this the default behavior for the 
+Open Picture dialog type by design.
+</p>
+<p>
+DefaultOpenDialogPictureOptions	contains the default value for the Options 
+property in TOpenPictureDialog. The value is assigned in the Create 
+constructor for the TOpenPictureDialog dialog instance.
+</p>
+</descr>
+<version>
+Added in LCL version 4.4.	
+</version>
+<seealso>
+<link id="TOpenPictureDialog.Options"/>
+<link id="TOpenPictureDialog.Filter"/>
+<link id="TOpenPictureDialog.Create"/>
+<link id=""></link>
+</seealso>
+</element>
+
 <element name="TOpenPictureDialog">
 <short>
 <var>TOpenPictureDialog</var> - a preview dialog that shows a preview of a 
@@ -464,16 +494,20 @@ selected file name for the preview dialog has changed.
 </element>
 
 <element name="TOpenPictureDialog.Create">
-<short>Constructor for the class instance.</short>
+<short>
+Constructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Create</var> is the overridden constructor for the class instance, and 
 calls the inherited constructor.
 </p>
 <p>
-Creates sets the value in <var>DefaultFilter</var> to the all files mask for 
-common image format used on the platform or OS. This value is also assigned 
-to the <var>Filter</var> property for the dialog.
+Creates sets the values in the <var>Options</var> and <var>Filter</var> 
+properties. Options is set to the value in the DefaultOpenDialogPictureOptions 
+constant. Filter is set to the all files mask for common image format used on 
+the platform or OS. This value is also assigned to the 
+<var>DefaultFilter</var> property for the dialog.
 </p>
 <p>
 Create allocates resources needed for the <var>PictureGroupBox</var> and 
@@ -486,6 +520,7 @@ display properties.
 <link id="TOpenPictureDialog.ImageCtrl"/>
 <link id="TOpenPictureDialog.DefaultFilter"/>
 <link id="TOpenPictureDialog.Filter"/>
+<link id="TOpenPictureDialog.Options"/>
 <link id="#lcl.graphics.GraphicFilter">GraphicFilter</link>
 </seealso>
 </element>
@@ -653,6 +688,42 @@ position for the selected file filter.
 <link id="TOpenPictureDialog.GetFilterExt"/>
 <link id="#lcl.dialogs.TFileDialog.Filter">TFileDialog.Filter</link>
 <link id="#lcl.dialogs.TFileDialog.FilterIndex">TFileDialog.FilterIndex</link>
+</seealso>
+</element>
+
+<element name="TOpenPictureDialog.Options">
+<short>
+Indicates the dialog options enabled for the class instance.
+</short>
+<descr>
+<p>
+<var>Options</var> is a <var>TOpenOptions</var> property which controls the 
+options enabled for the dialog instance. It redefines the property introduced 
+in TOpenDialog to use the default values specifed in the 
+DefaultOpenDialogPictureOptions constant. The set of option values includes:
+</p>
+<dl>
+<dt>ofEnableSizing</dt>
+<dd>Allows the dialog to be resized at run-time.</dd>
+<dt>ofViewDetail</dt>
+<dd>Displays detailed file information.</dd>
+<dt>ofAutoPreview</dt>
+<dd>Automatically displays a preview for the selected image file.</dd>
+</dl>
+<p>
+The default value for Options is assigned in the Create constructor, along 
+with the default Filter for the dialog, and used when the Execute method is 
+called at run-time.
+</p>	
+</descr>
+<version>
+Added in LCL version 4.4.
+</version>
+<seealso>
+<link id="TOpenDialog.Options"/>
+<link id="TOpenDialog.Filter"/>
+<link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
+<link id="#lcl.dialogs.TOpenOption">TOpenOption</link>
 </seealso>
 </element>
 
