@@ -65,8 +65,8 @@ end;
          LParam - Long-integer parameter
  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
 
- Passes message on to 'default' handler. This can be a control specific window
- procedure or the default window procedure.
+ Passes message on to 'default' handler. This can be the default window procedure
+ (WndProc) or a specific indexed dynamic method via inherited TObject.Dispatch.
  ------------------------------------------------------------------------------}
 function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult;
