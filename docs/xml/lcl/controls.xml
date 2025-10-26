@@ -17806,7 +17806,9 @@ available.
 </element>
 
 <element name="TControl.Caption">
-<short>The text displayed for the control.</short>
+<short>
+The text displayed for the control.
+</short>
 <descr>
 <p>
 Caption is a TCaption property with the text displayed for the control. By 
@@ -17851,6 +17853,22 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 Displays the 'N' character with an underline indicating the accelerator key. 
 Pressing Alt+N activates the shortcut key and causes the associated TMemo 
 control to be given focus.
+</p>
+<p>
+Caption can also contain multiline text. In TControl descendants, this is 
+achieved by setting Caption to a value which contains embedded LineEnding 
+sequence(s). For example:
+</p>
+<code>
+Button1.Caption := 'Pass' + LineEnding + 'and' + LineEnding + 'Stowe';
+</code>
+<p>
+In descendant controls, like TSpeedButton or TToggleBox, a multiline value 
+can be assigned in the Object Inspector using its Strings property editor.
+</p>
+<p>
+Enable AutoSize to automatically resize the control to its Caption value 
+(including multiline text).
 </p>
 <p>
 Set values in Font to specify the typeface, size, color, and style used to 
