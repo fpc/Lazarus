@@ -230,6 +230,7 @@ const
 
   LM_PARENTNOTIFY      = $0210;
   LM_CAPTURECHANGED    = $0215;
+  LM_DEVICECHANGE      = $0219;
   LM_DROPFILES         = $0233;
 
   LM_SELCHANGE         = $0234;
@@ -989,6 +990,7 @@ begin
 
   LM_PARENTNOTIFY                : Result := 'LM_PARENTNOTIFY';
   LM_CAPTURECHANGED              : Result := 'LM_CAPTURECHANGED';
+  LM_DEVICECHANGE                : Result := 'LM_DEVICECHANGE';
   LM_DROPFILES                   : Result := 'LM_DROPFILES';
 
   LM_SELCHANGE                   : Result := 'LM_SELCHANGE';

@@ -2513,6 +2513,7 @@ begin
     WM_UPDATEUISTATE:
       if ThemeServices.ThemesEnabled then
         InvalidateRect(Window, nil, True);
+    WM_DEVICECHANGE: SetLMessageAndParams(LM_DEVICECHANGE, True);
 
     { >= WM_USER }
 
@@ -2659,7 +2660,8 @@ begin
 
   // respond to result of LCL handling the message
   case PLMsg^.Msg of
-    LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP, LM_CONTEXTMENU:
+    LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP, LM_CONTEXTMENU,
+    WM_DEVICECHANGE:
       if PLMsg^.Result = 0 then
         WinProcess := True;
 
