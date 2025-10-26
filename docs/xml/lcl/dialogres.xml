@@ -237,7 +237,6 @@ Image.Center := True;
 <seealso>
 <link id="TDialogImageList"/>
 <link id="#lcl.dialogs.DefaultPromptDialog">DefaultPromptDialog</link>
-<link id="#lcl.lcltaskdialog.TTaskDialog.Execute">TTaskDialog.Execute</link>
 </seealso>
 </element>
 <element name="DialogGlyphs.Result">

@@ -7339,7 +7339,6 @@ documentation states otherwise but it is incorrect.
 <link id="TCustomTaskDialog.RadioButton"/>
 <link id="TCustomTaskDialog.QueryResult"/>
 <link id="TCustomTaskDialog.QueryItemIndex"/>
-<link id="#lcl.lcltaskdialog.TTaskDialog">TTaskDialog</link>
 </seealso>
 </element>
 <element name="TCustomTaskDialog.Execute.Result">
@@ -7518,7 +7517,6 @@ and passed as arguments to the wrapper in <file>LCLTaskDialog</file>.
 <link id="TCustomTaskDialog.Execute"/>
 <link id="TTaskDialogCommonButtons"/>
 <link id="TTaskDialogCommonButton"/>
-<link id="#lcl.lcltaskdialog.TTaskDialog">LCLTaskDialog.TTaskDialog</link>
 </seealso>
 </element>
 
@@ -8222,7 +8220,6 @@ pixels) or an upper limit (480 pixels) on the auto-calculated width.
 <link id="TCustomTaskDialog.Text"/>
 <link id="TCustomTaskDialog.ExpandedText"/>
 <link id="TCustomTaskDialog.Execute"/>
-<link id="#lcl.lcltaskdialog.TTaskDialog.Execute">TTaskDialog.Execute</link>
 </seealso>
 </element>
 
