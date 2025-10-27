@@ -11,11 +11,11 @@
 
 unit BasicThumbnails;
 {$mode ObjFPC}{$H+}
-
+{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 interface
 
 uses
-  LCLIntf, LCLType,
+  LCLIntf, LCLType, LMessages,
   Classes, SysUtils, fgl, Types,
   Graphics, Controls, Forms;
 
@@ -30,7 +30,7 @@ type
     FSelected: Boolean;
     procedure SetSelected(AValue: Boolean);
   public
-    procedure DrawToCanvas(ACanvas: TCanvas; ARect: TRect); virtual;
+    procedure DrawToCanvas({%H-}ACanvas: TCanvas; {%H-}ARect: TRect); virtual;
     property Left: Integer read FLeft write FLeft;
     property Selected: Boolean read FSelected write SetSelected;
     property Top: Integer read FTop write FTop;
@@ -77,10 +77,11 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     procedure Paint; override;
+    procedure ScrollBy(DeltaX, DeltaY: Integer); override;
     procedure SetSelectedIndex(AValue: Integer); virtual;
     procedure SingleSelect(AThumbnail: TBasicThumbnail);
     function ThumbnailMarked({%H-}AThumbnail: TBasicThumbnail): Boolean; virtual;
-    procedure ThumbnailOutside(AThumbnail: TBasicThumbnail); virtual;
+    procedure ThumbnailOutside({%H-}AThumbnail: TBasicThumbnail); virtual;
     function ThumbnailVisible(AThumbnail: TBasicThumbnail): Boolean;
 
     property ThumbnailList: TThumbnailList read FThumbnailList;
@@ -145,6 +146,7 @@ end;
 constructor TBasicThumbnailviewer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  AutoScroll := true;
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
 
@@ -477,6 +479,16 @@ begin
   end;
 end;
 
+procedure TBasicThumbnailViewer.ScrollBy(DeltaX, DeltaY: Integer);
+begin
+  VertScrollbar.Increment := FThumbnailHeight + FThumbnailSpacing;
+
+//  if (VertScrollbar.Position > 0) and (VertScrollbar.Position < VertScrollbar.Increment) then
+//    if DeltaY < 0 then DeltaY := -VertScrollbar.Increment else DeltaY := VertScrollbar.Increment;
+
+  inherited;
+end;
+
 procedure TBasicThumbnailViewer.ScrollIntoView;
 var
   thumb: TBasicThumbnail;
@@ -575,6 +587,7 @@ begin
   if AValue = FThumbnailHeight then
     exit;
   FThumbnailHeight := AValue;
+  VertScrollbar.Increment := FThumbnailHeight + FThumbnailSpacing;
   LayoutThumbnails;
 end;
 

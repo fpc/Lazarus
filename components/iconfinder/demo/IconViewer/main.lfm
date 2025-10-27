@@ -6,7 +6,7 @@ object MainForm: TMainForm
   Caption = 'Icon Viewer'
   ClientHeight = 525
   ClientWidth = 818
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object Panel1: TPanel
