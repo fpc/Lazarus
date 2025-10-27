@@ -4623,7 +4623,7 @@ Implements an event handler used to toggle the visibility of the popup dialog
 for the control.
 </short>
 <descr></descr>
-<seealso></seealso>
+<seealso/>
 </element>
 <element name="TTimeEdit.TimePopupShowHide.Sender">
 <short>Object generating the event notification.</short>
@@ -4638,7 +4638,7 @@ Configures and displays the popup dialog for the control.
 Used in the implementation of the ButtonClick and EditDblClick methods.
 </p>
 </descr>
-<seealso></seealso>
+<seealso/>
 </element>
 
 <element name="TTimeEdit.ParseInput">
@@ -4703,6 +4703,45 @@ Default resource name for the glyph used on the button in the control.
 </short>
 </element>
 
+<element name="TTimeEdit.Is12HourMode">
+<short>
+Indicates whether the effective TimeFormat for the control reflects 12-hour 
+clock values with AM and PM designations.
+</short>
+<descr>
+<p>	
+<var>Is12HourMode</var> is a <var>Boolean</var> function which indicates that 
+the TimeFormat for control displays values with AM and PM suffixes for 12-hour 
+clock values. It examines the effective time format returned by the 
+UsedTimeFormat method and returns <b>True</b> if the lowercase 
+<var>TimeFormat</var> value contains one of the following:
+</p>
+<ul>
+<li>'am/pm'</li>
+<li>'a/p'</li>
+<li>'ampm'</li>
+</ul>
+<p>
+Is12HourMode, along with <var>UsedTimeAMString</var> and 
+<var>UsedTimePMString</var>, are used when a popup is displayed for the 
+<var>Time</var> value in the control.
+</p>
+</descr>
+<version>
+Added in LCL version 4.4.
+</version>
+<seealso>
+<link id="TTimeEdit.UsedTimeFormat"/>
+<link id="TTimeEdit.UsedTimeAMString"/>
+<link id="TTimeEdit.UsedTimePMString"/>
+<link id="TTimeEdit.Time"/>
+</seealso>
+</element>
+
+<element name="TTimeEdit.Is12HourMode.Result">
+<short></short>
+</element>
+
 <element name="TTimeEdit.UsedFormatSettings">
 <short>
 Gets the effective format settings used to format the value for the time edit 
@@ -4742,14 +4781,60 @@ applied.
 </short>
 </element>
 
+<element name="TTimeEdit.UsedTimeAMString">
+<short>
+Gets the suffix used for an <i>ante meridiem</i> (before midday) time value in 
+the control.	
+</short>
+<descr>
+<p>
+<var>UsedTimeAMString</var> is a <var>String</var> function which returns the 
+suffix used for an <i>ante meridiem</i> time value when the UsedTimeFormat for 
+the control displays 12-hour clock values. UsedTimeAMString examines the 
+lowercase value returned from UsedTimeFormat to determine whether the value 
+'ampm' is used in the effective TimeFormat for the control.
+</p>
+<p>
+If UsedTimeFormat contains 'ampm', the return value is set to the effective  
+display value for a Time which occurs before midday / noon. This is the value 
+from DefaultFormatSettings.TimeAMString when TimeAMString is empty, or the 
+TimeAMString property value when assigned. The default value in the 
+DEFAULT_TIMEAMSTRING constant is used when the return value is unassigned 
+(an empty string).
+</p>
+<p>
+UsedTimeAMString, along with <var>UsedTimePMString</var> and 
+<var>UsedTimeFormat</var>, are used when a popup is displayed for the 
+<var>Time</var> value in the control.
+</p>
+<p>	
+See <var>UsedTimePMString</var> for the effective value used for a post 
+meridiem (after midday) time value when a 12-hour clock is used.
+</p>
+</descr>
+<seealso>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.UsedTimeFormat"/>
+<link id="TTimeEdit.UsedTimePMString"/>
+<link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
+</seealso>
+</element>
+
+<element name="TTimeEdit.UsedTimeAMString.Result">
+<short>
+Suffix used for an ante meridiem (before midday) time value when 12-hour clock 
+values are used in time TimeFormat.
+</short>
+</element>
+
 <element name="TTimeEdit.UsedTimeFormat">
 <short>
 Gets the effective short time format used for the Time value in the control.
 </short>
 <descr>
 <p>
-The return value contains the short time format used to format the value in the 
-Text property. It defaults to the short time setting in the 
+The return value contains the short time format used to format the value in 
+the Text property. It defaults to the short time setting in the 
 DefaultFormatSettings for the platform. The value in TimeFormat is substituted 
 when an explicit value has been assigned to the property.
 </p>
@@ -4758,8 +4843,8 @@ UsedTimeFormat is called from the UsedFormatSettings method, which occurs when
 a new value has been assigned to the Time property.
 </p>
 <p>
-See TimeSeparator and UsedTimeSeparator for the separator character used in the 
-short time format settings.
+See TimeSeparator and UsedTimeSeparator for the separator character used in 
+the short time format settings.
 </p>
 </descr>
 <version>
@@ -4779,6 +4864,52 @@ Added in LCL version 4.0.
 <element name="TTimeEdit.UsedTimeFormat.Result">
 <short>
 Short time format used in the class instance.
+</short>
+</element>
+
+<element name="TTimeEdit.UsedTimePMString">
+<short>
+Gets the suffix used for a <i>post meridiem</i> (after midday) time value in 
+the control.	
+</short>
+<descr>
+<p>
+<var>UsedTimePMString</var> is a <var>String</var> function which returns the 
+suffix used for a <i>post meridiem</i> time value when the UsedTimeFormat for 
+the control displays 12-hour clock values. UsedTimeAMString examines the 
+lowercase value returned from UsedTimeFormat to determine whether the value 
+'ampm' is used in the effective TimeFormat for the control.
+</p>
+<p>
+If UsedTimeFormat contains 'ampm', the return value is set to the effective  
+display suffix for a Time which occurs before midday / noon. This is the value 
+from DefaultFormatSettings.TimePMString when TimePMString is empty, or the 
+TimePMString property value when assigned. The default value in the 
+DEFAULT_TIMEPMSTRING constant is used when the return value is unassigned 
+(an empty string).
+</p>
+<p>
+UsedTimePMString, along with <var>UsedTimeAMString</var> and 
+<var>UsedTimeFormat</var>, are used when a popup is displayed for the 
+<var>Time</var> value in the control.
+</p>
+<p>	
+See <var>UsedTimeAMString</var> for the effective value used for a ante  
+meridiem (after midday) time value when a 12-hour clock is used.
+</p>
+</descr>
+<seealso>
+<link id="TTimeEdit.TimeFormat"/>
+<link id="TTimeEdit.UsedTimeFormat"/>
+<link id="TTimeEdit.UsedTimeAMString"/>
+<link id="#rtl.sysutils.DefaultFormatSettings">DefaultFormatSettings</link>
+</seealso>
+</element>
+
+<element name="TTimeEdit.UsedTimePMString.Result">
+<short>
+Suffix used for a post meridiem (after midday) time value when 12-hour clock 
+values are used in time TimeFormat.
 </short>
 </element>
 
