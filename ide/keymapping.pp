@@ -548,6 +548,7 @@ begin
     ecScrollDown              : Result:= srkmecScrollDown;
     ecScrollLeft              : Result:= srkmecScrollLeft;
     ecScrollRight             : Result:= srkmecScrollRight;
+    ecScrollCurrentLineToCenter          : Result:= srkmecScrollCurrentLineToCenter;
     ecInsertMode              : Result:= srkmecInsertMode;
     ecOverwriteMode           : Result:= srkmecOverwriteMode;
     ecToggleMode              : Result:= srkmecToggleMode;
@@ -2872,6 +2873,7 @@ begin
   AddDefault(C, 'Scroll down one line', srkmecScrollDown, ecScrollDown);
   AddDefault(C, 'Scroll left one char', srkmecScrollLeft, ecScrollLeft);
   AddDefault(C, 'Scroll right one char', srkmecScrollRight, ecScrollRight);
+  AddDefault(C, 'Scroll current line to center', srkmecScrollCurrentLineToCenter, ecScrollCurrentLineToCenter);
 
   // selection
   C:=Categories[AddCategory('Selection',srkmCatSelection, IDECmdScopeSrcEditOnly)];

@@ -166,6 +166,8 @@ const
   ecScrollLeft      = 213;  // Scroll left one char leaving cursor position unchanged.
   ecScrollRight     = 214;  // Scroll right one char leaving cursor position unchanged.
 
+  ecScrollCurrentLineToCenter  = 215;  // Scroll to vertical center leaving cursor position unchanged.
+
   ecInsertMode      = 221;  // Set insert mode
   ecOverwriteMode   = 222;  // Set overwrite mode
   ecToggleMode      = 223;  // Toggle ins/ovr mode
@@ -439,7 +441,7 @@ implementation
 { Command mapping routines }
 
 const
-  EditorCommandStrs: array[0..184] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..185] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -549,6 +551,7 @@ const
     (Value: ecScrollDown; Name: 'ecScrollDown'),
     (Value: ecScrollLeft; Name: 'ecScrollLeft'),
     (Value: ecScrollRight; Name: 'ecScrollRight'),
+    (Value: ecScrollCurrentLineToCenter; Name: 'ecScrollCurrentLineToCenter'),
     (Value: ecInsertMode; Name: 'ecInsertMode'),
     (Value: ecOverwriteMode; Name: 'ecOverwriteMode'),
     (Value: ecToggleMode; Name: 'ecToggleMode'),

@@ -2623,7 +2623,8 @@ begin
   Action := ccaDefaultAction;
   case Command of
     ecCopy, ecCut,
-    ecCopyCurrentLine, ecCutCurrentLine, ecDuplicateSelection:
+    ecCopyCurrentLine, ecCutCurrentLine, ecDuplicateSelection,
+    ecScrollCurrentLineToCenter:
       Action := ccaNoneRepeatCommand;
     ecMoveSelectUp, ecMoveSelectDown, ecMoveSelectLeft, ecMoveSelectRight:
       Action := ccaClearCarets;

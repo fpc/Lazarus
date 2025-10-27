@@ -7922,6 +7922,9 @@ begin
           if CaretX < LeftChar then
             CaretX := LeftChar;
         end;
+      ecScrollCurrentLineToCenter: begin
+        TopView := Max(1, FCaret.ViewedLinePos - (LinesInWindow div 2));
+      end;
       ecInsertMode:
         begin
           InsertMode := TRUE;
