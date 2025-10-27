@@ -11903,7 +11903,8 @@ begin
     AMouseFixPosF.Y := FMouseFixPos.Y;
     MouseEvent := QMouseEvent_create(QEventMouseButtonRelease, @AMouseFixPosF, QtLeftButton,
       QtLeftButton, QGUIApplication_keyboardModifiers());
-    QCoreApplication_postEvent(Widget, MouseEvent);
+    SlotMouse(Widget, MouseEvent);
+    QMouseEvent_destroy(MouseEvent);
   end;
 end;
 
