@@ -122,6 +122,23 @@ These internals are assigned using values passed as arguments to the
 <element name="TTimePopupForm.MinutesGrid"/>
 <element name="TTimePopupForm.MoreLessBtn"/>
 
+<element name="TTimePopupForm.CancelButtonClick">
+<short>
+Implements the OnClick handler for the Cancel button.
+</short>
+<descr>
+<p>
+Closes the pop-up form when the Cancel button is clicked.
+</p>
+</descr>
+</element>
+
+<element name="TTimePopupForm.CancelButtonClick.Sender">
+<short>
+Object instance for the event notification.
+</short>
+</element>
+
 <element name="TTimePopupForm.GridsDblClick">
 <short>
 Implements the OnDblClick event handler for grids controls on the form.
@@ -207,6 +224,45 @@ parameters are ignored in the current implementation.
 <short>Ignored.</short>
 </element>
 
+<element name="TTimePopupForm.HoursGridSelectCell">
+<short>
+Implements the OnSelectCell event handler for the hours grid on the form.
+</short>
+<descr>
+<p>
+Sets CanSelect to <b>False</b> when 12-hour time values are used and the 
+selected cell is not valid for the time format.
+</p>
+</descr>
+<version>
+Added in LCL version 4.4.
+</version>
+</element>
+
+<element name="TTimePopupForm.HoursGridSelectCell.Sender">
+<short>
+Object instance for the event notification.
+</short>
+</element>
+
+<element name="TTimePopupForm.HoursGridSelectCell.aCol">
+<short>
+Column number selected on the Hours grid.
+</short>
+</element>
+
+<element name="TTimePopupForm.HoursGridSelectCell.aRow">
+<short>
+Row number selected on the Hours grid.
+</short>
+</element>
+
+<element name="TTimePopupForm.HoursGridSelectCell.CanSelect">
+<short>
+Indicates whether the cell selection is allowed.
+</short>
+</element>
+
 <element name="TTimePopupForm.MoreLessBtnClick">
 <short>
 Implements the OnClick event handler for the MoreLessBtn button on the form.
@@ -219,11 +275,26 @@ Implements the OnClick event handler for the MoreLessBtn button on the form.
 <short>Object for the event notification.</short>
 </element>
 
+<element name="TTimePopupForm.OKButtonClick">
+<short>Implements the OnClick event handler for the OK button.</short>
+<descr>
+Returns the time value selected on the popup form.
+</descr>
+</element>
+
+<element name="TTimePopupForm.OKButtonClick.Sender">
+<short>
+Object instance for the event notification.
+</short>
+</element>
+
 <element name="TTimePopupForm.FClosed"/>
 <element name="TTimePopupForm.FOnReturnTime"/>
 <element name="TTimePopupForm.FSimpleLayout"/>
 <element name="TTimePopupForm.FPopupOrigin"/>
 <element name="TTimePopupForm.FCaller"/>
+<element name="TTimePopupForm.FAMPM"/>
+<element name="TTimePopupForm.FAMPMString"/>
 
 <element name="TTimePopupForm.ActivateDoubleBuffered">
 <short>
@@ -452,6 +523,17 @@ on the form.
 </element>
 <element name="ShowTimePopup.ACaller">
 <short>Control with the time value updated using the pop-up form.</short>
+</element>
+<element name="ShowTimePopup.AMPM">
+<short>
+<b>True</b> if 12-hour clock values are used in the Hour grid for the form.
+</short>
+</element>
+<element name="ShowTimePopup.AMString">
+<short>Suffix used for before midday (ante meridiem) time values.</short>
+</element>
+<element name="ShowTimePopup.PMString">
+<short>Suffix used for after midday (post meridiem) time values.</short>
 </element>
 
 </module>
