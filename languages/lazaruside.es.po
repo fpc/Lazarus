@@ -21229,6 +21229,10 @@ msgstr "ejecutar con depuración"
 msgid "run without debugging"
 msgstr "ejecutar sin depuración"
 
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Desplazar abajo una línea"

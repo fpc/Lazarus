@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-09-26 22:45+0300\n"
+"PO-Revision-Date: 2025-10-27 16:55+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -20798,6 +20798,10 @@ msgstr "Запустить с отладкой"
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"
 msgstr "Запустить без отладки"
+
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr "Отобразить текущую строку в центре"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

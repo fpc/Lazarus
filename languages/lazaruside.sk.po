@@ -20903,6 +20903,10 @@ msgstr ""
 msgid "run without debugging"
 msgstr "spustiť bez ladenia"
 
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Rolovať o riadok dole"

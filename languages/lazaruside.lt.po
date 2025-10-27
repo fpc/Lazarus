@@ -21273,6 +21273,10 @@ msgstr ""
 msgid "run without debugging"
 msgstr "startuoti be derinimo"
 
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Slinkti žemyn per vieną eilutę"

@@ -20896,6 +20896,10 @@ msgstr ""
 msgid "run without debugging"
 msgstr "suorita ilman virheenjäljitystä"
 
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Vieritä alas yksi rivi"

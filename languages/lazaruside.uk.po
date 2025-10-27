@@ -20994,6 +20994,10 @@ msgstr "виконати зі зневадженням"
 msgid "run without debugging"
 msgstr "запустити без зневадження"
 
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Прокрутити вниз один рядок"

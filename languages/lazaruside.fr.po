@@ -20892,6 +20892,10 @@ msgstr "exécuter avec débogage"
 msgid "run without debugging"
 msgstr "exécuter sans débogage"
 
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Faire défiler d'une ligne vers le bas"

@@ -20816,6 +20816,10 @@ msgstr "hata ayıklama ile çalıştır"
 msgid "run without debugging"
 msgstr "hata ayıklamasız çalıştır"
 
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "Bir satır aşağı kaydır"

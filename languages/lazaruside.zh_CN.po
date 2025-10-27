@@ -20819,6 +20819,10 @@ msgstr "带调试运行"
 msgid "run without debugging"
 msgstr "仅运行"
 
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "向下滚动一行"

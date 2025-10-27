@@ -21235,6 +21235,10 @@ msgstr ""
 msgid "run without debugging"
 msgstr "デバッグせずに実行"
 
+#: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
+msgid "Scroll current line to center"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
 msgstr "一行下へスクロール"
