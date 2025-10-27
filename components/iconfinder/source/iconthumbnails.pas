@@ -9,7 +9,7 @@
  Icon thumbnails.
 }
 
-unit IconThumbNails;
+unit IconThumbnails;
 
 {$mode ObjFPC}{$H+}
 {$define OVERLAY_ICONS}
@@ -1205,8 +1205,6 @@ var
   s: String;
   keywords: String;
   files: TStringList = nil;
-  stream: TStream;
-  reader: TFPCustomImageReaderClass;
   {$ifdef SPEED_TIMER}
   t1, t2: TDateTime;
   {$endif}
