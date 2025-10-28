@@ -14023,7 +14023,9 @@ when the Handle has not been allocated for the control.
 </element>
 
 <element name="TCustomListView.SetProperty">
-<short>Sets the value for the specified Boolean property.</short>
+<short>
+Sets the value for the specified Boolean property.
+</short>
 <descr>
 <p>
 <var>SetProperty</var> is a method used to set the Boolean value for the 
@@ -14064,7 +14066,15 @@ each of the property values.
 <p>
 See <var>GetProperty</var> for the read access specifier equivalent.
 </p>
+<p>
+SetProperty ensures the internal multi-selection list is freed and recreated 
+when the MultiSelect property will be enabled in the method.
+</p>
 </descr>
+<version>
+Modified in LCL version 4.4 to free and populate the internal multi-selection 
+list when MultiSelect is enabled in the method.
+</version>
 <seealso>
 <link id="TCustomListView.GetProperty"/>
 <link id="TListViewProperty"/>
@@ -17683,6 +17693,10 @@ get the TListItem which meets the specified search criteria. If no list item
 is found for the search criteria, the return value is <b>Nil</b>.
 </p>
 </descr>
+<version>
+Widgetset implementation modified in LCL version 4.4 to call the 
+GetNextSelected method when needed.
+</version>
 <seealso>
 <link id="TListItem"/>
 <link id="TSearchDirection"/>
@@ -17711,8 +17725,82 @@ Set of states values for eligible list items in the search.
 </short>
 </element>
 
+<element name="TCustomListView.GetNextSelected">
+<short>
+Indicates whether a list item following the list item at the specified 
+position can be authoritatively selected for the list view control.
+</short>
+<descr>
+<p>
+<var>GetNextSelected</var> is a <var>Boolean</var> function used to indicate 
+whether a list item following the specified position in the list view can 
+become the selected item in the method. It indicates that the Selected 
+property can be updated with the detected list item based on the settings for 
+the list view control.
+</p>
+<p>
+The return value is <b>False</b> if neither OwnerData nor MultiSelect are 
+enabled for the list view control.
+</p>
+<p>
+The return value is <b>True</b> if the variable parameter in <var>AItem</var> 
+was successfully updated with a TListItem instance in the method. This can be 
+one of the Items in the current multi-selection list, the next owner data list 
+item for the control, or <b>Nil</b> when the multi-selection list is empty or 
+OwnerData is not enabled.
+</p>
+<p>
+GetNextSelected visits each of the Items for the control following the 
+position specified in <var>LVIndex</var>. It checks whether the Selected 
+property for the list item is enabled, and when found, updates AItem with the 
+TListItem instance found in the method. If a subsequent list item is not found 
+that is selected, AItem is set to <b>Nil</b>.
+</p>
+<p>
+GetNextSelected is used in the widgetset implementation of the GetNextItem 
+method.
+</p>
+</descr>
+<version>
+Added in LCL version 4.4.
+</version>
+<seealso>
+<link id="TCustomListView.GetNextItem"/>
+<link id="TCustomListView.Items"/>
+<link id="TCustomListView.MultiSelect"/>
+<link id="TCustomListView.OwnerData"/>
+<link id="TCustomListView.Selected"/>
+<link id="TCustomListView.SelCount"/>
+<link id="TListItem.Selected"/>
+<link id="TListItems"/>
+</seealso>
+</element>
+
+<element name="TCustomListView.GetNextSelected.Result">
+<short>
+Returns <bold>True</bold> if another item is selected in multi-select or owner 
+data (virtual) modes.
+</short>
+</element>
+
+<element name="TCustomListView.GetNextSelected.LVIndex">
+<short>
+Ordinal position in the multi-selection list for list items examined in the 
+method.
+</short>
+</element>
+
+<element name="TCustomListView.GetNextSelected.AItem">
+<short>
+Returns the next selected TListItem instance for the control, or <b>Nil</b> 
+when none of the Items in the control are selected.
+</short>
+</element>
+
 <element name="TCustomListView.ClearSelection">
-<short>Clears the selected items for the list view control.</short>
+<short>
+Clears the selected items for the list view control.
+</short>
 <descr>
 <p>
 <var>ClearSelection</var> is a method used to remove the selected attribute 
