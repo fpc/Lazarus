@@ -3107,20 +3107,23 @@ constructor prior to exiting from the method.
 <element name="TFrame.Font" link="#lcl.controls.TControl.Font"/>
 
 <element name="TFrame.LCLVersion">
-<short>LCL version number for the frame instance.</short>
+<short>
+LCL version number for the frame instance.
+</short>
 <descr>
 <p>
 The value in <var>LCLVersion</var> is assigned in the Create constructor 
 using the lcl_version constant defined in the <file>lclversion.pas</file> 
-unit. Its value is stored during LCL component streaming if a value has not 
-been assigned to the Parent for the control.
+unit. Its value is stored during LCL component streaming if the ComponentState 
+indicates the TFrame instance was instantiated at design-time 
+(csDesignInstance).
 </p>
 </descr>
 <seealso>
-<link id="TForm.LCLVersion"/>
-<link id="TForm.Create"/>
-<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+<link id="TFrame.LCLVersion"/>
+<link id="TFrame.Create"/>
 <link id="#lcl.lclversion.lcl_version">lcl_version</link>
+<link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
 </seealso>
 </element>
 
@@ -9539,9 +9542,20 @@ The LCL version number as a String type.
 </short>
 <descr>
 <p>
-Used to distinguish form streaming content for different versions of the LCL.
+LCLVersion is a String property which written to the LCL streaming mechanism 
+when ComponentState indicates the form instance was created a design-time 
+(csDesignInstance). Used to distinguish form streaming content for different 
+versions of the LCL. The value is assigned in both the Create constructor and 
+the Loaded method. The property is set to the value in the lcl_version 
+constant.
 </p>
 </descr>
+<seealso>
+<link id="TForm.Create"/>
+<link id="TCustomForm.Loaded"/>
+<link id="#lcl.lclversion.lcl_version">lcl_version</link>
+<link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
+</seealso>
 </element>
 
 <element name="TForm.Scaled" link="#lcl.forms.TCustomDesignControl.Scaled"/>
