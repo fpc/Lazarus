@@ -141,7 +141,11 @@ begin
       AGlyph.LoadFromRawImage(raw,false);
       AGlyph.EndUpdate();
     end else
-      AGlyph.Assign(AValue.Glyph);
+    begin
+      AGlyph.BeginUpdate();
+      AGlyph.LoadFromRawImage(AValue.Glyph.RawImage, false);
+      AGlyph.EndUpdate();
+    end;
 
     if not AGlyph.Empty then
       AImage := gtk_image_new_from_pixbuf(TGtk3Image(AGlyph.Handle).Handle)
