@@ -17227,15 +17227,22 @@ values in the list view control.
 </element>
 
 <element name="TCustomListView.Destroy">
-<short>Destructor for the class instance.</short>
+<short>
+Destructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Destroy</var> is the destructor for <var>TCustomListView</var>. It frees 
-the Canvas, calls the inherited <var>Destroy</var>, and frees the columns and 
-list items.
+the Canvas, and calls the inherited <var>Destroy</var> method to free 
+resources allocated in the TWinControl ancestor. It then frees resources 
+allocated in TCustomListView like IconOptions, Items, Columns, as well as 
+internal resources for the multi-selection list and the owner data item.
 </p>
 </descr>
 <seealso>
+<link id="TCustomListView.Columns"/>
+<link id="TCustomListView.IconOptions"/>
+<link id="TCustomListView.Items"/>
 <link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
 <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
 </seealso>
