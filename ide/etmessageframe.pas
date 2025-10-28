@@ -3232,164 +3232,159 @@ var
   MsgType, ToolOptionsCaption: String;
 begin
   MessagesMenuRoot.MenuItem:=MsgCtrlPopupMenu.Items;
-  //MessagesMenuRoot.BeginUpdate;
-  try
-    HasText:=false;
-    HasFilename:=false;
-    MsgType:='';
-    CanFilterMsgType:=false;
-    Line:=nil;
-    HasViewContent:=false;
-    Running:=false;
+  HasText:=false;
+  HasFilename:=false;
+  MsgType:='';
+  CanFilterMsgType:=false;
+  Line:=nil;
+  HasViewContent:=false;
+  Running:=false;
 
-    // check all
-    for i:=0 to MessagesCtrl.ViewCount-1 do begin
-      View:=MessagesCtrl.Views[i];
-      if View.HasContent then
-        HasViewContent:=true;
-      if View.Running then
-        Running:=true;
-    end;
-
-    MsgFindMenuItem.OnClick:=@FindMenuItemClick;
-    MsgFindMenuItem.MenuItem.ShortCut:=ShortCut(VK_F, [ssCtrl]);
-
-    // check selection
-    View:=MessagesCtrl.SelectedView;
-    if View<>nil then begin
-      for i:=0 to View.FSelectedLines.Count-1 do begin
-        LineNumber:=View.FSelectedLines[i];
-        if LineNumber=-1 then Continue;            // header
-        if LineNumber=View.Lines.Count then
-          Line:=View.ProgressLine                  // progress line
-        else
-          Line:=View.Lines[LineNumber];            // normal messages
-        if Line.Filename<>'' then
-          HasFilename:=True;
-        if Line.Msg<>'' then
-          HasText:=True;
-        if (Line.SubTool<>'') and (Line.MsgID<>0) then begin
-          MsgType:=GetMsgPattern(Line.SubTool,Line.MsgID,true,40);
-          CanFilterMsgType:=ord(Line.Urgency)<ord(mluError);
-        end;
-      end;
-    end else begin
-      // no line selected => use last visible View
-      View:=MessagesCtrl.GetLastViewWithContent;
-    end;
-    ToolOptionsCaption:='';
-
-    // About
-    if View<>nil then
-    begin
-      MsgAboutToolMenuItem.Caption:=Format(lisAbout2, [View.Caption]);
-      MsgAboutSection.Visible:=true;
-      if (View.Tool<>nil) and (View.Tool.Data is TIDEExternalToolData) then begin
-        ToolData:=TIDEExternalToolData(View.Tool.Data);
-        if ToolData.Kind=IDEToolCompilePackage then
-          ToolOptionsCaption:=Format(lisCPOpenPackage, [ToolData.ModuleName]);
-      end;
-    end else
-      MsgAboutSection.Visible:=false;
-    MsgAboutToolMenuItem.OnClick:=@AboutToolMenuItemClick;
-    VisibleCnt:=1;
-    MsgOpenToolOptionsMenuItem.Visible:=ToolOptionsCaption<>'';
-    if MsgOpenToolOptionsMenuItem.Visible then
-    begin
-      inc(VisibleCnt);
-      //only assign caption if it is not empty to avoid its "unlocalizing",
-      //this is visible e.g. in EditorToolBar menu tree
-      MsgOpenToolOptionsMenuItem.Caption:=ToolOptionsCaption;
-    end
-    else
-      //assign default caption if item is not visible (needed for EditorToolBar)
-      MsgOpenToolOptionsMenuItem.Caption:=lisOpenToolOptions;
-    MsgOpenToolOptionsMenuItem.OnClick:=@OpenToolsOptionsMenuItemClick;
-    MsgAboutSection.ChildrenAsSubMenu:=VisibleCnt>1;
-
-    // Filtering
-    if CanFilterMsgType then begin
-      MsgFilterMsgOfTypeMenuItem.Caption:=Format(lisFilterAllMessagesOfType, [MsgType]);
-      MsgFilterMsgOfTypeMenuItem.Visible:=true;
-    end else begin
-      //assign default caption if item is not visible (needed for EditorToolBar)
-      MsgFilterMsgOfTypeMenuItem.Caption:=lisFilterAllMessagesOfCertainType;
-      MsgFilterMsgOfTypeMenuItem.Visible:=false;
-    end;
-    MsgFilterMsgOfTypeMenuItem.OnClick:=@FilterMsgOfTypeMenuItemClick;
-    MsgFilterHintsWithoutPosMenuItem.Checked:=MessagesCtrl.ActiveFilter.FilterNotesWithoutPos;
-    MsgFilterHintsWithoutPosMenuItem.OnClick:=@FilterHintsWithoutPosMenuItemClick;
-
-    // Urgency
-    MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
-    MsgFilterNoneMenuItem    .Checked := MinUrgency in [mluNone..mluDebug];
-    MsgFilterDebugMenuItem   .Checked := MinUrgency in [mluVerbose3..mluVerbose];
-    MsgFilterVerboseMenuItem .Checked := MinUrgency = mluHint;
-    MsgFilterHintsMenuItem   .Checked := MinUrgency = mluNote;
-    MsgFilterNotesMenuItem   .Checked := MinUrgency in [mluWarning..mluImportant];
-    MsgFilterWarningsMenuItem.Checked := MinUrgency >= mluError;
-    MsgFilterNoneMenuItem    .OnClick := @FilterUrgencyMenuItemClick;
-    MsgFilterDebugMenuItem   .OnClick := @FilterUrgencyMenuItemClick;
-    MsgFilterVerboseMenuItem .OnClick := @FilterUrgencyMenuItemClick;
-    MsgFilterHintsMenuItem   .OnClick := @FilterUrgencyMenuItemClick;
-    MsgFilterNotesMenuItem   .OnClick := @FilterUrgencyMenuItemClick;
-    MsgFilterWarningsMenuItem.OnClick := @FilterUrgencyMenuItemClick;
-    MsgFilterNoneMenuItem    .MenuItem.ShortCut := ShortCut(VK_0, [ssCtrl]);
-    MsgFilterDebugMenuItem   .MenuItem.ShortCut := ShortCut(VK_1, [ssCtrl]);
-    MsgFilterVerboseMenuItem .MenuItem.ShortCut := ShortCut(VK_2, [ssCtrl]);
-    MsgFilterHintsMenuItem   .MenuItem.ShortCut := ShortCut(VK_3, [ssCtrl]);
-    MsgFilterNotesMenuItem   .MenuItem.ShortCut := ShortCut(VK_4, [ssCtrl]);
-    MsgFilterWarningsMenuItem.MenuItem.ShortCut := ShortCut(VK_5, [ssCtrl]);
-
-    // Copying
-    MsgCopyMsgMenuItem     .Enabled := HasText;
-    MsgCopyFilenameMenuItem.Enabled := HasFilename;
-    MsgCopyAllMenuItem     .Enabled := not Running;
-    MsgCopyShownMenuItem   .Enabled := HasViewContent;
-    MsgCopyMsgMenuItem     .OnClick := @CopyMsgMenuItemClick;
-    MsgCopyFilenameMenuItem.OnClick := @CopyFilenameMenuItemClick;
-    MsgCopyAllMenuItem     .OnClick := @CopyAllMenuItemClick;
-    MsgCopyShownMenuItem   .OnClick := @CopyShownMenuItemClick;
-    MsgCopyMsgMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl]);
-    MsgCopyAllMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl, ssShift]);
-
-    // Saving
-    MsgSaveAllToFileMenuItem  .Enabled := not Running;
-    MsgSaveShownToFileMenuItem.Enabled := HasViewContent;
-    MsgHelpMenuItem           .Enabled := HasText;
-    MsgClearMenuItem          .Enabled := View <> nil;
-    MsgSaveAllToFileMenuItem  .OnClick := @SaveAllToFileMenuItemClick;
-    MsgSaveShownToFileMenuItem.OnClick := @SaveShownToFileMenuItemClick;
-    MsgHelpMenuItem           .OnClick := @HelpMenuItemClick;
-    MsgEditHelpMenuItem       .OnClick := @EditHelpMenuItemClick;
-    MsgClearMenuItem          .OnClick := @ClearMenuItemClick;
-    MsgSaveAllToFileMenuItem.MenuItem.ShortCut := ShortCut(VK_S, [ssCtrl, ssShift]);
-    MsgHelpMenuItem         .MenuItem.ShortCut := ShortCut(VK_F1, []);
-
-    // Options
-    MsgWndStayOnTopMenuItem     .Checked := mcoWndStayOnTop in MessagesCtrl.Options;
-    MsgFileStyleShortMenuItem   .Checked := MessagesCtrl.FilenameStyle = mwfsShort;
-    MsgFileStyleRelativeMenuItem.Checked := MessagesCtrl.FilenameStyle = mwfsRelative;
-    MsgFileStyleFullMenuItem    .Checked := MessagesCtrl.FilenameStyle = mwfsFull;
-    MsgWndStayOnTopMenuItem     .OnClick := @WndStayOnTopMenuItemClick;
-    MsgFileStyleShortMenuItem   .OnClick := @FileStyleMenuItemClick;
-    MsgFileStyleRelativeMenuItem.OnClick := @FileStyleMenuItemClick;
-    MsgFileStyleFullMenuItem    .OnClick := @FileStyleMenuItemClick;
-
-    MsgTranslateMenuItem.Checked := mcoShowTranslated in MessagesCtrl.Options;
-    MsgShowIDMenuItem   .Checked := mcoShowMessageID  in MessagesCtrl.Options;
-    MsgTranslateMenuItem  .OnClick := @TranslateMenuItemClick;
-    MsgShowIDMenuItem     .OnClick := @ShowIDMenuItemClick;
-    MsgMoreOptionsMenuItem.OnClick := @MoreOptionsMenuItemClick;
-
-    UpdateRemoveCompOptHideMsgItems;
-    UpdateRemoveMsgTypeFilterItems;
-    UpdateFilterItems;
-
-    UpdateQuickFixes(Line);
-  finally
-    //MessagesMenuRoot.EndUpdate;
+  // check all
+  for i:=0 to MessagesCtrl.ViewCount-1 do begin
+    View:=MessagesCtrl.Views[i];
+    if View.HasContent then
+      HasViewContent:=true;
+    if View.Running then
+      Running:=true;
   end;
+
+  MsgFindMenuItem.OnClick:=@FindMenuItemClick;
+  MsgFindMenuItem.MenuItem.ShortCut:=ShortCut(VK_F, [ssCtrl]);
+
+  // check selection
+  View:=MessagesCtrl.FTextCursorPoint.View;
+  if View<>nil then begin
+    for i:=0 to View.FSelectedLines.Count-1 do begin
+      LineNumber:=View.FSelectedLines[i];
+      if LineNumber=-1 then Continue;            // header
+      if LineNumber=View.Lines.Count then
+        Line:=View.ProgressLine                  // progress line
+      else
+        Line:=View.Lines[LineNumber];            // normal messages
+      if Line.Filename<>'' then
+        HasFilename:=True;
+      if Line.Msg<>'' then
+        HasText:=True;
+      if (Line.SubTool<>'') and (Line.MsgID<>0) then begin
+        MsgType:=GetMsgPattern(Line.SubTool,Line.MsgID,true,40);
+        CanFilterMsgType:=ord(Line.Urgency)<ord(mluError);
+      end;
+    end;
+  end else begin
+    // no line selected => use last visible View
+    View:=MessagesCtrl.GetLastViewWithContent;
+  end;
+  ToolOptionsCaption:='';
+
+  // About
+  if View<>nil then
+  begin
+    MsgAboutToolMenuItem.Caption:=Format(lisAbout2, [View.Caption]);
+    MsgAboutSection.Visible:=true;
+    if (View.Tool<>nil) and (View.Tool.Data is TIDEExternalToolData) then begin
+      ToolData:=TIDEExternalToolData(View.Tool.Data);
+      if ToolData.Kind=IDEToolCompilePackage then
+        ToolOptionsCaption:=Format(lisCPOpenPackage, [ToolData.ModuleName]);
+    end;
+  end else
+    MsgAboutSection.Visible:=false;
+  MsgAboutToolMenuItem.OnClick:=@AboutToolMenuItemClick;
+  VisibleCnt:=1;
+  MsgOpenToolOptionsMenuItem.Visible:=ToolOptionsCaption<>'';
+  if MsgOpenToolOptionsMenuItem.Visible then
+  begin
+    inc(VisibleCnt);
+    //only assign caption if it is not empty to avoid its "unlocalizing",
+    //this is visible e.g. in EditorToolBar menu tree
+    MsgOpenToolOptionsMenuItem.Caption:=ToolOptionsCaption;
+  end
+  else
+    //assign default caption if item is not visible (needed for EditorToolBar)
+    MsgOpenToolOptionsMenuItem.Caption:=lisOpenToolOptions;
+  MsgOpenToolOptionsMenuItem.OnClick:=@OpenToolsOptionsMenuItemClick;
+  MsgAboutSection.ChildrenAsSubMenu:=VisibleCnt>1;
+
+  // Filtering
+  if CanFilterMsgType then begin
+    MsgFilterMsgOfTypeMenuItem.Caption:=Format(lisFilterAllMessagesOfType, [MsgType]);
+    MsgFilterMsgOfTypeMenuItem.Visible:=true;
+  end else begin
+    //assign default caption if item is not visible (needed for EditorToolBar)
+    MsgFilterMsgOfTypeMenuItem.Caption:=lisFilterAllMessagesOfCertainType;
+    MsgFilterMsgOfTypeMenuItem.Visible:=false;
+  end;
+  MsgFilterMsgOfTypeMenuItem.OnClick:=@FilterMsgOfTypeMenuItemClick;
+  MsgFilterHintsWithoutPosMenuItem.Checked:=MessagesCtrl.ActiveFilter.FilterNotesWithoutPos;
+  MsgFilterHintsWithoutPosMenuItem.OnClick:=@FilterHintsWithoutPosMenuItemClick;
+
+  // Urgency
+  MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
+  MsgFilterNoneMenuItem    .Checked := MinUrgency in [mluNone..mluDebug];
+  MsgFilterDebugMenuItem   .Checked := MinUrgency in [mluVerbose3..mluVerbose];
+  MsgFilterVerboseMenuItem .Checked := MinUrgency = mluHint;
+  MsgFilterHintsMenuItem   .Checked := MinUrgency = mluNote;
+  MsgFilterNotesMenuItem   .Checked := MinUrgency in [mluWarning..mluImportant];
+  MsgFilterWarningsMenuItem.Checked := MinUrgency >= mluError;
+  MsgFilterNoneMenuItem    .OnClick := @FilterUrgencyMenuItemClick;
+  MsgFilterDebugMenuItem   .OnClick := @FilterUrgencyMenuItemClick;
+  MsgFilterVerboseMenuItem .OnClick := @FilterUrgencyMenuItemClick;
+  MsgFilterHintsMenuItem   .OnClick := @FilterUrgencyMenuItemClick;
+  MsgFilterNotesMenuItem   .OnClick := @FilterUrgencyMenuItemClick;
+  MsgFilterWarningsMenuItem.OnClick := @FilterUrgencyMenuItemClick;
+  MsgFilterNoneMenuItem    .MenuItem.ShortCut := ShortCut(VK_0, [ssCtrl]);
+  MsgFilterDebugMenuItem   .MenuItem.ShortCut := ShortCut(VK_1, [ssCtrl]);
+  MsgFilterVerboseMenuItem .MenuItem.ShortCut := ShortCut(VK_2, [ssCtrl]);
+  MsgFilterHintsMenuItem   .MenuItem.ShortCut := ShortCut(VK_3, [ssCtrl]);
+  MsgFilterNotesMenuItem   .MenuItem.ShortCut := ShortCut(VK_4, [ssCtrl]);
+  MsgFilterWarningsMenuItem.MenuItem.ShortCut := ShortCut(VK_5, [ssCtrl]);
+
+  // Copying
+  MsgCopyMsgMenuItem     .Enabled := HasText;
+  MsgCopyFilenameMenuItem.Enabled := HasFilename;
+  MsgCopyAllMenuItem     .Enabled := not Running;
+  MsgCopyShownMenuItem   .Enabled := HasViewContent;
+  MsgCopyMsgMenuItem     .OnClick := @CopyMsgMenuItemClick;
+  MsgCopyFilenameMenuItem.OnClick := @CopyFilenameMenuItemClick;
+  MsgCopyAllMenuItem     .OnClick := @CopyAllMenuItemClick;
+  MsgCopyShownMenuItem   .OnClick := @CopyShownMenuItemClick;
+  MsgCopyMsgMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl]);
+  MsgCopyAllMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl, ssShift]);
+
+  // Saving
+  MsgSaveAllToFileMenuItem  .Enabled := not Running;
+  MsgSaveShownToFileMenuItem.Enabled := HasViewContent;
+  MsgHelpMenuItem           .Enabled := HasText;
+  MsgClearMenuItem          .Enabled := View <> nil;
+  MsgSaveAllToFileMenuItem  .OnClick := @SaveAllToFileMenuItemClick;
+  MsgSaveShownToFileMenuItem.OnClick := @SaveShownToFileMenuItemClick;
+  MsgHelpMenuItem           .OnClick := @HelpMenuItemClick;
+  MsgEditHelpMenuItem       .OnClick := @EditHelpMenuItemClick;
+  MsgClearMenuItem          .OnClick := @ClearMenuItemClick;
+  MsgSaveAllToFileMenuItem.MenuItem.ShortCut := ShortCut(VK_S, [ssCtrl, ssShift]);
+  MsgHelpMenuItem         .MenuItem.ShortCut := ShortCut(VK_F1, []);
+
+  // Options
+  MsgWndStayOnTopMenuItem     .Checked := mcoWndStayOnTop in MessagesCtrl.Options;
+  MsgFileStyleShortMenuItem   .Checked := MessagesCtrl.FilenameStyle = mwfsShort;
+  MsgFileStyleRelativeMenuItem.Checked := MessagesCtrl.FilenameStyle = mwfsRelative;
+  MsgFileStyleFullMenuItem    .Checked := MessagesCtrl.FilenameStyle = mwfsFull;
+  MsgWndStayOnTopMenuItem     .OnClick := @WndStayOnTopMenuItemClick;
+  MsgFileStyleShortMenuItem   .OnClick := @FileStyleMenuItemClick;
+  MsgFileStyleRelativeMenuItem.OnClick := @FileStyleMenuItemClick;
+  MsgFileStyleFullMenuItem    .OnClick := @FileStyleMenuItemClick;
+
+  MsgTranslateMenuItem.Checked := mcoShowTranslated in MessagesCtrl.Options;
+  MsgShowIDMenuItem   .Checked := mcoShowMessageID  in MessagesCtrl.Options;
+  MsgTranslateMenuItem  .OnClick := @TranslateMenuItemClick;
+  MsgShowIDMenuItem     .OnClick := @ShowIDMenuItemClick;
+  MsgMoreOptionsMenuItem.OnClick := @MoreOptionsMenuItemClick;
+
+  UpdateRemoveCompOptHideMsgItems;
+  UpdateRemoveMsgTypeFilterItems;
+  UpdateFilterItems;
+
+  UpdateQuickFixes(Line);
 end;
 
 procedure TMessagesFrame.SelectFilterClick(Sender: TObject);
