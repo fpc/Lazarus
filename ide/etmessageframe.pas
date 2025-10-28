@@ -232,9 +232,11 @@ type
     procedure ViewChanged(Sender: TObject); // (main thread)
     procedure MsgCtrlMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X,Y: Integer);
     procedure MsgUpdateTimerTimer(Sender: TObject);
+    function OptionToggle(Opt: TMsgCtrlOption): boolean;
     procedure SetActiveFilter(AValue: TLMsgViewFilter); inline;
     procedure SetBackgroundColor(AValue: TColor);
     procedure SetFilenameStyle(AValue: TMsgWndFileNameStyle);
+    procedure SetFileStyleByMenuCmd(Cmd: TIDEMenuCommand);
     procedure SetHeaderBackground(aToolState: TLMVToolState; AValue: TColor);
     procedure SetIdleConnected(AValue: boolean);
     procedure SetImages(AValue: TCustomImageList);
@@ -805,8 +807,6 @@ begin
 end;
 
 procedure TLMsgWndView.SelectUptoLine(LineNumber: integer; Forward: boolean);
-// Direction of selection matters because the last selected line
-// is considered the current selection point.
 var
   i: Integer;
 begin
@@ -1528,6 +1528,15 @@ begin
   FetchNewMessages;
 end;
 
+function TMessagesCtrl.OptionToggle(Opt: TMsgCtrlOption): boolean;
+begin
+  if Opt in Options then
+    Options:=Options-[Opt]
+  else
+    Options:=Options+[Opt];
+  Result:=Opt in Options;
+end;
+
 procedure TMessagesCtrl.SetBackgroundColor(AValue: TColor);
 begin
   if FBackgroundColor=AValue then Exit;
@@ -1540,6 +1549,17 @@ begin
   if FFilenameStyle=AValue then Exit;
   FFilenameStyle:=AValue;
   Invalidate;
+end;
+
+procedure TMessagesCtrl.SetFileStyleByMenuCmd(Cmd: TIDEMenuCommand);
+begin
+  if Cmd=MsgFileStyleShortMenuItem then
+    FilenameStyle:=mwfsShort
+  else if Cmd=MsgFileStyleRelativeMenuItem then
+    FilenameStyle:=mwfsRelative
+  else if Cmd=MsgFileStyleFullMenuItem then
+    FilenameStyle:=mwfsFull;
+  EnvironmentGuiOpts.MsgViewFilenameStyle:=FilenameStyle;
 end;
 
 procedure TMessagesCtrl.SetHeaderBackground(aToolState: TLMVToolState;
@@ -2203,15 +2223,14 @@ begin
     Key := 0;
   end
   else if (Key = VK_P) and (Shift = [ssCtrl]) then
-    begin
-      with TMessagesFrame(Owner) do
-        case MessagesCtrl.FilenameStyle of
-          mwfsShort:    FileStyleMenuItemClick(MsgFileStyleRelativeMenuItem);
-          mwfsRelative: FileStyleMenuItemClick(MsgFileStyleFullMenuItem);
-          mwfsFull:     FileStyleMenuItemClick(MsgFileStyleShortMenuItem);
-        end;
-      Key := 0;
-    end
+  begin
+    case FilenameStyle of
+      mwfsShort:    SetFileStyleByMenuCmd(MsgFileStyleRelativeMenuItem);
+      mwfsRelative: SetFileStyleByMenuCmd(MsgFileStyleFullMenuItem);
+      mwfsFull:     SetFileStyleByMenuCmd(MsgFileStyleShortMenuItem);
+    end;
+    Key := 0;
+  end
 
   { Clipboard }
 
@@ -2531,9 +2550,8 @@ begin
         SelectView(+1);                // next view
       end;
     end else begin
-      if TheLine>=-1 then begin
-        Offset:=0;
-      end
+      if TheLine>=-1 then
+        Offset:=0
       else begin
         Offset:=TheLine+2;
         SelectView(-1);                // previous view
@@ -3088,6 +3106,7 @@ function TMessagesCtrl.GetView(aCaption: string; CreateIfNotExist: boolean): TLM
 var
   i: Integer;
 begin
+  Result:=nil;
   for i:=0 to ViewCount-1 do begin
     Result:=Views[i];
     if UTF8CompareStr(aCaption,Result.Caption)=0 then exit;
@@ -3556,11 +3575,8 @@ begin
 end;
 
 procedure TMessagesFrame.SearchEditChange(Sender: TObject);
-var
-  s: TCaption;
 begin
-  s:=SearchEdit.Text;
-  MessagesCtrl.SearchText:=s;
+  MessagesCtrl.SearchText:=SearchEdit.Text;
 end;
 
 procedure TMessagesFrame.SearchEditKeyDown(Sender: TObject; var Key: Word;
@@ -3598,10 +3614,7 @@ end;
 
 procedure TMessagesFrame.ShowIDMenuItemClick(Sender: TObject);
 begin
-  if mcoShowMessageID in MessagesCtrl.Options then
-    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowMessageID]
-  else
-    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowMessageID];
+  MessagesCtrl.OptionToggle(mcoShowMessageID);
 end;
 
 procedure TMessagesFrame.SrcEditLinesChanged(Sender: TObject);
@@ -3609,15 +3622,6 @@ begin
   //debugln(['TMessagesFrame.SrcEditLinesChanged ',DbgSName(Sender)]);
   if Sender is TETSynPlugin then
     ApplySrcChanges(TETSynPlugin(Sender).Changes);
-end;
-
-procedure TMessagesFrame.TranslateMenuItemClick(Sender: TObject);
-begin
-  if mcoShowTranslated in MessagesCtrl.Options then
-    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowTranslated]
-  else
-    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowTranslated];
-  EnvironmentGuiOpts.MsgViewShowTranslations:=mcoShowTranslated in MessagesCtrl.Options;
 end;
 
 procedure TMessagesFrame.RemoveFilterMsgTypeClick(Sender: TObject);
@@ -3629,13 +3633,14 @@ begin
     MessagesCtrl.ActiveFilter.DeleteFilterMsgType(i);
 end;
 
+procedure TMessagesFrame.TranslateMenuItemClick(Sender: TObject);
+begin
+  EnvironmentGuiOpts.MsgViewShowTranslations:=MessagesCtrl.OptionToggle(mcoShowTranslated);
+end;
+
 procedure TMessagesFrame.WndStayOnTopMenuItemClick(Sender: TObject);
 begin
-  if mcoWndStayOnTop in MessagesCtrl.Options then
-    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoWndStayOnTop]
-  else
-    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoWndStayOnTop];
-  EnvironmentGuiOpts.MsgViewStayOnTop:=mcoWndStayOnTop in MessagesCtrl.Options;
+  EnvironmentGuiOpts.MsgViewStayOnTop:=MessagesCtrl.OptionToggle(mcoWndStayOnTop);
 end;
 
 function TMessagesFrame.GetAboutView: TLMsgWndView;
@@ -3672,13 +3677,7 @@ end;
 
 procedure TMessagesFrame.FileStyleMenuItemClick(Sender: TObject);
 begin
-  if Sender=MsgFileStyleShortMenuItem then
-    MessagesCtrl.FilenameStyle:=mwfsShort
-  else if Sender=MsgFileStyleRelativeMenuItem then
-    MessagesCtrl.FilenameStyle:=mwfsRelative
-  else if Sender=MsgFileStyleFullMenuItem then
-    MessagesCtrl.FilenameStyle:=mwfsFull;
-  EnvironmentGuiOpts.MsgViewFilenameStyle:=MessagesCtrl.FilenameStyle;
+  MessagesCtrl.SetFileStyleByMenuCmd(Sender as TIDEMenuCommand);
 end;
 
 procedure TMessagesFrame.FindMenuItemClick(Sender: TObject);
@@ -3883,8 +3882,7 @@ end;
 procedure TMessagesFrame.SaveClicked(OnlyShown: boolean);
 var
   Dlg: TSaveDialog;
-  s: String;
-  Filename: String;
+  Filename, s: String;
   fs: TFileStream;
 begin
   Dlg:=IDESaveDialogClass.Create(nil);
@@ -3896,9 +3894,7 @@ begin
     if not Dlg.Execute then exit;
     Filename:=TrimAndExpandFilename(Dlg.FileName);
     if DirPathExistsCached(Filename) then exit;
-
     s:=MessagesCtrl.AllMessagesAsString(OnlyShown);
-
     try
       fs:=TFileStream.Create(Filename,fmCreate);
       try
@@ -4038,8 +4034,7 @@ begin
   Result:=MessagesCtrl.ViewCount;
 end;
 
-function TMessagesFrame.GetView(aCaption: string; CreateIfNotExist: boolean
-  ): TLMsgWndView;
+function TMessagesFrame.GetView(aCaption: string; CreateIfNotExist: boolean): TLMsgWndView;
 begin
   Result:=MessagesCtrl.GetView(aCaption,CreateIfNotExist);
 end;

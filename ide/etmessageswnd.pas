@@ -150,20 +150,20 @@ end;
 
 procedure TMessagesView.SetDblClickJumps(AValue: boolean);
 begin
-  if AValue then
-    MessagesFrame1.MessagesCtrl.Options:=
-      MessagesFrame1.MessagesCtrl.Options-[mcoSingleClickOpensFile]
-  else
-    MessagesFrame1.MessagesCtrl.Options:=
-      MessagesFrame1.MessagesCtrl.Options+[mcoSingleClickOpensFile]
+  with MessagesFrame1.MessagesCtrl do
+    if AValue then
+      Options:=Options-[mcoSingleClickOpensFile]
+    else
+      Options:=Options+[mcoSingleClickOpensFile]
 end;
 
 procedure TMessagesView.SetShowMessagesIcons(AValue: boolean);
 begin
-  if AValue then
-    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options+[mcoShowMsgIcons]
-  else
-    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options-[mcoShowMsgIcons];
+  with MessagesFrame1.MessagesCtrl do
+    if AValue then
+      Options:=Options+[mcoShowMsgIcons]
+    else
+      Options:=Options-[mcoShowMsgIcons];
 end;
 
 function TMessagesView.GetViews(Index: integer): TExtToolView;
