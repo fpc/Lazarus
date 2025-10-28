@@ -8438,9 +8438,9 @@ msgstr "Chyba kopírování"
 msgid "Copy Filename %s"
 msgstr "Kopírovat jméno souboru %s"
 
-#: lazarusidestrconsts.liscopyfilenametoclipboard
-msgid "Copy File Name to Clipboard"
-msgstr "Kopírovat Cestu Souboru do Schránky"
+#: lazarusidestrconsts.liscopyfilenamestoclipboard
+msgid "Copy File Names to Clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyfilesfailed
 msgid "Copying files failed."

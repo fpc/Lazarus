@@ -8410,9 +8410,9 @@ msgstr "Erro na cópia"
 msgid "Copy Filename %s"
 msgstr "Copiar nome arquivo %s"
 
-#: lazarusidestrconsts.liscopyfilenametoclipboard
-msgid "Copy File Name to Clipboard"
-msgstr "Copia nome arquivo para área de transferência"
+#: lazarusidestrconsts.liscopyfilenamestoclipboard
+msgid "Copy File Names to Clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyfilesfailed
 msgid "Copying files failed."

@@ -8306,9 +8306,9 @@ msgstr "复制错误"
 msgid "Copy Filename %s"
 msgstr "复制文件名%s"
 
-#: lazarusidestrconsts.liscopyfilenametoclipboard
-msgid "Copy File Name to Clipboard"
-msgstr "复制方法名到剪贴板"
+#: lazarusidestrconsts.liscopyfilenamestoclipboard
+msgid "Copy File Names to Clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyfilesfailed
 msgid "Copying files failed."

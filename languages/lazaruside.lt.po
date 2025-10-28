@@ -8508,9 +8508,9 @@ msgstr "Klaida kopijuojant"
 msgid "Copy Filename %s"
 msgstr "Kopijuoti failo pavadinimą „%s“"
 
-#: lazarusidestrconsts.liscopyfilenametoclipboard
-msgid "Copy File Name to Clipboard"
-msgstr "Failo pavadinimą kopijuoti iškarpinėn"
+#: lazarusidestrconsts.liscopyfilenamestoclipboard
+msgid "Copy File Names to Clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyfilesfailed
 msgid "Copying files failed."

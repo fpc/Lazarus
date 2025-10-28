@@ -8398,9 +8398,9 @@ msgstr "Hiba másolása"
 msgid "Copy Filename %s"
 msgstr "Fájlnév másolása: %s"
 
-#: lazarusidestrconsts.liscopyfilenametoclipboard
-msgid "Copy File Name to Clipboard"
-msgstr "Fájlnév másolása a vágólapra"
+#: lazarusidestrconsts.liscopyfilenamestoclipboard
+msgid "Copy File Names to Clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyfilesfailed
 msgid "Copying files failed."

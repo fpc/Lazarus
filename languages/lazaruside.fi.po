@@ -8374,9 +8374,9 @@ msgstr "Kopiointivirhe"
 msgid "Copy Filename %s"
 msgstr "Kopioi tiedostonimi %s"
 
-#: lazarusidestrconsts.liscopyfilenametoclipboard
-msgid "Copy File Name to Clipboard"
-msgstr "Kopioi tiedostonimi leikepöydälle"
+#: lazarusidestrconsts.liscopyfilenamestoclipboard
+msgid "Copy File Names to Clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyfilesfailed
 msgid "Copying files failed."

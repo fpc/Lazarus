@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-10-27 16:55+0300\n"
+"PO-Revision-Date: 2025-10-28 16:01+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -8289,9 +8289,9 @@ msgstr "Ошибка копирования"
 msgid "Copy Filename %s"
 msgstr "Копировать имя файла %s"
 
-#: lazarusidestrconsts.liscopyfilenametoclipboard
-msgid "Copy File Name to Clipboard"
-msgstr "Копировать имя файла в буфер обмена"
+#: lazarusidestrconsts.liscopyfilenamestoclipboard
+msgid "Copy File Names to Clipboard"
+msgstr "Копировать имена файлов в буфер обмена"
 
 #: lazarusidestrconsts.liscopyfilesfailed
 msgid "Copying files failed."
@@ -20801,7 +20801,7 @@ msgstr "Запустить без отладки"
 
 #: lazarusidestrconsts.srkmecscrollcurrentlinetocenter
 msgid "Scroll current line to center"
-msgstr "Отобразить текущую строку в центре"
+msgstr "Прокрутить для помещения текущей строки в центре"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

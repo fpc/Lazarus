@@ -8518,8 +8518,8 @@ msgstr "S'ha produït un error de còpia"
 msgid "Copy Filename %s"
 msgstr ""
 
-#: lazarusidestrconsts.liscopyfilenametoclipboard
-msgid "Copy File Name to Clipboard"
+#: lazarusidestrconsts.liscopyfilenamestoclipboard
+msgid "Copy File Names to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyfilesfailed
