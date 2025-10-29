@@ -233,6 +233,7 @@ type
     procedure MsgCtrlMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X,Y: Integer);
     procedure MsgUpdateTimerTimer(Sender: TObject);
     function OptionToggle(Opt: TMsgCtrlOption): boolean;
+    procedure SaveToFile(OnlyShown: boolean);
     procedure SetActiveFilter(AValue: TLMsgViewFilter); inline;
     procedure SetBackgroundColor(AValue: TColor);
     procedure SetFilenameStyle(AValue: TMsgWndFileNameStyle);
@@ -404,7 +405,6 @@ type
     procedure HideSearch;
     procedure ImagesGetWidthForPPI(Sender: TCustomImageList; {%H-}AImageWidth,
       {%H-}APPI: Integer; var AResultWidth: Integer);
-    procedure SaveClicked(OnlyShown: boolean);
     function GetMsgPattern(SubTool: string; MsgId: integer;
       WithUrgency: boolean; MaxLen: integer): string;
   protected
@@ -1537,6 +1537,42 @@ begin
   Result:=Opt in Options;
 end;
 
+procedure TMessagesCtrl.SaveToFile(OnlyShown: boolean);
+var
+  Dlg: TSaveDialog;
+  Filename, s: String;
+  fs: TFileStream;
+begin
+  Dlg:=IDESaveDialogClass.Create(nil);
+  try
+    Dlg.Title:=lisSaveMessages;
+    Dlg.FileName:='messages.txt';
+    Dlg.Options:=Dlg.Options+[ofPathMustExist,ofCreatePrompt];
+    InitIDEFileDialog(Dlg);
+    if not Dlg.Execute then exit;
+    Filename:=TrimAndExpandFilename(Dlg.FileName);
+    if DirPathExistsCached(Filename) then exit;
+    s:=AllMessagesAsString(OnlyShown);
+    try
+      fs:=TFileStream.Create(Filename,fmCreate);
+      try
+        if s<>'' then
+          fs.Write(s[1],length(s));
+      finally
+        fs.Free;
+      end;
+    except
+      on E: Exception do begin
+        IDEMessageDialog(lisWriteError, Format(lisUnableToWriteFile2, [Filename]),
+          mtError, [mbCancel]);
+      end;
+    end;
+  finally
+    StoreIDEFileDialog(Dlg);
+    Dlg.Free;
+  end;
+end;
+
 procedure TMessagesCtrl.SetBackgroundColor(AValue: TColor);
 begin
   if FBackgroundColor=AValue then Exit;
@@ -2232,17 +2268,45 @@ begin
     Key := 0;
   end
 
-  { Clipboard }
-
-  // [Alt+C] - copy the displayed message hint
+  { Copy to Clipboard }
   else if (Key = VK_C) and (Shift = [ssAlt]) then
   begin
+    // [Alt+C] - copy the displayed message hint
     if assigned(FHintLast.View) then
     begin
       Clipboard.AsText := FHintLast.View.AsHintString(FHintLast.LineNro);
       Key := 0;
     end;
   end
+
+  // --- Needed because menu shortcuts are initialized only at popup event. ---
+  // ToDo: Find a way to define shortcuts earlier
+  else if (Key = VK_C) and (Shift = [ssCtrl]) then           // Copy selected
+  begin
+    CopySelectedToClipboard(false);
+    Key := 0;
+  end
+  else if (Key = VK_C) and (Shift = [ssCtrl,ssShift]) then   // Copy all
+  begin
+    CopyAllToClipboard(false);
+    Key := 0;
+  end
+  else if (Key = VK_F) and (Shift = [ssCtrl]) then           // Search
+  begin
+    TMessagesFrame(Owner).FindMenuItemClick(nil);
+    Key := 0;
+  end
+  else if (Key = VK_S) and (Shift = [ssCtrl,ssShift]) then   // Save
+  begin
+    SaveToFile(false);
+    Key := 0;
+  end
+  else if (Key = VK_F1) and (Shift = []) then                // Help
+  begin
+    ExecuteIDECommand(Self, ecContextHelp);
+    Key := 0;
+  end
+  // --------- End of menu shortcut duplicates --------
 
   { Selection }
 
@@ -2368,12 +2432,6 @@ begin
           (TMessagesFrame(Owner).SearchPanel.Visible) then
   begin
     TMessagesFrame(Owner).HideSearch;
-    Key := 0;
-  end
-  // search, needed because Find menu shortcut is initialized only at popup event.
-  else if (Key = VK_F) and (Shift = [ssCtrl]) then
-  begin
-    TMessagesFrame(Owner).FindMenuItemClick(nil);
     Key := 0;
   end
   // search next
@@ -3566,12 +3624,12 @@ end;
 
 procedure TMessagesFrame.SaveAllToFileMenuItemClick(Sender: TObject);
 begin
-  SaveClicked(false);
+  MessagesCtrl.SaveToFile(false);
 end;
 
 procedure TMessagesFrame.SaveShownToFileMenuItemClick(Sender: TObject);
 begin
-  SaveClicked(true);
+  MessagesCtrl.SaveToFile(true);
 end;
 
 procedure TMessagesFrame.SearchEditChange(Sender: TObject);
@@ -3877,44 +3935,6 @@ begin
   MessagesCtrl.SetFocus;
   SearchPanel.Visible:=false;
   MessagesCtrl.SearchText:='';
-end;
-
-procedure TMessagesFrame.SaveClicked(OnlyShown: boolean);
-var
-  Dlg: TSaveDialog;
-  Filename, s: String;
-  fs: TFileStream;
-begin
-  Dlg:=IDESaveDialogClass.Create(nil);
-  try
-    Dlg.Title:=lisSaveMessages;
-    Dlg.FileName:='messages.txt';
-    Dlg.Options:=Dlg.Options+[ofPathMustExist,ofCreatePrompt];
-    InitIDEFileDialog(Dlg);
-    if not Dlg.Execute then exit;
-    Filename:=TrimAndExpandFilename(Dlg.FileName);
-    if DirPathExistsCached(Filename) then exit;
-    s:=MessagesCtrl.AllMessagesAsString(OnlyShown);
-    try
-      fs:=TFileStream.Create(Filename,fmCreate);
-      try
-        if s<>'' then
-          fs.Write(s[1],length(s));
-      finally
-        fs.Free;
-      end;
-    except
-      on E: Exception do begin
-        IDEMessageDialog(lisWriteError, Format(lisUnableToWriteFile2, [Filename]
-          ),
-          mtError, [mbCancel]);
-      end;
-    end;
-
-  finally
-    StoreIDEFileDialog(Dlg);
-    Dlg.Free;
-  end;
 end;
 
 function TMessagesFrame.GetMsgPattern(SubTool: string; MsgId: integer;
