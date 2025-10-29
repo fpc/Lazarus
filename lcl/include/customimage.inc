@@ -291,8 +291,6 @@ procedure TCustomImage.Paint;
 var
   R: TRect;
   C: TCanvas;
-  factor: Double;
-  bitmap: TBitmap;
 begin
   // detect loop
   if FUseAncestorCanvas then exit;
@@ -314,13 +312,8 @@ begin
     if Assigned(Picture.Graphic) then
       C.StretchDraw(R, Picture.Graphic)
     else
-    if Assigned(Images) and (ImageIndex>=0) then begin
-      factor := GetCanvasScaleFactor;
-      bitmap := TBitmap.Create;
-      Images.ResolutionForPPI[Round(R.Width*factor), 96, factor].Resolution.GetBitmap(ImageIndex, bitmap);
-      C.StretchDraw(R, bitmap);
-      FreeAndNil(bitmap);
-    end;
+    if Assigned(Images) and (ImageIndex>=0) then
+      Images.StretchDraw(C, ImageIndex, R);
   finally
     FPainting:=false;
   end;
