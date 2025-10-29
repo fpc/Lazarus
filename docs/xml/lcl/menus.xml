@@ -3281,6 +3281,11 @@ used at the same time. A value assigned directly to the Bitmap property
 overrides the setting in ImageIndex.
 </p>
 <p>
+When loading the bitmap in the property using ImageIndex, the image width and 
+height are automatically scaled (when needed) using the canvas scaling factor 
+for the active screen form.
+</p>
+<p>
 Changing the value in Bitmap causes the UpdateWSIcon method to be called to 
 post the change to the widgetset class. The MenuChanged method is called to 
 signal the OnChange event handler (when assigned).
@@ -3290,7 +3295,20 @@ Use GlyphShowMode to control use the visibility of the glyph image for the
 menu item.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.4 to scale a bitmap (when needed) when loaded using 
+ImageIndex instead of an image directly assigned to the menu item. Fixes an 
+issue for Retina displays on macOS - but it applies to any high DPI display.
+</version>
+<seealso>
+<link id="TMenuItem.HasBitmap"/>
+<link id="TMenuItem.ImageIndex"/>
+<link id="TMenuItem.Parent"/>
+<link id="TMenuItem.GetIconSize"/>
+<link id="TMenuItem.GetImageList"/>
+<link id="TMenuItem.GlyphShowMode"/>
+<link id="TMenuItem.UpdateWSIcon"/>
+</seealso>
 </element>
 
 <element name="TMenuItem.GroupIndex">
