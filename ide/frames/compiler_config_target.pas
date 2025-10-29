@@ -32,7 +32,7 @@ uses
   // LCL
   Controls, Dialogs, Graphics, StdCtrls,
   // LazUtils
-  LazFileUtils, LazStringUtils, LazUTF8, LazLoggerBase,
+  LazFileUtils, LazStringUtils, LazUTF8, LazLoggerBase, FPCAdds,
   // CodeTools
   DefineTemplates, CodeToolManager,
   // BuildIntf
@@ -220,20 +220,16 @@ end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetOS(aTargetOS: string);
 begin
-  debugln(['UpdateByTargetOS TargetOS=', aTargetOS]);
+  //debugln(['UpdateByTargetOS TargetOS=', aTargetOS]);
   if aTargetOS = '' then
   begin
-    aTargetOS := '$(TargetOS)';
-    if not GlobalMacroList.SubstituteStr(aTargetOS) then
-      raise Exception.CreateFmt(lisCannotSubstituteMacroS, [aTargetOS]);
-    debugln(['UpdateByTargetOS Substituted TargetOS=', aTargetOS]);
+    aTargetOS := GetCompiledTargetOS;
+    //debugln(['UpdateByTargetOS Substituted TargetOS=', aTargetOS]);
   end;
-
   if AnsiStartsText('Win', aTargetOS) then
     chkWin32GraphicApp.Caption := dlgWindowsGUIApp + ' (-WG)'
   else
-    chkWin32GraphicApp.Caption := dlgWindowsGUIApp + ' (-WG, '+
-      lisOptionValueIgnored+')';
+    chkWin32GraphicApp.Caption := dlgWindowsGUIApp + ' (-WG, '+lisOptionValueIgnored+')';
 end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
