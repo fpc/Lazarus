@@ -4003,7 +4003,7 @@ var
   KeyList: TKeyStrokeList;
   CurRelation: TKeyCommandRelation;
   POUsed: Boolean;
-  SameCmdKey: TSynEditKeyStroke;
+  //SameCmdKey: TSynEditKeyStroke;
 begin
   (* ACommandOffsetOffset
      The IDE defines its own fixed value command-id for plugins.
@@ -4029,12 +4029,13 @@ begin
         if KeyList.FCount < 3 then
           KeyList.Add(Key)
         else begin
-          DebugLn(['TKeyCommandRelationList.AssignTo: WARNING: fourth key for command ',EditorCommandToDescriptionString(Key.Command),':']);
+{          DebugLn(['TKeyCommandRelationList.AssignTo: WARNING: fourth key for command ',EditorCommandToDescriptionString(Key.Command),':']);
           for j:=0 to KeyList.FCount-1 do begin
             SameCmdKey:=KeyList[j];
-            debugln(['  ',j,'/',KeyList.FCount,' ',KeyAndShiftStateToKeyString(SameCmdKey.Key,SameCmdKey.Shift)]);
+            debugln(['  ',j+1,'/',KeyList.FCount,' ',KeyAndShiftStateToKeyString(SameCmdKey.Key,SameCmdKey.Shift)]);
           end;
           debugln(['  ',4,'/',KeyList.FCount,' ',KeyAndShiftStateToKeyString(Key.Key,Key.Shift)]);
+}
           Key.Free; // This deletes the key from TSynEditKeyStrokes container as well.
         end;
       end

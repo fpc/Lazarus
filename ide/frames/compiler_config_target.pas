@@ -220,11 +220,13 @@ end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetOS(aTargetOS: string);
 begin
+  debugln(['UpdateByTargetOS TargetOS=', aTargetOS]);
   if aTargetOS = '' then
   begin
     aTargetOS := '$(TargetOS)';
     if not GlobalMacroList.SubstituteStr(aTargetOS) then
       raise Exception.CreateFmt(lisCannotSubstituteMacroS, [aTargetOS]);
+    debugln(['UpdateByTargetOS Substituted TargetOS=', aTargetOS]);
   end;
 
   if AnsiStartsText('Win', aTargetOS) then
