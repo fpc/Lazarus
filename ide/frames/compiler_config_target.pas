@@ -228,9 +228,9 @@ begin
   end;
 
   if AnsiStartsText('Win', aTargetOS) then
-    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)'
+    chkWin32GraphicApp.Caption := dlgWindowsGUIApp + ' (-WG)'
   else
-    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG, '+
+    chkWin32GraphicApp.Caption := dlgWindowsGUIApp + ' (-WG, '+
       lisOptionValueIgnored+')';
 end;
 
@@ -388,7 +388,7 @@ begin
     lblTargetProc.Caption := dlgTargetProc+' (-Cp)';
     // Target-specific options
     grbTargetOptions.Caption := dlgTargetSpecificOptions;
-    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
+    chkWin32GraphicApp.Caption := dlgWindowsGUIApp + ' (-WG)';
     // WidgetSet
     LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSet;
 

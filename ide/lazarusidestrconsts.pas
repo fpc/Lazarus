@@ -2424,7 +2424,7 @@ resourcestring
   dlgExtSymb = 'Use external debug symbols file';
   dlgLinkSmart = 'Link smart';
   dlgPassOptsLinker = 'Pass options to linker with "-k", delimiter is space';
-  dlgWin32GUIApp = 'Win32 gui application';
+  dlgWindowsGUIApp = 'Windows GUI application';
   lisOptionValueIgnored = 'ignored';
   lisCannotSubstituteMacroS = 'Cannot substitute macro "%s".';
   dlgTargetSpecificOptions = 'Target-specific options';
