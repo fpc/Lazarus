@@ -13588,13 +13588,23 @@ the list of data modules.
 </element>
 
 <element name="TScreen.DataModules">
-<short>Provides indexed access to data modules on the screen.</short>
+<short>
+Provides thread-safe indexed access to data modules on the screen.
+</short>
 <descr>
 <p>
 <var>DataModules</var> is a read-only indexed <var>TDataModule</var> property 
-which provides access to a data module by its ordinal position in the list. 
-Data modules are a non-visual component at run-time, and are provided to 
-maintain compatibility with the Delphi VCL equivalent.
+which provides thread-safe access to a data module by its ordinal position in 
+the list. Data modules are a non-visual component at run-time, and are 
+provided to maintain compatibility with the Delphi VCL equivalent.
+</p>
+<p>
+TScreen maintains an internal TThreadList instance used to access and maintain 
+the TDataModule instances on the screen. Duplicate data modules are not 
+allowed in the list; an exception is raised when adding a specific TDataModule 
+instance if it is already stored in the list. Read and write access to the 
+list are protected using the LockList and UnlockList methods in the list. This 
+provides thread safety needed for Web server or other threaded applications.
 </p>
 <p>
 <var>Index</var> contains the ordinal position in the list for the property 
@@ -13607,9 +13617,14 @@ Use <var>DataModuleCount</var> to get the number of data module instances in
 the property.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.4 to provide thread-safe access to data module 
+instances the list of data modules.
+</version>
 <seealso>
 <link id="TScreen.DataModuleCount"/>
 <link id="#rtl.classes.TDataModule">TDataModule</link>
+<link id="#rtl.classes.TThreadList">TThreadList</link>
 </seealso>
 </element>
 <element name="TScreen.DataModules.Index">
