@@ -4710,14 +4710,14 @@ msgstr ""
 msgid "Width:"
 msgstr "Ample"
 
-#: lazarusidestrconsts.dlgwin32guiapp
-msgid "Win32 gui application"
-msgstr ""
-
 #: lazarusidestrconsts.dlgwindow
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Finestra"
+
+#: lazarusidestrconsts.dlgwindowsguiapp
+msgid "Windows GUI application"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"

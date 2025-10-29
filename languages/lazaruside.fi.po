@@ -4632,13 +4632,13 @@ msgstr "Vain &kokonaiset sanat"
 msgid "Width:"
 msgstr "Leveys:"
 
-#: lazarusidestrconsts.dlgwin32guiapp
-msgid "Win32 gui application"
-msgstr "Windows graafinen ohjelma"
-
 #: lazarusidestrconsts.dlgwindow
 msgid "Window"
 msgstr "Ikkuna"
+
+#: lazarusidestrconsts.dlgwindowsguiapp
+msgid "Windows GUI application"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"

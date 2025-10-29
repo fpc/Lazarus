@@ -4735,14 +4735,14 @@ msgstr "単語全体のみ(&W)"
 msgid "Width:"
 msgstr "幅:"
 
-#: lazarusidestrconsts.dlgwin32guiapp
-msgid "Win32 gui application"
-msgstr "Win32 gui アプリケーション"
-
 #: lazarusidestrconsts.dlgwindow
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "ウィンドウ"
+
+#: lazarusidestrconsts.dlgwindowsguiapp
+msgid "Windows GUI application"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"

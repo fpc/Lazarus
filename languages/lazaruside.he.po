@@ -4842,14 +4842,14 @@ msgstr "&מילים שלמות בלבד"
 msgid "Width:"
 msgstr "רוחב:"
 
-#: lazarusidestrconsts.dlgwin32guiapp
-msgid "Win32 gui application"
-msgstr "יישום גרפי ל Win32"
-
 #: lazarusidestrconsts.dlgwindow
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "חלון"
+
+#: lazarusidestrconsts.dlgwindowsguiapp
+msgid "Windows GUI application"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"

@@ -4737,14 +4737,14 @@ msgstr "Tik vie&ntisi žodžiai"
 msgid "Width:"
 msgstr "Plotis:"
 
-#: lazarusidestrconsts.dlgwin32guiapp
-msgid "Win32 gui application"
-msgstr "Win32 grafinės sąsajos programa"
-
 #: lazarusidestrconsts.dlgwindow
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Langas"
+
+#: lazarusidestrconsts.dlgwindowsguiapp
+msgid "Windows GUI application"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"

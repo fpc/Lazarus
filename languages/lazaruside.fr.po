@@ -4615,14 +4615,14 @@ msgstr "&Mots entiers seulement"
 msgid "Width:"
 msgstr "Largeur :"
 
-#: lazarusidestrconsts.dlgwin32guiapp
-msgid "Win32 gui application"
-msgstr "Application graphique Win32"
-
 #: lazarusidestrconsts.dlgwindow
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Fenêtre"
+
+#: lazarusidestrconsts.dlgwindowsguiapp
+msgid "Windows GUI application"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"

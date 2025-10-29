@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-10-28 16:01+0300\n"
+"PO-Revision-Date: 2025-10-29 22:14+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -4582,14 +4582,14 @@ msgstr "&Только целые слова"
 msgid "Width:"
 msgstr "Ширина:"
 
-#: lazarusidestrconsts.dlgwin32guiapp
-msgid "Win32 gui application"
-msgstr "Графическое приложение Win32"
-
 #: lazarusidestrconsts.dlgwindow
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
 msgstr "Окно"
+
+#: lazarusidestrconsts.dlgwindowsguiapp
+msgid "Windows GUI application"
+msgstr "Графическое приложение Windows"
 
 #: lazarusidestrconsts.dlgwordexceptions
 msgid "Exceptions"
