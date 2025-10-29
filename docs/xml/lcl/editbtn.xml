@@ -854,14 +854,6 @@ handler for click.
 <short>Owner of the class instance.</short>
 </element>
 
-<element name="TCustomEditButton.Destroy">
-<short>Destructor for the class instance.</short>
-<descr></descr>
-<seealso>
-<link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
-</seealso>
-</element>
-
 <element name="TEditButton">
 <short>
 Implements a grouped edit control with both an Edit and a Button.
@@ -2433,7 +2425,7 @@ calls the inherited constructor. Create allocates resource needed for the
 <short>Destructor for the class instance.</short>
 <descr/>
 <seealso>
-<link id="TCustomEditButton.Destroy"/>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Destroy">TCustomAbstractGroupedEdit.Destroy</link>
 </seealso>
 </element>
 
