@@ -3919,41 +3919,55 @@ value to 90 x 90 pixels. It does <b>not</b> call the inherited method.
 </element>
 
 <element name="TCustomImage.Paint">
-<short>Draws the image to the control canvas.</short>
+<short>
+Draws the image to the control canvas.
+</short>
 <descr>
 <p>
 <var>Paint</var> is an overridden procedure used to draw the image to the 
 control <var>Canvas</var>. At design-time, a dashed black line is drawn 
 around the image as a frame to mark the dimensions for its content.
 </p>
-<remark>
-No additional actions are performed in the method when a <var>TGraphic</var> 
-instance has not been assigned to the <var>Graphic</var> property in 
-<var>Picture</var>.
-</remark>
 <p>
 Paint uses the Canvas from the ancestor class as the target for the drawing 
 operation. The value in <var>AntialiasingMode</var> is assigned to the 
 corresponding property in the Canvas. The rectangle returned from    
 <var>DestRect</var> is used as the drawing area.
 </p>
+<remark>
+No actions are performed in the method when a <var>TGraphic</var> 
+instance has not been assigned to the <var>Graphic</var> property in 
+<var>Picture</var>, or the ancestor class does not have an assigned Canvas.
+</remark>
 <p>
 Paint signals the <var>OnPaintBackground</var> event handler (when assigned) 
 using the canvas and drawing rectangle to render the background for the 
-image. The <var>StretchDraw</var> method in the Canvas is used to render the 
-image content.
+image. 
 </p>
 <p>
-Paint calls the inherited method to ensure that the <var>OnPaint</var> event 
-handler is signalled (when assigned).
+If the image is loaded using Images and ImageIndex, the canvas scaling factor 
+is applied (when needed) to the width and height for the bitmap image. The 
+<var>StretchDraw</var> method in the Canvas is used to render the image 
+content to the display rectangle on the canvas.
+</p>
+<p>
+Paint calls the inherited Paint method to ensure that the <var>OnPaint</var> 
+event handler is signalled (when assigned).
 </p>
 </descr>
+<version>
+Modified in LCL version 4.4 to perform image scaling (when needed) using the 
+canvas scaling factor for the widgetset.
+</version>
 <seealso>
 <link id="TCustomImage.Canvas"/>
 <link id="TCustomImage.DestRect"/>
 <link id="TCustomImage.AntialiasingMode"/>
 <link id="TCustomImage.Transparent"/>
 <link id="TCustomImage.Stretch"/>
+<link id="TCustomImage.Images"/>
+<link id="TCustomImage.ImageIndex"/>
+<link id="TCustomImage.ImageWidth"/>
 <link id="TCustomImage.OnPaintBackground"/>
 <link id="#lcl.graphics.TCanvas">TCanvas</link>
 <link id="#lcl.graphics.TCanvas.StretchDraw">TCanvas.StretchDraw</link>
