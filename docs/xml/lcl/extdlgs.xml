@@ -328,7 +328,6 @@ Added in LCL version 4.4.
 <link id="TOpenPictureDialog.Options"/>
 <link id="TOpenPictureDialog.Filter"/>
 <link id="TOpenPictureDialog.Create"/>
-<link id=""></link>
 </seealso>
 </element>
 
@@ -721,8 +720,8 @@ Added in LCL version 4.4.
 </version>
 <seealso>
 <link id="TOpenDialog.Options"/>
-<link id="TOpenDialog.Filter"/>
 <link id="#lcl.dialogs.TCommonDialog.Execute">TCommonDialog.Execute</link>
+<link id="#lcl.dialogs.TFileDialog.Filter">TFileDialog.Filter</link>
 <link id="#lcl.dialogs.TOpenOption">TOpenOption</link>
 </seealso>
 </element>
