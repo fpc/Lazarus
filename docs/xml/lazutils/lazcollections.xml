@@ -658,7 +658,7 @@ Type used to the specialize the internal TLazFifoQueue instance for the class.
 <seealso/>
 </element>
 
-<!-- variable Visibility: private -->
+<!-- private -->
 <element name="TLazThreadedQueue.FMonitor"/>
 <element name="TLazThreadedQueue.FFifoQueue"/>
 <element name="TLazThreadedQueue.FPushTimeout"/>
@@ -698,6 +698,7 @@ Type used to the specialize the internal TLazFifoQueue instance for the class.
 <short>Value for the property.</short>
 </element>
 
+<!-- protected -->
 <element name="TLazThreadedQueue.TryPushItem">
 <short>Tries to add the specified item to the queue.</short>
 <descr>
@@ -822,8 +823,11 @@ Provides access to the TLazTypedFifoQueue instance used in the class.
 <seealso/>
 </element>
 
+<!-- public -->
 <element name="TLazThreadedQueue.Create">
-<short>Constructor for the class instance.</short>
+<short>
+Constructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Create</var> is the constructor for the class instance. Create allocates 
@@ -831,8 +835,9 @@ internal resources used to implement the thread-safe queue, and sets the
 default values for its properties.
 </p>
 <p>
-The value in <var>AQueueDepth</var> is passed as an argument to the 
-<var>Grow</var> method to allocate the internal storage for the queue.
+The <var>CreateFifoQueue</var> method is called to initialize the internal 
+First-In-First-Out queue storage used in the <var>FifoQueue</var> property. 
+<var>AQueueDepth</var> contains the storage size allocated for the FIFO queue.
 </p>
 <p>
 <var>PushTimeout</var> and <var>PopTimeout</var> indicate the number of 
@@ -842,20 +847,24 @@ internal members in the class instance.
 </p>
 </descr>
 <seealso>
+<link id="TLazThreadedQueue.FifoQueue"/>
+<link id="TLazThreadedQueue.CreateFifoQueue"/>
+<link id="TLazThreadedQueue.QueueSize"/>
 <link id="TLazThreadedQueue.Grow"/>
 <link id="TLazThreadedQueue.PushItem"/>
 <link id="TLazThreadedQueue.PopItem"/>
 <link id="TLazThreadedQueue.Destroy"/>
+<link id="TLazFifoQueue"/>
 </seealso>
 </element>
-<!-- argument Visibility: default -->
+
 <element name="TLazThreadedQueue.Create.AQueueDepth">
 <short>
 Indicates the maximum number of items that can be stored in the thread-safe 
 queue.
 </short>
 </element>
-<!-- argument Visibility: default -->
+
 <element name="TLazThreadedQueue.Create.PushTimeout">
 <short>
 Number of ticks (milliseconds) to wait for successful completion of an 
@@ -863,7 +872,6 @@ enqueue request.
 </short>
 </element>
 
-<!-- argument Visibility: default -->
 <element name="TLazThreadedQueue.Create.PopTimeout">
 <short>
 Number of ticks (milliseconds) to wait for successful completion of a dequeue 
@@ -871,7 +879,6 @@ request.
 </short>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TLazThreadedQueue.Destroy">
 <short>Destructor for the class instance.</short>
 <descr>
