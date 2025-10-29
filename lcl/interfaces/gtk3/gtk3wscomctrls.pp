@@ -942,28 +942,9 @@ end;
 
 class procedure TGtk3WSCustomListView.SetItemsCount(const ALV: TCustomListView;
   const Avalue: Integer);
-var
-  model:PGtkTreeModel;
-  i:integer;
-  ptv:PgtkTreeView;
-  iter:TGtkTreeIter;
 begin
-  if not WSCheckHandleAllocated(ALV, 'SetItemsCount')
-  then Exit;
-
-  ptv:=PGtkTreeView(TGtk3ListView(ALV.Handle).GetContainerWidget);
-  model:=ptv^.get_model();
-
-  g_object_ref(PGobject(model));
-  gtk_tree_view_set_model(PGtkTreeView(ptv), nil);
-
-  gtk_list_store_clear(PgtkListStore(model));
-  for i:=0 to AValue-1 do
-   gtk_list_store_append(PgtkListStore(model),@iter);
-
-  gtk_tree_view_set_model(PGtkTreeView(ptv), model);
-  g_object_unref(PGobject(model));
-
+  DebugLn('TGtk3WSCustomListView.SetItemsCount ');
+  // inherited SetItemsCount(ALV, Avalue);
 end;
 
 class procedure TGtk3WSCustomListView.SetProperty(const ALV: TCustomListView;
