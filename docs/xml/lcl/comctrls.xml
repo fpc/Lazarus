@@ -17785,8 +17785,8 @@ Added in LCL version 4.4.
 
 <element name="TCustomListView.GetNextSelected.Result">
 <short>
-Returns <bold>True</bold> if another item is selected in multi-select or owner 
-data (virtual) modes.
+Returns <b>True</b> if another item is selected in multi-select or owner data 
+(virtual) modes.
 </short>
 </element>
 
