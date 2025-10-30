@@ -1635,6 +1635,7 @@ type
     function InternalReleaseBitmapHandle: HBITMAP; override;
     function InternalReleaseMaskHandle: HBITMAP; override;
     function InternalReleasePalette: HPALETTE; override;
+    class function IsStreamFormatSupported(Stream: TStream): Boolean; override;
     procedure ReadData(Stream: TStream); override;
     procedure ReadStream(AStream: TMemoryStream; ASize: Longint); override;
     procedure SetMasked(AValue: Boolean); override;

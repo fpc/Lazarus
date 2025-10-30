@@ -665,6 +665,17 @@ begin
   else Result := TIconImage(TSharedIcon(FSharedImage).FImages[FCurrent]).ReleasePalette;
 end;
 
+class function TCustomIcon.IsStreamFormatSupported(Stream: TStream): Boolean;
+var
+  Signature: array[0..3] of Byte;
+  Position: UInt64;
+begin
+  Position := Stream.Position;
+  Stream.Read(Signature, SizeOf(Signature));
+  Stream.Position := Position;
+  Result := (Cardinal(Signature) = GetStreamSignature);
+end;
+
 function TCustomIcon.LazarusResourceTypeValid(const ResourceType: string): boolean;
 var
   ResType: String;
