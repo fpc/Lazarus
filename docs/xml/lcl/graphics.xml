@@ -16371,6 +16371,59 @@ widgetset to get the value used as the Handle for the shared image.
 <short/>
 </element>
 
+<element name="TCustomIcon.IsStreamFormatSupported">
+<short>
+Indicates whether the specified stream contains image data with a format 
+supported for use in derived TCustomIcon classes.
+</short>
+<descr>
+<p>
+<var>IsStreamFormatSupported</var> is an overridden <var>Boolean</var> class 
+function in <var>TCustomIcon</var> used to check whether the image data stored 
+in <var>Stream</var> uses the StreamSignature required for an icon class 
+instance. It overrides the method implemented in TGraphic which always returns 
+<b>False</b>. While IsStreamFormatSupported() has been implemented for other 
+graphics classes like TPortableNetworkGraphics, TBitmap, TJpegImage, etc., it 
+was missing in TCustomIcon and its descendants TIcon and TCursorImage.
+</p>
+<p>
+IsStreamFormatSupported returns <b>True</b> if the data stored in Stream 
+starts with the four byte StreamSignature required for an icon class instance. 
+The position in Stream is saved before reading the byte values, and restored 
+when the read operation is complete.
+</p>
+<p>
+Please note that TCustomIcon does <b>not</b> define the value for 
+StreamSignature - it is defined in descendent classes like TIcon and 
+TCursorImage which implement custom GetStreamSignature methods for the image 
+type.
+</p>
+</descr>
+<version>
+Added in LCL version 4.4.
+</version>
+<seealso>
+<link id="TCustomIcon.GetStreamSignature"/>
+<link id="TIcon.GetStreamSignature"/>
+<link id="TCursorImage.GetStreamSignature"/>
+<link id="TGraphic.IsStreamFormatSupported"/>
+<link id="TGraphicClass"/>
+<link id="TPicture.Graphic"/>
+<link id="GetGraphicClassForFileExtension"/>
+</seealso>
+</element>
+<element name="TCustomIcon.IsStreamFormatSupported.Stream">
+<short>
+Stream instance with the image data examined in the method.
+</short>
+</element>
+<element name="TCustomIcon.IsStreamFormatSupported.Result">
+<short>
+Returns <b>True</b> if the stream starts the StreamSignature needed for a  
+graphic class type.
+</short>
+</element>
+
 <element name="TCustomIcon.ReadData">
 <short>Reads data for the class instance from a stream.</short>
 <descr>
