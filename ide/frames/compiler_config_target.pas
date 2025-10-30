@@ -226,7 +226,7 @@ begin
     aTargetOS := GetCompiledTargetOS;
     //debugln(['UpdateByTargetOS Substituted TargetOS=', aTargetOS]);
   end;
-  if AnsiStartsText('Win', aTargetOS) then
+  if StartsText('Win', aTargetOS) then
     chkWin32GraphicApp.Caption := dlgWindowsGUIApp + ' (-WG)'
   else
     chkWin32GraphicApp.Caption := dlgWindowsGUIApp + ' (-WG, '+lisOptionValueIgnored+')';
@@ -262,8 +262,7 @@ begin
   ParsingFrame.grpAsmStyle.Visible := IsCPUX86(aTargetCPU);
 end;
 
-procedure TCompilerConfigTargetFrame.FillSubTargetComboBox(UseSubTarget: string
-  );
+procedure TCompilerConfigTargetFrame.FillSubTargetComboBox(UseSubTarget: string);
 var
   sl: TStringListUTF8Fast;
   aCache: TFPCUnitSetCache;

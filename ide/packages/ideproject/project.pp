@@ -47,7 +47,7 @@ uses
   // RTL + FCL
   Classes, SysUtils, TypInfo, System.UITypes,
   // LCL
-  LCLProc, Forms, Dialogs,
+  Forms, Dialogs,
   // CodeTools
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
   LinkScanner, CodeToolManager, CodeCache, CodeTree, StdCodeTools,
@@ -68,10 +68,8 @@ uses
   ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageSystem,
-  // IdeProject,
-  RunParamOptions,
   // IdeProject
-  ProjectResources, ProjectIcon, ProjectDefs, IdeProjectStrConsts;
+  RunParamOptions, ProjectResources, ProjectIcon, ProjectDefs, IdeProjectStrConsts;
 
 type
   TUnitInfo = class;

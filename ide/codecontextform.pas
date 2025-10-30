@@ -39,10 +39,10 @@ interface
 uses
   Classes, SysUtils, Types,
   // LCL
-  LCLProc, LCLType, LCLIntf, LResources, LMessages, Forms, Controls,
+  LCLType, LCLIntf, LResources, LMessages, Forms, Controls,
   Graphics, Dialogs, Themes, Buttons,
   // LazUtils
-  LazStringUtils, GraphMath, LazLoggerBase,
+  LazUtilities, LazStringUtils, GraphMath, LazLoggerBase,
   // SynEdit
   SynEdit, SynEditKeyCmds,
   // CodeTools

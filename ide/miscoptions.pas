@@ -31,10 +31,8 @@ interface
 
 uses
   Classes, SysUtils,
-  // LCL
-  LCLProc,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
+  LazUtilities, LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
   // CodeTools
   CodeToolsStructs,
   // IdeIntf
@@ -175,7 +173,6 @@ function FindRenameScopeNameToScope(const s: string): TFindRenameScope;
 
 
 implementation
-
 
 const
   MiscOptsFilename = 'miscellaneousoptions.xml';

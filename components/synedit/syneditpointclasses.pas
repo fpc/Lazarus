@@ -42,12 +42,12 @@ uses
   {$ENDIF}
   Classes, SysUtils,
   // LCL
-  Controls, LCLProc, LCLType, LCLIntf, ExtCtrls, Graphics, Forms,
+  Controls, LCLType, LCLIntf, ExtCtrls, Graphics, Forms,
   {$IFDEF SYN_MBCSSUPPORT}
   Imm,
   {$ENDIF}
   // LazUtils
-  LazMethodList, LazLoggerBase,
+  LazMethodList, LazLoggerBase, LazUtilities,
   // SynEdit
   LazSynEditText, SynEditTypes, SynEditMiscProcs;
 

@@ -33,10 +33,10 @@ uses
   // FCL
   Classes, SysUtils,
   // LazUtils
-  Laz2_DOM, Laz2_XMLRead, LazStringUtils, LazTracer,
+  Laz2_DOM, Laz2_XMLRead, LazUtilities, LazStringUtils, LazTracer,
   // LCL
   LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
-  ExtCtrls, Forms, Graphics, LCLType, LCLProc,
+  ExtCtrls, Forms, Graphics, LCLType,
   // Synedit
   SynEdit, SynHighlighterXML, SynEditFoldedView, SynEditWrappedView,
   // codetools

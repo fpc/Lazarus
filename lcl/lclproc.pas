@@ -124,8 +124,9 @@ function RemoveAmpersands(const ASource: String): String;
 function RemoveAmpersands(Src: PChar; var LineLength: Longint): PChar;
 
 function CompareHandles(h1, h2: TLCLHandle): integer;
-function ComparePoints(const p1, p2: TPoint): integer;
-function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
+// Deprecated in version 4.99, October 2025.
+function ComparePoints(p1, p2: TPoint): integer; deprecated 'Use LazUtilities.ComparePoints instead';
+function CompareCaret(Caret1, Caret2: TPoint): integer; deprecated 'Use LazUtilities.CompareCaret instead';
 
 // Call debugging procedures in LazLoggerBase and RaiseGDBException in LazTracer.
 // Deprecated in version 3.99, April 2024.
@@ -857,32 +858,14 @@ begin
     Result:=0;
 end;
 
-function ComparePoints(const p1, p2: TPoint): integer;
+function ComparePoints(p1, p2: TPoint): integer;
 begin
-  if p1.Y>p2.Y then
-    Result:=1
-  else if p1.Y<p2.Y then
-    Result:=-1
-  else if p1.X>p2.X then
-    Result:=1
-  else if p1.X<p2.X then
-    Result:=-1
-  else
-    Result:=0;
+  Result:=LazUtilities.ComparePoints(p1, p2);
 end;
 
-function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
+function CompareCaret(Caret1, Caret2: TPoint): integer;
 begin
-  if (FirstCaret.Y<SecondCaret.Y) then
-    Result:=1
-  else if (FirstCaret.Y>SecondCaret.Y) then
-    Result:=-1
-  else if (FirstCaret.X<SecondCaret.X) then
-    Result:=1
-  else if (FirstCaret.X>SecondCaret.X) then
-    Result:=-1
-  else
-    Result:=0;
+  Result:=LazUtilities.CompareCaret(Caret1, Caret2);
 end;
 
 procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);

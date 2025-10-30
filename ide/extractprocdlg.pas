@@ -34,9 +34,9 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   // LCL
-  Forms, Controls, Dialogs, ExtCtrls, StdCtrls, ButtonPanel, LCLProc,
+  Forms, Controls, Dialogs, ExtCtrls, StdCtrls, ButtonPanel,
   // LazUtils
-  LazUTF8,
+  LazUTF8, LazUtilities,
   // Codetools
   BasicCodeTools, CodeTree, CodeCache, CodeToolManager, ExtractProcTool,
   // IdeIntf

@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, StrUtils, Types, Contnrs, Math, fgl, RegExpr, AVL_Tree,
   // LCL
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
-  LCLProc, LCLType, LCLIntf, ClipBrd, HelpIntfs, Messages, LMessages,
+  LCLType, LCLIntf, ClipBrd, HelpIntfs, Messages, LMessages,
   // LazControls
   ExtendedNotebook,
   // LazUtils

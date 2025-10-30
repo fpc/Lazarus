@@ -25,7 +25,7 @@ interface
 uses
   SysUtils, Classes,
   // LCL
-  Graphics, LCLProc,
+  Graphics,
   // LazUtils
   LazUtilities, LazClasses, LazLoggerBase, LazMethodList,
   // SynEdit

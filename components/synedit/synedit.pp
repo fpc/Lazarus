@@ -124,7 +124,7 @@ uses
   {$ENDIF}
   Types, SysUtils, Classes,
   // LCL
-  LCLProc, LCLIntf, LCLType, LMessages, LResources, Messages, Controls, Graphics,
+  LCLIntf, LCLType, LMessages, LResources, Messages, Controls, Graphics,
   Forms, StdCtrls, ExtCtrls, Menus, Clipbrd, StdActns,
   // LazUtils
   LazUtilities, LazMethodList, LazLoggerBase, LazTracer, LazUTF8,

@@ -41,9 +41,9 @@ uses
   // RTL+FCL
   Classes, SysUtils, Types, AVL_Tree,
   // LazUtils
-  LazStringUtils, LazLoggerBase, LazTracer,
+  LazUtilities, LazStringUtils, LazLoggerBase, LazTracer,
   // LCL
-  LCLProc, LCLType, LMessages, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, ExtCtrls, EditBtn,
+  LCLType, LMessages, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, ExtCtrls, EditBtn,
   // CodeTools
   FileProcs, BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom,
   CodeCache, CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,

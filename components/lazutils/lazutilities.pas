@@ -25,6 +25,8 @@ procedure SetSkipCheckByKeyProc(AProc: TGetSkipCheckByKey);
 procedure FreeThenNil(var obj);
 function ComparePointers(p1, p2: Pointer): integer; inline;
 function CompareBoolean(b1, b2: boolean): integer;
+function CompareCaret(Caret1, Caret2: TPoint): integer;
+function ComparePoints(p1, p2: TPoint): integer;
 
 function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
                          const DefaultValue: Integer): Integer;
@@ -96,6 +98,34 @@ begin
     Result:=1
   else
     Result:=-1;
+end;
+
+function ComparePoints(p1, p2: TPoint): integer;
+begin
+  if p1.Y>p2.Y then
+    Result:=1
+  else if p1.Y<p2.Y then
+    Result:=-1
+  else if p1.X>p2.X then
+    Result:=1
+  else if p1.X<p2.X then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareCaret(Caret1, Caret2: TPoint): integer;
+begin
+  if (Caret1.Y<Caret2.Y) then
+    Result:=1
+  else if (Caret1.Y>Caret2.Y) then
+    Result:=-1
+  else if (Caret1.X<Caret2.X) then
+    Result:=1
+  else if (Caret1.X>Caret2.X) then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
