@@ -16488,7 +16488,8 @@ in <var>Stream</var> uses the StreamSignature required for an icon class
 instance. It overrides the method implemented in TGraphic which always returns 
 <b>False</b>. While IsStreamFormatSupported() has been implemented for other 
 graphics classes like TPortableNetworkGraphics, TBitmap, TJpegImage, etc., it 
-was missing in TCustomIcon and its descendants TIcon and TCursorImage.
+was missing in TCustomIcon and its descendants TIcon and TCursorImage in 
+versions prior to LCL 4.4.
 </p>
 <p>
 IsStreamFormatSupported returns <b>True</b> if the data stored in Stream 
@@ -16500,7 +16501,7 @@ when the read operation is complete.
 Please note that TCustomIcon does <b>not</b> define the value for 
 StreamSignature - it is defined in descendent classes like TIcon and 
 TCursorImage which implement custom GetStreamSignature methods for the image 
-type.
+types.
 </p>
 </descr>
 <version>
@@ -16518,13 +16519,13 @@ Added in LCL version 4.4.
 </element>
 <element name="TCustomIcon.IsStreamFormatSupported.Stream">
 <short>
-Stream instance with the image data examined in the method.
+TStream instance with the image data examined in the method.
 </short>
 </element>
 <element name="TCustomIcon.IsStreamFormatSupported.Result">
 <short>
-Returns <b>True</b> if the stream starts the StreamSignature needed for a  
-graphic class type.
+Returns <b>True</b> if the stream starts with the StreamSignature needed for 
+a graphic class type.
 </short>
 </element>
 
