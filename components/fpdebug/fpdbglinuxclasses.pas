@@ -1419,8 +1419,10 @@ begin
 
     {$ifNdef LINUX_NO_PTRACE_ALIGN}  // according to man, only peek/poke_user need align
     if WordAlignOffset <> 0 then begin
+      {$PUSH}{$R-}{$Q-}
       if not ReadWordSize(TargetReadAddress-WordAlignOffset, TmpBuffer) then
         Exit;  // APartSize is still correct
+      {$POP}
 
       BytesDone := WordSize - WordAlignOffset;
       if BytesDone > RemainingDataSize then

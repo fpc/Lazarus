@@ -1762,12 +1762,16 @@ begin
     then begin
       CastName := '';
       if ctx.LocationContext.ReadAddress(ResValue.DataAddress, SizeVal(Ctx.SizeOfAddress), ClassAddr) then begin
+        {$PUSH}{$R-}{$Q-}
         ClassAddr.Address := ClassAddr.Address + 3 * Ctx.SizeOfAddress;
+        {$POP}
         if ctx.LocationContext.ReadAddress(ClassAddr, SizeVal(Ctx.SizeOfAddress), CNameAddr) then begin
           if (ctx.LocationContext.ReadUnsignedInt(CNameAddr, SizeVal(1), NameLen)) then
             if NameLen > 0 then begin
               if FMemManager.SetLength(CastName, NameLen) then begin
+                {$PUSH}{$R-}{$Q-}
                 CNameAddr.Address := CNameAddr.Address + 1;
+                {$POP}
                 ctx.LocationContext.ReadMemory(CNameAddr, SizeVal(NameLen), @CastName[1]);
                 PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
                 PasExpr2.IntrinsicPrefix := TFpLldbDebuggerProperties(GetProperties).IntrinsicPrefix;

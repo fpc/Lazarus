@@ -284,7 +284,9 @@ function TFpDbgInfoCallContext.AddRecordParam(AParamSymbolType: TFpSymbol;
       Result := FldLoc.BitOffset <> 0;
       if Result then
         break;
+      {$PUSH}{$R-}{$Q-}
       FldOffs := FldLoc.Address - RecAddr;
+      {$POP}
       FldSize := m.DataSize;
       Result := FldSize.BitSize <> 0;
       if Result then

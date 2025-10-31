@@ -138,7 +138,9 @@ function TFpDbgValueConverterVariantNormalizer.ConvertValue(
       exit;
 
     sz := AnExpressionScope.LocationContext.SizeOfAddress;
+    {$PUSH}{$R-}{$Q-}
     Addr.Address := Addr.Address - sz;
+    {$POP}
     AnExpressionScope.LocationContext.ReadSignedInt(Addr, SizeVal(sz), SLen);
     if IsError(AnExpressionScope.LocationContext.LastMemError) then begin
       AnResData.CreateError('<Error reading string>');
@@ -146,7 +148,9 @@ function TFpDbgValueConverterVariantNormalizer.ConvertValue(
       exit;
     end;
 
+    {$PUSH}{$R-}{$Q-}
     Addr.Address := Addr.Address + sz;
+    {$POP}
     if SLen > AnExpressionScope.LocationContext.MemManager.MemLimits.MaxStringLen then
       SLen := AnExpressionScope.LocationContext.MemManager.MemLimits.MaxStringLen;
     SetLength(Str, SLen);
