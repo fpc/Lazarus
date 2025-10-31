@@ -4638,8 +4638,10 @@ begin
         Result := ConstRefOrExprFromAttrData(AttrDataBitOffset, AValueObj as TFpValueDwarf, BitOffset) and
                   ConstRefOrExprFromAttrData(AttrDataBitSize, AValueObj as TFpValueDwarf, BitSize);
 
+    {$PUSH}{$R-}{$Q-}
       if Result then
         AnAddress := AddBitOffset(AnAddress + ByteSize, -(BitOffset + BitSize));
+    {$POP}
     end;
 
     if not Result then

@@ -153,6 +153,7 @@ begin
       NewRes := suGuessed;
     end
     else begin
+      {$PUSH}{$R-}{$Q-}
       if UnknownOutsideFrame then begin
         NewRes := suGuessed;
         if Process.ReadData(FrameBasePointer + AddressSize, AddressSize, TmpCodePointer) and
@@ -168,26 +169,25 @@ begin
       end;
 
       if OutSideFrame then begin
-        {$PUSH}{$R-}{$Q-}
         StackPointer := StackPointer + 1 * AddressSize; // After popping return-addr from "StackPointer"
         if LastFrameBase > 0 then
           LastFrameBase := LastFrameBase - 1; // Make the loop think thas LastFrameBase was smaller
-        {$POP}
         // last stack has no frame
         //ACurrentFrame.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(0, '0',AddressSize, BP);
       end;
+      {$POP}
     end;
   end;
 
   if not OutSideFrame then begin
     {$PUSH}{$R-}{$Q-}
     StackPointer := FrameBasePointer + 2 * AddressSize; // After popping return-addr from "FrameBasePointer + AddressSize"
-    {$POP}
     if TmpCodePointer <> 0 then
       CodePointer := TmpCodePointer
     else
       if not Process.ReadData(FrameBasePointer + AddressSize, AddressSize, CodePointer) or (CodePointer = 0) then
         exit;
+    {$POP}
     if not Process.ReadData(FrameBasePointer, AddressSize, FrameBasePointer) then
       exit;
   end;

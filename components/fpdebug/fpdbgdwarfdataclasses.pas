@@ -2620,7 +2620,9 @@ begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
           EntryP := FStack.Peek;
+          {$PUSH}{$R-}{$Q-}
           EntryP^.Address := TDBGPtr( int64(EntryP^.Address) div int64(1 shl (Entry.Address - 1)) );
+          {$POP}
           if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
             EntryP^.MType := Entry.MType;
         end;

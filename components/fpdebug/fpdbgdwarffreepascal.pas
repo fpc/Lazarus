@@ -1305,7 +1305,9 @@ begin
       exit;
     end;
 
+    {$PUSH}{$R-}{$Q-}
     ClassNameAddr.Address := ClassNameAddr.Address + 1;
+    {$POP}
     Result := AContext.ReadMemory(ClassNameAddr, SizeVal(NameLen), @AClassName^[1]);
     if not Result then
       AnError := AContext.LastMemError;
@@ -1359,7 +1361,9 @@ begin
       exit;
     end;
 
+    {$PUSH}{$R-}{$Q-}
     ClassNameAddr.Address := ClassNameAddr.Address + 1;
+    {$POP}
     Result := AContext.ReadMemory(ClassNameAddr, SizeVal(NameLen), @AUnitName^[1]);
     if not Result then
       AnError := AContext.LastMemError;
@@ -1585,7 +1589,9 @@ begin
   if (sfDynArray in t.Flags) and (AsCardinal <> 0) and GetDwarfDataAddress(Addr) then begin
     if not (IsReadableMem(Addr) and (LocToAddr(Addr) > AddressSize)) then
       exit(0); // dyn array, but bad data
+    {$PUSH}{$R-}{$Q-}
     Addr.Address := Addr.Address - AddressSize;
+    {$POP}
     if Context.ReadSignedInt(Addr, SizeVal(AddressSize), h) then begin
 // TODO h < -1  => Error
       if (h >= 0) and (h < maxLongint) then
@@ -1801,11 +1807,15 @@ begin
 
   if TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030301
   then begin
+    {$PUSH}{$R-}{$Q-}
     Addr:= Addr - AddressSize - 4;
+    {$POP}
     Result := Context.ReadSignedInt(Addr, SizeVal(4), ARefCount);
   end
   else begin
+    {$PUSH}{$R-}{$Q-}
     Addr:= Addr - (AddressSize * 2);
+    {$POP}
     Result := Context.ReadSignedInt(Addr, SizeVal(AddressSize), ARefCount);
   end;
 end;
@@ -2172,7 +2182,9 @@ begin
     else
       Result := WResult;
   end else
+  {$PUSH}{$Q-}{$R-}
   if Addr.Address = Address.Address + 1 then begin
+  {$POP}
     // shortstring
     if not Context.ReadString(Addr, Len, RResult) then
       SetLastError(Context.LastMemError)
@@ -2253,7 +2265,9 @@ begin
 
   if TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030301
   then begin
+    {$PUSH}{$R-}{$Q-}
     Addr:= Addr - AddressSize - 4;
+    {$POP}
     Result := Context.ReadSignedInt(Addr, SizeVal(4), ARefCount);
   end
   else begin
@@ -2308,7 +2322,9 @@ begin
           // fpc issue 0035359
           // read data and check for DW_OP_shr ?
           Addr2 := Addr;
+          {$PUSH}{$R-}{$Q-}
           Addr2.Address := Addr2.Address - AddressSize;
+          {$POP}
           if Context.ReadSignedInt(Addr2, SizeVal(AddressSize), i) then begin
             if (i shr 1) = FHighBound then
               FHighBound := i;
