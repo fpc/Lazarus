@@ -156,51 +156,75 @@ Converts an Arc and ArcLength into a Bezier Approximation of the Arc.
 </short>
 <descr>
 <p>
-Use <var>Arc2Bezier</var> to convert an Arc and ArcLength into a Bezier
-approximation of the Arc. The Rotation parameter accepts a Rotation-Angle
-for a rotated Ellipse. For a non-rotated ellipse this value would be 0, or
-360. If the AngleLength is greater than 90 degrees, or is equal to 0, it
-automatically exits, as Bezier cannot accurately approximate any angle
-greater then 90 degrees, and in fact for best result no angle greater than
-45 should be converted, instead an array of Bezier's should be created,
-each Bezier describing a portion of the total arc no greater than 45
-degrees.
+Use <var>Arc2Bezier</var> to convert an elliptical arc into a Bezier 
+approximation of the arc.
 </p>
 <p>
-The angles are specified in 1/16th of a degree. For example, a full circle
-equals 5760 (16*360).
-</p>
-<p>
-Positive values in Angle and AngleLength mean counter-clockwise while
-negative values mean clockwise direction. Zero degrees is at the 3
+The arc is defined by a rectangle which bounds the full ellipse. The rectangle 
+has the specified Width and Height, its top/left corner is at the point 
+<var>X</var>, <var>Y</var>. The start of the arc is given by the eccentric 
+<var>Angle1</var>, and its length is given by eccentric <var>Angle2</var>. 
+Both angles are expressed in 1/16th of a degree, a full circle, for example, 
+equals to 5760 (16*360). A positive value of Angle2 means counter-clockwise 
+while a negative value means clockwise direction. Zero degrees is at the 3 
 o&apos;clock position.
+</p>
+<p>
+The <var>Rotation</var> parameter accepts an angle for a rotated ellipse - for 
+a non-rotated ellipse this value would be 0, or 360*16.
+</p>
+<p>
+If the angle length is greater than 90 degrees or is equal to 0, the procedure 
+automatically exits, as Bezier cannot accurately approximate any angle greater 
+then 90 degrees, and in fact for best results no angle greater than 45 should 
+be converted, instead an array of Beziers should be created, each Bezier 
+describing a portion of the total arc no greater than 45 degrees.
 </p>
 </descr>
 <seealso/>
 </element>
 <element name="Arc2Bezier.X">
-<short/>
+<short>
+Left coordinate for the upper/left corner of the rectangle where the arc is 
+located.
+</short>
 </element>
 <element name="Arc2Bezier.Y">
-<short/>
+<short>
+Top coordinate for the upper/left corner of the rectangle where the arc is 
+located.
+</short>
 </element>
 <element name="Arc2Bezier.Width">
-<short/>
+<short>
+Width for the rectangle where the arc is located.
+</short>
 </element>
 <element name="Arc2Bezier.Height">
-<short/>
+<short>
+Height for the rectangle where the arc is located.
+</short>
 </element>
 <element name="Arc2Bezier.Angle1">
-<short/>
+<short>
+Eccentric angle for the start of the arc.
+</short>
 </element>
 <element name="Arc2Bezier.Angle2">
-<short/>
+<short>
+Eccentric angle which defines the length of the arc.
+</short>
 </element>
 <element name="Arc2Bezier.Rotation">
-<short/>
+<short>
+Rotation angle for the arc specified in 1/16ths of a degree.
+</short>
 </element>
 <element name="Arc2Bezier.Points">
-<short/>
+<short>
+TBezier instance where the array of floating point values for the bezier 
+approximation is stored.
+</short>
 </element>
 
 <element name="Bezier">
@@ -271,67 +295,88 @@ ReallocMem(Points, 0) or FreeMem.
 
 <element name="BezierArcPoints">
 <short>
-<var>BezierArcPoints</var> - convert an Arc and ArcLength into a Pointer
-Array of TPoints for use with Polyline or Polygon.
+Converts an Arc and ArcLength into a Pointer to an Array of TPoints for use 
+with Polyline or Polygon.
 </short>
 <descr>
 <p>
-Use BezierArcPoints to convert an Arc and ArcLength into a Pointer Array of
-TPoints for use with Polyline or Polygon. The Rotation parameter accepts a
-Rotation-Angle for a rotated Ellipse. For a non-rotated ellipse this value
-would be 0, or 360. The result is an Approximation based on 1 or more
-Beziers.
+Use <var>BezierArcPoints</var> to convert an elliptical arc to a pointer to an 
+array of TPoints for use with Polyline or Polygon.
 </p>
 <p>
-If the AngleLength is greater than 90 degrees, it calls
-PolyBezierArcPoints, otherwise it Converts the angles into a Bezier by
-calling to Arc2Bezier, and then converts the Bezier into an array of Points
-by calling to Bezier2Polyline.
+The arc is defined by a rectangle which bounds the full ellipse. The
+rectangle has the specified Width and Height, its top/left corner is at the
+point <var>X</var>, <var>Y</var>. The start of the arc is given by the 
+eccentric <var>Angle1</var>, and its length is given by eccentric 
+<var>Angle2</var>. Both angles are expressed in 1/16th of a degree. 
+A full circle, for example, equals to 5760 (16*360). A positive value in  
+Angle2 means counter-clockwise while a negative value means clockwise 
+direction. Zero degrees is at the 3 o&apos;clock position.
 </p>
 <p>
-The angles are specified in 1/16th of a degree. For example, a full circle
-equals 5760 (16*360).
+The <var>Rotation</var> parameter accepts a rotation angle for a rotated 
+ellipse - for a non-rotated ellipse this value would be 0, or 360*16.
 </p>
 <p>
-Positive values in Angle and AngleLength mean counter-clockwise while
-negative values mean clockwise direction. Zero degrees is at the 3
-o&apos;clock position.
+The result is an approximation based on one or more Beziers. If the angle 
+length is greater than 90 degrees, the procedure calls PolyBezierArcPoints, 
+otherwise it converts the angles into a Bezier by calling Arc2Bezier which 
+then is converted to an array of points by calling Bezier2PolyLine.
 </p>
 <p>
-If Points is not initialized or Count is less then 0, it is set to nil and
-the array starts at 0, otherwise it tries to append points to the array
-starting at Count. Points should ALWAYS be Freed when done by calling
-ReallocMem(Points, 0) or FreeMem.
+If <var>Points</var> is not initialized or Count is less than 0, it is set to 
+<b>Nil</b> and the array starts at 0, otherwise it tries to append points to 
+the array starting at Count. Points should <b>ALWAYS</b> be free'd when done 
+by calling ReallocMem(Points, 0) or FreeMem.
 </p>
 </descr>
 <seealso/>
 </element>
 <element name="BezierArcPoints.X">
-<short/>
+<short>
+Left coordinate for the rectangle where the ellipse is positioned.
+</short>
 </element>
 <element name="BezierArcPoints.Y">
-<short/>
+<short>
+Top coordinate for the rectangle where the ellipse is positioned.
+</short>
 </element>
 <element name="BezierArcPoints.Width">
-<short/>
+<short>
+Width for the rectangle where the ellipse is positioned.
+</short>
 </element>
 <element name="BezierArcPoints.Height">
-<short/>
+<short>
+Height for the rectangle where the ellipse is positioned.
+</short>
 </element>
 <element name="BezierArcPoints.Angle1">
-<short/>
+<short>
+Eccentric angle which defines the start of the arc.
+</short>
 </element>
 <element name="BezierArcPoints.Angle2">
-<short/>
+<short>
+Eccentric angle which defines the end or length of the arc.
+</short>
 </element>
 <element name="BezierArcPoints.Rotation">
-<short/>
+<short>
+Rotation angle for the ellipse specified in 1/16ths of a degree.
+</short>
 </element>
 <element name="BezierArcPoints.Points">
-<short/>
+<short>
+Returns a Pointer to the array with the approximation based on one or more 
+Beziers, or Nil when Count is less than 0.
+</short>
 </element>
 <element name="BezierArcPoints.Count">
-<short/>
+<short>
+Returns the number of points stored in the Points argument.
+</short>
 </element>
 
 <element name="BezierMidPoint">
