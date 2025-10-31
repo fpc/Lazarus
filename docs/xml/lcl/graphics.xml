@@ -10189,13 +10189,13 @@ TRect instance with the coordinates for the rectangle vertices.
 
 <element name="TCanvas.RoundRect">
 <short>
-Draws a rectangle with rounded (or radiused) corners at the specified 
+Draws a rectangle with rounded corners at the specified 
 position.
 </short>
 <descr>
 <p>
 <var>RoundRect</var> is an overloaded method in TCanvas used to draw a 
-rectangle with rounded (or radiused) corners. The overloaded variants allow 
+rectangle with rounded corners. The overloaded variants allow 
 the coordinates to be specified as either:
 </p>
 <ul>
@@ -10228,26 +10228,26 @@ for the current widgetset.
 </seealso>
 </element>
 <element name="TCanvas.RoundRect.X1">
-<short>Left coordinate for the top, left of the rectangle.</short>
+<short>Left coordinate for the top, left corner of the rectangle.</short>
 </element>
 <element name="TCanvas.RoundRect.Y1">
-<short>Top coordinate for the top, left of the rectangle.</short>
+<short>Top coordinate for the top, left corner of the rectangle.</short>
 </element>
 <element name="TCanvas.RoundRect.X2">
-<short>Right coordinate for the bottom, right of the rectangle.</short>
+<short>Right coordinate for the bottom, right corner of the rectangle.</short>
 </element>
 <element name="TCanvas.RoundRect.Y2">
-<short>Bottom coordinate for the bottom, right of the rectangle.</short>
+<short>Bottom coordinate for the bottom, right corner of the rectangle.</short>
 </element>
 <short/>
 <element name="TCanvas.RoundRect.RX">
 <short>
-Horizontal distance to the ellipse origin used for the rounded corners.
+Width of the ellipse a quarter of which is drawn in the rounded corners. Note that this is the <i>full</i> width rather than the radius as suggested by the variable name.
 </short>
 </element>
 <element name="TCanvas.RoundRect.RY">
 <short>
-Vertical distance to the ellipse origin used for the rounded corners.
+Height of the ellipse a quarter of which is drawn in the rounded corners. Note that this is the <i>full</i> height rather than the radius as suggested by the variable name.
 </short>
 </element>
 <element name="TCanvas.RoundRect.Rect">

@@ -346,18 +346,25 @@ end;
   Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
   Returns:  Nothing
 
-  Use Arc2Bezier to convert an Arc and ArcLength into a Bezier Aproximation
-  of the Arc. The Rotation parameter accepts a Rotation-Angle for a rotated
-  Ellipse'- for a non-rotated ellipse this value would be 0, or 360. If the
-  AngleLength is greater than 90 degrees, or is equal to 0, it automatically
-  exits, as Bezier cannot accurately aproximate any angle greater then 90
-  degrees, and in fact for best result no angle greater than 45 should be
-  converted, instead an array of Bezier's should be created, each Bezier
-  descibing a portion of the total arc no greater than 45 degrees. The angles
-  are 1/16th of a degree. For example, a full circle equals 5760 (16*360).
-  Positive values of Angle and AngleLength mean counter-clockwise while
-  negative values mean clockwise direction. Zero degrees is at the 3'o clock
-  position.
+  Use Arc2Bezier to convert an elliptical arc into a Bezier approximation
+  of the arc.
+
+  The arc is defined by a rectangle which bounds the full ellipse. The
+  rectangle has the specified Width and Height, its top/left corner is at the
+  point X,Y. Start of the arc is given by the eccentric Angle1, and its length
+  is given by eccentric Angle2. Both angles are expressed in 1/16th of a degree,
+  a full circle, for example, equals to 5760 (16*360).
+  A positive value of Angle2 means counter-clockwise while a negative value
+  means clockwise direction. Zero degrees is at the 3 o'clock position.
+
+  The Rotation parameter accepts an angle for a rotated ellipse - for a
+  non-rotated ellipse this value would be 0, or 360*16.
+
+  If the angle length is greater than 90 degrees or is equal to 0, the procedure
+  automatically exits, as Bezier cannot accurately approximate any angle greater
+  then 90 degrees, and in fact for best results no angle greater than 45 should
+  be converted, instead an array of Beziers should be created, each Bezier
+  describing a portion of the total arc no greater than 45 degrees.
 
 ------------------------------------------------------------------------------}
 procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
@@ -552,20 +559,29 @@ end;
   Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
   Returns:  Nothing
 
-  Use BezierArcPoints to convert an Arc and ArcLength into a Pointer Array
-  of TPoints for use with Polyline or Polygon. The Rotation parameter accepts
-  a Rotation-Angle for a rotated Ellipse'- for a non-rotated ellipse this
-  value would be 0, or 360. The result is an Aproximation based on 1 or more
-  Beziers. If the AngleLength is greater than 90 degrees, it calls
-  PolyBezierArcPoints, otherwise it Converts the angles into a Bezier by
-  calling to Arc2Bezier, and then converts the Bezier into an array of Points
-  by calling to Bezier2Polyline. The angles are 1/16th of a degree. For example,
-  a full circle equals 5760 (16*360). Positive values of Angle and AngleLength
-  mean counter-clockwise while negative values mean clockwise direction. Zero
-  degrees is at the 3'o clock position. If Points is not initialized or Count
-  is less then 0, it is set to nil and the array starts at 0,
-  otherwise it tries to append points to the array starting at Count. Points
-  should ALWAYS be Freed when done by calling ReallocMem(Points, 0) or FreeMem.
+  Use BezierArcPoints to convert an elliptical arc to a pointer array of
+  TPoints for use with Polyline or Polygon.
+
+  The arc is defined by a rectangle which bounds the full ellipse. The
+  rectangle has the specified Width and Height, its top/left corner is at the
+  point X,Y. Start of the arc is given by the eccentric Angle1, and its length
+  is given by eccentric Angle2. Both angles are expressed in 1/16th of a degree,
+  a full circle, for example, equals to 5760 (16*360)
+  A positive value of Angle2 means counter-clockwise while a negative value
+  means clockwise direction. Zero degrees is at the 3 o'clock position.
+
+  The Rotation parameter accepts a rotation angle for a rotated ellipse - for
+  a non-rotated ellipse this value would be 0, or 360*16.
+
+  The result is an approximation based on one or more Beziers. If the angle length
+  is greater than 90 degrees, the procedure calls PolyBezierArcPoints, otherwise
+  it converts the angles into a Bezier by calling Arc2Bezier which then is
+  converted to an array of points by calling Bezier2PolyLine.
+
+  If Points is not initialized or Count is less then 0, it is set to nil and
+  the array starts at 0, otherwise it tries to append points to the array
+  starting at Count. Points should ALWAYS be free'd when done by calling
+  ReallocMem(Points, 0) or FreeMem.
 
 ------------------------------------------------------------------------------}
 procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
@@ -1094,20 +1110,27 @@ end;
   Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
   Returns:  Nothing
 
-  Use PolyBezierArcPoints to convert an arc between two angles Angle1 and Angle2
-  into a pointer array of TPoints for use with Polyline or Polygon.
-  The Rotation parameter accepts a rotation angle for a rotated ellipse - for
-  a non-rotated ellipse this value would be 0, or 360*16.
+  Use PolyBezierArcPoints to convert an elliptical arc to a pointer array of
+  TPoints for use with Polyline or Polygon.
+
+  The arc is defined by a rectangle which bounds the full ellipse. The
+  rectangle has the specified Width and Height, its top/left corner is at the
+  point X,Y. Start of the arc is given by the eccentric angle Angle1, and its
+  length is given by Angle2. Both angles are expressed in 1/16th of a degree,
+  a full circle, for example, equals to 5760 (16*360)
+  A positive value of Angle2 means counter-clockwise while a negative value
+  means clockwise direction. Zero degrees is at the 3 o'clock position.
+
+  The Rotation parameter accepts a angle for a rotated ellipse - for a
+  non-rotated ellipse this value would be 0, or 360*16.
+
   The result is an approximation based on 1 or more Beziers. If the angle length
-  is greater than 45*16 degrees, it recursively breaks the arc into arcs of
-  45*16 degrees or less, and converts them into beziers with BezierArcPoints.
-  The angles are 1/16th of a degree. For example, a full circle equals
-  5760 (16*360).
-  Positive values of Angle1 and Angle2 mean counter-clockwise while negative
-  values mean clockwise direction. Zero degrees is at the 3'o clock position.
-  Points is automatically initialized, so any existing information is lost,
+  is greater than 45*16 (45 degrees), it recursively breaks the arc into arcs of
+  45 degrees or less, and converts them into beziers with BezierArcPoints.
+
+  Points is automatically initialized, so that any existing information is lost,
   and the array starts at 0. Points should ALWAYS be freed when done by calling
-  to ReallocMem(Points, 0).
+  ReallocMem(Points, 0).
 
 ------------------------------------------------------------------------------}
 procedure PolyBezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
