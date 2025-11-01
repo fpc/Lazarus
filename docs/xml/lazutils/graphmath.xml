@@ -359,7 +359,7 @@ Eccentric angle which defines the start of the arc.
 </element>
 <element name="BezierArcPoints.Angle2">
 <short>
-Eccentric angle which defines the end or length of the arc.
+Eccentric angle which defines the length of the arc.
 </short>
 </element>
 <element name="BezierArcPoints.Rotation">
@@ -369,8 +369,8 @@ Rotation angle for the ellipse specified in 1/16ths of a degree.
 </element>
 <element name="BezierArcPoints.Points">
 <short>
-Returns a Pointer to the array with the approximation based on one or more 
-Beziers, or Nil when Count is less than 0.
+Returns a pointer to the array of points with the approximation based on one 
+or more Beziers, or Nil when Count is less than 0.
 </short>
 </element>
 <element name="BezierArcPoints.Count">
