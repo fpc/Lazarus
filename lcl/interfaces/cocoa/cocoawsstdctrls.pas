@@ -317,6 +317,9 @@ type
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+      override;
   end;
 
   { TLCLCheckBoxCallback }
@@ -954,6 +957,25 @@ begin
   TCocoaWSWinControl.SetFont(AWinControl, AFont);
   TCocoaButton(AWinControl.Handle).adjustFontToControlSize := (AFont.Name = 'default')
     and (AFont.Size = 0);
+end;
+
+class procedure TCocoaWSButton.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  button: TCocoaButton;
+  size: NSSize;
+begin
+  button:= TCocoaButton(AWinControl.Handle);
+  size := button.fittingSize();
+  SetNSControlSize(button, Round(size.height), button.miniHeight, button.smallHeight, button.adjustFontToControlSize);
+  size := button.fittingSize();
+  if button.controlSize = NSRegularControlSize then begin
+    size.width:= size.width - 12;
+    size.height:= size.height - 6;
+    size:= adjustButtonSizeIfNecessary(button, size);
+  end;
+  PreferredWidth:= Round(size.width);
+  PreferredHeight:= Round(size.height);
 end;
 
 { TCocoaWSCustomCheckBox }
