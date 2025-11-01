@@ -131,6 +131,10 @@ Files in this package are for the main configuration of the IDE."/>
         <Filename Value="ideconfigpcktest.pas"/>
         <UnitName Value="IdeConfigPckTest"/>
       </Item>
+      <Item>
+        <Filename Value="projectbuildmode.pas"/>
+        <UnitName Value="ProjectBuildMode"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

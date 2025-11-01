@@ -73,7 +73,7 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, TransferMacros, IDEProcs,
+  EnvironmentOpts, IDEOptionDefs, TransferMacros, IDEProcs, ProjectBuildMode,
   // IDE
   LazarusIDEStrConsts, MainBase, MainBar, DialogProcs, Project,
   BuildManager, AddToProjectDlg, EnvGuiOptions,

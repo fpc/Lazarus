@@ -41,7 +41,8 @@ uses
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IdeConfig
-  EnvironmentOpts, TransferMacros, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
+  EnvironmentOpts, TransferMacros, SearchPathProcs, ProjectBuildMode,
+  ParsedCompilerOpts, CompilerOptions,
   // IDE
   MainBase, MainBar, BasePkgManager, PackageDefs, Project,
   BaseBuildManager, Compiler_ModeMatrix, BuildModeDiffDlg, GenericCheckList,

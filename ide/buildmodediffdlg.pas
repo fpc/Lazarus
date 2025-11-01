@@ -36,7 +36,7 @@ uses
   // LazUtils
   LazUTF8, LazLoggerBase, AvgLvlTree,
   // IdeConfig
-  EnvironmentOpts, ModeMatrixOpts, CompOptsModes,
+  EnvironmentOpts, ModeMatrixOpts, CompOptsModes, ProjectBuildMode,
   // IDE
   LazarusIDEStrConsts, Project;
 
@@ -66,7 +66,10 @@ type
 
 function ShowBuildModeDiffDialog(BuildModes: TProjectBuildModes; aMode: TProjectBuildMode): TModalResult;
 
+
 implementation
+
+{$R *.lfm}
 
 function ShowBuildModeDiffDialog(BuildModes: TProjectBuildModes;
   aMode: TProjectBuildMode): TModalResult;
@@ -286,18 +289,15 @@ procedure TBuildModeDiffDialog.SetBuildMode(aMode: TProjectBuildMode);
 begin
   if aMode<>nil then
   begin
-    if aMode.LazProject<>nil then
-      BuildModes:=aMode.LazProject.BuildModes;
+    Assert(aMode.LazProject = Project1, 'TBuildModeDiffDialog.SetBuildMode: Project mismatc.');
+    if Project1<>nil then
+      BuildModes:=Project1.BuildModes;
     FBaseMode:=aMode;
   end else
-  begin
     FBaseMode:=nil;
-  end;
   FillModeComboBox;
   FillDiffTreeView;
 end;
-
-{$R *.lfm}
 
 end.
 

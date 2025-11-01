@@ -41,10 +41,16 @@ uses
   // LCL
   LCLPlatformDef, Controls, Graphics, ComCtrls, Menus,
   // IdeIntf
-  IdeIntfStrConsts, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, CompOptsIntf, KeywordFuncLists,
+  IdeIntfStrConsts, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, CompOptsIntf,
+  KeywordFuncLists,
+  // IdeConfig
+  EnvironmentOpts, TransferMacros, ModeMatrixOpts, ProjectBuildMode,
+  // IdePackager
+  PackageSystem, PackageDefs,
+  // IdeProject
+  Project,
   // IDE
-  EnvironmentOpts, PackageSystem, PackageDefs, Project, LazarusIDEStrConsts,
-  TransferMacros, ModeMatrixOpts, ModeMatrixCtrl, compiler_config_target;
+  LazarusIDEStrConsts, ModeMatrixCtrl, compiler_config_target;
 
 type
 

@@ -477,8 +477,7 @@ type
     procedure AddOnChangedHandler(const Handler: TNotifyEvent);
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
     function GetCaption: string; virtual; abstract;
-    function GetIndex: integer; virtual; abstract;
-    property Name; // See Identifier for the name of the buildmode
+    property Name; // See Identifier for the name
     property InSession: boolean read FInSession write SetInSession;
     property Identifier: string read FIdentifier write SetIdentifier;// arbitrary string
     property Modified: boolean read GetModified write SetModified;
@@ -579,6 +578,7 @@ type
   protected
     FChangeStamp: integer;
     FSessionChangeStamp: integer;
+    FFileVersion: Integer;
     FFlags: TProjectFlags;
     FResources: TObject;
     FRunParameters: TAbstractRunParamsOptions;
@@ -639,6 +639,7 @@ type
     property MainFile: TLazProjectFile read GetMainFile;
     property Title: String read FTitle write SetTitle;
     property Scaled: Boolean read FScaled write SetScaled;
+    property FileVersion: Integer read FFileVersion;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property ExecutableType: TProjectExecutableType read FExecutableType
                  write SetExecutableType;// read from MainFile, not saved to lpi
