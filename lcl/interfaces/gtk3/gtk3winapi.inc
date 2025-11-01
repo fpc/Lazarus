@@ -3455,7 +3455,10 @@ begin
   Result := False;
   if not IsValidDC(DC) then
     exit;
-  Result := TGtk3DeviceContext(DC).RoundRect(X1, Y1, X2, Y2, RX, RY);
+  if (RX > 0) and (RY > 0) then
+    Result := TGtk3DeviceContext(DC).RoundRect(X1, Y1, X2, Y2, RX, RY)
+  else
+    Result := Rectangle(DC, X1, Y1, X2, Y2);
 end;
 
 function TGtk3WidgetSet.SaveDC(DC: HDC): Integer;
