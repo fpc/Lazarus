@@ -2928,10 +2928,14 @@ begin
     Result := False;
 end;
 
-function TCocoaWidgetSet.RoundRect(DC: HDC; X1, Y1, X2, Y2: Integer; RX,
-  RY: Integer): Boolean;
+function TCocoaWidgetset.RoundRect(DC: HDC; X1, Y1, X2, Y2, RX, RY: Integer): Boolean;
+var
+  ctx: TCocoaContext;
 begin
-  Result:=inherited RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+    ctx.RoundRect(X1, Y1, X2, Y2, RX, RY);
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
