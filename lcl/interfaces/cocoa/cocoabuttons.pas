@@ -323,7 +323,7 @@ end;
 function TCocoaButton.lclGetFrameToLayoutDelta: TRect;
 begin
   case bezelStyle of
-    NSPushOnPushOffButton:
+    NSRoundedBezelStyle:
     begin
       // todo: on 10.7 or later there's a special API for that!
         // The data is received from 10.6 Interface Builder
@@ -343,9 +343,9 @@ begin
       else
         // NSRegularControlSize
         Result.Left := 6;
-        Result.Top := 4;
+        Result.Top := 5;
         Result.Right := -6;
-        Result.Bottom := -8;
+        Result.Bottom := -7;
       end;
     end;
   else
