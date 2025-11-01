@@ -2006,6 +2006,17 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+  Filled, Continuous: boolean): boolean;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx) and Assigned(Points) and (NumPts >= 4);
+  if Result then
+    ctx.PolyBezier(PPointArray(Points)^, NumPts, Filled, Continuous);
+end;
+
 {$push}
 {$rangechecks off}
 function TCocoaWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean;
