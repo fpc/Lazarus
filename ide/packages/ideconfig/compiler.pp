@@ -1,16 +1,4 @@
 {
- /***************************************************************************
-                        compiler.pp  -  Lazarus IDE unit
-                        -------------------------------------
-               TCompiler is responsible for configuration and running
-               the Free Pascal Compiler.
-
-
-                   Initial Revision  : Sun Mar 28 23:15:32 CST 1999
-
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -29,6 +17,12 @@
  *   Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.   *
  *                                                                         *
  ***************************************************************************
+
+ Abstract:
+   TCompiler is responsible for configuration and running the Free Pascal Compiler.
+
+   Initial Revision  : Sun Mar 28 23:15:32 CST 1999
+   Moved to IdeConfig package in November 2025.
 }
 unit Compiler;
 
@@ -46,9 +40,7 @@ uses
   // BuildIntf
   IDEExternToolIntf, CompOptsIntf, ProjectIntf,
   // IdeConfig
-  TransferMacros, IDECmdLine, CompilerOptions,
-  // IDE
-  LazarusIDEStrConsts;
+  TransferMacros, IDECmdLine, CompilerOptions, IdeConfStrConsts;
 
 type
   //TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;

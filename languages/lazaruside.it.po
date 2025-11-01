@@ -7721,10 +7721,6 @@ msgstr ""
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "Compila il progetto"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Compilatore"
@@ -7739,18 +7735,9 @@ msgstr ""
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Il compilatore \"%s\" non supporta la destinazione %s-%s"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Errore: compilatore non valido: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Nome file del compilatore"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Consiglio: imposta il percorso del compilatore in Strumenti-> Opzioni-> Files-> Percorso compilatore"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8582,11 +8569,6 @@ msgstr "Apri il pacchetto %s"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "Apri la unit %s"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ", CPU: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -14296,11 +14278,6 @@ msgstr "(era \"%s\")"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr ""
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ", Modalità: %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy
 #| msgid ""
@@ -15034,11 +15011,6 @@ msgstr "Opzioni"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr ""
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
-msgstr ", OS: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 #, object-pascal-format, fuzzy
@@ -18105,11 +18077,6 @@ msgstr "Linguette per %s"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Destinazione:"
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr ", Destinazione: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

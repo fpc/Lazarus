@@ -7606,10 +7606,6 @@ msgstr ""
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "Projekt fordítása"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Fordító"
@@ -7624,18 +7620,9 @@ msgstr "%s nem található."
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "A(z) \"%s\" fordító nem támogatja a célt: %s-%s"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Hiba: érvénytelen fordító: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Fordító fájlneve"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Tipp: A fordító útvonala beállítható a menüben: Eszközök -> Beállítások -> Fájlok -> Fordító útvonala"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8456,11 +8443,6 @@ msgstr "%s csomag megnyitása"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "%s unit megnyitása"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ", CPU: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -14119,11 +14101,6 @@ msgstr "(\"%s\" volt)"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr "A vezérlőkészlet megváltoztatása csak LCL projektek esetén lehetséges"
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ", Mód: %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -14840,11 +14817,6 @@ msgstr "Beállítások"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "kihagyva"
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
-msgstr ", OS: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 #, object-pascal-format
@@ -17901,11 +17873,6 @@ msgstr "%s lapjai"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Cél:"
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr ", Cél: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

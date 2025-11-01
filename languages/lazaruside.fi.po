@@ -7586,10 +7586,6 @@ msgstr ""
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "Käännä projekti"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Kääntäjä"
@@ -7604,18 +7600,9 @@ msgstr ""
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Kääntäjä \"%s\" ei tue kohdetta %s-%s"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Virhe: toimimaton kääntäjä: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Kääntäjän tiedostonimi"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Vihje: voit asettaa kääntäjän hakupolun valikosta Työkalut -> Asetukset -> Tiedostot -> Kääntäjän polku"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8432,11 +8419,6 @@ msgstr "Avaa paketti %s"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "Avaa käännösyksikkö %s"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ""
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -14025,11 +14007,6 @@ msgstr "(oli \"%s\")"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr ""
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ", Moodi: %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -14733,11 +14710,6 @@ msgstr "Asetukset"
 
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
-msgstr ""
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
@@ -17781,11 +17753,6 @@ msgstr "%s:n tabit"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Kohde:"
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr ", Kohde: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

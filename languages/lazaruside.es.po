@@ -7724,10 +7724,6 @@ msgstr ""
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "Compilar proyecto"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Compilador"
@@ -7742,18 +7738,9 @@ msgstr "Falta %s."
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "El compilador \"%s\" no soporta el objetivo %s-%s"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Error: compilador no válido: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Nombre de archivo del compilador"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Sugerencia: puede establecer la ruta del compilador en Herramientas -> Opciones-> Archivos -> Ruta del compilador"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8586,11 +8573,6 @@ msgstr "Abrir Paquete %s"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "Abrir Unidad %s"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ", CPU: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -14295,11 +14277,6 @@ msgstr "(era \"%s\")"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr "Cambios al WidgetSet están disponibles solo para proyectos LCL"
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ", Modo: %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -15022,11 +14999,6 @@ msgstr "Opciones"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "ignorado"
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
-msgstr ", OS: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 #, object-pascal-format
@@ -18093,11 +18065,6 @@ msgstr "Tabs por %s"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Objetivo:"
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr ", Objetivo: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

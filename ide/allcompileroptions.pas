@@ -35,8 +35,10 @@ uses
   LazUTF8, LazLoggerBase,
   // IdeIntf
   IDEImagesIntf, IDEWindowIntf,
+  // IdeConfig
+  Compiler,
   // IDE
-  Compiler, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
 

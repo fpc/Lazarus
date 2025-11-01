@@ -7545,10 +7545,6 @@ msgstr "Compiler normalement"
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "Compilation du projet"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Compilateur"
@@ -7563,18 +7559,9 @@ msgstr "%s est manquant."
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Le compilateur \"%s\" ne supporte pas la cible %s-%s"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Erreur : compilateur incorrect : %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Nom de fichier du compilateur"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Conseil : vous pouvez définir le chemin du compilateur dans Outils->Options->Fichiers->Chemin du compilateur"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8395,11 +8382,6 @@ msgstr "Ouvrir le paquet %s"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "Ouvrir l'unité %s"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ", CPU : %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -14009,11 +13991,6 @@ msgstr "(valait \"%s\")"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr "Le changement d'ensemble graphique (WidgetSet) n'est possible qu'avec les projets LCL"
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ", Mode : %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -14732,11 +14709,6 @@ msgstr "Options"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "ignoré"
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
-msgstr ",  : %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 #, object-pascal-format
@@ -17772,11 +17744,6 @@ msgstr "Tabulations pour %s"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Cible :"
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr ", Cible : %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

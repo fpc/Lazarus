@@ -7715,10 +7715,6 @@ msgstr ""
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "Kompiliuoti projektą"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Kompiliatorius"
@@ -7733,18 +7729,9 @@ msgstr ""
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "„%s“ kompiliatorius nepalaiko paskirties %s-%s"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Klaida: klaidingas kompiliatorius: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Kompiliatoriaus failo pavadinimas"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Užuomina: kompiliatoriaus programą galite nurodyti „Aplinka -> Parinktys -> Failai -> Kompiliatoriaus programa“."
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8566,11 +8553,6 @@ msgstr "Atverti paketą %s"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "Atverti modulį %s"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ", procesorius: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -14297,11 +14279,6 @@ msgstr "(buvo „%s“)"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr "Valdiklių tipą galima keisti tik „LCL“ projektuose"
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ", Režimas: %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy
 #| msgid ""
@@ -15033,11 +15010,6 @@ msgstr "Parinktys"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "ignoruojamas"
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
-msgstr ", operacinė sistema: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 #, object-pascal-format, fuzzy
@@ -18133,11 +18105,6 @@ msgstr "%s kortelės"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Paskirtis:"
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr ", Tikslas: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

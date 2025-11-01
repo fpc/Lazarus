@@ -7497,10 +7497,6 @@ msgstr "Собрать как обычно"
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr "Собрать пакет дважды и проверить, компилировался ли какой-нибудь модуль повторно."
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "Компиляция проекта"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Компилятор"
@@ -7515,18 +7511,9 @@ msgstr "%s отсутствует."
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Компилятор \"%s\" не поддерживает целевую платформу %s-%s"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Ошибка: неверный компилятор: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Имя файла компилятора"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Подсказка: Вы можете задать путь компилятора в Сервис -> Параметры -> Файлы -> Путь компилятора"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8347,11 +8334,6 @@ msgstr "Открыть пакет %s"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "Открыть модуль %s"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ", процессор: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -13938,11 +13920,6 @@ msgstr "(было \"%s\")"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr "Изменение библиотеки виджетов доступно только в проектах LCL"
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ", режим: %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -14664,11 +14641,6 @@ msgstr "Параметры"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "игнорируется"
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
-msgstr ", ОС: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 #, object-pascal-format
@@ -17700,11 +17672,6 @@ msgstr "Вкладки %s"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Цель:"
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr ", цель: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

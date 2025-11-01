@@ -8,12 +8,13 @@ unit IdeConfig;
 interface
 
 uses
-  CompilerOptions, CompOptsModes, CoolBarOptions, DiffPatch, EditDefineTree, 
-  EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, 
-  FppkgHelper, IDECmdLine, IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, 
-  IDEProcs, IdeXmlConfigProcs, LazConf, ModeMatrixOpts, ParsedCompilerOpts, 
+  Compiler, CompilerOptions, CompOptsModes, CoolBarOptions, DiffPatch, 
+  EditDefineTree, EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, 
+  etMakeMsgParser, FppkgHelper, IDECmdLine, IdeConfigPckTest, 
+  IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, IdeXmlConfigProcs, 
+  LazConf, ModeMatrixOpts, ParsedCompilerOpts, ProjectBuildMode, 
   ProjPackCommon, RecentListProcs, SearchPathProcs, ToolBarOptionsBase, 
-  TransferMacros, IdeConfigPckTest, ProjectBuildMode, LazarusPackageIntf;
+  TransferMacros, LazarusPackageIntf;
 
 implementation
 

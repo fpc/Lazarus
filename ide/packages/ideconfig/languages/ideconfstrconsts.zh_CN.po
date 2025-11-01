@@ -8,6 +8,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: TyPoEditor 0.2\n"
 
+#: ideconfstrconsts.liscompileproject
+msgid "Compile Project"
+msgstr ""
+
+#: ideconfstrconsts.liscompilererrorinvalidcompiler
+#, object-pascal-format
+msgid "Error: invalid compiler: %s"
+msgstr ""
+
+#: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
+msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgstr ""
+
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is a Pascal keyword."
@@ -17,6 +30,11 @@ msgstr "组件名称 \"%s\" 是一个 Pascal 关键字。"
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "组件名称 \"%s\" 不是有效的标识符"
+
+#: ideconfstrconsts.liscpu
+#, object-pascal-format
+msgid ", CPU: %s"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -88,6 +106,21 @@ msgstr "未能找到为 Fppkg 配置的编译器 [%s]。"
 #: ideconfstrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
 msgstr "Fppkg 报告说 RTL 未安装。"
+
+#: ideconfstrconsts.lismode
+#, object-pascal-format
+msgid ", Mode: %s"
+msgstr ""
+
+#: ideconfstrconsts.lisos
+#, object-pascal-format
+msgid ", OS: %s"
+msgstr ""
+
+#: ideconfstrconsts.listarget2
+#, object-pascal-format
+msgid ", Target: %s"
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

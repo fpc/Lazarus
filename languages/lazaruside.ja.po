@@ -7711,10 +7711,6 @@ msgstr ""
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "プロジェクトをコンパイル"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "コンパイラ"
@@ -7729,18 +7725,9 @@ msgstr ""
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "コンパイラ \"%s\" は対象 %s-%s をサポートしていません"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "エラー：無効なコンパイラ: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "コンパイラファイル名"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "ヒント: コンパイラパスの設定は、ツール→オプション→ファイル→コンパイラパスでできます。"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8562,11 +8549,6 @@ msgstr "パッケージ %s を開く"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "ユニット %s を開く"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ", CPU: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -14258,11 +14240,6 @@ msgstr "(元の値 \"%s\")"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr "ウィジェットセットの変更はLCLプロジェクトでのみ可能です。"
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ", Mode: %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy
 #| msgid ""
@@ -14997,11 +14974,6 @@ msgstr "オプション"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "無視"
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
-msgstr ", OS: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 #, object-pascal-format, fuzzy
@@ -18093,11 +18065,6 @@ msgstr "%sへのタブ"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "対象："
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr "対象：%s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

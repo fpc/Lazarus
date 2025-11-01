@@ -42,9 +42,9 @@ uses
   // SynEdit
   SynEdit, SynEditKeyCmds, SynCompletion,
   // IdeConfig
-  ParsedCompilerOpts, CompilerOptions,
+  ParsedCompilerOpts, CompilerOptions, Compiler,
   // IDE
-  LazarusIDEStrConsts, Compiler,
+  LazarusIDEStrConsts,
   AllCompilerOptions, DefinesGui, EditorOptions, PackageDefs, SourceSynEditor;
 
 type

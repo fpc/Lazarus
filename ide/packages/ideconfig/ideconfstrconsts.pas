@@ -14,6 +14,15 @@ uses
   Classes, SysUtils;
 
 resourcestring
+  // compiler
+  lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
+  lisCompilerHintYouCanSetTheCompilerPath = 'Hint: you can set the compiler '
+    +'path in Tools -> Options-> Files -> Compiler Path';
+  lisCompileProject = 'Compile Project';
+  lisMode = ', Mode: %s';
+  lisOS = ', OS: %s';
+  lisCPU = ', CPU: %s';
+  lisTarget2 = ', Target: %s';
   // Transfer Macros
   lisTMFunctionExtractFileExtension = 'Function: extract file extension';
   lisTMFunctionExtractFilePath = 'Function: extract file path';

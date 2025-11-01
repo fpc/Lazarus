@@ -24,6 +24,10 @@ Files in this package are for the main configuration of the IDE."/>
     <Version Major="1"/>
     <Files>
       <Item>
+        <Filename Value="compiler.pp"/>
+        <UnitName Value="Compiler"/>
+      </Item>
+      <Item>
         <Filename Value="compileroptions.pp"/>
         <UnitName Value="CompilerOptions"/>
       </Item>
@@ -68,6 +72,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="IDECmdLine"/>
       </Item>
       <Item>
+        <Filename Value="ideconfigpcktest.pas"/>
+        <UnitName Value="IdeConfigPckTest"/>
+      </Item>
+      <Item>
         <Filename Value="ideconfstrconsts.pas"/>
         <UnitName Value="IdeConfStrConsts"/>
       </Item>
@@ -100,6 +108,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="ParsedCompilerOpts"/>
       </Item>
       <Item>
+        <Filename Value="projectbuildmode.pas"/>
+        <UnitName Value="ProjectBuildMode"/>
+      </Item>
+      <Item>
         <Filename Value="projpackcommon.pas"/>
         <UnitName Value="ProjPackCommon"/>
       </Item>
@@ -126,14 +138,6 @@ Files in this package are for the main configuration of the IDE."/>
       <Item>
         <Filename Value="include\linux\lazconf.inc"/>
         <Type Value="Include"/>
-      </Item>
-      <Item>
-        <Filename Value="ideconfigpcktest.pas"/>
-        <UnitName Value="IdeConfigPckTest"/>
-      </Item>
-      <Item>
-        <Filename Value="projectbuildmode.pas"/>
-        <UnitName Value="ProjectBuildMode"/>
       </Item>
     </Files>
     <i18n>

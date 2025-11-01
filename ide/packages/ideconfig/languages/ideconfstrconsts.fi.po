@@ -5,6 +5,19 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.liscompileproject
+msgid "Compile Project"
+msgstr ""
+
+#: ideconfstrconsts.liscompilererrorinvalidcompiler
+#, object-pascal-format
+msgid "Error: invalid compiler: %s"
+msgstr ""
+
+#: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
+msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgstr ""
+
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is a Pascal keyword."
@@ -14,6 +27,11 @@ msgstr "Komponentin nimi \"%s\" on Pascalin avainsana."
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Komponentin nimi \"%s\" ei ole sallittu tunniste"
+
+#: ideconfstrconsts.liscpu
+#, object-pascal-format
+msgid ", CPU: %s"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -84,6 +102,21 @@ msgstr ""
 
 #: ideconfstrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
+msgstr ""
+
+#: ideconfstrconsts.lismode
+#, object-pascal-format
+msgid ", Mode: %s"
+msgstr ""
+
+#: ideconfstrconsts.lisos
+#, object-pascal-format
+msgid ", OS: %s"
+msgstr ""
+
+#: ideconfstrconsts.listarget2
+#, object-pascal-format
+msgid ", Target: %s"
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter

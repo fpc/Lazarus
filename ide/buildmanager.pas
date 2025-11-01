@@ -54,13 +54,13 @@ uses
   IdeUtilsPkgStrConsts, DialogProcs, InputHistory,
   // IdeConfig
   LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
-  IDEProcs, etMakeMsgParser, etFPCMsgFilePool, ParsedCompilerOpts, CompilerOptions,
-  EditDefineTree,
+  IDEProcs, etMakeMsgParser, etFPCMsgFilePool, EditDefineTree,
+  ParsedCompilerOpts, CompilerOptions, Compiler,
   // IdePackager
   IdePackagerStrConsts,
   // IDE
   LazarusIDEStrConsts, ProjectResources,
-  MiscOptions, ExtTools, etFPCMsgParser, etPas2jsMsgParser, Compiler,
+  MiscOptions, ExtTools, etFPCMsgParser, etPas2jsMsgParser,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
   ApplicationBundle, IdeTransferMacros, SearchPathProcs, RunParamOptions;
 

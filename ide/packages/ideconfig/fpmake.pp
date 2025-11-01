@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeConfig 1.0
 
-   This file was generated on 13/04/2024
+   This file was generated on 01.11.2025
 }
 
 {$ifndef ALLPACKAGES} 
@@ -30,15 +30,13 @@ begin
 
     P.Author:='Lazarus Team';
     P.License:='GPLv2';
-    P.Description:='-- This package is part of the IDE --'#13#10'This package does not guarantee any particular interface/API. Files are maintained for the use by the IDE.'#13#10''#13#10'Files in this package are for the main configuration of the IDE.';
+    P.Description:='-- This package is part of the IDE --'#10'This package does not guarantee any particular interface/API. Files are maintained for the use by the IDE.'#10''#10'Files in this package are for the main configuration of the IDE.';
 
     P.Flags.Add('LazarusDsgnPkg');
 
     D := P.Dependencies.Add('codetools');
     D := P.Dependencies.Add('debuggerintf');
     D := P.Dependencies.Add('buildintf');
-    D := P.Dependencies.Add('lazutils');
-    D := P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
@@ -50,6 +48,7 @@ begin
     P.IncludePath.Add('include/$(OS)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('ideconfig.pas');
+    t.Dependencies.AddUnit('compiler');
     t.Dependencies.AddUnit('compileroptions');
     t.Dependencies.AddUnit('compoptsmodes');
     t.Dependencies.AddUnit('coolbaroptions');
@@ -61,6 +60,7 @@ begin
     t.Dependencies.AddUnit('etmakemsgparser');
     t.Dependencies.AddUnit('fppkghelper');
     t.Dependencies.AddUnit('idecmdline');
+    t.Dependencies.AddUnit('ideconfigpcktest');
     t.Dependencies.AddUnit('ideconfstrconsts');
     t.Dependencies.AddUnit('ideguicmdline');
     t.Dependencies.AddUnit('ideoptiondefs');
@@ -69,12 +69,14 @@ begin
     t.Dependencies.AddUnit('lazconf');
     t.Dependencies.AddUnit('modematrixopts');
     t.Dependencies.AddUnit('parsedcompileropts');
+    t.Dependencies.AddUnit('projectbuildmode');
     t.Dependencies.AddUnit('projpackcommon');
     t.Dependencies.AddUnit('recentlistprocs');
     t.Dependencies.AddUnit('searchpathprocs');
     t.Dependencies.AddUnit('toolbaroptionsbase');
     t.Dependencies.AddUnit('transfermacros');
 
+    T:=P.Targets.AddUnit('compiler.pp');
     T:=P.Targets.AddUnit('compileroptions.pp');
     T:=P.Targets.AddUnit('compoptsmodes.pas');
     T:=P.Targets.AddUnit('coolbaroptions.pas');
@@ -86,6 +88,7 @@ begin
     T:=P.Targets.AddUnit('etmakemsgparser.pas');
     T:=P.Targets.AddUnit('fppkghelper.pas');
     T:=P.Targets.AddUnit('idecmdline.pas');
+    T:=P.Targets.AddUnit('ideconfigpcktest.pas');
     T:=P.Targets.AddUnit('ideconfstrconsts.pas');
     T:=P.Targets.AddUnit('ideguicmdline.pas');
     T:=P.Targets.AddUnit('ideoptiondefs.pas');
@@ -94,6 +97,7 @@ begin
     T:=P.Targets.AddUnit('lazconf.pp');
     T:=P.Targets.AddUnit('modematrixopts.pas');
     T:=P.Targets.AddUnit('parsedcompileropts.pas');
+    T:=P.Targets.AddUnit('projectbuildmode.pas');
     T:=P.Targets.AddUnit('projpackcommon.pas');
     T:=P.Targets.AddUnit('recentlistprocs.pas');
     T:=P.Targets.AddUnit('searchpathprocs.pas');

@@ -11,6 +11,19 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.3.1\n"
 
+#: ideconfstrconsts.liscompileproject
+msgid "Compile Project"
+msgstr ""
+
+#: ideconfstrconsts.liscompilererrorinvalidcompiler
+#, object-pascal-format
+msgid "Error: invalid compiler: %s"
+msgstr ""
+
+#: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
+msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgstr ""
+
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is a Pascal keyword."
@@ -20,6 +33,11 @@ msgstr "Имя компонента \"%s\" является ключевым с�
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Имя компонента \"%s\" не является корректным идентификатором"
+
+#: ideconfstrconsts.liscpu
+#, object-pascal-format
+msgid ", CPU: %s"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -91,6 +109,21 @@ msgstr "Невозможно найти компилятор [%s], назнач�
 #: ideconfstrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
 msgstr "Fppkg сообщает, что RTL не установлена."
+
+#: ideconfstrconsts.lismode
+#, object-pascal-format
+msgid ", Mode: %s"
+msgstr ""
+
+#: ideconfstrconsts.lisos
+#, object-pascal-format
+msgid ", OS: %s"
+msgstr ""
+
+#: ideconfstrconsts.listarget2
+#, object-pascal-format
+msgid ", Target: %s"
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

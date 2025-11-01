@@ -7524,10 +7524,6 @@ msgstr "Normal şekilde derle"
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "Projeyi Derle"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Derleyici"
@@ -7542,18 +7538,9 @@ msgstr "%s kayıp."
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Derleyici \"%s\" hedef %s- %s'yi desteklemez"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Hata: geçersiz derleyici: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Derleyici dosya adı"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "İpucu: Araçlar -> Seçenekler -> Dosyalar -> Derleyici Yolu'nda derleyici yolunu ayarlayabilirsiniz"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8374,11 +8361,6 @@ msgstr "Paketi aç %s"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "Birimi aç %s"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ", CPU: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -13966,11 +13948,6 @@ msgstr "(\"%s\" idi)"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr "WidgetSet değişikliği yalnızca LCL projeleri için kullanılabilir"
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ", Mod: %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -14685,11 +14662,6 @@ msgstr "Seçenekler"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "yoksay"
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
-msgstr ", OS: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 #, object-pascal-format
@@ -17701,11 +17673,6 @@ msgstr "%s için sekmeler"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Hedef:"
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr ", Hedef: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

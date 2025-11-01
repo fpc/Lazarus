@@ -7742,10 +7742,6 @@ msgstr ""
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr ""
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Compiler"
@@ -7760,20 +7756,9 @@ msgstr ""
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr ""
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Error: ongeldige compiler: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Compilerbestandsnaam"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-#, fuzzy
-#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Hint: u kunt het pad naar de compiler opgeven in Omgeving -> Omgevingsopties -> Bestanden -> Compiler Pad"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8611,11 +8596,6 @@ msgstr "Open Pakket %s"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "Open unit %s"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ""
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -14367,11 +14347,6 @@ msgstr ""
 msgid "WidgetSet change is available only for LCL projects"
 msgstr ""
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format
-msgid ", Mode: %s"
-msgstr ""
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -15090,11 +15065,6 @@ msgstr "Opties"
 
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
-msgstr ""
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format
-msgid ", OS: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
@@ -18234,11 +18204,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listarget
 msgid "Target:"
-msgstr ""
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu

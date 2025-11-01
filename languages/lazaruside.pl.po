@@ -7712,10 +7712,6 @@ msgstr ""
 msgid "Compile package twice and check if any unit was compiled again."
 msgstr ""
 
-#: lazarusidestrconsts.liscompileproject
-msgid "Compile Project"
-msgstr "Kompilowany projekt"
-
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Kompilator"
@@ -7730,20 +7726,9 @@ msgstr "brak %s."
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Kompilator \"%s\" nie obsługuje celu %s-%s"
 
-#: lazarusidestrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
-msgid "Error: invalid compiler: %s"
-msgstr "Błąd: nieprawidłowy kompilator: %s"
-
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
 msgstr "Nazwa pliku kompilatora"
-
-#: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-#, fuzzy
-#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Porada: możesz ustawić ścieżkę kompilatora w Środowisko->Opcje środowiska->Pliki->Ścieżka kompilatora"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -8568,11 +8553,6 @@ msgstr "Otwórz pakiet %s"
 #, object-pascal-format
 msgid "Open Unit %s"
 msgstr "Otwórz moduł %s"
-
-#: lazarusidestrconsts.liscpu
-#, object-pascal-format
-msgid ", CPU: %s"
-msgstr ", CPU: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
@@ -14228,11 +14208,6 @@ msgstr "Błąd zapisu: %s%sPlik: %s%s%s"
 msgid "WidgetSet change is available only for LCL projects"
 msgstr ""
 
-#: lazarusidestrconsts.lismode
-#, object-pascal-format, fuzzy
-msgid ", Mode: %s"
-msgstr "Tryb budowania: %s"
-
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -14951,11 +14926,6 @@ msgstr "Opcje"
 #: lazarusidestrconsts.lisoptionvalueignored
 msgid "ignored"
 msgstr "ignorowany"
-
-#: lazarusidestrconsts.lisos
-#, object-pascal-format, fuzzy, badformat
-msgid ", OS: %s"
-msgstr "Docelowy system operacyjny"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 #, object-pascal-format
@@ -18035,11 +18005,6 @@ msgstr "Zakładki należące do %s"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Obiekt docelowy:"
-
-#: lazarusidestrconsts.listarget2
-#, object-pascal-format
-msgid ", Target: %s"
-msgstr ", Obiekt docelowy: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
