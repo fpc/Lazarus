@@ -1396,6 +1396,8 @@ end;
 
 procedure TLazProjectBuildMode.SetIdentifier(AValue: string);
 begin
+  // A GUI etc. must prevent an empty name.
+  //Assert(AValue<>'', 'TLazProjectBuildMode.SetIdentifier: BuildMode must have a name.');
   if FIdentifier=AValue then exit;
   FIdentifier:=AValue;
   {$IFDEF VerboseIDEModified}

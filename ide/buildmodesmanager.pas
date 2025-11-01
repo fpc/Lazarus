@@ -154,7 +154,7 @@ begin
     OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);
     // Copy to dialog
     frm.BuildModes.Assign(Project1.BuildModes, True);
-    frm.SetActiveBuildModeByID(Project1.ActiveBuildMode.Identifier,true);
+    frm.SetActiveBuildModeByID(Project1.ActiveBuildModeID,true);
     frm.fShowSession:=aShowSession;
     // Show the form. Let user add / edit / delete.
     Result := frm.ShowModal;
@@ -457,14 +457,19 @@ begin
   OldValue:=Value;
   if InputQuery(lisRename, lisUIDName, Value) then
   begin
-    CurMode.Identifier:=Value;
-    FillBuildModesGrid;
-    // Rename in many BuildModes selection.
-    i:=fBuildModes.ManyBuildModes.IndexOf(OldValue);
-    if i>=0 then
-      fBuildModes.ManyBuildModes[i]:=Value;
-    // Rename in the ModeMatrix settings frame.
-    ModeMatrixFrame.Grid.RenameMode(OldValue, Value);
+    if Value<>'' then begin
+      CurMode.Identifier:=Value;
+      FillBuildModesGrid;
+      // Rename in many BuildModes selection.
+      i:=fBuildModes.ManyBuildModes.IndexOf(OldValue);
+      if i>=0 then
+        fBuildModes.ManyBuildModes[i]:=Value;
+      // Rename in the ModeMatrix settings frame.
+      ModeMatrixFrame.Grid.RenameMode(OldValue, Value);
+      NoteLabel.Caption:='';
+    end
+    else
+      NoteLabel.Caption:=lisBuildModesMustHaveName;
   end;
 end;
 
@@ -673,8 +678,12 @@ begin
       for i:=0 to fBuildModes.Count-1 do begin
         if (fBuildModes[i]<>CurMode)
         and (Comparetext(fBuildModes[i].Identifier,NewValue)=0) then begin
-          IDEMessageDialog(lisDuplicateEntry,
-            lisThereIsAlreadyABuildModeWithThisName, mtError, [mbCancel]);
+          NoteLabel.Caption:=lisThereIsAlreadyABuildModeWithThisName;
+          NewValue:=CurMode.Identifier;
+          exit;
+        end;
+        if NewValue='' then begin
+          NoteLabel.Caption:=lisBuildModesMustHaveName;
           NewValue:=CurMode.Identifier;
           exit;
         end;
@@ -724,8 +733,9 @@ var
   CurMode: TProjectBuildMode;
   Identifier: string;
 begin
+  Assert(Assigned(fBuildModes), 'TBuildModesForm.UpdateBuildModeButtons: No BuildModes.');
   i:=BuildModesStringGrid.Row-1;
-  if (fBuildModes<>nil) and (i>=0) and (i<fBuildModes.Count) then
+  if (i>=0) and (i<fBuildModes.Count) then
   begin
     CurMode:=fBuildModes[i];
     Identifier:=BuildModesStringGrid.Cells[fModeNameCol,i+1];
