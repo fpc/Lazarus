@@ -406,6 +406,7 @@ type
     procedure SetPixel(X,Y:integer; AColor:TColor); virtual;
     procedure Polygon(const Points: array of TPoint; NumPts: Integer; Winding: boolean);
     procedure Polyline(const Points: array of TPoint; NumPts: Integer);
+    procedure PolyBezier(const Points: array of TPoint; NumPts: Integer; Filled, Continuous: boolean);
     // draws a rectangle by given LCL coordinates.
     // always outlines rectangle
     // if FillRect is set to true, then fills with either Context brush
@@ -1787,6 +1788,69 @@ begin
   AttachedBitmap_SetModified();
 end;
 
+{ Draws a sequence of Bezier segments for the specified Points array
+  Filled = true: curve is closed and filled with current brush
+  Continuous = true: Each segment consists of 3 points:
+    the 1st segment point is the control point for the start point taken from the
+    previous segment (or the very first point in the array)
+    the 2nd segment point is the control point for the end point
+    the 3rd segment point is the end point of the segment and the start point
+    of the next segment.
+    For n segments there must be (n*3 + 1) points in the array.
+  Continuous = false: Each segment consists of 4 points, the 1st and 4th points
+    are the start and end points of the segments, the 2nd and 3rd points their
+    control points. A straight line is drawn between the end point of a segment
+    and the start point of the next segment.
+    For n segments there must be n*4 points in the array.
+  Incomplete segments are ignored. }
+procedure TCocoaContext.PolyBezier(const Points: array of TPoint; NumPts: Integer;
+  Filled, Continuous: Boolean);
+var
+  cg: CGContextRef;
+  i, j: Integer;
+  PtsPerSegment: Integer;
+begin
+  cg := CGContext;
+  if not Assigned(cg) or (NumPts <= 0) then Exit;
+
+  // Drop incomplete segments
+  if Continuous then
+  begin
+    NumPts := ((NumPts - 1) div 3) * 3 + 1;
+    PtsPerSegment := 3;
+    j := 1;
+  end else
+  begin
+    NumPts := (NumPts div 4) * 4;
+    PtsPerSegment := 4;
+    j := 0;
+  end;
+
+  CGContextBeginPath(cg);
+  CGContextMoveToPoint(cg, Points[0].X+0.5, Points[0].Y+0.5); // Move to start
+  i := 0;
+  repeat
+    if not Continuous and (i > 0) then
+      CGContextAddLineToPoint(cg, Points[i].X+0.5, Points[i].Y+0.5); // Line from prev segment
+    CGContextAddCurveToPoint(cg,
+      Points[i+1].X+0.5, Points[i+1].Y+0.5,    // Control point of segment start point
+      Points[i+2].X+0.5, Points[i+2].Y+0.5,    // Control point of segment end point
+      Points[i+3].X+0.5, Points[i+3].Y+0.5     // Segment end point
+    );
+    inc(i, PtsPerSegment);
+    inc(j, PtsPerSegment);
+  until (j >= NumPts);
+
+  if Filled then
+  begin
+    CGContextClosePath(cg);                    // Closes the path
+    CGContextDrawPath(cg, kCGPathFillStroke);  // Draws the curve and fills it
+  end else
+    CGContextDrawPath(cg, kCGPathStroke);      // Draws the curve only
+
+  AttachedBitmap_SetModified();
+end;
+
 procedure TCocoaContext.Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
 var
   cg: CGContextRef;
@@ -1912,8 +1976,8 @@ begin
     AttachedBitmap_SetModified();
   end
   else
+    // Rectangle keeping brush and pen of the roundrect
     Polygon([Point(X1,Y1), Point(X1,Y2-1), Point(X2-1,Y2-1), Point(X2-1,Y1)], 4, false);
-//    Rectangle(X1, Y1, X2, Y2, Assigned(Brush), nil);
 end;
 
 procedure TCocoaContext.Ellipse(X1, Y1, X2, Y2:Integer);
