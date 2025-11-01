@@ -208,6 +208,114 @@ Numeric value with the relative order for the compared Pointers.
 <short>Boolean value compared in the routine.</short>
 </element>
 
+<element name="CompareCaret">
+<short>
+Gets the relative order for the specified caret positions based on the X and Y 
+positions.
+</short>
+<descr>
+<p>
+<var>CompareCaret</var> is an <var>Integer</var> function used to determine 
+the relative order for the specified caret positions.
+</p>
+<p>
+<var>Caret1</var> and <var>Caret2</var> are <var>TPoint</var> instances where 
+the X and Y members represent the coordinates for a caret position. 
+CompareCaret examines the X and Y members to determine the return value for 
+the function. For example:
+</p>
+<dl>
+<dt>-1</dt>
+<dd>
+Y member in Caret1 is larger than the member in Caret2. Or, X member in Caret1 
+is larger than the member in Caret2.
+</dd>
+<dt>1</dt>
+<dd>
+Y member in Caret1 is smaller than the member in Caret2. Or, X member in 
+Caret1 is smaller than the member in Caret2.
+</dd>
+<dt>0</dt>
+<dd>
+Caret1 and Caret2 have the same values in their respective X and Y members.
+</dd>
+</dl>
+<p>
+CompareCaret is used in the implementation of the TCustomSynEdit / TSynEdit 
+control.
+</p>
+</descr>
+<version>
+Added in LCL version 4.3.
+</version>
+<seealso>
+<link id="#rtl.classes.TPoint">TPoint</link>
+</seealso>
+</element>
+<element name="CompareCaret.Caret1">
+<short>
+TPoint instance with a caret position compared in the routine.
+</short>
+</element>
+<element name="CompareCaret.Caret2">
+<short>
+TPoint instance with a caret position compared in the routine.
+</short>
+</element>
+<element name="CompareCaret.Result">
+<short>
+Relative order for the caret positions. -1, 0, or 1.
+</short>
+</element>
+
+<element name="ComparePoints">
+<short>
+Gets the relative order for the specified points based on their X and Y 
+members.
+</short>
+<descr>
+<p>
+<var>ComparePoints</var> is an <var>Integer</var> function used to compare 
+the coordinates in the specified <var>TPoint</var> instances to determine 
+their relative order. The return value contains -1, 0, or 1 for the following 
+conditions:
+</p>
+<dl>
+<dt>-1</dt>
+<dd>p1.y is smaller than p2.y, or p1.x is smaller than p2.x.</dd>
+<dt>0</dt>
+<dd>p1 and p2 have the same x and y values.</dd>
+<dt>1</dt>
+<dd>p1.y is larger than p2.y, or p1.x is larger than p2.x.</dd>
+</dl>
+<p>
+ComparePoints is used in the implementation of the TCustomSynEdit / TSynEdit 
+control.
+</p>
+</descr>
+<version>
+Added in LCL version 4.3.
+</version>
+<seealso>
+<link id="#rtl.classes.TPoint">TPoint</link>
+</seealso>
+</element>
+<element name="ComparePoints.p1">
+<short>
+TPoint instance compared in the routine.
+</short>
+</element>
+<element name="ComparePoints.p2">
+<short>
+TPoint instance compared in the routine.
+</short>
+</element>
+<element name="ComparePoints.Result">
+<short>
+Relative order for the compared points. -1, 0, or 1.
+</short>
+</element>
+
 <element name="GetEnumValueDef">
 <short>
 Gets the ordinal position for an enumeration value with the specified name.

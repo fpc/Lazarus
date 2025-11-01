@@ -727,7 +727,6 @@ instead.
 </element>
 
 <element name="CompareRect">
-.
 <short>
 Deprecated. Indicates if the specified rectangle pointers have the same 
 coordinate values.
@@ -977,7 +976,8 @@ The return value contains the following:
 
 <element name="ComparePoints">
 <short>
-Compares the specified TPoint values to get their relative order.
+Deprecated. Use LazUtils.ComparePoints instead. Compares the specified TPoint 
+values to get their relative order.
 </short>
 <descr>
 <p>
@@ -995,8 +995,14 @@ conditions:
 <dd>p1.y is larger than p2.y, or p1.x is larger than p2.x.</dd>
 </dl>
 </descr>
-<seealso/>
+<seealso>
+<link id="#lazutils.lazutilities.ComparePoints">LazUtilities.ComparePoints</link>
+</seealso>
 </element>
+<version>
+Deprecated in LCL version 4.3. Use the LazUtils.ComparePoints routine in the 
+LazUtils package instead.
+</version>
 <element name="ComparePoints.Result">
 <short>Relative order for the compared TPoint values.</short>
 </element>
@@ -1008,20 +1014,27 @@ conditions:
 </element>
 
 <element name="CompareCaret">
-<short>See ComparePoints.</short>
+<short>
+Deprecated. Use LazUtilities.CompareCaret instead.
+</short>
 <descr>
 <p>
-See ComparePoints.
+See LazUtilities.CompareCaret.
 </p>
 </descr>
 <seealso>
 <link id="ComparePoints"/>
+<link id="#lazutils.lazutilities.CompareCaret">LazUtilities.CompareCaret</link>
 </seealso>
 </element>
+<version>
+Deprecated in LCL version 4.3. Use the LazUtilities.CompareCaret routine in 
+the LazUtils package instead.
+</version>
 <element name="CompareCaret.Result">
 <short/>
 </element>
-<element name="CompareCaret.FIrstCaret">
+<element name="CompareCaret.FirstCaret">
 <short/>
 </element>
 <element name="CompareCaret.SecondCaret">
