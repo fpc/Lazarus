@@ -15,7 +15,7 @@ uses
   {$ifndef CocoaUseHITheme}
   customdrawndrawers, customdrawn_mac,
   {$endif}
-  SysUtils, Classes, Contnrs, Types, Math;
+  SysUtils, Classes, Contnrs, Types, Math, GraphMath;
 
 type
   TCocoaBitmapAlignment = (
@@ -415,6 +415,7 @@ type
     //   if "useBrush" is provided, uses the color from the defined brush
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
     procedure BackgroundFill(dirtyRect:NSRect);
+    procedure RoundRect(X1, Y1, X2, Y2, RX, RY: Integer);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
     procedure TextOut(X, Y: CGFloat; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: CGFloatPtr);
@@ -1845,6 +1846,74 @@ begin
   CGContextFillRect(cg,CGRect(dirtyRect));
 
   AttachedBitmap_SetModified();
+end;
+
+procedure TCocoaContext.RoundRect(X1, Y1, X2, Y2, RX, RY: Integer);
+var
+  cg: CGContextRef;
+  rx2, ry2: CGFloat;
+
+  procedure EnsureOrder(var X, Y: Integer);
+  var
+    tmp: Integer;
+  begin
+    if Y < X then
+    begin
+      tmp := X;
+      X := Y;
+      Y := tmp;
+    end;
+  end;
+
+  procedure DrawArc(X, Y, Width, Height: Integer; Angle: Integer);
+  const
+    ARC_LENGTH = 90*16;
+  var
+    B: TBezier;
+  begin
+    Arc2Bezier(X, Y, Width, Height, Angle, ARC_LENGTH, 0.0, B);
+    CGContextAddCurveToPoint(cg, B[1].X+0.5, B[1].Y+0.5, B[2].X+0.5, B[2].Y+0.5, B[3].X+0.5, B[3].Y+0.5);
+  end;
+
+begin
+  cg := CGContext;
+  if not Assigned(cg) then exit;
+
+  EnsureOrder(X1, X2);
+  EnsureOrder(Y1, Y2);
+
+  if (X2 - X1 <= 0) or (Y2 - Y1 <= 0) then
+    Exit;
+
+  if (RX > 0) and (RY > 0) then
+  begin
+    Dec(X2);
+    Dec(Y2);
+
+    if X2 - X1 < RX then RX := X2 - X1;
+    if Y2 - Y1 < RY then RY := Y2 - Y1;
+
+    rx2 := RX * 0.5;    // ellipse radii  (RX, RY are diameters!)
+    ry2 := RY * 0.5;
+
+    CGContextBeginPath(cg);                                 // Begin path
+    CGContextMoveToPoint(cg, X1 + rx2 + 0.5, Y2 + 0.5);     // Move to start
+    CGContextAddLineToPoint(cg, X2 - rx2 + 0.5, Y2 + 0.5);  // Bottom horizontal line
+    DrawArc(X2 - RX, Y2 - RY, RX, RY, 270*16);              // Bottom/right arc
+    CGContextAddLineToPoint(cg, X2 + 0.5, Y1 + ry2 + 0.5);  // Right vertical line
+    DrawArc(X2 - RX, Y1, RX, RY, 0);                        // Top/right arc
+    CGContextAddLineToPoint(cg, X1 + rx2 + 0.5, Y1 + 0.5);  // Top horizontal line
+    DrawArc(X1, Y1, RX, RY, 90*16);                         // Top/left arc
+    CGContextAddLineToPoint(cg, X1 + 0.5, Y2 - ry2 + 0.5);  // Left vertical line
+    DrawArc(X1, Y2 - RY, RX, RY, 180*16);                   // Bottom/left arc
+    CGContextClosePath(cg);                                 // Close path
+
+    CGContextDrawPath(cg, kCGPathFillStroke);
+    AttachedBitmap_SetModified();
+  end
+  else
+    Polygon([Point(X1,Y1), Point(X1,Y2-1), Point(X2-1,Y2-1), Point(X2-1,Y1)], 4, false);
+//    Rectangle(X1, Y1, X2, Y2, Assigned(Brush), nil);
 end;
 
 procedure TCocoaContext.Ellipse(X1, Y1, X2, Y2:Integer);
