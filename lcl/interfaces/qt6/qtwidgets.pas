@@ -127,6 +127,9 @@ type
     FLastCaretPos: TQtPoint;
     FHasPaint: Boolean;
     FOwner: TQtWidget;
+    FPreEditStr: WideString;
+    FCommitStr: WideString;
+    FIMPreedit: Boolean;
 
     FWidgetColorRole: QPaletteColorRole;
     FTextColorRole: QPaletteColorRole;
@@ -2094,6 +2097,7 @@ begin
   LCLObject := AWinControl;
   FKeysToEat := [VK_TAB, VK_RETURN, VK_ESCAPE];
   FHasPaint := False;
+  FIMPreedit := False;
 
   FParams := AParams;
   InitializeWidget;
@@ -3677,10 +3681,11 @@ end;
 function TQtWidget.SlotInputMethod(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   InputEvent: QInputMethodEventH;
-  WStr: WideString;
+  WStr, temps: WideString;
   UnicodeChar: Cardinal;
-  UnicodeOutLen: integer;
+  i: integer;
   KeyEvent: QKeyEventH;
+  Msg: TLMessage;
 begin
   Result := True;
   if not (QEvent_type(Event) = QEventInputMethod) then Exit;
@@ -3688,25 +3693,61 @@ begin
     DebugLn('TQtWidget.SlotInputMethod ', dbgsname(LCLObject));
   {$endif}
   InputEvent := QInputMethodEventH(Event);
-  QInputMethodEvent_commitString(InputEvent, @WStr);
-  UnicodeChar := UTF8CodepointToUnicode(PChar(WStr), UnicodeOutLen);
-  {$IFDEF VerboseQtKeys}
-  writeln('> TQtWidget.SlotInputMethod ',dbgsname(LCLObject),' event=QEventInputMethod:');
-  writeln('   commmitString ',WStr,' len ',length(WStr),' UnicodeChar ',UnicodeChar,
-    ' UnicodeLen ',UnicodeOutLen);
-  writeln('   sending QEventKeyPress');
-  {$ENDIF}
-
-  KeyEvent := QKeyEvent_create(QEventKeyPress, PtrInt(UnicodeChar), QGUIApplication_keyboardModifiers, @WStr, False, 1);
-  try
-    // do not send it to queue, just pass it to SlotKey
-    Result := SlotKey(Sender, KeyEvent);
-  finally
-    QKeyEvent_destroy(KeyEvent);
+  FPreEditStr:='';
+  FCommitStr:='';
+  QInputMethodEvent_commitString(InputEvent, @FCommitStr);
+  QInputMethodEvent_preeditString(InputEvent, @FPreEditStr);
+  WStr:=FCommitStr;
+  { commit }
+  if FCommitStr<>'' then
+  begin
+    if CanSendLCLMessage then
+    begin
+      Msg.Msg:=LM_IM_COMPOSITION;
+      Msg.WParam:=GTK_IM_FLAG_COMMIT or GTK_IM_FLAG_END;
+      Msg.LParam:=LPARAM(@FCommitStr);
+      DeliverMessage(Msg);
+    end;
+    FIMPreedit:=False;
   end;
-  {$IFDEF VerboseQtKeys}
-  writeln('< TQtWidget.SlotInputMethod End: ',dbgsname(LCLObject),' event=QEventInputMethod, sent QEventKeyPress');
-  {$ENDIF}
+  { preedit }
+  if CanSendLCLMessage then
+  begin
+    Msg.Msg:=LM_IM_COMPOSITION;
+    Msg.WParam:=GTK_IM_FLAG_PREEDIT;
+    if not FIMPreedit then
+      Msg.WParam:=Msg.WParam or GTK_IM_FLAG_START
+      else
+        Msg.WParam:=Msg.WParam or GTK_IM_FLAG_REPLACE;
+    Msg.LParam:=LPARAM(@FPreEditStr);
+    DeliverMessage(Msg);
+  end;
+  FIMPreedit:=FPreEditStr<>'';
+  { commit to keyinput }
+  if WStr<>'' then
+  begin
+    {$IFDEF VerboseQtKeys}
+    writeln('> TQtWidget.SlotInputMethod ',dbgsname(LCLObject),' event=QEventInputMethod:');
+    writeln('   commmitString ',WStr,' len ',length(WStr),' UnicodeChar ',UnicodeChar,
+      ' UnicodeLen ',UnicodeOutLen);
+    writeln('   sending QEventKeyPress');
+    {$ENDIF}
+    for i:=1 to Length(WStr) do
+    begin
+      UnicodeChar := PWord(@WStr[i])^;
+      temps:=WStr[i];
+      KeyEvent := QKeyEvent_create(QEventKeyPress, PtrInt(UnicodeChar), QGUIApplication_keyboardModifiers, @temps);
+      try
+        // do not send it to queue, just pass it to SlotKey
+        Result := SlotKey(Sender, KeyEvent);
+      finally
+        QKeyEvent_destroy(KeyEvent);
+      end;
+      {$IFDEF VerboseQtKeys}
+      writeln('< TQtWidget.SlotInputMethod End: ',dbgsname(LCLObject),' event=QEventInputMethod, sent QEventKeyPress');
+      {$ENDIF}
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
