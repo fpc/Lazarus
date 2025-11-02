@@ -380,7 +380,11 @@ begin
     if Length(Bytes) = 0 then exit;
     InStream := TFileStream.Create(Filename, fmOpenRead);
     try
+      {$IF FPC_FULLVERSION>30300}
       InStream.Read64(Bytes, 0, Length(Bytes));
+      {$ELSE}
+      InStream.Read(Bytes, Length(Bytes));
+      {$ENDIF}
     finally
       InStream.Free;
     end;
@@ -402,7 +406,11 @@ begin
     if s='' then exit;
     InStream := TFileStream.Create(Filename, fmOpenRead);
     try
+      {$IF FPC_FULLVERSION>30300}
       InStream.Read64(TBytes(s), 0, Length(s));
+      {$ELSE}
+      InStream.Read(TBytes(s), Length(s));
+      {$ENDIF}
     finally
       InStream.Free;
     end;
