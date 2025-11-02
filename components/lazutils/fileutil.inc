@@ -371,24 +371,19 @@ function ReadFileToString(const Filename: string): string;
 // Note: FileSize() returns 0 for virtual files at least in Unix like systems.
 //       Then use different ways to read contents, eg. TStringList.LoadFromFile();
 var
-  SrcHandle: THandle;
-  ReadCount: LongInt;
   s: String;
+  InStream: TFileStream;
 begin
   Result := '';
   s:='';
   try
     Setlength(s, FileSize(Filename));
     if s='' then exit;
-    SrcHandle := FileOpenUTF8(Filename, fmOpenRead or fmShareDenyWrite);
-    if SrcHandle = feInvalidHandle then
-      exit;
+    InStream := TFileStream.Create(Filename, fmOpenRead);
     try
-      ReadCount:=FileRead(SrcHandle,s[1],length(s));
-      if ReadCount<length(s) then
-        exit;
+      InStream.Read64(Pointer(s), 0,length(s));
     finally
-      FileClose(SrcHandle);
+      InStream.Free;
     end;
     Result:=s;
   except
