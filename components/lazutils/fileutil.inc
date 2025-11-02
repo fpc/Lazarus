@@ -366,22 +366,43 @@ begin
   {$ENDIF}
 end;
 
-function ReadFileToString(const Filename: string): string;
-// Read and return the contents of a text file in one slurp.
+function ReadFileToBytes(const Filename: string): TBytes;
+// Read and return the contents of a file in one slurp.
 // Note: FileSize() returns 0 for virtual files at least in Unix like systems.
 //       Then use different ways to read contents, eg. TStringList.LoadFromFile();
+var
+  Bytes: TBytes;
+  InStream: TFileStream;
+begin
+  SetLength(Result, 0);
+  try
+    SetLength(Bytes, FileSize(Filename));
+    if Length(Bytes) = 0 then exit;
+    InStream := TFileStream.Create(Filename, fmOpenRead);
+    try
+      InStream.Read64(Bytes, 0, Length(Bytes));
+    finally
+      InStream.Free;
+    end;
+    Result:=Bytes;
+  except
+    // ignore errors, Result string will be empty
+  end;
+end;
+
+function ReadFileToString(const Filename: string): string;
+// Read and return the contents of a text file in one slurp.
 var
   s: String;
   InStream: TFileStream;
 begin
   Result := '';
-  s:='';
   try
     Setlength(s, FileSize(Filename));
     if s='' then exit;
     InStream := TFileStream.Create(Filename, fmOpenRead);
     try
-      InStream.Read64(Pointer(s), 0,length(s));
+      InStream.Read64(TBytes(s), 0, Length(s));
     finally
       InStream.Free;
     end;
