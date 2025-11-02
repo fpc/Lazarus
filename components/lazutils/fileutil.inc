@@ -366,44 +366,87 @@ begin
   {$ENDIF}
 end;
 
+function ReadFileToBytes(const Filename: string): TBytes;
+// Read and return the contents of a file in one slurp.
+// Note: FileSize() returns 0 for virtual files at least in Unix like systems.
+//       Then use different ways to read contents, eg. TStringList.LoadFromFile();
+var
+  Bytes: TBytes;
+  InStream: TFileStream;
+  i, len: Int64;
+begin
+  SetLength(Result, 0);
+  try
+    len := FileSize(Filename);
+    {$IFNDEF CPU64}
+    if len > MaxLongint then
+      len := 0;           // A big file (>2GB) does not fit. Return empty array.
+    {$ENDIF};
+    SetLength(Bytes, len);
+    if Length(Bytes) = 0 then exit;
+    InStream := TFileStream.Create(Filename, fmOpenRead);
+    try
+      {$IF FPC_FULLVERSION>30300}
+      InStream.Read64(Bytes, 0, Length(Bytes));
+      {$ELSE}
+      i := 0;
+      while i < Length(Bytes) do
+      begin
+        InStream.Position := i;
+        if Length(Bytes) - i > MaxLongint then
+          len := MaxLongint
+        else
+          len := Length(Bytes) - i;
+        InStream.Read(Bytes[i], len);
+        Inc(i, len);
+      end;
+      {$ENDIF}
+    finally
+      InStream.Free;
+    end;
+    Result:=Bytes;
+  except
+    // ignore errors, Result string will be empty
+  end;
+end;
+
 function ReadFileToString(const Filename: string): string;
 // Read and return the contents of a text file in one slurp.
 // Note: FileSize() returns 0 for virtual files at least in Unix like systems.
 //       Then use different ways to read contents, eg. TStringList.LoadFromFile();
 var
-  {$IF FPC_FULLVERSION>30300}
-  InStream: TFileStream;
-  {$ELSE}
-  SrcHandle: THandle;
-  ReadCount: LongInt;
-  {$ENDIF}
   s: String;
+  InStream: TFileStream;
+  i, len: Int64;
 begin
   Result := '';
   try
-    Setlength(s, FileSize(Filename));
-    if s='' then exit;
-    {$IF FPC_FULLVERSION>30300}
-    // This version supports big files (over 2GB).
+    len := FileSize(Filename);
+    {$IFNDEF CPU64}
+    if len > MaxLongint then
+      len := 0;           // A big file (>2GB) does not fit. Return empty array.
+    {$ENDIF};
+    Setlength(s, len);
+    if Length(s) = 0 then exit;
     InStream := TFileStream.Create(Filename, fmOpenRead);
     try
+      {$IF FPC_FULLVERSION>30300}
       InStream.Read64(TBytes(s), 0, Length(s));
+      {$ELSE}
+      i := 0;
+      while i < Length(s) do
+      begin
+        InStream.Position := i;
+        len := Length(s) - i;
+        if len > MaxLongint then
+          len := MaxLongint;
+        InStream.Read(s[i+1], len);
+        Inc(i, len);
+      end;
+      {$ENDIF}
     finally
       InStream.Free;
     end;
-    {$ELSE}
-    // This version supports file sizes up to High(LongInt).
-    SrcHandle := FileOpenUTF8(Filename, fmOpenRead or fmShareDenyWrite);
-    if SrcHandle = feInvalidHandle then
-      exit;
-    try
-      ReadCount:=FileRead(SrcHandle,s[1],length(s));
-      if ReadCount<length(s) then
-        exit;
-    finally
-      FileClose(SrcHandle);
-    end;
-    {$ENDIF}
     Result:=s;
   except
     // ignore errors, Result string will be empty
