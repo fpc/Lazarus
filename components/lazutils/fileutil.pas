@@ -68,7 +68,6 @@ function FileIsInDirectory(const Filename, Directory: string): boolean;
 
 function GetAllFilesMask: string; inline;
 function GetExeExt: string; inline;
-function ReadFileToBytes(const Filename: string): TBytes;
 function ReadFileToString(const Filename: string): string;
 
 // file search

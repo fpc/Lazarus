@@ -366,54 +366,44 @@ begin
   {$ENDIF}
 end;
 
-function ReadFileToBytes(const Filename: string): TBytes;
-// Read and return the contents of a file in one slurp.
+function ReadFileToString(const Filename: string): string;
+// Read and return the contents of a text file in one slurp.
 // Note: FileSize() returns 0 for virtual files at least in Unix like systems.
 //       Then use different ways to read contents, eg. TStringList.LoadFromFile();
 var
-  Bytes: TBytes;
+  {$IF FPC_FULLVERSION>30300}
   InStream: TFileStream;
-begin
-  SetLength(Result, 0);
-  try
-    SetLength(Bytes, FileSize(Filename));
-    if Length(Bytes) = 0 then exit;
-    InStream := TFileStream.Create(Filename, fmOpenRead);
-    try
-      {$IF FPC_FULLVERSION>30300}
-      InStream.Read64(Bytes, 0, Length(Bytes));
-      {$ELSE}
-      InStream.Read(Bytes, Length(Bytes));
-      {$ENDIF}
-    finally
-      InStream.Free;
-    end;
-    Result:=Bytes;
-  except
-    // ignore errors, Result string will be empty
-  end;
-end;
-
-function ReadFileToString(const Filename: string): string;
-// Read and return the contents of a text file in one slurp.
-var
+  {$ELSE}
+  SrcHandle: THandle;
+  ReadCount: LongInt;
+  {$ENDIF}
   s: String;
-  InStream: TFileStream;
 begin
   Result := '';
   try
     Setlength(s, FileSize(Filename));
     if s='' then exit;
+    {$IF FPC_FULLVERSION>30300}
+    // This version supports big files (over 2GB).
     InStream := TFileStream.Create(Filename, fmOpenRead);
     try
-      {$IF FPC_FULLVERSION>30300}
       InStream.Read64(TBytes(s), 0, Length(s));
-      {$ELSE}
-      InStream.Read(TBytes(s), Length(s));
-      {$ENDIF}
     finally
       InStream.Free;
     end;
+    {$ELSE}
+    // This version supports file sizes up to High(LongInt).
+    SrcHandle := FileOpenUTF8(Filename, fmOpenRead or fmShareDenyWrite);
+    if SrcHandle = feInvalidHandle then
+      exit;
+    try
+      ReadCount:=FileRead(SrcHandle,s[1],length(s));
+      if ReadCount<length(s) then
+        exit;
+    finally
+      FileClose(SrcHandle);
+    end;
+    {$ENDIF}
     Result:=s;
   except
     // ignore errors, Result string will be empty
