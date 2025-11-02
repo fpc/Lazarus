@@ -406,7 +406,7 @@ begin
     end;
     Result:=Bytes;
   except
-    // ignore errors, Result string will be empty
+    // ignore errors, Result will be empty array
   end;
 end;
 
