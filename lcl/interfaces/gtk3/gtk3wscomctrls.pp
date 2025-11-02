@@ -1288,9 +1288,10 @@ class procedure TGtk3WSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
 begin
   if not WSCheckHandleAllocated(AStatusBar, 'SetPanelText') then
     Exit;
-  // inherited SetPanelText(AStatusBar, PanelIndex);
-  //writeln('TGtk3WSStatusBar.SetPanelText PanelIndex=',PanelIndex);
-  TGtk3StatusBar(AStatusBar.Handle).SetPanelText(AStatusBar.Panels[PanelIndex].Text, PanelIndex);
+  if AStatusBar.SimplePanel or (AStatusBar.Panels.Count=0) then
+    TGtk3StatusBar(AStatusBar.Handle).SetSimpleText(AStatusBar.SimpleText)
+  else
+    TGtk3StatusBar(AStatusBar.Handle).SetPanelText(AStatusBar.Panels[PanelIndex].Text, PanelIndex);
 end;
 
 class procedure TGtk3WSStatusBar.Update(const AStatusBar: TStatusBar);
