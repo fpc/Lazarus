@@ -11,7 +11,7 @@ msgid "Error: invalid compiler: %s"
 msgstr ""
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr ""
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword

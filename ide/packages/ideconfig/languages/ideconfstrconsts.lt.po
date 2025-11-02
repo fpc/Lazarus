@@ -15,7 +15,9 @@ msgid "Error: invalid compiler: %s"
 msgstr "Klaida: klaidingas kompiliatorius: %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Užuomina: kompiliatoriaus programą galite nurodyti „Aplinka -> Parinktys -> Failai -> Kompiliatoriaus programa“."
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword

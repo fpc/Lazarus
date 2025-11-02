@@ -17,7 +17,7 @@ msgstr "Błąd: nieprawidłowy kompilator: %s"
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 #, fuzzy
 #| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Porada: możesz ustawić ścieżkę kompilatora w Środowisko->Opcje środowiska->Pliki->Ścieżka kompilatora"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword

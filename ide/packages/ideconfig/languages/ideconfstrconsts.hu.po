@@ -15,7 +15,9 @@ msgid "Error: invalid compiler: %s"
 msgstr "Hiba: érvénytelen fordító: %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Tipp: A fordító útvonala beállítható a menüben: Eszközök -> Beállítások -> Fájlok -> Fordító útvonala"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword

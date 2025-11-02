@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 2.3.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
 
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
@@ -21,8 +21,8 @@ msgid "Error: invalid compiler: %s"
 msgstr "Ошибка: неверный компилятор: %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Подсказка: Вы можете задать путь компилятора в Сервис -> Параметры -> Файлы -> Путь компилятора"
+msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
+msgstr "Подсказка: задать исполнимый файл компилятора можно в Сервис -> Параметры -> Файлы -> Исполнимый файл компилятора"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format

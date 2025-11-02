@@ -15,7 +15,9 @@ msgid "Error: invalid compiler: %s"
 msgstr "Chyba: neplatný prekladač: %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Rada: cestu prekladača môžete nastaviť v Nástroje ->Voľby prostredia ->Súbory -> Spustiteľný súbor prekladača"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword

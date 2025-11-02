@@ -18,7 +18,9 @@ msgid "Error: invalid compiler: %s"
 msgstr "错误:无效的编译器:%s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "提示: 您可以设置编译器路径在 工具->选项->文件->编译器路径"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword

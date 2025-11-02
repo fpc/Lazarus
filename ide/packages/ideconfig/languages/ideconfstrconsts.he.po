@@ -17,7 +17,7 @@ msgstr "שגיאה: מהדר s% לא חוקי"
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 #, fuzzy
 #| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
-msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "טיפ: אתה יכול להגדיר את נתיב המהדר ב Environment->Environment options->Files->Compiler Path"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
