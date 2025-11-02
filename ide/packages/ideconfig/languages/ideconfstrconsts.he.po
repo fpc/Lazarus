@@ -10,13 +10,15 @@ msgid "Compile Project"
 msgstr ""
 
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "שגיאה: מהדר s% לא חוקי"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr ""
+msgstr "טיפ: אתה יכול להגדיר את נתיב המהדר ב Environment->Environment options->Files->Compiler Path"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format, fuzzy

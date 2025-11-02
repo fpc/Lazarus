@@ -7,16 +7,16 @@ msgstr ""
 
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
-msgstr ""
+msgstr "Kompiliuoti projektą"
 
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "Klaida: klaidingas kompiliatorius: %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr ""
+msgstr "Užuomina: kompiliatoriaus programą galite nurodyti „Aplinka -> Parinktys -> Failai -> Kompiliatoriaus programa“."
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -31,7 +31,7 @@ msgstr "Komponento pavadinimas „%s“ nėra tinkamas identifikatorius"
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
-msgstr ""
+msgstr ", procesorius: %s"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -107,17 +107,17 @@ msgstr ""
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
-msgstr ""
+msgstr ", Režimas: %s"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
-msgstr ""
+msgstr ", operacinė sistema: %s"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
-msgstr ""
+msgstr ", Tikslas: %s"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

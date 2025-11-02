@@ -12,11 +12,13 @@ msgstr ""
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "Error: ongeldige compiler: %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr ""
+msgstr "Hint: u kunt het pad naar de compiler opgeven in Omgeving -> Omgevingsopties -> Bestanden -> Compiler Pad"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format

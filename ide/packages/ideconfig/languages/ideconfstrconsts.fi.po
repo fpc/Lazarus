@@ -7,16 +7,16 @@ msgstr ""
 
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
-msgstr ""
+msgstr "Käännä projekti"
 
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "Virhe: toimimaton kääntäjä: %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr ""
+msgstr "Vihje: voit asettaa kääntäjän hakupolun valikosta Työkalut -> Asetukset -> Tiedostot -> Kääntäjän polku"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -107,7 +107,7 @@ msgstr ""
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
-msgstr ""
+msgstr ", Moodi: %s"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
@@ -117,7 +117,7 @@ msgstr ""
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
-msgstr ""
+msgstr ", Kohde: %s"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

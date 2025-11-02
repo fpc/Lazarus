@@ -7,16 +7,16 @@ msgstr ""
 
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
-msgstr ""
+msgstr "Компіляція проєкту"
 
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "Помилка: неправильний компілятор:%s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr ""
+msgstr "Довідка: Ви можете задати шлях до компілятора в Інструменти->Параметри->Файли->Шлях до компілятора"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -31,7 +31,7 @@ msgstr "Назва компонента \"%s\" є некоректним іде�
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
-msgstr ""
+msgstr ", ЦП: %s"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -107,17 +107,17 @@ msgstr ""
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
-msgstr ""
+msgstr ", Режим: %s"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
-msgstr ""
+msgstr ", ОС: %s"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
-msgstr ""
+msgstr ", ціль: %s"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

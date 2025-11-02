@@ -7,16 +7,16 @@ msgstr ""
 
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
-msgstr ""
+msgstr "Projekt fordítása"
 
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "Hiba: érvénytelen fordító: %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr ""
+msgstr "Tipp: A fordító útvonala beállítható a menüben: Eszközök -> Beállítások -> Fájlok -> Fordító útvonala"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -31,7 +31,7 @@ msgstr "A(z) \"%s\" komponens azonosító érvénytelen"
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
-msgstr ""
+msgstr ", CPU: %s"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -107,17 +107,17 @@ msgstr ""
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
-msgstr ""
+msgstr ", Mód: %s"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
-msgstr ""
+msgstr ", OS: %s"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
-msgstr ""
+msgstr ", Cél: %s"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

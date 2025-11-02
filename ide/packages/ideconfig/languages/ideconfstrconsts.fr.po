@@ -7,16 +7,16 @@ msgstr ""
 
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
-msgstr ""
+msgstr "Compilation du projet"
 
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "Erreur : compilateur incorrect : %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr ""
+msgstr "Conseil : vous pouvez définir le chemin du compilateur dans Outils->Options->Fichiers->Chemin du compilateur"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -31,7 +31,7 @@ msgstr "Le nom du composant \"%s\" n'est pas un identificateur correct"
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
-msgstr ""
+msgstr ", CPU : %s"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -107,17 +107,17 @@ msgstr ""
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
-msgstr ""
+msgstr ", Mode : %s"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
-msgstr ""
+msgstr ",  : %s"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
-msgstr ""
+msgstr ", Cible : %s"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

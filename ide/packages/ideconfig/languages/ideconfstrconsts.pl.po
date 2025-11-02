@@ -7,16 +7,18 @@ msgstr ""
 
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
-msgstr ""
+msgstr "Kompilowany projekt"
 
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "Błąd: nieprawidłowy kompilator: %s"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr ""
+msgstr "Porada: możesz ustawić ścieżkę kompilatora w Środowisko->Opcje środowiska->Pliki->Ścieżka kompilatora"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -31,7 +33,7 @@ msgstr "Nazwa komponentu \"%s\" nie jest prawidłowym identyfikatorem"
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
-msgstr ""
+msgstr ", CPU: %s"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -105,19 +107,19 @@ msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
 #: ideconfstrconsts.lismode
-#, object-pascal-format
+#, object-pascal-format, fuzzy
 msgid ", Mode: %s"
-msgstr ""
+msgstr "Tryb budowania: %s"
 
 #: ideconfstrconsts.lisos
-#, object-pascal-format
+#, object-pascal-format, fuzzy, badformat
 msgid ", OS: %s"
-msgstr ""
+msgstr "Docelowy system operacyjny"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
-msgstr ""
+msgstr ", Obiekt docelowy: %s"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

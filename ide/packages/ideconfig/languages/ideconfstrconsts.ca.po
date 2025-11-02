@@ -12,11 +12,13 @@ msgstr ""
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "S'ha produït un error: el compilador %s no és vàlid."
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr ""
+msgstr "Suggeriment: podeu triar la trajectòria del compilador en Entorn->Opcions d'entorn->Fitxers->Trajectòria del compilador"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
