@@ -17,7 +17,7 @@ resourcestring
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
   lisCompilerHintYouCanSetTheCompilerPath = 'Hint: you can set the compiler '
-    +'path in Tools -> Options-> Files -> Compiler Path';
+    +'executable in Tools -> Options-> Files -> Compiler executable';
   lisCompileProject = 'Compile Project';
   lisMode = ', Mode: %s';
   lisOS = ', OS: %s';
