@@ -5876,6 +5876,10 @@ msgstr "Mod:"
 msgid "Build mode"
 msgstr "Yapı modu"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "Yeni proje oluştur"
@@ -9254,10 +9258,6 @@ msgstr "Görsel olmayan bileşenleri göstermeyi Aç/Kapat"
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Aynı"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "Yinelenen giriş"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"

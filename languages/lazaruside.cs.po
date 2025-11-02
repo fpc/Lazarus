@@ -5986,6 +5986,10 @@ msgstr "Mód:"
 msgid "Build mode"
 msgstr "Režimy sestavení"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "Sestavit nový projekt"
@@ -9387,10 +9391,6 @@ msgstr "Přepnout zobrazení negrafických komponent"
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Duplicitní"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "Duplikovat záznam"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"

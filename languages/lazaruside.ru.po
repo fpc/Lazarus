@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-10-29 22:14+0300\n"
+"PO-Revision-Date: 2025-11-02 16:25+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -5862,6 +5862,10 @@ msgstr "Режим:"
 msgid "Build mode"
 msgstr "Режим сборки"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr "Все режимы сборки должны быть поименованы."
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "Собрать новый проект"
@@ -9225,10 +9229,6 @@ msgstr "Показать или скрыть невизуальные компо
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Дубликат"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "Дублирующийся элемент"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"

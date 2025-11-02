@@ -6061,6 +6061,10 @@ msgstr "Modo:"
 msgid "Build mode"
 msgstr "Modi di costruzione"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "Costruisci un nuovo progetto"
@@ -9474,10 +9478,6 @@ msgstr ""
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Duplicato"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "Voce duplicata"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"

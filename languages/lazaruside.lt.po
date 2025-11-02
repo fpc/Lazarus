@@ -6055,6 +6055,10 @@ msgstr "Veiksena:"
 msgid "Build mode"
 msgstr "Darymo veiksenos"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "Daryti naująjį projektą"
@@ -9458,10 +9462,6 @@ msgstr ""
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Dublikatas"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "Įrašas dubliuojasi"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"

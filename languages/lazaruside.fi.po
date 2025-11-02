@@ -5936,6 +5936,10 @@ msgstr "Moodi:"
 msgid "Build mode"
 msgstr "Koontamoodit"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "Kokoa uusi projekti"
@@ -9314,10 +9318,6 @@ msgstr ""
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Päällekkäinen"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "Päällekkäinen merkintä"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"

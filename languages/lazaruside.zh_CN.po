@@ -5872,6 +5872,10 @@ msgstr "模式:"
 msgid "Build mode"
 msgstr "构建模式"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "构建新的项目"
@@ -9244,10 +9248,6 @@ msgstr "切换显示非可视组件"
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "重复"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "重复入口(Entry)"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"

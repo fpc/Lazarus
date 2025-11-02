@@ -5946,6 +5946,10 @@ msgstr "Mód:"
 msgid "Build mode"
 msgstr "Építési módok"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "Új projekt építése"
@@ -9343,10 +9347,6 @@ msgstr "Nem-vizuális komponensek megjelenítésének be- és kikapcsolása"
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Ismétlés"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "Ismétlődő bejegyzés"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"

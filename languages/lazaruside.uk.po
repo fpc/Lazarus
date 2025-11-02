@@ -5933,6 +5933,10 @@ msgstr "Режим:"
 msgid "Build mode"
 msgstr "Режими збирання"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "Зібрати новий проєкт"
@@ -9315,10 +9319,6 @@ msgstr "Перемикання показу невізуальних компо�
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Дублікат"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "Повторний елемент"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"

@@ -6050,6 +6050,10 @@ msgstr "モード："
 msgid "Build mode"
 msgstr "構築モード"
 
+#: lazarusidestrconsts.lisbuildmodesmusthavename
+msgid "All build modes must have a name."
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
 msgstr "新規プロジェクトを構築"
@@ -9454,10 +9458,6 @@ msgstr ""
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "重複"
-
-#: lazarusidestrconsts.lisduplicateentry
-msgid "Duplicate entry"
-msgstr "重複したエントリ"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"
