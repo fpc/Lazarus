@@ -2,7 +2,7 @@
  *****************************************************************************
   This file is part of the LazEdit package from the Lazarus IDE.
 
-  This content of this file is licensensed: Modified LGPL-2
+  This content of this file is licensed: Modified LGPL-2
   Or at the users choice: Modified LGPL-3
   See the file COPYING.modifiedLGPL.txt, included in the Lazarus distribution,
   for details about the license.

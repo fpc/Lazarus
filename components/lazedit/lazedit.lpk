@@ -12,7 +12,7 @@
       </SearchPaths>
       <Other>
         <CompilerMessages>
-          <IgnoredMessages idx6058="True" idx3123="True"/>
+          <IgnoredMessages idx6058="True" idx5024="True" idx3123="True"/>
         </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
@@ -54,6 +54,10 @@ Additional licenses may be granted in each individual file. See the headers in e
       <Item>
         <Filename Value="lazedittextattributes.pas"/>
         <UnitName Value="LazEditTextAttributes"/>
+      </Item>
+      <Item>
+        <Filename Value="lazeditlineitemlists.pas"/>
+        <UnitName Value="LazEditLineItemLists"/>
       </Item>
     </Files>
     <RequiredPkgs>
