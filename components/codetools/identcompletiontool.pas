@@ -2778,7 +2778,6 @@ var
   Directive: String;
   ms: TCompilerModeSwitch;
   cm: TCompilerMode;
-  OptimizerSwitch: TOptimizerSwitch;
   SrcType: TCodeTreeNodeDesc;
   Compiler: TPascalCompiler;
 begin
@@ -3082,8 +3081,37 @@ begin
           AddKeyWord('COM');
           AddKeyWord('CORBA');
         end else if Directive='optimization' then begin
-          for OptimizerSwitch in TOptimizerSwitch do
-            AddKeyWord(OptimizerSwitchStr[OptimizerSwitch]);
+          // see "fpcsrc/compiler/globtype.pas" toptimizerswitch (incomplete list)
+          AddKeyWord('ON');
+          AddKeyWord('OFF');
+          AddKeyWord('DEFAULT');
+          AddKeyWord('REGVAR');
+          AddKeyWord('UNCERTAIN');
+          AddKeyWord('SIZE');
+          AddKeyWord('STACKFRAME');
+          AddKeyWord('PEEPHOLE');
+          AddKeyWord('ASMCSE');
+          AddKeyWord('LOOPUNROLL');
+          AddKeyWord('TAILREC');
+          AddKeyWord('ORDERFIELDS');
+          AddKeyWord('FASTMATH');
+          AddKeyWord('REMOVEEMPTYPROCS');
+          AddKeyWord('CSE');
+          AddKeyWord('DFA');
+          AddKeyWord('STRENGTH');
+          AddKeyWord('AUTOINLINE');
+          AddKeyWord('LEVEL1');
+          AddKeyWord('LEVEL2');
+          AddKeyWord('LEVEL3');
+          AddKeyWord('LEVEL4');
+          AddKeyWord('SCHEDULE');
+          AddKeyWord('USEEBP');
+          AddKeyWord('USERBP');
+          AddKeyWord('DEADVALUES');
+          AddKeyWord('CONSTPROP');
+          AddKeyWord('DEADSTORE');
+          AddKeyWord('FORCENOSTACKFRAME');
+          AddKeyWord('USELOADMODIFYSTORE');
         end;
       end;
       exit;
