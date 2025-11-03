@@ -369,13 +369,12 @@ end;
 function ReadFileToBytes(const Filename: string): TBytes;
 // Read and return the contents of a file in one slurp.
 // Note: FileSize() returns 0 for virtual files at least in Unix like systems.
-//       Then use different ways to read contents, eg. TStringList.LoadFromFile();
 var
   Bytes: TBytes;
   InStream: TFileStream;
   i, len: Int64;
 begin
-  SetLength(Result, 0);
+  Result := [];
   try
     len := FileSize(Filename);
     {$IFNDEF CPU64}
@@ -424,7 +423,7 @@ begin
     len := FileSize(Filename);
     {$IFNDEF CPU64}
     if len > MaxLongint then
-      len := 0;           // A big file (>2GB) does not fit. Return empty array.
+      len := 0;           // A big file (>2GB) does not fit. Return empty string.
     {$ENDIF};
     Setlength(s, len);
     if Length(s) = 0 then exit;
