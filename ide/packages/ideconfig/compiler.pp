@@ -20,6 +20,7 @@
 
  Abstract:
    TCompiler is responsible for configuration and running the Free Pascal Compiler.
+   TCompilerOptReader reads and parses FPC options from "fpc -h" and "fpc -i" output.
 
    Initial Revision  : Sun Mar 28 23:15:32 CST 1999
    Moved to IdeConfig package in November 2025.
@@ -81,17 +82,17 @@ type
   TCompilerOpt = class
   private
     fOwnerGroup: TCompilerOptGroup;
-    fId: integer;                       // Identification.
-    fOption: string;                    // Option with the leading '-', except oeSetElem+oeSetValue no leading '-'
-    fSuffix: string;                    // <x> or similar suffix of option.
-    fValue: string;                     // Data entered by user, 'True' for Boolean.
-    fOrigLine: integer;                 // Original line in the input data.
+    fId: integer;          // Identification.
+    fOption: string;// Option with the leading '-', except oeSetElem+oeSetValue no leading '-'
+    fSuffix: string;       // <x> or similar suffix of option.
+    fValue: string;        // Data entered by user, 'True' for Boolean.
+    fOrigLine: integer;    // Original line in the input data.
     fEditKind: TCompilerOptEditKind;
     fDescription: string;
-    fIndentation: integer;              // Indentation level in "fpc -h" output.
-    fVisible: Boolean;                  // Used for filtering.
-    fIgnored: Boolean;                  // Pretend this option does not exist.
-    fChoices: TStrings;                 // Choices got from "fpc -i"
+    fIndentation: integer; // Indentation level in "fpc -h" output.
+    fVisible: Boolean;     // Used for filtering.
+    fIgnored: Boolean;     // Pretend this option does not exist.
+    fChoices: TStrings;    // Choices got from "fpc -i"
     procedure AddChoicesByOptOld;
     function Comment: string;
     procedure Filter(aFilter: string; aOnlySelected: Boolean);
@@ -138,7 +139,7 @@ type
     constructor Create(aOwnerReader: TCompilerOptReader; aOwnerGroup: TCompilerOptGroup);
     destructor Destroy; override;
     procedure Clear;
-    function FindOption(aOptStr: string): TCompilerOpt;
+    function FindAndUpdateValue(aOptStr: string): TCompilerOpt;
     function FindOptionById(aId: integer): TCompilerOpt;
     function SelectOption(aOptAndValue: string): Boolean;
     procedure DeselectAll;
@@ -176,6 +177,7 @@ type
     fDefines: TStringList;
     // Options not accepted by parser. They may still be valid (a macro maybe)
     fInvalidOptions: TStringList;        // and will be included in output.
+    fGeneratedOptions: TStringList;      // Options generated from GUI.
     // List of categories parsed from "fpc -i". Contains category names,
     //  Objects[] contains another StringList for the selection list.
     fSupportedCategories: TStringListUTF8Fast;
@@ -188,7 +190,6 @@ type
     fIsNewFpc: Boolean;
     fParsedTarget: String;
     fErrorMsg: String;
-    fGeneratedOptions: TStringList; // Options generated from GUI.
     fUseComments: Boolean;        // Add option's description into generated data.
     function AddChoicesNew(aOpt: string): TStrings;
     function AddNewCategory(aCategoryName: String): TStringList;
@@ -521,6 +522,7 @@ begin
 end;
 
 procedure TCompilerOpt.SetValue(aValue: string; aOrigLine: integer);
+// Update the textual or numeric value of an option.
 begin
   fValue := aValue;
   fOrigLine := aOrigLine;
@@ -557,9 +559,9 @@ begin
   fItems.Clear;
 end;
 
-function TCompilerOptGroup.FindOption(aOptStr: string): TCompilerOpt;
+function TCompilerOptGroup.FindAndUpdateValue(aOptStr: string): TCompilerOpt;
 
-  function FindOptionSub(aRoot: TCompilerOpt): boolean; // false if invalid
+  function FindSub(aRoot: TCompilerOpt): boolean; // false if invalid
   var
     i: Integer;
     aGroup: TCompilerOptGroup;
@@ -570,33 +572,37 @@ function TCompilerOptGroup.FindOption(aOptStr: string): TCompilerOpt;
       aGroup:=TCompilerOptGroup(aRoot);
       if aGroup is TCompilerOptSet then
       begin                  // TCompilerOptSet
-        if AnsiStartsStr(aRoot.Option, aOptStr) then
-          FindOption := aRoot;
+        if StartsStr(aRoot.Option, aOptStr) then
+          FindAndUpdateValue := aRoot;
       end
       else begin             // TCompilerOptGroup
         for i := 0 to aGroup.Count-1 do         // Recursive call for children.
         begin
-          if not FindOptionSub(aGroup[i]) then exit(false);
-          if Assigned(FindOption) then
+          if not FindSub(aGroup[i]) then
+            exit(false);
+          if Assigned(FindAndUpdateValue) then
             exit;
         end;
       end;
     end
     else begin               // TCompilerOpt
       if aRoot.Option = aOptStr then
-        FindOption := aRoot
-      else if (aRoot.EditKind = oeText) and AnsiStartsStr(aRoot.Option, aOptStr) then
+        FindAndUpdateValue := aRoot
+      else
+      if (aRoot.EditKind in [oeText,oeNumber,oeList])
+      and StartsStr(aRoot.Option, aOptStr) then
       begin
+        // Update the textual or numeric value.
         aRoot.SetValue(Copy(aOptStr, Length(aRoot.Option)+1, Length(aOptStr)),
                        fOwnerReader.fCurOrigLine);
-        FindOption := aRoot;
+        FindAndUpdateValue := aRoot;
       end;
     end;
   end;
 
 begin
   Result := nil;
-  FindOptionSub(Self);
+  FindSub(Self);
 end;
 
 function TCompilerOptGroup.FindOptionById(aId: integer): TCompilerOpt;
@@ -640,7 +646,7 @@ begin
     // First check if all options are valid. Change them only if they are valid.
     for i := 3 to Length(aOptAndValue) do
     begin
-      Result := FindOption(OptBase + aOptAndValue[i]);
+      Result := FindAndUpdateValue(OptBase + aOptAndValue[i]);
       if Assigned(Result) then
         List.Add(Result)
       else
@@ -671,7 +677,7 @@ var
   Param: string;
   OptLen, ParamLen: integer;
 begin
-  Opt := FindOption(aOptAndValue);
+  Opt := FindAndUpdateValue(aOptAndValue);
   if Assigned(Opt) then
   begin
     if Opt is TCompilerOptSet then
@@ -685,7 +691,8 @@ begin
         debugln(['Warning: TCompilerOptGroup.SelectOption invalid value of "',Opt.Option,'": "',aOptAndValue,'"']);
         Opt:=nil;
       end;
-    end else
+    end
+    else if not (Opt.EditKind in [oeText,oeNumber,oeList]) then
       Opt:=nil;
   end
   else begin
@@ -710,7 +717,7 @@ begin
     end;
     if Opt = Nil then
     begin
-      Opt := FindOption(Copy(aOptAndValue, 1, OptLen));
+      Opt := FindAndUpdateValue(Copy(aOptAndValue, 1, OptLen));
       if Assigned(Opt) and (Opt.EditKind in [oeText,oeNumber]) then
       begin
         Assert(Opt.Value='', 'TCompilerOptGroup.SelectOption: Opt.Value is already set.');
@@ -788,7 +795,7 @@ begin
     if Opt.Value <> '' then
       case Opt.EditKind of
         oeSetElem  : s := s + Opt.Option;
-        oeSetValue: s := s + Opt.Option+Opt.Suffix;
+        oeSetValue: s := s + Opt.Option+Opt.Value;
       end;
   end;
   if s <> '' then begin
@@ -878,9 +885,9 @@ begin
         break;
       end else if Item.EditKind=oeSetValue then begin
         // non boolean option: rest of parameter is the value
-        if Negate then begin
-          dec(i);
-        end else if (i > Length(aOptAndValue)) then begin
+        if Negate then
+          dec(i)
+        else if i > Length(aOptAndValue) then begin
           // missing number
           debugln(['Warning: TCompilerOptSet.SelectOptions "',c,'" expects a value: "',aOptAndValue,'"']);
           exit;
@@ -939,7 +946,7 @@ var
   Opt1, Opt2: string;
   i: Integer;
 begin
-  if AnsiStartsStr('<n>', aDescr) then
+  if StartsStr('<n>', aDescr) then
     NewSetNumber(aDescr)
   else begin
     i := PosEx(':', aDescr, 4);
@@ -1040,9 +1047,9 @@ begin
   if fIsNewFpc then
   begin
     // FPC 2.7.1+
-    if AnsiStartsStr('-Oo', aOpt)
-    or AnsiStartsStr('-OW', aOpt)
-    or AnsiStartsStr('-Ow', aOpt) then
+    if StartsStr('-Oo', aOpt)
+    or StartsStr('-OW', aOpt)
+    or StartsStr('-Ow', aOpt) then
     begin
       aCategoryList := AddChoicesNew(aOpt);
       Result := Assigned(aCategoryList);
@@ -1051,9 +1058,9 @@ begin
   else begin
     // FPC 2.6.x
     CategoryName := '';
-    if AnsiStartsStr('-Oo', aOpt) then
+    if StartsStr('-Oo', aOpt) then
       CategoryName := 'Optimizations:'
-    else if AnsiStartsStr('-OW', aOpt) or AnsiStartsStr('-Ow', aOpt) then
+    else if StartsStr('-OW', aOpt) or StartsStr('-Ow', aOpt) then
       CategoryName := 'Whole Program Optimizations:';
     Result := CategoryName <> '';
     if Result then
@@ -1103,7 +1110,7 @@ begin
             Category.Add(sl[j]);
         end;
       end
-      else if AnsiStartsStr(Supported, Line) then
+      else if StartsStr(Supported, Line) then
         Category := AddNewCategory(Copy(Line, Length(Supported)+1, Length(Line)));
     end;
   finally
@@ -1118,7 +1125,7 @@ var
   Start, V1, V2: Integer;
   OutputI: TStringList;      // fpc -Fr$(FPCMsgFile) -i
 begin
-  Result := AnsiStartsStr(VersBegin, s);
+  Result := StartsStr(VersBegin, s);
   if Result then
   begin
     fIsNewFpc := False;
@@ -1336,9 +1343,9 @@ begin
       for j := 0 to sl.Count-1 do begin
         s := sl[j];
         // Put the option into fDefines or fInvalidOptions, or set in options collection.
-        if AnsiStartsStr('-d', s) and (Length(s) > 2) then
+        if StartsStr('-d', s) and (Length(s) > 2) then
         begin
-          if not AnsiStartsStr(CommentId, s) then    // Skip a generated comment.
+          if not StartsStr(CommentId, s) then    // Skip a generated comment.
             fDefines.Add(s)
         end
         else if not fRootOptGroup.SelectOption(s) then begin
