@@ -462,10 +462,13 @@ type
   TPascalCompilerMode = (
     pcmObjFPC,
     pcmDelphi,
+    pcmDelphiUnicode,
     pcmFPC,
     pcmTP,
     pcmGPC,
-    pcmMacPas
+    pcmMacPas,
+    pcmIso,
+    pcmExtPas
     );
 
   TPascalCompilerModeSwitch = (
@@ -1475,11 +1478,14 @@ begin
   if (not FModeSwitchesLoaded) or not(csLoading in ComponentState) then begin
     case AValue of
       pcmFPC,
-      pcmObjFPC: ModeSwitches := [pcsNestedComments];
-      pcmDelphi: ModeSwitches := [pcsTypeHelpers];
-      //pcmTP: ;
-      //pcmGPC: ;
-      pcmMacPas: ModeSwitches := [pcsObjectiveC1, pcsObjectiveC2];
+      pcmObjFPC:        ModeSwitches := [pcsNestedComments];
+      pcmDelphi,
+      pcmDelphiUnicode: ModeSwitches := [pcsTypeHelpers];
+      pcmTP:            ModeSwitches := [];
+      pcmGPC:           ModeSwitches := [pcsNestedComments];
+      pcmMacPas:        ModeSwitches := [pcsObjectiveC1, pcsObjectiveC2];
+      pcmIso:           ModeSwitches := [];
+      pcmExtPas:        ModeSwitches := [];
     end;
   end;
   //if FCompilerMode=AValue then exit;
@@ -3631,7 +3637,7 @@ begin
   Result := tkModifier;
   if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
-     (CompilerMode = pcmDelphi)
+     (CompilerMode in [pcmDelphi, pcmDelphiUnicode])
   then
     FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
 end;
@@ -4179,9 +4185,11 @@ begin
     while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
     if TextComp('objfpc') then
       CompilerMode:=pcmObjFPC
+    else if TextComp('delphiunicode') then
+      CompilerMode:=pcmDelphiUnicode
     else if TextComp('delphi') then
       CompilerMode:=pcmDelphi
-    else if TextComp('fpc') then
+    else if TextComp('fpc') or TextComp('default') then
       CompilerMode:=pcmFPC
     else if TextComp('gpc') then
       CompilerMode:=pcmGPC
@@ -4189,6 +4197,10 @@ begin
       CompilerMode:=pcmTP
     else if TextComp('macpas') then
       CompilerMode:=pcmMacPas
+    else if TextComp('iso') then
+      CompilerMode:=pcmIso
+    else if (TextComp('extendedpascal')) then
+      CompilerMode:=pcmExtPas
     else
       exclude(fRange, rsCompilerModeSet);
   end;
