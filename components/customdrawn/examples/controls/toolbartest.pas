@@ -52,7 +52,7 @@ begin
   lToolBar.Parent := Self;
 
   lBmp := TBitmap.Create;
-  lBmp.LoadFromFile('/usr/share/magnifier/lupa.bmp');
+  lBmp.LoadFromFile('lupa.bmp');
   lItem := lToolBar.AddItem(tikButton);
   lItem.Image := lBmp;
   lItem.Caption := 'Btn 1';
@@ -60,7 +60,7 @@ begin
   lItem := lToolBar.AddItem(tikSeparator);
 
   lBmp := TBitmap.Create;
-  lBmp.LoadFromFile('/usr/share/magnifier/usplegal.bmp');
+  lBmp.LoadFromFile('usplegal.bmp');
   lItem := lToolBar.AddItem(tikCheckButton);
   lItem.Image := lBmp;
   lItem.Caption := 'Btn 2';
