@@ -150,7 +150,7 @@ type
     procedure DoQueryFileFound(const Fn: String; var Accept: Boolean);
     procedure DoQueryDirectoryEnter(const Dir: String; var Accept: Boolean);
   public
-    constructor Create;
+    constructor Create; virtual;
     procedure Search(const ASearchPath: String; const ASearchMask: String = '';
       ASearchSubDirs: Boolean = True; CaseSensitive: Boolean = False);
   public
@@ -214,7 +214,7 @@ type
 function CopyFile(const SrcFilename, DestFilename: string;
                   Flags: TCopyFileFlags=[cffOverwriteFile]; ExceptionOnError: Boolean=False): boolean;
 function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: boolean; ExceptionOnError: Boolean=False): boolean;
-function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[]): Boolean;
+function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[]; CopyEmptyDirs: Boolean = False): Boolean;
 
 // filename parts
 const

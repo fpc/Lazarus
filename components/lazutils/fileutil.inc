@@ -297,13 +297,17 @@ end;
 type
   TCopyDirTree = class(TFileSearcher)
   private
+    FCopyEmptyDirectories: Boolean;
     FSourceDir: string;
     FTargetDir: string;
     FFlags: TCopyFileFlags;
     FCopyFailedCount: Integer;
   protected
     procedure DoFileFound; override;
-    //procedure DoDirectoryFound; override;
+    procedure DoDirectoryFound; override;
+  public
+    property CopyEmptyDirectories: Boolean read FCopyEmptyDirectories write FCopyEmptyDirectories default False;
+    constructor Create; override;
   end;
 
 procedure TCopyDirTree.DoFileFound;
@@ -315,13 +319,27 @@ begin
   if not CopyFile(FileName, NewLoc, FFlags) then
     Inc(FCopyFailedCount);
 end;
-{
+
 procedure TCopyDirTree.DoDirectoryFound;
+var
+  NewDir: String;
 begin
-  // Directory is already created by the cffCreateDestDirectory flag.
+  // Directory is only created by the cffCreateDestDirectory flag if there actually is a file to copy
+  // if the directory has no files in it, it will by default not be created in the target directory: issue #41883
+  NewDir:=StringReplace(FileName, FSourceDir, FTargetDir, []);
+  if (cffCreateDestDirectory in FFlags) and FCopyEmptyDirectories
+      and (not DirectoryExistsUTF8(NewDir))
+      and (not ForceDirectoriesUTF8(NewDir)) then
+    Inc(FCopyFailedCount);
 end;
-}
-function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[]): Boolean;
+
+constructor TCopyDirTree.Create;
+begin
+  inherited Create;
+  FCopyEmptyDirectories := False;
+end;
+
+function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags; CopyEmptyDirs: Boolean): Boolean;
 var
   Searcher: TCopyDirTree;
 begin
@@ -333,6 +351,7 @@ begin
     Searcher.FCopyFailedCount:=0;
     Searcher.FSourceDir:=TrimFilename(SetDirSeparators(SourceDir));
     Searcher.FTargetDir:=TrimFilename(SetDirSeparators(TargetDir));
+    Searcher.CopyEmptyDirectories := CopyEmptyDirs;
 
     // Don't even try to copy to a subdirectory of SourceDir.
     //append a pathedelim, otherwise CopyDirTree('/home/user/foo','/home/user/foobar') will fail at this point. Issue #0038644
