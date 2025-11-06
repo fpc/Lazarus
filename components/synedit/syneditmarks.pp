@@ -393,7 +393,7 @@ end;
 
 function TSynEditMark.GetIsBookmark: boolean;
 begin
-  Result := False;
+  Result := FBookmarkNum >= 0;
 end;
 
 procedure TSynEditMark.DoChange(AChanges: TSynEditMarkChangeReasons);

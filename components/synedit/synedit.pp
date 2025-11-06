@@ -6708,17 +6708,20 @@ end;
 procedure TCustomSynEdit.GotoBookMark(BookMark: Integer);
 var
   LogCaret: TPoint;
-  m: TSynEditBookMark;
+  m: TSynEditMark;
+  bm: TSynEditBookMark absolute m;
 begin
   if (BookMark in [0..9]) and assigned(fBookMarks[BookMark])
     and (fBookMarks[BookMark].Line <= fLines.Count)
   then begin
-    m := TSynEditBookMark(fBookMarks[BookMark]);
-    if (eoBookmarkRestoresScroll in FOptions2) and (m.TopLeftMark <> nil) and
-       (m.TopLeftMark.Line > 0)
-    then begin
-      TopLine := m.TopLeftMark.Line;
-      LeftChar := m.TopLeftMark.Column;
+    m := fBookMarks[BookMark];
+    if m is TSynEditBookMark then begin
+      if (eoBookmarkRestoresScroll in FOptions2) and (bm.TopLeftMark <> nil) and
+         (bm.TopLeftMark.Line > 0)
+      then begin
+        TopLine := bm.TopLeftMark.Line;
+        LeftChar := bm.TopLeftMark.Column;
+      end;
     end;
     LogCaret:=Point(m.Column, m.Line);
     DoIncPaintLock(Self); // No editing is taking place
