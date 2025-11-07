@@ -647,10 +647,10 @@ begin
       Result.Right := 0;
     end;
   else
-    Result.Bottom := -4;
-    Result.Top := 6;
-    Result.Left := 7;
-    Result.Right := -7;
+    Result.Left := 5;
+    Result.Right := -5;
+    Result.Top := 5;
+    Result.Bottom := -7;
   end;
 end;
 
