@@ -661,6 +661,7 @@ var
   ofs : Double; // aprx offset between label and the text (from both sides)
   x   : Double;
   vt  : NSTabViewType;
+  origin: NSPoint;
 begin
   Result:=inherited GetTabRect(ATabControl, AIndex);
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
@@ -724,6 +725,9 @@ begin
     Result.Top := Round(x);
     Result.Bottom := Round(x + w[idx] + ofs);
   end;
+
+  origin:= lTabControl.contentRect.origin;
+  Result.Offset( -Round(origin.x), -Round(origin.y) );
 end;
 
 class procedure TCocoaWSCustomTabControl.SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer);
