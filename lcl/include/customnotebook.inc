@@ -876,6 +876,7 @@ procedure TCustomTabControl.SetTabPosition(tabPos: TTabPosition);
 begin
   if fTabPosition = tabPos then exit;
   fTabPosition := tabPos;
+  InvalidateClientRectCache(True);
   DoSendTabPosition;
 end;
 
