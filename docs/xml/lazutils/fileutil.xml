@@ -2674,6 +2674,7 @@ performed.
 </short>
 </element>
 
+<!-- TODO: Modified in LazUtils 5.0. Commit 20d206d2. Issue #41883. -->
 <element name="CopyDirTree">
 <short>
 Copies all file system entries in a source directory to the destination 
@@ -2686,23 +2687,30 @@ system entries from the directory in <var>SourceDir</var> to the directory in
 <var>TargetDir</var>.
 </p>
 <p>
-Values in SourceDir and TargetDir are fully-qualified path names for the 
-directories. If a trailing path delimiter is omitted in SourceDir or 
-TargetDir, it is appended (when needed) to the values. TargetDir cannot be a 
-sub-directory located in SourceDir. No actions are performed in the routine 
-when TargetDir is located within the specified SourceDir.
+Values in <var>SourceDir</var> and <var>TargetDir</var> are fully-qualified 
+path names for the directories. If a trailing path delimiter is omitted in 
+SourceDir or TargetDir, it is appended (when needed) to the values. TargetDir 
+cannot be a sub-directory located in SourceDir. No actions are performed in 
+the routine when TargetDir is located within the specified SourceDir.
 </p>
 <p>
-Flags contains values representing the options enabled in the copy operation. 
-The default value for the parameters is an empty set (<b>[]</b>) and 
-indicates that none of the <var>TCopyFileFlag</var> options are enabled. The 
-value <var>cffCreateDestDirectory</var> is always added to the values in 
+<var>Flags</var> contains values representing the options enabled in the copy 
+operation. The default value for the parameters is an empty set (<b>[]</b>) 
+and indicates that none of the <var>TCopyFileFlag</var> options are enabled. 
+The value <var>cffCreateDestDirectory</var> is always added to the values in 
 Flags internally; CopyDirTree requires the destination directory to be 
 created if it does not already exist.
 </p>
 <p>
 See <link id="TCopyFileFlag">TCopyFileFlag</link> for more information about 
 the option values and their meanings.
+</p>
+<p>
+<var>CopyEmptyDirs</var> indicates whether an empty directory found in the 
+routine is automatically created in the destination directory. The default 
+value is <b>False</b> and prevents an empty directory in SourceDir from being 
+copied to DestDir. When set to <b>True</b>, the empty directory will be 
+created in DestDir.
 </p>
 <p>
 The return value is <b>True</b> when all file system entries in SourceDir are 
@@ -2715,6 +2723,9 @@ Use <var>CopyFile</var> to copy a single file with a given name to a new file
 name.
 </p>
 </descr>
+<version>
+Modified in LazUtils version 5.0 to incorporate the CopyEmptyDirs argument.
+</version>
 <seealso>
 <link id="CopyFile"/>
 <link id="TCopyFileFlags"/>
@@ -2738,6 +2749,12 @@ Directory where the copied files are stored.
 <element name="CopyDirTree.Flags">
 <short>
 Options enabled for the copy operation; default value is an empty set ([])
+</short>
+</element>
+<element name="CopyDirTree.CopyEmptyDirs">
+<short>
+Indicates whether directories which contain no files are processed in the copy 
+operation. Default value is <b>False</b>.
 </short>
 </element>
 
