@@ -110,6 +110,8 @@ type
     procedure InsertRows(AIndex, ACount: Integer); override;
     procedure DeleteRows(AIndex, ACount: Integer); override;
     function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; // experimental
+
+    procedure SetLine(Index: Integer; const AString: String; const AnObject: TObject; const AFlags: TSynEditStringFlags);
     property Strings[Index: Integer]: String read GetString write SetString; default;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
     property RangeList[Index: Pointer]: TSynManagedStorageMem read GetRange write SetRange;
@@ -746,31 +748,30 @@ end;
 
 procedure TSynEditStringList.AddStrings(AStrings: TStrings);
 var
-  i, FirstAdded: integer;
+  OtherCnt, FirstAdded, InsPos, i: integer;
 begin
-{begin}                                                                         //mh 2000-10-19
-  if AStrings.Count > 0 then begin
-    fIndexOfLongestLine := -1;
-    BeginUpdate;
-    try
-      i := Count + AStrings.Count;
-      if i > Capacity then
-        SetCapacity((i + 15) and (not 15));
-      FirstAdded := Count;
-      for i := 0 to AStrings.Count - 1 do begin
-        SetCount(Count + 1);
-        with fList do begin
-          Strings[Count-1] := AStrings[i];
-          Objects[Count-1] := AStrings.Objects[i];
-        end;
-        Flags[Count-1] := [];
-      end;
-      SendNotification(senrLineCount, self, FirstAdded, Count - FirstAdded);
-    finally
-      EndUpdate;
+  OtherCnt := AStrings.Count;
+  if OtherCnt = 0 then
+    exit;
+
+  BeginUpdate;
+  try
+    FirstAdded := Count;
+    i := FirstAdded + OtherCnt;
+    if i > Capacity then
+      SetCapacity(i + 32);
+    SetCount(i);
+
+    InsPos := FirstAdded;
+    for i := 0 to OtherCnt - 1 do begin
+      FList.SetLine(InsPos, AStrings[i], AStrings.Objects[i], []);
+      inc(InsPos);
     end;
+
+    SendNotification(senrLineCount, self, FirstAdded, OtherCnt);
+  finally
+    EndUpdate;
   end;
-{end}                                                                           //mh 2000-10-19
 end;
 
 procedure TSynEditStringList.Clear;
@@ -1815,6 +1816,22 @@ begin
   ip := ItemPointer[ALineIndex];
   ALen   := length(PString(ip)^);
   Result := PPChar(ip)^;
+end;
+
+procedure TSynEditStringMemory.SetLine(Index: Integer; const AString: String;
+  const AnObject: TObject; const AFlags: TSynEditStringFlags);
+var
+  p: Pointer;
+begin
+  p := ItemPointer[Index];
+  (PString(p))^ := AString;
+  p := p + SizeOf(String);
+  (PObject(p))^ := AnObject;
+  p := p + SizeOf(TObject);
+  (PSynEditStringFlags(p))^ := AFlags;
+
+  if FRangeListLock = 0 then
+    FRangeList.CallLineTextChanged(Index);
 end;
 
 procedure TSynEditStringMemory.Move(AFrom, ATo, ALen: Integer);
