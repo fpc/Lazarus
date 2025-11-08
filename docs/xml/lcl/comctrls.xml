@@ -5127,7 +5127,9 @@ When set to <b>False</b>, a unused tab row is moved behind the current tab row.
 The default value for the ScrollOpposite property is <b>False</b>.
 </p>
 <p>
-ScrollOpposite is supported on the Windows widgetset only. It causes the TCS_SCROLLOPPOSITE flag to be included in the tab style flags for the widget when set to <b>True</b>.
+ScrollOpposite is supported on the Windows widgetset only. It causes the 
+TCS_SCROLLOPPOSITE flag to be included in the tab style flags for the widget 
+when set to <b>True</b>.
 </p>
 </descr>
 <seealso/>
@@ -5137,8 +5139,29 @@ ScrollOpposite is supported on the Windows widgetset only. It causes the TCS_SCR
 <short>
 Enables display of tabs on the control when set to <b>True</b> (default).
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ShowTabs</var> is a <var>Boolean</var>	 property which enables or 
+disables display of the tab captions specified in the Tabs property. The 
+default value for the property is <b>True</b> and enables captions to be drawn 
+along the control side indicated in <var>TabPosition</var>.
+</p>
+<p>
+Changing the value for the property causes the new setting to be applied to 
+the widgetset class instance.
+</p>
+<p>
+Use <var>TabHeight</var> and <var>TabWidth</var> to control the dimensions for 
+the tab captions drawn on the control. Use <var>Style</var> to control the 
+display style applied to the Tabs on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTabControl.Tabs"/>
+<link id="TCustomTabControl.TabHeight"/>
+<link id="TCustomTabControl.TabWidth"/>
+<link id="TCustomTabControl.Style"/>
+</seealso>
 </element>
 
 <element name="TCustomTabControl.Style">
@@ -5214,15 +5237,30 @@ Indicates the edge where the tabs for the control are aligned.
 <p>
 <var>TabPosition</var> is a <var>TTabPosition</var> property which indicates 
 the edge on the control where its tabs are aligned. The default value for the 
-property is tpTop and causes the tabs to be drawn across the top edge of the 
-control. Changing the value for the property causes to the widgetset class 
-instance to be updated with the new value.
+property is <var>tpTop</var> and causes the Tabs to be drawn across the top 
+edge of the control. See <link id="TTabPosition">TTabPosition</link> for the 
+other values allowed in the property.
+</p>
+<p>
+Changing the value for the property causes 
+<var>InvalidateClientRectCache</var> to be called to invalidate the cached 
+ClientRect for the control (and its child controls). The changed value(s) are 
+sent to the widgetset class instance, and the LCL interface recalculates the 
+client rectangle(s) the next time the property value is accessed.
+</p>
+<p>
+Use TabHeight and TabWidth to control the dimensions for the Tabs on the 
+control. Use ShowTabs to control whether Tabs are visible on the control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomTabControl.ShowTabs"/>
+<link id="TCustomTabControl.Tabs"/>
+<link id="TCustomTabControl.TabHeight"/>
+<link id="TCustomTabControl.TabWidth"/>
 <link id="TCustomTabControl.Style"/>
 <link id="TTabPosition"/>
+<link id="#lcl.controls.TWinControl.InvalidateClientRectCache">TWinControl.InvalidateClientRectCache</link>
 </seealso>
 </element>
 
