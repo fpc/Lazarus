@@ -96,7 +96,9 @@ var
   PPUListCommand: TIDECommand;
   ShowCodeNodeInfoCommand: TIDECommand;
   CmdCatView: TIDECommandCategory;
+  {$IFDEF EnableCodyExperiments}
   ViewCodyWindowCommand: TIDECommand;
+  {$ENDIF}
   CmdCatSearchReplace: TIDECommandCategory;
 begin
   CodyOptions:=TCodyMiscOptions.Create;
@@ -195,7 +197,7 @@ begin
   ViewCodyWindowCommand:=RegisterIDECommand(CmdCatView, 'Cody',
     'Cody', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowCodyWindow);
   RegisterIDEMenuCommand(itmViewMainWindows, 'ViewCody',
-    'Cody', nil, nil, ViewCodyWindowCommand)
+    'Cody', nil, nil, ViewCodyWindowCommand);
   {$ENDIF};
 
   // Components - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
