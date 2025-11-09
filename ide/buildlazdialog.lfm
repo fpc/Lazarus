@@ -303,6 +303,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           BorderSpacing.Right = 6
           ItemHeight = 15
           TabOrder = 6
+          OnExit = MRUComboBoxExit
         end
         object TargetOSLabel: TLabel
           AnchorSideLeft.Control = LCLWidgetTypeComboBox

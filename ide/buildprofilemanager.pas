@@ -42,7 +42,7 @@ uses
   // IdeIntf
   IdeIntfStrConsts, IDEImagesIntf, IDEDialogs,
   // IdeConfig
-  EnvironmentOpts, TransferMacros, IdeXmlConfigProcs,
+  EnvironmentOpts, TransferMacros, IdeXmlConfigProcs, RecentListProcs,
   // IDE
   LazarusIDEStrConsts;
 
@@ -72,7 +72,7 @@ type
     fUpdateRevisionInc: boolean;
     fOptions: TStringList;      // User defined options.
     fDefines: TStringList;      // Defines selected for this profile.
-
+    fTargetDirHistory: TStringList; // History
     function GetExtraOptions: string;
     procedure SetExtraOptions(const AValue: string);
   public
@@ -89,6 +89,7 @@ type
     property ExtraOptions: string read GetExtraOptions write SetExtraOptions;
     property TargetOS: string read fTargetOS write fTargetOS;
     property TargetDirectory: string read fTargetDirectory write fTargetDirectory;
+    property TargetDirHistory: TStringList read fTargetDirHistory;
     property TargetCPU: string read fTargetCPU write fTargetCPU;
     property Subtarget: string read FSubtarget write FSubtarget;
     property TargetPlatform: TLCLPlatform read fTargetPlatform write fTargetPlatform;
@@ -205,12 +206,14 @@ begin
   fName:=AName;
   fOptions:=TStringList.Create;
   fDefines:=TStringList.Create;
+  fTargetDirHistory:=TStringList.Create;
 end;
 
 destructor TBuildLazarusProfile.Destroy;
 begin
   fDefines.Free;
   fOptions.Free;
+  fTargetDirHistory.Free;
   inherited Destroy;
 end;
 
@@ -228,6 +231,8 @@ begin
     fTargetPlatform  :=DirNameToLCLPlatform(LCLPlatformStr);
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
       XMLConfig.GetValue(Path+'TargetDirectory/Value', DefaultTargetDirectory)));
+  LoadRecentList(XMLConfig,fTargetDirHistory,Path+'TargetDirectory/History/',rltFile);
+
   IdeBuildMode:=StrToIdeBuildMode(XMLConfig.GetValue(Path+'IdeBuildMode/Value',''));
   CleanOnce:=XMLConfig.GetValue(Path+'CleanOnce/Value',false);
   FUpdateRevisionInc :=XMLConfig.GetValue(Path+'UpdateRevisionInc/Value',true);
@@ -247,6 +252,8 @@ begin
                            '');
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
+  SaveRecentList(XMLConfig,fTargetDirHistory,Path+'TargetDirectory/History/');
+
   XMLConfig.SetDeleteValue(Path+'IdeBuildMode/Value',IdeBuildModeToStr(IdeBuildMode),'');
   XMLConfig.SetDeleteValue(Path+'CleanOnce/Value',CleanOnce,false);
   XMLConfig.SetDeleteValue(Path+'UpdateRevisionInc/Value',FUpdateRevisionInc,true);
@@ -261,6 +268,7 @@ begin
     fName           :=Source.Name;
   TargetOS          :=Source.TargetOS;
   TargetDirectory   :=Source.TargetDirectory;
+  fTargetDirHistory.Assign(Source.fTargetDirHistory);
   TargetCPU         :=Source.TargetCPU;
   Subtarget         :=Source.Subtarget;
   TargetPlatform    :=Source.TargetPlatform;

@@ -135,6 +135,7 @@ type
     procedure ShowOptsMenuItemClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
+    procedure MRUComboBoxExit(Sender: TObject);
   private
     fBuilder: TLazarusBuilder;
     // Data is copied by caller before and after opening this dialog.
@@ -1353,21 +1354,33 @@ begin
                       GetExecutableExt(fProfiles.Current.FPCTargetOS)+')';
 
     { Setup directory path }
-    lDirName:=EnvironmentOptions.GetParsedValue(eopLazarusDirectory, TargetDirectoryComboBox.Text);
-    lExpandedName:=CleanAndExpandDirectory(lDirName);
+    lDirName:=EnvironmentOptions.GetParsedValue(eopTestBuildDirectory, TargetDirectoryComboBox.Text);
+    lExpandedName:=ChompPathDelim(CleanAndExpandDirectory(lDirName));
     lDirName:=GetValidDirectoryAndFilename(lExpandedName, lDirNameF);
 
-    DirDialog.InitialDir:=ChompPathDelim(lExpandedName);
+    DirDialog.InitialDir:=lDirName;
     DirDialog.FileName:=lDirNameF;
 
     if DirDialog.Execute then begin
-      lDirName:=CleanAndExpandDirectory(DirDialog.Filename);
-      { ~bk Here I wanted to keeep Macros but it doesn't seem to work
-      if UpperCase(lDirName)<>UpperCase(lExpandedName) then }
-      TargetDirectoryComboBox.AddHistoryItem(lDirName,10,true,true);
+      lDirName:=ChompPathDelim(CleanAndExpandDirectory(DirDialog.Filename));
+      if CompareFilenames(lDirName, lExpandedName)<>0 then
+        SetComboBoxText(TargetDirectoryComboBox,lDirName,cstFilename,MaxComboBoxCount);
     end;
   finally
     DirDialog.Free;
+  end;
+end;
+
+procedure TConfigureBuildLazarusDlg.MRUComboBoxExit(Sender: TObject);
+var
+  cb: TComboBox;
+begin
+  cb := Sender as TComboBox;
+  if cb.ItemIndex < 0 then
+    SetComboBoxText(cb, cb.Text, cstFilename)
+  else begin
+    cb.Items.Move(cb.ItemIndex, 0);
+    cb.ItemIndex := 0;
   end;
 end;
 
@@ -1381,7 +1394,11 @@ begin
     LCLWidgetTypeComboBox.ItemIndex   :=ord(AProfile.TargetPlatform);
     UpdateRevisionIncCheckBox.Checked :=AProfile.UpdateRevisionInc;
     TargetOSComboBox.Text             :=AProfile.TargetOS;
-    TargetDirectoryComboBox.Text      :=AProfile.TargetDirectory;
+    with AProfile do begin
+      if TargetDirHistory.Count > 0 then
+        TargetDirectoryComboBox.Items.Assign(TargetDirHistory);
+      SetComboBoxText(TargetDirectoryComboBox,TargetDirectory,cstFilename,MaxComboBoxCount);
+    end;
     TargetCPUComboBox.Text            :=AProfile.TargetCPU;
     case AProfile.IdeBuildMode of
     bmBuild: CleanAutoRadioButton.Checked:=true;
@@ -1405,6 +1422,7 @@ begin
   AProfile.UpdateRevisionInc :=UpdateRevisionIncCheckBox.Checked;
   AProfile.TargetOS          :=TargetOSComboBox.Text;
   AProfile.TargetDirectory   :=TargetDirectoryComboBox.Text;
+  AProfile.TargetDirHistory.Assign(TargetDirectoryComboBox.Items);
   AProfile.TargetCPU         :=TargetCPUComboBox.Text;
   if CleanAllRadioButton.Checked then
     AProfile.IdeBuildMode := bmCleanAllBuild
