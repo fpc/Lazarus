@@ -1662,7 +1662,7 @@ begin
   if ARow < FixedRows then
     exit;
   F := GetFieldFromGridColumn(ACol);
-  if (F <> nil) then
+  if (F <> nil) and not F.IsNull then
     if CheckDisplayMemo(f) then
       result := F.AsString
     else
