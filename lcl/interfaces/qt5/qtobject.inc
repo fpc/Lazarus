@@ -1766,7 +1766,7 @@ begin
   if FDragImageList = nil then
   begin
     FDragImageList := QWidget_create(nil,
-      QtSubWindow or QtFramelessWindowHint or
+      QtSubWindow or QtFramelessWindowHint or QtWindowTransparentForInput or
       QtWindowStaysOnTopHint {$IFDEF HASX11}or QtX11BypassWindowManagerHint{$ENDIF});
 
     // do not set focus and do not activate this widget
