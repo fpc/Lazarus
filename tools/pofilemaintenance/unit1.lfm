@@ -7,9 +7,9 @@ object Form1: TForm1
   Caption = 'Po-File maintenance'
   ClientHeight = 571
   ClientWidth = 896
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDropFiles = FormDropFiles
-  LCLVersion = '2.3.0.0'
   object lbPoFiles: TListBox
     Left = 0
     Height = 493
@@ -28,11 +28,11 @@ object Form1: TForm1
     Caption = 'ToolBar1'
     ShowCaptions = True
     TabOrder = 1
-    object ToolButton1: TToolButton
+    object tbOpenPot: TToolButton
       Left = 1
       Top = 2
       Caption = 'Open POT'
-      OnClick = ToolButton1Click
+      OnClick = tbOpenPotClick
     end
     object tbMovePoItems: TToolButton
       Left = 202

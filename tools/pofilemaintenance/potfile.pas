@@ -311,10 +311,8 @@ begin
   Result := -1;
   i := Count - 1;
   while i >= 0 do begin
-    if strlcomp(PChar(AName), PChar(Strings[i]), Length(AName)) = 0 then begin
-      Result := i;
-      exit;
-    end;
+    if strlcomp(PChar(AName), PChar(Strings[i]), Length(AName)) = 0 then
+      exit(i);
     dec(i);
   end;
 end;
@@ -649,8 +647,7 @@ end;
 
 { TPotFileList }
 
-procedure TPotFileList.FindDuplicateMsgId(ARes: TPotFile; AFlags: TFindDupFlags
-  );
+procedure TPotFileList.FindDuplicateMsgId(ARes: TPotFile; AFlags: TFindDupFlags);
 
   function GetComparableMsgId(msgid: string): String;
   var
@@ -717,9 +714,7 @@ var
   msgid: String;
 begin
   ARes.Clear;
-
   TmpHash := TFPObjectHashTable.Create(False);
-
   for i := 0 to Count - 1 do begin
     pot := Items[i];
     for j := 1 to pot.Count - 1 do begin
@@ -747,9 +742,6 @@ begin
       end;
     end;
   end;
-
-
-
   TmpHash.Free;
 end;
 

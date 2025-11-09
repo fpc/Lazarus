@@ -32,7 +32,7 @@ type
     Splitter2: TSplitter;
     Timer1: TTimer;
     ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
+    tbOpenPot: TToolButton;
     tbMovePoItems: TToolButton;
     tbSave: TToolButton;
     tbDupId: TToolButton;
@@ -52,7 +52,7 @@ type
     procedure tbSaveClick(Sender: TObject);
     procedure tbShowMsgIdEntriesClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
-    procedure ToolButton1Click(Sender: TObject);
+    procedure tbOpenPotClick(Sender: TObject);
   private
     FPotList: TPotFileList;
     FCurPotFile: TPotFile;
@@ -80,7 +80,7 @@ implementation
 
 { TForm1 }
 
-procedure TForm1.ToolButton1Click(Sender: TObject);
+procedure TForm1.tbOpenPotClick(Sender: TObject);
 var
   f: TPotFile;
 begin
@@ -205,7 +205,7 @@ procedure TForm1.UpdatePoItems;
       ;
   end;
 var
-  i, j, CntAll, CntNoneEmpty: Integer;
+  i, j: Integer;
   itm: TPotSection;
   MatchWords, MatchTxtId, fnd, MatchIgnUName: Boolean;
   t: String;
@@ -308,8 +308,7 @@ begin
   FPotList.Free;
 end;
 
-procedure TForm1.FormDropFiles(Sender: TObject; const FileNames: array of string
-  );
+procedure TForm1.FormDropFiles(Sender: TObject; const FileNames: array of string);
 var
   s: String;
   f: TPotFile;
