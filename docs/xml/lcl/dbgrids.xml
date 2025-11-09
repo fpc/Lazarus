@@ -5725,6 +5725,12 @@ Other values in DataType cause the DisplayText for the field to be be used as
 the cell hint text.
 </p>
 <p>
+The cell hint text is an empty string ('') if a field type was not found 
+for the specified column number, or field data for the cell contains an 
+unassigned or <b>NULL</b> value (TField.IsNull returns <b>True</b>). This is 
+also the cell hint returned when the dataset for the grid is empty.
+</p>
+<p>
 The OnGetCellHint event handler is signalled (when assigned) if 
 CellHintPriority is set to chpTruncOnly. This allows the TColumn instance for 
 the cell to be used to override the value for the cell hint text or to 
@@ -5735,7 +5741,17 @@ GetTruncCellHintText is called from the ShowCellHintWindow method in the
 ancestor class.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomDBGrid.GetFieldFromGridColumn"/>
+<link id="TCustomDBGrid.CheckDisplayMemo"/>
+<link id="TCustomDBGrid.OnGetCellHint"/>
+<link id="#lcl.grids.TCustomGrid.FixedRows">TCustomGrid.FixedRows</link>
+<link id="#lcl.grids.TCustomGrid.ColumnFromGridColumn">TCustomGrid.ColumnFromGridColumn</link>
+<link id="#lcl.grids.TCustomGrid.CellHintPriority">TCustomGrid.CellHintPriority</link>
+<link id="#lcl.grids.TCellHintPriority">TCustomGrid.CellHintPriority</link>
+<link id="#fcl.db.TField.DataType">TField.DataType</link>
+<link id="#fcl.db.TField.DisplayText">TField.DisplayText</link>
+</seealso>
 </element>
 <element name="TCustomDBGrid.GetTruncCellHintText.Result">
 <short>Contains the hint text for the cell derived in the method.</short>
