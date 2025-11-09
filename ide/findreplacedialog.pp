@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, RegExpr,
   LCLType, Controls, StdCtrls, Forms, Buttons, ExtCtrls, Dialogs, Graphics, ButtonPanel,
   SynEditTypes, SynEdit,
-  IDEImagesIntf, IDEWindowIntf, IDEDialogs,
+  IDEImagesIntf, IDEWindowIntf, IDEDialogs, IDEUtils,
   InputHistory,
   EnvironmentOpts,
   LazarusIdeStrConsts;
@@ -104,7 +104,6 @@ type
     procedure SetFindText(const NewFindText: AnsiString);
     function GetReplaceText: AnsiString;
     procedure SetReplaceText(const NewReplaceText: AnsiString);
-    procedure SetComboBoxText(AComboBox: TComboBox; const AText: AnsiString);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -116,8 +115,8 @@ type
     property Options: TSynSearchOptions read GetOptions write SetOptions;
     property EnableAutoComplete: boolean read GetEnableAutoComplete
                                          write SetEnableAutoComplete;
-    property FindText:AnsiString read GetFindText write SetFindText;
-    property ReplaceText:AnsiString read GetReplaceText write SetReplaceText;
+    property FindText: AnsiString read GetFindText write SetFindText;
+    property ReplaceText: AnsiString read GetReplaceText write SetReplaceText;
     property OnKey: TOnFindDlgKey read FOnKey write SetOnKey;
     property ComponentText[c: TFindDlgComponent]: string
       read GetComponentText write SetComponentText;
@@ -528,21 +527,7 @@ end;
 
 procedure TLazFindReplaceDialog.SetReplaceText(const NewReplaceText:AnsiString);
 begin
-  SetComboBoxText(ReplaceTextComboBox,NewReplaceText);
-end;
-
-procedure TLazFindReplaceDialog.SetComboBoxText(AComboBox:TComboBox;
-  const AText:AnsiString);
-var a:integer;
-begin
-  a:=AComboBox.Items.IndexOf(AText);
-  //debugln('TLazFindReplaceDialog.SetComboBoxText ',AText,' ',a);
-  if a>=0 then
-    AComboBox.ItemIndex:=a
-  else begin
-    AComboBox.Items.Add(AText);
-    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
-  end;
+  SetComboBoxText(ReplaceTextComboBox,NewReplaceText,cstCaseInsensitive);
 end;
 
 end.

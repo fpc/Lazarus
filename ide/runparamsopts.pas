@@ -172,7 +172,6 @@ type
     procedure SaveUserOverrides(const AMode: TRunParamsOptionsMode);
     procedure SelectMode(const AName: string);
     function SelectedMode: TRunParamsOptionsMode;
-    procedure SetComboBoxText(AComboBox: TComboBox; AText: ansistring);
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
@@ -829,20 +828,6 @@ begin
       ModesComboBox.ItemIndex := I;
       Exit;
     end;
-end;
-
-procedure TRunParamsOptsDlg.SetComboBoxText(AComboBox: TComboBox; AText: ansistring);
-var
-  a: integer;
-begin
-  a := AComboBox.Items.IndexOf(AText);
-  if a >= 0 then
-    AComboBox.ItemIndex := a
-  else
-  begin
-    AComboBox.Items.Add(AText);
-    AComboBox.ItemIndex := AComboBox.Items.IndexOf(AText);
-  end;
 end;
 
 procedure TRunParamsOptsDlg.SetOptions(NewOptions: TRunParamsOptions);
