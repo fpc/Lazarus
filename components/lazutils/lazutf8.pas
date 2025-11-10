@@ -247,14 +247,6 @@ const
   CP_UTF8 = 65001;
 {$ENDIF}
 
-function IsASCII(const s: string): boolean; inline;
-var
-  i: Integer;
-begin
-  for i:=1 to length(s) do if ord(s[i])>127 then exit(false);
-  Result:=true;
-end;
-
 {$IFDEF windows}
   {$i winlazutf8.inc}
 {$ELSE}
@@ -314,7 +306,7 @@ begin
   {$IFDEF UTF8_RTL}
   Result:=s;
   {$ELSE}
-  if NeedRTLAnsi and (not IsASCII(s)) then
+  if NeedRTLAnsi and (not IsPureASCII(s)) then
     Result:=UTF8ToAnsi(s)
   else
     Result:=s;
@@ -326,7 +318,7 @@ begin
   {$IFDEF UTF8_RTL}
   Result:=s;
   {$ELSE}
-  if NeedRTLAnsi and (not IsASCII(s)) then
+  if NeedRTLAnsi and (not IsPureASCII(s)) then
   begin
     Result:=AnsiToUTF8(s);
     {$ifdef FPC_HAS_CPSTRING}

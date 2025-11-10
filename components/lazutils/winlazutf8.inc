@@ -320,7 +320,7 @@ var
   UTF16Str: UnicodeString;
 begin
   Result:=s;
-  if IsASCII(Result) then begin
+  if IsPureASCII(Result) then begin
     {$ifdef FPC_HAS_CPSTRING}
     // prevent codepage conversion magic
     SetCodePage(RawByteString(Result), CP_ACP, False);
@@ -355,7 +355,7 @@ var
   len: LongInt;
 begin
   Result:=s;
-  if IsASCII(Result) then begin
+  if IsPureASCII(Result) then begin
     {$ifdef FPC_HAS_CPSTRING}
     // prevent codepage conversion magic
     SetCodePage(RawByteString(Result), CP_ACP, False);

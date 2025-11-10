@@ -5,13 +5,13 @@ unit editor_wordwrap_options;
 interface
 
 uses
+  Classes,
   // LCL
   Forms, Controls, StdCtrls, ExtCtrls, Spin, CheckLst,
   // IdeIntf
   IDEOptEditorIntf, IDEOptionsIntf, SynEditWrappedView, DividerBevel,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, EditorSyntaxHighlighterDef
-  , Classes;
+  EditorOptions, LazarusIDEStrConsts, EditorSyntaxHighlighterDef;
 
 type
 

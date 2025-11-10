@@ -406,15 +406,6 @@ type
 var
   unique: boolean;
 
-  function IsASCII(const h: string): boolean;
-  var
-    i: Integer;
-  begin
-    for i:=1 to length(h) do
-      if ord(h[i])>=128 then exit(false);
-    Result:=true;
-  end;
-
   procedure UniqString(var p: PChar); inline;
   var
     OldPos: SizeInt;
@@ -645,7 +636,7 @@ begin
   if (SrcChars='') or (s='') or (SrcChars=DstChars) then exit;
 
   unique:=false;
-  if IsASCII(SrcChars) and IsASCII(DstChars) then begin
+  if IsPureAscii(SrcChars) and IsPureAscii(DstChars) then begin
     // search and replace single byte characters
     ReplaceASCII;
     exit;
