@@ -1165,7 +1165,8 @@ end;
 
 function TSynEditStringList.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
 begin
-  if (ALineIndex = 0) and (Count = 0) then begin  // simulate empty line
+  if (ALineIndex >= Count) then begin  // simulate empty line
+    assert(Count = 0, 'TSynEditStringList.GetPChar: Count = 0 -- GetPChar should only be out of range, if buffer is empty');
     ALen := 0;
     Result := nil;
   end
