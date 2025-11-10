@@ -4,9 +4,9 @@ program SynTest;
 {off $DEFINE NOGUI}
 
 uses
-  Interfaces, Forms,
-  {$ifdef NOGUI} consoletestrunner, {$ELSE}   GuiTestRunner, {$ENDIF}
-  TestBase, TestBasicSynEdit, TestNavigation,
+  Interfaces, Forms, consoletestrunner,
+  {$ifNdef NOGUI} GuiTestRunner, {$ENDIF}
+  LazUTF8, TestBase, TestBasicSynEdit, TestNavigation,
   TestSynSelection, TestSynMultiCaret, TestBlockIndent, TestBookMarks, TestSearch,
   TestSynBeautifier, TestTrimSpace, TestSyncroEdit, TestSynTextArea,
   TestHighlightPas, TestHighlightXml, TestHighlightMulti, TestMarkupwordGroup,
@@ -19,30 +19,31 @@ uses
 
 {$R *.res}
 
-{$ifdef NOGUI}
 var
-  Application: TTestRunner;
-  LclApp: TApplication;
-{$ENDIF}
+  Application: consoletestrunner.TTestRunner;
 
 begin
-  {$ifdef NOGUI}
-  DefaultRunAllTests:=True;
-  DefaultFormat:=fXML;
-  LclApp := Forms.Application.Create(nil);
-  LclApp.Initialize;
-  Application := TTestRunner.Create(nil);
-  Application.Initialize;
-  Application.Title := '';
-  Application.Run;
-  Application.Free;
-  LclApp.Free;
-  {$ELSE}
-  { $I SynTest.lrs}
-  Application.Title := '';
-  Application.Initialize;
-  Application.CreateForm(TGuiTestRunner, TestRunner);
-  Application.Run;
+  {$ifNdef NOGUI}
+  if (ParamStrUTF8(1) = '-a') then begin
+  {$ENDIF}
+    DefaultRunAllTests:=True;
+    DefaultFormat:=fXML;
+    Forms.Application.Initialize;
+    Application := TTestRunner.Create(nil);
+    Application.Initialize;
+    Application.Title := '';
+    Application.Run;
+    Application.Free;
+    Forms.Application.Free;
+    exit;
+  {$ifNdef NOGUI}
+  end;
+  {$ENDIF}
+  {$ifNdef NOGUI}
+  Forms.Application.Title := '';
+  Forms.Application.Initialize;
+  Forms.Application.CreateForm(TGuiTestRunner, TestRunner);
+  Forms.Application.Run;
   {$ENDIF}
 end.
 
