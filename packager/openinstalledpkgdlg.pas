@@ -141,12 +141,8 @@ begin
   begin
     Package:=TEditablePackage(PackageGraph.FindPackageWithName(PkgListView.Selected.Caption,nil));
     if Assigned(Package) then
-    begin
       ModalResult:=mrOk;
-      Exit;
-    end;
   end;
-  ModalResult:=mrCancel;
 end;
 
 procedure TOpenLoadedPackagesDlg.FormCreate(Sender: TObject);
