@@ -56,7 +56,7 @@ type
   strict private
     FGapStartIndex, FGapEndIndex: integer; // FGapEndIndex is first AFTER gap
     FIgnoreGapLock: integer;
-    function GetCount: Integer;
+    function GetCount: Integer; reintroduce;
     function GetItemPointer(Index: Integer): Pointer; reintroduce; inline;
     function GetItemPointerRaw(Index: Integer): Pointer;
   protected
@@ -129,8 +129,8 @@ type
     function IndexOf(APoint: TPoint): Integer;
     procedure Clear;
     procedure SendInvalidateAll;
-    procedure Delete(AnIndex: Integer; ACount: Integer = 1);
-    procedure Insert(AnIndex: Integer; ACount: Integer = 1);
+    procedure Delete(AnIndex: Integer; ACount: Integer = 1); reintroduce;
+    procedure Insert(AnIndex: Integer; ACount: Integer = 1); reintroduce;
     procedure Insert(AnIndex: Integer; AStartPoint, AnEndPoint: TPoint);
     function Insert(AStartPoint, AnEndPoint: TPoint): integer;
     procedure SetMatchPoints(const AnIndex : Integer; AStartPoint, AnEndPoint: TPoint);

@@ -47,9 +47,9 @@ unit SynEditTextBuffer;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLProc, LazLoggerBase,
+  Classes, SysUtils, Graphics, LCLProc, LazLoggerBase, LazListClasses,
   SynEditTypes, LazSynEditText, SynEditTextBase, SynEditMiscProcs, SynEditMiscClasses,
-  SynEditHighlighter, LazEditMiscProcs;
+  SynEditHighlighter, LazEditMiscProcs, LazEditLineItemLists;
 
 type
   TSynEditFlagsClass = class end; // For Register
@@ -62,6 +62,14 @@ type
   PSynEditStringFlags = ^TSynEditStringFlags;
 
   TStringListIndexEvent = procedure(Index: Integer) of object;
+
+  TSynEditStringMemoryEntry = packed record
+    Line: AnsiString;
+    Obj: TObject;
+    case integer of
+    1: (Flags: TSynEditStringFlags; );
+    2: (Dummy: Word; );
+  end;
 
   { TLinesModifiedNotificationList }
 
@@ -85,37 +93,50 @@ type
                                     aLinePos, aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
   end;
 
+  TSynEditStringMemoryBase = class(
+    specialize TGenLazEditLineItemsFixedShiftList<
+      TSynEditStringMemoryEntry,
+      specialize TLazListAspectMemInitManagedRefCnt<TSynEditStringMemoryEntry>
+    >
+  )
+  private type
+    TWrapGenParamClass = class(TWrapGenBaseLazEditLineItems)
+    public type
+      TBase = TSynEditStringMemoryBase;
+    end;
+  end;
+
   { TSynEditStringMemory }
 
-  TSynEditStringMemory = class(TSynEditStorageMem)
+  TSynEditStringMemory = class(
+    specialize TGenLazEditParentLineItems<TSynEditStringMemoryBase.TWrapGenParamClass>
+  )
+  private type
+    PSynEditStringMemoryEntry = ^TSynEditStringMemoryEntry;
   private
-    FRangeList: TSynManagedStorageMemList;
-    FRangeListLock: Integer;
-    function GetFlags(Index: Integer): TSynEditStringFlags;
-    function GetObject(Index: Integer): TObject;
-    function GetRange(Index: Pointer): TSynManagedStorageMem;
-    function GetString(Index: Integer): String;
-    procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
-    procedure SetObject(Index: Integer; const AValue: TObject);
-    procedure SetRange(Index: Pointer; const AValue: TSynManagedStorageMem);
-    procedure SetString(Index: Integer; const AValue: String);
-  protected
-    procedure Move(AFrom, ATo, ALen: Integer); override;
-    procedure SetCount(const AValue: Integer); override;
-    procedure SetCapacity(const AValue: Integer); override;
+    function GetFlags(AnIndex: Integer): TSynEditStringFlags;
+    function GetObject(AnIndex: Integer): TObject;
+    function GetRange(AnIndex: Pointer): TLazEditLineItems;
+    function GetString(AnIndex: Integer): String;
+    procedure SetCount(AValue: Integer);
+    procedure SetFlags(AnIndex: Integer; AValue: TSynEditStringFlags);
+    procedure SetObject(AnIndex: Integer; AValue: TObject);
+    procedure SetRange(AnIndex: Pointer; AValue: TLazEditLineItems);
+    procedure SetString(AnIndex: Integer; AValue: String);
   public
-    constructor Create;
-    destructor Destroy; override;
-
-    procedure InsertRows(AIndex, ACount: Integer); override;
-    procedure DeleteRows(AIndex, ACount: Integer); override;
+    //procedure Insert(AnIndex, ACount: Integer); reintroduce; inline;
+    //procedure Delete(AnIndex, ACount: Integer); reintroduce; inline;
+    // TODO: move => forward to rangelist
+    procedure InsertRows(AnIndex, ACount: Integer); // deprecated 'use insert / to be removed in 5.99'
+    procedure DeleteRows(AnIndex, ACount: Integer); // deprecated 'use delete / to be removed in 5.99'
+    procedure SetLine(AnIndex: Integer; const AString: String; const AnObject: TObject; const AFlags: TSynEditStringFlags);
     function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; // experimental
 
-    procedure SetLine(Index: Integer; const AString: String; const AnObject: TObject; const AFlags: TSynEditStringFlags);
-    property Strings[Index: Integer]: String read GetString write SetString; default;
-    property Objects[Index: Integer]: TObject read GetObject write SetObject;
-    property RangeList[Index: Pointer]: TSynManagedStorageMem read GetRange write SetRange;
-    property Flags[Index: Integer]: TSynEditStringFlags read GetFlags write SetFlags;
+    property Strings[AnIndex: Integer]: String read GetString write SetString; default;
+    property Objects[AnIndex: Integer]: TObject read GetObject write SetObject;
+    property RangeList[AnIndex: Pointer]: TLazEditLineItems read GetRange write SetRange;
+    property Flags[AnIndex: Integer]: TSynEditStringFlags read GetFlags write SetFlags;
+    property Count: Integer read GetCount write SetCount;
   end;
 
   TSynEditStringList = class;
@@ -193,8 +214,8 @@ type
     procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
                                      IncIgnore: Boolean); override;
 
-    function GetRange(Index: Pointer): TSynManagedStorageMem; override;
-    procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
+    function GetRange(Index: Pointer): TLazEditLineItems; override;
+    procedure PutRange(Index: Pointer; const ARange: TLazEditLineItems); override;
     function Get(Index: integer): string; override;
     function GetCapacity: integer; override;
     function GetCount: integer; override;
@@ -1079,7 +1100,7 @@ begin
     Result := nil;
 end;
 
-function TSynEditStringList.GetRange(Index: Pointer): TSynManagedStorageMem;
+function TSynEditStringList.GetRange(Index: Pointer): TLazEditLineItems;
 begin
   Result := FList.RangeList[Index];
 end;
@@ -1202,7 +1223,7 @@ begin
   EndUpdate;
 end;
 
-procedure TSynEditStringList.PutRange(Index: Pointer; const ARange: TSynManagedStorageMem);
+procedure TSynEditStringList.PutRange(Index: Pointer; const ARange: TLazEditLineItems);
 begin
   FList.RangeList[Index] := ARange;
 end;
@@ -1773,152 +1794,102 @@ begin
 end;
 
 { TSynEditStringMemory }
-type
-  PObject = ^TObject;
 
-constructor TSynEditStringMemory.Create;
-const
-  FlagSize = ((SizeOf(TSynEditStringFlags) + 1 ) Div 2) * 2; // ensure boundary
+function TSynEditStringMemory.GetFlags(AnIndex: Integer): TSynEditStringFlags;
 begin
-  inherited Create;
-  ItemSize := SizeOf(String) + SizeOf(TObject) + FlagSize;
-  FRangeList := TSynManagedStorageMemList.Create;
-  FRangeListLock := 0;
+  Result := PSynEditStringMemoryEntry(ItemPointer[AnIndex])^.Flags;
 end;
 
-destructor TSynEditStringMemory.Destroy;
+function TSynEditStringMemory.GetObject(AnIndex: Integer): TObject;
 begin
-  inherited Destroy;
-  FreeAndNil(FRangeList);
+  Result := PSynEditStringMemoryEntry(ItemPointer[AnIndex])^.Obj;
 end;
 
-procedure TSynEditStringMemory.InsertRows(AIndex, ACount: Integer);
+function TSynEditStringMemory.GetRange(AnIndex: Pointer): TLazEditLineItems;
 begin
-  // Managed lists to get Mave, Count, instead of InsertRows
-  inc(FRangeListLock);
-  inherited InsertRows(AIndex, ACount);
-  dec(FRangeListLock);
-  FRangeList.CallInsertedLines(AIndex, ACount);
+  Result := ManagedList.ChildrenByID[AnIndex];
 end;
 
-procedure TSynEditStringMemory.DeleteRows(AIndex, ACount: Integer);
+function TSynEditStringMemory.GetString(AnIndex: Integer): String;
 begin
-  // Managed lists to get Mave, Count, instead of InsertRows
-  inc(FRangeListLock);
-  inherited DeleteRows(AIndex, ACount);
-  dec(FRangeListLock);
-  FRangeList.CallDeletedLines(AIndex, ACount);
+  Result := PSynEditStringMemoryEntry(ItemPointer[AnIndex])^.Line;
+end;
+
+procedure TSynEditStringMemory.SetCount(AValue: Integer);
+var
+  c: Integer;
+begin
+  c := Count;
+  if AValue > c then
+    inherited Insert(c, AValue-c)
+  else
+  if AValue < c then
+    inherited Delete(AValue, c-AValue);
+end;
+
+procedure TSynEditStringMemory.SetFlags(AnIndex: Integer; AValue: TSynEditStringFlags);
+begin
+  PSynEditStringMemoryEntry(ItemPointer[AnIndex])^.Flags := AValue;
+end;
+
+procedure TSynEditStringMemory.SetObject(AnIndex: Integer; AValue: TObject);
+begin
+  PSynEditStringMemoryEntry(ItemPointer[AnIndex])^.Obj := AValue;
+end;
+
+procedure TSynEditStringMemory.SetRange(AnIndex: Pointer; AValue: TLazEditLineItems);
+var
+  c: integer;
+begin
+  ManagedList.ChildrenByID[AnIndex] := AValue;
+
+  if AValue <> nil then begin
+    c := AValue.Count;
+    if c > 0 then
+      AValue.Delete(0, c);
+    AValue.Capacity := Capacity;
+    c := Count;
+    if c > 0 then
+      AValue.Insert(0, c);
+  end;
+end;
+
+procedure TSynEditStringMemory.SetString(AnIndex: Integer; AValue: String);
+begin
+  PSynEditStringMemoryEntry(ItemPointer[AnIndex])^.Line := AValue;
+  CallLineTextChanged(AnIndex, 1);
+end;
+
+procedure TSynEditStringMemory.InsertRows(AnIndex, ACount: Integer);
+begin
+  inherited Insert(AnIndex, ACount);
+end;
+
+procedure TSynEditStringMemory.DeleteRows(AnIndex, ACount: Integer);
+begin
+  inherited Delete(AnIndex, ACount);
+end;
+
+procedure TSynEditStringMemory.SetLine(AnIndex: Integer; const AString: String;
+  const AnObject: TObject; const AFlags: TSynEditStringFlags);
+var
+  p: PSynEditStringMemoryEntry;
+begin
+  p := PSynEditStringMemoryEntry(ItemPointer[AnIndex]);
+  p^.Line  := AString;
+  p^.Obj   := AnObject;
+  p^.Flags := AFlags;
+
+  CallLineTextChanged(AnIndex, 1);
 end;
 
 function TSynEditStringMemory.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
 var
-  ip: Pointer;
+  p: PSynEditStringMemoryEntry;
 begin
-  ip := ItemPointer[ALineIndex];
-  ALen   := length(PString(ip)^);
-  Result := PPChar(ip)^;
-end;
-
-procedure TSynEditStringMemory.SetLine(Index: Integer; const AString: String;
-  const AnObject: TObject; const AFlags: TSynEditStringFlags);
-var
-  p: Pointer;
-begin
-  p := ItemPointer[Index];
-  (PString(p))^ := AString;
-  p := p + SizeOf(String);
-  (PObject(p))^ := AnObject;
-  p := p + SizeOf(TObject);
-  (PSynEditStringFlags(p))^ := AFlags;
-
-  if FRangeListLock = 0 then
-    FRangeList.CallLineTextChanged(Index);
-end;
-
-procedure TSynEditStringMemory.Move(AFrom, ATo, ALen: Integer);
-var
-  Len, i: Integer;
-begin
-  if ATo < AFrom then begin
-    Len := Min(ALen, AFrom-ATo);
-    for i:=ATo to ATo + Len -1 do Strings[i]:='';
-  end else begin
-    Len := Min(ALen, ATo-AFrom);
-    for i:=ATo+Alen-Len to ATo+ALen -1 do Strings[i]:='';
-  end;
-  inherited Move(AFrom, ATo, ALen);
-  FRangeList.CallMove(AFrom, ATo, ALen);
-end;
-
-procedure TSynEditStringMemory.SetCount(const AValue: Integer);
-var
-  OldCount, i : Integer;
-begin
-  If Count = AValue then exit;
-  for i:= AValue to Count-1 do
-    Strings[i]:='';
-  OldCount := Count;
-  inherited SetCount(AValue);
-  FRangeList.ChildCounts := AValue;
-  if FRangeListLock = 0 then begin
-    if OldCount > Count then
-      FRangeList.CallDeletedLines(Count, OldCount - Count)
-    else
-      FRangeList.CallInsertedLines(OldCount, Count - OldCount);
-  end;
-end;
-
-function TSynEditStringMemory.GetString(Index: Integer): String;
-begin
-  Result := (PString(ItemPointer[Index]))^;
-end;
-
-procedure TSynEditStringMemory.SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
-begin
-  (PSynEditStringFlags(ItemPointer[Index] + SizeOf(String) + SizeOf(TObject) ))^ := AValue;
-end;
-
-procedure TSynEditStringMemory.SetString(Index: Integer; const AValue: String);
-begin
-  (PString(ItemPointer[Index]))^ := AValue;
-  if FRangeListLock = 0 then
-    FRangeList.CallLineTextChanged(Index);
-end;
-
-procedure TSynEditStringMemory.SetCapacity(const AValue: Integer);
-begin
-  inherited SetCapacity(AValue);
-  FRangeList.ChildCapacities := AValue;
-end;
-
-function TSynEditStringMemory.GetObject(Index: Integer): TObject;
-begin
-  Result := (PObject(ItemPointer[Index] + SizeOf(String)))^;
-end;
-
-function TSynEditStringMemory.GetFlags(Index: Integer): TSynEditStringFlags;
-begin
-  Result := (PSynEditStringFlags(ItemPointer[Index] + SizeOf(String) + SizeOf(TObject) ))^;
-end;
-
-function TSynEditStringMemory.GetRange(Index: Pointer): TSynManagedStorageMem;
-begin
-  Result := FRangeList[Index];
-end;
-
-procedure TSynEditStringMemory.SetObject(Index: Integer; const AValue: TObject);
-begin
-  (PObject(ItemPointer[Index] + SizeOf(String)))^ := AValue;
-end;
-
-procedure TSynEditStringMemory.SetRange(Index: Pointer; const AValue: TSynManagedStorageMem);
-begin
-  FRangeList[Index] := AValue;
-
-  if AValue <> nil then begin
-    AValue.Capacity := Capacity;
-    AValue.Count := Count;
-  end;
+  p := PSynEditStringMemoryEntry(ItemPointer[ALineIndex]);
+  Result := PChar(p^.Line);
+  ALen   := Length(p^.Line);
 end;
 
 { TLinesModifiedNotificationList }

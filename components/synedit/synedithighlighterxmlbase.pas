@@ -32,7 +32,7 @@ interface
 uses
   SysUtils, Classes, math, LCLType,
   SynEditTextBase,
-  SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditHighlighter, SynEditHighlighterFoldBase, LazEditHighlighterUtils, LazListClasses;
 
 type
 
@@ -41,18 +41,22 @@ type
     ElementCloseList: Array of Smallint; // include close, for open on same line
   end;
 
+  TSynXmlFullRangeInfo = record
+    Rng: Pointer;
+    Info: TSynXmlRangeInfo;
+  end;
+
   { TSynHighlighterXmlRangeList }
 
-  TSynHighlighterXmlRangeList = class(TSynHighlighterRangeList)
+  TSynHighlighterXmlRangeList = class(
+    specialize TGenInitLazHighlighterLineRangeShiftList<TSynXmlFullRangeInfo,
+      specialize TLazListAspectMemInitManagedRefCnt<TSynXmlFullRangeInfo>
+    >
+  )
   private
-    FItemOffset: Integer;
     function GetXmlRangeInfo(Index: Integer): TSynXmlRangeInfo;
     procedure SetXmlRangeInfo(Index: Integer; const AValue: TSynXmlRangeInfo);
-  protected
-    procedure SetCapacity(const AValue: Integer); override;
   public
-    constructor Create;
-    procedure Move(AFrom, ATo, ALen: Integer); override;
     property XmlRangeInfo[Index: Integer]: TSynXmlRangeInfo
       read GetXmlRangeInfo write SetXmlRangeInfo;
   end;
@@ -65,7 +69,7 @@ type
     FXmlRangeInfoOpenPos: integer;
     FXmlRangeInfoClosePos: integer;
   protected
-    function  CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
+    function  CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
     function  UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
 
     function  StartXmlCodeFoldBlock(ABlockType: Integer): TSynCustomCodeFoldBlock;
@@ -79,7 +83,7 @@ type
 
 implementation
 
-function TSynCustomXmlHighlighter.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;
+function TSynCustomXmlHighlighter.CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList;
 begin
   Result := TSynHighlighterXmlRangeList.Create;
 end;
@@ -233,51 +237,13 @@ begin
     Result.ElementOpenList := nil;
     exit;
   end;
-  Result := TSynXmlRangeInfo((ItemPointer[Index] + FItemOffset)^);
+  Result := ItemPointer[Index]^.Info;
 end;
 
 procedure TSynHighlighterXmlRangeList.SetXmlRangeInfo(Index: Integer;
   const AValue: TSynXmlRangeInfo);
 begin
-  TSynXmlRangeInfo((ItemPointer[Index] + FItemOffset)^) := AValue;
-end;
-
-procedure TSynHighlighterXmlRangeList.SetCapacity(const AValue: Integer);
-var
-  i: LongInt;
-begin
-  for i := AValue to Capacity-1 do
-    with TSynXmlRangeInfo((ItemPointer[i] + FItemOffset)^) do begin
-      ElementOpenList := nil;
-      ElementCloseList := nil;
-    end;
-  inherited SetCapacity(AValue);
-end;
-
-constructor TSynHighlighterXmlRangeList.Create;
-begin
-  inherited;
-  FItemOffset := ItemSize;
-  ItemSize := FItemOffset + SizeOf(TSynXmlRangeInfo);
-end;
-
-procedure TSynHighlighterXmlRangeList.Move(AFrom, ATo, ALen: Integer);
-var
-  i: LongInt;
-begin
-  if ATo > AFrom then
-    for i:= Max(AFrom + ALen, ATo) to ATo + ALen - 1 do // move forward
-      with TSynXmlRangeInfo((ItemPointer[i] + FItemOffset)^) do begin
-        ElementOpenList := nil;
-        ElementCloseList := nil;
-      end
-  else
-    for i:= ATo to Min(ATo + ALen , AFrom) - 1 do // move backward
-      with TSynXmlRangeInfo((ItemPointer[i] + FItemOffset)^) do begin
-        ElementOpenList := nil;
-        ElementCloseList := nil;
-      end;
-  inherited Move(AFrom, ATo, ALen);
+  ItemPointer[Index]^.Info := AValue;
 end;
 
 end.

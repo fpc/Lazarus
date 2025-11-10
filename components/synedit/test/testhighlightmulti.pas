@@ -5,9 +5,9 @@ unit TestHighlightMulti;
 interface
 
 uses
-  Classes, SysUtils, Math, testregistry, TestBase, Forms, SynEditHighlighter,
-  SynHighlighterMulti, SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds,
-  LazSynEditText, SynEditTextBuffer, SynEditTypes, LazLoggerBase, LazEditTextAttributes;
+  Classes, SysUtils, Math, testregistry, TestBase, Forms, SynEditHighlighter, SynHighlighterMulti,
+  SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds, LazSynEditText,
+  SynEditTextBuffer, SynEditTypes, LazLoggerBase, LazEditTextAttributes, LazEditHighlighterUtils;
 
 type
 
@@ -39,7 +39,7 @@ type
     function  GetRealLinesText4(ALen1, ALen2: Integer): TStringArray;
     procedure DumpLines(ALines: TSynHLightMultiVirtualLines);
     procedure DumpSections(ASectList: TSynHLightMultiSectionList);
-    procedure DumpRanges(ARangeList: TSynHighlighterRangeList);
+    procedure DumpRanges(ARangeList: TLazHighlighterLineRangeList);
     procedure DumpAll(Hl: TSynMultiSyn);
     procedure CheckTokensForLine(Name: String; HL: TSynCustomHighlighter;
                                  LineIdx: Integer; ExpAttr: Array of TLazEditTextAttribute);
@@ -232,7 +232,7 @@ begin
   ASectList.Debug;
 end;
 
-procedure TTestHighlightMulti.DumpRanges(ARangeList: TSynHighlighterRangeList);
+procedure TTestHighlightMulti.DumpRanges(ARangeList: TLazHighlighterLineRangeList);
 var
   i: Integer;
 begin
@@ -250,7 +250,7 @@ begin  // ensure CurrentLines are set
     DumpLines(hl.DefaultVirtualLines);
   DebugLnExit();
   DebugLnEnter(['--> Ranges  HL: ', PtrUInt(hl)]);
-    DumpRanges(TSynHighlighterRangeList(hl.CurrentLines.Ranges[hl]));
+    DumpRanges(TLazHighlighterLineRangeList(hl.CurrentLines.Ranges[hl]));
   DebugLnExit;
   for i := 0 to hl.Schemes.Count - 1 do begin
     DebugLnEnter(['--> Scheme=',i,' ', dbgs(hl.Schemes[i].Highlighter), ' ', PtrUint(hl.Schemes[i].VirtualLines)]);
@@ -537,7 +537,7 @@ procedure TTestHighlightMulti.TestVirtualLines;
 var
   vl: TSynHLightMultiVirtualLines;
   Name: String;
-  r: TSynHighlighterRangeList;
+  r: TLazHighlighterLineRangeList;
 
   procedure AddSect(y1, x1, y2, x2, v: Integer; ExpectInsPos: Integer);
   var
@@ -590,7 +590,7 @@ var
 begin
   SetRealLinesText;
   vl := TSynHLightMultiVirtualLines.Create(SynEdit.TextBuffer);
-  r := TSynHighlighterRangeList.Create;
+  r := TLazHighlighterLineRangeShiftList.Create;
   vl.Ranges[self] := r;
 
   AssertEquals('Line Count', 0, vl.Count);
@@ -615,8 +615,9 @@ begin
   AddSect(6,5, 8,3, 4, 5);
   TestVLines('(1,1-2,5),..,(6,5-8,3)',    ['', '  Foo', ' ac;', 'test', '123', '', 'end']);
 
+  r.Delete(0, r.Count);
   r.Capacity := 7;
-  r.Count := 7;
+  r.Insert(0, 7);
 
   Name := 'Scan(1,1-2,5) to (1,1-2,4)';
   InitVRange;

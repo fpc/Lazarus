@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLProc, SynEditTypes, SynEditMiscProcs,
-  SynEditHighlighter, SynEditKeyCmds, SynEditTextBase, LazEditTextAttributes;
+  SynEditHighlighter, SynEditKeyCmds, SynEditTextBase, LazEditTextAttributes, LazEditLineItemLists;
 
 type
   TSynEditStrings = class;
@@ -436,8 +436,8 @@ type
     function GetTextChangeStamp: int64; override;
     function GetViewChangeStamp: int64; override;
 
-    function GetRange(Index: Pointer): TSynManagedStorageMem; override;
-    procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
+    function GetRange(Index: Pointer): TLazEditLineItems; override;
+    procedure PutRange(Index: Pointer; const ARange: TLazEditLineItems); override;
 
     function GetViewedCount: Integer; override;
     function GetViewedLines(Index: integer): string; override;
@@ -1540,12 +1540,12 @@ begin
 end;
 
 //Ranges
-function TSynEditStringsLinked.GetRange(Index: Pointer): TSynManagedStorageMem;
+function TSynEditStringsLinked.GetRange(Index: Pointer): TLazEditLineItems;
 begin
   Result:= fSynStringsState.Ranges[Index];
 end;
 
-procedure TSynEditStringsLinked.PutRange(Index: Pointer; const ARange: TSynManagedStorageMem);
+procedure TSynEditStringsLinked.PutRange(Index: Pointer; const ARange: TLazEditLineItems);
 begin
   fSynStringsState.Ranges[Index] := ARange;
 end;

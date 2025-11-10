@@ -534,15 +534,18 @@ type
     MinLevelRegion: Smallint;
   end;
 
+ TSynPasFullRangeInfo = record
+    Rng: Pointer;
+    Info: TSynPasRangeInfo;
+ end;
+
   { TSynHighlighterPasRangeList }
 
-  TSynHighlighterPasRangeList = class(TSynHighlighterRangeList)
+  TSynHighlighterPasRangeList = class(specialize TGenLazHighlighterLineRangeShiftList<TSynPasFullRangeInfo>)
   private
-    FItemOffset: integer;
     function GetTSynPasRangeInfo(Index: Integer): TSynPasRangeInfo;
     procedure SetTSynPasRangeInfo(Index: Integer; const AValue: TSynPasRangeInfo);
   public
-    constructor Create;
     property PasRangeInfo[Index: Integer]: TSynPasRangeInfo
       read GetTSynPasRangeInfo write SetTSynPasRangeInfo;
   end;
@@ -901,7 +904,7 @@ type
     // "Range"
     function GetRangeClass: TLazHighlighterRangeClass; override;
     procedure CreateRootCodeFoldBlock; override;
-    function CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
+    function CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
     function UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
 
     property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
@@ -5602,8 +5605,6 @@ end;
 
 
 function TSynPasSyn.GetTokenAttribute: TLazEditTextAttribute;
-var
-  x1, x2: Integer;
 begin
   case GetTokenID of
     tkAsm: Result := fAsmAttri;
@@ -7101,7 +7102,7 @@ begin
     (Result.Modes <> []);
 end;
 
-function TSynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;
+function TSynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList;
 begin
   Result := TSynHighlighterPasRangeList.Create;
 end;
@@ -7580,20 +7581,13 @@ begin
     Result.EndLevelIfDef := 0;
     exit;
   end;
-  Result := TSynPasRangeInfo((ItemPointer[Index] + FItemOffset)^);
+  Result := ItemPointer[Index]^.Info;
 end;
 
 procedure TSynHighlighterPasRangeList.SetTSynPasRangeInfo(Index: Integer;
   const AValue: TSynPasRangeInfo);
 begin
-  TSynPasRangeInfo((ItemPointer[Index] + FItemOffset)^) := AValue;
-end;
-
-constructor TSynHighlighterPasRangeList.Create;
-begin
-  inherited;
-  FItemOffset := ItemSize;
-  ItemSize := FItemOffset + SizeOf(TSynPasRangeInfo);
+  ItemPointer[Index]^.Info := AValue;
 end;
 
 initialization

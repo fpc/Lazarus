@@ -41,7 +41,7 @@ uses
   // LazUtils
   LazMethodList, LazLoggerBase,
   // SynEdit
-  SynEditMiscProcs, SynEditKeyCmds;
+  SynEditMiscProcs, SynEditKeyCmds, LazEditLineItemLists;
 
 type
 
@@ -52,7 +52,7 @@ type
 
   { TSynEditStorageMem }
 
-  TSynEditStorageMem = class
+  TSynEditStorageMem = class(TLazEditLineItems) // baseclass not used // just keep assignment compatible
   private
     FItemSize: Integer;
     FMem: PByte;
@@ -61,9 +61,11 @@ type
     procedure SetItemSize(const AValue: Integer);
   protected
     function  GetInintialForItemSize: Integer; virtual;
-    procedure SetCapacity(const AValue: Integer); virtual;
+    procedure SetCapacity(const AValue: Integer); override;
     procedure SetCount(const AValue: Integer); virtual;
-    procedure Move(AFrom, ATo, ALen: Integer); virtual;
+    function GetCount: Integer; override;
+    function GetCapacity: Integer; override;
+    procedure Move(AFrom, ATo, ALen: Integer); reintroduce; virtual;
     procedure InitMem(var AFirstItem; AByteCount: Integer); virtual;
 
     property Mem: PByte read FMem;
@@ -78,7 +80,7 @@ type
     property Capacity: Integer read FCapacity write SetCapacity;
     // Capacity must be maintained by owner (Shrink)
     property Count: Integer read FCount write SetCount;
-  end;
+  end deprecated 'Use TLazEditLineItems / To be removed in 5.99';
 
   { TSynManagedStorageMem }
 
@@ -88,14 +90,22 @@ type
     procedure LineTextChanged(AIndex: Integer; ACount: Integer = 1); virtual;
     procedure InsertedLines(AIndex, ACount: Integer); virtual;
     procedure DeletedLines(AIndex, ACount: Integer); virtual;
-  end;
+
+  (* for compatibility*)
+  protected
+    procedure TextChanged(AnIndex, ACount: Integer); override; final;
+  public
+    procedure Insert(AnIndex, ACount: Integer); override; final;
+    procedure Delete(AnIndex, ACount: Integer); override; final;
+    //procedure Move(AFrom, ATo, ALen: Integer); override; final;
+  end deprecated 'Use TLazEditLineItems / To be removed in 5.99';
 
 
   { TSynManagedStorageMemList }
 
   TSynManagedStorageMemList = class
   private
-    FStorageMemList: Array of TSynManagedStorageMem;
+    FStorageMemList: Array of TSynManagedStorageMem{%H-};
     FClassList: Array of Pointer;
     function GetChildCounts: Integer;
     function GetChildren(Index: Integer): TSynManagedStorageMem;
@@ -115,19 +125,19 @@ type
     property Children[Index: Integer]: TSynManagedStorageMem read GetChildren;
     property StorageMems[Index: Pointer]: TSynManagedStorageMem
              read GetStorageMems write SetStorageMems; default;
-  end;
+  end deprecated 'Use TLazEditChildLineItemsList / To be removed in 5.99';
 
   { TSynEditStringsBase }
 
   TSynEditStringsBase = class(TStrings)
   protected
-    function GetRange(Index: Pointer): TSynManagedStorageMem; virtual; abstract;
-    procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); virtual; abstract;
+    function GetRange(Index: Pointer): TLazEditLineItems; virtual; abstract;
+    procedure PutRange(Index: Pointer; const ARange: TLazEditLineItems); virtual; abstract;
   public
     procedure SendHighlightChanged(aIndex, aCount: Integer); virtual; abstract;
     function  GetPChar(ALineIndex: Integer): PChar;                                       // experimental
     function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; virtual; abstract; // experimental
-    property Ranges[Index: Pointer]: TSynManagedStorageMem read GetRange write PutRange;
+    property Ranges[Index: Pointer]: TLazEditLineItems read GetRange write PutRange;
   end;
 
   { TSynEditUndoItem }
@@ -888,6 +898,16 @@ begin
   FCount := AValue;
 end;
 
+function TSynEditStorageMem.GetCount: Integer;
+begin
+  Result := FCount;
+end;
+
+function TSynEditStorageMem.GetCapacity: Integer;
+begin
+  Result := FCapacity;
+end;
+
 constructor TSynEditStorageMem.Create;
 begin
   FItemSize := GetInintialForItemSize;
@@ -966,6 +986,46 @@ end;
 procedure TSynManagedStorageMem.DeletedLines(AIndex, ACount: Integer);
 begin  // empty base class
 end;
+
+procedure TSynManagedStorageMem.TextChanged(AnIndex, ACount: Integer);
+begin
+  LineTextChanged(AnIndex, ACount);
+end;
+
+procedure TSynManagedStorageMem.Insert(AnIndex, ACount: Integer);
+var
+  c: Integer;
+begin
+  c := Count;
+  if Capacity < c + ACount then
+    SetCapacity(c + ACount + 8);
+
+  if AnIndex < c then
+    Move(AnIndex, AnIndex + ACount, c - AnIndex);
+  SetCount(c + ACount);
+
+  InsertedLines(AnIndex, ACount);
+end;
+
+procedure TSynManagedStorageMem.Delete(AnIndex, ACount: Integer);
+var
+  c, c2: Integer;
+begin
+  c := Count;
+  c2 := c - (AnIndex + ACount); // count after deleted
+  if c2 > 0 then
+    Move(AnIndex + ACount, AnIndex, c2);
+  c :=  c - ACount;
+  SetCount(c);
+  if (Capacity > 16) and (Capacity > c * 2) then
+    Capacity := Capacity - (c div 2);
+
+  DeletedLines(AnIndex, ACount);
+end;
+
+//procedure TSynManagedStorageMem.Move(AFrom, ATo, ALen: Integer);
+//begin
+//end;
 
 { TSynManagedStorageMemList }
 

@@ -23,7 +23,8 @@ unit LazEditHighlighterUtils;
 interface
 
 uses
-  Classes, SysUtils, fgl, LazClasses, Generics.Collections, Generics.Defaults;
+  Classes, SysUtils, fgl, Math, LazClasses, LazListClasses, LazListClassesBase,
+  LazEditLineItemLists, Generics.Collections, Generics.Defaults;
 
 type
 
@@ -72,6 +73,100 @@ type
     destructor Destroy; override;
     function GetEqual(ARange: TLazHighlighterRange): TLazHighlighterRange; override;
   end;
+
+
+  { TLazHighlighterLineRangeList }
+
+  TLazHighlighterLineRangeList = class(TLazEditLineItems)
+  private type
+    TWrapGenParamClass = class(TWrapGenBaseLazEditLineItems)
+    public type
+      TBase = TLazHighlighterLineRangeList;
+    end;
+  private
+    FFirstInvalidLine: Integer;
+    FLastInvalidLine: Integer;
+    FRefCount: Integer;
+    FUnsentValidationStartLine: Integer;
+  protected
+    procedure LineTextChanged(AIndex: Integer; ACount: Integer = 1); virtual; deprecated 'use TextChanged / to be removed in 5.99';
+    procedure InsertedLines(AIndex, ACount: Integer); virtual; deprecated 'use Insert / to be removed in 5.99';
+    procedure DeletedLines(AIndex, ACount: Integer); virtual; deprecated 'use Delete / to be removed in 5.99';
+    procedure TextChanged(AnIndex, ACount: Integer); override;
+  public
+    procedure Insert(AnIndex, ACount: Integer); override;
+    procedure Delete(AnIndex, ACount: Integer); override;
+  protected
+    procedure Invalidate(AFrom, ATo: integer); inline;
+    function GetRange(AnIndex: Integer): Pointer; virtual; abstract;
+    procedure SetRange(AnIndex: Integer; const AValue: Pointer); virtual; abstract;
+  public
+    constructor Create;
+
+    procedure InvalidateAll;
+    procedure ValidateAll;
+    procedure UpdateFirstInvalidLine(ANewFirstInvalidLine: Integer);
+
+    procedure IncRefCount;
+    procedure DecRefCount;
+    property RefCount: Integer read FRefCount;
+
+    property FirstInvalidLine: Integer read FFirstInvalidLine;
+    property LastInvalidLine: Integer read FLastInvalidLine;
+    property UnsentValidationStartLine: Integer read FUnsentValidationStartLine;
+
+    property Range[AnIndex: Integer]: Pointer read GetRange write SetRange; default;
+  public
+    procedure ClearReScanNeeded;  deprecated 'Use ValidateAll / To be removed in 5.99';
+    procedure AdjustReScanStart(ANewStart: Integer);  deprecated 'Use UpdateFirstInvalidLine / To be removed in 5.99';
+
+    property NeedsReScanStartIndex: Integer read FFirstInvalidLine; deprecated 'Use FirstInvalidLine / To be removed in 5.99';
+    property NeedsReScanEndIndex: Integer read FLastInvalidLine; deprecated 'Use LastInvalidLine / To be removed in 5.99';
+    property NeedsReScanRealStartIndex: Integer read FUnsentValidationStartLine; deprecated 'Use UnsentValidationStartLine / To be removed in 5.99';
+  end;
+
+  { TGenLazHighlighterLineRangeShiftList
+    - Range can be Pointer or record
+    - First field in Range MUST BE a pointer
+    - Additional fields can be handled by subclasses
+  }
+
+  generic TGenInitLazHighlighterLineRangeShiftList<_RANGE, _MemInit> = class(
+    specialize TGenLazEditLineItemsFixSize<
+      TLazHighlighterLineRangeList.TWrapGenParamClass,
+      specialize TGenLazShiftListFixedSize<
+        _RANGE,
+        {$IFDEF AssertSynMemIndex}
+        specialize TGenListConfigFixSize_3<_MemInit, TLazListAspectCapacityExp0x8000, TLazListAspectRangeIndexCheckExcept>
+        {$ELSE}
+        specialize TGenListConfigFixSize_3<_MemInit, TLazListAspectCapacityExp0x8000, TLazListAspectRangeNoIndexCheck>
+        {$ENDIF}
+      >
+    >)
+  protected type
+    PRange = ^_RANGE;
+  private
+    function GetItemPointer(AnIndex: Integer): PRange; inline;
+  protected
+    function GetRange(AnIndex: Integer): Pointer; override;
+    procedure SetRange(AnIndex: Integer; const AValue: Pointer); override;
+    procedure TextChanged(AnIndex, ACount: Integer); override;
+  public
+    procedure Insert(AnIndex, ACount: Integer); override;
+    procedure Delete(AnIndex, ACount: Integer); override;
+    procedure Move(AFromIndex, AToIndex, ACount: Integer); override;
+
+    property ItemPointer[AnIndex: Integer]: PRange read GetItemPointer;
+  end;
+
+  generic TGenLazHighlighterLineRangeShiftList<_RANGE> = class(
+    specialize TGenInitLazHighlighterLineRangeShiftList<_RANGE, TLazListAspectMemAllocZero>
+  )
+  end;
+
+  TLazHighlighterLineRangeShiftList = specialize TGenLazHighlighterLineRangeShiftList<Pointer>;
+
+
 
 function GetHighlighterRangesForHighlighter(
     AnHighlighterClass: TClass {TSynCustomHighlighterClass};
@@ -231,6 +326,140 @@ begin
     Result := TLazHighlighterRangeClass(DictRange.ClassType).Create(DictRange);
     FRangeDict.Add(DictResult, DictResult);
   end;
+end;
+
+{ TLazHighlighterLineRangeList }
+
+procedure TLazHighlighterLineRangeList.LineTextChanged(AIndex: Integer; ACount: Integer);
+begin
+  //
+end;
+
+procedure TLazHighlighterLineRangeList.InsertedLines(AIndex, ACount: Integer);
+begin
+  //
+end;
+
+procedure TLazHighlighterLineRangeList.DeletedLines(AIndex, ACount: Integer);
+begin
+  //
+end;
+
+procedure TLazHighlighterLineRangeList.TextChanged(AnIndex, ACount: Integer);
+begin
+  inherited TextChanged(AnIndex, ACount);
+  LineTextChanged(AnIndex, ACount){%H-};
+end;
+
+procedure TLazHighlighterLineRangeList.Insert(AnIndex, ACount: Integer);
+begin
+  inherited Insert(AnIndex, ACount);
+  InsertedLines(AnIndex, ACount){%H-};
+end;
+
+procedure TLazHighlighterLineRangeList.Delete(AnIndex, ACount: Integer);
+begin
+  inherited Delete(AnIndex, ACount);
+  DeletedLines(AnIndex, ACount){%H-};
+end;
+
+procedure TLazHighlighterLineRangeList.Invalidate(AFrom, ATo: integer);
+begin
+  if (FFirstInvalidLine < 0) or (AFrom < FFirstInvalidLine) then begin
+    FFirstInvalidLine := AFrom;
+    FUnsentValidationStartLine := AFrom;
+  end;
+  if ATo > FLastInvalidLine then
+    FLastInvalidLine := ATo;
+end;
+
+constructor TLazHighlighterLineRangeList.Create;
+begin
+  ValidateAll;
+  FRefCount := 1;
+end;
+
+procedure TLazHighlighterLineRangeList.InvalidateAll;
+begin
+  FFirstInvalidLine := 0;
+  FLastInvalidLine := Count - 1;
+  FUnsentValidationStartLine := 0;
+end;
+
+procedure TLazHighlighterLineRangeList.ValidateAll;
+begin
+  FFirstInvalidLine := -1;
+  FLastInvalidLine := -1;
+  FUnsentValidationStartLine :=-1;
+end;
+
+procedure TLazHighlighterLineRangeList.UpdateFirstInvalidLine(ANewFirstInvalidLine: Integer);
+begin
+  if ANewFirstInvalidLine > FLastInvalidLine then
+    ValidateAll
+  else
+    FFirstInvalidLine := ANewFirstInvalidLine;
+end;
+
+procedure TLazHighlighterLineRangeList.IncRefCount;
+begin
+  inc(FRefCount);
+end;
+
+procedure TLazHighlighterLineRangeList.DecRefCount;
+begin
+  dec(FRefCount);
+end;
+
+procedure TLazHighlighterLineRangeList.ClearReScanNeeded;
+begin
+  ValidateAll;
+end;
+
+procedure TLazHighlighterLineRangeList.AdjustReScanStart(ANewStart: Integer);
+begin
+  UpdateFirstInvalidLine(ANewStart);
+end;
+
+{ TGenInitLazHighlighterLineRangeShiftList }
+
+function TGenInitLazHighlighterLineRangeShiftList.GetItemPointer(AnIndex: Integer): PRange;
+begin
+  Result := PRange(inherited ItemPointer[AnIndex]);
+end;
+
+function TGenInitLazHighlighterLineRangeShiftList.GetRange(AnIndex: Integer): Pointer;
+begin
+  Result := PPointer(inherited ItemPointer[AnIndex])^;
+end;
+
+procedure TGenInitLazHighlighterLineRangeShiftList.SetRange(AnIndex: Integer; const AValue: Pointer);
+begin
+  PPointer(inherited ItemPointer[AnIndex])^ := AValue;
+end;
+
+procedure TGenInitLazHighlighterLineRangeShiftList.TextChanged(AnIndex, ACount: Integer);
+begin
+  inherited TextChanged(AnIndex, ACount);
+  Invalidate(AnIndex, AnIndex+ACount-1);
+end;
+
+procedure TGenInitLazHighlighterLineRangeShiftList.Insert(AnIndex, ACount: Integer);
+begin
+  inherited Insert(AnIndex, ACount);
+  Invalidate(AnIndex, AnIndex+ACount-1);
+end;
+
+procedure TGenInitLazHighlighterLineRangeShiftList.Delete(AnIndex, ACount: Integer);
+begin
+  inherited Delete(AnIndex, ACount);
+  Invalidate(AnIndex, AnIndex);
+end;
+
+procedure TGenInitLazHighlighterLineRangeShiftList.Move(AFromIndex, AToIndex, ACount: Integer);
+begin
+  inherited Move(AFromIndex, AToIndex, ACount);
+  Invalidate(Min(AFromIndex, AToIndex), Max(AFromIndex, AToIndex)+ACount-1);
 end;
 
 finalization

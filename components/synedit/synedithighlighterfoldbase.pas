@@ -2087,7 +2087,7 @@ begin
     FFoldNodeInfoList.HighLighter := Self;
   end
   else
-  if (CurrentRanges <> nil) and (CurrentRanges.NeedsReScanStartIndex >= 0) then
+  if (CurrentRanges <> nil) and (CurrentRanges.FirstInvalidLine >= 0) then
     ClearFoldNodeList;
 
 

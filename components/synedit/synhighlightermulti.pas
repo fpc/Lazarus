@@ -51,9 +51,9 @@ unit SynHighlighterMulti;
 interface
 
 uses
-  Classes, Graphics, SysUtils, Math, RegExpr,
-  SynEditStrConst, SynEditTypes, SynEditTextBase,
-  SynEditHighlighter, LazEditTextAttributes, LazEditMiscProcs,
+  Classes, Graphics, SysUtils, Math, RegExpr, SynEditStrConst, SynEditTypes, SynEditTextBase,
+  SynEditHighlighter, LazEditTextAttributes, LazEditMiscProcs, LazEditLineItemLists,
+  LazEditHighlighterUtils,
   {$IFDEF SynDebugMultiHL}LazLoggerBase{$ELSE}LazLoggerDummy{$ENDIF}, LazUTF8
   ;
 
@@ -83,8 +83,8 @@ type
   public
     constructor Create;
     procedure Debug;
-    procedure Insert(AnIndex: Integer; AnSection: TSynHLightMultiVirtualSection);
-    procedure Delete(AnIndex: Integer);
+    procedure Insert(AnIndex: Integer; AnSection: TSynHLightMultiVirtualSection); reintroduce;
+    procedure Delete(AnIndex: Integer); reintroduce;
     property Sections[Index: Integer]: TSynHLightMultiVirtualSection
              read GetSection write SetSection; default;
     property PSections[Index: Integer]: PSynHLightMultiVirtualSection
@@ -101,7 +101,7 @@ type
   private
     FFirstHLChangedLine: Integer;
     FLastHLChangedLine: Integer;
-    FRangeList: TSynManagedStorageMemList;
+    FRangeList: TLazEditChildLineItemsList;
     FRealLines: TSynEditStringsBase;
     FScheme: TSynHighlighterMultiScheme;
     FSectionList: TSynHLightMultiSectionList;
@@ -111,8 +111,8 @@ type
     FRegionScanRangeIndex: Integer;
     FLastPCharLine: String;
   protected
-    function  GetRange(Index: Pointer): TSynManagedStorageMem; override;
-    procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
+    function  GetRange(Index: Pointer): TLazEditLineItems; override;
+    procedure PutRange(Index: Pointer; const ARange: TLazEditLineItems); override;
     function  Get(Index: integer): string; override;
     procedure Put(Index: integer; const S: string); override; // should not be called ever
     function  GetCount: integer; override;
@@ -240,7 +240,7 @@ type
 
   { TSynHighlighterMultiRangeList }
 
-  TSynHighlighterMultiRangeList = class(TSynHighlighterRangeList)
+  TSynHighlighterMultiRangeList = class(TLazHighlighterLineRangeShiftList)
   private
     FLines: TSynEditStringsBase;
     FDefaultVirtualLines: TSynHLightMultiVirtualLines;
@@ -303,8 +303,8 @@ type
     procedure HookHighlighter(aHL: TSynCustomHighlighter);
     procedure UnhookHighlighter(aHL: TSynCustomHighlighter);
     procedure Notification(aComp: TComponent; aOp: TOperation); override;
-    function  CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
-    procedure BeforeDetachedFromRangeList(ARangeList: TSynHighlighterRangeList); override;
+    function  CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
+    procedure BeforeDetachedFromRangeList(ARangeList: TLazHighlighterLineRangeList); override;
     procedure SetCurrentLines(const AValue: TSynEditStringsBase); override;
     procedure SchemeItemChanged(Item: TObject);
     procedure SchemeChanged;
@@ -531,17 +531,24 @@ end;
 
 { TSynHLightMultiVirtualLines }
 
-function TSynHLightMultiVirtualLines.GetRange(Index: Pointer): TSynManagedStorageMem;
+function TSynHLightMultiVirtualLines.GetRange(Index: Pointer): TLazEditLineItems;
 begin
   Result := FRangeList[Index];
 end;
 
-procedure TSynHLightMultiVirtualLines.PutRange(Index: Pointer; const ARange: TSynManagedStorageMem);
+procedure TSynHLightMultiVirtualLines.PutRange(Index: Pointer; const ARange: TLazEditLineItems);
+var
+  c: Integer;
 begin
   FRangeList[Index] := ARange;
   if ARange <> nil then begin
-    ARange.Capacity := Count;
-    ARange.Count := Count;
+    c := ARange.Count;
+    if c > 0 then
+      ARange.Delete(0, c);
+    c := Count;
+    ARange.Capacity := c;
+    if c > 0 then
+      ARange.Insert(0, c);
   end;
 end;
 
@@ -622,7 +629,7 @@ end;
 
 constructor TSynHLightMultiVirtualLines.Create(ALines: TSynEditStringsBase);
 begin
-  FRangeList := TSynManagedStorageMemList.Create;
+  FRangeList := TLazEditChildLineItemsList.Create;
   FSectionList := TSynHLightMultiSectionList.Create;
   FRealLines := ALines;
 end;
@@ -642,8 +649,8 @@ begin
   for i := 0 to Count - 1 do
     debugln(SYNDEBUG_MULTIHL, [i,' len=',length(self[i]),': ',self[i]]);
 
-  debugln(SYNDEBUG_MULTIHL, ['- RangeList: ChildCnt: ', FRangeList.ChildCounts]);
-  for i := 0 to FRangeList.ChildCounts - 1 do
+  debugln(SYNDEBUG_MULTIHL, ['- RangeList: ChildCnt: ', FRangeList.Count]);
+  for i := 0 to FRangeList.Count - 1 do
     debugln(SYNDEBUG_MULTIHL, ['   ', PtrUInt(FRangeList.Children[i]), ' Cnt: ', FRangeList.Children[i].Count ]);
 
   if FScheme <> nil then
@@ -735,14 +742,12 @@ begin
   if VDiff = 0 then
     VDiff := Count - FRScanStartedWithLineCount;
   if VDiff < 0 then begin
-    FRangeList.ChildDeleteRows(FRScanStartedAtVLine, -VDiff);
-    FRangeList.CallDeletedLines(FRScanStartedAtVLine, -VDiff);
+    FRangeList.ChildrenDelete(FRScanStartedAtVLine, -VDiff);
   end
   else if VDiff > 0 then begin
-    FRangeList.ChildInsertRows(FRScanStartedAtVLine, VDiff);
-    FRangeList.CallInsertedLines(FRScanStartedAtVLine, VDiff);
+    FRangeList.ChildrenInsert(FRScanStartedAtVLine, VDiff);
   end;
-  FRangeList.CallLineTextChanged(FRScanStartedAtVLine, LastVline - FRScanStartedAtVLine + 1);
+  FRangeList.ChildrenTextChanged(FRScanStartedAtVLine, LastVline - FRScanStartedAtVLine + 1);
 end;
 
 procedure TSynHLightMultiVirtualLines.RegionScanUpdateFirstRegionEnd(AnEndPoint: TPoint;
@@ -823,8 +828,7 @@ begin
   s := FSectionList[i];
   if AIndex > s.StartPos.y then begin
     p := FSectionList.PSections[i];
-    FRangeList.ChildInsertRows(p^.VirtualLine + AIndex - p^.StartPos.y, ACount);
-    FRangeList.CallInsertedLines(p^.VirtualLine + AIndex - p^.StartPos.y, ACount);
+    FRangeList.ChildrenInsert(p^.VirtualLine + AIndex - p^.StartPos.y, ACount);
     p^.EndPos.y := p^.EndPos.y + ACount;
     inc(i);
     VLineDiff := ACount;
@@ -847,8 +851,7 @@ var
   procedure DelVLines;
   begin
     if VLineCount > 0 then begin
-      FRangeList.ChildDeleteRows(FirstVLine, VLineCount);
-      FRangeList.CallDeletedLines(FirstVLine, VLineCount);
+      FRangeList.ChildrenDelete(FirstVLine, VLineCount);
     end;
   end;
 begin
@@ -926,7 +929,7 @@ begin
     s := FSectionList[i];
     VLine2 := s.VirtualLine + AIndex + ACount - 1 - s.StartPos.y;
   end;
-  FRangeList.CallLineTextChanged(VLine1, VLine2 - VLine1 + 1);
+  FRangeList.ChildrenTextChanged(VLine1, VLine2 - VLine1 + 1);
 end;
 
 procedure TSynHLightMultiVirtualLines.ResetHLChangedLines;
@@ -1519,7 +1522,7 @@ begin
   end;
 end;
 
-function TSynMultiSyn.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;
+function TSynMultiSyn.CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList;
 var
   NewRangeList: TSynHighlighterMultiRangeList;
 begin
@@ -1531,7 +1534,7 @@ begin
   Result := NewRangeList;
 end;
 
-procedure TSynMultiSyn.BeforeDetachedFromRangeList(ARangeList: TSynHighlighterRangeList);
+procedure TSynMultiSyn.BeforeDetachedFromRangeList(ARangeList: TLazHighlighterLineRangeList);
 begin
   inherited BeforeDetachedFromRangeList(ARangeList);
   if (Schemes <> nil) and (ARangeList.RefCount = 0) then begin

@@ -11,7 +11,7 @@ uses
   LazFileUtils,
   Laz2_XMLRead, Laz2_DOM, LazStringUtils,
   // LazEdit
-  TextMateGrammar, LazEditTextAttributes,
+  TextMateGrammar, LazEditTextAttributes, LazEditHighlighterUtils,
   // SynEdit
   SynEditHighlighter, SynEditHighlighterFoldBase, SynEditTypes, SynEditTextBase;
 
@@ -24,15 +24,18 @@ type
     FoldLevel: Smallint;
   end;
 
+ TSynTextMateFullRangeInfo = record
+   Rng: pointer;
+   Info: TSynTextMateRangeInfo;
+ end;
+
   { TSynHighlighterTextMateRangeList }
 
-  TSynHighlighterTextMateRangeList = class(TSynHighlighterRangeList)
+  TSynHighlighterTextMateRangeList = class(specialize TGenLazHighlighterLineRangeShiftList<TSynTextMateFullRangeInfo>)
   private
-    FItemOffset: integer;
     function GetRangeInfo(Index: Integer): TSynTextMateRangeInfo;
     procedure SetRangeInfo(Index: Integer; AValue: TSynTextMateRangeInfo);
   public
-    constructor Create;
     property RangeInfo[Index: Integer]: TSynTextMateRangeInfo read GetRangeInfo write SetRangeInfo;
   end;
 
@@ -65,7 +68,7 @@ type
 
   protected
     function GetInstanceLanguageName: string; override;
-    function CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
+    function CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
     function UpdateRangeInfoAtLine(Index: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -109,20 +112,13 @@ begin
   if (Index < 0) or (Index >= Count) then
     Result := Default(TSynTextMateRangeInfo)
   else
-    Result := TSynTextMateRangeInfo((ItemPointer[Index] + FItemOffset)^);
+    Result := ItemPointer[Index]^.Info;
 end;
 
 procedure TSynHighlighterTextMateRangeList.SetRangeInfo(Index: Integer;
   AValue: TSynTextMateRangeInfo);
 begin
-  TSynTextMateRangeInfo((ItemPointer[Index] + FItemOffset)^) := AValue;
-end;
-
-constructor TSynHighlighterTextMateRangeList.Create;
-begin
-  inherited;
-  FItemOffset := ItemSize;
-  ItemSize := FItemOffset + SizeOf(TSynTextMateRangeInfo);
+  ItemPointer[Index]^.Info := AValue;
 end;
 
 { TSynTextMateSyn }
@@ -173,7 +169,7 @@ begin
 end;
 
 function TSynTextMateSyn.CreateRangeList(ALines: TSynEditStringsBase
-  ): TSynHighlighterRangeList;
+  ): TLazHighlighterLineRangeList;
 begin
   Result := TSynHighlighterTextMateRangeList.Create;
 end;

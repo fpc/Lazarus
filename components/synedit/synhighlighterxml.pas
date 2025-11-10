@@ -271,8 +271,6 @@ const
   NameCharsNoColon : set of char = ['0'..'9', 'a'..'z', 'A'..'Z', '_', '.', '-'];
 
 constructor TSynXMLSyn.Create(AOwner: TComponent);
-var
-  s: TFontStyle;
 begin
   inherited Create(AOwner);
 
