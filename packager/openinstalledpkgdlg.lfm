@@ -11,34 +11,28 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
   Position = poScreenCenter
   LCLVersion = '1.7'
   object HintMemo: TMemo
-    Left = 3
+    Left = 6
     Height = 121
-    Top = 333
-    Width = 440
+    Top = 334
+    Width = 434
     Align = alBottom
-    BorderSpacing.Left = 3
-    BorderSpacing.Right = 3
-    Lines.Strings = (
-      'Memo1'
-    )
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 3
   end
   object PkgListView: TListView
-    AnchorSideTop.Control = FilterEdit
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Splitter1
-    Left = 3
-    Height = 294
-    Top = 34
-    Width = 440
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Left = 3
-    BorderSpacing.Top = 3
-    BorderSpacing.Right = 3
+    Left = 6
+    Height = 293
+    Top = 35
+    Width = 434
+    Align = alClient
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
     Columns = <>
     HideSelection = False
     ReadOnly = True
@@ -53,7 +47,7 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
   object Splitter1: TSplitter
     Cursor = crVSplit
     Left = 0
-    Height = 5
+    Height = 6
     Top = 328
     Width = 446
     Align = alBottom
@@ -61,8 +55,8 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 35
-    Top = 460
+    Height = 34
+    Top = 461
     Width = 434
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -77,11 +71,13 @@ object OpenLoadedPackagesDlg: TOpenLoadedPackagesDlg
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object FilterEdit: TListViewFilterEdit
-    Left = 3
-    Height = 28
-    Top = 3
-    Width = 147
+    Left = 6
+    Height = 23
+    Top = 6
+    Width = 434
     ButtonWidth = 23
+    Align = alTop
+    BorderSpacing.Around = 6
     NumGlyphs = 1
     MaxLength = 0
     TabOrder = 0
