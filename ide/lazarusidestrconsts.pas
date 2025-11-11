@@ -3457,17 +3457,17 @@ resourcestring
   lisFocusHint = 'Focus hint';
    
   // Category
-  srkmCatCursorMoving   = 'Cursor moving commands';
-  srkmCatSelection      = 'Text selection commands';
-  srkmCatColSelection   = 'Text column selection commands';
-  srkmCatEditing        = 'Text editing commands';
-  srkmCatClipboard      = 'Clipboard commands';
+  srkmCatCursorMoving   = 'Cursor moving';
+  srkmCatSelection      = 'Text selection';
+  srkmCatColSelection   = 'Text column selection';
+  srkmCatEditing        = 'Text editing';
+  srkmCatClipboard      = 'Clipboard';
   lisKMDeleteLastChar   = 'Delete last char';
-  srkmCatMultiCaret     = 'Multi caret commands';
-  srkmCatSearchReplace  = 'Text search and replace commands';
-  srkmCatMarker         = 'Text bookmark commands';
-  srkmCatFold           = 'Text folding commands';
-  srkmCatCodeTools      = 'CodeTools commands';
+  srkmCatMultiCaret     = 'Multi caret';
+  srkmCatSearchReplace  = 'Text search and replace';
+  srkmCatMarker         = 'Text bookmark';
+  srkmCatFold           = 'Text folding';
+  srkmCatCodeTools      = 'CodeTools';
   srkmCatMacroRecording = 'Macros';
   srkmCatTemplateEdit   = 'Template Editing';
   srkmCatTemplateEditOff= 'Template Editing (not in Cell)';
@@ -3476,9 +3476,9 @@ resourcestring
   srkmCatSyncroEditSel  = 'Syncron Editing (while selecting)';
   srkmCatLineWrap       = 'Line wrapping';
 
-  srkmCatSrcNoteBook    = 'Source Notebook commands';
-  srkmCatFileMenu       = 'File menu commands';
-  srkmCatViewMenu       = 'View menu commands';
+  srkmCatSrcNoteBook    = 'Source Notebook';
+  srkmCatFileMenu       = 'File menu';
+  srkmCatViewMenu       = 'View menu';
   lisKMToggleViewObjectInspector = 'Toggle view Object Inspector';
   lisKMToggleViewSourceEditor = 'Toggle view Source Editor';
   lisKMToggleViewCodeExplorer = 'Toggle view Code Explorer';
@@ -3487,11 +3487,11 @@ resourcestring
   lisKMToggleViewMessages = 'Toggle view Messages';
   lisKMToggleViewSearchResults = 'Toggle view Search Results';
   lisKMToggleViewDebugEvents = 'View Debugger Event Log';
-  srkmCatProjectMenu    = 'Project menu commands';
+  srkmCatProjectMenu    = 'Project menu';
   lisKMNewProject = 'New project';
   lisKMNewProjectFromFile = 'New project from file';
   lisKMToggleViewIDESpeedButtons = 'Toggle view IDE speed buttons';
-  srkmCatRunMenu        = 'Run menu commands';
+  srkmCatRunMenu        = 'Run menu';
   lisKMCompileProjectProgram = 'Compile project/program';
   lisKMBuildProjectProgram = 'Build project/program';
   lisKMQuickCompileNoLinking = 'Quick compile, no linking';
@@ -3502,17 +3502,17 @@ resourcestring
   lisKMRunProgram = 'Run program';
   lisKMPauseProgram = 'Pause program';
   lisKMViewProjectOptions = 'View project options';
-  srkmCatPackageMenu = 'Package menu commands';
-  srkmCatToolMenu       = 'Tools menu commands';
+  srkmCatPackageMenu = 'Package menu';
+  srkmCatToolMenu       = 'Tools menu';
   lisKMExternalToolsSettings = 'External Tools settings';
   lisKMConvertDelphiPackageToLazarusPackage = 'Convert Delphi package to Lazarus package';
-  srkmCarHelpMenu       = 'Help menu commands';
-  lisKeyCatDesigner     = 'Designer commands';
+  srkmCarHelpMenu       = 'Help menu';
+  lisKeyCatDesigner     = 'Designer';
   lisKMCopySelectedComponentsToClipboard = 'Copy selected components';
   lisKMCutSelectedComponentsToClipboard = 'Cut selected components';
   lisKMPasteComponentsFromClipboard = 'Paste Components';
-  lisKeyCatObjInspector = 'Object Inspector commands';
-  lisKeyCatCustom       = 'Custom commands';
+  lisKeyCatObjInspector = 'Object Inspector';
+  lisKeyCatCustom       = 'Custom';
 
   // Unit dependencies
   dlgUnitDepRefresh      = 'Refresh';
