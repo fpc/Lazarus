@@ -4733,15 +4733,7 @@ resourcestring
   lisCoolbarAvailableCommands = 'Available commands';
   lisCoolbarToolbarCommands = 'Toolbar commands';
   // Command root nodes
-  lisCoolbarIDEMainMenu = 'IDE Main Menu';
   lisCoolbarSourceTab = 'Source Tab';
-  lisCoolbarSourceEditor = 'Source Editor';
-  lisCoolbarMessages = 'Messages';
-  lisCoolbarCodeExplorer = 'Code Explorer';
-  lisCoolbarCodeTemplates = 'Code Templates';
-  lisCoolbarDesigner = 'Designer';
-  lisCoolbarPackageEditor = 'Package Editor';
-  lisCoolbarPackageEditorFiles = 'Package Editor Files';
 
   lisCoolbarAddConfigDelete = 'Add/Config/Delete Toolbar(s)';
   lisCoolbarGeneralSettings = 'General Coolbar Settings';

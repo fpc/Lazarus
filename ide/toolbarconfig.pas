@@ -92,7 +92,6 @@ type
     procedure LoadCategories;
     procedure SortCategories(ACtgList: TStrings);
     procedure AddMenuItem(ParentNode: TTreeNode; CmdItem: TIDEButtonCommand);
-    function RootNodeCaption(CmdItem: TIDEButtonCommand): string;
   public
     procedure LoadSettings(SL: TStringList);
     procedure SaveSettings(SL: TStringList);
@@ -424,22 +423,6 @@ begin
   Node.ImageIndex := CmdItem.ImageIndex;
   Node.SelectedIndex := CmdItem.ImageIndex;
   Node.Data := CmdItem;
-end;
-
-function TToolBarConfig.RootNodeCaption(CmdItem: TIDEButtonCommand): string;
-begin
-  case CmdItem.Caption of
-    'IDEMainMenu':        Result := lisCoolbarIDEMainMenu;    // mnuMain
-    'SourceTab':          Result := lisCoolbarSourceTab;      // SourceTabMenuRootName
-    'SourceEditor':       Result := lisCoolbarSourceEditor;   // SourceEditorMenuRootName
-    'Messages':           Result := lisCoolbarMessages;       // MessagesMenuRootName
-    'Code Explorer':      Result := lisCoolbarCodeExplorer;   // CodeExplorerMenuRootName
-    'CodeTemplates':      Result := lisCoolbarCodeTemplates;  // CodeTemplatesMenuRootName
-    'Designer':           Result := lisCoolbarDesigner;       // DesignerMenuRootName
-    'PackageEditor':      Result := lisCoolbarPackageEditor;  // PackageEditorMenuRootName
-    'PackageEditorFiles': Result := lisCoolbarPackageEditorFiles // PackageEditorMenuFilesRootName
-    else                  Result := CmdItem.Caption;
-  end;
 end;
 
 procedure TToolBarConfig.AddToolBarItem(CmdItem: TIDEButtonCommand);
