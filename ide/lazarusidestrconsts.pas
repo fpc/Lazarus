@@ -3463,7 +3463,6 @@ resourcestring
   srkmCatEditing        = 'Text editing commands';
   srkmCatClipboard      = 'Clipboard commands';
   lisKMDeleteLastChar   = 'Delete last char';
-  srkmCatCmdCmd         = 'Command commands';
   srkmCatMultiCaret     = 'Multi caret commands';
   srkmCatSearchReplace  = 'Text search and replace commands';
   srkmCatMarker         = 'Text bookmark commands';
