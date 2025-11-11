@@ -1165,6 +1165,7 @@ type
     procedure PickListItemSelected(Sender: TObject);
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
     procedure PrepareCellHints(ACol, ARow: Integer); virtual;
+    function  RangeContains(const ARange: TGridRect; ACol, ARow: Integer): Boolean;
     procedure ResetDefaultColWidths; virtual;
     procedure ResetEditor;
     procedure ResetLastMove;
@@ -4031,6 +4032,13 @@ procedure TCustomGrid.PrepareCellHints(ACol, ARow: Integer);
 begin
 end;
 
+function TCustomGrid.RangeContains(const ARange: TGridRect;
+  ACol, ARow: Integer): Boolean;
+begin
+  Result := (ARange.Left <= ACol) and (ACol <= ARange.Right) and
+            (ARange.Top <= ARow) and (ARow <= ARange.Bottom);
+end;
+
 procedure TCustomGrid.ResetDefaultColWidths;
 var
   i: Integer;
@@ -5449,6 +5457,9 @@ end;
 
 procedure TCustomGrid.UpdateSelectionRange;
 begin
+  if (ColCount = 0) and (RowCount = 0) then
+    FRange := Rect(-1, -1, -1, -1)        // empty grid
+  else
   if goRowSelect in Options then begin
     FRange:=Rect(FFixedCols, FRow, ColCount-1, FRow);
   end
@@ -5603,19 +5614,11 @@ function TCustomGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
 var
   i: Integer;
 begin
-  Result:=  (FRange.Left<=aCol)   and
-            (aCol<=FRange.Right)  and
-            (FRange.Top<=aRow)    and
-            (aRow<=FRange.Bottom);
-
-  if not Result and (goRangeSelect in FOptions) and (RangeSelectMode = rsmMulti)
-  then
+  Result := RangeContains(FRange, aCol, aRow);
+  if not Result and (goRangeSelect in FOptions) and (RangeSelectMode = rsmMulti) then
     for i:=0 to High(FSelections) do
-      if (FSelections[i].Left <= aCol)  and
-         (ACol <= FSelections[i].Right) and
-         (FSelections[i].Top <= ARow)   and
-         (ARow <= FSelections[i].Bottom)
-      then begin
+      if RangeContains(FSelections[i], aCol, aRow) then
+      begin
         Result := true;
         exit;
       end;
@@ -5994,8 +5997,11 @@ end;
 
 function TCustomGrid.GetSelectedRangeCount: Integer;
 begin
-  Result := Length(FSelections) + 1;
+  if FRange = Rect(-1,-1, -1, -1) then   // empty grid
+    Result := 0
+  else
     // add 1 because the current selection (FRange) is not stored in the array
+    Result := Length(FSelections) + 1;
 end;
 
 function TCustomGrid.GetSelection: TGridRect;
@@ -6986,14 +6992,14 @@ begin
           // normal selecting
           fGridState:=gsSelecting;
 
-          if not EditingAllowed(FCol) or
-            (ExtendedSelect and not EditorAlwaysShown) then begin
-
+          if not EditingAllowed(FCol) or (ExtendedSelect and not EditorAlwaysShown) then
+          begin
             if ssShift in Shift then
               SelectActive:=(goRangeSelect in Options)
             else begin
               if (goRangeSelect in Options) and (FRangeSelectMode = rsmMulti)
-              then begin
+                and not IsCellSelected[FGCache.ClickCell.X, FGCache.ClickCell.Y] then
+              begin
                 if (MULTISEL_MODIFIER in Shift) then
                   AddSelectedRange
                 else begin
@@ -8423,7 +8429,10 @@ procedure TCustomGrid.ClearSelections;
 begin
   SetLength(FSelections, 0);
   UpdateSelectionRange;
-  FPivot := Point(Col, Row);
+  if (ColCount = 0) and (RowCount = 0) then
+    FPivot := Point(-1, -1)
+  else
+    FPivot := Point(Col, Row);
   InvalidateGrid;
 end;
 
@@ -10363,6 +10372,7 @@ begin
   FGridPropBackup.ValidData := True;
   FTopLeft:=Point(-1,-1);
   FRange:=Rect(-1,-1,-1,-1);
+  ClearSelections;
   FGCache.HotCellPainted := false;
   ResetHotCell;
   VisualChange;
