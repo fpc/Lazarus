@@ -73,6 +73,7 @@ type
     RubberbandSelectsGrandChildsCheckBox: TCheckBox;
     ShowBorderSpaceCheckBox: TCheckBox;
     ShowComponentCaptionsCheckBox: TCheckBox;
+    ShowNonVisualComponentsCheckBox: TCheckBox;
     ShowEditorHintsCheckBox: TCheckBox;
     ShowGridCheckBox: TCheckBox;
     ShowGuideLinesCheckBox: TCheckBox;
@@ -81,6 +82,7 @@ type
     procedure ColorBoxChange(Sender: TObject);
     procedure ColorsListBoxGetColors(Sender: TCustomColorListBox; Items: TStrings);
     procedure ColorsListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure ShowNonVisualComponentsCheckBoxChange(Sender: TObject);
     procedure CreateCompFocusNameCheckBoxChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
   private
@@ -132,6 +134,8 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
   begin
     RubberbandSelectsGrandChildsCheckBox.Caption:=dlgRubberbandSelectsGrandChildren;
     RubberbandSelectsGrandChildsCheckBox.Hint:=dlgSelectAllChildControls;
+    ShowNonVisualComponentsCheckBox.Caption:=lisDsgShowNonVisualComponents;
+    ShowNonVisualComponentsCheckBox.Hint:=lisDsgToggleShowingNonVisualComponents;
     ShowComponentCaptionsCheckBox.Caption:=dlgShowCaptionsOfNonVisuals;
     ShowComponentCaptionsCheckBox.Hint:=dlgDrawComponentsNameBelowIt;
     ShowEditorHintsCheckBox.Caption:=dlgShowDesignerHints;
@@ -190,7 +194,9 @@ begin
     GridSizeYSpinEdit.Value := GridSizeY;
     ShowGuideLinesCheckBox.Checked := ShowGuideLines;
     SnapToGuideLinesCheckBox.Checked := SnapToGuideLines;
+    ShowNonVisualComponentsCheckBox.Checked := ShowNonVisualComponents;
     ShowComponentCaptionsCheckBox.Checked := ShowComponentCaptions;
+    ShowComponentCaptionsCheckBox.Enabled := ShowNonVisualComponentsCheckBox.Checked;
     ShowEditorHintsCheckBox.Checked := ShowEditorHints;
     OpenDesignerOnOpenUnitCheckBox.Checked := AutoCreateFormsOnOpen;
     CheckPackagesOnFormCreateCheckBox.Checked := CheckPackagesOnFormCreate;
@@ -232,6 +238,7 @@ begin
     GridSizeY := GridSizeYSpinEdit.Value;
     ShowGuideLines := ShowGuideLinesCheckBox.Checked;
     SnapToGuideLines := SnapToGuideLinesCheckBox.Checked;
+    ShowNonVisualComponents := ShowNonVisualComponentsCheckBox.Checked;
     ShowComponentCaptions := ShowComponentCaptionsCheckBox.Checked;
     ShowEditorHints := ShowEditorHintsCheckBox.Checked;
     AutoCreateFormsOnOpen := OpenDesignerOnOpenUnitCheckBox.Checked;
@@ -286,6 +293,11 @@ begin
   if not (FLoaded and User) then
     Exit;
   ColorBox.Selected := ColorsListBox.Selected;
+end;
+
+procedure TFormEditorOptionsFrame.ShowNonVisualComponentsCheckBoxChange(Sender: TObject);
+begin
+  ShowComponentCaptionsCheckBox.Enabled := ShowNonVisualComponentsCheckBox.Checked;
 end;
 
 procedure TFormEditorOptionsFrame.CreateCompFocusNameCheckBoxChange(Sender: TObject);
