@@ -3465,7 +3465,7 @@ resourcestring
   srkmCatClipboard      = 'Clipboard';
   srkmCatSearchReplace  = 'Text search and replace';
   srkmCatFold           = 'Text folding';
-  srkmCatMarker         = 'Text bookmark';
+  srkmCatMarker         = 'Text bookmarks';
   srkmCatCodeTools      = 'CodeTools';
   srkmCatMacroRecording = 'Macros';
   srkmCatTemplateEdit   = 'Template Editing';
@@ -3474,14 +3474,14 @@ resourcestring
   srkmCatSyncroEditOff  = 'Syncron Editing (not in Cell)';
   srkmCatSyncroEditSel  = 'Syncron Editing (while selecting)';
   srkmCatLineWrap       = 'Line wrapping';
-  srkmCatSrcNoteBook    = 'Source Notebook';
+  srkmCatSrcNoteBook    = 'Source Notebooks';
   srkmCatFileMenu       = 'File menu';
   srkmCatViewMenu       = 'View menu';
   srkmCatProjectMenu    = 'Project menu';
   srkmCatRunMenu        = 'Run menu';
   srkmCatPackageMenu    = 'Package menu';
   srkmCatToolMenu       = 'Tools menu';
-  srkmCarHelpMenu       = 'Help menu';
+  srkmCatHelpMenu       = 'Help menu';
   lisKeyCatDesigner     = 'Designer';
   lisKeyCatObjInspector = 'Object Inspector';
   lisKeyCatCustom       = 'Custom';

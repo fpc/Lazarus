@@ -3409,7 +3409,7 @@ begin
   AddDefault(C, 'Editor Window Manager', lisSourceEditorWindowManager, ecManageSourceEditors);
 
   // help menu
-  C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,nil)];
+  C:=Categories[AddCategory('HelpMenu',srkmCatHelpMenu,nil)];
   AddDefault(C, 'About Lazarus', lisAboutLazarus, ecAboutLazarus);
   AddDefault(C, 'Online Help', lisMenuOnlineHelp, ecOnlineHelp);
   AddDefault(C, 'Context sensitive help', lisKMContextSensitiveHelp, ecContextHelp);

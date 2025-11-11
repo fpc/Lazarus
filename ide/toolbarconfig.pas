@@ -412,7 +412,7 @@ begin
   MoveItem(srkmCatPackageMenu);
   MoveItem(srkmCatToolMenu);
   MoveItem(srkmCatSrcNoteBook);
-  MoveItem(srkmCarHelpMenu);
+  MoveItem(srkmCatHelpMenu);
 end;
 
 procedure TToolBarConfig.AddMenuItem(ParentNode: TTreeNode; CmdItem: TIDEButtonCommand);
