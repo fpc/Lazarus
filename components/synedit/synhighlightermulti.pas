@@ -803,6 +803,8 @@ begin
         (FSectionList.Sections[FRegionScanRangeIndex].EndPos.y <= ALineIndex)
   do
     FSectionList.Delete(FRegionScanRangeIndex);
+  if FRegionScanRangeIndex >= FSectionList.Count then
+    exit;
   p := FSectionList.PSections[FRegionScanRangeIndex];
   p^.StartPos := AStartPoint;
   p^.TokenStartPos := ATokenStartPos;
