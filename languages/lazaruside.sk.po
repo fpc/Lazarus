@@ -8209,6 +8209,7 @@ msgid "There must be at least one toolbar!"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbardesigner
+msgctxt "lazarusidestrconsts.liscoolbardesigner"
 msgid "Designer"
 msgstr "Návrhár"
 
@@ -11405,15 +11406,24 @@ msgid "Key"
 msgstr "Kľúč"
 
 #: lazarusidestrconsts.liskeycatcustom
-msgid "Custom commands"
+#, fuzzy
+#| msgid "Custom commands"
+msgctxt "lazarusidestrconsts.liskeycatcustom"
+msgid "Custom"
 msgstr "Vlastné príkazy"
 
 #: lazarusidestrconsts.liskeycatdesigner
-msgid "Designer commands"
+#, fuzzy
+#| msgid "Designer commands"
+msgctxt "lazarusidestrconsts.liskeycatdesigner"
+msgid "Designer"
 msgstr "Príkazy návrhára"
 
 #: lazarusidestrconsts.liskeycatobjinspector
-msgid "Object Inspector commands"
+#, fuzzy
+#| msgid "Object Inspector commands"
+msgctxt "lazarusidestrconsts.liskeycatobjinspector"
+msgid "Object Inspector"
 msgstr "Príkazy Inšpektora objektov"
 
 #: lazarusidestrconsts.liskeyor2keysequence
@@ -15214,6 +15224,7 @@ msgid "Auto rebuild when rebuilding all"
 msgstr "Automaticky prebudovať, pri prebudovaní všetkého"
 
 #: lazarusidestrconsts.lispckoptscustom
+msgctxt "lazarusidestrconsts.lispckoptscustom"
 msgid "Custom"
 msgstr "Vlastné"
 
@@ -19903,40 +19914,45 @@ msgstr "Číslovanie verzií"
 msgid "Show options"
 msgstr "Zobraziť voľby"
 
-#: lazarusidestrconsts.srkmcarhelpmenu
-msgid "Help menu commands"
-msgstr "Príkazy menu Help"
-
 #: lazarusidestrconsts.srkmcatclipboard
-msgid "Clipboard commands"
+msgid "Clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.srkmcatcmdcmd
-msgid "Command commands"
-msgstr "Príkazy Command"
-
 #: lazarusidestrconsts.srkmcatcodetools
-msgid "CodeTools commands"
+#, fuzzy
+#| msgid "CodeTools commands"
+msgid "CodeTools"
 msgstr "Príkazy CodeTools"
 
 #: lazarusidestrconsts.srkmcatcolselection
-msgid "Text column selection commands"
+msgid "Text column selection"
 msgstr ""
 
 #: lazarusidestrconsts.srkmcatcursormoving
-msgid "Cursor moving commands"
+#, fuzzy
+#| msgid "Cursor moving commands"
+msgid "Cursor moving"
 msgstr "Príkazy presunu kurzora"
 
 #: lazarusidestrconsts.srkmcatediting
-msgid "Text editing commands"
+#, fuzzy
+#| msgid "Text editing commands"
+msgid "Text editing"
 msgstr "Príkazy úpravy textu"
 
 #: lazarusidestrconsts.srkmcatfilemenu
-msgid "File menu commands"
+#, fuzzy
+#| msgid "File menu commands"
+msgid "File menu"
 msgstr "Príkazy menu Súbor"
 
 #: lazarusidestrconsts.srkmcatfold
-msgid "Text folding commands"
+msgid "Text folding"
+msgstr ""
+
+#: lazarusidestrconsts.srkmcathelpmenu
+msgctxt "lazarusidestrconsts.srkmcathelpmenu"
+msgid "Help menu"
 msgstr ""
 
 #: lazarusidestrconsts.srkmcatlinewrap
@@ -19951,35 +19967,47 @@ msgstr "Makrá"
 #: lazarusidestrconsts.srkmcatmarker
 #, fuzzy
 #| msgid "Text marker commands"
-msgid "Text bookmark commands"
+msgid "Text bookmarks"
 msgstr "Príkazy značkovania textu"
 
 #: lazarusidestrconsts.srkmcatmulticaret
-msgid "Multi caret commands"
+msgid "Multi caret"
 msgstr ""
 
 #: lazarusidestrconsts.srkmcatpackagemenu
-msgid "Package menu commands"
+#, fuzzy
+#| msgid "Package menu commands"
+msgid "Package menu"
 msgstr "Príkazy menu Balíček"
 
 #: lazarusidestrconsts.srkmcatprojectmenu
-msgid "Project menu commands"
+#, fuzzy
+#| msgid "Project menu commands"
+msgid "Project menu"
 msgstr "Príkazy menu Projekt"
 
 #: lazarusidestrconsts.srkmcatrunmenu
-msgid "Run menu commands"
+#, fuzzy
+#| msgid "Run menu commands"
+msgid "Run menu"
 msgstr "Príkazy menu Spustiť"
 
 #: lazarusidestrconsts.srkmcatsearchreplace
-msgid "Text search and replace commands"
+#, fuzzy
+#| msgid "Text search and replace commands"
+msgid "Text search and replace"
 msgstr "Príkazy hľadania a nahradzovania textu"
 
 #: lazarusidestrconsts.srkmcatselection
-msgid "Text selection commands"
+#, fuzzy
+#| msgid "Text selection commands"
+msgid "Text selection"
 msgstr "Príkazy výberu textu"
 
 #: lazarusidestrconsts.srkmcatsrcnotebook
-msgid "Source Notebook commands"
+#, fuzzy
+#| msgid "Source Notebook commands"
+msgid "Source Notebooks"
 msgstr "Príkazy zdrojových poznámok"
 
 #: lazarusidestrconsts.srkmcatsyncroedit
@@ -20003,11 +20031,15 @@ msgid "Template Editing (not in Cell)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmcattoolmenu
-msgid "Tools menu commands"
+#, fuzzy
+#| msgid "Tools menu commands"
+msgid "Tools menu"
 msgstr "Príkazy menu Nástroje"
 
 #: lazarusidestrconsts.srkmcatviewmenu
-msgid "View menu commands"
+#, fuzzy
+#| msgid "View menu commands"
+msgid "View menu"
 msgstr "Príkazy menu Zobraziť"
 
 #: lazarusidestrconsts.srkmcommand

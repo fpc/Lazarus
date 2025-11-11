@@ -8169,6 +8169,7 @@ msgid "There must be at least one toolbar!"
 msgstr "这里至少需要一个工具栏！"
 
 #: lazarusidestrconsts.liscoolbardesigner
+msgctxt "lazarusidestrconsts.liscoolbardesigner"
 msgid "Designer"
 msgstr "设计"
 
@@ -11374,15 +11375,24 @@ msgid "Key"
 msgstr "键"
 
 #: lazarusidestrconsts.liskeycatcustom
-msgid "Custom commands"
+#, fuzzy
+#| msgid "Custom commands"
+msgctxt "lazarusidestrconsts.liskeycatcustom"
+msgid "Custom"
 msgstr "自定义命令"
 
 #: lazarusidestrconsts.liskeycatdesigner
-msgid "Designer commands"
+#, fuzzy
+#| msgid "Designer commands"
+msgctxt "lazarusidestrconsts.liskeycatdesigner"
+msgid "Designer"
 msgstr "设计工具命令"
 
 #: lazarusidestrconsts.liskeycatobjinspector
-msgid "Object Inspector commands"
+#, fuzzy
+#| msgid "Object Inspector commands"
+msgctxt "lazarusidestrconsts.liskeycatobjinspector"
+msgid "Object Inspector"
 msgstr "对象查看器命令"
 
 #: lazarusidestrconsts.liskeyor2keysequence
@@ -15181,6 +15191,7 @@ msgid "Auto rebuild when rebuilding all"
 msgstr "自动重新构建,当重新重建时"
 
 #: lazarusidestrconsts.lispckoptscustom
+msgctxt "lazarusidestrconsts.lispckoptscustom"
 msgid "Custom"
 msgstr "自定义"
 
@@ -19825,41 +19836,52 @@ msgstr "版本编号"
 msgid "Show options"
 msgstr "显示选项"
 
-#: lazarusidestrconsts.srkmcarhelpmenu
-msgid "Help menu commands"
-msgstr "帮助菜单命令"
-
 #: lazarusidestrconsts.srkmcatclipboard
-msgid "Clipboard commands"
+#, fuzzy
+#| msgid "Clipboard commands"
+msgid "Clipboard"
 msgstr "剪贴板命令"
 
-#: lazarusidestrconsts.srkmcatcmdcmd
-msgid "Command commands"
-msgstr "命令命令"
-
 #: lazarusidestrconsts.srkmcatcodetools
-msgid "CodeTools commands"
+#, fuzzy
+#| msgid "CodeTools commands"
+msgid "CodeTools"
 msgstr "CodeTools 命令"
 
 #: lazarusidestrconsts.srkmcatcolselection
-msgid "Text column selection commands"
+#, fuzzy
+#| msgid "Text column selection commands"
+msgid "Text column selection"
 msgstr "文本列选择命令"
 
 #: lazarusidestrconsts.srkmcatcursormoving
-msgid "Cursor moving commands"
+#, fuzzy
+#| msgid "Cursor moving commands"
+msgid "Cursor moving"
 msgstr "光标移动命令"
 
 #: lazarusidestrconsts.srkmcatediting
-msgid "Text editing commands"
+#, fuzzy
+#| msgid "Text editing commands"
+msgid "Text editing"
 msgstr "文本编辑命令"
 
 #: lazarusidestrconsts.srkmcatfilemenu
-msgid "File menu commands"
+#, fuzzy
+#| msgid "File menu commands"
+msgid "File menu"
 msgstr "文件菜单命令"
 
 #: lazarusidestrconsts.srkmcatfold
-msgid "Text folding commands"
+#, fuzzy
+#| msgid "Text folding commands"
+msgid "Text folding"
 msgstr "文本折叠命令"
+
+#: lazarusidestrconsts.srkmcathelpmenu
+msgctxt "lazarusidestrconsts.srkmcathelpmenu"
+msgid "Help menu"
+msgstr ""
 
 #: lazarusidestrconsts.srkmcatlinewrap
 msgid "Line wrapping"
@@ -19871,35 +19893,51 @@ msgid "Macros"
 msgstr "宏"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text bookmark commands"
+#, fuzzy
+#| msgid "Text bookmark commands"
+msgid "Text bookmarks"
 msgstr "文本书签命令"
 
 #: lazarusidestrconsts.srkmcatmulticaret
-msgid "Multi caret commands"
+#, fuzzy
+#| msgid "Multi caret commands"
+msgid "Multi caret"
 msgstr "多光标命令"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
-msgid "Package menu commands"
+#, fuzzy
+#| msgid "Package menu commands"
+msgid "Package menu"
 msgstr "软件包菜单命令"
 
 #: lazarusidestrconsts.srkmcatprojectmenu
-msgid "Project menu commands"
+#, fuzzy
+#| msgid "Project menu commands"
+msgid "Project menu"
 msgstr "项目菜单命令"
 
 #: lazarusidestrconsts.srkmcatrunmenu
-msgid "Run menu commands"
+#, fuzzy
+#| msgid "Run menu commands"
+msgid "Run menu"
 msgstr "运行菜单命令"
 
 #: lazarusidestrconsts.srkmcatsearchreplace
-msgid "Text search and replace commands"
+#, fuzzy
+#| msgid "Text search and replace commands"
+msgid "Text search and replace"
 msgstr "文本搜索和替换命令"
 
 #: lazarusidestrconsts.srkmcatselection
-msgid "Text selection commands"
+#, fuzzy
+#| msgid "Text selection commands"
+msgid "Text selection"
 msgstr "文本选择命令"
 
 #: lazarusidestrconsts.srkmcatsrcnotebook
-msgid "Source Notebook commands"
+#, fuzzy
+#| msgid "Source Notebook commands"
+msgid "Source Notebooks"
 msgstr "源笔记本命令"
 
 #: lazarusidestrconsts.srkmcatsyncroedit
@@ -19923,11 +19961,15 @@ msgid "Template Editing (not in Cell)"
 msgstr "模板编辑（不在单元格中）"
 
 #: lazarusidestrconsts.srkmcattoolmenu
-msgid "Tools menu commands"
+#, fuzzy
+#| msgid "Tools menu commands"
+msgid "Tools menu"
 msgstr "工具菜单命令"
 
 #: lazarusidestrconsts.srkmcatviewmenu
-msgid "View menu commands"
+#, fuzzy
+#| msgid "View menu commands"
+msgid "View menu"
 msgstr "查看菜单命令"
 
 #: lazarusidestrconsts.srkmcommand

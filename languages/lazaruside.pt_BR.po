@@ -8273,6 +8273,7 @@ msgid "There must be at least one toolbar!"
 msgstr "Deve haver ao menos uma barra de ferramentas!"
 
 #: lazarusidestrconsts.liscoolbardesigner
+msgctxt "lazarusidestrconsts.liscoolbardesigner"
 msgid "Designer"
 msgstr "Editor formulário"
 
@@ -11519,15 +11520,24 @@ msgid "Key"
 msgstr "Tecla"
 
 #: lazarusidestrconsts.liskeycatcustom
-msgid "Custom commands"
+#, fuzzy
+#| msgid "Custom commands"
+msgctxt "lazarusidestrconsts.liskeycatcustom"
+msgid "Custom"
 msgstr "Comandos personalizados"
 
 #: lazarusidestrconsts.liskeycatdesigner
-msgid "Designer commands"
+#, fuzzy
+#| msgid "Designer commands"
+msgctxt "lazarusidestrconsts.liskeycatdesigner"
+msgid "Designer"
 msgstr "Comandos do Editor"
 
 #: lazarusidestrconsts.liskeycatobjinspector
-msgid "Object Inspector commands"
+#, fuzzy
+#| msgid "Object Inspector commands"
+msgctxt "lazarusidestrconsts.liskeycatobjinspector"
+msgid "Object Inspector"
 msgstr "Comandos do Inspetor de Objetos"
 
 #: lazarusidestrconsts.liskeyor2keysequence
@@ -15355,6 +15365,7 @@ msgid "Auto rebuild when rebuilding all"
 msgstr "Auto reconstruir quando reconstruindo tudo"
 
 #: lazarusidestrconsts.lispckoptscustom
+msgctxt "lazarusidestrconsts.lispckoptscustom"
 msgid "Custom"
 msgstr "Personalizado"
 
@@ -20046,41 +20057,50 @@ msgstr "Numeração versão"
 msgid "Show options"
 msgstr "Exibir opções"
 
-#: lazarusidestrconsts.srkmcarhelpmenu
-msgid "Help menu commands"
-msgstr "Comandos do menu Ajuda"
-
 #: lazarusidestrconsts.srkmcatclipboard
-msgid "Clipboard commands"
+msgid "Clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.srkmcatcmdcmd
-msgid "Command commands"
-msgstr "Comandos de Comando"
-
 #: lazarusidestrconsts.srkmcatcodetools
-msgid "CodeTools commands"
+#, fuzzy
+#| msgid "CodeTools commands"
+msgid "CodeTools"
 msgstr "Comandos das Ferramentas de Código"
 
 #: lazarusidestrconsts.srkmcatcolselection
-msgid "Text column selection commands"
+#, fuzzy
+#| msgid "Text column selection commands"
+msgid "Text column selection"
 msgstr "Comandos seleção coluna texto"
 
 #: lazarusidestrconsts.srkmcatcursormoving
-msgid "Cursor moving commands"
+#, fuzzy
+#| msgid "Cursor moving commands"
+msgid "Cursor moving"
 msgstr "Comandos de movimentação do Cursor"
 
 #: lazarusidestrconsts.srkmcatediting
-msgid "Text editing commands"
+#, fuzzy
+#| msgid "Text editing commands"
+msgid "Text editing"
 msgstr "Comandos de Edição de Texto"
 
 #: lazarusidestrconsts.srkmcatfilemenu
-msgid "File menu commands"
+#, fuzzy
+#| msgid "File menu commands"
+msgid "File menu"
 msgstr "Comandos do menu Arquivo"
 
 #: lazarusidestrconsts.srkmcatfold
-msgid "Text folding commands"
+#, fuzzy
+#| msgid "Text folding commands"
+msgid "Text folding"
 msgstr "Comandos retração texto"
+
+#: lazarusidestrconsts.srkmcathelpmenu
+msgctxt "lazarusidestrconsts.srkmcathelpmenu"
+msgid "Help menu"
+msgstr ""
 
 #: lazarusidestrconsts.srkmcatlinewrap
 msgid "Line wrapping"
@@ -20092,35 +20112,51 @@ msgid "Macros"
 msgstr "Macros"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text bookmark commands"
+#, fuzzy
+#| msgid "Text bookmark commands"
+msgid "Text bookmarks"
 msgstr "Comandos do marcador texto"
 
 #: lazarusidestrconsts.srkmcatmulticaret
-msgid "Multi caret commands"
+#, fuzzy
+#| msgid "Multi caret commands"
+msgid "Multi caret"
 msgstr "Comandos multi cursor texto"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
-msgid "Package menu commands"
+#, fuzzy
+#| msgid "Package menu commands"
+msgid "Package menu"
 msgstr "Comandos do menu Pacotes"
 
 #: lazarusidestrconsts.srkmcatprojectmenu
-msgid "Project menu commands"
+#, fuzzy
+#| msgid "Project menu commands"
+msgid "Project menu"
 msgstr "Comandos do menu Projeto"
 
 #: lazarusidestrconsts.srkmcatrunmenu
-msgid "Run menu commands"
+#, fuzzy
+#| msgid "Run menu commands"
+msgid "Run menu"
 msgstr "Comandos do menu Executar"
 
 #: lazarusidestrconsts.srkmcatsearchreplace
-msgid "Text search and replace commands"
+#, fuzzy
+#| msgid "Text search and replace commands"
+msgid "Text search and replace"
 msgstr "Comandos de busca e substituição de Texto"
 
 #: lazarusidestrconsts.srkmcatselection
-msgid "Text selection commands"
+#, fuzzy
+#| msgid "Text selection commands"
+msgid "Text selection"
 msgstr "Comandos de seleção de texto"
 
 #: lazarusidestrconsts.srkmcatsrcnotebook
-msgid "Source Notebook commands"
+#, fuzzy
+#| msgid "Source Notebook commands"
+msgid "Source Notebooks"
 msgstr "Comandos Fonte do \"Notebook\""
 
 #: lazarusidestrconsts.srkmcatsyncroedit
@@ -20144,11 +20180,15 @@ msgid "Template Editing (not in Cell)"
 msgstr "Edição Modelo (fora Célula)"
 
 #: lazarusidestrconsts.srkmcattoolmenu
-msgid "Tools menu commands"
+#, fuzzy
+#| msgid "Tools menu commands"
+msgid "Tools menu"
 msgstr "Comandos do menu Ferramentas"
 
 #: lazarusidestrconsts.srkmcatviewmenu
-msgid "View menu commands"
+#, fuzzy
+#| msgid "View menu commands"
+msgid "View menu"
 msgstr "Comandos do menu Exibir"
 
 #: lazarusidestrconsts.srkmcommand

@@ -8371,6 +8371,7 @@ msgid "There must be at least one toolbar!"
 msgstr "Turi linkti bent viena įrankių juostą!"
 
 #: lazarusidestrconsts.liscoolbardesigner
+msgctxt "lazarusidestrconsts.liscoolbardesigner"
 msgid "Designer"
 msgstr "Komponuotojas"
 
@@ -11632,15 +11633,24 @@ msgid "Key"
 msgstr "Klavišas"
 
 #: lazarusidestrconsts.liskeycatcustom
-msgid "Custom commands"
+#, fuzzy
+#| msgid "Custom commands"
+msgctxt "lazarusidestrconsts.liskeycatcustom"
+msgid "Custom"
 msgstr "Kitos komandos"
 
 #: lazarusidestrconsts.liskeycatdesigner
-msgid "Designer commands"
+#, fuzzy
+#| msgid "Designer commands"
+msgctxt "lazarusidestrconsts.liskeycatdesigner"
+msgid "Designer"
 msgstr "Konstruktoriaus komandos"
 
 #: lazarusidestrconsts.liskeycatobjinspector
-msgid "Object Inspector commands"
+#, fuzzy
+#| msgid "Object Inspector commands"
+msgctxt "lazarusidestrconsts.liskeycatobjinspector"
+msgid "Object Inspector"
 msgstr "Objektų inspektoriaus komandos"
 
 #: lazarusidestrconsts.liskeyor2keysequence
@@ -15538,6 +15548,7 @@ msgid "Auto rebuild when rebuilding all"
 msgstr "Daryti automatiškai kai daromi visi"
 
 #: lazarusidestrconsts.lispckoptscustom
+msgctxt "lazarusidestrconsts.lispckoptscustom"
 msgid "Custom"
 msgstr "Naudotojo"
 
@@ -20272,41 +20283,50 @@ msgstr "Versijos numeracija"
 msgid "Show options"
 msgstr ""
 
-#: lazarusidestrconsts.srkmcarhelpmenu
-msgid "Help menu commands"
-msgstr "Meniu „Žinynas“ komandos"
-
 #: lazarusidestrconsts.srkmcatclipboard
-msgid "Clipboard commands"
+msgid "Clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.srkmcatcmdcmd
-msgid "Command commands"
-msgstr "Menių „Komandos“ komandos"
-
 #: lazarusidestrconsts.srkmcatcodetools
-msgid "CodeTools commands"
+#, fuzzy
+#| msgid "CodeTools commands"
+msgid "CodeTools"
 msgstr "CodeTools komandos"
 
 #: lazarusidestrconsts.srkmcatcolselection
-msgid "Text column selection commands"
+#, fuzzy
+#| msgid "Text column selection commands"
+msgid "Text column selection"
 msgstr "Komandos teksto stulpelio žymėjimui"
 
 #: lazarusidestrconsts.srkmcatcursormoving
-msgid "Cursor moving commands"
+#, fuzzy
+#| msgid "Cursor moving commands"
+msgid "Cursor moving"
 msgstr "Žymeklio perkėlimo komandos"
 
 #: lazarusidestrconsts.srkmcatediting
-msgid "Text editing commands"
+#, fuzzy
+#| msgid "Text editing commands"
+msgid "Text editing"
 msgstr "Teksto keitimo komandos"
 
 #: lazarusidestrconsts.srkmcatfilemenu
-msgid "File menu commands"
+#, fuzzy
+#| msgid "File menu commands"
+msgid "File menu"
 msgstr "Meniu „Failas“ komandos"
 
 #: lazarusidestrconsts.srkmcatfold
-msgid "Text folding commands"
+#, fuzzy
+#| msgid "Text folding commands"
+msgid "Text folding"
 msgstr "Teksto suskleidimo komandos"
+
+#: lazarusidestrconsts.srkmcathelpmenu
+msgctxt "lazarusidestrconsts.srkmcathelpmenu"
+msgid "Help menu"
+msgstr ""
 
 #: lazarusidestrconsts.srkmcatlinewrap
 msgid "Line wrapping"
@@ -20318,35 +20338,51 @@ msgid "Macros"
 msgstr "Makrokomandos"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text bookmark commands"
+#, fuzzy
+#| msgid "Text bookmark commands"
+msgid "Text bookmarks"
 msgstr "Teksto žymeklio komandos"
 
 #: lazarusidestrconsts.srkmcatmulticaret
-msgid "Multi caret commands"
+#, fuzzy
+#| msgid "Multi caret commands"
+msgid "Multi caret"
 msgstr "Daugelo žymeklių komandos"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
-msgid "Package menu commands"
+#, fuzzy
+#| msgid "Package menu commands"
+msgid "Package menu"
 msgstr "Paketo menių komandos"
 
 #: lazarusidestrconsts.srkmcatprojectmenu
-msgid "Project menu commands"
+#, fuzzy
+#| msgid "Project menu commands"
+msgid "Project menu"
 msgstr "Menių „Projektas“ komandos"
 
 #: lazarusidestrconsts.srkmcatrunmenu
-msgid "Run menu commands"
+#, fuzzy
+#| msgid "Run menu commands"
+msgid "Run menu"
 msgstr "Meniu „Startuoti“ komandos"
 
 #: lazarusidestrconsts.srkmcatsearchreplace
-msgid "Text search and replace commands"
+#, fuzzy
+#| msgid "Text search and replace commands"
+msgid "Text search and replace"
 msgstr "Teksto ieškos ir pakeitimo komandos"
 
 #: lazarusidestrconsts.srkmcatselection
-msgid "Text selection commands"
+#, fuzzy
+#| msgid "Text selection commands"
+msgid "Text selection"
 msgstr "Teksto žymėjimo komandos"
 
 #: lazarusidestrconsts.srkmcatsrcnotebook
-msgid "Source Notebook commands"
+#, fuzzy
+#| msgid "Source Notebook commands"
+msgid "Source Notebooks"
 msgstr "Pirminio kodo rengyklės komandos"
 
 #: lazarusidestrconsts.srkmcatsyncroedit
@@ -20370,11 +20406,15 @@ msgid "Template Editing (not in Cell)"
 msgstr "Šablono taisymas (ne langelyje)"
 
 #: lazarusidestrconsts.srkmcattoolmenu
-msgid "Tools menu commands"
+#, fuzzy
+#| msgid "Tools menu commands"
+msgid "Tools menu"
 msgstr "Meniu „Įrankiai“ komandos"
 
 #: lazarusidestrconsts.srkmcatviewmenu
-msgid "View menu commands"
+#, fuzzy
+#| msgid "View menu commands"
+msgid "View menu"
 msgstr "Meniu „Rodymas“ komandos"
 
 #: lazarusidestrconsts.srkmcommand

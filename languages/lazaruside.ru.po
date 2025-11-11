@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-11-02 16:25+0300\n"
+"PO-Revision-Date: 2025-11-11 17:49+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -8152,6 +8152,7 @@ msgid "There must be at least one toolbar!"
 msgstr "Должна иметься хотя бы одна панель!"
 
 #: lazarusidestrconsts.liscoolbardesigner
+msgctxt "lazarusidestrconsts.liscoolbardesigner"
 msgid "Designer"
 msgstr "Дизайнер"
 
@@ -11353,16 +11354,19 @@ msgid "Key"
 msgstr "Ключ"
 
 #: lazarusidestrconsts.liskeycatcustom
-msgid "Custom commands"
-msgstr "Команды пользователя"
+msgctxt "lazarusidestrconsts.liskeycatcustom"
+msgid "Custom"
+msgstr "Пользовательские"
 
 #: lazarusidestrconsts.liskeycatdesigner
-msgid "Designer commands"
-msgstr "Команды редактора форм"
+msgctxt "lazarusidestrconsts.liskeycatdesigner"
+msgid "Designer"
+msgstr "Редактор форм"
 
 #: lazarusidestrconsts.liskeycatobjinspector
-msgid "Object Inspector commands"
-msgstr "Команды инспектора объектов"
+msgctxt "lazarusidestrconsts.liskeycatobjinspector"
+msgid "Object Inspector"
+msgstr "Инспектор объектов"
 
 #: lazarusidestrconsts.liskeyor2keysequence
 msgid "Key (or 2 key sequence)"
@@ -15160,6 +15164,7 @@ msgid "Auto rebuild when rebuilding all"
 msgstr "Автоматически пересобирать при пересборке всех"
 
 #: lazarusidestrconsts.lispckoptscustom
+msgctxt "lazarusidestrconsts.lispckoptscustom"
 msgid "Custom"
 msgstr "Пользовательские"
 
@@ -19805,41 +19810,38 @@ msgstr "Номера версий"
 msgid "Show options"
 msgstr "Показать параметры"
 
-#: lazarusidestrconsts.srkmcarhelpmenu
-msgid "Help menu commands"
-msgstr "Команды меню Справка"
-
 #: lazarusidestrconsts.srkmcatclipboard
-msgid "Clipboard commands"
-msgstr "Команды буфера обмена"
-
-#: lazarusidestrconsts.srkmcatcmdcmd
-msgid "Command commands"
-msgstr "Управляющие команды"
+msgid "Clipboard"
+msgstr "Буфер обмена"
 
 #: lazarusidestrconsts.srkmcatcodetools
-msgid "CodeTools commands"
-msgstr "Команды CodeTools"
+msgid "CodeTools"
+msgstr "CodeTools"
 
 #: lazarusidestrconsts.srkmcatcolselection
-msgid "Text column selection commands"
-msgstr "Команды выделения столбцов текста"
+msgid "Text column selection"
+msgstr "Выделение столбцов текста"
 
 #: lazarusidestrconsts.srkmcatcursormoving
-msgid "Cursor moving commands"
-msgstr "Команды перемещения курсора"
+msgid "Cursor moving"
+msgstr "Перемещение курсора"
 
 #: lazarusidestrconsts.srkmcatediting
-msgid "Text editing commands"
-msgstr "Команды редактирования текста"
+msgid "Text editing"
+msgstr "Редактирование текста"
 
 #: lazarusidestrconsts.srkmcatfilemenu
-msgid "File menu commands"
-msgstr "Команды меню Файл"
+msgid "File menu"
+msgstr "Меню Файл"
 
 #: lazarusidestrconsts.srkmcatfold
-msgid "Text folding commands"
-msgstr "Команды сворачивания текста"
+msgid "Text folding"
+msgstr "Сворачивание текста"
+
+#: lazarusidestrconsts.srkmcathelpmenu
+msgctxt "lazarusidestrconsts.srkmcathelpmenu"
+msgid "Help menu"
+msgstr "Меню Справка"
 
 #: lazarusidestrconsts.srkmcatlinewrap
 msgid "Line wrapping"
@@ -19851,36 +19853,36 @@ msgid "Macros"
 msgstr "Макросы"
 
 #: lazarusidestrconsts.srkmcatmarker
-msgid "Text bookmark commands"
-msgstr "Команды управления закладками исходного кода"
+msgid "Text bookmarks"
+msgstr "Закладки исходного кода"
 
 #: lazarusidestrconsts.srkmcatmulticaret
-msgid "Multi caret commands"
-msgstr "Команды управления несколькими курсорами"
+msgid "Multi caret"
+msgstr "Многокурсорный режим"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
-msgid "Package menu commands"
-msgstr "Команды меню Пакет"
+msgid "Package menu"
+msgstr "Меню Пакет"
 
 #: lazarusidestrconsts.srkmcatprojectmenu
-msgid "Project menu commands"
-msgstr "Команды меню Проект"
+msgid "Project menu"
+msgstr "Меню Проект"
 
 #: lazarusidestrconsts.srkmcatrunmenu
-msgid "Run menu commands"
-msgstr "Команды меню Запуск"
+msgid "Run menu"
+msgstr "Меню Запуск"
 
 #: lazarusidestrconsts.srkmcatsearchreplace
-msgid "Text search and replace commands"
-msgstr "Команды поиска и замены текста"
+msgid "Text search and replace"
+msgstr "Поиск и замена текста"
 
 #: lazarusidestrconsts.srkmcatselection
-msgid "Text selection commands"
-msgstr "Команды выделения текста"
+msgid "Text selection"
+msgstr "Выделение текста"
 
 #: lazarusidestrconsts.srkmcatsrcnotebook
-msgid "Source Notebook commands"
-msgstr "Команды управления редакторами исходного кода"
+msgid "Source Notebooks"
+msgstr "Редакторы исходного кода"
 
 #: lazarusidestrconsts.srkmcatsyncroedit
 msgid "Syncron Editing"
@@ -19903,12 +19905,12 @@ msgid "Template Editing (not in Cell)"
 msgstr "Команды редактирования шаблонов (не в полях)"
 
 #: lazarusidestrconsts.srkmcattoolmenu
-msgid "Tools menu commands"
-msgstr "Команды меню Сервис"
+msgid "Tools menu"
+msgstr "Меню Сервис"
 
 #: lazarusidestrconsts.srkmcatviewmenu
-msgid "View menu commands"
-msgstr "Команды меню Вид"
+msgid "View menu"
+msgstr "Меню Вид"
 
 #: lazarusidestrconsts.srkmcommand
 msgctxt "lazarusidestrconsts.srkmcommand"
