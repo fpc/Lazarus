@@ -8238,16 +8238,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Egyszeres"
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "Kódböngésző"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr "Kódsablonok"
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr "&Beállítás"
@@ -8259,11 +8249,6 @@ msgstr "Biztosan törölhető a kijelölt eszköztár?"
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
 msgstr "Legalább egy eszköztárnak léteznie kell!"
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
-msgstr "Tervező"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
@@ -8303,15 +8288,6 @@ msgstr "Nyomógomb"
 msgid "Grab width"
 msgstr "Fogantyú szélessége"
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr "IDE Főmenü"
-
-#: lazarusidestrconsts.liscoolbarmessages
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr "Üzenetek"
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "A kijelölt eszköztárelem mozgatása lefelé"
@@ -8324,14 +8300,6 @@ msgstr "A kijelölt eszköztárelem mozgatása felfelé"
 msgid "IDE CoolBar"
 msgstr "IDE eszköztár"
 
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr "Csomagszerkesztő"
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
-msgstr "Csomagszerkesztő fájljai"
-
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "A kijelölt elem eltávolítása az eszköztárról"
@@ -8343,11 +8311,6 @@ msgstr "Alaphelyzet"
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr "Előbb ki kell választani egy eszköztárat!"
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "Forráskódszerkesztő"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"

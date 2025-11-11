@@ -8359,18 +8359,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Simple"
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-#, fuzzy
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "Explorador de Código"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-#, fuzzy
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr "Plantillas de Código"
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr "&Configurar"
@@ -8382,11 +8370,6 @@ msgstr "¿Está seguro que desea borrar la barra de herramientas seleccionada?"
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
 msgstr "¡Aquí debe estar al menos una barra de herramientas!"
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
-msgstr "Diseñador"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 #, fuzzy
@@ -8429,16 +8412,6 @@ msgstr "Botón"
 msgid "Grab width"
 msgstr "Anchura"
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr "Menú principal del IDE"
-
-#: lazarusidestrconsts.liscoolbarmessages
-#, fuzzy
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr "Mensajes"
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "Mover los elementos seleccionados de la barra de herramientas abajo"
@@ -8452,14 +8425,6 @@ msgstr "Mover los elementos seleccionados de la barra de herramientas arriba"
 msgid "IDE CoolBar"
 msgstr "CoolBar del IDE"
 
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr "Editor de paquetes"
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
-msgstr "Archivos del editor de paquetes"
-
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Remover los elementos seleccionados de la barra de herramientas"
@@ -8471,12 +8436,6 @@ msgstr "Restaurar valores predeterminados"
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr "¡Por favor, seleccione una barra de herramienta primero!"
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-#, fuzzy
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "Editor de Código Fuente"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 #, fuzzy

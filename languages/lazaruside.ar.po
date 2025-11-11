@@ -8156,17 +8156,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr ""
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-#, fuzzy
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "كاشف الأوامر"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr ""
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr ""
@@ -8177,11 +8166,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
@@ -8223,15 +8207,6 @@ msgstr ""
 msgid "Grab width"
 msgstr ""
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarmessages
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr ""
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr ""
@@ -8242,14 +8217,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liscoolbaroptions
 msgid "IDE CoolBar"
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr ""
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
 msgstr ""
 
 #: lazarusidestrconsts.liscoolbarremoveselected
@@ -8263,12 +8230,6 @@ msgstr ""
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr ""
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-#, fuzzy
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "محرّر الأوامر"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"

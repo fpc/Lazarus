@@ -8278,16 +8278,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Jednoduchý"
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "Průzkumník kódu"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr "Šablony kódu"
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr "&Nastavit"
@@ -8299,11 +8289,6 @@ msgstr "Opravdu chcete odstranit vybraný panel nástrojů?"
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
 msgstr "Musí být nejméně jeden nástrojový panel!"
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
-msgstr "Návrhář"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
@@ -8343,15 +8328,6 @@ msgstr "Tlačítko"
 msgid "Grab width"
 msgstr "Šířka uchopení"
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr "Hlavní nabídka IDE"
-
-#: lazarusidestrconsts.liscoolbarmessages
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr "Zprávy"
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "Přesunout vybranou položku nástrojového panelu dolů"
@@ -8364,14 +8340,6 @@ msgstr "Přesunout vybranou položku nástrojového panelu nahoru"
 msgid "IDE CoolBar"
 msgstr "CoolBar IDE"
 
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr "Editor balíčků"
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
-msgstr "Soubory editoru balíčků"
-
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Odstranit vybranou položku z nástrojového panelu"
@@ -8383,11 +8351,6 @@ msgstr "Obnovit výchozí"
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr "Prosím nejdříve vyberte nástrojový panel!"
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "Editor zdrojového kódu"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"

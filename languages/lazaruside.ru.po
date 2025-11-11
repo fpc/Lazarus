@@ -8129,16 +8129,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Одинарная"
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "Обозреватель кода"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr "Шаблоны кода"
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr "&Настроить"
@@ -8150,11 +8140,6 @@ msgstr "Вы действительно хотите удалить эту па�
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
 msgstr "Должна иметься хотя бы одна панель!"
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
-msgstr "Дизайнер"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
@@ -8194,15 +8179,6 @@ msgstr "Кнопка"
 msgid "Grab width"
 msgstr "Ширина"
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr "Главное меню IDE"
-
-#: lazarusidestrconsts.liscoolbarmessages
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr "Сообщения"
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "Переместить выбранный элемент вниз"
@@ -8215,14 +8191,6 @@ msgstr "Переместить выбранный элемент вверх"
 msgid "IDE CoolBar"
 msgstr "Инструментальные панели IDE"
 
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr "Редактор пакетов"
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
-msgstr "Файлы в редакторе пакетов"
-
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Удалить выбранный элемент с панели"
@@ -8234,11 +8202,6 @@ msgstr "Сбросить"
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr "Сначала выберите панель!"
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "Редактор исходного кода"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"

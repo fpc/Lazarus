@@ -8348,16 +8348,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Viengubas"
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "Kodo tyrinėtojas"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr "Kodo šablonai"
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr "&Konfigūruoti"
@@ -8369,11 +8359,6 @@ msgstr "Ar tikrai pašalinti pažymėtą įrankių juostą?"
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
 msgstr "Turi linkti bent viena įrankių juostą!"
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
-msgstr "Komponuotojas"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
@@ -8413,15 +8398,6 @@ msgstr "Mygtukas"
 msgid "Grab width"
 msgstr "Vilkti su"
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr "IKA pagrindiniis meniu"
-
-#: lazarusidestrconsts.liscoolbarmessages
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr "Pranešimai"
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "Pažymėtąjį įrankių juostos elementą perkelti žemiau"
@@ -8434,14 +8410,6 @@ msgstr "Pažymėtąjį įrankių juostos elementą perkelti aukščiau"
 msgid "IDE CoolBar"
 msgstr "IKA „CoolBar“"
 
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr "Paketų rengyklė"
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
-msgstr "Paketų rengyklės failai"
-
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Pažymėtus elementu šalinti iš įrankių juostos"
@@ -8453,11 +8421,6 @@ msgstr "Atkurti numatytasias"
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr "Pirma parinkite įrankių juostą!"
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "Pirminio kodo rengyklė"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"

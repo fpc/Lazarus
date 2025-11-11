@@ -8156,16 +8156,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Tek"
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "Kod Explorer"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr "Kod Şablonları"
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr "&Yapılandır"
@@ -8177,11 +8167,6 @@ msgstr "Seçili araç çubuğunu silmek istediğinizden emin misiniz?"
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
 msgstr "En az bir araç çubuğu olmalıdır!"
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
-msgstr "Tasarım"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
@@ -8221,15 +8206,6 @@ msgstr "Buton"
 msgid "Grab width"
 msgstr "Genişliği tut"
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr "IDE Ana Menüsü"
-
-#: lazarusidestrconsts.liscoolbarmessages
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr "Mesajlar"
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "Seçilen araç çubuğu öğesini aşağı taşı"
@@ -8242,14 +8218,6 @@ msgstr "Seçilen araç çubuğu öğesini yukarı taşı"
 msgid "IDE CoolBar"
 msgstr "IDE Araç çubuğu"
 
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr "Paket Düzenleyici"
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
-msgstr "Paket Düzenleyici Dosyaları"
-
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Seçilen öğeyi araç çubuğundan kaldır"
@@ -8261,11 +8229,6 @@ msgstr "Varsayılanları geri yükle"
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr "Lütfen öncelikle bir araç çubuğu seçin!"
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "Kaynak Düzenleyici"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"

@@ -8170,16 +8170,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Einfach"
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "Code-Explorer"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr "Quelltextvorlagen"
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr "Konfigurieren"
@@ -8191,11 +8181,6 @@ msgstr "Wollen Sie die ausgewählte Symbolleiste wirklich löschen?"
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
 msgstr "Es muß wenigstens eine Symbolleiste geben!"
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
-msgstr ""
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
@@ -8235,15 +8220,6 @@ msgstr "Schaltfläche"
 msgid "Grab width"
 msgstr "Griffbreite"
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr "IDE-Hauptmenü"
-
-#: lazarusidestrconsts.liscoolbarmessages
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr "Meldungen"
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "Gewähltes Symbolleisten-Element nach unten verschieben"
@@ -8256,14 +8232,6 @@ msgstr "Gewähltes Symbolleisten-Element nach oben verschieben"
 msgid "IDE CoolBar"
 msgstr "IDE-CoolBar"
 
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr "Package-Editor"
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
-msgstr "Package-Editordateien"
-
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Gewähltes Element aus der Symbolleiste entfernen"
@@ -8275,11 +8243,6 @@ msgstr "Vorgaben wiederherstellen"
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr "Bitte wählen Sie zunächst eine Symbolleiste aus!"
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "Quelltexteditor"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"

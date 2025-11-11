@@ -8177,16 +8177,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Simple"
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "Explorateur de code"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr "Modèles de code"
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr "&Configurer"
@@ -8198,11 +8188,6 @@ msgstr "Voulez-vous vraiment supprimer la barre d'outils sélectionnée ?"
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
 msgstr "Il doit y avoir au moins une barre d'outils !"
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
-msgstr "Concepteur"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
@@ -8242,15 +8227,6 @@ msgstr "Bouton"
 msgid "Grab width"
 msgstr "Largeur de saisie"
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr "Menu principal de l'EDI"
-
-#: lazarusidestrconsts.liscoolbarmessages
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr "Messages"
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "Déplacer l'élément choisi de la barre d'outils vers le bas"
@@ -8263,14 +8239,6 @@ msgstr "Déplacer l'élément choisi de la barre d'outils vers le haut"
 msgid "IDE CoolBar"
 msgstr "Barre de l'EDI"
 
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr "Éditeur de paquet"
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
-msgstr "Fichiers de l'éditeur de paquet"
-
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Retirer l'élément sélectionné de la barre d'outils"
@@ -8282,11 +8250,6 @@ msgstr "Valeurs par défaut"
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr "Veuillez d'abord sélectionner une barre d'outils !"
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "Éditeur de source"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 msgid "Source Tab"

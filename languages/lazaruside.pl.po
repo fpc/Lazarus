@@ -8347,16 +8347,6 @@ msgctxt "lazarusidestrconsts.liscoolbarborderstyleitem1"
 msgid "Single"
 msgstr "Pojedyncze"
 
-#: lazarusidestrconsts.liscoolbarcodeexplorer
-msgctxt "lazarusidestrconsts.liscoolbarcodeexplorer"
-msgid "Code Explorer"
-msgstr "Przeglądarka źródeł"
-
-#: lazarusidestrconsts.liscoolbarcodetemplates
-msgctxt "lazarusidestrconsts.liscoolbarcodetemplates"
-msgid "Code Templates"
-msgstr "Szablony źródeł"
-
 #: lazarusidestrconsts.liscoolbarconfigure
 msgid "&Configure"
 msgstr "&Konfiguracja"
@@ -8368,11 +8358,6 @@ msgstr "Na pewno chcesz skasować zaznaczony pasek narzędzi?"
 #: lazarusidestrconsts.liscoolbardeletewarning
 msgid "There must be at least one toolbar!"
 msgstr "Musi być przynajmniej jeden pasek narzędzi!"
-
-#: lazarusidestrconsts.liscoolbardesigner
-msgctxt "lazarusidestrconsts.liscoolbardesigner"
-msgid "Designer"
-msgstr "Edytor"
 
 #: lazarusidestrconsts.liscoolbargeneralsettings
 msgid "General Coolbar Settings"
@@ -8412,15 +8397,6 @@ msgstr "Przycisk"
 msgid "Grab width"
 msgstr "Szerokość chwytu"
 
-#: lazarusidestrconsts.liscoolbaridemainmenu
-msgid "IDE Main Menu"
-msgstr "Menu główne IDE"
-
-#: lazarusidestrconsts.liscoolbarmessages
-msgctxt "lazarusidestrconsts.liscoolbarmessages"
-msgid "Messages"
-msgstr "Komunikaty"
-
 #: lazarusidestrconsts.liscoolbarmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "Przesuń zaznaczony element paska w dół"
@@ -8433,14 +8409,6 @@ msgstr "Przesuń zaznaczony element paska w górę"
 msgid "IDE CoolBar"
 msgstr "IDE CoolBar"
 
-#: lazarusidestrconsts.liscoolbarpackageeditor
-msgid "Package Editor"
-msgstr "Edytor pakietu"
-
-#: lazarusidestrconsts.liscoolbarpackageeditorfiles
-msgid "Package Editor Files"
-msgstr "Pliki edytora pakietu"
-
 #: lazarusidestrconsts.liscoolbarremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Usuń wybrany element z paska narzędzi"
@@ -8452,11 +8420,6 @@ msgstr "Przywróć domyślne"
 #: lazarusidestrconsts.liscoolbarselecttoolbar
 msgid "Please select a toolbar first!"
 msgstr "Proszę najpierw wybrać pasek narzędzi!"
-
-#: lazarusidestrconsts.liscoolbarsourceeditor
-msgctxt "lazarusidestrconsts.liscoolbarsourceeditor"
-msgid "Source Editor"
-msgstr "Edytor źródeł"
 
 #: lazarusidestrconsts.liscoolbarsourcetab
 #, fuzzy
