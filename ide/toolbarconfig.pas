@@ -400,7 +400,6 @@ var
 begin
   NewIndex := 0;
   MoveItem(srkmCatFileMenu);
-  MoveItem(srkmCatCmdCmd);
   MoveItem(srkmCatSelection);
   MoveItem(srkmCatMacroRecording);
   MoveItem(srkmCatSearchReplace);

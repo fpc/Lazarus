@@ -2974,6 +2974,8 @@ begin
   // editing - without menu items in the IDE bar
   C:=Categories[AddCategory(CommandCategoryTextEditingName,srkmCatEditing,
                 IDECmdScopeSrcEditOnly)];
+  AddDefault(C, 'Undo', lisUndo, ecUndo);
+  AddDefault(C, 'Redo', lisRedo, ecRedo);
   AddDefault(C, 'Delete last char', lisKMDeleteLastChar, ecDeleteLastChar);
   AddDefault(C, 'Delete char at cursor', srkmecDeletechar, ecDeleteChar);
   AddDefault(C, 'Delete to end of word', srkmecDeleteWord, ecDeleteWord);
@@ -3030,11 +3032,6 @@ begin
   AddDefault(C, 'Cut current line', srkmecCutCurrentLine, ecCutCurrentLine);
   AddDefault(C, 'Cut current line - Add to Clipboard', srkmecCutAddCurrentLine, ecCutAddCurrentLine);
   AddDefault(C, 'Multi paste clipboard to current position', srkmecMultiPaste, ecMultiPaste);
-
-  // command commands
-  C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,nil)];
-  AddDefault(C, 'Undo', lisUndo, ecUndo);
-  AddDefault(C, 'Redo', lisRedo, ecRedo);
 
   // search & replace
   C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,IDECmdScopeSrcEditOnly)];
