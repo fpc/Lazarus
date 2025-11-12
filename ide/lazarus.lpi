@@ -723,11 +723,6 @@
         <UnitName Value="ExtTools"/>
       </Unit>
       <Unit>
-        <Filename Value="compiler.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Compiler"/>
-      </Unit>
-      <Unit>
         <Filename Value="exttooldialog.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>

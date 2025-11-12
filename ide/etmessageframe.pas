@@ -1330,15 +1330,9 @@ begin
 end;
 
 function TMessagesCtrl.GetViews(Index: integer): TLMsgWndView;
-
-  procedure RaiseOutOfBounds;
-  begin
-    raise Exception.Create('TMessagesCtrl.GetViews '+IntToStr(Index)+' out of bounds '+IntToStr(ViewCount));
-  end;
-
 begin
   if (Index<0) or (Index>=ViewCount) then
-    RaiseOutOfBounds;
+    raise Exception.Create('TMessagesCtrl.GetViews '+IntToStr(Index)+' out of bounds '+IntToStr(ViewCount));
   Result:=TLMsgWndView(FViews[Index]);
 end;
 
@@ -1850,6 +1844,18 @@ begin
   {$ENDIF}
 end;
 
+procedure TMessagesCtrl.CreateSourceMark(MsgLine: TMessageLine;
+  aSynEdit: TSynEdit);
+var
+  SourceMark: TETMark;
+begin
+  if TLMsgViewLine(MsgLine).Mark<>nil then exit;
+  if ord(MsgLine.Urgency)<ord(mluHint) then exit;
+  SourceMark:=SourceMarks.CreateMark(MsgLine,aSynEdit);
+  if SourceMark=nil then exit;
+  TLMsgViewLine(MsgLine).Mark:=SourceMark;
+end;
+
 procedure TMessagesCtrl.CreateSourceMarks(View: TLMsgWndView;
   StartLineNumber: Integer);
 var
@@ -1924,18 +1930,6 @@ end;
 function TMessagesCtrl.GetHeaderBackground(aToolState: TLMVToolState): TColor;
 begin
   Result:=FHeaderBackground[aToolState];
-end;
-
-procedure TMessagesCtrl.CreateSourceMark(MsgLine: TMessageLine;
-  aSynEdit: TSynEdit);
-var
-  SourceMark: TETMark;
-begin
-  if TLMsgViewLine(MsgLine).Mark<>nil then exit;
-  if ord(MsgLine.Urgency)<ord(mluHint) then exit;
-  SourceMark:=SourceMarks.CreateMark(MsgLine,aSynEdit);
-  if SourceMark=nil then exit;
-  TLMsgViewLine(MsgLine).Mark:=SourceMark;
 end;
 
 function TMessagesCtrl.GetUrgencyStyles(Urgency: TMessageLineUrgency): TMsgCtrlUrgencyStyle;
