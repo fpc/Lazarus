@@ -356,6 +356,21 @@ type
   TGetThreadDpiAwarenessContext = function (): DPI_AWARENESS_CONTEXT; stdcall;
   TAreDpiAwarenessContextsEqual = function (dpiContextA, dpiContextB: DPI_AWARENESS_CONTEXT): BOOL; stdcall;
 
+  { TApplicationAccessHelper }
+  // Provides access to protected methods and properties of TWinControl, without using a typecast hack,
+  // since such a typecast wil raise an EInvalidCast when compiled with -CR {$OBJECTCHECKS ON}
+  TApplicationAccessHelper = class helper for TApplication
+  public
+    procedure _ProcessAsyncCallQueue;
+  end;
+
+{ TApplicationAccessHelper }
+
+procedure TApplicationAccessHelper._ProcessAsyncCallQueue;
+begin
+  ProcessAsyncCallQueue;
+end;
+
 var
   g_GetDpiForMonitor: TGetDpiForMonitor = nil;
   g_GetDpiForWindow: TGetDpiForWindow = nil;
@@ -366,6 +381,7 @@ var
   g_GetThreadDpiAwarenessContext: TGetThreadDpiAwarenessContext = nil;
   g_AreDpiAwarenessContextsEqual: TAreDpiAwarenessContextsEqual = nil;
   g_HighDPIAPIDone: Boolean = False;
+  g_DoneAsyncPerLoop: Boolean = False;
 
 procedure InitHighDPIAPI;
 var

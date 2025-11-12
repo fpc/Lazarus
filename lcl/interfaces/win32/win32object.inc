@@ -375,6 +375,7 @@ var
     end;
 
 begin
+  g_DoneAsyncPerLoop := False;
   repeat
     if FPendingWaitHandlerIndex >= 0 then
     begin
@@ -421,12 +422,18 @@ begin
           DispatchMessageW(@AMessage);
         end;
       end;
+      // Handle ASync events that were queued recursively
+      g_DoneAsyncPerLoop := False;
+      if Assigned(Application) then
+        Application._ProcessAsyncCallQueue;
     end else
     if retVal = WAIT_TIMEOUT then
     begin
       // check for pending to-be synchronized methods
       CheckSynchronize;
       CheckPipeEvents;
+      if Assigned(Application) then
+        Application._ProcessAsyncCallQueue;
       break;
     end else
     if retVal = $FFFFFFFF then

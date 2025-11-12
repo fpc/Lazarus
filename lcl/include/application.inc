@@ -484,7 +484,7 @@ begin
       DoIdleActions;
     Include(FFlags,AppWaiting);
     Exclude(FFlags,AppIdleEndSent);
-    if Wait then
+    if Wait and not HasAsyncCallQueued then
       WidgetSet.AppWaitMessage;
     if (FIdleLockCount=0) then
       DoOnIdleEnd;
@@ -1050,6 +1050,11 @@ begin
   HideHint;
 end;
 
+function TApplication.HasAsyncCallQueued: boolean;
+begin
+  Result := (FAsyncCall.Cur.Top <> nil) or (FAsyncCall.Next.Top <> nil);
+end;
+
 {------------------------------------------------------------------------------
   Method: TApplication.ProcessAsyncCallQueue
 
@@ -1062,26 +1067,29 @@ var
   Data: PtrInt;
 begin
   with FAsyncCall do begin
-    // move the items of NextQueue to CurQueue, keep the order
-    System.EnterCriticalsection(CritSec);
-    try
-      if Next.Top<>nil then
-      begin
-        if Cur.Last<>nil then
+    // dirty read, to check if we need to enter the critical section
+    if Next.Top<>nil then begin
+      // move the items of NextQueue to CurQueue, keep the order
+      System.EnterCriticalsection(CritSec);
+      try
+        if Next.Top<>nil then
         begin
-          assert(Cur.Top <> nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
-          Cur.Last^.NextItem:=Next.Top;
-          Next.Top^.PrevItem:=Cur.Last;
-        end else begin
-          assert(Cur.Top = nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
-          Cur.Top:=Next.Top;
+          if Cur.Last<>nil then
+          begin
+            assert(Cur.Top <> nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
+            Cur.Last^.NextItem:=Next.Top;
+            Next.Top^.PrevItem:=Cur.Last;
+          end else begin
+            assert(Cur.Top = nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
+            Cur.Top:=Next.Top;
+          end;
+          Cur.Last:=Next.Last;
+          Next.Top:=nil;
+          Next.Last:=nil;
         end;
-        Cur.Last:=Next.Last;
-        Next.Top:=nil;
-        Next.Last:=nil;
+      finally
+        System.LeaveCriticalsection(CritSec);
       end;
-    finally
-      System.LeaveCriticalsection(CritSec);
     end;
 
     // process items from top to last in 'Cur' queue
@@ -1090,6 +1098,8 @@ begin
     // Application.ProcesssMessages
     // Using a second queue avoids an endless loop, when an event adds a new event.
     repeat
+      // dirty read, to check if we need to enter the critical section
+      if Cur.Top=nil then exit;
       // remove top item from queue
       System.EnterCriticalSection(CritSec);
       try

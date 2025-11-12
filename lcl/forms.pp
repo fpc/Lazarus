@@ -1594,6 +1594,7 @@ type
     procedure UpdateVisible;
     procedure DoIdleActions;
     procedure MenuPopupHandler(Sender: TObject);
+    function  HasAsyncCallQueued: boolean;
     procedure ProcessAsyncCallQueue;
     procedure DoDecLCLRefcountToZero(Sender: TObject);
     procedure FreeComponent(Data: PtrInt);
