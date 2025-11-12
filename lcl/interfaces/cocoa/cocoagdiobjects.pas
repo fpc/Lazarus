@@ -398,6 +398,7 @@ type
     function InitDraw(width, height: Integer): Boolean;
 
     // drawing functions
+    procedure DrawArc(X1, Y1, X2, Y2, Angle1, Angle2, AMode: Integer);
     procedure DrawFocusRect(ARect: TRect);
     procedure InvertRectangle(X1, Y1, X2, Y2: Integer);
     procedure MoveTo(X, Y: Integer);
@@ -595,6 +596,19 @@ function isSamePoint(const p1, p2: TPoint): Boolean; inline;
 begin
   Result:=(p1.x=p2.x) and (p1.y=p2.y);
 end;
+
+procedure EnsureOrder(var X, Y: Integer);
+var
+  tmp: Integer;
+begin
+  if Y < X then
+  begin
+    tmp := X;
+    X := Y;
+    Y := tmp;
+  end;
+end;
+
 
 { TCocoaFont }
 
@@ -1899,19 +1913,7 @@ var
   cg: CGContextRef;
   rx2, ry2: CGFloat;
 
-  procedure EnsureOrder(var X, Y: Integer);
-  var
-    tmp: Integer;
-  begin
-    if Y < X then
-    begin
-      tmp := X;
-      X := Y;
-      Y := tmp;
-    end;
-  end;
-
-  procedure DrawArc(X, Y, Width, Height: Integer; Angle: Integer);
+  procedure DoArc(X, Y, Width, Height: Integer; Angle: Integer);
   const
     ARC_LENGTH = 90*16;
   var
@@ -1945,13 +1947,13 @@ begin
     CGContextBeginPath(cg);                                 // Begin path
     CGContextMoveToPoint(cg, X1 + rx2 + 0.5, Y2 + 0.5);     // Move to start
     CGContextAddLineToPoint(cg, X2 - rx2 + 0.5, Y2 + 0.5);  // Bottom horizontal line
-    DrawArc(X2 - RX, Y2 - RY, RX, RY, 270*16);              // Bottom/right arc
+    DoArc(X2 - RX, Y2 - RY, RX, RY, 270*16);              // Bottom/right arc
     CGContextAddLineToPoint(cg, X2 + 0.5, Y1 + ry2 + 0.5);  // Right vertical line
-    DrawArc(X2 - RX, Y1, RX, RY, 0);                        // Top/right arc
+    DoArc(X2 - RX, Y1, RX, RY, 0);                        // Top/right arc
     CGContextAddLineToPoint(cg, X1 + rx2 + 0.5, Y1 + 0.5);  // Top horizontal line
-    DrawArc(X1, Y1, RX, RY, 90*16);                         // Top/left arc
+    DoArc(X1, Y1, RX, RY, 90*16);                         // Top/left arc
     CGContextAddLineToPoint(cg, X1 + 0.5, Y2 - ry2 + 0.5);  // Left vertical line
-    DrawArc(X1, Y2 - RY, RX, RY, 180*16);                   // Bottom/left arc
+    DoArc(X1, Y2 - RY, RX, RY, 180*16);                   // Bottom/left arc
     CGContextClosePath(cg);                                 // Close path
 
     CGContextDrawPath(cg, kCGPathFillStroke);
@@ -2530,6 +2532,55 @@ begin
   TM.tmCharSet := DEFAULT_CHARSET;
 
   Result := True;
+end;
+
+// AMode = 0 --- simple arc line
+//         1 --- chord
+//         2 --- sector (pie)
+procedure TCocoaContext.DrawArc(X1, Y1, X2, Y2, Angle1, Angle2, AMode: Integer);
+var
+  cg: CGContextRef;
+  pts: TBezierPointArray;
+  i: Integer;
+begin
+  cg := CGContext;
+  if not Assigned(cg) then exit;
+
+  EnsureOrder(X1, X2);
+  EnsureOrder(Y1, Y2);
+
+  if (X2 - X1 <= 0) or (Y2 - Y1 <= 0) or (Angle2 = 0) then
+    Exit;
+
+  Arc2PolyBezier(X1, Y1, X2-X1-1, Y2-Y1-1, Angle1, Angle2, 0, pts);
+
+  CGContextBeginPath(cg);
+  CGContextMoveToPoint(cg, pts[0].X+0.5, pts[0].Y+0.5); // move to first curve point
+  i := 1;
+  repeat
+    CGContextAddCurveToPoint(cg,
+      pts[i].X+0.5,   pts[i].Y+0.5,        // control point of previous curve point
+      pts[i+1].X+0.5, pts[i+1].Y+0.5,      // control point of next curve point
+      pts[i+2].X+0.5, pts[i+2].Y+0.5       // next curve point
+    );
+    inc(i, 3);
+  until i = Length(pts);
+
+  case AMode of
+    0: begin   // simple arc line
+         CGContextDrawPath(cg, kCGPathStroke);
+       end;
+    1: begin  // chord
+         CGContextClosePath(cg);           // Close path
+         CGContextDrawPath(cg, kCGPathFillStroke);
+       end;
+    2: begin  // pie
+         CGContextAddLineToPoint(cg, (X1 + X2)*0.5, (Y1 + Y2)*0.5);  // Line to center
+         CGContextClosePath(cg);           // Close path
+         CGContextDrawPath(cg, kCGPathFillStroke);
+       end;
+  end;
+  AttachedBitmap_SetModified();
 end;
 
 procedure TCocoaContext.DrawBitmap(X, Y: Integer; ABitmap: TCocoaBitmap);

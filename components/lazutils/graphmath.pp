@@ -40,6 +40,7 @@ Type
   end;
 
   TBezier = Array[0..3] of TFloatPoint;
+  TBezierPointArray = Array of TFloatPoint;
 
   PPoint = ^TPoint;
 
@@ -48,6 +49,8 @@ procedure Angles2Coords(X,Y, Width, Height : Integer;
 
 procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : TBezier);
+procedure Arc2PolyBezier(X, Y, Width, Height, Angle1, Angle2, Rotation: Integer;
+  var Points: TBezierPointArray);
 
 function Bezier(const C1,C2,C3,C4 : TFloatPoint): TBezier; Overload; inline;
 function Bezier(const C1,C2,C3,C4 : TPoint): TBezier; Overload; inline;
@@ -446,6 +449,99 @@ begin
     Points[I] := Rotate(Points[I], Rotation); //Rotate Counter-Clockwise
     Points[I] := Points[I] + PT; //Translate to Center
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:   Arc2ToPolyBezier
+  Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
+  Returns:  Nothing
+
+  Arc2PolyBezier approximates an elliptical arc by an array of Bezier segments
+  consisting of curve and control points.
+
+  The arc is defined by a rectangle which bounds the full ellipse. The
+  rectangle has the specified Width and Height, its top/left corner is at the
+  point X,Y. Start of the arc is given by the eccentric angle Angle1, and its
+  length is given by Angle2. Both angles are expressed in 1/16th of a degree,
+  a full circle, for example, equals to 5760 (16*360).
+  A positive value of Angle2 means counter-clockwise while a negative value
+  means clockwise direction. Zero degrees is at the 3 o'clock position.
+
+  The Rotation parameter accepts a angle for a rotated ellipse - for a
+  non-rotated ellipse this value would be 0, or 360*16.
+
+  The arc is approximated by one or more Bezier curves. If the angle length
+  is greater than 45*16 (45 degrees), it breaks the arc into arcs of 45 degrees.
+
+  The points with indices 0, 3, 6, etc are Bezier curve points (points on the
+  arc), the points with indices 1, 4, 7 are the right-sided control points, those
+  with indcies 2, 5, ... the left-sided controls points of the curve points at
+  indices 0, 3, 6, ...
+
+  The points are arranged such that they can be immediately passed to the
+  TCanvas.PolyBezier with parameter Continuous=true.
+
+------------------------------------------------------------------------------}
+procedure Arc2PolyBezier(X, Y, Width, Height, Angle1, Angle2, Rotation: Integer;
+  var Points: TBezierPointArray);
+const
+  BLOCK_SIZE = 25;
+var
+  Count: Integer;
+
+  procedure AddPoint(const APoint: TFloatPoint);
+  begin
+    Inc(Count);
+    if Count mod BLOCK_SIZE = 0 then
+      SetLength(Points, Length(Points) + BLOCK_SIZE);
+    Points[Count - 1] := APoint;
+  end;
+
+var
+  I, K: Integer;
+  FullAngle: Integer;
+  TST: Boolean;
+  B: TBezier;
+begin
+  if Abs(Angle2) > 360*16 then begin
+    Angle2 := 360*16;
+    Angle1 := 0;
+  end;
+  FullAngle := Angle1 + Angle2;
+  K := Ceil(ABS(Angle2/16) / 45);
+  Count := 0;
+  SetLength(Points, BLOCK_SIZE);
+  if Angle2 > 45*16 then
+    Angle2 := 45*16
+  else
+  if Angle2 < -45*16 then
+    Angle2 := -45*16;
+
+  for I := 0 to K - 1 do begin
+    Arc2Bezier(X, Y, Width, Height, Angle1, Angle2, Rotation, B{%H-});
+    if I = 0 then
+      AddPoint(B[0]);
+    AddPoint(B[1]);
+    AddPoint(B[2]);
+    AddPoint(B[3]);
+
+    Angle1 := Angle1 + Angle2;
+    if Angle2 > 0 then
+      TST := (FullAngle - Angle1) > 45*16
+    else
+      TST := ABS(FullAngle - Angle1) > 45*16;
+    if TST then
+    begin
+      if Angle2 > 0 then
+        Angle2 := 45*16
+      else
+        Angle2 := -45*16;
+    end else
+    begin
+      Angle2 := FullAngle - Angle1
+    end;
+  end;
+  SetLength(Points, Count);
 end;
 
 {------------------------------------------------------------------------------
