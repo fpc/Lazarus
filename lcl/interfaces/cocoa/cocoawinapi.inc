@@ -40,16 +40,26 @@ const
  { crt_Complex   } COMPLEXREGION
   );
 
-function TCocoaWidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, angle1,
-  angle2: Integer): Boolean;
+function TCocoaWidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, Angle1,
+  Angle2: Integer): Boolean;
+var
+  ctx: TCocoaContext;
 begin
-  Result:=inherited Arc(DC, Left, Top, Right, Bottom, angle1, angle2);
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+    ctx.DrawArc(Left, Top, Right, Bottom, Angle1, Angle2, 0)  // 0 --> arc line only
 end;
 
 function TCocoaWidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1,
   angle2: Integer): Boolean;
+var
+  ctx: TCocoaContext;
 begin
-  Result:=inherited AngleChord(DC, x1, y1, x2, y2, angle1, angle2);
+  ctx := CheckDC(DC);
+  result := Assigned(ctx);
+  if Result then
+    ctx.DrawArc(x1, y1, x2, y2, angle1, angle2, 1);  // 1 --> chord mode
 end;
 
 function TCocoaWidgetSet.BeginPaint(Handle: hWnd; var PS: TPaintStruct): hdc;
@@ -2123,6 +2133,30 @@ begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCocoaRegion.PtInRegion Result: ' + DbgS(Result));
   {$ENDIF}
+end;
+
+function TCocoaWidgetSet.Pie(DC: HDC; X1, Y1, X2, Y2, SX, SY, EX, EY: Integer): Boolean;
+var
+  ctx: TCocoaContext;
+  angle1, angle2: Extended;
+begin
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+  begin
+    Coords2Angles(X1, Y1, X2-X1-1, Y2-Y1-1, SX, SY, EX, EY, angle1, angle2);
+    ctx.DrawArc(X1, Y1, X2, Y2, round(angle1), round(angle2), 2);  // 2 = pie mode
+  end;
+end;
+
+function TCocoaWidgetSet.RadialPie(DC: HDC; X1, Y1, X2, Y2, Angle1, Angle2: Integer): Boolean;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+    ctx.DrawArc(X1, Y1, X2, Y2, Angle1, Angle2, 2);  // 2 = pie mode
 end;
 
 function TCocoaWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;

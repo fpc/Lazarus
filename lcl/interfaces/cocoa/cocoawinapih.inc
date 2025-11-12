@@ -145,12 +145,14 @@ function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; ove
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 {function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;}
+function Pie(DC: HDC; X1, Y1, X2, Y2, SX, SY, EX, EY: Integer): Boolean; override;
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
 function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean; override;
 function PtInRegion(RGN: HRGN; X, Y: Integer): Boolean; override;
 
+function RadialPie(DC: HDC; X1, Y1, X2, Y2, Angle1, Angle2: Integer): Boolean; override;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 function ReleaseCapture : Boolean; override;
