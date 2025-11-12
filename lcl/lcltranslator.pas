@@ -55,11 +55,14 @@ type
     procedure UpdateTranslation(AnInstance: TPersistent);
   end;
 
+  { TDefaultTranslator }
+
   TDefaultTranslator = class(TUpdateTranslator)
   private
     FMOFile: TMOFile;
   public
     constructor Create(MOFileName: string);
+    constructor Create(aMOFile: TMOFile);
     destructor Destroy; override;
     procedure TranslateStringProperty(Sender: TObject; const Instance: TPersistent;
       PropInfo: PPropInfo; var Content: string); override;
@@ -448,12 +451,18 @@ begin
   FMOFile := TMOFile.Create(UTF8ToSys(MOFileName));
 end;
 
+constructor TDefaultTranslator.Create(aMOFile: TMOFile);
+begin
+  inherited Create;
+  FMOFile := aMOFile;
+end;
+
 destructor TDefaultTranslator.Destroy;
 begin
   FMOFile.Free;
   //If someone will use this class incorrectly, it can be destroyed
   //before Reader destroying. It is a very bad thing, but in THIS situation
-  //in this case is impossible. Maybe, in future we can overcome this difficulty
+  //in this case is impossible. Maybe, in future we can overcome this difficulty.
   inherited Destroy;
 end;
 
@@ -505,7 +514,7 @@ begin
   FPOFile.Free;
   //If someone will use this class incorrectly, it can be destroyed
   //before Reader destroying. It is a very bad thing, but in THIS situation
-  //in this case is impossible. May be, in future we can overcome this difficulty
+  //in this case is impossible. Maybe, in future we can overcome this difficulty.
   inherited Destroy;
 end;
 
