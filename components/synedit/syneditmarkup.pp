@@ -551,6 +551,8 @@ begin
 end;
 
 procedure TSynEditMarkupManager.AddMarkUp(aMarkUp: TSynEditMarkup; AsFirst: Boolean);
+var
+  i: Integer;
 begin
   if AsFirst then
     fMarkUpList.Insert(0, aMarkUp)
@@ -561,6 +563,9 @@ begin
   aMarkUp.TopLine := TopLine;
   aMarkUp.LinesInWindow := LinesInWindow;
   aMarkUp.InvalidateLinesMethod := FInvalidateLinesMethod;
+
+  for i := 0 to FPaintLock-1 do
+    aMarkUp.IncPaintLock;
 end;
 
 procedure TSynEditMarkupManager.RemoveMarkUp(aMarkUp: TSynEditMarkup);

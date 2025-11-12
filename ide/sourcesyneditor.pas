@@ -1869,8 +1869,6 @@ begin
 
   while AValue > FUserWordsList.Count do begin
     m := TSourceSynEditMarkupHighlightAllMulti.Create(self);
-    if PaintLock > 0 then
-      m.IncPaintLock;
     if Highlighter <> nil then
       m.WordBreakChars := Highlighter.WordBreakChars + TSynWhiteChars;
     FUserWordsList.Add(m);

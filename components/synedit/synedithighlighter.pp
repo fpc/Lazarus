@@ -1131,10 +1131,13 @@ end;
 procedure TSynCustomHighlighter.StartAtLineIndex(LineNumber: Integer);
 begin
   FLineIndex := LineNumber;
-  if LineNumber = 0 then
-    ResetRange
-  else
+  if LineNumber = 0 then begin
+    ResetRange;
+  end
+  else begin
+//    assert((CurrentRanges.NeedsReScanStartIndex < 0) or ({IsScanning and} (LineNumber <= CurrentRanges.NeedsReScanStartIndex)), 'TSynCustomHighlighter.StartAtLineIndex: (CurrentRanges.NeedsReScanStartIndex < 0) or (IsScanning and (LineNumber <= CurrentRanges.NeedsReScanStartIndex))');
     SetRange(FCurrentRanges[LineNumber - 1]);
+  end;
   SetLine(CurrentLines[LineNumber], LineNumber);
 end;
 

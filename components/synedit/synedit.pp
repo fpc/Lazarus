@@ -224,6 +224,7 @@ type
     sfGutterResized,
     sfAfterLoadFromFileNeeded,
     sfAfterHandleCreatedNeeded,
+    sfMarkupMgrWaitingForHandle, // MarkupManager is locked until handle gets created
     // Mouse-states
     sfLeftGutterClick, sfRightGutterClick,
     sfInClick, sfDblClicked, sfTripleClicked, sfQuadClicked,
@@ -2478,6 +2479,8 @@ begin
   fMarkupManager.Lines := FTheLinesView;
   fMarkupManager.Caret := FCaret;
   fMarkupManager.InvalidateLinesMethod := @InvalidateLines;
+  Include(fStateFlags, sfMarkupMgrWaitingForHandle);
+  FMarkupManager.IncPaintLock; // don't markup until handle created
 
   {$IFDEF WinIME}
   {$IFDEF WinIMEFull}
@@ -5184,6 +5187,11 @@ begin
     else
     if sfScrollbarChanged in fStateFlags then
       UpdateScrollBars;
+  end;
+
+  if (sfMarkupMgrWaitingForHandle in fStateFlags) then begin
+    FMarkupManager.DecPaintLock;
+    Exclude(fStateFlags, sfMarkupMgrWaitingForHandle);
   end;
 end;
 
@@ -9379,6 +9387,12 @@ begin
   if FFoldedLinesView <> nil then
     FFoldedLinesView.LinesInWindow := -1; // Mark as "not HandleAllocated" / WaitingForInitialSize;
   inherited DestroyWnd;
+
+  if (not(sfMarkupMgrWaitingForHandle in fStateFlags)) and (FMarkupManager <> nil) and not HandleAllocated then begin
+    Include(fStateFlags, sfMarkupMgrWaitingForHandle);
+    FMarkupManager.IncPaintLock;
+  end;
+
 end;
 
 procedure TCustomSynEdit.VisibleChanged;
