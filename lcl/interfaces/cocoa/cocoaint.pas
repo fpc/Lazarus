@@ -32,6 +32,7 @@ uses
   CocoaUtils, Cocoa_Extra, CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows,
   CocoaScrollers, CocoaWSScrollers,
   CocoaWSClipboard, CocoaTextEdits,
+  CocoaDragImg,
   LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus, ExtCtrls,
   IntfGraphics, Graphics;
@@ -129,6 +130,9 @@ type
     FCaptureControl: HWND;
     FWaitingDropFiles: NSMutableArray;
     FSendingScrollWheelCount: Integer;
+    FDragImageList: TCocoaDragImage;
+    FDragHotSpot: TPoint;
+    FDragImageLock: Boolean;
 
   protected
     FStockNullBrush: HBRUSH;
@@ -254,6 +258,12 @@ type
     // the extra LCL interface methods
     {$I cocoalclintfh.inc}
     procedure AddToCollect(obj: TObject);
+        // drag image list
+    function DragImageList_BeginDrag(AImage: NSImage; AHotSpot: TPoint): Boolean;
+    procedure DragImageList_EndDrag;
+    function DragImageList_DragMove(X, Y: Integer): Boolean;
+    function DragImageList_SetVisible(NewVisible: Boolean): Boolean;
+    property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
   end;
   
 var
@@ -950,6 +960,69 @@ begin
   // let's try to find an object. Do not add a duplicate
   if (ToCollect.IndexOf(Obj)>=0) then Exit;
   ToCollect.Add(obj);
+end;
+
+function TCocoaWidgetSet.DragImageList_BeginDrag(AImage: NSImage;
+  AHotSpot: TPoint): Boolean;
+var
+  nsr: NSRect;
+begin
+  if FDragImageList = nil then
+  begin
+    nsr := NSMakeRect(0, 0, AImage.size.width, AImage.size.height);
+    FDragImageList := TCocoaDragImage.alloc.initWithContentRect_styleMask_backing_defer(
+                   nsr, 0, NSBackingStoreBuffered, False);
+    FDragImageList.setImage( AImage );
+    FDragHotSpot := AHotSpot;
+    FDragImageList.setAlphaValue(0.8);
+    FDragImageList.setIgnoresMouseEvents(True);
+    FDragImageList.setAcceptsMouseMovedEvents(False);
+  end;
+  Result := FDragImageList <> nil;
+end;
+
+procedure TCocoaWidgetSet.DragImageList_EndDrag;
+begin
+  if FDragImageList <> nil then
+  begin
+    FDragImageList.release;
+    FDragImageList := nil;
+  end;
+end;
+
+function TCocoaWidgetSet.DragImageList_DragMove(X, Y: Integer): Boolean;
+var
+  f: NSRect;
+begin
+  Result := Assigned(FDragImageList);
+  if Result then
+  begin
+    FDragImageList.orderFront(nil);
+    Dec(X, FDragHotSpot.X);
+    Dec(Y, FDragHotSpot.Y);
+    if Assigned(FDragImageList.screen) then
+    begin
+      f := FDragImageList.frame;
+      //dec(X, Round(f.origin.x));
+      Y := Round(FDragImageList.screen.frame.size.height - f.size.height) - Y;
+      FDragImageList.setFrameOrigin(NSMakePoint(X, Y));
+    end
+    else
+    begin
+      {dummy}
+    end;
+  end;
+end;
+
+function TCocoaWidgetSet.DragImageList_SetVisible(NewVisible: Boolean): Boolean;
+begin
+  Result := Assigned(FDragImageList);
+  begin
+    if NewVisible then
+       FDragImageList.orderFrontRegardless
+    else
+      FDragImageList.orderOut(nil);
+  end;
 end;
 
 function TCocoaWidgetSet.RetainToCollect: Integer;
