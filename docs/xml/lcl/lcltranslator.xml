@@ -177,24 +177,55 @@ Object</b>) file format.
 
 <!-- public -->
 <element name="TDefaultTranslator.Create">
-<short>Constructor for the class instance.</short>
+<short>
+Constructor for the class instance.
+</short>
 <descr>
 <p>
-<var>Create</var> is the constructor for the class instance, and calls the 
-inherited constructor. Create initializes and stores a TMOFile instance using 
-the file name specified in the MOFileName parameter. Create calls UTF8ToSys 
-to convert any UTF-8-encoded values in MOFileName to the default encoding 
-used for the platform or OS.
+<var>Create</var> is an overloaded constructor in 
+<var>TDefaultTranslator</var>. The overloaded variants allow an MO file to be 
+specified for the translator as either a path to a file name or as a TMOFile 
+instance. 
+</p>
+<p>
+One variant includes the <var>MOFileName</var> argument which specifies a 
+qualified file name with the .MO file content used to translate string 
+properties. UTF8ToSys is called to convert any UTF-8-encoded values in 
+MOFileName to the default encoding used for the platform or OS.
+</p>
+<p>
+Another variant allows a <var>TMOFile</var> instance to be passed to the class.
+</p>
+<p>
+Both variants call the inherited constructor, and initialize and / or store 
+the TMOFile instance used in the class instance.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.5 to include a constructor which accepts a TMOFile 
+instance.
+</version>
+<seealso>
+<link id="TDefaultTranslator.Destroy"/>
+<link id="TDefaultTranslator.TranslateStringProperty"/>
+<link id="#fcl.gettext.TMOFile">TMOFile</link>
+</seealso>
 </element>
 <element name="TDefaultTranslator.Create.MOFileName">
-<short>.mo file used in the class instance.</short>
+<short>
+.mo file name used in the class instance.
+</short>
+</element>
+<element name="TDefaultTranslator.Create.aMOFile">
+<short>
+.mo file (TMOFile) instance used in the class.
+</short>
 </element>
 
 <element name="TDefaultTranslator.Destroy">
-<short>Destructor for the class instance.</short>
+<short>
+Destructor for the class instance.
+</short>
 <descr>
 <p>
 <var>Destroy</var> is the overridden destructor for the class instance. 
@@ -285,27 +316,36 @@ Constructor for the class instance.
 <descr>
 <p>
 <var>Create</var> is the overloaded constructor for the class instance. Both 
-variant call the inherited constructor to initialize the class instance. The 
+variants call the inherited constructor to initialize the class instance. The 
 overloaded variants allow use of a file name or a <var>TPOFile</var> instance 
 in the class. TPOTranslator contains an internal TPOFile member which is used 
 to access the translated string values.
 </p>
 <p>
-POFileName is the file name which contains the translated values for strings. 
-A TPOFile instance is created for the specified file name.
+<var>POFileName</var> is the file name which contains the translated values 
+for strings. A <var>TPOFile</var> instance is created for the specified file 
+name.
 </p>
 <p>
-aPOFile is the TPPOFile class instance which contains the translated values 
-for strings.
+<var>aPOFile</var> is the <var>TPOFile</var> class instance which contains the 
+translated values for strings.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TPOTranslator.Destroy"/>
+<link id="TPOTranslator.TranslateStringProperty"/>
+<link id="#lazutils.translations.TPOFile">TPOFile</link>
+</seealso>
 </element>
 <element name="TPOTranslator.Create.POFileName">
-<short>.po file name to use for translated string values.</short>
+<short>
+.po file name to use for translated string values.
+</short>
 </element>
 <element name="TPOTranslator.Create.aPOFile">
-<short>.po file to use for translated string values.</short>
+<short>
+.po file (TPOFile) to use for translated string values.
+</short>
 </element>
 
 <element name="TPOTranslator.Destroy">
