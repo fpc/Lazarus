@@ -1,5 +1,31 @@
 {%MainUnit gtk3int.pas}
 
+type
+  { TGtk3ToolWnd }
+
+  // Used for AllocateHWnd
+  TGtk3ToolWnd = class(TGtk3Widget)
+  strict private
+    FWndMethod: TWndMethod;
+  public
+    constructor Create(AWndMethod: TWndMethod);
+    function DeliverMessage(var Msg; const AIsInputEvent: Boolean=False): LRESULT; override;
+  end;
+
+  constructor TGtk3ToolWnd.Create(AWndMethod: TWndMethod);
+  begin
+    CreateFrom(nil, nil);
+    FWndMethod := AWndMethod;
+  end;
+
+  function TGtk3ToolWnd.DeliverMessage(var Msg; const AIsInputEvent: Boolean): LRESULT;
+  var
+    LMessage: TLMessage absolute Msg;
+  begin
+    FWndMethod(LMessage);
+    Result := LMessage.Result;
+  end;
+
 { TGtk3WidgetSet }
 
 var
@@ -874,6 +900,16 @@ begin
     end;
   end;
   Result := True;
+end;
+
+function TGtk3WidgetSet.AllocateHWnd(Method: TLCLWndMethod): HWND;
+begin
+  Result := HWND(TGtk3ToolWnd.Create(Method));
+end;
+
+procedure TGtk3WidgetSet.DeallocateHWnd(Wnd: HWND);
+begin
+  TGtk3ToolWnd(Wnd).Free;
 end;
 
 function TGtk3WidgetSet.SystemMetric(const AIndex:integer):integer;

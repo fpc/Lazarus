@@ -149,6 +149,9 @@ type
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;
     function DestroyTimer(TimerHandle: TLCLHandle): boolean; override;
 
+    function AllocateHWnd(Method: TLCLWndMethod): HWND; override;
+    procedure DeallocateHWnd(Wnd: HWND); override;
+
     function SystemMetric(const AIndex: integer): integer;
 
     function IsValidDC(const DC: HDC): Boolean;
