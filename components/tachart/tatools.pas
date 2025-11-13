@@ -2100,10 +2100,11 @@ procedure TDataPointHintTool.MouseMove(APoint: TPoint);
   begin
     if UseDefaultHintText and (PointIndex > -1) then begin
       if Series is TChartSeries then
-        Result := TChartSeries(Series).FormattedMark(PointIndex)
+        Result := TChartSeries(Series).FormattedMark(PointIndex, TChartSeries(Series).Marks.Format, YIndex, XIndex)
       else
-        Result := Format(
-          '%s: %d', [(Series as TCustomChartSeries).Title, PointIndex]);
+        Result := IntToStr(PointIndex);
+      if (Series as TCustomChartSeries).Title <> '' then
+        Result := (Series as TCustomChartSeries).Title + ': ' + Result;
     end;
     if Assigned(OnHint) then
       OnHint(Self, APoint, Result);
