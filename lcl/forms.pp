@@ -500,6 +500,11 @@ type
     pmExplicit  // modal & non-modal: popup to PopupParent or if not available, to main form
   );
 
+  TTileMode = (
+    tbHorizontal,
+    tbVertical
+  );
+
   TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject; var CanClose: Boolean) of object;
   TDropFilesEvent = procedure (Sender: TObject; const FileNames: array of string) of object;
@@ -555,6 +560,7 @@ type
     FRestoredWidth: Integer;
     FRestoredHeight: Integer;
     FShowInTaskbar: TShowInTaskbar;
+    FTileMode: TTileMode;
     FWindowState: TWindowState;
     FDelayedEventCtr: Integer;
     FDelayedOnChangeBounds, FDelayedOnResize: Boolean;
@@ -818,6 +824,7 @@ type
     property RestoredHeight: Integer read FRestoredHeight;
     property ShowInTaskBar: TShowInTaskbar read FShowInTaskbar write SetShowInTaskBar
                                     default stDefault;
+    property TileMode: TTileMode read FTileMode write FTileMode default tbHorizontal;
     property Visible stored VisibleIsStored default false;
     property WindowState: TWindowState read FWindowState write SetWindowState
                                        default wsNormal;
@@ -903,6 +910,7 @@ type
     property UseDockManager;
     property LCLVersion: string read FLCLVersion write FLCLVersion stored LCLVersionIsStored;
     property Scaled;
+    property TileMode;
     property Visible;
     property WindowState;
 

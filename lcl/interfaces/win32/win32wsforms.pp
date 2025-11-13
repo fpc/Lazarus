@@ -868,10 +868,18 @@ begin
 end;
 
 class function TWin32WSCustomForm.Tile(const AForm: TCustomForm): Boolean;
+var
+  MsgMDITileModifier : integer;
 begin
   if (AForm.FormStyle=fsMDIForm) and (Application.MainForm=AForm) then
   begin
-    SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDITILE, MDITILE_HORIZONTAL, 0);
+    case AForm.TileMode of
+      tbVertical  : MsgMDITileModifier := MDITILE_VERTICAL;
+      tbHorizontal: MsgMDITileModifier := MDITILE_HORIZONTAL;
+    else
+      MsgMDITileModifier := MDITILE_HORIZONTAL;
+    end;
+    SendMessage(Win32WidgetSet.MDIClientHandle, WM_MDITILE, MsgMDITileModifier, 0);
     Result := True;
   end else
     Result := False;
