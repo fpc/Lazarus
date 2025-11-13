@@ -80,9 +80,14 @@ function TWin32WidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1,
   angle2: Integer): Boolean;
 var
   SX, SY, EX, EY : Longint;
+  OldArcDirection: Longint;
 begin
   Angles2Coords(x1, y1, x2-x1, y2-y1, Angle1, Angle2, SX{%H-}, SY{%H-}, EX{%H-}, EY{%H-});
+  if Angle2 < 0 then OldArcDirection := Windows.SetArcDirection(DC, AD_CLOCKWISE)
+  else OldArcDirection := Windows.SetArcDirection(DC, AD_COUNTERCLOCKWISE);
   Result := Boolean(Windows.Chord(DC, x1, y1, x2, y2, SX, SY, EX, EY));
+  // Revert the arc direction to the previous value
+  Windows.SetArcDirection(DC, OldArcDirection);
 end;
 
 {------------------------------------------------------------------------------
