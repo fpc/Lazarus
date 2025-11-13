@@ -1672,6 +1672,32 @@ begin
 end;
 
 procedure TIDESynEditor.SrcSynCaretChanged(Sender: TObject);
+  var
+    CachedInGlobalSectIdx: integer;
+  function IsInGlobalVarTypeSection(Idx: Integer): boolean;
+  var
+    nt: TPascalCodeFoldBlockType;
+  begin
+    Result := True;
+    if Idx > CachedInGlobalSectIdx then
+      exit;
+    dec(Idx);
+    while Idx >= 0 do begin
+      nt := TPascalCodeFoldBlockType({%H-}PtrUInt(FTopInfoNestList.NodeFoldType[Idx]));
+      if nt in [cfbtTypeBlock, cfbtVarBlock, cfbtConstBlock] then begin
+        CachedInGlobalSectIdx := Idx;
+        exit;
+      end;
+      if nt in [cfbtNone, cfbtProgram, cfbtUnit, cfbtUnitSection, cfbtProcedure, cfbtAnonymousProcedure,
+                cfbtLocalTypeBlock, cfbtLocalVarBlock, cfbtLocalConstBlock,
+                cfbtClassTypeBlock, cfbtClassConstBlock]
+      then
+        break;
+      dec(Idx);
+    end;
+    Result := False;
+  end;
+
   function RealTopLine: Integer;
   begin
     Result := TopLine - TSourceLazSynSurfaceManager(FPaintArea).TopLineCount;
@@ -1708,10 +1734,13 @@ begin
       FTopInfoNestList := FTopInfoNestList;
 
       InfCnt := FTopInfoNestList.Count;
+      CachedInGlobalSectIdx := MaxInt;
       for i := InfCnt-1 downto 0 do begin
         NodeFoldType := TPascalCodeFoldBlockType({%H-}PtrUInt(FTopInfoNestList.NodeFoldType[i]));
-        if not(NodeFoldType in
-           [cfbtClass, cfbtClassSection, cfbtProcedure])
+        if not( (NodeFoldType in [cfbtClass, cfbtProcedure])
+                or
+                ( (NodeFoldType in [cfbtRecord, cfbtClassSection]) and IsInGlobalVarTypeSection(i) )
+           )
         then
           continue;
 
@@ -1721,7 +1750,7 @@ begin
           inc(ListCnt);
         end;
 
-        if (NodeFoldType in [cfbtClass]) and (ListCnt < 2) then begin
+        if (NodeFoldType in [cfbtClass, cfbtRecord]) and (ListCnt < 2) then begin
           InfList[ListCnt].LineIndex := FTopInfoNestList.NodeLine[i];
           InfList[ListCnt].FoldType := NodeFoldType;
           inc(ListCnt);
