@@ -270,7 +270,7 @@ end;
 
 class procedure TGtk3WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
-  AMask:TGdkEventMask;
+  //AMask:TGdkEventMask;
   AForm, OtherForm: TCustomForm;
   AWindow, ATransient: PGtkWindow;
   i: Integer;
@@ -290,10 +290,10 @@ var
     AWindow^.window^.get_geometry(@x, @y, @w, @h);
     x := 0; // we don't use result of get_geometry
     y := 0;
-    if Assigned(aTransient) and not AWindow^.get_decorated then
+    if (AWindow^.transient_for <> nil) and not AWindow^.get_decorated then
     begin
       if Assigned(AForm.PopupParent) or (AForm.PopupMode = pmAuto) then
-        aTransient^.window^.get_origin(@x, @y);
+        AWindow^.transient_for^.window^.get_origin(@x, @y);
     end else
     begin
       x := 0;
@@ -424,7 +424,7 @@ begin
     //See issue #41412
     CheckAndFixGeometry;
     AWindow^.show_all;
-    AMask := AWindow^.window^.get_events;
+    //AMask := AWindow^.window^.get_events;
     AWindow^.window^.set_events(GDK_ALL_EVENTS_MASK);
     if not IsFormDesign(AForm) then
       AWindow^.present;
