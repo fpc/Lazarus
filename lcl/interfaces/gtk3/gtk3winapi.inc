@@ -3691,11 +3691,20 @@ end;
 
 function TGtk3WidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): LResult;
+var
+  LMessage: TLMessage;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.SendMessage not implemented ...');
-  {$ENDIF}
-  Result := inherited SendMessage(HandleWnd, Msg, wParam, lParam);
+  if IsValidHandle(HandleWnd) then
+  begin
+    FillChar(LMessage, SizeOf(LMessage), 0);
+    LMessage.Msg := Msg;
+    LMessage.WParam := wParam;
+    LMessage.LParam := lParam;
+    TGtk3Widget(HandleWnd).DeliverMessage(LMessage);
+    Result := LMessage.Result;
+  end
+  else
+    Result := 0;
 end;
 
 function TGtk3WidgetSet.SetActiveWindow(Handle: HWND): HWND;
