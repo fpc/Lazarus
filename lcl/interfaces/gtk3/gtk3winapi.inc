@@ -218,18 +218,20 @@ begin
        AStatus := cairo_region_xor(ARegion, RSrc2);
      end;
   end;
-  if (AStatus <> CAIRO_STATUS_SUCCESS) or (ARegion = nil) or cairo_region_is_empty(ARegion) then
-    Result := NullRegion
+  if (AStatus <> CAIRO_STATUS_SUCCESS) or (ARegion = nil) then
+    Result := Error
   else
   begin
-
     cairo_region_destroy(RDest);
     RDest := cairo_region_copy(ARegion);
     TGtk3Region(Dest).Handle := RDest;
-    if cairo_region_num_rectangles(ARegion) > 1 then
-      Result := ComplexRegion
+    if cairo_region_is_empty(RDest) then
+      Result := NullRegion
     else
-      Result := SimpleRegion;
+      if cairo_region_num_rectangles(RDest) > 1 then
+        Result := ComplexRegion
+      else
+        Result := SimpleRegion;
   end;
   {$IFDEF VerboseGtk3DeviceContext}
   if Result <> NullRegion then
