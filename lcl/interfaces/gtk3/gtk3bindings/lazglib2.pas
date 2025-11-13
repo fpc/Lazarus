@@ -5419,7 +5419,7 @@ procedure g_checksum_free(checksum: PGChecksum); cdecl; external LazGLib2_librar
 procedure g_checksum_get_digest(checksum: PGChecksum; buffer: Pguint8; digest_len: Pgsize); cdecl; external LazGLib2_library name 'g_checksum_get_digest';
 procedure g_checksum_reset(checksum: PGChecksum); cdecl; external LazGLib2_library name 'g_checksum_reset';
 procedure g_checksum_update(checksum: PGChecksum; data: Pguint8; length: gssize); cdecl; external LazGLib2_library name 'g_checksum_update';
-procedure g_clear_error; cdecl; external LazGLib2_library name 'g_clear_error';
+procedure g_clear_error(err:PPGError); cdecl; external LazGLib2_library name 'g_clear_error';
 procedure g_clear_handle_id(tag_ptr: Pguint; clear_func: TGClearHandleFunc); cdecl; external LazGLib2_library name 'g_clear_handle_id';
 procedure g_clear_list(list_ptr: PPGList; destroy_: TGDestroyNotify); cdecl; external LazGLib2_library name 'g_clear_list';
 procedure g_clear_pointer(pp: Pgpointer; destroy_: TGDestroyNotify); cdecl; external LazGLib2_library name 'g_clear_pointer';
