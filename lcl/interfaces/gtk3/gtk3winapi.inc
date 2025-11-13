@@ -1418,7 +1418,7 @@ begin
   //Self.SelectClipRGN(dc,rgn);
   clip:=Self.CreateEmptyRegion;
   Self.GetClipRGN(dc,clip);
-  Self.CombineRgn(clip,rgn,clip,RGN_AND);
+  Result:=Self.CombineRgn(clip,rgn,clip,RGN_AND);
   Self.SelectClipRGN(dc,clip);
   DeleteObject(clip);
   DeleteObject(rgn);
@@ -1426,7 +1426,6 @@ begin
  { ncorg:=Tgtk3DeviceContext(dc).fncOrigin;
   GetWindowOrgEx(DC, @DCOrigin);
   Result:=inherited IntersectClipRect(dc, Left, Top, Right, Bottom);}
-  Result:=0;
 end;
 
 
