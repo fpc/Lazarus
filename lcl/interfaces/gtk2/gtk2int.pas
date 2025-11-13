@@ -76,9 +76,7 @@ type
     {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
     FMainPoll: PGPollFD;
     {$ENDIF}
-    {$IFDEF HASX}
     FIsWayland: boolean;
-    {$ENDIF}
     FIsLibraryInstance: Boolean;
     FGtkTerminated: Boolean;
     FMultiThreadingEnabled: boolean;
