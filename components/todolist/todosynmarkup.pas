@@ -36,6 +36,8 @@ type
     FNxtIdx, FMrkIdx: integer;
     function GetStartOfComment(var ALineNum: integer; out ALogX: integer): boolean;
     function MarkupFor(AKind: TToDoType): TLazEditTextAttributeModifier;
+    function StartsWithContinuedComment(ALineNum: integer): boolean;
+    function TokenEndX(aKind: TToDoType): integer;
   public
     procedure BeginMarkup; override;
     procedure PrepareMarkupForRow(aRow: Integer); override;
@@ -155,6 +157,26 @@ begin
   end;
 end;
 
+function TSynEditTodoMarkup.StartsWithContinuedComment(ALineNum: integer): boolean;
+begin
+  FPasHl.StartAtLineIndex(ToIdx(ALineNum));
+  Result := FPasHl.GetTokenIsComment and
+            not FPasHl.GetTokenIsCommentStart(True);
+end;
+
+function TSynEditTodoMarkup.TokenEndX(aKind: TToDoType): integer;
+var
+  IsEnd: Boolean;
+begin
+  repeat
+    Result := ToPos(FPasHl.GetTokenPos) + FPasHl.GetTokenLen;
+    IsEnd := FPasHl.GetTokenIsCommentEnd;
+    FPasHl.Next;
+  until IsEnd or FPasHl.GetEol or not FPasHl.GetTokenIsComment;
+  if FPasHl.GetEol and (not IsEnd) and (lafPastEOL in MarkupFor(aKind).Features) then
+    Result := MaxInt; // past eol
+end;
+
 procedure TSynEditTodoMarkup.BeginMarkup;
 begin
   FFoundPos := nil;
@@ -197,13 +219,6 @@ var
     until (not Result) or (LineText <> '');
   end;
 
-  function StartsWithContinuedComment(ALineNum: integer): boolean;
-  begin
-    FPasHl.StartAtLineIndex(ToIdx(ALineNum));
-    Result := FPasHl.GetTokenIsComment and
-              not FPasHl.GetTokenIsCommentStart(True);
-  end;
-
 var
   curRow: integer;
   StartPos: TPoint;
@@ -217,11 +232,10 @@ var
   end;
 
 var
-  fnd, firstRun, HasHash, IsEnd: Boolean;
-  LogX, TkEnd: integer;
-  Kind: TToDoType;
-  pos: TPoint;
+  fnd, firstRun, HasHash: Boolean;
+  LogX, xx: integer;
   i: SizeInt;
+  ToDoKind: TToDoType;
 begin
   if FPasHl = nil then
     exit;
@@ -237,7 +251,6 @@ begin
 
   curRow := aRow;
   LogX := 1;
-
   i := Length(FFoundPos) - 1;
   if (i >= 0) and
      (FFoundPos[i].StartPos.Y < aRow) and
@@ -256,16 +269,9 @@ begin
       if i > 0 then
         FFoundPos[0] := FFoundPos[i];
       SetLength(FFoundPos, 1);
-      repeat
-        TkEnd := ToPos(FPasHl.GetTokenPos) + FPasHl.GetTokenLen;
-        IsEnd := FPasHl.GetTokenIsCommentEnd;
-        FPasHl.Next;
-      until IsEnd or FPasHl.GetEol or not FPasHl.GetTokenIsComment;
-      if FPasHl.GetEol and (not IsEnd) and (lafPastEOL in MarkupFor(FFoundPos[0].Kind).Features) then
-        TkEnd := MaxInt; // past eol
+      LogX := TokenEndX(FFoundPos[0].Kind);
       FFoundPos[0].EndPos.Y := aRow;
-      FFoundPos[0].EndPos.X := TkEnd;
-      LogX := TkEnd;
+      FFoundPos[0].EndPos.X := LogX;
       if FPasHl.GetEol then
         exit;
     end
@@ -275,17 +281,15 @@ begin
   else
     FFoundPos := nil;
 
-  if (FFoundPos = nil) and (not GetStartOfComment(curRow, LogX)) then begin
+  if (FFoundPos = nil) and not GetStartOfComment(curRow, LogX) then begin
     curRow := aRow;
     LogX := 1;
   end;
-
   GetLine(curRow);
   if LineText = '' then
     exit;
 
   p := p + LogX - 1;
-
   fnd := False;
   firstRun := True;
   repeat
@@ -337,15 +341,15 @@ begin
     if (p+4 <= pe) then begin
       case p^ of
         't', 'T': begin
-            Kind := tdTodo;
+            ToDoKind := tdTodo;
             fnd := (p[1] in ['o', 'O']) and (p[2] in ['d', 'D']) and (p[3] in ['o', 'O']);
           end;
         'd', 'D': begin
-            Kind := tdDone;
+            ToDoKind := tdDone;
             fnd := (p[1] in ['o', 'O']) and (p[2] in ['n', 'N']) and (p[3] in ['e', 'E']);
           end;
         'n', 'N': begin
-            Kind := tdNote;
+            ToDoKind := tdNote;
             fnd := (p[1] in ['o', 'O']) and (p[2] in ['t', 'T']) and (p[3] in ['e', 'E']);
           end;
       end;
@@ -354,7 +358,6 @@ begin
       MaybeSetSkipRows;
       Continue;
     end;
-
     fnd := False; // for next round, in case of several todo on one line
     inc(p, 4);
     if not ( (p = pe) or (p^ in [#9, #10, #13, ' ',':'])) then begin
@@ -391,8 +394,7 @@ begin
             end;
             inc(p);
           end
-          else
-          begin
+          else begin
             inc(p, 2);
             while (p < pe) and not(p^ in [#9, ' ', ':']) do
               inc(p);
@@ -414,7 +416,8 @@ begin
     if (StartPos.Y = aRow) then begin
       FPasHl.StartAtLineIndex(ToIdx(StartPos.Y));
       FPasHl.NextToLogX(StartPos.X);
-      if (ToPos(FPasHl.GetTokenPos) <> StartPos.x) or (not FPasHl.GetTokenIsCommentStart(True)) then begin
+      if (ToPos(FPasHl.GetTokenPos) <> StartPos.x) or not FPasHl.GetTokenIsCommentStart(True) then
+      begin
         MaybeSetSkipRows;
         Continue;
       end;
@@ -424,35 +427,23 @@ begin
       curRow := aRow;
       GetLine(curRow);
     end;
-    pos.Y := curRow;
-    pos.X := 1;
     if StartPos.Y = curRow then
-      pos.X := StartPos.x;
-
-    if (StartPos.Y <> aRow) or
-       (StartPos.Y <> pos.Y) or (StartPos.X > pos.X)
-    then
-      FPasHl.StartAtLineIndex(ToIdx(pos.Y));
-    FPasHl.NextToLogX(pos.X);
-    repeat
-      TkEnd := ToPos(FPasHl.GetTokenPos) + FPasHl.GetTokenLen;
-      IsEnd := FPasHl.GetTokenIsCommentEnd;
-      FPasHl.Next;
-    until IsEnd or FPasHl.GetEol or not FPasHl.GetTokenIsComment;
-
-    if FPasHl.GetEol and (not IsEnd) and (lafPastEOL in MarkupFor(Kind).Features) then
-      TkEnd := MaxInt; // past eol
-
+      xx := StartPos.X
+    else
+      xx := 1;
+    if (StartPos.Y <> aRow) or (StartPos.Y <> curRow) or (StartPos.X > xx) then
+      FPasHl.StartAtLineIndex(ToIdx(curRow));
+    FPasHl.NextToLogX(xx);
+    xx := TokenEndX(ToDoKind);
     i := Length(FFoundPos);
     SetLength(FFoundPos, i + 1);
     FFoundPos[i].StartPos := StartPos;
     FFoundPos[i].EndPos.Y := curRow;
-    FFoundPos[i].EndPos.X := TkEnd;
-    FFoundPos[i].Kind     := Kind;
+    FFoundPos[i].EndPos.X := xx;
+    FFoundPos[i].Kind     := ToDoKind;
 
-    p := PChar(LineText) + TkEnd - 1;
+    p := PChar(LineText) + xx - 1;
   until (p >= pe) or (curRow > aRow);
-
 end;
 
 function TSynEditTodoMarkup.GetStartOfComment(var ALineNum: integer;

@@ -1114,10 +1114,8 @@ begin
     Start := ToPos(GetTokenPos);
     if Start > ALogX then
       exit;
-    if ALogX < Start + GetTokenLen then begin
-      Result := True;
-      exit;
-    end;
+    if ALogX < Start + GetTokenLen then
+      exit(True);
     Next;
   end;
 end;
