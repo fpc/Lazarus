@@ -1429,13 +1429,17 @@ begin
 end;
 
 
-function TGtk3WidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right,
-  Bottom: Integer): Integer;
+function TGtk3WidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
+var
+  rgn,clip:HRGN;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.ExcludeClipRect not implemented ...');
-  {$ENDIF}
-  Result:=inherited ExcludeClipRect(dc, Left, Top, Right, Bottom);
+  rgn := CreateRectRgn(Left, Top, Right, Bottom);
+  clip := CreateEmptyRegion;
+  GetClipRGN(dc, clip);
+  Result := CombineRgn(clip, clip, rgn, RGN_DIFF);
+  SelectClipRGN(dc, clip);
+  DeleteObject(clip);
+  DeleteObject(rgn);
 end;
 
 function TGtk3WidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
