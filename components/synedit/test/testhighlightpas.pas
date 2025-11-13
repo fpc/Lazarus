@@ -88,6 +88,7 @@ type
     procedure TestModifierAttributesForLabel;
     procedure TestCaretAsString;
     procedure TestFoldNodeInfo;
+    procedure TestIsComment;
   end;
 
 implementation
@@ -4903,6 +4904,234 @@ begin
     {%endregion TEXT 5 -- [cfbtBeginEnd..cfbtNone], []}
 
   {%region TEXT 5}
+end;
+
+procedure TTestHighlighterPas.TestIsComment;
+
+  function TestTextComment: TStringArray;
+  begin
+    SetLength(Result, 46);
+    Result[ 0] := 'program Foo; {$mode objfpc}';
+    Result[ 1] := '//Slash//Foo // Bar{x} {y} (*a';
+    Result[ 2] := '//Slash//Foo // Bar{x} {y} (*a';
+
+    Result[ 3] := '{Bor{Foo { Bar} X } // }';
+    Result[ 4] := '{Bor';
+    Result[ 5] := '{Foo';
+    Result[ 6] := '{ Bar}';
+    Result[ 7] := 'X } {Foo} { Foo }';
+    Result[ 8] := '// }';
+
+    Result[ 9] := '(*Ansi(*Foo (* Bar*) X *) // *)';
+    Result[10] := '(*Bor';
+    Result[11] := '(*Foo';
+    Result[12] := '(* Bar*)';
+    Result[13] := 'X *)';
+    Result[14] := '// *)';
+
+    Result[15] := '  //Slash//Foo // Bar{x} {y} (*a';
+    Result[16] := '  //Slash//Foo // Bar{x} {y} (*a';
+
+    Result[17] := '  {Bor{Foo { Bar} X } // }';
+    Result[18] := '  {Bor';
+    Result[19] := '  {Foo';
+    Result[20] := '  { Bar}';
+    Result[21] := '  X } {} //Bar Foo';
+    Result[22] := '  // }';
+
+    Result[23] := '  (*Ansi(*Foo (* Bar*) X *) // *)';
+    Result[24] := '  (*Bor';
+    Result[25] := '  (*Foo';
+    Result[26] := '  (* Bar*)';
+    Result[27] := '  X *)';
+    Result[28] := '  // *)';
+
+    Result[29] := 'procedure a; //Slash//Foo // Bar{x} {y} (*a';
+    Result[30] := '  //Slash//Foo // Bar{x} {y} (*a';  // not continued
+
+    Result[31] := '  begin      //Slash//Foo // Bar{x} {y} (*a';
+    Result[32] := '//Slash//Foo // Bar{x} {y} (*a';  // not continued
+
+    Result[33] := '{}  //Slash//Foo // Bar{x} {y} (*a';
+    Result[34] := '{Foo}  //Slash//Foo // Bar{x} {y} (*a';
+    Result[35] := '(*Foo*)  //Slash//Foo // Bar{x} {y} (*a';
+    Result[36] := ' //Foo//';
+    Result[37] := ' //'; // nothing in the comment
+    Result[38] := '//';
+    Result[39] := '';  // empty
+    Result[40] := '//';
+    Result[41] := '  ';  // spaces
+    Result[42] := '//';
+
+    Result[43] := ' {}{}(**)(**){x}{x}(*x*)(*x*)//Foo';
+    Result[44] := '';
+    Result[45] := '';
+  end;
+
+  const OPEN_END = 9999999;
+  procedure CheckComments(ALineIdx: integer; ACommentRanges: array of integer; IsMultiLineSlashCont: Boolean = False);
+    procedure GetExpCommentBounds(var i: integer; out ExpStart, ExpEnd: integer);
+    begin
+      if i >= Length(ACommentRanges) then begin
+        ExpStart := MaxInt;
+        ExpEnd   := MaxInt;
+        inc(i,2);
+        exit;
+      end;
+      ExpStart := ACommentRanges[i];
+      ExpEnd   := ACommentRanges[i+1];
+      inc(i,2);
+    end;
+  var
+    i, TkStart, TkEnd, ExpStart, ExpEnd: Integer;
+  begin
+    PasHighLighter.StartAtLineIndex(ALineIdx);
+    i := 0;
+    GetExpCommentBounds(i, ExpStart, ExpEnd);
+    while not PasHighLighter.GetEol do begin
+      TkStart := PasHighLighter.GetTokenPos;
+      TkEnd   := TkStart + PasHighLighter.GetTokenLen;
+
+      if TkStart < ExpStart then begin
+        AssertFalse('Not in comment: Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsComment);
+        AssertFalse('Not comment start(F): Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentStart(False));
+        AssertFalse('Not comment start(T): Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentStart(True));
+        AssertFalse('Not comment end: Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentEnd);
+      end
+      else
+      if TkStart = ExpStart then begin
+        ExpStart := -1; // got the start
+        AssertTrue('Is in comment: Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsComment);
+        if (i=2) and IsMultiLineSlashCont then // first comment start, and multiline cont
+          AssertFalse('NOT (is cont) comment start(F): Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentStart(False))
+        else
+          AssertTrue('Is comment start(F): Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentStart(False));
+        AssertTrue('Is comment start(T): Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentStart(True));
+      end
+      else begin // TkStart > ExpStart
+        AssertTrue('Missing begin of commend (idx = %d) pos = %d // got token at Pos %d To (end at) %d', [i-2, ExpStart, TkStart, TkEnd], ExpStart = -1);
+        AssertTrue('Is in comment: Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsComment);
+        AssertFalse('Not comment start(F): Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentStart(False));
+        AssertFalse('Not comment start(T): Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentStart(True));
+      end;
+
+      if TkEnd < ExpEnd then begin
+        AssertFalse('Not comment end: Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentEnd);
+      end
+      else
+      if TkEnd = ExpEnd then begin
+        GetExpCommentBounds(i, ExpStart, ExpEnd); // next bounds
+        AssertTrue('Is comment end: Token at %d to (end at) %d', [TkStart, TkEnd], PasHighLighter.GetTokenIsCommentEnd);
+      end
+      else
+        AssertFalse('Did not find comment end) at %d: Token at %d to (end at) %d', [ExpEnd, TkStart, TkEnd], PasHighLighter.GetTokenIsCommentStart(True));
+
+      PasHighLighter.Next;
+    end;
+
+    AssertTrue('finished...', (ExpStart = -1) or (ExpStart = MaxInt));
+    AssertTrue('Found tokens for all ranges (%d of %d)', [i, Length(ACommentRanges)],
+      (i > Length(ACommentRanges)) or (ExpEnd = OPEN_END)
+    );
+    // line end is never a comment
+    // not currently..., maybe todo
+    AssertFalse('Is in comment: after end', PasHighLighter.GetTokenIsComment);
+  end;
+
+  procedure AddCustomTokens(tk: array of string);
+  var
+    i: Integer;
+  begin
+    PasHighLighter.CustomTokenCount := Length(tk);
+    for i := 0 to Length(tk) - 1 do begin
+      PasHighLighter.CustomTokens[i].Markup.Foreground := 999+i;
+      PasHighLighter.CustomTokens[i].MatchTokenKinds := [tkComment];
+      PasHighLighter.CustomTokens[i].Tokens.Add(tk[i]);
+    end;
+  end;
+
+var
+  i,j: Integer;
+begin
+  ReCreateEdit;
+  SynEdit.Options := SynEdit.Options - [eoTrimTrailingSpaces];
+
+  SetLines(TestTextComment);
+  for i := 0 to 3 do
+  for j := 0 to 6 do begin
+    case i of
+      0: EnableFolds([cfbtBeginEnd..cfbtNone]);
+      1: EnableFolds([]);
+      2: EnableFolds([cfbtSlashComment]);
+      3: EnableFolds([cfbtBorCommand]);
+    end;
+    case j of
+      0: AddCustomTokens([]); // clear
+      1: AddCustomTokens(['//', '{', '}', '(*', '*)']);
+      2: AddCustomTokens(['Slash', 'Bor', 'Ansi']);
+      3: AddCustomTokens(['Slash', 'Bor', 'Ansi']);
+      4: AddCustomTokens(['Foo', 'Bar', 'y', 'x', 'a']);
+      5: AddCustomTokens(['Slash', 'Bor', 'Ansi', 'Foo', 'Bar', 'y', 'x', 'a']);
+      6: AddCustomTokens(['Slash', 'Bor', 'Ansi', 'Foo', 'Bar', 'y', 'x', 'a', '//', '{', '}', '(*', '*)']);
+    end;
+
+    CheckComments( 0, []);
+    CheckComments( 1, [0, 30]); // slash comment do end at line end // even if the next line is a continuation
+    CheckComments( 2, [0, 30], True);
+
+    CheckComments( 3, [0, 24]);
+    CheckComments( 4, [0, OPEN_END]);
+    CheckComments( 5, [-1, OPEN_END]);
+    CheckComments( 6, [-1, OPEN_END]);
+    CheckComments( 7, [-1, OPEN_END]);
+    CheckComments( 8, [-1, 4]);
+
+    CheckComments( 9, [0, 31]);
+    CheckComments(10, [0, OPEN_END]);
+    CheckComments(11, [-1, OPEN_END]);
+    CheckComments(12, [-1, OPEN_END]);
+    CheckComments(13, [-1, OPEN_END]);
+    CheckComments(14, [-1, 5]);
+
+    CheckComments(15, [2, 32]);
+    CheckComments(16, [2, 32], True);
+
+    CheckComments(17, [2, 26]);
+    CheckComments(18, [2, OPEN_END]);
+    CheckComments(19, [-1, OPEN_END]);
+    CheckComments(20, [-1, OPEN_END]);
+    CheckComments(21, [-1, OPEN_END]);
+    CheckComments(22, [-1, 6]);
+
+    CheckComments(23, [2, 33]);
+    CheckComments(24, [2, OPEN_END]);
+    CheckComments(25, [-1, OPEN_END]);
+    CheckComments(26, [-1, OPEN_END]);
+    CheckComments(27, [-1, OPEN_END]);
+    CheckComments(28, [-1, 7]);
+
+    CheckComments(29, [13, 43]);
+    CheckComments(30, [2, 32], FALSE);
+
+    CheckComments(31, [13, 43]);
+    CheckComments(32, [0, 30], FALSE);
+
+    CheckComments(33, [0, 2, 4,34]);
+    CheckComments(34, [0, 5, 7,37]);
+    CheckComments(35, [0, 7, 9,39]);
+    CheckComments(36, [1, 8], True);
+    CheckComments(37, [1, 3], True);
+    CheckComments(38, [0, 2], True);
+    CheckComments(39, []);  // not continued // empty
+    CheckComments(40, [0, 2]);
+    CheckComments(41, []);  // not continued // spaces only
+    CheckComments(42, [0, 2]);
+
+    CheckComments(43, [1, 3,  3,5,  5,9,  9,13,  13,16,  16,19,  19,24,  24,29,  29,34]);
+  end;
+
+
+
 end;
 
 initialization

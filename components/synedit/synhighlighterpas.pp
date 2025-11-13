@@ -80,7 +80,7 @@ type
     // rsAnsi, rsBor, rsDirective are exclusive to each other
     rsAnsi,         // *) comment
     rsBor,          // { comment
-    rsSlash,        // //
+    rsSlash,        // // : Only if it's from the "start of line" (ignore lead whitespace). Used for calling SlashCommentProc 
     rsIDEDirective, // {%
     rsDirective,    // {$
     rsAsm,          // assembler block
@@ -4983,6 +4983,8 @@ begin
 
   AtSlashOpen := (fLine[Run] = '/') and (fLine[Run + 1] = '/') and not FIsInSlash;
   if FIsInSlash or AtSlashOpen then begin
+    if not FIsInSlash then
+      FAtSlashStart := True;
     FIsInSlash := True;
     if reCommentSlash in FRequiredStates then
       FCustomCommentTokenMarkup := FCommentSlashAttri;
@@ -5009,6 +5011,7 @@ begin
 
   if not((fLine[Run] = '/') and (fLine[Run + 1] = '/')) then begin
     fRange := fRange - [rsSlash];
+    FHadSlashLastLine := False;
     if TopPascalCodeFoldBlockType = cfbtSlashComment then
       EndPascalCodeFoldBlockLastLine;
   end;
@@ -5840,23 +5843,28 @@ end;
 
 function TSynPasSyn.GetTokenIsCommentStart(AnIgnoreMultiLineSlash: Boolean): Boolean;
 begin
-  if AnIgnoreMultiLineSlash then
-    Result := (FTokenID = tkComment) and (fLineLen > 0) and
-              ( (FOldRange * [rsAnsi, rsBor, rsSlash] = []) or  // rsIDEDirective
-                FAtSlashStart or
-                ((rsSlash in fRange) and (fTokenPos = 0) )
-              )
+  Result := (FTokenID = tkComment) and (fLineLen > 0);
+  if not Result then
+    exit;
+
+  if not FIsInSlash then begin
+    Result := (FOldRange * [rsAnsi, rsBor] = [])  // intentionally not rsIDEDirective, TODO
+  end
   else
-    Result := (FTokenID = tkComment) and (fLineLen > 0) and
-              (FOldRange * [rsAnsi, rsBor, rsSlash] = []);
+  if AnIgnoreMultiLineSlash then
+    Result := FAtSlashStart
+  else
+    Result := FAtSlashStart and not FHadSlashLastLine;
 end;
 
 function TSynPasSyn.GetTokenIsCommentEnd: Boolean;
 begin
-  Result := (FTokenID = tkComment) and
-            ( (FRange * [rsAnsi, rsBor, rsSlash] = []) or  // rsIDEDirective
-              ( (rsSlash in fRange) and FIsInSlash and (Run = fLineLen) )
-            );
+  if not FIsInSlash then
+    Result := (FTokenID = tkComment) and
+              (FRange * [rsAnsi, rsBor] = [])   // rsIDEDirective
+  else
+    Result := (FTokenID = tkComment) and
+              (Run = fLineLen);
 end;
 
 function TSynPasSyn.GetRange: Pointer;

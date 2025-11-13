@@ -123,6 +123,8 @@ type
   public
     class procedure AssertTrue(const AMessage: string; ACondition: boolean; AErrorAddrs: Pointer = nil); overload;
     class procedure AssertTrue(const AMessage: string; const AFormatArgs: array of const; ACondition: boolean; AErrorAddrs: Pointer = nil); overload;
+    class procedure AssertFalse(const AMessage: string; ACondition: boolean; AErrorAddrs: Pointer = nil); overload;
+    class procedure AssertFalse(const AMessage: string; const AFormatArgs: array of const; ACondition: boolean; AErrorAddrs: Pointer = nil); overload;
     class procedure AssertEquals(const AMessage: string; Expected, Actual: integer); overload;
     class procedure AssertEquals(const AMessage: string; const AFormatArgs: array of const; Expected, Actual: integer); overload;
     class procedure AssertEquals(const AMessage: string; Expected, Actual: string); overload;
@@ -332,6 +334,20 @@ class procedure TTestBase.AssertTrue(const AMessage: string; const AFormatArgs: 
 begin
   if ACondition then exit;
   inherited AssertTrue(Format(AMessage, AFormatArgs), ACondition, AErrorAddrs);
+end;
+
+class procedure TTestBase.AssertFalse(const AMessage: string; ACondition: boolean;
+  AErrorAddrs: Pointer);
+begin
+  if not ACondition then exit;
+  inherited AssertFalse(AMessage, ACondition, AErrorAddrs);
+end;
+
+class procedure TTestBase.AssertFalse(const AMessage: string; const AFormatArgs: array of const;
+  ACondition: boolean; AErrorAddrs: Pointer);
+begin
+  if not ACondition then exit;
+  inherited AssertFalse(Format(AMessage, AFormatArgs), ACondition, AErrorAddrs);
 end;
 
 class procedure TTestBase.AssertEquals(const AMessage: string; Expected, Actual: integer);
