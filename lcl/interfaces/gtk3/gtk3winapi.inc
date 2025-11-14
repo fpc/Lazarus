@@ -4381,28 +4381,19 @@ begin
   Result:=inherited SetWindowLong(Handle, Idx, NewLong);
 end;
 
-function TGtk3WidgetSet.SetWindowOrgEx(dc: hdc; NewX, NewY: Integer;
-  OldPoint: PPoint): Boolean;
+function TGtk3WidgetSet.SetWindowOrgEx(dc: hdc; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
 var
   Matrix: Tcairo_matrix_t;
-  //dx, dy: Double;
+  Point: TPoint;
 begin
-  Result := False; // inherited SetWindowOrgEx(dc, NewX, NewY, OldPoint);
-  if IsValidDC(DC) then
+  Result := IsValidDC(DC);
+  if Result then
   begin
-    GetWindowOrgEx(dc, OldPoint);
-    cairo_get_matrix(TGtk3DeviceContext(DC).pcr, @Matrix);
-    //dx := 0;
-    //dy := 0;
-    // cairo_matrix_init_translate(Matrix, -NewX, -NewY);
-    cairo_matrix_translate(@Matrix,
-    	-NewX - TGtk3DeviceContext(DC).fncOrigin.x,
-        -NewY - TGtk3DeviceContext(DC).fncOrigin.Y);
-    cairo_transform(TGtk3DeviceContext(DC).pcr, @Matrix);
-    // cairo_set_matrix(TGtk3DeviceContext(DC).Widget, Matrix);
+    GetWindowOrgEx(dc, @Point);
+    if OldPoint <> nil then
+      OldPoint^ := Point;
+    cairo_translate(TGtk3DeviceContext(DC).pcr, Point.X - NewX, Point.Y - NewY);
     // DebugLn('TGtk3WidgetSet.SetWindowOrgEx NewX=',dbgs(NewX),' NewY=',dbgs(NewY));
-    Result := True;
-
   end;
 end;
 
