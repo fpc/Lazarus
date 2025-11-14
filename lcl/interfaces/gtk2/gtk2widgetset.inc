@@ -1992,6 +1992,9 @@ begin
 end;
 {$ENDIF}
 
+var
+  _thread_sync_pending: integer;
+
 procedure TGtk2WidgetSet.PrepareSynchronize(AObject: TObject);
 { This method is the WakeMainThread of the unit classes.
   It is called in TThread.Synchronize to wake up the main thread = LCL GUI thread.
@@ -2001,6 +2004,9 @@ var
   thrash: char;
 begin
   // ToDo: TGtk2WidgetSet.PrepareSynchronize what is AObject?
+
+  if InterlockedExchange(_thread_sync_pending, 1) = 1 then
+    exit; // signal already pending
 
   // wake up GUI thread by sending a byte through the threadsync pipe
   thrash:='l';
@@ -2049,6 +2055,7 @@ function threadsync_iocallback({%H-}source: PGIOChannel; {%H-}condition: TGIOCon
 var
   thrashspace: array[1..1024] of byte;
 begin
+  InterlockedExchange(_thread_sync_pending, 0);
   // read the sent bytes
   fpread(threadsync_pipein, {%H-}thrashspace[1], 1);
 
