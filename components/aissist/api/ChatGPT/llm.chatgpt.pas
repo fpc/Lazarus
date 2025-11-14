@@ -36,7 +36,7 @@ begin
   aProxy.WebClient:=ResolveWebClient;
   aProxy.BaseURL:=ResolveBaseURL;
   // Set OpenAI API authentication header
-  aProxy.RequestHeaders.Add('Authorization=Bearer '+ResolveAuthorizationKey);
+  aProxy.RequestHeaders.Add('Authorization: Bearer '+ResolveAuthorizationKey);
 end;
 
 function TChatGPTProtocol.ConvertPromptArrayToString(aPrompt: TPromptArray): string;
@@ -79,11 +79,14 @@ begin
     ConfigProxy(lModelService);
     // Exceptions will be handled by caller.
     lModelsResponse:=lModelService.Get_models();
-    SetLength(lModels,Length(lModelsResponse.Value.data));
-    for I:=0 to Length(lModels)-1 do
+    if Assigned(lModelsResponse.Value) then
       begin
-      lModels[i].ID:=lModelsResponse.Value.data[i].id;
-      lModels[i].Name:=lModelsResponse.Value.data[i].id; // Use ID as name since no display name field
+      SetLength(lModels,Length(lModelsResponse.Value.data));
+        for I:=0 to Length(lModels)-1 do
+          begin
+          lModels[i].ID:=lModelsResponse.Value.data[i].id;
+          lModels[i].Name:=lModelsResponse.Value.data[i].id; // Use ID as name since no display name field
+          end;
       end;
     Result.SetOKValue(lModels);
   finally
