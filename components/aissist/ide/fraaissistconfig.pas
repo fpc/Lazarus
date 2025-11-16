@@ -16,7 +16,7 @@ unit fraAIssistConfig;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, llm.Client,
+  Classes, SysUtils, Forms, Dialogs, Controls, StdCtrls, llm.Client,
   IDEOptionsIntf, IDEOptEditorIntf, LazNumEdit;
 
 type
@@ -55,7 +55,7 @@ type
 
 implementation
 
-uses StrAIssist, AIssistController;
+uses IDEMsgIntf, IDEExternToolIntf, StrAIssist, AIssistController;
 
 {$R *.lfm}
 
@@ -66,11 +66,18 @@ procedure TAIAssistentConfigFrame.HandleModels(Sender: TObject; aModels: TGetMod
 var
   aModel : TModelData;
   Idx,I : Integer;
-  lItem : string;
+  lMsg,lItem : string;
 begin
   //Writeln('Handling models');
   FBusy:=False;
   Idx:=-1;
+  if not aModels.Success then
+    begin
+    lMsg:=aModels.StatusInfo.ToString('Failed to get models');
+    ShowMessage(lMsg);
+    IDEMsgIntf.AddIDEMessage(mluError,lMsg);
+    exit;
+    end;
   With cbModel.Items do
     begin
     BeginUpdate;

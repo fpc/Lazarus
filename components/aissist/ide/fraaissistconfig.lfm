@@ -1,24 +1,26 @@
 object AIAssistentConfigFrame: TAIAssistentConfigFrame
   Left = 0
-  Height = 239
+  Height = 475
   Top = 0
-  Width = 445
-  ClientHeight = 239
-  ClientWidth = 445
+  Width = 976
+  ClientHeight = 475
+  ClientWidth = 976
+  DesignTimePPI = 192
+  ParentFont = False
   TabOrder = 0
   DesignLeft = 530
   DesignTop = 419
   object CBProtocol: TComboBox
     AnchorSideTop.Control = Owner
-    Left = 120
-    Height = 28
-    Top = 8
-    Width = 227
+    Left = 312
+    Height = 57
+    Top = 16
+    Width = 468
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 8
+    BorderSpacing.Top = 16
     ItemHeight = 0
+    Style = csDropDownList
     TabOrder = 0
-    Text = 'CBProtocol'
     OnChange = CBProtocolChange
   end
   object lblProtocol: TLabel
@@ -26,26 +28,27 @@ object AIAssistentConfigFrame: TAIAssistentConfigFrame
     AnchorSideRight.Control = CBProtocol
     AnchorSideBottom.Control = CBProtocol
     AnchorSideBottom.Side = asrBottom
-    Left = 56
-    Height = 28
-    Top = 8
-    Width = 56
+    Left = 24
+    Height = 57
+    Top = 16
+    Width = 272
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = False
-    BorderSpacing.Right = 8
+    BorderSpacing.Right = 16
     Caption = 'Protocol'
     Layout = tlCenter
   end
   object edtURL: TEdit
+    AnchorSideLeft.Control = CBProtocol
     AnchorSideTop.Control = CBProtocol
     AnchorSideTop.Side = asrBottom
-    Left = 120
-    Height = 26
-    Top = 44
-    Width = 307
+    Left = 312
+    Height = 55
+    Top = 89
+    Width = 628
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 8
+    BorderSpacing.Top = 16
     TabOrder = 1
     TextHint = 'Enter AI API Server URL'
   end
@@ -54,26 +57,27 @@ object AIAssistentConfigFrame: TAIAssistentConfigFrame
     AnchorSideRight.Control = edtURL
     AnchorSideBottom.Control = edtURL
     AnchorSideBottom.Side = asrBottom
-    Left = 43
-    Height = 26
-    Top = 44
-    Width = 69
+    Left = 22
+    Height = 55
+    Top = 89
+    Width = 274
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = False
-    BorderSpacing.Right = 8
+    BorderSpacing.Right = 16
     Caption = 'Server URL'
     Layout = tlCenter
   end
   object cbModel: TComboBox
+    AnchorSideLeft.Control = CBProtocol
     AnchorSideTop.Control = edtAPIKey
     AnchorSideTop.Side = asrBottom
-    Left = 120
-    Height = 28
-    Top = 112
-    Width = 227
+    Left = 312
+    Height = 55
+    Top = 231
+    Width = 468
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 8
+    BorderSpacing.Top = 16
     ItemHeight = 0
     TabOrder = 2
   end
@@ -82,24 +86,25 @@ object AIAssistentConfigFrame: TAIAssistentConfigFrame
     AnchorSideRight.Control = cbModel
     AnchorSideBottom.Control = cbModel
     AnchorSideBottom.Side = asrBottom
-    Left = 16
-    Height = 28
-    Top = 112
-    Width = 96
+    Left = 32
+    Height = 55
+    Top = 231
+    Width = 264
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = False
-    BorderSpacing.Right = 8
+    BorderSpacing.Right = 16
     Caption = 'Default model'
     Layout = tlCenter
   end
   object edtMaxResponseLength: TLazIntegerEdit
+    AnchorSideLeft.Control = CBProtocol
     AnchorSideTop.Control = cbModel
     AnchorSideTop.Side = asrBottom
-    Left = 120
-    Height = 26
-    Top = 148
-    Width = 80
+    Left = 312
+    Height = 55
+    Top = 302
+    Width = 176
     Value = 0
     MinValue = -9223372036854775808
     MaxValue = 9223372036854775807
@@ -110,7 +115,7 @@ object AIAssistentConfigFrame: TAIAssistentConfigFrame
     ToggleOctKeys = '&'
     BinIndicator = '%'
     ToggleBinKeys = '%'
-    BorderSpacing.Top = 8
+    BorderSpacing.Top = 16
     TabOrder = 3
     Text = '0'
   end
@@ -119,14 +124,14 @@ object AIAssistentConfigFrame: TAIAssistentConfigFrame
     AnchorSideRight.Control = edtMaxResponseLength
     AnchorSideBottom.Control = edtMaxResponseLength
     AnchorSideBottom.Side = asrBottom
-    Left = 34
-    Height = 26
-    Top = 148
-    Width = 78
+    Left = 68
+    Height = 55
+    Top = 302
+    Width = 228
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = False
-    BorderSpacing.Right = 8
+    BorderSpacing.Right = 16
     Caption = 'Max. Length'
     Layout = tlCenter
   end
@@ -134,23 +139,26 @@ object AIAssistentConfigFrame: TAIAssistentConfigFrame
     AnchorSideTop.Control = cbModel
     AnchorSideBottom.Control = cbModel
     AnchorSideBottom.Side = asrBottom
-    Left = 352
-    Height = 28
-    Top = 112
-    Width = 75
+    Left = 790
+    Height = 55
+    Top = 231
+    Width = 150
     Anchors = [akTop, akRight, akBottom]
     Caption = 'Refresh'
     TabOrder = 4
     OnClick = HandleRefreshClick
   end
   object edtAPIKey: TEdit
+    AnchorSideLeft.Control = CBProtocol
     AnchorSideTop.Control = edtURL
     AnchorSideTop.Side = asrBottom
-    Left = 120
-    Height = 26
-    Top = 78
-    Width = 307
-    BorderSpacing.Top = 8
+    Left = 312
+    Height = 55
+    Top = 160
+    Width = 566
+    BorderSpacing.Top = 16
+    EchoMode = emPassword
+    PasswordChar = '*'
     TabOrder = 5
   end
   object Label1: TLabel
@@ -158,14 +166,14 @@ object AIAssistentConfigFrame: TAIAssistentConfigFrame
     AnchorSideRight.Control = edtAPIKey
     AnchorSideBottom.Control = edtAPIKey
     AnchorSideBottom.Side = asrBottom
-    Left = 14
-    Height = 26
-    Top = 78
-    Width = 98
+    Left = 28
+    Height = 55
+    Top = 160
+    Width = 268
     Alignment = taRightJustify
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = False
-    BorderSpacing.Right = 8
+    BorderSpacing.Right = 16
     Caption = 'API Key'
     Layout = tlCenter
   end
