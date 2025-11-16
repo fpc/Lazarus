@@ -11,8 +11,8 @@ uses
   // LazUtils
   LazMethodList,
   // SynEdit
-  SynEditMarks, SynEditMiscClasses, SynEditMouseCmds,
-  LazSynTextArea, SynEditHighlighter, LazEditTextGridPainter, LazEditTextAttributes;
+  SynEditMarks, SynEditMiscClasses, SynEditMouseCmds, LazSynTextArea, SynEditHighlighter,
+  SynEditTypes, LazSynEditMouseCmdsTypes, LazEditTextGridPainter, LazEditTextAttributes;
 
 type
 
@@ -75,18 +75,27 @@ type
     procedure Init; override;
   end;
 
-  TGutterClickEvent = procedure(Sender: TObject; X, Y, Line: integer;
-    mark: TSynEditMark) of object;
-
+  TSynGutterBase = class;
   TSynGutterPartBase = class;
   TSynGutterPartBaseClass = class of TSynGutterPartBase;
   TSynGutterPartListBase = class;
+
+  TGutterClickEvent = procedure(Sender: TObject; X, Y, Line: integer; mark: TSynEditMark) of object deprecated 'Use TGutterClickEvent in unit SynEdit';
+
+  TSynGutterClickInfo = record
+    MouseX, MouseY: integer;
+    LinePos: IntPos; // 1 based
+    Shift: TShiftState;
+    GutterPart: TSynGutterPartBase;
+  end;
+  TSynGutterClickEvent = procedure(ASynEdit: TSynEditBase; AGutter: TSynGutterBase; const AnInfo: TSynGutterClickInfo) of object;
+
 
   { TSynGutterBase }
 
   TSynGutterSide = (gsLeft, gsRight);
 
-  TSynGutterBase = class(TPersistent)
+  TSynGutterBase = class(TSynGutterDispatchBase)
   private
     FGutterArea: TLazSynSurfaceWithText;
     FGutterPartList: TSynGutterPartListBase;
@@ -107,6 +116,8 @@ type
     FFlags: set of (gfNeedChildBounds);
     FOnResize: TNotifyEvent;
     FOnChange: TNotifyEvent;
+    FOnClick: TSynGutterClickEvent;
+    FMouseDownPart: Integer;
     FMouseActions: TSynEditMouseInternalActions;
     FOnResizeHandler: TMethodList;
     FOnChangeHandler: TMethodList;
@@ -126,9 +137,14 @@ type
     procedure SetWidth(Value: integer);
   protected
     FCaretRow: integer;
+    function PixelToPartIndex(X: Integer): Integer;
     procedure SetChildBounds;
     procedure DoChange(Sender: TObject);
     procedure DoResize(Sender: TObject);
+    procedure DoClick(AGutterPart: TSynGutterPartBase; const AnInfo: TSynEditMouseActionInfo); virtual;
+    procedure MouseDown(const AnInfo: TSynEditMouseActionInfo); override;
+    procedure MouseUp(const AnInfo: TSynEditMouseActionInfo); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure IncChangeLock;
     procedure DecChangeLock;
     procedure DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
@@ -150,6 +166,10 @@ type
     procedure RecalcBounds;
     procedure ScalePPI(const AScaleFactor: Double);
     procedure DoAutoSize;
+    function  HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); deprecated 'Use MouseDown(TSynEditMouseActionInfo) / To be removed in 5.99';
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); deprecated 'Use MouseUp(TSynEditMouseActionInfo) / To be removed in 5.99';
+    procedure DoOnGutterClick(X, Y: integer); deprecated 'Use DoClick / To be removed in 5.99';
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                  HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
     procedure ResetMouseActions; virtual; // set mouse-actions according to current Options / may clear them
@@ -178,6 +198,7 @@ type
     property TextDrawer: TLazEditTextGridPainter read FTextDrawer;
     property Color: TColor read GetColor write SetColor default clBtnFace;
     property CurrentLineColor: TSynGutterColorAttributesModifier read FCurrentLineColor write SetCurrentLineColor;
+    property OnClick: TSynGutterClickEvent read FOnClick write FOnClick;
     property MouseActions: TSynEditMouseActions
       read GetMouseActions write SetMouseActions;
   end;
@@ -235,7 +256,8 @@ type
     FMarkupInfoCurLineMerged: TSynSelectedColorMergeResult;
     FCursor: TCursor;
     FOnChange: TNotifyEvent;
-    FOnGutterClick: TGutterClickEvent;
+    FOnClick: TSynGutterClickEvent;
+    FOnGutterClick: TGutterClickEvent{%H-};
     FMouseActions: TSynEditMouseInternalActions;
     procedure DoColorChanged(Sender: TObject);
     function GetCaretRow: integer; inline;
@@ -265,6 +287,10 @@ type
     procedure VisibilityOrSize(aCallDoChange: Boolean = False);
     procedure DoResize(Sender: TObject); virtual;
     procedure DoChange(Sender: TObject); virtual;
+    procedure DoClick(const AnInfo: TSynEditMouseActionInfo); virtual;
+    procedure MouseDown(const AnInfo: TSynEditMouseActionInfo); virtual;
+    procedure MouseUp(const AnInfo: TSynEditMouseActionInfo); virtual;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
     property GutterParts: TSynGutterPartListBase read GetGutterParts;
     property Gutter: TSynGutterBase read FGutter;
     property SynEdit:TSynEditBase read FSynEdit;
@@ -285,17 +311,15 @@ type
   public
     // X/Y are relative to the gutter, not the gutter part
     function HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean; virtual;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual; deprecated 'Use MouseDown(TSynEditMouseActionInfo) / To be removed in 5.99';
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual; deprecated 'Use MouseUp(TSynEditMouseActionInfo) / To be removed in 5.99';
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                  HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean; virtual;
     procedure ResetMouseActions; virtual; // set mouse-actions according to current Options / may clear them
     procedure DoOnGutterClick(X, Y: integer);  virtual;
-    property OnGutterClick: TGutterClickEvent
-      read FOnGutterClick write FOnGutterClick;
+    property OnGutterClick: TGutterClickEvent read FOnGutterClick write FOnGutterClick; deprecated 'Use OnClick // To be removed in 5.99';
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
     property MarkupInfo: TSynGutterColorAttributes read FMarkupInfo write SetMarkupInfo;
@@ -307,6 +331,7 @@ type
     property LeftOffset: integer read FLeftOffset write SetLeftOffset default 0;
     property RightOffset: integer read FRightOffset write SetRightOffset default 0;
     property Visible: boolean read FVisible write SetVisible default True;
+    property OnClick: TSynGutterClickEvent read FOnClick write FOnClick;
     property MouseActions: TSynEditMouseActions
       read GetMouseActions write SetMouseActions;
   end;
@@ -322,6 +347,8 @@ implementation
 constructor TSynGutterBase.Create(AOwner: TSynEditBase; ASide: TSynGutterSide;
   ATextDrawer: TLazEditTextGridPainter);
 begin
+  FMouseDownPart := -1;
+
   FOnResizeHandler := TMethodList.Create;
   FOnChangeHandler := TMethodList.Create;
 
@@ -557,6 +584,21 @@ begin
   DoResize(Self);
 end;
 
+function TSynGutterBase.PixelToPartIndex(X: Integer): Integer;
+begin
+  Result := 0;
+  x := x - Left - LeftOffset;
+  while Result < PartCount-1 do begin
+    if Parts[Result].Visible then begin
+      if x >= Parts[Result].FullWidth then
+        x := x - Parts[Result].FullWidth
+      else
+        break;
+    end;
+    inc(Result)
+  end;
+end;
+
 procedure TSynGutterBase.DoAutoSize;
 var
   NewWidth, i: Integer;
@@ -589,6 +631,32 @@ begin
   finally
     DecChangeLock;
   end;
+end;
+
+function TSynGutterBase.HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
+begin
+  if (FMouseDownPart >= 0) and (FMouseDownPart < PartCount) then
+    Result := Parts[FMouseDownPart].HasCustomPopupMenu(PopMenu)
+  else
+    Result := False;
+end;
+
+procedure TSynGutterBase.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  FMouseDownPart := PixelToPartIndex(X);
+  Parts[FMouseDownPart].MouseDown(Button, Shift, X, Y){%H-};
+  if (Button = Controls.mbLeft) then
+    DoOnGutterClick(X, Y){%H-};
+end;
+
+procedure TSynGutterBase.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  Parts[FMouseDownPart].MouseUp(Button, Shift, X, Y){%H-};
+end;
+
+procedure TSynGutterBase.DoOnGutterClick(X, Y: integer);
+begin
+  Parts[PixelToPartIndex(X)].DoOnGutterClick(X, Y);
 end;
 
 procedure TSynGutterBase.SetChildBounds;
@@ -650,6 +718,48 @@ begin
     FOnResize(Self)
   else
     DoChange(Self);
+end;
+
+procedure TSynGutterBase.DoClick(AGutterPart: TSynGutterPartBase;
+  const AnInfo: TSynEditMouseActionInfo);
+var
+  ClickInfo: TSynGutterClickInfo;
+begin
+  if Assigned(FOnClick) then begin
+    ClickInfo.MouseX     := AnInfo.MouseX;
+    ClickInfo.MouseY     := AnInfo.MouseY;
+    ClickInfo.Shift      := AnInfo.Shift;
+    ClickInfo.LinePos    := AnInfo.NewCaret.LinePos;
+    ClickInfo.GutterPart := AGutterPart;
+    FOnClick(SynEdit, Self, ClickInfo);
+  end;
+end;
+
+procedure TSynGutterBase.MouseDown(const AnInfo: TSynEditMouseActionInfo);
+begin
+  FMouseDownPart := PixelToPartIndex(AnInfo.MouseX);
+  Parts[FMouseDownPart].MouseDown(AnInfo);
+
+  MouseDown(SynMouseButtonBackMap[AnInfo.Button], AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY){%H-};
+
+  if (AnInfo.Button = LazSynEditMouseCmdsTypes.mbLeft) then
+    DoClick(Parts[FMouseDownPart], AnInfo);
+end;
+
+procedure TSynGutterBase.MouseUp(const AnInfo: TSynEditMouseActionInfo);
+begin
+  if (FMouseDownPart >= 0) and (FMouseDownPart < PartCount) then
+    Parts[FMouseDownPart].MouseUp(AnInfo);
+
+  MouseUp(SynMouseButtonBackMap[AnInfo.Button], AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY){%H-};
+
+  FMouseDownPart := -1;
+end;
+
+procedure TSynGutterBase.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  if (FMouseDownPart >= 0) and (FMouseDownPart < PartCount) then
+    Parts[FMouseDownPart].MouseMove(Shift, X, Y);
 end;
 
 procedure TSynGutterBase.IncChangeLock;
@@ -879,6 +989,35 @@ begin
     FOnChange(Self);
 end;
 
+procedure TSynGutterPartBase.DoClick(const AnInfo: TSynEditMouseActionInfo);
+var
+  ClickInfo: TSynGutterClickInfo;
+begin
+  if Assigned(FOnClick) then begin
+    ClickInfo.MouseX     := AnInfo.MouseX;
+    ClickInfo.MouseY     := AnInfo.MouseY;
+    ClickInfo.Shift      := AnInfo.Shift;
+    ClickInfo.LinePos    := AnInfo.NewCaret.LinePos;
+    ClickInfo.GutterPart := Self;
+    FOnClick(SynEdit, Gutter, ClickInfo);
+  end;
+end;
+
+procedure TSynGutterPartBase.MouseDown(const AnInfo: TSynEditMouseActionInfo);
+begin
+  if (AnInfo.Button = LazSynEditMouseCmdsTypes.mbLeft) then
+    DoClick(AnInfo);
+end;
+
+procedure TSynGutterPartBase.MouseUp(const AnInfo: TSynEditMouseActionInfo);
+begin
+  //
+end;
+
+procedure TSynGutterPartBase.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+end;
+
 function TSynGutterPartBase.CreateMouseActions: TSynEditMouseInternalActions;
 begin
   Result := TSynEditMouseInternalActions.Create(Self);
@@ -1022,10 +1161,6 @@ end;
 
 procedure TSynGutterPartBase.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
-begin
-end;
-
-procedure TSynGutterPartBase.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
 end;
 

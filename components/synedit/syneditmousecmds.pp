@@ -111,6 +111,7 @@ type
     CaretDone: Boolean; // Return Value
     IgnoreUpClick: Boolean;
     ActionResult: TSynEditMouseActionResult;
+    Sender: TObject; // Gutter or SynEdit
   end;
 
   { TSynEditMouseAction }

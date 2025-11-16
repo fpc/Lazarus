@@ -359,6 +359,7 @@ type
     procedure CallUtf8KeyPressHandlers(Sender: TObject; var UTF8Key: TUTF8Char);
   end;
 
+  TGutterClickEvent = SynGutterBase.TGutterClickEvent{%H-};
 
   TSynMouseLinkEvent = procedure (
     Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean) of object;
@@ -584,6 +585,7 @@ type
     FUseUTF8: boolean deprecated 'always true';
     fWantTabs: boolean;
     FLeftGutter, FRightGutter: TSynGutter;
+    //FOnGutterClick: TGutterClickEvent; // TODO: Use in 5.99 when FLeftGutter.OnGutterClick is removed
     fTabWidth: integer;
     fTextDrawer: TLazEditTextGridPainter;
     FPaintLineColor, FPaintLineColor2: TLazEditTextAttributeModifier;
@@ -824,11 +826,10 @@ type
     procedure DragTimerHandler;
     procedure ScrollTimerHandler(Sender: TObject);
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
-    procedure FindAndHandleMouseAction(AButton: TSynMouseButton; AShift: TShiftState;
+    function GetMouseActionInfo(AButton: TSynMouseButton; AShift: TShiftState;
                                 X, Y: Integer; ACCount:TSynMAClickCount;
-                                ADir: TSynMAClickDir;
-                                out AnActionResult: TSynEditMouseActionResult;
-                                AWheelDelta: Integer = 0);
+                                ADir: TSynMAClickDir; AWheelDelta: Integer = 0): TSynEditMouseActionInfo;
+    procedure FindAndHandleMouseAction(var AnInfo: TSynEditMouseActionInfo; out AnActionResult: TSynEditMouseActionResult);
     function DoHandleMouseAction(AnActionList: TSynEditMouseActions;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean;
     procedure DoHandleMouseActionResult(AnActionResult: TSynEditMouseActionResult);
@@ -1246,7 +1247,8 @@ type
     property OnCutCopy: TSynCopyPasteEvent read FOnCutCopy write FOnCutCopy;
     property OnPaste: TSynCopyPasteEvent read FOnPaste write FOnPaste;
     property OnDropFiles: TSynDropFilesEvent read fOnDropFiles write fOnDropFiles;
-    property OnGutterClick: TGutterClickEvent read GetOnGutterClick write SetOnGutterClick;
+    //property OnGutterClick: TGutterClickEvent read FOnGutterClick write FOnGutterClick;
+    property OnGutterClick: TGutterClickEvent read GetOnGutterClick write SetOnGutterClick; // TODO: Change to FOnGutterClick in 5.99
     property OnPaint: TPaintEvent read fOnPaint write fOnPaint;
     // OnPlaceBookmark only triggers for Bookmarks
     property OnPlaceBookmark: TPlaceMarkEvent read FOnPlaceMark write FOnPlaceMark;
@@ -3033,7 +3035,7 @@ end;
 
 function TCustomSynEdit.GetOnGutterClick : TGutterClickEvent;
 begin
-  Result := FLeftGutter.OnGutterClick;
+  Result := FLeftGutter.{%H-}OnGutterClick;
 end;
 
 function TCustomSynEdit.GetSelectedColor : TSynHighlighterAttributesModifier;
@@ -3090,7 +3092,7 @@ end;
 
 procedure TCustomSynEdit.SetOnGutterClick(const AValue : TGutterClickEvent);
 begin
-  FLeftGutter.OnGutterClick := AValue; // Todo: the IDE uses this for the left gutter only
+  FLeftGutter.{%H-}OnGutterClick := AValue; // Todo: the IDE uses this for the left gutter only
 end;
 
 procedure TCustomSynEdit.SetUseIncrementalColor(const AValue : Boolean);
@@ -3583,7 +3585,7 @@ begin
           FConfirmMouseDownMatchAct := AnAction;
           FConfirmMouseDownMatchFound := False;
           // simulate up click at the coordinates of the down click
-          FindAndHandleMouseAction(AnInfo.Button, AnInfo.Shift, fMouseDownX, fMouseDownY, AnInfo.CCount, cdUp, AnActionResultDummy);
+          FindAndHandleMouseAction(AnInfo, AnActionResultDummy);
         finally
           FConfirmMouseDownMatchAct := nil;
         end;
@@ -3618,6 +3620,18 @@ begin
     // Plugins/External
     Result := FMouseActionExecHandlerList.CallExecHandlers(AnAction, AnInfo);
     // Gutter
+    if (not Result) and (ACommand = emcOnMainGutterClick) then begin
+      Result := True;
+      if Assigned(OnGutterClick) then
+        OnGutterClick(AnInfo.Sender, AnInfo.MouseX, AnInfo.MouseY, AnInfo.NewCaret.LinePos, nil)
+      else  // simulate the old behaviour, until the properties on the Gutters are removed
+            // If left gutter was not assigned, then right gutter would fire (even for left gutter)
+            // TODO: remove in 5.99
+      if Assigned(RightGutter.OnGutterClick) then
+        RightGutter.OnGutterClick(AnInfo.Sender, AnInfo.MouseX, AnInfo.MouseY, AnInfo.NewCaret.LinePos, nil)
+      else
+        Result := False;
+    end;
     if not Result then
       Result := FLeftGutter.DoHandleMouseAction(AnAction, AnInfo);
     if not Result then
@@ -3956,65 +3970,56 @@ begin
             (abs(VertFraction) <= 256);
 end;
 
-procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TSynMouseButton;
-  AShift: TShiftState; X, Y: Integer; ACCount: TSynMAClickCount; ADir: TSynMAClickDir; out
-  AnActionResult: TSynEditMouseActionResult; AWheelDelta: Integer);
+procedure TCustomSynEdit.FindAndHandleMouseAction(var AnInfo: TSynEditMouseActionInfo; out
+  AnActionResult: TSynEditMouseActionResult);
 var
-  Info: TSynEditMouseActionInfo;
+  IsInSelection: Boolean;
+  X, Y: Integer;
 begin
-  FInternalCaret.AssignFrom(FCaret);
-  FInternalCaret.Invalidate;
-  FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
-  with Info do begin
-    NewCaret := FInternalCaret;
-    Button := AButton;
-    Shift := AShift;
-    MouseX := X;
-    MouseY := Y;
-    WheelDelta := AWheelDelta;
-    CCount := ACCount;
-    Dir := ADir;
-    IgnoreUpClick := False;
-    ActionResult.DoPopUpEvent := False;
-    ActionResult.PopUpMenu := nil;
-  end;
+  X := AnInfo.MouseX;
+  Y := AnInfo.MouseY;
+  IsInSelection := IsPointInSelection(AnInfo.NewCaret.LineBytePos);
   try
     // Check plugins/external handlers
-    if FMouseActionSearchHandlerList.CallSearchHandlers(Info,
+    if FMouseActionSearchHandlerList.CallSearchHandlers(AnInfo,
                                          @DoHandleMouseAction)
     then
       exit;
 
     if FLeftGutter.Visible and (X < FLeftGutter.Width) then begin
       // mouse event occurred in Gutter ?
-      if FLeftGutter.MaybeHandleMouseAction(Info, @DoHandleMouseAction) then
+      AnInfo.Sender := FLeftGutter;
+      if FLeftGutter.MaybeHandleMouseAction(AnInfo, @DoHandleMouseAction) then
         exit;
+      AnInfo.Sender := Self;
     end
     else
     if FRightGutter.Visible and (X > ClientWidth - FRightGutter.Width) then begin
+      AnInfo.Sender := FRightGutter;
       // mouse event occurred in Gutter ?
-      if FRightGutter.MaybeHandleMouseAction(Info, @DoHandleMouseAction) then
+      if FRightGutter.MaybeHandleMouseAction(AnInfo, @DoHandleMouseAction) then
         exit;
+      AnInfo.Sender := Self;
     end
     else
     begin
       // mouse event occurred in selected block ?
       if SelAvail and (X >= FTextArea.Bounds.Left) and (X < FTextArea.Bounds.Right) and
          (Y >= FTextArea.Bounds.Top) and (Y < FTextArea.Bounds.Bottom) and
-         IsPointInSelection(FInternalCaret.LineBytePos)
+         IsInSelection
       then
-        if DoHandleMouseAction(FMouseSelActions.GetActionsForOptions(MouseOptions), Info) then
+        if DoHandleMouseAction(FMouseSelActions.GetActionsForOptions(MouseOptions), AnInfo) then
           exit;
       // mouse event occurred in text?
-      if DoHandleMouseAction(FMouseTextActions.GetActionsForOptions(MouseOptions), Info) then
+      if DoHandleMouseAction(FMouseTextActions.GetActionsForOptions(MouseOptions), AnInfo) then
         exit;
     end;
 
-    DoHandleMouseAction(FMouseActions.GetActionsForOptions(MouseOptions), Info);
+    DoHandleMouseAction(FMouseActions.GetActionsForOptions(MouseOptions), AnInfo);
   finally
-    if Info.IgnoreUpClick then
+    if AnInfo.IgnoreUpClick then
       include(fStateFlags, sfIgnoreUpClick);
-    AnActionResult := Info.ActionResult;
+    AnActionResult := AnInfo.ActionResult;
   end;
 end;
 
@@ -4034,6 +4039,7 @@ procedure TCustomSynEdit.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   CType: TSynMAClickCount;
   AnActionResult: TSynEditMouseActionResult;
+  Info: TSynEditMouseActionInfo;
 begin
   DebugLnEnter(LOG_SynMouseEvents, ['>> TCustomSynEdit.MouseDown Mouse=',X,',',Y, ' Shift=',dbgs(Shift), ' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags)]);
   Exclude(FStateFlags, sfHideCursor);
@@ -4080,15 +4086,16 @@ begin
 
   IncPaintLock;
   try
+    Info := GetMouseActionInfo(SynMouseButtonMap[Button], Shift, X, Y, CType, cdDown);
     if (X < TextLeftPixelOffset(False)) then begin
       Include(fStateFlags, sfLeftGutterClick);
-      FLeftGutter.MouseDown(Button, Shift, X, Y);
+      CallGutterMouseDown(FLeftGutter, Info);
     end;
     if (X > ClientWidth - TextRightPixelOffset - ScrollBarWidth) then begin
       Include(fStateFlags, sfRightGutterClick);
-      FRightGutter.MouseDown(Button, Shift, X, Y);
+      CallGutterMouseDown(FRightGutter, Info);
     end;
-    FindAndHandleMouseAction(SynMouseButtonMap[Button], Shift, X, Y, CType, cdDown, AnActionResult);
+    FindAndHandleMouseAction(Info, AnActionResult);
   finally
     DecPaintLock;
   end;
@@ -4111,9 +4118,9 @@ begin
   Exclude(FStateFlags, sfHideCursor);
   inherited MouseMove(Shift, x, y);
   if (sfLeftGutterClick in fStateFlags) then
-    FLeftGutter.MouseMove(Shift, X, Y);
+    CallGutterMouseMove(FLeftGutter, Shift, X, Y);
   if (sfRightGutterClick in fStateFlags) then
-    FRightGutter.MouseMove(Shift, X, Y);
+    CallGutterMouseMove(FRightGutter, Shift, X, Y);
 
   FLastMouseLocation.LastMousePoint := Point(X,Y);
   LastMouseCaret := PixelsToRowColumn(Point(X,Y)); // TODO: Used for ctrl-Link => Use LastMousePoint, and calculate only, if modifier is down
@@ -4313,12 +4320,36 @@ begin
     Exclude(FStateFlags, sfHideCursor);
 end;
 
+function TCustomSynEdit.GetMouseActionInfo(AButton: TSynMouseButton; AShift: TShiftState; X,
+  Y: Integer; ACCount: TSynMAClickCount; ADir: TSynMAClickDir; AWheelDelta: Integer
+  ): TSynEditMouseActionInfo;
+begin
+  FInternalCaret.AssignFrom(FCaret);
+  FInternalCaret.Invalidate;
+  FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
+  with Result do begin
+    NewCaret := FInternalCaret;
+    Button := AButton;
+    Shift := AShift;
+    MouseX := X;
+    MouseY := Y;
+    WheelDelta := AWheelDelta;
+    CCount := ACCount;
+    Dir := ADir;
+    IgnoreUpClick := False;
+    ActionResult.DoPopUpEvent := False;
+    ActionResult.PopUpMenu := nil;
+    Sender := Self;
+  end;
+end;
+
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   wasDragging, wasSelecting, ignoreUp : Boolean;
   CType: TSynMAClickCount;
   AnActionResult: TSynEditMouseActionResult;
+  Info: TSynEditMouseActionInfo;
 begin
   DebugLn(LOG_SynMouseEvents, ['>> TCustomSynEdit.MouseUp Mouse=',X,',',Y, ' Shift=',dbgs(Shift), ' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd), ' StateFlags=',dbgs(fStateFlags)]);
   Exclude(FStateFlags, sfHideCursor);
@@ -4366,15 +4397,16 @@ begin
 
   IncPaintLock;
   try
+    Info := GetMouseActionInfo(SynMouseButtonMap[Button], Shift, X, Y, CType, cdUp);
     if (sfLeftGutterClick in fStateFlags) then begin
-      FLeftGutter.MouseUp(Button, Shift, X, Y);
+      CallGutterMouseUp(FLeftGutter, Info);
       Exclude(fStateFlags, sfLeftGutterClick);
     end;
     if (sfRightGutterClick in fStateFlags) then begin
-      FRightGutter.MouseUp(Button, Shift, X, Y);
+      CallGutterMouseUp(FRightGutter, Info);
       Exclude(fStateFlags, sfRightGutterClick);
     end;
-    FindAndHandleMouseAction(SynMouseButtonMap[Button], Shift, X, Y, CType, cdUp, AnActionResult);
+    FindAndHandleMouseAction(Info, AnActionResult);
   finally
     DecPaintLock;
   end;
@@ -8471,6 +8503,7 @@ var
   lState: TShiftState;
   MousePos: TPoint;
   AnActionResult: TSynEditMouseActionResult;
+  Info: TSynEditMouseActionInfo;
 begin
   if ((sfHorizScrollbarVisible in fStateFlags) and (Message.Y > ClientHeight)) or
      ((sfVertScrollbarVisible in fStateFlags) and (Message.X > ClientWidth))
@@ -8492,11 +8525,13 @@ begin
   IncPaintLock;
   try
     if Message.WheelDelta > 0 then begin
-      FindAndHandleMouseAction(mbXWheelUp, lState, Message.X, Message.Y, ccSingle, cdDown, AnActionResult, Message.WheelDelta);
+      Info := GetMouseActionInfo(mbXWheelUp, lState, Message.X, Message.Y, ccSingle, cdDown, Message.WheelDelta);
+      FindAndHandleMouseAction(Info, AnActionResult);
     end
     else begin
       // send megative delta
-      FindAndHandleMouseAction(mbXWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown, AnActionResult, Message.WheelDelta);
+      Info := GetMouseActionInfo(mbXWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown, Message.WheelDelta);
+      FindAndHandleMouseAction(Info, AnActionResult);
     end;
   finally
     DecPaintLock;
@@ -8512,6 +8547,7 @@ var
   lState: TShiftState;
   MousePos: TPoint;
   AnActionResult: TSynEditMouseActionResult;
+  Info: TSynEditMouseActionInfo;
 begin
   if ((sfHorizScrollbarVisible in fStateFlags) and (Message.Y > ClientHeight)) or
      ((sfVertScrollbarVisible in fStateFlags) and (Message.X > ClientWidth))
@@ -8533,11 +8569,13 @@ begin
   IncPaintLock;
   try
     if Message.WheelDelta > 0 then begin
-      FindAndHandleMouseAction(mbXWheelLeft, lState, Message.X, Message.Y, ccSingle, cdDown, AnActionResult, Message.WheelDelta);
+      Info := GetMouseActionInfo(mbXWheelLeft, lState, Message.X, Message.Y, ccSingle, cdDown, Message.WheelDelta);
+      FindAndHandleMouseAction(Info, AnActionResult);
     end
     else begin
       // send megative delta
-      FindAndHandleMouseAction(mbXWheelRight, lState, Message.X, Message.Y, ccSingle, cdDown, AnActionResult, Message.WheelDelta);
+      Info := GetMouseActionInfo(mbXWheelRight, lState, Message.X, Message.Y, ccSingle, cdDown, Message.WheelDelta);
+      FindAndHandleMouseAction(Info, AnActionResult);
     end;
   finally
     DecPaintLock;

@@ -135,6 +135,14 @@ type
   TSynSelectedColor = class;
   TSynBookMarkOpt = class;
 
+  TSynGutterDispatchBase = class(TPersistent)
+  protected
+    procedure MouseDown(const AnInfo: TSynEditMouseActionInfo); virtual; abstract;
+    procedure MouseUp(const AnInfo: TSynEditMouseActionInfo); virtual; abstract;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual; abstract;
+  end;
+
+
   { TSynEditBase }
 
   TSynEditBase = class(TCustomControl)
@@ -200,6 +208,10 @@ type
     procedure SetSelEnd(const Value: Integer); virtual; abstract;
     procedure SetSelStart(const Value: Integer); virtual; abstract;
     procedure SetSelTextExternal(const Value: string); virtual; abstract;
+
+    procedure CallGutterMouseDown(AGutter: TSynGutterDispatchBase; const AnInfo: TSynEditMouseActionInfo);
+    procedure CallGutterMouseUp(AGutter: TSynGutterDispatchBase; const AnInfo: TSynEditMouseActionInfo);
+    procedure CallGutterMouseMove(AGutter: TSynGutterDispatchBase; Shift: TShiftState; X, Y: Integer);
 
     function GetMouseActions: TSynEditMouseActions; virtual; abstract;
     function GetMouseSelActions: TSynEditMouseActions; virtual; abstract;
@@ -978,6 +990,24 @@ begin
     fReadOnly := Value;
     StatusChanged([scReadOnly]);
   end;
+end;
+
+procedure TSynEditBase.CallGutterMouseDown(AGutter: TSynGutterDispatchBase;
+  const AnInfo: TSynEditMouseActionInfo);
+begin
+  AGutter.MouseDown(AnInfo);
+end;
+
+procedure TSynEditBase.CallGutterMouseUp(AGutter: TSynGutterDispatchBase;
+  const AnInfo: TSynEditMouseActionInfo);
+begin
+  AGutter.MouseUp(AnInfo);
+end;
+
+procedure TSynEditBase.CallGutterMouseMove(AGutter: TSynGutterDispatchBase; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  AGutter.MouseMove(Shift, X, Y);
 end;
 
 { TSynEditFriend }

@@ -20,9 +20,7 @@ type
   TSynGutter = class(TSynGutterBase)
   private
     FCursor: TCursor;
-    FOnGutterClick: TGutterClickEvent;
-    FMouseDownPart: Integer;
-    function PixelToPartIndex(X: Integer): Integer;
+    FOnGutterClick: TGutterClickEvent{%H-}deprecated;
   protected
     procedure DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
       mark: TSynEditMark); override;
@@ -35,18 +33,13 @@ type
                       ATextDrawer: TLazEditTextGridPainter);
     destructor Destroy; override;
     procedure Paint(Canvas: TCanvas; Surface:TLazSynGutterArea; AClip: TRect; FirstLine, LastLine: integer);
-    function  HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer);
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     function  MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                          HandleActionProc: TSynEditMouseActionHandler): Boolean; override;
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean;
     procedure ResetMouseActions; override; // set mouse-actions according to current Options / may clear them
-    procedure DoOnGutterClick(X, Y: integer);
-    property  OnGutterClick: TGutterClickEvent
-      read FOnGutterClick write FOnGutterClick;
+    property  OnGutterClick: TGutterClickEvent read FOnGutterClick write FOnGutterClick;
+      deprecated 'Use SynEdit.OnGutterClick ({Left}Gutter.OnGutterClick is a forwarded copy), or use OnClick // To be removed in 5.99';
   public
     // Access to well known parts
     Function LineNumberPart(Index: Integer = 0): TSynGutterLineNumber;
@@ -68,6 +61,7 @@ type
     property MouseActions;
     property OnResize;
     property OnChange;
+    property OnClick;
   end;
 
   { TSynGutterSeparator }
@@ -216,21 +210,6 @@ begin
   Result := TSynEditMouseActionsGutter.Create(self);
 end;
 
-function TSynGutter.PixelToPartIndex(X: Integer): Integer;
-begin
-  Result := 0;
-  x := x - Left - LeftOffset;
-  while Result < PartCount-1 do begin
-    if Parts[Result].Visible then begin
-      if x >= Parts[Result].FullWidth then
-        x := x - Parts[Result].FullWidth
-      else
-        break;
-    end;
-    inc(Result)
-  end;
-end;
-
 procedure TSynGutter.DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
   mark: TSynEditMark);
 begin
@@ -250,11 +229,6 @@ begin
         Result.Name := 'SynRightGutterPartList1';
       end;
   end;
-end;
-
-procedure TSynGutter.DoOnGutterClick(X, Y: integer);
-begin
-  Parts[PixelToPartIndex(X)].DoOnGutterClick(X, Y);
 end;
 
 procedure TSynGutter.Paint(Canvas: TCanvas; Surface:TLazSynGutterArea; AClip: TRect; FirstLine, LastLine: integer);
@@ -315,29 +289,6 @@ begin
   end;
 end;
 
-function TSynGutter.HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
-begin
-  Result := Parts[FMouseDownPart].HasCustomPopupMenu(PopMenu);
-end;
-
-procedure TSynGutter.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  FMouseDownPart := PixelToPartIndex(X);
-  Parts[FMouseDownPart].MouseDown(Button, Shift, X, Y);
-  if (Button=Controls.mbLeft) then
-    DoOnGutterClick(X, Y);
-end;
-
-procedure TSynGutter.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  Parts[FMouseDownPart].MouseMove(Shift, X, Y);
-end;
-
-procedure TSynGutter.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  Parts[FMouseDownPart].MouseUp(Button, Shift, X, Y);
-end;
-
 function TSynGutter.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 var
@@ -361,21 +312,7 @@ begin
   Result := False;
   for i := 0 to Parts.Count - 1 do begin
     Result := Parts[i].DoHandleMouseAction(AnAction, AnInfo);
-    if Result then exit;;
-  end;
-
-  if AnAction = nil then exit;
-  ACommand := AnAction.Command;
-  if (ACommand = emcNone) then exit;
-
-  case ACommand of
-    emcOnMainGutterClick:
-      begin
-        if Assigned(FOnGutterClick) then begin
-          FOnGutterClick(Self, AnInfo.MouseX, AnInfo.MouseY, AnInfo.NewCaret.LinePos, nil);
-          Result := True;
-        end;
-      end;
+    if Result then exit;
   end;
 end;
 
