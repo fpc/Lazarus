@@ -611,8 +611,10 @@ type
   TCDToolBar = class(TCDControl)
   private
     // fields
+    FFlat: Boolean;
     FShowCaptions: Boolean;
     FItems: TFPList;
+    procedure SetFlat(AValue: Boolean);
     procedure SetShowCaptions(AValue: Boolean);
   protected
     FTBState: TCDToolBarStateEx;
@@ -634,9 +636,11 @@ type
     function GetItem(AIndex: Integer): TCDToolBarItem;
     function GetItemCount(): Integer;
     function GetItemWithMousePos(APosInControl: TPoint): TCDToolBarItem;
+    function GetItemWithMousePos(APosInControl: TPoint; out OnArrow: Boolean): TCDToolBarItem;
     function IsPosInButton(APosInControl: TPoint; AItem: TCDToolBarItem; AItemX: Integer): Boolean;
   published
-    property ShowCaptions: Boolean read FShowCaptions write SetShowCaptions;
+    property Flat: Boolean read FFlat write SetFlat default true;
+    property ShowCaptions: Boolean read FShowCaptions write SetShowCaptions default false;
     property DrawStyle;
   end;
 
@@ -2918,7 +2922,15 @@ begin
   inherited Destroy;
 end;
 
+
 { TCDToolBar }
+
+procedure TCDToolbar.SetFlat(AValue: Boolean);
+begin
+  if FFlat = AValue then Exit;
+  FFlat := AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
 
 procedure TCDToolBar.SetShowCaptions(AValue: Boolean);
 begin
@@ -2933,6 +2945,8 @@ begin
 end;
 
 procedure TCDToolBar.CreateControlStateEx;
+var
+  i: Integer;
 begin
   FTBState := TCDToolBarStateEx.Create;
   FStateEx := FTBState;
@@ -2945,6 +2959,7 @@ var
   lCurItem: TCDToolBarItem;
 begin
   inherited PrepareControlStateEx;
+  FTBState.Flat := FFlat;
   FTBState.ShowCaptions := FShowCaptions;
   FTBState.Items := FItems;
   FTBState.ToolBarHeight := Height;
@@ -2974,13 +2989,16 @@ end;
 procedure TCDToolBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 var
   lCurItem: TCDToolBarItem;
+  lOnArrow: Boolean;
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  lCurItem := GetItemWithMousePos(Point(X, Y));
-  if lCurItem = nil then Exit;
-  if lCurItem.Kind in [tikButton, tikCheckButton] then
+  lCurItem := GetItemWithMousePos(Point(X, Y), lOnArrow);
+  if (lCurItem = nil) or not lCurItem.Enabled then Exit;
+  if lCurItem.Kind in [tikButton, tikCheckButton, tikDropDownButton] then
   begin
     lCurItem.State := lCurItem.State + [csfSunken];
+    if (lCurItem.Kind = tikDropDownButton) and lOnArrow then
+      lCurItem.State := lCurItem.State + [csfSunkenArrow] - [csfSunken];
     Invalidate();
   end;
 end;
@@ -2988,32 +3006,38 @@ end;
 procedure TCDToolBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 var
   i: Integer;
-  lCurItem: TCDToolBarItem;
+  lCurItem, item: TCDToolBarItem;
   DoInvalidate: Boolean = False;
+  ArrowClicked: Boolean = False;
 begin
   inherited MouseUp(Button, Shift, X, Y);
   lCurItem := GetItemWithMousePos(Point(X, Y));
-  if lCurItem = nil then Exit;
+  if (lCurItem = nil) or (not lCurItem.Enabled) then Exit;
 
   // click the selected checkbutton if applicable
   if lCurItem.Kind in [tikCheckButton] then
   begin
     lCurItem.Down := not lCurItem.Down;
     DoInvalidate := True;
-  end;
+  end else
+  if lCurItem.Kind = tikDropDownButton then
+    ArrowClicked := csfSunkenArrow in lCurItem.State;
 
   // up all buttons
   for i := 0 to GetItemCount()-1 do
   begin
-    lCurItem := GetItem(i);
-    if lCurItem.Kind in [tikButton, tikCheckButton] then
+    item := GetItem(i);
+    if item.Kind in [tikButton, tikCheckButton, tikDropDownButton] then
     begin
-      lCurItem.State := lCurItem.State - [csfSunken];
+      item.State := item.State - [csfSunken, csfSunkenArrow];
       DoInvalidate := True;
     end;
   end;
 
   if DoInvalidate then Invalidate;
+
+  if Assigned(lCurItem.OnClick) and (lCurItem.Kind in [tikButton, tikCheckButton, tikDropDownButton]) then
+    lCurItem.OnClick(lCurItem, ArrowClicked);
 end;
 
 procedure TCDToolBar.MouseLeave;
@@ -3029,6 +3053,7 @@ begin
   Align := alTop;
   FItems := TFPList.Create();
   TabStop := False;
+  FFlat := True;
 end;
 
 destructor TCDToolBar.Destroy;
@@ -3045,15 +3070,18 @@ var
 begin
   lNewItem := TCDToolBarItem.Create;
   lNewItem.Kind := AKind;
+  lNewItem.Enabled := true;
   FItems.Insert(AIndex, lNewItem);
   Result := lNewItem;
   PrepareCurrentDrawer();
   case AKind of
-  tikButton, tikCheckButton: Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH);
-  tikDropDownButton:
-    Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH)
-      + FDrawer.GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH);
-  tikSeparator, tikDivider:  Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH);
+    tikButton, tikCheckButton:
+      Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH);
+    tikDropDownButton:
+      Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH)
+        + FDrawer.GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH);
+    tikSeparator, tikDivider:
+      Result.Width := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH);
   end;
 end;
 
@@ -3063,8 +3091,12 @@ begin
 end;
 
 procedure TCDToolBar.DeleteItem(AIndex: Integer);
+var
+  item: TCDToolbarItem;
 begin
   if (AIndex < 0) or (AIndex >= FItems.Count) then Exit;
+  item := TCDToolbarItem(FItems[AIndex]);
+  item.Free;
   FItems.Delete(AIndex);
 end;
 
@@ -3082,19 +3114,39 @@ end;
 
 function TCDToolBar.GetItemWithMousePos(APosInControl: TPoint): TCDToolBarItem;
 var
+  onArrow: Boolean;
+begin
+  Result := GetItemWithMousePos(APosInControl, onArrow);
+end;
+
+function TCDToolbar.GetItemWithMousePos(APosInControl: TPoint;
+  out OnArrow: Boolean): TCDToolBarItem;
+var
   i, lX: Integer;
   lCurItem: TCDToolBarItem;
+  lArrowWidth: Integer = -1;
 begin
   Result := nil;
+  OnArrow := false;
   lX := 0;
   for i := 0 to FItems.Count-1 do
   begin
     lCurItem := GetItem(i);
     if IsPosInButton(APosInControl, lCurItem, lX) then
+    begin
+      if (lCurItem.Kind = tikDropDownButton) then
+      begin
+        if lArrowWidth = -1 then
+          lArrowWidth := FDrawer.GetMeasures(TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH);
+        if (APosInControl.X > lX + lCurItem.Width - lArrowWidth) then
+          OnArrow := true;
+      end;
       Exit(lCurItem);
+    end;
     lX := lX + lCurItem.Width;
   end;
 end;
+
 
 function TCDToolBar.IsPosInButton(APosInControl: TPoint; AItem: TCDToolBarItem;
   AItemX: Integer): Boolean;

@@ -7,16 +7,18 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, mainform, toolbartest
+  Forms, MainForm, ToolBarTest, ButtonTest
   { you can add units after this };
 
 {$R *.res}
 
 begin
   RequireDerivedFormResource:=True;
+  Application.Scaled:=True;
   Application.Initialize;
-  Application.CreateForm(TformCDControlsTest, formCDControlsTest);
+  Application.CreateForm(TFormCDControlsTest, FormCDControlsTest);
   Application.CreateForm(TFormToolBar, FormToolBar);
+  Application.CreateForm(TFormButtons, FormButtons);
   Application.Run;
 end.
 
