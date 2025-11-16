@@ -3475,17 +3475,22 @@ var
 begin
   if StoreDirectives then
     FDirectives[FDirectivesCount-1].Kind:=lsdkMacro;
-  ReadSpace;
-  ValStart:=SrcPos;
-  while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
+  if (SrcPos<=SrcLen) and (Src[SrcPos] in ['-','+']) then begin
+    FMacrosOn:=Src[SrcPos]='+';
     inc(SrcPos);
-  if CompareUpToken('ON',Src,ValStart,SrcPos) then
-    FMacrosOn:=true
-  else if CompareUpToken('OFF',Src,ValStart,SrcPos) then
-    FMacrosOn:=false
-  else
-    RaiseExceptionFmt(20170422130118,ctsInvalidFlagValueForDirective,
-        [copy(Src,ValStart,SrcPos-ValStart),FDirectiveName]);
+  end else begin
+    ReadSpace;
+    ValStart:=SrcPos;
+    while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
+      inc(SrcPos);
+    if CompareUpToken('ON',Src,ValStart,SrcPos) then
+      FMacrosOn:=true
+    else if CompareUpToken('OFF',Src,ValStart,SrcPos) then
+      FMacrosOn:=false
+    else
+      RaiseExceptionFmt(20170422130118,ctsInvalidFlagValueForDirective,
+          [copy(Src,ValStart,SrcPos-ValStart),FDirectiveName]);
+  end;
   Result:=true;
 end;
 
