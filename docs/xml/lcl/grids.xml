@@ -7200,7 +7200,9 @@ control.
 </element>
 
 <element name="TCustomGrid">
-<short>Implements the base class for grid controls.</short>
+<short>
+Implements the base class for grid controls.
+</short>
 <descr>
 <p>
 A grid is a collection of cells that are organized in columns and rows. Grids 
@@ -7290,6 +7292,107 @@ id="TCustomGrid.EndUpdate">EndUpdate</link> to speed up the application.
 <p>
 Component developers must override the <link 
 id="TCustomGrid.DrawCell">DrawCell</link> method in customized grid controls.
+</p>
+<p>
+<b>Grid cell selection</b>
+</p>
+<p>
+The location of the current (focused) cell (or row) can be changed using 
+keyboard, mouse or through code. In order to change cell focus successfully to 
+another position, we must test the target position to see if it is allowed to 
+receive cell focus. When using keyboard, the property AutoAdvance performs 
+part of the process by finding what should be the next focused cell. When 
+using mouse clicks or moving by code, focus will not move from the current 
+cell unless the target cell is permitted to receive focus.
+</p>
+<p>
+The grid calls the SelectCell function to see if a cell is focusable: if this 
+function returns true, then the target cell identified with arguments aCol and 
+aRow is focusable (the current implementation of TCustomGrid simply returns 
+true). TCustomDrawGrid and hence TDrawGrid and TStringGrid override this 
+method to check first if cell is any wider than 0; normally you don't want a 0 
+width cell selected so a cell with these characteristics is skipped 
+automatically in the process of finding a suitable cell. The other thing the 
+overridden method SelectCell does is to call the user configurable event 
+OnSelectCell: this event receives the cell coordinates as arguments and always 
+returns a default result value of true.
+</p>
+<p>
+Once a cell is known to be focusable and we are sure a movement will take 
+place, first the method BeforeMoveSelection is called; this in turns triggers 
+the OnBeforeSelection event. This method's arguments are the coordinates for 
+the new focused cell. At this point any visible editor is hidden too. The 
+"before" word means that selection is not yet changed and current focused 
+coordinates can be accessed with grid.Col and grid.Row properties.
+</p>
+<p>
+After that, the internal focused cell coordinates are changed and then 
+MoveSelection method is called; this method's purpose is to trigger the 
+OnSelection event if set (this is a notification that the focused cell has, by 
+this time, already changed and cell coordinates are now available through 
+grid.row and grid.col properties).
+</p>
+<p>
+Note that is not good to use OnSelectCell event to detect cell focus changes, 
+as this event will be triggered several times even for the same cell in the 
+process of finding a suitable cell. Is better to use OnBeforeSelection or 
+OnSelection events for this purpose.
+</p>
+<p>
+<b>Multi-selection</b>
+</p>
+<p>
+The Lazarus grids are able to extend the selection to multiple cells. The 
+Option goRangeSelect must be active for this purpose: Now you can drag the 
+mouse over a rectangle on the grid to select all the cells included or 
+intersected by this rectangle. Or you can click on the cell in one corner, 
+hold SHIFT down and either click on the opposite corner of the selection, or 
+press the arrow keys to extend the selection in the corresponding direction.
+</p>
+<p>
+In the default setting of the RangeSelectMode property, rsmSingle, only a 
+single cell or cell range (rectangle of cells) can be selected, as described. 
+The rsmMulti mode, however, allows selection of multiple and even 
+discontiguous cells or ranges. After selecting the first cell/range as already 
+described, hold the CTRL key down and click on the next cell or drag over the 
+next range to be selected. Instead of dragging you can also select an 
+additional range by pressing SHIFT (in addition to CTRL) and clicking on the 
+opposite corner of the range or pressing the arrow keys.
+</p>
+<p>
+The selected cells are highlighted by a different color. Note, however, that 
+the currently focused cell has the default background color of the grid unless 
+you set the Option goDrawFocusSelected.
+</p>
+<p>
+Clicking somewhere on an unselected cell unselects the selected cell(s)/range(
+s).
+</p>
+<p>
+If you need to access selections by code you can do this by using these 
+TCustomGrid properties:
+</p>
+<dl>
+<dt>SelectedRange[AIndex: Integer]: TGridRect:</dt>
+<dd>
+Returns the column/row coordinates of the corner cells of the selected range 
+at the specified index (type TGridRect = TRect). A single selected cell is 
+considered to be a block with equal Left and Right column and equal Top and 
+Bottom row coordinates.
+</dd>
+<dt>SelectedRangeCount: Integer:</dt>
+<dd>The number of selected blocks. </dd>
+</dl>
+<p>
+Note that these are read-only properties, you can add and change selections 
+only by user interaction. But you can call ClearSelections to unselect 
+everything.
+</p>
+<p>
+Your selection handling code must be prepared that a selected cell could be 
+found in another selected block again. Normally this situation is prohibited 
+in the user interface, but there are scenarios where a selection could be 
+extended into another range so that the overlapping cells are "selected twice".
 </p>
 <p>
 Additional information about grid usage is available on the Lazarus wiki in 
@@ -9418,9 +9521,9 @@ rectangle(s). It increases the capacity for the member and appends the value
 for the current selection rectangle.
 </p>
 <p>
-No actions are performed in the method if goRangeSelect has not been included 
-in the Options property, or when RangeSelectMode has a value other than 
-rsmMulti.
+No actions are performed in the method if <var>goRangeSelect</var> has not 
+been included in the <var>Options</var> property, or when 
+<var>RangeSelectMode</var> has a value other than <var>rsmMulti</var>.
 </p>
 <p>
 Use ClearSelections to remove range selection rectangle(s) stored using 
@@ -9429,7 +9532,10 @@ AddSelectedRange.
 <p>
 AddSelectedRange is called from MouseDown when a Ctrl+Click or Meta+Click 
 (macOS) mouse event occurs in the data area for the grid and range selection 
-has been enabled for the control.
+has been enabled for the control. Precautions have been taken in the calling 
+procedure to avoid adding the same cells to more than one selection range. 
+There are some combinations of user commands, however, where this cannot be 
+eliminated completely.
 </p>
 </descr>
 <seealso>
@@ -14178,7 +14284,9 @@ Returns <b>True</b> when all of the following conditions are satisfied:
 </element>
 
 <element name="TCustomGrid.GetIsCellSelected">
-<short>Gets the value for the indexed IsCellSelected property.</short>
+<short>
+Gets the value for the indexed IsCellSelected property.
+</short>
 <descr>
 <p>
 Compares the cell coordinates in <var>ACol</var> and <var>ARow</var> to the 
@@ -14197,6 +14305,7 @@ Otherwise, the return value is set to <b>False</b>.
 </descr>
 <seealso>
 <link id="TCustomGrid.IsCellSelected"/>
+<link id="TCustomGrid.RangeContains"/>
 </seealso>
 </element>
 <element name="TCustomGrid.GetIsCellSelected.Result">
@@ -15226,6 +15335,60 @@ PrepareCellHints is called from the <var>ShowCellHintWIndow</var> method.
 </element>
 <element name="TCustomGrid.PrepareCellHints.ARow">
 <short>Row number for the cell.</short>
+</element>
+
+<element name="TCustomGrid.RangeContains">
+<short>
+Indicates whether the specified grid rectangle contains the specified cell 
+coordinates.
+</short>
+<descr>
+<p>
+<var>RangeContains</var> is a <var>Boolean</var> function used to determine 
+whether the grid rectangle specified in the <var>ARange</var> argument 
+contains the cell specified in the <var>ACol</var> and <var>ARow</var> 
+arguments. The return value is <b>True</b> if the <var>TGridRect</var> 
+instance includes the specified cell coordinates; ACol must be between the 
+Left and Right members (inclusive) in the rectangle, ARow must be between the 
+Top and Bottom members (inclusive) in the rectangle.
+</p>
+<p>
+RangeContains is called from the GetIsCellSelected method and occurs when the 
+IsCellSelected property is examined during mouse down event handling and state 
+draw operations for the grid control.
+</p>
+</descr>
+<version>
+Added in LCL version 4.5.
+</version>
+<seealso>
+<link id="TCustomGrid.IsCellSelected"/>
+<link id="TCustomGrid.GetIsCellSelected"/>
+<link id="TCustomGrid.GetGridDrawState"/>
+<link id="TCustomGrid.MouseDown"/>
+<link id="TCustomGrid.DrawRow"/>
+</seealso>
+</element>
+<element name="TCustomGrid.RangeContains.ARange">
+<short>
+Grid rectangle with the cell coordinates examined in the method.
+</short>
+</element>
+<element name="TCustomGrid.RangeContains.ACol">
+<short>
+Column number for the cell to locate in the specified rectangle.
+</short>
+</element>
+<element name="TCustomGrid.RangeContains.ARow">
+<short>
+Row number for the cell to locate in the specified rectangle.
+</short>
+</element>
+<element name="TCustomGrid.RangeContains.Result">
+<short>
+Returns <b>True</b> if the specified cell exists in the specified grid 
+rectangle.
+</short>
 </element>
 
 <element name="TCustomGrid.ResetDefaultColWidths">
@@ -16372,12 +16535,20 @@ or row in the grid control. UpdateSelectionRange creates a new
 selection in the grid.
 </p>
 <p>
-UpdateSelectionRange uses values in <var>Options</var> to determine whether 
-the rectangle represents a single cell or the current Row. When 
-<var>goRowSelect</var> has been included in Options, the rectangle contains 
-the non-fixed column and last column numbers in the current Row. Otherwise, 
-the rectangle uses the value in Col and Row to represent both the start and 
-end cells for the Selection.
+UpdateSelectionRange uses values in <var>ColCount</var>, <var>RowCount</var>, 
+and <var>Options</var> to determine whether the rectangle represents an empty 
+selection, a single cell, or all cells in the current Row.
+</p>
+<p>
+When ColCount and RowCount both contain 0 (zero), the selection range is an 
+empty rectangle (Top, Left, Bottom, and Right members in the rectangle are -1).
+</p>
+<p>
+When <var>goRowSelect</var> has been included in Options, the rectangle 
+contains the first non-fixed column and last column numbers for the current 
+Row. If row selection is not enabled in Options, the rectangle uses the values 
+in <var>Col</var> and <var>Row</var> to represent both the start and end cells 
+for the selection range.
 </p>
 <p>
 UpdateSelectionRange is called from the <var>ClearSelections</var> and 
@@ -16388,7 +16559,9 @@ UpdateSelectionRange is called from the <var>ClearSelections</var> and
 <link id="TCustomGrid.Col"/>
 <link id="TCustomGrid.ColCount"/>
 <link id="TCustomGrid.FixedCols"/>
+<link id="TCustomGrid.Options"/>
 <link id="TCustomGrid.Row"/>
+<link id="TCustomGrid.RowCount"/>
 </seealso>
 </element>
 
@@ -18261,15 +18434,15 @@ number. <var>ACol</var> and <var>ARow</var> contain the column and row number
 for the cell.
 </p>
 <p>
-Compares the cell coordinates in <var>ACol</var> and <var>ARow</var> to the 
-current Selection in the grid control. The return value is <b>True</b> if the 
-cell is in the cell range in <var>Selection</var>.
+Compares the cell coordinates in ACol and ARow to the current selected range 
+on the grid control. The return value is <b>True</b> if the cell is in the 
+range for the selection on the control.
 </p>
 <p>
 If <var>RangeSelectMode</var> is set to <var>rsmMulti</var>, all of the 
 existing range selections are examined for the specified cell. The property 
 value is <b>True</b> when the cell is located in the array of rectangles used 
-for multi-selections in the grid control.
+for multi-selections on the grid control.
 </p>
 <p>
 Otherwise, the property value is set to <b>False</b>.
@@ -18434,14 +18607,16 @@ options.
 </element>
 
 <element name="TCustomGrid.RangeSelectMode">
-<short>Controls the range selection mode used for the grid.</short>
+<short>
+Controls the range selection mode used for the grid.
+</short>
 <descr>
 <p>
 <var>RangeSelectMode</var> is a <var>TRangeSelectMode</var> property that 
 controls the range selection mode used for the grid. The default value for 
-the property is <var>rsmSingle</var>, and allows selection of a single cell 
-in a range. Use <var>rsmMulti</var> to select multiple cells in a range 
-selection.
+the property is <var>rsmSingle</var>, and allows a selection to consist of a 
+single cell or a single cell range. Use <var>rsmMulti</var> to enable 
+selections that consist of multiple cells or multiple cell ranges.
 </p>
 <p>
 Changing the value in RangeSelectMode causes the <var>ClearSelections</var> 
@@ -19885,23 +20060,30 @@ stored using AddSelectedRange when multi-selection is enabled in the Options
 for the control.
 </p>
 <p>
-ClearSelections calls UpdateSelectionRange to restore the current selection 
-using the values in Col and Row. When goRowSelect has been included in 
-Options, a range selection for all cells in the current row is created. The 
-pivot point for extending the range selection is set to the values in Col and 
-Row.
+ClearSelections clears the internal storage for selection ranges and 
+calls UpdateSelectionRange to reset the current selection on the control.
+The selected range is an empty rectangle (where Left, Top, Bottom, and Right 
+members are -1) when ColCount and RowCount contain 0 (zero).
+</p>
+<p>
+When <var>goRowSelect</var> has been included in <var>Options</var>, a range 
+selection for all non-fixed cells in the current row is created. The pivot 
+point (selection anchor) for extending the range selection is set to the 
+values in Col and Row.
 </p>
 <p>
 ClearSelections calls InvalidateGrid to redraw the grid control when another 
 update is not already in progress.
 </p>
 <p>
-ClearSelections is called when a new value is assigned to the RangeSelectMode 
-property. It is also called from the MouseDown method when a range selection 
-is handled for the non-fixed area in the grid control.
+ClearSelections is called from the Clear method, and when a new value is 
+assigned to the RangeSelectMode property. It is also called from the MouseDown 
+method when a range selection is handled for the non-fixed area on the grid 
+control.
 </p>
 </descr>
 <seealso>
+<link id="TCustomGrid.Clear"/>
 <link id="TCustomGrid.Options"/>
 <link id="TCustomGrid.Col"/>
 <link id="TCustomGrid.Row"/>
@@ -20891,15 +21073,14 @@ Number of cell rectangles in the selected range for the grid.
 the number of selected cell rectangles currently selected in the cells for 
 the control. The property value contains the length of the internal 
 TGridRectArray maintained in the control + 1 (for the current selected cell 
-not already in the array).
+not already in the array), or 0 when the grid is empty.
 </p>
 <p>
-Use SelectedRange to access the selection rectangles by the ordinal position 
-in the internal TGridRectArray instance.
+Use SelectedRange to access a selection rectangle by its ordinal position in the internal TGridRectArray instance.
 </p>
 <p>
 Use AddSelectedRange to add a selection rectangle when RangeSelectMode is set 
-to rsMulti.
+to rsmMulti.
 </p>
 <p>
 Use ClearSelections to remove all selection rectangles and redraw the grid 
@@ -25087,7 +25268,9 @@ end;
 <element name="TCustomStringGrid.ValidateOnSetSelection" link="#lcl.grids.TCustomGrid.ValidateOnSetSelection"/>
 
 <element name="TStringGrid">
-<short>Implements a grid specialized for textual content.</short>
+<short>
+Implements a grid specialized for textual content.
+</short>
 <descr>
 <p>
 <var>TStringGrid</var> is a <var>TCustomStringGrid</var> descendant which 
@@ -25106,6 +25289,185 @@ TStringGrid sets the visibility for properties defined in the ancestor
 class. It has an overridden <var>WSRegisterClass</var> method to register 
 properties (from older LCL versions) which are no longer used in LCL 
 component streaming.
+</p>
+<p>
+<b>Key properties:</b>
+</p>
+<p>
+The <link id="TCustomGrid.ColCount">ColCount</link> and <link 
+id="TCustomGrid.RowCount">RowCount</link> properties contain the column and 
+row count of the grid.
+</p>
+<p>
+The <link id="TCustomGrid.FixedCols">FixedCols</link> and <link 
+id="TCustomGrid.FixedRows">FixedRows</link> properties specify the count of 
+fixed columns or rows that are used for headings.
+</p>
+<p>
+The column widths and row heights of the grid are accessible with the <link 
+id="TCustomGrid.ColWidths">ColWidths</link> and <link 
+id="TCustomGrid.RowHeights">RowHeights</link> properties.
+</p>
+<p>
+The <link id="TCustomGrid.DefaultColWidth">DefaultColWidth</link> and <link 
+id="TCustomGrid.DefaultRowHeight">DefaultRowHeight</link> properties are used 
+to specify default column widths or row heights respectively.
+</p>
+<p>
+The colors used for the cells and other grid elements are specified in the 
+following properties:
+</p>
+<ul>
+<li><link id="TCustomGrid.AlternateColor">AlternateColor</link></li>
+<li><link id="TCustomGrid.BorderColor">BorderColor</link></li>
+<li><link id="TCustomGrid.FixedColor">FixedColor</link></li>
+<li><link id="TCustomGrid.FixedHotColor">FixedHotColor</link></li>
+<li><link id="TCustomGrid.FocusColor">FocusColor</link></li>
+<li><link id="TCustomGrid.GridLineColor">GridLineColor</link></li>
+</ul>
+<p>
+The <link id="TCustomGrid.GridWidth">GridWidth</link> and <link 
+id="TCustomGrid.GridHeight">GridHeight</link> properties contain the 
+dimension of the entire grid.
+</p>
+<p>
+The <link id="TCustomGrid.ScrollBars">ScrollBars</link> controls the creation 
+of scroll bars for the grid.
+</p>
+<p>
+The <link id="TCustomGrid.LeftCol">LeftCol</link>, <link 
+id="TCustomGrid.TopRow">TopRow</link>, <link 
+id="TCustomGrid.VisibleColCount">VisibleColCount</link> and <link 
+id="TCustomGrid.VisibleRowCount">VisibleRowCount</link> properties contain 
+information about the visible area of the grid.
+</p>
+<p>
+The <link id="TCustomGrid.Options">Options</link> controls options for the 
+grid.
+</p>
+<p>
+<b>Key methods and events:</b>
+</p>
+<p>
+If the user highlights a cell of the grid, the <link 
+id="TCustomGrid.SelectCell">SelectCell</link> method is called that triggers 
+the OnSelectCell event. The position of the highlighted cell is stored within 
+the <link id="TCustomGrid.Col">Col</link> and <link 
+id="TCustomGrid.Row">Row</link> property.
+</p>
+<p>
+The <link id="TCustomGrid.MouseToCell">MouseToCell</link> method calculates a 
+grid cell from a given screen position.
+</p>
+<p>
+Huge changes to the grid should be encapsulated in calls to <link 
+id="TCustomGrid.BeginUpdate">BeginUpdate</link> and <link 
+id="TCustomGrid.EndUpdate">EndUpdate</link> to speed up the application.
+</p>
+<p>
+Component developers must override the <link 
+id="TCustomGrid.DrawCell">DrawCell</link> method in customized grid controls.
+</p>
+<p>
+<b>Grid cell selection</b>
+</p>
+<p>
+The location of the current (focused) cell (or row) can be changed using 
+keyboard, mouse or through code. In order to change cell focus successfully to 
+another position, we must test the target position to see if it is allowed to 
+receive cell focus. When using keyboard, the property AutoAdvance performs 
+part of the process by finding what should be the next focused cell. When 
+using mouse clicks or moving by code, focus will not move from the current 
+cell unless the target cell is permitted to receive focus.
+</p>
+<p>
+The grid calls the SelectCell function to see if a cell is focusable: if this 
+function returns true, then the target cell identified with arguments aCol and 
+aRow is focusable (the current implementation of TCustomGrid simply returns 
+true). TCustomDrawGrid and hence TDrawGrid and TStringGrid override this 
+method to check first if cell is any wider than 0; normally you don't want a 0 
+width cell selected so a cell with these characteristics is skipped 
+automatically in the process of finding a suitable cell. The other thing the 
+overridden method SelectCell does is to call the user configurable event 
+OnSelectCell: this event receives the cell coordinates as arguments and always 
+returns a default result value of true.
+</p>
+<p>
+Once a cell is known to be focusable and we are sure a movement will take 
+place, first the method BeforeMoveSelection is called; this in turns triggers 
+the OnBeforeSelection event. This method's arguments are the coordinates for 
+the new focused cell. At this point any visible editor is hidden too. The 
+"before" word means that selection is not yet changed and current focused 
+coordinates can be accessed with grid.Col and grid.Row properties.
+</p>
+<p>
+After that, the internal focused cell coordinates are changed and then 
+MoveSelection method is called; this method's purpose is to trigger the 
+OnSelection event if set (this is a notification that the focused cell has, by 
+this time, already changed and cell coordinates are now available through 
+grid.row and grid.col properties).
+</p>
+<p>
+Note that is not good to use OnSelectCell event to detect cell focus changes, 
+as this event will be triggered several times even for the same cell in the 
+process of finding a suitable cell. Is better to use OnBeforeSelection or 
+OnSelection events for this purpose.
+</p>
+<p>
+<b>Multi-selection</b>
+</p>
+<p>
+The Lazarus grids are able to extend the selection to multiple cells. The 
+Option goRangeSelect must be active for this purpose: Now you can drag the 
+mouse over a rectangle on the grid to select all the cells included or 
+intersected by this rectangle. Or you can click on the cell in one corner, 
+hold SHIFT down and either click on the opposite corner of the selection, or 
+press the arrow keys to extend the selection in the corresponding direction.
+</p>
+<p>
+In the default setting of the RangeSelectMode property, rsmSingle, only a 
+single cell or cell range (rectangle of cells) can be selected, as described. 
+The rsmMulti mode, however, allows selection of multiple and even 
+discontiguous cells or ranges. After selecting the first cell/range as already 
+described, hold the CTRL key down and click on the next cell or drag over the 
+next range to be selected. Instead of dragging you can also select an 
+additional range by pressing SHIFT (in addition to CTRL) and clicking on the 
+opposite corner of the range or pressing the arrow keys.
+</p>
+<p>
+The selected cells are highlighted by a different color. Note, however, that 
+the currently focused cell has the default background color of the grid unless 
+you set the Option goDrawFocusSelected.
+</p>
+<p>
+Clicking somewhere on an unselected cell unselects the selected cell(s)/range(
+s).
+</p>
+<p>
+If you need to access selections by code you can do this by using these 
+TCustomGrid properties:
+</p>
+<dl>
+<dt>SelectedRange[AIndex: Integer]: TGridRect:</dt>
+<dd>
+Returns the column/row coordinates of the corner cells of the selected range 
+at the specified index (type TGridRect = TRect). A single selected cell is 
+considered to be a block with equal Left and Right column and equal Top and 
+Bottom row coordinates.
+</dd>
+<dt>SelectedRangeCount: Integer:</dt>
+<dd>The number of selected blocks. </dd>
+</dl>
+<p>
+Note that these are read-only properties, you can add and change selections 
+only by user interaction. But you can call ClearSelections to unselect 
+everything.
+</p>
+<p>
+Your selection handling code must be prepared that a selected cell could be 
+found in another selected block again. Normally this situation is prohibited 
+in the user interface, but there are scenarios where a selection could be 
+extended into another range so that the overlapping cells are "selected twice".
 </p>
 <p>
 Additional information about grid usage is available on the Lazarus wiki in 
