@@ -70,10 +70,14 @@ Type
   TPromptResponseArray  = Array of TPromptResponse;
 
   { TLLMResult }
+
+  { TLLMRestStatusInfo }
+
   TLLMRestStatusInfo = record
     Status : Integer;
     StatusCode : string;
     ErrorContent : string;
+    Function ToString(const aPrefix : string = '') : String;
   end;
 
   generic TLLMResult<T> = record
@@ -428,6 +432,17 @@ begin
     AuthorizationKey:=aSource.AuthorizationKey;
   end else
     inherited Assign(Source);
+end;
+
+{ TLLMRestStatusInfo }
+
+function TLLMRestStatusInfo.ToString(const aPrefix: string = ''): String;
+begin
+  Result:=Format('%d %s',[Status,StatusCode]);
+  if ErrorContent<>'' then
+    Result:=Result+': '+ErrorContent;
+  if aPrefix<>'' then
+    Result:=aPrefix+': '+Result;
 end;
 
 { TLLMResult }
