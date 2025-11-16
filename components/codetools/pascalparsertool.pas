@@ -242,7 +242,7 @@ type
     function ReadWithStatement(ExceptionOnError, CreateNodes: boolean): boolean;
     function ReadOnStatement(ExceptionOnError, CreateNodes: boolean): boolean;
     procedure ReadVariableType;
-    procedure ReadHintModifiers(AllowSemicolonSep: boolean);
+    function ReadHintModifiers(AllowSemicolonSep: boolean): boolean;
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
     function ReadTilGetterOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
@@ -258,6 +258,7 @@ type
     function SkipSpecializeParams(ExceptionOnError: boolean): boolean;
     function WordIsPropertyEnd: boolean;
     function WordIsStatemendEnd: boolean;
+    function WordIsModifier: boolean;
     function AllowAttributes: boolean; inline;
     function AllowAnonymousFunctions: boolean; inline;
   public
@@ -1900,7 +1901,7 @@ begin
     or UpAtomIs('DEPRECATED')
     then begin
       ReadNextAtom;
-      if not (CurPos.Flag in [cafSemicolon,cafEND]) then
+      if not (CurPos.Flag in [cafSemicolon,cafEqual,cafEND]) then
         ReadConstant(true,false,[]);
     end else if UpAtomIs('IS') then begin
       ReadNextAtom;
@@ -3269,6 +3270,22 @@ begin
   Result:=false;
 end;
 
+function TPascalParserTool.WordIsModifier: boolean;
+var
+  p: PChar;
+begin
+  Result:=false;
+  if (CurPos.StartPos<1) or (CurPos.StartPos>SrcLen) then exit;
+  p:=@Src[CurPos.StartPos];
+  case UpChars[p^] of
+  'D': Result:=UpAtomIs('DEPRECATED');
+  'E': Result:=UpAtomIs('EXPERIMENTAL');
+  'L': Result:=UpAtomIs('LIBRARY');
+  'P': Result:=UpAtomIs('PLATFORM');
+  'U': Result:=UpAtomIs('UNIMPLEMENTED');
+  end;
+end;
+
 
 function TPascalParserTool.ReadTilStatementEnd(ExceptionOnError,
   CreateNodes: boolean): boolean;
@@ -3662,31 +3679,16 @@ begin
   EndChildNode;
 end;
 
-procedure TPascalParserTool.ReadHintModifiers(AllowSemicolonSep: boolean);
+function TPascalParserTool.ReadHintModifiers(AllowSemicolonSep: boolean): boolean;
 // after reading the cursor is at next atom, e.g. the semicolon
 // e.g. var c: char deprecated;
-
-  function IsModifier: boolean;
-  var
-    p: PChar;
-  begin
-    Result:=false;
-    if (CurPos.StartPos<1) or (CurPos.StartPos>SrcLen) then exit;
-    p:=@Src[CurPos.StartPos];
-    case UpChars[p^] of
-    'D': Result:=UpAtomIs('DEPRECATED');
-    'E': Result:=UpAtomIs('EXPERIMENTAL');
-    'L': Result:=UpAtomIs('LIBRARY');
-    'P': Result:=UpAtomIs('PLATFORM');
-    'U': Result:=UpAtomIs('UNIMPLEMENTED');
-    end;
-  end;
-
 var
   CanHaveString: Boolean;
 begin
+  Result := False;
   if not (Scanner.CompilerMode in [cmFPC,cmOBJFPC,cmDELPHI,cmDELPHIUNICODE]) then exit;
-  while IsModifier do begin
+  while WordIsModifier do begin
+    Result := True;
     //debugln(['TPascalParserTool.ReadHintModifier ',CurNode.DescAsString,' ',CleanPosToStr(CurPos.StartPos)]);
     CreateChildNode;
     CurNode.Desc:=ctnHintModifier;
@@ -3700,7 +3702,7 @@ begin
     EndChildNode;
     if AllowSemicolonSep and (CurPos.Flag=cafSemicolon) then begin
       ReadNextAtom;
-      if not IsModifier then begin
+      if not WordIsModifier then begin
         UndoReadNextAtom;
         exit;
       end;
@@ -4960,9 +4962,14 @@ function TPascalParserTool.KeyWordFuncTypeProc: boolean;
     function(ParmList):SimpleType of object;
     procedure; cdecl; popstack; register; pascal; stdcall;
 }
-var IsFunction, EqualFound, IsReferenceTo: boolean;
+var
+  IsFunction, EqualFound, IsReferenceTo, IsVarOrConst, CanHaveHints: boolean;
+  n: TCodeTreeNode;
 begin
   IsReferenceTo:=CurNode.Desc=ctnReferenceTo;
+  n := CurNode;
+  if IsReferenceTo then n := n.Parent;
+  IsVarOrConst:=(n<>nil) and ((n.Desc=ctnVarDefinition) or (n.Desc=ctnConstDefinition));
   IsFunction:=UpAtomIs('FUNCTION');
   CreateChildNode;
   CurNode.Desc:=ctnProcedureType;
@@ -4987,13 +4994,16 @@ begin
       SaveRaiseStringExpectedButAtomFound(20170421195812,'"object"');
     ReadNextAtom;
   end;
-  if (CurPos.Flag=cafEqual)
-  and (CurNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition]) then begin
+
+  if (CurPos.Flag=cafEqual) and IsVarOrConst then begin
     // for example  'const f: procedure = nil;'
   end else begin
+    CanHaveHints := True;
     if CurPos.Flag=cafSemicolon then begin
       ReadNextAtom;
       EqualFound:=false;
+      if IsVarOrConst then
+        CanHaveHints := False;
     end else if (CurPos.Flag=cafEqual) then begin
       EqualFound:=true;
     end else
@@ -5001,7 +5011,21 @@ begin
     if not EqualFound then begin
       // read modifiers
       repeat
+        if CanHaveHints then begin
+          if ReadHintModifiers(not IsVarOrConst) then begin
+            if CurPos.Flag=cafSemicolon then begin
+              if IsVarOrConst then
+                CanHaveHints := False;
+              ReadNextAtom;
+            end
+            else
+            if (CurPos.Flag=cafEqual) and IsVarOrConst
+            then
+              break;
+          end;
+        end;
         if (CurPos.StartPos>SrcLen)
+        or WordIsModifier  // already checked, and may not be allowed in var/const section if semicolon was encountered
         or (not IsKeyWordProcedureTypeSpecifier.DoIdentifier(@Src[CurPos.StartPos]))
         then begin
           UndoReadNextAtom;
