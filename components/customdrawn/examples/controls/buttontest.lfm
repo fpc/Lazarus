@@ -1,0 +1,10 @@
+object FormButtons: TFormButtons
+  Left = 768
+  Height = 240
+  Top = 280
+  Width = 424
+  Caption = 'TCDButton, TCDCheckbox, TCDRadioButton'
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  OnShow = FormShow
+end

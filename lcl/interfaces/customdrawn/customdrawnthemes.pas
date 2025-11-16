@@ -284,7 +284,7 @@ begin
 
     lCDToolbar.ToolBarHeight := lSize.CY;
 
-    lDrawer := GetDrawer(dsMacOSX);
+    lDrawer := GetDrawer(DefaultStyle); //dsMacOSX);
     lCanvas.Handle := HDC(DC);
     lDrawer.DrawToolBarItem(lCanvas, lSize, lCDToolbarItem, R.Left, R.Top, lCDToolbarItem.State, lCDToolbar);
 
