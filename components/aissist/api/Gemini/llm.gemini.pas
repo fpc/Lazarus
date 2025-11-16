@@ -35,7 +35,7 @@ begin
   aProxy.WebClient:=ResolveWebClient;
   aProxy.BaseURL:=ResolveBaseURL;
   // Set Gemini API authentication header
-  aProxy.RequestHeaders.Add('x-goog-api-key='+ResolveAuthorizationKey);
+  aProxy.AddRequestHeader('x-goog-api-key',ResolveAuthorizationKey);
 end;
 
 function TGeminiProtocol.GetModels: TGetModelsResult;
@@ -54,7 +54,10 @@ begin
     ConfigProxy(lModelService);
     // Exceptions will be handled by caller.
     lModelsResponse:=lModelService.List();
-    SetLength(lModels,Length(lModelsResponse.Value.models));
+    if assigned(lModelsResponse.Value) then
+      SetLength(lModels,Length(lModelsResponse.Value.models))
+    else
+      SetLength(lModels,0);
     for I:=0 to Length(lModels)-1 do
       begin
       lModelName := lModelsResponse.Value.models[i].name;
@@ -151,7 +154,7 @@ end;
 
 class function TGeminiProtocol.DefaultURL: String;
 begin
-  Result:='https://generativelanguage.googleapis.com/v1beta/';
+  Result:='https://generativelanguage.googleapis.com/';
 end;
 
 class function TGeminiProtocol.DefaultAPIKeyVariable: String;

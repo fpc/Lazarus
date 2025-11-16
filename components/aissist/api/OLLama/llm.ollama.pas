@@ -13,7 +13,7 @@ Type
 
   TOLLamaProtocol = class(TLLMProtocol)
   protected
-    procedure ConfigProxy(aProxy : TFPOpenAPIServiceClient);
+    procedure ConfigProxy(aProxy : TFPOpenAPIServiceClient);  virtual;
   public
     function GetModels: TGetModelsResult; override;
     function SendPrompt(aPrompt: TPromptArray; aMaxLen: Integer): TSendPromptResult; override;

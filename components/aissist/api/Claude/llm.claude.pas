@@ -12,14 +12,18 @@ Type
   { TClaudeProtocol }
 
   TClaudeProtocol = class(TLLMProtocol)
+  private
+    FAnthropicVersion: string;
   protected
-    procedure ConfigProxy(aProxy : TFPOpenAPIServiceClient);
+    procedure ConfigProxy(aProxy : TFPOpenAPIServiceClient); virtual;
   public
+    constructor Create(aClient : TCustomLLMClient); override;
     function GetModels: TGetModelsResult; override;
     function SendPrompt(aPrompt: TPromptArray; aMaxLen: Integer): TSendPromptResult; override;
     class function ProtocolName : string; override;
     class function DefaultURL : String; override;
     class function DefaultAPIKeyVariable : String; override;
+    property AnthropicVersion : string Read FAnthropicVersion Write FAnthropicVersion;
   end;
 
 implementation
@@ -35,8 +39,14 @@ begin
   aProxy.WebClient:=ResolveWebClient;
   aProxy.BaseURL:=ResolveBaseURL;
   // Set Claude API authentication header
-  aProxy.RequestHeaders.Add('x-api-key='+ResolveAuthorizationKey);
-  aProxy.RequestHeaders.Add('anthropic-version=2023-06-01');
+  aProxy.AddRequestHeader('x-api-key',ResolveAuthorizationKey);
+  aProxy.AddRequestHeader('anthropic-version',AnthropicVersion);
+end;
+
+constructor TClaudeProtocol.Create(aClient: TCustomLLMClient);
+begin
+  inherited Create(aClient);
+  FAnthropicVersion:='2023-06-01';
 end;
 
 function TClaudeProtocol.GetModels: TGetModelsResult;

@@ -13,8 +13,8 @@ Type
 
   TChatGPTProtocol = class(TLLMProtocol)
   protected
-    procedure ConfigProxy(aProxy : TFPOpenAPIServiceClient);
-    function ConvertPromptArrayToString(aPrompt: TPromptArray): string;
+    procedure ConfigProxy(aProxy : TFPOpenAPIServiceClient); virtual;
+    function ConvertPromptArrayToString(aPrompt: TPromptArray): string; virtual;
   public
     function GetModels: TGetModelsResult; override;
     function SendPrompt(aPrompt: TPromptArray; aMaxLen: Integer): TSendPromptResult; override;
@@ -36,7 +36,7 @@ begin
   aProxy.WebClient:=ResolveWebClient;
   aProxy.BaseURL:=ResolveBaseURL;
   // Set OpenAI API authentication header
-  aProxy.RequestHeaders.Add('Authorization: Bearer '+ResolveAuthorizationKey);
+  aProxy.AddRequestHeader('Authorization','Bearer '+ResolveAuthorizationKey);
 end;
 
 function TChatGPTProtocol.ConvertPromptArrayToString(aPrompt: TPromptArray): string;

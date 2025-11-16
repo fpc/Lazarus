@@ -13,8 +13,8 @@ Type
 
   TPerplexityProtocol = class(TLLMProtocol)
   protected
-    procedure ConfigProxy(aProxy : TFPOpenAPIServiceClient);
-    function ConvertPromptArrayToString(aPrompt: TPromptArray): string;
+    procedure ConfigProxy(aProxy : TFPOpenAPIServiceClient); virtual;
+    function ConvertPromptArrayToString(aPrompt: TPromptArray): string; virtual;
   public
     function GetModels: TGetModelsResult; override;
     function SendPrompt(aPrompt: TPromptArray; aMaxLen: Integer): TSendPromptResult; override;
@@ -36,11 +36,11 @@ uses
 procedure TPerplexityProtocol.ConfigProxy(aProxy : TFPOpenAPIServiceClient);
 
 begin
-     aProxy.WebClient:=ResolveWebClient;
-     aProxy.BaseURL:=ResolveBaseURL;
-     // Set OpenAI API authentication header
-     //aProxy.RequestHeaders.Add('Authorization=Bearer '+ResolveAuthorizationKey);
-     aProxy.RequestHeaders.Values['Authorization']:='Bearer '+ResolveAuthorizationKey;
+  aProxy.WebClient:=ResolveWebClient;
+  aProxy.BaseURL:=ResolveBaseURL;
+  // Set OpenAI API authentication header
+  //aProxy.RequestHeaders.Add('Authorization=Bearer '+ResolveAuthorizationKey);
+  aProxy.AddRequestHeader('Authorization','Bearer '+ResolveAuthorizationKey);
 end;
 
 function TPerplexityProtocol.ConvertPromptArrayToString(aPrompt: TPromptArray): string;
