@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types, fpcanvas, fpimage,
   // LCL for types
-  Controls, Graphics, GraphUtil, ComCtrls, ExtCtrls, LazUTF8;
+  Controls, Graphics, ComCtrls, ExtCtrls, LazUTF8;
 
 const
   CDDRAWSTYLE_COUNT = 19;
@@ -50,7 +50,6 @@ const
   TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH = $1304;
   TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH = $1305;
   TCDTOOLBAR_DEFAULT_HEIGHT = $1306;
-  TCDTOOLBAR_ITEM_MARGIN = $1307;
 
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH = $2600;
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING = $2601;
@@ -114,11 +113,9 @@ type
     csfLeftArrow,
     csfRightArrow,
     csfDownArrow,
-    csfUpArrow,
-    // for tool button
-    csfSunkenArrow,
-    csfMouseOverArrow
-{   csfAutoRaise,
+    csfUpArrow
+{    // for tool button
+    csfAutoRaise,
     csfTop,
     csfBottom,
     csfFocusAtBorder,
@@ -230,35 +227,19 @@ type
 
   TCDToolbarItemSubpartKind = (tiskMain, tiskArrow);
 
-  TCDToolBarItemClickEvent = procedure (Sender: TObject; ArrowClicked: Boolean) of object;
-
   TCDToolBarItem = class
-  private
-    FImage: TCustomBitmap;
-    FDisabledImage: TCustomBitmap;
-    FOnClick: TCDToolBarItemClickEvent;
-    function GetEnabled: Boolean;
-    procedure SetEnabled(AValue: Boolean);
-    procedure SetImage(AValue: TCustomBitmap);
-    procedure SetDisabledImage(AValue: TCustomBitmap);
-  public
     Kind: TCDToolbarItemKind;
     SubpartKind: TCDToolbarItemSubpartKind;
+    Image: TBitmap;
     Caption: string;
     Width: Integer;
     Down: Boolean;
     // filled for drawing
     State: TCDControlState;
-    destructor Destroy; override;
-    property Enabled: Boolean read GetEnabled write SetEnabled default true;
-    property Image: TCustomBitmap read FImage write SetImage;
-    property DisabledImage: TCustomBitmap read FDisabledImage write SetDisabledImage;
-    property OnClick: TCDToolBarItemClickEvent read FOnClick write FOnClick;
   end;
 
   TCDToolBarStateEx = class(TCDControlStateEx)
     ShowCaptions: Boolean;
-    Flat: Boolean;
     IsVertical: Boolean;
     Items: TFPList; // of TCDToolBarItem
     ToolBarHeight: Integer;
@@ -365,8 +346,6 @@ type
       const FrameWidth : integer; const Style : TBevelCut); virtual; abstract;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
-    procedure DrawThinRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
-    procedure DrawThinSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawTickmark(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState); virtual; abstract;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); virtual; abstract;
     procedure DrawArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState; ASize: Integer = 7); virtual; abstract;
@@ -434,17 +413,9 @@ type
     // TCDToolBar
     procedure DrawToolBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDToolBarStateEx); virtual; abstract;
-    procedure DrawToolBarDivider(ADest: TCanvas; AX, AY: Integer; ASize: TSize;
-      IsSeparator, IsFlat: Boolean); virtual; abstract;
-    procedure DrawToolBarItem(ADest: TCanvas; ASize: TSize; ACurItem: TCDToolBarItem;
-      AX, AY: Integer; AState: TCDControlState; AStateEx: TCDToolBarStateEx); virtual; abstract;
-    procedure DrawToolbarItemBackground(ADest: TCanvas; ACurItem: TCDToolbarItem;
-      AX, AY: Integer; ASize: TSize; AState: TCDControlState;
-      AStateEx: TCDToolbarStateEx); virtual; abstract;
-    procedure DrawToolbarItemCaption(ADest: TCanvas; ACaption: String;
-      var ARect: TRect; AState: TCDControlState; AStateEx: TCDToolbarStateEx); virtual; abstract;
-    procedure DrawToolBarItemIcon(ADest: TCanvas; ACurItem: TCDToolBarItem;
-      ARect: TRect; AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+    procedure DrawToolBarItem(ADest: TCanvas; ASize: TSize;
+      ACurItem: TCDToolBarItem; AX, AY: Integer;
+      AState: TCDControlState; AStateEx: TCDToolBarStateEx); virtual; abstract;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
@@ -496,63 +467,8 @@ begin
   Result := RegisteredDrawers[lDrawStyle];
 end;
 
-{ TCDToolbarItem }
-
-destructor TCDToolbarItem.Destroy;
-begin
-  FImage.Free;
-  FDisabledImage.Free;
-  inherited;
-end;
-
-function TCDToolbarItem.GetEnabled: Boolean;
-begin
-  Result := csfEnabled in State;
-end;
-
-procedure TCDToolbarItem.SetEnabled(AValue: Boolean);
-begin
-  if AValue = GetEnabled then Exit;
-  if AValue then
-    State := State + [csfEnabled]
-  else
-    State := State - [csfEnabled];
-end;
-
-procedure TCDToolbarItem.SetDisabledImage(AValue: TCustomBitmap);
-begin
-  if AValue = nil then
-  begin
-    if FImage <> nil then
-    begin
-      if (FDisabledImage = nil) then
-        FDisabledImage := TCustomBitmapClass(FImage.ClassType).Create;
-      FDisabledImage.Assign(FImage);
-      BitmapGrayscale(FDisabledImage, 0.30, 0.59, 0.11);
-      FDisabledImage.Transparent := FImage.Transparent;
-    end else
-      FreeAndNil(FDisabledImage)
-  end else
-  begin
-    if FDisabledImage = nil then
-      FDisabledImage := TCustomBitmapClass(AValue.ClassType).Create;
-    FDisabledImage.Assign(AValue);
-  end;
-end;
-
-procedure TCDToolbarItem.SetImage(AValue: TCustomBitmap);
-begin
-  if AValue = nil then
-    FreeAndNil(FImage)
-  else
-  begin
-    if FImage = nil then
-      FImage := TCustomBitmapClass(AValue.ClassType).Create;
-    FImage.Assign(AValue);
-  end;
-  SetDisabledImage(nil);  // create default grayscale image
-end;
-
+var
+  i: Integer;
 
 { TCDColorPalette }
 
@@ -814,8 +730,6 @@ begin
   end;
 end;
 
-var
-  i: Integer;
 finalization
   // Free all drawers
   for i := 0 to CDDRAWSTYLE_COUNT-1 do

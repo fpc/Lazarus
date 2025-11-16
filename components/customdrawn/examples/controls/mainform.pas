@@ -1,28 +1,26 @@
-unit MainForm;
+unit mainform;
 
 {$mode objfpc}{$H+}
 
 interface
 
-uses     //        LazLogger,
+uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, TypInfo,
   // other forms
-  ToolBarTest, ButtonTest,
+  toolbartest,
   // CD
-  customdrawndrawers, customdrawn_common, customdrawn_mac, customdrawn_winxp;
+  customdrawndrawers, customdrawn_common, customdrawn_mac;
 
 type
 
-  { TFormCDControlsTest }
+  { TformCDControlsTest }
 
-  TFormCDControlsTest = class(TForm)
+  TformCDControlsTest = class(TForm)
     Button1: TButton;
-    Button2: TButton;
     comboDrawer: TComboBox;
     Label1: TLabel;
     procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
@@ -31,25 +29,20 @@ type
   end;
 
 var
-  FormCDControlsTest: TFormCDControlsTest;
+  formCDControlsTest: TformCDControlsTest;
 
 implementation
 
 {$R *.lfm}
 
-{ TFormCDControlsTest }
+{ TformCDControlsTest }
 
-procedure TFormCDControlsTest.Button1Click(Sender: TObject);
+procedure TformCDControlsTest.Button1Click(Sender: TObject);
 begin
   FormToolBar.ShowModal();
 end;
 
-procedure TFormCDControlsTest.Button2Click(Sender: TObject);
-begin
-  FormButtons.ShowModal();
-end;
-
-procedure TFormCDControlsTest.FormCreate(Sender: TObject);
+procedure TformCDControlsTest.FormCreate(Sender: TObject);
 var
   lStyle: TCDDrawStyle;
   lStr: string;

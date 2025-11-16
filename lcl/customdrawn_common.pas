@@ -5,7 +5,6 @@ unit CustomDrawn_Common;
 interface
 
 uses
-  LazLoggerBase,
   // RTL / FCL
   Classes, SysUtils, Types, Math, fpcanvas, fpimage,
   // LazUtils
@@ -43,8 +42,6 @@ type
       const FrameWidth : integer; const Style : TBevelCut); override;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
-    procedure DrawThinRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
-    procedure DrawThinSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawTickmark(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState); override;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
     procedure DrawArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState; ASize: Integer = 7); override;
@@ -115,18 +112,9 @@ type
     // TCDToolBar
     procedure DrawToolBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDToolBarStateEx); override;
-    procedure DrawToolBarDivider(ADest: TCanvas; AX, AY: Integer; ASize: TSize;
-      IsSeparator, IsFlat: Boolean); override;
     procedure DrawToolBarItem(ADest: TCanvas; ASize: TSize;
       ACurItem: TCDToolBarItem; AX, AY: Integer;
       AState: TCDControlState; AStateEx: TCDToolBarStateEx); override;
-    procedure DrawToolbarItemBackground(ADest: TCanvas;
-      ACurItem: TCDToolBarItem; AX, AY: Integer; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDToolbarStateEx); override;
-    procedure DrawToolbarItemCaption(ADest: TCanvas; ACaption: String;
-      var ARect: TRect; AState: TCDControlState; AStateEx: TCDToolbarStateEx); override;
-    procedure DrawToolBarItemIcon(ADest: TCanvas; ACurItem: TCDToolbarItem; ARect: TRect;
-      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
@@ -153,7 +141,6 @@ const
   WIN2000_FRAME_GRAY = $0099A8AC;
   WIN2000_FRAME_DARK_GRAY = $00646F71;
 
-  WIN2000_ENABLED_TEXT = $00000000;
   WIN2000_DISABLED_TEXT = WIN2000_FRAME_GRAY;
 
   WIN2000_SELECTION_BACKGROUND = $00C56A31;
@@ -249,10 +236,9 @@ begin
   TCDTOOLBAR_ITEM_SPACING: Result := 2;
   TCDTOOLBAR_ITEM_ARROW_WIDTH: Result := 7;
   TCDTOOLBAR_ITEM_BUTTON_DEFAULT_WIDTH: Result := 23;
-  TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH: Result := 35 - 22; //23;
+  TCDTOOLBAR_ITEM_ARROW_RESERVED_WIDTH: Result := 35 - 23;
   TCDTOOLBAR_ITEM_SEPARATOR_DEFAULT_WIDTH: Result := 8;
   TCDTOOLBAR_DEFAULT_HEIGHT: Result := 26;
-  TCDTOOLBAR_ITEM_MARGIN: Result := 2;
   //
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH: Result := 10;
   TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING: Result := 10;
@@ -459,23 +445,6 @@ begin
   ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y-1);
 end;
 
-procedure TCDDrawerCommon.DrawThinRaisedFrame(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize);
-begin
-  // white lines in the left and top
-  ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsClear;
-  ADest.Pen.Color := WIN2000_FRAME_WHITE;
-  ADest.MoveTo(ADestPos.X, ADestPos.Y+ASize.cy-1);
-  ADest.LineTo(ADestPos.X, ADestPos.Y);
-  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
-  // Grey line on the inside right and bottom
-  ADest.Pen.Color := WIN2000_FRAME_GRAY;
-  ADest.MoveTo(ADestPos.X+1,          ADestPos.Y+ASize.cy-2);
-  ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y+ASize.cy-2);
-  ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y-1);
-end;
-
 procedure TCDDrawerCommon.DrawFrame3D(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
     const FrameWidth : integer; const Style : TBevelCut);
 var
@@ -546,23 +515,6 @@ begin
   ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y+ASize.cy-2);
   ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y);
   // outter bottom-right
-  ADest.Pen.Color := WIN2000_FRAME_WHITE;
-  ADest.MoveTo(ADestPos.X+1,          ADestPos.Y+ASize.cy-1);
-  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y+ASize.cy-1);
-  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
-end;
-
-procedure TCDDrawerCommon.DrawThinSunkenFrame(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize);
-begin
-  // The Frame, except the lower-bottom which is white anyway
-  // outter top-right
-  ADest.Pen.Style := psSolid;
-  ADest.Pen.Color := WIN2000_FRAME_GRAY;
-  ADest.MoveTo(ADestPos.X,            ADestPos.Y+ASize.cy-1);
-  ADest.LineTo(ADestPos.X,            ADestPos.Y);
-  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
-  // outer bottom-right
   ADest.Pen.Color := WIN2000_FRAME_WHITE;
   ADest.MoveTo(ADestPos.X+1,          ADestPos.Y+ASize.cy-1);
   ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y+ASize.cy-1);
@@ -726,9 +678,9 @@ begin
     lPoints[2] := Point(lPos.X+lSizeHalf, lPos.Y+1+lSizeHalf);// lower point
   end;
   ADest.Brush.Style := bsSolid;
-//  ADest.Brush.Color := clBlack;  // must be set outside to allow for enabled/disabled states
+  ADest.Brush.Color := clBlack;
   ADest.Pen.Style := psSolid;
-  ADest.Pen.Color := ADest.Brush.Color;
+  ADest.Pen.Color := clBlack;
   ADest.Polygon(lPoints);
 end;
 
@@ -755,7 +707,6 @@ begin
   else DrawRaisedFrame(ADest, ADestPos, ASize);
 
   // Now the arrow
-  ADest.Brush.Color := clBlack;
   DrawArrow(ADest, Point(ADestPos.X + ASize.CY div 4, ADestPos.Y + ASize.CY * 3 div 8), AState, ASize.CY div 2);
 end;
 
@@ -1293,11 +1244,9 @@ begin
     lArrowState := [];
   end;
 
-  ADest.Brush.Color := clBlack;
   if csfHorizontal in AState then
     DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfLeftArrow]+lArrowState)
-  else
-    DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfUpArrow]+lArrowState);
+  else DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfUpArrow]+lArrowState);
 
   // Right/Bottom button
   if csfHorizontal in AState then
@@ -1318,11 +1267,9 @@ begin
     lArrowState := [];
   end;
 
-  ADest.Brush.Color := clBlack;
   if csfHorizontal in AState then
     DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfRightArrow] + lArrowState)
-  else
-    DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfDownArrow] + lArrowState);
+  else DrawArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfDownArrow] + lArrowState);
 
   // The slider
   lPos := Point(0, 0);
@@ -1759,166 +1706,64 @@ begin
   end;
 end;
 
-procedure TCDDrawerCommon.DrawToolBarDivider(ADest: TCanvas; AX, AY: Integer;
-  ASize: TSize; IsSeparator, IsFlat: Boolean);
-var
-  lX, lY1, lY2: Integer;
-begin
-  if not IsFlat and IsSeparator then
-    exit;
-
-  lX := AX;
-  if not IsSeparator then  // Divider
-    lX := AX + ASize.CX div 2 - 1;
-
-  lY1 := AY + 2;
-  lY2 := AY + ASize.CY - 2;
-
-  ADest.Pen.Style := psSolid;
-  ADest.Pen.Color := $DCDEE1;
-  ADest.Line(lX+1, lY1, lX+1, lY2);
-  ADest.Line(lX+3, lY1, lX+3, lY2);
-  ADest.Pen.Style := psSolid;
-  ADest.Pen.Color := $93979E;
-  ADest.Line(lX+2, lY1, lX+2, lY2);
-end;
-
-{ ARect is total area available for icon, frame and caption have been removed. }
-procedure TCDDrawerCommon.DrawToolBarItemIcon(ADest: TCanvas; ACurItem: TCDToolbarItem;
-  ARect: TRect; AState: TCDControlState; AStateEx: TCDControlStateEx);
-var
-  R: TRect;
-  x, y: Integer;
-  img: TCustomBitmap;
-begin
-  if (csfEnabled in AState) then
-    img := ACurItem.Image
-  else
-    img := ACurItem.DisabledImage;
-
-  if (img = nil) then
-    exit;
-
-  if (img.Width > ARect.Width) or (img.Height > ARect.Height) then
-  begin
-    R := Rect(0, 0, 0, 0);
-    if img.Height > img.Width then
-    begin
-      R.Right := ARect.Width;
-      R.Bottom := (ARect.Width * img.Height) div img.Width;
-      OffsetRect(R, ARect.Left, (ARect.Top + ARect.Bottom - R.Height) div 2);
-    end else
-    begin
-      R.Bottom := ARect.Height;
-      R.Right := (ARect.Height * img.Width) div img.Height;
-      OffsetRect(R, (ARect.Left + ARect.Right - R.Width) div 2, ARect.Top);
-    end;
-    ADest.StretchDraw(R, img);
-  end else
-  begin
-    x := (ARect.Left + ARect.Right - img.Width) div 2;
-    y := (ARect.Top + ARect.Bottom - img.Height) div 2;
-    ADest.Draw(x, y, img);
-  end;
-end;
-
 procedure TCDDrawerCommon.DrawToolBarItem(ADest: TCanvas; ASize: TSize;
   ACurItem: TCDToolBarItem; AX, AY: Integer; AState: TCDControlState; AStateEx: TCDToolBarStateEx);
 var
-  R: TRect;
   lX, lY1, lY2: Integer;
-  savedClipRect: TRect;
-  savedClipping: Boolean;
-  margin: Integer;
-begin
-  savedClipRect := ADest.ClipRect;
-  savedClipping := ADest.Clipping;
-  ADest.ClipRect := Rect(AX, AY, AX + ASize.CX, AY + ASize.CY);
-  ADest.Clipping := true;
 
-  // tikDivider is centered, tikSeparator is left-aligned
+  procedure DrawToolBarItemBorder();
+  begin
+    ADest.Pen.Style := psSolid;
+    ADest.Pen.Color := $AFAFAF;
+    ADest.Brush.Style := bsClear;
+    ADest.Rectangle(Bounds(AX, AY, ASize.cx, ASize.cy));
+  end;
+
+begin
+  // tikDivider is centralized, tikSeparator is left-aligned
   case ACurItem.Kind of
-    tikSeparator, tikDivider:
-      DrawToolbarDivider(ADest, AX, AY, ASize, ACurItem.Kind = tikSeparator, AStateEx.Flat);
-    tikButton, tikCheckButton, tikDropDownButton:
+  tikSeparator, tikDivider:
+  begin
+    lX := AX;
+    if ACurItem.Kind = tikDivider then
+      lX := AX + ASize.CX div 2 - 1;
+
+    lY1 := AY;
+    lY2 := AY+ASize.CY;
+
+    ADest.Pen.Style := psSolid;
+    ADest.Pen.Color := $DCDEE1;
+    ADest.Line(lX+1, lY1, lX+1, lY2);
+    ADest.Line(lX+3, lY1, lX+3, lY2);
+    ADest.Pen.Style := psSolid;
+    ADest.Pen.Color := $93979E;
+    ADest.Line(lX+2, lY1, lX+2, lY2);
+  end;
+  tikButton, tikCheckButton, tikDropDownButton:
+  begin
+    if ACurItem.SubpartKind = tiskArrow then
     begin
-      R := Rect(AX, AY, AX + ASize.CX, AY + ASize.CY);
-      case ACurItem.SubPartKind of
-        tiskMain:
-          begin
-            DrawToolbarItemBackground(ADest, ACurItem, AX, AY, ASize, AState, AStateEx);
-            margin := GetMeasures(TCDTOOLBAR_ITEM_MARGIN) + 1;
-            InflateRect(R, -margin, -margin);  // Remove frame/border
-            if AStateEx.ShowCaptions then
-            begin
-              DrawToolbarItemCaption(ADest, ACurItem.Caption, R, AState, AStateEx);
-              dec(R.Bottom, margin);
-            end;
-            DrawToolbarItemIcon(ADest, ACurItem, R, AState, AStateEx);
-          end;
-        tiskArrow:
-          begin
-            DrawToolbarItemBackground(ADest, ACurItem, AX, AY, ASize, AState, AStateEx);
-//            DrawToolbarItemBorder(ADest, ACurItem, AX, AY, ASize, AState, AStateEx);
-            // Center the arrow in the available space
-            lX := AX + (ASize.CX - GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH)) div 2;
-            lY1 := AY + (ASize.CY - GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH)) div 2;
-            if ACurItem.Enabled then
-              ADest.Brush.Color := WIN2000_ENABLED_TEXT
-            else
-              ADest.Brush.Color := WIN2000_DISABLED_TEXT;
-            DrawArrow(ADest, Point(lX, lY1), [csfDownArrow], GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH));
-          end;
-      end;
+      // Centralize the arrow in the available space
+      lX := AX + ASize.CX div 2 - GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH) div 2;
+      lY1 := AY + ASize.CY div 2 - GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH) div 2;
+      DrawArrow(ADest, Point(lX, lY1), [csfDownArrow], GetMeasures(TCDTOOLBAR_ITEM_ARROW_WIDTH));
+      Exit;
+    end;
+
+    if csfSunken in AState then
+    begin
+      ADest.GradientFill(Bounds(AX, AY, ASize.CX, ASize.CY),
+        $C4C4C4, $DBDBDB, gdVertical);
+      DrawToolBarItemBorder();
+    end
+    else if csfMouseOver in AState then
+    begin
+      ADest.GradientFill(Bounds(AX, AY, ASize.CX, ASize.CY),
+        $E3E3E3, $F7F7F7, gdVertical);
+      DrawToolBarItemBorder();
     end;
   end;
-  ADest.ClipRect := savedClipRect;
-  ADest.Clipping := savedClipping;
-end;
-
-procedure TCDDrawerCommon.DrawToolbarItemBackground(ADest: TCanvas;
-  ACurItem: TCDToolbarItem; AX, AY: Integer; ASize: TSize;
-  AState: TCDControlState; AStateEx: TCDToolbarStateEx);
-begin
-  if ((csfSunken in AState) and (ACurItem.SubPartKind = tiskMain)) or
-     ((csfSunkenArrow in AState) and (ACurItem.SubPartKind = tiskArrow)) then
-  begin
-    ADest.GradientFill(Bounds(AX, AY, ASize.CX, ASize.CY), $C4C4C4, $DBDBDB, gdVertical);
-    DrawThinSunkenFrame(ADest, Point(AX, AY), ASize);
-    exit;
   end;
-
-  if (AState * [csfMouseOver, csfEnabled] = [csfMouseOver, csfEnabled]) then
-    ADest.GradientFill(Bounds(AX, AY, ASize.CX, ASize.CY), $E3E3E3, $F7F7F7, gdVertical);
-  if not AStateEx.Flat or ((csfMouseOver in AState) and (csfEnabled in AState))then
-    DrawThinRaisedFrame(ADest, Point(AX, AY), ASize);
-end;
-
-{ ARect - input: entire rect for button caption plus icon, excluding frame;
-          output: rect available for the icon.}
-procedure TCDDrawerCommon.DrawToolbarItemCaption(ADest: TCanvas;
-  ACaption: String; var ARect: TRect; AState: TCDControlState;
-  AStateEx: TCDToolbarStateEx);
-var
-  sz: TSize;
-  x, y: Integer;
-begin
-  ADest.Font.Assign(AStateEx.Font);
-  sz := ADest.TextExtent(ACaption);
-  x := (ARect.Left + ARect.Right - sz.CX) div 2;
-  y := ARect.Bottom - sz.CY;
-  ADest.Brush.Style := bsClear;
-
-  if (csfEnabled in AState) then
-    ADest.Font.Color := AStateEx.Font.Color
-  else
-  begin
-    ADest.Font.Color := clWhite;
-    ADest.TextOut(x+1, y+1, ACaption);
-    ADest.Font.Color := WIN2000_DISABLED_TEXT;
-  end;
-  ADest.TextOut(x, y, ACaption);
-  ARect.Bottom := y;
 end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas;
