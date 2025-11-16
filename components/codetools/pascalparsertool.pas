@@ -5001,7 +5001,7 @@ begin
     CanHaveHints := True;
     if CurPos.Flag=cafSemicolon then begin
       ReadNextAtom;
-      EqualFound:=false;
+      EqualFound:=(CurPos.Flag=cafEqual) and IsVarOrConst;
       if IsVarOrConst then
         CanHaveHints := False;
     end else if (CurPos.Flag=cafEqual) then begin
@@ -5017,8 +5017,7 @@ begin
               if IsVarOrConst then
                 CanHaveHints := False;
               ReadNextAtom;
-            end
-            else
+            end;
             if (CurPos.Flag=cafEqual) and IsVarOrConst
             then
               break;
@@ -5055,6 +5054,9 @@ begin
           UndoReadNextAtom;
         end;
         ReadNextAtom;
+        if (CurPos.Flag=cafEqual) and IsVarOrConst
+        then
+          break;
       until false;
     end;
   end;
