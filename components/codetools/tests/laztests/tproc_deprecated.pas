@@ -227,6 +227,7 @@ var
   experimental: procedure;
 
   // = nil
+  nproc0: procedure(deprecated: deprecated) = nil;
   nproc1: procedure(deprecated: deprecated) deprecated = nil;
   nproc2: procedure(deprecated: deprecated) deprecated 'abc' = nil;
   nproc3: procedure(deprecated: deprecated) experimental deprecated = nil;
@@ -234,6 +235,7 @@ var
   nproc5: procedure(deprecated: deprecated) deprecated experimental = nil;
   nproc6: procedure(deprecated: deprecated) deprecated 'abc' experimental = nil;
 
+  nproc0c: procedure(deprecated: deprecated) cdecl = nil;
   nproc1c: procedure(deprecated: deprecated) cdecl; deprecated = nil;
   nproc1c1: procedure(deprecated: deprecated) cdecl; stdcall; deprecated = nil;
   nproc1c2: procedure(deprecated: deprecated) cdecl stdcall; deprecated = nil;
@@ -243,6 +245,7 @@ var
   nproc5c: procedure(deprecated: deprecated) cdecl; deprecated experimental = nil;
   nproc6c: procedure(deprecated: deprecated) cdecl; deprecated 'abc' experimental = nil;
 
+  nproc0o: procedure(deprecated: deprecated) of object = nil;
   nproc1o: procedure(deprecated: deprecated) of object deprecated = nil;
   nproc2o: procedure(deprecated: deprecated) of object deprecated 'abc' = nil;
   nproc3o: procedure(deprecated: deprecated) of object experimental deprecated = nil;
@@ -251,6 +254,7 @@ var
   nproc6o: procedure(deprecated: deprecated) of object deprecated 'abc' experimental = nil;
 
 
+  nproc0oc: procedure(deprecated: deprecated) of object cdecl = nil;
   nproc1oc: procedure(deprecated: deprecated) of object cdecl; deprecated = nil;
   nproc2oc: procedure(deprecated: deprecated) of object cdecl; deprecated 'abc' = nil;
   nproc3oc: procedure(deprecated: deprecated) of object cdecl; experimental deprecated = nil;
@@ -258,6 +262,7 @@ var
   nproc5oc: procedure(deprecated: deprecated) of object cdecl; deprecated experimental = nil;
   nproc6oc: procedure(deprecated: deprecated) of object cdecl; deprecated 'abc' experimental = nil;
 
+  nproc0n: procedure(deprecated: deprecated) is nested = nil;
   nproc1n: procedure(deprecated: deprecated) is nested deprecated = nil;
   nproc2n: procedure(deprecated: deprecated) is nested deprecated 'abc' = nil;
   nproc3n: procedure(deprecated: deprecated) is nested experimental deprecated = nil;
@@ -265,6 +270,7 @@ var
   nproc5n: procedure(deprecated: deprecated) is nested deprecated experimental = nil;
   nproc6n: procedure(deprecated: deprecated) is nested deprecated 'abc' experimental = nil;
 
+  nproc0nc: procedure(deprecated: deprecated) is nested cdecl = nil;
   nproc1nc: procedure(deprecated: deprecated) is nested cdecl; deprecated = nil;
   nproc2nc: procedure(deprecated: deprecated) is nested cdecl; deprecated 'abc' = nil;
   nproc3nc: procedure(deprecated: deprecated) is nested cdecl; experimental deprecated = nil;
@@ -343,6 +349,70 @@ var
   nr_func4c: reference to  function(deprecated: deprecated): cdecl cdecl; experimental deprecated 'abc' = nil;
   nr_func5c: reference to  function(deprecated: deprecated): cdecl cdecl; deprecated experimental = nil;
   nr_func6c: reference to  function(deprecated: deprecated): cdecl cdecl; deprecated 'abc' experimental = nil;
+
+  // Issue 40497
+
+  s_nproc0: procedure(deprecated: deprecated) ; = nil;
+  s_nproc1: procedure(deprecated: deprecated) deprecated ; = nil;
+  s_nproc2: procedure(deprecated: deprecated) deprecated 'abc' ; = nil;
+  s_nproc3: procedure(deprecated: deprecated) experimental deprecated ; = nil;
+  s_nproc4: procedure(deprecated: deprecated) experimental deprecated 'abc' ; = nil;
+  s_nproc5: procedure(deprecated: deprecated) deprecated experimental ; = nil;
+  s_nproc6: procedure(deprecated: deprecated) deprecated 'abc' experimental ; = nil;
+
+  s_nproc0o: procedure(deprecated: deprecated) of object ; = nil;
+  s_nproc1o: procedure(deprecated: deprecated) of object deprecated ; = nil;
+  s_nproc2o: procedure(deprecated: deprecated) of object deprecated 'abc' ; = nil;
+  s_nproc3o: procedure(deprecated: deprecated) of object experimental deprecated ; = nil;
+  s_nproc4o: procedure(deprecated: deprecated) of object experimental deprecated 'abc' ; = nil;
+  s_nproc5o: procedure(deprecated: deprecated) of object deprecated experimental ; = nil;
+  s_nproc6o: procedure(deprecated: deprecated) of object deprecated 'abc' experimental ; = nil;
+
+  s_nproc0n: procedure(deprecated: deprecated) is nested ; = nil;
+  s_nproc1n: procedure(deprecated: deprecated) is nested deprecated ; = nil;
+  s_nproc2n: procedure(deprecated: deprecated) is nested deprecated 'abc' ; = nil;
+  s_nproc3n: procedure(deprecated: deprecated) is nested experimental deprecated ; = nil;
+  s_nproc4n: procedure(deprecated: deprecated) is nested experimental deprecated 'abc' ; = nil;
+  s_nproc5n: procedure(deprecated: deprecated) is nested deprecated experimental ; = nil;
+  s_nproc6n: procedure(deprecated: deprecated) is nested deprecated 'abc' experimental ; = nil;
+
+  s_nfunc0: function(deprecated: deprecated): deprecated ; = nil;
+  s_nfunc1: function(deprecated: deprecated): deprecated deprecated ; = nil;
+  s_nfunc2: function(deprecated: deprecated): deprecated deprecated 'abc' ; = nil;
+  s_nfunc3: function(deprecated: deprecated): deprecated experimental deprecated ; = nil;
+  s_nfunc4: function(deprecated: deprecated): deprecated experimental deprecated 'abc' ; = nil;
+  s_nfunc5: function(deprecated: deprecated): deprecated deprecated experimental ; = nil;
+  s_nfunc6: function(deprecated: deprecated): deprecated deprecated 'abc' experimental ; = nil;
+
+  s_nfunc1o: function(deprecated: deprecated): cdecl of object deprecated ; = nil;
+  s_nfunc2o: function(deprecated: deprecated): cdecl of object deprecated 'abc' ; = nil;
+  s_nfunc3o: function(deprecated: deprecated): cdecl of object experimental deprecated ; = nil;
+  s_nfunc4o: function(deprecated: deprecated): cdecl of object experimental deprecated 'abc' ; = nil;
+  s_nfunc5o: function(deprecated: deprecated): cdecl of object deprecated experimental ; = nil;
+  s_nfunc6o: function(deprecated: deprecated): cdecl of object deprecated 'abc' experimental ; = nil;
+
+  s_nfunc1n: function(deprecated: deprecated): deprecated is nested deprecated ; = nil;
+  s_nfunc2n: function(deprecated: deprecated): deprecated is nested deprecated 'abc' ; = nil;
+  s_nfunc3n: function(deprecated: deprecated): deprecated is nested experimental deprecated ; = nil;
+  s_nfunc4n: function(deprecated: deprecated): deprecated is nested experimental deprecated 'abc' ; = nil;
+  s_nfunc5n: function(deprecated: deprecated): deprecated is nested deprecated experimental ; = nil;
+  s_nfunc6n: function(deprecated: deprecated): deprecated is nested deprecated 'abc' experimental ; = nil;
+
+
+  // 3.3.1 ref to
+  s_nr_proc1: reference to  procedure(deprecated: deprecated) deprecated ; = nil;
+  s_nr_proc2: reference to  procedure(deprecated: deprecated) deprecated 'abc' ; = nil;
+  s_nr_proc3: reference to  procedure(deprecated: deprecated) experimental deprecated ; = nil;
+  s_nr_proc4: reference to  procedure(deprecated: deprecated) experimental deprecated 'abc' ; = nil;
+  s_nr_proc5: reference to  procedure(deprecated: deprecated) deprecated experimental ; = nil;
+  s_nr_proc6: reference to  procedure(deprecated: deprecated) deprecated 'abc' experimental ; = nil;
+
+  s_nr_func1: reference to  function(deprecated: deprecated): deprecated deprecated ; = nil;
+  s_nr_func2: reference to  function(deprecated: deprecated): deprecated deprecated 'abc' ; = nil;
+  s_nr_func3: reference to  function(deprecated: deprecated): deprecated experimental deprecated ; = nil;
+  s_nr_func4: reference to  function(deprecated: deprecated): deprecated experimental deprecated 'abc' ; = nil;
+  s_nr_func5: reference to  function(deprecated: deprecated): deprecated deprecated experimental ; = nil;
+  s_nr_func6: reference to  function(deprecated: deprecated): deprecated deprecated 'abc' experimental ; = nil;
 
 
 
