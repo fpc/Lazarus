@@ -636,7 +636,7 @@ begin
   if (SrcChars='') or (s='') or (SrcChars=DstChars) then exit;
 
   unique:=false;
-  if IsPureAscii(SrcChars) and IsPureAscii(DstChars) then begin
+  if IsAscii(SrcChars) and IsAscii(DstChars) then begin
     // search and replace single byte characters
     ReplaceASCII;
     exit;

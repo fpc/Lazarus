@@ -158,7 +158,8 @@ function UTF8WrapText(S, BreakStr: string; BreakChars: TSysCharSet; MaxCol, Inde
 function UTF8WrapText(S, BreakStr: string; BreakChars: TSysCharSet; MaxCol: integer): string; overload;
 function UTF8WrapText(S: string; MaxCol: integer): string; overload;
 
-function IsPureAscii(S: string): Boolean; // String has only ASCII characters.
+function IsAscii(S: string): Boolean; // String has only ASCII characters.
+function IsPureAscii(S: string): Boolean; inline;
 
 type
   // the order of enum items is used in Utf8EscapeControlChars!
@@ -306,7 +307,7 @@ begin
   {$IFDEF UTF8_RTL}
   Result:=s;
   {$ELSE}
-  if NeedRTLAnsi and (not IsPureASCII(s)) then
+  if NeedRTLAnsi and (not IsASCII(s)) then
     Result:=UTF8ToAnsi(s)
   else
     Result:=s;
@@ -318,7 +319,7 @@ begin
   {$IFDEF UTF8_RTL}
   Result:=s;
   {$ELSE}
-  if NeedRTLAnsi and (not IsPureASCII(s)) then
+  if NeedRTLAnsi and (not IsASCII(s)) then
   begin
     Result:=AnsiToUTF8(s);
     {$ifdef FPC_HAS_CPSTRING}
@@ -3380,7 +3381,7 @@ begin
   Result := UTF8WrapText(S, LineEnding, [' ', '-', #9], MaxCol);
 end;
 
-function IsPureAscii(S: string): Boolean;
+function IsAscii(S: string): Boolean;
 var
   i: Integer;
 begin
@@ -3388,6 +3389,11 @@ begin
     if Ord(S[i]) > $7F then      // Not ASCII.
       Exit(False);
   Result := True;
+end;
+
+function IsPureAscii(S: string): Boolean;
+begin
+  Result := IsAscii(S);
 end;
 
 function UTF8Trim(const s: string; Flags: TUTF8TrimFlags): string;
@@ -4055,7 +4061,7 @@ end;
 
 procedure TStringListUTF8Fast.InsertItem(Index: Integer; const S: string; O: TObject);
 begin
-  if not IsPureAscii(S) then
+  if not IsAscii(S) then
   begin
     // Non-ASCII string found, switch to Unicode mode.
     //WriteLn('TStringListUTF8Fast.InsertItem: Found non-ASCII string "'+S+'"');

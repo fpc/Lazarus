@@ -12,7 +12,7 @@ end;
 
 function WinCPToUTF8(const s: string): string;
 begin
-  if NeedRTLAnsi and (not IsPureAscii(s)) then
+  if NeedRTLAnsi and (not IsAscii(s)) then
   begin
     Result:=AnsiToUTF8(s);
     {$ifdef FPC_HAS_CPSTRING}
@@ -27,7 +27,7 @@ end;
 
 function UTF8ToWinCP(const s: string): string;
 begin
-  if NeedRTLAnsi and (not IsPureAscii(s)) then
+  if NeedRTLAnsi and (not IsAscii(s)) then
     Result:=UTF8ToAnsi(s)
   else
     Result:=s;
