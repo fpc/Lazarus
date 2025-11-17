@@ -29,11 +29,14 @@ const
 
 resourcestring
   lisTodolistEdit='Edit selected item';
-  lisTodolistRefresh='Refresh todo items';
+  lisTodolistRefresh='Refresh ToDo items';
   lisTodoListGotoLine='Goto selected source line';
   lisColorOptions = 'Color Options';
   lisCTInsertMacro = 'Insert Macro';
-  lisToDoLDone = 'Done';
+  lisToDo  = 'ToDo';
+  lisFixMe = 'FixMe';
+  lisDone  = 'Done';
+  lisNote  = 'Note';
   lisToDoLType = 'Type';
   lisToDoLDescription = 'Description';
   lisToDoLPriority = 'Priority';
@@ -44,35 +47,28 @@ resourcestring
   lisEdit = 'Edit';
   lisToDoGoto = 'Goto';
   lisToDoExport = 'Export';
-  lisInclude = 'Include';
   lisColors = 'Colors';
   lisHelp = 'Help';
-  lisToDoListed = 'Listed';
-  lisToDoListedHint = 'Add units listed in project inspector/package editor';
-  lisToDoUsed = 'Used';
-  lisToDoUsedHint = 'Add units used by main source file';
-  lisPackages = 'Packages';
-  lisPackagesHint = 'Extends "%s" and "%s" options by units from used packages';
-  lisSourceEditor = 'Editor';
-  lisSourceEditorHint = 'Add units in source editor';
+  lisToDoListed = 'Listed files';
+  //lisToDoListedHint = 'Add files listed in project inspector/package editor';
+  lisToDoUsedUnits = 'Used units';
+  //lisToDoUsedUnitsHint = 'Add units used by main source file';
+  lisSourceEditor = 'Source editor files';
+  //lisSourceEditorHint = 'Add files in source editor';
+  lisPackages = 'Used packages';
+  //lisPackagesHint = 'Extends "%s" and "%s" options by units from used packages';
   dlgUnitDepRefresh = 'Refresh';
-  lisTDDInsertToDo = 'Insert a ToDo/Done/Note';
-  lisTDDEditToDo = 'Edit the ToDo/Done/Note';
+  lisTDDInsertToDo = 'Insert a ToDo item';
+  lisTDDEditToDo = 'Edit the ToDo item';
   lisViewToDoList = 'View ToDo List';
   lisToDoList = 'ToDo List';
   lisPkgFileTypeText = 'Text';
   dlgFilterCsv = 'CSV files';
-
-  lisFilterItem0 = 'All';
-  lisFilterItem1 = 'ToDo Only';
-  lisFilterItem2 = 'Done Only';
-  lisFilterItem3 = 'Note Only';
-  lisFilterItem4 = 'ToDo & Done';
-  lisFilterItem5 = 'ToDo & Note';
-  lisFilterItem6 = 'Done & Note';
-
-  lisShowWhat = 'Show';
-  lisShowWhatHint = 'Select which ToDo types to list';
+  lisShowTypes = 'Show Types';
+  lisShowTypesHint = 'Select which ToDo types to list';
+  lisShowFiles = 'Show Files';
+  lisShowFilesHint = 'Select which Pascal units and .todo files to list';
+  lisToDoItems = 'items';
   lisToDoToDoType = 'ToDo type';
   lisAlternateTokens = 'Use Alternate Tokens';
   lisAlternateTokensHint = 'Standard token is #todo etc. Alternate is without the #';
@@ -84,6 +80,7 @@ resourcestring
 
   AttribGroupName = 'ToDo comments';
   AttribNameTodo  = 'ToDo comment';
+  AttribNameFixMe = 'FixMe comment';
   AttribNameDone  = 'Done comment';
   AttribNameNote  = 'Note comment';
 

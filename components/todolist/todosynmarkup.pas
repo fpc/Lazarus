@@ -68,7 +68,7 @@ type
 
 var
   AttribGroupIdx: Integer;
-  CommentAttribTodo, CommentAttribDone, CommentAttribNote: TSynSelectedColor;
+  CommentAttribTodo, CommentAttribFixMe, CommentAttribDone, CommentAttribNote: TSynSelectedColor;
 
 procedure Register;
 begin
@@ -81,16 +81,20 @@ procedure RegisterAttribs;
 var
   pas: TIdeSyntaxHighlighterID;
 begin
-  CommentAttribTodo := TSynSelectedColor.Create('', '', [lafPastEOL]);
-  CommentAttribDone := TSynSelectedColor.Create('', '', [lafPastEOL]);
-  CommentAttribNote := TSynSelectedColor.Create('', '', [lafPastEOL]);
+  CommentAttribTodo  := TSynSelectedColor.Create('', '', [lafPastEOL]);
+  CommentAttribFixMe := TSynSelectedColor.Create('', '', [lafPastEOL]);
+  CommentAttribDone  := TSynSelectedColor.Create('', '', [lafPastEOL]);
+  CommentAttribNote  := TSynSelectedColor.Create('', '', [lafPastEOL]);
   CommentAttribTodo.Clear;
+  CommentAttribFixMe.Clear;
   CommentAttribDone.Clear;
   CommentAttribNote.Clear;
-  CommentAttribTodo.Features := [lafPastEOL];
-  CommentAttribDone.Features := [lafPastEOL];
-  CommentAttribNote.Features := [lafPastEOL];
+  CommentAttribTodo.Features  := [lafPastEOL];
+  CommentAttribFixMe.Features := [lafPastEOL];
+  CommentAttribDone.Features  := [lafPastEOL];
+  CommentAttribNote.Features  := [lafPastEOL];
   CommentAttribTodo.InternalSaveDefaultValues;
+  CommentAttribFixMe.InternalSaveDefaultValues;
   CommentAttribDone.InternalSaveDefaultValues;
   CommentAttribNote.InternalSaveDefaultValues;
 
@@ -101,14 +105,20 @@ begin
   pas := IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal);
   AttribGroupIdx := IdeColorSchemeList.RegisterAttributeGroup(@AttribGroupName);
 
-  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentTodo', @AttribNameTodo, [hafBackColor..hafFrameEdges], CommentAttribTodo);
-  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentDone', @AttribNameDone, [hafBackColor..hafFrameEdges], CommentAttribDone);
-  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentNote', @AttribNameNote, [hafBackColor..hafFrameEdges], CommentAttribNote);
+  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentTodo',
+    @AttribNameTodo, [hafBackColor..hafFrameEdges], CommentAttribTodo);
+  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentFixme',
+    @AttribNameFixMe, [hafBackColor..hafFrameEdges], CommentAttribFixMe);
+  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentDone',
+    @AttribNameDone, [hafBackColor..hafFrameEdges], CommentAttribDone);
+  IdeColorSchemeList.AddAttribute(AttribGroupIdx, pas, 'LazTodoListCommentNote',
+    @AttribNameNote, [hafBackColor..hafFrameEdges], CommentAttribNote);
 end;
 
 procedure FreeAttribs;
 begin
   CommentAttribTodo.Free;
+  CommentAttribFixMe.Free;
   CommentAttribDone.Free;
   CommentAttribNote.Free;
 end;
@@ -135,6 +145,8 @@ begin
   csl := cs.GetLanguageForHighlighter(pas);
   attr := csl.GetAttributeIntf('LazTodoListCommentTodo');
   attr.ApplyTo(CommentAttribTodo);
+  attr := csl.GetAttributeIntf('LazTodoListCommentFixme');
+  attr.ApplyTo(CommentAttribFixMe);
   attr := csl.GetAttributeIntf('LazTodoListCommentDone');
   attr.ApplyTo(CommentAttribDone);
   attr := csl.GetAttributeIntf('LazTodoListCommentNote');
@@ -151,9 +163,10 @@ end;
 function TSynEditTodoMarkup.MarkupFor(AKind: TToDoType): TLazEditTextAttributeModifier;
 begin
   case AKind of
-    tdTodo: Result := CommentAttribTodo;
-    tdDone: Result := CommentAttribDone;
-    else    Result := CommentAttribNote;
+    tdTodo:  Result := CommentAttribTodo;
+    tdFixMe: Result := CommentAttribFixMe;
+    tdDone:  Result := CommentAttribDone;
+    else     Result := CommentAttribNote;
   end;
 end;
 
@@ -188,6 +201,7 @@ begin
     FPasHl := nil;
 
   if not (CommentAttribTodo.IsEnabled or
+          CommentAttribFixMe.IsEnabled or
           CommentAttribDone.IsEnabled or
           CommentAttribNote.IsEnabled)
   then
@@ -197,8 +211,7 @@ end;
 procedure TSynEditTodoMarkup.PrepareMarkupForRow(aRow: Integer);
 var
   LineText: String;
-  p: PChar;
-  pe: Pointer;
+  p, pe: PChar;
 
   function GetLine(ALineNum: integer): boolean;
   begin
@@ -219,6 +232,14 @@ var
     until (not Result) or (LineText <> '');
   end;
 
+  function IsPureToDo: boolean;
+  // Return True if { TODO } is without parameters which is valid.
+  begin
+    while p^ in [#9, ' '] do
+      inc(p);
+    Result := (p >= pe) or (p^='}') or ( (p^='*') and (p[1]=')') );
+  end;
+
 var
   curRow: integer;
   StartPos: TPoint;
@@ -232,10 +253,12 @@ var
   end;
 
 var
-  fnd, firstRun, HasHash: Boolean;
+  firstRun: Boolean;
   LogX, xx: integer;
   i: SizeInt;
+  ToDoToken: string;
   ToDoKind: TToDoType;
+  TokenStyle: TTokenStyle;
 begin
   if FPasHl = nil then
     exit;
@@ -290,7 +313,6 @@ begin
     exit;
 
   p := p + LogX - 1;
-  fnd := False;
   firstRun := True;
   repeat
     if (not firstRun) and (curRow < aRow) then begin
@@ -332,45 +354,20 @@ begin
       break;
     until false;
 
-    (* ***  skip hash *** *)
-    HasHash := (p+5 < pe) and (p^ = '#'); // hash must be on same line as keyword
-    if HasHash then
-      inc(p);
-
-    (* ***  keyword *** *)
-    if (p+4 <= pe) then begin
-      case p^ of
-        't', 'T': begin
-            ToDoKind := tdTodo;
-            fnd := (p[1] in ['o', 'O']) and (p[2] in ['d', 'D']) and (p[3] in ['o', 'O']);
-          end;
-        'd', 'D': begin
-            ToDoKind := tdDone;
-            fnd := (p[1] in ['o', 'O']) and (p[2] in ['n', 'N']) and (p[3] in ['e', 'E']);
-          end;
-        'n', 'N': begin
-            ToDoKind := tdNote;
-            fnd := (p[1] in ['o', 'O']) and (p[2] in ['t', 'T']) and (p[3] in ['e', 'E']);
-          end;
-      end;
-    end;
-    if not fnd then begin
+    ToDoToken := FindTokenAndStyle(p, ToDoKind, TokenStyle);
+    if ToDoToken = '' then begin
       MaybeSetSkipRows;
       Continue;
     end;
-    fnd := False; // for next round, in case of several todo on one line
-    inc(p, 4);
-    if not ( (p = pe) or (p^ in [#9, #10, #13, ' ',':'])) then begin
-      MaybeSetSkipRows;
-      continue;
-    end;
 
     (* ***  Check arguments / parse *** *)
-    if not HasHash then begin
+    inc(p, Length(ToDoToken));
+    if (TokenStyle = tsAlternate) and not IsPureToDo then begin
+      // Without hash '#' we need colon ':'
       while p^ <> ':' do begin
+        // Skip numeric priority
         while p^ in [#9, ' ', '0'..'9'] do
           inc(p);
-
         if p >= pe then begin
           if not AdvanceToNextLine(curRow) then begin
             MaybeSetSkipRows;
@@ -378,7 +375,7 @@ begin
           end;
           continue; // continue search for colon
         end;
-
+        // Parameters Owner and Category
         if (p^ = '-') and (p[1] in ['o', 'O', 'c', 'C']) then begin
           if p[2] = '''' then begin
             inc(p, 3);
@@ -401,7 +398,6 @@ begin
           end;
           continue; // continue search for colon
         end;
-
         break; // not allowed char
       end;
       if p^ <> ':' then begin

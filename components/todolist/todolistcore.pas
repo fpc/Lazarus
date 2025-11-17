@@ -53,11 +53,11 @@ uses
   ToDoListStrConsts;
 
 type
-  TToDoType = (tdToDo, tdDone, tdNote);
-  TTokenStyle = (tsNormal, tsAlternate);
+  TToDoType = (tdToDo, tdFixMe, tdDone, tdNote);
+  TTokenStyle = (tsNormal, tsAlternate); // Normal is with hash '#'.
 
 const
-  LIST_INDICATORS : array [TToDoType] of string = ('ToDo', 'Done', 'Note');
+  LIST_INDICATORS : array [TToDoType] of string = ('ToDo', 'FixMe', 'Done', 'Note');
 
 type
   { TTodoItem: Class to hold TODO item information }
@@ -126,6 +126,8 @@ type
   procedure ExtractToCSV(const aFilename: string; aListItems: TListItems);
   procedure ScanFile(const aFileName: string;
     aScannedFiles: TAvlTree; aScannedIncFiles: TStringMap);
+  function FindTokenAndStyle(pComment: PChar;
+    out aTodoType: TToDoType; out aTokenStyle: TTokenStyle): string;
   function CreateToDoItem(aCommentStr: string; aStartPos, aEndPos: TPoint): TTodoItem;
 
 
@@ -133,7 +135,7 @@ implementation
 
 const
   TODO_TOKENS : array [TTokenStyle, TToDoType] of string
-      = (('#todo', '#done', '#note'), ('TODO', 'DONE', 'NOTE'));
+    = (('#todo', '#fixme', '#done', '#note'), ('TODO', 'FIXME', 'DONE', 'NOTE'));
 
 function CompareTLScannedFiles(Data1, Data2: Pointer): integer;
 begin
@@ -222,14 +224,42 @@ begin
   end;
 end;
 
+function FindTokenAndStyle(pComment: PChar;
+  out aTodoType: TToDoType; out aTokenStyle: TTokenStyle): string;
+// Find a ToDo token and style. Returns the token if found.
+var
+  TheToken: string;
+  TodoType: TToDoType;
+  TokenStyle: TTokenStyle;
+  pe: PChar;
+begin
+  Result := '';
+  for TokenStyle := Low(TTokenStyle) to High(TTokenStyle) do
+  begin
+    for TodoType := Low(TToDoType) to High(TToDoType) do
+    begin
+      TheToken := TODO_TOKENS[TokenStyle,TodoType];
+      pe := pComment + Length(TheToken);
+      if (StrLIComp(PChar(TheToken), pComment, Length(TheToken)) = 0) and
+         ( (pe^ in [#0,#9,#10,#13,' ',':','}']) or
+          ((pe^='*') and (pe[1]=')'))
+         )
+      then begin
+        aToDoType := TodoType;
+        aTokenStyle := TokenStyle;
+        exit(TheToken);       // Token match
+      end;
+    end;
+  end;
+end;
+
 function CreateToDoItem(aCommentStr: string; aStartPos, aEndPos: TPoint): TTodoItem;
 var
   TheToken: string;
   CT: char;  // Character starting the comment
-  lTokenFound: boolean;
   lStartLen, lEndLen: Integer;
-  lTodoType, lFoundToDoType: TToDoType;
-  lTokenStyle, lFoundTokenStyle: TTokenStyle;
+  lTodoType: TToDoType;
+  lTokenStyle: TTokenStyle;
 begin
   //DebugLn(['CreateToDoItem Start=',aStartPos.X,':',aStartPos.Y,', End=',aEndPos.X,':',aEndPos.Y
   //         ', aCommentStr="',aCommentStr,'"']);
@@ -254,34 +284,11 @@ begin
       Inc(lEndLen);
     SetLength(aCommentStr, lStartLen-lEndLen);
   end;
-
-  // Determine Token and Style
-  lTokenFound := False;
-  for lTokenStyle := Low(TTokenStyle) to High(TTokenStyle) do
-  begin
-    if lTokenFound then Break;
-    for lTodoType := Low(TToDoType) to High(TToDoType) do
-    begin
-      TheToken := TODO_TOKENS[lTokenStyle,lTodoType];
-      if LazStartsText(TheToken, aCommentStr) then
-      begin
-        if (Length(aCommentStr)=Length(TheToken)) // Don't match with 'ToDoX'
-        or (aCommentStr[Length(TheToken)+1] in [#9,' ',':']) then
-        begin
-          lTokenFound := True;       // Token match
-          lFoundToDoType := lTodoType;
-          lFoundTokenStyle := lTokenStyle;
-        end;
-        Break;
-      end;
-    end;
-  end;
-
-  if Not lTokenFound then
-    Exit; // Not a Todo/Done item, leave
+  TheToken := FindTokenAndStyle(PChar(aCommentStr), lTodoType, lTokenStyle);
+  if TheToken = '' then Exit; // Not a Todo item, leave
 
   // Remove the ToDo token
-  Assert(TheToken=TODO_TOKENS[lFoundTokenStyle,lFoundToDoType], 'CreateToDoItem: TheToken');
+  Assert(TheToken=TODO_TOKENS[lTokenStyle,lToDoType], 'CreateToDoItem: TheToken');
   lStartLen := Length(TheToken);
   while (lStartLen > Length(aCommentStr)) and (aCommentStr[lStartLen+1] in [' ',#9]) do
     Inc(lStartLen);
@@ -289,10 +296,10 @@ begin
 
   // Require a colon with plain "done" but not with "#done". Prevent false positives.
   Result := TTodoItem.Create;
-  if Result.Parse(aCommentStr, lFoundTokenStyle=tsAlternate) then
+  if Result.Parse(aCommentStr, lTokenStyle=tsAlternate) then
   begin
-    Result.ToDoType   := lFoundToDoType;
-    Result.TokenStyle := lFoundTokenStyle;
+    Result.ToDoType   := lToDoType;
+    Result.TokenStyle := lTokenStyle;
     Result.StartPos   := aStartPos;
     Result.EndPos     := aEndPos;
     Result.CommentType:= CT;

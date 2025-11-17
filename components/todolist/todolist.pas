@@ -93,20 +93,24 @@ type
     acHelp: TAction;
     acColors: TAction;
     ActionList: TActionList;
-    chkListed: TCheckBox;
-    chkUsed: TCheckBox;
-    chkPackages: TCheckBox;
-    chkSourceEditor: TCheckBox;
-    cboShowWhat: TComboBox;
-    lblOptions: TLabel;
-    lblShowWhat: TLabel;
+    lblCount: TLabel;
     lvTodo: TListView;
     EditMenuItem: TMenuItem;
+    AllPackagesMenuItem: TMenuItem;
+    FixmeMenuItem: TMenuItem;
+    pnlStatistics: TPanel;
+    ListedFilesMenuItem: TMenuItem;
+    UsedUnitsMenuItem: TMenuItem;
+    EditorFilesMenuItem: TMenuItem;
+    DepPackagesMenuItem: TMenuItem;
+    ToDoMenuItem: TMenuItem;
+    DoneMenuItem: TMenuItem;
+    NoteMenuItem: TMenuItem;
+    mnuFiles: TPopupMenu;
     N1: TToolButton;
     N5: TToolButton;
-    pnlOptions: TPanel;
-    pnlShowWhat: TPanel;
-    mnuPopup: TPopupMenu;
+    mnuList: TPopupMenu;
+    mnuTypes: TPopupMenu;
     SaveDialog: TSaveDialog;
     tbEdit: TToolButton;
     tbColors: TToolButton;
@@ -118,12 +122,13 @@ type
     N3: TToolButton;
     N4: TToolButton;
     tbHelp: TToolButton;
+    tbShowTypes: TToolButton;
+    tbShowFiles: TToolButton;
     XMLPropStorage: TXMLPropStorage;
     procedure acColorsExecute(Sender: TObject);
     procedure acEditExecute(Sender: TObject);
     procedure acExportExecute(Sender: TObject);
     procedure acGotoExecute(Sender: TObject);
-    procedure acRefreshExecute(Sender: TObject);
     procedure acHelpExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var {%H-}CanClose: boolean);
     procedure FormCreate(Sender: TObject);
@@ -135,6 +140,8 @@ type
     procedure lvTodoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure lvTodoSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure SaveDialogShow(Sender: TObject);
+    procedure ShowSomethingMenuItemClick(Sender: TObject);
+    procedure ShowChange(Sender: TObject);
     procedure XMLPropStorageRestoreProperties(Sender: TObject);
     procedure XMLPropStorageRestoringProperties(Sender: TObject);
   private
@@ -195,6 +202,8 @@ begin
   acExport.ImageIndex := IDEImages.LoadImage('menu_saveas');
   acColors.ImageIndex := IDEImages.LoadImage('pastel_colors');
   acHelp.ImageIndex := IDEImages.LoadImage('btn_help');
+  tbShowTypes.ImageIndex := IDEImages.LoadImage('item_filter');
+  tbShowFiles.ImageIndex := IDEImages.LoadImage('laz_open_unit');
   SaveDialog.Filter := dlgFilterCsv+'|*.csv';
   LazarusIDE.AddHandlerOnProjectOpened(@ProjectOpened);
 end;
@@ -228,28 +237,27 @@ begin
   acColors.Caption := lisColors;
   acHelp.Caption := lisHelp;
 
-  lblOptions.Caption := lisInclude;
-  chkListed.Caption := lisToDoListed;
-  chkListed.Hint := lisToDoListedHint;
-  chkUsed.Caption := lisToDoUsed;
-  chkUsed.Hint := lisToDoUsedHint;
-  chkPackages.Caption := lisPackages;
-  chkPackages.Hint := Format(lisPackagesHint, [lisToDoListed, lisToDoUsed]);
-  chkSourceEditor.Caption := lisSourceEditor;
-  chkSourceEditor.Hint := lisSourceEditorHint;
+  // Show Types
+  tbShowTypes.Caption := lisShowTypes;
+  tbShowTypes.Hint := lisShowTypesHint;
+  ToDoMenuItem.Caption  := lisTodo;
+  FixmeMenuItem.Caption := lisFixMe;
+  DoneMenuItem.Caption  := lisDone;
+  NoteMenuItem.Caption  := lisNote;
 
-  with cboShowWhat do
-    begin
-      Items[0] := lisFilterItem0;
-      Items[1] := lisFilterItem1;
-      Items[2] := lisFilterItem2;
-      Items[3] := lisFilterItem3;
-      Items[4] := lisFilterItem4;
-      Items[5] := lisFilterItem5;
-      Items[6] := lisFilterItem6;
-      Hint := lisShowWhatHint;
-    end;
-  lblShowWhat.Caption:=lisShowWhat;
+  // Show Files
+  tbShowFiles.Caption := lisShowFiles;
+  tbShowFiles.Hint := lisShowFilesHint;
+  ListedFilesMenuItem.Caption := lisToDoListed;
+  //ListedFilesMenuItem.Hint := lisToDoListedHint;         Menu hints don't work!
+  UsedUnitsMenuItem.Caption := lisToDoUsedUnits;
+  //UsedUnitsMenuItem.Hint := lisToDoUsedUnitsHint;
+  EditorFilesMenuItem.Caption := lisSourceEditor;
+  //EditorFilesMenuItem.Hint := lisSourceEditorHint;
+  DepPackagesMenuItem.Caption := lisPackages;
+  //DepPackagesMenuItem.Hint := Format(lisPackagesHint, [lisToDoListed, lisToDoUsedUnits]);
+  //AllPackagesMenuItem.Caption := ;
+  //AllPackagesMenuItem.Hint := ;
   with lvTodo do
   begin
     Column[0].Caption := lisToDoLType;
@@ -278,22 +286,21 @@ var
 begin
   if FLoadingOptions then
     exit;
-
   if not Immediately then
   begin
     FUpdateNeeded:=true;
     IdleConnected:=true;
+    lblCount.Caption := '';
     exit;
   end;
-
   FUpdateNeeded:=false;
   if FUpdating or (FOwnerProjPack=nil) then
     Exit;
   LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
   Screen.BeginWaitCursor;
   lvTodo.BeginUpdate;
-  Units:=nil;
   try
+    Units:=nil;
     FUpdating:=True;
     CodeToolBoss.ActivateWriteLock;
 
@@ -312,14 +319,14 @@ begin
     end;
 
     Flags:=[];
-    if chkListed.Checked then
+    if ListedFilesMenuItem.Checked then
       Include(Flags, fuooListed);
-    if chkUsed.Checked then
+    if UsedUnitsMenuItem.Checked then
       Include(Flags, fuooUsed);
-    if chkPackages.Checked then
-      Include(Flags, fuooPackages);
-    if chkSourceEditor.Checked then
+    if EditorFilesMenuItem.Checked then
       Include(Flags, fuooSourceEditor);
+    if DepPackagesMenuItem.Checked then
+      Include(Flags, fuooPackages);
 
     Units:=LazarusIDE.FindUnitsOfOwner(FOwnerProjPack,Flags);
     for i:=0 to Units.Count-1 do
@@ -327,16 +334,17 @@ begin
 
     Node:=FScannedFiles.FindLowest;
     while Node<>nil do
-      begin
-        CurFile:=TTLScannedFile(Node.Data);
-        for i:=0 to CurFile.Count-1 do
-          AddListItem(CurFile[i]);
-        Node:=FScannedFiles.FindSuccessor(Node);
-      end;
+    begin
+      CurFile:=TTLScannedFile(Node.Data);
+      for i:=0 to CurFile.Count-1 do
+        AddListItem(CurFile[i]);
+      Node:=FScannedFiles.FindSuccessor(Node);
+    end;
   finally
     Units.Free;
     CodeToolBoss.DeactivateWriteLock;
     lvTodo.EndUpdate;
+    lblCount.Caption := IntToStr(lvTodo.Items.Count) + ' ' + lisToDoItems;
     Screen.EndWaitCursor;
     FUpdating:=False;
   end;
@@ -374,11 +382,13 @@ begin
 
             if lvTodo.SortColumn <= Item1.SubItems.Count then
               Str1 := Item1.SubItems.Strings[lvTodo.SortColumn-1]
-            else Str1 := '';
+            else
+              Str1 := '';
 
             if lvTodo.SortColumn <= Item2.SubItems.Count then
               Str2 := Item2.SubItems.Strings[lvTodo.SortColumn-1]
-            else Str2 := '';
+            else
+              Str2 := '';
           end;
         Compare := AnsiCompareText(Str1, Str2);
       end;
@@ -421,6 +431,21 @@ end;
 procedure TIDETodoWindow.SaveDialogShow(Sender: TObject);
 begin
   SaveDialog.InitialDir := GetCurrentDirUTF8;
+end;
+
+procedure TIDETodoWindow.ShowSomethingMenuItemClick(Sender: TObject);
+// Handler used for Show Types and Show Files menu items.
+var
+  mi: TMenuItem;
+begin
+  mi := Sender as TMenuItem;
+  mi.Checked := not mi.Checked;
+  UpdateTodos;
+end;
+
+procedure TIDETodoWindow.ShowChange(Sender: TObject);
+begin
+  UpdateTodos;
 end;
 
 procedure TIDETodoWindow.XMLPropStorageRestoreProperties(Sender: TObject);
@@ -495,11 +520,6 @@ begin
   UpdateStartFilename;
 end;
 
-procedure TIDETodoWindow.acRefreshExecute(Sender: TObject);
-begin
-  UpdateTodos;
-end;
-
 procedure TIDETodoWindow.acExportExecute(Sender: TObject);
 begin
   SaveDialog.FileName:='TodoList_'+FormatDateTime('YYYY_MM_DD',now);
@@ -563,12 +583,11 @@ procedure TIDETodoWindow.AddListItem(aTodoItem: TTodoItem);
   function ShowThisToDoItem: boolean;
   // Add this ToDoItem based on the cboShowWhat selection
   begin
-    case cboShowWhat.ItemIndex of
-      0:Result := True;
-      1..3: Result := (TToDoType(cboShowWhat.ItemIndex - 1) = aTodoItem.ToDoType);
-      4:Result := aTodoItem.ToDoType in [tdToDo, tdDone];
-      5:Result := aTodoItem.ToDoType in [tdToDo, tdNote];
-      6:Result := aTodoItem.ToDoType in [tdDone, tdNote];
+    case aTodoItem.ToDoType of
+      tdToDo:  Result := ToDoMenuItem.Checked;
+      tdFixme: Result := FixmeMenuItem.Checked;
+      tdDone:  Result := DoneMenuItem.Checked;
+      tdNote:  Result := NoteMenuItem.Checked;
     end;
   end;
 
@@ -576,7 +595,8 @@ var
    aListItem: TListItem;
    aFilename: String;
 begin
-  if Assigned(aTodoItem) and ShowThisToDoItem then
+  Assert(Assigned(aTodoItem), 'TIDETodoWindow.AddListItem: aTodoItem=Nil');
+  if ShowThisToDoItem then
   begin
     //DebugLn(['TIDETodoWindow.AddListItem ',aTodoItem.Filename,' ',aTodoItem.LineNumber]);
     aListitem := lvTodo.Items.Add;
