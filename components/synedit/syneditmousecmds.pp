@@ -114,6 +114,11 @@ type
     Sender: TObject; // Gutter or SynEdit
   end;
 
+  TSynEditMouseAction = class;
+
+  // Called by "HandleActionProc", if an Action was found in the list
+  TSynEditMouseActionExecProc = function(AnAction: TSynEditMouseAction; var AnInfo: TSynEditMouseActionInfo): boolean of object;
+
   { TSynEditMouseAction }
 
   TSynEditMouseAction = class(TCollectionItem)
@@ -121,6 +126,7 @@ type
     FButtonUpRestrictions: TSynMAUpRestrictions;
     FClickDir: TSynMAClickDir;
     FIgnoreUpClick: Boolean;
+    FOnExecute: TSynEditMouseActionExecProc;
     FOption: TSynEditorMouseCommandOpt;
     FOption2: Integer;
     FPriority: TSynEditorMouseCommandOpt;
@@ -171,6 +177,7 @@ type
     property Option2: Integer read FOption2 write SetOption2                    default 0;
     // Priority: 0 = highest / MaxInt = lowest
     property Priority: TSynEditorMouseCommandOpt read FPriority write SetPriority default 0;
+    property OnExecute: TSynEditMouseActionExecProc read FOnExecute write FOnExecute;
   end;
 
   { TSynEditMouseActions }
@@ -247,10 +254,6 @@ type
   // Should Call "HandleActionProc" for each ActionList it want's to check
   TSynEditMouseActionSearchProc = function(var AnInfo: TSynEditMouseActionInfo;
     HandleActionProc: TSynEditMouseActionHandler): Boolean of object;
-
-  // Called by "HandleActionProc", if an Action was found in the list
-  TSynEditMouseActionExecProc = function(AnAction: TSynEditMouseAction;
-    var AnInfo: TSynEditMouseActionInfo): Boolean of object;
 
   { TSynEditMouseActionSearchList }
 
@@ -788,6 +791,7 @@ begin
     FOption     := TSynEditMouseAction(Source).FOption;
     FOption2    := TSynEditMouseAction(Source).FOption2;
     FPriority   := TSynEditMouseAction(Source).Priority;
+    FOnExecute  := TSynEditMouseAction(Source).OnExecute;
   end else
     inherited Assign(Source);
   if Collection <> nil then

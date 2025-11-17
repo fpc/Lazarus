@@ -3550,6 +3550,21 @@ var
   s: String;
   AnActionResultDummy: TSynEditMouseActionResult;
   DownMisMatch: Boolean;
+
+  procedure DoFinalSteps;
+  begin
+    if Result and (not CaretDone) and AnAction.MoveCaret then
+      MoveCaret;
+    if Result and (AnAction.IgnoreUpClick) then
+      AnInfo.IgnoreUpClick := True;
+    if ResetMouseCapture then
+      MouseCapture := False;
+    if FBlockSelection.AutoExtend and (FPaintLock = 0) then
+      FBlockSelection.AutoExtend := False;
+    if Result then
+      FMouseActionShiftMask := AnInfo.Shift;
+  end;
+
 begin
   AnAction := nil;
   Result := False;
@@ -3598,6 +3613,8 @@ begin
 
 
     ACommand := AnAction.Command;
+    CaretDone := False;
+    ResetMouseCapture := False;
     AnInfo.CaretDone := False;
 
     // Opening the context menu must not unset the block selection
@@ -3614,6 +3631,15 @@ begin
           AnInfo.CaretDone := False;
         else
           AnInfo.CaretDone := True;
+      end;
+    end;
+
+    if AnAction.OnExecute <> nil then begin
+      Result := AnAction.OnExecute(AnAction, AnInfo);
+      if Result then begin
+        CaretDone := AnInfo.CaretDone;
+        DoFinalSteps;
+        exit;
       end;
     end;
 
@@ -3638,6 +3664,7 @@ begin
       Result := FRightGutter.DoHandleMouseAction(AnAction, AnInfo);
 
     if Result then begin
+      // TODO: DoFinalSteps
       if (not AnInfo.CaretDone) and AnAction.MoveCaret then
         MoveCaret;
       if (AnAction.IgnoreUpClick) then
@@ -3889,16 +3916,7 @@ begin
         Result := False; // ACommand was not handled => Fallback to parent Context
     end;
 
-    if Result and (not CaretDone) and AnAction.MoveCaret then
-      MoveCaret;
-    if Result and (AnAction.IgnoreUpClick) then
-      AnInfo.IgnoreUpClick := True;
-    if ResetMouseCapture then
-      MouseCapture := False;
-    if FBlockSelection.AutoExtend and (FPaintLock = 0) then
-      FBlockSelection.AutoExtend := False;
-    if Result then
-      FMouseActionShiftMask := AnInfo.Shift;
+    DoFinalSteps;
   end;
 end;
 
