@@ -310,10 +310,10 @@ class function TCocoaWSDragImageListResolution.BeginDrag(
 var
   ABitmap: TBitmap;
   cb: TCocoaBitmap;
-  rep: NSBitmapImageRep;
   img: NSImage;
 begin
   ABitmap := TBitmap.Create;
+  img := nil;
   try
     ADragImageList.GetBitmap(AIndex, ABitmap);
     if (ABitmap.Handle = 0) or (ABitmap.Width = 0) or (ABitmap.Height = 0) then
@@ -324,35 +324,16 @@ begin
 
     // Bitmap Handle should be nothing but TCocoaBitmap
     cb := TCocoaBitmap(ABitmap.Handle);
+    img := cb.Image.copy;
 
-    // There's NSBitmapImageRep in TCocoaBitmap, but it depends on the availability
-    // of memory buffer stored with TCocoaBitmap. As soon as TCocoaBitmap is freed
-    // pixels are not available. For this reason, we're making a copy of the bitmapdata
-    // allowing Cocoa to allocate its own buffer (by passing nil for planes parameter)
-    rep := NSBitmapImageRep(NSBitmapImageRep.alloc).initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
-      nil, // planes, BitmapDataPlanes
-      Round(cb.ImageRep.size.Width), // width, pixelsWide
-      Round(cb.ImageRep.size.Height),// height, PixelsHigh
-      cb.ImageRep.bitsPerSample,// bitsPerSample, bps
-      cb.ImageRep.samplesPerPixel, // samplesPerPixel, spp
-      cb.ImageRep.hasAlpha, // hasAlpha
-      False, // isPlanar
-      cb.ImageRep.colorSpaceName, // colorSpaceName
-      cb.ImageRep.bitmapFormat, // bitmapFormat
-      cb.ImageRep.bytesPerRow, // bytesPerRow
-      cb.ImageRep.BitsPerPixel //bitsPerPixel
-    );
-    System.Move( cb.ImageRep.bitmapData^, rep.bitmapData^, cb.ImageRep.bytesPerRow * Round(cb.ImageRep.size.height));
-    img := NSImage(NSImage.alloc).initWithSize( rep.size );
-    img.addRepresentation(rep);
+    Result := CocoaWidgetset.DragImageList_BeginDrag(
+      img, ADragImageList.DragHotspot);
+    if Result then
+      CocoaWidgetSet.DragImageList_DragMove(X, Y);
   finally
+    img.release;
     ABitmap.Free;
   end;
-
-  Result := CocoaWidgetset.DragImageList_BeginDrag(
-      img, ADragImageList.DragHotspot);
-  if Result then
-      CocoaWidgetSet.DragImageList_DragMove(X, Y);
 end;
 
 class function TCocoaWSDragImageListResolution.DragMove(
