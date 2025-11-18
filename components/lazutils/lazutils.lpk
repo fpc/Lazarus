@@ -338,6 +338,10 @@
         <Filename Value="plist2json.pas"/>
         <UnitName Value="plist2json"/>
       </Item>
+      <Item>
+        <Filename Value="lazlistclassesbase.pas"/>
+        <UnitName Value="LazListClassesBase"/>
+      </Item>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
