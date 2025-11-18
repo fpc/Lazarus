@@ -10102,7 +10102,7 @@ end;
 
 procedure TCustomSynEdit.FindMatchingBracket;
 begin
-  FindMatchingBracket(CaretXY,false,true,false,false);
+  FindMatchingBracket(CaretXY,True,true,false,false);
 end;
 
 function TCustomSynEdit.FindMatchingBracket(PhysStartBracket: TPoint;
@@ -10197,21 +10197,23 @@ var
 
   procedure DoMatchingBracketFound;
   var
-    EndPt, DummyPt: TPoint;
+    EndPt: TPoint;
   begin
     // matching bracket found, set caret and bail out
     Result := Point(PosX, PosY); // start with logical (byte) position
+
     if SelectBrackets then begin
       EndPt:=Result;
       if (EndPt.Y < StartPt.Y)
         or ((EndPt.Y = StartPt.Y) and (EndPt.X < StartPt.X)) then
       begin
-        DummyPt:=StartPt;
-        StartPt:=EndPt;
-        EndPt:=DummyPt;
+        inc(StartPt.x);
+        SetCaretAndSelection(LogicalToPhysicalPos(StartPt), EndPt, StartPt);
+      end
+      else begin
+        inc(EndPt.x);
+        SetCaretAndSelection(LogicalToPhysicalPos(StartPt), StartPt, EndPt);
       end;
-      inc(EndPt.X);
-      SetCaretAndSelection(CaretXY, StartPt, EndPt);
     end
     else if MoveCaret then
       LogicalCaretXY := Result;
@@ -10385,21 +10387,13 @@ begin
    exit;
 
   Line := FTheLinesView[PosY - 1];
-  DoCheckBracket;
+  DoCheckBracket; // char after caret
   if Result.Y>0 then exit;
   if StartIncludeNeighborChars then begin
     if PosX>1 then begin
       // search in front
       dec(PosX);
       DoCheckBracket;
-      if Result.Y>0 then exit;
-      inc(PosX);
-    end;
-    if PosX<Length(Line) then begin
-      // search behind
-      inc(PosX);
-      DoCheckBracket;
-      if Result.Y>0 then exit;
     end;
   end;
 end;
