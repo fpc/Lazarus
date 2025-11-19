@@ -68,6 +68,7 @@ type
     procedure TestParseUnderscoreIsSeparator;
     procedure TestParseDirective_IF_SizeOf_Char;
     procedure TestParseObjectSealedAbstract;
+    procedure TestParseProcType_OfObjectDeprecated;
     procedure TestGetProcResultNode;
   end;
 
@@ -761,6 +762,25 @@ begin
   'end;',
   'TBar2 = object abstract (TFoo)',
   '  Field1:boolean;',
+  'end;',
+  'begin']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseProcType_OfObjectDeprecated;
+begin
+  StartProgram;
+  Add([
+  'type',
+  'TDeprecatedEvent = procedure(aUserData: Pointer) of object; deprecated ''DepriTE'';',
+  'TDeprecatedProc = procedure(aUserData: Pointer); deprecated ''DepriTP'';',
+  'TBird = record',
+  '  DeprecatedEvent: procedure(aUserData: Pointer) of object;',
+  '  Deprecated: word;',
+  'end;',
+  'TAnt = record',
+  '  DeprecatedProc: procedure;',
+  '  Deprecated: word;',
   'end;',
   'begin']);
   ParseModule;

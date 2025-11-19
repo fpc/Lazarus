@@ -94,7 +94,8 @@ type
      pphIsMethodDecl,
      pphIsMethodBody,
      pphIsFunction,
-     pphIsType,
+     pphIsType, // is proc type
+     pphIsAnonymousType, // e.g. var p: procedure;
      pphIsOperator,
      pphIsGeneric,
      pphCreateNodes);
@@ -1877,14 +1878,27 @@ begin
     if not UpAtomIs('OBJECT') then
       SaveRaiseStringExpectedButAtomFound(20170421195457,'"object"');
     ReadNextAtom;
+  end else if UpAtomIs('IS') then begin
+    if not (pphIsType in ParseAttr) then
+      SaveRaiseCharExpectedButAtomFound(20251119192819,';');
+    ReadNextAtom;
+    if not UpAtomIs('NESTED') then
+      SaveRaiseStringExpectedButAtomFound(20251119192824,'nested');
+    ReadNextAtom;
   end;
+
   // read procedures/method specifiers
   if CurPos.Flag=cafEND then begin
     UndoReadNextAtom;
     exit;
   end;
-  if CurPos.Flag=cafSemicolon then
-    ReadNextAtom;
+
+  if (CurPos.Flag=cafSemicolon) then begin
+    if not (pphIsAnonymousType in ParseAttr) then
+      ReadNextAtom
+    else
+      exit;
+  end;
   if (CurPos.StartPos>SrcLen) then
     SaveRaiseException(20170421195010,ctsSemicolonNotFound);
   if [pphIsMethodDecl,pphIsMethodBody]*ParseAttr<>[] then
@@ -1911,11 +1925,6 @@ begin
       ReadNextAtom;
       if not (CurPos.Flag in [cafSemicolon,cafEqual,cafEND]) then
         ReadConstant(true,false,[]);
-    end else if UpAtomIs('IS') then begin
-      ReadNextAtom;
-      if not UpAtomIs('NESTED') then
-        SaveRaiseStringExpectedButAtomFound(20170421195459,'nested');
-      ReadNextAtom;
     end else if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('PUBLIC') then begin
       HasForwardModifier:=UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL');
       ReadNextAtom;
@@ -2032,7 +2041,10 @@ begin
     end;
     // check semicolon
     if CurPos.Flag=cafSemicolon then begin
-      ReadNextAtom;
+      if not (pphIsAnonymousType in ParseAttr) then
+        ReadNextAtom
+      else
+        exit;
     end else begin
       // Delphi/FPC allow procs without ending semicolon
     end;
@@ -3594,7 +3606,7 @@ begin
     end;
   end;
 
-  // optional: hint modifier
+  // optional: hint modifier without semicolon
   if CurPos.Flag=cafWord then
     ReadHintModifiers(false);
 
@@ -4977,12 +4989,15 @@ end;
 
 function TPascalParserTool.KeyWordFuncTypeProc: boolean;
 {
+  Read a procedure type
   examples:
     procedure;
     procedure of object;
     procedure(ParmList) of object;
     function(ParmList):SimpleType of object;
     procedure; cdecl; popstack; register; pascal; stdcall;
+    type p = procedure(Bla) of object; deprecated 'Use another';
+    var p: procedure(Bla) of object = nil;
 }
 var
   IsFunction, EqualFound, IsReferenceTo, IsVarOrConst, CanHaveHints: boolean;
@@ -6488,7 +6503,11 @@ begin
     if (not IsFunction) and UpAtomIs('OPERATOR') then
       Include(ParseAttr,pphIsOperator);
     if ProcNode.Desc=ctnProcedureType then
+    begin
       Include(ParseAttr,pphIsType);
+      if ProcNode.Parent.Desc<>ctnTypeDefinition then
+        Include(ParseAttr,pphIsAnonymousType);
+    end;
     // read procedure head (= [name[<parameters>]] + parameterlist + resulttype;)
     ReadNextAtom;// read first atom of head
     CurNode:=ProcHeadNode;
