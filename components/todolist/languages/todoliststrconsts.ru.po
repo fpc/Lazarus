@@ -19,6 +19,10 @@ msgstr "Комментарии ToDo"
 msgid "Done comment"
 msgstr "Комментарий Done"
 
+#: todoliststrconsts.attribnamefixme
+msgid "FixMe comment"
+msgstr "Комментарий FixMe"
+
 #: todoliststrconsts.attribnamenote
 msgid "Note comment"
 msgstr "Комментарий Note"
@@ -70,79 +74,58 @@ msgstr "Вставить макрос"
 msgid "Edit"
 msgstr "Редактировать"
 
-#: todoliststrconsts.lisfilteritem0
-msgid "All"
-msgstr "Все"
-
-#: todoliststrconsts.lisfilteritem1
-msgid "ToDo Only"
-msgstr "Только ToDo"
-
-#: todoliststrconsts.lisfilteritem2
-msgid "Done Only"
-msgstr "Только Done"
-
-#: todoliststrconsts.lisfilteritem3
-msgid "Note Only"
-msgstr "Только Note"
-
-#: todoliststrconsts.lisfilteritem4
-msgid "ToDo & Done"
-msgstr "ToDo и Done"
-
-#: todoliststrconsts.lisfilteritem5
-msgid "ToDo & Note"
-msgstr "ToDo и Note"
-
-#: todoliststrconsts.lisfilteritem6
-msgid "Done & Note"
-msgstr "Done и Note"
-
 #: todoliststrconsts.lishelp
 msgid "Help"
 msgstr "Справка"
 
-#: todoliststrconsts.lisinclude
-msgid "Include"
-msgstr "Обрабатывать"
-
 #: todoliststrconsts.lispackages
-msgid "Packages"
-msgstr "Пакеты"
-
-#: todoliststrconsts.lispackageshint
-#, object-pascal-format
-msgid "Extends \"%s\" and \"%s\" options by units from used packages"
-msgstr "Расширить множества \"%s\" и \"%s\" модулями используемых пакетов"
+msgid "Used packages"
+msgstr "Используемые пакеты"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
 msgstr "Текст"
 
-#: todoliststrconsts.lisshowwhat
-msgid "Show"
-msgstr "Отображать"
+#: todoliststrconsts.lisshowfiles
+msgid "Show Files"
+msgstr "Показ файлов"
 
-#: todoliststrconsts.lisshowwhathint
+#: todoliststrconsts.lisshowfileshint
+msgid "Select which Pascal units and .todo files to list"
+msgstr "Выбрать отображаемые модули Паскаля и файлы .todo"
+
+#: todoliststrconsts.lisshowtypes
+msgid "Show Types"
+msgstr "Показ типов"
+
+#: todoliststrconsts.lisshowtypeshint
+msgctxt "todoliststrconsts.lisshowtypeshint"
 msgid "Select which ToDo types to list"
-msgstr "Выбор отображаемых типов элементов списка ToDo"
+msgstr "Выбрать отображаемые типы элементов списка ToDo"
 
 #: todoliststrconsts.lissourceeditor
-msgid "Editor"
-msgstr "Редактор"
-
-#: todoliststrconsts.lissourceeditorhint
-msgctxt "todoliststrconsts.lissourceeditorhint"
-msgid "Add units in source editor"
-msgstr "Добавить модули из редактора исходного кода"
+msgid "Source editor files"
+msgstr "Файлы редактора"
 
 #: todoliststrconsts.listddedittodo
-msgid "Edit the ToDo/Done/Note"
-msgstr "Редактирование элемента списка ToDo/Done/Note"
+msgctxt "todoliststrconsts.listddedittodo"
+msgid "Edit the ToDo item"
+msgstr "Редактировать элемент списка ToDo"
+
+#: todoliststrconsts.listddedittododlgcaption
+msgctxt "todoliststrconsts.listddedittododlgcaption"
+msgid "Edit the ToDo item"
+msgstr "Редактирование элемента списка ToDo"
 
 #: todoliststrconsts.listddinserttodo
-msgid "Insert a ToDo/Done/Note"
-msgstr "Вставить элемент списка ToDo/Done/Note"
+msgctxt "todoliststrconsts.listddinserttodo"
+msgid "Insert a ToDo item"
+msgstr "Вставить элемент списка ToDo"
+
+#: todoliststrconsts.listddinserttododlgcaption
+msgctxt "todoliststrconsts.listddinserttododlgcaption"
+msgid "Insert a ToDo item"
+msgstr "Вставка элемента списка ToDo"
 
 #: todoliststrconsts.listodocolorsareattheendofcolorlist
 msgid "ToDo colors are at the end of color list"
@@ -156,13 +139,14 @@ msgstr "Экспорт"
 msgid "Goto"
 msgstr "Перейти"
 
+#: todoliststrconsts.listodoitems
+#, object-pascal-format
+msgid "%d items"
+msgstr "Элементов: %d"
+
 #: todoliststrconsts.listodoldescription
 msgid "Description"
 msgstr "Описание"
-
-#: todoliststrconsts.listodoldone
-msgid "Done"
-msgstr "Готово"
 
 #: todoliststrconsts.listodolfile
 msgid "Module"
@@ -173,12 +157,8 @@ msgid "ToDo List"
 msgstr "Список ToDo"
 
 #: todoliststrconsts.listodolisted
-msgid "Listed"
-msgstr "Указанные"
-
-#: todoliststrconsts.listodolistedhint
-msgid "Add units listed in project inspector/package editor"
-msgstr "Добавить модули, указанные в инспекторе проекта либо редакторе пакета"
+msgid "Listed files"
+msgstr "Указанные файлы"
 
 #: todoliststrconsts.listodolistedit
 msgid "Edit selected item"
@@ -189,7 +169,7 @@ msgid "Goto selected source line"
 msgstr "Перейти к выделенной строке исходного кода"
 
 #: todoliststrconsts.listodolistrefresh
-msgid "Refresh todo items"
+msgid "Refresh ToDo items"
 msgstr "Обновить элементы ToDo"
 
 #: todoliststrconsts.listodolline
@@ -212,13 +192,9 @@ msgstr "Тип"
 msgid "ToDo type"
 msgstr "Тип элемента ToDo"
 
-#: todoliststrconsts.listodoused
-msgid "Used"
-msgstr "Используемые"
-
-#: todoliststrconsts.listodousedhint
-msgid "Add units used by main source file"
-msgstr "Добавить модули, используемые в главном файле исходного кода"
+#: todoliststrconsts.listodousedunits
+msgid "Used units"
+msgstr "Используемые модули"
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"

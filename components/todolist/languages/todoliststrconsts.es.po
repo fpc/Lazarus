@@ -17,6 +17,10 @@ msgstr ""
 msgid "Done comment"
 msgstr ""
 
+#: todoliststrconsts.attribnamefixme
+msgid "FixMe comment"
+msgstr ""
+
 #: todoliststrconsts.attribnamenote
 msgid "Note comment"
 msgstr ""
@@ -65,81 +69,60 @@ msgstr "Insertar Macro"
 msgid "Edit"
 msgstr ""
 
-#: todoliststrconsts.lisfilteritem0
-msgid "All"
-msgstr ""
-
-#: todoliststrconsts.lisfilteritem1
-msgid "ToDo Only"
-msgstr ""
-
-#: todoliststrconsts.lisfilteritem2
-msgid "Done Only"
-msgstr ""
-
-#: todoliststrconsts.lisfilteritem3
-msgid "Note Only"
-msgstr ""
-
-#: todoliststrconsts.lisfilteritem4
-msgid "ToDo & Done"
-msgstr ""
-
-#: todoliststrconsts.lisfilteritem5
-msgid "ToDo & Note"
-msgstr ""
-
-#: todoliststrconsts.lisfilteritem6
-msgid "Done & Note"
-msgstr ""
-
 #: todoliststrconsts.lishelp
 msgid "Help"
 msgstr ""
 
-#: todoliststrconsts.lisinclude
-msgid "Include"
-msgstr ""
-
 #: todoliststrconsts.lispackages
-msgid "Packages"
-msgstr ""
-
-#: todoliststrconsts.lispackageshint
-#, object-pascal-format
-msgid "Extends \"%s\" and \"%s\" options by units from used packages"
+msgid "Used packages"
 msgstr ""
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
 msgstr "Texto"
 
-#: todoliststrconsts.lisshowwhat
-msgid "Show"
+#: todoliststrconsts.lisshowfiles
+msgid "Show Files"
 msgstr ""
 
-#: todoliststrconsts.lisshowwhathint
+#: todoliststrconsts.lisshowfileshint
+msgid "Select which Pascal units and .todo files to list"
+msgstr ""
+
+#: todoliststrconsts.lisshowtypes
+msgid "Show Types"
+msgstr ""
+
+#: todoliststrconsts.lisshowtypeshint
+msgctxt "todoliststrconsts.lisshowtypeshint"
 msgid "Select which ToDo types to list"
 msgstr ""
 
 #: todoliststrconsts.lissourceeditor
-msgid "Editor"
-msgstr ""
-
-#: todoliststrconsts.lissourceeditorhint
-msgctxt "todoliststrconsts.lissourceeditorhint"
-msgid "Add units in source editor"
+msgid "Source editor files"
 msgstr ""
 
 #: todoliststrconsts.listddedittodo
-msgid "Edit the ToDo/Done/Note"
+msgctxt "todoliststrconsts.listddedittodo"
+msgid "Edit the ToDo item"
+msgstr ""
+
+#: todoliststrconsts.listddedittododlgcaption
+msgctxt "todoliststrconsts.listddedittododlgcaption"
+msgid "Edit the ToDo item"
 msgstr ""
 
 #: todoliststrconsts.listddinserttodo
 #, fuzzy
 #| msgid "Insert ToDo"
-msgid "Insert a ToDo/Done/Note"
+msgctxt "todoliststrconsts.listddinserttodo"
+msgid "Insert a ToDo item"
 msgstr "Insertar Pendiente (ToDo)"
+
+#: todoliststrconsts.listddinserttododlgcaption
+msgctxt "todoliststrconsts.listddinserttododlgcaption"
+msgid "Insert a ToDo item"
+msgstr ""
 
 #: todoliststrconsts.listodocolorsareattheendofcolorlist
 msgid "ToDo colors are at the end of color list"
@@ -153,13 +136,14 @@ msgstr "Exportar"
 msgid "Goto"
 msgstr "Ir a"
 
+#: todoliststrconsts.listodoitems
+#, object-pascal-format
+msgid "%d items"
+msgstr ""
+
 #: todoliststrconsts.listodoldescription
 msgid "Description"
 msgstr "Descripción"
-
-#: todoliststrconsts.listodoldone
-msgid "Done"
-msgstr "Hecho"
 
 #: todoliststrconsts.listodolfile
 msgid "Module"
@@ -170,11 +154,7 @@ msgid "ToDo List"
 msgstr "Lista ToDo"
 
 #: todoliststrconsts.listodolisted
-msgid "Listed"
-msgstr ""
-
-#: todoliststrconsts.listodolistedhint
-msgid "Add units listed in project inspector/package editor"
+msgid "Listed files"
 msgstr ""
 
 #: todoliststrconsts.listodolistedit
@@ -186,7 +166,9 @@ msgid "Goto selected source line"
 msgstr "Ir a línea seleccionada de codigo fuente"
 
 #: todoliststrconsts.listodolistrefresh
-msgid "Refresh todo items"
+#, fuzzy
+#| msgid "Refresh todo items"
+msgid "Refresh ToDo items"
 msgstr "Actualizar los elementos de ToDo"
 
 #: todoliststrconsts.listodolline
@@ -209,12 +191,8 @@ msgstr ""
 msgid "ToDo type"
 msgstr ""
 
-#: todoliststrconsts.listodoused
-msgid "Used"
-msgstr ""
-
-#: todoliststrconsts.listodousedhint
-msgid "Add units used by main source file"
+#: todoliststrconsts.listodousedunits
+msgid "Used units"
 msgstr ""
 
 #: todoliststrconsts.listtodolcategory
