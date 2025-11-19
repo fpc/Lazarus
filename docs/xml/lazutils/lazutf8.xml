@@ -2308,6 +2308,41 @@ word-wrapped text.
 </short>
 </element>
 
+<element name="IsAscii">
+<short>
+Returns <b>True</b> when the specified string contains only single-byte ASCII 
+characters.
+</short>
+<descr>
+<p>	
+<var>IsAscii</var> is <var>Boolean</var> function used to determine whether 
+all of the characters in the specified string are single-byte ASCII values. 
+ASCII characters are those with an ordinal value less than or equal to $7F 
+(Decimal 127).
+</p>
+<p>
+<var>S</var> is the string value with the characters examined in the routine. 
+IsAscii examines each of the bytes values in S, and returns <b>False</b> 
+is any byte has an ordinal value &gt; $7F. Otherwise, the return value is <b>
+True</b>.
+</p>
+</descr>
+<seealso>
+<link id="IsPureASCII"/>
+</seealso>
+</element>
+<element name="IsAscii.S">
+<short>
+String with the characters examined in the routine.
+</short>
+</element>
+<element name="IsAscii.Result">
+<short>
+Returns <b>True</b> if the specified string contains characters with ASCII 
+single-byte values.
+</short>
+</element>
+
 <element name="IsPureAscii">
 <short>
 Determines whether the specified string contains only single-byte ASCII  
@@ -2322,17 +2357,19 @@ Used in the implementation of the TStringListUTF8Fast.InsertItem method.
 Added in LazUtils version 3.2.
 </version>
 <seealso>
+<link id="IsAscii"/>
 <link id="TStringListUTF8Fast.InsertItem"/>
 </seealso>
 </element>
 <element name="IsPureAscii.Result">
 <short>
-Returns <b>True</b> if all of the characters in S have a value less than $7F.
+Returns <b>True</b> if all of the characters in S have a value less than or 
+equal to $7F.
 </short>
 </element>
 <element name="IsPureAscii.S">
 <short>
-String with the characters examined in the method.
+String with the characters examined in the routine.
 </short>
 </element>
 
