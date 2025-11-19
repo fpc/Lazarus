@@ -27,16 +27,17 @@ interface
 const
   csvHeader = 'Type,Description,Priority,Module,Line,Owner,Category';
 
+  lisToDo  = 'ToDo';
+  lisFixMe = 'FixMe';
+  lisDone  = 'Done';
+  lisNote  = 'Note';
+
 resourcestring
   lisTodolistEdit='Edit selected item';
   lisTodolistRefresh='Refresh ToDo items';
   lisTodoListGotoLine='Goto selected source line';
   lisColorOptions = 'Color Options';
   lisCTInsertMacro = 'Insert Macro';
-  lisToDo  = 'ToDo';
-  lisFixMe = 'FixMe';
-  lisDone  = 'Done';
-  lisNote  = 'Note';
   lisToDoLType = 'Type';
   lisToDoLDescription = 'Description';
   lisToDoLPriority = 'Priority';
@@ -60,6 +61,8 @@ resourcestring
   dlgUnitDepRefresh = 'Refresh';
   lisTDDInsertToDo = 'Insert a ToDo item';
   lisTDDEditToDo = 'Edit the ToDo item';
+  lisTDDInsertToDoDlgCaption = 'Insert a ToDo item';
+  lisTDDEditToDoDlgCaption = 'Edit the ToDo item';
   lisViewToDoList = 'View ToDo List';
   lisToDoList = 'ToDo List';
   lisPkgFileTypeText = 'Text';
@@ -68,7 +71,7 @@ resourcestring
   lisShowTypesHint = 'Select which ToDo types to list';
   lisShowFiles = 'Show Files';
   lisShowFilesHint = 'Select which Pascal units and .todo files to list';
-  lisToDoItems = 'items';
+  lisToDoItems = '%d items';
   lisToDoToDoType = 'ToDo type';
   lisAlternateTokens = 'Use Alternate Tokens';
   lisAlternateTokensHint = 'Standard token is #todo etc. Alternate is without the #';

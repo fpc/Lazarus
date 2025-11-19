@@ -228,7 +228,7 @@ var
   TodoItem: TTodoItem;
 begin
   TodoItem := nil;
-  if ExecuteTodoDialog(lisTDDInsertToDo, TodoItem) <> mrOK then exit;
+  if ExecuteTodoDialog(lisTDDInsertToDoDlgCaption, TodoItem) <> mrOK then exit;
   try
     if Assigned(TodoItem) then
       aSrcEdit.Selection := TodoItem.AsComment;
@@ -241,7 +241,7 @@ end;
 
 procedure EditToDo(aTodoItem: TTodoItem; aSrcEdit: TSourceEditorInterface);
 begin
-  if ExecuteTodoDialog(lisTDDEditToDo, aTodoItem) <> mrOK then exit;
+  if ExecuteTodoDialog(lisTDDEditToDoDlgCaption, aTodoItem) <> mrOK then exit;
   aSrcEdit.SelectText(aTodoItem.StartPos, aTodoItem.EndPos);
   aSrcEdit.Selection := aTodoItem.AsComment;
   if Assigned(IDETodoWindow) then

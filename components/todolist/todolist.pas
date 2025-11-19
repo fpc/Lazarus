@@ -344,7 +344,7 @@ begin
     Units.Free;
     CodeToolBoss.DeactivateWriteLock;
     lvTodo.EndUpdate;
-    lblCount.Caption := IntToStr(lvTodo.Items.Count) + ' ' + lisToDoItems;
+    lblCount.Caption := Format(lisToDoItems, [lvTodo.Items.Count]);
     Screen.EndWaitCursor;
     FUpdating:=False;
   end;
