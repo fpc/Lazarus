@@ -2130,6 +2130,7 @@ var
     if (ClassNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
     // parse class and build CodeTreeNodes for all properties/methods
     CursorNode:=FindDeepestNodeAtPos(ClassNode,CleanCursorPos,true);
+    if CursorNode.StartPos < CleanCursorPos then exit; // Not a simple term, no DirectSearch
     if CursorNode.GetNodeOfType(ctnClassInheritance)=nil then exit;
     // identifier is an ancestor/interface identifier
     CursorNode:=ClassNode.Parent;
