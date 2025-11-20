@@ -320,6 +320,7 @@ type
     procedure WriteDesignTop(Writer: TWriter);
   protected
     class procedure WSRegisterClass; override;
+    procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure SetColor(Value: TColor); override;

@@ -220,6 +220,18 @@ begin
       SetInitialBounds(0, 0, CX, CY);
 end;
 
+procedure TCustomFrame.Loaded;
+begin
+  inherited;
+  DisableAlign;
+  try
+    if Application.Scaled and Scaled then
+      FixDesignFontsPPIWithChildren(FDesignTimePPI);
+  finally
+    EnableAlign;
+  end;
+end;
+
 { TFrame }
 
 function TFrame.LCLVersionIsStored: boolean;
