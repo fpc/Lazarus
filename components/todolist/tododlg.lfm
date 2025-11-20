@@ -1,12 +1,12 @@
 object TodoDialog: TTodoDialog
   Left = 400
-  Height = 290
+  Height = 291
   Top = 124
-  Width = 397
+  Width = 506
   ActiveControl = TodoMemo
   Caption = 'Insert Todo'
-  ClientHeight = 290
-  ClientWidth = 397
+  ClientHeight = 291
+  ClientWidth = 506
   Constraints.MinHeight = 290
   Constraints.MinWidth = 360
   Position = poScreenCenter
@@ -36,7 +36,7 @@ object TodoDialog: TTodoDialog
     AnchorSideBottom.Control = PriorityEdit
     Left = 8
     Height = 18
-    Top = 95
+    Top = 96
     Width = 45
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 4
@@ -49,7 +49,7 @@ object TodoDialog: TTodoDialog
     AnchorSideBottom.Control = OwnerEdit
     Left = 74
     Height = 18
-    Top = 95
+    Top = 96
     Width = 43
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 4
@@ -57,12 +57,25 @@ object TodoDialog: TTodoDialog
     Caption = 'Owner'
     ParentColor = False
   end
+  object IssueLabel: TLabel
+    AnchorSideLeft.Control = IssueEdit
+    AnchorSideBottom.Control = IssueEdit
+    Left = 216
+    Height = 18
+    Top = 96
+    Width = 50
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Top = 4
+    BorderSpacing.Bottom = 2
+    Caption = 'Issue ID'
+    ParentColor = False
+  end
   object CategoryLabel: TLabel
     AnchorSideLeft.Control = CategoryEdit
     AnchorSideBottom.Control = CategoryEdit
-    Left = 235
+    Left = 320
     Height = 18
-    Top = 95
+    Top = 96
     Width = 56
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 4
@@ -78,40 +91,66 @@ object TodoDialog: TTodoDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = PriorityLabel
     Left = 8
-    Height = 67
+    Height = 68
     Top = 24
-    Width = 381
+    Width = 490
     Anchors = [akTop, akLeft, akRight, akBottom]
     ScrollBars = ssAutoBoth
     TabOrder = 0
+  end
+  object PriorityEdit: TSpinEdit
+    AnchorSideLeft.Control = grpboxToDoType
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = grpboxToDoType
+    Left = 8
+    Height = 32
+    Top = 116
+    Width = 58
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 8
+    TabOrder = 1
   end
   object OwnerEdit: TEdit
     AnchorSideLeft.Control = PriorityEdit
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Bevel2
     AnchorSideBottom.Control = grpboxToDoType
     Left = 74
     Height = 32
-    Top = 115
-    Width = 153
-    Anchors = [akLeft, akRight, akBottom]
+    Top = 116
+    Width = 134
+    Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 8
     BorderSpacing.Bottom = 8
     TabOrder = 2
   end
+  object IssueEdit: TEdit
+    AnchorSideLeft.Control = OwnerEdit
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = grpboxToDoType
+    Left = 216
+    Height = 32
+    Top = 116
+    Width = 96
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 8
+    BorderSpacing.Bottom = 8
+    TabOrder = 7
+  end
   object CategoryEdit: TEdit
-    AnchorSideLeft.Control = Bevel2
+    AnchorSideLeft.Control = IssueEdit
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = grpboxToDoType
-    Left = 235
+    Left = 320
     Height = 32
-    Top = 115
-    Width = 154
+    Top = 116
+    Width = 178
     Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Left = 8
     BorderSpacing.Right = 8
     BorderSpacing.Bottom = 8
     TabOrder = 3
@@ -120,8 +159,8 @@ object TodoDialog: TTodoDialog
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 29
-    Top = 255
-    Width = 385
+    Top = 256
+    Width = 494
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -134,30 +173,18 @@ object TodoDialog: TTodoDialog
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
   end
-  object PriorityEdit: TSpinEdit
-    AnchorSideLeft.Control = grpboxToDoType
-    AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = grpboxToDoType
-    Left = 8
-    Height = 32
-    Top = 115
-    Width = 58
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Bottom = 8
-    TabOrder = 1
-  end
   object grpboxToDoType: TGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 66
-    Top = 155
-    Width = 381
+    Top = 156
+    Width = 490
     Align = alBottom
     BorderSpacing.Left = 8
     BorderSpacing.Right = 8
     Caption = 'ToDo type'
-    ClientHeight = 36
-    ClientWidth = 377
+    ClientHeight = 37
+    ClientWidth = 486
     TabOrder = 4
     object rdoToDo: TRadioButton
       Left = 6
@@ -176,7 +203,7 @@ object TodoDialog: TTodoDialog
       Tag = 1
       AnchorSideLeft.Control = grpboxToDoType
       AnchorSideLeft.Side = asrCenter
-      Left = 162
+      Left = 288
       Height = 22
       Top = 0
       Width = 57
@@ -189,7 +216,7 @@ object TodoDialog: TTodoDialog
       Tag = 2
       AnchorSideRight.Control = grpboxToDoType
       AnchorSideRight.Side = asrBottom
-      Left = 317
+      Left = 426
       Height = 22
       Top = 0
       Width = 54
@@ -199,13 +226,26 @@ object TodoDialog: TTodoDialog
       TabOrder = 2
       OnChange = rdoToDoTypeChange
     end
+    object rdoFixme: TRadioButton
+      Tag = 1
+      AnchorSideLeft.Control = grpboxToDoType
+      AnchorSideLeft.Side = asrCenter
+      Left = 143
+      Height = 22
+      Top = 0
+      Width = 61
+      Anchors = [akTop]
+      Caption = 'FixMe'
+      TabOrder = 3
+      OnChange = rdoToDoTypeChange
+    end
   end
   object chkAlternateTokens: TCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 22
-    Top = 227
-    Width = 381
+    Top = 228
+    Width = 490
     Align = alBottom
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 8
@@ -214,27 +254,6 @@ object TodoDialog: TTodoDialog
     BorderSpacing.Bottom = 6
     Caption = 'UseAlternate Tokens'
     TabOrder = 5
-  end
-  object Bevel1: TBevel
-    AnchorSideLeft.Control = OwnerEdit
-    AnchorSideRight.Control = CategoryEdit
-    AnchorSideRight.Side = asrBottom
-    Left = 74
-    Height = 21
-    Top = 167
-    Width = 315
-    Anchors = [akLeft, akRight, akBottom]
-    Shape = bsSpacer
-  end
-  object Bevel2: TBevel
-    AnchorSideLeft.Control = Bevel1
-    AnchorSideLeft.Side = asrCenter
-    Left = 227
-    Height = 16
-    Top = 132
-    Width = 8
-    Anchors = [akLeft, akBottom]
-    Shape = bsSpacer
   end
   object XMLPropStorage: TXMLPropStorage
     StoredValues = <>

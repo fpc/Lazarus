@@ -44,6 +44,7 @@ resourcestring
   lisToDoLFile  = 'Module';
   lisToDoLLine  = 'Line';
   lisToDoLOwner = 'Owner';
+  lisToDoLIssue = 'Issue ID';
   listToDoLCategory = 'Category';
   lisEdit = 'Edit';
   lisToDoGoto = 'Goto';

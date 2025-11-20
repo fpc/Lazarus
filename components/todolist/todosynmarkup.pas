@@ -376,7 +376,7 @@ begin
           continue; // continue search for colon
         end;
         // Parameters Owner and Category
-        if (p^ = '-') and (p[1] in ['o', 'O', 'c', 'C']) then begin
+        if (p^ = '-') and (p[1] in ['o', 'O', 'c', 'C', '#']) then begin
           if p[2] = '''' then begin
             inc(p, 3);
             while (p^ <> '''') do begin

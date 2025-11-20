@@ -64,25 +64,31 @@ type
 
   TTodoItem = class(TObject)
   private
+    FPriority: integer;
+    FOwner: string;
+    FIssueID: string;
     FCategory: string;
     FTokenStyle: TTokenStyle;
     FToDoType: TToDoType;
-    FPriority: integer;
     FText: string;
     FHasColon: Boolean;
     FStartPos, FEndPos: TPoint; // Comment Column:Line in file.
-    FCommentType: char;         // Characters of comment start / end.
+    FCommentType: char;         // Character of comment start ['{','/','('].
     FFilename: string;
-    FOwner: string;
     function GetQuotedCategory: string;
     function GetQuotedOwner: string;
     function GetAsComment: string;
     function GetAsString: string;
     function QuotedStr(const aSrc: string; const aQuote: char): string;
+    procedure FindIssueIDFromText(const aKey: string);
     function Parse(const aTokenString: string; aRequireColon: Boolean): Boolean;
   public
+    property Priority: integer read FPriority write FPriority;
+    property Owner: string read FOwner write FOwner;
+    property IssueID: string read FIssueID write FIssueID;
     property Category: string read FCategory write FCategory;
     property QuotedCategory: string read GetQuotedCategory;
+    property QuotedOwner: string read GetQuotedOwner;
     property TokenStyle: TTokenStyle read FTokenStyle write FTokenStyle;
     property ToDoType: TToDoType read FToDoType write FToDoType;
     property HasColon: Boolean read FHasColon write FHasColon;
@@ -90,9 +96,6 @@ type
     property EndPos: TPoint read FEndPos write FEndPos;
     property CommentType: char read FCommentType write FCommentType;
     property Filename: string read FFilename write FFilename;
-    property Owner: string read FOwner write FOwner;
-    property QuotedOwner: string read GetQuotedOwner;
-    property Priority: integer read FPriority write FPriority;
     property Text: string read FText write FText;
     property AsString: string read GetAsString;
     property AsComment: string read GetAsComment;
@@ -165,8 +168,12 @@ begin
         lToDoItem:=TTodoItem(aListItems[i].Data);
         s:=LIST_INDICATORS[lToDoItem.ToDoType] + ',';
         t:=DelChars(lToDoItem.Text,',');{Strip any commas that can cause a faulty csv file}
-        s:=s+t+','+IntToStr(lToDoItem.Priority)+','+lToDoItem.Filename+
-           ','+IntToStr(lToDoItem.StartPos.Y)+','+lToDoItem.Owner+','+lToDoItem.Category;
+        s:=s+t+','+IntToStr(lToDoItem.Priority)+
+               ','+lToDoItem.Filename+
+               ','+IntToStr(lToDoItem.StartPos.Y)+
+               ','+lToDoItem.Owner+
+               ','+lToDoItem.IssueID+
+               ','+lToDoItem.Category;
         lCommaList.Add(s);
         Inc(i);
       end;
@@ -469,6 +476,9 @@ begin
   // Owner
   if Owner <> '' then
     Result := Result + ' -o'+QuotedOwner;
+  // Issue ID
+  if IssueID <> '' then
+    Result := Result + ' -#'+IssueID;
   // Category
   if Category <> '' then
     Result := Result + ' -c'+QuotedCategory;
@@ -506,10 +516,33 @@ begin
   end;
 end;
 
+procedure TTodoItem.FindIssueIDFromText(const aKey: string);
+// Dig out Issue IDs embedded in the Text. aKey is typically 'issue' or 'bug'.
+// Syntax "aKey #12345" and "aKey 12345" are supported.
+var
+  I, EndI, Len: Integer;
+begin
+  if (Text = '') or (IssueID <> '') then exit;
+  I := PosI(aKey, Text);
+  if (I > 0) and (I < Length(Text)-1) and (Text[I+Length(aKey)] in [' ','=']) then
+  begin
+    Inc(I, Length(aKey)+1);
+    if Text[I] = '#' then
+      Inc(I);
+    EndI := I;
+    while (EndI <= Length(Text)) and (Text[EndI] in ['0'..'9']) do
+      Inc(EndI);
+    Len := EndI-I;
+    if (Len > 0) and ((EndI > Length(Text)) or (Text[EndI] in [#9,' '])) then
+      IssueID := Copy(Text, I, Len);
+  end;
+end;
+
 type
   TParseState =
     (psHunting, psGotDash, psPriority, psText, psAllDone,
      psOwnerStart, psOwnerContinue, { NOTE: Continue state must follow Start state }
+     psIssueStart, psIssueContinue,
      psCategoryStart, psCategoryContinue
     );
 
@@ -561,13 +594,18 @@ begin
         end;
 
       psGotDash:
-        case LowerCase(aTokenString[i]) of
-          'o':
+        case aTokenString[i] of
+          'o','O':
             begin
               lParseState:=psOwnerStart;
               Inc(i);
             end;
-          'c':
+          '#':
+            begin
+              lParseState:=psIssueStart;
+              Inc(i);
+            end;
+          'c','C':
             begin
               lParseState:=psCategoryStart;
               Inc(i);
@@ -589,7 +627,7 @@ begin
           lParseState := psHunting;
         end;
 
-      psOwnerStart, psCategoryStart:
+      psOwnerStart, psIssueStart, psCategoryStart:
         case aTokenString[i] of
           '''':// Got a quote so extract
             begin
@@ -598,6 +636,8 @@ begin
               lStr := AnsiExtractQuotedStr(lpTemp, '''');
               if lParseState = psOwnerStart then
                 Owner := lStr
+              else if lParseState = psIssueStart then
+                IssueID := lStr
               else
                 Category := lStr;
               i := i + Length(lTempStr) - Length(lpTemp);
@@ -607,17 +647,19 @@ begin
             begin
               lTempStr := aTokenString[i];
               Inc(i);
-              Assert(Succ(psOwnerStart) = psOwnerContinue, 'Succ(psOwnerStart) is not psOwnerContinue.');
-              Assert(Succ(psCategoryStart) = psCategoryContinue, 'Succ(psCategoryStart) is not psCategoryContinue.');
+              //Assert(Succ(psOwnerStart) = psOwnerContinue, 'Succ(psOwnerStart) is not psOwnerContinue.');
+              //Assert(Succ(psCategoryStart) = psCategoryContinue, 'Succ(psCategoryStart) is not psCategoryContinue.');
               inc(lParseState); // Assumes Continue is succ to Start
             end;
         end;
 
-      psOwnerContinue,psCategoryContinue:
+      psOwnerContinue, psIssueContinue, psCategoryContinue:
         if aTokenString[i] in [#9,' ',':'] then
         begin
           if lParseState = psOwnerContinue then
             Owner := lTempStr
+          else if lParseState = psIssueContinue then
+            IssueID := lTempStr
           else
             Category := lTempStr;
           lParseState:=psHunting;
@@ -629,8 +671,11 @@ begin
 
       psAllDone:
         break;
-
     end;
+
+  // Issue IDs may be embedded in Text.
+  FindIssueIDFromText('issue');
+  FindIssueIDFromText('bug');
   Result := True;
 end;
 

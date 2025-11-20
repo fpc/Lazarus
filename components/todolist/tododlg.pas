@@ -51,18 +51,19 @@ type
   { TTodoDialog }
 
   TTodoDialog = class(TForm)
-    Bevel1: TBevel;
-    Bevel2: TBevel;
     BtnPanel: TButtonPanel;
     chkAlternateTokens: TCheckBox;
     grpboxToDoType: TGroupBox;
     OwnerEdit: TEdit;
     CategoryEdit: TEdit;
     CategoryLabel: TLabel;
+    IssueEdit: TEdit;
+    IssueLabel: TLabel;
     PriorityEdit: TSpinEdit;
     PriorityLabel: TLabel;
     OwnerLabel: TLabel;
     rdoToDo: TRadioButton;
+    rdoFixme: TRadioButton;
     rdoDone: TRadioButton;
     rdoNote: TRadioButton;
     TodoLabel: TLabel;
@@ -189,17 +190,19 @@ begin
   aTodoDialog := TTodoDialog.Create(nil);
   aTodoDialog.Caption:=aCaption;
   if Assigned(aTodoItem) then begin
+    aTodoDialog.TodoMemo.Text      := aTodoItem.Text;
+    aTodoDialog.PriorityEdit.Value := aTodoItem.Priority;
+    aTodoDialog.OwnerEdit.Text     := aTodoItem.Owner;
+    aTodoDialog.IssueEdit.Text     := aTodoItem.IssueID;
     aTodoDialog.CategoryEdit.Text  := aTodoItem.Category;
     aTodoDialog.grpboxToDoType.Tag := PtrInt(aTodoItem.ToDoType);
     case aTodoItem.ToDoType of
-      tdToDo: aTodoDialog.rdoToDo.Checked := True;
-      tdDone: aTodoDialog.rdoDone.Checked := True;
-      tdNote: aTodoDialog.rdoNote.Checked := True;
+      tdToDo:  aTodoDialog.rdoToDo.Checked := True;
+      tdFixMe: aTodoDialog.rdoFixme.Checked:= True;
+      tdDone:  aTodoDialog.rdoDone.Checked := True;
+      tdNote:  aTodoDialog.rdoNote.Checked := True;
     end;
     aTodoDialog.chkAlternateTokens.Checked := aTodoItem.TokenStyle=tsAlternate;
-    aTodoDialog.OwnerEdit.Text     := aTodoItem.Owner;
-    aTodoDialog.TodoMemo.Text      := aTodoItem.Text;
-    aTodoDialog.PriorityEdit.Value := aTodoItem.Priority;
   end;
   aTodoDialog.ShowModal;
   Result := aTodoDialog.ModalResult;
@@ -210,15 +213,16 @@ begin
       aTodoItem.CommentType := '{';
       aTodoItem.HasColon := True;
     end;
+    aTodoItem.Text        := aTodoDialog.TodoMemo.Text;
+    aTodoItem.Priority    := aTodoDialog.PriorityEdit.Value;
+    aTodoItem.Owner       := aTodoDialog.OwnerEdit.Text;
+    aTodoItem.IssueID     := aTodoDialog.IssueEdit.Text;
     aTodoItem.Category    := aTodoDialog.CategoryEdit.Text;
     aTodoItem.ToDoType    := TToDoType(aTodoDialog.grpboxToDoType.Tag);
     if aTodoDialog.chkAlternateTokens.Checked then
       aTodoItem.TokenStyle:=tsAlternate
     else
       aTodoItem.TokenStyle:=tsNormal;
-    aTodoItem.Owner       := aTodoDialog.OwnerEdit.Text;
-    aTodoItem.Text        := aTodoDialog.TodoMemo.Text;
-    aTodoItem.Priority    := aTodoDialog.PriorityEdit.Value;
   end;
   aTodoDialog.Free;
 end;
@@ -270,12 +274,14 @@ begin
   TodoLabel.Caption:=lisPkgFileTypeText;
   PriorityLabel.Caption:=lisToDoLPriority;
   OwnerLabel.Caption:=lisToDoLOwner;
+  IssueLabel.Caption:=lisToDoLIssue;
   CategoryLabel.Caption:=listToDoLCategory;
   grpboxToDoType.Caption:=lisToDoToDoType;
   grpboxToDoType.Tag:=Ord(tdToDo);
-  rdoToDo.Tag:=Ord(tdToDo);
-  rdoDone.Tag:=Ord(tdDone);
-  rdoNote.Tag:=Ord(tdNote);
+  rdoToDo.Tag :=Ord(tdToDo);
+  rdoFixme.Tag:=Ord(tdFixMe);
+  rdoDone.Tag :=Ord(tdDone);
+  rdoNote.Tag :=Ord(tdNote);
   chkAlternateTokens.Caption:=lisAlternateTokens;
   chkAlternateTokens.Hint:=lisAlternateTokensHint;
   XMLPropStorage.FileName:=Concat(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath),
