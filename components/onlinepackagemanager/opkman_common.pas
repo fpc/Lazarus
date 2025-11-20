@@ -115,11 +115,11 @@ const
 
   MaxLazVersions = 11;
   LazVersions: array [0..MaxLazVersions - 1] of String = (
-    '2.0.x', '2.2.0', '2.2.4',                                       // order from old to young
+    '2.0.x', '2.2.x',                               // order from old to young
     '3.0.0', '3.2.0', '3.4.0', '3.6.0', '3.8.0',
-    '4.0.0', '4.2.0',
+    '4.0.0', '4.2.0', '4.4.0',
     'Trunk');
-  LazDefVersions = '4.2.0, 4.0.0, 3.8.0, 3.6.0, 3.4.0, 3.2.0, 3.0.0';
+  LazDefVersions = '4.4.0, 4.2.0, 4.0.0, 3.8.0, 3.6.0, 3.4.0, 3.2.0, 3.0.0';
   LazTrunk = '4.99.0';
 
   MaxFPCVersions = 7;
