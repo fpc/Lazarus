@@ -4662,7 +4662,7 @@ end;
 
 function TPascalParserTool.KeyWordFuncSpecialize: boolean;
 begin
-  ReadSpecialize(true);
+  ReadTypeReference(True);
   Result:=true;
 end;
 
