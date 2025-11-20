@@ -15657,7 +15657,12 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
     if (NewNode.FirstChild = nil)
     or (NewNode.FirstChild.Desc <> ctnGenericConstraint) then exit;
 
-    Identifier:=@NewCodeTool.Src[NewNode.FirstChild.StartPos];
+    NewCodeTool.MoveCursorToCleanPos(NewNode.FirstChild.StartPos);
+    NewCodeTool.ReadNextAtom;
+    if NewCodeTool.UpAtomIs('CLASS') then
+      Identifier := PChar('TOBJECT')
+    else
+      Identifier:=@NewCodeTool.Src[NewNode.FirstChild.StartPos];
     Result := DoFindIdentifierInContext(NewCodeTool);
   end;
 var
