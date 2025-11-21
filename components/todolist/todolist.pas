@@ -267,7 +267,8 @@ begin
     Column[3].Caption := lisToDoLFile;
     Column[4].Caption := lisToDoLLine;
     Column[5].Caption := lisToDoLOwner;
-    Column[6].Caption := listToDoLCategory;
+    Column[6].Caption := lisToDoLIssue;
+    Column[7].Caption := listToDoLCategory;
   end;
 
   XMLPropStorage.FileName := Concat(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath),
@@ -370,7 +371,7 @@ var
   Int2: Integer;
 begin
   Case lvTodo.SortColumn of
-    0, 1, 3, 5, 6 :
+    0, 1, 3, 5, 6, 7 :
       begin
         if lvTodo.SortColumn = 0 then
         begin
@@ -581,7 +582,7 @@ end;
 procedure TIDETodoWindow.AddListItem(aTodoItem: TTodoItem);
 
   function ShowThisToDoItem: boolean;
-  // Add this ToDoItem based on the cboShowWhat selection
+  // Add this ToDoItem based on the "Show Types" selection
   begin
     case aTodoItem.ToDoType of
       tdToDo:  Result := ToDoMenuItem.Checked;
@@ -610,6 +611,7 @@ begin
     aListitem.SubItems.Add(aFilename);
     aListitem.SubItems.Add(IntToStr(aTodoItem.StartPos.Y));
     aListitem.SubItems.Add(aTodoItem.Owner);
+    aListitem.SubItems.Add(aTodoItem.IssueID);
     aListitem.SubItems.Add(aTodoItem.Category);
   end;
 end;

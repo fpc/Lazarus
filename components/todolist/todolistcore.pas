@@ -57,7 +57,7 @@ type
   TTokenStyle = (tsNormal, tsAlternate); // Normal is with hash '#'.
 
 const
-  LIST_INDICATORS : array [TToDoType] of string = ('ToDo', 'FixMe', 'Done', 'Note');
+  LIST_INDICATORS : array [TToDoType] of string = (lisToDo, lisFixMe, lisDone, lisNote);
 
 type
   { TTodoItem: Class to hold TODO item information }

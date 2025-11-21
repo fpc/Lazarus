@@ -24,36 +24,41 @@ object IDETodoWindow: TIDETodoWindow
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    Columns = <    
+    Columns = <
       item
         AutoSize = True
         Caption = 'Type'
         Width = 100
-      end    
+      end
       item
         Caption = 'Description'
-        Width = 400
-      end    
+        Width = 300
+      end
       item
         AutoSize = True
         Caption = 'Priority'
         Width = 100
-      end    
+      end
       item
         AutoSize = True
         Caption = 'Module'
         Width = 100
-      end    
+      end
       item
         AutoSize = True
         Caption = 'Line'
         Width = 100
-      end    
+      end
       item
         AutoSize = True
         Caption = 'Owner'
         Width = 100
-      end    
+      end
+      item
+        AutoSize = True
+        Caption = 'Issue ID'
+        Width = 100
+      end
       item
         AutoSize = True
         Caption = 'Category'
