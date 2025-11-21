@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="569">
+    <Files Count="570">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2804,6 +2804,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TestMockMessages"/>
       </Item569>
+      <Item570>
+        <Filename Value="cocoa/cocoawsdragimage.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSDragImage"/>
+      </Item570>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

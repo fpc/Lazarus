@@ -19,7 +19,8 @@ uses
   CocoaWSSpin,
   CocoaWSCheckLst,
   CocoaWSDatePicker,
-  CocoaWSListView;
+  CocoaWSListView,
+  CocoaWSDragImage;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
@@ -127,7 +128,8 @@ end;
 // controls
 function RegisterDragImageListResolution: Boolean; alias : 'WSRegisterDragImageListResolution';
 begin
-  Result := False;
+  RegisterWSComponent(TDragImageListResolution, TCocoaWSDragImageListResolution);
+  Result := True;
 end;
 
 function RegisterLazAccessibleObject: Boolean; alias : 'WSRegisterLazAccessibleObject';
