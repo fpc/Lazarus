@@ -41,6 +41,9 @@ uses
   SysUtils,
   LazConf;
 
+var
+  ShowSplashScreen: boolean = true;
+
 type
 
   { TSplashForm }

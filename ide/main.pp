@@ -1011,9 +1011,6 @@ type
 const
   CodeToolsIncludeLinkFile = 'includelinks.xml';
 
-var
-  ShowSplashScreen: boolean = true;
-
 implementation
 
 
