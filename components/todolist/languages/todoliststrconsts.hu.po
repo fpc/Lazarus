@@ -155,6 +155,10 @@ msgstr "Leírás"
 msgid "Module"
 msgstr "Modul"
 
+#: todoliststrconsts.listodolissue
+msgid "Issue ID"
+msgstr ""
+
 #: todoliststrconsts.listodolist
 msgid "ToDo List"
 msgstr "ToDo lista"

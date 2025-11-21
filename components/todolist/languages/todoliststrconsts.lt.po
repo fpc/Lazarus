@@ -156,6 +156,10 @@ msgstr "Aprašymas"
 msgid "Module"
 msgstr "Modulis"
 
+#: todoliststrconsts.listodolissue
+msgid "Issue ID"
+msgstr ""
+
 #: todoliststrconsts.listodolist
 msgid "ToDo List"
 msgstr "ToDo sąrašas"

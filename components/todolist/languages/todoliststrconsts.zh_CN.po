@@ -160,6 +160,10 @@ msgstr "描述"
 msgid "Module"
 msgstr "模块"
 
+#: todoliststrconsts.listodolissue
+msgid "Issue ID"
+msgstr ""
+
 #: todoliststrconsts.listodolist
 msgid "ToDo List"
 msgstr "待办事项列表(&T)"
