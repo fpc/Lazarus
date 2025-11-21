@@ -9,7 +9,7 @@ uses
   Classes, SysUtils,
   LCLType, Controls, Graphics, WSControls,
   MacOSAll, CocoaAll,
-  CocoaWindows, CocoaGDIObjects;
+  CocoaGDIObjects, CocoaUtils;
 
 type
 
@@ -22,22 +22,19 @@ type
   public
     function acceptsFirstResponder: ObjCBOOL; override;
     function canBecomeKeyWindow: ObjCBOOL; override;
-    procedure setImage(aImage: NSImage); message 'lclSetImage:';
+    procedure setImage(image: NSImage); message 'lclSetImage:';
   end;
 
   { TCocoaWSDragImageListResolution }
 
   TCocoaWSDragImageListResolution = class(TWSDragImageListResolution)
   private
-    class var _dragImageList: TCocoaDragImage;
+    class var _dragImage: TCocoaDragImage;
     class var _dragHotSpot: TPoint;
     class var _dragImageLock: Boolean;
   private
-    class function DragImageList_BeginDrag(AImage: NSImage; AHotSpot: TPoint): Boolean;
-    class procedure DragImageList_EndDrag;
-    class function DragImageList_DragMove(X, Y: Integer): Boolean;
-    class function DragImageList_SetVisible(NewVisible: Boolean): Boolean;
-    class property DragImageLock: Boolean read _dragImageLock write _dragImageLock;
+    class function doDragMove(X, Y: Integer): Boolean;
+    class function doSetVisible(NewVisible: Boolean): Boolean;
   published
     class function BeginDrag(const ADragImageList: TDragImageListResolution; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
     class function DragMove(const ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean; override;
@@ -50,126 +47,105 @@ type
 
 implementation
 
-class function TCocoaWSDragImageListResolution.DragImageList_BeginDrag(AImage: NSImage;
-  AHotSpot: TPoint): Boolean;
+class function TCocoaWSDragImageListResolution.doDragMove(X, Y: Integer): Boolean;
 var
-  nsr: NSRect;
+  localPoint: NSPoint;
 begin
-  if _dragImageList = nil then
-  begin
-    nsr := NSMakeRect(0, 0, AImage.size.width, AImage.size.height);
-    _dragImageList := TCocoaDragImage.alloc.initWithContentRect_styleMask_backing_defer(
-                   nsr, 0, NSBackingStoreBuffered, False);
-    _dragImageList.setImage( AImage );
-    _dragHotSpot := AHotSpot;
-    _dragImageList.setAlphaValue(0.8);
-    _dragImageList.setIgnoresMouseEvents(True);
-    _dragImageList.setAcceptsMouseMovedEvents(False);
-  end;
-  Result := _dragImageList <> nil;
-end;
-
-class procedure TCocoaWSDragImageListResolution.DragImageList_EndDrag;
-begin
-  if _dragImageList <> nil then
-  begin
-    _dragImageList.release;
-    _dragImageList := nil;
+  Result:= Assigned( _dragImage );
+  if Result then begin
+    Dec( X, _dragHotSpot.X );
+    Dec( Y, _dragHotSpot.Y );
+    localPoint:= ScreenPointFromLCLToNS( TPoint.Create(X,Y) );
+    localPoint.y:= localPoint.y - _dragImage.frame.size.height;
+    _dragImage.setFrameOrigin( localPoint );
+    _dragImage.orderFront( nil );
   end;
 end;
 
-class function TCocoaWSDragImageListResolution.DragImageList_DragMove(X, Y: Integer): Boolean;
-var
-  f: NSRect;
+class function TCocoaWSDragImageListResolution.doSetVisible(NewVisible: Boolean): Boolean;
 begin
-  Result := Assigned(_dragImageList);
-  if Result then
-  begin
-    _dragImageList.orderFront(nil);
-    Dec(X, _dragHotSpot.X);
-    Dec(Y, _dragHotSpot.Y);
-    if Assigned(_dragImageList.screen) then
-    begin
-      f := _dragImageList.frame;
-      //dec(X, Round(f.origin.x));
-      Y := Round(_dragImageList.screen.frame.size.height - f.size.height) - Y;
-      _dragImageList.setFrameOrigin(NSMakePoint(X, Y));
-    end
-    else
-    begin
-      {dummy}
-    end;
-  end;
-end;
-
-class function TCocoaWSDragImageListResolution.DragImageList_SetVisible(NewVisible: Boolean): Boolean;
-begin
-  Result := Assigned(_dragImageList);
-  begin
+  Result:= Assigned( _dragImage );
+  if Result then begin
     if NewVisible then
-       _dragImageList.orderFrontRegardless
+      _dragImage.orderFrontRegardless
     else
-      _dragImageList.orderOut(nil);
+      _dragImage.orderOut( nil );
   end;
 end;
 
 class function TCocoaWSDragImageListResolution.BeginDrag(
   const ADragImageList: TDragImageListResolution; Window: HWND; AIndex, X,
   Y: Integer): Boolean;
+
+  function createDragImage(AImage: NSImage; AHotSpot: TPoint): Boolean;
+  var
+    nsr: NSRect;
+  begin
+    if _dragImage = nil then begin
+      nsr:= NSMakeRect(0, 0, AImage.size.width, AImage.size.height);
+      _dragImage:= TCocoaDragImage.alloc.initWithContentRect_styleMask_backing_defer(
+                     nsr, 0, NSBackingStoreBuffered, False);
+      _dragImage.setImage( AImage );
+      _dragHotSpot:= AHotSpot;
+      _dragImage.setAlphaValue( 0.8 );
+      _dragImage.setIgnoresMouseEvents( True );
+      _dragImage.setAcceptsMouseMovedEvents( False );
+    end;
+    Result:= _dragImage <> nil;
+  end;
+
 var
-  ABitmap: TBitmap;
-  cb: TCocoaBitmap;
-  img: NSImage;
+  lclBitmap: TBitmap;
+  cocoaBitmap: TCocoaBitmap;
+  cocoaImage: NSImage;
 begin
-  ABitmap := TBitmap.Create;
-  img := nil;
+  lclBitmap := TBitmap.Create;
+  cocoaImage := nil;
   try
-    ADragImageList.GetBitmap(AIndex, ABitmap);
-    if (ABitmap.Handle = 0) or (ABitmap.Width = 0) or (ABitmap.Height = 0) then
+    ADragImageList.GetBitmap(AIndex, lclBitmap);
+    if (lclBitmap.Handle = 0) or (lclBitmap.Width = 0) or (lclBitmap.Height = 0) then
     begin
-      Result := False;
+      Result:= False;
       Exit;
     end;
 
     // Bitmap Handle should be nothing but TCocoaBitmap
-    cb := TCocoaBitmap(ABitmap.Handle);
-    img := cb.Image.copy;
+    cocoaBitmap:= TCocoaBitmap(lclBitmap.Handle);
+    cocoaImage:= cocoaBitmap.Image.copy;
 
-    Result := self.DragImageList_BeginDrag(
-      img, ADragImageList.DragHotspot);
+    Result:= createDragImage( cocoaImage, ADragImageList.DragHotspot );
     if Result then
-      self.DragImageList_DragMove(X, Y);
+      self.doDragMove( X, Y );
   finally
-    img.release;
-    ABitmap.Free;
+    cocoaImage.release;
+    lclBitmap.Free;
   end;
 end;
 
 class function TCocoaWSDragImageListResolution.DragMove(
   const ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean;
 begin
-  Result := self.DragImageList_DragMove(X, Y);
-  if not Result then
-  begin
-    writeln('noresult');
-  end;
+  Result:= self.doDragMove(X, Y);
 end;
 
 class procedure TCocoaWSDragImageListResolution.EndDrag(
   const ADragImageList: TDragImageListResolution);
 begin
-  self.DragImageList_EndDrag;
+  if _dragImage <> nil then begin
+    _dragImage.release;
+    _dragImage:= nil;
+  end;
 end;
 
 class function TCocoaWSDragImageListResolution.HideDragImage(
   const ADragImageList: TDragImageListResolution; ALockedWindow: HWND;
   DoUnLock: Boolean): Boolean;
 begin
-  Result := True;
+  Result:= True;
   if DoUnlock then
   begin
-    self.DragImageLock := False;
-    Result := self.DragImageList_SetVisible(False);
+    _dragImageLock:= False;
+    Result:= self.doSetVisible(False);
   end;
 end;
 
@@ -177,16 +153,15 @@ class function TCocoaWSDragImageListResolution.ShowDragImage(
   const ADragImageList: TDragImageListResolution; ALockedWindow: HWND; X,
   Y: Integer; DoLock: Boolean): Boolean;
 begin
-  Result := self.DragImageLock;
+  Result:= _dragImageLock;
   if not DoLock then
   begin
     if not Result then
-      Result := self.DragImageList_SetVisible(True);
+      Result:= self.doSetVisible(True);
   end else
   begin
-    self.DragImageLock := True;
-    Result := self.DragImageList_DragMove(X, Y) and
-      self.DragImageList_SetVisible(True);
+    _dragImageLock:= True;
+    Result:= self.doDragMove(X, Y) and self.doSetVisible(True);
   end;
 end;
 
@@ -194,25 +169,29 @@ end;
 
 function TCocoaDragImage.windowShouldClose(sender: id): LongBool;
 begin
-  Result := True;
+  Result:= True;
 end;
 
 function TCocoaDragImage.acceptsFirstResponder: ObjCBOOL;
 begin
-  Result:=False
+  Result:= False;
 end;
 
 function TCocoaDragImage.canBecomeKeyWindow: ObjCBOOL;
 begin
-  Result:=False
+  Result:= False;
 end;
 
-procedure TCocoaDragImage.setImage(aImage: NSImage);
+procedure TCocoaDragImage.setImage(image: NSImage);
 begin
-  _imageView := NSImageView.alloc.initWithFrame(NSMakeRect(0,0,aImage.size.width, aImage.size.height));
-  _imageView.setImage(aImage);
-  setContentView(_imageView);
-  setContentSize(aImage.size);
+  if _imageView = nil then begin
+    _imageView:= NSImageView.new;
+    self.setContentView( _imageView );
+    _imageView.release;
+  end;
+  _imageView.setImage( image );
+  _imageView.setFrame( NSMakeRect(0,0,image.size.width, image.size.height) );
+  self.setContentSize( image.size );
 end;
 
 end.
