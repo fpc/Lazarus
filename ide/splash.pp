@@ -59,8 +59,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    procedure Show;
   end;
 
 var
@@ -106,11 +104,6 @@ begin
   inherited Destroy;
 
   SplashForm := nil;
-end;
-
-procedure TSplashForm.Show;
-begin
-
 end;
 
 procedure TSplashForm.ApplicationOnIdle(Sender: TObject; var Done: boolean);
