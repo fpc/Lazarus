@@ -846,6 +846,7 @@ type
       Params: TFindDeclarationParams; SearchRangeFlags: TNodeCacheEntryFlags);
   protected
     // expressions, operands, variables
+    function IsNodeSingleAtom(Node: TCodeTreeNode): boolean;
     function GetCurrentAtomType: TVariableAtomType;
     function FindEndOfTerm(StartPos: integer;
       ExceptionIfNoVariableStart, WithAsOperator: boolean): integer; // read one operand
@@ -14126,6 +14127,13 @@ begin
   {$ENDIF}
 end;
 
+function TFindDeclarationTool.IsNodeSingleAtom(Node: TCodeTreeNode): boolean;
+begin
+  MoveCursorToCleanPos(Node.StartPos);
+  ReadNextAtom;
+  Result := CurPos.EndPos = Node.EndPos;
+end;
+
 function TFindDeclarationTool.CreateNewNodeCache(
   Node: TCodeTreeNode): TCodeTreeNodeCache;
 begin
@@ -15623,18 +15631,27 @@ end;
 
 function TFindDeclarationParams.FindGenericParamType: Boolean;
 
-  function DoFindIdentifierInContext(Tool: TFindDeclarationTool): boolean;
+  function DoFindIdentifierInContext(Tool: TFindDeclarationTool; IdentNode: TCodeTreeNode): boolean;
   var
     SubParams: TFindDeclarationParams;
+    r: TExpressionType;
   begin
     SubParams:=TFindDeclarationParams.Create(Self);
     try
       SubParams.GenParams:=GenParams;
       SubParams.ContextNode:=ContextNode;
       SubParams.Flags:=Flags;
-      SubParams.SetIdentifier(IdentifierTool, Identifier, nil);
 
-      Result:=Tool.FindIdentifierInContext(SubParams);
+      if (IdentNode <> nil) and not Tool.IsNodeSingleAtom(IdentNode) then begin
+        r := Tool.FindExpressionTypeOfTerm(IdentNode.StartPos, IdentNode.EndPos, SubParams, False);
+        if r.Desc <> xtContext then
+          Tool.RaiseExceptionFmt(20251121120000,'type',[]);
+        Result := r.Desc <> xtNone;
+      end
+      else begin
+        SubParams.SetIdentifier(IdentifierTool, Identifier, nil);
+        Result:=Tool.FindIdentifierInContext(SubParams);
+      end;
 
       if Result then begin
         NewNode:=SubParams.NewNode;
@@ -15663,7 +15680,7 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
       Identifier := PChar('TOBJECT')
     else
       Identifier:=@NewCodeTool.Src[NewNode.FirstChild.StartPos];
-    Result := DoFindIdentifierInContext(NewCodeTool);
+    Result := DoFindIdentifierInContext(NewCodeTool, NewNode.FirstChild);
   end;
 var
   i, n: integer;
@@ -15749,18 +15766,19 @@ begin
       Include(Flags, fdfDoNotCache);
       Include(NewFlags, fodDoNotCache);
     end
-    else
-      Result:=DoFindIdentifierInContext(ContextTool);
-
-    if not Result then begin
+    else begin
       GenParamType := ContextNode.FirstChild;
       for i := 2 to n do if GenParamType <> nil then GenParamType := GenParamType.NextBrother;
-      if GenParamType <> nil then begin
-        NewNode:=GenParamType;
-        NewCodeTool:=ContextTool;
-        Include(Flags, fdfDoNotCache);
-        Include(NewFlags, fodDoNotCache);
-        Result := True;
+      Result:=DoFindIdentifierInContext(ContextTool, GenParamType);
+
+      if not Result then begin
+        if GenParamType <> nil then begin
+          NewNode:=GenParamType;
+          NewCodeTool:=ContextTool;
+          Include(Flags, fdfDoNotCache);
+          Include(NewFlags, fodDoNotCache);
+          Result := True;
+        end;
       end;
     end;
 
