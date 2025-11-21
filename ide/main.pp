@@ -1012,7 +1012,7 @@ const
   CodeToolsIncludeLinkFile = 'includelinks.xml';
 
 var
-  ShowSplashScreen: boolean = false;
+  ShowSplashScreen: boolean = true;
 
 implementation
 
@@ -14313,7 +14313,6 @@ end;
 
 initialization
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('main.pp: initialization');{$ENDIF}
-  ShowSplashScreen:=true;
   DebugLogger.ParamForEnabledLogGroups := '--debug-enable=';
   EnvironmentOpts.GroupEnvironmentI18NCaption := @dlgGroupEnvironment;
 
