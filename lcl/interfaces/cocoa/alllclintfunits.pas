@@ -24,7 +24,6 @@ uses
   cocoawsmenus{%H-},
   cocoawsspin{%H-},
   cocoawsstdctrls{%H-},
-  cocoadragimg{%H-},
   interfaces{%H-};
 implementation
 end.

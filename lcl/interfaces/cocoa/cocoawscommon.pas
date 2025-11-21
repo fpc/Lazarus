@@ -175,19 +175,6 @@ type
       const ABorderStyle: TBorderStyle); override;
   end;
 
-  { TCocoaWSDragImageListResolution }
-
-  TCocoaWSDragImageListResolution = class(TWSDragImageListResolution)
-  published
-    class function BeginDrag(const ADragImageList: TDragImageListResolution; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
-    class function DragMove(const ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean; override;
-    class procedure EndDrag(const ADragImageList: TDragImageListResolution); override;
-    class function HideDragImage(const ADragImageList: TDragImageListResolution;
-      ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
-    class function ShowDragImage(const ADragImageList: TDragImageListResolution;
-      ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
-  end;
-
 procedure UpdateControlFocusRing( cocoaControl: NSView; lclControl: TWinControl );
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
@@ -302,83 +289,6 @@ begin
   AScroll.setHasVerticalScroller(VerticalScrollerVisible[AStyles]);
   AScroll.setHasHorizontalScroller(HorizontalScrollerVisible[AStyles]);
   AScroll.setAutohidesScrollers(ScrollerAutoHide[AStyles]);
-end;
-
-class function TCocoaWSDragImageListResolution.BeginDrag(
-  const ADragImageList: TDragImageListResolution; Window: HWND; AIndex, X,
-  Y: Integer): Boolean;
-var
-  ABitmap: TBitmap;
-  cb: TCocoaBitmap;
-  img: NSImage;
-begin
-  ABitmap := TBitmap.Create;
-  img := nil;
-  try
-    ADragImageList.GetBitmap(AIndex, ABitmap);
-    if (ABitmap.Handle = 0) or (ABitmap.Width = 0) or (ABitmap.Height = 0) then
-    begin
-      Result := False;
-      Exit;
-    end;
-
-    // Bitmap Handle should be nothing but TCocoaBitmap
-    cb := TCocoaBitmap(ABitmap.Handle);
-    img := cb.Image.copy;
-
-    Result := CocoaWidgetset.DragImageList_BeginDrag(
-      img, ADragImageList.DragHotspot);
-    if Result then
-      CocoaWidgetSet.DragImageList_DragMove(X, Y);
-  finally
-    img.release;
-    ABitmap.Free;
-  end;
-end;
-
-class function TCocoaWSDragImageListResolution.DragMove(
-  const ADragImageList: TDragImageListResolution; X, Y: Integer): Boolean;
-begin
-  Result := CocoaWidgetSet.DragImageList_DragMove(X, Y);
-  if not Result then
-  begin
-    writeln('noresult');
-  end;
-end;
-
-class procedure TCocoaWSDragImageListResolution.EndDrag(
-  const ADragImageList: TDragImageListResolution);
-begin
-  CocoaWidgetSet.DragImageList_EndDrag;
-end;
-
-class function TCocoaWSDragImageListResolution.HideDragImage(
-  const ADragImageList: TDragImageListResolution; ALockedWindow: HWND;
-  DoUnLock: Boolean): Boolean;
-begin
-  Result := True;
-  if DoUnlock then
-  begin
-    CocoaWidgetSet.DragImageLock := False;
-    Result := CocoaWidgetSet.DragImageList_SetVisible(False);
-  end;
-end;
-
-class function TCocoaWSDragImageListResolution.ShowDragImage(
-  const ADragImageList: TDragImageListResolution; ALockedWindow: HWND; X,
-  Y: Integer; DoLock: Boolean): Boolean;
-begin
-  Result := CocoaWidgetSet.DragImageLock;
-  if not DoLock then
-  begin
-    if not Result then
-      Result := CocoaWidgetSet.DragImageList_SetVisible(True);
-  end else
-  begin
-    CocoaWidgetSet.DragImageLock := True;
-    Result := CocoaWidgetSet.DragImageList_DragMove(X, Y) and
-      CocoaWidgetSet.DragImageList_SetVisible(True);
-  end;
 end;
 
 { TLCLCommonCallback }
