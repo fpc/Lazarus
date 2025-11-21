@@ -578,6 +578,7 @@ type
   TFindDeclarationInput = record
     Flags: TFindDeclarationFlags;
     Identifier: PChar;
+    IdentifierNode: TCodeTreeNode;
     ContextNode: TCodeTreeNode;
     OnIdentifierFound: TOnIdentifierFound;
     IdentifierTool: TFindDeclarationTool;
@@ -614,6 +615,7 @@ type
     FFreeHelpers: array[TFDHelpersListKind] of Boolean;
     FNeedHelpers: Boolean;
     FKnownIdentifierLength: integer;
+    FKnownIdentifierSpecializeParamCnt: integer;
     procedure ClearFoundProc;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
@@ -639,6 +641,7 @@ type
     // input parameters:
     Flags: TFindDeclarationFlags;
     Identifier: PChar;
+    IdentifierNode: TCodeTreeNode; // used for specialize to have count of gen-params
     StartTool: TFindDeclarationTool;
     StartNode: TCodeTreeNode;
     Parent: TFindDeclarationParams;
@@ -671,9 +674,11 @@ type
     procedure SetResult(NodeCacheEntry: PCodeTreeNodeCacheEntry);
     procedure SetIdentifier(NewIdentifierTool: TFindDeclarationTool;
                 NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound;
-                const IdentifierLength: Integer = 0);
+                const IdentifierLength: Integer = 0;
+                NewIdentifierNode: TCodeTreeNode = nil);
     procedure WriteDebugReport;
     function GetHelpers(HelperKind: TFDHelpersListKind; CreateIfNotExists: boolean = false): TFDHelpersList;
+    function IdentSpecializeNodeParamCount: integer;
     property KnownIdentifierLength: integer read FKnownIdentifierLength;
   end;
   
@@ -4622,11 +4627,11 @@ var
     end;
   end;
 
-  function SearchInTypeVarConstGlobPropDefinition: boolean;
+  function SearchInTypeVarConstGlobPropDefinition(GenParamCnt: integer = 0; SkipEnums: boolean = False): boolean;
   // returns: true if ok to exit
   //          false if search should continue
   var
-    NameNode: TCodeTreeNode;
+    NameNode, n: TCodeTreeNode;
   begin
     Result:=false;
     NameNode:=ContextNode;
@@ -4641,6 +4646,16 @@ var
       {$IFDEF ShowTriedIdentifiers}
       DebugLn('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
+      // mode delphi can have overloads with different amount of gen param
+      // in other mode they have to match anyway
+      if GenParamCnt > 0 then begin
+        if ContextNode.Desc<>ctnGenericType then
+          exit;
+        n := NameNode.NextBrother;
+        if n.ChildCount <> GenParamCnt then
+          exit;
+      end;
+
       // identifier found
       Params.SetResult(Self,ContextNode);
       Result:=CheckResult(true,true);
@@ -4656,17 +4671,18 @@ var
       end;
     end;
     // search for enums
+    if SkipEnums then exit;
     Params.ContextNode:=ContextNode;
     if FindEnumInContext(Params) then begin
       Result:=CheckResult(true,false);
     end;
   end;
 
-  function SearchInGenericType: boolean;
+  function SearchInGenericType(GenParamCnt: integer = 0; SkipEnums: boolean = False): boolean;
   // returns: true if ok to exit
   //          false if search should continue
   var
-    NameNode: TCodeTreeNode;
+    NameNode, n: TCodeTreeNode;
   begin
     Result:=false;
     NameNode:=ContextNode.FirstChild;
@@ -4679,6 +4695,16 @@ var
       {$IFDEF ShowTriedIdentifiers}
       DebugLn('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
+      // mode delphi can have overloads with different amount of gen param
+      // in other mode they have to match anyway
+      if GenParamCnt > 0 then begin
+        if ContextNode.Desc<>ctnGenericType then
+          exit;
+        n := NameNode.NextBrother;
+        if n.ChildCount <> GenParamCnt then
+          exit;
+      end;
+
       // identifier found
       Params.SetResult(Self,ContextNode);
       Result:=CheckResult(true,true);
@@ -4694,6 +4720,7 @@ var
     end;
 
     // search for enums
+    if SkipEnums then exit;
     Params.ContextNode:=ContextNode;
     if FindEnumInContext(Params) then begin
       Result:=CheckResult(true,false);
@@ -4985,8 +5012,12 @@ var
   const
     AbortNoCacheResult = false;
     Proceed = true;
+  var
+    n, n2: TCodeTreeNode;
+    DoneTypeName: boolean;
   begin
     repeat
+      DoneTypeName := False;
       // search for prior node
       {$IFDEF ShowTriedIdentifiers}
       DebugLn('[TFindDeclarationTool.FindIdentifierInContext.SearchNextNode] Searching prior node of ',ContextNode.DescAsString,' ',dbgstr(copy(Src,ContextNode.StartPos,ContextNode.EndPos-ContextNode.StartPos)));
@@ -4996,9 +5027,38 @@ var
       if (ContextNode.Desc in AllClasses) then begin
         // after searching in a class definition ...
 
+        // search the classname before anchestor
+        if (ContextNode.Parent <> nil) and (ContextNode.Parent.Desc in [ctnTypeDefinition, ctnGenericType])
+        and (not (fdfSearchForward in Flags))
+        and (not (fdfCollect in Flags))
+        and (Params.Identifier <> nil) // gather ident will be done later
+        then begin
+          n := ContextNode;
+          ContextNode := ContextNode.Parent;
+          if ContextNode.Desc = ctnGenericType then begin
+            //SearchInGenericType (SkipEnums=True) should not change Params
+            if SearchInGenericType(Params.IdentSpecializeNodeParamCount, True) then begin
+              (* this may be a generic, refering itself. Params.GenParams are kept. *)
+              FindIdentifierInContext:=true;
+              exit(AbortNoCacheResult);
+            end;
+          end
+          else begin
+            //SearchInTypeVarConstGlobPropDefinition (SkipEnums=True) should not change Params
+            if SearchInTypeVarConstGlobPropDefinition(Params.IdentSpecializeNodeParamCount, True) then begin
+              (* this may be a generic, refering itself. Params.GenParams are kept. *)
+              FindIdentifierInContext:=true;
+              exit(AbortNoCacheResult);
+            end;
+          end;
+          ContextNode := n;
+          DoneTypeName := True;
+        end;
+
         if (ContextNode.PriorBrother<>nil) and (ContextNode.PriorBrother.Desc=ctnGenericParams)
         then begin
           // before searching in the ancestors, search in the generic parameters
+          // SearchInGenericParams does not modify Params
           if SearchInGenericParams(ContextNode.PriorBrother) then begin
             FindIdentifierInContext:=true;
             {$IFDEF ShowCollect}
@@ -5189,7 +5249,14 @@ var
           begin
             Include(Params.Flags, fdfDoNotCache);
             Include(Params.NewFlags, fodDoNotCache);
-          // do not search again in this node, go on ...
+            if not(DoneTypeName and LeavingContextIsPermitted) then
+              break;
+          end;
+
+        ctnTypeDefinition:
+          begin
+            if not(DoneTypeName and LeavingContextIsPermitted) then
+              break;
           end;
 
         else
@@ -5314,10 +5381,16 @@ begin
 
           ctnTypeDefinition, ctnVarDefinition, ctnConstDefinition,
           ctnGlobalProperty:
-            if SearchInTypeVarConstGlobPropDefinition then exit;
+            begin
+              // if looking for a generic, then don't accept other types
+              if (Params.IdentifierNode = nil)
+              or not(Params.IdentifierNode.Desc in [ctnSpecialize, ctnSpecializeType])
+              then
+                if SearchInTypeVarConstGlobPropDefinition then exit;
+            end;
 
           ctnGenericType:
-            if SearchInGenericType then exit;
+            if SearchInGenericType(Params.IdentSpecializeNodeParamCount) then exit;
           // ctnGenericParams: skip here, it was searched before searching the ancestors
 
           ctnIdentifier:
@@ -5650,7 +5723,7 @@ var
         exit;
       end;
 
-      SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
+      SubParams.SetIdentifier(Self,@Src[IdentStart],nil,0,StartNode);
       TypeFound:=FindIdentifierInContext(SubParams);
       if TypeFound and (SubParams.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
       then begin
@@ -5861,7 +5934,7 @@ begin
         end;
         Params.Save(OldInput);
         Params.SetIdentifier(Self,@Src[ClassIdentNode.StartPos],
-                             @CheckSrcIdentifier);
+                             @CheckSrcIdentifier,0,ClassIdentNode);
         Params.Flags:=[fdfSearchInParentNodes,fdfSearchForward,
                        fdfIgnoreUsedUnits,fdfExceptionOnNotFound,
                        fdfIgnoreCurContextNode]
@@ -5896,7 +5969,7 @@ begin
         Params.Save(OldInput);
         // first search backwards
         Params.SetIdentifier(Self,@Src[ClassIdentNode.StartPos],
-                             @CheckSrcIdentifier);
+                             @CheckSrcIdentifier,0,ClassIdentNode);
         Params.Flags:=[fdfSearchInParentNodes,
                        fdfIgnoreCurContextNode]
                       +(fdfGlobals*Params.Flags)-[fdfExceptionOnNotFound];
@@ -5905,7 +5978,7 @@ begin
           // then search forwards
           Params.Load(OldInput,false);
           Params.SetIdentifier(Self,@Src[ClassIdentNode.StartPos],
-                               @CheckSrcIdentifier);
+                               @CheckSrcIdentifier,0,ClassIdentNode);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                          fdfIgnoreCurContextNode,fdfSearchForward]
                         +(fdfGlobals*Params.Flags);
@@ -8807,7 +8880,7 @@ begin
       DebugLn('[TFindDeclarationTool.FindAncestorOfClass] ',
       ' search ancestor class="',GetIdentifier(@Src[AncestorStartPos]),'" for class "',ExtractClassName(ClassNode,false),'"');
       {$ENDIF}
-      Params.SetIdentifier(Self,@Src[AncestorStartPos],nil);
+      Params.SetIdentifier(Self,@Src[AncestorStartPos],nil,0,IdentifierNode);
       if not FindIdentifierInContext(Params) then
         exit;
 
@@ -15238,6 +15311,7 @@ begin
   Clear;
   Parent:=ParentParams;
   FKnownIdentifierLength:=0;
+  FKnownIdentifierSpecializeParamCnt := -1;
 end;
 
 constructor TFindDeclarationParams.Create(Tool: TFindDeclarationTool;
@@ -15283,6 +15357,7 @@ procedure TFindDeclarationParams.Save(out Input: TFindDeclarationInput);
 begin
   Input.Flags:=Flags;
   Input.Identifier:=Identifier;
+  Input.IdentifierNode:=IdentifierNode;
   Input.ContextNode:=ContextNode;
   Input.OnIdentifierFound:=OnIdentifierFound;
   Input.IdentifierTool:=IdentifierTool;
@@ -15307,6 +15382,7 @@ procedure TFindDeclarationParams.Load(Input: TFindDeclarationInput;
 begin
   Flags:=Input.Flags;
   Identifier:=Input.Identifier;
+  IdentifierNode:=Input.IdentifierNode;
   ContextNode:=Input.ContextNode;
   OnIdentifierFound:=Input.OnIdentifierFound;
   IdentifierTool:=Input.IdentifierTool;
@@ -15382,6 +15458,8 @@ procedure TFindDeclarationParams.ClearInput;
 begin
   Flags:=[];
   Identifier:=nil;
+  IdentifierNode := nil;
+  FKnownIdentifierSpecializeParamCnt := -1;
   ContextNode:=nil;
   OnIdentifierFound:=nil;
   IdentifierTool:=nil;
@@ -15451,13 +15529,43 @@ begin
   end;
 end;
 
-procedure TFindDeclarationParams.SetIdentifier(
-  NewIdentifierTool: TFindDeclarationTool; NewIdentifier: PChar;
-  NewOnIdentifierFound: TOnIdentifierFound;
-  const IdentifierLength: Integer = 0);
+function TFindDeclarationParams.IdentSpecializeNodeParamCount: integer;
+var
+  Nd: TCodeTreeNode;
+begin
+  Result := FKnownIdentifierSpecializeParamCnt;
+  if Result >= 0 then
+    exit;
+
+  Result := 0;
+  FKnownIdentifierSpecializeParamCnt := 0;
+
+  Nd := IdentifierNode;
+  if Nd = nil then exit;
+  if Nd.EndPos <= 0 then exit;
+  if Nd.Desc = ctnSpecializeType then begin
+    Nd := Nd.Parent;
+    if Nd = nil then exit;
+    if Nd.EndPos <= 0 then exit;
+  end;
+  if Nd.Desc <> ctnSpecialize then exit;
+  Nd := Nd.FirstChild;
+  if Nd = nil then exit;
+  Nd := Nd.NextBrother;
+  if Nd = nil then exit;
+
+  Result := Nd.ChildCount;
+  FKnownIdentifierSpecializeParamCnt := Result;
+end;
+
+procedure TFindDeclarationParams.SetIdentifier(NewIdentifierTool: TFindDeclarationTool;
+  NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound; const IdentifierLength: Integer;
+  NewIdentifierNode: TCodeTreeNode);
 begin
   Identifier:=NewIdentifier;
   IdentifierTool:=NewIdentifierTool;
+  IdentifierNode:=NewIdentifierNode;
+  FKnownIdentifierSpecializeParamCnt := -1;
   OnIdentifierFound:=NewOnIdentifierFound;
   ClearFoundProc;
   FKnownIdentifierLength:=IdentifierLength;
