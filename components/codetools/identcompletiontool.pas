@@ -3112,6 +3112,11 @@ begin
           AddKeyWord('DEADSTORE');
           AddKeyWord('FORCENOSTACKFRAME');
           AddKeyWord('USELOADMODIFYSTORE');
+        end else if Directive='apptype' then begin
+          AddKeyWord('CONSOLE');
+          AddKeyWord('GUI');
+          AddKeyWord('TOOL');
+          AddKeyWord('FS');
         end;
       end;
       exit;
