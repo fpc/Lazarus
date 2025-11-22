@@ -171,6 +171,11 @@ var
   );
 
 var
+  CocoaConfigDragImage: TCocoaConfigDragImage = (
+    alpha: 0.8;
+  );
+
+var
   CocoaConfigMouse: TCocoaConfigMouse = (
     // False: Control-Left-Click passes straight through
     // True: Control-Left-Click will become Right Click
