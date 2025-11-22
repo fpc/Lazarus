@@ -3117,6 +3117,12 @@ begin
           AddKeyWord('GUI');
           AddKeyWord('TOOL');
           AddKeyWord('FS');
+        end else if Directive='syscall' then begin
+          AddKeyWord('LEGACY');
+          AddKeyWord('SYSV');
+          AddKeyWord('SYSVBASE');
+          AddKeyWord('BASESYSV');
+          AddKeyWord('R12BASE');
         end;
       end;
       exit;
