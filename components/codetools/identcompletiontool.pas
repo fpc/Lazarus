@@ -2856,7 +2856,7 @@ begin
         AddKeyWord('Fatal');
         AddKeyWord('FPUType');
         AddKeyWord('FrameworkPath');
-        AddKeyWord('Goto');
+        AddKeyWord('GoTo');
         if Compiler=pcDelphi then
           AddKeyWord('HighCharUnicode');
         AddKeyWord('Hint');
@@ -2967,7 +2967,7 @@ begin
         AddKeyWord('StringChecks');
         if Compiler=pcDelphi then
           AddKeyWord('StrongLinkTypes');
-        AddKeyWord('Syscall');
+        AddKeyWord('SysCall');
         AddKeyWord('TargetSwitch');
         AddKeyWord('ThreadName');
         AddKeyWord('TypedAddress');
@@ -3112,6 +3112,17 @@ begin
           AddKeyWord('DEADSTORE');
           AddKeyWord('FORCENOSTACKFRAME');
           AddKeyWord('USELOADMODIFYSTORE');
+        end else if Directive='apptype' then begin
+          AddKeyWord('CONSOLE');
+          AddKeyWord('GUI');
+          AddKeyWord('TOOL');
+          AddKeyWord('FS');
+        end else if Directive='syscall' then begin
+          AddKeyWord('LEGACY');
+          AddKeyWord('SYSV');
+          AddKeyWord('SYSVBASE');
+          AddKeyWord('BASESYSV');
+          AddKeyWord('R12BASE');
         end;
       end;
       exit;
