@@ -2856,7 +2856,7 @@ begin
         AddKeyWord('Fatal');
         AddKeyWord('FPUType');
         AddKeyWord('FrameworkPath');
-        AddKeyWord('Goto');
+        AddKeyWord('GoTo');
         if Compiler=pcDelphi then
           AddKeyWord('HighCharUnicode');
         AddKeyWord('Hint');
@@ -2967,7 +2967,7 @@ begin
         AddKeyWord('StringChecks');
         if Compiler=pcDelphi then
           AddKeyWord('StrongLinkTypes');
-        AddKeyWord('Syscall');
+        AddKeyWord('SysCall');
         AddKeyWord('TargetSwitch');
         AddKeyWord('ThreadName');
         AddKeyWord('TypedAddress');
