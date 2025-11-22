@@ -95,21 +95,19 @@ type
     ActionList: TActionList;
     lblCount: TLabel;
     lvTodo: TListView;
-    EditMenuItem: TMenuItem;
-    AllPackagesMenuItem: TMenuItem;
-    FixmeMenuItem: TMenuItem;
     pnlStatistics: TPanel;
+    EditMenuItem: TMenuItem;
+    ToDoMenuItem: TMenuItem;
+    FixmeMenuItem: TMenuItem;
+    DoneMenuItem: TMenuItem;
+    NoteMenuItem: TMenuItem;
     ListedFilesMenuItem: TMenuItem;
     UsedUnitsMenuItem: TMenuItem;
     EditorFilesMenuItem: TMenuItem;
     DepPackagesMenuItem: TMenuItem;
-    ToDoMenuItem: TMenuItem;
-    DoneMenuItem: TMenuItem;
-    NoteMenuItem: TMenuItem;
-    mnuFiles: TPopupMenu;
-    N1: TToolButton;
-    N5: TToolButton;
+    AllPackagesMenuItem: TMenuItem;
     mnuList: TPopupMenu;
+    mnuFiles: TPopupMenu;
     mnuTypes: TPopupMenu;
     SaveDialog: TSaveDialog;
     tbEdit: TToolButton;
@@ -118,9 +116,11 @@ type
     tbGoto: TToolButton;
     tbRefresh: TToolButton;
     tbExport: TToolButton;
+    N1: TToolButton;
     N2: TToolButton;
     N3: TToolButton;
     N4: TToolButton;
+    N5: TToolButton;
     tbHelp: TToolButton;
     tbShowTypes: TToolButton;
     tbShowFiles: TToolButton;
@@ -364,11 +364,20 @@ end;
 
 procedure TIDETodoWindow.lvTodoCompare(Sender : TObject;
   Item1, Item2 : TListItem; Data : Integer; var Compare : Integer);
+
+  function CmpNumeric(aSortCol: integer): integer;
+  var
+    Int1, Int2: Integer;
+  begin
+    if TryStrToInt(Item1.SubItems.Strings[aSortCol-1], Int1)
+    and TryStrToInt(Item2.SubItems.Strings[aSortCol-1], Int2) then
+      Result := CompareValue(Int1, Int2)
+    else
+      Result := 0;
+  end;
+
 var
-  Str1: String;
-  Str2: String;
-  Int1: Integer;
-  Int2: Integer;
+  Str1, Str2: String;
 begin
   Case lvTodo.SortColumn of
     0, 1, 3, 5, 6, 7 :
@@ -392,15 +401,11 @@ begin
               Str2 := '';
           end;
         Compare := AnsiCompareText(Str1, Str2);
+        // For the same module name sort by line number.
+        if (Compare = 0) and (lvTodo.SortColumn = 3) then
+          Compare := CmpNumeric(4);
       end;
-    2, 4  :
-      begin
-        if TryStrToInt(Item1.SubItems.Strings[lvTodo.SortColumn-1], Int1)
-        and TryStrToInt(Item2.SubItems.Strings[lvTodo.SortColumn-1], Int2) then
-          Compare := CompareValue(Int1, Int2)
-        else
-          Compare := 0;
-      end;
+    2, 4 : Compare := CmpNumeric(lvTodo.SortColumn);
     else Compare := 0;
   end;
 
@@ -446,6 +451,21 @@ end;
 
 procedure TIDETodoWindow.ShowChange(Sender: TObject);
 begin
+  // If no filters are selected, this is most probably the first run.
+  // Then select all. Later they are saved by SessionProperties.
+  if not (ToDoMenuItem.Checked or FixmeMenuItem.Checked or DoneMenuItem.Checked
+  or NoteMenuItem.Checked or ListedFilesMenuItem.Checked or UsedUnitsMenuItem.Checked
+  or EditorFilesMenuItem.Checked or DepPackagesMenuItem.Checked) then
+  begin
+    ToDoMenuItem.Checked := True;
+    FixmeMenuItem.Checked := True;
+    DoneMenuItem.Checked := True;
+    NoteMenuItem.Checked := True;
+    ListedFilesMenuItem.Checked := True;
+    UsedUnitsMenuItem.Checked := True;
+    EditorFilesMenuItem.Checked := True;
+    DepPackagesMenuItem.Checked := True;
+  end;
   UpdateTodos;
 end;
 

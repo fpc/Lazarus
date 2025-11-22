@@ -396,8 +396,8 @@ begin
     // Process a comment
     pEnd:=FindCommentEnd(Src,pStart,NestedComment);
     B := FTool.CleanPosToCaret(pEnd,EndCaret);
-    Assert(B, 'TTLScannedFile.ScanPascalToDos: No comment end.');
     CommentStr:=copy(Src,pStart,pEnd-pStart);
+    //Assert(B, 'TTLScannedFile.ScanPascalToDos: No comment end. "'+CommentStr+'"');
     // Process each include file location only once. Units are processed always.
     if (LocationIncTodo='') or not FScannedIncFiles.Contains(LocationIncTodo) then
     begin

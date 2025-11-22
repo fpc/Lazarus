@@ -8,7 +8,7 @@ object IDETodoWindow: TIDETodoWindow
   ClientHeight = 230
   ClientWidth = 1014
   KeyPreview = True
-  SessionProperties = 'cboShowWhat.ItemIndex;chkListed.Checked;chkPackages.Checked;chkSourceEditor.Checked;chkUsed.Checked;lvTodo.Columns'
+  SessionProperties = 'ToDoMenuItem.Checked;FixmeMenuItem.Checked;DoneMenuItem.Checked;NoteMenuItem.Checked;ListedFilesMenuItem.Checked;UsedUnitsMenuItem.Checked;EditorFilesMenuItem.Checked;DepPackagesMenuItem.Checked'
   LCLVersion = '4.99.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -24,41 +24,41 @@ object IDETodoWindow: TIDETodoWindow
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    Columns = <
+    Columns = <    
       item
         AutoSize = True
         Caption = 'Type'
         Width = 100
-      end
+      end    
       item
         Caption = 'Description'
         Width = 300
-      end
+      end    
       item
         AutoSize = True
         Caption = 'Priority'
         Width = 100
-      end
+      end    
       item
         AutoSize = True
         Caption = 'Module'
         Width = 100
-      end
+      end    
       item
         AutoSize = True
         Caption = 'Line'
         Width = 100
-      end
+      end    
       item
         AutoSize = True
         Caption = 'Owner'
         Width = 100
-      end
+      end    
       item
         AutoSize = True
         Caption = 'Issue ID'
         Width = 100
-      end
+      end    
       item
         AutoSize = True
         Caption = 'Category'
@@ -255,25 +255,21 @@ object IDETodoWindow: TIDETodoWindow
     Top = 120
     object ToDoMenuItem: TMenuItem
       Caption = 'ToDo'
-      Checked = True
       ShowAlwaysCheckable = True
       OnClick = ShowSomethingMenuItemClick
     end
     object FixmeMenuItem: TMenuItem
       Caption = 'FixMe'
-      Checked = True
       ShowAlwaysCheckable = True
       OnClick = ShowSomethingMenuItemClick
     end
     object DoneMenuItem: TMenuItem
       Caption = 'Done'
-      Checked = True
       ShowAlwaysCheckable = True
       OnClick = ShowSomethingMenuItemClick
     end
     object NoteMenuItem: TMenuItem
       Caption = 'Note'
-      Checked = True
       ShowAlwaysCheckable = True
       OnClick = ShowSomethingMenuItemClick
     end
@@ -283,31 +279,26 @@ object IDETodoWindow: TIDETodoWindow
     Top = 120
     object ListedFilesMenuItem: TMenuItem
       Caption = 'Listed files'
-      Checked = True
       ShowAlwaysCheckable = True
       OnClick = ShowSomethingMenuItemClick
     end
     object UsedUnitsMenuItem: TMenuItem
       Caption = 'Used Units'
-      Checked = True
       ShowAlwaysCheckable = True
       OnClick = ShowSomethingMenuItemClick
     end
     object EditorFilesMenuItem: TMenuItem
       Caption = 'Editor Files'
-      Checked = True
       ShowAlwaysCheckable = True
       OnClick = ShowSomethingMenuItemClick
     end
     object DepPackagesMenuItem: TMenuItem
       Caption = 'Dependent Packages'
-      Checked = True
       ShowAlwaysCheckable = True
       OnClick = ShowSomethingMenuItemClick
     end
     object AllPackagesMenuItem: TMenuItem
       Caption = 'All Packages'
-      Checked = True
       ShowAlwaysCheckable = True
       Visible = False
       OnClick = ShowSomethingMenuItemClick
