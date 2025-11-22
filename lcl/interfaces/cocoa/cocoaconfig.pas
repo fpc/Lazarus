@@ -322,6 +322,11 @@ type
   end;
 
 type
+  TCocoaConfigDragImage = record
+    alpha: Double;
+  end;
+
+type
   TCocoaConfigMouse = record
     controlLeftToRightClick: Boolean;
   end;

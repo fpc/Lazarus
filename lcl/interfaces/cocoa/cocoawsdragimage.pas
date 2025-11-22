@@ -9,7 +9,7 @@ uses
   Classes, SysUtils,
   LCLType, Controls, Graphics, WSControls,
   MacOSAll, CocoaAll,
-  CocoaGDIObjects, CocoaUtils;
+  CocoaGDIObjects, CocoaConfig, CocoaUtils;
 
 type
 
@@ -87,7 +87,7 @@ class function TCocoaWSDragImageListResolution.BeginDrag(
                      nsr, 0, NSBackingStoreBuffered, False);
       _dragImage.setImage( AImage );
       _dragHotSpot:= AHotSpot;
-      _dragImage.setAlphaValue( 0.8 );
+      _dragImage.setAlphaValue( CocoaConfigDragImage.alpha );
       _dragImage.setIgnoresMouseEvents( True );
       _dragImage.setAcceptsMouseMovedEvents( False );
     end;
