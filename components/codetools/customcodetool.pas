@@ -2067,7 +2067,7 @@ begin
     then begin
       // check for anonymous function
       Node:=FindDeepestNodeAtPos(CurPos.StartPos+1,false);
-      if (Node<>nil) and (Node.Desc=ctnProcedure) then
+      if (Node<>nil) and (Node.Desc=ctnProcedure) and (Node.EndPos >= CurPos.StartPos) then
       begin
         MoveCursorToCleanPos(Node.EndPos);
       end else begin
