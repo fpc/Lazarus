@@ -1302,6 +1302,13 @@ begin
     end;
     Inc(i);
   end;
+  if wstart > 0 then
+  begin
+    Result[wstart] := ' ';
+    Delete(Result, wstart+1, wlen);
+    Dec(i, wlen);
+    wstart := 0;
+  end;
 end;
 
 function SwapCase(const S: String): String;
