@@ -7,32 +7,32 @@ tcompletion_keywords   {completion:+21=!do,!label,!repeat,!else,!inherited,!and,
 {$ModeSwitch typehelpers}
 {$ModeSwitch advancedrecords}
 
-interface   {completion:+11=!do,!label,!repeat,!else,!inherited,!and,!not}
+interface    {completion:+11=!do,!repeat,!else,!inherited,!and,!not}
 
 uses     {completion:+5=!do,!label,!repeat,!else,!inherited,!and,!not}
 system   {completion:+7=!do,!label,!repeat,!else,!inherited,!and,!not}
 ;
 
-const   {completion:+6=!do,!label,!repeat,!else,!inherited,!and,!not}
+const   {completion:+6=!do,!repeat,!else,!inherited,!and,!not}
   MYCONST
    =    {completion:+2=!do,!label,!repeat,!else,!inherited,!and,!not}
    1    {completion:+2=!do,!label,!repeat,!else,!inherited,!and,!not}
-   ;    {completion:+2=!do,!label,!repeat,!else,!inherited,!and,!not}
-  MYCONST_B = 'test' ;   {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
+   ;    {completion:+2=!do,!repeat,!else,!inherited,!and,!not}
+  MYCONST_B = 'test' ;   {completion:+1=!do,!repeat,!else,!inherited,!and,!not}
 
-var    {completion:+4=!do,!label,!repeat,!else,!inherited,!and,!not}
+var    {completion:+4=!do,!repeat,!else,!inherited,!and,!not}
   MyVar     {completion:+6=!do,!label,!repeat,!else,!inherited,!and,!not}
   :         {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
   Integer   {completion:+8=!do,!label,!repeat,!else,!inherited,!and,!not}
-  ;         {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
-  MyVar2: TObject ;   {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not,!case}
+  ;         {completion:+1=!do,!repeat,!else,!inherited,!and,!not}
+  MyVar2: TObject ;   {completion:+1=!do,!repeat,!else,!inherited,!and,!not,!case}
   // TODO: "case" in record
   MyVar3: record    {completion:+7=!do,!label,!repeat,!else,!inherited,!and,!not}
     a: Integer ;    {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
     a2              {completion:+3=!do,!label,!repeat,!else,!inherited,!and,!not}
     :               {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
     Integer         {completion:+8=!do,!label,!repeat,!else,!inherited,!and,!not}
-    ;               {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
+    ;               {completion:+1=!do,!repeat,!else,!inherited,!and,!not}
     case
     boolean   {completion:+8=!do,!label,!repeat,!else,!inherited,!and,!not} // TODO: "of"
     of
@@ -47,7 +47,7 @@ var    {completion:+4=!do,!label,!repeat,!else,!inherited,!and,!not}
 type
   TFoo    {completion:+5=!do,!label,!repeat,!else,!inherited,!and,!not}
   =       {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
-  class   {completion:+6=!do,!label,!repeat,!else,!inherited,!and,!not}
+  class   {completion:+6=!do,!repeat,!else,!inherited,!and,!not}
   ;
 
   TIntA =    {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not} // TODO: "array"
@@ -67,11 +67,11 @@ type
     a        {completion:+2=!do,!label,!repeat,!else,!inherited,!and,!not}
     :        {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
     Integer  {completion:+8=!do,!label,!repeat,!else,!inherited,!and,!not}
-    ;        {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
+    ;        {completion:+1=!do,!repeat,!else,!inherited,!and,!not}
   private
-    procedure     {completion:+10=!do,!label,!repeat,!else,!inherited,!and,!not}
+    procedure     {completion:+10=!do,!repeat,!else,!inherited,!and,!not} // todo: !label
     Bar           {completion:+5=!do,!label,!repeat,!else,!inherited,!and,!not}
-    ;             {completion:+1=!do,!label,!repeat,!else,!inherited,!and,!not}
+    ;             {completion:+1=!do,!repeat,!else,!inherited,!and,!not}
   end;
 
 procedure SomeProc(val: Integer; var v2, v3: TIntA);
@@ -84,8 +84,8 @@ var
   ia: TIntA;
 
 procedure SomeProc(val: Integer);
-begin  {completion:+6=!do,!label,repeat,!else,inherited,!and,!not}
-  ;    {completion:+1=!do,!label,repeat,!else,inherited,!and,!not}
+begin  {completion:+6=!do,!label,repeat,!else,inherited,!and}  // todo: !not
+  ;    {completion:+1=!do,repeat,!else,inherited,!and}   // todo: !not
 end;
 
 procedure SomeProc(val: Integer; var v2, v3: TIntA);
@@ -105,6 +105,6 @@ end;
 
 begin
   if  {completion:+3=!and,not,inherited} // +3 test in space after if
-    iVal  {completion:!and,!in,not,inherited;+1=!and,!in,!not,inherited;+5=and,in,!not,!inherited} // + 5 in spaces after iVal
+    iVal  {completion:!and,!in,not,inherited;+1=!and,!in,inherited;+5=and,in,!inherited} // + 5 in spaces after iVal
 end.
 

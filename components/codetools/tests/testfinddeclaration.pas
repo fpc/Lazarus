@@ -339,7 +339,7 @@ var
   NameStartPos, i, j, l, IdentifierStartPos, IdentifierEndPos,
     BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop: Integer;
   Marker, ExpectedType, NewType, ExpectedCompletion, ExpectedTerm,
-    ExpectedCompletionPart, ExpectedTermPart, s: String;
+    ExpectedCompletionPart, ExpectedTermPart, ExpectedTermPartEx, s: String;
   IdentItem: TIdentifierListItem;
   ItsAKeyword, IsSubIdentifier, ExpInvert, ExpComment: boolean;
   ExistingDefinition: TFindContext;
@@ -514,7 +514,8 @@ begin
                 end;
                 continue;
               end else begin
-                for ExpectedTermPart in ExpectedCompletion.Split(',') do begin
+                for ExpectedTermPartEx in ExpectedCompletion.Split(',') do
+                for ExpectedTermPart in ExpectedTermPartEx.Split(';') do begin
                   ExpectedTerm := ExpectedTermPart;
                   ExpInvert := (ExpectedTerm <> '') and (ExpectedTerm[1] = '!');
                   if ExpInvert then
@@ -556,7 +557,7 @@ begin
                   else
                   if ExpInvert and (i>=0) then begin
                     WriteSource(StartOffs,MainTool);
-                    AssertEquals('GatherIdentifiers should not have "'+ExpectedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true,i>=0);
+                    AssertFalse('GatherIdentifiers should not have "'+ExpectedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true);
                   end;
                 end;
               end;

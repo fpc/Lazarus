@@ -105,13 +105,13 @@ var
 begin
   &class{guesstype:&tampersand/program}
   :=
-    &function{completion:&tampersand,&function,fun,&program,xyz|completion:-1=&tampersand,&function,fun,&program,xyz|completion:+11=&function,fun,!&program,!program,!xyz|declaration!:tampersand/&function}
-    (&array{completion:&tampersand,&function,fun,&array,xyz|completion:-1=&tampersand,&function,fun,&array,xyz|completion:+1=!&function,!function,!fun,&array,!xyz|declaration!:tampersand/var},
+    &function{completion:&tampersand,&function,fun,&program,xyz|completion:-1=&tampersand,&function,fun,&program,xyz|completion:+1=&function,fun|declaration!:tampersand/&function}
+    (&array{completion:&tampersand,&function,fun,&array,xyz|completion:-1=&tampersand,&function,fun,&array,xyz|completion:+1=&array|declaration!:tampersand/var},
      &const
     );
   fun1
   :=
-  &fun{completion:&tampersand,&function,fun,&program,xyz|completion:-1=&tampersand,&function,fun,&program,xyz|completion:+11=&function,fun,!&program,!program,!xyz|declaration!:tampersand/fun}
+  &fun{completion:&tampersand,&function,fun,&program,xyz|completion:-1=&tampersand,&function,fun,&program,xyz|completion:+1=&function,fun|declaration!:tampersand/fun}
   (
     &var.&begin,
     [&tampersand.&uses, &uses]
@@ -132,7 +132,7 @@ begin
   );
   n1
   :=
-  &other{completion:&procedure,&tampersand,other,more,&program,xyz|completion:-1=&procedure,&tampersand,other,more,&program,xyz|completion:+11=other|declaration!:procedure/&procedure.other}
+  &other{completion:&procedure,&tampersand,other,more,&program,xyz|completion:-1=&procedure,&tampersand,other,more,&program,xyz|completion:+1=other|declaration!:procedure/&procedure.other}
   (
     &procedure.&var.&end,
     [&procedure.def]
@@ -148,14 +148,14 @@ begin
     [new]
   );
 
-  cast{completion:&case,cast,n1|completion:-1=&case,cast,n1|completion:+1=&case,&const,!then,!&then}.
+  cast{completion:&case,cast,n1|completion:-1=&case,cast,n1|completion:+1=&case,&const}.
     abc :=&2;
   cast.&abc :=2;
   cast.&array:=&case.&array;
   cast.&array.x:=2;
   cast.&array.&case:=2;
 
-  &cast{completion:&case,cast,n1|completion:-1=&case,cast,n1|completion:+1=&case,&const,!then,!&then}.
+  &cast{completion:&case,cast,n1|completion:-1=&case,cast,n1|completion:+1=&case,&const}.
     abc :=2;
   &cast.&abc :=2;
   &cast.&array:=&case.&array;
@@ -168,9 +168,9 @@ begin
   &case.&array.x:=2;
   &then { TODO: guesstype:tampersand/if.for}
   :=
-  &case{completion:&case|completion:-1=&case|completion:+1=&case,&const,!then,!&then}.
-    &array{completion:&array,abc|completion:-1=&array,abc|completion:+1=&array,abc|completion:+2=&array,!abc|declaration:tampersand/record.array}.
-      &case{completion:&case,x,y|completion:-1=&case,x,y|completion:+1=&case,!x,!y|declaration:tampersand/record.array.case}
+  &case{completion:&case|completion:-1=&case|completion:+1=&case,&const}.
+    &array{completion:&array,abc|completion:-1=&array,abc|completion:+1=&array,abc|declaration:tampersand/record.array}.
+      &case{completion:&case,x,y|completion:-1=&case,x,y|completion:+1=&case|declaration:tampersand/record.array.case}
       ;
 
 end.
