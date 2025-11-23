@@ -558,7 +558,7 @@ begin
   Recognise(ttProgram);
 
   PushNode(nUnitName);
-  RecogniseIdentifier(False, idStrict);
+  RecogniseDottedName;
   PopNode;
 
   if fcTokenList.FirstSolidTokenType = ttOpenBracket then
@@ -616,7 +616,7 @@ begin
   Recognise(ttPackage);
 
   PushNode(nUnitName);
-  RecogniseIdentifier(False, idStrict);
+  RecogniseDottedName;
   PopNode;
   Recognise(ttSemicolon);
   PopNode;
@@ -642,7 +642,7 @@ begin
   Recognise(ttLibrary);
 
   PushNode(nUnitName);
-  RecogniseIdentifier(False, idStrict);
+  RecogniseDottedName;
   PopNode;
   Recognise(ttSemicolon);
   PopNode;
