@@ -69,6 +69,7 @@ type
     fiTokenCount: integer;
     procedure ChangeFirstSolidTokenType(peNewTokenType: TTokenType);
     function IsEndOfTypeSection: Boolean;
+    function IsProcedureHintOrDirective: boolean;
     procedure RecogniseTypeHelper;
     procedure SplitGreaterThanOrEqual;
     procedure SplitShr_gg;
@@ -141,6 +142,8 @@ type
     procedure RecogniseMethodReferenceType;
 
     procedure RecogniseFileType;
+    procedure RecogniseOptionalSemicolon;
+    procedure RecogniseOptionalSemicolonBefore(aTokenType: TTokenType);
     procedure RecogniseOrdIdent;
     procedure RecogniseOrdinalType;
     procedure RecognisePointerType;
@@ -1302,7 +1305,7 @@ begin
     end;
 
     // the type can be deprecated or another hint directive
-    if fcTokenList.FirstSolidTokenType in HintDirectives then
+    if IsProcedureHintOrDirective then
       RecogniseHintDirectives;
 
     if fcTokenList.FirstSolidTokenType <> ttDot then
@@ -2475,6 +2478,18 @@ begin
   end;
 end;
 
+procedure TBuildParseTree.RecogniseOptionalSemicolon;
+begin
+  if fcTokenList.FirstSolidTokenType=ttSemicolon then
+    Recognise(ttSemiColon);
+end;
+
+procedure TBuildParseTree.RecogniseOptionalSemicolonBefore(aTokenType: TTokenType);
+begin
+  if (fcTokenList.FirstSolidTokenType=ttSemicolon) and (fcTokenList.SolidTokenType(2)=aTokenType) then
+    Recognise(ttSemiColon);
+end;
+
 procedure TBuildParseTree.RecognisePointerType;
 var
   wTT:TTokenType;
@@ -2526,6 +2541,12 @@ begin
   begin
     Recognise(ttOf);
     Recognise(ttObject);
+  end;
+
+  if fcTokenList.FirstSolidTokenType = ttIs then
+  begin
+    Recognise(ttIs);
+    Recognise(ttNested);
   end;
 
   RecogniseProcedureDirectives;
@@ -2714,9 +2735,7 @@ begin
       ((fcTokenList.FirstSolidTokenType=ttSemicolon) and
        (fcTokenList.SolidTokenType(2) in VariableModifiers))) then
     begin
-      // optional SemiColon
-      if fcTokenList.FirstSolidTokenType=ttSemicolon then
-        Recognise(ttSemiColon);
+      RecogniseOptionalSemicolon;
       if fcTokenList.FirstSolidTokenType=ttExternal then
       begin
         Recognise(fcTokenList.FirstSolidTokenType);
@@ -2731,26 +2750,14 @@ begin
         RecogniseConstantExpression;
       end;
     end;
-
-    if fcTokenList.FirstSolidTokenType=ttEquals then
-    begin
-      PushNode(nVariableInit);
-
-      Recognise(ttEquals);
-
-      { not just an expr - can be an array, record or the like
-        reuse the code from typed constant declaration as it works the same }
-      RecogniseTypedConstant;
-      PopNode;
-    end;
   end;
 
   { This loop will attempt to recognize HintDirectives and special directives }
+  lct := fcTokenList.FirstSolidTokenType;
+  if lct = ttSemicolon then   // need to look ahead
+    lct := fcTokenList.SolidTokenType(2);
   repeat
-    lct := fcTokenList.FirstSolidTokenType;
-    if lct = ttSemicolon then   // need to look ahead
-      lct := fcTokenList.SolidTokenType(2);
-    if lct in HintDirectives then
+    if IsProcedureHintOrDirective then
       RecogniseHintDirectives
     else if lct=ttExport then
       RecogniseVarExpPubDir
@@ -2758,7 +2765,21 @@ begin
       RecogniseVarExpPubDir
     else
       break;
+    lct := fcTokenList.FirstSolidTokenType;
   until False;
+
+  if (fcTokenList.FirstSolidTokenType=ttEquals) or
+    ((fcTokenList.FirstSolidTokenType=ttSemicolon) and
+    (fcTokenList.SolidTokenType(2) = ttEquals)) then
+  begin
+    RecogniseOptionalSemicolon;
+    PushNode(nVariableInit);
+    Recognise(ttEquals);
+    { not just an expr - can be an array, record or the like
+      reuse the code from typed constant declaration as it works the same }
+    RecogniseTypedConstant;
+    PopNode;
+  end;
 
   PopNode;
 end;
@@ -4507,9 +4528,53 @@ begin
     RecogniseLiteralString;
 end;
 
+function TBuildParseTree.IsProcedureHintOrDirective: boolean;
+var
+  liIndex: integer;
+begin
+  liIndex := 0;
+
+  if fcTokenList.FirstSolidTokenType in AllProcDirectives then
+    liIndex := 1
+  else
+  begin
+    if fcTokenList.FirstSolidTokenType = ttSemiColon then
+    begin
+      if fcTokenList.SolidTokenType(2) in AllProcDirectives then
+        liIndex := 2;
+    end;
+  end;
+  // the token can be a identifier instead of hint or directive like:
+  // so looking forward.
+  // var
+  //   pr1:procedure;stdcall;deprecated;
+  //   deprecated:boolean;
+  // type
+  //   pr2=procedure;stdcall;
+  //   stdcall=integer;
+  if liIndex > 0 then
+  begin
+    // ttPublic is not a hint inside a record, object or class.
+    if (fcTokenList.SolidTokenType(liIndex) = ttPublic)
+      and TopNode.HasParentNode([nClassType,nRecordType,nObjectType]) then
+      liIndex := 0
+    else
+    begin
+      if fcTokenList.SolidTokenType(liIndex + 1) = ttSemicolon then
+        Inc(liIndex);
+      if (fcTokenList.SolidTokenType(liIndex + 1) = ttEquals) and (TopNode.NodeType = nTypeDecl) then
+        liIndex := 0
+      else
+      if fcTokenList.SolidTokenType(liIndex + 1) in [ttComma, ttColon] then
+        liIndex := 0;
+    end;
+  end;
+  Result := liIndex > 0;
+end;
+
 procedure TBuildParseTree.RecogniseProcedureDirectives;
 var
-  lTokenType, lNextType: TTokenType;
+  lTokenType: TTokenType;
 begin
   { these are semi-colon separated
 
@@ -4520,10 +4585,9 @@ begin
   }
 
   lTokenType := fcTokenList.FirstSolidTokenType;
-  lNextType := fcTokenList.SolidTokenType(2);
-  if (lTokenType in AllProcDirectives) or (lNextType in AllProcDirectives) then begin
+  if IsProcedureHintOrDirective then begin
     PushNode(nProcedureDirectives);
-    while (lTokenType in AllProcDirectives) or (lNextType in AllProcDirectives) do begin
+    while IsProcedureHintOrDirective do begin
       if (lTokenType = ttSemiColon) then
         Recognise(ttSemiColon)
       else begin
@@ -4556,8 +4620,11 @@ begin
         end;
       end;
       lTokenType := fcTokenList.FirstSolidTokenType;
-      lNextType := fcTokenList.SolidTokenType(2);
     end;
+    //var
+    //  proc:procedure;stdcall;=@test;
+    //  proc2:procedure;stdcall=@test;
+    RecogniseOptionalSemicolonBefore(ttEquals);
     PopNode;
   end;
 end;
@@ -5990,23 +6057,22 @@ end;
 
 procedure TBuildParseTree.RecogniseHintDirectives;
 begin
-  if ((fcTokenList.FirstSolidTokenType = ttSemicolon) and
-    (fcTokenList.SolidTokenType(2) in HintDirectives)) or
-    (fcTokenList.FirstSolidTokenType in HintDirectives) then
+  if IsProcedureHintOrDirective then
   begin
-    if fcTokenList.FirstSolidTokenType = ttSemicolon then
-      Recognise(ttSemicolon);
-
+    RecogniseOptionalSemicolon;
     PushNode(nHintDirectives);
-
-    while (fcTokenList.FirstSolidTokenType in HintDirectives) do
+    while IsProcedureHintOrDirective do
     begin
+      RecogniseOptionalSemicolon;
       if fcTokenList.FirstSolidTokenType = ttDeprecated then
         RecogniseDeprecated
       else
-        Recognise(HintDirectives);
+        Recognise(AllProcDirectives);
     end;
-
+    //var
+    //  proc:procedure;stdcall;deprecated;=@test;
+    //  proc2:procedure;stdcall;deprecated=@test;
+    RecogniseOptionalSemiColonBefore(ttEquals);
     PopNode;
   end;
 end;
