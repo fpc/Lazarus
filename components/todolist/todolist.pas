@@ -133,6 +133,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var {%H-}CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift:TShiftState);
+    procedure FormShow(Sender: TObject);
     procedure lvTodoClick(Sender: TObject);
     procedure lvTodoCompare(Sender : TObject; Item1, Item2 : TListItem;
       {%H-}Data : Integer; var Compare : Integer);
@@ -141,27 +142,21 @@ type
     procedure lvTodoSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure SaveDialogShow(Sender: TObject);
     procedure ShowSomethingMenuItemClick(Sender: TObject);
-    procedure ShowChange(Sender: TObject);
     procedure XMLPropStorageRestoreProperties(Sender: TObject);
     procedure XMLPropStorageRestoringProperties(Sender: TObject);
   private
     FBaseDirectory: string;
     FUpdating, FUpdateNeeded: Boolean;
-    FIDEItem: string;
     FIdleConnected: boolean;
     FLoadingOptions: boolean;
-    FStartFilename: String;
-    FOwnerProjPack: TObject;  // Project or package owning the FStartFilename.
-    FScannedFiles: TAvlTree;// tree of TTLScannedFile
+    FProjPack: TObject;   // Project or package from where to collect ToDo items.
+    FScannedFiles: TAvlTree; // tree of TTLScannedFile
     FScannedIncFiles: TStringMap;
     FOnEditItem: TOnEditToDo;
     procedure GotoTodo(aTodoItem: TTodoItem);
-    procedure SetIDEItem(AValue: string);
+    procedure SetProjPack(AValue: TObject);
     procedure SetIdleConnected(const AValue: boolean);
     function ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
-    procedure UpdateStartFilename;
-    procedure ResolveIDEItem(out CurOwner: TObject; out CurProject: TLazProject;
-                             out CurPkg: TIDEPackage);
     procedure AddListItem(aTodoItem: TTodoItem);
     procedure ScanFile(aFileName : string);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
@@ -170,10 +165,9 @@ type
     destructor Destroy; override;
     procedure UpdateTodos(Immediately: boolean = false);
 
-    property IDEItem: string read FIDEItem write SetIDEItem; // package name or empty for active project
+    property ProjPack: TObject read FProjPack write SetProjPack;
     property BaseDirectory: string read FBaseDirectory;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
-
     property OnEditItem: TOnEditToDo read FOnEditItem write FOnEditItem;
   end;
 
@@ -276,10 +270,36 @@ begin
   XMLPropStorage.Active := True;
 end;
 
+procedure TIDETodoWindow.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_ESCAPE then
+    ModalResult := mrCancel;
+end;
+
+procedure TIDETodoWindow.FormShow(Sender: TObject);
+begin
+  // If no filters are selected, this is most probably the first run.
+  // Then select all. Later they are saved by SessionProperties.
+  if not (ToDoMenuItem.Checked or FixmeMenuItem.Checked or DoneMenuItem.Checked
+  or NoteMenuItem.Checked or ListedFilesMenuItem.Checked or UsedUnitsMenuItem.Checked
+  or EditorFilesMenuItem.Checked or DepPackagesMenuItem.Checked) then
+  begin
+    ToDoMenuItem.Checked := True;
+    FixmeMenuItem.Checked := True;
+    DoneMenuItem.Checked := True;
+    NoteMenuItem.Checked := True;
+    ListedFilesMenuItem.Checked := True;
+    UsedUnitsMenuItem.Checked := True;
+    EditorFilesMenuItem.Checked := True;
+    DepPackagesMenuItem.Checked := True;
+  end;
+  UpdateTodos;
+end;
+
 procedure TIDETodoWindow.UpdateTodos(Immediately: boolean);
 var
   i: integer;
-  St : String;
+  StartFN, St: String;
   Node: TAvlTreeNode;
   CurFile: TTLScannedFile;
   Units: TStrings;
@@ -295,7 +315,7 @@ begin
     exit;
   end;
   FUpdateNeeded:=false;
-  if FUpdating or (FOwnerProjPack=nil) then
+  if FUpdating or (FProjPack=nil) then
     Exit;
   LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
   Screen.BeginWaitCursor;
@@ -309,15 +329,23 @@ begin
     FScannedIncFiles.Clear;
     lvTodo.Items.Clear;
 
-    if FStartFilename<>'' then begin
-      // Find a '.todo' file of the main source
-      St:=ChangeFileExt(FStartFilename,'.todo');
-      if FileExistsCached(St) then
-        ScanFile(St);
-      // Scan main source file
-      if FilenameIsPascalUnit(FStartFilename) then
-        ScanFile(FStartFilename);
+    StartFN:='';
+    if FProjPack is TLazProject then begin
+      Caption:=Format(lisToDoListforProject,[TLazProject(FProjPack).MainFile.Unit_Name]);
+      StartFN:=TLazProject(FProjPack).ProjectInfoFile;
+    end
+    else if FProjPack is TIDEPackage then begin
+      Caption:=Format(lisToDoListForPackage,[TIDEPackage(FProjPack).IDAsString]);
+      StartFN:=TIDEPackage(FProjPack).Filename;
     end;
+    Assert(StartFN<>'', 'TIDETodoWindow.UpdateTodos: No StartFN');
+    // Find a '.todo' file of the main source
+    St:=ChangeFileExt(StartFN,'.todo');
+    if FileExistsCached(St) then
+      ScanFile(St);
+    // Scan main source file
+    if FilenameIsPascalUnit(StartFN) then
+      ScanFile(StartFN);
 
     Flags:=[];
     if ListedFilesMenuItem.Checked then
@@ -329,7 +357,7 @@ begin
     if DepPackagesMenuItem.Checked then
       Include(Flags, fuooPackages);
 
-    Units:=LazarusIDE.FindUnitsOfOwner(FOwnerProjPack,Flags);
+    Units:=LazarusIDE.FindUnitsOfOwner(FProjPack,Flags);
     for i:=0 to Units.Count-1 do
       ScanFile(Units[i]);
 
@@ -349,12 +377,6 @@ begin
     Screen.EndWaitCursor;
     FUpdating:=False;
   end;
-end;
-
-procedure TIDETodoWindow.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  if (Key=VK_ESCAPE) then
-    ModalResult:=mrCancel;
 end;
 
 procedure TIDETodoWindow.lvTodoClick(Sender: TObject);
@@ -449,26 +471,6 @@ begin
   UpdateTodos;
 end;
 
-procedure TIDETodoWindow.ShowChange(Sender: TObject);
-begin
-  // If no filters are selected, this is most probably the first run.
-  // Then select all. Later they are saved by SessionProperties.
-  if not (ToDoMenuItem.Checked or FixmeMenuItem.Checked or DoneMenuItem.Checked
-  or NoteMenuItem.Checked or ListedFilesMenuItem.Checked or UsedUnitsMenuItem.Checked
-  or EditorFilesMenuItem.Checked or DepPackagesMenuItem.Checked) then
-  begin
-    ToDoMenuItem.Checked := True;
-    FixmeMenuItem.Checked := True;
-    DoneMenuItem.Checked := True;
-    NoteMenuItem.Checked := True;
-    ListedFilesMenuItem.Checked := True;
-    UsedUnitsMenuItem.Checked := True;
-    EditorFilesMenuItem.Checked := True;
-    DepPackagesMenuItem.Checked := True;
-  end;
-  UpdateTodos;
-end;
-
 procedure TIDETodoWindow.XMLPropStorageRestoreProperties(Sender: TObject);
 begin
   FLoadingOptions := False;
@@ -482,46 +484,9 @@ end;
 
 function TIDETodoWindow.ProjectOpened(Sender: TObject; AProject: TLazProject): TModalResult;
 begin
-  Result:=mrOK;
-  IDEItem:='';
+  Result := mrOK;
+  ProjPack := AProject;
   UpdateTodos;
-end;
-
-procedure TIDETodoWindow.UpdateStartFilename;
-var
-  NewStartFilename: String;
-  CurProject: TLazProject;
-  CurPkg: TIDEPackage;
-begin
-  ResolveIDEItem(FOwnerProjPack,CurProject,CurPkg);
-  NewStartFilename:='';
-  if CurPkg<>nil then                   // package
-    NewStartFilename:=CurPkg.Filename
-  else if CurProject<>nil then          // project
-    NewStartFilename:=CurProject.ProjectInfoFile;
-  if FStartFilename=NewStartFilename then
-    exit;
-  FStartFilename:=NewStartFilename;
-  UpdateTodos;
-end;
-
-procedure TIDETodoWindow.ResolveIDEItem(out CurOwner: TObject;
-  out CurProject: TLazProject; out CurPkg: TIDEPackage);
-begin
-  CurOwner:=nil;
-  CurProject:=nil;
-  CurPkg:=nil;
-  if IsValidIdent(FIDEItem,true,true) then begin
-    // package
-    CurPkg:=PackageEditingInterface.FindPackageWithName(FIDEItem);
-    CurOwner:=CurPkg;
-    //DebugLn(['TIDETodoWindow.ResolveIDEItem: Found package ', CurPkg.Filename]);
-  end else begin
-    // project
-    CurProject:=LazarusIDE.ActiveProject;
-    CurOwner:=CurProject;
-    //DebugLn(['TIDETodoWindow.ResolveIDEItem: Found project ', CurProject.MainFile.Filename]);
-  end;
 end;
 
 procedure TIDETodoWindow.SetIdleConnected(const AValue: boolean);
@@ -534,11 +499,11 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
-procedure TIDETodoWindow.SetIDEItem(AValue: string);
+procedure TIDETodoWindow.SetProjPack(AValue: TObject);
 begin
-  //if FIDEItem=AValue then exit;  // No check, trigger update in any case.
-  FIDEItem:=AValue;
-  UpdateStartFilename;
+  //if FProjPack=AValue then Exit; // No check, trigger update in any case.
+  FProjPack:=AValue;
+  UpdateTodos;
 end;
 
 procedure TIDETodoWindow.acExportExecute(Sender: TObject);

@@ -13,7 +13,7 @@ object IDETodoWindow: TIDETodoWindow
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  OnShow = ShowChange
+  OnShow = FormShow
   object lvTodo: TListView
     Left = 6
     Height = 176
@@ -212,7 +212,7 @@ object IDETodoWindow: TIDETodoWindow
     object acRefresh: TAction
       Caption = 'Refresh'
       ShortCut = 116
-      OnExecute = ShowChange
+      OnExecute = FormShow
     end
     object acExport: TAction
       Caption = 'Export'

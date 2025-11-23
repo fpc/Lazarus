@@ -66,6 +66,8 @@ resourcestring
   lisTDDEditToDoDlgCaption = 'Edit the ToDo item';
   lisViewToDoList = 'View ToDo List';
   lisToDoList = 'ToDo List';
+  lisToDoListforProject = 'ToDo List for Project "%s"';
+  lisToDoListForPackage = 'ToDo List for Package "%s"';
   lisPkgFileTypeText = 'Text';
   dlgFilterCsv = 'CSV files';
   lisShowTypes = 'Show Types';

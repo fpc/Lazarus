@@ -523,10 +523,11 @@ var
   I, EndI, Len: Integer;
 begin
   if (Text = '') or (IssueID <> '') then exit;
+  Len := Length(aKey);
   I := PosI(aKey, Text);
-  if (I > 0) and (I < Length(Text)-1) and (Text[I+Length(aKey)] in [' ','=']) then
+  if (I > 0) and (I < Length(Text)-Len) and (Text[I+Len] in [' ','=']) then
   begin
-    Inc(I, Length(aKey)+1);
+    Inc(I, Len+1);
     if Text[I] = '#' then
       Inc(I);
     EndI := I;
