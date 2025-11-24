@@ -4522,7 +4522,7 @@ procedure TPascalParserTool.ReadTypeReference(CreateNodes: boolean; Extract: boo
   end;
 
 var
-  Cnt: Integer;
+  Cnt, p: Integer;
 begin
   if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
     (* If ForceCreateSpecializeSubNodes then the specialize can be closed.
@@ -4539,6 +4539,7 @@ begin
       CurNode.EndPos:=CurPos.EndPos;
     end;
     Next;
+    p := CurPos.StartPos;
   end;
   Cnt:=1;
   while CurPos.Flag=cafPoint do begin
@@ -4564,23 +4565,37 @@ begin
       Next;
     end
     else if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) then begin
-      // e.g. atype<params>
-      if CreateNodes or ForceCreateSpecializeSubNodes then begin
-        CurNode.Desc:=ctnSpecialize;
-        CreateChildNode;
-        CurNode.Desc:=ctnSpecializeType;
-        CurNode.StartPos:=CurNode.Parent.StartPos;
-        CurNode.EndPos:=CurPos.StartPos;
-        EndChildNode;
-      end;
-      ReadSpecializeParams(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr);
-      Next;
-      while CurPos.Flag=cafPoint do begin
-        // e.g. atype<params>.subtype
-        Next;
-        AtomIsIdentifierSaveE(20180411194209);
-        Next;
-      end;
+      repeat
+        // e.g. atype<params>
+        if CurPos.StartPos = p then begin
+          // convert current node
+          if CreateNodes or ForceCreateSpecializeSubNodes then begin
+            CurNode.Desc:=ctnSpecialize;
+            CreateChildNode;
+            CurNode.Desc:=ctnSpecializeType;
+            CurNode.StartPos:=CurNode.Parent.StartPos;
+            CurNode.EndPos:=CurPos.StartPos;
+            EndChildNode;
+          end;
+          ReadSpecializeParams(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr);
+          Next;
+        end
+        else begin
+          // create sub-node
+          ReadSpecialize(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr);
+          if CreateNodes then
+            LastEnd := CurNode.LastChild.EndPos;
+        end;
+        while CurPos.Flag=cafPoint do begin
+          // e.g. atype<params>.subtype
+          Next;
+          AtomIsIdentifierSaveE(20180411194209);
+          Next;
+        end;
+        // e.g. atype<params>.subtype.nested_gen<params>
+        if not AtomIsChar('<') then
+          break
+      until false;
     end;
   end;
   if CreateNodes then begin
