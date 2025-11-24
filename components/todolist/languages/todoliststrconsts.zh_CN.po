@@ -178,6 +178,16 @@ msgstr "列表"
 msgid "Edit selected item"
 msgstr ""
 
+#: todoliststrconsts.listodolistforpackage
+#, object-pascal-format
+msgid "ToDo List for Package \"%s\""
+msgstr ""
+
+#: todoliststrconsts.listodolistforproject
+#, object-pascal-format
+msgid "ToDo List for Project \"%s\""
+msgstr ""
+
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "转到选择的代码行"

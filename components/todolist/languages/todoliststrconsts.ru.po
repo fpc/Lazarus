@@ -168,6 +168,16 @@ msgstr "Указанные файлы"
 msgid "Edit selected item"
 msgstr "Редактировать выбранный элемент"
 
+#: todoliststrconsts.listodolistforpackage
+#, object-pascal-format
+msgid "ToDo List for Package \"%s\""
+msgstr "Список ToDo для пакета \"%s\""
+
+#: todoliststrconsts.listodolistforproject
+#, object-pascal-format
+msgid "ToDo List for Project \"%s\""
+msgstr "Список ToDo для проекта \"%s\""
+
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Перейти к выделенной строке исходного кода"

@@ -177,6 +177,16 @@ msgstr "Uvedený"
 msgid "Edit selected item"
 msgstr "Upraviť vybratú položku"
 
+#: todoliststrconsts.listodolistforpackage
+#, object-pascal-format
+msgid "ToDo List for Package \"%s\""
+msgstr ""
+
+#: todoliststrconsts.listodolistforproject
+#, object-pascal-format
+msgid "ToDo List for Project \"%s\""
+msgstr ""
+
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
 msgstr "Choď na vybratý zdrojový riadok"
