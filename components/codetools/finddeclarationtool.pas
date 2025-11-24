@@ -1184,6 +1184,8 @@ function dbgs(const Flags: TFindDeclarationFlags): string; overload;
 function dbgs(const Flags: TFoundDeclarationFlags): string; overload;
 function dbgs(const vat: TVariableAtomType): string; overload;
 function dbgs(const Kind: TFDHelpersListKind): string; overload;
+function dbgs(const Node: TCodeTreeNode; Tool: TCustomCodeTool): string; overload;
+function dbgs(GenVal: TGenericParams): string; overload;
 
 
 function BooleanTypesOrderList: TTypeAliasOrderList;
@@ -1253,6 +1255,38 @@ end;
 function dbgs(const Kind: TFDHelpersListKind): string;
 begin
   WriteStr(Result, Kind);
+end;
+
+function dbgs(const Node: TCodeTreeNode; Tool: TCustomCodeTool): string;
+var
+  c: TCodeXYPosition;
+begin
+  if Node=nil then exit('N(nil)');
+  if (Tool<>nil) then begin
+    Tool.CleanPosToCaret(node.StartPos,c);
+    Result := Format('N(%d..%d | %d,%d)', [Node.StartPos, Node.EndPos,c.X,c.y]);
+    Result := Result + '"' + TextToSingleLine(copy(Tool.Src, Node.StartPos, Node.EndPos-Node.StartPos+1))+ '"';
+  end
+  else
+    Result := Format('N(%d..%d)', [Node.StartPos, Node.EndPos]);
+end;
+
+function dbgs(GenVal: TGenericParams): string;
+var
+  s: String;
+begin
+  Result := '';
+  s := '|| ';
+  repeat
+    with GenVal do
+      result := Result +
+        format('%s  %s --FOR GEN--: %s', [s, dbgs(SpecializeParamsNode, ParamValuesTool), dbgs(GenericNode, GenericTool)]);
+    if Length(GenVal.OuterGenParam) < 1 then break;
+    Result := Result + LineEnding;
+    GenVal := GenVal.OuterGenParam[0];
+    //if s = '|| ' then s := StringOfChar(' ', DebugLogger.CurrentIndentLevel) +StringOfChar(' ', DebugLogger.CurrentIndentLevel) +s;
+    s := s +' ';
+  until false;
 end;
 
 function BooleanTypesOrderList: TTypeAliasOrderList;
