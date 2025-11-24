@@ -99,7 +99,7 @@ type
     // Put into a wrapper, so it can be moved outside, as nested generics aren't allowed
     TCAWrap = class
     private type
-      generic TCapacityAccessor<TMemHeaderT; TData> = object
+      generic TCapacityAccessor<TMemHeaderT, TData> = object
       public type
         PMemHeaderT = ^TMemHeaderT;
       public
