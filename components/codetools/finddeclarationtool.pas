@@ -101,6 +101,7 @@ type
     vatSpace,            // empty or space
     vatIdentifier,       // an identifier
     vatPreDefIdentifier, // an identifier with special meaning to the compiler
+    vatSpecialize,       // specialize keyword
     vatPoint,            // .
     vatAS,               // AS keyword
     vatINHERITED,        // INHERITED keyword
@@ -122,6 +123,7 @@ const
      'Space',
      'Ident',
      'PreDefIdent',
+     'Specialize',
      'Point',
      'AS',
      'INHERITED',
@@ -2170,10 +2172,13 @@ var
     if (ClassNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
     // parse class and build CodeTreeNodes for all properties/methods
     CursorNode:=FindDeepestNodeAtPos(ClassNode,CleanCursorPos,true);
-    if CursorNode.StartPos < CleanCursorPos then exit; // Not a simple term, no DirectSearch
+    // Class ancestor may be qualifed: Foo.TBase
+    if CursorNode.StartPos < CleanCursorPos then exit;
     if CursorNode.GetNodeOfType(ctnClassInheritance)=nil then exit;
+    // May be a generic param
+    if (ClassNode.FirstChild <> nil) and (ClassNode.FirstChild.StartPos = CleanCursorPos) then
+      CursorNode:=ClassNode.Parent;
     // identifier is an ancestor/interface identifier
-    CursorNode:=ClassNode.Parent;
     DirectSearch:=true;
     SkipChecks:=true;
   end;
@@ -5729,7 +5734,7 @@ var
       MoveCursorToCleanPos(CleanPos);
       ReadNextAtom;
       ReadNextAtom;
-      if (CurPos.Flag=cafPoint) or AtomIsChar('<') then begin
+      if (StartNode.Desc = ctnSpecialize) or (CurPos.Flag=cafPoint) or AtomIsChar('<') then begin
         // this is an expression, e.g. A.B or A<B>
         Include(SubParams.Flags,fdfFindVariable);
         ExprType:=FindExpressionTypeOfTerm(CleanPos,-1,SubParams,false);
@@ -5862,7 +5867,6 @@ var
   TestContext: TFindContext;
   OldPos, i: integer;
   SpecializeNode: TCodeTreeNode;
-  NameNode: TCodeTreeNode;
   IsPredefined: boolean;
   OldStartFlags: TFindDeclarationFlags;
   NodeStackEntry: PCodeTreeNodeStackEntry;
@@ -6103,13 +6107,12 @@ begin
       if (Result.Node.Desc=ctnSpecialize) then begin
         // go to the type name of the specialisation
         SpecializeNode:=Result.Node;
-        NameNode:=SpecializeNode.FirstChild;
-        Result.Node:=NameNode;
+        Result.Node:=SpecializeNode;
         if Result.Node=nil then break;
-        SearchIdentifier(SpecializeNode,NameNode.StartPos,IsPredefined,Result);
-        if (Result.Node=nil) or (Result.Node.Desc<>ctnGenericType) then begin
+        SearchIdentifier(SpecializeNode,SpecializeNode.StartPos,IsPredefined,Result);
+        if (Result.Node=nil) then begin //or (Result.Node.Desc<>ctnGenericType) then begin
           // not a generic
-          MoveCursorToNodeStart(NameNode);
+          MoveCursorToNodeStart(SpecializeNode);
           ReadNextAtom;
           RaiseExceptionFmt(20170421200156,ctsStrExpectedButAtomFound,
                             [ctsGenericIdentifier,GetAtom]);
@@ -8885,19 +8888,27 @@ begin
       RaiseStringExpectedButAtomFound(20170421200248,'class type');
     end;
     MoveCursorToCleanPos(IdentifierNode.FirstChild.StartPos);
-  end else
+    ReadNextAtom;
+    AtomIsIdentifierE;
+    AncestorStartPos:=CurPos.StartPos;
+    MoveCursorToCleanPos(IdentifierNode.LastChild.EndPos);
+    ReadNextAtom;
+  end else begin
     MoveCursorToCleanPos(IdentifierNode.StartPos);
-  ReadNextAtom;
-  AtomIsIdentifierE;
-  AncestorStartPos:=CurPos.StartPos;
-  ReadNextAtom;
+    ReadNextAtom;
+    AtomIsIdentifierE;
+    AncestorStartPos:=CurPos.StartPos;
+    ReadNextAtom;
+  end;
 
   Params:=TFindDeclarationParams.Create(ResultParams);
   try
     Params.GenParams := ResultParams.GenParams;
     Params.Flags:=fdfDefaultForExpressions;
     Params.ContextNode:=IdentifierNode;
-    if CurPos.Flag=cafPoint then begin
+    if (CurPos.Flag=cafPoint) or
+       ( (IdentifierNode.Desc=ctnSpecialize) and (Scanner.CompilerMode<>cmDelphi))
+    then begin
       // complex identifier
       {$IFDEF ShowTriedContexts}
       DebugLn(['[TFindDeclarationTool.FindAncestorOfClass] ',
@@ -9976,7 +9987,7 @@ function TFindDeclarationTool.FindEndOfTerm(
   end;
 
 var
-  FirstIdentifier: boolean;
+  FirstIdentifier, NextReadDone: boolean;
 
   procedure StartVar;
   begin
@@ -9991,6 +10002,7 @@ var
     end;
     FirstIdentifier:=true;
     if not (CurPos.Flag in AllCommonAtomWords) then exit;
+    if UpAtomIs('SPECIALIZE') then exit;
     AtomIsIdentifierE;
     FirstIdentifier:=false;
     ReadNextAtom;
@@ -10000,6 +10012,7 @@ begin
   MoveCursorToCleanPos(StartPos);
   StartVar;
   repeat
+    NextReadDone := False;
     case CurPos.Flag of
     cafRoundBracketOpen:
       begin
@@ -10031,10 +10044,15 @@ begin
           break;
         StartVar;
         UndoReadNextAtom;
+      end else if UpAtomIs('SPECIALIZE') then begin
+        FirstIdentifier:=false;
+        ReadSpecialize(False);
+        NextReadDone := True;
       end else
         break;
     end;
-    ReadNextAtom;
+    if not NextReadDone then
+      ReadNextAtom;
   until false;
   if LastAtoms.HasPrior then
     UndoReadNextAtom
@@ -10075,14 +10093,24 @@ begin
   if not IsSpaceChar[Src[StartPos]] then
     ReadNextAtom;
   NextAtomType:=GetCurrentAtomType;
-  NextIsValue:=NextAtomType in [vatIdentifier,vatPreDefIdentifier,vatNumber,vatStringConstant];
+  NextIsValue:=NextAtomType in [vatIdentifier,vatSpecialize,vatPreDefIdentifier,vatNumber,vatStringConstant];
   repeat
     ReadPriorAtom;
     CurAtom:=CurPos;
     CurAtomType:=GetCurrentAtomType;
     if CurAtomType=vatNone then begin
-      Result:=NextAtom.StartPos;
-      exit;
+      if AtomIs('>') and (NextAtomType = vatPoint)
+      and ReadBackGenericParamList(False)
+      then begin // y.specialize Foo<x>.
+        ReadPriorAtom;
+        CurAtom:=CurPos; // generic type name "Foo"
+        CurAtomType:=GetCurrentAtomType; // vatIdentifier
+        // keep NextAtom = vatPoint => then vatSpecialize will be read as identifier before the dot
+      end
+      else begin
+        Result:=NextAtom.StartPos;
+        exit;
+      end;
     end;
     //DebugLn(['TFindDeclarationTool.FindStartOfTerm ',GetAtom,' Cur=',VariableAtomTypeNames[CurAtomType],' Next=',VariableAtomTypeNames[NextAtomType]]);
     if CurAtomType in [vatRoundBracketClose,vatEdgedBracketClose] then begin
@@ -10110,11 +10138,11 @@ begin
       Result:=NextAtom.StartPos;
       exit;
     end;
-    CurIsValue:=CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatNumber,vatStringConstant];
+    CurIsValue:=CurAtomType in [vatIdentifier,vatSpecialize,vatPreDefIdentifier,vatNumber,vatStringConstant];
 
-    if (not (CurAtomType in [vatIdentifier,vatPreDefIdentifier,vatNumber,vatStringConstant,
+    if (not (CurAtomType in [vatIdentifier,vatSpecialize,vatPreDefIdentifier,vatNumber,vatStringConstant,
       vatPoint,vatUp,vatEdgedBracketClose,vatRoundBracketClose]))
-    or (CurIsValue and NextIsValue)
+    or ((CurIsValue and NextIsValue) and not (CurAtomType = vatSpecialize)) // vatSpecialize is value, so it gets set to NextIsValue
     then begin
       // boundary found between current and next
       if NextAtom.StartPos>=EndPos then begin
@@ -10122,7 +10150,7 @@ begin
         Result:=EndPos;
       end else begin
         // the next atom is the start of the variable
-        if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier,vatStringConstant,
+        if (not (NextAtomType in [vatSpace,vatIdentifier,vatSpecialize,vatPreDefIdentifier,vatStringConstant,
           vatRoundBracketClose,vatEdgedBracketClose,vatAddrOp])) then
         begin
           MoveCursorToCleanPos(NextAtom.StartPos);
@@ -10168,7 +10196,7 @@ var
   PrevAtomType: TVariableAtomType; // previous, start of brackets
   CurAtom, NextAtom: TAtomPosition;
   CurAtomBracketEndPos: integer;
-  StartNode: TCodeTreeNode;
+  StartNode, SpecializeNode: TCodeTreeNode;
   OldInput: TFindDeclarationInput;
   StartFlags: TFindDeclarationFlags;
   IsIdentEndOfVar: TIsIdentEndOfVar;
@@ -10192,6 +10220,73 @@ var
   procedure RaisePointNotFound(const Id: int64);
   begin
     RaiseExceptionFmt(Id,ctsStrExpectedButAtomFound,['.',GetAtom]);
+  end;
+
+  procedure ReadNextExpressionAtom;
+  var
+    n: TCodeTreeNode;
+    p: Integer;
+    MaybeSpecialize: Boolean;
+  begin
+    SpecializeNode := nil;
+    PrevAtomType:=CurAtomType;
+    CurAtom:=NextAtom;
+    CurAtomType:=NextAtomType;
+    MoveCursorToCleanPos(NextAtom.StartPos);
+    ReadNextAtom;
+    // in mode Delphi there is no keyword
+    MaybeSpecialize := False;
+    p := CurPos.StartPos;
+    if (Scanner.CompilerMode=cmDELPHI) and (CurAtomType = vatIdentifier) then begin
+      ReadNextAtom;
+      MaybeSpecialize := AtomIsChar('<');
+      // if it is specialize, keep the atom read
+      // ReadSpecialize expects the ident already read
+      if not MaybeSpecialize then
+        UndoReadNextAtom;
+    end;
+    if (CurAtomType = vatSpecialize) or MaybeSpecialize then begin
+      if CurAtomType = vatSpecialize then begin
+        ReadNextAtom; // skip the keyword
+        CurAtom.StartPos := CurPos.StartPos;
+      end;
+      n := StartNode;
+      while (n <> nil) and (n.StartPos > CurPos.StartPos) do
+        n := n.Parent;
+      if n <> nil then
+        SpecializeNode:=FindDeepestNodeAtPos(n,CurPos.StartPos,true); // may be wrong if anchestor is specialize ?
+      if SpecializeNode <> nil then begin
+        if SpecializeNode.Desc <> ctnSpecialize then
+          SpecializeNode := SpecializeNode.Parent;
+        if (SpecializeNode <> nil)
+        and ((SpecializeNode.Desc <> ctnSpecialize) or (SpecializeNode.StartPos <> p))
+        then
+          SpecializeNode := nil;
+      end;
+
+      if CurAtomType = vatSpecialize then begin
+        UndoReadNextAtom;
+        ReadSpecialize(False);
+      end
+      else
+      if SpecializeNode <> nil then begin
+        ReadSpecialize(False);
+      end;
+    end;
+    if (CurAtomType <> vatSpecialize) and (SpecializeNode = nil) then begin
+      // Did not ReadSpecialize
+      if CurAtomType in [vatRoundBracketOpen,vatEdgedBracketOpen] then
+        ReadTilBracketClose(true);
+      CurAtomBracketEndPos:=CurPos.EndPos;
+      ReadNextAtom;
+    end;
+    NextAtom:=CurPos;
+    if NextAtom.EndPos<=EndPos then
+      NextAtomType:=GetCurrentAtomType
+    else
+      NextAtomType:=vatSpace;
+    MoveCursorToCleanPos(CurAtom.StartPos);
+    IsIdentEndOfVar:=iieovUnknown;
   end;
 
   function InitAtomQueue: boolean;
@@ -10219,45 +10314,16 @@ var
     {$IFDEF ShowExprEval}
     DebugLn(['  FindExpressionTypeOfTerm InitAtomQueue StartPos=',StartPos,' EndPos=',EndPos,' Expr="',copy(Src,StartPos,EndPos-StartPos),'"']);
     {$ENDIF}
-    PrevAtomType:=vatNone;
+
+    CurAtomType := vatNone;
     MoveCursorToCleanPos(StartPos);
     ReadNextAtom;
     if CurPos.StartPos>SrcLen then exit;
-    CurAtom:=CurPos;
-    CurAtomType:=GetCurrentAtomType;
-    if CurAtomType in [vatRoundBracketOpen,vatEdgedBracketOpen] then
-      ReadTilBracketClose(true);
-    CurAtomBracketEndPos:=CurPos.EndPos;
-    ReadNextAtom;
     NextAtom:=CurPos;
-    if NextAtom.EndPos<=EndPos then
-      NextAtomType:=GetCurrentAtomType
-    else
-      NextAtomType:=vatSpace;
-    MoveCursorToCleanPos(CurAtom.StartPos);
-    IsIdentEndOfVar:=iieovUnknown;
+    NextAtomType:=GetCurrentAtomType;
+    ReadNextExpressionAtom;
     FlagCanBeForwardDefinedValid:=false;
     Result:=true;
-  end;
-  
-  procedure ReadNextExpressionAtom;
-  begin
-    PrevAtomType:=CurAtomType;
-    CurAtom:=NextAtom;
-    CurAtomType:=NextAtomType;
-    MoveCursorToCleanPos(NextAtom.StartPos);
-    ReadNextAtom;
-    if CurAtomType in [vatRoundBracketOpen,vatEdgedBracketOpen] then
-      ReadTilBracketClose(true);
-    CurAtomBracketEndPos:=CurPos.EndPos;
-    ReadNextAtom;
-    NextAtom:=CurPos;
-    if NextAtom.EndPos<=EndPos then
-      NextAtomType:=GetCurrentAtomType
-    else
-      NextAtomType:=vatSpace;
-    MoveCursorToCleanPos(CurAtom.StartPos);
-    IsIdentEndOfVar:=iieovUnknown;
   end;
   
   function IsIdentifierEndOfVariable: boolean;
@@ -10936,7 +11002,7 @@ var
           exit;
         end;
 
-        Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
+        Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier,0,SpecializeNode);
 
         // search ...
         {$IFDEF ShowExprEval}
@@ -10946,10 +11012,15 @@ var
         // first search backwards
         if Context.Tool.FindIdentifierInContext(Params) then begin
           ExprType.Desc:=xtContext;
+          if SpecializeNode <> nil then begin
+            if Params.NewNode.Desc <> ctnGenericType then
+              RaiseException(20251125000000,'[TFindDeclarationTool.FindExpressionTypeOfTerm.ResolveIdentifier] Expected generic');
+            Params.SetGenericParamValues(Self, SpecializeNode, Params.NewCodeTool, Params.NewNode);
+          end;
         end else if SearchForwardToo then begin
           // then search forwards
           Params.Load(OldInput,false);
-          Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
+          Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier,0,SpecializeNode);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                          fdfIgnoreCurContextNode,fdfSearchForward]
                         +(fdfGlobals*Params.Flags);
@@ -11165,7 +11236,7 @@ var
       exit;
     if fdfExtractOperand in Params.Flags then
       Params.AddOperandPart('.');
-    if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
+    if (not (NextAtomType in [vatSpace,vatIdentifier,vatSpecialize,vatPreDefIdentifier])) then
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
@@ -11212,7 +11283,7 @@ var
   procedure ResolveAs;
   begin
     // for example 'A as B'
-    if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
+    if (not (NextAtomType in [vatSpace,vatIdentifier,vatSpecialize,vatPreDefIdentifier])) then
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
@@ -11526,7 +11597,7 @@ var
     end;
     HasIdentifier:=NextAtom.EndPos<=EndPos;
     if HasIdentifier then begin
-      if (not (NextAtomType in [vatIdentifier,vatPreDefIdentifier])) then
+      if (not (NextAtomType in [vatIdentifier,vatSpecialize,vatPreDefIdentifier])) then
       begin
         MoveCursorToCleanPos(NextAtom.StartPos);
         ReadNextAtom;
@@ -11635,7 +11706,7 @@ begin
       ' ExprType=',ExprTypeToString(ExprType)]);
     {$ENDIF}
     case CurAtomType of
-    vatIdentifier, vatPreDefIdentifier: ResolveIdentifier;
+    vatIdentifier, vatSpecialize, vatPreDefIdentifier: ResolveIdentifier;
     vatStringConstant,vatNumber: ResolveConstant;
     vatPoint:             ResolvePoint;
     vatAS:                ResolveAs;
@@ -13090,6 +13161,15 @@ begin
       else
         exit(vatIdentifier);
     end else
+    if UpAtomIs('SPECIALIZE') and ((Scanner.CompilerMode<>cmDELPHI)) then begin
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      //if (Node<>nil) and (Node.Desc in [ctnSpecialize,ctnSpecializeParams,ctnSpecializeParam,ctnSpecializeType]) then
+      if (Node<>nil) and (Node.Desc in [ctnSpecialize, ctnBeginBlock]) then // no nodes in begin...end code
+        exit(vatSpecialize)
+      else
+        exit(vatIdentifier);
+    end
+    else
       exit(vatIdentifier);
   end else if (CurPos.StartPos=CurPos.EndPos-1) then begin
     case c of
@@ -15688,7 +15768,7 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
   function DoFindIdentifierInContext(
     Tool: TFindDeclarationTool; CtxNode: TCodeTreeNode;
     IdentTool: TFindDeclarationTool; IdentNode: TCodeTreeNode;
-    NewIdentifier: pchar): boolean;
+    ForceIdentifier: string = ''): boolean;
   var
     SubParams: TFindDeclarationParams;
     r: TExpressionType;
@@ -15700,19 +15780,29 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
       SubParams.Flags:=Flags;
 
       if (IdentNode <> nil) and not Tool.IsNodeSingleAtom(IdentNode) then begin
+        SubParams.Flags:=SubParams.Flags+[fdfFindVariable];
         r := Tool.FindExpressionTypeOfTerm(IdentNode.StartPos, IdentNode.EndPos, SubParams, False);
-        if r.Desc <> xtContext then
-          Tool.RaiseExceptionFmt(20251121120000,'type',[]);
         Result := r.Desc <> xtNone;
+        if Result and (r.Desc <> xtContext) then
+          Tool.RaiseExceptionFmt(20251121120000,'type',[]);
+        if Result then begin
+          NewNode:=r.Context.Node;
+          NewCodeTool:=r.Context.Tool;
+        end;
       end
       else begin
-        SubParams.SetIdentifier(IdentTool, NewIdentifier, nil);
+        if ForceIdentifier <> '' then
+          SubParams.SetIdentifier(IdentTool, pchar(ForceIdentifier), nil,0,IdentNode)
+        else
+          SubParams.SetIdentifier(IdentTool, @IdentTool.Src[IdentNode.StartPos], nil,0,IdentNode);
         Result:=Tool.FindIdentifierInContext(SubParams);
+        if Result then begin
+          NewNode:=SubParams.NewNode;
+          NewCodeTool:=SubParams.NewCodeTool;
+        end;
       end;
 
       if Result then begin
-        NewNode:=SubParams.NewNode;
-        NewCodeTool:=SubParams.NewCodeTool;
         if  (fodDoNotCache in SubParams.NewFlags) then begin
           Include(Flags, fdfDoNotCache);
           Include(NewFlags, fodDoNotCache);
@@ -15734,9 +15824,9 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
     NewCodeTool.MoveCursorToCleanPos(NewNode.FirstChild.StartPos);
     NewCodeTool.ReadNextAtom;
     if NewCodeTool.UpAtomIs('CLASS') then
-      Result := DoFindIdentifierInContext(NewCodeTool, NewNode, NewCodeTool, NewNode.FirstChild, PChar('TOBJECT'))
+      Result := DoFindIdentifierInContext(NewCodeTool, NewNode, NewCodeTool, nil, 'TOBJECT')
     else
-      Result := DoFindIdentifierInContext(NewCodeTool, NewNode, NewCodeTool, NewNode.FirstChild, @NewCodeTool.Src[NewNode.FirstChild.StartPos]);
+      Result := DoFindIdentifierInContext(NewCodeTool, NewNode, NewCodeTool, NewNode.FirstChild);
   end;
 var
   i, n: integer;
@@ -15794,53 +15884,29 @@ begin
      TODO: Except if we "self specialized"?
   *)
   with GenParams.ParamValuesTool do begin
-    MoveCursorToNodeStart(GenParams.SpecializeParamsNode);
-    ReadNextAtom;
-    // maybe all this syntax check is redundant
-    if not AtomIsChar('<') then
-      RaiseExceptionFmt(20170421200701,ctsStrExpectedButAtomFound,['<', GetAtom]);
-    ReadNextAtom;
-    if CurPos.Flag<>cafWord then
-      RaiseExceptionFmt(20170421200703,ctsIdentExpectedButAtomFound,[GetAtom]);
-    for i:=2 to n do begin
-      ReadNextAtom;
-      if AtomIsChar('>') then
-        RaiseException(20170421200705,ctsNotEnoughGenParams);
-      if not AtomIsChar(',') then
-        RaiseExceptionFmt(20170421200707,ctsStrExpectedButAtomFound,['>', GetAtom]);
-      ReadNextAtom;
-      if CurPos.Flag<>cafWord then
-        RaiseExceptionFmt(20170421200710,ctsIdentExpectedButAtomFound,[GetAtom]);
-    end;
-
     CtxNode:=GenParams.SpecializeParamsNode;
     CtxTool:=GenParams.ParamValuesTool;
-    if Length(GenParams.OuterGenParam) > 0 then
-      GenParams := GenParams.OuterGenParam[0]
+    if Length(GenParams.OuterGenParam) > 0 then begin
+      GenParams := GenParams.OuterGenParam[0];
+    end
     else begin
       GenParams.ParamValuesTool:=nil;
       GenParams.SpecializeParamsNode:=nil;
     end;
-    Result := (CtxNode.FirstChild <> nil) and (CtxNode.FirstChild.Desc = ctnSpecialize);
-    if Result then begin
-      NewNode:= CtxNode.FirstChild;
-      NewCodeTool:=CtxTool;
-      Include(Flags, fdfDoNotCache);
-      Include(NewFlags, fodDoNotCache);
-    end
-    else begin
-      GenParamType := CtxNode.FirstChild;
-      for i := 2 to n do if GenParamType <> nil then GenParamType := GenParamType.NextBrother;
-      Result:=DoFindIdentifierInContext(CtxTool, CtxNode, CtxTool, GenParamType, @Src[CurPos.StartPos]);
 
-      if not Result then begin
-        if GenParamType <> nil then begin
-          NewNode:=GenParamType;
-          NewCodeTool:=CtxTool;
-          Include(Flags, fdfDoNotCache);
-          Include(NewFlags, fodDoNotCache);
-          Result := True;
-        end;
+    GenParamType := CtxNode.FirstChild;
+    for i := 2 to n do if GenParamType <> nil then GenParamType := GenParamType.NextBrother;
+    if GenParamType <> nil then begin
+      Result:=DoFindIdentifierInContext(CtxTool, CtxNode, CtxTool, GenParamType);
+
+      if (not Result) and
+         (PredefinedIdentToExprTypeDesc(@CtxTool.Src[GenParamType.StartPos], CtxTool.Scanner.PascalCompiler) <> xtNone)
+      then begin
+        NewNode:=GenParamType;
+        NewCodeTool:=CtxTool;
+        Include(Flags, fdfDoNotCache);
+        Include(NewFlags, fodDoNotCache);
+        Result := True;
       end;
     end;
 

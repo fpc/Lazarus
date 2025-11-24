@@ -23,10 +23,14 @@ type
   // This would be a user defined type when using Generics.Collections.
   // In mode Delphi there is no "specialize" keyword but it makes no difference for the error.
   TestType = TDictionary<string,string>;
+  TestType2 = bug32252.TDictionary<string,string>;
 var
   TestVar: TestType;
+  TestVar2: TestType2;
 begin
-  TestVar:=TestType.a{completion:Create;Bar;Foo;TKey;TValue;THashFactory}
+// TODO: TKey should not be in Gather...
+  TestVar:=TestType.a{completion:Create;Bar;Foo;TKey;TValue;THashFactory} Bar;
+  TestVar2:=TestType2.a{completion:Create;Bar;Foo;TKey;TValue;THashFactory} Bar;
 end.
 
 

@@ -176,10 +176,12 @@ type
     // types
     procedure ReadTypeNameAndDefinition;
     procedure ReadGenericParamList(Must, AllowConstraints: boolean);
+    function ReadBackGenericParamList(AllowConstraints: boolean): boolean;
     procedure ReadAttribute;
     procedure FixLastAttributes;
     procedure ReadTypeReference(CreateNodes: boolean; Extract: boolean = false;
-      Copying: boolean = false; const Attr: TProcHeadAttributes = []);
+      Copying: boolean = false; const Attr: TProcHeadAttributes = [];
+      ForceCreateSpecializeSubNodes: Boolean = False);
     procedure ReadClassInterfaceContent;
     function KeyWordFuncTypeClass: boolean;
     function KeyWordFuncTypeClassInterface(IntfDesc: TCodeTreeNodeDesc): boolean;
@@ -249,7 +251,7 @@ type
     procedure ReadGUID;
     procedure ReadClassInheritance(CreateChildNodes: boolean);
     procedure ReadSpecialize(CreateChildNodes: boolean; Extract: boolean = false;
-      Copying: boolean = false; const Attr: TProcHeadAttributes = []);
+      Copying: boolean = false; const Attr: TProcHeadAttributes = []; DontCloseChildNode: boolean = False);
     procedure ReadSpecializeParams(CreateChildNodes: boolean; Extract: boolean = false;
       Copying: boolean = false; const Attr: TProcHeadAttributes = []);
     procedure ReadAnsiStringParams(Extract: boolean = false;
@@ -4351,31 +4353,28 @@ begin
           CreateChildNode;
           CurNode.Desc:=ctnGenericConstraint;
         end;
-        repeat
-          CurNode.EndPos:=CurPos.EndPos;
-          CurNode.Parent.EndPos:=CurPos.EndPos;
-          if UpAtomIs('RECORD') or UpAtomIs('CLASS') or UpAtomIs('CONSTRUCTOR')
-          then begin
-            // keyword
-            ReadNextAtom;
-          end else begin
-            // a type
-            AtomIsIdentifierSaveE(20180411194204);
-            ReadNextAtom;
-          end;
-          if AtomIs('>=') then begin
-            // this is the rare case where >= are two separate atoms
-            dec(CurPos.EndPos);
-          end;
-          if (CurPos.Flag=cafSemicolon) or AtomIsChar('>') then begin
-            break;
-          end else if CurPos.Flag<>cafComma then
-            SaveRaiseCharExpectedButAtomFound(20170421195740,'>');
-          ReadNextAtom;
-        until false;
-        // close ctnGenericConstraint
+
+        if UpAtomIs('RECORD') or UpAtomIs('CLASS') or UpAtomIs('CONSTRUCTOR')
+        then begin
+          // keyword
+        end else begin
+          ReadTypeReference(False, False, False, [], True);
+          UndoReadNextAtom;
+        end;
+        CurNode.EndPos:=CurPos.EndPos;
         EndChildNode;
-        if AtomIsChar('>') then break;
+        CurNode.EndPos:=CurPos.EndPos;
+
+        ReadNextAtom;
+        if AtomIs('>=') then begin
+          // this is the rare case where >= are two separate atoms
+          dec(CurPos.EndPos);
+          break; // reached >
+        end
+        else
+          if AtomIsChar('>') then break;
+        if not (CurPos.Flag=cafSemicolon) then
+          SaveRaiseCharExpectedButAtomFound(20170421195740,'>');
         // cursor is now on ;
       end else
         SaveRaiseCharExpectedButAtomFound(20170421195742,'>');
@@ -4395,6 +4394,40 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   ReadNextAtom;
+end;
+
+function TPascalParserTool.ReadBackGenericParamList(AllowConstraints: boolean): boolean;
+var
+  Start: TAtomPosition;
+begin
+  Result := False;
+  Start:=CurPos;
+  if CurPos.StartPos <= 1 then
+    exit;
+  while (CurPos.StartPos > 1) do begin
+    ReadPriorAtom; // go before the ">"
+    Result := AtomIsChar('<');
+    if Result then
+      exit;
+
+    if (not AllowConstraints) and (CurPos.Flag in [cafColon, cafSemicolon]) then
+      break;
+
+    if (CurPos.Flag = cafRoundBracketClose) or
+       (CurPos.Flag = cafEdgedBracketClose)
+    then begin
+      if not ReadBackTilBracketOpen(False) then
+        break;
+    end;
+
+    if  AtomIsChar('>') then begin
+      if not ReadBackGenericParamList(False) then // must be a specialize
+        break;
+      ReadPriorAtom;
+    end;
+
+  end;
+  CurPos := Start;
 end;
 
 procedure TPascalParserTool.ReadAttribute;
@@ -4464,7 +4497,7 @@ begin
 end;
 
 procedure TPascalParserTool.ReadTypeReference(CreateNodes: boolean; Extract: boolean;
-  Copying: boolean; const Attr: TProcHeadAttributes);
+  Copying: boolean; const Attr: TProcHeadAttributes; ForceCreateSpecializeSubNodes: Boolean);
 { After reading CurPos is on atom behind the identifier
 
   Examples:
@@ -4474,10 +4507,14 @@ procedure TPascalParserTool.ReadTypeReference(CreateNodes: boolean; Extract: boo
     TGenericClass<TypeRef,TypeRef>.TNestedClass<TypeRef>
     specialize TGenericClass<TypeRef,TypeRef>
     atype<char>.subtype
+    TFoo.specialize atype<char>.subtype
 }
 
+  var
+    LastEnd: Integer;
   procedure Next; inline;
   begin
+    LastEnd := CurPos.EndPos;
     if not Extract then
       ReadNextAtom
     else
@@ -4488,12 +4525,12 @@ var
   Cnt: Integer;
 begin
   if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
-    ReadSpecialize(CreateNodes,Extract,Copying,Attr);
-    if CurPos.Flag<>cafPoint then
-      exit;
-    CreateNodes := False; // TODO
-    // e.g. atype<params>.subtype
-    // e.g. atype<params>.subtype.specialize<x>
+    (* If ForceCreateSpecializeSubNodes then the specialize can be closed.
+       The surrounding node of the caller can handle multiple specialize children
+    *)
+    ReadSpecialize(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr,CreateNodes);
+    if CreateNodes then
+      LastEnd := CurNode.EndPos;  // if CreateNodes then: CurNode is not yet closed;
   end
   else begin
     if CreateNodes then begin
@@ -4507,7 +4544,9 @@ begin
   while CurPos.Flag=cafPoint do begin
     Next;
     if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
-      ReadSpecialize(CreateNodes,Extract,Copying,Attr);
+      ReadSpecialize(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr);
+      if CreateNodes then
+        LastEnd := CurNode.LastChild.EndPos;
       inc(Cnt,1);
     end
     else begin
@@ -4526,7 +4565,7 @@ begin
     end
     else if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) then begin
       // e.g. atype<params>
-      if CreateNodes then begin
+      if CreateNodes or ForceCreateSpecializeSubNodes then begin
         CurNode.Desc:=ctnSpecialize;
         CreateChildNode;
         CurNode.Desc:=ctnSpecializeType;
@@ -4534,7 +4573,7 @@ begin
         CurNode.EndPos:=CurPos.StartPos;
         EndChildNode;
       end;
-      ReadSpecializeParams(CreateNodes,Extract,Copying,Attr);
+      ReadSpecializeParams(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr);
       Next;
       while CurPos.Flag=cafPoint do begin
         // e.g. atype<params>.subtype
@@ -4545,7 +4584,7 @@ begin
     end;
   end;
   if CreateNodes then begin
-    CurNode.EndPos:=CurPos.StartPos;
+    CurNode.EndPos:=LastEnd;
     EndChildNode;
   end;
 end;
@@ -6129,8 +6168,8 @@ begin
   end;
 end;
 
-procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean;
-  Extract: boolean; Copying: boolean; const Attr: TProcHeadAttributes);
+procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean; Extract: boolean;
+  Copying: boolean; const Attr: TProcHeadAttributes; DontCloseChildNode: boolean);
 // specialize template
 // after parsing the cursor is on the atom behind the >
 // examples:
@@ -6195,7 +6234,8 @@ begin
   if CreateChildNodes then begin
     // close specialize
     CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode; // end ctnSpecialize
+    if not DontCloseChildNode then
+      EndChildNode; // end ctnSpecialize
   end;
   Next;
   //debugln(['TPascalParserTool.ReadSpecialize END ',GetAtom,' ',CurNode.DescAsString]);

@@ -10,7 +10,7 @@ type
     FData: B;
   end;
 
-  TTestClass = class
+  TTestClass = class(TBase)
   protected type
     generic TInnerGen<T: TBase> = class
       f: T;
@@ -22,7 +22,7 @@ type
     procedure Foo;
   end;
 
-  TOuterBar = specialize TTestClass.TInnerGen<TTestClass>;
+  TOuterBar = TTestClass.specialize TInnerGen<TTestClass>;
 
 
 var
