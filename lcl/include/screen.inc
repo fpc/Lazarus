@@ -43,12 +43,9 @@ begin
   Assert(not L.Sorted, 'EnumFontsNoDups: List of fonts has Sorted=True.');
   Assert(not L.UseLocale, 'EnumFontsNoDups: List of fonts has UseLocale=True.');
   S := LogFont.elfLogFont.lfFaceName;
-  // Prevent consecutive duplicates. The list is alphabetically sorted in all platforms.
-  if (L.Count=0) or (L[L.Count-1] <> S) then begin
-    // There should be no duplicates elsewhere in the list.
-    Assert(L.IndexOf(S)<0,'EnumFontsNoDups: Unexpected duplicate font "'+S+'"');
+  // Prevent consecutive duplicates. The list is sorted in most systems.
+  if (L.Count = 0) or (L[L.Count-1] <> S) then
     L.Add(S);
-  end;
   Result := 1;
 end;
 
