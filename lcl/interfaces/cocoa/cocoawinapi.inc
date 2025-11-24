@@ -1836,6 +1836,7 @@ begin
   if obj.isKindOfClass(TCocoaScrollView) then
   begin
     sc:=TCocoaScrollView(obj);
+    Inc( sc.scrollingLockCount );
     if sc.lclGetTarget is TScrollingWinControl then
       lclControl:=TScrollingWinControl(sc.lclGetTarget);
     if sc.isCustomRange and (ScrollInfo.fMask and SIF_RANGE>0) then begin
@@ -1882,6 +1883,7 @@ begin
         sc.applyScrollInfo(SBStyle, ScrollInfo);
     end;
     Result:= getNewScrollPos();
+    Dec( sc.scrollingLockCount );
   end else if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
     bar:=nil;
