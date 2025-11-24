@@ -8888,6 +8888,7 @@ begin
       AncestorContext.Tool:=Params.NewCodeTool;
       AncestorContext.Node:=Params.NewNode;
     end;
+    ResultParams.GenParams:=Params.GenParams;
   finally
     Params.Free;
   end;
@@ -9112,6 +9113,8 @@ function TFindDeclarationTool.FindIdentifierInAncestors(
 { this function is internally used by FindIdentifierInContext
   and FindBaseTypeOfNode
 }
+var
+  OldGenParam: TGenericParams;
 
   function Search(AncestorTool: TFindDeclarationTool;
     AncestorClassNode: TCodeTreeNode): boolean;
@@ -9125,6 +9128,8 @@ function TFindDeclarationTool.FindIdentifierInAncestors(
       +[fdfSearchInAncestors];
     Result:=AncestorTool.FindIdentifierInContext(Params,IdentFoundResult);
     Params.Flags := OldFlags;
+    if not Result then
+      Params.GenParams := OldGenParam;
   end;
 
 var
@@ -9133,26 +9138,32 @@ var
   SearchDefaultAncestor: Boolean;
 begin
   Result:=false;
-  {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
+  OldGenParam := Params.GenParams;
+  try
+    {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
 
-  if not (fdfSearchInAncestors in Params.Flags) then exit;
+    if not (fdfSearchInAncestors in Params.Flags) then exit;
 
-  SearchDefaultAncestor:=true;
-  InheritanceNode:=FindInheritanceNode(ClassNode);
-  if (InheritanceNode<>nil) then begin
-    Node:=InheritanceNode.FirstChild;
-    while Node<>nil do begin
-      if not FindAncestorOfClassInheritance(Node,Params,true) then exit;
-      SearchDefaultAncestor:=false;
-      if Search(Params.NewCodeTool,Params.NewNode) then exit(true);
-      Node:=Node.NextBrother;
+    SearchDefaultAncestor:=true;
+    InheritanceNode:=FindInheritanceNode(ClassNode);
+    if (InheritanceNode<>nil) then begin
+      Node:=InheritanceNode.FirstChild;
+      while Node<>nil do begin
+        if not FindAncestorOfClassInheritance(Node,Params,true) then exit;
+        SearchDefaultAncestor:=false;
+        if Search(Params.NewCodeTool,Params.NewNode) then exit(true);
+        Node:=Node.NextBrother;
+      end;
     end;
-  end;
-  //debugln(['TFindDeclarationTool.FindIdentifierInAncestors SearchDefaultAncestor=',SearchDefaultAncestor,' ',CleanPosToStr(ClassNode.StartPos,true),' ',ClassNode.DescAsString]);
-  if SearchDefaultAncestor then begin
-    if not FindDefaultAncestorOfClass(ClassNode,Params,true) then exit;
-    //debugln(['TFindDeclarationTool.FindIdentifierInAncestors search in default ancestor ',FindContextToString(CreateFindContext(Params.NewCodeTool,Params.NewNode))]);
-    Result:=Search(Params.NewCodeTool,Params.NewNode);
+    //debugln(['TFindDeclarationTool.FindIdentifierInAncestors SearchDefaultAncestor=',SearchDefaultAncestor,' ',CleanPosToStr(ClassNode.StartPos,true),' ',ClassNode.DescAsString]);
+    if SearchDefaultAncestor then begin
+      if not FindDefaultAncestorOfClass(ClassNode,Params,true) then exit;
+      //debugln(['TFindDeclarationTool.FindIdentifierInAncestors search in default ancestor ',FindContextToString(CreateFindContext(Params.NewCodeTool,Params.NewNode))]);
+      Result:=Search(Params.NewCodeTool,Params.NewNode);
+    end;
+  finally
+    if not Result then
+      Params.GenParams := OldGenParam;
   end;
 end;
 
@@ -15607,7 +15618,10 @@ begin
     SetLength(GenParams.OuterGenParam, 0);
 
   GenParams.ParamValuesTool := SpecializeParamsTool;
-  GenParams.SpecializeParamsNode := SpecializeNode.FirstChild.NextBrother;
+  if SpecializeNode.FirstChild <> nil then
+    GenParams.SpecializeParamsNode := SpecializeNode.FirstChild.NextBrother
+  else
+    GenParams.SpecializeParamsNode := nil;
   GenParams.GenericTool := GenericTool;
   GenParams.GenericNode := GenericNode;
 end;
@@ -15617,11 +15631,17 @@ procedure TFindDeclarationParams.AppendGenericParamValues(
 var
   p: TGenericParams;
 begin
+  if AGenParams.ParamValuesTool = nil then begin
+    exit;
+  end;
+
   if GenParams.ParamValuesTool = nil then begin
     GenParams := AGenParams;
     exit;
   end;
 
+  if Length(GenParams.OuterGenParam) > 0 then
+    SetLength(GenParams.OuterGenParam, 1); // make unique copy
   p:=GenParams;
   while Length(p.OuterGenParam)>0 do
     p:=p.OuterGenParam[0];
@@ -15631,7 +15651,10 @@ end;
 
 function TFindDeclarationParams.FindGenericParamType: Boolean;
 
-  function DoFindIdentifierInContext(Tool: TFindDeclarationTool; IdentNode: TCodeTreeNode): boolean;
+  function DoFindIdentifierInContext(
+    Tool: TFindDeclarationTool; CtxNode: TCodeTreeNode;
+    IdentTool: TFindDeclarationTool; IdentNode: TCodeTreeNode;
+    NewIdentifier: pchar): boolean;
   var
     SubParams: TFindDeclarationParams;
     r: TExpressionType;
@@ -15639,7 +15662,7 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
     SubParams:=TFindDeclarationParams.Create(Self);
     try
       SubParams.GenParams:=GenParams;
-      SubParams.ContextNode:=ContextNode;
+      SubParams.ContextNode:=CtxNode;
       SubParams.Flags:=Flags;
 
       if (IdentNode <> nil) and not Tool.IsNodeSingleAtom(IdentNode) then begin
@@ -15649,7 +15672,7 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
         Result := r.Desc <> xtNone;
       end
       else begin
-        SubParams.SetIdentifier(IdentifierTool, Identifier, nil);
+        SubParams.SetIdentifier(IdentTool, NewIdentifier, nil);
         Result:=Tool.FindIdentifierInContext(SubParams);
       end;
 
@@ -15661,7 +15684,7 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
           Include(NewFlags, fodDoNotCache);
         end;
         //SubParams.AppendGenericParamValues(GenParams);
-        //GenParams:=SubParams.GenParams;
+        GenParams:=SubParams.GenParams;
       end;
     finally
       SubParams.Free;
@@ -15677,16 +15700,15 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
     NewCodeTool.MoveCursorToCleanPos(NewNode.FirstChild.StartPos);
     NewCodeTool.ReadNextAtom;
     if NewCodeTool.UpAtomIs('CLASS') then
-      Identifier := PChar('TOBJECT')
+      Result := DoFindIdentifierInContext(NewCodeTool, NewNode, NewCodeTool, NewNode.FirstChild, PChar('TOBJECT'))
     else
-      Identifier:=@NewCodeTool.Src[NewNode.FirstChild.StartPos];
-    Result := DoFindIdentifierInContext(NewCodeTool, NewNode.FirstChild);
+      Result := DoFindIdentifierInContext(NewCodeTool, NewNode, NewCodeTool, NewNode.FirstChild, @NewCodeTool.Src[NewNode.FirstChild.StartPos]);
   end;
 var
   i, n: integer;
-  GenParamType: TCodeTreeNode;
+  GenParamType, CtxNode: TCodeTreeNode;
   OldGenParam: TGenericParams;
-  ContextTool: TFindDeclarationTool;
+  CtxTool: TFindDeclarationTool;
 begin
   Include(Flags, fdfDoNotCache);
   Include(NewFlags, fodDoNotCache);
@@ -15708,14 +15730,18 @@ begin
   end;
 
   OldGenParam := GenParams;
+  (* Find the ParamValues (as given by specialize)
+     for the current generic-value (the value-identifier (NewNode) must be in the list)
+  *)
   while (GenParams.ParamValuesTool <> nil) and
     ( (NewNode.StartPos < GenParams.GenericNode.StartPos) or
       (NewNode.EndPos > GenParams.GenericNode.EndPos) or
       (NewCodeTool <> GenParams.GenericTool)
     )
   do begin
-    if Length(GenParams.OuterGenParam) > 0 then
-      GenParams := GenParams.OuterGenParam[0]
+    if Length(GenParams.OuterGenParam) > 0 then begin
+      GenParams := GenParams.OuterGenParam[0];
+    end
     else begin
       GenParams.ParamValuesTool:=nil;
       GenParams.SpecializeParamsNode:=nil;
@@ -15729,6 +15755,10 @@ begin
   end;
 
 
+  (* When we search the value given by the specialize,
+     then it can't be in the current generic.
+     TODO: Except if we "self specialized"?
+  *)
   with GenParams.ParamValuesTool do begin
     MoveCursorToNodeStart(GenParams.SpecializeParamsNode);
     ReadNextAtom;
@@ -15749,32 +15779,30 @@ begin
         RaiseExceptionFmt(20170421200710,ctsIdentExpectedButAtomFound,[GetAtom]);
     end;
 
-    Identifier:=@Src[CurPos.StartPos];
-    IdentifierTool:=GenParams.ParamValuesTool;
-    ContextNode:=GenParams.SpecializeParamsNode;
-    ContextTool:=GenParams.ParamValuesTool;
+    CtxNode:=GenParams.SpecializeParamsNode;
+    CtxTool:=GenParams.ParamValuesTool;
     if Length(GenParams.OuterGenParam) > 0 then
       GenParams := GenParams.OuterGenParam[0]
     else begin
       GenParams.ParamValuesTool:=nil;
       GenParams.SpecializeParamsNode:=nil;
     end;
-    Result := (ContextNode.FirstChild <> nil) and (ContextNode.FirstChild.Desc = ctnSpecialize);
+    Result := (CtxNode.FirstChild <> nil) and (CtxNode.FirstChild.Desc = ctnSpecialize);
     if Result then begin
-      NewNode:= ContextNode.FirstChild;
-      NewCodeTool:=ContextTool;
+      NewNode:= CtxNode.FirstChild;
+      NewCodeTool:=CtxTool;
       Include(Flags, fdfDoNotCache);
       Include(NewFlags, fodDoNotCache);
     end
     else begin
-      GenParamType := ContextNode.FirstChild;
+      GenParamType := CtxNode.FirstChild;
       for i := 2 to n do if GenParamType <> nil then GenParamType := GenParamType.NextBrother;
-      Result:=DoFindIdentifierInContext(ContextTool, GenParamType);
+      Result:=DoFindIdentifierInContext(CtxTool, CtxNode, CtxTool, GenParamType, @Src[CurPos.StartPos]);
 
       if not Result then begin
         if GenParamType <> nil then begin
           NewNode:=GenParamType;
-          NewCodeTool:=ContextTool;
+          NewCodeTool:=CtxTool;
           Include(Flags, fdfDoNotCache);
           Include(NewFlags, fodDoNotCache);
           Result := True;
@@ -15782,7 +15810,8 @@ begin
       end;
     end;
 
-    GenParams := OldGenParam;
+    if not Result then
+      GenParams := OldGenParam;
   end;
 end;
 
