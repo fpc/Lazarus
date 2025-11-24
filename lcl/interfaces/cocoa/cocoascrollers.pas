@@ -35,9 +35,13 @@ type
   // it corresponds to components such as ListBox, ListView, ScrollBox, Form.
 
   TCocoaScrollView = objcclass(NSScrollView)
+  private
+    _lastScrollX: Integer;
+    _lastScrollY: Integer;
   public
     callback: ICommonCallback;
     isCustomRange: Boolean;
+    scrollingLockCount: Integer;
 
     // the corresponding LCL ScrollInfo,
     // which are needed when documentView.frame changes.
@@ -56,6 +60,7 @@ type
     function lclContentView: NSView; override;
     procedure setDocumentView(aView: NSView); override;
     procedure scrollWheel(theEvent: NSEvent); override;
+    procedure reflectScrolledClipView(cView: NSClipView); override;
     procedure ensureDocumentViewSizeChanged(newSize: NSSize;
       ensureWidth: Boolean; ensureHeight: Boolean);
       message 'ensureDocumentViewSizeChanged:newSize:ensureWidth:';
@@ -989,6 +994,7 @@ end;
 
 procedure TCocoaScrollView.scrollWheel(theEvent: NSEvent);
 begin
+  Inc( self.scrollingLockCount );
   if self.hasHorizontalScroller or self.hasVerticalScroller then begin
     inherited scrollWheel( theEvent );
     callback.scrollWheel( theEvent );
@@ -996,6 +1002,34 @@ begin
     self.enclosingScrollView.scrollWheel( theEvent )
   else
     inherited scrollWheel( theEvent );
+  Dec( self.scrollingLockCount );
+end;
+
+procedure TCocoaScrollView.reflectScrolledClipView(cView: NSClipView);
+var
+  currentX: Integer;
+  currentY: Integer;
+  control: TWinControl;
+begin
+  inherited reflectScrolledClipView(cView);
+
+  currentX:= Round( cView.bounds.origin.x );
+  if not self.documentView.isFlipped then begin
+    currentY:= Round( self.documentView.frame.size.height - cView.bounds.origin.y - self.contentSize.height );
+  end else begin
+    currentY:= Round( cView.bounds.origin.y );
+  end;
+
+  control:= TWinControl( self.lclGetTarget );
+  if (self.scrollingLockCount=0) and Assigned(callback) and control.HandleAllocated then begin
+    if _lastScrollX <> currentX then
+      callback.scroll( False, currentX, NSScrollerKnob );
+    if _lastScrollY <> currentY then
+      callback.scroll( True, currentY, NSScrollerKnob );
+  end;
+
+  _lastScrollX:= currentX;
+  _lastScrollY:= currentY;
 end;
 
 procedure TCocoaScrollView.lclUpdate;
@@ -1055,6 +1089,7 @@ begin
   if BarFlag = SB_Vert then
   begin
     self.lclVertScrollInfo:= scrollInfo;
+    _lastScrollY:= scrollInfo.nPos;
     if not self.documentView.isFlipped then
       newOrigin.y := self.documentView.frame.size.height - scrollInfo.nPos - self.contentSize.height
     else
@@ -1063,6 +1098,7 @@ begin
   else
   begin
     self.lclHorzScrollInfo:= scrollInfo;
+    _lastScrollX:= scrollInfo.nPos;
     newOrigin.x:= scrollInfo.nPos;
   end;
   self.contentView.setBoundsOrigin( newOrigin );
