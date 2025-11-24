@@ -758,6 +758,7 @@ type
     FHistoryList: TFPList; // list of TSourceEditor page order for when a window closes
     FHistoryDlg: TBrowseEditorTabHistoryDialog;
     FStopBtnIdx: Integer;
+    FNextNumForEditorName: Integer;
     FOnEditorPageCaptionUpdate: TMethodList;
   private
     FUpdateTabAndPageTimer: TTimer;
@@ -5416,7 +5417,6 @@ procedure TSourceEditor.CreateEditor(AOwner: TSourceNotebook;
   AParent: TWinControl; AReturnUpdating: boolean);
 var
   NewName: string;
-  i: integer;
   bmp: TCustomBitmap;
 Begin
   {$IFDEF IDE_DEBUG}
@@ -5424,11 +5424,8 @@ Begin
   {$ENDIF}
   if not assigned(FEditor) then Begin
     FVisible := False;
-    i:=0;
-    repeat
-      inc(i);
-      NewName:='SynEdit'+IntToStr(i);
-    until (AOwner.FindComponent(NewName)=nil);
+    NewName:='SynEdit'+IntToStr(AOwner.FNextNumForEditorName);
+    Inc(AOwner.FNextNumForEditorName);
     FEditor := TIDESynEditor.Create(AOwner);
     FEditor.BeginUpdate;
     with FEditor do begin
