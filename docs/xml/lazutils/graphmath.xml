@@ -85,6 +85,35 @@ SplitBezier.
 </seealso>
 </element>
 
+<element name="TBezierPointArray">
+<short>
+Dynamically-sized array used to store TFloatPoint instances.
+</short>
+<descr>
+<p>
+<var>TBezierPointArray</var> is an array type, similar to <var>TBezier</var>, 
+used to store instances of the <var>TFloatPoint</var> type which represents 
+the control points on a parametric curve. Unlike TBezier, which has a fixed 
+length of 4 elements, TBezierPointArray is dynamically sized and allows more 
+control points for more complex bezier curves.
+</p>
+<p>
+Use Length and SetLength to examine or resize a TBezierPointArray instance.
+</p>
+<p>
+TBezierPointArray is the type passed as an argument to the Arc2PolyBezier 
+routine.
+</p>
+</descr>
+<version>
+Added in LazUtils version 5.0.
+</version>
+<seealso>
+<link id="Arc2PolyBezier"/>
+<link id="TBezier"/>
+</seealso>
+</element>
+
 <element name="PPoint">
 <short>
 Pointer to the TPoint type.
@@ -224,6 +253,86 @@ Rotation angle for the arc specified in 1/16ths of a degree.
 <short>
 TBezier instance where the array of floating point values for the bezier 
 approximation is stored.
+</short>
+</element>
+
+<element name="Arc2PolyBezier">
+<short>
+Approximates an elliptical arc by an array of Bezier segments consisting of 
+curve and control points.
+</short>
+<descr>
+<p>	
+The arc is defined by a rectangle which bounds the full ellipse. The
+rectangle has the specified Width and Height, its top/left corner is at the
+point X,Y. Start of the arc is given by the eccentric angle Angle1, and its
+length is given by Angle2. Both angles are expressed in 1/16th of a degree. 
+A full circle, for example, is equal to 5760 (16*360). A positive value of 
+Angle2 means counter-clockwise while a negative value means clockwise 
+direction. Zero degrees is at the 3 o&apos;clock position.
+</p>
+<p>
+The Rotation parameter accepts a angle for a rotated ellipse - for a
+non-rotated ellipse this value would be 0, or 360*16.
+</p>
+<p>
+The arc is approximated by one or more Bezier curves. If the angle length
+is greater than 45*16 (45 degrees), it breaks the arc into arcs of 45 degrees.
+</p>
+<p>
+The points with indices 0, 3, 6, etc are Bezier curve points (points on the
+arc), the points with indices 1, 4, 7 are the right-sided control points, those
+with indices 2, 5, ... the left-sided controls points of the curve points at
+indices 0, 3, 6, ...
+</p>
+<p>
+The points are arranged such that they can be immediately passed to the
+TCanvas.PolyBezier with parameter Continuous = True.
+</p>
+</descr>
+<version>
+Added in LazUtils version 5.0.
+</version>
+<seealso></seealso>
+</element>
+<element name="Arc2PolyBezier.X">
+<short>
+Horizontal coordinate for the top corner of the Bezier.
+</short>
+</element>
+<element name="Arc2PolyBezier.Y">
+<short>
+Vertical coordinate for the top corner of the Bezier.
+</short>
+</element>
+<element name="Arc2PolyBezier.Width">
+<short>
+Width for the rectangle where the Bezier is drawn.
+</short>
+</element>
+<element name="Arc2PolyBezier.Height">
+<short>
+Height for the rectangle where the Bezier is drawn.
+</short>
+</element>
+<element name="Arc2PolyBezier.Angle1">
+<short>
+Eccentric angle for the start of the arc.
+</short>
+</element>
+<element name="Arc2PolyBezier.Angle2">
+<short>
+Eccentric angle which defines the length of the arc.
+</short>
+</element>
+<element name="Arc2PolyBezier.Rotation">
+<short>
+Rotation angle for a rotated ellipse.
+</short>
+</element>
+<element name="Arc2PolyBezier.Points">
+<short>
+Array of TFloatPoint instances which define the control points for the Bezier.
 </short>
 </element>
 
