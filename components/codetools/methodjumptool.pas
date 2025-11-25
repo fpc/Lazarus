@@ -514,7 +514,7 @@ begin
         // search for a proc with same param list
         // and no corresponding forward proc
         SearchedParamList:=ExtractProcHead(ProcNode,[phpInUpperCase,
-                        phpWithStart,phpWithoutClassKeyword,phpWithoutClassName,
+                        phpWithStart,phpWithoutClassKeyword,phpWithoutGenericKeyword,phpWithoutClassName,
                         phpWithoutName]);
         BodyAVLNode:=SearchInNodes.FindLowest;
         while BodyAVLNode<>nil do begin
@@ -522,7 +522,7 @@ begin
           if (ANode.StartPos>ProcNode.StartPos)
           and (CompareTextIgnoringSpace(SearchedParamList,
             ExtractProcHead(ANode,[phpInUpperCase,phpWithStart,
-                    phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName]),
+                    phpWithoutClassKeyword,phpWithoutGenericKeyword,phpWithoutClassName,phpWithoutName]),
                     false)=0) then
           begin
             // proc body found
@@ -666,7 +666,7 @@ begin
           // search for a forward proc with same param list
           // and no corresponding proc body
           SearchedParamList:=ExtractProcHead(ProcNode,[phpInUpperCase,
-                      phpWithStart,phpWithoutClassKeyword,phpWithoutClassName,
+                      phpWithStart,phpWithoutClassKeyword,phpWithoutGenericKeyword,phpWithoutClassName,
                       phpWithoutName]);
           DefAVLNode:=SearchInNodes.FindLowest;
           while DefAVLNode<>nil do begin
@@ -674,7 +674,7 @@ begin
             if (ANode.StartPos<ProcNode.StartPos)
             and (CompareTextIgnoringSpace(SearchedParamList,
               ExtractProcHead(ANode,[phpInUpperCase,phpWithStart,
-                  phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName]),
+                  phpWithoutClassKeyword,phpWithoutGenericKeyword,phpWithoutClassName,phpWithoutName]),
                   false)=0) then
             begin
               // proc body found

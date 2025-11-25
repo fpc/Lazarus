@@ -54,6 +54,11 @@ type
     procedure TestCompleteClass_Unit_NewClass_BetweenOldClasses;
     procedure TestCompleteNestedClass_Unit_NewClass_BehindParentClass;
 
+    // procedure completion
+    procedure TestCompleteGenericProcBodyObjFpc;
+    procedure TestCompleteGenericProcBodyDelphi;
+    procedure TestCompleteGenericForwardProcBodyObjFpc;
+    procedure TestCompleteGenericForwardProcBodyDelphi;
     // procedure completion: sync interface procedure to body
     procedure TestIntfProcUpdateArgName;
     procedure TestIntfCompleteMethodBody_ResultGenericObjFPC;
@@ -1549,6 +1554,115 @@ begin
     ,'begin'
     ,'end;'
     ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteGenericProcBodyObjFpc;
+begin
+  Test('TestCompleteGenericProcBodyObjFpc',
+  ['unit Unit1;',
+  '{$mode objfpc}',
+  'interface',
+  'generic function MyFunc<T1,T2>(a: T1): T2;',
+  'implementation',
+  '',
+  'end.'
+  ],
+  4,1,
+  ['unit Unit1;',
+  '{$mode objfpc}',
+  'interface',
+  'generic function MyFunc<T1,T2>(a: T1): T2;',
+  'implementation',
+  '',
+  'generic function MyFunc<T1, T2>(a: T1): T2;',
+  'begin',
+  '',
+  'end;',
+  '',
+  'end.'
+  ]);
+end;
+
+procedure TTestCodeCompletion.TestCompleteGenericProcBodyDelphi;
+begin
+  Test('TestCompleteGenericProcBodyDelphi',
+  ['unit Unit1;',
+  '{$mode delphi}',
+  'interface',
+  'function MyFunc<T1,T2>(a: T1): T2;',
+  'implementation',
+  '',
+  'end.'
+  ],
+  4,1,
+  [
+  'unit Unit1;',
+  '{$mode delphi}',
+  'interface',
+  'function MyFunc<T1,T2>(a: T1): T2;',
+  'implementation',
+  '',
+  'function MyFunc<T1, T2>(a: T1): T2;',
+  'begin',
+  '',
+  'end;',
+  '',
+  'end.'
+  ]);
+end;
+
+procedure TTestCodeCompletion.TestCompleteGenericForwardProcBodyObjFpc;
+begin
+  Test('TestCompleteGenericForwardProcBodyObjFpc',
+  ['program Project1;',
+  '{$mode objfpc}',
+  'generic function MyFunc<T1,T2>(a: T1): T2; forward;',
+  '',
+  'begin',
+  '',
+  'end.'
+  ],
+  3,1,
+  ['program Project1;',
+  '{$mode objfpc}',
+  'generic function MyFunc<T1,T2>(a: T1): T2; forward;',
+  '',
+  'generic function MyFunc<T1, T2>(a: T1): T2;',
+  'begin',
+  '',
+  'end;',
+  '',
+  'begin',
+  '',
+  'end.'
+  ]);
+end;
+
+procedure TTestCodeCompletion.TestCompleteGenericForwardProcBodyDelphi;
+begin
+  Test('TestCompleteGenericForwardProcBodyDelphi',
+  ['program Project1;',
+  '{$mode delphi}',
+  'function MyFunc<T1,T2>(a: T1): T2; forward;',
+  '',
+  'begin',
+  '',
+  'end.'
+  ],
+  3,1,
+  ['program Project1;',
+  '{$mode delphi}',
+  'function MyFunc<T1,T2>(a: T1): T2; forward;',
+  '',
+  'function MyFunc<T1, T2>(a: T1): T2;',
+  'begin',
+  '',
+  'end;',
+  '',
+  'begin',
+  '',
+  'end.'
+  ]);
 end;
 
 initialization

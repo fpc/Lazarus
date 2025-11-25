@@ -3869,7 +3869,7 @@ function TIdentCompletionTool.FindAbstractMethods(
   const CursorPos: TCodeXYPosition; out ListOfPCodeXYPosition: TFPList;
   SkipAbstractsInStartClass: boolean): boolean;
 const
-  ProcAttr = [phpWithoutClassKeyword,phpWithHasDefaultValues];
+  ProcAttr = [phpWithoutClassKeyword,phpWithoutGenericKeyword,phpWithHasDefaultValues];
   FlagIsAbstract = 0;
   FlagIsImplemented = 1;
 var
@@ -4251,7 +4251,7 @@ begin
     if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
       try
         FParamTypeList:=Tool.ExtractProcHead(ANode,
-           [phpWithoutClassKeyword,phpWithoutClassName,
+           [phpWithoutClassKeyword,phpWithoutGenericKeyword,phpWithoutClassName,
             phpWithoutName,phpInUpperCase]);
         //debugln('TIdentifierListItem.GetParamTypeList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
       except
@@ -4275,7 +4275,7 @@ begin
     if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
       try
         FParamNameList:=Tool.ExtractProcHead(ANode,
-           [phpWithoutClassKeyword,phpWithoutClassName,
+           [phpWithoutClassKeyword,phpWithoutGenericKeyword,phpWithoutClassName,
             phpWithoutName,phpInUpperCase,phpWithParameterNames]);
         //debugln('TIdentifierListItem.GetParamNameList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
       except

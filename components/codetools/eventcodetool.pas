@@ -1003,26 +1003,26 @@ begin
         InsertCall:=CallAncestorMethod+';';
       if UseTypeInfoForParameters then begin
         MethodDefinition:=MethodTypeDataToStr(ATypeData,
-                    [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
+                    [phpWithStart, phpWithoutClassKeyword,phpWithoutGenericKeyword, phpWithoutClassName,
                      phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
                      phpWithDefaultValues, phpWithResultType]);
         if (InsertCall='') and (CallAncestorMethod<>'') then begin
           InsertCall:=CallAncestorMethod+MethodTypeDataToStr(ATypeData,
-                      [phpWithoutClassKeyword, phpWithoutClassName,
+                      [phpWithoutClassKeyword,phpWithoutGenericKeyword, phpWithoutClassName,
                        phpWithoutName, phpWithParameterNames,
                        phpWithoutParamTypes]);
         end;
       end else begin
         MethodDefinition:=TrimCodeSpace(FindContext.Tool.ExtractProcHead(
                      FindContext.Node,
-                    [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
+                    [phpWithStart, phpWithoutClassKeyword,phpWithoutGenericKeyword, phpWithoutClassName,
                      phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
                      phpWithDefaultValues, phpWithResultType]));
         if (InsertCall='') and (CallAncestorMethod<>'') then begin
           InsertCall:=CallAncestorMethod
                     +TrimCodeSpace(FindContext.Tool.ExtractProcHead(
                      FindContext.Node,
-                    [phpWithoutClassKeyword, phpWithoutClassName,
+                    [phpWithoutClassKeyword,phpWithoutGenericKeyword, phpWithoutClassName,
                      phpWithoutName, phpWithParameterNames,
                      phpWithoutParamTypes]));
         end;

@@ -270,7 +270,7 @@ function TExtractCodeTool.ExtractProc(const StartPos, EndPos: TCodeXYPosition;
   SourceChangeCache: TSourceChangeCache; FunctionResultVariableStartPos: integer
   ): boolean;
 const
-  ShortProcFormat = [phpWithoutClassKeyword];
+  ShortProcFormat = [phpWithoutClassKeyword,phpWithoutGenericKeyword];
 var
   BlockStartPos, BlockEndPos: integer; // the selection
   MainBlockNode: TCodeTreeNode; // the main proc node of the selection, or main begin block of program

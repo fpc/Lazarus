@@ -53,6 +53,7 @@ type
     // extract attributes:
     phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
     phpWithoutClassKeyword,// without 'class' proc keyword
+    phpWithoutGenericKeyword,// without 'generic' keyword
     phpAddClassName,       // extract/add 'ClassName.'
     phpAddParentProcs,     // add 'ProcName.' for nested procs
     phpWithoutClassName,   // skip classname

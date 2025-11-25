@@ -725,7 +725,7 @@ begin
   // read procedure start keyword
   if (Scanner.CompilerMode in [cmOBJFPC]) and UpAtomIs('GENERIC') then begin
     ExtractNextAtom((phpWithStart in Attr)
-                    and not (phpWithoutClassKeyword in Attr),Attr);
+                    and not (phpWithoutGenericKeyword in Attr),Attr);
     IsGeneric:=true;
   end else
     IsGeneric:=false;
@@ -1130,7 +1130,7 @@ begin
     // in a class definition -> search method body
     if Search=cpsUp then exit;
     StartNode:=ClassNode.GetTopMostNodeOfType(ctnTypeSection);
-    Attr:=Attr-[phpWithoutClassName]+[phpWithoutClassKeyword,phpAddClassName];
+    Attr:=Attr-[phpWithoutClassName]+[phpWithoutClassKeyword,phpWithoutGenericKeyword,phpAddClassName];
   end else if NodeIsMethodBody(ProcNode) then begin
     //debugln('TPascalReaderTool.FindCorrespondingProcNode Method ',ExtractClassNameOfProcNode(ProcNode));
     // in a method body -> search in class
@@ -1150,7 +1150,7 @@ begin
         StartNode:=StartNode.NextBrother;
       end;
     end;
-    Attr:=Attr-[phpAddClassName]+[phpWithoutClassKeyword,phpWithoutClassName];
+    Attr:=Attr-[phpAddClassName]+[phpWithoutClassKeyword,phpWithoutGenericKeyword,phpWithoutClassName];
   end else begin
     //DebugLn('TPascalReaderTool.FindCorrespondingProcNode Normal');
     // else: search on same lvl

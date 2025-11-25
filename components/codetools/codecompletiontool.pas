@@ -1492,7 +1492,7 @@ begin
 
   // insert new published method to class
   Beauty:=SourceChangeCache.BeautifyCodeOptions;
-  MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithVarModifiers,
+  MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithoutGenericKeyword, phpWithVarModifiers,
                phpWithParameterNames,phpWithDefaultValues,phpWithResultType];
   MethodDefinition:=TrimCodeSpace(ProcContext.Tool.ExtractProcHead(
                        ProcContext.Node,
@@ -1588,7 +1588,7 @@ begin
   end;
 
   // extract method param list, result type and modifiers
-  MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithVarModifiers,
+  MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithoutGenericKeyword, phpWithVarModifiers,
                phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
                phpWithCallingSpecs];
   MethodDefinition:=TrimCodeSpace(
@@ -2926,7 +2926,7 @@ begin
       // add method declaration
       NewProcCode:=ExtractProcHead(BodyProcNode,ProcAttrCopyBodyToDef+[phpWithCallingSpecs,phpWithEmptyParamList]);
       CleanProcCode:=ExtractProcHead(BodyProcNode,
-                       [phpWithoutClassKeyword,phpWithoutClassName,phpInUpperCase]);
+                       [phpWithoutClassKeyword,phpWithoutGenericKeyword,phpWithoutClassName,phpInUpperCase]);
       AddClassInsertion(CleanProcCode,NewProcCode,ProcName,ncpPrivateProcs);
 
       // apply changes
@@ -3073,7 +3073,7 @@ function TCodeCompletionCodeTool.CompleteProcByCall(CleanCursorPos,
   SourceChangeCache: TSourceChangeCache): boolean;
 // check if 'procname(expr list);'
 const
-  ShortProcFormat = [phpWithoutClassKeyword];
+  ShortProcFormat = [phpWithoutClassKeyword,phpWithoutGenericKeyword];
 
   function CheckProcSyntax(out BeginNode: TCodeTreeNode;
     out ProcNameAtom: TAtomPosition;
@@ -8210,7 +8210,7 @@ begin
         exit;
       end;
       ProcCode:=ExtractProcHead(ANode,[phpWithStart,
-                  phpWithoutClassKeyword,
+                  phpWithoutClassKeyword,phpWithoutGenericKeyword,
                   phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
                   phpWithProcModifiers,phpDoNotAddSemicolon,phpWithEmptyParamList]);
       if (ProcCode<>'') and (ProcCode[length(ProcCode)]<>';') then begin
