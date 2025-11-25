@@ -6059,8 +6059,15 @@ begin
         // this is a property -> search the type definition of the property
         if MoveCursorToPropType(Result.Node) then begin
           // property has a type
-          SearchIdentifier(Result.Node,CurPos.StartPos,IsPredefined,Result);
-          if IsPredefined then break;
+          if (Result.Node.FirstChild <> nil)
+          and (Result.Node.FirstChild.StartPos = CurPos.StartPos)
+          then begin
+            Result.Node := Result.Node.FirstChild;
+          end
+          else begin
+            SearchIdentifier(Result.Node,CurPos.StartPos,IsPredefined,Result);
+            if IsPredefined then break;
+          end;
         end else if (Result.Node.Desc=ctnProperty) then begin
           // property has no type
           // -> search ancestor property

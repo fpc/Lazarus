@@ -7039,25 +7039,6 @@ var
   Parts: array[TPropPart] of TAtomPosition;
   PartIsAtom: array[TPropPart] of boolean; // is single identifier
 
-  function IsIncomplePartAndWordIsPropSpec: boolean;
-  // incomplete property section?
-  //          property a:T read write Fa;       // Can't be field "write", because then "Fa" is invalid
-  // but not: property a:T read write write Fa; // field "write"
-  // nor    : property a:T read write.a;        // record field "write" with sub-field "a"
-  // nor    : property a:T read write;          // field "write"
-  begin
-    Result := WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
-      CurPos.EndPos-CurPos.StartPos);
-    if not Result then
-      exit;
-
-    ReadNextAtom;
-    Result := (CurPos.Flag = cafWord)
-    and not WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
-      CurPos.EndPos-CurPos.StartPos);
-    UndoReadNextAtom;
-  end;
-
   procedure ReadSimpleSpec(SpecWord, SpecParam: TPropPart);
   // allowed after simple specifier like 'read':
   //   one semicolon

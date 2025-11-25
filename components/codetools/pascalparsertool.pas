@@ -260,6 +260,7 @@ type
     function SkipTypeReference(ExceptionOnError: boolean): boolean;
     function SkipSpecializeParams(ExceptionOnError: boolean): boolean;
     function WordIsPropertyEnd: boolean;
+    function IsIncomplePartAndWordIsPropSpec: boolean;
     function WordIsStatemendEnd: boolean;
     function WordIsModifier: boolean;
     function AllowAttributes: boolean; inline;
@@ -2618,6 +2619,9 @@ begin
     ReadTilBracketClose(true);
     ReadNextAtom;
   end;
+  if (CurPos.Flag = cafColon) then ReadNextAtom;
+  if (CurPos.Flag = cafWord) and not IsIncomplePartAndWordIsPropSpec then
+    ReadTypeReference(True);
   while (CurPos.StartPos<=SrcLen) do begin
     case CurPos.Flag of
     cafSemicolon: break;
@@ -6484,6 +6488,25 @@ begin
   'V': if UpAtomIs('VAR') then exit(true);
   end;
   Result:=false;
+end;
+
+function TPascalParserTool.IsIncomplePartAndWordIsPropSpec: boolean;
+// incomplete property section?
+//          property a:T read write Fa;       // Can't be field "write", because then "Fa" is invalid
+// but not: property a:T read write write Fa; // field "write"
+// nor    : property a:T read write.a;        // record field "write" with sub-field "a"
+// nor    : property a:T read write;          // field "write"
+begin
+  Result := WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
+    CurPos.EndPos-CurPos.StartPos);
+  if not Result then
+    exit;
+
+  ReadNextAtom;
+  Result := (CurPos.Flag = cafWord)
+  and not WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
+    CurPos.EndPos-CurPos.StartPos);
+  UndoReadNextAtom;
 end;
 
 function TPascalParserTool.AllowAttributes: boolean;

@@ -140,12 +140,11 @@ type
                               FM1{declaration:TClassMain1.FM1}
                               ;
     property M2: specialize
-//TODO: property does not create specialize node yet
                   TGenClassA   {declaration:u_specialize_inline.TGenClassA}
                   <TClassMain1 {declaration:TClassMain1}
                   >
-                  .            { TODO: completion:TTypeA;TSelf;TNestClassA;!TNestTypeA}
-                  TTypeA       { TODO: declaration:u_specialize_inline.TGenClassA.TTypeA}
+                  .            {completion:TTypeA;TSelf;TNestClassA;!TNestTypeA}
+                  TTypeA       {declaration:u_specialize_inline.TGenClassA.TTypeA}
                  read     {completion:FBaseData;FBaseData4;!FDataA;!FNestDataA}
                  FBaseData{declaration:TTest_ClassA.FBaseData}
                  ;
@@ -244,8 +243,8 @@ begin
     FM1    {declaration:TClassMain1.FM1}
     :=
     M2     {declaration:TTest_ClassA.M2}
-    .      { TODO: property completion:FM1;!FDataA}
-    FM1    { TODO: property declaration:TClassMain1.FM1}
+    .      {completion:FM1;!FDataA}
+    FM1    {declaration:TClassMain1.FM1}
     ;
 
   Local1    { TODO: guesstype:}
