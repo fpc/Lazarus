@@ -934,8 +934,8 @@ var
   d5: TDoubleSpec5;
   d6: TDoubleSpec6;
 begin
-  d1. { TODO: completion:F,TX}
-  F   { TODO: declaration:TClassMain1.TGenMain1.F}
+  d1. {completion:F,TX}
+  F   {declaration:TClassMain1.TGenMain1.F}
   := 1;
 
   d2.    {completion:F,TX}
@@ -976,14 +976,14 @@ begin
   Foo    {declaration:u_specialize_inline.TGenIFaceA.Foo}
   (0);
 
-  d6.    { TODO: completion:F,TX}
-  F      { TODO: declaration:TClassMain1.TGenMain1.F}
+  d6.    {completion:F,TX}
+  F      {declaration:TClassMain1.TGenMain1.F}
   := nil;
-  d6.F.  { TODO: completion:!Foo,CallM1}
-  CallM1 { TODO: declaration:TClassMain1.CallM1}
+  d6.F.  {completion:!Foo,CallM1}
+  CallM1 {declaration:TClassMain1.CallM1}
   ;
-  d6.F.TTypeB2(nil).  { TODO: completion:Foo}
-  Foo    { TODO: declaration:u_specialize_inline.TGenIFaceA.Foo}
+  d6.F.TTypeB2(nil).  {completion:Foo}
+  Foo    {declaration:u_specialize_inline.TGenIFaceA.Foo}
   (0);
 
 

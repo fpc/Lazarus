@@ -10026,6 +10026,7 @@ begin
           RaiseIdentNotFound;
         ReadNextAtom;
         AtomIsIdentifierE;
+        NextReadDone := UpAtomIs('SPECIALIZE');
       end;
 
     cafEdgedBracketOpen:
