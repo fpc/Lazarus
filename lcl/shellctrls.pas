@@ -1907,9 +1907,7 @@ begin
         if not FileItem.IsFolder then
         begin
           // Second column - Size, but not for folders
-          // The raw size in bytes is stored in the data part of the item
           CurFileSize := FileItem.FFileInfo.Size; // in Bytes. (We already know this, so no need for FileSize(CurFilePath))
-          NewItem.Data := Pointer(PtrInt(CurFileSize));
           NewItem.SubItems.Add(FileSizeToStr(CurFileSize));
           // Third column - Type, but not folders
           NewItem.SubItems.Add(ExtractFileExt(CurFileName));
