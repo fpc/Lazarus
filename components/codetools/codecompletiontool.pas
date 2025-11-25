@@ -7039,6 +7039,25 @@ var
   Parts: array[TPropPart] of TAtomPosition;
   PartIsAtom: array[TPropPart] of boolean; // is single identifier
 
+  function IsIncomplePartAndWordIsPropSpec: boolean;
+  // incomplete property section?
+  //          property a:T read write Fa;       // Can't be field "write", because then "Fa" is invalid
+  // but not: property a:T read write write Fa; // field "write"
+  // nor    : property a:T read write.a;        // record field "write" with sub-field "a"
+  // nor    : property a:T read write;          // field "write"
+  begin
+    Result := WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
+      CurPos.EndPos-CurPos.StartPos);
+    if not Result then
+      exit;
+
+    ReadNextAtom;
+    Result := (CurPos.Flag = cafWord)
+    and not WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
+      CurPos.EndPos-CurPos.StartPos);
+    UndoReadNextAtom;
+  end;
+
   procedure ReadSimpleSpec(SpecWord, SpecParam: TPropPart);
   // allowed after simple specifier like 'read':
   //   one semicolon
@@ -7053,9 +7072,7 @@ var
     ReadNextAtom;
     if AtomIsChar(';') then exit;
     AtomIsIdentifierE;
-    if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
-      CurPos.EndPos-CurPos.StartPos)
-    then
+    if IsIncomplePartAndWordIsPropSpec then
       exit;
     Parts[SpecParam]:=CurPos;
     ReadNextAtom;
@@ -7165,8 +7182,7 @@ var
         RaiseException(20170421201737,ctsIndexSpecifierRedefined);
       Parts[ppIndexWord]:=CurPos;
       ReadNextAtom;
-      if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos) then
+      if IsIncomplePartAndWordIsPropSpec then
         RaiseExceptionFmt(20170421201740,ctsIndexParameterExpectedButAtomFound,[GetAtom]);
       Parts[ppIndex].StartPos:=CurPos.StartPos;
       ReadConstant(true,false,[]);
@@ -7183,8 +7199,7 @@ var
         RaiseException(20170421201742,ctsDispidSpecifierRedefined);
       Parts[ppDispidWord]:=CurPos;
       ReadNextAtom;
-      if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos) then
+      if IsIncomplePartAndWordIsPropSpec then
         RaiseExceptionFmt(20170421201744,ctsDispidParameterExpectedButAtomFound,[GetAtom]);
       Parts[ppDispid].StartPos:=CurPos.StartPos;
       ReadConstant(true,false,[]);
@@ -7214,8 +7229,7 @@ var
           RaiseException(20170421201746,ctsDefaultSpecifierRedefined);
         Parts[ppDefaultWord]:=CurPos;
         ReadNextAtom;
-        if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
-          CurPos.EndPos-CurPos.StartPos) then
+        if IsIncomplePartAndWordIsPropSpec then
           RaiseExceptionFmt(20170421201748,ctsDefaultParameterExpectedButAtomFound,[GetAtom]);
         Parts[ppDefault].StartPos:=CurPos.StartPos;
         ReadConstant(true,false,[]);
@@ -7231,8 +7245,7 @@ var
         while CurPos.Flag=cafComma do begin
           ReadNextAtom;
           AtomIsIdentifierE;
-          if WordIsPropertySpecifier.DoItCaseInsensitive(Src,CurPos.StartPos,
-            CurPos.EndPos-CurPos.StartPos) then
+          if IsIncomplePartAndWordIsPropSpec then
             RaiseExceptionFmt(20170421201752,ctsIndexParameterExpectedButAtomFound,[GetAtom]);
           ReadNextAtom;
         end;

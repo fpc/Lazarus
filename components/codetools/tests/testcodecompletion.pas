@@ -42,6 +42,7 @@ type
     procedure TestCompleteMethodSignature_Without_Parentheses;
     // class completion: property
     procedure TestCompleteProperty_TypeWithUnitname;
+    procedure TestCompleteProperty_WithReadWriteAsIdentifier;
     procedure TestCompleteProperty_TypeGenericObjFPC;
     procedure TestCompleteProperty_TypeGenericDelphi;
     procedure TestCompleteProperty_GenericObjFPC;
@@ -831,6 +832,94 @@ begin
     '  fWing:=AValue;',
     'end;',
     'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteProperty_WithReadWriteAsIdentifier;
+begin
+  Test('TestCompleteProperty_WithReadWriteAsIdentifier',
+  ['program project1;',
+  'const stored = 2;',
+  'type',
+  'read = class',
+  'public const',
+  'default = nil;',
+  'index = 1;',
+  'public type',
+  'read=read;',
+  'write=read;',
+  'end;',
+  'index = record',
+  'read:read;',
+  'write:read;',
+  'end;',
+  'write=integer;',
+  '',
+  '{ TFoo }',
+  '',
+  'TFoo=class',
+  'private',
+  'default: index;',
+  'FAbc: integer;',
+  'function GetIa(AIndex: Integer): index;',
+  'function IsBarStored: Boolean;',
+  'public',
+  'property Prop: index read  default write  default ;',
+  'property i1: index index read.index read  GetIa;',
+  'property i2: index index stored read  GetIa;',
+  'property Bar: read.read read  default.read write default.write stored IsBarStored default read.default;',
+  'end;',
+  '',
+  'begin',
+  '',
+  'end.'
+  ],
+  30,10,
+  ['program project1;',
+  'const stored = 2;',
+  'type',
+  'read = class',
+  'public const',
+  'default = nil;',
+  'index = 1;',
+  'public type',
+  'read=read;',
+  'write=read;',
+  'end;',
+  'index = record',
+  'read:read;',
+  'write:read;',
+  'end;',
+  'write=integer;',
+  '',
+  '{ TFoo }',
+  '',
+  'TFoo=class',
+  'private',
+  'default: index;',
+  'FAbc: integer;',
+  'function GetIa(AIndex: Integer): index;',
+  'function IsBarStored: Boolean;',
+  'public',
+  'property Prop: index read  default write  default ;',
+  'property i1: index index read.index read  GetIa;',
+  'property i2: index index stored read  GetIa;',
+  'property Bar: read.read read  default.read write default.write stored IsBarStored default read.default;',
+  'end;',
+  '',
+  'function TFoo.GetIa(AIndex: Integer): index;',
+  'begin',
+  '',
+  'end;',
+  '',
+  'function TFoo.IsBarStored: Boolean;',
+  'begin',
+  '',
+  'end;',
+  '',
+  'begin',
+  '',
+  'end.'
+  ]);
 end;
 
 procedure TTestCodeCompletion.TestCompleteProperty_TypeGenericObjFPC;
