@@ -1753,6 +1753,7 @@ var
   ProcsCopied: boolean;
   StartNode: TCodeTreeNode;
   OnlyNode: TCodeTreeNode;
+  Attr: TProcHeadAttributes;
 begin
   Result:=true;
   {$IFDEF CTDEBUG}
@@ -1841,10 +1842,13 @@ begin
     // build nice procs
     CurProcNode:=StartProcNode;
     repeat
-      ProcCode:=ExtractProcHead(CurProcNode,[phpWithStart,
-                  phpWithoutClassKeyword,
-                  phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
-                  phpWithCallingSpecs,phpWithAssembler,phpDoNotAddSemicolon, phpWithEmptyParamList]);
+      Attr := [phpWithStart,
+               phpWithoutClassKeyword, phpWithoutGenericTypeConstraints, phpWithoutGenericConstConstraints,
+               phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
+               phpWithCallingSpecs,phpWithAssembler,phpDoNotAddSemicolon, phpWithEmptyParamList];
+      if (CurProcNode.Parent <> nil) and (CurProcNode.Parent.Desc in [ctnProgram, ctnImplementation]) then
+        Attr := Attr - [phpWithoutGenericConstConstraints];
+      ProcCode:=ExtractProcHead(CurProcNode, Attr);
       if ProcCode='' then
         RaiseException(20170421201518,'CompleteForwardProcs: unable to parse forward proc node');
       if ProcCode[length(ProcCode)]<>';' then begin
@@ -8807,7 +8811,8 @@ begin
   if (TheNodeExt.Code='') and (TheNodeExt.ProcBody='') then begin
     ANode:=TheNodeExt.Node;
     if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-      ProcCode:=ExtractProcHead(ANode,CreateMethodBodies_ProcAttrBodyDef+[phpWithEmptyParamList]);
+      ProcCode:=ExtractProcHead(ANode,CreateMethodBodies_ProcAttrBodyDef+[phpWithEmptyParamList,
+        phpWithoutGenericTypeConstraints, phpWithoutGenericConstConstraints]);
       //debugln(['CreateCodeForMissingProcBody Definition="',ProcCode,'"']);
       TheNodeExt.ProcBody:=Beauty.BeautifyProc(ProcCode,Indent,true);
       //debugln(['CreateCodeForMissingProcBody Beautified="',TheNodeExt.ProcBody,'"']);

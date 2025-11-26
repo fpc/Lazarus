@@ -59,6 +59,8 @@ type
     phpWithoutClassName,   // skip classname
     phpWithoutName,        // skip function name
     phpWithoutGenericParams,// skip <> after proc name
+    phpWithoutGenericTypeConstraints,// skip TYPE constraints, e.g. <T: class; X:TFoo> (BUT KEEP const constraints)
+    phpWithoutGenericConstConstraints,// skip CONST constraints in <const A: byte>
     phpWithoutParamList,   // skip param list
     phpWithVarModifiers,   // extract 'var', 'out', 'const'
     phpWithParameterNames, // extract parameter names
