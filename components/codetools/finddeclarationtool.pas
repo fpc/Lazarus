@@ -5356,7 +5356,7 @@ begin
   SearchInHelpersInTheEnd := False;
   if (fdfSearchInHelpers in Flags)
     and (ContextNode.Desc in [ctnClass,ctnRecordType,ctnTypeType,ctnObjCClass,ctnEnumerationType,ctnRangedArrayType,ctnOpenArrayType])
-    and (ContextNode.Parent<>nil) and (ContextNode.Parent.Desc = ctnTypeDefinition)
+    and (ContextNode.Parent<>nil) and (ContextNode.Parent.Desc in [ctnTypeDefinition, ctnGenericType])
   then begin
     if (fdfSearchInHelpersInTheEnd in Flags) then
       SearchInHelpersInTheEnd := True
