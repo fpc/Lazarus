@@ -661,15 +661,15 @@ procedure TSynEditStringTrimmingList.SetEnabled(const AValue : Boolean);
 begin
   if fEnabled = AValue then exit;
   fEnabled:=AValue;
-  fLockList.Clear;
-  fLockCount:=0;
   FSpaces := '';
   FLineIndex := -1;
   FLockList.Clear;
-  FIsTrimming := True;
   FLineEdited := False;
-  if fEnabled and (fLineIndex >= 0) and (fLineIndex < NextLines.Count) then
+
+  if fEnabled and (fLineIndex >= 0) and (fLineIndex < NextLines.Count) then begin
+    FIsTrimming := True;
     NextLines[fLineIndex] := TrimLine(NextLines[fLineIndex], fLineIndex);
+  end;
   FIsTrimming := False;
 end;
 
