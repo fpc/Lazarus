@@ -2242,8 +2242,7 @@ procedure TIDEWindowCreatorList.ShowForm(AForm: TCustomForm; BringToFront: boole
 var
   Layout: TSimpleWindowLayout;
 begin
-  if not IsValidIdent(AForm.Name) then
-    raise Exception.Create('TIDEWindowCreatorList.ShowForm invalid form name '+AForm.Name);
+  Assert(IsValidIdent(AForm.Name), 'TIDEWindowCreatorList.ShowForm invalid form name '+AForm.Name);
 
   // auto create a layout storage for every shown form
   Layout:=SimpleLayoutStorage.ItemByFormID(AForm.Name);

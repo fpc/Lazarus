@@ -59,8 +59,8 @@ uses
   LinkScanner, CodeTree, SourceChanger, IdentCompletionTool,
   // synedit
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynEditHighlighter, SynEditAutoComplete,
-  SynEditKeyCmds, SynCompletion, SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
-  SynBeautifier, SynPluginMultiCaret, SynPluginSyncronizedEditBase, SourceSynEditor, SynExportHTML,
+  SynEditKeyCmds, SynCompletion, SynEditMarkupHighAll, SynEditMarks, SynBeautifier,
+  SynPluginMultiCaret, SynPluginSyncronizedEditBase, SourceSynEditor, SynExportHTML,
   SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef, SynBeautifierPascal,
   SynEditMarkupSpecialLine,
   // IdeIntf
@@ -79,7 +79,7 @@ uses
   LazarusIDEStrConsts, EditorOptions, EnvGuiOptions,
   WordCompletion, FindReplaceDialog, IDEHelpManager, MacroPromptDlg, CodeContextForm,
   SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, CodeMacroPrompt,
-  CodeTemplatesDlg, CodeToolsOptions, editor_general_options, SortSelectionDlg,
+  CodeTemplatesDlg, CodeToolsOptions, SortSelectionDlg,
   EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,
   SourceMarks, SearchFrm, MultiPasteDlg, EditorMacroListViewer,
   EditorToolbarStatic, editortoolbar_options, InputhistoryWithSearchOpt,
