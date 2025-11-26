@@ -2683,10 +2683,12 @@ type, its FileInfo property is updated with the file information from the
 TFileItem created in the GetFilesInDirectory helper.
 </p>
 <p>
-The Caption is used to store the file or directory name in the list item. The 
-Data property in the list item is used to store a pointer to the file size. 
-Values are added to SubItems in the list item to store the string 
-representation for the file size, and the file extension.
+The Caption in the list item is set to the file or directory name. SubItems 
+are added to the TListItem instance to store file system information displayed 
+in the Size and Type columns on the List view. For a file, the file size and 
+file extension are added to the SubItems. For a directory, the first subitem 
+is an empty string (since directories do not have a size) and the second is 
+set to the sShellCtrlsFolder constant.
 </p>
 <p>
 When UseBuiltInIcons is set to <b>True</b>, the GetBuiltInImageIndex method 
@@ -2722,6 +2724,7 @@ items.
 <link id="TCustomShellListView.OnAddItem"/>
 <link id="TCustomShellListView.OnFileAdded"/>
 <link id="TCustomShellListView.CreateHandle"/>
+<link id="TShellListItem.FileInfo"/>
 <link id="TShellListItem"/>
 <link id="TAddItemEvent"/>
 <link id="TCSLVFileAddedEvent"/>
