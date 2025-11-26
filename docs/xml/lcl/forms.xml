@@ -2902,8 +2902,7 @@ Added in LCL version 4.6.
 </version>
 <seealso>
 <link id="TCustomFrame.Loaded"/>
-<link id="TCustomFrame.Parent"/>
-<link id="TCustomFrame.Scaled"/>
+<link id="TCustomDesignControl.Scaled"/>
 <link id="TApplication.Scaled"/>
 <link id="GetParentForm"/>
 <link id="#lcl.controls.TWinControl.FixDesignFontsPPIWithChildren">TWinControl.FixDesignFontsPPIWithChildren</link>
