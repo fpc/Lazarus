@@ -1310,6 +1310,11 @@ begin
     // jump behind parameter list
     MoveCursorToCleanPos(GetProcParamList(ProcNode).EndPos);
     ReadNextAtom;
+  end else if (ProcNode.LastChild<>nil) and (ProcNode.LastChild.Desc=ctnGenericParams)
+  then begin
+    // there was no parameter list, so gen params are the end
+    MoveCursorToCleanPos(ProcNode.LastChild.EndPos);
+    ReadNextAtom;
   end else begin
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
