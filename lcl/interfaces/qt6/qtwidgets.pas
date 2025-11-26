@@ -127,6 +127,7 @@ type
     FLastCaretPos: TQtPoint;
     FHasPaint: Boolean;
     FOwner: TQtWidget;
+    { Input Method }
     FPreEditStr: WideString;
     FCommitStr: WideString;
     FIMPreedit: Boolean;
@@ -209,6 +210,7 @@ type
     function SlotHover(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotInputMethod(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function SlotInputMethodQuery(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; virtual; cdecl;
     procedure SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
     function SlotMouseEnter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -470,6 +472,7 @@ type
   private
     FCornerWidget: TQtWidget;
     FViewPortWidget: TQtViewPort;
+    FIMCaretPos: TPoint;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     function ProcessArrowKeys: Boolean; override;
@@ -493,6 +496,8 @@ type
     procedure setVisible(AVisible: Boolean); override;
     procedure viewportNeeded; virtual;
     procedure viewportDelete; virtual;
+    { Input Method Tweak }
+    property IMCaretPos: TPoint read FIMCaretPos write FIMCaretPos;
   end;
   
   { TQtViewPort }
@@ -2763,10 +2768,8 @@ begin
 
         //Dead keys (used to compose chars like "ó" by pressing 'o)  do not trigger EventKeyPress
         //and therefore no KeyDown,Utf8KeyPress,KeyPress
-        QEventInputMethod:
-          begin
-            Result := SlotInputMethod(Sender, Event);
-          end;
+        QEventInputMethod:      Result := SlotInputMethod(Sender, Event);
+        QEventInputMethodQuery: Result := SlotInputMethodQuery(Sender, Event);
 
         QEventMouseButtonPress,
         QEventMouseButtonRelease,
@@ -3687,7 +3690,7 @@ var
   KeyEvent: QKeyEventH;
   Msg: TLMessage;
 begin
-  Result := True;
+  Result := False;
   if not (QEvent_type(Event) = QEventInputMethod) then Exit;
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotInputMethod ', dbgsname(LCLObject));
@@ -3706,7 +3709,7 @@ begin
       Msg.Msg:=LM_IM_COMPOSITION;
       Msg.WParam:=GTK_IM_FLAG_COMMIT or GTK_IM_FLAG_END;
       Msg.LParam:=LPARAM(@FCommitStr);
-      DeliverMessage(Msg);
+      Result:=DeliverMessage(Msg)<>0;
     end;
     FIMPreedit:=False;
   end;
@@ -3720,6 +3723,7 @@ begin
       else
         Msg.WParam:=Msg.WParam or GTK_IM_FLAG_REPLACE;
     Msg.LParam:=LPARAM(@FPreEditStr);
+    { Don't update result }
     DeliverMessage(Msg);
   end;
   FIMPreedit:=FPreEditStr<>'';
@@ -3746,6 +3750,39 @@ begin
       {$IFDEF VerboseQtKeys}
       writeln('< TQtWidget.SlotInputMethod End: ',dbgsname(LCLObject),' event=QEventInputMethod, sent QEventKeyPress');
       {$ENDIF}
+    end;
+  end;
+end;
+
+function TQtWidget.SlotInputMethodQuery(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  imq: QInputMethodQueryEventH;
+  NewIMRect: TRect;
+  qrect: QVariantH;
+  x, y: Integer;
+  Msg: TLMessage;
+begin
+  Result:=False;
+  if not (QEvent_type(Event) = QEventInputMethodQuery) then Exit;
+
+  if (ClassType=TQtCustomControl) and Assigned(LCLObject) then
+  begin
+    imq:=QInputMethodQueryEventH(Event);
+    if QInputMethodQueryEvent_queries(imq) and QtImCursorRectangle<>0 then
+    begin
+      { notify caret position pointer to wincontrol }
+      Msg.Msg:=LM_IM_COMPOSITION+1;
+      Msg.WParam:=0;
+      Msg.LParam:=PtrInt(@TQtCustomControl(self).IMCaretPos);
+      DeliverMessage(Msg);
+      { Set Candidate window position }
+      x:=TQtCustomControl(self).IMCaretPos.X;
+      y:=TQtCustomControl(self).IMCaretPos.Y;
+      NewIMRect:=measureText('Qj',0);
+      NewIMRect:=Rect(x,y,x+abs(NewIMRect.Right-NewIMRect.Left),abs(y+NewIMRect.Bottom-NewIMRect.Top));
+      qrect:=QVariant_Create(PRect(@NewIMRect));
+      QInputMethodQueryEvent_setValue(imq,QtImCursorRectangle,qrect);
+      Result:=True;
     end;
   end;
 end;
@@ -18060,6 +18097,8 @@ begin
     QWidget_setAutoFillBackground(Result, False);
 
   QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
+  if Assigned(LCLObject) then
+    FIMCaretPos:=Point(0,LCLObject.Height);
 end;
 
 function TQtCustomControl.ProcessArrowKeys: Boolean;

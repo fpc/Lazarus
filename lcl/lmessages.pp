@@ -100,6 +100,7 @@ const
   
   LM_UNKNOWN        = LM_INTERFACELAST + 1;
   LM_IM_COMPOSITION = LM_USER + $FFF0; // gtk IM
+  LM_IM_QUERY       = LM_IM_COMPOSITION + 1;
 
   // GTK IM Flags
   GTK_IM_FLAG_START       = 1;

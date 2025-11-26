@@ -125,6 +125,7 @@ type
     FLastCaretPos: TQtPoint;
     FHasPaint: Boolean;
     FOwner: TQtWidget;
+    { Input Method }
     FPreEditStr: WideString;
     FCommitStr: WideString;
     FIMPreedit: Boolean;
@@ -2634,10 +2635,7 @@ begin
 
         //Dead keys (used to compose chars like "ó" by pressing 'o)  do not trigger EventKeyPress
         //and therefore no KeyDown,Utf8KeyPress,KeyPress
-        QEventInputMethod:
-          begin
-            Result := SlotInputMethod(Sender, Event);
-          end;
+        QEventInputMethod: Result := SlotInputMethod(Sender, Event);
 
         QEventMouseButtonPress,
         QEventMouseButtonRelease,
@@ -3536,7 +3534,7 @@ var
   KeyEvent: QKeyEventH;
   Msg: TLMessage;
 begin
-  Result := True;
+  Result := False;
   if not (QEvent_type(Event) = QEventInputMethod) then Exit;
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotInputMethod ', dbgsname(LCLObject));
@@ -3555,7 +3553,7 @@ begin
       Msg.Msg:=LM_IM_COMPOSITION;
       Msg.WParam:=GTK_IM_FLAG_COMMIT or GTK_IM_FLAG_END;
       Msg.LParam:=LPARAM(@FCommitStr);
-      DeliverMessage(Msg);
+      Result:=DeliverMessage(Msg)<>0;
     end;
     FIMPreedit:=False;
   end;
@@ -3569,6 +3567,7 @@ begin
       else
         Msg.WParam:=Msg.WParam or GTK_IM_FLAG_REPLACE;
     Msg.LParam:=LPARAM(@FPreEditStr);
+    { Don't update result }
     DeliverMessage(Msg);
   end;
   FIMPreedit:=FPreEditStr<>'';
