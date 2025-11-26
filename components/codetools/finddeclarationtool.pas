@@ -10230,6 +10230,27 @@ var
     RaiseExceptionFmt(Id,ctsStrExpectedButAtomFound,['.',GetAtom]);
   end;
 
+  procedure AdjustNextExpressionAtomForDelphiSpecialize;
+  begin
+    if (Scanner.CompilerMode<>cmDELPHI) or (CurAtomType <> vatIdentifier) then
+      exit;
+
+    // TGen<x>.abc
+    // CurAtom is TGen
+    // NextAtum is <  but should be "." (or end)
+    MoveCursorToCleanPos(CurAtom.StartPos);
+    ReadNextAtom; // name
+    ReadNextAtom; // ReadSpecialize will undo this
+    ReadSpecialize(False);
+
+    NextAtom:=CurPos;
+    if NextAtom.EndPos<=EndPos then
+      NextAtomType:=GetCurrentAtomType
+    else
+      NextAtomType:=vatSpace;
+//    MoveCursorToCleanPos(CurAtom.StartPos);
+  end;
+
   procedure ReadNextExpressionAtom;
   var
     n: TCodeTreeNode;
@@ -10256,7 +10277,7 @@ var
     if (CurAtomType = vatSpecialize) or MaybeSpecialize then begin
       if CurAtomType = vatSpecialize then begin
         ReadNextAtom; // skip the keyword
-        CurAtom.StartPos := CurPos.StartPos;
+        CurAtom := CurPos;
       end;
       n := StartNode;
       while (n <> nil) and (n.StartPos > CurPos.StartPos) do
@@ -10279,7 +10300,9 @@ var
       else
       if SpecializeNode <> nil then begin
         ReadSpecialize(False);
-      end;
+      end
+      else
+        UndoReadNextAtom;
     end;
     if (CurAtomType <> vatSpecialize) and (SpecializeNode = nil) then begin
       // Did not ReadSpecialize
@@ -11024,6 +11047,14 @@ var
             if Params.NewNode.Desc <> ctnGenericType then
               RaiseException(20251125000000,'[TFindDeclarationTool.FindExpressionTypeOfTerm.ResolveIdentifier] Expected generic');
             Params.SetGenericParamValues(Self, SpecializeNode, Params.NewCodeTool, Params.NewNode);
+          end
+          else
+          if (Params.NewNode.Desc = ctnGenericType) and (NextAtomType = vatNone)
+             and (src[NextAtom.StartPos] = '<') and (NextAtom.EndPos-NextAtom.StartPos=1)
+             and (Scanner.CompilerMode=cmDELPHI)
+          then begin
+            // delphi generic
+            AdjustNextExpressionAtomForDelphiSpecialize;
           end;
         end else if SearchForwardToo then begin
           // then search forwards
