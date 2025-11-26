@@ -221,52 +221,6 @@ begin
   inherited;
 end;
 
-procedure TLazMonitor.Acquire;
-const
-  YieldTreshold = 10;
-  Sleep1Treshold = 20;
-  Sleep0Treshold = 5;
-var
-  i,j: integer;
-  Waitcount: integer;
-  ASpinCount: integer;
-  Sp: integer;
-begin
-  ASpinCount:=FSpinCount;
-  for Sp := 0 to ASpinCount-1 do
-  begin
-    Waitcount:=1;
-    for i := 0 to YieldTreshold-1 do
-      begin
-      if TryEnter then
-        Exit;
-      {$PUSH}
-      {$OPTIMIZATION OFF}
-      for j := 0 to Waitcount-1 do
-        begin
-        end;
-      {$POP}
-      Waitcount:=Waitcount*2;
-      end;
-
-    for i := 0 to Sleep1Treshold-1 do
-      begin
-      if TryEnter then
-        Exit;
-      sleep(1);
-      end;
-
-    for i := 0 to Sleep0Treshold do
-      begin
-      if TryEnter then
-        Exit;
-      sleep(0);
-      end;
-  end;
-
-  inherited Acquire;
-end;
-
 { TLazFifoQueue }
 
 function TLazFifoQueue.GetIsEmpty: Boolean;
@@ -528,6 +482,57 @@ begin
   FShutDown:=true;
   RTLeventSetEvent(FHasRoomEvent);
   RTLeventSetEvent(FHasItemEvent);
+end;
+
+(* Issue #41922
+   $PUSH/$POP do not restore the value of $OPTIMIZATION
+   To minimze impact of the directive on the rest of code in the unit
+   this function is kept as the last one.
+*)
+procedure TLazMonitor.Acquire;
+const
+  YieldTreshold = 10;
+  Sleep1Treshold = 20;
+  Sleep0Treshold = 5;
+var
+  i,j: integer;
+  Waitcount: integer;
+  ASpinCount: integer;
+  Sp: integer;
+begin
+  ASpinCount:=FSpinCount;
+  for Sp := 0 to ASpinCount-1 do
+  begin
+    Waitcount:=1;
+    for i := 0 to YieldTreshold-1 do
+      begin
+      if TryEnter then
+        Exit;
+      {$PUSH}
+      {$OPTIMIZATION OFF}
+      for j := 0 to Waitcount-1 do
+        begin
+        end;
+      {$POP}
+      Waitcount:=Waitcount*2;
+      end;
+
+    for i := 0 to Sleep1Treshold-1 do
+      begin
+      if TryEnter then
+        Exit;
+      sleep(1);
+      end;
+
+    for i := 0 to Sleep0Treshold do
+      begin
+      if TryEnter then
+        Exit;
+      sleep(0);
+      end;
+  end;
+
+  inherited Acquire;
 end;
 
 initialization
