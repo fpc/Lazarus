@@ -2748,8 +2748,6 @@ items.
 <link id="TCustomShellListView.OnAddItem"/>
 <link id="TCustomShellListView.OnFileAdded"/>
 <link id="TCustomShellListView.CreateHandle"/>
-<link id="TShellListView.SmallImages"/>
-<link id="TShellListView.LargeImages"/>
 <link id="TShellListItem.FileInfo"/>
 <link id="TShellListItem"/>
 <link id="TAddItemEvent"/>
