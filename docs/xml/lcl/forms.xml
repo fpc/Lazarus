@@ -2659,21 +2659,33 @@ new Parent which contains an action list is assigned for the frame instance.
 
 <element name="TCustomFrame.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-<element name="TCustomFrame.GetChildren">
+<element name="TCustomFrame.Loaded">
 <short>
-Invokes <var>Proc</var> for all Controls and also for all Components without 
-a Parent.
+Adjust the design-time PPI setting (when needed) when the frame instance has 
+finished loading.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Loaded</var> is an overridden method in <var>TCustomFrame</var> which 
+performs actions when the frame instance has been loaded from the LCL 
+streaming mechanism. It calls the inherited method (in 
+<var>TScrollingWinControl</var>) on entry to update the page, ranges, and 
+visibility for scroll bars used on the frame instance. It also calls the 
+<var>FixFrameFontsPPI</var> method to adjust the design-time pixels-per-inch 
+setting when scaling is enabled for the frame instance and the application.
+</p>
+</descr>
+<version>
+Added in LCL version 4.6.
+</version>
 <seealso>
-<link id="#lcl.controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
+<link id="TCustomFrame.FixFrameFontsPPI"/>
+<link id="TScrollingWinControl.Loaded"/>
+<link id="TScrollingWinControl.HorzScrollBar"/>
+<link id="TScrollingWinControl.VertScrollBar"/>
+<link id="TApplication.Scaled"/>
+<link id="TCustomDesignControl.Scaled"/>
 </seealso>
-</element>
-<element name="TCustomFrame.GetChildren.Proc">
-<short>The callback method.</short>
-</element>
-<element name="TCustomFrame.GetChildren.Root">
-<short>Components are enumerated only if Root=Self.</short>
 </element>
 
 <element name="TCustomFrame.Notification">
@@ -2863,6 +2875,49 @@ handled for the frame.
 </seealso>
 </element>
 
+<element name="TCustomFrame.FixFrameFontsPPI">
+<short>
+Adjusts the design-time PPI settings for fonts when scaling is enabled.
+</short>
+<descr>
+<p>
+<var>FixFrameFontsPPI</var> is a method used to adjust font PPI settings for 
+the frame and its child controls. It ensures that font sizes are scaled (when 
+enabled) so that the PixelsPerInch setting for the frame reflects the run-time 
+PPI setting used in the Parent control. This occurs when the Loaded method is 
+executed on completion of LCL component streaming, or when a new Parent has 
+been assigned for the frame instance.
+</p>
+<p>
+FixFrameFontsPPI temporarily disables alignment on the frame while the PPI 
+settings are adjusted and cascaded to the child controls. It calls 
+FixDesignFontsPPIWithChildren using the PPI value as an argument. This occurs 
+when the Scaled property is enabled for both the Application and the frame 
+instance. FixDesignFontsPPIWithChildren is <b>not</b> called if either of the 
+Scaled properties is not enabled.
+</p>
+</descr>
+<version>
+Added in LCL version 4.6.
+</version>
+<seealso>
+<link id="TCustomFrame.Loaded"/>
+<link id="TCustomFrame.Parent"/>
+<link id="TCustomFrame.Scaled"/>
+<link id="TApplication.Scaled"/>
+<link id="GetParentForm"/>
+<link id="#lcl.controls.TWinControl.FixDesignFontsPPIWithChildren">TWinControl.FixDesignFontsPPIWithChildren</link>
+<link id="#lcl.controls.TWinControl.DisableAlign">TWinControl.DisableAlign</link>
+<link id="#lcl.controls.TWinControl.EnableAlign">TWinControl.EnableAlign</link>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+</seealso>
+</element>
+<element name="TCustomFrame.FixFrameFontsPPI.PPI">
+<short>
+Pixels-per-Inch setting examined and adjusted in the method.
+</short>
+</element>
+
 <element name="TCustomFrame.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -2895,6 +2950,23 @@ is not derived from TFrame.
 </element>
 <element name="TCustomFrame.Create.AOwner">
 <short>Owner of the class instance.</short>
+</element>
+
+<element name="TCustomFrame.GetChildren">
+<short>
+Invokes <var>Proc</var> for all Controls and also for all Components without 
+a Parent.
+</short>
+<descr/>
+<seealso>
+<link id="#lcl.controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
+</seealso>
+</element>
+<element name="TCustomFrame.GetChildren.Proc">
+<short>The callback method.</short>
+</element>
+<element name="TCustomFrame.GetChildren.Root">
+<short>Components are enumerated only if Root=Self.</short>
 </element>
 
 <element name="TCustomFrame.GetControlClassDefaultSize">
