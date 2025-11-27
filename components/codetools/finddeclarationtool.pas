@@ -8533,6 +8533,8 @@ begin
   // -> find class name
   MoveCursorToNodeStart(ProcContextNode);
   ReadNextAtom; // read keyword
+  if UpAtomIs('GENERIC') then
+    ReadNextAtom;
   if UpAtomIs('CLASS') then
     ReadNextAtom;
   ReadNextAtom; // read classname
@@ -8650,6 +8652,7 @@ begin
   
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom; // read keyword
+  if UpAtomIs('GENERIC') then ReadNextAtom;
   if UpAtomIs('CLASS') then ReadNextAtom;
   ReadNextAtom; // read classname
   ClassNameAtom:=CurPos;
