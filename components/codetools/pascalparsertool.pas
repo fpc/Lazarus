@@ -278,6 +278,7 @@ type
     function IsIncomplePartAndWordIsPropSpec: boolean;
     function WordIsStatemendEnd: boolean;
     function WordIsModifier: boolean;
+    function WordIsGenericProcStart: boolean;
     function AllowAttributes: boolean; inline;
     function AllowAnonymousFunctions: boolean; inline;
   public
@@ -3338,6 +3339,34 @@ begin
   end;
 end;
 
+function TPascalParserTool.WordIsGenericProcStart: boolean;
+(* A var/type/cons section ends with the declaration of a procedure/function/method.
+   This can be generic, and "generic" is not a keyword.
+   E.g.:   generic class procedure TClass.Foo<A>;
+*)
+var
+  FndClass: Boolean;
+begin
+  Result := False;
+  if not (CurPos.Flag = cafWord) then exit;
+  if not UpAtomIs('GENERIC') then exit;
+  ReadNextAtom;
+  if not (CurPos.Flag = cafWord) then begin
+    UndoReadNextAtom;
+    exit;
+  end;
+  FndClass := False;
+  if UpAtomIs('CLASS') then begin
+    ReadNextAtom;
+  end;
+  Result :=
+       UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')
+    or UpAtomIs('CONSTRUCTOR') or UpAtomIs('DESTRUCTOR')
+    or UpAtomIs('OPERATOR');
+  UndoReadNextAtom;
+  if FndClass then UndoReadNextAtom;
+end;
+
 
 function TPascalParserTool.ReadTilStatementEnd(ExceptionOnError,
   CreateNodes: boolean): boolean;
@@ -3869,14 +3898,11 @@ begin
   repeat
     ReadNextAtom;  // name
     if UpAtomIs('GENERIC') then begin
-      ReadNextAtom;
-      if UpAtomIs('CLASS') or UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then
-        begin
-        // generic function...  -> not a type declaration
-        UndoReadNextAtom;
+      if WordIsGenericProcStart then begin
         UndoReadNextAtom;
         break;
-        end;
+      end;
+      ReadNextAtom;
       UndoReadNextAtom;
       ReadTypeNameAndDefinition;
     end else if AtomIsIdentifier then begin
@@ -3927,7 +3953,10 @@ begin
     ReadNextAtom;  // name
     if AtomIsIdentifier
     and ((not (Scanner.CompilerMode in [cmOBJFPC,cmFPC]))
-         or (not UpAtomIs('PROPERTY')))
+         or (not (UpAtomIs('PROPERTY')
+                  or WordIsGenericProcStart )
+            )
+        )
     then begin
       CreateChildNode;
       CurNode.Desc:=ctnVarDefinition;
@@ -3989,7 +4018,11 @@ begin
     ReadNextAtom;  // name
     if CurPos.Flag=cafSemicolon then begin
       // ignore empty semicolons
-    end else if AtomIsIdentifier then begin
+    end else if AtomIsIdentifier
+    and ((not (Scanner.CompilerMode in [cmOBJFPC,cmFPC]))
+         or (not WordIsGenericProcStart)
+        )
+    then begin
       CreateChildNode;
       CurNode.Desc:=ctnConstDefinition;
       ReadConst;

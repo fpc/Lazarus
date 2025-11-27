@@ -70,6 +70,7 @@ type
     procedure TestParseObjectSealedAbstract;
     procedure TestParseProcType_OfObjectDeprecated;
     procedure TestGetProcResultNode;
+    procedure TestVarTypeSectionEndAtGenericProc;
   end;
 
 implementation
@@ -818,6 +819,48 @@ begin
     end;
     Node:=Node.Next;
   end;
+end;
+
+procedure TTestPascalParser.TestVarTypeSectionEndAtGenericProc;
+begin
+  Add([
+  'program Project1;',
+  '{$Mode objfpc}',
+  'var a: integer;',
+  'generic procedure Foo<P>;',
+  'begin',
+  'end;',
+  'begin',
+  'specialize Foo<byte>;',
+  'end.'
+  ]);
+  ParseModule;
+
+  Add([
+  'program Project1;',
+  '{$Mode objfpc}',
+  'const a = 1;',
+  'generic procedure Foo<P>;',
+  'begin',
+  'end;',
+  'begin',
+  'specialize Foo<byte>;',
+  'end.'
+  ]);
+  ParseModule;
+
+  Add([
+  'program Project1;',
+  '{$Mode objfpc}',
+  'type a = integer;',
+  'generic procedure Foo;',
+  'begin',
+  'end;',
+  'begin',
+  'specialize Foo<byte>;',
+  'end.'
+  ]);
+  ParseModule;
 end;
 
 initialization
