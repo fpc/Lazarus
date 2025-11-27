@@ -3907,13 +3907,20 @@ begin
   Result := True;
 end;
 
-function TGtk3WidgetSet.SetRectRgn(aRGN: HRGN; X1, Y1, X2, Y2: Integer
-  ): Boolean;
+function TGtk3WidgetSet.SetRectRgn(aRGN: HRGN; X1, Y1, X2, Y2: Integer): Boolean;
+var
+  ARect: Tcairo_rectangle_int_t;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.SetRectRgn not implemented ...');
-  {$ENDIF}
-  Result:=inherited SetRectRgn(aRGN, X1, Y1, X2, Y2);
+  Result := IsValidGDIObject(aRgn);
+  if Result then
+  begin
+    cairo_region_destroy(TGtk3Region(aRGN).Handle);
+    ARect.x := X1;
+    ARect.y := Y1;
+    ARect.width := X2 - X1;
+    ARect.height := Y2 - Y1;
+    TGtk3Region(aRGN).Handle := cairo_region_create_rectangle(@ARect);
+  end;
 end;
 
 function TGtk3WidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
