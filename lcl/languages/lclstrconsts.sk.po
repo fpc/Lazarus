@@ -1449,6 +1449,10 @@ msgstr "Zlý symbol tokenu: očakávaný bol %s, ale nájdený bol %s"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Zlý typ tokenu: očakávaný bol %s , ale nájdený bol %s"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1505,6 +1509,10 @@ msgstr "%s kB"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s MB"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"

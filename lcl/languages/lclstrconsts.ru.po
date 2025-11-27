@@ -1447,6 +1447,10 @@ msgstr "Неверный символ лексемы: ожидался %s, но 
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Неверный тип лексемы: ожидался %s, но найден %s"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1503,6 +1507,10 @@ msgstr "%s кБ"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s МБ"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"

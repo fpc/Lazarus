@@ -1564,6 +1564,10 @@ msgstr "סוג token שגוי: %s צפוי אבל %s נמצא"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "סוג token שגוי: %s צפוי אבל %s נמצא"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1611,6 +1615,10 @@ msgstr ""
 #: lclstrconsts.sshellctrlsmb
 #, object-pascal-format
 msgid "%s MB"
+msgstr ""
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsname

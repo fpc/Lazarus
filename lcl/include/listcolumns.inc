@@ -52,7 +52,7 @@ end;
 constructor TListColumns.Create(AOwner: TCustomListView);
 begin
   FOwner := AOwner;
-  inherited Create(TListColumn);
+  inherited Create(AOwner.GetListColumnClass);
 end;
 
 destructor TListColumns.Destroy;

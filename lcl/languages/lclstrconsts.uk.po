@@ -1532,6 +1532,10 @@ msgstr "Хибний символ маркера: очікувався %s, ал�
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Хибний тип маркера: очікувався %s, але знайдено %s"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1588,6 +1592,10 @@ msgstr "%s кБ"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s МБ"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"

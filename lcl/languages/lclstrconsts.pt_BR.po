@@ -1529,6 +1529,10 @@ msgstr "Símbolo sílaba incorreto: %s esperado mas %s encontrado"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Tipo sílaba incorreto: %s esperado mas %s encontrado"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1585,6 +1589,10 @@ msgstr "%s kB"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s MB"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"

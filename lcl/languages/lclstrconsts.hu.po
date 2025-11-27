@@ -1547,6 +1547,10 @@ msgstr "Rossz vezérjel szimbólum: %s az elvárt, de %s található"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Rossz vezérjel típus: %s az elvárt, de %s található"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1603,6 +1607,10 @@ msgstr "%s kB"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s MB"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"

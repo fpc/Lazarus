@@ -1450,6 +1450,10 @@ msgstr "Simbulu gattivu di fiscia : %s aspettatu ma %s trovu"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Tipu gattivu di fiscia : %s aspettatu ma %s trovu"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1506,6 +1510,10 @@ msgstr "%s Ko"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s Mo"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"

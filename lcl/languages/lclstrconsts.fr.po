@@ -1549,6 +1549,10 @@ msgstr "Mauvais symbole d'identificateur : %s attendu mais %s trouvé"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Mauvais type d'identificateur : %s attendu mais %s trouvé"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1605,6 +1609,10 @@ msgstr "%s kB"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s MB"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"

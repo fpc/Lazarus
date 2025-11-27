@@ -1257,6 +1257,8 @@ type
     property SortIndicator: TSortIndicator read FSortIndicator write SetSortIndicator default siNone;
   end;
 
+  TListColumnClass = class of TListColumn;
+
 
   { TListColumns }
 
@@ -1565,6 +1567,7 @@ type
       const AFindPosition: TPoint; AFindData: Pointer; AStartIndex: Integer;
       ADirection: TSearchDirection; AWrap: Boolean): Integer; virtual;
 
+    function GetListColumnClass: TListColumnClass; virtual;
   protected
     // Multiselection
     FMultiSelList: TIntegerList;

@@ -1515,6 +1515,10 @@ msgstr "Falscher Token: %s erwartet, %s gefunden"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Falscher Token-Typ: %s erwartet, %s gefunden"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1566,6 +1570,10 @@ msgstr ""
 #: lclstrconsts.sshellctrlsmb
 #, object-pascal-format
 msgid "%s MB"
+msgstr ""
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsname

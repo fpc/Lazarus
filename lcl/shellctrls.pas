@@ -24,7 +24,7 @@ interface
 uses
   Classes, SysUtils, Types, Math, AVL_Tree,
   // LCL
-  Forms, Graphics, ComCtrls, LCLStrConsts,
+  Forms, Graphics, Controls, ComCtrls, LCLStrConsts,
   // LazUtils
   LazFileUtils, LazUTF8, Masks;
 
@@ -238,9 +238,6 @@ type
     property OnUTF8KeyPress;
   end;
 
-  { TCustomShellListView }
-
-  TCSLVFileAddedEvent = procedure(Sender: TObject; Item: TListItem) of object;
 
   { TShellListItem }
 
@@ -248,9 +245,37 @@ type
   private
     FFileInfo: TSearchRec;
   public
-    function isFolder: Boolean;
+    function IsFolder: Boolean;
     property FileInfo: TSearchRec read FFileInfo write FFileInfo;
   end;
+
+
+  { TShellListColumn }
+
+  TSLVColumnID = (cidCustom, cidFileName, cidSize, cidType, cidAttr, cidDateModified);
+
+  TShellListColumn = class(TListColumn)
+  private
+    FColumnID: TSLVColumnID;
+    FCustomID: Integer;
+    procedure SetColumnID(const AValue: TSLVColumnID);
+    procedure SetCustomID(const AValue: Integer);
+  private
+    procedure Assign(ASource: TPersistent); override;
+  published
+    property ID: TSLVColumnID read FColumnID write SetColumnID default cidCustom;
+    property CustomID: Integer read FCustomID write SetCustomID default 0;
+  end;
+
+
+  { TCustomShellListView }
+
+  TSLVFileAddedEvent = procedure (Sender: TObject; Item: TListItem) of object;
+
+  TSLVGetCellTextEvent = procedure (Sender: TObject; Item: TShellListItem;
+    AColumn: TShellListColumn; var AText: String) of object;
+
+  TCSLVFileAddedEvent = procedure(Sender: TObject; Item: TListItem) of object; deprecated;
 
   TCustomShellListView = class(TCustomListView)
   private
@@ -266,7 +291,8 @@ type
     FUseBuiltInIcons: Boolean;
     FLockUpdate: Integer;
     FOnAddItem: TAddItemEvent;
-    FOnFileAdded: TCSLVFileAddedEvent;
+    FOnFileAdded: TSLVFileAddedEvent;
+    FOnGetCellText: TSLVGetCellTextEvent;
     { Setters and getters }
     procedure SetFileSortType(AValue: TFileSortType);
     procedure SetMask(const AValue: string);
@@ -283,9 +309,13 @@ type
     function CreateListItem: TListItem; override;
     procedure PopulateWithRoot();
     procedure DoOnResize; override;
+    function GetCellText(AItem: TShellListItem; AColumn: TShellListColumn; AFileName: String): String;
+    procedure InitColumns;
     procedure SetAutoSizeColumns(const Value: Boolean); virtual;
     procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     function GetBuiltinImageIndex(const AFileName: String; ALargeImage: Boolean): Integer;
+    function GetListColumnClass: TListColumnClass; override;
+//    property ColumnTypes: TCSLVColumnTypes read FColumnTypes write SetColumnTypes default DEFAULT_COLUMN_TYPES;
     property OnFileAdded: TCSLVFileAddedEvent read FOnFileAdded write FOnFileAdded;
   public
     { Basic methods }
@@ -304,6 +334,7 @@ type
     property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
     property UseBuiltInIcons: Boolean read FUseBuiltinIcons write FUseBuiltInIcons default true;
     property OnAddItem: TAddItemEvent read FOnAddItem write FOnAddItem;
+    property OnGetCellText: TSLVGetCellTextEvent read FOnGetCellText write FOnGetCellText;
     property OnSortCompare: TFileItemCompareEvent read FOnSortCompare write SetOnSortCompare;
     { Protected properties which users may want to access, see bug 15374 }
     property Items;
@@ -312,9 +343,8 @@ type
   { TShellListView }
 
   TShellListView = class(TCustomShellListView)
-  public
-    property Columns;
   published
+//    property ColumnTypes;
     { TCustomListView properties
       The same as TListView excluding data properties }
 
@@ -325,6 +355,7 @@ type
     property BorderStyle;
     property BorderWidth;
     property Color default clWindow;
+    property Columns;
     property Constraints;
     property DragCursor;
     property DragMode;
@@ -373,6 +404,7 @@ type
     property OnEdited;
     property OnEditing;
     property OnEndDrag;
+    property OnGetCellText;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -433,6 +465,8 @@ const
   sShellTreeViewIncorrectNodeType = 'TShellTreeView: the newly created node is not a TShellTreeNode!';
   MaskCaseSensitivityStrings: array[TMaskCaseSensitivity] of String = ('mcsPlatformDefault', 'mcsCaseInsensitive', 'mcsCaseSensitive');
 
+  DateColumnFormat = 'ddddd t';  // short date + short time
+
 function DbgS(OT: TObjectTypes): String; overload;
 begin
   Result := '[';
@@ -446,6 +480,15 @@ end;
 function DbgS(CS: TMaskCaseSensitivity): String;
 begin
   Result := MaskCaseSensitivityStrings[CS];
+end;
+
+function AttrToStr(Attr: LongInt): String;
+begin
+  Result := '';
+  if faReadOnly and Attr <> 0 then Result := Result + 'R';
+  if faHidden and Attr <> 0 then Result := Result + 'H';
+  if faSysFile and Attr <> 0 then Result := Result + 'S';
+  if faArchive and Attr <> 0 then Result := Result + 'A';
 end;
 
 function FileSizeToStr(AFileSize: Int64): String;
@@ -469,10 +512,38 @@ end;
 
 { TShellListItem }
 
-function TShellListItem.isFolder: Boolean;
+function TShellListItem.IsFolder: Boolean;
 begin
   Result := (FFileInfo.Attr and faDirectory) = faDirectory;
 end;
+
+
+{ TShellListColumn }
+
+procedure TShellListColumn.Assign(ASource: TPersistent);
+begin
+  if ASource is TShellListColumn then
+  begin
+    FColumnID := TShellListColumn(ASource).ID;
+    FCustomID := TShellListColumn(ASource).CustomID;
+  end;
+  inherited;
+end;
+
+procedure TShellListColumn.SetColumnID(const AValue: TSLVColumnID);
+begin
+  if AValue = FColumnID then exit;
+  FColumnID := AValue;
+  Changed(true);
+end;
+
+procedure TShellListColumn.SetCustomID(const AValue: Integer);
+begin
+  if AValue = FCustomID then exit;
+  FCustomID := AValue;
+  Changed(true);
+end;
+
 
 { TFileItem : internal helper class used for temporarily storing info in an internal TStrings component}
 
@@ -1734,6 +1805,16 @@ begin
   end;
 end;
 
+{
+procedure TCustomShellListView.SetColumnTypes(AValue: TCSLVColumnTypes);
+begin
+  if AValue = FColumnTypes then
+    exit;
+  FColumnTypes := AValue;
+  SetupColumns;
+end;
+}
+
 procedure TCustomShellListView.SetFileSortType(AValue: TFileSortType);
 begin
   if FFileSortType=AValue then Exit;
@@ -1833,17 +1914,11 @@ begin
   ViewStyle := vsReport;
   ObjectTypes := [otNonFolders];
   FMaskCaseSensitivity := mcsPlatformDefault;
+  //FColumnTypes := DEFAULT_COLUMN_TYPES;
   FAutoSizeColumns := true;
   ReadOnly := true;
 
-  Self.Columns.Add;
-  Self.Columns.Add;
-  Self.Columns.Add;
-  Self.Column[0].Caption := sShellCtrlsName;
-  Self.Column[1].Caption := sShellCtrlsSize;
-  Self.Column[2].Caption := sShellCtrlsType;
-  // Initial sizes, necessary under Windows CE
-  AdjustColWidths;
+  InitColumns;
 end;
 
 destructor TCustomShellListView.Destroy;
@@ -1860,15 +1935,21 @@ begin
   );
 end;
 
+function TCustomShellListView.GetListColumnClass: TListColumnClass;
+begin
+  Result := TShellListColumn;
+end;
+
 procedure TCustomShellListView.PopulateWithRoot();
 var
-  i: Integer;
+  i, j: Integer;
   Files: TStringList;
-  NewItem: TListItem;
+  NewItem: TShellListItem;
   FileItem: TFileItem;
   CurFileName, CurFilePath: string;
   CurFileSize: Int64;
   CanAdd: Boolean;
+  col: TShellListColumn;
 begin
   // avoids crashes in the IDE by not populating during design
   if (csDesigning in ComponentState) then Exit;
@@ -1897,24 +1978,18 @@ begin
       with FileItem do DoAddItem(FBasePath, FileInfo, CanAdd);
       if CanAdd then
       begin
-        NewItem := Items.Add;
-        if (NewItem is TShellListItem) then
-          TShellListItem(NewItem).FileInfo := FileItem.FileInfo;
+        NewItem := TShellListItem(Items.Add);
+        NewItem.FileInfo := FileItem.FileInfo;
         CurFileName := Files.Strings[i];
         CurFilePath := IncludeTrailingPathDelimiter(FRoot) + CurFileName;
-        // First column - Name
-        NewItem.Caption := CurFileName;
-        if not FileItem.IsFolder then
+
+        for j := 0 to ColumnCount-1 do
         begin
-          // Second column - Size, but not for folders
-          CurFileSize := FileItem.FFileInfo.Size; // in Bytes. (We already know this, so no need for FileSize(CurFilePath))
-          NewItem.SubItems.Add(FileSizeToStr(CurFileSize));
-          // Third column - Type, but not folders
-          NewItem.SubItems.Add(ExtractFileExt(CurFileName));
-        end else
-        begin
-          NewItem.SubItems.Add('');                    // Size
-          NewItem.SubItems.Add(sShellCtrlsFolder);     // Type
+          col := TShellListColumn(Columns[j]);
+          if col.ID = cidFileName then
+            NewItem.Caption := CurFileName
+          else
+            NewItem.SubItems.Add(GetCellText(NewItem, col, CurFileName));
         end;
         // Image index
         if FUseBuiltInIcons then
@@ -1934,32 +2009,122 @@ begin
   end;
 end;
 
+function TCustomShellListView.GetCellText(AItem: TShellListItem;
+  AColumn: TShellListColumn; AFileName: String): String;
+begin
+  Result := '';
+  case AColumn.ID of
+    cidFileName:
+      Result := AFileName;
+    cidSize:
+      if not AItem.IsFolder then  // no size display for folders.
+        Result := FileSizeToStr(AItem.FileInfo.Size)
+      else
+        Result := '';
+    cidType:
+      if not AItem.IsFolder then
+        Result := ExtractFileExt(AFileName)
+      else
+        Result := sShellCtrlsFolder;
+    cidAttr:
+      Result := AttrToStr(AItem.FileInfo.Attr);
+    cidDateModified:
+      Result := FormatDateTime(DateColumnFormat, AItem.FileInfo.TimeStamp);
+    cidCustom:
+      ;  // Get text only from event handler
+  end;
+  if Assigned(FOnGetCellText) then
+    FOnGetCellText(self, AItem, AColumn, Result);
+end;
+
+procedure TCustomShellListView.InitColumns;
+begin
+  Columns.BeginUpdate;
+  try
+    Columns.Clear;
+    with TShellListColumn(Columns.Add) do begin
+      ID := cidFileName;
+      Caption := sShellCtrlsName;
+    end;
+    with TShellListColumn(Columns.Add) do begin
+      ID := cidSize;
+      Caption := sShellCtrlsSize;
+      Alignment := taRightJustify;
+    end;
+    with TShellListcolumn(Columns.Add) do begin
+      ID := cidType;
+      Caption := sShellCtrlsType;
+    end;
+    AdjustColWidths;
+  finally
+    Columns.EndUpdate;
+  end;
+end;
+
 procedure TCustomShellListView.AdjustColWidths;
 var
-  iWidth: Integer;
+  colWidth: Integer;
+  sumOfWidths: Integer;
+  widthAvail: Integer;
+  c: Integer;
+  col: TShellListColumn;
+  testDate: TDateTime;
+  nCol: Integer;
+  colWidths: array of Integer = nil;
+  weightName: Integer;
+  canv: TControlCanvas;
 begin
-  // The correct check is with count,
-  // if Column[0] <> nil then will raise an exception
-  if Self.Columns.Count < 3 then Exit;
+  if Self.Columns.Count < 3 then
+    Exit;
   if (Column[0].Width <> 0) and (not AutoSizeColumns) then
     Exit;
 
-  iWidth := ClientWidth;
+  SetLength(colWidths, ColumnCount);  // all colWidths are initialized with 0
+  widthAvail := ClientWidth;   // Width to be distributed
+  nCol := ColumnCount;         // number of columns to receive  distributed space
+
+  // Calculate fixed width of date column, if available.
+  canv := TControlCanvas.Create;
+  try
+    canv.Control := Self;
+    testDate := EncodeDate(2000,12,29) + EncodeTime(12,0,0,0);
+    for c := 0 to ColumnCount-1 do
+    begin
+      col := TShellListColumn(Columns[c]);
+      if col.ID = cidDateModified then
+      begin
+        colWidths[c] := canv.TextWidth(FormatDateTime(DateColumnFormat, testDate) + 'MM');   //'MM' to simulate the cell padding
+        dec(widthAvail, colWidths[c]);
+        dec(nCol);
+      end;
+    end;
+  finally
+    canv.Free;
+  end;
+
+  // If the space available is small, alloc a larger percentage to the secondary fields
+  if ClientWidth < 400 then
+    weightName := 2
+  else
+    weightName := 4;
+
+  colWidth := widthAvail div (nCol + weightName - 1);
+  colWidths[0] := weightName * colWidth;
+  sumOfWidths := 0;
+  for c := 0 to ColumnCount-1 do
+  begin
+    col := TShellListColumn(Column[c]);
+    if colWidths[c] = 0 then
+      colWidths[c] := colWidth;
+    inc(sumOfWidths, colWidths[c]);
+  end;
+  inc(colWidths[0], ClientWidth - sumOfWidths); // distribute remaining space
+
+  // Apply calculated colwidths to Columns
   BeginUpdate;
   try
-    // If the space available is small, alloc a larger percentage to the secondary
-    // fields
-    if Width < 400 then
-    begin
-      Column[0].Width := (50 * iWidth) div 100;
-      Column[1].Width := (25 * iWidth) div 100;
-    end
-    else
-    begin
-      Column[0].Width := (70 * iWidth) div 100;
-      Column[1].Width := (15 * iWidth) div 100;
-    end;
-    Column[2].Width := Max(0, iWidth - Column[0].Width - Column[1].Width);
+    for c := 0 to ColumnCount-1 do
+      Column[c].Width := colWidths[c];
   finally
     EndUpdate;
   end;

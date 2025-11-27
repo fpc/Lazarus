@@ -1448,6 +1448,10 @@ msgstr "잘못된 토큰 심벌: %s를 기대했으나 %s 발견됨"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "잘못된 토큰 유형: %s를 기대했으나 %s가 발견됨"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1504,6 +1508,10 @@ msgstr "%s kB"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s MB"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"

@@ -915,6 +915,11 @@ begin
       ADirection, AWrap, Result);
 end;
 
+function TCustomListView.GetListColumnClass: TListColumnClass;
+begin
+  Result := TListColumn;
+end;
+
 procedure TCustomListView.QueuedShowEditor(Data: PtrInt);
 begin
   if fShowEditorQueued and IsVisible then

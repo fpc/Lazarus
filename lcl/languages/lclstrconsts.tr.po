@@ -1529,6 +1529,10 @@ msgstr "Yanlış işaret(token) sembolü: %s beklendi fakat %s bulundu"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Yanlış işaret(token) türü: %s beklendi fakat %s bulundu"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1585,6 +1589,10 @@ msgstr "%s kB"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s MB"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"

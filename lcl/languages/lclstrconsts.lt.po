@@ -1550,6 +1550,10 @@ msgstr "Klaidingas leksemos simbolis: tikėtasi %s, tačiau rasta %s"
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Klaidingas leksemos tipas: tikėtasi %s, tačiau rasta %s"
 
+#: lclstrconsts.sshellctrlsattributes
+msgid "Attributes"
+msgstr ""
+
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
 msgid "%s bytes"
@@ -1617,6 +1621,10 @@ msgstr "%s kB"
 #, object-pascal-format
 msgid "%s MB"
 msgstr "%s MB"
+
+#: lclstrconsts.sshellctrlsmodificationdate
+msgid "Modif.Date"
+msgstr ""
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"
