@@ -532,6 +532,14 @@ procedure TShellListColumn.SetColumnID(const AValue: TSLVColumnID);
 begin
   if AValue = FColumnID then exit;
   FColumnID := AValue;
+  if Caption = '' then
+    case FColumnID of
+      cidFileName: Caption := sShellCtrlsName;
+      cidSize: Caption := sShellCtrlsSize;
+      cidType: Caption := sShellCtrlsType;
+      cidAttr: Caption := sShellCtrlsAttributes;
+      cidDateModified: Caption := sShellCtrlsModificationDate;
+    end;
   Changed(true);
 end;
 
@@ -2029,18 +2037,18 @@ begin
   Columns.BeginUpdate;
   try
     Columns.Clear;
-    with TShellListColumn(Columns.Add) do begin
+    with TShellListColumn(Columns.Add) do
+    begin
       ID := cidFileName;
-      Caption := sShellCtrlsName;
     end;
-    with TShellListColumn(Columns.Add) do begin
+    with TShellListColumn(Columns.Add) do
+    begin
       ID := cidSize;
-      Caption := sShellCtrlsSize;
       Alignment := taRightJustify;
     end;
-    with TShellListcolumn(Columns.Add) do begin
+    with TShellListcolumn(Columns.Add) do
+    begin
       ID := cidType;
-      Caption := sShellCtrlsType;
     end;
     AdjustColWidths;
   finally
