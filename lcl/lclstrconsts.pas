@@ -315,7 +315,7 @@ resourceString
   sShellCtrlsName = 'Name';
   sShellCtrlsSize = 'Size';
   sShellCtrlsType = 'Type';
-  sShellCtrlsModificationDate = 'Modif.Date';
+  sShellCtrlsModificationDate = 'Date modified';
   sShellCtrlsAttributes = 'Attributes';
   sShellCtrlsGB = '%s GB';
   sShellCtrlsMB = '%s MB';
