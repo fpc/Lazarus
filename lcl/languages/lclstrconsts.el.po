@@ -1497,7 +1497,7 @@ msgid "%s MB"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsmodificationdate
-msgid "Modif.Date"
+msgid "Date modified"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsname

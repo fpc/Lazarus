@@ -32,7 +32,7 @@ msgid "Unable to find a HTML browser."
 msgstr "Kann den HTML-Browser nicht finden."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
 msgstr "Kein HTML-Browser gefunden.%sBitte legen Sie einen fest unter Werkzeuge -> Einstellungen -> Hilfe -> Hilfeeinstellungen"
@@ -1549,7 +1549,9 @@ msgid "%s MB"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsmodificationdate
-msgid "Modif.Date"
+#, fuzzy
+#| msgid "Modif.Date"
+msgid "Date modified"
 msgstr "Änderungsdatum"
 
 #: lclstrconsts.sshellctrlsname
@@ -1570,3 +1572,4 @@ msgstr "Größe"
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
 msgstr "Typ"
+

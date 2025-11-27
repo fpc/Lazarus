@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-07-09 00:51+0300\n"
+"PO-Revision-Date: 2025-11-28 02:12+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1449,7 +1449,7 @@ msgstr "Неверный тип лексемы: ожидался %s, но най
 
 #: lclstrconsts.sshellctrlsattributes
 msgid "Attributes"
-msgstr ""
+msgstr "Атрибуты"
 
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
@@ -1509,8 +1509,8 @@ msgid "%s MB"
 msgstr "%s МБ"
 
 #: lclstrconsts.sshellctrlsmodificationdate
-msgid "Modif.Date"
-msgstr ""
+msgid "Date modified"
+msgstr "Дата изменения"
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"
