@@ -310,12 +310,11 @@ type
     procedure PopulateWithRoot();
     procedure DoOnResize; override;
     function GetCellText(AItem: TShellListItem; AColumn: TShellListColumn; AFileName: String): String;
-    procedure InitColumns;
+    procedure InitColumns; virtual;
     procedure SetAutoSizeColumns(const Value: Boolean); virtual;
     procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     function GetBuiltinImageIndex(const AFileName: String; ALargeImage: Boolean): Integer;
     function GetListColumnClass: TListColumnClass; override;
-//    property ColumnTypes: TCSLVColumnTypes read FColumnTypes write SetColumnTypes default DEFAULT_COLUMN_TYPES;
     property OnFileAdded: TCSLVFileAddedEvent read FOnFileAdded write FOnFileAdded;
   public
     { Basic methods }
@@ -344,7 +343,6 @@ type
 
   TShellListView = class(TCustomShellListView)
   published
-//    property ColumnTypes;
     { TCustomListView properties
       The same as TListView excluding data properties }
 
@@ -1805,16 +1803,6 @@ begin
   end;
 end;
 
-{
-procedure TCustomShellListView.SetColumnTypes(AValue: TCSLVColumnTypes);
-begin
-  if AValue = FColumnTypes then
-    exit;
-  FColumnTypes := AValue;
-  SetupColumns;
-end;
-}
-
 procedure TCustomShellListView.SetFileSortType(AValue: TFileSortType);
 begin
   if FFileSortType=AValue then Exit;
@@ -1914,7 +1902,6 @@ begin
   ViewStyle := vsReport;
   ObjectTypes := [otNonFolders];
   FMaskCaseSensitivity := mcsPlatformDefault;
-  //FColumnTypes := DEFAULT_COLUMN_TYPES;
   FAutoSizeColumns := true;
   ReadOnly := true;
 
