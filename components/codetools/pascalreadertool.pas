@@ -3025,6 +3025,10 @@ begin
   ReadNextAtom;
   if not AtomIsIdentifier then exit;
   ReadNextAtom;
+  if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then begin
+    if not ReadGenericParamList(True, False, [ppDontCreateNodes, ppDontRaiseExceptionOnError]) then
+      exit;
+  end;
   if (CurPos.Flag<>cafPoint) then exit;
   Result:=true;
 end;

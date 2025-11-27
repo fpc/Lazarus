@@ -8540,6 +8540,10 @@ begin
   ReadNextAtom; // read classname
   ClassNameAtom:=CurPos;
   ReadNextAtom;
+  if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then begin
+    if not ReadGenericParamList(True, False, [ppDontCreateNodes, ppDontRaiseExceptionOnError]) then
+      exit;
+  end;
   if AtomIsChar('.') then begin
     // proc is a method
     if CompareSrcIdentifiers(ClassNameAtom.StartPos,Params.Identifier) then
@@ -8662,6 +8666,12 @@ begin
   end;
   CurClassName:=@Src[ClassNameAtom.StartPos];
   ReadNextAtom;
+  if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and AtomIsChar('<') then begin
+    if not ReadGenericParamList(True, False, [ppDontCreateNodes, ppDontRaiseExceptionOnError]) then begin
+      if not ExceptionOnNotFound then exit;
+      RaiseNotAClass;
+    end;
+  end;
   if CurPos.Flag<>cafPoint then begin
     // not a method
     if not ExceptionOnNotFound then exit;
