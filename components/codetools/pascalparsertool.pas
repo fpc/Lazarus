@@ -126,22 +126,28 @@ type
     );
   TBuildTreeFlags = set of TBuildTreeFlag;
 
+  TPascalParserFlag = (
+    ppDontRaiseExceptionOnError,
+    ppDontCreateNodes
+  );
+  TPascalParserFlags = set of TPascalParserFlag;
+
   { TPascalParserTool }
   
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
   private
   protected
     // often used errors
-    procedure SaveRaiseCharExpectedButAtomFound(id: int64; c: char);
-    procedure RaiseCharExpectedButAtomFound(id: int64; c: char);
-    procedure SaveRaiseStringExpectedButAtomFound(id: int64; const s: string);
-    procedure RaiseStringExpectedButAtomFound(id: int64; const s: string);
-    procedure SaveRaiseUnexpectedKeyWord(id: int64);
-    procedure RaiseUnexpectedKeyWord(id: int64);
-    procedure SaveRaiseIllegalQualifier(id: int64);
-    procedure RaiseIllegalQualifier(id: int64);
-    procedure SaveRaiseEndOfSourceExpected(id: int64);
-    procedure RaiseUnexpectedSectionKeyWord(id: int64);
+    procedure SaveRaiseCharExpectedButAtomFound(id: int64; c: char; ParserFlags: TPascalParserFlags = []);
+    procedure RaiseCharExpectedButAtomFound(id: int64; c: char; ParserFlags: TPascalParserFlags = []);
+    procedure SaveRaiseStringExpectedButAtomFound(id: int64; const s: string; ParserFlags: TPascalParserFlags = []);
+    procedure RaiseStringExpectedButAtomFound(id: int64; const s: string; ParserFlags: TPascalParserFlags = []);
+    procedure SaveRaiseUnexpectedKeyWord(id: int64; ParserFlags: TPascalParserFlags = []);
+    procedure RaiseUnexpectedKeyWord(id: int64; ParserFlags: TPascalParserFlags = []);
+    procedure SaveRaiseIllegalQualifier(id: int64; ParserFlags: TPascalParserFlags = []);
+    procedure RaiseIllegalQualifier(id: int64; ParserFlags: TPascalParserFlags = []);
+    procedure SaveRaiseEndOfSourceExpected(id: int64; ParserFlags: TPascalParserFlags = []);
+    procedure RaiseUnexpectedSectionKeyWord(id: int64; ParserFlags: TPascalParserFlags = []);
   protected
     // code extraction
     ExtractMemStream: TMemoryStream;
@@ -178,13 +184,16 @@ type
     procedure ReadConstExpr;
     // types
     procedure ReadTypeNameAndDefinition;
-    procedure ReadGenericParamList(Must, AllowConstraints: boolean);
+    function ReadGenericParamList(Must, AllowConstraints: boolean; ParserFlags: TPascalParserFlags = []): boolean;
     function ReadBackGenericParamList(AllowConstraints: boolean): boolean;
     procedure ReadAttribute;
     procedure FixLastAttributes;
-    procedure ReadTypeReference(CreateNodes: boolean; Extract: boolean = false;
+    function ReadTypeReference(CreateNodes: boolean; Extract: boolean = false;
       Copying: boolean = false; const Attr: TProcHeadAttributes = [];
-      ForceCreateSpecializeSubNodes: Boolean = False);
+      ForceCreateSpecializeSubNodes: Boolean = False): boolean;
+    function ReadTypeReference(ParserFlags: TPascalParserFlags; Extract: boolean = False;
+      Copying: boolean = false; const Attr: TProcHeadAttributes = [];
+      ForceCreateSpecializeSubNodes: Boolean = False): boolean;
     procedure ReadClassInterfaceContent;
     function KeyWordFuncTypeClass: boolean;
     function KeyWordFuncTypeClassInterface(IntfDesc: TCodeTreeNodeDesc): boolean;
@@ -253,12 +262,15 @@ type
     function ReadTilGetterOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
     procedure ReadClassInheritance(CreateChildNodes: boolean);
-    procedure ReadSpecialize(CreateChildNodes: boolean; Extract: boolean = false;
-      Copying: boolean = false; const Attr: TProcHeadAttributes = []; DontCloseChildNode: boolean = False);
-    procedure ReadSpecializeParams(CreateChildNodes: boolean; Extract: boolean = false;
-      Copying: boolean = false; const Attr: TProcHeadAttributes = []);
-    procedure ReadAnsiStringParams(Extract: boolean = false;
-      Copying: boolean = false; const Attr: TProcHeadAttributes = []);
+    function ReadSpecialize(CreateChildNodes: boolean; Extract: boolean = false;
+      Copying: boolean = false; const Attr: TProcHeadAttributes = []; DontCloseChildNode: boolean = False): boolean;
+    function ReadSpecialize(ParserFlags: TPascalParserFlags = []; Extract: boolean = false;
+      Copying: boolean = false; const Attr: TProcHeadAttributes = []; DontCloseChildNode: boolean = False): boolean;
+    function ReadSpecializeParams(ParserFlags: TPascalParserFlags; Extract: boolean = false;
+      Copying: boolean = false; const Attr: TProcHeadAttributes = []): boolean;
+    function ReadAnsiStringParams(Extract: boolean = false;
+      Copying: boolean = false; const Attr: TProcHeadAttributes = [];
+      ParserFlags: TPascalParserFlags = []): boolean;
     function ReadAnonymousFunction(ExceptionOnError: boolean): boolean;
     function SkipTypeReference(ExceptionOnError: boolean): boolean;
     function SkipSpecializeParams(ExceptionOnError: boolean): boolean;
@@ -296,6 +308,11 @@ type
     function BuildSubTreeAndFindDeepestNodeAtPos(StartNode: TCodeTreeNode;
       P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
 
+    procedure CreateChildNode(ParserFlags: TPascalParserFlags); overload;
+    procedure CreateChildNode(Desc: TCodeTreeNodeDesc; ParserFlags: TPascalParserFlags); overload;
+    procedure CreateChildNode(Desc: TCodeTreeNodeDesc; EndPos: integer; ParserFlags: TPascalParserFlags); overload;
+    procedure EndChildNode(ParserFlags: TPascalParserFlags); overload; inline; {$IFDEF UseInline}inline;{$ENDIF}
+    procedure EndChildNode(EndPos: integer; ParserFlags: TPascalParserFlags = []); overload; {$IFDEF UseInline}inline;{$ENDIF}
     function DoAtom: boolean; override;
 
     function FindFirstNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
@@ -4305,7 +4322,8 @@ begin
   EndChildNode;
 end;
 
-procedure TPascalParserTool.ReadGenericParamList(Must, AllowConstraints: boolean);
+function TPascalParserTool.ReadGenericParamList(Must, AllowConstraints: boolean;
+  ParserFlags: TPascalParserFlags): boolean;
 { At start cursor is on <
   At end cursor is on atom after >
 
@@ -4316,22 +4334,20 @@ procedure TPascalParserTool.ReadGenericParamList(Must, AllowConstraints: boolean
   <T1: record; T2,T3: class; T4: constructor; T5: name> = type
 }
 begin
+  Result := False;
   if not AtomIsChar('<') then begin
     if Must then
       SaveRaiseCharExpectedButAtomFound(20171106143341,'<');
     exit;
   end else if not (Scanner.CompilerMode in cmAllModesWithGeneric) then
     exit;
-  CreateChildNode;
-  CurNode.Desc:=ctnGenericParams;
+  CreateChildNode(ctnGenericParams, ParserFlags);
   ReadNextAtom;
   //debugln(['TPascalParserTool.ReadGenericParamList START ctnGenericParams ',GetAtom]);
   if UpAtomIs('CONST') then // read const after <
     ReadNextAtom;
   if AtomIsIdentifier then begin
-    CreateChildNode;
-    CurNode.Desc:=ctnGenericParameter;
-    CurNode.EndPos:=CurPos.EndPos;
+    CreateChildNode(ctnGenericParameter, CurPos.EndPos, ParserFlags);
     ReadNextAtom;
     repeat
       // read name
@@ -4342,14 +4358,13 @@ begin
       end;
       if CurPos.Flag in [cafComma,cafSemicolon] then begin
         // read next name
-        EndChildNode;
+        EndChildNode(ParserFlags);
         ReadNextAtom;
         if UpAtomIs('CONST') then // read const after , or ;
           ReadNextAtom;
-        AtomIsIdentifierSaveE(20180411194201);
-        CreateChildNode;
-        CurNode.Desc:=ctnGenericParameter;
-        CurNode.EndPos:=CurPos.EndPos;
+        if not AtomIsIdentifierSaveE(20180411194201, ppDontRaiseExceptionOnError in ParserFlags) then
+          exit;
+        CreateChildNode(ctnGenericParameter, CurPos.EndPos, ParserFlags);
         ReadNextAtom;
       end else if AtomIsChar('>') then begin
         break;
@@ -4357,20 +4372,19 @@ begin
         // read constraints
         ReadNextAtom;
         if CurPos.Flag<>cafNone then begin
-          CreateChildNode;
-          CurNode.Desc:=ctnGenericConstraint;
+          CreateChildNode(ctnGenericConstraint, ParserFlags);
         end;
 
         if UpAtomIs('RECORD') or UpAtomIs('CLASS') or UpAtomIs('CONSTRUCTOR')
         then begin
           // keyword
         end else begin
-          ReadTypeReference(False, False, False, [], True);
+          ReadTypeReference(ParserFlags, False, False, [], True);
           UndoReadNextAtom;
         end;
-        CurNode.EndPos:=CurPos.EndPos;
-        EndChildNode;
-        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode(CurPos.EndPos, ParserFlags);
+        if not (ppDontCreateNodes in ParserFlags) then
+          CurNode.EndPos:=CurPos.EndPos;
 
         ReadNextAtom;
         if AtomIs('>=') then begin
@@ -4380,27 +4394,33 @@ begin
         end
         else
           if AtomIsChar('>') then break;
-        if not (CurPos.Flag=cafSemicolon) then
-          SaveRaiseCharExpectedButAtomFound(20170421195740,'>');
+        if not (CurPos.Flag=cafSemicolon) then begin
+          SaveRaiseCharExpectedButAtomFound(20170421195740,'>', ParserFlags);
+          exit;
+        end;
         // cursor is now on ;
-      end else
-        SaveRaiseCharExpectedButAtomFound(20170421195742,'>');
+      end else begin
+        SaveRaiseCharExpectedButAtomFound(20170421195742,'>', ParserFlags);
+        exit;
+      end;
     until false;
     // close ctnGenericParameter
-    EndChildNode;
+    EndChildNode(ParserFlags);
   end else begin
     if AtomIs('>=') then begin
       // this is the rare case where >= are two separate atoms
       dec(CurPos.EndPos);
       LastAtoms.SetCurrent(CurPos);
     end;
-    if not AtomIsChar('>') then
-      SaveRaiseCharExpectedButAtomFound(20170421195745,'>');
+    if not AtomIsChar('>') then begin
+      SaveRaiseCharExpectedButAtomFound(20170421195745,'>', ParserFlags);
+      exit;
+    end;
   end;
   // close ctnGenericParams
-  CurNode.EndPos:=CurPos.EndPos;
-  EndChildNode;
+  EndChildNode(CurPos.EndPos, ParserFlags);
   ReadNextAtom;
+  Result := True;
 end;
 
 function TPascalParserTool.ReadBackGenericParamList(AllowConstraints: boolean): boolean;
@@ -4503,8 +4523,21 @@ begin
   until Attr=nil;
 end;
 
-procedure TPascalParserTool.ReadTypeReference(CreateNodes: boolean; Extract: boolean;
-  Copying: boolean; const Attr: TProcHeadAttributes; ForceCreateSpecializeSubNodes: Boolean);
+function TPascalParserTool.ReadTypeReference(CreateNodes: boolean; Extract: boolean;
+  Copying: boolean; const Attr: TProcHeadAttributes; ForceCreateSpecializeSubNodes: Boolean
+  ): boolean;
+begin
+  if CreateNodes then
+    Result := ReadTypeReference([], Extract, Copying, Attr,
+      ForceCreateSpecializeSubNodes)
+  else
+    Result := ReadTypeReference([ppDontCreateNodes], Extract, Copying, Attr,
+      ForceCreateSpecializeSubNodes);
+end;
+
+function TPascalParserTool.ReadTypeReference(ParserFlags: TPascalParserFlags; Extract: boolean;
+  Copying: boolean; const Attr: TProcHeadAttributes; ForceCreateSpecializeSubNodes: Boolean
+  ): boolean;
 { After reading CurPos is on atom behind the identifier
 
   Examples:
@@ -4530,21 +4563,22 @@ procedure TPascalParserTool.ReadTypeReference(CreateNodes: boolean; Extract: boo
 
 var
   Cnt, p: Integer;
+  ParserFlagsSpecialize: TPascalParserFlags;
 begin
+  Result := False;
+  ParserFlagsSpecialize := ParserFlags;
+  if ForceCreateSpecializeSubNodes then
+    exclude(ParserFlagsSpecialize, ppDontCreateNodes);
   if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
     (* If ForceCreateSpecializeSubNodes then the specialize can be closed.
        The surrounding node of the caller can handle multiple specialize children
     *)
-    ReadSpecialize(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr,CreateNodes);
-    if CreateNodes then
+    ReadSpecialize(ParserFlagsSpecialize, Extract,Copying,Attr,not(ppDontCreateNodes in ParserFlags));
+    if not(ppDontCreateNodes in ParserFlags) then
       LastEnd := CurNode.EndPos;  // if CreateNodes then: CurNode is not yet closed;
   end
   else begin
-    if CreateNodes then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnIdentifier;
-      CurNode.EndPos:=CurPos.EndPos;
-    end;
+    CreateChildNode(ctnIdentifier, CurPos.EndPos, ParserFlags);
     Next;
     p := CurPos.StartPos;
   end;
@@ -4552,13 +4586,14 @@ begin
   while CurPos.Flag=cafPoint do begin
     Next;
     if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
-      ReadSpecialize(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr);
-      if CreateNodes then
+      ReadSpecialize(ParserFlagsSpecialize, Extract,Copying,Attr);
+      if not(ppDontCreateNodes in ParserFlags) then
         LastEnd := CurNode.LastChild.EndPos;
       inc(Cnt,1);
     end
     else begin
-      AtomIsIdentifierSaveE(20180411194207);
+      if not AtomIsIdentifierSaveE(20180411194207, not(ppDontRaiseExceptionOnError in ParserFlags)) then
+        exit;
       Next;
       inc(Cnt,2);
     end;
@@ -4568,7 +4603,7 @@ begin
     or ((Cnt=3) and LastUpAtomIs(3,'SYSTEM') and LastUpAtomIs(1,'STRING'))
     then begin
       // e.g. string<codepage>
-      ReadAnsiStringParams(Extract,Copying,Attr);
+      ReadAnsiStringParams(Extract,Copying,Attr, ParserFlags);
       Next;
     end
     else if (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) then begin
@@ -4576,27 +4611,26 @@ begin
         // e.g. atype<params>
         if CurPos.StartPos = p then begin
           // convert current node
-          if CreateNodes or ForceCreateSpecializeSubNodes then begin
+          if not(ppDontCreateNodes in ParserFlagsSpecialize) then begin
             CurNode.Desc:=ctnSpecialize;
-            CreateChildNode;
-            CurNode.Desc:=ctnSpecializeType;
+            CreateChildNode(ctnSpecializeType);
             CurNode.StartPos:=CurNode.Parent.StartPos;
-            CurNode.EndPos:=CurPos.StartPos;
-            EndChildNode;
+            EndChildNode(CurPos.StartPos);
           end;
-          ReadSpecializeParams(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr);
+          ReadSpecializeParams(ParserFlagsSpecialize, Extract,Copying,Attr);
           Next;
         end
         else begin
           // create sub-node
-          ReadSpecialize(CreateNodes or ForceCreateSpecializeSubNodes,Extract,Copying,Attr);
-          if CreateNodes then
+          ReadSpecialize(ParserFlagsSpecialize,Extract,Copying,Attr);
+          if not(ppDontCreateNodes in ParserFlags) then
             LastEnd := CurNode.LastChild.EndPos;
         end;
         while CurPos.Flag=cafPoint do begin
           // e.g. atype<params>.subtype
           Next;
-          AtomIsIdentifierSaveE(20180411194209);
+          if not AtomIsIdentifierSaveE(20180411194209, not(ppDontRaiseExceptionOnError in ParserFlags)) then
+            exit;
           Next;
         end;
         // e.g. atype<params>.subtype.nested_gen<params>
@@ -4605,10 +4639,8 @@ begin
       until false;
     end;
   end;
-  if CreateNodes then begin
-    CurNode.EndPos:=LastEnd;
-    EndChildNode;
-  end;
+  EndChildNode(LastEnd, ParserFlags);
+  Result := True;
 end;
 
 procedure TPascalParserTool.ReadClassInterfaceContent;
@@ -5590,72 +5622,85 @@ begin
   Result:=true;
 end;
 
-procedure TPascalParserTool.SaveRaiseCharExpectedButAtomFound(id: int64; c: char
-  );
+procedure TPascalParserTool.SaveRaiseCharExpectedButAtomFound(id: int64; c: char;
+  ParserFlags: TPascalParserFlags);
 var
   a: String;
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   a:=GetAtom;
   if a='' then a:=ctsEndOfFile;
   SaveRaiseExceptionFmt(id,ctsStrExpectedButAtomFound,[c,a]);
 end;
 
-procedure TPascalParserTool.RaiseCharExpectedButAtomFound(id: int64; c: char);
+procedure TPascalParserTool.RaiseCharExpectedButAtomFound(id: int64; c: char;
+  ParserFlags: TPascalParserFlags);
 var
   a: String;
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   a:=GetAtom;
   if a='' then a:=ctsEndOfFile;
   RaiseExceptionFmt(id,ctsStrExpectedButAtomFound,[c,a]);
 end;
 
-procedure TPascalParserTool.SaveRaiseStringExpectedButAtomFound(id: int64;
-  const s: string);
+procedure TPascalParserTool.SaveRaiseStringExpectedButAtomFound(id: int64; const s: string;
+  ParserFlags: TPascalParserFlags);
 var
   a: String;
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   a:=GetAtom;
   if a='' then a:=ctsEndOfFile;
   SaveRaiseExceptionFmt(id,ctsStrExpectedButAtomFound,[s,a]);
 end;
 
-procedure TPascalParserTool.RaiseStringExpectedButAtomFound(id: int64;
-  const s: string);
+procedure TPascalParserTool.RaiseStringExpectedButAtomFound(id: int64; const s: string;
+  ParserFlags: TPascalParserFlags);
 var
   a: String;
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   a:=GetAtom;
   if a='' then a:=ctsEndOfFile;
   RaiseExceptionFmt(id,ctsStrExpectedButAtomFound,[s,a]);
 end;
 
-procedure TPascalParserTool.SaveRaiseUnexpectedKeyWord(id: int64);
+procedure TPascalParserTool.SaveRaiseUnexpectedKeyWord(id: int64; ParserFlags: TPascalParserFlags);
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   SaveRaiseExceptionFmt(id,ctsUnexpectedKeyword,[GetAtom]);
 end;
 
-procedure TPascalParserTool.RaiseUnexpectedKeyWord(id: int64);
+procedure TPascalParserTool.RaiseUnexpectedKeyWord(id: int64; ParserFlags: TPascalParserFlags);
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   RaiseExceptionFmt(id,ctsUnexpectedKeyword,[GetAtom]);
 end;
 
-procedure TPascalParserTool.SaveRaiseIllegalQualifier(id: int64);
+procedure TPascalParserTool.SaveRaiseIllegalQualifier(id: int64; ParserFlags: TPascalParserFlags);
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   SaveRaiseExceptionFmt(id,ctsIllegalQualifier,[GetAtom]);
 end;
 
-procedure TPascalParserTool.RaiseIllegalQualifier(id: int64);
+procedure TPascalParserTool.RaiseIllegalQualifier(id: int64; ParserFlags: TPascalParserFlags);
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   RaiseExceptionFmt(id,ctsIllegalQualifier,[GetAtom]);
 end;
 
-procedure TPascalParserTool.SaveRaiseEndOfSourceExpected(id: int64);
+procedure TPascalParserTool.SaveRaiseEndOfSourceExpected(id: int64; ParserFlags: TPascalParserFlags
+  );
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   SaveRaiseExceptionFmt(id,ctsEndofSourceExpectedButAtomFound,[GetAtom]);
 end;
 
-procedure TPascalParserTool.RaiseUnexpectedSectionKeyWord(id: int64);
+procedure TPascalParserTool.RaiseUnexpectedSectionKeyWord(id: int64;
+  ParserFlags: TPascalParserFlags);
 begin
+  if ppDontRaiseExceptionOnError in ParserFlags then exit;
   SaveRaiseExceptionFmt(id,ctsUnexpectedSectionKeyword,[GetAtom]);
 end;
 
@@ -6190,8 +6235,17 @@ begin
   end;
 end;
 
-procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean; Extract: boolean;
-  Copying: boolean; const Attr: TProcHeadAttributes; DontCloseChildNode: boolean);
+function TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean; Extract: boolean;
+  Copying: boolean; const Attr: TProcHeadAttributes; DontCloseChildNode: boolean): boolean;
+begin
+  if CreateChildNodes then
+    Result := ReadSpecialize([], Extract, Copying, Attr, DontCloseChildNode)
+  else
+    Result := ReadSpecialize([ppDontCreateNodes], Extract, Copying, Attr, DontCloseChildNode);
+end;
+
+function TPascalParserTool.ReadSpecialize(ParserFlags: TPascalParserFlags; Extract: boolean;
+  Copying: boolean; const Attr: TProcHeadAttributes; DontCloseChildNode: boolean): boolean;
 // specialize template
 // after parsing the cursor is on the atom behind the >
 // examples:
@@ -6210,61 +6264,55 @@ procedure TPascalParserTool.ReadSpecialize(CreateChildNodes: boolean; Extract: b
   end;
 
 begin
+  Result := False;
   //debugln(['TPascalParserTool.ReadSpecialize START ',GetAtom]);
   if Scanner.CompilerMode=cmOBJFPC then begin
     {$IFDEF CheckNodeTool}
     if not UpAtomIs('SPECIALIZE') then
       SaveRaiseIllegalQualifier(20171106150016);
     {$ENDIF}
-    if CreateChildNodes then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnSpecialize;
-    end;
+    CreateChildNode(ctnSpecialize, ParserFlags);
     Next;
   end else if Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE] then begin
     UndoReadNextAtom;
-    if CreateChildNodes then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnSpecialize;
-    end;
-  end else
-    SaveRaiseIllegalQualifier(20171106145928);
+    CreateChildNode(ctnSpecialize, ParserFlags);
+  end else begin
+    SaveRaiseIllegalQualifier(20171106145928, ParserFlags);
+    exit;
+  end;
 
   // read identifier (the name of the generic)
-  AtomIsIdentifierSaveE(20180411194257);
-  if CreateChildNodes then begin
-    CreateChildNode;
-    CurNode.Desc:=ctnSpecializeType;
-    CurNode.EndPos:=CurPos.EndPos;
-  end;
+  if not AtomIsIdentifierSaveE(20180411194257, not(ppDontRaiseExceptionOnError in ParserFlags)) then
+    exit;
+  CreateChildNode(ctnSpecializeType, CurPos.EndPos, ParserFlags);
   if Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE] then
     ReadNextAtom // if Extract=true: was already extracted
   else
     Next;
   while Curpos.Flag=cafPoint do begin
     Next;
-    AtomIsIdentifierSaveE(20180411194300);
-    if CreateChildNodes then
+    if not AtomIsIdentifierSaveE(20180411194300, not(ppDontRaiseExceptionOnError in ParserFlags)) then
+      exit;
+    if not(ppDontCreateNodes in ParserFlags) then
       CurNode.EndPos:=CurPos.EndPos;
     Next;
   end;
-  if CreateChildNodes then begin
-    EndChildNode; // end ctnSpecializeType
-  end;
+  EndChildNode(ParserFlags); // end ctnSpecializeType
 
-  ReadSpecializeParams(CreateChildNodes,Extract,Copying,Attr);
-  if CreateChildNodes then begin
+  ReadSpecializeParams(ParserFlags, Extract,Copying,Attr);
+  if not(ppDontCreateNodes in ParserFlags) then begin
     // close specialize
     CurNode.EndPos:=CurPos.EndPos;
     if not DontCloseChildNode then
-      EndChildNode; // end ctnSpecialize
+      EndChildNode(ParserFlags); // end ctnSpecialize
   end;
   Next;
   //debugln(['TPascalParserTool.ReadSpecialize END ',GetAtom,' ',CurNode.DescAsString]);
+  Result := True;
 end;
 
-procedure TPascalParserTool.ReadSpecializeParams(CreateChildNodes: boolean;
-  Extract: boolean; Copying: boolean; const Attr: TProcHeadAttributes);
+function TPascalParserTool.ReadSpecializeParams(ParserFlags: TPascalParserFlags; Extract: boolean;
+  Copying: boolean; const Attr: TProcHeadAttributes): boolean;
 // after readig CurPos is at the >
 
   procedure Next; inline;
@@ -6276,35 +6324,37 @@ procedure TPascalParserTool.ReadSpecializeParams(CreateChildNodes: boolean;
   end;
 
 begin
+  Result := False;
   // read params
-  if not AtomIsChar('<') then
-    SaveRaiseCharExpectedButAtomFound(20170421195916,'<');
-  if CreateChildNodes then begin
-    CreateChildNode;
-    CurNode.Desc:=ctnSpecializeParams;
+  if not AtomIsChar('<') then begin
+    SaveRaiseCharExpectedButAtomFound(20170421195916,'<', ParserFlags);
+    exit
   end;
+  CreateChildNode(ctnSpecializeParams, ParserFlags);
   // read list of types
   repeat
     // read identifier (a parameter of the generic type)
     Next;
-    ReadTypeReference(CreateChildNodes,Extract,Copying,Attr);
+    ReadTypeReference(ParserFlags, Extract,Copying,Attr);
     if AtomIsChar('>') then
       break
     else if CurPos.Flag=cafComma then begin
       // read next parameter
-    end else
-      SaveRaiseCharExpectedButAtomFound(20170421195918,'>');
+    end else begin
+      SaveRaiseCharExpectedButAtomFound(20170421195918,'>', ParserFlags);
+      exit;
+    end;
   until false;
-  if CreateChildNodes then begin
-    // close list
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode; // end ctnSpecializeParams
-  end;
+  // close list
+  EndChildNode(CurPos.EndPos, ParserFlags); // end ctnSpecializeParams
+  Result := True;
 end;
 
-procedure TPascalParserTool.ReadAnsiStringParams(Extract: boolean; Copying: boolean; const Attr: TProcHeadAttributes);
+function TPascalParserTool.ReadAnsiStringParams(Extract: boolean; Copying: boolean;
+  const Attr: TProcHeadAttributes; ParserFlags: TPascalParserFlags): boolean;
 begin
   // string<codepage>
+  Result := False;
   repeat
     if not Extract then
       ReadNextAtom
@@ -6314,19 +6364,25 @@ begin
     case CurPos.Flag of
     cafRoundBracketOpen,cafEdgedBracketOpen: ReadTilBracketClose(true);
     cafNone:
-      if (CurPos.StartPos>SrcLen) then
-        SaveRaiseCharExpectedButAtomFound(20170421195831,'>')
+      if (CurPos.StartPos>SrcLen) then begin
+        SaveRaiseCharExpectedButAtomFound(20170421195831,'>', ParserFlags);
+        exit;
+      end
       else if (((CurPos.EndPos-CurPos.StartPos=1)
             and (Src[CurPos.StartPos] in ['+','-','*','&','$'])))
           or AtomIsNumber
       then begin
       end else begin
-        SaveRaiseCharExpectedButAtomFound(20170421195834,'>')
+        SaveRaiseCharExpectedButAtomFound(20170421195834,'>', ParserFlags);
+        exit;
       end;
-    else
-      SaveRaiseCharExpectedButAtomFound(20170421195837,'>');
+    else begin
+        SaveRaiseCharExpectedButAtomFound(20170421195837,'>', ParserFlags);
+        exit;
+      end;
     end;
   until false;
+  Result := True;
 end;
 
 function TPascalParserTool.ReadAnonymousFunction(ExceptionOnError: boolean): boolean;
@@ -6690,6 +6746,38 @@ begin
   // re-raise parse errors
   if (Result<>nil) and ((ctnsHasParseError and Result.SubDesc)>0) then
     RaiseNodeParserError(Result);
+end;
+
+procedure TPascalParserTool.CreateChildNode(ParserFlags: TPascalParserFlags);
+begin
+  if ppDontCreateNodes in ParserFlags then exit;
+  inherited CreateChildNode;
+end;
+
+procedure TPascalParserTool.CreateChildNode(Desc: TCodeTreeNodeDesc;
+  ParserFlags: TPascalParserFlags);
+begin
+  if ppDontCreateNodes in ParserFlags then exit;
+  inherited CreateChildNode(Desc);
+end;
+
+procedure TPascalParserTool.CreateChildNode(Desc: TCodeTreeNodeDesc; EndPos: integer;
+  ParserFlags: TPascalParserFlags);
+begin
+  if ppDontCreateNodes in ParserFlags then exit;
+  inherited CreateChildNode(Desc, EndPos);
+end;
+
+procedure TPascalParserTool.EndChildNode(ParserFlags: TPascalParserFlags);
+begin
+  if ppDontCreateNodes in ParserFlags then exit;
+  inherited EndChildNode;
+end;
+
+procedure TPascalParserTool.EndChildNode(EndPos: integer; ParserFlags: TPascalParserFlags);
+begin
+  if ppDontCreateNodes in ParserFlags then exit;
+  inherited EndChildNode(EndPos);
 end;
 
 function TPascalParserTool.FindInterfaceNode: TCodeTreeNode;
