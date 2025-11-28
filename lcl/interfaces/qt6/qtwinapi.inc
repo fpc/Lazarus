@@ -5453,6 +5453,14 @@ begin
   Result := True;
 end;
 
+function TQtWidgetSet.RectInRegion(RGN: HRGN; ARect: TRect): Boolean;
+begin
+  if IsValidGDIObject(RGN) then
+    Result := TQtRegion(RGN).intersects(ARect)
+  else
+    Result := False;
+end;
+
 function TQtWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 var
   QtDC: TQtDeviceContext;
@@ -5463,9 +5471,12 @@ begin
   Result := False;
   if not IsValidDC(DC) then Exit;
   QtDC := TQtDeviceContext(DC);
-  // as MSDN says only clipping region can play here
+  // as MSDN says only clipping region can play here, also if any
+  // part of rect is inside region it should return true, so we
+  // use QRegion_intersects(), because QRegion_contains() returns
+  // true only if TRect is fully inside region bounds.
   if QtDC.getClipping then
-    Result := QtDC.getClipRegion.containsRect(ARect);
+    Result := RectInRegion(HRGN(QtDC.getClipRegion), ARect);
 end;
 
 {------------------------------------------------------------------------------
