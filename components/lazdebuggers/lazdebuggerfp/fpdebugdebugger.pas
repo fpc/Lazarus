@@ -4199,6 +4199,7 @@ begin
 
     // Check if CreateDbgProcess returns a valid TDbgProcess
 //    if ACommand <> dcAttach then begin
+    FDbgController.CreateCurrentProcess;
     if Assigned(FDbgController.CurrentProcess) then begin
       FDbgController.CurrentProcess.Config.UseConsoleWinPos    := FUseConsoleWinPos;
       FDbgController.CurrentProcess.Config.UseConsoleWinSize   := FUseConsoleWinSize;

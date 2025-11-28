@@ -294,7 +294,6 @@ type
     FWorkingDirectory: string;
     // This only holds a reference to the LazDebugger instance
     FProcessConfig: TDbgProcessConfig;
-    function GetCurrentProcess: TDbgProcess;
     function GetCurrentThreadId: Integer;
     function GetDefaultContext: TFpDbgLocationContext;
     procedure SetCurrentThreadId(AValue: Integer);
@@ -318,6 +317,7 @@ type
     destructor Destroy; override;
     (* InitializeCommand: set new command
        Not called if command is replaced by OnThreadProcessLoopCycleEvent  *)
+    procedure CreateCurrentProcess;
     procedure InitializeCommand(ACommand: TDbgControllerCmd);
     procedure AbortCurrentCommand(AForce: Boolean = False); // AForce: either if in debug-thread, or if thread not needed
     function Run: boolean;
@@ -343,7 +343,7 @@ type
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
-    property CurrentProcess: TDbgProcess read GetCurrentProcess;
+    property CurrentProcess: TDbgProcess read FCurrentProcess;
     property CurrentThread: TDbgThread read FCurrentThread;
     property CurrentThreadId: Integer read GetCurrentThreadId write SetCurrentThreadId;
     property MainProcess: TDbgProcess read FMainProcess;
@@ -1583,14 +1583,6 @@ begin
   Result := FCurrentThread.ID;
 end;
 
-function TDbgController.GetCurrentProcess: TDbgProcess;
-begin
-  if (FCurrentProcess = nil) and (FMainProcess = nil) then
-    FCurrentProcess := CreateDbgProcess;
-
-  Result := FCurrentProcess;
-end;
-
 function TDbgController.GetDefaultContext: TFpDbgLocationContext;
 begin
   Result := FStoredDefaultContext;
@@ -1657,6 +1649,14 @@ begin
   FParams.Free;
   FEnvironment.Free;
   inherited Destroy;
+end;
+
+procedure TDbgController.CreateCurrentProcess;
+begin
+  assert(FCurrentProcess = nil, 'TDbgController.CreateCurrentProcess: FCurrentProcess = nil');
+  assert(FMainProcess = nil, 'TDbgController.CreateCurrentProcess: FMainProcess = nil');
+  if (FCurrentProcess = nil) and (FMainProcess = nil) then
+    FCurrentProcess := CreateDbgProcess;
 end;
 
 procedure TDbgController.AbortCurrentCommand(AForce: Boolean);
