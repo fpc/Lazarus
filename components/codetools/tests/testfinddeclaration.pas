@@ -58,6 +58,19 @@
       An exact list of all the location that codetool will find.
       if XYLIST starts with "C," then comments are searched too.
 
+    {#ID} {#=ID} {#/ID}
+    {@ID} {@!ID}
+    Test FindDeclaration:
+      FindDeclaration for the identifier in front of {@ID} should return the
+      identifier in front of {#ID}
+      - For each ID there must be exactly ONE {#ID}
+      - For each ID there can be many {@ID}
+      @! This is declared by something else. FindDeclaratin must return a location different to ID
+         Can be used to ensure FindRefs is not returning a location
+      #= For *FindRefs*: All find-results are marked with {@}.
+         If any unmarked location is found then this is an error.
+      #/ Ignore this marker and references to it. Alternative with exact spaces: { TODO: #ID}
+
 *)
 unit TestFindDeclaration;
 
@@ -80,12 +93,25 @@ const
   MarkRef = '@'; // a reference to a declaration
 
 type
+
+  { TFDMarker }
+
   TFDMarker = class
   public
     Name: string;
     Kind: char;
     NameStartPos, NameEndPos: integer; // identifier in front of comment
     CleanPos: integer; // comment end
+    InvMarker, ExactMarker: boolean; // Has a declaration somewhere else / MUST NOT return ID as declaration
+    RefPosList, RefPosList2: TStringList;
+    destructor Destroy; override;
+    procedure AddRefPos(x,y: integer);
+    procedure StartRefPosTest;
+    procedure EndRefPosTest;
+    function RefPosCount: integer;
+    function MarkRefPosAsFound(x,y: integer): boolean;
+    function NotFoundRefPosCount: integer;
+    function NotFoundRefPos(Idx: Integer): String;
   end;
 
   { TCustomTestFindDeclaration }
@@ -102,7 +128,10 @@ type
     function MarkerCount: integer;
     property Markers[Index: integer]: TFDMarker read GetMarkers;
     function AddMarker(const aName: string; Kind: char; CleanPos: integer;
-      NameStartPos, NameEndPos: integer): TFDMarker;
+      NameStartPos, NameEndPos: integer;
+      InvMarker: boolean = False;
+      ExactMarker: boolean = False
+      ): TFDMarker;
     function IndexOfMarker(const aName: string; Kind: char): integer;
     procedure ParseSimpleMarkers(aCode: TCodeBuffer);
     function FindMarker(const aName: string; Kind: char): TFDMarker;
@@ -207,22 +236,86 @@ type
 
 implementation
 
+{ TFDMarker }
+
+destructor TFDMarker.Destroy;
+begin
+  inherited Destroy;
+  RefPosList.Free;
+  RefPosList2.Free;
+end;
+
+procedure TFDMarker.AddRefPos(x, y: integer);
+begin
+  if RefPosList = nil then
+    RefPosList := TStringList.Create;
+  RefPosList.Add(Format('%d,%d', [Y, X]));
+end;
+
+procedure TFDMarker.StartRefPosTest;
+begin
+  RefPosList2.Free;
+  RefPosList2 := TStringList.Create;
+  if RefPosList <> nil then
+    RefPosList2.Assign(RefPosList);
+  RefPosList2.Sorted := True;
+end;
+
+procedure TFDMarker.EndRefPosTest;
+begin
+  while (RefPosList2.Count > 0) and (RefPosList2[0][1] = '-') do
+    RefPosList2.Delete(0); // remove InvMarker entries
+end;
+
+function TFDMarker.MarkRefPosAsFound(x, y: integer): boolean;
+var
+  i: Integer;
+begin
+  i := RefPosList2.IndexOf(Format('%d,%d', [Y, X]));
+  Result := i >= 0;
+  if Result then
+    RefPosList2.Delete(i);
+end;
+
+function TFDMarker.NotFoundRefPosCount: integer;
+begin
+  Result := RefPosList2.Count;
+end;
+
+function TFDMarker.NotFoundRefPos(Idx: Integer): String;
+begin
+  Result := RefPosList2[Idx];
+end;
+
+function TFDMarker.RefPosCount: integer;
+begin
+  Result := 0;
+  if RefPosList <> nil then
+    Result := RefPosList.Count;
+end;
+
 { TCustomTestFindDeclaration }
 
 procedure TCustomTestFindDeclaration.CheckReferenceMarkers;
 var
-  i, FoundTopLine, FoundCleanPos, BlockTopLine, BlockBottomLine: Integer;
+  i, FoundTopLine, FoundCleanPos, BlockTopLine, BlockBottomLine, j: Integer;
   Marker, DeclMarker: TFDMarker;
   CursorPos, FoundCursorPos: TCodeXYPosition;
   FoundTool: TFindDeclarationTool;
+  ListOfPCodeXYPosition: TFPList;
+  Cache: TFindIdentifierReferenceCache;
+  s:string;
 begin
   for i:=0 to MarkerCount-1 do begin
     Marker:=Markers[i];
     if Marker.Kind=MarkRef then begin
       DeclMarker:=FindMarker(Marker.Name,MarkDecl);
-      if DeclMarker=nil then
+      if (DeclMarker=nil) or (DeclMarker.NameStartPos = -1) then
         Fail('ref has no decl marker. ref "'+Marker.Name+'" at '+MainTool.CleanPosToStr(Marker.CleanPos));
-      MainTool.CleanPosToCaret(Marker.NameStartPos,CursorPos);
+      if (DeclMarker.NameStartPos < 0) then
+        continue;
+      if not MainTool.CleanPosToCaret(Marker.NameStartPos,CursorPos) then
+        Fail('failed CleanPosToCaret. ref "'+Marker.Name+'"');
 
       // test FindDeclaration
       if not CodeToolBoss.FindDeclaration(CursorPos.Code,CursorPos.X,CursorPos.Y,
@@ -244,9 +337,50 @@ begin
           WriteSource(CursorPos);
           Fail('find declaration at '+MainTool.CleanPosToStr(Marker.NameStartPos,true)
             +' returned wrong position "'+MainTool.CleanPosToStr(FoundCleanPos)+'"'
-            +' instead of "'+MainTool.CleanPosToStr(Marker.NameStartPos)+'"');
+            +' instead of "'+MainTool.CleanPosToStr(DeclMarker.NameStartPos)+'"');
         end;
       end;
+    end
+    else
+    if (Marker.Kind=MarkDecl) and (Marker.NameStartPos >= 0) then begin
+      ListOfPCodeXYPosition:=nil;
+      Cache:=nil;
+      MainTool.CleanPosToCaret(Marker.NameStartPos,CursorPos);
+      if not CodeToolBoss.FindReferences(
+        FMainCode,CursorPos.X,CursorPos.Y,
+        FMainCode{TODO: iterate multiple files}, True {SkipComments},
+        ListOfPCodeXYPosition, Cache)
+      then
+        AssertTrue('FindReferences failed at '+MainTool.CleanPosToStr(Marker.NameStartPos,true)+format(' %d / %d,%d', [Marker.NameStartPos, CursorPos.X,CursorPos.Y]), False);
+
+
+      Marker.StartRefPosTest;
+      if ListOfPCodeXYPosition <> nil then begin
+        for j:=0 to ListOfPCodeXYPosition.Count-1 do begin
+          if not Marker.MarkRefPosAsFound(PCodeXYPosition(ListOfPCodeXYPosition[j])^.X, PCodeXYPosition(ListOfPCodeXYPosition[j])^.Y) then begin
+            if Marker.ExactMarker then begin
+              WriteSource(CursorPos);
+              Fail('FindRefs: Returend unknown position. Bad ref at '+MainTool.CleanPosToStr(Marker.CleanPos, True)+' '+format('%d,%d',[CursorPos.X,CursorPos.Y])+' for marker '+s);
+            end;
+          end;
+          if Marker.MarkRefPosAsFound(-PCodeXYPosition(ListOfPCodeXYPosition[j])^.X, -PCodeXYPosition(ListOfPCodeXYPosition[j])^.Y) then begin
+            WriteSource(CursorPos);
+            Fail('FindRefs: Returend position explicityl excluded from refs. Bad ref at '+MainTool.CleanPosToStr(Marker.CleanPos, True)+' '+format('%d,%d',[CursorPos.X,CursorPos.Y])+' for marker '+s);
+          end;
+        end;
+      end;
+      Marker.EndRefPosTest;
+      if Marker.NotFoundRefPosCount > 0 then begin;
+        WriteSource(CursorPos);
+        s := '';
+        for j := 0 to Marker.NotFoundRefPosCount-1 do
+          s := s + ' / ' + Marker.NotFoundRefPos(j);
+        Fail('FindRefs: Did not find ref at '+MainTool.CleanPosToStr(Marker.CleanPos, True)+' '+format('%d,%d',[CursorPos.X,CursorPos.Y])+' for marker '+s);
+      end;
+
+      if ListOfPCodeXYPosition <> nil then
+        CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+      Cache.Free;
     end;
   end;
 end;
@@ -340,18 +474,19 @@ var
     BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop: Integer;
   Marker, ExpectedType, NewType, ExpectedCompletion, ExpectedTerm,
     ExpectedCompletionPart, ExpectedTermPart, ExpectedTermPartEx, s: String;
+  k:char;
   IdentItem: TIdentifierListItem;
-  ItsAKeyword, IsSubIdentifier, ExpInvert, ExpComment: boolean;
+  ItsAKeyword, IsSubIdentifier, ExpInvert, ExpComment, InvMarker, ExactMarker: boolean;
   ExistingDefinition: TFindContext;
   ListOfPFindContext: TFPList;
   NewExprType: TExpressionType;
   ListOfPCodeXYPosition: TFPList;
   Cache: TFindIdentifierReferenceCache;
-  k: Char;
 begin
   FMainCode:=aCode;
   DoParseModule(MainCode,FMainTool);
   Src:=MainTool.Src;
+  FMarkers.Clear;
 
   CodeToolBoss.IdentComplIncludeKeywords := False;
   if pos('{%identcomplincludekeywords:on}', LowerCase(Src)) > 0 then
@@ -390,11 +525,40 @@ begin
         end;
       end;
       inc(p);
+
+      // check marker #/@
       NameStartPos:=p;
-      if Src[p] in ['#','@'] then begin
+      l := IdentifierStartPos;
+      k := Src[p];
+      if (strlicomp(@Src[p], pchar('TODO: #'), 7) = 0) or  (strlicomp(@Src[p], pchar('TODO:#'), 6) = 0)
+      then begin
+        k := '#';
+        l := -2;
+        while Src[p] <> '#' do inc(p);
+      end;
+      if k in ['#','@'] then begin
         {#name}  {@name}
-        k := Src[p];
         inc(p);
+        InvMarker := False;
+        ExactMarker := False;
+        if k = '@' then begin
+          InvMarker := src[p] = '!';
+          if InvMarker then
+            inc(p);
+        end;
+        if k = '#' then begin
+          if src[p] = '/' then begin
+            l := -2;
+            inc(p);
+          end;
+          if src[p] = '/' then begin
+            l := -2;
+            inc(p);
+          end;
+          ExactMarker := src[p] = '=';
+          if ExactMarker then
+            inc(p);
+        end;
         if not IsIdentStartChar[Src[p]] then begin
           WriteSource(p,MainTool);
           Fail('Expected identifier at '+MainTool.CleanPosToStr(p,true));
@@ -403,9 +567,12 @@ begin
         while IsIdentChar[Src[p]] do inc(p);
         Marker:=copy(Src,NameStartPos,p-NameStartPos);
         if TestLoop=0 then
-          AddMarker(Marker,k,CommentP,IdentifierStartPos,IdentifierEndPos);
+          AddMarker(Marker,k,CommentP,l,IdentifierEndPos, InvMarker, ExactMarker);
         continue;
       end;
+
+      if (strlicomp(@Src[p], pchar('TODO:'), 5) = 0) then
+        continue;
 
       CommentEnd := CommentP;
       CommentP := p;
@@ -702,21 +869,49 @@ begin
     Result:=FMarkers.Count;
 end;
 
-function TCustomTestFindDeclaration.AddMarker(const aName: string; Kind: char;
-  CleanPos: integer; NameStartPos, NameEndPos: integer): TFDMarker;
+function TCustomTestFindDeclaration.AddMarker(const aName: string; Kind: char; CleanPos: integer;
+  NameStartPos, NameEndPos: integer; InvMarker: boolean; ExactMarker: boolean): TFDMarker;
+var
+  CursorPos: TCodeXYPosition;
+  DeclMarker: TFDMarker;
 begin
-  if (Kind=MarkDecl) then begin
-    Result:=FindMarker(aName,Kind);
-    if Result<>nil then
-      Fail('duplicate decl marker at '+MainTool.CleanPosToStr(CleanPos)+' and at '+MainTool.CleanPosToStr(Result.CleanPos));
+  DeclMarker :=FindMarker(aName,MarkDecl);
+  if DeclMarker = nil then begin
+    DeclMarker:=TFDMarker.Create;
+    DeclMarker.Name := aName;
+    DeclMarker.Kind := MarkDecl;
+    DeclMarker.NameStartPos := -1;
+    FMarkers.Add(DeclMarker);
   end;
-  Result:=TFDMarker.Create;
+
+  if (Kind=MarkDecl) then begin
+    if (DeclMarker.NameStartPos>=0) then
+      Fail('duplicate decl marker at '+MainTool.CleanPosToStr(CleanPos)+' and at '+MainTool.CleanPosToStr(DeclMarker.CleanPos));
+    Result := DeclMarker;
+  end
+  else begin
+    Result:=TFDMarker.Create;
+    FMarkers.Add(Result);
+  end;
+
   Result.Name:=aName;
   Result.Kind:=Kind;
   Result.CleanPos:=CleanPos;
   Result.NameStartPos:=NameStartPos;
   Result.NameEndPos:=NameEndPos;
-  FMarkers.Add(Result);
+  Result.InvMarker:=InvMarker;
+  Result.ExactMarker:=ExactMarker;
+
+  if Kind = MarkRef then begin
+    MainTool.CleanPosToCaret(NameStartPos,CursorPos);
+    if InvMarker then begin
+      DeclMarker.AddRefPos(-CursorPos.X, -CursorPos.Y);
+      MainTool.CleanPosToCaret(NameEndPos,CursorPos);
+      DeclMarker.AddRefPos(-CursorPos.X, -CursorPos.Y);
+    end
+    else
+      DeclMarker.AddRefPos(CursorPos.X, CursorPos.Y);
+  end;
 end;
 
 function TCustomTestFindDeclaration.IndexOfMarker(const aName: string; Kind: char

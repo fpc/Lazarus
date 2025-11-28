@@ -8495,6 +8495,11 @@ begin
   if not AtomIsIdentifier then exit; // ignore operator procs
   NameAtom:=CurPos;
   ReadNextAtom;
+  if (Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE]) and AtomIsChar('<') then begin
+    // coulde be generic param of a class: TFoo<T>.Method
+    // or of a generic procedure: procedure Foo<T>(a: T);
+    ReadGenericParamList(False, False, [ppDontCreateNodes,ppDontRaiseExceptionOnError]);
+  end;
   if AtomIsChar('.') then begin
     // proc is a method body (not a declaration).
     // -> proceed the search normally ...
