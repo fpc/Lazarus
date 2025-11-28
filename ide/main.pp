@@ -1270,7 +1270,7 @@ begin
     CreateConfig;
     Load(false);
   end;
-  AddDefaultRecentProjects;            // Add some initial recent projects.
+  AddDefaultRecentProjects;
 
   // read language and lazarusdir parameters, needed for translation
   if GetParamOptionPlusValue('--language=',s) then
