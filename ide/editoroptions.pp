@@ -4271,20 +4271,10 @@ begin
 end;
 
 function TEditOptLangList.FindByName(const Name: String): Integer;
-var
-  bb: Boolean;
 begin
   Result := Count - 1;
-  while (Result > 0) do begin
-    //debugln(['TEditOptLangList.FindByName Name=', Name,
-    //         ', LanguageName=', Items[Result].SynInstance.LanguageName]);
-    bb := Items[Result].SynInstance.LanguageName = Name;
-    // Caseinsensitive Unicode should not be needed here.
-    Assert(bb = (AnsiCompareText(Items[Result].SynInstance.LanguageName, Name)=0),
-           'TEditOptLangList.FindByName: Sanity check, will be removed.');
-    if bb then break;
+  while (Result > 0) and (Items[Result].SynInstance.LanguageName <> Name) do
     dec(Result);
-  end;
   if Result = 0 then // not found // not checking lshNone;
     dec(Result);
 end;
@@ -7412,8 +7402,7 @@ end;
 
 { TColorSchemeLanguage }
 
-function TColorSchemeLanguage.GetAttribute(const Index: String
-  ): TColorSchemeAttribute;
+function TColorSchemeLanguage.GetAttribute(const Index: String): TColorSchemeAttribute;
 var
   Idx: Integer;
 begin
