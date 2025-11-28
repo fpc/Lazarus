@@ -670,7 +670,7 @@ begin
 
     // restore source editor settings
     DebugBossMgr.DoRestoreDebuggerMarks(AnUnitInfo);
-    NewSrcEdit.SyntaxHighlighterId := AnEditorInfo.CustomSyntaxHighlighter;
+    NewSrcEdit.SetSyntaxHighlighterId(AnEditorInfo.CustomSyntaxHighlighter, True);
     NewSrcEdit.EditorComponent.AfterLoadFromFile;
     try
       NewSrcEdit.EditorComponent.FoldState := FoldState;
