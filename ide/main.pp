@@ -11749,8 +11749,10 @@ begin
     //Find start of identifier
     FHintWatchData.HintPos := Rect(-1,-1,-1,-1);
     SrcEdit.EditorComponent.GetWordBoundsAtRowCol(CaretPos, AtomStartPos, AtomEndPos);
-    FHintWatchData.HintPos.TopLeft := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomStartPos, CaretPos.y));
-    FHintWatchData.HintPos.BottomRight := SrcEdit.EditorComponent.RowColumnToPixels(Point(AtomEndPos, CaretPos.y+1));
+    with SrcEdit.EditorComponent do begin
+      FHintWatchData.HintPos.TopLeft := ScreenXYToPixels(TextXYToScreenXY(Point(AtomStartPos, CaretPos.y)));
+      FHintWatchData.HintPos.BottomRight := ScreenXYToPixels(TextXYToScreenXY(Point(AtomEndPos, CaretPos.y+1)));
+    end;
   end;
 
 
