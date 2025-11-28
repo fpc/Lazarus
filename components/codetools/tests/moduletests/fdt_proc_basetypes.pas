@@ -61,7 +61,7 @@ initialization
   DoIt{@single}(si);
   DoIt{@double}(d);
   DoIt{@char}(ch);
-  DoIt{@string}(st);
+  DoIt{ TODO @string}(st);
   DoIt{@widechar}(wc);
   DoIt{@widestring}(ws);
   DoIt{@unicodestring}(us);

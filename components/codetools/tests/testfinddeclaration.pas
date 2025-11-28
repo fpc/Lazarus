@@ -347,6 +347,7 @@ var
   NewExprType: TExpressionType;
   ListOfPCodeXYPosition: TFPList;
   Cache: TFindIdentifierReferenceCache;
+  k: Char;
 begin
   FMainCode:=aCode;
   DoParseModule(MainCode,FMainTool);
@@ -392,6 +393,7 @@ begin
       NameStartPos:=p;
       if Src[p] in ['#','@'] then begin
         {#name}  {@name}
+        k := Src[p];
         inc(p);
         if not IsIdentStartChar[Src[p]] then begin
           WriteSource(p,MainTool);
@@ -401,7 +403,7 @@ begin
         while IsIdentChar[Src[p]] do inc(p);
         Marker:=copy(Src,NameStartPos,p-NameStartPos);
         if TestLoop=0 then
-          AddMarker(Marker,Src[NameStartPos],CommentP,IdentifierStartPos,IdentifierEndPos);
+          AddMarker(Marker,k,CommentP,IdentifierStartPos,IdentifierEndPos);
         continue;
       end;
 
