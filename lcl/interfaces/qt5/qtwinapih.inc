@@ -173,6 +173,7 @@ function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam
 function PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean; override;
 
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
+function RectInRegion(RGN: HRGN; ARect: TRect): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean; override;
 function ReleaseCapture : Boolean; override;
