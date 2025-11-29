@@ -2813,7 +2813,7 @@ end;
 function TPascalParserTool.KeyWordFuncEndPoint: boolean;
 // keyword 'end' or '.'  (source end.)
 var
-  LastNodeEnd: LongInt;
+  LastNodeEnd: integer;
 begin
   if CurPos.Flag=cafPoint then begin
     if not LastUpAtomIs(0,'END') then
@@ -3815,7 +3815,7 @@ function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
 
 var
   ChildNodeCreated: boolean;
-  IsAsm, IsBegin: Boolean;
+  IsAsm, IsBegin, IsProc: Boolean;
   EndPos: Integer;
 begin
   //DebugLn('TPascalParserTool.KeyWordFuncBeginEnd CurNode=',CurNode.DescAsString);
@@ -3826,6 +3826,7 @@ begin
     SaveRaiseStringExpectedButAtomFound(20170421195640,'end');
   IsAsm:=UpAtomIs('ASM');
   IsBegin:=UpAtomIs('BEGIN');
+  IsProc:=CurNode.Desc=ctnProcedure;
   ChildNodeCreated:=IsBegin or IsAsm;
   if ChildNodeCreated then begin
     CreateChildNode;
@@ -3839,10 +3840,10 @@ begin
   ReadTilBlockEnd(false,false);
   // close node
   if ChildNodeCreated then begin
-    if CurNode.Parent.Desc=ctnImplementation then
-      CurNode.EndPos:=CurPos.StartPos
+    if IsProc then
+      CurNode.EndPos:=CurPos.EndPos // proc: the "end" is included
     else
-      CurNode.EndPos:=CurPos.EndPos;
+      CurNode.EndPos:=CurPos.StartPos; // program: "end" is excluded, has its own node ctnEndPoint
     EndChildNode;
   end;
   if (CurSection<>ctnInterface)
@@ -3856,11 +3857,12 @@ begin
     EndChildNode;
   end else if (CurNode<>nil) and (CurNode.Desc in [ctnProgram,ctnLibrary,ctnImplementation]) then
   begin
+    // close section, expected "end."
     EndPos:=CurPos.StartPos;
     ReadNextAtom;
     if (CurPos.Flag<>cafPoint) then
       SaveRaiseException(20170421195122,ctsMissingPointAfterEnd);
-    // close program
+    // close program node
     CurNode.EndPos:=EndPos;
     EndChildNode;
     // add endpoint node
