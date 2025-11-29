@@ -801,8 +801,6 @@ begin
   // for procs: use ctnProcedureHead as parent
   if ParentNode.Desc=ctnProcedure then
     ParentNode:=ParentNode.FirstChild;
-  if (ParentNode.Desc=ctnProcedureHead) and NodeNeedsBuildSubTree(ParentNode) then
-    BuildSubTreeForProcHead(ParentNode);
 
   ParamListNode:=ParentNode.FirstChild;
   if (ParamListNode<>nil) and (ParamListNode.Desc<>ctnParameterList) then

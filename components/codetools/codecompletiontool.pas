@@ -1899,8 +1899,6 @@ begin
   {$ENDIF}
   if not ((CursorNode.Desc=ctnBeginBlock)
           or CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
-  if CursorNode.Desc=ctnBeginBlock then
-    BuildSubTreeForBeginBlock(CursorNode);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
   {$IFDEF VerboseCompleteLocalVarAssign}
@@ -2256,8 +2254,6 @@ begin
   AClassNode:=nil;
   CheckWholeUnitParsed(CursorNode,ProcNode);
 
-  if CursorNode.Desc=ctnBeginBlock then
-    BuildSubTreeForBeginBlock(CursorNode);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
   {$IFDEF VerboseCompleteEventAssign}
@@ -2370,8 +2366,6 @@ begin
   {$ENDIF}
   if not ((CursorNode.Desc=ctnBeginBlock)
           or CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
-  if CursorNode.Desc=ctnBeginBlock then
-    BuildSubTreeForBeginBlock(CursorNode);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
   {$IFDEF CTDEBUG}
@@ -2510,8 +2504,6 @@ begin
   {$ENDIF}
   if not ((CursorNode.Desc=ctnBeginBlock)
           or CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
-  if CursorNode.Desc=ctnBeginBlock then
-    BuildSubTreeForBeginBlock(CursorNode);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
   {$IFDEF CTDEBUG}
@@ -9562,8 +9554,6 @@ function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
     //  --> the UpIdentifier must not be preceded by a point ("MyObject.I" - if we want to complete I)
     //      and then do another check if it is not available with the "with" command, e.g.
     MoveCursorToCleanPos(StatementNode.StartPos);
-    if StatementNode.Desc=ctnBeginBlock then
-      BuildSubTreeForBeginBlock(StatementNode);
     LastAtomIsDot := False;
     while CurPos.EndPos < CleanCursorPos do
     begin

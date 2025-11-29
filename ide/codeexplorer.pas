@@ -1290,13 +1290,6 @@ begin
 
       ctnBeginBlock:
         begin
-          if (CodeNode.SubDesc and ctnsNeedJITParsing)<>0 then
-          begin
-            try
-              Tool.BuildSubTreeForBeginBlock(CodeNode);
-            except
-            end;
-          end;
           if (cefcLongProcs in ObserverCats)
           and (CodeNode.Parent.Desc=ctnProcedure) then begin
             LineCnt:=LineEndCount(Tool.Src,CodeNode.StartPos,CodeNode.EndPos,i);

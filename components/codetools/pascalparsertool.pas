@@ -297,13 +297,10 @@ type
         BuildTreeFlags: TBuildTreeFlags = []);
     procedure BuildTreeAndGetCleanPos(const CursorPos: TCodeXYPosition;
         out CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags = []);
-    procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
-    procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
-        out FunctionResult: TCodeTreeNode);
+    procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode; out FunctionResult: TCodeTreeNode);
     procedure BuildSubTree(CleanCursorPos: integer); virtual;
     procedure BuildSubTree(ANode: TCodeTreeNode); virtual;
-    function NodeNeedsBuildSubTree(ANode: TCodeTreeNode): boolean; virtual;
     function BuildSubTreeAndFindDeepestNodeAtPos(
       P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
     function BuildSubTreeAndFindDeepestNodeAtPos(StartNode: TCodeTreeNode;
@@ -1080,72 +1077,6 @@ begin
   {$IFDEF MEM_CHECK}
   CheckHeap('TPascalParserTool.BuildTree END '+IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
-end;
-
-procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
-// reparse a quick parsed begin..end block and build the child nodes
-//   create nodes for 'with' and 'case' statements
-
-  procedure RaiseBeginExpected;
-  begin
-    SaveRaiseException(20170421194949,
-       'TPascalParserTool.BuildSubTreeForBeginBlock: begin expected, but '
-       +GetAtom+' found');
-  end;
-
-var
-  MaxPos: integer;
-begin
-  if BeginNode=nil then
-    RaiseException(20170421194953,
-       'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode=nil');
-  if BeginNode.Desc<>ctnBeginBlock then
-    RaiseException(20170421194958,
-       'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode.Desc='
-       +BeginNode.DescAsString);
-  if (BeginNode.SubDesc and ctnsNeedJITParsing)=0 then begin
-    // block already parsed
-    if (ctnsHasParseError and BeginNode.SubDesc)>0 then
-      RaiseNodeParserError(BeginNode);
-    exit;
-  end;
-
-  try
-    BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
-    // set CursorPos on 'begin'
-    MoveCursorToNodeStart(BeginNode);
-    CurSection:=ctnImplementation;
-    ReadNextAtom;
-    if not UpAtomIs('BEGIN') then
-      RaiseBeginExpected;
-    if BeginNode.EndPos<SrcLen then
-      Maxpos:=BeginNode.EndPos
-    else
-      MaxPos:=SrcLen;
-    repeat
-      ReadNextAtom;
-      if CurPos.StartPos>=MaxPos then break;
-      if BlockStatementStartKeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])
-      then begin
-        if not ReadTilBlockEnd(false,true) then
-          SaveRaiseEndOfSourceExpected(20170421195401);
-      end else if UpAtomIs('WITH') then
-        ReadWithStatement(true,true)
-      else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')) and AllowAnonymousFunctions then
-        ReadAnonymousFunction(true);
-    until false;
-  except
-    {$IFDEF ShowIgnoreErrorAfter}
-    DebugLn('TPascalParserTool.BuildSubTreeForBeginBlock ',MainFilename,' ERROR: ',LastErrorMessage);
-    {$ENDIF}
-    if (not IgnoreErrorAfterValid)
-    or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then begin
-      raise;
-    end;
-    {$IFDEF ShowIgnoreErrorAfter}
-    DebugLn('TPascalParserTool.BuildSubTreeForBeginBlock ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
-    {$ENDIF}
-  end;
 end;
 
 function TPascalParserTool.KeyWordFuncClassIdentifier: boolean;
@@ -2981,7 +2912,7 @@ var BlockType: TEndBlockType;
       Format(ctsUnexpectedKeywordInBeginEndBlock,[GetAtom]));
   end;
 
-  procedure CloseNode; inline;
+  procedure CloseNode;
   begin
     if Desc<>ctnNone then begin
       CurNode.EndPos:=CurPos.EndPos;
@@ -3814,8 +3745,7 @@ function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
   end;
 
 var
-  ChildNodeCreated: boolean;
-  IsAsm, IsBegin, IsProc: Boolean;
+  IsProc: Boolean;
   EndPos: Integer;
 begin
   //DebugLn('TPascalParserTool.KeyWordFuncBeginEnd CurNode=',CurNode.DescAsString);
@@ -3824,27 +3754,13 @@ begin
     [ctnProcedure,ctnProgram,ctnLibrary,ctnImplementation]))
   then
     SaveRaiseStringExpectedButAtomFound(20170421195640,'end');
-  IsAsm:=UpAtomIs('ASM');
-  IsBegin:=UpAtomIs('BEGIN');
   IsProc:=CurNode.Desc=ctnProcedure;
-  ChildNodeCreated:=IsBegin or IsAsm;
-  if ChildNodeCreated then begin
-    CreateChildNode;
-    if IsBegin then
-      CurNode.Desc:=ctnBeginBlock
-    else
-      CurNode.Desc:=ctnAsmBlock;
-    CurNode.SubDesc:=ctnsNeedJITParsing;
-  end;
   // search "end"
-  ReadTilBlockEnd(false,false);
+  ReadTilBlockEnd(false,true);
   // close node
-  if ChildNodeCreated then begin
-    if IsProc then
-      CurNode.EndPos:=CurPos.EndPos // proc: the "end" is included
-    else
-      CurNode.EndPos:=CurPos.StartPos; // program: "end" is excluded, has its own node ctnEndPoint
-    EndChildNode;
+  if not IsProc then begin
+    // program, implementation: "end" is excluded, has its own node ctnEndPoint
+    CurNode.LastChild.EndPos:=CurPos.StartPos;
   end;
   if (CurSection<>ctnInterface)
   and (CurNode<>nil) and (CurNode.Desc=ctnProcedure) then begin
@@ -5153,10 +5069,9 @@ begin
   ReadNextAtom;
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
-  CurNode.SubDesc:=ctnsNeedJITParsing;
   if (CurPos.Flag=cafRoundBracketOpen) then begin
     // read parameter list
-    ReadParamList(true,false,[]);
+    ReadParamList(true,false,[phpCreateNodes]);
   end;
   if IsFunction then begin
     if (CurPos.Flag=cafColon) then begin
@@ -6450,7 +6365,7 @@ var
 begin
   Result:=false;
   {$IFDEF VerboseReadClosure}
-  writeln('TPascalParserTool.ReadClosure START Atom=',GetAtom,' CurSection=',NodeDescToStr(CurSection));
+  writeln('TPascalParserTool.ReadClosure START Atom=',GetAtom,' CurSection=',NodePathAsString(CurNode));
   {$ENDIF}
   Last:=LastAtoms.GetAtomAt(-1);
   if not (Last.Flag in [cafAssignment,cafComma,cafEdgedBracketOpen,cafRoundBracketOpen])
@@ -6478,7 +6393,7 @@ begin
     ReadParamList(true,false,Attr);
   end;
   {$IFDEF VerboseReadClosure}
-  writeln('TPascalParserTool.ReadClosure head end "',GetAtom,'" CurNode=',NodeDescToStr(CurNode.Desc));
+  writeln('TPascalParserTool.ReadClosure head end "',GetAtom,'" CurNode=',NodeDescriptionAsString(CurNode.Desc));
   {$ENDIF}
   // read function result
   if IsFunction then begin
@@ -6492,7 +6407,7 @@ begin
     ReadTypeReference(true);
   end;
   {$IFDEF VerboseReadClosure}
-  writeln('TPascalParserTool.ReadClosure modifiers ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
+  writeln('TPascalParserTool.ReadClosure modifiers ',GetAtom,' CurNode=',NodeDescriptionAsString(CurNode.Desc));
   {$ENDIF}
   // read modifiers conventions
   while (CurPos.StartPos<=SrcLen)
@@ -6529,7 +6444,7 @@ begin
   until false;
   // read begin block
   {$IFDEF VerboseReadClosure}
-  writeln('TPascalParserTool.ReadClosure END ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc),' ',CurPos.EndPos);
+  writeln('TPascalParserTool.ReadClosure END ',GetAtom,' CurNode=',NodeDescriptionAsString(CurNode.Desc),' ',CurPos.EndPos);
   {$ENDIF}
 end;
 
@@ -6658,8 +6573,7 @@ begin
       +'internal error: invalid ProcNode');
   end;
   ProcHeadNode:=ProcNode.FirstChild;
-  if (ProcHeadNode<>nil)
-  and ((ProcHeadNode.SubDesc and ctnsNeedJITParsing)=0) then begin
+  if (ProcHeadNode<>nil) then begin
     // proc head already parsed
     if (ProcHeadNode<>nil) and ((ctnsHasParseError and ProcHeadNode.SubDesc)>0)
     then
@@ -6700,7 +6614,6 @@ begin
         SaveRaiseCharExpectedButAtomFound(20170421195925,';')
       else
         SaveRaiseStringExpectedButAtomFound(20170421195928,'identifier');
-    ProcHeadNode.SubDesc:=ProcHeadNode.SubDesc and (not ctnsNeedJITParsing);
 
     if not (pphIsType in ParseAttr) then begin
       // read procedure name of a class method (the name after the . )
@@ -6754,18 +6667,6 @@ begin
   case ANode.Desc of
   ctnProcedure,ctnProcedureHead:
     BuildSubTreeForProcHead(ANode);
-  ctnBeginBlock:
-    BuildSubTreeForBeginBlock(ANode);
-  end;
-end;
-
-function TPascalParserTool.NodeNeedsBuildSubTree(ANode: TCodeTreeNode
-  ): boolean;
-begin
-  Result:=false;
-  if ANode=nil then exit;
-  if ANode.Desc in (AllClasses+[ctnProcedureHead,ctnBeginBlock]) then begin
-    Result:=(ANode.SubDesc and ctnsNeedJITParsing)>0;
   end;
 end;
 
@@ -6778,18 +6679,9 @@ end;
 function TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos(
   StartNode: TCodeTreeNode; P: integer; ExceptionOnNotFound: boolean
   ): TCodeTreeNode;
-var
-  Node: TCodeTreeNode;
 begin
   Result:=FindDeepestNodeAtPos(StartNode,P,ExceptionOnNotFound);
   //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos A ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
-  while NodeNeedsBuildSubTree(Result) do begin
-    BuildSubTree(Result);
-    Node:=FindDeepestNodeAtPos(Result,P,ExceptionOnNotFound);
-    if Node=Result then break;
-    Result:=Node;
-    //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos B ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
-  end;
   // re-raise parse errors
   if (Result<>nil) and ((ctnsHasParseError and Result.SubDesc)>0) then
     RaiseNodeParserError(Result);

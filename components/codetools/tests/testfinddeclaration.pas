@@ -360,12 +360,12 @@ begin
           if not Marker.MarkRefPosAsFound(PCodeXYPosition(ListOfPCodeXYPosition[j])^.X, PCodeXYPosition(ListOfPCodeXYPosition[j])^.Y) then begin
             if Marker.ExactMarker then begin
               WriteSource(CursorPos);
-              Fail('FindRefs: Returend unknown position. Bad ref at '+MainTool.CleanPosToStr(Marker.CleanPos, True)+' '+format('%d,%d',[CursorPos.X,CursorPos.Y])+' for marker '+s);
+              Fail('FindRefs: Returend unknown position. Bad ref at '+MainTool.CleanPosToStr(Marker.CleanPos, True)+' '+format('%d,%d',[CursorPos.X,CursorPos.Y])+' for marker "'+Marker.Name+'"');
             end;
           end;
           if Marker.MarkRefPosAsFound(-PCodeXYPosition(ListOfPCodeXYPosition[j])^.X, -PCodeXYPosition(ListOfPCodeXYPosition[j])^.Y) then begin
             WriteSource(CursorPos);
-            Fail('FindRefs: Returend position explicityl excluded from refs. Bad ref at '+MainTool.CleanPosToStr(Marker.CleanPos, True)+' '+format('%d,%d',[CursorPos.X,CursorPos.Y])+' for marker '+s);
+            Fail('FindRefs: Returend position explicityl excluded from refs. Bad ref at '+MainTool.CleanPosToStr(Marker.CleanPos, True)+' '+format('%d,%d',[CursorPos.X,CursorPos.Y])+' for marker "'+Marker.Name+'"');
           end;
         end;
       end;

@@ -476,8 +476,6 @@ end;
 
 procedure TCustomCodeTool.SaveRaiseException(id: int64; const AMessage: string;
   ClearNicePos: boolean);
-var
-  Node: TCodeTreeNode;
 begin
   LastErrorMessage:=AMessage;
   LastErrorCurPos:=CurPos;
@@ -488,16 +486,6 @@ begin
     LastErrorNicePosition.Y:=-1;
   end else begin
     LastErrorNicePosition:=ErrorNicePosition;
-  end;
-
-  Node:=CurNode;
-  while (Node<>nil) do begin
-    if (ctnsNeedJITParsing and Node.SubDesc)>0 then begin
-      SetNodeParserError(Node,AMessage,CurPos.StartPos,
-                         ErrorNicePosition);
-      break;
-    end;
-    Node:=Node.Parent;
   end;
 
   RaiseException(id,AMessage,ClearNicePos);
@@ -634,17 +622,12 @@ begin
     begin
       if (SubDesc and ctnsForwardDeclaration)>0 then Result:=ctsForward;
     end;
-  ctnProcedureHead, ctnBeginBlock:
-    begin
-      if (SubDesc and ctnsNeedJITParsing)>0 then Result:=ctsUnparsed;
-    end;
   ctnClass,ctnObject,ctnRecordType,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
   ctnCPPClass,ctnClassInterface,ctnDispinterface,
   ctnTypeHelper,ctnRecordHelper,ctnClassHelper:
     begin
       Result:='';
       if (SubDesc and ctnsForwardDeclaration)>0 then Result:=ctsForward;
-      if (SubDesc and ctnsNeedJITParsing)>0 then Result:=Result+ctsUnparsed;
     end;
   end;
   if (SubDesc and ctnsHasParseError)>0 then Result:=Result+','+ctsHasError;

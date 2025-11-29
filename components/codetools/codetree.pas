@@ -219,7 +219,7 @@ const
 
   // CodeTreeNodeSubDescriptors
   ctnsNone                = 0;
-  ctnsNeedJITParsing      = 1 shl 1;
+  ctnsNeedJITParsing      = 1 shl 1; // deprecated in 'Laz 4.99';
   ctnsHasParseError       = 1 shl 2;
   ctnsForwardDeclaration  = 1 shl 3;
   ctnsHasDefaultValue     = 1 shl 4;

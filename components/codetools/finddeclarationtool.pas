@@ -5053,7 +5053,7 @@ var
     AbortNoCacheResult = false;
     Proceed = true;
   var
-    n, n2: TCodeTreeNode;
+    n: TCodeTreeNode;
     DoneTypeName: boolean;
   begin
     repeat
@@ -8443,7 +8443,6 @@ begin
       CursorNode := FindDeepestNodeAtPos(CleanCursorPos, True);
     end;
     if CursorNode.Desc = ctnBeginBlock then begin
-      BuildSubTreeForBeginBlock(CursorNode);
       CursorNode := FindDeepestNodeAtPos(CursorNode, CleanCursorPos, True);
     end;
     // set cursor on identifier
