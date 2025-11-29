@@ -2190,7 +2190,6 @@ var
     if CursorNode.Desc=ctnProcedureHead then
       CursorNode:=CursorNode.Parent;
     if CursorNode.Desc<>ctnProcedure then exit;
-    BuildSubTreeForProcHead(CursorNode);
     CursorNode:=FindDeepestNodeAtPos(CursorNode,CleanCursorPos,true);
     // check if cursor on proc name
     if (CursorNode.Desc=ctnProcedureHead)
@@ -3702,11 +3701,6 @@ begin
               ctnObjCProtocol: Result:=Result+'objcprotocol';
               ctnDispinterface: Result:=Result+'dispinterface';
               ctnRangedArrayType, ctnOpenArrayType: Result:=Result+'array';
-              end;
-              try
-                BuildSubTree(TypeNode);
-              except
-                on ECodeToolError do ;
               end;
               SubNode:=FindInheritanceNode(TypeNode);
               if SubNode<>nil then
@@ -5460,7 +5454,6 @@ begin
 
           ctnProcedureHead:
             begin
-              BuildSubTreeForProcHead(ContextNode);
               if ContextNode.FirstChild<>nil then
                 ContextNode:=ContextNode.FirstChild; // the ctnParameterList
             end;
@@ -6412,7 +6405,6 @@ begin
       AddFindContext(ListOfPFindContext,ExprType.Context);
   end else begin
     // not a sub identifier
-    BuildSubTree(CursorNode);
     CursorNode:=FindDeepestNodeAtPos(CursorNode,CleanPos,true);
     Node:=CursorNode;
     while Node<>nil do begin
@@ -10927,7 +10919,6 @@ var
           end;
           if (ProcNode<>nil) then begin
             if IsEnd and (fdfFindVariable in StartFlags) then begin
-              BuildSubTreeForProcHead(ProcNode);
               ResultNode:=GetProcResultNode(ProcNode);
               if ResultNode<>nil then begin
                 ExprType.Desc:=xtContext;
@@ -12644,7 +12635,6 @@ begin
   if (Result.Desc in [ctnProperty,ctnGlobalProperty]) then
     Result:=Result.FirstChild
   else if Result.Desc in [ctnProcedure,ctnProcedureHead,ctnProcedureType] then begin
-    BuildSubTreeForProcHead(Result);
     if Result.Desc in [ctnProcedure,ctnProcedureType] then
       Result:=Result.FirstChild;
     if Result.Desc=ctnProcedureHead then
@@ -13801,7 +13791,7 @@ end;
 function TFindDeclarationTool.FindNthParameterNode(Node: TCodeTreeNode;
   ParameterIndex: integer): TCodeTreeNode;
 var
-  ProcNode, FunctionNode: TCodeTreeNode;
+  ProcNode: TCodeTreeNode;
   ProcHeadNode: TCodeTreeNode;
   ParameterNode: TCodeTreeNode;
   i: Integer;
@@ -13816,8 +13806,6 @@ begin
   if Node.Desc in [ctnProcedure,ctnProcedureType] then begin
     ProcNode:=Node;
     //DebugLn('  FindNthParameterNode ProcNode="',copy(Params.NewCodeTool.Src,ProcNode.StartPos,ProcNode.EndPos-ProcNode.StartPos),'"');
-    FunctionNode:=nil;
-    BuildSubTreeForProcHead(ProcNode,FunctionNode);
     // find procedure head
     ProcHeadNode:=ProcNode.FirstChild;
     if (ProcHeadNode=nil) or (ProcHeadNode.Desc<>ctnProcedureHead) then begin
@@ -14954,7 +14942,6 @@ begin
   DebugLn(['TFindDeclarationTool.CheckOperatorEnumerator ',FindContextToString(FoundContext)]);
   {$ENDIF}
   if not FoundContext.Tool.NodeIsOperator(FoundContext.Node) then exit;
-  FoundContext.Tool.BuildSubTreeForProcHead(FoundContext.Node);
   Node:=FoundContext.Node.FirstChild;
   if (Node=nil) or (Node.Desc<>ctnProcedureHead) then exit;
   Node:=Node.FirstChild;

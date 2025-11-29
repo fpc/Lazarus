@@ -748,11 +748,6 @@ begin
                 ctnObjCProtocol: s:=s+'objcprotocol';
                 ctnDispinterface: s:=s+'dispinterface';
                 end;
-                try
-                  IdentItem.Tool.BuildSubTree(ANode);
-                except
-                  on ECodeToolError do ;
-                end;
                 if ANode.Desc in [ctnClassHelper, ctnRecordHelper, ctnTypeHelper] then
                   HelperForNode := IdentItem.Tool.FindHelperForNode(ANode)
                 else

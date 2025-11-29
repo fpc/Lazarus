@@ -297,10 +297,7 @@ type
         BuildTreeFlags: TBuildTreeFlags = []);
     procedure BuildTreeAndGetCleanPos(const CursorPos: TCodeXYPosition;
         out CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags = []);
-    procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode; out FunctionResult: TCodeTreeNode);
-    procedure BuildSubTree(CleanCursorPos: integer); virtual;
-    procedure BuildSubTree(ANode: TCodeTreeNode); virtual;
     function BuildSubTreeAndFindDeepestNodeAtPos(
       P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
     function BuildSubTreeAndFindDeepestNodeAtPos(StartNode: TCodeTreeNode;
@@ -6074,7 +6071,6 @@ begin
   // find the CursorPos in cleaned source
   CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (CaretType=0) or (CaretType=-1) then begin
-    BuildSubTree(CleanCursorPos);
     exit;
   end
   else if (CaretType=-2) or (not (btCursorPosOutAllowed in BuildTreeFlags)) then
@@ -6547,99 +6543,6 @@ begin
 
 end;
 
-procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
-var
-  HasForwardModifier, IsFunction: boolean;
-  ParseAttr: TParseProcHeadAttributes;
-  ProcHeadNode: TCodeTreeNode;
-begin
-  if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
-  if ProcNode.Desc=ctnMethodMap then
-    exit;
-  if ProcNode.Desc=ctnReferenceTo then begin
-    ProcNode:=ProcNode.FirstChild;
-    if ProcNode=nil then exit;
-  end;
-  if (not (ProcNode.Desc in [ctnProcedure,ctnProcedureType])) then begin
-    {$IFDEF CheckNodeTool}
-    CTDumpStack;
-    {$ENDIF}
-    if ProcNode<>nil then begin
-      DebugLn(['TPascalParserTool.BuildSubTreeForProcHead Desc=',ProcNode.DescAsString]);
-      if ProcNode.FirstChild<>nil then
-        DebugLn(['TPascalParserTool.BuildSubTreeForProcHead FirstChild=',ProcNode.FirstChild.DescAsString]);
-    end;
-    RaiseException(20170421195922,'[TPascalParserTool.BuildSubTreeForProcHead] '
-      +'internal error: invalid ProcNode');
-  end;
-  ProcHeadNode:=ProcNode.FirstChild;
-  if (ProcHeadNode<>nil) then begin
-    // proc head already parsed
-    if (ProcHeadNode<>nil) and ((ctnsHasParseError and ProcHeadNode.SubDesc)>0)
-    then
-      RaiseNodeParserError(ProcHeadNode);
-    exit;
-  end;
-  ParseAttr:=[pphCreateNodes];
-  try
-    if (ProcNode.Parent<>nil) and (ProcNode.Parent.Desc in (AllClasses+AllClassSections)) then
-      Include(ParseAttr,pphIsMethodDecl);
-    MoveCursorToNodeStart(ProcNode);
-    ReadNextAtom;
-    if (Scanner.CompilerMode in [cmOBJFPC,cmFPC]) and UpAtomIs('GENERIC') then begin
-      Include(ParseAttr,pphIsGeneric);
-      CurNode.Desc:=ctnGenericType;
-      ReadNextAtom;
-    end;
-    if UpAtomIs('CLASS') then
-      ReadNextAtom;
-    if UpAtomIs('FUNCTION') then begin
-      IsFunction:=true;
-      Include(ParseAttr,pphIsFunction);
-    end else
-      IsFunction:=false;
-    if (not IsFunction) and UpAtomIs('OPERATOR') then
-      Include(ParseAttr,pphIsOperator);
-    if ProcNode.Desc=ctnProcedureType then
-    begin
-      Include(ParseAttr,pphIsType);
-      if ProcNode.Parent.Desc<>ctnTypeDefinition then
-        Include(ParseAttr,pphIsAnonymousType);
-    end;
-    // read procedure head (= [name[<parameters>]] + parameterlist + resulttype;)
-    ReadNextAtom;// read first atom of head
-    CurNode:=ProcHeadNode;
-    if CurNode=nil then
-      if pphIsType in ParseAttr then
-        SaveRaiseCharExpectedButAtomFound(20170421195925,';')
-      else
-        SaveRaiseStringExpectedButAtomFound(20170421195928,'identifier');
-
-    if not (pphIsType in ParseAttr) then begin
-      // read procedure name of a class method (the name after the . )
-      repeat
-        CheckOperatorProc(ParseAttr);
-        ReadGenericParamList(false,false);
-        if CurPos.Flag<>cafPoint then break;
-        ReadNextAtom;
-      until false;
-    end;
-    // read rest of procedure head and build nodes
-    HasForwardModifier:=false;
-    ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
-  except
-    {$IFDEF ShowIgnoreErrorAfter}
-    DebugLn('TPascalParserTool.BuildSubTreeForProcHead ',MainFilename,' ERROR: ',LastErrorMessage);
-    {$ENDIF}
-    if (not IgnoreErrorAfterValid)
-    or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then
-      raise;
-    {$IFDEF ShowIgnoreErrorAfter}
-    DebugLn('TPascalParserTool.BuildSubTreeForProcHead ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
-    {$ENDIF}
-  end;
-end;
-
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
   out FunctionResult: TCodeTreeNode);
 begin
@@ -6650,24 +6553,9 @@ begin
   if not (ProcNode.Desc in [ctnProcedure,ctnProcedureType]) then
     RaiseException(20170421195932,
       'INTERNAL ERROR: TPascalParserTool.BuildSubTreeForProcHead with FunctionResult');
-  BuildSubTreeForProcHead(ProcNode);
   FunctionResult:=ProcNode.FirstChild.FirstChild;
   if (FunctionResult<>nil) and (FunctionResult.Desc=ctnParameterList) then
     FunctionResult:=FunctionResult.NextBrother;
-end;
-
-procedure TPascalParserTool.BuildSubTree(CleanCursorPos: integer);
-begin
-  BuildSubTree(FindDeepestNodeAtPos(CleanCursorPos,false));
-end;
-
-procedure TPascalParserTool.BuildSubTree(ANode: TCodeTreeNode);
-begin
-  if ANode=nil then exit;
-  case ANode.Desc of
-  ctnProcedure,ctnProcedureHead:
-    BuildSubTreeForProcHead(ANode);
-  end;
 end;
 
 function TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos(P: integer;

@@ -1192,7 +1192,6 @@ begin
     // search alias for parameter
     ProcNode:=FindCorrespondingProcNode(ProcNode,Attr,Search);
     if ProcNode=nil then exit;
-    BuildSubTreeForProcHead(ProcNode);
     Result:=ProcNode;
     while (Result<>nil) do begin
       //debugln(['TPascalReaderTool.FindCorrespondingProcParamNode ',dbgstr(copy(Src,Result.StartPos,20))]);

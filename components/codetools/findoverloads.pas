@@ -183,7 +183,6 @@ begin
     //DebugLn(['TDeclarationOverloadsGraph.AddContext a class or interface']);
     // a class or class interface
     ClassNode:=CodeNode.FirstChild;
-    Tool.BuildSubTree(ClassNode);
 
     if (ClassNode.FirstChild<>nil)
     and (ClassNode.FirstChild.Desc=ctnClassInheritance) then begin

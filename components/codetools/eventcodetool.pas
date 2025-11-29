@@ -873,8 +873,6 @@ function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
     if not (Node.Desc in [ctnProcedureType,ctnProcedure]) then exit;
     ProcHeadNode:=Node.FirstChild;
     if (ProcHeadNode=nil) or (ProcHeadNode.Desc<>ctnProcedureHead) then exit;
-    if ProcHeadNode.FirstChild=nil then
-      AFindContext.Tool.BuildSubTreeForProcHead(ProcHeadNode);
     ParamListNode:=ProcHeadNode.FirstChild;
     if (ParamListNode=nil) or (ParamListNode.Desc<>ctnParameterList) then exit;
     Node:=ParamListNode.FirstChild;

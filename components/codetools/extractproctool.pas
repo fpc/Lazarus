@@ -1946,7 +1946,6 @@ begin
   try
     if CaretToCleanPos(StartPos,BlockStartPos)<>0 then exit;
     if CaretToCleanPos(EndPos,BlockEndPos)<>0 then exit;
-    BuildSubTree(BlockStartPos);
     BlockNode:=FindDeepestNodeAtPos(BlockStartPos,true);
     while BlockNode<>nil do begin
       if BlockNode.Desc in [ctnInitialization,ctnFinalization,ctnProcedure]
