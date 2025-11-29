@@ -52,6 +52,8 @@ type
     procedure InternalUpdateCtrlMouse;
     procedure UpdateSynCursor(Sender: TObject; const AMouseLocation: TSynMouseLocationInfo;
     var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject);
+    procedure LastCaretChanged(Sender: TObject; ACaret:TPoint);
+    procedure KeyUpDownEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
     procedure SetLines(const AValue : TSynEditStringsLinked); override;
     procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
@@ -191,6 +193,17 @@ begin
   AChangedBy := Self;
 end;
 
+procedure TSynEditMarkupCtrlMouseLink.LastCaretChanged(Sender: TObject; ACaret: TPoint);
+begin
+  LastMouseCaret := ACaret;
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.KeyUpDownEvent(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  UpdateCtrlState(Shift);
+end;
+
 function TSynEditMarkupCtrlMouseLink.IsCtrlMouseShiftState(AShift: TShiftState;
   OnlyShowLink: Boolean): Boolean;
 var
@@ -248,10 +261,16 @@ begin
   MarkupInfo.Background := clNone;
 
   SynEdit.RegisterQueryMouseCursorHandler(@UpdateSynCursor);
+  SynEdit.RegisterMouseLastCaretHandler(@LastCaretChanged);
+  SynEdit.RegisterBeforeKeyDownHandler(@KeyUpDownEvent);
+  SynEdit.RegisterBeforeKeyUpHandler(@KeyUpDownEvent);
 end;
 
 destructor TSynEditMarkupCtrlMouseLink.Destroy;
 begin
+  SynEdit.UnRegisterBeforeKeyUpHandler(@KeyUpDownEvent);
+  SynEdit.UnRegisterBeforeKeyDownHandler(@KeyUpDownEvent);
+  SynEdit.UnRegisterMouseLastCaretHandler(@LastCaretChanged);
   SynEdit.UnregisterQueryMouseCursorHandler(@UpdateSynCursor);
   if Lines <> nil then begin;
     Lines.RemoveModifiedHandler(senrLinesModified, @LinesChanged);
