@@ -71,6 +71,7 @@ type
     procedure TestParseProcType_OfObjectDeprecated;
     procedure TestGetProcResultNode;
     procedure TestVarTypeSectionEndAtGenericProc;
+    procedure TestVarWithClassOf;
   end;
 
 implementation
@@ -858,6 +859,29 @@ begin
   'end;',
   'begin',
   'specialize Foo<byte>;',
+  'end.'
+  ]);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestVarWithClassOf;
+begin
+  StartProgram;
+  Add([
+  'procedure Foo;',
+  'const c1:  class of TObject = nil;',
+  'type  T1 = class of TObject;',
+  'var   v1:  class of TObject;',
+  'v2:  class of TObject = nil;',
+  'begin',
+  'end;',
+  '',
+  'const c1:  class of TObject = nil;',
+  'type  T1 = class of TObject;',
+  'var   v1:  class of TObject;',
+  'v2:  class of TObject = nil;',
+  'begin',
+  '',
   'end.'
   ]);
   ParseModule;

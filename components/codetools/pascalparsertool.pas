@@ -4826,17 +4826,24 @@ begin
     SaveRaiseStringExpectedButAtomFound(20170421195754,'class');
   ContextDesc:=CurNode.Desc;
   //debugln(['TPascalParserTool.KeyWordFuncTypeClass ContextDesc=',NodeDescToStr(ContextDesc),' ClassDesc=',NodeDescToStr(ClassDesc),' CurNode=',CurNode.DescAsString,' CurNode.Parent=',CurNode.Parent.DescAsString]);
-  if not (ClassDesc in [ctnRecordType, ctnTypeType]) then begin
-    if not (ContextDesc in [ctnTypeDefinition,ctnGenericType]) then
-      SaveRaiseExceptionFmt(20170421195127,ctsAnonymDefinitionsAreNotAllowed,[GetAtom]);
-    if CurNode.Parent.Desc<>ctnTypeSection then
-      SaveRaiseExceptionFmt(20170421195129,ctsNestedDefinitionsAreNotAllowed,[GetAtom]);
-  end;
   // packed class, bitpacked object
   if LastUpAtomIs(0,'PACKED') or LastUpAtomIs(0,'BITPACKED') then begin
     ClassAtomPos:=LastAtoms.GetPriorAtom;
   end else begin
     ClassAtomPos:=CurPos;
+  end;
+  ReadNextAtom;
+  if (not (ClassDesc in [ctnRecordType, ctnTypeType]))
+  and (not((ClassDesc = ctnClass) and UpAtomIs('OF')))
+  then begin
+    if not (ContextDesc in [ctnTypeDefinition,ctnGenericType]) then begin
+      UndoReadNextAtom;
+      SaveRaiseExceptionFmt(20170421195127,ctsAnonymDefinitionsAreNotAllowed,[GetAtom]);
+    end;
+    if CurNode.Parent.Desc<>ctnTypeSection then begin
+      UndoReadNextAtom;
+      SaveRaiseExceptionFmt(20170421195129,ctsNestedDefinitionsAreNotAllowed,[GetAtom]);
+    end;
   end;
   CreateChildNode;
   ClassNode:=CurNode;
@@ -4844,10 +4851,10 @@ begin
   CurNode.StartPos:=ClassAtomPos.StartPos;
   IsForward:=true;
   IsHelper:=false;
-  ReadNextAtom;
   if (ClassDesc=ctnClass) and UpAtomIs('OF') then begin
     // class of
     IsForward:=false;
+    ClassDesc:=ctnClassOfType;
     CurNode.Desc:=ctnClassOfType;
     ReadNextAtom;
     AtomIsIdentifierSaveE(20180411194212);
@@ -4864,7 +4871,10 @@ begin
     end;
     EndChildNode;
     ReadHintModifiers(False);
-    if CurPos.Flag<>cafSemicolon then
+    if (CurPos.Flag<>cafSemicolon)
+    and not((ClassNode.Parent.Desc in [ctnVarDefinition, ctnConstDefinition])
+            and(CurPos.Flag=cafEqual))
+    then
       SaveRaiseCharExpectedButAtomFound(20170421195756,';');
   end else begin
     if CurPos.Flag=cafWord then begin
@@ -4958,7 +4968,9 @@ begin
         EndChildNode;
       end;
     end;
-  end else begin
+  end else
+  if ClassDesc <> ctnClassOfType then
+  begin
     // start the first class section (the one without a keyword)
     CreateChildNode;
     if ClassDesc in [ctnClass,ctnObjCClass] then
