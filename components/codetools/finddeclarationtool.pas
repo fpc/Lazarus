@@ -14855,6 +14855,7 @@ var
   Params: TFindDeclarationParams;
   p: LongInt;
   Child: TCodeTreeNode;
+  PreDef: Boolean;
 begin
   Result:=false;
   Context:=Default(TFindContext);
@@ -14862,7 +14863,9 @@ begin
   debugln(['TFindDeclarationTool.FindEnumerationTypeOfSetType ',SetTypeNode.FirstChild.DescAsString]);
   Child:=SetTypeNode.FirstChild;
   if Child=nil then exit;
-  if Child.Desc=ctnIdentifier then begin
+  PreDef := (Child.Desc=ctnIdentifier)
+  and (PredefinedIdentToExprTypeDesc(@Src[Child.StartPos],Scanner.PascalCompiler)<>xtNone);
+  if (Child.Desc=ctnIdentifier) and not PreDef then begin
     Params:=TFindDeclarationParams.Create;
     try
       Params.Flags:=fdfDefaultForExpressions;
@@ -14884,7 +14887,7 @@ begin
     finally
       Params.Free;
     end;
-  end else if Child.Desc=ctnEnumerationType then begin
+  end else if PreDef or (Child.Desc=ctnEnumerationType) then begin
     Context.Tool:=Self;
     Context.Node:=Child;
     Result:=true;
