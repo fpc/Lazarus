@@ -253,22 +253,34 @@ type
   { TShellListColumn }
 
   TSLVColumnID = (cidCustom, cidFileName, cidSize, cidType, cidAttr, cidDateModified);
+  TSLVSizeUnits = (suDefault, suBytes, suKB, suMB, suGB);
 
   TShellListColumn = class(TListColumn)
   private
     FColumnID: TSLVColumnID;
     FCustomID: Integer;
+    FFormat: String;
+    FSizeUnits: TSLVSizeUnits;
     procedure SetColumnID(const AValue: TSLVColumnID);
     procedure SetCustomID(const AValue: Integer);
+    procedure SetFormat(const AValue: String);
+    procedure SetSizeUnits(const AValue: TSLVSizeUnits);
   private
     procedure Assign(ASource: TPersistent); override;
+  protected
+    function GetListView: TCustomShellListView;
+    function GetSizeFormat: String;
   published
-    property ID: TSLVColumnID read FColumnID write SetColumnID default cidCustom;
+    property ColumnID: TSLVColumnID read FColumnID write SetColumnID default cidCustom;
     property CustomID: Integer read FCustomID write SetCustomID default 0;
+    property Format: String read FFormat write SetFormat;
+    property SizeUnits: TSLVSizeUnits read FSizeUnits write SetSizeUnits default suDefault;
   end;
 
 
   { TCustomShellListView }
+
+  TSLVSizeFunc = function(ASize: Int64; AFormat: String): String;
 
   TSLVFileAddedEvent = procedure (Sender: TObject; Item: TListItem) of object;
 
@@ -294,6 +306,7 @@ type
     FOnFileAdded: TSLVFileAddedEvent;
     FOnGetCellText: TSLVGetCellTextEvent;
     { Setters and getters }
+    function IsColumnsStored: Boolean;
     procedure SetFileSortType(AValue: TFileSortType);
     procedure SetMask(const AValue: string);
     procedure SetMaskCaseSensitivity(AValue: TMaskCaseSensitivity);
@@ -302,6 +315,7 @@ type
     procedure SetRoot(const Value: string);
     procedure SetObjectTypes(const Value: TObjectTypes);
   protected
+    FSizeFunc: TSLVSizeFunc;
     { Methods specific to Lazarus }
     class procedure WSRegisterClass; override;
     procedure AdjustColWidths;
@@ -311,6 +325,7 @@ type
     procedure DoOnResize; override;
     function GetCellText(AItem: TShellListItem; AColumn: TShellListColumn; AFileName: String): String;
     procedure InitColumns; virtual;
+    procedure Loaded; override;
     procedure SetAutoSizeColumns(const Value: Boolean); virtual;
     procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     function GetBuiltinImageIndex(const AFileName: String; ALargeImage: Boolean): Integer;
@@ -321,7 +336,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     { Methods specific to Lazarus }
+    function FindColumn(AColumnID: TSLVColumnID; ACustomID: Integer = 0): TShellListColumn;
     function GetPathFromItem(ANode: TListItem): string;
+    procedure UpdateColumn(AColumn: TShellListColumn);
     procedure UpdateView;
     { Properties }
     property AutoSizeColumns: Boolean read FAutoSizeColumns write SetAutoSizeColumns default true;
@@ -353,7 +370,7 @@ type
     property BorderStyle;
     property BorderWidth;
     property Color default clWindow;
-    property Columns;
+    property Columns stored IsColumnsStored;
     property Constraints;
     property DragCursor;
     property DragMode;
@@ -465,6 +482,8 @@ const
 
   DateColumnFormat = 'ddddd t';  // short date + short time
 
+  FileSizeFormat: array[TSLVSizeUnits] of string = ('', '%.0n', '%.1n', '%.1n', '%.1n');
+
 function DbgS(OT: TObjectTypes): String; overload;
 begin
   Result := '[';
@@ -489,11 +508,32 @@ begin
   if faArchive and Attr <> 0 then Result := Result + 'A';
 end;
 
-function FileSizeToStr(AFileSize: Int64): String;
 const
   ONE_KB = 1024;
   ONE_MB = 1024 * 1024;
   ONE_GB = 1024 * 1024 * 1024;
+
+function FileSizeToBytesStr(AFileSize: Int64; AFormat: String = '%.0n'): String;
+begin
+  Result := Format(AFormat, [1.0*AFileSize]);
+end;
+
+function FileSizeToKBytesStr(AFileSize: Int64; AFormat: String = '%.1n'): String;
+begin
+  Result := Format(sShellCtrlsKB, [Format(AFormat, [AFileSize / ONE_KB])]);
+end;
+
+function FileSizeToMBytesStr(AFileSize: Int64; AFormat: String = '%.1n'): String;
+begin
+  Result := Format(sShellCtrlsMB, [Format(AFormat, [AFileSize / ONE_MB])]);
+end;
+
+function FileSizeToGBytesStr(AFileSize: Int64; AFormat: String = '%.1n'): String;
+begin
+  Result := Format(sShellCtrlsGB, [Format(AFormat, [AFileSize / ONE_GB])]);
+end;
+
+function FileSizeToStr(AFileSize: Int64; AFormat: String = '%.1n'): String;
 begin
   if AFileSize < ONE_KB then
     Result := Format(sShellCtrlsBytes, [IntToStr(AFileSize)])
@@ -504,7 +544,7 @@ begin
   if AFileSize < ONE_GB then
     Result := Format(sShellCtrlsMB, [IntToStr(AFileSize div ONE_MB)])
   else
-    Result := Format(sShellCtrlsGB, [Format('%.1n', [AFileSize / ONE_GB])]);
+    Result := Format(sShellCtrlsGB, [Format(AFormat, [AFileSize / ONE_GB])]);
 end;
 
 
@@ -522,24 +562,38 @@ procedure TShellListColumn.Assign(ASource: TPersistent);
 begin
   if ASource is TShellListColumn then
   begin
-    FColumnID := TShellListColumn(ASource).ID;
+    FColumnID := TShellListColumn(ASource).ColumnID;
     FCustomID := TShellListColumn(ASource).CustomID;
+    FFormat := TShellListColumn(ASource).Format;
+    FSizeUnits := TShellListColumn(ASource).SizeUnits;
   end;
   inherited;
+end;
+
+function TShellListColumn.GetListView: TCustomShellListView;
+begin
+  Result := TCustomShellListView(TListColumns(Collection).Owner);
+end;
+
+function TShellListColumn.GetSizeFormat: String;
+begin
+  if FFormat = '' then
+    Result := FileSizeFormat[FSizeUnits]
+  else
+    Result := FFormat;
 end;
 
 procedure TShellListColumn.SetColumnID(const AValue: TSLVColumnID);
 begin
   if AValue = FColumnID then exit;
   FColumnID := AValue;
-  if Caption = '' then
-    case FColumnID of
-      cidFileName: Caption := sShellCtrlsName;
-      cidSize: Caption := sShellCtrlsSize;
-      cidType: Caption := sShellCtrlsType;
-      cidAttr: Caption := sShellCtrlsAttributes;
-      cidDateModified: Caption := sShellCtrlsModificationDate;
-    end;
+  case FColumnID of
+    cidFileName: Caption := sShellCtrlsName;
+    cidSize: Caption := sShellCtrlsSize;
+    cidType: Caption := sShellCtrlsType;
+    cidAttr: Caption := sShellCtrlsAttributes;
+    cidDateModified: Caption := sShellCtrlsModificationDate;
+  end;
   Changed(true);
 end;
 
@@ -548,6 +602,22 @@ begin
   if AValue = FCustomID then exit;
   FCustomID := AValue;
   Changed(true);
+end;
+
+procedure TShellListColumn.SetFormat(const AValue: String);
+begin
+  if AValue = FFormat then exit;
+  FFormat := AValue;
+  GetListView.UpdateColumn(Self);
+  Changed(false);
+end;
+
+procedure TShellListColumn.SetSizeUnits(const AValue: TSLVSizeUnits);
+begin
+  if AValue = FSizeUnits then exit;
+  FSizeUnits := AValue;
+  GetListView.UpdateColumn(Self);
+  Changed(false);
 end;
 
 
@@ -733,7 +803,7 @@ var
 begin
   if FFileSortType=AValue then exit;
   FFileSortType:=AValue;
-  if (([csLoading,csDesigning] * ComponentState) <> []) then Exit;
+  if (([csLoading, csDesigning] * ComponentState) <> []) then Exit;
   CurrPath := GetPath;
   try
     BeginUpdate;
@@ -1864,7 +1934,6 @@ var
 begin
   if FObjectTypes = Value then Exit;
   FObjectTypes := Value;
-  if (csLoading in ComponentState) then Exit;
 
   BeginUpdate;
   try
@@ -1900,6 +1969,70 @@ begin
   end;
 end;
 
+function TCustomShellListView.FindColumn(AColumnID: TSLVColumnID;
+  ACustomID: Integer = 0): TShellListColumn;
+var
+  i: Integer;
+  col: TShellListColumn;
+begin
+  if AColumnID <> cidCustom then
+    for i := 0 to ColumnCount-1 do
+    begin
+      col := TShellListColumn(Columns[i]);
+      if (col.ColumnID = AColumnID) then
+      begin
+        Result := col;
+        exit;
+      end;
+    end
+  else
+    for i := 0 to ColumnCount-1 do
+    begin
+      col := TShellListColumn(Columns[i]);
+      if col.CustomID = ACustomID then
+      begin
+        Result := col;
+        exit;
+      end;
+    end;
+  Result := nil;
+end;
+
+procedure TCustomShellListView.UpdateColumn(AColumn: TShellListColumn);
+var
+  i: Integer;
+  item: TShellListItem;
+  newText: String;
+begin
+  if AColumn = nil then Exit;
+
+  if AColumn.ColumnID = cidSize then
+    case AColumn.SizeUnits of
+      suDefault: FSizeFunc := @FileSizeToStr;
+      suBytes: FSizeFunc := @FileSizeToBytesStr;
+      suKB: FSizeFunc := @FileSizeToKBytesStr;
+      suMB: FSizeFunc := @FileSizeToMBytesStr;
+      suGB: FSizeFunc := @FileSizeToGBytesStr;
+    end;
+
+  BeginUpdate;
+  try
+    for i := 0 to Items.Count-1 do
+    begin
+      item := TShellListItem(Items[i]);
+      newText := GetCellText(item, AColumn, item.Caption);
+      if AColumn.ColumnID = cidFileName then
+        item.Caption := newText
+      else
+        item.SubItems[AColumn.Index - 1] := newText;
+    end;
+    if AColumn.ColumnID = cidDateModified then
+      AdjustColWidths;
+  finally
+    EndUpdate;
+  end;
+end;
+
 constructor TCustomShellListView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1912,6 +2045,7 @@ begin
   FMaskCaseSensitivity := mcsPlatformDefault;
   FAutoSizeColumns := true;
   ReadOnly := true;
+  FSizeFunc := @FileSizeToStr;
 
   InitColumns;
 end;
@@ -1946,8 +2080,9 @@ var
   CanAdd: Boolean;
   col: TShellListColumn;
 begin
-  // avoids crashes in the IDE by not populating during design
-  if (csDesigning in ComponentState) then Exit;
+  // csDesigning: avoids crashes in the IDE by not populating during design
+  // csLoading: prevents multiple execution during loading
+  if (([csLoading, csDesigning] * ComponentState) <> []) then Exit;
 
   // Check inputs
   if Trim(FRoot) = '' then Exit;
@@ -1981,7 +2116,7 @@ begin
         for j := 0 to ColumnCount-1 do
         begin
           col := TShellListColumn(Columns[j]);
-          if col.ID = cidFileName then
+          if col.ColumnID = cidFileName then
             NewItem.Caption := CurFileName
           else
             NewItem.SubItems.Add(GetCellText(NewItem, col, CurFileName));
@@ -2006,14 +2141,16 @@ end;
 
 function TCustomShellListView.GetCellText(AItem: TShellListItem;
   AColumn: TShellListColumn; AFileName: String): String;
+var
+  fmt: String;
 begin
   Result := '';
-  case AColumn.ID of
+  case AColumn.ColumnID of
     cidFileName:
       Result := AFileName;
     cidSize:
       if not AItem.IsFolder then  // no size display for folders.
-        Result := FileSizeToStr(AItem.FileInfo.Size)
+        Result := FSizeFunc(AItem.FileInfo.Size, AColumn.GetSizeFormat)
       else
         Result := '';
     cidType:
@@ -2024,7 +2161,13 @@ begin
     cidAttr:
       Result := AttrToStr(AItem.FileInfo.Attr);
     cidDateModified:
-      Result := FormatDateTime(DateColumnFormat, AItem.FileInfo.TimeStamp);
+      begin
+        if AColumn.Format = '' then
+          fmt := DateColumnFormat
+        else
+          fmt := AColumn.Format;
+        Result := FormatDateTime(fmt, AItem.FileInfo.TimeStamp);
+      end;
     cidCustom:
       ;  // Get text only from event handler
   end;
@@ -2039,21 +2182,59 @@ begin
     Columns.Clear;
     with TShellListColumn(Columns.Add) do
     begin
-      ID := cidFileName;
+      ColumnID := cidFileName;
     end;
     with TShellListColumn(Columns.Add) do
     begin
-      ID := cidSize;
+      ColumnID := cidSize;
       Alignment := taRightJustify;
     end;
     with TShellListcolumn(Columns.Add) do
     begin
-      ID := cidType;
+      ColumnID := cidType;
     end;
     AdjustColWidths;
   finally
     Columns.EndUpdate;
   end;
+end;
+
+function TCustomShellListView.IsColumnsStored: Boolean;
+begin
+  Result := not (
+    (ColumnCount = 3) and
+    (TShellListcolumn(Columns[0]).ColumnID = cidFileName) and
+    (TShellListcolumn(Columns[1]).ColumnID = cidSize) and
+    (TShellListcolumn(Columns[2]).ColumnID = cidType)
+  );
+end;
+
+procedure TCustomShellListView.Loaded;
+
+  procedure FixColumnIDs;
+  var
+    IDsMissing: Boolean;
+    i: Integer;
+  begin
+    if ColumnCount > 3 then exit;
+    for i := 0 to ColumnCount-1 do
+      if TShellListColumn(Columns[i]).ColumnID <> cidCustom then
+        exit;
+
+    // We get here when the lfm file has been written by an old Laz version
+    // which did not write the ColumnIDs --> the columns must be filename, size, type
+    if ColumnCount > 0 then
+      TShellListColumn(Columns[0]).ColumnID := cidFileName;
+    if ColumnCount > 1 then
+      TShellListColumn(Columns[1]).ColumnID := cidSize;
+    if ColumnCount > 2 then
+      TShellListColumn(Columns[2]).ColumnID := cidType;
+  end;
+
+begin
+  inherited Loaded;
+  FixColumnIDs;
+  PopulateWithRoot;
 end;
 
 procedure TCustomShellListView.AdjustColWidths;
@@ -2068,6 +2249,7 @@ var
   colWidths: array of Integer = nil;
   weightName: Integer;
   canv: TControlCanvas;
+  fmt: String;
 begin
   if Self.Columns.Count < 3 then
     Exit;
@@ -2086,9 +2268,13 @@ begin
     for c := 0 to ColumnCount-1 do
     begin
       col := TShellListColumn(Columns[c]);
-      if col.ID = cidDateModified then
+      if col.ColumnID = cidDateModified then
       begin
-        colWidths[c] := canv.TextWidth(FormatDateTime(DateColumnFormat, testDate) + 'MM');   //'MM' to simulate the cell padding
+        if col.Format = '' then
+          fmt := DateColumnFormat
+        else
+          fmt := col.Format;
+        colWidths[c] := canv.TextWidth(FormatDateTime(fmt, testDate) + 'MM');   //'MM' to simulate the cell padding
         dec(widthAvail, colWidths[c]);
         dec(nCol);
       end;
