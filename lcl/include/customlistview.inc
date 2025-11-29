@@ -114,7 +114,7 @@ begin
   FAutoWidthLastColumn := False;
   FSortDirection := sdAscending;
   FIconOptions := TIconOptions.Create(Self);
-  FColumns := TListColumns.Create(Self);
+  FColumns := CreateListColumns;
   FListItems := CreateListItems;
   BorderStyle := bsSingle;
   FScrollBars := ssBoth;
@@ -1231,6 +1231,11 @@ end;
 procedure TCustomListView.BeginAutoDrag;
 begin
   BeginDrag(False);
+end;
+
+function TCustomListView.CreateListColumns: TListColumns;
+begin
+  Result := TListColumns.Create(self);
 end;
 
 function TCustomListView.CreateListItem: TListItem;

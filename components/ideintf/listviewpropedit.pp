@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, ComCtrls, StdCtrls, Dialogs, Buttons, ButtonPanel,
+  Forms, Controls, ComCtrls, StdCtrls, Dialogs, Buttons, ButtonPanel, ShellCtrls,
   // IdeIntf
   PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
 
@@ -83,7 +83,16 @@ type
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
   end;
-  
+
+  {TShellListViewComponentEditor }
+  TShellListViewComponentEditor = class(TComponentEditor)
+  public
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb({%H-}Index: Integer): String; override;
+    function GetVerbCount: Integer; override;
+  end;
+
+
 implementation
 
 {$R *.lfm}
@@ -358,6 +367,36 @@ begin
   Result := 2;
 end;
 
+
+{ TShellListViewComponentEditor }
+
+procedure TShellListViewComponentEditor.ExecuteVerb(Index: Integer);
+var
+  Hook: TPropertyEditorHook;
+  slv: TShellListView;
+begin
+  slv := GetComponent as TShellListView;
+  case Index of
+    0:
+    begin
+      GetHook(Hook);
+      EditCollection(slv, slv.Columns, 'Columns');
+      if Assigned(Hook) then Hook.Modified(Self);
+    end;
+  end;
+end;
+
+function TShellListViewComponentEditor.GetVerb(Index: Integer): string;
+begin
+  Result := sccsLvColEdt;
+end;
+
+function TShellListViewComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
+end;
+
+
 initialization
   //Register TListViewItemsPropertyEditor
   RegisterPropertyEditor(ClassTypeInfo(TListItems), TListView, 'Items',
@@ -365,5 +404,8 @@ initialization
 
   //Register a component editor for TListView
   RegisterComponentEditor(TListView, TListViewComponentEditor);
-  
+
+  //Register a component editor for TShellListView (columns)
+  RegisterComponentEditor(TShellListView, TShellListViewComponentEditor);
+
 end.

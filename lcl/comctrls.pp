@@ -1527,6 +1527,7 @@ type
     procedure DestroyWnd; override;
     procedure BeginAutoDrag; override;
 
+    function CreateListColumns: TListColumns; virtual;
     function CreateListItem: TListItem; virtual;
     function CreateListItems: TListItems; virtual;
     function CanEdit(Item: TListItem): Boolean; virtual;

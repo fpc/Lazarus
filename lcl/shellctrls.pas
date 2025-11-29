@@ -24,7 +24,7 @@ interface
 uses
   Classes, SysUtils, Types, Math, AVL_Tree,
   // LCL
-  Forms, Graphics, Controls, ComCtrls, LCLStrConsts,
+  Forms, Graphics, Controls, ComCtrls, LCLStrConsts, LCLProc,
   // LazUtils
   LazFileUtils, LazUTF8, Masks;
 
@@ -277,6 +277,15 @@ type
     property SizeUnits: TSLVSizeUnits read FSizeUnits write SetSizeUnits default suDefault;
   end;
 
+  TShellListColumns = class(TListColumns)
+  private
+    function GetItem(const AIndex: Integer): TShellListColumn;
+    procedure SetItem(const AIndex: Integer; const AValue: TShellListColumn);
+  public
+    function Add: TShellListColumn;
+    property Items[const AIndex: Integer]: TShellListColumn read GetItem write SetItem; default;
+  end;
+
 
   { TCustomShellListView }
 
@@ -320,6 +329,7 @@ type
     class procedure WSRegisterClass; override;
     procedure AdjustColWidths;
     procedure CreateHandle; override;
+    function CreateListColumns: TListColumns; override;
     function CreateListItem: TListItem; override;
     procedure PopulateWithRoot();
     procedure DoOnResize; override;
@@ -618,6 +628,28 @@ begin
   FSizeUnits := AValue;
   GetListView.UpdateColumn(Self);
   Changed(false);
+end;
+
+
+{ TShellListColumns }
+
+function TShellListColumns.Add: TShellListColumn;
+begin
+  Result := TShellListColumn(inherited Add);
+  if (Owner <> nil) and
+     ([csDesigning,csLoading,csReading]*Owner.ComponentState = [csDesigning])
+  then
+    OwnerFormDesignerModified(Owner);
+end;
+
+function TShellListColumns.GetItem(const AIndex: Integer): TShellListColumn;
+begin
+  Result := TShellListColumn(inherited GetItem(AIndex));
+end;
+
+procedure TShellListColumns.SetItem(const AIndex: Integer; const AValue: TShellListColumn);
+begin
+  inherited SetItem(AIndex, AValue);
 end;
 
 
@@ -2319,6 +2351,11 @@ begin
     PopulateWithRoot;
     FPopulateDelayed := false;
   end;
+end;
+
+function TCustomShellListView.CreateListColumns: TListColumns;
+begin
+  Result := TShellListColumns.Create(Self);
 end;
 
 function TCustomShellListView.CreateListItem: TListItem;
