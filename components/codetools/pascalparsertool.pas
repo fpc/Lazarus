@@ -2005,6 +2005,27 @@ end;
 
 function TPascalParserTool.ReadConstant(ExceptionOnError, Extract: boolean;
   const Attr: TProcHeadAttributes): boolean;
+(* ReadConstant is used to read type or value
+  FPC allows for
+    unitname.value_or_type
+    class_or_struct.value_or_type
+    unit.class_or_struct.value_or_type
+    typecast(value)
+    Expressions like: -value * value >> n
+                      AnArray[n..m]
+    ...
+  and in some context also
+    @TClass(nil).value   // not currentyl for type, but not sure of all cases
+
+  In "var foo absolute ..."
+  when "value" is a variable that can be referred too
+    absolute TClass(value).foo
+    FOR: var a: array [1..3] of TPoint;
+    absolute b: integer absolute a[1].x;
+
+*)
+
+
 // after reading, the CurPos will be on the atom after the constant
 
  procedure RaiseConstantExpected;
@@ -2013,9 +2034,25 @@ function TPascalParserTool.ReadConstant(ExceptionOnError, Extract: boolean;
      SaveRaiseStringExpectedButAtomFound(20170421195512,ctsConstant);
  end;
 
+  procedure ReadPointAndMember;
+  begin
+    while CurPos.Flag=cafPoint do begin
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      if AtomIsKeyWord
+      and (not IsKeyWordInConstAllowed.DoIdentifier(@Src[CurPos.StartPos]))
+      then begin
+        if ExceptionOnError then
+          SaveRaiseUnexpectedKeyWord(20170421195520)
+        else exit;
+      end;
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+    end;
+  end;
+
 var
   BracketType: TCommonAtomFlag;
   p: PChar;
+  first: Boolean;
 begin
   Result:=false;
   repeat
@@ -2049,20 +2086,14 @@ begin
         else exit;
       end;
       if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-      while CurPos.Flag=cafPoint do begin
-        // Unitname.Constant
-        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-        if AtomIsKeyWord
-        and (not IsKeyWordInConstAllowed.DoIdentifier(@Src[CurPos.StartPos]))
-        then begin
-          if ExceptionOnError then
-            SaveRaiseUnexpectedKeyWord(20170421195520)
-          else exit;
-        end;
-        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-      end;
-      if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
-      begin
+      ReadPointAndMember;
+      if Result then
+        break;
+      first := True;
+      while ((CurPos.Flag = cafRoundBracketOpen) and first)
+         or (CurPos.Flag = cafEdgedBracketOpen)
+      do begin
+        first := False;
         // type cast or constant array or built-in function
         BracketType:=CurPos.Flag;
         repeat
@@ -2080,6 +2111,9 @@ begin
             SaveRaiseCharExpectedButAtomFound(20170421195527,']')
           else exit;
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        ReadPointAndMember;
+        if Result then
+          break;
       end;
     end else if AtomIsNumber or AtomIsStringConstant then begin
       // number or '...' or #...
@@ -2094,6 +2128,9 @@ begin
             SaveRaiseCharExpectedButAtomFound(20170421195529,')')
           else exit;
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        ReadPointAndMember;
+        if Result then
+          break;
       end else if CurPos.Flag=cafEdgedBracketOpen then begin
         // open bracket + ? + close bracket
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
