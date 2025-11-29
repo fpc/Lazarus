@@ -1816,16 +1816,17 @@ begin
     c := (CurPos.Flag = cafWord) and UpAtomIs('CONST');
     if (phpWithoutGenericConstConstraints in Attr) and c then begin
       ExtractNextAtom(False, Attr);                // Skip the CONST
-      Result:=ExtractNextTil([':', '>'], Add);     // exctrat the param name(s)
+      Result:=ExtractNextTil([':', ';', '>'], Add);     // exctrat the param name(s)
       if (Result) and (Src[CurPos.StartPos] = ':') then
         Result:=ExtractNextTil([';', '>'], False); // skip the type
     end
     else begin
-      Result:=ExtractNextTil([':', '>'], Add);  // Extract param name(s)
+      Result:=ExtractNextTil([':', ';', '>'], Add);  // Extract param name(s)
       if (not Result) or (Src[CurPos.StartPos] = '>') then
         exit;
       // at : / start of contstraint
-      Result:=ExtractNextTil([';', '>'], c or not (phpWithoutGenericTypeConstraints in Attr));
+      if (Result) and (Src[CurPos.StartPos] = ':') then
+        Result:=ExtractNextTil([';', '>'], c or not (phpWithoutGenericTypeConstraints in Attr));
     end;
     if (not Result) or (Src[CurPos.StartPos] = '>') then
       exit;
