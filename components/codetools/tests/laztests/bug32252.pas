@@ -1,4 +1,4 @@
-program bug32252;
+program bug32252;{%skipnodechecks}
 {$MODE DELPHI}
 {$MACRO ON}
 {$DEFINE CUSTOM_DICTIONARY_CONSTRAINTS := TKey, TValue, THashFactory}

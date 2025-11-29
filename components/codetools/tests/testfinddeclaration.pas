@@ -476,7 +476,8 @@ var
     ExpectedCompletionPart, ExpectedTermPart, ExpectedTermPartEx, s: String;
   k:char;
   IdentItem: TIdentifierListItem;
-  ItsAKeyword, IsSubIdentifier, ExpInvert, ExpComment, InvMarker, ExactMarker: boolean;
+  ItsAKeyword, IsSubIdentifier, ExpInvert, ExpComment, InvMarker, ExactMarker,
+    DoCheckNode: boolean;
   ExistingDefinition: TFindContext;
   ListOfPFindContext: TFPList;
   NewExprType: TExpressionType;
@@ -485,6 +486,8 @@ var
 begin
   FMainCode:=aCode;
   DoParseModule(MainCode,FMainTool);
+  DoCheckNode := pos('{%skipnodechecks}', FMainTool.Src) < 1;
+  if DoCheckNode then CheckNodeTree('StartA: '+FMainTool.Scanner.MainFilename, FMainTool, Self);
   Src:=MainTool.Src;
   FMarkers.Clear;
 
@@ -798,7 +801,9 @@ begin
       until CommentP >= CommentEnd;
     end;
   end;
+  if DoCheckNode then CheckNodeTree('EndA: '+FMainTool.Scanner.MainFilename, FMainTool, Self);
   CheckReferenceMarkers;
+  if DoCheckNode then CheckNodeTree('EndB: '+FMainTool.Scanner.MainFilename, FMainTool, Self);
   CodeToolBoss.IdentComplIncludeKeywords := False;
 end;
 
@@ -1840,7 +1845,7 @@ procedure TTestFindDeclaration.TestFindDeclaration_VarArgsOfType;
 begin
   StartProgram;
   Add([
-  'procedure Run; varargs of word;',
+  'procedure Run; varargs of word;{%skipnodechecks}',  // TODO: VarArgs node ends with -1
   'begin',
   '  Run{declaration:run}(1,2);',
   'end;',

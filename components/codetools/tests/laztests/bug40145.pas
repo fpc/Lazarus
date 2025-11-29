@@ -1,4 +1,4 @@
-unit bug40145;
+unit bug40145;{%skipnodechecks}
 
 {$mode delphi}{$H+}
 

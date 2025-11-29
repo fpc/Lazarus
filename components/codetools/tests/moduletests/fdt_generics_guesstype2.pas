@@ -1,7 +1,7 @@
 {
   ./testcodetools --format=plain --suite=TestFindDeclaration_Generics_GuessType2
 }
-program fdt_generics_guesstype2;
+program fdt_generics_guesstype2;{%skipnodechecks}
 
 {$mode objfpc}{$H+}
 
