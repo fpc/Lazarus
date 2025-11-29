@@ -142,6 +142,8 @@ type
     LastMousePoint: TPoint;  // Pixel
   end;
 
+  TSynMouseLastCaretEvent = procedure(Sender: TObject; ACaret:TPoint) of object;
+
   TSynQueryMouseCursorEvent = procedure(Sender: TObject; const AMouseLocation: TSynMouseLocationInfo;
     var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject) of object;
 

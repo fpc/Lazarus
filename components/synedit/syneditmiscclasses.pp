@@ -295,6 +295,9 @@ type
     procedure RegisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc); virtual; abstract;
     procedure UnregisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc); virtual; abstract;
 
+    procedure RegisterMouseLastCaretHandler(AHandlerProc: TSynMouseLastCaretEvent); virtual; abstract;
+    procedure UnregisterMouseLastCaretHandler(AHandlerProc: TSynMouseLastCaretEvent); virtual; abstract;
+
     procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent); virtual; abstract;
     procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent); virtual; abstract;
 

@@ -338,6 +338,13 @@ type
                                     Shift: TShiftState; X, Y: Integer);
   end;
 
+  { TSynEditMouseLastCaretEventList }
+
+  TSynEditMouseLastCaretEventList = Class(TMethodList)
+  public
+    procedure CallMouseLastCaretHandlers(Sender: TObject; Caret:TPoint);
+  end;
+
   { TLazSynKeyDownEventList }
 
   TLazSynKeyDownEventList = Class(TMethodList)
@@ -580,6 +587,7 @@ type
     FMouseActions, FMouseSelActions, FMouseTextActions: TSynEditMouseInternalActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
     FMouseActionExecHandlerList: TSynEditMouseActionExecList;
+    FMouseLastCaretHandlerList: TSynEditMouseLastCaretEventList;
     FMouseActionShiftMask: TShiftState;
     FMarkList: TSynEditMarkList;
     FUseUTF8: boolean deprecated 'always true';
@@ -1108,6 +1116,8 @@ type
     procedure UnregisterMouseActionSearchHandler(AHandlerProc: TSynEditMouseActionSearchProc); override;
     procedure RegisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc); override;
     procedure UnregisterMouseActionExecHandler(AHandlerProc: TSynEditMouseActionExecProc); override;
+    procedure RegisterMouseLastCaretHandler(AHandlerProc: TSynMouseLastCaretEvent); override;
+    procedure UnregisterMouseLastCaretHandler(AHandlerProc: TSynMouseLastCaretEvent); override;
 
     procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent); override;
     procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent); override;
@@ -2455,6 +2465,7 @@ begin
   fPlugins := TList.Create;
   FHookedKeyTranslationList := TSynHookedKeyTranslationList.Create;
   FUndoRedoItemHandlerList := TSynUndoRedoItemHandlerList.Create;
+  FMouseLastCaretHandlerList := TSynEditMouseLastCaretEventList.Create;
 
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
@@ -2914,6 +2925,7 @@ begin
   FreeAndNil(fKeyStrokes);
   FreeAndNil(FMouseActionSearchHandlerList);
   FreeAndNil(FMouseActionExecHandlerList);
+  FreeAndNil(FMouseLastCaretHandlerList);
   FreeAndNil(FMouseActions);
   FreeAndNil(FMouseSelActions);
   FreeAndNil(FMouseTextActions);
@@ -3286,8 +3298,6 @@ begin
   if Key=0 then exit;
 
   inherited;
-  if assigned(fMarkupCtrlMouse) then
-    fMarkupCtrlMouse.UpdateCtrlState(Shift);
 
   if Key in [VK_SHIFT, VK_CONTROL, VK_MENU,
              VK_LSHIFT, VK_LCONTROL, VK_LMENU,
@@ -3401,8 +3411,6 @@ begin
   if sfIgnoreNextChar in fStateFlags then
     Exclude(FStateFlags, sfIgnoreNextChar);
 
-  if assigned(fMarkupCtrlMouse) then
-    fMarkupCtrlMouse.UpdateCtrlState(Shift);
   UpdateCursor;
 end;
 
@@ -7268,8 +7276,8 @@ procedure TCustomSynEdit.SetLastMouseCaret(const AValue: TPoint);
 begin
   if (FLastMouseLocation.LastMouseCaret.X=AValue.X) and (FLastMouseLocation.LastMouseCaret.Y=AValue.Y) then exit;
   FLastMouseLocation.LastMouseCaret:=AValue;
-  if assigned(fMarkupCtrlMouse) then
-    fMarkupCtrlMouse.LastMouseCaret := AValue;
+  if FMouseLastCaretHandlerList <> nil then
+    FMouseLastCaretHandlerList.CallMouseLastCaretHandlers(Self, AValue);
   UpdateCursor;
 end;
 
@@ -10731,6 +10739,18 @@ begin
   FMouseActionExecHandlerList.Remove(TMethod(AHandlerProc));
 end;
 
+procedure TCustomSynEdit.RegisterMouseLastCaretHandler(
+  AHandlerProc: TSynMouseLastCaretEvent);
+begin
+  FMouseLastCaretHandlerList.Add(TMethod(AHandlerProc));
+end;
+
+procedure TCustomSynEdit.UnregisterMouseLastCaretHandler(
+  AHandlerProc: TSynMouseLastCaretEvent);
+begin
+  FMouseLastCaretHandlerList.Remove(TMethod(AHandlerProc));
+end;
+
 procedure TCustomSynEdit.RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
 begin
   FHookedKeyTranslationList.Add(TMEthod(AHandlerProc));
@@ -11231,6 +11251,18 @@ begin
   i:=Count;
   while NextDownIndex(i) do
     TMouseEvent(Items[i])(Sender, Button, Shift, X, Y);
+end;
+
+
+{ TSynEditMouseLastCaretEventList }
+
+procedure TSynEditMouseLastCaretEventList.CallMouseLastCaretHandlers(Sender: TObject; Caret:TPoint);
+var
+  i: LongInt;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TSynMouseLastCaretEvent(Items[i])(Sender, Caret);
 end;
 
 { TLazSynKeyDownEventList }
