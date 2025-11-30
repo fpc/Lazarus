@@ -1,7 +1,7 @@
 {
   ./testcodetools --format=plain --suite=TestFindDeclaration_Generics_FindDeclaration
 }
-program fdt_generics_finddeclaration;{%skipnodechecks}
+program fdt_generics_finddeclaration;
 
 {$mode objfpc}{$H+}
 

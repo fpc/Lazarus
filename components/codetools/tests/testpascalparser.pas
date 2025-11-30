@@ -130,6 +130,7 @@ procedure CheckNodeTree(Name: String; Tool: TCodeTool; Test: TTestCase; Unfinish
         Test.Fail('Node ends before its own start: '+NodeToPathName(Node));
 
       if not (Node.Desc in [
+        ctnClassPublished, ctnClassPublic, // class(base) ; // create class with empty section
         ctnVariantType,  // typeless proc parameter
         ctnProcedureHead // e.g. anon proc
       ]) then
