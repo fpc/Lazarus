@@ -5088,6 +5088,9 @@ function TPascalParserTool.KeyWordFuncTypeProc: boolean;
     procedure; cdecl; popstack; register; pascal; stdcall;
     type p = procedure(Bla) of object; deprecated 'Use another';
     var p: procedure(Bla) of object = nil;
+
+  NodEnd:
+  Include the finishing semicolon, but don't include finishing = or )
 }
 var
   IsFunction, EqualFound, IsReferenceTo, IsVarOrConst, CanHaveHints: boolean;
