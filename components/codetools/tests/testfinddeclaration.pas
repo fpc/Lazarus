@@ -477,7 +477,7 @@ var
   k:char;
   IdentItem: TIdentifierListItem;
   ItsAKeyword, IsSubIdentifier, ExpInvert, ExpComment, InvMarker, ExactMarker,
-    DoCheckNode: boolean;
+    DoCheckNode, SameIdent: boolean;
   ExistingDefinition: TFindContext;
   ListOfPFindContext: TFPList;
   NewExprType: TExpressionType;
@@ -498,36 +498,44 @@ begin
   for TestLoop := 0 to 2 do begin
     // Pass 1: Eval with cache from previous run
     CommentP:=1;
+    CommentEnd:=1;
     while CommentP<length(Src) do begin
       if TestLoop = 2 then begin  // Pass 2: Eval each test, with an empty cache
         CodeToolBoss.CurCodeTool.ClearNodeCaches;
         MainTool.ClearNodeCaches;
       end;
 
-      CommentP:=FindNextComment(Src,CommentP);
+      CommentP:=FindNextComment(Src,CommentEnd);
       if CommentP>length(Src) then break;
       p:=CommentP;
-      CommentP:=FindCommentEnd(Src,CommentP,MainTool.Scanner.NestedComments);
+
+      while (CommentEnd < CommentP) and (Src[CommentEnd] in [#10,#13,#9,' ']) do inc(CommentEnd);
+      SameIdent := CommentEnd >= CommentP;
+
+
+      CommentEnd:=FindCommentEnd(Src,CommentP,MainTool.Scanner.NestedComments);
       if Src[p]<>'{' then continue;
       if Src[p+1] in ['$','%',' ',#0..#31] then continue;
 
-      // allow spaces before the comment
-      IdentifierEndPos:=p;
-      while (IdentifierEndPos>1) and (IsSpaceChar[Src[IdentifierEndPos-1]]) do
-        dec(IdentifierEndPos);
-      IdentifierStartPos:=IdentifierEndPos;
-      if (IdentifierStartPos>1) and (Src[IdentifierStartPos-1]='.') then begin
-        // .{...} for completion
-      end else begin
-        // check identifier in front of comment
-        while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
-          dec(IdentifierStartPos);
-        if IdentifierStartPos=p then begin
-          WriteSource(p,MainTool);
-          Fail('missing identifier in front of marker at '+MainTool.CleanPosToStr(p));
+      if not SameIdent then begin
+        // allow spaces before the comment
+        IdentifierEndPos:=p;
+        while (IdentifierEndPos>1) and (IsSpaceChar[Src[IdentifierEndPos-1]]) do
+          dec(IdentifierEndPos);
+        IdentifierStartPos:=IdentifierEndPos;
+        if (IdentifierStartPos>1) and (Src[IdentifierStartPos-1]='.') then begin
+          // .{...} for completion
+        end else begin
+          // check identifier in front of comment
+          while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
+            dec(IdentifierStartPos);
+          if IdentifierStartPos=p then begin
+            WriteSource(p,MainTool);
+            Fail('missing identifier in front of marker at '+MainTool.CleanPosToStr(p));
+          end;
         end;
       end;
-      inc(p);
+      inc(p); // inc(CommentP)
 
       // check marker #/@
       NameStartPos:=p;
@@ -570,14 +578,13 @@ begin
         while IsIdentChar[Src[p]] do inc(p);
         Marker:=copy(Src,NameStartPos,p-NameStartPos);
         if TestLoop=0 then
-          AddMarker(Marker,k,CommentP,l,IdentifierEndPos, InvMarker, ExactMarker);
+          AddMarker(Marker,k,CommentEnd,l,IdentifierEndPos, InvMarker, ExactMarker);
         continue;
       end;
 
       if (strlicomp(@Src[p], pchar('TODO:'), 5) = 0) then
         continue;
 
-      CommentEnd := CommentP;
       CommentP := p;
       repeat
         NameStartPos:=CommentP;
