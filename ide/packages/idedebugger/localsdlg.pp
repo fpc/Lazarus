@@ -116,6 +116,8 @@ type
       Node: PVirtualNode; Column: TColumnIndex);
     procedure vtLocalsNodeDblClick(Sender: TBaseVirtualTree;
       const HitInfo: THitInfo);
+  private const
+    MAX_GRID_VALUE_LEN = 4096;
   private
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FWatchPrinter: TWatchResultPrinter;
@@ -945,7 +947,9 @@ begin
   if (ResData <> nil) and
      not( (ResData.ValueKind = rdkPrePrinted) and (AWatchAbleResult.TypeInfo <> nil) )
   then begin
+    FLocalsDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine];
     WatchValueStr := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, DispFormat, TIdeLocalsValue(AWatchAble).Name);
+    WatchValueStr := LimitTextLength(WatchValueStr, FLocalsDlg.MAX_GRID_VALUE_LEN);
   end
   else begin
     s := AnsiUpperCase(TIdeLocalsValue(AWatchAble).Name);
@@ -953,11 +957,11 @@ begin
        not GlobalValueFormatterSelectorList.FormatValue(AWatchAbleResult.TypeInfo,
        AWatchAbleResult.Value, DispFormat, WatchValueStr, s, s)
     then begin
-      WatchValueStr := AWatchAbleResult.Value;
+      WatchValueStr := ClearMultiline(AWatchAbleResult.Value, FLocalsDlg.MAX_GRID_VALUE_LEN);
     end;
   end;
   TreeView.NodeText[AVNode, 0] := TIdeLocalsValue(AWatchAble).DisplayName;
-  TreeView.NodeText[AVNode, 1] := ClearMultiline(WatchValueStr);
+  TreeView.NodeText[AVNode, 1] := WatchValueStr;
 
   if (ResData <> nil) and (ResData.HasDataAddress) then begin
     da := ResData.DataAddress;

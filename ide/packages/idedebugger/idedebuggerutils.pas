@@ -5,7 +5,7 @@ unit IdeDebuggerUtils;
 interface
 
 uses
-  Classes, SysUtils, LazMethodList;
+  Classes, SysUtils, Math, LazMethodList;
 
 type
 
@@ -29,7 +29,8 @@ type
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
 function QuoteText(AText: Utf8String; AnOpts: TQuoteTextOpts = []): UTf8String;
 function QuoteWideText(AText: WideString; AnOpts: TQuoteTextOpts = []): WideString;
-function ClearMultiline(const AValue: ansistring): ansistring;
+function ClearMultiline(const AValue: ansistring; AMaxChars: integer = -1): ansistring;
+function LimitTextLength(const AValue: ansistring; AMaxChars: integer): ansistring;
 
 (* GetExpressionForArrayElement
   If "AnArrayExpression" returns an array, get a new Expression that returns
@@ -275,37 +276,67 @@ begin
   until False;
 end;
 
-function ClearMultiline(const AValue: ansistring): ansistring;
+function ClearMultiline(const AValue: ansistring; AMaxChars: integer): ansistring;
 var
   j: SizeInt;
   ow: SizeInt;
   NewLine: Boolean;
+  p: PChar;
 begin
   ow:=0;
-  SetLength(Result{%H-},Length(AValue));
+  if AMaxChars > 0 then
+    SetLength(Result{%H-},Min(Length(AValue), AMaxChars+3))
+  else
+    SetLength(Result{%H-},Length(AValue));
   NewLine:=true;
+  p := pchar(Result);
   for j := 1 to Length(AValue) do begin
     if (AValue[j]=#13) or (AValue[j]=#10) then begin
       NewLine:=true;
       inc(ow);
-      Result[ow]:=#32; // insert one space instead of new line
+      p^:=#32; // insert one space instead of new line
+      inc(p);
     end
     else if Avalue[j] in [#9,#32] then begin
       if not NewLine then begin // strip leading spaces after new line
         inc(ow);
-        Result[ow]:=#32;
+        p^:=#32;
+        inc(p);
       end;
     end else begin
       inc(ow);
-      Result[ow]:=AValue[j];
+      p^:=AValue[j];
+      inc(p);
       NewLine:=false;
     end;
+    If (AMaxChars > 0) and (ow>AMaxChars) then
+      break;
   end;
-  If ow>255 then begin
-    //Limit watch to 255 chars in length
-    Result:=Copy(Result,1,252)+'...';
+  If (AMaxChars > 0) and (ow>AMaxChars) then begin
+    //Limit length / avoid doing a 2nd resize by having to call LimitTextLength
+    if AMaxChars < 3 then AMaxChars := 3;
+    SetLength(Result, AMaxChars);
+    p := @Result[AMaxChars-2];
+    p^ := '.'; inc(p);
+    p^ := '.'; inc(p);
+    p^ := '.';
   end else begin
     SetLength(Result,ow);
+  end;
+end;
+
+function LimitTextLength(const AValue: ansistring; AMaxChars: integer): ansistring;
+var
+  p: PChar;
+begin
+  Result := AValue;
+  If Length(Result) > AMaxChars then begin
+    if AMaxChars < 3 then AMaxChars := 3;
+    SetLength(Result, AMaxChars);
+    p := @Result[AMaxChars-2];
+    p^ := '.'; inc(p);
+    p^ := '.'; inc(p);
+    p^ := '.';
   end;
 end;
 

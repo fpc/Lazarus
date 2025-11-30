@@ -80,6 +80,9 @@ type
     procedure menuCopyValueClick(Sender: TObject);
     procedure TimerClearDataTimer(Sender: TObject);
     procedure TimerFilterTimer(Sender: TObject);
+  private const
+    MAX_GRID_TEXT_LEN = 4096;
+    MAX_STATUS_TEXT_LEN = 4096;
   private
     //FDataGridHook,
     //FPropertiesGridHook,
@@ -106,6 +109,7 @@ type
     procedure DoDebuggerState(ADebugger: TDebuggerIntf; AnOldState: TDBGState);
     procedure DoDispFormatChanged(Sender: TObject);
     procedure SetWatchPrinterFlags(AFlags: TWatchResultPrinterFormatFlags);
+    function PrintWatchValue(AResValue: TWatchResultData; const ADispFormat: TWatchDisplayFormat; const AWatchedExpr: String): String;
     procedure DoEnvOptChanged(Sender: TObject; Restore: boolean);
     procedure DoWatchesInvalidated(Sender: TObject);
     procedure DoWatchUpdated(const ASender: TIdeWatches; const AWatch: TIdeWatch);
@@ -213,7 +217,7 @@ begin
   WatchInspectNav1.ColTypeEnabled := True;
   WatchInspectNav1.ColVisibilityEnabled := False;
 
-  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
+  v := PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression);
   StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
@@ -240,13 +244,13 @@ begin
   WatchInspectNav1.ColTypeEnabled := True;
   WatchInspectNav1.ColVisibilityEnabled := False;
 
-  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
+  v := PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression);
   StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
   df := WatchInspectNav1.DisplayFormat;
   df.Num.BaseFormat := vdfBaseHex; //xxxxxxxxxxxxxxxxxxxxxx
-  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, df, WatchInspectNav1.CurrentWatchValue.Expression));
+  v := PrintWatchValue(Res, df, WatchInspectNav1.CurrentWatchValue.Expression);
   FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
   FGridData.Cells[2,1]:=FCurrentTypePrefix+Res.TypeName;
   FGridData.Cells[3,1]:=v;
@@ -256,7 +260,7 @@ begin
     FGridData.RowCount := 3;
     FGridData.Cells[1,2]:=Format(lisInspectPointerTo, ['']);
     FGridData.Cells[2,2]:=Res.TypeName;
-    FGridData.Cells[3,2]:=ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
+    FGridData.Cells[3,2]:=PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression);
   end;
 end;
 
@@ -278,7 +282,7 @@ begin
   WatchInspectNav1.ColTypeEnabled := True;
   WatchInspectNav1.ColVisibilityEnabled := False;
 
-  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
+  v := PrintWatchValue(Res, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression);
   StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
@@ -368,7 +372,7 @@ begin
         Res.SetSelectedIndex(i);
         Entry := Res.SelectedEntry;
         Entry := Entry.ConvertedRes;
-        s := ClearMultiline(FWatchPrinter.PrintWatchValue(Entry, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
+        s := PrintWatchValue(Entry, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression);
 
         if (filter <> '') and
            // index
@@ -441,7 +445,7 @@ begin
   if (Res.ValueKind = rdkStruct) and (AnchType <> '') then
     StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, FCurrentTypePrefix+Res.TypeName, AnchType])
   else
-    StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + FHumanReadable;
+    StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + ClearMultiline(FHumanReadable, MAX_STATUS_TEXT_LEN);
 
   GridDataSetup;
 
@@ -513,7 +517,7 @@ begin
       else begin
         s := '';
         if Fld <> nil then
-          s := ClearMultiline(FWatchPrinter.PrintWatchValue(Fld, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression));
+          s := PrintWatchValue(Fld, WatchInspectNav1.DisplayFormat, WatchInspectNav1.CurrentWatchValue.Expression);
         if (filter <> '') and
            // name
            (pos(filter, LowerCase(FldInfo.FieldName)) < 1) and
@@ -1398,7 +1402,7 @@ begin
       //  skDecomposable: ;
         else begin
             Clear;
-            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable)]);
+            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable, MAX_STATUS_TEXT_LEN)]);
             ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
             PageControl.ActivePage := ErrorPage;
           end;
@@ -1459,7 +1463,7 @@ begin
 //        rdkConvertRes:    InspectResDataStruct;
         else begin
             Clear;
-            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable)]);
+            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable, MAX_STATUS_TEXT_LEN)]);
             ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
             PageControl.ActivePage := ErrorPage;
           end;
@@ -1470,7 +1474,7 @@ begin
   end;
 
   Clear;
-  StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable)]);
+  StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable, MAX_STATUS_TEXT_LEN)]);
   ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
   PageControl.ActivePage := ErrorPage;
 end;
@@ -1523,6 +1527,23 @@ begin
   else
     FWatchPrinter.FormatFlags := AFlags - [rpfSkipValueFormatter];
   FWatchPrinter.OnlyValueFormatter := WatchInspectNav1.DbgValueFormatter;
+end;
+
+function TIDEInspectDlg.PrintWatchValue(AResValue: TWatchResultData;
+  const ADispFormat: TWatchDisplayFormat; const AWatchedExpr: String): String;
+var
+  o: TWatchResultPrinterFormatFlags;
+begin
+  try
+    o := FWatchPrinter.FormatFlags;
+    FWatchPrinter.FormatFlags := FWatchPrinter.FormatFlags - [rpfMultiLine];
+    Result := LimitTextLength(
+      FWatchPrinter.PrintWatchValue(AResValue, ADispFormat, AWatchedExpr),
+      MAX_GRID_TEXT_LEN
+    );
+  finally
+    FWatchPrinter.FormatFlags := o;
+  end;
 end;
 
 procedure TIDEInspectDlg.DoEnvOptChanged(Sender: TObject; Restore: boolean);
