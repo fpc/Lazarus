@@ -5556,6 +5556,7 @@ begin
       {$ENDIF}
       if (CurPos.Flag=cafRoundBracketClose) then begin
         // end of variant record
+        break;
       end else if UpAtomIs('CASE') then begin
         // sub record variant
         KeyWordFuncTypeRecordCase();
@@ -5601,14 +5602,14 @@ begin
       {$ENDIF}
       if (CurPos.Flag=cafRoundBracketClose) then begin
         // end of variant record
-        ReadNextAtom;
         break;
       end;
       if CurPos.Flag<>cafSemicolon then
         SaveRaiseCharExpectedButAtomFound(20170421195856,';');
       ReadNextAtom;
     until false;
-    CurNode.EndPos:=CurPos.StartPos;
+    CurNode.EndPos:=CurPos.EndPos;
+    ReadNextAtom; // read ")"
     {$IFDEF VerboseRecordCase}
     debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase variant end="',GetAtom,'" ',CurNode.DescAsString,' ',dbgstr(copy(Src,CurNode.StartPos,CurNode.EndPos-CurNode.StartPos))]);
     {$ENDIF}
