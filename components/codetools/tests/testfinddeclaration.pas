@@ -471,7 +471,7 @@ var
   FoundCleanPos: Integer;
   FoundNode: TCodeTreeNode;
   NameStartPos, i, j, l, IdentifierStartPos, IdentifierEndPos,
-    BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop: Integer;
+    BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop, CommentEnd2: Integer;
   Marker, ExpectedType, NewType, ExpectedCompletion, ExpectedTerm,
     ExpectedCompletionPart, ExpectedTermPart, ExpectedTermPartEx, s: String;
   k:char;
@@ -499,42 +499,59 @@ begin
     // Pass 1: Eval with cache from previous run
     CommentP:=1;
     CommentEnd:=1;
+    CommentEnd2:=1;
+    IdentifierStartPos := 0;
     while CommentP<length(Src) do begin
       if TestLoop = 2 then begin  // Pass 2: Eval each test, with an empty cache
         CodeToolBoss.CurCodeTool.ClearNodeCaches;
         MainTool.ClearNodeCaches;
       end;
 
-      CommentP:=FindNextComment(Src,CommentEnd);
+      CommentP:=FindNextComment(Src,CommentEnd2);
       if CommentP>length(Src) then break;
       p:=CommentP;
 
       while (CommentEnd < CommentP) and (Src[CommentEnd] in [#10,#13,#9,' ']) do inc(CommentEnd);
       SameIdent := CommentEnd >= CommentP;
 
-
       CommentEnd:=FindCommentEnd(Src,CommentP,MainTool.Scanner.NestedComments);
-      if Src[p]<>'{' then continue;
-      if Src[p+1] in ['$','%',' ',#0..#31] then continue;
+
+      if (Src[p]<>'{')
+      or (Src[p+1] in ['$','%',' ',#0..#31])
+      then begin
+        if (Src[p]<>'{') then
+          IdentifierStartPos := 0; // different comment type / not SameIdent
+        CommentEnd2 := CommentEnd;
+        continue;
+      end;
 
       if not SameIdent then begin
+        // restrict to CommentEnd2 => the previous CommentEnd;
         // allow spaces before the comment
         IdentifierEndPos:=p;
-        while (IdentifierEndPos>1) and (IsSpaceChar[Src[IdentifierEndPos-1]]) do
+        while (IdentifierEndPos>CommentEnd2) and (IsSpaceChar[Src[IdentifierEndPos-1]]) do
           dec(IdentifierEndPos);
         IdentifierStartPos:=IdentifierEndPos;
-        if (IdentifierStartPos>1) and (Src[IdentifierStartPos-1]='.') then begin
+        if (IdentifierStartPos>CommentEnd2) and (Src[IdentifierStartPos-1]='.') then begin
           // .{...} for completion
         end else begin
           // check identifier in front of comment
-          while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
+          while (IdentifierStartPos>CommentEnd2) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
             dec(IdentifierStartPos);
           if IdentifierStartPos=p then begin
             WriteSource(p,MainTool);
             Fail('missing identifier in front of marker at '+MainTool.CleanPosToStr(p));
           end;
         end;
+      end
+      else if IdentifierStartPos = 0 then begin
+        IdentifierStartPos:=p;
+        IdentifierEndPos:=p;
       end;
+
+      CommentEnd2:=CommentEnd;
+      while src[CommentEnd2] in [#10,#13] do inc(CommentEnd2); // in case of //
+
       inc(p); // inc(CommentP)
 
       // check marker #/@
