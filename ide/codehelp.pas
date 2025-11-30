@@ -2988,6 +2988,10 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile;
     then begin
       Result:=Result+'<'+Node.NodeName+'>'+AddChilds(Node)+'</'+Node.NodeName+'>';
     end else
+    // fpdoc remark tag as an italicized paragraph
+    if (Node.NodeName='remark') then begin
+      Result := Result + '<p><i>' + AddChilds(Node) + '</i></p>';
+    end else
     // fpdoc file tag as html span.file
     if (Node.NodeName='file') then begin
       Result:=Result+'<span class="file">'+AddChilds(Node)+'</span>';
