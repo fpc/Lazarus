@@ -23,10 +23,12 @@ type
     procedure CallChangeNotifications;
   end;
 
+  TQuoteTextOpt = (qtMultiLine);
+  TQuoteTextOpts = set of TQuoteTextOpt;
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
-function QuoteText(AText: Utf8String): UTf8String;
-function QuoteWideText(AText: WideString): WideString;
+function QuoteText(AText: Utf8String; AnOpts: TQuoteTextOpts = []): UTf8String;
+function QuoteWideText(AText: WideString; AnOpts: TQuoteTextOpts = []): WideString;
 function ClearMultiline(const AValue: ansistring): ansistring;
 
 (* GetExpressionForArrayElement
@@ -70,7 +72,7 @@ begin
   end;
 end;
 
-function QuoteWideText(AText: WideString): WideString;
+function QuoteWideText(AText: WideString; AnOpts: TQuoteTextOpts): WideString;
 const
   HEXCHR: array [0..15] of char = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
 var
@@ -83,7 +85,12 @@ begin
 
   Len := Length(AText);
 
-  SetLength(Result, Len * 4); // This is the maximal length result can get
+  // An non-quote char (ctrl char) will become 4 chars: #$12
+  // But if qtMultiLine then it can be #$0A + LineEnding
+  if qtMultiLine in AnOpts then
+    SetLength(Result, Len * 6) // This is the maximal length result can get
+  else
+    SetLength(Result, Len * 4); // This is the maximal length result can get
   RPos := @Result[1];
   SPos := @AText[1];
   SEnd := PWideChar(@AText[Len]) + 1;
@@ -132,13 +139,22 @@ begin
       RPos^ := HEXCHR[Byte(c) >> 4]; inc(RPos);
       RPos^ := HEXCHR[Byte(c) and 15]; inc(RPos);
       inc(SPos);
-      c := SPos^;
+      if (qtMultiLine in AnOpts) and
+       ( (c = #10) or
+         ((c=#13) and (SPos^ <> #10))
+        )
+      then begin
+        if LineEnding = #13#10 then
+          RPos^ := #13; inc(RPos);
+        RPos^ := #10; inc(RPos);
+      end;
+    c := SPos^;
     until not(c in [#0..#31, #127, #$80..#$9F]);
 
   until False;
 end;
 
-function QuoteText(AText: Utf8String): UTf8String;
+function QuoteText(AText: Utf8String; AnOpts: TQuoteTextOpts): UTf8String;
 // TODO: process large text in chunks to avoid allocating huge memory
 const
   HEXCHR: array [0..15] of char = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
@@ -152,7 +168,12 @@ begin
 
   Len := Length(AText);
 
-  SetLength(Result, Len * 4); // This is the maximal length result can get
+  // An non-quote char (ctrl char) will become 4 chars: #$12
+  // But if qtMultiLine then it can be #$0A + LineEnding
+  if qtMultiLine in AnOpts then
+    SetLength(Result, Len * 6) // This is the maximal length result can get
+  else
+    SetLength(Result, Len * 4); // This is the maximal length result can get
   RPos := @Result[1];
   SPos := @AText[1];
   SEnd := PChar(@AText[Len]) + 1;
@@ -239,6 +260,15 @@ begin
       RPos^ := HEXCHR[Byte(c) >> 4]; inc(RPos);
       RPos^ := HEXCHR[Byte(c) and 15]; inc(RPos);
       inc(SPos);
+      if (qtMultiLine in AnOpts) and
+         ( (c = #10) or
+           ((c=#13) and (SPos^ <> #10))
+          )
+      then begin
+        if LineEnding = #13#10 then
+          RPos^ := #13; inc(RPos);
+        RPos^ := #10; inc(RPos);
+      end;
       c := SPos^;
     until not(c in [#0..#31, #127, #$80..#$BF]);
 

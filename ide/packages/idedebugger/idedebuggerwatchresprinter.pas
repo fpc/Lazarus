@@ -1488,8 +1488,14 @@ begin
           end;
       end;
       rdkChar:       Result.RawAsStringPtr^ := PrintChar;
-      rdkString:     Result.RawAsStringPtr^ := QuoteText(AResValue.AsString);
-      rdkWideString: Result.RawAsStringPtr^ := QuoteWideText(AResValue.AsWideString);
+      rdkString:     if rpfMultiLine in FFormatFlags then
+           Result.RawAsStringPtr^ := QuoteText(AResValue.AsString, [qtMultiLine])
+        else
+           Result.RawAsStringPtr^ := QuoteText(AResValue.AsString);
+      rdkWideString: if rpfMultiLine in FFormatFlags then
+          Result.RawAsStringPtr^ := QuoteWideText(AResValue.AsWideString, [qtMultiLine])
+        else
+          Result.RawAsStringPtr^ := QuoteWideText(AResValue.AsWideString);
       rdkBool:       Result.RawAsStringPtr^ := PrintBool;
       rdkEnum, rdkEnumVal:
                      Result.RawAsStringPtr^ := PrintEnum;
