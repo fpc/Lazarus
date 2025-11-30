@@ -3742,8 +3742,8 @@ begin
     CanHaveString:=UpAtomIs('DEPRECATED');
     ReadNextAtom;
     if CanHaveString and AtomIsStringConstant then begin
-      ReadConstant(true,false,[]);
-      CurNode.EndPos:=CurPos.StartPos;
+      CurNode.EndPos:=CurPos.EndPos;
+      ReadNextAtom;
     end;
     EndChildNode;
     if AllowSemicolonSep and (CurPos.Flag=cafSemicolon) then begin
@@ -5092,6 +5092,7 @@ function TPascalParserTool.KeyWordFuncTypeProc: boolean;
 var
   IsFunction, EqualFound, IsReferenceTo, IsVarOrConst, CanHaveHints: boolean;
   n: TCodeTreeNode;
+  NodeEnd: Integer;
 begin
   IsReferenceTo:=CurNode.Desc=ctnReferenceTo;
   n := CurNode;
@@ -5100,17 +5101,21 @@ begin
   IsFunction:=UpAtomIs('FUNCTION');
   CreateChildNode;
   CurNode.Desc:=ctnProcedureType;
+  NodeEnd := CurPos.EndPos;
   ReadNextAtom;
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
   if (CurPos.Flag=cafRoundBracketOpen) then begin
     // read parameter list
-    ReadParamList(true,false,[phpCreateNodes]);
+    if ReadParamList(true,false,[phpCreateNodes]) then
+      NodeEnd := CurNode.LastChild.EndPos;
   end;
   if IsFunction then begin
     if (CurPos.Flag=cafColon) then begin
       ReadNextAtom;
-      ReadTypeReference(true);
+      NodeEnd := CurPos.EndPos;
+      if ReadTypeReference(true) then
+        NodeEnd := CurNode.LastChild.EndPos;
     end else begin
       SaveRaiseCharExpectedButAtomFound(20170421195810,':');
     end;
@@ -5118,6 +5123,7 @@ begin
   if (not IsReferenceTo) and UpAtomIs('OF') then begin
     if not ReadNextUpAtomIs('OBJECT') then
       SaveRaiseStringExpectedButAtomFound(20170421195812,'"object"');
+    NodeEnd := CurPos.EndPos;
     ReadNextAtom;
   end;
 
@@ -5126,6 +5132,7 @@ begin
   end else begin
     CanHaveHints := True;
     if CurPos.Flag=cafSemicolon then begin
+      NodeEnd := CurPos.EndPos;
       ReadNextAtom;
       EqualFound:=(CurPos.Flag=cafEqual) and IsVarOrConst;
       if IsVarOrConst then
@@ -5139,7 +5146,9 @@ begin
       repeat
         if CanHaveHints then begin
           if ReadHintModifiers(not IsVarOrConst) then begin
+            NodeEnd := CurNode.LastChild.EndPos;
             if CurPos.Flag=cafSemicolon then begin
+              NodeEnd := CurPos.EndPos;
               if IsVarOrConst then
                 CanHaveHints := False;
               ReadNextAtom;
@@ -5159,10 +5168,12 @@ begin
         if not IsReferenceTo then begin
           if UpAtomIs('IS') then begin
             ReadNextAtom;
+            NodeEnd := CurPos.EndPos;
             if not UpAtomIs('NESTED') then
               SaveRaiseStringExpectedButAtomFound(20170421195814,'nested');
           end else if UpAtomIs('OF') then begin
             ReadNextAtom;
+            NodeEnd := CurPos.EndPos;
             if not UpAtomIs('OBJECT') then
               SaveRaiseStringExpectedButAtomFound(20170421195816,'object');
           end;
@@ -5178,7 +5189,9 @@ begin
           then
             SaveRaiseCharExpectedButAtomFound(20170421195819,';');
           UndoReadNextAtom;
-        end;
+        end
+        else
+          NodeEnd := CurPos.EndPos;
         ReadNextAtom;
         if (CurPos.Flag=cafEqual) and IsVarOrConst
         then
@@ -5186,11 +5199,10 @@ begin
       until false;
     end;
   end;
-  CurNode.EndPos:=CurPos.StartPos;
-  EndChildNode;
-  CurNode.EndPos:=CurPos.StartPos;
-  EndChildNode;
-  Result:=true;
+  if CurNode.StartPos > NodeEnd then
+    CurNode.StartPos := NodeEnd; // empty proc head
+  EndChildNode(NodeEnd);
+  EndChildNode(NodeEnd);
 end;
 
 function TPascalParserTool.KeyWordFuncTypeReferenceTo: boolean;
@@ -5205,8 +5217,7 @@ begin
     if (not UpAtomIs('PROCEDURE')) and (not UpAtomIs('FUNCTION')) then
       SaveRaiseStringExpectedButAtomFound(20170421195824,'"procedure"');
     Result:=KeyWordFuncTypeProc;
-    CurNode.EndPos:=CurPos.StartPos;
-    EndChildNode;
+    EndChildNode(CurNode.LastChild.EndPos);
   end else begin
     Result:=KeyWordFuncTypeDefault;
   end;
