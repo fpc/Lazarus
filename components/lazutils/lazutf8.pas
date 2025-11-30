@@ -3354,16 +3354,28 @@ begin
     begin
       Len := Length(Result);
       RP := Len;
-      while not (Result[RP] in BreakChars) do
+      { Test "RP <> 0" below, in case S starts with a long word
+        (without delimiters (BreakChars), longer than MaxCol).
+        Without this test, this loop could then go into RP being zero and
+        then negative and Result[RP] would read memory it shouldn't. }
+      while (RP <> 0) and (not (Result[RP] in BreakChars)) do
         Dec(RP);
       RightSpace := Len - RP;
-      if (RightSpace > 0) and (RightSpace < MaxCol) then
+      { Add a BreakStr in the middle of Result collected so far.
+        Abort it if "Len - RP >= MaxCol" which implies that initial text (S)
+        has a word without delimiters (BreakChars) longer than MaxCol,
+        so it's impossible to break it, and we should at least
+        not make an infinite loop. }
+      if (RP <> 0) and (RightSpace < MaxCol - Length(BreakStr) - Length(IndentStr)) then
       begin
-        Dec(P, RightSpace);
-        SetLength(Result, Len - RightSpace);
+        if (RightSpace > 0) and (RightSpace < MaxCol) then
+        begin
+          Dec(P, RightSpace);
+          SetLength(Result, Len - RightSpace);
+        end;
+        Result := Result + BreakStr;
+        N := 0;
       end;
-      Result := Result + BreakStr;
-      N := 0;
     end;
     if N = 0 then
       Result := Result + IndentStr;
