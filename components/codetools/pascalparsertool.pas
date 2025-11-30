@@ -4917,7 +4917,7 @@ begin
           CurNode.Desc:=ctnClassPublished
         else
           CurNode.Desc:=ctnClassPublic;
-        EndChildNode;
+        EndChildNode(CurPos.StartPos);
       end;
     end;
   end else
