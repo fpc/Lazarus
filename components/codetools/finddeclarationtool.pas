@@ -14487,8 +14487,22 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
             if SubExprType.Context.Tool.FindEnumerationTypeOfSetType(
                                     SubExprType.Context.Node,ExprType.Context)
             then begin
-              ExprType.Desc:=xtContext;
-              Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
+              if (ExprType.Context.Node <> nil)
+              and (ExprType.Context.Node.Desc = ctnEnumerationType)
+              and (ExprType.Context.Node.Parent <> nil)
+              and (ExprType.Context.Node.Parent.Desc = ctnSetType)
+              then begin
+                MoveCursorToCleanPos(SubExprType.Context.Node.Parent.StartPos);
+                ReadNextAtom;
+                ExprType.Desc:=xtContext;
+                Result := '';
+                if CurPos.Flag = cafWord then
+                  Result:=format('low(%s)..high(%s)', [GetAtom, GetAtom]);
+              end
+              else begin
+                ExprType.Desc:=xtContext;
+                Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
+              end;
             end;
           ctnRangedArrayType,ctnOpenArrayType:
             begin

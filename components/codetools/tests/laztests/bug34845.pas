@@ -31,5 +31,6 @@ begin
   for B{guesstype:byte} in ReturnBytes do ;
   for C{guesstype:ansichar} in ReturnChars do ;
   for D{guesstype:TEnum} in ReturnSet1 do ;
+  for E{guesstype:low(TSet2)..high(TSet2)} in ReturnSet2 do ;
 end.
 
