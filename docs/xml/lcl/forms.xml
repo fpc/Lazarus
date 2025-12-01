@@ -16103,8 +16103,52 @@ needed).
 <short>Object for the event notification.</short>
 </element>
 
+<element name="TApplication.HasAsyncCallQueued">
+<short>
+Indicates whether there are unprocessed asynchronous calls pending in the 
+application queue.
+</short>
+<descr>
+<p>
+<var>HasAsyncCallQueued</var> is a <var>Boolean</var> function which 
+determines whether there are any unprocessed requests pending from <var>
+QueueAsyncCall</var>. The return value is <b>True</b> if the internal 
+<var>TAsyncCallQueues</var> instance in the application has any unfinished 
+asynchronous calls in the current or next queue messages.
+</p>
+<p>
+HasAsyncCallQueued is used in the <var>TApplication.Idle</var> method to 
+prevent placing the application in a wait state until pending asynchronous 
+calls have been handled. If there are pending asynchronous events in the 
+queue, then the application is not idle and further calls to 
+ProcessAsyncCallQueue are deferred.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TApplication.QueueAsyncCall"/>
+<link id="TApplication.ProcessAsyncCallQueue"/>
+<link id="TApplication.Idle"/>
+<link id="TApplication.DoIdleActions"/>
+<link id="TApplication.OnIdleEnd"/>
+<link id="TApplication.Flags"/>
+<link id="TAsyncCallQueues"/>
+<link id="TAsyncCallQueue"/>
+</seealso>
+</element>
+<element name="TApplication.HasAsyncCallQueued.Result">
+<short>
+Returns <b>True</b> if there are unprocessed asynchronous method calls for the 
+application.
+</short>
+</element>
+
 <element name="TApplication.ProcessAsyncCallQueue">
-<short>Calls all methods queued in QueueAsyncCall.</short>
+<short>
+Calls all methods queued in QueueAsyncCall.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -17437,12 +17481,14 @@ queued asynchronous callbacks.
 </element>
 
 <element name="TApplication.Idle">
-<short>Called when the application enters the idle state.</short>
+<short>
+Called when the application enters the idle state.
+</short>
 <descr>
 <p>
-Idle is a method used to perform actions when the application enters an idle 
-state. It allows the application to free components pending release, and 
-handle any queued asynchronous requests.
+<var>Idle</var> is a method used to perform actions when the application 
+enters an idle state. It allows the application to free components pending 
+release, and handle any queued asynchronous requests.
 </p>
 <p>
 In addition, Idle calls event and application handlers assigned in the class 
@@ -17457,14 +17503,24 @@ fsSplash).
 <p>
 When the Wait argument is set to <b>True</b>, the AppWaitMessage method in 
 the widgetset class is called to capture an message on the handles for the 
-application. This action is not performed when Wait is <b>False</b>.
+application. This action is not performed when Wait is <b>False</b>, or when 
+HasAsyncCallQueued indicates there are unprocessed asynchronous messages 
+pending for the application.
 </p>
 <p>
 Idle calls the DoOnIdleEnd method to signal the OnIdleEnd event handler and 
 any application handlers using the ahtIdleEnd handler type.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TApplication.OnIdle"/>
+<link id="TApplication.NotifyIdleHandler"/>
+<link id="TApplication.DoIdleActions"/>
+<link id="TApplication.OnIdleEnd"/>
+<link id="TApplication.HasAsyncCallQueued"/>
+<link id="TApplication.Flags"/>
+<link id="TApplicationFlags"/>
+</seealso>
 </element>
 <element name="TApplication.Idle.Wait">
 <short>Indicates if the method waits for the next message.</short>
