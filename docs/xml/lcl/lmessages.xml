@@ -280,7 +280,12 @@ IDs reserved for internal messages in the interfaces.
 <descr/>
 </element>
 
-<element name="LM_IM_COMPOSITION ">
+<element name="LM_IM_COMPOSITION">
+<short/>
+<descr/>
+</element>
+
+<element name="LM_IM_QUERY">
 <short/>
 <descr/>
 </element>
