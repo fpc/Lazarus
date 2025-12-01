@@ -2015,7 +2015,7 @@ function TPascalParserTool.ReadConstant(ExceptionOnError, Extract: boolean;
                       AnArray[n..m]
     ...
   and in some context also
-    @TClass(nil).value   // not currentyl for type, but not sure of all cases
+    @TClass(nil).value   // not currently for type, but not sure of all cases
 
   In "var foo absolute ..."
   when "value" is a variable that can be referred too
