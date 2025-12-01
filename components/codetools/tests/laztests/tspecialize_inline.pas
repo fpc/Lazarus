@@ -825,7 +825,7 @@ begin
   { TODO completion:Foo,FDataA,FDataA2,P1,P2,TSelf,TM1,FM1,!PXD}
   FM1      { TODO: declaration:TClassMain1.FM1}
   := 1;
-  FExtra2  { TODO: declaration:TNew2_GenParamWrapperClassC.TGenClassC.TTypeC.FExtra2}
+  FExtra2  {declaration:TNew2_GenParamWrapperClassC.TGenClassC.TTypeC.FExtra2}
   := 1;
 
   a

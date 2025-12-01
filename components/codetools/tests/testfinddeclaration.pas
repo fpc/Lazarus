@@ -1084,7 +1084,7 @@ begin
   '    Size{declaration:Fly.Sub2.Size}:=4;',
   '  end;',
   'begin',
-  '  Size{declaration:Fly.Size}:=Size{ declaration:Fly.Size}+1;',
+  '  Size{declaration:Fly.Size}:=Size{declaration:Fly.Size}+1;',
   'end;',
   '',
   'begin',
