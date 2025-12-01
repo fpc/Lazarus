@@ -1462,7 +1462,7 @@ msgstr "වැරදි ටෝකන වර්ගය: %s බලාපොරො�
 
 #: lclstrconsts.sshellctrlsattributes
 msgid "Attributes"
-msgstr ""
+msgstr "ගුණාංග"
 
 #: lclstrconsts.sshellctrlsbytes
 #, object-pascal-format
@@ -1523,7 +1523,7 @@ msgstr "%s MB"
 
 #: lclstrconsts.sshellctrlsmodificationdate
 msgid "Date modified"
-msgstr ""
+msgstr "වෙනස් කළ දිනය"
 
 #: lclstrconsts.sshellctrlsname
 msgid "Name"
