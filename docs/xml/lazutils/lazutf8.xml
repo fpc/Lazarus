@@ -2265,15 +2265,23 @@ represent a line break inserted into the return value.
 </p>
 <p>
 Use <var>Indent</var> to specify the number of Space (#32) characters inserted 
-as indentation at the beginning of each word-wrapped line. The default value is 
-0 (zero) and omits indentation in the word-wrapped lines. A negative value in 
-Indent causes the argument to be set to 0.
+as indentation at the beginning of each word-wrapped line. The default value 
+is 0 (zero) and omits indentation in the word-wrapped lines. A negative value 
+in Indent causes the argument to be set to 0.
 </p>
 <p>
 The Indent argument affects the number of UTF-8 characters allowed in each 
-word-wrapped line. When set to a positive non-zero value, the maximum number of 
-characters allowed per line is <b>MaxCol - Indent</b>.
+word-wrapped line. When set to a positive non-zero value, the maximum number 
+of characters allowed per line is <b>MaxCol - Indent - Len(BreakStr)</b>. 
+BreakStr is not inserted if a given line exceeds MaxCol but <b>does not</b> 
+include one of the values in BreakChars. For example:
 </p>
+<code>
+// 90 character string not wrapped at column 80 when no break chars are found
+ShowMessage(UTF8WrapText(
+  '123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890',
+  LineEnding, [' ', ';'], 80, 8));
+</code>
 <p>
 No actions are performed in the function when S is an empty string (''), 
 MaxCol is set to 0 (zero), or BreakChars is an empty set ([]).
@@ -2296,7 +2304,7 @@ Modified in LazUtils 4.0 to include the overload with an indentation argument.
 <short>End-of-line sequence used in the routine.</short>
 </element>
 <element name="UTF8WrapText.BreakChars">
-<short>Set of characters where a line break cab be inserted.</short>
+<short>Set of characters where a line break can be inserted.</short>
 </element>
 <element name="UTF8WrapText.MaxCol">
 <short>Maximum line width in number of UTF-8 characters.</short>
