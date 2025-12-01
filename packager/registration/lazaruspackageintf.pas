@@ -26,7 +26,7 @@ interface
 
 uses
   {$IFDEF FPC_DOTTEDUNITS}
-  System.Classes;
+  System.Classes, System.SysUtils, System.FGL;
   {$ELSE}
   Classes, SysUtils, fgl;
   {$ENDIF}
