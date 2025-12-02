@@ -209,22 +209,22 @@ begin
           inc(FRecurseCnt);
         end;
       end
-      else
-      if (DerefVal.Kind =skPointer) and (svfString in DerefVal.FieldFlags) then begin
-        DerefRes := AnResData.SetDerefData;
-        if DerefRes <> nil then begin
-          DerefRes.CreateString(DerefVal.AsString);
-          AddTypeNameToResData(DerefVal, DerefRes, True);
-        end;
-      end
-      else
-      if (DerefVal.Kind =skPointer) and (svfWideString in DerefVal.FieldFlags) then begin
-        DerefRes := AnResData.SetDerefData;
-        if DerefRes <> nil then begin
-          DerefRes.CreateWideString(DerefVal.AsString);
-          AddTypeNameToResData(DerefVal, DerefRes, True);
-        end;
-      end
+      //else
+      //if (DerefVal.Kind =skPointer) and (svfString in DerefVal.FieldFlags) then begin
+      //  DerefRes := AnResData.SetDerefData;
+      //  if DerefRes <> nil then begin
+      //    DerefRes.CreateString(DerefVal.AsString);
+      //    AddTypeNameToResData(DerefVal, DerefRes);
+      //  end;
+      //end
+      //else
+      //if (DerefVal.Kind =skPointer) and (svfWideString in DerefVal.FieldFlags) then begin
+      //  DerefRes := AnResData.SetDerefData;
+      //  if DerefRes <> nil then begin
+      //    DerefRes.CreateWideString(DerefVal.AsString);
+      //    AddTypeNameToResData(DerefVal, DerefRes);
+      //  end;
+      //end
       else begin
         DerefRes := AnResData.SetDerefData;
         if DerefRes <> nil then
