@@ -5,6 +5,7 @@ object MessagesFrame: TMessagesFrame
   Width = 444
   ClientHeight = 106
   ClientWidth = 444
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 297
   DesignTop = 171

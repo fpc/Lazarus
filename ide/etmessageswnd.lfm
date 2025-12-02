@@ -7,9 +7,9 @@ object MessagesView: TMessagesView
   Caption = 'MessagesView'
   ClientHeight = 128
   ClientWidth = 639
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.1'
   inline MessagesFrame1: TMessagesFrame
     Height = 128
     Width = 639
@@ -17,9 +17,26 @@ object MessagesView: TMessagesView
     ClientHeight = 128
     ClientWidth = 639
     inherited SearchPanel: TPanel
-      Top = 101
+      Height = 32
+      Top = 96
       Width = 639
+      ClientHeight = 32
       ClientWidth = 639
+      inherited SearchEdit: TEdit
+        Height = 32
+        Top = 0
+      end
+      inherited SearchNextSpeedButton: TSpeedButton
+        Height = 32
+        Top = 0
+      end
+      inherited SearchPrevSpeedButton: TSpeedButton
+        Height = 32
+        Top = 0
+      end
+      inherited HideSearchSpeedButton: TSpeedButton
+        Height = 32
+      end
     end
   end
 end

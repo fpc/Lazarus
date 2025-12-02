@@ -154,7 +154,6 @@ type
     mcoAutoOpenFirstError, // when all views stopped, open first error
     mcoSrcEditPopupSelect, // when user right clicks on gutter mark,
                            // scroll and select message of the quickfixes
-    mcoWndStayOnTop,       // use fsStayOnTop
     mcoAlwaysDrawFocused   // draw selected item as focused, even if the window is not
     );
   TMsgCtrlOptions = set of TMsgCtrlOption;
@@ -397,7 +396,6 @@ type
     procedure SrcEditLinesChanged(Sender: TObject);
     procedure TranslateMenuItemClick(Sender: TObject);
     procedure RemoveFilterMsgTypeClick(Sender: TObject);
-    procedure WndStayOnTopMenuItemClick(Sender: TObject);
   private
     FImages: TLCLGlyphs;
     FMessagesCtrl: TMessagesCtrl;
@@ -431,8 +429,7 @@ type
     procedure ApplyMultiSrcChanges(Changes: TETMultiSrcChanges);
     procedure SourceEditorPopup(MarkLine: TSynEditMarkLine;
       const LogicalCaretXY: TPoint);
-    procedure SourceEditorHint(MarkLine: TSynEditMarkLine;
-      var HintStr: string);
+    procedure SourceEditorHint(MarkLine: TSynEditMarkLine; var HintStr: string);
 
     // message lines
     procedure SelectMsgLine(Msg: TMessageLine);
@@ -451,11 +448,20 @@ type
 const
   MessagesMenuRootName = 'Messages';
 var
+  // Generic menu items
   MsgFindMenuItem: TIDEMenuCommand;
+  MsgCopyMenuSection: TIDEMenuSection;
+    MsgCopyFilenameMenuItem: TIDEMenuCommand;
+    MsgCopyMsgMenuItem: TIDEMenuCommand;
+    MsgCopyShownMenuItem: TIDEMenuCommand;
+    MsgCopyAllMenuItem: TIDEMenuCommand;
+  MsgSaveToFileMenuSection: TIDEMenuSection;
+    MsgSaveAllToFileMenuItem: TIDEMenuCommand;
+    MsgSaveShownToFileMenuItem: TIDEMenuCommand;
+  MsgClearMenuItem: TIDEMenuCommand;
+  MsgMoreOptionsMenuItem: TIDEMenuCommand;
+  // FPC message specific menu items
   MsgQuickFixMenuSection: TIDEMenuSection;
-  MsgAboutSection: TIDEMenuSection;
-    MsgAboutToolMenuItem: TIDEMenuCommand;
-    MsgOpenToolOptionsMenuItem: TIDEMenuCommand;
   MsgFilterMsgOfTypeMenuItem: TIDEMenuCommand;
   MsgRemoveCompOptHideMenuSection: TIDEMenuSection;
   MsgRemoveMsgTypeFilterMenuSection: TIDEMenuSection;
@@ -472,26 +478,18 @@ var
   MsgFiltersMenuSection: TIDEMenuSection;
     MsgSelectFilterMenuSection: TIDEMenuSection;
     MsgAddFilterMenuItem: TIDEMenuCommand;
-  MsgCopyMenuSection: TIDEMenuSection;
-    MsgCopyFilenameMenuItem: TIDEMenuCommand;
-    MsgCopyMsgMenuItem: TIDEMenuCommand;
-    MsgCopyShownMenuItem: TIDEMenuCommand;
-    MsgCopyAllMenuItem: TIDEMenuCommand;
-  MsgSaveToFileMenuSection: TIDEMenuSection;
-    MsgSaveAllToFileMenuItem: TIDEMenuCommand;
-    MsgSaveShownToFileMenuItem: TIDEMenuCommand;
   MsgHelpMenuItem: TIDEMenuCommand;
   MsgEditHelpMenuItem: TIDEMenuCommand;
-  MsgClearMenuItem: TIDEMenuCommand;
   MsgOptionsMenuSection: TIDEMenuSection;
-    MsgWndStayOnTopMenuItem: TIDEMenuCommand;
     MsgFilenameStyleMenuSection: TIDEMenuSection;
       MsgFileStyleShortMenuItem: TIDEMenuCommand;
       MsgFileStyleRelativeMenuItem: TIDEMenuCommand;
       MsgFileStyleFullMenuItem: TIDEMenuCommand;
     MsgTranslateMenuItem: TIDEMenuCommand;
     MsgShowIDMenuItem: TIDEMenuCommand;
-    MsgMoreOptionsMenuItem: TIDEMenuCommand;
+  MsgAboutSection: TIDEMenuSection;
+    MsgAboutToolMenuItem: TIDEMenuCommand;
+    MsgOpenToolOptionsMenuItem: TIDEMenuCommand;
 
 procedure RegisterStandardMessagesViewMenuItems;
 
@@ -505,18 +503,36 @@ var
   Parent: TIDEMenuSection;
   Root: TIDEMenuSection;
 begin
-  MessagesMenuRoot := RegisterIDEMenuRoot(MessagesMenuRootName);
+  MessagesMenuRoot:=RegisterIDEMenuRoot(MessagesMenuRootName);
   Root:=MessagesMenuRoot;
-  MsgFindMenuItem := RegisterIDEMenuCommand(Root, 'Find', lisFind);
-  MsgQuickFixMenuSection := RegisterIDEMenuSection(Root, 'Quick Fix');
-  MsgAboutSection:=RegisterIDEMenuSection(Root,'About');
-    Parent:=MsgAboutSection;
+  // Generic menu items
+  MsgFindMenuItem:=RegisterIDEMenuCommand(Root, 'Find', lisFind);
+  MsgCopyMenuSection:=RegisterIDEMenuSection(Root, 'Copy');
+    Parent:=MsgCopyMenuSection;
     Parent.ChildrenAsSubMenu:=true;
-    Parent.Caption:=lisAbout;
-    MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', lisAbout);
-    MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool '
-      +'Options', lisOpenToolOptions);
-  MsgFilterMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'FilterMsgOfType',lisFilterAllMessagesOfCertainType);
+    Parent.Caption:=lisCopy;
+    MsgCopyFilenameMenuItem:=RegisterIDEMenuCommand(Parent, 'Filename',
+      lisCopyFileNamesToClipboard);
+    MsgCopyMsgMenuItem:=RegisterIDEMenuCommand(Parent, 'Selected',
+      lisCopySelectedMessagesToClipboard);
+    MsgCopyShownMenuItem:=RegisterIDEMenuCommand(Parent, 'Shown',
+      lisCopyAllShownMessagesToClipboard);
+    MsgCopyAllMenuItem:=RegisterIDEMenuCommand(Parent, 'All',
+      lisCopyAllOriginalMessagesToClipboard);
+  MsgSaveToFileMenuSection:=RegisterIDEMenuSection(Root, 'Save');
+    Parent:=MsgSaveToFileMenuSection;
+    Parent.ChildrenAsSubMenu:=true;
+    Parent.Caption:=lisSave;
+    MsgSaveShownToFileMenuItem:=RegisterIDEMenuCommand(Parent,
+      'Save Shown Messages to File', lisSaveShownMessagesToFile);
+    MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent,
+      'Save All Messages to File', lisSaveAllOriginalMessagesToFile);
+  MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', lisClear);
+  MsgMoreOptionsMenuItem:=RegisterIDEMenuCommand(Root, 'Options',lisMenuGeneralOptions);
+  // FPC message specific menu items
+  MsgQuickFixMenuSection:=RegisterIDEMenuSection(Root, 'Quick Fix');
+  MsgFilterMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'FilterMsgOfType',
+    lisFilterAllMessagesOfCertainType);
   MsgRemoveCompOptHideMenuSection:=RegisterIDEMenuSection(Root,'RemoveCompOptHideMsg');
     Parent:=MsgRemoveCompOptHideMenuSection;
     Parent.ChildrenAsSubMenu:=true;
@@ -565,33 +581,12 @@ begin
     MsgSelectFilterMenuSection:=RegisterIDEMenuSection(Parent,'Filters');
     MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent, 'Add Filter',
       lisAddFilter);
-  MsgCopyMenuSection:=RegisterIDEMenuSection(Root,'Copy');
-    Parent:=MsgCopyMenuSection;
-    Parent.ChildrenAsSubMenu:=true;
-    Parent.Caption:=lisCopy;
-    MsgCopyFilenameMenuItem:=RegisterIDEMenuCommand(Parent, 'Filename',
-      lisCopyFileNamesToClipboard);
-    MsgCopyMsgMenuItem := RegisterIDEMenuCommand(Parent, 'Selected',lisCopySelectedMessagesToClipboard);
-    MsgCopyShownMenuItem := RegisterIDEMenuCommand(Parent, 'Shown', lisCopyAllShownMessagesToClipboard);
-    MsgCopyAllMenuItem:=RegisterIDEMenuCommand(Parent, 'All',
-      lisCopyAllOriginalMessagesToClipboard);
-  MsgSaveToFileMenuSection:=RegisterIDEMenuSection(Root,'Save');
-    Parent:=MsgSaveToFileMenuSection;
-    Parent.ChildrenAsSubMenu:=true;
-    Parent.Caption:=lisSave;
-    MsgSaveShownToFileMenuItem:=RegisterIDEMenuCommand(Parent, 'Save Shown '
-      +'Messages to File', lisSaveShownMessagesToFile);
-    MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent, 'Save All '
-      +'Messages to File', lisSaveAllOriginalMessagesToFile);
   MsgHelpMenuItem := RegisterIDEMenuCommand(Root, 'Help for this message',lisHelp);
   MsgEditHelpMenuItem := RegisterIDEMenuCommand(Root, 'Edit help for messages',lisEditHelp);
-  MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', lisClear);
   MsgOptionsMenuSection:=RegisterIDEMenuSection(Root,'Option Section');
     Parent:=MsgOptionsMenuSection;
     Parent.ChildrenAsSubMenu:=true;
-    Parent.Caption:=lisOptions;
-    MsgWndStayOnTopMenuItem:=RegisterIDEMenuCommand(Parent,
-      'Window stay on top', lisWindowStaysOnTop);
+    Parent.Caption:=lisFpcMessageOptions;
     MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Parent,'Filename Styles');
       Parent:=MsgFilenameStyleMenuSection;
       Parent.ChildrenAsSubMenu:=true;
@@ -606,8 +601,13 @@ begin
       lisTranslateTheEnglishMessages);
     MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent, 'ShowID',
       lisShowMessageTypeID);
-    MsgMoreOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'More Options',
-      lisDlgMore);
+  MsgAboutSection:=RegisterIDEMenuSection(Root,'About');
+    Parent:=MsgAboutSection;
+    Parent.ChildrenAsSubMenu:=true;
+    Parent.Caption:=lisAbout;
+    MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', lisAbout);
+    MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool Options',
+      lisOpenToolOptions);
 end;
 
 {$R *.lfm}
@@ -3542,11 +3542,9 @@ begin
   MsgHelpMenuItem         .MenuItem.ShortCut := ShortCut(VK_F1, []);
 
   // Options
-  MsgWndStayOnTopMenuItem     .Checked := mcoWndStayOnTop in FMessagesCtrl.Options;
   MsgFileStyleShortMenuItem   .Checked := FMessagesCtrl.FilenameStyle = mwfsShort;
   MsgFileStyleRelativeMenuItem.Checked := FMessagesCtrl.FilenameStyle = mwfsRelative;
   MsgFileStyleFullMenuItem    .Checked := FMessagesCtrl.FilenameStyle = mwfsFull;
-  MsgWndStayOnTopMenuItem     .OnClick := @WndStayOnTopMenuItemClick;
   MsgFileStyleShortMenuItem   .OnClick := @FileStyleMenuItemClick;
   MsgFileStyleRelativeMenuItem.OnClick := @FileStyleMenuItemClick;
   MsgFileStyleFullMenuItem    .OnClick := @FileStyleMenuItemClick;
@@ -3690,11 +3688,6 @@ end;
 procedure TMessagesFrame.TranslateMenuItemClick(Sender: TObject);
 begin
   EnvironmentGuiOpts.MsgViewShowTranslations:=FMessagesCtrl.OptionToggle(mcoShowTranslated);
-end;
-
-procedure TMessagesFrame.WndStayOnTopMenuItemClick(Sender: TObject);
-begin
-  EnvironmentGuiOpts.MsgViewStayOnTop:=FMessagesCtrl.OptionToggle(mcoWndStayOnTop);
 end;
 
 function TMessagesFrame.GetAboutView: TLMsgWndView;
@@ -3893,11 +3886,12 @@ var
   NewFilter: TLMsgViewFilter;
   Filters: TLMsgViewFilters;
 begin
-  aCaption:=lisFilter;
-  i:=1;
+  i:=0;
   Filters:=FMessagesCtrl.Filters;
-  while Filters.GetFilter(aCaption+IntToStr(i),false)<>nil do
+  repeat
     inc(i);
+    aCaption:=lisFilter+IntToStr(i);
+  until Filters.GetFilter(aCaption,false)=nil;
   if not InputQuery(lisCreateFilter, lisCodeToolsDefsName, aCaption) then exit;
   aCaption:=UTF8Trim(aCaption,[]);
   if aCaption='' then exit;

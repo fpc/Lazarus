@@ -55,6 +55,7 @@ type
     MWFocusCheckBox: TCheckBox;
     MWSetPastelColorsButton: TBitBtn;
     MWShowFPCMsgLinesCompiledCheckBox: TCheckBox;
+    MWStayOnTopCheckBox: TCheckBox;
     MWShowIconsCheckBox: TCheckBox;
     MWMaxProcsLabel: TLabel;
     MWMaxProcsSpinEdit: TSpinEdit;
@@ -234,6 +235,7 @@ begin
   MWSetPastelColorsButton.Caption:=lisPastelColors;
   IDEImages.AssignImage(MWSetPastelColorsButton, 'pastel_colors');
   MWSetEditorColorsButton.Caption:=lisEditorColors;
+  MWStayOnTopCheckBox.Caption:=lisWindowStaysOnTop;
   MWShowIconsCheckBox.Caption:=dlgShowMessagesIcons;
   MWShowIconsCheckBox.Hint:=dlgAnIconForErrorWarningHintIsShown;
   MWAlwaysDrawFocusedCheckBox.Caption:=lisAlwaysDrawSelectedItemsFocused;
@@ -274,6 +276,7 @@ begin
       MWColorListBox.Colors[ord(c)] := MsgViewColors[c];
     for u in TMessageLineUrgency do
       MsgColorListBox.Colors[ord(u)] := MsgColors[u];
+    MWStayOnTopCheckBox.Checked := MsgViewStayOnTop;
     MWShowIconsCheckBox.Checked := ShowMessagesIcons;
     MWAlwaysDrawFocusedCheckBox.Checked := MsgViewAlwaysDrawFocused;
     MWFocusCheckBox.Checked := MsgViewFocus;
@@ -298,6 +301,7 @@ begin
       MsgViewColors[c] := MWColorListBox.Colors[ord(c)];
     for u in TMessageLineUrgency do
       MsgColors[u] := MsgColorListBox.Colors[ord(u)];
+    MsgViewStayOnTop := MWStayOnTopCheckBox.Checked;
     ShowMessagesIcons := MWShowIconsCheckBox.Checked;
     MsgViewAlwaysDrawFocused := MWAlwaysDrawFocusedCheckBox.Checked;
     MsgViewFocus := MWFocusCheckBox.Checked;

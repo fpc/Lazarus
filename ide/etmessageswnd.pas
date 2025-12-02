@@ -40,7 +40,7 @@ uses
   // SynEdit
   SynEditMarks,
   // IDE
-  IDEOptionDefs, etMessageFrame, etQuickFixes, LazarusIDEStrConsts;
+  EnvGuiOptions, IDEOptionDefs, etMessageFrame, etQuickFixes, LazarusIDEStrConsts;
 
 type
 
@@ -50,7 +50,6 @@ type
     MessagesFrame1: TMessagesFrame;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure MsgCtrlOptsChanged(Sender: TObject);
     function OpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
   private
     function GetDblClickJumps: boolean;
@@ -114,22 +113,12 @@ begin
   end;
   {$ENDIF}
   MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OpenMessage;
-  MessagesFrame1.MessagesCtrl.OnOptionsChanged:=@MsgCtrlOptsChanged;
-
   ActiveControl:=MessagesFrame1.MessagesCtrl;
 end;
 
 procedure TMessagesView.FormDestroy(Sender: TObject);
 begin
   IDEMessagesWindow:=nil;
-end;
-
-procedure TMessagesView.MsgCtrlOptsChanged(Sender: TObject);
-begin
-  if mcoWndStayOnTop in MessagesFrame1.MessagesCtrl.Options then
-    FormStyle:=fsStayOnTop
-  else
-    FormStyle:=fsNormal;
 end;
 
 function TMessagesView.OpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
@@ -280,7 +269,10 @@ end;
 procedure TMessagesView.ApplyIDEOptions;
 begin
   MessagesFrame1.ApplyIDEOptions;
-  MsgCtrlOptsChanged(Self);
+  if EnvironmentGuiOpts.MsgViewStayOnTop then
+    FormStyle:=fsStayOnTop
+  else
+    FormStyle:=fsNormal;
 end;
 
 function TMessagesView.GetDblClickJumps: boolean;
