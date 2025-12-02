@@ -254,7 +254,7 @@ type
     function TestTrue(Name: string; Got: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
     function TestFalse(Name: string; Got: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
 
-    function CheckResult(AnWatchExp: TWatchExpectation): Boolean;
+    function CheckResult(AnWatchExp: TWatchExpectation; const ANestedResult: array of string): Boolean;
     function CheckData(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String; AnIsNested: Boolean = True; ASkipErrCheck: Boolean = False): Boolean; virtual;
     function VerifyDebuggerState: Boolean; virtual;
     function VerifySymType(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
@@ -311,7 +311,8 @@ type
     procedure Clear;
     function Count: Integer;
     procedure EvaluateWatches;
-    procedure CheckResults;
+    procedure CheckResults();
+    procedure CheckResults(const ANestedResult: array of string);
     procedure EvalAndCheck;
 
     procedure AddTypeNameAlias(ATypeName, AnAliases: String);
@@ -1439,11 +1440,11 @@ begin
   Result := FTest.TestFalse(Name, Got, AContext.WatchExp.TstMinDbg, AContext.WatchExp.TstMinFpc, AIgnoreReason);
 end;
 
-function TWatchExpectationList.CheckResult(AnWatchExp: TWatchExpectation
-  ): Boolean;
+function TWatchExpectationList.CheckResult(AnWatchExp: TWatchExpectation;
+  const ANestedResult: array of string): Boolean;
 var
-  Thread, Stack: Integer;
-  CurBaseName, AnIgnoreRsn: String;
+  Thread, Stack, i,j,k,l: Integer;
+  CurBaseName, AnIgnoreRsn, s: String;
   WatchVal: TWatchValue;
   Context: TWatchExpTestCurrentData;
   ehf: TWatchExpErrorHandlingFlags;
@@ -1478,6 +1479,41 @@ begin
       Stack  := TstStackFrame;
       WatchVal := TstWatch.Values[Thread, Stack];
       Context.WatchRes := WatchVal.ResultData;
+
+      for i := 0 to length(ANestedResult) - 1 do begin
+        s := ANestedResult[i];
+        case s[1] of
+          '[': begin // array entry
+              Context.IsNested := True;
+              if not TestTrue('value is array', Context.WatchRes.ValueKind = rdkArray, Context, '') then
+                exit;
+              j := pos('/', s);
+              k := -1;
+              if j > 1 then begin
+                k := StrToInt(copy(s,j+1,Length(s)));
+                TestEquals('Array length', k, Context.WatchRes.Count, Context, '');
+              end
+              else
+                j := Length(s)+1;
+
+              l := StrToInt(copy(s,2,j-2));
+              if not TestTrue('Array length > idx ', Context.WatchRes.Count > l, Context, '') then
+                exit;
+
+              Context.WatchRes.SetSelectedIndex(l);
+              Context.WatchRes := Context.WatchRes.SelectedEntry;
+            end;
+            '^' : begin
+              if not TestTrue('value is pointer', Context.WatchRes.ValueKind = rdkPointerVal, Context, '') then
+                exit;
+              Context.WatchRes := Context.WatchRes.DerefData;
+            end;
+          otherwise begin
+            TestTrue('nested value not supported', False, Context, '');
+            exit;
+          end;
+        end;
+      end;
 
       //debugln([' ## ## ',  WatchVal.Expression]);
       //debugln([FWatchResultPrinter.PrintWatchValue(WatchVal.ResultData,TestWatchDisplayFormat)]); debugln;
@@ -1571,7 +1607,8 @@ var
   ehf: TWatchExpErrorHandlingFlags;
 begin
   ehf := AContext.Expectation.ExpErrorHandlingFlags[Compiler.SymbolType];
-  AContext.IsNested := AnIsNested;
+  if AnIsNested then
+    AContext.IsNested := True;
 
   if (AContext.WatchRes.ValueKind = rdkVariant) and (AContext.WatchRes.DerefData <> nil) then
     AContext.WatchRes := AContext.WatchRes.DerefData;
@@ -2229,14 +2266,19 @@ debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
       FTest.TestBaseName := n + ' Idx='+IntToStr(i)+' ';
       AContext.WatchRes.SetSelectedIndex(i);
 
-      if PrePrint then
-        SubContext.WatchRes := TWatchResultDataPrePrinted.Create(parsed[i])
-      else
+      if PrePrint then begin
+        SubContext.WatchRes := TWatchResultDataPrePrinted.Create(parsed[i]);
+      end
+      else begin
         SubContext.WatchRes := AContext.WatchRes.SelectedEntry;
+        if not AContext.IsNested then
+          TestTrue('has array entry data', SubContext.WatchRes <> nil, AContext, AnIgnoreRsn);
+      end;
       SubContext.Expectation := Expect.ExpSubResults[i];
 
       // if "not preprint" do treat this as non-nested
-      Result := CheckData(SubContext, AnIgnoreRsn, PrePrint);
+      if SubContext.WatchRes <> nil then
+        Result := CheckData(SubContext, AnIgnoreRsn, PrePrint);
 
       if PrePrint then
         FreeAndNil(SubContext.WatchRes);
@@ -2573,12 +2615,17 @@ begin
   TestLogger.DebugLn('');
 end;
 
-procedure TWatchExpectationList.CheckResults;
+procedure TWatchExpectationList.CheckResults();
+begin
+  CheckResults([]);
+end;
+
+procedure TWatchExpectationList.CheckResults(const ANestedResult: array of string);
 var
   i: Integer;
 begin
   for i := 0 to Length(FList)-1 do
-    CheckResult(FList[i]);
+    CheckResult(FList[i], ANestedResult);
 end;
 
 procedure TWatchExpectationList.EvalAndCheck;
