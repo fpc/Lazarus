@@ -5158,7 +5158,7 @@ msgstr "%s ບໍ່ສາມາດບັນຈຸ TControls ໄດ້.%sທ່�
 
 #: lazarusidestrconsts.lisacknowledgements
 msgid "Acknowledgements"
-msgstr "ກິດຕິກຳປະກາດ"
+msgstr "ຜູ້ສະໜັບສະໜຸນ"
 
 #: lazarusidestrconsts.lisaction
 msgid "Action:"
