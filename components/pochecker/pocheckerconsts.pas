@@ -136,6 +136,7 @@ type
     lang_it,     {Italian}
     lang_ja,     {Japanese}
     lang_ko,     {Korean}
+    lang_lo,     {Lao}
     lang_lt,     {Lithuanian}
     lang_nl,     {Dutch}
     lang_pl,     {Polish}
@@ -167,6 +168,7 @@ resourcestring
   rs_lang_it =     'Italian';
   rs_lang_ja =     'Japanese';
   rs_lang_ko =     'Korean';
+  rs_lang_lo =     'Lao';
   rs_lang_lt =     'Lithuanian';
   rs_lang_nl =     'Dutch';
   rs_lang_pl =     'Polish';
@@ -198,6 +200,7 @@ const
     rs_lang_it ,
     rs_lang_ja ,
     rs_lang_ko ,
+    rs_lang_lo ,
     rs_lang_lt ,
     rs_lang_nl ,
     rs_lang_pl ,
@@ -229,6 +232,7 @@ const
      'it',     {Italian}
      'ja',     {Japanese}
      'ko',     {Korean}
+     'lo',     {Lao}
      'lt',     {Lithuanian}
      'nl',     {Dutch}
      'pl',     {Polish}
@@ -278,6 +282,7 @@ begin
   LanguageNames[lang_it]:=rs_lang_it;
   LanguageNames[lang_ja]:=rs_lang_ja;
   LanguageNames[lang_ko]:=rs_lang_ko;
+  LanguageNames[lang_lo]:=rs_lang_lo;
   LanguageNames[lang_lt]:=rs_lang_lt;
   LanguageNames[lang_nl]:=rs_lang_nl;
   LanguageNames[lang_pl]:=rs_lang_pl;
