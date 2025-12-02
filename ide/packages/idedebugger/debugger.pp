@@ -3801,7 +3801,7 @@ end;
 procedure TCurrentResData.CreateFloatValue(AFloatValue: Single);
 begin
   BeforeCreateValue;
-  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataSingle), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataSingle), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData is TWatchResultDataSingle)');
   if FNewResultData = nil then
     FNewResultData := TWatchResultDataSingle.Create(AFloatValue)
   else
@@ -3812,7 +3812,7 @@ end;
 procedure TCurrentResData.CreateFloatValue(AFloatValue: Double);
 begin
   BeforeCreateValue;
-  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataDouble), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataDouble), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData is TWatchResultDataDouble');
   if FNewResultData = nil then
     FNewResultData := TWatchResultDataDouble.Create(AFloatValue)
   else
@@ -3823,7 +3823,7 @@ end;
 procedure TCurrentResData.CreateFloatValue(AFloatValue: TDbgExtended);
 begin
   BeforeCreateValue;
-  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataExtended), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataExtended), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData is TWatchResultDataExtended)');
   if FNewResultData = nil then
     FNewResultData := TWatchResultDataExtended.Create(AFloatValue)
   else
@@ -3835,7 +3835,7 @@ procedure TCurrentResData.CreateFloatValue(AFloatValue: Extended;
   APrecission: TLzDbgFloatPrecission);
 begin
   BeforeCreateValue;
-  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataFloat), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkString)');
+  assert((FNewResultData=nil) or (FNewResultData is TWatchResultDataFloat), 'TCurrentResData.CreateFloatValue: (FNewResultData=nil) or (FNewResultData is TWatchResultDataFloat)');
   if FNewResultData = nil then
     FNewResultData := TWatchResultDataFloat.Create(AFloatValue, APrecission)
   else
