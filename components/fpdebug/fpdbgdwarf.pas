@@ -2718,8 +2718,7 @@ begin
 
   t := TypeInfo;
   if (t <> nil) then t := t.TypeInfo;
-  if (t <> nil) and (t.Kind = skChar) and
-     (IsNilLoc(OrdOrDataAddr) or IsValidLoc(GetDerefAddress))
+  if (t <> nil) and (t.Kind = skChar)
   then begin // pchar
     if not t.ReadSize(nil, Size) then
       Size := ZeroSize;
