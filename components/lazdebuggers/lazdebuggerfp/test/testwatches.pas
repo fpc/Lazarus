@@ -661,6 +661,13 @@ procedure TTestWatches.TestWatchesValue;
     TTestPart = (tp1, tp2, tp3);
     TTestParts = set of TTestPart;
 
+  function GetFullName(AName, APreFix, APostFix: string): string;
+  begin
+    APreFix := StringReplace(APreFix, '%%', AName, [rfReplaceAll]);
+    APostFix := StringReplace(APostFix, '%%', AName, [rfReplaceAll]);
+    Result := APreFix + AName + APostFix;
+  end;
+
   procedure AddWatches(t: TWatchExpectationList; AName: String; APrefix: String; AOffs: Integer; AChr1: Char;
     ALoc: TTestLoc = tlAny; APostFix: String = ''; AIgnFlags: TTestIgn = []; TpPreFix: String = ''; APartToRun: TTestParts = [tp1, tp2, tp3]);
   var
@@ -707,172 +714,172 @@ procedure TTestWatches.TestWatchesValue;
        ****************************** *)
     if tp1 in APartToRun then begin
 
-    t.Add(AName, p+'Byte'+e,       weCardinal(1+n,                    x+'Byte',     1));
-    t.Add(AName, p+'Word'+e,       weCardinal(100+n,                  x+'Word',     2));
-    t.Add(AName, p+'Longword'+e,   weCardinal(1000+n,                 x+'Longword', 4));
-    t.Add(AName, p+'QWord'+e,      weCardinal(10000+n,                x+'QWord',    8));
-    t.Add(AName, p+'Shortint'+e,   weInteger (50+n,                   x+'Shortint', 1));
-    t.Add(AName, p+'Smallint'+e,   weInteger (500+n,                  x+'Smallint', 2));
-    t.Add(AName, p+'Longint'+e,    weInteger (5000+n,                 x+'Longint',  4));
-    t.Add(AName, p+'Int64'+e,      weInteger (50000+n,                x+'Int64',    8));
-    t.Add(AName, p+'IntRange'+e,   weInteger (-50+n,                  x+'IntRange',0));
-    t.Add(AName, p+'CardinalRange'+e, weCardinal(50+n,                x+'CardinalRange',0));
+    t.Add(AName, GetFullName('Byte', p, e),       weCardinal(1+n,                    x+'Byte',     1));
+    t.Add(AName, GetFullName('Word', p, e),       weCardinal(100+n,                  x+'Word',     2));
+    t.Add(AName, GetFullName('Longword', p, e),   weCardinal(1000+n,                 x+'Longword', 4));
+    t.Add(AName, GetFullName('QWord', p, e),      weCardinal(10000+n,                x+'QWord',    8));
+    t.Add(AName, GetFullName('Shortint', p, e),   weInteger (50+n,                   x+'Shortint', 1));
+    t.Add(AName, GetFullName('Smallint', p, e),   weInteger (500+n,                  x+'Smallint', 2));
+    t.Add(AName, GetFullName('Longint', p, e),    weInteger (5000+n,                 x+'Longint',  4));
+    t.Add(AName, GetFullName('Int64', p, e),      weInteger (50000+n,                x+'Int64',    8));
+    t.Add(AName, GetFullName('IntRange', p, e),   weInteger (-50+n,                  x+'IntRange',0));
+    t.Add(AName, GetFullName('CardinalRange', p, e), weCardinal(50+n,                x+'CardinalRange',0));
 
     BeginTxTypeIgnore;
       if not (tlReduced in AIgnFlags) then begin
-        t.Add(AName, p+'Byte_2'+e,     weCardinal(240+n,                  x+'Byte',     1));
-        t.Add(AName, p+'Word_2'+e,     weCardinal(65501+n,                x+'Word',     2));
-        t.Add(AName, p+'Longword_2'+e, weCardinal(4123456789+n,           x+'Longword', 4));
-        t.Add(AName, p+'QWord_2'+e,    weCardinal(15446744073709551610+n, x+'QWord',    8));
-        t.Add(AName, p+'Shortint_2'+e, weInteger (112+n,                  x+'Shortint', 1));
-        t.Add(AName, p+'Smallint_2'+e, weInteger (32012+n,                x+'Smallint', 2));
-        t.Add(AName, p+'Longint_2'+e,  weInteger (20123456+n,             x+'Longint',  4));
-        t.Add(AName, p+'Int64_2'+e,    weInteger (9123372036854775801+n,  x+'Int64',    8));
+        t.Add(AName, GetFullName('Byte_2', p, e),     weCardinal(240+n,                  x+'Byte',     1));
+        t.Add(AName, GetFullName('Word_2', p, e),     weCardinal(65501+n,                x+'Word',     2));
+        t.Add(AName, GetFullName('Longword_2', p, e), weCardinal(4123456789+n,           x+'Longword', 4));
+        t.Add(AName, GetFullName('QWord_2', p, e),    weCardinal(15446744073709551610+n, x+'QWord',    8));
+        t.Add(AName, GetFullName('Shortint_2', p, e), weInteger (112+n,                  x+'Shortint', 1));
+        t.Add(AName, GetFullName('Smallint_2', p, e), weInteger (32012+n,                x+'Smallint', 2));
+        t.Add(AName, GetFullName('Longint_2', p, e),  weInteger (20123456+n,             x+'Longint',  4));
+        t.Add(AName, GetFullName('Int64_2', p, e),    weInteger (9123372036854775801+n,  x+'Int64',    8));
 
-        t.Add(AName, p+'Shortint_3'+e, weInteger(-112+n,                 x+'Shortint', 1));
-        t.Add(AName, p+'Smallint_3'+e, weInteger(-32012+n,               x+'Smallint', 2));
-        t.Add(AName, p+'Longint_3'+e,  weInteger(-20123456+n,            x+'Longint',  4));
-        t.Add(AName, p+'Int64_3'+e,    weInteger(-9123372036854775801+n, x+'Int64',    8));
+        t.Add(AName, GetFullName('Shortint_3', p, e), weInteger(-112+n,                 x+'Shortint', 1));
+        t.Add(AName, GetFullName('Smallint_3', p, e), weInteger(-32012+n,               x+'Smallint', 2));
+        t.Add(AName, GetFullName('Longint_3', p, e),  weInteger(-20123456+n,            x+'Longint',  4));
+        t.Add(AName, GetFullName('Int64_3', p, e),    weInteger(-9123372036854775801+n, x+'Int64',    8));
 
-        t.Add(AName, p+'Bool1'+e,      weBool(False,  x+'Boolean'));
-        t.Add(AName, p+'Bool2'+e,      weBool(True,   x+'Boolean'));
-        t.Add(AName, p+'WBool1'+e,      weBool(False, x+'Boolean16'));
-        t.Add(AName, p+'WBool2'+e,      weBool(True , x+'Boolean16'));
-        t.Add(AName, p+'LBool1'+e,      weBool(False, x+'Boolean32'));
-        t.Add(AName, p+'LBool2'+e,      weBool(True , x+'Boolean32'));
-        t.Add(AName, p+'QBool1'+e,      weBool(False, x+'Boolean64'));
-        t.Add(AName, p+'QBool2'+e,      weBool(True , x+'Boolean64'));
+        t.Add(AName, GetFullName('Bool1', p, e),      weBool(False,  x+'Boolean'));
+        t.Add(AName, GetFullName('Bool2', p, e),      weBool(True,   x+'Boolean'));
+        t.Add(AName, GetFullName('WBool1', p, e),      weBool(False, x+'Boolean16'));
+        t.Add(AName, GetFullName('WBool2', p, e),      weBool(True , x+'Boolean16'));
+        t.Add(AName, GetFullName('LBool1', p, e),      weBool(False, x+'Boolean32'));
+        t.Add(AName, GetFullName('LBool2', p, e),      weBool(True , x+'Boolean32'));
+        t.Add(AName, GetFullName('QBool1', p, e),      weBool(False, x+'Boolean64'));
+        t.Add(AName, GetFullName('QBool2', p, e),      weBool(True , x+'Boolean64'));
       end;
 
-      t.Add(AName, p+'ByteBool1'+e,  weSizedBool(False, x+'ByteBool'));
-      t.Add(AName, p+'ByteBool2'+e,  weSizedBool(True , x+'ByteBool'));
-      t.Add(AName, p+'WordBool1'+e,  weSizedBool(False, x+'WordBool'));
-      t.Add(AName, p+'WordBool2'+e,  weSizedBool(True , x+'WordBool'));
-      t.Add(AName, p+'LongBool1'+e,  weSizedBool(False, x+'LongBool'));
-      t.Add(AName, p+'LongBool2'+e,  weSizedBool(True , x+'LongBool'));
-      t.Add(AName, p+'QWordBool1'+e, weSizedBool(False, x+'QWordBool'));
-      t.Add(AName, p+'QWordBool2'+e, weSizedBool(True , x+'QWordBool'));
+      t.Add(AName, GetFullName('ByteBool1', p, e),  weSizedBool(False, x+'ByteBool'));
+      t.Add(AName, GetFullName('ByteBool2', p, e),  weSizedBool(True , x+'ByteBool'));
+      t.Add(AName, GetFullName('WordBool1', p, e),  weSizedBool(False, x+'WordBool'));
+      t.Add(AName, GetFullName('WordBool2', p, e),  weSizedBool(True , x+'WordBool'));
+      t.Add(AName, GetFullName('LongBool1', p, e),  weSizedBool(False, x+'LongBool'));
+      t.Add(AName, GetFullName('LongBool2', p, e),  weSizedBool(True , x+'LongBool'));
+      t.Add(AName, GetFullName('QWordBool1', p, e), weSizedBool(False, x+'QWordBool'));
+      t.Add(AName, GetFullName('QWordBool2', p, e), weSizedBool(True , x+'QWordBool'));
     EndTxTypeIgnore;
 
-    t.Add(AName, p+'Real'+e,       weFloat(50.25+n,                 x+'Real'       ));
-    t.Add(AName, p+'Single'+e,     weSingle(100.125+n,              x+'Single'     ));
-    t.Add(AName, p+'Double'+e,     weDouble(1000.125+n,             x+'Double'     ));
-    t.Add(AName, p+'Extended'+e,   weFloat(10000.175+n,             ''   )) // Double ?
+    t.Add(AName, GetFullName('Real', p, e),       weFloat(50.25+n,                 x+'Real'       ));
+    t.Add(AName, GetFullName('Single', p, e),     weSingle(100.125+n,              x+'Single'     ));
+    t.Add(AName, GetFullName('Double', p, e),     weDouble(1000.125+n,             x+'Double'     ));
+    t.Add(AName, GetFullName('Extended', p, e),   weFloat(10000.175+n,             ''   )) // Double ?
     .IgnAll([], Compiler.Version <= 030202);
 //    {$IFDEF cpu64}
 //    if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
 //      t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
 //    {$ENDIF}
-    //t.Add(p+'Comp'+e,       weInteger(150.125+n,              'Comp'       ));
+    //t.Add(GetFullName('Comp', p, e),       weInteger(150.125+n,              'Comp'       ));
 //TODO: currency // integer is wrong, but lets check it
-    t.Add(AName,         p+'Currency'+e,   weInteger(1251230+n*10000,  x+'Currency', SIZE_8 ))
+    t.Add(AName,         GetFullName('Currency', p, e),   weInteger(1251230+n*10000,  x+'Currency', SIZE_8 ))
       .SkipIf(ALoc = tlPointerAny);
-    t.Add(AName+'-TODO', p+'Currency'+e,   weFloat(125.123+n,        x+'Currency'))^.AddFlag([ehNotImplementedData])
+    t.Add(AName+'-TODO', GetFullName('Currency', p, e),   weFloat(125.123+n,        x+'Currency'))^.AddFlag([ehNotImplementedData])
       .SkipIf(ALoc = tlPointerAny);
 
     BeginTxTypeIgnore;
-      t.Add(AName, p+'Real_2'+e,     weFloat(-50.25+n,                x+'Real'       ));
-      t.Add(AName, p+'Single_2'+e,   weSingle(-100.125+n,             x+'Single'     ));
-      t.Add(AName, p+'Double_2'+e,   weDouble(-1000.125+n,            x+'Double'     ));
-      t.Add(AName, p+'Extended_2'+e, weFloat(-10000.175+n,            ''   )) // Double ?
+      t.Add(AName, GetFullName('Real_2', p, e),     weFloat(-50.25+n,                x+'Real'       ));
+      t.Add(AName, GetFullName('Single_2', p, e),   weSingle(-100.125+n,             x+'Single'     ));
+      t.Add(AName, GetFullName('Double_2', p, e),   weDouble(-1000.125+n,            x+'Double'     ));
+      t.Add(AName, GetFullName('Extended_2', p, e), weFloat(-10000.175+n,            ''   )) // Double ?
     .IgnAll([], Compiler.Version <= 030202);
 //      {$IFDEF cpu64}
 //      if Compiler.CpuBitType = cpu32 then // a 64bit debugger does has no 10byte extended type // TODO: check for error
 //        t.Tests[-1]^.AddFlag(ehExpectError); // TODO: check error msg
 //      {$ENDIF}
-      //t.Add(p+'Comp_2'+e,     weFloat(-150.125+n,             'Comp'       ));
-      t.Add(AName+'-TODO', p+'Currency_2'+e, weFloat(-125.123+n,              x+'Currency'   ))^.AddFlag([ehNotImplementedData])
+      //t.Add(GetFullName('Comp_2', p, e),     weFloat(-150.125+n,             'Comp'       ));
+      t.Add(AName+'-TODO', GetFullName('Currency_2', p, e), weFloat(-125.123+n,              x+'Currency'   ))^.AddFlag([ehNotImplementedData])
         .SkipIf(ALoc = tlPointerAny);
 
-      t.Add(AName, p+'Ptr1'+e, wePointerAddr(nil,                 x+'Pointer'));
-      t.Add(AName, p+'Ptr2'+e, wePointerAddr(Pointer(1000+n),     x+'Pointer'));
+      t.Add(AName, GetFullName('Ptr1', p, e), wePointerAddr(nil,                 x+'Pointer'));
+      t.Add(AName, GetFullName('Ptr2', p, e), wePointerAddr(Pointer(1000+n),     x+'Pointer'));
 
-      t.Add(AName, p+'Char'+e,       weChar(AChr1, x+'Char'));
-      t.Add(AName, p+'Char2'+e,      weChar(#0   , x+'Char'));
-      t.Add(AName, p+'Char3'+e,      weChar(' '  , x+'Char'));
+      t.Add(AName, GetFullName('Char', p, e),       weChar(AChr1, x+'Char'));
+      t.Add(AName, GetFullName('Char2', p, e),      weChar(#0   , x+'Char'));
+      t.Add(AName, GetFullName('Char3', p, e),      weChar(' '  , x+'Char'));
 
 // tlConst => strings are stored as shortstring
-      t.Add(AName, p+'String1'+e,    weShortStr(AChr1, x+'ShortStr1'))                      .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
-      t.Add(AName, p+'String1e'+e,   weShortStr('',    x+'ShortStr1'))                      .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
-      t.Add(AName, p+'String10'+e,   weShortStr(AChr1+'bc1',               x+'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
-      t.Add(AName, p+'String10e'+e,  weShortStr('',                        x+'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
-      t.Add(AName, p+'String10x'+e,  weShortStr(AChr1+'S'#0'B'#9'b'#10#13, x+'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
-      t.Add(AName, p+'String255'+e,  weShortStr(AChr1+'bcd0123456789', x+'ShortStr255'))                                      .NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+      t.Add(AName, GetFullName('String1', p, e),    weShortStr(AChr1, x+'ShortStr1'))                      .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+      t.Add(AName, GetFullName('String1e', p, e),   weShortStr('',    x+'ShortStr1'))                      .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+      t.Add(AName, GetFullName('String10', p, e),   weShortStr(AChr1+'bc1',               x+'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+      t.Add(AName, GetFullName('String10e', p, e),  weShortStr('',                        x+'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+      t.Add(AName, GetFullName('String10x', p, e),  weShortStr(AChr1+'S'#0'B'#9'b'#10#13, x+'ShortStr10')) .IgnTypeName([], ALoc in [tlConst, tlClassConst]).NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+      t.Add(AName, GetFullName('String255', p, e),  weShortStr(AChr1+'bcd0123456789', x+'ShortStr255'))                                      .NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
     EndTxTypeIgnore;
 
     if not (tlReduced in AIgnFlags) then begin
       BeginTxTypeIgnore;
-        t.Add(AName, p+'Ansi1'+e,      weAnsiStr(Succ(AChr1), x+'AnsiString' ))     .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
+        t.Add(AName, GetFullName('Ansi1', p, e),      weAnsiStr(Succ(AChr1), x+'AnsiString' ))     .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
           .IgnTypeName([], ALoc in [tlConst, tlClassConst]).IgnKind([], ALoc in [tlConst, tlClassConst]);
-        t.Add(AName, p+'Ansi2'+e,      weAnsiStr(AChr1+'abcd0123', x+'AnsiString')).IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
+        t.Add(AName, GetFullName('Ansi2', p, e),      weAnsiStr(AChr1+'abcd0123', x+'AnsiString')).IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
           .IgnTypeName([], ALoc in [tlConst, tlClassConst]).IgnKind([], ALoc in [tlConst, tlClassConst]);
-        t.Add(AName, p+'Ansi3'+e,      weAnsiStr('', x+'AnsiString'))              .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
+        t.Add(AName, GetFullName('Ansi3', p, e),      weAnsiStr('', x+'AnsiString'))              .IgnKindPtr(stDwarf2).IgnKind(stDwarf3Up)
           .IgnTypeName([], ALoc in [tlConst, tlClassConst]).IgnKind([], ALoc in [tlConst, tlClassConst]);
-        t.Add(AName, p+'Ansi4'+e,      weAnsiStr(AChr1+'A'#0'B'#9'b'#10#13, x+'AnsiString'))  // cut off at #0 in dwarf2 / except tlConst, because it is a shortstring (kind of works by accident)
+        t.Add(AName, GetFullName('Ansi4', p, e),      weAnsiStr(AChr1+'A'#0'B'#9'b'#10#13, x+'AnsiString'))  // cut off at #0 in dwarf2 / except tlConst, because it is a shortstring (kind of works by accident)
                  .IgnKindPtr(stDwarf2).IgnData(stDwarf2, not(ALoc in [tlConst, tlClassConst])).IgnKind(stDwarf3Up)
           .IgnTypeName([], ALoc in [tlConst, tlClassConst]).IgnKind([], ALoc in [tlConst, tlClassConst]);
-        t.Add(AName, p+'Ansi5'+e,      weAnsiStr(AChr1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
+        t.Add(AName, GetFullName('Ansi5', p, e),      weAnsiStr(AChr1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
           x+'AnsiString') )    .IgnKindPtr(stDwarf2)                  .IgnKind(stDwarf3Up)
           .IgnTypeName([], ALoc in [tlConst, tlClassConst]).IgnKind([], ALoc in [tlConst, tlClassConst]);
       EndTxTypeIgnore;
 
         //TODO wePchar
-      t.Add(AName, p+'PChar'+e,      wePointer(weAnsiStr('', 'Char'), x+'PChar'));
+      t.Add(AName, GetFullName('PChar', p, e),      wePointer(weAnsiStr('', 'Char'), x+'PChar'));
       BeginTxTypeIgnore;
-        t.Add(AName, p+'PChar2'+e,     wePointer(weAnsiStr(AChr1+'abcd0123', 'Char'), x+'TPChr')).SkipIf(ALoc in [tlConst, tlClassConst]);
+        t.Add(AName, GetFullName('PChar2', p, e),     wePointer(weAnsiStr(AChr1+'abcd0123', 'Char'), x+'TPChr')).SkipIf(ALoc in [tlConst, tlClassConst]);
 
         // char by index
         // TODO: no typename => calculated value ?
-        t.Add(AName, p+'String10'+e+'[2]',   weChar('b', '')).CharFromIndex.NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
-        t.Add(AName, p+'Ansi2'+e+'[2]',      weChar('a', '')).CharFromIndex;
-        t.Add(AName, p+'PChar2'+e+'[1]',     weChar('a', '')).CharFromIndex.SkipIf(ALoc in [tlConst, tlClassConst]);
-        t.Add(AName, p+'String10'+e+'[1]',   weChar(AChr1, '')).CharFromIndex.NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
-        t.Add(AName, p+'Ansi2'+e+'[1]',      weChar(AChr1, '')).CharFromIndex;
-        t.Add(AName, p+'PChar2'+e+'[0]',     weChar(AChr1, '')).CharFromIndex.SkipIf(ALoc in [tlConst, tlClassConst]);
+        t.Add(AName, GetFullName('String10', p, e)+'[2]',   weChar('b', '')).CharFromIndex.NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+        t.Add(AName, GetFullName('Ansi2', p, e)+'[2]',      weChar('a', '')).CharFromIndex;
+        t.Add(AName, GetFullName('PChar2', p, e)+'[1]',     weChar('a', '')).CharFromIndex.SkipIf(ALoc in [tlConst, tlClassConst]);
+        t.Add(AName, GetFullName('String10', p, e)+'[1]',   weChar(AChr1, '')).CharFromIndex.NotImplemented(stDwarf3up, tiPointerMath in AIgnFlags);
+        t.Add(AName, GetFullName('Ansi2', p, e)+'[1]',      weChar(AChr1, '')).CharFromIndex;
+        t.Add(AName, GetFullName('PChar2', p, e)+'[0]',     weChar(AChr1, '')).CharFromIndex.SkipIf(ALoc in [tlConst, tlClassConst]);
 
 
-        t.Add(AName, p+'WideChar'+e,       weChar(AChr1, x+'Char')); // TODO: widechar
-        t.Add(AName, p+'WideChar2'+e,      weChar(#0   , x+'Char'));
-        t.Add(AName, p+'WideChar3'+e,      weChar(' '  , x+'Char'));
+        t.Add(AName, GetFullName('WideChar', p, e),       weChar(AChr1, x+'Char')); // TODO: widechar
+        t.Add(AName, GetFullName('WideChar2', p, e),      weChar(#0   , x+'Char'));
+        t.Add(AName, GetFullName('WideChar3', p, e),      weChar(' '  , x+'Char'));
 
         BeginSkipConst; // tlConst => Only eval the watch. No tests
-          t.Add(AName, p+'WideString1'+e,    weWideStr(Succ(AChr1), x+'WideString'))              .IgnKindPtr;
-          t.Add(AName, p+'WideString2'+e,    weWideStr(AChr1+'abcX0123', x+'WideString'))         .IgnKindPtr;
-          t.Add(AName, p+'WideString3'+e,    weWideStr('', x+'WideString'))                       .IgnKindPtr;
-          t.Add(AName, p+'WideString4'+e,    weWideStr(AChr1+'A'#0'X'#9'b'#10#13, x+'WideString')).IgnKindPtr
+          t.Add(AName, GetFullName('WideString1', p, e),    weWideStr(Succ(AChr1), x+'WideString'))              .IgnKindPtr;
+          t.Add(AName, GetFullName('WideString2', p, e),    weWideStr(AChr1+'abcX0123', x+'WideString'))         .IgnKindPtr;
+          t.Add(AName, GetFullName('WideString3', p, e),    weWideStr('', x+'WideString'))                       .IgnKindPtr;
+          t.Add(AName, GetFullName('WideString4', p, e),    weWideStr(AChr1+'A'#0'X'#9'b'#10#13, x+'WideString')).IgnKindPtr
             .IgnData(stDwarf2).IgnData([], Compiler.Version < 030100); // cut off at #0
-          t.Add(AName, p+'WideString5'+e,    weWideStr(AChr1+'XcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
+          t.Add(AName, GetFullName('WideString5', p, e),    weWideStr(AChr1+'XcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
             x+'TWStrTA'))                                                         .IgnKindPtr;
 
-          t.Add(AName, p+'WideString2'+e+'[1]',  weWideChar(AChr1))     .CharFromIndex.IgnTypeName(stDwarf3Up);
-          t.Add(AName, p+'WideString2'+e+'[2]',  weWideChar('a'))       .CharFromIndex.IgnTypeName(stDwarf3Up);
-          t.Add(AName, p+'WideString5'+e+'[1]',  weWideChar(AChr1))     .CharFromIndex.IgnTypeName(stDwarf3Up);
-          t.Add(AName, p+'WideString5'+e+'[2]',  weWideChar('X'))       .CharFromIndex.IgnTypeName(stDwarf3Up);
+          t.Add(AName, GetFullName('WideString2', p, e)+'[1]',  weWideChar(AChr1))     .CharFromIndex.IgnTypeName(stDwarf3Up);
+          t.Add(AName, GetFullName('WideString2', p, e)+'[2]',  weWideChar('a'))       .CharFromIndex.IgnTypeName(stDwarf3Up);
+          t.Add(AName, GetFullName('WideString5', p, e)+'[1]',  weWideChar(AChr1))     .CharFromIndex.IgnTypeName(stDwarf3Up);
+          t.Add(AName, GetFullName('WideString5', p, e)+'[2]',  weWideChar('X'))       .CharFromIndex.IgnTypeName(stDwarf3Up);
         // for tlClassConst the error should be something about "unknown type" due to absence of type info
         EndSkipConst;
 
         //TODO wePWidechar
-        t.Add(AName, p+'PWideChar'+e,      wePointer(weWideStr('', 'WideChar'), 'PWideChar'));
-        t.Add(AName, p+'PWideChar2'+e,     wePointer(weWideStr(AChr1+'abcX0123', 'WideChar'), 'TPWChr')).SkipIf(ALoc in [tlConst, tlClassConst]);
+        t.Add(AName, GetFullName('PWideChar', p, e),      wePointer(weWideStr('', 'WideChar'), 'PWideChar'));
+        t.Add(AName, GetFullName('PWideChar2', p, e),     wePointer(weWideStr(AChr1+'abcX0123', 'WideChar'), 'TPWChr')).SkipIf(ALoc in [tlConst, tlClassConst]);
 
         BeginSkipConst;
-          t.Add(AName, p+'UnicodeString1'+e,    weUniStr(Succ(AChr1), x+'UnicodeString'))              .IgnKindPtr(stDwarf2);
-          t.Add(AName, p+'UnicodeString2'+e,    weUniStr(AChr1+'aBcX0123'))         .IgnKindPtr(stDwarf2);
-          t.Add(AName, p+'UnicodeString3'+e,    weUniStr(''))                       .IgnKindPtr(stDwarf2);
-          t.Add(AName, p+'UnicodeString4'+e,    weUniStr(AChr1+'B'#0'X'#9'b'#10#13)).IgnKindPtr(stDwarf2).IgnData(stDwarf2); // #00 terminated in dwarf2
-          t.Add(AName, p+'UnicodeString5'+e,    weUniStr(AChr1+'YcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
+          t.Add(AName, GetFullName('UnicodeString1', p, e),    weUniStr(Succ(AChr1), x+'UnicodeString'))              .IgnKindPtr(stDwarf2);
+          t.Add(AName, GetFullName('UnicodeString2', p, e),    weUniStr(AChr1+'aBcX0123'))         .IgnKindPtr(stDwarf2);
+          t.Add(AName, GetFullName('UnicodeString3', p, e),    weUniStr(''))                       .IgnKindPtr(stDwarf2);
+          t.Add(AName, GetFullName('UnicodeString4', p, e),    weUniStr(AChr1+'B'#0'X'#9'b'#10#13)).IgnKindPtr(stDwarf2).IgnData(stDwarf2); // #00 terminated in dwarf2
+          t.Add(AName, GetFullName('UnicodeString5', p, e),    weUniStr(AChr1+'YcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
             'TUStrTA'))                                                         .IgnKindPtr(stDwarf2);
 
           //todo dwarf 3
-          t.Add(AName, p+'UnicodeString2'+e+'[1]',    weWideChar(AChr1))       .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
-          t.Add(AName, p+'UnicodeString2'+e+'[2]',    weWideChar('a'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
-          t.Add(AName, p+'UnicodeString5'+e+'[1]',    weWideChar(AChr1))       .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
-          t.Add(AName, p+'UnicodeString5'+e+'[2]',    weWideChar('Y'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
+          t.Add(AName, GetFullName('UnicodeString2', p, e)+'[1]',    weWideChar(AChr1))       .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
+          t.Add(AName, GetFullName('UnicodeString2', p, e)+'[2]',    weWideChar('a'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
+          t.Add(AName, GetFullName('UnicodeString5', p, e)+'[1]',    weWideChar(AChr1))       .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
+          t.Add(AName, GetFullName('UnicodeString5', p, e)+'[2]',    weWideChar('Y'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
 
-          t.Add(AName, p+'Variant_1'+e,      weMatch('71237',skVariant))
+          t.Add(AName, GetFullName('Variant_1', p, e),      weMatch('71237',skVariant))
             .SkipIf(ALoc in [tlPointerAny])
             .IgnKind();
-          t.Add(AName, p+'Variant_2'+e,      weMatch('True',skVariant))
+          t.Add(AName, GetFullName('Variant_2', p, e),      weMatch('True',skVariant))
             .SkipIf(ALoc in [tlPointerAny])
             .IgnKind();
         EndSkipConst;
@@ -880,7 +887,7 @@ procedure TTestWatches.TestWatchesValue;
 
 
       // TODO
-      t.Add(AName, p+'ShortRec'+e,     weMatch(''''+AChr1+''', *''b'', *'''+AChr1+'''', skRecord))
+      t.Add(AName, GetFullName('ShortRec', p, e),     weMatch(''''+AChr1+''', *''b'', *'''+AChr1+'''', skRecord))
         .SkipIf(ALoc in [tlClassConst])
         .SkipIf(ALoc = tlPointerAny);
 
@@ -897,44 +904,44 @@ procedure TTestWatches.TestWatchesValue;
     if not (tlReduced in AIgnFlags) then begin
       BeginTxTypeIgnore;
       BeginSkipConst;   // class const only
-        t.add(AName, p+'CharDynArray'+e,  weDynArray([]                                        )).SkipIf(ALoc in [tlPointer, tlClassConst]);
-        t.add(AName, p+'CharDynArray2'+e, weDynArray(weChar(['N', AChr1, 'M'])                 )).SkipIf(ALoc in [tlConst, tlClassConst, tlPointer]);
+        t.add(AName, GetFullName('CharDynArray', p, e),  weDynArray([]                                        )).SkipIf(ALoc in [tlPointer, tlClassConst]);
+        t.add(AName, GetFullName('CharDynArray2', p, e), weDynArray(weChar(['N', AChr1, 'M'])                 )).SkipIf(ALoc in [tlConst, tlClassConst, tlPointer]);
         t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-        t.add(AName, p+'CharDynArray3'+e, weDynArray([],                        'TCharDynArray')).SkipIf(ALoc in [tlClassConst]);
-        t.Add(AName, p+'CharDynArray4'+e, weDynArray(weChar(['J', AChr1, 'M']), 'TCharDynArray')).SkipIf(ALoc in [tlConst, tlClassConst]);
-        t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-
-        t.Add(AName, p+'WCharDynArray'+e, weDynArray([]                        )).SkipIf(ALoc in [tlPointer, tlClassConst]);
-        t.Add(AName, p+'WCharDynArray2'+e,weDynArray(weWideChar(['W', AChr1, 'M']) )).SkipIf(ALoc in [tlConst, tlClassConst,tlPointer]);
-        t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-        t.Add(AName, p+'WCharDynArray3'+e,weDynArray([]                        )).SkipIf(ALoc in [tlClassConst]);
-        t.Add(AName, p+'WCharDynArray4'+e,weDynArray(weWideChar(['K', AChr1, 'M']) )).SkipIf(ALoc in [tlConst, tlClassConst]);
+        t.add(AName, GetFullName('CharDynArray3', p, e), weDynArray([],                        'TCharDynArray')).SkipIf(ALoc in [tlClassConst]);
+        t.Add(AName, GetFullName('CharDynArray4', p, e), weDynArray(weChar(['J', AChr1, 'M']), 'TCharDynArray')).SkipIf(ALoc in [tlConst, tlClassConst]);
         t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
 
-        t.add(AName, p+'IntDynArray'+e,   weDynArray([]                                           )).SkipIf(ALoc in [tlPointer]);
-        t.add(AName, p+'IntDynArray2'+e,  weDynArray(weInteger([11, 30+AOffs, 60])                )).SkipIf(ALoc in [tlConst,tlPointer]);
+        t.Add(AName, GetFullName('WCharDynArray', p, e), weDynArray([]                        )).SkipIf(ALoc in [tlPointer, tlClassConst]);
+        t.Add(AName, GetFullName('WCharDynArray2', p, e),weDynArray(weWideChar(['W', AChr1, 'M']) )).SkipIf(ALoc in [tlConst, tlClassConst,tlPointer]);
         t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-        t.add(AName, p+'IntDynArray3'+e,  weDynArray([],                            'TIntDynArray'));
-        t.Add(AName, p+'IntDynArray4'+e,  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray')).SkipIf(ALoc in [tlConst]);
+        t.Add(AName, GetFullName('WCharDynArray3', p, e),weDynArray([]                        )).SkipIf(ALoc in [tlClassConst]);
+        t.Add(AName, GetFullName('WCharDynArray4', p, e),weDynArray(weWideChar(['K', AChr1, 'M']) )).SkipIf(ALoc in [tlConst, tlClassConst]);
         t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
 
-        t.add(AName, p+'IntDynArray5'+e,  weDynArray([],                            'TIntDynArray'));
+        t.add(AName, GetFullName('IntDynArray', p, e),   weDynArray([]                                           )).SkipIf(ALoc in [tlPointer]);
+        t.add(AName, GetFullName('IntDynArray2', p, e),  weDynArray(weInteger([11, 30+AOffs, 60])                )).SkipIf(ALoc in [tlConst,tlPointer]);
+        t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
+        t.add(AName, GetFullName('IntDynArray3', p, e),  weDynArray([],                            'TIntDynArray'));
+        t.Add(AName, GetFullName('IntDynArray4', p, e),  weDynArray(weInteger([12, 30+AOffs, 60]), 'TIntDynArray')).SkipIf(ALoc in [tlConst]);
+        t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
 
-        t.add(AName, p+'AnsiDynArray'+e,  weDynArray([]                                                     )).SkipIf(ALoc in [tlPointer]);
-        t.add(AName, p+'AnsiDynArray2'+e, weDynArray(weAnsiStr(['N123', AChr1+'ab', 'M'#9])                 )).SkipIf(ALoc in [tlConst,tlPointer]);
+        t.add(AName, GetFullName('IntDynArray5', p, e),  weDynArray([],                            'TIntDynArray'));
+
+        t.add(AName, GetFullName('AnsiDynArray', p, e),  weDynArray([]                                                     )).SkipIf(ALoc in [tlPointer]);
+        t.add(AName, GetFullName('AnsiDynArray2', p, e), weDynArray(weAnsiStr(['N123', AChr1+'ab', 'M'#9])                 )).SkipIf(ALoc in [tlConst,tlPointer]);
     // TODO: currently gets skPointer instead of skAnsiString (dwarf 2)
     //    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-        t.add(AName, p+'AnsiDynArray3'+e, weDynArray([],                                     'TAnsiDynArray'));
-        t.Add(AName, p+'AnsiDynArray4'+e, weDynArray(weAnsiStr(['J123', AChr1+'ab', 'M'#9]), 'TAnsiDynArray')).SkipIf(ALoc in [tlConst]);
+        t.add(AName, GetFullName('AnsiDynArray3', p, e), weDynArray([],                                     'TAnsiDynArray'));
+        t.Add(AName, GetFullName('AnsiDynArray4', p, e), weDynArray(weAnsiStr(['J123', AChr1+'ab', 'M'#9]), 'TAnsiDynArray')).SkipIf(ALoc in [tlConst]);
     // TODO: currently gets skPointer instead of skAnsiString (dwarf 2)
     //    t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
 
-        t.add(AName, p+'ShortStrDynArray'+e,  weDynArray([]                                                          )).SkipIf(ALoc in [tlPointer]);
-        t.add(AName, p+'ShortStrDynArray2'+e, weDynArray(weShortStr(['N123', AChr1+'ac', 'M'#9], 'ShortStr10')                     ))
+        t.add(AName, GetFullName('ShortStrDynArray', p, e),  weDynArray([]                                                          )).SkipIf(ALoc in [tlPointer]);
+        t.add(AName, GetFullName('ShortStrDynArray2', p, e), weDynArray(weShortStr(['N123', AChr1+'ac', 'M'#9], 'ShortStr10')                     ))
           .SkipIf(ALoc in [tlConst,tlPointer]);
         t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-        t.add(AName, p+'ShortStrDynArray3'+e, weDynArray([],                                      'TShortStrDynArray'));
-        t.Add(AName, p+'ShortStrDynArray4'+e, weDynArray(weShortStr(['J123', AChr1+'ac', 'M'#9], 'ShortStr10'), 'TShortStrDynArray'))
+        t.add(AName, GetFullName('ShortStrDynArray3', p, e), weDynArray([],                                      'TShortStrDynArray'));
+        t.Add(AName, GetFullName('ShortStrDynArray4', p, e), weDynArray(weShortStr(['J123', AChr1+'ac', 'M'#9], 'ShortStr10'), 'TShortStrDynArray'))
           .SkipIf(ALoc = tlConst);
         t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
       EndSkipConst(True);
@@ -944,7 +951,7 @@ procedure TTestWatches.TestWatchesValue;
 
     BeginTxTypeIgnore;
     BeginSkipConst;
-      t.Add(AName, p+'DynDynArrayInt'+e, weDynArray([
+      t.Add(AName, GetFullName('DynDynArrayInt', p, e), weDynArray([
           weDynArray(weInteger([11+AOffs,0,-22])),
           weDynArray(weInteger([110+AOffs])),
           weDynArray(weInteger([11+AOffs,0,-22])),
@@ -952,60 +959,60 @@ procedure TTestWatches.TestWatchesValue;
           weDynArray(weInteger([11,12,11,10]))
         ], 'TDynDynArrayInt'));
 
-      t.Add(AName, p+'DynDynArrayInt'+e+'[0]', weDynArray(weInteger([11+AOffs,0,-22])) );
-      t.Add(AName, p+'DynDynArrayInt'+e+'[1]', weDynArray(weInteger([110+AOffs])) );
-      t.Add(AName, p+'DynDynArrayInt'+e+'[2]', weDynArray(weInteger([11+AOffs,0,-22])) );
-      t.Add(AName, p+'DynDynArrayInt'+e+'[3]', weDynArray(weInteger([])) );
-      t.Add(AName, p+'DynDynArrayInt'+e+'[4]', weDynArray(weInteger([11,12,11,10])) );
+      t.Add(AName, GetFullName('DynDynArrayInt', p, e)+'[0]', weDynArray(weInteger([11+AOffs,0,-22])) );
+      t.Add(AName, GetFullName('DynDynArrayInt', p, e)+'[1]', weDynArray(weInteger([110+AOffs])) );
+      t.Add(AName, GetFullName('DynDynArrayInt', p, e)+'[2]', weDynArray(weInteger([11+AOffs,0,-22])) );
+      t.Add(AName, GetFullName('DynDynArrayInt', p, e)+'[3]', weDynArray(weInteger([])) );
+      t.Add(AName, GetFullName('DynDynArrayInt', p, e)+'[4]', weDynArray(weInteger([11,12,11,10])) );
 
-      t.Add(AName, p+'DynDynArrayInt2'+e+'[0]', weDynArray(weInteger([11+AOffs,0,-22])) );
-      t.Add(AName, p+'DynDynArrayInt2'+e+'[1]', weDynArray(weInteger([110+AOffs])) );
-      t.Add(AName, p+'DynDynArrayInt2'+e+'[2]', weDynArray(weInteger([11+AOffs,0,-22])) );
-      t.Add(AName, p+'DynDynArrayInt2'+e+'[3]', weDynArray(weInteger([])) );
-      t.Add(AName, p+'DynDynArrayInt2'+e+'[4]', weDynArray(weInteger([11,12,11,10])) );
+      t.Add(AName, GetFullName('DynDynArrayInt2', p, e)+'[0]', weDynArray(weInteger([11+AOffs,0,-22])) );
+      t.Add(AName, GetFullName('DynDynArrayInt2', p, e)+'[1]', weDynArray(weInteger([110+AOffs])) );
+      t.Add(AName, GetFullName('DynDynArrayInt2', p, e)+'[2]', weDynArray(weInteger([11+AOffs,0,-22])) );
+      t.Add(AName, GetFullName('DynDynArrayInt2', p, e)+'[3]', weDynArray(weInteger([])) );
+      t.Add(AName, GetFullName('DynDynArrayInt2', p, e)+'[4]', weDynArray(weInteger([11,12,11,10])) );
 
 
-/////    t.Add(AName, p+'pre__FiveDynArray'+e,  weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'c'])                  ))
-t.Add(AName, p+'FiveDynArray'+e,            weMatch('.*',skArray));
-t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
-//    t.Add(AName, p+'FiveDynArray'+e,            we());
-//    t.Add(AName, p+'FiveDynArrayPack'+e,        we());
-//    t.Add(AName, p+'FivePackDynArray'+e,        we());
-//    t.Add(AName, p+'FivePackDynArrayPack'+e,    we());
-//    t.Add(AName, p+'RecFiveDynArray'+e,         we());
-//    t.Add(AName, p+'RecFiveDynPackArray'+e,     we());
-//    t.Add(AName, p+'RecFivePackDynArray'+e,     we());
-//    t.Add(AName, p+'RecFivePackDynPackArray'+e, we());
-//    t.Add(AName, p+'FiveDynArray2'+e,           we());
-//    t.Add(AName, p+'FiveDynArrayPack2'+e,       we());
-//    t.Add(AName, p+'FivePackDynArray2'+e,       we());
-//    t.Add(AName, p+'FivePackDynArrayPack2'+e,   we());
+/////    t.Add(AName, GetFullName('pre__FiveDynArray', p, e),  weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'c'])                  ))
+t.Add(AName, GetFullName('FiveDynArray', p, e),            weMatch('.*',skArray));
+t.Add(AName, GetFullName('FiveDynArray', p, e)+'[0]',      weMatch('.*',skRecord));
+//    t.Add(AName, GetFullName('FiveDynArray', p, e),            we());
+//    t.Add(AName, GetFullName('FiveDynArrayPack', p, e),        we());
+//    t.Add(AName, GetFullName('FivePackDynArray', p, e),        we());
+//    t.Add(AName, GetFullName('FivePackDynArrayPack', p, e),    we());
+//    t.Add(AName, GetFullName('RecFiveDynArray', p, e),         we());
+//    t.Add(AName, GetFullName('RecFiveDynPackArray', p, e),     we());
+//    t.Add(AName, GetFullName('RecFivePackDynArray', p, e),     we());
+//    t.Add(AName, GetFullName('RecFivePackDynPackArray', p, e), we());
+//    t.Add(AName, GetFullName('FiveDynArray2', p, e),           we());
+//    t.Add(AName, GetFullName('FiveDynArrayPack2', p, e),       we());
+//    t.Add(AName, GetFullName('FivePackDynArray2', p, e),       we());
+//    t.Add(AName, GetFullName('FivePackDynArrayPack2', p, e),   we());
 
     EndSkipConst;
 
 
     BeginSkipConst; // class const only
-      t.Add(AName, p+'CharStatArray'+e,  weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'c'])                  ))
+      t.Add(AName, GetFullName('CharStatArray', p, e),  weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'c'])                  ))
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
-      t.Add(AName, p+'CharStatArray2'+e, weStatArray(weChar([AChr1, 'c', AChr1, 'B', 'c']), 'TCharStatArray'));
+      t.Add(AName, GetFullName('CharStatArray2', p, e), weStatArray(weChar([AChr1, 'c', AChr1, 'B', 'c']), 'TCharStatArray'));
 
   if  (tlReduced in AIgnFlags) then exit;
 
-      t.Add(AName, p+'WCharStatArray'+e, weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'd'])                   ))
+      t.Add(AName, GetFullName('WCharStatArray', p, e), weStatArray(weChar([AChr1, 'b', AChr1, 'B', 'd'])                   ))
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
-      t.Add(AName, p+'WCharStatArray2'+e,weStatArray(weChar([AChr1, 'c', AChr1, 'B', 'd']), 'TwCharStatArray'));
+      t.Add(AName, GetFullName('WCharStatArray2', p, e),weStatArray(weChar([AChr1, 'c', AChr1, 'B', 'd']), 'TwCharStatArray'));
 
-      t.Add(AName, p+'IntStatArray'+e,  weStatArray(weInteger([-1, 300+AOffs, 2, 0, 1])                 ))
+      t.Add(AName, GetFullName('IntStatArray', p, e),  weStatArray(weInteger([-1, 300+AOffs, 2, 0, 1])                 ))
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
-      t.Add(AName, p+'IntStatArray2'+e, weStatArray(weInteger([-2, 200+AOffs, 2, 0, 1]), 'TIntStatArray'));
+      t.Add(AName, GetFullName('IntStatArray2', p, e), weStatArray(weInteger([-2, 200+AOffs, 2, 0, 1]), 'TIntStatArray'));
 
-      t.Add(AName, p+'AnsiStatArray'+e,  weStatArray(weAnsiStr([AChr1, 'b123', AChr1+'ab', 'B', 'cdef'#9])                  ))
+      t.Add(AName, GetFullName('AnsiStatArray', p, e),  weStatArray(weAnsiStr([AChr1, 'b123', AChr1+'ab', 'B', 'cdef'#9])                  ))
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
-      t.Add(AName, p+'AnsiStatArray2'+e, weStatArray(weAnsiStr([AChr1, 'c123', AChr1+'ad', 'D', 'cxx'#9] ), 'TAnsiStatArray'));
+      t.Add(AName, GetFullName('AnsiStatArray2', p, e), weStatArray(weAnsiStr([AChr1, 'c123', AChr1+'ad', 'D', 'cxx'#9] ), 'TAnsiStatArray'));
 
-      t.Add(AName, p+'ShortStrStatArray'+e,  weStatArray(weShortStr([AChr1, 'b123', AChr1+'ab', 'C', 'cdef'#9])                  ))
+      t.Add(AName, GetFullName('ShortStrStatArray', p, e),  weStatArray(weShortStr([AChr1, 'b123', AChr1+'ab', 'C', 'cdef'#9])                  ))
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
-      t.Add(AName, p+'ShortStrStatArray2'+e, weStatArray(weShortStr([AChr1, 'c123', AChr1+'ad', 'C', 'cxx'#9] ), 'TShortStrStatArray'));
+      t.Add(AName, GetFullName('ShortStrStatArray2', p, e), weStatArray(weShortStr([AChr1, 'c123', AChr1+'ad', 'C', 'cxx'#9] ), 'TShortStrStatArray'));
 
 //      t.Add(AName, p+'FiveStatArray{e}             _O2_ TFiveStatArray            _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FiveStatArray;
 //      t.Add(AName, p+'FiveStatArrayPack{e}         _O2_ TFiveStatArrayPack        _EQ_ ((a:-9;b:44), (a:-8-ADD;b:33), (a:-7;b:22));          //@@ _pre3_FiveStatArrayPack;
@@ -1018,80 +1025,100 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
 
 //TODO: element by index
 
-      t.Add(AName, p+'ArrayEnum1'+e, weStatArray(weCardinal([500+n,701,702,703], 'WORD', SIZE_2)  ))
+      t.Add(AName, GetFullName('ArrayEnum1', p, e), weStatArray(weCardinal([500+n,701,702,703], 'WORD', SIZE_2)  ))
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
       t.AddIndexFromPrevious(['EnVal1','EnVal2','EnVal3','EnVal4',
-       'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',   p+'Enum'+e, p+'EnumA'+e, p+'Enum1'+e],
+       'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',
+       GetFullName('Enum', p, e),
+       GetFullName('EnumA', p, e),
+       GetFullName('Enum1', p, e)],
        [0,1,2,3,  2,0,1,  2,0,1,  2,0,1]);
-      t.Add(AName, p+'ArrayEnum3'+e, weStatArray(weCardinal([200+n,701,702,703], 'WORD', SIZE_2), 'TArrayEnum'));
+      t.Add(AName, GetFullName('ArrayEnum3', p, e), weStatArray(weCardinal([200+n,701,702,703], 'WORD', SIZE_2), 'TArrayEnum'));
       t.AddIndexFromPrevious(['EnVal1','EnVal2','EnVal3','EnVal4',
-       'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',   p+'Enum'+e, p+'EnumA'+e, p+'Enum1'+e],
+       'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',
+       GetFullName('Enum', p, e),
+       GetFullName('EnumA', p, e),
+       GetFullName('Enum1', p, e)],
        [0,1,2,3,  2,0,1,  2,0,1,  2,0,1]);
 
-      t.Add(AName, p+'ArrayEnumSub1'+e, weStatArray(weCardinal([600+n,801], 'WORD', SIZE_2)  ))
+      t.Add(AName, GetFullName('ArrayEnumSub1', p, e), weStatArray(weCardinal([600+n,801], 'WORD', SIZE_2)  ))
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
       t.AddIndexFromPrevious(['EnVal1','EnVal2',
-       'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',   p+'EnumA'+e, p+'Enum1'+e],
+       'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',
+       GetFullName('EnumA', p, e),
+       GetFullName('Enum1', p, e)],
        [0,1,  0,1,  0,1,  0,1]);
-      t.Add(AName, p+'ArrayEnumSub3'+e, weStatArray(weCardinal([100+n,801], 'WORD', SIZE_2), 'TArrayEnumSub'));
+      t.Add(AName, GetFullName('ArrayEnumSub3', p, e), weStatArray(weCardinal([100+n,801], 'WORD', SIZE_2), 'TArrayEnumSub'));
       t.AddIndexFromPrevious(['EnVal1','EnVal2',
-       'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',   p+'EnumA'+e, p+'Enum1'+e],
+       'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',
+       GetFullName('EnumA', p, e),
+       GetFullName('Enum1', p, e)],
        [0,1,  0,1,  0,1,  0,1]);
 
-      t.Add(AName, p+'ArrayEnum2'+e, weStatArray(weCardinal([300+n,701,702,703], 'WORD', SIZE_2)  ))
+      t.Add(AName, GetFullName('ArrayEnum2', p, e), weStatArray(weCardinal([300+n,701,702,703], 'WORD', SIZE_2)  ))
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
       t.AddIndexFromPrevious(['EnVal1','EnVal2','EnVal3','EnVal4',
-       'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',   p+'Enum'+e, p+'EnumA'+e, p+'Enum1'+e],
+       'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',
+       GetFullName('Enum', p, e),
+       GetFullName('EnumA', p, e),
+       GetFullName('Enum1', p, e)],
        [0,1,2,3,  2,0,1,  2,0,1,  2,0,1]);
-      t.Add(AName, p+'ArrayEnum4'+e, weStatArray(weCardinal([800+n,701,702,703], 'WORD', SIZE_2), 'TArrayEnumElem'));
+      t.Add(AName, GetFullName('ArrayEnum4', p, e), weStatArray(weCardinal([800+n,701,702,703], 'WORD', SIZE_2), 'TArrayEnumElem'));
       t.AddIndexFromPrevious(['EnVal1','EnVal2','EnVal3','EnVal4',
-       'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',   p+'Enum'+e, p+'EnumA'+e, p+'Enum1'+e],
+       'gvEnum', 'gvEnumA', 'gvEnum1',  'gcEnum', 'gcEnumA', 'gcEnum1',
+       GetFullName('Enum', p, e),
+       GetFullName('EnumA', p, e),
+       GetFullName('Enum1', p, e)],
        [0,1,2,3,  2,0,1,  2,0,1,  2,0,1]);
 
-      t.Add(AName, p+'ArrayEnumSub2'+e, weStatArray(weCardinal([400+n,801], 'WORD', SIZE_2)  ))
+      t.Add(AName, GetFullName('ArrayEnumSub2', p, e), weStatArray(weCardinal([400+n,801], 'WORD', SIZE_2)  ))
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
       t.AddIndexFromPrevious(['EnVal1','EnVal2',
-       'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',   p+'EnumA'+e, p+'Enum1'+e],
+       'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',
+       GetFullName('EnumA', p, e),
+       GetFullName('Enum1', p, e)],
        [0,1,  0,1,  0,1,  0,1]);
-      t.Add(AName, p+'ArrayEnumSub4'+e, weStatArray(weCardinal([700+n,801], 'WORD', SIZE_2), 'TArrayEnumSubElem'));
+      t.Add(AName, GetFullName('ArrayEnumSub4', p, e), weStatArray(weCardinal([700+n,801], 'WORD', SIZE_2), 'TArrayEnumSubElem'));
       t.AddIndexFromPrevious(['EnVal1','EnVal2',
-       'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',   p+'EnumA'+e, p+'Enum1'+e],
+       'gvEnumA', 'gvEnum1',  'gcEnumA', 'gcEnum1',
+       GetFullName('EnumA', p, e),
+       GetFullName('Enum1', p, e)],
        [0,1,  0,1,  0,1,  0,1]);
 
 
-      t.Add(AName, p+'Enum'+e, weEnum('EnVal3', 'TEnum'));
-      t.Add(AName, p+'Enum1'+e, weEnum('EnVal2', 'TEnumSub'));
-      t.Add(AName, p+'Enum2'+e, weEnum('EnVal21', 'TEnum2'));
-      t.Add(AName, p+'Enum3'+e, weEnum('EnVal25', 'TEnum2'));
+      t.Add(AName, GetFullName('Enum', p, e), weEnum('EnVal3', 'TEnum'));
+      t.Add(AName, GetFullName('Enum1', p, e), weEnum('EnVal2', 'TEnumSub'));
+      t.Add(AName, GetFullName('Enum2', p, e), weEnum('EnVal21', 'TEnum2'));
+      t.Add(AName, GetFullName('Enum3', p, e), weEnum('EnVal25', 'TEnum2'));
 
-      t.Add(AName, p+'EnumX0a'+e, weEnum('EnXVal01', 'TEnumX0'));
-      t.Add(AName, p+'EnumX0b'+e, weEnum('EnXVal04', 'TEnumX0'));
-      t.Add(AName, p+'EnumX1a'+e, weEnum('EnXVal11 = -3', 'TEnumX1'));
-      t.Add(AName, p+'EnumX1b'+e, weEnum('EnXVal14 = 10', 'TEnumX1'));
-      t.Add(AName, p+'EnumX1Aa'+e, weEnum('EnXValA11 = 1', 'TEnumX1a'));
-      t.Add(AName, p+'EnumX1Ab'+e, weEnum('EnXValA14 = 190', 'TEnumX1a'))
+      t.Add(AName, GetFullName('EnumX0a', p, e), weEnum('EnXVal01', 'TEnumX0'));
+      t.Add(AName, GetFullName('EnumX0b', p, e), weEnum('EnXVal04', 'TEnumX0'));
+      t.Add(AName, GetFullName('EnumX1a', p, e), weEnum('EnXVal11 = -3', 'TEnumX1'));
+      t.Add(AName, GetFullName('EnumX1b', p, e), weEnum('EnXVal14 = 10', 'TEnumX1'));
+      t.Add(AName, GetFullName('EnumX1Aa', p, e), weEnum('EnXValA11 = 1', 'TEnumX1a'));
+      t.Add(AName, GetFullName('EnumX1Ab', p, e), weEnum('EnXValA14 = 190', 'TEnumX1a'))
       .IgnAll(stDwarf2, Compiler.Version >= 030301);
-      t.Add(AName, p+'EnumX2a'+e, weEnum('EnXVal21', 'TEnumX2'));
-      t.Add(AName, p+'EnumX2b'+e, weEnum('EnXVal24', 'TEnumX2'));
+      t.Add(AName, GetFullName('EnumX2a', p, e), weEnum('EnXVal21', 'TEnumX2'));
+      t.Add(AName, GetFullName('EnumX2b', p, e), weEnum('EnXVal24', 'TEnumX2'));
 
 //      t.Add(AName, 'EnVal2', weMatch('xxx', skEnumValue));
 
-      t.Add(AName, p+'Enum16'+e, weEnum('ExVal23', 'TEnum16'));
-      t.Add(AName, p+'Enum16A'+e, weEnum('ExValX5', 'TEnum16'));
+      t.Add(AName, GetFullName('Enum16', p, e), weEnum('ExVal23', 'TEnum16'));
+      t.Add(AName, GetFullName('Enum16A', p, e), weEnum('ExValX5', 'TEnum16'));
 
-      t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet')).Skip([stDwarf]);
-      t.Add(AName, p+'Set2'+e, weSet(['EnVal1', 'EnVal4'])).Skip([stDwarf])
+      t.Add(AName, GetFullName('Set', p, e), weSet(['EnVal2', 'EnVal4'], 'TSet')).Skip([stDwarf]);
+      t.Add(AName, GetFullName('Set2', p, e), weSet(['EnVal1', 'EnVal4'])).Skip([stDwarf])
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
 
-      t.Add(AName, p+'Set4'+e, weSet(['E4Val02', 'E4Val0A'], 'TSet4')).Skip([stDwarf]);
-      t.Add(AName, p+'Set5'+e, weSet(['E5Val02', 'E5Val12'], 'TSet5')).Skip([stDwarf]);
-      t.Add(AName, p+'Set6'+e, weSet(['E6Val02', 'E6Val1A'], 'TSet6')).Skip([stDwarf]);
-      t.Add(AName, p+'Set7'+e, weSet(['E7Val02', 'E7Val3A'], 'TSet7')).Skip([stDwarf]);
-      t.Add(AName, p+'Set8'+e, weSet(['E8Val02', 'E8Val5B'], 'TSet8')).Skip([stDwarf]);
+      t.Add(AName, GetFullName('Set4', p, e), weSet(['E4Val02', 'E4Val0A'], 'TSet4')).Skip([stDwarf]);
+      t.Add(AName, GetFullName('Set5', p, e), weSet(['E5Val02', 'E5Val12'], 'TSet5')).Skip([stDwarf]);
+      t.Add(AName, GetFullName('Set6', p, e), weSet(['E6Val02', 'E6Val1A'], 'TSet6')).Skip([stDwarf]);
+      t.Add(AName, GetFullName('Set7', p, e), weSet(['E7Val02', 'E7Val3A'], 'TSet7')).Skip([stDwarf]);
+      t.Add(AName, GetFullName('Set8', p, e), weSet(['E8Val02', 'E8Val5B'], 'TSet8')).Skip([stDwarf]);
 
-      t.Add(AName, p+'SmallSet'+e, weSet(['22', '24', '25'], 'TSmallRangeSet')).Skip([stDwarf])
+      t.Add(AName, GetFullName('SmallSet', p, e), weSet(['22', '24', '25'], 'TSmallRangeSet')).Skip([stDwarf])
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
-      t.Add(AName, p+'SmallSet2'+e, weSet(['21', '24', '25'])).Skip([stDwarf])
+      t.Add(AName, GetFullName('SmallSet2', p, e), weSet(['21', '24', '25'])).Skip([stDwarf])
         .SkipIf(ALoc = tlParam).SkipIf(ALoc = tlPointer);
 
     EndSkipConst(True);
@@ -1109,65 +1136,65 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
 
 
       // bitpacked
-      t.Add(AName, p+'BitPackBoolArray'+e,     weStatArray(weBool([True, False, True, True])   ));
+      t.Add(AName, GetFullName('BitPackBoolArray', p, e),     weStatArray(weBool([True, False, True, True])   ));
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
-      t.Add(AName, p+'BitPackTinyArray'+e,     weStatArray(weCardinal([1, 0, 3, 2], 'TTinyRange', SIZE_1)   ));
+      t.Add(AName, GetFullName('BitPackTinyArray', p, e),     weStatArray(weCardinal([1, 0, 3, 2], 'TTinyRange', SIZE_1)   ));
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
-      t.Add(AName, p+'BitPackTinyNegArray'+e,  weStatArray(weInteger([2, -2, 0, -1], #1, SIZE_1)   ));
+      t.Add(AName, GetFullName('BitPackTinyNegArray', p, e),  weStatArray(weInteger([2, -2, 0, -1], #1, SIZE_1)   ));
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
-      t.Add(AName, p+'BitPackEnumArray'+e,  weStatArray(weEnum(['EnVal3', 'EnVal1', 'EnVal2', 'EnVal3'])   ));
+      t.Add(AName, GetFullName('BitPackEnumArray', p, e),  weStatArray(weEnum(['EnVal3', 'EnVal1', 'EnVal2', 'EnVal3'])   ));
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
-      t.Add(AName, p+'BitPackEnum3Array'+e,  weStatArray(weEnum(['EnVal32', 'EnVal32', 'EnVal31', 'EnVal32'])   ));
+      t.Add(AName, GetFullName('BitPackEnum3Array', p, e),  weStatArray(weEnum(['EnVal32', 'EnVal32', 'EnVal31', 'EnVal32'])   ));
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
-      t.Add(AName, p+'BitPackSetArray'+e,  weStatArray([ weSet(['EnVal1', 'EnVal3']), weSet([]), weSet(['EnVal3']), weSet(['EnVal1'])]  ))
+      t.Add(AName, GetFullName('BitPackSetArray', p, e),  weStatArray([ weSet(['EnVal1', 'EnVal3']), weSet([]), weSet(['EnVal3']), weSet(['EnVal1'])]  ))
         .Skip([stDwarf]);
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
-      t.Add(AName, p+'BitPackSet3Array'+e,  weStatArray([weSet(['EnVal31', 'EnVal32']), weSet([]), weSet(['EnVal31']), weSet(['EnVal32'])]  ))
+      t.Add(AName, GetFullName('BitPackSet3Array', p, e),  weStatArray([weSet(['EnVal31', 'EnVal32']), weSet([]), weSet(['EnVal31']), weSet(['EnVal32'])]  ))
         .Skip([stDwarf]);
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
 
 
-      t.Add(AName, p+'BitPackBoolArray2'+e,     weStatArray([
+      t.Add(AName, GetFullName('BitPackBoolArray2', p, e),     weStatArray([
          weStatArray(weBool([True, False, True])),
          weStatArray(weBool([False, True, True]))
       ]));
       t.AddIndexFromPrevious(['0','1'], [0,1]);
       t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-      t.Add(AName, p+'BitPackTinyArray2'+e,     weStatArray([
+      t.Add(AName, GetFullName('BitPackTinyArray2', p, e),     weStatArray([
           weStatArray(weCardinal([1, 0, 3], 'TTinyRange', SIZE_1)),
           weStatArray(weCardinal([2, 3, 0], 'TTinyRange', SIZE_1))
       ]));
       t.AddIndexFromPrevious(['0','1'], [0,1]);
       t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-      t.Add(AName, p+'BitPackTinyNegArray2'+e,  weStatArray([
+      t.Add(AName, GetFullName('BitPackTinyNegArray2', p, e),  weStatArray([
           weStatArray(weInteger([2, -2, 0], #1, SIZE_1)),
           weStatArray(weInteger([1, 0, -1], #1, SIZE_1))
       ]));
       t.AddIndexFromPrevious(['0','1'], [0,1]);
       t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-      t.Add(AName, p+'BitPackEnumArray2'+e,  weStatArray([
+      t.Add(AName, GetFullName('BitPackEnumArray2', p, e),  weStatArray([
           weStatArray(weEnum(['EnVal3', 'EnVal1', 'EnVal2'])),
           weStatArray(weEnum(['EnVal1', 'EnVal4', 'EnVal2']))
       ]));
       t.AddIndexFromPrevious(['0','1'], [0,1]);
       t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-      t.Add(AName, p+'BitPackEnum3Array2'+e,  weStatArray([
+      t.Add(AName, GetFullName('BitPackEnum3Array2', p, e),  weStatArray([
           weStatArray(weEnum(['EnVal32', 'EnVal32', 'EnVal31'])),
           weStatArray(weEnum(['EnVal31', 'EnVal31', 'EnVal32']))
       ]));
       t.AddIndexFromPrevious(['0','1'], [0,1]);
       t.AddIndexFromPrevious(['0','1','2'], [0,1,2]);
-      //t.Add(AName, p+'BitPackEnumSet'+e,  weStatArray(weSet(['EnVal3', 'EnVal1']), weSet([]), weSet(['EnVal3']), weSet(['EnVal1'])  ));
+      //t.Add(AName, GetFullName('BitPackEnumSet', p, e),  weStatArray(weSet(['EnVal3', 'EnVal1']), weSet([]), weSet(['EnVal3']), weSet(['EnVal1'])  ));
       //t.AddIndexFromPrevious(['0','1'], [0,1]);
-      //t.Add(AName, p+'BitPackEnumSet3'+e,  weStatArray(weSet(['EnVal31', 'EnVal32']), weSet([]), weSet(['EnVal31']), weSet(['EnVal32'])  ));
+      //t.Add(AName, GetFullName('BitPackEnumSet3', p, e),  weStatArray(weSet(['EnVal31', 'EnVal32']), weSet([]), weSet(['EnVal31']), weSet(['EnVal32'])  ));
       //t.AddIndexFromPrevious(['0','1'], [0,1]);
 
 
-      t.Add(AName, p+'BitPackBoolRecord'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackBoolRecord', p, e),     weRecord([
         weBool(True).N('a'), weBool(False).N('b'), weBool(True).N('c'), weBool(True).N('d'), weBool(False).N('e')
       ], 'TBitPackBoolRecord')   );
       t.AddMemberFromPrevious();
-      t.Add(AName, p+'BitPackTinyRecord'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackTinyRecord', p, e),     weRecord([
         weCardinal(1, 'TTinyRange', SIZE_1).N('a'),
         weCardinal(1, 'TTinyRange', SIZE_1).N('b'),
         weCardinal(0, 'TTinyRange', SIZE_1).N('c'),
@@ -1175,7 +1202,7 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
         weCardinal(0, 'TTinyRange', SIZE_1).N('e')
       ], 'TBitPackTinyRecord')   );
       t.AddMemberFromPrevious();
-      t.Add(AName, p+'BitPackTinyNegRecord'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackTinyNegRecord', p, e),     weRecord([
         weInteger( 3, #1, SIZE_1).N('a'),
         weInteger(-2, #1, SIZE_1).N('b'),
         weInteger(-1, #1, SIZE_1).N('c'),
@@ -1183,39 +1210,39 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
         weInteger( 1, #1, SIZE_1).N('e')
       ], 'TBitPackTinyNegRecord')   );
       t.AddMemberFromPrevious();
-      t.Add(AName, p+'BitPackEnumRecord'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackEnumRecord', p, e),     weRecord([
         weEnum('EnVal3').N('a'), weEnum('EnVal1').N('b'), weEnum('EnVal2').N('c'), weEnum('EnVal2').N('d'), weEnum('EnVal1').N('e')
       ], 'TBitPackEnumRecord')   );
       t.AddMemberFromPrevious();
-      t.Add(AName, p+'BitPackEnum3Record'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackEnum3Record', p, e),     weRecord([
         weEnum('EnVal31').N('a'), weEnum('EnVal32').N('b'), weEnum('EnVal31').N('c'), weEnum('EnVal31').N('d'), weEnum('EnVal32').N('e')
       ], 'TBitPackEnum3Record')   );
       t.AddMemberFromPrevious();
-      t.Add(AName, p+'BitPackSetRecord'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackSetRecord', p, e),     weRecord([
         weSet(['EnVal3']).N('a'), weSet([]).N('b'), weSet(['EnVal1','EnVal2']).N('c'), weSet(['EnVal2']).N('d'), weSet(['EnVal1','EnVal3']).N('e')
       ], 'TBitPackSetRecord')   )
         .Skip([stDwarf]);
       t.AddMemberFromPrevious();
-      t.Add(AName, p+'BitPackSet3Record'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackSet3Record', p, e),     weRecord([
         weSet(['EnVal31']).N('a'), weSet([]).N('b'), weSet(['EnVal31','EnVal32']).N('c'), weSet(['EnVal32']).N('d'), weSet(['EnVal31']).N('e')
       ], 'TBitPackSet3Record')   )
         .Skip([stDwarf]);
       t.AddMemberFromPrevious();
 
-      t.Add(AName, p+'BitPackBoolArrayRecord'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackBoolArrayRecord', p, e),     weRecord([
          weStatArray(weBool([True, False, True, True])).N('a'),
          weStatArray(weBool([False, True, True, False])).N('b')
       ], 'TBitPackBoolArrayRecord')   );
       t.AddMemberFromPrevious();
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
 
-      t.Add(AName, p+'BitPackTinyArrayRecord'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackTinyArrayRecord', p, e),     weRecord([
           weStatArray(weCardinal([1, 0, 3, 2], 'TTinyRange', SIZE_1)).N('a'),
           weStatArray(weCardinal([2, 3, 0, 1], 'TTinyRange', SIZE_1)).N('b')
       ], 'TBitPackTinyArrayRecord')   );
       t.AddMemberFromPrevious();
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
-      t.Add(AName, p+'BitPackTinyNegArrayRecord'+e,     weRecord([
+      t.Add(AName, GetFullName('BitPackTinyNegArrayRecord', p, e),     weRecord([
           weStatArray(weInteger([2, -2, 0, -1], #1, SIZE_1)).N('a'),
           weStatArray(weInteger([1, 0, -1, 2],  #1, SIZE_1)).N('b')
       ], 'TBitPackTinyNegArrayRecord')   );
@@ -1223,7 +1250,7 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
       t.AddIndexFromPrevious(['0','1','2','3'], [0,1,2,3]);
 
 
-      t.Add(AName, p+'FpDbgValueSize'+e, weRecord([
+      t.Add(AName, GetFullName('FpDbgValueSize', p, e), weRecord([
         weInteger(0, 'Int64',    SIZE_8).N('Size'),
         weInteger(2, 'TBitSize', SIZE_1).N('BitSize')
       ], 'TFpDbgValueSize')   )
@@ -1232,31 +1259,31 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
 
 
 
-      t.Add(AName, p+'FiveRec'+e,            weMatch('a *:.*b *: *44',skRecord))
+      t.Add(AName, GetFullName('FiveRec', p, e),            weMatch('a *:.*b *: *44',skRecord))
         .SkipIf(ALoc = tlPointerAny);
-      t.Add(AName, p+'FiveRec'+e,     weRecord([weInteger(-22-n).N('a'), weInteger(44).N('b')], 'TRecordFive'))
+      t.Add(AName, GetFullName('FiveRec', p, e),     weRecord([weInteger(-22-n).N('a'), weInteger(44).N('b')], 'TRecordFive'))
         .SkipIf(ALoc = tlPointerAny);
 
         // FDynInt  // nil for tlconst
-      t.Add(AName, p+'Instance1'+e,   weClass([weInteger(22+n).N('FInt'), weAnsiStr(AChr1+'T').N('FAnsi')], 'TClass1'))
+      t.Add(AName, GetFullName('Instance1', p, e),   weClass([weInteger(22+n).N('FInt'), weAnsiStr(AChr1+'T').N('FAnsi')], 'TClass1'))
         .AddFlag(ehMissingFields)
         .SkipIf(ALoc in [tlConst, tlPointerAny]);
 
-      t.Add(AName, p+'Obj3'+e,   weObject([weInteger(-22).N('a'), weInteger(44).N('b'), weInteger(4000+n).N('c')],
+      t.Add(AName, GetFullName('Obj3', p, e),   weObject([weInteger(-22).N('a'), weInteger(44).N('b'), weInteger(4000+n).N('c')],
         'TObject3Int64'))
         .Skip(stDwarf3Up)  // fixed in fpc 3.3 with .SkipKind since it reports skRecord
         .IgnKind([], Compiler.Version < 029900)
         .SkipIf(ALoc = tlPointerAny);
-      t.Add(AName, p+'Obj3Ex'+e,   weObject([weInteger(-22).N('a'), weInteger(44).N('b'), weInteger(4100+n).N('c'), weInteger(555).N('d')],
+      t.Add(AName, GetFullName('Obj3Ex', p, e),   weObject([weInteger(-22).N('a'), weInteger(44).N('b'), weInteger(4100+n).N('c'), weInteger(555).N('d')],
         'TObject3Int64Ex'))
         .Skip(stDwarf3Up)  // fixed in fpc 3.3 with .SkipKind since it reports skRecord
         .SkipIf(ALoc = tlPointerAny);
-      t.Add(AName, p+'Obj3C'+e,   weObject([weInteger(22).N('a'), weInteger(44).N('b'), weInteger(4200+n).N('c')],
+      t.Add(AName, GetFullName('Obj3C', p, e),   weObject([weInteger(22).N('a'), weInteger(44).N('b'), weInteger(4200+n).N('c')],
         'TObjectCreate3Int64'))
         .AddFlag(ehMissingFields)
         .Skip(stDwarf3Up)  // fixed in fpc 3.3
         .SkipIf(ALoc in [tlConst, tlPointerAny]);
-      t.Add(AName, p+'Obj3ExC'+e,   weObject([weInteger(22).N('a'), weInteger(44).N('b'), weInteger(4300+n).N('c'), weInteger(655).N('d')],
+      t.Add(AName, GetFullName('Obj3ExC', p, e),   weObject([weInteger(22).N('a'), weInteger(44).N('b'), weInteger(4300+n).N('c'), weInteger(655).N('d')],
         'TObjectCreate3Int64Ex'))
         .AddFlag(ehMissingFields)
         .Skip(stDwarf3Up)  // fixed in fpc 3.3
@@ -1265,17 +1292,17 @@ t.Add(AName, p+'FiveDynArray'+e+'[0]',      weMatch('.*',skRecord));
 
 
 
-      t.Add(AName, p+'IntfUnknown1'+e, weMatch('.?', skInterface)) //.Skip(); // only run eval / do not crash
+      t.Add(AName, GetFullName('IntfUnknown1', p, e), weMatch('.?', skInterface)) //.Skip(); // only run eval / do not crash
         .SkipIf(ALoc = tlPointerAny);
-      t.Add(AName, p+'IntfUnknown'+e, weMatch('nil', skInterface)); //.Skip(); // only run eval / do not crash
+      t.Add(AName, GetFullName('IntfUnknown', p, e), weMatch('nil', skInterface)); //.Skip(); // only run eval / do not crash
 
 
 StartIdx := t.Count; // tlConst => Only eval the watch. No tests
-      t.Add(AName, p+'SomeFunc1Ref'+e,         weMatch('\$[0-9A-F]+ = SomeFunc1: *function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN', skFunctionRef) );
-      t.Add(AName, '@'+p+'SomeFunc1Ref'+e,     wePointer('^TFunc1') ).AddFlag(ehIgnPointerDerefData);
-      t.Add(AName, p+'SomeProc1Ref'+e,         weMatch('\$[0-9A-F]+ = SomeProc1: *procedure *\(\) *$', skProcedureRef) );
-      t.Add(AName, p+'SomeMeth1Ref'+e,         weMatch('Proc *: *\$[0-9A-F]+ *= *TMyBaseClass\.SomeMeth1.*: *TMeth1;[\s\r\n]*Self.*:.*', skRecord) );
-      t.Add(AName, p+'SomeMeth1Ref'+e+'.Proc', weMatch('\$[0-9A-F]+ = TMyBaseClass\.SomeMeth1: *function *\(.*AVal.*\): *BOOLEAN', skFunctionRef) );
+      t.Add(AName, GetFullName('SomeFunc1Ref', p, e),         weMatch('\$[0-9A-F]+ = SomeFunc1: *function *\(SOMEVALUE, Foo: LONGINT; Bar: Word; x: Byte\): *BOOLEAN', skFunctionRef) );
+      t.Add(AName, '@'+GetFullName('SomeFunc1Ref', p, e),     wePointer('^TFunc1') ).AddFlag(ehIgnPointerDerefData);
+      t.Add(AName, GetFullName('SomeProc1Ref', p, e),         weMatch('\$[0-9A-F]+ = SomeProc1: *procedure *\(\) *$', skProcedureRef) );
+      t.Add(AName, GetFullName('SomeMeth1Ref', p, e),         weMatch('Proc *: *\$[0-9A-F]+ *= *TMyBaseClass\.SomeMeth1.*: *TMeth1;[\s\r\n]*Self.*:.*', skRecord) );
+      t.Add(AName, GetFullName('SomeMeth1Ref', p, e)+'.Proc', weMatch('\$[0-9A-F]+ = TMyBaseClass\.SomeMeth1: *function *\(.*AVal.*\): *BOOLEAN', skFunctionRef) );
 for i := StartIdx to t.Count-1 do
   t.Tests[i].SkipIf(ALoc in [tlConst, tlPointerAny]);
 
@@ -1522,6 +1549,8 @@ begin
 
     AddWatches(t, 'glob var pointer',            'gvp_', 001, 'B', tlPointer, '^'); // pointer
     AddWatches(t, 'glob var named pointer',      'gvpt_', 001, 'B', tlPointer, '^'); // pointer
+    AddWatches(t, 'glob var type cast pointer',  'Px%%(gv_aptr_', 001, 'B', tlPointer, '[0])^'); // pointer
+//    AddWatches(t, 'glob var type cast pointer 2',  '%%(gv_aptr_', 001, 'B', tlPointer, '[0]^)'); // pointer
     (*
       ptr[0] is tested above: glob var (@)[0]',   '(@gv', 001, 'B', tlAny, ')[0]'
       More pointer ops tested in Expression testcase
