@@ -120,6 +120,7 @@ resourcestring
   rsLanguageCorsican     = 'Corsican';
   rsLanguageSinhala      = 'Sinhala';
   rsLanguageKorean       = 'Korean';
+  rsLanguageLao          = 'Lao';
 
 implementation
 
