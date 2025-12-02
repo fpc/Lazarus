@@ -330,6 +330,10 @@ msgstr "יפנית"
 msgid "Korean"
 msgstr ""
 
+#: ideutilspkgstrconsts.rslanguagelao
+msgid "Lao"
+msgstr ""
+
 #: ideutilspkgstrconsts.rslanguagelithuanian
 msgid "Lithuanian"
 msgstr "לטבית"

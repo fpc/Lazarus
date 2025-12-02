@@ -324,6 +324,10 @@ msgstr "Японский"
 msgid "Korean"
 msgstr "Корейский"
 
+#: ideutilspkgstrconsts.rslanguagelao
+msgid "Lao"
+msgstr "Лаосский"
+
 #: ideutilspkgstrconsts.rslanguagelithuanian
 msgid "Lithuanian"
 msgstr "Литовский"
