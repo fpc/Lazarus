@@ -2477,33 +2477,29 @@ begin
   case FullSize of
     {$IF DBG_HAS_EXTENDED}
     DBG_EXTENDED_SIZE: begin
+      FFloatPrecission := fpExtended;
       if not Context.ReadExtended(OrdOrDataAddr, Size, FValue.FValueExt) then
-        SetLastError(Context.LastMemError)
-      else
-        FFloatPrecission := fpExtended;
+        SetLastError(Context.LastMemError);
     end;
     {$ENDIF}
     SizeOf(double): begin
+      FFloatPrecission := fpDouble;
       if not Context.ReadDouble(OrdOrDataAddr, Size, FValue.FValueDouble) then begin
         SetLastError(Context.LastMemError);
         FValue.FValueDouble := 0;
-      end
-      else
-        FFloatPrecission := fpDouble;
+      end;
     end;
     SizeOf(Single): begin
+      FFloatPrecission := fpSingle;
       if not Context.ReadSingle(OrdOrDataAddr, Size, FValue.FValueSingle) then
-        SetLastError(Context.LastMemError)
-      else
-        FFloatPrecission := fpSingle;
+        SetLastError(Context.LastMemError);
     end;
     SizeOf(Real48): begin
+      FFloatPrecission := fpDouble;
       if not Context.ReadDouble(OrdOrDataAddr, Size, FValue.FValueDouble) then begin
         SetLastError(Context.LastMemError);
         FValue.FValueDouble := 0;
-      end
-      else
-        FFloatPrecission := fpDouble;
+      end;
     end;
     else begin
       SetLastError(CreateError(fpErrorBadFloatSize));
