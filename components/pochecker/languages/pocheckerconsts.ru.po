@@ -83,6 +83,10 @@ msgstr "Японский"
 msgid "Korean"
 msgstr "Корейский"
 
+#: pocheckerconsts.rs_lang_lo
+msgid "Lao"
+msgstr "Лаосский"
+
 #: pocheckerconsts.rs_lang_lt
 msgid "Lithuanian"
 msgstr "Литовский"
