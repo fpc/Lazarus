@@ -2271,6 +2271,7 @@ procedure TCustomShellListView.Loaded;
 begin
   inherited Loaded;
   FixColumnIDs;
+  AdjustColWidths;
   PopulateWithRoot;
 end;
 
