@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="SynEdit"><module name="SynEditLines"><element name="TSynEditLines.OwnObjects"><short>Controls if SynEdit will destroy objects stored in Lines.Objects[] when a line is deleted</short><descr>TSynEdit.Lines.Objects[n] provide storage for objects provided by the user. If this property is set, SynEdit will destroy any objcet stored for a line, if that line is deleted.
+</descr>
+      </element><element name="TSynEditLines.OnBeforeDeleteLines"><short>Event when line(s) are removed from SynEdits textbuffer</short><descr>This event is called when one or more lines are about to be removed from the SynEdit's textbuffer.
+
+The Sender of the event may be nil, if the lines are changed without BeginUpdate on the editor. If the text buffer is shared, and several editors are in Begin/EndUpdate state, then the Sender is the first editor that was set to be updating.
+
+The event is called before objects are destroyed by Lines.OwnObjects, if that is true.
+
+Durning this event the SynEdit must be treated as read only, with the exception of the SynEdit.Lines.Objects[] property.
+</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
