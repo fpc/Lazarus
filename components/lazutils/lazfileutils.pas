@@ -135,6 +135,9 @@ Function FileCreateUtf8(Const FileName : String; ShareMode : Integer; Rights : C
 
 function FileSizeUtf8(const Filename: string): int64;
 function GetFileDescription(const AFilename: string): string;
+{$if defined(UNIX)}
+function GetPermissions(const AFilename: string): string;
+{$endif}
 function ReadAllLinks(const Filename: string;
                  {%H-}ExceptionOnError: boolean): string; // if a link is broken returns ''
 function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
