@@ -32,5 +32,10 @@ begin
   for C{guesstype:ansichar} in ReturnChars do ;
   for D{guesstype:TEnum} in ReturnSet1 do ;
   for E{guesstype:low(TSet2)..high(TSet2)} in ReturnSet2 do ;
+
+  for F{guesstype:byte} := low(TByteSet) to high(TByteSet) do ;
+  for G{guesstype:TEnum} := low(TSet1) to high(TSet1) do ;
+  for H{guesstype:low(TSet2)..high(TSet2)} := low(TSet2) to high(TSet2) do ;
+
 end.
 

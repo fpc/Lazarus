@@ -12168,6 +12168,10 @@ begin
             and (ParamNode.Parent.Desc=ctnTypeDefinition) then
               Result.Context.Node:=ParamNode.Parent;
 
+          ctnSetType:
+            if (ParamNode.FirstChild<>nil) then
+              Result.Context.Node:=ParamNode.FirstChild;
+
           ctnOpenArrayType:
             // array without explicit range -> open array
             // Low(Open array) is ordinal integer
@@ -15257,7 +15261,18 @@ begin
           and (FindContext.Node.Parent.Desc=ctnTypeDefinition)
           then
             Result:=GetIdentifier(
-                     @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
+                     @FindContext.Tool.Src[FindContext.Node.Parent.StartPos])
+          else
+          if (FindContext.Node.Parent<>nil)
+          and (FindContext.Node.Parent.Desc=ctnSetType)
+          and (FindContext.Node.Parent.Parent<>nil)
+          and (FindContext.Node.Parent.Parent.Desc=ctnTypeDefinition)
+          then begin
+            Result:=GetIdentifier(
+                     @FindContext.Tool.Src[FindContext.Node.Parent.Parent.StartPos]);
+            if Result <> '' then
+              Result:=format('low(%s)..high(%s)', [Result, Result]);
+          end;
 
         ctnProperty,ctnGlobalProperty:
           begin
