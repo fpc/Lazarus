@@ -1842,7 +1842,7 @@ procedure TSynPluginMultiCaretKeyStrokes.ResetDefaults;
     end;
   end;
 begin
-  inherited ResetDefaults;
+  Clear;
   AddKey(ecPluginMultiCaretToggleCaret, VK_SPACE, [ssShift, ssCtrl]);
   AddKey(ecPluginMultiCaretClearAll, VK_ESCAPE, [ssShift, ssCtrl]);
 end;
