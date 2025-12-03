@@ -9,7 +9,8 @@ interface
 
 uses
   TextMateGrammar, xHyperLinksDecorator, xregexpr, xregexpr_unicodedata, LazEditMiscProcs, 
-  LazEditHighlighterUtils, LazEditTextGridPainter, LazEditTextAttributes, LazEditLineItemLists;
+  LazEditHighlighterUtils, LazEditTextGridPainter, LazEditTextAttributes, LazEditLineItemLists, 
+  LazEditHighlighter;
 
 implementation
 

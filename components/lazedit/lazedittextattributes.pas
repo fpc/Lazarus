@@ -319,7 +319,7 @@ type
     property StyleMask stored GetStyleMaskStored;
   end;
 
-  TLazEditCustomHighlighter = class(TComponent)
+  TLazEditAttributeOwner = class(TComponent)
   protected
     procedure AddAttribute(AAttrib: TLazEditTextAttribute); virtual; abstract;
     procedure RemoveAttribute(AAttrib: TLazEditTextAttribute); virtual; abstract;
@@ -345,7 +345,7 @@ type
     FBaseName: string;
     FBaseStoredName: string;
     FOnAttributeChange: TNotifyEvent;
-    FOwner: TLazEditCustomHighlighter;
+    FOwner: TLazEditAttributeOwner;
     procedure DoAttribChaged(Sender: TObject);
     function GetAttrib(Index: Integer): TLazEditTextAttributeModifier;
     function GetItem(Index: Integer): TLazEditTextAttributeModifierCollectionItem;
@@ -357,7 +357,7 @@ type
   protected
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
   public
-    constructor Create(AnOwner: TLazEditCustomHighlighter);
+    constructor Create(AnOwner: TLazEditAttributeOwner);
     function Add: TLazEditTextAttributeModifierCollectionItem;
   public
     property BaseName: string read FBaseName write SetBaseName;
@@ -1165,7 +1165,7 @@ begin
   ResetNames;
 end;
 
-constructor TLazEditTextAttributeModifierCollection.Create(AnOwner: TLazEditCustomHighlighter);
+constructor TLazEditTextAttributeModifierCollection.Create(AnOwner: TLazEditAttributeOwner);
 begin
   FOwner := AnOwner;
   inherited Create(TLazEditTextAttributeModifierCollectionItem);

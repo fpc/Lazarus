@@ -59,6 +59,10 @@ Additional licenses may be granted in each individual file. See the headers in e
         <Filename Value="lazeditlineitemlists.pas"/>
         <UnitName Value="LazEditLineItemLists"/>
       </Item>
+      <Item>
+        <Filename Value="lazedithighlighter.pas"/>
+        <UnitName Value="LazEditHighlighter"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

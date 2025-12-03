@@ -610,7 +610,6 @@ type
     FCommentCurlyAttri: TSynHighlighterAttributesModifier_Eol;
     FCommentSlashAttri: TSynHighlighterAttributesModifier_Eol;
     FNestedBracketAttribs: TLazEditTextAttributeModifierCollection;
-    FNestedBracketMergedMarkup: TLazEditTextAttributeMergeResult;
     FHighNestedBracketAttrib: integer;
     FSynCustomTokens: array of TSynPasSynCustomToken;
     FNeedCustomTokenBuild: boolean;
@@ -619,13 +618,6 @@ type
       Lists: array of TSynPasSynCustomTokenInfoListEx;
     end;
     FCustomTokenMarkup, FCustomCommentTokenMarkup: TSynHighlighterAttributesModifier;
-    FCustomTokenMergedMarkup, FCustomCommentTokenMergedMarkup: TLazEditTextAttributeMergeResult;
-
-    FCurIDEDirectiveAttri: TLazEditTextAttributeMergeResult;
-    FCurCaseLabelAttri: TLazEditTextAttributeMergeResult;
-    FCurStructMemberExtraAttri: TLazEditTextAttributeMergeResult;
-    FCurProcTypeDeclExtraAttr: TLazEditTextAttributeMergeResult;
-    FCurPasDocAttri: TLazEditTextAttributeMergeResult;
 
     fAsmStart: Boolean;
     FExtendedKeywordsMode: Boolean;
@@ -3815,7 +3807,6 @@ begin
   FIDEDirectiveAttri := TSynHighlighterAttributesModifier_Eol.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective, [lafPastEOL]);
   FIDEDirectiveAttri.Features:= [lafPastEOL];
   AddAttribute(FIDEDirectiveAttri);
-  FCurIDEDirectiveAttri := TLazEditTextAttributeMergeResult.Create;
   fIdentifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   AddAttribute(fIdentifierAttri);
   fKeyAttri := TSynHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
@@ -3857,13 +3848,10 @@ begin
   AddAttribute(FGotoLabelAttr);
   FStructMemberAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrStructMember, SYNS_XML_AttrStructMember);
   AddAttribute(FStructMemberAttr);
-  FCurStructMemberExtraAttri := TLazEditTextAttributeMergeResult.Create(@SYNS_AttrStructMember, SYNS_XML_AttrStructMember);
 
 
   FCaseLabelAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   AddAttribute(FCaseLabelAttri);
-  FCurCaseLabelAttri := TLazEditTextAttributeMergeResult.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
-  FCurProcTypeDeclExtraAttr := TLazEditTextAttributeMergeResult.Create(@SYNS_AttrProcedureHeaderName, SYNS_XML_AttrProcedureHeaderName);
   fDirectiveAttri := TSynHighlighterAttributes_Eol.Create(@SYNS_AttrDirective, SYNS_XML_AttrDirective, [lafPastEOL]);
   fDirectiveAttri.Style:= [fsItalic];
   fDirectiveAttri.Features:= [lafPastEOL];
@@ -3878,15 +3866,10 @@ begin
   fPasDocUnknownAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPasDocUnknown, SYNS_XML_AttrPasDocUnknown);
   fPasDocUnknownAttr.Clear;
   AddAttribute(fPasDocUnknownAttr);
-  FCurPasDocAttri := TLazEditTextAttributeMergeResult.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   FPasDocWordList := TStringList.Create;
-
-  FCustomTokenMergedMarkup := TLazEditTextAttributeMergeResult.Create;
-  FCustomCommentTokenMergedMarkup := TLazEditTextAttributeMergeResult.Create;
 
   FNestedBracketAttribs := TLazEditTextAttributeModifierCollection.Create(Self);
   FNestedBracketAttribs.OnAttributeChange := @DefHighlightChange;
-  FNestedBracketMergedMarkup := TLazEditTextAttributeMergeResult.Create;
 
   CompilerMode:=pcmDelphi;
   SetAttributesOnChange(@DefHighlightChange);
@@ -3907,19 +3890,11 @@ var
   i, j: Integer;
 begin
   DestroyDividerDrawConfig;
-  FreeAndNil(FCurCaseLabelAttri);
-  FreeAndNil(FCurIDEDirectiveAttri);
-  FreeAndNil(FCurProcTypeDeclExtraAttr);
-  FreeAndNil(FCurStructMemberExtraAttri);
-  FreeAndNil(FCurPasDocAttri);
-  FreeAndNil(FCustomTokenMergedMarkup);
-  FreeAndNil(FCustomCommentTokenMergedMarkup);
   FreeAndNil(FPasDocWordList);
   CustomTokenCount := 0;
   for i := 0 to 255 do
     for j := 0 to length(FCustomTokenInfo[i].Lists) - 1 do
       FreeAndNil(FCustomTokenInfo[i].Lists[j].List);
-  FNestedBracketMergedMarkup.Free;
   FNestedBracketAttribs.Free;
   inherited Destroy;
 end;
@@ -5636,18 +5611,15 @@ begin
   else
     Result := nil;
   end;
+  if Result <> nil then
+    Result.SetFrameBoundsLog(ToPos(fTokenPos), ToPos(Run));
 end;
+
 function TSynPasSyn.GetTokenAttributeEx: TLazCustomEditTextAttribute;
 var
   tid: TtkTokenKind;
   i, x1, x2, x1b, x2b: Integer;
   attr: TLazEditTextAttributeModifier;
-
-  procedure InitMergeRes(AMergeRes: TLazEditTextAttributeMergeResult; AnAttr: TLazCustomEditTextAttribute);
-  begin
-    AMergeRes.Assign(AnAttr);
-    AMergeRes.SetFrameBoundsLog(x1, x2);
-  end;
 begin
   Result := GetTokenAttribute;
   if Result = nil then
@@ -5659,15 +5631,11 @@ begin
   x2 := ToPos(Run);
 
   if tid = tkIDEDirective then begin
-    FCurIDEDirectiveAttri.Assign(Result);
-    FCurIDEDirectiveAttri.SetFrameBoundsLog(x1, x2);
     FTokenID := tkComment; // for IsCommentStart/End
     x1b := x1;  if not GetTokenIsCommentStart(True) then x1b := 1;
     x2b := x2;  if (not GetTokenIsCommentEnd)       then x2b := fLineLen;
     FTokenID := tkIDEDirective; // restore
-    FIDEDirectiveAttri.SetFrameBoundsLog(x1b, x2b);
-    FCurIDEDirectiveAttri.Merge(FIDEDirectiveAttri);
-    Result := FCurIDEDirectiveAttri;
+    MergeModifierToTokenAttribute(Result, FIDEDirectiveAttri, x1b, x2b);
   end;
 
   if FTokenIsCaseLabel and
@@ -5675,38 +5643,21 @@ begin
       (FCaseLabelAttriMatchesElseOtherwise and (tid = tkKey) )
     )
   then begin
-    FCurCaseLabelAttri.Assign(Result);
-    FCurCaseLabelAttri.SetFrameBoundsLog(x1, x2);
-    FCaseLabelAttri.SetFrameBoundsLog(x1, x2);
-    FCurCaseLabelAttri.Merge(FCaseLabelAttri);
-    Result := FCurCaseLabelAttri;
+    MergeModifierToTokenAttribute(Result, FCaseLabelAttri, x1, x2);
   end;
 
   if FIsPasDocKey then begin
-    InitMergeRes(FCurPasDocAttri, Result);
-    fPasDocKeyWordAttri.SetFrameBoundsLog(x1, x2);
-    FCurPasDocAttri.Merge(fPasDocKeyWordAttri);
-    Result := FCurPasDocAttri;
+    MergeModifierToTokenAttribute(Result, fPasDocKeyWordAttri, x1, x2);
   end
   else
   if FIsPasDocSym then begin
-    InitMergeRes(FCurPasDocAttri, Result);
-    fPasDocSymbolAttri.SetFrameBoundsLog(x1, x2);
-    FCurPasDocAttri.Merge(fPasDocSymbolAttri);
-    Result := FCurPasDocAttri;
+    MergeModifierToTokenAttribute(Result, fPasDocSymbolAttri, x1, x2);
   end
   else
   if FIsPasUnknown then begin
-    InitMergeRes(FCurPasDocAttri, Result);
-    fPasDocUnknownAttr.SetFrameBoundsLog(x1, x2);
-    FCurPasDocAttri.Merge(fPasDocUnknownAttr);
-    Result := FCurPasDocAttri;
+    MergeModifierToTokenAttribute(Result, fPasDocUnknownAttr, x1, x2);
   end;
 
-  if FTokenTypeDeclExtraAttrib <> eaNone then begin
-    FCurProcTypeDeclExtraAttr.Assign(Result);
-    FCurProcTypeDeclExtraAttr.SetFrameBoundsLog(x1, x2);
-  end;
   case FTokenTypeDeclExtraAttrib of
     eaProcName: begin
         if (tid in [tkIdentifier, tkSymbol]) and
@@ -5714,77 +5665,47 @@ begin
            (FOldRange * [rsAfterEqualOrColon, rsAfterEqual] = []) and
            (PasCodeFoldRange.BracketNestLevel = 0)
         then begin
-          FProcedureHeaderNameAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderNameAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FProcedureHeaderNameAttr, x1, x2);
         end;
       end;
     eaPropertyName: begin
-          FPropertyNameAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FPropertyNameAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FPropertyNameAttr, x1, x2);
       end;
     eaProcParam: begin
-          FProcedureHeaderParamAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderParamAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FProcedureHeaderParamAttr, x1, x2);
       end;
     eaProcType: begin
-          FProcedureHeaderTypeAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderTypeAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FProcedureHeaderTypeAttr, x1, x2);
       end;
     eaProcValue: begin
-          FProcedureHeaderValueAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderValueAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FProcedureHeaderValueAttr, x1, x2);
       end;
     eaProcResult: begin
-          FProcedureHeaderResultAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FProcedureHeaderResultAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FProcedureHeaderResultAttr, x1, x2);
       end;
     eaDeclVarName: begin
-          FDeclarationVarConstNameAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FDeclarationVarConstNameAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FDeclarationVarConstNameAttr, x1, x2);
       end;
     eaDeclTypeName: begin
-          FDeclarationTypeNameAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FDeclarationTypeNameAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FDeclarationTypeNameAttr, x1, x2);
       end;
     eaDeclType: begin
-          FDeclarationTypeAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FDeclarationTypeAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FDeclarationTypeAttr, x1, x2);
       end;
     eaDeclValue: begin
-          FDeclarationValueAttr.SetFrameBoundsLog(x1, x2);
-          FCurProcTypeDeclExtraAttr.Merge(FDeclarationValueAttr);
-          Result := FCurProcTypeDeclExtraAttr;
+          MergeModifierToTokenAttribute(Result, FDeclarationValueAttr, x1, x2);
       end;
   end;
 
   if eaStructMemeber in FTokenExtraAttribs then begin
-    FCurStructMemberExtraAttri.Assign(Result);
-    FCurStructMemberExtraAttri.SetFrameBoundsLog(x1, x2);
-    FStructMemberAttr.SetFrameBoundsLog(x1, x2);
-    FCurStructMemberExtraAttri.Merge(FStructMemberAttr);
-    Result := FCurStructMemberExtraAttri;
+    MergeModifierToTokenAttribute(Result, FStructMemberAttr, x1, x2);
   end;
 
   if FCustomCommentTokenMarkup <> nil then begin
-    InitMergeRes(FCustomCommentTokenMergedMarkup, Result);
-    FCustomCommentTokenMarkup.SetFrameBoundsLog(x1, x2);
-    FCustomCommentTokenMergedMarkup.Merge(FCustomCommentTokenMarkup);
-    Result := FCustomCommentTokenMergedMarkup;
+    MergeModifierToTokenAttribute(Result, FCustomCommentTokenMarkup, x1, x2);
   end;
   if FCustomTokenMarkup <> nil then begin
-    InitMergeRes(FCustomTokenMergedMarkup, Result);
-    FCustomTokenMarkup.SetFrameBoundsLog(x1, x2);
-    FCustomTokenMergedMarkup.Merge(FCustomTokenMarkup);
-    Result := FCustomTokenMergedMarkup;
+    MergeModifierToTokenAttribute(Result, FCustomTokenMarkup, x1, x2);
   end;
 
   if (FTokenID = tkSymbol) and (Run - fTokenPos = 1) and (fLine[fTokenPos] in ['(', ')'])
@@ -5797,10 +5718,7 @@ begin
     if (i >= 0) and (i < FNestedBracketAttribs.Count) then begin
       attr := FNestedBracketAttribs.Attribs[i];
       if attr.IsEnabled then begin
-        FNestedBracketMergedMarkup.Assign(Result);
-        attr.SetFrameBoundsLog(x1, x2);
-        FNestedBracketMergedMarkup.Merge(attr);
-        Result := FNestedBracketMergedMarkup;
+        MergeModifierToTokenAttribute(Result, attr, x1, x2);
       end;
     end;
   end;
@@ -5886,8 +5804,7 @@ begin
 end;
 
 function TSynPasSyn.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
-  function Merge(MergeRes: TLazEditTextAttributeMergeResult;
-    Base: TSynHighlighterAttributes;
+  function Merge(Base: TSynHighlighterAttributes;
     Modifier: TSynHighlighterAttributesModifier
   ): TLazCustomEditTextAttribute;
   begin
@@ -5898,20 +5815,16 @@ function TSynPasSyn.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
     if not (lafPastEOL in Modifier.Features) then
       exit;
 
-    if Result = nil then begin
-      Result := Modifier;
-    end
-    else begin
-      MergeRes.Assign(Base);
-      MergeRes.Merge(Modifier);
-      Result := MergeRes;
-    end;
+    if Result = nil then
+      Result := Modifier
+    else
+      MergeModifierToTokenAttribute(Result, Modifier, -1, -1, True);
   end;
 
 begin
   Result := nil;
   if fRange * [rsIDEDirective] <> [] then begin
-    Result := Merge(FCurIDEDirectiveAttri, fCommentAttri, FIDEDirectiveAttri);
+    Result := Merge(fCommentAttri, FIDEDirectiveAttri);
   end
   else
   if fRange * [rsDirective] <> [] then begin
@@ -5920,16 +5833,16 @@ begin
   end
   else
   if fRange * [rsAnsi] <> [] then begin
-    Result := Merge(FCustomCommentTokenMergedMarkup, fCommentAttri, FCommentAnsiAttri);
+    Result := Merge(fCommentAttri, FCommentAnsiAttri);
   end
   else
   if fRange * [rsBor] <> [] then begin
-    Result := Merge(FCustomCommentTokenMergedMarkup, fCommentAttri, FCommentCurlyAttri);
+    Result := Merge(fCommentAttri, FCommentCurlyAttri);
   end
   else
   if fRange * [rsSlash] <> [] then begin
     if FHadSlashLastLine or (LastLinePasFoldLevelFix(fLineNumber+1, FOLDGROUP_PASCAL, True) = 0) then begin
-      Result := Merge(FCustomCommentTokenMergedMarkup, fCommentAttri, FCommentSlashAttri);
+      Result := Merge(fCommentAttri, FCommentSlashAttri);
     end;
   end
   else

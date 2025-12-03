@@ -145,7 +145,6 @@ type
     fTextAttri: TSynHighlighterAttributes;
     fEntityRefAttri: TSynHighlighterAttributes;
     fProcessingInstructionAttri: TSynHighlighterAttributesModifier;
-    fProcessingInstructionAttriResult: TLazEditTextAttributeMergeResult;
     fNamespaceColonAttri: TSynHighlighterAttributesModifier;
     fNamespaceDefinitionAttri: TSynHighlighterAttributesModifier;
     fNamespacePrefixAttri: TSynHighlighterAttributesModifier;
@@ -204,7 +203,6 @@ type
     class function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
@@ -279,7 +277,6 @@ begin
   fSpaceAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrWhitespace, SYNS_XML_AttrWhitespace);
   fEntityRefAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrEntityReference, SYNS_XML_AttrEntityReference);
   fProcessingInstructionAttri:= TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcessingInstr, SYNS_XML_AttrProcessingInstr);
-  fProcessingInstructionAttriResult := TLazEditTextAttributeMergeResult.Create;
   fProcessingInstructionSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrProcessingInstrSym, SYNS_XML_AttrProcessingInstrSym);
   fCDATAAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCDATASection, SYNS_XML_AttrCDATASection);
   fCommentAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
@@ -365,12 +362,6 @@ begin
   MakeMethodTables;
   fRange := rsText;
   fDefaultFilter := SYNS_FilterXML;
-end;
-
-destructor TSynXMLSyn.Destroy;
-begin
-  inherited Destroy;
-  fProcessingInstructionAttriResult.Free;
 end;
 
 procedure TSynXMLSyn.MakeMethodTables;
@@ -972,6 +963,8 @@ begin
 end;
 
 function TSynXMLSyn.GetTokenAttribute: TLazEditTextAttribute;
+var
+  x1, x2: Integer;
 begin
 case fTokenID of
     tkElement: Result:= fElementAttri;
@@ -1000,77 +993,49 @@ case fTokenID of
   else
     Result := nil;
   end;
+  if Result <> nil then begin
+    x1 := ToPos(fTokenPos);
+    x2 := ToPos(Run);
+    case fTokenDecorator of
+      tdNameSpacePrefix,
+      tdNameSpaceNoneStart:  begin          x2 := fLineLen + 1; end;
+      tdNameSpaceColon:      begin x1 := 1; x2 := fLineLen + 1; end;
+      tdNameSpaceDefinition,
+      tdNameSpaceNoneEnd:    begin x1 := 1;                     end;
+    end;
+    Result.SetFrameBoundsLog(x1, x2);
+  end;
 end;
 
 function TSynXMLSyn.GetTokenAttributeEx: TLazCustomEditTextAttribute;
 var
   x1, x2: Integer;
-  DoneMRes: Boolean;
-
-  procedure InitMergeRes;
-  var
-    a, b: Integer;
-  begin
-    x1 := ToPos(fTokenPos);
-    x2 := ToPos(Run);
-    if DoneMRes then
-      exit;
-
-    DoneMRes := True;
-    //fProcessingInstructionAttriResult.Clear;
-    //fProcessingInstructionAttriResult.SetFrameBoundsLog(x1, x2);
-
-    //if Result <> fProcessingInstructionAttriResult then begin
-      a := x1;
-      b := x2;
-      case fTokenDecorator of
-        tdNameSpacePrefix,
-        tdNameSpaceNoneStart:  begin         b := fLineLen + 1; end;
-        tdNameSpaceColon:      begin a := 1; b := fLineLen + 1; end;
-        tdNameSpaceDefinition,
-        tdNameSpaceNoneEnd:    begin a := 1;                    end;
-      end;
-      Result.SetFrameBoundsLog(a, b);
-      fProcessingInstructionAttriResult.Assign(Result);
-      //fProcessingInstructionAttriResult.Merge(Result);
-    //end;
-    fProcessingInstructionAttriResult.SetFrameBoundsLog(x1, x2);
-    Result:= fProcessingInstructionAttriResult;
-  end;
-
 begin
   Result := GetTokenAttribute;
-  Result.SetFrameBoundsLog(-1,-1);
-  DoneMRes := False;
+  x1 := ToPos(fTokenPos);
+  x2 := ToPos(Run);
 
   if (rfProcessingInstruction in fRangeFlags) or
      (fTokenID = tkProcessingInstruction)
   then begin
-    InitMergeRes;
-
     if (not(rfProcessingInstruction in fRangeFlags)) or (fTokenID <> tkProcessingInstruction) then
       x1 := 1;
     if (rfProcessingInstruction in fRangeFlags) then
       x2 := fLineLen + 1;
-    fProcessingInstructionAttri.SetFrameBoundsLog(x1, x2);
-    fProcessingInstructionAttriResult.Merge(fProcessingInstructionAttri);
+    MergeModifierToTokenAttribute(Result, fProcessingInstructionAttri, x1, x2);
+    x1 := ToPos(fTokenPos);
+    x2 := ToPos(Run);
   end;
 
   case fTokenDecorator of
     tdNameSpacePrefix: begin
-      InitMergeRes;
-      fNamespacePrefixAttri.SetFrameBoundsLog(x1, x2);
-      fProcessingInstructionAttriResult.Merge(fNamespacePrefixAttri);
+      MergeModifierToTokenAttribute(Result, fNamespacePrefixAttri, x1, x2);
     end;
     tdNameSpaceColon: begin
-      InitMergeRes;
-      fNamespaceColonAttri.SetFrameBoundsLog(x1, x2);
-      fProcessingInstructionAttriResult.Merge(fNamespaceColonAttri);
+      MergeModifierToTokenAttribute(Result, fNamespaceColonAttri, x1, x2);
     end;
     tdNameSpaceDefinition: begin
-      InitMergeRes;
-      fNamespaceDefinitionAttri.SetFrameBoundsLog(x1, x2);
-      fProcessingInstructionAttriResult.Merge(fNamespaceDefinitionAttri);
+      MergeModifierToTokenAttribute(Result, fNamespaceDefinitionAttri, x1, x2);
     end;
   end;
 end;

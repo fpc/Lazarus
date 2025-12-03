@@ -38,7 +38,8 @@ uses
   // LazUtils
   LazUTF8, LazMethodList,
   // SynEdit
-  SynEditTypes, SynEditTextBase, SynEditMiscProcs, LazEditTextAttributes, LazEditHighlighterUtils;
+  SynEditTypes, SynEditTextBase, SynEditMiscProcs, LazEditTextAttributes, LazEditHighlighterUtils,
+  LazEditHighlighter;
 
 type
   TSynHighlighterRangeList = TLazHighlighterLineRangeList deprecated 'use TLazHighlighterLineRangeList or TLazHighlighterLineRangeShiftList / to be removed in 5.99';
@@ -284,18 +285,9 @@ type
     function GetRange: Pointer; virtual;
     function GetToken: String; virtual; abstract;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); virtual; abstract;
-    (* GetTokenAttribute / GetEndOfLineAttribute
-       The base attribute
-     * GetTokenAttributeEx / GetEndOfLineAttributeEx
-       The final attribute with merged modifiers (if HL has modifiers)
-    *)
-    function GetEndOfLineAttribute: TLazEditTextAttribute; virtual; // valid after line was scanned to EOL
-    function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; virtual; // valid after line was scanned to EOL
-    function GetTokenAttribute: TLazEditTextAttribute; virtual; abstract;
-    function GetTokenAttributeEx: TLazCustomEditTextAttribute; virtual;
     function GetTokenKind: integer; virtual; abstract;
-    function GetTokenPos: Integer; virtual; abstract; // 0-based
-    function GetTokenLen: Integer; virtual;
+    //function GetTokenPos: Integer; override; // 0-based
+    function GetTokenLen: Integer; override;
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
     procedure Next; virtual; abstract;
     procedure NextToEol;
@@ -1007,21 +999,6 @@ end;
 function TSynCustomHighlighter.GetIdentChars: TSynIdentChars;
 begin
   Result := ['_', 'A'..'Z', 'a'..'z', '0'..'9'];
-end;
-
-function TSynCustomHighlighter.GetEndOfLineAttribute: TLazEditTextAttribute;
-begin
-  Result := nil;
-end;
-
-function TSynCustomHighlighter.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
-begin
-  Result := GetEndOfLineAttribute;
-end;
-
-function TSynCustomHighlighter.GetTokenAttributeEx: TLazCustomEditTextAttribute;
-begin
-  Result := GetTokenAttribute;
 end;
 
 function TSynCustomHighlighter.GetTokenLen: Integer;
