@@ -49,11 +49,12 @@ uses
   // Codetools
   FileProcs,
   // IdeIntf
-  IdeIntfStrConsts, IDEExternToolIntf, PropEdits, IDEDialogs, IDECommands, IDEUtils,
+  IdeIntfStrConsts, IDEExternToolIntf, PropEdits, IDEDialogs, IDECommands,
+  IDEUtils, IDEMsgIntf,
   // IdeConfig
   TransferMacros, EnvironmentOpts,
   // IDE
-  LazarusIDEStrConsts, KeyMapping;
+  LazarusIDEStrConsts, KeyMapping, ExtTools;
 
 const
   ExternalToolOptionsVersion = 3;
@@ -540,17 +541,16 @@ begin
   fItems.Move(CurIndex,NewIndex);
 end;
 
-function TExternalUserTools.Run(Index: integer; ShowAbort: boolean
-  ): TModalResult;
+function TExternalUserTools.Run(Index: integer; ShowAbort: boolean): TModalResult;
 var
   Item: TExternalUserTool;
   Tool: TIDEExternalToolOptions;
 begin
   Result:=mrCancel;
-  if (Index < 0) or (Index >= fItems.Count) then
-    exit;
-
+  Assert((Index>=0) and (Index<fItems.Count), 'TExternalUserTools.Run: Index out of bounds.');
   Item:=Items[Index];
+  if (ExternalToolsRef.RunningCount=0) and (Item.Parsers.Count>0) then
+    IDEMessagesWindow.Clear;
   Tool:=TIDEExternalToolOptions.Create;
   try
     Tool.Title:=Item.Title;

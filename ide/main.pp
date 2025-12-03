@@ -5093,11 +5093,7 @@ var
 begin
   if not (Sender is TIDEMenuItem) then exit;
   Index:=itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
-  if (Index<0)
-  or (Index>=ExternalUserTools.Count)
-  then exit;
-  if ExternalToolsRef.RunningCount=0 then
-    IDEMessagesWindow.Clear;
+  if (Index<0) or (Index>=ExternalUserTools.Count) then exit;
   DoRunExternalTool(Index,false);
 end;
 
