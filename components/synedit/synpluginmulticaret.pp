@@ -1843,8 +1843,8 @@ procedure TSynPluginMultiCaretKeyStrokes.ResetDefaults;
   end;
 begin
   inherited ResetDefaults;
-  AddKey(ecPluginMultiCaretToggleCaret, VK_SPACE, [ssShift, ssCtrl], [ssShift,ssCtrl,ssAlt]);
-  AddKey(ecPluginMultiCaretClearAll, VK_ESCAPE, [ssShift, ssCtrl], [ssShift,ssCtrl,ssAlt]);
+  AddKey(ecPluginMultiCaretToggleCaret, VK_SPACE, [ssShift, ssCtrl]);
+  AddKey(ecPluginMultiCaretClearAll, VK_ESCAPE, [ssShift, ssCtrl]);
 end;
 
 { TSynEditUndoMultiCaret }
