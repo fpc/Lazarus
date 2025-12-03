@@ -4198,8 +4198,8 @@ resourcestring
   lisEdtExtToolProgramfilename = 'Program Filename:';
   lisEdtExtToolParameters = 'Parameters:';
   lisEdtExtToolWorkingDirectory = 'Working Directory:';
-  lisEdtExtToolScanOutputForFreePascalCompilerMessages = 'Scan output for '
-    +'FPC messages';
+  lisEdtExtToolPassOutputToMessages = 'Pass output to Messages window';
+  lisEdtExtToolScanOutputForFreePascalCompilerMessages = 'Scan output for FPC messages';
   lisEdtExtToolScanOutputForMakeMessages = 'Scan output for "make" messages';
   lisShowConsole = 'Show console';
   lisOnlyAvailableOnWindowsRunToolInANewConsole = 'Only available on Windows. '

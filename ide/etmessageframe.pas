@@ -3416,6 +3416,7 @@ begin
   Line:=nil;
   HasViewContent:=false;
   Running:=false;
+  debugln(['TMessagesFrame.MsgCtrlPopupMenuPopup ActiveFilter=', FMessagesCtrl.ActiveFilter.ClassName]);
 
   // check all
   for i:=0 to FMessagesCtrl.ViewCount-1 do begin

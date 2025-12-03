@@ -164,6 +164,7 @@ type
     OptionsGroupBox: TGroupBox;
     ParametersLabel: TLabel;
     ScannersButton: TButton;
+    ScanOutputDefaultCheckBox: TCheckBox;
     ScanOutputForFPCMessagesCheckBox: TCheckBox;
     ScanOutputForMakeMessagesCheckBox: TCheckBox;
     ShowConsoleCheckBox: TCheckBox;
@@ -423,7 +424,7 @@ begin
   Config.GetValue('EnvironmentOverrides/',FEnvironmentOverrides);
   ShowConsole:=Config.GetValue('ShowConsole/Value',false);
   HideWindow:=Config.GetValue('HideWindow/Value',true);
-
+{
   if CfgVersion<3 then
   begin
     if Config.GetValue('ScanOutputForFPCMessages/Value',false) then
@@ -432,7 +433,7 @@ begin
       FParsers.Add(SubToolMake);
     if Config.GetValue('ShowAllOutput/Value',false) then
       FParsers.Add(SubToolDefault);
-  end else
+  end else  }
     Config.GetValue('Scanners/',FParsers);
 
   Modified:=false;
@@ -686,6 +687,7 @@ begin
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
   fKeyBox.Key:=fOptions.Key;
   fKeyBox.ShiftState:=fOptions.Shift;
+  ScanOutputDefaultCheckBox.Checked:=fOptions.HasParser[SubToolDefault];
   ScanOutputForFPCMessagesCheckBox.Checked:=fOptions.HasParser[SubToolFPC];
   ScanOutputForMakeMessagesCheckBox.Checked:=fOptions.HasParser[SubToolMake];
   ShowConsoleCheckBox.Checked:=FOptions.ShowConsole;
@@ -702,8 +704,9 @@ begin
   fOptions.WorkingDirectory:=WorkingDirEdit.Text;
   fOptions.Key:=fKeyBox.Key;
   fOptions.Shift:=fKeyBox.ShiftState;
-  FOptions.ShowConsole := ShowConsoleCheckBox.Checked;
-  FOptions.HideWindow := HideWindowCheckBox.Checked;
+  FOptions.ShowConsole:=ShowConsoleCheckBox.Checked;
+  FOptions.HideWindow:=HideWindowCheckBox.Checked;
+  fOptions.HasParser[SubToolDefault]:=ScanOutputDefaultCheckBox.Checked;
   fOptions.HasParser[SubToolFPC]:=ScanOutputForFPCMessagesCheckBox.Checked;
   fOptions.HasParser[SubToolMake]:=ScanOutputForMakeMessagesCheckBox.Checked;
 end;
@@ -753,6 +756,8 @@ begin
   WorkingDirLabel.Caption:=lisEdtExtToolWorkingDirectory;
   OptionsGroupBox.Caption:=RemoveAmpersands(lisLazBuildOptions);
 
+  with ScanOutputDefaultCheckBox do
+    Caption:=lisEdtExtToolPassOutputToMessages;
   with ScanOutputForFPCMessagesCheckBox do
     Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;
   with ScanOutputForMakeMessagesCheckBox do

@@ -39,11 +39,16 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils,
+  // LCL
   Controls, Forms, StdCtrls, ComCtrls, Dialogs, ButtonPanel, Menus, LCLStrConsts,
+  // LazUtils
   FileUtil,
-  IDEImagesIntf, IDEDialogs, IDECommands,
-  ExtToolEditDlg, TransferMacros,
-  IdeIntfStrConsts, LazarusIDEStrConsts, IDEOptionDefs, EditorOptions;
+  // IdeIntf
+  IDEImagesIntf, IDEExternToolIntf, IDEDialogs, IDECommands, IdeIntfStrConsts,
+  // IdeConfig
+  TransferMacros, IDEOptionDefs,
+  // IDE
+  ExtToolEditDlg, LazarusIDEStrConsts, EditorOptions;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -127,9 +132,7 @@ constructor TExternalToolDialog.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
   Name:='ExternalToolDialog';
-
   Caption:=lisExtToolExternalTools;
-  
   ToolBar.Images := IDEImages.Images_16;
 
   AddButton.Caption:=lisAdd;
@@ -207,6 +210,7 @@ begin
     exit;
   end;
   NewTool:=TExternalUserTool.Create(nil);
+  NewTool.HasParser[SubToolDefault]:=True;
   MsgResult:=ShowExtToolOptionDlg(fTransferMacros, NewTool, EditorOpts.KeyMap);
   if MsgResult=mrOk then
   begin
