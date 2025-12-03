@@ -9068,11 +9068,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "导入(&I) ..."
 
-#: lazarusidestrconsts.lisdlgmore
-msgctxt "lazarusidestrconsts.lisdlgmore"
-msgid "More ..."
-msgstr "更多(&M) ..."
-
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9360,6 +9355,10 @@ msgstr "宏命令"
 #: lazarusidestrconsts.lisedtexttoolparameters
 msgid "Parameters:"
 msgstr "参数:"
+
+#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
+msgid "Pass output to Messages window"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
@@ -10205,6 +10204,10 @@ msgstr "FP C版本作为一个数字（例如 20701）"
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "FPC 消息文件:"
+
+#: lazarusidestrconsts.lisfpcmessageoptions
+msgid "FPC Message Options"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcmessagesappendix
 msgid "FPC messages: Appendix"

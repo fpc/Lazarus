@@ -9279,11 +9279,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Importuj ..."
 
-#: lazarusidestrconsts.lisdlgmore
-msgctxt "lazarusidestrconsts.lisdlgmore"
-msgid "More ..."
-msgstr "Więcej ..."
-
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9577,6 +9572,10 @@ msgstr "Makra"
 #: lazarusidestrconsts.lisedtexttoolparameters
 msgid "Parameters:"
 msgstr "Parametry:"
+
+#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
+msgid "Pass output to Messages window"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
@@ -10441,6 +10440,10 @@ msgstr "Wersja FPC jako jedna liczba (np. 20701)"
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "Plik z komunikatami FPC:"
+
+#: lazarusidestrconsts.lisfpcmessageoptions
+msgid "FPC Message Options"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcmessagesappendix
 #, fuzzy

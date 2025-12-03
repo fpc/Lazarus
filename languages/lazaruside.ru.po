@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-11-11 17:49+0300\n"
+"PO-Revision-Date: 2025-12-03 23:02+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -9049,11 +9049,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "Импортировать ..."
 
-#: lazarusidestrconsts.lisdlgmore
-msgctxt "lazarusidestrconsts.lisdlgmore"
-msgid "More ..."
-msgstr "Прочие ..."
-
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9341,6 +9336,10 @@ msgstr "Макросы"
 #: lazarusidestrconsts.lisedtexttoolparameters
 msgid "Parameters:"
 msgstr "Параметры:"
+
+#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
+msgid "Pass output to Messages window"
+msgstr "Перенаправить вывод в окно сообщений"
 
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
@@ -10184,6 +10183,10 @@ msgstr "Версия FPC в виде одного числа (например, 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "Файл сообщений FPC:"
+
+#: lazarusidestrconsts.lisfpcmessageoptions
+msgid "FPC Message Options"
+msgstr "Параметры сообщений FPC"
 
 #: lazarusidestrconsts.lisfpcmessagesappendix
 msgid "FPC messages: Appendix"

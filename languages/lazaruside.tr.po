@@ -9078,11 +9078,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr "İçe aktar ..."
 
-#: lazarusidestrconsts.lisdlgmore
-msgctxt "lazarusidestrconsts.lisdlgmore"
-msgid "More ..."
-msgstr "Daha fazla..."
-
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9370,6 +9365,10 @@ msgstr "Makro"
 #: lazarusidestrconsts.lisedtexttoolparameters
 msgid "Parameters:"
 msgstr "Parametreler:"
+
+#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
+msgid "Pass output to Messages window"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
@@ -10213,6 +10212,10 @@ msgstr "Bir sayı olarak FPC sürümü (ör. 20701)"
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "FPC ileti dosyası:"
+
+#: lazarusidestrconsts.lisfpcmessageoptions
+msgid "FPC Message Options"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcmessagesappendix
 msgid "FPC messages: Appendix"

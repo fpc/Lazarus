@@ -9072,11 +9072,6 @@ msgctxt "lazarusidestrconsts.lisdlgimport"
 msgid "Import ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisdlgmore
-msgctxt "lazarusidestrconsts.lisdlgmore"
-msgid "More ..."
-msgstr ""
-
 #: lazarusidestrconsts.lisdlgopen
 msgctxt "lazarusidestrconsts.lisdlgopen"
 msgid "Open ..."
@@ -9361,6 +9356,10 @@ msgstr "Makro's"
 
 #: lazarusidestrconsts.lisedtexttoolparameters
 msgid "Parameters:"
+msgstr ""
+
+#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
+msgid "Pass output to Messages window"
 msgstr ""
 
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
@@ -10208,6 +10207,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessageoptions
+msgid "FPC Message Options"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcmessagesappendix
