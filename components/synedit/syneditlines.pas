@@ -48,6 +48,8 @@ type
       sfleLf
     );
 
+  TSynOnBeforeDeleteLines = SynEditTextBuffer.TSynOnBeforeDeleteLines;
+
   { TSynEditLines }
 
   TSynEditLines = class(TStrings)
@@ -57,6 +59,10 @@ type
     FTextBuffer: TSynEditStringList;
     FOnSaved: TSavedNotification;
     function GetTextChangeStamp: int64;
+    function GetOnBeforeDeleteLines: TSynOnBeforeDeleteLines;
+    function GetOwnObjects: Boolean;
+    procedure SetOnBeforeDeleteLines(AValue: TSynOnBeforeDeleteLines);
+    procedure SetOwnObjects(AValue: Boolean);
   protected
     function Get(Index: integer): string; override;
     function GetCapacity: integer; override;
@@ -80,6 +86,8 @@ type
     property FileWriteLineEndType: TSynLinesFileLineEndType
              read FFileWriteLineEndType write FFileWriteLineEndType;
     property TextChangeStamp: int64 read GetTextChangeStamp;
+    property OwnObjects: Boolean read GetOwnObjects write SetOwnObjects;
+    property OnBeforeDeleteLines: TSynOnBeforeDeleteLines read GetOnBeforeDeleteLines write SetOnBeforeDeleteLines;
   end;
 
 implementation
@@ -310,6 +318,26 @@ end;
 function TSynEditLines.GetTextChangeStamp: int64;
 begin
   Result:=FTextBuffer.TextChangeStamp;
+end;
+
+function TSynEditLines.GetOnBeforeDeleteLines: TSynOnBeforeDeleteLines;
+begin
+  Result := FTextBuffer.OnBeforeDeleteLines;
+end;
+
+function TSynEditLines.GetOwnObjects: Boolean;
+begin
+  Result := FTextBuffer.OwnObjects;
+end;
+
+procedure TSynEditLines.SetOnBeforeDeleteLines(AValue: TSynOnBeforeDeleteLines);
+begin
+  FTextBuffer.OnBeforeDeleteLines := AValue;
+end;
+
+procedure TSynEditLines.SetOwnObjects(AValue: Boolean);
+begin
+  FTextBuffer.OwnObjects := AValue;
 end;
 
 function TSynEditLines.Get(Index: integer): string;

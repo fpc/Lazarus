@@ -61,7 +61,9 @@ type
   TSynEditStringFlags = set of TSynEditStringFlag;
   PSynEditStringFlags = ^TSynEditStringFlags;
 
-  TStringListIndexEvent = procedure(Index: Integer) of object;
+  TStringListIndexEvent = procedure(Index: Integer) of object deprecated 'to be removed in 5.99';
+  TSynOnBeforeDeleteLines = procedure(Sender: TObject; AnIndex, ACount: Integer) of object;
+
 
   TSynEditStringMemoryEntry = packed record
     Line: AnsiString;
@@ -178,6 +180,8 @@ type
     FIgnoreSendNotification: array [TSynEditNotifyReason] of Integer;
     fDosFileFormat: boolean;
     fIndexOfLongestLine: integer;
+    FOnBeforeDeleteLines: TSynOnBeforeDeleteLines;
+    FOwnObjects: Boolean;
     FRedoList: TSynEditUndoList;
     FUndoList: TSynEditUndoList;
     FIsUndoing, FIsRedoing: Boolean;
@@ -273,6 +277,8 @@ type
     property Flags[Index: Integer]: TSynEditStringFlags read GetFlags
       write SetFlags;
     property Modified: Boolean read FModified write SetModified;
+    property OwnObjects: Boolean read FOwnObjects write FOwnObjects;
+    property OnBeforeDeleteLines: TSynOnBeforeDeleteLines read FOnBeforeDeleteLines write FOnBeforeDeleteLines;
   public
     // Char bounds // 1 based (1 is the 1st char in the line)
     function LogicPosAddChars(const ALine: String; ALogicalPos, ACount: integer;
@@ -817,6 +823,9 @@ begin
   if (Index < 0) or (Index >= Count) then
     ListIndexOutOfBounds(Index);
   BeginUpdate;
+  if Assigned(FOnBeforeDeleteLines) then
+    FOnBeforeDeleteLines(PaintLockOwner, Index, 1);
+  if FOwnObjects then FList.Objects[Index].Free;
   FList.DeleteRows(Index, 1);
   IncreaseTextChangeStamp;
   fIndexOfLongestLine := -1;
@@ -825,12 +834,20 @@ begin
 end;
 
 procedure TSynEditStringList.DeleteLines(Index, NumLines: integer);
+var
+  i: Integer;
 begin
   if NumLines > 0 then begin
     // Ensure correct index, so DeleteLines will not throw exception
     if (Index < 0) or (Index + NumLines > Count) then
       ListIndexOutOfBounds(Index);
     BeginUpdate;
+    if Assigned(FOnBeforeDeleteLines) then
+      FOnBeforeDeleteLines(PaintLockOwner, Index, NumLines);
+    if FOwnObjects then begin
+      for i := Index to Index + NumLines - 1 do
+        FList.Objects[i].Free;
+    end;
     FList.DeleteRows(Index, NumLines);
     IncreaseTextChangeStamp;
     SendNotification(senrLineCount, self, Index, -NumLines);
