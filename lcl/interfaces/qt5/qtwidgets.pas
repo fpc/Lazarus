@@ -2491,6 +2491,7 @@ begin
     QEventKeyRelease: result:='QEventKeyRelease';
     QEventFocusIn: result:='QEventFocusIn';
     QEventFocusOut: result:='QEventFocusOut';
+    QEventFocusAboutToChange: result:='QEventFocusAboutToChange';
     QEventEnter: result:='QEventEnter';
     QEventLeave: result:='QEventLeave';
     QEventPaint: result:='QEventPaint';
@@ -2606,8 +2607,19 @@ begin
     QEventUngrabKeyboard: result := 'QEventUngrabKeyboard';
     QEventUser: result:='QEventUser';
     QEventMaxUser: result:='QEventMaxUser';
-    200: Result := 'QEventCloseSoftwareInputPanel';
-    203: Result := 'QEventWinIdChange';
+    QEventRequestSoftwareInputPanel: result := 'QEventRequestSoftwareInputPanel';
+    QEventCloseSoftwareInputPanel: Result := 'QEventCloseSoftwareInputPanel';
+    QEventWinIdChange: Result := 'QEventWinIdChange';
+    QEventScrollPrepare: Result := 'QEventScrollPrepare';
+    QEventScroll: Result := 'QEventScrollPrepare';
+    QEventExpose: Result := 'QEventExpose';
+    QEventInputMethodQuery: Result := 'QEventInputMethodQuery';
+    QEventOrientationChange: Result := 'QEventOrientationChange';
+    QEventThemeChange: Result := 'QEventThemeChange';
+    QEventSockClose: Result := 'QEventSockClose';
+    QEventPlatformPanel: Result := 'QEventPlatformPanel';
+    QEventStyleAnimationUpdate: Result := 'QEventStyleAnimationUpdate';
+    QEventApplicationStateChange: Result := 'QEventApplicationStateChange';
   else
     Result := Format('Unknown event: %d', [QEvent_type(Event)]);
   end;
