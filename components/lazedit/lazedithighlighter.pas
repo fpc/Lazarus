@@ -105,8 +105,15 @@ begin
 end;
 
 function TLazEditCustomHighlighter.GetTokenAttributeEx: TLazCustomEditTextAttribute;
+var
+  tp: Integer;
 begin
   Result := GetTokenAttribute;
+  if Result <> nil then begin
+    // Highlighter that need different bounds must implement their own GetTokenAttributeEx;
+    tp := GetTokenPos+1;
+    Result.SetFrameBoundsLog(tp, tp+GetTokenLen);
+  end;
 end;
 
 function TLazEditCustomHighlighter.GetEndOfLineAttribute: TLazEditTextAttribute;
