@@ -7889,6 +7889,7 @@ begin
 
       if TIDESynEditor(aSynEdit).WrapView <> nil then begin
         SetMarkupColor(ahaWrapIndend,  TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapIndent);
+        TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapIndent.FrameEdges := sfeLeft;
         SetMarkupColor(ahaWrapEol,     TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapEol);
         SetMarkupColor(ahaWrapSubLine, TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapSubLine);
       end;
