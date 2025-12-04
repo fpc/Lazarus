@@ -20,7 +20,7 @@ uses
 type
   TLazSynDisplayTokenInfoEx = record
     Tk: TLazSynDisplayTokenInfo;
-    Attr: TSynSelectedColorMergeResult;
+    Attr: TLazEditTextAttributeMergeResult;
     StartPos: TLazSynDisplayTokenBound;  // Start according to Logical flow. Left for LTR, or Right for RTL
     EndPos: TLazSynDisplayTokenBound;    // End according to Logical flow.
     // SreenRect Bounds. Ltr/RTL independent. Start is always left. End Always right
@@ -69,7 +69,7 @@ type
     // Info about the token (from highlighter)
     FCurViewToken: TLazSynDisplayTokenInfo;
     FCurViewCurTokenStartPos: TLazSynDisplayTokenBound; // Start bound of the HL token
-    FCurViewAttr: TSynSelectedColorMergeResult;
+    FCurViewAttr: TLazEditTextAttributeMergeResult;
     FWrapStartBound, FWrapEndBound: TLazSynDisplayTokenBound;
     // Scanner Pos
     FCurViewScannerPos: TLazSynDisplayTokenBound;  // Start according to Logical flow. Left for LTR, or Right for RTL
@@ -86,7 +86,7 @@ type
     FCurMarkupNextStart: TLazSynDisplayTokenBound;
     FCurMarkupNextRtlInfo: TLazSynDisplayRtlInfo;
     FTokenOrigin: TLazSynDisplayTokenOrigin;
-    FMarkupTokenAttr: TSynSelectedColorMergeResult;
+    FMarkupTokenAttr: TLazEditTextAttributeMergeResult;
     procedure InitCurMarkup;
   public
     constructor Create;
@@ -295,8 +295,8 @@ end;
 
 constructor TLazSynPaintTokenBreaker.Create;
 begin
-  FCurViewAttr := TSynSelectedColorMergeResult.Create;
-  FMarkupTokenAttr := TSynSelectedColorMergeResult.Create;
+  FCurViewAttr := TLazEditTextAttributeMergeResult.Create;
+  FMarkupTokenAttr := TLazEditTextAttributeMergeResult.Create;
   FTabExtraByteCount := 0;
   FSpaceExtraByteCount := 0;
 end;
@@ -469,10 +469,6 @@ begin
     FMarkupTokenAttr.Clear;
     if ATokenInfo.Attr <> nil then begin
       FMarkupTokenAttr.Assign(ATokenInfo.Attr);
-      if FTokenOrigin = dtoBeforeText then begin
-        FMarkupTokenAttr.CurrentStartX := FWrapStartBound;
-        FMarkupTokenAttr.CurrentEndX   := FWrapEndBound;
-      end;
     end
     else begin
       FMarkupTokenAttr.Foreground := FForegroundColor;
@@ -493,8 +489,15 @@ begin
     FCurMarkupNextRtlInfo := ATokenInfo.NextRtlInfo;
 
     FMarkupTokenAttr.Assign(ATokenInfo.Attr);
-    FMarkupTokenAttr.CurrentStartX := ATokenInfo.StartPos; // current sub-token
-    FMarkupTokenAttr.CurrentEndX   := ATokenInfo.EndPos;
+  end;
+
+  if FTokenOrigin = dtoBeforeText then begin
+    FMarkupTokenAttr.StartX := FWrapStartBound;
+    FMarkupTokenAttr.EndX   := FWrapEndBound;
+  end
+  else begin
+    FMarkupTokenAttr.StartX := ATokenInfo.StartPos; // current sub-token
+    FMarkupTokenAttr.EndX   := ATokenInfo.EndPos;
   end;
 
   if FTokenOrigin = dtoAfterWrapped then
@@ -504,7 +507,7 @@ begin
   if FTokenOrigin <> dtoBeforeText then
     fMarkupManager.MergeMarkupAttributeAtRowCol(FCurTxtLineIdx + 1,
       ATokenInfo.StartPos, ATokenInfo.EndPos, ATokenInfo.RtlInfo, FMarkupTokenAttr);
-  FMarkupTokenAttr.ProcessMergeInfo;
+  FMarkupTokenAttr.FinishMerge;
 
 
   ATokenInfo.Attr := FMarkupTokenAttr;
@@ -524,7 +527,7 @@ end;
 function TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView(out
   ATokenInfo: TLazSynDisplayTokenInfoEx; APhysEnd: Integer; ALogEnd: Integer): Boolean;
 
-  procedure InitSynAttr(var ATarget: TSynSelectedColorMergeResult; const ASource: TLazCustomEditTextAttribute;
+  procedure InitSynAttr(var ATarget: TLazEditTextAttributeMergeResult; const ASource: TLazCustomEditTextAttribute;
     const AnAttrStartX: TLazSynDisplayTokenBound);
   const
     NoEnd: TLazSynDisplayTokenBound = (Physical: -1; Logical: -1; Offset: 0);
@@ -1682,7 +1685,7 @@ var
   var
     HasFrame: Boolean;
     s: TLazSynBorderSide;
-    Attr: TSynSelectedColorMergeResult;
+    Attr: TLazEditTextAttributeMergeResult;
     TxtFlags: Integer;
     tok: TRect;
     c, i, j, k, e, Len: Integer;

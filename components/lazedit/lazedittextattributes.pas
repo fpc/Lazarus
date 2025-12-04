@@ -24,7 +24,7 @@ unit LazEditTextAttributes;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LazMethodList;
+  Classes, SysUtils, Math, Graphics, LazMethodList;
 
 type
   // TODO: TLazEditDisplayTokenBound is not yet supporting wrapped text - The Physical value may change
@@ -110,8 +110,9 @@ type
     function GetAlpha({%H-}AnIndex: TLazTextAttributeColor): byte; virtual;
     function GetPriority({%H-}AnIndex: TLazTextAttributeColor): integer; virtual;
     function GetFrameStyle: TLazTextAttrLineStyle; inline;
-    function GetFrameEdges: TLazTextAttrFrameEdges; inline;
+    function GetFrameEdges: TLazTextAttrFrameEdges; virtual;
     function GetFrameSideColors({%H-}Side: TLazTextAttrBorderSide): TColor; virtual;
+    function GetFrameSideAlpha({%H-}Side: TLazTextAttrBorderSide): Byte; virtual;
     function GetFrameSidePriority({%H-}Side: TLazTextAttrBorderSide): integer; virtual;
     function GetFrameSideStyles({%H-}Side: TLazTextAttrBorderSide): TLazTextAttrLineStyle; virtual;
     function GetStyle: TFontStyles; inline;
@@ -123,6 +124,8 @@ type
     procedure SetPriority({%H-}AnIndex: TLazTextAttributeColor; {%H-}AValue: integer); virtual;
     procedure SetFrameStyle(AValue: TLazTextAttrLineStyle);
     procedure SetFrameEdges(AValue: TLazTextAttrFrameEdges);
+    procedure SetEndX(AValue: TLazEditDisplayTokenBound); virtual;
+    procedure SetStartX(AValue: TLazEditDisplayTokenBound); virtual;
     procedure SetStyle(AValue: TFontStyles);
     procedure SetStyleMask({%H-}AValue: TFontStyles); virtual;
     procedure SetStylePriority({%H-}AnIndex: TFontStyle; {%H-}AValue: integer); virtual;
@@ -137,6 +140,11 @@ type
     procedure AssignColorsFrom(ASource: TLazCustomEditTextAttribute); virtual;
     procedure AssignFrom(ASource: TLazCustomEditTextAttribute); virtual;
     function  DefaultSupportedFeatures: TLazTextAttributeFeatures; virtual;
+
+    property ColorValue [AnIndex: TLazTextAttributeColor]: TColor read GetColor write SetColor;
+    property ColorAlpha [AnIndex: TLazTextAttributeColor]: byte read GetAlpha;
+    property ColorPriority [AnIndex: TLazTextAttributeColor]: integer read GetPriority;
+
   public
     constructor Create; overload;
     constructor Create(ASupportedFeatures: TLazTextAttributeFeatures); overload;
@@ -150,10 +158,10 @@ type
     procedure UpdateSupportedFeatures(AnAddSupportedFeatures, ARemoveSupportedFeatures: TLazTextAttributeFeatures);
     procedure SetAllPriorities(APriority: integer); virtual;
     // boundaries of the frame
-    procedure SetFrameBoundsPhys(AStart, AEnd: Integer);
-    procedure SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer = 0; AEndOffs: Integer = 0);
-    property StartX: TLazEditDisplayTokenBound read FStartX write FStartX;
-    property EndX: TLazEditDisplayTokenBound read FEndX write FEndX;
+    procedure SetFrameBoundsPhys(AStart, AEnd: Integer); inline;
+    procedure SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer = 0; AEndOffs: Integer = 0); inline;
+    property StartX: TLazEditDisplayTokenBound read FStartX write SetStartX;
+    property EndX: TLazEditDisplayTokenBound read FEndX write SetEndX;
 
     property SupportedFeatures: TLazTextAttributeFeatures read FSupportedFeatures;
   public
@@ -174,6 +182,7 @@ type
 
     property FrameSidePriority[Side: TLazTextAttrBorderSide]: integer read GetFrameSidePriority;
     property FrameSideColors[Side: TLazTextAttrBorderSide]: TColor read GetFrameSideColors;
+    property FrameSideAlpha[Side: TLazTextAttrBorderSide]: Byte read GetFrameSideAlpha;
     property FrameSideStyles[Side: TLazTextAttrBorderSide]: TLazTextAttrLineStyle read GetFrameSideStyles;
 
     property Style: TFontStyles     read GetStyle write SetStyle;
@@ -361,6 +370,67 @@ type
     property OnAttributeChange: TNotifyEvent read FOnAttributeChange write FOnAttributeChange;
   end;
 
+  { TLazEditTextAttributeMergeResult }
+
+  TLazEditTextAttributeMergeResult = class(TLazEditTextAttribute)
+  private type
+    TFontStylePriors = fsBold..fsUnderline; //fsBold, fsItalic, fsUnderline
+
+    { TUnMergedList }
+
+    generic TUnMergedList<T> = object
+    public type
+      PT = ^T;
+    public
+      Count: integer;
+      List: array of T;
+      procedure Clear;
+      function Add: PT;
+      procedure Shorten(NewBasePrior: integer);
+      procedure AssignFrom(L: TUnMergedList);
+    end;
+
+    TUnMergedColor = object
+      Prior: integer;
+      Color: TColor;
+      Alpha: byte;
+    end;
+    TUnMergedFrame = object(TUnMergedColor)
+      Style: TLazTextAttrLineStyle;
+    end;
+    TUnMergedFontStyle = object
+      Prior: integer;
+      //Style,Mask: TFontStyles; // only invert goes into the list
+    end;
+    PUnMergedColor = ^TUnMergedColor;
+    PUnMergedFrame = ^TUnMergedFrame;
+    PUnMergedFontStyle = ^TUnMergedFontStyle;
+
+  private
+    FState: (mrsClear, mrsAssigning, mrsAssigningRes, mrsAssigned, mrsMerging, mrsMerged);
+    FUnMergedColors:     array[TLazTextAttributeColor] of specialize TUnMergedList<TUnMergedColor>;
+    FUnMergedFrameSides: array[TLazTextAttrBorderSide] of specialize TUnMergedList<TUnMergedFrame>;
+    FUnMergedFontStyles: array [TFontStylePriors] of specialize TUnMergedList<TUnMergedFontStyle>;
+    FFrameSides: array[TLazTextAttrBorderSide] of TUnMergedFrame;
+
+    function IsMatching(const ABound1, ABound2: TLazEditDisplayTokenBound): Boolean; inline;
+  protected
+    function GetFrameEdges: TLazTextAttrFrameEdges; override; // ALL
+    function GetFrameSideColors(Side: TLazTextAttrBorderSide): TColor; override;
+    function GetFrameSideAlpha(Side: TLazTextAttrBorderSide): Byte; override;
+    function GetFrameSideStyles(Side: TLazTextAttrBorderSide): TLazTextAttrLineStyle; override;
+    procedure SetStartX(AValue: TLazEditDisplayTokenBound); override;
+    procedure SetEndX(AValue: TLazEditDisplayTokenBound); override;
+    procedure DoClear; override;
+    procedure AssignFrom(ASource: TLazCustomEditTextAttribute); override;
+  public
+    procedure Assign(ASource: TPersistent); override;
+    // procedure SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer = 0;
+    //  AEndOffs: Integer = 0);
+    procedure Merge(AnAttrib: TLazCustomEditTextAttribute);
+    procedure FinishMerge;
+  end;
+
 implementation
 
 { TLazEditDisplayTokenBound }
@@ -378,6 +448,16 @@ begin
 end;
 
 { TLazCustomEditTextAttribute }
+
+procedure TLazCustomEditTextAttribute.SetEndX(AValue: TLazEditDisplayTokenBound);
+begin
+  FEndX := AValue;
+end;
+
+procedure TLazCustomEditTextAttribute.SetStartX(AValue: TLazEditDisplayTokenBound);
+begin
+  FStartX := AValue;
+end;
 
 function TLazCustomEditTextAttribute.GetColor(AnIndex: TLazTextAttributeColor): TColor;
 begin
@@ -406,7 +486,15 @@ end;
 
 function TLazCustomEditTextAttribute.GetFrameSideColors(Side: TLazTextAttrBorderSide): TColor;
 begin
-  Result := FColors[lacFrameColor];
+  if Side in LazTextFrameEdgeToSides[FrameEdges] then
+    Result := FColors[lacFrameColor]
+  else
+    Result := clNone;
+end;
+
+function TLazCustomEditTextAttribute.GetFrameSideAlpha(Side: TLazTextAttrBorderSide): Byte;
+begin
+  Result := FrameAlpha;
 end;
 
 function TLazCustomEditTextAttribute.GetFrameSidePriority(Side: TLazTextAttrBorderSide): integer;
@@ -660,24 +748,24 @@ begin
 end;
 
 procedure TLazCustomEditTextAttribute.SetFrameBoundsPhys(AStart, AEnd: Integer);
+var
+  b: TLazEditDisplayTokenBound;
 begin
-  FStartX.Physical := AStart;
-  FEndX.Physical   := AEnd;
-  FStartX.Logical  := -1;
-  FEndX.Logical    := -1;
-  FStartX.Offset   := 0;
-  FEndX.Offset     := 0;
+  b.Init(AStart, 0);
+  StartX := b;
+  b.Init(AEnd, 0);
+  EndX := b;
 end;
 
 procedure TLazCustomEditTextAttribute.SetFrameBoundsLog(AStart, AEnd: Integer;
   AStartOffs: Integer; AEndOffs: Integer);
+var
+  b: TLazEditDisplayTokenBound;
 begin
-  FStartX.Physical := -1;
-  FEndX.Physical   := -1;
-  FStartX.Logical  := AStart;
-  FEndX.Logical    := AEnd;
-  FStartX.Offset   := AStartOffs;
-  FEndX.Offset     := AEndOffs;
+  b.Init(0, AStart);
+  StartX := b;
+  b.Init(0, AEnd);
+  EndX := b;
 end;
 
 { TLazEditTextAttribute }
@@ -1086,6 +1174,361 @@ end;
 function TLazEditTextAttributeModifierCollection.Add: TLazEditTextAttributeModifierCollectionItem;
 begin
   Result := TLazEditTextAttributeModifierCollectionItem(inherited Add);
+end;
+
+{ TLazEditTextAttributeMergeResult.TUnMergedList }
+
+procedure TLazEditTextAttributeMergeResult.TUnMergedList.Clear;
+begin
+  Count := 0;
+  if Length(List) > 6 then
+    SetLength(List, 6);
+end;
+
+function TLazEditTextAttributeMergeResult.TUnMergedList.Add: PT;
+begin
+  if Count >= Length(List) then
+    SetLength(List, Count + 8);
+  Result := @List[Count];
+  inc(Count);
+end;
+
+procedure TLazEditTextAttributeMergeResult.TUnMergedList.Shorten(NewBasePrior: integer);
+var
+  c: Integer;
+begin
+  c := Count-1;
+  while (c >= 0) and (List[c].Prior < NewBasePrior) do
+    dec(c);
+  Count := c+1;
+end;
+
+procedure TLazEditTextAttributeMergeResult.TUnMergedList.AssignFrom(L: TUnMergedList);
+var
+  i: Integer;
+begin
+  Count := L.Count;
+  if (Length(List) < Count) or (Length(List) > Count + 12) then
+    SetLength(List, Count);
+  for i := 0 to Count - 1 do
+    Add()^ := L.List[i];
+end;
+
+{ TLazEditTextAttributeMergeResult }
+
+function TLazEditTextAttributeMergeResult.IsMatching(const ABound1,
+  ABound2: TLazEditDisplayTokenBound): Boolean;
+begin
+  Result := ( (ABound1.Physical > 0) and
+              (ABound1.Physical = ABound2.Physical)
+            ) or
+            ( (ABound1.Logical > 0) and
+              (ABound1.Logical = ABound2.Logical) and (ABound1.Offset = ABound2.Offset)
+            );
+end;
+
+function TLazEditTextAttributeMergeResult.GetFrameEdges: TLazTextAttrFrameEdges;
+begin
+  Result := sfeAround;
+end;
+
+function TLazEditTextAttributeMergeResult.GetFrameSideColors(Side: TLazTextAttrBorderSide): TColor;
+begin
+  Result := FFrameSides[Side].Color;
+end;
+
+function TLazEditTextAttributeMergeResult.GetFrameSideAlpha(Side: TLazTextAttrBorderSide): Byte;
+begin
+  Result := FFrameSides[Side].Alpha;
+end;
+
+function TLazEditTextAttributeMergeResult.GetFrameSideStyles(Side: TLazTextAttrBorderSide
+  ): TLazTextAttrLineStyle;
+begin
+  Result := FFrameSides[Side].Style;
+end;
+
+procedure TLazEditTextAttributeMergeResult.SetStartX(AValue: TLazEditDisplayTokenBound);
+begin
+  if StartX.HasValue and not IsMatching(StartX, AValue) then begin
+    FFrameSides[bsLeft].Color := clNone;
+    FUnMergedFrameSides[bsLeft].Clear;
+  end;
+
+  inherited SetStartX(AValue);
+end;
+
+procedure TLazEditTextAttributeMergeResult.SetEndX(AValue: TLazEditDisplayTokenBound);
+begin
+  if EndX.HasValue and not IsMatching(EndX, AValue) then begin
+    FFrameSides[bsRight].Color := clNone;
+    FUnMergedFrameSides[bsRight].Clear;
+  end;
+  inherited SetEndX(AValue);
+end;
+
+procedure TLazEditTextAttributeMergeResult.DoClear;
+var
+  ColorIdx: TLazTextAttributeColor;
+  BorderIdx: TLazTextAttrBorderSide;
+  FontStyleIdx: TFontStyle;
+begin
+  inherited DoClear;
+  if FState = mrsAssigningRes then
+    exit;
+  if FState <> mrsAssigning then begin
+    FState := mrsClear;
+
+    for BorderIdx in TLazTextAttrBorderSide do begin
+      FFrameSides[BorderIdx].Prior := 0;
+      FFrameSides[BorderIdx].Color := clNone;
+    end;
+  end;
+
+  for ColorIdx in TLazTextAttributeColor do
+    FUnMergedColors[ColorIdx].Clear;
+  for BorderIdx in TLazTextAttrBorderSide do
+    FUnMergedFrameSides[BorderIdx].Clear;
+  for FontStyleIdx in TFontStylePriors do
+    FUnMergedFontStyles[FontStyleIdx].Clear;
+end;
+
+procedure TLazEditTextAttributeMergeResult.Assign(ASource: TPersistent);
+begin
+  BeginUpdate;
+  if (ASource is TLazEditTextAttributeMergeResult) and
+     (TLazEditTextAttributeMergeResult(ASource).FState = mrsMerging)
+  then
+    FState := mrsAssigningRes
+  else
+    FState := mrsAssigning;
+
+  Clear;
+  inherited Assign(ASource);
+  if FState in [mrsClear, mrsAssigning, mrsAssigningRes] then
+    FState := mrsAssigned;
+  EndUpdate;
+end;
+
+procedure TLazEditTextAttributeMergeResult.AssignFrom(ASource: TLazCustomEditTextAttribute);
+var
+  MrgResSource: TLazEditTextAttributeMergeResult absolute ASource;
+  ColorIdx: TLazTextAttributeColor;
+  BorderIdx: TLazTextAttrBorderSide;
+  FontStyleIdx: TFontStyle;
+begin
+  inherited AssignFrom(ASource);
+
+  if ASource is TLazEditTextAttributeMergeResult then begin
+    FState := MrgResSource.FState;
+    FFrameSides := MrgResSource.FFrameSides;
+
+    if MrgResSource.FState = mrsMerging then begin
+      for ColorIdx in TLazTextAttributeColor do
+        FUnMergedColors[ColorIdx].AssignFrom(MrgResSource.FUnMergedColors[ColorIdx]);
+      for BorderIdx in TLazTextAttrBorderSide do
+        FUnMergedFrameSides[BorderIdx].AssignFrom(MrgResSource.FUnMergedFrameSides[BorderIdx]);
+      for FontStyleIdx in TFontStylePriors do
+        FUnMergedFontStyles[FontStyleIdx].AssignFrom(MrgResSource.FUnMergedFontStyles[FontStyleIdx]);
+    end;
+  end
+  else begin
+    // init frame sides
+    for BorderIdx in TLazTextAttrBorderSide do begin
+      FFrameSides[BorderIdx].Prior := ASource.FrameSidePriority[BorderIdx];
+      FFrameSides[BorderIdx].Color := ASource.FrameSideColors[BorderIdx];
+      FFrameSides[BorderIdx].Alpha := ASource.FrameSideAlpha[BorderIdx];
+      FFrameSides[BorderIdx].Style := ASource.FrameSideStyles[BorderIdx];
+    end;
+  end;
+end;
+
+procedure TLazEditTextAttributeMergeResult.Merge(AnAttrib: TLazCustomEditTextAttribute);
+var
+  ColorIdx: TLazTextAttributeColor;
+  BorderIdx: TLazTextAttrBorderSide;
+  FontStyleIdx: TFontStylePriors;
+  AttrPrior: integer;
+  AttrCol: TColor;
+  UnMergedColor: PUnMergedColor;
+  UnMergedFrame: PUnMergedFrame;
+  UnMergedStyle: PUnMergedFontStyle;
+  edg: TLazTextAttrBorderSides;
+  st, sm: TFontStyles;
+begin
+  BeginUpdate;
+  FState := mrsMerging;
+
+  for ColorIdx in TLazTextAttributeColor do begin
+    if ColorIdx = lacFrameColor then continue;
+    AttrPrior := AnAttrib.ColorPriority[ColorIdx];
+    AttrCol   := AnAttrib.ColorValue[ColorIdx];
+    if (AttrCol = clNone) or
+       ((AttrPrior < ColorPriority[ColorIdx]) and (ColorValue[ColorIdx] <> clNone))
+    then
+      continue;
+    if AnAttrib.ColorAlpha[ColorIdx] = 0 then begin
+      if FPriority[ColorIdx] < AttrPrior then
+        FUnMergedColors[ColorIdx].Shorten(AttrPrior);
+      FPriority[ColorIdx] := AttrPrior;
+      FColors[ColorIdx]   := AttrCol;
+    end
+    else begin
+      UnMergedColor := FUnMergedColors[ColorIdx].Add;
+      UnMergedColor^.Prior := AttrPrior;
+      UnMergedColor^.Color := AttrCol;
+      UnMergedColor^.Alpha := AnAttrib.ColorAlpha[ColorIdx];
+    end;
+  end;
+
+  edg := LazTextFrameEdgeToSides[AnAttrib.FrameEdges];
+  for BorderIdx in TLazTextAttrBorderSide do begin
+    if not(BorderIdx in edg) then
+      continue;
+    case BorderIdx of
+      bsLeft:  if AnAttrib.StartX.HasValue and not IsMatching(AnAttrib.StartX, StartX) then continue;
+      bsRight: if AnAttrib.EndX.HasValue   and not IsMatching(AnAttrib.EndX, EndX) then continue;
+    end;
+    AttrPrior := AnAttrib.FrameSidePriority[BorderIdx];
+    AttrCol   := AnAttrib.FrameSideColors[BorderIdx];
+    if (AttrCol = clNone) or
+       ((AttrPrior < FFrameSides[BorderIdx].Prior) and (FrameSideColors[BorderIdx] <> clNone))
+    then
+      continue;
+    if AnAttrib.ColorAlpha[lacFrameColor] = 0 then begin
+      if FFrameSides[BorderIdx].Prior < AttrPrior then
+        FUnMergedColors[ColorIdx].Shorten(AttrPrior);
+      FFrameSides[BorderIdx].Prior := AttrPrior;
+      FFrameSides[BorderIdx].Color := AttrCol;
+      FFrameSides[BorderIdx].Alpha := AnAttrib.FrameSideAlpha[BorderIdx];
+      FFrameSides[BorderIdx].Style := AnAttrib.FrameSideStyles[BorderIdx];
+    end
+    else begin
+      UnMergedFrame := FUnMergedFrameSides[BorderIdx].Add;
+      UnMergedFrame^.Prior := AttrPrior;
+      UnMergedFrame^.Color := AttrCol;
+      UnMergedFrame^.Alpha := AnAttrib.ColorAlpha[lacFrameColor];
+      UnMergedFrame^.Style := AnAttrib.FrameSideStyles[BorderIdx];
+    end;
+  end;
+
+  st := AnAttrib.Style;
+  sm := AnAttrib.StyleMask;
+  for FontStyleIdx in TFontStylePriors do begin
+    AttrPrior := AnAttrib.StylePriority[FontStyleIdx];
+    if (AttrPrior < StylePriority[FontStyleIdx]) or
+       not(FontStyleIdx in (st+sm))
+    then
+      continue;
+    if ((FontStyleIdx in st) and not (FontStyleIdx in sm)) then begin
+      // invert
+      UnMergedStyle := FUnMergedFontStyles[FontStyleIdx].Add;
+      UnMergedStyle^.Prior := AttrPrior;
+    end
+    else begin
+      if StylePriority[FontStyleIdx] < AttrPrior then
+        FUnMergedFontStyles[FontStyleIdx].Shorten(AttrPrior);
+      StylePriority[FontStyleIdx] := AttrPrior;
+      if (FontStyleIdx in st) then // set
+        Include(FStyle, FontStyleIdx)
+      else  // clear
+        Exclude(FStyle, FontStyleIdx);
+    end;
+  end;
+  EndUpdate;
+end;
+
+procedure TLazEditTextAttributeMergeResult.FinishMerge;
+  procedure FadeColor(var R,G,B: Byte; ACol: TColor; AnAlpha: Byte);
+  var
+    R2,G2,B2: Byte;
+  begin
+    RedGreenBlue(ColorToRGB(ACol), R2, G2, B2);
+    R := Byte(Min(Max(Integer(R) + (Integer(R2) - Integer(R)) * Integer(AnAlpha) div 256, 0), 255));
+    G := Byte(Min(Max(Integer(G) + (Integer(G2) - Integer(G)) * Integer(AnAlpha) div 256, 0), 255));
+    B := Byte(Min(Max(Integer(B) + (Integer(B2) - Integer(B)) * Integer(AnAlpha) div 256, 0), 255));
+  end;
+var
+  i, c, CurPrior: Integer;
+  f: boolean;
+  ColorIdx: TLazTextAttributeColor;
+  BorderIdx: TLazTextAttrBorderSide;
+  FontStyleIdx: TFontStyle;
+  CurCol: TColor;
+  UnMergedColor: PUnMergedColor;
+  UnMergedFrame: PUnMergedFrame;
+  UnMergedStyle: PUnMergedFontStyle;
+  R,G,B: Byte;
+  st: TFontStyles;
+begin
+  if FState <> mrsMerging then begin
+    FState := mrsMerged;
+    exit;
+  end;
+
+  FState := mrsMerged;
+  BeginUpdate;
+
+  for ColorIdx in TLazTextAttributeColor do begin
+    if ColorIdx = lacFrameColor then continue;
+    c := FUnMergedColors[ColorIdx].Count;
+    if c = 0 then continue;
+
+    CurPrior := ColorPriority[ColorIdx];
+    CurCol   := ColorValue[ColorIdx];
+    if CurCol = clNone then
+      CurCol := FUnMergedColors[ColorIdx].List[0].Color;
+    RedGreenBlue(ColorToRGB(CurCol), R, G, B);
+    for i := 0 to c - 1 do begin
+      UnMergedColor := @FUnMergedColors[ColorIdx].List[i];
+      if UnMergedColor^.Prior < CurPrior then continue;
+      FadeColor(R, G, B, UnMergedColor^.Color, UnMergedColor^.Alpha);
+    end;
+    ColorValue[ColorIdx] := RGBToColor(R, G, B);
+  end;
+
+  for BorderIdx in TLazTextAttrBorderSide do begin
+    c := FUnMergedFrameSides[BorderIdx].Count;
+    if c = 0 then continue;
+
+    CurPrior := FFrameSides[BorderIdx].Prior;
+    CurCol   := FFrameSides[BorderIdx].Color;
+    if CurCol = clNone then begin
+      CurCol := Background;
+      if CurCol = clNone then
+        CurCol := FUnMergedFrameSides[BorderIdx].List[0].Color;
+    end;
+    RedGreenBlue(ColorToRGB(CurCol), R, G, B);
+    for i := 0 to c - 1 do begin
+      UnMergedFrame := @FUnMergedFrameSides[BorderIdx].List[i];
+      if UnMergedFrame^.Prior < CurPrior then continue;
+      FadeColor(R, G, B, UnMergedFrame^.Color, UnMergedFrame^.Alpha);
+      FFrameSides[BorderIdx].Style := UnMergedFrame^.Style;  // always updating style
+    end;
+    FFrameSides[BorderIdx].Color := RGBToColor(R, G, B);
+  end;
+
+  st := Style;
+  for FontStyleIdx in TFontStylePriors do begin
+    c := FUnMergedFontStyles[FontStyleIdx].Count;
+    if c = 0 then continue;
+    CurPrior := StylePriority[FontStyleIdx];
+    f := False;
+    for i := 0 to c - 1 do begin
+      UnMergedStyle := @FUnMergedFontStyles[FontStyleIdx].List[i];
+      if UnMergedStyle^.Prior < CurPrior then continue;
+      f := not f;
+    end;
+    if f then begin
+      if FontStyleIdx in st then
+        Exclude(st, FontStyleIdx)
+      else
+        Include(st, FontStyleIdx);
+    end;
+  end;
+  Style := st;
+
+  EndUpdate;
 end;
 
 end.

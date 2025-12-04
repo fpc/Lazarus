@@ -114,14 +114,14 @@ type
     procedure MergeMarkupAttributeAtRowCol(const aRow: Integer;
                                            const aStartCol, AEndCol :TLazSynDisplayTokenBound;
                                            const AnRtlInfo: TLazSynDisplayRtlInfo;
-                                           AMarkup: TSynSelectedColorMergeResult); virtual;
+                                           AMarkup: TLazEditTextAttributeMergeResult); virtual;
 
     function GetMarkupAttributeAtWrapEnd(const aRow: Integer;
                                          const aWrapCol: TLazSynDisplayTokenBound): TLazEditTextAttributeModifier; virtual;
                                          // experimental; // params may still change
     procedure MergeMarkupAttributeAtWrapEnd(const aRow: Integer;
                                            const aWrapCol: TLazSynDisplayTokenBound;
-                                           AMarkup: TSynSelectedColorMergeResult); virtual;
+                                           AMarkup: TLazEditTextAttributeMergeResult); virtual;
                                            // experimental; // params may still change
 
     // Notifications about Changes to the text
@@ -189,11 +189,11 @@ type
     procedure MergeMarkupAttributeAtRowCol(const aRow: Integer;
                                            const aStartCol, AEndCol :TLazSynDisplayTokenBound;
                                            const AnRtlInfo: TLazSynDisplayRtlInfo;
-                                           AMarkup: TSynSelectedColorMergeResult); override;
+                                           AMarkup: TLazEditTextAttributeMergeResult); override;
 
     procedure MergeMarkupAttributeAtWrapEnd(const aRow: Integer;
       const aWrapCol: TLazSynDisplayTokenBound;
-      AMarkup: TSynSelectedColorMergeResult); override;
+      AMarkup: TLazEditTextAttributeMergeResult); override;
 
     // Notifications about Changes to the text
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine, ACountDiff: Integer); override; // lines are 1 based
@@ -451,13 +451,13 @@ end;
 
 procedure TSynEditMarkup.MergeMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol, AEndCol: TLazSynDisplayTokenBound;
-  const AnRtlInfo: TLazSynDisplayRtlInfo; AMarkup: TSynSelectedColorMergeResult);
+  const AnRtlInfo: TLazSynDisplayRtlInfo; AMarkup: TLazEditTextAttributeMergeResult);
 var
   c: TLazEditTextAttribute;
 begin
   c := GetMarkupAttributeAtRowCol(aRow, aStartCol, AnRtlInfo);
   if assigned(c) then
-    AMarkup.Merge(c, aStartCol, AEndCol);
+    AMarkup.Merge(c);
 end;
 
 function TSynEditMarkup.GetMarkupAttributeAtWrapEnd(const aRow: Integer;
@@ -468,7 +468,7 @@ end;
 
 procedure TSynEditMarkup.MergeMarkupAttributeAtWrapEnd(const aRow: Integer;
   const aWrapCol: TLazSynDisplayTokenBound;
-  AMarkup: TSynSelectedColorMergeResult);
+  AMarkup: TLazEditTextAttributeMergeResult);
 var
   c: TLazEditTextAttribute;
 begin
@@ -623,7 +623,7 @@ end;
 
 procedure TSynEditMarkupManager.MergeMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol, AEndCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
-  AMarkup: TSynSelectedColorMergeResult);
+  AMarkup: TLazEditTextAttributeMergeResult);
 var
   i : integer;
 begin
@@ -636,7 +636,7 @@ end;
 
 procedure TSynEditMarkupManager.MergeMarkupAttributeAtWrapEnd(
   const aRow: Integer; const aWrapCol: TLazSynDisplayTokenBound;
-  AMarkup: TSynSelectedColorMergeResult);
+  AMarkup: TLazEditTextAttributeMergeResult);
 var
   i : integer;
 begin

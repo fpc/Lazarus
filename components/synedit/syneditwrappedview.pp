@@ -55,7 +55,7 @@ type
     FCurToken: TLazSynDisplayTokenInfo;
     FCurLineLogIdx: Integer;
     FCurLineWrapIndentString: String;
-    FCurrentSubLineMarkupInfo: TSynSelectedColorMergeResult;
+    FCurrentSubLineMarkupInfo: TLazEditTextAttributeMergeResult;
   public
     constructor Create(AWrappedView: TLazSynWordWrapView; AWrapPlugin: TLazSynEditLineWrapPlugin);
     destructor Destroy; override;
@@ -194,7 +194,7 @@ constructor TLazSynDisplayWordWrap.Create(AWrappedView: TLazSynWordWrapView;
   AWrapPlugin: TLazSynEditLineWrapPlugin);
 begin
   FWrapPlugin := AWrapPlugin;
-  FCurrentSubLineMarkupInfo := TSynSelectedColorMergeResult.Create(nil);
+  FCurrentSubLineMarkupInfo := TLazEditTextAttributeMergeResult.Create(nil);
   inherited Create(AWrappedView);
 end;
 
@@ -256,7 +256,6 @@ function TLazSynDisplayWordWrap.GetNextHighlighterToken(out
   ATokenInfo: TLazSynDisplayTokenInfo): Boolean;
 var
   PreStart: Integer;
-  LineBnd1, LineBnd2: TLazSynDisplayTokenBound;
 begin
   ATokenInfo := Default(TLazSynDisplayTokenInfo);
   if FCurLineLogIdx < 0 then begin
@@ -314,17 +313,11 @@ begin
   if (FCurrentWrapSubline > 0) and (FWrapPlugin.MarkupInfoWrapSubLine <> nil) and
      (FWrapPlugin.MarkupInfoWrapSubLine.IsEnabled)
   then begin
-    LineBnd1.Logical  := ToPos(FCurSubLineLogStartIdx);
-    LineBnd1.Physical := -1;
-    LineBnd1.Offset   := 0;
-    LineBnd2.Logical  := ToPos(FCurSubLineNextLogStartIdx);
-    LineBnd2.Physical := -1;
-    LineBnd2.Offset   := 0;
-
     FCurrentSubLineMarkupInfo.Clear;
     if ATokenInfo.TokenAttr <> nil then begin
       FCurrentSubLineMarkupInfo.Assign(ATokenInfo.TokenAttr);
-      FCurrentSubLineMarkupInfo.Merge(FWrapPlugin.MarkupInfoWrapSubLine, LineBnd1, LineBnd2);
+      FCurrentSubLineMarkupInfo.SetFrameBoundsLog(ToPos(FCurSubLineLogStartIdx), ToPos(FCurSubLineNextLogStartIdx));
+      FCurrentSubLineMarkupInfo.Merge(FWrapPlugin.MarkupInfoWrapSubLine);
     end
     else
       FCurrentSubLineMarkupInfo.Assign(FWrapPlugin.MarkupInfoWrapSubLine);

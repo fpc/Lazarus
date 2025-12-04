@@ -42,7 +42,7 @@ procedure TTestPaintColorMerging.MergeAttrib;
     end;
   end;
 
-  procedure CheckAttrib(AName: String; AnAttrib: TSynSelectedColorMergeResult;
+  procedure CheckAttrib(AName: String; AnAttrib: TLazEditTextAttributeMergeResult;
     AFore, ABack, AFrameL, AFrameR, AFrameT, AFrameB: TColor;
     AStyle: TFontStyles = []);
   begin
@@ -56,7 +56,7 @@ procedure TTestPaintColorMerging.MergeAttrib;
   end;
 
 var
-  Merger: TSynSelectedColorMergeResult;
+  Merger: TLazEditTextAttributeMergeResult;
   Base: TSynHighlighterAttributes;
   Modifier: TLazEditTextAttributeModifier;
   b1, b2: TLazSynDisplayTokenBound;
@@ -66,31 +66,31 @@ begin
   b2.Logical := -1;
   b2.Physical := 7;
 
-  Merger := TSynSelectedColorMergeResult.Create;
+  Merger := TLazEditTextAttributeMergeResult.Create;
   Base := TSynHighlighterAttributes.Create;
   Modifier := TSynSelectedColor.Create;
 
   SetAttrib(Base, clRed, clYellow, clNone);
   Merger.Assign(Base);
-  Merger.CurrentStartX := b1;
-  Merger.CurrentEndX := b2;
+  Merger.StartX := b1;
+  Merger.EndX := b2;
   CheckAttrib('', Merger, clRed, clYellow, clNone, clNone, clNone, clNone);
 
 
   SetAttrib(Base, clRed, clYellow, clNone);
   Merger.Assign(Base);
-  Merger.CurrentStartX := b1;
-  Merger.CurrentEndX := b2;
-  Merger.ProcessMergeInfo;
+  Merger.StartX := b1;
+  Merger.EndX := b2;
+  Merger.FinishMerge;
   CheckAttrib('', Merger, clRed, clYellow, clNone, clNone, clNone, clNone);
 
 
   SetAttrib(Base, clRed, clYellow, clNone);
   Merger.Assign(Base);
-  Merger.CurrentStartX := b1;
-  Merger.CurrentEndX := b2;
-  Merger.InitMergeInfo;
-  Merger.ProcessMergeInfo;
+  Merger.StartX := b1;
+  Merger.EndX := b2;
+  //Merger.InitMergeInfo;
+  Merger.FinishMerge;
   CheckAttrib('', Merger, clRed, clYellow, clNone, clNone, clNone, clNone);
 
 
@@ -98,22 +98,24 @@ begin
   SetAttrib(Modifier, clNone, clNone, clNone);
   Merger.Assign(Base);
   Merger.Merge(Modifier);
-  Merger.ProcessMergeInfo;
+  Merger.FinishMerge;
   CheckAttrib('', Merger, clRed, clYellow, clNone, clNone, clNone, clNone);
 
   SetAttrib(Base, clRed, clYellow, clNone);
   SetAttrib(Modifier, clNone, clNone, clNone, [], [], sfeAround, slsSolid, 3, 7);
   Merger.Assign(Base);
   Merger.Merge(Modifier);
-  Merger.ProcessMergeInfo;
+  Merger.FinishMerge;
   CheckAttrib('', Merger, clRed, clYellow, clNone, clNone, clNone, clNone);
 
 
   SetAttrib(Base, clRed, clYellow, clNone);
   SetAttrib(Modifier, clNone, clGray, clGreen, [], [], sfeAround, slsSolid, 3, 7);
   Merger.Assign(Base);
-  Merger.Merge(Modifier, b1, b2);
-  Merger.ProcessMergeInfo;
+  Merger.StartX := b1;
+  Merger.EndX   := b2;
+  Merger.Merge(Modifier);
+  Merger.FinishMerge;
   CheckAttrib('', Merger, clRed, clGray, clGreen, clGreen, clGreen, clGreen);
 
 

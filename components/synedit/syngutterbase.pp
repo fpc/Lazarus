@@ -104,7 +104,7 @@ type
     FTextDrawer: TLazEditTextGridPainter;
     FColor: TSynGutterColorAttributesModifier;
     FCurrentLineColor: TSynGutterColorAttributesModifier;
-    FMarkupInfoCurLineMerged: TSynSelectedColorMergeResult;
+    FMarkupInfoCurLineMerged: TLazEditTextAttributeMergeResult;
 
     FLeft, FWidth, FHeight, FTop: Integer;
     FVisible: boolean;
@@ -157,7 +157,7 @@ type
     function GetOwner: TPersistent; override;
     property GutterArea: TLazSynSurfaceWithText read FGutterArea write FGutterArea;
 
-    property MarkupInfoCurLineMerged: TSynSelectedColorMergeResult read FMarkupInfoCurLineMerged;
+    property MarkupInfoCurLineMerged: TLazEditTextAttributeMergeResult read FMarkupInfoCurLineMerged;
     property CaretRow: integer read FCaretRow; // vaild only during paint
   public
     constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide; ATextDrawer: TLazEditTextGridPainter);
@@ -253,7 +253,7 @@ type
     FMarkupInfo: TSynGutterColorAttributes;
     FMarkupInfoInternal: TLazEditTextAttributeModifier;
     FMarkupInfoCurrentLine: TSynGutterColorAttributesModifier;
-    FMarkupInfoCurLineMerged: TSynSelectedColorMergeResult;
+    FMarkupInfoCurLineMerged: TLazEditTextAttributeMergeResult;
     FCursor: TCursor;
     FOnChange: TNotifyEvent;
     FOnClick: TSynGutterClickEvent;
@@ -296,7 +296,7 @@ type
     property SynEdit:TSynEditBase read FSynEdit;
     property GutterArea: TLazSynSurfaceWithText read GetGutterArea;
     property MarkupInfoInternal: TLazEditTextAttributeModifier read FMarkupInfoInternal;
-    property MarkupInfoCurLineMerged: TSynSelectedColorMergeResult read FMarkupInfoCurLineMerged;
+    property MarkupInfoCurLineMerged: TLazEditTextAttributeMergeResult read FMarkupInfoCurLineMerged;
     property CaretRow: integer read GetCaretRow;
   public
     constructor Create(AnOwner: TComponent); override;
@@ -357,7 +357,7 @@ begin
 
   FCurrentLineColor := TSynGutterColorAttributesModifier.Create;
   FCurrentLineColor.AddChangeHandler(@DoColorChanged);
-  FMarkupInfoCurLineMerged := TSynSelectedColorMergeResult.Create;
+  FMarkupInfoCurLineMerged := TLazEditTextAttributeMergeResult.Create;
 
   inherited Create;
   FSide := ASide;
@@ -529,7 +529,7 @@ begin
   FMarkupInfoCurLineMerged.Clear;
   FMarkupInfoCurLineMerged.Assign(FColor);
   FMarkupInfoCurLineMerged.Merge(FCurrentLineColor);
-  FMarkupInfoCurLineMerged.ProcessMergeInfo;
+  FMarkupInfoCurLineMerged.FinishMerge;
   for i := 0 to PartCount - 1 do
     Parts[i].UpdateInternalColors;
 end;
@@ -952,7 +952,7 @@ begin
   FMarkupInfoCurLineMerged.Assign(FMarkupInfoInternal);
   FMarkupInfoCurLineMerged.Merge(Gutter.FCurrentLineColor);
   FMarkupInfoCurLineMerged.Merge(MarkupInfoCurrentLine);
-  FMarkupInfoCurLineMerged.ProcessMergeInfo;
+  FMarkupInfoCurLineMerged.FinishMerge;
 end;
 
 procedure TSynGutterPartBase.PaintBackground(Canvas: TCanvas; AClip: TRect);
@@ -1046,7 +1046,7 @@ begin
   FMarkupInfoCurrentLine.FrameColor := clNone;
 
   FMarkupInfoInternal := TLazEditTextAttributeModifier.Create;
-  FMarkupInfoCurLineMerged := TSynSelectedColorMergeResult.Create;
+  FMarkupInfoCurLineMerged := TLazEditTextAttributeMergeResult.Create;
 
   FMouseActions := CreateMouseActions;
 

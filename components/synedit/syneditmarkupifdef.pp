@@ -417,7 +417,7 @@ type
     destructor Destroy; override;
     procedure MergeMarkupAttributeAtRowCol(const aRow: Integer; const aStartCol,
       AEndCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
-      AMarkup: TSynSelectedColorMergeResult); override;
+      AMarkup: TLazEditTextAttributeMergeResult); override;
 
     property MarkupInfoEnabled:      TSynHighlighterAttributesModifier read FMarkupInfoEnabled;
     property MarkupInfoDisabled:     TSynHighlighterAttributesModifier read GetMarkupInfo; // alias for MarkupInfo
@@ -491,7 +491,7 @@ type
       ANextPhys, ANextLog: Integer); override;
     procedure MergeMarkupAttributeAtRowCol(const aRow: Integer; const aStartCol,
       AEndCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
-      AMarkup: TSynSelectedColorMergeResult); override;
+      AMarkup: TLazEditTextAttributeMergeResult); override;
 
     procedure InvalidateAll;
     procedure SetNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
@@ -664,7 +664,7 @@ end;
 
 procedure TSynEditMarkupIfDefNodes.MergeMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol, AEndCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
-  AMarkup: TSynSelectedColorMergeResult);
+  AMarkup: TLazEditTextAttributeMergeResult);
 var
   i, s, e: Integer;
   c: TSynHighlighterAttributesModifier;
@@ -676,23 +676,23 @@ begin
   if (i and MARKUP_ENABLED) <> 0 then begin
     c := MarkupInfoEnabled;
     c.SetFrameBoundsLog(s, e);
-    AMarkup.Merge(c, aStartCol, AEndCol);
+    AMarkup.Merge(c);
   end;
   if (i and MARKUP_DISABLED) <> 0 then begin
     c := MarkupInfoDisabled;
     c.SetFrameBoundsLog(s, e);
-    AMarkup.Merge(c, aStartCol, AEndCol);
+    AMarkup.Merge(c);
   end;
 
   if (i and MARKUP_TEMP_ENABLED) <> 0 then begin
     c := MarkupInfoTempEnabled;
     c.SetFrameBoundsLog(s, e);
-    AMarkup.Merge(c, aStartCol, AEndCol);
+    AMarkup.Merge(c);
   end;
   if (i and MARKUP_TEMP_DISABLED) <> 0 then begin
     c := MarkupInfoTempDisabled;
     c.SetFrameBoundsLog(s, e);
-    AMarkup.Merge(c, aStartCol, AEndCol);
+    AMarkup.Merge(c);
   end;
 end;
 
@@ -4071,7 +4071,7 @@ end;
 
 procedure TSynEditMarkupIfDef.MergeMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol, AEndCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
-  AMarkup: TSynSelectedColorMergeResult);
+  AMarkup: TLazEditTextAttributeMergeResult);
 begin
   FMarkupEnabled.MergeMarkupAttributeAtRowCol(aRow, aStartCol, AEndCol, AnRtlInfo, AMarkup);
   FMarkupNodes.MergeMarkupAttributeAtRowCol(aRow, aStartCol, AEndCol, AnRtlInfo, AMarkup);

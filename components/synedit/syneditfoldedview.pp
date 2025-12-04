@@ -358,7 +358,7 @@ type
     FFoldView: TSynEditFoldedView;
     FLineState: integer;
     FTokenAttr: TSynHighlighterAttributesModifier;
-    FMarkupLine: TSynSelectedColorMergeResult;
+    FMarkupLine: TLazEditTextAttributeMergeResult;
     FLineFlags, FLineFlags2: TSynEditFoldLineCapabilities;
   public
     constructor Create(AFoldView: TSynEditFoldedView);
@@ -715,7 +715,7 @@ begin
   inherited Create;
   FFoldView := AFoldView;
   FTokenAttr := TSynHighlighterAttributesModifier.Create(nil);
-  FMarkupLine := TSynSelectedColorMergeResult.Create;
+  FMarkupLine := TLazEditTextAttributeMergeResult.Create;
 end;
 
 destructor TLazSynDisplayFold.Destroy;
@@ -824,13 +824,13 @@ begin
 
     // fully expand all frames
     //FMarkupLine.SetFrameBoundsLog(0,0,0);
-    //FMarkupLine.CurrentStartX := FMarkupLine.StartX;
-    //FMarkupLine.CurrentEndX := FMarkupLine.EndX;
+    FMarkupLine.StartX := MergeStartX;
+    FMarkupLine.EndX   := MergeEndX;
 
     if (cfCollapsedFold in FLineFlags2) then
-      FMarkupLine.Merge(FFoldView.MarkupInfoFoldedCodeLine, MergeStartX, MergeEndX)
+      FMarkupLine.Merge(FFoldView.MarkupInfoFoldedCodeLine)
     else
-      FMarkupLine.Merge(FFoldView.MarkupInfoHiddenCodeLine, MergeStartX, MergeEndX);
+      FMarkupLine.Merge(FFoldView.MarkupInfoHiddenCodeLine);
 
     ATokenInfo.TokenAttr := FMarkupLine;
   end;

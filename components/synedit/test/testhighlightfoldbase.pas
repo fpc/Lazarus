@@ -201,8 +201,8 @@ procedure TTestBaseHighlighterFoldBase.CheckTokensForLine(Name: String;
   function AttrVal(a: TLazCustomEditTextAttribute): Integer;
   begin
     if a = nil then exit(-1);
-    if a is TSynSelectedColorMergeResult then
-      TSynSelectedColorMergeResult(a).ProcessMergeInfo;
+    if a is TLazEditTextAttributeMergeResult then
+      TLazEditTextAttributeMergeResult(a).FinishMerge;
     Result := a.Foreground; // compare the color
   end;
 var

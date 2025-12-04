@@ -166,7 +166,7 @@ type
     FHighLigther: TSynCustomHighlighter;
     FDefAttrib, FSrcCodeAttrib, FSrcFuncAttrib: TSynHighlighterAttributes;
     FSelAttrib, FCurLineAttrib, FJmpLinkAttrib, FJmpTargetAttrib: TSynHighlighterAttributesModifier;
-    FMergeCol: TSynSelectedColorMergeResult;
+    FMergeCol: TLazEditTextAttributeMergeResult;
 
     function LineForAddr(AnAddr: TDBGPtr):Integer;
     procedure BreakPointChanged(const {%H-}ASender: TIDEBreakPoints;
@@ -323,7 +323,7 @@ begin
   FCurLineAttrib   := TSynHighlighterAttributesModifier.Create;
   FJmpLinkAttrib   := TSynHighlighterAttributesModifier.Create;
   FJmpTargetAttrib := TSynHighlighterAttributesModifier.Create;
-  FMergeCol:= TSynSelectedColorMergeResult.Create;
+  FMergeCol:= TLazEditTextAttributeMergeResult.Create;
 
   inherited Create(AOwner);
 //  DoubleBuffered := True;
@@ -804,12 +804,12 @@ procedure TAssemblerDlg.GetColors(ASrc: TLazEditTextAttribute;
 var
   i: Integer;
 begin
-  FMergeCol.CleanupMergeInfo;
+  FMergeCol.Clear;
   FMergeCol.Assign(ASrc);
   for i := low(AMod) to high(AMod) do
     if AMod[i] <> nil then FMergeCol.Merge(AMod[i]);
 
-  FMergeCol.ProcessMergeInfo;
+  FMergeCol.FinishMerge;
 
   ABack  := FMergeCol.Background;
   if (ABack = clNone) or (ABack = clDefault) then ABack := FDefAttrib.Background;
