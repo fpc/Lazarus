@@ -43,6 +43,7 @@ type
 
 
   TLazTextAttributeFeature = (
+    lafAlwaysEnabled, // force enabled to return true, even if no colors are set
     lafPastEOL       // color extends past eol
   );
   TLazTextAttributeFeatures = set of TLazTextAttributeFeature;
@@ -734,6 +735,8 @@ begin
   for c := low(TLazTextAttributeColor) to high(TLazTextAttributeColor) do
     if FColors[c] <> clNone then
       exit;
+  if lafAlwaysEnabled in Features then
+    exit;
   Result := False;
 end;
 

@@ -481,6 +481,7 @@ var
   MouseXY, XY: TPoint;
   AddAttr: TAdditionalHilightAttribute;
   NewNode: TTreeNode;
+  AttriList: TLazCustomEditTextAttributeArray;
 begin
   MouseXY := Point(X - (ColorPreview.CharWidth div 2), Y);
   XY := ColorPreview.PixelsToRowColumn(MouseXY);
@@ -532,9 +533,28 @@ begin
   if FIsEditingDefaults then
     exit;
   // Pascal Highlights
+  if FCurrentHighlighter <> nil then begin
+    // the features will be reset in between select events
+    for i := 0 to FCurrentHighlighter.AttrCount - 1 do begin
+      FCurrentHighlighter.Attribute[i].UpdateSupportedFeatures([lafAlwaysEnabled], []);
+      FCurrentHighlighter.Attribute[i].Features := FCurrentHighlighter.Attribute[i].Features + [lafAlwaysEnabled];
+    end;
+    FCurrentHighlighter.ScanAllRanges;
+  end;
   Token := '';
   Attri := nil;
   ColorPreview.GetHighlighterAttriAtRowCol(XY, Token, Attri);
+  AttriList := ColorPreview.Highlighter.GetTokenAttributeList;
+  i := Length(AttriList) - 1;
+  while (i >= 0) and (AttriList[i] is TLazEditTextAttribute) and
+        (TLazEditTextAttribute(AttriList[i]).StoredName <> FCurHighlightElement.StoredName)
+  do
+    dec(i);
+  if i >= 0 then inc(i);
+  if i = Length(AttriList) then i := 0;
+  if (i >= 0) and (AttriList[i] is TLazEditTextAttribute) then
+    Attri := TLazEditTextAttribute(AttriList[i]);
+
   if Attri = nil then
     Attri := FCurrentHighlighter.WhitespaceAttribute;
   if Attri <> nil then begin
@@ -1398,9 +1418,10 @@ begin
     SynColorAttrEditor1.CurrentColorScheme := FCurrentColorScheme;
     FillPriorEditor;
   end;
-  if FCurrentHighlighter <> nil then
+  if FCurrentHighlighter <> nil then begin
     SetComboBoxText(FileExtensionsComboBox,
-      GetCurFileExtensions(FCurrentHighlighter.LanguageName),cstFilename)
+      GetCurFileExtensions(FCurrentHighlighter.LanguageName),cstFilename);
+  end
   else
     SetComboBoxText(FileExtensionsComboBox, '', cstFilename);
   ApplyCurrentScheme;
