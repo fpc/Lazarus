@@ -68,6 +68,7 @@ type
     function  IsCtrlMouseShiftState(AShift: TShiftState; OnlyShowLink: Boolean): Boolean;
     procedure UpdateBoundsInfo(ANewBoundsInfo: TSynMarkupLinkInfo);
     procedure InternalUpdateCtrlMouse;
+    procedure UpdateMouseCursor;
     procedure UpdateSynCursor(Sender: TObject; const AMouseLocation: TSynMouseLocationInfo;
       var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject);
     procedure LastCaretChanged(Sender: TObject; ACaret:TPoint);
@@ -188,6 +189,17 @@ begin
     InvalidateSynLines(FCurrentLink.StartPos.Y, FCurrentLink.EndPos.Y);
 end;
 
+procedure TSynEditMarkupCtrlMouseLink.UpdateMouseCursor;
+begin
+  if FCurrentLink.IsLinkable and
+    (FCurrentLink.StartPos <= FLastMouseCaret) and
+    (FCurrentLink.EndPos >= FLastMouseCaret)
+  then
+    SetCursor(crHandPoint)
+  else
+    SetCursor(crDefault);
+end;
+
 procedure TSynEditMarkupCtrlMouseLink.InternalUpdateCtrlMouse;
 
   procedure doNotShowLink;
@@ -197,6 +209,7 @@ procedure TSynEditMarkupCtrlMouseLink.InternalUpdateCtrlMouse;
     SetCursor(crDefault);
 
     FCurrentLink.IsLinkable := False;
+    FCurrentLink.StartPos.Y := -1; // must re-evaluate on next mouse move
   end;
 
 var
@@ -223,8 +236,10 @@ begin
       if (FCurrentLink.StartPos   = NewLinkInfo.StartPos) and
          (FCurrentLink.EndPos     = NewLinkInfo.EndPos) and
          (FCurrentLink.IsLinkable = NewLinkInfo.IsLinkable)
-      then
+      then begin
+        UpdateMouseCursor;
         exit;
+      end;
     end
     else begin
       SynEdit.GetWordBoundsAtRowCol(FLastMouseCaretLogical,NewX1,NewX2);
@@ -232,8 +247,10 @@ begin
          (NewY  = FCurrentLink.EndPos.Y) and
          (NewX1 = FCurrentLink.StartPos.X) and
          (NewX2 = FCurrentLink.EndPos.X)
-      then
+      then begin
+        UpdateMouseCursor;
         exit;
+      end;
 
       NewLinkInfo.StartPos.Y := NewY;
       NewLinkInfo.EndPos.Y := NewY;
@@ -243,14 +260,7 @@ begin
     end;
 
     UpdateBoundsInfo(NewLinkInfo);
-
-    if FCurrentLink.IsLinkable and
-      (FCurrentLink.StartPos <= FLastMouseCaret) and
-      (FCurrentLink.EndPos >= FLastMouseCaret)
-    then
-      SetCursor(crHandPoint)
-    else
-      SetCursor(crDefault)
+    UpdateMouseCursor;
   end else
     doNotShowLink;
 end;
@@ -361,12 +371,8 @@ begin
   NewInfo.IsLinkable := ANewIsLinkAble;
   UpdateBoundsInfo(NewInfo);
   if AnUpdateMouseCursor then begin
-    if FCurrentLink.IsLinkable and
-       (FLastMouseCaret.Y >= 0) and
-       (FCurrentLink.StartPos <= FLastMouseCaret) and
-       (FCurrentLink.EndPos >= FLastMouseCaret)
-     then
-      SetCursor(crHandPoint)
+    if (FLastMouseCaret.Y >= 0) then
+      UpdateMouseCursor
     else
       SetCursor(crDefault);
   end;
