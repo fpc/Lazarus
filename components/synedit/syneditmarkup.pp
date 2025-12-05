@@ -107,6 +107,10 @@ type
     Function  GetMarkupAttributeAtRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo) : TLazEditTextAttributeModifier; virtual; abstract;
+    procedure GetMarkupAttributeListAtRowCol(const aRow: Integer;
+                                         const aStartCol: TLazSynDisplayTokenBound;
+                                         const AnRtlInfo: TLazSynDisplayRtlInfo;
+                                         var AnAttrList: TLazCustomEditTextAttributeArray); virtual;
     Procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                           const aStartCol: TLazSynDisplayTokenBound;
                                           const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -182,6 +186,9 @@ type
     Function  GetMarkupAttributeAtRowCol(const aRow: Integer;
                                          const aStartCol: TLazSynDisplayTokenBound;
                                          const AnRtlInfo: TLazSynDisplayRtlInfo) : TLazEditTextAttributeModifier; override;
+    procedure GetMarkupAttributeListAtRowCol(const aRow: Integer;
+      const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
+      var AnAttrList: TLazCustomEditTextAttributeArray); override;
     procedure GetNextMarkupColAfterRowCol(const aRow: Integer;
                                           const aStartCol: TLazSynDisplayTokenBound;
                                           const AnRtlInfo: TLazSynDisplayRtlInfo;
@@ -449,6 +456,23 @@ procedure TSynEditMarkup.EndMarkup;
 begin
 end;
 
+procedure TSynEditMarkup.GetMarkupAttributeListAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
+  var AnAttrList: TLazCustomEditTextAttributeArray);
+var
+  a: TLazEditTextAttributeModifier;
+  l: SizeInt;
+  n1, n2: Integer;
+begin
+  GetNextMarkupColAfterRowCol(aRow, aStartCol, AnRtlInfo, n1, n2);
+  a := GetMarkupAttributeAtRowCol(aRow, aStartCol, AnRtlInfo);
+  if a <> nil then begin
+    l := Length(AnAttrList);
+    SetLength(AnAttrList, l + 1);
+    AnAttrList[l] := a;
+  end;
+end;
+
 procedure TSynEditMarkup.MergeMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol, AEndCol: TLazSynDisplayTokenBound;
   const AnRtlInfo: TLazSynDisplayRtlInfo; AMarkup: TLazEditTextAttributeMergeResult);
@@ -655,6 +679,17 @@ begin
   Result := MarkupInfo;
   Result.Clear;
   //MergeMarkupAttributeAtRowCol(aRow, aCol, GetNextMarkupColAfterRowCol(aRow, aCol) - 1, Result);
+end;
+
+procedure TSynEditMarkupManager.GetMarkupAttributeListAtRowCol(const aRow: Integer;
+  const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
+  var AnAttrList: TLazCustomEditTextAttributeArray);
+var
+  i: Integer;
+begin
+  for i := 0 to fMarkUpList.Count-1 do
+    if TSynEditMarkup(fMarkUpList[i]).RealEnabled then
+      TSynEditMarkup(fMarkUpList[i]).GetMarkupAttributeListAtRowCol(aRow, aStartCol, AnRtlInfo, AnAttrList);
 end;
 
 procedure TSynEditMarkupManager.GetNextMarkupColAfterRowCol(const aRow: Integer;

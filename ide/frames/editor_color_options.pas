@@ -35,7 +35,7 @@ uses
   // SynEdit
   SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynEditStrConst,
-  SynEditMarkupSpecialLine,
+  SynEditMarkupSpecialLine, SynEditMarkup,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
   EditorSyntaxHighlighterDef, LazEditTextAttributes,
@@ -482,6 +482,8 @@ var
   AddAttr: TAdditionalHilightAttribute;
   NewNode: TTreeNode;
   AttriList: TLazCustomEditTextAttributeArray;
+  TkBound: TLazSynDisplayTokenBound;
+  RtlInfo: TLazSynDisplayRtlInfo;
 begin
   MouseXY := Point(X - (ColorPreview.CharWidth div 2), Y);
   XY := ColorPreview.PixelsToRowColumn(MouseXY);
@@ -541,10 +543,25 @@ begin
     end;
     FCurrentHighlighter.ScanAllRanges;
   end;
+  for i := 0 to ColorPreview.MarkupManager.Count - 1 do begin
+    ColorPreview.MarkupManager.Markup[i].MarkupInfo.UpdateSupportedFeatures([lafAlwaysEnabled], []);
+    ColorPreview.MarkupManager.Markup[i].MarkupInfo.Features :=
+      ColorPreview.MarkupManager.Markup[i].MarkupInfo.Features  + [lafAlwaysEnabled]
+  end;
+
   Token := '';
   Attri := nil;
   ColorPreview.GetHighlighterAttriAtRowCol(XY, Token, Attri);
   AttriList := ColorPreview.Highlighter.GetTokenAttributeList;
+
+  ColorPreview.MarkupManager.BeginMarkup;
+  ColorPreview.MarkupManager.PrepareMarkupForRow(XY.y);
+  TkBound.Init(ColorPreview.LogicalToPhysicalPos(XY).X, XY.X);
+  RtlInfo := Default(TLazSynDisplayRtlInfo);
+  ColorPreview.MarkupManager.GetMarkupAttributeListAtRowCol(XY.y, TkBound, RtlInfo, AttriList);
+  ColorPreview.MarkupManager.FinishMarkupForRow(XY.y);
+  ColorPreview.MarkupManager.EndMarkup;
+
   i := Length(AttriList) - 1;
   while (i >= 0) and (AttriList[i] is TLazEditTextAttribute) and
         (TLazEditTextAttribute(AttriList[i]).StoredName <> FCurHighlightElement.StoredName)
