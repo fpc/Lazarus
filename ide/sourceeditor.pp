@@ -352,6 +352,8 @@ type
     function GetModified: Boolean; override;
     procedure SetModified(const NewValue: Boolean); override;
     procedure SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlighterID);
+    procedure SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlighterID;
+                                     ASkipEditorOpts: boolean);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
     function CheckIdentCompletionValidity: Boolean;
@@ -514,8 +516,6 @@ type
     procedure SetLineText(const AValue: string); override;
     function GetLines: TStrings; override;
     procedure SetLines(const AValue: TStrings); override;
-    procedure SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlighterID;
-                                     ASkipEditorOpts: boolean);
 
     // context
     function GetProjectFile: TLazProjectFile; override;
@@ -5413,7 +5413,6 @@ procedure TSourceEditor.CreateEditor(AOwner: TSourceNotebook;
 var
   NewName: string;
   bmp: TCustomBitmap;
-  SimilarEdit: TSynEdit;
 Begin
   {$IFDEF IDE_DEBUG}
   debugln('TSourceEditor.CreateEditor  A ');
@@ -5451,11 +5450,11 @@ Begin
       OnMouseLink := Manager.OnMouseLink;
       OnKeyDown := @EditorKeyDown;
       OnKeyUp := @EditorKeyUp;
-      OnPaste := @EditorPaste;
-      OnEnter := @EditorEnter;
+      OnPaste:=@EditorPaste;
+      OnEnter:=@EditorEnter;
       OnPlaceBookmark := @EditorPlaceBookmark;
       OnClearBookmark := @EditorClearBookmark;
-      OnChangeUpdating := @EditorChangeUpdating;
+      OnChangeUpdating  := @EditorChangeUpdating;
       OnMultiCaretBeforeCommand := @DoMultiCaretBeforeCommand;
       RegisterMouseActionExecHandler(@EditorHandleMouseAction);
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
@@ -5473,14 +5472,8 @@ Begin
     bmp.Free;
     FEditor.SyncroEdit.OnBeginEdit := @EditorActivateSyncro;
     FEditor.SyncroEdit.OnEndEdit := @EditorDeactivateSyncro;
-    // try to copy settings from an editor to the left
-    SimilarEdit:=nil;
-    if SourceNotebook.EditorCount>0 then begin
-      Assert(SourceNotebook.Editors[0]<>Self, 'TSourceEditor.CreateEditor: Editors[0]=Self');
-      SimilarEdit:=SourceNotebook.Editors[0].EditorComponent;
-    end;
-    EditorOpts.GetSynEditSettings(FEditor, SimilarEdit, ActiveSyntaxHighlighterId);
-    SourceNotebook.UpdateActiveEditColors(FEditor);
+
+    RefreshEditorSettings;
     if not AReturnUpdating then
       FEditor.EndUpdate;
   end else begin
