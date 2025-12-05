@@ -14487,7 +14487,25 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
               if Node.Desc=ctnTypeDefinition then
                 Result:=SubExprType.Context.Tool.ExtractIdentifier(Node.StartPos);
             end;
+          ctnEnumIdentifier:
+            begin
+              if (SubExprType.Context.Node.Parent<>nil)
+              and (SubExprType.Context.Node.Parent.Desc=ctnEnumerationType)
+              and (SubExprType.Context.Node.Parent.Parent<>nil)
+              and (SubExprType.Context.Node.Parent.Parent.Desc=ctnTypeDefinition)
+              then
+                Result:=SubExprType.Context.Tool.ExtractIdentifier(
+                  SubExprType.Context.Node.Parent.Parent.StartPos
+                );
+            end;
           ctnSetType:
+            if (SubExprType.Context.Node.FirstChild <> nil)
+            and (SubExprType.Context.Node.FirstChild.Desc = ctnRangeType)
+            and IsNumeric(SubExprType.Context.Tool.ExtractIdentifier(SubExprType.Context.Node.FirstChild.StartPos))
+            then begin
+              Result := 'integer';
+            end
+            else
             if SubExprType.Context.Tool.FindEnumerationTypeOfSetType(
                                     SubExprType.Context.Node,ExprType.Context)
             then begin
@@ -14872,7 +14890,7 @@ function TFindDeclarationTool.FindEnumerationTypeOfSetType(
 var
   Params: TFindDeclarationParams;
   p: LongInt;
-  Child: TCodeTreeNode;
+  Child, NewNode: TCodeTreeNode;
   PreDef: Boolean;
 begin
   Result:=false;
@@ -14883,7 +14901,7 @@ begin
   if Child=nil then exit;
   PreDef := (Child.Desc=ctnIdentifier)
   and (PredefinedIdentToExprTypeDesc(@Src[Child.StartPos],Scanner.PascalCompiler)<>xtNone);
-  if (Child.Desc=ctnIdentifier) and not PreDef then begin
+  if (Child.Desc in [ctnIdentifier, ctnRangeType]) and not PreDef then begin
     Params:=TFindDeclarationParams.Create;
     try
       Params.Flags:=fdfDefaultForExpressions;
@@ -14891,16 +14909,21 @@ begin
       p:=Child.StartPos;
       Params.SetIdentifier(Self,@Src[p],nil);
       if not FindIdentifierInContext(Params) then exit;
-      if (Params.NewNode=nil)
-      or (Params.NewNode.Desc<>ctnTypeDefinition)
-      or (Params.NewNode.FirstChild=nil)
-      or (Params.NewNode.FirstChild.Desc<>ctnEnumerationType) then begin
+      NewNode := Params.NewNode;
+      if (NewNode<>nil) and (NewNode.Desc = ctnEnumIdentifier)
+      and (NewNode.Parent<>nil) and (NewNode.Parent.Desc=ctnEnumerationType)
+      then
+        NewNode := NewNode.Parent.Parent;
+      if (NewNode=nil)
+      or (NewNode.Desc<>ctnTypeDefinition)
+      or (NewNode.FirstChild=nil)
+      or not (NewNode.FirstChild.Desc in [ctnEnumerationType, ctnRangeType]) then begin
         MoveCursorToCleanPos(p);
         ReadNextAtom;
         RaiseStringExpectedButAtomFound(20170421200656,ctsEnumerationType);
       end;
       Context.Tool:=Params.NewCodeTool;
-      Context.Node:=Params.NewNode;
+      Context.Node:=NewNode;
       Result:=true;
     finally
       Params.Free;
