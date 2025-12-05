@@ -409,11 +409,28 @@ function TSynEditMarkupCtrlMouseLink.GetMarkupAttributeAtRowCol(const aRow: Inte
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 begin
   Result := nil;
-  if (not FCurrentLink.IsLinkable) or (aRow <> FCurrentLink.StartPos.Y) or
-     ((aStartCol.Logical < FCurrentLink.StartPos.X) or (aStartCol.Logical >= FCurrentLink.EndPos.X))
-  then exit;
+  if (not FCurrentLink.IsLinkable) or
+     (aRow < FCurrentLink.StartPos.Y) or
+     ((aRow = FCurrentLink.StartPos.Y) and (aStartCol.Logical < FCurrentLink.StartPos.X)) or
+     (aRow > FCurrentLink.EndPos.Y) or
+     ((aRow = FCurrentLink.EndPos.Y) and (aStartCol.Logical >= FCurrentLink.EndPos.X))
+  then
+    exit;
+
   Result := MarkupInfo;
-  MarkupInfo.SetFrameBoundsLog(FCurrentLink.StartPos.X, FCurrentLink.EndPos.X);
+
+  if (aRow = FCurrentLink.StartPos.Y) then begin
+    if (aRow = FCurrentLink.EndPos.Y) then
+      MarkupInfo.SetFrameBoundsLog(FCurrentLink.StartPos.X, FCurrentLink.EndPos.X)
+    else
+      MarkupInfo.SetFrameBoundsLog(FCurrentLink.StartPos.X, -1);
+  end
+  else
+  if (aRow = FCurrentLink.EndPos.Y) then begin
+    MarkupInfo.SetFrameBoundsLog(-1, FCurrentLink.EndPos.X)
+  end
+  else
+    MarkupInfo.SetFrameBoundsLog(-1, -1)
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow: Integer;
@@ -422,13 +439,22 @@ procedure TSynEditMarkupCtrlMouseLink.GetNextMarkupColAfterRowCol(const aRow: In
 begin
   ANextLog := -1;
   ANextPhys := -1;
-  if FCurrentLink.StartPos.Y <> aRow
-  then exit;
+  if (not FCurrentLink.IsLinkable) or
+     (aRow < FCurrentLink.StartPos.Y) or
+     (aRow > FCurrentLink.EndPos.Y)
+  then
+    exit;
 
-  if aStartCol.Logical < FCurrentLink.StartPos.X
-  then ANextLog := FCurrentLink.StartPos.X;
-  if (aStartCol.Logical < FCurrentLink.EndPos.X) and (aStartCol.Logical >= FCurrentLink.StartPos.X)
-  then ANextLog := FCurrentLink.EndPos.X;
+  if (aRow = FCurrentLink.StartPos.y) and
+     (aStartCol.Logical < FCurrentLink.StartPos.X)
+  then
+    ANextLog := FCurrentLink.StartPos.X
+  else
+  if (aRow = FCurrentLink.EndPos.y) and
+     (aStartCol.Logical < FCurrentLink.EndPos.X) and
+     ((aRow > FCurrentLink.StartPos.Y) or (aStartCol.Logical >= FCurrentLink.StartPos.X))
+  then
+    ANextLog := FCurrentLink.EndPos.X;
 end;
 
 end.
