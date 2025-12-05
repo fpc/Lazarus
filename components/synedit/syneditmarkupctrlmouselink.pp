@@ -48,6 +48,8 @@ type
                                            var ALinkData: TSynMarkupLinkInfo
                                           ) of object;
 
+  { TSynEditMarkupCtrlMouseLink }
+
   TSynEditMarkupCtrlMouseLink = class(TSynEditMarkup)
   private
     FCurrentLink: TSynMarkupLinkInfo;
@@ -64,9 +66,10 @@ type
     procedure SetLastMouseCaret(const AValue: TPoint);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ANewCount, AOldCount : Integer);
     function  IsCtrlMouseShiftState(AShift: TShiftState; OnlyShowLink: Boolean): Boolean;
+    procedure UpdateBoundsInfo(ANewBoundsInfo: TSynMarkupLinkInfo);
     procedure InternalUpdateCtrlMouse;
     procedure UpdateSynCursor(Sender: TObject; const AMouseLocation: TSynMouseLocationInfo;
-    var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject);
+      var AnCursor: TCursor; var APriority: Integer; var AChangedBy: TObject);
     procedure LastCaretChanged(Sender: TObject; ACaret:TPoint);
     procedure KeyUpDownEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
@@ -80,6 +83,7 @@ type
   public
     constructor Create(ASynEdit: TSynEditBase);
     destructor Destroy; override;
+    procedure SetLinkBounds(ANewStartPos, ANewEndPos: TLogPoint; ANewIsLinkAble: Boolean; AnUpdateMouseCursor: Boolean = False);
 
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
@@ -92,8 +96,8 @@ type
     property CtrlMouseLine : Integer read FCurrentLink.StartPos.Y write FCurrentLink.StartPos.Y; deprecated 'use LinkStartPos or LinkEndPos / to be removed in 5.99';
     property CtrlMouseX1 : Integer read FCurrentLink.StartPos.X write FCurrentLink.StartPos.X; deprecated 'use LinkStartPos / to be removed in 5.99';
     property CtrlMouseX2 : Integer read FCurrentLink.EndPos.X write FCurrentLink.EndPos.X; deprecated 'use LinkEndPos / to be removed in 5.99';
-    property LinkStartPos: TLogPoint read FCurrentLink.StartPos write FCurrentLink.StartPos;
-    property LinkEndPos: TLogPoint read FCurrentLink.EndPos write FCurrentLink.EndPos;
+    property LinkStartPos: TLogPoint read FCurrentLink.StartPos;
+    property LinkEndPos: TLogPoint read FCurrentLink.EndPos;
     property IsMouseOverLink: Boolean read GetIsMouseOverLink;
     property Cursor: TCursor read FCursor;
     property OnGetLinkInfo: TSynMarkupLinkGetBoundsEvent read FOnGetLinkInfo write FOnGetLinkInfo;
@@ -143,7 +147,7 @@ procedure TSynEditMarkupCtrlMouseLink.LinesChanged(Sender: TSynEditStrings; AInd
 begin
   if not Enabled then Exit;
   If LastMouseCaret.Y < 0 then exit;
-  LastMouseCaret := Point(-1, -1);
+  LastMouseCaret := Point(-1, -1); // Text changed, this will hide the link
   UpdateCtrlMouse;
 end;
 
@@ -164,6 +168,24 @@ begin
   if not Enabled then Exit;
   FLastControlIsPressed := IsCtrlMouseShiftState(GetKeyShiftState, True);
   InternalUpdateCtrlMouse;
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.UpdateBoundsInfo(ANewBoundsInfo: TSynMarkupLinkInfo);
+begin
+  if FCurrentLink.IsLinkable and (FCurrentLink.StartPos.Y >= 0) and
+     ( (FCurrentLink.StartPos.Y < ANewBoundsInfo.StartPos.Y) or
+       (FCurrentLink.EndPos.Y   > ANewBoundsInfo.EndPos.Y) or
+       (not ANewBoundsInfo.IsLinkable) or
+       (ANewBoundsInfo.EndPos < ANewBoundsInfo.StartPos) or
+       (ANewBoundsInfo.StartPos.Y < 0)
+     )
+  then
+    InvalidateSynLines(FCurrentLink.StartPos.Y, FCurrentLink.EndPos.Y);
+
+  FCurrentLink := ANewBoundsInfo;
+
+  if FCurrentLink.IsLinkable and (FCurrentLink.StartPos.Y >= 0) then
+    InvalidateSynLines(FCurrentLink.StartPos.Y, FCurrentLink.EndPos.Y);
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.InternalUpdateCtrlMouse;
@@ -220,25 +242,15 @@ begin
       NewLinkInfo.IsLinkable := SynEdit.IsLinkable(NewY, NewX1, NewX2);
     end;
 
-    if FCurrentLink.IsLinkable and (FCurrentLink.StartPos.Y >= 0) and
-       ( (FCurrentLink.StartPos.Y < NewLinkInfo.StartPos.Y) or
-         (FCurrentLink.EndPos.Y   > NewLinkInfo.EndPos.Y) or
-         (not NewLinkInfo.IsLinkable) or
-         (NewLinkInfo.EndPos < NewLinkInfo.StartPos) or
-         (NewLinkInfo.StartPos.Y < 0)
-       )
+    UpdateBoundsInfo(NewLinkInfo);
+
+    if FCurrentLink.IsLinkable and
+      (FCurrentLink.StartPos <= FLastMouseCaret) and
+      (FCurrentLink.EndPos >= FLastMouseCaret)
     then
-      InvalidateSynLines(FCurrentLink.StartPos.Y, FCurrentLink.EndPos.Y);
-
-    FCurrentLink := NewLinkInfo;
-
-    if FCurrentLink.IsLinkable and (FCurrentLink.StartPos.Y >= 0) then
-      InvalidateSynLines(FCurrentLink.StartPos.Y, FCurrentLink.EndPos.Y);
-
-    if FCurrentLink.IsLinkable then // todo: what should happen if start > end
       SetCursor(crHandPoint)
     else
-      doNotShowLink;
+      SetCursor(crDefault)
   end else
     doNotShowLink;
 end;
@@ -339,12 +351,34 @@ begin
   inherited Destroy;
 end;
 
+procedure TSynEditMarkupCtrlMouseLink.SetLinkBounds(ANewStartPos, ANewEndPos: TLogPoint;
+  ANewIsLinkAble: Boolean; AnUpdateMouseCursor: Boolean);
+var
+  NewInfo: TSynMarkupLinkInfo;
+begin
+  NewInfo.StartPos   := ANewStartPos;
+  NewInfo.EndPos     := ANewEndPos;
+  NewInfo.IsLinkable := ANewIsLinkAble;
+  UpdateBoundsInfo(NewInfo);
+  if AnUpdateMouseCursor then begin
+    if FCurrentLink.IsLinkable and
+       (FLastMouseCaret.Y >= 0) and
+       (FCurrentLink.StartPos <= FLastMouseCaret) and
+       (FCurrentLink.EndPos >= FLastMouseCaret)
+     then
+      SetCursor(crHandPoint)
+    else
+      SetCursor(crDefault);
+  end;
+end;
+
 procedure TSynEditMarkupCtrlMouseLink.SetLines(
   const AValue: TSynEditStringsLinked);
 begin
   inherited SetLines(AValue);
   if Lines <> nil then begin;
     Lines.AddModifiedHandler(senrLinesModified, @LinesChanged);
+    LinesChanged(nil,-1,0,0);
   end;
 end;
 
