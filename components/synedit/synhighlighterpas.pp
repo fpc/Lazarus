@@ -202,6 +202,8 @@ type
      Can hold extra info, e.g. which merge-attribute(s) to use.
   *)
   TTokenExtraAttrib = (
+    eaPartTokenNotAtStart,  // a token (e.g. string, comment) is returned in parts. FTokenPos is not at the start of the token
+    eaPartTokenNotAtEnd,
     //teaCaseLabel,
     //teaPasDoc...,
     eaGotoLabel,
@@ -4025,16 +4027,22 @@ begin
 
   if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
     if FUsePasDoc and (fLine[Run] = '@') then begin
-      if CheckPasDoc then
+      if CheckPasDoc then begin
+        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
+      end;
     end;
     if (IsLetterChar[fline[Run]]) and
        ( (Run = 0) or
          not((IsLetterChar[fline[Run-1]] or IsUnderScoreOrNumberChar[fline[Run-1]]))
        )
     then begin
-      if GetCustomTokenAndNext(tkBorComment, FCustomTokenMarkup) then
+      if GetCustomTokenAndNext(tkBorComment, FCustomTokenMarkup) then begin
+        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
+      end;
     end;
   end;
 
@@ -4348,11 +4356,17 @@ begin
         GetCustomSymbolToken(tkBorComment, 1, FCustomTokenMarkup);
 
       inc(Run);
-      if FCustomTokenMarkup <> nil then
+      if FCustomTokenMarkup <> nil then begin
+        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
+      end;
     end;
-    if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
+    if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then begin
+      if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
       exit;
+    end;
     BorProc;
   end;
 end;
@@ -4585,16 +4599,22 @@ begin
 
   if (not (FIsInNextToEOL or IsScanning)) then begin
     if FUsePasDoc and (fLine[Run] = '@') then begin
-      if CheckPasDoc then
+      if CheckPasDoc then begin
+        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
+      end;
     end;
     if (IsLetterChar[fline[Run]]) and
        ( (Run = 0) or
          not((IsLetterChar[fline[Run-1]] or IsUnderScoreOrNumberChar[fline[Run-1]]))
        )
     then begin
-      if GetCustomTokenAndNext(tkAnsiComment, FCustomTokenMarkup) then
+      if GetCustomTokenAndNext(tkAnsiComment, FCustomTokenMarkup) then begin
+        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
+      end;
     end;
   end;
 
@@ -4713,11 +4733,17 @@ begin
           GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup);
 
         Inc(Run, 2);
-        if FCustomTokenMarkup <> nil then
+        if FCustomTokenMarkup <> nil then begin
+          if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+            Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
           exit;
+        end;
         if not (fLine[Run] in [#0, #10, #13]) then begin
-          if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
+          if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then begin
+            if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+              Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
             exit;
+          end;
           AnsiProc;
         end;
       end;
@@ -4941,6 +4967,7 @@ var
 begin
   FAtSlashStart := False;
   if FIsInSlash and (not (FIsInNextToEOL or IsScanning)) then begin
+    Include(FTokenExtraAttribs, eaPartTokenNotAtStart);
     if reCommentSlash in FRequiredStates then
       FCustomCommentTokenMarkup := FCommentSlashAttri;
     fTokenID := tkComment;
@@ -4961,7 +4988,9 @@ begin
 
   AtSlashOpen := (fLine[Run] = '/') and (fLine[Run + 1] = '/') and not FIsInSlash;
   if FIsInSlash or AtSlashOpen then begin
-    if not FIsInSlash then
+    if FIsInSlash then
+      Include(FTokenExtraAttribs, eaPartTokenNotAtStart)
+    else
       FAtSlashStart := True;
     FIsInSlash := True;
     if reCommentSlash in FRequiredStates then
@@ -5010,14 +5039,20 @@ begin
       if fLine[Run+1] = '@' then
         inc(Run, 2)
       else
-      if CheckPasDoc(True) then
+      if CheckPasDoc(True) then begin
+        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
+      end;
       Inc(Run);
     end
     else
     if (not WasInWord) and IsLetterChar[fline[Run]] then begin
-      if GetCustomTokenAndNext(tkSlashComment, FCustomTokenMarkup, True) then
+      if GetCustomTokenAndNext(tkSlashComment, FCustomTokenMarkup, True) then begin
+        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
+      end;
     end
     else
       Inc(Run);
@@ -5060,6 +5095,8 @@ begin
          GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup)
       then begin
         inc(Run, 2);
+        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
 
@@ -5068,8 +5105,11 @@ begin
            not((IsLetterChar[fline[Run-1]] or IsUnderScoreOrNumberChar[fline[Run-1]]))
          )
       then begin
-        if GetCustomTokenAndNext(tkString, FCustomTokenMarkup) then
+        if GetCustomTokenAndNext(tkString, FCustomTokenMarkup) then begin
+          if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+            Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
           exit;
+        end;
       end;
     end;
   end
@@ -5079,6 +5119,8 @@ begin
       GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup)
     then begin
       Inc(Run);
+      if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
       exit;
     end;
     Inc(Run);
@@ -5095,6 +5137,8 @@ begin
         then begin
           if (Run = fTokenPos) then
             inc(Run, 2);
+          if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+            Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
           exit
         end;
         Inc(Run);
@@ -5103,8 +5147,11 @@ begin
         // string end
         if not (FIsInNextToEOL or IsScanning) then begin
           ct := GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup, Run <> fTokenPos);
-          if ct and (Run <> fTokenPos) then
+          if ct and (Run <> fTokenPos) then begin
+            if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+              Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
             exit;
+          end;
         end;
         Inc(Run);
         break;
@@ -5112,8 +5159,11 @@ begin
     end
     else
     if (not WasInWord) and IsLetterChar[fline[Run]] then begin
-      if GetCustomTokenAndNext(tkString, FCustomTokenMarkup, True) then
+      if GetCustomTokenAndNext(tkString, FCustomTokenMarkup, True) then begin
+        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
+      end;
     end;
 
     Inc(Run);
@@ -5426,15 +5476,21 @@ begin
     #13: CRProc;
     else
       FOldRange := fRange;
-      if rsAnsi in fRange then
-        AnsiProc
-      else if fRange * [rsBor, rsIDEDirective] <> [] then
-        BorProc
+      FTokenExtraAttribs := FTokenExtraAttribs - [eaPartTokenNotAtStart, eaPartTokenNotAtEnd];
+      if rsAnsi in fRange then begin
+        Include(FTokenExtraAttribs, eaPartTokenNotAtStart);
+        AnsiProc;
+      end
+      else if fRange * [rsBor, rsIDEDirective] <> [] then begin
+        Include(FTokenExtraAttribs, eaPartTokenNotAtStart);
+        BorProc;
+      end
       else if rsDirective in fRange then
         DirectiveProc
       else if (rsSlash in fRange) or FIsInSlash then
         SlashContinueProc
       else if FInString then begin
+        Include(FTokenExtraAttribs, eaPartTokenNotAtStart);
         StringProc;
         if (rsAtCaseLabel in fRange) then
           FTokenIsCaseLabel := True;
@@ -5580,6 +5636,8 @@ end;
 
 
 function TSynPasSyn.GetTokenAttribute: TLazEditTextAttribute;
+var
+  x1, x2: Integer;
 begin
   case GetTokenID of
     tkAsm: Result := fAsmAttri;
@@ -5611,8 +5669,32 @@ begin
   else
     Result := nil;
   end;
-  if Result <> nil then
-    Result.SetFrameBoundsLog(ToPos(fTokenPos), ToPos(Run));
+  if Result <> nil then begin
+    x1 := ToPos(fTokenPos);
+    x2 := ToPos(Run);
+    if eaPartTokenNotAtStart in FTokenExtraAttribs then x1 := MaxInt;
+    if eaPartTokenNotAtEnd   in FTokenExtraAttribs then x2 := MaxInt;
+    if (Run >= fLineLen) or (fLine[Run] in [#0,#10,#13]) then begin
+      if (Result = CommentAttri) and
+         ((fRange * [rsIDEDirective, rsAnsi, rsBor] <> []) or
+          ((rsSlash in fRange) and
+           (FHadSlashLastLine or (LastLinePasFoldLevelFix(fLineNumber+1, FOLDGROUP_PASCAL, True) = 0))
+          )
+         ) and
+         (lafPastEOL in fCommentAttri.Features)
+      then
+        x2 := MaxInt;
+      if (Result = fDirectiveAttri) and (lafPastEOL in fDirectiveAttri.Features)
+      then
+        x2 := MaxInt;
+      if (Result = fStringAttri) and (rsAnsiMultiDQ in fRange) and
+         (lafPastEOL in fStringAttri.Features)
+      then
+        x2 := MaxInt;
+    end;
+
+    Result.SetFrameBoundsLog(x1, x2);
+  end;
 end;
 
 function TSynPasSyn.GetTokenAttributeEx: TLazCustomEditTextAttribute;
@@ -5631,10 +5713,12 @@ begin
   x2 := ToPos(Run);
 
   if tid = tkIDEDirective then begin
-    FTokenID := tkComment; // for IsCommentStart/End
-    x1b := x1;  if not GetTokenIsCommentStart(True) then x1b := 1;
-    x2b := x2;  if (not GetTokenIsCommentEnd)       then x2b := fLineLen;
-    FTokenID := tkIDEDirective; // restore
+    x1b := x1;  if eaPartTokenNotAtStart in FTokenExtraAttribs then x1b := 1;
+    x2b := x2;  if eaPartTokenNotAtEnd   in FTokenExtraAttribs then x2b := fLineLen;
+    if (Run >= fLineLen) or (fLine[Run] in [#0,#10,#13]) and
+       (lafPastEOL in FIDEDirectiveAttri.Features)
+      then
+        x2b := MaxInt;
     MergeModifierToTokenAttribute(Result, FIDEDirectiveAttri, x1b, x2b);
   end;
 
@@ -5702,7 +5786,18 @@ begin
   end;
 
   if FCustomCommentTokenMarkup <> nil then begin
-    MergeModifierToTokenAttribute(Result, FCustomCommentTokenMarkup, x1, x2);
+    x2b := x2;
+    if (Run >= fLineLen) or (fLine[Run] in [#0,#10,#13]) then begin
+      if ((not ((rsSlash in fRange))) or
+          ((rsSlash in fRange) and
+           (FHadSlashLastLine or (LastLinePasFoldLevelFix(fLineNumber+1, FOLDGROUP_PASCAL, True) = 0))
+          )
+         ) and
+         (lafPastEOL in FCustomCommentTokenMarkup.Features)
+      then
+        x2b := MaxInt;
+    end;
+    MergeModifierToTokenAttribute(Result, FCustomCommentTokenMarkup, x1, x2b);
   end;
   if FCustomTokenMarkup <> nil then begin
     MergeModifierToTokenAttribute(Result, FCustomTokenMarkup, x1, x2);
@@ -5722,8 +5817,6 @@ begin
       end;
     end;
   end;
-
-  //Result.SetFrameBoundsLog(-1, -1); // TODO: Textdrawer will do its own bounds, so all frames must be cleared while merging
 end;
 
 function TSynPasSyn.GetTokenKind: integer;
@@ -5818,7 +5911,7 @@ function TSynPasSyn.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
     if Result = nil then
       Result := Modifier
     else
-      MergeModifierToTokenAttribute(Result, Modifier, -1, -1, True);
+      MergeModifierToTokenAttribute(Result, Modifier, MaxInt, MaxInt, True);
   end;
 
 begin
