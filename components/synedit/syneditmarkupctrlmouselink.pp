@@ -43,6 +43,7 @@ type
   end;
 
   TSynMarkupLinkGetBoundsEvent = procedure(ASender:TObject;
+                                           ALogXY: TLogPoint;
                                            var AnInfoState: TSynMarkupLinkInfoResult;
                                            var ALinkData: TSynMarkupLinkInfo
                                           ) of object;
@@ -140,6 +141,7 @@ end;
 procedure TSynEditMarkupCtrlMouseLink.LinesChanged(Sender: TSynEditStrings; AIndex, ANewCount,
   AOldCount: Integer);
 begin
+  if not Enabled then Exit;
   If LastMouseCaret.Y < 0 then exit;
   LastMouseCaret := Point(-1, -1);
   UpdateCtrlMouse;
@@ -149,6 +151,7 @@ procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlState(aShift: TShiftState);
 var
   NewCtrlIsPressed: Boolean;
 begin
+  if not Enabled then Exit;
   NewCtrlIsPressed := IsCtrlMouseShiftState(aShift, True);
   if FLastControlIsPressed <> NewCtrlIsPressed then begin
     FLastControlIsPressed := NewCtrlIsPressed;
@@ -158,6 +161,7 @@ end;
 
 procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlMouse;
 begin
+  if not Enabled then Exit;
   FLastControlIsPressed := IsCtrlMouseShiftState(GetKeyShiftState, True);
   InternalUpdateCtrlMouse;
 end;
@@ -189,7 +193,7 @@ begin
       InfoState := liNoData;
       if FCurrentLink.StartPos.Y >= 0 then
         InfoState := liValid;
-      OnGetLinkInfo(Self, InfoState, NewLinkInfo);
+      OnGetLinkInfo(Self, FLastMouseCaretLogical, InfoState, NewLinkInfo);
       if InfoState <> liValid then begin
         NewLinkInfo.StartPos.Y := -1;
         NewLinkInfo.IsLinkable := False;
@@ -243,6 +247,7 @@ procedure TSynEditMarkupCtrlMouseLink.UpdateSynCursor(Sender: TObject;
   const AMouseLocation: TSynMouseLocationInfo; var AnCursor: TCursor; var APriority: Integer;
   var AChangedBy: TObject);
 begin
+  if not Enabled then Exit;
   if (Cursor = crDefault) or (APriority > LINK_CURSOR_PRIORITY) then exit;
   AnCursor := Cursor;
   APriority := LINK_CURSOR_PRIORITY;
@@ -354,6 +359,8 @@ end;
 procedure TSynEditMarkupCtrlMouseLink.DoEnabledChanged(Sender: TObject);
 begin
   inherited DoEnabledChanged(Sender);
+  LastMouseCaret := Point(-1, -1);
+  FLastControlIsPressed := False;
   if FCurrentLink.StartPos.Y >= 0 then
     InvalidateSynLines(FCurrentLink.StartPos.Y, FCurrentLink.StartPos.Y);
 end;
