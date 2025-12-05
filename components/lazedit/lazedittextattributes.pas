@@ -203,6 +203,8 @@ type
     property ExtendPastEol: boolean index lafPastEOL read GetFeature write SetFeature;
   end;
 
+  TLazCustomEditTextAttributeArray = array of TLazCustomEditTextAttribute;
+
   { TLazEditTextAttribute }
 
   TLazEditTextAttribute = class(TLazCustomEditTextAttribute)

@@ -34,6 +34,7 @@ type
   TLazEditCustomHighlighter = class(TLazEditAttributeOwner)
   strict private
     FTokenAttributeMergeResult: TLazEditTextAttributeMergeResult;
+    FTokenAttributeList: TLazCustomEditTextAttributeArray;
   protected
     procedure MergeModifierToTokenAttribute(
       var ACurrentResultAttrib: TLazCustomEditTextAttribute;
@@ -54,6 +55,7 @@ type
     *)
     function GetTokenAttribute: TLazEditTextAttribute; virtual; abstract;
     function GetTokenAttributeEx: TLazCustomEditTextAttribute; virtual;
+    function GetTokenAttributeList: TLazCustomEditTextAttributeArray;
     function GetEndOfLineAttribute: TLazEditTextAttribute; virtual; // valid after line was scanned to EOL
     function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; virtual; // valid after line was scanned to EOL
   end;
@@ -77,6 +79,8 @@ begin
     FTokenAttributeMergeResult := TLazEditTextAttributeMergeResult.Create;
 
   if ACurrentResultAttrib <> FTokenAttributeMergeResult then begin
+    if FTokenAttributeList <> nil then
+      FTokenAttributeList[0] := ACurrentResultAttrib;
     // first call, replace the callers result
     FTokenAttributeMergeResult.Assign(ACurrentResultAttrib);
     if not ASkipResultBounds then begin
@@ -84,6 +88,12 @@ begin
       FTokenAttributeMergeResult.SetFrameBoundsLog(tp, tp+GetTokenLen);
     end;
     ACurrentResultAttrib := FTokenAttributeMergeResult;
+  end;
+
+  if FTokenAttributeList <> nil then begin
+    tp := Length(FTokenAttributeList);
+    SetLength(FTokenAttributeList, tp+1);
+    FTokenAttributeList[tp] := AModifierAttrib;
   end;
 
   if AModifierLeftCol <> -2 then begin
@@ -114,6 +124,23 @@ begin
     tp := GetTokenPos+1;
     Result.SetFrameBoundsLog(tp, tp+GetTokenLen);
   end;
+end;
+
+function TLazEditCustomHighlighter.GetTokenAttributeList: TLazCustomEditTextAttributeArray;
+var
+  r: TLazCustomEditTextAttribute;
+begin
+  SetLength(FTokenAttributeList,1);
+  FTokenAttributeList[0] := nil;
+  r := GetTokenAttributeEx;
+  if FTokenAttributeList[0] = nil then begin
+    if r = nil then
+      SetLength(FTokenAttributeList, 0)
+    else
+      FTokenAttributeList[0] := r;
+  end;
+  Result := FTokenAttributeList;
+  SetLength(FTokenAttributeList, 0)
 end;
 
 function TLazEditCustomHighlighter.GetEndOfLineAttribute: TLazEditTextAttribute;
