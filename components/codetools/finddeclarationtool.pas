@@ -176,6 +176,7 @@ type
     fdfFindVariable,        // do not search for the base type of a variable,
                             //   instead return the variable declaration
     fdfFunctionResult,      // if function is found, return result type
+    fdfStrictFunctionResult, // really only if function is found, return result type
     fdfEnumIdentifier,      // do not resolve enum to its enum type
     fdfFindChildren,        // search the class of a 'class of', the interface of a unit
     fdfSkipClassForward,    // when a class forward was found search the class
@@ -11765,7 +11766,10 @@ begin
     ReadNextExpressionAtom;
   until CurAtom.EndPos>EndPos;
 
-  if fdfFunctionResult in StartFlags then
+  if (fdfFunctionResult in StartFlags)
+  and ( ((Params.NewNode = nil) or (Params.NewNode.Desc <> ctnTypeDefinition))
+       or not (fdfStrictFunctionResult in StartFlags) )
+  then
     ResolveChildren;
 
   Result:=ExprType;
@@ -14619,7 +14623,7 @@ begin
   TermExprType:=CleanExpressionType;
   Params.ContextNode:=CursorNode;
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,
-                 fdfTopLvlResolving,fdfFunctionResult];
+                 fdfTopLvlResolving,fdfFunctionResult, fdfStrictFunctionResult];
   TermExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
 
   {$IFDEF ShowForInEval}

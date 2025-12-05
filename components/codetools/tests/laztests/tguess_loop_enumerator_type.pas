@@ -29,7 +29,7 @@ begin
   for A3{guesstype:TEnum}                   in ReturnSet1 do ;
   for A4{guesstype:low(TSet2)..high(TSet2)} in ReturnSet2 do ;
   for A5{guesstype:integer}                 in ReturnSet3 do ;
-  for A6{ TODO guesstype:TEnumRange}              in ReturnSet4 do ;
+  for A6{guesstype:TEnumRange}              in ReturnSet4 do ;
   for A7{guesstype:TEnum}                   in ReturnSet5 do ;
 
   for D1{ TODO: guesstype:byte}                    in vReturnBytes() do ;
@@ -40,7 +40,7 @@ begin
   for B3{guesstype:TEnum}                   in TSet1 do ;
   for B4{guesstype:low(TSet2)..high(TSet2)} in TSet2 do ;
   for B5{guesstype:integer}                 in TSet3 do ;
-  for B6{ TODO guesstype:TEnumRange}              in TSet4 do ;
+  for B6{guesstype:TEnumRange}              in TSet4 do ;
   for B7{guesstype:TEnum}                   in TSet5 do ;
   for B8{guesstype:TEnum}                   in TEnum do ;
   for B9{guesstype:TEnum}                   in TEnumRange do ; // TODO: guess TEnumRange
