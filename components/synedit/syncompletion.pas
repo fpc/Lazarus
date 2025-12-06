@@ -186,12 +186,14 @@ type
     procedure FontChanged(Sender: TObject); override;
     procedure WMMouseWheel(var Msg: TLMMouseEvent); message LM_MOUSEWHEEL;
   private
+    FAllowOtherFormActive: boolean;
     FCurrentEditor: TCustomSynEdit; // Must only be set via TSynCompletion.SetEditor
     FDoubleClickSelects: Boolean;
     FDrawBorderWidth: Integer;
     FOnDragResized: TNotifyEvent;
     FOnMeasureItem: TSynBaseCompletionMeasureItem;
     FOnPositionChanged: TNotifyEvent;
+    FPositionFollowsMouse: boolean;
     FShowSizeDrag: Boolean;
     FHintLock: Integer;
     procedure SetCurrentEditor(const AValue: TCustomSynEdit);
@@ -215,6 +217,8 @@ type
     procedure OnHintTimer(Sender: TObject);
     // Must only be set via TSynCompletion.SetEditor
     property CurrentEditor: TCustomSynEdit read FCurrentEditor;
+    property AllowOtherFormActive: boolean read FAllowOtherFormActive write FAllowOtherFormActive;
+    property PositionFollowsMouse: boolean read FPositionFollowsMouse write FPositionFollowsMouse;
   published
     property CurrentString: string read FCurrentString write SetCurrentString;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
@@ -701,10 +705,12 @@ begin
   {$ENDIF}
   // completion box lost focus
   // this can happen when a hint window is clicked => ToDo
-  Visible := False;
-  FHintTimer.Enabled := False;
-  FHint.Visible := False;
-  if Assigned(OnCancel) then OnCancel(Self);
+  if not FAllowOtherFormActive then begin
+    Visible := False;
+    FHintTimer.Enabled := False;
+    FHint.Visible := False;
+    if Assigned(OnCancel) then OnCancel(Self);
+  end;
   if (FCurrentEditor<>nil) and (TCustomSynEdit(fCurrentEditor).HandleAllocated)
   then
     SetCaretRespondToFocus(TCustomSynEdit(FCurrentEditor).Handle,true);
@@ -933,6 +939,8 @@ begin
   then
     exit;
   Y := (Y - DrawBorderWidth) div FFontHeight;
+  if FPositionFollowsMouse then
+    Position := Scroll.Position + y;
   ShowItemHint(Scroll.Position + Y);
 end;
 
@@ -1016,11 +1024,16 @@ begin
 end;
 
 procedure TSynBaseCompletionForm.AppDeactivated(Sender: TObject);
+var
+  a: Boolean;
 begin
   {$IFDEF VerboseFocus}
   DebugLn(['>> TSynBaseCompletionForm.AppDeactivated ']);
   {$ENDIF}
+  a := FAllowOtherFormActive;
+  FAllowOtherFormActive := False;
   Deactivate;
+  FAllowOtherFormActive := a;
 end;
 
 procedure TSynBaseCompletionForm.ScrollChange(Sender: TObject);
