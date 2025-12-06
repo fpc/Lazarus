@@ -425,6 +425,10 @@ If you wish to allow use of your version of these files only under the terms of 
         <Filename Value="synhighlightersql_mysql8.inc"/>
         <Type Value="Binary"/>
       </Item>
+      <Item>
+        <Filename Value="synpluginexternallink.pas"/>
+        <UnitName Value="SynPluginExternalLink"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs\xml"/>
     <i18n>

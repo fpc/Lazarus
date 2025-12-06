@@ -28,7 +28,7 @@ uses
   SynEditTextDoubleWidthChars, SynEditTextSystemCharWidth, SynEditMarkupIfDef, 
   SynPluginMultiCaret, synhighlighterpike, SynEditMarkupFoldColoring, SynEditViewedLineMap, 
   SynEditWrappedView, SynBeautifierPascal, LazSynIMMBase, SynPopupMenu, 
-  SynEditTextDynTabExpander, SynTextMateSyn, LazarusPackageIntf;
+  SynEditTextDynTabExpander, SynTextMateSyn, SynPluginExternalLink, LazarusPackageIntf;
 
 implementation
 
