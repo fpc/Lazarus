@@ -1021,7 +1021,7 @@ begin
   end;
 
   control:= TWinControl( self.lclGetTarget );
-  if (self.scrollingLockCount=0) and Assigned(callback) and control.HandleAllocated then begin
+  if Assigned(control) and (self.scrollingLockCount=0) and Assigned(callback) and control.HandleAllocated then begin
     if _lastScrollX <> currentX then
       callback.scroll( False, currentX, NSScrollerKnob );
     if _lastScrollY <> currentY then
