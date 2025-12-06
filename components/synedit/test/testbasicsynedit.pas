@@ -35,13 +35,13 @@ type
   private
     FTestCommand:TSynEditorCommand;
     procedure TestCommand(Name:String; X, Y: Integer;
-                           ExpX1, ExpY1: Integer; Repl: Array of const);
+                           ExpX1, ExpY1: Integer; const Repl: Array of const);
     procedure TestCommand(Name:String; X, Y, X2, Y2: Integer;
                            ExpX1, ExpY1, ExpX2, ExpY2: Integer;
-                           Repl: Array of const);
+                           const Repl: Array of const);
     procedure TestCommand(Name:String; X, Y: Integer;
-                           ExpX1, ExpY1: Integer; Repl: Array of const;
-                           ExpX2, ExpY2: Integer; Repl2: Array of const);
+                           ExpX1, ExpY1: Integer; const Repl: Array of const;
+                           ExpX2, ExpY2: Integer; const Repl2: Array of const);
   protected
     function TestMaxLeftProc: Integer;
     procedure ReCreateEdit; reintroduce;
@@ -122,8 +122,8 @@ begin
   Result[6] := '';
 end;
 
-procedure TTestBasicSynEdit.TestCommand(Name: String; X, Y: Integer; ExpX1,
-  ExpY1: Integer; Repl: array of const);
+procedure TTestBasicSynEdit.TestCommand(Name: String; X, Y: Integer; ExpX1, ExpY1: Integer;
+  const Repl: array of const);
 begin
   FDoInit();
   SetCaretPhys(X,Y);
@@ -132,8 +132,8 @@ begin
   TestIsFullText(Name +  '(1st)', FTestLines(), Repl);
 end;
 
-procedure TTestBasicSynEdit.TestCommand(Name: String; X, Y, X2, Y2: Integer;
-  ExpX1, ExpY1, ExpX2, ExpY2: Integer; Repl: array of const);
+procedure TTestBasicSynEdit.TestCommand(Name: String; X, Y, X2, Y2: Integer; ExpX1, ExpY1, ExpX2,
+  ExpY2: Integer; const Repl: array of const);
 begin
   FDoInit();
   SetCaretAndSel(X,Y, x2,y2);
@@ -143,8 +143,8 @@ begin
 end;
 
 procedure TTestBasicSynEdit.TestCommand(Name: String; X, Y: Integer; ExpX1,
-  ExpY1: Integer; Repl: array of const; ExpX2, ExpY2: Integer;
-  Repl2: array of const);
+  ExpY1: Integer; const Repl: array of const; ExpX2, ExpY2: Integer;
+  const Repl2: array of const);
 begin
     TestCommand(Name, X, Y, ExpX1, ExpY1, Repl);
     SynEdit.CommandProcessor(FTestCommand, '', nil);
@@ -324,8 +324,8 @@ var
 
   // All Logical pos
   Procedure DoTest(ATestName: String; StartX, StartY: Integer;
-                   Char1: String; ExpX1, ExpY1: Integer; Repl1: Array of const;
-                   Char2: String; ExpX2, ExpY2: Integer; Repl2: Array of const;
+                   Char1: String; ExpX1, ExpY1: Integer; const Repl1: Array of const;
+                   Char2: String; ExpX2, ExpY2: Integer; const Repl2: Array of const;
                    AStartIsPhys: Boolean = False
                   );
   begin
@@ -1162,7 +1162,7 @@ var
   Procedure DoOneTest(AName: String; AY, AX, ALogX, ALogOffs: Integer;
     ExpY, ExpX, ExpLogX, ExpLogOffs: Integer;
     // X,LogX,LogOffs, [X,LogX,LogOffs]
-    AMoveHorizNext: array of integer; AMoveHorizPrev: array of integer;
+    const AMoveHorizNext: array of integer; const AMoveHorizPrev: array of integer;
     ExpMoveHorizFalse: Boolean = False;
     ALineForKeepX: Integer = -1; ExpNotKeptX: Integer = -1; ExpNotKeptLogX: Integer = -1
     );
@@ -2455,7 +2455,7 @@ procedure TTestBasicSynEdit.TestSearchReplace;
 
   procedure TestSearch(Name, Find, Repl: String; SrcOpts: TSynSearchOptions;
     CaretX, CaretY: Integer;
-    ExpCnt: Integer; ExpTxt: Array of const;
+    ExpCnt: Integer; const ExpTxt: Array of const;
     ExpSearchCoord, ExpReplCoord: TCaretBlockCoordinates
   );
   var
@@ -2517,19 +2517,19 @@ procedure TTestBasicSynEdit.TestSearchReplace;
   end;
 
   procedure TestSearch(Name, Find, Repl: String; SrcOpts: TSynSearchOptions;
-    CaretX, CaretY: Integer; ExpCnt: Integer; ExpTxt: Array of const);
+    CaretX, CaretY: Integer; ExpCnt: Integer; const ExpTxt: Array of const);
   begin
     TestSearch(Name, Find, Repl, SrcOpts, CaretX, CaretY, ExpCnt, ExpTxt, ExpC(-1,-1), ExpC(-1,-1));
   end;
   procedure TestSearch(Name, Find, Repl: String; Opts: TSynSearchOptions;
-    ExpCnt: Integer; ExpTxt: Array of const);
+    ExpCnt: Integer; const ExpTxt: Array of const);
   begin
     if ssoBackwards in Opts
     then TestSearch(Name, Find, Repl, Opts, 1,length(TheTestText)-1, ExpCnt, ExpTxt)
     else TestSearch(Name, Find, Repl, Opts, 1,1, ExpCnt, ExpTxt);
   end;
   procedure TestSearch(Name, Find, Repl: String; Opts: TSynSearchOptions;
-    ExpCnt: Integer; ExpTxt: Array of const; ExpSearchCoord, ExpReplCoord: TCaretBlockCoordinates);
+    ExpCnt: Integer; const ExpTxt: Array of const; ExpSearchCoord, ExpReplCoord: TCaretBlockCoordinates);
   begin
     if ssoBackwards in Opts
     then TestSearch(Name, Find, Repl, Opts, 1,length(TheTestText)-1, ExpCnt, ExpTxt, ExpSearchCoord, ExpReplCoord)

@@ -64,9 +64,9 @@ type
     procedure CheckOpenCloseCount(AName: String; ALine: Integer;
       AExpOpenCnt, AExpCloseCnt: Integer);
     procedure CheckNodes(AName: String; ALine: Integer;
-      AExp: array of TNodeExpect);
+      const AExp: array of TNodeExpect);
     procedure CheckNodesXY(AName: String; ALine: Integer;
-      AExp: array of Integer; // [Start, end,  start, end, ....]
+      const AExp: array of Integer; // [Start, end,  start, end, ....]
       AExpEndOffs: Integer);
     //procedure CheckPeer(AName: String; ALine, ACol: Integer;
     //  AType: TSynMarkupIfdefNodeTypeTest; ExpLine, ExpCol: Integer);
@@ -77,7 +77,7 @@ type
     function CreateTheHighLighter: TSynCustomFoldHighlighter; override;
     //procedure SetUp; override;
     //procedure TearDown; override;
-    procedure ReCreateEditForTreeTest(Lines: Array of String); reintroduce;
+    procedure ReCreateEditForTreeTest(const Lines: Array of String); reintroduce;
   published
     procedure TestIfDefTreeMoveOnEdit;
     procedure TestIfDefTreePeerConnect;
@@ -188,7 +188,7 @@ end;
 
 
 procedure TTestMarkupIfDef.CheckNodes(AName: String; ALine: Integer;
-  AExp: array of TNodeExpect);
+  const AExp: array of TNodeExpect);
 var
   Node: TSynMarkupHighIfDefEntry;
 
@@ -262,8 +262,7 @@ begin
 end;
 
 procedure TTestMarkupIfDef.CheckNodesXY(AName: String; ALine: Integer;
-  AExp: array of Integer; // [Start, end,  start, end, ....]
-  AExpEndOffs: Integer);
+  const AExp: array of Integer; AExpEndOffs: Integer);
 var
   i, c: Integer;
   n1: TSynMarkupHighIfDefLinesNodeInfo;
@@ -805,7 +804,7 @@ begin
   Result := TSynPasSyn.Create(nil);
 end;
 
-procedure TTestMarkupIfDef.ReCreateEditForTreeTest(Lines: array of String);
+procedure TTestMarkupIfDef.ReCreateEditForTreeTest(const Lines: array of String);
 begin
   FreeAndNil(FTestTree);
   FTestTree.DiscardOpeningList(FOpenings);
@@ -2208,7 +2207,7 @@ procedure TTestMarkupIfDef.TestIfDefTreeNodeState;
     FNodeStateRequests.Clear;
   end;
 
-  procedure AddResponses(R: Array of integer);
+  procedure AddResponses(const R: Array of integer);
   var
     i: Integer;
   begin
@@ -2216,7 +2215,7 @@ procedure TTestMarkupIfDef.TestIfDefTreeNodeState;
       FNodeStateResponses.Values[Format('%d/%d', [R[i*3], R[I*3+1]])] := IntToStr(R[I*3+2]);
   end;
 
-  procedure CheckReq(n: String; R: Array of integer);
+  procedure CheckReq(n: String; const R: Array of integer);
   var
     i: Integer;
     s, s2: String;
@@ -2230,7 +2229,7 @@ procedure TTestMarkupIfDef.TestIfDefTreeNodeState;
     end;
   end;
 
-  procedure SetupTest(Lines: Array of String);
+  procedure SetupTest(const Lines: Array of String);
   begin
     ReCreateEditForTreeTest(Lines);
     FTestTree.OnNodeStateRequest := @TesTNodeStateHandler;

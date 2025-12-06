@@ -32,73 +32,73 @@ type
 
 
     procedure SetCaretAndColumnSelect(X, Y, Down, Right: Integer);
-    procedure SetCaretsByKey(X, Y: Integer; CaretMoves: Array of Integer; EndMode: TSynPluginMultiCaretMode = mcmAddingCarets); //  [ {SET}, Right,DOwn, {SET}, Right,DOwn,..]
-    procedure SetCaretsByKey(CaretMoves: Array of Integer; EndMode: TSynPluginMultiCaretMode = mcmAddingCarets); //  [ {SET}, Right,DOwn, {SET}, Right,DOwn,..]
+    procedure SetCaretsByKey(X, Y: Integer; const CaretMoves: Array of Integer; EndMode: TSynPluginMultiCaretMode = mcmAddingCarets); //  [ {SET}, Right,DOwn, {SET}, Right,DOwn,..]
+    procedure SetCaretsByKey(const CaretMoves: Array of Integer; EndMode: TSynPluginMultiCaretMode = mcmAddingCarets); //  [ {SET}, Right,DOwn, {SET}, Right,DOwn,..]
 
     procedure TestExtraCaretCount(AName: String; ExpCount: Integer);
-    procedure TestExtraCaretPos(AName: String; ExpCount: Integer; ExpPos: array of integer); // x,y
-    procedure TestExtraCaretPosAndOffs(AName: String; ExpCount: Integer; ExpPos: array of integer); // x,y,offs
+    procedure TestExtraCaretPos(AName: String; ExpCount: Integer; const ExpPos: array of integer); // x,y
+    procedure TestExtraCaretPosAndOffs(AName: String; ExpCount: Integer; const ExpPos: array of integer); // x,y,offs
 
-    procedure TestExtraCaretPos(AName: String; X, Y: Integer; ExpCount: Integer; ExpPos: array of integer); // x,y
-    procedure TestExtraCaretPosAndOffs(AName: String; X, Y, Offs: Integer; ExpCount: Integer; ExpPos: array of integer); // x,y,offs
-
-    procedure RunAndTest(AName: String;
-        cmds: Array of TSynEditorCommand; chars: array of String;
-        X, Y: Integer; ExpLines: Array of String
-      );
-    procedure RunAndTest(AName: String;
-        cmds: Array of TSynEditorCommand; // no chars
-        X, Y: Integer; ExpLines: Array of String
-      );
-    procedure RunAndTest(AName: String;
-        cmds: Array of TSynEditorCommand; chars: array of String;
-        X, Y, Offs: Integer; ExpLines: Array of String
-      );
-    procedure RunAndTest(AName: String;
-        cmds: Array of TSynEditorCommand; // no chars
-        X, Y, Offs: Integer; ExpLines: Array of String
-      );
-
+    procedure TestExtraCaretPos(AName: String; X, Y: Integer; ExpCount: Integer; const ExpPos: array of integer); // x,y
+    procedure TestExtraCaretPosAndOffs(AName: String; X, Y, Offs: Integer; ExpCount: Integer; const ExpPos: array of integer); // x,y,offs
 
     procedure RunAndTest(AName: String;
-        cmds: Array of TSynEditorCommand; chars: array of String;
-        X, Y: Integer; ExpLines: Array of String;
-        ExpCount: Integer; ExpPos: array of integer   // x, [offs,] y
+        const cmds: Array of TSynEditorCommand; const chars: array of String;
+        X, Y: Integer; const ExpLines: Array of String
       );
     procedure RunAndTest(AName: String;
-        cmds: Array of TSynEditorCommand; // no chars
-        X, Y: Integer; ExpLines: Array of String;
-        ExpCount: Integer; ExpPos: array of integer   // x, [offs,] y
+        const cmds: Array of TSynEditorCommand; // no const chars
+        X, Y: Integer; const ExpLines: Array of String
       );
     procedure RunAndTest(AName: String;
-        cmds: Array of TSynEditorCommand; chars: array of String;
-        X, Y, Offs: Integer; ExpLines: Array of String;
-        ExpCount: Integer; ExpPos: array of integer   // x, [offs,] y
+        const cmds: Array of TSynEditorCommand; const chars: array of String;
+        X, Y, Offs: Integer; const ExpLines: Array of String
       );
     procedure RunAndTest(AName: String;
-        cmds: Array of TSynEditorCommand; // no chars
-        X, Y, Offs: Integer; ExpLines: Array of String;
-        ExpCount: Integer; ExpPos: array of integer   // x, [offs,] y
+        const cmds: Array of TSynEditorCommand; // no const chars
+        X, Y, Offs: Integer; const ExpLines: Array of String
+      );
+
+
+    procedure RunAndTest(AName: String;
+        const cmds: Array of TSynEditorCommand; const chars: array of String;
+        X, Y: Integer; const ExpLines: Array of String;
+        ExpCount: Integer; const ExpPos: array of integer   // x, [offs,] y
+      );
+    procedure RunAndTest(AName: String;
+        const cmds: Array of TSynEditorCommand; // no const chars
+        X, Y: Integer; const ExpLines: Array of String;
+        ExpCount: Integer; const ExpPos: array of integer   // x, [offs,] y
+      );
+    procedure RunAndTest(AName: String;
+        const cmds: Array of TSynEditorCommand; const chars: array of String;
+        X, Y, Offs: Integer; const ExpLines: Array of String;
+        ExpCount: Integer; const ExpPos: array of integer   // x, [offs,] y
+      );
+    procedure RunAndTest(AName: String;
+        const cmds: Array of TSynEditorCommand; // no const chars
+        X, Y, Offs: Integer; const ExpLines: Array of String;
+        ExpCount: Integer; const ExpPos: array of integer   // x, [offs,] y
       );
 
     // y1/2 1-based
-    function DelCol(Lines: Array of String; y1,y2,X: Integer; Cnt: Integer = 1): TStringArray;
+    function DelCol(const Lines: Array of String; y1,y2,X: Integer; Cnt: Integer = 1): TStringArray;
     // ADel: y,x,cnt,   y,x,cnt, .... 1-based
-    function DelCol(Lines: Array of String; ADel: Array of Integer): TStringArray;
+    function DelCol(const Lines: Array of String; const ADel: Array of Integer): TStringArray;
 
     function TestText1: TStringArray;
     function TestText1(DelY1, DelY2, DelX: Integer; DelCnt: Integer = 1): TStringArray;
-    function TestText1(ADel: Array of Integer): TStringArray;
+    function TestText1(const ADel: Array of Integer): TStringArray;
     function TestText2: TStringArray;
     function TestText2(DelY1, DelY2, DelX: Integer; DelCnt: Integer = 1): TStringArray;
-    function TestText2(ADel: Array of Integer): TStringArray;
+    function TestText2(const ADel: Array of Integer): TStringArray;
   public
     procedure ReCreateEdit; reintroduce;
     procedure ReCreateEdit(ALines: TStringArray);
     procedure ReCreateSharedEdit(Reverse: boolean = False);
     procedure SwapEdit; reintroduce;
 
-    procedure RunCmdSeq(cmds: Array of TSynEditorCommand; chars: array of String);
+    procedure RunCmdSeq(const cmds: Array of TSynEditorCommand; const chars: array of String);
   published
     procedure CaretList;
     procedure ColumnSelect;
@@ -156,14 +156,14 @@ begin
       RunCmdSeq([ecColSelLeft], []);
 end;
 
-procedure TTestMultiCaret.SetCaretsByKey(X, Y: Integer; CaretMoves: array of Integer;
+procedure TTestMultiCaret.SetCaretsByKey(X, Y: Integer; const CaretMoves: array of Integer;
   EndMode: TSynPluginMultiCaretMode);
 begin
   SetCaret(X, Y);
   SetCaretsByKey(CaretMoves, EndMode);
 end;
 
-procedure TTestMultiCaret.SetCaretsByKey(CaretMoves: array of Integer;
+procedure TTestMultiCaret.SetCaretsByKey(const CaretMoves: array of Integer;
   EndMode: TSynPluginMultiCaretMode);
 var
   i, j: Integer;
@@ -195,7 +195,7 @@ begin
 end;
 
 procedure TTestMultiCaret.TestExtraCaretPos(AName: String; ExpCount: Integer;
-  ExpPos: array of integer);
+  const ExpPos: array of integer);
 var
   i: Integer;
 begin
@@ -208,7 +208,7 @@ begin
 end;
 
 procedure TTestMultiCaret.TestExtraCaretPosAndOffs(AName: String; ExpCount: Integer;
-  ExpPos: array of integer);
+  const ExpPos: array of integer);
 var
   i: Integer;
 begin
@@ -222,61 +222,61 @@ begin
 end;
 
 procedure TTestMultiCaret.TestExtraCaretPos(AName: String; X, Y: Integer; ExpCount: Integer;
-  ExpPos: array of integer);
+  const ExpPos: array of integer);
 begin
   TestIsCaret(AName, X, Y);
   TestExtraCaretPos(AName, ExpCount, ExpPos);
 end;
 
 procedure TTestMultiCaret.TestExtraCaretPosAndOffs(AName: String; X, Y, Offs: Integer;
-  ExpCount: Integer; ExpPos: array of integer);
+  ExpCount: Integer; const ExpPos: array of integer);
 begin
   TestIsCaret(AName, X, Y, Offs);
   TestExtraCaretPosAndOffs(AName, ExpCount, ExpPos);
 end;
 
-procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand;
-  chars: array of String; X, Y: Integer; ExpLines: array of String);
+procedure TTestMultiCaret.RunAndTest(AName: String; const cmds: array of TSynEditorCommand;
+  const chars: array of String; X, Y: Integer; const ExpLines: array of String);
 begin
   RunCmdSeq(cmds, chars);
   TestIsCaretLogAndFullText(AName, X, Y, ExpLines);
 end;
 
-procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand; X,
-  Y: Integer; ExpLines: array of String);
+procedure TTestMultiCaret.RunAndTest(AName: String; const cmds: array of TSynEditorCommand; X,
+  Y: Integer; const ExpLines: array of String);
 begin
   RunAndTest(AName, cmds, [], X, Y, ExpLines);
 end;
 
-procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand;
-  chars: array of String; X, Y, Offs: Integer; ExpLines: array of String);
+procedure TTestMultiCaret.RunAndTest(AName: String; const cmds: array of TSynEditorCommand;
+  const chars: array of String; X, Y, Offs: Integer; const ExpLines: array of String);
 begin
   RunCmdSeq(cmds, chars);
   TestIsCaretLogAndFullText(AName, X, Y, Offs, ExpLines);
 end;
 
-procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand; X, Y,
-  Offs: Integer; ExpLines: array of String);
+procedure TTestMultiCaret.RunAndTest(AName: String; const cmds: array of TSynEditorCommand; X, Y,
+  Offs: Integer; const ExpLines: array of String);
 begin
   RunAndTest(AName, cmds, [], X, Y, Offs, ExpLines);
 end;
 
-procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand;
-  chars: array of String; X, Y: Integer; ExpLines: array of String; ExpCount: Integer;
-  ExpPos: array of integer);
+procedure TTestMultiCaret.RunAndTest(AName: String; const cmds: array of TSynEditorCommand;
+  const chars: array of String; X, Y: Integer; const ExpLines: array of String; ExpCount: Integer;
+  const ExpPos: array of integer);
 begin
   RunAndTest(AName, cmds, chars, X, Y, 0, ExpLines, ExpCount, ExpPos);
 end;
 
-procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand; X,
-  Y: Integer; ExpLines: array of String; ExpCount: Integer; ExpPos: array of integer);
+procedure TTestMultiCaret.RunAndTest(AName: String; const cmds: array of TSynEditorCommand; X,
+  Y: Integer; const ExpLines: array of String; ExpCount: Integer; const ExpPos: array of integer);
 begin
   RunAndTest(AName, cmds, [], X, Y, ExpLines, ExpCount, ExpPos);
 end;
 
-procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand;
-  chars: array of String; X, Y, Offs: Integer; ExpLines: array of String; ExpCount: Integer;
-  ExpPos: array of integer);
+procedure TTestMultiCaret.RunAndTest(AName: String; const cmds: array of TSynEditorCommand;
+  const chars: array of String; X, Y, Offs: Integer; const ExpLines: array of String;
+  ExpCount: Integer; const ExpPos: array of integer);
 begin
   RunAndTest(AName, cmds, chars, X, Y, Offs, ExpLines);
   if length(ExpPos) = 0 then
@@ -291,14 +291,15 @@ begin
     AssertTrue(BaseTestName+' '+AName + 'selftest CaretCOUNT <> pos-array-len', false);
 end;
 
-procedure TTestMultiCaret.RunAndTest(AName: String; cmds: array of TSynEditorCommand; X, Y,
-  Offs: Integer; ExpLines: array of String; ExpCount: Integer; ExpPos: array of integer);
+procedure TTestMultiCaret.RunAndTest(AName: String; const cmds: array of TSynEditorCommand; X, Y,
+  Offs: Integer; const ExpLines: array of String; ExpCount: Integer; const ExpPos: array of integer
+  );
 begin
   RunAndTest(AName, cmds, [], X, Y, Offs, ExpLines, ExpCount, ExpPos);
 end;
 
-function TTestMultiCaret.DelCol(Lines: array of String; y1, y2, X: Integer;
-  Cnt: Integer): TStringArray;
+function TTestMultiCaret.DelCol(const Lines: array of String; y1, y2, X: Integer; Cnt: Integer
+  ): TStringArray;
 var
   i: Integer;
 begin
@@ -309,7 +310,8 @@ begin
     system.Delete(Result[i], X, Cnt);
 end;
 
-function TTestMultiCaret.DelCol(Lines: array of String; ADel: array of Integer): TStringArray;
+function TTestMultiCaret.DelCol(const Lines: array of String; const ADel: array of Integer
+  ): TStringArray;
 var
   i: Integer;
 begin
@@ -338,7 +340,7 @@ begin
   Result := DelCol(TestText1(), DelY1, DelY2, DelX, DelCnt);
 end;
 
-function TTestMultiCaret.TestText1(ADel: array of Integer): TStringArray;
+function TTestMultiCaret.TestText1(const ADel: array of Integer): TStringArray;
 begin
   Result := DelCol(TestText1(), ADel);
 end;
@@ -371,7 +373,7 @@ begin
   Result := DelCol(TestText2(), DelY1, DelY2, DelX, DelCnt);
 end;
 
-function TTestMultiCaret.TestText2(ADel: array of Integer): TStringArray;
+function TTestMultiCaret.TestText2(const ADel: array of Integer): TStringArray;
 begin
   Result := DelCol(TestText2(), ADel);
 end;
@@ -437,7 +439,8 @@ begin
   FSynEdit2 := e;
 end;
 
-procedure TTestMultiCaret.RunCmdSeq(cmds: array of TSynEditorCommand; chars: array of String);
+procedure TTestMultiCaret.RunCmdSeq(const cmds: array of TSynEditorCommand;
+  const chars: array of String);
 var
   i, j: Integer;
   a: String;
@@ -455,7 +458,7 @@ begin
 end;
 
 procedure TTestMultiCaret.CaretList;
-  procedure TestSequence(name: string; a: Array of Integer);
+  procedure TestSequence(name: string; const a: Array of Integer);
   var
     c: TSynPluginMultiCaretList;
     i, j, k, n, m: Integer;
@@ -514,7 +517,7 @@ procedure TTestMultiCaret.CaretList;
 
     c.Free;
   end;
-  procedure TestSequenceEx(n: string; a: Array of Integer);
+  procedure TestSequenceEx(n: string; const a: Array of Integer);
   var
     i, j: Integer;
     b: Array of Integer;

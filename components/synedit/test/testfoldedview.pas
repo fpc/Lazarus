@@ -31,8 +31,8 @@ type
     PrepareLine, PrepareMax: integer;
 
 
-    procedure TestFoldedText(AName: String; ALines: Array of Integer);
-    procedure SetLines(AText: Array of String); reintroduce;
+    procedure TestFoldedText(AName: String; const ALines: Array of Integer);
+    procedure SetLines(const AText: Array of String); reintroduce;
   protected
     procedure SetUp; override;
     procedure ReCreateEdit; reintroduce;
@@ -64,22 +64,22 @@ type
     *)
     function TestTextNodeDesc_FoldOpenFold_WithDistance: TStringArray;
   protected
-    procedure TstSetText(AName: String; AText: Array of String);
-    procedure TstFold(AName: String; AFoldAtIndex: integer; AExpectedLines: Array of Integer);
-    procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum: integer; AExpectedLines: Array of Integer);
+    procedure TstSetText(AName: String; const AText: Array of String);
+    procedure TstFold(AName: String; AFoldAtIndex: integer; const AExpectedLines: Array of Integer);
+    procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum: integer; const AExpectedLines: Array of Integer);
     procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-      AExpectedLines: Array of Integer);
+      const AExpectedLines: Array of Integer);
     procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-      AFoldAtSkip: Boolean; AExpectedLines: Array of Integer);
+      AFoldAtSkip: Boolean; const AExpectedLines: Array of Integer);
     procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-      AFoldAtSkip: Boolean; AVisibleLines: Integer; AExpectedLines: Array of Integer);
+      AFoldAtSkip: Boolean; AVisibleLines: Integer; const AExpectedLines: Array of Integer);
     procedure TstUnFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-      AFoldAtSkip: Boolean; AVisibleLines: Integer; AExpectedLines: Array of Integer);
-    procedure TstUnFoldAtCaret(AName: String; X, Y: integer; AExpectedLines: Array of Integer);
-    procedure TstTxtIndexToViewPos(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
-    procedure TstViewPosToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
-    procedure TstTextIndexToScreenLine(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
-    procedure TstScreenLineToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+      AFoldAtSkip: Boolean; AVisibleLines: Integer; const AExpectedLines: Array of Integer);
+    procedure TstUnFoldAtCaret(AName: String; X, Y: integer; const AExpectedLines: Array of Integer);
+    procedure TstTxtIndexToViewPos(AName: String; const AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+    procedure TstViewPosToTextIndex(AName: String; const AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+    procedure TstTextIndexToScreenLine(AName: String; const AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+    procedure TstScreenLineToTextIndex(AName: String; const AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
 
     // fold nest list
     Procedure CheckNode(nd: TSynFoldNodeInfo; ALine: TLineIdx; AColumn: integer;
@@ -87,10 +87,10 @@ type
       FoldType: integer;  FoldTypeCompatible: integer; FoldGroup: Integer;
       FoldAction: TSynFoldActions);
     procedure CheckFoldTypes(AName: String; AStartLine: Integer;
-      AnExpIncluded: Array of TSynEditFoldLineCapabilities;
-      AnExpExcluded: Array of TSynEditFoldLineCapabilities);
-    Procedure CheckNodeLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
-    Procedure CheckNodeEndLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
+      const AnExpIncluded: Array of TSynEditFoldLineCapabilities;
+      const AnExpExcluded: Array of TSynEditFoldLineCapabilities);
+    Procedure CheckNodeLines(AList: TLazSynEditNestedFoldsList; const ALines: array of integer);
+    Procedure CheckNodeEndLines(AList: TLazSynEditNestedFoldsList; const ALines: array of integer);
     procedure InitList(const AName: String; AList: TLazSynEditNestedFoldsList;
       ALine, AGroup: Integer; AFlags: TSynFoldBlockFilterFlags;
       AInclOpening: Boolean; AClear: Boolean = True);
@@ -111,7 +111,7 @@ implementation
 type
   TSynEditFoldedViewHack = class(TSynEditFoldedView) end;
 
-procedure TTestFoldedView.TstSetText(AName: String; AText: array of String);
+procedure TTestFoldedView.TstSetText(AName: String; const AText: array of String);
 begin
   PopBaseName;
   ReCreateEdit;
@@ -120,33 +120,32 @@ begin
 end;
 
 procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex: integer;
-  AExpectedLines: array of Integer);
+  const AExpectedLines: array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex);
   TestFoldedText(AName, AExpectedLines);
 end;
-procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex,
-  AFoldAtColum: integer; AExpectedLines: array of Integer);
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum: integer;
+  const AExpectedLines: array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum);
   TestFoldedText(AName, AExpectedLines);
 end;
 procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum,
-  AFoldAtColCnt: integer; AExpectedLines: array of Integer);
+  AFoldAtColCnt: integer; const AExpectedLines: array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt);
   TestFoldedText(AName, AExpectedLines);
 end;
 procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum,
-  AFoldAtColCnt: integer; AFoldAtSkip: Boolean; AExpectedLines: array of Integer
-  );
+  AFoldAtColCnt: integer; AFoldAtSkip: Boolean; const AExpectedLines: array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip);
   TestFoldedText(AName, AExpectedLines);
 end;
 procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum,
   AFoldAtColCnt: integer; AFoldAtSkip: Boolean; AVisibleLines: Integer;
-  AExpectedLines: array of Integer);
+  const AExpectedLines: array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip, AVisibleLines);
   TestFoldedText(AName, AExpectedLines);
@@ -154,14 +153,14 @@ end;
 
 procedure TTestFoldedView.TstUnFold(AName: String; AFoldAtIndex, AFoldAtColum,
   AFoldAtColCnt: integer; AFoldAtSkip: Boolean; AVisibleLines: Integer;
-  AExpectedLines: array of Integer);
+  const AExpectedLines: array of Integer);
 begin
   FoldedView.UnFoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip, AVisibleLines);
   TestFoldedText(AName, AExpectedLines);
 end;
 
 procedure TTestFoldedView.TstUnFoldAtCaret(AName: String; X, Y: integer;
-  AExpectedLines: array of Integer);
+  const AExpectedLines: array of Integer);
 begin
   SynEdit.CaretXY := Point(X, Y);
   TestFoldedText('UnfoldCaret - '+AName, AExpectedLines);
@@ -169,7 +168,7 @@ end;
 
 // ViewPos is 1 based
 procedure TTestFoldedView.TstTxtIndexToViewPos(AName: String;
-  AExpectedPairs: array of Integer; ADoReverse: Boolean);
+  const AExpectedPairs: array of Integer; ADoReverse: Boolean);
 var i: Integer;
 begin
   i := 0;
@@ -184,7 +183,7 @@ begin
 end;
 // ViewPos is 1 based // Reverse of the above
 procedure TTestFoldedView.TstViewPosToTextIndex(AName: String;
-  AExpectedPairs: array of Integer; ADoReverse: Boolean);
+  const AExpectedPairs: array of Integer; ADoReverse: Boolean);
 var i: Integer;
 begin
   i := 0;
@@ -200,7 +199,7 @@ end;
 
 // ScreenLine is 0 based
 procedure TTestFoldedView.TstTextIndexToScreenLine(AName: String;
-  AExpectedPairs: array of Integer; ADoReverse: Boolean);
+  const AExpectedPairs: array of Integer; ADoReverse: Boolean);
 var i: Integer;
 begin
   i := 0;
@@ -215,7 +214,7 @@ begin
 end;
 // ScreenLine is 0 based // Reverse of the above
 procedure TTestFoldedView.TstScreenLineToTextIndex(AName: String;
-  AExpectedPairs: array of Integer; ADoReverse: Boolean);
+  const AExpectedPairs: array of Integer; ADoReverse: Boolean);
 var i: Integer;
 begin
   i := 0;
@@ -232,7 +231,7 @@ end;
 
 
 
-procedure TTestFoldedView.TestFoldedText(AName: String; ALines: array of Integer);
+procedure TTestFoldedView.TestFoldedText(AName: String; const ALines: array of Integer);
 var
   ExpTxt: String;
   i: Integer;
@@ -296,7 +295,7 @@ begin
   PopBaseName;
 end;
 
-procedure TTestFoldedView.SetLines(AText: array of String);
+procedure TTestFoldedView.SetLines(const AText: array of String);
 begin
   inherited SetLines(AText);
   FoldedView.TopViewPos := 1;
@@ -1667,7 +1666,7 @@ end;
 
 procedure TTestFoldedView.TestFoldStateFromText;
 
-  procedure TstFoldState(AName, AFoldDesc: String; AExpectedLines: Array of Integer);
+  procedure TstFoldState(AName, AFoldDesc: String; const AExpectedLines: Array of Integer);
   begin
     // Use to test text-desc as stored in IDE xml session files
     FoldedView.UnfoldAll;
@@ -1916,7 +1915,7 @@ begin
 end;
 
 procedure TTestFoldedView.TestFoldProvider;
-  procedure DoTestOpenCounts(AName: string; AType: Integer; AExp: Array of Integer);
+  procedure DoTestOpenCounts(AName: string; AType: Integer; const AExp: Array of Integer);
   var
     i: Integer;
   begin
@@ -2082,8 +2081,8 @@ begin
 end;
 
 procedure TTestFoldedView.CheckFoldTypes(AName: String; AStartLine: Integer;
-  AnExpIncluded: array of TSynEditFoldLineCapabilities;
-  AnExpExcluded: array of TSynEditFoldLineCapabilities);
+  const AnExpIncluded: array of TSynEditFoldLineCapabilities;
+  const AnExpExcluded: array of TSynEditFoldLineCapabilities);
 var
   f: TSynEditFoldLineCapabilities;
   j: TSynEditFoldLineCapability;
@@ -2107,7 +2106,7 @@ begin
 end;
 
 procedure TTestFoldedView.CheckNodeLines(AList: TLazSynEditNestedFoldsList;
-  ALines: array of integer);
+  const ALines: array of integer);
 var
   i: Integer;
 begin
@@ -2116,7 +2115,7 @@ begin
 end;
 
 procedure TTestFoldedView.CheckNodeEndLines(AList: TLazSynEditNestedFoldsList;
-  ALines: array of integer);
+  const ALines: array of integer);
 var
   i: Integer;
 begin

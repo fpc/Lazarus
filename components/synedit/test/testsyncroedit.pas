@@ -63,18 +63,18 @@ type
 
     function CurrentCell: Integer;
     function CopyCells: TCellsData;
-    procedure CheckCells(AName: String; AExp: array of TCellData);
+    procedure CheckCells(AName: String; const AExp: array of TCellData);
     procedure SetCarretAndCell(X, Y, C: Integer);
 
 
     procedure TestCmdAt(AName: String; X, Y: Integer; Cmd: TSynEditorCommand;
-                         Exp: Array of String; SyncRunning: Boolean = True;
+                         const Exp: Array of String; SyncRunning: Boolean = True;
                          ExpCurCell: Integer = -99; ExpCells: TCellsData = nil);
     procedure TestKeyAt(AName: String; X, Y: Integer; Key: Word; Shift: TShiftState;
-                         Exp: Array of String; SyncRunning: Boolean = True;
+                         const Exp: Array of String; SyncRunning: Boolean = True;
                          ExpCurCell: Integer = -99; ExpCells: TCellsData = nil);
     procedure TestKeyAtSel(AName: String; X, Y, X2, Y2: Integer; Key: Word; Shift: TShiftState;
-                         Exp: Array of String; SyncRunning: Boolean = True;
+                         const Exp: Array of String; SyncRunning: Boolean = True;
                          ExpCurCell: Integer = -99; ExpCells: TCellsData = nil);
 
     procedure TestUndoRedo(const AName: String; const Exp: Array of String; SyncRunning: Boolean);
@@ -190,7 +190,7 @@ begin
   end;
 end;
 
-procedure TTestSyncroEdit.CheckCells(AName: String; AExp: array of TCellData);
+procedure TTestSyncroEdit.CheckCells(AName: String; const AExp: array of TCellData);
 var
   cells: TSynPluginSyncronizedEditList;
   i, l: Integer;
@@ -224,9 +224,8 @@ begin
     FTemplateModule.CurrentCell := c;
 end;
 
-procedure TTestSyncroEdit.TestCmdAt(AName: String; X, Y: Integer;
-  Cmd: TSynEditorCommand; Exp: array of String; SyncRunning: Boolean;
-  ExpCurCell: Integer; ExpCells: TCellsData);
+procedure TTestSyncroEdit.TestCmdAt(AName: String; X, Y: Integer; Cmd: TSynEditorCommand;
+  const Exp: array of String; SyncRunning: Boolean; ExpCurCell: Integer; ExpCells: TCellsData);
 var
   t: String;
   l: Integer;
@@ -256,9 +255,8 @@ begin
   TestUndoRedo(Format('Cmd at (%d,%d) %s / %s ', [X, Y, FName, AName]), Exp, SyncRunning);
 end;
 
-procedure TTestSyncroEdit.TestKeyAt(AName: String; X, Y: Integer; Key: Word;
-  Shift: TShiftState; Exp: array of String; SyncRunning: Boolean;
-  ExpCurCell: Integer; ExpCells: TCellsData);
+procedure TTestSyncroEdit.TestKeyAt(AName: String; X, Y: Integer; Key: Word; Shift: TShiftState;
+  const Exp: array of String; SyncRunning: Boolean; ExpCurCell: Integer; ExpCells: TCellsData);
 var
   t: String;
   i, UCnt, j, l: Integer;
@@ -290,9 +288,9 @@ debugln(['!!!! key']);
 debugln(['!!!! end']);
 end;
 
-procedure TTestSyncroEdit.TestKeyAtSel(AName: String; X, Y, X2, Y2: Integer;
-  Key: Word; Shift: TShiftState; Exp: array of String; SyncRunning: Boolean;
-  ExpCurCell: Integer; ExpCells: TCellsData);
+procedure TTestSyncroEdit.TestKeyAtSel(AName: String; X, Y, X2, Y2: Integer; Key: Word;
+  Shift: TShiftState; const Exp: array of String; SyncRunning: Boolean; ExpCurCell: Integer;
+  ExpCells: TCellsData);
 var
   t: String;
   l: Integer;

@@ -20,8 +20,8 @@ type
   TTestLineMarkupResults = array of TTestLineMarkupResult;
 
   // build expectations
-  function ExpR(aExpColumns, aExpColors: Array of Integer): TTestLineMarkupResult;
-  function ExpR(aExpColumns, aExpColors, aExpWords, aExpWordsColor: Array of Integer): TTestLineMarkupResult;
+  function ExpR(const aExpColumns, aExpColors: Array of Integer): TTestLineMarkupResult;
+  function ExpR(const aExpColumns, aExpColors, aExpWords, aExpWordsColor: Array of Integer): TTestLineMarkupResult;
 
 type
 
@@ -40,7 +40,7 @@ type
     procedure TestBeginMarkup(aName: string = '');
     procedure TestRowColumns(aName: string; aRow: Integer; aExp: TTestLineMarkupResult; aScrollOffs: Integer = 0); overload;
     procedure TestRowColumns(aName: string; aRow: Integer;
-      aExpColumns, aExpColors: Array of Integer; aScrollOffs: Integer = 0); overload;
+      const aExpColumns, aExpColors: Array of Integer; aScrollOffs: Integer = 0); overload;
     (* TestRowColumns( name, row,
        [], // exp (phys) column for vert lines // must be complete
        [], // exp colors // can be empty -> no tests
@@ -49,7 +49,7 @@ type
        scroll // simulate horiz scrolled line
     *)
     procedure TestRowColumns(aName: string; aRow: Integer;
-      aExpColumns, aExpColors, aExpWords, aExpWordsColor: Array of Integer; aScrollOffs: Integer = 0); overload;
+      const aExpColumns, aExpColors, aExpWords, aExpWordsColor: Array of Integer; aScrollOffs: Integer = 0); overload;
 
     procedure TestLines(exp: TTestLineMarkupResults; backward: Boolean = false);
   protected
@@ -76,14 +76,14 @@ type
 
 implementation
 
-function CopyArray(a: array of Integer): TIntArray;
+function CopyArray(const a: array of Integer): TIntArray;
 begin
   SetLength(Result{%H-}, Length(a));
   if Length(a) > 0 then
     move(a[0], Result[0], Length(a) * SizeOf(a[0]));
 end;
 
-function ExpR(aExpColumns, aExpColors: array of Integer): TTestLineMarkupResult;
+function ExpR(const aExpColumns, aExpColors: array of Integer): TTestLineMarkupResult;
 begin
   Result.aExpColumns := CopyArray(aExpColumns);
   Result.aExpColors  := CopyArray(aExpColors);
@@ -91,7 +91,7 @@ begin
   Result.aExpWordsColor := nil;
 end;
 
-function ExpR(aExpColumns, aExpColors, aExpWords,
+function ExpR(const aExpColumns, aExpColors, aExpWords,
   aExpWordsColor: array of Integer): TTestLineMarkupResult;
 begin
   Result.aExpColumns := CopyArray(aExpColumns);
@@ -144,15 +144,14 @@ begin
   TestRowColumns(aName, aRow, aExp.aExpColumns, aExp.aExpColors, aExp.aExpWords, aExp.aExpWordsColor, aScrollOffs);
 end;
 
-procedure TTestMarkupFoldColoring.TestRowColumns(aName: string; aRow: Integer;
-  aExpColumns, aExpColors: array of Integer; aScrollOffs: Integer);
+procedure TTestMarkupFoldColoring.TestRowColumns(aName: string; aRow: Integer; const aExpColumns,
+  aExpColors: array of Integer; aScrollOffs: Integer);
 begin
   TestRowColumns(aName, aRow, aExpColumns, aExpColors, [], [], aScrollOffs);
 end;
 
-procedure TTestMarkupFoldColoring.TestRowColumns(aName: string; aRow: Integer;
-  aExpColumns, aExpColors, aExpWords, aExpWordsColor: array of Integer;
-  aScrollOffs: Integer);
+procedure TTestMarkupFoldColoring.TestRowColumns(aName: string; aRow: Integer; const aExpColumns,
+  aExpColors, aExpWords, aExpWordsColor: array of Integer; aScrollOffs: Integer);
 var
   i, nextP, nextL, srow: Integer;
   rtl: TLazSynDisplayRtlInfo;

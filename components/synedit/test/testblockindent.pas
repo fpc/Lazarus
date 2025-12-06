@@ -22,17 +22,17 @@ type
     function TestTextColumn2: TStringArray;
 
     function ReplaceIndent(AText: TStringArray; AFirstLine: Integer;
-                           ANewIndents: Array of String): TStringArray;
+                           const ANewIndents: Array of String): TStringArray;
     function AddIndent(AText: TStringArray; AFirstLine, ALastLine, ASpaceCount: Integer): TStringArray;
     function DelIndent(AText: TStringArray; AFirstLine, ALastLine, ASpaceCount: Integer): TStringArray;
-    function InsertIntoText(AText: TStringArray; AnInsText: String; AnXPos: array of integer): TStringArray;
-    function DelFromText(AText: TStringArray; AnXPosAndLen: array of integer): TStringArray;
+    function InsertIntoText(AText: TStringArray; AnInsText: String; const AnXPos: array of integer): TStringArray;
+    function DelFromText(AText: TStringArray; const AnXPosAndLen: array of integer): TStringArray;
 
     procedure TestSelAndText(Name: String; LogX1, LogY1, LogX2, LogY2: Integer;
-                             ExpLines: Array of String;
+                             const ExpLines: Array of String;
                              SelIsForward: Boolean = True);
     procedure TestColSelAndText(Name: String; LogX1, LogY1, LogX2, LogY2: Integer;
-                             ExpLines: Array of String;
+                             const ExpLines: Array of String;
                              SelIsForward: Boolean = True);
     //procedure DoTest(X1,Y1, X2,Y2: Boolean; CountIndent: Integer;
     //                 ExpX1, ExpY1, ExpX2, ExpY2: Integer;
@@ -117,7 +117,7 @@ begin
 end;
 
 function TTestBlockIndent.ReplaceIndent(AText: TStringArray; AFirstLine: Integer;
-  ANewIndents: array of String): TStringArray;
+  const ANewIndents: array of String): TStringArray;
 var
   i: Integer;
 begin
@@ -160,7 +160,7 @@ begin
 end;
 
 function TTestBlockIndent.InsertIntoText(AText: TStringArray; AnInsText: String;
-  AnXPos: array of integer): TStringArray;
+  const AnXPos: array of integer): TStringArray;
 var
   i: Integer;
 begin
@@ -173,7 +173,7 @@ begin
   end;
 end;
 
-function TTestBlockIndent.DelFromText(AText: TStringArray; AnXPosAndLen: array of integer
+function TTestBlockIndent.DelFromText(AText: TStringArray; const AnXPosAndLen: array of integer
   ): TStringArray;
 var
   i, x: Integer;
@@ -189,7 +189,7 @@ begin
 end;
 
 procedure TTestBlockIndent.TestSelAndText(Name: String; LogX1, LogY1, LogX2, LogY2: Integer;
-  ExpLines: array of String; SelIsForward: Boolean);
+  const ExpLines: array of String; SelIsForward: Boolean);
 begin
   if SelIsForward then
     TestIsCaretAndSel(Name, LogX1, LogY1, LogX2, LogY2)
@@ -199,7 +199,7 @@ begin
 end;
 
 procedure TTestBlockIndent.TestColSelAndText(Name: String; LogX1, LogY1, LogX2, LogY2: Integer;
-  ExpLines: array of String; SelIsForward: Boolean);
+  const ExpLines: array of String; SelIsForward: Boolean);
 var
   BB, BE: TPoint;
 begin
@@ -672,7 +672,7 @@ var
 
   procedure DoTest(AName: String; x1,y1, x2,y2: integer;
     ExpectSelStartX, ExpCaretX: integer;
-    AnInsText: String; AnXPos: array of integer;
+    AnInsText: String; const AnXPos: array of integer;
     ATestUndoRedo: Integer = 2
     );
   var
@@ -708,7 +708,7 @@ var
 
   procedure DoTest2(AName: String; x1,y1, x2,y2: integer;
     ExpectSelStartX1, ExpCaretX1, ExpectSelStartX2, ExpCaretX2: integer;
-    AnInsText: String; AnXPos1, AnXPos2: array of integer;
+    AnInsText: String; const AnXPos1, AnXPos2: array of integer;
     ExpGroupUndo: boolean
     );
   var
@@ -921,8 +921,8 @@ var
 
   procedure DoTest(AName: String; x1,y1, x2,y2: integer;
     ExpectSelStartX, ExpCaretX: integer;
-    AnXDelPos: array of integer;
-    AnInsText: String; AnXPos: array of integer;
+    const AnXDelPos: array of integer;
+    AnInsText: String; const AnXPos: array of integer;
     ATestUndoRedo: Integer = 2
     );
   var
@@ -964,9 +964,9 @@ Application.ProcessMessages;
 
   procedure DoTest2(AName: String; x1,y1, x2,y2: integer;
     ExpectSelStartX1, ExpCaretX1, ExpectSelStartX2, ExpCaretX2: integer;
-    AnXDelPos1, AnXDelPos2: array of integer;
-    AnInsText1: String; AnXPos1: array of integer;
-    AnInsText2: String; AnXPos2: array of integer;
+    const AnXDelPos1, AnXDelPos2: array of integer;
+    AnInsText1: String; const AnXPos1: array of integer;
+    AnInsText2: String; const AnXPos2: array of integer;
     ExpGroupUndo: boolean;
     SkipRedo: boolean = False // in case the selection gets 0 column width / undo does not store that
     );

@@ -20,7 +20,7 @@ type
     //procedure TearDown; override;
     //procedure ReCreateEdit; reintroduce;
     function TestText1: TStringArray;
-    procedure CheckMarks(Name: String; MarkList: Array of Integer);
+    procedure CheckMarks(Name: String; const MarkList: Array of Integer);
     function AddMark(Y, X: Integer) : TSynEditMark;
   published
     procedure TestMarks;
@@ -46,7 +46,7 @@ begin
   Result[7] := '  321';
 end;
 
-procedure TTestBookMarks.CheckMarks(Name: String; MarkList: array of Integer);
+procedure TTestBookMarks.CheckMarks(Name: String; const MarkList: array of Integer);
 var
   m: TSynEditMark;
   i: Integer;

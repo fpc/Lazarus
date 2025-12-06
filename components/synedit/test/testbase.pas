@@ -70,7 +70,7 @@ type
   protected
     FSynEdit : TTestSynEdit;
     FSharedSynEdit : TTestSynEdit;
-    function  LinesToText(Lines: Array of String; Separator: String = LineEnding;
+    function  LinesToText(const Lines: Array of String; Separator: String = LineEnding;
                           SeparatorAtEnd: Boolean = False): String;
     (* Relpl,must be an alteration of LineNum, LineText+
       [ 3, 'a' ] => replace line 3 with 'a' (old line 3 is deleted)
@@ -78,14 +78,14 @@ type
       [ 3 ] => replace line 3 with nothing => delete line 3
       [ -3, 'a' ] => insert a line 'a', at line 3 (current line 3 becomes line 4)
     *)
-    function  LinesReplace(Lines: Array of String; Repl: Array of const): TStringArray;
-    function  LinesReplaceText(Lines: Array of String; Repl: Array of const): String;
+    function  LinesReplace(const Lines: Array of String; const Repl: Array of const): TStringArray;
+    function  LinesReplaceText(const Lines: Array of String; const Repl: Array of const): String;
   protected
     procedure ReCreateEdit;
     function GetSharedSynEdit: TTestSynEdit;
     procedure SetSynEditHeight(Lines: Integer; PartLinePixel: Integer = 3);
     procedure SetSynEditWidth(Chars: Integer; PartCharPixel: Integer = 2);
-    procedure SetLines(Lines: Array of String);
+    procedure SetLines(const Lines: Array of String);
     (* Setting selection, with one X/Y pair having negative values, will set caret to other X/Y pair and clear selection *)
     // Locical Caret
     procedure SetCaret(X, Y: Integer);
@@ -100,9 +100,9 @@ type
     procedure SetCaretAndSelPhysBackward(X1, Y1, X2, Y2: Integer;
       DoLock: Boolean = False; AMode: TSynSelectionMode = smCurrent);
     procedure DoKeyPress(Key: Word; Shift: TShiftState = []);
-    procedure DoKeyPress(Key: Array of Word; Shift: TShiftState = []);
+    procedure DoKeyPress(const Key: Array of Word; Shift: TShiftState = []);
     procedure DoKeyPressAtPos(X, Y: Integer; Key: Word; Shift: TShiftState = []);
-    procedure DoKeyPressAtPos(X, Y: Integer; Key: array of Word; Shift: TShiftState = []);
+    procedure DoKeyPressAtPos(X, Y: Integer; const Key: array of Word; Shift: TShiftState = []);
 
     procedure TestFail(Name, Func, Expect, Got: String; Result: Boolean = False);
     procedure PushBaseName(Add: String);
@@ -140,25 +140,25 @@ type
     procedure TestIsSelection(Name: String; LogX1, LogY1, LogX2, LogY2: Integer);
 
     procedure TestCompareString(Name, Expect, Value: String; DbgInfo: String = '');
-    procedure TestCompareString(Name: String; Expect, Value: Array of String; DbgInfo: String = '');
-    procedure TestCompareString(Name, Expect: String; Value: Array of String; DbgInfo: String = '');
-    procedure TestCompareString(Name: String; Expect: Array of String; Value: String; DbgInfo: String = '');
+    procedure TestCompareString(Name: String; const Expect, Value: Array of String; DbgInfo: String = '');
+    procedure TestCompareString(Name, Expect: String; const Value: Array of String; DbgInfo: String = '');
+    procedure TestCompareString(Name: String; const Expect: Array of String; Value: String; DbgInfo: String = '');
     // exclude trimspaces, as seen by other objects
     procedure TestIsText(Name, Text: String; FullText: Boolean = False);
-    procedure TestIsText(Name: String; Lines: Array of String);
-    procedure TestIsText(Name: String; Lines: Array of String; Repl: Array of const);
+    procedure TestIsText(Name: String; const Lines: Array of String);
+    procedure TestIsText(Name: String; const Lines: Array of String; const Repl: Array of const);
     // include trim-spaces
     procedure TestIsFullText(Name, Text: String);
-    procedure TestIsFullText(Name: String; Lines: Array of String);
-    procedure TestIsFullText(Name: String; Lines: Array of String; Repl: Array of const);
+    procedure TestIsFullText(Name: String; const Lines: Array of String);
+    procedure TestIsFullText(Name: String; const Lines: Array of String; const Repl: Array of const);
 
     procedure TestIsCaretLogAndFullText(Name: String; X, Y: Integer; Text: String); // logical caret
-    procedure TestIsCaretLogAndFullText(Name: String; X, Y: Integer; Lines: Array of String); // logical caret
-    procedure TestIsCaretLogAndFullText(Name: String; X, Y: Integer; Lines: Array of String; Repl: Array of const); // logical caret
+    procedure TestIsCaretLogAndFullText(Name: String; X, Y: Integer; const Lines: Array of String); // logical caret
+    procedure TestIsCaretLogAndFullText(Name: String; X, Y: Integer; const Lines: Array of String; const Repl: Array of const); // logical caret
 
     procedure TestIsCaretLogAndFullText(Name: String; X, Y, Offs: Integer; Text: String); // logical caret
-    procedure TestIsCaretLogAndFullText(Name: String; X, Y, Offs: Integer; Lines: Array of String); // logical caret
-    procedure TestIsCaretLogAndFullText(Name: String; X, Y, Offs: Integer; Lines: Array of String; Repl: Array of const); // logical caret
+    procedure TestIsCaretLogAndFullText(Name: String; X, Y, Offs: Integer; const Lines: Array of String); // logical caret
+    procedure TestIsCaretLogAndFullText(Name: String; X, Y, Offs: Integer; const Lines: Array of String; const Repl: Array of const); // logical caret
   end;
 
   function MyDbg(t: String; AnEsc: Boolean = false): String;
@@ -482,19 +482,19 @@ begin
            '"'+DbgStr(Expect)+'"', '"'+DbgStr(Value)+'"');
 end;
 
-procedure TTestBase.TestCompareString(Name: String; Expect, Value: array of String;
+procedure TTestBase.TestCompareString(Name: String; const Expect, Value: array of String;
   DbgInfo: String);
 begin
   TestCompareString(Name, LinesToText(Expect), LinesToText(Value), DbgInfo);
 end;
 
-procedure TTestBase.TestCompareString(Name, Expect: String; Value: array of String;
+procedure TTestBase.TestCompareString(Name, Expect: String; const Value: array of String;
   DbgInfo: String);
 begin
   TestCompareString(Name, Expect, LinesToText(Value), DbgInfo);
 end;
 
-procedure TTestBase.TestCompareString(Name: String; Expect: array of String; Value: String;
+procedure TTestBase.TestCompareString(Name: String; const Expect: array of String; Value: String;
   DbgInfo: String);
 begin
   TestCompareString(Name, LinesToText(Expect), Value, DbgInfo);
@@ -512,12 +512,13 @@ begin
   TestCompareString(Name, Text, s, 'IsText');
 end;
 
-procedure TTestBase.TestIsText(Name: String; Lines: array of String);
+procedure TTestBase.TestIsText(Name: String; const Lines: array of String);
 begin
   TestIsText(Name, LinesToText(Lines));
 end;
 
-procedure TTestBase.TestIsText(Name: String; Lines: array of String; Repl: array of const);
+procedure TTestBase.TestIsText(Name: String; const Lines: array of String;
+  const Repl: array of const);
 begin
   TestIsText(Name, LinesToText(LinesReplace(Lines, Repl)));
 end;
@@ -527,13 +528,13 @@ begin
   TestIsText(Name, Text, True);
 end;
 
-procedure TTestBase.TestIsFullText(Name: String; Lines: array of String);
+procedure TTestBase.TestIsFullText(Name: String; const Lines: array of String);
 begin
   TestIsFullText(Name, LinesToText(Lines));
 end;
 
-procedure TTestBase.TestIsFullText(Name: String; Lines: array of String;
-  Repl: array of const);
+procedure TTestBase.TestIsFullText(Name: String; const Lines: array of String;
+  const Repl: array of const);
 begin
   TestIsFullText(Name, LinesToText(LinesReplace(Lines, Repl)));
 end;
@@ -545,14 +546,14 @@ begin
 end;
 
 procedure TTestBase.TestIsCaretLogAndFullText(Name: String; X, Y: Integer;
-  Lines: array of String);
+  const Lines: array of String);
 begin
   TestIsCaret(Name, X, Y);
   TestIsFullText(Name, Lines);
 end;
 
 procedure TTestBase.TestIsCaretLogAndFullText(Name: String; X, Y: Integer;
-  Lines: array of String; Repl: array of const);
+  const Lines: array of String; const Repl: array of const);
 begin
   TestIsCaret(Name, X, Y);
   TestIsFullText(Name, Lines, Repl);
@@ -565,14 +566,14 @@ begin
 end;
 
 procedure TTestBase.TestIsCaretLogAndFullText(Name: String; X, Y, Offs: Integer;
-  Lines: array of String);
+  const Lines: array of String);
 begin
   TestIsCaret(Name, X, Y, Offs);
   TestIsFullText(Name, Lines);
 end;
 
 procedure TTestBase.TestIsCaretLogAndFullText(Name: String; X, Y, Offs: Integer;
-  Lines: array of String; Repl: array of const);
+  const Lines: array of String; const Repl: array of const);
 begin
   TestIsCaret(Name, X, Y, Offs);
   TestIsFullText(Name, Lines, Repl);
@@ -637,8 +638,8 @@ begin
   Clipboard.AsText := AValue;
 end;
 
-function TTestBase.LinesToText(Lines: array of String; Separator: String = LineEnding;
-  SeparatorAtEnd: Boolean = False): String;
+function TTestBase.LinesToText(const Lines: array of String; Separator: String;
+  SeparatorAtEnd: Boolean): String;
 var
   i: Integer;
 begin
@@ -650,7 +651,8 @@ begin
   end;
 end;
 
-function TTestBase.LinesReplace(Lines: array of String; Repl: array of const): TStringArray;
+function TTestBase.LinesReplace(const Lines: array of String;
+  const Repl: array of const): TStringArray;
 var
   i, j, k: Integer;
   s: String;
@@ -693,8 +695,8 @@ begin
   end;
 end;
 
-function TTestBase.LinesReplaceText(Lines: array of String;
-  Repl: array of const): String;
+function TTestBase.LinesReplaceText(const Lines: array of String;
+  const Repl: array of const): String;
 begin
   Result := LinesToText(LinesReplace(Lines, Repl));
 end;
@@ -743,9 +745,17 @@ begin
   AssertEquals('SetSynEditWidth', Chars, SynEdit.CharsInWindow);
 end;
 
-procedure TTestBase.SetLines(Lines: array of String);
+procedure TTestBase.SetLines(const Lines: array of String);
+var
+  i: Integer;
 begin
-  SynEdit.Text := LinesToText(Lines);
+  //SynEdit.Text := LinesToText(Lines);
+  SynEdit.Clear;
+  SynEdit.BeginUpdate(False);
+  for i := 0 to high(Lines) do
+    if (i < High(Lines)) or (Lines[i] <> '') then
+      SynEdit.Lines.Add(Lines[i]);
+  SynEdit.EndUpdate;
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
@@ -861,7 +871,7 @@ begin
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
 
-procedure TTestBase.DoKeyPress(Key: array of Word; Shift: TShiftState);
+procedure TTestBase.DoKeyPress(const Key: array of Word; Shift: TShiftState);
 var
   i: Integer;
 begin
@@ -875,8 +885,7 @@ begin
   DoKeyPress(Key, Shift);
 end;
 
-procedure TTestBase.DoKeyPressAtPos(X, Y: Integer; Key: array of Word;
-  Shift: TShiftState);
+procedure TTestBase.DoKeyPressAtPos(X, Y: Integer; const Key: array of Word; Shift: TShiftState);
 begin
   SetCaret(X, Y);
   DoKeyPress(Key, Shift);
@@ -888,8 +897,11 @@ var
 begin
   i := length(FBaseTestNames);
   SetLength(FBaseTestNames, i + 1);
-  FBaseTestNames[i] := Add;
-  FBaseTestName := LinesToText(FBaseTestNames, '; ');
+  if i = 0 then
+    FBaseTestNames[i] := Add
+  else
+    FBaseTestNames[i] := FBaseTestNames[i-1] + '; ' + Add;
+  FBaseTestName := FBaseTestNames[i]
 end;
 
 procedure TTestBase.PopPushBaseName(Add: String);
@@ -899,10 +911,18 @@ begin
 end;
 
 procedure TTestBase.PopBaseName;
+var
+  i: SizeInt;
 begin
-  if length(FBaseTestNames) = 0 then exit;
-  SetLength(FBaseTestNames, length(FBaseTestNames) - 1);
-  FBaseTestName := LinesToText(FBaseTestNames, ' ');
+  i := length(FBaseTestNames)-1;
+  if i <= 0 then begin
+    SetLength(FBaseTestNames, 0);
+    FBaseTestName := '';
+  end
+  else begin
+    SetLength(FBaseTestNames, i);
+    FBaseTestName := FBaseTestNames[i-1];
+  end;
 end;
 
 procedure TTestBase.IncFixedBaseTestNames;

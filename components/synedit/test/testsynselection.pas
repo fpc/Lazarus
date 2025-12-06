@@ -30,7 +30,7 @@ type
     (* Testing selection, with any X/Y pair having negative values, will check for No Selection *)
     procedure TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer);
     procedure TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; Text: String);
-    procedure TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; Text: Array of String);
+    procedure TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; const Text: Array of String);
     procedure TestIsNoBlock(Name: String);
   protected
     FGotMode, FNewMode: TSynSelectionMode;
@@ -110,7 +110,7 @@ begin
 end;
 
 procedure TTestSynSelection.TestIsBlock(Name: String; X1, Y1, X2, Y2: Integer;
-  Text: array of String);
+  const Text: array of String);
 begin
   TestIsBlock(Name, X1, Y1, X2, Y2, LinesToText(Text));
 end;
@@ -461,7 +461,7 @@ var
   NoSelection : Boolean;
   UseBeginUpdate: Boolean;
 
-  procedure DoTestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; ExpText: Array of String);
+  procedure DoTestIsBlock(Name: String; X1, Y1, X2, Y2: Integer; const ExpText: Array of String);
   begin
     if NoSelection
     then TestIsNoBlock(Name)
@@ -470,7 +470,7 @@ var
       TestIsCaret(Name, X2, Y2);
     end;
   end;
-  procedure DoTestIsBlockBackward(Name: String; X1, Y1, X2, Y2: Integer; ExpText: Array of String);
+  procedure DoTestIsBlockBackward(Name: String; X1, Y1, X2, Y2: Integer; const ExpText: Array of String);
   begin
     if NoSelection
     then TestIsNoBlock(Name)
@@ -1015,9 +1015,9 @@ procedure TTestSynSelection.ReplaceSelText;
     Result[7] := ''; // this line is not added, it just provides the last CrLf
   end;
 
-  procedure TestReplace(Name: String; X1,Y1, X2,Y2: Integer; Before: Array of String;
-                        Replace: Array of String; ExpCaretX, ExpCaretY: Integer;
-                        ExpLineRepl: Array of Const; SkipUndo: Boolean = False);
+  procedure TestReplace(Name: String; X1,Y1, X2,Y2: Integer; const Before: Array of String;
+                        const Replace: Array of String; ExpCaretX, ExpCaretY: Integer;
+                        const ExpLineRepl: Array of Const; SkipUndo: Boolean = False);
   var
     SkipUndo2, SkipRedo2: Boolean;
     Text1: String;
@@ -1868,7 +1868,7 @@ procedure TTestSynSelection.CopyPaste;
     AssertEquals  (Name + ' - Clip', LinesToText(ClipAfter), ClipBoardText);
   end;
 
-  procedure DoTestPaste(Name: String; TextRepl: Array of const); // Paste SynEdits ClipFormat, if avail
+  procedure DoTestPaste(Name: String; const TextRepl: Array of const); // Paste SynEdits ClipFormat, if avail
   begin
     SetLines(TheText2);
     SetCaret(2,1);

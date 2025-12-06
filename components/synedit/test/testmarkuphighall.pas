@@ -48,10 +48,10 @@ type
     procedure CheckReceiveInvalidateLine(const AName: String; const ALines: array of integer);
   protected
     procedure SetLinesInWindow(ALinesInWindow: Integer);
-    procedure TestHasMatches(AName: String; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
+    procedure TestHasMatches(AName: String; const AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
     procedure TestHasMCount(AName: String; AExpMin: Integer; AExpMax: Integer = -1);
-    procedure TestHasMatches(AName: String; AExpCount: Integer; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
-    procedure TestHasMatches(AName: String; AExpCountMin, AExpCountMax: Integer; AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
+    procedure TestHasMatches(AName: String; AExpCount: Integer; const AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
+    procedure TestHasMatches(AName: String; AExpCountMin, AExpCountMax: Integer; const AExp: Array of TMAtchLoc; ExpMusNotExist: Boolean = False);
     //procedure SetUp; override;
     procedure TearDown; override;
     //procedure ReCreateEdit; reintroduce;
@@ -211,7 +211,7 @@ begin
   AssertEquals('LinesInWindow', ALinesInWindow, SynEdit.LinesInWindow);
 end;
 
-procedure TTestMarkupHighAll.TestHasMatches(AName: String; AExp: array of TMAtchLoc;
+procedure TTestMarkupHighAll.TestHasMatches(AName: String; const AExp: array of TMAtchLoc;
   ExpMusNotExist: Boolean);
 var
   i, j: Integer;
@@ -247,14 +247,14 @@ begin
 end;
 
 procedure TTestMarkupHighAll.TestHasMatches(AName: String; AExpCount: Integer;
-  AExp: array of TMAtchLoc; ExpMusNotExist: Boolean);
+  const AExp: array of TMAtchLoc; ExpMusNotExist: Boolean);
 begin
   TestHasMatches(AName, AExp, ExpMusNotExist);
   TestHasMCount(AName, AExpCount);
 end;
 
 procedure TTestMarkupHighAll.TestHasMatches(AName: String; AExpCountMin, AExpCountMax: Integer;
-  AExp: array of TMAtchLoc; ExpMusNotExist: Boolean);
+  const AExp: array of TMAtchLoc; ExpMusNotExist: Boolean);
 begin
   TestHasMatches(AName, AExp, ExpMusNotExist);
   TestHasMCount(AName, AExpCountMin, AExpCountMax);
@@ -1100,7 +1100,7 @@ var
     then AssertEquals(Name+' Result (event)', ExpRes2, Res2 - @LineText[1]);
   end;
 
-  procedure CheckExp(AExpCount: Integer; AExpList: array of Integer);
+  procedure CheckExp(AExpCount: Integer; const AExpList: array of Integer);
   var
     i: Integer;
   begin
@@ -1111,7 +1111,7 @@ var
     end;
   end;
 
-  procedure CheckExp(ExpRes1, ExpRes2, AExpCount: Integer; AExpList: array of Integer);
+  procedure CheckExp(ExpRes1, ExpRes2, AExpCount: Integer; const AExpList: array of Integer);
   begin
     CheckExp(ExpRes1, ExpRes2);
     CheckExp(AExpCount, AExpList);
@@ -1449,7 +1449,7 @@ procedure TTestMarkupHighAll.TestValidateMatches;
     Result := l(n, 3, 3+Length(Mtxt(n)));
   end;
 
-  procedure StartMatch(Words: Array of string);
+  procedure StartMatch(const Words: Array of string);
   var
     i: Integer;
   begin
@@ -1483,13 +1483,13 @@ procedure TTestMarkupHighAll.TestValidateMatches;
     SynEdit.TopLine := ATopLine;
   end;
 
-  procedure SetTextAndStart(ATopLine: Integer = 1; HideSingle: Boolean = False; Words: Array of string);
+  procedure SetTextAndStart(ATopLine: Integer = 1; HideSingle: Boolean = False; const Words: Array of string);
   begin
     SetText(ATopLine, HideSingle);
     StartMatch(Words);
   end;
 
-  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean; Words: Array of string;
+  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean; const Words: Array of string;
     AName: String= ''; AExpMin: Integer = -1; AExpMax: Integer = -1);
   begin
     SetTextAndStart(ATopLine, HideSingle, Words);
@@ -1497,8 +1497,8 @@ procedure TTestMarkupHighAll.TestValidateMatches;
       TestHasMCount(AName + ' init', AExpMin, AExpMax);
   end;
 
-  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean; Words: Array of string;
-    AExp: Array of TMAtchLoc; AExpMax: Integer;
+  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean; const Words: Array of string;
+    const AExp: Array of TMAtchLoc; AExpMax: Integer;
     AName: String = '');
   begin
     SetText(ATopLine, HideSingle);
@@ -1506,40 +1506,40 @@ procedure TTestMarkupHighAll.TestValidateMatches;
     TestHasMatches(AName + ' init', length(AExp), AExpMax, AExp);
   end;
 
-  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean; Words: Array of string;
-    AExp: Array of TMAtchLoc;
+  procedure SetTextAndMatch(ATopLine: Integer; HideSingle: Boolean; const Words: Array of string;
+    const AExp: Array of TMAtchLoc;
     AName: String = '');
   begin
     SetTextAndMatch(ATopLine, HideSingle, Words, AExp, -1, AName);
   end;
 
-  procedure ScrollAndMatch(ATopLine: Integer; AExp: Array of TMAtchLoc; AExpMax: Integer;
+  procedure ScrollAndMatch(ATopLine: Integer; const AExp: Array of TMAtchLoc; AExpMax: Integer;
     AName: String = '');
   begin
     SynEdit.TopLine := ATopLine;
     TestHasMatches(AName + ' scrolled ', length(AExp), AExpMax, AExp);
   end;
 
-  procedure ScrollAndMatch(ATopLine: Integer; AExp: Array of TMAtchLoc;
+  procedure ScrollAndMatch(ATopLine: Integer; const AExp: Array of TMAtchLoc;
     AName: String = '');
   begin
     ScrollAndMatch(ATopLine, AExp, -1, AName);
   end;
 
-  procedure HeightAndMatch(ALineCnt: Integer; AExp: Array of TMAtchLoc; AExpMax: Integer;
+  procedure HeightAndMatch(ALineCnt: Integer; const AExp: Array of TMAtchLoc; AExpMax: Integer;
     AName: String = '');
   begin
     SetLinesInWindow(ALineCnt);
     TestHasMatches(AName + ' height ', length(AExp), AExpMax, AExp);
   end;
 
-  procedure HeightAndMatch(ALineCnt: Integer; AExp: Array of TMAtchLoc;
+  procedure HeightAndMatch(ALineCnt: Integer; const AExp: Array of TMAtchLoc;
     AName: String = '');
   begin
     HeightAndMatch(ALineCnt, AExp, -1, AName);
   end;
 
-  procedure EditReplaceAndMatch(Y, X, Y2, X2: Integer; ATxt: String; AExp: Array of TMAtchLoc; AExpMax: Integer;
+  procedure EditReplaceAndMatch(Y, X, Y2, X2: Integer; ATxt: String; const AExp: Array of TMAtchLoc; AExpMax: Integer;
     AName: String = '');
   begin
     SynEdit.TextBetweenPoints[point(X, Y), point(X2, Y2)] := ATxt;
@@ -1547,19 +1547,19 @@ procedure TTestMarkupHighAll.TestValidateMatches;
     TestHasMatches(AName + ' inserted ', length(AExp), AExpMax, AExp);
   end;
 
-  procedure EditReplaceAndMatch(Y, X, Y2, X2: Integer; ATxt: String; AExp: Array of TMAtchLoc;
+  procedure EditReplaceAndMatch(Y, X, Y2, X2: Integer; ATxt: String; const AExp: Array of TMAtchLoc;
     AName: String = '');
   begin
     EditReplaceAndMatch(Y, X, Y2, X2, ATxt, AExp, -1, AName);
   end;
 
-  procedure EditInsertAndMatch(Y, X: Integer; ATxt: String; AExp: Array of TMAtchLoc; AExpMax: Integer;
+  procedure EditInsertAndMatch(Y, X: Integer; ATxt: String; const AExp: Array of TMAtchLoc; AExpMax: Integer;
     AName: String = '');
   begin
     EditReplaceAndMatch(Y, X, Y, X, ATxt, AExp, AExpMax, AName);
   end;
 
-  procedure EditInsertAndMatch(Y, X: Integer; ATxt: String; AExp: Array of TMAtchLoc;
+  procedure EditInsertAndMatch(Y, X: Integer; ATxt: String; const AExp: Array of TMAtchLoc;
     AName: String = '');
   begin
     EditInsertAndMatch(Y, X, ATxt, AExp, -1, AName);

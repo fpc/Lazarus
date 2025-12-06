@@ -116,7 +116,7 @@ type
   TTripleBool = (tTrue, tFalse, tKeep);
 
 function l(ATxtIdx: TLineIdx; ASubIdx: Integer; AText: String; ANoTrim: Boolean = False): TTestWrapLineInfo;
-function ViewedExp(AFirstViewedIdx: TLineIdx; ALines:
+function ViewedExp(AFirstViewedIdx: TLineIdx; const ALines:
   array of TTestWrapLineInfo; ANoTrim: TTripleBool = tKeep): TTestViewedLineRangeInfo;
 
 type
@@ -137,7 +137,7 @@ type
     procedure AddLines(AFirstLineIdx, ACount, ALen: Integer; AnID: String; SkipBeginUpdate: Boolean = False; AReplaceExisting: Boolean = False);
     procedure InternalCheckLine(AName: String; dsp: TLazSynDisplayView; ALine: TLineIdx; AExpTextStart: String; NoTrim: Boolean = False);
     procedure CheckLine(AName: String; ALine: TLineIdx; AExpTextStart: String; NoTrim: Boolean = False);
-    procedure CheckLines(AName: String; AStartLine: TLineIdx; AExpTextStart: array of String; NoTrim: Boolean = False);
+    procedure CheckLines(AName: String; AStartLine: TLineIdx; const AExpTextStart: array of String; NoTrim: Boolean = False);
 
     procedure CheckLine(AName: String; AExpLine: TTestWrapLineInfo);
     procedure CheckLines(AName: String; AExpLines: TTestViewedLineRangeInfo);
@@ -147,7 +147,7 @@ type
 
     procedure CheckXyMap(AName: String; APoints: TPointSpecs);
     procedure CheckXyMap(AName: String; APoints: TPointSpecs;
-      ATestCommands: array of TCommandAndPointSpecs);
+      const ATestCommands: array of TCommandAndPointSpecs);
 
     procedure CheckLineIndexMapping(AName: String; ATextIdx, AViewTopIdx, AViewBottomIdx: TLineIdx);
 
@@ -212,9 +212,8 @@ begin
   Result.NoTrim  := ANoTrim;
 end;
 
-function ViewedExp(AFirstViewedIdx: TLineIdx;
-  ALines: array of TTestWrapLineInfo; ANoTrim: TTripleBool
-  ): TTestViewedLineRangeInfo;
+function ViewedExp(AFirstViewedIdx: TLineIdx; const ALines: array of TTestWrapLineInfo;
+  ANoTrim: TTripleBool): TTestViewedLineRangeInfo;
 var
   i, j: Integer;
 begin
@@ -1219,7 +1218,7 @@ var
   procedure DoMoveLinesAtEndTo(const AName: String;
     const AWrapValues1, AWrapValues2: array of integer; AInvalLine: Integer; const AInvalDest: Boolean;
     ASourceStartLine, ALineCount: Integer;
-    Exp: array of integer;  ExpInval: Integer
+    const Exp: array of integer;  ExpInval: Integer
   );
   begin
     InitLine(ALine1, w.init(AWrapValues1));
@@ -1237,7 +1236,7 @@ var
   procedure DoMoveLinesAtStartTo(const AName: String;
     const AWrapValues1, AWrapValues2: array of integer; AInvalLine: Integer; const AInvalDest: Boolean;
     ASourceEndLine, ATargetStartLine: Integer;
-    Exp: array of integer;  ExpInval: Integer
+    const Exp: array of integer;  ExpInval: Integer
   );
   begin
     InitLine(ALine1, w.init(AWrapValues1));
@@ -1822,8 +1821,8 @@ begin
   end;
 end;
 
-procedure TTestWordWrapPluginBase.CheckLines(AName: String;
-  AStartLine: TLineIdx; AExpTextStart: array of String; NoTrim: Boolean);
+procedure TTestWordWrapPluginBase.CheckLines(AName: String; AStartLine: TLineIdx;
+  const AExpTextStart: array of String; NoTrim: Boolean);
 var
   v: TSynEditStringsLinked;
   dsp: TLazSynDisplayView;
@@ -1938,8 +1937,8 @@ begin
 
 end;
 
-procedure TTestWordWrapPluginBase.CheckXyMap(AName: String;
-  APoints: TPointSpecs; ATestCommands: array of TCommandAndPointSpecs);
+procedure TTestWordWrapPluginBase.CheckXyMap(AName: String; APoints: TPointSpecs;
+  const ATestCommands: array of TCommandAndPointSpecs);
 var
   i: Integer;
   StartP, TestP: TPointType;

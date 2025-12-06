@@ -17,7 +17,7 @@ type
     Exp: Array of integer;
   end;
 
-  function ExpVLine(ALine: Integer; AExp: Array of integer): TTestExpValuesForLine;
+  function ExpVLine(ALine: Integer; const AExp: Array of integer): TTestExpValuesForLine;
 
 const
   TK_SKIP = -1;
@@ -46,14 +46,14 @@ type
     procedure TearDown; override;
     procedure ReCreateEdit; reintroduce; virtual;
 
-    procedure CheckFoldOpenCounts(Name: String; Expected: Array of Integer);
-    procedure CheckFoldLengths(Name: String; Expected: Array of TTestExpValuesForLine);
-    procedure CheckFoldEndLines(Name: String; Expected: Array of TTestExpValuesForLine);
+    procedure CheckFoldOpenCounts(Name: String; const Expected: Array of Integer);
+    procedure CheckFoldLengths(Name: String; const Expected: Array of TTestExpValuesForLine);
+    procedure CheckFoldEndLines(Name: String; const Expected: Array of TTestExpValuesForLine);
 
-    procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; Expected: Array of Integer);
-    procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; Group: Integer; Expected: Array of Integer);
+    procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; const Expected: Array of Integer);
+    procedure CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions; const Group: Integer; const Expected: Array of Integer);
 
-    procedure CheckTokensForLine(Name: String; LineIdx: Integer; ExpTokens: Array of TExpTokenInfo);
+    procedure CheckTokensForLine(Name: String; LineIdx: Integer; const ExpTokens: Array of TExpTokenInfo);
 
     function FoldActionsToString(AFoldActions: TSynFoldActions): String;
   end;
@@ -83,7 +83,7 @@ begin
   result.Flags := [etiKind, etiAttr];
 end;
 
-function ExpVLine(ALine: Integer; AExp: array of integer): TTestExpValuesForLine;
+function ExpVLine(ALine: Integer; const AExp: array of integer): TTestExpValuesForLine;
 var
   i: Integer;
 begin
@@ -136,7 +136,7 @@ begin
 end;
 
 procedure TTestBaseHighlighterFoldBase.CheckFoldOpenCounts(Name: String;
-  Expected: array of Integer);
+  const Expected: array of Integer);
 var
   i: Integer;
 begin
@@ -148,7 +148,7 @@ begin
 end;
 
 procedure TTestBaseHighlighterFoldBase.CheckFoldLengths(Name: String;
-  Expected: array of TTestExpValuesForLine);
+  const Expected: array of TTestExpValuesForLine);
 var
   i, j: Integer;
 begin
@@ -159,7 +159,7 @@ begin
 end;
 
 procedure TTestBaseHighlighterFoldBase.CheckFoldEndLines(Name: String;
-  Expected: array of TTestExpValuesForLine);
+  const Expected: array of TTestExpValuesForLine);
 var
   i, j: Integer;
 begin
@@ -169,14 +169,14 @@ begin
         Expected[i].Exp[j], FTheHighLighter.FoldEndLine(Expected[i].Line, j));
 end;
 
-procedure TTestBaseHighlighterFoldBase.CheckFoldInfoCounts(Name: String;
-  Filter: TSynFoldActions; Expected: array of Integer);
+procedure TTestBaseHighlighterFoldBase.CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions;
+  const Expected: array of Integer);
 begin
   CheckFoldInfoCounts(Name, Filter, 0, Expected);
 end;
 
-procedure TTestBaseHighlighterFoldBase.CheckFoldInfoCounts(Name: String;
-  Filter: TSynFoldActions; Group: Integer; Expected: array of Integer);
+procedure TTestBaseHighlighterFoldBase.CheckFoldInfoCounts(Name: String; Filter: TSynFoldActions;
+  const Group: Integer; const Expected: array of Integer);
 var
   i: Integer;
   l: TLazSynFoldNodeInfoList;
@@ -195,8 +195,8 @@ begin
   end;
 end;
 
-procedure TTestBaseHighlighterFoldBase.CheckTokensForLine(Name: String;
-  LineIdx: Integer; ExpTokens: array of TExpTokenInfo);
+procedure TTestBaseHighlighterFoldBase.CheckTokensForLine(Name: String; LineIdx: Integer;
+  const ExpTokens: array of TExpTokenInfo);
 
   function AttrVal(a: TLazCustomEditTextAttribute): Integer;
   begin
@@ -220,17 +220,23 @@ begin
     end;
     //DebugLn([FTheHighLighter.GetToken,' (',FTheHighLighter.GetTokenKind ,') at ', FTheHighLighter.GetTokenPos]);
 
-    if etiKind in e.Flags then
+    if etiKind in e.Flags then begin
+      if e.ExpKind <> FTheHighLighter.GetTokenKind then
       AssertEquals('%s ASSERT token-kind @ TokenId Line=%d pos=%d Src=%s @ %d', [Name, LineIdx, c, FTheHighLighter.GetToken, FTheHighLighter.GetTokenPos],
         e.ExpKind, FTheHighLighter.GetTokenKind);
+    end;
 
     GotAttr := FTheHighLighter.GetTokenAttributeEx;
-    if etiAttr in e.Flags then
+    if etiAttr in e.Flags then begin
+      if AttrVal(e.ExpAttr) <> AttrVal(GotAttr) then
       AssertEquals('%s Attr @ TokenId Line=%d pos=%d Src=%s @ %d', [Name, LineIdx, c, FTheHighLighter.GetToken, FTheHighLighter.GetTokenPos],
-        AttrVal(e.ExpAttr), AttrVal(GotAttr))
-    else
+        AttrVal(e.ExpAttr), AttrVal(GotAttr));
+    end
+    else begin
+      if not( (GotAttr=nil) or (not (GotAttr is TSynHighlighterAttributesModifier)) ) then
       AssertTrue('%s Attr is NOT modifier @ TokenId Line=%d pos=%d Src=%s @ %d', [Name, LineIdx, c, FTheHighLighter.GetToken, FTheHighLighter.GetTokenPos],
         (GotAttr=nil) or (not (GotAttr is TSynHighlighterAttributesModifier)) );
+    end;
 
     FTheHighLighter.Next;
     inc(c);

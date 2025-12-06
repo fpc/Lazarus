@@ -224,7 +224,7 @@ var
 
   procedure DoTestRepl(AName: String;
     AStartX, AStartY: Integer; ASearch, ARepl: String;
-    AExpX, AExpY: Integer; AExpTextRepl: Array of const;
+    AExpX, AExpY: Integer; const AExpTextRepl: Array of const;
     AOpts: TSynSearchOptions = [ssoRegExpr, ssoReplaceAll]);
   begin
     AName := AName + ' # Replace "' + ASearch + '" => "' + ARepl + '"';

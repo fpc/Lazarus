@@ -42,7 +42,7 @@ type
     procedure DumpRanges(ARangeList: TLazHighlighterLineRangeList);
     procedure DumpAll(Hl: TSynMultiSyn);
     procedure CheckTokensForLine(Name: String; HL: TSynCustomHighlighter;
-                                 LineIdx: Integer; ExpAttr: Array of TLazEditTextAttribute);
+                                 LineIdx: Integer; const ExpAttr: Array of TLazEditTextAttribute);
   published
     procedure TestSectionList;
     procedure TestVirtualLines;
@@ -261,7 +261,7 @@ begin  // ensure CurrentLines are set
 end;
 
 procedure TTestHighlightMulti.CheckTokensForLine(Name: String; HL: TSynCustomHighlighter;
-  LineIdx: Integer; ExpAttr: array of TLazEditTextAttribute);
+  LineIdx: Integer; const ExpAttr: array of TLazEditTextAttribute);
 var
   c: Integer;
   tk: TLazCustomEditTextAttribute;
@@ -557,7 +557,7 @@ var
     sl.Insert(i, s);
   end;
 
-  procedure TestVLines(AName: String; ExpLines: Array of String);
+  procedure TestVLines(AName: String; const ExpLines: Array of String);
   var
     i: Integer;
   begin
@@ -572,7 +572,7 @@ var
   begin
     for i := 0 to r.Count - 1 do r.Range[i] := Pointer(PtrUInt(i+1));
   end;
-  procedure TestVRange(AName: String; ExpRanges: Array of Integer);
+  procedure TestVRange(AName: String; const ExpRanges: Array of Integer);
   var
     i: Integer;
   begin
@@ -759,7 +759,7 @@ var
   LfmScheme, PasScheme: TSynHighlighterMultiScheme;
   Name: String;
 
-  procedure TestHLTokens(AName: STring; ALine: Integer; AExpTokens: Array of string);
+  procedure TestHLTokens(AName: STring; ALine: Integer; const AExpTokens: Array of string);
   var
     tkpos: PChar;
     tklen: integer;

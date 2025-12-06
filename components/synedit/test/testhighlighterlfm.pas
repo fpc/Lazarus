@@ -30,7 +30,7 @@ type
   protected
     function TestTextFoldInfo1: TStringArray;
 
-    procedure CheckTokensForLine(Name: String; LineIdx: Integer; ExpTokens: Array of TtkTokenKind);
+    procedure CheckTokensForLine(Name: String; LineIdx: Integer; const ExpTokens: Array of TtkTokenKind);
   published
     procedure TestFoldInfo;
   end;
@@ -84,7 +84,7 @@ begin
 end;
 
 procedure TTestHighlighterLfm.CheckTokensForLine(Name: String; LineIdx: Integer;
-  ExpTokens: array of TtkTokenKind);
+  const ExpTokens: array of TtkTokenKind);
 var
   c: Integer;
 begin

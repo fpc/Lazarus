@@ -3584,38 +3584,48 @@ end;
 
 function TSynPasSyn.IsHintModifier(tfb: TPascalCodeFoldBlockType): Boolean;
 begin
+  Result := (fRange *[rsAfterEqualOrColon, rsProperty] = []) and
+            (PasCodeFoldRange.BracketNestLevel = 0);
+  if not Result then
+    exit;
   tfb := TopPascalCodeFoldBlockType;
-  if (fRange *[rsAfterEqualOrColon, rsProperty] = []) and
-     (PasCodeFoldRange.BracketNestLevel = 0) and
-     ( ( (tfb in cfbtVarConstType) and
+  case tfb of
+    //cfbtVarConstType:
+    cfbtVarBlock, cfbtLocalVarBlock,
+    cfbtConstBlock, cfbtLocalConstBlock:
+      result :=
+         (FTokenState <> tsAfterAbsolute) and
+         (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]);
+    cfbtTypeBlock, cfbtLocalTypeBlock:
+      result :=
          (FTokenState <> tsAfterAbsolute) and
          ( (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon] = [rsVarTypeInSpecification]) or
-           ( (tfb in [cfbtTypeBlock, cfbtLocalTypeBlock]) and
-             (rsWasInProcHeader in fRange) and
+           ( (rsWasInProcHeader in fRange) and
              (FTokenState in [tsAtBeginOfStatement])
            )
-         )
-       ) or
-       ( (tfb in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
+         );
+    cfbtClass, cfbtClassSection,
+    cfbtRecord, cfbtRecordCase, cfbtRecordCaseSection,
+    cfbtClassConstBlock:
+      result :=
+         ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
+           (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification])
+         );
+    cfbtClassTypeBlock:
+      result :=
          ( (fRange * [rsAfterClassMembers, rsInProcHeader] = [rsAfterClassMembers]) or
            (fRange * [rsAfterClassMembers, rsAfterEqualOrColon, rsVarTypeInSpecification] = [rsVarTypeInSpecification]) or
-           ( (tfb = cfbtClassTypeBlock) and
-             (rsWasInProcHeader in fRange) and
+           ( (rsWasInProcHeader in fRange) and
              (FTokenState in [tsAtBeginOfStatement])
            )
-       )
-       ) or
-       ( (tfb in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
-         (fRange * [rsInProcHeader] = [])
-       ) or
-       ( (tfb in [cfbtUnit, cfbtNone]) and
-         (fRange * [rsInProcHeader] = []) and (FTokenState = tsAfterProcName)
-       )
-     )
-  then
-    Result := True
-  else
-    Result := False;
+         );
+    cfbtUnitSection, cfbtProgram, cfbtProcedure:
+      Result :=
+         (fRange * [rsInProcHeader] = []);
+    cfbtUnit, cfbtNone:
+      Result :=
+         (fRange * [rsInProcHeader] = []) and (FTokenState = tsAfterProcName);
+  end;
 end;
 
 function TSynPasSyn.IsHintModifier(const AnUpperKey: string): Boolean;

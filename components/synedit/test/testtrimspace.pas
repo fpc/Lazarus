@@ -38,44 +38,44 @@ type
     FUndoIndex: Integer;
   protected
     procedure test_assert(ASubName: String; AExp: String = ''; AExpX: Integer = -1; AExpY: Integer = -1; AppendCr: Boolean = True);
-    procedure test_assert(ASubName: String; AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1; AppendCr: Boolean = True);
+    procedure test_assert(ASubName: String; const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1; AppendCr: Boolean = True);
     procedure test_add_undo(Cmd: TSynEditorCommand; IsRedo: Boolean = False);
 
     procedure test_start(AName, Txt: String);
-    procedure test_start(AName: String; Txt: Array of String);
-    procedure test_start(AName: String; Txt: Array of String; X, Y: Integer);
+    procedure test_start(AName: String; const Txt: Array of String);
+    procedure test_start(AName: String; const Txt: Array of String; X, Y: Integer);
 
     Procedure test_cmd(ASubName: String; X, Y: Integer; Cmd: TSynEditorCommand; AChar: TUTF8Char;
                        AExp: String = ''; AExpX: Integer = -1; AExpY: Integer = -1);
     Procedure test_cmd(ASubName: String; Cmd: TSynEditorCommand;
-                       AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1;
+                       const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1;
                        SkipAddUndo: Boolean = False);
     Procedure test_caret(ASubName: String; X, Y: Integer;
                        AExp: String = ''; AExpX: Integer = -1; AExpY: Integer = -1);
 
     Procedure test_type  (ASubName: String; AText: String;
-                       AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
+                       const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
     Procedure test_type  (ASubName: String; AText: String; X, Y: Integer;
-                       AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
+                       const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
     Procedure test_bspace(ASubName: String;
-                       AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
+                       const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
     Procedure test_bspace(ASubName: String; X, Y: Integer;
-                       AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
+                       const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
     Procedure test_del   (ASubName: String;
-                       AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
+                       const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
     Procedure test_del   (ASubName: String; X, Y: Integer;
-                       AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
+                       const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
 
     Procedure test_undo(ASubName: String; SkipCaretTest: Boolean = False);
     Procedure test_redo(ASubName: String; SkipCaretTest: Boolean = False);
     Procedure test_undo_exp(ASubName: String;
                        AExp: String = ''; AExpX: Integer = -1; AExpY: Integer = -1);
     Procedure test_undo_exp(ASubName: String;
-                       AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
+                       const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
     Procedure test_redo_exp(ASubName: String;
                        AExp: String = ''; AExpX: Integer = -1; AExpY: Integer = -1);
     Procedure test_redo_exp(ASubName: String;
-                       AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
+                       const AExp: Array of String; AExpX: Integer = -1; AExpY: Integer = -1);
     procedure SetUp; override;
     procedure TearDown; override;
   published
@@ -115,8 +115,8 @@ begin
 //debugln(['done ',ASubName]);
 end;
 
-procedure TTestTrimSpace.test_assert(ASubName: String; AExp: array of String; AExpX: Integer;
-  AExpY: Integer; AppendCr: Boolean = True);
+procedure TTestTrimSpace.test_assert(ASubName: String; const AExp: array of String;
+  AExpX: Integer; AExpY: Integer; AppendCr: Boolean);
 begin
   test_assert(ASubName, LinesToText(AExp), AExpX, AExpY, AppendCr);
 end;
@@ -147,12 +147,12 @@ begin
 //debugln(['----- START ',AName]);
 end;
 
-procedure TTestTrimSpace.test_start(AName: String; Txt: array of String);
+procedure TTestTrimSpace.test_start(AName: String; const Txt: array of String);
 begin
   test_start(AName, LinesToText(Txt));
 end;
 
-procedure TTestTrimSpace.test_start(AName: String; Txt: array of String; X, Y: Integer);
+procedure TTestTrimSpace.test_start(AName: String; const Txt: array of String; X, Y: Integer);
 begin
   test_start(AName, LinesToText(Txt));
   SynEdit.CaretXY := Point(x, y);
@@ -171,7 +171,7 @@ begin
 end;
 
 procedure TTestTrimSpace.test_cmd(ASubName: String; Cmd: TSynEditorCommand;
-  AExp: array of String; AExpX: Integer; AExpY: Integer; SkipAddUndo: Boolean);
+  const AExp: array of String; AExpX: Integer; AExpY: Integer; SkipAddUndo: Boolean);
 begin
   if not SkipAddUndo then
     test_add_undo(Cmd);
@@ -190,7 +190,7 @@ begin
   test_assert('caret: '+ASubName, AExp, AExpX, AExpY);
 end;
 
-procedure TTestTrimSpace.test_type(ASubName: String; AText: String; AExp: array of String;
+procedure TTestTrimSpace.test_type(ASubName: String; AText: String; const AExp: array of String;
   AExpX: Integer; AExpY: Integer);
 begin
   test_add_undo(ecChar);
@@ -200,7 +200,7 @@ begin
 end;
 
 procedure TTestTrimSpace.test_type(ASubName: String; AText: String; X, Y: Integer;
-  AExp: array of String; AExpX: Integer; AExpY: Integer);
+  const AExp: array of String; AExpX: Integer; AExpY: Integer);
 begin
   test_add_undo(ecChar);
   SynEdit.CaretXY := Point(x, y);
@@ -209,8 +209,8 @@ begin
   test_assert('Typed: '+ASubName, AExp, AExpX, AExpY);
 end;
 
-procedure TTestTrimSpace.test_bspace(ASubName: String; AExp: array of String; AExpX: Integer;
-  AExpY: Integer);
+procedure TTestTrimSpace.test_bspace(ASubName: String; const AExp: array of String;
+  AExpX: Integer; AExpY: Integer);
 begin
   test_add_undo(ecDeleteLastChar);
   SynEdit.CommandProcessor(ecDeleteLastChar, '', nil);
@@ -218,7 +218,7 @@ begin
   test_assert('BSpace: '+ASubName, AExp, AExpX, AExpY);
 end;
 
-procedure TTestTrimSpace.test_bspace(ASubName: String; X, Y: Integer; AExp: array of String;
+procedure TTestTrimSpace.test_bspace(ASubName: String; X, Y: Integer; const AExp: array of String;
   AExpX: Integer; AExpY: Integer);
 begin
   test_add_undo(ecDeleteLastChar);
@@ -228,7 +228,7 @@ begin
   test_assert('BSpace: '+ASubName, AExp, AExpX, AExpY);
 end;
 
-procedure TTestTrimSpace.test_del(ASubName: String; AExp: array of String; AExpX: Integer;
+procedure TTestTrimSpace.test_del(ASubName: String; const AExp: array of String; AExpX: Integer;
   AExpY: Integer);
 begin
   test_add_undo(ecDeleteChar);
@@ -237,7 +237,7 @@ begin
   test_assert('Del: '+ASubName, AExp, AExpX, AExpY);
 end;
 
-procedure TTestTrimSpace.test_del(ASubName: String; X, Y: Integer; AExp: array of String;
+procedure TTestTrimSpace.test_del(ASubName: String; X, Y: Integer; const AExp: array of String;
   AExpX: Integer; AExpY: Integer);
 begin
   test_add_undo(ecDeleteChar);
@@ -293,7 +293,7 @@ begin
   test_assert('undo: '+ASubName, AExp, AExpX, AExpY);
 end;
 
-procedure TTestTrimSpace.test_undo_exp(ASubName: String; AExp: array of String;
+procedure TTestTrimSpace.test_undo_exp(ASubName: String; const AExp: array of String;
   AExpX: Integer; AExpY: Integer);
 begin
   test_undo_exp(ASubName, LinesToText(AExp), AExpX, AExpY);
@@ -309,7 +309,7 @@ begin
   test_assert('redo: '+ASubName, AExp, AExpX, AExpY);
 end;
 
-procedure TTestTrimSpace.test_redo_exp(ASubName: String; AExp: array of String;
+procedure TTestTrimSpace.test_redo_exp(ASubName: String; const AExp: array of String;
   AExpX: Integer; AExpY: Integer);
 begin
   test_redo_exp(ASubName, LinesToText(AExp), AExpX, AExpY);

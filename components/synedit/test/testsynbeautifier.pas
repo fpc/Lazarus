@@ -24,8 +24,8 @@ type
 
   TTestSynBeautifier = class(TTestBaseHighlighterPas)
   protected
-    procedure TestRedoUndo(Name: String; Text: Array of String; X, Y: Integer;
-                           Data: Array of const;
+    procedure TestRedoUndo(Name: String; const Text: Array of String; X, Y: Integer;
+                           const Data: Array of const;
                            SelX: Integer = -1; SelY: Integer = -1);
   protected
     FGetIndentCallBackResult: Boolean;
@@ -80,8 +80,8 @@ implementation
 { TTestSynBeautifier }
 
 var SkipGroupUndo: Boolean;
-procedure TTestSynBeautifier.TestRedoUndo(Name: String; Text: array of String; X, Y: Integer;
-  Data: array of const; SelX: Integer; SelY: Integer);
+procedure TTestSynBeautifier.TestRedoUndo(Name: String; const Text: array of String; X,
+  Y: Integer; const Data: array of const; SelX: Integer; SelY: Integer);
 
   function data2txt(n: Integer): String;
   begin
@@ -661,7 +661,7 @@ procedure TTestSynBeautifier.IndentCallBack;
     Result := LinesToText(LinesReplace(TestText, rpl))
   end;
 
-  procedure SetCB(Res: Boolean; Action: array of const);
+  procedure SetCB(Res: Boolean; const Action: array of const);
   var i: integer;
   begin
     FGetIndentCallBackResult := Res;
@@ -981,7 +981,7 @@ type
 DebugLn(BaseConf);
   end;
 
-  Procedure DoSetText(ABaseName: String; ALines: array of const);
+  Procedure DoSetText(ABaseName: String; const ALines: array of const);
   begin
     BaseName := ABaseName;
     BaseStep := 0;
@@ -998,7 +998,7 @@ DebugLn(BaseConf);
 
   // Caret is logical
   Procedure DoNewLine(AName: string; AStartX, AStartY: Integer;
-    ExpX, ExpY: Integer; ExpLineDiff: array of const; AFlags: TTestFlags = []);
+    ExpX, ExpY: Integer; const ExpLineDiff: array of const; AFlags: TTestFlags = []);
   begin
     SynEdit.TestTypeText(AStartX, AStartY, #13);
 

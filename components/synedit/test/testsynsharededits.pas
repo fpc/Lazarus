@@ -24,7 +24,7 @@ type
     procedure ReCreateEdit(Count: Integer); overload;
     procedure SelectEdit(Index: Integer);
     function TestText1: TStringArray;
-    procedure CheckMarks(Name: String; EditIndex: Integer; MarkList: Array of Integer);
+    procedure CheckMarks(Name: String; EditIndex: Integer; const MarkList: Array of Integer);
     function AddMark(EditIndex: Integer; Y, X: Integer) : TSynEditMark;
   published
     procedure TestMarks;
@@ -93,7 +93,7 @@ begin
 end;
 
 procedure TTestSynSharedEdits.CheckMarks(Name: String; EditIndex: Integer;
-  MarkList: array of Integer);
+  const MarkList: array of Integer);
 var
   m: TSynEditMark;
   i: Integer;
@@ -311,7 +311,7 @@ begin
 end;
 
 procedure TTestSynSharedEdits.TestBookMarks;
-  procedure CheckBMarks(Name: String; EditIndex: Integer; MarkList: Array of Integer);
+  procedure CheckBMarks(Name: String; EditIndex: Integer; const MarkList: Array of Integer);
   var
     m: TSynEditMark;
     l: Array of Integer;
