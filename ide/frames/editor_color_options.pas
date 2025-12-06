@@ -29,13 +29,13 @@ uses
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazUTF8, LazLoggerBase,
   // LCL
-  LCLType, LCLIntf, StdCtrls, ExtCtrls, Graphics, ComCtrls, Dialogs, Menus,
+  LCLType, LCLIntf, StdCtrls, ExtCtrls, Graphics, ComCtrls, Dialogs, Menus, LMessages,
   // LazControls
   DividerBevel,
   // SynEdit
   SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
   SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynEditStrConst,
-  SynEditMarkupSpecialLine, SynEditMarkup,
+  SynEditMarkupSpecialLine, SynEditMarkup, SynCompletion,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
   EditorSyntaxHighlighterDef, LazEditTextAttributes,
@@ -91,6 +91,7 @@ type
     Splitter1: TSplitter;
     ColorElementTree: TTreeView;
     SynColorAttrEditor1: TSynColorAttrEditor;
+    SynCompletion1: TSynCompletion;
     ToolBar: TToolBar;
     ToolBar1: TToolBar;
     ToolButton3: TToolButton;
@@ -115,6 +116,9 @@ type
     procedure ColorElementTreeChange(Sender: TObject; {%H-}Node: TTreeNode);
     procedure ColorElementTreeClick(Sender: TObject);
     procedure ColorElementTreeKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure WMCancelMode(var Message: TLMessage); message LM_CANCELMODE;
+    procedure ColorPreviewMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
+      Y: Integer);
     procedure ColorPreviewMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
     procedure ColorSchemeButtonClick(Sender: TObject);
@@ -147,7 +151,11 @@ type
     FCurrentColorScheme: TColorSchemeLanguage;
     FIsEditingDefaults, FInPriorUpdating: Boolean;
     CurLanguageID: Integer;
+    FMouseDownPos: TPoint;
+    FMouseDownAttr: TLazEditTextAttribute;
 
+    procedure DoCompletionMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
+      Y: Integer);
     procedure FillPriorEditor;
     procedure SelectCurInPriorEditor;
 
@@ -472,44 +480,74 @@ begin
   end;
 end;
 
-procedure TEditorColorOptionsFrame.ColorPreviewMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TEditorColorOptionsFrame.WMCancelMode(var Message: TLMessage);
+begin
+  if GetCaptureControl <> SynCompletion1.TheForm then
+    inherited WMCancelMode(Message);
+end;
+
+procedure TEditorColorOptionsFrame.ColorPreviewMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+
+  var
+    FixedAttr: TLazEditTextAttribute;
+
+  procedure SetAttrByEnum(AnAHA: TAdditionalHilightAttribute);
+  var
+    i: Integer;
+    a: TLazEditTextAttribute;
+  begin
+    for i := 0 to FCurrentColorScheme.AttributeCount - 1 do begin
+      a := FCurrentColorScheme.AttributeAtPos[i];
+      if GetEnumValue(TypeInfo(TAdditionalHilightAttribute), a.StoredName) = ord(AnAHA) then begin
+        FixedAttr := a;
+        FMouseDownAttr := a;
+        exit;
+      end;
+    end;
+  end;
+
 var
-  i: Integer;
-  Token: String;
-  Attri: TLazEditTextAttribute;
   MouseXY, XY: TPoint;
+  rct: TREct;
+  i, j, CurIdx: Integer;
+  Token: String;
+  Attri, a: TLazEditTextAttribute;
   AddAttr: TAdditionalHilightAttribute;
-  NewNode: TTreeNode;
   AttriList: TLazCustomEditTextAttributeArray;
   TkBound: TLazSynDisplayTokenBound;
   RtlInfo: TLazSynDisplayRtlInfo;
+  InGutter: Boolean;
 begin
+  FMouseDownPos.X := X;
+  FMouseDownPos.Y := Y;
+  FMouseDownAttr := nil;
+  FixedAttr := nil;
+  InGutter := False;
   MouseXY := Point(X - (ColorPreview.CharWidth div 2), Y);
   XY := ColorPreview.PixelsToRowColumn(MouseXY);
-  NewNode := nil;
   // Gutter Colors
   if X <= ColorPreview.Gutter.Width then begin
+    InGutter := True;
     for i := 0 to ColorPreview.Gutter.Parts.Count-1 do begin
       if ColorPreview.Gutter.Parts[i].Width > X then begin
         if ColorPreview.Gutter.Parts[i] is TSynGutterLineNumber then
-          SelectAhaColor(ahaLineNumber)
+          SetAttrByEnum(ahaLineNumber)
         else
         if ColorPreview.Gutter.Parts[i] is TSynGutterChanges then
-          SelectAhaColor(ahaModifiedLine)
+          SetAttrByEnum(ahaModifiedLine)
         else
         if ColorPreview.Gutter.Parts[i] is TSynGutterCodeFolding then
-          SelectAhaColor(ahaCodeFoldingTree)
+          SetAttrByEnum(ahaCodeFoldingTree)
         else
-          SelectAhaColor(ahaGutter);
-        exit;
+          SetAttrByEnum(ahaGutter);
+        break;
       end;
       X := X - ColorPreview.Gutter.Parts[i].Width;
     end;
-    exit;
-  end;
-  // Line Highlights
-  if CurLanguageID >= 0 then
+  end
+  else
+  if CurLanguageID >= 0 then  // Line Highlights
   begin
     AddAttr := EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
     if AddAttr = ahaFoldedCode then begin
@@ -519,21 +557,20 @@ begin
         AddAttr := ahaNone;
         //NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
     end;
-    if AddAttr <> ahaNone then begin
-      SelectAhaColor(AddAttr);
-      exit;
-    end;
+    if AddAttr <> ahaNone then
+      SetAttrByEnum(AddAttr);
       //NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[AddAttr]);
   end;
-  if (XY.Y = ColorPreview.CaretY) and
+  if (FixedAttr = nil) and
+     (XY.Y = ColorPreview.CaretY) and
      (XY.X > Length(ColorPreview.Lines[XY.Y - 1])+1)
   then begin
-    SelectAhaColor(ahaLineHighlight);
-    exit;
+    SetAttrByEnum(ahaLineHighlight);
     //NewNode := ColorElementTree.Items.FindNodeWithText(COLOR_NODE_PREFIX+AdditionalHighlightAttributes[ahaLineHighlight]);
   end;
   if FIsEditingDefaults then
     exit;
+
   // Pascal Highlights
   if FCurrentHighlighter <> nil then begin
     // the features will be reset in between select events
@@ -549,39 +586,149 @@ begin
       ColorPreview.MarkupManager.Markup[i].MarkupInfo.Features  + [lafAlwaysEnabled]
   end;
 
+  AttriList := nil;
   Token := '';
   Attri := nil;
   ColorPreview.GetHighlighterAttriAtRowCol(XY, Token, Attri);
-  AttriList := ColorPreview.Highlighter.GetTokenAttributeList;
 
-  ColorPreview.MarkupManager.BeginMarkup;
-  ColorPreview.MarkupManager.PrepareMarkupForRow(XY.y);
-  TkBound.Init(ColorPreview.LogicalToPhysicalPos(XY).X, XY.X);
-  RtlInfo := Default(TLazSynDisplayRtlInfo);
-  ColorPreview.MarkupManager.GetMarkupAttributeListAtRowCol(XY.y, TkBound, RtlInfo, AttriList);
-  ColorPreview.MarkupManager.FinishMarkupForRow(XY.y);
-  ColorPreview.MarkupManager.EndMarkup;
+  if (not InGutter) and (not ColorPreview.Highlighter.GetEol) then begin
+    AttriList := ColorPreview.Highlighter.GetTokenAttributeList;
 
+    ColorPreview.MarkupManager.BeginMarkup;
+    ColorPreview.MarkupManager.PrepareMarkupForRow(XY.y);
+    TkBound.Init(ColorPreview.LogicalToPhysicalPos(XY).X, XY.X);
+    RtlInfo := Default(TLazSynDisplayRtlInfo);
+    ColorPreview.MarkupManager.GetMarkupAttributeListAtRowCol(XY.y, TkBound, RtlInfo, AttriList);
+    ColorPreview.MarkupManager.FinishMarkupForRow(XY.y);
+    ColorPreview.MarkupManager.EndMarkup;
+  end;
+
+  if FixedAttr <> nil then begin
+    i := Length(AttriList) - 1;
+    while (i >= 0) and (AttriList[i] <> FixedAttr) do
+      dec(i);
+    if i < 0 then begin
+      i := Length(AttriList);
+      SetLength(AttriList, i + 1);
+      AttriList[i] := FixedAttr;
+    end;
+  end;
+
+  CurIdx := -1;
   i := Length(AttriList) - 1;
-  while (i >= 0) and (AttriList[i] is TLazEditTextAttribute) and
-        (TLazEditTextAttribute(AttriList[i]).StoredName <> FCurHighlightElement.StoredName)
-  do
-    dec(i);
-  if i >= 0 then inc(i);
-  if i = Length(AttriList) then i := 0;
-  if (i >= 0) and (AttriList[i] is TLazEditTextAttribute) then
-    Attri := TLazEditTextAttribute(AttriList[i]);
+  while (i >= 0) do begin
+    if AttriList[i] is TLazEditTextAttribute then begin
+      a := TLazEditTextAttribute(AttriList[i]);
+      if (CurIdx < 0) and (a.StoredName = FCurHighlightElement.StoredName) then
+        CurIdx := i;
+      if (a.Caption = nil) or (a.Caption^ = '') then begin
+        j := FCurrentColorScheme.AttributeCount - 1;
+        while j >= 0 do begin
+          if a.StoredName = FCurrentColorScheme.AttributeAtPos[j].StoredName then begin
+            AttriList[i] := FCurrentColorScheme.AttributeAtPos[j];
+            break;
+          end;
+          dec(j);
+        end;
+        if j < 0 then begin
+          assert(False, 'TEditorColorOptionsFrame.ColorPreviewMouseDown: unknown attrib');
+          AttriList[i] := AttriList[Length(AttriList)-1];
+          SetLength(AttriList, Length(AttriList)-1);
+        end;
+      end;
+    end
+    else begin
+      assert(False, 'TEditorColorOptionsFrame.ColorPreviewMouseDown: wrong attrib class');
+      AttriList[i] := AttriList[Length(AttriList)-1];
+      SetLength(AttriList, Length(AttriList)-1);
+    end;
+    dec(i)
+  end;
+
+  if Length(AttriList) = 1 then begin
+    FMouseDownAttr := TLazEditTextAttribute(AttriList[0]);
+    exit;
+  end
+  else
+  if Length(AttriList) = 0 then
+    exit;
+
+  if CurIdx >= 0 then begin
+    i := CurIdx;
+    inc(i);
+    if i = Length(AttriList) then i := 0;
+    if (i >= 0) then
+      Attri := TLazEditTextAttribute(AttriList[i]);
+  end
+  else
+    Attri := TLazEditTextAttribute(AttriList[Length(AttriList) - 1]);
 
   if Attri = nil then
     Attri := FCurrentHighlighter.WhitespaceAttribute;
-  if Attri <> nil then begin
+  if FMouseDownAttr = nil then
+    FMouseDownAttr := Attri;
+
+  SynCompletion1.ItemList.Clear;
+  for i := 0 to Length(AttriList) - 1 do begin
+    Attri := TLazEditTextAttribute(AttriList[i]);
+    SynCompletion1.ItemList.AddObject(Attri.Caption^, Attri);
+  end;
+  SynCompletion1.Position := Max(CurIdx, 0);
+  SynCompletion1.TheForm.AllowOtherFormActive := True;
+  SynCompletion1.TheForm.PositionFollowsMouse := True;
+  rct.TopLeft := ColorPreview.ClientToScreen(FMouseDownPos);
+  rct.BottomRight := rct.TopLeft;
+  rct.TopLeft.X := rct.TopLeft.X - ColorPreview.CharWidth * 3;
+  rct.BottomRight.X := rct.BottomRight.X + ColorPreview.CharWidth * 3;
+  rct.TopLeft.Y := rct.TopLeft.Y - ColorPreview.LineHeight;
+  rct.BottomRight.Y := rct.BottomRight.Y + ColorPreview.LineHeight;
+  SynCompletion1.Execute('', rct);
+  SynCompletion1.TheForm.OnMouseUp := @DoCompletionMouseUp;
+  SetCaptureControl(SynCompletion1.TheForm);
+end;
+
+procedure TEditorColorOptionsFrame.DoCompletionMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  xy: TPoint;
+begin
+  xy := ColorPreview.ScreenToClient(SynCompletion1.TheForm.ClientToScreen(Point(x,y)));
+  ColorPreviewMouseUp(Sender, Button, Shift, xy.X, xy.Y);
+  SynCompletion1.TheForm.Hide;
+end;
+
+procedure TEditorColorOptionsFrame.ColorPreviewMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  NewNode: TTreeNode;
+begin
+  if SynCompletion1.TheForm.Visible then begin
+    if SynCompletion1.TheForm.BoundsRect.Contains(ColorPreview.ClientToScreen(point(x,y)))
+    then begin
+      FMouseDownAttr := nil;
+      if (SynCompletion1.Position >= 0) and (SynCompletion1.Position < SynCompletion1.ItemList.Count) then
+        FMouseDownAttr := TLazEditTextAttribute(SynCompletion1.ItemList.Objects[SynCompletion1.Position]);
+    end
+    else begin
+      SynCompletion1.TheForm.Hide;
+      if (abs(FMouseDownPos.Y - Y) > 8) or (abs(FMouseDownPos.X - X) > 8) then
+        exit;
+    end;
+  end
+  else
+  if (abs(FMouseDownPos.Y - Y) > 8) or (abs(FMouseDownPos.X - X) > 8) then
+    exit;
+
+  NewNode := nil;
+  if FMouseDownAttr <> nil then begin
     NewNode := ColorElementTree.Items.GetFirstNode;
     while Assigned(NewNode) do begin
       if (NewNode.Data <> nil)
-      and (TColorSchemeAttribute(NewNode.Data).StoredName = Attri.StoredName) then
+      and (TColorSchemeAttribute(NewNode.Data).StoredName = FMouseDownAttr.StoredName) then
         break;
       NewNode := NewNode.GetNext;
     end;
+    FMouseDownAttr := nil;
   end;
   if NewNode <> nil then begin
     NewNode.Selected := True;

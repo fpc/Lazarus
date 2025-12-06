@@ -5,6 +5,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
   Width = 640
   ClientHeight = 466
   ClientWidth = 640
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   Visible = False
   DesignLeft = 401
@@ -588,10 +589,12 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       Font.Name = 'courier'
       Font.Pitch = fpFixed
       Font.Quality = fqNonAntialiased
+      Font.Style = [fsBold]
       ParentColor = False
       ParentFont = False
       TabOrder = 1
       TabStop = False
+      OnMouseDown = ColorPreviewMouseDown
       OnMouseUp = ColorPreviewMouseUp
       BookMarkOptions.Xoffset = 30
       Gutter.Width = 59
@@ -1010,36 +1013,38 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
         'ColorPreview'
       )
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
-      SelectedColor.BackPriority = 50
       SelectedColor.ForePriority = 50
+      SelectedColor.BackPriority = 50
       SelectedColor.FramePriority = 50
-      SelectedColor.BoldPriority = 50
-      SelectedColor.ItalicPriority = 50
-      SelectedColor.UnderlinePriority = 50
-      SelectedColor.StrikeOutPriority = 50
+      SelectedColor.ExtendPastEol = True
+      IncrementColor.ExtendPastEol = False
       BracketHighlightStyle = sbhsBoth
-      BracketMatchColor.Background = clNone
       BracketMatchColor.Foreground = clNone
+      BracketMatchColor.Background = clNone
       BracketMatchColor.Style = [fsBold]
-      FoldedCodeColor.Background = clNone
       FoldedCodeColor.Foreground = clGray
+      FoldedCodeColor.Background = clNone
       FoldedCodeColor.FrameColor = clGray
-      MouseLinkColor.Background = clNone
       MouseLinkColor.Foreground = clBlue
-      LineHighlightColor.Background = clNone
+      MouseLinkColor.Background = clNone
       LineHighlightColor.Foreground = clNone
+      LineHighlightColor.Background = clNone
       inline TSynGutterPartList
         object TSynGutterMarks
           Width = 24
           MouseActions = <>
           MaxExtraMarksColums = 0
           Options = [sgmoDeDuplicateMarksOnOverflow]
+          MarkupInfo.Background = clBtnFace
+          MarkupInfoCurrentLine.Foreground = clNone
+          MarkupInfoCurrentLine.Background = clNone
         end
         object TSynGutterLineNumber
           Width = 19
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
-          MarkupInfo.Foreground = clNone
+          MarkupInfoCurrentLine.Foreground = clNone
+          MarkupInfoCurrentLine.Background = clNone
           DigitCount = 2
           ShowOnlyLineNumbersMultiplesOf = 1
           ZeroStart = False
@@ -1050,12 +1055,18 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           MouseActions = <>
           ModifiedColor = 59900
           SavedColor = clGreen
+          MarkupInfo.Foreground = clGreen
+          MarkupInfo.FrameColor = 59900
+          MarkupInfoCurrentLine.Foreground = clNone
+          MarkupInfoCurrentLine.Background = clNone
         end
         object TSynGutterSeparator
           Width = 2
           MouseActions = <>
-          MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
+          MarkupInfo.Background = clWhite
+          MarkupInfoCurrentLine.Foreground = clNone
+          MarkupInfoCurrentLine.Background = clNone
         end
         object TSynGutterCodeFolding
           MouseActions = <          
@@ -1084,8 +1095,9 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
               ClickDir = cdDown
               Command = emcNone
             end>
-          MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clGray
+          MarkupInfoCurrentLine.Foreground = clNone
+          MarkupInfoCurrentLine.Background = clNone
           MouseActionsExpanded = <          
             item
               ClickCount = ccAny
@@ -1219,5 +1231,19 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
   object ColorSchemeMenu: TPopupMenu
     Left = 568
     Top = 160
+  end
+  object SynCompletion1: TSynCompletion
+    Position = -1
+    LinesInWindow = 6
+    SelectedColor = clHighlight
+    CaseSensitive = False
+    Width = 262
+    AutoUseSingleIdent = True
+    ShortCut = 16416
+    EndOfTokenChr = '()[].'
+    ExecCommandID = ecSynCompletionExecute
+    ToggleReplaceWhole = False
+    Left = 353
+    Top = 103
   end
 end
