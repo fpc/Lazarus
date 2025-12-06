@@ -75,7 +75,8 @@ type
      ahaIdentComplWindowEntryText, ahaIdentComplWindowEntryTempl, ahaIdentComplWindowEntryKeyword,
      ahaIdentComplWindowEntryUnknown,
      ahaOutlineLevel1Color, ahaOutlineLevel2Color, ahaOutlineLevel3Color, ahaOutlineLevel4Color, ahaOutlineLevel5Color, ahaOutlineLevel6Color, ahaOutlineLevel7Color, ahaOutlineLevel8Color, ahaOutlineLevel9Color, ahaOutlineLevel10Color,
-     ahaWrapIndend, ahaWrapEol, ahaWrapSubLine
+     ahaWrapIndend, ahaWrapEol, ahaWrapSubLine,
+     ahaExternalLink
      );
   TAdditionalHilightAttributes = set of TAdditionalHilightAttribute;
 

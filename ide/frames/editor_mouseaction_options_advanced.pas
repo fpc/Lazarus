@@ -93,7 +93,7 @@ type
     FKeyMap: TKeyCommandRelationList;
 
     FGlobalNode: TTreeNode;
-    FTextNode, FSelNode: TTreeNode;
+    FTextNode, FSelNode, FExtLinkNode: TTreeNode;
     FGutterNode: TTreeNode;
     FGutterFoldNode, FGutterFoldExpNode, FGutterFoldColNode: TTreeNode;
     FGutterLinesNode: TTreeNode;
@@ -625,6 +625,9 @@ begin
   // Selection
   FSelNode := ContextTree.Items.AddChild(FTextNode, dlgMouseOptNodeSelect);
   FSelNode.Data := FTempMouseSettings.SelActions;
+  // ExtLink
+  FExtLinkNode := ContextTree.Items.AddChild(FTextNode, dlgMouseOptNodeExtLink);
+  FExtLinkNode.Data := FTempMouseSettings.ExtLinkActions;
   // Gutter
   FGutterNode := ContextTree.Items.AddChild(FGlobalNode, dlgMouseOptNodeGutter);
   FGutterNode.Data := FTempMouseSettings.GutterActions;

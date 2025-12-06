@@ -62,7 +62,7 @@ uses
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
-  LazEditTextAttributes,
+  SynPluginExternalLink, LazEditTextAttributes,
   // IDE
   etSrcEditMarks, LazarusIDEStrConsts, SourceMarks, LazEditTextGridPainter;
 
@@ -261,6 +261,7 @@ type
   private
     FCaretColor: TColor;
     FCaretStamp: Int64;
+    FExternalHttpLink: TSynPluginExternalLink;
     FMarkupIdentComplWindow: TSynMarkupIdentComplWindow;
     FShowTopInfo: boolean;
     FFoldView: TSynEditFoldedView;
@@ -355,6 +356,7 @@ type
     property CaretStamp: Int64 read FCaretStamp;
     property CaretColor: TColor read FCaretColor write SetCaretColor;
 
+    property ExternalHttpLink: TSynPluginExternalLink read FExternalHttpLink;
     property WrapView: TLazSynEditLineWrapPlugin read FWrapView;
     property WordWrapEnabled: Boolean read GetWordWrapEnabled write SetWordWrapEnabled;
     property WordWrapCaretWrapPos: TLazSynEditWrapCaretPos write SetWordWrapCaretWrapPos;
@@ -2142,6 +2144,8 @@ begin
   MarkupCaret := TSynEditMarkupHighlightAllCaret(MarkupByClass[TSynEditMarkupHighlightAllCaret]);
   MarkupCaret.CreateOverviewGutterPart(TIDESynGutter(RightGutter).FOverviewGutterPart, 15);
   MarkupCaret.ScanMode := smsmASyncForceAll;
+
+  FExternalHttpLink := TSynPluginExternalLink.Create(Self);
 
   {$IFDEF WithSynDebugGutter}
   TIDESynGutter(RightGutter).DebugGutter.TheLinesView := ViewedTextBuffer;

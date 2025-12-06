@@ -56,15 +56,14 @@ uses
   // LazEdit
   TextMateGrammar, LazEditTextAttributes,
   // SynEdit Highlighters
-  SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterCPP,
-  SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM, SynHighlighterPas,
-  SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL, SynHighlighterCss,
-  SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
-  SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat,
+  SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterCPP, SynHighlighterHTML,
+  SynHighlighterJava, SynHighlighterLFM, SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP,
+  SynHighlighterSQL, SynHighlighterCss, SynHighlighterPython, SynHighlighterUNIXShellScript,
+  SynHighlighterXML, SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat,
   SynHighlighterIni, SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
-  SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview,
-  SynBeautifierPascal, SynEditTextDynTabExpander, SynEditTextTabExpander,
-  SynTextMateSyn, SynEditStrConst, SynHighlighterPosition, SynGutterMarks, SynEditWrappedView,
+  SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview, SynBeautifierPascal,
+  SynEditTextDynTabExpander, SynEditTextTabExpander, SynTextMateSyn, SynEditStrConst,
+  SynHighlighterPosition, SynGutterMarks, SynEditWrappedView, SynPluginExternalLink,
   // codetools
   LinkScanner, CodeToolManager,
   // BuildIntf
@@ -135,7 +134,8 @@ const
     '', '', '',     // ahaIdentComplWindowEntryText, ahaIdentComplWindowEntryTempl, ahaIdentComplWindowEntryKeyword,
     '',             // ahaIdentComplWindowEntryUnknown,
     '', '', '', '', '', '', '', '', '', '', // ahaOutlineLevel1Color..ahaOutlineLevel10Color
-    '', '', '' // ahaWrapIndend, ahaWrapEol, ahaWrapSubLine
+    '', '', '', // ahaWrapIndend, ahaWrapEol, ahaWrapSubLine
+    ''         // ahaExternalLink
   );
 
   ahaGroupMap: array[TAdditionalHilightAttribute] of TAhaGroupName = (
@@ -217,7 +217,8 @@ const
     { ahaOutlineLevel10Color } agnOutlineColors,
     { ahaWrapIndend  } agnWrap,
     { ahaWrapEol     } agnWrap,
-    { ahaWrapSubLine } agnWrap
+    { ahaWrapSubLine } agnWrap,
+    { ahaExternalLink } agnText
 
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TColorSchemeAttributeFeatures =
@@ -300,7 +301,8 @@ const
     { ahaFoldLevel10Color }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
     { ahaWrapIndend  } [hafBackColor, hafFrameColor {, hafAlpha, hafPrior}],
     { ahaWrapEol     } [hafBackColor {, hafAlpha, hafPrior}],
-    { ahaWrapSubLine } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
+    { ahaWrapSubLine } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaExternalLink }  [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
   );
 
 const
@@ -963,6 +965,7 @@ deprecated 'NONOONONONONONOONON only create ONE ????';
     mbaPaste,
     mbaDeclarationJump,
     mbaDeclarationOrBlockJump,
+    mbaOpenExternalLink,
     mbaAddHistoryPoint,
     mbaHistoryBack, mbaHistoryForw,
     mbaSetFreeBookmark,
@@ -1010,6 +1013,7 @@ type
     FUserSchemes: TQuickStringlist;
   private
     FCustomSavedActions: Boolean;
+    FDeclarationJumpIncludesExtLink: Boolean;
     FGutterActionsChanges: TSynEditMouseActions;
     FMainActions, FSelActions, FTextActions: TSynEditMouseActions;
     FSelectOnLineNumbers: Boolean;
@@ -1018,6 +1022,7 @@ type
     FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
     FGutterActionsLines: TSynEditMouseActions;
     FGutterActionsOverView, FGutterActionsOverViewMarks: TSynEditMouseActions;
+    FExtLinkActions: TSynEditMouseActions;
     FSelectedUserScheme: String;
     // left multi click
     FTextDoubleLeftClick: TMouseOptButtonAction;
@@ -1138,6 +1143,7 @@ type
     property GutterActionsChanges: TSynEditMouseActions read FGutterActionsChanges;
     property GutterActionsOverView: TSynEditMouseActions read FGutterActionsOverView;
     property GutterActionsOverViewMarks: TSynEditMouseActions read FGutterActionsOverViewMarks;
+    property ExtLinkActions: TSynEditMouseActions read FExtLinkActions;
   published
     property GutterLeft: TMouseOptGutterLeftType read FGutterLeft write FGutterLeft
              default moglUpClickAndSelect;
@@ -1146,6 +1152,8 @@ type
     property TextDrag: Boolean read FTextDrag write FTextDrag
              default True;
     property TextRightMoveCaret: Boolean read FTextRightMoveCaret  write FTextRightMoveCaret
+             default False;
+    property DeclarationJumpIncludesExtLink: Boolean read FDeclarationJumpIncludesExtLink write FDeclarationJumpIncludesExtLink
              default False;
     // left multi click
     property TextDoubleLeftClick: TMouseOptButtonAction read FTextDoubleLeftClick write FTextDoubleLeftClick
@@ -3169,6 +3177,8 @@ begin
   AdditionalHighlightAttributes[ahaWrapEol]     := dlgAddHiAttrWrapEol;
   AdditionalHighlightAttributes[ahaWrapSubLine] := dlgAddHiAttrWrapSubLine;
 
+  AdditionalHighlightAttributes[ahaExternalLink] := dlgAddHiExternalLink;
+
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
   AdditionalHighlightGroupNames[agnLine]         := dlgAddHiAttrGroupLine;
@@ -4421,6 +4431,7 @@ begin
   FGutterActionsChanges := TSynEditMouseActions.Create(nil);
   FGutterActionsOverView:= TSynEditMouseActions.Create(nil);
   FGutterActionsOverViewMarks:= TSynEditMouseActions.Create(nil);
+  FExtLinkActions       := TSynEditMouseActions.Create(nil);
   FUserSchemes := TQuickStringlist.Create;
   FVersion := 0;
 end;
@@ -4440,6 +4451,7 @@ begin
   FGutterActionsChanges.Free;
   FGutterActionsOverView.Free;
   FGutterActionsOverViewMarks.Free;
+  FExtLinkActions.Free;
   inherited Destroy;
 end;
 
@@ -4518,6 +4530,7 @@ begin
   FTextShiftExtra2Click := mbaNone;
 
   FTextRightMoveCaret  := False;
+  FDeclarationJumpIncludesExtLink := False;
   FTextDrag            := True;
   FSelectOnLineNumbers := True;
 end;
@@ -4679,7 +4692,11 @@ procedure TEditorMouseOptions.ResetTextToDefault;
             AddCommand(emcMouseLink,        False, AButton, AClickCount, ADir,    AShift, AShiftMask);
             if AnAction = mbaDeclarationOrBlockJump then
               AddCommand(emcSynEditCommand, True,  AButton, AClickCount, ADir,    AShift, AShiftMask, ecFindBlockOtherEnd, 1);
+            if DeclarationJumpIncludesExtLink then
+              FExtLinkActions.AddCommand(emcPluginExternalLinkDefaultOpen, False, AButton, AClickCount, ADir,    AShift, AShiftMask);
           end;
+        mbaOpenExternalLink:
+          FExtLinkActions.AddCommand(emcPluginExternalLinkDefaultOpen, False, AButton, AClickCount, ADir,    AShift, AShiftMask);
         mbaAddHistoryPoint:
           AddCommand(emcSynEditCommand,     True,  AButton, AClickCount, ADir, AShift, AShiftMask, ecAddJumpPoint);
         mbaHistoryBack:
@@ -4765,6 +4782,7 @@ begin
   FMainActions.Clear;
   FSelActions.Clear;
   FTextActions.Clear;
+  FExtLinkActions.Clear;
 
   // Left Btn
   ModKeys := [ssShift];
@@ -4945,6 +4963,7 @@ begin
   FGutterActionsChanges.Assign(Src.GutterActionsChanges);
   FGutterActionsOverView.Assign(Src.GutterActionsOverView);
   FGutterActionsOverViewMarks.Assign(Src.GutterActionsOverViewMarks);
+  FExtLinkActions.Assign      (Src.ExtLinkActions);
 end;
 
 procedure TEditorMouseOptions.SetTextCtrlLeftClick(AValue: TMouseOptButtonActionOld);
@@ -4975,6 +4994,7 @@ begin
   FSelectOnLineNumbers  := Src.SelectOnLineNumbers;
   FTextDrag             := Src.TextDrag;
   FTextRightMoveCaret   := Src.TextRightMoveCaret;
+  FDeclarationJumpIncludesExtLink := Src.DeclarationJumpIncludesExtLink;
   FSelectedUserScheme   := Src.FSelectedUserScheme;
 
     // left multi click
@@ -5089,7 +5109,8 @@ begin
     Temp.GutterActionsLines.Equals  (self.GutterActionsLines) and
     Temp.GutterActionsChanges.Equals(Self.GutterActionsChanges) and
     Temp.GutterActionsOverView.Equals(Self.GutterActionsOverView) and
-    Temp.GutterActionsOverViewMarks.Equals(Self.GutterActionsOverViewMarks);
+    Temp.GutterActionsOverViewMarks.Equals(Self.GutterActionsOverViewMarks) and
+    Temp.ExtLinkActions.Equals      (Self.ExtLinkActions);
   Temp.Free;
 end;
 
@@ -5205,6 +5226,7 @@ begin
     LoadFromXmlMouseAct(aXMLConfig, aPath + 'GutterLineChange/', GutterActionsChanges);
     LoadFromXmlMouseAct(aXMLConfig, aPath + 'GutterOverView/',   GutterActionsOverView);
     LoadFromXmlMouseAct(aXMLConfig, aPath + 'GutterOverViewMarks/',   GutterActionsOverViewMarks);
+    LoadFromXmlMouseAct(aXMLConfig, aPath + 'ExtLinkActions/',   ExtLinkActions);
 
     if Version < 1 then begin
       try
@@ -5268,6 +5290,7 @@ begin
     SaveMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
     SaveMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
     SaveMouseAct(aPath + 'GutterOverViewMarks/',GutterActionsOverViewMarks);
+    SaveMouseAct(aPath + 'ExtLinkActions/',ExtLinkActions);
   end else begin
     // clear unused entries
     aXMLConfig.DeletePath(aPath + 'Main');
@@ -5293,6 +5316,7 @@ begin
   LoadFromXmlMouseAct(aXMLConfig, aPath + 'GutterLineChange/', GutterActionsChanges,         True);
   LoadFromXmlMouseAct(aXMLConfig, aPath + 'GutterOverView/',   GutterActionsOverView,        True);
   LoadFromXmlMouseAct(aXMLConfig, aPath + 'GutterOverViewMarks/',GutterActionsOverViewMarks, True);
+  LoadFromXmlMouseAct(aXMLConfig, aPath + 'ExtLinkActions/',ExtLinkActions, True);
 end;
 
 procedure TEditorMouseOptions.ExportToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
@@ -5326,6 +5350,7 @@ begin
   SaveMouseAct(aPath + 'GutterLineChange/', GutterActionsChanges);
   SaveMouseAct(aPath + 'GutterOverView/',   GutterActionsOverView);
   SaveMouseAct(aPath + 'GutterOverViewMarks/',GutterActionsOverViewMarks);
+  SaveMouseAct(aPath + 'ExtLinkActions/',ExtLinkActions);
   MAct.Free;
 end;
 
@@ -7093,6 +7118,8 @@ begin
       ASynEdit.RightGutter.LineOverviewPart.MouseActions.Assign(FUserMouseSettings.GutterActionsOverView);
       ASynEdit.RightGutter.LineOverviewPart.MouseActionsForMarks.Assign(FUserMouseSettings.GutterActionsOverViewMarks);
     end;
+    if (ASynEdit is TIDESynEditor) and (TIDESynEditor(ASynEdit).ExternalHttpLink <> nil) then
+      TIDESynEditor(ASynEdit).ExternalHttpLink.MouseActions.Assign(fUserMouseSettings.ExtLinkActions);
 
     GutterPartList.Sort;
     for i := 0 to GutterPartList.Count - 1 do begin
@@ -7972,6 +7999,11 @@ begin
         TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapIndent.FrameEdges := sfeLeft;
         SetMarkupColor(ahaWrapEol,     TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapEol);
         SetMarkupColor(ahaWrapSubLine, TIDESynEditor(aSynEdit).WrapView.MarkupInfoWrapSubLine);
+      end;
+
+      if TIDESynEditor(ASynEdit).ExternalHttpLink <> nil then begin
+        SetMarkupColor(ahaExternalLink, TIDESynEditor(ASynEdit).ExternalHttpLink.MarkupInfo);
+        //TIDESynEditor(ASynEdit).ExternalHttpLink
       end;
     end;
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);

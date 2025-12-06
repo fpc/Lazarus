@@ -156,6 +156,7 @@ type
     PageExtra2: TPage;
     PageExtra1: TPage;
     PageRight: TPage;
+    JumpDeclInclExtLink: TCheckBox;
     ScrollBoxExtra2: TScrollBox;
     ScrollBoxExtra1: TScrollBox;
     ScrollBoxRight: TScrollBox;
@@ -365,6 +366,7 @@ begin
   Result := not (
     (FTempMouseSettings.TextDrag      = TextDrag.Checked) and
     (FTempMouseSettings.TextRightMoveCaret = RightMoveCaret.Checked) and
+    (FTempMouseSettings.DeclarationJumpIncludesExtLink= JumpDeclInclExtLink.Checked) and
 
     (FTempMouseSettings.TextAltLeftClick          = TMouseOptButtonAction(dropAltLeft.ItemIndex)) and
     (FTempMouseSettings.TextCtrlLeftClick         = TMouseOptButtonAction(dropCtrlLeft.ItemIndex)) and
@@ -466,6 +468,7 @@ procedure TEditorMouseOptionsFrame.SaveTextSettings;
 begin
   FTempMouseSettings.TextDrag := TextDrag.Checked;
   FTempMouseSettings.TextRightMoveCaret := RightMoveCaret.Checked;
+  FTempMouseSettings.DeclarationJumpIncludesExtLink:= JumpDeclInclExtLink.Checked;
 
   FTempMouseSettings.TextAltLeftClick          := TMouseOptButtonAction(dropAltLeft.ItemIndex);
   FTempMouseSettings.TextCtrlLeftClick         := TMouseOptButtonAction(dropCtrlLeft.ItemIndex);
@@ -621,6 +624,7 @@ procedure TEditorMouseOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
     ACombo.Items.Add(dlfMouseSimpleButtonPaste);             // mbaPaste,
     ACombo.Items.Add(dlfMouseSimpleButtonDeclaration);       // mbaDeclarationJump,
     ACombo.Items.Add(dlfMouseSimpleButtonDeclarationBlock);  // mbaDeclarationOrBlockJump,
+    ACombo.Items.Add(dlfMouseSimpleButtonExternalLink);      // mbaOpenExternalLink,
     ACombo.Items.Add(dlfMouseSimpleButtonAddHistoryPoint);   // mbaAddHistoryPoint,
     ACombo.Items.Add(dlfMouseSimpleButtonHistBack);          // mbaHistoryBack,
     ACombo.Items.Add(dlfMouseSimpleButtonHistForw);          // mbaHistoryForw,
@@ -663,6 +667,7 @@ begin
   TextDividerLabel.Caption := dlfMouseSimpleTextSect;
   TextDrag.Caption := dlfMouseSimpleTextSectDrag;
   RightMoveCaret.Caption := dlfMouseSimpleRightMoveCaret;
+  JumpDeclInclExtLink.Caption := dlfMouseSimpleDeclJumpInclExtLink;
 
   ToolBtnLeftMod.Caption := dlfMouseSimpleTextSectPageLMod;
   ToolBtnLeftMulti.Caption := dlfMouseSimpleTextSectPageLMulti;
@@ -851,6 +856,7 @@ begin
   chkGutterTextLines.Checked := FTempMouseSettings.SelectOnLineNumbers;
   TextDrag.Checked    := FTempMouseSettings.TextDrag;
   RightMoveCaret.Checked := FTempMouseSettings.TextRightMoveCaret;
+  JumpDeclInclExtLink.Checked := FTempMouseSettings.DeclarationJumpIncludesExtLink;
 
   dropAltLeft.ItemIndex          := ord(FTempMouseSettings.TextAltLeftClick);
   dropCtrlLeft.ItemIndex         := ord(FTempMouseSettings.TextCtrlLeftClick);

@@ -9,6 +9,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
   Anchors = [akTop]
   ClientHeight = 588
   ClientWidth = 671
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   Visible = False
   DesignLeft = 393
@@ -36,11 +37,11 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Left = 6
       Height = 19
       Top = 2
-      Width = 138
+      Width = 136
       BorderSpacing.Left = 6
       Caption = 'chkPredefinedScheme'
-      OnChange = chkPredefinedSchemeChange
       TabOrder = 0
+      OnChange = chkPredefinedSchemeChange
     end
     object dropUserSchemes: TComboBox
       AnchorSideLeft.Control = chkPredefinedScheme
@@ -48,7 +49,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideTop.Control = pnlUserSchemes
       AnchorSideRight.Control = pnlUserSchemes
       AnchorSideRight.Side = asrBottom
-      Left = 150
+      Left = 148
       Height = 23
       Top = 0
       Width = 200
@@ -56,11 +57,11 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BorderSpacing.Left = 6
       Constraints.MaxWidth = 200
       ItemHeight = 15
+      Style = csDropDownList
+      TabOrder = 1
       OnChange = dropUserSchemesChange
       OnExit = dropUserSchemesChange
       OnKeyDown = dropUserSchemesKeyDown
-      Style = csDropDownList
-      TabOrder = 1
     end
   end
   object HideMouseCheckBox: TCheckBox
@@ -70,7 +71,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Left = 6
     Height = 19
     Top = 50
-    Width = 133
+    Width = 132
     BorderSpacing.Left = 6
     Caption = 'HideMouseCheckBox'
     TabOrder = 1
@@ -120,9 +121,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Anchors = [akTop, akLeft, akRight]
         Caption = 'GutterLeftRadio1'
         Checked = True
-        OnChange = CheckOrRadioChange
         TabOrder = 0
         TabStop = True
+        OnChange = CheckOrRadioChange
       end
       object GutterLeftRadio2: TRadioButton
         AnchorSideLeft.Control = PanelGutter
@@ -136,8 +137,8 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Width = 659
         Anchors = [akTop, akLeft, akRight]
         Caption = 'GutterLeftRadio2'
-        OnChange = CheckOrRadioChange
         TabOrder = 1
+        OnChange = CheckOrRadioChange
       end
       object GutterLeftRadio3: TRadioButton
         AnchorSideLeft.Control = PanelGutter
@@ -151,8 +152,8 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Width = 659
         Anchors = [akTop, akLeft, akRight]
         Caption = 'GutterLeftRadio3'
-        OnChange = CheckOrRadioChange
         TabOrder = 2
+        OnChange = CheckOrRadioChange
       end
     end
     object ResetGutterButton: TButton
@@ -169,8 +170,8 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       Caption = 'ResetGutterButton'
-      OnClick = ResetGutterButtonClick
       TabOrder = 1
+      OnClick = ResetGutterButtonClick
     end
     object chkGutterTextLines: TCheckBox
       AnchorSideLeft.Control = PanelGutter
@@ -179,10 +180,10 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Left = 6
       Height = 19
       Top = 57
-      Width = 121
+      Width = 119
       Caption = 'chkGutterTextLines'
-      OnChange = CheckOrRadioChange
       TabOrder = 2
+      OnChange = CheckOrRadioChange
     end
   end
   object pnlAllText: TPanel
@@ -208,7 +209,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Control = pnlAllText
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 38
+      Height = 57
       Top = 0
       Width = 659
       Anchors = [akTop, akLeft, akRight]
@@ -218,7 +219,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BorderSpacing.Bottom = 6
       BevelOuter = bvNone
       ChildSizing.ControlsPerLine = 2
-      ClientHeight = 38
+      ClientHeight = 57
       ClientWidth = 659
       TabOrder = 0
       object TextDrag: TCheckBox
@@ -226,10 +227,10 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Left = 0
         Height = 19
         Top = 0
-        Width = 67
+        Width = 65
         Caption = 'TextDrag'
-        OnChange = CheckOrRadioChange
         TabOrder = 0
+        OnChange = CheckOrRadioChange
       end
       object RightMoveCaret: TCheckBox
         AnchorSideLeft.Control = PanelTextCheckBox
@@ -238,10 +239,22 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Left = 0
         Height = 19
         Top = 19
-        Width = 106
+        Width = 104
         Caption = 'RightMoveCaret'
-        OnChange = CheckOrRadioChange
         TabOrder = 1
+        OnChange = CheckOrRadioChange
+      end
+      object JumpDeclInclExtLink: TCheckBox
+        AnchorSideLeft.Control = PanelTextCheckBox
+        AnchorSideTop.Control = RightMoveCaret
+        AnchorSideTop.Side = asrBottom
+        Left = 0
+        Height = 19
+        Top = 38
+        Width = 127
+        Caption = 'JumpDeclInclExtLink'
+        TabOrder = 2
+        OnChange = CheckOrRadioChange
       end
     end
     object ToolBar1: TToolBar
@@ -252,7 +265,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 24
-      Top = 44
+      Top = 63
       Width = 671
       Align = alNone
       Anchors = [akTop, akLeft, akRight]
@@ -261,21 +274,21 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       TabOrder = 1
       object ToolBtnMiddle: TToolButton
         Tag = 2
-        Left = 194
+        Left = 192
         Top = 2
         Caption = 'ToolBtnMiddle'
         Grouped = True
-        OnClick = ToolBtnMiddleClick
         Style = tbsCheck
+        OnClick = ToolBtnMiddleClick
       end
       object ToolBtnWheel: TToolButton
         Tag = 3
-        Left = 281
+        Left = 278
         Top = 2
         Caption = 'ToolBtnWheel'
         Grouped = True
-        OnClick = ToolBtnMiddleClick
         Style = tbsCheck
+        OnClick = ToolBtnMiddleClick
       end
       object ToolBtnLeftMod: TToolButton
         Left = 1
@@ -283,35 +296,35 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Caption = 'ToolBtnLeftMod'
         Down = True
         Grouped = True
-        OnClick = ToolBtnMiddleClick
         Style = tbsCheck
+        OnClick = ToolBtnMiddleClick
       end
       object ToolBtnLeftMulti: TToolButton
         Tag = 1
-        Left = 96
+        Left = 95
         Top = 2
         Caption = 'ToolBtnLeftMulti'
         Grouped = True
-        OnClick = ToolBtnMiddleClick
         Style = tbsCheck
+        OnClick = ToolBtnMiddleClick
       end
       object ToolBtnRight: TToolButton
         Tag = 5
-        Left = 475
+        Left = 470
         Top = 2
         Caption = 'ToolBtnRight'
         Grouped = True
-        OnClick = ToolBtnMiddleClick
         Style = tbsCheck
+        OnClick = ToolBtnMiddleClick
       end
       object ToolBtnExtra1: TToolButton
         Tag = 6
-        Left = 553
+        Left = 547
         Top = 2
         Caption = 'ToolBtnExtra1'
         Grouped = True
-        OnClick = ToolBtnMiddleClick
         Style = tbsCheck
+        OnClick = ToolBtnMiddleClick
       end
       object ToolBtnExtra2: TToolButton
         Tag = 7
@@ -319,17 +332,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Top = 24
         Caption = 'ToolBtnExtra2'
         Grouped = True
-        OnClick = ToolBtnMiddleClick
         Style = tbsCheck
+        OnClick = ToolBtnMiddleClick
       end
       object ToolBtnHorizWheel: TToolButton
         Tag = 4
-        Left = 364
+        Left = 360
         Top = 2
         Caption = 'ToolBtnHorizWheel'
         Grouped = True
-        OnClick = ToolBtnMiddleClick
         Style = tbsCheck
+        OnClick = ToolBtnMiddleClick
       end
     end
     object ResetTextButton: TButton
@@ -348,8 +361,8 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       Caption = 'ResetTextButton'
-      OnClick = ResetTextButtonClick
       TabOrder = 2
+      OnClick = ResetTextButtonClick
     end
     object Notebook1: TNotebook
       AnchorSideLeft.Control = pnlAllText
@@ -359,8 +372,8 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ResetTextButton
       Left = 0
-      Height = 219
-      Top = 68
+      Height = 200
+      Top = 87
       Width = 671
       PageIndex = 0
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -369,17 +382,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       object PageLeftMod: TPage
         object ScrollBoxLeftMod: TScrollBox
           Left = 0
-          Height = 219
+          Height = 200
           Top = 0
           Width = 671
           HorzScrollBar.Page = 246
           HorzScrollBar.Tracking = True
-          VertScrollBar.Page = 203
+          VertScrollBar.Page = 200
           VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 219
-          ClientWidth = 671
+          ClientHeight = 200
+          ClientWidth = 654
           TabOrder = 0
           object dropCtrlLeft: TComboBox
             AnchorSideLeft.Control = dropAltLeft
@@ -390,15 +403,15 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 35
-            Width = 525
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 0
+            OnChange = CheckOrRadioChange
           end
           object CtrLLeftLabel: TLabel
             AnchorSideLeft.Control = ScrollBoxLeftMod
@@ -420,15 +433,15 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 6
-            Width = 525
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 1
+            OnChange = CheckOrRadioChange
           end
           object AltLeftLabel: TLabel
             AnchorSideLeft.Control = ScrollBoxLeftMod
@@ -451,16 +464,16 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 93
-            Width = 525
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
+            OnChange = CheckOrRadioChange
           end
           object dropAltCtrlLeft: TComboBox
             AnchorSideLeft.Control = dropAltLeft
@@ -471,15 +484,15 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 64
-            Width = 525
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
+            OnChange = CheckOrRadioChange
           end
           object dropShiftAltLeft: TComboBox
             AnchorSideLeft.Control = dropAltLeft
@@ -490,15 +503,15 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 122
-            Width = 525
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 4
+            OnChange = CheckOrRadioChange
           end
           object dropShiftCtrlLeft: TComboBox
             AnchorSideLeft.Control = dropAltLeft
@@ -509,15 +522,15 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 151
-            Width = 525
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 5
+            OnChange = CheckOrRadioChange
           end
           object dropShiftAltCtrlLeft: TComboBox
             AnchorSideLeft.Control = dropAltLeft
@@ -528,15 +541,15 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 180
-            Width = 525
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 6
+            OnChange = CheckOrRadioChange
           end
           object ShiftLeftLabel: TLabel
             AnchorSideLeft.Control = ScrollBoxLeftMod
@@ -630,9 +643,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 0
+            OnChange = CheckOrRadioChange
           end
           object lblLeftTriple: TLabel
             AnchorSideLeft.Control = ScrollBoxLeftDbl
@@ -661,9 +674,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 1
+            OnChange = CheckOrRadioChange
           end
           object lblLeftDouble: TLabel
             AnchorSideLeft.Control = ScrollBoxLeftDbl
@@ -692,9 +705,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
+            OnChange = CheckOrRadioChange
           end
           object dropLeftShiftDouble: TComboBox
             AnchorSideLeft.Control = dropLeftDouble
@@ -711,9 +724,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
+            OnChange = CheckOrRadioChange
           end
           object dropLeftAltDouble: TComboBox
             AnchorSideLeft.Control = dropLeftDouble
@@ -730,9 +743,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 4
+            OnChange = CheckOrRadioChange
           end
           object dropLeftCtrlDouble: TComboBox
             AnchorSideLeft.Control = dropLeftDouble
@@ -749,9 +762,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 5
+            OnChange = CheckOrRadioChange
           end
           object lblLeftQuad: TLabel
             AnchorSideLeft.Control = ScrollBoxLeftDbl
@@ -847,9 +860,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 1
+            OnChange = CheckOrRadioChange
           end
           object lblMiddleCtrl: TLabel
             AnchorSideLeft.Control = ScrollBoxMiddle
@@ -880,9 +893,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 0
+            OnChange = CheckOrRadioChange
           end
           object dropMiddleAlt: TComboBox
             AnchorSideLeft.Control = dropMiddle
@@ -899,9 +912,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
+            OnChange = CheckOrRadioChange
           end
           object lblMiddleAlt: TLabel
             AnchorSideLeft.Control = ScrollBoxMiddle
@@ -932,9 +945,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
+            OnChange = CheckOrRadioChange
           end
           object lblMiddleShift: TLabel
             AnchorSideLeft.Control = ScrollBoxMiddle
@@ -965,9 +978,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 4
+            OnChange = CheckOrRadioChange
           end
           object dropMiddleShiftAlt: TComboBox
             AnchorSideLeft.Control = dropMiddle
@@ -984,9 +997,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 5
+            OnChange = CheckOrRadioChange
           end
           object dropMiddleShiftCtrl: TComboBox
             AnchorSideLeft.Control = dropMiddle
@@ -1003,9 +1016,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 6
+            OnChange = CheckOrRadioChange
           end
           object dropMiddleShiftAltCtrl: TComboBox
             AnchorSideLeft.Control = dropMiddle
@@ -1022,9 +1035,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 7
+            OnChange = CheckOrRadioChange
           end
           object lblMiddleAltCtrl: TLabel
             AnchorSideLeft.Control = ScrollBoxMiddle
@@ -1114,9 +1127,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 0
+            OnChange = CheckOrRadioChange
           end
           object dropWheelCtrl: TComboBox
             AnchorSideLeft.Control = dropWheel
@@ -1133,9 +1146,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 1
+            OnChange = CheckOrRadioChange
           end
           object dropWheelAlt: TComboBox
             AnchorSideLeft.Control = dropWheel
@@ -1152,9 +1165,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
+            OnChange = CheckOrRadioChange
           end
           object dropWheelShift: TComboBox
             AnchorSideLeft.Control = dropWheel
@@ -1171,9 +1184,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
+            OnChange = CheckOrRadioChange
           end
           object lblWheel: TLabel
             AnchorSideLeft.Control = ScrollBoxWheel
@@ -1246,9 +1259,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 4
+            OnChange = CheckOrRadioChange
           end
           object dropWheelShiftAlt: TComboBox
             AnchorSideLeft.Control = dropWheel
@@ -1265,9 +1278,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 5
+            OnChange = CheckOrRadioChange
           end
           object dropWheelShiftCtrl: TComboBox
             AnchorSideLeft.Control = dropWheel
@@ -1284,9 +1297,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 6
+            OnChange = CheckOrRadioChange
           end
           object dropWheelShiftAltCtrl: TComboBox
             AnchorSideLeft.Control = dropWheel
@@ -1303,9 +1316,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 7
+            OnChange = CheckOrRadioChange
           end
           object lblWheelAltCtrl: TLabel
             AnchorSideLeft.Control = ScrollBoxWheel
@@ -1395,9 +1408,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 0
+            OnChange = CheckOrRadioChange
           end
           object dropWheelCtrlHoriz: TComboBox
             AnchorSideLeft.Control = dropWheelHoriz
@@ -1414,9 +1427,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 1
+            OnChange = CheckOrRadioChange
           end
           object dropWheelAltHoriz: TComboBox
             AnchorSideLeft.Control = dropWheelHoriz
@@ -1433,9 +1446,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
+            OnChange = CheckOrRadioChange
           end
           object dropWheelShiftHoriz: TComboBox
             AnchorSideLeft.Control = dropWheelHoriz
@@ -1452,9 +1465,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
+            OnChange = CheckOrRadioChange
           end
           object lblWheelHoriz: TLabel
             AnchorSideLeft.Control = ScrollBoxWheelHoriz
@@ -1527,9 +1540,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 4
+            OnChange = CheckOrRadioChange
           end
           object dropWheelShiftAltHoriz: TComboBox
             AnchorSideLeft.Control = dropWheelHoriz
@@ -1546,9 +1559,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 5
+            OnChange = CheckOrRadioChange
           end
           object dropWheelShiftCtrlHoriz: TComboBox
             AnchorSideLeft.Control = dropWheelHoriz
@@ -1565,9 +1578,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 6
+            OnChange = CheckOrRadioChange
           end
           object dropWheelShiftAltCtrlHoriz: TComboBox
             AnchorSideLeft.Control = dropWheelHoriz
@@ -1584,9 +1597,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 7
+            OnChange = CheckOrRadioChange
           end
           object lblWheelAltCtrlHoriz: TLabel
             AnchorSideLeft.Control = ScrollBoxWheelHoriz
@@ -1690,9 +1703,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 1
+            OnChange = CheckOrRadioChange
           end
           object lblRightCtrl: TLabel
             AnchorSideLeft.Control = ScrollBoxRight
@@ -1723,9 +1736,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 0
+            OnChange = CheckOrRadioChange
           end
           object dropRightAlt: TComboBox
             AnchorSideLeft.Control = dropRight
@@ -1742,9 +1755,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
+            OnChange = CheckOrRadioChange
           end
           object lblRightAlt: TLabel
             AnchorSideLeft.Control = ScrollBoxRight
@@ -1775,9 +1788,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
+            OnChange = CheckOrRadioChange
           end
           object lblRightShift: TLabel
             AnchorSideLeft.Control = ScrollBoxRight
@@ -1808,9 +1821,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 4
+            OnChange = CheckOrRadioChange
           end
           object dropRightShiftAlt: TComboBox
             AnchorSideLeft.Control = dropRight
@@ -1827,9 +1840,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 5
+            OnChange = CheckOrRadioChange
           end
           object dropRightShiftCtrl: TComboBox
             AnchorSideLeft.Control = dropRight
@@ -1846,9 +1859,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 6
+            OnChange = CheckOrRadioChange
           end
           object dropRightShiftAltCtrl: TComboBox
             AnchorSideLeft.Control = dropRight
@@ -1865,9 +1878,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 7
+            OnChange = CheckOrRadioChange
           end
           object lblRightAltCtrl: TLabel
             AnchorSideLeft.Control = ScrollBoxRight
@@ -1971,9 +1984,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 1
+            OnChange = CheckOrRadioChange
           end
           object lblExtra1Ctrl: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra1
@@ -2004,9 +2017,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 0
+            OnChange = CheckOrRadioChange
           end
           object dropExtra1Alt: TComboBox
             AnchorSideLeft.Control = dropExtra1
@@ -2023,9 +2036,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
+            OnChange = CheckOrRadioChange
           end
           object lblExtra1Alt: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra1
@@ -2056,9 +2069,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
+            OnChange = CheckOrRadioChange
           end
           object lblExtra1Shift: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra1
@@ -2089,9 +2102,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 4
+            OnChange = CheckOrRadioChange
           end
           object dropExtra1ShiftAlt: TComboBox
             AnchorSideLeft.Control = dropExtra1
@@ -2108,9 +2121,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 5
+            OnChange = CheckOrRadioChange
           end
           object dropExtra1ShiftCtrl: TComboBox
             AnchorSideLeft.Control = dropExtra1
@@ -2127,9 +2140,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 6
+            OnChange = CheckOrRadioChange
           end
           object dropExtra1ShiftAltCtrl: TComboBox
             AnchorSideLeft.Control = dropExtra1
@@ -2146,9 +2159,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 7
+            OnChange = CheckOrRadioChange
           end
           object lblExtra1AltCtrl: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra1
@@ -2252,9 +2265,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 1
+            OnChange = CheckOrRadioChange
           end
           object lblExtra2Ctrl: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra2
@@ -2285,9 +2298,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 0
+            OnChange = CheckOrRadioChange
           end
           object dropExtra2Alt: TComboBox
             AnchorSideLeft.Control = dropExtra2
@@ -2304,9 +2317,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
+            OnChange = CheckOrRadioChange
           end
           object lblExtra2Alt: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra2
@@ -2337,9 +2350,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
+            OnChange = CheckOrRadioChange
           end
           object lblExtra2Shift: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra2
@@ -2370,9 +2383,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 4
+            OnChange = CheckOrRadioChange
           end
           object dropExtra2ShiftAlt: TComboBox
             AnchorSideLeft.Control = dropExtra2
@@ -2389,9 +2402,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 5
+            OnChange = CheckOrRadioChange
           end
           object dropExtra2ShiftCtrl: TComboBox
             AnchorSideLeft.Control = dropExtra2
@@ -2408,9 +2421,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 6
+            OnChange = CheckOrRadioChange
           end
           object dropExtra2ShiftAltCtrl: TComboBox
             AnchorSideLeft.Control = dropExtra2
@@ -2427,9 +2440,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Right = 6
             DropDownCount = 12
             ItemHeight = 15
-            OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 7
+            OnChange = CheckOrRadioChange
           end
           object lblExtra2AltCtrl: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra2
@@ -2573,8 +2586,8 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       Caption = 'ResetAllButton'
-      OnClick = ResetAllButtonClick
       TabOrder = 0
+      OnClick = ResetAllButtonClick
     end
   end
   object GenericDividerLabel: TDividerBevel

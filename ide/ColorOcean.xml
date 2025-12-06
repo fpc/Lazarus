@@ -70,6 +70,7 @@
           <ahaOutlineLevel4Color Foreground="13421568"/>
           <ahaOutlineLevel5Color Foreground="16738346"/>
           <ahaOutlineLevel6Color Foreground="13566148"/>
+          <ahaExternalLink FrameColor="clFuchsia" FrameEdges="sfeBottom"/>
         </SchemeOcean>
       </Globals>
       <LangObjectPascal Version="6">

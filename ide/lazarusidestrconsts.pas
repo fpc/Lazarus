@@ -1708,6 +1708,7 @@ resourcestring
   dlfMouseSimpleTextSect = 'Text';
   dlfMouseSimpleTextSectDrag = 'Drag selection (copy/paste)';
   dlfMouseSimpleRightMoveCaret = 'Right button click includes caret move';
+  dlfMouseSimpleDeclJumpInclExtLink = 'Jump to declaration also opens external links (http, file, ...)';
   dlfMouseSimpleTextSectMidLabel = 'Middle Button';
   dlfMouseSimpleTextSectWheelLabel = 'Wheel';
   dlfMouseSimpleTextSectRightLabel = 'Right Button';
@@ -1760,6 +1761,7 @@ resourcestring
   dlfMouseSimpleButtonPaste            = 'Paste';
   dlfMouseSimpleButtonDeclaration      = 'Jumps to implementation';
   dlfMouseSimpleButtonDeclarationBlock = 'Jumps to implementation/other block end';
+  dlfMouseSimpleButtonExternalLink     = 'Open external (http, file, ...) link';
   dlfMouseSimpleButtonAddHistoryPoint  = 'Add history point';
   dlfMouseSimpleButtonHistBack = 'History back';
   dlfMouseSimpleButtonHistForw = 'History forward';
@@ -1794,6 +1796,7 @@ resourcestring
   dlgMouseOptNodeAll = 'All';
   dlgMouseOptNodeMain = 'Text';
   dlgMouseOptNodeSelect = 'Selection';
+  dlgMouseOptNodeExtLink = 'External link';
   dlgMouseOptNodeGutter = 'Gutter';
   dlgMouseOptNodeGutterFold = 'Fold Tree';
   dlgMouseOptNodeGutterFoldCol = 'Collapsed [+]';
@@ -2181,6 +2184,7 @@ resourcestring
   dlgAddHiAttrWrapIndent  = 'Indent';
   dlgAddHiAttrWrapEol     = 'EOL';
   dlgAddHiAttrWrapSubLine = 'Sub-line';
+  dlgAddHiExternalLink     = 'External (http) link';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgCaretColor                   = 'Caret (Text-Cursor)';
