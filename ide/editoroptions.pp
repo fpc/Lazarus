@@ -3506,6 +3506,8 @@ begin
   '      mrCancel, mrIgnore: dec(X)'#13+
   '    end'#13+
   '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13+
+      '    // A multiline'#13 +
+      '    // comment'#13 +
 //{ $IFDEF WithSynMarkupIfDef}
 //      '    {$IFDEF Foo}' +
 //      '      X := X + 1.0; {$R-} { Error line }'#13 +
@@ -3605,6 +3607,8 @@ begin
   '      mrCancel, mrIgnore: dec(X)'#13+
   '    end'#13+
   '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13+
+      '    // A multiline'#13 +
+      '    // comment'#13 +
 //{ $IFDEF WithSynMarkupIfDef}
 //      '    {$IFDEF Foo}' +
 //      '      X := X + 1.0; {$R-} { Error line }'#13 +
