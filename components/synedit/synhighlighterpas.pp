@@ -143,6 +143,7 @@ type
     tsAfterEqualThenType, // TFoo = type
                           //    >>> ONLY if type-helper enabled
     tsAfterAbsolute,      // var x absolute y;
+    tsAfterReferenceTo,   // type TFoo = reference to procedure
     tsAfterExternal,      // procedure Foo; public name 'bar';
                           // procedure Foo; external 'x' name 'bar';
                           // var Foo; public name 'bar';
@@ -483,7 +484,8 @@ type
     pcsTypeHelpers,
     //pcsAdvancedRecords,
     pcsObjectiveC1,
-    pcsObjectiveC2
+    pcsObjectiveC2,
+    pcsFunctionReferences
   );
   TPascalCompilerModeSwitches = set of TPascalCompilerModeSwitch;
 
@@ -820,6 +822,7 @@ type
     function IsHintModifier(const AnUpperKey: string): Boolean; inline;
     function IsHintModifier(const AnUpperKey: string; tfb: TPascalCodeFoldBlockType): Boolean; inline;
     function DoHintModifier: TtkTokenKind; inline;
+    function CouldBeAtStartOfTypeDef: Boolean; inline; // type foo = XXX   or var a: XXXX   or const ...
     function IsClassSection: Boolean; inline;
     function IsClassSection(const AnUpperKey: string): Boolean; inline;
     function DoClassSection: TtkTokenKind; inline;
@@ -2075,8 +2078,11 @@ begin
     FOldRange := FOldRange - [rsAfterIdentifierOrValue];
   end
   else
-  if KeyCompU('TO') then
-    Result := tkKey
+  if KeyCompU('TO') then begin
+    Result := tkKey;
+    if FTokenState = tsAfterReferenceTo then
+      FNextTokenState := tsAfterReferenceTo;
+  end
   else
   if KeyCompU('DIV') then begin
     Result := tkKey;
@@ -2714,6 +2720,19 @@ begin
 end;
 
 function TSynPasSyn.Func79: TtkTokenKind;
+  function NextTokenIsTo: boolean;
+  var
+    s: String;
+    i, l: integer;
+  begin
+    Result := fLine[Run+fStringLen] in [#0, ' ', #9, '(','{']; // must be space or comment or next line
+    if not Result then exit;
+
+    Result := not ScanAheadForNextToken(fStringLen, s, i, l, 1); // if it isn't found on the next line, assume true
+    if Result then exit;
+
+    Result := (l=2) and (s[i] in ['t', 'T']) and (s[i+1] in ['o', 'O']);
+  end;
 begin
   if KeyCompU('FINALLY') then begin
     Result := tkKey;
@@ -2723,7 +2742,17 @@ begin
     if TopPascalCodeFoldBlockType = cfbtTry then
       StartPascalCodeFoldBlock(cfbtExcept);
   end
-  else Result := tkIdentifier;
+  else
+  if HasCompilerModeswitch(pcsFunctionReferences) and
+     (FTokenState <> tsAfterEqualThenType) and
+     KeyCompU('REFERENCE') and CouldBeAtStartOfTypeDef
+     and NextTokenIsTo
+  then begin
+    FNextTokenState := tsAfterReferenceTo;
+    Result := tkKey;
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func81: TtkTokenKind;
@@ -3103,19 +3132,31 @@ begin
 end;
 
 function TSynPasSyn.Func102: TtkTokenKind;
+var
+  ForcedProc: Boolean;
 begin
   if KeyCompU('FUNCTION') then begin
-    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonymousFunc(8, True) then begin
-      StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
-      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
-      FNextTokenState := tsAfterAnonProc;
-    end
-    else begin
-      if not(rsAfterEqualOrColon in fRange) or
-         (FAtLineStart and NextTokenIsProcedureName)
+    // In case code above may be incomplete, do some heuristics
+    ForcedProc := (FAtLineStart and NextTokenIsProcedureName(True));
+    if ForcedProc or
+       not ((FTokenState = tsAfterReferenceTo) or
+            CouldBeAtStartOfTypeDef
+           )
+    then begin
+      if (not ForcedProc) and
+         (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonymousFunc(8, True)
       then begin
-        DoProcFuncHeader([cfbtClass, cfbtClassSection, cfbtRecord]);
-        FNextTokenState := tsAtProcName;
+        StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
+        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+        FNextTokenState := tsAfterAnonProc;
+      end
+      else begin
+        if not(rsAfterEqualOrColon in fRange) or
+           (FAtLineStart and NextTokenIsProcedureName)
+        then begin
+          DoProcFuncHeader([cfbtClass, cfbtClassSection, cfbtRecord]);
+          FNextTokenState := tsAtProcName;
+        end;
       end;
     end;
     fRange := fRange + [rsInProcHeader];
@@ -3143,19 +3184,31 @@ begin
 end;
 
 function TSynPasSyn.Func105: TtkTokenKind;
+var
+  ForcedProc: Boolean;
 begin
   if KeyCompU('PROCEDURE') then begin
-    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonymousFunc(9, False) then begin
-      StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
-      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
-      FNextTokenState := tsAfterAnonProc;
-    end
-    else begin
-      if not(rsAfterEqualOrColon in fRange) or
-         (FAtLineStart and NextTokenIsProcedureName(True))
+    // In case code above may be incomplete, do some heuristics
+    ForcedProc := (FAtLineStart and NextTokenIsProcedureName(True));
+    if ForcedProc or
+       not ((FTokenState = tsAfterReferenceTo) or
+            CouldBeAtStartOfTypeDef
+           )
+    then begin
+      if (not ForcedProc) and
+         (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonymousFunc(9, False)
       then begin
-        DoProcFuncHeader([cfbtClass, cfbtClassSection, cfbtRecord]);
-        FNextTokenState := tsAtProcName;
+        StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
+        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+        FNextTokenState := tsAfterAnonProc;
+      end
+      else begin
+        if not(rsAfterEqualOrColon in fRange) or
+           (FAtLineStart and NextTokenIsProcedureName(True))
+        then begin
+          DoProcFuncHeader([cfbtClass, cfbtClassSection, cfbtRecord]);
+          FNextTokenState := tsAtProcName;
+        end;
       end;
     end;
     fRange := fRange + [rsInProcHeader];
@@ -3657,6 +3710,22 @@ begin
      (CompilerMode in [pcmDelphi, pcmDelphiUnicode])
   then
     FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
+end;
+
+function TSynPasSyn.CouldBeAtStartOfTypeDef: Boolean;
+(*
+  type TFoo = COULD_BE_HERE;
+  type TFoo = type COULD_BE_HERE;
+  var Foo:  COULD_BE_HERE;
+  Const Foo: COULD_BE_HERE;
+  class TBar FField: COULD_BE_HERE
+*)
+begin
+  // class-section for fields: TYPE
+  Result :=
+    (rsAfterEqualOrColon in fRange) and
+    (PasCodeFoldRange.BracketNestLevel = 0) and
+    (TopPascalCodeFoldBlockType in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord]);
 end;
 
 function TSynPasSyn.IsClassSection: Boolean;
@@ -4181,6 +4250,12 @@ begin
     begin
       inc(Run,11);
       ApplyModeSwitch(pcsObjectiveC2);
+    end
+    else
+    if TextComp('functionreferences') then
+    begin
+      inc(Run,18);
+      ApplyModeSwitch(pcsFunctionReferences);
     end;
   end;
   if TextComp('mode') then begin
@@ -6285,9 +6360,11 @@ begin
     case l of
       //1: Result := (strlicomp(pchar('is'), pchar(@s[p]), 1) <> 0);
       //1: Result := (strlicomp(pchar('of'), pchar(@s[p]), 1) <> 0);
-      3:  Result := (strlicomp(pchar('far'), pchar(@s[p]), 3) <> 0);
+      3:  Result := (strlicomp(pchar('far'), pchar(@s[p]), 3) <> 0)
+                and (strlicomp(pchar('asm'), pchar(@s[p]), 3) <> 0);
       4:  Result := (strlicomp(pchar('near'), pchar(@s[p]), 4) <> 0);
-      5:  Result := (strlicomp(pchar('cdecl'), pchar(@s[p]), 5) <> 0);
+      5:  Result := (strlicomp(pchar('cdecl'), pchar(@s[p]), 5) <> 0)
+                and (strlicomp(pchar('begin'), pchar(@s[p]), 5) <> 0);
       6:  Result := (strlicomp(pchar('pascal'), pchar(@s[p]), 6) <> 0);
       7:  Result := (strlicomp(pchar('stdcall'), pchar(@s[p]), 7) <> 0);
       8:  Result := (strlicomp(pchar('safecall'), pchar(@s[p]), 8) <> 0)
