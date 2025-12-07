@@ -2122,7 +2122,7 @@ begin
     //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumNestFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
   end else
   if FExtendedKeywordsMode and KeyCompU('BREAK') and
-     (TopPascalCodeFoldBlockType() in PascalStatementBlocks) and (fRange * [rsAfterEqualOrColon] = []) and
+     (TopPascalCodeFoldBlockType() in PascalStatementBlocks) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
      (fLine[Run+fStringLen] <> ':')
   then
@@ -2389,7 +2389,7 @@ end;
 function TSynPasSyn.Func58: TtkTokenKind;
 begin
   if FExtendedKeywordsMode and KeyCompU('EXIT') and
-     (TopPascalCodeFoldBlockType() in PascalStatementBlocks) and (fRange * [rsAfterEqualOrColon] = []) and
+     (TopPascalCodeFoldBlockType() in PascalStatementBlocks) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
      (fLine[Run+fStringLen] <> ':')
   then
@@ -3131,7 +3131,7 @@ begin
   end
   else
   if FExtendedKeywordsMode and KeyCompU('CONTINUE') and
-     (TopPascalCodeFoldBlockType in PascalStatementBlocks) and (fRange * [rsAfterEqualOrColon] = []) and
+     (TopPascalCodeFoldBlockType in PascalStatementBlocks) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
      (fLine[Run+fStringLen] <> ':')
   then
@@ -4489,11 +4489,14 @@ begin
   if fLine[Run] = '=' then
     inc(Run) // ":="
   else begin
-    if (rrsAfterColon in FRequiredStates) and not (rsAtCaseLabel in fRange) then
-      fRange := fRange + [rsAfterColon];
     tfb := TopPascalCodeFoldBlockType;
-    if (not (tfb in PascalStatementBlocks)) then
+    if (not (tfb in PascalStatementBlocks + [cfbtUnit, cfbtUses])) or
+       (fRange * [rsInProcHeader, rsProperty] <> [])
+    then begin
       fRange := fRange + [rsAfterEqualOrColon];
+      if (rrsAfterColon in FRequiredStates) and not (rsAtCaseLabel in fRange) then
+        fRange := fRange + [rsAfterColon];
+    end;
     fRange := fRange - [rsAtCaseLabel];
     if (tfb in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
        ( (rsProperty in fRange) or not(rsAfterClassMembers in fRange) )
@@ -4970,9 +4973,10 @@ begin
   inc(Run);
   fTokenID := tkSymbol;
   tfb := TopPascalCodeFoldBlockType;
-  if (not (tfb in PascalStatementBlocks)) then
-    fRange := fRange + [rsAfterEqualOrColon];
-  fRange := fRange + [rsAfterEqual];
+  if (not (tfb in PascalStatementBlocks + [cfbtUnit, cfbtUses])) or
+     (fRange * [rsInProcHeader, rsProperty] <> [])
+  then
+    fRange := fRange + [rsAfterEqualOrColon, rsAfterEqual];
   if PasCodeFoldRange.BracketNestLevel = 0 then
     fRange := fRange - [rsAfterColon];
   if (tfb in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
@@ -5464,8 +5468,8 @@ begin
         FTokenExtraAttribs := FTokenExtraAttribs + [eaStructMemeber];
       end;
     tsNone, tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst, tsAfterEqualThenType: begin
+
         // procedure param-list / result
-        tfb := TopPascalCodeFoldBlockType;
         if (FTokenState in [tsNone, tsAtBeginOfStatement]) and (rsInProcHeader in fRange) and
            ( (PasCodeFoldRange.BracketNestLevel > 0) or
              (rsInProcHeader in FOldRange)
@@ -5502,6 +5506,7 @@ begin
 
         // var/const/type
         else begin
+          tfb := TopPascalCodeFoldBlockType;
           if (tfb in cfbtVarConstTypeExt) or
              ( (tfb in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
                not(rsAfterClassMembers in fRange)
@@ -5661,7 +5666,7 @@ begin
 
         if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull]) then begin
           if (FNextTokenState = tsNone) and (FTokenState in [tsAfterExternal, tsAfterExternalName]) and
-             (FTokenID in [tkIdentifier, tkString, tkKey, tkSymbol])
+             (FTokenID in [tkIdentifier, tkString, tkKey, tkSymbol]) // tkSymbol for dot in "unit.ident"
           then
             FNextTokenState := FTokenState;
 
