@@ -81,6 +81,7 @@ type
     procedure TestContextForRecordCase;
     procedure TestContextForStatic;
     procedure TestCaseLabel;
+    procedure TestBreakKeyword;
     procedure TestModifierAttributesForProcedure;
     procedure TestModifierAttributesForProperty;
     procedure TestModifierAttributesForVarConstType;
@@ -94,12 +95,15 @@ type
 implementation
 
 const
-  TK_Comma   = tkSymbol;
-  TK_Semi    = tkSymbol;
-  TK_Dot     = tkSymbol;
-  TK_Colon   = tkSymbol;
-  TK_Equal   = tkSymbol;
-  TK_Bracket = tkSymbol;
+  TK_Comma   = tkSymbol;  _Comma   = tkSymbol;
+  TK_Semi    = tkSymbol;  _Semi    = tkSymbol;
+  TK_Dot     = tkSymbol;  _Dot     = tkSymbol;
+  TK_Colon   = tkSymbol;  _Col     = tkSymbol;
+  TK_Equal   = tkSymbol;  _Eq      = tkSymbol;
+  TK_Assign  = tkSymbol;  _ceq     = tkSymbol;
+  TK_Bracket = tkSymbol;  _Open    = tkSymbol; _Close = tkSymbol;
+  TK_Angle   = tkSymbol;  _Gt      = tkSymbol; _Lt    = tkSymbol;
+  _          = tkSpace;
 
 type
   TNoMergedTokenAttriIndicator = (PlainAttr);
@@ -3467,6 +3471,68 @@ begin
   CheckTokensForLine('else foo;',  9, [tkKey, tkSpace, tkIdentifier, TK_Semi]);
   CheckTokensForLine('end;',  10, [tkKey, TK_Semi]);
 
+end;
+
+procedure TTestHighlighterPas.TestBreakKeyword;
+begin
+  FKeepAllModifierAttribs := false;
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface implementation',  // 0
+       'procedure Foo;',
+       'label abc1, abc2;',
+       'begin',                             // 3
+       '     while true do begin',
+       '     break; exit;',                 // 5
+       '     system.break; system.exit;',
+       'abc1:  break;',
+       'abc2:  exit;',
+       '     case 1 of',
+       '       1: break;',                  // 10
+       '       2: exit;',
+       '     end;',
+       '     end;',
+       'end;',
+       'procedure Bar;',                    // 15
+       'label break,  exit;',
+       'begin',
+       'break:  bar;',
+       'exit:  bar;',
+       'end;',
+       'procedure abc;',                   // 21
+       'var exit, break, a: byte;',
+       'begin',
+       '     while exit=1 do',               // 24
+       '     a := exit;',
+       '     a := break;',
+       '     case break of',
+       '       2: abc;',
+       '     end;',
+       'end;',
+       ''
+    ]);
+
+  PasHighLighter.ExtendedKeywordsMode := True;
+
+  CheckTokensForLine('5: break; exit;',  5, [_, tkKey, _Semi, _, tkKey, _Semi]);
+  CheckTokensForLine('6: system.break; system.exit;',  6,
+    [_, tkIdentifier, _Dot, tkKey, _Semi, _, tkIdentifier, _Dot, tkKey, _Semi]);
+  CheckTokensForLine('7: abc1; break;',  7, [tkIdentifier, _Col, _, tkKey, _Semi]);
+  CheckTokensForLine('8: abc1; exit;',   8, [tkIdentifier, _Col, _, tkKey, _Semi]);
+
+  CheckTokensForLine('10: 1: exit;',  10, [_, tkNumber+FCaseLabelAttri, _Col, _, tkKey, _Semi]);
+  CheckTokensForLine('11: 2: break;', 11, [_, tkNumber+FCaseLabelAttri, _Col, _, tkKey, _Semi]);
+
+  CheckTokensForLine('16: label break, exit;',  16, [tkKey, _, tkIdentifier, _Comma, _, tkIdentifier, _Semi]);
+  CheckTokensForLine('18: break: bar;',  18, [tkIdentifier, _Col, _, tkIdentifier, _Semi]);
+  CheckTokensForLine('19: exit: bar;',   19, [tkIdentifier, _Col, _, tkIdentifier, _Semi]);
+
+  CheckTokensForLine('22: var break, exit, a: byte;',  22,
+    [tkKey, _, tkIdentifier, _Comma, _, tkIdentifier, _Comma, _, tkIdentifier, _Col, _, tkIdentifier, _Semi]);
+  //CheckTokensForLine('24: while exit=1 do',  24, [tkKey, _, tkIdentifier, _Eq, tkNumber, _, tkKey]);
+  //CheckTokensForLine('25: a := exit;',  25, [tkIdentifier, _, _ceq, _, tkIdentifier, _Semi]);
+  //CheckTokensForLine('26: a := break;', 26, [tkIdentifier, _, _ceq, _, tkIdentifier, _Semi]);
+  //CheckTokensForLine('27: case break of', 27, [tkKey, _, tkIdentifier, _, tkKey]);
 end;
 
 procedure TTestHighlighterPas.TestModifierAttributesForProcedure;

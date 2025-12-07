@@ -93,7 +93,12 @@ type
 
     // we need to detect:    type TFoo = procedure; // must not fold
     //                       var  foo: procedure;   // must not fold
-    rsAfterEqualOrColon,   // very first word after "=" or ":"
+    rsAfterEqualOrColon,   (* very first word after "=" or ":"
+                              - NOT in PascalStatementBlocks
+                              - also set after "OF" except in rsInProcHeader
+                              - kept after "= TYPE" for "type foo = TYPE bar;"
+                              - kept after "PACKED" for "packed record"
+                            *)
     rsAfterColon,          // [OPT] between ":" and ";" (or block end / or "=") this is a type specification
     rsAfterEqual,          // between "=" and ";" (or block end) // a ^ means ctrl-char, not pointer to type
 
@@ -1774,7 +1779,9 @@ begin
   tfb := TopPascalCodeFoldBlockType;
   if KeyCompU('OF') then begin
     Result := tkKey;
-    if not (rsInProcHeader in fRange) then
+    if (not (rsInProcHeader in fRange)) and
+       (not (tfb in PascalStatementBlocks))
+    then
       fRange := fRange + [rsAfterEqualOrColon]; // Identifier for type expected
     if (tfb = cfbtClass) and
        (fRange * [rsInClassHeader, rsAfterIdentifierOrValue] = [rsInClassHeader]) and
@@ -2109,7 +2116,8 @@ begin
   end else
   if FExtendedKeywordsMode and KeyCompU('BREAK') and
      (TopPascalCodeFoldBlockType() in PascalStatementBlocks) and (fRange * [rsAfterEqualOrColon] = []) and
-     (PasCodeFoldRange.BracketNestLevel = 0)
+     (PasCodeFoldRange.BracketNestLevel = 0) and
+     (fLine[Run+fStringLen] <> ':')
   then
     Result := tkKey
   else
@@ -2374,7 +2382,8 @@ function TSynPasSyn.Func58: TtkTokenKind;
 begin
   if FExtendedKeywordsMode and KeyCompU('EXIT') and
      (TopPascalCodeFoldBlockType() in PascalStatementBlocks) and (fRange * [rsAfterEqualOrColon] = []) and
-     (PasCodeFoldRange.BracketNestLevel = 0)
+     (PasCodeFoldRange.BracketNestLevel = 0) and
+     (fLine[Run+fStringLen] <> ':')
   then
     Result := tkKey
   else
@@ -3085,7 +3094,8 @@ begin
   else
   if FExtendedKeywordsMode and KeyCompU('CONTINUE') and
      (TopPascalCodeFoldBlockType in PascalStatementBlocks) and (fRange * [rsAfterEqualOrColon] = []) and
-     (PasCodeFoldRange.BracketNestLevel = 0)
+     (PasCodeFoldRange.BracketNestLevel = 0) and
+     (fLine[Run+fStringLen] <> ':')
   then
     Result := tkKey
   else
@@ -4392,8 +4402,10 @@ begin
   else begin
     if (rrsAfterColon in FRequiredStates) and not (rsAtCaseLabel in fRange) then
       fRange := fRange + [rsAfterColon];
-    fRange := fRange + [rsAfterEqualOrColon] - [rsAtCaseLabel];
     tfb := TopPascalCodeFoldBlockType;
+    if (not (tfb in PascalStatementBlocks)) then
+      fRange := fRange + [rsAfterEqualOrColon];
+    fRange := fRange - [rsAtCaseLabel];
     if (tfb in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
        ( (rsProperty in fRange) or not(rsAfterClassMembers in fRange) )
     then
@@ -4861,13 +4873,18 @@ begin
 end;
 
 procedure TSynPasSyn.EqualSignProc;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   inc(Run);
   fTokenID := tkSymbol;
-  fRange := fRange + [rsAfterEqualOrColon, rsAfterEqual];
+  tfb := TopPascalCodeFoldBlockType;
+  if (not (tfb in PascalStatementBlocks)) then
+    fRange := fRange + [rsAfterEqualOrColon];
+  fRange := fRange + [rsAfterEqual];
   if PasCodeFoldRange.BracketNestLevel = 0 then
     fRange := fRange - [rsAfterColon];
-  if (TopPascalCodeFoldBlockType in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
+  if (tfb in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord, cfbtRecordCaseSection]) and
      not(rsAfterClassMembers in fRange)
   then begin
     fRange := fRange + [rsVarTypeInSpecification];
