@@ -128,7 +128,8 @@ type
   // Except, will be kept for: tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull  // maybe in future line break
   TTokenState = (
     tsNone,
-    tsAtBeginOfStatement, // After ";" or begin,do,with,...
+    tsAtBeginOfStatement, // After ";" or begin,do,with,type (todo: const, var)...
+                          // TokenState can also be tsAfterTypedConst
     tsAfterVarConstType,  // Immediately after
                           // Also sometime after ";" (in declarations) to prevent a type of name public/export/external to be highlighted
     tsAfterClass,         // after "class" or "record": for "class helper"
@@ -2349,6 +2350,7 @@ begin
        not(rsInProcHeader in fRange) and
        (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
+      FNextTokenState := tsAtBeginOfStatement;
       fRange := fRange + [rsInClassHeader] - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
       FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
@@ -2436,7 +2438,12 @@ begin
    end;
   end
   else
-  if KeyCompU('GENERIC') then begin
+  if KeyCompU('GENERIC') and
+    ( (CompilerMode = pcmObjFPC) or not(rsCompilerModeSet in fRange) ) and
+    (not(TopPascalCodeFoldBlockType in PascalStatementBlocks+[cfbtUses])) and
+    (FTokenState in [tsAtBeginOfStatement, tsAfterTypedConst, tsAfterClass])
+  then begin
+    // TODO: this may be a generic procedure and need to close a var/const/label/type section
     Result := tkKey;
   end
   else
@@ -2581,6 +2588,7 @@ begin
         FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
         FNextTokenState := tsAfterVarConstType;
         fRange := fRange - [rsProperty, rsInProcHeader, rsInParamDeclaration];
+        FNextTokenState := tsAtBeginOfStatement;
       end;
     end;
     Result := tkKey;
@@ -2781,6 +2789,7 @@ begin
       fRange := fRange + [rsInterface];
       // Interface has no ";", implicit end of statement
     end;
+    FNextTokenState := tsAtBeginOfStatement;
     Result := tkKey
   end
   else if IsHintModifier('DEPRECATED') then
@@ -3214,7 +3223,9 @@ begin
     fRange := fRange + [rsInProcHeader];
     Result := tkKey;
   end
-  else if KeyCompU('SPECIALIZE') then begin
+  else if KeyCompU('SPECIALIZE') and
+    ( (CompilerMode = pcmObjFPC) or not(rsCompilerModeSet in fRange) )
+  then begin
     Result := tkKey;
     if rsProperty in fRange then begin
       fRange := fRange + [rsAtPropertyOrReadWrite];
@@ -3404,6 +3415,7 @@ begin
     if TopPascalCodeFoldBlockType=cfbtUnitSection then EndPascalCodeFoldBlockLastLine;
     StartPascalCodeFoldBlock(cfbtUnitSection);
     fRange := fRange - [rsInterface] + [rsImplementation];
+    FNextTokenState := tsAtBeginOfStatement;
     Result := tkKey
   end
   else Result := tkIdentifier;
@@ -3518,6 +3530,7 @@ begin
       StartPascalCodeFoldBlock(cfbtUnitSection);
       fRange := fRange - [rsInterface] + [rsImplementation];
       // implicit end of statement
+      FNextTokenState := tsAtBeginOfStatement;
       Result := tkKey;
     end else
       Result := tkIdentifier;
@@ -3546,6 +3559,7 @@ begin
     if TopPascalCodeFoldBlockType=cfbtUnitSection then EndPascalCodeFoldBlockLastLine;
     StartPascalCodeFoldBlock(cfbtUnitSection);
     fRange := fRange - [rsInterface] + [rsImplementation];
+    FNextTokenState := tsAtBeginOfStatement;
     Result := tkKey;
   end
   else Result := tkIdentifier;
@@ -4910,6 +4924,8 @@ begin
     if rsInParamDeclaration in fRange then
       fRange := fRange - [rsAfterEqual, rsAfterColon];
     fRange := fRange - [rsInParamDeclaration];
+    if rsInClassHeader in fRange then
+      FNextTokenState := tsAtBeginOfStatement;
   end;
   inc(Run);
 end;
@@ -6052,7 +6068,7 @@ end;
 procedure TSynPasSyn.ResetRange;
 begin
   fRange := [];
-  FTokenState := tsNone;
+  FTokenState := tsAtBeginOfStatement;
   FStartCodeFoldBlockLevel:=0;
   FPasStartLevel := 0;
   with FSynPasRangeInfo do begin

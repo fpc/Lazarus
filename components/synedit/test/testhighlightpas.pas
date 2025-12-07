@@ -1493,7 +1493,7 @@ begin
       ReCreateEdit;
       EnableFolds(AFolds);
       SetLines
-        ([ 'Unit A; interface',
+        ([ 'Unit A;{$mode objfpc} interface',
            'type TFoo = class',
            'default,default:default;',
            'private type',
