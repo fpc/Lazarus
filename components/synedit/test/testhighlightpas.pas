@@ -3720,12 +3720,14 @@ begin
          'x=function (a:word): integer deprecated;',
          'x=function (a:word=b): integer deprecated;',
          'x=function (a:word; b:byte): integer deprecated;',
+         'x=reference to function(a:byte):byte;',   // 13
+         '',
        'var',
-         'a:record',  // 14
+         'a:record',              // 16
            'b:byte;',
            'c:array of word;',
          'end;',
-       '',  // 18
+       '',                        // 20
        'name: name;  external name name;',   // external keyword_NAME const_NAME
        'name: name;  external foo name name;',   // external foo keyword_NAME const_NAME
        ''
@@ -3746,7 +3748,7 @@ begin
   PasHighLighter.DeclaredTypeAttributeMode := tamKeywords;
   PasHighLighter.DeclaredValueAttributeMode := tamKeywords;
   // inside the function, use the proc-attr
-  CheckTokensForLine('8:x:function (a:word; b:byte): integer = nil;', 7,
+  CheckTokensForLine('7:x:function (a:word; b:byte): integer = nil;', 7,
     [tkIdentifier+DeclVarName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket,
      tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Semi, tkSpace, // a:word
      tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, // b:byte
@@ -3755,20 +3757,20 @@ begin
      TK_Equal, tkSpace, tkKey+DeclVal, TK_Semi
     ]);
   //type
-  CheckTokensForLine('10:x=function (a:word): integer deprecated;', 9,
+  CheckTokensForLine('9:x=function (a:word): integer deprecated;', 9,
     [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
      TK_Bracket, TK_Colon, tkSpace,  // ):
      tkIdentifier+ProcRes, tkSpace,  // integer
      tkModifier, TK_Semi  // deprecated
     ]);
-  CheckTokensForLine('11:x=function (a:word): integer deprecated;', 10,
+  CheckTokensForLine('10:x=function (a:word): integer deprecated;', 10,
     [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
      tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,   // a:word
      TK_Bracket, TK_Colon, tkSpace,  // ):
      tkIdentifier+ProcRes, tkSpace,  // integer
      tkModifier, TK_Semi  // deprecated
     ]);
-  CheckTokensForLine('12:x=function (a:word=b): integer deprecated;', 11,
+  CheckTokensForLine('11:x=function (a:word=b): integer deprecated;', 11,
     [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
      tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,   // a:word
      TK_Equal, tkIdentifier+ProcVal, // =b
@@ -3776,7 +3778,7 @@ begin
      tkIdentifier+ProcRes, tkSpace,  // integer
      tkModifier, TK_Semi  // deprecated
     ]);
-  CheckTokensForLine('13:x=function (a:word; b:byte): integer deprecated;', 12,
+  CheckTokensForLine('12:x=function (a:word; b:byte): integer deprecated;', 12,
     [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
      tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Semi, tkSpace, // a:word
      tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, // b:byte
@@ -3784,25 +3786,31 @@ begin
      tkIdentifier+ProcRes, tkSpace,  // integer
      tkModifier, TK_Semi  // deprecated
     ]);
+  CheckTokensForLine('13: x=reference to function(a:byte):byte;', 13,
+    [tkIdentifier+DeclTypeName, _Eq, tkKey+DeclType, _,tkKey+DeclType, _, // reference to
+     tkKey+DeclType, _Open,  // function (
+     tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,
+     _Close, _Col, tkIdentifier+ProcRes, _Semi
+    ]);
 
   // inside the record, use decl-attr according to record
 // TODO: record and end are not DeclType, because cfbtVarConstTypeExt is missing
-  //CheckTokensForLine('15: a:record', 14,
+  //CheckTokensForLine('16: a:record', 16,
   //  [tkIdentifier+DeclVarName, TK_Colon,tkKey+DeclType]);
-  CheckTokensForLine('16: b:byte', 15,
+  CheckTokensForLine('17: b:byte', 17,
     [tkIdentifier+DeclVarName, TK_Colon,tkIdentifier+DeclType]);
-  CheckTokensForLine('17: c:array of word', 16,
+  CheckTokensForLine('18: c:array of word', 18,
     [tkIdentifier+DeclVarName, TK_Colon,tkKey+DeclType, tkSpace,
      tkKey+DeclType, tkSpace, tkIdentifier+DeclType, TK_Semi]);
-  //CheckTokensForLine('18: end', 17,
+  //CheckTokensForLine('19: end', 19,
   //  [tkKey+DeclType, TK_Semi]);
 
 
-    CheckTokensForLine('name: name; external name name;', 19,
+    CheckTokensForLine('21: name: name; external name name;', 21,
       [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi, tkSpace,
        tkModifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
 
-    CheckTokensForLine('name: name; external foo name name;', 20,
+    CheckTokensForLine('22: name: name; external foo name name;', 22,
       [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi, tkSpace,
        tkModifier, tkSpace, tkIdentifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
 

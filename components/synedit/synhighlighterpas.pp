@@ -5510,7 +5510,9 @@ begin
       if (reaStructMemeber in FRequiredStates) and (FTokenID = tkIdentifier) then
         FTokenExtraAttribs := FTokenExtraAttribs + [eaStructMemeber];
       end;
-    tsNone, tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst, tsAfterEqualThenType: begin
+    tsNone, tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass,
+    tsAfterTypedConst, tsAfterEqualThenType, tsAfterReferenceTo:
+    begin
 
         // procedure param-list / result
         if (FTokenState in [tsNone, tsAtBeginOfStatement]) and (rsInProcHeader in fRange) and
