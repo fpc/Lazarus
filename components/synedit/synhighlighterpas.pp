@@ -585,7 +585,18 @@ type
     procedure DecLastLinePasFoldFix;
     property Mode: TPascalCompilerMode read FMode write FMode;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write FModeSwitches;
+    (* BracketNestLevel counts only within the current "fold" (or expression).
+       It is reset for
+       - RecordCaseSection
+       - anonymous proc  // ProcHeader aka start of a new procedure
+       - any "begin", "end", "repeat", "while", "for", "raise", "case" statement
+       - unit section
+    *)
     property BracketNestLevel: integer read FBracketNestLevel write SetBracketNestLevel;
+    (* RoundBracketNestLevel keeps counting
+       They can occur **around** an anonymous proc, and must be kept counting.
+       TODO: they should reset at the end of blocks, the the value they had at the start
+    *)
     property RoundBracketNestLevel: integer read FRoundBracketNestLevel;
     property LastLineCodeFoldLevelFix: integer
       read FLastLineCodeFoldLevelFix write FLastLineCodeFoldLevelFix;
@@ -834,6 +845,7 @@ type
     function IsPropertyDefinitionKey(const AnUpperKey: string): Boolean; inline;
     function DoPropertyDefinitionKey: TtkTokenKind; inline;
     procedure DoProcFuncHeader(AnInClassFolds: TPascalCodeFoldBlockTypes); inline;
+    procedure DoCodeBlockStatement; inline;
     function AltFunc: TtkTokenKind;
     procedure InitIdent;
     function IdentKind(p: integer): TtkTokenKind;
@@ -1736,6 +1748,7 @@ function TSynPasSyn.Func15: TtkTokenKind;
 begin
   if KeyCompU('IF') then begin
 // Anything that may be nested in a "case", and does not have an end (like "end", "until",...)
+    DoCodeBlockStatement;
     StartPascalCodeFoldBlock(cfbtIfThen,
       TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo]);
     Result := tkKey
@@ -1830,10 +1843,13 @@ begin
                           rsSkipAllPasBlocks];
       if FTokenState in [tsAfterExternal, tsAfterExternalName] then
         FTokenState := tsNone;
-      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+      tfb := TopPascalCodeFoldBlockType;
+      if tfb in PascalStatementBlocks then
+        DoCodeBlockStatement
+      else
+        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       sl := fStringLen;
       // there may be more than on block ending here
-      tfb := TopPascalCodeFoldBlockType;
       fStringLen:=0;
       EndStatement(tfb, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]);
 
@@ -1982,6 +1998,7 @@ begin
   end
   else if KeyCompU('CASE') then begin
     if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then begin
+      DoCodeBlockStatement;
       StartPascalCodeFoldBlock(cfbtCase, True);
     end
     else begin
@@ -2102,9 +2119,9 @@ begin
     if (fRange * [rsImplementation, rsInterface] = []) then
       Include(fRange, rsImplementation);
     FNextTokenState := tsAtBeginOfStatement;
-    PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
     if TopPascalCodeFoldBlockType in cfbtVarConstTypeLabelExt then
       EndPascalCodeFoldBlockLastLine;
+    DoCodeBlockStatement;
     Result := tkKey;
     tfb := TopPascalCodeFoldBlockType;
     if tfb in [cfbtProcedure, cfbtAnonymousProcedure]
@@ -2143,8 +2160,10 @@ function TSynPasSyn.Func39: TtkTokenKind;
 begin
   if KeyCompU('FOR') then begin
     Result := tkKey;
-    if TopPascalCodeFoldBlockType in PascalStatementBlocks then
-      StartPascalCodeFoldBlock(cfbtForDo)
+    if TopPascalCodeFoldBlockType in PascalStatementBlocks then begin
+      DoCodeBlockStatement;
+      StartPascalCodeFoldBlock(cfbtForDo);
+    end
     else
     if rsInTypeHelper in FOldRange then begin
       fRange := fRange + [rsInTypeHelper];
@@ -2319,6 +2338,7 @@ begin
   else
   if KeyCompU('RAISE') then begin
     Result := tkKey;
+    DoCodeBlockStatement;
     fRange := fRange + [rsInRaise];
     FNextTokenState := tsAfterRaise;
   end
@@ -2372,18 +2392,20 @@ end;
 
 function TSynPasSyn.Func57: TtkTokenKind;
 begin
-  if KeyCompU('GOTO') then Result := tkKey else
-    if KeyCompU('WHILE') then begin
-      Result := tkKey;
-      StartPascalCodeFoldBlock(cfbtWhileDo);
-    end
-    else
-    if KeyCompU('XOR') then begin
-      Result := tkKey;
-      DoAfterOperator;
-    end
-    else
-      Result := tkIdentifier;
+  if KeyCompU('GOTO') then Result := tkKey
+  else
+  if KeyCompU('WHILE') then begin
+    Result := tkKey;
+    DoCodeBlockStatement;
+    StartPascalCodeFoldBlock(cfbtWhileDo);
+  end
+  else
+  if KeyCompU('XOR') then begin
+    Result := tkKey;
+    DoAfterOperator;
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func58: TtkTokenKind;
@@ -2494,8 +2516,10 @@ begin
   else if KeyCompU('ARRAY') then Result := tkKey
   else if KeyCompU('TRY') then
   begin
-    if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then
+    if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then begin
+      DoCodeBlockStatement;
       StartPascalCodeFoldBlock(cfbtTry);
+    end;
     Result := tkKey;
     FNextTokenState := tsAtBeginOfStatement;
   end
@@ -2549,6 +2573,7 @@ function TSynPasSyn.Func65: TtkTokenKind;
 begin
   if KeyCompU('REPEAT') then begin
     Result := tkKey;
+    DoCodeBlockStatement;
     FNextTokenState := tsAtBeginOfStatement;
     StartPascalCodeFoldBlock(cfbtRepeat);
    end
@@ -2699,6 +2724,7 @@ begin
   if KeyCompU('EXCEPT') then begin
     Result := tkKey;
     // no semicolon before except
+    DoCodeBlockStatement;
     EndStatement(TopPascalCodeFoldBlockType, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]);
     SmartCloseBeginEndBlocks(cfbtTry);
     if TopPascalCodeFoldBlockType = cfbtTry then
@@ -2720,6 +2746,7 @@ begin
   if KeyCompU('UNTIL') then begin
     Result := tkKey;
     // no semicolon before until;
+    DoCodeBlockStatement;
     EndStatement(TopPascalCodeFoldBlockType, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]);
     SmartCloseBeginEndBlocks(cfbtRepeat);
     if TopPascalCodeFoldBlockType = cfbtRepeat then EndPascalCodeFoldBlock;
@@ -2744,6 +2771,7 @@ function TSynPasSyn.Func79: TtkTokenKind;
 begin
   if KeyCompU('FINALLY') then begin
     Result := tkKey;
+    DoCodeBlockStatement;
      // no semicolon before finally
     EndStatement(TopPascalCodeFoldBlockType, [cfbtForDo,cfbtWhileDo,cfbtWithDo,cfbtIfThen,cfbtIfElse]);
     SmartCloseBeginEndBlocks(cfbtTry);
@@ -3824,6 +3852,21 @@ begin
   if InClass then
     fRange := fRange + [rsAfterClassMembers];
   fRange := fRange + [rsInProcHeader] - [rsAfterEqual, rsAfterColon, rsProperty, rsInParamDeclaration];
+end;
+
+procedure TSynPasSyn.DoCodeBlockStatement;
+(* RESERVED KEYWORD
+ that always start a new statement (or combound statenment)
+ => i.e. any current statement ends
+ That is
+ - any "begin", "end", "repeat", "until", "while", "for", "raise", "case", "if", "try", "except", "finally" statement/keyword
+ - but  NOT: break, exit, continue // only reserved keywords
+ - also NOT: anonymous proc // they can be mid statement
+   TODO: maybe include anonymous proc
+*)
+begin
+  PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+  fRange := fRange - [rsInRaise]; // TODO: maybe rsAtCaseLabel
 end;
 
 function TSynPasSyn.AltFunc: TtkTokenKind;
