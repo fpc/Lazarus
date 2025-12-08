@@ -4843,7 +4843,9 @@ var
   tfb: TPascalCodeFoldBlockType;
 begin
   Inc(Run);
-  if Run>=fLineLen then begin
+  if (Run>=fLineLen) or
+     not(fLine[Run] in ['*', '.'])
+  then begin
     fTokenID:=tkSymbol;
     tfb := TopPascalCodeFoldBlockType;
     if tfb = cfbtRecordCase then begin
@@ -4852,18 +4854,26 @@ begin
       StartPascalCodeFoldBlock(cfbtRecordCaseSection, True); // TODO: only if case-label attr is set
       Inc(Run);
       PasCodeFoldRange.IncRoundBracketNestLevel;
-      PasCodeFoldRange.BracketNestLevel := 0
+      PasCodeFoldRange.BracketNestLevel := 0;
+      FNextTokenState := tsAtBeginOfStatement;
+      fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon, rsAfterEqualOrColon];
     end
     else begin
       if (rrsInParamDeclaration in FRequiredStates) and
-         ( ( (FTokenState = tsAfterProcName) and (PasCodeFoldRange.BracketNestLevel = 0)
+         ( ( (PasCodeFoldRange.BracketNestLevel = 0) and
+             ( (FTokenState = tsAfterProcName) or
+               ( (rsInProcHeader in fRange) and
+                 (tfb in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord])
+               )
+             )
            ) or
            ( FTokenState = tsAfterAnonProc )
          )
       then
         fRange := fRange + [rsInParamDeclaration];
 
-      if (tfb in cfbtVarConstTypeExt) then begin
+      if (tfb in cfbtVarConstTypeExt) or (rsInProcHeader in fRange)
+      then begin
         FNextTokenState := tsAtBeginOfStatement;
         if (rsInProcHeader in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
           fRange := fRange - [rsAfterColon, rsAfterEqual];
@@ -4911,40 +4921,6 @@ begin
         PasCodeFoldRange.IncRoundBracketNestLevel;
       end;
     else
-      begin
-        fTokenID := tkSymbol;
-        tfb := TopPascalCodeFoldBlockType;
-        if tfb = cfbtRecordCase then begin
-          fStringLen := 1;
-          Dec(Run);
-          StartPascalCodeFoldBlock(cfbtRecordCaseSection, True); // TODO: only if case-label attr is set
-          Inc(Run);
-          PasCodeFoldRange.IncRoundBracketNestLevel;
-          PasCodeFoldRange.BracketNestLevel := 0;
-          FNextTokenState := tsAtBeginOfStatement;
-          fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon, rsAfterEqualOrColon];
-        end
-        else begin
-          if (rrsInParamDeclaration in FRequiredStates) and
-             ( ( (PasCodeFoldRange.BracketNestLevel = 0) and
-                 ( (FTokenState = tsAfterProcName) or
-                   (tfb in cfbtVarConstTypeExt)
-                 )
-               ) or
-               ( FTokenState = tsAfterAnonProc )
-             )
-          then
-            fRange := fRange + [rsInParamDeclaration];
-
-          if (tfb in cfbtVarConstTypeExt) then begin
-            FNextTokenState := tsAtBeginOfStatement;
-            if (rsInProcHeader in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
-              fRange := fRange - [rsAfterColon, rsAfterEqual];
-          end;
-
-          PasCodeFoldRange.IncRoundBracketNestLevel;
-        end;
-      end;
   end;
 end;
 
@@ -5088,7 +5064,9 @@ begin
   else
     FNextTokenState := tsAtBeginOfStatement;
 
-  if (tfb in cfbtVarConstTypeExt) and (PasCodeFoldRange.BracketNestLevel > 0) then
+  if ( (tfb in cfbtVarConstTypeExt) or (rsInProcHeader in fRange) ) and
+     (PasCodeFoldRange.BracketNestLevel > 0)
+  then
     fRange := fRange - [rsAfterEqual, rsAfterColon]
   else
     fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon, rsInTypedConst];

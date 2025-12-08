@@ -3538,11 +3538,24 @@ end;
 procedure TTestHighlighterPas.TestModifierAttributesForProcedure;
 var
   ProcName, ProcParam, ProcType, ProcVal, ProcRes: TSynHighlighterAttributesModifier;
+  t: Integer;
+  s1: String;
 begin
   FKeepAllModifierAttribs := True;
   ReCreateEdit;
+  for t := 0 to 6 do begin
+  ReCreateEdit;
+  case t of
+    0: s1 := 'unit A; interface';
+    1: s1 := 'unit A; interface implementation';
+    2: s1 := 'program A;';
+    3: s1 := 'unit A; {$ModeSwitch advancedrecords} interface type TClass = record';
+    4: s1 := 'unit A; interface type TClass = class';
+    5: s1 := 'unit A; interface type TClass = class public';
+    6: s1 := 'unit A; {$ModeSwitch functionreferences} interface type TClass = record';
+  end;
   SetLines
-    ([ 'Unit A; interface',  // 0
+    ([ s1, //'Unit A; interface',  // 0
        'function Foo: integer;',
        'function Foo: string;',
        'function Foo(var a:byte;b, b2:string;c:array of boolean): integer;',
@@ -3599,6 +3612,9 @@ begin
   CheckTokensForLine('6: procedure Foo(a:byte;',  5,
     [tkKey, tkSpace, tkIdentifier+ProcName, TK_Bracket,
      tkIdentifier+ProcParam, TK_Semi]);
+
+  if t >= 3 then // no external in class
+    continue;
   CheckTokensForLine('7: b, b2:word);',  6,
     [tkIdentifier+ProcParam, TK_Comma, tkSpace, tkIdentifier+ProcParam, TK_Colon,
      tkIdentifier+ProcType, TK_Bracket, TK_Semi]);
@@ -3613,17 +3629,29 @@ begin
   //PasHighLighter.DeclaredValueAttributeMode := tamIdentifierOnly;
   //PasHighLighter.DeclaredValueAttributeMachesStringNum := False;
 
-
+  end; // for t
 end;
 
 procedure TTestHighlighterPas.TestModifierAttributesForProperty;
 var
   PropName, ProcParam, ProcType, ProcRes: TSynHighlighterAttributesModifier;
+  t: Integer;
+  s1: String;
 begin
   FKeepAllModifierAttribs := True;
+  for t := 0 to 6 do begin
   ReCreateEdit;
+  case t of
+    0: s1 := 'unit A; interface';
+    1: s1 := 'unit A; interface implementation';
+    2: s1 := 'program A;';
+    3: s1 := 'unit A; {$ModeSwitch advancedrecords} interface type TClass = record';
+    4: s1 := 'unit A; interface type TClass = class';
+    5: s1 := 'unit A; interface type TClass = class public';
+    6: s1 := 'unit A; {$ModeSwitch functionreferences} interface type TClass = record';
+  end;
   SetLines
-    ([ 'Unit A; interface',  // 0
+    ([ s1, //'Unit A; interface',  // 0
        'property Foo: integer read Foo;',
        'property Foo[a:byte;b:string;c:unit2.word]: unit2.integer read Foo;',
        ''
@@ -3637,9 +3665,6 @@ begin
   PasHighLighter.DeclaredTypeAttributeMode := tamIdentifierOnly;
   PasHighLighter.DeclaredValueAttributeMode := tamIdentifierOnly;
   PasHighLighter.DeclaredValueAttributeMachesStringNum := False;
-
-  CheckTokensForLine('1: unit a: interface;',  0,
-    [tkKey, tkSpace, tkIdentifier, TK_Semi, tkSpace, tkKey]);
 
   CheckTokensForLine('2:property Foo: integer read Foo;',  1,
     [tkKey, tkSpace, tkIdentifier+PropName, TK_Colon, tkSpace,
@@ -3696,33 +3721,68 @@ begin
      tkIdentifier+ProcRes, TK_Dot, tkIdentifier+ProcRes, tkSpace,
      tkKey, tkSpace, tkIdentifier, TK_Semi]);
 
+  end; // for t
 end;
 
 procedure TTestHighlighterPas.TestModifierAttributesForVarConstType;
 var
   DeclVarName, DeclTypeName, DeclType, DeclVal, ProcName,
     ProcParam, ProcType, ProcVal, ProcRes: TSynHighlighterAttributesModifier;
-  i: Integer;
+  t, i: Integer;
+  s1,s2,s3,s4: String;
 begin
   FKeepAllModifierAttribs := True;
   ReCreateEdit;
+  for t := 0 to 7 do begin
+  s2 := '';
+  s3 := 'var';  s4 := 'var';
+  case t of
+    0: begin s1 := 'unit A; {$ModeSwitch functionreferences} interface';
+      end;
+    1: begin s1 := 'unit A; {$ModeSwitch functionreferences} interface implementation';
+      end;
+    2: begin s1 := 'unit A; {$ModeSwitch functionreferences} interface implementation procedure Wrap;';
+      end;
+    3: begin s1 := 'program A; {$ModeSwitch functionreferences} ';
+      end;
+    4: begin s1 := 'unit A; {$ModeSwitch functionreferences} interface type TClass = class';
+             s2 := 'public ';
+             s3 := '';
+             s4 := 'public';
+      end;
+    5: begin s1 := 'unit A; {$ModeSwitch functionreferences} interface type TClass = class ';
+             s2 := 'public ';
+             s3 := 'public';
+             s4 := 'public';
+      end;
+    6: begin s1 := 'unit A; {$ModeSwitch advancedrecords} {$ModeSwitch functionreferences} interface type TClass = record';
+             s2 := 'public ';
+             s3 := '';
+             s4 := 'public';
+      end;
+    7: begin s1 := 'unit A; {$ModeSwitch advancedrecords} {$ModeSwitch functionreferences} interface type TClass = record case byte of 1:(';
+             s2 := 'public ';
+             s3 := '';
+             s4 := 'public';
+      end;
+  end;
   SetLines
-    ([ 'Unit A; interface',  // 0
-       'var',
+    ([ s1, //'Unit A; interface',  // 0
+       s3, //'var',
          'Foo: word deprecated;',  //2
          'Foo: word = val deprecated;',
-       'type',
+       s2+'type',
          'Foo= word deprecated;',
-       'const',            // 6
+       s2+'const',            // 6
          'x:function (a:word; b:byte): integer = nil;',            // 7
-       'type',
+       s2+'type',
          'x=function (): integer deprecated;',             //9
          'x=function (a:word): integer deprecated;',
          'x=function (a:word=b): integer deprecated;',
          'x=function (a:word; b:byte): integer deprecated;',
          'x=reference to function(a:byte):byte;',   // 13
          '',
-       'var',
+       s4, //'var',
          'a:record',              // 16
            'b:byte;',
            'c:array of word;',
@@ -3730,6 +3790,7 @@ begin
        '',                        // 20
        'name: name;  external name name;',   // external keyword_NAME const_NAME
        'name: name;  external foo name name;',   // external foo keyword_NAME const_NAME
+       'x:function(a:word;b:word):integer;',             //23
        ''
     ]);
 
@@ -3747,73 +3808,78 @@ begin
 
   PasHighLighter.DeclaredTypeAttributeMode := tamKeywords;
   PasHighLighter.DeclaredValueAttributeMode := tamKeywords;
-  // inside the function, use the proc-attr
-  CheckTokensForLine('7:x:function (a:word; b:byte): integer = nil;', 7,
-    [tkIdentifier+DeclVarName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket,
-     tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Semi, tkSpace, // a:word
-     tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, // b:byte
-     TK_Bracket, TK_Colon, tkSpace,  // ):
-     tkIdentifier+ProcRes, tkSpace,  // integer
-     TK_Equal, tkSpace, tkKey+DeclVal, TK_Semi
-    ]);
-  //type
-  CheckTokensForLine('9:x=function (a:word): integer deprecated;', 9,
-    [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
-     TK_Bracket, TK_Colon, tkSpace,  // ):
-     tkIdentifier+ProcRes, tkSpace,  // integer
-     tkModifier, TK_Semi  // deprecated
-    ]);
-  CheckTokensForLine('10:x=function (a:word): integer deprecated;', 10,
-    [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
-     tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,   // a:word
-     TK_Bracket, TK_Colon, tkSpace,  // ):
-     tkIdentifier+ProcRes, tkSpace,  // integer
-     tkModifier, TK_Semi  // deprecated
-    ]);
-  CheckTokensForLine('11:x=function (a:word=b): integer deprecated;', 11,
-    [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
-     tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,   // a:word
-     TK_Equal, tkIdentifier+ProcVal, // =b
-     TK_Bracket, TK_Colon, tkSpace,  // ):
-     tkIdentifier+ProcRes, tkSpace,  // integer
-     tkModifier, TK_Semi  // deprecated
-    ]);
-  CheckTokensForLine('12:x=function (a:word; b:byte): integer deprecated;', 12,
-    [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
-     tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Semi, tkSpace, // a:word
-     tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, // b:byte
-     TK_Bracket, TK_Colon, tkSpace,  // ):
-     tkIdentifier+ProcRes, tkSpace,  // integer
-     tkModifier, TK_Semi  // deprecated
-    ]);
-  CheckTokensForLine('13: x=reference to function(a:byte):byte;', 13,
-    [tkIdentifier+DeclTypeName, _Eq, tkKey+DeclType, _,tkKey+DeclType, _, // reference to
-     tkKey+DeclType, _Open,  // function (
-     tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,
-     _Close, _Col, tkIdentifier+ProcRes, _Semi
-    ]);
+  PasHighLighter.DeclaredValueAttributeMachesStringNum := False;
 
-  // inside the record, use decl-attr according to record
-// TODO: record and end are not DeclType, because cfbtVarConstTypeExt is missing
-  //CheckTokensForLine('16: a:record', 16,
-  //  [tkIdentifier+DeclVarName, TK_Colon,tkKey+DeclType]);
-  CheckTokensForLine('17: b:byte', 17,
-    [tkIdentifier+DeclVarName, TK_Colon,tkIdentifier+DeclType]);
-  CheckTokensForLine('18: c:array of word', 18,
-    [tkIdentifier+DeclVarName, TK_Colon,tkKey+DeclType, tkSpace,
-     tkKey+DeclType, tkSpace, tkIdentifier+DeclType, TK_Semi]);
-  //CheckTokensForLine('19: end', 19,
-  //  [tkKey+DeclType, TK_Semi]);
+  if t < 7 then begin
+    // inside the function, use the proc-attr
+    CheckTokensForLine('7:x:function (a:word; b:byte): integer = nil;', 7,
+      [tkIdentifier+DeclVarName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket,
+       tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Semi, tkSpace, // a:word
+       tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, // b:byte
+       TK_Bracket, TK_Colon, tkSpace,  // ):
+       tkIdentifier+ProcRes, tkSpace,  // integer
+       TK_Equal, tkSpace, tkKey+DeclVal, TK_Semi
+      ]);
+    //type
+    CheckTokensForLine('9:x=function (a:word): integer deprecated;', 9,
+      [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
+       TK_Bracket, TK_Colon, tkSpace,  // ):
+       tkIdentifier+ProcRes, tkSpace,  // integer
+       tkModifier, TK_Semi  // deprecated
+      ]);
+    CheckTokensForLine('10:x=function (a:word): integer deprecated;', 10,
+      [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
+       tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,   // a:word
+       TK_Bracket, TK_Colon, tkSpace,  // ):
+       tkIdentifier+ProcRes, tkSpace,  // integer
+       tkModifier, TK_Semi  // deprecated
+      ]);
+    CheckTokensForLine('11:x=function (a:word=b): integer deprecated;', 11,
+      [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
+       tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,   // a:word
+       TK_Equal, tkIdentifier+ProcVal, // =b
+       TK_Bracket, TK_Colon, tkSpace,  // ):
+       tkIdentifier+ProcRes, tkSpace,  // integer
+       tkModifier, TK_Semi  // deprecated
+      ]);
+    CheckTokensForLine('12:x=function (a:word; b:byte): integer deprecated;', 12,
+      [tkIdentifier+DeclTypeName, TK_Colon, tkKey+DeclType, tkSpace, TK_Bracket, // x=function (
+       tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, TK_Semi, tkSpace, // a:word
+       tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, // b:byte
+       TK_Bracket, TK_Colon, tkSpace,  // ):
+       tkIdentifier+ProcRes, tkSpace,  // integer
+       tkModifier, TK_Semi  // deprecated
+      ]);
+    CheckTokensForLine('13: x=reference to function(a:byte):byte;', 13,
+      [tkIdentifier+DeclTypeName, _Eq, tkKey+DeclType, _,tkKey+DeclType, _, // reference to
+       tkKey+DeclType, _Open,  // function (
+       tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,
+       _Close, _Col, tkIdentifier+ProcRes, _Semi
+      ]);
+
+    // inside the record, use decl-attr according to record
+  // TODO: record and end are not DeclType, because cfbtVarConstTypeExt is missing
+    //CheckTokensForLine('16: a:record', 16,
+    //  [tkIdentifier+DeclVarName, TK_Colon,tkKey+DeclType]);
+    CheckTokensForLine('17: b:byte', 17,
+      [tkIdentifier+DeclVarName, TK_Colon,tkIdentifier+DeclType]);
+    CheckTokensForLine('18: c:array of word', 18,
+      [tkIdentifier+DeclVarName, TK_Colon,tkKey+DeclType, tkSpace,
+       tkKey+DeclType, tkSpace, tkIdentifier+DeclType, TK_Semi]);
+    //CheckTokensForLine('19: end', 19,
+    //  [tkKey+DeclType, TK_Semi]);
 
 
-    CheckTokensForLine('21: name: name; external name name;', 21,
-      [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi, tkSpace,
-       tkModifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
+    if t < 4 then begin
+      CheckTokensForLine('21: name: name; external name name;', 21,
+        [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi, tkSpace,
+         tkModifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
 
-    CheckTokensForLine('22: name: name; external foo name name;', 22,
-      [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi, tkSpace,
-       tkModifier, tkSpace, tkIdentifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
-
+      CheckTokensForLine('22: name: name; external foo name name;', 22,
+        [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType, TK_Semi, tkSpace,
+         tkModifier, tkSpace, tkIdentifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
+    end;
+  end; // if t < 7
 
   for i := 0 to 1 do begin
     case i of
@@ -3829,20 +3895,41 @@ begin
       end;
     end;
 
-    CheckTokensForLine('3: Foo: word; deprecated;',  2,
+    CheckTokensForLine('2: Foo: word; deprecated;',  2,
       [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType,
        tkSpace, tkModifier, TK_Semi]);
 
-    CheckTokensForLine('4: Foo: word = val; deprecated;',  3,
+    CheckTokensForLine('2: Foo: word = val; deprecated;',  3,
       [tkIdentifier+DeclVarName, TK_Colon, tkSpace, tkIdentifier+DeclType,
        tkSpace, TK_Equal, tkSpace, tkIdentifier+DeclVal,
        tkSpace, tkModifier, TK_Semi]);
+
+    if t = 7 then continue; // not in record case section
 
     CheckTokensForLine('6: Foo= word; deprecated;', 5,
       [tkIdentifier+DeclTypeName, TK_Equal, tkSpace, tkIdentifier+DeclType,
        tkSpace, tkModifier, TK_Semi]);
 
+    case i of
+      0: CheckTokensForLine('23:x:function(a:word;b:word): integer;', 23,
+          [tkIdentifier+DeclVarName, TK_Colon, tkKey, TK_Bracket, // x=function (
+           tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, _Semi,   // a:word
+           tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,   // a:word
+           TK_Bracket, TK_Colon,   // ):
+           tkIdentifier+ProcRes,   // integer
+           TK_Semi  // deprecated
+          ]);
+      1: CheckTokensForLine('23:x:function(a:word;b:word): integer;', 23,
+          [tkIdentifier+DeclVarName, TK_Colon, tkKey+DeclType, TK_Bracket, // x=function (
+           tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType, _Semi,  // a:word
+           tkIdentifier+ProcParam, TK_Colon, tkIdentifier+ProcType,   // a:word
+           TK_Bracket, TK_Colon,   // ):
+           tkIdentifier+ProcRes,   // integer
+           TK_Semi  // deprecated
+          ]);
+    end;
   end;
+  end;// for t
 end;
 
 procedure TTestHighlighterPas.TestModifierAttributesWithAnonProcedure;
