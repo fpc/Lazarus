@@ -2076,7 +2076,7 @@ begin
   else
   if (FTokenState = tsAfterExternal) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fRange * [rsAfterEqualOrColon, rsAfterEqual] = []) and
+     (fRange * [rsAfterEqual] = []) and
      KeyCompU('NAME') // procedure foo; public name 'abc';
   then
   begin
@@ -2507,7 +2507,7 @@ begin
     //FNextTokenState := tsAtBeginOfStatement;
     //if (CompilerMode = pcmDelphi) or (pcsTypeHelpers in FModeSwitches {and adv_record}) then
     FNextTokenState := tsAfterClass;
-    fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon, rsAfterEqualOrColon, rsProperty, rsInProcHeader, rsInParamDeclaration];
+    fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon, rsProperty, rsInProcHeader, rsInParamDeclaration];
     if (CompilerMode = pcmDelphi) or (pcsTypeHelpers in FModeSwitches {and adv_record}) then
       fRange := fRange + [rsInClassHeader]; // highlight helper
       FOldRange := FOldRange - [rsInClassHeader];
@@ -4856,7 +4856,7 @@ begin
       PasCodeFoldRange.IncRoundBracketNestLevel;
       PasCodeFoldRange.BracketNestLevel := 0;
       FNextTokenState := tsAtBeginOfStatement;
-      fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon, rsAfterEqualOrColon];
+      fRange := fRange - [rsVarTypeInSpecification, rsAfterEqual, rsAfterColon];
     end
     else begin
       if (rrsInParamDeclaration in FRequiredStates) and
@@ -4957,7 +4957,7 @@ begin
   inc(Run);
   fTokenID := tkSymbol;
   if (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader])
+     (fRange * [rsInProcHeader, rsProperty, rsWasInProcHeader] = [rsWasInProcHeader])
   then
     FOldRange := FOldRange - [rsWasInProcHeader];
   if (FTokenState = tsAfterProperty) and (rrsInParamDeclaration in FRequiredStates) then
