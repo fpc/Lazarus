@@ -158,6 +158,14 @@ type
     tsAfterTypedConst,    // const foo: ___=___; public;
                           //    >>> typed const can have modifiers
                           //        Set AFTER ";"
+    tsAtExpressionEnd,    (* Last token was identifier (or predefind val/type like string)
+                             The expression (type or value declaration) could end at this point.
+                             (Or an operator could follow)
+                             Only used in cfbtVarConstType // Only after : or =
+                             Used to detect modifiers:
+                             var foo: byte = deprecated + deprecated  deprecated 'old';
+                             var foo: byte cvar;
+                          *)
     tsAfterRaise,         // After the raise keyword (or "." or operator inside rsInRaise)
     tsAfterDot            // [OPT] In Code. For member detection
   );
@@ -179,7 +187,6 @@ type
   *)
   TRequiredState = (
     // ranges
-    rrsAfterColon,                   // Only needed ProcedureHeaderTypeAttr or DeclarationType
     rrsInParamDeclaration,           // ProcedureHeaderParamAttr or ProcedureHeaderTypeAttr
     rrsInPropertyNameOrIndex,        // Only needed if PropertyNameAttr.IsEnabled
     // tokenstates
@@ -826,6 +833,7 @@ type
     function Func181: TtkTokenKind;
     function Func191: TtkTokenKind;
     function Func220: TtkTokenKind;
+    function IsPublicOrExternalOrExport(tfb: TPascalCodeFoldBlockType): Boolean; inline;
     function IsCallingConventionModifier(tfb: TPascalCodeFoldBlockType): Boolean; inline;
     function IsCallingConventionModifier(const AnUpperKey: string): Boolean; inline;
     function IsCallingConventionModifier(const AnUpperKey: string; tfb: TPascalCodeFoldBlockType): Boolean; inline;
@@ -2268,8 +2276,12 @@ begin
          (TopPascalCodeFoldBlockType() in [cfbtConstBlock, cfbtLocalConstBlock])
        )
        or
-       ( (FTokenState = tsAtBeginOfStatement) and
-         (fRange * [rsInProcHeader, rsWasInProcHeader] = []) and
+       ( (FTokenState in [tsAtBeginOfStatement, tsAtExpressionEnd]) and
+         (fRange * [rsInProcHeader] = []) and
+         (TopPascalCodeFoldBlockType() in [cfbtVarBlock, cfbtLocalVarBlock])
+       )
+       or
+       ( (FTokenState in [tsAtExpressionEnd]) and
          (TopPascalCodeFoldBlockType() in [cfbtVarBlock, cfbtLocalVarBlock])
        )
      )
@@ -2481,18 +2493,17 @@ begin
       Result := DoClassSection;
     end
     else
-    // outside class: procedure foo; public name 'abc';
+    (* outside class:
+        procedure Foo              ; public name 'abc';
+        procedure Foo                public name 'abc'; // no semicolon
+        var Bar:function: integer {;} public name 'abc';
+        var Bar:integer           {;} public name 'abc';
+        var Bar:integer {;} cvar   ;  public name 'abc';
+        const C:byte   = 1         ;  public;
+    *)
     if (PasCodeFoldRange.BracketNestLevel = 0) and
-       ( (FTokenState in [tsAfterTypedConst, tsAfterCvar])
-         or
-         ( (not (FTokenState in [tsAfterExternal, tsAfterExternalName, tsAfterVarConstType])) and
-           ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-               (tfb in ProcModifierAllowed - [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock])
-             ) or
-             ( (FTokenState in [tsAtBeginOfStatement, tsAfterCvar]) and // Todo: Do we need tsAfterCvar?
-               (fRange * [rsInProcHeader, rsWasInProcHeader] = []) and
-               (tfb in [cfbtVarBlock, cfbtLocalVarBlock])
-         ) ) )
+       ( (FTokenState in [tsAfterTypedConst, tsAfterCvar]) or
+         IsPublicOrExternalOrExport(tfb)
        )
     then begin
       Result := tkModifier;
@@ -3021,7 +3032,7 @@ begin
      (TopPascalCodeFoldBlockType in cfbtVarConstType) and
      (fRange * [rsVarTypeInSpecification, rsAfterEqualOrColon, rsProperty] = [rsVarTypeInSpecification]) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
-     (FTokenState = tsNone) // FTokenState <> tsAfterAbsolute
+     (FTokenState in [tsNone, tsAtExpressionEnd]) // FTokenState <> tsAfterAbsolute
   then begin
     Result := tkModifier;
     // prevent:          var foo absolute absolute; // at same address as variable named absolute
@@ -3073,18 +3084,20 @@ var
   tfb: TPascalCodeFoldBlockType;
 begin
   tfb := TopPascalCodeFoldBlockType;
-  if (PasCodeFoldRange.BracketNestLevel in [0, 1]) and
-     (not(FTokenState in [tsAfterVarConstType, tsAfterExternal, tsAfterExternalName])) and
-     ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-         (tfb in ProcModifierAllowed)
-       ) or
-       ( (FTokenState in [tsAtBeginOfStatement, tsAfterTypedConst, tsAfterCvar]) and
-         (fRange * [rsInProcHeader, rsWasInProcHeader] = []) and
-         (tfb in [ cfbtVarBlock, cfbtLocalVarBlock])
-       )
-     ) and
-     KeyCompU('EXPORT')
+  if KeyCompU('EXPORT') and
+    (PasCodeFoldRange.BracketNestLevel <= 1) and
+    ( (FTokenState in [tsAfterTypedConst, tsAfterCvar]) or
+      IsPublicOrExternalOrExport(tfb)
+    )
   then begin
+    (*  procedure Foo              ; export;
+        procedure Foo                export;  // no semicolon
+        var Bar:function: integer {;} export name 'abc';
+        var Bar:integer           {;} export;
+        var Bar:integer           {;} export name 'abc';
+        var Bar:integer {;} cvar   ;  export name 'abc';
+        const C:byte   = 1         ;  export;
+    *)
     Result := tkModifier;
     FNextTokenState := tsAfterExternal;
   end
@@ -3105,19 +3118,14 @@ var
   tfb: TPascalCodeFoldBlockType;
 begin
   tfb := TopPascalCodeFoldBlockType;
-  if (PasCodeFoldRange.BracketNestLevel = 0) and
-     (not(FTokenState in [tsAfterVarConstType, tsAfterExternal, tsAfterExternalName])) and
-     ( ( (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
-         (tfb in ProcModifierAllowed)
-       ) or
-       ( (FTokenState in [tsAtBeginOfStatement, tsAfterTypedConst, tsAfterCvar]) and
-         (fRange * [rsInProcHeader, rsWasInProcHeader] = []) and
-         (tfb in [ cfbtVarBlock, cfbtLocalVarBlock])
-       ) or
-       ( rsInObjcProtocol in fRange )
-     ) and
-     KeyCompU('EXTERNAL')
+  if KeyCompU('EXTERNAL') and
+    (PasCodeFoldRange.BracketNestLevel = 0) and
+    ( IsPublicOrExternalOrExport(tfb) or
+      ( rsInObjcProtocol in fRange )
+    )
   then begin
+    (* NOT after const ... ; {cvar;}
+    *)
     Result := tkModifier;
     FOldRange := FOldRange - [rsInObjcProtocol];
     FNextTokenState := tsAfterExternal;
@@ -3646,13 +3654,33 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynPasSyn.IsPublicOrExternalOrExport(tfb: TPascalCodeFoldBlockType): Boolean;
+begin
+  Result :=
+    (not (FTokenState in [tsAfterExternal, tsAfterExternalName, tsAfterVarConstType]))
+    and
+    ( ( (fRange * [rsProperty, rsAfterEqualOrColon] = [])
+        and
+        ( (fRange * [rsInProcHeader, rsWasInProcHeader] = [rsWasInProcHeader]) or
+          ( (FTokenState in [tsAtExpressionEnd, tsAfterProcName]) and (PasCodeFoldRange.BracketNestLevel = 0) )
+        )
+        and
+        (tfb in ProcModifierAllowed - [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock])
+      )
+      or
+      ( (FTokenState in [tsAtBeginOfStatement, tsAfterCvar, tsAtExpressionEnd]) and // Todo: Do we need tsAfterCvar?
+        (tfb in [cfbtVarBlock, cfbtLocalVarBlock])
+    ) )
+    ;
+end;
+
 function TSynPasSyn.IsCallingConventionModifier(tfb: TPascalCodeFoldBlockType): Boolean;
 begin
   Result :=
      (tfb in ProcModifierAllowed + [cfbtAnonymousProcedure]) and
      (fRange * [rsProperty, rsAfterEqualOrColon] = []) and
      (PasCodeFoldRange.RoundBracketNestLevel = 0) and
-     ( ( (rsInProcHeader in fRange) and (FTokenState in [tsNone, tsAfterProcName]) and  // CDECL without semicolon
+     ( ( (rsInProcHeader in fRange) and (FTokenState in [tsNone, tsAtExpressionEnd, tsAfterProcName]) and  // CDECL without semicolon
          ( (PasCodeFoldRange.BracketNestLevel = 0) or
            ( (tfb = cfbtAnonymousProcedure) and (PasCodeFoldRange.BracketNestLevel <= 1) )  // for anon function it may be in [cdecl]
          )
@@ -4532,7 +4560,7 @@ begin
        (fRange * [rsInProcHeader, rsProperty] <> [])
     then begin
       fRange := fRange + [rsAfterEqualOrColon];
-      if (rrsAfterColon in FRequiredStates) and not (rsAtCaseLabel in fRange) then
+      if not (rsAtCaseLabel in fRange) then
         fRange := fRange + [rsAfterColon];
     end;
     fRange := fRange - [rsAtCaseLabel];
@@ -5456,7 +5484,7 @@ begin
       if (reaStructMemeber in FRequiredStates) and (FTokenID = tkIdentifier) then
         FTokenExtraAttribs := FTokenExtraAttribs + [eaStructMemeber];
       end;
-    tsNone, tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass,
+    tsNone, tsAtExpressionEnd, tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass,
     tsAfterTypedConst, tsAfterEqualThenType, tsAfterReferenceTo:
       begin
         if rsInPropertyNameOrIndex in fRange then begin
@@ -5488,7 +5516,8 @@ begin
 
         else
         // procedure param-list / result
-        if (FTokenState in [tsNone, tsAtBeginOfStatement]) and (rsInProcHeader in fRange) and
+        if (FTokenState in [tsNone, tsAtExpressionEnd, tsAtBeginOfStatement]) and (rsInProcHeader in fRange) and
+           (FTokenID <> tkModifier) and
            ( (PasCodeFoldRange.BracketNestLevel > 0) or
              (rsInProcHeader in FOldRange)
            )
@@ -5581,7 +5610,7 @@ begin
                  ( (Run = fLineLen) or (fLine[Run+1] <>'=') )
                ) or
                ( (tfb in [cfbtLabelBlock, cfbtLocalLabelBlock]) and
-                 (FTokenState = tsNone)
+                 (FTokenState in [tsNone, tsAtExpressionEnd])
                )
              )
           then
@@ -5681,6 +5710,28 @@ begin
             FNextTokenState := FTokenState;
 
           FTokenState := FNextTokenState;
+
+          if (FTokenState = tsNone) then begin
+            if ( (FTokenID = tkIdentifier) or FTokenIsValueOrTypeName )
+               and
+               ( ( (fRange * [rsAfterEqual, rsAfterColon] <> []) and
+                   (TopPascalCodeFoldBlockType in cfbtVarConstType)
+                 ) or
+                 ( (rsInProcHeader in fRange) and
+                   (TopPascalCodeFoldBlockType in [cfbtNone, cfbtProgram, cfbtUnitSection])
+                 )
+               )
+            then
+              FTokenState := tsAtExpressionEnd
+            else
+            // procedure foo() public; // after the ")"
+            if (FTokenID = tkSymbol) and (fLine[Run-1] = ')') and
+               (PasCodeFoldRange.BracketNestLevel = 0) and
+               (rsInProcHeader in fRange) and
+               (TopPascalCodeFoldBlockType in [cfbtNone, cfbtProgram, cfbtUnitSection, cfbtProcedure])
+            then
+              FTokenState := tsAtExpressionEnd;
+          end;
         end;
 
         if (IsAtCaseLabel) and (rsAtCaseLabel in fRange) then begin
@@ -7457,7 +7508,7 @@ begin
   if FProcedureHeaderParamAttr.IsEnabled then
     FRequiredStates := FRequiredStates + [reaProcParam, rrsInPropertyNameOrIndex, rrsInParamDeclaration];
   if FProcedureHeaderTypeAttr.IsEnabled then
-    FRequiredStates := FRequiredStates + [reaProcType, rrsInPropertyNameOrIndex, rrsInParamDeclaration, rrsAfterColon];
+    FRequiredStates := FRequiredStates + [reaProcType, rrsInPropertyNameOrIndex, rrsInParamDeclaration];
   if FProcedureHeaderValueAttr.IsEnabled then
     FRequiredStates := FRequiredStates + [reaProcValue];
   if FProcedureHeaderResultAttr.IsEnabled then
@@ -7465,11 +7516,11 @@ begin
 
 
   if FDeclarationVarConstNameAttr.IsEnabled then
-    FRequiredStates := FRequiredStates + [reaDeclVarName, rrsAfterColon];
+    FRequiredStates := FRequiredStates + [reaDeclVarName];
   if FDeclarationTypeNameAttr.IsEnabled then
     FRequiredStates := FRequiredStates + [reaDeclTypeName];
   if FDeclarationTypeAttr.IsEnabled then
-    FRequiredStates := FRequiredStates + [reaDeclType, rrsAfterColon];
+    FRequiredStates := FRequiredStates + [reaDeclType];
   if FDeclarationValueAttr.IsEnabled then
     FRequiredStates := FRequiredStates + [reaDeclValue];
 

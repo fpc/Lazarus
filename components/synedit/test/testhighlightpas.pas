@@ -80,6 +80,7 @@ type
     procedure TestContextForRecordHelper;
     procedure TestContextForRecordCase;
     procedure TestContextForStatic;
+    procedure TestContextForObjective;
     procedure TestCaseLabel;
     procedure TestBreakKeyword;
     procedure TestModifierAttributesForProcedure;
@@ -104,6 +105,9 @@ const
   TK_Bracket = tkSymbol;  _Open    = tkSymbol; _Close = tkSymbol;
   TK_Angle   = tkSymbol;  _Gt      = tkSymbol; _Lt    = tkSymbol;
   _          = tkSpace;
+  _K         = tkKey;
+  _I         = tkIdentifier;
+  _M         = tkModifier;
 
 type
   TNoMergedTokenAttriIndicator = (PlainAttr);
@@ -1057,11 +1061,13 @@ end;
 
 procedure TTestHighlighterPas.TestContextForVarModifiers;
 var
-  n: String;
+  n, s: String;
   AFolds: TPascalCodeFoldBlockTypes;
-  i, j: Integer;
+  i, j, k: Integer;
+  se: TExpTokenInfo;
 begin
   ReCreateEdit;
+  for k := 0 to 1 do
   for i := 0 to 7 do begin
     case i of
       0: n := 'name';
@@ -1073,35 +1079,39 @@ begin
       6: n := 'default';
       7: n := 'absolute';
     end;
+    case k of
+      0: begin s := ';';  se := _Semi     end;
+      1: begin s := '{}'; se := tkComment end;
+    end;
 
     SetLines
       ([ 'Unit A; interface',
          '',
          'var ',
          // Line 3:
-         n+':'+n+'; public;',
-         n+':'+n+'; public name ''name'';',
-         n+':'+n+'; external;',
-         n+':'+n+'; external ''name'';',
-         n+':'+n+'; external name ''name'';',
-         n+':'+n+'; external ''name'' name ''name'';',
-         n+':'+n+'; export;',
-         n+':'+n+'; export name ''name'';',
+         n+':'+n+s+' public;',
+         n+':'+n+s+' public name ''name'';',
+         n+':'+n+s+' external;',
+         n+':'+n+s+' external ''name'';',
+         n+':'+n+s+' external name ''name'';',
+         n+':'+n+s+' external ''name'' name ''name'';',
+         n+':'+n+s+' export;',
+         n+':'+n+s+' export name ''name'';',
          '',
          '',
          // Line 13:
-         n+':'+n+';cvar; public;',
-         n+':'+n+';cvar; public name ''name'';',
-         n+':'+n+';cvar; external;',
-         n+':'+n+';cvar; external ''name'';',
-         '',//n+':'+n+';cvar; external name ''name'';',
-         '',//n+':'+n+';cvar; external ''name'' name ''name'';',
-         n+':'+n+';cvar; export;',
-         n+':'+n+';cvar; export name ''name'';',
-         n+':'+n+';cvar; cvar: cvar; name: name; var',                         // just another variable
+         n+':'+n+s+'cvar; public;',
+         n+':'+n+s+'cvar; public name ''name'';',
+         n+':'+n+s+'cvar; external;',
+         n+':'+n+s+'cvar; external ''name'';',
+         '',//n+':'+n+s+'cvar; external name ''name'';',
+         '',//n+':'+n+s+'cvar; external ''name'' name ''name'';',
+         n+':'+n+s+'cvar; export;',
+         n+':'+n+s+'cvar; export name ''name'';',
+         n+':'+n+s+'cvar; cvar: cvar; name: name; var',                         // just another variable
          '',
          // Line 23:
-         n+':'+n+'=1; public;',
+         n+':'+n+'='+n+'+'+n+'; public;',  // var public: public = public + public; public;
          n+':'+n+'=1; public name ''name'';',
          '',//n+':'+n+'=1; external;',
          '',//n+':'+n+'=1; external ''name'';',
@@ -1164,80 +1174,85 @@ begin
       EnableFolds(AFolds);
 
       CheckTokensForLine(n+':'+n+'; public;', 3,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,
         tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; public name ''name'';', 4,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,
         tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; external;', 5,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,
         tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; external ''name'';', 6,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,
         tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; external name ''name'';', 7,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,
         tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; external ''name'' name ''name'';', 8,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,
         tkModifier, tkSpace, tkString, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; export;', 9,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,
         tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'; export name ''name'';', 10,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,
         tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
 
       CheckTokensForLine(n+':'+n+';cvar; public;', 13,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se,      tkModifier {cvar}, TK_Semi, tkSpace,
         tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+';cvar; public name ''name'';', 14,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se,      tkModifier {cvar}, TK_Semi, tkSpace,
         tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+';cvar; external;', 15,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se,      tkModifier {cvar}, TK_Semi, tkSpace,
         tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+';cvar; external ''name'';', 16,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se,      tkModifier {cvar}, TK_Semi, tkSpace,
         tkModifier, tkSpace, tkString, TK_Semi
        ]);
 //      CheckTokensForLine(n+':'+n+';cvar; external name ''name'';', 17,
 //        tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
-//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,     tkModifier {cvar}, TK_Semi, tkSpace,
+//       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,     tkModifier {cvar}, TK_Semi, tkSpace,
 //       ]);
 //      CheckTokensForLine(n+':'+n+';cvar; external ''name'' name ''name'';', 18,
-//       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi, tkSpace,     tkModifier {cvar}, TK_Semi, tkSpace,
+//       [tkIdentifier, TK_Colon, tkIdentifier, se, tkSpace,     tkModifier {cvar}, TK_Semi, tkSpace,
 //        tkModifier, tkSpace, tkString, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
 //       ]);
       CheckTokensForLine(n+':'+n+';cvar; export;', 19,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se,      tkModifier {cvar}, TK_Semi, tkSpace,
         tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+';cvar; export name ''name'';', 20,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se,      tkModifier {cvar}, TK_Semi, tkSpace,
         tkModifier, tkSpace, tkModifier, tkSpace, tkString, TK_Semi
        ]);
       // just another var:
       CheckTokensForLine(n+':'+n+';cvar; cvar: cvar; name: name; var', 21,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Semi,      tkModifier {cvar}, TK_Semi, tkSpace,
+       [tkIdentifier, TK_Colon, tkIdentifier, se,      tkModifier {cvar}, TK_Semi, tkSpace,
         tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
         tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi,
         tkSpace, tkkey
        ]);
 
-      CheckTokensForLine(n+':'+n+'=1; public;', 23,
-       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkNumber, TK_Semi, tkSpace,
+(* TODO: deprecated and absolute
+  var x: byte = deprecated + deprecated;       // const deprecated
+  var x: byte = deprecated  deprecated 'old';  // actually deprecated
+*)
+if not (i in [5, 7]) then
+      CheckTokensForLine(n+':'+n+'=n+n; public;', 23,
+       [tkIdentifier, TK_Colon, tkIdentifier, TK_Equal, tkIdentifier, tkSymbol, tkIdentifier, TK_Semi, tkSpace,
         tkModifier, TK_Semi
        ]);
       CheckTokensForLine(n+':'+n+'=1; public name ''name'';', 24,
@@ -1319,7 +1334,9 @@ begin
         tkModifier, TK_Semi
        ]);
 
-      if copy(n,1,6) = 'public' then
+      if (strlicomp(pchar(n), pchar('public'), 6) = 0) or
+         (strlicomp(pchar(n), pchar('export'), 6) = 0)
+      then
         continue;
       // NOT for "public"
       CheckTokensForLine(n+':'+n+'='+n+'; cvar; public;', 52,   // key CVAR
@@ -1364,13 +1381,16 @@ end;
 
 procedure TTestHighlighterPas.TestContextForVarModifiers2;
 begin
+  FKeepAllModifierAttribs := False;
   ReCreateEdit;
+  PasHighLighter.ProcedureHeaderName.Clear;
   EnableFolds([cfbtBeginEnd..cfbtNone]);
   SetLines
     ([ 'Unit A; interface',
        'var',
        'name: name;  external name name;',   // external const_NAME keyword_NAME const_NAME
        'name: name;  external foo name name;',   // external const_NAME keyword_NAME const_NAME
+       'foo:function(cvar:cvar=cvar):cvar; cvar;',
        ''
     ]);
 
@@ -1381,6 +1401,164 @@ begin
     CheckTokensForLine('name: name; external foo name name;', 3,
       [tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Semi, tkSpace,
        tkModifier, tkSpace, tkIdentifier, tkSpace, tkModifier, tkSpace, tkIdentifier, TK_Semi]);
+
+    CheckTokensForLine('foo:function(cvar:cvar=cvar):cvar; cvar;', 4,
+      [tkIdentifier, _Col, tkKey, _Open,
+       tkIdentifier, _Col, tkIdentifier, _Eq, tkIdentifier,
+       _Close, _Col, tkIdentifier, _Semi, _,
+       tkModifier, _Semi]);
+
+
+  (* The below all compiles / every cval, public, external, export is a modifier *)
+  SetLines([
+  'program project1; {$Mode objfpc}',  //0
+  'var',
+  'a1: byte; public;',                //2
+  'a2: byte; public name ''a2'';',
+  'a3: byte; cvar; public;',
+  'a4: byte; cvar; public name ''a4'';',
+  '',
+  'a5: byte public;',                 // 7
+  'a6: byte public name ''a6'';',
+  'a7: byte cvar; public;',
+  'a8: byte cvar; public name ''a8'';',
+  '',
+  'a11: byte = 1; public;',           // 12
+  'a12: byte = 1; public name ''a12'';',
+  'a13: byte = 1; cvar; public;',
+  'a14: byte = 1; cvar; public name ''a14'';',
+  '',
+  'const',
+  'c1: byte = 1; public;',            // 18
+  'c2: byte = 1; public name ''c2'';',
+  'c3: byte = 1; cvar; public;',
+  'c4: byte = 1; cvar; public name ''c4'';',
+  '',
+  'procedure p1; public;',            // 23
+  'begin end;',
+  'procedure p2; public name ''p2'';',
+  'begin end;',
+  'procedure p3 public;',
+  'begin end;',
+  'procedure p4 public name ''p4'';',
+  'begin end;',
+  'procedure public() public; begin end;',  // the procedure name public is not modifier
+  'var',
+  'ea1: byte; export;',               // 33
+  'ea2: byte; export name ''ea2'';',
+  'ea3: byte; cvar; export;',
+  'ea4: byte; cvar; export name ''ea4'';',
+  '',
+  'e5: byte export;',                 // 38
+  'e6: byte export name ''ea6'';',
+  'e7: byte cvar; export;',
+  'e8: byte cvar; export name ''ea8'';',
+  '',
+  'ea11: byte = 1; export;',          // 43
+  'ea12: byte = 1; export name ''ea12'';',
+  'ea13: byte = 1; cvar; export;',
+  'ea14: byte = 1; cvar; export name ''ea14'';',
+  '',
+  'const',
+  'ec1: byte = 1; export;',           // 49
+  'ec2: byte = 1; export name ''ec2'';',
+  'ec3: byte = 1; cvar; export;',
+  'ec4: byte = 1; cvar; export name ''ec4'';',
+  '',
+  'procedure ep1; export;',           // 54
+  'begin end;',
+  'procedure ep3 export;',
+  'begin end;',
+  '',
+  '',
+  'var',
+  'xa1: byte; external;',             // 61
+  'xa2: byte; external name ''xa2'';',
+  'xa3: byte; cvar; external;',
+  'xa4: byte; cvar; external ''xa4'';',
+  '',
+  'x5: byte external;',               // 66
+  'x6: byte external name ''xa6'';',
+  'x7: byte cvar; external;',
+  'x8: byte cvar; external ''xa8'';',
+  '',
+  'procedure xp1; external;',         // 71
+  'procedure xp2; external name ''xp2'';',
+  'procedure xp3 external;',
+  'procedure xp4 external name ''xp4'';',
+  '',
+  'begin end.'
+  ]);
+  // public
+  //                         a   :        byte ;        pub/cvar
+  CheckTokensForLine('', 2, [_I, _Col, _, _I, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('', 3, [_I, _Col, _, _I, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('', 4, [_I, _Col, _, _I, _Semi, _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('', 5, [_I, _Col, _, _I, _Semi, _, _M, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  //                         a   :        byte          pub/cvar
+  CheckTokensForLine('', 7, [_I, _Col, _, _I,        _, _M, _Semi]);
+  CheckTokensForLine('', 8, [_I, _Col, _, _I,        _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('', 9, [_I, _Col, _, _I,        _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',10, [_I, _Col, _, _I,        _, _M, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  //                         a   :        byte    =      1          ;        pub/cvar
+  CheckTokensForLine('',12, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',13, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',14, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',15, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  //const
+  CheckTokensForLine('',18, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',19, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',20, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',21, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  //                         proc   p1   ;        public
+  CheckTokensForLine('',23, [_K, _, _I, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',25, [_K, _, _I, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',27, [_K, _, _I,        _, _M, _Semi]);
+  CheckTokensForLine('',29, [_K, _, _I,        _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',31, [_K, _, _I, _Open,_Close, _, _M, _Semi,   _, _K, _, _K, _Semi]);
+
+  // export
+  //                         a   :        byte ;        exp/cvar
+  CheckTokensForLine('', 33, [_I, _Col, _, _I, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('', 34, [_I, _Col, _, _I, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('', 35, [_I, _Col, _, _I, _Semi, _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('', 36, [_I, _Col, _, _I, _Semi, _, _M, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  //                         a   :        byte          exp/cvar
+  CheckTokensForLine('',38, [_I, _Col, _, _I,        _, _M, _Semi]);
+  CheckTokensForLine('',39, [_I, _Col, _, _I,        _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',40, [_I, _Col, _, _I,        _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',41, [_I, _Col, _, _I,        _, _M, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  //                         a   :        byte    =      1          ;        pub/cvar
+  CheckTokensForLine('',43, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',44, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',45, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',46, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  //const
+  CheckTokensForLine('',49, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',50, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',51, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',52, [_I, _Col, _, _I, _, _Eq, _, tkNumber, _Semi, _, _M, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  //                         proc   p1   ;        export
+  CheckTokensForLine('',54, [_K, _, _I, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',56, [_K, _, _I,        _, _M, _Semi]);
+
+  // external
+  //                         a   :        byte ;        ext/cvar
+  CheckTokensForLine('',61, [_I, _Col, _, _I, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',62, [_I, _Col, _, _I, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',63, [_I, _Col, _, _I, _Semi, _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',64, [_I, _Col, _, _I, _Semi, _, _M, _Semi, _, _M, _, tkString, _Semi]);
+  //                         a   :        byte          ext/cvar
+  CheckTokensForLine('',66, [_I, _Col, _, _I,        _, _M, _Semi]);
+  CheckTokensForLine('',67, [_I, _Col, _, _I,        _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',68, [_I, _Col, _, _I,        _, _M, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',69, [_I, _Col, _, _I,        _, _M, _Semi, _, _M, _, tkString, _Semi]);
+  //                         proc   p1   ;        external
+  CheckTokensForLine('',71, [_K, _, _I, _Semi, _, _M, _Semi]);
+  CheckTokensForLine('',72, [_K, _, _I, _Semi, _, _M, _, _M, _, tkString, _Semi]);
+  CheckTokensForLine('',73, [_K, _, _I,        _, _M, _Semi]);
+  CheckTokensForLine('',74, [_K, _, _I,        _, _M, _, _M, _, tkString, _Semi]);
+
 end;
 
 procedure TTestHighlighterPas.TestContextForProperties;
@@ -3402,6 +3580,21 @@ begin
                         tkSymbol                   // ;
                        ]);
   end;
+end;
+
+procedure TTestHighlighterPas.TestContextForObjective;
+begin
+  ReCreateEdit;
+  SetLines
+    ([
+  'program Project1;{$Mode objfpc}{$modeswitch objectivec1}',
+  'type',
+  'TFoo = objcclass external(NSObject)',
+  'end;'
+    ]);
+
+  CheckTokensForLine('TFoo = objcclass external(NSObject)', 2,
+    [_I, _, _Eq, _, _K, _, _M, _Open, _I, _Close]);
 end;
 
 procedure TTestHighlighterPas.TestCaseLabel;
