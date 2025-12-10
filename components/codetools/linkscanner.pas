@@ -173,7 +173,7 @@ const
     'OBJFPC',
     'MACPAS',
     'ISO',
-    'EXTPAS'
+    'EXTENDEDPASCAL'
     );
 type
 

@@ -222,8 +222,15 @@ const
       'xtensa',
       'wasm32'
     );
-  FPCSyntaxModes: array[1..6] of shortstring = (
-    'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas', 'ISO'
+  FPCSyntaxModes: array[1..8] of shortstring = (
+    'FPC',
+    'ObjFPC',
+    'Delphi',
+    'DelphiUnicode',
+    'TP',
+    'MacPas',
+    'ISO',
+    'ExtendedPascal'
     );
 
   Pas2jsPlatformNames: array[1..4] of shortstring = (
