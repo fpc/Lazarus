@@ -739,6 +739,7 @@
         <Filename Value="splash.pp"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="Splash"/>
       </Unit>
       <Unit>
         <Filename Value="unitdependencies.pas"/>
