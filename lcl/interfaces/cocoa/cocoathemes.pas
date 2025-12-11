@@ -210,8 +210,8 @@ begin
     begin
       SetButtonCellToDetails(b, Details);
       CellDrawStart(DC, R, cur, nsr);
-      // don't set backgroundColor for PushButton
-      if (Details.Part<>BP_PUSHBUTTON) and (Details.Part<>BP_CHECKBOX) then
+      // don't set backgroundColor for PushButton, CheckBox and RadioButton
+      if (Details.Part<>BP_PUSHBUTTON) and (Details.Part<>BP_CHECKBOX) and (Details.Part<>BP_RADIOBUTTON) then
         b.setBackgroundColor( NSColor.controlBackgroundColor );
       CellDrawFrame(b, nsr);
       CellDrawEnd(DC, cur);
@@ -909,7 +909,7 @@ begin
   useBezel := false;
   if Details.Element = teToolBar then
   begin
-    BtnType := NSToggleButton;  // it usesd to be NSOnOffButton, but NSOnOffButton is not transparent.
+    BtnType := NSToggleButton;  // it used to be NSOnOffButton, but NSOnOffButton is not transparent.
     BezelStyle := BezelToolBar;
     useBezel := true;
   end else if Details.Element = teButton then
@@ -951,6 +951,7 @@ begin
   if ((Details.Element = teToolBar) and (not IsPushed(Details)) and (not IsChecked(Details)))
     or ((Details.Element = teButton) and (Details.Part = BP_PUSHBUTTON) and IsPushed(Details))
     or ((Details.Element = teButton) and (Details.Part = BP_CHECKBOX))
+    or ((Details.Element = teButton) and (Details.Part = BP_RADIOBUTTON))
   then
     // this is "flat" mode. So unpushed state should draw no borders
     btn.setBordered(false)
