@@ -115,6 +115,8 @@ type
   Identifiers, with chars not contained in Identifiers before and after them. }
 procedure EnumerateKeywords(AKind: integer; KeywordList: string;
   Identifiers: TSynIdentChars; AKeywordProc: TEnumerateKeywordEvent);
+procedure EnumerateKeywords(AKind: integer; KeywordList: array of string;
+  AKeywordProc: TEnumerateKeywordEvent);
 
 implementation
 
@@ -143,6 +145,17 @@ begin
       // pEnd points to a char not in Identifiers, restart after that
       pStart := pEnd + 1;
     until (pStart^ = #0) or (pEnd^ = #0);
+  end;
+end;
+
+procedure EnumerateKeywords(AKind: integer; KeywordList: array of string;
+  AKeywordProc: TEnumerateKeywordEvent);
+var
+  KeyWord: String;
+begin
+  if Assigned(AKeywordProc) then begin
+    for KeyWord in KeywordList do
+      AKeywordProc(KeyWord, AKind);
   end;
 end;
 
