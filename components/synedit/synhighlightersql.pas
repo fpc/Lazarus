@@ -52,11 +52,9 @@ unit SynHighlighterSQL;
 interface
 
 uses
-  SysUtils, Classes,
-  LCLIntf, LCLType,
-  Controls, Graphics,
-  SynEditTypes, SynEditHighlighter, SynEditStrConst,
-  SynHighlighterHashEntries, SynEditMiscProcs, LazEditTextAttributes, LazEditHighlighter;
+  SysUtils, Classes, LCLIntf, LCLType, Controls, Graphics, SynEditTypes, SynEditHighlighter,
+  SynEditStrConst, SynHighlighterHashEntries, SynEditMiscProcs, SynEditHighlighterFoldBase,
+  LazEditTextAttributes, LazEditHighlighter, LazEditHighlighterUtils;
 
 type
   TtkTokenKind = (tkComment, tkDatatype, tkDefaultPackage, tkException,         // DJLP 2000-08-11
@@ -64,8 +62,73 @@ type
     tkSQLPlus, tkString, tkSymbol, tkTableName, tkUnknown, tkVariable,          // DJLP 2000-08-11
     tkCharSet, tkCollation);
 
-  TRangeState = (rsUnknown, rsComment, rsString);
+  TRangeState = (
+    rsUnknown,
+    rsComment, rsString,
+    rsAtStatementBegin,
+    rsAfterUnion,
+    rsAfterOpenBracket,
+    rsAfterCreate, rsAfterDrop, rsAfterAlter,
+    rsAfterDelimiter
+  );
+  TRangeStates = set of TRangeState;
 
+  TSqlCodeFoldBlockType = (
+    cfbtSelect,
+    cfbtSubSelect,
+    cfbtUpdateSelect,
+    cfbtInsertSelect,
+    cfbtUpdate,
+    cfbtInsert,
+    cfbtDelete,
+    cfbtFrom,
+    cfbtJoin,
+    cfbtJoinOn,
+    cfbtWhere,
+    cfbtGroup,
+    cfbtHaving,
+    cfbtOrder,
+    cfbtLimit,
+    cfbtInto,
+    cfbtValues,
+    cfbtCreateTable,
+    cfbtAlterTable,
+    cfbtDropTable,
+    cfbtCreateDb,
+    cfbtDropDb,
+    cfbtCreateProcedure,
+    cfbtBegin,
+    cfbtNone
+  );
+  TSqlCodeFoldBlockTypes = set of TSqlCodeFoldBlockType;
+
+const
+  {$WriteableConst off}
+  cfbtSqlEssential: TSqlCodeFoldBlockTypes = ([]);
+
+  cfbtSqlFoldSupporting: TSqlCodeFoldBlockTypes =
+  ( [ cfbtSelect..cfbtNone ]
+    - [
+    cfbtNone,
+    cfbtDropTable,
+    cfbtCreateDb,
+    cfbtDropDb
+  ]);
+  cfbtSqlFoldDefaultEnable: TSqlCodeFoldBlockTypes =
+  ( [ cfbtSelect..cfbtNone ]
+    - [
+    cfbtNone,
+    cfbtJoin, cfbtJoinOn ]
+  );
+
+  cfbtSqlWordTripletRanges: TSqlCodeFoldBlockTypes = ([
+    cfbtSelect, cfbtSubSelect, cfbtUpdateSelect, cfbtInsertSelect,
+    cfbtUpdate, cfbtInsert, cfbtDelete,
+    cfbtFrom, cfbtInto,
+    cfbtBegin
+  ]);
+
+type
   TProcTableProc = procedure of object;
 
   TSQLDialect = (sqlStandard, sqlInterbase6, sqlMSSQL7, sqlMySQL, sqlMySQL5, sqlMySQL8, sqlOracle,
@@ -81,9 +144,25 @@ type
 
 type
 
+  { TSynSQLSynRange }
+
+  TSynSQLSynRange = class(TSynCustomHighlighterRange)
+  private
+    FBracketNestLevel: Integer;
+  public
+    procedure Clear; override;
+    function Compare(Range: TLazHighlighterRange): integer; override;
+    procedure Assign(Src: TLazHighlighterRange); override;
+    function MaxFoldLevel: Integer; override;
+    procedure ResetBracketNestLevel;
+    procedure IncBracketNestLevel;
+    procedure DecBracketNestLevel;
+    property BracketNestLevel: integer read FBracketNestLevel write FBracketNestLevel;
+  end;
+
   { TSynSQLSyn }
 
-  TSynSQLSyn = class(TSynCustomHighlighter)
+  TSynSQLSyn = class(TSynCustomFoldHighlighter)
   private type
     TSynPasAttribute = (
     attribComment,
@@ -104,15 +183,41 @@ type
     attribCharSet,
     attribCollation
     );
+
+    TSqlKeywordId = (
+      skUnknown,
+      skSelect, skUpdate, skInsert, skDelete,
+      skUnion, skFrom, skJoin, skOn, skWhere, skGroup, skHaving, skOrder, skLimit,
+      skInto, skValues,
+      skCreate, skDrop, skAlter, skDb, skTable,
+      skProcedure,
+      skBegin, skEnd,
+      skDelimiter
+    );
+
+    { TSynSqlHashEntry }
+
+    TSynSqlHashEntry = class;
+    TSynSqlHashEntry = class(specialize TGenSynHashEntry<TSynSqlHashEntry>)
+    private
+      FKeywordId: TSqlKeywordId;
+    public
+      constructor Create(const AKey: string; AKind: integer; AKeywordId: TSqlKeywordId);
+      property KeywordId: TSqlKeywordId read FKeywordId;
+    end;
+
+    TSynSqlHashEntryList = specialize TGenSynHashEntryList<TSynSqlHashEntry>;
+
   private
-    fRange: TRangeState;
+    fRange, FPreviousRange: TRangeStates;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fStringLen: Integer;
     fToIdent: PChar;
     fTokenPos: Integer;
     fTokenID: TtkTokenKind;
-    fKeywords: TSynHashEntryList;
+    fKeywordId: TSqlKeywordId;
+    fKeywords: TSynSqlHashEntryList;
     fTableNames: TStrings;
     fDialect: TSQLDialect;
     fCommentAttri: TSynHighlighterAttributes;
@@ -134,6 +239,7 @@ type
     fCollationAttri: TSynHighlighterAttributesModifier;
     fIdentifiersPtr: PIdentifierTable;
     fmHashTablePtr: PHashTable;
+    function GetSqlCodeFoldRange: TSynSqlSynRange;
     function KeyHash(ToHash: PChar): Integer;
     function KeyComp(const aKey: string): Boolean;
     procedure AndSymbolProc;
@@ -156,6 +262,9 @@ type
     procedure SpaceProc;
     procedure StringProc;
     procedure SymbolProc;
+    procedure RoundOpenProc;
+    procedure RoundCloseProc;
+    procedure SemicolonProc;
     procedure SymbolAssignProc;
     procedure VariableProc;
     procedure UnknownProc;
@@ -169,9 +278,23 @@ type
     procedure InitializeKeywordLists;
     procedure PutTableNamesInKeywordList;
   protected
+    procedure CreateRootCodeFoldBlock; override;
+    // Fold Config
+    function CreateFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
+    function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
+    function GetFoldConfigCount: Integer; override;
+    function GetFoldConfigInternalCount: Integer; override;
+    //procedure DoFoldConfigChanged(Sender: TObject); override;
+    procedure CollectNodeInfo(FinishingABlock: Boolean; ABlockType: Pointer; LevelChanged: Boolean
+      ); override;
+  protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource : String; override;
     function GetInitialDefaultFileFilterMask: string; override;
+    function StartSqlCodeFoldBlock(ABlockType: TSqlCodeFoldBlockType; ABracketLvl: word = 0): TSqlCodeFoldBlockType;
+    function TopSqlCodeFoldBlockType(DownIndex: Integer = 0): TSqlCodeFoldBlockType;
+    function TopSqlCodeFoldBlockBracketLvl(DownIndex: Integer = 0): word;
+    property SqlCodeFoldRange: TSynSqlSynRange read GetSqlCodeFoldRange;
   public
     class function GetLanguageName: string; override;
   public
@@ -182,6 +305,7 @@ type
       ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
+    function GetRangeClass: TLazHighlighterRangeClass; override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
 
@@ -1360,6 +1484,46 @@ begin
   mHashTableMSSQL7['@'] := mHashTableMSSQL7['Z'] + 1;
 end;
 
+{ TSynSQLSynRange }
+
+procedure TSynSQLSynRange.Clear;
+begin
+  inherited Clear;
+  FBracketNestLevel := 0;
+end;
+
+function TSynSQLSynRange.Compare(Range: TLazHighlighterRange): integer;
+begin
+  Result := DoCompare(Range, TSynSQLSynRange.InstanceSize);
+end;
+
+procedure TSynSQLSynRange.Assign(Src: TLazHighlighterRange);
+begin
+  inherited Assign(Src);
+  if Src is TSynSQLSynRange then
+    FBracketNestLevel := TSynSQLSynRange(Src).FBracketNestLevel;
+end;
+
+function TSynSQLSynRange.MaxFoldLevel: Integer;
+begin
+  Result := 100;
+end;
+
+procedure TSynSQLSynRange.ResetBracketNestLevel;
+begin
+  FBracketNestLevel := 0;
+end;
+
+procedure TSynSQLSynRange.IncBracketNestLevel;
+begin
+  inc(FBracketNestLevel);
+end;
+
+procedure TSynSQLSynRange.DecBracketNestLevel;
+begin
+  dec(FBracketNestLevel);
+end;
+
 function TSynSQLSyn.KeyHash(ToHash: PChar): Integer;
 var
   Start: PChar;
@@ -1373,6 +1537,11 @@ begin
   end;
   Result := Result and $FF; // 255
   fStringLen := ToHash - Start;
+end;
+
+function TSynSQLSyn.GetSqlCodeFoldRange: TSynSqlSynRange;
+begin
+  Result := TSynSQLSynRange(CodeFoldRange);
 end;
 
 function TSynSQLSyn.KeyComp(const aKey: string): Boolean;
@@ -1398,9 +1567,10 @@ end;
 
 function TSynSQLSyn.IdentKind(MayBe: PChar): TtkTokenKind;
 var
-  Entry: TSynHashEntry;
+  Entry: TSynSqlHashEntry;
 begin
   fToIdent := MayBe;
+  fKeywordId := skUnknown;
   Entry := fKeywords[KeyHash(MayBe)];
   while Assigned(Entry) do begin
     if Entry.KeywordLen > fStringLen then
@@ -1408,6 +1578,7 @@ begin
     else if Entry.KeywordLen = fStringLen then
       if KeyComp(Entry.Keyword) then begin
         Result := TtkTokenKind(Entry.Kind);
+        fKeywordId := Entry.KeywordId;
         exit;
       end;
     Entry := Entry.Next;
@@ -1444,8 +1615,14 @@ begin
         fProcTable[I] := @SpaceProc;
       '^', '%', '*', '!':
         fProcTable[I] := @SymbolAssignProc;
-      '{', '}', '.', ',', ';', '?', '(', ')', '[', ']', '~':
+      '{', '}', '.', ',', '?', '[', ']', '~':
         fProcTable[I] := @SymbolProc;
+      '(':
+        fProcTable[I] := @RoundOpenProc;
+      ')':
+        fProcTable[I] := @RoundCloseProc;
+      ';':
+        fProcTable[I] := @SemicolonProc;
       else
         fProcTable[I] := @UnknownProc;
     end;
@@ -1454,7 +1631,7 @@ end;
 constructor TSynSQLSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fKeywords := TSynHashEntryList.Create;
+  fKeywords := TSynSqlHashEntryList.Create;
   fTableNames := TStringList.Create;
   TStringList(fTableNames).OnChange := @TableNamesChanged;
   fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
@@ -1508,7 +1685,7 @@ begin
   AddAttribute(fCollationAttri);
   SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;
-  fRange := rsUnknown;
+  fRange := [];
   fDialect := sqlStandard;
   SQLDialect := sqlSybase;
 end;
@@ -1548,24 +1725,24 @@ begin
     NullProc
   else begin
     fTokenID := tkString;
-    if (fRange = rsString) and (LinePtr[Run] = #39) then begin
+    if (rsString in fRange) and (LinePtr[Run] = #39) then begin
       // End of a string after linebreak
       Inc(Run);
-      fRange := rsUnknown;
+      exclude(fRange, rsString);
     end
     else
     if SQLDialect <> sqlMySql then begin
-      fRange := rsString;
+      include(fRange, rsString);
       repeat
         Inc(Run);
       until LinePtr[Run] in [#0, #10, #13, #39];
       if LinePtr[Run] = #39 then begin
         Inc(Run);
-        fRange := rsUnknown;
+        exclude(fRange, rsString);
       end;
     end
     else begin
-      fRange := rsString;
+      include(fRange, rsString);
       repeat
         if (LinePtr[Run] = '\') and (LinePtr[Run+1] in [#39, '\']) then
           Inc(Run);
@@ -1573,7 +1750,7 @@ begin
       until LinePtr[Run] in [#0, #10, #13, #39];
       if LinePtr[Run] = #39 then begin
         Inc(Run);
-        fRange := rsUnknown;
+        exclude(fRange, rsString);
       end;
     end;
   end;
@@ -1601,6 +1778,29 @@ begin
 end;
 
 procedure TSynSQLSyn.IdentProc;
+const
+  cfbtAnySelect: TSqlCodeFoldBlockTypes = ([cfbtSelect, cfbtSubSelect, cfbtUpdateSelect, cfbtInsertSelect]);
+
+  procedure CloseJoinFoldBlocks;
+  begin
+    case TopSqlCodeFoldBlockType of
+      cfbtJoinOn: begin
+          EndCodeFoldBlock;
+          if TopSqlCodeFoldBlockType = cfbtJoin then
+            EndCodeFoldBlock;
+        end;
+      cfbtJoin:
+          EndCodeFoldBlock;
+    end;
+  end;
+
+  function IsAtNewStatementBegin: boolean; inline;
+  begin
+    Result :=  (SqlCodeFoldRange.BracketNestLevel = 0) and
+               (TopSqlCodeFoldBlockType in [cfbtNone, cfbtBegin]) and
+               (rsAtStatementBegin in fRange);
+  end;
+
 begin
   fTokenID := IdentKind((LinePtr + Run));
   inc(Run, fStringLen);
@@ -1610,7 +1810,155 @@ begin
       Inc(Run);
   end else
 {end}                                                                           // DJLP 2000-08-11
-    while fIdentifiersPtr^[LinePtr[Run]] do inc(Run);
+  begin
+    case fKeywordId of
+      skSelect: begin
+          if (SqlCodeFoldRange.BracketNestLevel = 0) then begin
+            if (TopSqlCodeFoldBlockType in [cfbtNone, cfbtBegin]) and
+               (fRange * [rsAtStatementBegin, rsAfterUnion] <> [])
+            then
+              StartSqlCodeFoldBlock(cfbtSelect)
+            else
+            if TopSqlCodeFoldBlockType = cfbtUpdate then
+              StartSqlCodeFoldBlock(cfbtUpdateSelect)
+            else
+            begin
+              if TopSqlCodeFoldBlockType = cfbtInto then
+                EndCodeFoldBlock;
+              if TopSqlCodeFoldBlockType = cfbtInsert then
+                StartSqlCodeFoldBlock(cfbtInsertSelect);
+            end;
+          end
+          else
+          if (fRange * [rsAfterOpenBracket, rsAfterUnion] <> []) then
+            StartSqlCodeFoldBlock(cfbtSubSelect, SqlCodeFoldRange.BracketNestLevel);
+        end;
+      skUpdate: begin
+          if IsAtNewStatementBegin then
+            StartSqlCodeFoldBlock(cfbtUpdate);
+        end;
+      skInsert: begin
+          if IsAtNewStatementBegin then
+            StartSqlCodeFoldBlock(cfbtInsert);
+        end;
+      skDelete: begin
+          if IsAtNewStatementBegin then
+            StartSqlCodeFoldBlock(cfbtDelete);
+        end;
+
+      skUnion: begin
+          if (TopSqlCodeFoldBlockType in cfbtAnySelect)
+          then begin
+            EndCodeFoldBlock;
+            fRange := fRange + [rsAfterUnion];
+          end;
+        end;
+
+      skFrom: begin
+          if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
+            StartSqlCodeFoldBlock(cfbtFrom, SqlCodeFoldRange.BracketNestLevel);
+        end;
+      skJoin: begin
+          CloseJoinFoldBlocks;
+          if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtUpdate]) then
+            StartSqlCodeFoldBlock(cfbtJoin, SqlCodeFoldRange.BracketNestLevel);
+        end;
+      skOn: begin
+          if (TopSqlCodeFoldBlockType = cfbtJoin) then begin
+            StartSqlCodeFoldBlock(cfbtJoinOn, SqlCodeFoldRange.BracketNestLevel);
+          end;
+        end;
+
+      skWhere: begin
+          CloseJoinFoldBlocks;
+          if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtUpdate, cfbtDelete]) then
+            EndCodeFoldBlock;
+          if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
+            StartSqlCodeFoldBlock(cfbtFrom, SqlCodeFoldRange.BracketNestLevel);
+        end;
+      skGroup: begin
+          CloseJoinFoldBlocks;
+          if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtWhere]) then
+            EndCodeFoldBlock;
+          if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
+            StartSqlCodeFoldBlock(cfbtGroup, SqlCodeFoldRange.BracketNestLevel);
+        end;
+      skHaving: begin
+          CloseJoinFoldBlocks;
+          if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtWhere, cfbtGroup]) then // should always be cfbtGroup;
+            EndCodeFoldBlock;
+          if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
+            StartSqlCodeFoldBlock(cfbtHaving, SqlCodeFoldRange.BracketNestLevel);
+        end;
+      skOrder: begin
+          CloseJoinFoldBlocks;
+          if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtUpdate, cfbtDelete, cfbtWhere, cfbtGroup, cfbtHaving]) then
+            EndCodeFoldBlock;
+          if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
+            StartSqlCodeFoldBlock(cfbtOrder, SqlCodeFoldRange.BracketNestLevel);
+        end;
+      skLimit: begin
+          CloseJoinFoldBlocks;
+          if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtUpdate, cfbtDelete, cfbtWhere, cfbtGroup, cfbtHaving, cfbtOrder]) then
+            EndCodeFoldBlock;
+          if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
+            StartSqlCodeFoldBlock(cfbtOrder, SqlCodeFoldRange.BracketNestLevel);
+        end;
+
+      skInto: begin
+          if (TopSqlCodeFoldBlockType in [cfbtInsert]) and
+             (SqlCodeFoldRange.BracketNestLevel = 0)
+          then
+            StartSqlCodeFoldBlock(cfbtInto);
+        end;
+      skValues: begin
+          if (TopSqlCodeFoldBlockType in [cfbtInto]) then
+            EndCodeFoldBlock;
+          if (TopSqlCodeFoldBlockType in [cfbtInsert]) then
+            StartSqlCodeFoldBlock(cfbtValues);
+        end;
+
+      skCreate: if IsAtNewStatementBegin then fRange := fRange + [rsAfterCreate];
+      skDrop:   if IsAtNewStatementBegin then fRange := fRange + [rsAfterDrop];
+      skAlter:  if IsAtNewStatementBegin then fRange := fRange + [rsAfterAlter];
+      skDb: begin
+          if (rsAfterCreate in fRange) then
+            StartSqlCodeFoldBlock(cfbtCreateDb)
+          else
+          if (rsAfterDrop in fRange) then
+            StartSqlCodeFoldBlock(cfbtDropDb);
+        end;
+      skTable: begin
+          if (rsAfterCreate in fRange) then
+            StartSqlCodeFoldBlock(cfbtCreateTable)
+          else
+          if (rsAfterAlter in fRange) then
+            StartSqlCodeFoldBlock(cfbtAlterTable)
+          else
+          if (rsAfterDrop in fRange) then
+            StartSqlCodeFoldBlock(cfbtDropTable);
+        end;
+      skProcedure: begin
+          if (rsAfterCreate in fRange) then begin
+            StartSqlCodeFoldBlock(cfbtCreateProcedure);
+          end;
+        end;
+      skBegin: begin
+          if (TopSqlCodeFoldBlockType = cfbtCreateProcedure) and
+             (SqlCodeFoldRange.BracketNestLevel = 0)
+          then
+            StartSqlCodeFoldBlock(cfbtBegin);
+        end;
+      skEnd: begin
+          if TopSqlCodeFoldBlockType = cfbtBegin then
+            EndCodeFoldBlock;
+        end;
+      skDelimiter: begin
+          if IsAtNewStatementBegin then
+            fRange := fRange + [rsAfterDelimiter];
+        end;
+    end;
+  end;
 end;
 
 procedure TSynSQLSyn.LFProc;
@@ -1719,12 +2067,12 @@ begin
   case LinePtr[Run] of
     '*':
       begin
-        fRange := rsComment;
+        include(fRange, rsComment);
         fTokenID := tkComment;
         repeat
           Inc(Run);
           if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = '/') then begin
-            fRange := rsUnknown;
+            exclude(fRange, rsComment);
             Inc(Run, 2);
             break;
           end;
@@ -1772,6 +2120,36 @@ begin
   fTokenID := tkSymbol;
 end;
 
+procedure TSynSQLSyn.RoundOpenProc;
+begin
+  SymbolProc;
+  SqlCodeFoldRange.IncBracketNestLevel;
+  include(fRange, rsAfterOpenBracket);
+  exclude(FPreviousRange, rsAfterOpenBracket);
+end;
+
+procedure TSynSQLSyn.RoundCloseProc;
+begin
+  SymbolProc;
+  if SqlCodeFoldRange.BracketNestLevel = 0 then
+    exit;
+
+  while TopSqlCodeFoldBlockBracketLvl = SqlCodeFoldRange.BracketNestLevel do
+    EndCodeFoldBlock;
+
+  SqlCodeFoldRange.DecBracketNestLevel;
+end;
+
+procedure TSynSQLSyn.SemicolonProc;
+begin
+  SymbolProc;
+  include(fRange, rsAtStatementBegin);
+  exclude(FPreviousRange, rsAtStatementBegin);
+  SqlCodeFoldRange.ResetBracketNestLevel;
+  while not (TopSqlCodeFoldBlockType in [cfbtNone, cfbtBegin]) do
+    EndCodeFoldBlock;
+end;
+
 procedure TSynSQLSyn.SymbolAssignProc;
 begin
   fTokenID := tkSymbol;
@@ -1813,7 +2191,7 @@ begin
   if (SQLDialect = sqlMySql) and (LinePtr[Run] = '#') and (Run = 0) then          //DDH Changes from Tonci Grgin for MYSQL
   begin
     fTokenID := tkComment;
-    fRange := rsComment;
+    include(fRange, rsComment);
   end else begin
     {$IFDEF SYN_MBCSSUPPORT}
     if LinePtr[Run] in LeadBytes then
@@ -1839,13 +2217,13 @@ begin
         repeat
           Inc(Run);
         until LinePtr[Run] in [#0, #10, #13];
-        fRange := rsUnknown;
+        exclude(fRange, rsComment);
       end
       else begin
 
         repeat
           if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = '/') then begin
-            fRange := rsUnknown;
+            exclude(fRange, rsComment);
             Inc(Run, 2);
             break;
           end;
@@ -1869,15 +2247,28 @@ end;
 
 procedure TSynSQLSyn.Next;
 begin
+  FPreviousRange := fRange;
+
   fTokenPos := Run;
-  case fRange of
-    rsComment:
-      AnsiCProc;
-    rsString:
-      AsciiCharProc;
+  if rsComment in fRange then
+    AnsiCProc
+  else
+  if rsString in fRange then
+    AsciiCharProc
   else
     fProcTable[LinePtr[Run]]();
-  end;
+
+  if not (fTokenID in [tkSpace, tkComment, tkNull]) then
+    fRange := fRange - FPreviousRange
+            * [rsAtStatementBegin, rsAfterOpenBracket, rsAfterUnion,
+               rsAfterCreate, rsAfterDrop, rsAfterAlter
+              ];
+
+  if (rsAfterDelimiter in FPreviousRange) and
+     (TopSqlCodeFoldBlockType in [cfbtNone, cfbtBegin]) and
+     (SqlCodeFoldRange.BracketNestLevel = 0)
+  then
+    fRange := fRange + [rsAtStatementBegin];
 end;
 
 function TSynSQLSyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
@@ -1904,7 +2295,13 @@ end;
 
 function TSynSQLSyn.GetRange: Pointer;
 begin
-  Result := Pointer(PtrInt(fRange));
+  CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
+  Result := inherited GetRange;
+end;
+
+function TSynSQLSyn.GetRangeClass: TLazHighlighterRangeClass;
+begin
+  Result := TSynSQLSynRange;
 end;
 
 function TSynSQLSyn.GetToken: string;
@@ -1979,12 +2376,15 @@ end;
 
 procedure TSynSQLSyn.ResetRange;
 begin
-  fRange := rsUnknown;
+  fRange := [rsAtStatementBegin];
+  FPreviousRange := [];
+  inherited ResetRange;
 end;
 
 procedure TSynSQLSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrUInt(Value));
+  inherited SetRange(Value);
+  fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
 end;
 
 function TSynSQLSyn.GetIdentChars: TSynIdentChars;
@@ -2011,9 +2411,37 @@ end;
 procedure TSynSQLSyn.DoAddKeyword(AKeyword: string; AKind: integer);
 var
   HashValue: integer;
+  kid: TSqlKeywordId;
 begin
   HashValue := KeyHash(PChar(AKeyword));
-  fKeywords[HashValue] := TSynHashEntry.Create(AKeyword, AKind);
+  kid := skUnknown;
+  case UpperCase(AKeyword) of
+    'SELECT':     kid := skSelect;
+    'UPDATE':     kid := skUpdate;
+    'INSERT':     kid := skInsert;
+    'DELETE':     kid := skDelete;
+    'UNION':      kid := skUnion;
+    'FROM':       kid := skFrom;
+    'JOIN':       kid := skJoin;
+    'ON':         kid := skOn;
+    'WHERE':      kid := skWhere;
+    'GROUP':      kid := skGroup;
+    'HAVING':     kid := skHaving;
+    'ORDER':      kid := skOrder;
+    'LIMIT':      kid := skLimit;
+    'INTO':       kid := skInto;
+    'VALUES':     kid := skValues;
+    'CREATE':     kid := skCreate;
+    'DROP':       kid := skDrop;
+    'ALTER':      kid := skAlter;
+    'DB':         kid := skDb;
+    'TABLE':      kid := skTable;
+    'PROCEDURE':  kid := skProcedure;
+    'BEGIN':      kid := skBegin;
+    'END':        kid := skEnd;
+    'DELIMITER':  kid := skDelimiter;
+  ENd;
+  fKeywords[HashValue] := TSynSqlHashEntry.Create(AKeyword, AKind, kid);
 end;
 
 procedure TSynSQLSyn.SetTableNames(const Value: TStrings);
@@ -2029,7 +2457,7 @@ end;
 procedure TSynSQLSyn.PutTableNamesInKeywordList;
 var
   i: Integer;
-  Entry: TSynHashEntry;
+  Entry: TSynSqlHashEntry;
 begin
   for i := 0 to (fTableNames.Count - 1) do
   begin
@@ -2043,6 +2471,56 @@ begin
     if not Assigned(Entry) then
       DoAddKeyword(fTableNames[i], Ord(tkTableName));
   end;
+end;
+
+procedure TSynSQLSyn.CreateRootCodeFoldBlock;
+begin
+  inherited CreateRootCodeFoldBlock;
+  RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtNone)));
+end;
+
+function TSynSQLSyn.CreateFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
+var
+  m: TSynCustomFoldConfigModes;
+begin
+  m := [];
+  if TSqlCodeFoldBlockType(Index) in cfbtSqlWordTripletRanges then
+    m := m + [fmMarkup];
+  if TSqlCodeFoldBlockType(Index) in cfbtSqlFoldSupporting then
+    m := m + [fmFold];
+
+  Result := TSynCustomFoldConfig.Create(m, TSqlCodeFoldBlockType(Index) in cfbtSqlEssential);
+  Result.Modes := m;
+end;
+
+function TSynSQLSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
+begin
+  Result := inherited GetFoldConfigInstance(Index);
+  Result.Enabled := Result.SupportedModes <> [];
+end;
+
+function TSynSQLSyn.GetFoldConfigCount: Integer;
+begin
+  // exclude cfbtNone;
+  Result := ord(high(TSqlCodeFoldBlockType)) -
+            ord(low(TSqlCodeFoldBlockType));
+end;
+
+function TSynSQLSyn.GetFoldConfigInternalCount: Integer;
+begin
+  Result := ord(high(TSqlCodeFoldBlockType)) -
+            ord(low(TSqlCodeFoldBlockType))
+            + 1; // cfbtNone;
+end;
+
+procedure TSynSQLSyn.CollectNodeInfo(FinishingABlock: Boolean; ABlockType: Pointer;
+  LevelChanged: Boolean);
+begin
+  inherited CollectNodeInfo(
+    FinishingABlock,
+    Pointer(PtrUInt(ABlockType) and 255),
+    LevelChanged
+  );
 end;
 
 procedure TSynSQLSyn.InitializeKeywordLists;
@@ -2326,6 +2804,36 @@ end;
 function TSynSQLSyn.GetInitialDefaultFileFilterMask: string;
 begin
   Result := SYNS_FilterSQL;
+end;
+
+function TSynSQLSyn.StartSqlCodeFoldBlock(ABlockType: TSqlCodeFoldBlockType; ABracketLvl: word
+  ): TSqlCodeFoldBlockType;
+begin
+  Result := TSqlCodeFoldBlockType(PtrUInt(
+    StartCodeFoldBlock(Pointer(
+      PtrUInt(ABlockType) +
+      (ABracketLvl << 8)
+    ))
+  ));
+end;
+
+function TSynSQLSyn.TopSqlCodeFoldBlockType(DownIndex: Integer): TSqlCodeFoldBlockType;
+begin
+  Result := TSqlCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType(DownIndex)) and 255);
+end;
+
+function TSynSQLSyn.TopSqlCodeFoldBlockBracketLvl(DownIndex: Integer): word;
+begin
+  Result := word(PtrUInt(TopCodeFoldBlockType(DownIndex)) >> 8);
+end;
+
+{ TSynSQLSyn.TSynSqlHashEntry }
+
+constructor TSynSQLSyn.TSynSqlHashEntry.Create(const AKey: string; AKind: integer;
+  AKeywordId: TSqlKeywordId);
+begin
+  FKeywordId := AKeywordId;
+  inherited Create(AKey, AKind);
 end;
 
 initialization
