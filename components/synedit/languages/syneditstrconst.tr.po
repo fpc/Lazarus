@@ -75,6 +75,10 @@ msgstr "CDATA Seçimi"
 msgid "Character"
 msgstr "Karakter"
 
+#: syneditstrconst.syns_attrcharset
+msgid "Charset"
+msgstr ""
+
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
 msgstr "Diff Yığın İşaretleyici"
@@ -94,6 +98,10 @@ msgstr "Diff Yığın Orijinal Satır Sayısı"
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "Sınıf"
+
+#: syneditstrconst.syns_attrcollation
+msgid "Collation"
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"

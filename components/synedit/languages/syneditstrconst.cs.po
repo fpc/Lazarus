@@ -71,6 +71,10 @@ msgstr "Sekce CDATA"
 msgid "Character"
 msgstr "Znak"
 
+#: syneditstrconst.syns_attrcharset
+msgid "Charset"
+msgstr ""
+
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
 msgstr "Porovnat zvýrazňovač úseku"
@@ -90,6 +94,10 @@ msgstr "Porovnat původní počet řádků úseku"
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "Třída"
+
+#: syneditstrconst.syns_attrcollation
+msgid "Collation"
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"

@@ -163,6 +163,8 @@ resourcestring
   SYNS_AttrVariable             =  'Variable';
   SYNS_AttrWhitespace           =  'Whitespace';
   SYNS_AttrTableName            =  'Table Name';
+  SYNS_AttrCharSet              =  'Charset';
+  SYNS_AttrCollation            =  'Collation';
   SYNS_AttrMathMode             =  'Math Mode';
   SYNS_AttrTextMathMode         =  'Text in Math Mode';
   SYNS_AttrSquareBracket        =  'Square Bracket';
@@ -304,6 +306,8 @@ const
   SYNS_XML_AttrVariable             =  'Variable';
   SYNS_XML_AttrWhitespace           =  'Whitespace';
   SYNS_XML_AttrTableName            =  'Table Name';
+  SYNS_XML_AttrCharSet              =  'Charset';
+  SYNS_XML_AttrCollation            =  'Collation';
   SYNS_XML_AttrMathMode             =  'Math Mode';
   SYNS_XML_AttrTextMathMode         =  'Text in Math Mode';
   SYNS_XML_AttrSquareBracket        =  'Square Bracket';

@@ -64,6 +64,10 @@ msgstr "CDATA lohko"
 msgid "Character"
 msgstr "Merkki"
 
+#: syneditstrconst.syns_attrcharset
+msgid "Charset"
+msgstr ""
+
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
 msgstr ""
@@ -83,6 +87,10 @@ msgstr ""
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "Luokka"
+
+#: syneditstrconst.syns_attrcollation
+msgid "Collation"
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"

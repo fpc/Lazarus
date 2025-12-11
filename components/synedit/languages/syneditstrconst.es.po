@@ -71,6 +71,10 @@ msgstr "Sección CDATA"
 msgid "Character"
 msgstr "Carácter"
 
+#: syneditstrconst.syns_attrcharset
+msgid "Charset"
+msgstr ""
+
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
 msgstr "Marcador de pedazos de diferencias"
@@ -90,6 +94,10 @@ msgstr "Contador de pedazos de línea original de diferencias"
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "Clase"
+
+#: syneditstrconst.syns_attrcollation
+msgid "Collation"
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"

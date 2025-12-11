@@ -72,6 +72,10 @@ msgstr "Sekcija „CDATA“"
 msgid "Character"
 msgstr "Rašmuo"
 
+#: syneditstrconst.syns_attrcharset
+msgid "Charset"
+msgstr ""
+
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
 msgstr "Skirtumų gabalo žymeklis"
@@ -91,6 +95,10 @@ msgstr "Originalo eilučių kiekis skirtumų gabale"
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "Klasė"
+
+#: syneditstrconst.syns_attrcollation
+msgid "Collation"
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"

@@ -74,6 +74,10 @@ msgstr "Секція CDATA"
 msgid "Character"
 msgstr "Символ"
 
+#: syneditstrconst.syns_attrcharset
+msgid "Charset"
+msgstr ""
+
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
 msgstr "Маркер шматка Diff"
@@ -93,6 +97,10 @@ msgstr "К-сть початкових рядків шматка Diff"
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "Клас"
+
+#: syneditstrconst.syns_attrcollation
+msgid "Collation"
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"

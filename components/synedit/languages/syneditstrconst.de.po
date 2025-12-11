@@ -69,6 +69,10 @@ msgstr "CDATA-Abschnitt"
 msgid "Character"
 msgstr "Zeichen"
 
+#: syneditstrconst.syns_attrcharset
+msgid "Charset"
+msgstr ""
+
 #: syneditstrconst.syns_attrchunkmarker
 #, fuzzy
 msgid "Diff Chunk Marker"
@@ -92,6 +96,10 @@ msgstr "Unsprüngliche Chunk-Zeilenzahl des Diff"
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "Klasse"
+
+#: syneditstrconst.syns_attrcollation
+msgid "Collation"
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"

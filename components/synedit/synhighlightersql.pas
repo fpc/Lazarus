@@ -56,7 +56,7 @@ uses
   LCLIntf, LCLType,
   Controls, Graphics,
   SynEditTypes, SynEditHighlighter, SynEditStrConst,
-  SynHighlighterHashEntries, LazEditTextAttributes;
+  SynHighlighterHashEntries, SynEditMiscProcs, LazEditTextAttributes;
 
 type
   TtkTokenKind = (tkComment, tkDatatype, tkDefaultPackage, tkException,         // DJLP 2000-08-11
@@ -80,6 +80,9 @@ type
   THashTable = array[Char] of Integer;
 
 type
+
+  { TSynSQLSyn }
+
   TSynSQLSyn = class(TSynCustomHighlighter)
   private
     fRange: TRangeState;
@@ -109,6 +112,8 @@ type
     fSymbolAttri: TSynHighlighterAttributes;
     fTableNameAttri: TSynHighlighterAttributes;
     fVariableAttri: TSynHighlighterAttributes;
+    fCharSetAttri: TSynHighlighterAttributesModifier;
+    fCollationAttri: TSynHighlighterAttributesModifier;
     fIdentifiersPtr: PIdentifierTable;
     fmHashTablePtr: PHashTable;
     function KeyHash(ToHash: PChar): Integer;
@@ -159,6 +164,7 @@ type
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
 
     function GetTokenAttribute: TLazEditTextAttribute; override;
+    function GetTokenAttributeEx: TLazCustomEditTextAttribute; override;
     function GetTokenID: TtkTokenKind;
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
@@ -198,6 +204,8 @@ type
     property TableNames: TStrings read fTableNames write SetTableNames;
     property VariableAttri: TSynHighlighterAttributes read fVariableAttri
       write fVariableAttri;
+    property CharSetAttri: TSynHighlighterAttributesModifier read fCharSetAttri write fCharSetAttri;
+    property CollationAttri: TSynHighlighterAttributesModifier read fCharSetAttri write fCharSetAttri;
     property SQLDialect: TSQLDialect read fDialect write SetDialect;
   end;
 
@@ -1486,6 +1494,10 @@ begin
   AddAttribute(fTableNameAttri);
   fVariableAttri := TSynHighlighterAttributes.Create(@SYNS_AttrVariable, SYNS_XML_AttrVariable);
   AddAttribute(fVariableAttri);
+  fCharSetAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCharSet, SYNS_XML_AttrCharSet);
+  AddAttribute(fCharSetAttri);
+  fCollationAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCollation, SYNS_XML_AttrCollation);
+  AddAttribute(fCollationAttri);
   SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;
   fDefaultFilter := SYNS_FilterSQL;
@@ -1899,6 +1911,20 @@ begin
     tkCollation: Result := fDataTypeAttri;
   else
     Result := nil;
+  end;
+  if Result <> nil then
+    Result.SetFrameBoundsLog(ToPos(fTokenPos), ToPos(Run));
+end;
+
+function TSynSQLSyn.GetTokenAttributeEx: TLazCustomEditTextAttribute;
+begin
+  Result := GetTokenAttribute;
+  if Result = nil then
+    exit;
+
+  case fTokenID of
+    tkCharSet:   MergeModifierToTokenAttribute(Result, fCharSetAttri, ToPos(fTokenPos), ToPos(Run));
+    tkCollation: MergeModifierToTokenAttribute(Result, fCollationAttri, ToPos(fTokenPos), ToPos(Run));
   end;
 end;
 

@@ -71,6 +71,10 @@ msgstr "CDATA szakasz"
 msgid "Character"
 msgstr "Karakter"
 
+#: syneditstrconst.syns_attrcharset
+msgid "Charset"
+msgstr ""
+
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
 msgstr "Diff - adatblokk jelző"
@@ -90,6 +94,10 @@ msgstr "Diff - adatblokk eredeti sorainak száma"
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "Osztály"
+
+#: syneditstrconst.syns_attrcollation
+msgid "Collation"
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"

@@ -72,6 +72,10 @@ msgstr "CDATA 节"
 msgid "Character"
 msgstr "字符"
 
+#: syneditstrconst.syns_attrcharset
+msgid "Charset"
+msgstr ""
+
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
 msgstr "差异块标记"
@@ -91,6 +95,10 @@ msgstr "差异块原始行数"
 #: syneditstrconst.syns_attrclass
 msgid "Class"
 msgstr "类"
+
+#: syneditstrconst.syns_attrcollation
+msgid "Collation"
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"
