@@ -417,6 +417,14 @@ If you wish to allow use of your version of these files only under the terms of 
         <Filename Value="syntextmatesyn.pas"/>
         <UnitName Value="SynTextMateSyn"/>
       </Item>
+      <Item>
+        <Filename Value="synhighlightersql_mysql5.inc"/>
+        <Type Value="Binary"/>
+      </Item>
+      <Item>
+        <Filename Value="synhighlightersql_mysql8.inc"/>
+        <Type Value="Binary"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs\xml"/>
     <i18n>
