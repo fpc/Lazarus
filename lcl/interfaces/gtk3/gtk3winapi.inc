@@ -91,70 +91,167 @@ begin
   {$endif}
 end;
 
-function TGtk3WidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat
-  ): string;
+{$REGION ' Clipboard '}
+type
+  PClipboardData = ^TClipboardData;
+  TClipboardData = record
+    ClipboardType: TClipboardType;
+    OnRequest: TClipboardRequestEvent;
+    FormatCount: Integer;
+    Formats: PGtkTargetEntry;
+  end;
+
+procedure FreeClipboardData(var AData: PClipboardData);
+var
+  I: Integer;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.ClipboardFormatToMimeType not implemented ...');
-  {$ENDIF}
-  Result:=inherited ClipboardFormatToMimeType(FormatID);
+  if AData <> nil then
+  begin
+    for I := 0 to AData^.FormatCount - 1 do
+      g_free(AData^.Formats[I].target);
+    FreeMem(AData^.Formats);
+    AData^.FormatCount := 0;
+    AData^.Formats := nil;
+  end;
+  AData := nil;
 end;
 
-const
-  sPrimary = 'PRIMARY';
-  sClipboard = 'CLIPBOARD';
+function GetClipboardAtom(ClipboardType: TClipboardType): PGdkAtom;
+begin
+  case ClipboardType of
+  ctPrimarySelection: Result:=TGdkAtom.intern('PRIMARY',false);
+  ctSecondarySelection: Result:=TGdkAtom.intern('SECONDARY',false);
+  ctClipboard: Result:=TGdkAtom.intern('CLIPBOARD',false);
+  else Result:=nil;
+  end;
+end;
+
+procedure ClipboardCallbackClearData(clipboard: PGtkClipboard; data: gpointer); cdecl;
+var
+  LData: PClipboardData absolute data;
+begin
+  if Assigned(LData^.OnRequest) then
+    LData^.OnRequest(0, nil);
+  FreeClipboardData(LData);
+end;
+
+procedure ClipboardCallbackGetData(clipboard: PGtkClipboard;
+  selection: PGtkSelectionData; info: guint; data: gpointer) cdecl;
+var
+  LData: PClipboardData absolute data;
+  LFormat: PGdkAtom;
+  LStream: TMemoryStream;
+begin
+  LFormat := selection^.get_target;
+  if Assigned(LData^.OnRequest) then
+  begin
+    LStream := TMemoryStream.Create;
+    try
+      LData^.OnRequest(TClipboardFormat(LFormat), LStream);
+      selection^.set_(LFormat, 8, LStream.Memory, LStream.Size);
+    finally
+      LStream.Free;
+    end;
+  end
+  else
+    selection^.set_(LFormat, 8, nil, 0);
+end;
+
+function TGtk3WidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
+var p: PChar;
+begin
+  if FormatID<>0 then
+  begin
+    p:=gdk_atom_name(PGdkAtom(FormatID)^);
+    Result:=StrPas(p);
+    g_free(p);
+  end else
+    Result:='';
+end;
 
 function TGtk3WidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 var
+  data:PGtkSelectionData;
   pclp:PGtkClipboard;
   pc:pgchar;
   pcname:PgdkAtom;
 begin
-  case ClipboardType of
-  ctPrimarySelection: pcname:=TGdkAtom.intern(sPrimary,false);
-  ctSecondarySelection: pcname:=nil;
-  ctClipboard: pcname:=TGdkAtom.intern(sClipboard,false);
-  end;
-  if not Assigned(pcname) then exit;
+  pcname:=GetClipboardAtom(ClipboardType);
+  if not Assigned(pcname) then exit(false);
   pclp:=TGtkClipboard.get(pcname);
   if not Assigned(pclp) then exit(false);
   // text handling
   //pclp^.request_text(@ClipboardTextReceivedFunc,Stream);
-  pc:=pclp^.wait_for_text;
-  Stream.Write(pc^,strlen(pc));
+  if FormatID = TClipboardFormat(TGdkAtom.intern('text/plain', true)) then
+  begin
+    pc:=pclp^.wait_for_text;
+    Stream.Write(pc^,strlen(pc));
+  end
+  else
+  begin
+    data:=pclp^.wait_for_contents(PGdkAtom(FormatID));
+    if data <> nil then
+      Stream.Write(data^.get_data^, data^.get_length);
+  end;
   Result:=true;
 end;
 
 function TGtk3WidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
+var
+  LStream: TMemoryStream;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.ClipboardGetFormats not implemented ...');
-  {$ENDIF}
-  Result:=inherited ClipboardGetFormats(ClipboardType, Count, List);
+  Count := 0;
+  List := nil;
+  LStream := TMemoryStream.Create;
+  try
+    Result := ClipboardGetData(ClipboardType, ClipboardRegisterFormat('TARGETS'), LStream);
+    if Result then
+    begin
+      Count := LStream.Size div SizeOf(TClipboardFormat) {=SizeOf(TGdkAtom)};
+      GetMem(List, Count * SizeOf(TClipboardFormat));
+      LStream.Position:=0;
+      LStream.ReadBuffer(List^, Count * SizeOf(TClipboardFormat));
+    end;
+  finally
+    LStream.free;
+  end;
 end;
 
 function TGtk3WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: integer;
   Formats: PClipboardFormat): boolean;
 var
+  data:PClipboardData;
   pclp:PGtkClipboard;
   pcname:PgdkAtom;
+  i:integer;
 begin
-  case ClipboardType of
-  ctPrimarySelection: pcname:=TGdkAtom.intern(sPrimary,false);
-  ctSecondarySelection: pcname:=nil;
-  ctClipboard: pcname:=TGdkAtom.intern(sClipboard,false);
-  end;
-  if not Assigned(pcname) then exit;
+  pcname:=GetClipboardAtom(ClipboardType);
+  if pcname = nil then exit(False);
   pclp:=TGtkClipboard.get(pcname);
   if not Assigned(pclp) then exit(false);
-{  // text handling
-  //pclp^.request_text(@ClipboardTextReceivedFunc,Stream);
-  pc:=pclp^.wait_for_text;
-  Stream.Write(pc^,strlen(pc)); }
-  Result:=true;
+
+  if (Formats = nil) or (FormatCount = 0) then
+  begin
+    pclp^.clear; // it will call the clear-callback of previous owner
+    exit(false);
+  end;
+
+  New(data);
+  data^.OnRequest := OnRequestProc;
+  data^.ClipboardType := ClipboardType;
+  data^.FormatCount := FormatCount;
+  data^.Formats := AllocMem(FormatCount * SizeOf(TGtkTargetEntry));
+  for i := 0 to FormatCount - 1 do
+  begin
+    data^.Formats[i].info := i;
+    data^.Formats[i].flags := 0;
+    data^.Formats[i].target := gdk_atom_name(PGdkAtom(Formats[i])^);
+  end;
+  Result := pclp^.set_with_data(data^.Formats, data^.FormatCount,
+    @ClipboardCallbackGetData, @ClipboardCallbackClearData, data);
 end;
 
 function TGtk3WidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
@@ -168,6 +265,7 @@ begin
     RaiseGDBException(
       'ERROR: TGtk3WidgetSet.ClipboardRegisterFormat gdk not initialized');
 end;
+{$ENDREGION}
 
 function TGtk3WidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
   fnCombineMode: Longint): Longint;
