@@ -118,6 +118,9 @@ procedure TlrFormStorageEditorForm.ListBoxPropsDblClick(Sender: TObject);
 var
   S:string;
 begin
+  if (ListBoxObjects.ItemIndex<0) or (ListBoxObjects.Items.Count=0) or
+     (ListBoxProps.ItemIndex<0) or (ListBoxProps.Items.Count=0) then exit;
+
   S:=ListBoxObjects.Items[ListBoxObjects.ItemIndex]+'.'+ListBoxProps.Items[ListBoxProps.ItemIndex];
   if ListBoxSaved.Items.IndexOf(S)<0 then
     ListBoxSaved.Items.Add(S);
