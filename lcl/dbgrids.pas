@@ -2643,7 +2643,7 @@ begin
       begin
         doOnKeyDown;
         if Key<>0 then begin
-          if FDatalink.Active and not EditorKey then begin
+          if FDatalink.Active then begin
             GridFlags := GridFlags + [gfEditingDone];
             if ssCTRL in Shift then
               FDataLink.DataSet.First
@@ -2660,7 +2660,7 @@ begin
       begin
         doOnKeyDown;
         if Key<>0 then begin
-          if FDatalink.Active and not EditorKey then begin
+          if FDatalink.Active then begin
             GridFlags := GridFlags + [gfEditingDone];
             if ssCTRL in shift then
               FDatalink.DataSet.Last
