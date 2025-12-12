@@ -18,6 +18,7 @@ type
   TTestBaseHighlighterPas = class(TTestBaseHighlighterFoldBase)
   protected
     FKeepAllModifierAttribs: boolean;
+    FKeepGenericModifierAttribs: boolean;
     function PasHighLighter: TSynPasSyn;
     function CreateTheHighLighter: TSynCustomFoldHighlighter; override;
     procedure InitTighLighterAttr; override;
@@ -88,6 +89,8 @@ type
     procedure TestModifierAttributesForVarConstType;
     procedure TestModifierAttributesWithAnonProcedure;
     procedure TestModifierAttributesForLabel;
+    procedure TestModifierAttributesForGenericObjFpc;
+    procedure TestModifierAttributesForGenericDelphi;
     procedure TestCaretAsString;
     procedure TestFoldNodeInfo;
     procedure TestIsComment;
@@ -146,6 +149,12 @@ begin
   PasHighLighter.CommentAnsiAttri.Clear;
   PasHighLighter.CommentCurlyAttri.Clear;
   PasHighLighter.CommentSlashAttri.Clear;
+
+  if not FKeepGenericModifierAttribs then begin
+    PasHighLighter.GenericParamAttr.Clear;
+    PasHighLighter.GenericConstraintAttr.Clear;
+    PasHighLighter.SpecializeParamAttr.Clear;
+  end;
 
   if FKeepAllModifierAttribs then exit;
 
@@ -1382,6 +1391,7 @@ end;
 procedure TTestHighlighterPas.TestContextForVarModifiers2;
 begin
   FKeepAllModifierAttribs := False;
+  FKeepGenericModifierAttribs := False;
   ReCreateEdit;
   PasHighLighter.ProcedureHeaderName.Clear;
   EnableFolds([cfbtBeginEnd..cfbtNone]);
@@ -1566,6 +1576,7 @@ var
   AFolds: TPascalCodeFoldBlockTypes;
   i: Integer;
 begin
+  FKeepGenericModifierAttribs := False;
   for i := 0 to $10-1 do begin
     AFolds := [cfbtBeginEnd..cfbtNone];
     if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
@@ -2459,6 +2470,7 @@ var
   i0, i1, i2, i3, i4: Integer;
   s0, s1, s2: String;
 begin
+  FKeepGenericModifierAttribs := False;
   ReCreateEdit;
   EnableFolds([cfbtClass, cfbtRecord], []);
 
@@ -3701,6 +3713,7 @@ end;
 procedure TTestHighlighterPas.TestBreakKeyword;
 begin
   FKeepAllModifierAttribs := false;
+  FKeepGenericModifierAttribs := False;
   ReCreateEdit;
   SetLines
     ([ 'Unit A; interface implementation',  // 0
@@ -3767,6 +3780,7 @@ var
   s1: String;
 begin
   FKeepAllModifierAttribs := True;
+  FKeepGenericModifierAttribs := False;
   ReCreateEdit;
   for t := 0 to 6 do begin
   ReCreateEdit;
@@ -3864,6 +3878,7 @@ var
   s1: String;
 begin
   FKeepAllModifierAttribs := True;
+  FKeepGenericModifierAttribs := False;
   for t := 0 to 6 do begin
   ReCreateEdit;
   case t of
@@ -3957,6 +3972,7 @@ var
   s1,s2,s3,s4: String;
 begin
   FKeepAllModifierAttribs := True;
+  FKeepGenericModifierAttribs := False;
   ReCreateEdit;
   for t := 0 to 7 do begin
   s2 := '';
@@ -4165,6 +4181,7 @@ var
 begin
   x := 'end; procedure test; begin'; // in case the anon function closed the named function
   FKeepAllModifierAttribs := True;
+  FKeepGenericModifierAttribs := False;
   ReCreateEdit;
   EnableFolds([cfbtBeginEnd..cfbtNone]);
   SetLines
@@ -4300,6 +4317,7 @@ var
   GotoLbl: TSynHighlighterAttributes;
 begin
   FKeepAllModifierAttribs := True;
+  FKeepGenericModifierAttribs := False;
   ReCreateEdit;
   SetLines
     ([ 'Unit A; interface',  // 0
@@ -4381,6 +4399,392 @@ begin
     [tkIdentifier+GotoLbl, TK_Colon]);
 
 
+end;
+
+procedure TTestHighlighterPas.TestModifierAttributesForGenericObjFpc;
+var
+  pam1, pam2: TProcNameAttrbuteModes;
+  GP, GC, SP, ProcName, ProcParam, ProcType, ProcVal, ProcRes: TSynHighlighterAttributesModifier;
+  __O, __C: TExpTokenInfo;
+  __gP, __gC, __gCK, __sP, __sPK: TExpTokenInfo;
+  __pN, __pd, __pG, __pC, __pCK, __pB, __ps, __p_: TExpTokenInfo;
+  i: Integer;
+begin
+  FKeepGenericModifierAttribs := True;
+  ReCreateEdit;
+  GP := PasHighLighter.GenericParamAttr;
+  GC := PasHighLighter.GenericConstraintAttr;
+  SP := PasHighLighter.SpecializeParamAttr;
+  ProcName  := PasHighLighter.ProcedureHeaderName;
+  ProcParam := PasHighLighter.ProcedureHeaderParamAttr;
+  ProcType  := PasHighLighter.ProcedureHeaderTypeAttr;
+  ProcVal  := PasHighLighter.ProcedureHeaderValueAttr;
+  ProcRes   := PasHighLighter.ProcedureHeaderResultAttr;
+
+  SetLines
+    ([ 'Unit A; {$mode objfpc} ',                                        // 0
+      'interface',
+  'type',
+  '',
+  'generic TGen<P1> = class end;',                                       // 4
+  'generic TFoo<P1,P2; P3: class; P4: TObject> = class',
+  'procedure Abc;',
+  'end;',                                                                // 7
+  'generic TFoo2<P1: specialize TFoo<byte,byte,TObject,TObject>; P2> = class end;',
+  'generic TFoo3<P1: specialize TGen<byte>> = class end;',
+  '',
+  'TObj = TObject;',
+  '',                                                                    // 12
+  'TBar = class(specialize TFoo<byte, byte, specialize TGen<word>, Unit1.TObj>)',
+  'generic procedure Bcd<P1:TObj; P2; P3: class; P4>(p: pointer);',
+  'public type',                                                         // 15
+  'T = specialize TFoo<byte, byte, Unit1.TBar, specialize TGen<word>>;',
+  'end;',
+  '',                                                                    // 18
+  'T1 = specialize TFoo<byte, byte, specialize TGen<word>, Unit1.TObj>;',
+  'T2 = specialize TFoo<byte, byte, Unit1.TObj, specialize TGen<word>>;',
+  '',
+  'generic procedure Abc<P1:TBar; P2; P3: class; P4>(p: pointer);',      // 22
+  '',
+  '',
+  'implementation',
+  '',
+  'procedure TFoo.Abc;',                                                 // 27
+  'type',
+  'T = specialize TFoo<byte, byte, specialize TGen<word>, Unit1.TObj>;', // 29
+  'begin',
+  'specialize TFoo<byte, byte, specialize TGen<word>, Unit1.TObj>.Create;',
+  'end;',
+  '',
+  'generic procedure TBar.Bcd<P1; P2; P3; P4>(p: pointer);',             // 34
+  'begin {} end;',
+  '',
+  'generic procedure Abc<P1; P2; P3; P4>(p: pointer);',                  // 37
+  'begin {} end;'
+    ]);
+
+  for i := 0 to 15 do begin
+    case i and 7 of
+      0: begin pam1 := [];                                              pam2 := pam1; end;
+      1: begin pam1 := [pamDots];                                       pam2 := pam1; end;
+      2: begin pam1 := [pamSupressGenParamAttr];
+               pam2 := [pamGenParamIdent, pamSupressGenParamAttr];                 end;
+      3: begin pam1 := [pamGenParamIdent, pamSupressGenParamAttr];
+               pam2 := [pamSupressGenParamAttr];                                   end;
+      4: begin pam1 := [pamGenParamKeyword, pamSupressGenParamAttr];    pam2 := pam1; end;
+      5: begin pam1 := [pamDots, pamGenParamSeparator];                 pam2 := pam1; end;
+// TODO: spaces don't work becaues FLastTokenTypeDeclExtraAttrib does reset it to eaNone
+      //6: begin pam1 := [pamDots, pamGenParamSeparator, pamGenParamSym]; pam2 := pam1; end;
+      //7: begin pam1 := [pamGenParamKeyword, pamGenParamSym, pamSupressGenParamAttr];    pam2 := pam1; end;
+      else continue;
+    end;
+  PasHighLighter.ProcNameIntfAttributeMode := pam1;
+  PasHighLighter.ProcNameImplAttributeMode := pam2;
+
+  case i and 8 of
+    0: begin
+      PasHighLighter.SpecializeParamAttributeMode   := tamIdentifierOnly;
+      PasHighLighter.GenericConstraintAttributeMode := tamIdentifierOnly;
+    end;
+    8: begin
+      PasHighLighter.SpecializeParamAttributeMode   := tamKeywords;
+      PasHighLighter.GenericConstraintAttributeMode := tamKeywords;
+    end;
+  end;
+
+    __O   := _Open;
+    __C   := _Close;
+    // Gen/Spec elemens in type decl / depending on tamKeywords;
+    __gP  := _I + GP;  // gen param
+    __gC  := _I + GC;  // gen constraint
+    __gCK := _K;  if (i and 8) <> 0 then __gCK := _K + GC; // Keyword as gen constraint
+    __sP  := _I + SP;  // specialize param
+    __sPK := _K;  if (i and 8) <> 0 then __spK := _K + SP; // Keyword as specialize param
+
+    // Procname
+    __pN := _I+ProcName;     // Ident, always
+    __pd := _Dot;    if pamDots in pam1 then __pd := _Dot+ProcName;
+    // gen param
+    __pG := __gP;    if pamSupressGenParamAttr in pam1 then __pG := _I;         // gen param in proc
+                     if pamGenParamIdent       in pam1 then __pG := _I+ProcName;
+                     if pamGenParamKeyword     in pam1 then __pG := _I+ProcName; // kwd includes indent
+    __pC := __gC;    if pamSupressGenParamAttr in pam1 then __pC := _I;         // gen param in proc
+                     if pamGenParamIdent       in pam1 then __pC := _I+ProcName;
+                     if pamGenParamKeyword     in pam1 then __pC := _I+ProcName; // kwd includes indent
+    __pCK:= __gCK;   if pamSupressGenParamAttr in pam1 then __pCK:= _K;         // gen param in proc
+                     if pamGenParamKeyword     in pam1 then __pCK:= _K+ProcName;
+    __pB := _Open;   if pamGenParamSeparator   in pam1 then __pB := _Open+ProcName;  // <> Bracket
+    __ps := _Comma;  if pamGenParamSeparator   in pam1 then __ps := _Comma+ProcName;  // :,
+    __p_ := _;       if pamGenParamSym         in pam1 then __p_ := _+ProcName;  // space
+
+
+    CheckTokensForLine('generic TGen<P1> = class end;', 4,
+    [_K, _, _I, __O, __gP, __C, _, _Eq, _, _K, _, _K, _Semi]);
+    CheckTokensForLine('generic TFoo<P1,P2; P3: class; P4: TObject> = class', 5,
+    [_K, _, _I, __O, __gP, _Comma, __gP, _Semi, _, __gP, _Col, _, __gcK, _Semi, _, __gP, _Col, _, __gC, __C,
+     _, _Eq, _, _K]);
+    CheckTokensForLine('procedure Abc;', 6,
+    [_K, _, __pN, _Semi]);
+    CheckTokensForLine('generic TFoo2<P1: specialize TFoo<byte,byte,TObject,TObject>; P2> = class end;', 8,
+    [_K, _, _I, __O, __gp, _Col, _,
+     __gCK, _, __gC, __O, __sp, _Comma, __sp, _Comma, __sp, _Comma, __sp, __C, // specialize as constraint
+     _Semi, _, __gP, __C, _, _Eq, _, _K, _, _K, _Semi  ]);
+    CheckTokensForLine('generic TFoo3<P1: specialize TGen<byte>> = class end;', 9,
+    [_K, _, _I, __O, __gp, _Col, _,
+     __gCK, _, __gC, __O, __sp, __C, // specialize as constraint
+     __C, _, _Eq, _, _K, _, _K, _Semi  ]);
+    CheckTokensForLine('TBar = class(specialize TFoo<byte, byte, specialize TGen<word>, Unit1.TObj>)', 13,
+    [_I, _, _Eq, _, _K, _Open,
+      _K, _, _I, __O, __sP, _Comma, _,__sP, _Comma, _,  // specialze
+      __sPK, _, __sp, __O, __sP, __C,                   // nested specialze
+      _Comma, _, __sP, _Dot, __sP, __C,  _Close    ]);
+    CheckTokensForLine('generic procedure Bcd<P1:TObj; P2; P3: class; P4>(p: pointer);', 14,
+    [_K, _, _K, _, __pN,
+     __pB, __pG {P1}, __ps, __pC, __ps, __p_, __pG {P2}, __ps, __p_,  // <...
+     __pG {P3}, __ps, __p_, __pCK, __ps, __p_, __pG {P4}, __pB,          // ...>
+     _Open, _I, _Col, _, _I, _Close, _Semi   ]);
+    CheckTokensForLine('T = specialize TFoo<byte, byte, Unit1.TBar, specialize TGen<word>>;', 16,
+    [_I, _, _Eq, _, _K, _, _I,
+     __O, __sP, _Comma, _,__sP, _Comma, _,__sP, _Dot, __sP, _Comma, _,
+     __sPK, _, __sP, __O, __sP, __C, __C, _Semi    ]);
+    CheckTokensForLine('T1 = specialize TFoo<byte, byte, specialize TGen<word>, Unit1.TObj>;', 19,
+    [_I, _, _Eq, _, _K, _, _I,
+     __O, __sP, _Comma, _,__sP, _Comma, _,
+     __sPK, _, __sP, __O, __sP, __C, _Comma, _,
+     __sP, _Dot, __sP, __C, _Semi    ]);
+    CheckTokensForLine('T2 = specialize TFoo<byte, byte, Unit1.TObj, specialize TGen<word>>;', 20,
+    [_I, _, _Eq, _, _K, _, _I,
+     __O, __sP, _Comma, _,__sP, _Comma, _,__sP, _Dot, __sP, _Comma, _,
+     __sPK, _, __sP, __O, __sP, __C, __C, _Semi    ]);
+    CheckTokensForLine('generic procedure Abc<P1:TBar; P2; P3: class; P4>(p: pointer);', 22,
+    [_K, _, _K, _, __pN,
+     __pB, __pG {P1}, __ps, __pC, __ps, __p_,   __pG {P2}, __ps, __p_,
+     __pG {P3}, __ps, __p_, __pCK, __ps, __p_,   __pG {P4}, __pB,
+     _Open, _I, _Col, _, _I, _Close, _Semi     ]);
+
+    // implementation
+    // Procname
+    __pN := _I+ProcName;     // Ident, always
+    __pd := _Dot;    if pamDots in pam2 then __pd := _Dot+ProcName;
+    // gen param
+    __pG := __gP;    if pamSupressGenParamAttr in pam2 then __pG := _I;         // gen param in proc
+                     if pamGenParamIdent       in pam2 then __pG := _I+ProcName;
+                     if pamGenParamKeyword     in pam2 then __pG := _I+ProcName; // kwd includes indent
+    __pC := __gC;    if pamSupressGenParamAttr in pam2 then __pC := _I;         // gen param in proc
+                     if pamGenParamIdent       in pam2 then __pC := _I+ProcName;
+                     if pamGenParamKeyword     in pam2 then __pC := _I+ProcName; // kwd includes indent
+    __pCK:= __gCK;   if pamSupressGenParamAttr in pam2 then __pCK:= _K;         // gen param in proc
+                     if pamGenParamKeyword     in pam2 then __pCK:= _K+ProcName;
+    __pB := _Open;   if pamGenParamSeparator   in pam2 then __pB := _Open+ProcName;  // <> Bracket
+    __ps := _Comma;  if pamGenParamSeparator   in pam2 then __ps := _Comma+ProcName;  // :,
+    __p_ := _;       if pamGenParamSym         in pam2 then __p_ := _+ProcName;  // space
+
+    CheckTokensForLine('procedure TFoo.Abc;', 27,
+    [_K, _, __pN, __pd, __pN, _Semi]);
+    CheckTokensForLine('T = specialize TFoo<byte, byte, specialize TGen<word>, Unit1.TObj>;', 29,
+    [_I, _, _Eq, _, _K, _, _I,
+     __O, __sP, _Comma, _,__sP, _Comma, _,
+     __sPK, _, __sP, __O, __sP, __C, _Comma, _,
+     __sP, _Dot, __sP, __C, _Semi    ]);
+    CheckTokensForLine('specialize TFoo<byte, byte, specialize TGen<word>, Unit1.TObj>.Create;', 31,
+    [_K, _, _I,
+     __O, __sP, _Comma, _,__sP, _Comma, _,
+     __sPK, _, __sP, __O, __sP, __C, _Comma, _,
+     __sP, _Dot, __sP, __C,   _Dot, _I, _Semi    ]);
+    CheckTokensForLine('generic procedure TBar.Bcd<P1; P2; P3; P4>(p: pointer);',  34,
+    [_K, _, _K, _, __pN, __pd, __pN, __pB, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __pB,
+    _Open, _I, _Col, _, _I, _Close, _Semi     ]);
+    CheckTokensForLine('generic procedure Abc<P1; P2; P3; P4>(p: pointer);', 37,
+    [_K, _, _K, _, __pN, __pB, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __pB,
+    _Open, _I, _Col, _, _I, _Close, _Semi     ]);
+  end;
+end;
+
+procedure TTestHighlighterPas.TestModifierAttributesForGenericDelphi;
+var
+  pam1, pam2: TProcNameAttrbuteModes;
+  GP, GC, SP, ProcName, ProcParam, ProcType, ProcVal, ProcRes: TSynHighlighterAttributesModifier;
+  __O, __C: TExpTokenInfo;
+  __gP, __gC, __gCK, __sP, __sPK: TExpTokenInfo;
+  __pN, __pd, __pG, __pC, __pCK, __pB, __ps, __p_: TExpTokenInfo;
+  i: Integer;
+begin
+  FKeepGenericModifierAttribs := True;
+  ReCreateEdit;
+  GP := PasHighLighter.GenericParamAttr;
+  GC := PasHighLighter.GenericConstraintAttr;
+  SP := PasHighLighter.SpecializeParamAttr;
+  ProcName  := PasHighLighter.ProcedureHeaderName;
+  ProcParam := PasHighLighter.ProcedureHeaderParamAttr;
+  ProcType  := PasHighLighter.ProcedureHeaderTypeAttr;
+  ProcVal  := PasHighLighter.ProcedureHeaderValueAttr;
+  ProcRes   := PasHighLighter.ProcedureHeaderResultAttr;
+
+  SetLines
+    ([ 'Unit A; {$mode objfpc} ',  // 0
+      'interface',
+  'type',
+  '',
+  'TGen<P1> = class end;',   // 4
+  'TFoo<P1,P2; P3: class; P4: TObject> = class',
+  'procedure Abc;',
+  'end;',
+  'TFoo2<P1:  TFoo<byte,byte,TObject,TObject>; P2> = class end;',
+  'TFoo3<P1:  TGen<byte>> = class end;',
+  '',
+  'TObj = TObject;',  // 11
+  '',
+  'TBar = class(TFoo<byte, byte,  TGen<word>, Unit1.TObj>)',
+  'procedure Bcd<P1:TObj; P2; P3: class; P4>(p: pointer);',
+  'public type',
+  'T =  TFoo<byte, byte, Unit1.TBar,  TGen<word>>;',
+  'end;',
+  '',
+  'T1 =  TFoo<byte, byte,  TGen<word>, Unit1.TObj>;',
+  'T2 =  TFoo<byte, byte, Unit1.TObj,  TGen<word>>;',
+  '',
+  'procedure Abc<P1:TBar; P2; P3: class; P4>(p: pointer);',
+  '',
+  '',
+  'implementation',
+  '',
+  'procedure TFoo<P1, P2, P3, P4>.Abc;', // 27
+  'begin {} end;',
+  '',
+  'procedure TBar.Bcd<P1; P2; P3; P4>(p: pointer);',
+  'begin {} end;',
+  '',
+  'procedure Abc<P1; P2; P3; P4>(p: pointer);',
+  'begin {} end;',
+  ''
+    ]);
+
+  for i := 0 to 15 do begin
+    case i and 7 of
+      0: begin pam1 := [];                                              pam2 := pam1; end;
+      1: begin pam1 := [pamDots];                                       pam2 := pam1; end;
+      2: begin pam1 := [pamSupressGenParamAttr];
+               pam2 := [pamGenParamIdent, pamSupressGenParamAttr];                 end;
+      3: begin pam1 := [pamGenParamIdent, pamSupressGenParamAttr];
+               pam2 := [pamSupressGenParamAttr];                                   end;
+      4: begin pam1 := [pamGenParamKeyword, pamSupressGenParamAttr];    pam2 := pam1; end;
+      5: begin pam1 := [pamDots, pamGenParamSeparator];                 pam2 := pam1; end;
+// TODO: spaces don't work becaues FLastTokenTypeDeclExtraAttrib does reset it to eaNone
+      //6: begin pam1 := [pamDots, pamGenParamSeparator, pamGenParamSym]; pam2 := pam1; end;
+      //7: begin pam1 := [pamGenParamKeyword, pamGenParamSym, pamSupressGenParamAttr];    pam2 := pam1; end;
+      else continue;
+    end;
+  PasHighLighter.ProcNameIntfAttributeMode := pam1;
+  PasHighLighter.ProcNameImplAttributeMode := pam2;
+
+  case i and 8 of
+    0: begin
+      PasHighLighter.SpecializeParamAttributeMode   := tamIdentifierOnly;
+      PasHighLighter.GenericConstraintAttributeMode := tamIdentifierOnly;
+    end;
+    8: begin
+      PasHighLighter.SpecializeParamAttributeMode   := tamKeywords;
+      PasHighLighter.GenericConstraintAttributeMode := tamKeywords;
+    end;
+  end;
+
+    __O   := _Open;
+    __C   := _Close;
+    // Gen/Spec elemens in type decl / depending on tamKeywords;
+    __gP  := _I + GP;  // gen param
+    __gC  := _I + GC;  // gen constraint
+    __gCK := _K;  if (i and 8) <> 0 then __gCK := _K + GC; // Keyword as gen constraint
+    __sP  := _I + SP;  // specialize param
+    __sPK := _K;  if (i and 8) <> 0 then __spK := _K + SP; // Keyword as specialize param
+
+    // Procname
+    __pN := _I+ProcName;     // Ident, always
+    __pd := _Dot;    if pamDots in pam1 then __pd := _Dot+ProcName;
+    // gen param
+    __pG := __gP;    if pamSupressGenParamAttr in pam1 then __pG := _I;         // gen param in proc
+                     if pamGenParamIdent       in pam1 then __pG := _I+ProcName;
+                     if pamGenParamKeyword     in pam1 then __pG := _I+ProcName; // kwd includes indent
+    __pC := __gC;    if pamSupressGenParamAttr in pam1 then __pC := _I;         // gen param in proc
+                     if pamGenParamIdent       in pam1 then __pC := _I+ProcName;
+                     if pamGenParamKeyword     in pam1 then __pC := _I+ProcName; // kwd includes indent
+    __pCK:= __gCK;   if pamSupressGenParamAttr in pam1 then __pCK:= _K;         // gen param in proc
+                     if pamGenParamKeyword     in pam1 then __pCK:= _K+ProcName;
+    __pB := _Open;   if pamGenParamSeparator   in pam1 then __pB := _Open+ProcName;  // <> Bracket
+    __ps := _Comma;  if pamGenParamSeparator   in pam1 then __ps := _Comma+ProcName;  // :,
+    __p_ := _;       if pamGenParamSym         in pam1 then __p_ := _+ProcName;  // space
+
+
+    CheckTokensForLine(' TGen<P1> = class end;', 4,
+    [_I, __O, __gP, __C, _, _Eq, _, _K, _, _K, _Semi]);
+    CheckTokensForLine(' TFoo<P1,P2; P3: class; P4: TObject> = class', 5,
+    [_I, __O, __gP, _Comma, __gP, _Semi, _, __gP, _Col, _, __gcK, _Semi, _, __gP, _Col, _, __gC, __C,
+     _, _Eq, _, _K]);
+    CheckTokensForLine('procedure Abc;', 6,
+    [_K, _, __pN, _Semi]);
+    CheckTokensForLine(' TFoo2<P1:  TFoo<byte,byte,TObject,TObject>; P2> = class end;', 8,
+    [_I, __O, __gp, _Col, _,
+     __gC, __O, __sp, _Comma, __sp, _Comma, __sp, _Comma, __sp, __C, //  as constraint
+     _Semi, _, __gP, __C, _, _Eq, _, _K, _, _K, _Semi  ]);
+    CheckTokensForLine(' TFoo3<P1:  TGen<byte>> = class end;', 9,
+    [_I, __O, __gp, _Col, _,
+     __gC, __O, __sp, __C, //  as constraint
+     __C, _, _Eq, _, _K, _, _K, _Semi  ]);
+    CheckTokensForLine('TBar = class(TFoo<byte, byte,  TGen<word>, Unit1.TObj>)', 13,
+    [_I, _, _Eq, _, _K, _Open,
+      _I, __O, __sP, _Comma, _,__sP, _Comma, _,  // specialze
+      __sp, __O, __sP, __C,                   // nested specialze
+      _Comma, _, __sP, _Dot, __sP, __C,  _Close    ]);
+    CheckTokensForLine(' procedure Bcd<P1:TObj; P2; P3: class; P4>(p: pointer);', 14,
+    [_K, _, __pN,
+     __pB, __pG {P1}, __ps, __pC, __ps, __p_, __pG {P2}, __ps, __p_,  // <...
+     __pG {P3}, __ps, __p_, __pCK, __ps, __p_, __pG {P4}, __pB,          // ...>
+     _Open, _I, _Col, _, _I, _Close, _Semi   ]);
+    CheckTokensForLine('T =  TFoo<byte, byte, Unit1.TBar,  TGen<word>>;', 16,
+    [_I, _, _Eq, _, _I,
+     __O, __sP, _Comma, _,__sP, _Comma, _,__sP, _Dot, __sP, _Comma, _,
+     __sP, __O, __sP, __C, __C, _Semi    ]);
+    CheckTokensForLine('T1 =  TFoo<byte, byte,  TGen<word>, Unit1.TObj>;', 19,
+    [_I, _, _Eq, _, _I,
+     __O, __sP, _Comma, _,__sP, _Comma, _,
+     __sP, __O, __sP, __C, _Comma, _,
+     __sP, _Dot, __sP, __C, _Semi    ]);
+    CheckTokensForLine('T2 =  TFoo<byte, byte, Unit1.TObj,  TGen<word>>;', 20,
+    [_I, _, _Eq, _, _I,
+     __O, __sP, _Comma, _,__sP, _Comma, _,__sP, _Dot, __sP, _Comma, _,
+     __sP, __O, __sP, __C, __C, _Semi    ]);
+    CheckTokensForLine(' procedure Abc<P1:TBar; P2; P3: class; P4>(p: pointer);', 22,
+    [_K, _, __pN,
+     __pB, __pG {P1}, __ps, __pC, __ps, __p_,   __pG {P2}, __ps, __p_,
+     __pG {P3}, __ps, __p_, __pCK, __ps, __p_,   __pG {P4}, __pB,
+     _Open, _I, _Col, _, _I, _Close, _Semi     ]);
+
+    // implementation
+    // Procname
+    __pN := _I+ProcName;     // Ident, always
+    __pd := _Dot;    if pamDots in pam2 then __pd := _Dot+ProcName;
+    // gen param
+    __pG := __gP;    if pamSupressGenParamAttr in pam2 then __pG := _I;         // gen param in proc
+                     if pamGenParamIdent       in pam2 then __pG := _I+ProcName;
+                     if pamGenParamKeyword     in pam2 then __pG := _I+ProcName; // kwd includes indent
+    __pC := __gC;    if pamSupressGenParamAttr in pam2 then __pC := _I;         // gen param in proc
+                     if pamGenParamIdent       in pam2 then __pC := _I+ProcName;
+                     if pamGenParamKeyword     in pam2 then __pC := _I+ProcName; // kwd includes indent
+    __pCK:= __gCK;   if pamSupressGenParamAttr in pam2 then __pCK:= _K;         // gen param in proc
+                     if pamGenParamKeyword     in pam2 then __pCK:= _K+ProcName;
+    __pB := _Open;   if pamGenParamSeparator   in pam2 then __pB := _Open+ProcName;  // <> Bracket
+    __ps := _Comma;  if pamGenParamSeparator   in pam2 then __ps := _Comma+ProcName;  // :,
+    __p_ := _;       if pamGenParamSym         in pam2 then __p_ := _+ProcName;  // space
+
+    CheckTokensForLine('procedure TFoo<P1, P2, P3, P4>.Abc;', 27,
+    [_K, _, __pN, __pB, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __pB,__pd, __pN, _Semi]);
+
+    CheckTokensForLine('procedure TBar.Bcd<P1; P2; P3; P4>(p: pointer);',  30,
+    [_K, _, __pN, __pd, __pN, __pB, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __pB,
+    _Open, _I, _Col, _, _I, _Close, _Semi     ]);
+    CheckTokensForLine('procedure Abc<P1; P2; P3; P4>(p: pointer);', 33,
+    [_K, _, __pN, __pB, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __ps, __p_, __pG, __pB,
+    _Open, _I, _Col, _, _I, _Close, _Semi     ]);
+  end;
 end;
 
 procedure TTestHighlighterPas.TestCaretAsString;
@@ -4545,6 +4949,7 @@ procedure TTestHighlighterPas.TestFoldNodeInfo;
       FoldGroup, FoldAction);
   end;
 begin
+  FKeepGenericModifierAttribs := False;
   ReCreateEdit;
   PushBaseName('');
   //  // +(\d+) +(\d+) +(\d+) +(\d+) +(\d+) +(\d+) +(\d+) +(\d+) +(\d+) +(\d+) +(\S+)

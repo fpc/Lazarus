@@ -212,6 +212,14 @@ msgstr "窗体"
 msgid "Function"
 msgstr "函数"
 
+#: syneditstrconst.syns_attrgenericconstraint
+msgid "Generic param constraint"
+msgstr ""
+
+#: syneditstrconst.syns_attrgenericparam
+msgid "Generic param name"
+msgstr ""
+
 #: syneditstrconst.syns_attrgotolabel
 msgid "Goto Label"
 msgstr "Goto 标签"
@@ -467,6 +475,10 @@ msgstr "选择器"
 #: syneditstrconst.syns_attrspace
 msgid "Space"
 msgstr "空格"
+
+#: syneditstrconst.syns_attrspecializeparam
+msgid "Specialize param"
+msgstr ""
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"

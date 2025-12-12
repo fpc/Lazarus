@@ -214,6 +214,14 @@ msgstr "Форма"
 msgid "Function"
 msgstr "Функція"
 
+#: syneditstrconst.syns_attrgenericconstraint
+msgid "Generic param constraint"
+msgstr ""
+
+#: syneditstrconst.syns_attrgenericparam
+msgid "Generic param name"
+msgstr ""
+
 #: syneditstrconst.syns_attrgotolabel
 msgid "Goto Label"
 msgstr ""
@@ -469,6 +477,10 @@ msgstr "Селектор"
 #: syneditstrconst.syns_attrspace
 msgid "Space"
 msgstr "Пробіл"
+
+#: syneditstrconst.syns_attrspecializeparam
+msgid "Specialize param"
+msgstr ""
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"

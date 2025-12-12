@@ -212,6 +212,14 @@ msgstr "Modulo"
 msgid "Function"
 msgstr "Funzione"
 
+#: syneditstrconst.syns_attrgenericconstraint
+msgid "Generic param constraint"
+msgstr ""
+
+#: syneditstrconst.syns_attrgenericparam
+msgid "Generic param name"
+msgstr ""
+
 #: syneditstrconst.syns_attrgotolabel
 msgid "Goto Label"
 msgstr ""
@@ -467,6 +475,10 @@ msgstr ""
 #: syneditstrconst.syns_attrspace
 msgid "Space"
 msgstr "Spazio"
+
+#: syneditstrconst.syns_attrspecializeparam
+msgid "Specialize param"
+msgstr ""
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"

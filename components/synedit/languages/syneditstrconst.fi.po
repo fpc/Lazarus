@@ -204,6 +204,14 @@ msgstr "Lomake"
 msgid "Function"
 msgstr "Funktio"
 
+#: syneditstrconst.syns_attrgenericconstraint
+msgid "Generic param constraint"
+msgstr ""
+
+#: syneditstrconst.syns_attrgenericparam
+msgid "Generic param name"
+msgstr ""
+
 #: syneditstrconst.syns_attrgotolabel
 msgid "Goto Label"
 msgstr ""
@@ -459,6 +467,10 @@ msgstr "Valitsija"
 #: syneditstrconst.syns_attrspace
 msgid "Space"
 msgstr "Välilyönti"
+
+#: syneditstrconst.syns_attrspecializeparam
+msgid "Specialize param"
+msgstr ""
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
