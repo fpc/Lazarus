@@ -121,6 +121,8 @@ type
     rsAtCaseLabel,
     rsInProcHeader,       // Declaration or implementation header of a Procedure, function, constructor...
     rsWasInProcHeader,    // after the semicolon that ended a "ProcHeader / proc-modifiers are possible
+    rsInProcName,         // after function/procedure, up to "(" or ":" or ";" the NAME.NAME.NAME part
+                          // also unit NAME;
     rsAfterClassMembers,  // Encountered a procedure, function, property, constructor or destructor in a class
     rsAfterClassField,    // after ";" of a field (static needs highlight)
     rsInRaise,            // between raise and either ";" or "at"
@@ -138,13 +140,7 @@ type
     tsAfterVarConstType,  // Immediately after
                           // Also sometime after ";" (in declarations) to prevent a type of name public/export/external to be highlighted
     tsAfterClass,         // after "class" or "record": for "class helper"
-    tsAtProcName,         // procedure ___
-                          // unit ____    // used for "deprecated" detection / check in tsAfterProcName
-                          //    >>> after a procedure/function/... keyword, when the name is expected (not for types)
-                          //    >>> renewed after dot "."
     tsAfterAnonProc,      // [OPT] for rsInParamDeclaration
-    tsAfterProcName,      // procedure NAME
-                          // unit NAME    // used for "deprecated" detection
     tsAfterIs,            // maybe "is nested"
     tsAfterEqualThenType, // TFoo = type
                           //    >>> ONLY if type-helper enabled
@@ -352,6 +348,9 @@ const
     // the following statementblocks can only be nested in another statement.
     - [cfbtBeginEnd, cfbtCase, {cfbtTry,} cfbtExcept, cfbtRepeat,
        cfbtCaseElse, cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo ]);
+
+  cfbtAnyTypeBlock = TPascalCodeFoldBlockTypes([
+    cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock]);
 
   cfbtVarConstType = TPascalCodeFoldBlockTypes([
     cfbtVarBlock, cfbtLocalVarBlock,
@@ -1862,7 +1861,7 @@ begin
       Result := tkKey;
       fRange := fRange - [rsAsm, rsInClassHeader, rsInTypeHelper, rsInObjcProtocol,
                           rsAfterClassMembers, rsProperty, rsInPropertyNameOrIndex,
-                          rsInProcHeader, rsInParamDeclaration,
+                          rsInProcHeader, rsInProcName, rsInParamDeclaration,
                           rsSkipAllPasBlocks];
       if FTokenState in [tsAfterExternal, tsAfterExternalName] then
         FTokenState := tsNone;
@@ -2050,8 +2049,8 @@ begin
       if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
       then StartPascalCodeFoldBlock(cfbtLocalLabelBlock)
       else StartPascalCodeFoldBlock(cfbtLabelBlock);
-      FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
-      fRange := fRange - [rsProperty, rsInPropertyNameOrIndex, rsInProcHeader, rsInParamDeclaration];
+      fRange := fRange - [rsProperty, rsInPropertyNameOrIndex,
+                          rsInProcHeader, rsInProcName, rsInParamDeclaration];
     end;
     Result := tkKey;
   end
@@ -2156,8 +2155,8 @@ begin
       // TODO: cfbtIfThen..cfbtWithDo => only if they are nested in one of the above
       cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo
     ]);
-    FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
-    fRange := fRange - [rsProperty, rsInPropertyNameOrIndex, rsInProcHeader, rsInParamDeclaration];
+    fRange := fRange - [rsProperty, rsInPropertyNameOrIndex,
+                        rsInProcHeader, rsInProcName, rsInParamDeclaration];
     //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumNestFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
   end else
   if FExtendedKeywordsMode and KeyCompU('BREAK') and
@@ -2245,9 +2244,9 @@ begin
       else
       if (tfb in [cfbtNone, cfbtProgram, cfbtUnit, cfbtUnitSection]) then
         StartPascalCodeFoldBlock(cfbtVarBlock);
-      FTokenState := tsNone;  // clear tsAfterProcName for anon undetected procedure
       FNextTokenState := tsAfterVarConstType;
-      fRange := fRange - [rsProperty, rsInPropertyNameOrIndex, rsInProcHeader, rsInParamDeclaration];
+      fRange := fRange - [rsProperty, rsInPropertyNameOrIndex,
+                          rsInProcHeader, rsInProcName, rsInParamDeclaration];
     end;
     Result := tkKey;
   end
@@ -2380,7 +2379,8 @@ begin
     then begin
       FNextTokenState := tsAfterClass;
       fRange := fRange + [rsInClassHeader]
-                       - [rsInTypeSpecification, rsAfterEqual, rsProperty, rsInPropertyNameOrIndex, rsInProcHeader, rsInParamDeclaration];
+                       - [rsInTypeSpecification, rsAfterEqual, rsProperty, rsInPropertyNameOrIndex,
+                          rsInProcHeader, rsInProcName, rsInParamDeclaration];
       FOldRange := FOldRange - [rsInClassHeader];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
@@ -2531,7 +2531,8 @@ begin
     //FNextTokenState := tsAtBeginOfStatement;
     //if (CompilerMode = pcmDelphi) or (pcsTypeHelpers in FModeSwitches {and adv_record}) then
     FNextTokenState := tsAfterClass;
-    fRange := fRange - [rsInTypeSpecification, rsAfterEqual, rsProperty, rsInPropertyNameOrIndex, rsInProcHeader, rsInParamDeclaration];
+    fRange := fRange - [rsInTypeSpecification, rsAfterEqual, rsProperty, rsInPropertyNameOrIndex,
+                        rsInProcHeader, rsInProcName, rsInParamDeclaration];
     if (CompilerMode = pcmDelphi) or (pcsTypeHelpers in FModeSwitches {and adv_record}) then
       fRange := fRange + [rsInClassHeader]; // highlight helper
       FOldRange := FOldRange - [rsInClassHeader];
@@ -2563,7 +2564,8 @@ begin
   if KeyCompU('UNIT') then begin
     if TopPascalCodeFoldBlockType=cfbtNone then StartPascalCodeFoldBlock(cfbtUnit);
     Result := tkKey;
-    FNextTokenState := tsAtProcName;
+    fRange := fRange + [rsInProcName];
+    FOldRange := FOldRange - [rsInProcName];
   end
   else if KeyCompU('USES') then begin
     if (TopPascalCodeFoldBlockType in
@@ -2632,9 +2634,9 @@ begin
         if tfb in [cfbtProcedure, cfbtAnonymousProcedure]
         then StartPascalCodeFoldBlock(cfbtLocalTypeBlock)
         else StartPascalCodeFoldBlock(cfbtTypeBlock);
-        FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
         FNextTokenState := tsAfterVarConstType;
-        fRange := fRange - [rsProperty, rsInPropertyNameOrIndex, rsInProcHeader, rsInParamDeclaration];
+        fRange := fRange - [rsProperty, rsInPropertyNameOrIndex,
+                            rsInProcHeader, rsInProcName, rsInParamDeclaration];
       end;
     end;
     Result := tkKey;
@@ -2707,9 +2709,9 @@ begin
       if (tfb in [cfbtNone, cfbtProgram, cfbtUnit, cfbtUnitSection]) then
         StartPascalCodeFoldBlock(cfbtConstBlock);
 
-      FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
       FNextTokenState := tsAfterVarConstType;
-      fRange := fRange - [rsProperty, rsInPropertyNameOrIndex, rsInProcHeader, rsInParamDeclaration];
+      fRange := fRange - [rsProperty, rsInPropertyNameOrIndex,
+                          rsInProcHeader, rsInProcName, rsInParamDeclaration];
     end;
     Result := tkKey;
   end
@@ -3216,11 +3218,12 @@ begin
            (FAtLineStart and NextTokenIsProcedureName)
         then begin
           DoProcFuncHeader([cfbtClass, cfbtClassSection, cfbtRecord]);
-          FNextTokenState := tsAtProcName;
+          fRange := fRange + [rsInProcName];
         end;
       end;
     end;
     fRange := fRange + [rsInProcHeader];
+    FOldRange := FOldRange - [rsInProcName];
     Result := tkKey;
   end
   else
@@ -3268,11 +3271,12 @@ begin
            (FAtLineStart and NextTokenIsProcedureName(True))
         then begin
           DoProcFuncHeader([cfbtClass, cfbtClassSection, cfbtRecord]);
-          FNextTokenState := tsAtProcName;
+          fRange := fRange + [rsInProcName];
         end;
       end;
     end;
     fRange := fRange + [rsInProcHeader];
+    FOldRange := FOldRange - [rsInProcName];
     Result := tkKey;
   end
   else if KeyCompU('SPECIALIZE') and
@@ -3304,7 +3308,8 @@ begin
   if KeyCompU('OPERATOR') then
   begin
     DoProcFuncHeader([{cfbtClass,} cfbtClassSection, cfbtRecord]); // only in records
-    //FNextTokenState := tsAtProcName;
+    //fRange := fRange + [rsInProcName];
+    FOldRange := FOldRange - [rsInProcName];
     Result := tkKey;
   end
   else
@@ -3449,12 +3454,15 @@ var
 begin
   if KeyCompU('PROPERTY') then begin
     Result := tkKey;
-    fRange := fRange + [rsProperty, rsAtPropertyOrReadWrite] - [rsAfterEqual, rsInTypeSpecification, rsInProcHeader, rsInParamDeclaration];
+    fRange := fRange + [rsProperty, rsAtPropertyOrReadWrite]
+                     - [rsAfterEqual, rsInTypeSpecification,
+                        rsInProcHeader, rsInProcName, rsInParamDeclaration];
     if rrsInPropertyNameOrIndex in FRequiredStates then
       fRange := fRange + [rsInPropertyNameOrIndex];
     tfb := CloseFolds(TopPascalCodeFoldBlockType, [cfbtClassConstBlock, cfbtClassTypeBlock]);
     if tfb in [cfbtClass, cfbtClassSection, cfbtRecord] then
       fRange := fRange + [rsAfterClassMembers];
+    FOldRange := FOldRange - [rsInProcName];
   end
   else
     Result := tkIdentifier;
@@ -3513,7 +3521,8 @@ begin
   if KeyCompU('DESTRUCTOR') then
   begin
     DoProcFuncHeader([cfbtClass, cfbtClassSection, cfbtRecord]);
-    FNextTokenState := tsAtProcName;
+    fRange := fRange + [rsInProcName];
+    FOldRange := FOldRange - [rsInProcName];
     Result := tkKey;
   end else
   if (PasCodeFoldRange.BracketNestLevel = 0) and
@@ -3571,7 +3580,8 @@ begin
        (FAtLineStart and NextTokenIsProcedureName)
     then begin
       DoProcFuncHeader([cfbtClass, cfbtClassSection, cfbtRecord]);
-      FNextTokenState := tsAtProcName;
+      fRange := fRange + [rsInProcName];
+      FOldRange := FOldRange - [rsInProcName];
     end;
     Result := tkKey;
   end else
@@ -3683,7 +3693,8 @@ begin
     ( ( (fRange * [rsProperty, rsAfterEqualOrColon] = [])
         and
         ( (fRange * [rsInProcHeader, rsWasInProcHeader] = [rsWasInProcHeader]) or
-          ( (FTokenState in [tsAtExpressionEnd, tsAfterProcName]) and (PasCodeFoldRange.BracketNestLevel = 0) )
+          ( (FTokenState in [tsAtExpressionEnd]) and (PasCodeFoldRange.BracketNestLevel = 0)
+          )
         )
         and
         (tfb in ProcModifierAllowed - [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock])
@@ -3701,7 +3712,10 @@ begin
      (tfb in ProcModifierAllowed + [cfbtAnonymousProcedure]) and
      (fRange * [rsProperty, rsAfterEqualOrColon] = []) and
      (PasCodeFoldRange.RoundBracketNestLevel = 0) and
-     ( ( (rsInProcHeader in fRange) and (FTokenState in [tsNone, tsAtExpressionEnd, tsAfterProcName]) and  // CDECL without semicolon
+     ( ( ( ( rsInProcName in fRange) and ((FTokenState in [tsAtExpressionEnd]) ) or
+           ( (fRange * [rsInProcName, rsInProcHeader] = [rsInProcHeader]) and (FTokenState in [tsNone, tsAtExpressionEnd]) )
+         ) and  // CDECL without semicolon
+
          ( (PasCodeFoldRange.BracketNestLevel = 0) or
            ( (tfb = cfbtAnonymousProcedure) and (PasCodeFoldRange.BracketNestLevel <= 1) )  // for anon function it may be in [cdecl]
          )
@@ -3778,7 +3792,7 @@ begin
          (fRange * [rsInProcHeader] = []);
     cfbtUnit, cfbtNone:
       Result :=
-         (fRange * [rsInProcHeader] = []) and (FTokenState = tsAfterProcName);
+         (fRange * [rsInProcHeader, rsInProcName] = [rsInProcName]);
   end;
 end;
 
@@ -3852,7 +3866,7 @@ begin
   Result :=
      (fRange * [rsProperty, rsAfterEqualOrColon] = []) and
      (fRange * [rsInProcHeader, rsWasInProcHeader] <> []) and
-     ((FTokenState in [tsAtExpressionEnd, tsAfterProcName, tsAtBeginOfStatement]) or (rsWasInProcHeader in fRange)) and
+     ((FTokenState in [tsAtExpressionEnd, tsAtBeginOfStatement]) or (rsWasInProcHeader in fRange)) and
      ( (PasCodeFoldRange.BracketNestLevel = 0) or
        ( (PasCodeFoldRange.BracketNestLevel = 1) and (rsWasInProcHeader in fRange) ) // ; [inline]
      ) and
@@ -3866,7 +3880,7 @@ begin
   Result :=
      (fRange * [rsProperty, rsAfterEqualOrColon, rsAfterClassMembers] = [rsAfterClassMembers]) and
      (fRange * [rsInProcHeader, rsWasInProcHeader] <> []) and
-     ((FTokenState in [tsAtExpressionEnd, tsAfterProcName, tsAtBeginOfStatement]) or (rsWasInProcHeader in fRange)) and
+     ((FTokenState in [tsAtExpressionEnd, tsAtBeginOfStatement]) or (rsWasInProcHeader in fRange)) and
      ( (PasCodeFoldRange.BracketNestLevel = 0) or
        ( (PasCodeFoldRange.BracketNestLevel = 1) and (rsWasInProcHeader in fRange) ) // ; [virtual]
      ) and
@@ -4622,8 +4636,8 @@ begin
       if tfb in PascalStatementBlocks then  // goto label
         FNextTokenState := tsAtBeginOfStatement;
 
-      FTokenState := tsNone;  // clear tsAfterProcName for undetected anon function
     end;
+    fRange := fRange - [rsInProcName];
   end;
 end;
 
@@ -4634,12 +4648,13 @@ begin
   if fLine[Run] = '=' then begin
     inc(Run);
     // generic TFoo<..>= // no space between > and =
-    if TopPascalCodeFoldBlockType in [cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock] then begin
+    if TopPascalCodeFoldBlockType in cfbtAnyTypeBlock then begin
       fRange := fRange + [rsAfterEqual, rsAfterEqualOrColon, rsInTypeSpecification];
       exit;
     end;
   end;
 
+  FOldRange := FOldRange - [rsInProcName];
   if not(rsInTypeSpecification in fRange) then // must be end of: specialize<...>
     DoAfterOperator;
 end;
@@ -4709,7 +4724,7 @@ begin
   inc(Run);
   if fLine[Run] in ['=', '>'] then inc(Run);
   DoAfterOperator;
-  FOldRange := FOldRange - [rsAtPropertyOrReadWrite];
+  FOldRange := FOldRange - [rsAtPropertyOrReadWrite, rsInProcName];
 end;
 
 procedure TSynPasSyn.CaretProc;
@@ -4726,7 +4741,7 @@ begin
          (rsAfterEqual in fRange)
        )
        or
-       ( (t in [cfbtProcedure, cfbtAnonymousProcedure, cfbtTypeBlock, cfbtLocalTypeBlock]) and
+       ( (t in [cfbtProcedure, cfbtAnonymousProcedure]+cfbtAnyTypeBlock) and
          (PasCodeFoldRange.BracketNestLevel > 0) and
          (fRange * [rsInProcHeader, rsAfterEqual] = [rsInProcHeader, rsAfterEqual])
        )
@@ -4789,10 +4804,10 @@ begin
     fRange := fRange + [rsAtPropertyOrReadWrite];
     FOldRange := FOldRange - [rsAtPropertyOrReadWrite];
   end;
-  if (FTokenState = tsAfterProcName) then begin
+  if (rsInProcName in fRange) then begin
+    FOldRange := FOldRange - [rsInProcName];
     if rsInProcHeader in fRange then
       FTokenTypeDeclExtraAttrib := eaProcName;
-    FNextTokenState := tsAtProcName;
   end
   else
   if rsInRaise in fRange then
@@ -4922,7 +4937,7 @@ begin
     else begin
       if (rrsInParamDeclaration in FRequiredStates) and
          ( ( (PasCodeFoldRange.BracketNestLevel = 0) and
-             ( (FTokenState = tsAfterProcName) or
+             ( (rsInProcName in fRange) or
                ( (rsInProcHeader in fRange) and
                  (tfb in cfbtVarConstTypeExt + [cfbtClass, cfbtClassSection, cfbtRecord])
                )
@@ -4940,6 +4955,7 @@ begin
           fRange := fRange - [rsInTypeSpecification, rsAfterEqual];
       end;
 
+      fRange := fRange - [rsInProcName];
       PasCodeFoldRange.IncRoundBracketNestLevel;
     end;
     exit;
@@ -5069,7 +5085,7 @@ begin
     fRange := fRange - [rsInTypeSpecification];
 
   if (PasCodeFoldRange.BracketNestLevel = 0) and
-     (tfb in [cfbtTypeBlock, cfbtLocalTypeBlock, cfbtClassTypeBlock])
+     (tfb in cfbtAnyTypeBlock)
   then begin
     fRange := fRange + [rsInTypeSpecification];
     fRange := fRange - [rsInProcHeader]; // TODO: should never be needed?
@@ -5140,7 +5156,7 @@ begin
   else
     FNextTokenState := tsAtBeginOfStatement;
 
-  fRange := fRange - [rsInTypeSpecification, rsAfterEqual, rsInTypedConst];
+  fRange := fRange - [rsInTypeSpecification, rsAfterEqual, rsInTypedConst, rsInProcName];
 end;
 
 procedure TSynPasSyn.SlashProc;
@@ -5522,13 +5538,15 @@ begin
   if not (FTokenID in [tkString, tkComment]) then
     GetCustomToken(FTokenID, byte(FTokenHashKey and 255), @fLine[fTokenPos], Run - fTokenPos, FCustomTokenMarkup);
 
+  if rsInProcName in fRange then begin
+    if (reaProcName in FRequiredStates) and (FTokenID = tkIdentifier) and
+       (rsInProcHeader in fRange)
+    then
+      FTokenTypeDeclExtraAttrib := eaProcName;
+    exit;
+  end;
+
   case FTokenState of
-    tsAtProcName: begin
-        if (reaProcName in FRequiredStates) and (FTokenID = tkIdentifier) and
-           (rsInProcHeader in fRange)
-        then
-          FTokenTypeDeclExtraAttrib := eaProcName;
-      end;
     tsAfterDot: begin
       if (reaStructMemeber in FRequiredStates) and (FTokenID = tkIdentifier) then
         FTokenExtraAttribs := FTokenExtraAttribs + [eaStructMemeber];
@@ -5745,12 +5763,6 @@ begin
             FLastTokenTypeDeclExtraAttrib := FTokenTypeDeclExtraAttrib;
         end;
 
-        case FTokenState of
-          tsAtProcName: begin
-              FNextTokenState := tsAfterProcName;
-            end;
-        end;
-
 
         if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull]) then begin
           if (FNextTokenState = tsNone) and (FTokenState in [tsAfterExternal, tsAfterExternalName]) and
@@ -5768,7 +5780,8 @@ begin
                  ) or
                  ( (rsInProcHeader in fRange) and
                    (TopPascalCodeFoldBlockType in [cfbtNone, cfbtProgram, cfbtUnitSection, cfbtClass, cfbtClassSection, cfbtRecord])
-                 )
+                 ) or
+                 ( rsInProcName in fRange )
                )
             then
               FTokenState := tsAtExpressionEnd
@@ -5799,11 +5812,13 @@ begin
              (OldNestLevel > 0)
           then
             FOldRange := FOldRange - [rsInClassHeader, rsInObjcProtocol, rsInTypeHelper];
+          if FTokenID = tkIdentifier then
+            FOldRange := FOldRange - [rsInProcName];
 
           fRange := fRange -
             (FOldRange * [rsAfterEqualOrColon, rsAtPropertyOrReadWrite,
                           rsInClassHeader, rsInObjcProtocol, rsInTypeHelper, rsAfterClassField,
-                          rsAfterIdentifierOrValue, rsWasInProcHeader]
+                          rsAfterIdentifierOrValue, rsWasInProcHeader, rsInProcName]
             );
         end;
 
@@ -6625,11 +6640,13 @@ begin
     'b', 'B': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('begin'), 5) );
     'c', 'C': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('const'), 5) ) or
                         ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('cdecl'), 5) );
+    'f', 'F': Result := ( (FndLen = 8) and KeyCompEx(@FndLine[FndPos], PChar('function'), 8) );
     'i', 'I': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('inline'), 5) ) or
                         ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('interrupt'), 5) );
     'l', 'L': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('label'), 5) );
     'n', 'N': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('none'), 5) );
-    'p', 'P': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('pascal'), 5) );
+    'p', 'P': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('pascal'), 5) ) or
+                        ( (FndLen = 9) and KeyCompEx(@FndLine[FndPos], PChar('procedure'), 9) );
     'r', 'R': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('register'), 5) );
     's', 'S': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('safecall'), 5) ) or
                         ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('stdcall'), 5) );
