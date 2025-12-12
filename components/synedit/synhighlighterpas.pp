@@ -1520,7 +1520,7 @@ begin
       pcmFPC,
       pcmObjFPC:        ModeSwitches := [pcsNestedComments];
       pcmDelphi,
-      pcmDelphiUnicode: ModeSwitches := [pcsTypeHelpers];
+      pcmDelphiUnicode: ModeSwitches := [pcsTypeHelpers, pcsFunctionReferences];
       pcmTP:            ModeSwitches := [];
       pcmGPC:           ModeSwitches := [pcsNestedComments];
       pcmMacPas:        ModeSwitches := [pcsObjectiveC1, pcsObjectiveC2];
