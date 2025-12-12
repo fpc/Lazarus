@@ -63,7 +63,7 @@ type
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
     procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); overload; override;
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); overload; override;
-    function GetDetailSize(Details: TThemedElementDetails): TSize; override;
+    function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
@@ -885,7 +885,7 @@ begin
   end;
 end;
 
-function TQtThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
+function TQtThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize;
 begin
   case Details.Element of
     teButton:

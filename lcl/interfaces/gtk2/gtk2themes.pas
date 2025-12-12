@@ -81,7 +81,7 @@ type
     function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails;
       AIndex: Integer): TGtkStyleParams;
   public
-    function GetDetailSize(Details: TThemedElementDetails): TSize; override;
+    function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
     function GetOption(AOption: TThemeOption): Integer; override;
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails;
@@ -563,7 +563,7 @@ begin
   end;
 end;
 
-function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
+function TGtk2ThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize;
 var
   AValue: TGValue;
 begin
