@@ -73,7 +73,7 @@ type
     function ContentRect({%H-}DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts({%H-}Details: TThemedElementDetails): Boolean; override;
 *)
-    function GetDetailSize(Details: TThemedElementDetails): TSize; override;
+    function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; override;
     function GetOption(AOption: TThemeOption): Integer; override;
   end;
 
@@ -729,8 +729,8 @@ begin
   end;
 end;
 
-function TCocoaThemeServices.GetDetailSize(Details: TThemedElementDetails
-  ): TSize;
+function TCocoaThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails;
+  PPI: Integer): TSize;
 var
   cl : NSCell;
   sz : NSSize;
@@ -741,6 +741,7 @@ begin
     sz:=cl.cellSize;
     Result.cx:=Round(sz.width);
     Result.cy:=Round(sz.height);
+    // FixMe: Is scaling already included?
   end
   else
   if (Details.Element=teHeader) and (Details.Part=HP_HEADERSORTARROW) then
@@ -748,7 +749,7 @@ begin
     Result.cx:=-1; // not supported yet
     Result.cy:=-1;
   end else
-    Result:=inherited GetDetailSize(Details);
+    Result:=inherited GetDetailSizeForPPI(Details, PPI);
 end;
 
 (*
