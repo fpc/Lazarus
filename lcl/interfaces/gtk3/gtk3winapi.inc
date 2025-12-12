@@ -101,6 +101,10 @@ type
     Formats: PGtkTargetEntry;
   end;
 
+var
+  // References to an actual clipboard requests
+  FClipboardData: array[TClipboardType] of Pointer;
+
 procedure FreeClipboardData(var AData: PClipboardData);
 var
   I: Integer;
@@ -130,8 +134,13 @@ procedure ClipboardCallbackClearData(clipboard: PGtkClipboard; data: gpointer); 
 var
   LData: PClipboardData absolute data;
 begin
-  if Assigned(LData^.OnRequest) then
-    LData^.OnRequest(0, nil);
+  // drop ownership only if its callback for an actual request!
+  if FClipboardData[LData^.ClipboardType] = data then
+  begin
+    FClipboardData[LData^.ClipboardType] := nil;
+    if Assigned(LData^.OnRequest) then
+      LData^.OnRequest(0, nil);
+  end;
   FreeClipboardData(LData);
 end;
 
@@ -250,6 +259,7 @@ begin
     data^.Formats[i].flags := 0;
     data^.Formats[i].target := gdk_atom_name(PGdkAtom(Formats[i])^);
   end;
+  FClipboardData[ClipboardType] := data;
   Result := pclp^.set_with_data(data^.Formats, data^.FormatCount,
     @ClipboardCallbackGetData, @ClipboardCallbackClearData, data);
 end;
