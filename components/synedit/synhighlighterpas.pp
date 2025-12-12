@@ -4770,7 +4770,10 @@ begin
   if (rtsAfterDot in FRequiredStates) and
      (TopPascalCodeFoldBlockType in PascalStatementBlocks)
   then
-    FNextTokenState := tsAfterDot;
+    FNextTokenState := tsAfterDot
+  else
+  if FTokenState in [tsAfterExternal, tsAfterExternalName] then
+    FNextTokenState := FTokenState;
 end;
 
 procedure TSynPasSyn.AnsiProc;
@@ -5717,7 +5720,7 @@ begin
 
         if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective, tkNull]) then begin
           if (FNextTokenState = tsNone) and (FTokenState in [tsAfterExternal, tsAfterExternalName]) and
-             (FTokenID in [tkIdentifier, tkString, tkKey, tkSymbol]) // tkSymbol for dot in "unit.ident"
+             (FTokenID in [tkIdentifier, tkString, tkKey])
           then
             FNextTokenState := FTokenState;
 
