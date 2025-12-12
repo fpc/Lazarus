@@ -174,18 +174,16 @@ type
     tsAfterDot            // [OPT] In Code. For member detection
   );
 
-  (*
   TTokenStates = set of TTokenState;
+
 const
-  tsAllAtBeginOfStatement = TTokenStates(
+  tsAnyAtBeginOfStatement = TTokenStates([
     tsAtBeginOfStatement,
     tsAfterVarConstType,
-    tsAfterTypedConst,
-    tsAfterExternal,
-    tsAfterCvar
-  );
+    tsAfterTypedConst
+  ]);
+
 type
-  *)
 
   (* Some Ranges/TokenStates are only required for specific highlights. If those Attr are not enabled the states are not required
   *)
@@ -2489,7 +2487,7 @@ begin
   if KeyCompU('GENERIC') and
     ( (CompilerMode = pcmObjFPC) or not(rsCompilerModeSet in fRange) ) and
     (not(TopPascalCodeFoldBlockType in PascalStatementBlocks+[cfbtUses])) and
-    (FTokenState in [tsAtBeginOfStatement, tsAfterTypedConst, tsAfterClass])
+    (FTokenState in tsAnyAtBeginOfStatement + [tsAfterClass])
   then begin
     // TODO: this may be a generic procedure and need to close a var/const/label/type section
     Result := tkKey;
@@ -2638,7 +2636,6 @@ begin
         FTokenState := tsNone;  // clear tsAfterProcName for undetected anon procedure
         FNextTokenState := tsAfterVarConstType;
         fRange := fRange - [rsProperty, rsInPropertyNameOrIndex, rsInProcHeader, rsInParamDeclaration];
-        FNextTokenState := tsAtBeginOfStatement;
       end;
     end;
     Result := tkKey;
@@ -3816,7 +3813,7 @@ function TSynPasSyn.IsClassSection: Boolean;
 begin
   Result :=
      (fRange * [rsInProcHeader, rsAfterEqualOrColon] = []) and
-     ( (FTokenState in [tsAtBeginOfStatement, tsAfterVarConstType, tsAfterClass, tsAfterTypedConst]) or (fRange * [rsInClassHeader, rsInObjcProtocol, rsAfterIdentifierOrValue] <> []) ) and
+     ( (FTokenState in tsAnyAtBeginOfStatement + [tsAfterClass]) or (fRange * [rsInClassHeader, rsInObjcProtocol, rsAfterIdentifierOrValue] <> []) ) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]);
 end;
