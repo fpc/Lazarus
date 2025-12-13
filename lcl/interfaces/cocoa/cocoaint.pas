@@ -813,7 +813,7 @@ begin
   PrevLCLMenu := CurLCLMenu;
   CurLCLMenu := ALCLMenu;
 
-  if NOT Assigned(self.MainFormMenu) then begin
+  if NOT Assigned(self.MainFormMenu) or (self.MainFormMenu.numberOfItems=0) then begin
     self.MainFormMenu:= AMenu;
   end;
 
