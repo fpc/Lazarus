@@ -1194,6 +1194,9 @@ procedure TEditorColorOptionsFrame.FillColorElementListBox;
         SYNS_XML_AttrDeclarationVarConstName, SYNS_XML_AttrDeclarationTypeName,
         SYNS_XML_AttrDeclarationType, SYNS_XML_AttrDeclarationValue:
           AGroupName := dlgAddHiAttrGroup_DeclSection;
+        SYNS_XML_AttrSpecializeParam,
+        SYNS_XML_AttrGenericParam, SYNS_XML_AttrGenericConstraint:
+          AGroupName := dlgAddHiAttrGroup_SpecializeGenericSection;
       end;
     end
     else
@@ -1459,6 +1462,9 @@ begin
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       PreviewEdits[a].BeginUpdate;
     try
+      if FCurrentHighlighter <> nil then
+        EditorOpts.GetHighlighterSettings(FCurrentHighlighter);
+
       if not FIsEditingDefaults then
         FCurrentColorScheme.ApplyTo(FCurrentHighlighter);
 
@@ -1481,6 +1487,7 @@ begin
             EditorOpts.GutterRightPartList[i].ApplyLineColorTo(PreviewEdits[a].Gutter.Parts.ByClass[EditorOpts.GutterRightPartList[i].GClass, 0], Attri, AttriNum);
         end;
 
+        UpdatePreviewEdits;
         PreviewEdits[a].Invalidate;
       end;
     finally

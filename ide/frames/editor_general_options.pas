@@ -123,6 +123,7 @@ type
   end;
 
 implementation
+uses editor_markup_options;
 
 {$R *.lfm}
 
@@ -345,12 +346,16 @@ end;
 procedure TEditorGeneralOptionsFrame.UpdatePreviewEdits;
 var
   a: Integer;
+  MrkUpFrm: TEditorMarkupOptionsFrame;
 begin
   for a := Low(PreviewEdits) to High(PreviewEdits) do
     if PreviewEdits[a].Highlighter is TSynPasSyn then begin
       TSynPasSyn(PreviewEdits[a].Highlighter).ExtendedKeywordsMode := PasExtendedKeywordsMode;
       TSynPasSyn(PreviewEdits[a].Highlighter).StringKeywordMode := PasStringKeywordMode;
     end;
+
+  MrkUpFrm := TEditorMarkupOptionsFrame(FDialog.FindEditor(TEditorMarkupOptionsFrame));
+  if MrkUpFrm <> nil then MrkUpFrm.UpdatePreviews;
 end;
 
 procedure TEditorGeneralOptionsFrame.AlwaysVisibleCursorCheckBoxChange(

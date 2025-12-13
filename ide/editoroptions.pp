@@ -1595,6 +1595,12 @@ type
     property ByClass[AIndex: TSynGutterPartBaseClass]: TEditorSynGutterOptions read GetByClass;
   end;
 
+  TProcHeaderNameMode = (
+    pnmGenericOnly,
+    pnmGenericAndProcName,
+    pnmProcNameOnly,
+    pnmPlain
+  );
   { TEditorOptionsBase }
 
   TEditorOptionsBase = class(TIDEEditorOptions)
@@ -1654,6 +1660,9 @@ type
     FDeclaredTypeAttributeMode: TSynPasTypeAttributeMode;
     FDeclaredValueAttributeMachesStringNum: Boolean;
     FDeclaredValueAttributeMode: TSynPasTypeAttributeMode;
+    FGenericParamAttrMode: TSynPasTypeAttributeMode;
+    FProcHeaderNameDeclMode: TProcHeaderNameMode;
+    FProcHeaderNameImplMode: TProcHeaderNameMode;
     // Multi window
     fCtrlMiddleTabClickClosesOthers: Boolean;
     fMiddleTabClickClosesOthersModifier: TShiftState;
@@ -1763,6 +1772,12 @@ type
        read FDeclaredValueAttributeMode write FDeclaredValueAttributeMode default tamIdentifierOnly;
     property DeclaredValueAttributeMachesStringNum: Boolean
        read FDeclaredValueAttributeMachesStringNum write FDeclaredValueAttributeMachesStringNum default False;
+    property GenericParamAttrMode: TSynPasTypeAttributeMode
+       read FGenericParamAttrMode write FGenericParamAttrMode default tamIdentifierOnly;
+    property ProcHeaderNameDeclMode: TProcHeaderNameMode
+       read FProcHeaderNameDeclMode write FProcHeaderNameDeclMode default pnmGenericOnly;
+    property ProcHeaderNameImplMode: TProcHeaderNameMode
+       read FProcHeaderNameImplMode write FProcHeaderNameImplMode default pnmProcNameOnly;
     // Multi window
     property CtrlMiddleTabClickClosesOthers: Boolean
       read fCtrlMiddleTabClickClosesOthers write fCtrlMiddleTabClickClosesOthers stored False default True;
@@ -3446,43 +3461,51 @@ begin
     SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('pp;pas;inc;lpr;lrs;dpr;dpk;fpd');
     SampleSource :=
-      'program Sample; { Comment with Pasdoc @author someone }'#13 +
-      '{$R- compiler directive}'#13 +
-      'type'#13 +
-      '  TMyData = class abstract'#13 +
-      '  public'#13 +
-      '    function GetItem(AnIndex: integer): boolean; virtual; experimental;'#13 +
-      '    property Item[AnIndex: integer]: boolean read GetItem;'#13 +
-      '  end deprecated ''reason'';'#13 +
-      'procedure TForm1.Button1Click(Sender: TObject);'#13 +
-      'label JumpPos;'#13 +
-      'const BREAK_CHAR: char = ^C;'#13 +
-      'var  // Slash Comment'#13 +
-      '  Number, I, X: Integer;'#13 +
-      '  Text: String; MoreText: AnsiString;'#13 +
-      '  List: Array of record x,y: Byte; end;'#13 +
-      'begin'#13 +
-      '  Number := 12345 * (2 + 9); // << Brackets at caret'#13 +
-      '  Caption := ''The number is '' + IntToStr(Number);'#13 +
-      '  asm'#13 + '    MOV AX,1234h'#13 +
-      '    MOV Number,AX'#13 +
-      '  end;'#13 +
-      '  {%region /fold}'#13 +
-      '  {%endregion}'#13 +
-      '  X := 10 + (Number * (ord(''A'') + (I - Abs(X * (I+(1-((X))))))));'#13 +
-      '  inc(X); {$R+} { Selected text }'#13 +
-      '  for I := 0 to Number do {$R-} { execution point }'#13 +
-      '  begin'#13 +
-      '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13 +
-      '    Dec(X, 3); {$R+} { Disabled breakpoint }'#13 +
-      '    {$R-} // { Invalid breakpoint }'#13 +
-      '    WriteLN(X); {$R-} { Unknown breakpoint }'#13 +
-      '    X := X + 1.0; {$R-} { Error line }'#13 +
-      '    case ModalResult of'#13+
-      '      mrOK: inc(X);'#13+
-      '      mrCancel, mrIgnore: dec(X);'#13+
-      '    end;'#13+
-      '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13 +
+  'program Sample; { Comment with Pasdoc @author someone }'#13+
+  '{$mode objfpc}{$R- compiler directive}'#13+
+  'type'#13+
+  '  TMyData = class abstract'#13+
+  '  public'#13+
+  '    function GetItem(AnIndex: integer = -1): boolean; virtual; abstract; experimental;'#13+
+  '    generic procedure Test<Param1>(foo: Param1);'#13+
+  '    property Item[AnIndex: integer]: boolean read GetItem;'#13+
+  '  end deprecated ''reason'';'#13+
+  '  generic TProc<A: specialize TGen<byte>> = procedure (foo: A); cdecl;'#13+
+  ''#13+
+  '  generic TSomeGeneric<Param1; Param2: TConstrain; const Val: word> = class(specialize TFoo<Param2>)'#13+
+  '  end;'#13+
+  ''#13+
+  'procedure TForm1.Button1Click(Sender: TObject);'#13+
+  'label JumpPos;'#13+
+  'const BREAK_CHAR: char = ^C;'#13+
+  'var  // Slash Comment'#13+
+  '  Number, I, X: Integer;'#13+
+  '  MyVar: System.integer = 2 * (1 + 5);'#13+
+  '  Text: String; MoreText: AnsiString;'#13+
+  '  List: Array of record x,y: Byte; end;'#13+
+  'begin'#13+
+  '  Number := 12345 * (2 + 9); // << Brackets at caret'#13+
+  '  Caption := ''The number is '' + IntToStr(Number);'#13+
+  '  asm'#13+
+  '    MOV AX,1234h'#13+
+  '    MOV Number,AX'#13+
+  '  end;'#13+
+  '  {%region /fold}'#13+
+  '  {%endregion}'#13+
+  '  X := 10 + (Number * (ord(''A'') + (I - Abs(X * (I+(1-((X))))))));'#13+
+  '  inc(X); {$R+} { Selected text }'#13+
+  '  for I := 0 to Number do {$R-} { execution point }'#13+
+  '  begin'#13+
+  '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13+
+  '    Dec(X, 3); {$R+} { Disabled breakpoint }'#13+
+  '    {$R-} // { Invalid breakpoint }'#13+
+  '    WriteLN(X); {$R-} { Unknown breakpoint }'#13+
+  '    X := X + 1.0; {$R-} { Error line }'#13+
+  '    case ModalResult o'#13+
+  '      mrOK: inc(X)'#13+
+  '      mrCancel, mrIgnore: dec(X)'#13+
+  '    end'#13+
+  '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13+
 //{ $IFDEF WithSynMarkupIfDef}
 //      '    {$IFDEF Foo}' +
 //      '      X := X + 1.0; {$R-} { Error line }'#13 +
@@ -3498,22 +3521,33 @@ begin
 //      '        X := 10;'#13 +
 //      '    {$ENDIF}' +
 //{ $ENDIF}
-      '  end;'#13 +
-      'JumpPos:'#13 +
-      'end;'#13+
-      '(* Multiline Ansi-Comment'#13+
-      ' * Foo Bar'#13+
-      ' *)'#13+
-      ''#13 + #13;
-    AddAttrSampleLines[ahaDisabledBreakpoint] := 30;
-    AddAttrSampleLines[ahaEnabledBreakpoint] := 29;
-    AddAttrSampleLines[ahaInvalidBreakpoint] := 31;
-    AddAttrSampleLines[ahaUnknownBreakpoint] := 32;
-    AddAttrSampleLines[ahaErrorLine] := 33;
-    AddAttrSampleLines[ahaExecutionPoint] := 27;
-    AddAttrSampleLines[ahaTextBlock] := 26;
-    AddAttrSampleLines[ahaFoldedCode] := 23;
-    CaretXY := Point(21, 17);
+  '  end;'#13+
+  'JumpPos:'#13+
+  'end;'#13+
+  '(* Multiline Ansi-Comment'#13+
+  '* Foo Bar'#13+
+  '*)'#13+
+  ''#13+
+  'generic procedure TMyData.Test<Param1>(foo: Param1);'#13+
+  'begin {} end;'#13+
+  ''#13+
+  '{$Mode delphi}'#13+
+  'procedure TGenClass<ABC>.Something<XYZ>(a: XYZ);'#13+
+  'begin {} end;'#13+
+  ''#13+
+  '{  Multiline Curly-Comment'#13+
+  'Foo Bar'#13+
+  '}'#13+
+  ''#13 + #13;
+    AddAttrSampleLines[ahaDisabledBreakpoint] := 37;
+    AddAttrSampleLines[ahaEnabledBreakpoint] := 36;
+    AddAttrSampleLines[ahaInvalidBreakpoint] := 38;
+    AddAttrSampleLines[ahaUnknownBreakpoint] := 39;
+    AddAttrSampleLines[ahaErrorLine] := 40;
+    AddAttrSampleLines[ahaExecutionPoint] := 34;
+    AddAttrSampleLines[ahaTextBlock] := 33;
+    AddAttrSampleLines[ahaFoldedCode] := 30;
+    CaretXY := Point(21, 24);
   end;
   Add(NewInfo);
 
@@ -3526,43 +3560,51 @@ begin
     SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('pp;pas;inc;lpr;lrs;dpr;dpk;fpd');
     SampleSource :=
-      'program Sample; { Comment with Pasdoc @author someone }'#13 +
-      '{$R- compiler directive}'#13 +
-      'type'#13 +
-      '  TMyData = class abstract'#13 +
-      '  public'#13 +
-      '    function GetItem(AnIndex: integer): boolean; virtual; experimental;'#13 +
-      '    property Item[AnIndex: integer]: boolean read GetItem;'#13 +
-      '  end deprecated ''reason'';'#13 +
-      'procedure TForm1.Button1Click(Sender: TObject);'#13 +
-      'label JumpPos;'#13 +
-      'const BREAK_CHAR: char = ^C;'#13 +
-      'var  // Slash Comment'#13 +
-      '  Number, I, X: Integer;'#13 +
-      '  Text: String; MoreText: AnsiString;'#13 +
-      '  List: Array of record x,y: Byte; end;'#13 +
-      'begin'#13 +
-      '  Number := 12345 * (2 + 9); // << Brackets at caret'#13 +
-      '  Caption := ''The number is '' + IntToStr(Number);'#13 +
-      '  asm'#13 + '    MOV AX,1234h'#13 +
-      '    MOV Number,AX'#13 +
-      '  end;'#13 +
-      '  {%region /fold}'#13 +
-      '  {%endregion}'#13 +
-      '  X := 10 + (Number * (ord(''A'') + (I - Abs(X * (I+(1-((X))))))));'#13 +
-      '  inc(X); {$R+} { Selected text }'#13 +
-      '  for I := 0 to Number do {$R-} { execution point }'#13 +
-      '  begin'#13 +
-      '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13 +
-      '    Dec(X, 3); {$R+} { Disabled breakpoint }'#13 +
-      '    {$R-} // { Invalid breakpoint }'#13 +
-      '    WriteLN(X); {$R-} { Unknown breakpoint }'#13 +
-      '    X := X + 1.0; {$R-} { Error line }'#13 +
-      '    case ModalResult of'#13+
-      '      mrOK: inc(X);'#13+
-      '      mrCancel, mrIgnore: dec(X);'#13+
-      '    end;'#13+
-      '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13 +
+  'program Sample; { Comment with Pasdoc @author someone }'#13+
+  '{$mode objfpc}{$R- compiler directive}'#13+
+  'type'#13+
+  '  TMyData = class abstract'#13+
+  '  public'#13+
+  '    function GetItem(AnIndex: integer = -1): boolean; virtual; abstract; experimental;'#13+
+  '    generic procedure Test<Param1>(foo: Param1);'#13+
+  '    property Item[AnIndex: integer]: boolean read GetItem;'#13+
+  '  end deprecated ''reason'';'#13+
+  '  generic TProc<A: specialize TGen<byte>> = procedure (foo: A); cdecl;'#13+
+  ''#13+
+  '  generic TSomeGeneric<Param1; Param2: TConstrain; const Val: word> = class(specialize TFoo<Param2>)'#13+
+  '  end;'#13+
+  ''#13+
+  'procedure TForm1.Button1Click(Sender: TObject);'#13+
+  'label JumpPos;'#13+
+  'const BREAK_CHAR: char = ^C;'#13+
+  'var  // Slash Comment'#13+
+  '  Number, I, X: Integer;'#13+
+  '  MyVar: System.integer = 2 * (1 + 5);'#13+
+  '  Text: String; MoreText: AnsiString;'#13+
+  '  List: Array of record x,y: Byte; end;'#13+
+  'begin'#13+
+  '  Number := 12345 * (2 + 9); // << Brackets at caret'#13+
+  '  Caption := ''The number is '' + IntToStr(Number);'#13+
+  '  asm'#13+
+  '    MOV AX,1234h'#13+
+  '    MOV Number,AX'#13+
+  '  end;'#13+
+  '  {%region /fold}'#13+
+  '  {%endregion}'#13+
+  '  X := 10 + (Number * (ord(''A'') + (I - Abs(X * (I+(1-((X))))))));'#13+
+  '  inc(X); {$R+} { Selected text }'#13+
+  '  for I := 0 to Number do {$R-} { execution point }'#13+
+  '  begin'#13+
+  '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13+
+  '    Dec(X, 3); {$R+} { Disabled breakpoint }'#13+
+  '    {$R-} // { Invalid breakpoint }'#13+
+  '    WriteLN(X); {$R-} { Unknown breakpoint }'#13+
+  '    X := X + 1.0; {$R-} { Error line }'#13+
+  '    case ModalResult o'#13+
+  '      mrOK: inc(X)'#13+
+  '      mrCancel, mrIgnore: dec(X)'#13+
+  '    end'#13+
+  '    ListBox1.Items.Add(IntToStr(X)); // TODO: more work'#13+
 //{ $IFDEF WithSynMarkupIfDef}
 //      '    {$IFDEF Foo}' +
 //      '      X := X + 1.0; {$R-} { Error line }'#13 +
@@ -3578,22 +3620,33 @@ begin
 //      '        X := 10;'#13 +
 //      '    {$ENDIF}' +
 //{ $ENDIF}
-      '  end;'#13 +
-      'JumpPos:'#13 +
-      'end;'#13+
-      '(* Multiline Ansi-Comment'#13+
-      ' * Foo Bar'#13+
-      ' *)'#13+
-      ''#13 + #13;
-    AddAttrSampleLines[ahaDisabledBreakpoint] := 30;
-    AddAttrSampleLines[ahaEnabledBreakpoint] := 29;
-    AddAttrSampleLines[ahaInvalidBreakpoint] := 31;
-    AddAttrSampleLines[ahaUnknownBreakpoint] := 32;
-    AddAttrSampleLines[ahaErrorLine] := 33;
-    AddAttrSampleLines[ahaExecutionPoint] := 27;
-    AddAttrSampleLines[ahaTextBlock] := 26;
-    AddAttrSampleLines[ahaFoldedCode] := 23;
-    CaretXY := Point(21, 17);
+  '  end;'#13+
+  'JumpPos:'#13+
+  'end;'#13+
+  '(* Multiline Ansi-Comment'#13+
+  '* Foo Bar'#13+
+  '*)'#13+
+  ''#13+
+  'generic procedure TMyData.Test<Param1>(foo: Param1);'#13+
+  'begin {} end;'#13+
+  ''#13+
+  '{$Mode delphi}'#13+
+  'procedure TGenClass<ABC>.Something<XYZ>(a: XYZ);'#13+
+  'begin {} end;'#13+
+  ''#13+
+  '{  Multiline Curly-Comment'#13+
+  'Foo Bar'#13+
+  '}'#13+
+  ''#13 + #13;
+    AddAttrSampleLines[ahaDisabledBreakpoint] := 37;
+    AddAttrSampleLines[ahaEnabledBreakpoint] := 36;
+    AddAttrSampleLines[ahaInvalidBreakpoint] := 38;
+    AddAttrSampleLines[ahaUnknownBreakpoint] := 39;
+    AddAttrSampleLines[ahaErrorLine] := 40;
+    AddAttrSampleLines[ahaExecutionPoint] := 34;
+    AddAttrSampleLines[ahaTextBlock] := 33;
+    AddAttrSampleLines[ahaFoldedCode] := 30;
+    CaretXY := Point(21, 24);
   end;
   Add(NewInfo);
 
@@ -5594,7 +5647,10 @@ begin
   FCaseLabelAttriMatchesElseOtherwise := True;
   FDeclaredTypeAttributeMode := tamIdentifierOnly;
   FDeclaredValueAttributeMode := tamIdentifierOnly;
+  FGenericParamAttrMode := tamIdentifierOnly;
   FDeclaredValueAttributeMachesStringNum := False;
+  FProcHeaderNameDeclMode := pnmGenericOnly;
+  FProcHeaderNameImplMode := pnmProcNameOnly;
   // Multi window
   fCtrlMiddleTabClickClosesOthers := True;
   fMiddleTabClickClosesOthersModifier := [ssCtrl];
@@ -6685,6 +6741,20 @@ begin
     TSynPasSyn(Syn).DeclaredTypeAttributeMode             := FDeclaredTypeAttributeMode;
     TSynPasSyn(Syn).DeclaredValueAttributeMode            := FDeclaredValueAttributeMode;
     TSynPasSyn(Syn).DeclaredValueAttributeMachesStringNum := FDeclaredValueAttributeMachesStringNum;
+    TSynPasSyn(Syn).GenericConstraintAttributeMode        := FGenericParamAttrMode;
+    TSynPasSyn(Syn).SpecializeParamAttributeMode          := FGenericParamAttrMode;
+    case FProcHeaderNameDeclMode of
+      pnmGenericOnly:        TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamDots];
+      pnmGenericAndProcName: TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
+      pnmProcNameOnly:       TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamSupressGenParamAttr, pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
+      pnmPlain:              TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamSupressGenParamAttr, pamDots];
+    end;
+    case FProcHeaderNameImplMode of
+      pnmGenericOnly:        TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamDots];
+      pnmGenericAndProcName: TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
+      pnmProcNameOnly:       TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamSupressGenParamAttr, pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
+      pnmPlain:              TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamSupressGenParamAttr, pamDots];
+    end;
   end;
 end;
 

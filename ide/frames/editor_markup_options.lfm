@@ -8,6 +8,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
   AutoScroll = True
   ClientHeight = 645
   ClientWidth = 634
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   Visible = False
   DesignLeft = 557
@@ -396,11 +397,11 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
   end
   object cbDeclaredValueAttrForNumString: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = dropDeclaredValueAttrMode
+    AnchorSideTop.Control = dropProcNameImplAttrMode
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 384
+    Top = 471
     Width = 201
     BorderSpacing.Around = 6
     Caption = 'cbDeclaredValueAttrForNumString'
@@ -414,7 +415,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 409
+    Top = 496
     Width = 634
     Caption = 'divKeyWordGroups'
     Anchors = [akTop, akLeft, akRight]
@@ -428,7 +429,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 430
+    Top = 517
     Width = 140
     BorderSpacing.Around = 6
     Caption = 'cbMarkupWordBracket'
@@ -441,7 +442,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 455
+    Top = 542
     Width = 111
     BorderSpacing.Around = 6
     Caption = 'cbMarkupOutline'
@@ -455,7 +456,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 137
     Height = 15
-    Top = 457
+    Top = 544
     Width = 124
     BorderSpacing.Left = 20
     Caption = 'lbMarkupWarnNoColor'
@@ -470,7 +471,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 480
+    Top = 567
     Width = 200
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -488,7 +489,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 212
     Height = 15
-    Top = 484
+    Top = 571
     Width = 80
     BorderSpacing.Left = 6
     Caption = 'LanguageLabel'
@@ -502,7 +503,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 150
-    Top = 509
+    Top = 596
     Width = 220
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
@@ -520,7 +521,7 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideTop.Control = chkKWGroups
     Left = 232
     Height = 19
-    Top = 509
+    Top = 596
     Width = 72
     BorderSpacing.Left = 6
     Caption = 'cbMarkup'
@@ -534,12 +535,96 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 232
     Height = 19
-    Top = 534
+    Top = 621
     Width = 70
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'cbOutline'
     TabOrder = 12
     OnChange = cbMarkupChange
+  end
+  object dropGenericParamAttrMode: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = dropDeclaredValueAttrMode
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 384
+    Width = 220
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 18
+    OnChange = dropPasStringKeywordsChange
+  end
+  object lblGenericParamAttrMode: TLabel
+    AnchorSideLeft.Control = dropGenericParamAttrMode
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = dropGenericParamAttrMode
+    AnchorSideTop.Side = asrCenter
+    Left = 232
+    Height = 15
+    Top = 388
+    Width = 138
+    BorderSpacing.Left = 6
+    Caption = 'lblGenericParamAttrMode'
+    ParentColor = False
+  end
+  object dropProcNameDeclAttrMode: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = dropGenericParamAttrMode
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 413
+    Width = 220
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 19
+    OnChange = dropPasStringKeywordsChange
+  end
+  object lblProcNameDeclAttrMode: TLabel
+    AnchorSideLeft.Control = dropProcNameDeclAttrMode
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = dropProcNameDeclAttrMode
+    AnchorSideTop.Side = asrCenter
+    Left = 232
+    Height = 15
+    Top = 417
+    Width = 143
+    BorderSpacing.Left = 6
+    Caption = 'lblProcNameDeclAttrMode'
+    ParentColor = False
+  end
+  object dropProcNameImplAttrMode: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = dropProcNameDeclAttrMode
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 442
+    Width = 220
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 20
+    OnChange = dropPasStringKeywordsChange
+  end
+  object lblProcNameImplAttrMode: TLabel
+    AnchorSideLeft.Control = dropProcNameImplAttrMode
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = dropProcNameImplAttrMode
+    AnchorSideTop.Side = asrCenter
+    Left = 232
+    Height = 15
+    Top = 446
+    Width = 144
+    BorderSpacing.Left = 6
+    Caption = 'lblProcNameImplAttrMode'
+    ParentColor = False
   end
 end

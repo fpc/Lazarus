@@ -1993,11 +1993,18 @@ resourcestring
   dlgPasCaseLabelForOtherwise = 'Color otherwise/else as case-label';
   dlgPasDeclaredTypeAttrMode = 'Extend of type-highlight in declarations';
   dlgPasDeclaredTypeValueMode = 'Extend of initial-value-highlight in declarations';
+  dlgPasGenericParamAttrMode = 'Extend of initial-value-highlight in generic/specialize';
   dlgPasDeclaredTypeValueModeLiteral = 'Include literals (Number, String) in initial-value-highlight in declarations';
   dlgPasDeclaredTypeAttrModeIdent = 'Identifier only';
   dlgPasDeclaredTypeAttrModeNames = 'Identifier and built-in (types/values)';
   dlgPasDeclaredTypeAttrModeKeywords = 'Identifier, built-in and keywords';
   dlgPasDeclaredTypeAttrModeKeyAndSym = 'All, including symbols';
+  dlgPasProcNameDeclAttrMode = 'Generic higlight in procedure names (declaration)';
+  dlgPasProcNameImplAttrMode = 'Generic higlight in procedure names (implementation)';
+  dlgPasProcNameAttrModeGenOnly = 'Apply generic highilght only';
+  dlgPasProcNameAttrModeGenAndProc = 'Apply generic and procedure name highilght';
+  dlgPasProcNameAttrModeProcOnly = 'Apply procedure name highilght only';
+  dlgPasProcNameAttrModeNone = 'Don''t apply either highlight';
 
   dlgPasStringKeywords = 'Highlight "String" types as keyword';
   dlgPasStringKeywordsOptDefault = 'Default';
@@ -2209,6 +2216,7 @@ resourcestring
   dlgAddHiAttrGroup_Comment      = 'Comments';
   dlgAddHiAttrGroup_ProgHeader   = 'Procedure Header';
   dlgAddHiAttrGroup_DeclSection  = 'Declaration Blocks';
+  dlgAddHiAttrGroup_SpecializeGenericSection  = 'Specialize/Generic Blocks';
 
 
   dlgEditAccessCaptionLockedInView            = 'Locked, if text in view';
