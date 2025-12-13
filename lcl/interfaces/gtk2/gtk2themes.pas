@@ -72,7 +72,6 @@ type
     function ThemedControlsEnabled: Boolean; override;
 
     procedure InternalDrawParentBackground({%H-}Window: HWND; {%H-}Target: HDC; {%H-}Bounds: PRect); override;
-    function GetBaseDetailsSize(Details: TThemedElementDetails): TSize;
 
     function GetParamsCount(Details: TThemedElementDetails): Integer; virtual;
 
@@ -576,7 +575,7 @@ begin
         gtk_widget_style_get_property(GetStyleWidget(lgsTreeView), 'expander-size', @AValue);
         Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
       end else
-        Result := GetBaseDetailsSize(Details);
+        Result := inherited GetDetailSizeForPPI(Details, PPI);
     teButton:
       if (Byte(Details.Part) in [BP_CHECKBOX, BP_RADIOBUTTON]) then
       begin
@@ -588,7 +587,7 @@ begin
           gtk_widget_style_get_property(GetStyleWidget(lgsRadioButton),'indicator-size', @AValue);
         Result := Size(AValue.data[0].v_int, AValue.data[0].v_int);
       end else
-        Result := GetBaseDetailsSize(Details);
+        Result := inherited GetDetailSizeForPPI(Details, PPI);
     {$IFDEF LINUX} // fix tbsButtonDrop arrow outside button bounds
     teToolBar:
       if (Details.Part = TP_DROPDOWNBUTTON) then
@@ -596,15 +595,15 @@ begin
         Result.cy := -1;
         Result.cx := 15;
       end else
-        Result := GetBaseDetailsSize(Details);
+        Result := inherited GetDetailSizeForPPI(Details, PPI);
     {$ENDIF}
     teHeader:
       if Details.Part = HP_HEADERSORTARROW then
         Result := Size(-1, -1) // not yet supported
       else
-        Result := GetBaseDetailsSize(Details);
+        Result := inherited GetDetailSizeForPPI(Details, PPI);
     else
-      Result := GetBaseDetailsSize(Details);
+      Result := inherited GetDetailSizeForPPI(Details, PPI);
   end;
 end;
 
