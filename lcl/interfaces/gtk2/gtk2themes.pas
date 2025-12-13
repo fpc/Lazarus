@@ -217,12 +217,6 @@ begin
   // ToDo: TGtk2ThemeServices.InternalDrawParentBackground: What to do?
 end;
 
-function TGtk2ThemeServices.GetBaseDetailsSize(Details: TThemedElementDetails): TSize;
-begin
-  Result := inherited GetDetailSize(Details);
-end;
-
-
 function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
   Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams;
 var
@@ -508,7 +502,7 @@ begin
           else
             Result.Expander := GTK_EXPANDER_EXPANDED;
 
-          Result.ExpanderSize := GetDetailSize(Details).cx;
+          Result.ExpanderSize := GetDetailSizeForPPI(Details, Screen.PixelsPerInch).cx;
         end
         else
         if Details.Part = TVP_TREEITEM then
