@@ -96,70 +96,58 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     ClientHeight = 96
     ClientWidth = 645
     TabOrder = 4
-    object ScanOutputDefaultCheckBox: TCheckBox
+    object ScanOutputDefaultRadioButton: TRadioButton
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 28
+      Height = 22
       Top = 6
-      Width = 270
+      Width = 253
       BorderSpacing.Around = 6
-      Caption = 'ScanOutputDefaultCheckBox'
-      TabOrder = 0
+      Caption = 'ScanOutputDefaultRadioButton'
+      TabOrder = 3
     end
-    object ScanOutputForFPCMessagesCheckBox: TCheckBox
+    object ScanOutputFPCAndMakeRadioButton: TRadioButton
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 22
-      Top = 40
-      Width = 270
+      Top = 34
+      Width = 253
       BorderSpacing.Around = 6
-      Caption = 'ScanOutputForFPCMessagesCheckBox'
-      TabOrder = 1
-    end
-    object ScanOutputForMakeMessagesCheckBox: TCheckBox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 6
-      Height = 22
-      Top = 68
-      Width = 270
-      BorderSpacing.Around = 6
-      Caption = 'ScanOutputForMakeMessagesCheckBox'
-      ParentShowHint = False
-      TabOrder = 2
+      Caption = 'ScanOutputFPCAndMakeRadioButton'
+      TabOrder = 4
     end
     object ScannersButton: TButton
       AnchorSideTop.Side = asrBottom
-      Left = 282
+      Left = 6
       Height = 28
-      Top = 6
-      Width = 166
+      Top = 62
+      Width = 253
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'ScannersButton'
-      TabOrder = 3
+      TabOrder = 0
     end
     object ShowConsoleCheckBox: TCheckBox
-      Left = 282
+      Left = 265
       Height = 22
-      Top = 40
+      Top = 6
       Width = 166
       Caption = 'ShowConsoleCheckBox'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 1
       Visible = False
       OnChange = ShowConsoleCheckBoxChange
     end
     object HideWindowCheckBox: TCheckBox
-      Left = 282
+      Left = 265
       Height = 22
-      Top = 68
+      Top = 34
       Width = 166
       Caption = 'HideWindowCheckBox'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 5
+      TabOrder = 2
       Visible = False
     end
   end

@@ -154,23 +154,22 @@ type
 
   TExternalToolOptionDlg = class(TForm)
     ButtonPanel: TButtonPanel;
+    TitleEdit: TEdit;
+    TitleLabel: TLabel;
     FileNameEdit: TFileNameEdit;
     FilenameLabel: TLabel;
-    HideWindowCheckBox: TCheckBox;
     KeyGroupBox: TGroupBox;
     MacrosGroupbox: TGroupbox;
     MacrosInsertButton: TButton;
     MacrosListbox: TListbox;
     MemoParameters: TMemo;
-    OptionsGroupBox: TGroupBox;
     ParametersLabel: TLabel;
+    OptionsGroupBox: TGroupBox;
+    ScanOutputDefaultRadioButton: TRadioButton;
+    ScanOutputFPCAndMakeRadioButton: TRadioButton;
     ScannersButton: TButton;
-    ScanOutputDefaultCheckBox: TCheckBox;
-    ScanOutputForFPCMessagesCheckBox: TCheckBox;
-    ScanOutputForMakeMessagesCheckBox: TCheckBox;
     ShowConsoleCheckBox: TCheckBox;
-    TitleEdit: TEdit;
-    TitleLabel: TLabel;
+    HideWindowCheckBox: TCheckBox;
     WorkingDirEdit: TDirectoryEdit;
     WorkingDirLabel: TLabel;
     procedure FormCreate(Sender: TObject);
@@ -425,18 +424,7 @@ begin
   Config.GetValue('EnvironmentOverrides/',FEnvironmentOverrides);
   ShowConsole:=Config.GetValue('ShowConsole/Value',false);
   HideWindow:=Config.GetValue('HideWindow/Value',true);
-{
-  if CfgVersion<3 then
-  begin
-    if Config.GetValue('ScanOutputForFPCMessages/Value',false) then
-      FParsers.Add(SubToolFPC);
-    if Config.GetValue('ScanOutputForMakeMessages/Value',false) then
-      FParsers.Add(SubToolMake);
-    if Config.GetValue('ShowAllOutput/Value',false) then
-      FParsers.Add(SubToolDefault);
-  end else  }
-    Config.GetValue('Scanners/',FParsers);
-
+  Config.GetValue('Scanners/',FParsers);
   Modified:=false;
   Result:=mrOk;
 end;
@@ -687,9 +675,8 @@ begin
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
   fKeyBox.Key:=fOptions.Key;
   fKeyBox.ShiftState:=fOptions.Shift;
-  ScanOutputDefaultCheckBox.Checked:=fOptions.HasParser[SubToolDefault];
-  ScanOutputForFPCMessagesCheckBox.Checked:=fOptions.HasParser[SubToolFPC];
-  ScanOutputForMakeMessagesCheckBox.Checked:=fOptions.HasParser[SubToolMake];
+  ScanOutputDefaultRadioButton.Checked:=fOptions.HasParser[SubToolDefault];
+  ScanOutputFPCAndMakeRadioButton.Checked:=fOptions.HasParser[SubToolFPC];
   ShowConsoleCheckBox.Checked:=FOptions.ShowConsole;
   HideWindowCheckBox.Checked:=FOptions.HideWindow;
   fScanners.Assign(fOptions.Parsers);
@@ -706,9 +693,9 @@ begin
   fOptions.Shift:=fKeyBox.ShiftState;
   FOptions.ShowConsole:=ShowConsoleCheckBox.Checked;
   FOptions.HideWindow:=HideWindowCheckBox.Checked;
-  fOptions.HasParser[SubToolDefault]:=ScanOutputDefaultCheckBox.Checked;
-  fOptions.HasParser[SubToolFPC]:=ScanOutputForFPCMessagesCheckBox.Checked;
-  fOptions.HasParser[SubToolMake]:=ScanOutputForMakeMessagesCheckBox.Checked;
+  fOptions.HasParser[SubToolDefault]:=ScanOutputDefaultRadioButton.Checked;
+  fOptions.HasParser[SubToolFPC]:=ScanOutputFPCAndMakeRadioButton.Checked;
+  fOptions.HasParser[SubToolMake]:=ScanOutputFPCAndMakeRadioButton.Checked;
 end;
 
 procedure TExternalToolOptionDlg.UpdateButtons;
@@ -756,12 +743,8 @@ begin
   WorkingDirLabel.Caption:=lisEdtExtToolWorkingDirectory;
   OptionsGroupBox.Caption:=RemoveAmpersands(lisLazBuildOptions);
 
-  with ScanOutputDefaultCheckBox do
-    Caption:=lisEdtExtToolPassOutputToMessages;
-  with ScanOutputForFPCMessagesCheckBox do
-    Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;
-  with ScanOutputForMakeMessagesCheckBox do
-    Caption:=lisEdtExtToolScanOutputForMakeMessages;
+  ScanOutputDefaultRadioButton.Caption:=lisEdtExtToolPassOutputToMessages;
+  ScanOutputFPCAndMakeRadioButton.Caption:=lisEdtExtToolScanOutputForFpcAndMake;
   ShowConsoleCheckBox.Caption:=lisShowConsole;
   ShowConsoleCheckBox.Hint:=lisOnlyAvailableOnWindowsRunToolInANewConsole;
   HideWindowCheckBox.Caption:=lisHideWindow;

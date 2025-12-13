@@ -4207,8 +4207,7 @@ resourcestring
   lisEdtExtToolParameters = 'Parameters:';
   lisEdtExtToolWorkingDirectory = 'Working Directory:';
   lisEdtExtToolPassOutputToMessages = 'Pass output to Messages window';
-  lisEdtExtToolScanOutputForFreePascalCompilerMessages = 'Scan output for FPC messages';
-  lisEdtExtToolScanOutputForMakeMessages = 'Scan output for "make" messages';
+  lisEdtExtToolScanOutputForFpcAndMake = 'Scan output for FPC and "make" messages';
   lisShowConsole = 'Show console';
   lisOnlyAvailableOnWindowsRunToolInANewConsole = 'Only available on Windows. '
     +'Run tool in a new console.';

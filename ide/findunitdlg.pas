@@ -621,7 +621,9 @@ function TQuickFixIncludeNotFound_Search.IsApplicable(Msg: TMessageLine; out
 var
   Dummy: string;
 begin
-  debugln(['TQuickFixIncludeNotFound_Search.IsApplicable ',Msg.Msg,' ',TIDEFPCParser.MsgLineIsId(Msg,2013,IncludeFile,Dummy),' ',IsCodetoolsErrorIncludeFileNotFound(Msg.Msg,IncludeFile)]);
+  debugln(['TQuickFixIncludeNotFound_Search.IsApplicable ',Msg.Msg,' ',
+           TIDEFPCParser.MsgLineIsId(Msg,2013,IncludeFile,Dummy),' ',
+           IsCodetoolsErrorIncludeFileNotFound(Msg.Msg,IncludeFile)]);
   if TIDEFPCParser.MsgLineIsId(Msg,2013,IncludeFile,Dummy) then
     Result:=true // Can't open include file "$1"
   else
@@ -630,8 +632,7 @@ begin
     Result:=false;
 end;
 
-procedure TQuickFixIncludeNotFound_Search.CreateMenuItems(Fixes: TMsgQuickFixes
-  );
+procedure TQuickFixIncludeNotFound_Search.CreateMenuItems(Fixes: TMsgQuickFixes);
 var
   IncludeFile: string;
   Msg: TMessageLine;

@@ -64,7 +64,7 @@ type
   private
     FAsyncQueued: boolean;
     FControl: TMessagesCtrl;
-    FFilter: TLMsgViewFilter;
+    FViewFilter: TLMsgViewFilter;
     fPaintBottom: integer;    // only valid if FPaintStamp=Control.FPaintStamp
     FPaintStamp: int64;
     fPaintTop: integer;       // only valid if FPaintStamp=Control.FPaintStamp
@@ -72,7 +72,7 @@ type
     FSelectedLines: TIntegerList;
     function GetSelLineFirst: integer;
     function GetSelLineLast: integer;
-    procedure SetFilter(AValue: TLMsgViewFilter);
+    procedure SetViewFilter(AValue: TLMsgViewFilter);
     procedure SetSelLineFirst(AValue: integer);
     // Selection
     procedure ClearSelection;
@@ -104,7 +104,7 @@ type
   public
     property Control: TMessagesCtrl read FControl;
     // requires Enter/LeaveCriticalSection, write only via main thread
-    property Filter: TLMsgViewFilter read FFilter write SetFilter;
+    property ViewFilter: TLMsgViewFilter read FViewFilter write SetViewFilter;
     property PendingChanges: TETMultiSrcChanges read FPendingChanges;// src changes for messages adding to view
     // First initially selected line, -1=header line, can be on progress line (=View.Count)
     property SelLineFirst: integer read GetSelLineFirst write SetSelLineFirst;
@@ -228,6 +228,8 @@ type
     function GetViews(Index: integer): TLMsgWndView;
     function FirstViewWithContext(out Line: integer): TLMsgWndView;
     function LastViewWithContext(out Line: integer): TLMsgWndView;
+    function ViewsHaveContent: Boolean;
+    function ViewsAreRunning: Boolean;
     procedure ViewChanged(Sender: TObject); // (main thread)
     procedure MsgCtrlMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X,Y: Integer);
     procedure MsgUpdateTimerTimer(Sender: TObject);
@@ -379,6 +381,7 @@ type
     procedure CopyFilenameMenuItemClick(Sender: TObject);
     procedure CopyMsgMenuItemClick(Sender: TObject);
     procedure CopyShownMenuItemClick(Sender: TObject);
+    procedure ShowHideFpcMenuItems(aShow: Boolean);
     procedure EditHelpMenuItemClick(Sender: TObject);
     procedure FileStyleMenuItemClick(Sender: TObject);
     procedure FindMenuItemClick(Sender: TObject);
@@ -396,6 +399,9 @@ type
     procedure SrcEditLinesChanged(Sender: TObject);
     procedure TranslateMenuItemClick(Sender: TObject);
     procedure RemoveFilterMsgTypeClick(Sender: TObject);
+    procedure UpdateFilterItems;
+    procedure UpdateRemoveCompOptHideMsgItems;
+    procedure UpdateRemoveMsgTypeFilterItems;
   private
     FImages: TLCLGlyphs;
     FMessagesCtrl: TMessagesCtrl;
@@ -459,7 +465,7 @@ var
     MsgSaveAllToFileMenuItem: TIDEMenuCommand;
     MsgSaveShownToFileMenuItem: TIDEMenuCommand;
   MsgClearMenuItem: TIDEMenuCommand;
-  MsgMoreOptionsMenuItem: TIDEMenuCommand;
+  MsgOptionsMenuItem: TIDEMenuCommand;
   // FPC message specific menu items
   MsgQuickFixMenuSection: TIDEMenuSection;
   MsgFilterMsgOfTypeMenuItem: TIDEMenuCommand;
@@ -528,7 +534,7 @@ begin
     MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent,
       'Save All Messages to File', lisSaveAllOriginalMessagesToFile);
   MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', lisClear);
-  MsgMoreOptionsMenuItem:=RegisterIDEMenuCommand(Root, 'Options',lisMenuGeneralOptions);
+  MsgOptionsMenuItem:=RegisterIDEMenuCommand(Root, 'Options',lisMenuGeneralOptions);
   // FPC message specific menu items
   MsgQuickFixMenuSection:=RegisterIDEMenuSection(Root, 'Quick Fix');
   MsgFilterMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'FilterMsgOfType',
@@ -645,7 +651,7 @@ begin
   fMessageLineClass:=TLMsgViewLine;
   inherited Create(AOwner);
   Lines.OnMarksFixed:=@MarksFixed;
-  FFilter:=TLMsgViewFilter.Create;
+  FViewFilter:=TLMsgViewFilter.Create;
   FPendingChanges:=TETMultiSrcChanges.Create(nil);
   FSelectedLines:=TIntegerList.Create;
 end;
@@ -655,7 +661,7 @@ begin
   inherited Destroy;
   FreeAndNil(FSelectedLines);
   FreeAndNil(FPendingChanges);
-  FreeAndNil(FFilter);
+  FreeAndNil(FViewFilter);
 end;
 
 function TLMsgWndView.GetHeaderText: string;
@@ -730,9 +736,9 @@ begin
   Control.Invalidate;
 end;
 
-procedure TLMsgWndView.SetFilter(AValue: TLMsgViewFilter);
+procedure TLMsgWndView.SetViewFilter(AValue: TLMsgViewFilter);
 begin
-  FFilter.Assign(AValue);
+  FViewFilter.Assign(AValue);
 end;
 
 procedure TLMsgWndView.SetSelLineFirst(AValue: integer);
@@ -927,13 +933,11 @@ begin
           MsgLine:=PendingLines.CreateLine(-1);
           MsgLine.Urgency:=mluPanic;
           if ExitCode<>0 then
-            MsgLine.Msg:=Format(
-              lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo, [IntToStr(
-              ExitCode)])
+            MsgLine.Msg:=Format(lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo,
+                                [IntToStr(ExitCode)])
           else
-            MsgLine.Msg:=Format(
-              lisToolStoppedWithExitStatusUseContextMenuToGetMoreInfo, [
-              IntToStr(ExitStatus)]);
+            MsgLine.Msg:=Format(lisToolStoppedWithExitStatusUseContextMenuToGetMoreInfo,
+                                [IntToStr(ExitStatus)]);
           PendingLines.Add(MsgLine);
         finally
           LeaveCriticalSection;
@@ -1016,8 +1020,8 @@ end;
 
 function TLMsgWndView.LineFits(Line: TMessageLine): boolean;
 begin
-  if FFilter<>nil then
-    Result:=FFilter.LineFits(Line)
+  if FViewFilter<>nil then
+    Result:=FViewFilter.LineFits(Line)
   else
     Result:=inherited LineFits(Line);
 end;
@@ -1804,10 +1808,10 @@ begin
   //debugln(['TMessagesCtrl.OnIdle fLastLoSearchText=',fLastLoSearchText,' ',UTF8LowerCase(fSearchText)]);
   for i:=0 to ViewCount-1 do begin
     View:=Views[i];
-    if not View.Filter.IsEqual(ActiveFilter) then begin
+    if not View.ViewFilter.IsEqual(ActiveFilter) then begin
       View.EnterCriticalSection;
       try
-        View.Filter:=ActiveFilter;
+        View.ViewFilter:=ActiveFilter;
       finally
         View.LeaveCriticalSection;
       end;
@@ -2732,6 +2736,32 @@ begin
   Result:=nil;
 end;
 
+function TMessagesCtrl.ViewsHaveContent: Boolean;
+var
+  i: Integer;
+begin
+  i:=0;
+  while i<ViewCount do begin
+    if Views[i].HasContent then
+      exit(True);
+    inc(i);
+  end;
+  Result:=False;
+end;
+
+function TMessagesCtrl.ViewsAreRunning: Boolean;
+var
+  i: Integer;
+begin
+  i:=0;
+  while i<ViewCount do begin
+    if Views[i].Running then
+      exit(True);
+    inc(i);
+  end;
+  Result:=False;
+end;
+
 function TMessagesCtrl.NextSearchOccurrence(Downwards: boolean): boolean;
 var
   FoundP: TMsgPoint;
@@ -3170,7 +3200,7 @@ begin
   Result:=TLMsgWndView.Create(Self);
   Result.FControl:=Self;
   Result.Caption:=aCaption;
-  Result.Filter.Assign(ActiveFilter);
+  Result.ViewFilter.Assign(ActiveFilter);
   FViews.Add(Result);
   FreeNotification(Result);
   Result.OnChanged:=@ViewChanged;
@@ -3278,184 +3308,215 @@ begin
     end;
 end;
 
+
+procedure UpdateQuickFixes(CurLine: TMessageLine);
+begin
+  // delete old
+  MsgQuickFixMenuSection.Clear;
+  // create items
+  if CurLine<>nil then begin
+    IDEQuickFixes.SetMsgLines(CurLine);
+    IDEQuickFixes.OnPopupMenu(MsgQuickFixMenuSection);
+  end;
+  MsgQuickFixMenuSection.Visible:=MsgQuickFixMenuSection.Count>0;
+end;
+
 { TMessagesFrame }
 
-procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
-
-  procedure UpdateRemoveCompOptHideMsgItems;
-  var
-    i: Integer;
-    View: TLMsgWndView;
-    ToolData: TIDEExternalToolData;
-    IDETool: TObject;
-    CompOpts: TBaseCompilerOptions;
-    Flag: PCompilerMsgIdFlag;
-    Pattern: String;
-    Pkg: TIDEPackage;
-    Cnt: Integer;
-    Item: TIDEMenuCommand;
-    ModuleName: String;
-  begin
-    // create one menuitem per compiler option
-    Cnt:=0;
-    for i:=0 to ViewCount-1 do begin
-      View:=Views[i];
-      if View.Tool=nil then continue;
-      ToolData:=TIDEExternalToolData(View.Tool.Data);
-      if not (ToolData is TIDEExternalToolData) then continue;
-      IDETool:=ExternalToolList.GetIDEObject(ToolData);
-      if IDETool=nil then continue;
-      if IDETool is TLazProject then begin
-        CompOpts:=TLazProject(IDETool).LazCompilerOptions as TBaseCompilerOptions;
-        ModuleName:=lisProjectOption;
-      end else if IDETool is TIDEPackage then begin
-        Pkg:=TIDEPackage(IDETool);
-        CompOpts:=Pkg.LazCompilerOptions as TBaseCompilerOptions;
-        ModuleName:=Format(lisPackageOption, [Pkg.Name]);
-      end else
-        continue;
-      for Flag in CompOpts.IDEMessageFlags do begin
-        if Flag^.Flag<>cfvHide then continue;
-        if Cnt>=MsgRemoveCompOptHideMenuSection.Count then begin
-          Item:=RegisterIDEMenuCommand(MsgRemoveCompOptHideMenuSection,'RemoveCompOptHideMsg'+IntToStr(Cnt),'');
-          Item.OnClick:=@RemoveCompOptHideMsgClick;
-        end else begin
-          Item:=MsgRemoveCompOptHideMenuSection.Items[Cnt] as TIDEMenuCommand;
-        end;
-        Item.Tag:=Flag^.MsgId;
-        Item.UserTag:=PtrUInt(ToolData);
-        Pattern:=GetMsgPattern(SubToolFPC,Flag^.MsgID,true,40);
-        Item.Caption:=ModuleName+': '+Pattern;
-        inc(Cnt);
+procedure TMessagesFrame.UpdateRemoveCompOptHideMsgItems;
+var
+  i, Cnt: Integer;
+  View: TLMsgWndView;
+  ToolData: TIDEExternalToolData;
+  IDETool: TObject;
+  CompOpts: TBaseCompilerOptions;
+  Flag: PCompilerMsgIdFlag;
+  Pkg: TIDEPackage;
+  Item: TIDEMenuCommand;
+  ModuleName, Pattern: String;
+begin
+  // create one menuitem per compiler option
+  Cnt:=0;
+  for i:=0 to ViewCount-1 do begin
+    View:=Views[i];
+    if View.Tool=nil then continue;
+    ToolData:=TIDEExternalToolData(View.Tool.Data);
+    if not (ToolData is TIDEExternalToolData) then continue;
+    IDETool:=ExternalToolList.GetIDEObject(ToolData);
+    if IDETool=nil then continue;
+    if IDETool is TLazProject then begin
+      CompOpts:=TLazProject(IDETool).LazCompilerOptions as TBaseCompilerOptions;
+      ModuleName:=lisProjectOption;
+    end else if IDETool is TIDEPackage then begin
+      Pkg:=TIDEPackage(IDETool);
+      CompOpts:=Pkg.LazCompilerOptions as TBaseCompilerOptions;
+      ModuleName:=Format(lisPackageOption, [Pkg.Name]);
+    end else
+      continue;
+    for Flag in CompOpts.IDEMessageFlags do begin
+      if Flag^.Flag<>cfvHide then continue;
+      if Cnt>=MsgRemoveCompOptHideMenuSection.Count then begin
+        Item:=RegisterIDEMenuCommand(MsgRemoveCompOptHideMenuSection,'RemoveCompOptHideMsg'+IntToStr(Cnt),'');
+        Item.OnClick:=@RemoveCompOptHideMsgClick;
+      end else begin
+        Item:=MsgRemoveCompOptHideMenuSection.Items[Cnt] as TIDEMenuCommand;
       end;
+      Item.Tag:=Flag^.MsgId;
+      Item.UserTag:=PtrUInt(ToolData);
+      Pattern:=GetMsgPattern(SubToolFPC,Flag^.MsgID,true,40);
+      Item.Caption:=ModuleName+': '+Pattern;
+      inc(Cnt);
     end;
-    MsgRemoveCompOptHideMenuSection.Visible:=Cnt>0;
-    // delete old menu items
-    while MsgRemoveCompOptHideMenuSection.Count>Cnt do
-      MsgRemoveCompOptHideMenuSection[Cnt].Free;
   end;
+  MsgRemoveCompOptHideMenuSection.Visible:=Cnt>0;
+  // delete old menu items
+  while MsgRemoveCompOptHideMenuSection.Count>Cnt do
+    MsgRemoveCompOptHideMenuSection[Cnt].Free;
+end;
 
-  procedure UpdateRemoveMsgTypeFilterItems;
-  var
-    FilterItem: TLMVFilterMsgType;
-    i: Integer;
-    Item: TIDEMenuCommand;
-    Cnt: Integer;
-  begin
-    // create one menuitem per filter item
-    Cnt:=FMessagesCtrl.ActiveFilter.FilterMsgTypeCount;
-    MsgRemoveMsgTypeFilterMenuSection.Visible:=Cnt>0;
-    for i:=0 to Cnt-1 do begin
-      if i>=MsgRemoveFilterMsgOneTypeMenuSection.Count then begin
-        Item:=RegisterIDEMenuCommand(MsgRemoveFilterMsgOneTypeMenuSection,'MsgRemoveMsgOfTypeFilter'+IntToStr(i),'');
-        Item.Tag:=i;
-        Item.OnClick:=@RemoveFilterMsgTypeClick;
-      end else
-        Item:=MsgRemoveFilterMsgOneTypeMenuSection.Items[i] as TIDEMenuCommand;
-      FilterItem:=FMessagesCtrl.ActiveFilter.FilterMsgTypes[i];
-      Item.Caption:=GetMsgPattern(FilterItem.SubTool,FilterItem.MsgID,true,40);
-    end;
-    // delete old menu items
-    while MsgRemoveFilterMsgOneTypeMenuSection.Count>Cnt do
-      MsgRemoveFilterMsgOneTypeMenuSection[Cnt].Free;
-    MsgRemoveFilterAllMsgTypesMenuItem.OnClick:=@ClearFilterMsgTypesMenuItemClick;
+procedure TMessagesFrame.UpdateRemoveMsgTypeFilterItems;
+var
+  i, Cnt: Integer;
+  FilterItem: TLMVFilterMsgType;
+  Item: TIDEMenuCommand;
+begin
+  // create one menuitem per filter item
+  Cnt:=FMessagesCtrl.ActiveFilter.FilterMsgTypeCount;
+  MsgRemoveMsgTypeFilterMenuSection.Visible:=Cnt>0;
+  for i:=0 to Cnt-1 do begin
+    if i>=MsgRemoveFilterMsgOneTypeMenuSection.Count then begin
+      Item:=RegisterIDEMenuCommand(MsgRemoveFilterMsgOneTypeMenuSection,'MsgRemoveMsgOfTypeFilter'+IntToStr(i),'');
+      Item.Tag:=i;
+      Item.OnClick:=@RemoveFilterMsgTypeClick;
+    end else
+      Item:=MsgRemoveFilterMsgOneTypeMenuSection.Items[i] as TIDEMenuCommand;
+    FilterItem:=FMessagesCtrl.ActiveFilter.FilterMsgTypes[i];
+    Item.Caption:=GetMsgPattern(FilterItem.SubTool,FilterItem.MsgID,true,40);
   end;
+  // delete old menu items
+  while MsgRemoveFilterMsgOneTypeMenuSection.Count>Cnt do
+    MsgRemoveFilterMsgOneTypeMenuSection[Cnt].Free;
+  MsgRemoveFilterAllMsgTypesMenuItem.OnClick:=@ClearFilterMsgTypesMenuItemClick;
+end;
 
-  procedure UpdateFilterItems;
-  var
-    i: Integer;
-    Filter: TLMsgViewFilter;
-    Item: TIDEMenuCommand;
-    Cnt: Integer;
-  begin
-    Cnt:=FMessagesCtrl.Filters.Count;
-    for i:=0 to Cnt-1 do begin
-      Filter:=FMessagesCtrl.Filters[i];
-      if i>=MsgSelectFilterMenuSection.Count then begin
-        Item:=RegisterIDEMenuCommand(MsgSelectFilterMenuSection,'MsgSelectFilter'+IntToStr(i),'');
-        Item.Tag:=i;
-        Item.OnClick:=@SelectFilterClick;
-      end else
-        Item:=MsgSelectFilterMenuSection[i] as TIDEMenuCommand;
-      Item.Caption:=Filter.Caption;
-      Item.Checked:=Filter=FMessagesCtrl.ActiveFilter;
-    end;
-    // delete old menu items
-    while MsgSelectFilterMenuSection.Count>Cnt do
-      MsgSelectFilterMenuSection[Cnt].Free;
-
-    MsgAddFilterMenuItem.OnClick:=@AddFilterMenuItemClick;
+procedure TMessagesFrame.UpdateFilterItems;
+var
+  i, Cnt: Integer;
+  Filter: TLMsgViewFilter;
+  Item: TIDEMenuCommand;
+begin
+  Cnt:=FMessagesCtrl.Filters.Count;
+  for i:=0 to Cnt-1 do begin
+    Filter:=FMessagesCtrl.Filters[i];
+    if i>=MsgSelectFilterMenuSection.Count then begin
+      Item:=RegisterIDEMenuCommand(MsgSelectFilterMenuSection,'MsgSelectFilter'+IntToStr(i),'');
+      Item.Tag:=i;
+      Item.OnClick:=@SelectFilterClick;
+    end else
+      Item:=MsgSelectFilterMenuSection[i] as TIDEMenuCommand;
+    Item.Caption:=Filter.Caption;
+    Item.Checked:=Filter=FMessagesCtrl.ActiveFilter;
   end;
+  // delete old menu items
+  while MsgSelectFilterMenuSection.Count>Cnt do
+    MsgSelectFilterMenuSection[Cnt].Free;
+  MsgAddFilterMenuItem.OnClick:=@AddFilterMenuItemClick;
+end;
 
-  procedure UpdateQuickFixes(CurLine: TMessageLine);
-  begin
-    // delete old
-    MsgQuickFixMenuSection.Clear;
-    // create items
-    if CurLine<>nil then begin
-      IDEQuickFixes.SetMsgLines(CurLine);
-      IDEQuickFixes.OnPopupMenu(MsgQuickFixMenuSection);
-    end;
-    MsgQuickFixMenuSection.Visible:=MsgQuickFixMenuSection.Count>0;
-  end;
+procedure TMessagesFrame.ShowHideFpcMenuItems(aShow: Boolean);
+begin
+  MsgQuickFixMenuSection.Visible:=aShow;
+  MsgFilterMsgOfTypeMenuItem.Visible:=aShow;
+  MsgRemoveCompOptHideMenuSection.Visible:=aShow;
+  MsgRemoveMsgTypeFilterMenuSection.Visible:=aShow;
+  MsgFilterBelowMenuSection.Visible:=aShow;
+  MsgFilterHintsWithoutPosMenuItem.Visible:=aShow;
+  MsgFiltersMenuSection.Visible:=aShow;
+  MsgHelpMenuItem.Visible:=aShow;
+  MsgEditHelpMenuItem.Visible:=aShow;
+  MsgOptionsMenuSection.Visible:=aShow;
+  MsgAboutSection.Visible:=aShow;
+end;
 
+procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
 var
   View: TLMsgWndView;
   MinUrgency: TMessageLineUrgency;
   ToolData: TIDEExternalToolData;
   Line: TMessageLine;
-  i, LineNumber, VisibleCnt: Integer;
-  HasText, HasFilename, HasViewContent, Running, CanFilterMsgType: Boolean;
-  MsgType, ToolOptionsCaption: String;
+  i, LineNumber: Integer;
+  HasText, HasFilename, HasContent, Running, CanFilterMsgType, FpcMsg: Boolean;
+  MsgType, ToolCaption: String;
 begin
   MessagesMenuRoot.MenuItem:=MsgCtrlPopupMenu.Items;
   HasText:=false;
   HasFilename:=false;
   MsgType:='';
   CanFilterMsgType:=false;
+  FpcMsg:=False;
   Line:=nil;
-  HasViewContent:=false;
-  Running:=false;
-  debugln(['TMessagesFrame.MsgCtrlPopupMenuPopup ActiveFilter=', FMessagesCtrl.ActiveFilter.ClassName]);
-
-  // check all
-  for i:=0 to FMessagesCtrl.ViewCount-1 do begin
-    View:=FMessagesCtrl.Views[i];
-    if View.HasContent then
-      HasViewContent:=true;
-    if View.Running then
-      Running:=true;
-  end;
-
+  HasContent:=FMessagesCtrl.ViewsHaveContent;
+  Running:=FMessagesCtrl.ViewsAreRunning;
+  // Find
   MsgFindMenuItem.OnClick:=@FindMenuItemClick;
   MsgFindMenuItem.MenuItem.ShortCut:=ShortCut(VK_F, [ssCtrl]);
-
   // check selection
   View:=FMessagesCtrl.FTextCursorPoint.View;
+  if View=nil then                  // no line selected => use last visible View
+    View:=FMessagesCtrl.GetLastViewWithContent;
   if View<>nil then begin
     for i:=0 to View.FSelectedLines.Count-1 do begin
       LineNumber:=View.FSelectedLines[i];
-      if LineNumber=-1 then Continue;            // header
-      if LineNumber=View.Lines.Count then
-        Line:=View.ProgressLine                  // progress line
-      else
-        Line:=View.Lines[LineNumber];            // normal messages
-      if Line.Filename<>'' then
-        HasFilename:=True;
-      if Line.Msg<>'' then
-        HasText:=True;
-      if (Line.SubTool<>'') and (Line.MsgID<>0) then begin
-        MsgType:=GetMsgPattern(Line.SubTool,Line.MsgID,true,40);
-        CanFilterMsgType:=ord(Line.Urgency)<ord(mluError);
+      if LineNumber=-1 then begin                // header line
+        if StartsStr('Compile', View.Caption)
+        or StartsStr('Build', View.Caption) then
+          FpcMsg:=True;
+      end
+      else begin
+        if LineNumber=View.Lines.Count then
+          Line:=View.ProgressLine                // progress line
+        else
+          Line:=View.Lines[LineNumber];          // normal messages
+        if Line.Filename<>'' then
+          HasFilename:=True;
+        if Line.Msg<>'' then
+          HasText:=True;
+        if (Line.SubTool<>'') and (Line.MsgID<>0) then begin
+          FpcMsg:=True;
+          MsgType:=GetMsgPattern(Line.SubTool,Line.MsgID,true,40);
+          CanFilterMsgType:=ord(Line.Urgency)<ord(mluError);
+        end;
       end;
     end;
-  end else begin
-    // no line selected => use last visible View
-    View:=FMessagesCtrl.GetLastViewWithContent;
   end;
-  ToolOptionsCaption:='';
+  // Copying
+  MsgCopyMsgMenuItem.Enabled := HasText;
+  MsgCopyMsgMenuItem.OnClick := @CopyMsgMenuItemClick;
+  MsgCopyMsgMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl]);
+  MsgCopyFilenameMenuItem.Enabled := HasFilename;
+  MsgCopyFilenameMenuItem.OnClick := @CopyFilenameMenuItemClick;
+  MsgCopyAllMenuItem.Enabled := not Running;
+  MsgCopyAllMenuItem.OnClick := @CopyAllMenuItemClick;
+  MsgCopyAllMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl, ssShift]);
+  MsgCopyShownMenuItem.Enabled := HasContent;
+  MsgCopyShownMenuItem.OnClick := @CopyShownMenuItemClick;
+  // Save, clear, options
+  MsgSaveAllToFileMenuItem.Enabled := not Running;
+  MsgSaveAllToFileMenuItem.OnClick := @SaveAllToFileMenuItemClick;
+  MsgSaveAllToFileMenuItem.MenuItem.ShortCut := ShortCut(VK_S, [ssCtrl, ssShift]);
+  MsgSaveShownToFileMenuItem.Enabled := HasContent;
+  MsgSaveShownToFileMenuItem.OnClick := @SaveShownToFileMenuItemClick;
+  MsgClearMenuItem.Enabled := View <> nil;
+  MsgClearMenuItem.OnClick := @ClearMenuItemClick;
+  MsgOptionsMenuItem.OnClick := @MoreOptionsMenuItemClick;
+
+  // FPC specific menu items.
+  ShowHideFpcMenuItems(FpcMsg);
+  if not FpcMsg then             // This is a user defined external tool.
+    Exit;                        // Don't process FPC compilation specific stuff.
 
   // About
+  ToolCaption:='';
   if View<>nil then
   begin
     MsgAboutToolMenuItem.Caption:=Format(lisAbout2, [View.Caption]);
@@ -3463,25 +3524,25 @@ begin
     if (View.Tool<>nil) and (View.Tool.Data is TIDEExternalToolData) then begin
       ToolData:=TIDEExternalToolData(View.Tool.Data);
       if ToolData.Kind=IDEToolCompilePackage then
-        ToolOptionsCaption:=Format(lisCPOpenPackage, [ToolData.ModuleName]);
+        ToolCaption:=Format(lisCPOpenPackage, [ToolData.ModuleName]);
     end;
   end else
     MsgAboutSection.Visible:=false;
   MsgAboutToolMenuItem.OnClick:=@AboutToolMenuItemClick;
-  VisibleCnt:=1;
-  MsgOpenToolOptionsMenuItem.Visible:=ToolOptionsCaption<>'';
+  i:=1;  // Count of visible MenuItems
+  MsgOpenToolOptionsMenuItem.Visible:=ToolCaption<>'';
   if MsgOpenToolOptionsMenuItem.Visible then
   begin
-    inc(VisibleCnt);
+    inc(i);
     //only assign caption if it is not empty to avoid its "unlocalizing",
     //this is visible e.g. in EditorToolBar menu tree
-    MsgOpenToolOptionsMenuItem.Caption:=ToolOptionsCaption;
+    MsgOpenToolOptionsMenuItem.Caption:=ToolCaption;
   end
   else
     //assign default caption if item is not visible (needed for EditorToolBar)
     MsgOpenToolOptionsMenuItem.Caption:=lisOpenToolOptions;
   MsgOpenToolOptionsMenuItem.OnClick:=@OpenToolsOptionsMenuItemClick;
-  MsgAboutSection.ChildrenAsSubMenu:=VisibleCnt>1;
+  MsgAboutSection.ChildrenAsSubMenu:=i>1;
 
   // Filtering
   if CanFilterMsgType then begin
@@ -3517,30 +3578,11 @@ begin
   MsgFilterNotesMenuItem   .MenuItem.ShortCut := ShortCut(VK_4, [ssCtrl]);
   MsgFilterWarningsMenuItem.MenuItem.ShortCut := ShortCut(VK_5, [ssCtrl]);
 
-  // Copying
-  MsgCopyMsgMenuItem     .Enabled := HasText;
-  MsgCopyFilenameMenuItem.Enabled := HasFilename;
-  MsgCopyAllMenuItem     .Enabled := not Running;
-  MsgCopyShownMenuItem   .Enabled := HasViewContent;
-  MsgCopyMsgMenuItem     .OnClick := @CopyMsgMenuItemClick;
-  MsgCopyFilenameMenuItem.OnClick := @CopyFilenameMenuItemClick;
-  MsgCopyAllMenuItem     .OnClick := @CopyAllMenuItemClick;
-  MsgCopyShownMenuItem   .OnClick := @CopyShownMenuItemClick;
-  MsgCopyMsgMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl]);
-  MsgCopyAllMenuItem.MenuItem.ShortCut := ShortCut(VK_C, [ssCtrl, ssShift]);
-
-  // Saving
-  MsgSaveAllToFileMenuItem  .Enabled := not Running;
-  MsgSaveShownToFileMenuItem.Enabled := HasViewContent;
-  MsgHelpMenuItem           .Enabled := HasText;
-  MsgClearMenuItem          .Enabled := View <> nil;
-  MsgSaveAllToFileMenuItem  .OnClick := @SaveAllToFileMenuItemClick;
-  MsgSaveShownToFileMenuItem.OnClick := @SaveShownToFileMenuItemClick;
-  MsgHelpMenuItem           .OnClick := @HelpMenuItemClick;
-  MsgEditHelpMenuItem       .OnClick := @EditHelpMenuItemClick;
-  MsgClearMenuItem          .OnClick := @ClearMenuItemClick;
-  MsgSaveAllToFileMenuItem.MenuItem.ShortCut := ShortCut(VK_S, [ssCtrl, ssShift]);
-  MsgHelpMenuItem         .MenuItem.ShortCut := ShortCut(VK_F1, []);
+  // Help
+  MsgHelpMenuItem.Enabled := HasText;
+  MsgHelpMenuItem.OnClick := @HelpMenuItemClick;
+  MsgHelpMenuItem.MenuItem.ShortCut := ShortCut(VK_F1, []);
+  MsgEditHelpMenuItem.OnClick := @EditHelpMenuItemClick;
 
   // Options
   MsgFileStyleShortMenuItem   .Checked := FMessagesCtrl.FilenameStyle = mwfsShort;
@@ -3552,14 +3594,12 @@ begin
 
   MsgTranslateMenuItem.Checked := mcoShowTranslated in FMessagesCtrl.Options;
   MsgShowIDMenuItem   .Checked := mcoShowMessageID  in FMessagesCtrl.Options;
-  MsgTranslateMenuItem  .OnClick := @TranslateMenuItemClick;
-  MsgShowIDMenuItem     .OnClick := @ShowIDMenuItemClick;
-  MsgMoreOptionsMenuItem.OnClick := @MoreOptionsMenuItemClick;
+  MsgTranslateMenuItem.OnClick := @TranslateMenuItemClick;
+  MsgShowIDMenuItem   .OnClick := @ShowIDMenuItemClick;
 
   UpdateRemoveCompOptHideMsgItems;
   UpdateRemoveMsgTypeFilterItems;
   UpdateFilterItems;
-
   UpdateQuickFixes(Line);
 end;
 
@@ -3937,12 +3977,12 @@ begin
   Result:=SubTool;
   if Result=SubToolFPC then
     Result:='';
-  if (MsgID<>0) then
+  if MsgID<>0 then
     Result+='('+IntToStr(MsgID)+')';
   Pattern:=ExternalToolList.GetMsgPattern(SubTool,MsgID,Urgency);
   if Pattern<>'' then
     Result+=' '+Pattern;
-  if WithUrgency and (not (Urgency in [mluNone,mluImportant])) then
+  if WithUrgency and not (Urgency in [mluNone,mluImportant]) then
     Result:=FMessagesCtrl.UrgencyToStr(Urgency)+': '+Result;
   if UTF8Length(Result)>MaxLen then
     Result:=UTF8Copy(Result,1,MaxLen)+'...';
