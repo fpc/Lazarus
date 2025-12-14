@@ -579,7 +579,7 @@ begin
   dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeywords);
   dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeyAndSym);
 
-  lblGenericParamAttrMode.Caption := dlgPasDeclaredTypeValueMode;
+  lblGenericParamAttrMode.Caption := dlgPasGenericParamAttrMode;
   dropGenericParamAttrMode.Items.Clear;
   dropGenericParamAttrMode.Items.add(dlgPasDeclaredTypeAttrModeIdent);
   dropGenericParamAttrMode.Items.add(dlgPasDeclaredTypeAttrModeNames);

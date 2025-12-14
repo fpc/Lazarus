@@ -1993,17 +1993,17 @@ resourcestring
   dlgPasCaseLabelForOtherwise = 'Color otherwise/else as case-label';
   dlgPasDeclaredTypeAttrMode = 'Extend of type-highlight in declarations';
   dlgPasDeclaredTypeValueMode = 'Extend of initial-value-highlight in declarations';
-  dlgPasGenericParamAttrMode = 'Extend of initial-value-highlight in generic/specialize';
+  dlgPasGenericParamAttrMode = 'Extend of initial-value-highlight in Generic/Specialize';
   dlgPasDeclaredTypeValueModeLiteral = 'Include literals (Number, String) in initial-value-highlight in declarations';
   dlgPasDeclaredTypeAttrModeIdent = 'Identifier only';
   dlgPasDeclaredTypeAttrModeNames = 'Identifier and built-in (types/values)';
   dlgPasDeclaredTypeAttrModeKeywords = 'Identifier, built-in and keywords';
   dlgPasDeclaredTypeAttrModeKeyAndSym = 'All, including symbols';
-  dlgPasProcNameDeclAttrMode = 'Generic higlight in procedure names (declaration)';
-  dlgPasProcNameImplAttrMode = 'Generic higlight in procedure names (implementation)';
-  dlgPasProcNameAttrModeGenOnly = 'Apply generic highilght only';
-  dlgPasProcNameAttrModeGenAndProc = 'Apply generic and procedure name highilght';
-  dlgPasProcNameAttrModeProcOnly = 'Apply procedure name highilght only';
+  dlgPasProcNameDeclAttrMode = 'Generic highlight in procedure names (declaration)';
+  dlgPasProcNameImplAttrMode = 'Generic highlight in procedure names (implementation)';
+  dlgPasProcNameAttrModeGenOnly = 'Generic highlight only';
+  dlgPasProcNameAttrModeGenAndProc = 'Generic and procedure name highlight';
+  dlgPasProcNameAttrModeProcOnly = 'Procedure name highlight only';
   dlgPasProcNameAttrModeNone = 'Don''t apply either highlight';
 
   dlgPasStringKeywords = 'Highlight "String" types as keyword';
