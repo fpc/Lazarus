@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-12-11 22:54+0300\n"
+"PO-Revision-Date: 2025-12-14 23:06+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -213,11 +213,11 @@ msgstr "Функция"
 
 #: syneditstrconst.syns_attrgenericconstraint
 msgid "Generic param constraint"
-msgstr ""
+msgstr "Ограничение параметра в Generic"
 
 #: syneditstrconst.syns_attrgenericparam
 msgid "Generic param name"
-msgstr ""
+msgstr "Имя параметра в Generic"
 
 #: syneditstrconst.syns_attrgotolabel
 msgid "Goto Label"
@@ -477,7 +477,7 @@ msgstr "Фон"
 
 #: syneditstrconst.syns_attrspecializeparam
 msgid "Specialize param"
-msgstr ""
+msgstr "Параметр в Specialize"
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
