@@ -576,6 +576,10 @@ msgstr "ບລັອກການປະກາດ"
 msgid "Procedure Header"
 msgstr "ຫົວຂໍ້ໂປຣຊີເຢີ"
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_specializegenericsection
+msgid "Specialize/Generic Blocks"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
 msgid "(Custom)"
 msgstr "(ກຳນົດເອງ)"
@@ -3623,6 +3627,10 @@ msgstr "ຕົວເລືອກໄຮໄລ້ Pascal ເພີ່ມເຕີ�
 msgid "Highlight flow control statements (break, continue, exit) as keywords"
 msgstr "ໄຮໄລ້ຄຳສັ່ງຄວບຄຸມການໄຫຼ (break, continue, exit) ເປັນຄຳສັ່ງສະເພາະ"
 
+#: lazarusidestrconsts.dlgpasgenericparamattrmode
+msgid "Extend of initial-value-highlight in Generic/Specialize"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
 msgid "Markup (on caret)"
 msgstr "ໝາຍ (ຢູ່ທີ່ເຄີເຊີ)"
@@ -3634,6 +3642,30 @@ msgstr "ຄຳສັ່ງສະເພາະທີ່ກົງກັນ"
 #: lazarusidestrconsts.dlgpaskeywordsoutline
 msgid "Outline"
 msgstr "ເຄົ້າໂຄງ"
+
+#: lazarusidestrconsts.dlgpasprocnameattrmodegenandproc
+msgid "Generic and procedure name highlight"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasprocnameattrmodegenonly
+msgid "Generic highlight only"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasprocnameattrmodenone
+msgid "Don't apply either highlight"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasprocnameattrmodeproconly
+msgid "Procedure name highlight only"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasprocnamedeclattrmode
+msgid "Generic highlight in procedure names (declaration)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpasprocnameimplattrmode
+msgid "Generic highlight in procedure names (implementation)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
@@ -9347,13 +9379,9 @@ msgstr ""
 msgid "Program Filename:"
 msgstr "ຊື່ໄຟລ໌ໂປຣແກຣມ:"
 
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for FPC messages"
-msgstr "ສະແກນຜົນລັດ (output) ສຳລັບຂໍ້ຄວາມ FPC"
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for \"make\" messages"
-msgstr "ສະແກນຜົນລັດ (output) ສຳລັບຂໍ້ຄວາມ \"make\""
+#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
+msgid "Scan output for FPC and \"make\" messages"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-12-03 23:02+0300\n"
+"PO-Revision-Date: 2025-12-14 23:14+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -576,6 +576,10 @@ msgstr "Блоки объявлений"
 #: lazarusidestrconsts.dlgaddhiattrgroup_progheader
 msgid "Procedure Header"
 msgstr "Заголовок процедуры"
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_specializegenericsection
+msgid "Specialize/Generic Blocks"
+msgstr "Блоки Specialize/Generic"
 
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
 msgid "(Custom)"
@@ -3624,6 +3628,10 @@ msgstr "Расширенные параметры подсветки Паска�
 msgid "Highlight flow control statements (break, continue, exit) as keywords"
 msgstr "Подсвечивать операторы управления (break, continue, exit) так же, как ключевые слова"
 
+#: lazarusidestrconsts.dlgpasgenericparamattrmode
+msgid "Extend of initial-value-highlight in Generic/Specialize"
+msgstr "Расширение подсветки первоначального значения в Generic/Specialize"
+
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
 msgid "Markup (on caret)"
 msgstr "Подсвечивать при установке курсора"
@@ -3635,6 +3643,30 @@ msgstr "Связанные ключевые слова"
 #: lazarusidestrconsts.dlgpaskeywordsoutline
 msgid "Outline"
 msgstr "Отображать контур"
+
+#: lazarusidestrconsts.dlgpasprocnameattrmodegenandproc
+msgid "Generic and procedure name highlight"
+msgstr "Подсветка и в стиле Generic, и в стиле имени процедуры"
+
+#: lazarusidestrconsts.dlgpasprocnameattrmodegenonly
+msgid "Generic highlight only"
+msgstr "Подсветка только в стиле Generic"
+
+#: lazarusidestrconsts.dlgpasprocnameattrmodenone
+msgid "Don't apply either highlight"
+msgstr "Не подсвечивать ни в одном стиле"
+
+#: lazarusidestrconsts.dlgpasprocnameattrmodeproconly
+msgid "Procedure name highlight only"
+msgstr "Подсветка только в стиле имени процедуры"
+
+#: lazarusidestrconsts.dlgpasprocnamedeclattrmode
+msgid "Generic highlight in procedure names (declaration)"
+msgstr "Подсветка Generic в именах процедур (объявление)"
+
+#: lazarusidestrconsts.dlgpasprocnameimplattrmode
+msgid "Generic highlight in procedure names (implementation)"
+msgstr "Подсветка Generic в именах процедур (реализация)"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
@@ -9345,13 +9377,9 @@ msgstr "Перенаправить вывод в окно сообщений"
 msgid "Program Filename:"
 msgstr "Имя файла программы:"
 
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
-msgid "Scan output for FPC messages"
-msgstr "Искать сообщения FPC в выводе"
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
-msgid "Scan output for \"make\" messages"
-msgstr "Искать сообщения \"make\" в выводе"
+#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
+msgid "Scan output for FPC and \"make\" messages"
+msgstr "Искать сообщения FPC и \"make\" в выводе"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
