@@ -640,6 +640,18 @@ msgstr "Прокрутка (поле обзора)"
 msgid "Quick Paste Selection"
 msgstr "Быстрая вставка выделенного"
 
+#: syneditstrconst.syns_emcpluginextlinkcopyexternallink
+msgid "Copy external link"
+msgstr ""
+
+#: syneditstrconst.syns_emcpluginextlinkopenexternallink
+msgid "Open external link"
+msgstr ""
+
+#: syneditstrconst.syns_emcpluginextlinkselectexternallink
+msgid "Select external link"
+msgstr ""
+
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
 msgstr "Устанавливать курсоры на концах выделенных строк"

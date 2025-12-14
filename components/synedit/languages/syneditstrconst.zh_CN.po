@@ -641,6 +641,18 @@ msgstr "滚动 (概览边栏)"
 msgid "Quick Paste Selection"
 msgstr "快速粘贴选择"
 
+#: syneditstrconst.syns_emcpluginextlinkcopyexternallink
+msgid "Copy external link"
+msgstr ""
+
+#: syneditstrconst.syns_emcpluginextlinkopenexternallink
+msgid "Open external link"
+msgstr ""
+
+#: syneditstrconst.syns_emcpluginextlinkselectexternallink
+msgid "Select external link"
+msgstr ""
+
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
 msgstr "在选区的行尾设置光标"

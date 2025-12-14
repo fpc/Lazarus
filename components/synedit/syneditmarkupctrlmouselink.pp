@@ -118,6 +118,7 @@ type
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
 
+    procedure ClearShiftStateCache;
     property CtrlMouseLine : Integer read FCurrentLink.StartPos.Y write FCurrentLink.StartPos.Y; deprecated 'use LinkStartPos or LinkEndPos / to be removed in 5.99';
     property CtrlMouseX1 : Integer read FCurrentLink.StartPos.X write FCurrentLink.StartPos.X; deprecated 'use LinkStartPos / to be removed in 5.99';
     property CtrlMouseX2 : Integer read FCurrentLink.EndPos.X write FCurrentLink.EndPos.X; deprecated 'use LinkEndPos / to be removed in 5.99';
@@ -476,6 +477,11 @@ begin
      ((aRow > FCurrentLink.StartPos.Y) or (aStartCol.Logical >= FCurrentLink.StartPos.X))
   then
     ANextLog := FCurrentLink.EndPos.X;
+end;
+
+procedure TSynEditMarkupMouseLink.ClearShiftStateCache;
+begin
+  FShiftStatCache.Clear;
 end;
 
 { TSynEditMarkupMouseLink.TShiftStateCache }

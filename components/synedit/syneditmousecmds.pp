@@ -321,6 +321,7 @@ const
 
   emcPluginFirstSyncro     = 19000;
   emcPluginFirstMultiCaret = 19010;
+  emcPluginExternalLink    = 19020;
   emcPluginFirst = 20000;
 
   // Options

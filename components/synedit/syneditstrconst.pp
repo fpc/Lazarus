@@ -461,6 +461,11 @@ resourcestring
   SYNS_Delete = '&Delete';
   SYNS_SelectAll = 'Select &all';
 
+  // Plugin External Link
+  SYNS_emcPluginExtLinkOpenExternalLink = 'Open external link';
+  SYNS_emcPluginExtLinkCopyExternalLink = 'Copy external link';
+  SYNS_emcPluginExtLinkSelectExternalLink = 'Select external link';
+
 implementation
 
 end.

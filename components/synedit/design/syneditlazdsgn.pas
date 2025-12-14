@@ -36,16 +36,14 @@ uses
   SynGutter, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
   SynGutterMarks, SynGutterBase, SynEditMouseCmds, SynEditTypes,
   {$IFDEF DesignSynGutterLineOverview} SynGutterLineOverview, {$ENDIF}
-  SynEditKeyCmds, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
-  SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
-  SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
-  SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
-  SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX, SynHighlighterSQL,
-  SynHighlighterPython, SynHighlighterVB, SynHighlighterAny, SynHighlighterDiff,
-  SynHighlighterBat, SynHighlighterIni, SynHighlighterPo,
-  SynPluginSyncroEdit, SynPopupMenu,
-  SynPropertyEditObjectList, SynDesignStringConstants, SynHighlighterJScript,
-  LazarusPackageIntf, LResources, PropEdits, ComponentEditors;
+  SynEditKeyCmds, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder, SynMemo,
+  SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava, SynHighlighterPerl, SynHighlighterHTML,
+  SynHighlighterXML, SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
+  SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX, SynHighlighterSQL, SynHighlighterPython,
+  SynHighlighterVB, SynHighlighterAny, SynHighlighterDiff, SynHighlighterBat, SynHighlighterIni,
+  SynHighlighterPo, SynPluginSyncroEdit, SynPopupMenu, SynPropertyEditObjectList,
+  SynDesignStringConstants, SynHighlighterJScript, SynPluginExternalLink, LazarusPackageIntf,
+  LResources, PropEdits, ComponentEditors;
 
 procedure Register;
 
@@ -240,7 +238,7 @@ begin
   RegisterSynSyncroEdit;
   RegisterSynPopupMenu;
 
-  RegisterSynHighlighterPas;;
+  RegisterSynHighlighterPas;
   RegisterSynHighlighterCPP;
   RegisterSynHighlighterJava;
   RegisterSynHighlighterJScript;
@@ -287,6 +285,8 @@ begin
   {$IFDEF DesignSynGutterLineOverview}
   RegisterGutterPartClass(TSynGutterLineOverview, syndsLineOverview);
   {$ENDIF}
+
+  SynPluginExternalLink.Register;
 end;
 
 end.
