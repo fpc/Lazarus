@@ -304,7 +304,6 @@ type
     procedure UnhookHighlighter(aHL: TSynCustomHighlighter);
     procedure Notification(aComp: TComponent; aOp: TOperation); override;
     function  CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
-    procedure BeforeDetachedFromRangeList(ARangeList: TLazHighlighterLineRangeList); override;
     procedure SetCurrentLines(const AValue: TSynEditStringsBase); override;
     procedure SchemeItemChanged(Item: TObject);
     procedure SchemeChanged;
@@ -313,6 +312,7 @@ type
     function  PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean = False): Integer; override;
     property CurrentRanges: TSynHighlighterMultiRangeList read GetCurrentRanges;
     property KnownRanges[Index: Integer]: TSynHighlighterMultiRangeList read GetKnownMultiRanges;
+    procedure DoDetachingFromLines(Lines: TSynEditStringsBase; ARangeList: TLazHighlighterLineRangeList); override;
   public
     class function GetLanguageName: string; override;
   public
@@ -1245,6 +1245,20 @@ begin
   end;
 end;
 
+procedure TSynMultiSyn.DoDetachingFromLines(Lines: TSynEditStringsBase;
+  ARangeList: TLazHighlighterLineRangeList);
+begin
+  if (Schemes <> nil) and (ARangeList.RefCount = 0) then begin
+    TSynHighlighterMultiRangeList(ARangeList).CleanUpForScheme(Schemes);
+    if (TSynHighlighterMultiRangeList(ARangeList).DefaultVirtualLines <> nil) and
+       (DefaultHighlighter <> nil)
+    then
+      DefaultHighlighter.DetachFromLines(TSynHighlighterMultiRangeList(ARangeList).DefaultVirtualLines);
+  end;
+
+  inherited DoDetachingFromLines(Lines, ARangeList);
+end;
+
 function TSynMultiSyn.GetAttribCount: integer;
 var
   i: Integer;
@@ -1534,18 +1548,6 @@ begin
   Result := NewRangeList;
 end;
 
-procedure TSynMultiSyn.BeforeDetachedFromRangeList(ARangeList: TLazHighlighterLineRangeList);
-begin
-  inherited BeforeDetachedFromRangeList(ARangeList);
-  if (Schemes <> nil) and (ARangeList.RefCount = 0) then begin
-    TSynHighlighterMultiRangeList(ARangeList).CleanUpForScheme(Schemes);
-    if (TSynHighlighterMultiRangeList(ARangeList).DefaultVirtualLines <> nil) and
-       (DefaultHighlighter <> nil)
-    then
-      DefaultHighlighter.DetachFromLines(TSynHighlighterMultiRangeList(ARangeList).DefaultVirtualLines);
-  end;
-end;
-
 procedure TSynMultiSyn.SetCurrentLines(const AValue: TSynEditStringsBase);
 begin
   inherited SetCurrentLines(AValue);
@@ -1597,7 +1599,7 @@ end;
 
 function TSynMultiSyn.GetKnownMultiRanges(Index: Integer): TSynHighlighterMultiRangeList;
 begin
-  Result := TSynHighlighterMultiRangeList(inherited KnownRanges[Index])
+  Result := TSynHighlighterMultiRangeList(KnownLines[Index].Ranges[GetRangeIdentifier]);
 end;
 
 function TSynMultiSyn.GetCurrentRanges: TSynHighlighterMultiRangeList;
