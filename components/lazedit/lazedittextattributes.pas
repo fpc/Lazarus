@@ -787,7 +787,7 @@ end;
 
 function TLazEditTextAttribute.GetStylePriority(AnIndex: TFontStyle): integer;
 begin
-  Result := inherited GetStylePriority(AnIndex);
+  Result := FStylePriority[AnIndex];
 end;
 
 procedure TLazEditTextAttribute.SetPriority(AnIndex: TLazTextAttributeColor; AValue: integer);
