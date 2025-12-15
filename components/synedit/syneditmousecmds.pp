@@ -673,27 +673,24 @@ procedure TSynEditMouseAction.SetButton(const AValue: TSynMouseButton);
 begin
   if FButton = AValue then exit;
   FButton := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
 
   if FButton in [mbXWheelUp, mbXWheelDown, mbXWheelLeft, mbXWheelRight] then
-    ClickDir := cdDown;
+    FClickDir := cdDown;
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetButtonUpRestrictions(AValue: TSynMAUpRestrictions);
 begin
   if FButtonUpRestrictions = AValue then Exit;
   FButtonUpRestrictions := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetClickCount(const AValue: TSynMAClickCount);
 begin
   if FClickCount = AValue then exit;
   FClickCount := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetClickDir(AValue: TSynMAClickDir);
@@ -702,72 +699,63 @@ begin
     AValue := cdDown;
   if FClickDir = AValue then exit;
   FClickDir := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetCommand(const AValue: TSynEditorMouseCommand);
 begin
   if FCommand = AValue then exit;
   FCommand := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetIgnoreUpClick(AValue: Boolean);
 begin
   if FIgnoreUpClick = AValue then Exit;
   FIgnoreUpClick := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetMoveCaret(const AValue: Boolean);
 begin
   if FMoveCaret = AValue then exit;
   FMoveCaret := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetOption(const AValue: TSynEditorMouseCommandOpt);
 begin
   if FOption = AValue then exit;
   FOption := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetOption2(AValue: Integer);
 begin
   if FOption2 = AValue then Exit;
   FOption2 := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetPriority(const AValue: TSynEditorMouseCommandOpt);
 begin
   if FPriority = AValue then exit;
   FPriority := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetShift(const AValue: TShiftState);
 begin
   if FShift = AValue then exit;
   FShift := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.SetShiftMask(const AValue: TShiftState);
 begin
   if FShiftMask = AValue then exit;
   FShiftMask := AValue;
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 function TSynEditMouseAction.GetDisplayName: string;
@@ -794,8 +782,7 @@ begin
     FOnExecute  := TSynEditMouseAction(Source).OnExecute;
   end else
     inherited Assign(Source);
-  if Collection <> nil then
-    TSynEditMouseActions(Collection).AssertNoConflict(self);
+  Changed(False);
 end;
 
 procedure TSynEditMouseAction.Clear;
@@ -810,6 +797,7 @@ begin
   FOption     := 0;
   FPriority   := 0;
   FIgnoreUpClick := False;
+  Changed(False);
 end;
 
 function TSynEditMouseAction.IsMatchingShiftState(AShift: TShiftState): Boolean;
@@ -887,6 +875,11 @@ var
   Err : ESynMouseCmdError;
 begin
   inherited Update(Item);
+  if Item <> nil then begin
+    AssertNoConflict(TSynEditMouseAction(Item));
+    exit;
+  end;
+
   i := Count - 1;
   Err := nil;
   while i > 0 do begin

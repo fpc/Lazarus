@@ -417,11 +417,16 @@ procedure TSynEditMouseActionsGutter.InitForOptions(AnOptions: TSynEditorMouseOp
 var
   rmc: Boolean;
 begin
-  Clear;
-  rmc := (emRightMouseMovesCursor in AnOptions);
+  BeginUpdate;
+  try
+    Clear;
+    rmc := (emRightMouseMovesCursor in AnOptions);
 
-  AddCommand(emcOnMainGutterClick, False, mbXLeft,  ccAny, cdDown, [], []);
-  AddCommand(emcContextMenu,       rmc,   mbXRight, ccSingle, cdUp, [], []);
+    AddCommand(emcOnMainGutterClick, False, mbXLeft,  ccAny, cdDown, [], []);
+    AddCommand(emcContextMenu,       rmc,   mbXRight, ccSingle, cdUp, [], []);
+  finally
+    EndUpdate;
+  end;
 end;
 
 end.

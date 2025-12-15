@@ -1463,8 +1463,13 @@ end;
 
 procedure TSynPluginSyncroEditMouseActions.ResetDefaults;
 begin
-  Clear;
-  AddCommand(emcSynPSyncroEdGutterGlyph, False, mbXLeft, ccAny, cdDown, [], []);
+  BeginUpdate;
+  try
+    Clear;
+    AddCommand(emcSynPSyncroEdGutterGlyph, False, mbXLeft, ccAny, cdDown, [], []);
+  finally
+    EndUpdate;
+  end;
 end;
 
 { TSynEditSyncroEditKeyStrokesSelecting }

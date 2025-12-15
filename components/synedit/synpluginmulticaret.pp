@@ -1823,8 +1823,13 @@ end;
 
 procedure TSynPluginMultiCaretMouseActions.ResetDefaults;
 begin
-  Clear;
-  AddCommand(emcPluginMultiCaretToggleCaret, False, mbXLeft, ccAny, cdDown, [ssShift, ssCtrl], [ssShift,ssCtrl,ssAlt]);
+  BeginUpdate;
+  try
+    Clear;
+    AddCommand(emcPluginMultiCaretToggleCaret, False, mbXLeft, ccAny, cdDown, [ssShift, ssCtrl], [ssShift,ssCtrl,ssAlt]);
+  finally
+    EndUpdate;
+  end;
 end;
 
 { TSynPluginMultiCaretKeyStrokes }

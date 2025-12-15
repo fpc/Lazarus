@@ -1045,32 +1045,47 @@ procedure TSynEditMouseActionsGutterFold.InitForOptions(AnOptions: TSynEditorMou
 var
   rmc: Boolean;
 begin
-  Clear;
-  rmc := (emRightMouseMovesCursor in AnOptions);
+  BeginUpdate;
+  try
+    Clear;
+    rmc := (emRightMouseMovesCursor in AnOptions);
 
-  AddCommand(emcNone,                False,  mbXLeft, ccAny, cdDown, [], []);
+    AddCommand(emcNone,                False,  mbXLeft, ccAny, cdDown, [], []);
 
-  AddCommand(emcCodeFoldCollaps,     False, mbXMiddle, ccAny, cdDown, [], [ssShift], emcoCodeFoldCollapsOne);
-  AddCommand(emcCodeFoldCollaps,     False, mbXMiddle, ccAny, cdDown, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
+    AddCommand(emcCodeFoldCollaps,     False, mbXMiddle, ccAny, cdDown, [], [ssShift], emcoCodeFoldCollapsOne);
+    AddCommand(emcCodeFoldCollaps,     False, mbXMiddle, ccAny, cdDown, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
 
-  AddCommand(emcCodeFoldContextMenu, rmc,   mbXRight, ccSingle, cdUp, [], []);
+    AddCommand(emcCodeFoldContextMenu, rmc,   mbXRight, ccSingle, cdUp, [], []);
+  finally
+    EndUpdate;
+  end;
 end;
 
 { TSynEditMouseActionsGutterFoldExpanded }
 
 procedure TSynEditMouseActionsGutterFoldExpanded.InitForOptions(AnOptions: TSynEditorMouseOptions);
 begin
-  Clear;
-  AddCommand(emcCodeFoldCollaps, False, mbXLeft, ccAny, cdDown, [], [], emcoCodeFoldCollapsOne);
+  BeginUpdate;
+  try
+    Clear;
+    AddCommand(emcCodeFoldCollaps, False, mbXLeft, ccAny, cdDown, [], [], emcoCodeFoldCollapsOne);
+  finally
+    EndUpdate;
+  end;
 end;
 
 { TSynEditMouseActionsGutterFoldCollapsed }
 
 procedure TSynEditMouseActionsGutterFoldCollapsed.InitForOptions(AnOptions: TSynEditorMouseOptions);
 begin
-  Clear;
-  AddCommand(emcCodeFoldExpand, False, mbXLeft, ccAny, cdDown, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
-  AddCommand(emcCodeFoldExpand, False, mbXLeft, ccAny, cdDown, [], [ssCtrl], emcoCodeFoldExpandAll);
+  BeginUpdate;
+  try
+    Clear;
+    AddCommand(emcCodeFoldExpand, False, mbXLeft, ccAny, cdDown, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
+    AddCommand(emcCodeFoldExpand, False, mbXLeft, ccAny, cdDown, [], [ssCtrl], emcoCodeFoldExpandAll);
+  finally
+    EndUpdate;
+  end;
 end;
 
 

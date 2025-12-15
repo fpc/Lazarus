@@ -1685,16 +1685,21 @@ end;
 
 procedure TSynEditMouseGlobalActions.InitForOptions(AnOptions: TSynEditorMouseOptions);
 begin
-  // Normal wheel: scroll dependent on visible scroll-bars
-  AddCommand(emcWheelScrollDown,       False,  mbXWheelDown, ccAny, cdDown, [], []);
-  AddCommand(emcWheelScrollUp,         False,  mbXWheelUp, ccAny, cdDown, [], []);
+  BeginUpdate;
+  try
+    // Normal wheel: scroll dependent on visible scroll-bars
+    AddCommand(emcWheelScrollDown,       False,  mbXWheelDown, ccAny, cdDown, [], []);
+    AddCommand(emcWheelScrollUp,         False,  mbXWheelUp, ccAny, cdDown, [], []);
 
-  AddCommand(emcWheelHorizScrollDown,       False,  mbXWheelLeft, ccAny, cdDown, [], []);
-  AddCommand(emcWheelHorizScrollUp,         False,  mbXWheelRight, ccAny, cdDown, [], []);
+    AddCommand(emcWheelHorizScrollDown,       False,  mbXWheelLeft, ccAny, cdDown, [], []);
+    AddCommand(emcWheelHorizScrollUp,         False,  mbXWheelRight, ccAny, cdDown, [], []);
 
-  if emCtrlWheelZoom in AnOptions then begin
-    AddCommand(emcWheelZoomOut,        False,  mbXWheelDown, ccAny, cdDown, [ssCtrl], [ssCtrl]);
-    AddCommand(emcWheelZoomIn,         False,  mbXWheelUp,   ccAny, cdDown, [ssCtrl], [ssCtrl]);
+    if emCtrlWheelZoom in AnOptions then begin
+      AddCommand(emcWheelZoomOut,        False,  mbXWheelDown, ccAny, cdDown, [ssCtrl], [ssCtrl]);
+      AddCommand(emcWheelZoomIn,         False,  mbXWheelUp,   ccAny, cdDown, [ssCtrl], [ssCtrl]);
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -1704,48 +1709,58 @@ procedure TSynEditMouseTextActions.InitForOptions(AnOptions: TSynEditorMouseOpti
 var
   rmc: Boolean;
 begin
-  Clear;
-  rmc := (emRightMouseMovesCursor in AnOptions);
-  //// eoRightMouseMovesCursor
-  //if (eoRightMouseMovesCursor in ChangedOptions) then begin
-  //  for i := FMouseActions.Count-1 downto 0 do
-  //    if FMouseActions[i].Button = mbXRight then
-  //      FMouseActions[i].MoveCaret := (eoRightMouseMovesCursor in fOptions);
-  //end;
+  BeginUpdate;
+  try
+    Clear;
+    rmc := (emRightMouseMovesCursor in AnOptions);
+    //// eoRightMouseMovesCursor
+    //if (eoRightMouseMovesCursor in ChangedOptions) then begin
+    //  for i := FMouseActions.Count-1 downto 0 do
+    //    if FMouseActions[i].Button = mbXRight then
+    //      FMouseActions[i].MoveCaret := (eoRightMouseMovesCursor in fOptions);
+    //end;
 
-  AddCommand(emcStartSelections,       True,  mbXLeft, ccSingle, cdDown, [],        [ssShift, ssAlt], emcoSelectionStart);
-  AddCommand(emcStartSelections,       True,  mbXLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt], emcoSelectionContinue);
-  if (emAltSetsColumnMode in AnOptions) then begin
-    AddCommand(emcStartColumnSelections, True,  mbXLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
-    AddCommand(emcStartColumnSelections, True,  mbXLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
+    AddCommand(emcStartSelections,       True,  mbXLeft, ccSingle, cdDown, [],        [ssShift, ssAlt], emcoSelectionStart);
+    AddCommand(emcStartSelections,       True,  mbXLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt], emcoSelectionContinue);
+    if (emAltSetsColumnMode in AnOptions) then begin
+      AddCommand(emcStartColumnSelections, True,  mbXLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
+      AddCommand(emcStartColumnSelections, True,  mbXLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
+    end;
+    if (emShowCtrlMouseLinks in AnOptions) then
+      AddCommand(emcMouseLink,             False, mbXLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER]);
+
+    if (emDoubleClickSelectsLine in AnOptions) then begin
+      AddCommand(emcSelectLine,            True,  mbXLeft, ccDouble, cdDown, [], []);
+      AddCommand(emcSelectPara,            True,  mbXLeft, ccTriple, cdDown, [], []);
+    end
+    else begin
+      AddCommand(emcSelectWord,            True,  mbXLeft, ccDouble, cdDown, [], []);
+      AddCommand(emcSelectLine,            True,  mbXLeft, ccTriple, cdDown, [], []);
+    end;
+    AddCommand(emcSelectPara,            True,  mbXLeft, ccQuad,   cdDown, [], []);
+
+    AddCommand(emcContextMenu,           rmc,   mbXRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
+
+    AddCommand(emcPasteSelection,        True,  mbXMiddle, ccSingle, cdDown, [], []);
+  finally
+    EndUpdate;
   end;
-  if (emShowCtrlMouseLinks in AnOptions) then
-    AddCommand(emcMouseLink,             False, mbXLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER]);
-
-  if (emDoubleClickSelectsLine in AnOptions) then begin
-    AddCommand(emcSelectLine,            True,  mbXLeft, ccDouble, cdDown, [], []);
-    AddCommand(emcSelectPara,            True,  mbXLeft, ccTriple, cdDown, [], []);
-  end
-  else begin
-    AddCommand(emcSelectWord,            True,  mbXLeft, ccDouble, cdDown, [], []);
-    AddCommand(emcSelectLine,            True,  mbXLeft, ccTriple, cdDown, [], []);
-  end;
-  AddCommand(emcSelectPara,            True,  mbXLeft, ccQuad,   cdDown, [], []);
-
-  AddCommand(emcContextMenu,           rmc,   mbXRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
-
-  AddCommand(emcPasteSelection,        True,  mbXMiddle, ccSingle, cdDown, [], []);
 end;
 
 { TSynEditMouseSelActions }
 
 procedure TSynEditMouseSelActions.InitForOptions(AnOptions: TSynEditorMouseOptions);
 begin
-  Clear;
-  //rmc := (eoRightMouseMovesCursor in AnOptions);
+  BeginUpdate;
+  try
+    Clear;
+    //rmc := (eoRightMouseMovesCursor in AnOptions);
 
-  if (emDragDropEditing in AnOptions) then
-    AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], [ssShift]);
+    if (emDragDropEditing in AnOptions) then
+      AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], [ssShift]);
+  finally
+    EndUpdate;
+  end;
 end;
 
 { THookedCommandHandlerEntry }
