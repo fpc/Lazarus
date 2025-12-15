@@ -64,7 +64,20 @@ type
   TIdentFuncTableFunc = function: TtkTokenKind of object;
 
 type
+
+  { TSynVBSyn }
+
   TSynVBSyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribIdentifier,
+    attribKey,
+    attribNumber,
+    attribSpace,
+    attribString,
+    attribSymbol
+    );
   private
     fLine: PChar;
     fLineNumber: Integer;
@@ -172,6 +185,7 @@ type
     function Func116: TtkTokenKind;
     function Func118: TtkTokenKind;
     function Func133: TtkTokenKind;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SymbolProc;
     procedure ApostropheProc;
     procedure CRProc;
@@ -209,19 +223,13 @@ type
     function GetTokenPos: Integer; override;
     procedure Next; override;
   published
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
   end;
 
 implementation
@@ -954,6 +962,19 @@ end;
 function TSynVBSyn.Func133: TtkTokenKind;
 begin
   if KeyComp('property') then Result := tkKey else Result := tkIdentifier;
+end;
+
+procedure TSynVBSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribComment:    FCommentAttri.Assign(AValue);
+    attribIdentifier: FIdentifierAttri.Assign(AValue);
+    attribKey:        FKeyAttri.Assign(AValue);
+    attribNumber:     FNumberAttri.Assign(AValue);
+    attribSpace:      FSpaceAttri.Assign(AValue);
+    attribString:     FStringAttri.Assign(AValue);
+    attribSymbol:     FSymbolAttri.Assign(AValue);
+  end;
 end;
 
 function TSynVBSyn.AltFunc: TtkTokenKind;

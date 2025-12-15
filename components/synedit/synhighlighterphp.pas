@@ -66,7 +66,22 @@ type
   TIdentFuncTableFunc = function: TtkTokenKind of object;
 
 type
+
+  { TSynPHPSyn }
+
   TSynPHPSyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribIdentifier,
+    attribInvalidSymbol,
+    attribKey,
+    attribNumber,
+    attribSpace,
+    attribString,
+    attribSymbol,
+    attribVariable
+    );
   private
     fRange: TRangeState;
     fLine: PChar;
@@ -162,6 +177,7 @@ type
     procedure RoundCloseProc;
     procedure RoundOpenProc;
     procedure SemiColonProc;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SlashProc;
     procedure SpaceProc;
     procedure SquareCloseProc;
@@ -202,23 +218,15 @@ type
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
   published
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property InvalidSymbolAttri: TSynHighlighterAttributes read fInvalidSymbolAttri
-      write fInvalidSymbolAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
-    property VariableAttri: TSynHighlighterAttributes read fVariableAttri
-      write fVariableAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property InvalidSymbolAttri: TSynHighlighterAttributes index attribInvalidSymbol read fInvalidSymbolAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property VariableAttri: TSynHighlighterAttributes index attribVariable read fVariableAttri write SetAttribute;
   end;
 
 implementation
@@ -995,6 +1003,21 @@ procedure TSynPHPSyn.SemiColonProc;
 begin
   inc(Run);                            {semicolon}
   fTokenID := tkSymbol;
+end;
+
+procedure TSynPHPSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribComment:       FCommentAttri.Assign(AValue);
+    attribIdentifier:    FIdentifierAttri.Assign(AValue);
+    attribInvalidSymbol: FInvalidSymbolAttri.Assign(AValue);
+    attribKey:           FKeyAttri.Assign(AValue);
+    attribNumber:        FNumberAttri.Assign(AValue);
+    attribSpace:         FSpaceAttri.Assign(AValue);
+    attribString:        FStringAttri.Assign(AValue);
+    attribSymbol:        FSymbolAttri.Assign(AValue);
+    attribVariable:      FVariableAttri.Assign(AValue);
+  end;
 end;
 
 procedure TSynPHPSyn.SlashProc;

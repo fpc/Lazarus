@@ -69,6 +69,7 @@ type
     FTokenKind: TtkTokenKind;
     fTokens: TList; // list of PPositionTokens
     function GetTokens(TheLineNumber: integer): PPositionTokens;
+    procedure SetTextAttri(AValue: TSynHighlighterAttributes);
   protected
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
@@ -113,7 +114,7 @@ type
     function GetCopiedAttribute(TokenID: TtkTokenKind): TLazEditTextAttribute;
     property Tokens[TheLineNumber: integer]: PPositionTokens read GetTokens;
   published
-    property TextAttri: TSynHighlighterAttributes read fTextAttri write fTextAttri;
+    property TextAttri: TSynHighlighterAttributes read fTextAttri write SetTextAttri;
   end;
 
 implementation
@@ -127,6 +128,11 @@ begin
     Result:=PPositionTokens(fTokens[TheLineNumber])
   else
     Result:=nil;
+end;
+
+procedure TSynPositionHighlighter.SetTextAttri(AValue: TSynHighlighterAttributes);
+begin
+  fTextAttri.Assign(AValue);
 end;
 
 function TSynPositionHighlighter.GetIdentChars: TSynIdentChars;

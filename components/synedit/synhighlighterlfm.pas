@@ -78,6 +78,15 @@ type
   { TSynLFMSyn }
 
   TSynLFMSyn = class(TSynCustomFoldHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribIdentifier,
+    attribKey,
+    attribNumber,
+    attribSpace,
+    attribString
+    );
   private
     fRange: TRangeState;
     fLine: PChar;
@@ -106,6 +115,7 @@ type
     procedure NumberProc;
     procedure ObjectProc;
     procedure InheritedInlineProc;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SpaceProc;
     procedure StringProc;
     procedure SymbolProc;
@@ -148,17 +158,12 @@ type
     procedure ResetRange; override;
     property IdentChars;
   published
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
   end;
 
 function LoadLFMFile2Strings(const AFile: string; AStrings: TStrings;
@@ -458,6 +463,18 @@ begin
   end
   else
     AltProc;
+end;
+
+procedure TSynLFMSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribComment:    FCommentAttri.Assign(AValue);
+    attribIdentifier: FIdentifierAttri.Assign(AValue);
+    attribKey:        FKeyAttri.Assign(AValue);
+    attribNumber:     FNumberAttri.Assign(AValue);
+    attribSpace:      FSpaceAttri.Assign(AValue);
+    attribString:     FStringAttri.Assign(AValue);
+  end;
 end;
 
 procedure TSynLFMSyn.SpaceProc;

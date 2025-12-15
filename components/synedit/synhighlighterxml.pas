@@ -115,6 +115,27 @@ type
 
   TSynXMLSyn = class(TSynCustomXmlHighlighter)
   private type
+    TSynPasAttribute = (
+    attribElement,
+    attribAttribute,
+    attribNameSpaceAttribute,
+    attribAttributeValue,
+    attribNameSpaceAttributeValue,
+    attribNamespaceDefinition,
+    attribNamespacePrefix,
+    attribNamespaceColon,
+    attribText,
+    attribCDATA,
+    attribEntityRef,
+    attribProcessingInstruction,
+    attribProcessingInstructionSymbol,
+    attribComment,
+    attribCommentSymbol,
+    attribDocType,
+    attribSpace,
+    attribSymbol
+    );
+
     {$PUSH}{$PackEnum 1}{$PackSet 1}
     TRangeStore = bitpacked record
       case integer of
@@ -153,15 +174,18 @@ type
     fCommentAttri: TSynHighlighterAttributes;
     fDocTypeAttri: TSynHighlighterAttributes;
     fAttributeAttri: TSynHighlighterAttributes;
-    fnsAttributeAttri: TSynHighlighterAttributes;
+    fNameSpaceAttributeAttri: TSynHighlighterAttributes;
     fAttributeValueAttri: TSynHighlighterAttributes;
-    fnsAttributeValueAttri: TSynHighlighterAttributes;
+    fNameSpaceAttributeValueAttri: TSynHighlighterAttributes;
     fSymbolAttri: TSynHighlighterAttributes;
     fProcTable: array[#0..#255] of TProcTableProc;
     FWantBracesParsed: Boolean;
     procedure NullProc;
     procedure CarriageReturnProc;
     procedure LineFeedProc;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributesModifier);
+    procedure SetAttributeEx(AnIndex: TSynPasAttribute; AValue: TLazEditTextAttribute);
     procedure SpaceProc;
     procedure QuestionMarkProc;
     procedure LessThanProc;
@@ -220,44 +244,25 @@ type
     procedure ReSetRange; override;
     property IdentChars;
   published
-    property ElementAttri: TSynHighlighterAttributes read fElementAttri
-      write fElementAttri;
-    property AttributeAttri: TSynHighlighterAttributes read fAttributeAttri
-      write fAttributeAttri;
-    property NamespaceAttributeAttri: TSynHighlighterAttributes
-      read fnsAttributeAttri write fnsAttributeAttri;
-    property AttributeValueAttri: TSynHighlighterAttributes
-      read fAttributeValueAttri write fAttributeValueAttri;
-    property NamespaceAttributeValueAttri: TSynHighlighterAttributes
-      read fnsAttributeValueAttri write fnsAttributeValueAttri;
-    property NamespaceDefinitionAttri: TSynHighlighterAttributesModifier
-      read fNamespaceDefinitionAttri write fNamespaceDefinitionAttri;
-    property NamespacePrefixAttri: TSynHighlighterAttributesModifier
-      read fNamespacePrefixAttri write fNamespacePrefixAttri;
-    property NamespaceColonAttri: TSynHighlighterAttributesModifier
-      read fNamespaceColonAttri write fNamespaceColonAttri;
-    property TextAttri: TSynHighlighterAttributes read fTextAttri
-      write fTextAttri;
-    property CDATAAttri: TSynHighlighterAttributes read fCDATAAttri
-      write fCDATAAttri;
-    property EntityRefAttri: TSynHighlighterAttributes read fEntityRefAttri
-      write fEntityRefAttri;
-    property ProcessingInstructionAttri: TSynHighlighterAttributesModifier
-      read fProcessingInstructionAttri write fProcessingInstructionAttri;
-    property ProcessingInstructionSymbolAttri: TSynHighlighterAttributes
-      read fProcessingInstructionSymbolAttri write fProcessingInstructionSymbolAttri;
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property CommentSymbolAttri: TSynHighlighterAttributes read fCommentSymbolAttri
-      write fCommentSymbolAttri;
-    property DocTypeAttri: TSynHighlighterAttributes read fDocTypeAttri
-      write fDocTypeAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
-    property QuotesUseAttribValueAttri: Boolean read FQuotesUseAttribValueAttri
-      write FQuotesUseAttribValueAttri default False;
+    property ElementAttri: TSynHighlighterAttributes index attribElement read fElementAttri write SetAttribute;
+    property AttributeAttri: TSynHighlighterAttributes index attribAttribute  read fAttributeAttri write SetAttribute;
+    property NamespaceAttributeAttri: TSynHighlighterAttributes index attribNameSpaceAttribute read fNameSpaceAttributeAttri write SetAttribute;
+    property AttributeValueAttri: TSynHighlighterAttributes index attribAttributeValue  read fAttributeValueAttri write SetAttribute;
+    property NamespaceAttributeValueAttri: TSynHighlighterAttributes index attribNameSpaceAttributeValue read fNameSpaceAttributeValueAttri write SetAttribute;
+    property NamespaceDefinitionAttri: TSynHighlighterAttributesModifier index attribNamespaceDefinition read fNamespaceDefinitionAttri write SetAttribute;
+    property NamespacePrefixAttri: TSynHighlighterAttributesModifier index attribNamespacePrefix read fNamespacePrefixAttri write SetAttribute;
+    property NamespaceColonAttri: TSynHighlighterAttributesModifier index attribNamespaceColon read fNamespaceColonAttri write SetAttribute;
+    property TextAttri: TSynHighlighterAttributes index attribText read fTextAttri write SetAttribute;
+    property CDATAAttri: TSynHighlighterAttributes index attribCDATA read fCDATAAttri write SetAttribute;
+    property EntityRefAttri: TSynHighlighterAttributes index attribEntityRef read fEntityRefAttri write SetAttribute;
+    property ProcessingInstructionAttri: TSynHighlighterAttributesModifier index attribProcessingInstruction read fProcessingInstructionAttri write SetAttribute;
+    property ProcessingInstructionSymbolAttri: TSynHighlighterAttributes index attribProcessingInstructionSymbol read fProcessingInstructionSymbolAttri write SetAttribute;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property CommentSymbolAttri: TSynHighlighterAttributes index attribCommentSymbol read fCommentSymbolAttri write SetAttribute;
+    property DocTypeAttri: TSynHighlighterAttributes index attribDocType read fDocTypeAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property QuotesUseAttribValueAttri: Boolean read FQuotesUseAttribValueAttri write FQuotesUseAttribValueAttri default False;
     property WantBracesParsed : Boolean read FWantBracesParsed
       write FWantBracesParsed default True;
   end;
@@ -283,9 +288,9 @@ begin
   fCommentSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCommentSym, SYNS_XML_AttrCommentSym);
   fDocTypeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrDOCTYPESection, SYNS_XML_AttrDOCTYPESection);
   fAttributeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrAttributeName, SYNS_XML_AttrAttributeName);
-  fnsAttributeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrName, SYNS_XML_AttrNamespaceAttrName);
+  fNameSpaceAttributeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrName, SYNS_XML_AttrNamespaceAttrName);
   fAttributeValueAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrAttributeValue, SYNS_XML_AttrAttributeValue);
-  fnsAttributeValueAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrValue, SYNS_XML_AttrNamespaceAttrValue);
+  fNameSpaceAttributeValueAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrValue, SYNS_XML_AttrNamespaceAttrValue);
   fSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
 
   fNamespaceColonAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrNamespaceIdentDef, SYNS_XML_AttrNamespaceIdentDef);
@@ -320,14 +325,14 @@ begin
   fAttributeAttri.Foreground:= clMaroon;
   fAttributeAttri.Style:= [];
 
-  fnsAttributeAttri.Foreground:= clRed;
-  fnsAttributeAttri.Style:= [];
+  fNameSpaceAttributeAttri.Foreground:= clRed;
+  fNameSpaceAttributeAttri.Style:= [];
 
   fAttributeValueAttri.Foreground:= clNavy;
   fAttributeValueAttri.Style:= [fsBold];
 
-  fnsAttributeValueAttri.Foreground:= clRed;
-  fnsAttributeValueAttri.Style:= [fsBold];
+  fNameSpaceAttributeValueAttri.Foreground:= clRed;
+  fNameSpaceAttributeValueAttri.Style:= [fsBold];
 
   fCommentAttri.Background:= clSilver;
   fCommentAttri.Foreground:= clGray;
@@ -345,9 +350,9 @@ begin
   AddAttribute(fCommentSymbolAttri);
   AddAttribute(fElementAttri);
   AddAttribute(fAttributeAttri);
-  AddAttribute(fnsAttributeAttri);
+  AddAttribute(fNameSpaceAttributeAttri);
   AddAttribute(fAttributeValueAttri);
-  AddAttribute(fnsAttributeValueAttri);
+  AddAttribute(fNameSpaceAttributeValueAttri);
   AddAttribute(fNamespaceColonAttri);
   AddAttribute(fNamespaceDefinitionAttri);
   AddAttribute(fNamespacePrefixAttri);
@@ -429,6 +434,41 @@ procedure TSynXMLSyn.LineFeedProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
+end;
+
+procedure TSynXMLSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribElement:                     FElementAttri.Assign(AValue);
+    attribAttribute:                   FAttributeAttri.Assign(AValue);
+    attribNameSpaceAttribute:          FNameSpaceAttributeAttri.Assign(AValue);
+    attribAttributeValue:              FAttributeValueAttri.Assign(AValue);
+    attribNameSpaceAttributeValue:     FNameSpaceAttributeValueAttri.Assign(AValue);
+    attribNamespaceDefinition:         FNamespaceDefinitionAttri.Assign(AValue);
+    attribNamespacePrefix:             FNamespacePrefixAttri.Assign(AValue);
+    attribNamespaceColon:              FNamespaceColonAttri.Assign(AValue);
+    attribText:                        FTextAttri.Assign(AValue);
+    attribCDATA:                       FCDATAAttri.Assign(AValue);
+    attribEntityRef:                   FEntityRefAttri.Assign(AValue);
+    attribProcessingInstruction:       FProcessingInstructionAttri.Assign(AValue);
+    attribProcessingInstructionSymbol: FProcessingInstructionSymbolAttri.Assign(AValue);
+    attribComment:                     FCommentAttri.Assign(AValue);
+    attribCommentSymbol:               FCommentSymbolAttri.Assign(AValue);
+    attribDocType:                     FDocTypeAttri.Assign(AValue);
+    attribSpace:                       FSpaceAttri.Assign(AValue);
+    attribSymbol:                      FSymbolAttri.Assign(AValue);
+  end;
+end;
+
+procedure TSynXMLSyn.SetAttribute(AnIndex: TSynPasAttribute;
+  AValue: TSynHighlighterAttributesModifier);
+begin
+  SetAttributeEx(AnIndex, AValue);
+end;
+
+procedure TSynXMLSyn.SetAttributeEx(AnIndex: TSynPasAttribute; AValue: TLazEditTextAttribute);
+begin
+  SetAttributeEx(AnIndex, AValue);
 end;
 
 procedure TSynXMLSyn.SpaceProc;
@@ -969,10 +1009,10 @@ begin
 case fTokenID of
     tkElement: Result:= fElementAttri;
     tkAttribute: Result:= fAttributeAttri;
-    tknsAttribute: Result:= fnsAttributeAttri;
+    tknsAttribute: Result:= fNameSpaceAttributeAttri;
     tkEqual: Result:= fSymbolAttri;
     tkAttrValue: Result:= fAttributeValueAttri;
-    tknsAttrValue: Result:= fnsAttributeValueAttri;
+    tknsAttrValue: Result:= fNameSpaceAttributeValueAttri;
     tkText: Result:= fTextAttri;
     tkCDATA: Result:= fCDATAAttri;
     tkEntityRef: Result:= fEntityRefAttri;

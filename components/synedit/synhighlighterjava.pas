@@ -74,7 +74,22 @@ type
   TProcTableProc = procedure of Object;
   TIdentFuncTableFunc = function: TtkTokenKind of Object;
 
+  { TSynJavaSyn }
+
   TSynJavaSyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribAnnotation,
+    attribComment,
+    attribDocument,
+    attribIdentifier,
+    attribInvalid,
+    attribKey,
+    attribNumber,
+    attribSpace,
+    attribString,
+    attribSymbol
+    );
   private
     fRange: TRangeState;
     fLine: PChar;
@@ -172,6 +187,7 @@ type
     procedure RoundCloseProc;
     procedure RoundOpenProc;
     procedure SemiColonProc;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SlashProc;
     procedure SpaceProc;
     procedure SquareCloseProc;
@@ -212,25 +228,16 @@ type
     procedure ResetRange; override;
     property ExtTokenID: TxtkTokenKind read GetExtTokenID;
   published
-    property AnnotationAttri: TSynHighlighterAttributes read fAnnotationAttri
-      write fAnnotationAttri;
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property DocumentAttri: TSynHighlighterAttributes read fDocumentAttri
-      write fDocumentAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property InvalidAttri: TSynHighlighterAttributes read fInvalidAttri
-      write fInvalidAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
+    property AnnotationAttri: TSynHighlighterAttributes index attribAnnotation read fAnnotationAttri write SetAttribute;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property DocumentAttri: TSynHighlighterAttributes index attribDocument read fDocumentAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property InvalidAttri: TSynHighlighterAttributes index attribInvalid read fInvalidAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
   end;
 
 implementation
@@ -1125,6 +1132,22 @@ begin
   inc(Run);                            {semicolon}
   fTokenID := tkSymbol;
   FExtTokenID := xtkSemiColon;
+end;
+
+procedure TSynJavaSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribAnnotation: FAnnotationAttri.Assign(AValue);
+    attribComment:    FCommentAttri.Assign(AValue);
+    attribDocument:   FDocumentAttri.Assign(AValue);
+    attribIdentifier: FIdentifierAttri.Assign(AValue);
+    attribInvalid:    FInvalidAttri.Assign(AValue);
+    attribKey:        FKeyAttri.Assign(AValue);
+    attribNumber:     FNumberAttri.Assign(AValue);
+    attribSpace:      FSpaceAttri.Assign(AValue);
+    attribString:     FStringAttri.Assign(AValue);
+    attribSymbol:     FSymbolAttri.Assign(AValue);
+  end;
 end;
 
 procedure TSynJavaSyn.SlashProc;

@@ -74,6 +74,19 @@ type
   { TSynJScriptSyn }
 
   TSynJScriptSyn = class(TSynCustomFoldHighlighter{TSynCustomHighLighter})
+  public type
+    TSynPasAttribute = (
+    attribBracket,
+    attribComment,
+    attribIdentifier,
+    attribKey,
+    attribNonReservedKey,
+    attribEvent,
+    attribNumber,
+    attribSpace,
+    attribString,
+    attribSymbol
+    );
   private
     FBracketAttri: TSynHighlighterAttributes;
     FAtLineStart: Boolean;
@@ -247,6 +260,7 @@ type
     procedure OrSymbolProc;
     procedure PlusProc;
     procedure PointProc;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SlashProc;
     procedure SpaceProc;
     procedure StarProc;
@@ -294,23 +308,16 @@ type
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
   published
-    property BracketAttri: TSynHighlighterAttributes read FBracketAttri
-                  write FBracketAttri;
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property NonReservedKeyAttri: TSynHighlighterAttributes read fNonReservedKeyAttri write fNonReservedKeyAttri;
-    property EventAttri: TSynHighlighterAttributes read fEventAttri write fEventAttri;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
+    property BracketAttri: TSynHighlighterAttributes index attribBracket read FBracketAttri write SetAttribute;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NonReservedKeyAttri: TSynHighlighterAttributes index attribNonReservedKey read fNonReservedKeyAttri write SetAttribute;
+    property EventAttri: TSynHighlighterAttributes index attribEvent read fEventAttri write SetAttribute;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
   end;
 
 implementation
@@ -1670,6 +1677,23 @@ begin
   fTokenID := tkSymbol;
   inc(Run);
   if (fLine[Run] = '.') and (fLine[Run + 1] = '.') then inc(Run, 2);
+end;
+
+procedure TSynJScriptSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes
+  );
+begin
+  case AnIndex of
+    attribBracket:        FBracketAttri.Assign(AValue);
+    attribComment:        FCommentAttri.Assign(AValue);
+    attribIdentifier:     FIdentifierAttri.Assign(AValue);
+    attribKey:            FKeyAttri.Assign(AValue);
+    attribNonReservedKey: FNonReservedKeyAttri.Assign(AValue);
+    attribEvent:          FEventAttri.Assign(AValue);
+    attribNumber:         FNumberAttri.Assign(AValue);
+    attribSpace:          FSpaceAttri.Assign(AValue);
+    attribString:         FStringAttri.Assign(AValue);
+    attribSymbol:         FSymbolAttri.Assign(AValue);
+  end;
 end;
 
 procedure TSynJScriptSyn.SlashProc;

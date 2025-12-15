@@ -53,7 +53,20 @@ type
   TProcTableProc = procedure of object;
 
 type
+
+  { TSynTeXSyn }
+
   TSynTeXSyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribText,
+    attribControlSequence,
+    attribMathmode,
+    attribSpace,
+    attribBrace,
+    attribBracket
+    );
   private
     fLine:                  PChar;
     fLineNumber:            Integer;
@@ -76,6 +89,7 @@ type
     //Procedures
     procedure MakeMethodTables;
     procedure CRProc;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure TextProc;
     procedure LFProc;
     procedure NullProc;
@@ -108,20 +122,13 @@ type
     function GetTokenPos: Integer; override;
     procedure Next; override;
   published
-    property CommentAttri : TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property TextAttri: TSynHighlighterAttributes read fTextAttri
-      write fTextAttri;
-    property ControlSequenceAttri: TSynHighlighterAttributes
-      read fControlSequenceAttri write fControlSequenceAttri;
-    property MathmodeAttri: TSynHighlighterAttributes read fMathmodeAttri
-      write fMathmodeAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property BraceAttri: TSynHighlighterAttributes read fBraceAttri
-      write fBraceAttri;
-    property BracketAttri: TSynHighlighterAttributes read fBracketAttri
-      write fBracketAttri;
+    property CommentAttri : TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property TextAttri: TSynHighlighterAttributes index attribText read fTextAttri write SetAttribute;
+    property ControlSequenceAttri: TSynHighlighterAttributes index attribControlSequence read fControlSequenceAttri write SetAttribute;
+    property MathmodeAttri: TSynHighlighterAttributes index attribMathmode read fMathmodeAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property BraceAttri: TSynHighlighterAttributes index attribBrace read fBraceAttri write SetAttribute;
+    property BracketAttri: TSynHighlighterAttributes index attribBracket read fBracketAttri write SetAttribute;
   end;
 
 implementation
@@ -197,6 +204,19 @@ begin
   else inc(Run);
   end;
 end;  { CRProc }
+
+procedure TSynTeXSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribComment:         FCommentAttri.Assign(AValue);
+    attribText:            FTextAttri.Assign(AValue);
+    attribControlSequence: FControlSequenceAttri.Assign(AValue);
+    attribMathmode:        FMathmodeAttri.Assign(AValue);
+    attribSpace:           FSpaceAttri.Assign(AValue);
+    attribBrace:           FBraceAttri.Assign(AValue);
+    attribBracket:         FBracketAttri.Assign(AValue);
+  end;
+end;
 
 
 procedure TSynTeXSyn.SpaceProc;

@@ -70,7 +70,27 @@ type
   TProcTableProc = procedure of object;
 
 type
+
+  { TSynPythonSyn }
+
   TSynPythonSyn = class(TSynCustomHighLighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribIdentifier,
+    attribKey,
+    attribNonKey,
+    attribSystem,
+    attribNumber,
+    attribHex,
+    attribOctal,
+    attribFloat,
+    attribSpace,
+    attribString,
+    attribDocString,
+    attribSymbol,
+    attribError
+    );
   private
     fStringStarter: char;  // used only for rsMultilineString3 stuff
     fRange: TRangeState;
@@ -97,6 +117,7 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     fErrorAttri: TSynHighlighterAttributes;
 
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SymbolProc;
     procedure CRProc;
     procedure CommentProc;
@@ -148,33 +169,20 @@ type
     procedure ResetRange; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
   published
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-    write fCommentAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-    write fIdentifierAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property NonKeyAttri: TSynHighlighterAttributes read fNonKeyAttri
-      write fNonKeyAttri;
-    property SystemAttri: TSynHighlighterAttributes read fSystemAttri
-      write fSystemAttri;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-    write fNumberAttri;
-    property HexAttri: TSynHighlighterAttributes read fHexAttri
-      write fHexAttri;
-    property OctalAttri: TSynHighlighterAttributes read fOctalAttri
-      write fOctalAttri;
-    property FloatAttri: TSynHighlighterAttributes read fFloatAttri
-      write fFloatAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-    write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-    write fStringAttri;
-    property DocStringAttri: TSynHighlighterAttributes read fDocStringAttri
-      write fDocStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-    write fSymbolAttri;
-    property ErrorAttri: TSynHighlighterAttributes read fErrorAttri
-      write fErrorAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NonKeyAttri: TSynHighlighterAttributes index attribNonKey read fNonKeyAttri write SetAttribute;
+    property SystemAttri: TSynHighlighterAttributes index attribSystem read fSystemAttri write SetAttribute;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property HexAttri: TSynHighlighterAttributes index attribHex read fHexAttri write SetAttribute;
+    property OctalAttri: TSynHighlighterAttributes index attribOctal read fOctalAttri write SetAttribute;
+    property FloatAttri: TSynHighlighterAttributes index attribFloat read fFloatAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property DocStringAttri: TSynHighlighterAttributes index attribDocString read fDocStringAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property ErrorAttri: TSynHighlighterAttributes index attribError read fErrorAttri write SetAttribute;
   end;
 
 implementation
@@ -474,6 +482,26 @@ procedure TSynPythonSyn.SymbolProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
+end;
+
+procedure TSynPythonSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribComment:    FCommentAttri.Assign(AValue);
+    attribIdentifier: FIdentifierAttri.Assign(AValue);
+    attribKey:        FKeyAttri.Assign(AValue);
+    attribNonKey:     FNonKeyAttri.Assign(AValue);
+    attribSystem:     FSystemAttri.Assign(AValue);
+    attribNumber:     FNumberAttri.Assign(AValue);
+    attribHex:        FHexAttri.Assign(AValue);
+    attribOctal:      FOctalAttri.Assign(AValue);
+    attribFloat:      FFloatAttri.Assign(AValue);
+    attribSpace:      FSpaceAttri.Assign(AValue);
+    attribString:     FStringAttri.Assign(AValue);
+    attribDocString:  FDocStringAttri.Assign(AValue);
+    attribSymbol:     FSymbolAttri.Assign(AValue);
+    attribError:      FErrorAttri.Assign(AValue);
+  end;
 end;
 
 procedure TSynPythonSyn.CRProc;

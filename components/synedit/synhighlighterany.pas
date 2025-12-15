@@ -88,6 +88,22 @@ type
   { TSynAnySyn }
 
   TSynAnySyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribIdentifier,
+    attribKey,
+    attribConstant,
+    attribObject,
+    attribEntity,
+    attribVariable,
+    attribNumber,
+    attribDot,
+    attribPreprocessor,
+    attribSpace,
+    attribString,
+    attribSymbol
+    );
   private
     fUserData:TIniList;
     fMarkupOn:boolean;
@@ -138,6 +154,7 @@ type
     procedure NumberProc;
     procedure RoundOpenProc;
     procedure RoundCloseProc;
+    procedure SetAttribute(AIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SlashProc;
     procedure SpaceProc;
     procedure StringProc;
@@ -162,7 +179,6 @@ type
     procedure SetEntity(const Value: boolean);
     procedure SetDollarVariables(const Value: boolean);
     procedure SetActiveDot(const Value: boolean);
-    procedure SetDotAttri(const Value: TSynHighlighterAttributes);
   protected
     function GetIdentChars: TSynIdentChars; override;
   public
@@ -190,36 +206,26 @@ type
     function LoadFromRegistry(RootKey: HKEY; Key: string): boolean; override;
     procedure LoadHighLighter(aFile: string);
   published
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
     property Comments: CommentStyles read fComments write SetComments;
-    property DetectPreprocessor: boolean read fDetectPreprocessor
-      write SetDetectPreprocessor;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property IdentifierChars: string read GetIdentifierChars
-      write SetIdentifierChars;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property ConstantAttri: TSynHighlighterAttributes read fConstantAttri write fConstantAttri;
-    property ObjectAttri: TSynHighlighterAttributes read fObjectAttri write fObjectAttri;
-    property EntityAttri: TSynHighlighterAttributes read fEntityAttri write fEntityAttri;
-    property VariableAttri: TSynHighlighterAttributes read fVariableAttri write fVariableAttri;
-    property DotAttri: TSynHighlighterAttributes read FDotAttri write SetDotAttri;
+    property DetectPreprocessor: boolean read fDetectPreprocessor write SetDetectPreprocessor;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property IdentifierChars: string read GetIdentifierChars write SetIdentifierChars;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property ConstantAttri: TSynHighlighterAttributes index attribConstant read fConstantAttri write SetAttribute;
+    property ObjectAttri: TSynHighlighterAttributes index attribObject read fObjectAttri write SetAttribute;
+    property EntityAttri: TSynHighlighterAttributes index attribEntity read fEntityAttri write SetAttribute;
+    property VariableAttri: TSynHighlighterAttributes index attribVariable read fVariableAttri write SetAttribute;
+    property DotAttri: TSynHighlighterAttributes index attribDot read FDotAttri write SetAttribute;
     property KeyWords: TStrings read fKeyWords write SetKeyWords;
     property Constants: TStrings read fConstants write SetConstants;
     property Objects: TStrings read fObjects write SetObjects;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property PreprocessorAttri: TSynHighlighterAttributes
-      read fPreprocessorAttri write fPreprocessorAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
-    property StringDelim: TStringDelim read GetStringDelim write SetStringDelim
-      default sdSingleQuote;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property PreprocessorAttri: TSynHighlighterAttributes index attribPreprocessor read fPreprocessorAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property StringDelim: TStringDelim read GetStringDelim write SetStringDelim default sdSingleQuote;
     property Markup:boolean read FMarkup write SetMarkup;
     property Entity:boolean read FEntity write SetEntity;
     property DollarVariables:boolean read FDollarVariables write SetDollarVariables;
@@ -676,6 +682,25 @@ procedure TSynAnySyn.RoundCloseProc;
 begin
   inc(Run);
   FTokenID := tkSymbol;
+end;
+
+procedure TSynAnySyn.SetAttribute(AIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AIndex of
+    attribComment:      FCommentAttri.Assign(AValue);
+    attribIdentifier:   FIdentifierAttri.Assign(AValue);
+    attribKey:          FKeyAttri.Assign(AValue);
+    attribConstant:     FConstantAttri.Assign(AValue);
+    attribObject:       FObjectAttri.Assign(AValue);
+    attribEntity:       FEntityAttri.Assign(AValue);
+    attribVariable:     FVariableAttri.Assign(AValue);
+    attribNumber:       FNumberAttri.Assign(AValue);
+    attribDot:          FDotAttri.Assign(AValue);
+    attribPreprocessor: FPreprocessorAttri.Assign(AValue);
+    attribSpace:        FSpaceAttri.Assign(AValue);
+    attribString:       FStringAttri.Assign(AValue);
+    attribSymbol:       FSymbolAttri.Assign(AValue);
+  end;
 end;
 
 procedure TSynAnySyn.SlashProc;
@@ -1342,11 +1367,6 @@ end;
 procedure TSynAnySyn.SetActiveDot(const Value: boolean);
 begin
   FActiveDot := Value;
-end;
-
-procedure TSynAnySyn.SetDotAttri(const Value: TSynHighlighterAttributes);
-begin
-  FDotAttri := Value;
 end;
 
 initialization

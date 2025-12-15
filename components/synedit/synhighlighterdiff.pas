@@ -88,6 +88,21 @@ type
   { TSynDiffSyn }
 
   TSynDiffSyn = class(TSynCustomFoldHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribUnknown,
+    attribSpace,
+    attribOrigFile,
+    attribNewFile,
+    attribChunkMarker,
+    attribChunkNew,
+    attribChunkOld,
+    attribChunkMixed,
+    attribLineAdded,
+    attribLineRemoved,
+    attribLineChanged,
+    attribLineContext
+    );
   private
     fRange: TRangeState;
     fLine: PChar;
@@ -122,6 +137,7 @@ type
     FOrigFileAttri: TSynHighlighterAttributes;
     FSpaceAttri: TSynHighlighterAttributes;
     FUnknownAttri: TSynHighlighterAttributes;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
   protected
     function GetSampleSource : String; override;
   public
@@ -158,18 +174,18 @@ type
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
   published
-    property UnknownAttri: TSynHighlighterAttributes read FUnknownAttri write FUnknownAttri;
-    property SpaceAttri: TSynHighlighterAttributes read FSpaceAttri write FSpaceAttri;
-    property OrigFileAttri: TSynHighlighterAttributes read FOrigFileAttri write FOrigFileAttri;
-    property NewFileAttri: TSynHighlighterAttributes read FNewFileAttri write FNewFileAttri;
-    property ChunkMarkerAttri: TSynHighlighterAttributes read FChunkMarkerAttri write FChunkMarkerAttri;
-    property ChunkNewAttri: TSynHighlighterAttributes read FChunkNewAttri write FChunkNewAttri;
-    property ChunkOldAttri: TSynHighlighterAttributes read FChunkOldAttri write FChunkOldAttri;
-    property ChunkMixedAttri: TSynHighlighterAttributes read FChunkMixedAttri write FChunkMixedAttri;
-    property LineAddedAttri: TSynHighlighterAttributes read FLineAddedAttri write FLineAddedAttri;
-    property LineRemovedAttri: TSynHighlighterAttributes read FLineRemovedAttri write FLineRemovedAttri;
-    property LineChangedAttri: TSynHighlighterAttributes read FLineChangedAttri write FLineChangedAttri;
-    property LineContextAttri: TSynHighlighterAttributes read FLineContextAttri write FLineContextAttri;
+    property UnknownAttri: TSynHighlighterAttributes index attribUnknown read FUnknownAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read FSpaceAttri write SetAttribute;
+    property OrigFileAttri: TSynHighlighterAttributes index attribOrigFile read FOrigFileAttri write SetAttribute;
+    property NewFileAttri: TSynHighlighterAttributes index attribNewFile read FNewFileAttri write SetAttribute;
+    property ChunkMarkerAttri: TSynHighlighterAttributes index attribChunkMarker read FChunkMarkerAttri write SetAttribute;
+    property ChunkNewAttri: TSynHighlighterAttributes index attribChunkNew read FChunkNewAttri write SetAttribute;
+    property ChunkOldAttri: TSynHighlighterAttributes index attribChunkOld read FChunkOldAttri write SetAttribute;
+    property ChunkMixedAttri: TSynHighlighterAttributes index attribChunkMixed read FChunkMixedAttri write SetAttribute;
+    property LineAddedAttri: TSynHighlighterAttributes index attribLineAdded read FLineAddedAttri write SetAttribute;
+    property LineRemovedAttri: TSynHighlighterAttributes index attribLineRemoved read FLineRemovedAttri write SetAttribute;
+    property LineChangedAttri: TSynHighlighterAttributes index attribLineChanged read FLineChangedAttri write SetAttribute;
+    property LineContextAttri: TSynHighlighterAttributes index attribLineContext read FLineContextAttri write SetAttribute;
   end;
 
 implementation
@@ -468,7 +484,25 @@ begin
   FTokenID := tkChunkMixedMark;
 end;
 
-function TSynDiffSyn.GetSampleSource: string;
+procedure TSynDiffSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribUnknown:     FUnknownAttri.Assign(AValue);
+    attribSpace:       FSpaceAttri.Assign(AValue);
+    attribOrigFile:    FOrigFileAttri.Assign(AValue);
+    attribNewFile:     FNewFileAttri.Assign(AValue);
+    attribChunkMarker: FChunkMarkerAttri.Assign(AValue);
+    attribChunkNew:    FChunkNewAttri.Assign(AValue);
+    attribChunkOld:    FChunkOldAttri.Assign(AValue);
+    attribChunkMixed:  FChunkMixedAttri.Assign(AValue);
+    attribLineAdded:   FLineAddedAttri.Assign(AValue);
+    attribLineRemoved: FLineRemovedAttri.Assign(AValue);
+    attribLineChanged: FLineChangedAttri.Assign(AValue);
+    attribLineContext: FLineContextAttri.Assign(AValue);
+  end;
+end;
+
+function TSynDiffSyn.GetSampleSource: String;
 begin
   Result := ''#13#10 +
             '';

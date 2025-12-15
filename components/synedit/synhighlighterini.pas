@@ -66,6 +66,17 @@ type
   { TSynIniSyn }
 
   TSynIniSyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribText,
+    attribSection,
+    attribKey,
+    attribNumber,
+    attribSpace,
+    attribString,
+    attribSymbol
+    );
   private
     FCommentTypes: TSynIniCommentTypes;
     fLine: PChar;
@@ -82,6 +93,7 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     fStringAttri: TSynHighlighterAttributes;
     fSymbolAttri: TSynHighlighterAttributes;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SetCommentTypes(AValue: TSynIniCommentTypes);
     procedure SectionOpenProc;
     procedure KeyProc;
@@ -117,22 +129,14 @@ type
     procedure Next; override;
   published
     property CommentTypes: TSynIniCommentTypes read FCommentTypes write SetCommentTypes default [ictSemicolon];
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property TextAttri   : TSynHighlighterAttributes read fTextAttri
-      write fTextAttri;
-    property SectionAttri: TSynHighlighterAttributes read fSectionAttri
-      write fSectionAttri;
-    property KeyAttri    : TSynHighlighterAttributes read fKeyAttri
-      write fKeyAttri;
-    property NumberAttri : TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property SpaceAttri  : TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri : TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
-    property SymbolAttri : TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property TextAttri   : TSynHighlighterAttributes index attribText read fTextAttri write SetAttribute;
+    property SectionAttri: TSynHighlighterAttributes index attribSection read fSectionAttri write SetAttribute;
+    property KeyAttri    : TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri : TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property SpaceAttri  : TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri : TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri : TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
   end;
 
 implementation
@@ -253,6 +257,20 @@ begin
   MakeMethodTables;
   FAttributeChangeNeedScan := True;
   DefHighlightChange(self);
+end;
+
+procedure TSynIniSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribComment: FCommentAttri.Assign(AValue);
+    attribText:    FTextAttri.Assign(AValue);
+    attribSection: FSectionAttri.Assign(AValue);
+    attribKey:     FKeyAttri.Assign(AValue);
+    attribNumber:  FNumberAttri.Assign(AValue);
+    attribSpace:   FSpaceAttri.Assign(AValue);
+    attribString:  FStringAttri.Assign(AValue);
+    attribSymbol:  FSymbolAttri.Assign(AValue);
+  end;
 end;
 
 procedure TSynIniSyn.KeyProc;

@@ -191,6 +191,21 @@ type
   { TSynHTMLSyn }
 
   TSynHTMLSyn = class(TSynCustomXmlHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribAnd,
+    attribASP,
+    attribCDATA,
+    attribDOCTYPE,
+    attribComment,
+    attribIdentifier,
+    attribKey,
+    attribSpace,
+    attribSymbol,
+    attribText,
+    attribUndefKey,
+    attribValue
+    );
   private
     FMode: TSynHTMLSynMode;
     fSimpleTag: Boolean;
@@ -388,6 +403,7 @@ type
     procedure ASPProc;
     procedure CDATAProc;
     procedure DOCTYPEProc;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SetMode(const AValue: TSynHTMLSynMode);
     procedure TextProc;
     procedure CommentProc;
@@ -436,25 +452,18 @@ type
     procedure ReSetRange; override;
     property IdentChars;
   published
-    property AndAttri: TSynHighlighterAttributes read fAndAttri write fAndAttri;
-    property ASPAttri: TSynHighlighterAttributes read fASPAttri write fASPAttri;
-    property CDATAAttri: TSynHighlighterAttributes read fCDATAAttri write fCDATAAttri;
-    property DOCTYPEAttri: TSynHighlighterAttributes read fDOCTYPEAttri write fDOCTYPEAttri;
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
-    property TextAttri: TSynHighlighterAttributes read fTextAttri
-      write fTextAttri;
-    property UndefKeyAttri: TSynHighlighterAttributes read fUndefKeyAttri
-      write fUndefKeyAttri;
-    property ValueAttri: TSynHighlighterAttributes read fValueAttri
-      write fValueAttri;
+    property AndAttri: TSynHighlighterAttributes index attribAnd read fAndAttri write SetAttribute;
+    property ASPAttri: TSynHighlighterAttributes index attribASP read fASPAttri write SetAttribute;
+    property CDATAAttri: TSynHighlighterAttributes index attribCDATA read fCDATAAttri write SetAttribute;
+    property DOCTYPEAttri: TSynHighlighterAttributes index attribDOCTYPE read fDOCTYPEAttri write SetAttribute;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property TextAttri: TSynHighlighterAttributes index attribText read fTextAttri write SetAttribute;
+    property UndefKeyAttri: TSynHighlighterAttributes index attribUndefKey read fUndefKeyAttri write SetAttribute;
+    property ValueAttri: TSynHighlighterAttributes index attribValue read fValueAttri write SetAttribute;
     property Mode: TSynHTMLSynMode read FMode write SetMode default shmHtml;
   end;
 
@@ -2360,6 +2369,24 @@ begin
       break;
     end;
     Inc(Run);
+  end;
+end;
+
+procedure TSynHTMLSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribAnd:        FAndAttri.Assign(AValue);
+    attribASP:        FASPAttri.Assign(AValue);
+    attribCDATA:      FCDATAAttri.Assign(AValue);
+    attribDOCTYPE:    FDOCTYPEAttri.Assign(AValue);
+    attribComment:    FCommentAttri.Assign(AValue);
+    attribIdentifier: FIdentifierAttri.Assign(AValue);
+    attribKey:        FKeyAttri.Assign(AValue);
+    attribSpace:      FSpaceAttri.Assign(AValue);
+    attribSymbol:     FSymbolAttri.Assign(AValue);
+    attribText:       FTextAttri.Assign(AValue);
+    attribUndefKey:   FUndefKeyAttri.Assign(AValue);
+    attribValue:      FValueAttri.Assign(AValue);
   end;
 end;
 

@@ -79,6 +79,19 @@ type
   { TSynUNIXShellScriptSyn }
 
   TSynUNIXShellScriptSyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribIdentifier,
+    attribKey,
+    attribSecondKey,
+    attribNumber,
+    attribSpace,
+    attribString,
+    attribSymbol,
+    attribVar,
+    attribUnknown
+    );
   private
     fRange: TRangeState;
     fLine: PChar;
@@ -107,6 +120,7 @@ type
     procedure NullProc;
     procedure NumberProc;
     procedure RoundOpenProc;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SlashProc;
     procedure BackSlashProc;
     procedure SpaceProc;
@@ -144,26 +158,17 @@ type
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
   published
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property SecondKeyAttri: TSynHighlighterAttributes read fSecondKeyAttri
-      write fSecondKeyAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property SecondKeyAttri: TSynHighlighterAttributes index attribSecondKey read fSecondKeyAttri write SetAttribute;
     property SecondKeyWords: TStrings read fSecondKeys write SetSecondKeys;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
-    property VarAttri: TSynHighlighterAttributes read fVarAttri
-      write fVarAttri;
-    property UnknownAttri: TSynHighlighterAttributes read fUnknownAttri
-      write fUnknownAttri;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read FNumberAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property VarAttri: TSynHighlighterAttributes index attribVar read fVarAttri write SetAttribute;
+    property UnknownAttri: TSynHighlighterAttributes index attribUnknown read fUnknownAttri write SetAttribute;
   end;
 
 implementation
@@ -563,6 +568,23 @@ procedure TSynUNIXShellScriptSyn.RoundOpenProc;
 begin
   inc(Run);
   fTokenId := tkSymbol;
+end;
+
+procedure TSynUNIXShellScriptSyn.SetAttribute(AnIndex: TSynPasAttribute;
+  AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribComment:    FCommentAttri.Assign(AValue);
+    attribIdentifier: FIdentifierAttri.Assign(AValue);
+    attribKey:        FKeyAttri.Assign(AValue);
+    attribSecondKey:  FSecondKeyAttri.Assign(AValue);
+    attribNumber:     FNumberAttri.Assign(AValue);
+    attribSpace:      FSpaceAttri.Assign(AValue);
+    attribString:     FStringAttri.Assign(AValue);
+    attribSymbol:     FSymbolAttri.Assign(AValue);
+    attribVar:        FVarAttri.Assign(AValue);
+    attribUnknown:    FUnknownAttri.Assign(AValue);
+  end;
 end;
 
 procedure TSynUNIXShellScriptSyn.SlashProc;

@@ -72,6 +72,18 @@ type
   { TSynCssSyn }
 
   TSynCssSyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribIdentifier,
+    attribKey,
+    attribNumber,
+    attribSpace,
+    attribString,
+    attribSymbol,
+    attribMeasurementUnit,
+    attribSelector
+    );
   private
     fRange: TRangeStates;
     fLine: PChar;
@@ -243,6 +255,7 @@ type
     function Func250: TtkTokenKind;
     function Func253: TtkTokenKind;
     function Func275: TtkTokenKind;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure SymbolProc;
     procedure ColonProc;
     procedure SelectorProc;
@@ -293,23 +306,15 @@ type
 
     function KeyHash2(ToHash: PChar): Integer;
   published
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
-    property MeasurementUnitAttri: TSynHighlighterAttributes read fMeasurementUnitAttri
-      write fMeasurementUnitAttri;
-    property SelectorAttri: TSynHighlighterAttributes read fSelectorAttri
-      write fSelectorAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property MeasurementUnitAttri: TSynHighlighterAttributes index attribMeasurementUnit read fMeasurementUnitAttri write SetAttribute;
+    property SelectorAttri: TSynHighlighterAttributes index attribSelector read fSelectorAttri write SetAttribute;
   end;
 
 implementation
@@ -1748,6 +1753,21 @@ begin
     Result := tkKey
   else
     Result := tkIdentifier;
+end;
+
+procedure TSynCssSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribComment:         FCommentAttri.Assign(AValue);
+    attribIdentifier:      FIdentifierAttri.Assign(AValue);
+    attribKey:             FKeyAttri.Assign(AValue);
+    attribNumber:          FNumberAttri.Assign(AValue);
+    attribSpace:           FSpaceAttri.Assign(AValue);
+    attribString:          FStringAttri.Assign(AValue);
+    attribSymbol:          FSymbolAttri.Assign(AValue);
+    attribMeasurementUnit: FMeasurementUnitAttri.Assign(AValue);
+    attribSelector:        FSelectorAttri.Assign(AValue);
+  end;
 end;
 
 function TSynCssSyn.AltFunc: TtkTokenKind;

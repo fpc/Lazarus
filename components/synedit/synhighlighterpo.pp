@@ -48,6 +48,13 @@ type
   { TSynPoSyn }
 
   TSynPoSyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribText,
+    attribKey,
+    attribSpace
+    );
   private
     fLine: PChar;
     fLineNumber: Integer;
@@ -66,6 +73,7 @@ type
     procedure IdentProc;
     procedure KeyProc;
     procedure CRProc;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
     procedure TextProc;
     procedure LFProc;
     procedure NullProc;
@@ -94,14 +102,10 @@ type
     function GetTokenPos: Integer; override;
     procedure Next; override;
   published
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property TextAttri   : TSynHighlighterAttributes read fTextAttri
-      write fTextAttri;
-    property KeyAttri    : TSynHighlighterAttributes read fKeyAttri
-      write fKeyAttri;
-    property SpaceAttri  : TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property TextAttri   : TSynHighlighterAttributes index attribText read fTextAttri write SetAttribute;
+    property KeyAttri    : TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property SpaceAttri  : TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
   end;
 
 implementation
@@ -201,6 +205,16 @@ begin
   Case FLine[Run + 1] of
     #10: inc(Run, 2);
   else inc(Run);
+  end;
+end;
+
+procedure TSynPoSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  case AnIndex of
+    attribComment: FCommentAttri.Assign(AValue);
+    attribText:    FTextAttri.Assign(AValue);
+    attribKey:     FKeyAttri.Assign(AValue);
+    attribSpace:   FSpaceAttri.Assign(AValue);
   end;
 end;
 
