@@ -2486,6 +2486,12 @@ begin
   FUndoRedoItemHandlerList := TSynUndoRedoItemHandlerList.Create;
   FMouseLastCaretHandlerList := TSynEditMouseLastCaretEventList.Create;
 
+  FMouseActions     := TSynEditMouseGlobalActions.Create(Self);
+  FMouseSelActions  := TSynEditMouseSelActions.Create(Self);
+  FMouseTextActions := TSynEditMouseTextActions.Create(Self);
+  FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
+  FMouseActionExecHandlerList  := TSynEditMouseActionExecList.Create;
+
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
   fMarkupHighCaret.Selection := FBlockSelection;
@@ -2582,12 +2588,6 @@ begin
   if assigned(Owner) and not (csLoading in Owner.ComponentState) then begin
     SetDefaultKeystrokes;
   end;
-
-  FMouseActions     := TSynEditMouseGlobalActions.Create(Self);
-  FMouseSelActions  := TSynEditMouseSelActions.Create(Self);
-  FMouseTextActions := TSynEditMouseTextActions.Create(Self);
-  FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
-  FMouseActionExecHandlerList  := TSynEditMouseActionExecList.Create;
 
   fWantTabs := True;
   fTabWidth := 8;
