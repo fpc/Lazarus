@@ -84,6 +84,26 @@ type
   { TSynSQLSyn }
 
   TSynSQLSyn = class(TSynCustomHighlighter)
+  private type
+    TSynPasAttribute = (
+    attribComment,
+    attribDataType,
+    attribDefaultPackage,
+    attribException,
+    attribFunction,
+    attribIdentifier,
+    attribKey,
+    attribNumber,
+    attribPLSQL,
+    attribSpace,
+    attribSQLPlus,
+    attribString,
+    attribSymbol,
+    attribTableName,
+    attribVariable,
+    attribCharSet,
+    attribCollation
+    );
   private
     fRange: TRangeState;
     fLine: PChar;
@@ -131,6 +151,9 @@ type
     procedure NumberProc;
     procedure OrSymbolProc;
     procedure PlusProc;
+    procedure SetAttributeEx(AnIndex: TSynPasAttribute; AValue: TLazEditTextAttribute);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributesModifier);
     procedure SlashProc;
     procedure SpaceProc;
     procedure StringProc;
@@ -174,38 +197,24 @@ type
     procedure SetLine(const NewValue: string; LineNumber: Integer); override;
     procedure SetRange(Value: Pointer); override;
   published
-    property CommentAttri: TSynHighlighterAttributes read fCommentAttri
-      write fCommentAttri;
-    property DataTypeAttri: TSynHighlighterAttributes read fDataTypeAttri
-      write fDataTypeAttri;
-    property DefaultPackageAttri: TSynHighlighterAttributes                     // DJLP 2000-08-11
-      read fDefaultPackageAttri write fDefaultPackageAttri;
-    property ExceptionAttri: TSynHighlighterAttributes read fExceptionAttri
-      write fExceptionAttri;
-    property FunctionAttri: TSynHighlighterAttributes read fFunctionAttri
-      write fFunctionAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property PLSQLAttri: TSynHighlighterAttributes read fPLSQLAttri             // DJLP 2000-08-11
-      write fPLSQLAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property SQLPlusAttri: TSynHighlighterAttributes read fSQLPlusAttri         // DJLP 2000-09-05
-      write fSQLPlusAttri;
-    property StringAttri: TSynHighlighterAttributes read fStringAttri
-      write fStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
-    property TableNameAttri: TSynHighlighterAttributes read fTableNameAttri
-      write fTableNameAttri;
+    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property DataTypeAttri: TSynHighlighterAttributes index attribDataType read fDataTypeAttri write SetAttribute;
+    property DefaultPackageAttri: TSynHighlighterAttributes index attribDefaultPackage read fDefaultPackageAttri write SetAttribute;
+    property ExceptionAttri: TSynHighlighterAttributes index attribException read fExceptionAttri write SetAttribute;
+    property FunctionAttri: TSynHighlighterAttributes index attribFunction read fFunctionAttri write SetAttribute;
+    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property PLSQLAttri: TSynHighlighterAttributes index attribPLSQL read fPLSQLAttri write SetAttribute;
+    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property SQLPlusAttri: TSynHighlighterAttributes index attribSQLPlus read fSQLPlusAttri write SetAttribute;
+    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property TableNameAttri: TSynHighlighterAttributes index attribTableName read fTableNameAttri write SetAttribute;
     property TableNames: TStrings read fTableNames write SetTableNames;
-    property VariableAttri: TSynHighlighterAttributes read fVariableAttri
-      write fVariableAttri;
-    property CharSetAttri: TSynHighlighterAttributesModifier read fCharSetAttri write fCharSetAttri;
-    property CollationAttri: TSynHighlighterAttributesModifier read fCharSetAttri write fCharSetAttri;
+    property VariableAttri: TSynHighlighterAttributes index attribVariable read fVariableAttri write SetAttribute;
+    property CharSetAttri: TSynHighlighterAttributesModifier index attribCharSet read fCharSetAttri write SetAttribute;
+    property CollationAttri: TSynHighlighterAttributesModifier index attribCollation read fCollationAttri write SetAttribute;
     property SQLDialect: TSQLDialect read fDialect write SetDialect;
   end;
 
@@ -1672,6 +1681,40 @@ begin
   fTokenID := tkSymbol;
   Inc(Run);
   if fLine[Run] in ['=', '+'] then Inc(Run);
+end;
+
+procedure TSynSQLSyn.SetAttributeEx(AnIndex: TSynPasAttribute; AValue: TLazEditTextAttribute);
+begin
+  case AnIndex of
+    attribComment:        FCommentAttri.Assign(AValue);
+    attribDataType:       FDataTypeAttri.Assign(AValue);
+    attribDefaultPackage: FDefaultPackageAttri.Assign(AValue);
+    attribException:      FExceptionAttri.Assign(AValue);
+    attribFunction:       FFunctionAttri.Assign(AValue);
+    attribIdentifier:     FIdentifierAttri.Assign(AValue);
+    attribKey:            FKeyAttri.Assign(AValue);
+    attribNumber:         FNumberAttri.Assign(AValue);
+    attribPLSQL:          FPLSQLAttri.Assign(AValue);
+    attribSpace:          FSpaceAttri.Assign(AValue);
+    attribSQLPlus:        FSQLPlusAttri.Assign(AValue);
+    attribString:         FStringAttri.Assign(AValue);
+    attribSymbol:         FSymbolAttri.Assign(AValue);
+    attribTableName:      FTableNameAttri.Assign(AValue);
+    attribVariable:       FVariableAttri.Assign(AValue);
+    attribCharSet:        FCharSetAttri.Assign(AValue);
+    attribCollation:      fCollationAttri.Assign(AValue);
+  end;
+end;
+
+procedure TSynSQLSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+begin
+  SetAttributeEx(AnIndex, AValue);
+end;
+
+procedure TSynSQLSyn.SetAttribute(AnIndex: TSynPasAttribute;
+  AValue: TSynHighlighterAttributesModifier);
+begin
+  SetAttributeEx(AnIndex, AValue);
 end;
 
 procedure TSynSQLSyn.SlashProc;
