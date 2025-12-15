@@ -55,7 +55,7 @@ uses
   SysUtils, Classes, fgl, Registry, Graphics, Generics.Defaults, SynEditHighlighterFoldBase,
   SynEditMiscProcs, SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditStrConst,
   SynEditMiscClasses, LazLoggerBase, LazEditMiscProcs, LazEditHighlighterUtils,
-  LazEditTextAttributes;
+  LazEditTextAttributes, LazEditHighlighter;
 
 type
   TSynPasStringMode = (spsmDefault, spsmStringOnly, spsmNone);
@@ -552,7 +552,7 @@ type
     procedure DoMarkupChaged(Sender: TObject);
     procedure DoTokensChanged(Sender: TObject);
   private
-    FMarkup: TSynHighlighterAttributesModifier;
+    FMarkup: TLazEditHighlighterAttributesModifier;
     FMatchTokenKinds: TtkTokenKindExs;
     FTokens: TStrings;
 
@@ -564,7 +564,7 @@ type
     destructor Destroy; override;
     property MatchTokenKinds: TtkTokenKindExs read FMatchTokenKinds write SetMatchTokenKinds;
     property Tokens: TStrings read FTokens;
-    property Markup: TSynHighlighterAttributesModifier read FMarkup;
+    property Markup: TLazEditHighlighterAttributesModifier read FMarkup;
   end;
 
  TSynPasRangeInfo = record
@@ -670,6 +670,43 @@ type
 
   TSynPasSyn = class(TSynCustomFoldHighlighter)
   private type
+    TSynPasAttribute = (
+      attribAsm,
+      attribComment,
+      attribIdentifier,
+      attribKey,
+      attribModifier,
+      attribNumber,
+      attribSpace,
+      attribString,
+      attribSymbol,
+      attribGotoLabel,
+      attribDirective
+    );
+    TSynPasAttributeMod = (
+      attribCommentAnsi,
+      attribCommentCurly,
+      attribCommentSlash,
+      attribIDEDirective,
+      attribProcedureHeaderName,
+      attribPropertyName,
+      attribProcedureHeaderParam,
+      attribProcedureHeaderType,
+      attribProcedureHeaderValue,
+      attribProcedureHeaderResult,
+      attribDeclarationVarConstName,
+      attribDeclarationTypeName,
+      attribDeclarationType,
+      attribDeclarationValue,
+      attribSpecializeParam,
+      attribGenericParam,
+      attribGenericConstraint,
+      attribStructMember,
+      attribCaseLabel,
+      attribPasDocKeyWord,
+      attribPasDocSymbol,
+      attribPasDocUnknown
+    );
     (* TTokenKindExtraDetail: Not persistent in range
        Like "FTokenId: TtkTokenKind", used only between "Next();" and "GetToken....();"
        Can hold extra info, e.g. which merge-attribute(s) to use.
@@ -694,15 +731,13 @@ type
     PSynPasSynCustomTokenInfoListEx = ^TSynPasSynCustomTokenInfoListEx;
   private
     FCaseLabelAttriMatchesElseOtherwise: Boolean;
-    FCommentAnsiAttri: TSynHighlighterAttributesModifier_Eol;
-    FCommentCurlyAttri: TSynHighlighterAttributesModifier_Eol;
-    FCommentSlashAttri: TSynHighlighterAttributesModifier_Eol;
+    FPasAttributes: array [TSynPasAttribute] of TLazEditHighlighterAttributes;
+    FPasAttributesMod: array [TSynPasAttributeMod] of TLazEditHighlighterAttributesModifier;
+    FNestedBracketAttribs: TLazEditTextAttributeModifierCollection;
     FGenericConstraintAttributeMode: TSynPasTypeAttributeMode;
     FProcNameImplAttributeMode: TProcNameAttrbuteModes;
     FProcNameIntfAttributeMode: TProcNameAttrbuteModes;
-    FNestedBracketAttribs: TLazEditTextAttributeModifierCollection;
     FHighNestedBracketAttrib: integer;
-    FSpecializeParamAttr: TSynHighlighterAttributesModifier;
     FSpecializeParamAttributeMode: TSynPasTypeAttributeMode;
     FSynCustomTokens: array of TSynPasSynCustomToken;
     FNeedCustomTokenBuild: boolean;
@@ -710,29 +745,12 @@ type
       MatchTokenKinds: TtkTokenKindExs;
       Lists: array of TSynPasSynCustomTokenInfoListEx;
     end;
-    FCustomTokenMarkup, FCustomCommentTokenMarkup: TSynHighlighterAttributesModifier;
+    FCustomTokenMarkup, FCustomCommentTokenMarkup: TLazEditHighlighterAttributesModifier;
 
     fAsmStart: Boolean;
     FExtendedKeywordsMode: Boolean;
     FUsePasDoc, FIsPasDocKey, FIsPasUnknown, FIsPasDocSym, FIsInSlash: Boolean;
     FPasDocWordList: TStringList;
-    fPasDocKeyWordAttri: TSynHighlighterAttributesModifier;
-    fPasDocSymbolAttri: TSynHighlighterAttributesModifier;
-    fPasDocUnknownAttr: TSynHighlighterAttributesModifier;
-    FProcedureHeaderNameAttr: TSynHighlighterAttributesModifier;
-    FPropertyNameAttr: TSynHighlighterAttributesModifier;
-    FProcedureHeaderParamAttr: TSynHighlighterAttributesModifier;
-    FProcedureHeaderTypeAttr: TSynHighlighterAttributesModifier;
-    FProcedureHeaderValueAttr: TSynHighlighterAttributesModifier;
-    FProcedureHeaderResultAttr: TSynHighlighterAttributesModifier;
-    FDeclarationVarConstNameAttr: TSynHighlighterAttributesModifier;
-    FDeclarationTypeNameAttr: TSynHighlighterAttributesModifier;
-    FDeclarationTypeAttr: TSynHighlighterAttributesModifier;
-    FDeclarationValueAttr: TSynHighlighterAttributesModifier;
-    FGenericParamAttr: TSynHighlighterAttributesModifier;
-    FGenericConstraintAttr: TSynHighlighterAttributesModifier;
-    FGotoLabelAttr: TSynHighlighterAttributes;
-    FStructMemberAttr: TSynHighlighterAttributesModifier;
     FDeclaredTypeAttributeMode: TSynPasTypeAttributeMode;
     FDeclaredValueAttributeMachesStringNum: Boolean;
     FDeclaredValueAttributeMode: TSynPasTypeAttributeMode;
@@ -763,18 +781,6 @@ type
     FTokenTypeDeclExtraAttrib, FLastTokenTypeDeclExtraAttrib: TTokenTypeDeclExtraAttrib;
     FTokenIsCaseLabel: Boolean;
     FTokenIsValueOrTypeName: Boolean;
-    fStringAttri: TSynHighlighterAttributes_Eol;
-    fNumberAttri: TSynHighlighterAttributes;
-    fKeyAttri: TSynHighlighterAttributes;
-    fModifierAttri: TSynHighlighterAttributes;
-    fSymbolAttri: TSynHighlighterAttributes;
-    fAsmAttri: TSynHighlighterAttributes;
-    fCommentAttri: TSynHighlighterAttributes_Eol;
-    FIDEDirectiveAttri: TSynHighlighterAttributesModifier_Eol;
-    fIdentifierAttri: TSynHighlighterAttributes;
-    fSpaceAttri: TSynHighlighterAttributes;
-    FCaseLabelAttri: TSynHighlighterAttributesModifier;
-    fDirectiveAttri: TSynHighlighterAttributes_Eol;
     FCompilerMode: TPascalCompilerMode;
     FModeSwitches: TPascalCompilerModeSwitches;
     FModeSwitchesLoaded: Boolean;
@@ -789,6 +795,18 @@ type
     function GetTypeHelpers: boolean; deprecated;
     procedure RebuildCustomTokenInfo;
     function  GetCustomTokenCount: integer;
+    procedure CreateAttribute(AnIndex: TSynPasAttribute; AClass: TLazEditHighlighterAttributesClass; ACaption: PString; AStoredName: String);
+    procedure CreateAttribute(AnIndex: TSynPasAttribute; AClass: TLazEditHighlighterAttributesClass; ACaption: PString; AStoredName: String; ASupportedFeatures: TLazTextAttributeFeatures);
+    procedure CreateAttribute(AnIndex: TSynPasAttributeMod; AClass: TLazEditHighlighterAttributesModifierClass; ACaption: PString; AStoredName: String);
+    procedure CreateAttribute(AnIndex: TSynPasAttributeMod; AClass: TLazEditHighlighterAttributesModifierClass; ACaption: PString; AStoredName: String; ASupportedFeatures: TLazTextAttributeFeatures);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes); overload;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes_Eol); overload;
+    procedure SetAttribute(AnIndex: TSynPasAttributeMod; AValue: TLazEditHighlighterAttributesModifier_Eol); overload;
+    procedure SetAttribute(AnIndex: TSynPasAttributeMod; AValue: TLazEditHighlighterAttributesModifier); overload;
+    function  GetAttribute(AnIndex: TSynPasAttribute): TLazEditHighlighterAttributes; overload;
+    function  GetAttribute_Eol(AnIndex: TSynPasAttribute): TLazEditHighlighterAttributes_Eol; overload;
+    function  GetAttribute_ModEol(AnIndex: TSynPasAttributeMod): TLazEditHighlighterAttributesModifier_Eol; overload;
+    function  GetAttribute_Mod(AnIndex: TSynPasAttributeMod): TLazEditHighlighterAttributesModifier; overload;
     procedure SetCaseLabelAttriMatchesElseOtherwise(AValue: Boolean);
     procedure SetCustomTokenCount(AValue: integer);
     function  GetCustomTokens(AnIndex: integer): TSynPasSynCustomToken;
@@ -971,14 +989,14 @@ type
 
     function CanApplyExtendedDeclarationAttribute(AMode: TSynPasTypeAttributeMode): boolean; inline;
     function GetCustomSymbolToken(ATokenID: TtkTokenKindEx; ALen: integer;
-             out ACustomMarkup: TSynHighlighterAttributesModifier;
+             out ACustomMarkup: TLazEditHighlighterAttributesModifier;
              APeekOnly: boolean = False
              ): boolean; inline;
-    function GetCustomTokenAndNext(ATokenID: TtkTokenKindEx; out ACustomMarkup: TSynHighlighterAttributesModifier;
+    function GetCustomTokenAndNext(ATokenID: TtkTokenKindEx; out ACustomMarkup: TLazEditHighlighterAttributesModifier;
              APeekOnly: boolean = False
              ): boolean; inline;
     function GetCustomToken(ATokenID: TtkTokenKindEx; AnHash: byte; ATokenStart: PChar; ATokenLen: integer;
-             out ACustomMarkup: TSynHighlighterAttributesModifier
+             out ACustomMarkup: TLazEditHighlighterAttributesModifier
              ): boolean; inline;
     procedure CheckForAdditionalAttributes;
 
@@ -1066,7 +1084,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: integer): TLazEditHighlighterAttributes;
       override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
@@ -1115,65 +1133,40 @@ type
     property NestedComments: boolean read GetNestedComments write SetNestedComments stored False; deprecated 'Use ModeSwitches / Will be removed in 5.99';
     property TypeHelpers: boolean read GetTypeHelpers write SetTypeHelpers stored False; deprecated 'Use ModeSwitches / Will be removed in 5.99';
   published
-    property AsmAttri: TSynHighlighterAttributes read fAsmAttri write fAsmAttri;
-    property CommentAttri: TSynHighlighterAttributes_Eol read fCommentAttri
-      write fCommentAttri;
-    property CommentAnsiAttri: TSynHighlighterAttributesModifier_Eol read FCommentAnsiAttri write FCommentAnsiAttri;
-    property CommentCurlyAttri: TSynHighlighterAttributesModifier_Eol read FCommentCurlyAttri write FCommentCurlyAttri;
-    property CommentSlashAttri: TSynHighlighterAttributesModifier_Eol read FCommentSlashAttri write FCommentSlashAttri;
-    property IDEDirectiveAttri: TSynHighlighterAttributesModifier_Eol read FIDEDirectiveAttri
-      write FIDEDirectiveAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
-      write fIdentifierAttri;
-    property KeyAttri: TSynHighlighterAttributes read fKeyAttri write fKeyAttri;
-    property ModifierAttri: TSynHighlighterAttributes read fModifierAttri write fModifierAttri;
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri
-      write fNumberAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
-      write fSpaceAttri;
-    property StringAttri: TSynHighlighterAttributes_Eol read fStringAttri
-      write fStringAttri;
-    property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
-      write fSymbolAttri;
+    property AsmAttri: TLazEditHighlighterAttributes                            index attribAsm                     read GetAttribute write SetAttribute;
+    property CommentAttri: TLazEditHighlighterAttributes_Eol                    index attribComment                 read GetAttribute_Eol write SetAttribute;
+    property CommentAnsiAttri: TLazEditHighlighterAttributesModifier_Eol        index attribCommentAnsi             read GetAttribute_ModEol write SetAttribute;
+    property CommentCurlyAttri: TLazEditHighlighterAttributesModifier_Eol       index attribCommentCurly            read GetAttribute_ModEol write SetAttribute;
+    property CommentSlashAttri: TLazEditHighlighterAttributesModifier_Eol       index attribCommentSlash            read GetAttribute_ModEol write SetAttribute;
+    property IDEDirectiveAttri: TLazEditHighlighterAttributesModifier_Eol       index attribIDEDirective            read GetAttribute_ModEol write SetAttribute;
+    property IdentifierAttri: TLazEditHighlighterAttributes                     index attribIdentifier              read GetAttribute write SetAttribute;
+    property KeyAttri: TLazEditHighlighterAttributes                            index attribKey                     read GetAttribute write SetAttribute;
+    property ModifierAttri: TLazEditHighlighterAttributes                       index attribModifier                read GetAttribute write SetAttribute;
+    property NumberAttri: TLazEditHighlighterAttributes                         index attribNumber                  read GetAttribute write SetAttribute;
+    property SpaceAttri: TLazEditHighlighterAttributes                          index attribSpace                   read GetAttribute write SetAttribute;
+    property StringAttri: TLazEditHighlighterAttributes_Eol                     index attribString                  read GetAttribute_Eol write SetAttribute;
+    property SymbolAttri: TLazEditHighlighterAttributes                         index attribSymbol                  read GetAttribute write SetAttribute;
 
-    property ProcedureHeaderName: TSynHighlighterAttributesModifier
-       read FProcedureHeaderNameAttr write FProcedureHeaderNameAttr;
+    property PropertyNameAttr: TLazEditHighlighterAttributesModifier            index attribPropertyName            read GetAttribute_Mod write SetAttribute;
+    property ProcedureHeaderName: TLazEditHighlighterAttributesModifier         index attribProcedureHeaderName     read GetAttribute_Mod write SetAttribute;
+    property ProcedureHeaderParamAttr: TLazEditHighlighterAttributesModifier    index attribProcedureHeaderParam    read GetAttribute_Mod write SetAttribute;
+    property ProcedureHeaderTypeAttr: TLazEditHighlighterAttributesModifier     index attribProcedureHeaderType     read GetAttribute_Mod write SetAttribute;
+    property ProcedureHeaderValueAttr: TLazEditHighlighterAttributesModifier    index attribProcedureHeaderValue    read GetAttribute_Mod write SetAttribute;
+    property ProcedureHeaderResultAttr: TLazEditHighlighterAttributesModifier   index attribProcedureHeaderResult   read GetAttribute_Mod write SetAttribute;
 
-    property PropertyNameAttr: TSynHighlighterAttributesModifier
-       read FPropertyNameAttr write FPropertyNameAttr;
+    property DeclarationVarConstNameAttr: TLazEditHighlighterAttributesModifier index attribDeclarationVarConstName read GetAttribute_Mod write SetAttribute;
+    property DeclarationTypeNameAttr: TLazEditHighlighterAttributesModifier     index attribDeclarationTypeName     read GetAttribute_Mod write SetAttribute;
+    property DeclarationTypeAttr: TLazEditHighlighterAttributesModifier         index attribDeclarationType         read GetAttribute_Mod write SetAttribute;
+    property DeclarationValueAttr: TLazEditHighlighterAttributesModifier        index attribDeclarationValue        read GetAttribute_Mod write SetAttribute;
+    property SpecializeParamAttr: TLazEditHighlighterAttributesModifier         index attribSpecializeParam         read GetAttribute_Mod write SetAttribute;
+    property GenericParamAttr: TLazEditHighlighterAttributesModifier            index attribGenericParam            read GetAttribute_Mod write SetAttribute;
+    property GenericConstraintAttr: TLazEditHighlighterAttributesModifier       index attribGenericConstraint       read GetAttribute_Mod write SetAttribute;
+    property GotoLabelAttr: TLazEditHighlighterAttributes                       index attribGotoLabel               read GetAttribute write SetAttribute;
+    property StructMemberAttr: TLazEditHighlighterAttributesModifier            index attribStructMember            read GetAttribute_Mod write SetAttribute;
 
-    property ProcedureHeaderParamAttr: TSynHighlighterAttributesModifier
-       read FProcedureHeaderParamAttr write FProcedureHeaderParamAttr;
-    property ProcedureHeaderTypeAttr: TSynHighlighterAttributesModifier
-       read FProcedureHeaderTypeAttr write FProcedureHeaderTypeAttr;
-    property ProcedureHeaderValueAttr: TSynHighlighterAttributesModifier
-       read FProcedureHeaderValueAttr write FProcedureHeaderValueAttr;
-    property ProcedureHeaderResultAttr: TSynHighlighterAttributesModifier
-       read FProcedureHeaderResultAttr write FProcedureHeaderResultAttr;
+    property CaseLabelAttri: TLazEditHighlighterAttributesModifier              index attribCaseLabel               read GetAttribute_Mod write SetAttribute;
+    property DirectiveAttri: TLazEditHighlighterAttributes_Eol                  index attribDirective               read GetAttribute_Eol write SetAttribute;
 
-    property DeclarationVarConstNameAttr: TSynHighlighterAttributesModifier
-       read FDeclarationVarConstNameAttr write FDeclarationVarConstNameAttr;
-    property DeclarationTypeNameAttr: TSynHighlighterAttributesModifier
-       read FDeclarationTypeNameAttr write FDeclarationTypeNameAttr;
-    property DeclarationTypeAttr: TSynHighlighterAttributesModifier
-       read FDeclarationTypeAttr write FDeclarationTypeAttr;
-    property DeclarationValueAttr: TSynHighlighterAttributesModifier
-       read FDeclarationValueAttr write FDeclarationValueAttr;
-    property SpecializeParamAttr: TSynHighlighterAttributesModifier
-       read FSpecializeParamAttr write FSpecializeParamAttr;
-    property GenericParamAttr: TSynHighlighterAttributesModifier
-       read FGenericParamAttr write FGenericParamAttr;
-    property GenericConstraintAttr: TSynHighlighterAttributesModifier
-       read FGenericConstraintAttr write FGenericConstraintAttr;
-    property GotoLabelAttr: TSynHighlighterAttributes
-       read FGotoLabelAttr write FGotoLabelAttr;
-    property StructMemberAttr: TSynHighlighterAttributesModifier
-       read FStructMemberAttr write FStructMemberAttr;
-
-    property CaseLabelAttri: TSynHighlighterAttributesModifier read FCaseLabelAttri
-      write FCaseLabelAttri;
-    property DirectiveAttri: TSynHighlighterAttributes_Eol read fDirectiveAttri
-      write fDirectiveAttri;
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write SetModeSwitches;
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
@@ -1201,9 +1194,9 @@ type
     property ProcNameIntfAttributeMode: TProcNameAttrbuteModes
        read FProcNameIntfAttributeMode write SetProcNameIntfAttributeMode default [pamDots];
 
-    property PasDocKeyWord: TSynHighlighterAttributesModifier read fPasDocKeyWordAttri write fPasDocKeyWordAttri;
-    property PasDocSymbol: TSynHighlighterAttributesModifier read fPasDocSymbolAttri write fPasDocSymbolAttri;
-    property PasDocUnknown: TSynHighlighterAttributesModifier read fPasDocUnknownAttr write fPasDocUnknownAttr;
+    property PasDocKeyWord: TLazEditHighlighterAttributesModifier index attribPasDocKeyWord read GetAttribute_Mod write SetAttribute;
+    property PasDocSymbol: TLazEditHighlighterAttributesModifier  index attribPasDocSymbol  read GetAttribute_Mod write SetAttribute;
+    property PasDocUnknown: TLazEditHighlighterAttributesModifier index attribPasDocUnknown read GetAttribute_Mod write SetAttribute;
     property NestedBracketAttribs: TLazEditTextAttributeModifierCollection read FNestedBracketAttribs write SetNestedBracketAttribs;
   end;
 
@@ -1696,9 +1689,9 @@ begin
   FAttributeChangeNeedScan := True;
 
   if spmsmDoubleQuote in FStringMultilineMode then
-    fStringAttri.UpdateSupportedFeatures([lafPastEOL], [])
+    FPasAttributes[attribString].UpdateSupportedFeatures([lafPastEOL], [])
   else
-    fStringAttri.UpdateSupportedFeatures([], [lafPastEOL]);
+    FPasAttributes[attribString].UpdateSupportedFeatures([], [lafPastEOL]);
 
   DefHighlightChange(self);
 end;
@@ -1727,6 +1720,79 @@ end;
 function TSynPasSyn.GetCustomTokenCount: integer;
 begin
   Result := Length(FSynCustomTokens);
+end;
+
+procedure TSynPasSyn.CreateAttribute(AnIndex: TSynPasAttribute;
+  AClass: TLazEditHighlighterAttributesClass; ACaption: PString; AStoredName: String);
+begin
+  FPasAttributes[AnIndex] := AClass.Create(ACaption, AStoredName);
+  AddAttribute(FPasAttributes[AnIndex]);
+end;
+
+procedure TSynPasSyn.CreateAttribute(AnIndex: TSynPasAttribute;
+  AClass: TLazEditHighlighterAttributesClass; ACaption: PString; AStoredName: String;
+  ASupportedFeatures: TLazTextAttributeFeatures);
+begin
+  FPasAttributes[AnIndex] := AClass.Create(ACaption, AStoredName, ASupportedFeatures);
+  AddAttribute(FPasAttributes[AnIndex]);
+end;
+
+procedure TSynPasSyn.CreateAttribute(AnIndex: TSynPasAttributeMod;
+  AClass: TLazEditHighlighterAttributesModifierClass; ACaption: PString; AStoredName: String);
+begin
+  FPasAttributesMod[AnIndex] := AClass.Create(ACaption, AStoredName);
+  AddAttribute(FPasAttributesMod[AnIndex]);
+end;
+
+procedure TSynPasSyn.CreateAttribute(AnIndex: TSynPasAttributeMod;
+  AClass: TLazEditHighlighterAttributesModifierClass; ACaption: PString; AStoredName: String;
+  ASupportedFeatures: TLazTextAttributeFeatures);
+begin
+  FPasAttributesMod[AnIndex] := AClass.Create(ACaption, AStoredName, ASupportedFeatures);
+  AddAttribute(FPasAttributesMod[AnIndex]);
+end;
+
+procedure TSynPasSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
+begin
+  FPasAttributes[AnIndex].Assign(AValue);
+end;
+
+procedure TSynPasSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes_Eol);
+begin
+  FPasAttributes[AnIndex].Assign(AValue);
+end;
+
+procedure TSynPasSyn.SetAttribute(AnIndex: TSynPasAttributeMod;
+  AValue: TLazEditHighlighterAttributesModifier_Eol);
+begin
+  FPasAttributesMod[AnIndex].Assign(AValue);
+end;
+
+procedure TSynPasSyn.SetAttribute(AnIndex: TSynPasAttributeMod;
+  AValue: TLazEditHighlighterAttributesModifier);
+begin
+  FPasAttributesMod[AnIndex].Assign(AValue);
+end;
+
+function TSynPasSyn.GetAttribute(AnIndex: TSynPasAttribute): TLazEditHighlighterAttributes;
+begin
+  Result := FPasAttributes[AnIndex] as TLazEditHighlighterAttributes;
+end;
+
+function TSynPasSyn.GetAttribute_Eol(AnIndex: TSynPasAttribute): TLazEditHighlighterAttributes_Eol;
+begin
+  Result := FPasAttributes[AnIndex] as TLazEditHighlighterAttributes_Eol;
+end;
+
+function TSynPasSyn.GetAttribute_ModEol(AnIndex: TSynPasAttributeMod
+  ): TLazEditHighlighterAttributesModifier_Eol;
+begin
+  Result := FPasAttributesMod[AnIndex] as TLazEditHighlighterAttributesModifier_Eol;
+end;
+
+function TSynPasSyn.GetAttribute_Mod(AnIndex: TSynPasAttributeMod): TLazEditHighlighterAttributesModifier;
+begin
+  Result := FPasAttributesMod[AnIndex] as TLazEditHighlighterAttributesModifier;
 end;
 
 procedure TSynPasSyn.SetCaseLabelAttriMatchesElseOtherwise(AValue: Boolean);
@@ -1862,9 +1928,9 @@ end;
 
 procedure TSynPasSyn.PasDocAttrChanged(Sender: TObject);
 begin
-  FUsePasDoc := fPasDocKeyWordAttri.IsEnabled or
-                fPasDocSymbolAttri.IsEnabled or
-                fPasDocUnknownAttr.IsEnabled;
+  FUsePasDoc := FPasAttributesMod[attribPasDocKeyWord].IsEnabled or
+                FPasAttributesMod[attribPasDocSymbol].IsEnabled or
+                FPasAttributesMod[attribPasDocUnknown].IsEnabled;
   DefHighlightChange(Sender);
 end;
 
@@ -4150,88 +4216,55 @@ begin
   FGenericConstraintAttributeMode := tamIdentifierOnly;
   CreateDividerDrawConfig;
   fD4syntax := true;
-  fAsmAttri := TSynHighlighterAttributes.Create(@SYNS_AttrAssembler, SYNS_XML_AttrAssembler);
-  AddAttribute(fAsmAttri);
-  fCommentAttri := TSynHighlighterAttributes_Eol.Create(@SYNS_AttrComment, SYNS_XML_AttrComment, [lafPastEOL]);
-  fCommentAttri.Style:= [fsItalic];
-  fCommentAttri.Features:= [lafPastEOL];
-  AddAttribute(fCommentAttri);
-  FCommentAnsiAttri := TSynHighlighterAttributesModifier_Eol.Create(@SYNS_AttrCommentAnsi, SYNS_XML_AttrCommentAnsi, [lafPastEOL]);
-  FCommentAnsiAttri.Features:= [lafPastEOL];
-  AddAttribute(FCommentAnsiAttri);
-  FCommentCurlyAttri := TSynHighlighterAttributesModifier_Eol.Create(@SYNS_AttrCommentCurly, SYNS_XML_AttrCommentCurly, [lafPastEOL]);
-  FCommentCurlyAttri.Features:= [lafPastEOL];
-  AddAttribute(FCommentCurlyAttri);
-  FCommentSlashAttri := TSynHighlighterAttributesModifier_Eol.Create(@SYNS_AttrCommentSlash, SYNS_XML_AttrCommentSlash, [lafPastEOL]);
-  AddAttribute(FCommentSlashAttri);
-  FIDEDirectiveAttri := TSynHighlighterAttributesModifier_Eol.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective, [lafPastEOL]);
-  FIDEDirectiveAttri.Features:= [lafPastEOL];
-  AddAttribute(FIDEDirectiveAttri);
-  fIdentifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
-  AddAttribute(fIdentifierAttri);
-  fKeyAttri := TSynHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
-  fKeyAttri.Style:= [fsBold];
-  AddAttribute(fKeyAttri);
-  fModifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrModifier, SYNS_XML_AttrModifier);
-  fModifierAttri.Style:= [fsBold];
-  AddAttribute(fModifierAttri);
-  fNumberAttri := TSynHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
-  AddAttribute(fNumberAttri);
-  fSpaceAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
-  AddAttribute(fSpaceAttri);
-  fStringAttri := TSynHighlighterAttributes_Eol.Create(@SYNS_AttrString, SYNS_XML_AttrString);
-  AddAttribute(fStringAttri);
-  fSymbolAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
-  AddAttribute(fSymbolAttri);
-  FProcedureHeaderNameAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcedureHeaderName, SYNS_XML_AttrProcedureHeaderName);
-  AddAttribute(FProcedureHeaderNameAttr);
+  CreateAttribute(attribAsm, TLazEditHighlighterAttributes, @SYNS_AttrAssembler, SYNS_XML_AttrAssembler);
+  CreateAttribute(attribComment, TLazEditHighlighterAttributes_Eol, @SYNS_AttrComment, SYNS_XML_AttrComment, [lafPastEOL]);
+  FPasAttributes[attribComment].Style:= [fsItalic];
+  FPasAttributes[attribComment].Features:= [lafPastEOL];
+  CreateAttribute(attribCommentAnsi, TLazEditHighlighterAttributesModifier_Eol, @SYNS_AttrCommentAnsi, SYNS_XML_AttrCommentAnsi, [lafPastEOL]);
+  FPasAttributesMod[attribCommentAnsi].Features:= [lafPastEOL];
+  CreateAttribute(attribCommentCurly, TLazEditHighlighterAttributesModifier_Eol, @SYNS_AttrCommentCurly, SYNS_XML_AttrCommentCurly, [lafPastEOL]);
+  FPasAttributesMod[attribCommentCurly].Features:= [lafPastEOL];
+  CreateAttribute(attribCommentSlash, TLazEditHighlighterAttributesModifier_Eol, @SYNS_AttrCommentSlash, SYNS_XML_AttrCommentSlash, [lafPastEOL]);
+  CreateAttribute(attribIDEDirective, TLazEditHighlighterAttributesModifier_Eol, @SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective, [lafPastEOL]);
+  FPasAttributesMod[attribIDEDirective].Features:= [lafPastEOL];
+  CreateAttribute(attribIdentifier, TLazEditHighlighterAttributes, @SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
+  CreateAttribute(attribKey, TLazEditHighlighterAttributes, @SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
+  FPasAttributes[attribKey].Style:= [fsBold];
+  CreateAttribute(attribModifier, TLazEditHighlighterAttributes, @SYNS_AttrModifier, SYNS_XML_AttrModifier);
+  FPasAttributes[attribModifier].Style:= [fsBold];
+  CreateAttribute(attribNumber, TLazEditHighlighterAttributes, @SYNS_AttrNumber, SYNS_XML_AttrNumber);
+  CreateAttribute(attribSpace, TLazEditHighlighterAttributes, @SYNS_AttrSpace, SYNS_XML_AttrSpace);
+  CreateAttribute(attribString, TLazEditHighlighterAttributes_Eol, @SYNS_AttrString, SYNS_XML_AttrString);
+  CreateAttribute(attribSymbol, TLazEditHighlighterAttributes, @SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
+  CreateAttribute(attribProcedureHeaderName, TLazEditHighlighterAttributesModifier, @SYNS_AttrProcedureHeaderName, SYNS_XML_AttrProcedureHeaderName);
 
-  FPropertyNameAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPropertyName, SYNS_XML_AttrPropertyName);
-  AddAttribute(FPropertyNameAttr);
-  FProcedureHeaderParamAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcedureHeaderParam, SYNS_XML_AttrProcedureHeaderParam);
-  AddAttribute(FProcedureHeaderParamAttr);
-  FProcedureHeaderResultAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcedureHeaderResult, SYNS_XML_AttrProcedureHeaderResult);
-  AddAttribute(FProcedureHeaderResultAttr);
-  FProcedureHeaderTypeAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcedureHeaderType, SYNS_XML_AttrProcedureHeaderType);
-  AddAttribute(FProcedureHeaderTypeAttr);
-  FProcedureHeaderValueAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcedureHeaderValue, SYNS_XML_AttrProcedureHeaderValue);
-  AddAttribute(FProcedureHeaderValueAttr);
-  FDeclarationVarConstNameAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrDeclarationVarConstName, SYNS_XML_AttrDeclarationVarConstName);
-  AddAttribute(FDeclarationVarConstNameAttr);
-  FDeclarationTypeNameAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrDeclarationTypeName, SYNS_XML_AttrDeclarationTypeName);
-  AddAttribute(FDeclarationTypeNameAttr);
-  FDeclarationTypeAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrDeclarationType, SYNS_XML_AttrDeclarationType);
-  AddAttribute(FDeclarationTypeAttr);
-  FDeclarationValueAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrDeclarationValue, SYNS_XML_AttrDeclarationValue);
-  AddAttribute(FDeclarationValueAttr);
-  FSpecializeParamAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrSpecializeParam, SYNS_XML_AttrSpecializeParam);
-  AddAttribute(FSpecializeParamAttr);
-  FGenericParamAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrGenericParam, SYNS_XML_AttrGenericParam);
-  AddAttribute(FGenericParamAttr);
-  FGenericConstraintAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrGenericConstraint, SYNS_XML_AttrGenericConstraint);
-  AddAttribute(FGenericConstraintAttr);
-  FGotoLabelAttr := TSynHighlighterAttributes.Create(@SYNS_AttrGotoLabel, SYNS_XML_AttrGotoLabel);
-  AddAttribute(FGotoLabelAttr);
-  FStructMemberAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrStructMember, SYNS_XML_AttrStructMember);
-  AddAttribute(FStructMemberAttr);
+  CreateAttribute(attribPropertyName, TLazEditHighlighterAttributesModifier, @SYNS_AttrPropertyName, SYNS_XML_AttrPropertyName);
+  CreateAttribute(attribProcedureHeaderParam, TLazEditHighlighterAttributesModifier, @SYNS_AttrProcedureHeaderParam, SYNS_XML_AttrProcedureHeaderParam);
+  CreateAttribute(attribProcedureHeaderResult, TLazEditHighlighterAttributesModifier, @SYNS_AttrProcedureHeaderResult, SYNS_XML_AttrProcedureHeaderResult);
+  CreateAttribute(attribProcedureHeaderType, TLazEditHighlighterAttributesModifier, @SYNS_AttrProcedureHeaderType, SYNS_XML_AttrProcedureHeaderType);
+  CreateAttribute(attribProcedureHeaderValue, TLazEditHighlighterAttributesModifier, @SYNS_AttrProcedureHeaderValue, SYNS_XML_AttrProcedureHeaderValue);
+  CreateAttribute(attribDeclarationVarConstName, TLazEditHighlighterAttributesModifier, @SYNS_AttrDeclarationVarConstName, SYNS_XML_AttrDeclarationVarConstName);
+  CreateAttribute(attribDeclarationTypeName, TLazEditHighlighterAttributesModifier, @SYNS_AttrDeclarationTypeName, SYNS_XML_AttrDeclarationTypeName);
+  CreateAttribute(attribDeclarationType, TLazEditHighlighterAttributesModifier, @SYNS_AttrDeclarationType, SYNS_XML_AttrDeclarationType);
+  CreateAttribute(attribDeclarationValue, TLazEditHighlighterAttributesModifier, @SYNS_AttrDeclarationValue, SYNS_XML_AttrDeclarationValue);
+  CreateAttribute(attribSpecializeParam, TLazEditHighlighterAttributesModifier, @SYNS_AttrSpecializeParam, SYNS_XML_AttrSpecializeParam);
+  CreateAttribute(attribGenericParam, TLazEditHighlighterAttributesModifier, @SYNS_AttrGenericParam, SYNS_XML_AttrGenericParam);
+  CreateAttribute(attribGenericConstraint, TLazEditHighlighterAttributesModifier, @SYNS_AttrGenericConstraint, SYNS_XML_AttrGenericConstraint);
+  CreateAttribute(attribGotoLabel, TLazEditHighlighterAttributes, @SYNS_AttrGotoLabel, SYNS_XML_AttrGotoLabel);
+  CreateAttribute(attribStructMember, TLazEditHighlighterAttributesModifier, @SYNS_AttrStructMember, SYNS_XML_AttrStructMember);
 
 
-  FCaseLabelAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
-  AddAttribute(FCaseLabelAttri);
-  fDirectiveAttri := TSynHighlighterAttributes_Eol.Create(@SYNS_AttrDirective, SYNS_XML_AttrDirective, [lafPastEOL]);
-  fDirectiveAttri.Style:= [fsItalic];
-  fDirectiveAttri.Features:= [lafPastEOL];
-  AddAttribute(fDirectiveAttri);
+  CreateAttribute(attribCaseLabel, TLazEditHighlighterAttributesModifier, @SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
+  CreateAttribute(attribDirective, TLazEditHighlighterAttributes_Eol, @SYNS_AttrDirective, SYNS_XML_AttrDirective, [lafPastEOL]);
+  FPasAttributes[attribDirective].Style:= [fsItalic];
+  FPasAttributes[attribDirective].Features:= [lafPastEOL];
 
-  fPasDocKeyWordAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPasDocKey, SYNS_XML_AttrPasDocKey);
-  fPasDocKeyWordAttri.Clear;
-  AddAttribute(fPasDocKeyWordAttri);
-  fPasDocSymbolAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPasDocSymbol, SYNS_XML_AttrPasDocSymbol);
-  fPasDocSymbolAttri.Clear;
-  AddAttribute(fPasDocSymbolAttri);
-  fPasDocUnknownAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPasDocUnknown, SYNS_XML_AttrPasDocUnknown);
-  fPasDocUnknownAttr.Clear;
-  AddAttribute(fPasDocUnknownAttr);
+  CreateAttribute(attribPasDocKeyWord, TLazEditHighlighterAttributesModifier, @SYNS_AttrPasDocKey, SYNS_XML_AttrPasDocKey);
+  FPasAttributesMod[attribPasDocKeyWord].Clear;
+  CreateAttribute(attribPasDocSymbol, TLazEditHighlighterAttributesModifier, @SYNS_AttrPasDocSymbol, SYNS_XML_AttrPasDocSymbol);
+  FPasAttributesMod[attribPasDocSymbol].Clear;
+  CreateAttribute(attribPasDocUnknown, TLazEditHighlighterAttributesModifier, @SYNS_AttrPasDocUnknown, SYNS_XML_AttrPasDocUnknown);
+  FPasAttributesMod[attribPasDocUnknown].Clear;
   FPasDocWordList := TStringList.Create;
 
   FNestedBracketAttribs := TLazEditTextAttributeModifierCollection.Create(Self);
@@ -4239,9 +4272,9 @@ begin
 
   CompilerMode:=pcmDelphi;
   SetAttributesOnChange(@DefHighlightChange);
-  fPasDocKeyWordAttri.AddChangeHandler(@PasDocAttrChanged);
-  fPasDocSymbolAttri.AddChangeHandler(@PasDocAttrChanged);
-  fPasDocUnknownAttr.AddChangeHandler(@PasDocAttrChanged);
+  FPasAttributesMod[attribPasDocKeyWord].AddChangeHandler(@PasDocAttrChanged);
+  FPasAttributesMod[attribPasDocSymbol].AddChangeHandler(@PasDocAttrChanged);
+  FPasAttributesMod[attribPasDocUnknown].AddChangeHandler(@PasDocAttrChanged);
 
   InitIdent;
   MakeMethodTables;
@@ -4349,7 +4382,7 @@ begin
 
   if fLine[Run] in ['(', ')', '-'] then begin
     inc(Run);
-    Result := fPasDocSymbolAttri.IsEnabled;
+    Result := FPasAttributesMod[attribPasDocSymbol].IsEnabled;
     FIsPasDocSym := Result and not APeekOnly;
     if APeekOnly then
       Run := r;
@@ -4367,11 +4400,11 @@ begin
   SetLength(s{%H-}, Run - p);
   move(fLine[p], s[1], Run - p);
   if FPasDocWordList.IndexOf(LowerCase(s)) >= 0 then begin
-    Result := fPasDocKeyWordAttri.IsEnabled;
+    Result := FPasAttributesMod[attribPasDocKeyWord].IsEnabled;
     FIsPasDocKey := Result and not APeekOnly;
   end
   else begin
-    Result := fPasDocUnknownAttr.IsEnabled;
+    Result := FPasAttributesMod[attribPasDocUnknown].IsEnabled;
     FIsPasUnknown := Result and not APeekOnly;
   end;
   if APeekOnly or not Result then
@@ -4384,7 +4417,7 @@ var
   IsInWord, WasInWord, ct: Boolean;
 begin
   if reCommentCurly in FRequiredStates then
-    FCustomCommentTokenMarkup := FCommentCurlyAttri;
+    FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentCurly];
   fTokenID := tkComment;
   if rsIDEDirective in fRange then
     fTokenID := tkIDEDirective;
@@ -4721,7 +4754,7 @@ begin
       StartPascalCodeFoldBlock(cfbtBorCommand);
 
       if reCommentCurly in FRequiredStates then
-        FCustomCommentTokenMarkup := FCommentCurlyAttri;
+        FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentCurly];
       if not (FIsInNextToEOL or IsScanning) then
         GetCustomSymbolToken(tkBorComment, 1, FCustomTokenMarkup);
 
@@ -5021,7 +5054,7 @@ var
 begin
   fTokenID := tkComment;
   if reCommentAnsi in FRequiredStates then
-    FCustomCommentTokenMarkup := FCommentAnsiAttri;
+    FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentAnsi];
 
   if (not (FIsInNextToEOL or IsScanning)) then begin
     if FUsePasDoc and (fLine[Run] = '@') then begin
@@ -5165,7 +5198,7 @@ begin
         StartPascalCodeFoldBlock(cfbtAnsiComment);
 
         if reCommentAnsi in FRequiredStates then
-          FCustomCommentTokenMarkup := FCommentAnsiAttri;
+          FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentAnsi];
         if not (FIsInNextToEOL or IsScanning) then
           GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup);
 
@@ -5376,7 +5409,7 @@ procedure TSynPasSyn.SlashProc;
 begin
   if fLine[Run+1] = '/' then begin
     if reCommentSlash in FRequiredStates then
-      FCustomCommentTokenMarkup := FCommentSlashAttri;
+      FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentSlash];
     FIsInSlash := True;
     FAtSlashStart := True;
 
@@ -5412,7 +5445,7 @@ begin
   if FIsInSlash and (not (FIsInNextToEOL or IsScanning)) then begin
     Include(FTokenExtraAttribs, eaPartTokenNotAtStart);
     if reCommentSlash in FRequiredStates then
-      FCustomCommentTokenMarkup := FCommentSlashAttri;
+      FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentSlash];
     fTokenID := tkComment;
 
     if (fLine[Run] = '@') then begin
@@ -5437,7 +5470,7 @@ begin
       FAtSlashStart := True;
     FIsInSlash := True;
     if reCommentSlash in FRequiredStates then
-      FCustomCommentTokenMarkup := FCommentSlashAttri;
+      FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentSlash];
     // Continue fold block
     fTokenID := tkComment;
 
@@ -5690,9 +5723,9 @@ begin
 end;
 
 function TSynPasSyn.GetCustomSymbolToken(ATokenID: TtkTokenKindEx; ALen: integer; out
-  ACustomMarkup: TSynHighlighterAttributesModifier; APeekOnly: boolean): boolean;
+  ACustomMarkup: TLazEditHighlighterAttributesModifier; APeekOnly: boolean): boolean;
 var
-  TempMarkup: TSynHighlighterAttributesModifier;
+  TempMarkup: TLazEditHighlighterAttributesModifier;
 begin
   ACustomMarkup := nil;
   Result := GetCustomToken(ATokenID, 0, @fLine[Run], ALen, TempMarkup);
@@ -5701,10 +5734,10 @@ begin
 end;
 
 function TSynPasSyn.GetCustomTokenAndNext(ATokenID: TtkTokenKindEx; out
-  ACustomMarkup: TSynHighlighterAttributesModifier; APeekOnly: boolean): boolean;
+  ACustomMarkup: TLazEditHighlighterAttributesModifier; APeekOnly: boolean): boolean;
 var
   h: Integer;
-  TempTokenMarkup: TSynHighlighterAttributesModifier;
+  TempTokenMarkup: TLazEditHighlighterAttributesModifier;
 begin
   ACustomMarkup := nil;
   fToIdent := Run;
@@ -5720,7 +5753,7 @@ begin
 end;
 
 function TSynPasSyn.GetCustomToken(ATokenID: TtkTokenKindEx; AnHash: byte; ATokenStart: PChar;
-  ATokenLen: integer; out ACustomMarkup: TSynHighlighterAttributesModifier): boolean;
+  ATokenLen: integer; out ACustomMarkup: TLazEditHighlighterAttributesModifier): boolean;
 var
   CustTkList: TStringList;
   i, j: integer;
@@ -6140,17 +6173,17 @@ begin
   FIsInNextToEOL := True;
 end;
 
-function TSynPasSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynPasSyn.GetDefaultAttribute(Index: integer): TLazEditHighlighterAttributes;
 begin
   case Index of
-    SYN_ATTR_COMMENT: Result := fCommentAttri;
-    SYN_ATTR_IDENTIFIER: Result := fIdentifierAttri;
-    SYN_ATTR_KEYWORD: Result := fKeyAttri;
-    SYN_ATTR_STRING: Result := fStringAttri;
-    SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
-    SYN_ATTR_NUMBER: Result := fNumberAttri;
-    SYN_ATTR_DIRECTIVE: Result := fDirectiveAttri;
-    SYN_ATTR_ASM: Result := fAsmAttri;
+    SYN_ATTR_COMMENT:    Result := FPasAttributes[attribComment];
+    SYN_ATTR_IDENTIFIER: Result := FPasAttributes[attribIdentifier];
+    SYN_ATTR_KEYWORD:    Result := FPasAttributes[attribKey];
+    SYN_ATTR_STRING:     Result := FPasAttributes[attribString];
+    SYN_ATTR_WHITESPACE: Result := FPasAttributes[attribSpace];
+    SYN_ATTR_NUMBER:     Result := FPasAttributes[attribNumber];
+    SYN_ATTR_DIRECTIVE:  Result := FPasAttributes[attribDirective];
+    SYN_ATTR_ASM:        Result := FPasAttributes[attribAsm];
   else
     Result := nil;
   end;
@@ -6192,9 +6225,9 @@ var
   x1, x2: Integer;
 begin
   case GetTokenID of
-    tkAsm: Result := fAsmAttri;
+    tkAsm: Result := FPasAttributes[attribAsm];
     tkIDEDirective, tkComment: begin
-      Result := fCommentAttri;
+      Result := FPasAttributes[attribComment];
       //x1 := ToPos(fTokenPos);
       //x2 := ToPos(Run);
       //FCustomCommentTokenMergedMarkup.SetFrameBoundsLog(x1, x2);
@@ -6206,18 +6239,18 @@ begin
     end;
     tkIdentifier: begin
       if eaGotoLabel in FTokenExtraAttribs then
-        Result := FGotoLabelAttr
+        Result := FPasAttributes[attribGotoLabel]
       else
-        Result := fIdentifierAttri;
+        Result := FPasAttributes[attribIdentifier];
     end;
-    tkKey: Result := fKeyAttri;
-    tkModifier: Result := fModifierAttri;
-    tkNumber: Result := fNumberAttri;
-    tkSpace: Result := fSpaceAttri;
-    tkString: Result := fStringAttri;
-    tkSymbol: Result := fSymbolAttri;
-    tkDirective: Result := fDirectiveAttri;
-    tkUnknown: Result := fSymbolAttri;
+    tkKey: Result := FPasAttributes[attribKey];
+    tkModifier: Result := FPasAttributes[attribModifier];
+    tkNumber: Result := FPasAttributes[attribNumber];
+    tkSpace: Result := FPasAttributes[attribSpace];
+    tkString: Result := FPasAttributes[attribString];
+    tkSymbol: Result := FPasAttributes[attribSymbol];
+    tkDirective: Result := FPasAttributes[attribDirective];
+    tkUnknown: Result := FPasAttributes[attribSymbol];
   else
     Result := nil;
   end;
@@ -6233,14 +6266,14 @@ begin
            (FHadSlashLastLine or (LastLinePasFoldLevelFix(fLineNumber+1, FOLDGROUP_PASCAL, True) = 0))
           )
          ) and
-         (lafPastEOL in fCommentAttri.Features)
+         (lafPastEOL in FPasAttributes[attribComment].Features)
       then
         x2 := MaxInt;
-      if (Result = fDirectiveAttri) and (lafPastEOL in fDirectiveAttri.Features)
+      if (Result = FPasAttributes[attribDirective]) and (lafPastEOL in FPasAttributes[attribDirective].Features)
       then
         x2 := MaxInt;
-      if (Result = fStringAttri) and (rsAnsiMultiDQ in fRange) and
-         (lafPastEOL in fStringAttri.Features)
+      if (Result = FPasAttributes[attribString]) and (rsAnsiMultiDQ in fRange) and
+         (lafPastEOL in FPasAttributes[attribString].Features)
       then
         x2 := MaxInt;
     end;
@@ -6268,10 +6301,10 @@ begin
     x1b := x1;  if eaPartTokenNotAtStart in FTokenExtraAttribs then x1b := 1;
     x2b := x2;  if eaPartTokenNotAtEnd   in FTokenExtraAttribs then x2b := fLineLen;
     if (Run >= fLineLen) or (fLine[Run] in [#0,#10,#13]) and
-       (lafPastEOL in FIDEDirectiveAttri.Features)
+       (lafPastEOL in FPasAttributesMod[attribIDEDirective].Features)
       then
         x2b := MaxInt;
-    MergeModifierToTokenAttribute(Result, FIDEDirectiveAttri, x1b, x2b);
+    MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribIDEDirective], x1b, x2b);
   end;
 
   if FTokenIsCaseLabel and
@@ -6279,83 +6312,83 @@ begin
       (FCaseLabelAttriMatchesElseOtherwise and (tid = tkKey) )
     )
   then begin
-    MergeModifierToTokenAttribute(Result, FCaseLabelAttri, x1, x2);
+    MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribCaseLabel], x1, x2);
   end;
 
   if FIsPasDocKey then begin
-    MergeModifierToTokenAttribute(Result, fPasDocKeyWordAttri, x1, x2);
+    MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribPasDocKeyWord], x1, x2);
   end
   else
   if FIsPasDocSym then begin
-    MergeModifierToTokenAttribute(Result, fPasDocSymbolAttri, x1, x2);
+    MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribPasDocSymbol], x1, x2);
   end
   else
   if FIsPasUnknown then begin
-    MergeModifierToTokenAttribute(Result, fPasDocUnknownAttr, x1, x2);
+    MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribPasDocUnknown], x1, x2);
   end;
 
   case FTokenTypeDeclExtraAttrib of
     eaProcName: begin
-          MergeModifierToTokenAttribute(Result, FProcedureHeaderNameAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribProcedureHeaderName], x1, x2);
       end;
     eaPropertyName: begin
-          MergeModifierToTokenAttribute(Result, FPropertyNameAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribPropertyName], x1, x2);
       end;
     eaProcParam: begin
-          MergeModifierToTokenAttribute(Result, FProcedureHeaderParamAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribProcedureHeaderParam], x1, x2);
       end;
     eaProcType: begin
-          MergeModifierToTokenAttribute(Result, FProcedureHeaderTypeAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribProcedureHeaderType], x1, x2);
       end;
     eaProcValue: begin
-          MergeModifierToTokenAttribute(Result, FProcedureHeaderValueAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribProcedureHeaderValue], x1, x2);
       end;
     eaProcResult: begin
-          MergeModifierToTokenAttribute(Result, FProcedureHeaderResultAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribProcedureHeaderResult], x1, x2);
       end;
     eaDeclVarName: begin
-          MergeModifierToTokenAttribute(Result, FDeclarationVarConstNameAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribDeclarationVarConstName], x1, x2);
       end;
     eaDeclTypeName: begin
-          MergeModifierToTokenAttribute(Result, FDeclarationTypeNameAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribDeclarationTypeName], x1, x2);
       end;
     eaDeclType: begin
-          MergeModifierToTokenAttribute(Result, FDeclarationTypeAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribDeclarationType], x1, x2);
       end;
     eaDeclValue: begin
-          MergeModifierToTokenAttribute(Result, FDeclarationValueAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribDeclarationValue], x1, x2);
       end;
     eaSpecializeParam:
       begin
-          MergeModifierToTokenAttribute(Result, FSpecializeParamAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribSpecializeParam], x1, x2);
       end;
     eaSpecializeParamAndProcName:
       begin
-          MergeModifierToTokenAttribute(Result, FSpecializeParamAttr, x1, x2);
-          MergeModifierToTokenAttribute(Result, FProcedureHeaderNameAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribSpecializeParam], x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribProcedureHeaderName], x1, x2);
       end;
     eaGenericParam:
       begin
-          MergeModifierToTokenAttribute(Result, FGenericParamAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribGenericParam], x1, x2);
       end;
     eaGenericParamAndProcName:
       begin
-          MergeModifierToTokenAttribute(Result, FGenericParamAttr, x1, x2);
-          MergeModifierToTokenAttribute(Result, FProcedureHeaderNameAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribGenericParam], x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribProcedureHeaderName], x1, x2);
       end;
     eaGenericConstraint:
       begin
-          MergeModifierToTokenAttribute(Result, FGenericConstraintAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribGenericConstraint], x1, x2);
       end;
     eaGenericConstraintAndProcName:
       begin
-          MergeModifierToTokenAttribute(Result, FGenericConstraintAttr, x1, x2);
-          MergeModifierToTokenAttribute(Result, FProcedureHeaderNameAttr, x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribGenericConstraint], x1, x2);
+          MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribProcedureHeaderName], x1, x2);
       end;
   end;
 
   if eaStructMemeber in FTokenExtraAttribs then begin
-    MergeModifierToTokenAttribute(Result, FStructMemberAttr, x1, x2);
+    MergeModifierToTokenAttribute(Result, FPasAttributesMod[attribStructMember], x1, x2);
   end;
 
   if FCustomCommentTokenMarkup <> nil then begin
@@ -6470,8 +6503,8 @@ begin
 end;
 
 function TSynPasSyn.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
-  function Merge(Base: TSynHighlighterAttributes;
-    Modifier: TSynHighlighterAttributesModifier
+  function Merge(Base: TLazEditHighlighterAttributes;
+    Modifier: TLazEditHighlighterAttributesModifier
   ): TLazCustomEditTextAttribute;
   begin
     Result := nil;
@@ -6490,31 +6523,31 @@ function TSynPasSyn.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
 begin
   Result := nil;
   if fRange * [rsIDEDirective] <> [] then begin
-    Result := Merge(fCommentAttri, FIDEDirectiveAttri);
+    Result := Merge(FPasAttributes[attribComment], FPasAttributesMod[attribIDEDirective]);
   end
   else
   if fRange * [rsDirective] <> [] then begin
-    if lafPastEOL in fDirectiveAttri.Features then
-      Result := fDirectiveAttri;
+    if lafPastEOL in FPasAttributes[attribDirective].Features then
+      Result := FPasAttributes[attribDirective];
   end
   else
   if fRange * [rsAnsi] <> [] then begin
-    Result := Merge(fCommentAttri, FCommentAnsiAttri);
+    Result := Merge(FPasAttributes[attribComment], FPasAttributesMod[attribCommentAnsi]);
   end
   else
   if fRange * [rsBor] <> [] then begin
-    Result := Merge(fCommentAttri, FCommentCurlyAttri);
+    Result := Merge(FPasAttributes[attribComment], FPasAttributesMod[attribCommentCurly]);
   end
   else
   if fRange * [rsSlash] <> [] then begin
     if FHadSlashLastLine or (LastLinePasFoldLevelFix(fLineNumber+1, FOLDGROUP_PASCAL, True) = 0) then begin
-      Result := Merge(fCommentAttri, FCommentSlashAttri);
+      Result := Merge(FPasAttributes[attribComment], FPasAttributesMod[attribCommentSlash]);
     end;
   end
   else
   if fRange * [rsAnsiMultiDQ] <> [] then begin
-    if lafPastEOL in fStringAttri.Features then
-      Result := fStringAttri;
+    if lafPastEOL in FPasAttributes[attribString].Features then
+      Result := FPasAttributes[attribString];
   end
   else
     Result := inherited GetEndOfLineAttribute;
@@ -7748,10 +7781,10 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
   function ReadDelphiSettings(settingIndex: integer): boolean;
 
     function ReadDelphiSetting(settingTag: string;
-      attri: TSynHighlighterAttributes; key: string): boolean;
+      attri: TLazEditHighlighterAttributes; key: string): boolean;
 
       function ReadDelphi2Or3(settingTag: string;
-        attri: TSynHighlighterAttributes; name: string): boolean;
+        attri: TLazEditHighlighterAttributes; name: string): boolean;
       var
         i: integer;
       begin
@@ -7762,7 +7795,7 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
       end; { ReadDelphi2Or3 }
 
       function ReadDelphi4OrMore(settingTag: string;
-        attri: TSynHighlighterAttributes; key: string): boolean;
+        attri: TLazEditHighlighterAttributes; key: string): boolean;
       begin
         Result := attri.LoadFromBorlandRegistry(HKEY_CURRENT_USER,
                '\Software\Borland\Delphi\'+settingTag+'\Editor\Highlight',
@@ -7778,15 +7811,15 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
     end; { ReadDelphiSetting }
 
   var
-    tmpStringAttri    : TSynHighlighterAttributes;
-    tmpNumberAttri    : TSynHighlighterAttributes;
-    tmpKeyAttri       : TSynHighlighterAttributes;
-    tmpSymbolAttri    : TSynHighlighterAttributes;
-    tmpAsmAttri       : TSynHighlighterAttributes;
-    tmpCommentAttri   : TSynHighlighterAttributes;
-    tmpDirectiveAttri : TSynHighlighterAttributes;
-    tmpIdentifierAttri: TSynHighlighterAttributes;
-    tmpSpaceAttri     : TSynHighlighterAttributes;
+    tmpStringAttri    : TLazEditHighlighterAttributes;
+    tmpNumberAttri    : TLazEditHighlighterAttributes;
+    tmpKeyAttri       : TLazEditHighlighterAttributes;
+    tmpSymbolAttri    : TLazEditHighlighterAttributes;
+    tmpAsmAttri       : TLazEditHighlighterAttributes;
+    tmpCommentAttri   : TLazEditHighlighterAttributes;
+    tmpDirectiveAttri : TLazEditHighlighterAttributes;
+    tmpIdentifierAttri: TLazEditHighlighterAttributes;
+    tmpSpaceAttri     : TLazEditHighlighterAttributes;
     s                 : TStringList;
 
   begin { ReadDelphiSettings }
@@ -7795,45 +7828,45 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
       EnumUserSettings(s);
       if (settingIndex < 0) or (settingIndex >= s.Count) then Result := false
       else begin
-        tmpStringAttri    := TSynHighlighterAttributes.Create(nil);
-        tmpNumberAttri    := TSynHighlighterAttributes.Create(nil);
-        tmpKeyAttri       := TSynHighlighterAttributes.Create(nil);
-        tmpSymbolAttri    := TSynHighlighterAttributes.Create(nil);
-        tmpAsmAttri       := TSynHighlighterAttributes.Create(nil);
-        tmpCommentAttri   := TSynHighlighterAttributes.Create(nil);
-        tmpDirectiveAttri := TSynHighlighterAttributes.Create(nil);
-        tmpIdentifierAttri:= TSynHighlighterAttributes.Create(nil);
-        tmpSpaceAttri     := TSynHighlighterAttributes.Create(nil);
-        tmpStringAttri    .Assign(fStringAttri);
-        tmpNumberAttri    .Assign(fNumberAttri);
-        tmpKeyAttri       .Assign(fKeyAttri);
-        tmpSymbolAttri    .Assign(fSymbolAttri);
-        tmpAsmAttri       .Assign(fAsmAttri);
-        tmpCommentAttri   .Assign(fCommentAttri);
-        tmpDirectiveAttri .Assign(fDirectiveAttri);
-        tmpIdentifierAttri.Assign(fIdentifierAttri);
-        tmpSpaceAttri     .Assign(fSpaceAttri);
-        Result := ReadDelphiSetting(s[settingIndex],fAsmAttri,'Assembler')
-              and ReadDelphiSetting(s[settingIndex],fCommentAttri,'Comment')
-              and ReadDelphiSetting(s[settingIndex],fDirectiveAttri,'Directive')
-              and ReadDelphiSetting(s[settingIndex],fIdentifierAttri,'Identifier')
-              and ReadDelphiSetting(s[settingIndex],fKeyAttri,'Reserved word')
-              and ReadDelphiSetting(s[settingIndex],fNumberAttri,'Number')
-              and ReadDelphiSetting(s[settingIndex],fSpaceAttri,'Whitespace')
-              and ReadDelphiSetting(s[settingIndex],fStringAttri,'string')
-              and ReadDelphiSetting(s[settingIndex],fSymbolAttri,'Symbol');
+        tmpStringAttri    := TLazEditHighlighterAttributes.Create(nil);
+        tmpNumberAttri    := TLazEditHighlighterAttributes.Create(nil);
+        tmpKeyAttri       := TLazEditHighlighterAttributes.Create(nil);
+        tmpSymbolAttri    := TLazEditHighlighterAttributes.Create(nil);
+        tmpAsmAttri       := TLazEditHighlighterAttributes.Create(nil);
+        tmpCommentAttri   := TLazEditHighlighterAttributes.Create(nil);
+        tmpDirectiveAttri := TLazEditHighlighterAttributes.Create(nil);
+        tmpIdentifierAttri:= TLazEditHighlighterAttributes.Create(nil);
+        tmpSpaceAttri     := TLazEditHighlighterAttributes.Create(nil);
+        tmpStringAttri    .Assign(FPasAttributes[attribString]);
+        tmpNumberAttri    .Assign(FPasAttributes[attribNumber]);
+        tmpKeyAttri       .Assign(FPasAttributes[attribKey]);
+        tmpSymbolAttri    .Assign(FPasAttributes[attribSymbol]);
+        tmpAsmAttri       .Assign(FPasAttributes[attribAsm]);
+        tmpCommentAttri   .Assign(FPasAttributes[attribComment]);
+        tmpDirectiveAttri .Assign(FPasAttributes[attribDirective]);
+        tmpIdentifierAttri.Assign(FPasAttributes[attribIdentifier]);
+        tmpSpaceAttri     .Assign(FPasAttributes[attribSpace]);
+        Result := ReadDelphiSetting(s[settingIndex],FPasAttributes[attribAsm],'Assembler')
+              and ReadDelphiSetting(s[settingIndex],FPasAttributes[attribComment],'Comment')
+              and ReadDelphiSetting(s[settingIndex],FPasAttributes[attribDirective],'Directive')
+              and ReadDelphiSetting(s[settingIndex],FPasAttributes[attribIdentifier],'Identifier')
+              and ReadDelphiSetting(s[settingIndex],FPasAttributes[attribKey],'Reserved word')
+              and ReadDelphiSetting(s[settingIndex],FPasAttributes[attribNumber],'Number')
+              and ReadDelphiSetting(s[settingIndex],FPasAttributes[attribSpace],'Whitespace')
+              and ReadDelphiSetting(s[settingIndex],FPasAttributes[attribString],'string')
+              and ReadDelphiSetting(s[settingIndex],FPasAttributes[attribSymbol],'Symbol');
         if not Result then begin
-          fStringAttri    .Assign(tmpStringAttri);
-          fNumberAttri    .Assign(tmpNumberAttri);
-          fKeyAttri       .Assign(tmpKeyAttri);
-          fModifierAttri  .Assign(tmpKeyAttri);
-          fSymbolAttri    .Assign(tmpSymbolAttri);
-          fAsmAttri       .Assign(tmpAsmAttri);
-          fCommentAttri   .Assign(tmpCommentAttri);
-          FIDEDirectiveAttri.Assign(tmpCommentAttri);
-          fDirectiveAttri .Assign(tmpDirectiveAttri);
-          fIdentifierAttri.Assign(tmpIdentifierAttri);
-          fSpaceAttri     .Assign(tmpSpaceAttri);
+          FPasAttributes[attribString]    .Assign(tmpStringAttri);
+          FPasAttributes[attribNumber]    .Assign(tmpNumberAttri);
+          FPasAttributes[attribKey]       .Assign(tmpKeyAttri);
+          FPasAttributes[attribModifier]  .Assign(tmpKeyAttri);
+          FPasAttributes[attribSymbol]    .Assign(tmpSymbolAttri);
+          FPasAttributes[attribAsm]       .Assign(tmpAsmAttri);
+          FPasAttributes[attribComment]   .Assign(tmpCommentAttri);
+          FPasAttributesMod[attribIDEDirective].Assign(tmpCommentAttri);
+          FPasAttributes[attribDirective] .Assign(tmpDirectiveAttri);
+          FPasAttributes[attribIdentifier].Assign(tmpIdentifierAttri);
+          FPasAttributes[attribSpace]     .Assign(tmpSpaceAttri);
         end;
         tmpStringAttri    .Free;
         tmpNumberAttri    .Free;
@@ -7881,48 +7914,48 @@ begin
 
   FRequiredStates := [];
 
-  if FCommentAnsiAttri.IsEnabled then  Include(FRequiredStates, reCommentAnsi);
-  if FCommentCurlyAttri.IsEnabled then Include(FRequiredStates, reCommentCurly);
-  if FCommentSlashAttri.IsEnabled then Include(FRequiredStates, reCommentSlash);
+  if FPasAttributesMod[attribCommentAnsi].IsEnabled then  Include(FRequiredStates, reCommentAnsi);
+  if FPasAttributesMod[attribCommentCurly].IsEnabled then Include(FRequiredStates, reCommentCurly);
+  if FPasAttributesMod[attribCommentSlash].IsEnabled then Include(FRequiredStates, reCommentSlash);
 
-  //if fPasDocKeyWordAttri.IsEnabled then begin
+  //if FPasAttributesMod[attribPasDocKeyWord].IsEnabled then begin
   //end;
-  //if fPasDocSymbolAttri.IsEnabled then begin
+  //if FPasAttributesMod[attribPasDocSymbol].IsEnabled then begin
   //end;
-  //if fPasDocUnknownAttr.IsEnabled then begin
+  //if FPasAttributesMod[attribPasDocUnknown].IsEnabled then begin
   //end;
 
-  if FProcedureHeaderNameAttr.IsEnabled then
+  if FPasAttributesMod[attribProcedureHeaderName].IsEnabled then
     FRequiredStates := FRequiredStates + [reaProcName];
-  if FPropertyNameAttr.IsEnabled then
+  if FPasAttributesMod[attribPropertyName].IsEnabled then
     FRequiredStates := FRequiredStates + [reaPropertyName, rrsInPropertyNameOrIndex];
-  if FProcedureHeaderParamAttr.IsEnabled then
+  if FPasAttributesMod[attribProcedureHeaderParam].IsEnabled then
     FRequiredStates := FRequiredStates + [reaProcParam, rrsInPropertyNameOrIndex, rrsInParamDeclaration];
-  if FProcedureHeaderTypeAttr.IsEnabled then
+  if FPasAttributesMod[attribProcedureHeaderType].IsEnabled then
     FRequiredStates := FRequiredStates + [reaProcType, rrsInPropertyNameOrIndex, rrsInParamDeclaration];
-  if FProcedureHeaderValueAttr.IsEnabled then
+  if FPasAttributesMod[attribProcedureHeaderValue].IsEnabled then
     FRequiredStates := FRequiredStates + [reaProcValue];
-  if FProcedureHeaderResultAttr.IsEnabled then
+  if FPasAttributesMod[attribProcedureHeaderResult].IsEnabled then
     FRequiredStates := FRequiredStates + [reaProcResult, rrsInPropertyNameOrIndex, rrsInParamDeclaration];
 
 
-  if FDeclarationVarConstNameAttr.IsEnabled then
+  if FPasAttributesMod[attribDeclarationVarConstName].IsEnabled then
     FRequiredStates := FRequiredStates + [reaDeclVarName];
-  if FDeclarationTypeNameAttr.IsEnabled then
+  if FPasAttributesMod[attribDeclarationTypeName].IsEnabled then
     FRequiredStates := FRequiredStates + [reaDeclTypeName];
-  if FDeclarationTypeAttr.IsEnabled then
+  if FPasAttributesMod[attribDeclarationType].IsEnabled then
     FRequiredStates := FRequiredStates + [reaDeclType];
-  if FDeclarationValueAttr.IsEnabled then
+  if FPasAttributesMod[attribDeclarationValue].IsEnabled then
     FRequiredStates := FRequiredStates + [reaDeclValue];
 
 
-  //if FCaseLabelAttri.IsEnabled then
+  //if FPasAttributes[attribCaseLabel].IsEnabled then
   //;
-  if FGotoLabelAttr.IsEnabled then
+  if FPasAttributes[attribGotoLabel].IsEnabled then
     FRequiredStates := FRequiredStates + [reaGotoLabel];
 
 
-  if FStructMemberAttr.IsEnabled then
+  if FPasAttributesMod[attribStructMember].IsEnabled then
     FRequiredStates := FRequiredStates + [reaStructMemeber, rtsAfterDot];
 
 
@@ -8146,7 +8179,7 @@ end;
 
 constructor TSynPasSynCustomToken.Create;
 begin
-    FMarkup := TSynHighlighterAttributesModifier.Create;
+    FMarkup := TLazEditHighlighterAttributesModifier.Create;
     FMarkup.AddChangeHandler(@DoMarkupChaged);
     FTokens := TStringList.Create;
     TStringList(FTokens).OnChange := @DoTokensChanged;

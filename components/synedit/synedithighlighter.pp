@@ -45,64 +45,10 @@ type
   TSynHighlighterRangeList = TLazHighlighterLineRangeList deprecated 'use TLazHighlighterLineRangeList or TLazHighlighterLineRangeShiftList / to be removed in 5.99';
 
   TLazSynCustomTextAttributes = TLazEditTextAttribute deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-  TSynHighlighterAttributes = class(TLazEditTextAttribute)
-  published
-    property Foreground;
-    property Background;
-    property FrameColor;
-
-    property ForePriority;
-    property BackPriority;
-    property FramePriority;
-
-    property FrameStyle;
-    property FrameEdges;
-
-    property Style;
-    property BoldPriority;
-    property ItalicPriority;
-    property UnderlinePriority;
-    property StrikeOutPriority;
-
-    property OnChange;
-  end;
-  TSynHighlighterAttributesModifier = class(TLazEditTextAttributeModifier)
-  published
-    property Foreground;
-    property Background;
-    property FrameColor;
-
-    property ForePriority;
-    property BackPriority;
-    property FramePriority;
-
-    property FrameStyle;
-    property FrameEdges;
-
-    property Style;
-    property BoldPriority;
-    property ItalicPriority;
-    property UnderlinePriority;
-    property StrikeOutPriority;
-
-    property OnChange;
-  published
-    property BackAlpha;
-    property ForeAlpha;
-    property FrameAlpha;
-
-    property StyleMask;
-  end;
-
-  TSynHighlighterAttributes_Eol = class(TSynHighlighterAttributes)
-  published
-    property ExtendPastEol;
-  end;
-
-  TSynHighlighterAttributesModifier_Eol = class(TSynHighlighterAttributesModifier)
-  published
-    property ExtendPastEol;
-  end;
+  TSynHighlighterAttributes = TLazEditHighlighterAttributes;
+  TSynHighlighterAttributesModifier = TLazEditHighlighterAttributesModifier;
+  TSynHighlighterAttributes_Eol = TLazEditHighlighterAttributes_Eol;
+  TSynHighlighterAttributesModifier_Eol = TLazEditHighlighterAttributesModifier_Eol;
 
   { TSynHighlighterAttributesHelper }
 

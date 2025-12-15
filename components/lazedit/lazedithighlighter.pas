@@ -29,6 +29,68 @@ uses
 
 type
 
+  TLazEditHighlighterAttributes = class(TLazEditTextAttribute)
+  published
+    property Foreground;
+    property Background;
+    property FrameColor;
+
+    property ForePriority;
+    property BackPriority;
+    property FramePriority;
+
+    property FrameStyle;
+    property FrameEdges;
+
+    property Style;
+    property BoldPriority;
+    property ItalicPriority;
+    property UnderlinePriority;
+    property StrikeOutPriority;
+
+    property OnChange;
+  end;
+  TLazEditHighlighterAttributesClass = class of TLazEditHighlighterAttributes;
+
+  TLazEditHighlighterAttributesModifier = class(TLazEditTextAttributeModifier)
+  published
+    property Foreground;
+    property Background;
+    property FrameColor;
+
+    property ForePriority;
+    property BackPriority;
+    property FramePriority;
+
+    property FrameStyle;
+    property FrameEdges;
+
+    property Style;
+    property BoldPriority;
+    property ItalicPriority;
+    property UnderlinePriority;
+    property StrikeOutPriority;
+
+    property OnChange;
+  published
+    property BackAlpha;
+    property ForeAlpha;
+    property FrameAlpha;
+
+    property StyleMask;
+  end;
+  TLazEditHighlighterAttributesModifierClass = class of TLazEditHighlighterAttributesModifier;
+
+  TLazEditHighlighterAttributes_Eol = class(TLazEditHighlighterAttributes)
+  published
+    property ExtendPastEol;
+  end;
+
+  TLazEditHighlighterAttributesModifier_Eol = class(TLazEditHighlighterAttributesModifier)
+  published
+    property ExtendPastEol;
+  end;
+
   { TLazEditCustomHighlighter }
 
   TLazEditCustomHighlighter = class(TLazEditAttributeOwner)
