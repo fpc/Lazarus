@@ -883,7 +883,10 @@ begin
       if (tfQueryFixedChoices in FDlg.Flags) then
         ItemIndex := 0
       else
+      begin
         ItemIndex := -1;
+        Text := FDlg.SimpleQuery;
+      end;
     end;
     Parent := AParent;
   end;

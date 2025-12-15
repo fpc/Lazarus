@@ -4670,9 +4670,9 @@ method. This initiates a series of method calls and event handler
 notifications needed to close the form.
 </p>
 <pre>
-TCustomForm.Close ->
-  TCustomForm.OnClose ->
-    TFindDialog.DoCloseForm ->
+TCustomForm.Close -&gt;
+  TCustomForm.OnClose -&gt;
+    TFindDialog.DoCloseForm -&gt;
       TCommonDialog.OnClose
 </pre>
 </descr>
@@ -6239,7 +6239,8 @@ Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TProgressBarState"/>
-</seealso></element>
+</seealso>
+      </element>
 
 <element name="PBST_PAUSED">
 <short>
@@ -6252,7 +6253,8 @@ Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TProgressBarState"/>
-</seealso></element>
+</seealso>
+      </element>
 
 <element name="PB_DEFMIN">
 <short>
@@ -6701,69 +6703,34 @@ Added in LCL version 4.0.
 <short>
 Defines a configurable, modal task dialog at run-time.
 </short>
-<descr>
-<p>
-<var>TCustomTaskDialog</var> is a <var>TLCLComponent</var> descendant which 
+<descr><p><var>TCustomTaskDialog</var> is a <var>TLCLComponent</var> descendant which 
 defines a configurable, modal task dialog. It can be used to display and edit 
 information on a dialog form with more features than those available on a 
 standard message box. TCustomTaskDialog includes values like:
-</p>
-<ul>
-<li>
-A Title for the dialog.
-</li>
-<li>
-A Caption for the dialog.
-</li>
-<li>
-A main Icon for the dialog.
-</li>
-<li>
-Text to describe the task dialog.
-</li>
-<li>
-A footer to display additional information on the dialog.
-</li>
-<li>
-An expandable / collapsible text area which can be displayed in the main 
+</p><ul><li>A Title for the dialog.
+</li><li>A Caption for the dialog.
+</li><li>A main Icon for the dialog.
+</li><li>Text to describe the task dialog.
+</li><li>A footer to display additional information on the dialog.
+</li><li>An expandable / collapsible text area which can be displayed in the main 
 content area or the footer for the dialog.
-</li>
-<li>
-Standard buttons used to return a modal result value.
-</li>
-<li>
-Custom command buttons for task-specific actions.
-</li>
-<li>
-Radio buttons to select dialog options.
-</li>
-<li>
-A progress bar using either the standard or marquee display styles.
-</li>
-<li>
-A query field to capture user input as text or by selecting a value from a list 
+</li><li>Standard buttons used to return a modal result value.
+</li><li>Custom command buttons for task-specific actions.
+</li><li>Radio buttons to select dialog options.
+</li><li>A progress bar using either the standard or marquee display styles.
+</li><li>A query field to capture user input as text or by selecting a value from a list 
 of values in a combo-box control.
+</li><li>A verification message and check box.
+</li><li>Support for hyperlinks in text areas.
 </li>
-<li>
-A verification message and check box.
-</li>
-<li>
-Support for hyperlinks in text areas.
-</li>
-</ul>
-<p>
-TCustomTaskDialog is the base class for TaskDialog, and provides a 
+          </ul><p>TCustomTaskDialog is the base class for TaskDialog, and provides a 
 multi-platform implementation of the Windows TaskDialog API. It provides 
 properties which can be used to configure the task dialog at design-time or at 
 run-time. At run-time, the <var>Execute</var> method handles converting 
 properties and calling routines and methods in the widgetset which implement 
 the task dialog for a given platform.
-</p>
-<p>
-<b>Platform Support</b>
-</p>
-<p>
-The TaskDialog API, upon which TCustomTaskDialog and TTaskDialog are based, is 
+</p><p><b>Platform Support</b>
+          </p><p>The TaskDialog API, upon which TCustomTaskDialog and TTaskDialog are based, is 
 available only on Windows Vista or later versions. On these platforms, the form 
 displayed at run-time is the native form for the platform. On older Windows 
 versions, and other platforms, the TaskDialog API is not available or 
@@ -6773,16 +6740,13 @@ implementation. This occurs in the widget set class and uses the components
 found in the <file>taskdlgemulation.pp</file> unit. It can be forced by 
 including a value in the Flags property for the class instance.
 </p>
-</descr>
+        </descr>
 <version>
 Modified in LCL version 4.0. The implementation for the most part is rewritten, 
 and includes additional features not found in previous versions.
 </version>
-<seealso>
-<link id="TTaskDialog"/>
-<link id="#lcl.taskdlgemulation.TLCLTaskDialog">TLCLTaskDialog</link>
-<link id="#lcl.lclclasses.TLCLComponent">TLCLComponent</link>
-</seealso>
+<seealso><link id="TTaskDialog"/><link id="#lcl.taskdlgemulation.TLCLTaskDialog">TLCLTaskDialog</link><link id="#lcl.lclclasses.TLCLComponent">TLCLComponent</link>
+        </seealso>
 </element>
 
 <!-- private -->
@@ -7985,43 +7949,25 @@ Added in LCL version 4.0.
 </element>
 
 <element name="TCustomTaskDialog.QueryItemIndex">
-<short>
-Ordinal position for the value in QueryChoices selected when the task dialog 
-is executed.
-</short>
-<descr>
-<p>
-<var>QueryItemIndex</var> is an <var>Integer</var> property which contains the 
+<short>Ordinal position for the value in QueryChoices selected when the task dialog is executed.</short>
+<descr><p><var>QueryItemIndex</var> is an <var>Integer</var> property which contains the 
 ordinal position for the selected value in the QueryChoices on the dialog. It 
 contains the initial item in QueryChoices selected when the Execute method is 
 called. It is updated with the option selected during execution of the dialog 
 form.
-</p>
-<p>
-Use QueryResult to access the string value for the selected item in 
+</p><p>Use QueryResult to access the string value for the selected item in 
 QueryChoices.
-</p>
-<p>
-QueryItem and QueryResult are relevant when tfQuery has been included in the 
+</p><p>QueryItem and QueryResult are relevant when tfQuery has been included in the 
 Flags for the task dialog.
-</p>
-<p>
-Use ModalResult to determine the button or key combination used to complete 
+</p><p>Use ModalResult to determine the button or key combination used to complete 
 execution of the dialog form.
 </p>
-</descr>
+        </descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso>
-<link id="TCustomTaskDialog.QueryChoices"/>
-<link id="TCustomTaskDialog.QueryResult"/>
-<link id="TCustomTaskDialog.Flags"/>
-<link id="TCustomTaskDialog.Execute"/>
-<link id="TCustomTaskDialog.ModalResult"/>
-<link id="TTaskDialogFlags"/>
-<link id="TTaskDialogFlag"/>
-</seealso>
+<seealso><link id="TCustomTaskDialog.QueryChoices"/><link id="TCustomTaskDialog.QueryResult"/><link id="TCustomTaskDialog.Flags"/><link id="TCustomTaskDialog.Execute"/><link id="TCustomTaskDialog.ModalResult"/><link id="TTaskDialogFlags"/><link id="TTaskDialogFlag"/>
+        </seealso>
 </element>
 
 <element name="TCustomTaskDialog.QueryResult">
@@ -8125,35 +8071,22 @@ selected on the Task dialog.
 </element>
 
 <element name="TCustomTaskDialog.SimpleQuery">
-<short>
-Contains the text displayed and edited using the query control on the task 
-dialog.
-</short>
-<descr>
-<p>
-<var>SimpleQuery</var> is a <var>String</var> property which contains free-form 
+<short>Contains the text displayed and edited using the query control on the task dialog.</short>
+<descr><p><var>SimpleQuery</var> is a <var>string</var> property which contains free-form
 text maintained using the query control for the task dialog. A single-line edit 
 control is used to display and edit the value for the property.
-</p>
-<p>
-SimpleQuery is displayed on the dialog when tfSimpleQuery has been included in 
-the Flags property. Please note that tfQuery and tfSimpleQuery flag values are 
-mutually exclusive with tfQuery taking precedence.
-</p>
-<p>
-Use QueryChoices if predefined choices selected using a combo-box control are 
+</p><p>SimpleQuery is displayed on the dialog when tfSimpleQuery or tfQuery has been included in
+the Flags property. In case of tfQuery, QueryItemIndex must be set to -1 to show the SimpleQuery text in the combo box.
+Please note that tfQuery and tfSimpleQuery flag values are mutually exclusive with tfQuery taking precedence.
+</p><p>Use QueryChoices if predefined choices selected using a combo-box control are 
 needed on the task dialog.
 </p>
-</descr>
+        </descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso>
-<link id="TCustomTaskDialog.SimpleQueryPasswordChar"/>
-<link id="TCustomTaskDialog.Flags"/>
-<link id="TTaskDialogFlags"/>
-<link id="TTaskDialogFlag"/>
-</seealso>
+<seealso><link id="TCustomTaskDialog.SimpleQueryPasswordChar"/><link id="TCustomTaskDialog.Flags"/><link id="TTaskDialogFlags"/><link id="TTaskDialogFlag"/>
+        </seealso>
 </element>
 
 <element name="TCustomTaskDialog.SimpleQueryPasswordChar">
@@ -8369,7 +8302,7 @@ collapsed state. The property value is updated each time the expando control
 (expand / collapse indicator) is clicked.
 </p>
 <p>
-When set to <b>True</b>b>, the values in ExpandedText ar displayed in the 
+When set to <b>True</b>b&gt;, the values in ExpandedText ar displayed in the 
 expanded state on its text area. Otherwise the values in ExpandText are not 
 visible on the dialog.
 </p>
@@ -8951,8 +8884,7 @@ The HelpCtx argument allows the use of Context Help
 </p>
 <p>
 The return value from the Function is the identity of the button pressed, 
-expressed as an integer (see the constant definitions in <link 
-id="Controls.TControl">TControl</link> , [mrNone..mrAll]).
+expressed as an integer (see the constant definitions in <link id="Controls.TControl">TControl</link> , [mrNone..mrAll]).
 </p>
 <p>
 If the user clicks the [X]-bordericon, the return value will be mrCancel.
@@ -9055,8 +8987,7 @@ Help keyword for the message dialog.
 <short>An extended MessageDlg function.</short>
 <descr>
 <p>
-This function performs the same function as the <link 
-id="MessageDlg">MessageDlg</link> function. It has been extended with 
+This function performs the same function as the <link id="MessageDlg">MessageDlg</link> function. It has been extended with 
 parameters to place the dialog on a certain position on the screen instead of 
 in the center of the screen.
 </p>
@@ -9432,8 +9363,7 @@ dialog form. It represents the question to be answered using the dialog.
 </p>
 <p>
 <var>DlgType</var> contains a value from the TMsgDlgType enumeration, and 
-determines the icon displayed on the dialog form. See <link 
-id="TMsgDlgType">TMsgDlgType</link> for the values in the enumeration and 
+determines the icon displayed on the dialog form. See <link id="TMsgDlgType">TMsgDlgType</link> for the values in the enumeration and 
 their meanings.
 </p>
 <p>
@@ -9728,8 +9658,7 @@ Shows a message assembled from a format string and an array of arguments.
 </short>
 <descr>
 <p>
-This procedure is an extension to the <link 
-id="ShowMessage">ShowMessage</link> procedure. The parameters it takes are 
+This procedure is an extension to the <link id="ShowMessage">ShowMessage</link> procedure. The parameters it takes are 
 the same as the <link id="#rtl.sysutils.Format">Format</link> function.
 </p>
 </descr>
