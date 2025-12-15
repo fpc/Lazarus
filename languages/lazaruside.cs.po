@@ -9080,7 +9080,7 @@ msgstr "Duplicitní Jednotka"
 #: lazarusidestrconsts.lisduplicateunitin
 #, object-pascal-format
 msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Zdvojit jednotku \"%s\" v \"%s\""
+msgstr "Zdvojená jednotka \"%s\" v \"%s\""
 
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
