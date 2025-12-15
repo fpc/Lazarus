@@ -5,16 +5,17 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
   Width = 741
   ClientHeight = 539
   ClientWidth = 741
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
-  DesignLeft = 537
-  DesignTop = 171
+  DesignLeft = 471
+  DesignTop = 169
   object chkCreateMakefile: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 19
+    Height = 22
     Top = 0
-    Width = 118
+    Width = 137
     Caption = 'chkCreateMakefile'
     ParentShowHint = False
     ShowHint = True
@@ -27,23 +28,22 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 166
-    Top = 283
+    Height = 187
+    Top = 328
     Width = 741
     Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'ExecuteAfterGroupBox'
-    ClientHeight = 146
+    ClientHeight = 158
     ClientWidth = 737
     TabOrder = 3
     object lblRunIfExecAfter: TLabel
       AnchorSideLeft.Control = ExecuteAfterGroupBox
       AnchorSideTop.Control = ExecuteAfterGroupBox
       Left = 6
-      Height = 15
+      Height = 18
       Top = 6
-      Width = 90
+      Width = 107
       BorderSpacing.Around = 6
       Caption = 'lblRunIfExecAfter'
       ParentColor = False
@@ -53,9 +53,9 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideTop.Control = ExecuteAfterCommandComboBox
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 15
-      Top = 35
-      Width = 151
+      Height = 18
+      Top = 41
+      Width = 174
       BorderSpacing.Around = 6
       Caption = 'ExecuteAfterCommandLabel'
       ParentColor = False
@@ -64,10 +64,10 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Control = lblRunIfExecAfter
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExecuteAfterGroupBox
-      Left = 126
-      Height = 19
+      Left = 143
+      Height = 22
       Top = 6
-      Width = 133
+      Width = 153
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'chkExecAfterCompile'
@@ -77,10 +77,10 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Control = chkExecAfterCompile
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExecuteAfterGroupBox
-      Left = 289
-      Height = 19
+      Left = 326
+      Height = 22
       Top = 6
-      Width = 115
+      Width = 134
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'chkExecAfterBuild'
@@ -90,10 +90,10 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Control = chkExecAfterBuild
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExecuteAfterGroupBox
-      Left = 434
-      Height = 19
+      Left = 490
+      Height = 22
       Top = 6
-      Width = 109
+      Width = 127
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'chkExecAfterRun'
@@ -105,15 +105,15 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideTop.Control = chkExecAfterCompile
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = ExecAfterBrowseButton
-      Left = 169
-      Height = 23
-      Top = 31
-      Width = 539
+      Left = 192
+      Height = 32
+      Top = 34
+      Width = 516
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 12
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 15
+      ItemHeight = 30
       TabOrder = 3
       Text = 'ExecuteAfterCommandComboBox'
     end
@@ -124,39 +124,55 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideBottom.Control = ExecuteAfterCommandComboBox
       AnchorSideBottom.Side = asrBottom
       Left = 708
-      Height = 23
-      Top = 31
+      Height = 32
+      Top = 34
       Width = 23
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '…'
-      OnClick = CompCmdBrowseButtonClick
       TabOrder = 4
+      OnClick = CompCmdBrowseButtonClick
     end
     object ExecAfterParsersLabel: TLabel
-      AnchorSideLeft.Control = ExecuteAfterGroupBox
       AnchorSideTop.Control = ExecAfterParsersCheckListBox
-      Left = 6
-      Height = 15
-      Top = 63
-      Width = 114
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 3
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = ExecAfterParsersCheckListBox
+      Left = 139
+      Height = 18
+      Top = 106
+      Width = 136
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 3
       Caption = 'ExecAfterParsersLabel'
       ParentColor = False
     end
     object ExecAfterParsersCheckListBox: TCheckListBox
-      AnchorSideLeft.Control = ExecAfterParsersLabel
+      AnchorSideLeft.Control = ExecAfterParserDefaultCheckbox
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExecuteAfterCommandComboBox
-      AnchorSideTop.Side = asrBottom
-      Left = 126
-      Height = 80
-      Top = 60
+      AnchorSideTop.Control = ExecAfterParserDefaultCheckbox
+      AnchorSideBottom.Control = ExecuteAfterGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 278
+      Height = 86
+      Top = 72
       Width = 180
-      BorderSpacing.Around = 6
+      Anchors = [akTop, akLeft, akBottom]
       ItemHeight = 0
       TabOrder = 5
+      TopIndex = -1
+    end
+    object ExecAfterParserDefaultCheckbox: TCheckBox
+      AnchorSideTop.Control = ExecuteBeforeCommandComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 3
+      Height = 22
+      Top = 72
+      Width = 225
+      Anchors = [akLeft]
+      BorderSpacing.Right = 50
+      Caption = 'ExecAfterParserDefaultCheckbox'
+      TabOrder = 6
+      OnChange = ExecAfterParserDefaultCheckboxChange
     end
   end
   object grpCompiler: TGroupBox
@@ -166,23 +182,23 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 80
-    Top = 197
+    Height = 101
+    Top = 221
     Width = 741
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'grpCompiler'
-    ClientHeight = 60
+    ClientHeight = 72
     ClientWidth = 737
     TabOrder = 2
     object lblRunIfCompiler: TLabel
       AnchorSideLeft.Control = grpCompiler
       AnchorSideTop.Control = grpCompiler
       Left = 6
-      Height = 15
+      Height = 18
       Top = 6
-      Width = 90
+      Width = 105
       BorderSpacing.Around = 6
       Caption = 'lblRunIfCompiler'
       ParentColor = False
@@ -192,9 +208,9 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideTop.Control = cobCompiler
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 15
-      Top = 35
-      Width = 62
+      Height = 18
+      Top = 41
+      Width = 72
       BorderSpacing.Around = 6
       Caption = 'lblCompiler'
       ParentColor = False
@@ -203,10 +219,10 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Control = lblRunIfCompiler
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = grpCompiler
-      Left = 126
-      Height = 19
+      Left = 141
+      Height = 22
       Top = 6
-      Width = 133
+      Width = 151
       BorderSpacing.Left = 30
       BorderSpacing.Top = 6
       Caption = 'chkCompilerCompile'
@@ -216,10 +232,10 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Control = chkCompilerCompile
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = grpCompiler
-      Left = 289
-      Height = 19
+      Left = 322
+      Height = 22
       Top = 6
-      Width = 115
+      Width = 132
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'chkCompilerBuild'
@@ -229,10 +245,10 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Control = chkCompilerBuild
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = grpCompiler
-      Left = 434
-      Height = 19
+      Left = 484
+      Height = 22
       Top = 6
-      Width = 109
+      Width = 125
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'chkCompilerRun'
@@ -244,15 +260,15 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideTop.Control = chkCompilerCompile
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BrowseCompilerButton
-      Left = 80
-      Height = 23
-      Top = 31
-      Width = 628
+      Left = 90
+      Height = 32
+      Top = 34
+      Width = 618
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 12
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 15
+      ItemHeight = 30
       TabOrder = 3
       Text = 'cobCompiler'
     end
@@ -263,16 +279,16 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideBottom.Control = cobCompiler
       AnchorSideBottom.Side = asrBottom
       Left = 708
-      Height = 23
-      Top = 31
+      Height = 32
+      Top = 34
       Width = 23
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '…'
-      OnClick = CompCmdBrowseButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
+      OnClick = CompCmdBrowseButtonClick
     end
   end
   object ExecuteBeforeGroupBox: TGroupBox
@@ -282,23 +298,22 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 166
-    Top = 25
+    Height = 187
+    Top = 28
     Width = 741
     Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'ExecuteBeforeGroupBox'
-    ClientHeight = 146
+    ClientHeight = 158
     ClientWidth = 737
     TabOrder = 1
     object lblRunIfExecBefore: TLabel
       AnchorSideLeft.Control = ExecuteBeforeGroupBox
       AnchorSideTop.Control = ExecuteBeforeGroupBox
       Left = 6
-      Height = 15
+      Height = 18
       Top = 6
-      Width = 98
+      Width = 116
       BorderSpacing.Around = 6
       Caption = 'lblRunIfExecBefore'
       ParentColor = False
@@ -308,9 +323,9 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideTop.Control = ExecuteBeforeCommandComboBox
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 15
-      Top = 35
-      Width = 159
+      Height = 18
+      Top = 41
+      Width = 185
       BorderSpacing.Around = 6
       Caption = 'ExecuteBeforeCommandLabel'
       ParentColor = False
@@ -319,10 +334,10 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Control = lblRunIfExecBefore
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExecuteBeforeGroupBox
-      Left = 134
-      Height = 19
+      Left = 152
+      Height = 22
       Top = 6
-      Width = 141
+      Width = 164
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'chkExecBeforeCompile'
@@ -332,10 +347,10 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Control = chkExecBeforeCompile
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExecuteBeforeGroupBox
-      Left = 305
-      Height = 19
+      Left = 346
+      Height = 22
       Top = 6
-      Width = 123
+      Width = 145
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'chkExecBeforeBuild'
@@ -345,10 +360,10 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideLeft.Control = chkExecBeforeBuild
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExecuteBeforeGroupBox
-      Left = 458
-      Height = 19
+      Left = 521
+      Height = 22
       Top = 6
-      Width = 117
+      Width = 138
       BorderSpacing.Left = 24
       BorderSpacing.Around = 6
       Caption = 'chkExecBeforeRun'
@@ -360,15 +375,15 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideTop.Control = chkExecBeforeCompile
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = ExecBeforeBrowseButton
-      Left = 177
-      Height = 23
-      Top = 31
-      Width = 531
+      Left = 203
+      Height = 32
+      Top = 34
+      Width = 505
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 12
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 15
+      ItemHeight = 30
       TabOrder = 3
       Text = 'ExecuteBeforeCommandComboBox'
     end
@@ -380,38 +395,54 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       AnchorSideBottom.Control = ExecuteBeforeCommandComboBox
       AnchorSideBottom.Side = asrBottom
       Left = 708
-      Height = 23
-      Top = 31
+      Height = 32
+      Top = 34
       Width = 23
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
       Caption = '…'
-      OnClick = CompCmdBrowseButtonClick
       TabOrder = 4
+      OnClick = CompCmdBrowseButtonClick
     end
     object ExecBeforeParsersLabel: TLabel
       AnchorSideTop.Control = ExecBeforeParsersCheckListBox
-      Left = 6
-      Height = 15
-      Top = 63
-      Width = 122
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 3
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = ExecBeforeParsersCheckListBox
+      Left = 139
+      Height = 18
+      Top = 106
+      Width = 147
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 3
       Caption = 'ExecBeforeParsersLabel'
       ParentColor = False
     end
     object ExecBeforeParsersCheckListBox: TCheckListBox
-      AnchorSideLeft.Control = ExecBeforeParsersLabel
+      AnchorSideLeft.Control = ExecBeforeParserDefaultCheckbox
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExecuteBeforeCommandComboBox
-      AnchorSideTop.Side = asrBottom
-      Left = 134
-      Height = 80
-      Top = 60
+      AnchorSideTop.Control = ExecBeforeParserDefaultCheckbox
+      AnchorSideBottom.Control = ExecuteBeforeGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 289
+      Height = 86
+      Top = 72
       Width = 180
-      BorderSpacing.Around = 6
+      Anchors = [akTop, akLeft, akBottom]
       ItemHeight = 0
       TabOrder = 5
+      TopIndex = -1
+    end
+    object ExecBeforeParserDefaultCheckbox: TCheckBox
+      AnchorSideTop.Control = ExecuteBeforeCommandComboBox
+      AnchorSideTop.Side = asrBottom
+      Left = 3
+      Height = 22
+      Top = 72
+      Width = 236
+      BorderSpacing.Right = 50
+      Caption = 'ExecBeforeParserDefaultCheckbox'
+      TabOrder = 6
+      OnChange = ExecBeforeParserDefaultCheckboxChange
     end
   end
 end

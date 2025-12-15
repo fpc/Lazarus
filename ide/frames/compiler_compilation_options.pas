@@ -14,7 +14,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8,
   // BuildIntf
-  IDEOptionsIntf, CompOptsIntf, IDEExternToolIntf,
+  IDEOptionsIntf, CompOptsIntf, IDEExternToolIntf, BuildStrConsts,
   // IDEIntf
   IDEOptEditorIntf, IDEDialogs, IDEUtils,
   // IdeUtils
@@ -45,6 +45,7 @@ type
     chkExecBeforeRun: TCheckBox;
     cobCompiler: TComboBox;
     ExecAfterBrowseButton: TButton;
+    ExecAfterParserDefaultCheckbox: TCheckBox;
     ExecBeforeParsersCheckListBox: TCheckListBox;
     ExecuteAfterCommandComboBox: TComboBox;
     ExecuteAfterCommandLabel: TLabel;
@@ -58,12 +59,10 @@ type
     lblRunIfCompiler: TLabel;
     lblRunIfExecAfter: TLabel;
     lblRunIfExecBefore: TLabel;
+    ExecBeforeParserDefaultCheckbox: TCheckBox;
     procedure CompCmdBrowseButtonClick(Sender: TObject);
-  private
-    procedure ReadSettingsParsers(ToolOpts: TCompilationToolOptions;
-      Cmb: TCheckListBox);
-    procedure WriteSettingsParsers(ToolOpts: TCompilationToolOptions;
-      Cmb: TCheckListBox);
+    procedure ExecAfterParserDefaultCheckboxChange(Sender: TObject);
+    procedure ExecBeforeParserDefaultCheckboxChange(Sender: TObject);
   public
     function GetTitle: string; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -76,10 +75,80 @@ implementation
 
 {$R *.lfm}
 
+procedure ReadParsers(ToolOpts: TCompilationToolOptions; CbDef: TCheckBox; CLB: TCheckListBox);
+var
+  l: TFPList;
+  i, j: Integer;
+  s: String;
+  ParserClass: TExtToolParserClass;
+begin
+  l:=TFPList.Create;
+  try
+    // add registered parsers
+    for i:=0 to ExternalToolList.ParserCount-1 do
+    begin
+      ParserClass:=ExternalToolList.Parsers[i];
+      j:=0;
+      while (j<l.Count)
+      and (TExtToolParserClass(l[j]).Priority>=ParserClass.Priority) do
+        inc(j);
+      l.Insert(j,ParserClass);
+    end;
+    CLB.Clear;
+    for i:=0 to l.Count-1 do
+    begin
+      ParserClass:=TExtToolParserClass(l[i]);
+      if ParserClass.GetParserName<>SubToolDefault then begin
+        j:=CLB.Items.Add(ParserClass.GetLocalizedParserName);
+        CLB.Checked[j]:=ToolOpts.HasParser[ParserClass.GetParserName];
+      end;
+    end;
+    CbDef.Checked:=ToolOpts.HasParser[SubToolDefault];
+    // add not registered parsers
+    // Note: this happens when opening a project which needs a designtime-package
+    for i:=0 to ToolOpts.Parsers.Count-1 do
+    begin
+      s:=ToolOpts.Parsers[i];
+      if ExternalToolList.FindParserWithName(s)=nil then
+      begin
+        j:=CLB.Items.Add(s);
+        CLB.Checked[j]:=True;
+      end;
+    end;
+  finally
+    l.Free;
+  end;
+end;
+
+procedure WriteParsers(ToolOpts: TCompilationToolOptions; CbDef: TCheckBox; CLB: TCheckListBox);
+var
+  sl: TStringList;
+  i, j: Integer;
+begin
+  sl:=TStringList.Create;
+  try
+    if CbDef.Checked then
+      sl.Add(SubToolDefault);
+    for i:=0 to CLB.Items.Count-1 do
+      if CLB.Checked[i] then begin
+        j:=ExternalToolList.ParserCount-1;
+        while (j>=0)
+        and (CLB.Items[i]<>ExternalToolList.Parsers[j].GetLocalizedParserName) do
+          dec(j);
+        if j>=0 then
+          sl.Add(ExternalToolList.Parsers[j].GetParserName)
+        else
+          sl.Add(CLB.Items[i]); // not registered parser
+      end;
+    ToolOpts.Parsers:=sl;
+  finally
+    sl.Free;
+  end;
+end;
+
 { TCompilerCompilationOptionsFrame }
 
-procedure TCompilerCompilationOptionsFrame.CompCmdBrowseButtonClick(
-  Sender: TObject);
+procedure TCompilerCompilationOptionsFrame.CompCmdBrowseButtonClick(Sender: TObject);
 
   function ShowQuality(Quality: TSDFilenameQuality;
     const Filename, Note: string): boolean;
@@ -163,8 +232,10 @@ begin
           exit;
         ok:=true;
       end;
-    end else if (Sender=ExecBeforeBrowseButton)
-    or (Sender=ExecAfterBrowseButton) then begin
+    end
+    else if (Sender=ExecBeforeBrowseButton)
+         or (Sender=ExecAfterBrowseButton) then
+    begin
       // check executable
       if not CheckExecutable('',NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
       then
@@ -178,73 +249,14 @@ begin
   end;
 end;
 
-procedure TCompilerCompilationOptionsFrame.ReadSettingsParsers(
-  ToolOpts: TCompilationToolOptions; Cmb: TCheckListBox);
-var
-  l: TFPList;
-  i, j: Integer;
-  ParserClass: TExtToolParserClass;
-  s: String;
+procedure TCompilerCompilationOptionsFrame.ExecAfterParserDefaultCheckboxChange(Sender: TObject);
 begin
-  l:=TFPList.Create;
-  try
-    // add registered parsers
-    for i:=0 to ExternalToolList.ParserCount-1 do
-    begin
-      ParserClass:=ExternalToolList.Parsers[i];
-      j:=0;
-      while (j<l.Count)
-      and (TExtToolParserClass(l[j]).Priority>=ParserClass.Priority) do
-        inc(j);
-      l.Insert(j,ParserClass);
-    end;
-    Cmb.Clear;
-    for i:=0 to l.Count-1 do
-    begin
-      ParserClass:=TExtToolParserClass(l[i]);
-      s:=ParserClass.GetLocalizedParserName;
-      j:=Cmb.Items.Add(s);
-      Cmb.Checked[j] := ToolOpts.HasParser[ParserClass.GetParserName];
-    end;
-    // add not registered parsers
-    // Note: this happens when opening a project, which needs a designtime-package
-    for i:=0 to ToolOpts.Parsers.Count-1 do
-    begin
-      s:=ToolOpts.Parsers[i];
-      if ExternalToolList.FindParserWithName(s)=nil then
-      begin
-        j:=Cmb.Items.Add(s);
-        Cmb.Checked[j]:=True;
-      end;
-    end;
-  finally
-    l.Free;
-  end;
+  ExecAfterParsersCheckListBox.Enabled:=not (Sender as TCheckBox).Checked;
 end;
 
-procedure TCompilerCompilationOptionsFrame.WriteSettingsParsers(
-  ToolOpts: TCompilationToolOptions; Cmb: TCheckListBox);
-var
-  sl: TStringList;
-  i, j: Integer;
+procedure TCompilerCompilationOptionsFrame.ExecBeforeParserDefaultCheckboxChange(Sender: TObject);
 begin
-  sl:=TStringList.Create;
-  try
-    for i:=0 to Cmb.Items.Count-1 do
-      if Cmb.Checked[i] then begin
-        j:=ExternalToolList.ParserCount-1;
-        while (j>=0)
-        and (Cmb.Items[i]<>ExternalToolList.Parsers[j].GetLocalizedParserName) do
-          dec(j);
-        if j>=0 then
-          sl.Add(ExternalToolList.Parsers[j].GetParserName)
-        else
-          sl.Add(Cmb.Items[i]); // not registered parser
-      end;
-    ToolOpts.Parsers:=sl;
-  finally
-    sl.Free;
-  end;
+  ExecBeforeParsersCheckListBox.Enabled:=not (Sender as TCheckBox).Checked;
 end;
 
 function TCompilerCompilationOptionsFrame.GetTitle: string;
@@ -257,7 +269,7 @@ begin
   chkCreateMakefile.Caption := dlgCOCreateMakefile;
   chkCreateMakefile.Hint := lisEnabledOnlyForPackages;
 
-  ExecuteBeforeGroupBox.Caption := lisCOExecuteBefore;
+  ExecuteBeforeGroupBox.Caption := lisExecuteBefore;
   lblRunIfExecBefore.Caption := lisCOCallOn;
   chkExecBeforeBuild.Caption := lisBuildStage;
   chkExecBeforeCompile.Caption := lisCompileStage;
@@ -265,6 +277,7 @@ begin
   ExecuteBeforeCommandComboBox.Text := '';
   ExecuteBeforeCommandLabel.Caption := lisCOCommand;
   ExecBeforeParsersLabel.Caption:=lisParsers;
+  ExecBeforeParserDefaultCheckbox.Caption:=lisShowAllOutputLines;
 
   grpCompiler.Caption := lisCompiler;
   lblRunIfCompiler.Caption := lisCOCallOn;
@@ -278,13 +291,14 @@ begin
   cobCompiler.Text := '';
   BrowseCompilerButton.Hint:=lisBrowseAndSelectACompiler+ExeExt+')';
 
-  ExecuteAfterGroupBox.Caption := lisCOExecuteAfter;
+  ExecuteAfterGroupBox.Caption := lisExecuteAfter;
   chkExecAfterBuild.Caption := lisBuildStage;
   chkExecAfterCompile.Caption := lisCompileStage;
   chkExecAfterRun.Caption := lisRunStage;
   ExecuteAfterCommandComboBox.Text := '';
   ExecuteAfterCommandLabel.Caption := lisCOCommand;
   ExecAfterParsersLabel.Caption:=lisParsers;
+  ExecAfterParserDefaultCheckbox.Caption:=lisShowAllOutputLines;
   lblRunIfExecAfter.Caption := lisCOCallOn;
 end;
 
@@ -313,7 +327,7 @@ begin
   chkExecBeforeCompile.Visible := IsProj;
   chkExecBeforeBuild.Visible := IsProj;
   chkExecBeforeRun.Visible := IsProj;
-  ReadSettingsParsers(Options.ExecuteBefore,ExecBeforeParsersCheckListBox);
+  ReadParsers(Options.ExecuteBefore,ExecBeforeParserDefaultCheckbox,ExecBeforeParsersCheckListBox);
 
   // compiler path
   CompFiles:=TStringList.Create;
@@ -335,7 +349,7 @@ begin
   if Options is TProjectCompilerOptions then
     with TProjectCompilerOptions(Options) do
     begin
-      chkCreateMakefile.Enabled:=false;
+      chkCreateMakefile.Enabled := false;
       lblRunIfCompiler.Visible := True;
       chkCompilerCompile.AnchorToNeighbour(akLeft, 30, lblRunIfCompiler);
       chkCompilerCompile.Checked := crCompile in CompileReasons;
@@ -349,7 +363,7 @@ begin
     end
   else if Options is TPkgCompilerOptions then
   begin
-    chkCreateMakefile.Enabled:=true;
+    chkCreateMakefile.Enabled := true;
     lblRunIfCompiler.Visible := False;
     chkCompilerCompile.AnchorParallel(akTop, 6, chkCompilerCompile.Parent);
     chkCompilerCompile.AnchorParallel(akLeft, 6, chkCompilerCompile.Parent);
@@ -384,7 +398,7 @@ begin
   chkExecAfterCompile.Visible := IsProj;
   chkExecAfterBuild.Visible := IsProj;
   chkExecAfterRun.Visible := IsProj;
-  ReadSettingsParsers(Options.ExecuteAfter,ExecAfterParsersCheckListBox);
+  ReadParsers(Options.ExecuteAfter,ExecAfterParserDefaultCheckbox,ExecAfterParsersCheckListBox);
 end;
 
 procedure TCompilerCompilationOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -409,7 +423,7 @@ begin
   HL.Assign(ExecuteBeforeCommandComboBox.Items);
   HL.Push(Options.ExecuteBefore.Command);
 
-  WriteSettingsParsers(Options.ExecuteBefore,ExecBeforeParsersCheckListBox);
+  WriteParsers(Options.ExecuteBefore,ExecBeforeParserDefaultCheckbox,ExecBeforeParsersCheckListBox);
 
   if Options.ExecuteBefore is TProjectCompilationToolOptions then
     Options.ExecuteBefore.CompileReasons :=
@@ -433,7 +447,7 @@ begin
   HL := InputHistories.HistoryLists.GetList('BuildExecAfter',true,rltCaseSensitive);
   HL.Assign(ExecuteAfterCommandComboBox.Items);
   HL.Push(Options.ExecuteAfter.Command);
-  WriteSettingsParsers(Options.ExecuteAfter,ExecAfterParsersCheckListBox);
+  WriteParsers(Options.ExecuteAfter,ExecAfterParserDefaultCheckbox,ExecAfterParsersCheckListBox);
   if Options.ExecuteAfter is TProjectCompilationToolOptions then
     Options.ExecuteAfter.CompileReasons :=
       MakeCompileReasons(chkExecAfterCompile, chkExecAfterBuild, chkExecAfterRun);

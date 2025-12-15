@@ -2498,8 +2498,6 @@ resourcestring
   lisCOCallOn = 'Call on:';
   dlgCOCreateMakefile = 'Create Makefile';
   lisEnabledOnlyForPackages = 'Enabled only for packages.';
-  lisCOExecuteAfter = 'Execute after';
-  lisCOExecuteBefore = 'Execute before';
   lisCOCommand = 'Command:';
   lisBrowseAndSelectACompiler = 'Browse and select a compiler (e.g. ppcx64';
   lisCOScanForFPCMessages = 'Scan for FPC messages';
@@ -4206,8 +4204,6 @@ resourcestring
   lisEdtExtToolProgramfilename = 'Program Filename:';
   lisEdtExtToolParameters = 'Parameters:';
   lisEdtExtToolWorkingDirectory = 'Working Directory:';
-  lisEdtExtToolPassOutputToMessages = 'Pass output to Messages window';
-  lisEdtExtToolScanOutputForFpcAndMake = 'Scan output for FPC and "make" messages';
   lisShowConsole = 'Show console';
   lisOnlyAvailableOnWindowsRunToolInANewConsole = 'Only available on Windows. '
     +'Run tool in a new console.';

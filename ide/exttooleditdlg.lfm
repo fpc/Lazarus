@@ -84,71 +84,83 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 125
+    Height = 120
     Top = 216
     Width = 649
     Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'OptionsGroupBox'
-    ChildSizing.Layout = cclTopToBottomThenLeftToRight
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 96
+    ClientHeight = 91
     ClientWidth = 645
     TabOrder = 4
-    object ScanOutputDefaultRadioButton: TRadioButton
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 22
-      Top = 6
-      Width = 253
-      BorderSpacing.Around = 6
-      Caption = 'ScanOutputDefaultRadioButton'
-      TabOrder = 3
-    end
-    object ScanOutputFPCAndMakeRadioButton: TRadioButton
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 22
-      Top = 34
-      Width = 253
-      BorderSpacing.Around = 6
-      Caption = 'ScanOutputFPCAndMakeRadioButton'
-      TabOrder = 4
-    end
-    object ScannersButton: TButton
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 28
-      Top = 62
-      Width = 253
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'ScannersButton'
-      TabOrder = 0
-    end
     object ShowConsoleCheckBox: TCheckBox
-      Left = 265
+      AnchorSideLeft.Control = ParsersCheckListBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ParsersCheckListBox
+      Left = 412
       Height = 22
-      Top = 6
+      Top = 3
       Width = 166
+      BorderSpacing.Left = 11
       Caption = 'ShowConsoleCheckBox'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 0
       Visible = False
       OnChange = ShowConsoleCheckBoxChange
     end
     object HideWindowCheckBox: TCheckBox
-      Left = 265
+      AnchorSideLeft.Control = ShowConsoleCheckBox
+      AnchorSideTop.Control = ShowConsoleCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 412
       Height = 22
-      Top = 34
-      Width = 166
+      Top = 25
+      Width = 162
       Caption = 'HideWindowCheckBox'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 2
+      TabOrder = 1
       Visible = False
+    end
+    object ParsersCheckListBox: TCheckListBox
+      AnchorSideLeft.Control = ParserDefaultCheckbox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ParserDefaultCheckbox
+      AnchorSideBottom.Control = OptionsGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 221
+      Height = 88
+      Top = 3
+      Width = 180
+      Anchors = [akTop, akLeft, akBottom]
+      BorderSpacing.Left = 6
+      ItemHeight = 0
+      TabOrder = 2
+      TopIndex = -1
+    end
+    object ParserDefaultCheckbox: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 3
+      Height = 22
+      Top = 3
+      Width = 168
+      BorderSpacing.Right = 50
+      Caption = 'ParserDefaultCheckbox'
+      TabOrder = 3
+      OnChange = ParserDefaultCheckboxChange
+    end
+    object ParsersLabel: TLabel
+      AnchorSideTop.Control = ParsersCheckListBox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = ParsersCheckListBox
+      Left = 136
+      Height = 18
+      Top = 38
+      Width = 79
+      Anchors = [akTop, akRight]
+      Caption = 'ParsersLabel'
     end
   end
   object KeyGroupBox: TGroupBox
@@ -159,7 +171,7 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 90
-    Top = 347
+    Top = 342
     Width = 649
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -176,13 +188,13 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 108
-    Top = 443
+    Height = 113
+    Top = 438
     Width = 649
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'MacrosGroupbox'
-    ClientHeight = 79
+    ClientHeight = 84
     ClientWidth = 645
     TabOrder = 6
     object MacrosListbox: TListBox
@@ -192,7 +204,7 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
       AnchorSideBottom.Control = MacrosGroupbox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 71
+      Height = 76
       Top = 2
       Width = 491
       Anchors = [akTop, akLeft, akRight, akBottom]
