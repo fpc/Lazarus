@@ -7467,14 +7467,6 @@ msgstr "Строковая константа"
 msgid "Symbol"
 msgstr "Символ"
 
-#: lazarusidestrconsts.liscoexecuteafter
-msgid "Execute after"
-msgstr "Выполнить после компиляции"
-
-#: lazarusidestrconsts.liscoexecutebefore
-msgid "Execute before"
-msgstr "Выполнить перед компиляцией"
-
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
 msgstr "Свернуть"
@@ -9369,17 +9361,9 @@ msgstr "Макросы"
 msgid "Parameters:"
 msgstr "Параметры:"
 
-#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
-msgid "Pass output to Messages window"
-msgstr "Перенаправить вывод в окно сообщений"
-
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
 msgstr "Имя файла программы:"
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
-msgid "Scan output for FPC and \"make\" messages"
-msgstr "Искать сообщения FPC и \"make\" в выводе"
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"

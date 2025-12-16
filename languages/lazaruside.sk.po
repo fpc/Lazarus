@@ -7524,14 +7524,6 @@ msgstr "Reťazcová konštanta"
 msgid "Symbol"
 msgstr "Symbol"
 
-#: lazarusidestrconsts.liscoexecuteafter
-msgid "Execute after"
-msgstr "Spustiť po"
-
-#: lazarusidestrconsts.liscoexecutebefore
-msgid "Execute before"
-msgstr "Spustiť pred"
-
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
 msgstr ""
@@ -9431,17 +9423,9 @@ msgstr "Makrá"
 msgid "Parameters:"
 msgstr "Parametre:"
 
-#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
-msgid "Pass output to Messages window"
-msgstr ""
-
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
 msgstr "Meno súboru programu:"
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
-msgid "Scan output for FPC and \"make\" messages"
-msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"

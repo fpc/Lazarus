@@ -7680,14 +7680,6 @@ msgstr "Stała łańcuchowa"
 msgid "Symbol"
 msgstr "Symbol"
 
-#: lazarusidestrconsts.liscoexecuteafter
-msgid "Execute after"
-msgstr "Wykonaj po"
-
-#: lazarusidestrconsts.liscoexecutebefore
-msgid "Execute before"
-msgstr "Wykonaj przed"
-
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
 msgstr ""
@@ -9605,17 +9597,9 @@ msgstr "Makra"
 msgid "Parameters:"
 msgstr "Parametry:"
 
-#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
-msgid "Pass output to Messages window"
-msgstr ""
-
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
 msgstr "Nazwa pliku programu:"
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
-msgid "Scan output for FPC and \"make\" messages"
-msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"

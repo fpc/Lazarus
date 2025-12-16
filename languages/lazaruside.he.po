@@ -7871,14 +7871,6 @@ msgstr "קבוע מסוג מחרוזת"
 msgid "Symbol"
 msgstr "סמל"
 
-#: lazarusidestrconsts.liscoexecuteafter
-msgid "Execute after"
-msgstr "בצע אחרי"
-
-#: lazarusidestrconsts.liscoexecutebefore
-msgid "Execute before"
-msgstr "בצע לפני"
-
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
 msgstr ""
@@ -9828,17 +9820,9 @@ msgstr "מאקרויים"
 msgid "Parameters:"
 msgstr "פרמטרים:"
 
-#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
-msgid "Pass output to Messages window"
-msgstr ""
-
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
 msgstr "שם התוכנית:"
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
-msgid "Scan output for FPC and \"make\" messages"
-msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"

@@ -7494,14 +7494,6 @@ msgstr "Sabit sitring"
 msgid "Symbol"
 msgstr "Sembol"
 
-#: lazarusidestrconsts.liscoexecuteafter
-msgid "Execute after"
-msgstr "Sonra çalıştır"
-
-#: lazarusidestrconsts.liscoexecutebefore
-msgid "Execute before"
-msgstr "Önce çalıştır"
-
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
 msgstr "Daralt"
@@ -9398,17 +9390,9 @@ msgstr "Makro"
 msgid "Parameters:"
 msgstr "Parametreler:"
 
-#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
-msgid "Pass output to Messages window"
-msgstr ""
-
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
 msgstr "Program Adı:"
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
-msgid "Scan output for FPC and \"make\" messages"
-msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"

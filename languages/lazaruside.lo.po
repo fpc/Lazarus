@@ -7469,14 +7469,6 @@ msgstr "String constant"
 msgid "Symbol"
 msgstr "ສັນຍາລັກ"
 
-#: lazarusidestrconsts.liscoexecuteafter
-msgid "Execute after"
-msgstr "ປະຕິບັດການຫຼັງຈາກ"
-
-#: lazarusidestrconsts.liscoexecutebefore
-msgid "Execute before"
-msgstr "ປະຕິບັດການກ່ອນ"
-
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
 msgstr "ຫຍໍ້"
@@ -9371,17 +9363,9 @@ msgstr "Macros"
 msgid "Parameters:"
 msgstr "Parameters:"
 
-#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
-msgid "Pass output to Messages window"
-msgstr ""
-
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
 msgstr "ຊື່ໄຟລ໌ໂປຣແກຣມ:"
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
-msgid "Scan output for FPC and \"make\" messages"
-msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"

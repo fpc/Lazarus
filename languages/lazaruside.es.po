@@ -7692,14 +7692,6 @@ msgstr "Constante de cadena"
 msgid "Symbol"
 msgstr "Símbolo"
 
-#: lazarusidestrconsts.liscoexecuteafter
-msgid "Execute after"
-msgstr "Ejecutar después de"
-
-#: lazarusidestrconsts.liscoexecutebefore
-msgid "Execute before"
-msgstr "Ejecutar antes de"
-
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
 msgstr "Colapsar"
@@ -9624,17 +9616,9 @@ msgstr "Macros"
 msgid "Parameters:"
 msgstr "Parámetros:"
 
-#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
-msgid "Pass output to Messages window"
-msgstr ""
-
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
 msgstr "Nombre de archivo del programa:"
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
-msgid "Scan output for FPC and \"make\" messages"
-msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"

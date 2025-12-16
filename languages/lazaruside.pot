@@ -7450,14 +7450,6 @@ msgstr ""
 msgid "Symbol"
 msgstr ""
 
-#: lazarusidestrconsts.liscoexecuteafter
-msgid "Execute after"
-msgstr ""
-
-#: lazarusidestrconsts.liscoexecutebefore
-msgid "Execute before"
-msgstr ""
-
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
 msgstr ""
@@ -9350,16 +9342,8 @@ msgstr ""
 msgid "Parameters:"
 msgstr ""
 
-#: lazarusidestrconsts.lisedtexttoolpassoutputtomessages
-msgid "Pass output to Messages window"
-msgstr ""
-
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
-msgstr ""
-
-#: lazarusidestrconsts.lisedtexttoolscanoutputforfpcandmake
-msgid "Scan output for FPC and \"make\" messages"
 msgstr ""
 
 #: lazarusidestrconsts.lisedtexttooltitleandfilenamerequired
