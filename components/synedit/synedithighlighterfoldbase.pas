@@ -2107,11 +2107,13 @@ procedure TSynCustomFoldHighlighter.InitFoldNodeInfo(AList: TLazSynFoldNodeInfoL
 begin
   FIsCollectingNodeInfo := True;
   try
-    FCollectingNodeInfoList := TLazSynFoldNodeInfoList(AList);
+    assert(FCollectingNodeInfoList = nil, 'TSynCustomFoldHighlighter.InitFoldNodeInfo: FCollectingNodeInfoList = nil');
+    FCollectingNodeInfoList := AList;
     StartAtLineIndex(Line);
     ScanFoldNodeInfo();
   finally
     FIsCollectingNodeInfo := False;
+    FCollectingNodeInfoList := nil;
   end;
 end;
 
