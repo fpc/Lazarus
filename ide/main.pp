@@ -392,7 +392,6 @@ type
     procedure mnuToolBuildAdvancedLazarusClicked(Sender: TObject);
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
     procedure mnuToolConfigureUserExtToolsClicked(Sender: TObject);
-    procedure mnuExternalUserToolClick(Sender: TObject);
 
     // options menu
     procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
@@ -864,11 +863,9 @@ type
     procedure DoCommand(ACommand: integer); override;
     procedure DoSourceEditorCommand(EditorCommand: integer;
       CheckFocus: boolean = true; FocusEditor: boolean = true);
-    procedure UpdateExternalUserToolsInMenu;
 
-    // external tools
+    // compile and build
     function PrepareForCompile: TModalResult; override;
-    function DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoExampleManager: TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
@@ -2937,7 +2934,7 @@ begin
       itmToolBuildLazarus.Caption:=
         Format(lisMenuBuildLazarusProf, [MiscellaneousOptions.BuildLazOpts.Name]);
   end;
-  UpdateExternalUserToolsInMenu;
+  ExternalUserTools.UpdateInMenu;
 end;
 
 procedure TMainIDE.SetupWindowsMenu;
@@ -3690,7 +3687,7 @@ begin
   ecViewProjectUnits:         DoViewUnitsAndForms(false);
   ecViewProjectForms:         DoViewUnitsAndForms(true);
   ecProjectInspector:         DoShowProjectInspector;
-  ecExtToolFirst..ecExtToolLast: DoRunExternalTool(Command-ecExtToolFirst,false);
+  ecExtToolFirst..ecExtToolLast: ExternalUserTools.DoRun(Command-ecExtToolFirst,false);
   ecSyntaxCheck:              DoCheckSyntax;
   ecGuessUnclosedBlock:       DoJumpToGuessedUnclosedBlock(true);
   {$IFDEF GuessMisplacedIfdef}
@@ -4849,7 +4846,7 @@ begin
     // save shortcuts to editor options
     ExternalUserTools.SaveShortCuts(EditorOpts.KeyMap);
     EditorOpts.Save;
-    UpdateExternalUserToolsInMenu;
+    ExternalUserTools.UpdateInMenu;
   end;
 end;
 
@@ -5084,17 +5081,6 @@ begin
       DoBuildLazarus([]);
     end;
   end;
-end;
-
-procedure TMainIDE.mnuExternalUserToolClick(Sender: TObject);
-// Handler for clicking on a menuitem for a custom external tool.
-var
-  Index: integer;
-begin
-  if not (Sender is TIDEMenuItem) then exit;
-  Index:=itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
-  if (Index<0) or (Index>=ExternalUserTools.Count) then exit;
-  DoRunExternalTool(Index,false);
 end;
 
 procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender: TObject);
@@ -8021,13 +8007,6 @@ end;
 
 //-----------------------------------------------------------------------------
 
-function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
-begin
-  SourceEditorManager.ClearErrorLines;
-  Result:=ExternalUserTools.Run(Index,ShowAbort);
-  DoCheckFilesOnDisk;
-end;
-
 function TMainIDE.DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult;
 var
   InheritedOptionStrings: TInheritedCompOptsStrings;
@@ -8681,46 +8660,6 @@ begin
   finally
     Converter.Free;
     OpenEditorsOnCodeToolChange:=OldChange;
-  end;
-end;
-
-{-------------------------------------------------------------------------------
-  procedure TMainIDE.UpdateExternalUserToolsInMenu;
-
-  Creates a TMenuItem for each custom external tool.
--------------------------------------------------------------------------------}
-procedure TMainIDE.UpdateExternalUserToolsInMenu;
-var
-  ToolCount: integer;
-  Section: TIDEMenuSection;
-  CurMenuItem: TIDEMenuItem;
-  i: Integer;
-  ExtTool: TExternalUserTool;
-begin
-  ToolCount:=ExternalUserTools.Count;
-  Section:=itmCustomTools;
-  //Section.BeginUpdate;
-  try
-    // add enough menuitems
-    while Section.Count-1<ToolCount do
-      RegisterIDEMenuCommand(Section.GetPath,
-                          'itmToolCustomExt'+IntToStr(Section.Count),'');
-    // delete unneeded menuitems
-    while Section.Count-1>ToolCount do
-      Section[Section.Count-1].Free;
-
-    // set caption and command
-    for i:=0 to ToolCount-1 do begin
-      CurMenuItem:=itmCustomTools[i+1]; // Note: the first menu item is the "Configure"
-      ExtTool:=ExternalUserTools[i];
-      CurMenuItem.Caption:=ExtTool.Title;
-      if CurMenuItem is TIDEMenuCommand then
-        TIDEMenuCommand(CurMenuItem).Command:=
-          EditorOpts.KeyMap.FindIDECommand(ecExtToolFirst+i);
-      CurMenuItem.OnClick:=@mnuExternalUserToolClick;
-    end;
-  finally
-    //Section.EndUpdate;
   end;
 end;
 

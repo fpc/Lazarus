@@ -548,14 +548,14 @@ begin
     Parent.ChildrenAsSubMenu:=true;
     Parent.Caption:=lisRemoveMessageTypeFilter;
     MsgRemoveFilterMsgOneTypeMenuSection:=RegisterIDEMenuSection(Parent,'RemoveOneMsgTypeFilterSection');
-    MsgRemoveFilterAllMsgTypesMenuItem:=RegisterIDEMenuCommand(Parent, 'Remove'
-      +' all message type filters', lisRemoveAllMessageTypeFilters);
+    MsgRemoveFilterAllMsgTypesMenuItem:=RegisterIDEMenuCommand(Parent,
+      'Remove all message type filters', lisRemoveAllMessageTypeFilters);
   MsgFilterBelowMenuSection:=RegisterIDEMenuSection(Root,'Filter Below Section');
     Parent:=MsgFilterBelowMenuSection;
     Parent.ChildrenAsSubMenu:=true;
     Parent.Caption:=lisFilterNonUrgentMessages;
-    MsgFilterWarningsMenuItem:=RegisterIDEMenuCommand(Parent,
-      'Filter Warnings', lisFilterWarningsAndBelow);
+    MsgFilterWarningsMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Warnings',
+      lisFilterWarningsAndBelow);
     MsgFilterWarningsMenuItem.RadioItem:=true;
     MsgFilterWarningsMenuItem.GroupIndex:=2;
     MsgFilterNotesMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Notes',
@@ -566,27 +566,26 @@ begin
       lisFilterHintsAndBelow);
     MsgFilterHintsMenuItem.RadioItem:=true;
     MsgFilterHintsMenuItem.GroupIndex:=2;
-    MsgFilterVerboseMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Verbose '
-      +'Messages', lisFilterVerboseMessagesAndBelow);
+    MsgFilterVerboseMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Verbose Messages',
+      lisFilterVerboseMessagesAndBelow);
     MsgFilterVerboseMenuItem.RadioItem:=true;
     MsgFilterVerboseMenuItem.GroupIndex:=2;
-    MsgFilterDebugMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Debug '
-      +'Messages', lisFilterDebugMessagesAndBelow);
+    MsgFilterDebugMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Debug Messages',
+      lisFilterDebugMessagesAndBelow);
     MsgFilterDebugMenuItem.RadioItem:=true;
     MsgFilterDebugMenuItem.GroupIndex:=2;
     MsgFilterNoneMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter None, do not'
       +' filter by urgency', lisFilterNoneDoNotFilterByUrgency);
     MsgFilterNoneMenuItem.RadioItem:=true;
     MsgFilterNoneMenuItem.GroupIndex:=2;
-  MsgFilterHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root, 'Filter Hints'
-    +' without Source Position', lisFilterHintsWithoutSourcePosition);
+  MsgFilterHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root,
+      'Filter Hints without Source Position', lisFilterHintsWithoutSourcePosition);
   MsgFiltersMenuSection:=RegisterIDEMenuSection(Root,'Switch Filter Section');
     Parent:=MsgFiltersMenuSection;
     Parent.ChildrenAsSubMenu:=true;
     Parent.Caption:=lisSwitchFilterSettings;
     MsgSelectFilterMenuSection:=RegisterIDEMenuSection(Parent,'Filters');
-    MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent, 'Add Filter',
-      lisAddFilter);
+    MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent, 'Add Filter', lisAddFilter);
   MsgHelpMenuItem := RegisterIDEMenuCommand(Root, 'Help for this message',lisHelp);
   MsgEditHelpMenuItem := RegisterIDEMenuCommand(Root, 'Edit help for messages',lisEditHelp);
   MsgOptionsMenuSection:=RegisterIDEMenuSection(Root,'Option Section');
@@ -597,10 +596,8 @@ begin
       Parent:=MsgFilenameStyleMenuSection;
       Parent.ChildrenAsSubMenu:=true;
       Parent.Caption:=lisFilenameStyle;
-      MsgFileStyleShortMenuItem:=RegisterIDEMenuCommand(Parent, 'Short',
-        lisShortNoPath);
-      MsgFileStyleRelativeMenuItem:=RegisterIDEMenuCommand(Parent, 'Relative',
-        lisRelative);
+      MsgFileStyleShortMenuItem:=RegisterIDEMenuCommand(Parent, 'Short', lisShortNoPath);
+      MsgFileStyleRelativeMenuItem:=RegisterIDEMenuCommand(Parent, 'Relative', lisRelative);
       MsgFileStyleFullMenuItem:=RegisterIDEMenuCommand(Parent, 'Full', lisFull);
     Parent:=MsgOptionsMenuSection;
     MsgTranslateMenuItem:=RegisterIDEMenuCommand(Parent, 'Translate',

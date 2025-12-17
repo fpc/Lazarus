@@ -41,7 +41,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, contnrs,
+  Classes, SysUtils, Contnrs,
   // LCL
   LCLType, Controls, Forms, StdCtrls, Dialogs, LCLProc, ButtonPanel, EditBtn,
   CheckLst,
@@ -52,11 +52,12 @@ uses
   // BuilldIntf
   IDEExternToolIntf, BuildStrConsts,
   // IdeIntf
-  IdeIntfStrConsts, PropEdits, IDEDialogs, IDECommands, IDEUtils, IDEMsgIntf,
+  IdeIntfStrConsts, PropEdits, IDEDialogs, IDECommands, IDEUtils,
+  IDEMsgIntf, MenuIntf, SrcEditorIntf, LazIDEIntf,
   // IdeConfig
   TransferMacros, EnvironmentOpts,
   // IDE
-  LazarusIDEStrConsts, KeyMapping, ExtTools;
+  LazarusIDEStrConsts, ExtTools, KeyMapping, EditorOptions;
 
 const
   ExternalToolOptionsVersion = 3;
@@ -125,6 +126,7 @@ type
   private
     fItems: TObjectList; // list of TExternalUserTool
     function GetItems(Index: integer): TExternalUserTool; inline;
+    procedure mnuExternalUserToolClick(Sender: TObject);
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -139,6 +141,8 @@ type
     procedure Move(CurIndex, NewIndex: integer);
     // run
     function Run(Index: integer; {%H-}ShowAbort: boolean): TModalResult;
+    function DoRun(Index: integer; ShowAbort: Boolean): TModalResult;
+    procedure UpdateInMenu;
     // load/save
     function Load(Config: TConfigStorage): TModalResult;
     function Load(Config: TConfigStorage; const Path: string): TModalResult; override;
@@ -636,6 +640,13 @@ begin
   end;
 end;
 
+function TExternalUserTools.DoRun(Index: integer; ShowAbort: Boolean): TModalResult;
+begin
+  SourceEditorManagerIntf.ClearErrorLines;
+  Result:=Run(Index,ShowAbort);
+  LazarusIDE.DoCheckFilesOnDisk;
+end;
+
 function TExternalUserTools.Load(Config: TConfigStorage): TModalResult;
 var
   i: integer;
@@ -742,6 +753,53 @@ begin
         +'unable to save shortcut for external tool "',Items[i].Title,'"');
     end;
   end;
+end;
+
+procedure TExternalUserTools.UpdateInMenu;
+// Creates a TMenuItem for each custom external tool.
+var
+  ToolCount: integer;
+  Section: TIDEMenuSection;
+  CurMenuItem: TIDEMenuItem;
+  i: Integer;
+  ExtTool: TExternalUserTool;
+begin
+  ToolCount:=Count;
+  Section:=itmCustomTools;
+  //Section.BeginUpdate;
+  try
+    // add enough menuitems
+    while Section.Count-1<ToolCount do
+      RegisterIDEMenuCommand(Section.GetPath,
+                          'itmToolCustomExt'+IntToStr(Section.Count),'');
+    // delete unneeded menuitems
+    while Section.Count-1>ToolCount do
+      Section[Section.Count-1].Free;
+
+    // set caption and command
+    for i:=0 to ToolCount-1 do begin
+      CurMenuItem:=itmCustomTools[i+1]; // Note: the first menu item is the "Configure"
+      ExtTool:=Items[i];
+      CurMenuItem.Caption:=ExtTool.Title;
+      if CurMenuItem is TIDEMenuCommand then
+        TIDEMenuCommand(CurMenuItem).Command:=
+          EditorOpts.KeyMap.FindIDECommand(ecExtToolFirst+i);
+      CurMenuItem.OnClick:=@mnuExternalUserToolClick;
+    end;
+  finally
+    //Section.EndUpdate;
+  end;
+end;
+
+procedure TExternalUserTools.mnuExternalUserToolClick(Sender: TObject);
+// Handler for clicking on a menuitem for a custom external tool.
+var
+  Index: integer;
+begin
+  if not (Sender is TIDEMenuItem) then exit;
+  Index:=itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
+  if (Index<0) or (Index>=Count) then exit;
+  DoRun(Index,false);
 end;
 
 { TExternalToolOptionDlg }
