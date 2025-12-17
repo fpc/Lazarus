@@ -2709,11 +2709,11 @@ begin
   else if KeyCompU('RECORD') then begin
     StartPascalCodeFoldBlock(cfbtRecord);
     //FNextTokenState := tsAtBeginOfStatement;
-    //if (FRangeCompilerMode = pcmDelphi) or (pcsTypeHelpers in FRangeModeSwitches {and adv_record}) then
+    //if HasRangeCompilerModeswitch(pcsTypeHelpers) {and adv_record} then
     FNextTokenState := tsAfterClass;
     fRange := fRange - [rsInTypeSpecification, rsAfterEqual, rsProperty, rsInPropertyNameOrIndex,
                         rsInProcHeader, rsInProcName, rsInParamDeclaration];
-    if (FRangeCompilerMode = pcmDelphi) or (pcsTypeHelpers in FRangeModeSwitches {and adv_record}) then
+    if HasRangeCompilerModeswitch(pcsTypeHelpers) {and adv_record} then
       fRange := fRange + [rsInClassHeader]; // highlight helper
       FOldRange := FOldRange - [rsInClassHeader];
     Result := tkKey;
@@ -2762,7 +2762,7 @@ begin
       fRange := fRange - [rsInTypeSpecification, rsAfterEqual] + [rsInTypeHelper];
     end
     else
-    if (FTokenState = tsAfterEqualThenType) and (pcsTypeHelpers in FRangeModeSwitches) then begin
+    if (FTokenState = tsAfterEqualThenType) and HasRangeCompilerModeswitch(pcsTypeHelpers) then begin
       Result := tkKey;
       fRange := fRange - [rsInTypeSpecification, rsAfterEqual] + [rsInTypeHelper];
       StartPascalCodeFoldBlock(cfbtClass); // type helper
@@ -2799,7 +2799,7 @@ begin
     then begin
       if (rsAfterEqualOrColon in fRange) then begin
         FOldRange := FOldRange - [rsAfterEqualOrColon];
-        if (pcsTypeHelpers in FRangeModeSwitches) then
+        if HasRangeCompilerModeswitch(pcsTypeHelpers) then
           FNextTokenState := tsAfterEqualThenType;
       end
       else begin
@@ -4477,7 +4477,7 @@ begin
         end;
       end;
     '{':
-      if (pcsNestedComments in FRangeModeSwitches) then begin
+      if HasRangeCompilerModeswitch(pcsNestedComments) then begin
         Run := p;
         if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
           ct := GetCustomSymbolToken(tkAnsiComment, 1, FCustomTokenMarkup, Run <> fTokenPos);
@@ -5124,7 +5124,7 @@ begin
       end;
     end
     else
-    if (pcsNestedComments in FRangeModeSwitches) and
+    if HasRangeCompilerModeswitch(pcsNestedComments) and
        (fLine[Run] = '(') and (fLine[Run + 1] = '*') then
     begin
       if not (FIsInNextToEOL or IsScanning) then begin
@@ -6831,31 +6831,11 @@ end;
 function TSynPasSyn.HasRangeCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean;
 begin
   Result := (AModeSwitch in FRangeModeSwitches) or not(rsCompilerModeSet in fRange);
-  if not Result then begin
-    case FRangeCompilerMode of
-      pcmObjFPC: Result := AModeSwitch in [pcsNestedComments];
-      //pcmDelphi: ;
-      pcmFPC:    Result := AModeSwitch in [pcsNestedComments];
-      //pcmTP: ;
-      //pcmGPC: ;
-      pcmMacPas: Result := AModeSwitch in [pcsObjectiveC1, pcsObjectiveC2];
-    end;
-  end;
 end;
 
 function TSynPasSyn.HasRangeCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean;
 begin
   Result := (AModeSwitches * FRangeModeSwitches <> []) or not(rsCompilerModeSet in fRange);
-  if not Result then begin
-    case FRangeCompilerMode of
-      pcmObjFPC: Result := AModeSwitches * [pcsNestedComments] <> [];
-      //pcmDelphi: ;
-      pcmFPC:    Result := AModeSwitches * [pcsNestedComments] <> [];
-      //pcmTP: ;
-      //pcmGPC: ;
-      pcmMacPas: Result := AModeSwitches * [pcsObjectiveC1, pcsObjectiveC2] <> [];
-    end;
-  end;
 end;
 
 procedure TSynPasSyn.GetTokenBounds(out LogX1, LogX2: Integer);
@@ -6950,7 +6930,7 @@ begin
     while TxtPos < TxtLen do begin
       case Txt[TxtPos] of
         '{' : if (NestBrace2 = 0) and
-                 ((pcsNestedComments in FRangeModeSwitches) or (NestBrace1 = 0))
+                 (HasRangeCompilerModeswitch(pcsNestedComments) or (NestBrace1 = 0))
               then
                 inc(NestBrace1);
         '}' : if (NestBrace2 = 0) then
@@ -6959,7 +6939,7 @@ begin
                 else exit(SetFoundToken);
         '(' : if (NestBrace1 = 0) then
                 if (TxtPos+1 <= TxtLen) and (Txt[TxtPos+1] = '*') then begin
-                  if (pcsNestedComments in FRangeModeSwitches) or (NestBrace2 = 0) then begin
+                  if HasRangeCompilerModeswitch(pcsNestedComments) or (NestBrace2 = 0) then begin
                     inc(NestBrace2);
                     inc(TxtPos);
                   end
