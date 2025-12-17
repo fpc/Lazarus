@@ -905,11 +905,12 @@ type
     function GetSelectedColor : TSynHighlighterAttributesModifier; override;
     function GetTextViewsManager: TSynTextViewsManager; override;
     procedure FontChanged(Sender: TObject); override;
-    procedure HighlighterAttrChanged(Sender: TObject);
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure SizeOrFontChanged(bFont: boolean);
     procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    procedure DoHighlightAttribChanged(Sender: TObject);
+    procedure DoHighlightRescanNeeded(Sender: TObject);
     procedure ListCleared(Sender: TObject);
     procedure FoldChanged(Sender: TSynEditStrings; aIndex, aCount: Integer);
     function  GetTopView : Integer;
@@ -2401,6 +2402,9 @@ begin
     AddChangeHandler(senrLineCount, @LineCountChanged);
     AddChangeHandler(senrLineChange, @LineTextChanged);
     AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
+
+    AddNotifyHandler(senrHighlightAttribChanged, @DoHighlightAttribChanged);
+    AddNotifyHandler(senrHighlightRescanNeeded, @DoHighlightRescanNeeded);
     AddNotifyHandler(senrCleared, @ListCleared);
     AddNotifyHandler(senrUndoRedoAdded, @Self.UndoRedoAdded);
     AddNotifyHandler(senrModifiedChanged, @ModifiedChanged);
@@ -6012,6 +6016,24 @@ begin
     SetFoldState(FPendingFoldState);
 end;
 
+procedure TCustomSynEdit.DoHighlightAttribChanged(Sender: TObject);
+begin
+  RecalcCharExtent;
+  Invalidate;
+  if fHighlighter.AttributeChangeNeedScan then
+    DoHighlightRescanNeeded(Sender);
+end;
+
+procedure TCustomSynEdit.DoHighlightRescanNeeded(Sender: TObject);
+begin
+  if WaitingForInitialSize or (FPaintLock > 0) then
+    exit;
+
+  FHighlighter.CurrentLines := FTheLinesView;
+  FHighlighter.ScanAllRanges;
+  fMarkupManager.TextChanged(1, FTheLinesView.Count, 0);
+end;
+
 procedure TCustomSynEdit.ListCleared(Sender: TObject);
 begin
   ClearUndo;
@@ -7069,7 +7091,6 @@ procedure TCustomSynEdit.RemoveHooksFromHighlighter;
 begin
   if not Assigned(fHighlighter) then
     exit;
-  fHighlighter.UnhookAttrChangeEvent(@HighlighterAttrChanged);
   fHighlighter.DetachFromLines(FLines);
   fHighlighter.RemoveFreeNotification(self);
 end;
@@ -7080,8 +7101,6 @@ begin
     FPendingFoldState := '';
     RemoveHooksFromHighlighter;
     if Assigned(Value) then begin
-      Value.HookAttrChangeEvent(
-        @HighlighterAttrChanged);
       Value.FreeNotification(Self);
       Value.AttachToLines(FLines);
     end;
@@ -9318,18 +9337,6 @@ begin
     UpdateScrollBars;
   finally
     DecStatusChangeLock;
-  end;
-end;
-
-procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);
-begin
-  RecalcCharExtent;
-  Invalidate;
-  // TODO: obey paintlock
-  if fHighlighter.AttributeChangeNeedScan then begin
-    FHighlighter.CurrentLines := FTheLinesView;
-    FHighlighter.ScanAllRanges;
-    fMarkupManager.TextChanged(1, FTheLinesView.Count, 0);
   end;
 end;
 

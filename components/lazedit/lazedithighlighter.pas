@@ -100,6 +100,8 @@ type
   public
     destructor Destroy; override;
     procedure SendHighlightChanged(aIndex, aCount: Integer); virtual; abstract;
+    procedure SendHighlightAttributeChanged; virtual; abstract;
+    procedure SendHighlightRescanNeeded; virtual; abstract;
     function  GetPChar(ALineIndex: Integer): PChar;                                       // experimental
     function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; virtual; abstract; // experimental
     property Ranges[Index: Pointer]: TLazEditLineItems read GetRange write PutRange;
@@ -110,7 +112,13 @@ type
   { TLazEditCustomHighlighter }
 
   TLazEditCustomHighlighter = class(TLazEditAttributeOwner)
+  private type
+    TLazEditHlUpdateFlag = (ufAttribChanged, ufRescanNeeded);
+    TLazEditHlUpdateFlags = set of TLazEditHlUpdateFlag;
   strict private
+    FUpdateLock: integer;
+    FUpdateFlags: TLazEditHlUpdateFlags;
+
     FAttachedLines: TLazEditHighlighterAttachedLines;
     FCurrentLines: TLazEditStringsBase;
     FCurrentRanges: TLazHighlighterLineRangeList;
@@ -118,8 +126,15 @@ type
     FTokenAttributeMergeResult: TLazEditTextAttributeMergeResult;
     FTokenAttributeList: TLazCustomEditTextAttributeArray;
 
+    function GetIsUpdating: boolean; inline;
+    procedure InternalEndUpdate;
+
     procedure SetCurrentLines(AValue: TLazEditStringsBase);
     procedure DoAttachedLinesFreed(Sender: TObject);
+  protected
+    procedure DoBeginUpdate; virtual;
+    procedure DoEndUpdate; virtual;
+
   protected
     (* ------------------ *
      * Lines / RangesList *
@@ -129,6 +144,7 @@ type
     procedure DoAttachedToLines(Lines: TLazEditStringsBase; ARangeList: TLazHighlighterLineRangeList); virtual;
     procedure DoDetachingFromLines(Lines: TLazEditStringsBase; ARangeList: TLazHighlighterLineRangeList); virtual;
     procedure DoCurrentLinesChanged; virtual;
+    procedure SendRescanNeededNotification;
 
     property AttachedLines: TLazEditHighlighterAttachedLines read FAttachedLines;
     property CurrentRanges: TLazHighlighterLineRangeList read FCurrentRanges;
@@ -137,6 +153,7 @@ type
     (* ------------------ *
      * Token / Attributes *
      * ------------------ *)
+    procedure SendAttributeChangeNotification;
     procedure MergeModifierToTokenAttribute(
       var ACurrentResultAttrib: TLazCustomEditTextAttribute;
       AModifierAttrib: TLazCustomEditTextAttribute;
@@ -147,6 +164,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure BeginUpdate; inline;
+    procedure EndUpdate; inline;
+    property IsUpdating: boolean read GetIsUpdating;
 
     (* ------------------ *
      * Lines / RangesList *
@@ -202,6 +222,16 @@ begin
   FAttachedLines.Remove(TLazEditStringsBase(Sender));
 end;
 
+procedure TLazEditCustomHighlighter.DoBeginUpdate;
+begin
+  //
+end;
+
+procedure TLazEditCustomHighlighter.DoEndUpdate;
+begin
+  //
+end;
+
 procedure TLazEditCustomHighlighter.SetCurrentLines(AValue: TLazEditStringsBase);
 begin
   if AValue = FCurrentLines then
@@ -213,6 +243,19 @@ begin
   then FCurrentRanges := TLazHighlighterLineRangeList(AValue.Ranges[GetRangeIdentifier])
   else FCurrentRanges := nil;
   DoCurrentLinesChanged;
+end;
+
+function TLazEditCustomHighlighter.GetIsUpdating: boolean;
+begin
+  Result := FUpdateLock > 0;
+end;
+
+procedure TLazEditCustomHighlighter.InternalEndUpdate;
+begin
+  DoEndUpdate;
+  if ufAttribChanged in FUpdateFlags then SendAttributeChangeNotification;
+  if ufRescanNeeded in FUpdateFlags then SendRescanNeededNotification;
+  FUpdateFlags := [];
 end;
 
 function TLazEditCustomHighlighter.GetRangeIdentifier: Pointer;
@@ -241,6 +284,34 @@ end;
 procedure TLazEditCustomHighlighter.DoCurrentLinesChanged;
 begin
   //
+end;
+
+procedure TLazEditCustomHighlighter.SendRescanNeededNotification;
+var
+  i: Integer;
+begin
+  if IsUpdating then begin
+    Include(FUpdateFlags, ufRescanNeeded);
+    exit;
+  end;
+  Exclude(FUpdateFlags, ufRescanNeeded);
+
+  for i := 0 to AttachedLines.Count - 1 do
+    AttachedLines[i].SendHighlightRescanNeeded;
+end;
+
+procedure TLazEditCustomHighlighter.SendAttributeChangeNotification;
+var
+  i: Integer;
+begin
+  if IsUpdating then begin
+    Include(FUpdateFlags, ufAttribChanged);
+    exit;
+  end;
+  Exclude(FUpdateFlags, ufAttribChanged);
+
+  for i := 0 to AttachedLines.Count - 1 do
+    AttachedLines[i].SendHighlightAttributeChanged;
 end;
 
 procedure TLazEditCustomHighlighter.MergeModifierToTokenAttribute(
@@ -295,6 +366,25 @@ begin
   inherited Destroy;
   FTokenAttributeMergeResult.Free;
   FAttachedLines.Free;
+end;
+
+procedure TLazEditCustomHighlighter.BeginUpdate;
+begin
+  if FUpdateLock = 0 then
+    DoBeginUpdate;
+  inc(FUpdateLock);
+end;
+
+procedure TLazEditCustomHighlighter.EndUpdate;
+begin
+  if FUpdateLock = 0 then begin
+    assert(False, 'TLazEditCustomHighlighter.EndUpdate: UpdateLock > 0');
+    exit;
+  end;
+
+  dec(FUpdateLock);
+  if FUpdateLock = 0 then
+    InternalEndUpdate;
 end;
 
 procedure TLazEditCustomHighlighter.AttachToLines(ALines: TLazEditStringsBase);

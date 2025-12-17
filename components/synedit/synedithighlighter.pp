@@ -156,7 +156,7 @@ type
     procedure SetDrawDividerLevel(const AValue: Integer); deprecated;
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
   protected
-    FAttributeChangeNeedScan: Boolean;
+    FAttributeChangeNeedScan: Boolean deprecated 'use SendRescanNeededNotification // to be removed in 5.99';
     fDefaultFilter: string;
     fDefaultFilterInitialValue: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
@@ -188,12 +188,15 @@ type
     property IsScanning: Boolean read FIsScanning;
     property KnownLines: TLazEditHighlighterAttachedLines read GetKnownLines; deprecated 'use AttachedLines // to be removed in 5.99';
     property CurrentLineText: string read FLineText;
+    procedure SendRescanNeededNotification; reintroduce; // deprecated 'to be removed in 5.99' // only needed to force a call to fAttrChangeHooks
+    procedure SendAttributeChangeNotification; reintroduce; // deprecated 'to be removed in 5.99'
     procedure DoDefHighlightChanged; virtual;
+    procedure DoEndUpdate; override;
     procedure DoAttachedToLines(Lines: TLazEditStringsBase; ARangeList: TLazHighlighterLineRangeList); override;
     procedure DoDetachingFromLines(Lines: TLazEditStringsBase; ARangeList: TLazHighlighterLineRangeList); override;
   public
     procedure DefHighlightChange(Sender: TObject);
-    property  AttributeChangeNeedScan: Boolean read FAttributeChangeNeedScan;
+    property  AttributeChangeNeedScan: Boolean read FAttributeChangeNeedScan; deprecated 'use SendRescanNeededNotification // to be removed in 5.99';
     class function GetCapabilities: TSynHighlighterCapabilities; virtual;
     class function GetLanguageName: string; virtual;
   public
@@ -204,8 +207,6 @@ type
     function AddSpecialAttribute(const aCaption: PString;
                      const aStoredName: String = ''): TLazEditTextAttribute;
     procedure Assign(Source: TPersistent); override;
-    procedure BeginUpdate;
-    procedure EndUpdate;
   public
     function GetEol: Boolean; virtual; abstract;
     function GetRange: Pointer; virtual;
@@ -248,8 +249,8 @@ type
     function SaveToRegistry(RootKey: HKEY; Key: string): boolean; virtual;
     function LoadFromFile(AFileName: String): boolean;                          //DDH 10/16/01
     function SaveToFile(AFileName: String): boolean;                            //DDH 10/16/01
-    procedure HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
-    procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
+    procedure HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);  deprecated 'use senrHighlightRescanNeeded // to be removed in 5.99';
+    procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);  deprecated 'use senrHighlightRescanNeeded // to be removed in 5.99';
     property IdentChars: TSynIdentChars read GetIdentChars;
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
     property LanguageName: string read GetInstanceLanguageName;
@@ -706,22 +707,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynCustomHighlighter.BeginUpdate;
-begin
-  Inc(fUpdateCount);
-end;
-
-procedure TSynCustomHighlighter.EndUpdate;
-begin
-  if fUpdateCount > 0 then begin
-    Dec(fUpdateCount);
-    if (fUpdateCount = 0) and fUpdateChange then begin
-      fUpdateChange := FALSE;
-      DefHighlightChange(Self);
-    end;
-  end;
-end;
-
 procedure TSynCustomHighlighter.FreeHighlighterAttributes;
 var
   i: integer;
@@ -875,9 +860,11 @@ end;
 
 procedure TSynCustomHighlighter.DefHighlightChange(Sender: TObject);
 begin
-  if fUpdateCount > 0 then
+  if IsUpdating then
     fUpdateChange := TRUE
   else begin
+    inherited SendAttributeChangeNotification;
+    if FAttributeChangeNeedScan then inherited SendRescanNeededNotification;
     fAttrChangeHooks.CallNotifyEvents(self);
     FAttributeChangeNeedScan := False;
     DoDefHighlightChanged;
@@ -1151,9 +1138,31 @@ begin
   end;
 end;
 
+procedure TSynCustomHighlighter.SendRescanNeededNotification;
+begin
+  //inherited SendRescanNeededNotification;
+  FAttributeChangeNeedScan := True;
+  DefHighlightChange(nil); // will call SendRescanNeededNotification;
+end;
+
+procedure TSynCustomHighlighter.SendAttributeChangeNotification;
+begin
+  //inherited SendAttributeChangeNotification;
+  DefHighlightChange(nil); // will call SendAttributeChangeNotification;
+end;
+
 procedure TSynCustomHighlighter.DoDefHighlightChanged;
 begin
   //
+end;
+
+procedure TSynCustomHighlighter.DoEndUpdate;
+begin
+  inherited DoEndUpdate;
+  if fUpdateChange then begin
+    fUpdateChange := FALSE;
+    DefHighlightChange(Self);
+  end;
 end;
 
 procedure TSynCustomHighlighter.DoAttachedToLines(Lines: TLazEditStringsBase;
