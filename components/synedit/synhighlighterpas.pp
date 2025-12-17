@@ -1019,7 +1019,7 @@ type
     // "Range"
     function GetRangeClass: TLazHighlighterRangeClass; override;
     procedure CreateRootCodeFoldBlock; override;
-    function CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
+    function CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList; override;
     function UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
 
     property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
@@ -7707,7 +7707,7 @@ begin
     (Result.Modes <> []);
 end;
 
-function TSynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList;
+function TSynPasSyn.CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList;
 begin
   Result := TSynHighlighterPasRangeList.Create;
 end;

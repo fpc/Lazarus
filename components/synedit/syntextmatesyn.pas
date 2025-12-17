@@ -11,7 +11,7 @@ uses
   LazFileUtils,
   Laz2_XMLRead, Laz2_DOM, LazStringUtils,
   // LazEdit
-  TextMateGrammar, LazEditTextAttributes, LazEditHighlighterUtils,
+  TextMateGrammar, LazEditTextAttributes, LazEditHighlighterUtils, LazEditHighlighter,
   // SynEdit
   SynEditHighlighter, SynEditHighlighterFoldBase, SynEditTypes, SynEditTextBase;
 
@@ -68,7 +68,7 @@ type
 
   protected
     function GetInstanceLanguageName: string; override;
-    function CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
+    function CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList; override;
     function UpdateRangeInfoAtLine(Index: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -168,7 +168,7 @@ begin
   Result := FTextMateGrammar.LanguageName;
 end;
 
-function TSynTextMateSyn.CreateRangeList(ALines: TSynEditStringsBase
+function TSynTextMateSyn.CreateRangeList(ALines: TLazEditStringsBase
   ): TLazHighlighterLineRangeList;
 begin
   Result := TSynHighlighterTextMateRangeList.Create;

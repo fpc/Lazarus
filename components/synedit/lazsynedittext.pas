@@ -33,8 +33,8 @@ unit LazSynEditText;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLProc, SynEditTypes, SynEditMiscProcs,
-  SynEditHighlighter, SynEditKeyCmds, SynEditTextBase, LazEditTextAttributes, LazEditLineItemLists;
+  Classes, SysUtils, Graphics, LCLProc, SynEditTypes, SynEditMiscProcs, SynEditHighlighter,
+  SynEditKeyCmds, SynEditTextBase, LazEditTextAttributes, LazEditLineItemLists, LazEditHighlighter;
 
 type
   TSynEditStrings = class;
@@ -278,7 +278,7 @@ type
 
   { TSynEditStrings }
 
-  TSynEditStrings = class(TSynEditStringsBase)
+  TSynEditStrings = class(TLazEditStringsBase)
   private
     FSenderUpdateCount: Integer;
     FLogPhysConvertor :TSynLogicalPhysicalConvertor;

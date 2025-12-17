@@ -41,7 +41,7 @@ uses
   // LazUtils
   LazMethodList, LazLoggerBase,
   // SynEdit
-  SynEditMiscProcs, SynEditKeyCmds, LazEditLineItemLists;
+  SynEditMiscProcs, SynEditKeyCmds, LazEditLineItemLists, LazEditHighlighter;
 
 type
 
@@ -127,18 +127,9 @@ type
              read GetStorageMems write SetStorageMems; default;
   end deprecated 'Use TLazEditChildLineItemsList / To be removed in 5.99';
 
-  { TSynEditStringsBase }
+  { TLazEditStringsBase }
 
-  TSynEditStringsBase = class(TStrings)
-  protected
-    function GetRange(Index: Pointer): TLazEditLineItems; virtual; abstract;
-    procedure PutRange(Index: Pointer; const ARange: TLazEditLineItems); virtual; abstract;
-  public
-    procedure SendHighlightChanged(aIndex, aCount: Integer); virtual; abstract;
-    function  GetPChar(ALineIndex: Integer): PChar;                                       // experimental
-    function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; virtual; abstract; // experimental
-    property Ranges[Index: Pointer]: TLazEditLineItems read GetRange write PutRange;
-  end;
+  TSynEditStringsBase = TLazEditStringsBase deprecated 'use TLazEditStringsBase // To be removed in 5.99';
 
   { TSynEditUndoItem }
 
@@ -294,15 +285,6 @@ begin
   i:=Count;
   while NextDownIndex(i) do
     TSynUpdateCaretUndoProc(Items[i])(AnUndoItem, AnIsBeginUndo);
-end;
-
-{ TSynEditStringsBase }
-
-function TSynEditStringsBase.GetPChar(ALineIndex: Integer): PChar;
-var
-  l: Integer;
-begin
-  Result := GetPChar(ALineIndex, l);
 end;
 
 { TSynEditUndoList }

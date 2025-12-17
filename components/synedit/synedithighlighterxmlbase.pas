@@ -30,9 +30,8 @@ interface
 {$I SynEdit.inc}
 
 uses
-  SysUtils, Classes, math, LCLType,
-  SynEditTextBase,
-  SynEditHighlighter, SynEditHighlighterFoldBase, LazEditHighlighterUtils, LazListClasses;
+  SysUtils, Classes, math, LCLType, SynEditTextBase, SynEditHighlighter,
+  SynEditHighlighterFoldBase, LazEditHighlighterUtils, LazEditHighlighter, LazListClasses;
 
 type
 
@@ -69,7 +68,7 @@ type
     FXmlRangeInfoOpenPos: integer;
     FXmlRangeInfoClosePos: integer;
   protected
-    function  CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
+    function  CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList; override;
     function  UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
 
     function  StartXmlCodeFoldBlock(ABlockType: Integer): TSynCustomCodeFoldBlock;
@@ -83,7 +82,7 @@ type
 
 implementation
 
-function TSynCustomXmlHighlighter.CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList;
+function TSynCustomXmlHighlighter.CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList;
 begin
   Result := TSynHighlighterXmlRangeList.Create;
 end;

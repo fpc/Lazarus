@@ -52,7 +52,7 @@ uses
   SynEditHighlighter, SynEditTextBase, SynEditTextBuffer,
   FileUtil, LazUTF8, FPCAdds, LCLType,
   Graphics, Clipbrd,
-  SynEditMiscProcs, SynEditStrConst, LazEditTextAttributes;
+  SynEditMiscProcs, SynEditStrConst, LazEditTextAttributes, LazEditHighlighter;
 
 type
   PSynReplaceCharsArray = ^TSynReplaceCharsArray;
@@ -305,7 +305,7 @@ var
   Token: string;
   IsSpace: boolean;
   Attri: TLazCustomEditTextAttribute;
-  TheLines: TSynEditStringsBase;
+  TheLines: TLazEditStringsBase;
 begin
   // abort if not all necessary conditions are met
   if not Assigned(ALines) or not Assigned(Highlighter) then
@@ -320,8 +320,8 @@ begin
   if (Start.Y = Stop.Y) and (Start.X >= Stop.X) then
     Exit;
 
-  if ALines is TSynEditStringsBase then
-    TheLines := TSynEditStringsBase(ALines)
+  if ALines is TLazEditStringsBase then
+    TheLines := TLazEditStringsBase(ALines)
   else begin
     TheLines := TSynEditStringList.Create();
     TheLines.Assign(ALines);
