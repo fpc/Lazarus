@@ -2054,8 +2054,7 @@ end;
 
 procedure TSynCustomFoldHighlighter.DoFoldConfigChanged(Sender: TObject);
 begin
-  FAttributeChangeNeedScan := True;
-  DefHighlightChange(self);
+  SendRescanNeededNotification;
 end;
 
 procedure TSynCustomFoldHighlighter.ClearFoldNodeList;

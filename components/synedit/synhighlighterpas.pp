@@ -1604,21 +1604,21 @@ procedure TSynPasSyn.SetGenericConstraintAttributeMode(AValue: TSynPasTypeAttrib
 begin
   if FGenericConstraintAttributeMode = AValue then Exit;
   FGenericConstraintAttributeMode := AValue;
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetProcNameImplAttributeMode(AValue: TProcNameAttrbuteModes);
 begin
   if FProcNameImplAttributeMode = AValue then Exit;
   FProcNameImplAttributeMode := AValue;
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetProcNameIntfAttributeMode(AValue: TProcNameAttrbuteModes);
 begin
   if FProcNameIntfAttributeMode = AValue then Exit;
   FProcNameIntfAttributeMode := AValue;
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetModeSwitches(AValue: TPascalCompilerModeSwitches);
@@ -1633,32 +1633,28 @@ procedure TSynPasSyn.SetDeclaredTypeAttributeMode(AValue: TSynPasTypeAttributeMo
 begin
   if FDeclaredTypeAttributeMode = AValue then Exit;
   FDeclaredTypeAttributeMode := AValue;
-  FAttributeChangeNeedScan := True;
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetDeclaredValueAttributeMachesStringNum(AValue: Boolean);
 begin
   if FDeclaredValueAttributeMachesStringNum = AValue then Exit;
   FDeclaredValueAttributeMachesStringNum := AValue;
-  FAttributeChangeNeedScan := True;
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetDeclaredValueAttributeMode(AValue: TSynPasTypeAttributeMode);
 begin
   if FDeclaredValueAttributeMode = AValue then Exit;
   FDeclaredValueAttributeMode := AValue;
-  FAttributeChangeNeedScan := True;
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetExtendedKeywordsMode(const AValue: Boolean);
 begin
   if FExtendedKeywordsMode = AValue then exit;
   FExtendedKeywordsMode := AValue;
-  FAttributeChangeNeedScan := True;
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetNestedBracketAttribs(AValue: TLazEditTextAttributeModifierCollection);
@@ -1671,29 +1667,27 @@ procedure TSynPasSyn.SetSpecializeParamAttributeMode(AValue: TSynPasTypeAttribut
 begin
   if FSpecializeParamAttributeMode = AValue then Exit;
   FSpecializeParamAttributeMode := AValue;
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetStringKeywordMode(const AValue: TSynPasStringMode);
 begin
   if FStringKeywordMode = AValue then exit;
   FStringKeywordMode := AValue;
-  FAttributeChangeNeedScan := True;
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetStringMultilineMode(const AValue: TSynPasMultilineStringModes);
 begin
   if FStringMultilineMode=AValue then Exit;
   FStringMultilineMode:=AValue;
-  FAttributeChangeNeedScan := True;
 
   if spmsmDoubleQuote in FStringMultilineMode then
     FPasAttributes[attribString].UpdateSupportedFeatures([lafPastEOL], [])
   else
     FPasAttributes[attribString].UpdateSupportedFeatures([], [lafPastEOL]);
 
-  DefHighlightChange(self);
+  SendAttributeChangeNotification;
 end;
 
 procedure TSynPasSyn.SetNestedComments(AValue: boolean);
@@ -8039,6 +8033,7 @@ end;
 procedure TSynPasSyn.SetD4syntax(const Value: boolean);
 begin
   FD4syntax := Value;
+  SendRescanNeededNotification;
 end;
 
 { TSynFreePascalSyn }

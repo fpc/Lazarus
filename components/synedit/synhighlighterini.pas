@@ -255,8 +255,7 @@ begin
   if FCommentTypes = AValue then Exit;
   FCommentTypes := AValue;
   MakeMethodTables;
-  FAttributeChangeNeedScan := True;
-  DefHighlightChange(self);
+  SendRescanNeededNotification;
 end;
 
 procedure TSynIniSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);

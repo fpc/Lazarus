@@ -1744,8 +1744,10 @@ var
   i: Integer;
 begin
   if Schemes = nil then exit;
-  FAttributeChangeNeedScan := (Item <> nil) and (TSynHighlighterMultiScheme(Item).NeedHLScan);
-  DefHighlightChange( Item );
+  if (Item <> nil) and (TSynHighlighterMultiScheme(Item).NeedHLScan) then begin
+    SendAttributeChangeNotification;
+    SendRescanNeededNotification;
+  end;
   for i := 0 to AttachedLines.Count - 1 do
     KnownRanges[i].InvalidateAll;
 end;

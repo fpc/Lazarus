@@ -6735,30 +6735,35 @@ end;
 procedure TEditorOptions.GetHighlighterSettings(Syn: TSrcIDEHighlighter);
 // read highlight settings from config file
 begin
-  ReadHighlighterSettings(Syn, '');
-  ReadHighlighterFoldSettings(Syn);
-  ReadHighlighterDivDrawSettings(Syn);
-  if Syn is TSynPasSyn then begin
-    TSynPasSyn(Syn).ExtendedKeywordsMode := PasExtendedKeywordsMode;
-    TSynPasSyn(Syn).StringKeywordMode := PasStringKeywordMode;
-    TSynPasSyn(Syn).CaseLabelAttriMatchesElseOtherwise    := FCaseLabelAttriMatchesElseOtherwise;
-    TSynPasSyn(Syn).DeclaredTypeAttributeMode             := FDeclaredTypeAttributeMode;
-    TSynPasSyn(Syn).DeclaredValueAttributeMode            := FDeclaredValueAttributeMode;
-    TSynPasSyn(Syn).DeclaredValueAttributeMachesStringNum := FDeclaredValueAttributeMachesStringNum;
-    TSynPasSyn(Syn).GenericConstraintAttributeMode        := FGenericParamAttrMode;
-    TSynPasSyn(Syn).SpecializeParamAttributeMode          := FGenericParamAttrMode;
-    case FProcHeaderNameDeclMode of
-      pnmGenericOnly:        TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamDots];
-      pnmGenericAndProcName: TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
-      pnmProcNameOnly:       TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamSupressGenParamAttr, pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
-      pnmPlain:              TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamSupressGenParamAttr, pamDots];
+  syn.BeginUpdate;
+  try
+    ReadHighlighterSettings(Syn, '');
+    ReadHighlighterFoldSettings(Syn);
+    ReadHighlighterDivDrawSettings(Syn);
+    if Syn is TSynPasSyn then begin
+      TSynPasSyn(Syn).ExtendedKeywordsMode := PasExtendedKeywordsMode;
+      TSynPasSyn(Syn).StringKeywordMode := PasStringKeywordMode;
+      TSynPasSyn(Syn).CaseLabelAttriMatchesElseOtherwise    := FCaseLabelAttriMatchesElseOtherwise;
+      TSynPasSyn(Syn).DeclaredTypeAttributeMode             := FDeclaredTypeAttributeMode;
+      TSynPasSyn(Syn).DeclaredValueAttributeMode            := FDeclaredValueAttributeMode;
+      TSynPasSyn(Syn).DeclaredValueAttributeMachesStringNum := FDeclaredValueAttributeMachesStringNum;
+      TSynPasSyn(Syn).GenericConstraintAttributeMode        := FGenericParamAttrMode;
+      TSynPasSyn(Syn).SpecializeParamAttributeMode          := FGenericParamAttrMode;
+      case FProcHeaderNameDeclMode of
+        pnmGenericOnly:        TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamDots];
+        pnmGenericAndProcName: TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
+        pnmProcNameOnly:       TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamSupressGenParamAttr, pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
+        pnmPlain:              TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamSupressGenParamAttr, pamDots];
+      end;
+      case FProcHeaderNameImplMode of
+        pnmGenericOnly:        TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamDots];
+        pnmGenericAndProcName: TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
+        pnmProcNameOnly:       TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamSupressGenParamAttr, pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
+        pnmPlain:              TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamSupressGenParamAttr, pamDots];
+      end;
     end;
-    case FProcHeaderNameImplMode of
-      pnmGenericOnly:        TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamDots];
-      pnmGenericAndProcName: TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
-      pnmProcNameOnly:       TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamSupressGenParamAttr, pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
-      pnmPlain:              TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamSupressGenParamAttr, pamDots];
-    end;
+  finally
+    Syn.EndUpdate;
   end;
 end;
 

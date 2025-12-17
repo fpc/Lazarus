@@ -2394,8 +2394,7 @@ procedure TSynHTMLSyn.SetMode(const AValue: TSynHTMLSynMode);
 begin
   if FMode = AValue then exit;
   FMode := AValue;
-  FAttributeChangeNeedScan := True;
-  DefHighlightChange(self);
+  SendRescanNeededNotification;
 end;
 
 procedure TSynHTMLSyn.BraceCloseProc;
