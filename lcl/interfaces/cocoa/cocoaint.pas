@@ -94,6 +94,9 @@ type
     procedure stop(sender: id); override;
     {$endif}
 
+    procedure observeValueForKeyPath_ofObject_change_context(keyPath: NSString;
+      object_: id; change: NSDictionary; context_: pointer); override;
+
     procedure onOpenURL( const url: NSURL ); message 'lclOnOpenURL:';
   private
     _onOpenURLObserver: TCocoaAppOnOpenURLNotify;
@@ -760,6 +763,21 @@ procedure TCocoaApplication.stop(sender: id);
 begin
   Stopped := true;
   inherited stop(sender);
+end;
+
+procedure TCocoaApplication.observeValueForKeyPath_ofObject_change_context(
+  keyPath: NSString; object_: id; change: NSDictionary; context_: pointer);
+var
+  prior: NSNumber;
+begin
+  Inherited observeValueForKeyPath_ofObject_change_context( keyPath, object_, change, context_ );
+  if keyPath.isEqualToString(NSSTR('effectiveAppearance')) then begin
+    prior:= NSNumber( change.valueForKey( NSSTR('notificationIsPrior') ) );
+    if prior.intValue > 0 then
+      Exit;
+    NSAppearance.setCurrentAppearance( self.effectiveAppearance );
+    TCocoaThemeServices.darwinThemeChangedNotify;
+  end;
 end;
 
 procedure TCocoaApplication.onOpenURL(const url: NSURL);
