@@ -125,6 +125,8 @@ type
     procedure Insert(Index: Integer; const S: string); override; // should not be called ever
     function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; override; // experimental
     procedure SendHighlightChanged(aIndex, aCount: Integer); override;
+    procedure SendHighlightAttributeChanged; override;
+    procedure SendHighlightRescanNeeded; override;
     procedure PrepareRegionScan(AStartLineIdx: Integer);
     procedure FinishRegionScan(AEndLineIdx: Integer);
     procedure RegionScanUpdateFirstRegionEnd(AnEndPoint: TPoint; ATokenEndPos: Integer);
@@ -625,6 +627,16 @@ begin
     FFirstHLChangedLine := aIndex;
   if (FLastHLChangedLine < aIndex + aCount - 1) then
     FLastHLChangedLine := aIndex + aCount - 1;
+end;
+
+procedure TSynHLightMultiVirtualLines.SendHighlightAttributeChanged;
+begin
+  FRealLines.SendHighlightAttributeChanged;
+end;
+
+procedure TSynHLightMultiVirtualLines.SendHighlightRescanNeeded;
+begin
+  FRealLines.SendHighlightAttributeChanged;
 end;
 
 constructor TSynHLightMultiVirtualLines.Create(ALines: TLazEditStringsBase);

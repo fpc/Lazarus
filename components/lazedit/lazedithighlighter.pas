@@ -122,6 +122,7 @@ type
     FAttachedLines: TLazEditHighlighterAttachedLines;
     FCurrentLines: TLazEditStringsBase;
     FCurrentRanges: TLazHighlighterLineRangeList;
+    FRangesChangeStamp: QWord;
 
     FTokenAttributeMergeResult: TLazEditTextAttributeMergeResult;
     FTokenAttributeList: TLazCustomEditTextAttributeArray;
@@ -239,9 +240,12 @@ begin
 
   FCurrentLines := AValue;
 
-  if FCurrentLines <> nil
-  then FCurrentRanges := TLazHighlighterLineRangeList(AValue.Ranges[GetRangeIdentifier])
-  else FCurrentRanges := nil;
+  if FCurrentLines <> nil then begin
+    FCurrentRanges := TLazHighlighterLineRangeList(AValue.Ranges[GetRangeIdentifier]);
+    CurrentRanges.ValidatedChangeStamp := FRangesChangeStamp;
+  end
+  else
+    FCurrentRanges := nil;
   DoCurrentLinesChanged;
 end;
 
@@ -295,6 +299,12 @@ begin
     exit;
   end;
   Exclude(FUpdateFlags, ufRescanNeeded);
+
+  {$PUSH}{$R-}{$Q-}
+  inc(FRangesChangeStamp);
+  {$POP}
+  if CurrentRanges <> nil then
+    CurrentRanges.ValidatedChangeStamp := FRangesChangeStamp;
 
   for i := 0 to AttachedLines.Count - 1 do
     AttachedLines[i].SendHighlightRescanNeeded;
@@ -398,6 +408,7 @@ begin
     r := CreateRangeList(ALines);
     ALines.Ranges[GetRangeIdentifier] := r;
     r.InvalidateAll;
+    r.ValidatedChangeStamp := FRangesChangeStamp;
     FAttachedLines.Add(ALines);
     ALines.AddFreeNotification(@DoAttachedLinesFreed);
   end;

@@ -83,11 +83,13 @@ type
     public type
       TBase = TLazHighlighterLineRangeList;
     end;
-  private
+  strict private
     FFirstInvalidLine: Integer;
     FLastInvalidLine: Integer;
+    FValidatedChangeStamp: QWord;
     FRefCount: Integer;
     FUnsentValidationStartLine: Integer;
+    procedure SetValidatedChangeStamp(AValue: QWord);
   protected
     procedure LineTextChanged(AIndex: Integer; ACount: Integer = 1); virtual; deprecated 'use TextChanged / to be removed in 5.99';
     procedure InsertedLines(AIndex, ACount: Integer); virtual; deprecated 'use Insert / to be removed in 5.99';
@@ -111,6 +113,7 @@ type
     procedure DecRefCount;
     property RefCount: Integer read FRefCount;
 
+    property ValidatedChangeStamp: QWord read FValidatedChangeStamp write SetValidatedChangeStamp;
     property FirstInvalidLine: Integer read FFirstInvalidLine;
     property LastInvalidLine: Integer read FLastInvalidLine;
     property UnsentValidationStartLine: Integer read FUnsentValidationStartLine;
@@ -329,6 +332,13 @@ begin
 end;
 
 { TLazHighlighterLineRangeList }
+
+procedure TLazHighlighterLineRangeList.SetValidatedChangeStamp(AValue: QWord);
+begin
+  if FValidatedChangeStamp = AValue then Exit;
+  FValidatedChangeStamp := AValue;
+  //InvalidateAll;
+end;
 
 procedure TLazHighlighterLineRangeList.LineTextChanged(AIndex: Integer; ACount: Integer);
 begin
