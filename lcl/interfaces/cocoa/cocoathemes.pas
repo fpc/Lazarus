@@ -30,7 +30,6 @@ type
   TCocoaThemeServices = class(TThemeServices)
   private
   protected
-    callback     : NSObject;
     BtnCell      : NSButtonCell;
     hdrCell      : NSTableHeaderCell;
     function SetButtonCellType(btn: NSButtonCell; Details: TThemedElementDetails): Boolean;
@@ -75,14 +74,13 @@ type
 *)
     function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; override;
     function GetOption(AOption: TThemeOption): Integer; override;
+  private
+    procedure doDarwinThemeChangedNotify;
+  public
+    class procedure darwinThemeChangedNotify;
   end;
 
 implementation
-
-type
-  TCocoaThemeCallback = objcclass(NSObject)
-    procedure notifySysColorsChanged(notification: NSNotification); message 'notifySysColorsChanged:';
-  end;
 
 type
   TCocoaContextAccess = class(TCocoaContext);
@@ -550,17 +548,10 @@ begin
   BtnCell := NSButtonCell.alloc.initTextCell(NSSTR_EMPTY);
   BezelToolBar := NSSmallSquareBezelStyle; // can be resized at any size
   BezelButton := NSSmallSquareBezelStyle;
-
-  callback := TCocoaThemeCallback.alloc.init;
-  NSNotificationCenter(NSNotificationCenter.defaultCenter).addObserver_selector_name_object(
-    callback, ObjCSelector('notifySysColorsChanged:'), NSSystemColorsDidChangeNotification, nil
-  );
 end;
 
 destructor TCocoaThemeServices.Destroy;
 begin
-  NSNotificationCenter(NSNotificationCenter.defaultCenter).removeObserver(callback);
-  callback.release;
   if (HdrCell<>nil) then hdrCell.Release;
   if (BtnCell<>nil) then BtnCell.Release;
   inherited Destroy;
@@ -994,13 +985,16 @@ begin
   CGContextRestoreGState(dst.ctx.lclCGContext);
 end;
 
-{ TCocoaThemeCallback }
-
-procedure TCocoaThemeCallback.notifySysColorsChanged(notification: NSNotification);
+procedure TCocoaThemeServices.doDarwinThemeChangedNotify;
 begin
-  ThemeServices.UpdateThemes;
+  self.UpdateThemes;
   Graphics.UpdateHandleObjects;
-  ThemeServices.IntfDoOnThemeChange;
+  self.IntfDoOnThemeChange;
+end;
+
+class procedure TCocoaThemeServices.darwinThemeChangedNotify;
+begin
+  TCocoaThemeServices(ThemeServices).doDarwinThemeChangedNotify;
 end;
 
 end.
