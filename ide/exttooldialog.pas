@@ -48,7 +48,7 @@ uses
   // IdeConfig
   TransferMacros, IDEOptionDefs,
   // IDE
-  ExtToolEditDlg, LazarusIDEStrConsts, EditorOptions;
+  ExtToolEditDlg, LazarusIDEStrConsts;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -87,40 +87,33 @@ type
     procedure ListboxClick(Sender: TObject);
   private
     fExtToolList: TExternalUserTools;
-    fTransferMacros: TTransferMacroList;
     procedure Load;
     procedure SetExtToolList(NewExtToolList: TExternalUserTools);
-    procedure SetTransferMacros(NewMacros: TTransferMacroList);
     function ToolDescription(Index: integer): string;
     procedure EnableButtons;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     property ExtToolList: TExternalUserTools read fExtToolList write SetExtToolList;
-    property TransferMacros: TTransferMacroList
-                                   read fTransferMacros write SetTransferMacros;
   end;
   
-function ShowExtToolDialog(ExtToolList: TExternalUserTools;
-  TransferMacros: TTransferMacroList):TModalResult;
+function ShowExtToolDialog: TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowExtToolDialog(ExtToolList: TExternalUserTools;
-  TransferMacros: TTransferMacroList):TModalResult;
+function ShowExtToolDialog: TModalResult;
 var
   ExternalToolDialog: TExternalToolDialog;
 begin
   Result:=mrCancel;
   ExternalToolDialog:=TExternalToolDialog.Create(nil);
   try
-    ExternalToolDialog.TransferMacros:=TransferMacros;
-    ExternalToolDialog.ExtToolList:=ExtToolList;
+    ExternalToolDialog.ExtToolList:=ExternalUserTools;
     Result:=ExternalToolDialog.ShowModal;
     if Result=mrOk then
-      ExtToolList.Assign(ExternalToolDialog.ExtToolList);
+      ExternalUserTools.Assign(ExternalToolDialog.ExtToolList);
   finally
     ExternalToolDialog.Free;
   end;
@@ -172,12 +165,6 @@ begin
   Load;
 end;
 
-procedure TExternalToolDialog.SetTransferMacros(NewMacros: TTransferMacroList);
-begin
-  if fTransferMacros=NewMacros then exit;
-  fTransferMacros:=NewMacros;
-end;
-
 function TExternalToolDialog.ToolDescription(Index: integer): string;
 begin
   Result:=fExtToolList[Index].Title;
@@ -211,7 +198,7 @@ begin
   end;
   NewTool:=TExternalUserTool.Create(nil);
   NewTool.HasParser[SubToolDefault]:=True;
-  MsgResult:=ShowExtToolOptionDlg(fTransferMacros, NewTool, EditorOpts.KeyMap);
+  MsgResult:=ShowExtToolOptionDlg(NewTool);
   if MsgResult=mrOk then
   begin
     fExtToolList.Add(NewTool);
@@ -245,9 +232,7 @@ begin
   If SaveDialog1.Execute Then Begin
     AFileName := SaveDialog1.FileName;
     Case SaveDialog1.FilterIndex Of
-      1 : Begin
-            AFileName := ChangeFileExt(AFileName, '.xml');
-          end;
+      1 : AFileName := ChangeFileExt(AFileName, '.xml');
     end;
     FileConfig := TXMLOptionsStorage.Create(AFileName, False);
     fExtToolList.Save(FileConfig);
@@ -291,7 +276,7 @@ var
 begin
   i:=Listbox.ItemIndex;
   if i<0 then exit;
-  if ShowExtToolOptionDlg(fTransferMacros,fExtToolList[i],EditorOpts.KeyMap)=mrOk
+  if ShowExtToolOptionDlg(fExtToolList[i])=mrOk
   then begin
     Listbox.Items[i]:=ToolDescription(i);
     EnableButtons;

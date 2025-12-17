@@ -205,26 +205,22 @@ type
   end;
 
 
-function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolMenuItem: TExternalUserTool;
-  AllKeys: TKeyCommandRelationList):TModalResult;
+function ShowExtToolOptionDlg(ExternalToolMenuItem: TExternalUserTool): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolMenuItem: TExternalUserTool;
-  AllKeys: TKeyCommandRelationList):TModalResult;
+function ShowExtToolOptionDlg(ExternalToolMenuItem: TExternalUserTool): TModalResult;
 var
   ExternalToolOptionDlg: TExternalToolOptionDlg;
 begin
   Result:=mrCancel;
   ExternalToolOptionDlg:=TExternalToolOptionDlg.Create(nil);
   try
-    ExternalToolOptionDlg.fAllKeys:=AllKeys;
+    ExternalToolOptionDlg.fAllKeys:=EditorOpts.KeyMap;
     ExternalToolOptionDlg.Options:=ExternalToolMenuItem;
-    ExternalToolOptionDlg.MacroList:=TransferMacroList;
+    ExternalToolOptionDlg.MacroList:=GlobalMacroList;
     Result:=ExternalToolOptionDlg.ShowModal;
     if Result=mrOk then
       ExternalToolMenuItem.Assign(ExternalToolOptionDlg.Options);
@@ -889,8 +885,7 @@ begin
   LoadFromOptions;
 end;
 
-procedure TExternalToolOptionDlg.SetTransferMacros(
-  TransferMacroList: TTransferMacroList);
+procedure TExternalToolOptionDlg.SetTransferMacros(TransferMacroList: TTransferMacroList);
 begin
   if fTransferMacros=TransferMacroList then exit;
   fTransferMacros:=TransferMacroList;

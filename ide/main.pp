@@ -2916,11 +2916,8 @@ begin
     itmToolRescanFPCSrcDir.OnClick := @mnuEnvRescanFPCSrcDirClicked;
     itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
-
     itmToolConfigure.OnClick := @mnuToolConfigureUserExtToolsClicked;
-
     itmToolDiff.OnClick := @mnuToolDiffClicked;
-
     itmToolCheckLFM.OnClick := @mnuToolCheckLFMClicked;
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
@@ -4839,7 +4836,7 @@ end;
 
 procedure TMainIDE.mnuToolConfigureUserExtToolsClicked(Sender: TObject);
 begin
-  if ShowExtToolDialog(ExternalUserTools,GlobalMacroList)=mrOk then
+  if ShowExtToolDialog=mrOk then
   begin
     // save to environment options
     SaveEnvironment(true);
