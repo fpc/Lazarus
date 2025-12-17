@@ -428,7 +428,6 @@ type
   TIDESynFreePasSyn = class(TIDESynPasSyn)
   public
     constructor Create(AOwner: TComponent); override;
-    procedure ResetRange; override;
   end;
 
   { TIDESynGutterLOvProviderPascal }
@@ -2357,12 +2356,6 @@ end;
 constructor TIDESynFreePasSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  CompilerMode:=pcmObjFPC;
-end;
-
-procedure TIDESynFreePasSyn.ResetRange;
-begin
-  inherited ResetRange;
   CompilerMode:=pcmObjFPC;
 end;
 

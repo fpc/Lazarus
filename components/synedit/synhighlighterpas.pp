@@ -759,6 +759,8 @@ type
     fRange: TRangeStates;
     FOldRange: TRangeStates;
     FTokenState, FNextTokenState: TTokenState;
+    FRangeCompilerMode: TPascalCompilerMode;
+    FRangeModeSwitches: TPascalCompilerModeSwitches;
     FRequiredStates: TRequiredStates;
     FStringKeywordMode: TSynPasStringMode;
     FStringMultilineMode: TSynPasMultilineStringModes;
@@ -812,6 +814,7 @@ type
     function  GetCustomTokens(AnIndex: integer): TSynPasSynCustomToken;
     function GetPasCodeFoldRange: TSynPasSynRange; inline;
     procedure PasDocAttrChanged(Sender: TObject);
+    function  SwitchesForMode(const AValue: TPascalCompilerMode):TPascalCompilerModeSwitches;
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
     procedure SetGenericConstraintAttributeMode(AValue: TSynPasTypeAttributeMode);
     procedure SetProcNameImplAttributeMode(AValue: TProcNameAttrbuteModes);
@@ -1025,8 +1028,8 @@ type
     property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
     function TopPascalCodeFoldBlockType
              (DownIndex: Integer = 0): TPascalCodeFoldBlockType;
-    function HasCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean; inline;
-    function HasCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean; inline;
+    function HasRangeCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean; inline;
+    function HasRangeCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean; inline;
 
     // Open/Close Folds
     procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
@@ -1167,7 +1170,7 @@ type
     property CaseLabelAttri: TLazEditHighlighterAttributesModifier              index attribCaseLabel               read GetAttribute_Mod write SetAttribute;
     property DirectiveAttri: TLazEditHighlighterAttributes_Eol                  index attribDirective               read GetAttribute_Eol write SetAttribute;
 
-    property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
+    property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode default pcmDelphi;
     property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write SetModeSwitches;
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
     property ExtendedKeywordsMode: Boolean
@@ -1205,7 +1208,8 @@ type
   TSynFreePascalSyn = class(TSynPasSyn)
   public
     constructor Create(AOwner: TComponent); override;
-    procedure ResetRange; override;
+  published
+    property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode default pcmFPC;
   end;
 
 
@@ -1580,24 +1584,29 @@ begin
   Result:=true;
 end;
 
+function TSynPasSyn.SwitchesForMode(const AValue: TPascalCompilerMode
+  ): TPascalCompilerModeSwitches;
+begin
+  Result := [];
+  case AValue of
+    pcmFPC,
+    pcmObjFPC:        Result := [pcsNestedComments];
+    pcmDelphi,
+    pcmDelphiUnicode: Result := [pcsTypeHelpers, pcsFunctionReferences];
+    pcmTP:            Result := [];
+    pcmGPC:           Result := [pcsNestedComments];
+    pcmMacPas:        Result := [pcsObjectiveC1, pcsObjectiveC2];
+    pcmIso:           Result := [];
+    pcmExtPas:        Result := [];
+  end;
+end;
+
 procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
 begin
-  if (not FModeSwitchesLoaded) or not(csLoading in ComponentState) then begin
-    case AValue of
-      pcmFPC,
-      pcmObjFPC:        ModeSwitches := [pcsNestedComments];
-      pcmDelphi,
-      pcmDelphiUnicode: ModeSwitches := [pcsTypeHelpers, pcsFunctionReferences];
-      pcmTP:            ModeSwitches := [];
-      pcmGPC:           ModeSwitches := [pcsNestedComments];
-      pcmMacPas:        ModeSwitches := [pcsObjectiveC1, pcsObjectiveC2];
-      pcmIso:           ModeSwitches := [];
-      pcmExtPas:        ModeSwitches := [];
-    end;
-  end;
+  if (not FModeSwitchesLoaded) or not(csLoading in ComponentState) then
+    ModeSwitches := SwitchesForMode(AValue);
   //if FCompilerMode=AValue then exit;
   FCompilerMode:=AValue;
-//  PasCodeFoldRange.Mode:=FCompilerMode;
 end;
 
 procedure TSynPasSyn.SetGenericConstraintAttributeMode(AValue: TSynPasTypeAttributeMode);
@@ -2655,7 +2664,7 @@ begin
   end
   else
   if KeyCompU('GENERIC') and
-    ( (CompilerMode = pcmObjFPC) or not(rsCompilerModeSet in fRange) ) and
+    ( (FRangeCompilerMode = pcmObjFPC) or not(rsCompilerModeSet in fRange) ) and
     (not(TopPascalCodeFoldBlockType in PascalStatementBlocks+[cfbtUses])) and
     (FTokenState in tsAnyAtBeginOfStatement + [tsAfterClass])
   then begin
@@ -2700,11 +2709,11 @@ begin
   else if KeyCompU('RECORD') then begin
     StartPascalCodeFoldBlock(cfbtRecord);
     //FNextTokenState := tsAtBeginOfStatement;
-    //if (CompilerMode = pcmDelphi) or (pcsTypeHelpers in FModeSwitches {and adv_record}) then
+    //if (FRangeCompilerMode = pcmDelphi) or (pcsTypeHelpers in FRangeModeSwitches {and adv_record}) then
     FNextTokenState := tsAfterClass;
     fRange := fRange - [rsInTypeSpecification, rsAfterEqual, rsProperty, rsInPropertyNameOrIndex,
                         rsInProcHeader, rsInProcName, rsInParamDeclaration];
-    if (CompilerMode = pcmDelphi) or (pcsTypeHelpers in FModeSwitches {and adv_record}) then
+    if (FRangeCompilerMode = pcmDelphi) or (pcsTypeHelpers in FRangeModeSwitches {and adv_record}) then
       fRange := fRange + [rsInClassHeader]; // highlight helper
       FOldRange := FOldRange - [rsInClassHeader];
     Result := tkKey;
@@ -2753,7 +2762,7 @@ begin
       fRange := fRange - [rsInTypeSpecification, rsAfterEqual] + [rsInTypeHelper];
     end
     else
-    if (FTokenState = tsAfterEqualThenType) and (pcsTypeHelpers in FModeSwitches) then begin
+    if (FTokenState = tsAfterEqualThenType) and (pcsTypeHelpers in FRangeModeSwitches) then begin
       Result := tkKey;
       fRange := fRange - [rsInTypeSpecification, rsAfterEqual] + [rsInTypeHelper];
       StartPascalCodeFoldBlock(cfbtClass); // type helper
@@ -2790,7 +2799,7 @@ begin
     then begin
       if (rsAfterEqualOrColon in fRange) then begin
         FOldRange := FOldRange - [rsAfterEqualOrColon];
-        if (pcsTypeHelpers in FModeSwitches) then
+        if (pcsTypeHelpers in FRangeModeSwitches) then
           FNextTokenState := tsAfterEqualThenType;
       end
       else begin
@@ -2974,7 +2983,7 @@ begin
       StartPascalCodeFoldBlock(cfbtExcept);
   end
   else
-  if HasCompilerModeswitch(pcsFunctionReferences) and
+  if HasRangeCompilerModeswitch(pcsFunctionReferences) and
      (FTokenState <> tsAfterEqualThenType) and
      KeyCompU('REFERENCE') and CouldBeAtStartOfTypeDef
      and NextTokenIsTo
@@ -3045,7 +3054,7 @@ begin
       Result := tkIdentifier;
   end
   else
-  if HasCompilerModeswitch([pcsObjectiveC1, pcsObjectiveC2]) and
+  if HasRangeCompilerModeswitch([pcsObjectiveC1, pcsObjectiveC2]) and
      KeyCompU('OBJCCLASS')
   then begin
     Result := tkKey;
@@ -3339,7 +3348,7 @@ begin
             So even in "$mode delphi" this is not available.
             If this is needed, then we need a "property compiler"
   *)
-  //if (CompilerMode = pcmDelphi) and  IsClassSection('AUTOMATED') then
+  //if (FRangeCompilerMode = pcmDelphi) and  IsClassSection('AUTOMATED') then
   //  Result := DoClassSection
   //else
   if (rsInProcHeader in fRange) and KeyCompU('CONSTREF') and
@@ -3456,7 +3465,7 @@ begin
     Result := tkKey;
   end
   else if KeyCompU('SPECIALIZE') and
-    ( (CompilerMode = pcmObjFPC) or not(rsCompilerModeSet in fRange) )
+    ( (FRangeCompilerMode = pcmObjFPC) or not(rsCompilerModeSet in fRange) )
   then begin
     Result := tkKey;
     if rsProperty in fRange then begin
@@ -3528,7 +3537,7 @@ end;
 
 function TSynPasSyn.Func124: TtkTokenKind;
 begin
-  if HasCompilerModeswitch([pcsObjectiveC1, pcsObjectiveC2]) and
+  if HasRangeCompilerModeswitch([pcsObjectiveC1, pcsObjectiveC2]) and
      KeyCompU('OBJCCATEGORY')
   then begin
     Result := tkKey;
@@ -3720,7 +3729,7 @@ end;
 
 function TSynPasSyn.Func144: TtkTokenKind;
 begin
-  if HasCompilerModeswitch([pcsObjectiveC1, pcsObjectiveC2]) and
+  if HasRangeCompilerModeswitch([pcsObjectiveC1, pcsObjectiveC2]) and
      KeyCompU('OBJCPROTOCOL')
   then begin
     Result := tkKey;
@@ -3993,7 +4002,7 @@ begin
   Result := tkModifier;
   if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader, rsAfterClassMembers] = [rsWasInProcHeader, rsAfterClassMembers]) and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
-     (CompilerMode in [pcmDelphi, pcmDelphiUnicode])
+     (FRangeCompilerMode in [pcmDelphi, pcmDelphiUnicode])
   then
     FRange := FRange + [rsInProcHeader]; // virtual reintroduce overload can be after virtual
 end;
@@ -4468,7 +4477,7 @@ begin
         end;
       end;
     '{':
-      if NestedComments then begin
+      if (pcsNestedComments in FRangeModeSwitches) then begin
         Run := p;
         if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
           ct := GetCustomSymbolToken(tkAnsiComment, 1, FCustomTokenMarkup, Run <> fTokenPos);
@@ -4518,10 +4527,10 @@ procedure TSynPasSyn.DirectiveProc;
     // skip space
     while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
     if fLine[Run] in ['+', '}'] then
-      ModeSwitches := ModeSwitches + [ASwitch]
+      FRangeModeSwitches := FRangeModeSwitches + [ASwitch]
     else
     if fLine[Run] = '-' then
-      ModeSwitches := ModeSwitches - [ASwitch];
+      FRangeModeSwitches := FRangeModeSwitches - [ASwitch];
   end;
 begin
   fTokenID := tkDirective;
@@ -4566,24 +4575,42 @@ begin
     include(fRange, rsCompilerModeSet);
     // skip space
     while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
-    if TextComp('objfpc') then
-      CompilerMode:=pcmObjFPC
-    else if TextComp('delphiunicode') then
-      CompilerMode:=pcmDelphiUnicode
-    else if TextComp('delphi') then
-      CompilerMode:=pcmDelphi
-    else if TextComp('fpc') or TextComp('default') then
-      CompilerMode:=pcmFPC
-    else if TextComp('gpc') then
-      CompilerMode:=pcmGPC
-    else if TextComp('tp') then
-      CompilerMode:=pcmTP
-    else if TextComp('macpas') then
-      CompilerMode:=pcmMacPas
-    else if TextComp('iso') then
-      CompilerMode:=pcmIso
-    else if (TextComp('extendedpascal')) then
-      CompilerMode:=pcmExtPas
+    if TextComp('objfpc') then begin
+      FRangeCompilerMode:=pcmObjFPC;
+      FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
+    end
+    else if TextComp('delphiunicode') then begin
+      FRangeCompilerMode:=pcmDelphiUnicode;
+      FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
+    end
+    else if TextComp('delphi') then begin
+      FRangeCompilerMode:=pcmDelphi;
+      FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
+    end
+    else if TextComp('fpc') or TextComp('default') then begin
+      FRangeCompilerMode:=pcmFPC;
+      FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
+    end
+    else if TextComp('gpc') then begin
+      FRangeCompilerMode:=pcmGPC;
+      FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
+    end
+    else if TextComp('tp') then begin
+      FRangeCompilerMode:=pcmTP;
+      FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
+    end
+    else if TextComp('macpas') then begin
+      FRangeCompilerMode:=pcmMacPas;
+      FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
+    end
+    else if TextComp('iso') then begin
+      FRangeCompilerMode:=pcmIso;
+      FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
+    end
+    else if (TextComp('extendedpascal')) then begin
+      FRangeCompilerMode:=pcmExtPas;
+      FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
+    end
     else
       exclude(fRange, rsCompilerModeSet);
   end;
@@ -4599,7 +4626,7 @@ begin
         break;
       end;
     '{':
-      if pcsNestedComments in ModeSwitches then begin
+      if pcsNestedComments in FRangeModeSwitches then begin
         fStringLen := 1;
         StartPascalCodeFoldBlock(cfbtNestedComment);
       end;
@@ -5097,7 +5124,7 @@ begin
       end;
     end
     else
-    if (pcsNestedComments in ModeSwitches) and
+    if (pcsNestedComments in FRangeModeSwitches) and
        (fLine[Run] = '(') and (fLine[Run + 1] = '*') then
     begin
       if not (FIsInNextToEOL or IsScanning) then begin
@@ -6474,8 +6501,8 @@ begin
   // -> update now
   CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
   PasCodeFoldRange.TokenState := FTokenState;
-  PasCodeFoldRange.Mode := CompilerMode;
-  PasCodeFoldRange.ModeSwitches := ModeSwitches;
+  PasCodeFoldRange.Mode := FRangeCompilerMode;
+  PasCodeFoldRange.ModeSwitches := FRangeModeSwitches;
   // return a fixed copy of the current CodeFoldRange instance
   Result := inherited GetRange;
 end;
@@ -6484,8 +6511,8 @@ procedure TSynPasSyn.SetRange(Value: Pointer);
 begin
   //DebugLn(['TSynPasSyn.SetRange START']);
   inherited SetRange(Value);
-  CompilerMode := PasCodeFoldRange.Mode;
-  ModeSwitches := PasCodeFoldRange.ModeSwitches;
+  FRangeCompilerMode := PasCodeFoldRange.Mode;
+  FRangeModeSwitches := PasCodeFoldRange.ModeSwitches;
   FTokenState := PasCodeFoldRange.TokenState;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
@@ -6560,7 +6587,8 @@ begin
     MinLevelRegion := 0;
   end;
   Inherited ResetRange;
-  CompilerMode:=pcmDelphi;
+  FRangeCompilerMode := CompilerMode;
+  FRangeModeSwitches := ModeSwitches;
 end;
 
 procedure TSynPasSyn.EnumUserSettings(settings: TStrings);
@@ -6800,11 +6828,11 @@ begin
   Result := TPascalCodeFoldBlockType(PtrUInt(p));
 end;
 
-function TSynPasSyn.HasCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean;
+function TSynPasSyn.HasRangeCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean;
 begin
-  Result := (AModeSwitch in ModeSwitches) or not(rsCompilerModeSet in fRange);
+  Result := (AModeSwitch in FRangeModeSwitches) or not(rsCompilerModeSet in fRange);
   if not Result then begin
-    case CompilerMode of
+    case FRangeCompilerMode of
       pcmObjFPC: Result := AModeSwitch in [pcsNestedComments];
       //pcmDelphi: ;
       pcmFPC:    Result := AModeSwitch in [pcsNestedComments];
@@ -6815,11 +6843,11 @@ begin
   end;
 end;
 
-function TSynPasSyn.HasCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean;
+function TSynPasSyn.HasRangeCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean;
 begin
-  Result := (AModeSwitches * ModeSwitches <> []) or not(rsCompilerModeSet in fRange);
+  Result := (AModeSwitches * FRangeModeSwitches <> []) or not(rsCompilerModeSet in fRange);
   if not Result then begin
-    case CompilerMode of
+    case FRangeCompilerMode of
       pcmObjFPC: Result := AModeSwitches * [pcsNestedComments] <> [];
       //pcmDelphi: ;
       pcmFPC:    Result := AModeSwitches * [pcsNestedComments] <> [];
@@ -6921,7 +6949,9 @@ begin
   while true do begin
     while TxtPos < TxtLen do begin
       case Txt[TxtPos] of
-        '{' : if (NestBrace2 = 0) and (NestedComments or (NestBrace1 = 0)) then
+        '{' : if (NestBrace2 = 0) and
+                 ((pcsNestedComments in FRangeModeSwitches) or (NestBrace1 = 0))
+              then
                 inc(NestBrace1);
         '}' : if (NestBrace2 = 0) then
                 if NestBrace1 > 0
@@ -6929,7 +6959,7 @@ begin
                 else exit(SetFoundToken);
         '(' : if (NestBrace1 = 0) then
                 if (TxtPos+1 <= TxtLen) and (Txt[TxtPos+1] = '*') then begin
-                  if NestedComments or (NestBrace2 = 0) then begin
+                  if (pcsNestedComments in FRangeModeSwitches) or (NestBrace2 = 0) then begin
                     inc(NestBrace2);
                     inc(TxtPos);
                   end
@@ -8041,12 +8071,6 @@ end;
 constructor TSynFreePascalSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  CompilerMode:=pcmObjFPC;
-end;
-
-procedure TSynFreePascalSyn.ResetRange;
-begin
-  inherited ResetRange;
   CompilerMode:=pcmObjFPC;
 end;
 
