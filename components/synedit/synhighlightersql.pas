@@ -60,6 +60,7 @@ type
   TtkTokenKind = (tkComment, tkDatatype, tkDefaultPackage, tkException,         // DJLP 2000-08-11
     tkFunction, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace, tkPLSQL,        // DJLP 2000-08-11
     tkSQLPlus, tkString, tkSymbol, tkTableName, tkUnknown, tkVariable,          // DJLP 2000-08-11
+    tkClientKeyword,
     tkCharSet, tkCollation);
 
   TRangeState = (
@@ -104,7 +105,10 @@ type
 
 const
   {$WriteableConst off}
-  cfbtSqlEssential: TSqlCodeFoldBlockTypes = ([]);
+  cfbtSqlEssential: TSqlCodeFoldBlockTypes = ([
+    cfbtSelect, cfbtUpdate, cfbtInsert,
+    cfbtBegin
+  ]);
 
   cfbtSqlFoldSupporting: TSqlCodeFoldBlockTypes =
   ( [ cfbtSelect..cfbtNone ]
@@ -125,6 +129,12 @@ const
     cfbtSelect, cfbtSubSelect, cfbtUpdateSelect, cfbtInsertSelect,
     cfbtUpdate, cfbtInsert, cfbtDelete,
     cfbtFrom, cfbtInto,
+    cfbtBegin
+  ]);
+  cfbtSqlWordOutlineRanges: TSqlCodeFoldBlockTypes = ([
+    cfbtSelect, cfbtSubSelect, cfbtUpdateSelect, cfbtInsertSelect,
+    cfbtUpdate, cfbtInsert, cfbtDelete,
+    //cfbtFrom, cfbtInto,
     cfbtBegin
   ]);
 
@@ -180,6 +190,7 @@ type
     attribSymbol,
     attribTableName,
     attribVariable,
+    attribClientKeyword,
     attribCharSet,
     attribCollation
     );
@@ -235,6 +246,7 @@ type
     fSymbolAttri: TSynHighlighterAttributes;
     fTableNameAttri: TSynHighlighterAttributes;
     fVariableAttri: TSynHighlighterAttributes;
+    fClientKeywordAttri: TSynHighlighterAttributesModifier;
     fCharSetAttri: TSynHighlighterAttributesModifier;
     fCollationAttri: TSynHighlighterAttributesModifier;
     fIdentifiersPtr: PIdentifierTable;
@@ -292,6 +304,7 @@ type
     function GetSampleSource : String; override;
     function GetInitialDefaultFileFilterMask: string; override;
     function StartSqlCodeFoldBlock(ABlockType: TSqlCodeFoldBlockType; ABracketLvl: word = 0): TSqlCodeFoldBlockType;
+    procedure EndSqlCodeFoldBlock;
     function TopSqlCodeFoldBlockType(DownIndex: Integer = 0): TSqlCodeFoldBlockType;
     function TopSqlCodeFoldBlockBracketLvl(DownIndex: Integer = 0): word;
     property SqlCodeFoldRange: TSynSqlSynRange read GetSqlCodeFoldRange;
@@ -336,6 +349,7 @@ type
     property TableNameAttri: TSynHighlighterAttributes index attribTableName read fTableNameAttri write SetAttribute;
     property TableNames: TStrings read fTableNames write SetTableNames;
     property VariableAttri: TSynHighlighterAttributes index attribVariable read fVariableAttri write SetAttribute;
+    property ClientKeywordAttri: TSynHighlighterAttributesModifier index attribClientKeyword read fClientKeywordAttri write SetAttribute;
     property CharSetAttri: TSynHighlighterAttributesModifier index attribCharSet read fCharSetAttri write SetAttribute;
     property CollationAttri: TSynHighlighterAttributesModifier index attribCollation read fCollationAttri write SetAttribute;
     property SQLDialect: TSQLDialect read fDialect write SetDialect;
@@ -1242,6 +1256,8 @@ const
     'TIME_FORMAT,TIME_TO_SEC,TO_DAYS,TRIM,TRUNCATE,UCASE,UNIX_TIMESTAMP,' +
     'UPPER,USER,VERSION,WEEK,WEEKDAY,WHEN,YEARWEEK,YEAR_MONTH';
 
+  MySQL_Any_ClientKeywords: array of string = ('DELIMITER');
+
 {$I synhighlightersql_mysql5.inc}
 {$I synhighlightersql_mysql8.inc}
 
@@ -1679,6 +1695,8 @@ begin
   AddAttribute(fTableNameAttri);
   fVariableAttri := TSynHighlighterAttributes.Create(@SYNS_AttrVariable, SYNS_XML_AttrVariable);
   AddAttribute(fVariableAttri);
+  fClientKeywordAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrClientKeyword, SYNS_XML_AttrClientKeyword);
+  AddAttribute(fClientKeywordAttri);
   fCharSetAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCharSet, SYNS_XML_AttrCharSet);
   AddAttribute(fCharSetAttri);
   fCollationAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCollation, SYNS_XML_AttrCollation);
@@ -1785,12 +1803,12 @@ const
   begin
     case TopSqlCodeFoldBlockType of
       cfbtJoinOn: begin
-          EndCodeFoldBlock;
+          EndSqlCodeFoldBlock;
           if TopSqlCodeFoldBlockType = cfbtJoin then
-            EndCodeFoldBlock;
+            EndSqlCodeFoldBlock;
         end;
       cfbtJoin:
-          EndCodeFoldBlock;
+          EndSqlCodeFoldBlock;
     end;
   end;
 
@@ -1824,7 +1842,7 @@ begin
             else
             begin
               if TopSqlCodeFoldBlockType = cfbtInto then
-                EndCodeFoldBlock;
+                EndSqlCodeFoldBlock;
               if TopSqlCodeFoldBlockType = cfbtInsert then
                 StartSqlCodeFoldBlock(cfbtInsertSelect);
             end;
@@ -1849,7 +1867,7 @@ begin
       skUnion: begin
           if (TopSqlCodeFoldBlockType in cfbtAnySelect)
           then begin
-            EndCodeFoldBlock;
+            EndSqlCodeFoldBlock;
             fRange := fRange + [rsAfterUnion];
           end;
         end;
@@ -1872,35 +1890,35 @@ begin
       skWhere: begin
           CloseJoinFoldBlocks;
           if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtUpdate, cfbtDelete]) then
-            EndCodeFoldBlock;
+            EndSqlCodeFoldBlock;
           if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
             StartSqlCodeFoldBlock(cfbtFrom, SqlCodeFoldRange.BracketNestLevel);
         end;
       skGroup: begin
           CloseJoinFoldBlocks;
           if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtWhere]) then
-            EndCodeFoldBlock;
+            EndSqlCodeFoldBlock;
           if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
             StartSqlCodeFoldBlock(cfbtGroup, SqlCodeFoldRange.BracketNestLevel);
         end;
       skHaving: begin
           CloseJoinFoldBlocks;
           if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtWhere, cfbtGroup]) then // should always be cfbtGroup;
-            EndCodeFoldBlock;
+            EndSqlCodeFoldBlock;
           if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
             StartSqlCodeFoldBlock(cfbtHaving, SqlCodeFoldRange.BracketNestLevel);
         end;
       skOrder: begin
           CloseJoinFoldBlocks;
           if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtUpdate, cfbtDelete, cfbtWhere, cfbtGroup, cfbtHaving]) then
-            EndCodeFoldBlock;
+            EndSqlCodeFoldBlock;
           if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
             StartSqlCodeFoldBlock(cfbtOrder, SqlCodeFoldRange.BracketNestLevel);
         end;
       skLimit: begin
           CloseJoinFoldBlocks;
           if (TopSqlCodeFoldBlockType in [cfbtFrom, cfbtUpdate, cfbtDelete, cfbtWhere, cfbtGroup, cfbtHaving, cfbtOrder]) then
-            EndCodeFoldBlock;
+            EndSqlCodeFoldBlock;
           if (TopSqlCodeFoldBlockType in cfbtAnySelect) then
             StartSqlCodeFoldBlock(cfbtOrder, SqlCodeFoldRange.BracketNestLevel);
         end;
@@ -1913,7 +1931,7 @@ begin
         end;
       skValues: begin
           if (TopSqlCodeFoldBlockType in [cfbtInto]) then
-            EndCodeFoldBlock;
+            EndSqlCodeFoldBlock;
           if (TopSqlCodeFoldBlockType in [cfbtInsert]) then
             StartSqlCodeFoldBlock(cfbtValues);
         end;
@@ -1951,7 +1969,7 @@ begin
         end;
       skEnd: begin
           if TopSqlCodeFoldBlockType = cfbtBegin then
-            EndCodeFoldBlock;
+            EndSqlCodeFoldBlock;
         end;
       skDelimiter: begin
           if IsAtNewStatementBegin then
@@ -2045,6 +2063,7 @@ begin
     attribSymbol:         FSymbolAttri.Assign(AValue);
     attribTableName:      FTableNameAttri.Assign(AValue);
     attribVariable:       FVariableAttri.Assign(AValue);
+    attribClientKeyword:  FClientKeywordAttri.Assign(AValue);
     attribCharSet:        FCharSetAttri.Assign(AValue);
     attribCollation:      fCollationAttri.Assign(AValue);
   end;
@@ -2135,7 +2154,7 @@ begin
     exit;
 
   while TopSqlCodeFoldBlockBracketLvl = SqlCodeFoldRange.BracketNestLevel do
-    EndCodeFoldBlock;
+    EndSqlCodeFoldBlock;
 
   SqlCodeFoldRange.DecBracketNestLevel;
 end;
@@ -2147,7 +2166,7 @@ begin
   exclude(FPreviousRange, rsAtStatementBegin);
   SqlCodeFoldRange.ResetBracketNestLevel;
   while not (TopSqlCodeFoldBlockType in [cfbtNone, cfbtBegin]) do
-    EndCodeFoldBlock;
+    EndSqlCodeFoldBlock;
 end;
 
 procedure TSynSQLSyn.SymbolAssignProc;
@@ -2333,7 +2352,8 @@ begin
     tkException: Result := fExceptionAttri;
     tkFunction: Result := fFunctionAttri;
     tkIdentifier: Result := fIdentifierAttri;
-    tkKey: Result := fKeyAttri;
+    tkKey,
+    tkClientKeyword: Result := fKeyAttri;
     tkNumber: Result := fNumberAttri;
     tkPLSQL: Result := fPLSQLAttri;                                             // DJLP 2000-08-11
     tkSpace: Result := fSpaceAttri;
@@ -2359,8 +2379,9 @@ begin
     exit;
 
   case fTokenID of
-    tkCharSet:   MergeModifierToTokenAttribute(Result, fCharSetAttri, ToPos(fTokenPos), ToPos(Run));
-    tkCollation: MergeModifierToTokenAttribute(Result, fCollationAttri, ToPos(fTokenPos), ToPos(Run));
+    tkClientKeyword: MergeModifierToTokenAttribute(Result, fClientKeywordAttri, ToPos(fTokenPos), ToPos(Run));
+    tkCharSet:       MergeModifierToTokenAttribute(Result, fCharSetAttri, ToPos(fTokenPos), ToPos(Run));
+    tkCollation:     MergeModifierToTokenAttribute(Result, fCollationAttri, ToPos(fTokenPos), ToPos(Run));
   end;
 end;
 
@@ -2486,6 +2507,8 @@ begin
   m := [];
   if TSqlCodeFoldBlockType(Index) in cfbtSqlWordTripletRanges then
     m := m + [fmMarkup];
+  if TSqlCodeFoldBlockType(Index) in cfbtSqlWordOutlineRanges then
+    m := m + [fmOutline];
   if TSqlCodeFoldBlockType(Index) in cfbtSqlFoldSupporting then
     m := m + [fmFold];
 
@@ -2518,7 +2541,7 @@ procedure TSynSQLSyn.CollectNodeInfo(FinishingABlock: Boolean; ABlockType: Point
 begin
   inherited CollectNodeInfo(
     FinishingABlock,
-    Pointer(PtrUInt(ABlockType) and 255),
+    Pointer(PtrUInt(ABlockType) and 127),
     LevelChanged
   );
 end;
@@ -2597,6 +2620,7 @@ begin
           @DoAddKeyword);
         EnumerateKeywords(Ord(tkFunction), MySqlFunctions, IdentChars,
           @DoAddKeyword);
+        EnumerateKeywords(Ord(tkClientKeyword), MySQL_Any_ClientKeywords,   @DoAddKeyword);
       end;
     sqlMySQL5:
       begin
@@ -2605,6 +2629,7 @@ begin
         EnumerateKeywords(Ord(tkFunction),  MySQL5Functions,  @DoAddKeyword);
         EnumerateKeywords(Ord(tkCharSet),   MySQL5Charsets,   @DoAddKeyword);
         EnumerateKeywords(Ord(tkCollation), MySQL5Collations, @DoAddKeyword);
+        EnumerateKeywords(Ord(tkClientKeyword), MySQL_Any_ClientKeywords,   @DoAddKeyword);
       end;
     sqlMySQL8:
       begin
@@ -2613,6 +2638,7 @@ begin
         EnumerateKeywords(Ord(tkFunction),  MySQL8Functions,  @DoAddKeyword);
         EnumerateKeywords(Ord(tkCharSet),   MySQL8Charsets,   @DoAddKeyword);
         EnumerateKeywords(Ord(tkCollation), MySQL8Collations, @DoAddKeyword);
+        EnumerateKeywords(Ord(tkClientKeyword), MySQL_Any_ClientKeywords,   @DoAddKeyword);
       end;
     sqlOracle:
       begin
@@ -2808,18 +2834,37 @@ end;
 
 function TSynSQLSyn.StartSqlCodeFoldBlock(ABlockType: TSqlCodeFoldBlockType; ABracketLvl: word
   ): TSqlCodeFoldBlockType;
+var
+  ConfigP: PSynCustomFoldConfig;
+  BlockEnabled, FoldBlock: Boolean;
+  p: PtrUInt;
 begin
+  ConfigP := @FFoldConfig[ord(ABlockType)];
+  BlockEnabled := ConfigP^.Enabled;
+  //if (not BlockEnabled) and (not ConfigP^.IsEssential) then
+  //  exit(False);
+
+  FoldBlock := BlockEnabled and (ConfigP^.Modes * [fmFold, fmHide] <> []);
+  p := 0;
+  if FoldBlock then p := 128;
+
   Result := TSqlCodeFoldBlockType(PtrUInt(
-    StartCodeFoldBlock(Pointer(
-      PtrUInt(ABlockType) +
-      (ABracketLvl << 8)
-    ))
+    StartCodeFoldBlock( Pointer(PtrUInt(ABlockType) + p + (ABracketLvl << 8)),
+                        FoldBlock
+                      )
   ));
+end;
+
+procedure TSynSQLSyn.EndSqlCodeFoldBlock;
+begin
+  inherited EndCodeFoldBlock(
+    (PtrUInt(TopCodeFoldBlockType) and 128) <> 0
+  );
 end;
 
 function TSynSQLSyn.TopSqlCodeFoldBlockType(DownIndex: Integer): TSqlCodeFoldBlockType;
 begin
-  Result := TSqlCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType(DownIndex)) and 255);
+  Result := TSqlCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType(DownIndex)) and 127);
 end;
 
 function TSynSQLSyn.TopSqlCodeFoldBlockBracketLvl(DownIndex: Integer): word;

@@ -164,6 +164,7 @@ resourcestring
   SYNS_AttrUserFunction         =  'User functions';
   SYNS_AttrValue                =  'Value';
   SYNS_AttrVariable             =  'Variable';
+  SYNS_AttrClientKeyword        =  'Keyword (Client)';
   SYNS_AttrWhitespace           =  'Whitespace';
   SYNS_AttrTableName            =  'Table Name';
   SYNS_AttrCharSet              =  'Charset';
@@ -310,6 +311,7 @@ const
   SYNS_XML_AttrUserFunction         =  'User functions';
   SYNS_XML_AttrValue                =  'Value';
   SYNS_XML_AttrVariable             =  'Variable';
+  SYNS_XML_AttrClientKeyword        =  'ClientKeyword';
   SYNS_XML_AttrWhitespace           =  'Whitespace';
   SYNS_XML_AttrTableName            =  'Table Name';
   SYNS_XML_AttrCharSet              =  'Charset';

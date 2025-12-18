@@ -95,6 +95,10 @@ msgstr "Contagem original linhas fragmento \"Diff\""
 msgid "Class"
 msgstr "Classe"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr ""

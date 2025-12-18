@@ -96,6 +96,10 @@ msgstr "Originalo eilučių kiekis skirtumų gabale"
 msgid "Class"
 msgstr "Klasė"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr ""

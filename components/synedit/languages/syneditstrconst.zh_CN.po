@@ -96,6 +96,10 @@ msgstr "差异块原始行数"
 msgid "Class"
 msgstr "类"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr ""

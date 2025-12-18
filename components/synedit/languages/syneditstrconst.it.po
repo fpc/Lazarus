@@ -96,6 +96,10 @@ msgstr "Numero righe originali blocco Diff"
 msgid "Class"
 msgstr "Classe"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr ""

@@ -88,6 +88,10 @@ msgstr ""
 msgid "Class"
 msgstr "Luokka"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr ""

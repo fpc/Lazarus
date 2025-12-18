@@ -99,6 +99,10 @@ msgstr "Diff Yığın Orijinal Satır Sayısı"
 msgid "Class"
 msgstr "Sınıf"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr ""

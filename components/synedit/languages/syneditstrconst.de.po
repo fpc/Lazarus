@@ -97,6 +97,10 @@ msgstr "Unsprüngliche Chunk-Zeilenzahl des Diff"
 msgid "Class"
 msgstr "Klasse"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr ""

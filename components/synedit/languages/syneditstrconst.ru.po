@@ -95,6 +95,10 @@ msgstr "Число исходных строк последовательнос�
 msgid "Class"
 msgstr "Класс"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr "Порядок сортировки"

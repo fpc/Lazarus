@@ -98,6 +98,10 @@ msgstr "К-сть початкових рядків шматка Diff"
 msgid "Class"
 msgstr "Клас"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr ""

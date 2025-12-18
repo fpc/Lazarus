@@ -95,6 +95,10 @@ msgstr "Porovnat původní počet řádků úseku"
 msgid "Class"
 msgstr "Třída"
 
+#: syneditstrconst.syns_attrclientkeyword
+msgid "Keyword (Client)"
+msgstr ""
+
 #: syneditstrconst.syns_attrcollation
 msgid "Collation"
 msgstr ""
