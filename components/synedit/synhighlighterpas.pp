@@ -48,6 +48,7 @@ unit SynHighlighterPas;
 
 {$I synedit.inc}
 {$ModeSwitch advancedrecords}
+{$WriteableConst off}
 
 interface
 
