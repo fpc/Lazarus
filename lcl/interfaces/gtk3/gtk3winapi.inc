@@ -1295,10 +1295,7 @@ var
       pango_font_family_list_faces(AFamilies[i], @AFaces, @ANumFaces);
       SetLength(Faces[i].Faces, ANumFaces);
       for j := 0 to ANumFaces - 1 do
-      begin
         Faces[i].Faces[j] := StrPas(pango_font_face_get_face_name(AFaces[j]));
-        g_object_unref(AFaces[j]);
-      end;
       g_free(AFaces);
     end;
     g_free(AFamilies);
