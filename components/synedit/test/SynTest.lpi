@@ -765,6 +765,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestWordWrap"/>
       </Unit>
+      <Unit>
+        <Filename Value="testhighlightsql.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestHighlightSql"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
