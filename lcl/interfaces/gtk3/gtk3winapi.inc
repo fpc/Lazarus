@@ -2789,6 +2789,11 @@ begin
         Result := 2;
       end;
 
+    SM_CXSMICON,
+    SM_CYSMICON:
+      // small icon size
+      Result := 16;
+
     SM_CXICON,
     SM_CYICON:
       // big icon size
