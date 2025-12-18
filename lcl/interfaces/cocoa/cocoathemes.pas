@@ -8,6 +8,7 @@ unit CocoaThemes;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$interfaces corba}
 
 interface
 
@@ -23,8 +24,15 @@ uses
   customdrawndrawers,
   // widgetset
   CocoaUtils, CocoaGDIObjects, CocoaConst;
-  
+
 type
+
+  { ICocoaThemeObserver }
+
+  ICocoaThemeObserver = Interface
+    procedure onThemeChanged;
+  end;
+
   { TCocoaThemeServices }
 
   TCocoaThemeServices = class(TThemeServices)
@@ -75,8 +83,11 @@ type
     function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; override;
     function GetOption(AOption: TThemeOption): Integer; override;
   private
+    _observers: TFPList;
     procedure doDarwinThemeChangedNotify;
   public
+    class procedure addObserver( const observer: ICocoaThemeObserver );
+    class procedure removeObserver( const observer: ICocoaThemeObserver );
     class procedure darwinThemeChangedNotify;
   end;
 
@@ -548,12 +559,14 @@ begin
   BtnCell := NSButtonCell.alloc.initTextCell(NSSTR_EMPTY);
   BezelToolBar := NSSmallSquareBezelStyle; // can be resized at any size
   BezelButton := NSSmallSquareBezelStyle;
+  _observers := TFPList.Create;
 end;
 
 destructor TCocoaThemeServices.Destroy;
 begin
   if (HdrCell<>nil) then hdrCell.Release;
   if (BtnCell<>nil) then BtnCell.Release;
+  _observers.Free;
   inherited Destroy;
 end;
 
@@ -836,6 +849,18 @@ begin
   end;
 end;
 
+class procedure TCocoaThemeServices.addObserver(
+  const observer: ICocoaThemeObserver);
+begin
+  TCocoaThemeServices(ThemeServices)._observers.Add( observer );
+end;
+
+class procedure TCocoaThemeServices.removeObserver(
+  const observer: ICocoaThemeObserver);
+begin
+  TCocoaThemeServices(ThemeServices)._observers.Remove( observer );
+end;
+
 (*
 {------------------------------------------------------------------------------
   Method:  TCarbonThemeServices.InternalDrawParentBackground
@@ -986,10 +1011,16 @@ begin
 end;
 
 procedure TCocoaThemeServices.doDarwinThemeChangedNotify;
+var
+  i: Integer;
 begin
   self.UpdateThemes;
   Graphics.UpdateHandleObjects;
   self.IntfDoOnThemeChange;
+
+  for i:= 0 to _observers.Count-1 do begin
+    ICocoaThemeObserver(_observers[i]).onThemeChanged;
+  end;
 end;
 
 class procedure TCocoaThemeServices.darwinThemeChangedNotify;
