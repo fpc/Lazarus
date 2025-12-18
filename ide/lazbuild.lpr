@@ -88,7 +88,7 @@ type
     FSubtargetOverrideValue: String;
     fWidgetsetOverride: String;
 
-    function HasLongOptIgnoreCase(const S: String; out aValue: String): Boolean;
+    function HasOpt_GetValue(const S: String; out aValue: String): Boolean;
     function HasShortOrLongOpt(const C: Char; const S: String): Boolean;
 
     // codetools
@@ -158,12 +158,14 @@ type
     procedure SetupPackageSystem;
     procedure SetupDialogs;
     procedure StoreBaseSettings;
+    {$IF FPC_FULLVERSION<30301}
     function RepairedCheckOptions(Const ShortOptions : String;
                    Const Longopts : TStrings; Opts,NonOpts : TStrings) : String;
+    {$endif}
   public
     // Files (or package names) passed by the user to Lazbuild:
     Files: TStringList;
-    constructor Create(TheOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     procedure Run;
@@ -851,8 +853,8 @@ var
     // apply options
     MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
-    if HasLongOptIgnoreCase('get',S) or
-       HasLongOptIgnoreCase('get-expand-text',S) then begin
+    if HasOpt_GetValue('get',S)
+    or HasOpt_GetValue('get-expand-text',S) then begin
       // check for empty text
       if S = '' then
       begin
@@ -1030,7 +1032,7 @@ begin
   else
     CompReason:= crCompile;
 
-  if HasLongOptIgnoreCase('get-build-modes',S) then begin
+  if HasOpt_GetValue('get-build-modes',S) then begin
     ShowBuildModes;
     exit(true);
   end;
@@ -1268,7 +1270,7 @@ begin
   fCompilerInCfg:=EnvironmentOptions.CompilerFilename;
   fLazarusDirInCfg:=EnvironmentOptions.LazarusDirectory;
 
-  if HasLongOptIgnoreCase('language',Lang) then
+  if HasOpt_GetValue('language',Lang) then
     EnvironmentOptions.LanguageID:=Lang;
   TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
                            EnvironmentOptions.LanguageID);
@@ -1371,6 +1373,7 @@ begin
   end;
 end;
 
+{$IF FPC_FULLVERSION<30301}
 function TLazBuildApplication.RepairedCheckOptions(const ShortOptions: String;
   const Longopts: TStrings; Opts, NonOpts: TStrings): String;
 
@@ -1485,13 +1488,18 @@ begin
     Inc(I);
     end;
 end;
+{$endif}
 
-constructor TLazBuildApplication.Create(TheOwner: TComponent);
+constructor TLazBuildApplication.Create(AOwner: TComponent);
 begin
-  inherited Create(TheOwner);
-  SetupDialogs;
+  inherited Create(AOwner);
   Files:=TStringList.Create;
+  SetupDialogs;
   fMaxProcessCount:=-1;
+  {$IF FPC_FULLVERSION>=30301}
+  CaseSensitiveShortOptions:=True;
+  CaseSensitiveLongOptions:=False;
+  {$endif}
 end;
 
 destructor TLazBuildApplication.Destroy;
@@ -1544,27 +1552,34 @@ begin
       PrintErrorAndHalt(ErrorBuildFailed, '');
 end;
 
-function TLazBuildApplication.HasLongOptIgnoreCase(const S: String; out
-  aValue: String): Boolean;
-// Check existence of a long option case-insensitively.
+function TLazBuildApplication.HasOpt_GetValue(const S: String;
+  out aValue: String): Boolean;
+// Check existence of an option and get its value.
+var
+  IsLong: Boolean;
+  I: Integer;
 begin
-  CaseSensitiveOptions:=False;
-  Result:=HasOption(S);
+  {$IF FPC_FULLVERSION<30301}CaseSensitiveOptions:=False;{$endif}
+  I:=FindOptionIndex(S, IsLong);
+  Result:=I<>-1;
   if Result then
-    aValue:=GetOptionValue(S)
+    aValue:=GetOptionAtIndex(I, IsLong)
   else
     aValue:='';
-  CaseSensitiveOptions:=True;
+  {$IF FPC_FULLVERSION<30301}CaseSensitiveOptions:=True;{$endif}
 end;
 
-function TLazBuildApplication.HasShortOrLongOpt(const C: Char; const S: String
-  ): Boolean;
+function TLazBuildApplication.HasShortOrLongOpt(const C: Char; const S: String): Boolean;
 // Check existence of a short option casesensitively and long option case-insensitively.
 begin
+  {$IF FPC_FULLVERSION>=30301}
+  Result:=HasOption(C, S);
+  {$else}
   Result:=HasOption(C);
   CaseSensitiveOptions:=False;
   Result:=Result or HasOption(S);
   CaseSensitiveOptions:=True;
+  {$endif}
 end;
 
 function TLazBuildApplication.ParseParameters: boolean;
@@ -1577,16 +1592,7 @@ var
   FilesNeeded: Boolean;
 begin
   Result:=False;
-  if (ToolParamCount<=0)
-   or (CompareText(ToolParamStr(1),'--help')=0)
-   or (CompareText(ToolParamStr(1),'-help')=0)
-   or (CompareText(ToolParamStr(1),'-?')=0)
-   or (CompareText(ToolParamStr(1),'-h')=0)
-  then begin
-    WriteUsage;
-    exit;
-  end;
-  if HasShortOrLongOpt('h','help') or HasOption('?') then begin
+  if (ToolParamCount<=0) or HasOption('?') or HasShortOrLongOpt('h','help') then begin
     WriteUsage;
     exit;
   end;
@@ -1596,9 +1602,9 @@ begin
   end;
 
   // ConsoleVerbosity
-  if HasLongOptIgnoreCase('get-build-modes', p) or
-     HasLongOptIgnoreCase('get-expand-text', p) or
-     HasLongOptIgnoreCase('get', p)
+  if HasOpt_GetValue('get-build-modes', p) or
+     HasOpt_GetValue('get-expand-text', p) or
+     HasOpt_GetValue('get', p)
   then
     ConsoleVerbosity := -100 // do not output anything other than the result
   else
@@ -1648,21 +1654,27 @@ begin
     LongOptions.Add('get-expand-text:');
     LongOptions.Add('get:');
     LongOptions.Add('get-build-modes');
-    ErrorMsg:=RepairedCheckOptions('lBrdq',LongOptions,Options,NonOptions);
+    {$IF FPC_FULLVERSION>=30301}
+    ErrorMsg:=CheckOptions('Brdq',LongOptions,Options,NonOptions);
+    {$else}
+    ErrorMsg:=RepairedCheckOptions('Brdq',LongOptions,Options,NonOptions);
+    {$endif}
     if ErrorMsg<>'' then
       PrintErrorAndHalt(ErrorInvalidSyntax, ErrorMsg);
 
+    if Options.Count > 0 then
+      PrintHint('Opt: "' + Options[0] + '"');
     // lazarus config
     if FileExistsUTF8(GetCfgFileName) then
       PrintInfo('Using config file: "' + GetCfgFileName + '"');
 
     FilesNeeded:=true;
 
-    if HasLongOptIgnoreCase('verbose-pkgsearch',p) then
+    if HasOpt_GetValue('verbose-pkgsearch',p) then
       Include(fPkgGraphVerbosity,pvPkgSearch);
 
     // PackageAction: register lpk files
-    if HasLongOptIgnoreCase('add-package-link',p) then begin
+    if HasOpt_GetValue('add-package-link',p) then begin
       PrintInfo('Parameter: --add-package-link');
       if PackageAction<>lpaBuild then
         PrintErrorAndHalt(ErrorInvalidSyntax, 'Invalid combination of package actions');
@@ -1671,7 +1683,7 @@ begin
     end;
 
     // PackageAction: install lpk files
-    if HasLongOptIgnoreCase('add-package',p) then begin
+    if HasOpt_GetValue('add-package',p) then begin
       PrintInfo('Parameter: --add-package');
       if PackageAction<>lpaBuild then
         PrintErrorAndHalt(ErrorInvalidSyntax, 'Invalid combination of package actions');
@@ -1680,7 +1692,7 @@ begin
     end;
 
     // building IDE
-    if HasLongOptIgnoreCase('build-ide', FBuildIDEOptions) then begin
+    if HasOpt_GetValue('build-ide', FBuildIDEOptions) then begin
       BuildIDE:=true;
       FilesNeeded:=false;
       PrintInfo('Parameter: --build-ide="' + BuildIDEOptions + '"');
@@ -1692,19 +1704,19 @@ begin
       PrintErrorAndHalt(ErrorInvalidSyntax, 'Missing file');
 
     // primary config path
-    if HasLongOptIgnoreCase('primary-config-path',p) then begin
+    if HasOpt_GetValue('primary-config-path',p) then begin
       SetPrimaryConfigPath(p);
       PrintInfo('Parameter: --primary-config-path="' + GetPrimaryConfigPath + '"');
-    end else if HasLongOptIgnoreCase('pcp',p) then begin
+    end else if HasOpt_GetValue('pcp',p) then begin
       SetPrimaryConfigPath(p);
       PrintInfo('Parameter: --pcp="' + GetPrimaryConfigPath + '"');
     end;
 
     // secondary config path
-    if HasLongOptIgnoreCase('secondary-config-path',p) then begin
+    if HasOpt_GetValue('secondary-config-path',p) then begin
       SetPrimaryConfigPath(p);
       PrintInfo('Parameter: --secondary-config-path="' + GetSecondaryConfigPath + '"');
-    end else if HasLongOptIgnoreCase('scp',p) then begin
+    end else if HasOpt_GetValue('scp',p) then begin
       SetSecondaryConfigPath(p);
       PrintInfo('Parameter: --scp="' + GetSecondaryConfigPath + '"');
     end;
@@ -1733,59 +1745,59 @@ begin
     { Overrides }
 
     // widgetset
-    if HasLongOptIgnoreCase('ws',FWidgetSetOverride) then
+    if HasOpt_GetValue('ws',FWidgetSetOverride) then
       PrintInfo('Parameter: --ws=' + WidgetSetOverride)
-    else if HasLongOptIgnoreCase('widgetset',FWidgetSetOverride) then
+    else if HasOpt_GetValue('widgetset',FWidgetSetOverride) then
       PrintInfo('Parameter: --widgetset=' + WidgetSetOverride);
 
     // operating system
-    if HasLongOptIgnoreCase('os',FOSOverride) then
+    if HasOpt_GetValue('os',FOSOverride) then
       PrintInfo('Parameter: --os=' + OSOverride)
-    else if HasLongOptIgnoreCase('operating-system',FOSOverride) then
+    else if HasOpt_GetValue('operating-system',FOSOverride) then
       PrintInfo('Parameter: --operating-system=' + OSOverride);
 
     // cpu
-    if HasLongOptIgnoreCase('cpu',FCPUOverride) then
+    if HasOpt_GetValue('cpu',FCPUOverride) then
       PrintInfo('Parameter: --cpu=' + CPUOverride);
 
     // subtarget
-    if HasLongOptIgnoreCase('subtarget',FSubtargetOverrideValue) then begin
+    if HasOpt_GetValue('subtarget',FSubtargetOverrideValue) then begin
       FSubtargetOverride:=true;
       PrintInfo('Parameter: --subtarget=' + FSubtargetOverrideValue);
     end;
 
     // build mode
-    if HasLongOptIgnoreCase('bm',FBuildModeOverride) then
+    if HasOpt_GetValue('bm',FBuildModeOverride) then
       PrintInfo('Parameter: --bm="' + BuildModeOverride + '"')
-    else if HasLongOptIgnoreCase('build-mode',FBuildModeOverride) then
+    else if HasOpt_GetValue('build-mode',FBuildModeOverride) then
       PrintInfo('Parameter: --build-mode="' + BuildModeOverride + '"');
 
     // compiler
-    if HasLongOptIgnoreCase('compiler',FCompilerOverride) then
+    if HasOpt_GetValue('compiler',FCompilerOverride) then
       PrintInfo('Parameter: --compiler="' + CompilerOverride + '"');
 
     // lazarusdir
-    if HasLongOptIgnoreCase('lazarusdir',FLazarusDirOverride) then
+    if HasOpt_GetValue('lazarusdir',FLazarusDirOverride) then
       PrintInfo('Parameter: --lazarusdir="' + LazarusDirOverride + '"')
-    else if HasLongOptIgnoreCase('lazarus-dir',FLazarusDirOverride) then
+    else if HasOpt_GetValue('lazarus-dir',FLazarusDirOverride) then
       PrintInfo('Parameter: --lazarus-dir="' + LazarusDirOverride + '"');
 
     // language
-    if HasLongOptIgnoreCase('language',p) then
+    if HasOpt_GetValue('language',p) then
       PrintInfo('Parameter: --language=' + p);
 
     // max-process-count
-    if HasLongOptIgnoreCase('max-process-count',p) then begin
-      MaxProcessCount:=StrToInt(p);
+    if HasOpt_GetValue('max-process-count',p) then begin
+      MaxProcessCount := StrToInt(p);
       PrintInfo('Parameter: --max-process-count=' + p);
     end;
 
-    if HasLongOptIgnoreCase('no-write-project',p) then begin
+    if HasOpt_GetValue('no-write-project',p) then begin
       NoWriteProject := true;
       PrintInfo('Parameter: --no-write-project');
     end;
 
-    if HasLongOptIgnoreCase('create-makefile',p) then
+    if HasOpt_GetValue('create-makefile',p) then
     begin
       CreateMakefile := true;
       PrintInfo('Parameter: --create-makefile');
@@ -1814,9 +1826,9 @@ const
 
 begin
   // Obtain 'language' option value if present.
-  // HasLongOptIgnoreCase correctly handles all cases, so no need to check its result:
+  // HasOpt_GetValue correctly handles all cases, so no need to check its result:
   // empty CustomLang means using default language.
-  HasLongOptIgnoreCase('language',CustomLang);
+  HasOpt_GetValue('language',CustomLang);
   TranslateResourceStrings(ProgramDirectoryWithBundle,CustomLang);
   writeln('');
   writeln(lisLazbuildOptionsSyntax);
