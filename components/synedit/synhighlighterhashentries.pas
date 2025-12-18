@@ -72,7 +72,7 @@ type
       the two keywords it might return Self and store NewEntry in the Next
       pointer, or return NewEntry and make the Next property of NewEntry point
       to Self. This way the order of keyword length is preserved. }
-    function AddEntry(NewEntry: TSynHashEntryBase): TSynHashEntryBase; virtual;
+    function AddEntry(var NewEntry: TSynHashEntryBase; NoException: boolean = False): TSynHashEntryBase; virtual;
     { Creates a keyword entry for the given keyword and token kind. }
     constructor Create(const AKey: string);
     { Destroys the keyword entry and all other keyword entries Next points to. }
@@ -111,6 +111,9 @@ type
 
   { A list of keyword entries, stored as single-linked lists under the hashvalue
     of the keyword. }
+
+  { TGenSynHashEntryList }
+
   generic TGenSynHashEntryList<HE: TSynHashEntryBase> = class(TList)
   protected
     { Returns the first keyword entry for a given hashcalue, or nil. }
@@ -123,6 +126,7 @@ type
     { Clears the list and frees all contained keyword entries. }
     procedure Clear; override;
   public
+    function FindOnAdd(HashKey: Integer; Entry: HE): HE;
     { Type-safe access to the first keyword entry for a hashvalue. }
     property Items[Index: integer]: HE read Get write Put; default;
   end;
@@ -198,17 +202,22 @@ begin
   inherited Destroy;
 end;
 
-function TSynHashEntryBase.AddEntry(NewEntry: TSynHashEntryBase): TSynHashEntryBase;
+function TSynHashEntryBase.AddEntry(var NewEntry: TSynHashEntryBase; NoException: boolean
+  ): TSynHashEntryBase;
 begin
   Result := Self;
   if Assigned(NewEntry) then begin
-    if CompareText(NewEntry.Keyword, fKeyword) = 0 then
-      raise Exception.CreateFmt('Keyword "%s" already in list', [fKeyword]);
+    if CompareText(NewEntry.Keyword, fKeyword) = 0 then begin
+      if not NoException then
+        raise Exception.CreateFmt('Keyword "%s" already in list', [fKeyword]);
+      NewEntry := Self;
+      exit;
+    end;
     if NewEntry.fKeyLen < fKeyLen then begin
       NewEntry.fNext := Self;
       Result := NewEntry;
     end else if Assigned(fNext) then
-      fNext := fNext.AddEntry(NewEntry)
+      fNext := fNext.AddEntry(NewEntry, NoException)
     else
       fNext := NewEntry;
   end;
@@ -240,6 +249,21 @@ begin
   inherited Clear;
 end;
 
+function TGenSynHashEntryList.FindOnAdd(HashKey: Integer; Entry: HE): HE;
+var
+  ListEntry: TSynHashEntryBase;
+begin
+  Result := Entry;
+  if HashKey >= Count then
+    Count := HashKey + 1;
+  ListEntry := TSynHashEntryBase(inherited Items[HashKey]);
+  // if there is already a hashentry for this hashvalue let it decide
+  // where to put the new entry in its single linked list
+  if Assigned(ListEntry) then
+    Entry := HE(ListEntry.AddEntry(TSynHashEntryBase(Result), True));
+  inherited Items[HashKey] := Pointer(Entry);
+end;
+
 function TGenSynHashEntryList.Get(HashKey: Integer): HE;
 begin
   if (HashKey >= 0) and (HashKey < Count) then
@@ -258,7 +282,7 @@ begin
   // if there is already a hashentry for this hashvalue let it decide
   // where to put the new entry in its single linked list
   if Assigned(ListEntry) then
-    Entry := HE(ListEntry.AddEntry(Entry));
+    Entry := HE(ListEntry.AddEntry(TSynHashEntryBase(Entry)));
   inherited Items[HashKey] := Pointer(Entry);
 end;
 

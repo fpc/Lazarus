@@ -229,6 +229,18 @@ type
 
     TSynSqlHashEntryList = specialize TGenSynHashEntryList<TSynSqlHashEntry>;
 
+  private const
+    SqlKeyWordNames : array [TSqlKeywordId] of ansistring = (
+      '', // skUnknown
+      'SELECT', 'UPDATE', 'INSERT', 'DELETE',
+      'UNION', 'FROM', 'JOIN', 'ON', 'WHERE', 'GROUP', 'HAVING', 'ORDER', 'LIMIT',
+      'INTO', 'VALUES', 'SET',
+      'CREATE', 'DROP', 'ALTER', 'DB', 'TABLE',
+      'PROCEDURE',
+      'BEGIN', 'END',
+      'DELIMITER'
+    );
+
   private
     fRange, FPreviousRange: TRangeStates;
     FTokenState, FNextTokenState: TTokenState;
@@ -295,6 +307,7 @@ type
     function IdentKind(MayBe: PChar): TtkTokenKind;
     procedure MakeMethodTables;
     procedure AnsiCProc;
+    procedure AddCodeFoldWords;
     procedure DoAddKeyword(AKeyword: string; AKind: integer);
     procedure SetDialect(Value: TSQLDialect);
     procedure SetTableNames(const Value: TStrings);
@@ -2474,6 +2487,22 @@ begin
   Result := SYNS_LangSQL;
 end;
 
+procedure TSynSQLSyn.AddCodeFoldWords;
+var
+  kid: TSqlKeywordId;
+  e: TSynSqlHashEntry;
+  HashValue: Integer;
+begin
+  for kid in TSqlKeywordId do begin
+    if SqlKeyWordNames[kid] <> '' then begin
+      e := TSynSqlHashEntry.Create(SqlKeyWordNames[kid], ord(tkIdentifier), kid);
+      HashValue := KeyHash(PChar(SqlKeyWordNames[kid]));
+      if fKeywords.FindOnAdd(HashValue, e) <> e then
+        e.Free;
+    end;
+  end;
+end;
+
 procedure TSynSQLSyn.DoAddKeyword(AKeyword: string; AKind: integer);
 var
   HashValue: integer;
@@ -2595,6 +2624,7 @@ end;
 procedure TSynSQLSyn.InitializeKeywordLists;
 begin
   fKeywords.Clear;
+  fKeywords.Capacity := 256;
   if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL2022]) then
   begin
     fIdentifiersPtr := @IdentifiersMSSQL7;
@@ -2716,6 +2746,7 @@ begin
       EnumerateKeywords(Ord(tkKey), Firebird40KW, IdentChars, @DoAddKeyword);
   end;
   PutTableNamesInKeywordList;
+  AddCodeFoldWords;
   DefHighlightChange(Self);
 end;
 
