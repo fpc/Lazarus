@@ -90,7 +90,6 @@ type
     rsInParamDeclaration, // [OPT] Either in property-index "foo[AIndex:int]" or in procedure param declaration
     rsInterface,
     rsImplementation,   // Program or Implementation
-    rsCompilerModeSet,  // there was an explicit {$mode ...
 
     // we need to detect:    type TFoo = procedure; // must not fold
     //                       var  foo: procedure;   // must not fold
@@ -499,6 +498,7 @@ const
 type
 
   TPascalCompilerMode = (
+    pcmUnknown,
     pcmObjFPC,
     pcmDelphi,
     pcmDelphiUnicode,
@@ -793,6 +793,7 @@ type
     procedure DoCustomTokenChanged(Sender: TObject);
     procedure DoReadLfmNestedComments(Reader: TReader);
     procedure DoReadLfmTypeHelpers(Reader: TReader);
+    function GetModeSwitchesStored: Boolean;
     function GetNestedComments: boolean; deprecated;
     function GetTypeHelpers: boolean; deprecated;
     procedure RebuildCustomTokenInfo;
@@ -1171,7 +1172,7 @@ type
     property DirectiveAttri: TLazEditHighlighterAttributes_Eol                  index attribDirective               read GetAttribute_Eol write SetAttribute;
 
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode default pcmDelphi;
-    property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write SetModeSwitches;
+    property ModeSwitches: TPascalCompilerModeSwitches read FModeSwitches write SetModeSwitches stored GetModeSwitchesStored;
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
     property ExtendedKeywordsMode: Boolean
              read FExtendedKeywordsMode write SetExtendedKeywordsMode default False;
@@ -1589,6 +1590,7 @@ function TSynPasSyn.SwitchesForMode(const AValue: TPascalCompilerMode
 begin
   Result := [];
   case AValue of
+    pcmUnknown:       Result := [low(TPascalCompilerModeSwitches)..high(TPascalCompilerModeSwitches)];
     pcmFPC,
     pcmObjFPC:        Result := [pcsNestedComments];
     pcmDelphi,
@@ -1828,6 +1830,11 @@ begin
   else
     FModeSwitches := FModeSwitches - [pcsTypeHelpers];
   FModeSwitchesLoaded := True;
+end;
+
+function TSynPasSyn.GetModeSwitchesStored: Boolean;
+begin
+  Result := FModeSwitches <> SwitchesForMode(CompilerMode);
 end;
 
 function TSynPasSyn.GetNestedComments: boolean;
@@ -2664,7 +2671,7 @@ begin
   end
   else
   if KeyCompU('GENERIC') and
-    ( (FRangeCompilerMode = pcmObjFPC) or not(rsCompilerModeSet in fRange) ) and
+    (FRangeCompilerMode in [pcmObjFPC, pcmUnknown]) and
     (not(TopPascalCodeFoldBlockType in PascalStatementBlocks+[cfbtUses])) and
     (FTokenState in tsAnyAtBeginOfStatement + [tsAfterClass])
   then begin
@@ -3464,8 +3471,7 @@ begin
     FOldRange := FOldRange - [rsInProcName];
     Result := tkKey;
   end
-  else if KeyCompU('SPECIALIZE') and
-    ( (FRangeCompilerMode = pcmObjFPC) or not(rsCompilerModeSet in fRange) )
+  else if KeyCompU('SPECIALIZE') and (FRangeCompilerMode in [pcmObjFPC, pcmUnknown])
   then begin
     Result := tkKey;
     if rsProperty in fRange then begin
@@ -4572,7 +4578,6 @@ begin
   if TextComp('mode') then begin
     // $mode directive
     inc(Run,4);
-    include(fRange, rsCompilerModeSet);
     // skip space
     while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
     if TextComp('objfpc') then begin
@@ -4612,7 +4617,7 @@ begin
       FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
     end
     else
-      exclude(fRange, rsCompilerModeSet);
+      FRangeCompilerMode := pcmUnknown; // don't reset switches
   end;
   repeat
     case fLine[Run] of
@@ -6830,12 +6835,12 @@ end;
 
 function TSynPasSyn.HasRangeCompilerModeswitch(AModeSwitch: TPascalCompilerModeSwitch): Boolean;
 begin
-  Result := (AModeSwitch in FRangeModeSwitches) or not(rsCompilerModeSet in fRange);
+  Result := (AModeSwitch in FRangeModeSwitches);
 end;
 
 function TSynPasSyn.HasRangeCompilerModeswitch(AModeSwitches: TPascalCompilerModeSwitches): Boolean;
 begin
-  Result := (AModeSwitches * FRangeModeSwitches <> []) or not(rsCompilerModeSet in fRange);
+  Result := (AModeSwitches * FRangeModeSwitches <> []);
 end;
 
 procedure TSynPasSyn.GetTokenBounds(out LogX1, LogX2: Integer);
