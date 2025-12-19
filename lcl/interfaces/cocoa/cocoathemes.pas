@@ -89,6 +89,7 @@ type
     class procedure addObserver( const observer: ICocoaThemeObserver );
     class procedure removeObserver( const observer: ICocoaThemeObserver );
     class procedure darwinThemeChangedNotify;
+    class function isDark: Boolean;
   end;
 
 implementation
@@ -1026,6 +1027,19 @@ end;
 class procedure TCocoaThemeServices.darwinThemeChangedNotify;
 begin
   TCocoaThemeServices(ThemeServices).doDarwinThemeChangedNotify;
+end;
+
+class function TCocoaThemeServices.isDark: Boolean;
+var
+  appearanceName: NSString;
+begin
+  Result:= False;
+  if not NSApp.respondsToSelector( ObjCSelector('effectiveAppearance') ) then
+    Exit;
+  if not Assigned(NSApp.effectiveAppearance) then
+    Exit;
+  appearanceName:= NSApp.effectiveAppearance.Name;
+  Result:= appearanceName.isEqualToString(NSSTR_DARK_NAME) or appearanceName.isEqualToString(NSSTR_DARK_NAME_VIBRANT);
 end;
 
 end.
