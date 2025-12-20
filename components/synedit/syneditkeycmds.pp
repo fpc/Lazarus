@@ -42,7 +42,7 @@ unit SynEditKeyCmds;
 interface
 
 uses
-  Classes, Menus, SysUtils, Types, LCLIntf, LCLType, LCLProc, SynEditStrConst;
+  Classes, Menus, SysUtils, Types, Math, LCLIntf, LCLType, LCLProc, SynEditStrConst;
 
 const
   //****************************************************************************
@@ -891,14 +891,25 @@ end;
 
 procedure TSynEditKeyStrokes.Assign(Source: TPersistent);
 var
-  x: integer;
+  x, c: integer;
 begin
   if Source is TSynEditKeyStrokes then
   begin
-    Clear;
-    for x := 0 to TSynEditKeyStrokes(Source).Count-1 do
-      Add.Assign(TSynEditKeyStrokes(Source)[x]);
-  end else
+    BeginUpdate;
+    c := Count;
+    for x := 0 to Min(TSynEditKeyStrokes(Source).Count-1, c - 1) do
+      Items[x].Assign(TSynEditKeyStrokes(Source)[x]);
+    if TSynEditKeyStrokes(Source).Count < c then begin
+      for x := c - 1 downto TSynEditKeyStrokes(Source).Count do
+        Delete(x);
+    end
+    else begin
+      for x := c to TSynEditKeyStrokes(Source).Count-1 do
+        Add.Assign(TSynEditKeyStrokes(Source)[x]);
+    end;
+    EndUpdate;
+  end
+  else
     inherited Assign(Source);
 end;
 
