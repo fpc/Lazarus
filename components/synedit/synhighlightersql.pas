@@ -62,6 +62,7 @@ type
     tkSQLPlus, tkString, tkSymbol, tkTableName, tkUnknown, tkVariable,          // DJLP 2000-08-11
     tkClientKeyword,
     tkCharSet, tkCollation);
+  //TtkTokenKinds = set of TtkTokenKind;
 
   TRangeState = (
     rsUnknown,
@@ -76,8 +77,11 @@ type
 
   TTokenState = (
     tsUnknown,
-    tsAfterIdentOrExpression
+    tsAfterIdentOrExpression,
+    tsAfterAs,
+    tsAfterDblColon
   );
+  TTokenStates = set of TTokenState;
 
   TSqlCodeFoldBlockType = (
     cfbtSelect,
@@ -213,18 +217,39 @@ type
       skCreate, skDrop, skAlter, skDb, skTable,
       skProcedure,
       skBegin, skEnd,
+      skAs,
       skDelimiter
     );
+
+    TAlternativeKindFlag = (akNeedBrackets);
+    TAlternativeKindFlags = set of TAlternativeKindFlag;
+    { TAlternativeKind }
+
+    TAlternativeKind = object
+      FoldTypes: TSqlCodeFoldBlockTypes;
+      TokenStates: TTokenStates;
+      Flags: TAlternativeKindFlags;
+      AlternativeKind: TtkTokenKind;
+      function Match(AFoldType: TSqlCodeFoldBlockType; ATokenState: TTokenState; AFlags: TAlternativeKindFlags): Boolean;
+    end;
+    TAlternativeKinds = array of TAlternativeKind;
 
     { TSynSqlHashEntry }
 
     TSynSqlHashEntry = class;
     TSynSqlHashEntry = class(specialize TGenSynHashEntry<TSynSqlHashEntry>)
     private
+      FAlternativeKinds: TAlternativeKinds;
       FKeywordId: TSqlKeywordId;
+      function GetAlternativeKind(AnIndex: integer): TAlternativeKind;
+      function GetAlternativeKindCount: integer;
     public
       constructor Create(const AKey: string; AKind: integer; AKeywordId: TSqlKeywordId);
+      procedure AddAlternativeKind(AnAltKind: TAlternativeKind);
+      procedure AddAlternativeKind(AnAlternativeKind: TtkTokenKind; AFoldTypes: TSqlCodeFoldBlockTypes; ATokenStates: TTokenStates; AFlags: TAlternativeKindFlags);
       property KeywordId: TSqlKeywordId read FKeywordId;
+      property AlternativeKindCount: integer read GetAlternativeKindCount;
+      property AlternativeKind[AnIndex: integer]: TAlternativeKind read GetAlternativeKind;
     end;
 
     TSynSqlHashEntryList = specialize TGenSynHashEntryList<TSynSqlHashEntry>;
@@ -238,6 +263,7 @@ type
       'CREATE', 'DROP', 'ALTER', 'DB', 'TABLE',
       'PROCEDURE',
       'BEGIN', 'END',
+      'AS',
       'DELIMITER'
     );
 
@@ -304,6 +330,7 @@ type
     procedure SymbolAssignProc;
     procedure VariableProc;
     procedure UnknownProc;
+    function GetEntry(AnIdent: PChar): TSynSqlHashEntry;
     function IdentKind(MayBe: PChar): TtkTokenKind;
     procedure MakeMethodTables;
     procedure AnsiCProc;
@@ -1608,25 +1635,54 @@ begin
   Result := TRUE;
 end;
 
-function TSynSQLSyn.IdentKind(MayBe: PChar): TtkTokenKind;
+function TSynSQLSyn.GetEntry(AnIdent: PChar): TSynSqlHashEntry;
 var
   Entry: TSynSqlHashEntry;
 begin
-  fToIdent := MayBe;
-  fKeywordId := skUnknown;
-  Entry := fKeywords[KeyHash(MayBe)];
-  while Assigned(Entry) do begin
-    if Entry.KeywordLen > fStringLen then
+  fToIdent := AnIdent;
+  Result := fKeywords[KeyHash(AnIdent)];
+  while Assigned(Result) do begin
+    if Result.KeywordLen > fStringLen then
       break
-    else if Entry.KeywordLen = fStringLen then
-      if KeyComp(Entry.Keyword) then begin
-        Result := TtkTokenKind(Entry.Kind);
-        fKeywordId := Entry.KeywordId;
-        exit;
-      end;
-    Entry := Entry.Next;
+    else
+    if (Result.KeywordLen = fStringLen) and
+       KeyComp(Result.Keyword)
+    then
+      exit;
+    Result := Result.Next;
   end;
+  Result := nil;
+end;
+
+function TSynSQLSyn.IdentKind(MayBe: PChar): TtkTokenKind;
+var
+  Entry: TSynSqlHashEntry;
+  i, c: Integer;
+  f: TAlternativeKindFlags;
+  tfb: TSqlCodeFoldBlockType;
+begin
   Result := tkIdentifier;
+  fKeywordId := skUnknown;
+
+  Entry := GetEntry(MayBe);
+  if Entry = nil then
+    exit;
+
+  Result := TtkTokenKind(Entry.Kind);
+  fKeywordId := Entry.KeywordId;
+
+  c := Entry.AlternativeKindCount;
+  if c > 0 then begin
+    f := [];
+    if (SqlCodeFoldRange.BracketNestLevel > TopSqlCodeFoldBlockBracketLvl) then
+      f := [akNeedBrackets];
+    tfb := TopSqlCodeFoldBlockType;
+    for i := 0 to c - 1 do
+      if Entry.AlternativeKind[i].Match(tfb, FTokenState, f) then begin
+        Result := Entry.AlternativeKind[i].AlternativeKind;
+        break;
+      end;
+  end;
 end;
 
 procedure TSynSQLSyn.MakeMethodTables;
@@ -1850,6 +1906,7 @@ const
 
 begin
   fTokenID := IdentKind((LinePtr + Run));
+
   inc(Run, fStringLen);
 {begin}                                                                         // DJLP 2000-08-11
   if fTokenID = tkComment then begin
@@ -2010,6 +2067,8 @@ begin
           if TopSqlCodeFoldBlockType = cfbtBegin then
             EndSqlCodeFoldBlock;
         end;
+      skAs:
+        FNextTokenState := tsAfterAs;
       skDelimiter: begin
           if IsAtNewStatementBegin then
             fRange := fRange + [rsAfterDelimiter];
@@ -2226,28 +2285,36 @@ procedure TSynSQLSyn.VariableProc;
 var
   i: integer;
 begin
+  if (LinePtr[Run] = ':') and (LinePtr[Run+1] = ':') then begin
+    fTokenID := tkSymbol;
+    inc(Run, 2);
+    FNextTokenState := tsAfterDblColon;
+    exit;
+  end;
   // MS SQL uses @@ to indicate system functions/variables
   if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL2022]) and (LinePtr[Run] = '@') and (LinePtr[Run + 1] = '@')
-  then
-    IdentProc
-{begin}                                                                         //JDR 2000-25-2000
-  else if (SQLDialect in [sqlMySql, sqlOracle]) and (LinePtr[Run] = '@') then
-    SymbolProc
-{end}                                                                           //JDR 2000-25-2000
-  // Oracle uses the ':' character to indicate bind variables
-{begin}                                                                         //JJV 2000-11-16
-  // Ingres II also uses the ':' character to indicate variables
+  then begin
+    IdentProc;
+  end
   else
-    if not (SQLDialect in [sqlOracle, sqlIngres]) and (LinePtr[Run] = ':') then
-{end}                                                                           //JJV 2000-11-16
-    SymbolProc
+  if (SQLDialect in [sqlMySql, sqlOracle]) and (LinePtr[Run] = '@') then begin    //JDR 2000-25-2000
+    SymbolProc;
+  end                                                                           //JDR 2000-25-2000
+  // Oracle uses the ':' character to indicate bind variables
+  // Ingres II also uses the ':' character to indicate variables                //JJV 2000-11-16
   else begin
-    fTokenID := tkVariable;
-    i := Run;
-    repeat
-      Inc(i);
-    until not (fIdentifiersPtr^[LinePtr[i]]);
-    Run := i;
+    if not (SQLDialect in [sqlOracle, sqlIngres]) and (LinePtr[Run] = ':')        //JJV 2000-11-16
+    then begin
+      SymbolProc;
+    end
+    else begin
+      fTokenID := tkVariable;
+      i := Run;
+      repeat
+        Inc(i);
+      until not (fIdentifiersPtr^[LinePtr[i]]);
+      Run := i;
+    end;
   end;
 end;
 
@@ -2535,8 +2602,10 @@ begin
     'PROCEDURE':  kid := skProcedure;
     'BEGIN':      kid := skBegin;
     'END':        kid := skEnd;
+    'AS':         kid := skAs;
     'DELIMITER':  kid := skDelimiter;
-  ENd;
+  end;
+
   fKeywords[HashValue] := TSynSqlHashEntry.Create(AKeyword, AKind, kid);
 end;
 
@@ -2622,6 +2691,8 @@ begin
 end;
 
 procedure TSynSQLSyn.InitializeKeywordLists;
+var
+  Entry: TSynSqlHashEntry;
 begin
   fKeywords.Clear;
   fKeywords.Capacity := 256;
@@ -2706,6 +2777,10 @@ begin
         EnumerateKeywords(Ord(tkCharSet),   MySQL5Charsets,   @DoAddKeyword);
         EnumerateKeywords(Ord(tkCollation), MySQL5Collations, @DoAddKeyword);
         EnumerateKeywords(Ord(tkClientKeyword), MySQL_Any_ClientKeywords,   @DoAddKeyword);
+        // 2ndary
+        Entry := GetEntry('CHAR');
+        if Entry <> nil then Entry.AddAlternativeKind(tkDatatype, [], [tsAfterDblColon], []);
+        if Entry <> nil then Entry.AddAlternativeKind(tkDatatype, [], [tsAfterAs], [akNeedBrackets]);
       end;
     sqlMySQL8:
       begin
@@ -2949,13 +3024,55 @@ begin
   Result := word(PtrUInt(TopCodeFoldBlockType(DownIndex)) >> 8);
 end;
 
+{ TSynSQLSyn.TAlternativeKind }
+
+function TSynSQLSyn.TAlternativeKind.Match(AFoldType: TSqlCodeFoldBlockType;
+  ATokenState: TTokenState; AFlags: TAlternativeKindFlags): Boolean;
+begin
+  Result := ( (FoldTypes = []) or (AFoldType in FoldTypes) ) and
+            ( (TokenStates = []) or (ATokenState in TokenStates) );
+  if (akNeedBrackets in Flags) and not (akNeedBrackets in AFlags) then
+    Result := False;
+end;
+
 { TSynSQLSyn.TSynSqlHashEntry }
+
+function TSynSQLSyn.TSynSqlHashEntry.GetAlternativeKind(AnIndex: integer): TAlternativeKind;
+begin
+  Result := FAlternativeKinds[AnIndex];
+end;
+
+function TSynSQLSyn.TSynSqlHashEntry.GetAlternativeKindCount: integer;
+begin
+  Result := Length(FAlternativeKinds);
+end;
 
 constructor TSynSQLSyn.TSynSqlHashEntry.Create(const AKey: string; AKind: integer;
   AKeywordId: TSqlKeywordId);
 begin
   FKeywordId := AKeywordId;
   inherited Create(AKey, AKind);
+end;
+
+procedure TSynSQLSyn.TSynSqlHashEntry.AddAlternativeKind(AnAltKind: TAlternativeKind);
+var
+  l: SizeInt;
+begin
+  l := Length(FAlternativeKinds);
+  SetLength(FAlternativeKinds, l+1);
+  FAlternativeKinds[l] := AnAltKind;
+end;
+
+procedure TSynSQLSyn.TSynSqlHashEntry.AddAlternativeKind(AnAlternativeKind: TtkTokenKind;
+  AFoldTypes: TSqlCodeFoldBlockTypes; ATokenStates: TTokenStates; AFlags: TAlternativeKindFlags);
+var
+  AnAltKind: TAlternativeKind;
+begin
+  AnAltKind.AlternativeKind := AnAlternativeKind;
+  AnAltKind.FoldTypes       := AFoldTypes;
+  AnAltKind.TokenStates     := ATokenStates;
+  AnAltKind.Flags           := AFlags;
+  AddAlternativeKind(AnAltKind);
 end;
 
 initialization
