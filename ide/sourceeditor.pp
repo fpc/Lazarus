@@ -5098,13 +5098,14 @@ var
   HlIsPas, OldHlIsPas: Boolean;
   tl: TSrcSynTopLineInfo;
   d: TIdeSyntaxHighlighterID;
+  SimilarEditor: TSynEdit;
 begin
   d := AHighlighterId;
   if AHighlighterId < 0 then
     d := FDefaultSyntaxHighlighterId;
 
   if (AHighlighterId=fSyntaxHighlighterId) and
-     ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) and
+     ((FEditor.Highlighter<>nil) = (EditorOpts.UseSyntaxHighlight and (d <> IdeHighlighterNoneID)) ) and
      (d >= 0) and (d < EditorOpts.HighlighterList.Count) and
      (FEditor.Highlighter = EditorOpts.HighlighterList.SharedSynInstances[d])
   then
@@ -5137,7 +5138,12 @@ begin
         FEditor.Beautifier := nil; // use default
       if ASkipEditorOpts then
         exit;
-      EditorOpts.GetSynEditSettings(FEditor, nil, ActiveSyntaxHighlighterId);
+
+      SimilarEditor:=nil;
+      if (SourceNotebook.EditorCount>0) and (SourceNotebook.Editors[0]<>Self) then
+        SimilarEditor:=SourceNotebook.Editors[0].EditorComponent;
+
+      EditorOpts.GetSynEditSettings(FEditor, SimilarEditor, ActiveSyntaxHighlighterId);
       if Visible then
         UpdateIfDefNodeStates(True);
     end
