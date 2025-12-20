@@ -6865,12 +6865,14 @@ end;
 
 procedure TEditorOptions.ApplyFontSettingsTo(ASynEdit: TSynEdit);
 begin
+  ASynEdit.Font.BeginUpdate;
   ASynEdit.Font.Size := fEditorFontSize;// set size before name for XLFD !
   ASynEdit.Font.Name := fEditorFont;
   if fDisableAntialiasing then
     ASynEdit.Font.Quality := fqNonAntialiased
   else
     ASynEdit.Font.Quality := fqDefault;
+  ASynEdit.Font.EndUpdate;
 end;
 
 procedure TEditorOptions.ApplyTabFontSettingsTo(APageCtrl: TPageControl);
