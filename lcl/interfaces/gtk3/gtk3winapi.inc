@@ -4694,6 +4694,7 @@ var
   DestContext: TGtk3DeviceContext absolute DestDC;
   SrcContext: TGtk3DeviceContext absolute SrcDC;
   ATargetRect, ASrcRect, AMaskRect: TRect;
+  Origin: TPoint;
 begin
   Result := False;
 
@@ -4709,6 +4710,8 @@ begin
   ATargetRect := Rect(X, Y, Width + X, Height + Y);
   ASrcRect := Rect(XSrc, YSrc, SrcWidth + XSrc, SrcHeight + YSrc);
   AMaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
+  GetWindowOrgEx(SrcDC, @Origin);
+  ASrcRect.Offset(SrcContext.fncOrigin.X - Origin.x, SrcContext.fncOrigin.Y - Origin.y);
   if (mask<>0) then
     DestContext.drawImage1(@ATargetRect, SrcContext.CurrentImage.Handle , @ASrcRect, TGtk3Image(mask).Handle, @AMaskRect)
   else
