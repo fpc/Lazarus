@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="lazmarkdown"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="Src_3_2"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="Simple but complete Markdown display control"/>
+    <License Value="Modified LGPL license for the LCL-specific code, the code in Src_3_2 is from the FPC code repo, it is modified LGPL"/>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="markdown.canvasrender.pp"/>
+        <UnitName Value="markdown.canvasrender"/>
+      </Item>
+      <Item>
+        <Filename Value="markdown.control.pas"/>
+        <UnitName Value="markdown.control"/>
+      </Item>
+      <Item>
+        <Filename Value="markdown.regide.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="markdown.regide"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

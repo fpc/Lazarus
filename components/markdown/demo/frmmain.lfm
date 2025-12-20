@@ -1,0 +1,40 @@
+object MainForm: TMainForm
+  Left = 524
+  Height = 594
+  Top = 235
+  Width = 810
+  Caption = 'MarkDown Rendering Demo'
+  ClientHeight = 594
+  ClientWidth = 810
+  KeyPreview = True
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  object btnFile: TButton
+    Left = 664
+    Height = 25
+    Top = 560
+    Width = 123
+    Anchors = [akRight, akBottom]
+    Caption = 'Select file...'
+    TabOrder = 0
+    OnClick = btnFileClick
+  end
+  object sbMarkdown: TScrollBox
+    Left = 16
+    Height = 536
+    Top = 16
+    Width = 771
+    HorzScrollBar.Page = 1
+    HorzScrollBar.Visible = False
+    VertScrollBar.Page = 1
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 1
+  end
+  object ODMarkDown: TOpenDialog
+    DefaultExt = '.md'
+    Filter = 'MarkDown files|*.md|All files|*.*'
+    Left = 212
+    Top = 139
+  end
+end
