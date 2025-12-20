@@ -4015,6 +4015,7 @@ begin
   POUsed:=ASynEditKeyStrokes.UsePluginOffset;
   SequentialWithCtrl:=TFPList.Create;
   SequentialWithoutCtrl:=TFPList.Create;
+  ASynEditKeyStrokes.BeginUpdate;
   try
     ASynEditKeyStrokes.UsePluginOffset := False;
     // Save all SynEditKeyStrokes into a tree map for fast lookup, sorted by command.
@@ -4070,6 +4071,7 @@ begin
     KeyStrokesByCmds.FreeAndClear;   // Free also KeyLists.
     KeyStrokesByCmds.Free;
     ASynEditKeyStrokes.UsePluginOffset:=POUsed;
+    ASynEditKeyStrokes.EndUpdate;
   end;
 end;
 
