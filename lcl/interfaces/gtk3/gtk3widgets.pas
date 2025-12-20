@@ -2001,11 +2001,16 @@ const
   CN_CharMsg: array[Boolean] of UINT = (CN_CHAR, CN_SYSCHAR);
   LM_CharMsg: array[Boolean] of UINT = (LM_CHAR, LM_SYSCHAR);
 var
+  I: Integer;
   AEvent: TGdkEventKey;
   Msg: TLMKey;
   CharMsg: TLMChar;
   AEventString: String;
+  Keymap: PGdkKeymap;
+  KeymapKeys: PGdkKeymapKey = nil;
   KeyValue, ACharCode: Word;
+  KeySymCount: guint;
+  KeySyms: Pguint = nil;
   LCLModifiers: Word;
   IsSysKey: Boolean;
   UTF8Char: TUTF8Char;
@@ -2056,6 +2061,8 @@ begin
 
   if not AKeyPress then
     LCLModifiers := LCLModifiers or KF_UP;
+  if MK_CONTROL and LCLModifiers <> 0 then
+    AEventString := ''; // UTF8KeyPress MUST NOT be called if Ctrl is pressed
 
   // else
   //  writeln('KeyRelease: ',dbgsName(LCLObject),' Dump state=',AEvent.state,' hwkey=',KeyCode,' keyvalue=',KeyValue,' modifier=',AEvent.Bitfield0.is_modifier);
@@ -2082,6 +2089,23 @@ begin
     ' KeyValue ',KeyValue,' MODIFIERS ',LCLModifiers,' CharCode ',ACharCode,
     ' EAT ',EatArrowKeys(ACharCode));
   {$ENDIF}
+
+  if (ACharCode = VK_UNKNOWN) and (MK_CONTROL and LCLModifiers <> 0) then
+  begin
+    Keymap := gdk_keymap_get_for_display(gdk_display_get_default);
+    if gdk_keymap_get_entries_for_keycode(Keymap, AEvent.hardware_keycode, @KeymapKeys, @KeySyms, @KeySymCount) then
+    try
+      for I := 0 to KeySymCount - 1 do
+        if KeySyms[I] <> 0 then
+        begin
+          ACharCode := GdkKeyToLCLKey(KeySyms[I]);
+          Break;
+        end;
+    finally
+      g_free(KeymapKeys);
+      g_free(KeySyms);
+    end;
+  end;
 
   if (ACharCode <> VK_UNKNOWN) then
   begin

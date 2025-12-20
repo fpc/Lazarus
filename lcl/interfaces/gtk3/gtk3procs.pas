@@ -834,6 +834,9 @@ begin
     if (AValue >= GDK_KEY_exclam) and (AValue <= GDK_KEY_parenleft)  then
       exit(AValue + 16)
     else
+    if (AValue >= GDK_KEY_a_) and (AValue <= GDK_KEY_z_) then
+      exit(VK_A + (AValue - GDK_KEY_a_))
+    else
       exit(AValue);
   end;
   Result := VK_UNKNOWN;
