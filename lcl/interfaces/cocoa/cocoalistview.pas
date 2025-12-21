@@ -361,6 +361,7 @@ end;
 procedure TCocoaListView.lclClearCallback;
 begin
   callback:= nil;
+  _scrollView.lclClearCallback;
   _backendControl.lclClearCallback;
 end;
 
