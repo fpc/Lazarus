@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-12-14 23:06+0300\n"
+"PO-Revision-Date: 2025-12-21 22:24+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -642,15 +642,15 @@ msgstr "Быстрая вставка выделенного"
 
 #: syneditstrconst.syns_emcpluginextlinkcopyexternallink
 msgid "Copy external link"
-msgstr ""
+msgstr "Копировать внешнюю ссылку"
 
 #: syneditstrconst.syns_emcpluginextlinkopenexternallink
 msgid "Open external link"
-msgstr ""
+msgstr "Открыть внешнюю ссылку"
 
 #: syneditstrconst.syns_emcpluginextlinkselectexternallink
 msgid "Select external link"
-msgstr ""
+msgstr "Выделить внешнюю ссылку"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
