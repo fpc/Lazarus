@@ -1630,6 +1630,22 @@ var
   obj: NSObject;
   Callback: ICommonCallback;
   CallbackObject: TObject;
+
+  {
+    it's equivalent to TWinControl.Focused(), and it's to avoid problems from
+    directly calling control.Focused().
+    it's because subclasses might override Focused(), calling the overridden
+    Focused() during Destroy/DestroyHandle might then cause unforeseen issues.
+    e.g. TSynBaseCompletionForm:
+    1. free 'SizeDrag' in TSynBaseCompletionForm.Destroy() first
+    2. then calling DestroyHandle() in TWinControl.Destroy()
+    3. and reference to 'SizeDrag' in TSynBaseCompletionForm.Focused()
+  }
+  function Focused( const control: TWinControl ): Boolean;
+  begin
+    Result:= ( FindOwnerControl(GetFocus) = control );
+  end;
+
 begin
   if not AWinControl.HandleAllocated then
     Exit;
@@ -1640,7 +1656,7 @@ begin
   obj := NSObject(AWinControl.Handle);
   Callback := obj.lclGetCallback;
 
-  if AWinControl.Focused and Assigned(Callback) then
+  if Focused(AWinControl) and Assigned(Callback) then
     Callback.ResignFirstResponder;   // dont' call LCLSendKillFocusMsg
   LCLSendDestroyMsg( AWinControl );
 
