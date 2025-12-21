@@ -7014,9 +7014,11 @@ begin
         end;
 
         mw.MarkupInfo.Assign(TermsConf.ColorAttr);
+        mw.Terms.IncChangeNotifyLock;
         mw.Clear;
         mw.Terms.Assign(TermsConf);
         mw.RestoreLocalChanges;
+        mw.Terms.DecChangeNotifyLock;
         if TermsConf.AddTermCmd <> nil then
           mw.AddTermCmd := TermsConf.AddTermCmd.Command;
         if TermsConf.RemoveTermCmd <> nil then

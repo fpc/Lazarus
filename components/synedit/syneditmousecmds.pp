@@ -923,8 +923,8 @@ var
 begin
   if Source is TSynEditMouseActions then
   begin
-    Clear;
     BeginUpdate;
+    Clear;
     for i := 0 to TSynEditMouseActions(Source).Count-1 do
       Add.Assign(TSynEditMouseActions(Source)[i]);
     EndUpdate;
