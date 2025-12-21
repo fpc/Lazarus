@@ -232,7 +232,7 @@ type
     procedure SetUpdateState(Updating: Boolean; Sender: TObject); override;
 
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
-    procedure IncreaseTextChangeStamp;
+    procedure IncreaseTextChangeStamp; inline;
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
 
     function GetDisplayView: TLazSynDisplayView; override;
@@ -769,7 +769,7 @@ begin
   BeginUpdate;
   Result := Count;
   InsertItem(Result, S);
-  SendNotification(senrLineCount, self, Result, Count - Result);
+  SendNotification(senrLineCount, self, Result, 1);
   EndUpdate;
 end;
 
@@ -1157,9 +1157,7 @@ begin
   FList.InsertRows(Index, 1);
   IncreaseTextChangeStamp;
   fIndexOfLongestLine := -1;                                                    //mh 2000-10-19
-  fList[Index] := S;
-  FList.Objects[Index] := nil;
-  Flags[Index] := [];
+  FList.SetLine(Index, S, nil, []);
   EndUpdate;
 end;
 
@@ -1655,10 +1653,9 @@ end;
 
 procedure TSynEditStringList.IncreaseTextChangeStamp;
 begin
-  if FTextChangeStamp=High(FTextChangeStamp) then
-    FTextChangeStamp:=Low(FTextChangeStamp)
-  else
-    inc(FTextChangeStamp);
+  {$PUSH}{$Q-}{$R-}
+  FTextChangeStamp := FTextChangeStamp + 1;
+  {$POP}
 end;
 
 procedure TSynEditStringList.EditRedo(Item: TSynEditUndoItem);
