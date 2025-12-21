@@ -416,6 +416,7 @@ type
 
   TSynEditScreenCaretTimer = class
   private
+    FHasAsyncQueued: Boolean;
     FDisplayCycle: Boolean;
     FTimerEnabled: Boolean;
     FTimer: TTimer;
@@ -423,6 +424,7 @@ type
     FAfterPaintList: TMethodList;
     FLocCount: Integer;
     FLocFlags: set of (lfTimer, lfRestart);
+    procedure DoAfterPaintAsync(Data: PtrInt); // do not call directly, only via async
     procedure DoTimer(Sender: TObject);
     procedure DoAfterPaint(Data: PtrInt);
     function GetInterval: Integer;
@@ -3039,6 +3041,12 @@ begin
   FTimerList.CallNotifyEvents(Self);
 end;
 
+procedure TSynEditScreenCaretTimer.DoAfterPaintAsync(Data: PtrInt);
+begin
+  FHasAsyncQueued := False;
+  DoAfterPaint(Data);
+end;
+
 constructor TSynEditScreenCaretTimer.Create;
 begin
   FTimerList := TMethodList.Create;
@@ -3052,7 +3060,10 @@ end;
 
 destructor TSynEditScreenCaretTimer.Destroy;
 begin
-  Application.RemoveAsyncCalls(Self);
+  if FHasAsyncQueued then begin
+    Application.RemoveAsyncCalls(Self);
+    FHasAsyncQueued := False;
+  end;
   FreeAndNil(FTimer);
   FreeAndNil(FTimerList);
   FreeAndNil(FAfterPaintList);
@@ -3061,8 +3072,10 @@ end;
 
 procedure TSynEditScreenCaretTimer.AddAfterPaintHandler(AHandler: TNotifyEvent);
 begin
-  if FAfterPaintList.Count = 0 then
-    Application.QueueAsyncCall(@DoAfterPaint, 0);
+  if (FAfterPaintList.Count = 0) and not FHasAsyncQueued then begin
+    FHasAsyncQueued := True;
+    Application.QueueAsyncCall(@DoAfterPaintAsync, 0);
+  end;
   FAfterPaintList.Add(TMethod(AHandler));
 end;
 
@@ -3115,7 +3128,10 @@ end;
 
 procedure TSynEditScreenCaretTimer.AfterPaintEvent;
 begin
-  Application.RemoveAsyncCalls(Self);
+  if FHasAsyncQueued then begin
+    Application.RemoveAsyncCalls(Self);
+    FHasAsyncQueued := False;
+  end;
   DoAfterPaint(0);
 end;
 

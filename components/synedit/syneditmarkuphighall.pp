@@ -311,6 +311,7 @@ type
   public const
     DEFAULT_SCAN_OFFSCREEN_LIMIT = 200;
   strict private
+    FHasAsyncScheduled: Boolean;
     FFirstInvalidMatchLine, FLastInvalidMatchLine, FMatchLinesDiffCount: Integer;
     procedure DoOverViewGutterFreed(Sender: TObject);
   private
@@ -332,9 +333,11 @@ type
     procedure DoFoldChanged(Sender: TSynEditStrings; AnIndex, aCount: Integer);
     procedure SetScanOffScreenLimit(AValue: integer);
 
+    procedure ScheduleAsync;
+    procedure RemoveAsync;
     Procedure InvalidateMatches(AFirstLine, ALastLine, ALineDiffCount: Integer);
     procedure AssertGapsValid;
-    procedure DoAsyncScan(Data: PtrInt);
+    procedure DoAsyncScan(Data: PtrInt); // Do not call direct, only via procedure ScheduleAsync;
     function ValidateFillGaps: boolean;
     Procedure ValidateMatches(SkipPaint: Boolean = False);
 
@@ -3078,7 +3081,7 @@ end;
 
 destructor TSynEditMarkupHighlightAllBase.Destroy;
 begin
-  Application.RemoveAsyncCalls(Self);
+  RemoveAsync;
   if Lines <> nil then
     Lines.RemoveChangeHandler(senrLineMappingChanged, @DoFoldChanged);
 
@@ -3095,7 +3098,7 @@ begin
       ValidateMatches(not FNeedValidatePaint)
     else
     if smfNeedAsync in FFlags then
-      Application.QueueAsyncCall(@DoAsyncScan, 0);
+      ScheduleAsync;
   end;
 end;
 
@@ -3166,10 +3169,26 @@ begin
   ValidateMatches(True); // Should only need to extend off screen
 end;
 
+procedure TSynEditMarkupHighlightAllBase.ScheduleAsync;
+begin
+  if FHasAsyncScheduled then
+    exit;
+  Application.QueueAsyncCall(@DoAsyncScan, 0);
+  FHasAsyncScheduled := True;
+end;
+
+procedure TSynEditMarkupHighlightAllBase.RemoveAsync;
+begin
+  if not FHasAsyncScheduled then
+    exit;
+  FHasAsyncScheduled := False;
+  Application.RemoveAsyncCalls(Self);
+end;
+
 procedure TSynEditMarkupHighlightAllBase.InvalidateMatches(AFirstLine, ALastLine,
   ALineDiffCount: Integer);
 begin
-  Application.RemoveAsyncCalls(Self);
+  RemoveAsync;
   Exclude(FFlags, smfNeedAsync);
 
   if AFirstLine < 1 then
@@ -3206,6 +3225,7 @@ procedure TSynEditMarkupHighlightAllBase.DoAsyncScan(Data: PtrInt);
 var
   r, SkipPaint: Boolean;
 begin
+  FHasAsyncScheduled := False;
   if FPaintLock > 0 then begin
     Include(FFlags, smfNeedAsync);
     exit;
@@ -3219,7 +3239,7 @@ begin
   if SkipPaint then
     EndSkipSendingInvalidation;
   if not r then begin
-    Application.QueueAsyncCall(@DoAsyncScan, 0);
+    ScheduleAsync;
   end
   else begin
     if FOverViewGutterPart <> nil then
@@ -3490,7 +3510,7 @@ var
 var
   GapStartPoint, GapEndPoint: TPoint;
 begin
-  Application.RemoveAsyncCalls(Self);
+  RemoveAsync;
   FFlags := FFlags - [smfNeedAsync, smfAsyncSkipPaint];
 
   FCurrentRowNextPosIdx := -1;
@@ -3547,7 +3567,7 @@ begin
     if not ValidateFillGaps then begin
       if SkipPaint then
         Include(FFlags, smfAsyncSkipPaint);
-      Application.QueueAsyncCall(@DoAsyncScan, 0);
+      ScheduleAsync;
     end
     else if FOverViewGutterPart <> nil then
       FOverViewGutterPart.ReCalc;
