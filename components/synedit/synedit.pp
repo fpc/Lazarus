@@ -2751,9 +2751,6 @@ begin
   {$IFOPT C+} FAssertInDecPaintLockDone := []; {$ENDIF}
 
   try
-    if sfRecalcCharExtentNeeded in fStateFlags then
-      RecalcCharExtent;
-
     if (FUndoBlockAtPaintLock >= FPaintLock) then begin
       if (FUndoBlockAtPaintLock > FPaintLock) then
         debugln(['***** SYNEDIT: Fixing auto-undo-block FUndoBlockAtPaintLock=',FUndoBlockAtPaintLock,' FPaintLock=',FPaintLock]);
@@ -2767,6 +2764,9 @@ begin
     FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
 
     if (FPaintLock=1) and (not WaitingForInitialSize) then begin
+      if sfRecalcCharExtentNeeded in fStateFlags then
+        RecalcCharExtent;
+
       FLines.FlushNotificationCache;
       ScanChangedLines(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff,
                  FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
@@ -5250,6 +5250,8 @@ begin
 end;
 
 procedure TCustomSynEdit.DoHandleInitialSizeFinished;
+var
+  p: Integer;
 begin
   Exclude(fStateFlags, sfAfterHandleCreatedNeeded);
   Application.RemoveOnIdleHandler(@IdleScanRanges);
@@ -5260,8 +5262,12 @@ begin
   inc(FRecalcCharsAndLinesLock);
   Exclude(fStateFlags, sfRecalcCharsAndLinesInWinNeeded);
   try
-    if sfRecalcCharExtentNeeded in fStateFlags then
+    if sfRecalcCharExtentNeeded in fStateFlags then begin
+      p := FPaintLock;
+      FPaintLock := 0; // force, so gutter has correct text size
       RecalcCharExtent;
+      FPaintLock := p;
+    end;
 
     UpdateScrollBars; // just set sfScrollbarChanged
     FLeftGutter.RecalcBounds;
@@ -9328,7 +9334,7 @@ var
 begin
   if WaitingForInitialSize or
      (FPaintLock > 1) or
-     ( (FPaintLock = 1) and (dplNoNewPaintLock in FInDecPaintLockState)) // in DoDecPaintLock
+     ( (FPaintLock = 1) and not(dplNoNewPaintLock in FInDecPaintLockState)) // in DoDecPaintLock
   then begin
     Include(fStateFlags, sfRecalcCharExtentNeeded);
     exit;
