@@ -137,6 +137,10 @@ msgstr "转到实现"
 msgid "Jumps to implementation/other block end"
 msgstr "转到实现/其他语句块结尾"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonexternallink
+msgid "Open external (HTTP, file, ...) link"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonhistback
 msgid "History back"
 msgstr "历史后退"
@@ -216,6 +220,10 @@ msgstr "选择当前单词"
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
 msgstr "重置缩放"
+
+#: lazarusidestrconsts.dlfmousesimpledecljumpinclextlink
+msgid "Jump to declaration also opens external links (HTTP, file, ...)"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -718,6 +726,10 @@ msgstr "缩进"
 #: lazarusidestrconsts.dlgaddhiattrwrapsubline
 msgid "Sub-line"
 msgstr "子行"
+
+#: lazarusidestrconsts.dlgaddhiexternallink
+msgid "External (HTTP) link"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
 msgid "Visualized Special Chars"
@@ -3194,6 +3206,10 @@ msgstr "Y"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
 msgid "All"
 msgstr "所有"
+
+#: lazarusidestrconsts.dlgmouseoptnodeextlink
+msgid "External link"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"

@@ -144,6 +144,10 @@ msgstr "İmplementation a atla"
 msgid "Jumps to implementation/other block end"
 msgstr "İmplementation/diğer blok sonuna atla"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonexternallink
+msgid "Open external (HTTP, file, ...) link"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonhistback
 msgid "History back"
 msgstr "Geçmiş geri"
@@ -225,6 +229,10 @@ msgstr "Geçerli Kelimeyi Seç"
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
 msgstr "Yakınlaştırmayı sıfırla"
+
+#: lazarusidestrconsts.dlfmousesimpledecljumpinclextlink
+msgid "Jump to declaration also opens external links (HTTP, file, ...)"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -729,6 +737,10 @@ msgstr "Girinti"
 #: lazarusidestrconsts.dlgaddhiattrwrapsubline
 msgctxt "lazarusidestrconsts.dlgaddhiattrwrapsubline"
 msgid "Sub-line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiexternallink
+msgid "External (HTTP) link"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
@@ -3195,6 +3207,10 @@ msgstr "Y"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
 msgid "All"
 msgstr "Tümü"
+
+#: lazarusidestrconsts.dlgmouseoptnodeextlink
+msgid "External link"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"

@@ -137,6 +137,10 @@ msgstr ""
 msgid "Jumps to implementation/other block end"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttonexternallink
+msgid "Open external (HTTP, file, ...) link"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonhistback
 msgid "History back"
 msgstr ""
@@ -215,6 +219,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpledecljumpinclextlink
+msgid "Jump to declaration also opens external links (HTTP, file, ...)"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
@@ -729,6 +737,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrwrapsubline
 msgctxt "lazarusidestrconsts.dlgaddhiattrwrapsubline"
 msgid "Sub-line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiexternallink
+msgid "External (HTTP) link"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
@@ -3358,6 +3370,10 @@ msgstr "Y"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
 msgid "All"
 msgstr "הכל"
+
+#: lazarusidestrconsts.dlgmouseoptnodeextlink
+msgid "External link"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"

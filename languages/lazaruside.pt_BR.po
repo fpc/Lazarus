@@ -138,6 +138,10 @@ msgstr "Saltar para implementação"
 msgid "Jumps to implementation/other block end"
 msgstr "Saltar para implementação/outro final de bloco"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonexternallink
+msgid "Open external (HTTP, file, ...) link"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonhistback
 msgid "History back"
 msgstr "Voltar histórico"
@@ -219,6 +223,10 @@ msgstr "Selecionar palavra atual"
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
 msgstr "Redefinir zoom"
+
+#: lazarusidestrconsts.dlfmousesimpledecljumpinclextlink
+msgid "Jump to declaration also opens external links (HTTP, file, ...)"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -724,6 +732,10 @@ msgstr "Identação"
 #: lazarusidestrconsts.dlgaddhiattrwrapsubline
 msgctxt "lazarusidestrconsts.dlgaddhiattrwrapsubline"
 msgid "Sub-line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiexternallink
+msgid "External (HTTP) link"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
@@ -3228,6 +3240,10 @@ msgstr "Y"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
 msgid "All"
 msgstr "Tudo"
+
+#: lazarusidestrconsts.dlgmouseoptnodeextlink
+msgid "External link"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"

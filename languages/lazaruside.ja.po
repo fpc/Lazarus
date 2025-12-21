@@ -136,6 +136,10 @@ msgstr "実装部へ移動"
 msgid "Jumps to implementation/other block end"
 msgstr "実装部もしくはもう片方の末端へ移動"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonexternallink
+msgid "Open external (HTTP, file, ...) link"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonhistback
 msgid "History back"
 msgstr "履歴を後進"
@@ -217,6 +221,10 @@ msgstr "現在の語句を選択"
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
 msgstr "ズームをリセット"
+
+#: lazarusidestrconsts.dlfmousesimpledecljumpinclextlink
+msgid "Jump to declaration also opens external links (HTTP, file, ...)"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -724,6 +732,10 @@ msgstr "インデント"
 #: lazarusidestrconsts.dlgaddhiattrwrapsubline
 msgctxt "lazarusidestrconsts.dlgaddhiattrwrapsubline"
 msgid "Sub-line"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiexternallink
+msgid "External (HTTP) link"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
@@ -3300,6 +3312,10 @@ msgstr "Y"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
 msgid "All"
 msgstr "すべて"
+
+#: lazarusidestrconsts.dlgmouseoptnodeextlink
+msgid "External link"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"

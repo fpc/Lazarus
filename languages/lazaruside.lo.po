@@ -136,6 +136,10 @@ msgstr "ໂດດໄປຫາສ່ວນ implementation"
 msgid "Jumps to implementation/other block end"
 msgstr "ໂດດໄປຫາສ່ວນ implementation/ຈົບຕັນອື່ນ"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonexternallink
+msgid "Open external (HTTP, file, ...) link"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonhistback
 msgid "History back"
 msgstr "ປະຫວັດຍ້ອນກັບ"
@@ -215,6 +219,10 @@ msgstr "ເລືອກຄຳປັດຈຸບັນ"
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
 msgstr "ຣີເຊັດການຊູມ"
+
+#: lazarusidestrconsts.dlfmousesimpledecljumpinclextlink
+msgid "Jump to declaration also opens external links (HTTP, file, ...)"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -718,6 +726,10 @@ msgstr "ຫຍໍ້ໜ້າ"
 msgctxt "lazarusidestrconsts.dlgaddhiattrwrapsubline"
 msgid "Sub-line"
 msgstr "ແຖວຍ່ອຍ"
+
+#: lazarusidestrconsts.dlgaddhiexternallink
+msgid "External (HTTP) link"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
 msgid "Visualized Special Chars"
@@ -3188,6 +3200,10 @@ msgstr "Y"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
 msgid "All"
 msgstr "ທັງໝົດ"
+
+#: lazarusidestrconsts.dlgmouseoptnodeextlink
+msgid "External link"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"

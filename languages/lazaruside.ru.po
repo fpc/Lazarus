@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-12-14 23:14+0300\n"
+"PO-Revision-Date: 2025-12-21 22:44+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -137,6 +137,10 @@ msgstr "Перейти к реализации"
 msgid "Jumps to implementation/other block end"
 msgstr "Перейти к реализации / концу другого блока"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonexternallink
+msgid "Open external (HTTP, file, ...) link"
+msgstr "Открыть внешнюю ссылку (HTTP, файл и т. п.)"
+
 #: lazarusidestrconsts.dlfmousesimplebuttonhistback
 msgid "History back"
 msgstr "Перейти по истории назад"
@@ -216,6 +220,10 @@ msgstr "Выделить текущее слово"
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
+
+#: lazarusidestrconsts.dlfmousesimpledecljumpinclextlink
+msgid "Jump to declaration also opens external links (HTTP, file, ...)"
+msgstr "При переходе к объявлению также открывать внешние ссылки (HTTP, файл и т. п.)"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -719,6 +727,10 @@ msgstr "Отступ"
 msgctxt "lazarusidestrconsts.dlgaddhiattrwrapsubline"
 msgid "Sub-line"
 msgstr "Подстрока"
+
+#: lazarusidestrconsts.dlgaddhiexternallink
+msgid "External (HTTP) link"
+msgstr "Внешняя ссылка (HTTP)"
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
 msgid "Visualized Special Chars"
@@ -3189,6 +3201,10 @@ msgstr "Д"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
 msgid "All"
 msgstr "Все"
+
+#: lazarusidestrconsts.dlgmouseoptnodeextlink
+msgid "External link"
+msgstr "Внешняя ссылка"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
