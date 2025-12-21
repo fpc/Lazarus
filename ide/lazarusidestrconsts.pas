@@ -1708,7 +1708,7 @@ resourcestring
   dlfMouseSimpleTextSect = 'Text';
   dlfMouseSimpleTextSectDrag = 'Drag selection (copy/paste)';
   dlfMouseSimpleRightMoveCaret = 'Right button click includes caret move';
-  dlfMouseSimpleDeclJumpInclExtLink = 'Jump to declaration also opens external links (http, file, ...)';
+  dlfMouseSimpleDeclJumpInclExtLink = 'Jump to declaration also opens external links (HTTP, file, ...)';
   dlfMouseSimpleTextSectMidLabel = 'Middle Button';
   dlfMouseSimpleTextSectWheelLabel = 'Wheel';
   dlfMouseSimpleTextSectRightLabel = 'Right Button';
@@ -1761,7 +1761,7 @@ resourcestring
   dlfMouseSimpleButtonPaste            = 'Paste';
   dlfMouseSimpleButtonDeclaration      = 'Jumps to implementation';
   dlfMouseSimpleButtonDeclarationBlock = 'Jumps to implementation/other block end';
-  dlfMouseSimpleButtonExternalLink     = 'Open external (http, file, ...) link';
+  dlfMouseSimpleButtonExternalLink     = 'Open external (HTTP, file, ...) link';
   dlfMouseSimpleButtonAddHistoryPoint  = 'Add history point';
   dlfMouseSimpleButtonHistBack = 'History back';
   dlfMouseSimpleButtonHistForw = 'History forward';
@@ -2184,7 +2184,7 @@ resourcestring
   dlgAddHiAttrWrapIndent  = 'Indent';
   dlgAddHiAttrWrapEol     = 'EOL';
   dlgAddHiAttrWrapSubLine = 'Sub-line';
-  dlgAddHiExternalLink     = 'External (http) link';
+  dlgAddHiExternalLink     = 'External (HTTP) link';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
   dlgCaretColor                   = 'Caret (Text-Cursor)';
