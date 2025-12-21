@@ -2329,6 +2329,8 @@ procedure TCustomSynEdit.SetTabViewClass(AValue: TSynEditStringTabExpanderClass
 var
   i: Integer;
 begin
+  if FTabbedLinesView.ClassType = AValue then
+    exit;
   i := FTextViewsManager.IndexOf(FTabbedLinesView);
   FTextViewsManager.RemoveSynTextView(FTabbedLinesView);
   FTabbedLinesView.Free;
