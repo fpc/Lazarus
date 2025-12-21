@@ -224,6 +224,8 @@ type
     sfGutterResized,
     sfAfterLoadFromFileNeeded,
     sfAfterHandleCreatedNeeded,
+    sfRecalcCharExtentNeeded,
+    sfRecalcCharsAndLinesInWinNeeded,
     sfMarkupMgrWaitingForHandle, // MarkupManager is locked until handle gets created
     // Mouse-states
     sfLeftGutterClick, sfRightGutterClick,
@@ -2573,9 +2575,8 @@ begin
   FPaintArea.DisplayView := FTheLinesView.DisplayView;
 
   Color := clWhite;
+  Font.OnChange := @FontChanged; // already set by inherited
   Font.Assign(fFontDummy);
-  Font.OnChange := @FontChanged;
-  FontChanged(nil);
   ParentFont := False;
   ParentColor := False;
   TabStop := True;
@@ -2750,6 +2751,9 @@ begin
   {$IFOPT C+} FAssertInDecPaintLockDone := []; {$ENDIF}
 
   try
+    if sfRecalcCharExtentNeeded in fStateFlags then
+      RecalcCharExtent;
+
     if (FUndoBlockAtPaintLock >= FPaintLock) then begin
       if (FUndoBlockAtPaintLock > FPaintLock) then
         debugln(['***** SYNEDIT: Fixing auto-undo-block FUndoBlockAtPaintLock=',FUndoBlockAtPaintLock,' FPaintLock=',FPaintLock]);
@@ -5250,22 +5254,31 @@ begin
   Exclude(fStateFlags, sfAfterHandleCreatedNeeded);
   Application.RemoveOnIdleHandler(@IdleScanRanges);
   fStateFlags := fStateFlags - [sfHorizScrollbarVisible, sfVertScrollbarVisible];
-  UpdateScrollBars; // just set sfScrollbarChanged
 
+  IncStatusChangeLock;
   inc(FDoingResizeLock);
+  inc(FRecalcCharsAndLinesLock);
+  Exclude(fStateFlags, sfRecalcCharsAndLinesInWinNeeded);
   try
-  FLeftGutter.RecalcBounds;
-  FRightGutter.RecalcBounds;
+    if sfRecalcCharExtentNeeded in fStateFlags then
+      RecalcCharExtent;
+
+    UpdateScrollBars; // just set sfScrollbarChanged
+    FLeftGutter.RecalcBounds;
+    FRightGutter.RecalcBounds;
   finally
     dec(FDoingResizeLock);
-    if sfGutterResized in fStateFlags then begin
+    dec(FRecalcCharsAndLinesLock);
+
+    if (fStateFlags * [sfRecalcCharsAndLinesInWinNeeded, sfGutterResized] <> []) then begin
       Exclude(fStateFlags, sfGutterResized);
-      RecalcCharsAndLinesInWin(False);
+      RecalcCharsAndLinesInWin(sfRecalcCharsAndLinesInWinNeeded in fStateFlags);
       UpdateScrollBars;
     end
     else
     if sfScrollbarChanged in fStateFlags then
       UpdateScrollBars;
+    DecStatusChangeLock;
   end;
 
   if (sfMarkupMgrWaitingForHandle in fStateFlags) then begin
@@ -9132,8 +9145,11 @@ procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
 var
   l, r: Integer;
 begin
-  if FRecalcCharsAndLinesLock > 0 then
+  if FRecalcCharsAndLinesLock > 0 then begin
+    include(fStateFlags, sfRecalcCharsAndLinesInWinNeeded);
     exit;
+  end;
+  exclude(fStateFlags, sfRecalcCharsAndLinesInWinNeeded);
 
   IncStatusChangeLock;
   try
@@ -9310,6 +9326,15 @@ procedure TCustomSynEdit.RecalcCharExtent;
 var
   i: Integer;
 begin
+  if WaitingForInitialSize or
+     (FPaintLock > 1) or
+     ( (FPaintLock = 1) and (dplNoNewPaintLock in FInDecPaintLockState)) // in DoDecPaintLock
+  then begin
+    Include(fStateFlags, sfRecalcCharExtentNeeded);
+    exit;
+  end;
+  Exclude(fStateFlags, sfRecalcCharExtentNeeded);
+
   (* Highlighter or Font changed *)
   IncStatusChangeLock;
   try
