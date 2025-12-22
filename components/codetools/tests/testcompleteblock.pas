@@ -19,13 +19,13 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testregistry, FileProcs,
-  CodeToolManager, CodeCache, CustomCodeTool;
+  CodeToolManager, CodeCache, CustomCodeTool, TestStdCodetools, TestGlobals;
 
 type
 
   { TTestCodetoolsCompleteBlock }
 
-  TTestCodetoolsCompleteBlock = class(TTestCase)
+  TTestCodetoolsCompleteBlock = class(TCustomTestCTStdCodetools)
   private
     function CreateFullSrc(Src: string; out Cursor: integer): string;
     procedure TestCompleteBlocks;
@@ -36,9 +36,12 @@ type
     procedure CompleteBlockFail(Src: string;
                 OnlyIfCursorBlockIndented: boolean = false);
   published
+    procedure TestCompleteBlock_ProgamBeginEnd;
+    procedure TestCompleteBlock_ProgamBeginMissingEnd;
     procedure TestCompleteBlockClassStart;
     procedure TestCompleteBlockBegin;
-    procedure TestCompleteBlockRepeat;
+    procedure TestCompleteBlockRepeatMissingUntil;
+    procedure TestCompleteBlockRepeatUntil;
     procedure TestCompleteBlockCase;
     procedure TestCompleteBlockTry;
     procedure TestCompleteBlockAsm;
@@ -79,9 +82,6 @@ function TTestCodetoolsCompleteBlock.CreateFullSrc(Src: string;
   out Cursor: integer): string;
 begin
   Result:=Src;
-  {Result:='unit testcompleteblock;'+LineEnding
-         +'interface'+LineEnding
-         +Src;}
   if not (Result[length(Result)] in [#10,#13]) then
     Result:=Result+LineEnding;
   Cursor:=System.Pos('|',Result);
@@ -105,8 +105,6 @@ var
   eX: integer;
   FullSrc: String;
   FullExpectedSrc: String;
-  TrimExpected: String;
-  TrimResult: String;
 begin
   AssertEquals('Src is empty',Trim(Src)<>'',true);
   AssertEquals('ExpectedSrc is empty',Trim(ExpectedSrc)<>'',true);
@@ -115,7 +113,7 @@ begin
   ExpectedCode:=TCodeBuffer.Create;
   try
     // replace cursor | marker in Src
-    Code:=CodeToolBoss.CreateFile('TestCompleteBlock.pas');
+    Code:=CodeToolBoss.CreateFile(DefUnitName);
     FullSrc:=CreateFullSrc(Src,p);
     if p<1 then
       AssertEquals('missing cursor | in test source: "'+dbgstr(Src)+'"',true,false);
@@ -135,17 +133,7 @@ begin
       AssertEquals('CodeToolBoss.CompleteBlock returned false for src="'+dbgstr(Src)+'"',true,false);
       exit;
     end;
-    TrimExpected:=dbgstr(Trim(FullExpectedSrc));
-    TrimResult:=dbgstr(Trim(Code.Source));
-    if TrimExpected<>TrimResult then begin
-      debugln(['TTestCodetoolsCompleteBlock.CompleteBlock FAILED Expected:']);
-      debugln(FullExpectedSrc);
-      debugln(['TTestCodetoolsCompleteBlock.CompleteBlock FAILED Found:']);
-      debugln(Code.Source);
-      debugln(['TTestCodetoolsCompleteBlock.CompleteBlock FAILED end']);
-    end;
-    AssertEquals('CompleteBlock did no or the wrong completion: ',TrimExpected,TrimResult);
-
+    CheckDiff('CodeToolBoss.CompleteBlock',FullExpectedSrc,Code.Source);
   finally
     if Code<>nil then Code.IsDeleted:=true;
     ExpectedCode.Free;
@@ -174,7 +162,7 @@ begin
   AssertEquals('Src is empty',Trim(Src)<>'',true);
 
   // replace cursor | marker in Src
-  Code:=CodeToolBoss.CreateFile('TestCompleteBlock.pas');
+  Code:=CodeToolBoss.CreateFile(DefUnitName);
   try
     FullSrc:=CreateFullSrc(Src,p);
     if p<1 then
@@ -191,6 +179,37 @@ begin
   finally
     Code.IsDeleted:=true;
   end;
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlock_ProgamBeginEnd;
+begin
+  CompleteBlock(LinesToStr([
+  'program '+DefUnitName+';',
+  'begin',
+  '  |',
+  'end.'
+  ]),
+  LinesToStr([
+  'program '+DefUnitName+';',
+  'begin',
+  '  |',
+  'end.'
+  ]));
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlock_ProgamBeginMissingEnd;
+begin
+  CompleteBlock(LinesToStr([
+  'program '+DefUnitName+';',
+  'begin',
+  '  |',
+  '']),
+  LinesToStr([
+  'program '+DefUnitName+';',
+  'begin',
+  '  |',
+  'end.'
+  ]));
 end;
 
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockClassStart;
@@ -273,7 +292,7 @@ begin
                +'end.');}
 end;
 
-procedure TTestCodetoolsCompleteBlock.TestCompleteBlockRepeat;
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockRepeatMissingUntil;
 begin
   CompleteBlock('begin'+LineEnding
                +'  repeat|'+LineEnding
@@ -282,6 +301,10 @@ begin
                +'  repeat|'+LineEnding
                +'  until ;'+LineEnding
                +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockRepeatUntil;
+begin
   CompleteBlock(
      'begin'+LineEnding
     +'  if FindFirstUTF8(Dir+FileMask,faAnyFile,FileInfo)=0 then begin'+LineEnding

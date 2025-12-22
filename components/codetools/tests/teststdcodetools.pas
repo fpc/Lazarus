@@ -22,8 +22,11 @@ type
   private
     function GetCTMarker(Code: TCodeBuffer; Comment: string; out Position: TPoint): boolean;
   protected
+    DefUnitName: string;
+    procedure SetUp; override;
     procedure CheckDiff(Msg, Expected, Actual: string);
     procedure WriteSource(aFilename: string; Line, Col: integer);
+    procedure TestCompleteBlock(Src: string; Line, Col: integer; Expected: string);
   end;
 
   { TTestCTStdCodetools }
@@ -48,6 +51,8 @@ type
     procedure TestCTAddWarn5025_ProgramNoName;
     procedure TestCTAddWarn5025_Unit;
     procedure TestCTSetApplicationTitleStatement;
+
+    // for CompleteBlock see unit TestCompleteBlock
   end;
 
 implementation
@@ -71,6 +76,12 @@ begin
     AssertEquals('Code.AbsoluteToLineCol: '+Comment,true,Position.Y>=1)
   else
     Result:=true;
+end;
+
+procedure TCustomTestCTStdCodetools.SetUp;
+begin
+  inherited SetUp;
+  DefUnitName:='TestStdCodeTools.pas';
 end;
 
 procedure TCustomTestCTStdCodetools.CheckDiff(Msg, Expected, Actual: string);
@@ -217,6 +228,27 @@ begin
   end;
 end;
 
+procedure TCustomTestCTStdCodetools.TestCompleteBlock(Src: string; Line, Col: integer;
+  Expected: string);
+var
+  Code: TCodeBuffer;
+  OnlyIfCursorBlockIndented: boolean;
+begin
+  OnlyIfCursorBlockIndented:=false;
+  Code:=CodeToolBoss.CreateFile(DefUnitName+'.pas');
+  try
+    Code.Source:=Src;
+    if not CodeToolBoss.CompleteBlock(Code,Col,Line,OnlyIfCursorBlockIndented) then
+    begin
+      Fail('CompleteBlock failed: '+CodeToolBoss.ErrorMessage);
+    end else begin
+      CheckDiff('CompleteBlock',Expected,Code.Source);
+    end;
+  finally
+    Code.IsDeleted:=true;
+  end;
+end;
+
 procedure TTestCTStdCodetools.DoTestAddUnitWarn(Title: string; Src,
   Expected: array of string; WarnID, Comment: string; TurnOn: boolean);
 var
@@ -224,7 +256,7 @@ var
   s: String;
   i: Integer;
 begin
-  Code:=CodeToolBoss.CreateFile('test1.pas');
+  Code:=CodeToolBoss.CreateFile(DefUnitName+'.pas');
   try
     s:='';
     for i:=Low(Src) to High(Src) do
@@ -258,12 +290,12 @@ begin
   Footer:=LineEnding
     +'begin'+LineEnding
     +'end.'+LineEnding;
-  Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
+  Code:=CodeToolBoss.CreateFile(DefUnitName+'.pas');
   try
     Code.Source:=Header+UsesSrc+Footer;
     if not CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(Code,NewUnitName,NewUnitInFilename,Flags) then
     begin
-      AssertEquals('AddUnitToMainUsesSectionIfNeeded failed: '+CodeToolBoss.ErrorMessage,true,false);
+      Fail('AddUnitToMainUsesSectionIfNeeded failed: '+CodeToolBoss.ErrorMessage);
     end else begin
       Src:=Code.Source;
       AssertEquals('AddUnitToMainUsesSectionIfNeeded altered header: ',Header,LeftStr(Src,length(Header)));
@@ -327,7 +359,7 @@ var
   end;
 
 begin
-  Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
+  Code:=CodeToolBoss.CreateFile(DefUnitName+'.pas');
   Code.Source:=GetSource();
 
   Test('begin,try,finally,end|end','begin1','begin1end');
@@ -502,7 +534,7 @@ procedure TTestCTStdCodetools.TestCTUsesSectionToUnitNames;
     Actual: String;
     Code: TCodeBuffer;
   begin
-    Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
+    Code:=CodeToolBoss.CreateFile(DefUnitName+'.pas');
     try
       Code.Source:=
          'program TestStdCodeTools;'+LineEnding
@@ -587,7 +619,7 @@ procedure TTestCTStdCodetools.TestCTSetApplicationTitleStatement;
     Header:='program TestStdCodeTools;'+LineEnding;
     OldSrc:=Header+OldBeginEnd;
     ExpectedSrc:=Header+NewBeginEnd;
-    Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
+    Code:=CodeToolBoss.CreateFile(DefUnitName+'.pas');
     try
       Code.Source:=OldSrc;
       if not CodeToolBoss.SetApplicationTitleStatement(Code,NewTitle) then
