@@ -201,6 +201,7 @@ type
     procedure Clear;
     procedure ClearAllSourceLogEntries;
     procedure ClearIncludedByEntry(const IncludeFilename: string);
+    procedure ClearIncludedBy_FPCNamespaced(const aFPCDir: string = '*');
     procedure ClearAllModified;
     procedure OnBufferSetFileName(Sender: TCodeBuffer;
           const OldFilename: string);
@@ -596,6 +597,27 @@ begin
     Node:=FindIncludeLinkAVLNode(IncludeFilename);
     if Node<>nil then
       FIncludeLinks.FreeAndDelete(Node);
+  end;
+end;
+
+procedure TCodeCache.ClearIncludedBy_FPCNamespaced(const aFPCDir: string);
+var
+  Node, OldNode: TAVLTreeNode;
+  Link: TIncludedByLink;
+  Pat: String;
+begin
+  if aFPCDir='' then exit;
+  Node:=FIncludeLinks.FindLowest;
+  Pat:=PathDelim+'namespaced'+PathDelim;
+  while Node<>nil do begin
+    OldNode:=Node;
+    Node:=FIncludeLinks.FindSuccessor(Node);
+    Link:=TIncludedByLink(OldNode.Data);
+    if Pos(Pat,Link.IncludedByFile)<1 then
+      continue;
+    if (aFPCDir<>'*') and not FileIsInPath(Link.IncludedByFile,aFPCDir) then
+      continue;
+    FIncludeLinks.Delete(OldNode);
   end;
 end;
 
