@@ -5,7 +5,7 @@ unit regchatctrls;
 interface
 
 uses
-  Classes, SysUtils, chatcontrol, typingindicator;
+  Classes, SysUtils, Graphics, chatcontrol, typingindicator, propedits, GraphPropEdits, PropEditUtils;
 
 procedure register;
 
@@ -16,6 +16,7 @@ uses lresources;
 procedure register;
 begin
   RegisterComponents('Misc',[TChatControl,TTypingIndicator]);
+  RegisterPropertyEditor(TypeInfo(String),TChatControl,'MonoFontName',TFontNamePropertyEditor);
 end;
 
 initialization

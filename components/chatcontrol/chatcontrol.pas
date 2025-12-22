@@ -19,7 +19,8 @@ unit ChatControl;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, Graphics, Controls, ExtCtrls, StdCtrls, Forms, TypingIndicator;
+  Classes, SysUtils, Contnrs, Graphics, Controls, ExtCtrls, StdCtrls, Forms, TypingIndicator,
+  markdown.canvasrender, markdown.control;
 
 Const
   DefaultBackground : TColor = $00CDEBD0;
@@ -29,6 +30,31 @@ Const
   DefaultItemPadding = 8;
   DefaultItemMargin  = 4;
 
+Const
+  // Integer
+  IdxBaseFontSize     = 0;
+  IdxBlockQuoteIndent = 1;
+  IdxParagraphSpacing = 2;
+  IdxExtraIndent      = 3;
+  IdxImageMargin      = 4;
+  MaxIntegerIdx       = IdxImageMargin;
+
+  // Strings
+  IdxFontName     = 0;
+  IdxMonoFontName = 1;
+  IdxBulletChar1  = 2;
+  IdxBulletChar2  = 3;
+  IdxBulletChar3  = 4;
+  MaxStringIdx    = IdxBulletChar3;
+
+  // Color
+  IdxFontColor      = 0;
+  IdxFontCodeColor  = 1;
+  IdxFontQuoteColor = 2;
+  IdxHyperLinkColor = 3;
+  IdxBGCodeColor    = 4;
+  MaxColorIdx       = IdxBGCodeColor;
+
 Type
   TTextSide = (tsLeft,tsRight);
 
@@ -36,12 +62,14 @@ Type
 
   TChatItem = Class(TObject)
   private
+    FMarkDown: Boolean;
     FText: String;
     FSide: TTextSide;
   Public
     constructor Create(aText : String; aSide : TTextSide);
     Property Text : String Read FText Write FText;
     Property Side : TTextSide Read FSide Write FSide;
+    property MarkDown : Boolean Read FMarkDown Write FMarkDown;
   end;
   TChatItemArray = Array of TChatItem;
 
@@ -61,20 +89,32 @@ Type
     FItemSpacing: Integer;
     FLeftBackground: TColor;
     FLeftTextColor: TColor;
+    FOnGetImage: TMarkdownImageEvent;
     FOnItemClick: TItemClickEvent;
+    FOnOpenURL: TOpenURLEvent;
     FRightBackground: TColor;
     FRightTextColor: TColor;
     FTyping : Array[TTextSide] of TTypingIndicator;
+    FMarkDownColors : Array [0..MaxColorIdx] of TColor;
+    FMarkDownSizes: Array[0..MaxIntegerIdx] of Integer;
+    FMarkdownStrings : Array[0..MaxStringIdx] of string;
+    procedure DoGetOnImage(Sender: TObject; const aURL: string; var aImage: TPicture);
+    procedure DoOpenURL(Sender: TObject; aURL: String);
     function GetChatCount: Integer;
+    function GetMarkDownColor(AIndex: Integer): TColor;
     function GetDisplayItem(aIndex: Integer): TDisplayChatItem;
     function GetIndicatorSettings(AIndex: Integer): TTypingDotIndicatorSettings;
+    function GetMarkDownInteger(AIndex: Integer): Integer;
     function GetIsTyping(aSide : TTextSide): Boolean;
     function GetItem(aIndex : integer): TChatItem;
     function GetLeftTyping: Boolean;
     function GetRightTyping: Boolean;
+    function GetMarkdownString(AIndex: Integer): string;
     function GetTyping(aIndex : TTextSide): TTypingIndicator;
     function LayoutTypingItem(aSide: TTextSide; aTop: Integer): Integer;
     procedure SetIndicatorSettings(AIndex: Integer; AValue: TTypingDotIndicatorSettings);
+    procedure SetMarkDownColorsOnItems(aIndex: Integer);
+    procedure SetMarkdownInteger(AIndex: Integer; const aValue: Integer);
     procedure SetIsTyping(aSide : TTextSide; AValue: Boolean);
     procedure SetItemMargin(AValue: Integer);
     procedure SetItemPadding(AValue: Integer);
@@ -82,9 +122,13 @@ Type
     procedure SetLeftBackground(AValue: TColor);
     procedure SetLeftTextColor(AValue: TColor);
     procedure SetLeftTyping(AValue: Boolean);
+    procedure SetMarkDownIntegersOnItems(aIndex: Integer);
+    procedure SetMarkDownStringsOnItems(aIndex: Integer);
+    procedure SetMarkdownColor(AIndex: Integer; const aValue: TColor);
     procedure SetRightBackground(AValue: TColor);
     procedure SetRightTextColor(AValue: TColor);
     procedure SetRightTyping(AValue: Boolean);
+    procedure SetMarkDownString(AIndex: Integer; const aValue: string);
   Protected
     Type
 
@@ -96,7 +140,6 @@ Type
           TColorKind = (ckBackground,ckBackgroundPen,ckBackgroundBrush,ckLabelFont,ckLabelBack);
       Private
         FBackground: TShape;
-        FLabel: TLabel;
         FOnClick: TNotifyEvent;
         FDownShift: TShiftState;
         FSelected: Boolean;
@@ -104,28 +147,66 @@ Type
         procedure DoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
         function GetBottom: Integer;
         procedure SetSelected(AValue: Boolean);
-        procedure SetColors;
       protected
+        procedure SetColors; virtual;
         procedure SetBackground(AValue: TShape); virtual;
-        procedure SetLabel(AValue: TLabel); virtual;
-        Procedure LayoutAt(aTop,aPadding,aMargin : Integer); virtual;
+        procedure SetMaxWidth(aMaxWidth : Integer); virtual;
+        Procedure LayoutAt(aTop,aPadding,aMargin : Integer); virtual; abstract;
         procedure DoClick(Sender : TObject); virtual;
         procedure Invalidate; virtual;
       Public
         Destructor Destroy; override;
         Property OnClick : TNotifyEvent Read FOnClick Write FOnClick;
         Property Bottom : Integer Read GetBottom;
-        Property TextLabel : TLabel Read FLabel Write SetLabel;
         Property TextBackGround : TShape Read FBackground Write SetBackground;
         Property Selected : Boolean read FSelected Write SetSelected;
       end;
 
-    procedure DoItemClick(Sender: TObject);
+      { TPlainDisplayChatItem }
+
+      TPlainDisplayChatItem = class(TDisplayChatItem)
+      private
+        FLabel: TLabel;
+        procedure SetLabel(const aValue: TLabel);
+      Protected
+        procedure Invalidate; override;
+        procedure SetColors; override;
+        procedure SetMaxWidth(aMaxWidth: Integer); override;
+        procedure LayoutAt(aTop,aPadding,aMargin : Integer); override;
+      public
+        destructor destroy; override;
+        Property TextLabel : TLabel Read FLabel Write SetLabel;
+      end;
+
+      { TMarkdownDisplayChatItem }
+
+      TMarkdownDisplayChatItem = class(TDisplayChatItem)
+      private
+        FMaxWidth: Integer;
+        FControl : TMarkDownControl;
+      Protected
+        Procedure SetMarkdownProperty(aIndex : integer; aValue : string); virtual; overload;
+        Procedure SetMarkdownProperty(aIndex : integer; aValue : Integer); virtual; overload;
+        Procedure SetMarkdownColorProperty(aIndex : integer; aValue : TColor); virtual; overload;
+        procedure Invalidate; override;
+        procedure SetColors; override;
+        procedure SetMaxWidth(aMaxWidth: Integer); override;
+        procedure LayoutAt(aTop,aPadding,aMargin : Integer); override;
+        property MaxWidth : Integer Read FMaxWidth Write SetMaxWidth;
+      public
+        destructor destroy; override;
+      end;
+    procedure FontChanged(Sender: TObject); override;
+    procedure DoItemClick(Sender: TObject); virtual;
+    procedure InitMarkdownProperties; virtual;
+    procedure SetMarkDownProperties(aItem: TMarkDownDisplayChatItem); virtual;
     procedure SelectItem(aItem : TDisplayChatItem; IsSelect,aAddToSelection : Boolean);
     function CreateChatLabel(aParent: TWinControl): TLabel; virtual;
     function CreateTypingIndicator(aSide: TTextSide): TTypingIndicator; virtual;
-    function DoCreateItem(aText: String; aSide: TTextSide): TDisplayChatItem; virtual;
-    function CreateItem(aText: String; aSide: TTextSide; aParent: TWinControl): TDisplayChatItem;
+    function DoCreatePlainItem(aText: String; aSide: TTextSide): TPlainDisplayChatItem; virtual;
+    function CreatePlainItem(aText: String; aSide: TTextSide; aParent: TWinControl): TDisplayChatItem;
+    function DoCreateMarkdownItem(aText: String; aSide: TTextSide): TMarkdownDisplayChatItem;
+    function CreateMarkdownItem(aText: String; aSide: TTextSide): TDisplayChatItem;
     procedure DoOnResize; override;
     function LayoutItem(aIndex: Integer; aTop: Integer): Integer;
     procedure LayoutItems;
@@ -138,7 +219,7 @@ Type
     destructor Destroy; override;
     procedure Clear;
     procedure CopySelectionToClipBoard;
-    Procedure AddText(const aText : String; aSide : TTextSide);
+    procedure AddText(const aText: String; aSide: TTextSide; aMarkdown: Boolean = False);
     Procedure SelectItem(aIndex : Integer; aAddToSelection : Boolean);
     Procedure DeleteItem(aItem : TChatItem);
     Procedure DeleteItem(aIndex : Integer);
@@ -161,6 +242,21 @@ Type
     Property ItemMargin : Integer Read FItemMargin Write SetItemMargin;
     Property LeftTypingIndicator : TTypingDotIndicatorSettings Index Ord(tsLeft) Read GetIndicatorSettings Write SetIndicatorSettings;
     Property RightTypingIndicator : TTypingDotIndicatorSettings Index Ord(tsRight) Read GetIndicatorSettings Write SetIndicatorSettings;
+    property BaseFontSize: Integer index idxBaseFontSize read GetMarkDownInteger Write SetMarkDownInteger;
+    property MonoFontName: string index idxMonoFontName read GetMarkDownString write SetMarkDownString;
+    property FontCodeColor: TColor index idxFontCodeColor read GetMarkdownColor write SetMarkDownColor;
+    property FontQuoteColor: TColor index idxFontQuoteColor read GetMarkdownColor write SetMarkDownColor;
+    property HyperLinkColor: TColor index idxHyperLinkColor read GetMarkdownColor write SetMarkDownColor;
+    property BGCodeColor: TColor index IdxBGCodeColor read GetMarkdownColor write SetMarkDownColor;
+    property BulletChar1 : string index IdxBulletChar1 read GetMarkDownString write SetMarkDownString;
+    property BulletChar2 : string index IdxBulletChar2 read GetMarkDownString write SetMarkDownString;
+    property BulletChar3 : string index IdxBulletChar3 read GetMarkDownString write SetMarkDownString;
+    Property BlockQuoteIndent : Integer index IdxBlockQuoteIndent read GetMarkDownInteger Write SetMarkDownInteger;
+    Property ExtraIndent : Integer index IdxExtraIndent read GetMarkDownInteger Write SetMarkDownInteger;
+    Property ParagraphSpacing : Integer index IdxParagraphSpacing read GetMarkDownInteger Write SetMarkDownInteger;
+    Property ImageMargin : integer index IdxImageMargin read GetMarkDownInteger Write SetMarkDownInteger;
+    property OnGetImage : TMarkdownImageEvent read FOnGetImage Write FOnGetImage;
+    property OnOpenURL : TOpenURLEvent Read FOnOpenURL Write FOnOpenURL;
   Published
     property Align;
     property Anchors;
@@ -257,13 +353,7 @@ begin
     // When resizing and we have a bigger size, the label does not resize to take more space.
     // After much experimenting the following workaround was found:
     // By switching off wordwrap and switching back on wordwrap, it works.
-    Recalc:=NewMax>TextLabel.Constraints.MaxWidth;
-    TextLabel.Constraints.MaxWidth:=NewMax;
-    if Recalc then
-      begin
-      TextLabel.WordWrap:=False;
-      TextLabel.WordWrap:=True;
-      end;
+    SetMaxwidth(NewMax);
     LayoutAt(aTop,FItemPadding,FItemMargin);
     Result:=Bottom+ItemSpacing;
     end;
@@ -310,6 +400,12 @@ end;
 procedure TChatControl.SetIndicatorSettings(AIndex: Integer; AValue: TTypingDotIndicatorSettings);
 begin
   FTyping[TTextSide(aIndex)].DotSettings:=aValue;
+end;
+
+procedure TChatControl.SetMarkdownInteger(AIndex: Integer; const aValue: Integer);
+begin
+  FMarkDownSizes[aIndex]:=aValue;
+  SetMarkDownIntegersOnItems(aIndex);
 end;
 
 procedure TChatControl.SetIsTyping(aSide : TTextSide; AValue: Boolean);
@@ -365,6 +461,11 @@ begin
   Result:=FTyping[tsRight].Visible;
 end;
 
+function TChatControl.GetMarkdownString(AIndex: Integer): string;
+begin
+  Result:=FMarkdownStrings[aIndex];
+end;
+
 function TChatControl.GetTyping(aIndex : TTextSide): TTypingIndicator;
 begin
   Result:=FTyping[aIndex]
@@ -373,6 +474,36 @@ end;
 function TChatControl.GetChatCount: Integer;
 begin
   Result:=FChatList.Count;
+end;
+
+procedure TChatControl.DoGetOnImage(Sender: TObject; const aURL: string; var aImage: TPicture);
+begin
+  if assigned(FOnGetImage) then
+    FOnGetImage(Self,aURL,aImage)
+  else
+    aImage:=nil;
+end;
+
+procedure TChatControl.DoOpenURL(Sender: TObject; aURL: String);
+begin
+  if assigned(FOnOpenURL) then
+    FOnOpenURL(Self,aURL);
+end;
+
+function TChatControl.GetMarkDownColor(AIndex: Integer): TColor;
+begin
+  Result:=FMarkDownColors[aIndex];
+end;
+
+function TChatControl.GetMarkDownInteger(AIndex: Integer): Integer;
+begin
+  Result:=FMarkDownSizes[aIndex];
+end;
+
+procedure TChatControl.SetMarkdownColor(AIndex: Integer; const aValue: TColor);
+begin
+  FMarkDownColors[aIndex]:=aValue;
+  SetMarkDownColorsOnItems(aIndex);
 end;
 
 function TChatControl.GetDisplayItem(aIndex: Integer): TDisplayChatItem;
@@ -401,6 +532,29 @@ begin
     end;
   If Assigned(FOnItemClick)  then
     FOnItemClick(Self,lItm);
+end;
+
+procedure TChatControl.InitMarkdownProperties;
+begin
+  FMarkDownSizes[IdxImageMargin]:=2;
+  FMarkDownSizes[IdxBaseFontSize]:=10;
+  FMarkDownSizes[IdxParagraphSpacing]:=12;
+  FMarkDownSizes[IdxExtraIndent]:=0;
+  FMarkDownSizes[IdxBlockQuoteIndent]:=40;
+
+  FMarkdownStrings[IdxBulletChar1]:='•';
+  FMarkdownStrings[IdxBulletChar2]:='◦';
+  FMarkdownStrings[IdxBulletChar3]:='▪';
+
+  FMarkDownStrings[IdxFontName]:='Sans Serif';
+  FMarkDownStrings[IdxMonoFontName]:='Monospace';
+
+  FMarkDownColors[IdxBGCodeColor]:=clInfoBk;
+  FMarkDownColors[IdxFontCodeColor]:=clInfoText;
+  FMarkDownColors[IdxFontColor]:=clWindowText;
+  fMarkDownColors[IdxHyperLinkColor]:=RGBToColor(17,85,204);
+  fMarkDownColors[IdxFontQuoteColor]:=clWindowFrame;
+
 end;
 
 function TChatControl.GetIndicatorSettings(AIndex: Integer): TTypingDotIndicatorSettings;
@@ -434,6 +588,7 @@ procedure TChatControl.SetRightBackground(AValue: TColor);
 begin
   if FRightBackground=AValue then Exit;
   FRightBackground:=AValue;
+
 end;
 
 procedure TChatControl.SetRightTextColor(AValue: TColor);
@@ -445,6 +600,48 @@ end;
 procedure TChatControl.SetRightTyping(AValue: Boolean);
 begin
   FTyping[tsRight].Visible:=aValue;
+end;
+
+procedure TChatControl.SetMarkDownStringsOnItems(aIndex: Integer);
+var
+  i : Integer;
+begin
+  for I:=0 to FChatList.Count-1 do
+    if FChatList[i] is TMarkdownDisplayChatItem then
+      TMarkdownDisplayChatItem(FChatList[i]).SetMarkdownProperty(aIndex,FMarkdownStrings[aIndex]);
+end;
+
+procedure TChatControl.SetMarkDownIntegersOnItems(aIndex : Integer);
+var
+  i : Integer;
+begin
+  for I:=0 to FChatList.Count-1 do
+    if FChatList[i] is TMarkdownDisplayChatItem then
+      TMarkdownDisplayChatItem(FChatList[i]).SetMarkdownProperty(aIndex,FMarkdownSizes[aIndex]);
+end;
+
+procedure TChatControl.SetMarkDownColorsOnItems(aIndex : Integer);
+var
+  i : Integer;
+begin
+  for I:=0 to FChatList.Count-1 do
+    if FChatList[i] is TMarkdownDisplayChatItem then
+      TMarkdownDisplayChatItem(FChatList[i]).SetMarkdownColorProperty(aIndex,FMarkdownSizes[aIndex]);
+end;
+
+
+procedure TChatControl.SetMarkDownString(AIndex: Integer; const aValue: string);
+begin
+  FMarkdownStrings[aIndex]:=aValue;
+  SetMarkDownStringsOnItems(aIndex);
+end;
+
+procedure TChatControl.FontChanged(Sender: TObject);
+begin
+  inherited FontChanged(Sender);
+  SetMarkDownString(IdxFontName,Font.Name);
+  SetMarkDownInteger(IdxBaseFontSize,Font.Size);
+  SetMarkDownColor(IdxFontColor,Font.Color);
 end;
 
 procedure TChatControl.SelectItem(aItem: TDisplayChatItem; IsSelect, aAddToSelection: Boolean);
@@ -469,17 +666,84 @@ begin
   Result.Parent:=aParent;
 end;
 
-function TChatControl.DoCreateItem(aText: String; aSide: TTextSide): TDisplayChatItem;
+function TChatControl.DoCreatePlainItem(aText: String; aSide: TTextSide): TPlainDisplayChatItem;
 begin
-  Result:=TDisplayChatItem.Create(aText,aSide);
+  Result:=TPlainDisplayChatItem.Create(aText,aSide);
 end;
 
-function TChatControl.CreateItem(aText: String; aSide: TTextSide; aParent: TWinControl): TDisplayChatItem;
+function TChatControl.DoCreateMarkdownItem(aText: String; aSide: TTextSide): TMarkdownDisplayChatItem;
+begin
+  Result:=TMarkdownDisplayChatItem.Create(aText,aSide);
+end;
+
+procedure TChatControl.SetMarkDownProperties(aItem : TMarkDownDisplayChatItem);
+var
+  Idx : Integer;
+begin
+  for Idx:=0 to MaxColorIdx do
+    aItem.SetMarkdownProperty(Idx,FMarkDownColors[Idx]);
+  for Idx:=0 to MaxStringIdx do
+    aItem.SetMarkdownProperty(Idx,FMarkDownStrings[Idx]);
+  for Idx:=0 to MaxIntegerIdx do
+    aItem.SetMarkdownProperty(Idx,FMarkDownSizes[Idx]);
+  aItem.FControl.OnGetImage:=@DoGetOnImage;
+  aItem.FControl.OnOpenURL:=@DoOpenURL;
+  if aItem.Side=tsLeft then
+    begin
+    aItem.FControl.BGCodeColor:=LeftBackground;
+    aItem.FControl.FontColor:=LeftTextColor;
+    end
+  else
+    begin
+    aItem.FControl.BGCodeColor:=RightBackground;
+    aItem.FControl.FontColor:=RightTextColor;
+    end
+end;
+
+function TChatControl.CreateMarkdownItem(aText: String; aSide: TTextSide): TDisplayChatItem;
+var
+  C : TMarkDownControl;
+  S : TShape;
+  P : TMarkDownDisplayChatItem;
+begin
+  P:=DoCreateMarkdownItem(aText,aSide);
+  C:=TMarkDownControl.Create(Self);
+  C.Parent:=Self;
+  P.FControl:=C;
+  SetMarkDownProperties(P);
+  C.MarkDown.Text:=aText;
+  P.MaxWidth:=Round(ClientWidth*0.75);
+  S:=TShape.Create(Self);
+  S.Parent:=Self;
+  S.Shape:=stRoundRect;
+  if aSide=tsLeft then
+    begin
+    C.FontColor:=LeftTextColor;
+    C.Color:=LeftBackground;
+    S.Brush.Color:=LeftBackground;
+    S.Pen.Color:=LeftBackground;
+    end
+  else
+    begin
+    C.FontColor:=RightTextColor;
+    C.Color:=RightBackground;
+    S.Brush.Color:=RightBackground;
+    S.Pen.Color:=RightBackground;
+    end;
+  Result:=P;
+  Result.TextBackground:=S;
+  Result.OnClick:=@DoItemClick;
+end;
+
+
+function TChatControl.CreatePlainItem(aText: String; aSide: TTextSide; aParent: TWinControl): TDisplayChatItem;
 var
   L : TLabel;
   S : TShape;
+  P : TPlainDisplayChatItem;
 begin
-  Result:=DoCreateItem(aText,aSide);
+  P:=DoCreatePlainItem(aText,aSide);
+  Result:=P;
   L:=CreateChatLabel(Self);
   L.AutoSize:=True;
   L.Constraints.MaxWidth:=Round(ClientWidth*0.75);
@@ -500,7 +764,7 @@ begin
     S.Brush.Color:=RightBackground;
     S.Pen.Color:=RightBackground;
     end;
-  Result.TextLabel:=L;
+  P.TextLabel:=L;
   Result.TextBackground:=S;
   Result.OnClick:=@DoItemClick;
 end;
@@ -539,6 +803,7 @@ begin
   ItemSpacing:=DefaultItemSpacing;
   ItemPadding:=DefaultItemPadding;
   ItemMargin:=DefaultItemMargin;
+  InitMarkdownProperties;
 end;
 
 
@@ -579,13 +844,17 @@ begin
   ClipBoard.AsText:=S;
 end;
 
-procedure TChatControl.AddText(const aText: String; aSide: TTextSide);
+procedure TChatControl.AddText(const aText: String; aSide: TTextSide; aMarkdown: Boolean);
 
 var
   aItem : TDisplayChatItem;
   Idx,ltop : Integer;
 begin
-  aItem:=CreateItem(aText,aSide,Self);
+  if aMarkDown then
+    aItem:=CreateMarkdownItem(aText,aSide)
+  else
+    aItem:=CreatePlainItem(aText,aSide,Self);
+
   Idx:=FChatList.Add(aItem);
   lTop:=ItemSpacing;
   if Idx>0 then
@@ -673,11 +942,6 @@ begin
       FBackground.Brush.Color:=FSavedColors[ckBackgroundBrush];
       FBackground.Color:=FSavedColors[ckBackground];
       end;
-    if Assigned(FLabel) then
-      begin
-      FLabel.Font.Color:=FSavedColors[ckLabelFont];
-      FLabel.Color:=FSavedColors[ckLabelBack];
-      end;
     end
   else
     begin
@@ -686,11 +950,6 @@ begin
       FBackground.Pen.Color:=clHighlight;
       FBackground.Brush.Color:=clHighlight;
       FBackground.Color:=clHighlight;
-      end;
-    if Assigned(FLabel) then
-      begin
-      FLabel.Font.Color:=clHighlightText;
-      FLabel.Color:=clHighlight;
       end;
     end;
 end;
@@ -707,8 +966,6 @@ procedure TChatControl.TDisplayChatItem.Invalidate;
 begin
   If assigned(FBackground) then
     FBackground.Invalidate;
-  If assigned(FLabel) then
-    FLabel.Invalidate;
 end;
 
 procedure TChatControl.TDisplayChatItem.DoMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -731,27 +988,28 @@ begin
     end;
 end;
 
-procedure TChatControl.TDisplayChatItem.SetLabel(AValue: TLabel);
+procedure TChatControl.TDisplayChatItem.SetMaxWidth(aMaxWidth: Integer);
 begin
-  if FLabel=AValue then Exit;
-  FLabel:=AValue;
-  if Assigned(FLabel) then
-    begin
-    FSavedColors[ckLabelFont]:=FLabel.Font.Color;
-    FSavedColors[ckLabelBack]:=FLabel.Color;
-    FLabel.OnClick:=@DoClick;
-    FLabel.OnMouseDown:=@DoMouseDown;
-    end;
+  // Do nothing
 end;
+
 
 destructor TChatControl.TDisplayChatItem.Destroy;
 begin
-  FreeAndNil(FLabel);
   FreeAndNil(FBackground);
   inherited Destroy;
 end;
 
-procedure TChatControl.TDisplayChatItem.LayoutAt(aTop, aPadding, aMargin: Integer);
+
+procedure TChatControl.TDisplayChatItem.DoClick(Sender: TObject);
+begin
+  If Assigned(FOnClick) then
+    FOnClick(Self);
+end;
+
+{ TChatControl.TPlainDisplayChatItem }
+
+procedure TChatControl.TPlainDisplayChatItem.LayoutAt(aTop, aPadding, aMargin: Integer);
 
 var
   lPos : TPoint;
@@ -771,10 +1029,135 @@ begin
   TextLabel.BringToFront;
 end;
 
-procedure TChatControl.TDisplayChatItem.DoClick(Sender: TObject);
+procedure TChatControl.TPlainDisplayChatItem.SetLabel(const aValue: TLabel);
 begin
-  If Assigned(FOnClick) then
-    FOnClick(Self);
+  if FLabel=aValue then Exit;
+  FLabel:=AValue;
+  if Assigned(FLabel) then
+    begin
+    FSavedColors[ckLabelFont]:=FLabel.Font.Color;
+    FSavedColors[ckLabelBack]:=FLabel.Color;
+    FLabel.OnClick:=@DoClick;
+    FLabel.OnMouseDown:=@DoMouseDown;
+    end;
+end;
+
+procedure TChatControl.TPlainDisplayChatItem.Invalidate;
+begin
+  inherited Invalidate;
+  If assigned(FLabel) then
+    FLabel.Invalidate;
+end;
+
+procedure TChatControl.TPlainDisplayChatItem.SetColors;
+begin
+  if Not Assigned(FLabel) then
+    exit;
+  if FSelected then
+    begin
+    FLabel.Font.Color:=clHighlightText;
+    FLabel.Color:=clHighlight;
+    end
+  else
+    begin
+    FLabel.Font.Color:=FSavedColors[ckLabelFont];
+    FLabel.Color:=FSavedColors[ckLabelBack];
+    end
+
+end;
+
+procedure TChatControl.TPlainDisplayChatItem.SetMaxWidth(aMaxWidth: Integer);
+var
+  recalc : boolean;
+begin
+  Recalc:=aMaxWidth>TextLabel.Constraints.MaxWidth;
+  TextLabel.Constraints.MaxWidth:=aMaxWidth;
+  if Recalc then
+    begin
+    TextLabel.WordWrap:=False;
+    TextLabel.WordWrap:=True;
+    end;
+end;
+
+destructor TChatControl.TPlainDisplayChatItem.destroy;
+begin
+  FreeAndNil(FLabel);
+  inherited destroy;
+end;
+
+{ TChatControl.TMarkdownDisplayChatItem }
+
+procedure TChatControl.TMarkdownDisplayChatItem.SetMarkdownProperty(aIndex: integer; aValue: string);
+begin
+  Case aIndex of
+    IdxFontName     : FControl.FontName:=aValue;
+    IdxMonoFontName : FControl.MonoFontName:=aValue;
+    IdxBulletChar1  : FControl.BulletChar1:=aValue;
+    IdxBulletChar2  : FControl.BulletChar2:=aValue;
+    IdxBulletChar3  : FControl.BulletChar3:=aValue;
+  end;
+end;
+
+procedure TChatControl.TMarkdownDisplayChatItem.SetMarkdownProperty(aIndex: integer; aValue: Integer);
+begin
+  case aIndex of
+    IdxBaseFontSize     : FControl.BaseFontSize:=aValue;
+    IdxBlockQuoteIndent : FControl.BlockQuoteIndent:=aValue;
+    IdxImageMargin      : FControl.ImageMargin:=aValue;
+    IdxParagraphSpacing : FControl.ParagraphSpacing:=aValue;
+    IdxExtraIndent      : FControl.ExtraIndent:=aValue;
+  end;
+end;
+
+procedure TChatControl.TMarkdownDisplayChatItem.SetMarkdownColorProperty(aIndex: integer; aValue: TColor);
+begin
+  case aIndex of
+    IdxFontColor      : FControl.FontColor:=aValue;
+    IdxFontCodeColor  : FControl.FontCodeColor:=aValue;
+    IdxFontQuoteColor : FControl.FontQuoteColor:=aValue;
+    IdxHyperLinkColor : FControl.FontQuoteColor:=aValue;
+    IdxBGCodeColor    : FControl.BGCodeColor:=aValue;
+  end;
+end;
+
+procedure TChatControl.TMarkdownDisplayChatItem.Invalidate;
+begin
+  // Do nothing
+end;
+
+procedure TChatControl.TMarkdownDisplayChatItem.SetColors;
+begin
+  // Do nothing
+end;
+
+procedure TChatControl.TMarkdownDisplayChatItem.SetMaxWidth(aMaxWidth: Integer);
+begin
+  FControl.Width:=aMaxWidth;
+  FControl.CalcLayout;
+end;
+
+procedure TChatControl.TMarkdownDisplayChatItem.LayoutAt(aTop, aPadding, aMargin: Integer);
+var
+  lPos : TPoint;
+  lSize : TPoint;
+
+begin
+  lPos.Y:=aTop;
+  lSize.X:=FControl.Width;
+  lSize.Y:=FControl.Height;
+  Case Side of
+   tsLeft : lPos.X:=4;
+   tsRight : lPos.X:=FControl.Parent.Width-lSize.X-2*aPadding-aMargin;
+  end;
+  TextBackground.SetBounds(lPos.X,lpos.Y,lSize.X+2*aPadding,lSize.Y+2*aPadding);
+  FControl.Left:=lPos.X+aPadding;
+  FControl.Top:=lPos.Y+aPadding;
+  FControl.BringToFront;
+end;
+
+destructor TChatControl.TMarkdownDisplayChatItem.destroy;
+begin
+  inherited destroy;
 end;
 
 end.

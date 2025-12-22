@@ -80,12 +80,17 @@ begin
   With ccMain do
     begin
     AddText('Hello, how are you?',tsRight);
-    AddText('Fine, thanks for asking. How are you?',tsLeft);
+    AddText('Fine, thanks for asking. How are you?'+sLineBreak
+             +sLineBreak
+             +'* Bullet **1**'+sLineBreak
+             +'* Bullet **2**'+sLineBreak
+             +'* Bullet **3**',
+             tsLeft,True);
     AddText('Also fine. Can I ask you a question?',tsRight);
     AddText('Sure, go right ahead...',tsLeft);
     AddText('How does this program actually work?',tsRight);
-    AddText('Or is that too difficult to explain?',tsRight);
-    AddText('No, it is actually quite easy to make using lazarus:',tsLeft);
+    AddText('Or is that *too difficult* to explain?',tsRight,True);
+    AddText('No, it is actually **quite easy** to make using lazarus:',tsLeft,True);
     AddText('There is a control that makes this a breeze...',tsLeft);
     end;
 end;

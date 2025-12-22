@@ -93,10 +93,10 @@ object MainChatForm: TMainChatForm
       OnClick = handlePrompt
     end
     object cbLeft: TCheckBox
-      Left = 936
-      Height = 23
-      Top = 104
-      Width = 94
+      Left = 938
+      Height = 22
+      Top = 105
+      Width = 92
       Anchors = [akRight, akBottom]
       Caption = 'Add to Left'
       TabOrder = 2
@@ -111,10 +111,10 @@ object MainChatForm: TMainChatForm
       OnClick = Button2Click
     end
     object cbCtrlSelects: TCheckBox
-      Left = 936
-      Height = 23
-      Top = 75
-      Width = 132
+      Left = 941
+      Height = 22
+      Top = 76
+      Width = 127
       Anchors = [akRight, akBottom]
       Caption = 'CTRL-Click selects'
       TabOrder = 4
