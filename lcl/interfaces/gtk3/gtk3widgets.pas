@@ -3435,14 +3435,19 @@ begin
 end;
 
 procedure TGtk3Widget.SetCursor(ACursor: HCURSOR);
+var
+  LCursor: HCURSOR;
+  LCursorIsDefault: Boolean;
 begin
   if IsWidgetOk then
   begin
+    LCursor := HCURSOR(TGtk3Cursor(ACursor).Handle);
+    LCursorIsDefault := ACursor = Screen.Cursors[crDefault];
     if GetContainerWidget^.get_has_window and Gtk3IsGdkWindow(GetContainerWidget^.window) then
-      SetWindowCursor(GetContainerWidget^.window, HCURSOR(TGtk3Cursor(ACursor).Handle), False, True)
+      SetWindowCursor(GetContainerWidget^.window, LCursor, False, LCursorIsDefault)
     else
     if Widget^.get_has_window and Gtk3IsGdkWindow(Widget^.window) then
-      SetWindowCursor(Widget^.window, HCURSOR(TGtk3Cursor(ACursor).Handle), False, True)
+      SetWindowCursor(Widget^.window, LCursor, False, LCursorIsDefault)
     else // fallback for window-less widgets
     if Assigned(self.getParent) then
       Self.getParent.SetCursor(ACursor);
