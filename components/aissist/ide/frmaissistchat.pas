@@ -51,6 +51,7 @@ type
     procedure HandlePromptResult(Sender: TObject; aResult: TSendPromptResult);
     procedure HandleRequestError(aErrorData: TLLMRestStatusInfo);
     procedure SetState(AValue: TChatState);
+    function ValidateMarkDown(aMarkdown: String): boolean;
   public
     property State : TChatState Read FChatState Write SetState;
     property OnConfigure : TNotifyEvent Read FOnConfigure Write FOnConfigure;
@@ -59,13 +60,40 @@ type
 implementation
 
 uses
-  ClipBrd, StrAIssist, AIssistController;
+   IDEExternToolIntf,idemsgintf, ClipBrd, StrAIssist, AIssistController, markdown.parser, markdown.Processors;
 
 {$R *.lfm}
 
 { TAIssistChatForm }
 
+Function TAIssistChatForm.ValidateMarkDown(aMarkdown : String) : boolean;
+var
+  lParser : TMarkDownParser;
+  lMarkdown : TStrings;
+begin
+  Result:=False;
+  lMarkDown:=Nil;
+  lParser:=TMarkDownParser.Create(Self);
+  try
+    lMarkDown:=TStringList.Create;
+    lMarkDown.Text:=aMarkDown;
+    try
+      LParser.Parse(lMarkDown);
+      Result:=true;
+    except
+      on E : Exception do
+        AddIDEMessage(mluError,Format('Error %s parsing markdown: %s',[E.ClassName,E.Message]));
+    end;
+  finally
+    lParser.Free;
+    lMarkDown.Free;
+  end;
+end;
+
 procedure TAIssistChatForm.HandlePromptResult(Sender: TObject; aResult: TSendPromptResult);
+var
+  lIsValid : boolean;
+  lText : string;
 begin
   FChat.LeftTyping:=False;
   State:=csWaiting;
@@ -75,7 +103,11 @@ begin
     if Length(aResult.Value)=0 then
       FChat.AddText(SErrNoAnswer,tsLeft)
     else
-      FChat.AddText(aResult.Value[0].text,tsLeft,true);
+      begin
+      lText:=aResult.Value[0].text;
+      lIsValid:=ValidateMarkDown(lText);
+      FChat.AddText(lText,tsLeft,lIsValid);
+      end;
 end;
 
 procedure TAIssistChatForm.HandleRequestError(aErrorData: TLLMRestStatusInfo);
@@ -92,7 +124,7 @@ begin
     if aErrorData.ErrorContent<>'' then
       begin
       Msg.Add(SErrorBody);
-      Msg.Add(SErrorContext,[aErrorData.ErrorContent]);
+      Msg.Add(SErrorContext,[aErrorData.tostring]);
       end;
     FChat.AddText(Msg.Text,tsLeft);
     FChat.LeftTyping:=False;
