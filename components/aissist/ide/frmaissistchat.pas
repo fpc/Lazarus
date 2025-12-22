@@ -75,7 +75,7 @@ begin
     if Length(aResult.Value)=0 then
       FChat.AddText(SErrNoAnswer,tsLeft)
     else
-      FChat.AddText(aResult.Value[0].text,tsLeft);
+      FChat.AddText(aResult.Value[0].text,tsLeft,true);
 end;
 
 procedure TAIssistChatForm.HandleRequestError(aErrorData: TLLMRestStatusInfo);
