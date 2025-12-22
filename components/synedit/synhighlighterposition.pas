@@ -259,7 +259,7 @@ end;
 
 procedure TSynPositionHighlighter.ResetRange;
 begin
-  inherited ResetRange;
+  //inherited ResetRange;
 end;
 
 procedure TSynPositionHighlighter.SetLine(const NewValue: string;
@@ -288,7 +288,7 @@ end;
 
 procedure TSynPositionHighlighter.SetRange(Value: Pointer);
 begin
-  inherited SetRange(Value);
+  //inherited SetRange(Value);
 end;
 
 function TSynPositionHighlighter.UseUserSettings(settingIndex: integer

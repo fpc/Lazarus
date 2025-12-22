@@ -41,7 +41,7 @@ unit SynEditTypes;
 
 interface
 uses
-  SysUtils, types, Classes, Controls, LCLType, SynEditKeyCmds, LazEditTextAttributes;
+  SysUtils, types, Classes, Controls, LCLType, SynEditKeyCmds, LazEditTextAttributes, LazEditTypes;
 
 const
   TSynSpecialChars = [#128..#255]; // MG: special chars. Meaning depends on system encoding/codepage.
@@ -56,10 +56,10 @@ type
 
   TSynIdentChars = set of char;
 
-  TLinePos = type integer; // 1..high(Integer);
-  TLineIdx = type integer; // 0..high(Integer);
-  IntPos = type integer; // 1..high(Integer);
-  IntIdx = type integer; // 0..high(Integer);
+  TLinePos = LazEditTypes.TLinePos;
+  TLineIdx = LazEditTypes.TLineIdx;
+  IntPos   = LazEditTypes.IntPos;
+  IntIdx   = LazEditTypes.IntIdx;
 
   (* Points in Text
      x and y are 1 based, unless otherwise stated

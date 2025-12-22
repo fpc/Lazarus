@@ -1111,7 +1111,6 @@ type
     procedure ResetRange; override;
     procedure SetLine(const NewValue: string; LineNumber: Integer); override;
     procedure SetRange(Value: Pointer); override;
-    procedure StartAtLineIndex(LineNumber:Integer); override; // 0 based
     function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; override;
 
     function UseUserSettings(settingIndex: integer): boolean; override;
@@ -6524,11 +6523,6 @@ begin
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
 end;
 
-procedure TSynPasSyn.StartAtLineIndex(LineNumber: Integer);
-begin
-  inherited StartAtLineIndex(LineNumber);
-end;
-
 function TSynPasSyn.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
   function Merge(Base: TLazEditHighlighterAttributes;
     Modifier: TLazEditHighlighterAttributesModifier
@@ -8049,7 +8043,7 @@ end;
 procedure TSynPasSyn.SetD4syntax(const Value: boolean);
 begin
   FD4syntax := Value;
-  SendRescanNeededNotification;
+  RequestFullRescan;
 end;
 
 { TSynFreePascalSyn }

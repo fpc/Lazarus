@@ -1713,7 +1713,6 @@ end;
 
 procedure TSynMultiSyn.SetRange(Value: Pointer);
 begin
-  inherited;
   FCurScheme := TSynHighlighterMultiScheme(Value);
 end;
 
@@ -1746,7 +1745,7 @@ begin
   if Schemes = nil then exit;
   if (Item <> nil) and (TSynHighlighterMultiScheme(Item).NeedHLScan) then begin
     SendAttributeChangeNotification;
-    SendRescanNeededNotification;
+    RequestFullRescan;
   end;
   for i := 0 to AttachedLines.Count - 1 do
     KnownRanges[i].InvalidateAll;
