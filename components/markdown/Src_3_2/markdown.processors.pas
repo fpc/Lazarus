@@ -642,7 +642,10 @@ var
 begin
   lOldLastList:=FLastList;
   if inList(aParent.blocks, true, FMarker, Findent, 2, lList) then
-    lList.lastIndent:=FIndent
+    begin
+    lList.lastIndent:=FIndent;
+    FLastList:=lList;
+    end
   else
     begin
     lList:=TMarkDownListBlock.Create(aParent,aLine.LineNo);
