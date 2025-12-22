@@ -91,8 +91,6 @@ type
     FBracketAttri: TSynHighlighterAttributes;
     FAtLineStart: Boolean;
     fRange: TRangeState;
-    fLine: PChar;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fStringLen: Integer;
@@ -299,7 +297,7 @@ type
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: String; override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
@@ -1562,12 +1560,10 @@ begin
   fRange := rsUnknown;
 end;
 
-procedure TSynJScriptSyn.SetLine(const NewValue: String; LineNumber: Integer);
+procedure TSynJScriptSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   FAtLineStart := True;
   Next;
 end;
@@ -1576,23 +1572,23 @@ procedure TSynJScriptSyn.AndSymbolProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] in ['=', '&'] then inc(Run);
+  if LinePtr[Run] in ['=', '&'] then inc(Run);
 end;
 
 procedure TSynJScriptSyn.CommentProc;
 begin
-  if fLine[Run] = #0 then
+  if LinePtr[Run] = #0 then
     fTokenID := tkNull
   else begin
     fTokenID := tkComment;
     repeat
-      if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then begin
+      if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = '/') then begin
         fRange := rsUnKnown;
         inc(Run, 2);
         break;
       end;
       inc(Run);
-    until fLine[Run] in [#0, #10, #13];
+    until LinePtr[Run] in [#0, #10, #13];
   end;
 end;
 
@@ -1600,14 +1596,14 @@ procedure TSynJScriptSyn.CRProc;
 begin
   fTokenID := tkSpace;
   inc(Run);
-  if fLine[Run] = #10 then inc(Run);
+  if LinePtr[Run] = #10 then inc(Run);
 end;
 
 procedure TSynJScriptSyn.IdentProc;
 begin
-  fTokenID := IdentKind((fLine + Run));
+  fTokenID := IdentKind((LinePtr + Run));
   inc(Run, fStringLen);
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
 end;
 
 procedure TSynJScriptSyn.LFProc;
@@ -1620,14 +1616,14 @@ procedure TSynJScriptSyn.MinusProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] in ['=', '-', '>'] then inc(Run);
+  if LinePtr[Run] in ['=', '-', '>'] then inc(Run);
 end;
 
 procedure TSynJScriptSyn.ModSymbolProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] = '=' then inc(Run);
+  if LinePtr[Run] = '=' then inc(Run);
 end;
 
 procedure TSynJScriptSyn.NullProc;
@@ -1638,23 +1634,23 @@ end;
 procedure TSynJScriptSyn.NumberProc;
 begin
   fTokenID := tkNumber;
-  if (FLine[Run] = '0') and (FLine[Run+1] in ['x', 'X'])then
+  if (LinePtr[Run] = '0') and (LinePtr[Run+1] in ['x', 'X'])then
   begin
     inc(Run, 2);
-    while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
+    while LinePtr[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
     exit;
   end;
 
   inc(Run);
-  while FLine[Run] in ['0'..'9'] do inc(Run);
-  if (FLine[Run]='.') and not(fLine[Run+1]='.')  then begin
+  while LinePtr[Run] in ['0'..'9'] do inc(Run);
+  if (LinePtr[Run]='.') and not(LinePtr[Run+1]='.')  then begin
     inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
-  if (FLine[Run]='e') or (fLine[Run]='E')  then begin
+  if (LinePtr[Run]='e') or (LinePtr[Run]='E')  then begin
     inc(Run);
-    if (FLine[Run]='+') or (fLine[Run]='-')  then inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    if (LinePtr[Run]='+') or (LinePtr[Run]='-')  then inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
 end;
 
@@ -1662,21 +1658,21 @@ procedure TSynJScriptSyn.OrSymbolProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] in ['=', '|'] then inc(Run);
+  if LinePtr[Run] in ['=', '|'] then inc(Run);
 end;
 
 procedure TSynJScriptSyn.PlusProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] in ['=', '+'] then inc(Run);
+  if LinePtr[Run] in ['=', '+'] then inc(Run);
 end;
 
 procedure TSynJScriptSyn.PointProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if (fLine[Run] = '.') and (fLine[Run + 1] = '.') then inc(Run, 2);
+  if (LinePtr[Run] = '.') and (LinePtr[Run + 1] = '.') then inc(Run, 2);
 end;
 
 procedure TSynJScriptSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes
@@ -1699,24 +1695,24 @@ end;
 procedure TSynJScriptSyn.SlashProc;
 begin
   Inc(Run);
-  case fLine[Run] of
+  case LinePtr[Run] of
     '/': begin
            fTokenID := tkComment;
            repeat
              Inc(Run);
-           until fLine[Run] in [#0, #10, #13];
+           until LinePtr[Run] in [#0, #10, #13];
          end;
     '*': begin
            fTokenID := tkComment;
            fRange := rsAnsi;
            repeat
              Inc(Run);
-             if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then begin
+             if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = '/') then begin
                fRange := rsUnKnown;
                Inc(Run, 2);
                break;
              end;
-           until fLine[Run] in [#0, #10, #13];
+           until LinePtr[Run] in [#0, #10, #13];
          end;
     '=': begin
            Inc(Run);
@@ -1731,14 +1727,14 @@ procedure TSynJScriptSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
 procedure TSynJScriptSyn.StarProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] = '=' then inc(Run);
+  if LinePtr[Run] = '=' then inc(Run);
 end;
 
 procedure TSynJScriptSyn.StringProc;
@@ -1747,9 +1743,9 @@ var
   p: PChar;
 begin
   fTokenID := tkString;
-  l_strChar := FLine[Run];   // We could have '"' or #39
-  if (FLine[Run + 1] = l_strChar) and (FLine[Run + 2] = l_strChar) then inc(Run, 2);
-  p := @fLine[Run+1];
+  l_strChar := LinePtr[Run];   // We could have '"' or #39
+  if (LinePtr[Run + 1] = l_strChar) and (LinePtr[Run + 2] = l_strChar) then inc(Run, 2);
+  p := @LinePtr[Run+1];
 
   if l_strChar ='"' then
     repeat
@@ -1770,8 +1766,8 @@ begin
         break;
     until false;
 
-  Run := p - fLine;
-  if FLine[Run] <> #0 then
+  Run := p - LinePtr;
+  if LinePtr[Run] <> #0 then
     Inc(Run);
 end;
 
@@ -1784,13 +1780,13 @@ end;
 procedure TSynJScriptSyn.UnknownProc;
 begin
 {$IFDEF SYN_MBCSSUPPORT}
-  if FLine[Run] in LeadBytes then
+  if LinePtr[Run] in LeadBytes then
     Inc(Run,2)
   else
 {$ENDIF}
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -1798,12 +1794,12 @@ procedure TSynJScriptSyn.BracketProc;
 begin
   inc(Run);
   fTokenId := tkBracket;
-  if FLine[Run-1] = '{' then
+  if LinePtr[Run-1] = '{' then
   begin
     StartJScriptCodeFoldBlock(jsbBracket);
   end
   else
-  if FLine[Run-1] = '}' then
+  if LinePtr[Run-1] = '}' then
   begin
     FinishJScriptCodeFoldBlock();
     if CurrentJScriptCodeFoldBlockType = jsbFunction then
@@ -1817,7 +1813,7 @@ begin
   if fRange = rsANSI then
     CommentProc
   else
-    fProcTable[fLine[Run]];
+    fProcTable[LinePtr[Run]];
   if FAtLineStart and not(FTokenID in [tkSpace, tkComment]) then
     FAtLineStart := False;
 end;
@@ -1855,7 +1851,7 @@ var
   Len: LongInt;
 begin
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 function TSynJScriptSyn.GetTokenID: TtkTokenKind;
@@ -1866,7 +1862,7 @@ end;
 procedure TSynJScriptSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynJScriptSyn.GetTokenAttribute: TLazEditTextAttribute;

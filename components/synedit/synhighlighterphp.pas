@@ -84,9 +84,7 @@ type
     );
   private
     fRange: TRangeState;
-    fLine: PChar;
     fLineLen: integer;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fStringLen: Integer;
@@ -207,7 +205,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
 
@@ -676,19 +674,17 @@ begin
   fRange := rsUnknown;
 end;
 
-procedure TSynPHPSyn.SetLine(const NewValue: String; LineNumber: Integer);
+procedure TSynPHPSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
-  fLineLen := length(NewValue);
+  fLineLen := length(CurrentLineText);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
 end;
 
 procedure TSynPHPSyn.AndSymbolProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {and assign}
       begin
         inc(Run, 2);
@@ -728,7 +724,7 @@ end;
 procedure TSynPHPSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     #10: inc(Run, 2);
   else inc(Run);
   end;
@@ -748,7 +744,7 @@ end;
 
 procedure TSynPHPSyn.EqualProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {logical equal}
       begin
         inc(Run, 2);
@@ -769,7 +765,7 @@ end;
 
 procedure TSynPHPSyn.GreaterProc;
 begin
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     '=':                               {greater than or equal to}
       begin
         inc(Run, 2);
@@ -790,9 +786,9 @@ end;
 
 procedure TSynPHPSyn.IdentProc;
 begin
-  fTokenID := IdentKind((fLine + Run));
+  fTokenID := IdentKind((LinePtr + Run));
   inc(Run, fStringLen);
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
 end;
 
 procedure TSynPHPSyn.LFProc;
@@ -803,7 +799,7 @@ end;
 
 procedure TSynPHPSyn.LowerProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {less than or equal to}
       begin
         inc(Run, 2);
@@ -811,7 +807,7 @@ begin
       end;
     '<':
       begin
-        if FLine[Run + 2] = '=' then   {shift left assign}
+        if LinePtr[Run + 2] = '=' then   {shift left assign}
         begin
           inc(Run, 3)
         end
@@ -831,7 +827,7 @@ end;
 
 procedure TSynPHPSyn.MinusProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {subtract assign}
       begin
         inc(Run, 2);
@@ -857,7 +853,7 @@ end;
 
 procedure TSynPHPSyn.MultiplyProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {multiply assign}
       begin
         inc(Run, 2);
@@ -873,7 +869,7 @@ end;
 
 procedure TSynPHPSyn.NotSymbolProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {not equal}
       begin
         inc(Run, 2);
@@ -898,12 +894,12 @@ procedure TSynPHPSyn.NumberProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
-  while FLine[Run] in
+  while LinePtr[Run] in
       ['0'..'9', '.', '-', 'l', 'L', 'x', 'X', 'A'..'F', 'a'..'f'] do
   begin
-    case FLine[Run] of
+    case LinePtr[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if LinePtr[Run + 1] = '.' then break;
     end;
     inc(Run);
   end;
@@ -911,7 +907,7 @@ end;
 
 procedure TSynPHPSyn.OrSymbolProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {inclusive or assign}
       begin
         inc(Run, 2);
@@ -932,7 +928,7 @@ end;
 
 procedure TSynPHPSyn.PlusProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {add assign}
       begin
         inc(Run, 2);
@@ -961,7 +957,7 @@ procedure TSynPHPSyn.PoundProc;
 begin
   repeat
     inc(Run);
-  until FLine[Run] in [#0, #10, #13];
+  until LinePtr[Run] in [#0, #10, #13];
   fTokenID := tkComment;
 end;
 
@@ -973,7 +969,7 @@ end;
 
 procedure TSynPHPSyn.RemainderSymbolProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {remainder assign}
       begin
         inc(Run, 2);
@@ -1022,14 +1018,14 @@ end;
 
 procedure TSynPHPSyn.SlashProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '/':                               {c++ style comments}
       begin
         inc(Run, 2);
         fTokenID := tkComment;
-        while FLine[Run] <> #0 do
+        while LinePtr[Run] <> #0 do
         begin
-          case FLine[Run] of
+          case LinePtr[Run] of
             #10, #13: break;
           end;
           inc(Run);
@@ -1042,10 +1038,10 @@ begin
         fTokenID := tkComment;       {c style comment}
 
         inc(Run);
-        while fLine[Run] <> #0 do
-          case fLine[Run] of
+        while LinePtr[Run] <> #0 do
+          case LinePtr[Run] of
             '*':
-              if fLine[Run + 1] = '/' then
+              if LinePtr[Run + 1] = '/' then
               begin
                 fRange := rsUnKnown;
                 inc(Run, 2);
@@ -1073,7 +1069,7 @@ procedure TSynPHPSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
 procedure TSynPHPSyn.SquareCloseProc;
@@ -1095,7 +1091,7 @@ procedure TSynPHPSyn.StringProc;
     iFirstSlashPos: integer;
   begin
     iFirstSlashPos := Run -1;
-    while (iFirstSlashPos > 0) and (FLine[iFirstSlashPos] = '\') do
+    while (iFirstSlashPos > 0) and (LinePtr[iFirstSlashPos] = '\') do
       Dec( iFirstSlashPos );
     Result := (Run - iFirstSlashPos +1) mod 2 <> 0;
   end;
@@ -1103,9 +1099,9 @@ procedure TSynPHPSyn.StringProc;
 var
   iCloseChar: char;
 begin
-  if (FLine[Run] in [#0, #10, #13]) and (fTokenPos = Run) then
+  if (LinePtr[Run] in [#0, #10, #13]) and (fTokenPos = Run) then
   begin
-    fProcTable[ FLine[Run] ]();
+    fProcTable[ LinePtr[Run] ]();
     Exit;
   end;
   fTokenID := tkString;
@@ -1113,14 +1109,14 @@ begin
     iCloseChar := #39
   else
     iCloseChar := #34;
-  while not( FLine[Run] in [#0, #10, #13] ) do
+  while not( LinePtr[Run] in [#0, #10, #13] ) do
   begin
-    if (FLine[Run] = iCloseChar) and (not IsEscaped) then
+    if (LinePtr[Run] = iCloseChar) and (not IsEscaped) then
       break;
-    if (FLine[Run] = '$') and (iCloseChar = '"') and
-      ( (FLine[Run +1] = '{') or Identifiers[ FLine[Run +1] ] ) then
+    if (LinePtr[Run] = '$') and (iCloseChar = '"') and
+      ( (LinePtr[Run +1] = '{') or Identifiers[ LinePtr[Run +1] ] ) then
     begin
-      if (Run > 1) and (FLine[Run -1] = '{') then { complex syntax }
+      if (Run > 1) and (LinePtr[Run -1] = '{') then { complex syntax }
         Dec( Run );
       if not IsEscaped then
       begin
@@ -1128,14 +1124,14 @@ begin
         fRange := rsVarExpansion;
         Exit;
       end
-      else if FLine[Run] = '{' then
+      else if LinePtr[Run] = '{' then
         Inc( Run ); { restore Run if we previously deincremented it }
     end;
     Inc(Run);
   end;
-  if (FLine[Run] = iCloseChar) then
+  if (LinePtr[Run] = iCloseChar) then
     fRange := rsUnKnown;
-  if FLine[Run] <> #0 then inc(Run);
+  if LinePtr[Run] <> #0 then inc(Run);
 end;
 
 procedure TSynPHPSyn.VarExpansionProc;
@@ -1149,14 +1145,14 @@ var
 begin
   fRange := rsString34; { var expansion only occurs in double quoted strings }
   FTokenID := tkVariable;
-  if FLine[Run] = '{' then
+  if LinePtr[Run] = '{' then
   begin
     iSyntax := esComplex;
     Inc( Run, 2 ); // skips '{$' }
   end
   else begin
     Inc( Run );
-    if FLine[Run] = '{' then
+    if LinePtr[Run] = '{' then
     begin
       iSyntax := esBrace;
       Inc( Run );
@@ -1167,9 +1163,9 @@ begin
   if iSyntax in [esBrace, esComplex] then
   begin
     iOpenBraces := 1;
-    while FLine[Run] <> #0 do
+    while LinePtr[Run] <> #0 do
     begin
-      if FLine[Run] = '}' then
+      if LinePtr[Run] = '}' then
       begin
         Dec( iOpenBraces );
         if iOpenBraces = 0 then
@@ -1178,28 +1174,28 @@ begin
           break;
         end;
       end;
-      if FLine[Run] = '{' then
+      if LinePtr[Run] = '{' then
         Inc( iOpenBraces );
       Inc( Run );
     end;
   end
   else begin
-    while Identifiers[ FLine[Run] ] do
+    while Identifiers[ LinePtr[Run] ] do
       Inc( Run );
     iOpenBrackets := 0;
     iTempRun := Run;
     { process arrays and objects }
-    while FLine[iTempRun] <> #0 do
+    while LinePtr[iTempRun] <> #0 do
     begin
-      if FLine[iTempRun] = '[' then
+      if LinePtr[iTempRun] = '[' then
       begin
         Inc( iTempRun );
-        if FLine[iTempRun] = #39 then
+        if LinePtr[iTempRun] = #39 then
         begin
           Inc( iTempRun );
-          while (FLine[iTempRun] <> #39) and (FLine[iTempRun] <> #0) do
+          while (LinePtr[iTempRun] <> #39) and (LinePtr[iTempRun] <> #0) do
             Inc( iTempRun );
-          if (FLine[iTempRun] = #39) and (fLine[iTempRun +1] = ']') then
+          if (LinePtr[iTempRun] = #39) and (LinePtr[iTempRun +1] = ']') then
           begin
             Inc( iTempRun, 2 );
             Run := iTempRun;
@@ -1211,19 +1207,19 @@ begin
         else
           Inc( iOpenBrackets );
       end
-      else if (FLine[iTempRun] = '-') and (FLine[iTempRun +1] = '>') then
+      else if (LinePtr[iTempRun] = '-') and (LinePtr[iTempRun +1] = '>') then
         Inc( iTempRun, 2 )
       else
         break;
 
-      if not Identifiers[ FLine[iTempRun] ] then
+      if not Identifiers[ LinePtr[iTempRun] ] then
         break
       else
         repeat
           Inc( iTempRun );
-        until not Identifiers[ FLine[iTempRun] ];
+        until not Identifiers[ LinePtr[iTempRun] ];
 
-      while FLine[iTempRun] = ']' do
+      while LinePtr[iTempRun] = ']' do
       begin
         if iOpenBrackets = 0 then
           break;
@@ -1246,12 +1242,12 @@ procedure TSynPHPSyn.VariableProc;
 begin
   fTokenID := tkVariable;
   inc(Run);
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
 end;
 
 procedure TSynPHPSyn.XOrSymbolProc;
 begin
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     '=':                               {xor assign}
       begin
         inc(Run, 2);
@@ -1268,15 +1264,15 @@ end;
 procedure TSynPHPSyn.UnknownProc;
 begin
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnknown;
 end;
 
 procedure TSynPHPSyn.AnsiCProc;
 begin
   fTokenID := tkComment;
-  case FLine[Run] of
+  case LinePtr[Run] of
     #0:
       begin
         NullProc;
@@ -1294,10 +1290,10 @@ begin
       end;
   end;
 
-  while FLine[Run] <> #0 do
-    case FLine[Run] of
+  while LinePtr[Run] <> #0 do
+    case LinePtr[Run] of
       '*':
-        if fLine[Run + 1] = '/' then
+        if LinePtr[Run + 1] = '/' then
         begin
           inc(Run, 2);
           fRange := rsUnKnown;
@@ -1333,7 +1329,7 @@ begin
     rsVarExpansion: VarExpansionProc;
     else begin
       fRange := rsUnknown;
-      fProcTable[fLine[Run]]();
+      fProcTable[LinePtr[Run]]();
     end;
   end;
 end;
@@ -1370,7 +1366,7 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 function TSynPHPSyn.GetTokenID: TtkTokenKind;
@@ -1423,7 +1419,7 @@ end;
 procedure TSynPHPSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 class function TSynPHPSyn.GetLanguageName: string;

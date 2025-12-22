@@ -767,16 +767,13 @@ type
     FStringMultilineMode: TSynPasMultilineStringModes;
     FSynPasRangeInfo: TSynPasRangeInfo;
     FAtLineStart, FAtSlashStart, FHadSlashLastLine, FInString: Boolean; // Line had only spaces or comments sofar
-    fLineStr: string;
-    fLine: PChar;
     fLineLen: integer;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
-    Run: LongInt;// current parser postion in fLine
+    Run: LongInt;// current parser postion in LinePtr
     fStringLen: Integer;// current length of hash
-    fToIdent: integer;// start of current identifier in fLine
+    fToIdent: integer;// start of current identifier in LinePtr
     fIdentFuncTable: array[0..220] of TIdentFuncTableFunc;
-    fTokenPos: Integer;// start of current token in fLine
+    fTokenPos: Integer;// start of current token in LinePtr
     FTokenID: TtkTokenKind;
     FTokenHashKey: Integer;
     FTokenExtraKind: TTokenKindExtraDetail;
@@ -833,7 +830,8 @@ type
     procedure SetNestedComments(AValue: boolean); deprecated;
     procedure SetTypeHelpers(AValue: boolean); deprecated;
     function TextComp(aText: PChar): Boolean;
-    function KeyHash: Integer;
+    function KeyHash: Integer; inline;
+    function KeyHash(Start: PChar): Integer;
     function Func15: TtkTokenKind;
     function Func19: TtkTokenKind;
     function Func20: TtkTokenKind;
@@ -1109,7 +1107,7 @@ type
     procedure SetIsInNextToEOL; experimental; // scan without extra colors
 
     procedure ResetRange; override;
-    procedure SetLine(const NewValue: string; LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     procedure SetRange(Value: Pointer); override;
     function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; override;
 
@@ -1492,30 +1490,34 @@ begin
 end;
 
 function TSynPasSyn.KeyHash: Integer;
+begin
+  if (fToIdent<fLineLen) then begin
+    Result := KeyHash(LinePtr + fToIdent);
+  end else begin
+    Result := 0;
+    fStringLen := 0;
+  end;
+end;
+
+function TSynPasSyn.KeyHash(Start: PChar): Integer;
 var
-  Start, ToHash: PChar;
+  ToHash: PChar;
 begin
   Result := 0;
-  if (fToIdent<fLineLen) then begin
-    Start := fLine + fToIdent;
-    ToHash := Start;
-    if IsLetterChar[ToHash^] then
+  ToHash := Start;
+  if IsLetterChar[ToHash^] then
+  begin
+    inc(Result, mHashTable[ToHash^]);
+    inc(ToHash);
+    while (IsLetterChar[ToHash^] or IsUnderScoreOrNumberChar[ToHash^]) do
     begin
       inc(Result, mHashTable[ToHash^]);
       inc(ToHash);
-      while (IsLetterChar[ToHash^] or IsUnderScoreOrNumberChar[ToHash^]) do
-      begin
-        inc(Result, mHashTable[ToHash^]);
-        inc(ToHash);
-      end;
     end;
-    if IsUnderScoreOrNumberChar[ToHash^] then
-      inc(ToHash);
-    fStringLen := PtrUInt(ToHash) - PtrUInt(Start);
-    //if CompareText(copy(fLineStr,fToIdent+1,fStringLen),'varargs')=0 then debugln('TSynPasSyn.KeyHash '+copy(fLineStr,fToIdent+1,fStringLen)+'='+dbgs(Result));
-  end else begin
-    fStringLen := 0;
   end;
+  if IsUnderScoreOrNumberChar[ToHash^] then
+    inc(ToHash);
+  fStringLen := PtrUInt(ToHash) - PtrUInt(Start);
 end; { KeyHash }
 
 function TSynPasSyn.KeyComp(const aKey: string): Boolean;
@@ -1525,7 +1527,7 @@ var
 begin
   if Length(aKey) = fStringLen then
   begin
-    Temp := fLine + fToIdent;
+    Temp := LinePtr + fToIdent;
     Result := True;
     for i := 1 to fStringLen do
     begin
@@ -1546,7 +1548,7 @@ var
 begin
   Result := Length(AnUpperKey) = fStringLen;
   if Result then begin
-    Temp := fLine + fToIdent;
+    Temp := LinePtr + fToIdent;
     Temp2 := PChar(AnUpperKey);
     k := byte(Temp2^);
     while k <> 0 do begin
@@ -1576,7 +1578,7 @@ function TSynPasSyn.TextComp(aText: PChar): Boolean;
 var
   CurPos: PChar;
 begin
-  CurPos:=@fLine[Run];
+  CurPos:=@LinePtr[Run];
   while (aText^<>#0) do begin
     if mHashTable[aText^]<>mHashTable[CurPos^] then exit(false);
     inc(aText);
@@ -1896,11 +1898,7 @@ begin
       if t = '' then
         continue;
 
-      fLine    := PChar(t);
-      fLineLen := Length(t);
-      fToIdent := 0;
-      h := KeyHash and 255;
-
+      h := KeyHash(PChar(t)) and 255;
       FCustomTokenInfo[h].MatchTokenKinds := FCustomTokenInfo[h].MatchTokenKinds + mtk;
       for tk in mtk do begin
         Lst := FindList(h, tk);
@@ -2034,7 +2032,7 @@ var
   sl : integer;
 begin
   if KeyCompU('END') then begin
-    if ((fToIdent<2) or (fLine[fToIdent-1]<>'@'))
+    if ((fToIdent<2) or (LinePtr[fToIdent-1]<>'@'))
     then begin
       Result := tkKey;
       fRange := fRange - [rsAsm, rsInClassHeader, rsInTypeHelper, rsInObjcProtocol,
@@ -2339,12 +2337,12 @@ begin
     fRange := fRange - [rsProperty, rsInPropertyNameOrIndex,
                         rsInProcHeader, rsInProcName, rsInParamDeclaration, rsInGenericParams, rsInGenericConstraint];
     PasCodeFoldRange.ResetSpecializeBracketNestLevel;
-    //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumNestFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
+    //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(LineIndex),' ',dbgs(MinimumNestFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
   end else
   if FExtendedKeywordsMode and KeyCompU('BREAK') and
      (TopPascalCodeFoldBlockType() in PascalStatementBlocks) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fLine[Run+fStringLen] <> ':')
+     (LinePtr[Run+fStringLen] <> ':')
   then
     Result := tkKey
   else
@@ -2624,7 +2622,7 @@ begin
   if FExtendedKeywordsMode and KeyCompU('EXIT') and
      (TopPascalCodeFoldBlockType() in PascalStatementBlocks) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fLine[Run+fStringLen] <> ':')
+     (LinePtr[Run+fStringLen] <> ':')
   then
     Result := tkKey
   else
@@ -2971,7 +2969,7 @@ function TSynPasSyn.Func79: TtkTokenKind;
     s: String;
     i, l: integer;
   begin
-    Result := fLine[Run+fStringLen] in [#0, ' ', #9, '(','{']; // must be space or comment or next line
+    Result := LinePtr[Run+fStringLen] in [#0, ' ', #9, '(','{']; // must be space or comment or next line
     if not Result then exit;
 
     Result := not ScanAheadForNextToken(fStringLen, s, i, l, 1); // if it isn't found on the next line, assume true
@@ -3379,7 +3377,7 @@ begin
   if FExtendedKeywordsMode and KeyCompU('CONTINUE') and
      (TopPascalCodeFoldBlockType in PascalStatementBlocks) and
      (PasCodeFoldRange.BracketNestLevel = 0) and
-     (fLine[Run+fStringLen] <> ':')
+     (LinePtr[Run+fStringLen] <> ':')
   then
     Result := tkKey
   else
@@ -4307,26 +4305,23 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);
+procedure TSynPasSyn.InitForScaningLine;
 begin
   //DebugLn(['TSynPasSyn.SetLine START LineNumber=',LineNumber,' Line="',NewValue,'"']);
   if FNeedCustomTokenBuild then
     RebuildCustomTokenInfo;
 
-  fLineStr := NewValue;
-  fLineLen:=length(fLineStr);
-  fLine:=PChar(Pointer(fLineStr));
+  fLineLen:=length(CurrentLineText);
   Run := 0;
   FIsInSlash := False;
   FLastTokenTypeDeclExtraAttrib := eaNone;
-  Inherited SetLine(NewValue,LineNumber);
+  Inherited InitForScaningLine;
   PasCodeFoldRange.LastLineCodeFoldLevelFix := 0;
   PasCodeFoldRange.PasFoldFixLevel := 0;
   FStartCodeFoldBlockLevel := PasCodeFoldRange.MinimumNestFoldBlockLevel;
   FPasStartLevel := PasCodeFoldRange.MinimumCodeFoldBlockLevel;
   FSynPasRangeInfo.MinLevelIfDef := FSynPasRangeInfo.EndLevelIfDef;
   FSynPasRangeInfo.MinLevelRegion := FSynPasRangeInfo.EndLevelRegion;
-  fLineNumber := LineNumber;
   FAtLineStart := True;
   FAtSlashStart := False;
   FHadSlashLastLine := rsSlash in fRange;
@@ -4334,45 +4329,45 @@ begin
   FCustomCommentTokenMarkup := nil;
   if not IsCollectingNodeInfo then
     Next;
-end; { SetLine }
+end;
 
 procedure TSynPasSyn.AddressOpProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] = '@' then inc(Run);
+  if LinePtr[Run] = '@' then inc(Run);
 end;
 
 procedure TSynPasSyn.AsciiCharProc;
 begin
   fTokenID := tkString;
   inc(Run);
-  case FLine[Run] of
+  case LinePtr[Run] of
     '%':
       begin
         inc(Run);
-        if (FLine[Run] in ['0'..'1']) then
-          while (FLine[Run] in ['0'..'1']) do inc(Run)
+        if (LinePtr[Run] in ['0'..'1']) then
+          while (LinePtr[Run] in ['0'..'1']) do inc(Run)
         else
           fTokenID := tkSymbol;
       end;
     '&':
       begin
         inc(Run);
-        if (FLine[Run] in ['0'..'7']) then
-          while (FLine[Run] in ['0'..'7']) do inc(Run)
+        if (LinePtr[Run] in ['0'..'7']) then
+          while (LinePtr[Run] in ['0'..'7']) do inc(Run)
         else
           fTokenID := tkSymbol;
       end;
     '$':
       begin
         inc(Run);
-        if (IsIntegerChar[FLine[Run]]) then
-          while (IsIntegerChar[FLine[Run]]) do inc(Run)
+        if (IsIntegerChar[LinePtr[Run]]) then
+          while (IsIntegerChar[LinePtr[Run]]) do inc(Run)
         else
           fTokenID := tkSymbol;
       end;
-    '0'..'9': while (FLine[Run] in ['0'..'9']) do inc(Run);
+    '0'..'9': while (LinePtr[Run] in ['0'..'9']) do inc(Run);
     else
       fTokenID := tkSymbol;
   end;
@@ -4389,7 +4384,7 @@ begin
   r := Run;
   inc(Run); // the @
 
-  if fLine[Run] in ['(', ')', '-'] then begin
+  if LinePtr[Run] in ['(', ')', '-'] then begin
     inc(Run);
     Result := FPasAttributesMod[attribPasDocSymbol].IsEnabled;
     FIsPasDocSym := Result and not APeekOnly;
@@ -4399,7 +4394,7 @@ begin
   end;
 
   p := Run;
-  while fLine[Run] in ['A'..'Z', 'a'..'z'] do
+  while LinePtr[Run] in ['A'..'Z', 'a'..'z'] do
     inc(Run);
   if p = Run then begin
     Run := r;
@@ -4407,7 +4402,7 @@ begin
   end;
 
   SetLength(s{%H-}, Run - p);
-  move(fLine[p], s[1], Run - p);
+  move(LinePtr[p], s[1], Run - p);
   if FPasDocWordList.IndexOf(LowerCase(s)) >= 0 then begin
     Result := FPasAttributesMod[attribPasDocKeyWord].IsEnabled;
     FIsPasDocKey := Result and not APeekOnly;
@@ -4432,20 +4427,20 @@ begin
     fTokenID := tkIDEDirective;
 
   if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
-    if FUsePasDoc and (fLine[Run] = '@') then begin
+    if FUsePasDoc and (LinePtr[Run] = '@') then begin
       if CheckPasDoc then begin
-        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
     end;
-    if (IsLetterChar[fline[Run]]) and
+    if (IsLetterChar[LinePtr[Run]]) and
        ( (Run = 0) or
-         not((IsLetterChar[fline[Run-1]] or IsUnderScoreOrNumberChar[fline[Run-1]]))
+         not((IsLetterChar[LinePtr[Run-1]] or IsUnderScoreOrNumberChar[LinePtr[Run-1]]))
        )
     then begin
       if GetCustomTokenAndNext(tkBorComment, FCustomTokenMarkup) then begin
-        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
@@ -4456,7 +4451,7 @@ begin
   WasInWord := (FIsInNextToEOL or IsScanning) or (rsIDEDirective in fRange); // don't run checks
   p:=Run;
   repeat
-    case fLine[p] of
+    case LinePtr[p] of
     #0,#10,#13: break;
     '}': begin
         if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
@@ -4499,7 +4494,7 @@ begin
         end;
       end;
     '@': begin
-        if fLine[p+1] = '@' then
+        if LinePtr[p+1] = '@' then
           inc(p)
         else
         if FUsePasDoc and not(rsIDEDirective in fRange) then begin
@@ -4510,7 +4505,7 @@ begin
         end;
       end;
     otherwise begin
-        if (not WasInWord) and IsLetterChar[fline[p]] then begin
+        if (not WasInWord) and IsLetterChar[LinePtr[p]] then begin
           Run := p;
           if GetCustomTokenAndNext(tkBorComment, FCustomTokenMarkup, True) then
             exit;
@@ -4521,7 +4516,7 @@ begin
 
     if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
       WasInWord := IsInWord;
-      IsInWord := (IsLetterChar[fline[p]] or IsUnderScoreOrNumberChar[fline[p]]);
+      IsInWord := (IsLetterChar[LinePtr[p]] or IsUnderScoreOrNumberChar[LinePtr[p]]);
     end;
   until (p>=fLineLen);
   Run:=p;
@@ -4531,11 +4526,11 @@ procedure TSynPasSyn.DirectiveProc;
   procedure ApplyModeSwitch(ASwitch: TPascalCompilerModeSwitch);
   begin
     // skip space
-    while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
-    if fLine[Run] in ['+', '}'] then
+    while (LinePtr[Run] in [' ',#9,#10,#13]) do inc(Run);
+    if LinePtr[Run] in ['+', '}'] then
       FRangeModeSwitches := FRangeModeSwitches + [ASwitch]
     else
-    if fLine[Run] = '-' then
+    if LinePtr[Run] = '-' then
       FRangeModeSwitches := FRangeModeSwitches - [ASwitch];
   end;
 begin
@@ -4544,7 +4539,7 @@ begin
     // modeswitch directive
     inc(Run,10);
     // skip space
-    while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
+    while (LinePtr[Run] in [' ',#9,#10,#13]) do inc(Run);
     if TextComp('nestedcomments') then
     begin
       inc(Run,14);
@@ -4579,7 +4574,7 @@ begin
     // $mode directive
     inc(Run,4);
     // skip space
-    while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
+    while (LinePtr[Run] in [' ',#9,#10,#13]) do inc(Run);
     if TextComp('objfpc') then begin
       FRangeCompilerMode:=pcmObjFPC;
       FRangeModeSwitches := SwitchesForMode(FRangeCompilerMode);
@@ -4620,7 +4615,7 @@ begin
       FRangeCompilerMode := pcmUnknown; // don't reset switches
   end;
   repeat
-    case fLine[Run] of
+    case LinePtr[Run] of
     #0,#10,#13: break;
     '}':
       if TopPascalCodeFoldBlockType=cfbtNestedComment then
@@ -4638,7 +4633,7 @@ begin
     end;
     Inc(Run);
   until (Run>=fLineLen);
-  //DebugLn(['TSynPasSyn.DirectiveProc Run=',Run,' fTokenPos=',fTokenPos,' fLineStr=',fLineStr,' Token=',GetToken]);
+  //DebugLn(['TSynPasSyn.DirectiveProc Run=',Run,' fTokenPos=',fTokenPos,' CurrentLineText=',CurrentLineText,' Token=',GetToken]);
 end;
 
 procedure TSynPasSyn.BraceOpenProc;
@@ -4649,7 +4644,7 @@ procedure TSynPasSyn.BraceOpenProc;
     InString: Boolean;
   begin
     Result := False;
-    Txt := copy(fLine, Run, length(fLine));
+    Txt := copy(LinePtr, Run, length(LinePtr));
     Idx := LineIndex;
     InString := False;
     NestBrace := 0;
@@ -4710,24 +4705,24 @@ procedure TSynPasSyn.BraceOpenProc;
 var
   nd: PSynFoldNodeInfo;
 begin
-  if (Run < fLineLen-1) and (fLine[Run+1] = '$') then begin
+  if (Run < fLineLen-1) and (LinePtr[Run+1] = '$') then begin
     // compiler directive
     fRange := fRange + [rsDirective];
     inc(Run, 2);
     fToIdent := Run;
     KeyHash;
-    if (fLine[Run] in ['i', 'I']) and
+    if (LinePtr[Run] in ['i', 'I']) and
        ( KeyCompU('IF') or KeyCompU('IFC') or KeyCompU('IFDEF') or KeyCompU('IFNDEF') or
          KeyCompU('IFOPT') )
     then
       StartDirectiveFoldBlock(cfbtIfDef)
     else
-    if ( (fLine[Run] in ['e', 'E']) and ( KeyCompU('ENDIF') or KeyCompU('ENDC') ) ) or
+    if ( (LinePtr[Run] in ['e', 'E']) and ( KeyCompU('ENDIF') or KeyCompU('ENDC') ) ) or
        KeyCompU('IFEND')
     then
       EndDirectiveFoldBlock(cfbtIfDef)
     else
-    if (fLine[Run] in ['e', 'E']) and
+    if (LinePtr[Run] in ['e', 'E']) and
        ( KeyCompU('ELSE') or KeyCompU('ELSEC') or KeyCompU('ELSEIF') or KeyCompU('ELIFC') )
     then
       EndStartDirectiveFoldBlock(cfbtIfDef)
@@ -4749,7 +4744,7 @@ begin
     // curly bracket open -> borland comment
     fStringLen := 1; // length of "{"
     inc(Run);
-    if (Run < fLineLen) and (fLine[Run] = '%') then begin
+    if (Run < fLineLen) and (LinePtr[Run] = '%') then begin
       fRange := fRange + [rsIDEDirective];
     // IDE directive {%xxx } rsIDEDirective
       inc(Run);
@@ -4786,13 +4781,13 @@ begin
 
       inc(Run);
       if FCustomTokenMarkup <> nil then begin
-        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
     end;
-    if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then begin
-      if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+    if FUsePasDoc and (LinePtr[Run] = '@') and CheckPasDoc(True) then begin
+      if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
         Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
       exit;
     end;
@@ -4806,7 +4801,7 @@ var
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] = '=' then
+  if LinePtr[Run] = '=' then
     inc(Run) // ":="
   else begin
     fRange := fRange - [rsAtCaseLabel];
@@ -4870,7 +4865,7 @@ begin
   end;
 
 
-  if fLine[Run] = '=' then begin
+  if LinePtr[Run] = '=' then begin
     inc(Run);
     // generic TFoo<..>= // no space between > and =
     if TopPascalCodeFoldBlockType in cfbtAnyTypeBlock then begin
@@ -4888,22 +4883,22 @@ procedure TSynPasSyn.CRProc;
 begin
   fTokenID := tkSpace;
   inc(Run);
-  if fLine[Run] = #10 then inc(Run);
+  if LinePtr[Run] = #10 then inc(Run);
 end;
 
 procedure TSynPasSyn.IdentProc;
 begin
   fTokenID := IdentKind(Run);
   inc(Run, fStringLen);
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
 end;
 
 procedure TSynPasSyn.HexProc;
 begin
   inc(Run);
-  if (IsIntegerChar[FLine[Run]]) then begin
+  if (IsIntegerChar[LinePtr[Run]]) then begin
     fTokenID := tkNumber;
-    while (IsIntegerChar[FLine[Run]]) do inc(Run);
+    while (IsIntegerChar[LinePtr[Run]]) do inc(Run);
   end
   else
     fTokenID := tkSymbol;
@@ -4912,9 +4907,9 @@ end;
 procedure TSynPasSyn.BinaryProc;
 begin
   inc(Run);
-  if FLine[Run] in ['0'..'1'] then begin
+  if LinePtr[Run] in ['0'..'1'] then begin
     fTokenID := tkNumber;
-    while FLine[Run] in ['0'..'1'] do inc(Run);
+    while LinePtr[Run] in ['0'..'1'] do inc(Run);
   end
   else
     fTokenID := tkSymbol;
@@ -4923,14 +4918,14 @@ end;
 procedure TSynPasSyn.OctalProc;
 begin
   inc(Run);
-  if FLine[Run] in ['0'..'7'] then begin
+  if LinePtr[Run] in ['0'..'7'] then begin
     fTokenID := tkNumber;
-    while FLine[Run] in ['0'..'7'] do inc(Run);
+    while LinePtr[Run] in ['0'..'7'] do inc(Run);
   end
   else
-  if FLine[Run] in ['A'..'Z', 'a'..'z', '_'] then begin
+  if LinePtr[Run] in ['A'..'Z', 'a'..'z', '_'] then begin
     fTokenID := tkIdentifier;
-    while Identifiers[fLine[Run]] do inc(Run);
+    while Identifiers[LinePtr[Run]] do inc(Run);
   end
   else
     fTokenID := tkSymbol;
@@ -4947,7 +4942,7 @@ procedure TSynPasSyn.LowerProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] in ['=', '>'] then
+  if LinePtr[Run] in ['=', '>'] then
     inc(Run)
 
   else // if the below is true, the above should always have been false, i.e. the "else" is not functional
@@ -5001,7 +4996,7 @@ begin
      not(rsAfterIdentifierOrValue in fRange)
   then begin
     if Run<fLineLen then begin
-      if (Run+1 < fLineLen) and (fLine[Run] = '{') and (fLine[Run+1] = '$')  then begin
+      if (Run+1 < fLineLen) and (LinePtr[Run] = '{') and (LinePtr[Run+1] = '$')  then begin
         // "{$" directive takes precedence
         fTokenID := tkSymbol;
         exit;
@@ -5032,15 +5027,15 @@ begin
   inc(Run);
   fTokenID := tkNumber;
   if Run<fLineLen then begin
-    while (IsNumberChar[FLine[Run]]) do inc(Run);
-    if (FLine[Run]='.') and not(fLine[Run+1]='.')  then begin
+    while (IsNumberChar[LinePtr[Run]]) do inc(Run);
+    if (LinePtr[Run]='.') and not(LinePtr[Run+1]='.')  then begin
       inc(Run);
-      while (IsNumberChar[FLine[Run]]) do inc(Run);
+      while (IsNumberChar[LinePtr[Run]]) do inc(Run);
     end;
-    if (FLine[Run]='e') or (fLine[Run]='E')  then begin
+    if (LinePtr[Run]='e') or (LinePtr[Run]='E')  then begin
       inc(Run);
-      if (FLine[Run]='+') or (fLine[Run]='-')  then inc(Run);
-      while (IsNumberChar[FLine[Run]]) do inc(Run);
+      if (LinePtr[Run]='+') or (LinePtr[Run]='-')  then inc(Run);
+      while (IsNumberChar[LinePtr[Run]]) do inc(Run);
     end;
   end;
 end;
@@ -5049,7 +5044,7 @@ procedure TSynPasSyn.PointProc;
 begin
   fTokenID := tkSymbol;
   inc(Run);
-  if fLine[Run] in ['.', ')'] then
+  if LinePtr[Run] in ['.', ')'] then
     inc(Run)
   else
   if fRange * [rsProperty, rsAfterClassMembers] <> [] then begin // Also happens for result-type of functions (if they have a dot)
@@ -5083,20 +5078,20 @@ begin
     FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentAnsi];
 
   if (not (FIsInNextToEOL or IsScanning)) then begin
-    if FUsePasDoc and (fLine[Run] = '@') then begin
+    if FUsePasDoc and (LinePtr[Run] = '@') then begin
       if CheckPasDoc then begin
-        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
     end;
-    if (IsLetterChar[fline[Run]]) and
+    if (IsLetterChar[LinePtr[Run]]) and
        ( (Run = 0) or
-         not((IsLetterChar[fline[Run-1]] or IsUnderScoreOrNumberChar[fline[Run-1]]))
+         not((IsLetterChar[LinePtr[Run-1]] or IsUnderScoreOrNumberChar[LinePtr[Run-1]]))
        )
     then begin
       if GetCustomTokenAndNext(tkAnsiComment, FCustomTokenMarkup) then begin
-        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
@@ -5107,9 +5102,9 @@ begin
   IsInWord := False;
   WasInWord := (FIsInNextToEOL or IsScanning); // don't run checks
   repeat
-    if fLine[Run]=#0 then
+    if LinePtr[Run]=#0 then
       break
-    else if (fLine[Run] = '*') and (fLine[Run + 1] = ')') then
+    else if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = ')') then
     begin
       if not (FIsInNextToEOL or IsScanning) then begin
         ct := GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup, Run <> fTokenPos);
@@ -5130,7 +5125,7 @@ begin
     end
     else
     if HasRangeCompilerModeswitch(pcsNestedComments) and
-       (fLine[Run] = '(') and (fLine[Run + 1] = '*') then
+       (LinePtr[Run] = '(') and (LinePtr[Run + 1] = '*') then
     begin
       if not (FIsInNextToEOL or IsScanning) then begin
         ct := GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup, Run <> fTokenPos);
@@ -5143,8 +5138,8 @@ begin
       if FCustomTokenMarkup <> nil then
         exit;
     end else
-    if FUsePasDoc and (fLine[Run] = '@') then begin
-      if fLine[Run+1] = '@' then
+    if FUsePasDoc and (LinePtr[Run] = '@') then begin
+      if LinePtr[Run+1] = '@' then
           inc(Run, 2)
       else
       if CheckPasDoc(True) then
@@ -5152,7 +5147,7 @@ begin
       Inc(Run);
     end
     else
-    if (not WasInWord) and IsLetterChar[fline[Run]] then begin
+    if (not WasInWord) and IsLetterChar[LinePtr[Run]] then begin
       if GetCustomTokenAndNext(tkAnsiComment, FCustomTokenMarkup, True) then
         exit;
     end
@@ -5161,9 +5156,9 @@ begin
 
     if not (FIsInNextToEOL or IsScanning) then begin
       WasInWord := IsInWord;
-      IsInWord := (IsLetterChar[fline[Run]] or IsUnderScoreOrNumberChar[fline[Run]]);
+      IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
     end;
-  until (Run>=fLineLen) or (fLine[Run] in [#0, #10, #13]);
+  until (Run>=fLineLen) or (LinePtr[Run] in [#0, #10, #13]);
 end;
 
 procedure TSynPasSyn.RoundOpenProc;
@@ -5172,7 +5167,7 @@ var
 begin
   Inc(Run);
   if (Run>=fLineLen) or
-     not(fLine[Run] in ['*', '.'])
+     not(LinePtr[Run] in ['*', '.'])
   then begin
     fTokenID:=tkSymbol;
     tfb := TopPascalCodeFoldBlockType;
@@ -5213,7 +5208,7 @@ begin
     exit;
   end;
 
-  case fLine[Run] of
+  case LinePtr[Run] of
     '*':
       begin
         // We would not be here, if we were in a comment or directive already
@@ -5230,13 +5225,13 @@ begin
 
         Inc(Run, 2);
         if FCustomTokenMarkup <> nil then begin
-          if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
             Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
           exit;
         end;
-        if not (fLine[Run] in [#0, #10, #13]) then begin
-          if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then begin
-            if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if not (LinePtr[Run] in [#0, #10, #13]) then begin
+          if FUsePasDoc and (LinePtr[Run] = '@') and CheckPasDoc(True) then begin
+            if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
               Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
             exit;
           end;
@@ -5433,7 +5428,7 @@ end;
 
 procedure TSynPasSyn.SlashProc;
 begin
-  if fLine[Run+1] = '/' then begin
+  if LinePtr[Run+1] = '/' then begin
     if reCommentSlash in FRequiredStates then
       FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentSlash];
     FIsInSlash := True;
@@ -5474,13 +5469,13 @@ begin
       FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentSlash];
     fTokenID := tkComment;
 
-    if (fLine[Run] = '@') then begin
+    if (LinePtr[Run] = '@') then begin
       if CheckPasDoc then
         exit;
     end;
-    if (IsLetterChar[fline[Run]]) and
+    if (IsLetterChar[LinePtr[Run]]) and
        ( (Run = 0) or
-         not((IsLetterChar[fline[Run-1]] or IsUnderScoreOrNumberChar[fline[Run-1]]))
+         not((IsLetterChar[LinePtr[Run-1]] or IsUnderScoreOrNumberChar[LinePtr[Run-1]]))
        )
     then begin
       if GetCustomTokenAndNext(tkSlashComment, FCustomTokenMarkup) then
@@ -5488,7 +5483,7 @@ begin
     end;
   end;
 
-  AtSlashOpen := (fLine[Run] = '/') and (fLine[Run + 1] = '/') and not FIsInSlash;
+  AtSlashOpen := (LinePtr[Run] = '/') and (LinePtr[Run + 1] = '/') and not FIsInSlash;
   if FIsInSlash or AtSlashOpen then begin
     if FIsInSlash then
       Include(FTokenExtraAttribs, eaPartTokenNotAtStart)
@@ -5512,13 +5507,13 @@ begin
   end;
 
   fTokenID := tkUnknown;
-  if IsSpaceChar[FLine[Run]] then begin
+  if IsSpaceChar[LinePtr[Run]] then begin
     fTokenID := tkSpace;
     inc(Run);
-    while IsSpaceChar[FLine[Run]] do inc(Run);
+    while IsSpaceChar[LinePtr[Run]] do inc(Run);
   end;
 
-  if not((fLine[Run] = '/') and (fLine[Run + 1] = '/')) then begin
+  if not((LinePtr[Run] = '/') and (LinePtr[Run + 1] = '/')) then begin
     fRange := fRange - [rsSlash];
     FHadSlashLastLine := False;
     if TopPascalCodeFoldBlockType = cfbtSlashComment then
@@ -5536,22 +5531,22 @@ begin
   IsInWord := False;
   WasInWord := (FIsInNextToEOL or IsScanning); // don't run checks
 
-  while not(fLine[Run] in [#0, #10, #13]) do begin
-    if FUsePasDoc and (fLine[Run] = '@') then begin
-      if fLine[Run+1] = '@' then
+  while not(LinePtr[Run] in [#0, #10, #13]) do begin
+    if FUsePasDoc and (LinePtr[Run] = '@') then begin
+      if LinePtr[Run+1] = '@' then
         inc(Run, 2)
       else
       if CheckPasDoc(True) then begin
-        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
       Inc(Run);
     end
     else
-    if (not WasInWord) and IsLetterChar[fline[Run]] then begin
+    if (not WasInWord) and IsLetterChar[LinePtr[Run]] then begin
       if GetCustomTokenAndNext(tkSlashComment, FCustomTokenMarkup, True) then begin
-        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
@@ -5561,7 +5556,7 @@ begin
 
     if not (FIsInNextToEOL or IsScanning) then begin
       WasInWord := IsInWord;
-      IsInWord := (IsLetterChar[fline[Run]] or IsUnderScoreOrNumberChar[fline[Run]]);
+      IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
     end;
   end;
 end;
@@ -5569,19 +5564,19 @@ end;
 procedure TSynPasSyn.SpaceProc;
 begin
   inc(Run);
-  if IsCombiningCodePoint(fLine+Run) then begin
+  if IsCombiningCodePoint(LinePtr+Run) then begin
     IdentProc;
     exit;
   end;
 
   fTokenID := tkSpace;
 
-  if not IsSpaceChar[FLine[Run]] then
+  if not IsSpaceChar[LinePtr[Run]] then
     exit;
 
   inc(Run);
-  while IsSpaceChar[FLine[Run]] do inc(Run);
-  if IsCombiningCodePoint(fLine+Run) then
+  while IsSpaceChar[LinePtr[Run]] do inc(Run);
+  if IsCombiningCodePoint(LinePtr+Run) then
     dec(Run);
 end;
 
@@ -5593,22 +5588,22 @@ begin
 
   if FInString then begin
     if not (FIsInNextToEOL or IsScanning) then begin
-      if (fLine[Run] = '''') and (fLine[Run+1] = '''') and
+      if (LinePtr[Run] = '''') and (LinePtr[Run+1] = '''') and
          GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup)
       then begin
         inc(Run, 2);
-        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
 
-      if (IsLetterChar[fline[Run]]) and
+      if (IsLetterChar[LinePtr[Run]]) and
          ( (Run = 0) or
-           not((IsLetterChar[fline[Run-1]] or IsUnderScoreOrNumberChar[fline[Run-1]]))
+           not((IsLetterChar[LinePtr[Run-1]] or IsUnderScoreOrNumberChar[LinePtr[Run-1]]))
          )
       then begin
         if GetCustomTokenAndNext(tkString, FCustomTokenMarkup) then begin
-          if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
             Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
           exit;
         end;
@@ -5621,7 +5616,7 @@ begin
       GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup)
     then begin
       Inc(Run);
-      if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+      if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
         Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
       exit;
     end;
@@ -5630,16 +5625,16 @@ begin
 
   IsInWord := False;
   WasInWord := (FIsInNextToEOL or IsScanning); // don't run checks
-  while (not (fLine[Run] in [#0, #10, #13])) do begin
-    if fLine[Run] = '''' then begin
-      if (fLine[Run+1] = '''') then begin
+  while (not (LinePtr[Run] in [#0, #10, #13])) do begin
+    if LinePtr[Run] = '''' then begin
+      if (LinePtr[Run+1] = '''') then begin
         // escaped
         if (not (FIsInNextToEOL or IsScanning)) and
            GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup, Run <> fTokenPos)
         then begin
           if (Run = fTokenPos) then
             inc(Run, 2);
-          if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+          if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
             Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
           exit
         end;
@@ -5650,7 +5645,7 @@ begin
         if not (FIsInNextToEOL or IsScanning) then begin
           ct := GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup, Run <> fTokenPos);
           if ct and (Run <> fTokenPos) then begin
-            if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+            if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
               Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
             exit;
           end;
@@ -5660,9 +5655,9 @@ begin
       end;
     end
     else
-    if (not WasInWord) and IsLetterChar[fline[Run]] then begin
+    if (not WasInWord) and IsLetterChar[LinePtr[Run]] then begin
       if GetCustomTokenAndNext(tkString, FCustomTokenMarkup, True) then begin
-        if (Run < fLineLen) or (fLine[Run] in [#0,#10,#13]) then
+        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
           Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
         exit;
       end;
@@ -5672,7 +5667,7 @@ begin
 
     if not (FIsInNextToEOL or IsScanning) then begin
       WasInWord := IsInWord;
-      IsInWord := (IsLetterChar[fline[Run]] or IsUnderScoreOrNumberChar[fline[Run]]);
+      IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
     end;
   end;
   FInString := False;
@@ -5702,12 +5697,12 @@ begin
   fTokenID := tkString;
   fRange := fRange + [rsAnsiMultiDQ];
 
-  while (fLine[Run] <> #0) do
+  while (LinePtr[Run] <> #0) do
   begin
-    if (fLine[Run] = '"') then
+    if (LinePtr[Run] = '"') then
     begin
       Inc(Run);
-      if (fLine[Run] <> '"') then
+      if (LinePtr[Run] <> '"') then
       begin
         fRange := fRange - [rsAnsiMultiDQ];
         Break;
@@ -5733,8 +5728,8 @@ end;
 procedure TSynPasSyn.UnknownProc;
 begin
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -5754,7 +5749,7 @@ var
   TempMarkup: TLazEditHighlighterAttributesModifier;
 begin
   ACustomMarkup := nil;
-  Result := GetCustomToken(ATokenID, 0, @fLine[Run], ALen, TempMarkup);
+  Result := GetCustomToken(ATokenID, 0, @LinePtr[Run], ALen, TempMarkup);
   if Result and (not APeekOnly) then
     ACustomMarkup := TempMarkup;
 end;
@@ -5771,7 +5766,7 @@ begin
   Result := fStringLen > 0;
   if not Result then
     exit;
-  Result := GetCustomToken(ATokenID, byte(h and 255), @fLine[Run], fStringLen, TempTokenMarkup);
+  Result := GetCustomToken(ATokenID, byte(h and 255), @LinePtr[Run], fStringLen, TempTokenMarkup);
   if Result and (not APeekOnly) then begin
     ACustomMarkup := TempTokenMarkup;
     Run := Run + fStringLen;
@@ -5816,7 +5811,7 @@ var
   r: boolean;
 begin
   if not (FTokenID in [tkString, tkComment]) then
-    GetCustomToken(FTokenID, byte(FTokenHashKey and 255), @fLine[fTokenPos], Run - fTokenPos, FCustomTokenMarkup);
+    GetCustomToken(FTokenID, byte(FTokenHashKey and 255), @LinePtr[fTokenPos], Run - fTokenPos, FCustomTokenMarkup);
 
   if (fRange * [rsInProcName, rsInProcHeader] = [rsInProcName, rsInProcHeader]) then begin
     gpm := FProcNameImplAttributeMode;
@@ -6026,8 +6021,8 @@ begin
              ( ( (tfb in PascalStatementBlocks) and
                  (FTokenState = tsAtBeginOfStatement) and
                  (not (rsAtCaseLabel in fRange) ) and
-                 (run < fLineLen) and (fLine[run] = ':') and
-                 ( (Run = fLineLen) or (fLine[Run+1] <>'=') )
+                 (run < fLineLen) and (LinePtr[run] = ':') and
+                 ( (Run = fLineLen) or (LinePtr[Run+1] <>'=') )
                ) or
                ( (tfb in [cfbtLabelBlock, cfbtLocalLabelBlock]) and
                  (FTokenState in [tsNone, tsAtExpressionEnd])
@@ -6061,7 +6056,7 @@ begin
   if rsAnsiMultiDQ in fRange then
     StringProc_MultiLineDQ()
   else
-  case fLine[Run] of
+  case LinePtr[Run] of
      #0: NullProc;
     #10: LFProc;
     #13: CRProc;
@@ -6101,7 +6096,7 @@ begin
         IsAtCaseLabel := rsAtCaseLabel in fRange;
 
         FTokenHashKey := 0;
-        fProcTable[fLine[Run]];
+        fProcTable[LinePtr[Run]];
 
         if (PasCodeFoldRange.BracketNestLevel = 0) then
           fRange := fRange - [rsInParamDeclaration];
@@ -6148,7 +6143,7 @@ begin
               FTokenState := tsAtExpressionEnd
             else
             // procedure foo() public; // after the ")"
-            if (FTokenID = tkSymbol) and (fLine[Run-1] = ')') and
+            if (FTokenID = tkSymbol) and (LinePtr[Run-1] = ')') and
                (PasCodeFoldRange.BracketNestLevel = 0) and
                (rsInProcHeader in fRange) and
                (TopPascalCodeFoldBlockType in [cfbtNone, cfbtProgram, cfbtUnitSection, cfbtProcedure])
@@ -6222,14 +6217,14 @@ end;
 
 function TSynPasSyn.GetToken: string;
 begin
-  SetString(Result, @fLine[fTokenPos], Run - fTokenPos);
+  SetString(Result, @LinePtr[fTokenPos], Run - fTokenPos);
 end;
 
 procedure TSynPasSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   if TokenLength>0 then begin
-    TokenStart:=@fLine[fTokenPos];
+    TokenStart:=@LinePtr[fTokenPos];
   end else begin
     TokenStart:=nil;
   end;
@@ -6285,11 +6280,11 @@ begin
     x2 := ToPos(Run);
     if eaPartTokenNotAtStart in FTokenExtraAttribs then x1 := MaxInt;
     if eaPartTokenNotAtEnd   in FTokenExtraAttribs then x2 := MaxInt;
-    if (Run >= fLineLen) or (fLine[Run] in [#0,#10,#13]) then begin
+    if (Run >= fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then begin
       if (Result = CommentAttri) and
          ((fRange * [rsIDEDirective, rsAnsi, rsBor] <> []) or
           ((rsSlash in fRange) and
-           (FHadSlashLastLine or (LastLinePasFoldLevelFix(fLineNumber+1, FOLDGROUP_PASCAL, True) = 0))
+           (FHadSlashLastLine or (LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True) = 0))
           )
          ) and
          (lafPastEOL in FPasAttributes[attribComment].Features)
@@ -6326,7 +6321,7 @@ begin
   if tid = tkIDEDirective then begin
     x1b := x1;  if eaPartTokenNotAtStart in FTokenExtraAttribs then x1b := 1;
     x2b := x2;  if eaPartTokenNotAtEnd   in FTokenExtraAttribs then x2b := fLineLen;
-    if (Run >= fLineLen) or (fLine[Run] in [#0,#10,#13]) and
+    if (Run >= fLineLen) or (LinePtr[Run] in [#0,#10,#13]) and
        (lafPastEOL in FPasAttributesMod[attribIDEDirective].Features)
       then
         x2b := MaxInt;
@@ -6419,10 +6414,10 @@ begin
 
   if FCustomCommentTokenMarkup <> nil then begin
     x2b := x2;
-    if (Run >= fLineLen) or (fLine[Run] in [#0,#10,#13]) then begin
+    if (Run >= fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then begin
       if ((not ((rsSlash in fRange))) or
           ((rsSlash in fRange) and
-           (FHadSlashLastLine or (LastLinePasFoldLevelFix(fLineNumber+1, FOLDGROUP_PASCAL, True) = 0))
+           (FHadSlashLastLine or (LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True) = 0))
           )
          ) and
          (lafPastEOL in FCustomCommentTokenMarkup.Features)
@@ -6435,10 +6430,10 @@ begin
     MergeModifierToTokenAttribute(Result, FCustomTokenMarkup, x1, x2);
   end;
 
-  if (FTokenID = tkSymbol) and (Run - fTokenPos = 1) and (fLine[fTokenPos] in ['(', ')'])
+  if (FTokenID = tkSymbol) and (Run - fTokenPos = 1) and (LinePtr[fTokenPos] in ['(', ')'])
   then begin
     i := PasCodeFoldRange.RoundBracketNestLevel;
-    if (i > 0) and (fLine[fTokenPos] = '(') then
+    if (i > 0) and (LinePtr[fTokenPos] = '(') then
       dec(i);
     if i > FHighNestedBracketAttrib then
       i := FHighNestedBracketAttrib;
@@ -6561,7 +6556,7 @@ begin
   end
   else
   if fRange * [rsSlash] <> [] then begin
-    if FHadSlashLastLine or (LastLinePasFoldLevelFix(fLineNumber+1, FOLDGROUP_PASCAL, True) = 0) then begin
+    if FHadSlashLastLine or (LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True) = 0) then begin
       Result := Merge(FPasAttributes[attribComment], FPasAttributesMod[attribCommentSlash]);
     end;
   end
@@ -6918,8 +6913,8 @@ var
 
 begin
   Result := False;
-  AFndLine := fLineStr;
-  Txt    := fLine;
+  AFndLine := CurrentLineText;
+  Txt    := LinePtr;
   TxtPos := Run + RunOffs;
   TxtLen := fLineLen;
   CurLineIdx := LineIndex;

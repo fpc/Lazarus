@@ -86,8 +86,6 @@ type
     );
   private
     fRange: TRangeStates;
-    fLine: PChar;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fStringLen: Integer;
@@ -293,7 +291,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -1848,12 +1846,10 @@ begin
   fRange := [];
 end;
 
-procedure TSynCssSyn.SetLine(const NewValue: String; LineNumber: Integer);
+procedure TSynCssSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
 end;
 
@@ -1911,33 +1907,33 @@ procedure TSynCssSyn.CRProc;
 begin
   FTokenID := tkSpace;
   Inc(Run);
-  if FLine[Run] = #10 then
+  if LinePtr[Run] = #10 then
     Inc(Run);
 end;
 
 procedure TSynCssSyn.CStyleCommentProc;
 begin
-  if FLine[Run] = #0 then
+  if LinePtr[Run] = #0 then
     FTokenID := tkNull
   else begin
     FTokenID := tkComment;
     repeat
-      if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then begin
+      if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = '/') then begin
         FRange := fRange - [rsCStyle];
         Inc(Run, 2);
         Break;
       end;
       Inc(Run);
-    until FLine[Run] in [#0, #10, #13];
+    until LinePtr[Run] in [#0, #10, #13];
   end;
 end;
 
 procedure TSynCssSyn.DashProc;
 begin
-  if (FLine[Run - 1] = ' ') then begin
-    if (FLine[Run + 1] in ['0'..'9', 'a'..'z', 'A'..'Z']) then
+  if (LinePtr[Run - 1] = ' ') then begin
+    if (LinePtr[Run + 1] in ['0'..'9', 'a'..'z', 'A'..'Z']) then
       FTokenID := tkNumber
-    else if (FLine[Run + 1] = '.') and (FLine[Run + 2] in ['0'..'9', 'a'..'z', 'A'..'Z']) then begin
+    else if (LinePtr[Run + 1] = '.') and (LinePtr[Run + 2] in ['0'..'9', 'a'..'z', 'A'..'Z']) then begin
       FTokenID := tkNumber;
       Inc(Run);
     end;
@@ -1948,9 +1944,9 @@ end;
 
 procedure TSynCssSyn.IdentProc;
 begin
-  FTokenID := IdentKind((FLine + Run));
+  FTokenID := IdentKind((LinePtr + Run));
   Inc(Run, FStringLen);
-  while Identifiers[FLine[Run]] do
+  while Identifiers[LinePtr[Run]] do
     Inc(Run);
 end;
 
@@ -1974,7 +1970,7 @@ begin
   end;
 
   FTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do
+  while LinePtr[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do
     Inc(Run);
 end;
 
@@ -1993,9 +1989,9 @@ procedure TSynCssSyn.NumberProc;
 begin
   Inc(Run);
   FTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9', '.', 'e', 'E'] do begin
-    if ((FLine[Run] = '.') and (FLine[Run + 1] = '.')) or
-       ((FLine[Run] = 'e') and ((FLine[Run + 1] = 'x') or (FLine[Run + 1] = 'm'))) then
+  while LinePtr[Run] in ['0'..'9', '.', 'e', 'E'] do begin
+    if ((LinePtr[Run] = '.') and (LinePtr[Run + 1] = '.')) or
+       ((LinePtr[Run] = 'e') and ((LinePtr[Run + 1] = 'x') or (LinePtr[Run + 1] = 'm'))) then
       Break;
     Inc(Run);
   end;
@@ -2010,11 +2006,11 @@ end;
 procedure TSynCssSyn.SlashProc;
 begin
   Inc(Run);
-  if fLine[Run] = '*' then begin
+  if LinePtr[Run] = '*' then begin
     FTokenID := tkComment;
     FRange := fRange + [rsCStyle];
     Inc(Run);
-    if not (FLine[Run] in [#0, #10, #13]) then
+    if not (LinePtr[Run] in [#0, #10, #13]) then
       CStyleCommentProc;
   end else
     FTokenID := tkIdentifier;
@@ -2024,22 +2020,22 @@ procedure TSynCssSyn.SpaceProc;
 begin
   Inc(Run);
   FTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do
     Inc(Run);
 end;
 
 procedure TSynCssSyn.StringProc;
 begin
   FTokenID := tkString;
-  if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then
+  if (LinePtr[Run + 1] = #39) and (LinePtr[Run + 2] = #39) then
     Inc(Run, 2);
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13: Break;
     end;
     Inc(Run);
-  until FLine[Run] = #39;
-  if FLine[Run+1] <> #0 then
+  until LinePtr[Run] = #39;
+  if LinePtr[Run+1] <> #0 then
     Inc(Run);
 end;
 
@@ -2047,25 +2043,25 @@ procedure TSynCssSyn.StringDblProc;
 begin
   FTokenID := tkString;
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13: Break;
     end;
     Inc(Run);
-  until FLine[Run] = '"';
-  if FLine[Run+1] <> #0 then
+  until LinePtr[Run] = '"';
+  if LinePtr[Run+1] <> #0 then
     Inc(Run);
 end;
 
 procedure TSynCssSyn.UnknownProc;
 begin
 {$IFDEF SYN_MBCSSUPPORT}
-  if FLine[Run] in LeadBytes then
+  if LinePtr[Run] in LeadBytes then
     Inc(Run,2)
   else
 {$ENDIF}
   Inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   FTokenID := tkUnknown;
 end;
 
@@ -2075,7 +2071,7 @@ begin
   if rsCStyle in fRange then
     CStyleCommentProc
   else
-    FProcTable[FLine[Run]]();
+    FProcTable[LinePtr[Run]]();
 end;
 
 function TSynCssSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -2109,13 +2105,13 @@ var
 begin
   Result := '';
   Len := Run - FTokenPos;
-  SetString(Result, (FLine + FTokenPos), Len);
+  SetString(Result, (LinePtr + FTokenPos), Len);
 end;
 
 procedure TSynCssSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynCssSyn.GetTokenID: TtkTokenKind;

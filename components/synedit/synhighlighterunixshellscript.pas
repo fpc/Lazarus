@@ -94,12 +94,10 @@ type
     );
   private
     fRange: TRangeState;
-    fLine: PChar;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fTokenPos: Integer;
     FTokenID: TtkTokenKind;
-    fLineNumber: Integer;
     fStringAttri: TSynHighlighterAttributes;
     fSymbolAttri: TSynHighlighterAttributes;
     fKeyAttri: TSynHighlighterAttributes;
@@ -146,7 +144,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String; LineNumber:Integer); override; /////TL: Added 2003-06-11
+    procedure InitForScaningLine; override; /////TL: Added 2003-06-11
     function IsKeyword(const AKeyword: string): boolean; override;              //mh 2000-11-08
     function IsSecondKeyWord(aToken: string): Boolean;
     function GetToken: string; override;
@@ -337,17 +335,12 @@ begin
   fDefaultFilter := SYNS_FilterUNIXShellScript;
 end; { Create }
 
-////TL 2003-06-11: Replaced existing SetLine with this one... identical except for the IFDEF
-procedure TSynUNIXShellScriptSyn.SetLine(
-  const NewValue: String;
-  LineNumber:Integer);
+procedure TSynUNIXShellScriptSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
-end; { SetLine }
+end;
 
 destructor TSynUNIXShellScriptSyn.Destroy;
 begin
@@ -359,7 +352,7 @@ end; { Destroy }
 procedure TSynUNIXShellScriptSyn.AnsiProc;
 begin
   fTokenID := tkComment;
-  case FLine[Run] of
+  case LinePtr[Run] of
     #0:
       begin
         NullProc;
@@ -378,10 +371,10 @@ begin
       end;
   end;
 
-  while fLine[Run] <> #0 do
-    case fLine[Run] of
+  while LinePtr[Run] <> #0 do
+    case LinePtr[Run] of
       '*':
-        if fLine[Run + 1] = ')' then
+        if LinePtr[Run + 1] = ')' then
         begin
           fRange := rsUnKnown;
           inc(Run, 2);
@@ -397,7 +390,7 @@ end;
 procedure TSynUNIXShellScriptSyn.PasStyleProc;
 begin
   fTokenID := tkComment;
-  case FLine[Run] of
+  case LinePtr[Run] of
     #0:
       begin
         NullProc;
@@ -416,8 +409,8 @@ begin
       end;
   end;
 
-  while FLine[Run] <> #0 do
-    case FLine[Run] of
+  while LinePtr[Run] <> #0 do
+    case LinePtr[Run] of
       '}':
         begin
           fRange := rsUnKnown;
@@ -433,21 +426,21 @@ end;
 
 procedure TSynUNIXShellScriptSyn.CStyleProc;
 begin
-  case fLine[Run] of
+  case LinePtr[Run] of
     #0: NullProc;
     #10: LFProc;
     #13: CRProc;
   else
     fTokenID := tkComment;
     repeat
-      if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then
+      if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = '/') then
       begin
         fRange := rsUnKnown;
         Inc(Run, 2);
         break;
       end;
       Inc(Run);
-    until fLine[Run] in [#0, #10, #13];
+    until LinePtr[Run] in [#0, #10, #13];
   end;
 end;
 
@@ -457,25 +450,25 @@ var
 begin
   inc(Run);
   fTokenID := tkVariable;
-  if FLine[Run] = #0 then Exit;
-  cc := FLine[Run];
+  if LinePtr[Run] = #0 then Exit;
+  cc := LinePtr[Run];
   inc(Run);
   case cc of
     '''': DoStringProc('''', True);
     '"': DoStringProc('"', True);
     '{': begin
         // ${var}
-        while FLine[Run] in IdentChars do begin
-          case FLine[Run] of
+        while LinePtr[Run] in IdentChars do begin
+          case LinePtr[Run] of
             #0, #10, #13: Break;
           end;
           inc(Run);
         end;
-        if FLine[Run] = '}' then Inc(Run);
+        if LinePtr[Run] = '}' then Inc(Run);
       end
     else
       // $var
-      while FLine[Run] in IdentChars do
+      while LinePtr[Run] in IdentChars do
         inc(Run);
   end;
 end;
@@ -488,7 +481,7 @@ procedure TSynUNIXShellScriptSyn.DotProc;
     result := false;
     i := run;
     inc(i);
-    while (FLine[i] in ['a'..'z', 'A'..'Z']) do
+    while (LinePtr[i] in ['a'..'z', 'A'..'Z']) do
       inc(i);
     if i > (run + 1) then
       result := true;
@@ -520,7 +513,7 @@ end;
 procedure TSynUNIXShellScriptSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     #10: inc(Run, 2);
   else inc(Run);
   end;
@@ -528,7 +521,7 @@ end;
 
 procedure TSynUNIXShellScriptSyn.IdentProc;
 begin
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
   if IsKeyWord(GetToken) then begin
     fTokenId := tkKey;
     Exit;
@@ -554,11 +547,11 @@ procedure TSynUNIXShellScriptSyn.NumberProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9', '.', 'e', 'E'] do
+  while LinePtr[Run] in ['0'..'9', '.', 'e', 'E'] do
   begin
-    case FLine[Run] of
+    case LinePtr[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if LinePtr[Run + 1] = '.' then break;
     end;
     inc(Run);
   end;
@@ -589,27 +582,27 @@ end;
 
 procedure TSynUNIXShellScriptSyn.SlashProc;
 begin
-  if FLine[Run] = '#' then begin
+  if LinePtr[Run] = '#' then begin
     // Perl Styled Comment
     inc(Run);
     fTokenID := tkComment;
-    while FLine[Run] <> #0 do
+    while LinePtr[Run] <> #0 do
     begin
-      case FLine[Run] of
+      case LinePtr[Run] of
         #10, #13: break;
       end;
       inc(Run);
     end;
   end else begin
 //    // C Styled Comment
-//    case FLine[Run + 1] of
+//    case LinePtr[Run + 1] of
 //      '/':
 //        begin
 //          inc(Run, 2);
 //          fTokenID := tkComment;
-//          while FLine[Run] <> #0 do
+//          while LinePtr[Run] <> #0 do
 //          begin
-//            case FLine[Run] of
+//            case LinePtr[Run] of
 //              #10, #13: break;
 //            end;
 //            inc(Run);
@@ -620,10 +613,10 @@ begin
 //          fTokenID := tkComment;
 //          fRange := rsCStyle;
 //          inc(Run);
-//          while fLine[Run] <> #0 do
-//            case fLine[Run] of
+//          while LinePtr[Run] <> #0 do
+//            case LinePtr[Run] of
 //              '*':
-//                if fLine[Run + 1] = '/' then begin
+//                if LinePtr[Run + 1] = '/' then begin
 //                  fRange := rsUnKnown;
 //                  inc(Run, 2);
 //                  break;
@@ -646,7 +639,7 @@ end;
 procedure TSynUNIXShellScriptSyn.BackSlashProc;
 begin
   inc(Run);
-  if fLine[Run] <> #0 then
+  if LinePtr[Run] <> #0 then
     inc(Run);
   fTokenID := tkUnKnown;
 end;
@@ -655,7 +648,7 @@ procedure TSynUNIXShellScriptSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
 procedure TSynUNIXShellScriptSyn.DoStringProc(AnEndChar: Char; AnEscape: Boolean
@@ -665,13 +658,13 @@ begin
   fRange := rsUnknown;
 
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13:
         break;
       '\':
         if AnEscape then begin
           inc(Run);
-          if FLine[Run] in [#0, #10, #13] then begin
+          if LinePtr[Run] in [#0, #10, #13] then begin
             if AnEndChar = '"' then begin
               if AnEscape
               then fRange := rsStringDblEsc
@@ -682,15 +675,15 @@ begin
               then fRange := rsStringEsc
               else fRange := rsString;
             end;
-            if FLine[Run] = #0 then
+            if LinePtr[Run] = #0 then
               dec(Run);
             break;
           end;
         end;
     end;
     inc(Run);
-  until FLine[Run] = AnEndChar;
-  if FLine[Run] <> #0 then inc(Run);
+  until LinePtr[Run] = AnEndChar;
+  if LinePtr[Run] <> #0 then inc(Run);
 end;
 
 procedure TSynUNIXShellScriptSyn.StringProc;
@@ -698,7 +691,7 @@ var
   QuoteChar: Char;
 begin
   // Single and Double Quotes.
-  QuoteChar := FLine[Run];      // either " or '
+  QuoteChar := LinePtr[Run];      // either " or '
   inc(Run);
   DoStringProc(QuoteChar, QuoteChar = '"');
 end;
@@ -706,8 +699,8 @@ end;
 procedure TSynUNIXShellScriptSyn.UnknownProc;
 begin
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnKnown;
 end;
 
@@ -720,11 +713,11 @@ begin
       rsStringEsc:    DoStringProc('''', True);
       rsStringDbl:    DoStringProc('"',  False);
       rsStringDblEsc: DoStringProc('"',  True);
-      else fProcTable[fLine[Run]];
+      else fProcTable[LinePtr[Run]];
     end;
     exit;
   end;
-  fProcTable[fLine[Run]];
+  fProcTable[LinePtr[Run]];
 end;
 
 function TSynUNIXShellScriptSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -759,7 +752,7 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 ////TL 2003-06-11: Added the following to satisfy abstract method override
@@ -767,7 +760,7 @@ procedure TSynUNIXShellScriptSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynUNIXShellScriptSyn.GetTokenID: TtkTokenKind;

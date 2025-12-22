@@ -154,12 +154,10 @@ type
     fRange: TRangeState;
     fRangeFlags: TRangeFlags;
     fRequiredStates: TRequiredStates;
-    fLine: PChar;
     Run: Longint;
     fTokenPos: Integer;
     fTokenID: TtkTokenKind;
     fTokenDecorator: TtkTokenDecorator;
-    fLineNumber: Integer;
     fLineLen: Integer;
     fElementAttri: TSynHighlighterAttributes;
     fSpaceAttri: TSynHighlighterAttributes;
@@ -232,7 +230,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: string; LineNumber:Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -407,14 +405,11 @@ begin
   end;
 end;
 
-procedure TSynXMLSyn.SetLine(const NewValue: string;
-  LineNumber:Integer);
+procedure TSynXMLSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
-  fLineLen := Length(NewValue);
+  fLineLen := Length(CurrentLineText);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
 end;
 
@@ -427,7 +422,7 @@ procedure TSynXMLSyn.CarriageReturnProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
-  if fLine[Run] = #10 then Inc(Run);
+  if LinePtr[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynXMLSyn.LineFeedProc;
@@ -475,15 +470,15 @@ procedure TSynXMLSyn.SpaceProc;
 begin
   Inc(Run);
   fTokenID := tkSpace;
-  while fLine[Run] <= #32 do begin
-    if fLine[Run] in [#0, #9, #10, #13] then break;
+  while LinePtr[Run] <= #32 do begin
+    if LinePtr[Run] in [#0, #9, #10, #13] then break;
     Inc(Run);
   end;
 end;
 
 procedure TSynXMLSyn.QuestionMarkProc;
 begin
-  if (rfProcessingInstruction in fRangeFlags) and (fLine[Run+1] = '>') then begin
+  if (rfProcessingInstruction in fRangeFlags) and (LinePtr[Run+1] = '>') then begin
     fTokenID := tkProcessingInstruction;
     fRange := rsText;
     fRangeFlags := fRangeFlags - [rfSingleQuote, rfNameSpace, rfProcessingInstruction];
@@ -499,14 +494,14 @@ procedure TSynXMLSyn.LessThanProc;
 begin
   fRangeFlags := fRangeFlags - [rfSingleQuote, rfNameSpace];
   Inc(Run);
-  if (fLine[Run] = '/') then begin
+  if (LinePtr[Run] = '/') then begin
     Inc(Run);
     fTokenID := tkSymbol;
     fRange := rsCloseElement;
     exit;
   end;
 
-  if (fLine[Run] = '!') then
+  if (LinePtr[Run] = '!') then
   begin
     if NextTokenIs('--') then begin
       fTokenID := tkCommentSym;
@@ -528,7 +523,7 @@ begin
       fRange := rsElement;
       Inc(Run);
     end;
-  end else if fLine[Run]= '?' then begin
+  end else if LinePtr[Run]= '?' then begin
     fTokenID := tkProcessingInstruction;
     fRange := rsElement;
     Include(fRangeFlags, rfProcessingInstruction);
@@ -543,7 +538,7 @@ end;
 procedure TSynXMLSyn.GreaterThanProc;
 begin
   fRangeFlags := fRangeFlags - [rfSingleQuote, rfNameSpace];
-  if (Run > 0) and (fLine[Run - 1] = '/') then
+  if (Run > 0) and (LinePtr[Run - 1] = '/') then
     if TopXmlCodeFoldBlockType = cfbtXmlNode then
       EndXmlNodeCodeFoldBlock;
 
@@ -554,8 +549,8 @@ end;
 
 procedure TSynXMLSyn.CommentProc;
 begin
-  if (fLine[Run] = '-') and (fLine[Run + 1] = '-') and
-     (fLine[Run + 2] = '>')
+  if (LinePtr[Run] = '-') and (LinePtr[Run + 1] = '-') and
+     (LinePtr[Run + 2] = '>')
   then begin
     fTokenID := tkCommentSym;
     fRange:= rsText;
@@ -567,13 +562,13 @@ begin
 
   fTokenID := tkComment;
 
-  if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]]();
+  if (LinePtr[Run] In [#0, #10, #13]) then begin
+    fProcTable[LinePtr[Run]]();
     Exit;
   end;
 
-  while not (fLine[Run] in [#0, #10, #13]) do begin
-    if (fLine[Run] = '-') and (fLine[Run + 1] = '-') and (fLine[Run + 2] = '>')
+  while not (LinePtr[Run] in [#0, #10, #13]) do begin
+    if (LinePtr[Run] = '-') and (LinePtr[Run + 1] = '-') and (LinePtr[Run + 2] = '>')
     then begin
       fRange := rsComment;
       break;
@@ -586,22 +581,22 @@ procedure TSynXMLSyn.DocTypeProc;                                              /
 begin
   fTokenID := tkDocType;
 
-  if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]]();
+  if (LinePtr[Run] In [#0, #10, #13]) then begin
+    fProcTable[LinePtr[Run]]();
     Exit;
   end;
 
   case fRange of
     rsDocType:
       begin
-        while not (fLine[Run] in [#0, #10, #13]) do
+        while not (LinePtr[Run] in [#0, #10, #13]) do
         begin
-          case fLine[Run] of
+          case LinePtr[Run] of
             '[': begin
                    while True do
                    begin
                      inc(Run);
-                     case fLine[Run] of
+                     case LinePtr[Run] of
                        ']':
                          begin
                            Inc(Run);
@@ -628,9 +623,9 @@ begin
     end;
     rsDocTypeSquareBraces:
       begin
-        while not (fLine[Run] in [#0, #10, #13]) do
+        while not (LinePtr[Run] in [#0, #10, #13]) do
         begin
-          if (fLine[Run]=']') then
+          if (LinePtr[Run]=']') then
           begin
             fRange := rsDocType;
             Inc(Run);
@@ -645,16 +640,16 @@ end;
 procedure TSynXMLSyn.CDATAProc;
 begin
   fTokenID := tkCDATA;
-  if (fLine[Run] In [#0, #10, #13]) then
+  if (LinePtr[Run] In [#0, #10, #13]) then
   begin
-    fProcTable[fLine[Run]]();
+    fProcTable[LinePtr[Run]]();
     Exit;
   end;
 
-  while not (fLine[Run] in [#0, #10, #13]) do
+  while not (LinePtr[Run] in [#0, #10, #13]) do
   begin
-    if (Run >= 2) and (fLine[Run] = '>') and (fLine[Run - 1] = ']') and
-       (fLine[Run - 2] = ']')
+    if (Run >= 2) and (LinePtr[Run] = '>') and (LinePtr[Run - 1] = ']') and
+       (LinePtr[Run - 2] = ']')
     then begin
       fRange := rsText;
       Inc(Run);
@@ -671,27 +666,27 @@ var
   NameStart, r: LongInt;
   IsPreColon: Boolean;
 begin
-  if fLine[Run] = '/' then
+  if LinePtr[Run] = '/' then
     Inc(Run);
   NameStart := Run;
   IsPreColon := False;
   if not (IsScanning or FIsInNextToEOL) and (reaNameSpaceSubToken in fRequiredStates) then begin
     fTokenDecorator := tdNameSpaceNoneStart;
-    while (fLine[Run] in NameCharsNoColon) do Inc(Run);
-    IsPreColon := fLine[Run] = ':';
+    while (LinePtr[Run] in NameCharsNoColon) do Inc(Run);
+    IsPreColon := LinePtr[Run] = ':';
     r := Run;
-    while (fLine[r] in NameChars) do Inc(r);
+    while (LinePtr[r] in NameChars) do Inc(r);
   end
   else begin
-    while (fLine[Run] in NameChars) do Inc(Run);
+    while (LinePtr[Run] in NameChars) do Inc(Run);
     r := Run;
   end;
 
   if fRange = rsOpenElement then
-    StartXmlNodeCodeFoldBlock(cfbtXmlNode, NameStart, Copy(fLine, NameStart + 1, r - NameStart));
+    StartXmlNodeCodeFoldBlock(cfbtXmlNode, NameStart, Copy(LinePtr, NameStart + 1, r - NameStart));
 
   if fRange = rsCloseElement then
-    EndXmlNodeCodeFoldBlock(NameStart, Copy(fLine, NameStart + 1, r - NameStart));   // TODO: defer until ">" reached
+    EndXmlNodeCodeFoldBlock(NameStart, Copy(LinePtr, NameStart + 1, r - NameStart));   // TODO: defer until ">" reached
 
   fTokenID := tkElement;
 
@@ -713,7 +708,7 @@ end;
 
 procedure TSynXMLSyn.ElementPostColonProc;
 begin
-  while (fLine[Run] in NameChars) do Inc(Run);
+  while (LinePtr[Run] in NameChars) do Inc(Run);
   fTokenID := tkElement;
   fRange := rsAttribute;
   fTokenDecorator := tdNameSpaceNoneEnd;
@@ -722,7 +717,7 @@ end;
 procedure TSynXMLSyn.AttributeProc;
 begin
   //Check if we are starting on a closing quote
-  if (fLine[Run] in [#34, #39]) then
+  if (LinePtr[Run] in [#34, #39]) then
   begin
     fRangeFlags := fRangeFlags - [rfSingleQuote, rfNameSpace];
     if FQuotesUseAttribValueAttri then begin
@@ -739,11 +734,11 @@ begin
   end;
 
   //Check if this is an xmlns: attribute
-  while (fLine[Run] in NameCharsNoColon) do Inc(Run);
+  while (LinePtr[Run] in NameCharsNoColon) do Inc(Run);
   if (Run - fTokenPos = 5) and
-     (StrLComp(pchar('xmlns'), fLine + fTokenPos, 5) = 0) and
+     (StrLComp(pchar('xmlns'), LinePtr + fTokenPos, 5) = 0) and
      ( (fLineLen - fTokenPos = 5) or
-       ((fLine + fTokenPos + 5)^ in [':', '=', #10, #13, #9, #32, #0])
+       ((LinePtr + fTokenPos + 5)^ in [':', '=', #10, #13, #9, #32, #0])
      )
   then begin
     Include(fRangeFlags, rfNameSpace);
@@ -755,7 +750,7 @@ begin
 
 
   if not (IsScanning or FIsInNextToEOL) and (reaNameSpaceSubToken in fRequiredStates) and
-     (fLine[Run] = ':')
+     (LinePtr[Run] = ':')
   then begin
     fTokenDecorator := tdNameSpaceNoneStart;
     fRange := rsAttributeColon;
@@ -765,7 +760,7 @@ begin
   end;
 
   //Read the rest of the name
-  while (fLine[Run] in NameChars) do Inc(Run);
+  while (LinePtr[Run] in NameChars) do Inc(Run);
 end;
 
 procedure TSynXMLSyn.AttributeColonProc;
@@ -781,7 +776,7 @@ end;
 
 procedure TSynXMLSyn.AttributePostColonProc;
 begin
-  while (fLine[Run] in NameChars) do Inc(Run);
+  while (LinePtr[Run] in NameChars) do Inc(Run);
   if (rfNameSpace in fRangeFlags) then begin
     fTokenID := tknsAttribute;
     fTokenDecorator := tdNameSpaceDefinition;
@@ -797,19 +792,19 @@ procedure TSynXMLSyn.EqualProc;
 begin
   fTokenID := tkEqual;
 
-  while not (fLine[Run] in [#0, #10, #13]) do
+  while not (LinePtr[Run] in [#0, #10, #13]) do
   begin
-    if (fLine[Run] = '/') then
+    if (LinePtr[Run] = '/') then
     begin
       fTokenID := tkSymbol;
       fRange := rsElement;
       Inc(Run);
       Exit;
-    end else if (fLine[Run] in [#34, #39]) then
+    end else if (LinePtr[Run] in [#34, #39]) then
     begin
       if FQuotesUseAttribValueAttri and (Run > fTokenPos) then
         exit;
-      if (fLine[Run] = #39) then
+      if (LinePtr[Run] = #39) then
         Include(fRangeFlags, rfSingleQuote);
       fRange := rsAttrValue;
       Inc(Run);
@@ -829,22 +824,22 @@ begin
     fTokenID := tkAttrValue;
 
   if rfSingleQuote in fRangeFlags then
-    while not (fLine[Run] in [#0, #10, #13, '&', #39]) do Inc(Run)
+    while not (LinePtr[Run] in [#0, #10, #13, '&', #39]) do Inc(Run)
   else
-    while not (fLine[Run] in [#0, #10, #13, '&', #34]) do Inc(Run);
+    while not (LinePtr[Run] in [#0, #10, #13, '&', #34]) do Inc(Run);
 
-  if fLine[Run] = '&' then
+  if LinePtr[Run] = '&' then
   begin
     Include(fRangeFlags, rfEntityRef);
     Exit;
   end;
 
   if rfSingleQuote in fRangeFlags then begin
-    if fLine[Run] <> #39 then
+    if LinePtr[Run] <> #39 then
       Exit;
   end
   else begin
-    if fLine[Run] <> #34 then
+    if LinePtr[Run] <> #34 then
       Exit;
   end;
 
@@ -859,15 +854,15 @@ end;
 procedure TSynXMLSyn.TextProc;
 const StopSet = [#0..#31, '<', '&'];
 begin
-  if fLine[Run] in (StopSet - ['&']) then begin
-    fProcTable[fLine[Run]]();
+  if LinePtr[Run] in (StopSet - ['&']) then begin
+    fProcTable[LinePtr[Run]]();
     exit;
   end;
 
   fTokenID := tkText;
-  while not (fLine[Run] in StopSet) do Inc(Run);
+  while not (LinePtr[Run] in StopSet) do Inc(Run);
 
-  if (fLine[Run] = '&') then begin
+  if (LinePtr[Run] = '&') then begin
     Include(fRangeFlags, rfEntityRef);
     Exit;
   end;
@@ -876,9 +871,9 @@ end;
 procedure TSynXMLSyn.EntityRefProc;
 begin
   fTokenID := tkEntityRef;
-  while not (fLine[Run] in [#0..#32, ';', '''', '"', '>']) do
+  while not (LinePtr[Run] in [#0..#32, ';', '''', '"', '>']) do
     Inc(Run);
-  if (fLine[Run] = ';') then
+  if (LinePtr[Run] = ';') then
     Inc(Run);
 
   Exclude(fRangeFlags, rfEntityRef);
@@ -942,7 +937,7 @@ begin
         CDATAProc();
       end;
     else
-      fProcTable[fLine[Run]]();
+      fProcTable[LinePtr[Run]]();
     end;
     if fTokenId = tkNull then // EOL
       break;
@@ -955,7 +950,7 @@ begin
   Result:= True;
   Len:= Length(T);
   for I:= 1 to Len do
-    if (fLine[Run + I] <> T[I]) then
+    if (LinePtr[Run + I] <> T[I]) then
     begin
       Result:= False;
       Break;
@@ -987,14 +982,14 @@ var
 begin
   Result := '';
   Len := (Run - fTokenPos);
-  SetString(Result, (FLine + fTokenPos), len);
+  SetString(Result, (LinePtr + fTokenPos), len);
 end;
 
 procedure TSynXMLSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynXMLSyn.GetTokenID: TtkTokenKind;

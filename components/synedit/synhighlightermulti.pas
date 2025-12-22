@@ -286,8 +286,7 @@ type
   protected
     FSchemes: TSynHighlighterMultiSchemeList;
     FDefaultHighlighter: TSynCustomHighLighter;
-    FLine: string;
-    FCurLineIndex, FLineLen: Integer;
+    FLineLen: Integer;
     FTokenPos: integer;
     FTokenKind: integer;
     FTokenAttr: TLazEditTextAttribute;
@@ -1354,7 +1353,7 @@ end;
 
 function TSynMultiSyn.GetToken: string;
 begin
-  SetString(Result, (PChar(FLine) + FTokenPos - 1), FRun - FTokenPos);
+  SetString(Result, (PChar(CurrentLineText) + FTokenPos - 1), FRun - FTokenPos);
 end;
 
 procedure TSynMultiSyn.GetTokenEx(out TokenStart: PChar;
@@ -1362,7 +1361,7 @@ procedure TSynMultiSyn.GetTokenEx(out TokenStart: PChar;
 begin
   TokenLength := FRun-FTokenPos;
   if TokenLength > 0 then begin
-    TokenStart := @fLine[FTokenPos];
+    TokenStart := @CurrentLineText[FTokenPos];
   end else begin
     TokenStart := nil;
   end;
@@ -1411,14 +1410,14 @@ procedure TSynMultiSyn.Next;
     if (idx < 0) or (idx >= VLines.SectionList.Count) then
       exit;
     s := VLines.SectionList[idx];
-    if s.StartPos.y > FCurLineIndex then
+    if s.StartPos.y > LineIndex then
       exit;
 
     FRunSectionInfo[ASchemeIdx].SectionIdx := idx;
     FRunSectionInfo[ASchemeIdx].VirtualStartPos :=
       FRunSectionInfo[ASchemeIdx].VirtualStartPos +
       FRunSectionInfo[ASchemeIdx].LastChar - FRunSectionInfo[ASchemeIdx].FirstChar + 1;
-    if s.StartPos.y = FCurLineIndex then begin
+    if s.StartPos.y = LineIndex then begin
       x1  := s.StartPos.x;
       tx1 := s.TokenStartPos;
       if tx1 = 0 then
@@ -1427,13 +1426,13 @@ procedure TSynMultiSyn.Next;
       x1  := 1;
       tx1 := 1;
     end;
-    if s.EndPos.y = FCurLineIndex then begin
+    if s.EndPos.y = LineIndex then begin
       x2 := s.EndPos.x;
       tx2 := s.TokenEndPos;
       if tx2 = 0 then
         tx2 := x2;
     end else begin
-      x2 := length(CurrentLines[FCurLineIndex]);
+      x2 := length(CurrentLines[LineIndex]);
       tx2 := x2;
     end;
     FRunSectionInfo[ASchemeIdx].FirstChar := x1;
@@ -1515,7 +1514,7 @@ begin
         FTokenKind := idx * TokenKindPerHighlighter + HL.GetTokenKind;
         FRun := Min(tkpos - RSect.VirtualStartPos + RSect.FirstChar + tklen,
                     RSect.LastChar + 1);
-        //debugln(['  FOUND-token   ', FRun, ' t=',copy(FLine, FTokenPos, 2),'... kind=',FTokenKind, '    subhl: tkpos=',tkpos,' tklen=',tklen, '  t=', copy(dummy,1,tklen) ]);
+        //debugln(['  FOUND-token   ', FRun, ' t=',copy(CurrentLineText, FTokenPos, 2),'... kind=',FTokenKind, '    subhl: tkpos=',tkpos,' tklen=',tklen, '  t=', copy(dummy,1,tklen) ]);
       end
       else
         HL := nil;
@@ -1640,16 +1639,16 @@ procedure TSynMultiSyn.SetLine(const NewValue: string;
       VLines := DefaultVirtualLines;
       HL     := DefaultHighlighter;
     end;
-    idx := VLines.SectionList.IndexOfFirstSectionAtLineIdx(FCurLineIndex);
+    idx := VLines.SectionList.IndexOfFirstSectionAtLineIdx(LineIndex);
     if (idx < 0) or (idx >= VLines.SectionList.Count) then
       exit;
     s := VLines.SectionList[idx];
-    if s.StartPos.y > FCurLineIndex then
+    if s.StartPos.y > LineIndex then
       exit;
 
     FRunSectionInfo[ASchemeIdx].SectionIdx := idx;
     FRunSectionInfo[ASchemeIdx].VirtualStartPos := 1;
-    if s.StartPos.y = FCurLineIndex then begin
+    if s.StartPos.y = LineIndex then begin
       x1  := s.StartPos.x;
       tx1 := s.TokenStartPos;
       if tx1 = 0 then
@@ -1658,13 +1657,13 @@ procedure TSynMultiSyn.SetLine(const NewValue: string;
       x1  := 1;
       tx1 := 1;
     end;
-    if s.EndPos.y = FCurLineIndex then begin
+    if s.EndPos.y = LineIndex then begin
       x2 := s.EndPos.x;
       tx2 := s.TokenEndPos;
       if tx2 = 0 then
         tx2 := x2;
     end else begin
-      x2 := length(CurrentLines[FCurLineIndex]);
+      x2 := length(CurrentLines[LineIndex]);
       tx2 := x2;
     end;
     FRunSectionInfo[ASchemeIdx].FirstChar := x1;
@@ -1673,8 +1672,8 @@ procedure TSynMultiSyn.SetLine(const NewValue: string;
     FRunSectionInfo[ASchemeIdx].TokenLastChar  := tx2;
 
     if HL <> nil then
-      HL.StartAtLineIndex(s.VirtualLine + FCurLineIndex - s.StartPos.y);
-      //with FRunSectionInfo[ASchemeIdx] do debugln([' RunSection ',ASchemeIdx,': SectIdx=', SectionIdx, ' Fc=',FirstChar,' LC=',LastChar,' TkFC=',TokenFirstChar, ' TkLC=',TokenLastChar, '  VLine=',s.VirtualLine + FCurLineIndex - s.StartPos.y]);
+      HL.StartAtLineIndex(s.VirtualLine + LineIndex - s.StartPos.y);
+      //with FRunSectionInfo[ASchemeIdx] do debugln([' RunSection ',ASchemeIdx,': SectIdx=', SectionIdx, ' Fc=',FirstChar,' LC=',LastChar,' TkFC=',TokenFirstChar, ' TkLC=',TokenLastChar, '  VLine=',s.VirtualLine + LineIndex - s.StartPos.y]);
   end;
 var
   i: Integer;
@@ -1682,15 +1681,13 @@ begin
   if IsScanning then exit;
   inherited;
 
-  FCurLineIndex := LineNumber;
-  FLine := NewValue;
-  FLineLen := length(FLine);
+  FLineLen := length(CurrentLineText);
   fRun := 1;
   FTokenPos := 1;
   FTokenAttr := nil;
   FTokenAttrEx := nil;
   FTokenKind := 0;
-  //debugln(['>>>>> Setting Line ',FCurLineIndex,' = ',FLine]);
+  //debugln(['>>>>> Setting Line ',LineIndex,' = ',CurrentLineText]);
   for i := 0 to high(FRunSectionInfo) do
     InitRunSection(i);
   Next;

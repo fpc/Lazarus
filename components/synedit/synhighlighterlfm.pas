@@ -89,8 +89,6 @@ type
     );
   private
     fRange: TRangeState;
-    fLine: PChar;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: integer;
     fTokenPos: Integer;
@@ -146,8 +144,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String;
-      LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -300,13 +297,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynLFMSyn.SetLine(const NewValue: String;
-  LineNumber: Integer);
+procedure TSynLFMSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
 end;
 
@@ -315,7 +309,7 @@ begin
   fTokenID := tkIdentifier;
   repeat
     Inc(Run);
-  until not (fLine[Run] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']);
+  until not (LinePtr[Run] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']);
 end;
 
 procedure TSynLFMSyn.AsciiCharProc;
@@ -323,7 +317,7 @@ begin
   fTokenID := tkString;
   repeat
     Inc(Run);
-  until not (fLine[Run] in ['0'..'9']);
+  until not (LinePtr[Run] in ['0'..'9']);
 end;
 
 procedure TSynLFMSyn.BraceCloseProc;
@@ -344,26 +338,26 @@ begin
   fTokenID := tkComment;
   repeat
     inc(Run);
-    if fLine[Run] = '}' then begin
+    if LinePtr[Run] = '}' then begin
       Inc(Run);
       fRange := rsUnknown;
       break;
     end;
-  until fLine[Run] in [#0, #10, #13];
+  until LinePtr[Run] in [#0, #10, #13];
 end;
 
 procedure TSynLFMSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
-  if (fLine[Run] = #10) then Inc(Run);
+  if (LinePtr[Run] = #10) then Inc(Run);
 end;
 
 procedure TSynLFMSyn.EndProc;
 begin
-  if (fLine[Run + 1] in ['n', 'N']) and
-     (fLine[Run + 2] in ['d', 'D']) and
-     not (fLine[Run + 3] in ['_', '0'..'9', 'a'..'z', 'A'..'Z'])
+  if (LinePtr[Run + 1] in ['n', 'N']) and
+     (LinePtr[Run + 2] in ['d', 'D']) and
+     not (LinePtr[Run + 3] in ['_', '0'..'9', 'a'..'z', 'A'..'Z'])
   then begin
     fTokenID := tkKey;
     Inc(Run, 3);
@@ -378,7 +372,7 @@ begin
   fTokenID := tkNumber;
   repeat
     inc(Run);
-  until not (fLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f']);
+  until not (LinePtr[Run] in ['0'..'9', 'A'..'F', 'a'..'f']);
 end;
 
 procedure TSynLFMSyn.LFProc;
@@ -397,21 +391,21 @@ begin
   fTokenID := tkNumber;
   repeat
     Inc(Run);
-    if fLine[Run] = '.' then begin
-      if fLine[Run + 1] <> '.' then Inc(Run);
+    if LinePtr[Run] = '.' then begin
+      if LinePtr[Run + 1] <> '.' then Inc(Run);
       break;
     end;
-  until not (fLine[Run] in ['0'..'9', 'e', 'E']);
+  until not (LinePtr[Run] in ['0'..'9', 'e', 'E']);
 end;
 
 procedure TSynLFMSyn.ObjectProc;
 begin
-  if (fLine[Run + 1] in ['b', 'B']) and
-     (fLine[Run + 2] in ['j', 'J']) and
-     (fLine[Run + 3] in ['e', 'E']) and
-     (fLine[Run + 4] in ['c', 'C']) and
-     (fLine[Run + 5] in ['t', 'T']) and
-     not (fLine[Run + 6] in ['_', '0'..'9', 'a'..'z', 'A'..'Z'])
+  if (LinePtr[Run + 1] in ['b', 'B']) and
+     (LinePtr[Run + 2] in ['j', 'J']) and
+     (LinePtr[Run + 3] in ['e', 'E']) and
+     (LinePtr[Run + 4] in ['c', 'C']) and
+     (LinePtr[Run + 5] in ['t', 'T']) and
+     not (LinePtr[Run + 6] in ['_', '0'..'9', 'a'..'z', 'A'..'Z'])
   then
   begin
     fTokenID := tkKey;
@@ -424,37 +418,37 @@ end;
 
 procedure TSynLFMSyn.InheritedInlineProc;
 begin
-  if ((fLine[Run + 1] in ['n', 'N']) and
-     (fLine[Run + 2] in ['h', 'H']) and
-     (fLine[Run + 3] in ['e', 'E']) and
-     (fLine[Run + 4] in ['r', 'R']) and
-     (fLine[Run + 5] in ['i', 'I']) and
-     (fLine[Run + 6] in ['t', 'T']) and
-     (fLine[Run + 7] in ['e', 'E']) and
-     (fLine[Run + 8] in ['d', 'D']) and
-     not (fLine[Run + 9] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
+  if ((LinePtr[Run + 1] in ['n', 'N']) and
+     (LinePtr[Run + 2] in ['h', 'H']) and
+     (LinePtr[Run + 3] in ['e', 'E']) and
+     (LinePtr[Run + 4] in ['r', 'R']) and
+     (LinePtr[Run + 5] in ['i', 'I']) and
+     (LinePtr[Run + 6] in ['t', 'T']) and
+     (LinePtr[Run + 7] in ['e', 'E']) and
+     (LinePtr[Run + 8] in ['d', 'D']) and
+     not (LinePtr[Run + 9] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
   then
   begin
     fTokenID := tkKey;
     Inc(Run, 9);
     StartLfmCodeFoldBlock(cfbtLfmObject);
   end
-  else if ((fLine[Run + 1] in ['n', 'N']) and
-           (fLine[Run + 2] in ['l', 'L']) and
-           (fLine[Run + 3] in ['i', 'I']) and
-           (fLine[Run + 4] in ['n', 'N']) and
-           (fLine[Run + 5] in ['e', 'E']) and
-           not (fLine[Run + 6] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
+  else if ((LinePtr[Run + 1] in ['n', 'N']) and
+           (LinePtr[Run + 2] in ['l', 'L']) and
+           (LinePtr[Run + 3] in ['i', 'I']) and
+           (LinePtr[Run + 4] in ['n', 'N']) and
+           (LinePtr[Run + 5] in ['e', 'E']) and
+           not (LinePtr[Run + 6] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
   then
   begin
     fTokenID := tkKey;
     Inc(Run, 6);
     StartLfmCodeFoldBlock(cfbtLfmObject);
   end
-  else if ((fLine[Run + 1] in ['t', 'T']) and
-           (fLine[Run + 2] in ['e', 'E']) and
-           (fLine[Run + 3] in ['m', 'M']) and
-           not (fLine[Run + 4] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
+  else if ((LinePtr[Run + 1] in ['t', 'T']) and
+           (LinePtr[Run + 2] in ['e', 'E']) and
+           (LinePtr[Run + 3] in ['m', 'M']) and
+           not (LinePtr[Run + 4] in ['_', '0'..'9', 'a'..'z', 'A'..'Z']))
   then
   begin
     fTokenID := tkIdentifier;
@@ -482,7 +476,7 @@ begin
   fTokenID := tkSpace;
   repeat
     Inc(Run);
-  until (fLine[Run] > #32) or (fLine[Run] in [#0, #10, #13]);
+  until (LinePtr[Run] > #32) or (LinePtr[Run] in [#0, #10, #13]);
 end;
 
 procedure TSynLFMSyn.StringProc;
@@ -490,11 +484,11 @@ begin
   fTokenID := tkString;
   repeat
     Inc(Run);
-    if fLine[Run] = '''' then begin
+    if LinePtr[Run] = '''' then begin
       Inc(Run);
-      if fLine[Run] <> '''' then break
+      if LinePtr[Run] <> '''' then break
     end;
-  until fLine[Run] in [#0, #10, #13];
+  until LinePtr[Run] in [#0, #10, #13];
 end;
 
 procedure TSynLFMSyn.SymbolProc;
@@ -502,25 +496,25 @@ begin
 
   inc(Run);
   fTokenID := tkSymbol;
-  if fLine[Run-1] = '<' then
+  if LinePtr[Run-1] = '<' then
   begin
     StartLfmCodeFoldBlock(cfbtLfmList)
   end
   else
-  if (fLine[Run-1] = '>') and (TopLfmCodeFoldBlockType = cfbtLfmList) then
+  if (LinePtr[Run-1] = '>') and (TopLfmCodeFoldBlockType = cfbtLfmList) then
     EndLfmCodeFoldBlock;
 end;
 
 procedure TSynLFMSyn.UnknownProc;
 begin
 {$IFDEF SYN_MBCSSUPPORT}
-  if FLine[Run] in LeadBytes then
+  if LinePtr[Run] in LeadBytes then
     Inc(Run,2)
   else
 {$ENDIF}
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -528,10 +522,10 @@ procedure TSynLFMSyn.Next;
 begin
   fTokenPos := Run;
   if fRange = rsComment then begin
-    if fLine[Run] = #0 then NullProc
+    if LinePtr[Run] = #0 then NullProc
                        else CommentProc;
   end else
-    fProcTable[fLine[Run]]();
+    fProcTable[LinePtr[Run]]();
 end;
 
 function TSynLFMSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -571,14 +565,14 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 procedure TSynLFMSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynLFMSyn.GetTokenAttribute: TLazEditTextAttribute;

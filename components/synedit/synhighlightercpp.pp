@@ -118,7 +118,6 @@ type
   private
     fAsmStart: Boolean;
     fRange: TRangeState;
-    fLine: PChar;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fStringLen: Integer;
@@ -126,7 +125,6 @@ type
     fTokenPos: Integer;
     FTokenID: TtkTokenKind;
     FExtTokenID: TxtkTokenKind;
-    fLineNumber: Integer;
     fIdentFuncTable: array[0..206] of TIdentFuncTableFunc;
     fAsmAttri: TSynHighlighterAttributes;
     fCommentAttri: TSynHighlighterAttributes;
@@ -249,7 +247,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String; LineNumber:Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -816,19 +814,17 @@ begin
   fDefaultFilter := SYNS_FilterCPP;
 end; { Create }
 
-procedure TSynCppSyn.SetLine(const NewValue: String; LineNumber:Integer);
+procedure TSynCppSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
-end; { SetLine }
+end;
 
 procedure TSynCppSyn.AnsiCProc;
 begin
   fTokenID := tkComment;
-  case FLine[Run] of
+  case LinePtr[Run] of
     #0:
       begin
         NullProc;
@@ -846,10 +842,10 @@ begin
       end;
   end;
 
-  while FLine[Run] <> #0 do
-    case FLine[Run] of
+  while LinePtr[Run] <> #0 do
+    case LinePtr[Run] of
       '*':
-        if fLine[Run + 1] = '/' then
+        if LinePtr[Run + 1] = '/' then
         begin
           inc(Run, 2);
           if fRange = rsAnsiCAsm then
@@ -872,7 +868,7 @@ end;
 procedure TSynCppSyn.AndSymbolProc;
 begin
   fTokenID := tkSymbol;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {and assign}
       begin
         inc(Run, 2);
@@ -895,13 +891,13 @@ procedure TSynCppSyn.AsciiCharProc;
 begin
   fTokenID := tkString;
   repeat
-    if fLine[Run] = '\' then begin
-      if fLine[Run + 1] in [#39, '\'] then                                      //ek 2000-04-26
+    if LinePtr[Run] = '\' then begin
+      if LinePtr[Run + 1] in [#39, '\'] then                                      //ek 2000-04-26
         inc(Run);
     end;
     inc(Run);
-  until fLine[Run] in [#0, #10, #13, #39];
-  if fLine[Run] = #39 then
+  until LinePtr[Run] in [#0, #10, #13, #39];
+  if LinePtr[Run] = #39 then
     inc(Run);
 end;
 
@@ -935,13 +931,13 @@ procedure TSynCppSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
-  if fLine[Run + 1] = #10 then Inc(Run);
+  if LinePtr[Run + 1] = #10 then Inc(Run);
 end;
 
 procedure TSynCppSyn.ColonProc;
 begin
   fTokenID := tkSymbol;
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     ':':                               {scope resolution operator}
       begin
         inc(Run, 2);
@@ -964,20 +960,20 @@ end;
 
 procedure TSynCppSyn.DirectiveProc;
 begin
-  if fLine[Run] in [#0, #10, #13] then begin
-    if (Run <= 0) or (fLine[Run - 1] <> '\') then
+  if LinePtr[Run] in [#0, #10, #13] then begin
+    if (Run <= 0) or (LinePtr[Run - 1] <> '\') then
       fRange := rsUnknown;
-    fProcTable[fLine[Run]];
+    fProcTable[LinePtr[Run]];
   end else begin
     fTokenID := tkDirective;
     while TRUE do
-      case fLine[Run] of
+      case LinePtr[Run] of
         '/': // comment?
           begin
-            if fLine[Run + 1] = '/' then begin // is end of directive as well
+            if LinePtr[Run + 1] = '/' then begin // is end of directive as well
               fRange := rsUnknown;                                              //ek 2000-04-25
               break;
-            end else if fLine[Run + 1] = '*' then begin // might be embedded only
+            end else if LinePtr[Run + 1] = '*' then begin // might be embedded only
               fRange := rsDirectiveComment;
               break;
             end else
@@ -986,7 +982,7 @@ begin
         '\': // directive continued on next line?
           begin
             Inc(Run);
-            if fLine[Run] in [#0, #10, #13] then begin
+            if LinePtr[Run] in [#0, #10, #13] then begin
               fRange := rsDirective;
               break;
             end;
@@ -1004,7 +1000,7 @@ end;
 procedure TSynCppSyn.EqualProc;
 begin
   fTokenID := tkSymbol;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {logical equal}
       begin
         inc(Run, 2);
@@ -1021,7 +1017,7 @@ end;
 procedure TSynCppSyn.GreaterProc;
 begin
   fTokenID := tkSymbol;
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     '=':                               {greater than or equal to}
       begin
         inc(Run, 2);
@@ -1029,7 +1025,7 @@ begin
       end;
     '>':
       begin
-        if FLine[Run + 2] = '=' then   {shift right assign}
+        if LinePtr[Run + 2] = '=' then   {shift right assign}
         begin
           inc(Run, 3);
           FExtTokenID := xtkShiftRightAssign;
@@ -1057,9 +1053,9 @@ end;
 
 procedure TSynCppSyn.IdentProc;
 begin
-  fTokenID := IdentKind((fLine + Run));
+  fTokenID := IdentKind((LinePtr + Run));
   inc(Run, fStringLen);
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
 end;
 
 procedure TSynCppSyn.LFProc;
@@ -1071,7 +1067,7 @@ end;
 procedure TSynCppSyn.LowerProc;
 begin
   fTokenID := tkSymbol;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {less than or equal to}
       begin
         inc(Run, 2);
@@ -1079,7 +1075,7 @@ begin
       end;
     '<':
       begin
-        if FLine[Run + 2] = '=' then   {shift left assign}
+        if LinePtr[Run + 2] = '=' then   {shift left assign}
         begin
           inc(Run, 3);
           FExtTokenID := xtkShiftLeftAssign;
@@ -1101,7 +1097,7 @@ end;
 procedure TSynCppSyn.MinusProc;
 begin
   fTokenID := tkSymbol;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {subtract assign}
       begin
         inc(Run, 2);
@@ -1128,7 +1124,7 @@ end;
 procedure TSynCppSyn.ModSymbolProc;
 begin
   fTokenID := tkSymbol;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {mod assign}
       begin
         inc(Run, 2);
@@ -1145,7 +1141,7 @@ end;
 procedure TSynCppSyn.NotSymbolProc;
 begin
   fTokenID := tkSymbol;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {not equal}
       begin
         inc(Run, 2);
@@ -1168,32 +1164,32 @@ procedure TSynCppSyn.NumberProc;
 begin
   fTokenID := tkNumber;
 
-  if (FLine[Run] = '0') and (FLine[Run+1] in ['x', 'X'])then
+  if (LinePtr[Run] = '0') and (LinePtr[Run+1] in ['x', 'X'])then
   begin
     inc(Run, 2);
-    while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
-    if FLine[Run] in ['u', 'U', 'l', 'L'] then inc(Run);
+    while LinePtr[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
+    if LinePtr[Run] in ['u', 'U', 'l', 'L'] then inc(Run);
     exit;
   end;
 
   inc(Run);
-  while FLine[Run] in ['0'..'9'] do inc(Run);
-  if (FLine[Run]='.') and not(fLine[Run+1]='.')  then begin
+  while LinePtr[Run] in ['0'..'9'] do inc(Run);
+  if (LinePtr[Run]='.') and not(LinePtr[Run+1]='.')  then begin
     inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
-  if (FLine[Run]='e') or (fLine[Run]='E')  then begin
+  if (LinePtr[Run]='e') or (LinePtr[Run]='E')  then begin
     inc(Run);
-    if (FLine[Run]='+') or (fLine[Run]='-')  then inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    if (LinePtr[Run]='+') or (LinePtr[Run]='-')  then inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
-  if FLine[Run] in ['u', 'U', 'l', 'L'] then inc(Run);
+  if LinePtr[Run] in ['u', 'U', 'l', 'L'] then inc(Run);
 end;
 
 procedure TSynCppSyn.OrSymbolProc;
 begin
   fTokenID := tkSymbol;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {or assign}
       begin
         inc(Run, 2);
@@ -1215,7 +1211,7 @@ end;
 procedure TSynCppSyn.PlusProc;
 begin
   fTokenID := tkSymbol;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {add assign}
       begin
         inc(Run, 2);
@@ -1237,7 +1233,7 @@ end;
 procedure TSynCppSyn.PointProc;
 begin
   fTokenID := tkSymbol;
-  if (FLine[Run + 1] = '.') and (FLine[Run + 2] = '.') then
+  if (LinePtr[Run + 1] = '.') and (LinePtr[Run + 2] = '.') then
     begin                              {ellipse}
       inc(Run, 3);
       FExtTokenID := xtkEllipse;
@@ -1289,12 +1285,12 @@ end;
 
 procedure TSynCppSyn.SlashProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '/':                               {c++ style comments}
       begin
         fTokenID := tkComment;
         inc(Run, 2);
-        while not (fLine[Run] in [#0, #10, #13]) do Inc(Run);
+        while not (LinePtr[Run] in [#0, #10, #13]) do Inc(Run);
       end;
     '*':                               {c style comments}
       begin
@@ -1306,10 +1302,10 @@ begin
         else if fRange <> rsDirectiveComment then                          
           fRange := rsAnsiC;
         inc(Run, 2);
-        while fLine[Run] <> #0 do
-          case fLine[Run] of
+        while LinePtr[Run] <> #0 do
+          case LinePtr[Run] of
             '*':
-              if fLine[Run + 1] = '/' then
+              if LinePtr[Run + 1] = '/' then
               begin
                 inc(Run, 2);
                 if fRange = rsDirectiveComment then
@@ -1353,7 +1349,7 @@ procedure TSynCppSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
 procedure TSynCppSyn.SquareCloseProc;
@@ -1373,7 +1369,7 @@ end;
 procedure TSynCppSyn.StarProc;
 begin
   fTokenID := tkSymbol;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {multiply assign}
       begin
         inc(Run, 2);
@@ -1389,7 +1385,7 @@ end;
 
 procedure TSynCppSyn.StringProc;
 begin
-  case FLine[Run] of
+  case LinePtr[Run] of
     #0:
       begin
         NullProc;
@@ -1408,16 +1404,16 @@ begin
   end;
   fTokenID := tkString;
   if not((fRange in [rsAsmBlockString,rsAsmString,rsDirectiveString,rsString])
-         and (Run = 0) and (FLine[Run] = #34 ))
+         and (Run = 0) and (LinePtr[Run] = #34 ))
   then
     repeat
-      if fLine[Run] = '\' then begin
-        if fLine[Run + 1] in [#34, '\'] then                                      //ek 2000-04-26
+      if LinePtr[Run] = '\' then begin
+        if LinePtr[Run + 1] in [#34, '\'] then                                      //ek 2000-04-26
           Inc(Run);
       end;
       inc(Run);
-    until fLine[Run] in [#0, #10, #13, #34];
-  if FLine[Run] = #34 then begin
+    until LinePtr[Run] in [#0, #10, #13, #34];
+  if LinePtr[Run] = #34 then begin
     inc(Run);
     fRange := SynCppStringRangeToRange[fRange];
   end else begin
@@ -1436,7 +1432,7 @@ end;
 procedure TSynCppSyn.XOrSymbolProc;
 begin
   fTokenID := tkSymbol;
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
   	'=':                               {xor assign}
       begin
         inc(Run, 2);
@@ -1453,8 +1449,8 @@ end;
 procedure TSynCppSyn.UnknownProc;
 begin
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -1472,7 +1468,7 @@ begin
   else
     begin
       fRange := rsUnknown;
-      fProcTable[fLine[Run]];
+      fProcTable[LinePtr[Run]];
     end;
   end;
 end;
@@ -1508,14 +1504,14 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 procedure TSynCppSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynCppSyn.GetTokenID: TtkTokenKind;

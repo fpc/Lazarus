@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditStrConst, SynEditTypes,
-  SynEditHighlighter, LazEditTextAttributes;
+  SynEditHighlighter, SynEditTextBuffer, LazEditTextAttributes;
 
 const
   tkNone   = 0;
@@ -59,9 +59,7 @@ type
   TSynPositionHighlighter = class(TSynCustomHighlighter)
   private
     fCopiedAttributes: TList;
-    fLine: string;
     fLineLen: integer;
-    fLineNumber: Integer;
     fTokenEnd: LongInt; // end of current token
     fTextAttri: TSynHighlighterAttributes;
     fTokenPos: Integer;
@@ -90,8 +88,7 @@ type
     function GetTokenPos: Integer; override;
     procedure Next; override;
     procedure ResetRange; override;
-    procedure SetLine(const NewValue: string;
-      LineNumber:Integer); override;
+    procedure InitForScaningLine; override;
     procedure SetRange(Value: Pointer); override;
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
@@ -190,12 +187,12 @@ end;
 
 function TSynPositionHighlighter.GetRange: Pointer;
 begin
-  Result := Pointer(PtrInt(fLineNumber));
+  Result := Pointer(PtrInt(LineIndex));
 end;
 
 function TSynPositionHighlighter.GetToken: string;
 begin
-  SetString(Result, @fLine[fTokenPos], fTokenEnd - fTokenPos);
+  SetString(Result, @CurrentLineText[fTokenPos], fTokenEnd - fTokenPos);
 end;
 
 procedure TSynPositionHighlighter.GetTokenEx(out TokenStart: PChar;
@@ -203,7 +200,7 @@ procedure TSynPositionHighlighter.GetTokenEx(out TokenStart: PChar;
 begin
   TokenLength:=fTokenEnd-fTokenPos;
   if TokenLength>0 then begin
-    TokenStart:=@fLine[fTokenPos];
+    TokenStart:=@CurrentLineText[fTokenPos];
   end else begin
     TokenStart:=nil;
   end;
@@ -243,7 +240,7 @@ begin
     exit;
   end;
   inc(fTokenArrayPos);
-  p:=Tokens[fLineNumber];
+  p:=Tokens[LineIndex];
   if (p<>nil) and (p^.Count>fTokenArrayPos) then begin
     fTokenKind := p^.Tokens[fTokenArrayPos].Kind;
     fTokenEnd := p^.Tokens[fTokenArrayPos].Column+1;
@@ -262,18 +259,15 @@ begin
   //inherited ResetRange;
 end;
 
-procedure TSynPositionHighlighter.SetLine(const NewValue: string;
-  LineNumber: Integer);
+procedure TSynPositionHighlighter.InitForScaningLine;
 var
   p: PPositionTokens;
 begin
   inherited;
-  fLine := NewValue;
-  fLineLen := length(fLine);
-  fLineNumber := LineNumber;
+  fLineLen := length(CurrentLineText);
   fTokenArrayPos := 0;
   fTokenPos := 1;
-  p:=Tokens[fLineNumber];
+  p:=Tokens[LineIndex];
   if p<>nil then begin
     fTokenEnd := p^.Tokens[0].Column+1;
     if fTokenEnd>fLineLen+1 then
@@ -376,11 +370,18 @@ var
   sToken: PChar;
   Attr: TLazEditTextAttribute;
   TokenID: integer;
+  l: TSynEditStringList;
 begin
   if (Lines=nil) or (Lines.Count=0) or (Highlighter=nil) then exit;
   RelLine:=0;
+
+  l := TSynEditStringList.Create;
+  l.Assign(Lines);
+  Highlighter.AttachToLines(l);
+  Highlighter.CurrentLines := l;
+
   while RelLine<Lines.Count do begin
-    HighLighter.SetLine(Lines[RelLine], RelLine);
+    Highlighter.StartAtLineIndex(RelLine);
     while not Highlighter.GetEol do begin
       Attr:=Highlighter.GetTokenAttribute;
       TokenID:=GetCopiedTokenID(Attr);
@@ -395,6 +396,9 @@ begin
     inc(RelLine);
     Col:=1;
   end;
+
+  Highlighter.DetachFromLines(l);
+  l.Free;
 end;
 
 function TSynPositionHighlighter.CreateTokenID(const aName: string;

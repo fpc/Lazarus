@@ -79,8 +79,6 @@ type
   private
     fEcho: Boolean;
     fIgnoreComment: Boolean;
-    fLine: PChar;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fStringLen: Integer;
@@ -142,7 +140,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -412,14 +410,12 @@ begin
   fDefaultFilter := SYNS_FilterBatch;
 end;
 
-procedure TSynBatSyn.SetLine(const NewValue: String; LineNumber: Integer);
+procedure TSynBatSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
   fEcho := False;
   fIgnoreComment := False;
-  fLineNumber := LineNumber;
   Next;
 end;
 
@@ -428,8 +424,8 @@ begin
   fTokenID := tkVariable;
   repeat
     Inc(Run);
-  until not (fLine[Run] in ['A'..'Z', 'a'..'z', '0'..'9', '_']);
-  if fLine[Run] = '%' then
+  until not (LinePtr[Run] in ['A'..'Z', 'a'..'z', '0'..'9', '_']);
+  if LinePtr[Run] = '%' then
     Inc(Run);
 end;
 
@@ -437,26 +433,26 @@ procedure TSynBatSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
-  if (fLine[Run] = #10) then Inc(Run);
+  if (LinePtr[Run] = #10) then Inc(Run);
 end;
 
 procedure TSynBatSyn.CommentProc;
 begin
   fTokenID := tkIdentifier;
   Inc(Run);
-  if fLine[Run] = ':' then begin
+  if LinePtr[Run] = ':' then begin
     fTokenID := tkComment;
     repeat
       Inc(Run);
-    until (fLine[Run] in [#0, #10, #13]);
+    until (LinePtr[Run] in [#0, #10, #13]);
   end;
 end;
 
 procedure TSynBatSyn.IdentProc;
 begin
-  fTokenID := IdentKind((fLine + Run));
+  fTokenID := IdentKind((LinePtr + Run));
   Inc(Run, fStringLen);
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
 end;
 
 procedure TSynBatSyn.LFProc;
@@ -475,18 +471,18 @@ begin
   fTokenID := tkNumber;
   repeat
     Inc(Run);
-  until not (fLine[Run] in ['0'..'9', '.']);
+  until not (LinePtr[Run] in ['0'..'9', '.']);
 end;
 
 procedure TSynBatSyn.REMCommentProc;
 begin
-  if not fIgnoreComment and (FLine[Run+1] in ['E','e']) and (FLine[Run+2] in ['M','m'])
-    and (FLine[Run+3] < #33) then                                               //Fiala
+  if not fIgnoreComment and (LinePtr[Run+1] in ['E','e']) and (LinePtr[Run+2] in ['M','m'])
+    and (LinePtr[Run+3] < #33) then                                               //Fiala
   begin
     fTokenID := tkComment;
     Inc(Run, 3);
-    while (FLine[Run] <> #0) do begin
-      case FLine[Run] of
+    while (LinePtr[Run] <> #0) do begin
+      case LinePtr[Run] of
         #10, #13: break;
       end; { case }
       Inc(Run);
@@ -516,19 +512,19 @@ begin
   fTokenID := tkSpace;
   repeat
     Inc(Run);
-  until (fLine[Run] > #32) or (fLine[Run] in [#0, #10, #13]);
+  until (LinePtr[Run] > #32) or (LinePtr[Run] in [#0, #10, #13]);
 end;
 
 procedure TSynBatSyn.UnknownProc;
 begin
 {$IFDEF SYN_MBCSSUPPORT}
-  if FLine[Run] in LeadBytes then
+  if LinePtr[Run] in LeadBytes then
     Inc(Run,2)
   else
 {$ENDIF}
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnknown;
   //inc(Run);
   //fTokenID := tkUnknown;
@@ -537,7 +533,7 @@ end;
 procedure TSynBatSyn.Next;
 begin
   fTokenPos := Run;
-  fProcTable[fLine[Run]];
+  fProcTable[LinePtr[Run]];
   if FTokenID <> tkSpace then fIgnoreComment := True;
 end;
 
@@ -565,13 +561,13 @@ var
   Len: LongInt;
 begin
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 procedure TSynBatSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength := Run - fTokenPos;
-  TokenStart := FLine + fTokenPos;
+  TokenStart := LinePtr + fTokenPos;
 end;
 
 function TSynBatSyn.GetTokenAttribute: TLazEditTextAttribute;

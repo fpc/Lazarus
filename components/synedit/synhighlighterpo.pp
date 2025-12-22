@@ -56,8 +56,6 @@ type
     attribSpace
     );
   private
-    fLine: PChar;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fTokenPos: Integer;
@@ -94,7 +92,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String; LineNumber:Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -179,19 +177,17 @@ begin
   MakeMethodTables;
 end; { Create }
 
-procedure TSynPoSyn.SetLine(const NewValue: String; LineNumber:Integer);
+procedure TSynPoSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
 end;
 
 
 procedure TSynPoSyn.IdentProc;
 begin
-  while fLine[Run] in GetIdentChars {['A'..'Z','a'..'z']} do inc(Run);
+  while LinePtr[Run] in GetIdentChars {['A'..'Z','a'..'z']} do inc(Run);
   if IsKeyWord(GetToken) then begin
     fTokenId := tkKey;
     Exit;
@@ -202,7 +198,7 @@ end;
 procedure TSynPoSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     #10: inc(Run, 2);
   else inc(Run);
   end;
@@ -223,8 +219,8 @@ procedure TSynPoSyn.KeyProc;
 begin
   fTokenID := tkKey;
   inc(Run);
-  while FLine[Run] <> #0 do
-    case FLine[Run] of
+  while LinePtr[Run] <> #0 do
+    case LinePtr[Run] of
       #32: break;
       #10: break;
       #13: break;
@@ -238,8 +234,8 @@ begin
     IdentProc
   else begin
     inc(Run);
-    while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-     ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @TextProc)) do inc(Run);
+    while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+     ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @TextProc)) do inc(Run);
     fTokenID := tkText;
   end;
 end;
@@ -261,7 +257,7 @@ procedure TSynPoSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
 
@@ -272,17 +268,17 @@ begin
   FirstQuotePos := Run;
   LastQuotePos := FirstQuotePos;
   fTokenID := tkString;
-  while FLine[Run] <> #0 do
+  while LinePtr[Run] <> #0 do
   begin
-    case FLine[Run] of
+    case LinePtr[Run] of
       #10, #13: break;
-      #34: if (Run <= 0) or (FLine[Run - 1] <> '\') then LastQuotePos := Run;
+      #34: if (Run <= 0) or (LinePtr[Run - 1] <> '\') then LastQuotePos := Run;
     end;
     inc(Run);
   end;
   if FirstQuotePos <> LastQuotePos then
     Run := LastQuotePos;
-  if FLine[Run] <> #0 then
+  if LinePtr[Run] <> #0 then
     inc(Run);
 end;
 
@@ -300,8 +296,8 @@ begin
   // this is column 0 --> ok
   fTokenID := tkComment;
 
-  while FLine[Run] <> #0 do
-    case FLine[Run] of
+  while LinePtr[Run] <> #0 do
+    case LinePtr[Run] of
       #10: break;
       #13: break;
       ':': begin if (Run = 1) then fTokenId := tkIdentifier; Inc(Run) end;
@@ -314,7 +310,7 @@ end;
 procedure TSynPoSyn.Next;
 begin
   fTokenPos := Run;
-  fProcTable[fLine[Run]];
+  fProcTable[LinePtr[Run]];
 end;
 
 function TSynPoSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -339,13 +335,13 @@ var
   Len: LongInt;
 begin
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 procedure TSynPoSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength := Run - fTokenPos;
-  TokenStart := FLine + fTokenPos;
+  TokenStart := LinePtr + fTokenPos;
 end;
 
 function TSynPoSyn.GetTokenID: TtkTokenKind;

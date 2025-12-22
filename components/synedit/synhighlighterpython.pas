@@ -94,8 +94,6 @@ type
   private
     fStringStarter: char;  // used only for rsMultilineString3 stuff
     fRange: TRangeState;
-    fLine: PChar;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     fToIdent: PChar;
     fTokenPos: Integer;
@@ -156,8 +154,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: string;
-                      LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     function GetKeywordIdentifiers: TStringList; virtual;
     function GetToken: string; override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -461,21 +458,18 @@ begin
   inherited;
 end;
 
-procedure TSynPythonSyn.SetLine(const NewValue: string;
-  LineNumber: Integer);
+procedure TSynPythonSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
-end; { SetLine }
+end;
 
 procedure TSynPythonSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 procedure TSynPythonSyn.SymbolProc;
@@ -507,7 +501,7 @@ end;
 procedure TSynPythonSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     #10: inc(Run, 2);
   else
     inc(Run);
@@ -518,13 +512,13 @@ procedure TSynPythonSyn.CommentProc;
 begin
   fTokenID := tkComment;
   inc(Run);
-  while not (FLine[Run] in [#13, #10, #0]) do
+  while not (LinePtr[Run] in [#13, #10, #0]) do
     inc(Run);
 end;
 
 procedure TSynPythonSyn.GreaterProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=': begin
         inc(Run, 2);
         fTokenID := tkSymbol;
@@ -538,7 +532,7 @@ end;
 
 procedure TSynPythonSyn.IdentProc;
 begin
-  fTokenID := IdentKind((fLine + Run));
+  fTokenID := IdentKind((LinePtr + Run));
   inc(Run, fStringLen);
 end;
 
@@ -550,7 +544,7 @@ end;
 
 procedure TSynPythonSyn.LowerProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=': begin
         inc(Run, 2);
         fTokenID := tkSymbol;
@@ -605,7 +599,7 @@ var
       // Look for dot (.)
       DOT: begin
         // .45
-        if FLine[Run] in INTCHARS then begin
+        if LinePtr[Run] in INTCHARS then begin
           Inc (Run);
           fTokenID := tkFloat;
           State := nsDotFound;
@@ -613,7 +607,7 @@ var
         // Non-number dot
         end else begin
           // Ellipsis
-          if (FLine[Run] = DOT) and (FLine[Run+1] = DOT) then
+          if (LinePtr[Run] = DOT) and (LinePtr[Run+1] = DOT) then
             Inc (Run, 2);
           fTokenID := tkSymbol;
           Result := False;
@@ -623,7 +617,7 @@ var
 
       // Look for zero (0)
       ZERO: begin
-        temp := FLine[Run];
+        temp := LinePtr[Run];
         // 0x123ABC
         if temp in HEXINDICATOR then begin
           Inc (Run);
@@ -657,7 +651,7 @@ var
     Result := False;
     fTokenID := tkUnknown;
     // Ignore all tokens till end of "number"
-    while FLine[Run] in (IDENTIFIER_CHARS + ['.']) do
+    while LinePtr[Run] in (IDENTIFIER_CHARS + ['.']) do
       Inc (Run);
   end; // HandleBadNumber
 
@@ -666,10 +660,10 @@ var
     State := nsExpFound;
     fTokenID := tkFloat;
     // Skip e[+/-]
-    if FLine[Run+1] in EXPONENTSIGN then
+    if LinePtr[Run+1] in EXPONENTSIGN then
       Inc (Run);
     // Invalid token : 1.0e
-    if not (FLine[Run+1] in INTCHARS) then begin
+    if not (LinePtr[Run+1] in INTCHARS) then begin
       Inc (Run);
       Result := HandleBadNumber;
       Exit;
@@ -681,7 +675,7 @@ var
   function HandleDot: Boolean;
   begin
     // Check for ellipsis
-    Result := (FLine[Run+1] <> DOT) or (FLine[Run+2] <> DOT);
+    Result := (LinePtr[Run+1] <> DOT) or (LinePtr[Run+2] <> DOT);
     if Result then begin
       State := nsDotFound;
       fTokenID := tkFloat;
@@ -843,7 +837,7 @@ begin
   State := nsStart;
   fTokenID := tkNumber;
 
-  temp := FLine[Run];
+  temp := LinePtr[Run];
   Inc (Run);
 
   // Special cases
@@ -852,7 +846,7 @@ begin
 
   // Use a state machine to parse numbers
   while True do begin
-    temp := FLine[Run];
+    temp := LinePtr[Run];
 
     case State of
       nsStart:
@@ -874,10 +868,10 @@ begin
 
 {
 begin
-  while FLine[Run] in ['0'..'9', '.', 'e', 'E'] do begin
-    case FLine[Run] of
+  while LinePtr[Run] in ['0'..'9', '.', 'e', 'E'] do begin
+    case LinePtr[Run] of
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if LinePtr[Run + 1] = '.' then break;
     end;
     inc(Run);
   end;
@@ -888,7 +882,7 @@ procedure TSynPythonSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do
     inc(Run);
 end;
 
@@ -896,24 +890,24 @@ procedure TSynPythonSyn.String2Proc;
 var fBackslashCount:integer;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = '"') and (FLine[Run + 2] = '"') then begin
+  if (LinePtr[Run + 1] = '"') and (LinePtr[Run + 2] = '"') then begin
     fTokenID := tkTripleQuotedString;
     inc(Run, 3);
 
     fRange:=rsMultilineString2;
-    while fLine[Run] <> #0 do begin
-      case fLine[Run] of
+    while LinePtr[Run] <> #0 do begin
+      case LinePtr[Run] of
 
         '\':begin
                { If we're looking at a backslash, and the following character is an
                end quote, and it's preceeded by an odd number of backslashes, then
                it shouldn't mark the end of the string.  If it's preceeded by an
                even number, then it should. !!!THIS RULE DOESNT APPLY IN RAW STRINGS}
-               if FLine[Run + 1] = '"' then
+               if LinePtr[Run + 1] = '"' then
                  begin
                    fBackslashCount := 1;
 
-                   while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
+                   while ((Run > fBackslashCount) and (LinePtr[Run - fBackslashCount] = '\')) do
                      fBackslashCount := fBackslashCount + 1;
 
                    if (fBackslashCount mod 2 = 1) then inc(Run)
@@ -922,7 +916,7 @@ begin
             end;// '\':
 
         '"':
-          if (fLine[Run + 1] = '"') and (fLine[Run + 2] = '"') then begin
+          if (LinePtr[Run + 1] = '"') and (LinePtr[Run + 2] = '"') then begin
             fRange := rsUnKnown;
             inc(Run, 3);
             EXIT;
@@ -937,9 +931,9 @@ begin
   end
       else //if short string
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13 : begin
-        if FLine[Run-1] = '\' then begin
+        if LinePtr[Run-1] = '\' then begin
           fStringStarter := '"';
           fRange := rsMultilineString3;
         end;
@@ -947,11 +941,11 @@ begin
         end;
       {The same backslash stuff above...}
       '\':begin
-             if FLine[Run + 1] = '"' then
+             if LinePtr[Run + 1] = '"' then
                begin
                  fBackslashCount := 1;
 
-                 while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
+                 while ((Run > fBackslashCount) and (LinePtr[Run - fBackslashCount] = '\')) do
                    fBackslashCount := fBackslashCount + 1;
 
                  if (fBackslashCount mod 2 = 1) then inc(Run)
@@ -961,8 +955,8 @@ begin
 
       else inc(Run);
     end; //case
-  until (FLine[Run] = '"');
-  if FLine[Run] <> #0 then inc(Run);
+  until (LinePtr[Run] = '"');
+  if LinePtr[Run] <> #0 then inc(Run);
 end;
 
 procedure TSynPythonSyn.PreStringProc;
@@ -972,7 +966,7 @@ var
 begin
   // Handle python raw strings
   // r""
-  temp := FLine[Run + 1];
+  temp := LinePtr[Run + 1];
   if temp = '''' then begin
     Inc (Run);
     StringProc;
@@ -989,7 +983,7 @@ procedure TSynPythonSyn.UnicodeStringProc;
 begin
   // Handle python raw and unicode strings
   // Valid syntax: u"", or ur""
-  if (FLine[Run + 1] in ['r', 'R']) and (FLine[Run + 2] in ['''', '"']) then
+  if (LinePtr[Run + 1] in ['r', 'R']) and (LinePtr[Run + 2] in ['''', '"']) then
     // for ur, Remove the "u" and...
     Inc (Run);
   // delegate to raw strings
@@ -1000,24 +994,24 @@ procedure TSynPythonSyn.StringProc;
 var fBackslashCount:integer;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then begin
+  if (LinePtr[Run + 1] = #39) and (LinePtr[Run + 2] = #39) then begin
     fTokenID := tkTripleQuotedString;
     inc(Run, 3);
 
     fRange:=rsMultilineString;
-    while fLine[Run] <> #0 do begin
-      case fLine[Run] of
+    while LinePtr[Run] <> #0 do begin
+      case LinePtr[Run] of
 
         '\': begin
              { If we're looking at a backslash, and the following character is an
              end quote, and it's preceeded by an odd number of backslashes, then
              it shouldn't mark the end of the string.  If it's preceeded by an
              even number, then it should. !!!THIS RULE DOESNT APPLY IN RAW STRINGS}
-              if FLine[Run + 1] = #39 then
+              if LinePtr[Run + 1] = #39 then
                 begin
                   fBackslashCount := 1;
 
-                  while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
+                  while ((Run > fBackslashCount) and (LinePtr[Run - fBackslashCount] = '\')) do
                     fBackslashCount := fBackslashCount + 1;
 
                   if (fBackslashCount mod 2 = 1) then inc(Run)
@@ -1026,7 +1020,7 @@ begin
             end;// '\':
 
         #39:
-          if (fLine[Run + 1] = #39) and (fLine[Run + 2] = #39) then begin
+          if (LinePtr[Run + 1] = #39) and (LinePtr[Run + 2] = #39) then begin
             fRange := rsUnKnown;
             inc(Run, 3);
             EXIT;
@@ -1041,9 +1035,9 @@ begin
   end
       else //if short string
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13 : begin
-        if FLine[Run-1] = '\' then begin
+        if LinePtr[Run-1] = '\' then begin
           fStringStarter := #39;
           fRange := rsMultilineString3;
         end;
@@ -1052,11 +1046,11 @@ begin
 
       {The same backslash stuff above...}
       '\':begin
-             if FLine[Run + 1] = #39 then
+             if LinePtr[Run + 1] = #39 then
                begin
                  fBackslashCount := 1;
 
-                 while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
+                 while ((Run > fBackslashCount) and (LinePtr[Run - fBackslashCount] = '\')) do
                    fBackslashCount := fBackslashCount + 1;
 
                  if (fBackslashCount mod 2 = 1) then inc(Run)
@@ -1066,8 +1060,8 @@ begin
 
       else inc(Run);
     end; //case
-  until (FLine[Run] = #39);
-  if FLine[Run] <> #0 then inc(Run);
+  until (LinePtr[Run] = #39);
+  if LinePtr[Run] <> #0 then inc(Run);
 end;
 
 procedure TSynPythonSyn.StringEndProc(EndChar:char);
@@ -1078,7 +1072,7 @@ begin
   else
     fTokenID := tkTripleQuotedString;
 
-  case FLine[Run] of
+  case LinePtr[Run] of
     #0:
       begin
         NullProc;
@@ -1098,57 +1092,57 @@ begin
 
   if fRange = rsMultilineString3 then begin
     repeat
-      if FLine[Run]=fStringStarter then begin
+      if LinePtr[Run]=fStringStarter then begin
         inc(Run);
         fRange:=rsUnknown;
         EXIT;
-      end else if FLine[Run]='\' then {The same backslash stuff above...}
+      end else if LinePtr[Run]='\' then {The same backslash stuff above...}
           begin
-             if FLine[Run + 1] = fStringStarter then
+             if LinePtr[Run + 1] = fStringStarter then
                begin
                  fBackslashCount := 1;
 
-                 while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
+                 while ((Run > fBackslashCount) and (LinePtr[Run - fBackslashCount] = '\')) do
                    fBackslashCount := fBackslashCount + 1;
 
                  if (fBackslashCount mod 2 = 1) then inc(Run);
              end;
-           end;// if FLine[Run]...
+           end;// if LinePtr[Run]...
 
       inc(Run);
-    until (FLine[Run] in [#0, #10, #13]);
-    if FLine[Run-1]<>'\' then begin
+    until (LinePtr[Run] in [#0, #10, #13]);
+    if LinePtr[Run-1]<>'\' then begin
       fRange:=rsUnknown;
       EXIT;
     end;
   end else
   repeat
-    if FLine[Run] = '\' then
+    if LinePtr[Run] = '\' then
     begin
-       if FLine[Run + 1] = EndChar then
+       if LinePtr[Run + 1] = EndChar then
          begin
            fBackslashCount := 1;
 
-           while ((Run > fBackslashCount) and (FLine[Run - fBackslashCount] = '\')) do
+           while ((Run > fBackslashCount) and (LinePtr[Run - fBackslashCount] = '\')) do
              fBackslashCount := fBackslashCount + 1;
 
            if (fBackslashCount mod 2 = 1) then inc(Run,2);
        end;
-     end;// if FLine[Run]...
-    if (FLine[Run]=EndChar) and (FLine[Run+1]=EndChar) and (FLine[Run+2]=EndChar) then begin
+     end;// if LinePtr[Run]...
+    if (LinePtr[Run]=EndChar) and (LinePtr[Run+1]=EndChar) and (LinePtr[Run+2]=EndChar) then begin
       inc(Run,3);
       fRange:=rsUnknown;
       EXIT;
     end;
     inc(Run);
-  until (FLine[Run] in [#0, #10, #13]);
+  until (LinePtr[Run] in [#0, #10, #13]);
 end;
 
 procedure TSynPythonSyn.UnknownProc;
 begin
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnknown;
 end;
 
@@ -1164,7 +1158,7 @@ begin
     rsMultilineString3:
       StringEndProc(fStringStarter);
     else
-      fProcTable[fLine[Run]];
+      fProcTable[LinePtr[Run]];
   end;
 end;
 
@@ -1197,7 +1191,7 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 function TSynPythonSyn.GetTokenID: TtkTokenKind;

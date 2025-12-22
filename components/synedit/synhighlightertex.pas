@@ -68,8 +68,6 @@ type
     attribBracket
     );
   private
-    fLine:                  PChar;
-    fLineNumber:            Integer;
     fProcTable:             array[#0..#255] of TProcTableProc;
     Run:                    LongInt;
     fTokenPos:              Integer;
@@ -112,8 +110,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String;
-                      LineNumber:Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
 
@@ -187,19 +184,17 @@ begin
   MakeMethodTables;
 end;  { Create }
 
-procedure TSynTeXSyn.SetLine(const NewValue: String; LineNumber:Integer);
+procedure TSynTeXSyn.InitForScaningLine;
 begin
   inherited;
-  fLine       := PChar(NewValue);
   Run         := 0;
-  fLineNumber := LineNumber;
   Next;
 end;  { SetLine }
 
 procedure TSynTeXSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     #10: inc(Run, 2);
   else inc(Run);
   end;
@@ -223,13 +218,13 @@ procedure TSynTeXSyn.SpaceProc;
 begin
   fTokenID:=tkSpace;
   inc(Run);
-   while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
+   while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;  { SpaceProc }
 
 procedure TSynTeXSyn.TextProc;
 begin
   fTokenID:=tkText;
-  inc(Run,UTF8CodepointSize(@fLine[Run]));
+  inc(Run,UTF8CodepointSize(@LinePtr[Run]));
 end;  { TextProc }
 
 procedure TSynTeXSyn.LFProc;
@@ -271,11 +266,11 @@ procedure TSynTeXSyn.CommentProc;
 begin
  fTokenID := tkComment;
  repeat
-    case fLine[Run] of
+    case LinePtr[Run] of
       #0, #10: Break;
     end;
     inc(Run);
-  until fLine[Run] = #13;
+  until LinePtr[Run] = #13;
   Exit;
 end;  { CommentProc }
 
@@ -289,26 +284,26 @@ procedure TSynTeXSyn.ControlSequenceProc;
 begin
  fTokenID:=tkControlSequence;
  repeat
-   case fLine[Run] of
+   case LinePtr[Run] of
      #0..#31                 : Break;  //No Control Chars !
      #48..#57                : Break;  //No Numbers !
      #33..#47, #58..#64,               //Just the Characters that
      #91, #93,#94, #123,              //only can follow to '\'
      #125, #126              : begin
-                                if (fLine[Run-1]='\') then
+                                if (LinePtr[Run-1]='\') then
                                 Inc(Run,1);
                                 Break;
                                end;
    end;
    Inc(Run);
- until fLine[Run] = #32;
+ until LinePtr[Run] = #32;
  exit;
 end;  { ControlSequenceProc }
 
 procedure TSynTeXSyn.Next;
 begin
   fTokenPos := Run;
-  fProcTable[fLine[Run]]();
+  fProcTable[LinePtr[Run]]();
 end;  { Next }
 
 function TSynTeXSyn.GetDefaultAttribute(Index: integer):
@@ -332,13 +327,13 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;  { GetToken }
 
 procedure TSynTeXSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynTeXSyn.GetTokenID: TtkTokenKind;

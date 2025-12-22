@@ -106,8 +106,6 @@ type
     );
   private
     fRange: TRangeState;
-    fLine: PChar;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fStringLen: Integer;
@@ -194,7 +192,7 @@ type
     function IsKeyword(const AKeyword: string): boolean; override;              // DJLP 2000-08-09
     procedure Next; override;
     procedure ResetRange; override;
-    procedure SetLine(const NewValue: string; LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     procedure SetRange(Value: Pointer); override;
   published
     property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
@@ -1529,12 +1527,10 @@ begin
     SQLDialect := TSynSQLSyn(Source).SQLDialect;
 end;
 
-procedure TSynSQLSyn.SetLine(const NewValue: string; LineNumber: Integer);
+procedure TSynSQLSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
 end;
 
@@ -1542,17 +1538,17 @@ procedure TSynSQLSyn.AndSymbolProc;
 begin
   fTokenID := tkSymbol;
   Inc(Run);
-  if fLine[Run] in ['=', '&'] then Inc(Run);
+  if LinePtr[Run] in ['=', '&'] then Inc(Run);
 end;
 
 procedure TSynSQLSyn.AsciiCharProc;
 begin
   // Oracle SQL allows strings to go over multiple lines
-  if fLine[Run] = #0 then
+  if LinePtr[Run] = #0 then
     NullProc
   else begin
     fTokenID := tkString;
-    if (fRange = rsString) and (fLine[Run] = #39) then begin
+    if (fRange = rsString) and (LinePtr[Run] = #39) then begin
       // End of a string after linebreak
       Inc(Run);
       fRange := rsUnknown;
@@ -1562,8 +1558,8 @@ begin
       fRange := rsString;
       repeat
         Inc(Run);
-      until fLine[Run] in [#0, #10, #13, #39];
-      if fLine[Run] = #39 then begin
+      until LinePtr[Run] in [#0, #10, #13, #39];
+      if LinePtr[Run] = #39 then begin
         Inc(Run);
         fRange := rsUnknown;
       end;
@@ -1571,11 +1567,11 @@ begin
     else begin
       fRange := rsString;
       repeat
-        if (fLine[Run] = '\') and (fLine[Run+1] in [#39, '\']) then
+        if (LinePtr[Run] = '\') and (LinePtr[Run+1] in [#39, '\']) then
           Inc(Run);
         Inc(Run);
-      until fLine[Run] in [#0, #10, #13, #39];
-      if fLine[Run] = #39 then begin
+      until LinePtr[Run] in [#0, #10, #13, #39];
+      if LinePtr[Run] = #39 then begin
         Inc(Run);
         fRange := rsUnknown;
       end;
@@ -1587,34 +1583,34 @@ procedure TSynSQLSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
-  if fLine[Run] = #10 then Inc(Run);
+  if LinePtr[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynSQLSyn.EqualProc;
 begin
   fTokenID := tkSymbol;
   Inc(Run);
-  if fLine[Run] in ['=', '>'] then Inc(Run);
+  if LinePtr[Run] in ['=', '>'] then Inc(Run);
 end;
 
 procedure TSynSQLSyn.GreaterProc;
 begin
   fTokenID := tkSymbol;
   Inc(Run);
-  if fLine[Run] in ['=', '>'] then Inc(Run);
+  if LinePtr[Run] in ['=', '>'] then Inc(Run);
 end;
 
 procedure TSynSQLSyn.IdentProc;
 begin
-  fTokenID := IdentKind((fLine + Run));
+  fTokenID := IdentKind((LinePtr + Run));
   inc(Run, fStringLen);
 {begin}                                                                         // DJLP 2000-08-11
   if fTokenID = tkComment then begin
-    while not (fLine[Run] in [#0, #10, #13]) do
+    while not (LinePtr[Run] in [#0, #10, #13]) do
       Inc(Run);
   end else
 {end}                                                                           // DJLP 2000-08-11
-    while fIdentifiersPtr^[fLine[Run]] do inc(Run);
+    while fIdentifiersPtr^[LinePtr[Run]] do inc(Run);
 end;
 
 procedure TSynSQLSyn.LFProc;
@@ -1627,11 +1623,11 @@ procedure TSynSQLSyn.LowerProc;
 begin
   fTokenID := tkSymbol;
   Inc(Run);
-  case fLine[Run] of
+  case LinePtr[Run] of
     '=': Inc(Run);
     '<': begin
            Inc(Run);
-           if fLine[Run] = '=' then Inc(Run);
+           if LinePtr[Run] = '=' then Inc(Run);
          end;
   end;
 end;
@@ -1639,11 +1635,11 @@ end;
 procedure TSynSQLSyn.MinusProc;
 begin
   Inc(Run);
-  if fLine[Run] = '-' then begin
+  if LinePtr[Run] = '-' then begin
     fTokenID := tkComment;
     repeat
       Inc(Run);
-    until fLine[Run] in [#0, #10, #13];
+    until LinePtr[Run] in [#0, #10, #13];
   end else
     fTokenID := tkSymbol;
 end;
@@ -1657,15 +1653,15 @@ procedure TSynSQLSyn.NumberProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9'] do inc(Run);
-  if (FLine[Run]='.') and not(fLine[Run+1]='.')  then begin
+  while LinePtr[Run] in ['0'..'9'] do inc(Run);
+  if (LinePtr[Run]='.') and not(LinePtr[Run+1]='.')  then begin
     inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
-  if (FLine[Run]='e') or (fLine[Run]='E')  then begin
+  if (LinePtr[Run]='e') or (LinePtr[Run]='E')  then begin
     inc(Run);
-    if (FLine[Run]='+') or (fLine[Run]='-')  then inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    if (LinePtr[Run]='+') or (LinePtr[Run]='-')  then inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
 end;
 
@@ -1673,14 +1669,14 @@ procedure TSynSQLSyn.OrSymbolProc;
 begin
   fTokenID := tkSymbol;
   Inc(Run);
-  if fLine[Run] in ['=', '|'] then Inc(Run);
+  if LinePtr[Run] in ['=', '|'] then Inc(Run);
 end;
 
 procedure TSynSQLSyn.PlusProc;
 begin
   fTokenID := tkSymbol;
   Inc(Run);
-  if fLine[Run] in ['=', '+'] then Inc(Run);
+  if LinePtr[Run] in ['=', '+'] then Inc(Run);
 end;
 
 procedure TSynSQLSyn.SetAttributeEx(AnIndex: TSynPasAttribute; AValue: TLazEditTextAttribute);
@@ -1720,19 +1716,19 @@ end;
 procedure TSynSQLSyn.SlashProc;
 begin
   Inc(Run);
-  case fLine[Run] of
+  case LinePtr[Run] of
     '*':
       begin
         fRange := rsComment;
         fTokenID := tkComment;
         repeat
           Inc(Run);
-          if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then begin
+          if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = '/') then begin
             fRange := rsUnknown;
             Inc(Run, 2);
             break;
           end;
-        until fLine[Run] in [#0, #10, #13];
+        until LinePtr[Run] in [#0, #10, #13];
       end;
     '=':
       begin
@@ -1749,18 +1745,18 @@ begin
   fTokenID := tkSpace;
   repeat
     Inc(Run);
-  until (fLine[Run] > #32) or (fLine[Run] in [#0, #10, #13]);
+  until (LinePtr[Run] > #32) or (LinePtr[Run] in [#0, #10, #13]);
 end;
 
 procedure TSynSQLSyn.StringProc;
 begin
   fTokenID := tkString;
   Inc(Run);
-  while not (fLine[Run] in [#0, #10, #13]) do begin
-    case fLine[Run] of
-      '\': if fLine[Run + 1] in [#34, '\'] then
+  while not (LinePtr[Run] in [#0, #10, #13]) do begin
+    case LinePtr[Run] of
+      '\': if LinePtr[Run + 1] in [#34, '\'] then
              Inc(Run);
-      #34: if fLine[Run + 1] <> #34 then
+      #34: if LinePtr[Run + 1] <> #34 then
            begin
              Inc(Run);
              break;
@@ -1780,7 +1776,7 @@ procedure TSynSQLSyn.SymbolAssignProc;
 begin
   fTokenID := tkSymbol;
   Inc(Run);
-  if fLine[Run] = '=' then Inc(Run);
+  if LinePtr[Run] = '=' then Inc(Run);
 end;
 
 procedure TSynSQLSyn.VariableProc;
@@ -1788,18 +1784,18 @@ var
   i: integer;
 begin
   // MS SQL uses @@ to indicate system functions/variables
-  if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL2022]) and (fLine[Run] = '@') and (fLine[Run + 1] = '@')
+  if (fDialect in [sqlMSSQL7, sqlMSSQL2K, sqlMSSQL2022]) and (LinePtr[Run] = '@') and (LinePtr[Run + 1] = '@')
   then
     IdentProc
 {begin}                                                                         //JDR 2000-25-2000
-  else if (SQLDialect in [sqlMySql, sqlOracle]) and (fLine[Run] = '@') then
+  else if (SQLDialect in [sqlMySql, sqlOracle]) and (LinePtr[Run] = '@') then
     SymbolProc
 {end}                                                                           //JDR 2000-25-2000
   // Oracle uses the ':' character to indicate bind variables
 {begin}                                                                         //JJV 2000-11-16
   // Ingres II also uses the ':' character to indicate variables
   else
-    if not (SQLDialect in [sqlOracle, sqlIngres]) and (fLine[Run] = ':') then
+    if not (SQLDialect in [sqlOracle, sqlIngres]) and (LinePtr[Run] = ':') then
 {end}                                                                           //JJV 2000-11-16
     SymbolProc
   else begin
@@ -1807,54 +1803,54 @@ begin
     i := Run;
     repeat
       Inc(i);
-    until not (fIdentifiersPtr^[fLine[i]]);
+    until not (fIdentifiersPtr^[LinePtr[i]]);
     Run := i;
   end;
 end;
 
 procedure TSynSQLSyn.UnknownProc;
 begin
-  if (SQLDialect = sqlMySql) and (fLine[Run] = '#') and (Run = 0) then          //DDH Changes from Tonci Grgin for MYSQL
+  if (SQLDialect = sqlMySql) and (LinePtr[Run] = '#') and (Run = 0) then          //DDH Changes from Tonci Grgin for MYSQL
   begin
     fTokenID := tkComment;
     fRange := rsComment;
   end else begin
     {$IFDEF SYN_MBCSSUPPORT}
-    if FLine[Run] in LeadBytes then
+    if LinePtr[Run] in LeadBytes then
       Inc(Run,2)
     else
     {$ENDIF}
     inc(Run);
-    while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-     ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+    while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+     ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
     fTokenID := tkUnknown;
   end;
 end;
 
 procedure TSynSQLSyn.AnsiCProc;
 begin
-  case fLine[Run] of
+  case LinePtr[Run] of
      #0: NullProc;
     #10: LFProc;
     #13: CRProc;
     else begin
       fTokenID := tkComment;
-      if (SQLDialect = sqlMySql) and (fLine[Run] = '#') then begin              //DDH Changes from Tonci Grgin for MYSQL
+      if (SQLDialect = sqlMySql) and (LinePtr[Run] = '#') then begin              //DDH Changes from Tonci Grgin for MYSQL
         repeat
           Inc(Run);
-        until fLine[Run] in [#0, #10, #13];
+        until LinePtr[Run] in [#0, #10, #13];
         fRange := rsUnknown;
       end
       else begin
 
         repeat
-          if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then begin
+          if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = '/') then begin
             fRange := rsUnknown;
             Inc(Run, 2);
             break;
           end;
           Inc(Run);
-        until fLine[Run] in [#0, #10, #13];
+        until LinePtr[Run] in [#0, #10, #13];
       end;
     end;
   end;
@@ -1880,7 +1876,7 @@ begin
     rsString:
       AsciiCharProc;
   else
-    fProcTable[fLine[Run]]();
+    fProcTable[LinePtr[Run]]();
   end;
 end;
 
@@ -1917,13 +1913,13 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  Setstring(Result, (FLine + fTokenPos), Len);
+  Setstring(Result, (LinePtr + fTokenPos), Len);
 end;
 
 procedure TSynSQLSyn.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynSQLSyn.GetTokenID: TtkTokenKind;

@@ -77,7 +77,7 @@ type
     procedure EndXmlCodeFoldBlock;
     procedure EndXmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
   public
-    procedure SetLine(const NewValue: string; LineNumber:Integer); override;
+    procedure InitForScaningLine; override;
   end;
 
 implementation
@@ -105,8 +105,7 @@ begin
   end;
 end;
 
-procedure TSynCustomXmlHighlighter.SetLine(const NewValue: string;
-  LineNumber:Integer);
+procedure TSynCustomXmlHighlighter.InitForScaningLine;
 begin
   inherited;
   FXmlRangeInfo := TSynHighlighterXmlRangeList(CurrentRanges).XmlRangeInfo[LineIndex]; // From this line, not from the previous line

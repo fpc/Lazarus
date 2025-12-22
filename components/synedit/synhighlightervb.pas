@@ -79,8 +79,6 @@ type
     attribSymbol
     );
   private
-    fLine: PChar;
-    fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fStringLen: Integer;
@@ -215,7 +213,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -1057,12 +1055,10 @@ begin
   fDefaultFilter := fDefaultFilterInitialValue;
 end;
 
-procedure TSynVBSyn.SetLine(const NewValue: String; LineNumber: Integer);
+procedure TSynVBSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
 end;
 
@@ -1077,40 +1073,40 @@ begin
   fTokenID := tkComment;
   repeat
     Inc(Run);
-  until fLine[Run] in [#0, #10, #13];
+  until LinePtr[Run] in [#0, #10, #13];
 end;
 
 procedure TSynVBSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
-  if fLine[Run] = #10 then Inc(Run);
+  if LinePtr[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynVBSyn.DateProc;
 begin
   fTokenID := tkString;
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13: break;
     end;
     inc(Run);
-  until FLine[Run] = '#';
-  if FLine[Run] <> #0 then inc(Run);
+  until LinePtr[Run] = '#';
+  if LinePtr[Run] <> #0 then inc(Run);
 end;
 
 procedure TSynVBSyn.GreaterProc;
 begin
   fTokenID := tkSymbol;
   Inc(Run);
-  if fLine[Run] = '=' then Inc(Run);
+  if LinePtr[Run] = '=' then Inc(Run);
 end;
 
 procedure TSynVBSyn.IdentProc;
 begin
-  fTokenID := IdentKind((fLine + Run));
+  fTokenID := IdentKind((LinePtr + Run));
   inc(Run, fStringLen);
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
 end;
 
 procedure TSynVBSyn.LFProc;
@@ -1123,7 +1119,7 @@ procedure TSynVBSyn.LowerProc;
 begin
   fTokenID := tkSymbol;
   Inc(Run);
-  if fLine[Run] in ['=', '>'] then Inc(Run);
+  if LinePtr[Run] in ['=', '>'] then Inc(Run);
 end;
 
 procedure TSynVBSyn.NullProc;
@@ -1135,15 +1131,15 @@ procedure TSynVBSyn.NumberProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9'] do inc(Run);
-  if (FLine[Run]='.') and not(fLine[Run+1]='.')  then begin
+  while LinePtr[Run] in ['0'..'9'] do inc(Run);
+  if (LinePtr[Run]='.') and not(LinePtr[Run+1]='.')  then begin
     inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
-  if (FLine[Run]='e') or (fLine[Run]='E')  then begin
+  if (LinePtr[Run]='e') or (LinePtr[Run]='E')  then begin
     inc(Run);
-    if (FLine[Run]='+') or (fLine[Run]='-')  then inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    if (LinePtr[Run]='+') or (LinePtr[Run]='-')  then inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
 end;
 
@@ -1151,39 +1147,39 @@ procedure TSynVBSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
 procedure TSynVBSyn.StringProc;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then inc(Run, 2);
+  if (LinePtr[Run + 1] = #34) and (LinePtr[Run + 2] = #34) then inc(Run, 2);
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13: break;
     end;
     inc(Run);
-  until FLine[Run] = #34;
-  if FLine[Run] <> #0 then inc(Run);
+  until LinePtr[Run] = #34;
+  if LinePtr[Run] <> #0 then inc(Run);
 end;
 
 procedure TSynVBSyn.UnknownProc;
 begin
 {$IFDEF SYN_MBCSSUPPORT}
-  if FLine[Run] in LeadBytes then
+  if LinePtr[Run] in LeadBytes then
     Inc(Run, 2)
   else
 {$ENDIF}
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnknown;
 end;
 
 procedure TSynVBSyn.Next;
 begin
   fTokenPos := Run;
-  fProcTable[fLine[Run]]();
+  fProcTable[LinePtr[Run]]();
 end;
 
 function TSynVBSyn.GetDefaultAttribute(Index: integer):
@@ -1213,14 +1209,14 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 procedure TSynVBSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynVBSyn.GetTokenID: TtkTokenKind;

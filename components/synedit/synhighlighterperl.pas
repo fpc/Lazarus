@@ -81,7 +81,6 @@ type
     attribVariable
     );
   private
-    fLine: PChar;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fStringLen: Integer;
@@ -89,7 +88,6 @@ type
     fTokenPos: Integer;
     FTokenID: TtkTokenKind;
     fIdentFuncTable: array[0..2167] of TIdentFuncTableFunc;
-    fLineNumber: Integer;
     fCommentAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fInvalidAttri: TSynHighlighterAttributes;
@@ -379,8 +377,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: String;
-      LineNumber:Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -2029,19 +2026,16 @@ begin
   fDefaultFilter := SYNS_FilterPerl;
 end; { Create }
 
-procedure TSynPerlSyn.SetLine(const NewValue: String;
-  LineNumber:Integer);
+procedure TSynPerlSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
-end; { SetLine }
+end;
 
 procedure TSynPerlSyn.AndSymbolProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {bit and assign}
       begin
         inc(Run, 2);
@@ -2049,7 +2043,7 @@ begin
       end;
     '&':
       begin
-        if FLine[Run + 2] = '=' then   {logical and assign}
+        if LinePtr[Run + 2] = '=' then   {logical and assign}
           inc(Run, 3)
         else                           {logical and}
           inc(Run, 2);
@@ -2066,7 +2060,7 @@ end;
 procedure TSynPerlSyn.CRProc;
 begin
   fTokenID := tkSpace;
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     #10: inc(Run, 2);
   else inc(Run);
   end;
@@ -2074,7 +2068,7 @@ end;
 
 procedure TSynPerlSyn.ColonProc;
 begin
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     ':':                               {double colon}
       begin
         inc(Run, 2);
@@ -2092,16 +2086,16 @@ procedure TSynPerlSyn.CommentProc;
 begin
   fTokenID := tkComment;
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13: break;
     end;
     inc(Run);
-  until FLine[Run] = #0;
+  until LinePtr[Run] = #0;
 end;
 
 procedure TSynPerlSyn.EqualProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {logical equal}
       begin
         inc(Run, 2);
@@ -2127,7 +2121,7 @@ end;
 
 procedure TSynPerlSyn.GreaterProc;
 begin
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     '=':                               {greater than or equal to}
       begin
         inc(Run, 2);
@@ -2135,7 +2129,7 @@ begin
       end;
     '>':
       begin
-        if FLine[Run + 2] = '=' then   {shift right assign}
+        if LinePtr[Run + 2] = '=' then   {shift right assign}
           inc(Run, 3)
         else                           {shift right}
           inc(Run, 2);
@@ -2151,10 +2145,10 @@ end;
 
 procedure TSynPerlSyn.IdentProc;
 begin
-  Case FLine[Run] of
+  Case LinePtr[Run] of
     '$':
       begin
-        Case FLine[Run + 1] of
+        Case LinePtr[Run + 1] of
           '!'..'+', '-'..'@', '['..']', '_', '`', '|', '~':
             begin                      {predefined variables}
               inc(Run, 2);
@@ -2163,7 +2157,7 @@ begin
             end;
           '^':
             begin
-              Case FLine[Run + 2] of
+              Case LinePtr[Run + 2] of
                 'A', 'D', 'F', 'I', 'L', 'P', 'T', 'W', 'X':
                   begin                {predefined variables}
                     inc(Run, 3);
@@ -2182,7 +2176,7 @@ begin
       end;
     '%':
       begin
-        Case FLine[Run + 1] of
+        Case LinePtr[Run + 1] of
           '=':                         {mod assign}
             begin
               inc(Run, 2);
@@ -2199,7 +2193,7 @@ begin
       end;
     'x':
       begin
-        Case FLine[Run + 1] of
+        Case LinePtr[Run + 1] of
           '=':                         {repetition assign}
             begin
               inc(Run, 2);
@@ -2216,9 +2210,9 @@ begin
       end;
   end;
   {regular identifier}
-  fTokenID := IdentKind((fLine + Run));
+  fTokenID := IdentKind((LinePtr + Run));
   inc(Run, fStringLen);
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
 end;
 
 procedure TSynPerlSyn.LFProc;
@@ -2229,10 +2223,10 @@ end;
 
 procedure TSynPerlSyn.LowerProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':
       begin
-        if FLine[Run + 2] = '>' then   {compare - less than, equal, greater}
+        if LinePtr[Run + 2] = '>' then   {compare - less than, equal, greater}
           inc(Run, 3)
         else                           {less than or equal to}
           inc(Run, 2);
@@ -2240,7 +2234,7 @@ begin
       end;
     '<':
       begin
-        if FLine[Run + 2] = '=' then   {shift left assign}
+        if LinePtr[Run + 2] = '=' then   {shift left assign}
           inc(Run, 3)
         else                           {shift left}
           inc(Run, 2);
@@ -2256,7 +2250,7 @@ end;
 
 procedure TSynPerlSyn.MinusProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {subtract assign}
       begin
         inc(Run, 2);
@@ -2282,7 +2276,7 @@ end;
 
 procedure TSynPerlSyn.NotSymbolProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '~':                               {logical negated bind like =~}
       begin
         inc(Run, 2);
@@ -2308,13 +2302,13 @@ end;
 
 procedure TSynPerlSyn.NumberProc;
 begin
-  if FLine[Run] = '.' then
+  if LinePtr[Run] = '.' then
   begin
-    case FLine[Run + 1] of
+    case LinePtr[Run + 1] of
       '.':
         begin
           inc(Run, 2);
-          if FLine[Run] = '.' then     {sed range}
+          if LinePtr[Run] = '.' then     {sed range}
             inc(Run);
 
           fTokenID := tkSymbol;        {range}
@@ -2337,29 +2331,29 @@ begin
 
   fTokenID := tkNumber;
 
-  if (FLine[Run] = '0') and (FLine[Run+1] in ['x', 'X'])then
+  if (LinePtr[Run] = '0') and (LinePtr[Run+1] in ['x', 'X'])then
   begin
     inc(Run, 2);
-    while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
+    while LinePtr[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
     exit;
   end;
 
   inc(Run);
-  while FLine[Run] in ['0'..'9'] do inc(Run);
-  if (FLine[Run]='.') and not(fLine[Run+1]='.')  then begin
+  while LinePtr[Run] in ['0'..'9'] do inc(Run);
+  if (LinePtr[Run]='.') and not(LinePtr[Run+1]='.')  then begin
     inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
-  if (FLine[Run]='e') or (fLine[Run]='E')  then begin
+  if (LinePtr[Run]='e') or (LinePtr[Run]='E')  then begin
     inc(Run);
-    if (FLine[Run]='+') or (fLine[Run]='-')  then inc(Run);
-    while FLine[Run] in ['0'..'9'] do inc(Run);
+    if (LinePtr[Run]='+') or (LinePtr[Run]='-')  then inc(Run);
+    while LinePtr[Run] in ['0'..'9'] do inc(Run);
   end;
 end;
 
 procedure TSynPerlSyn.OrSymbolProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {bit or assign}
       begin
         inc(Run, 2);
@@ -2367,7 +2361,7 @@ begin
       end;
     '|':
       begin
-        if FLine[Run + 2] = '=' then   {logical or assign}
+        if LinePtr[Run + 2] = '=' then   {logical or assign}
           inc(Run, 3)
         else                           {logical or}
           inc(Run, 2);
@@ -2383,7 +2377,7 @@ end;
 
 procedure TSynPerlSyn.PlusProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {add assign}
       begin
         inc(Run, 2);
@@ -2421,7 +2415,7 @@ end;
 
 procedure TSynPerlSyn.SlashProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {division assign}
       begin
         inc(Run, 2);
@@ -2439,12 +2433,12 @@ procedure TSynPerlSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
 procedure TSynPerlSyn.StarProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '=':                               {multiply assign}
       begin
         inc(Run, 2);
@@ -2452,7 +2446,7 @@ begin
       end;
     '*':
       begin
-        if FLine[Run + 2] = '=' then   {exponentiation assign}
+        if LinePtr[Run + 2] = '=' then   {exponentiation assign}
           inc(Run, 3)
         else                           {exponentiation}
           inc(Run, 2);
@@ -2469,29 +2463,29 @@ end;
 procedure TSynPerlSyn.StringInterpProc;
 begin
   fTokenID := tkString;
-  if (FLine[Run + 1] = #34) and (FLine[Run + 2] = #34) then inc(Run, 2);
+  if (LinePtr[Run + 1] = #34) and (LinePtr[Run + 2] = #34) then inc(Run, 2);
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13: break;
       #92:
         { backslash quote not the ending one }
-        if FLine[Run + 1] = #34 then inc(Run);
+        if LinePtr[Run + 1] = #34 then inc(Run);
     end;
     inc(Run);
-  until FLine[Run] = #34;
-  if FLine[Run] <> #0 then inc(Run);
+  until LinePtr[Run] = #34;
+  if LinePtr[Run] <> #0 then inc(Run);
 end;
 
 procedure TSynPerlSyn.StringLiteralProc;
 begin
   fTokenID := tkString;
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13: break;
     end;
     inc(Run);
-  until FLine[Run] = #39;
-  if FLine[Run] <> #0 then inc(Run);
+  until LinePtr[Run] = #39;
+  if LinePtr[Run] <> #0 then inc(Run);
 end;
 
 procedure TSynPerlSyn.SymbolProc;
@@ -2502,7 +2496,7 @@ end;
 
 procedure TSynPerlSyn.XOrSymbolProc;
 begin
-  Case FLine[Run + 1] of
+  Case LinePtr[Run + 1] of
     '=':                               {xor assign}
       begin
         inc(Run, 2);
@@ -2519,20 +2513,20 @@ end;
 procedure TSynPerlSyn.UnknownProc;
 begin
 {$IFDEF SYN_MBCSSUPPORT}
-  if FLine[Run] in LeadBytes then
+  if LinePtr[Run] in LeadBytes then
     Inc(Run,2)
   else
 {$ENDIF}
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnknown;
 end;
 
 procedure TSynPerlSyn.Next;
 begin
   fTokenPos := Run;
-  fProcTable[fLine[Run]]();
+  fProcTable[LinePtr[Run]]();
 end;
 
 function TSynPerlSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -2562,14 +2556,14 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 procedure TSynPerlSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynPerlSyn.GetTokenID: TtkTokenKind;

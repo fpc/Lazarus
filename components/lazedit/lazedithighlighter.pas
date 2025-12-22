@@ -124,6 +124,7 @@ type
 
     FLineIndex: TLineIdx;
     FLineText: String;
+    FLinePtr: Pchar;
 
     FTokenAttributeMergeResult: TLazEditTextAttributeMergeResult;
     FTokenAttributeList: TLazCustomEditTextAttributeArray;
@@ -157,6 +158,7 @@ type
      * ------------------ *)
     procedure InitForScaningLine; virtual;
     property  CurrentLineText: string read FLineText;
+    property  LinePtr: Pchar read FLinePtr;
 
   protected
     (* ------------------ *
@@ -466,6 +468,7 @@ procedure TLazEditCustomHighlighter.StartAtLineIndex(ALineIdx: TLineIdx);
 begin
   FLineIndex := ALineIdx;
   FLineText := CurrentLines[ALineIdx];
+  FLinePtr := PChar(FLineText);
 
   DoStartAtLine;
   InitForScaningLine;
@@ -475,6 +478,7 @@ procedure TLazEditCustomHighlighter.ContinueNextLine;
 begin
   inc(FLineIndex);
   FLineText := CurrentLines[FLineIndex];
+  FLinePtr := PChar(FLineText);
 
   InitForScaningLine;
 end;

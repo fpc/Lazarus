@@ -211,7 +211,6 @@ type
     fSimpleTag: Boolean;
     fAndCode: Integer;
     fRange: TRangeState;
-    fLine: PChar;
     fLineLen: integer;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: Longint;
@@ -233,7 +232,6 @@ type
     fTextAttri: TSynHighlighterAttributes;
     fUndefKeyAttri: TSynHighlighterAttributes;
     fValueAttri: TSynHighlighterAttributes;
-    fLineNumber: Integer;
 
     function KeyHash(ToHash: PChar): Integer;
     function KeyComp(const aKey: string): Boolean;
@@ -441,7 +439,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure SetLine(const NewValue: string; LineNumber:Integer); override;
+    procedure InitForScaningLine; override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -2299,26 +2297,24 @@ begin
   fDefaultFilter := SYNS_FilterHTML;
 end;
 
-procedure TSynHTMLSyn.SetLine(const NewValue: string; LineNumber:Integer);
+procedure TSynHTMLSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
-  fLineLen := Length(NewValue);
+  fLineLen := Length(CurrentLineText);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
 end;
 
 procedure TSynHTMLSyn.ASPProc;
 begin
   fTokenID := tkASP;
-  if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]];
+  if (LinePtr[Run] In [#0, #10, #13]) then begin
+    fProcTable[LinePtr[Run]];
     Exit;
   end;
 
-  while not (fLine[Run] in [#0, #10, #13]) do begin
-    if (fLine[Run] = '>') and (fLine[Run - 1] = '%')
+  while not (LinePtr[Run] in [#0, #10, #13]) do begin
+    if (LinePtr[Run] = '>') and (LinePtr[Run - 1] = '%')
     then begin
       fRange := rsText;
       Inc(Run);
@@ -2333,13 +2329,13 @@ end;
 procedure TSynHTMLSyn.CDATAProc;
 begin
   fTokenID := tkCDATA;
-  if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]];
+  if (LinePtr[Run] In [#0, #10, #13]) then begin
+    fProcTable[LinePtr[Run]];
     Exit;
   end;
 
-  while not (fLine[Run] in [#0, #10, #13]) do begin
-    if (fLine[Run] = '>') and (fLine[Run - 1] = ']') and (fLine[Run - 2] = ']')
+  while not (LinePtr[Run] in [#0, #10, #13]) do begin
+    if (LinePtr[Run] = '>') and (LinePtr[Run - 1] = ']') and (LinePtr[Run - 2] = ']')
     then begin
       fRange := rsText;
       Inc(Run);
@@ -2354,13 +2350,13 @@ end;
 procedure TSynHTMLSyn.DOCTYPEProc;
 begin
   fTokenID := tkDOCTYPE;
-  if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]];
+  if (LinePtr[Run] In [#0, #10, #13]) then begin
+    fProcTable[LinePtr[Run]];
     Exit;
   end;
 
-  while not (fLine[Run] in [#0, #10, #13]) do begin
-    if (fLine[Run] = '>')
+  while not (LinePtr[Run] in [#0, #10, #13]) do begin
+    if (LinePtr[Run] = '>')
     then begin
       fRange := rsText;
       Inc(Run);
@@ -2401,7 +2397,7 @@ procedure TSynHTMLSyn.BraceCloseProc;
 begin
   fRange := rsText;
   fTokenId := tkSymbol;
-  if ((FMode = shmXHtml) or (not fSimpleTag)) and (Run > 0) and (fLine[Run - 1] = '/') then
+  if ((FMode = shmXHtml) or (not fSimpleTag)) and (Run > 0) and (LinePtr[Run - 1] = '/') then
     EndHtmlNodeCodeFoldBlock(Run + 1, '')
   else
     fSimpleTag := False;
@@ -2412,13 +2408,13 @@ procedure TSynHTMLSyn.CommentProc;
 begin
   fTokenID := tkComment;
 
-  if (fLine[Run] In [#0, #10, #13]) then begin
-    fProcTable[fLine[Run]];
+  if (LinePtr[Run] In [#0, #10, #13]) then begin
+    fProcTable[LinePtr[Run]];
     Exit;
   end;
 
-  while not (fLine[Run] in [#0, #10, #13]) do begin
-    if (fLine[Run] = '>') and (fLine[Run - 1] = '-') and (fLine[Run - 2] = '-')
+  while not (LinePtr[Run] in [#0, #10, #13]) do begin
+    if (LinePtr[Run] = '>') and (LinePtr[Run - 1] = '-') and (LinePtr[Run - 2] = '-')
     then begin
       fRange := rsText;
       Inc(Run);
@@ -2434,30 +2430,30 @@ procedure TSynHTMLSyn.BraceOpenProc;
 begin
   fSimpleTag := False;
   Inc(Run);
-  if (Run <= fLineLen-2) and (fLine[Run] = '!') and (fLine[Run + 1] = '-') and (fLine[Run + 2] = '-')
+  if (Run <= fLineLen-2) and (LinePtr[Run] = '!') and (LinePtr[Run + 1] = '-') and (LinePtr[Run + 2] = '-')
   then begin
     fRange := rsComment;
     fTokenID := tkComment;
     StartHtmlCodeFoldBlock(cfbtHtmlComment);
     Inc(Run, 3);
   end
-  else if (Run <= fLineLen-7) and (fLine[Run] = '!') and (fLine[Run + 1] = '[')
-  and (fLine[Run + 2] = 'C') and (fLine[Run + 3] = 'D') and (fLine[Run + 4] = 'A')
-  and (fLine[Run + 5] = 'T') and (fLine[Run + 6] = 'A') and (fLine[Run + 7] = '[') then begin
+  else if (Run <= fLineLen-7) and (LinePtr[Run] = '!') and (LinePtr[Run + 1] = '[')
+  and (LinePtr[Run + 2] = 'C') and (LinePtr[Run + 3] = 'D') and (LinePtr[Run + 4] = 'A')
+  and (LinePtr[Run + 5] = 'T') and (LinePtr[Run + 6] = 'A') and (LinePtr[Run + 7] = '[') then begin
     fRange := rsCDATA;
     fTokenID := tkCDATA;
     StartHtmlCodeFoldBlock(cfbtHtmlCDATA);
     Inc(Run);
   end
-  else if fLine[Run]= '%' then begin
+  else if LinePtr[Run]= '%' then begin
     fRange := rsASP;
     fTokenID := tkASP;
     StartHtmlCodeFoldBlock(cfbtHtmlAsp);
     Inc(Run);
   end
-  else if (Run <= fLineLen-7) and (fLine[Run] = '!') and (upcase(fLine[Run + 1]) = 'D')
-  and (upcase(fLine[Run + 2]) = 'O') and (upcase(fLine[Run + 3]) = 'C') and (upcase(fLine[Run + 4]) = 'T')
-  and (upcase(fLine[Run + 5]) = 'Y') and (upcase(fLine[Run + 6]) = 'P') and (upcase(fLine[Run + 7]) = 'E') then 
+  else if (Run <= fLineLen-7) and (LinePtr[Run] = '!') and (upcase(LinePtr[Run + 1]) = 'D')
+  and (upcase(LinePtr[Run + 2]) = 'O') and (upcase(LinePtr[Run + 3]) = 'C') and (upcase(LinePtr[Run + 4]) = 'T')
+  and (upcase(LinePtr[Run + 5]) = 'Y') and (upcase(LinePtr[Run + 6]) = 'P') and (upcase(LinePtr[Run + 7]) = 'E') then
   begin
     fRange := rsDOCTYPE;
     fTokenID := tkDOCTYPE;
@@ -2474,7 +2470,7 @@ procedure TSynHTMLSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
-  if fLine[Run] = #10 then Inc(Run);
+  if LinePtr[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynHTMLSyn.EqualProc;
@@ -2506,20 +2502,20 @@ begin
   rsKey:
     begin
       fRange := rsParam;
-      fTokenID := IdentKind((fLine + Run));
+      fTokenID := IdentKind((LinePtr + Run));
       R := Run;
       Inc(Run, fStringLen);
       if ((FMode = shmXHtml) or (not fSimpleTag)) then begin
-        if fLine[R] = '/' then begin
+        if LinePtr[R] = '/' then begin
           SetLength(s, Max(fStringLen - 1, 0));
           if fStringLen > 1 then
-            move((fLine + R + 1)^, s[1], fStringLen-1);
+            move((LinePtr + R + 1)^, s[1], fStringLen-1);
           EndHtmlNodeCodeFoldBlock(R+1, s);
         end
-        else if fLine[R] <> '!' then begin
+        else if LinePtr[R] <> '!' then begin
           SetLength(s, fStringLen);
           if fStringLen > 0 then
-            move((fLine + R)^, s[1], fStringLen);
+            move((LinePtr + R)^, s[1], fStringLen);
           StartHtmlNodeCodeFoldBlock(cfbtHtmlNode, R, s);
         end;
       end;
@@ -2530,13 +2526,13 @@ begin
       fTokenID := tkValue;
       repeat
         Inc(Run);
-      until (fLine[Run] In [#0..#32, '>']);
+      until (LinePtr[Run] In [#0..#32, '>']);
     end;
   else
     fTokenID := tkIdentifier;
     repeat
       Inc(Run);
-    until (fLine[Run] In [#0..#32, '=', '"', '>']);
+    until (LinePtr[Run] In [#0..#32, '=', '"', '>']);
   end;
 end;
 
@@ -2556,27 +2552,27 @@ const StopSet = [#0..#31, '<', '&'];
 var
   i: Integer;
 begin
-  if fLine[Run] in (StopSet - ['&']) then begin
-    fProcTable[fLine[Run]];
+  if LinePtr[Run] in (StopSet - ['&']) then begin
+    fProcTable[LinePtr[Run]];
     exit;
   end;
 
   fTokenID := tkText;
   While True do begin
-    while not (fLine[Run] in StopSet) do Inc(Run);
+    while not (LinePtr[Run] in StopSet) do Inc(Run);
 
-    if (fLine[Run] = '&') then begin
-      if (fLine[Run+1] = '#') then begin
-        if (fLine[Run+2] = 'x') then begin
+    if (LinePtr[Run] = '&') then begin
+      if (LinePtr[Run+1] = '#') then begin
+        if (LinePtr[Run+2] = 'x') then begin
           i := 3;
-          while fLine[Run+i] in ['0'..'9', 'a'..'f', 'A'..'F'] do inc(i);
+          while LinePtr[Run+i] in ['0'..'9', 'a'..'f', 'A'..'F'] do inc(i);
         end
         else begin
           i := 2;
-          while fLine[Run+i] in ['0'..'9'] do inc(i);
+          while LinePtr[Run+i] in ['0'..'9'] do inc(i);
         end;
-        if (fLine[Run+i] = ';') and
-           (fLine[Run+i-1] in ['0'..'9', 'a'..'f', 'A'..'F'])
+        if (LinePtr[Run+i] = ';') and
+           (LinePtr[Run+i-1] in ['0'..'9', 'a'..'f', 'A'..'F'])
         then begin
           fAndCode := -i-1;
           fRange := rsAmpersand;
@@ -2585,7 +2581,7 @@ begin
       end
       else begin
         For i:=Low(EscapeAmps) To High(EscapeAmps) do begin
-          if (StrLIComp((fLine + Run), PChar(EscapeAmps[i]), StrLen(EscapeAmps[i])) = 0) then begin
+          if (StrLIComp((LinePtr + Run), PChar(EscapeAmps[i]), StrLen(EscapeAmps[i])) = 0) then begin
             fAndCode := i;
             fRange := rsAmpersand;
             Exit;
@@ -2628,8 +2624,8 @@ procedure TSynHTMLSyn.SpaceProc;
 begin
   Inc(Run);
   fTokenID := tkSpace;
-  while fLine[Run] <= #32 do begin
-    if fLine[Run] in [#0, #9, #10, #13] then break;
+  while LinePtr[Run] <= #32 do begin
+    if LinePtr[Run] in [#0, #9, #10, #13] then break;
     Inc(Run);
   end;
 end;
@@ -2643,8 +2639,8 @@ begin
     fTokenID := tkString;
   end;
   Inc(Run);  // first '"'
-  while not (fLine[Run] in [#0, #10, #13, '"']) do Inc(Run);
-  if fLine[Run] = '"' then Inc(Run);  // last '"'
+  while not (LinePtr[Run] in [#0, #10, #13, '"']) do Inc(Run);
+  if LinePtr[Run] = '"' then Inc(Run);  // last '"'
 end;
 
 procedure TSynHTMLSyn.Next;
@@ -2672,7 +2668,7 @@ begin
       DOCTYPEProc;
     end;
   else
-    fProcTable[fLine[Run]];
+    fProcTable[LinePtr[Run]];
   end;
 end;
 
@@ -2698,14 +2694,14 @@ var
 begin
   Result := '';
   Len := (Run - fTokenPos);
-  SetString(Result, (FLine + fTokenPos), len);
+  SetString(Result, (LinePtr + fTokenPos), len);
 end;
 
 procedure TSynHTMLSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynHTMLSyn.GetTokenID: TtkTokenKind;

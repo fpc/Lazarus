@@ -108,12 +108,10 @@ type
     fUserData:TIniList;
     fMarkupOn:boolean;
     fRange: TRangeState;
-    fLine: PChar;
     fProcTable: array[#0..#255] of TProcTableProc;
     Run: LongInt;
     fTokenPos: Integer;
     fTokenID: TtkTokenKind;
-    fLineNumber : Integer;
     fCommentAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fKeyAttri: TSynHighlighterAttributes;
@@ -201,7 +199,7 @@ type
     procedure Next; override;
     procedure ResetRange; override;
     procedure SetRange(Value: Pointer); override;
-    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     function SaveToRegistry(RootKey: HKEY; Key: string): boolean; override;
     function LoadFromRegistry(RootKey: HKEY; Key: string): boolean; override;
     procedure LoadHighLighter(aFile: string);
@@ -443,69 +441,67 @@ begin
   inherited Destroy;
 end; { Destroy }
 
-procedure TSynAnySyn.SetLine(const NewValue: String; LineNumber:Integer);
+procedure TSynAnySyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
-end; { SetLine }
+end;
 
 procedure TSynAnySyn.AnsiProc;
 begin
-  case fLine[Run] of
+  case LinePtr[Run] of
      #0: NullProc;
     #10: LFProc;
     #13: CRProc;
   else
     fTokenID := tkComment;
     repeat
-      if (fLine[Run] = '*') and (fLine[Run + 1] = ')') then begin
+      if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = ')') then begin
         fRange := rsUnKnown;
         Inc(Run, 2);
         break;
       end;
       Inc(Run);
-    until fLine[Run] in [#0, #10, #13];
+    until LinePtr[Run] in [#0, #10, #13];
   end;
 end;
 
 procedure TSynAnySyn.PasStyleProc;
 begin
-  case fLine[Run] of
+  case LinePtr[Run] of
      #0: NullProc;
     #10: LFProc;
     #13: CRProc;
   else
     fTokenID := tkComment;
     repeat
-      if fLine[Run] = '}' then begin
+      if LinePtr[Run] = '}' then begin
         fRange := rsUnKnown;
         Inc(Run);
         break;
       end;
       Inc(Run);
-    until fLine[Run] in [#0, #10, #13];
+    until LinePtr[Run] in [#0, #10, #13];
   end;
 end;
 
 procedure TSynAnySyn.CStyleProc;
 begin
-  case fLine[Run] of
+  case LinePtr[Run] of
      #0: NullProc;
     #10: LFProc;
     #13: CRProc;
   else
     fTokenID := tkComment;
     repeat
-      if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then begin
+      if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = '/') then begin
         fRange := rsUnKnown;
         Inc(Run, 2);
         break;
       end;
       Inc(Run);
-    until fLine[Run] in [#0, #10, #13];
+    until LinePtr[Run] in [#0, #10, #13];
   end;
 end;
 
@@ -515,12 +511,12 @@ begin
     fTokenID := tkPreprocessor;
     repeat
       inc(Run);
-    until fLine[Run] in [#0, #10, #13];
+    until LinePtr[Run] in [#0, #10, #13];
   end else begin
     fTokenID := tkString;
     repeat
       inc(Run);
-    until not (fLine[Run] in ['0'..'9']);
+    until not (LinePtr[Run] in ['0'..'9']);
   end;
 end;
 
@@ -531,8 +527,8 @@ begin
     fTokenID := tkComment;
     fRange := rsPasStyle;
     inc(Run);
-    while FLine[Run] <> #0 do
-      case FLine[Run] of
+    while LinePtr[Run] <> #0 do
+      case LinePtr[Run] of
         '}':
           begin
             fRange := rsUnKnown;
@@ -564,7 +560,7 @@ begin
     fTokenID := tkComment;
     fRange := rsUnknown;
     inc(Run);
-    while FLine[Run] <> #0 do
+    while LinePtr[Run] <> #0 do
       begin
         fTokenID := tkComment;
         inc(Run);
@@ -580,14 +576,14 @@ procedure TSynAnySyn.CRProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
-  if fLine[Run] = #10 then Inc(Run);
+  if LinePtr[Run] = #10 then Inc(Run);
 end;
 
 procedure TSynAnySyn.IdentProc;
 var
   aToken:string;
 begin
-  while Identifiers[fLine[Run]] do inc(Run);
+  while Identifiers[LinePtr[Run]] do inc(Run);
   aToken:=GetToken;
   if IsKeyWord(aToken) then begin
     if not Markup then
@@ -608,7 +604,7 @@ procedure TSynAnySyn.IntegerProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
+  while LinePtr[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
 end;
 
 procedure TSynAnySyn.LFProc;
@@ -626,15 +622,15 @@ procedure TSynAnySyn.NumberProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9', '.', 'e', 'E', 'x'] do
+  while LinePtr[Run] in ['0'..'9', '.', 'e', 'E', 'x'] do
   begin
-    case FLine[Run] of
+    case LinePtr[Run] of
       'x': begin // handle C style hex numbers
              IntegerProc;
              break;
            end;
       '.':
-        if FLine[Run + 1] = '.' then break;
+        if LinePtr[Run + 1] = '.' then break;
     end;
     inc(Run);
   end;
@@ -645,16 +641,16 @@ begin
   inc(Run);
   if csAnsiStyle in fComments then
   begin
-    case fLine[Run] of
+    case LinePtr[Run] of
       '*':
         begin
           fTokenID := tkComment;
           fRange := rsAnsi;
           inc(Run);
-          while fLine[Run] <> #0 do
-            case fLine[Run] of
+          while LinePtr[Run] <> #0 do
+            case LinePtr[Run] of
               '*':
-                if fLine[Run + 1] = ')' then
+                if LinePtr[Run + 1] = ')' then
                 begin
                   fRange := rsUnKnown;
                   inc(Run, 2);
@@ -705,14 +701,14 @@ end;
 
 procedure TSynAnySyn.SlashProc;
 begin
-  case FLine[Run + 1] of
+  case LinePtr[Run + 1] of
     '/':
       begin
         inc(Run, 2);
         fTokenID := tkComment;
-        while FLine[Run] <> #0 do
+        while LinePtr[Run] <> #0 do
         begin
-          case FLine[Run] of
+          case LinePtr[Run] of
             #10, #13: break;
           end;
           inc(Run);
@@ -725,10 +721,10 @@ begin
           fTokenID := tkComment;
           fRange := rsCStyle;
           inc(Run);
-          while fLine[Run] <> #0 do
-            case fLine[Run] of
+          while LinePtr[Run] <> #0 do
+            case LinePtr[Run] of
               '*':
-                if fLine[Run + 1] = '/' then
+                if LinePtr[Run + 1] = '/' then
                 begin
                   fRange := rsUnKnown;
                   inc(Run, 2);
@@ -760,28 +756,28 @@ procedure TSynAnySyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
-  while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
+  while LinePtr[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
 procedure TSynAnySyn.StringProc;
 begin
   fTokenID := tkString;
-  if (fLine[Run + 1] = fStringDelimCh) and (fLine[Run + 2] = fStringDelimCh) then
+  if (LinePtr[Run + 1] = fStringDelimCh) and (LinePtr[Run + 2] = fStringDelimCh) then
     Inc(Run, 2);
   repeat
-    case FLine[Run] of
+    case LinePtr[Run] of
       #0, #10, #13: break;
     end;
     inc(Run);
-  until FLine[Run] = fStringDelimCh;
-  if FLine[Run] <> #0 then inc(Run);
+  until LinePtr[Run] = fStringDelimCh;
+  if LinePtr[Run] <> #0 then inc(Run);
 end;
 
 procedure TSynAnySyn.UnknownProc;
 begin
   inc(Run);
-  while (fLine[Run] in [#128..#191]) OR // continued utf8 subcode
-   ((fLine[Run]<>#0) and (fProcTable[fLine[Run]] = @UnknownProc)) do inc(Run);
+  while (LinePtr[Run] in [#128..#191]) OR // continued utf8 subcode
+   ((LinePtr[Run]<>#0) and (fProcTable[LinePtr[Run]] = @UnknownProc)) do inc(Run);
   fTokenID := tkUnKnown;
 end;
 
@@ -793,7 +789,7 @@ begin
     rsPasStyle: PasStyleProc;
     rsCStyle: CStyleProc;
   else
-    fProcTable[fLine[Run]];
+    fProcTable[LinePtr[Run]];
   end;
 end;
 
@@ -829,14 +825,14 @@ var
 begin
   Len := Run - fTokenPos;
   Result:='';
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 procedure TSynAnySyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynAnySyn.GetTokenID: TtkTokenKind;
@@ -991,7 +987,7 @@ begin
   fTokenID := tkComment;
   repeat
     inc(Run);
-  until fLine[Run] in [#0, #10, #13];
+  until LinePtr[Run] in [#0, #10, #13];
 end;
 
 
@@ -1290,8 +1286,8 @@ procedure TSynAnySyn.AmpersandProc;
     result:=false;
     i:=run;
     inc(i);
-    while FLine[i] <> #0 do
-      case FLine[i] of
+    while LinePtr[i] <> #0 do
+      case LinePtr[i] of
         ';':
           begin
             fRange := rsUnKnown;
@@ -1335,7 +1331,7 @@ procedure TSynAnySyn.DollarProc;
 begin
   inc(Run);
   fTokenID := tkDollarVariable;
-  while FLine[Run] in ['0'..'9', 'A'..'Z', 'a'..'z','_'] do inc(Run);
+  while LinePtr[Run] in ['0'..'9', 'A'..'Z', 'a'..'z','_'] do inc(Run);
 end;
 
 procedure TSynAnySyn.DotProc;
@@ -1345,7 +1341,7 @@ procedure TSynAnySyn.DotProc;
     result:=false;
     i:=run;
     inc(i);
-    while (FLine[i] in ['a'..'z','A'..'Z']) do
+    while (LinePtr[i] in ['a'..'z','A'..'Z']) do
       inc(i);
     if i>(run+1) then result:=true;
     if result then run:=i;

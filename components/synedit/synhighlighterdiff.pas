@@ -105,8 +105,6 @@ type
     );
   private
     fRange: TRangeState;
-    fLine: PChar;
-    fLineNumber: Integer;
     Run: LongInt;
     fTokenPos: Integer;
     FTokenID: TtkTokenKind;
@@ -154,8 +152,7 @@ type
     procedure Next; override;
     function GetEol: Boolean; override;
 
-    procedure SetLine(const NewValue: String;
-      LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     function GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -215,7 +212,7 @@ procedure TSynDiffSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
-  if (fLine[Run] = #10) then Inc(Run);
+  if (LinePtr[Run] = #10) then Inc(Run);
 end;
 
 procedure TSynDiffSyn.LFProc;
@@ -237,33 +234,33 @@ begin
     rsCtxFileOrig, rsUniFileOrig: FTokenID := tkFileOrig;
     rsCtxFileNew, rsUniFileNew:   FTokenID := tkFileNew;
     rsCtxChunkNew: begin
-        l := length(fLine);
-        if fLine[Run] = '-' then begin
+        l := length(LinePtr);
+        if LinePtr[Run] = '-' then begin
           FTokenID := tkChunkNewMark;
-          while (Run < l-1) and (fLine[Run] = '-') do inc(Run);
+          while (Run < l-1) and (LinePtr[Run] = '-') do inc(Run);
         end else begin
           FTokenID := tkChunkNew;
-          while (Run < l-1) and (fLine[Run] <> '-') do inc(Run);
+          while (Run < l-1) and (LinePtr[Run] <> '-') do inc(Run);
         end;
       end;
     rsCtxChunkOrig: begin
-        l := length(fLine);
-        if fLine[Run] = '*' then begin
+        l := length(LinePtr);
+        if LinePtr[Run] = '*' then begin
           FTokenID := tkChunkOrigMark;
-          while (Run < l-1) and (fLine[Run] = '*') do inc(Run);
+          while (Run < l-1) and (LinePtr[Run] = '*') do inc(Run);
         end else begin
           FTokenID := tkChunkOrig;
-          while (Run < l-1) and (fLine[Run] <> '*') do inc(Run);
+          while (Run < l-1) and (LinePtr[Run] <> '*') do inc(Run);
         end;
       end;
     rsUniChunkHeader: begin
-        l := length(fLine);
-        if fLine[Run] = '@' then begin
+        l := length(LinePtr);
+        if LinePtr[Run] = '@' then begin
           FTokenID := tkChunkMixedMark;
-          while (Run < l-1) and (fLine[Run] = '@') do inc(Run);
+          while (Run < l-1) and (LinePtr[Run] = '@') do inc(Run);
         end else begin
           FTokenID := tkChunkMixed;
-          while (Run < l-1) and (fLine[Run] <> '@') do inc(Run);
+          while (Run < l-1) and (LinePtr[Run] <> '@') do inc(Run);
         end;
       end;
     rsCtxLineRemoved, rsUniLineRemoved: FTokenID := tkLineRemoved;
@@ -274,7 +271,7 @@ begin
       FTokenID := tkUnknown;
     end;
   end;
-  Run := length(fLine); // #0 NullProc
+  Run := length(LinePtr); // #0 NullProc
 end;
 
 procedure TSynDiffSyn.UnknownProc;
@@ -286,7 +283,7 @@ begin
   else
     fRange := rsUnknown;
   FTokenID := tkUnknown;
-  Run := length(fLine);
+  Run := length(LinePtr);
 end;
 
 procedure TSynDiffSyn.AsteriskProc;
@@ -298,15 +295,15 @@ begin
      ***************         # start of chunk                (Context Format)
      *** 10,15 ****          # chunk: lines in orig file     (Context Format)
   *)
-  l := length(fLine);
+  l := length(LinePtr);
   if (not (fRange in [rsUnknown, rsCtxFirst..rsCtxLast])) or
-     (l < 4) or (fLine[1] <> '*') or (fLine[2] <> '*')
+     (l < 4) or (LinePtr[1] <> '*') or (LinePtr[2] <> '*')
   then begin
     UnknownProc;
     exit;
   end;
 
-  if fLine[3] = '*' then begin
+  if LinePtr[3] = '*' then begin
     // ***************
     fRange := rsCtxChunkHeader;
     FTokenID := tkChunkSeparator;
@@ -314,7 +311,7 @@ begin
     exit;
   end;
 
-  if fLine[3] = ' ' then begin
+  if LinePtr[3] = ' ' then begin
     if fRange in [rsCtxChunkHeader..rsCtxChunkNew] then begin
       // *** 10,15 ****
       fRange := rsCtxChunkOrig;
@@ -344,8 +341,8 @@ begin
      -foo                    # Removed Line                  (Unified)
   *)
 
-  l := length(fLine);
-  if (l > 4) and (fLine[1] = '-') and (fLine[2] = '-') and (fLine[3] = ' ') then begin
+  l := length(LinePtr);
+  if (l > 4) and (LinePtr[1] = '-') and (LinePtr[2] = '-') and (LinePtr[3] = ' ') then begin
     // Todo: this check is unsufficent in Unified format; need to track amount of lines in Chunk
     if fRange in [rsUnknown, rsUniFirst..rsUniLast] then begin
       // --- /path/to/original   # orig file                   (Unified)
@@ -395,8 +392,8 @@ begin
      +foo                    # Removed Line                  (Unified)
   *)
 
-  l := length(fLine);
-  if (l > 4) and (fLine[1] = '+') and (fLine[2] = '+') and (fLine[3] = ' ') then begin
+  l := length(LinePtr);
+  if (l > 4) and (LinePtr[1] = '+') and (LinePtr[2] = '+') and (LinePtr[3] = ' ') then begin
     // Todo: this check is unsufficent in Unified format; need to track amount of lines in Chunk
     if fRange in [rsUnknown, rsUniFirst..rsUniLast] then begin
       // --- /path/to/new      # new file                    (Unified)
@@ -431,8 +428,8 @@ begin
      ! foo                   # Changed Line                  (Context)
   *)
 
-  l := length(fLine);
-  if (fRange in [rsCtxFirst..rsCtxLast]) and (l >= 2) and (fLine[1] = ' ')
+  l := length(LinePtr);
+  if (fRange in [rsCtxFirst..rsCtxLast]) and (l >= 2) and (LinePtr[1] = ' ')
   then begin
     fRange := rsCtxLineChanged;
     FTokenID := tkLineChangedMark;
@@ -451,9 +448,9 @@ begin
      @@ -1,3 +1,9 @@         # Start of Chunk                (Unified)
   *)
 
-  l := length(fLine);
+  l := length(LinePtr);
   if (fRange in [rsCtxFirst..rsCtxLast]) or
-     (l < 3) or (fLine[1] <> '@') or (fLine[2] <> ' ')
+     (l < 3) or (LinePtr[1] <> '@') or (LinePtr[2] <> ' ')
   then begin
     UnknownProc;
     exit;
@@ -475,7 +472,7 @@ begin
 
   if (fRange in [rsCtxFirst..rsCtxLast]) then begin
     fRange := rsCtxLineContext;
-    Run := Min(length(fLine), 2);
+    Run := Min(length(LinePtr), 2);
   end else begin
     fRange := rsUniLineContext;
     Run := 1;
@@ -580,14 +577,14 @@ var
 begin
   Result := '';
   Len := Run - fTokenPos;
-  SetString(Result, (FLine + fTokenPos), Len);
+  SetString(Result, (LinePtr + fTokenPos), Len);
 end;
 
 procedure TSynDiffSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
-  TokenStart:=FLine + fTokenPos;
+  TokenStart:=LinePtr + fTokenPos;
 end;
 
 function TSynDiffSyn.GetTokenAttribute: TLazEditTextAttribute;
@@ -640,11 +637,11 @@ var
 begin
   fTokenPos := Run;
   if Run > 0 then begin
-    if fLine[Run] = #0 then NullProc
+    if LinePtr[Run] = #0 then NullProc
                        else LineProc;
   end else begin
     OldRange := fRange;
-    fProcTable[fLine[Run]]();
+    fProcTable[LinePtr[Run]]();
 
     if ((fRange in [rsCtxFileOrig, rsCtxFileNew, rsUniFileOrig..rsUniFileNew]) and
         not (OldRange in [rsCtxFileOrig, rsCtxFileNew, rsUniFileOrig..rsUniFileNew]))
@@ -677,13 +674,10 @@ begin
   Result := fTokenId = tkNull;
 end;
 
-procedure TSynDiffSyn.SetLine(const NewValue: String;
-  LineNumber: Integer);
+procedure TSynDiffSyn.InitForScaningLine;
 begin
   inherited;
-  fLine := PChar(NewValue);
   Run := 0;
-  fLineNumber := LineNumber;
   Next;
 end;
 
