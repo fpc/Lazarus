@@ -1320,19 +1320,24 @@ begin
     FCanvas.brush.Style := bsSolid;
     FCanvas.brush.Color := clHighLight;
     FCanvas.FillRect(R);
+    FCanvas.brush.Style := bsSolid;
   end
   else if not wordIsInTable and (FCurProps.BgColor <> clNone) then
   begin
+    {$IFDEF DisableWordBGColor}
+    FCanvas.Brush.Style := bsClear;
+    {$ELSE}
     FCanvas.brush.Style := bsSolid;
     FCanvas.brush.Color := FCurProps.BgColor;
     TextStyle.Opaque := True;
+    {$ENDIF}
   end
   else
   begin
     TextStyle.Opaque := False;
     FCanvas.Brush.Style := bsClear;
   end;
-  
+
   isRTL := (FOwner.Dir = hdRTL);
   if (aCurWord.Owner.ParentNode <> nil) and (aCurWord.Owner.ParentNode is TIpHTMLNodeCORE) then
   begin

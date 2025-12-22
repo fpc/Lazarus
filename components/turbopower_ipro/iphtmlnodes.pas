@@ -3917,13 +3917,13 @@ begin
     hfsSUB: 
       begin
         Props.FontSize := Max(Props.FontSize - 4, 0);
-        Props.FontBaseline := Props.FontBaseline - 2;
+        Props.FontBaseline := Props.FontBaseline - 4; // Mattias: was - 2
         ElementName := 'sub';
       end;
     hfsSUP: 
       begin
         Props.FontSize := Max(Props.FontSize - 4, 0);
-        Props.FontBaseline := Props.FontBaseline + 4;
+        Props.FontBaseline := Props.FontBaseline + 6; // Mattias: was + 4
         ElementName := 'sup';
       end;
   end;

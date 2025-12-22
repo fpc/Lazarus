@@ -1519,7 +1519,7 @@ begin
                  Write(C, 1);
                end;
     else
-      raise EIpBaseException.Create(SBadLineTerminator);
+      raise EIpBaseException.Create(SBadLineTerminator){%H-};
     end;
   end;
 end;
