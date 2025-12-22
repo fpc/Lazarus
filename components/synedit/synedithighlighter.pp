@@ -158,7 +158,6 @@ type
     fDefaultFilter: string;
     fDefaultFilterInitialValue: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
-    FIsInNextToEOL: Boolean;
     function GetInstanceLanguageName: string; virtual;
     procedure AddAttribute(AAttrib: TLazEditTextAttribute); override;
     procedure RemoveAttribute(AAttrib: TLazEditTextAttribute); override;
@@ -206,17 +205,10 @@ type
     procedure Assign(Source: TPersistent); override;
   public
     procedure InitForScaningLine; override;
-    function GetEol: Boolean; virtual; abstract;
     function GetRange: Pointer; override;
-    function GetToken: String; virtual; abstract;
-    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); virtual; abstract;
-    function GetTokenKind: integer; virtual; abstract;
     //function GetTokenPos: Integer; override; // 0-based
     function GetTokenLen: Integer; override;
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
-    procedure Next; virtual; abstract;
-    procedure NextToEol;
-    function  NextToLogX(ALogX: IntPos): boolean;
 
     property DrawDivider[Index: integer]: TSynDividerDrawConfigSetting
       read GetDrawDivider;
@@ -744,7 +736,6 @@ end;
 
 procedure TSynCustomHighlighter.InitForScaningLine;
 begin
-  FIsInNextToEOL := False;
   SetLine(CurrentLineText, LineIndex);
   inherited InitForScaningLine;
 end;
@@ -943,28 +934,6 @@ begin
   Result := FALSE;
 end;
 {end}                                                                           // DJLP 2000-08-09
-
-procedure TSynCustomHighlighter.NextToEol;
-begin
-  FIsInNextToEOL := True;
-  while not GetEol do Next;
-  FIsInNextToEOL := False;
-end;
-
-function TSynCustomHighlighter.NextToLogX(ALogX: IntPos): boolean;
-var
-  Start: Integer;
-begin
-  Result := False;
-  while not GetEol do begin
-    Start := ToPos(GetTokenPos);
-    if Start > ALogX then
-      exit;
-    if ALogX < Start + GetTokenLen then
-      exit(True);
-    Next;
-  end;
-end;
 
 procedure TSynCustomHighlighter.SetLine(const NewValue: String; LineNumber: Integer);
 begin

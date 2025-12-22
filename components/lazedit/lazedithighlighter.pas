@@ -25,7 +25,8 @@ interface
 uses
   Classes, fgl,
   // LazEdit
-  LazEditTextAttributes, LazEditLineItemLists, LazEditHighlighterUtils, LazClasses, LazEditTypes;
+  LazEditTextAttributes, LazEditLineItemLists, LazEditHighlighterUtils, LazClasses, LazEditTypes,
+  LazEditMiscProcs;
 
 type
 
@@ -125,6 +126,7 @@ type
     FLineIndex: TLineIdx;
     FLineText: String;
     FLinePtr: Pchar;
+    F_IsInNextToEOL: Boolean;
 
     FTokenAttributeMergeResult: TLazEditTextAttributeMergeResult;
     FTokenAttributeList: TLazCustomEditTextAttributeArray;
@@ -160,6 +162,8 @@ type
     property  CurrentLineText: string read FLineText;
     property  LinePtr: Pchar read FLinePtr;
 
+    property FIsInNextToEOL: Boolean read F_IsInNextToEOL;  deprecated 'use IsInNextToEOL / to be removed in 5.99';
+    property IsInNextToEOL: Boolean read F_IsInNextToEOL write F_IsInNextToEOL;
   protected
     (* ------------------ *
      * Token / Attributes *
@@ -196,12 +200,20 @@ type
     procedure ContinueNextLine;  // To be called at EOL; does not read the range
     property  LineIndex: TLineIdx read FLineIndex;
 
+    procedure Next; virtual; abstract;
+    procedure NextToEol;
+    function NextToLogX(ALogX: IntPos; ARestartLineIfNeeded: Boolean = False): boolean;
+    function GetEol: Boolean; virtual; abstract;
+
     (* ------------------ *
      * Token / Attributes *
      * ------------------ *)
 
+    function GetTokenKind: integer; virtual; abstract;
+    function GetToken: String; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract; // 0-based
     function GetTokenLen: Integer; virtual; abstract;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); virtual; abstract;
     (* GetTokenAttribute / GetEndOfLineAttribute
        The base attribute
      * GetTokenAttributeEx / GetEndOfLineAttributeEx
@@ -314,6 +326,9 @@ begin
     exit;
 
   FCurrentLines := AValue;
+  FLineIndex := -1;
+  FLineText  := '';
+  FLinePtr   := nil;
   DoCurrentLinesChanged;
 end;
 
@@ -469,6 +484,7 @@ begin
   FLineIndex := ALineIdx;
   FLineText := CurrentLines[ALineIdx];
   FLinePtr := PChar(FLineText);
+  F_IsInNextToEOL := False;
 
   DoStartAtLine;
   InitForScaningLine;
@@ -479,8 +495,42 @@ begin
   inc(FLineIndex);
   FLineText := CurrentLines[FLineIndex];
   FLinePtr := PChar(FLineText);
+  F_IsInNextToEOL := False;
 
   InitForScaningLine;
+end;
+
+procedure TLazEditCustomHighlighter.NextToEol;
+begin
+  if not GetEol then begin
+    F_IsInNextToEOL := True;
+    repeat
+      Next;
+    until GetEol;
+    F_IsInNextToEOL := False;
+  end;
+end;
+
+function TLazEditCustomHighlighter.NextToLogX(ALogX: IntPos; ARestartLineIfNeeded: Boolean
+  ): boolean;
+var
+  Start: Integer;
+begin
+  Result := False;
+  ALogX := ToIdx(ALogX);
+  if ARestartLineIfNeeded then begin
+    if GetEol or (GetTokenPos > ALogX) then
+      StartAtLineIndex(FLineIndex); // TODO: avaid re-fetching CurrentLineText
+  end;
+
+  while not GetEol do begin
+    Start := GetTokenPos;
+    if Start > ALogX then
+      exit;
+    if ALogX < Start + GetTokenLen then
+      exit(True);
+    Next;
+  end;
 end;
 
 function TLazEditCustomHighlighter.GetTokenAttributeEx: TLazCustomEditTextAttribute;

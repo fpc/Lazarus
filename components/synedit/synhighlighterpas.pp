@@ -4379,7 +4379,7 @@ var
   s: string;
 begin
   Result := False;
-  if IsScanning or FIsInNextToEOL then
+  if IsScanning or IsInNextToEOL then
     exit;
   r := Run;
   inc(Run); // the @
@@ -4426,7 +4426,7 @@ begin
   if rsIDEDirective in fRange then
     fTokenID := tkIDEDirective;
 
-  if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
+  if (not (IsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
     if FUsePasDoc and (LinePtr[Run] = '@') then begin
       if CheckPasDoc then begin
         if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
@@ -4448,13 +4448,13 @@ begin
   end;
 
   IsInWord := False;
-  WasInWord := (FIsInNextToEOL or IsScanning) or (rsIDEDirective in fRange); // don't run checks
+  WasInWord := (IsInNextToEOL or IsScanning) or (rsIDEDirective in fRange); // don't run checks
   p:=Run;
   repeat
     case LinePtr[p] of
     #0,#10,#13: break;
     '}': begin
-        if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
+        if (not (IsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
           Run := p;
           ct := GetCustomSymbolToken(tkAnsiComment, 1, FCustomTokenMarkup, Run <> fTokenPos);
           if ct and (Run <> fTokenPos) then
@@ -4480,7 +4480,7 @@ begin
     '{':
       if HasRangeCompilerModeswitch(pcsNestedComments) then begin
         Run := p;
-        if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
+        if (not (IsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
           ct := GetCustomSymbolToken(tkAnsiComment, 1, FCustomTokenMarkup, Run <> fTokenPos);
           if ct and (Run <> fTokenPos) then
             exit;
@@ -4514,7 +4514,7 @@ begin
     end;
     Inc(p);
 
-    if (not (FIsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
+    if (not (IsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
       WasInWord := IsInWord;
       IsInWord := (IsLetterChar[LinePtr[p]] or IsUnderScoreOrNumberChar[LinePtr[p]]);
     end;
@@ -4776,7 +4776,7 @@ begin
 
       if reCommentCurly in FRequiredStates then
         FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentCurly];
-      if not (FIsInNextToEOL or IsScanning) then
+      if not (IsInNextToEOL or IsScanning) then
         GetCustomSymbolToken(tkBorComment, 1, FCustomTokenMarkup);
 
       inc(Run);
@@ -5077,7 +5077,7 @@ begin
   if reCommentAnsi in FRequiredStates then
     FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentAnsi];
 
-  if (not (FIsInNextToEOL or IsScanning)) then begin
+  if (not (IsInNextToEOL or IsScanning)) then begin
     if FUsePasDoc and (LinePtr[Run] = '@') then begin
       if CheckPasDoc then begin
         if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
@@ -5100,13 +5100,13 @@ begin
 
 
   IsInWord := False;
-  WasInWord := (FIsInNextToEOL or IsScanning); // don't run checks
+  WasInWord := (IsInNextToEOL or IsScanning); // don't run checks
   repeat
     if LinePtr[Run]=#0 then
       break
     else if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = ')') then
     begin
-      if not (FIsInNextToEOL or IsScanning) then begin
+      if not (IsInNextToEOL or IsScanning) then begin
         ct := GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup, Run <> fTokenPos);
         if ct and (Run <> fTokenPos) then
           exit;
@@ -5127,7 +5127,7 @@ begin
     if HasRangeCompilerModeswitch(pcsNestedComments) and
        (LinePtr[Run] = '(') and (LinePtr[Run + 1] = '*') then
     begin
-      if not (FIsInNextToEOL or IsScanning) then begin
+      if not (IsInNextToEOL or IsScanning) then begin
         ct := GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup, Run <> fTokenPos);
         if ct and (Run <> fTokenPos) then
           exit;
@@ -5154,7 +5154,7 @@ begin
     else
       Inc(Run);
 
-    if not (FIsInNextToEOL or IsScanning) then begin
+    if not (IsInNextToEOL or IsScanning) then begin
       WasInWord := IsInWord;
       IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
     end;
@@ -5220,7 +5220,7 @@ begin
 
         if reCommentAnsi in FRequiredStates then
           FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentAnsi];
-        if not (FIsInNextToEOL or IsScanning) then
+        if not (IsInNextToEOL or IsScanning) then
           GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup);
 
         Inc(Run, 2);
@@ -5442,7 +5442,7 @@ begin
         StartPascalCodeFoldBlock(cfbtSlashComment);
     end;
 
-    if (not (FIsInNextToEOL or IsScanning)) and
+    if (not (IsInNextToEOL or IsScanning)) and
        GetCustomSymbolToken(tkSlashComment, 2, FCustomTokenMarkup)
     then begin
       inc(Run, 2);
@@ -5463,7 +5463,7 @@ var
   AtSlashOpen: Boolean;
 begin
   FAtSlashStart := False;
-  if FIsInSlash and (not (FIsInNextToEOL or IsScanning)) then begin
+  if FIsInSlash and (not (IsInNextToEOL or IsScanning)) then begin
     Include(FTokenExtraAttribs, eaPartTokenNotAtStart);
     if reCommentSlash in FRequiredStates then
       FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentSlash];
@@ -5495,7 +5495,7 @@ begin
     // Continue fold block
     fTokenID := tkComment;
 
-    if (not (FIsInNextToEOL or IsScanning)) and AtSlashOpen and
+    if (not (IsInNextToEOL or IsScanning)) and AtSlashOpen and
        GetCustomSymbolToken(tkSlashComment, 2, FCustomTokenMarkup)
     then begin
       inc(Run, 2);
@@ -5529,7 +5529,7 @@ var
   IsInWord, WasInWord: Boolean;
 begin
   IsInWord := False;
-  WasInWord := (FIsInNextToEOL or IsScanning); // don't run checks
+  WasInWord := (IsInNextToEOL or IsScanning); // don't run checks
 
   while not(LinePtr[Run] in [#0, #10, #13]) do begin
     if FUsePasDoc and (LinePtr[Run] = '@') then begin
@@ -5554,7 +5554,7 @@ begin
     else
       Inc(Run);
 
-    if not (FIsInNextToEOL or IsScanning) then begin
+    if not (IsInNextToEOL or IsScanning) then begin
       WasInWord := IsInWord;
       IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
     end;
@@ -5587,7 +5587,7 @@ begin
   fTokenID := tkString;
 
   if FInString then begin
-    if not (FIsInNextToEOL or IsScanning) then begin
+    if not (IsInNextToEOL or IsScanning) then begin
       if (LinePtr[Run] = '''') and (LinePtr[Run+1] = '''') and
          GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup)
       then begin
@@ -5612,7 +5612,7 @@ begin
   end
   else begin
     FInString := True;
-    if not (FIsInNextToEOL or IsScanning) and
+    if not (IsInNextToEOL or IsScanning) and
       GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup)
     then begin
       Inc(Run);
@@ -5624,12 +5624,12 @@ begin
   end;
 
   IsInWord := False;
-  WasInWord := (FIsInNextToEOL or IsScanning); // don't run checks
+  WasInWord := (IsInNextToEOL or IsScanning); // don't run checks
   while (not (LinePtr[Run] in [#0, #10, #13])) do begin
     if LinePtr[Run] = '''' then begin
       if (LinePtr[Run+1] = '''') then begin
         // escaped
-        if (not (FIsInNextToEOL or IsScanning)) and
+        if (not (IsInNextToEOL or IsScanning)) and
            GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup, Run <> fTokenPos)
         then begin
           if (Run = fTokenPos) then
@@ -5642,7 +5642,7 @@ begin
       end
       else begin
         // string end
-        if not (FIsInNextToEOL or IsScanning) then begin
+        if not (IsInNextToEOL or IsScanning) then begin
           ct := GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup, Run <> fTokenPos);
           if ct and (Run <> fTokenPos) then begin
             if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
@@ -5665,7 +5665,7 @@ begin
 
     Inc(Run);
 
-    if not (FIsInNextToEOL or IsScanning) then begin
+    if not (IsInNextToEOL or IsScanning) then begin
       WasInWord := IsInWord;
       IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
     end;
@@ -6101,7 +6101,7 @@ begin
         if (PasCodeFoldRange.BracketNestLevel = 0) then
           fRange := fRange - [rsInParamDeclaration];
 
-        if not (FIsInNextToEOL or IsScanning) then begin
+        if not (IsInNextToEOL or IsScanning) then begin
           CheckForAdditionalAttributes;
           if FTokenTypeDeclExtraAttrib <> FLastTokenTypeDeclExtraAttrib then begin
             FLastTokenTypeDeclExtraAttrib := FTokenTypeDeclExtraAttrib;
@@ -6191,7 +6191,7 @@ end;
 
 procedure TSynPasSyn.SetIsInNextToEOL;
 begin
-  FIsInNextToEOL := True;
+  IsInNextToEOL := True;
 end;
 
 function TSynPasSyn.GetDefaultAttribute(Index: integer): TLazEditHighlighterAttributes;

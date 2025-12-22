@@ -10482,24 +10482,19 @@ begin
   begin
     Line := FTheLinesView[PosY];
     PosX := XY.X;
+
     if (PosX > 0) and (PosX <= Length(Line)) then begin
+      fHighlighter.CurrentLines := FTheLinesView;
       if (not ContinueIfPossible) or
-         (fHighlighter.CurrentLines <> FTheLinesView) or
-         (fHighlighter.LineIndex <> PosY) or
-         (fHighlighter.GetTokenPos + 1 + Highlighter.GetTokenLen >= PosX)
-      then begin
-        fHighlighter.CurrentLines := FTheLinesView;
+         (fHighlighter.LineIndex <> PosY)
+      then
         Highlighter.StartAtLineIndex(PosY);
-      end;
-      while not Highlighter.GetEol do begin
-        Start := Highlighter.GetTokenPos + 1;
+
+      if Highlighter.NextToLogX(PosX, True) then begin
         Token := Highlighter.GetToken;
-        if (PosX >= Start) and (PosX < Start + Length(Token)) then begin
-          Attri := Highlighter.GetTokenAttribute;
-          TokenType := Highlighter.GetTokenKind;
-          exit(True);
-        end;
-        Highlighter.Next;
+        Attri := Highlighter.GetTokenAttribute;
+        TokenType := Highlighter.GetTokenKind;
+        exit(True);
       end;
     end;
   end;
@@ -10521,21 +10516,15 @@ begin
     Line := FTheLinesView[PosY];
     PosX := XY.X;
     if (PosX > 0) and (PosX <= Length(Line)) then begin
+      fHighlighter.CurrentLines := FTheLinesView;
       if (not ContinueIfPossible) or
-         (fHighlighter.CurrentLines <> FTheLinesView) or
-         (fHighlighter.LineIndex <> PosY) or
-         (fHighlighter.GetTokenPos + 1 + Highlighter.GetTokenLen >= PosX)
-      then begin
-        fHighlighter.CurrentLines := FTheLinesView;
+         (fHighlighter.LineIndex <> PosY)
+      then
         Highlighter.StartAtLineIndex(PosY);
-      end;
-      while not Highlighter.GetEol do begin
-        Start := Highlighter.GetTokenPos + 1;
-        if (PosX >= Start) and (PosX < Start + Highlighter.GetTokenLen) then begin
-          TokenType := Highlighter.GetTokenKind;
-          exit(True);
-        end;
-        Highlighter.Next;
+
+      if Highlighter.NextToLogX(PosX, True) then begin
+        TokenType := Highlighter.GetTokenKind;
+        exit(True);
       end;
     end;
   end;

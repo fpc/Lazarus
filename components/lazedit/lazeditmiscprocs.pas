@@ -46,6 +46,11 @@ Operator >= (P1, P2 : TPoint) : Boolean; inline;
 function Min(P1, P2 : TPoint) : TPoint; inline; overload;
 function Max(P1, P2 : TPoint) : TPoint; inline; overload;
 
+function ToIdx(APos: Integer): Integer; inline;
+function ToPos(AIdx: Integer): Integer; inline;
+function YToIdx(APointWithYPos: TPoint): TPoint; inline;
+function YToPos(APointWithYIdx: TPoint): TPoint; inline;
+
 implementation
 
 function IsCombiningCodePoint(const AChar: PChar): Boolean;
@@ -500,6 +505,28 @@ begin
   if P1 > P2
   then Result := P1
   else Result := P2;
+end;
+
+function ToIdx(APos: Integer): Integer; inline;
+begin
+  Result := APos - 1;
+end;
+
+function ToPos(AIdx: Integer): Integer; inline;
+begin
+  Result := AIdx + 1;
+end;
+
+function YToIdx(APointWithYPos: TPoint): TPoint; inline;
+begin
+  Result := APointWithYPos;
+  dec(Result.Y);
+end;
+
+function YToPos(APointWithYIdx: TPoint): TPoint; inline;
+begin
+  Result := APointWithYIdx;
+  inc(Result.Y);
 end;
 
 end.

@@ -77,7 +77,7 @@ function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
 procedure SynAssert(Condition: Boolean; Msg: String);
 procedure SynAssert(Condition: Boolean; Msg: String; Args: Array of Const);
 
-function ToIdx(APos: Integer): Integer; inline;
+function ToIdx(APos: Integer): Integer; inline; // deprecated now in LazEditMiscProcs.
 function ToPos(AIdx: Integer): Integer; inline;
 function YToIdx(APointWithYPos: TPoint): TPoint; inline;
 function YToPos(APointWithYIdx: TPoint): TPoint; inline;

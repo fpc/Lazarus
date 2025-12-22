@@ -670,7 +670,7 @@ begin
     Inc(Run);
   NameStart := Run;
   IsPreColon := False;
-  if not (IsScanning or FIsInNextToEOL) and (reaNameSpaceSubToken in fRequiredStates) then begin
+  if not (IsScanning or IsInNextToEOL) and (reaNameSpaceSubToken in fRequiredStates) then begin
     fTokenDecorator := tdNameSpaceNoneStart;
     while (LinePtr[Run] in NameCharsNoColon) do Inc(Run);
     IsPreColon := LinePtr[Run] = ':';
@@ -749,7 +749,7 @@ begin
   fRange := rsEqual;
 
 
-  if not (IsScanning or FIsInNextToEOL) and (reaNameSpaceSubToken in fRequiredStates) and
+  if not (IsScanning or IsInNextToEOL) and (reaNameSpaceSubToken in fRequiredStates) and
      (LinePtr[Run] = ':')
   then begin
     fTokenDecorator := tdNameSpaceNoneStart;
