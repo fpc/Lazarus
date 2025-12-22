@@ -35,7 +35,7 @@ Resourcestring
   SErrorTitle   = 'Drat!';
   SErrorIntro   = 'An error occurred while talking to the AI!';
   SErrorInfo    = 'Here is the error we got: %s';
-  SErrorContext = 'This is what we were trying to do: %s %s';
+  SErrorContext = 'This is what we were trying to do: %s';
   SErrorBody    = 'And this is what we were saying:';
 
   SErrPleaseConfigure = 'No AI server has been configured.'+sLineBreak+
