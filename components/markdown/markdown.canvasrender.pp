@@ -170,7 +170,7 @@ type
     fLineWidth: LongInt;
     FLayout : TLayoutData;
     fParagraphSpacing: LongInt;
-    fIndentStep: LongInt;
+    fExtraIndent: LongInt;
     fFontName: utf8string;
     fMonoFontName: utf8string;
     fBaseFontSize: LongInt;
@@ -289,6 +289,8 @@ type
     property BulletChar2 : string Index 2 read GetBulletChar Write SetBulletChar;
     property BulletChar3 : string Index 3 read GetBulletChar Write SetBulletChar;
     Property BlockQuoteIndent : Integer Read FBlockQuoteIndent Write FBlockQuoteIndent;
+    Property ParagraphSpacing : Integer Read FParagraphSpacing Write FParagraphSpacing;
+    Property ExtraIndent : Integer Read FExtraIndent Write FExtraIndent;
     Property ImageMargin : integer read FImageMargin Write FImageMargin;
     Property OnGetImage : TMarkdownImageEvent Read FOnGetImage Write FOnGetImage;
     property SelectionColor: TColor read FSelectionColor write FSelectionColor;
@@ -552,7 +554,7 @@ begin
 
   // Initialize default values
   fParagraphSpacing:=10;
-  fIndentStep:=20;
+  fExtraIndent:=0;
   fTargetDPI:=96;
   fFontName:='Sans Serif';
   fMonoFontName:='Monospace';
@@ -1468,6 +1470,7 @@ end;
 
 procedure TMarkDownCanvasRenderer.Indent(aSize: integer);
 begin
+  inc(aSize,fExtraIndent);
   if FLayout.LineX>0 then
     FNextLineIndent:=FNextLineIndent+aSize
   else
@@ -1481,6 +1484,7 @@ end;
 
 procedure TMarkDownCanvasRenderer.Undent(aSize: integer);
 begin
+  inc(aSize,fExtraIndent);
   FLayout.CurrentIndent:=FLayout.CurrentIndent-aSize;
   if FLayout.CurrentIndent<0 then
     FLayout.CurrentIndent:=0;
