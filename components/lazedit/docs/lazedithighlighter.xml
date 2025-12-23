@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="LazEdit">
+<module name="LazEditHighlighter">
+<element name="TLazEditCustomHighlighter.AttachToLines">
+  <short>Add a SynEdit Textbuffer for highlighting</short>
+  <descr>One highlighter can be used to highlight for any amount of SynEdits. Each SynEdit must attach its TextBuffer to the highlighter before using it.
+The highlighter may add its own storage "Ranges" to the lines. It may also use the lines to send notifications to the SynEdit.
+
+Inherited Highlighters may overwrite DoAttachedToLines if they need to react to newly attached lines.
+</descr>
+  <seealso><link id="TLazEditCustomHighlighter.AttachedLines"/><link id="TLazEditCustomHighlighter.DoAttachedToLines"/><link id="TLazEditCustomHighlighter.DetachFromLines"/><link id="TLazEditCustomHighlighter.SendRescanNeededNotification"/><link id="TLazEditCustomHighlighter.SendAttributeChangeNotification"/><link id="TLazEditCustomHighlighter.CurrentLines"/><link id="TLazEditStringsBase.Ranges"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.DetachFromLines">
+  <short>Remove a SynEdit Textbuffer from highlighting</short>
+  <seealso><link id="TLazEditCustomHighlighter.AttachedLines"/><link id="TLazEditCustomHighlighter.DoDetachingFromLines"/><link id="TLazEditCustomHighlighter.AttachToLines"/>
+        </seealso>
+  <descr>See <link id="TLazEditCustomHighlighter.AttachToLines"/>. If a SynEdit will no longer use the highlighter it must remove its Textbuffer from the list of AttachedLines.
+The highlighter will remove any storage like "Ranges" that it had added.
+
+Inherited Highlighters may overwrite DoDetachingFromLines if they need to react to newly attached lines.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.AttachedLines">
+  <short>A list of all Textbuffers from any SynEdit using this highlighter</short>
+  <seealso><link id="TLazEditCustomHighlighter.AttachedLines"/><link id="TLazEditCustomHighlighter.DetachFromLines"/><link id="TLazEditCustomHighlighter.SendRescanNeededNotification"/><link id="TLazEditCustomHighlighter.SendAttributeChangeNotification"/><link id="TLazEditCustomHighlighter.CurrentLines"/>
+        </seealso>
+  <descr>All Textbuffers that where attached using <link id="TLazEditCustomHighlighter.AttachedLines"/>.
+
+The highlighter can be used by each of the owning SynEdits. And it will send notifications to the SynEdits via the attached lines.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.DoAttachedToLines">
+  <short>Event for inherited classes when lines get attached.</short>
+  <descr>Inherited Highlighters may overwrite DoAttachedToLines if they need to react to newly attached lines.
+</descr>
+  <seealso><link id="TLazEditCustomHighlighter.AttachToLines"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.DoDetachingFromLines">
+  <short>Event for inherited classes when lines get detached.</short>
+  <descr>Inherited Highlighters may overwrite DoDetachingFromLines if they need to react to newly attached lines.
+</descr>
+  <seealso><link id="TLazEditCustomHighlighter.DetachFromLines"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.DoCurrentLinesChanged">
+  <short>Event for inherited classes when CurrentLines get changed.</short>
+  <descr>Inherited Highlighters may overwrite DoCurrentLinesChanged if they need to react when the CurrentLines are changed
+</descr>
+  <seealso><link id="TLazEditCustomHighlighter.CurrentLines"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.CurrentLines">
+  <short>Set Textbuffer for scanning, getting highlight (Token) info, fold or other info.</short>
+  <descr>As a highlighter can be used by any amount of SynEdits, any of those edits must always set its own lines to the highlighter before performing any tasks.
+A highlighter will then be able to access the "Ranges" storage that it may have added to those lines. After setting CurrentLines they will be available via <link id="TLazEditCustomRangesHighlighter.CurrentRanges"/><p>A SynEdit must <link id="TLazEditCustomHighlighter.AttachToLines"/> once before it uses the highlighter for the first time.</p><p>Then set its textbuffer to <link id="TLazEditCustomHighlighter.CurrentLines"/> each time it is going to use the highlighter. This is valid until another SynEdit will set its textbuffer, so it should be done whenever other SynEdits may have had a chance to run.</p><p>When a SynEdit will no longer use the highlighter at all, then it must call once <link id="TLazEditCustomHighlighter.DetachFromLines"/>.</p>
+        </descr>
+  <seealso><link id="TLazEditCustomHighlighter.AttachToLines"/><link id="TLazEditCustomHighlighter.DetachFromLines"/><link id="TLazEditCustomRangesHighlighter.CurrentRanges"/><link id="TLazEditStringsBase.Ranges"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.StartAtLineIndex">
+  <short>Set a line for scanning or getting token-info</short>
+  <descr>Start working on a line from <link id="TLazEditCustomRangesHighlighter.CurrentRanges"/>.
+
+This can be either for scanning the line when building the highlighters "ranges" or building any state that a highlighter might keep about the lines. Or it can be for retrieving info like TokenKind and Attribute for each token on that line.
+
+StartAtLineIndex will set the properties <link id="TLazEditCustomHighlighter.LineIndex"/>, <link id="TLazEditCustomHighlighter.LinePtr"/> and <link id="TLazEditCustomHighlighter.CurrentLineText"/>. It will call <link id="TLazEditCustomRangesHighlighter.SetRange"/> or <link id="TLazEditCustomRangesHighlighter.ResetRange"/> with the start range for the line.
+
+Inherited Highlighters may also overwrite <link id="TLazEditCustomHighlighter.InitForScaningLine"/> to get notified.
+
+After the call the Highlighter is expected to be on the first token of the line. (For GetToken.... calls)
+
+Inherited Highlighters can also overwrite <link id="TLazEditCustomRangesHighlighter.SetRange"/>. The difference between SetRange and InitForScaningLine is that the former is only called by StartAtLineIndex, but not by <link id="TLazEditCustomHighlighter.ContinueNextLine"/>. The latter is always called by both.
+</descr>
+  <seealso><link id="TLazEditCustomHighlighter.LineIndex"/><link id="TLazEditCustomHighlighter.LinePtr"/><link id="TLazEditCustomHighlighter.CurrentLineText"/><link id="TLazEditCustomHighlighter.ContinueNextLine"/><link id="TLazEditCustomHighlighter.InitForScaningLine"/><link id="TLazEditCustomRangesHighlighter.SetRange"/><link id="TLazEditCustomRangesHighlighter.ResetRange"/><link id="TLazEditCustomHighlighter.CurrentLines"/><link id="TLazEditCustomRangesHighlighter.CurrentRanges"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.ContinueNextLine">
+  <short>Start working on the next line (after EOL) from TLazEditCustomRangesHighlighter.CurrentRanges. </short>
+  <descr>Like TLazEditCustomHighlighter.StartAtLineIndex this can be either for scanning or for retrieving info on tokens.
+
+Unlike StartAtLineIndex this will not not call <link id="TLazEditCustomRangesHighlighter.SetRange"/> or <link id="TLazEditCustomRangesHighlighter.ResetRange"/>. ContinueNextLine is an optimised way to go to the next line. It will keep the existing range info as it is. It must therefore only be called if the current line has reached its EOL. In that case the range info will already be as it needs to be for the next line.
+
+ContinueNextLine  will call <link id="TLazEditCustomHighlighter.InitForScaningLine"/>. So any initialisations that are needed on top of the range can be made by inherited highlighters.
+
+After the call the Highlighter is expected to be on the first token of the line. (For GetToken.... calls)
+</descr>
+  <seealso><link id="TLazEditCustomHighlighter.StartAtLineIndex"/><link id="TLazEditCustomHighlighter.LineIndex"/><link id="TLazEditCustomHighlighter.LinePtr"/><link id="TLazEditCustomHighlighter.CurrentLineText"/><link id="TLazEditCustomHighlighter.InitForScaningLine"/><link id="TLazEditCustomRangesHighlighter.SetRange"/><link id="TLazEditCustomRangesHighlighter.ResetRange"/><link id="TLazEditCustomHighlighter.CurrentLines"/><link id="TLazEditCustomRangesHighlighter.CurrentRanges"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.InitForScaningLine">
+  <short>Event for inherited Highlighters to initialise for scanning a line</short>
+  <seealso><link id="TLazEditCustomHighlighter.StartAtLineIndex"/><link id="TLazEditCustomHighlighter.ContinueNextLine"/><link id="TLazEditCustomHighlighter.LineIndex"/><link id="TLazEditCustomHighlighter.LinePtr"/><link id="TLazEditCustomHighlighter.CurrentLineText"/><link id="TLazEditCustomRangesHighlighter.SetRange"/><link id="TLazEditCustomRangesHighlighter.ResetRange"/>
+        </seealso>
+  <descr>Called by TLazEditCustomHighlighter.StartAtLineIndex and TLazEditCustomHighlighter.ContinueNextLine for inherited highlighters to initialise themself for scanning the line.
+
+After the event the Highlighter is expected to be on the first token of the line. (For GetToken.... calls)
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.RequestFullRescan">
+  <short>Inform all SynEdits that they need to call ScanRanges on this Highlighter</short>
+  <descr>If the configuration of any Highlighter changes in such a way that the state kept in the range info for each attached TextBuffer is outdated, then the Highlighter should call this method. It will notify all SynEdits that they should call ScanRanges. And when they next do, their ranges will be fully invalidated an scanned.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.IsInNextToEOL">
+  <short>Flag that the Highlighter only needs to update state info for ranges</short>
+  <descr>When a highlighter scans a line, then it must calculate all properties of each token that affect the state of the ranges info. Some highlighter may however perform additional work that affects the info for "GetToken..." calls, but not the ranges. If the Highlighter performs a NextToEol then "GetToken..." methods wont be called. The highlighter may save time by not computing the extra info.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.SendAttributeChangeNotification">
+  <short>Notify all SynEdits that an Attribute (color setting) has changed</short>
+  <descr>When Attributes are changed, then all SynEdits using the Highlighter need to repaint (invalidate), so the new colors take effect.
+
+If multiple attributes will be changed the user should call BeginUpdate and EndUpdate
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.MergeModifierToTokenAttribute">
+  <short>Helper method for Highlighters using modifier attributes (more than one attribute for one token)</short>
+  <descr>A highlighter may use modifier attributes for some tokens. Such tokens will have a base color that they may share with other tokens (e.g. all comments will use CommentAttribute). The tokens will then have further attributes applied to them (e.g. curly comments may get a faded (alpha channel) text color, or a frame added to the colors given by CommentAttribute.
+
+This method should be used to apply such extra attributes. It can help initialising properties like frame-bounds for the attributes. It also will ensure that all extra attributes can be retrieved using GetTokenAttributeList. If attributes are merged bypassing this method then GetTokenAttributeList will not see them.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.BeginUpdate">
+  <short>Start updating </short>
+<descr>This should be used when updating many settings of a Highlighter, such as the Attributes or other configuration.
+
+While updating some non essential tasks can be deferred to avoid repeating them over and over. This includes sending events on every change. Instead a single event (of each kind) will be sent on EndUpdate.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.EndUpdate">
+  <short>End updating </short>
+</element>
+
+<element name="TLazEditCustomHighlighter.IsUpdating">
+  <short>Indicator for Begin/EndUpdate</short>
+</element>
+<element name="TLazEditCustomHighlighter.Next">
+  <short>Set Highlighter to next token</short>
+  <descr>While scanning or getting token info this will select the next token in the current line. Or set GetEOL to true if the end of line is reached.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.NextToEol">
+  <short>Finish scanning the current line</short>
+  <descr>While scanning the results for individual tokens are not required. This will call Next until the end of line is reached. This will set <link id="TLazEditCustomHighlighter.IsInNextToEOL"/> to allow the highlighter to skip non essential tasks.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.NextToLogX">
+  <short>Call Next until the token at ALogX is reached</short>
+  
+  <descr>If information for a token at a given position (logical pos, 1-based) is needed, this can call next until the requested position is covered by the token:  TokenPos &lt;= ALogX &lt; TokenPos + TokenLength
+
+Before calling NextToLogX the line must be set with TLazEditCustomHighlighter.StartAtLineIndex or TLazEditCustomHighlighter.ContinueNextLine.
+This will continue scanning from the position of the current token. If NextToLogX is called repeatedly with increasing ALogX it does not rescan the tokens at the begin of the line.
+
+If NextToLogX is called with ALogX before the position of the current token then it will fail, unless ARestartLineIfNeeded is true in which case it will restart from the begin of line. ARestartLineIfNeeded will not go back to the begin of line if ALogX is after the position of the current token.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.GetEol">
+  <short>Indicates that the end of line has been reached</short>
+</element>
+<element name="TLazEditCustomHighlighter.DoBeginUpdate">
+  <short>Event for inherited classes when updating starts</short>
+  <descr>DoBeginUpdate is called by <link id="TLazEditCustomHighlighter.BeginUpdate"/>. It is only called if TLazEditCustomHighlighter.IsUpdating was false. Nested BeginUpdate calls do not trigger the event.
+When the event is called IsUpdating will already be set to True.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.DoEndUpdate">
+  <short>Event for inherited classes when updating starts</short>
+  <descr>DoEndUpdate is called by <link id="TLazEditCustomHighlighter.EndUpdate"/>. It is only called if TLazEditCustomHighlighter.IsUpdating became false. Nested EndUpdate calls do not trigger the event.
+When the event is called IsUpdating will already be set to False.
+</descr>
+</element>
+<element name="TLazEditCustomHighlighter.CurrentLineText">
+  <short>The current line as string</short>
+  <descr>The text of the current line (as string) as set by either <link id="TLazEditCustomHighlighter.StartAtLineIndex"/> or  <link id="TLazEditCustomHighlighter.ContinueNextLine"/>
+        </descr><seealso><link id="TLazEditCustomHighlighter.StartAtLineIndex"/><link id="TLazEditCustomHighlighter.ContinueNextLine"/><link id="TLazEditCustomHighlighter.Next"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.LinePtr">
+  <descr>The text of the current line (as PChar) as set by either <link id="TLazEditCustomHighlighter.StartAtLineIndex"/> or  <link id="TLazEditCustomHighlighter.ContinueNextLine"/>
+        </descr>
+  <short>The current line as PChar</short>
+  <seealso><link id="TLazEditCustomHighlighter.StartAtLineIndex"/><link id="TLazEditCustomHighlighter.ContinueNextLine"/><link id="TLazEditCustomHighlighter.Next"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.LineIndex">
+  <short>The index of the current line</short>
+  <descr>The index of the current line as set by either <link id="TLazEditCustomHighlighter.StartAtLineIndex"/> or  <link id="TLazEditCustomHighlighter.ContinueNextLine"/>
+
+This index is 0-based.
+</descr>
+  <seealso><link id="TLazEditCustomHighlighter.StartAtLineIndex"/><link id="TLazEditCustomHighlighter.ContinueNextLine"/><link id="TLazEditCustomHighlighter.Next"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomHighlighter.Create">
+  <short>Create new instance</short>
+</element>
+<element name="TLazEditCustomHighlighter.Destroy">
+  <short>Destroy instance</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetTokenKind">
+  <short>"Kind" (ID) of the current token</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetToken">
+  <short>Text (as string) of the current token</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetTokenPos">
+  <short>X-Position (0-based) of the current token</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetTokenLen">
+  <short>Length (in bytes) of the current token</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetTokenEx">
+  <short>Text (as PChar and length) of the current token</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetTokenAttribute">
+  <short>Primary attribute of the current token</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetTokenAttributeEx">
+  <short>Final (merged) attribute of the current token</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetTokenAttributeList">
+  <short>List of all attributes of the current token</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetEndOfLineAttribute">
+  <short>Primary attribute for the space past the end of line</short>
+</element>
+<element name="TLazEditCustomHighlighter.GetEndOfLineAttributeEx">
+  <short>Final (merged) attribute for the space past the end of line</short>
+</element>
+<element name="TLazEditCustomHighlighter">
+  <short>Base class for all SynEdit highlighters</short>
+  <descr>This class defines the interface of all highlighters for SynEdit.
+
+The interface is mostly based on what was declared in the original SynEdit. But has accumulated some changes.
+It also implements a few common methods.
+
+The LazEdit interface for the highlighter consists of two classes.
+
+<p><b>TLazEditCustomHighlighter</b>
+          </p>
+
+The core interface. This defines the public interface for using a highlighter, scanning, and getting information on the tokens in a line.
+
+This class excludes the "Ranges".
+
+<p><b><link id="TLazEditCustomRangesHighlighter"/>
+            </b>
+          </p>
+
+Defines the interface for state-keeping using ranges.
+</descr><seealso><link id="TLazEditCustomRangesHighlighter"/>
+        </seealso>
+</element>
+<element name="TLazEditCustomRangesHighlighter">
+  <short>Base class for all SynEdit highlighters with ranges (per line state keeping)</short>
+  <descr>This class defines the interface of all highlighters that use ranges.
+
+The interface is mostly based on what was declared in the original SynEdit. But has accumulated some changes.
+It also implements a few common methods.
+
+Ranges
+
+Ranges are a concept used by most of the Highlighters. They allow per line state keeping.
+
+That is, the highlight for the content of any line may depend on previous lines. E.g. a multiline comment must know that a previous line started that comment. To avoid having to scan all lines leading up to the current line (the line that is currently parsed for highlighting), a "range" is stored for each line. The content of the range depends on each specific highlighter class, but there is always a range per line, and it always stores the state of parsing at the begin of the line (which must always be the state from the end of the previous line). This state should contain all information required to start parsing the current line.
+
+The origin of the word "range" is unsure. It likely refers to a substring the text (a "range" defined by a start and end point in the text). However the start and end are not stored themself. Only "being in the range" is stored for the begin of a line. For example a comment would be such a range. The exact start (or end) can be found by scanning the line on which it starts, or ends. If it has started, but not ended on a line, then at the end of that line (as state for the begin of the next line) the highlighter would store that it is in a "comment".
+
+Highlighters can implement anything as range. Ranges can be overlapping, nested, keeping count, ... Highlighters should only store information that is truly required to highlight the current line without re-scanning prior lines. If a the text of a line changes it needs to be rescanned, and all subsequent lines for which the stored range changes will also have to be scanned. Storing to much information can lead to more text having to be scanned when the user edits a line.
+</descr>
+</element>
+<element name="TLazEditCustomRangesHighlighter.GetRangeIdentifier">
+  <short>Unique ID to store the Highlighters ranges on the SynEdit's Textbuffer</short>
+</element>
+<element name="TLazEditCustomRangesHighlighter.CreateRangeList">
+  <short>Create the list to store the ranges</short>
+</element>
+<element name="TLazEditCustomRangesHighlighter.ResetRange">
+  <short>Initialise the range for the first line (LineIndex = 0)</short>
+</element>
+<element name="TLazEditCustomRangesHighlighter.SetRange">
+  <short>Set the range for the start of the current line</short>
+  <descr>SetRange is called when scanning a line starts with <link id="TLazEditCustomHighlighter.StartAtLineIndex"/>. It is not called when using <link id="TLazEditCustomHighlighter.ContinueNextLine"/>, which will leave the current range as it is.
+
+SetRange must initialise the working range with a copy of the range it is given. If the range is an object-instance or pointer to memory, it must not modify the original range's memory. This range could be shared by several lines, and modifying it would then incorrectly affect the other lines too.
+
+</descr>
+</element>
+<element name="TLazEditCustomRangesHighlighter.GetRange">
+  <short>Get the range after reaching the end of the current line</short>
+  <descr>GetRange is called when scanning has reached the end of the current line. The result of GetRange is stored as the state for the begin of the next line.
+
+GetRange should return a copy of the current range. If the range is an object-instance or pointer to memory, then if a range is equal to any existing range, it should return that existing instance. So only that one instance will need to be stored.
+
+The highlighter must return a copy, as the original range on the Highlighter can be used (and be modified) when the next line is scanned. (See  <link id="TLazEditCustomHighlighter.ContinueNextLine"/>)
+</descr>
+</element>
+    </module>
+  </package>
+</fpdoc-descriptions>

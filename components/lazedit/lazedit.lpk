@@ -65,9 +65,10 @@ Additional licenses may be granted in each individual file. See the headers in e
       </Item>
       <Item>
         <Filename Value="lazedittypes.pas"/>
-        <UnitName Value="lazedittypes"/>
+        <UnitName Value="LazEditTypes"/>
       </Item>
     </Files>
+    <LazDoc Paths="docs"/>
     <RequiredPkgs>
       <Item>
         <PackageName Value="LCLBase"/>
