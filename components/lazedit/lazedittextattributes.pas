@@ -1104,7 +1104,9 @@ end;
 
 procedure TLazEditAttributeOwner.RemoveAttribute(AnAttribute: TLazEditTextAttribute);
 begin
+  FAttributes.FreeObjects := False;
   FAttributes.Remove(AnAttribute);
+  FAttributes.FreeObjects := True;
 end;
 
 procedure TLazEditAttributeOwner.FreeHighlighterAttributes;
