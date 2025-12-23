@@ -142,11 +142,9 @@ type
 
   TSynCustomHighlighter = class(TLazEditCustomRangesHighlighter)
   private
-    fAttributes: TObjectList;
     fAttrChangeHooks: TMethodList;
     FCapabilities: TSynHighlighterCapabilities;
     FDrawDividerLevel: Integer;
-    fUpdateCount: integer;                                                      //mh 2001-09-13
     fEnabled: Boolean;
     fWordBreakChars: TSynIdentChars;
     FIsScanning: Boolean;
