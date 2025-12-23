@@ -25,7 +25,7 @@ unit markdown.canvasrender;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, Graphics, Types, MarkDown.Elements, MarkDown.Parser, MarkDown.Render, LazUTF8;
+  SysUtils, Classes, Contnrs, Graphics, Types, MarkDown.Elements, MarkDown.Parser, MarkDown.Render, Markdown.HTMLEntities, LazUTF8;
 
 type
   TLayoutItemKind = (
@@ -189,7 +189,9 @@ type
 
     // Selection support
     FSelectionColor: TColor;
+    FHTMLEntities : TFPStringHashTable;
 
+  Protected
     // Selection methods
     procedure ClearAllSelections;
     procedure ApplySelection(const aStartPoint, aEndPoint: TSelectionPoint);
@@ -220,13 +222,15 @@ type
       const aContext : TFontContext): LongInt;
 
     // Text layout
+    procedure CollectHTMLEntities;
+    function ResolveEntities(const aText: String): String; virtual;
     procedure FlushTextRun(const aCanvas: TCanvas; const aText: utf8string; const aFontSize: LongInt;
       const aFontStyle: TFontStyles; const aLinkHref: utf8string; const aContext : TFontContext;
-      const aDryRun: boolean);
+      const aDryRun: boolean); virtual;
     procedure LayoutTextWrapped(const aCanvas: TCanvas; const aText: utf8string; const aFontSize: LongInt;
       const aFontStyle: TFontStyles; const aLinkHref: utf8string; const aContext : TFontContext;
-      const aPreserveWhitespace, aDryRun: boolean);
-    function LayoutImage(aImageURL: UTF8String): Boolean;
+      const aPreserveWhitespace, aDryRun: boolean); virtual;
+    function LayoutImage(aImageURL: UTF8String): Boolean; virtual;
 
     // Block rendering
     procedure RenderTextNode(aTextNode: TMarkDownTextNode; aFontSize: LongInt; aFontStyle: TFontStyles; const aContext : TFontContext);
@@ -541,6 +545,7 @@ constructor TMarkDownCanvasRenderer.Create(aOwner: TComponent);
 
 begin
   inherited Create(aOwner);
+  FHTMLEntities:=TFPStringHashTable.Create;
   FImageCache:=TFPObjectHashTable.Create(True);
   FBullets[1]:='•';
   FBullets[2]:='◦';
@@ -577,6 +582,7 @@ end;
 
 destructor TMarkDownCanvasRenderer.Destroy;
 begin
+  FreeAndNil(FHTMLEntities);
   FreeAndNil(FImageCache);
   FreeAndNil(FLists.Items);
   FreeAndNil(FLists.LinkRects);
@@ -1411,18 +1417,77 @@ begin
     FLayout.LineHeight:=lImage.Height;
 end;
 
+procedure TMarkDownCanvasRenderer.CollectHTMLEntities;
+var
+  Ent : THTMLEntityDef;
+begin
+  for ent in EntityDefList do
+    FHTMLEntities.Add(ent.e,Utf8Encode(ent.u));
+end;
+
+Function TMarkDownCanvasRenderer.ResolveEntities(const aText : String) : String;
+
+
+  procedure copytoresult(aEnd,aStart : Integer);
+  begin
+    Result:=Result+Copy(aText,aStart,aEnd-aStart+1);
+  end;
+
+var
+  lend,lPrev,lNext,lUnicode : Integer;
+  lUChar : UnicodeChar;
+  lEnt,lUTF8 : String;
+
+begin
+  if FHTMLEntities.Count=0 then
+    CollectHTMLEntities;
+  lPrev:=1;
+  lNext:=Pos('&',aText,1);
+  if lNext=0 then
+    Exit(aText);
+  Result:='';
+  While lNext>0 do
+    begin
+    lUTF8:='';
+    CopyToResult(lNext-1,lPrev);
+    lEnd:=Pos(';',aText,lNext+1);
+    lEnt:=Copy(aText,lNext+1,lEnd-lNext-1);
+    if (lEnt<>'') then
+      begin
+      if lEnt[1]<>'#' then
+        lUTF8:=FHTMLEntities.Items[LowerCase(lEnt)]
+      else if TryStrToInt(Copy(lEnt,2,Length(lEnt)-1),lUnicode) then
+        begin
+        if (lUnicode=0) or (lUnicode>65535) then
+          lUChar:=#$FFFD
+        else
+          lUChar:=UnicodeChar(lUnicode);
+        lUTF8:=Utf8Encode(lUChar);
+        end;
+      lNext:=lEnd;
+      end;
+    if lUTF8='' then
+      Result:=Result+lEnt+';'
+    else
+      Result:=Result+lUTF8;
+    lPrev:=lNext+1;
+    lNext:=Pos('&',aText,lPrev);
+    end;
+  CopyToResult(Length(aText),lPrev+1);
+end;
+
 procedure TMarkDownCanvasRenderer.RenderTextNode(aTextNode: TMarkDownTextNode; aFontSize: LongInt;
   aFontStyle: TFontStyles; const aContext : TFontContext);
 var
   fontStyle: TFontStyles;
-  linkHref: utf8string;
+  lText,linkHref: utf8string;
   lContext : TFontContext;
   Alt : string;
 begin
   if not assigned(aTextNode) then exit;
   lContext:=aContext;
   fontStyle:=aFontStyle + GetNodeFontStyle(aTextNode);
-
+  lText:=ResolveEntities(aTextNode.NodeText);
   linkHref:='';
   if aTextNode.Kind = nkCode then
     lContext:=lContext+[fcMono,fcCode];
@@ -1432,24 +1497,24 @@ begin
       begin
       if fcCode in lContext then
         begin
-        FlushTextRun(fCanvas, aTextNode.NodeText, aFontSize, fontStyle, '', lContext, False);
+        FlushTextRun(fCanvas, lText, aFontSize, fontStyle, '', lContext, False);
         NewLine(fCanvas);
         end
       else
-        LayoutTextWrapped(fCanvas, aTextNode.NodeText, aFontSize, fontStyle, linkHref, lContext, false, False);
+        LayoutTextWrapped(fCanvas, lText, aFontSize, fontStyle, linkHref, lContext, false, False);
       end;
     nkLineBreak:
       NewLine(fCanvas);
     nkURI, nkEmail:
       begin
       linkHref:=aTextNode.Attrs['href'];
-      LayoutTextWrapped(fCanvas, aTextNode.NodeText, aFontSize, fontStyle + [fsUnderline], linkHref,
+      LayoutTextWrapped(fCanvas, lText, aFontSize, fontStyle + [fsUnderline], linkHref,
         lContext+[fcHyperLink], False, False);
       end;
     nkImg:
       if Not LayoutImage(aTextNode.Attrs['src']) then
         begin
-        Alt:=aTextNode.Attrs['alt'];
+        Alt:=ResolveEntities(aTextNode.Attrs['alt']);
         if Alt='' then
           Alt:='img';
         LayoutTextWrapped(fCanvas, '['+Alt+']', aFontSize, fontStyle, '', lContext+[fcQuote], False, False);

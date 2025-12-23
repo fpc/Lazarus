@@ -4,6 +4,7 @@
 ## Plain text and bullet lists
 
 This is some plain text with a [website link](https://www.freepascal.org) embedded. It will open when clicked.
+We also support &quot;HTML entities&quot; and UTF8 escapes such as &#36825;&#20010;...
 
 * **a** - Length of alphabet **A** . This is going to be a very long line to see how line wrappping is handled in bullet lists. It *should* be handled gracefully.
    * indented bullet 1. *Again* a very long line to see line wrappping is handled in bullet lists. It should be handled   gracefully.
