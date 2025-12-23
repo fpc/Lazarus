@@ -333,6 +333,7 @@ type
   protected
     procedure AddAttribute(AnAttribute: TLazEditTextAttribute); virtual;
     procedure RemoveAttribute(AnAttribute: TLazEditTextAttribute); virtual;
+    procedure FreeHighlighterAttributes;
     function GetAttribCount: integer; virtual;
     function GetAttribute(AnIndex: integer): TLazEditTextAttribute; virtual;
   public
@@ -1104,6 +1105,11 @@ end;
 procedure TLazEditAttributeOwner.RemoveAttribute(AnAttribute: TLazEditTextAttribute);
 begin
   FAttributes.Remove(AnAttribute);
+end;
+
+procedure TLazEditAttributeOwner.FreeHighlighterAttributes;
+begin
+  FAttributes.Clear;
 end;
 
 constructor TLazEditAttributeOwner.Create(AOwner: TComponent);
