@@ -262,10 +262,14 @@ type
   TShapePointsEvent = procedure (Sender: TObject; var Points: TPointArray;
     var Winding: Boolean) of object;
 
+  { TCustomShape }
+
   TCustomShape = class(TGraphicControl)
   private
     FPen: TPen;
     FBrush: TBrush;
+    FRoundRectHorizontalRadius: Integer;
+    FRoundRectVerticalRadius: Integer;
     FShape: TShapeType;
     FBitmapCopy: TBitmap; // For testing if a mouse click is on the actual shape.
     FOnShapeClick: TNotifyEvent;
@@ -287,6 +291,8 @@ type
     function PtInShape(const P: TPoint): Boolean;
     procedure Paint; override;
     procedure StyleChanged(Sender: TObject);
+    Property RoundRectHorizontalRadius : Integer Read FRoundRectHorizontalRadius Write FRoundRectHorizontalRadius default 0;
+    Property RoundRectVerticalRadius : Integer Read FRoundRectVerticalRadius Write FRoundRectVerticalRadius default 0;
     property Brush: TBrush read FBrush write SetBrush;
     property Pen: TPen read FPen write SetPen;
     property Shape: TShapeType read FShape write SetShape default stRectangle;

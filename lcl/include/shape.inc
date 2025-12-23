@@ -73,7 +73,7 @@ const
   cStarError = 2; // Detect N pixels error for 5-star horizontal lines
 var
   PaintRect: TRect;
-  MinSize: Longint;
+  lHorz,lVert,MinSize: Longint;
   P: array of TPoint;
   PenInc, PenDec: Integer;
   PolygonWinding: Boolean;
@@ -102,7 +102,15 @@ begin
     stRectangle, stSquare:
       ACanvas.Rectangle(PaintRect);
     stRoundRect, stRoundSquare:
-      ACanvas.RoundRect(PaintRect, MinSize div 4, MinSize div 4);
+      begin
+      lHorz:=RoundRectHorizontalRadius;
+      if lHorz=0 then
+        lHorz:=MinSize div 4;
+      lVert:=RoundRectVerticalRadius;
+      if lVert=0 then
+        lVert:=MinSize div 4;
+      ACanvas.RoundRect(PaintRect, lHorz, lVert);
+      end;
     stCircle, stEllipse:
       ACanvas.Ellipse(PaintRect);
     stSquaredDiamond, stDiamond:
