@@ -24,7 +24,7 @@ unit LazEditTextAttributes;
 interface
 
 uses
-  Classes, SysUtils, Math, Graphics, LazMethodList;
+  Classes, SysUtils, Math, fgl, Graphics, LazMethodList;
 
 type
   // TODO: TLazEditDisplayTokenBound is not yet supporting wrapped text - The Physical value may change
@@ -322,10 +322,25 @@ type
     property StyleMask stored GetStyleMaskStored;
   end;
 
+  { TLazEditAttributeOwner }
+
   TLazEditAttributeOwner = class(TComponent)
+  strict private type
+    TAttributeList = specialize TFPGObjectList<TLazEditTextAttribute>;
+  strict private
+    FAttributes: TAttributeList;
+
   protected
-    procedure AddAttribute(AAttrib: TLazEditTextAttribute); virtual; abstract;
-    procedure RemoveAttribute(AAttrib: TLazEditTextAttribute); virtual; abstract;
+    procedure AddAttribute(AnAttribute: TLazEditTextAttribute); virtual;
+    procedure RemoveAttribute(AnAttribute: TLazEditTextAttribute); virtual;
+    function GetAttribCount: integer; virtual;
+    function GetAttribute(AnIndex: integer): TLazEditTextAttribute; virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    property AttrCount: integer read GetAttribCount;
+    property Attribute[AnIndex: integer]: TLazEditTextAttribute read GetAttribute;
   end;
 
   { TLazEditTextAttributeModifierCollectionItem }
@@ -1066,6 +1081,41 @@ begin
   inherited InternalSaveDefaultValues;
   FDefaultAlpha         := FAlpha;
   FDefaultStyleMask     := FStyleMask;
+end;
+
+{ TLazEditAttributeOwner }
+
+function TLazEditAttributeOwner.GetAttribCount: integer;
+begin
+  Result := FAttributes.Count;
+end;
+
+function TLazEditAttributeOwner.GetAttribute(AnIndex: integer): TLazEditTextAttribute;
+begin
+  Result := FAttributes[AnIndex];
+end;
+
+procedure TLazEditAttributeOwner.AddAttribute(AnAttribute: TLazEditTextAttribute);
+begin
+  if AnAttribute <> nil then
+    FAttributes.Add(AnAttribute);
+end;
+
+procedure TLazEditAttributeOwner.RemoveAttribute(AnAttribute: TLazEditTextAttribute);
+begin
+  FAttributes.Remove(AnAttribute);
+end;
+
+constructor TLazEditAttributeOwner.Create(AOwner: TComponent);
+begin
+  FAttributes := TAttributeList.Create(True);
+  inherited Create(AOwner);
+end;
+
+destructor TLazEditAttributeOwner.Destroy;
+begin
+  inherited Destroy;
+  FAttributes.Free; // will free all attributes
 end;
 
 { TLazEditTextAttributeModifierCollectionItem }

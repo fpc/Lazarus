@@ -231,7 +231,6 @@ destructor TSynTextMateSyn.Destroy;
 begin
   FTextMateGrammar.ClearGrammar;
   FTextMateGrammar.Free;
-  FreeHighlighterAttributes;
   FAttriMap.Clear;
   FAttriMap.Free;
   inherited Destroy;
