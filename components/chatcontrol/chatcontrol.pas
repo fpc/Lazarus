@@ -1023,6 +1023,8 @@ begin
    tsLeft : lPos.X:=4;
    tsRight : lPos.X:=TextLabel.Parent.Width-lSize.X-2*aPadding-aMargin;
   end;
+  TextBackground.RoundRectHorizontalRadius:=aPadding;
+  TextBackground.RoundRectVerticalRadius:=aPadding;
   TextBackground.SetBounds(lPos.X,lpos.Y,lSize.X+2*aPadding,lSize.Y+2*aPadding);
   TextLabel.Left:=lPos.X+aPadding;
   TextLabel.Top:=lPos.Y+aPadding;
@@ -1149,6 +1151,8 @@ begin
    tsLeft : lPos.X:=4;
    tsRight : lPos.X:=FControl.Parent.Width-lSize.X-2*aPadding-aMargin;
   end;
+  TextBackground.RoundRectHorizontalRadius:=aPadding;
+  TextBackground.RoundRectVerticalRadius:=aPadding;
   TextBackground.SetBounds(lPos.X,lpos.Y,lSize.X+2*aPadding,lSize.Y+2*aPadding);
   FControl.Left:=lPos.X+aPadding;
   FControl.Top:=lPos.Y+aPadding;
