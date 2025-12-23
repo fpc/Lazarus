@@ -37,7 +37,8 @@ uses
   // LazUtils
   LazFileUtils, LazLoggerBase,
   // IdeIntf
-  IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf, IDEWindowIntf,
+  CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf, IDEWindowIntf,
+  IDEDialogs, IdeIntfStrConsts,
   // IdeUtils
   IdeUtilsPkgStrConsts,
   // IdeConfig
@@ -234,6 +235,8 @@ begin
   end;
   BMList:=TBuildModesCheckList.Create(DlgCapt);
   try
+    BMList.ButtonPanel1.OKButton.Caption:=lisYes;
+    BMList.ButtonPanel1.CancelButton.Caption:=lisNo;
     if Project1.BuildModes.Count > 1 then
     begin
       BMList.SelectAll;
