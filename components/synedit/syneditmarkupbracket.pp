@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, SynEditMarkup, SynEditMiscClasses, SynEditTypes,
-  LazEditTextAttributes;
+  LazSynEditText, LazEditTextAttributes, LazEditMatchingBracketUtils, LazEditTypes;
 
 type
   TSynEditBracketHighlightStyle = (
@@ -35,18 +35,22 @@ type
     sbhsRightOfCursor,
     sbhsBoth
   );
+
   { TSynEditMarkupBracket }
 
   TSynEditMarkupBracket = class(TSynEditMarkup)
   private
     // Physical Position
-    FBracketHighlightPos: TPoint;
-    FBracketHighlightAntiPos: TPoint;
+    FBracketHighlightPos: TLogTokenPos;
+    FBracketHighlightAntiPos: TLogTokenPos;
     FHighlightStyle: TSynEditBracketHighlightStyle;
     FNeedInvalidate: Boolean;
+    FBracketChars: Tcharset;
     procedure SetHighlightStyle(const AValue: TSynEditBracketHighlightStyle);
+    procedure DoHighlighterChanged(pSender: TSynEditStrings; pIndex, pCount: Integer);
   protected
-    procedure FindMatchingBracketPair(LogCaret: TPoint; var StartBracket, EndBracket: TPoint); virtual;
+    procedure SetLines(const AValue: TSynEditStringsLinked); override;
+    procedure FindMatchingBracketPair(LogCaret: TPoint; var StartBracket, EndBracket: TLogTokenPos); virtual;
     procedure DoCaretChanged(Sender: TObject); override;
     procedure DoTextChanged(StartLine, EndLine, ACountDiff: Integer); override;
     procedure DoMarkupChanged(AMarkup: TLazEditTextAttribute); override;
@@ -54,6 +58,7 @@ type
     procedure DoVisibleChanged(AVisible: Boolean); override;
   public
     constructor Create(ASynEdit: TSynEditBase);
+    destructor Destroy; override;
     procedure DecPaintLock; override;
 
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
@@ -82,6 +87,14 @@ begin
   MarkupInfo.Background := clNone;
   MarkupInfo.Style := [fsBold];
   MarkupInfo.StyleMask := [];
+  FBracketChars := GetBracketCharSet(SynEdit.Highlighter);
+end;
+
+destructor TSynEditMarkupBracket.Destroy;
+begin
+  if Lines <> nil then
+    Lines.RemoveChangeHandler(senrHighlightChanged, @DoHighlighterChanged);
+  inherited Destroy;
 end;
 
 procedure TSynEditMarkupBracket.DecPaintLock;
@@ -101,13 +114,29 @@ begin
   end;
 end;
 
+procedure TSynEditMarkupBracket.DoHighlighterChanged(pSender: TSynEditStrings; pIndex,
+  pCount: Integer);
+begin
+  if pIndex < 0 then
+    FBracketChars := GetBracketCharSet(SynEdit.Highlighter);
+end;
+
+procedure TSynEditMarkupBracket.SetLines(const AValue: TSynEditStringsLinked);
+begin
+  if Lines <> nil then
+    Lines.RemoveChangeHandler(senrHighlightChanged, @DoHighlighterChanged);
+  inherited SetLines(AValue);
+  if Lines <> nil then
+    Lines.AddChangeHandler(senrHighlightChanged, @DoHighlighterChanged);
+end;
+
 procedure TSynEditMarkupBracket.FindMatchingBracketPair(LogCaret: TPoint; var StartBracket,
-  EndBracket: TPoint);
-const
-  Brackets: set of Char = ['(',')','{','}','[',']', '''', '"' ];
+  EndBracket: TLogTokenPos);
+//const
+//  Brackets: set of Char = ['(',')','{','}','[',']', '''', '"' ];
 var
-  StartLine: string;
-  x: Integer;
+  StartLine: String;
+  dir: TLazEditBracketSearchDirection;
 begin
   StartBracket.Y := -1;
   EndBracket.Y := -1;
@@ -115,34 +144,34 @@ begin
     Exit;
 
   StartLine := Lines[LogCaret.Y - 1];
-
-  // check for bracket, left of cursor
-  if (HighlightStyle in [sbhsLeftOfCursor, sbhsBoth]) and (LogCaret.x > 1) then
-  begin
-    x := Lines.LogicPosAddChars(StartLine, LogCaret.x, -1);
-    if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
-    begin
-      StartBracket := LogCaret;
-      StartBracket.x := x;
-      EndBracket := SynEdit.FindMatchingBracketLogical(StartBracket, False, False, False, False);
-      if EndBracket.y < 0 then
-        StartBracket.y := -1;
-      Exit;
+  case HighlightStyle of
+    sbhsLeftOfCursor:  begin
+      dir := bsdLeft;
+      if (LogCaret.X < 2) or (LogCaret.X-1 > Length(StartLine)) or
+         not (StartLine[LogCaret.X-1] in FBracketChars)
+      then
+        exit;
+    end;
+    sbhsRightOfCursor: begin
+      dir := bsdRightOrPartRight;
+      if (LogCaret.X > Length(StartLine)) or (not (StartLine[LogCaret.X] in FBracketChars)) then
+        exit;
+    end;
+    sbhsBoth:          begin
+      if not(
+        ( (LogCaret.X <= Length(StartLine)) and (StartLine[LogCaret.X] in FBracketChars) ) or
+        ( (LogCaret.X > 1) and (LogCaret.X-1 <= Length(StartLine)) and (StartLine[LogCaret.X-1] in FBracketChars) )
+      )
+      then
+        exit;
+      dir := bsdLeftThenRight;
     end;
   end;
 
-  // check for bracket after caret
-  if (HighlightStyle in [sbhsRightOfCursor, sbhsBoth]) then
-  begin
-    x := LogCaret.x ;
-    if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
-    begin
-      StartBracket := LogCaret;
-      EndBracket := SynEdit.FindMatchingBracketLogical(LogCaret, False, False, False, False);
-      if EndBracket.y < 0 then
-        StartBracket.y := -1;
-    end;
-  end;
+  StartBracket := LogCaret;
+  EndBracket := SynEdit.FindMatchingBracketLogical(StartBracket, dir, False, False, False);
+  if EndBracket.y < 0 then
+    StartBracket.y := -1;
 end;
 
 procedure TSynEditMarkupBracket.DoCaretChanged(Sender: TObject);
@@ -175,7 +204,7 @@ end;
 
 procedure TSynEditMarkupBracket.InvalidateBracketHighlight;
 var
-  NewPos, NewAntiPos, SwapPos : TPoint;
+  NewPos, NewAntiPos, SwapPos : TLogTokenPos;
 begin
   FNeedInvalidate := True;
   if (Caret = nil) or (not SynEdit.HandleAllocated) or (FPaintLock > 0) or
@@ -233,8 +262,12 @@ function TSynEditMarkupBracket.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
 begin
   Result := nil;
-  if ((FBracketHighlightPos.y = aRow) and  (FBracketHighlightPos.x = aStartCol.Logical))
-  or ((FBracketHighlightAntiPos.y = aRow) and  (FBracketHighlightAntiPos.x = aStartCol.Logical))
+  if ((FBracketHighlightPos.y = aRow) and  (aStartCol.Logical >= FBracketHighlightPos.x) and
+      (aStartCol.Logical < FBracketHighlightPos.x + FBracketHighlightPos.Len)
+     )
+  or ((FBracketHighlightAntiPos.y = aRow) and (aStartCol.Logical >= FBracketHighlightAntiPos.x) and
+      (aStartCol.Logical < FBracketHighlightAntiPos.x + FBracketHighlightAntiPos.Len)
+     )
   then begin
     Result := MarkupInfo;
     MarkupInfo.SetFrameBoundsLog(aStartCol.Logical, aStartCol.Logical + 1); // bracket is alvays 1 byte
@@ -250,16 +283,16 @@ begin
   if (FBracketHighlightPos.y = aRow) then begin
     if  (FBracketHighlightPos.x > aStartCol.Logical )
     then ANextLog := FBracketHighlightPos.x
-    else if  (FBracketHighlightPos.x + 1 > aStartCol.Logical )
-    then ANextLog := FBracketHighlightPos.x + 1; // end of bracket
+    else if  (FBracketHighlightPos.x + FBracketHighlightPos.Len > aStartCol.Logical )
+    then ANextLog := FBracketHighlightPos.x + FBracketHighlightPos.Len; // end of bracket
   end;
   if (FBracketHighlightAntiPos.y = aRow) then begin
     if  (FBracketHighlightAntiPos.x > aStartCol.Logical )
     and ((FBracketHighlightAntiPos.x < ANextLog) or (ANextLog < 0))
     then ANextLog := FBracketHighlightAntiPos.x
-    else if  (FBracketHighlightAntiPos.x + 1 > aStartCol.Logical )
-    and ((FBracketHighlightAntiPos.x + 1 < ANextLog) or (ANextLog < 0))
-    then ANextLog := FBracketHighlightAntiPos.x + 1;
+    else if  (FBracketHighlightAntiPos.x + FBracketHighlightAntiPos.Len > aStartCol.Logical )
+    and ((FBracketHighlightAntiPos.x + FBracketHighlightAntiPos.Len < ANextLog) or (ANextLog < 0))
+    then ANextLog := FBracketHighlightAntiPos.x + FBracketHighlightAntiPos.Len;
   end
 end;
 

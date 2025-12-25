@@ -140,11 +140,10 @@ uses
   SynEditTextTrimmer, SynEditTextTabExpander, SynEditTextDoubleWidthChars,
   SynEditFoldedView,
   // Gutter
-  SynGutterBase, SynGutter,
-  SynEditMiscClasses, SynEditHighlighter, LazSynTextArea,
+  SynGutterBase, SynGutter, SynEditMiscClasses, SynEditHighlighter, LazSynTextArea,
   SynEditTextBidiChars, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
-  SynGutterMarks, SynGutterLineOverview,
-  LazEditMiscProcs, LazEditTextAttributes, LazEditTextGridPainter;
+  SynGutterMarks, SynGutterLineOverview, LazEditMiscProcs, LazEditTextAttributes,
+  LazEditTextGridPainter, LazEditMatchingBracketUtils, LazEditTypes, LazEditHighlighter;
 
 const
   // SynDefaultFont is determined in InitSynDefaultFont()
@@ -902,7 +901,7 @@ type
     function GetCanRedo: Boolean; override;
     function GetCanUndo: Boolean; override;
     function GetCaretObj: TSynEditCaret; override;
-    function GetHighlighterObj: TObject; override;
+    function GetHighlighterObj: TLazEditCustomHighlighter; override;
     function GetMarksObj: TObject; override;
     function GetSelectedColor : TSynHighlighterAttributesModifier; override;
     function GetTextViewsManager: TSynTextViewsManager; override;
@@ -1176,6 +1175,12 @@ type
                                         StartIncludeNeighborChars, MoveCaret,
                                         SelectBrackets, OnlyVisible: Boolean
                                        ): TPoint; override; // Returns Logical
+    function FindMatchingBracketLogical(var LogicalStartBracket: TLogTokenPos;
+                                        SearchSide: TLazEditBracketSearchDirection;
+                                        MoveCaret: Boolean = False;
+                                        SelectBrackets: Boolean = False;
+                                        OnlyVisible: Boolean = False
+                                       ): TLogTokenPos; override; // Returns Logical
     //code fold
     procedure CodeFoldAction(iLine: integer); deprecated;
     procedure UnfoldAll; deprecated;
@@ -3055,7 +3060,7 @@ begin
   result := fMarkupHighAll.MarkupInfo;
 end;
 
-function TCustomSynEdit.GetHighlighterObj: TObject;
+function TCustomSynEdit.GetHighlighterObj: TLazEditCustomHighlighter;
 begin
   Result := fHighlighter;
 end;
@@ -10180,83 +10185,25 @@ end;
 
 function TCustomSynEdit.FindMatchingBracketLogical(LogicalStartBracket: TPoint;
   StartIncludeNeighborChars, MoveCaret, SelectBrackets, OnlyVisible: Boolean): TPoint;
-// returns physical (screen) position of end bracket
-const
-  // keep the ' last
-  Brackets: array[0..7] of char = ('(', ')', '[', ']', '{', '}', '''', '"');
-type
-  TokenPos = Record X: Integer; Attr: Integer; end;
 var
-  Line, s1: string;
+  dir: TLazEditBracketSearchDirection;
+  p: TLogTokenPos;
+begin
+  dir := bsdRightOrPartRight;
+  if StartIncludeNeighborChars then
+    dir := bsdRightThenLeft;
+
+  p := LogicalStartBracket;
+  Result := FindMatchingBracketLogical(p, dir,
+      MoveCaret, SelectBrackets, OnlyVisible);
+  LogicalStartBracket := p;
+end;
+
+function TCustomSynEdit.FindMatchingBracketLogical(var LogicalStartBracket: TLogTokenPos;
+  SearchSide: TLazEditBracketSearchDirection; MoveCaret: Boolean; SelectBrackets: Boolean;
+  OnlyVisible: Boolean): TLogTokenPos;
+var
   PosX, PosY: integer;
-  StartPt: TPoint;
-  // for ContextMatch
-  BracketKind, TmpStart: Integer;
-  SearchingForward: Boolean;
-  TmpAttr : TLazEditTextAttribute;
-  // for IsContextBracket
-  MaxKnownTokenPos, LastUsedTokenIdx, TokenListCnt: Integer;
-  TokenPosList: Array of TokenPos;
-
-  // remove all text, that is not of desired attribute
-  function IsContextBracket: boolean;
-  var
-    i, l: Integer;
-  begin
-    if not assigned(fHighlighter) then exit(true);
-    if PosX > MaxKnownTokenPos then begin
-      // Token is not yet known
-      l := Length(TokenPosList);
-      if l < max(CharsInWindow * 2, 32) then begin
-        l := max(CharsInWindow * 2, 32);
-        SetLength(TokenPosList, l);
-      end;
-      // Init the Highlighter only once per line
-      if MaxKnownTokenPos < 1 then begin
-        fHighlighter.CurrentLines := FTheLinesView;
-        fHighlighter.StartAtLineIndex(PosY - 1);
-        TokenListCnt := 0;
-      end
-      else
-        fHighlighter.Next;
-      i := TokenListCnt;
-      while not fHighlighter.GetEol do begin
-        if i >= l then begin
-          l := l * 4;
-          SetLength(TokenPosList, l);
-        end;
-        TokenPosList[i].X := fHighlighter.GetTokenPos + 1;
-        TokenPosList[i].Attr := fHighlighter.GetTokenKind;
-        if TokenPosList[i].X > PosX then begin
-          TokenListCnt := i + 1;
-          MaxKnownTokenPos := TokenPosList[i].X;
-          Result := TokenPosList[i-1].Attr = BracketKind;
-          LastUsedTokenIdx := i; // -1; TODO: -1 only if searching backwards
-          exit;
-        end;
-        inc(i);
-        fHighlighter.Next;
-      end;
-      MaxKnownTokenPos := Length(Line) + 1;             // 1 based end+1 of last token (start pos of none existing after eol token)
-      if i >= l then begin
-        l := l * 4;
-        SetLength(TokenPosList, l);
-      end;
-      TokenPosList[i].X := MaxKnownTokenPos;
-      TokenListCnt := i + 1;
-      Result := (i > 0) and (TokenPosList[i-1].Attr = BracketKind);
-      LastUsedTokenIdx := i; // -1; TODO: -1 only if searching backwards
-      exit;
-    end;
-
-    // Token is in previously retrieved values
-    i := LastUsedTokenIdx;
-    while (i > 0) and (TokenPosList[i].X > PosX) do
-      dec(i);
-    Result := TokenPosList[i].Attr = BracketKind;
-    if not SearchingForward then
-      LastUsedTokenIdx := i;
-  end;
 
   procedure DoMatchingBracketFound;
   var
@@ -10267,175 +10214,25 @@ var
 
     if SelectBrackets then begin
       EndPt:=Result;
-      if (EndPt.Y < StartPt.Y)
-        or ((EndPt.Y = StartPt.Y) and (EndPt.X < StartPt.X)) then
+      if (EndPt.Y < LogicalStartBracket.Y)
+        or ((EndPt.Y = LogicalStartBracket.Y) and (EndPt.X < LogicalStartBracket.X)) then
       begin
-        inc(StartPt.x);
-        SetCaretAndSelection(LogicalToPhysicalPos(StartPt), EndPt, StartPt);
+        inc(LogicalStartBracket.x);
+        SetCaretAndSelection(LogicalToPhysicalPos(LogicalStartBracket), EndPt, LogicalStartBracket);
       end
       else begin
         inc(EndPt.x);
-        SetCaretAndSelection(LogicalToPhysicalPos(StartPt), StartPt, EndPt);
+        SetCaretAndSelection(LogicalToPhysicalPos(LogicalStartBracket), LogicalStartBracket, EndPt);
       end;
     end
     else if MoveCaret then
       LogicalCaretXY := Result;
   end;
 
-  procedure DoFindMatchingQuote(q: char);
-  var
-    Test: char;
-    Len, PrevPosX, PrevCnt: integer;
-  begin
-    StartPt:=Point(PosX,PosY);
-    GetHighlighterAttriAtRowColEx(StartPt, s1, BracketKind, TmpStart, TmpAttr);
-    // Checck if we have a complete token, e.g. Highlightec returned entire "string"
-    if (TmpStart = PosX) and (Length(s1)>1) and (s1[Length(s1)] = q) then begin
-      PosX := PosX + Length(s1) - 1;
-      DoMatchingBracketFound;
-      exit;
-    end;
-    if (TmpStart + Length(s1) - 1 = PosX) and (Length(s1)>1) and (s1[1] = q) then begin
-      PosX := PosX - Length(s1) + 1;
-      DoMatchingBracketFound;
-      exit;
-    end;
-
-    MaxKnownTokenPos := 0;
-    Len := PosX;
-    PrevPosX := -1;
-    PrevCnt := 0;
-    // search until start of line
-    SearchingForward := False;
-    while PosX > 1 do begin
-      Dec(PosX);
-      Test := Line[PosX];
-      if (Test = q) and IsContextBracket then begin
-        inc(PrevCnt);
-        if PrevPosX < 0 then PrevPosX := PosX;
-      end;
-    end;
-    // 1st, 3rd, 5th, ... are opening
-    if (PrevPosX > 0) and (PrevCnt mod 2 = 1) then begin
-      PosX := PrevPosX;
-      DoMatchingBracketFound;
-      exit;
-    end;
-
-    PosX := Len;
-    Len := Length(Line);
-    SearchingForward := True;
-    LastUsedTokenIdx := TokenListCnt;
-    while PosX < Len do begin
-      Inc(PosX);
-      Test := Line[PosX];
-      if (Test = q) and IsContextBracket then begin
-        DoMatchingBracketFound;
-        exit;
-      end;
-    end;
-
-    if (PrevPosX > 0) then begin
-      PosX := PrevPosX;
-      DoMatchingBracketFound;
-      exit;
-    end;
-  end;
-
-  procedure DoFindMatchingBracket(i: integer);
-  var
-    Test, BracketInc, BracketDec: char;
-    NumBrackets, Len: integer;
-  begin
-    StartPt:=Point(PosX,PosY);
-    GetHighlighterAttriAtRowColEx(StartPt, s1, BracketKind, TmpStart, TmpAttr);
-    MaxKnownTokenPos := 0;
-    BracketInc := Brackets[i];
-    BracketDec := Brackets[i xor 1]; // 0 -> 1, 1 -> 0, ...
-    // search for the matching bracket (that is until NumBrackets = 0)
-    NumBrackets := 1;
-    if Odd(i) then begin
-      // closing bracket -> search opening bracket
-      SearchingForward := False;
-      repeat
-        // search until start of line
-        while PosX > 1 do begin
-          Dec(PosX);
-          Test := Line[PosX];
-          if (Test = BracketInc) and IsContextBracket then
-            Inc(NumBrackets)
-          else if (Test = BracketDec) and IsContextBracket then begin
-            Dec(NumBrackets);
-            if NumBrackets = 0 then begin
-              DoMatchingBracketFound;
-              exit;
-            end;
-          end;
-        end;
-        // get previous line if possible
-        if PosY = 1 then break;
-        Dec(PosY);
-        if OnlyVisible
-        and ((PosY<TopLine) or (PosY > PartialBottomLine))
-        then
-          break;
-        Line := FTheLinesView[PosY - 1];
-        MaxKnownTokenPos := 0;
-        PosX := Length(Line) + 1;
-      until FALSE;
-    end else begin
-      // opening bracket -> search closing bracket
-      SearchingForward := True;
-      repeat
-        // search until end of line
-        Len := Length(Line);
-        while PosX < Len do begin
-          Inc(PosX);
-          Test := Line[PosX];
-          if (Test = BracketInc) and IsContextBracket then
-            Inc(NumBrackets)
-          else if (Test = BracketDec) and IsContextBracket then begin
-            Dec(NumBrackets);
-            if NumBrackets = 0 then begin
-              DoMatchingBracketFound;
-              exit;
-            end;
-          end;
-        end;
-        // get next line if possible
-        if PosY = FTheLinesView.Count then break;
-        Inc(PosY);
-        if OnlyVisible
-        and ((PosY < TopLine) or (PosY > PartialBottomLine))
-        then
-          break;
-        Line := FTheLinesView[PosY - 1];
-        MaxKnownTokenPos := 0;
-        PosX := 0;
-      until FALSE;
-    end;
-  end;
-
-  procedure DoCheckBracket;
-  var
-    i: integer;
-    Test: char;
-  begin
-    if Length(Line) >= PosX then begin
-      Test := Line[PosX];
-      // is it one of the recognized brackets?
-      for i := Low(Brackets) to High(Brackets) do begin
-        if Test = Brackets[i] then begin
-          // this is the bracket, get the matching one and the direction
-          if Brackets[i] in ['''', '"'] then
-            DoFindMatchingQuote(Brackets[i])
-          else
-            DoFindMatchingBracket(i);
-          exit;
-        end;
-      end;
-    end;
-  end;
+var
+  FndBracketInfo: TLazEditBracketInfo;
+  FndPosX, c: integer;
+  IsOpen: Boolean;
 
 begin
   Result.X:=-1;
@@ -10447,16 +10244,65 @@ begin
   if OnlyVisible
   and ((PosY<TopLine) or (PosY > PartialBottomLine))
   then
-   exit;
+    exit;
 
-  Line := FTheLinesView[PosY - 1];
-  DoCheckBracket; // char after caret
-  if Result.Y>0 then exit;
-  if StartIncludeNeighborChars then begin
-    if PosX>1 then begin
-      // search in front
-      dec(PosX);
-      DoCheckBracket;
+
+  if GetBracketInfoAt(ToIdx(PosY), PosX, fHighlighter, FndBracketInfo, SearchSide, FTheLinesView) then begin
+    LogicalStartBracket:=Point(FndBracketInfo.BracketLogStartX, PosY);
+    LogicalStartBracket.Len := FndBracketInfo.BracketLogLength;
+    if bfUniform in FndBracketInfo.BracketFlags then begin
+      IsOpen := PosX > FndBracketInfo.BracketLogStartX; // decide if to search forward/backward
+    end
+    else begin
+      IsOpen := bfOpen in FndBracketInfo.BracketFlags;
+      if IsOpen
+      then exclude(FndBracketInfo.BracketFlags, bfOpen)
+      else include(FndBracketInfo.BracketFlags, bfOpen);
+    end;
+    if (not IsOpen) then begin
+      // closing
+      PosX := FndBracketInfo.BracketLogStartX - 1;
+      if PosX < 1 then begin
+        dec(PosY);
+        PosX := -1;
+      end;
+      while PosY > 0 do begin
+        if FindBracketPos(ToIdx(PosY), PosX, True, fHighlighter, FndBracketInfo, FndPosX, FTheLinesView) then begin
+          PosX := FndPosX;
+          DoMatchingBracketFound;
+          Result.Len := LogicalStartBracket.Len; // TODO: unbalanced bracket length
+          exit;
+        end;
+        dec(PosY);
+        if (OnlyVisible and (PosY < TopLine)) or
+           ((bfNoLanguageContext in FndBracketInfo.BracketFlags) and (PosY < TopLine - 100)) or
+           (bfSingleLine in FndBracketInfo.BracketFlags) or
+           (bfForceStopSearch in FndBracketInfo.BracketFlags)
+        then
+          break;
+        PosX := -1;
+      end;
+    end
+    else begin
+      // opening
+      PosX := FndBracketInfo.BracketLogStartX + FndBracketInfo.BracketLogLength;
+      c := FTheLinesView.Count;
+      while PosY <= c do begin
+        if FindBracketPos(ToIdx(PosY), PosX, False, fHighlighter, FndBracketInfo, FndPosX, FTheLinesView) then begin
+          PosX := FndPosX;
+          DoMatchingBracketFound;
+          Result.Len := LogicalStartBracket.Len; // TODO: unbalanced bracket length
+          exit;
+        end;
+        inc(PosY);
+        if (OnlyVisible and (PosY > PartialBottomLine)) or
+           ((bfNoLanguageContext in FndBracketInfo.BracketFlags) and (PosY > PartialBottomLine + 100)) or
+           (bfSingleLine in FndBracketInfo.BracketFlags) or
+           (bfForceStopSearch in FndBracketInfo.BracketFlags)
+        then
+          break;
+        PosX := 1;
+      end;
     end;
   end;
 end;

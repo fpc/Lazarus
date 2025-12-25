@@ -23,7 +23,7 @@ unit LazEditHighlighter;
 interface
 
 uses
-  Classes, fgl,
+  Classes, fgl, SysUtils,
   // LazEdit
   LazEditTextAttributes, LazEditLineItemLists, LazEditHighlighterUtils, LazClasses, LazEditTypes,
   LazEditMiscProcs;
@@ -108,7 +108,19 @@ type
     property Ranges[Index: Pointer]: TLazEditLineItems read GetRange write PutRange;
   end;
 
+
   TLazEditHighlighterAttachedLines = specialize TFPGList<TLazEditStringsBase>;
+
+  TLazEditBracketInfoFlag = (
+    bfOpen,              // If absent, then close
+    bfUniform,           // no open/close, e.g. quote
+    bfUnknownNestLevel,  // NestLevel is not known, the field in Info will be used as variable to count
+    bfNotNestable,
+    bfSingleLine,        // match must be on same line
+    bfNoLanguageContext, // e.g. in comment or text, higher likelihood of being unbalanced
+    bfForceStopSearch    // Set by FindBracketPos if it knows the token can not be found on further lines
+  );
+  TLazEditBracketInfoFlags = set of TLazEditBracketInfoFlag;
 
   { TLazEditCustomHighlighter }
 
@@ -116,6 +128,13 @@ type
   private type
     TLazEditHlUpdateFlag = (ufAttribChanged, ufRescanNeeded);
     TLazEditHlUpdateFlags = set of TLazEditHlUpdateFlag;
+  private const
+    BRACKET_KIND_TOKEN_COUNT = 5;
+    BRACKET_KIND_TOKEN_QUOTE_START = 3;
+    BRACKET_KIND_TOKENS: array [Boolean, 0..BRACKET_KIND_TOKEN_COUNT-1] of string =
+      ( (')', ']', '}', '"', ''''),
+        ('(', '[', '{', '"', '''')
+      );
   strict private
     FUpdateLock: integer;
     FUpdateFlags: TLazEditHlUpdateFlags;
@@ -176,6 +195,13 @@ type
       AModifierRightCol: integer = -2;
       ASkipResultBounds: boolean = False
     );
+
+    (* ------------------ *
+     * Brackets           *
+     * ------------------ *)
+    // *** CurrentLines may NOT be set for BracketKinds ***
+    function GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean): String; virtual;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -225,6 +251,18 @@ type
     function GetTokenAttributeList: TLazCustomEditTextAttributeArray;
     function GetEndOfLineAttribute: TLazEditTextAttribute; virtual; // valid after line was scanned to EOL
     function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; virtual; // valid after line was scanned to EOL
+
+    (* ------------------ *
+     * Brackets           *
+     * ------------------ *)
+    function GetBracketContextAt(const ALineIdx: TLineIdx;
+                                 const ALogX: IntPos; const AByteLen: Integer; const AKind: integer;
+                                 var AFlags: TLazEditBracketInfoFlags; // caller should set bfOpen
+                                 out AContext, ANestLevel: Integer;
+                                 var InternalInfo: PtrUInt
+                                 ): Boolean; virtual;
+    function BracketKindCount: integer; virtual;
+    property BracketKinds[AnIndex: integer; AnOpeningToken: boolean] : String read GetBracketKinds;
   end;
 
   { TLazEditCustomRangesHighlighter }
@@ -432,6 +470,12 @@ begin
   FTokenAttributeMergeResult.Merge(AModifierAttrib);
 end;
 
+function TLazEditCustomHighlighter.GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean
+  ): String;
+begin
+  Result := BRACKET_KIND_TOKENS[AnOpeningToken, AnIndex]
+end;
+
 constructor TLazEditCustomHighlighter.Create(AOwner: TComponent);
 begin
   FAttachedLines := TLazEditHighlighterAttachedLines.Create;
@@ -583,6 +627,29 @@ end;
 function TLazEditCustomHighlighter.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
 begin
   Result := GetEndOfLineAttribute;
+end;
+
+function TLazEditCustomHighlighter.GetBracketContextAt(const ALineIdx: TLineIdx;
+  const ALogX: IntPos; const AByteLen: Integer; const AKind: integer;
+  var AFlags: TLazEditBracketInfoFlags; out AContext, ANestLevel: Integer;
+  var InternalInfo: PtrUInt): Boolean;
+begin
+  if LineIndex <> ALineIdx then
+    StartAtLineIndex(ALineIdx);
+  NextToLogX(ALogX, True);
+
+  AContext := GetTokenKind;
+  ANestLevel := 0;
+  if AKind >= BRACKET_KIND_TOKEN_QUOTE_START then
+    AFlags := AFlags + [bfUniform, bfNotNestable, bfSingleLine, bfNoLanguageContext] - [bfOpen]
+  else
+    AFlags := AFlags + [bfUnknownNestLevel, bfNoLanguageContext];
+  Result := True;
+end;
+
+function TLazEditCustomHighlighter.BracketKindCount: integer;
+begin
+  Result := BRACKET_KIND_TOKEN_COUNT;
 end;
 
 { TLazEditCustomRangesHighlighter }

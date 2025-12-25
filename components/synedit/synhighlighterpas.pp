@@ -209,7 +209,8 @@ type
     // other
     reCommentAnsi,
     reCommentCurly,
-    reCommentSlash
+    reCommentSlash,
+    reCommentSubTokens   // generate stand-alone tokens for each comment (and nested comment) open/close
   );
   TRequiredStates = set of TRequiredState;
 
@@ -718,11 +719,20 @@ type
       tkeGenParamColon, tkeGenParamSemi,     // generic :; for constraints
       tkeGenParamComma,                      // generic/specialize
       tkeSpecParamOpen, tkeSpecParamClose,   // specialize <>
-      tkeProcNameDot
+      tkeProcNameDot,
+      tkeAnsiCommentOpen, tkeAnsiCommentClose,
+      tkeBorCommentOpen, tkeBorCommentClose,
+      tkeDirectiveCommentOpen, tkeDirectiveCommentClose
     );
   private const
     tkeGenParamLow  = tkeGenParamOpen;
     tkeGenParamHigh = tkeGenParamComma;
+
+    PAS_BRACKET_KIND_TOKEN_COUNT = 8;
+    PAS_BRACKET_KIND_TOKENS: array [Boolean, 0..PAS_BRACKET_KIND_TOKEN_COUNT-1] of string =
+      ( (')', ']', '}', '>', '*)', '''', '''''', '"'),
+        ('(', '[', '{', '<', '(*', '''', '''''', '"')
+      );
 
   private type
     TSynPasSynCustomTokenInfoListEx = record
@@ -1064,6 +1074,7 @@ type
                        AIsFold: Boolean); override;
 
   protected
+    function GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean): String; override;
     function LastLinePasFoldLevelFix(Index: Integer; AType: Integer = 1;
                                      AIncludeDisabled: Boolean = False): integer; // TODO deprecated; // foldable nodes
 
@@ -1110,6 +1121,11 @@ type
     procedure InitForScaningLine; override;
     procedure SetRange(Value: Pointer); override;
     function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; override;
+
+    function BracketKindCount: integer; override;
+    function GetBracketContextAt(const ALineIdx: TLineIdx; const ALogX: IntPos; const AByteLen: Integer;
+      const AKind: integer; var AFlags: TLazEditBracketInfoFlags; out AContext, ANestLevel: Integer;
+      var InternalInfo: PtrUInt): Boolean; override;
 
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
@@ -4449,18 +4465,22 @@ begin
     case LinePtr[p] of
     #0,#10,#13: break;
     '}': begin
+        Run := p;
+        if (Run <> fTokenPos) and (reCommentSubTokens in FRequiredStates) then begin
+          exit;
+        end;
         if (not (IsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
-          Run := p;
           ct := GetCustomSymbolToken(tkAnsiComment, 1, FCustomTokenMarkup, Run <> fTokenPos);
           if ct and (Run <> fTokenPos) then
             exit;
         end;
+        FTokenExtraKind := tkeBorCommentClose;
         if TopPascalCodeFoldBlockType=cfbtNestedComment then
         begin
           Run:=p;
           EndPascalCodeFoldBlock;
           p:=Run;
-          if FCustomTokenMarkup <> nil then begin
+          if (FCustomTokenMarkup <> nil) or (reCommentSubTokens in FRequiredStates) then begin
             inc(Run);
             exit;
           end;
@@ -4475,15 +4495,18 @@ begin
     '{':
       if HasRangeCompilerModeswitch(pcsNestedComments) then begin
         Run := p;
+        if (Run <> fTokenPos) and (reCommentSubTokens in FRequiredStates) then
+          exit;
         if (not (IsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
           ct := GetCustomSymbolToken(tkAnsiComment, 1, FCustomTokenMarkup, Run <> fTokenPos);
           if ct and (Run <> fTokenPos) then
             exit;
         end;
         fStringLen := 1;
-        StartPascalCodeFoldBlock(cfbtNestedComment);
+        if StartPascalCodeFoldBlock(cfbtNestedComment) then
+          FTokenExtraKind := tkeBorCommentOpen;
         p:=Run;
-        if FCustomTokenMarkup <> nil then begin
+        if (reCommentSubTokens in FRequiredStates) or (FCustomTokenMarkup <> nil) then begin
           inc(Run);
           exit;
         end;
@@ -4617,8 +4640,11 @@ begin
       if TopPascalCodeFoldBlockType=cfbtNestedComment then
         EndPascalCodeFoldBlock
       else begin
+        if (reCommentSubTokens in FRequiredStates) and (fTokenPos <> Run) then
+          exit;
         fRange := fRange - [rsDirective];
         Inc(Run);
+        FTokenExtraKind := tkeDirectiveCommentClose;
         break;
       end;
     '{':
@@ -4704,6 +4730,7 @@ begin
   if (Run < fLineLen-1) and (LinePtr[Run+1] = '$') then begin
     // compiler directive
     fRange := fRange + [rsDirective];
+    FTokenExtraKind := tkeDirectiveCommentOpen;
     inc(Run, 2);
     fToIdent := Run;
     KeyHash;
@@ -4735,11 +4762,14 @@ begin
     end
     else if KeyCompU('ENDREGION') then
       EndDirectiveFoldBlock(cfbtRegion);
+    if (reCommentSubTokens in FRequiredStates) then
+      exit;
     DirectiveProc;
   end else begin
     // curly bracket open -> borland comment
     fStringLen := 1; // length of "{"
     inc(Run);
+    FTokenExtraKind := tkeBorCommentOpen;
     if (Run < fLineLen) and (LinePtr[Run] = '%') then begin
       fRange := fRange + [rsIDEDirective];
     // IDE directive {%xxx } rsIDEDirective
@@ -4787,6 +4817,8 @@ begin
         Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
       exit;
     end;
+    if (reCommentSubTokens in FRequiredStates) then
+      exit;
     BorProc;
   end;
 end;
@@ -5097,15 +5129,18 @@ begin
       break
     else if (LinePtr[Run] = '*') and (LinePtr[Run + 1] = ')') then
     begin
+      if (Run <> fTokenPos) and (reCommentSubTokens in FRequiredStates) then
+        exit;
       if not (IsInNextToEOL or IsScanning) then begin
         ct := GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup, Run <> fTokenPos);
         if ct and (Run <> fTokenPos) then
           exit;
       end;
       Inc(Run, 2);
+      FTokenExtraKind := tkeAnsiCommentClose;
       if TopPascalCodeFoldBlockType=cfbtNestedComment then begin
         EndPascalCodeFoldBlock;
-        if FCustomTokenMarkup <> nil then
+        if (FCustomTokenMarkup <> nil) or (reCommentSubTokens in FRequiredStates) then
           exit;
       end else begin
         fRange := fRange - [rsAnsi];
@@ -5118,14 +5153,19 @@ begin
     if HasRangeCompilerModeswitch(pcsNestedComments) and
        (LinePtr[Run] = '(') and (LinePtr[Run + 1] = '*') then
     begin
+      if (Run <> fTokenPos) and (reCommentSubTokens in FRequiredStates) then
+        exit;
       if not (IsInNextToEOL or IsScanning) then begin
         ct := GetCustomSymbolToken(tkAnsiComment, 2, FCustomTokenMarkup, Run <> fTokenPos);
         if ct and (Run <> fTokenPos) then
           exit;
       end;
       fStringLen := 2;
-      StartPascalCodeFoldBlock(cfbtNestedComment);
+      if StartPascalCodeFoldBlock(cfbtNestedComment) then
+        FTokenExtraKind := tkeAnsiCommentOpen;
       Inc(Run,2);
+      if (reCommentSubTokens in FRequiredStates) then
+        exit;
       if FCustomTokenMarkup <> nil then
         exit;
     end else
@@ -5209,6 +5249,7 @@ begin
         fStringLen := 2; // length of "(*"
         Dec(Run);
         StartPascalCodeFoldBlock(cfbtAnsiComment);
+        FTokenExtraKind := tkeAnsiCommentOpen;
 
         if reCommentAnsi in FRequiredStates then
           FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentAnsi];
@@ -5221,6 +5262,8 @@ begin
             Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
           exit;
         end;
+        if reCommentSubTokens in FRequiredStates then
+          exit;
         if not (LinePtr[Run] in [#0, #10, #13]) then begin
           if FUsePasDoc and (LinePtr[Run] = '@') and CheckPasDoc(True) then begin
             if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
@@ -6560,6 +6603,131 @@ begin
   end
   else
     Result := inherited GetEndOfLineAttribute;
+end;
+
+function TSynPasSyn.GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean): String;
+begin
+  Result := PAS_BRACKET_KIND_TOKENS[AnOpeningToken, AnIndex]
+end;
+
+function TSynPasSyn.BracketKindCount: integer;
+begin
+  Result := PAS_BRACKET_KIND_TOKEN_COUNT;
+end;
+
+function TSynPasSyn.GetBracketContextAt(const ALineIdx: TLineIdx; const ALogX: IntPos;
+  const AByteLen: Integer; const AKind: integer; var AFlags: TLazEditBracketInfoFlags; out
+  AContext, ANestLevel: Integer; var InternalInfo: PtrUInt): Boolean;
+
+  function IsOpeningString(const LogIdx: integer): boolean; inline;
+  begin
+    Result := (LogIdx = fTokenPos) and not(eaPartTokenNotAtStart in FTokenExtraAttribs);
+  end;
+  function IsClosinngString(const LogIdx: integer): boolean; inline;
+  begin
+    Result := (LogIdx = Run-1) and not(eaPartTokenNotAtEnd in FTokenExtraAttribs);
+  end;
+  function StartOffsetOfEscapedSingleQuote(const LogIdx: integer): integer;
+  var
+    x: Integer;
+  begin
+    Result := 0;
+    x := LogIdx;
+    while (x >= fTokenPos) and (LinePtr[x] = '''') do
+      dec(x);
+    inc(x);
+    if IsOpeningString(x) then
+      inc(x);
+    if ((LogIdx - x) and 1) = 1 then
+      dec(Result);
+  end;
+
+const
+  KIND_STRING_BOUND = ord(high(TtkTokenKindEx)) + 1;
+  KIND_ANSI_BOUND   = ord(high(TtkTokenKindEx)) + 2;
+  KIND_BOR_BOUND    = ord(high(TtkTokenKindEx)) + 3;
+var
+  LogIdx: Integer;
+begin
+  include(FRequiredStates, reCommentSubTokens);
+  if LineIndex <> ALineIdx then
+    StartAtLineIndex(ALineIdx);
+  IsInNextToEOL := True; // don't get custom words or proc-header...
+  NextToLogX(ALogX, True);
+  IsInNextToEOL := False;
+  exclude(FRequiredStates, reCommentSubTokens);
+
+  AContext := ord(FTokenID);
+  ANestLevel := 0;
+  Result := True;
+
+  if FTokenID in [tkString, tkComment, tkDirective, tkIDEDirective, tkUnknown, tkAsm] then
+    AFlags := AFlags + [bfNoLanguageContext, bfUnknownNestLevel];
+  LogIdx := ToIdx(ALogX);
+
+  case AKind of
+    0: begin // ()
+         Result := ((LogIdx <> fTokenPos)     or (FTokenExtraKind <> tkeAnsiCommentOpen)) and
+                   ((LogIdx - 1 <> fTokenPos) or (FTokenExtraKind <> tkeAnsiCommentClose));
+         if not Result then
+           exit;
+         if FTokenID = tkSymbol then begin
+           ANestLevel := PasCodeFoldRange.RoundBracketNestLevel;
+           if bfOpen in AFlags then
+             dec(ANestLevel);
+         end;
+       end;
+    1: begin // []
+         AFlags := AFlags + [bfUnknownNestLevel];
+       end;
+    2: begin // {}
+         if  (LogIdx = fTokenPos) and
+             (FTokenExtraKind in [tkeBorCommentOpen, tkeBorCommentClose, tkeDirectiveCommentOpen, tkeDirectiveCommentClose])
+         then begin
+           AContext := KIND_BOR_BOUND;
+           AFlags := AFlags - [bfNoLanguageContext];
+         end;
+         AFlags := AFlags + [bfUnknownNestLevel];
+       end;
+    3: begin // <>
+         Result := FTokenExtraKind in [tkeGenParamOpen, tkeGenParamClose, tkeSpecParamOpen, tkeSpecParamClose];
+         AFlags := AFlags + [bfUnknownNestLevel];
+       end;
+    4: begin // (**)
+         Result := (LogIdx = fTokenPos) and (FTokenExtraKind in [tkeAnsiCommentOpen, tkeAnsiCommentClose]);
+         if not Result then
+           exit;
+         AContext := KIND_ANSI_BOUND;
+         AFlags := AFlags + [bfUnknownNestLevel];
+       end;
+    5: begin // ''
+         if FTokenID = tkString then begin
+           AFlags := AFlags + [bfNotNestable, bfSingleLine] - [bfNoLanguageContext, bfUnknownNestLevel, bfUniform];
+           AContext := KIND_STRING_BOUND;
+           if  IsOpeningString(LogIdx) then
+             AFlags := AFlags + [bfOpen]  // string start
+           else
+           if  IsClosinngString(LogIdx) then
+             AFlags := AFlags - [bfOpen]  // string end
+           else
+             exit(false);                 // middle of string, escaped '' will be called with different AKind
+         end
+         else begin
+           // outside of string
+           AFlags := AFlags + [bfUniform, bfNotNestable] - [bfOpen];
+         end;
+       end;
+    6: begin // ' '' '' '
+         if IsOpeningString(LogIdx) or IsClosinngString(LogIdx+1) or
+            (StartOffsetOfEscapedSingleQuote(LogIdx) <> 0)
+         then
+           exit(False);
+         AFlags := AFlags + [bfUniform, bfNotNestable, bfNoLanguageContext] - [bfOpen, bfSingleLine];
+       end;
+    7: begin // ""
+         AFlags := AFlags + [bfUniform, bfNotNestable, bfNoLanguageContext] - [bfOpen, bfSingleLine];
+       end;
+  end;
 end;
 
 procedure TSynPasSyn.ResetRange;

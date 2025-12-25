@@ -51,8 +51,9 @@ uses
   // LCL
   LCLIntf, LCLType, Graphics, Controls, Clipbrd, ImgList,
   // SynEdit
-  SynEditHighlighter, SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses, SynEditMouseCmds,
-  SynEditTextBase, LazEditTextAttributes;
+  SynEditHighlighter, SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses,
+  SynEditMouseCmds, SynEditTextBase, LazEditTextAttributes, LazEditMatchingBracketUtils,
+  LazEditTypes, LazEditHighlighter;
 
 const
   SYNEDIT_DEFAULT_MOUSE_OPTIONS = [];
@@ -169,7 +170,7 @@ type
     function GetModified: Boolean; virtual; abstract;
     function GetReadOnly: boolean; virtual;
     function GetIsBackwardSel: Boolean;
-    function GetHighlighterObj: TObject; virtual; abstract;
+    function GetHighlighterObj: TLazEditCustomHighlighter; virtual; abstract;
     function GetMarksObj: TObject; virtual; abstract;
     function GetSelText: string;
     function GetSelAvail: Boolean;
@@ -284,6 +285,12 @@ type
                                         StartIncludeNeighborChars, MoveCaret,
                                         SelectBrackets, OnlyVisible: Boolean
                                        ): TPoint; virtual; abstract; // Returns Logical
+    function FindMatchingBracketLogical(var LogicalStartBracket: TLogTokenPos;
+                                        SearchSide: TLazEditBracketSearchDirection;
+                                        MoveCaret: Boolean = False;
+                                        SelectBrackets: Boolean = False;
+                                        OnlyVisible: Boolean = False
+                                       ): TLogTokenPos; virtual; abstract; // Returns Logical
   public
     // handlers
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
@@ -392,7 +399,7 @@ type
     property SelAvail: Boolean read GetSelAvail;
     property HideSelection: boolean read fHideSelection write SetHideSelection default false;
 
-    property Highlighter: TObject read GetHighlighterObj;
+    property Highlighter: TLazEditCustomHighlighter read GetHighlighterObj;
     property Marks: TObject read GetMarksObj;
   end;
 
