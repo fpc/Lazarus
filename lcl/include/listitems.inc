@@ -44,7 +44,7 @@ begin
     Exit;
   end;
 
-  if FItems.Count - 1 < AIndex
+  if (AIndex < 0) or (FItems.Count - 1 < AIndex)
   then Result := nil
   else begin
     Result := TListItem(FItems.Items[AIndex]);
