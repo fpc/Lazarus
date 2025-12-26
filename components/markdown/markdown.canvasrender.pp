@@ -36,7 +36,7 @@ type
     likImage,
     likBackground
   );
-  TFontContextItem = (fcMono,fcCode,fcQuote,fcHyperLink);
+  TFontContextItem = (fcMono,fcCode,fcFencedCode,fcQuote,fcHyperLink);
   TFontContext = set of TFontContextItem;
 
   { Selection support types }
@@ -164,40 +164,39 @@ type
     FBlockQuoteIndent: Integer;
     FBulletLevel: Integer;
     FBullets: Array[1..BulletCount] of string;
-    fCanvas: TCanvas;
-    fDocument: TMarkDownDocument;
-    fHyperLinkColor: TColor;
+    FCanvas: TCanvas;
+    FDocument: TMarkDownDocument;
+    FHyperLinkColor: TColor;
     FImageMargin: integer;
     FOnGetImage: TMarkdownImageEvent;
-    fParser: TMarkDownParser;
+    FParser: TMarkDownParser;
     FLists : TLayoutLists;
-    fCalculatedWidth: LongInt;
-    fCalculatedHeight: LongInt;
+    FCalculatedWidth: LongInt;
+    FCalculatedHeight: LongInt;
 
-    fLineWidth: LongInt;
+    FLineWidth: LongInt;
     FLayout : TLayoutData;
-    fParagraphSpacing: LongInt;
-    fExtraIndent: LongInt;
-    fFontName: utf8string;
-    fMonoFontName: utf8string;
-    fBaseFontSize: LongInt;
-    fTargetDPI: LongInt;
+    FParagraphSpacing: LongInt;
+    FExtraIndent: LongInt;
+    FFontName: utf8string;
+    FMonoFontName: utf8string;
+    FBaseFontSize: LongInt;
+    FTargetDPI: LongInt;
 
     // Colors
-    fBGCodeColor: TColor;
-    fFontCodeColor: TColor;
-    fBGMarkColor: TColor;
-    fFontMarkColor: TColor;
-    fBGColor: TColor;
-    fFontColor: TColor;
-    fFontQuoteColor: TColor;
+    FBGCodeColor: TColor;
+    FFontCodeColor: TColor;
+    FBGMarkColor: TColor;
+    FFontMarkColor: TColor;
+    FBGColor: TColor;
+    FFontColor: TColor;
+    FFontQuoteColor: TColor;
     FNextLineIndent : Integer;
     FImageCache : TFPObjectHashTable;
 
     // Selection support
     FSelectionColor: TColor;
     FHTMLEntities : TFPStringHashTable;
-
   Protected
     // Selection methods
     procedure ClearAllSelections;
@@ -226,6 +225,8 @@ type
       const aFontStyle: TFontStyles; const aContext : TFontContext): LongInt;
     function MeasureTextHeight(const aCanvas: TCanvas; const aFontSize: LongInt; const aFontStyle: TFontStyles;
       const aContext : TFontContext): LongInt;
+    function GetTextColor(aContext: TFontContext): TColor; virtual;
+    function GetTextBGColor(aContext: TFontContext): TColor; virtual;
 
     // Text layout
     procedure CollectHTMLEntities;
@@ -279,23 +280,23 @@ type
     function HitTestText(const aX, aY: LongInt): TSelectionPoint;
 
     // Properties
-    property CalculatedWidth: LongInt read fCalculatedWidth;
-    property CalculatedHeight: LongInt read fCalculatedHeight;
-    Property Document : TMarkdownDocument Read fDocument;
-    property TargetDPI: LongInt read fTargetDPI write fTargetDPI;
-    property FontName: utf8string read fFontName write fFontName;
-    property MonoFontName: utf8string read fMonoFontName write fMonoFontName;
+    property CalculatedWidth: LongInt read FCalculatedWidth;
+    property CalculatedHeight: LongInt read FCalculatedHeight;
+    Property Document : TMarkdownDocument Read FDocument;
+    property TargetDPI: LongInt read FTargetDPI write FTargetDPI;
+    property FontName: utf8string read FFontName write FFontName;
+    property MonoFontName: utf8string read FMonoFontName write FMonoFontName;
 
-    property FontHyperLinkColor: TColor read fHyperLinkColor write fHyperLinkColor;
-    property BGCodeColor: TColor read fBGCodeColor write fBGCodeColor;
-    property FontCodeColor: TColor read fFontCodeColor write fFontCodeColor;
-    property BGMarkColor: TColor read fBGMarkColor write fBGMarkColor;
-    property FontMarkColor: TColor read fFontMarkColor write fFontMarkColor;
+    property FontHyperLinkColor: TColor read FHyperLinkColor write FHyperLinkColor;
+    property BGCodeColor: TColor read FBGCodeColor write FBGCodeColor;
+    property FontCodeColor: TColor read FFontCodeColor write FFontCodeColor;
+    property BGMarkColor: TColor read FBGMarkColor write FBGMarkColor;
+    property FontMarkColor: TColor read FFontMarkColor write FFontMarkColor;
 
-    property BGColor: TColor read fBGColor write fBGColor;
-    property FontColor: TColor read fFontColor write fFontColor;
-    property FontQuoteColor: TColor read fFontQuoteColor write fFontQuoteColor;
-    property BaseFontSize: LongInt read fBaseFontSize write fBaseFontSize;
+    property BGColor: TColor read FBGColor write FBGColor;
+    property FontColor: TColor read FFontColor write FFontColor;
+    property FontQuoteColor: TColor read FFontQuoteColor write FFontQuoteColor;
+    property BaseFontSize: LongInt read FBaseFontSize write FBaseFontSize;
     property BulletChar1 : string Index 1 Read GetBulletChar Write SetBulletChar;
     property BulletChar2 : string Index 2 read GetBulletChar Write SetBulletChar;
     property BulletChar3 : string Index 3 read GetBulletChar Write SetBulletChar;
@@ -506,6 +507,7 @@ begin
   FKind:=aKind;
   FColor:=clNone;
   FBGColor:=clNone;
+
   FX:=aX;
   FY:=aY;
   FIsSelected:=False;
@@ -589,13 +591,12 @@ begin
   fFontName:='Sans Serif';
   fMonoFontName:='Monospace';
 
-  fBGCodeColor:=clInfoBk;
+  BGCodeColor:=RGBToColor(253,245,227);
   fFontCodeColor:=clInfoText;
   fBGMarkColor:=clYellow;
   fFontMarkColor:=clBlack;
   fHyperLinkColor:=RGBToColor(17,85,204);
   fBGColor:=clWindow;
-  Writeln(' fBGColor: ',fBGColor);
   fFontColor:=clWindowText;
   fFontQuoteColor:=clWindowFrame;
 
@@ -616,6 +617,7 @@ begin
   FreeAndNil(fParser);
   inherited Destroy;
 end;
+
 
 procedure TMarkDownCanvasRenderer.ClearAllSelections;
 var
@@ -945,6 +947,8 @@ procedure TMarkDownCanvasRenderer.ApplyFont(const aCanvas: TCanvas; const aFontS
   end;
 
 begin
+  // We do not apply color, it has no influence on measurement.
+  // Color is set explicitly when drawing.
   if fcMono in aContext then
     SetFontName(fMonoFontName)
   else
@@ -953,14 +957,6 @@ begin
     aCanvas.Font.Size:=aFontSize;
   if aCanvas.Font.Style<>aFontStyle then
     aCanvas.Font.Style:=aFontStyle;
-  if fcHyperLink in aContext then
-    aCanvas.Font.Color:=fHyperLinkColor
-  else if fcQuote in aContext then
-    aCanvas.Font.Color:=fFontQuoteColor
-  else if fcCode in aContext then
-    aCanvas.Font.Color:=fFontCodeColor
-  else
-    aCanvas.Font.Color:=fFontColor;
 end;
 
 
@@ -999,6 +995,28 @@ begin
   Result:=Height;
 end;
 
+function TMarkDownCanvasRenderer.GetTextColor(aContext : TFontContext) : TColor;
+
+begin
+  if fcHyperLink in aContext then
+    result:=FontHyperLinkColor
+  else if fcQuote in aContext then
+    Result:=fFontQuoteColor
+  else if ([fcCode,fcFencedCode]*aContext)<>[] then
+    Result:=FontCodeColor
+  else
+    Result:=FontColor;
+end;
+
+function TMarkDownCanvasRenderer.GetTextBGColor(aContext : TFontContext) : TColor;
+
+begin
+  if fcFencedCode in aContext then
+    Result:=BGCodeColor
+  else
+    Result:=BGColor;
+end;
+
 procedure TMarkDownCanvasRenderer.FlushTextRun(const aCanvas: TCanvas; const aText: utf8string;
   const aFontSize: LongInt; const aFontStyle: TFontStyles; const aLinkHref: utf8string;
   const aContext : TFontContext; const aDryRun: boolean);
@@ -1021,10 +1039,9 @@ begin
     lX:=FLayout.CurrentIndent + FLayout.LineX;
     lY:=FLayout.LineY + FLayout.LineAboveExtra + BaselineShift;
     Item:=FLists.Items.NewItem(TLayoutItemKind.likText,lX,lY);
-    Writeln(' fBGColor: ',fBGColor,' for ',aText);
 
-    item.BGColor:=self.BGColor;
-    item.color:=self.fBGColor;
+    item.BGColor:=GetTextBGColor(aContext);
+    item.color:=GetTextColor(aContext);
     Item.Width:=lWidth;
     Item.Height:=lHeight;
     Item.Text:=aText;
@@ -1296,36 +1313,27 @@ begin
      begin
      if aItem.IsSelected then
        aCanvas.Brush.Style:=bsClear
-     else if fcCode in aItem.Context then
-       begin
-       // Draw a rectangle over complete line.
-       aCanvas.Brush.Color:=aItem.GetColor(ckBackground,BGCodeColor);
-       aCanvas.Pen.Style:=psClear;
-       aCanvas.Rectangle(lX,ly,FLayout.MaxWidth,ly+aItem.Height+1);
-       end
+     else if ([fcCode,fcFencedCode] * aItem.Context)<>[] then
+       aCanvas.Brush.Color:=aItem.GetColor(ckBackground,BGCodeColor)
      else
-       begin
        aCanvas.Brush.Color:=aItem.GetColor(ckBackground,BGColor);
-       Writeln('Drawing with ',aCanvas.Brush.Color,' : ',aItem.Text);
-       end;
      with aItem do
        begin
        ApplyFont(aCanvas, FontSize, FontStyle, Context);
+       aCanvas.Font.Color:=aItem.GetColor(ckForeground,GetTextColor(aItem.Context));
        aCanvas.TextOut(lX,lY, Text);
        end;
      end;
-   TLayoutItemKind.likRect:
-     begin
-     aCanvas.Pen.Color:=clBlack;
-     aCanvas.Pen.Width:=1;
-     aCanvas.Brush.Color:=aItem.GetColor(ckBackGround,BGColor);
-     aCanvas.Rectangle(lX,LY,lX+aItem.Width,lY+aItem.Height);
-     end;
+   TLayoutItemKind.likRect,
    TLayoutItemKind.likBackground:
      begin
-     aCanvas.Pen.Style:=psClear; // :=aItem.GetColor(ckBackGround,BGColor);
+     aCanvas.Pen.Style:=psSolid;
+     if aItem.Kind=TLayoutItemKind.likRect then
+       aCanvas.Pen.Color:=clBlack
+     else
+       aCanvas.Pen.Color:=aItem.GetColor(ckBackground,BGColor);
      aCanvas.Pen.Width:=1;
-     aCanvas.Brush.Color:=aItem.GetColor(ckBackground,BGColor);
+     aCanvas.Brush.Color:=aItem.GetColor(ckBackGround,BGColor);
      aCanvas.Rectangle(lX,LY,lX+aItem.Width,lY+aItem.Height);
      end;
    TLayoutItemKind.likLine:
@@ -1465,7 +1473,7 @@ begin
     FHTMLEntities.Add(ent.e,Utf8Encode(ent.u));
 end;
 
-Function TMarkDownCanvasRenderer.ResolveEntities(const aText : String) : String;
+function TMarkDownCanvasRenderer.ResolveEntities(const aText: String): String;
 
 
   procedure copytoresult(aEnd,aStart : Integer);
@@ -1519,6 +1527,7 @@ end;
 procedure TMarkDownCanvasRenderer.RenderTextNode(aTextNode: TMarkDownTextNode; aFontSize: LongInt;
   aFontStyle: TFontStyles; const aContext : TFontContext);
 var
+  lItem : TLayoutItem;
   fontStyle: TFontStyles;
   lText,linkHref: utf8string;
   lContext : TFontContext;
@@ -1535,10 +1544,14 @@ begin
     nkCode,
     nkText:
       begin
-      if fcCode in lContext then
+      if fcFencedCode in lContext then
         begin
+        lItem:=FLists.Items.NewItem(likBackground,FLayout.LineX,FLayout.LineY);
+        lItem.BGColor:=GetTextBGColor([fcFencedCode]);
+        lItem.Width:=FLayout.MaxWidth-LItem.X;
         FlushTextRun(fCanvas, lText, aFontSize, fontStyle, '', lContext, False);
         NewLine(fCanvas);
+        lItem.Height:=FLayout.LineY-lItem.Y;
         end
       else
         LayoutTextWrapped(fCanvas, lText, aFontSize, fontStyle, linkHref, lContext, false, False);
@@ -1869,7 +1882,7 @@ end;
 procedure TCanvasMarkDownCodeBlockRenderer.DoRender(aBlock: TMarkDownBlock);
 begin
   if not assigned(aBlock) then exit;
-
+  ParagraphBreak;
   // Render code with monospace font
   Renderer.RenderChildren(aBlock as TMarkDownContainerBlock);
   ParagraphBreak;
@@ -2273,7 +2286,7 @@ begin
     if (Parent is TCanvasMarkDownQuoteBlockRenderer) then
       Include(FontContext,fcQuote);
     if (Parent is TCanvasMarkdownCodeBlockRenderer) then
-      FontContext:=FontContext+[fcMono,fcCode];
+      FontContext:=FontContext+[fcMono,fcFencedCode];
     end;
   for i:=0 to lTextBlock.Nodes.Count - 1 do
   begin
