@@ -40,6 +40,8 @@ type
     procedure TestCompleteBlock_ProgamBeginMissingEnd;
     procedure TestCompleteBlockClassStart;
     procedure TestCompleteBlockBegin;
+    procedure TestCompleteBlockProcBegin; // todo
+    procedure TestCompleteBlock_NestedProcBegin;
     procedure TestCompleteBlockRepeatMissingUntil;
     procedure TestCompleteBlockRepeatUntil;
     procedure TestCompleteBlockCase;
@@ -280,16 +282,46 @@ begin
                +'  end;'+LineEnding
                +'  writeln;'+LineEnding
                +'end.');
-  { Todo: Not implemented yet
-  CompleteBlock('procedure a;'+LineEnding
-               +'begin|'+LineEnding
-               +'begin'+LineEnding
-               +'end.',
-                'procedure a;'+LineEnding
-               +'begin|'+LineEnding
-               +'end;'+LineEnding
-               +'begin'+LineEnding
-               +'end.');}
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockProcBegin;
+begin
+  exit; // todo
+
+  CompleteBlock(
+   'program '+DefUnitName+';'+LineEnding
+  +'procedure a;'+LineEnding
+  +'begin|'+LineEnding
+  +'begin'+LineEnding
+  +'end.',
+  'program '+DefUnitName+';'+LineEnding
+  +'procedure a;'+LineEnding
+  +'begin|'+LineEnding
+  +'end;'+LineEnding
+  +'begin'+LineEnding
+  +'end.');
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlock_NestedProcBegin;
+begin
+  CompleteBlock(
+   'program '+DefUnitName+';'+LineEnding
+  +'procedure a;'+LineEnding
+  +'  procedure Sub;'+LineEnding
+  +'  begin|'+LineEnding
+  +'begin'+LineEnding
+  +'end;'+LineEnding
+  +'begin'+LineEnding
+  +'end.',
+  'program '+DefUnitName+';'+LineEnding
+  +'procedure a;'+LineEnding
+  +'  procedure Sub;'+LineEnding
+  +'  begin|'+LineEnding
+  +'  end;'+LineEnding
+  +'begin'+LineEnding
+  +'end;'+LineEnding
+  +'begin'+LineEnding
+  +'end.');
 end;
 
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockRepeatMissingUntil;

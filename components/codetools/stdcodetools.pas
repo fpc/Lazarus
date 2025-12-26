@@ -7124,7 +7124,10 @@ var
       case CursorBlock.Typ of
       btBegin,btAsm:
         begin
-          if Stack.Top=0 then
+          if (Stack.Top=0)
+              and (StartNode.Desc=ctnBeginBlock)
+              and ((StartNode.Parent=nil)
+                or (StartNode.Parent.Desc in AllSourceTypes+[ctnInterface,ctnImplementation])) then
             NewCode:='end.'
           else
             NewCode:='end'+NewCode;
