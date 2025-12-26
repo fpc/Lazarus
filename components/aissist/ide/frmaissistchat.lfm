@@ -21,7 +21,7 @@ object AIssistChatForm: TAIssistChatForm
       Left = 30
       Height = 16
       Top = 17
-      Width = 79
+      Width = 80
       Caption = 'Your prompt:'
     end
     object mPrompt: TMemo

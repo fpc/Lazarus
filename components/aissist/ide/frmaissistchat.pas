@@ -151,6 +151,7 @@ begin
   FChat.Align:=alClient;
   FChat.Width:=ClientWidth div 2;
   FChat.PopupMenu:=pmChat;
+  FChat.ItemPadding:=8;
   CreateServer;
 end;
 
