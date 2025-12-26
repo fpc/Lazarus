@@ -681,14 +681,10 @@ var
     Result:=lIdx;
   end;
 
-//var
-//  I : integer;
 begin
   lBottom:=0;
   if Assigned(aTerminator) then
     lBottom:=FStack.IndexOf(aTerminator)+1;
-  // For I:=0 to FStack.Count-1 do
-  //  writeln(FStack[i].Delimiter,' : ',FStack[i].Active,', ',FStack[i].Opens,' ',FStack[i].Node.NodeText);
   lBottoms[False]:=lBottom;
   lBottoms[True]:=lBottom;
   lCount:=FStack.count;

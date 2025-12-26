@@ -53,6 +53,9 @@ type
     Procedure RenderDocument(aDocument : TMarkDownDocument; aDest : TStrings); overload;
     procedure RenderChildren(aBlock : TMarkDownContainerBlock; aAppendNewLine : Boolean); overload;
     function RenderHTML(aDocument : TMarkDownDocument) : string;
+    procedure RenderHTMLToFile(aDocument : TMarkDownDocument; const aFileName : string);
+    class function FastRender(aDocument : TMarkDownDocument; aOptions : THTMLOptions; aTitle : String = ''; aHead : TStrings = Nil) : String;
+    class procedure FastRenderToFile(aDocument : TMarkDownDocument; const aFileName : string; aOptions : THTMLOptions; aTitle : String = ''; aHead : TStrings = Nil);
     Property HTML : String Read FHTML;
   published
     Property Options : THTMLOptions Read FOptions Write FOptions;
@@ -311,6 +314,55 @@ begin
   RenderDocument(aDocument);
   Result:=FHTML;
   FHTML:='';
+end;
+
+procedure TMarkDownHTMLRenderer.RenderHTMLToFile(aDocument: TMarkDownDocument; const aFileName: string);
+var
+  lHTML : String;
+  lFile : THandle;
+begin
+  lHTML:=RenderHTML(aDocument);
+  lFile:=FileCreate(aFileName);
+  try
+    if lHTML<>'' then
+      FileWrite(lFile,lHTML[1],Length(lHTML)*SizeOf(Char));
+  finally
+    FileClose(lFile);
+  end;
+end;
+
+class function TMarkDownHTMLRenderer.FastRender(aDocument: TMarkDownDocument; aOptions: THTMLOptions; aTitle: String;
+  aHead: TStrings): String;
+var
+  lRender : TMarkDownHTMLRenderer;
+begin
+  lRender:=TMarkDownHTMLRenderer.Create(Nil);
+  try
+    lRender.Options:=aOptions;
+    lRender.Title:=aTitle;
+    if assigned(aHead) then
+      lRender.Head.Assign(aHead);
+    Result:=lRender.RenderHTML(aDocument);
+  finally
+    lRender.Free;
+  end;
+end;
+
+class procedure TMarkDownHTMLRenderer.FastRenderToFile(aDocument: TMarkDownDocument; const aFileName: string;
+  aOptions: THTMLOptions; aTitle: String; aHead: TStrings);
+var
+  lRender : TMarkDownHTMLRenderer;
+begin
+  lRender:=TMarkDownHTMLRenderer.Create(Nil);
+  try
+    lRender.Options:=aOptions;
+    lRender.Title:=aTitle;
+    if assigned(aHead) then
+      lRender.Head.Assign(aHead);
+    lRender.RenderHTMLToFile(aDocument,aFileName);
+  finally
+    lRender.Free;
+  end;
 end;
 
 

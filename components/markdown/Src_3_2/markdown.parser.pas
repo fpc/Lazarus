@@ -158,10 +158,14 @@ type
     procedure ParseInline(aParent : TMarkDownContainerBlock; const aLine : String);
     // Parse the markDown in strings
     function Parse(aSource: TStrings): TMarkDownDocument; overload;
+    // Utility function: Parse the markDown in file aFileName.
+    function ParseFile(const aFilename : string): TMarkDownDocument;
     // Helper : is the last block a plain paragraph ?
     class function InPara(blocks : TMarkDownBlockList; canBeQuote : boolean) : boolean;
     // Helper to quickly parse a stringlist into a markdown document
     class function FastParse(aSource: TStrings; aOptions: TMarkDownOptions): TMarkDownDocument;
+    // Helper to quickly parse a stringlist into a markdown document
+    class function FastParseFile(const aFileName : string; aOptions: TMarkDownOptions = []): TMarkDownDocument;
     // State control in lazy continuation .
     property Lazy : Boolean Read FLazy Write FLazy;
     // HTML entities to convert
@@ -348,6 +352,19 @@ begin
   end;
 end;
 
+class function TMarkDownParser.FastParseFile(const aFileName: string; aOptions: TMarkDownOptions): TMarkDownDocument;
+var
+  lFile : TStrings;
+begin
+  lFile:=TStringList.Create;
+  try
+    lFile.LoadFromFile(aFileName,TEncoding.UTF8);
+    Result:=FastParse(lFile,aOptions);
+  finally
+    lFile.Free;
+  end;
+end;
+
 
 procedure TMarkDownParser.CollectEntities(aList :TFPStringHashTable);
 
@@ -421,6 +438,19 @@ begin
     if not lDone then
       Result.Free;
     lProc.Free;
+  end;
+end;
+
+function TMarkDownParser.ParseFile(const aFilename: string): TMarkDownDocument;
+var
+  lFile : TStrings;
+begin
+  lFile:=TStringList.Create;
+  try
+    lFile.LoadFromFile(aFileName,TEncoding.UTF8);
+    Result:=Parse(lFile);
+  finally
+    lFile.Free;
   end;
 end;
 
@@ -646,7 +676,6 @@ begin
     Processor:= LClass.Create(Scanner,Result,FEntities,wsMode);
     Processor.GFMExtensions:=mdoGithubFlavoured in Options;
     Processor.process(true);
-//    Processor.DumpNodes;
   finally
     Scanner.Free;
     Processor.Free;
