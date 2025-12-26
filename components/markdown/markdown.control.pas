@@ -39,6 +39,7 @@ Type
     fCalculatedHeight : LongInt;
     FIsSelecting: Boolean;
     FSelectionStart: TSelectionPoint;
+    FlastCalcWidth : Longint;
     function GetColor(AIndex: Integer): TColor;
     function GetDocument: TMarkDownDocument;
     function GetInteger(AIndex: Integer): Integer;
@@ -59,6 +60,7 @@ Type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Resize; override;
     property Document : TMarkDownDocument Read GetDocument;
   Public
     constructor Create(AOwner: TComponent); override;
@@ -270,6 +272,8 @@ end;
 procedure TCustomMarkDownControl.CalcLayout;
 
 begin
+  FlastCalcWidth:=Width;
+  FRenderer.BGColor:=Self.Color;
   FRenderer.CalculateLayout(Canvas,Width,FCalculatedWidth,fCalculatedHeight);
   Height:=FCalculatedHeight;
 //  Repaint;
@@ -366,6 +370,13 @@ begin
   begin
     FIsSelecting := False;
   end;
+end;
+
+procedure TCustomMarkDownControl.Resize;
+begin
+  inherited Resize;
+  if Width<>FlastCalcWidth then
+    CalcLayout;
 end;
 
 procedure TCustomMarkDownControl.ClearSelection;
