@@ -276,7 +276,6 @@ begin
   FRenderer.BGColor:=Self.Color;
   FRenderer.CalculateLayout(Canvas,Width,FCalculatedWidth,fCalculatedHeight);
   Height:=FCalculatedHeight;
-//  Repaint;
 end;
 
 procedure TCustomMarkDownControl.Click;
