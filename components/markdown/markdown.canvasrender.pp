@@ -33,7 +33,8 @@ type
     likHR,
     likRect,
     likLine,
-    likImage
+    likImage,
+    likBackground
   );
   TFontContextItem = (fcMono,fcCode,fcQuote,fcHyperLink);
   TFontContext = set of TFontContextItem;
@@ -45,9 +46,11 @@ type
   end;
 
   { TLayoutItem }
-
+  TColorKind = (ckForeground,ckBackground);
   TLayoutItem = class
   private
+    FBGColor: TColor;
+    FColor: TColor;
     FContext: TFontContext;
     FDeltaX: LongInt;
     FDeltaY: LongInt;
@@ -65,11 +68,15 @@ type
     FSelectionEnd: LongInt;
     FSelectionStartChar: Integer;
     FSelectionEndChar: Integer;
+  protected
+    function GetColor(aKind : TColorKind; aDefault : TColor) : TColor;
   public
     constructor Create(aKind : TLayoutItemKind; aX,aY : Longint);
     property Kind: TLayoutItemKind read FKind;
     property X: LongInt read FX write FX;
     property Y: LongInt read FY write FY;
+    property BGColor : TColor Read FBGColor Write FBGColor;
+    property Color : TColor Read FColor Write FColor;
     property DeltaX: LongInt read FDeltaX write FDeltaX;
     property DeltaY: LongInt read FDeltaY write FDeltaY;
     property Width: LongInt read FWidth write FWidth;
@@ -196,7 +203,6 @@ type
     procedure ClearAllSelections;
     procedure ApplySelection(const aStartPoint, aEndPoint: TSelectionPoint);
     function CalculateCharXPosition(aItem: TLayoutItem; aCharIndex: Integer): LongInt;
-    procedure DrawItemSelection(aCanvas: TCanvas; aItem: TLayoutItem; const aLeftPosition, aTopPosition: LongInt);
 
     // Layout management
     procedure Clear;
@@ -231,10 +237,11 @@ type
       const aFontStyle: TFontStyles; const aLinkHref: utf8string; const aContext : TFontContext;
       const aPreserveWhitespace, aDryRun: boolean); virtual;
     function LayoutImage(aImageURL: UTF8String): Boolean; virtual;
-
-    // Block rendering
     procedure RenderTextNode(aTextNode: TMarkDownTextNode; aFontSize: LongInt; aFontStyle: TFontStyles; const aContext : TFontContext);
+
+    // Actual drawing
     procedure DrawLayoutItem(aCanvas: TCanvas; aItem: TLayoutItem; const aLeftPosition, aTopPosition: LongInt);
+    procedure DrawItemSelection(aCanvas: TCanvas; aItem: TLayoutItem; const aLeftPosition, aTopPosition: LongInt);
 
     // Utility
     function GetNodeFontStyle(aTextNode: TMarkDownTextNode): TFontStyles;
@@ -249,7 +256,7 @@ type
     function CreateLayoutItem(aKind : TLayoutItemKind; aX,aY : Longint) : TLayoutItem; inline;
     Property BulletLevel : Integer Read FBulletLevel;
     Property CalculatedBlockQuoteIndent : Integer Read FCalculatedBlockQuoteIndent;
-
+    Property Layout : TLayoutData read FLayout;
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -309,6 +316,9 @@ type
   protected
     // Helper methods for canvas rendering
     function DIP(aSize : integer) : Integer;
+    procedure Indent(aSize : Integer);
+    procedure Undent(aSize : Integer);
+    function LayoutData : TLayoutData;
     function CreateLayoutItem(aKind : TLayoutItemKind; aX,aY : Longint) : TLayoutItem; inline;
     function MeasureTextHeight(const aFontSize: LongInt; const aFontStyle: TFontStyles; const aContext : TFontContext): LongInt;
     function MeasureTextWidth(const aText: utf8string; const aFontSize: LongInt; const aFontStyle: TFontStyles;
@@ -316,6 +326,7 @@ type
     procedure LayoutText(const aText: utf8string; const aFontSize: LongInt; const aFontStyle: TFontStyles; const aLinkHref: utf8string;
       const aContext: TFontContext); inline;
     procedure SetCurrentY(aValue: Integer);
+    function GetCurrentY : Integer;
     procedure NewLine; inline;
     procedure ParagraphBreak; inline;
     procedure MaybeStartParagraph; inline;
@@ -478,9 +489,23 @@ const
 
 { TLayoutItem }
 
+function TLayoutItem.GetColor(aKind: TColorKind; aDefault: TColor): TColor;
+begin
+  case aKind of
+    ckBackground : Result:=FBGColor;
+    ckForeground : Result:=FColor;
+  else
+    Result:=clNone;
+  end;
+  if Result=clNone then
+    Result:=aDefault;
+end;
+
 constructor TLayoutItem.Create(aKind: TLayoutItemKind; aX, aY: Longint);
 begin
   FKind:=aKind;
+  FColor:=clNone;
+  FBGColor:=clNone;
   FX:=aX;
   FY:=aY;
   FIsSelected:=False;
@@ -570,6 +595,7 @@ begin
   fFontMarkColor:=clBlack;
   fHyperLinkColor:=RGBToColor(17,85,204);
   fBGColor:=clWindow;
+  Writeln(' fBGColor: ',fBGColor);
   fFontColor:=clWindowText;
   fFontQuoteColor:=clWindowFrame;
 
@@ -995,6 +1021,10 @@ begin
     lX:=FLayout.CurrentIndent + FLayout.LineX;
     lY:=FLayout.LineY + FLayout.LineAboveExtra + BaselineShift;
     Item:=FLists.Items.NewItem(TLayoutItemKind.likText,lX,lY);
+    Writeln(' fBGColor: ',fBGColor,' for ',aText);
+
+    item.BGColor:=self.BGColor;
+    item.color:=self.fBGColor;
     Item.Width:=lWidth;
     Item.Height:=lHeight;
     Item.Text:=aText;
@@ -1145,7 +1175,7 @@ begin
   if aText='' then
     exit;
   lText:=aText;
-  TextHeight:=MeasureTextHeight(aCanvas, aFontSize, aFontStyle, aContext);
+  TextHeight:=MeasureTextHeight(aCanvas,aFontSize, aFontStyle, aContext);
   if TextHeight>FLayout.LineHeight then
     FLayout.LineHeight:=TextHeight;
   lLength:=length(lText);
@@ -1269,12 +1299,15 @@ begin
      else if fcCode in aItem.Context then
        begin
        // Draw a rectangle over complete line.
-       aCanvas.Brush.Color:=fBGCodeColor;
+       aCanvas.Brush.Color:=aItem.GetColor(ckBackground,BGCodeColor);
        aCanvas.Pen.Style:=psClear;
        aCanvas.Rectangle(lX,ly,FLayout.MaxWidth,ly+aItem.Height+1);
        end
      else
-       aCanvas.Brush.Color:=fBGColor;
+       begin
+       aCanvas.Brush.Color:=aItem.GetColor(ckBackground,BGColor);
+       Writeln('Drawing with ',aCanvas.Brush.Color,' : ',aItem.Text);
+       end;
      with aItem do
        begin
        ApplyFont(aCanvas, FontSize, FontStyle, Context);
@@ -1285,7 +1318,14 @@ begin
      begin
      aCanvas.Pen.Color:=clBlack;
      aCanvas.Pen.Width:=1;
-     aCanvas.Brush.Color:=BGColor;
+     aCanvas.Brush.Color:=aItem.GetColor(ckBackGround,BGColor);
+     aCanvas.Rectangle(lX,LY,lX+aItem.Width,lY+aItem.Height);
+     end;
+   TLayoutItemKind.likBackground:
+     begin
+     aCanvas.Pen.Style:=psClear; // :=aItem.GetColor(ckBackGround,BGColor);
+     aCanvas.Pen.Width:=1;
+     aCanvas.Brush.Color:=aItem.GetColor(ckBackground,BGColor);
      aCanvas.Rectangle(lX,LY,lX+aItem.Width,lY+aItem.Height);
      end;
    TLayoutItemKind.likLine:
@@ -1404,7 +1444,7 @@ begin
   LineDelta:=FLayout.LineHeight-lImage.Height;
   if LineDelta<0 then
     LineDelta:=0;
-  lItem:=CreateLayoutItem(likImage,FLayout.LineX+ImageMargin,FLayout.LineY+lineDelta);
+  lItem:=CreateLayoutItem(likImage,FLayout.LineX+ImageMargin+FLayout.CurrentIndent,FLayout.LineY+lineDelta);
   lItem.Width:=lImage.Width;
   lItem.Height:=lImage.Height;
   lItem.URL:=aImageURL;
@@ -1621,6 +1661,21 @@ begin
   Result:=CanvasRenderer.DIP(aSize);
 end;
 
+procedure TCanvasMarkDownBlockRenderer.Indent(aSize: Integer);
+begin
+  CanvasRenderer.Indent(aSize);
+end;
+
+procedure TCanvasMarkDownBlockRenderer.Undent(aSize: Integer);
+begin
+ CanvasRenderer.Undent(aSize);
+end;
+
+function TCanvasMarkDownBlockRenderer.LayoutData: TLayoutData;
+begin
+  Result:=CanvasRenderer.Layout;
+end;
+
 function TCanvasMarkDownBlockRenderer.CreateLayoutItem(aKind: TLayoutItemKind; aX, aY: Longint): TLayoutItem;
 begin
   Result:=CanvasRenderer.CreateLayoutItem(aKind, aX, aY);
@@ -1647,6 +1702,11 @@ end;
 procedure TCanvasMarkDownBlockRenderer.SetCurrentY(aValue: Integer);
 begin
   CanvasRenderer.SetCurrentY(aValue);
+end;
+
+function TCanvasMarkDownBlockRenderer.GetCurrentY: Integer;
+begin
+  Result:=CanvasRenderer.FLayout.Liney;
 end;
 
 procedure TCanvasMarkDownBlockRenderer.NewLine;
