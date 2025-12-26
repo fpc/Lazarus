@@ -11210,22 +11210,26 @@ ordinal position.
 </short>
 <descr>
 <p>
-Item is an indexed TListItem property which allows access to the list items 
-in the container by their ordinal position. AIndex specified the TListItem 
-instance returned as the property value, and must be in the range 0..Count-1.
+<var>Item</var> is an indexed <var>TListItem</var> property which allows 
+access to the list items in the container by their ordinal position. Item is 
+also the default property for the class instance and the target for the 
+enumerator returned by the <var>GetEnumerator</var> method.
 </p>
 <p>
-Item is also the default property for the class instance and the target for 
-an enumerator.
+<var>AIndex</var> is the ordinal position for the TListItem instance returned 
+as the property value, and must be in the range <b>0..Count-1</b>. If AIndex 
+has a value less than 0 (zero) or greater than Count-1, the value for the 
+property is <b>Nil</b>. This behavior is compatible with the TListItems 
+implementation in Delphi.
 </p>
 <p>
 Reading a property value causes the list item cache for the container to be 
 checked. If the cached item has the index value in AIndex, it is used as the 
-property value. Otherwise, the TListItem instance at AIndex is used. The 
-cache is updated with the new list item and its index value.
+property value. Otherwise, the TListItem instance stored at AIndex is used. 
+The cache is updated with the new list item and its index value.
 </p>
 <p>
-Writing a new property value causes AIndex to validated. No actions are 
+Writing a new property value causes AIndex to be validated. No actions are 
 performed during property assignment if AIndex exceeds Count-1. In addition, 
 no actions are needed when the new property value is the same TListItem 
 instance as the existing property value.
@@ -11238,7 +11242,17 @@ includes changes to Caption, ImageIndex, SubItemImages, and Checked
 properties, as well as internal state flags.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL versions after 4.4 to return <b>Nil</b> when the index 
+position for the requested value is less than 0 (zero).
+</version>
+<seealso>
+<link id="TListItems.Count"/>
+<link id="TListItems.GetItem"/>
+<link id="TListItems.SetItem"/>
+<link id="TListItems.GetEnumerator"/>
+<link id="TListItem"/>
+</seealso>
 </element>
 <element name="TListItems.Item.AIndex">
 <short>
