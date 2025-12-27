@@ -80,6 +80,13 @@ type
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function  GetTokenAttribute: TLazEditTextAttribute; override;
   public
+    (* ResetRange and SetRange do nothing.
+       They are needed because we inherit from TLazEditCustomRangesHighlighter (via TSynCustomHighlighter),
+       which is needed for the other examples to be able to extend this class
+    *)
+    procedure ResetRange; override;
+    procedure SetRange(Value: Pointer); override;
+
     function GetToken: String; override;
     function GetTokenPos: Integer; override;
     function GetTokenKind: integer; override;
@@ -206,6 +213,16 @@ begin
     Result := NotAttri
   else
     Result := IdentifierAttri;
+end;
+
+procedure TSynDemoHl.ResetRange;
+begin
+  // empty
+end;
+
+procedure TSynDemoHl.SetRange(Value: Pointer);
+begin
+  // empty
 end;
 
 function TSynDemoHl.GetToken: String;
