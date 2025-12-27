@@ -21,6 +21,7 @@ Contributors.txt file.
 unit SynHighlighterMarkdown;
 
 {$I synedit.inc}
+{$h+}
 
 interface
 
@@ -29,7 +30,7 @@ uses
   SynEditMiscProcs, LazEditTextAttributes;
 
 const
-  MaxAttrs = 9;
+  MarkdownMaxAttrs = 9;
 
 type
   TtkTokenKind = (tkBlockQuote, tkBold, tkCodeBlock, tkCodeInline, tkHeader,
@@ -43,7 +44,7 @@ type
   private
     fRange: TRangeState;
     fTokenID: TtkTokenKind;
-    fAttrs: array[0..MaxAttrs] of TSynHighlighterAttributes;
+    fAttrs: array[0..MarkdownMaxAttrs] of TSynHighlighterAttributes;
     fLine: PChar;
     Run: LongInt;
     fTokenPos: Integer;
@@ -125,7 +126,7 @@ begin
   fAttrs[9] := TSynHighlighterAttributes.Create('Space', 'Space');
 
   // Attributes registered with AddAttribute are freed automatically.
-  For I:=0 to MaxAttrs do
+  For I:=0 to MarkdownMaxAttrs do
     AddAttribute(fAttrs[i]);
 
   // Default attributes
