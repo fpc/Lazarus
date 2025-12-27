@@ -6,8 +6,8 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: SynHighlighterPo.pp, released 2025-12-27.
-Author: Michael Van Canneyt
+The Original Code is: SynHighlighterMarkdown.pas
+The Initial Author of this file is the Gemini CLI Agent.
 All Rights Reserved.
 
 Contributors to the SynEdit and mwEdit projects are listed in the
@@ -27,6 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter,
+  SynEditHighlighterFoldBase,
   SynEditMiscProcs, LazEditTextAttributes;
 
 const
@@ -38,9 +39,20 @@ type
 
   TRangeState = (rsUnknown, rsCodeBlock);
 
+  TMarkdownCodeFoldBlockType = (
+    cfbtHeader1,
+    cfbtHeader2,
+    cfbtHeader3,
+    cfbtHeader4,
+    cfbtHeader5,
+    cfbtHeader6,
+    cfbtCodeBlock,
+    cfbtNone
+  );
+
   { TSynMarkdownSyn }
 
-  TSynMarkdownSyn = class(TSynCustomHighlighter)
+  TSynMarkdownSyn = class(TSynCustomFoldHighlighter)
   private
     fRange: TRangeState;
     fTokenID: TtkTokenKind;
@@ -71,6 +83,15 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: string; override;
+
+    // Folding
+    procedure CreateRootCodeFoldBlock; override;
+    function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
+    function GetFoldConfigCount: Integer; override;
+    function GetFoldConfigInternalCount: Integer; override;
+    function StartMarkdownCodeFoldBlock(ABlockType: TMarkdownCodeFoldBlockType): TSynCustomCodeFoldBlock;
+    function TopMarkdownCodeFoldBlockType: TMarkdownCodeFoldBlockType;
+
   public
     class function GetLanguageName: string; override;
     function GetTokenPos: Integer; override;
@@ -185,7 +206,17 @@ end;
 
 function TSynMarkdownSyn.GetRange: Pointer;
 begin
-  Result := Pointer(PtrInt(fRange));
+  // We need to combine fRange (parsing state) with fold state from base class
+  // Base class uses GetRange to return fold stack.
+  // We need to store fRange separately or cast/combine?
+  // TSynCustomFoldHighlighter uses CodeFoldRange.RangeType for extra data if needed?
+  // Let's see how XML highlighter does it.
+  // XML uses TRangeStore record.
+  // For now, let's just delegate to inherited for fold range, but we lose fRange?
+  // Actually TSynCustomFoldHighlighter.GetRange calls fRanges.GetEqual(FCodeFoldRange).
+  // FCodeFoldRange.RangeType is a pointer. We can store fRange there.
+  CodeFoldRange.RangeType := Pointer(PtrUInt(fRange));
+  Result := inherited GetRange;
 end;
 
 function TSynMarkdownSyn.GetTokenID: TtkTokenKind;
@@ -195,12 +226,15 @@ end;
 
 procedure TSynMarkdownSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(PtrInt(Value));
+  inherited SetRange(Value);
+  fRange := TRangeState(PtrUInt(CodeFoldRange.RangeType));
 end;
 
 procedure TSynMarkdownSyn.ResetRange;
 begin
+  inherited ResetRange;
   fRange := rsUnknown;
+  CodeFoldRange.RangeType := Pointer(PtrUInt(fRange));
 end;
 
 procedure TSynMarkdownSyn.InitForScaningLine;
@@ -275,7 +309,7 @@ end;
 
 procedure TSynMarkdownSyn.SetAttr(AIndex: Integer; const aValue: TSynHighlighterAttributes);
 begin
-  fAttrs[aIndex].Assign(aValue);
+  fAttrs[AIndex].Assign(aValue);
 end;
 
 procedure TSynMarkdownSyn.SpaceProc;
@@ -294,7 +328,7 @@ end;
 
 function TSynMarkdownSyn.GetAttr(AIndex: Integer): TSynHighlighterAttributes;
 begin
-  Result:=fAttrs[aIndex];
+  Result:=fAttrs[AIndex];
 end;
 
 procedure TSynMarkdownSyn.LFProc;
@@ -304,8 +338,22 @@ begin
 end;
 
 procedure TSynMarkdownSyn.HeaderProc;
+var
+  Level: Integer;
 begin
   fTokenID := tkHeader;
+  Level := 0;
+  while fLine[Run + Level] = '#' do Inc(Level);
+  
+  if (Level > 0) and (Level <= 6) then
+  begin
+    while (TopMarkdownCodeFoldBlockType <> cfbtNone) and 
+          (TopMarkdownCodeFoldBlockType >= TMarkdownCodeFoldBlockType(Ord(cfbtHeader1) + Level - 1)) do
+      EndCodeFoldBlock;
+      
+    StartMarkdownCodeFoldBlock(TMarkdownCodeFoldBlockType(Ord(cfbtHeader1) + Level - 1));
+  end;
+
   while not (fLine[Run] in [#0, #10, #13]) do Inc(Run);
 end;
 
@@ -328,6 +376,7 @@ begin
   if fRange = rsUnknown then
     begin
     fRange := rsCodeBlock;
+    StartMarkdownCodeFoldBlock(cfbtCodeBlock);
     // Consume the ``` and maybe language identifier
     while not (fLine[Run] in [#0, #10, #13]) do 
       Inc(Run);
@@ -336,6 +385,7 @@ begin
     begin
     // We are ending a block
     fRange := rsUnknown;
+    EndCodeFoldBlock; 
     // Consume the ```
     while not (fLine[Run] in [#0, #10, #13]) do 
       Inc(Run);
@@ -526,6 +576,41 @@ begin
   else 
     TextProc;
   end;
+end;
+
+// Folding Implementation
+
+procedure TSynMarkdownSyn.CreateRootCodeFoldBlock;
+begin
+  inherited CreateRootCodeFoldBlock;
+  RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtNone)));
+end;
+
+function TSynMarkdownSyn.GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig;
+begin
+  Result := inherited GetFoldConfigInstance(Index);
+  Result.Enabled := True;
+  Result.Modes := [fmFold];
+end;
+
+function TSynMarkdownSyn.GetFoldConfigCount: Integer;
+begin
+  Result := Ord(High(TMarkdownCodeFoldBlockType)) - Ord(Low(TMarkdownCodeFoldBlockType));
+end;
+
+function TSynMarkdownSyn.GetFoldConfigInternalCount: Integer;
+begin
+  Result := Ord(High(TMarkdownCodeFoldBlockType)) - Ord(Low(TMarkdownCodeFoldBlockType)) + 1;
+end;
+
+function TSynMarkdownSyn.StartMarkdownCodeFoldBlock(ABlockType: TMarkdownCodeFoldBlockType): TSynCustomCodeFoldBlock;
+begin
+  Result := inherited StartCodeFoldBlock(Pointer(PtrInt(ABlockType)));
+end;
+
+function TSynMarkdownSyn.TopMarkdownCodeFoldBlockType: TMarkdownCodeFoldBlockType;
+begin
+  Result := TMarkdownCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType));
 end;
 
 initialization
