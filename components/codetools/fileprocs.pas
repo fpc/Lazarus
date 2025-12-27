@@ -107,12 +107,12 @@ function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
    NameOnly: PChar; NameOnlyLen: integer; CaseSensitive: boolean = false): integer;
 
 type
-  TCTPascalExtType = (petNone, petPAS, petPP, petP, petLPR);
+  TCTPascalExtType = (petNone, petPAS, petPP, petP);
   TCTPascalIncExtType = (pietNone, pietINC, pietPP, pietPAS);
 
 const
   CTPascalExtension: array[TCTPascalExtType] of string =
-    ('', '.pas', '.pp', '.p', '.lpr');
+    ('', '.pas', '.pp', '.p');
   CTPascalIncExtension: array[TCTPascalIncExtType] of string =
     ('', '.inc', '.pp', '.pas');
 

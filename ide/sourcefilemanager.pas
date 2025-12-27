@@ -370,9 +370,8 @@ implementation
 function CreateSrcEditPageName(const AnUnitName, AFilename: string;
   IgnoreEditor: TSourceEditor): string;
 begin
-  //Result := StringReplace(AnUnitName, '&', '', [rfReplaceAll]);
   Result := AnUnitName;
-  if Result='' then
+  if (Result='') or (FilenameExtIs(AFilename, '.lpr')) then
     Result:=ExtractFileName(AFilename);
   Result:=SourceEditorManager.FindUniquePageName(Result,IgnoreEditor);
 end;
@@ -2181,8 +2180,9 @@ begin
     if AnUnitInfo=nil then continue;
     if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
       SourceName:=CodeToolBoss.GetCachedSourceName(AnUnitInfo.Source);
-      if SourceName<>'' then
-        AnUnitInfo.ReadUnitNameFromSource(true);
+      Assert(SourceName<>'', 'UpdateSourceNames: SourceName is empty');
+      //if SourceName='' then
+      //  AnUnitInfo.ReadUnitNameFromSource(true);
     end else
       SourceName:='';
     PageName:=CreateSrcEditPageName(SourceName, AnUnitInfo.Filename, AEditor);
@@ -8094,7 +8094,7 @@ begin
   Project1.ActiveWindowIndexAtStart := SourceEditorManager.ActiveSourceWindowIndex;
 
   // update source notebook page names
-  UpdateSourceNames;
+  //UpdateSourceNames;
 
   // find mainunit
   GetMainUnit(MainUnitInfo, MainUnitSrcEdit);
