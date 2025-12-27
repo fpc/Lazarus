@@ -8,7 +8,7 @@
       <Version Value="11"/>
       <SearchPaths>
         <OtherUnitFiles Value="Src_3_2"/>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Description Value="Simple but complete Markdown display control"/>
@@ -27,6 +27,66 @@
         <Filename Value="markdown.regide.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="markdown.regide"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.delimiter.pas"/>
+        <UnitName Value="markdown.delimiter"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.elements.pas"/>
+        <UnitName Value="MarkDown.Elements"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.fpdocrender.pas"/>
+        <UnitName Value="Markdown.FPDocRender"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.htmlentities.pas"/>
+        <UnitName Value="Markdown.HTMLEntities"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.htmlrender.pas"/>
+        <UnitName Value="Markdown.HtmlRender"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.inlinetext.pas"/>
+        <UnitName Value="MarkDown.InlineText"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.latexrender.pas"/>
+        <UnitName Value="MarkDown.LatexRender"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.lexer.pas"/>
+        <UnitName Value="markdown.lexer"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.line.pas"/>
+        <UnitName Value="MarkDown.Line"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.panel.pas"/>
+        <UnitName Value="markdown.panel"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.parser.pas"/>
+        <UnitName Value="MarkDown.Parser"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.processors.pas"/>
+        <UnitName Value="Markdown.Processors"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.render.pas"/>
+        <UnitName Value="MarkDown.Render"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.scanner.pas"/>
+        <UnitName Value="MarkDown.Scanner"/>
+      </Item>
+      <Item>
+        <Filename Value="Src_3_2/markdown.utils.pas"/>
+        <UnitName Value="MarkDown.Utils"/>
       </Item>
     </Files>
     <RequiredPkgs>
