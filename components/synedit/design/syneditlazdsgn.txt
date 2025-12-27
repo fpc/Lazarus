@@ -88,3 +88,6 @@ tsynxmlsyn_200.png
 tsynpopupmenu.png
 tsynpopupmenu_150.png
 tsynpopupmenu_200.png
+tsynmarkdownsyn.png
+tsynmarkdownsyn_150.png
+tsynmarkdownsyn_200.png

@@ -303,6 +303,10 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="SynHighlighterXML"/>
       </Item>
       <Item>
+        <Filename Value="synhighlightermarkdown.pas"/>
+        <UnitName Value="SynHighlighterMarkdown"/>
+      </Item>
+      <Item>
         <Filename Value="synmacrorecorder.pas"/>
         <UnitName Value="SynMacroRecorder"/>
       </Item>
