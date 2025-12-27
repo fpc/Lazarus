@@ -75,7 +75,6 @@ type
     function GetTokenPos: Integer; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor destroy; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
@@ -125,6 +124,7 @@ begin
   fAttrs[8] := TSynHighlighterAttributes.Create('Link', 'Link');
   fAttrs[9] := TSynHighlighterAttributes.Create('Space', 'Space');
 
+  // Attributes registered with AddAttribute are freed automatically.
   For I:=0 to MaxAttrs do
     AddAttribute(fAttrs[i]);
 
@@ -152,14 +152,6 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
 end;
 
-destructor TSynMarkdownSyn.destroy;
-var
-  i : Integer;
-begin
-  For I:=0 to MaxAttrs do
-    FreeAndNil(Fattrs[I]);
-  inherited destroy;
-end;
 
 procedure TSynMarkdownSyn.SetAttribute(var AAttri: TSynHighlighterAttributes; AValue: TSynHighlighterAttributes);
 begin
