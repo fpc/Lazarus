@@ -28,6 +28,9 @@ uses
   Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter,
   SynEditMiscProcs, LazEditTextAttributes;
 
+const
+  MaxAttrs = 9;
+
 type
   TtkTokenKind = (tkBlockQuote, tkBold, tkCodeBlock, tkCodeInline, tkHeader,
     tkItalic, tkKey, tkLink, tkList, tkNull, tkSpace, tkText, tkUnknown);
@@ -40,17 +43,7 @@ type
   private
     fRange: TRangeState;
     fTokenID: TtkTokenKind;
-    fTextAttri: TSynHighlighterAttributes;
-    fHeaderAttri: TSynHighlighterAttributes;
-    fBoldAttri: TSynHighlighterAttributes;
-    fItalicAttri: TSynHighlighterAttributes;
-    fCodeInlineAttri: TSynHighlighterAttributes;
-    fCodeBlockAttri: TSynHighlighterAttributes;
-    fListAttri: TSynHighlighterAttributes;
-    fBlockQuoteAttri: TSynHighlighterAttributes;
-    fLinkAttri: TSynHighlighterAttributes;
-    fSpaceAttri: TSynHighlighterAttributes;
-    
+    fAttrs: array[0..MaxAttrs] of TSynHighlighterAttributes;
     fLine: PChar;
     Run: LongInt;
     fTokenPos: Integer;
@@ -69,7 +62,9 @@ type
     procedure NullProc;
     procedure SpaceProc;
     procedure TextProc;
-    
+    function GetAttr(AIndex: Integer): TSynHighlighterAttributes;
+    procedure SetAttr(AIndex: Integer; const aValue: TSynHighlighterAttributes);
+
     procedure SetAttribute(var AAttri: TSynHighlighterAttributes; AValue: TSynHighlighterAttributes);
 
   protected
@@ -80,6 +75,7 @@ type
     function GetTokenPos: Integer; override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor destroy; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
@@ -93,16 +89,16 @@ type
     function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
   published
-    property TextAttri: TSynHighlighterAttributes read fTextAttri write fTextAttri;
-    property HeaderAttri: TSynHighlighterAttributes read fHeaderAttri write fHeaderAttri;
-    property BoldAttri: TSynHighlighterAttributes read fBoldAttri write fBoldAttri;
-    property ItalicAttri: TSynHighlighterAttributes read fItalicAttri write fItalicAttri;
-    property CodeInlineAttri: TSynHighlighterAttributes read fCodeInlineAttri write fCodeInlineAttri;
-    property CodeBlockAttri: TSynHighlighterAttributes read fCodeBlockAttri write fCodeBlockAttri;
-    property ListAttri: TSynHighlighterAttributes read fListAttri write fListAttri;
-    property BlockQuoteAttri: TSynHighlighterAttributes read fBlockQuoteAttri write fBlockQuoteAttri;
-    property LinkAttri: TSynHighlighterAttributes read fLinkAttri write fLinkAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri write fSpaceAttri;
+    property TextAttri: TSynHighlighterAttributes Index 0 read GetAttr write SetAttr;
+    property HeaderAttri: TSynHighlighterAttributes Index 1 read GetAttr write SetAttr;
+    property BoldAttri: TSynHighlighterAttributes Index 2 read GetAttr write SetAttr;
+    property ItalicAttri: TSynHighlighterAttributes Index 3 read GetAttr write SetAttr;
+    property CodeInlineAttri: TSynHighlighterAttributes Index 4 read GetAttr write SetAttr;
+    property CodeBlockAttri: TSynHighlighterAttributes Index 5 read GetAttr write SetAttr;
+    property ListAttri: TSynHighlighterAttributes Index 6 read GetAttr write SetAttr;
+    property BlockQuoteAttri: TSynHighlighterAttributes Index 7 read GetAttr write SetAttr;
+    property LinkAttri: TSynHighlighterAttributes Index 8 read GetAttr write SetAttr;
+    property SpaceAttri: TSynHighlighterAttributes Index 9 read GetAttr write SetAttr;
   end;
 
 implementation
@@ -113,53 +109,56 @@ uses
 { TSynMarkdownSyn }
 
 constructor TSynMarkdownSyn.Create(AOwner: TComponent);
+var
+  I : Integer;
 begin
   inherited Create(AOwner);
 
-  fTextAttri := TSynHighlighterAttributes.Create('Text', 'Text');
-  fHeaderAttri := TSynHighlighterAttributes.Create('Header', 'Header');
-  fBoldAttri := TSynHighlighterAttributes.Create('Bold', 'Bold');
-  fItalicAttri := TSynHighlighterAttributes.Create('Italic', 'Italic');
-  fCodeInlineAttri := TSynHighlighterAttributes.Create('Code Inline', 'CodeInline');
-  fCodeBlockAttri := TSynHighlighterAttributes.Create('Code Block', 'CodeBlock');
-  fListAttri := TSynHighlighterAttributes.Create('List', 'List');
-  fBlockQuoteAttri := TSynHighlighterAttributes.Create('BlockQuote', 'BlockQuote');
-  fLinkAttri := TSynHighlighterAttributes.Create('Link', 'Link');
-  fSpaceAttri := TSynHighlighterAttributes.Create('Space', 'Space');
+  fAttrs[0] := TSynHighlighterAttributes.Create('Text', 'Text');
+  fAttrs[1] := TSynHighlighterAttributes.Create('Header', 'Header');
+  fAttrs[2] := TSynHighlighterAttributes.Create('Bold', 'Bold');
+  fAttrs[3] := TSynHighlighterAttributes.Create('Italic', 'Italic');
+  fAttrs[4] := TSynHighlighterAttributes.Create('Code Inline', 'CodeInline');
+  fAttrs[5] := TSynHighlighterAttributes.Create('Code Block', 'CodeBlock');
+  fAttrs[6] := TSynHighlighterAttributes.Create('List', 'List');
+  fAttrs[7] := TSynHighlighterAttributes.Create('BlockQuote', 'BlockQuote');
+  fAttrs[8] := TSynHighlighterAttributes.Create('Link', 'Link');
+  fAttrs[9] := TSynHighlighterAttributes.Create('Space', 'Space');
 
-  AddAttribute(fTextAttri);
-  AddAttribute(fHeaderAttri);
-  AddAttribute(fBoldAttri);
-  AddAttribute(fItalicAttri);
-  AddAttribute(fCodeInlineAttri);
-  AddAttribute(fCodeBlockAttri);
-  AddAttribute(fListAttri);
-  AddAttribute(fBlockQuoteAttri);
-  AddAttribute(fLinkAttri);
-  AddAttribute(fSpaceAttri);
-  
+  For I:=0 to MaxAttrs do
+    AddAttribute(fAttrs[i]);
+
   // Default attributes
-  fHeaderAttri.Style := [fsBold];
-  fHeaderAttri.Foreground := clMaroon;
+  HeaderAttri.Style := [fsBold];
+  HeaderAttri.Foreground := clMaroon;
   
-  fBoldAttri.Style := [fsBold];
+  BoldAttri.Style := [fsBold];
   
-  fItalicAttri.Style := [fsItalic];
+  ItalicAttri.Style := [fsItalic];
   
-  fCodeInlineAttri.Background := clSilver;
-  fCodeInlineAttri.Foreground := clRed;
+  CodeInlineAttri.Background := clSilver;
+  CodeInlineAttri.Foreground := clRed;
   
-  fCodeBlockAttri.Foreground := clBlue;
+  CodeBlockAttri.Foreground := clBlue;
   
-  fListAttri.Style := [fsBold];
-  fListAttri.Foreground := clNavy;
+  ListAttri.Style := [fsBold];
+  ListAttri.Foreground := clNavy;
   
-  fBlockQuoteAttri.Foreground := clGreen;
+  BlockQuoteAttri.Foreground := clGreen;
   
-  fLinkAttri.Foreground := clBlue;
-  fLinkAttri.Style := [fsUnderline];
+  LinkAttri.Foreground := clBlue;
+  LinkAttri.Style := [fsUnderline];
 
   SetAttributesOnChange(@DefHighlightChange);
+end;
+
+destructor TSynMarkdownSyn.destroy;
+var
+  i : Integer;
+begin
+  For I:=0 to MaxAttrs do
+    FreeAndNil(Fattrs[I]);
+  inherited destroy;
 end;
 
 procedure TSynMarkdownSyn.SetAttribute(var AAttri: TSynHighlighterAttributes; AValue: TSynHighlighterAttributes);
@@ -180,8 +179,8 @@ end;
 function TSynMarkdownSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
 begin
   case Index of
-    SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
-    SYN_ATTR_IDENTIFIER: Result := fTextAttri;
+    SYN_ATTR_WHITESPACE: Result := SpaceAttri;
+    SYN_ATTR_IDENTIFIER: Result := TextAttri;
     else Result := nil;
   end;
 end;
@@ -237,17 +236,18 @@ end;
 function TSynMarkdownSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   case fTokenID of
-    tkBlockQuote: Result := fBlockQuoteAttri;
-    tkBold: Result := fBoldAttri;
-    tkCodeBlock: Result := fCodeBlockAttri;
-    tkCodeInline: Result := fCodeInlineAttri;
-    tkHeader: Result := fHeaderAttri;
-    tkItalic: Result := fItalicAttri;
-    tkLink: Result := fLinkAttri;
-    tkList: Result := fListAttri;
-    tkSpace: Result := fSpaceAttri;
-    tkText: Result := fTextAttri;
-    else Result := fTextAttri;
+    tkBlockQuote: Result := BlockQuoteAttri;
+    tkBold: Result := BoldAttri;
+    tkCodeBlock: Result := CodeBlockAttri;
+    tkCodeInline: Result := CodeInlineAttri;
+    tkHeader: Result := HeaderAttri;
+    tkItalic: Result := ItalicAttri;
+    tkLink: Result := LinkAttri;
+    tkList: Result := ListAttri;
+    tkSpace: Result := SpaceAttri;
+    tkText: Result := TextAttri;
+  else
+    Result := TextAttri;
   end;
 end;
 
@@ -280,6 +280,11 @@ begin
   fTokenID := tkNull;
 end;
 
+procedure TSynMarkdownSyn.SetAttr(AIndex: Integer; const aValue: TSynHighlighterAttributes);
+begin
+  fAttrs[aIndex].Assign(aValue);
+end;
+
 procedure TSynMarkdownSyn.SpaceProc;
 begin
   fTokenID := tkSpace;
@@ -292,6 +297,11 @@ begin
   fTokenID := tkSpace;
   Inc(Run);
   if fLine[Run] = #10 then Inc(Run);
+end;
+
+function TSynMarkdownSyn.GetAttr(AIndex: Integer): TSynHighlighterAttributes;
+begin
+  Result:=fAttrs[aIndex];
 end;
 
 procedure TSynMarkdownSyn.LFProc;
