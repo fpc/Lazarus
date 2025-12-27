@@ -25,14 +25,14 @@ type
     FMsgFile: TFPCMsgFile;
     FFilename: string;
     FPool: TFPCMsgFilePool;
-    FLoadedFileAge: integer;
+    FLoadedFileAge: int64;
     fUseCount: integer;
   public
     constructor Create(aPool: TFPCMsgFilePool; const aFilename: string);
     destructor Destroy; override;
     property Pool: TFPCMsgFilePool read FPool;
     property Filename: string read FFilename;
-    property LoadedFileAge: integer read FLoadedFileAge;
+    property LoadedFileAge: int64 read FLoadedFileAge;
     function GetMsg(ID: integer): TFPCMsgItem;
     property MsgFile: TFPCMsgFile read FMsgFile;
     property UseCount: integer read fUseCount;
@@ -262,12 +262,12 @@ var
       Result:=FileExistsUTF8(aFilename);
   end;
 
-  function FileAge: longint;
+  function FileAge: int64;
   begin
     if IsMainThread then
-      Result:=FileAgeCached(aFilename)
+      Result:=FileAgeCached(aFilename)          // Returns universal time
     else
-      Result:=FileAgeUTF8(aFilename);
+      Result:=UniversalFileAgeUTF8(aFilename);
   end;
 
 var

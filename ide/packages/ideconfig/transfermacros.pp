@@ -102,7 +102,7 @@ type
 
   TLazIDEMacros = class(TIDEMacros)
   private
-    FLazbuildMacroFileAge: longint; // file age when last time the lazbuild macros were stored
+    FLazbuildMacroFileAge: int64; // file age when last time the lazbuild macros were stored
     FLazbuildMacros: TStringListUTF8Fast; // last stored lazbuild macros
   public
     destructor Destroy; override;
@@ -600,7 +600,7 @@ begin
     finally
       Cfg.Free;
     end;
-    FLazbuildMacroFileAge:=FileAgeUTF8(aFilename);
+    FLazbuildMacroFileAge:=UniversalFileAgeUTF8(aFilename);
   end;
 
   // clean up old macros
@@ -673,7 +673,7 @@ begin
   finally
     Cfg.Free;
   end;
-  FLazbuildMacroFileAge:=FileAgeUTF8(aFilename);
+  FLazbuildMacroFileAge:=UniversalFileAgeUTF8(aFilename);
 end;
 
 

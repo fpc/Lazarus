@@ -10,6 +10,8 @@
 unit LazFileUtils;
 
 {$mode objfpc}{$H+}
+{$MODESWITCH ADVANCEDRECORDS}
+{$MODESWITCH TYPEHELPERS}
 {$i lazutils_defines.inc}
 interface
 
@@ -109,7 +111,8 @@ function FindPathInSearchPath(const APath, SearchPath: string): integer; overloa
 
 // file operations
 function FileExistsUTF8(const Filename: string): boolean;
-function FileAgeUTF8(const FileName: string): Longint; // -1 if not exists
+function FileAgeUTF8(const FileName: string): int64; // -1 if not exists
+function UniversalFileAgeUtf8(const FileName: string): int64; // -1 if not exists
 function DirectoryExistsUTF8(const Directory: string): Boolean;
 function ExpandFileNameUTF8(const FileName: string; {const} BaseDir: string = ''): string;
 function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
@@ -146,6 +149,14 @@ function GetShellLinkTarget(const FileName: string): string;
 // for debugging
 function DbgSFileAttr(Attr: LongInt): String;
 
+type
+  TUnicodeSearchRecHelper = record helper for TUnicodeSearchRec
+    function UniversalTime: int64;
+  end;
+
+  TRawbyteSearchRecHelper = record helper for TRawbyteSearchRec
+    function UniversalTime: int64;
+  end;
 
 type
   TPhysicalFilenameOnError = (pfeException,pfeEmpty,pfeOriginal);

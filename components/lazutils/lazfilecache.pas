@@ -35,7 +35,7 @@ type
 
   TFileStateCacheItem = class
   private
-    FAge: longint;
+    FAge: int64;
     FFilename: string;
     FFlags: TFileStateCacheItemFlags;
     FPhysicalFilename: string;
@@ -50,7 +50,7 @@ type
     property Flags: TFileStateCacheItemFlags read FFlags;
     property TestedFlags: TFileStateCacheItemFlags read FTestedFlags;
     property TimeStamp: int64 read FTimeStamp;
-    property Age: longint read FAge;
+    property Age: int64 read FAge;
   end;
 
   TOnChangeFileStateTimeStamp = procedure(Sender: TObject;
@@ -80,7 +80,7 @@ type
     function FileIsReadableCached(const AFilename: string): boolean;
     function FileIsWritableCached(const AFilename: string): boolean;
     function FileIsTextCached(const AFilename: string): boolean;
-    function FileAgeCached(const AFileName: string): Longint;
+    function FileAgeCached(const AFileName: string): int64;
     function GetPhysicalFilenameCached(const AFileName: string; {%H-}EmptyOnError: boolean): string;
     function FindFile(const Filename: string;
                       CreateIfNotExists: boolean): TFileStateCacheItem;
@@ -103,7 +103,7 @@ function FileIsExecutableCached(const AFilename: string): boolean;
 function FileIsReadableCached(const AFilename: string): boolean;
 function FileIsWritableCached(const AFilename: string): boolean;
 function FileIsTextCached(const AFilename: string): boolean;
-function FileAgeCached(const AFileName: string): Longint;
+function FileAgeCached(const AFileName: string): int64;
 function GetPhysicalFilenameCached(const AFilename: string; EmptyOnError: boolean): string;
 
 procedure InvalidateFileStateCache(const Filename: string = ''); inline;
@@ -118,7 +118,7 @@ procedure LUIncreaseChangeStamp64(var ChangeStamp: int64); inline;
 
 type
   TOnFileExistsCached = function(Filename: string): boolean of object;
-  TOnFileAgeCached = function(Filename: string): longint of object;
+  TOnFileAgeCached = function(Filename: string): int64 of object;
 var
   OnFileExistsCached: TOnFileExistsCached = nil;
   OnFileAgeCached: TOnFileAgeCached = nil;
@@ -184,14 +184,14 @@ begin
     Result:=FileIsText(AFilename);
 end;
 
-function FileAgeCached(const AFileName: string): Longint;
+function FileAgeCached(const AFileName: string): int64;
 begin
   if OnFileAgeCached<>nil then
     Result:=OnFileAgeCached(AFilename)
   else if FileStateCache<>nil then
     Result:=FileStateCache.FileAgeCached(AFilename)
   else
-    Result:=FileAgeUTF8(AFileName);
+    Result:=UniversalFileAgeUTF8(AFileName);
 end;
 
 function GetPhysicalFilenameCached(const AFilename: string;
@@ -409,7 +409,7 @@ begin
   SetFlag(AFile,fsciText,Result);
 end;
 
-function TFileStateCache.FileAgeCached(const AFileName: string): Longint;
+function TFileStateCache.FileAgeCached(const AFileName: string): int64;
 var
   AFile: TFileStateCacheItem;
   Dummy: Boolean;
@@ -419,7 +419,7 @@ begin
     Result:=AFile.Age;
     exit;
   end;
-  Result:=FileAge(AFile.Filename);
+  Result:=UniversalFileAgeUTF8(AFile.Filename);
   AFile.FAge:=Result;
   Include(AFile.FTestedFlags,fsciAge);
 end;

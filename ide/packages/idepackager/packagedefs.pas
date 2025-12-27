@@ -428,9 +428,9 @@ type
   public
     StateFileLoaded: boolean;
     StateFileName: string; // the .compiled file
-    StateFileDate: longint;
+    StateFileDate: int64;
     CompilerFilename: string; // path to used compiler
-    CompilerFileDate: integer;
+    CompilerFileDate: int64;
     Params: TStrings;        // compiler parameters
     Complete: boolean;     // compilation was successful
     MainPPUExists: boolean; // main ppu file was there after compile

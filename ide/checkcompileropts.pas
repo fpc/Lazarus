@@ -537,9 +537,9 @@ end;
 function TCheckCompilerOptsDlg.CheckCompilerDate(CfgCache: TPCTargetConfigCache
   ): TModalResult;
 var
-  MinPPUDate: LongInt;
-  MaxPPUDate: LongInt;
-  CompilerDate: LongInt;
+  MinPPUDate: int64;
+  MaxPPUDate: int64;
+  CompilerDate: int64;
   MinPPU: String;
   MaxPPU: String;
   Node: TAVLTreeNode;
@@ -547,7 +547,7 @@ var
   
   procedure CheckFileAge(const aFilename: string);
   var
-    CurDate: LongInt;
+    CurDate: int64;
   begin
     CurDate:=FileAgeCached(aFilename);
     //DebugLn(['CheckFileAge ',aFilename,' ',CurDate]);

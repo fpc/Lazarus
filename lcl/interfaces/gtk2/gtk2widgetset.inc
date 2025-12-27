@@ -6360,7 +6360,7 @@ end;
 procedure TGtk2WidgetSet.CheckRCFilename;
 begin
   if FRCFileParsed and (FRCFilename<>'') and FileExistsUTF8(FRCFilename)
-  and (FileAgeUTF8(FRCFilename)<>FRCFileAge) then
+  and (UniversalFileAgeUTF8(FRCFilename)<>FRCFileAge) then
     FRCFileParsed:=false;
 end;
 
@@ -6378,7 +6378,7 @@ begin
   begin
     gtk_rc_parse(PChar(FRCFilename));
     FRCFileParsed:=true;
-    FRCFileAge:=FileAgeUTF8(FRCFilename);
+    FRCFileAge:=UniversalFileAgeUTF8(FRCFilename);
   end;
 end;
 

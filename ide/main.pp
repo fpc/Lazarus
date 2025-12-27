@@ -674,7 +674,7 @@ type
     FComponentAddedDesigner: TDesigner; // Designer and unit where components were added.
     FComponentAddedUnit: TUnitInfo;
     FRemoteControlTimer: TTimer;
-    FRemoteControlFileAge: integer;
+    FRemoteControlFileAge: int64;
     FRenamingComponents: TFPList; // list of TComponents currently renaming
     FOIHelpProvider: TAbstractIDEHTMLProvider;
     FWaitForClose: Boolean;

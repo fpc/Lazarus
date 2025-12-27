@@ -839,7 +839,7 @@ begin
           WorkingListingCapacity:=NewCapacity;
         end;
         WorkingItem:=@WorkingListing[WorkingListingCount];
-        WorkingItem^.Header.Time:=FileInfo.Time;
+        WorkingItem^.Header.Time:=FileInfo.UniversalTime;
         WorkingItem^.Header.Attr:=FileInfo.Attr;
         WorkingItem^.Header.Size:=FileInfo.Size;
         WorkingItem^.FileName:=FileInfo.Name;

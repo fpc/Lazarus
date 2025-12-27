@@ -3750,7 +3750,7 @@ function TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile(
 // returns: mrYes, mrNo, mrCancel, mrAbort
 var
   StateFilename: String;
-  StateFileAge: Integer;
+  StateFileAge: int64;
   i: Integer;
   CurFile: TPkgFile;
   LastParams: TStrings;
@@ -3828,7 +3828,7 @@ begin
       exit(mrYes);
     end;
 
-    StateFileAge:=FileAgeUTF8(StateFilename);
+    StateFileAge:=UniversalFileAgeUTF8(StateFilename);
 
     // check compiler and params
     LastParams:=APackage.LastCompile[o].Params;
@@ -3943,8 +3943,8 @@ begin
       DebugLn('  File="',CompilerFilename,'"');
       DebugLn('  State file="',Stats.StateFileName,'"');
       Note+='Compiler file "'+CompilerFilename+'" changed:'+LineEnding
-        +'  Old='+FileAgeToStr(Stats.CompilerFileDate)+LineEnding
-        +'  Now='+FileAgeToStr(FileAgeCached(CompilerFilename))+LineEnding
+        +'  Old='+UniversalFileAgeToStr(Stats.CompilerFileDate)+LineEnding
+        +'  Now='+UniversalFileAgeToStr(FileAgeCached(CompilerFilename))+LineEnding
         +'  State file="'+Stats.StateFileName+'"'+LineEnding;
       exit(mrYes);
     end;

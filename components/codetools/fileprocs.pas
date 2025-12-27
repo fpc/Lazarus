@@ -81,11 +81,12 @@ type
     ctsfcLoUpCase, // also search for lower and upper case
     ctsfcAllCase   // search case insensitive
     );
-  TCTFileAgeTime = longint;
+  TCTFileAgeTime = int64;
   PCTFileAgeTime = ^TCTFileAgeTime;
 
 // file operations
 function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime = 0): TDateTime;
+function UniversalFileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime = 0): TDateTime;
 function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean; AnyCase: boolean = false): boolean;
 function FindNextDirectoryInFilename(const Filename: string; var Position: integer): string;
 
@@ -151,7 +152,8 @@ function CTSafeFormat(const Fmt: String; const Args: Array of const): String; //
 function SimpleFormat(const Fmt: String; const Args: Array of const): String;
 
 // misc
-function FileAgeToStr(aFileAge: longint): string;
+function FileAgeToStr(aFileAge: int64): string;
+function UniversalFileAgeToStr(aFileAge: TCTFileAgeTime): string;
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
 // debugging
@@ -1866,9 +1868,31 @@ begin
   Result:=LazUtilities.ComparePointers(Addr,PCTLineInfoCacheItem(Item)^.Addr);
 end;
 
-function FileAgeToStr(aFileAge: longint): string;
+function FileAgeToStr(aFileAge: int64): string;
 begin
   Result:=DateTimeToStr(FileDateToDateTimeDef(aFileAge));
+end;
+
+function UniversalFileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime
+  ): TDateTime;
+begin
+  try
+    {$if defined(windows) or (FPC_FULLVERSION<30203)}
+    // On Windows FileTime is assumed to be local time, no timezone added.
+    // Remove the "FPC_FULLVERSION" part when FPC 3.2.4 is the minimum requirement.
+    Result:=FileDateToDateTime(aFileDate);
+    {$else}
+    // FileTime is already universal, just convert to TDateTime.
+    Result:=FileDateToUniversal(aFileDate);
+    {$endif}
+  except
+    Result:=Default;
+  end;
+end;
+
+function UniversalFileAgeToStr(aFileAge: TCTFileAgeTime): string;
+begin
+  Result:=DateTimeToStr(UniversalFileDateToDateTimeDef(aFileAge));
 end;
 
 //------------------------------------------------------------------------------

@@ -47,9 +47,24 @@ begin
   Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
 end;
 
-function FileAgeUTF8(const FileName: string): Longint;
+function FileAgeUTF8(const FileName: string): int64;
 begin
   Result:=SysUtils.FileAge(UTF8ToSys(Filename));
+end;
+
+function TUnicodeSearchRecHelper.UniversalTime: int64;
+begin
+  Result:=Time;
+end;
+
+function TRawbyteSearchRecHelper.UniversalTime: int64;
+begin
+  Result:=Time;
+end;
+
+function UniversalFileAgeUtf8(const FileName: string): int64; // -1 if not exists
+begin
+  Result := SysUtils.FileAge(UTF8ToSys(Filename));
 end;
 
 function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;

@@ -129,9 +129,55 @@ begin
   Result := SysUtils.FileSetAttr(FileName, Attr);
 end;
 
-function FileAgeUtf8(const FileName: String): Longint;
+function FileAgeUtf8(const FileName: String): int64;
 begin
   Result := SysUtils.FileAge(FileName);
+end;
+
+function TUnicodeSearchRecHelper.UniversalTime: int64;
+var
+  tmpdtime: longint;
+begin
+  If FileTimeToDosDateTime(FindData.ftLastWriteTime,longrec(tmpdtime).hi,longrec(tmpdtime).lo) then
+    Result:=tmpdtime
+  else
+    Result:=-1;
+end;
+
+function TRawbyteSearchRecHelper.UniversalTime: int64;
+var
+  tmpdtime: longint;
+begin
+  If FileTimeToDosDateTime(FindData.ftLastWriteTime,longrec(tmpdtime).hi,longrec(tmpdtime).lo) then
+    Result:=tmpdtime
+  else
+    Result:=-1;
+end;
+
+function UniversalFileAge (Const FileName : UnicodeString): Int64;
+var
+  Handle: THandle;
+  FindData: TWin32FindDataW;
+  tmpdtime: longint;
+  A: integer;
+begin
+  for A:=1 to Length(FileName) do
+    if CharInSet(FileName[A],['?','*']) then
+      Exit(-1);
+  Handle := FindFirstFileW(Pwidechar(FileName), FindData);
+  if Handle <> INVALID_HANDLE_VALUE then
+  begin
+    Windows.FindClose(Handle);
+    if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
+      If FileTimeToDosDateTime(FindData.ftLastWriteTime,longrec(tmpdtime).hi,longrec(tmpdtime).lo) then
+        exit(tmpdtime);
+  end;
+  Result := -1;
+end;
+
+function UniversalFileAgeUtf8(const FileName: string): int64; // -1 if not exists
+begin
+  Result:=UniversalFileAge(UnicodeString(FileName));
 end;
 
 function FileSetDateUtf8(const FileName: String; Age: Longint): Longint;

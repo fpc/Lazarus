@@ -454,7 +454,7 @@ type
   private
     FCIncludes: TFPList; // list of TH2PasFileCInclude
     FCIncludesValid: boolean;
-    FCIncludesFileAge: TDateTime;
+    FCIncludesFileAge: int64;
     FCIncludedBy: TFPList; // list of TH2PasFileCInclude
     FEnabled: boolean;
     FFilename: string;
@@ -1024,7 +1024,7 @@ begin
   Result:=mrCancel;
   if not FileExistsCached(Filename) then exit;
   ClearCIncludes;
-  FCIncludesFileAge:=FileAgeUTF8(Filename);
+  FCIncludesFileAge:=UniversalFileAgeUTF8(Filename);
   FCIncludesValid:=true;
   //DebugLn(['TH2PasFile.ReadCIncludes Filename="',Filename,'"']);
   try
@@ -1062,7 +1062,7 @@ begin
   FCIncludesValid:=false;
   if Project=nil then exit;
   if (not FileExistsCached(Filename)) then exit;
-  if FileAgeUTF8(Filename)>FCIncludesFileAge then exit;
+  if UniversalFileAgeUTF8(Filename)>FCIncludesFileAge then exit;
   FCIncludesValid:=true;
   Result:=true;
 end;
