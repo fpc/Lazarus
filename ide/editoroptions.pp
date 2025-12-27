@@ -509,6 +509,7 @@ type
     function GetDefaultAttribute({%H-}Index: integer): TSynHighlighterAttributes; override;
   public
     class function GetLanguageName: string; override;
+    procedure ResetRange; override;
 
     procedure SetLine(const NewValue: String; LineNumber: Integer); override;
     constructor Create(AOwner: TComponent); override;
@@ -519,6 +520,7 @@ type
     function GetTokenPos: Integer; override;
     function GetTokenKind: integer; override;
     procedure Next; override;
+    procedure SetRange(Value: Pointer); override;
   end;
 
 type
@@ -8581,6 +8583,11 @@ begin
   Result := 'Plain Text';
 end;
 
+procedure TIDESynTextSyn.ResetRange;
+begin
+
+end;
+
 constructor TIDESynTextSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -8622,6 +8629,11 @@ end;
 procedure TIDESynTextSyn.Next;
 begin
   inc(FPos);
+end;
+
+procedure TIDESynTextSyn.SetRange(Value: Pointer);
+begin
+
 end;
 
 { TQuickStringlist }
