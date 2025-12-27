@@ -30,33 +30,37 @@ uses
   SynEditHighlighterFoldBase,
   SynEditMiscProcs, LazEditTextAttributes;
 
-const
-  MarkdownMaxAttrs = 9;
 
 type
   TtkTokenKind = (tkBlockQuote, tkBold, tkCodeBlock, tkCodeInline, tkHeader,
     tkItalic, tkKey, tkLink, tkList, tkNull, tkSpace, tkText, tkUnknown);
 
-  TRangeState = (rsUnknown, rsCodeBlock);
-
-  TMarkdownCodeFoldBlockType = (
-    cfbtHeader1,
-    cfbtHeader2,
-    cfbtHeader3,
-    cfbtHeader4,
-    cfbtHeader5,
-    cfbtHeader6,
-    cfbtCodeBlock,
-    cfbtNone
-  );
-
   { TSynMarkdownSyn }
 
   TSynMarkdownSyn = class(TSynCustomFoldHighlighter)
+
+  private
+    Type
+      TRangeState = (rsUnknown, rsCodeBlock);
+    const
+      MaxAttrs = 9;
+  protected
+    type
+      TCodeFoldBlockType = (
+      cfbtHeader1,
+      cfbtHeader2,
+      cfbtHeader3,
+      cfbtHeader4,
+      cfbtHeader5,
+      cfbtHeader6,
+      cfbtCodeBlock,
+      cfbtNone
+    );
+
   private
     fRange: TRangeState;
     fTokenID: TtkTokenKind;
-    fAttrs: array[0..MarkdownMaxAttrs] of TSynHighlighterAttributes;
+    fAttrs: array[0..MaxAttrs] of TSynHighlighterAttributes;
     fLine: PChar;
     Run: LongInt;
     fTokenPos: Integer;
@@ -89,8 +93,8 @@ type
     function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
-    function StartMarkdownCodeFoldBlock(ABlockType: TMarkdownCodeFoldBlockType): TSynCustomCodeFoldBlock;
-    function TopMarkdownCodeFoldBlockType: TMarkdownCodeFoldBlockType;
+    function StartMarkdownCodeFoldBlock(ABlockType: TCodeFoldBlockType): TSynCustomCodeFoldBlock;
+    function TopMarkdownCodeFoldBlockType: TCodeFoldBlockType;
 
   public
     class function GetLanguageName: string; override;
@@ -147,7 +151,7 @@ begin
   fAttrs[9] := TSynHighlighterAttributes.Create('Space', 'Space');
 
   // Attributes registered with AddAttribute are freed automatically.
-  For I:=0 to MarkdownMaxAttrs do
+  For I:=0 to MaxAttrs do
     AddAttribute(fAttrs[i]);
 
   // Default attributes
@@ -348,10 +352,10 @@ begin
   if (Level > 0) and (Level <= 6) then
   begin
     while (TopMarkdownCodeFoldBlockType <> cfbtNone) and 
-          (TopMarkdownCodeFoldBlockType >= TMarkdownCodeFoldBlockType(Ord(cfbtHeader1) + Level - 1)) do
+          (TopMarkdownCodeFoldBlockType >= TCodeFoldBlockType(Ord(cfbtHeader1) + Level - 1)) do
       EndCodeFoldBlock;
       
-    StartMarkdownCodeFoldBlock(TMarkdownCodeFoldBlockType(Ord(cfbtHeader1) + Level - 1));
+    StartMarkdownCodeFoldBlock(TCodeFoldBlockType(Ord(cfbtHeader1) + Level - 1));
   end;
 
   while not (fLine[Run] in [#0, #10, #13]) do Inc(Run);
@@ -595,22 +599,22 @@ end;
 
 function TSynMarkdownSyn.GetFoldConfigCount: Integer;
 begin
-  Result := Ord(High(TMarkdownCodeFoldBlockType)) - Ord(Low(TMarkdownCodeFoldBlockType));
+  Result := Ord(High(TCodeFoldBlockType)) - Ord(Low(TCodeFoldBlockType));
 end;
 
 function TSynMarkdownSyn.GetFoldConfigInternalCount: Integer;
 begin
-  Result := Ord(High(TMarkdownCodeFoldBlockType)) - Ord(Low(TMarkdownCodeFoldBlockType)) + 1;
+  Result := Ord(High(TCodeFoldBlockType)) - Ord(Low(TCodeFoldBlockType)) + 1;
 end;
 
-function TSynMarkdownSyn.StartMarkdownCodeFoldBlock(ABlockType: TMarkdownCodeFoldBlockType): TSynCustomCodeFoldBlock;
+function TSynMarkdownSyn.StartMarkdownCodeFoldBlock(ABlockType: TCodeFoldBlockType): TSynCustomCodeFoldBlock;
 begin
   Result := inherited StartCodeFoldBlock(Pointer(PtrInt(ABlockType)));
 end;
 
-function TSynMarkdownSyn.TopMarkdownCodeFoldBlockType: TMarkdownCodeFoldBlockType;
+function TSynMarkdownSyn.TopMarkdownCodeFoldBlockType: TCodeFoldBlockType;
 begin
-  Result := TMarkdownCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType));
+  Result := TCodeFoldBlockType(PtrUInt(TopCodeFoldBlockType));
 end;
 
 initialization
