@@ -2177,14 +2177,11 @@ begin
     AEditor := SourceEditorManager.SourceEditors[i];
     AnUnitInfo := Project1.UnitWithEditorComponent(AEditor);
     if AnUnitInfo=nil then continue;
-    if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
-      SourceName:=CodeToolBoss.GetCachedSourceName(AnUnitInfo.Source);
-      Assert(SourceName<>'', 'UpdateSourceNames: SourceName is empty');
-      //if SourceName='' then
-      //  AnUnitInfo.ReadUnitNameFromSource(true);
-    end else
-      SourceName:='';
-    PageName:=CreateSrcEditPageName(SourceName, AnUnitInfo.Filename, AEditor);
+    if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+      SourceName := CodeToolBoss.GetCachedSourceName(AnUnitInfo.Source)
+    else
+      SourceName := '';
+    PageName := CreateSrcEditPageName(SourceName, AnUnitInfo.Filename, AEditor);
     //debugln([i,': UpdateSourceNames ',AnUnitInfo.Filename]);
     AEditor.PageName := PageName;
   end;
