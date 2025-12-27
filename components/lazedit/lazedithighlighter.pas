@@ -198,6 +198,7 @@ type
      * ------------------ *)
     procedure StartAtLineIndex(ALineIdx: TLineIdx);  // 0 based
     procedure ContinueNextLine;  // To be called at EOL; does not read the range
+    procedure SetAlternativeLineTextForGetTokens(const AnInjectedText: String; ALineIdx: TLineIdx); experimental;
     property  LineIndex: TLineIdx read FLineIndex;
 
     procedure Next; virtual; abstract;
@@ -497,6 +498,18 @@ begin
   FLinePtr := PChar(FLineText);
   F_IsInNextToEOL := False;
 
+  InitForScaningLine;
+end;
+
+procedure TLazEditCustomHighlighter.SetAlternativeLineTextForGetTokens(const AnInjectedText: String;
+  ALineIdx: TLineIdx);
+begin
+  FLineIndex := ALineIdx;
+  FLineText := AnInjectedText;
+  FLinePtr := PChar(FLineText);
+  F_IsInNextToEOL := False;
+
+  DoStartAtLine;
   InitForScaningLine;
 end;
 

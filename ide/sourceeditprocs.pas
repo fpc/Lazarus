@@ -287,8 +287,7 @@ var
     end;
     if (Highlighter<>nil) and AllowFontColor then begin
       LeftText := '';
-      Highlighter.ResetRange;
-      Highlighter.SetLine(s,0);
+      Highlighter.SetAlternativeLineTextForGetTokens(s, 0);
       while not Highlighter.GetEol do begin
         Highlighter.GetTokenEx(sToken,nTokenLen);
         SetLength(s,nTokenLen);

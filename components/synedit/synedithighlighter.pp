@@ -894,7 +894,7 @@ procedure TSynCustomHighlighter.SetLine(const NewValue: String; LineNumber: Inte
 begin
   if LineIndex <> LineNumber then begin
     //debugln(['TSynCustomHighlighter.SetLine - outdated call / deprecated']);
-    StartAtLineIndex(LineNumber);
+    SetAlternativeLineTextForGetTokens(NewValue, LineNumber);
   end;
 end;
 
