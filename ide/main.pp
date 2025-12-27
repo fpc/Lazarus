@@ -6533,8 +6533,7 @@ begin
   IncreaseCompilerParseStamp;
 
   // switch codetools to virtual project directory
-  CodeToolBoss.SetGlobalValue(
-    ExternalMacroStart+'ProjPath',VirtualDirectory);
+  CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',VirtualDirectory);
   EnvironmentOptions.LastSavedProjectFile:='';
 
   // create new project
