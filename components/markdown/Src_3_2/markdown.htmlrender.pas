@@ -658,10 +658,11 @@ var
   lLang : string;
 begin
   lLang:=lNode.Lang;
+  AppendNL('');
   if lLang<> '' then
-    Append('<pre><code class="language-'+lLang+'">')
+    AppendNl('<pre><code class="language-'+lLang+'">')
   else
-    Append('<pre><code>');
+    AppendNl('<pre><code>');
   for lBlock in LNode.Blocks do
     begin
     Renderer.RenderCodeBlock(LBlock,lLang);

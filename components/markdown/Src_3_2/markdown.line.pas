@@ -51,7 +51,7 @@ type
     // Line is the text with initial tabs replaced by spaces.
     property Line : AnsiString Read FLine;
     property LineNo : integer Read FLineNo;
-
+    Property CursorPos : Integer Read FCursor;
   end;
   TMarkDownLineList = class (specialize TGFPObjectList<TMarkDownLine>);
 

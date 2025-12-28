@@ -428,8 +428,11 @@ begin
   if (lBlock is TMarkDownListItemBlock) and (lBlock.Parent is TMarkDownListBlock) then
      lBlock:=lBlock.Parent as TMarkDownListBlock;
   if (lBlock is TMarkDownListBlock) then
-    if aLine.LeadingWhitespace>=lList.baseIndent then
-      Result:=False
+    if aLine.LeadingWhitespace>=lList.LastIndent then
+      begin
+      aLine.Advance(lList.LastIndent);
+      Result:=False;
+      end;
 end;
 
 function TUListProcessor.HandlesLine(aParent: TMarkDownContainerBlock; aLine: TMarkDownLine): boolean;
@@ -630,7 +633,10 @@ begin
      lBlock:=lBlock.Parent as TMarkDownListBlock;
   if (lBlock is TMarkDownListBlock) then
     if aLine.LeadingWhitespace>=lList.baseIndent then
+      begin
+      aLine.Advance(lList.LastIndent);
       Result:=False
+      end;
 end;
 
 
@@ -811,13 +817,15 @@ function TFencedCodeBlockProcessor.LineEndsBlock(aBlock: TMarkDownContainerBlock
 
 var
   s : String;
+  lBlock: TMarkdownCodeBlock absolute aBlock;
 
 begin
   Result:=(aLine=nil);
   if Result then
     Exit;
   // Ending may be preceded by 3 spaces
-  Result:=aLine.LeadingWhitespace>=4;
+
+  Result:=aLine.LeadingWhitespace>=4+lBlock.Indent;
   if Result then
     Exit;
   S:=aLine.Remainder.Trim;
@@ -829,27 +837,20 @@ function TFencedCodeBlockProcessor.processLine(aParent: TMarkDownContainerBlock;
 var
   lBlock : TMarkDownCodeBlock;
   s : String;
-  i : integer;
 
 begin
   lBlock:=TMarkDownCodeBlock.Create(aParent,aLine.LineNo);
   lBlock.fenced:=true;
   lBlock.lang:=Flang;
+  lBlock.Indent:=aLine.CursorPos;
   while Not LineEndsBlock(lBlock,PeekLine) do
     begin
     aLine:=NextLine;
+    if aLine.LeadingWhitespace>=lBlock.Indent then
+      aLine.Advance(lBlock.Indent)
+    else
+      aLine.Advance(aLine.LeadingWhitespace);
     s:=aLine.Remainder;
-    if (FIndent>0) then
-      begin
-      if FIndent>Length(S) then
-        FIndent:=Length(S);
-      I:=1;
-      while (I<=Findent) and (s[i]=' ') do
-        Inc(i);
-      if I>1 then
-        Delete(S,1,I-1);
-      aLine.advance(I-1);
-      end;
     TMarkDownTextBlock.Create(lBlock,aLine.LineNo,S);
     end;
   NextLine;

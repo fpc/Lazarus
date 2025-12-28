@@ -378,6 +378,7 @@ function TMarkDownElementRenderer.GetParentRenderers: TMarkDownElementRendererAr
 var
   i : integer;
 begin
+  Result:=[];
   SetLength(Result,Renderer.FRenderStack.Count);
   For I:=0 to Renderer.FRenderStack.Count-1 do
     Result[i]:=TMarkDownElementRenderer(Renderer.FRenderStack.items[i]);

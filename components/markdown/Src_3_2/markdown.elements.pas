@@ -206,10 +206,12 @@ Type
   private
     FFenced: boolean;
     FLang: AnsiString;
+    FIndent : Integer;
   public
     function WhiteSpaceMode : TWhitespaceMode; override;
     property Fenced : boolean read FFenced write FFenced;
     property Lang : AnsiString read FLang write FLang;
+    Property Indent : Integer Read FIndent Write FIndent;
   end;
 
 

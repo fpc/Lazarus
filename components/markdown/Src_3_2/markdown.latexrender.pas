@@ -23,7 +23,7 @@ uses
 {$IFDEF FPC_DOTTEDUNITS}
   System.Classes, System.SysUtils, System.StrUtils, System.Contnrs, 
 {$ELSE}
-  Classes, SysUtils, strutils, contnrs, 
+  Classes, SysUtils,  contnrs,
 {$ENDIF}  
   MarkDown.Elements, 
   MarkDown.Render, 

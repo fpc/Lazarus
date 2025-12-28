@@ -65,7 +65,6 @@ type
     procedure RenderToStream(aDocument : TMarkDownDocument; aStream : TStream);
     Procedure RenderDocument(aDocument : TMarkDownDocument); override;overload;
     Procedure RenderDocument(aDocument : TMarkDownDocument; aDest : TStrings); overload;
-    procedure RenderChildren(aBlock : TMarkDownContainerBlock; aAppendNewLine : Boolean); overload;
     function RenderFPDoc(aDocument : TMarkDownDocument) : string;
     Property PackageName : String read FPackageName Write FPackageName;
     Property FPDoc : String Read FFPDoc;
@@ -253,7 +252,7 @@ end;
 
 procedure TFPDocMarkDownBlockRenderer.CheckParent(const aParent, aChild: String);
 begin
-  if (Parent.NodeName<>aParent) then
+  if (UTF8Encode(Parent.NodeName)<>aParent) then
     Raise EFPDocRender.CreateFmt('Cannot have %s below %s',[aChild,aParent]);
 end;
 
@@ -333,10 +332,10 @@ end;
 
 function TMarkDownFPDocRenderer.Push(const aElementName: String; const aName: string): TDOMElement;
 begin
-  Result:=FDoc.CreateElement(aElementName);
+  Result:=FDoc.CreateElement(UTF8Decode(aElementName));
   PushElement(Result);
   if aName<>'' then
-    Result['name']:=aName;
+    Result['name']:=UTF8Decode(aName);
 end;
 
 procedure TMarkDownFPDocRenderer.PushElement(aElement: TDomElement);
@@ -364,7 +363,7 @@ end;
 
 procedure TMarkDownFPDocRenderer.AppendText(const aContent: String);
 begin
-  Parent.AppendChild(FDoc.CreateTextNode(aContent))
+  Parent.AppendChild(FDoc.CreateTextNode(UTF8Decode(aContent)));
 end;
 
 function TMarkDownFPDocRenderer.PushSection(aSection: TSectionType): TDomElement;
@@ -380,7 +379,7 @@ end;
 
 function TMarkDownFPDocRenderer.PopTill(const aElementName: string): TDomElement;
 begin
-  PopTill([aElementName]);
+  Result:=PopTill([aElementName]);
 end;
 
 
@@ -440,14 +439,6 @@ end;
 procedure TMarkDownFPDocRenderer.RenderDocument(aDocument: TMarkDownDocument; aDest: TStrings);
 begin
   aDest.Text:=RenderFPDoc(aDocument);
-end;
-
-procedure TMarkDownFPDocRenderer.RenderChildren(aBlock: TMarkDownContainerBlock; aAppendNewLine: Boolean);
-var
-  i : integer;
-begin
-  for I:=0 to aBlock.Blocks.Count-1 do
-    RenderBlock(aBlock.Blocks[I]);
 end;
 
 function TMarkDownFPDocRenderer.RenderFPDoc(aDocument: TMarkDownDocument): string;
@@ -618,7 +609,7 @@ function TFPDocMarkDownTextRenderer.renderAttrs(aElement: TMarkDownTextNode): An
   begin
     lKey:=KeyAlias(aKey);
     if lKey<>'' then
-      FPDoc.Parent[lKey]:=aValue;
+      FPDoc.Parent[UTF8Decode(lKey)]:=UTF8Decode(aValue);
   end;
 
 var
@@ -756,7 +747,7 @@ begin
   fpDoc.Push('li');
   For lBlock in lItemBlock.Blocks do
     if IsPlainBlock(lBlock) then
-      FPDoc.RenderChildren(lPar,True)
+      FPDoc.RenderChildren(lPar)
     else
       Renderer.RenderBlock(lBlock);
   fpDoc.Pop;
