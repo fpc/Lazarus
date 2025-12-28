@@ -2168,22 +2168,21 @@ end;
 
 procedure UpdateSourceNames;
 var
-  i: integer;
-  AnUnitInfo: TUnitInfo;
-  SourceName, PageName: string;
   AEditor: TSourceEditor;
+  AUnitInfo: TUnitInfo;
+  i: integer;
+  S: string;
 begin
   for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
     AEditor := SourceEditorManager.SourceEditors[i];
-    AnUnitInfo := Project1.UnitWithEditorComponent(AEditor);
-    if AnUnitInfo=nil then continue;
-    if FilenameIsPascalUnit(AnUnitInfo.Filename) then
-      SourceName := CodeToolBoss.GetCachedSourceName(AnUnitInfo.Source)
+    AUnitInfo := Project1.UnitWithEditorComponent(AEditor);
+    if AUnitInfo=nil then continue;
+    if FilenameIsPascalUnit(AUnitInfo.Filename) then
+      S := AUnitInfo.Unit_Name
     else
-      SourceName := '';
-    PageName := CreateSrcEditPageName(SourceName, AnUnitInfo.Filename, AEditor);
-    //debugln([i,': UpdateSourceNames ',AnUnitInfo.Filename]);
-    AEditor.PageName := PageName;
+      S := '';
+    S := CreateSrcEditPageName(S, AUnitInfo.Filename, AEditor);
+    AEditor.PageName := S;
   end;
 end;
 
