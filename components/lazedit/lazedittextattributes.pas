@@ -159,8 +159,9 @@ type
     procedure UpdateSupportedFeatures(AnAddSupportedFeatures, ARemoveSupportedFeatures: TLazTextAttributeFeatures);
     procedure SetAllPriorities(APriority: integer); virtual;
     // boundaries of the frame
-    procedure SetFrameBoundsPhys(AStart, AEnd: Integer); inline;
-    procedure SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer = 0; AEndOffs: Integer = 0); inline;
+// TODO: inline: removed for https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/41967 https://gitlab.com/freepascal.org/fpc/source/-/issues/41558
+    procedure SetFrameBoundsPhys(AStart, AEnd: Integer); //inline;
+    procedure SetFrameBoundsLog(AStart, AEnd: Integer; AStartOffs: Integer = 0; AEndOffs: Integer = 0); //inline;
     property StartX: TLazEditDisplayTokenBound read FStartX write SetStartX;
     property EndX: TLazEditDisplayTokenBound read FEndX write SetEndX;
 
