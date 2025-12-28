@@ -208,11 +208,17 @@ end;
 
 function TSynEditMarkupSelection.GetMarkupAttributeAtRowCol(const aRow: Integer;
   const aStartCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo): TLazEditTextAttributeModifier;
+var
+  i: Integer;
 begin
   result := nil;
 
-  if (nSelStart <= aStartCol.Logical) and ((nSelEnd > aStartCol.Logical) or (nSelEnd < 0)) then
+  if (nSelStart <= aStartCol.Logical) and ((nSelEnd > aStartCol.Logical) or (nSelEnd < 0)) then begin
     Result := MarkupInfo;
+    i := nSelEnd;
+    if i < 0 then i := MaxInt-1;
+    MarkupInfo.SetFrameBoundsLog(nSelStart, i);
+  end;
 
   //if AnRtlInfo.IsRtl then begin
   //  if ( ((nSelStart >= aStartCol.Physical) and (nSelStart < AnRtlInfo.PhysRight) ) or
