@@ -4425,25 +4425,20 @@ begin
   fTokenID := tkComment;
   if rsIDEDirective in fRange then
     fTokenID := tkIDEDirective;
+  Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
 
   if (not (IsInNextToEOL or IsScanning)) and not(rsIDEDirective in fRange) then begin
     if FUsePasDoc and (LinePtr[Run] = '@') then begin
-      if CheckPasDoc then begin
-        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+      if CheckPasDoc then
         exit;
-      end;
     end;
     if (IsLetterChar[LinePtr[Run]]) and
        ( (Run = 0) or
          not((IsLetterChar[LinePtr[Run-1]] or IsUnderScoreOrNumberChar[LinePtr[Run-1]]))
        )
     then begin
-      if GetCustomTokenAndNext(tkBorComment, FCustomTokenMarkup) then begin
-        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+      if GetCustomTokenAndNext(tkBorComment, FCustomTokenMarkup) then
         exit;
-      end;
     end;
   end;
 
@@ -4520,6 +4515,7 @@ begin
     end;
   until (p>=fLineLen);
   Run:=p;
+  Exclude(FTokenExtraAttribs, eaPartTokenNotAtEnd);
 end;
 
 procedure TSynPasSyn.DirectiveProc;
@@ -5074,27 +5070,22 @@ var
   IsInWord, WasInWord, ct: Boolean;
 begin
   fTokenID := tkComment;
+  Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
   if reCommentAnsi in FRequiredStates then
     FCustomCommentTokenMarkup := FPasAttributesMod[attribCommentAnsi];
 
   if (not (IsInNextToEOL or IsScanning)) then begin
     if FUsePasDoc and (LinePtr[Run] = '@') then begin
-      if CheckPasDoc then begin
-        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+      if CheckPasDoc then
         exit;
-      end;
     end;
     if (IsLetterChar[LinePtr[Run]]) and
        ( (Run = 0) or
          not((IsLetterChar[LinePtr[Run-1]] or IsUnderScoreOrNumberChar[LinePtr[Run-1]]))
        )
     then begin
-      if GetCustomTokenAndNext(tkAnsiComment, FCustomTokenMarkup) then begin
-        if (Run < fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then
-          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+      if GetCustomTokenAndNext(tkAnsiComment, FCustomTokenMarkup) then
         exit;
-      end;
     end;
   end;
 
@@ -5159,6 +5150,7 @@ begin
       IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
     end;
   until (Run>=fLineLen) or (LinePtr[Run] in [#0, #10, #13]);
+  Exclude(FTokenExtraAttribs, eaPartTokenNotAtEnd);
 end;
 
 procedure TSynPasSyn.RoundOpenProc;
@@ -6281,6 +6273,7 @@ begin
     if eaPartTokenNotAtStart in FTokenExtraAttribs then x1 := MaxInt;
     if eaPartTokenNotAtEnd   in FTokenExtraAttribs then x2 := MaxInt;
     if (Run >= fLineLen) or (LinePtr[Run] in [#0,#10,#13]) then begin
+      x2 := ToPos(Run);
       if (Result = CommentAttri) and
          ((fRange * [rsIDEDirective, rsAnsi, rsBor] <> []) or
           ((rsSlash in fRange) and
