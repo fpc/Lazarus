@@ -203,7 +203,6 @@ begin
 
     end;
   end;
-  MarkupInfo.SetFrameBoundsPhys(nSelStart, nSelEnd);
 end;
 
 function TSynEditMarkupSelection.GetMarkupAttributeAtRowCol(const aRow: Integer;
