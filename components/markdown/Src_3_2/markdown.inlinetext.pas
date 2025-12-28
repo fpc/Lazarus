@@ -848,6 +848,7 @@ begin
   Result:=False;
   S:=Scanner.PeekWhile(cEmailChars);
   lLen:=Length(S);
+  if lLen=0 then exit;
   cLast:=s[lLen];
   // Strip off _ or -
   if CharInSet(cLast,['_','-']) then
