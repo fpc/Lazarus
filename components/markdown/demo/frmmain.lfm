@@ -30,6 +30,7 @@ object MainForm: TMainForm
     VertScrollBar.Page = 1
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 1
+    OnResize = sbMarkdownResize
   end
   object ODMarkDown: TOpenDialog
     DefaultExt = '.md'

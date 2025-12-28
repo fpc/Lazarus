@@ -19,6 +19,7 @@ type
     procedure btnFileClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure sbMarkdownResize(Sender: TObject);
   private
     FRender:TMarkDownCanvasRenderer;
     PMarkDown: TMarkDownControl;
@@ -80,6 +81,12 @@ begin
     PMarkDown.CopySelectionToClipBoard;
     ShowMessage('Selection copied to clipboard');
     end;
+end;
+
+procedure TMainForm.sbMarkdownResize(Sender: TObject);
+begin
+  PMarkDown.Width:=SBMarkDown.ClientWidth-GetSystemMetrics(SM_CXVSCROLL);
+  SBMarkDown.Repaint;
 end;
 
 procedure TMainForm.RenderFile(const aFileName : string);
