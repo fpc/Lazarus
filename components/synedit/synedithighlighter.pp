@@ -199,6 +199,8 @@ type
   public
     procedure InitForScaningLine; override;
     function GetRange: Pointer; override;
+    procedure SetRange(Value: Pointer); override; deprecated;
+    procedure ResetRange; override; deprecated;
     //function GetTokenPos: Integer; override; // 0-based
     function GetTokenLen: Integer; override;
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
@@ -866,6 +868,16 @@ end;
 function TSynCustomHighlighter.GetRange: Pointer;
 begin
   Result := nil;
+end;
+
+procedure TSynCustomHighlighter.SetRange(Value: Pointer);
+begin
+  //
+end;
+
+procedure TSynCustomHighlighter.ResetRange;
+begin
+  //
 end;
 
 function TSynCustomHighlighter.GetSampleSource: string;
