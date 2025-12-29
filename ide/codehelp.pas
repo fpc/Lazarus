@@ -3217,8 +3217,7 @@ var
 begin
   Result:='';
   PasHighlighter.NestedComments:=NestedComments;
-  PasHighlighter.ResetRange;
-  PasHighlighter.SetLine(Src,0);
+  PasHighlighter.SetAlternativeLineTextForGetTokens(Src,0);
   LastTokenID:=tkUnknown;
   while not PasHighlighter.GetEol do begin
     TokenID:=PasHighlighter.GetTokenID;
