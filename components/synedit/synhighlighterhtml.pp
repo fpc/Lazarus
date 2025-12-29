@@ -48,8 +48,8 @@ unit SynHighlighterHTML;
 interface
 
 uses
-  SysUtils, Classes, Math, Graphics, SynEditTypes, SynEditHighlighter,
-  SynEditHighlighterXMLBase, SynEditHighlighterFoldBase, SynEditStrConst, LazEditTextAttributes;
+  SysUtils, Classes, Math, Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterXMLBase,
+  SynEditHighlighterFoldBase, SynEditStrConst, LazEditTextAttributes, LazEditHighlighter;
 
 const
   MAX_ESCAPEAMPS = 109;
@@ -448,6 +448,9 @@ type
     procedure Next; override;
     procedure SetRange(Value: Pointer); override;
     procedure ReSetRange; override;
+    function GetBracketContextAt(const ALineIdx: TLineIdx; const ALogX: IntPos;
+      const AByteLen: Integer; const AKind: integer; var AFlags: TLazEditBracketInfoFlags; out
+      AContext, ANestLevel: Integer; var InternalInfo: PtrUInt): Boolean; override;
     property IdentChars;
   published
     property AndAttri: TSynHighlighterAttributes index attribAnd read fAndAttri write SetAttribute;
@@ -2757,6 +2760,17 @@ begin
   inherited;
   fRange:= rsText;
   fAndCode := -1;
+end;
+
+function TSynHTMLSyn.GetBracketContextAt(const ALineIdx: TLineIdx; const ALogX: IntPos;
+  const AByteLen: Integer; const AKind: integer; var AFlags: TLazEditBracketInfoFlags; out
+  AContext, ANestLevel: Integer; var InternalInfo: PtrUInt): Boolean;
+begin
+  if (AKind = 0) { <> } and (fTokenID in [tkText, tkComment]) then
+    exit(False);
+
+  Result := inherited GetBracketContextAt(ALineIdx, ALogX, AByteLen, AKind, AFlags, AContext,
+    ANestLevel, InternalInfo);
 end;
 
 function TSynHTMLSyn.GetIdentChars: TSynIdentChars;

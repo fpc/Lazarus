@@ -58,7 +58,7 @@ interface
 uses
   Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase,
   SynEditHighlighterXMLBase, SynEditStrConst, SynEditMiscClasses, SynEditMiscProcs,
-  LazEditTextAttributes;
+  LazEditTextAttributes, LazEditHighlighter;
 
 type
   TtkTokenKind = (tkAttribute, tkAttrValue, tkCDATA,
@@ -240,6 +240,9 @@ type
     procedure Next; override;
     procedure SetRange(Value: Pointer); override;
     procedure ReSetRange; override;
+    function GetBracketContextAt(const ALineIdx: TLineIdx; const ALogX: IntPos;
+      const AByteLen: Integer; const AKind: integer; var AFlags: TLazEditBracketInfoFlags; out
+      AContext, ANestLevel: Integer; var InternalInfo: PtrUInt): Boolean; override;
     property IdentChars;
   published
     property ElementAttri: TSynHighlighterAttributes index attribElement read fElementAttri write SetAttribute;
@@ -1110,6 +1113,20 @@ begin
   inherited;
   fRange:= rsText;
   fRangeFlags := [];
+end;
+
+function TSynXMLSyn.GetBracketContextAt(const ALineIdx: TLineIdx; const ALogX: IntPos;
+  const AByteLen: Integer; const AKind: integer; var AFlags: TLazEditBracketInfoFlags; out
+  AContext, ANestLevel: Integer; var InternalInfo: PtrUInt): Boolean;
+begin
+  if (AKind = 0) { <> } and (fTokenID in [tkText, tkComment]) then
+    exit(False);
+
+  Result := inherited GetBracketContextAt(ALineIdx, ALogX, AByteLen, AKind, AFlags, AContext,
+    ANestLevel, InternalInfo);
+
+  if AContext = ord(tkEqual) then
+    AContext := ord(tkSymbol);
 end;
 
 function TSynXMLSyn.GetIdentChars: TSynIdentChars;

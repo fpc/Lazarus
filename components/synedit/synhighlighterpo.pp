@@ -33,9 +33,8 @@ unit SynHighlighterPo;
 interface
 
 uses
-  Classes, SysUtils,
-  Graphics,
-  SynEditTypes, SynEditHighlighter, SynEditStrConst, LazEditTextAttributes;
+  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, SynEditStrConst,
+  LazEditTextAttributes, LazEditMiscProcs, LazEditHighlighter;
 
 type
   TtkTokenKind = (tkComment, tkText, tkKey, tkNull, tkSpace, tkString,
@@ -48,6 +47,12 @@ type
   { TSynPoSyn }
 
   TSynPoSyn = class(TSynCustomHighlighter)
+  private const
+    PO_BRACKET_KIND_TOKEN_COUNT = 4;
+    PO_BRACKET_KIND_TOKENS: array [Boolean, 0..PO_BRACKET_KIND_TOKEN_COUNT-1] of string =
+      ( (')', ']', '}', '"'),
+        ('(', '[', '{', '"')
+      );
   private type
     TSynPasAttribute = (
     attribComment,
@@ -83,6 +88,7 @@ type
     {General Stuff}
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: String; override;
+    function GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean): String; override;
   public
     class function GetLanguageName: string; override;
     function IsKeyword(const AKeyword: string): boolean; override;
@@ -99,6 +105,11 @@ type
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     procedure Next; override;
+
+    function BracketKindCount: integer; override;
+    function GetBracketContextAt(const ALineIdx: TLineIdx; const ALogX: IntPos;
+      const AByteLen: Integer; const AKind: integer; var AFlags: TLazEditBracketInfoFlags; out
+      AContext, ANestLevel: Integer; var InternalInfo: PtrUInt): Boolean; override;
   published
     property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
     property TextAttri   : TSynHighlighterAttributes index attribText read fTextAttri write SetAttribute;
@@ -313,6 +324,45 @@ begin
   fProcTable[LinePtr[Run]];
 end;
 
+function TSynPoSyn.BracketKindCount: integer;
+begin
+  Result := PO_BRACKET_KIND_TOKEN_COUNT;
+end;
+
+function TSynPoSyn.GetBracketContextAt(const ALineIdx: TLineIdx; const ALogX: IntPos;
+  const AByteLen: Integer; const AKind: integer; var AFlags: TLazEditBracketInfoFlags; out
+  AContext, ANestLevel: Integer; var InternalInfo: PtrUInt): Boolean;
+var
+  LogIdx: Integer;
+begin
+  if LineIndex <> ALineIdx then
+    StartAtLineIndex(ALineIdx);
+  //IsInNextToEOL := True;
+  NextToLogX(ALogX, True);
+  //IsInNextToEOL := False;
+
+  AContext := ord(FTokenID);
+  ANestLevel := 0;
+  AFlags := AFlags + [bfNoLanguageContext, bfUnknownNestLevel];
+  Result := True;
+
+  if AKind = 3 then begin // "
+    LogIdx := ToIdx(ALogX);
+    AFlags := AFlags + [bfSingleLine];
+    if FTokenID <> tkString then
+      AFlags := AFlags + [bfUniform, bfNotNestable] - [bfUnknownNestLevel, bfOpen]
+    else
+    if LogIdx = fTokenPos then // open
+      AFlags := AFlags + [bfOpen, bfNotNestable] - [bfUnknownNestLevel]
+    else
+    if LogIdx = Run-1 then // close
+      AFlags := AFlags + [bfNotNestable] - [bfOpen, bfUnknownNestLevel]
+    else
+      AFlags := AFlags + [bfUniform, bfNotNestable] - [bfUnknownNestLevel, bfOpen];
+  end;
+
+end;
+
 function TSynPoSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
 begin
   case Index of
@@ -406,6 +456,11 @@ begin
             '"\"default\",Sync, to Sync with a previous cell of equal default\n"' + LineEnding +
             'msgstr ""';
 
+end;
+
+function TSynPoSyn.GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean): String;
+begin
+  Result := PO_BRACKET_KIND_TOKENS[AnOpeningToken, AnIndex]
 end;
 
 function TSynPoSyn.IsKeyword(const AKeyword: string): boolean;
