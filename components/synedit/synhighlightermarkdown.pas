@@ -93,7 +93,7 @@ type
     function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
-    function StartMarkdownCodeFoldBlock(ABlockType: TCodeFoldBlockType): TSynCustomCodeFoldBlock;
+    function StartMarkdownCodeFoldBlock(ABlockType: TCodeFoldBlockType): Boolean;
     function TopMarkdownCodeFoldBlockType: TCodeFoldBlockType;
 
   public
@@ -607,7 +607,7 @@ begin
   Result := Ord(High(TCodeFoldBlockType)) - Ord(Low(TCodeFoldBlockType)) + 1;
 end;
 
-function TSynMarkdownSyn.StartMarkdownCodeFoldBlock(ABlockType: TCodeFoldBlockType): TSynCustomCodeFoldBlock;
+function TSynMarkdownSyn.StartMarkdownCodeFoldBlock(ABlockType: TCodeFoldBlockType): Boolean;
 begin
   Result := inherited StartCodeFoldBlock(Pointer(PtrInt(ABlockType)));
 end;

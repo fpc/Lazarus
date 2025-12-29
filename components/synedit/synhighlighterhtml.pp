@@ -422,9 +422,9 @@ type
     procedure CreateRootCodeFoldBlock; override;
     function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
 
-    function StartHtmlCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType): TSynCustomCodeFoldBlock;
+    function StartHtmlCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType): Boolean;
     function StartHtmlNodeCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType;
-                                   OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
+                                   OpenPos: Integer; AName: String): Boolean;
     procedure EndHtmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
     function TopHtmlCodeFoldBlockType(DownIndex: Integer = 0): THtmlCodeFoldBlockType;
 
@@ -2780,15 +2780,15 @@ begin
   end;
 end;
 
-function TSynHTMLSyn.StartHtmlCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType): TSynCustomCodeFoldBlock;
+function TSynHTMLSyn.StartHtmlCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType): Boolean;
 begin
   Result := inherited StartXmlCodeFoldBlock(ord(ABlockType));
 end;
 
 function TSynHTMLSyn.StartHtmlNodeCodeFoldBlock(ABlockType: THtmlCodeFoldBlockType;
-  OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
+  OpenPos: Integer; AName: String): Boolean;
 begin
-  if not FFoldConfig[ord(cfbtHtmlNode)].Enabled then exit(nil);
+  if not FFoldConfig[ord(cfbtHtmlNode)].Enabled then exit(False);
   Result := inherited StartXmlNodeCodeFoldBlock(ord(ABlockType), OpenPos, AName);
 end;
 

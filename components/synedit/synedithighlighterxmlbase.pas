@@ -61,6 +61,8 @@ type
   end;
 
 
+  { TSynCustomXmlHighlighter }
+
   TSynCustomXmlHighlighter = class(TSynCustomFoldHighlighter)
   private
     FXmlRangeInfo: TSynXmlRangeInfo;
@@ -71,9 +73,9 @@ type
     function  CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList; override;
     function  UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
 
-    function  StartXmlCodeFoldBlock(ABlockType: Integer): TSynCustomCodeFoldBlock;
+    function  StartXmlCodeFoldBlock(ABlockType: Integer): Boolean;
     function  StartXmlNodeCodeFoldBlock(ABlockType: Integer; OpenPos: Integer;
-                                        AName: String): TSynCustomCodeFoldBlock;
+                                        AName: String): Boolean;
     procedure EndXmlCodeFoldBlock;
     procedure EndXmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
   public
@@ -114,7 +116,7 @@ begin
   FXmlRangeInfoClosePos := 0;
 end;
 
-function TSynCustomXmlHighlighter.StartXmlCodeFoldBlock(ABlockType: Integer): TSynCustomCodeFoldBlock;
+function TSynCustomXmlHighlighter.StartXmlCodeFoldBlock(ABlockType: Integer): Boolean;
 var
   FoldBlock: Boolean;
   p: PtrInt;
@@ -126,8 +128,8 @@ begin
   Result := StartCodeFoldBlock(p + Pointer(PtrInt(ABlockType)), FoldBlock);
 end;
 
-function TSynCustomXmlHighlighter.StartXmlNodeCodeFoldBlock(ABlockType: Integer;
-  OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
+function TSynCustomXmlHighlighter.StartXmlNodeCodeFoldBlock(ABlockType: Integer; OpenPos: Integer;
+  AName: String): Boolean;
 var
   i: Integer;
 begin

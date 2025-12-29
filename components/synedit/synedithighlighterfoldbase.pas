@@ -443,7 +443,7 @@ type
 
     // Open/Close Folds
     function StartCodeFoldBlock(ABlockType: Pointer = nil;
-              IncreaseLevel: Boolean = true; ForceDisabled: Boolean = False): TSynCustomCodeFoldBlock; virtual;
+              IncreaseLevel: Boolean = true; ForceDisabled: Boolean = False): Boolean; virtual;
     procedure EndCodeFoldBlock(DecreaseLevel: Boolean = True); virtual;
     procedure CollectNodeInfo(FinishingABlock : Boolean; ABlockType: Pointer;
               LevelChanged: Boolean); virtual;
@@ -2153,14 +2153,17 @@ begin
   LogX2 := LogX1 + L ;
 end;
 
-function TSynCustomFoldHighlighter.StartCodeFoldBlock(ABlockType: Pointer;
-  IncreaseLevel: Boolean; ForceDisabled: Boolean): TSynCustomCodeFoldBlock;
+function TSynCustomFoldHighlighter.StartCodeFoldBlock(ABlockType: Pointer; IncreaseLevel: Boolean;
+  ForceDisabled: Boolean): Boolean;
 begin
+  Result := False;
   if (PtrUInt(ABlockType) < FoldConfigCount) and (not ForceDisabled) and
      (not FoldConfig[PtrUInt(ABlockType)].Enabled) and
      (not FoldConfig[PtrUInt(ABlockType)].IsEssential)
   then
-    exit(nil);
+    exit;
+
+  Result := True;
 
   if FIsCollectingNodeInfo then
     CollectNodeInfo(False, ABlockType, IncreaseLevel);
@@ -2172,7 +2175,7 @@ begin
   inc(FUncommittedFoldNestCount);
   if IncreaseLevel then
     inc(FUncommittedFoldStackCount);
-//  Result:=CodeFoldRange.Add(ABlockType, IncreaseLevel);
+//  CodeFoldRange.Add(ABlockType, IncreaseLevel);
 end;
 
 procedure TSynCustomFoldHighlighter.EndCodeFoldBlock(DecreaseLevel: Boolean = True);

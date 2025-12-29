@@ -1041,7 +1041,7 @@ type
 
     function StartPascalCodeFoldBlock
              (ABlockType: TPascalCodeFoldBlockType; ForceDisabled: Boolean = False
-              ): TSynCustomCodeFoldBlock;
+              ): Boolean;
     procedure EndPascalCodeFoldBlock(NoMarkup: Boolean = False; UndoInvalidOpen: Boolean = False);
     procedure CloseBeginEndBlocksBeforeProc;
     procedure SmartCloseBeginEndBlocks(SearchFor: TPascalCodeFoldBlockType);
@@ -7361,9 +7361,8 @@ begin
   end;
 end;
 
-function TSynPasSyn.StartPascalCodeFoldBlock(
-  ABlockType: TPascalCodeFoldBlockType; ForceDisabled: Boolean
-  ): TSynCustomCodeFoldBlock;
+function TSynPasSyn.StartPascalCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType;
+  ForceDisabled: Boolean): Boolean;
 var
   p: PtrInt;
   FoldBlock, BlockEnabled: Boolean;
@@ -7371,13 +7370,13 @@ var
   nd: TSynFoldNodeInfo;
   ConfigP: PSynCustomFoldConfig;
 begin
-  if rsSkipAllPasBlocks in fRange then exit(nil);
+  if rsSkipAllPasBlocks in fRange then exit(False);
   ConfigP := @FFoldConfig[ord(PascalFoldTypeConfigMap[ABlockType])];
   BlockEnabled := ConfigP^.Enabled;
   if (not BlockEnabled) and (not ForceDisabled) and
      (not ConfigP^.IsEssential)
   then
-    exit(nil);
+    exit(False);
 
   FoldBlock := BlockEnabled and (ConfigP^.Modes * [fmFold, fmHide] <> []);
   p := 0;
@@ -7393,7 +7392,7 @@ begin
   end;
   if not FoldBlock then
     p := PtrInt(CountPascalCodeFoldBlockOffset);
-  Result:=TSynCustomCodeFoldBlock(StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), FoldBlock, True));
+  Result:=StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), FoldBlock, True);
 end;
 
 procedure TSynPasSyn.EndPascalCodeFoldBlock(NoMarkup: Boolean;

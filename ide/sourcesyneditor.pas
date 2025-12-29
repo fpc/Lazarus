@@ -411,7 +411,7 @@ type
     function CreateRangeList({%H-}ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
     function StartCodeFoldBlock(ABlockType: Pointer = nil;
       IncreaseLevel: Boolean = true; ForceDisabled: Boolean = False
-      ): TSynCustomCodeFoldBlock; override;
+      ): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     //procedure DefHighlightChange(Sender: TObject);
@@ -2304,8 +2304,8 @@ begin
   TIDESynHighlighterPasRangeList(Result).FFinalizationLine := -1;
 end;
 
-function TIDESynPasSyn.StartCodeFoldBlock(ABlockType: Pointer;
-  IncreaseLevel: Boolean; ForceDisabled: Boolean): TSynCustomCodeFoldBlock;
+function TIDESynPasSyn.StartCodeFoldBlock(ABlockType: Pointer; IncreaseLevel: Boolean;
+  ForceDisabled: Boolean): Boolean;
 begin
   if (ABlockType = Pointer(PtrUInt(cfbtUnitSection))) or
      (ABlockType = Pointer(PtrUInt(cfbtUnitSection)) + {%H-}PtrUInt(CountPascalCodeFoldBlockOffset))

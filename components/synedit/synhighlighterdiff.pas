@@ -163,7 +163,7 @@ type
     // folding
     procedure CreateRootCodeFoldBlock; override;
 
-    function StartDiffCodeFoldBlock(ABlockType: TDiffCodeFoldBlockType): TSynCustomCodeFoldBlock;
+    function StartDiffCodeFoldBlock(ABlockType: TDiffCodeFoldBlockType): Boolean;
     procedure EndDiffCodeFoldBlock;
     function TopDiffCodeFoldBlockType(DownIndex: Integer = 0): TDiffCodeFoldBlockType;
 
@@ -715,7 +715,7 @@ begin
   RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtDiffNone)));
 end;
 
-function TSynDiffSyn.StartDiffCodeFoldBlock(ABlockType: TDiffCodeFoldBlockType): TSynCustomCodeFoldBlock;
+function TSynDiffSyn.StartDiffCodeFoldBlock(ABlockType: TDiffCodeFoldBlockType): Boolean;
 var
   FoldBlock: Boolean;
   p: PtrInt;

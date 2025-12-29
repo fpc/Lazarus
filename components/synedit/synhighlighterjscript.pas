@@ -279,7 +279,7 @@ type
     //procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
     function StartJScriptCodeFoldBlock
              (ABlockType: TJScriptFoldBlockType;
-              OnlyEnabled: Boolean = False): TSynCustomCodeFoldBlock;
+              OnlyEnabled: Boolean = False): Boolean;
     procedure FinishJScriptCodeFoldBlock();
     procedure DoInitNode(var Node: TSynFoldNodeInfo;
                    FinishingABlock: Boolean;
@@ -1917,9 +1917,8 @@ begin
   Result := fDefaultFilter <> fDefaultFilterInitialValue;
 end;
 
-function TSynJScriptSyn.StartJScriptCodeFoldBlock(
-  ABlockType: TJScriptFoldBlockType; OnlyEnabled: Boolean
-  ): TSynCustomCodeFoldBlock;
+function TSynJScriptSyn.StartJScriptCodeFoldBlock(ABlockType: TJScriptFoldBlockType;
+  OnlyEnabled: Boolean): Boolean;
 begin
   Result:=StartCodeFoldBlock(Pointer(PtrInt(ABlockType)) );
 end;

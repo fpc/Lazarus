@@ -212,9 +212,9 @@ type
     // folding
     procedure CreateRootCodeFoldBlock; override;
 
-    function StartXmlCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType): TSynCustomCodeFoldBlock;
+    function StartXmlCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType): Boolean;
     function StartXmlNodeCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType;
-                                   OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
+                                   OpenPos: Integer; AName: String): Boolean;
     procedure EndXmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
     function TopXmlCodeFoldBlockType(DownIndex: Integer = 0): TXmlCodeFoldBlockType;
 
@@ -1150,15 +1150,15 @@ begin
   RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtXmlNone)));
 end;
 
-function TSynXMLSyn.StartXmlCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType): TSynCustomCodeFoldBlock;
+function TSynXMLSyn.StartXmlCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType): Boolean;
 begin
   Result := inherited StartXmlCodeFoldBlock(ord(ABlockType));
 end;
 
-function TSynXMLSyn.StartXmlNodeCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType;
-  OpenPos: Integer; AName: String): TSynCustomCodeFoldBlock;
+function TSynXMLSyn.StartXmlNodeCodeFoldBlock(ABlockType: TXmlCodeFoldBlockType; OpenPos: Integer;
+  AName: String): Boolean;
 begin
-  if not FFoldConfig[ord(cfbtXmlNode)].Enabled then exit(nil);
+  if not FFoldConfig[ord(cfbtXmlNode)].Enabled then exit(False);
   Result := inherited StartXmlNodeCodeFoldBlock(ord(ABlockType), OpenPos, AName);
 end;
 

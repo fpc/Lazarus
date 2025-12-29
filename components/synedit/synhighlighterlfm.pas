@@ -127,7 +127,7 @@ type
     procedure CreateRootCodeFoldBlock; override;
 
     function StartLfmCodeFoldBlock
-             (ABlockType: TLfmCodeFoldBlockType): TSynCustomCodeFoldBlock;
+             (ABlockType: TLfmCodeFoldBlockType): Boolean;
     procedure EndLfmCodeFoldBlock;
     function TopLfmCodeFoldBlockType(DownIndex: Integer = 0): TLfmCodeFoldBlockType;
   protected
@@ -638,7 +638,7 @@ begin
   RootCodeFoldBlock.InitRootBlockType(Pointer(PtrInt(cfbtLfmNone)));
 end;
 
-function TSynLFMSyn.StartLfmCodeFoldBlock(ABlockType: TLfmCodeFoldBlockType): TSynCustomCodeFoldBlock;
+function TSynLFMSyn.StartLfmCodeFoldBlock(ABlockType: TLfmCodeFoldBlockType): Boolean;
 var
   FoldBlock: Boolean;
   p: PtrInt;
