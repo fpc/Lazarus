@@ -5430,10 +5430,17 @@ begin
 end;
 
 procedure TQtGDIObjects.AddGDIObject(AObject: TObject);
+var
+  Key: PtrUInt;
+  Obj: TObject;
 begin
-  if not FSavedHandlesList.HasId(AObject) then
+  if AObject = nil then
+    exit;
+  Key := PtrUInt(AObject);
+  Obj := AObject;
+  if not FSavedHandlesList.HasId(Key) then
   begin
-    FSavedHandlesList.Add(AObject, AObject);
+    FSavedHandlesList.Add(Key, Obj);
     inc(FCount);
     {$IFDEF DebugQTGDIObjects}
     if FMaxCount < FCount then
@@ -5443,10 +5450,15 @@ begin
 end;
 
 procedure TQtGDIObjects.RemoveGDIObject(AObject: TObject);
+var
+  Key: PtrUInt;
 begin
-  if FSavedHandlesList.HasId(AObject) then
+  if AObject = nil then
+    exit;
+  Key := PtrUInt(AObject);
+  if FSavedHandlesList.HasId(Key) then
   begin
-    FSavedHandlesList.Delete(AObject);
+    FSavedHandlesList.Delete(Key);
     dec(FCount);
   end;
 end;
@@ -5454,8 +5466,8 @@ end;
 function TQtGDIObjects.IsValidGDIObject(AGDIObject: PtrUInt): Boolean;
 begin
   if (AGDIObject = 0) then
-    Exit(False);
-  Result := FSavedHandlesList.HasId(TObject(AGDIObject));
+    exit(False);
+  Result := FSavedHandlesList.HasId(AGDIObject);
   {$IFDEF DebugQTGDIObjects}
   if not Result then
   begin
