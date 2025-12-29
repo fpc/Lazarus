@@ -25,7 +25,7 @@
     <License Value="MPL - Mozilla public license
 "/>
     <Version Major="1"/>
-    <Files Count="22">
+    <Files Count="23">
       <Item1>
         <Filename Value="ipanim.pas"/>
         <UnitName Value="IpAnim"/>
@@ -45,7 +45,7 @@
       <Item5>
         <Filename Value="ipfilebroker.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="Ipfilebroker"/>
+        <UnitName Value="IpFileBroker"/>
       </Item5>
       <Item6>
         <Filename Value="iphttpbroker.pas"/>
@@ -118,6 +118,10 @@
         <Filename Value="iphtmlnodes.pas"/>
         <UnitName Value="IpHtmlNodes"/>
       </Item22>
+      <Item23>
+        <Filename Value="ipunicode.pas"/>
+        <UnitName Value="ipUnicode"/>
+      </Item23>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>

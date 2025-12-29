@@ -6,16 +6,16 @@ unit IpHtmlNodes;
 interface
 
 uses
-  // LCL
-  LCLType, LCLIntf,
   // RTL, FCL
   Types, Math, Classes, SysUtils,
   // LCL
+  LazUTF8,
+  LCLType, LCLIntf,
   Graphics, GraphUtil,
   Controls, StdCtrls, ExtCtrls, Buttons, Dialogs,
   // TurboPower_ipro
   IpConst, IpCSS, IpHtmlTypes, IpHtmlClasses, IpHtmlProp,
-  IpHtmlUtils, IpMsg, IpHtml;
+  ipUnicode, IpHtmlUtils, IpMsg, IpHtml;
 
 type
   { Descendants of TIpHtmlNode }
@@ -1310,6 +1310,8 @@ procedure TIpHtmlNodeText.DoNormalWords(N: PAnsiChar);
 var
   NewEntry : PIpHtmlElement;
   N2: PAnsiChar;
+  CurCode, LastCode: DWord;
+  CodepointLen: integer;
 begin
   while N^ <> #0 do begin
     case N^ of
@@ -1336,13 +1338,44 @@ begin
     else
       begin
         N2 := N;
-        while not (N2^ in [#0, ' ', LF]) do
-          Inc(N2);
+        LastCode:=0;
+        repeat
+          case N2^ of
+          #0, ' ', LF:
+            break;
+          #192..#255:
+            begin
+              CurCode:=UTF8CodepointToUnicode(N2,CodepointLen);
+              if IsWordBreak(LastCode,CurCode) then
+                break;
+              LastCode:=CurCode;
+              Inc(N2,CodepointLen);
+            end;
+          else
+            LastCode:=ord(N2^);
+            Inc(N2);
+          end;
+        until false;
         if N2^ <> #0 then
-          N := CutAndAddWord(N, N2)
+        begin
+          N := CutAndAddWord(N, N2);
+          if not (N2^ in [' ',LF]) then begin
+            if not ElementQueueIsEmpty then begin
+              NewEntry := Owner.NewElement(etWord, Self);
+              NewEntry.AnsiWord := '';
+              NewEntry.IsBlank := 1;
+              if FFirstW then
+                NewEntry.Props := PropsR
+              else
+                NewEntry.Props := nil;
+              EnqueueElement(NewEntry);
+              FFirstW := False;
+            end;
+          end;
+        end
         else begin
           AddAWord(N);
-          N^ := #0;
+          N := N2;
         end;
       end;
     end;

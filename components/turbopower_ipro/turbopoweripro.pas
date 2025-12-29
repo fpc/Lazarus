@@ -8,16 +8,15 @@ unit TurboPowerIPro;
 interface
 
 uses
-  IpAnim, IpConst, Ipfilebroker, Iphttpbroker, IpHtml, IpMsg, IpStrms, 
-  IpUtils, IpHtmlTabList, IpHtmlProp, ipHtmlBlockLayout, ipHtmlTableLayout, 
-  IpHtmlParser, IpHtmlUtils, IpCSS, IpHtmlClasses, IpHtmlTypes, IpHtmlNodes, 
-  LazarusPackageIntf;
+  IpAnim, IpConst, IpFileBroker, Iphttpbroker, IpHtml, IpMsg, IpStrms, IpUtils, IpHtmlTabList, 
+  IpHtmlProp, ipHtmlBlockLayout, ipHtmlTableLayout, IpHtmlParser, IpHtmlUtils, IpCSS, 
+  IpHtmlClasses, IpHtmlTypes, IpHtmlNodes, ipUnicode, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('Ipfilebroker', @Ipfilebroker.Register);
+  RegisterUnit('IpFileBroker', @IpFileBroker.Register);
   RegisterUnit('Iphttpbroker', @Iphttpbroker.Register);
   RegisterUnit('IpHtml', @IpHtml.Register);
 end;
