@@ -1478,28 +1478,58 @@ begin
 end;
 
 procedure TQtWidgetSet.AddHandle(AHandle: TObject);
+var
+  Key: PtrUInt;
+  Obj: TObject;
 begin
-  System.EnterCriticalsection(CriticalSection);
-  if not SavedHandlesList.HasId(AHandle) then
-    SavedHandlesList.Add(AHandle, AHandle);
-  System.LeaveCriticalsection(CriticalSection);
+  if AHandle = nil then
+    exit;
+
+  Key := PtrUInt(AHandle);
+  Obj := AHandle;
+
+  System.EnterCriticalSection(CriticalSection);
+  try
+    if not SavedHandlesList.HasId(Key) then
+      SavedHandlesList.Add(Key, Obj);
+  finally
+    System.LeaveCriticalSection(CriticalSection);
+  end;
 end;
 
 procedure TQtWidgetSet.RemoveHandle(AHandle: TObject);
+var
+  Key: PtrUInt;
 begin
-  System.EnterCriticalsection(CriticalSection);
-  if SavedHandlesList.HasId(AHandle) then
-    SavedHandlesList.Delete(AHandle);
-  System.LeaveCriticalsection(CriticalSection);
+  if AHandle = nil then
+    exit;
+
+  Key := PtrUInt(AHandle);
+
+  System.EnterCriticalSection(CriticalSection);
+  try
+    if SavedHandlesList.HasId(Key) then
+      SavedHandlesList.Delete(Key);
+  finally
+    System.LeaveCriticalSection(CriticalSection);
+  end;
 end;
 
 function TQtWidgetSet.IsValidHandle(AHandle: HWND): Boolean;
+var
+  Key: PtrUInt;
 begin
-  if (AHandle = 0) then
-    Exit(False);
-  System.EnterCriticalsection(CriticalSection);
-  Result := SavedHandlesList.HasId(TObject(AHandle));
-  System.LeaveCriticalsection(CriticalSection);
+  if AHandle = 0 then
+    exit(False);
+
+  Key := PtrUInt(AHandle);
+
+  System.EnterCriticalSection(CriticalSection);
+  try
+    Result := SavedHandlesList.HasId(Key);
+  finally
+    System.LeaveCriticalSection(CriticalSection);
+  end;
 end;
 
 procedure TQtWidgetSet.RegisterSysTrayIcon(AHandle: TObject);
