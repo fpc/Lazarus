@@ -54,8 +54,8 @@ type
     procedure RenderChildren(aBlock : TMarkDownContainerBlock; aAppendNewLine : Boolean); overload;
     function RenderHTML(aDocument : TMarkDownDocument) : string;
     procedure RenderHTMLToFile(aDocument : TMarkDownDocument; const aFileName : string);
-    class function FastRender(aDocument : TMarkDownDocument; aOptions : THTMLOptions; aTitle : String = ''; aHead : TStrings = Nil) : String;
-    class procedure FastRenderToFile(aDocument : TMarkDownDocument; const aFileName : string; aOptions : THTMLOptions; aTitle : String = ''; aHead : TStrings = Nil);
+    class function FastRender(aDocument : TMarkDownDocument; aOptions : THTMLOptions; const aTitle : String = ''; aHead : TStrings = Nil) : String;
+    class procedure FastRenderToFile(aDocument : TMarkDownDocument; const aFileName : string; aOptions : THTMLOptions; const aTitle : String = ''; aHead : TStrings = Nil);
     Property HTML : String Read FHTML;
   published
     Property Options : THTMLOptions Read FOptions Write FOptions;
@@ -331,7 +331,7 @@ begin
   end;
 end;
 
-class function TMarkDownHTMLRenderer.FastRender(aDocument: TMarkDownDocument; aOptions: THTMLOptions; aTitle: String;
+class function TMarkDownHTMLRenderer.FastRender(aDocument: TMarkDownDocument; aOptions: THTMLOptions; const aTitle: String;
   aHead: TStrings): String;
 var
   lRender : TMarkDownHTMLRenderer;
@@ -349,7 +349,7 @@ begin
 end;
 
 class procedure TMarkDownHTMLRenderer.FastRenderToFile(aDocument: TMarkDownDocument; const aFileName: string;
-  aOptions: THTMLOptions; aTitle: String; aHead: TStrings);
+  aOptions: THTMLOptions; const aTitle: String; aHead: TStrings);
 var
   lRender : TMarkDownHTMLRenderer;
 begin
