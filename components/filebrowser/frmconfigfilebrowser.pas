@@ -1,14 +1,15 @@
-unit fraconfigfilebrowser;
+unit frmConfigFileBrowser;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  // IdeIntf
-  Classes, SysUtils, Forms, Controls, StdCtrls,
-  Dialogs, FileCtrl, ComCtrls, ExtCtrls,  EditBtn,
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs;
+  SysUtils,
+  StdCtrls, Dialogs, EditBtn,
+  IDEOptionsIntf,
+  lazIDEIntf, IDEOptEditorIntf,
+  FileBrowserTypes, CtrlFileBrowser;
 
 type
 
@@ -49,14 +50,11 @@ type
 
 implementation
 
-uses lazIDEIntf, filebrowsertypes, ctrlfilebrowser;
-
 {$R *.lfm}
 
 { TFileBrowserOptionsFrame }
 
 procedure TFileBrowserOptionsFrame.CheckDirsBeforeFiles;
-
 begin
   CBShowDirectoriesBeforeFiles.Enabled:=CBShowFilesInline.Checked;
   if Not CBShowDirectoriesBeforeFiles.Enabled then
@@ -74,17 +72,14 @@ begin
 end;
 
 procedure TFileBrowserOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
-
 begin
   //
 end;
-
 
 procedure TFileBrowserOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   C : TFileBrowserController;
   RB: TRadioButton;
-
 begin
   C:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if not Assigned(C) then

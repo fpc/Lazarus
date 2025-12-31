@@ -110,7 +110,7 @@ var
 
 implementation
 
-{$R frmfilebrowser.lfm}
+{$R *.lfm}
 
 {$IFDEF MSWINDOWS}
 uses

@@ -1,12 +1,16 @@
-unit ctrlfilebrowser;
+unit CtrlFileBrowser;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, contnrs, frmFileBrowser, forms, filebrowsertypes, SrcEditorIntf, Masks,
-  LazIDEIntf, MenuIntf, IDECommands, ProjectIntf, IDEOptEditorIntf, IDEWindowIntf, BaseIDEIntf;
+  Classes, SysUtils, Contnrs, StrUtils,
+  Forms, Controls,
+  Masks, LazConfigStorage,
+  IDEExternToolIntf, ProjectIntf, BaseIDEIntf,
+  IDEMsgIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, IDECommands, IDEOptEditorIntf, IDEWindowIntf,
+  frmFileBrowser, FileBrowserTypes;
 
 Type
     TFileSearchOption = (fsoMatchOnlyFileName,fsoAbsolutePaths,fsoUseLetters);
@@ -120,8 +124,6 @@ Type
 
 implementation
 
-uses Controls, StrUtils, IDEMsgIntf, IDEExternToolIntf, LazConfigStorage;
-
 { TFileSearchMatch }
 
 constructor TFileSearchMatch.create(const aFileName: string;
@@ -151,7 +153,6 @@ end;
 
 { TFileBrowserController }
 
-
 procedure TFileBrowserController.TreeFillError(Sender: TThread; const aError : String);
 
 begin
@@ -170,11 +171,9 @@ begin
 end;
 
 procedure TFileBrowserController.AddFileNodes(List : TStrings; aNode : TFileSystemEntry; aDir : String);
-
 var
   FN : String;
   i : Integer;
-
 begin
   FN:=aDir;
   if FN<>'' then
@@ -191,7 +190,6 @@ begin
 end;
 
 procedure TFileBrowserController.CreateFileList(aUseAbsolutePaths : boolean);
-
 var
   lList,l2 : TStrings;
   lDir : String;
@@ -217,8 +215,6 @@ procedure TFileBrowserController.ReadConfig;
 var
   Storage : TConfigStorage;
   Opts : TFileSearchOptions;
-
-
 begin
   Opts:=[];
   Storage:=GetIDEConfigStorage(SConfigFile, True);
@@ -243,7 +239,6 @@ begin
       Free;
     end;
 end;
-
 
 procedure TFileBrowserController.SetCustomRootDir(AValue: string);
 begin

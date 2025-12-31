@@ -2,13 +2,14 @@
   This source is only used to compile and install the package.
  }
 
-unit idefilebrowser;
+unit IDEFileBrowser;
 
 {$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  frmFileBrowser, RegIDEFileBrowser, fraconfigfilebrowser, ctrlfilebrowser, filebrowsertypes, frmfilesearcher, LazarusPackageIntf;
+  frmFileBrowser, RegIDEFileBrowser, frmConfigFileBrowser, CtrlFileBrowser, 
+  FileBrowserTypes, LazarusPackageIntf;
 
 implementation
 
@@ -18,5 +19,5 @@ begin
 end;
 
 initialization
-  RegisterPackage('idefilebrowser', @Register);
+  RegisterPackage('IDEFileBrowser', @Register);
 end.

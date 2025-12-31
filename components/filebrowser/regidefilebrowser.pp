@@ -7,16 +7,14 @@ interface
 uses
   Classes, SysUtils,
   LazLoggerBase,
-  Controls, Forms,
-  LazIDEIntf, MenuIntf, IDECommands, IDEWindowIntf, BaseIDEIntf,
-  IDEOptionsIntf, IDEOptEditorIntf,
-  frmFileBrowser, {frmConfigFileBrowser, }ctrlfilebrowser, fraconfigfilebrowser;
+  LCLType, Controls, Forms,
+  IDEOptionsIntf,
+  LazIDEIntf, MenuIntf, IDECommands, IDEWindowIntf, IDEOptEditorIntf,
+  frmFileBrowser, CtrlFileBrowser, frmConfigFileBrowser, FileBrowserTypes;
 
 procedure Register;
 
 implementation
-
-uses lcltype,frmfilesearcher,filebrowsertypes;
 
 var
   FileBrowserOptionsFrameID: integer = 2000;
@@ -27,37 +25,9 @@ begin
   IDEWindowCreators.ShowForm(FileBrowserCreator.FormName,true);
 end;
 
-procedure ShowFileSearcher(Sender: TObject);
-
-var
-  Entries : TFileEntryArray;
-
-var
-  C: TFileBrowserController;
-
-begin
-  Entries:=[];
-  With TFileSearcherForm.Create(Application) do
-    try
-      if ShowModal=mrOK then
-        Entries:=GetSelectedItems;
-    finally
-      Free;
-    end;
-  if Length(Entries)>0 then
-    begin
-    C := LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
-    if Assigned(C) then
-      C.OpenFiles(Entries);
-    end;
-end;
-
-
 procedure CreateFileBrowser(Sender: TObject; aFormName: string; var AForm: TCustomForm; DoDisableAutoSizing: boolean);
-
 var
   C: TFileBrowserController;
-
 begin
   // sanity check to avoid clashing with another package that has registered a window with the same name
   if CompareText(aFormName,'FileBrowser')<>0 then begin
@@ -74,30 +44,25 @@ begin
     AForm.EnableAutoSizing;
 end;
 
-
 procedure CreateController;
-
 var
   C: TFileBrowserController;
-
 begin
   C := LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
-  if (C = nil) then
-    begin
+  Assert(C = nil, 'IDEFileBrowserController already created.');
+  //if (C = nil) then begin
     C := TFileBrowserController.Create(LazarusIDE.OwningComponent);
     C.Name:='IDEFileBrowserController';
     if C.GetResolvedRootDir<>'' then
       C.IndexRootDir;
-    end;
+  //end;
   C.ConfigFrame:=TFileBrowserOptionsFrame;
 end;
 
 procedure Register;
-
 var
   CmdCatViewMenu: TIDECommandCategory;
   ViewFileBrowserCommand: TIDECommand;
-  ViewFileSearcherCommand: TIDECommand;
 begin
   // search shortcut category
   CmdCatViewMenu:=IDECommandList.FindCategoryByName(CommandCategoryViewName);
@@ -105,17 +70,10 @@ begin
   ViewFileBrowserCommand:=RegisterIDECommand(CmdCatViewMenu,
     'ViewFileBrowser',SFileBrowserIDEMenuCaption,
     CleanIDEShortCut,nil,@ShowFileBrowser);
-  // register shortcut
-  ViewFileSearcherCommand:=RegisterIDECommand(CmdCatViewMenu,
-    'ViewFileSearcher',SFileSearcherIDEMenuCaption,
-    IDEShortCut(Ord('P'), [ssctrl], VK_UNKNOWN,[]),nil,@ShowFileSearcher);
   // register menu item in View menu
   RegisterIDEMenuCommand(itmViewMainWindows,
     ViewFileBrowserCommand.Name,
     SFileBrowserIDEMenuCaption, nil, nil, ViewFileBrowserCommand);
-  RegisterIDEMenuCommand(itmViewMainWindows,
-    ViewFileSearcherCommand.Name,
-    SFileSearcherIDEMenuCaption, nil, nil, ViewFileSearcherCommand);
 
   CreateController;
 
@@ -128,7 +86,6 @@ begin
   // add IDE options frame
   FileBrowserOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TFileBrowserOptionsFrame,
                                               FileBrowserOptionsFrameID)^.Index;
-
 end;
 
 end.

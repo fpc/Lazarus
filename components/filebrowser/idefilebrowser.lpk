@@ -19,7 +19,7 @@
     <Description Value="File browsing window for the Lazarus IDE"/>
     <License Value="Modified LGPL"/>
     <Version Minor="2"/>
-    <Files Count="7">
+    <Files Count="6">
       <Item1>
         <Filename Value="frmfilebrowser.lfm"/>
         <Type Value="LFM"/>
@@ -34,34 +34,27 @@
         <UnitName Value="RegIDEFileBrowser"/>
       </Item3>
       <Item4>
-        <Filename Value="fraconfigfilebrowser.pas"/>
-        <UnitName Value="fraconfigfilebrowser"/>
+        <Filename Value="frmconfigfilebrowser.pas"/>
+        <UnitName Value="frmconfigfilebrowser"/>
       </Item4>
       <Item5>
         <Filename Value="ctrlfilebrowser.pas"/>
-        <UnitName Value="ctrlfilebrowser"/>
+        <UnitName Value="CtrlFileBrowser"/>
       </Item5>
       <Item6>
         <Filename Value="filebrowsertypes.pas"/>
-        <UnitName Value="filebrowsertypes"/>
+        <UnitName Value="FileBrowserTypes"/>
       </Item6>
-      <Item7>
-        <Filename Value="frmfilesearcher.pas"/>
-        <UnitName Value="frmfilesearcher"/>
-      </Item7>
     </Files>
     <CompatibilityMode Value="True"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
-      </Item2>
-      <Item3>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item3>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>

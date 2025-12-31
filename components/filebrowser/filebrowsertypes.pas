@@ -1,4 +1,4 @@
-unit filebrowsertypes;
+unit FileBrowserTypes;
 
 {$mode objfpc}{$H+}
 
@@ -9,9 +9,7 @@ uses
 
 type
   TStartDir = (sdProjectDir, sdLastOpened, sdCustomDir);
-
   TRootDir = (rdProjectDir, rdUserDir, rdRootDir, rdCustomDir);
-
   EFileEntry = Class(Exception);
 
   TEntryType = (etDirectory,etFile,etSymlink);
