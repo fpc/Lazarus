@@ -2044,6 +2044,7 @@ resourcestring
   dlgIncludeWordsToIdentCompl_DontInclude = 'don''t include';
   dlgIncludeKeywordsToIdentCompl = 'Include all keywords and operators';
   dlgIncludeCodeTemplatesToIdentCompl = 'Include code templates';
+  dlgOptAutoBraceBevel = 'Automatic braces and quotes';
   dlgOptAutoBraceOpen = 'Automatically complete opening braces/quotes';
   dlgOptAutoBraceClose = 'Skip over existing closing braces/quotes';
   dlgOptAutoBraceFilter = 'Filter';

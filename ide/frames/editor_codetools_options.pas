@@ -117,6 +117,7 @@ begin
   CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeLittleLeft);
   CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeFullLeft);
 
+  AutoBracketBevel.Caption := dlgOptAutoBraceBevel;
   cbAutoBraceOpen.Caption := dlgOptAutoBraceOpen;
   cbAutoBraceClose.Caption := dlgOptAutoBraceClose;
   lblAutoBraceOpenFilter.Caption := dlgOptAutoBraceFilter;
