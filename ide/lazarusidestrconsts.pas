@@ -1996,9 +1996,9 @@ resourcestring
   dlgMarkupOutlineWarnNoColor = 'Warning: There are no colors configured for the selected language';
   dlgPasExtKeywords = 'Highlight flow control statements (break, continue, exit) as keywords';
   dlgPasCaseLabelForOtherwise = 'Color otherwise/else as case-label';
-  dlgPasDeclaredTypeAttrMode = 'Extend of type-highlight in declarations';
-  dlgPasDeclaredTypeValueMode = 'Extend of initial-value-highlight in declarations';
-  dlgPasGenericParamAttrMode = 'Extend of highlight in Generic-Constraint and Specialize-param';
+  dlgPasDeclaredTypeAttrMode = 'Extent of type-highlight in declarations';
+  dlgPasDeclaredTypeValueMode = 'Extent of initial-value-highlight in declarations';
+  dlgPasGenericParamAttrMode = 'Extent of highlight in Generic-Constraint and Specialize-param';
   dlgPasDeclaredTypeValueModeLiteral = 'Include literals (Number, String) in initial-value-highlight in declarations';
   dlgPasDeclaredTypeAttrModeIdent = 'Identifier only';
   dlgPasDeclaredTypeAttrModeNames = 'Identifier and built-in (types/values)';
