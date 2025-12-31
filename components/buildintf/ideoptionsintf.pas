@@ -176,7 +176,8 @@ const
     EdtOptionsDisplay     = 200;
       EdtOptionsColors      = 500;
       EdtOptionsTMLColors   = 501;
-      EdtOptionsMarkup      = 502;
+      EdtOptionsPascal      = 502;
+      EdtOptionsMarkup      = 503;
       EdtOptionsUserDefined = 504;
     EdtOptionsKeys        = 300;
     EdtOptionsMouse       = 400;

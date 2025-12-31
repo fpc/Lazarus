@@ -36,7 +36,7 @@ uses
   SynEdit, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase,
   // IDE
   EditorOptions, LazarusIDEStrConsts, SourceMarks, KeyMapping, SynEditMarkupBracket, SynEditTypes,
-  SynEditStrConst, editor_color_options, editor_general_options, editor_keymapping_options,
+  editor_color_options, editor_general_options, editor_keymapping_options,
   editor_codefolding_options;
 
 type
@@ -46,35 +46,18 @@ type
     BracketCombo: TComboBox;
     BracketLabel: TLabel;
     BracketLink: TLabel;
-    CaseLabelLink: TLabel;
-    cbDeclaredValueAttrForNumString: TCheckBox;
     cbMarkup: TCheckBox;
     cbOutline: TCheckBox;
     cbMarkupWordBracket: TCheckBox;
     cbMarkupOutline: TCheckBox;
-    cbCaseLabelColorForOtherwise: TCheckBox;
     chkKWGroups: TCheckListBox;
-    chkExtPasKeywords: TCheckBox;
     divKeyWordGroups: TDividerBevel;
-    dropGenericParamAttrMode: TComboBox;
-    dropProcNameDeclAttrMode: TComboBox;
-    dropProcNameImplAttrMode: TComboBox;
-    dropPasStringKeywords: TComboBox;
-    divKeywords: TDividerBevel;
     divMatchingBrackets: TDividerBevel;
     divWordGroup: TDividerBevel;
-    dropDeclaredTypeAttrMode: TComboBox;
-    dropDeclaredValueAttrMode: TComboBox;
-    lblDeclaredTypeAttrMode: TLabel;
-    lblDeclaredValueAttrMode: TLabel;
-    lblGenericParamAttrMode: TLabel;
-    lblProcNameDeclAttrMode: TLabel;
-    lblProcNameImplAttrMode: TLabel;
     MarkupCurrentWordKeys: TLabel;
     lbMarkupWarnNoColor: TLabel;
     LanguageComboBox: TComboBox;
     LanguageLabel: TLabel;
-    lblPasStringKeywords: TLabel;
     MarkupColorLink: TLabel;
     MarkupKeyLink: TLabel;
     MarkupWordDelayLabel: TLabel;
@@ -91,15 +74,12 @@ type
     procedure BracketLinkClick(Sender: TObject);
     procedure BracketLinkMouseEnter(Sender: TObject);
     procedure BracketLinkMouseLeave(Sender: TObject);
-    procedure CaseLabelLinkClick(Sender: TObject);
     procedure cbMarkupChange(Sender: TObject);
     procedure cbMarkupOutlineChange(Sender: TObject);
     procedure cbMarkupWordBracketChange(Sender: TObject);
-    procedure chkExtPasKeywordsChange(Sender: TObject);
     procedure chkKWGroupsClick(Sender: TObject);
     procedure chkKWGroupsClickCheck(Sender: TObject);
     procedure chkKWGroupsKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
-    procedure dropPasStringKeywordsChange(Sender: TObject);
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
     function FoldPage: TEditorCodefoldingOptionsFrame; inline;
     procedure LanguageComboBoxChange(Sender: TObject);
@@ -184,16 +164,6 @@ begin
   (Sender as TLabel).Font.Color := clBlue;
 end;
 
-procedure TEditorMarkupOptionsFrame.CaseLabelLinkClick(Sender: TObject);
-var
-  col: TEditorColorOptionsFrame;
-begin
-  col := TEditorColorOptionsFrame(FDialog.FindEditor(TEditorColorOptionsFrame));
-  if col = nil then exit;
-  FDialog.OpenEditor(TEditorColorOptionsFrame);
-  col.SelectNamedColor(SYNS_XML_AttrCaseLabel);
-end;
-
 procedure TEditorMarkupOptionsFrame.cbMarkupChange(Sender: TObject);
 var
   Hl: TSynCustomFoldHighlighter;
@@ -232,12 +202,6 @@ procedure TEditorMarkupOptionsFrame.cbMarkupWordBracketChange(Sender: TObject);
 begin
   FUseMarkupWordBracket := cbMarkupWordBracket.Checked;
   LanguageComboBoxExit(nil);
-end;
-
-procedure TEditorMarkupOptionsFrame.chkExtPasKeywordsChange(Sender: TObject);
-begin
-  GeneralPage.PasExtendedKeywordsMode := chkExtPasKeywords.Checked;
-  GeneralPage.UpdatePreviewEdits;
 end;
 
 procedure TEditorMarkupOptionsFrame.chkKWGroupsClick(Sender: TObject);
@@ -279,12 +243,6 @@ procedure TEditorMarkupOptionsFrame.chkKWGroupsKeyUp(Sender: TObject; var Key: W
   Shift: TShiftState);
 begin
   chkKWGroupsClickCheck(nil);
-end;
-
-procedure TEditorMarkupOptionsFrame.dropPasStringKeywordsChange(Sender: TObject);
-begin
-  GeneralPage.PasStringKeywordMode := TSynPasStringMode(dropPasStringKeywords.ItemIndex);
-  GeneralPage.UpdatePreviewEdits;
 end;
 
 function TEditorMarkupOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;
@@ -502,31 +460,6 @@ begin
           PreviewEdits[a].Options := PreviewEdits[a].Options + [eoBracketHighlight];
           PreviewEdits[a].BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
         end;
-
-        if PreviewEdits[a].Highlighter is TSynPasSyn then begin
-          Syn := TSynPasSyn(PreviewEdits[a].Highlighter);
-          //TSynPasSyn(Syn).ExtendedKeywordsMode := PasExtendedKeywordsMode;
-          //TSynPasSyn(Syn).StringKeywordMode := PasStringKeywordMode;
-          TSynPasSyn(Syn).CaseLabelAttriMatchesElseOtherwise    := cbCaseLabelColorForOtherwise.Checked;
-          TSynPasSyn(Syn).DeclaredTypeAttributeMode             := TSynPasTypeAttributeMode(dropDeclaredTypeAttrMode.ItemIndex);
-          TSynPasSyn(Syn).DeclaredValueAttributeMode            := TSynPasTypeAttributeMode(dropDeclaredValueAttrMode.ItemIndex);
-          TSynPasSyn(Syn).DeclaredValueAttributeMachesStringNum := cbDeclaredValueAttrForNumString.Checked;
-          TSynPasSyn(Syn).GenericConstraintAttributeMode        := TSynPasTypeAttributeMode(dropGenericParamAttrMode.ItemIndex);
-          TSynPasSyn(Syn).SpecializeParamAttributeMode          := TSynPasTypeAttributeMode(dropGenericParamAttrMode.ItemIndex);
-          case TProcHeaderNameMode(dropProcNameDeclAttrMode.ItemIndex) of
-            pnmGenericOnly:        TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamDots];
-            pnmGenericAndProcName: TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
-            pnmProcNameOnly:       TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamSupressGenParamAttr, pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
-            pnmPlain:              TSynPasSyn(Syn).ProcNameIntfAttributeMode := [pamSupressGenParamAttr, pamDots];
-          end;
-          case TProcHeaderNameMode(dropProcNameImplAttrMode.ItemIndex) of
-            pnmGenericOnly:        TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamDots];
-            pnmGenericAndProcName: TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
-            pnmProcNameOnly:       TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamSupressGenParamAttr, pamDots, pamGenParamKeyword, pamGenParamSym, pamGenParamSeparator];
-            pnmPlain:              TSynPasSyn(Syn).ProcNameImplAttributeMode := [pamSupressGenParamAttr, pamDots];
-          end;
-
-        end;
       end;
 end;
 
@@ -553,54 +486,6 @@ begin
   BracketCombo.Items.Add(dlgHighlightLeftOfCursor);
   BracketCombo.Items.Add(dlgHighlightRightOfCursor);
   BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
-
-  divKeywords.Caption := dlgPasExtHighlightGroup;
-  chkExtPasKeywords.Caption := dlgPasExtKeywords;
-
-  lblPasStringKeywords.Caption := dlgPasStringKeywords;
-  dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptDefault);
-  dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptString);
-  cbCaseLabelColorForOtherwise.Caption := dlgPasCaseLabelForOtherwise;
-
-  CaseLabelLink.Caption := dlgColorLink;
-  dropPasStringKeywords.Items.Add(dlgPasStringKeywordsOptNone);
-
-  lblDeclaredTypeAttrMode.Caption := dlgPasDeclaredTypeAttrMode;
-  dropDeclaredTypeAttrMode.Items.Clear;
-  dropDeclaredTypeAttrMode.Items.add(dlgPasDeclaredTypeAttrModeIdent);
-  dropDeclaredTypeAttrMode.Items.add(dlgPasDeclaredTypeAttrModeNames);
-  dropDeclaredTypeAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeywords);
-  dropDeclaredTypeAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeyAndSym);
-
-  lblDeclaredValueAttrMode.Caption := dlgPasDeclaredTypeValueMode;
-  dropDeclaredValueAttrMode.Items.Clear;
-  dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeIdent);
-  dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeNames);
-  dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeywords);
-  dropDeclaredValueAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeyAndSym);
-
-  lblGenericParamAttrMode.Caption := dlgPasGenericParamAttrMode;
-  dropGenericParamAttrMode.Items.Clear;
-  dropGenericParamAttrMode.Items.add(dlgPasDeclaredTypeAttrModeIdent);
-  dropGenericParamAttrMode.Items.add(dlgPasDeclaredTypeAttrModeNames);
-  dropGenericParamAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeywords);
-  dropGenericParamAttrMode.Items.add(dlgPasDeclaredTypeAttrModeKeyAndSym);
-
-  lblProcNameDeclAttrMode.Caption := dlgPasProcNameDeclAttrMode;
-  dropProcNameDeclAttrMode.Items.Clear;
-  dropProcNameDeclAttrMode.Items.add(dlgPasProcNameAttrModeGenOnly);
-  dropProcNameDeclAttrMode.Items.add(dlgPasProcNameAttrModeGenAndProc);
-  dropProcNameDeclAttrMode.Items.add(dlgPasProcNameAttrModeProcOnly);
-  dropProcNameDeclAttrMode.Items.add(dlgPasProcNameAttrModeNone);
-
-  lblProcNameImplAttrMode.Caption := dlgPasProcNameImplAttrMode;
-  dropProcNameImplAttrMode.Items.Clear;
-  dropProcNameImplAttrMode.Items.add(dlgPasProcNameAttrModeGenOnly);
-  dropProcNameImplAttrMode.Items.add(dlgPasProcNameAttrModeGenAndProc);
-  dropProcNameImplAttrMode.Items.add(dlgPasProcNameAttrModeProcOnly);
-  dropProcNameImplAttrMode.Items.add(dlgPasProcNameAttrModeNone);
-
-  cbDeclaredValueAttrForNumString.Caption := dlgPasDeclaredTypeValueModeLiteral;
 
   LanguageLabel.Caption := dlgLang;
   divKeyWordGroups.Caption := dlgPasKeywordsMatches;
@@ -653,16 +538,6 @@ begin
     else
       BracketCombo.ItemIndex := 0;
 
-    chkExtPasKeywords.Checked := PasExtendedKeywordsMode;
-    dropPasStringKeywords.ItemIndex := ord(PasStringKeywordMode);
-    cbCaseLabelColorForOtherwise.Checked    := CaseLabelAttriMatchesElseOtherwise;
-    dropDeclaredTypeAttrMode.ItemIndex      := ord(DeclaredTypeAttributeMode);
-    dropDeclaredValueAttrMode.ItemIndex     := ord(DeclaredValueAttributeMode);
-    dropGenericParamAttrMode.ItemIndex      := ord(GenericParamAttrMode);
-    dropProcNameDeclAttrMode.ItemIndex       := ord(ProcHeaderNameDeclMode);
-    dropProcNameImplAttrMode.ItemIndex       := ord(ProcHeaderNameImplMode);
-    cbDeclaredValueAttrForNumString.Checked := DeclaredValueAttributeMachesStringNum;
-
     FUseMarkupWordBracket := UseMarkupWordBracket;
     FUseMarkupOutline := UseMarkupOutline;
   end;
@@ -692,16 +567,6 @@ begin
       SynEditOptions := SynEditOptions + [eoBracketHighlight];
       BracketHighlightStyle := TSynEditBracketHighlightStyle(BracketCombo.ItemIndex - 1);
     end;
-
-    PasExtendedKeywordsMode := chkExtPasKeywords.Checked;
-    PasStringKeywordMode := TSynPasStringMode(dropPasStringKeywords.ItemIndex);
-    CaseLabelAttriMatchesElseOtherwise := cbCaseLabelColorForOtherwise.Checked;
-    DeclaredTypeAttributeMode          := TSynPasTypeAttributeMode(dropDeclaredTypeAttrMode.ItemIndex);
-    DeclaredValueAttributeMode         := TSynPasTypeAttributeMode(dropDeclaredValueAttrMode.ItemIndex);
-    GenericParamAttrMode               := TSynPasTypeAttributeMode(dropGenericParamAttrMode.ItemIndex);
-    ProcHeaderNameDeclMode               := TProcHeaderNameMode(dropProcNameDeclAttrMode.ItemIndex);
-    ProcHeaderNameImplMode               := TProcHeaderNameMode(dropProcNameImplAttrMode.ItemIndex);
-    DeclaredValueAttributeMachesStringNum := cbDeclaredValueAttrForNumString.Checked;
 
     UseMarkupWordBracket := FUseMarkupWordBracket;
     UseMarkupOutline := FUseMarkupOutline;

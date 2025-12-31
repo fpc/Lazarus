@@ -1866,6 +1866,7 @@ resourcestring
   dlgMultiCaretMode = 'Navigation keys move all carets';
   dlgMultiCaretDelSkipCr = 'Skip delete key at EOL (do not join lines)';
   dlgColorLink = '(Edit Color)';
+  dlgColorLink2 = '(Color)';
   dlgEditMaxLength = '(Edit Max Length)';
   dlgKeyLink = '(Edit Key)';
   dlgBracketHighlight = 'Bracket highlight';
@@ -1986,6 +1987,7 @@ resourcestring
   dlgMarkupGroup = 'Highlight all occurrences of Word under Caret';
   dlgBracketMatchGroup = 'Matching bracket and quote pairs';
   dlgPasExtHighlightGroup = 'Extended Pascal Highlight Options';
+  dlgPasParamTypes = 'Types and values in declaration and params';
   dlgPasKeywordsMatches = 'Matching Keywords';
   dlgPasKeywordsMarkup = 'Markup (on caret)';
   dlgPasKeywordsOutline = 'Outline';
@@ -1996,7 +1998,7 @@ resourcestring
   dlgPasCaseLabelForOtherwise = 'Color otherwise/else as case-label';
   dlgPasDeclaredTypeAttrMode = 'Extend of type-highlight in declarations';
   dlgPasDeclaredTypeValueMode = 'Extend of initial-value-highlight in declarations';
-  dlgPasGenericParamAttrMode = 'Extend of initial-value-highlight in Generic/Specialize';
+  dlgPasGenericParamAttrMode = 'Extend of highlight in Generic-Constraint and Specialize-param';
   dlgPasDeclaredTypeValueModeLiteral = 'Include literals (Number, String) in initial-value-highlight in declarations';
   dlgPasDeclaredTypeAttrModeIdent = 'Identifier only';
   dlgPasDeclaredTypeAttrModeNames = 'Identifier and built-in (types/values)';
@@ -2033,7 +2035,8 @@ resourcestring
   lisCompletionLongLineHintTypeFullLeft = 'Extend far left';
   dlgIncludeIdentifiersContainingPrefix = 'Include identifiers containing prefix';
   lisAutomaticFeatures = 'Completion and Hints';
-  lisAutoMarkup = 'Markup and Matches';
+  lisPascalHighlightOpts = 'Pascal highlight';
+  lisAutoMarkup = 'Pairs/Matches and Structure';
   dlgUseIconsInCompletionBox = 'Icons in code completion box';
   dlgIncludeWordsToIdentCompl = 'Include words';
   dlgIncludeWordsToIdentCompl_IncludeFromAllUnits = 'from all units';

@@ -123,7 +123,7 @@ type
   end;
 
 implementation
-uses editor_markup_options;
+uses editor_markup_options, editor_pascal_options;
 
 {$R *.lfm}
 
@@ -347,6 +347,7 @@ procedure TEditorGeneralOptionsFrame.UpdatePreviewEdits;
 var
   a: Integer;
   MrkUpFrm: TEditorMarkupOptionsFrame;
+  PasOptFrm: TEditorPascalOptionsFrame;
 begin
   for a := Low(PreviewEdits) to High(PreviewEdits) do
     if PreviewEdits[a].Highlighter is TSynPasSyn then begin
@@ -356,6 +357,8 @@ begin
 
   MrkUpFrm := TEditorMarkupOptionsFrame(FDialog.FindEditor(TEditorMarkupOptionsFrame));
   if MrkUpFrm <> nil then MrkUpFrm.UpdatePreviews;
+  PasOptFrm := TEditorPascalOptionsFrame(FDialog.FindEditor(TEditorPascalOptionsFrame));
+  if PasOptFrm <> nil then PasOptFrm.UpdatePreviews;
 end;
 
 procedure TEditorGeneralOptionsFrame.AlwaysVisibleCursorCheckBoxChange(
