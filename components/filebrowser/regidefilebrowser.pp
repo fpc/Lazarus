@@ -53,8 +53,8 @@ begin
   //if (C = nil) then begin
     C := TFileBrowserController.Create(LazarusIDE.OwningComponent);
     C.Name:='IDEFileBrowserController';
-    if C.GetResolvedRootDir<>'' then
-      C.IndexRootDir;
+    //if C.GetResolvedRootDir<>'' then
+    //  C.IndexRootDir;
   //end;
   C.ConfigFrame:=TFileBrowserOptionsFrame;
 end;

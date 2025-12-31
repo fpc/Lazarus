@@ -21,10 +21,10 @@ type
 Const
   AllEntryTypes = [Low(TEntryType)..High(TEntryType)];
 
-Type
+//Type
   { TFileSystemEntry }
 
-  TFileSystemEntry = Class(TObject)
+{  TFileSystemEntry = Class(TObject)
   private
     FName: String;
     FParent: TFileSystemEntry;
@@ -45,10 +45,10 @@ Type
     Property Parent : TFileSystemEntry Read FParent;
   end;
   TFileSystemEntryArray = Array of TFileSystemEntry;
-
+}
   { TSymlinkEntry }
 
-  TSymlinkEntry = Class(TFileSystemEntry)
+{  TSymlinkEntry = Class(TFileSystemEntry)
   private
     FTarget: String;
   Public
@@ -56,10 +56,10 @@ Type
     Class function EntryType : TEntryType; override;
     property Target : String Read FTarget;
   end;
-
+}
   { TDirectoryEntry }
 
-  TDirectoryEntry = Class(TFileSystemEntry)
+{  TDirectoryEntry = Class(TFileSystemEntry)
   Private
     FEntries:TFPObjectList;
   Protected
@@ -75,20 +75,20 @@ Type
     Function HasEntries(aShowHidden : Boolean; aTypes : TEntryTypes = AllEntryTypes) : Boolean; override;
     Procedure AddEntry(aEntry : TFileSystemEntry); override;
   end;
-
+}
   { TFileEntry }
 
-  TFileEntry = Class(TFileSystemEntry)
+{  TFileEntry = Class(TFileSystemEntry)
     Class function EntryType : TEntryType; override;
   end;
   TFileEntryArray = Array of TFileEntry;
 
   TTreeDoneEvent = procedure (Sender : TThread; aTree : TDirectoryEntry) of object;
   TTreeErrorEvent = procedure (Sender : TThread; const aError : String) of object;
-
+}
   { TTreeCreatorThread }
 
-  TTreeCreatorThread = Class(TThread)
+{  TTreeCreatorThread = Class(TThread)
   Private
     FRootDir : String;
     FOptions : TReadEntryOptions;
@@ -104,13 +104,13 @@ Type
     constructor Create(aRootDir: String; aOptions: TReadEntryOptions; aOnDone: TTreeDoneEvent; aOnError : TTreeErrorEvent);
     procedure execute; override;
   end;
-
+}
 
 const
   DefaultStartDir = sdProjectDir;
   DefaultRootDir = sdProjectDir;
-  DefaultFilesInTree = False;
-  DefaultDirectoriesBeforeFiles = True;
+  //DefaultFilesInTree = False;
+  //DefaultDirectoriesBeforeFiles = True;
   DefaultSyncCurrentEditor = False;
   DefaultSplitterPos = 150;
 
@@ -120,12 +120,12 @@ const
   KeyCustomStartDir   = 'CustomDir';
   KeyCustomRootDir    = 'CustomRootDir';
   KeySplitterPos      = 'SplitterPos';
-  KeyFilesInTree      = 'FilesInTree';
-  KeyDirectoriesBeforeFiles     = 'DirectoriesBeforeFiles';
+  //KeyFilesInTree      = 'FilesInTree';
+  //KeyDirectoriesBeforeFiles     = 'DirectoriesBeforeFiles';
   KeySyncCurrentEditor = 'SyncCurrentEditor';
-  KeySearchMatchOnlyFilename = 'MatchOnlyFileNames';
-  KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
-  KeySearchLetters = 'SearchLetters';
+  //KeySearchMatchOnlyFilename = 'MatchOnlyFileNames';
+  //KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
+  //KeySearchLetters = 'SearchLetters';
 
   SViewFilebrowser = 'File browser';
 
@@ -139,7 +139,7 @@ resourcestring
 implementation
 
 { TFileSystemEntry }
-
+{
 function TFileSystemEntry.GetChildCount: Integer;
 begin
   Result:=0;
@@ -162,11 +162,9 @@ begin
 end;
 
 function TFileSystemEntry.AbsolutePath: String;
-
 var
   E: TFileSystemEntry;
   S : String;
-
 begin
   E:=Self;
   S:='';
@@ -194,9 +192,9 @@ function TFileSystemEntry.HasEntries(aShowHidden: Boolean; aTypes: TEntryTypes):
 begin
   Result:=False;
 end;
-
+}
 { TSymlinkEntry }
-
+{
 constructor TSymlinkEntry.Create(aParent: TFileSystemEntry; const aName, aTarget: string);
 begin
   Inherited Create(aParent,aName);
@@ -207,9 +205,9 @@ class function TSymlinkEntry.EntryType: TEntryType;
 begin
   Result:=etSymlink;
 end;
-
+}
 { TDirectoryEntry }
-
+{
 function TDirectoryEntry.GetChildCount: Integer;
 begin
   Result:=FEntries.Count;
@@ -238,7 +236,6 @@ begin
 end;
 
 procedure TDirectoryEntry.ReadEntries(aOptions: TReadEntryOptions);
-
 var
   Info: TSearchRec;
   Entry : TFileSystemEntry;
@@ -246,7 +243,6 @@ var
   LinkTarget : RawByteString;
   isHidden : Boolean;
   isType : TEntryType;
-
 begin
   Clear;
   CurrentDir:=IncludeTrailingPathDelimiter(AbsolutePath);
@@ -307,12 +303,10 @@ begin
 end;
 
 class function TDirectoryEntry.HasEntries(aPath: String; aShowHidden : Boolean; aTypes: TEntryTypes): Boolean;
-
 var
   Info: TSearchRec;
   CurrentDir: string;
   isHidden,isDir,isLink : Boolean;
-
 begin
   Result := False;
   if aPath = '' then
@@ -351,10 +345,8 @@ begin
 end;
 
 function TDirectoryEntry.HasEntries(aShowHidden: Boolean; aTypes: TEntryTypes): Boolean;
-
 var
   I : Integer;
-
 begin
   Result:=False;
   if (aTypes = AllEntryTypes) then
@@ -374,16 +366,16 @@ begin
     exit;
   FEntries.Add(aEntry);
 end;
-
+}
 { TFileEntry }
-
+{
 class function TFileEntry.EntryType: TEntryType;
 begin
   Result:=etFile;
 end;
-
+}
 { TTreeCreatorThread }
-
+{
 constructor TTreeCreatorThread.Create(aRootDir: String;
   aOptions: TReadEntryOptions; aOnDone: TTreeDoneEvent;
   aOnError: TTreeErrorEvent);
@@ -396,10 +388,8 @@ begin
 end;
 
 procedure TTreeCreatorThread.FillNode(N : TDirectoryEntry);
-
 var
   i : integer;
-
 begin
   N.ReadEntries(FOptions);
   For I:=0 to N.EntryCount-1 do
@@ -425,9 +415,7 @@ begin
 end;
 
 procedure TTreeCreatorThread.execute;
-
 begin
-
   FNode:=TDirectoryEntry.Create(Nil,FRootDir);
   try
     Try
@@ -450,6 +438,6 @@ begin
     FNode.Free;
   end;
 end;
-
+}
 end.
 
