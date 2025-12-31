@@ -8,10 +8,11 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   AutoScroll = True
   ClientHeight = 492
   ClientWidth = 634
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   Visible = False
-  DesignLeft = 263
-  DesignTop = 222
+  DesignLeft = 451
+  DesignTop = 181
   object AutoDelayLabel: TLabel
     AnchorSideLeft.Control = AutoCompletionDelayLabel
     AnchorSideLeft.Side = asrBottom
@@ -22,7 +23,6 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 83
     BorderSpacing.Left = 20
     Caption = 'AutoDelayLabel'
-    Color = clDefault
     ParentColor = False
   end
   object ToolTipBevel: TBevel
@@ -103,9 +103,9 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Frequency = 250
     Max = 4000
     Min = 10
-    OnChange = AutoCompletionDelayTrackBarChange
     Position = 500
     ShowSelRange = False
+    OnChange = AutoCompletionDelayTrackBarChange
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 1
@@ -123,7 +123,6 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoCompletionDelayLabel'
-    Color = clDefault
     ParentColor = False
   end
   object CompletionDropDownHintTrackBar: TTrackBar
@@ -138,9 +137,9 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 622
     Frequency = 250
     Max = 4000
-    OnChange = AutoCompletionDelayTrackBarChange
     Position = 0
     ShowSelRange = False
+    OnChange = AutoCompletionDelayTrackBarChange
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 1
@@ -158,7 +157,6 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'CompletionDropDownLabel'
-    Color = clDefault
     ParentColor = False
   end
   object CompletionDropDownDelayLabel: TLabel
@@ -171,7 +169,6 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 177
     BorderSpacing.Left = 20
     Caption = 'CompletionDropDownDelayLabel'
-    Color = clDefault
     ParentColor = False
   end
   object CompletionDropDownHint: TComboBox
@@ -201,7 +198,6 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 171
     BorderSpacing.Around = 6
     Caption = 'CompletionDropDownHintLabel'
-    Color = clDefault
     ParentColor = False
   end
   object DbgToolTipAutoCastClass: TCheckBox
@@ -239,7 +235,6 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoHintDelayLabel'
-    Color = clDefault
     ParentColor = False
   end
   object AutoHintDelayTrackBar: TTrackBar
@@ -255,9 +250,9 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Frequency = 250
     Max = 4000
     Min = 10
-    OnChange = AutoCompletionDelayTrackBarChange
     Position = 500
     ShowSelRange = False
+    OnChange = AutoCompletionDelayTrackBarChange
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 1
@@ -274,7 +269,6 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 92
     BorderSpacing.Left = 20
     Caption = 'AutoHDelayLabel'
-    Color = clDefault
     ParentColor = False
   end
   object DbgToolTipUseConverter: TCheckBox
@@ -288,5 +282,109 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Left = 20
     Caption = 'DbgToolTipUseConverter'
     TabOrder = 10
+  end
+  object AutoBracketBevel: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CompletionDropDownHint
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 356
+    Width = 634
+    Caption = 'AutoBracketBevel'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AutoBracketBevel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 64
+    Top = 377
+    Width = 634
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 64
+    ClientWidth = 634
+    TabOrder = 11
+    object cbAutoBraceOpen: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 8
+      Width = 115
+      BorderSpacing.Right = 15
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'cbAutoBraceOpen'
+      TabOrder = 0
+    end
+    object lblAutoBraceOpenFilter: TLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 142
+      Height = 15
+      Top = 10
+      Width = 123
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'lblAutoBraceOpenFilter'
+    end
+    object edAutoBraceOpenFilter: TEdit
+      Left = 271
+      Height = 23
+      Top = 6
+      Width = 250
+      AutoSize = False
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Constraints.MinWidth = 250
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+    object cbAutoBraceClose: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 37
+      Width = 115
+      BorderSpacing.Right = 15
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'cbAutoBraceClose'
+      TabOrder = 2
+    end
+    object lblAutoBraceCloseFilter: TLabel
+      Left = 142
+      Height = 15
+      Top = 39
+      Width = 123
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'lblAutoBraceCloseFilter'
+    end
+    object edAutoBraceCloseFilter: TEdit
+      Left = 271
+      Height = 23
+      Top = 35
+      Width = 250
+      AutoSize = False
+      BorderSpacing.Around = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Constraints.MinWidth = 250
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
   end
 end

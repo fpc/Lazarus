@@ -64,6 +64,7 @@ uses
   SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview, SynBeautifierPascal,
   SynEditTextDynTabExpander, SynEditTextTabExpander, SynTextMateSyn, SynEditStrConst,
   SynHighlighterPosition, SynGutterMarks, SynEditWrappedView, SynPluginExternalLink,
+  SynPluginAutoBraces,
   // codetools
   LinkScanner, CodeToolManager,
   // BuildIntf
@@ -1702,6 +1703,10 @@ type
     FStringBreakPrefix: String;
     FStringAlignMax: Integer;
     FStringAlignPattern: String;
+    // Auto brace
+    FAutoBraceFilterClose: string;
+    FAutoBraceFilterOpen: string;
+    FAutoBraceModes: TSynPluginAutoBraceModes;
     // Scroll
     FScrollOnEditLeftOptions: TSynScrollOnEditLeftOptions;
     FScrollOnEditRightOptions: TSynScrollOnEditRightOptions;
@@ -1839,6 +1844,10 @@ type
     property StringBreakPrefix: String read FStringBreakPrefix write FStringBreakPrefix;
     property StringAlignPattern: String  read FStringAlignPattern write FStringAlignPattern;
     property StringAlignMax:     Integer read FStringAlignMax write FStringAlignMax;
+    // Auto braces
+    property AutoBraceModes: TSynPluginAutoBraceModes read FAutoBraceModes write FAutoBraceModes;
+    property AutoBraceFilterOpen: string read FAutoBraceFilterOpen write FAutoBraceFilterOpen;
+    property AutoBraceFilterClose: string read FAutoBraceFilterClose write FAutoBraceFilterClose;
     // Scroll
     property ScrollOnEditLeftOptions: TSynScrollOnEditLeftOptions
       read FScrollOnEditLeftOptions write FScrollOnEditLeftOptions;
@@ -5727,6 +5736,10 @@ begin
   FStringAlignPattern  := '';
   FStringAlignMax      := 0;
 
+  FAutoBraceModes := [];
+  FAutoBraceFilterOpen := '';
+  FAutoBraceFilterClose := '';
+
   FScrollPastEolMode := optScrollPage;
 
   FElasticTabsMinWidth := 1;
@@ -7033,6 +7046,10 @@ begin
         mw.KeyAddSelectBoundMaxLen := TermsConf.KeyAddSelectBoundMaxLen;
         mw.KeyAddSelectSmart       := TermsConf.KeyAddSelectSmart;
       end;
+
+      TIDESynEditor(ASynEdit).AutoBraces.Modes := FAutoBraceModes;
+      TIDESynEditor(ASynEdit).AutoBraces.FilterOpenTokens  := FAutoBraceFilterOpen;
+      TIDESynEditor(ASynEdit).AutoBraces.FilterCloseTokens := FAutoBraceFilterClose;
     end;
 
     {$IFnDEF WithoutSynMultiCaret}

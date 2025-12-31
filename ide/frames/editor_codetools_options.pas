@@ -29,9 +29,9 @@ uses
   // LCL
   StdCtrls, ComCtrls, ExtCtrls,
   // SynEdit
-  SynCompletion,
+  SynCompletion, SynPluginAutoBraces,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, DividerBevel,
   IdeDebuggerStringConstants,
   // IDE
   EditorOptions, LazarusIDEStrConsts;
@@ -46,6 +46,8 @@ type
     AutoHintDelayTrackBar: TTrackBar;
     AutoDisplayFuncProtoCheckBox: TCheckBox;
     AutoHintDelayLabel: TLabel;
+    cbAutoBraceOpen: TCheckBox;
+    cbAutoBraceClose: TCheckBox;
     DbgToolTipAutoCastClass: TCheckBox;
     CompletionDropDownHintLabel: TLabel;
     CompletionDropDownHint: TComboBox;
@@ -56,6 +58,12 @@ type
     AutoToolTipExprEvalCheckBox: TCheckBox;
     AutoCompletionDelayLabel: TLabel;
     DbgToolTipUseConverter: TCheckBox;
+    AutoBracketBevel: TDividerBevel;
+    edAutoBraceOpenFilter: TEdit;
+    edAutoBraceCloseFilter: TEdit;
+    lblAutoBraceOpenFilter: TLabel;
+    lblAutoBraceCloseFilter: TLabel;
+    Panel1: TPanel;
     ToolTipBevel: TBevel;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoRemoveEmptyMethodsOnSave: TCheckBox;
@@ -108,6 +116,13 @@ begin
   CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeRightOnly);
   CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeLittleLeft);
   CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeFullLeft);
+
+  cbAutoBraceOpen.Caption := dlgOptAutoBraceOpen;
+  cbAutoBraceClose.Caption := dlgOptAutoBraceClose;
+  lblAutoBraceOpenFilter.Caption := dlgOptAutoBraceFilter;
+  lblAutoBraceCloseFilter.Caption := dlgOptAutoBraceFilter;
+  edAutoBraceOpenFilter.Hint := dlgOptAutoBraceFilterHint;
+  edAutoBraceCloseFilter.Hint := dlgOptAutoBraceFilterHint;
 end;
 
 procedure TEditorCodetoolsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -127,11 +142,17 @@ begin
     CompletionDropDownHintTrackBar.Position := CompletionLongLineHintInMSec;
     CompletionDropDownHint.ItemIndex := ord(CompletionLongLineHintType);
 
+    cbAutoBraceOpen.Checked := abInsertClose in AutoBraceModes;
+    cbAutoBraceClose.Checked := abSkipClose in AutoBraceModes;
+    edAutoBraceOpenFilter.Text := AutoBraceFilterOpen;
+    edAutoBraceCloseFilter.Text := AutoBraceFilterClose;
   end;
   AutoCompletionDelayTrackBarChange(nil);
 end;
 
 procedure TEditorCodetoolsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  abm: TSynPluginAutoBraceModes;
 begin
   with AOptions as TEditorOptions do
   begin
@@ -148,6 +169,12 @@ begin
     CompletionLongLineHintInMSec := CompletionDropDownHintTrackBar.Position;
     CompletionLongLineHintType := TSynCompletionLongHintType(CompletionDropDownHint.ItemIndex);
 
+    abm := [];
+    if cbAutoBraceOpen.Checked  then abm := abm + [abInsertClose];
+    if cbAutoBraceClose.Checked then abm := abm + [abSkipClose];
+    AutoBraceModes := abm;
+    AutoBraceFilterOpen := edAutoBraceOpenFilter.Text;
+    AutoBraceFilterClose := edAutoBraceCloseFilter.Text;
   end;
 end;
 

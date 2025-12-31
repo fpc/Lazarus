@@ -62,7 +62,7 @@ uses
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
-  SynPluginExternalLink, LazEditTextAttributes,
+  SynPluginExternalLink, SynPluginAutoBraces, LazEditTextAttributes,
   // IDE
   etSrcEditMarks, LazarusIDEStrConsts, SourceMarks, LazEditTextGridPainter;
 
@@ -262,6 +262,7 @@ type
     FCaretColor: TColor;
     FCaretStamp: Int64;
     FExternalHttpLink: TSynPluginExternalLink;
+    FAutoBraces: TSynPluginAutoBraces;
     FMarkupIdentComplWindow: TSynMarkupIdentComplWindow;
     FShowTopInfo: boolean;
     FFoldView: TSynEditFoldedView;
@@ -357,6 +358,7 @@ type
     property CaretColor: TColor read FCaretColor write SetCaretColor;
 
     property ExternalHttpLink: TSynPluginExternalLink read FExternalHttpLink;
+    property AutoBraces: TSynPluginAutoBraces read FAutoBraces;
     property WrapView: TLazSynEditLineWrapPlugin read FWrapView;
     property WordWrapEnabled: Boolean read GetWordWrapEnabled write SetWordWrapEnabled;
     property WordWrapCaretWrapPos: TLazSynEditWrapCaretPos write SetWordWrapCaretWrapPos;
@@ -2146,6 +2148,7 @@ begin
   MarkupCaret.ScanMode := smsmASyncForceAll;
 
   FExternalHttpLink := TSynPluginExternalLink.Create(Self);
+  FAutoBraces := TSynPluginAutoBraces.Create(Self);
 
   {$IFDEF WithSynDebugGutter}
   TIDESynGutter(RightGutter).DebugGutter.TheLinesView := ViewedTextBuffer;

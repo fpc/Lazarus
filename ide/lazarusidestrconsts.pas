@@ -2044,6 +2044,13 @@ resourcestring
   dlgIncludeWordsToIdentCompl_DontInclude = 'don''t include';
   dlgIncludeKeywordsToIdentCompl = 'Include all keywords and operators';
   dlgIncludeCodeTemplatesToIdentCompl = 'Include code templates';
+  dlgOptAutoBraceOpen = 'Automatically complete opening braces/quotes';
+  dlgOptAutoBraceClose = 'Skip over existing closing braces/quotes';
+  dlgOptAutoBraceFilter = 'Filter';
+  dlgOptAutoBraceFilterHint = 'Only act on listed braces/quotes.' +
+                              ' Tokens with more than one char must be space separated.' +
+                              ' Single char tokens can be non-separated, but only at' +
+                              ' the begin of the filter';
 
   dlgMarkupUserDefined = 'User defined markup';
   dlgMarkupUserDefinedDivSelect = 'Create or Select list';
