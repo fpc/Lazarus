@@ -57,10 +57,7 @@ type
     FEmptyLine : integer;
     FLastList : TMarkDownListBlock;
     FLastItem : TMarkDownListItemBlock;
-    FIndent : Integer;
-    FMarker : String;
   protected
-    function isList(aOrdered : boolean; const aMarker : String; aIndent : integer) : boolean; override;
     function inListOrQuote : boolean; override;
     function Root : Boolean;
     function LastList : TMarkDownListBlock;
@@ -72,6 +69,7 @@ type
 
   TUListProcessor = class (TMarkDownListProcessor)
   private
+    function HasMarker(aLine: TMarkDownLine; out aIndent: Integer; out aMarker: String): boolean;
     function IsItemInList(aList: TMarkDownListBlock; aLine: TMarkDownLine): boolean;
   public
     function LineEndsBlock(aBlock: TMarkDownContainerBlock; aLine: TMarkDownLine): Boolean; override;
@@ -84,6 +82,7 @@ type
   TOListProcessor = class (TMarkDownListProcessor)
   private
     FStart : Integer;
+    function HasMarker(aLine: TMarkDownLine; out aIndent: integer; out aMarker: String; out aValue: Integer): boolean;
     function IsItemInList(aList: TMarkDownListBlock; aLine: TMarkDownLine): boolean;
   Public
     function LineEndsBlock(aBlock: TMarkDownContainerBlock; aLine: TMarkDownLine): Boolean; override;
@@ -186,7 +185,7 @@ begin
   if Len=0 then
     Exit(False);
   inQuote:=(Len=FLevel);
-//  InQuote:=StartsWithWhiteSpace(aLine.Remainder,'>',len);
+  //  InQuote:=StartsWithWhiteSpace(aLine.Remainder,'>',len);
   // Not enough markers -> check continuation.
   // end of block if:
   // - empty line
@@ -305,18 +304,6 @@ begin
 end;
 
 
-function TMarkDownListProcessor.isList(aOrdered: boolean; const aMarker: String; aIndent: integer): boolean;
-
-begin
-  Result:=Assigned(FLastList);
-  if Result then
-    begin
-    Result:=(FLastList.Ordered=aOrdered)
-            and (FLastList.Marker=aMarker)
-            and (aIndent<FLastList.lastIndent + 1);
-    end;
-end;
-
 function TMarkDownListProcessor.prepareLine(aLine: TMarkDownLine; aContext : TMarkDownBlockProcessingContext): boolean;
 
 var
@@ -327,9 +314,8 @@ begin
   lCurrLineNo:=aLine.LineNo;
   lLastIndent:=LastList.LastIndent;
   lWhiteSpace:=aLine.LeadingWhitespace;
-  if lCurrLineNo=FLastItem.Line then
-    aLine.advance(lLastIndent)
-  else if lWhitespace >= lLastIndent then
+
+  if lWhitespace >= lLastIndent then
     begin
     len:=lWhitespace;
     if (len>lLastIndent+1) then
@@ -430,51 +416,40 @@ begin
   if (lBlock is TMarkDownListBlock) then
     if aLine.LeadingWhitespace>=lList.LastIndent then
       begin
-      aLine.Advance(lList.LastIndent);
+//      aLine.Advance(lList.LastIndent);
       Result:=False;
       end;
 end;
 
-function TUListProcessor.HandlesLine(aParent: TMarkDownContainerBlock; aLine: TMarkDownLine): boolean;
-
+function TUListProcessor.HasMarker(aLine: TMarkDownLine; Out aIndent : Integer; out aMarker : String): boolean;
 var
-  ws,i, i2 : integer;
-  s : String;
-  list : TMarkDownListBlock;
+  lMarker : string;
+  lIndent : Integer;
 
 begin
   Result:=False;
   if aLine.isEmpty then
     Exit;
-  ws:=aLine.LeadingWhitespace;
-  if ws>3 then
-    begin
-    FMarker:=CopySkipped(aLine.Remainder,[' ',#9]);
-    if (FMarker='') or not inList(aParent.blocks, false, FMarker[1], ws, 1, list) then
-      Exit;
-    end;
-  i:=aLine.LeadingWhitespace;
-  s:=aLine.Remainder;
-  if (Length(s)<1+i) then
+  lIndent:=aLine.LeadingWhitespace;
+  lMarker:=CopySkipped(aLine.Remainder,[' ',#9]);
+  if (lMarker='')  then
     Exit;
-  if not CharInSet(s[1+i],['+','-','*']) then
+  if not CharInSet(lMarker[1],['+','-','*']) then
     Exit;
-  FMarker:=s[1+i];
-  s:=Copy(S,2+i,Length(S)-i);
-  if isWhitespace(s) and Parser.inPara(aParent.blocks, false) then
-    Exit;
-  if isWhitespace(s) then // nothing after if it's the only thing on the aLine
-    i2:=1
-  else
-    begin
-    i2:=LeadingWhitespace(s);
-    if (i2 = 0) then
-      Exit;
-    if (i2 >= 5) then
-      i2:=1;
-    end;
-  FIndent:=i+i2+1;
-  Result:=True;
+  if (lMarker[2]<>' ') then
+    exit;
+  aMarker:=lMarker[1];
+  aIndent:=lIndent;
+  Result:=true;
+end;
+
+function TUListProcessor.HandlesLine(aParent: TMarkDownContainerBlock; aLine: TMarkDownLine): boolean;
+
+var
+  lMarker : string;
+  lIndent : integer;
+begin
+  Result:=HasMarker(aLine,lIndent,lMarker);
 end;
 
 function TUListProcessor.IsItemInList(aList : TMarkDownListBlock; aLine : TMarkDownLine) : boolean;
@@ -487,6 +462,8 @@ begin
   if Not Result then
     exit;
   Result:=StartsWithWhitespace(aLine.line,aList.marker[1],len,aList.baseIndent);
+  if Result then
+    Result := (len >= aList.baseIndent);
 end;
 
 function TUListProcessor.processLine(aParent: TMarkDownContainerBlock; aLine: TMarkDownLine; aContext: TMarkDownBlockProcessingContext): boolean;
@@ -494,21 +471,27 @@ function TUListProcessor.processLine(aParent: TMarkDownContainerBlock; aLine: TM
 var
   lOldLastList, lList : TMarkDownListBlock;
   lOldLastItem, lItem : TMarkDownListItemBlock;
-  lMarker : string;
+  lRemain,lMarker : string;
+  lIndent : Integer;
   lNewItem : Boolean;
 
 begin
+  Result:=False;
+  lRemain:=aLine.Remainder;
+  if not HasMarker(aLine,lIndent,lMarker) then exit;
+
+  aLine.Advance(Pos(lMarker,aLine.Remainder)+1);
+  lRemain:=aLine.Remainder;
   lOldLastList:=FLastList;
   lOldLastItem:=FLastItem;
-  lMarker:=FMarker;
-  if InList(aParent.blocks,False,lMarker,FIndent,1,lList) then
-    lList.Lastindent:=FIndent
+  if InList(aParent,False,lMarker,lIndent,1,lList) then
+    lList.Lastindent:=lIndent
   else
     begin
     lList:=TMarkDownListBlock.Create(aParent,aLine.LineNo);
     lList.Ordered:=false;
-    lList.BaseIndent:=FIndent;
-    lList.LastIndent:=lList.BaseIndent;
+    lList.BaseIndent:=lIndent;
+    lList.LastIndent:=lIndent;
     lList.Marker:=lMarker;
     FLastList:=lList;
     end;
@@ -522,8 +505,11 @@ begin
     lNewItem:=Not Done;
     if lNewItem then
       begin
-      aLine:=NextLine;
+      aLine:=PeekLine;
+      // Check if next line is a list item at the SAME level
       lNewItem:=IsItemInList(lList,aLine);
+      if lnewItem then
+        aLine:=NextLine;
       end;
     lItem.Closed:=true;
   until not lNewItem;
@@ -537,61 +523,39 @@ end;
   TOListProcessor
   ---------------------------------------------------------------------}
 
+function TOListProcessor.HasMarker(aLine: TMarkDownLine; out aIndent : integer; out aMarker : String; out aValue : Integer): boolean;
+var
+  lValueLen,lIndent : integer;
+  lLine,lValue,lMarker : string;
+
+begin
+  Result:=False;
+  lIndent:=aLine.LeadingWhitespace;
+  lLine:=aLine.Remainder;
+  lLine:=CopySkipped(lLine,[' ',#9]);
+  lValue:=CopyMatching(lLine, ['0'..'9']);
+  lValueLen:=length(lValue); // ending dot or )
+  if (lValueLen=0) or (lValueLen>9) or (lValueLen>=Length(lLine)) then
+    Exit;
+  lMarker:=lLine[lValueLen+1];
+  if not CharInSet(LMarker[1], ['.', ')']) then
+    Exit;
+  Delete(lLine,1,lValueLen+1);
+  if isWhitespace(lLine) then
+    Exit;
+  aValue:=StrToIntDef(lValue,1);
+  aIndent:=lIndent;
+  aMarker:=lMarker;
+  Result:=True;
+end;
+
 function TOListProcessor.HandlesLine(aParent: TMarkDownContainerBlock; aLine: TMarkDownLine): boolean;
 
 var
-  list : TMarkDownListBlock;
-  lMarkerLen,lIndent, i2 : integer;
-  lMarker,lLine : String;
-
+  lIndent,lStart : integer;
+  lMarker : String;
 begin
-  Result:=false;
-  if aLine.isEmpty then
-    Exit;
-  if (aLine.LeadingWhitespace >= 4) then
-    begin
-    FMarker:=CopySkipped(aLine.Remainder, [' ']);
-    FMarker:=CopySkipped(FMarker, ['0'..'9']);
-    if (FMarker = '') or not inList(aParent.blocks, true, FMarker[1], aLine.LeadingWhitespace, 2, list) then
-      Exit;
-    end;
-  lIndent:=aLine.LeadingWhitespace;
-  aLine.mark;
-  try
-    aLine.SkipWhiteSpace;
-    lLine:=aLine.Remainder;
-    lMarker:=CopyMatching(lLine, ['0'..'9']);
-    lMarkerLen:=length(lMarker)+1; // ending dot or )
-    if (lMarkerLen=1) or (lMarkerLen>10) or (lMarkerLen>Length(lLine)) then
-      Exit;
-    if not CharInSet(lLine[lMarkerLen], ['.', ')']) then
-      Exit;
-    // rule 267
-    if Parser.inPara(aParent.blocks, false) and (lMarker<>'1') then
-      Exit;
-    FMarker:=lLine[lMarkerLen];
-    FStart:=StrToIntDef(lMarker,1);
-    inc(lIndent,lMarkerLen);
-    lLine:=Copy(lLine,lMarkerLen+1,Length(lLine)-lMarkerLen);
-    if isWhitespace(lLine) and Parser.inPara(aParent.blocks, false) then
-      Exit;
-    Result:=true;
-  finally
-    if not Result then
-      aLine.rewind;
-  end;
-  // Calculate indent to use...
-  if isWhitespace(lLine) then
-    i2:=1
-  else
-    begin
-    i2:=LeadingWhitespace(lLine);
-    if (i2 = 0) then
-      Exit(false);
-    if (i2 >= 5) then
-      i2:=1;
-    end;
-  FIndent:=lIndent+i2;
+  Result:=HasMarker(aLine,lIndent,lMarker,lStart);
 end;
 
 function TOListProcessor.IsItemInList(aList : TMarkDownListBlock; aLine : TMarkDownLine) : boolean;
@@ -607,7 +571,8 @@ begin
   Result:=StartsWithWhitespace(aLine.Line,['0'..'9'],len,aList.baseIndent);
   if Not Result then
     exit;
-  if len<=aList.baseIndent then
+  // Ensure indentation is exactly at the expected level for this list
+  if len = aList.baseIndent then
     begin
     lLine:=aLine.Line;
     if Len>0 then
@@ -616,7 +581,9 @@ begin
     Result:=(lLine<>'') and (aList.marker=lLine[1]);
     if Result then
       Result:=(Length(lLine)>1) and (lLine[2]=' ');
-    end;
+    end
+  else
+    Result:=False;
 end;
 
 function TOListProcessor.LineEndsBlock(aBlock: TMarkDownContainerBlock; aLine: TMarkDownLine): Boolean;
@@ -631,12 +598,14 @@ begin
     Exit;
   if (lBlock is TMarkDownListItemBlock) and (lBlock.Parent is TMarkDownListBlock) then
      lBlock:=lBlock.Parent as TMarkDownListBlock;
-  if (lBlock is TMarkDownListBlock) then
-    if aLine.LeadingWhitespace>=lList.baseIndent then
-      begin
-      aLine.Advance(lList.LastIndent);
-      Result:=False
-      end;
+  if not (lBlock is TMarkDownListBlock) then
+    Exit;
+  // Check if we're still in the parent list
+  if aLine.LeadingWhitespace>=lList.baseIndent then
+    begin
+    aLine.Advance(lList.LastIndent);
+    Result:=False
+    end;
 end;
 
 
@@ -645,20 +614,26 @@ var
   lOldLastList, lList : TMarkDownListBlock;
   lOldLastItem, lItem : TMarkDownListItemBlock;
   lNewItem : Boolean;
+  lMarker : String;
+  lStart,lIndent : Integer;
 begin
+  Result:=False;
+  if not HasMarker(aLine,lIndent,lMarker,lStart) then
+    exit;
+  aLine.Advance(Pos(lMarker,aLine.Remainder)+1);
   lOldLastList:=FLastList;
-  if inList(aParent.blocks, true, FMarker, Findent, 2, lList) then
+  if inList(aParent, true, lMarker, lindent, 2, lList) then
     begin
-    lList.lastIndent:=FIndent;
+    lList.lastIndent:=lIndent;
     FLastList:=lList;
     end
   else
     begin
     lList:=TMarkDownListBlock.Create(aParent,aLine.LineNo);
     lList.ordered:=true;
-    lList.baseIndent:=Findent;
-    lList.lastIndent:=lList.baseIndent;
-    lList.marker:=FMarker;
+    lList.baseIndent:=lindent;
+    lList.lastIndent:=lIndent;
+    lList.marker:=lMarker;
     lList.Start:=FStart;
     FLastList:=lList;
     end;
@@ -673,8 +648,11 @@ begin
     lNewItem:=Not Done;
     if lNewItem then
       begin
-      aLine:=NextLine;
+      aLine:=PeekLine;
+      // Check if next line is a list item at the SAME level
       lNewItem:=IsItemInList(lList,aLine);
+      if lNewItem then
+        aLine:=NextLine;
       end;
   until not lNewItem;
   FLastItem:=lOldLastItem;

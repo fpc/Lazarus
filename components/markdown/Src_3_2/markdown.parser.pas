@@ -52,12 +52,11 @@ type
   protected
     function inListOrQuote : boolean; virtual;
     // Access to parser methods
-    function isList(ordered : boolean; const marker : String; indent : integer) : boolean; virtual;
     function PeekLine : TMarkDownLine;
     function NextLine : TMarkDownLine;
     function Done : Boolean;
     procedure RedoLine(aResetLine: Boolean);
-    function InList(blocks : TMarkDownBlockList; ordered : boolean; marker : String; indent : integer; grace : integer; out list : TMarkDownListBlock) : boolean;
+    function InList(aBlock : TMarkDownBlock; ordered : boolean; marker : String; indent : integer; grace : integer; out list : TMarkDownListBlock) : boolean;
     function IsBlock(aBlock : TMarkDownBlock; blocks : TMarkDownBlockList; const aLine : String; wsLen : integer = 3) : boolean;
     function CurrentLine : TMarkDownLine;
     procedure Parse(aParent: TMarkDownContainerBlock; aPArentProcessor: TMarkDownBlockProcessor); overload;
@@ -129,7 +128,7 @@ type
     // status
     // Is the last block a list with the given properties ?
     // if yes, return the list
-    function InList(aBlocks: TMarkDownBlockList; aOrdered: boolean; const aMarker: String; aIndent: integer; aGrace: integer; out
+    function InList(aBlock: TMarkDownBlock; aOrdered: boolean; const aMarker: String; aIndent: integer; aGrace: integer; out
       aList: TMarkDownListBlock): boolean;
     // Does aLine start a new block (true) or can it be a continuation (false) ?
     function IsBlock(aParent: TMarkDownBlock; aBlocks: TMarkDownBlockList; const aLine: String; aWhiteSpaceLen: integer): boolean;
@@ -269,11 +268,11 @@ begin
 end;
 
 
-function TMarkDownBlockProcessor.InList(blocks: TMarkDownBlockList; ordered: boolean; marker: String; indent: integer;
-  grace: integer; out list: TMarkDownListBlock): boolean;
+function TMarkDownBlockProcessor.InList(aBlock: TMarkDownBlock; ordered: boolean; marker: String; indent: integer; grace: integer;
+  out list: TMarkDownListBlock): boolean;
 
 begin
-  Result:=FParser.InList(blocks,ordered,marker,indent,grace,list);
+  Result:=FParser.InList(aBlock,ordered,marker,indent,grace,list);
 end;
 
 
@@ -304,14 +303,6 @@ function TMarkDownBlockProcessor.GetParentProcessor: TMarkDownBlockProcessor;
 begin
   Result:=FParser.ParentProcessor;
 end;
-
-function TMarkDownBlockProcessor.isList(ordered: boolean; const marker: String; indent: integer): boolean;
-
-begin
-  Result:=false;
-  if ordered and (marker<>'') and (indent>0) then ; // keep compiler happy
-end;
-
 
 { TMarkDownDocumentProcessor }
 
@@ -496,17 +487,27 @@ begin
 end;
 
 
-function TMarkDownParser.InList(aBlocks: TMarkDownBlockList; aOrdered: boolean; const aMarker: String; aIndent: integer; aGrace: integer; out aList: TMarkDownListBlock): boolean;
-
+function TMarkDownParser.InList(aBlock: TMarkDownBlock; aOrdered: boolean; const aMarker: String; aIndent: integer;
+  aGrace: integer; out aList: TMarkDownListBlock): boolean;
+var
+  lBlock: TMarkDownBlock;
+  lList : TMarkDownListBlock absolute lBlock;
 begin
-  Result:=(aBlocks.Count > 0) and (aBlocks.Last is TMarkDownListBlock);
-  if Not Result then
-    exit;
-  aList:=aBlocks.Last as TMarkDownListBlock;
-  Result:=(aList.ordered=aOrdered)
-          and (aList.Marker=aMarker)
-          and (aIndent-aGrace<=aList.LastIndent)
-          and not aList.closed
+  Result:=False;
+  lBlock:=aBlock;
+  While (Not Result) and Assigned(lBlock) do
+    begin
+    Result:=lBlock is TMarkDownListBlock;
+    // Check for exact match: same type, marker, and base indentation level
+    if Result then
+      Result:=(lList.ordered=aOrdered)
+              and (lList.Marker=aMarker)
+              and (aIndent-aGrace <= lList.BaseIndent)
+              and not lList.closed;
+    if Result then
+      aList:=lList;
+    lBlock:=lBlock.Parent;
+    end;
 end;
 
 
