@@ -1987,7 +1987,7 @@ resourcestring
   dlgMarkupGroup = 'Highlight all occurrences of Word under Caret';
   dlgBracketMatchGroup = 'Matching bracket and quote pairs';
   dlgPasExtHighlightGroup = 'Extended Pascal Highlight Options';
-  dlgPasParamTypes = 'Types and values in declaration and params';
+  dlgPasParamTypes = 'Types and values in declarations and params';
   dlgPasKeywordsMatches = 'Matching Keywords';
   dlgPasKeywordsMarkup = 'Markup (on caret)';
   dlgPasKeywordsOutline = 'Outline';
@@ -2044,14 +2044,14 @@ resourcestring
   dlgIncludeWordsToIdentCompl_DontInclude = 'don''t include';
   dlgIncludeKeywordsToIdentCompl = 'Include all keywords and operators';
   dlgIncludeCodeTemplatesToIdentCompl = 'Include code templates';
-  dlgOptAutoBraceBevel = 'Automatic braces and quotes';
+  dlgOptAutoBraceBevel = 'Automatic completion of braces and quotes';
   dlgOptAutoBraceOpen = 'Automatically complete opening braces/quotes';
   dlgOptAutoBraceClose = 'Skip over existing closing braces/quotes';
   dlgOptAutoBraceFilter = 'Filter';
   dlgOptAutoBraceFilterHint = 'Only act on listed braces/quotes.' +
                               ' Tokens with more than one char must be space separated.' +
                               ' Single char tokens can be non-separated, but only at' +
-                              ' the begin of the filter';
+                              ' the begin of the filter.';
 
   dlgMarkupUserDefined = 'User defined markup';
   dlgMarkupUserDefinedDivSelect = 'Create or Select list';
