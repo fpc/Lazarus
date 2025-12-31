@@ -97,8 +97,8 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     ParentColor = False
     ParentFont = False
     OnClick = CaseLabelLinkClick
-    OnMouseDown = LinkLabelMouseEnter
-    OnMouseEnter = LinkLabelMouseExit
+    OnMouseEnter = LinkLabelMouseEnter
+    OnMouseLeave = LinkLabelMouseExit
   end
   object divParamTypes: TDividerBevel
     AnchorSideLeft.Control = Owner
@@ -160,8 +160,8 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     ParentColor = False
     ParentFont = False
     OnClick = CaseLabelLinkClick
-    OnMouseDown = LinkLabelMouseEnter
-    OnMouseEnter = LinkLabelMouseExit
+    OnMouseEnter = LinkLabelMouseEnter
+    OnMouseLeave = LinkLabelMouseExit
   end
   object LinkDeclType2: TLabel
     AnchorSideLeft.Control = LinkDeclType
@@ -179,8 +179,8 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     ParentColor = False
     ParentFont = False
     OnClick = CaseLabelLinkClick
-    OnMouseDown = LinkLabelMouseEnter
-    OnMouseEnter = LinkLabelMouseExit
+    OnMouseEnter = LinkLabelMouseEnter
+    OnMouseLeave = LinkLabelMouseExit
   end
   object LinkDeclType3: TLabel
     AnchorSideLeft.Control = LinkDeclType2
@@ -198,8 +198,8 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     ParentColor = False
     ParentFont = False
     OnClick = CaseLabelLinkClick
-    OnMouseDown = LinkLabelMouseEnter
-    OnMouseEnter = LinkLabelMouseExit
+    OnMouseEnter = LinkLabelMouseEnter
+    OnMouseLeave = LinkLabelMouseExit
   end
   object dropDeclaredValueAttrMode: TComboBox
     AnchorSideLeft.Control = Owner
@@ -245,8 +245,8 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     ParentColor = False
     ParentFont = False
     OnClick = CaseLabelLinkClick
-    OnMouseDown = LinkLabelMouseEnter
-    OnMouseEnter = LinkLabelMouseExit
+    OnMouseEnter = LinkLabelMouseEnter
+    OnMouseLeave = LinkLabelMouseExit
   end
   object LinkDeclValue2: TLabel
     AnchorSideLeft.Control = LinkDeclValue
@@ -264,8 +264,8 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     ParentColor = False
     ParentFont = False
     OnClick = CaseLabelLinkClick
-    OnMouseDown = LinkLabelMouseEnter
-    OnMouseEnter = LinkLabelMouseExit
+    OnMouseEnter = LinkLabelMouseEnter
+    OnMouseLeave = LinkLabelMouseExit
   end
   object dropGenericParamAttrMode: TComboBox
     AnchorSideLeft.Control = Owner
@@ -311,8 +311,8 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     ParentColor = False
     ParentFont = False
     OnClick = CaseLabelLinkClick
-    OnMouseDown = LinkLabelMouseEnter
-    OnMouseEnter = LinkLabelMouseExit
+    OnMouseEnter = LinkLabelMouseEnter
+    OnMouseLeave = LinkLabelMouseExit
   end
   object LinkDeclGenParam2: TLabel
     AnchorSideLeft.Control = LinkDeclGenParam
@@ -330,8 +330,8 @@ object EditorPascalOptionsFrame: TEditorPascalOptionsFrame
     ParentColor = False
     ParentFont = False
     OnClick = CaseLabelLinkClick
-    OnMouseDown = LinkLabelMouseEnter
-    OnMouseEnter = LinkLabelMouseExit
+    OnMouseEnter = LinkLabelMouseEnter
+    OnMouseLeave = LinkLabelMouseExit
   end
   object dropProcNameDeclAttrMode: TComboBox
     AnchorSideLeft.Control = Owner

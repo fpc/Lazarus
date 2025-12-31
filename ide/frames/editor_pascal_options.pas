@@ -68,8 +68,7 @@ type
     procedure CaseLabelLinkClick(Sender: TObject);
     procedure chkExtPasKeywordsChange(Sender: TObject);
     procedure dropPasStringKeywordsChange(Sender: TObject);
-    procedure LinkLabelMouseEnter(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-      Y: Integer);
+    procedure LinkLabelMouseEnter(Sender: TObject);
     procedure LinkLabelMouseExit(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
@@ -132,8 +131,7 @@ begin
   GeneralPage.UpdatePreviewEdits;
 end;
 
-procedure TEditorPascalOptionsFrame.LinkLabelMouseEnter(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TEditorPascalOptionsFrame.LinkLabelMouseEnter(Sender: TObject);
 begin
   (Sender as TLabel).Font.Underline := True;
   (Sender as TLabel).Font.Color := clRed;
