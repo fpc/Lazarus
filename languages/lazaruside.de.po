@@ -1194,6 +1194,10 @@ msgstr ""
 msgid "(Edit Color)"
 msgstr "(Farbe ändern)"
 
+#: lazarusidestrconsts.dlgcolorlink2
+msgid "(Color)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolornotmodified
 msgid "Not modified"
 msgstr "Nicht modifiziert"
@@ -3485,6 +3489,28 @@ msgstr "Es gelten die Voreinstellungen von Delphi"
 msgid "Use default Lazarus settings"
 msgstr "Es gelten die Voreinstellungen von Lazarus"
 
+#: lazarusidestrconsts.dlgoptautobracebevel
+msgid "Automatic completion of braces and quotes"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptautobraceclose
+msgid "Skip over existing closing braces/quotes"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptautobracefilter
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgoptautobracefilter"
+msgid "Filter"
+msgstr "Filter"
+
+#: lazarusidestrconsts.dlgoptautobracefilterhint
+msgid "Only act on listed braces/quotes. Tokens with more than one char must be space separated. Single char tokens can be non-separated, but only at the begin of the filter."
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptautobraceopen
+msgid "Automatically complete opening braces/quotes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgoptdebugbackendeditdebuggerbackend
 msgid "Edit debugger backend"
 msgstr ""
@@ -3625,7 +3651,7 @@ msgid "Color otherwise/else as case-label"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmode
-msgid "Extend of type-highlight in declarations"
+msgid "Extent of type-highlight in declarations"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodeident
@@ -3645,7 +3671,7 @@ msgid "Identifier and built-in (types/values)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypevaluemode
-msgid "Extend of initial-value-highlight in declarations"
+msgid "Extent of initial-value-highlight in declarations"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypevaluemodeliteral
@@ -3667,7 +3693,7 @@ msgid "Highlight flow control statements (break, continue, exit) as keywords"
 msgstr "Steueranweisungen wie Schlüsselworte hervorheben"
 
 #: lazarusidestrconsts.dlgpasgenericparamattrmode
-msgid "Extend of initial-value-highlight in Generic/Specialize"
+msgid "Extent of highlight in Generic-Constraint and Specialize-param"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
@@ -3681,6 +3707,10 @@ msgstr "Passende Schlüsselwörter"
 #: lazarusidestrconsts.dlgpaskeywordsoutline
 msgid "Outline"
 msgstr "Außenlinie"
+
+#: lazarusidestrconsts.dlgpasparamtypes
+msgid "Types and values in declarations and params"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpasprocnameattrmodegenandproc
 msgid "Generic and procedure name highlight"
@@ -5662,7 +5692,9 @@ msgid "Auto completion: on"
 msgstr "Auto-Vervollständigung: an"
 
 #: lazarusidestrconsts.lisautomarkup
-msgid "Markup and Matches"
+#, fuzzy
+#| msgid "Markup and Matches"
+msgid "Pairs/Matches and Structure"
 msgstr "Hervorhebung"
 
 #: lazarusidestrconsts.lisautomatic
@@ -10070,6 +10102,7 @@ msgid "File where debug output is written to. Default is write to the console."
 msgstr "Datei, in die Debug-Ausgaben geschrieben werden. Die Voreinstellung ist Schreiben auf die Konsole."
 
 #: lazarusidestrconsts.lisfilter
+msgctxt "lazarusidestrconsts.lisfilter"
 msgid "Filter"
 msgstr "Filter"
 
@@ -14800,6 +14833,10 @@ msgstr "Parser \"%s\": %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr "Parser:"
+
+#: lazarusidestrconsts.lispascalhighlightopts
+msgid "Pascal highlight"
+msgstr ""
 
 #: lazarusidestrconsts.lispassingquiettwotimeswillp
 msgid "Passing --quiet two times will pass -vw-n-h-i-l-d-u-t-p-c-x- to the compiler."

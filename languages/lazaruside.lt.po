@@ -1216,6 +1216,10 @@ msgstr ""
 msgid "(Edit Color)"
 msgstr "(Keisti spalvą)"
 
+#: lazarusidestrconsts.dlgcolorlink2
+msgid "(Color)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolornotmodified
 msgid "Not modified"
 msgstr "Nepakeista"
@@ -3586,6 +3590,28 @@ msgstr "Naudoti numatytąsias Delphi nuostatas"
 msgid "Use default Lazarus settings"
 msgstr "Naudoti numatytąsias Lazarus nuostatas"
 
+#: lazarusidestrconsts.dlgoptautobracebevel
+msgid "Automatic completion of braces and quotes"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptautobraceclose
+msgid "Skip over existing closing braces/quotes"
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptautobracefilter
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgoptautobracefilter"
+msgid "Filter"
+msgstr "Filtras"
+
+#: lazarusidestrconsts.dlgoptautobracefilterhint
+msgid "Only act on listed braces/quotes. Tokens with more than one char must be space separated. Single char tokens can be non-separated, but only at the begin of the filter."
+msgstr ""
+
+#: lazarusidestrconsts.dlgoptautobraceopen
+msgid "Automatically complete opening braces/quotes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgoptdebugbackendeditdebuggerbackend
 msgid "Edit debugger backend"
 msgstr ""
@@ -3730,7 +3756,7 @@ msgid "Color otherwise/else as case-label"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmode
-msgid "Extend of type-highlight in declarations"
+msgid "Extent of type-highlight in declarations"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypeattrmodeident
@@ -3750,7 +3776,7 @@ msgid "Identifier and built-in (types/values)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypevaluemode
-msgid "Extend of initial-value-highlight in declarations"
+msgid "Extent of initial-value-highlight in declarations"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasdeclaredtypevaluemodeliteral
@@ -3772,7 +3798,7 @@ msgid "Highlight flow control statements (break, continue, exit) as keywords"
 msgstr "Valdymo sakinius paryškinti kaip raktažodžius"
 
 #: lazarusidestrconsts.dlgpasgenericparamattrmode
-msgid "Extend of initial-value-highlight in Generic/Specialize"
+msgid "Extent of highlight in Generic-Constraint and Specialize-param"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
@@ -3786,6 +3812,10 @@ msgstr "Sutampantys raktažodžiai"
 #: lazarusidestrconsts.dlgpaskeywordsoutline
 msgid "Outline"
 msgstr "Kontūras"
+
+#: lazarusidestrconsts.dlgpasparamtypes
+msgid "Types and values in declarations and params"
+msgstr ""
 
 #: lazarusidestrconsts.dlgpasprocnameattrmodegenandproc
 msgid "Generic and procedure name highlight"
@@ -5811,7 +5841,9 @@ msgid "Auto completion: on"
 msgstr "Automatinis baigimas: įjungtas"
 
 #: lazarusidestrconsts.lisautomarkup
-msgid "Markup and Matches"
+#, fuzzy
+#| msgid "Markup and Matches"
+msgid "Pairs/Matches and Structure"
 msgstr "Paryškinimai ir sutapimai"
 
 #: lazarusidestrconsts.lisautomatic
@@ -10274,6 +10306,7 @@ msgid "File where debug output is written to. Default is write to the console."
 msgstr "Failas, į kurį bus rašoma derinimo išvestis. Jei jis nenurodytas, tai derinimo išvestis bus spausdinama pulte."
 
 #: lazarusidestrconsts.lisfilter
+msgctxt "lazarusidestrconsts.lisfilter"
 msgid "Filter"
 msgstr "Filtras"
 
@@ -15168,6 +15201,10 @@ msgstr "analizatorius „%s“: %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
+msgstr ""
+
+#: lazarusidestrconsts.lispascalhighlightopts
+msgid "Pascal highlight"
 msgstr ""
 
 #: lazarusidestrconsts.lispassingquiettwotimeswillp
