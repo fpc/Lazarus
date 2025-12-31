@@ -433,6 +433,10 @@ If you wish to allow use of your version of these files only under the terms of 
         <Filename Value="synpluginexternallink.pas"/>
         <UnitName Value="SynPluginExternalLink"/>
       </Item>
+      <Item>
+        <Filename Value="synpluginautobraces.pas"/>
+        <UnitName Value="SynPluginAutoBraces"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs\xml"/>
     <i18n>

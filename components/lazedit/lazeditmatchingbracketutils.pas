@@ -44,7 +44,10 @@ type
     InternalInfo: PtrUInt;     // for the HL internal use
   end;
 
-  Tcharset=set of char;
+
+  TCharset=set of char;
+  TLazEditBracketCharsFilter = (bcfOnlyOpen, bcfOnlyClose);
+  TLazEditBracketCharsFilters = set of TLazEditBracketCharsFilter;
 
 (* - AnHighlighter may be nil, and then ALines must be given.
    - If AnHighlighter <> nil, and ALines <> nil then CurrentLines will be set to ALines
@@ -64,7 +67,10 @@ function FindBracketPos(ALineIdx: TLineIdx; ALogStartX: IntPos; ASearchBackward:
   ALines: TLazEditStringsBase = nil
 ): boolean;
 
-function GetBracketCharSet(AnHighlighter: TLazEditCustomHighlighter): Tcharset;
+function GetBracketTokenCount(AnHighlighter: TLazEditCustomHighlighter ): integer;
+function GetBracketToken(AKind: integer; AnOpen: Boolean; AnHighlighter: TLazEditCustomHighlighter ): string;
+function GetBracketTokenIndex(AToken: String; AnOpen: Boolean; AnHighlighter: TLazEditCustomHighlighter ): integer;
+function GetBracketCharSet(AnHighlighter: TLazEditCustomHighlighter; AFilter: TLazEditBracketCharsFilters = []): TCharset;
 
 
 implementation
@@ -379,7 +385,36 @@ begin
   end;
 end;
 
-function GetBracketCharSet(AnHighlighter: TLazEditCustomHighlighter): Tcharset;
+function GetBracketTokenCount(AnHighlighter: TLazEditCustomHighlighter): integer;
+begin
+  if AnHighlighter = nil then
+    Result := BRACKET_KIND_TOKEN_COUNT
+  else
+    Result := AnHighlighter.BracketKindCount;
+end;
+
+function GetBracketToken(AKind: integer; AnOpen: Boolean; AnHighlighter: TLazEditCustomHighlighter
+  ): string;
+begin
+  if AnHighlighter = nil then
+    Result := BRACKET_KIND_TOKENS[AnOpen, AKind]
+  else
+    Result := AnHighlighter.BracketKinds[AKind, AnOpen];
+end;
+
+function GetBracketTokenIndex(AToken: String; AnOpen: Boolean;
+  AnHighlighter: TLazEditCustomHighlighter): integer;
+begin
+  Result := GetBracketTokenCount(AnHighlighter) - 1;
+  while Result >= 0 do begin
+    if GetBracketToken(Result, AnOpen, AnHighlighter) = AToken then
+      exit;
+    dec(Result);
+  end;
+end;
+
+function GetBracketCharSet(AnHighlighter: TLazEditCustomHighlighter;
+  AFilter: TLazEditBracketCharsFilters): TCharset;
   procedure AddC(s: string);
   var
     j: Integer;
@@ -389,17 +424,21 @@ function GetBracketCharSet(AnHighlighter: TLazEditCustomHighlighter): Tcharset;
 var
   i: Integer;
 begin
-  Result := Default(Tcharset);
+  Result := Default(TCharset);
   if AnHighlighter <> nil then begin
     for i := 0 to AnHighlighter.BracketKindCount - 1 do begin
-      AddC(AnHighlighter.BracketKinds[i, True]);
-      AddC(AnHighlighter.BracketKinds[i, False]);
+      if not (bcfOnlyClose in AFilter) then
+        AddC(AnHighlighter.BracketKinds[i, True]);
+      if not (bcfOnlyOpen in AFilter) then
+        AddC(AnHighlighter.BracketKinds[i, False]);
     end;
   end
   else begin
     for i := 0 to BRACKET_KIND_TOKEN_COUNT - 1 do begin
-      AddC(BRACKET_KIND_TOKENS[True, i]);
-      AddC(BRACKET_KIND_TOKENS[False, i]);
+      if not (bcfOnlyClose in AFilter) then
+        AddC(BRACKET_KIND_TOKENS[True, i]);
+      if not (bcfOnlyOpen in AFilter) then
+        AddC(BRACKET_KIND_TOKENS[False, i]);
     end;
   end;
 end;

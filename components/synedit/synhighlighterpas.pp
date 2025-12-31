@@ -772,7 +772,7 @@ type
     FTokenState, FNextTokenState: TTokenState;
     FRangeCompilerMode: TPascalCompilerMode;
     FRangeModeSwitches: TPascalCompilerModeSwitches;
-    FRequiredStates: TRequiredStates;
+    FRequiredStates, FRequiredStatesAtLastLineInit: TRequiredStates;
     FStringKeywordMode: TSynPasStringMode;
     FStringMultilineMode: TSynPasMultilineStringModes;
     FSynPasRangeInfo: TSynPasRangeInfo;
@@ -4328,6 +4328,7 @@ begin
     RebuildCustomTokenInfo;
 
   fLineLen:=length(CurrentLineText);
+  FRequiredStatesAtLastLineInit := FRequiredStates;
   Run := 0;
   FIsInSlash := False;
   FLastTokenTypeDeclExtraAttrib := eaNone;
@@ -6650,7 +6651,7 @@ var
   LogIdx: Integer;
 begin
   include(FRequiredStates, reCommentSubTokens);
-  if LineIndex <> ALineIdx then
+  if (LineIndex <> ALineIdx) or not(reCommentSubTokens in FRequiredStatesAtLastLineInit) then
     StartAtLineIndex(ALineIdx);
   IsInNextToEOL := True; // don't get custom words or proc-header...
   NextToLogX(ALogX, True);

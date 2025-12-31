@@ -2431,7 +2431,7 @@ procedure TSynCustomPluginMultiCaret.ProcessAllSynCommand(Sender: TObject; After
     Editor.BeginUpdate(True);
     FCarets.IncMergeLock;
     try
-      AddCaret(Editor.LogicalCaretXY.x, Editor.CaretY, CaretObj.BytePosOffset,
+      i := AddCaret(Editor.LogicalCaretXY.x, Editor.CaretY, CaretObj.BytePosOffset,
         [cfMainCaret, cfNoneVisual {, cfAddDuplicate}], CaretObj.KeepCaretXPos);
 
       // Execute Command at current caret pos
@@ -2441,8 +2441,12 @@ procedure TSynCustomPluginMultiCaret.ProcessAllSynCommand(Sender: TObject; After
         SelectionObj.AddBeforeSetSelTextHandler(@DoBeforeSetSelText);
       Editor.CommandProcessor(Command, AChar, data, [hcfInit, hcfFinish]);
       SelectionObj.RemoveBeforeSetSelTextHandler(@DoBeforeSetSelText);
+      noChange := (sfNoChangeIndicator in FStateFlags) and
+                  (CompareCarets(Carets.Caret[i], CaretObj.LineBytePos) = 0);
+      Carets.CaretFull[i] := CaretObj.FullLogicalPos;
+      if Carets.CaretKeepX[i] <> CaretObj.KeepCaretXPos then
+        Carets.CaretKeepX[i] := CaretObj.KeepCaretXPos;
       Exclude(FStateFlags, sfProcessingMain);
-      noChange := sfNoChangeIndicator in FStateFlags;
       Exclude(FStateFlags, sfNoChangeIndicator);
 
       if noChange and not AForceAll then begin
