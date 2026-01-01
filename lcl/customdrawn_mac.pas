@@ -34,12 +34,10 @@ type
     // ===================================
     // Common Controls Tab
     // ===================================
-    (*
     // TCDToolBar
     procedure DrawToolBarItem(ADest: TCanvas; ASize: TSize;
       ACurItem: TCDToolBarItem; AX, AY: Integer;
       AState: TCDControlState; AStateEx: TCDToolBarStateEx); override;
-    *)
   end;
 
 implementation
@@ -182,7 +180,7 @@ procedure TCDDrawerMac.DrawButton(ADest: TFPCustomCanvas; ADestPos: TPoint; ASiz
 begin
   DrawMacSquareButton(ADest, ADestPos, ASize, AState, AStateEx);
 end;
-                    (*
+
 procedure TCDDrawerMac.DrawToolBarItem(ADest: TCanvas; ASize: TSize;
   ACurItem: TCDToolBarItem; AX, AY: Integer; AState: TCDControlState;
   AStateEx: TCDToolBarStateEx);
@@ -249,7 +247,7 @@ begin
   end;
   end;
 end;
-            *)
+
 initialization
   RegisterDrawer(TCDDrawerMac.Create, dsMacOSX);
 end.
