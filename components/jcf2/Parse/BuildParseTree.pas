@@ -2737,7 +2737,8 @@ begin
   else
   begin
     // External needs special treatment.
-    RecogniseHintDirectives([ttExternal]);
+    // [ after a var is not a hint directive, instead it is an attribute
+   RecogniseHintDirectives([ttExternal,ttOpenSquareBracket]);
    if (aVarType in [vtNormal,vtInExternalClassBody]) and  ((fcTokenList.FirstSolidTokenType in VariableModifiers) or
       ((fcTokenList.FirstSolidTokenType=ttSemicolon) and
        (fcTokenList.SolidTokenType(2) in VariableModifiers))) then
@@ -2764,8 +2765,8 @@ begin
   if lct = ttSemicolon then   // need to look ahead
     lct := fcTokenList.SolidTokenType(2);
   repeat
-    if IsProcedureHintOrDirective then
-      RecogniseHintDirectives
+    if IsProcedureHintOrDirective([ttExternal,ttOpenSquareBracket]) then
+      RecogniseHintDirectives([ttExternal,ttOpenSquareBracket])
     else if lct=ttExport then
       RecogniseVarExpPubDir
     else if (lct=ttPublic) and (Not (aVarType in [vtInClassBody,vtInExternalClassBody])) then
