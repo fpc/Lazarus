@@ -69,7 +69,11 @@ Additional licenses may be granted in each individual file. See the headers in e
       </Item>
       <Item>
         <Filename Value="lazeditmatchingbracketutils.pas"/>
-        <UnitName Value="lazeditmatchingbracketutils"/>
+        <UnitName Value="LazEditMatchingBracketUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="lazeditasyncrunner.pas"/>
+        <UnitName Value="LazEditASyncRunner"/>
       </Item>
     </Files>
     <LazDoc Paths="docs"/>

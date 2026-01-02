@@ -8,7 +8,6 @@
       <Title Value="lazedittest"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <Icon Value="0"/>
     </General>
     <BuildModes>
       <Item Name="O0" Default="True"/>
@@ -538,6 +537,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestTextMateGrammar"/>
       </Unit>
+      <Unit>
+        <Filename Value="testasyncrunner.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestAsyncRunner"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -555,11 +559,6 @@
         <DebugInfoType Value="dsDwarf3"/>
       </Debugging>
     </Linking>
-    <Other>
-      <ConfigFile>
-        <WriteConfigFilePath Value=""/>
-      </ConfigFile>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions>

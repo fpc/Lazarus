@@ -3,7 +3,7 @@ program LazEditTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, GuiTestRunner, TestTextMateGrammar;
+  Interfaces, Forms, GuiTestRunner, TestTextMateGrammar, TestAsyncRunner;
 
 {$R *.res}
 
