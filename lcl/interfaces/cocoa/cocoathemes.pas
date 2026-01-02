@@ -364,65 +364,52 @@ var
   cur : NSGraphicsContext;
   nsr : NSRect;
 begin
-  if Details.Part = TP_BUTTON then
-  begin
-    //BtnCell.setBezeled(true);
-    SetButtonCellType(BtnCell, Details);
-    SetButtonCellToDetails(BtnCell, Details);
-    CellDrawStart(DC, R, cur, nsr);
-    CellDrawFrame(btnCell, nsr);
-    CellDrawEnd(DC, cur);
-    Result := R;
-  end
-  else
-  begin
-    lCDToolbarItem := TCDToolBarItem.Create;
-    lCDToolbar := TCDToolBarStateEx.Create;
-    lCanvas := TCanvas.Create;
-    try
-      lSize.CX := R.Right - R.Left;
-      lSize.CY := R.Bottom - R.Top;
-      case Details.Part of
-        TP_BUTTON, TP_DROPDOWNBUTTON, TP_SPLITBUTTON:
-        begin
-          lCDToolbarItem.Kind := tikButton;
-          lCDToolbarItem.Width := lSize.CX;
-        end;
-        TP_SPLITBUTTONDROPDOWN:
-        begin
-          lCDToolbarItem.Kind := tikDropDownButton;
-          lCDToolbarItem.SubpartKind := tiskArrow;
-          lCDToolbarItem.Width := -1;
-        end
-        //TP_SEPARATOR, TP_SEPARATORVERT, TP_DROPDOWNBUTTONGLYPH: // tikSeparator, tikDivider
-      else
-        Exit;
+  lCDToolbarItem := TCDToolBarItem.Create;
+  lCDToolbar := TCDToolBarStateEx.Create;
+  lCanvas := TCanvas.Create;
+  try
+    lSize.CX := R.Right - R.Left;
+    lSize.CY := R.Bottom - R.Top;
+    case Details.Part of
+      TP_BUTTON, TP_DROPDOWNBUTTON, TP_SPLITBUTTON:
+      begin
+        lCDToolbarItem.Kind := tikButton;
+        lCDToolbarItem.Width := lSize.CX;
       end;
-      lCDToolbarItem.Down := IsChecked(Details);
-
-      lCDToolbarItem.State := [];
-      if IsHot(Details) then
-        lCDToolbarItem.State := lCDToolbarItem.State + [csfMouseOver];
-      if IsPushed(Details) then
-        lCDToolbarItem.State := lCDToolbarItem.State + [csfSunken];
-      if IsChecked(Details) then
-        lCDToolbarItem.State := lCDToolbarItem.State + [csfSunken];
-      if not IsDisabled(Details) then
-        lCDToolbarItem.State := lCDToolbarItem.State + [csfEnabled];
-
-      lCDToolbar.ToolBarHeight := lSize.CY;
-
-      lDrawer := GetDrawer(dsMacOSX);
-      lCanvas.Handle := HDC(DC);
-      lDrawer.DrawToolBarItem(lCanvas, lSize, lCDToolbarItem, R.Left, R.Top, lCDToolbarItem.State, lCDToolbar);
-
-      Result := R;
-    finally
-      lCDToolbarItem.Free;
-      lCDToolbar.Free;
-      lCanvas.Handle := 0;
-      lCanvas.Free;
+      TP_SPLITBUTTONDROPDOWN:
+      begin
+        lCDToolbarItem.Kind := tikDropDownButton;
+        lCDToolbarItem.SubpartKind := tiskArrow;
+        lCDToolbarItem.Width := -1;
+      end
+      //TP_SEPARATOR, TP_SEPARATORVERT, TP_DROPDOWNBUTTONGLYPH: // tikSeparator, tikDivider
+    else
+      Exit;
     end;
+    lCDToolbarItem.Down := IsChecked(Details);
+
+    lCDToolbarItem.State := [];
+    if IsHot(Details) then
+      lCDToolbarItem.State := lCDToolbarItem.State + [csfMouseOver];
+    if IsPushed(Details) then
+      lCDToolbarItem.State := lCDToolbarItem.State + [csfSunken];
+    if IsChecked(Details) then
+      lCDToolbarItem.State := lCDToolbarItem.State + [csfOn];
+    if not IsDisabled(Details) then
+      lCDToolbarItem.State := lCDToolbarItem.State + [csfEnabled];
+
+    lCDToolbar.ToolBarHeight := lSize.CY;
+
+    lDrawer := GetDrawer(dsMacOSX);
+    lCanvas.Handle := HDC(DC);
+    lDrawer.DrawToolBarItem(lCanvas, lSize, lCDToolbarItem, R.Left, R.Top, lCDToolbarItem.State, lCDToolbar);
+
+    Result := R;
+  finally
+    lCDToolbarItem.Free;
+    lCDToolbar.Free;
+    lCanvas.Handle := 0;
+    lCanvas.Free;
   end;
 end;
 
