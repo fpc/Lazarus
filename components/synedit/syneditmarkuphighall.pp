@@ -30,11 +30,11 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Controls, ExtCtrls, Forms, Graphics,
+  LCLProc, Controls, ExtCtrls, Graphics,
   // LazUtils
   LazClasses, LazUTF8, LazMethodList, LazLoggerBase,
   // LazEdit
-  LazEditMiscProcs, LazSynEditText, LazEditTextAttributes,
+  LazEditMiscProcs, LazSynEditText, LazEditTextAttributes, LazEditASyncRunner,
   // SynEdit
   SynEditMarkup, SynEditTypes, SynEditSearch, SynEditMiscClasses,
   SynEditHighlighter, SynEditPointClasses, SynEditMiscProcs,
@@ -312,6 +312,7 @@ type
     DEFAULT_SCAN_OFFSCREEN_LIMIT = 200;
   strict private
     FHasAsyncScheduled: Boolean;
+    FAsyncEndTickTime: QWord;
     FFirstInvalidMatchLine, FLastInvalidMatchLine, FMatchLinesDiffCount: Integer;
     procedure DoOverViewGutterFreed(Sender: TObject);
   private
@@ -337,7 +338,9 @@ type
     procedure RemoveAsync;
     Procedure InvalidateMatches(AFirstLine, ALastLine, ALineDiffCount: Integer);
     procedure AssertGapsValid;
-    procedure DoAsyncScan(Data: PtrInt); // Do not call direct, only via procedure ScheduleAsync;
+    procedure DoAsyncScan(AnEditorId: TLazEditEditorId; ATaskId: TLazEditTaskId;
+      AMaxTime: integer; var AData: Pointer; var ADone: boolean;
+      var APriorities: TTLazEditTaskPriorities);
     function ValidateFillGaps: boolean;
     Procedure ValidateMatches(SkipPaint: Boolean = False);
 
@@ -366,6 +369,7 @@ type
     function  HasVisibleMatch: Boolean; deprecated 'use HasDisplayAbleMatches / to be removed in 5.99';
     property  MatchCount: Integer read GetMatchCount;
     property  MarkupEnabled: Boolean read FMarkupEnabled;
+    property AsyncEndTickTime: QWord read FAsyncEndTickTime;
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
@@ -2339,8 +2343,10 @@ begin
       inc(AStartPoint.y);
       AStartPoint.x := 1;
 
-      if (AStopAfterLine >= 0) and (AStartPoint.Y-1 > AStopAfterLine) and
-         (FFindInsertIndex > AnIndex)
+      if ( (AStopAfterLine >= 0) and (AStartPoint.Y-1 > AStopAfterLine) and
+           (FFindInsertIndex > AnIndex)
+         ) or
+         ( ((AStartPoint.y and $ff) = 0) and (GetTickCount64 > AsyncEndTickTime) )
       then begin
         AnEndPoint := point(LineLen + 1, AStartPoint.Y-1);
         break;
@@ -2494,20 +2500,26 @@ function TSynEditMarkupHighlightAll.FindMatches(AStartPoint, AnEndPoint: TPoint;
   var AnIndex: Integer; AStopAfterLine: Integer; ABackward: Boolean): TPoint;
 var
   ptFoundStart, ptFoundEnd: TPoint;
+  i: Integer;
 begin
   fSearch.Backwards := ABackward;
+  i := 0;
   While (true) do begin
     if not fSearch.FindNextOne(Lines, AStartPoint, AnEndPoint, ptFoundStart, ptFoundEnd)
     then break;
+    i := i +  ptFoundEnd.Y - AStartPoint.Y;
     AStartPoint := ptFoundEnd;
 
     FMatches.Insert(AnIndex, ptFoundStart, ptFoundEnd);
     inc(AnIndex); // BAckward learch needs final index to point to last inserted (currently support only find ONE)
 
-    if (AStopAfterLine >= 0) and (ptFoundStart.Y > AStopAfterLine) then begin
+    if ( (AStopAfterLine >= 0) and (ptFoundStart.Y > AStopAfterLine) ) or
+       ( (i > 100) and (GetTickCount64 > AsyncEndTickTime) )
+    then begin
       AnEndPoint := ptFoundEnd;
       break;
     end;
+    if i > 100 then i := 0;
   end;
   Result := AnEndPoint;
 end;
@@ -3173,7 +3185,7 @@ procedure TSynEditMarkupHighlightAllBase.ScheduleAsync;
 begin
   if FHasAsyncScheduled then
     exit;
-  Application.QueueAsyncCall(@DoAsyncScan, 0);
+  GlobalASyncRunner.AddOrReplaceTask(@DoAsyncScan, SynEdit, [tpPaintExtra]);
   FHasAsyncScheduled := True;
 end;
 
@@ -3181,8 +3193,8 @@ procedure TSynEditMarkupHighlightAllBase.RemoveAsync;
 begin
   if not FHasAsyncScheduled then
     exit;
+  GlobalASyncRunner.RemoveTask(@DoAsyncScan, SynEdit);
   FHasAsyncScheduled := False;
-  Application.RemoveAsyncCalls(Self);
 end;
 
 procedure TSynEditMarkupHighlightAllBase.InvalidateMatches(AFirstLine, ALastLine,
@@ -3221,27 +3233,30 @@ begin
   end;
 end;
 
-procedure TSynEditMarkupHighlightAllBase.DoAsyncScan(Data: PtrInt);
+procedure TSynEditMarkupHighlightAllBase.DoAsyncScan(AnEditorId: TLazEditEditorId;
+  ATaskId: TLazEditTaskId; AMaxTime: integer; var AData: Pointer; var ADone: boolean;
+  var APriorities: TTLazEditTaskPriorities);
 var
-  r, SkipPaint: Boolean;
+  SkipPaint: Boolean;
 begin
-  FHasAsyncScheduled := False;
   if FPaintLock > 0 then begin
+    ADone := True;
+    FHasAsyncScheduled := False;
     Include(FFlags, smfNeedAsync);
     exit;
   end;
   Exclude(FFlags, smfNeedAsync);
 
+  FAsyncEndTickTime := GetTickCount64 + AMaxTime;
   SkipPaint := (smfAsyncSkipPaint in FFlags) or (not FHideSingleMatch) or (FMatches.Count > 1);
   if SkipPaint then
     BeginSkipSendingInvalidation;
-  r := ValidateFillGaps;
+  ADone := ValidateFillGaps;
+  FHasAsyncScheduled := not ADone;
   if SkipPaint then
     EndSkipSendingInvalidation;
-  if not r then begin
-    ScheduleAsync;
-  end
-  else begin
+
+  if ADone then begin
     if FOverViewGutterPart <> nil then
       FOverViewGutterPart.ReCalc;
   end;
@@ -3564,6 +3579,7 @@ begin
       FValidRanges.RemoveBetween(GapStartPoint, GapEndPoint);
     end;
 
+    FAsyncEndTickTime := high(QWord)-1;
     if not ValidateFillGaps then begin
       if SkipPaint then
         Include(FFlags, smfAsyncSkipPaint);
