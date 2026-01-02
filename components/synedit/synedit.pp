@@ -143,7 +143,8 @@ uses
   SynGutterBase, SynGutter, SynEditMiscClasses, SynEditHighlighter, LazSynTextArea,
   SynEditTextBidiChars, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
   SynGutterMarks, SynGutterLineOverview, LazEditMiscProcs, LazEditTextAttributes,
-  LazEditTextGridPainter, LazEditMatchingBracketUtils, LazEditTypes, LazEditHighlighter;
+  LazEditTextGridPainter, LazEditMatchingBracketUtils, LazEditTypes, LazEditHighlighter,
+  LazEditASyncRunner;
 
 const
   // SynDefaultFont is determined in InitSynDefaultFont()
@@ -2351,6 +2352,7 @@ begin
   inherited Create(AOwner);
   SetInline(True);
   ControlStyle:=ControlStyle+[csOwnedChildrenNotSelectable];
+  GlobalASyncRunner.RegisterEditor(Self);
   FDoingResizeLock := 0;
   FPaintLock := 0;
   FStatusChangeLock := 0;
@@ -2991,6 +2993,7 @@ begin
   FreeAndNil(FUtf8KeyPressEventList);
   FreeAndNil(FScrollOnEditLeftOptions);
   FreeAndNil(FScrollOnEditRightOptions);
+  GlobalASyncRunner.UnregisterEditor(Self);
 
   inherited Destroy;
 end;
@@ -3984,6 +3987,12 @@ begin
     end;
   end;
   inherited UpdateShowing;
+
+  if not Focused then begin
+    if IsVisible
+    then GlobalASyncRunner.EditorPriority[Self] := epIsVisible
+    else GlobalASyncRunner.EditorPriority[Self] := epHasHandle;
+  end;
 
   if fMarkupManager <> nil then
     fMarkupManager.DoVisibleChanged(IsVisible);
@@ -5737,6 +5746,11 @@ begin
   FMouseActionShiftMask := [];
   inherited;
   StatusChanged([scFocus]);
+  if not Focused then begin
+    if IsVisible
+    then GlobalASyncRunner.EditorPriority[Self] := epIsVisible
+    else GlobalASyncRunner.EditorPriority[Self] := epHasHandle;
+  end;
 end;
 
 procedure TCustomSynEdit.WMSetFocus(var Msg: TLMSetFocus);
@@ -5759,6 +5773,8 @@ begin
   inherited;
   //DebugLn('[TCustomSynEdit.WMSetFocus] END');
   StatusChanged([scFocus]);
+
+  GlobalASyncRunner.EditorPriority[Self] := epHasFocused;
 end;
 
 procedure TCustomSynEdit.DoOnResize;
@@ -9489,10 +9505,13 @@ begin
     //old DragAcceptFiles(Handle, TRUE);
     ;
   SizeOrFontChanged(true);
+
+  GlobalASyncRunner.EditorPriority[Self] := epHasHandle;
 end;
 
 procedure TCustomSynEdit.DestroyWnd;
 begin
+  GlobalASyncRunner.EditorPriority[Self] := epCreated;
   {$IFDEF SynCheckPaintLock}
   if (FPaintLock > 0) and not(csDestroying in ComponentState) then begin
     debugln(['TCustomSynEdit.DestroyWnd: Paintlock=', FPaintLock, ' FInvalidateRect=', dbgs(FInvalidateRect)]);
