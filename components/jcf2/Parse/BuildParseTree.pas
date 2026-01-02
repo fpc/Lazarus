@@ -69,7 +69,7 @@ type
     fiTokenCount: integer;
     procedure ChangeFirstSolidTokenType(peNewTokenType: TTokenType);
     function IsEndOfTypeSection: Boolean;
-    function IsProcedureHintOrDirective: boolean;
+    function IsProcedureHintOrDirective(aExcludeTokens: TTokenTypeSet = []): boolean;
     procedure RecogniseTypeHelper;
     procedure SplitGreaterThanOrEqual;
     procedure SplitShr_gg;
@@ -113,7 +113,7 @@ type
     procedure CheckLabelPrefix;
 
     procedure RecogniseTypeSection(const pbNestedInCLass: Boolean);
-    procedure RecogniseVarSection(const pbClassVars: boolean);
+    procedure RecogniseVarSection(const pbClassVars: boolean; aExternalClass : Boolean = False);
     procedure RecogniseProcedureDeclSection;
     procedure RecogniseClassOperator(const pbHasBody: boolean);
     procedure RecogniseOperator(const pbHasBody: boolean);
@@ -162,8 +162,8 @@ type
     procedure RecogniseType;
     procedure RecogniseVariantType;
     procedure RecogniseClassType;
-    procedure RecogniseClassBody;
-    procedure RecogniseClassDeclarations(const pbInterface: boolean);
+    procedure RecogniseClassBody(aExternalClass: Boolean);
+    procedure RecogniseClassDeclarations(const pbInterface: boolean; aExternalClass : boolean = False);
 
     procedure RecogniseInterfaceType;
     procedure RecogniseObjectType;
@@ -259,7 +259,7 @@ type
     procedure RecogniseWhiteSpace;
     procedure RecogniseNotSolidTokens;
 
-    procedure RecogniseHintDirectives;
+    procedure RecogniseHintDirectives(aExcludeTokens : TTokenTypeSet = []);
     procedure RecognisePropertyDirectives;
     procedure RecogniseExternalProcDirective;
     function RecognisePublicProcDirective: boolean;
@@ -1239,7 +1239,7 @@ begin
   end;
   Recognise(ttFor);
   RecogniseIdentifier(True, idStrict);
-  RecogniseClassBody;
+  RecogniseClassBody(False);
   Recognise(ttEnd);
   RecogniseHintDirectives;
   PopNode;
@@ -2554,7 +2554,7 @@ begin
   PopNode;
 end;
 
-procedure TBuildParseTree.RecogniseVarSection(const pbClassVars: boolean);
+procedure TBuildParseTree.RecogniseVarSection(const pbClassVars: boolean; aExternalClass: Boolean);
 const
   END_VAR_SECTION: TTokenTypeSet =
     [ttVar, ttThreadVar, ttConst, ttLabel, ttResourceString, ttType,
@@ -2581,7 +2581,13 @@ begin
 
   // can be empty
   if pbClassVars then
-    lVarType:=vtInClassBody
+    begin
+    if aExternalClass then
+      lVarType:=vtInExternalClassBody
+    else
+      lVarType:=vtInClassBody
+
+    end
   else
     lVarType:=vtNormal;
   while not (fcTokenList.FirstSolidTokenType in leEndVarSection) do
@@ -2730,8 +2736,9 @@ begin
   end
   else
   begin
-    RecogniseHintDirectives;
-   if (aVarType=vtNormal) and  ((fcTokenList.FirstSolidTokenType in VariableModifiers) or
+    // External needs special treatment.
+    RecogniseHintDirectives([ttExternal]);
+   if (aVarType in [vtNormal,vtInExternalClassBody]) and  ((fcTokenList.FirstSolidTokenType in VariableModifiers) or
       ((fcTokenList.FirstSolidTokenType=ttSemicolon) and
        (fcTokenList.SolidTokenType(2) in VariableModifiers))) then
     begin
@@ -2761,7 +2768,7 @@ begin
       RecogniseHintDirectives
     else if lct=ttExport then
       RecogniseVarExpPubDir
-    else if (lct=ttPublic) and (aVarType<>vtInClassBody) then
+    else if (lct=ttPublic) and (Not (aVarType in [vtInClassBody,vtInExternalClassBody])) then
       RecogniseVarExpPubDir
     else
       break;
@@ -4528,19 +4535,24 @@ begin
     RecogniseLiteralString;
 end;
 
-function TBuildParseTree.IsProcedureHintOrDirective: boolean;
+function TBuildParseTree.IsProcedureHintOrDirective(aExcludeTokens: TTokenTypeSet): boolean;
 var
   liIndex: integer;
+  lDirectives : TTokenTypeSet;
+
 begin
   liIndex := 0;
+  lDirectives := AllProcDirectives;
+  if (aExcludeTokens <> []) then
+    lDirectives:=lDirectives - aExcludeTokens;
 
-  if fcTokenList.FirstSolidTokenType in AllProcDirectives then
+  if fcTokenList.FirstSolidTokenType in lDirectives then
     liIndex := 1
   else
   begin
     if fcTokenList.FirstSolidTokenType = ttSemiColon then
     begin
-      if fcTokenList.SolidTokenType(2) in AllProcDirectives then
+      if fcTokenList.SolidTokenType(2) in lDirectives then
         liIndex := 2;
     end;
   end;
@@ -4713,7 +4725,7 @@ begin
     RecogniseObjHeritage;
 
   // swiped this from the delphi object defs
-  RecogniseClassBody;
+  RecogniseClassBody(False);
 
   Recognise(ttEnd);
 
@@ -4822,6 +4834,8 @@ begin
 end;
 
 procedure TBuildParseTree.RecogniseClassType;
+var
+  lExternalClass : boolean;
 begin
   {
   ClassType -> CLASS [ClassHeritage]
@@ -4852,6 +4866,7 @@ begin
   TSealedClass = class sealed (TMaClass)
   TAbstractClass = class abstract (TObject)
   }
+  lExternalClass := False;
 
   PushNode(nClassType);
 
@@ -4884,6 +4899,7 @@ begin
     // JVM and pas2js: Class external name 'object' ()
     if fcTokenList.FirstSolidTokenType = ttExternal then
       begin
+      lExternalClass := true;
       Recognise(ttExternal);
       Recognise(ttName);
       Recognise(ttQuotedLiteralString);
@@ -4916,7 +4932,7 @@ begin
     exit;
   end;
 
-  RecogniseClassBody;
+  RecogniseClassBody(lExternalClass);
   Recognise(ttEnd);
 
   RecogniseHintDirectives;
@@ -4950,25 +4966,25 @@ begin
     Recognise(ClassVisibility);
 end;
 
-procedure TBuildParseTree.RecogniseClassBody;
+procedure TBuildParseTree.RecogniseClassBody(aExternalClass: Boolean);
 begin
   //ClassBody -> classdeclarations (access classdeclarations) ...
   PushNode(nClassBody);
 
-  RecogniseClassDeclarations(False);
+  RecogniseClassDeclarations(False,aExternalClass);
 
   while (fcTokenList.FirstSolidTokenType in ClassVisibility + [ttStrict, ttClass]) do
   begin
     PushNode(nClassVisibility);
     RecogniseClassVisibility;
-    RecogniseClassDeclarations(False);
+    RecogniseClassDeclarations(False,aExternalClass);
     PopNode;
   end;
 
   PopNode;
 end;
 
-procedure TBuildParseTree.RecogniseClassDeclarations(const pbInterface: boolean);
+procedure TBuildParseTree.RecogniseClassDeclarations(const pbInterface: boolean; aExternalClass: boolean);
 const
   // can declare thse things in a class
   CLASS_DECL_WORDS = [ttProcedure, ttFunction, ttConstructor, ttDestructor,
@@ -5054,7 +5070,7 @@ begin
             RecogniseFunctionHeading(False, True);
           ttVar, ttThreadVar:
           begin
-            RecogniseVarSection(True);
+            RecogniseVarSection(True,aExternalClass);
             lbHasTrailingSemicolon := False;
           end;
           ttProperty:
@@ -5095,7 +5111,7 @@ begin
       end;
       ttVar, ttThreadVar:
       begin
-        RecogniseVarSection(True);
+        RecogniseVarSection(True,aExternalClass);
         lbHasTrailingSemicolon := False;
       end;
     else
@@ -5110,8 +5126,10 @@ begin
         // no vars on interface
         if pbInterface then
           RaiseParseError(lisMsgUnexpectedToken, fcTokenList.FirstSolidToken);
-
-        RecogniseVarDecl(vtInClassBody);
+        if aExternalClass then
+          RecogniseVarDecl(vtInExternalClassBody)
+        else
+          RecogniseVarDecl(vtInClassBody);
       end
       else
         RaiseParseError(lisMsgUnexpectedToken, fcTokenList.FirstSolidToken);
@@ -6064,9 +6082,9 @@ begin
 
 end;
 
-procedure TBuildParseTree.RecogniseHintDirectives;
+procedure TBuildParseTree.RecogniseHintDirectives(aExcludeTokens: TTokenTypeSet);
 begin
-  if IsProcedureHintOrDirective then
+  if IsProcedureHintOrDirective(aExcludeTokens) then
   begin
     RecogniseOptionalSemicolon;
     PushNode(nHintDirectives);

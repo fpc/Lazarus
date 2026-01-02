@@ -92,6 +92,7 @@ type
     { built-in keywords }
     ttArray,
     ttAsm,
+    ttAsync,
     ttBegin,
     ttCase,
     ttClass,
@@ -408,7 +409,7 @@ const
     ttOverload, ttReintroduce,
     ttDeprecated, ttLibrary, ttPlatform, ttExperimental, ttUnimplemented,
     ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator, ttNostackframe, ttInterrupt,
-    ttPublic, ttVectorcall, ttHuge, ttNoreturn];
+    ttPublic, ttVectorcall, ttHuge, ttNoreturn, ttAsync];
 
   ClassDirectives: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
@@ -695,6 +696,7 @@ begin
 
   { reseved words that are directives }
   AddKeyword('absolute', wtReservedWordDirective, ttAbsolute);
+  AddKeyword('async', wtReservedWordDirective, ttAsync);
   AddKeyword('external', wtReservedWordDirective, ttExternal);
   AddKeyword('pascal', wtReservedWordDirective, ttPascal);
   AddKeyword('safecall', wtReservedWordDirective, ttSafecall);
