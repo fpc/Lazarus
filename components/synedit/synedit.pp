@@ -10226,16 +10226,12 @@ end;
 function TCustomSynEdit.FindMatchingBracketLogical(var LogicalStartBracket: TLogTokenPos;
   SearchSide: TLazEditBracketSearchDirection; MoveCaret: Boolean; SelectBrackets: Boolean;
   OnlyVisible: Boolean): TLogTokenPos;
-var
-  PosX, PosY: integer;
 
   procedure DoMatchingBracketFound;
   var
     EndPt: TPoint;
   begin
     // matching bracket found, set caret and bail out
-    Result := Point(PosX, PosY); // start with logical (byte) position
-
     if SelectBrackets then begin
       EndPt:=Result;
       if (EndPt.Y < LogicalStartBracket.Y)
@@ -10254,83 +10250,37 @@ var
   end;
 
 var
-  FndBracketInfo: TLazEditBracketInfo;
-  FndPosX, c: integer;
-  IsOpen: Boolean;
-
+  BracketFinder: TBracketFinderAsync;
 begin
   Result.X:=-1;
   Result.Y:=-1;
 
-  PosX := LogicalStartBracket.X;
-  PosY := LogicalStartBracket.Y;
-  if (PosY<1) or (PosY>FTheLinesView.Count) then exit;
-  if OnlyVisible
-  and ((PosY<TopLine) or (PosY > PartialBottomLine))
+  if (LogicalStartBracket.Y<1) or (LogicalStartBracket.Y>FTheLinesView.Count) then
+    exit;
+  if OnlyVisible and
+     ((LogicalStartBracket.Y<TopLine) or (LogicalStartBracket.Y > PartialBottomLine))
   then
     exit;
 
+  BracketFinder.Create;
+  if not BracketFinder.Init(Self, LogicalStartBracket, SearchSide, nil, Highlighter, FTheLinesView, [],
+    TopLine - 100, PartialBottomLine + 100)
+  then
+    exit;
 
-  if GetBracketInfoAt(ToIdx(PosY), PosX, fHighlighter, FndBracketInfo, SearchSide, FTheLinesView) and
-     not(bfUnmatched in FndBracketInfo.BracketFlags)
-  then begin
-    LogicalStartBracket:=Point(FndBracketInfo.BracketLogStartX, PosY);
-    LogicalStartBracket.Len := FndBracketInfo.BracketLogLength;
-    if bfUniform in FndBracketInfo.BracketFlags then begin
-      IsOpen := PosX > FndBracketInfo.BracketLogStartX; // decide if to search forward/backward
-    end
-    else begin
-      IsOpen := bfOpen in FndBracketInfo.BracketFlags;
-      if IsOpen
-      then exclude(FndBracketInfo.BracketFlags, bfOpen)
-      else include(FndBracketInfo.BracketFlags, bfOpen);
-    end;
-    if (not IsOpen) then begin
-      // closing
-      PosX := FndBracketInfo.BracketLogStartX - 1;
-      if PosX < 1 then begin
-        dec(PosY);
-        PosX := -1;
-      end;
-      while PosY > 0 do begin
-        if FindBracketPos(ToIdx(PosY), PosX, True, fHighlighter, FndBracketInfo, FndPosX, FTheLinesView) then begin
-          PosX := FndPosX;
-          DoMatchingBracketFound;
-          Result.Len := LogicalStartBracket.Len; // TODO: unbalanced bracket length
-          exit;
-        end;
-        dec(PosY);
-        if (OnlyVisible and (PosY < TopLine)) or
-           ((bfNoLanguageContext in FndBracketInfo.BracketFlags) and (PosY < TopLine - 100)) or
-           (bfSingleLine in FndBracketInfo.BracketFlags) or
-           (bfForceStopSearch in FndBracketInfo.BracketFlags)
-        then
-          break;
-        PosX := -1;
-      end;
-    end
-    else begin
-      // opening
-      PosX := FndBracketInfo.BracketLogStartX + FndBracketInfo.BracketLogLength;
-      c := FTheLinesView.Count;
-      while PosY <= c do begin
-        if FindBracketPos(ToIdx(PosY), PosX, False, fHighlighter, FndBracketInfo, FndPosX, FTheLinesView) then begin
-          PosX := FndPosX;
-          DoMatchingBracketFound;
-          Result.Len := LogicalStartBracket.Len; // TODO: unbalanced bracket length
-          exit;
-        end;
-        inc(PosY);
-        if (OnlyVisible and (PosY > PartialBottomLine)) or
-           ((bfNoLanguageContext in FndBracketInfo.BracketFlags) and (PosY > PartialBottomLine + 100)) or
-           (bfSingleLine in FndBracketInfo.BracketFlags) or
-           (bfForceStopSearch in FndBracketInfo.BracketFlags)
-        then
-          break;
-        PosX := 1;
-      end;
-    end;
+  if OnlyVisible then begin
+    BracketFinder.HardTopLineLimit := TopLine;
+    BracketFinder.HardBottomLineLimit := PartialBottomLine;
   end;
+
+  BracketFinder.Exec;
+
+  LogicalStartBracket := BracketFinder.OpenBracketPos;
+  if BracketFinder.CloseBracketFound then begin
+    Result := BracketFinder.CloseBracketPos;
+    DoMatchingBracketFound;
+  end;
+  BracketFinder.Destroy;
 end;
 
                                                                                  //L505 begin

@@ -19,11 +19,11 @@
 unit LazEditMatchingBracketUtils;
 
 {$mode objfpc}{$H+}
-
+{$WARN 3018 off : Constructor should be public}
 interface
 
 uses
-  LazEditTypes, LazEditHighlighter, SysUtils;
+  LazEditTypes, LazEditHighlighter, LazEditASyncRunner, LazEditMiscProcs, SysUtils, Classes;
 
 type
 
@@ -48,6 +48,73 @@ type
   TCharset=set of char;
   TLazEditBracketCharsFilter = (bcfOnlyOpen, bcfOnlyClose);
   TLazEditBracketCharsFilters = set of TLazEditBracketCharsFilter;
+
+
+  { TBracketFinderAsync }
+
+  TBracketFinderAsync = object // class
+  public type
+    TBracketFinderAsyncDoneEvent = procedure(ASender: TBracketFinderAsync) of object;
+  private
+    FCallBack: TBracketFinderAsyncDoneEvent;
+    FEditor:TLazEditEditorId;
+    FCloseBracketFound: boolean;
+    FCloseBracketPos: TLogTokenPos;
+    FHardBottomLineLimit: integer;
+    FHardTopLineLimit: integer;
+    FHighlighter: TLazEditCustomHighlighter;
+    FLines: TLazEditStringsBase;
+    FOpenBracketIsOpening, FSearchingForward: boolean;
+    FAsyncSched: (asNone, asFrwrd, asBackwrd);
+    FTaskPriorities: TTLazEditTaskPriorities;
+    FNoCtxTopLineLimit, FNoCtxBottomLineLimit: integer;
+
+    FStartPos: TPoint;
+    FOpenBracketPos: TLogTokenPos;
+    FCurYIdx, FCurXPos: integer;
+    FOpenBracketInfo, FSearchBracketInfo: TLazEditBracketInfo;
+
+    procedure DoCallback;
+    procedure DoBackwardSearch(AnEditorId: TLazEditEditorId; ATaskId: TLazEditTaskId;
+      AMaxTime: integer; var AData: Pointer; var ADone: boolean;
+      var APriorities: TTLazEditTaskPriorities);
+    procedure DoForwardSearch(AnEditorId: TLazEditEditorId; ATaskId: TLazEditTaskId;
+      AMaxTime: integer; var AData: Pointer; var ADone: boolean;
+      var APriorities: TTLazEditTaskPriorities);
+  public
+    procedure Create;
+    procedure Destroy;
+    function Run(AnEditor:TLazEditEditorId;
+      ALogicalStartPos: TPoint; SearchSide: TLazEditBracketSearchDirection;
+      ACallBack: TBracketFinderAsyncDoneEvent;
+      AnHighlighter: TLazEditCustomHighlighter; ALines: TLazEditStringsBase = nil;
+      ATaskPriorities: TTLazEditTaskPriorities = [];
+      ANoCtxTopLineLimit: integer = -1;
+      ANoCtxBottomLineLimit: integer = -1
+    ): Boolean;
+    function Init(AnEditor:TLazEditEditorId;
+      ALogicalStartPos: TPoint; SearchSide: TLazEditBracketSearchDirection;
+      ACallBack: TBracketFinderAsyncDoneEvent;
+      AnHighlighter: TLazEditCustomHighlighter; ALines: TLazEditStringsBase = nil;
+      ATaskPriorities: TTLazEditTaskPriorities = [];
+      ANoCtxTopLineLimit: integer = -1;
+      ANoCtxBottomLineLimit: integer = -1
+    ): boolean;
+    function Exec: Boolean;
+    procedure Cancel;
+
+    property NoCtxTopLineLimit:    integer read FNoCtxTopLineLimit    write FNoCtxTopLineLimit;
+    property NoCtxBottomLineLimit: integer read FNoCtxBottomLineLimit write FNoCtxTopLineLimit;
+    property HardTopLineLimit:     integer read FHardTopLineLimit    write FHardTopLineLimit;
+    property HardBottomLineLimit:  integer read FHardBottomLineLimit write FHardBottomLineLimit;
+
+    property OpenBracketPos: TLogTokenPos read FOpenBracketPos;
+    // OpenBracketIsOpening: for uniform brackets this can be adjusted after CreateIdle
+    property OpenBracketIsOpening: boolean read FOpenBracketIsOpening write FOpenBracketIsOpening; // do forward search
+    property CloseBracketPos: TLogTokenPos read FCloseBracketPos;
+    property CloseBracketFound: boolean read FCloseBracketFound;
+    property OpenBracketInfo: TLazEditBracketInfo read FOpenBracketInfo;
+  end;
 
 (* - AnHighlighter may be nil, and then ALines must be given.
    - If AnHighlighter <> nil, and ALines <> nil then CurrentLines will be set to ALines
@@ -319,6 +386,7 @@ begin
     if ASearchBackward then begin
       // Backwards, build cache
       LogX := 1;
+      Cache := nil;
       CacheIdx := -1;
       CacheAntiBrkCount := 0;
       repeat
@@ -441,6 +509,221 @@ begin
         AddC(BRACKET_KIND_TOKENS[False, i]);
     end;
   end;
+end;
+
+{ TBracketFinderAsync }
+
+procedure TBracketFinderAsync.DoCallback;
+begin
+  if FCallBack <> nil then
+    FCallBack(Self);
+end;
+
+procedure TBracketFinderAsync.DoBackwardSearch(AnEditorId: TLazEditEditorId;
+  ATaskId: TLazEditTaskId; AMaxTime: integer; var AData: Pointer; var ADone: boolean;
+  var APriorities: TTLazEditTaskPriorities);
+var
+  EndTime: QWord;
+  FoundPosX: IntPos;
+begin
+  ADone := False;
+  EndTime := GetTickCount64 + AMaxTime;
+  while FCurYIdx >= 0 do begin
+    if FindBracketPos(FCurYIdx, FCurXPos, True, FHighlighter, FSearchBracketInfo, FoundPosX, FLines) then begin
+      ADone := True;
+      FCloseBracketFound := True;
+      FCloseBracketPos.Y := ToPos(FCurYIdx);
+      FCloseBracketPos.X := FoundPosX;
+      FCloseBracketPos.Len := FSearchBracketInfo.BracketLogLength;
+      DoCallback;
+      exit;
+    end;
+    dec(FCurYIdx);
+    FCurXPos := -1;
+    if ( (bfNoLanguageContext in FOpenBracketInfo.BracketFlags) and
+         (FNoCtxTopLineLimit >= 0) and (FCurYIdx < FNoCtxTopLineLimit)
+       ) or
+       ( (FHardTopLineLimit >= 0) and (FCurYIdx < FHardTopLineLimit) ) or
+       (bfSingleLine in FOpenBracketInfo.BracketFlags) or
+       (bfForceStopSearch in FOpenBracketInfo.BracketFlags)
+    then begin
+      ADone := True;
+      DoCallback;
+      exit;
+    end;
+    if ((FCurYIdx and 15) = 0) and (FCallBack <> nil) and (GetTickCount64 > EndTime) then
+      exit;
+  end;
+  ADone := True;
+  DoCallback;
+end;
+
+procedure TBracketFinderAsync.DoForwardSearch(AnEditorId: TLazEditEditorId;
+  ATaskId: TLazEditTaskId; AMaxTime: integer; var AData: Pointer; var ADone: boolean;
+  var APriorities: TTLazEditTaskPriorities);
+var
+  c: Integer;
+  EndTime: QWord;
+  FoundPosX: IntPos;
+begin
+  ADone := False;
+  EndTime := GetTickCount64 + AMaxTime;
+  if FLines <> nil then c := FLines.Count
+  else c := FHighlighter.CurrentLines.Count;
+
+  while FCurYIdx < c do begin
+    if FindBracketPos(FCurYIdx, FCurXPos, False, FHighlighter, FSearchBracketInfo, FoundPosX, FLines) then begin
+      ADone := True;
+      FCloseBracketFound := True;
+      FCloseBracketPos.Y := ToPos(FCurYIdx);
+      FCloseBracketPos.X := FoundPosX;
+      FCloseBracketPos.Len := FSearchBracketInfo.BracketLogLength;
+      DoCallback;
+      exit;
+    end;
+    inc(FCurYIdx);
+    FCurXPos := 1;
+    if ( (bfNoLanguageContext in FOpenBracketInfo.BracketFlags) and
+         (FNoCtxBottomLineLimit >= 0) and (FCurYIdx > FNoCtxBottomLineLimit)
+       ) or
+       ( (FHardBottomLineLimit >= 0) and (FCurYIdx > FHardBottomLineLimit) ) or
+       (bfSingleLine in FOpenBracketInfo.BracketFlags) or
+       (bfForceStopSearch in FOpenBracketInfo.BracketFlags)
+    then begin
+      ADone := True;
+      DoCallback;
+      exit;
+    end;
+    if ((FCurYIdx and 15) = 0) and (FCallBack <> nil) and (GetTickCount64 > EndTime) then
+      exit;
+  end;
+  ADone := True;
+  DoCallback;
+end;
+
+procedure TBracketFinderAsync.Create;
+begin
+  FAsyncSched := asNone;
+  FCloseBracketFound := False;
+  FOpenBracketPos.Y  := -1;
+end;
+
+procedure TBracketFinderAsync.Destroy;
+begin
+  Cancel;
+end;
+
+function TBracketFinderAsync.Run(AnEditor: TLazEditEditorId; ALogicalStartPos: TPoint;
+  SearchSide: TLazEditBracketSearchDirection; ACallBack: TBracketFinderAsyncDoneEvent;
+  AnHighlighter: TLazEditCustomHighlighter; ALines: TLazEditStringsBase;
+  ATaskPriorities: TTLazEditTaskPriorities; ANoCtxTopLineLimit: integer;
+  ANoCtxBottomLineLimit: integer): Boolean;
+begin
+  Result := Init(AnEditor, ALogicalStartPos, SearchSide, ACallBack, AnHighlighter,
+      ALines, ATaskPriorities, ANoCtxTopLineLimit, ANoCtxBottomLineLimit);
+
+  if Result then begin
+    Result := Exec;
+    if FCallBack <> nil then Result := True;
+  end;
+end;
+
+function TBracketFinderAsync.Init(AnEditor: TLazEditEditorId; ALogicalStartPos: TPoint;
+  SearchSide: TLazEditBracketSearchDirection; ACallBack: TBracketFinderAsyncDoneEvent;
+  AnHighlighter: TLazEditCustomHighlighter; ALines: TLazEditStringsBase;
+  ATaskPriorities: TTLazEditTaskPriorities; ANoCtxTopLineLimit: integer;
+  ANoCtxBottomLineLimit: integer): boolean;
+var
+  FndOpenBracketInfo: TLazEditBracketInfo;
+begin
+  Result := False;
+  FCloseBracketFound := False;
+  FOpenBracketPos.Y  := -1;
+
+  if (not GetBracketInfoAt(ToIdx(ALogicalStartPos.Y), ALogicalStartPos.X,
+        AnHighlighter, FndOpenBracketInfo, SearchSide, ALines)) or
+     (bfUnmatched in FndOpenBracketInfo.BracketFlags)
+  then
+    exit;
+
+  Result := True;
+
+  FStartPos := ALogicalStartPos;
+  FOpenBracketPos.Y   := ALogicalStartPos.Y;
+  FOpenBracketPos.X   := FndOpenBracketInfo.BracketLogStartX;
+  FOpenBracketPos.Len := FndOpenBracketInfo.BracketLogLength;
+  FOpenBracketInfo := FndOpenBracketInfo;
+  FSearchBracketInfo := FndOpenBracketInfo;
+
+  FEditor               := AnEditor;
+  FCallBack             := ACallBack;
+  FHighlighter          := AnHighlighter;
+  FLines                := ALines;
+  FTaskPriorities       := ATaskPriorities;
+  FNoCtxTopLineLimit    := ToIdx(ANoCtxTopLineLimit);
+  FNoCtxBottomLineLimit := ToIdx(ANoCtxBottomLineLimit);
+  FHardTopLineLimit     := -1;
+  FHardBottomLineLimit  := -1;
+
+  FCloseBracketFound := False;
+
+  if bfUniform in FOpenBracketInfo.BracketFlags then
+    FOpenBracketIsOpening := ALogicalStartPos.X > FndOpenBracketInfo.BracketLogStartX // decide if to search forward/backward
+  else
+    FOpenBracketIsOpening := bfOpen in FndOpenBracketInfo.BracketFlags;
+end;
+
+function TBracketFinderAsync.Exec: Boolean;
+var
+  ADone: Boolean;
+  d: Pointer;
+begin
+  Cancel;
+  FCloseBracketFound := False;
+  if FOpenBracketPos.y < 0 then
+    exit(False);
+
+  Exclude(FSearchBracketInfo.BracketFlags, bfOpen);
+  ADone := False;
+  FCurYIdx := ToIdx(FStartPos.Y);
+  d := nil;
+  if FOpenBracketIsOpening then begin
+    // find the closing bracket
+    FSearchingForward := True;
+
+    FCurXPos := FSearchBracketInfo.BracketLogStartX + FSearchBracketInfo.BracketLogLength;
+    DoForwardSearch(FEditor, nil, 10, d, ADone, FTaskPriorities);
+    if not ADone then begin
+      FAsyncSched := asFrwrd;
+      GlobalASyncRunner.AddOrReplaceTask(@DoForwardSearch, FEditor, FTaskPriorities);
+    end;
+  end
+  else begin
+    if not (bfUniform in FSearchBracketInfo.BracketFlags) then
+      Include(FSearchBracketInfo.BracketFlags, bfOpen); // find the opening bracket
+    FSearchingForward := False;
+
+    FCurXPos := FSearchBracketInfo.BracketLogStartX - 1;
+    if FCurXPos < 1 then begin
+      dec(FCurYIdx);
+      FCurXPos := -1;
+    end;
+    DoBackwardSearch(FEditor, nil, 10, d, ADone, FTaskPriorities);
+    if not ADone then begin
+      FAsyncSched := asBackwrd;
+      GlobalASyncRunner.AddOrReplaceTask(@DoBackwardSearch, FEditor, FTaskPriorities);
+    end;
+  end;
+  Result := FCloseBracketFound;
+end;
+
+procedure TBracketFinderAsync.Cancel;
+begin
+  case FAsyncSched of
+    asFrwrd:   GlobalASyncRunner.RemoveTask(@DoForwardSearch, FEditor);
+    asBackwrd: GlobalASyncRunner.RemoveTask(@DoBackwardSearch, FEditor);
+  end;
+  FAsyncSched := asNone;
 end;
 
 end.
