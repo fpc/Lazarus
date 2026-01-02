@@ -28,6 +28,7 @@ function TCommonDialog.Execute: boolean;
 var
   DisabledList: TList;
   SavedFocusState: TFocusState;
+  sss: String;
 begin
   SavedFocusState := SaveFocusState;
   Application.ModalStarted;
@@ -36,6 +37,7 @@ begin
     try
       FUserChoice := mrNone;
       ResetShowCloseFlags;
+      sss := WidgetSetClass.ClassName;
       FWSEventCapabilities := TWSCommonDialogClass(WidgetSetClass).QueryWSEventCapabilities(Self);
       Handle := TWSCommonDialogClass(WidgetSetClass).CreateHandle(Self);
       Result:= DoExecute;

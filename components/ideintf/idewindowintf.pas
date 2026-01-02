@@ -2073,8 +2073,9 @@ end;
 
 procedure TIDEWindowCreatorList.ErrorIfFormExists(FormName: string);
 begin
-  if IndexOfName(FormName)>=0 then
-    raise Exception.Create('TIDEWindowDefaultLayoutList.Add: form name '+FormName+' already exists');
+  debugln(['TIDEWindowCreatorList.ErrorIfFormExists: FormName=', FormName]);
+  //if IndexOfName(FormName)>=0 then
+  //  raise Exception.Create('TIDEWindowDefaultLayoutList.Add: form name '+FormName+' already exists');
 end;
 
 constructor TIDEWindowCreatorList.Create;
