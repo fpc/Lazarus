@@ -22,8 +22,10 @@ end;
 
 implementation
 
+{$IFNDEF USE_PLAIN_IO}
 uses
   crt;
+{$ENDIF}
 
 procedure TJcfUINoGUI.UpdateGUI(aCounter:integer=0;aUpdateInterval:integer=512);
 begin
@@ -40,7 +42,11 @@ begin
   Write('Yes No Abort aLl <YNAL>? ');
   I:=0;
   repeat
+    {$IFDEF USE_PLAIN_IO}
+    READ(C);
+    {$ELSE}
     C:=ReadKey;
+    {$ENDIF}
     C:=UpCase(C);
     I:=Pos(C,'YNAL');
   until I>0;
