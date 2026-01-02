@@ -1,106 +1,137 @@
 object Form1: TForm1
   Left = 315
-  Height = 243
+  Height = 266
   Top = 183
-  Width = 240
+  Width = 283
   Caption = 'Lazarus Dialogs Test'
-  ClientHeight = 243
-  ClientWidth = 240
-  LCLVersion = '0.9.31'
+  ClientHeight = 266
+  ClientWidth = 283
+  LCLVersion = '4.99.0.0'
   object buttonNativeOpen: TButton
+    AnchorSideTop.Control = editOutputFileName
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 25
-    Top = 48
+    Top = 77
     Width = 226
+    BorderSpacing.Top = 6
     Caption = 'Native TOpenDialog'
-    OnClick = buttonNativeOpenClick
     TabOrder = 0
+    OnClick = buttonNativeOpenClick
   end
   object buttonLazOpen: TButton
+    AnchorSideTop.Control = buttonNativeOpen
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 25
-    Top = 80
+    Top = 108
     Width = 226
+    BorderSpacing.Top = 6
     Caption = 'TLazOpenDialog'
-    OnClick = buttonLazOpenClick
     TabOrder = 1
+    OnClick = buttonLazOpenClick
   end
   object buttonNativeSave: TButton
+    AnchorSideTop.Control = buttonLazOpen
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 25
-    Top = 112
+    Top = 139
     Width = 226
+    BorderSpacing.Top = 6
     Caption = 'Native TSaveDialog'
-    OnClick = buttonNativeSaveClick
     TabOrder = 2
+    OnClick = buttonNativeSaveClick
   end
   object buttonLazSave: TButton
+    AnchorSideTop.Control = buttonNativeSave
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 25
-    Top = 144
+    Top = 170
     Width = 226
+    BorderSpacing.Top = 6
     Caption = 'TLazSaveDialog'
-    OnClick = buttonLazSaveClick
     TabOrder = 3
+    OnClick = buttonLazSaveClick
   end
   object buttonNativeSelectDir: TButton
+    AnchorSideTop.Control = buttonLazSave
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 25
-    Top = 173
+    Top = 201
     Width = 226
+    BorderSpacing.Top = 6
     Caption = 'Native TSelectDirectoryDialog'
-    OnClick = buttonNativeSelectDirClick
     TabOrder = 4
+    OnClick = buttonNativeSelectDirClick
   end
   object buttonLazSelectDir: TButton
+    AnchorSideTop.Control = buttonNativeSelectDir
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 25
-    Top = 200
+    Top = 232
     Width = 226
+    BorderSpacing.Top = 6
     Caption = 'TLazSelectDirectoryDialog'
-    OnClick = buttonLazSelectDirClick
     TabOrder = 5
+    OnClick = buttonLazSelectDirClick
   end
   object Label1: TLabel
+    AnchorSideTop.Control = editInputInitialDir
+    AnchorSideTop.Side = asrCenter
     Left = 8
-    Height = 14
-    Top = 4
-    Width = 73
+    Height = 18
+    Top = 11
+    Width = 93
     Caption = 'Input InitialDir:'
     ParentColor = False
   end
   object editInputInitialDir: TEdit
-    Left = 96
-    Height = 21
+    AnchorSideLeft.Control = Label1
+    AnchorSideLeft.Side = asrBottom
+    Left = 104
+    Height = 32
     Top = 4
     Width = 136
+    BorderSpacing.Left = 3
     TabOrder = 6
   end
   object Label2: TLabel
+    AnchorSideTop.Control = editOutputFileName
+    AnchorSideTop.Side = asrCenter
     Left = 8
-    Height = 14
-    Top = 24
-    Width = 81
+    Height = 18
+    Top = 46
+    Width = 105
     Caption = 'Output FileName'
     ParentColor = False
   end
   object editOutputFileName: TEdit
-    Left = 96
-    Height = 21
-    Top = 24
+    AnchorSideLeft.Control = Label2
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = editInputInitialDir
+    AnchorSideTop.Side = asrBottom
+    Left = 116
+    Height = 32
+    Top = 39
     Width = 136
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 3
     TabOrder = 7
   end
   object dialogNativeOpen: TOpenDialog
-    left = 160
-    top = 184
+    Left = 200
+    Top = 80
   end
   object dialogNativeSave: TSaveDialog
-    left = 208
-    top = 184
+    Left = 200
+    Top = 136
   end
   object dialogNativeSelectDir: TSelectDirectoryDialog
-    left = 248
-    top = 184
+    Left = 200
+    Top = 192
   end
 end
