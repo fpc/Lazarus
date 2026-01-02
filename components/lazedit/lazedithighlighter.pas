@@ -116,6 +116,7 @@ type
     bfUniform,           // no open/close, e.g. quote
     bfUnknownNestLevel,  // NestLevel is not known, the field in Info will be used as variable to count
     bfNotNestable,
+    bfUnmatched,         // bracket but match is missing
     bfSingleLine,        // match must be on same line
     bfNoLanguageContext, // e.g. in comment or text, higher likelihood of being unbalanced
     bfForceStopSearch    // Set by FindBracketPos if it knows the token can not be found on further lines

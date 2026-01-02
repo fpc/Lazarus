@@ -10247,7 +10247,9 @@ begin
     exit;
 
 
-  if GetBracketInfoAt(ToIdx(PosY), PosX, fHighlighter, FndBracketInfo, SearchSide, FTheLinesView) then begin
+  if GetBracketInfoAt(ToIdx(PosY), PosX, fHighlighter, FndBracketInfo, SearchSide, FTheLinesView) and
+     not(bfUnmatched in FndBracketInfo.BracketFlags)
+  then begin
     LogicalStartBracket:=Point(FndBracketInfo.BracketLogStartX, PosY);
     LogicalStartBracket.Len := FndBracketInfo.BracketLogLength;
     if bfUniform in FndBracketInfo.BracketFlags then begin

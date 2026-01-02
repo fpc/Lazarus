@@ -224,7 +224,8 @@ type
     //teaCaseLabel,
     //teaPasDoc...,
     eaGotoLabel,
-    eaStructMemeber  // identifier after a dot / only in code blocks
+    eaStructMemeber,  // identifier after a dot / only in code blocks
+    eaUnmatchedClosingBracket
   );
   TTokenExtraAttribs = set of TTokenExtraAttrib;
 
@@ -5300,6 +5301,8 @@ begin
       EndPascalCodeFoldBlock;
   end;
 
+  if PasCodeFoldRange.RoundBracketNestLevel = 0 then
+    Include(FTokenExtraAttribs, eaUnmatchedClosingBracket);
   PasCodeFoldRange.DecRoundBracketNestLevel;
 
   if (PasCodeFoldRange.BracketNestLevel = 0) then begin
@@ -6098,7 +6101,7 @@ begin
     #13: CRProc;
     else
       FOldRange := fRange;
-      FTokenExtraAttribs := FTokenExtraAttribs - [eaPartTokenNotAtStart, eaPartTokenNotAtEnd];
+      FTokenExtraAttribs := FTokenExtraAttribs - [eaPartTokenNotAtStart, eaPartTokenNotAtEnd, eaUnmatchedClosingBracket];
       if rsAnsi in fRange then begin
         Include(FTokenExtraAttribs, eaPartTokenNotAtStart);
         AnsiProc;
@@ -6672,11 +6675,13 @@ begin
                    ((LogIdx - 1 <> fTokenPos) or (FTokenExtraKind <> tkeAnsiCommentClose));
          if not Result then
            exit;
-         if FTokenID = tkSymbol then begin
+         if (FTokenID = tkSymbol) and not(eaUnmatchedClosingBracket in FTokenExtraAttribs) then begin
            ANestLevel := PasCodeFoldRange.RoundBracketNestLevel;
            if bfOpen in AFlags then
              dec(ANestLevel);
-         end;
+         end
+         else
+           AFlags := AFlags + [bfUnknownNestLevel, bfUnmatched];
        end;
     1: begin // []
          AFlags := AFlags + [bfUnknownNestLevel];
