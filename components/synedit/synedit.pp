@@ -3978,7 +3978,12 @@ end;
 
 procedure TCustomSynEdit.UpdateShowing;
 begin
-  if (sfAfterHandleCreatedNeeded in fStateFlags) and (not AutoSizeDelayed) and HandleAllocated then begin
+  if not HandleAllocated then begin
+    inherited UpdateShowing;
+    exit;
+  end;
+
+  if (sfAfterHandleCreatedNeeded in fStateFlags) and (not AutoSizeDelayed) {and HandleAllocated} then begin
     DoIncPaintLock(nil);  // prevent calculations during inherited and ONLY during inherited
     try
       DoHandleInitialSizeFinished;
