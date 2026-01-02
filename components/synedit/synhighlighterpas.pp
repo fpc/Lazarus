@@ -6675,13 +6675,18 @@ begin
                    ((LogIdx - 1 <> fTokenPos) or (FTokenExtraKind <> tkeAnsiCommentClose));
          if not Result then
            exit;
-         if (FTokenID = tkSymbol) and not(eaUnmatchedClosingBracket in FTokenExtraAttribs) then begin
-           ANestLevel := PasCodeFoldRange.RoundBracketNestLevel;
-           if bfOpen in AFlags then
-             dec(ANestLevel);
+         if (FTokenID = tkSymbol) then begin
+           if (eaUnmatchedClosingBracket in FTokenExtraAttribs) then begin
+             AFlags := AFlags + [bfUnmatched, bfUnknownNestLevel];
+           end
+           else begin
+             ANestLevel := PasCodeFoldRange.RoundBracketNestLevel;
+             if bfOpen in AFlags then
+               dec(ANestLevel);
+           end;
          end
          else
-           AFlags := AFlags + [bfUnknownNestLevel, bfUnmatched];
+           AFlags := AFlags + [bfUnknownNestLevel];
        end;
     1: begin // []
          AFlags := AFlags + [bfUnknownNestLevel];
