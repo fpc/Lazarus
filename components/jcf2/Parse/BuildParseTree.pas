@@ -4881,6 +4881,15 @@ begin
     if fcTokenList.FirstSolidTokenType = ttAbstract then
       Recognise(ttAbstract);
 
+    // JVM and pas2js: Class external name 'object' ()
+    if fcTokenList.FirstSolidTokenType = ttExternal then
+      begin
+      Recognise(ttExternal);
+      Recognise(ttName);
+      Recognise(ttQuotedLiteralString);
+      end;
+
+
     if fcTokenList.FirstSolidTokenType = ttSemicolon then
     begin
       PopNode;
