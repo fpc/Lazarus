@@ -50,7 +50,6 @@ type
   TLazOpenDialog = class(TOpenDialog)
   protected
     FForm: TLazarusFileDialogForm;
-    class procedure WSRegisterClass; override;
     function DoExecute: boolean; override;
     procedure DoInitialize; virtual;
   public
@@ -287,11 +286,6 @@ begin
 end;
 
 { TLazOpenDialog }
-
-class procedure TLazOpenDialog.WSRegisterClass;
-begin
-  // Do nothing, because this dialog doesn't require a WS implementation
-end;
 
 function TLazOpenDialog.DoExecute: boolean;
 begin
