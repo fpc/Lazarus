@@ -20,6 +20,10 @@ type
   TLazarusFileDialogForm = class(TForm)
   private
     FKind: TLazFileDialogKind;
+    // input/output
+    FFileName: string;
+    FFilter: string;
+    FTitle: string;
     procedure SetFilter(AFilter: string);
   public
     // User interface
@@ -28,12 +32,6 @@ type
     ShellListView: TShellListView;
     SaveEdit: TEdit;
     FilterComboBox: TFilterComboBox;
-    // input/output
-    FileName: string;
-    Filter: string;
-    InitialDir: string;
-    Title: string;
-    //
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
     procedure Initialize(AKind: TLazFileDialogKind);
     procedure HandleOkClick(ASender: TObject);
@@ -48,12 +46,16 @@ type
   { TLazOpenDialog }
 
   TLazOpenDialog = class(TOpenDialog)
+  private
+    function GetInitialDir: string;
+    procedure SetInitialDir(AValue: string);
   protected
     FForm: TLazarusFileDialogForm;
     function DoExecute: boolean; override;
     procedure DoInitialize; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
+    property InitialDir: string read GetInitialDir write SetInitialDir;
   end;
 
   { TLazSaveDialog }
@@ -162,7 +164,7 @@ begin
       SaveEdit.Top := Height - ButtonPanel.Height - SaveEdit.Height;
       SaveEdit.Width := Width;
       SaveEdit.Align := alBottom;
-      SaveEdit.Text := SysUtils.ExtractFileName(FileName);
+      SaveEdit.Text := SysUtils.ExtractFileName(FFileName);
       SaveEdit.OnChange := @HandleEditChange;
     end;
 
@@ -176,7 +178,7 @@ begin
       FilterComboBox.Top := FilterComboBox.Top - SaveEdit.Height;
     FilterComboBox.Width := Width;
     FilterComboBox.Align := alBottom;
-    SetFilter(Filter);
+    SetFilter(FFilter);
     FilterComboBox.ShellListView := ShellListView;
 
     // In the save dialog it is enabled when there is a text in the TEdit
@@ -226,30 +228,24 @@ begin
     CanClose := True;
     Exit;
   end;
-
   CanClose := False;
-
   if FKind in [ldkSaveDesktop, ldkSavePDA] then
   begin
     if SaveEdit.Text = '' then Exit;
-
-    FileName := ShellTreeView.GetPathFromNode(ShellTreeView.Selected);
-    FileName := IncludeTrailingPathDelimiter(FileName);
-    FileName := FileName + SaveEdit.Text;
+    FFileName := ShellTreeView.GetPathFromNode(ShellTreeView.Selected);
+    FFileName := IncludeTrailingPathDelimiter(FFileName) + SaveEdit.Text;
     CanClose := True;
   end
   else if FKind in [ldkOpenDesktop, ldkOpenPDA] then
   begin
     if ShellListView.Selected = nil then Exit;
-
-    FileName := ShellListView.GetPathFromItem(ShellListView.Selected);
+    FFileName := ShellListView.GetPathFromItem(ShellListView.Selected);
     CanClose := True;
   end
   else
   begin
     if ShellTreeView.Selected = nil then Exit;
-
-    FileName := ShellTreeView.GetPathFromNode(ShellTreeView.Selected);
+    FFileName := ShellTreeView.GetPathFromNode(ShellTreeView.Selected);
     CanClose := True;
   end;
 end;
@@ -262,18 +258,12 @@ end;
 procedure TLazarusFileDialogForm.HandleSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
-  // Selecting an item changes the filename in the TEdit
-  // in save dialogs
   if (FKind in [ldkSaveDesktop, ldkSavePDA]) and Selected then
-  begin
-    SaveEdit.Text := Item.Caption;
-  end
-  // In the OpenDialog the state of the Ok button is dependent
-  // on the selection of an item
+    // Selecting an item changes the FileName in the TEdit in save dialogs
+    SaveEdit.Text := Item.Caption
   else
-  begin
+    // In OpenDialog the state of OK button is dependent on the selection of an item
     ButtonPanel.OkButton.Enabled := Selected;
-  end;
 end;
 
 // Used only in the TLazSelectDirectoryDialog
@@ -284,26 +274,41 @@ end;
 
 { TLazOpenDialog }
 
+constructor TLazOpenDialog.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FForm := TLazarusFileDialogForm.CreateNew(Self);
+  FForm.FFileName := FileName;
+  FForm.FFilter := Filter;
+  FForm.FTitle := Title;
+  DoInitialize;
+  FForm.Hide;
+end;
+
+function TLazOpenDialog.GetInitialDir: string;
+begin
+  Result := FForm.ShellTreeView.Root;
+end;
+
+procedure TLazOpenDialog.SetInitialDir(AValue: string);
+begin
+  //inherited InitialDir := AValue;  // Not needed
+  // Update empty Root initially.
+  if (FForm.ShellTreeView.Root = '') and (AValue = '') then
+    FForm.ShellTreeView.PopulateWithBaseFiles;
+  // This triggers an update in any other case.
+  FForm.ShellTreeView.Root := AValue;
+end;
+
 function TLazOpenDialog.DoExecute: boolean;
 begin
   Result := FForm.ShowModal <> mrCancel;
-  FileName := FForm.FileName;
+  FileName := FForm.FFileName;
 end;
 
 procedure TLazOpenDialog.DoInitialize;
 begin
   FForm.Initialize(ldkOpenDesktop);
-end;
-
-constructor TLazOpenDialog.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  FForm := TLazarusFileDialogForm.CreateNew(Self);
-  FForm.FileName := FileName;
-  FForm.Filter := Filter;
-  FForm.Title := Title;
-  DoInitialize;
-  FForm.Hide;
 end;
 
 { TLazSaveDialog }
