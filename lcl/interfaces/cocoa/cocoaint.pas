@@ -512,7 +512,12 @@ begin
     end;
   end;
 
-  if (not Assigned(w)) or (not Assigned(theEvent.window)) or (w=theEvent.window) then
+  if not Assigned(w) then begin
+    Application.DoBeforeMouseMessage( nil );
+    Exit;
+  end;
+
+  if (not Assigned(theEvent.window)) or (w=theEvent.window) then
     Exit;
 
   p.x := p.x - w.frame.origin.x;

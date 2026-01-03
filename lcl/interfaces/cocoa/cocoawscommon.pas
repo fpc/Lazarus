@@ -1126,6 +1126,7 @@ begin
       if (event.type_ = NSMouseMoved) and (not Types.PtInRect(rect, bndPt)) then
       begin
         // do not send negative coordinates (unless dragging mouse)
+        Application.DoBeforeMouseMessage( nil );
         Exit;
       end;
 
