@@ -104,8 +104,10 @@ type
   TCocoaColorObject = class(TCocoaGDIObject)
   strict private
     FR, FG, FB: Byte;
-    FA: Boolean; // alpha: True - solid, False - clear
     function GetColorRef: TColorRef;
+  protected
+    FLCLColor: TColor;
+    FA: Boolean; // alpha: True - solid, False - clear
   public
     constructor Create(const AColor: TColor; ASolid, AGlobal: Boolean); reintroduce;
     procedure SetColor(const AColor: TColor; ASolid: Boolean);
@@ -834,6 +836,7 @@ end;
 
 procedure TCocoaColorObject.SetColor(const AColor: TColor; ASolid: Boolean);
 begin
+  FLCLColor:= AColor;
   RedGreenBlue(ColorToRGB(AColor), FR, FG, FB);
   FA := ASolid;
 end;
@@ -3024,6 +3027,7 @@ begin
   else
     AROP2 := R2_COPYPEN;
 
+  self.SetColor( FLCLColor, FA );
   GetRGBA(AROP2, AR, AG, AB, AA);
 
   case AROP2 of
@@ -3080,12 +3084,12 @@ begin
     PS_SOLID..PS_DASHDOTDOT,
     PS_INSIDEFRAME:
       begin
-        inherited Create(ColorToRGB(TColor(ALogPen.lopnColor)), True, AGlobal);
+        inherited Create(TColor(ALogPen.lopnColor), True, AGlobal);
         FWidth := Max(1, ALogPen.lopnWidth.x);
       end;
     else
     begin
-      inherited Create(ColorToRGB(TColor(ALogPen.lopnColor)), False, AGlobal);
+      inherited Create(TColor(ALogPen.lopnColor), False, AGlobal);
       FWidth := 1;
     end;
   end;
@@ -3102,11 +3106,11 @@ begin
     PS_SOLID..PS_DASHDOTDOT,
     PS_USERSTYLE:
       begin
-        inherited Create(ColorToRGB(TColor(lplb.lbColor)), True, False);
+        inherited Create(TColor(lplb.lbColor), True, False);
       end;
     else
     begin
-      inherited Create(ColorToRGB(TColor(lplb.lbColor)), False, False);
+      inherited Create(TColor(lplb.lbColor), False, False);
     end;
   end;
 
@@ -3143,7 +3147,7 @@ end;
 
 constructor TCocoaPen.Create(const ABrush: TCocoaBrush; const AGlobal: Boolean);
 begin
-  inherited Create(ABrush.ColorRef, True, AGlobal);
+  inherited Create(ABrush.FLCLColor, True, AGlobal);
   FStyle := PS_SOLID;
   FWidth := 1;
   FIsExtPen := False;
