@@ -119,8 +119,6 @@ begin
 end;
 
 function TPreProcessorExpressionTokeniser.TryConsumeFixedSymbol: boolean;
-const
-  IdentChars = ['A'..'Z','a'..'z','0'..'9','_'];
 var
   leLoop:  TPreProcessorSymbol;
   lbFound: boolean;
@@ -137,7 +135,7 @@ begin
       // So, check that the next character is not part of a possible identifier.
       // e.g. StartsWith("And") matches "Android" but should not match eAnd...
       C:=fsExpr[fiCurrentIndex+Length(SYMBOL_DATA[leLoop])];
-      if (C in IdentChars) then
+      if CharIsWordCharOrDigit(C) then
         lbFound:=False;
       end;
 

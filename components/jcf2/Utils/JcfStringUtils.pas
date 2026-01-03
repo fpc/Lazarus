@@ -97,6 +97,7 @@ function CharInSet(const C: Char; const testSet: TSysCharSet): Boolean;
 function CharIsAlpha(const C: Char): Boolean;
 function CharIsAlphaNum(const C: Char): Boolean;
 function CharIsWordChar(const c: Char): Boolean;
+function CharIsWordCharOrDigit(const c: Char): Boolean;
 function CharIsControl(const C: Char): Boolean;
 function CharIsDigit(const C: Char): Boolean;
 function CharIsReturn(const C: Char): Boolean;
@@ -190,6 +191,11 @@ end;
 function CharIsWordChar(const c: Char): Boolean;
 begin
   Result := CharIsAlpha(c) or (c = '_') or (Ord(c) > 127);
+end;
+
+function CharIsWordCharOrDigit(const c: Char): Boolean;
+begin
+  Result := CharInSet(c,['A'..'Z','a'..'z','0'..'9','_']) or (Ord(c) > 127);
 end;
 
 function CharIsControl(const C: Char): Boolean;
