@@ -24,7 +24,6 @@ type
     btnReload: TButton;
     cbHidden: TCheckBox;
     cbFilePanel: TFilterComboBox;
-    cbTreeFilter: TFilterComboBox;
     ShellListView: TShellListView;
     ilTreeview: TImageList;
     Panel1: TPanel;
@@ -34,12 +33,12 @@ type
     procedure btnConfigureClick(Sender: TObject);
     procedure btnReloadClick(Sender: TObject);
     procedure cbHiddenChange(Sender: TObject);
-    procedure cbTreeFilterChange(Sender: TObject);
     procedure ShellListViewDblClick(Sender: TObject);
     procedure cbFilePanelChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure TVGetImageIndex(Sender: TObject; Node: TTreeNode);
+    procedure TVGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure TVSelectionChanged(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure cbFilePanelSelect(Sender: TObject);
@@ -52,9 +51,7 @@ type
     FShowHidden: Boolean;
     FSelectedMask : TMaskList;
     function GetAbsolutePath(Node: TTreeNode): string;
-    function GetTreeFileMask: String;
     procedure SetRootDir(const Value: string);
-    procedure SetTreeFileMask(AValue: String);
   public
     procedure ShowFiles;
     { Directory the treeview starts from }
@@ -67,8 +64,6 @@ type
     property OnConfigure: TNotifyEvent read FOnConfigure write FOnConfigure;
     { Called when a new directory is selected }
     property OnSelectDir: TNotifyEvent read FOnSelectDir write FOnSelectDir;
-    { selected tree mask }
-    property TreeFileMask : String Read GetTreeFileMask Write SetTreeFileMask;
   end;
 
 var
@@ -91,7 +86,13 @@ procedure TFileBrowserForm.FormCreate(Sender: TObject);
 begin
   FShowHidden := False;
   cbFilePanel.Filter := cFilter;
-  cbTreeFilter.Filter := cFilter;
+ {$IFDEF MSWINDOWS}
+  TV.UseBuiltinIcons := true;
+ {$ELSE}
+  TV.Images := ilTreeView;
+  TV.OnGetImageIndex := @TVGetImageIndex;
+  TV.OnGetSelectedIndex := @TVGetSelectedIndex;
+ {$ENDIF}
 end;
 
 procedure TFileBrowserForm.FormShow(Sender: TObject);
@@ -137,11 +138,6 @@ begin
   end;
 end;
 
-procedure TFileBrowserForm.cbTreeFilterChange(Sender: TObject);
-begin
-  TreeFileMask:=cbTreeFilter.Mask;
-end;
-
 procedure TFileBrowserForm.cbFilePanelChange(Sender: TObject);
 begin
   ShellListView.Mask := cbFilePanel.Text;
@@ -160,29 +156,11 @@ begin
   end;
 end;
 
-function TFileBrowserForm.GetTreeFileMask: String;
-begin
-  if Assigned(FSelectedMask) then
-    Result:=FSelectedMask.Mask
-  else
-    Result:='';
-end;
-
 procedure TFileBrowserForm.SetRootDir(const Value: string);
 begin
   if FRootDir=Value then exit;
   FRootDir:=Value;
   ShowFiles;
-end;
-
-procedure TFileBrowserForm.SetTreeFileMask(AValue: String);
-begin
-  if aValue=GetTreeFileMask then exit;
-  FreeAndNil(FSelectedMask);
-  if AValue<>'' then
-    FselectedMask:=TMaskList.Create(aValue);
-  if TV.Items.Count>0 then
-    ShowFiles;
 end;
 
 procedure TFileBrowserForm.ShowFiles;
@@ -211,6 +189,10 @@ end;
 procedure TFileBrowserForm.TVGetImageIndex(Sender: TObject; Node: TTreeNode);
 begin
   Node.ImageIndex:=0;
+end;
+
+procedure TFileBrowserForm.TVGetSelectedIndex(Sender: TObject; Node: TTreeNode);
+begin
   Node.SelectedIndex:=0;
 end;
 

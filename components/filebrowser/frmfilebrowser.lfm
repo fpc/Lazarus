@@ -58,20 +58,20 @@ object FileBrowserForm: TFileBrowserForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 259
+    Top = 227
     Width = 377
     Align = alTop
     ResizeAnchor = akTop
   end
   object pnlFiles: TPanel
     Left = 0
-    Height = 203
-    Top = 264
+    Height = 235
+    Top = 232
     Width = 377
     Align = alClient
     BevelOuter = bvNone
     Caption = 'pnlFiles'
-    ClientHeight = 203
+    ClientHeight = 235
     ClientWidth = 377
     TabOrder = 3
     object cbFilePanel: TFilterComboBox
@@ -86,7 +86,7 @@ object FileBrowserForm: TFileBrowserForm
     end
     object ShellListView: TShellListView
       Left = 0
-      Height = 171
+      Height = 203
       Top = 32
       Width = 377
       Align = alClient
@@ -97,34 +97,22 @@ object FileBrowserForm: TFileBrowserForm
       OnKeyPress = ShellListViewKeyPress
     end
   end
-  object cbTreeFilter: TFilterComboBox
-    Left = 0
-    Height = 32
-    Top = 42
-    Width = 377
-    Align = alTop
-    TabOrder = 4
-    OnChange = cbTreeFilterChange
-    OnSelect = cbTreeFilterChange
-  end
   object TV: TShellTreeView
     Left = 0
     Height = 185
-    Top = 74
+    Top = 42
     Width = 377
     Align = alTop
-    ExpandSignType = tvestArrowFill
     HideSelection = False
     HotTrack = True
-    Images = ilTreeview
     ScrollBars = ssAutoBoth
     TabOrder = 1
     Options = [tvoAutoItemHeight, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     ShellListView = ShellListView
-    OnGetImageIndex = TVGetImageIndex
     OnSelectionChanged = TVSelectionChanged
   end
   object ilTreeview: TImageList
+    Scaled = True
     Left = 88
     Top = 107
     Bitmap = {
