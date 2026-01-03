@@ -50,12 +50,8 @@ var
 begin
   C := LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   Assert(C = nil, 'IDEFileBrowserController already created.');
-  //if (C = nil) then begin
-    C := TFileBrowserController.Create(LazarusIDE.OwningComponent);
-    C.Name:='IDEFileBrowserController';
-    //if C.GetResolvedRootDir<>'' then
-    //  C.IndexRootDir;
-  //end;
+  C := TFileBrowserController.Create(LazarusIDE.OwningComponent);
+  C.Name:='IDEFileBrowserController';
   C.ConfigFrame:=TFileBrowserOptionsFrame;
 end;
 
@@ -84,8 +80,8 @@ begin
     '200','100','400','400'
     );
   // add IDE options frame
-  FileBrowserOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TFileBrowserOptionsFrame,
-                                              FileBrowserOptionsFrameID)^.Index;
+  FileBrowserOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,
+                     TFileBrowserOptionsFrame, FileBrowserOptionsFrameID)^.Index;
 end;
 
 end.

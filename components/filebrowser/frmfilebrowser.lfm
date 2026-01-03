@@ -1,9 +1,9 @@
 object FileBrowserForm: TFileBrowserForm
-  Left = 537
+  Left = 523
   Height = 467
-  Top = 311
+  Top = 120
   Width = 377
-  ActiveControl = Panel1
+  ActiveControl = TV
   Caption = 'File Browser'
   ClientHeight = 467
   ClientWidth = 377
@@ -32,7 +32,7 @@ object FileBrowserForm: TFileBrowserForm
       Anchors = [akTop, akLeft, akBottom]
       AutoSize = False
       Caption = 'Show hidden files'
-      TabOrder = 0
+      TabOrder = 2
       OnChange = cbHiddenChange
     end
     object btnConfigure: TButton
@@ -41,7 +41,7 @@ object FileBrowserForm: TFileBrowserForm
       Top = 7
       Width = 90
       Caption = 'Configure'
-      TabOrder = 1
+      TabOrder = 0
       OnClick = btnConfigureClick
     end
     object btnReload: TButton
@@ -50,7 +50,7 @@ object FileBrowserForm: TFileBrowserForm
       Top = 7
       Width = 90
       Caption = 'Reload'
-      TabOrder = 2
+      TabOrder = 1
       OnClick = btnReloadClick
     end
   end
@@ -73,7 +73,7 @@ object FileBrowserForm: TFileBrowserForm
     Caption = 'pnlFiles'
     ClientHeight = 203
     ClientWidth = 377
-    TabOrder = 2
+    TabOrder = 3
     object cbFilePanel: TFilterComboBox
       Left = 0
       Height = 32
@@ -103,7 +103,7 @@ object FileBrowserForm: TFileBrowserForm
     Top = 42
     Width = 377
     Align = alTop
-    TabOrder = 3
+    TabOrder = 4
     OnChange = cbTreeFilterChange
     OnSelect = cbTreeFilterChange
   end
@@ -113,13 +113,15 @@ object FileBrowserForm: TFileBrowserForm
     Top = 74
     Width = 377
     Align = alTop
+    ExpandSignType = tvestArrowFill
     HideSelection = False
+    HotTrack = True
     Images = ilTreeview
     ScrollBars = ssAutoBoth
-    TabOrder = 4
-    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    TabOrder = 1
+    Options = [tvoAutoItemHeight, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     ShellListView = ShellListView
-    OnExpanded = TVExpanded
+    OnGetImageIndex = TVGetImageIndex
     OnSelectionChanged = TVSelectionChanged
   end
   object ilTreeview: TImageList

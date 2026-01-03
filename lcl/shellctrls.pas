@@ -1986,9 +1986,9 @@ begin
   begin
     //Delphi raises an unspecified exception in this case, but don't crash the IDE at designtime
     if not (csDesigning in ComponentState)
-       and (Value <> '')
-       and not DirectoryExistsUtf8(ExpandFilenameUtf8(Value)) then
-       Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidRoot,[Value]);
+    and (Value <> '')
+    and not DirectoryExistsUtf8(ExpandFilenameUtf8(Value)) then
+      Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidRoot,[Value]);
     FRoot := Value;
     BeginUpdate;
     try

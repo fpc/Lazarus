@@ -36,7 +36,6 @@ type
     procedure ReadSettings({%H-}AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
-
   end;
 
 implementation
