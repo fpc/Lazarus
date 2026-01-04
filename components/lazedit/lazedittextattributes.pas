@@ -332,6 +332,8 @@ type
     FAttributes: TAttributeList;
 
   protected
+    procedure SetAttributesOnChange(AChangeEvent: TNotifyEvent; ASaveDefaultValues: Boolean = True);
+    procedure SaveAttributeDefaultValues;
     procedure AddAttribute(AnAttribute: TLazEditTextAttribute); virtual;
     procedure RemoveAttribute(AnAttribute: TLazEditTextAttribute); virtual;
     procedure FreeHighlighterAttributes;
@@ -1095,6 +1097,25 @@ end;
 function TLazEditAttributeOwner.GetAttribute(AnIndex: integer): TLazEditTextAttribute;
 begin
   Result := FAttributes[AnIndex];
+end;
+
+procedure TLazEditAttributeOwner.SetAttributesOnChange(AChangeEvent: TNotifyEvent;
+  ASaveDefaultValues: Boolean);
+var
+  Attri: TLazEditTextAttribute;
+begin
+  for Attri in FAttributes do
+    Attri.AddChangeHandler(AChangeEvent);
+  if ASaveDefaultValues then
+    SaveAttributeDefaultValues;
+end;
+
+procedure TLazEditAttributeOwner.SaveAttributeDefaultValues;
+var
+  Attri: TLazEditTextAttribute;
+begin
+  for Attri in FAttributes do
+    Attri.InternalSaveDefaultValues;
 end;
 
 procedure TLazEditAttributeOwner.AddAttribute(AnAttribute: TLazEditTextAttribute);

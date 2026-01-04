@@ -164,7 +164,6 @@ type
     procedure SetWordBreakChars(AChars: TSynIdentChars); virtual;
     function GetSampleSource: string; virtual;
     function IsFilterStored: boolean; virtual;
-    procedure SetAttributesOnChange(AEvent: TNotifyEvent);
     procedure SetDefaultFilter(Value: string); virtual;
     procedure SetSampleSource(Value: string); virtual;
     procedure AfterAttachedToRangeList(ARangeList: TLazHighlighterLineRangeList); virtual; deprecated 'use DoAttachedToLines // to be removed in 5.99';
@@ -907,20 +906,6 @@ begin
   if LineIndex <> LineNumber then begin
     //debugln(['TSynCustomHighlighter.SetLine - outdated call / deprecated']);
     SetAlternativeLineTextForGetTokens(NewValue, LineNumber);
-  end;
-end;
-
-procedure TSynCustomHighlighter.SetAttributesOnChange(AEvent: TNotifyEvent);
-(* Called once from TSynCustomHighlighter.Create (and only from there),
-   after all Attributes where created  *)
-var
-  i: integer;
-  Attri: TLazEditTextAttribute;
-begin
-  for i := AttrCount - 1 downto 0 do begin
-    Attri := Attribute[i];
-    Attri.AddChangeHandler(AEvent);
-    Attri.InternalSaveDefaultValues;
   end;
 end;
 
