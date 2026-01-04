@@ -84,7 +84,7 @@ object FileBrowserForm: TFileBrowserForm
       OnChange = cbFilePanelChange
       OnSelect = cbFilePanelSelect
     end
-    object ShellListView: TShellListView
+    object LV: TShellListView
       Left = 0
       Height = 203
       Top = 32
@@ -93,8 +93,9 @@ object FileBrowserForm: TFileBrowserForm
       Color = clDefault
       TabOrder = 1
       ShellTreeView = TV
-      OnDblClick = ShellListViewDblClick
-      OnKeyPress = ShellListViewKeyPress
+      OnDblClick = LVDblClick
+      OnKeyPress = LVKeyPress
+      OnSelectItem = LVSelectItem
     end
   end
   object TV: TShellTreeView
@@ -108,7 +109,7 @@ object FileBrowserForm: TFileBrowserForm
     ScrollBars = ssAutoBoth
     TabOrder = 1
     Options = [tvoAutoItemHeight, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-    ShellListView = ShellListView
+    ShellListView = LV
     OnSelectionChanged = TVSelectionChanged
   end
   object ilTreeview: TImageList

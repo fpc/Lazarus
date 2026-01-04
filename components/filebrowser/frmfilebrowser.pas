@@ -24,7 +24,7 @@ type
     btnReload: TButton;
     cbHidden: TCheckBox;
     cbFilePanel: TFilterComboBox;
-    ShellListView: TShellListView;
+    LV: TShellListView;
     ilTreeview: TImageList;
     Panel1: TPanel;
     pnlFiles: TPanel;
@@ -33,29 +33,38 @@ type
     procedure btnConfigureClick(Sender: TObject);
     procedure btnReloadClick(Sender: TObject);
     procedure cbHiddenChange(Sender: TObject);
-    procedure ShellListViewDblClick(Sender: TObject);
+    procedure LVDblClick(Sender: TObject);
     procedure cbFilePanelChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure LVSelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
     procedure TVGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure TVGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure TVSelectionChanged(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure cbFilePanelSelect(Sender: TObject);
-    procedure ShellListViewKeyPress(Sender: TObject; var Key: char);
+    procedure LVKeyPress(Sender: TObject; var Key: char);
   private
     FOnConfigure: TNotifyEvent;
     FOnOpenFile: TOpenFileEvent;
     FOnSelectDir: TNotifyEvent;
     FRootDir: string;
+    FCurrentDir: string;
     FShowHidden: Boolean;
-    FSelectedMask : TMaskList;
     function GetAbsolutePath(Node: TTreeNode): string;
+    function GetCurrentFile: string;
+    procedure SetCurrentFile(AValue: string);
     procedure SetRootDir(const Value: string);
+    procedure SetCurrentDir(const AValue: string);
   public
     procedure ShowFiles;
     { Directory the treeview starts from }
-    property RootDirectory: string read FRootDir write SetRootDir;
+    property RootDir: string read FRootDir write SetRootDir;
+    { The selected directory }
+    property CurrentDir: string read FCurrentDir write SetCurrentDir;
+    { The selected file }
+    property CurrentFile: string read GetCurrentFile write SetCurrentFile;
     { Must we show hidden directories }
     property ShowHidden: Boolean read FShowHidden write FShowHidden default False;
     { Called when user double-clicks file name }
@@ -84,7 +93,9 @@ const
 
 procedure TFileBrowserForm.FormCreate(Sender: TObject);
 begin
-  FShowHidden := False;
+  btnConfigure.Caption := rsConfigure;
+  btnReload.Caption := rsReload;
+  cbHidden.Caption := rsShowHidden;
   cbFilePanel.Filter := cFilter;
  {$IFDEF MSWINDOWS}
   TV.UseBuiltinIcons := true;
@@ -109,15 +120,13 @@ end;
 
 procedure TFileBrowserForm.cbFilePanelSelect(Sender: TObject);
 begin
-  ShellListView.Mask := cbFilePanel.Mask;
+  LV.Mask := cbFilePanel.Mask;
 end;
 
 procedure TFileBrowserForm.btnConfigureClick(Sender: TObject);
 begin
-  if Assigned(FOnConfigure) then begin
+  if Assigned(FOnConfigure) then
     FOnConfigure(Self);
-    //RootDirectory:=;
-  end;
 end;
 
 procedure TFileBrowserForm.btnReloadClick(Sender: TObject);
@@ -130,17 +139,17 @@ begin
   ShowHidden := cbHidden.Checked;
   if ShowHidden then begin
     TV.ObjectTypes := TV.ObjectTypes + [otHidden];
-    ShellListView.ObjectTypes := ShellListView.ObjectTypes + [otHidden];
+    LV.ObjectTypes := LV.ObjectTypes + [otHidden];
   end
   else begin
     TV.ObjectTypes := TV.ObjectTypes - [otHidden];
-    ShellListView.ObjectTypes := ShellListView.ObjectTypes - [otHidden];
+    LV.ObjectTypes := LV.ObjectTypes - [otHidden];
   end;
 end;
 
 procedure TFileBrowserForm.cbFilePanelChange(Sender: TObject);
 begin
-  ShellListView.Mask := cbFilePanel.Text;
+  LV.Mask := cbFilePanel.Text;
 end;
 
 function TFileBrowserForm.GetAbsolutePath(Node: TTreeNode): string;
@@ -156,10 +165,43 @@ begin
   end;
 end;
 
+function TFileBrowserForm.GetCurrentFile: string;
+// Get the selected file in LV
+var
+  Item: TListItem;
+  Capt: String;
+begin
+  Item := LV.Selected;
+  Capt := Item.Caption;
+  Result := TV.Path + Item.Caption;
+  debugln(['TFileBrowserForm.GetCurrentFile Result=', Result, ', Capt=', Capt]);
+end;
+
+procedure TFileBrowserForm.SetCurrentFile(AValue: string);
+var
+  Dir, Fil: String;
+begin
+  Dir := ExtractFilePath(aValue);
+  Fil := ExtractFileName(aValue);
+  CurrentDir := Dir;
+  LV.FindAndSelectItem(Fil);
+end;
+
+procedure TFileBrowserForm.SetCurrentDir(const AValue: string);
+begin
+  if FCurrentDir = AValue then Exit;
+  FCurrentDir := AValue;
+  try
+    TV.Path:=AValue;
+  except
+    ;  // Ignore exception when the path does not exist.
+  end;
+end;
+
 procedure TFileBrowserForm.SetRootDir(const Value: string);
 begin
-  if FRootDir=Value then exit;
-  FRootDir:=Value;
+  if FRootDir = Value then exit;
+  FRootDir := Value;
   ShowFiles;
 end;
 
@@ -167,33 +209,41 @@ procedure TFileBrowserForm.ShowFiles;
 Var
   RootNode: TTreeNode;
 begin
-  TV.Root:=FRootDir;
+  TV.Root := FRootDir;
   { Set the original root node as the selected node. }
   RootNode := TV.Items.GetFirstNode;
   TV.Selected := RootNode;
   RootNode.Expand(False);
 end;
 
-procedure TFileBrowserForm.ShellListViewDblClick(Sender: TObject);
+procedure TFileBrowserForm.LVSelectItem(Sender: TObject;
+  Item: TListItem; Selected: Boolean);
 begin
-  if Assigned(FOnOpenFile) then
-    FOnOpenFile(Self, TV.Path + ShellListView.Selected.Caption);
+  debugln(['TFileBrowserForm.ShellListViewSelectItem Item=', Item.Caption, ', Selected=', Selected]);
+  // ToDo: Pass to TFileBrowserController somehow.
+  //CurrentFile := TV.Path + Item.Caption;
 end;
 
-procedure TFileBrowserForm.ShellListViewKeyPress(Sender: TObject; var Key: char);
+procedure TFileBrowserForm.LVDblClick(Sender: TObject);
+begin
+  if Assigned(FOnOpenFile) then
+    FOnOpenFile(Self, TV.Path + LV.Selected.Caption);
+end;
+
+procedure TFileBrowserForm.LVKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = Char(VK_RETURN) then
-   ShellListViewDblClick(Sender);
+   LVDblClick(Sender);
 end;
 
 procedure TFileBrowserForm.TVGetImageIndex(Sender: TObject; Node: TTreeNode);
 begin
-  Node.ImageIndex:=0;
+  Node.ImageIndex := 0;
 end;
 
 procedure TFileBrowserForm.TVGetSelectedIndex(Sender: TObject; Node: TTreeNode);
 begin
-  Node.SelectedIndex:=0;
+  Node.SelectedIndex := 0;
 end;
 
 procedure TFileBrowserForm.TVSelectionChanged(Sender: TObject);

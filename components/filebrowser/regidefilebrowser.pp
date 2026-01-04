@@ -38,8 +38,8 @@ begin
   IDEWindowCreators.CreateForm(AForm,TFileBrowserForm,true,C);
   AForm.Name:=aFormName;
   FileBrowserForm:=AForm as TFileBrowserForm;
-  C.ConfigWindow(FileBrowserForm);
-  FileBrowserForm.ShowFiles;
+  C.ConfigureWindow(FileBrowserForm);
+  //FileBrowserForm.ShowFiles;
   if not DoDisableAutoSizing then
     AForm.EnableAutoSizing;
 end;
@@ -74,11 +74,8 @@ begin
   CreateController;
 
   // register dockable Window
-  FileBrowserCreator:=IDEWindowCreators.Add(
-    'FileBrowser',
-    @CreateFileBrowser,nil,
-    '200','100','400','400'
-    );
+  FileBrowserCreator:=IDEWindowCreators.Add('FileBrowser',@CreateFileBrowser,nil,
+                                            '200','100','400','400');
   // add IDE options frame
   FileBrowserOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,
                      TFileBrowserOptionsFrame, FileBrowserOptionsFrameID)^.Index;

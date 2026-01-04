@@ -7,6 +7,7 @@ interface
 uses
   SysUtils,
   StdCtrls, Dialogs, EditBtn,
+  LazLoggerBase,
   IDEOptionsIntf,
   lazIDEIntf, IDEOptEditorIntf,
   FileBrowserTypes, CtrlFileBrowser;
@@ -16,19 +17,15 @@ type
   { TFileBrowserOptionsFrame }
 
   TFileBrowserOptionsFrame = class(TAbstractIDEOptionsEditor)
-    CBSyncCurrentEditor: TCheckBox;
-    DEStartDir: TDirectoryEdit;
-    DERootDir: TDirectoryEdit;
-    GBStartDir: TGroupBox;
-    GBStartDir1: TGroupBox;
+    cbSyncCurrentEditor: TCheckBox;
+    cbRememberSelectedDir: TCheckBox;
+    deRootDir: TDirectoryEdit;
+    gbStartDir: TGroupBox;
     GBFileTree: TGroupBox;
-    RBLastDir: TRadioButton;
-    RBRootFileSystemRoot: TRadioButton;
-    RBRootUserDir: TRadioButton;
-    RBThisDir: TRadioButton;
-    RBRootThisDir: TRadioButton;
-    RBUseProjectDir: TRadioButton;
-    RBRootUseProjectDir: TRadioButton;
+    rbRootFileSystemRoot: TRadioButton;
+    rbRootUserDir: TRadioButton;
+    rbRootThisDir: TRadioButton;
+    rbRootUseProjectDir: TRadioButton;
   private
   public
     function GetTitle: String; override;
@@ -59,72 +56,49 @@ var
   C : TFileBrowserController;
   RB: TRadioButton;
 begin
+  debugln(['TFileBrowserOptionsFrame.ReadSettings ']);
   C:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if not Assigned(C) then
     exit;
-  case C.StartDir of
-    sdProjectDir: RB := RBUseProjectDir;
-    sdLastOpened: RB := RBLastDir;
-    sdCustomDir: RB  := RBThisDir;
-  end;
-  RB.Checked := True;
-  if C.StartDir=sdCustomDir then
-    DEStartDir.Directory:=C.CustomStartDir;
   case C.RootDir of
-    rdProjectDir: RB := RBUseProjectDir;
-    rdRootDir: RB := RBRootFileSystemRoot;
-    rdUserDir : RB  := RBRootUserDir;
-    rdCustomDir: RB  := RBRootThisDir;
+    rdProjectDir   : RB := rbRootUseProjectDir;
+    rdSystemRootDir: RB := rbRootFileSystemRoot;
+    rdUserDir      : RB := rbRootUserDir;
+    rdCustomDir    : RB := rbRootThisDir;
   end;
   RB.Checked := True;
-  if C.RootDir=rdCustomDir then
-    DERootDir.Directory:=C.CustomRootDir;
-  CBSyncCurrentEditor.Checked:=C.SyncCurrentEditor;
+  deRootDir.Directory := C.CustomRootDir;
+  cbRememberSelectedDir.Checked := C.RememberSelectedDir;
+  cbSyncCurrentEditor.Checked := C.SyncCurrentEditor;
 end;
 
 procedure TFileBrowserOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  C : TFileBrowserController;
-  SD : TStartDir;
-  RD : TRootDir;
-  lRootDir: String;
+  C: TFileBrowserController;
+  RD: TRootDir;
 begin
+  debugln(['TFileBrowserOptionsFrame.WriteSettings ']);
   C:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if not Assigned(C) then
     exit;
-  lRootDir:=C.GetResolvedRootDir;
-  if RBUseProjectDir.Checked then
-    SD:=sdProjectDir
-  else if RBLastDir.Checked then
-    SD:=sdLastOpened
+  if rbRootUseProjectDir.Checked then
+    RD := rdProjectDir
+  else if rbRootFileSystemRoot.Checked then
+    RD := rdSystemRootDir
+  else if rbRootUserDir.Checked then
+    RD := rdUserDir
   else
-    SD:=sdCustomDir;
-  C.StartDir:=SD;
-  if SD=sdCustomDir then
-    C.CustomStartDir:=DEStartDir.Directory
-  else
-    C.CustomStartDir:='';
-
-  if RBRootUseProjectDir.Checked then
-    RD:=rdProjectDir
-  else if RBRootFileSystemRoot.Checked then
-    RD:=rdRootDir
-  else if RBRootUserDir.Checked then
-    RD:=rdUserDir
-  else
-    RD:=rdCustomDir;
-  C.RootDir:=rD;
-  if rD=rdCustomDir then
-    C.CustomRootDir:=DERootDir.Directory
-  else
-    C.CustomRootDir:='';
-  C.SyncCurrentEditor:=CBSyncCurrentEditor.Checked;
+    RD := rdCustomDir;
+  C.CustomRootDir := deRootDir.Directory;
+  C.RootDir := RD;
+  C.RememberSelectedDir := cbRememberSelectedDir.Checked;
+  C.SyncCurrentEditor := cbSyncCurrentEditor.Checked;
   C.WriteConfig;
 end;
 
 class function TFileBrowserOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=IDEEditorGroups.GetByIndex(GroupEnvironment)^.GroupClass;
+  Result := IDEEditorGroups.GetByIndex(GroupEnvironment)^.GroupClass;
 end;
 
 end.

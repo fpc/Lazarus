@@ -8,25 +8,23 @@ uses
   SysUtils;
 
 type
-  TStartDir = (sdProjectDir, sdLastOpened, sdCustomDir);
-  TRootDir = (rdProjectDir, rdUserDir, rdRootDir, rdCustomDir);
+  TRootDir = (rdProjectDir, rdSystemRootDir, rdUserDir, rdCustomDir);
 
 Const
-  DefaultStartDir = sdProjectDir;
-  DefaultRootDir = sdProjectDir;
-  DefaultSyncCurrentEditor = False;
+  DefaultRootDir = rdProjectDir;
   DefaultSplitterPos = 150;
-
   SConfigFile         = 'idebrowserwin.xml';
-  KeyStartDir         = 'StartDir';
   KeyRootDir          = 'RootDir';
-  KeyCustomStartDir   = 'CustomDir';
   KeyCustomRootDir    = 'CustomRootDir';
   KeySplitterPos      = 'SplitterPos';
+  KeyRememberSelDir   = 'RememberSelectedDir';
   KeySyncCurrentEditor= 'SyncCurrentEditor';
 
 resourcestring
   SFileBrowserIDEMenuCaption = 'File Browser';
+  rsConfigure = 'Configure';
+  rsReload = 'Reload';
+  rsShowHidden = 'Show hidden files';
 
 implementation
 
