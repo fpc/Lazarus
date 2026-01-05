@@ -1729,14 +1729,13 @@ begin
       //don't expand Avalue yet, we may need it in error message
       if not ExistsAndIsValid(ExpandFileNameUtf8(AValue)) then
         Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidPath,[ExpandFileNameUtf8(FQRootPath + AValue)]);
-      //Directory (or file) ExistsAndIsValid
-      //Make it fully qualified
+      //Directory (or file) ExistsAndIsValid. Make it fully qualified
       AValue := ExpandFileNameUtf8(AValue);
     end;
   end
   else
   begin
-    //AValue is an absoulte path to begin with , but still needs  expanding (because TryCreateRelativePath requires this)
+    //AValue is an absolute path to begin with, but still needs expanding because of TryCreateRelativePath
     AValue := ExpandFilenameUtf8(AValue);
     //if not DirectoryExistsUtf8(AValue) then
     if not ExistsAndIsValid(AValue) then

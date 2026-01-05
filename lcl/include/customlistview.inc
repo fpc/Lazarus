@@ -1501,10 +1501,9 @@ function TCustomListView.GetSelCount: Integer;
 var
   i: integer;
 begin
-  if HandleAllocated
-  then Result := TWSCustomListViewClass(WidgetSetClass).GetSelCount(Self)
-  else
-  begin
+  if HandleAllocated then
+    Result := TWSCustomListViewClass(WidgetSetClass).GetSelCount(Self)
+  else begin
     Result := 0;
     for i := 0 to Items.Count - 1 do
       if Items[i].Selected then
