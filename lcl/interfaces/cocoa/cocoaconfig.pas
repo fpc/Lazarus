@@ -35,6 +35,7 @@ type
     identifier: String;
     priority: NSInteger;
     navigational: Boolean;
+    appValidates: Boolean;
   end;
 
   { TCocoaConfigToolBarItemWithUI }
