@@ -347,6 +347,7 @@ type
     destructor Destroy; override;
     { Methods specific to Lazarus }
     function FindColumn(AColumnID: TSLVColumnID; ACustomID: Integer = 0): TShellListColumn;
+    function FindAndSelectItem(const ACaption: string): boolean;
     function GetPathFromItem(ANode: TListItem): string;
     procedure UpdateColumn(AColumn: TShellListColumn);
     procedure UpdateView;
@@ -2027,6 +2028,29 @@ begin
       end;
     end;
   Result := nil;
+end;
+
+function TCustomShellListView.FindAndSelectItem(const ACaption: string): boolean;
+// Return True if a file was found and selected.
+var
+  i: Integer;
+  Item, FoundItem: TListItem;
+begin
+  FoundItem := nil;
+  for i := 0 to Items.Count-1 do begin
+    Item := Items[i];
+    if Item.Caption = ACaption then begin
+      FoundItem := Item;    // Found
+      break;
+    end;
+  end;
+  Result := Assigned(FoundItem);
+  if Result then begin
+    for i := 0 to Items.Count-1 do begin
+      Item := Items[i];
+      Item.Selected := FoundItem=Item;
+    end;
+  end;
 end;
 
 procedure TCustomShellListView.UpdateColumn(AColumn: TShellListColumn);
