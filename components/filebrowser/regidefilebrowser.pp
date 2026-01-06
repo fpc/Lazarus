@@ -75,7 +75,7 @@ begin
 
   // register dockable Window
   FileBrowserCreator:=IDEWindowCreators.Add('FileBrowser',@CreateFileBrowser,nil,
-                                            '200','100','400','400');
+                                            '200','100','700','700');
   // add IDE options frame
   FileBrowserOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,
                      TFileBrowserOptionsFrame, FileBrowserOptionsFrameID)^.Index;

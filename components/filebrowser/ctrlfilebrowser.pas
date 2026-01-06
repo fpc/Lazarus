@@ -32,22 +32,21 @@ Type
       FNeedSave: Boolean;
       FSplitterPos: integer;
       FCurrentEditorFile: String;
-      FRememberSelectedDir: Boolean;
       FSyncCurrentEditor: Boolean;
       FFileList: TStrings;
       procedure ActiveEditorChanged(Sender: TObject);
+      procedure DoFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
       function DoProjectChanged(Sender: TObject; AProject: TLazProject): TModalResult;
-      procedure DoSelectDir(Sender: TObject);
       function GetProjectDir: String;
       procedure SetCustomRootDir(AValue: string);
       procedure SetLastOpenedDir(AValue: string);
-      procedure SetRememberSelectedDir(AValue: Boolean);
       procedure SetRootDir(AValue: TRootDir);
       procedure SetSplitterPos(AValue: integer);
       procedure SetSyncCurrentEditor(AValue: Boolean);
-      procedure OnFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
       { Called by file browser window }
-      procedure DoOpenFile(Sender: TObject; const AFileName: string); virtual;
+      procedure DoOpenFile(Sender: TObject; const AFileName: string);
+      procedure DoSelectFile(Sender: TObject; const AFileName: string);
+      procedure DoSelectDir(Sender: TObject);
       { Called by file browser window }
       procedure DoConfig(Sender: TObject);
       procedure SyncCurrentFile;
@@ -56,7 +55,7 @@ Type
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
-      procedure ConfigureWindow(AForm: TFileBrowserForm); virtual;
+      procedure ConfigureWindow(AForm: TFileBrowserForm);
       procedure ReadConfig;
       procedure WriteConfig;
       function GetResolvedRootDir: String;
@@ -64,7 +63,6 @@ Type
       property RootDir: TRootDir read FRootDir write SetRootDir;
       property CustomRootDir: string read FCustomRootDir write SetCustomRootDir;
       property LastOpenedDir: string read FLastOpenedDir write SetLastOpenedDir;
-      property RememberSelectedDir: Boolean Read FRememberSelectedDir Write SetRememberSelectedDir;
       property SyncCurrentEditor: Boolean Read FSyncCurrentEditor Write SetSyncCurrentEditor;
       property SplitterPos: integer read FSplitterPos write SetSplitterPos;
       Property ConfigFrame: TAbstractIDEOptionsEditorClass Read FConfigFrame Write FConfigFrame;
@@ -96,10 +94,11 @@ procedure TFileBrowserController.ConfigureWindow(AForm: TFileBrowserForm);
 begin
   aForm.Caption := SFileBrowserIDEMenuCaption;
   aForm.FreeNotification(Self);
-  aForm.OnOpenFile := @DoOpenFile;
   aForm.OnConfigure := @DoConfig;
+  aForm.OnOpenFile := @DoOpenFile;
+  aForm.OnSelectFile := @DoSelectFile;
   aForm.OnSelectDir := @DoSelectDir;
-  aForm.AddHandlerClose(@OnFormClose);
+  aForm.AddHandlerClose(@DoFormClose);
   aForm.TV.Height := FSplitterPos;
   aForm.RootDir := GetResolvedRootDir;
   //aForm.CurrentDir := GetResolvedStartDir;
@@ -117,7 +116,6 @@ begin
       FRootDir := TRootDir(GetValue(KeyRootDir, Ord(DefaultRootDir)));
       FCustomRootDir := GetValue(KeyCustomRootDir, '');
       FSplitterPos := GetValue(KeySplitterPos, DefaultSplitterPos);
-      FRememberSelectedDir := GetValue(KeyRememberSelDir, False);
       FSyncCurrentEditor := GetValue(KeySyncCurrentEditor, False);
     finally
       Free;
@@ -134,7 +132,6 @@ begin
       SetDeleteValue(KeyRootDir, Ord(FRootDir), Ord(DefaultRootDir));
       SetDeleteValue(KeyCustomRootDir, CustomRootDir, '');
       SetDeleteValue(KeySplitterPos, FSplitterPos, DefaultSplitterPos);
-      SetDeleteValue(KeyRememberSelDir, FRememberSelectedDir, False);
       SetDeleteValue(KeySyncCurrentEditor, FSyncCurrentEditor, False);
       FNeedSave := False;
     finally
@@ -147,6 +144,8 @@ begin
   if FCustomRootDir = AValue then Exit;
   FCustomRootDir := AValue;
   FNeedSave := True;
+  if FRootDir = rdCustomDir then
+    FileBrowserForm.RootDir := IncludeTrailingPathDelimiter(FCustomRootDir);
 end;
 
 procedure TFileBrowserController.SetLastOpenedDir(AValue: string);
@@ -170,13 +169,6 @@ begin
   if FSplitterPos=AValue then Exit;
   FSplitterPos:=AValue;
   FNeedSave:=true;
-end;
-
-procedure TFileBrowserController.SetRememberSelectedDir(AValue: Boolean);
-begin
-  if FRememberSelectedDir=AValue then Exit;
-  FRememberSelectedDir:=AValue;
-  FNeedSave:=True;
 end;
 
 procedure TFileBrowserController.SetSyncCurrentEditor(AValue: Boolean);
@@ -224,10 +216,20 @@ begin
   LazarusIDE.DoOpenEditorFile(AFileName, 0, 0, Flags);
 end;
 
-procedure TFileBrowserController.OnFormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
+procedure TFileBrowserController.DoSelectFile(Sender: TObject; const AFileName: string);
+var
+  i: Integer;
+  SE: TSourceEditorInterface;
 begin
-  SplitterPos := FileBrowserForm.Splitter1.Top;
+  if SyncCurrentEditor then
+    for i := 0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
+      SE := SourceEditorManagerIntf.SourceEditors[i];
+      //debugln(['TFileBrowserController.DoSelectFile SE=', SE.FileName]);
+      if SE.FileName = AFileName then begin
+        SourceEditorManagerIntf.ActiveEditor := SE;
+        Break;
+      end;
+    end;
 end;
 
 procedure TFileBrowserController.DoSelectDir(Sender: TObject);
@@ -235,6 +237,11 @@ begin
   // ToDo:
   //if FStartDir = sdLastOpened then
   //  LastOpenedDir := FileBrowserForm.CurrentDirectory;
+end;
+
+procedure TFileBrowserController.DoFormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  SplitterPos := FileBrowserForm.Splitter1.Top;
 end;
 
 function TFileBrowserController.DoProjectChanged(Sender: TObject; AProject: TLazProject): TModalResult;
@@ -258,15 +265,14 @@ begin
   if not Assigned(SourceEditorManagerIntf.ActiveEditor) then
     exit;
   FCurrentEditorFile := SourceEditorManagerIntf.ActiveEditor.FileName;
-  debugln(['TFileBrowserController.ActiveEditorChanged: Sync FCurrentEditorFile=', FCurrentEditorFile]);
+  //debugln(['TFileBrowserController.ActiveEditorChanged: Sync FCurrentEditorFile=', FCurrentEditorFile]);
   SyncCurrentFile;
 end;
 
 procedure TFileBrowserController.SyncCurrentFile;
 begin
-  if not (Assigned(FileBrowserForm) and SyncCurrentEditor) then
-    exit;
-  FileBrowserForm.CurrentFile := FCurrentEditorFile;
+  if SyncCurrentEditor and Assigned(FileBrowserForm) then
+    FileBrowserForm.CurrentFile := FCurrentEditorFile;
 end;
 
 procedure TFileBrowserController.DoConfig(Sender: TObject);

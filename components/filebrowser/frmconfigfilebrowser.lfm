@@ -11,14 +11,14 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
   DesignTop = 247
   object gbStartDir: TGroupBox
     Left = 0
-    Height = 194
+    Height = 162
     Top = 0
     Width = 504
     Align = alTop
     AutoSize = True
     BorderSpacing.Bottom = 3
     Caption = 'Root directory'
-    ClientHeight = 165
+    ClientHeight = 133
     ClientWidth = 500
     TabOrder = 0
     object deRootDir: TDirectoryEdit
@@ -27,7 +27,6 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbStartDir
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = gbStartDir
       Left = 33
       Height = 32
       Top = 94
@@ -38,6 +37,7 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 25
       BorderSpacing.Right = 25
+      BorderSpacing.Bottom = 7
       MaxLength = 0
       TabOrder = 0
     end
@@ -88,27 +88,15 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       Caption = 'User directory'
       TabOrder = 4
     end
-    object cbRememberSelectedDir: TCheckBox
-      AnchorSideLeft.Control = rbRootThisDir
-      AnchorSideTop.Control = deRootDir
-      AnchorSideTop.Side = asrBottom
-      Left = 8
-      Height = 22
-      Top = 138
-      Width = 229
-      BorderSpacing.Top = 12
-      BorderSpacing.Bottom = 5
-      Caption = 'Remember last selected directory'
-      TabOrder = 5
-    end
   end
   object GBFileTree: TGroupBox
     Left = 0
     Height = 90
-    Top = 197
+    Top = 165
     Width = 504
     Align = alTop
     AutoSize = True
+    BorderSpacing.Bottom = 3
     Caption = 'File browser tree'
     ClientHeight = 61
     ClientWidth = 500
@@ -121,6 +109,7 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       Top = 0
       Width = 279
       BorderSpacing.Left = 8
+      BorderSpacing.Bottom = 7
       Caption = 'Keep synchronized with current editor file'
       TabOrder = 0
     end

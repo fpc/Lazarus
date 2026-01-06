@@ -33,21 +33,21 @@ type
     procedure btnConfigureClick(Sender: TObject);
     procedure btnReloadClick(Sender: TObject);
     procedure cbHiddenChange(Sender: TObject);
-    procedure LVDblClick(Sender: TObject);
     procedure cbFilePanelChange(Sender: TObject);
+    procedure cbFilePanelSelect(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure LVSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+    procedure FormActivate(Sender: TObject);
     procedure TVGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure TVGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure TVSelectionChanged(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
-    procedure cbFilePanelSelect(Sender: TObject);
+    procedure LVDblClick(Sender: TObject);
     procedure LVKeyPress(Sender: TObject; var Key: char);
+    procedure LVSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
   private
     FOnConfigure: TNotifyEvent;
     FOnOpenFile: TOpenFileEvent;
+    FOnSelectFile: TOpenFileEvent;
     FOnSelectDir: TNotifyEvent;
     FRootDir: string;
     FCurrentDir: string;
@@ -67,10 +67,12 @@ type
     property CurrentFile: string read GetCurrentFile write SetCurrentFile;
     { Must we show hidden directories }
     property ShowHidden: Boolean read FShowHidden write FShowHidden default False;
-    { Called when user double-clicks file name }
-    property OnOpenFile: TOpenFileEvent read FOnOpenFile write FOnOpenFile;
     { Called when user clicks configure button }
     property OnConfigure: TNotifyEvent read FOnConfigure write FOnConfigure;
+    { Called when user double-clicks file name }
+    property OnOpenFile: TOpenFileEvent read FOnOpenFile write FOnOpenFile;
+    { Called when user selects a file name }
+    property OnSelectFile: TOpenFileEvent read FOnSelectFile write FOnSelectFile;
     { Called when a new directory is selected }
     property OnSelectDir: TNotifyEvent read FOnSelectDir write FOnSelectDir;
   end;
@@ -174,7 +176,7 @@ begin
   Item := LV.Selected;
   Capt := Item.Caption;
   Result := TV.Path + Item.Caption;
-  debugln(['TFileBrowserForm.GetCurrentFile Result=', Result, ', Capt=', Capt]);
+  //debugln(['TFileBrowserForm.GetCurrentFile Result=', Result, ', Capt=', Capt]);
 end;
 
 procedure TFileBrowserForm.SetCurrentFile(AValue: string);
@@ -216,11 +218,12 @@ begin
   RootNode.Expand(False);
 end;
 
-procedure TFileBrowserForm.LVSelectItem(Sender: TObject;
-  Item: TListItem; Selected: Boolean);
+procedure TFileBrowserForm.LVSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
 begin
-  debugln(['TFileBrowserForm.ShellListViewSelectItem Item=', Item.Caption, ', Selected=', Selected]);
-  // ToDo: Pass to TFileBrowserController somehow.
+  //debugln(['TFileBrowserForm.ShellListViewSelectItem Item=', Item.Caption,
+  //         ', Path=', TV.Path, ', Selected=', Selected]);
+  if Selected and Assigned(FOnSelectFile) then
+    FOnSelectFile(Self, TV.Path + Item.Caption);
   //CurrentFile := TV.Path + Item.Caption;
 end;
 

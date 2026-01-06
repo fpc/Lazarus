@@ -18,7 +18,6 @@ type
 
   TFileBrowserOptionsFrame = class(TAbstractIDEOptionsEditor)
     cbSyncCurrentEditor: TCheckBox;
-    cbRememberSelectedDir: TCheckBox;
     deRootDir: TDirectoryEdit;
     gbStartDir: TGroupBox;
     GBFileTree: TGroupBox;
@@ -56,7 +55,6 @@ var
   C : TFileBrowserController;
   RB: TRadioButton;
 begin
-  debugln(['TFileBrowserOptionsFrame.ReadSettings ']);
   C:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if not Assigned(C) then
     exit;
@@ -68,7 +66,6 @@ begin
   end;
   RB.Checked := True;
   deRootDir.Directory := C.CustomRootDir;
-  cbRememberSelectedDir.Checked := C.RememberSelectedDir;
   cbSyncCurrentEditor.Checked := C.SyncCurrentEditor;
 end;
 
@@ -77,7 +74,6 @@ var
   C: TFileBrowserController;
   RD: TRootDir;
 begin
-  debugln(['TFileBrowserOptionsFrame.WriteSettings ']);
   C:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if not Assigned(C) then
     exit;
@@ -91,7 +87,6 @@ begin
     RD := rdCustomDir;
   C.CustomRootDir := deRootDir.Directory;
   C.RootDir := RD;
-  C.RememberSelectedDir := cbRememberSelectedDir.Checked;
   C.SyncCurrentEditor := cbSyncCurrentEditor.Checked;
   C.WriteConfig;
 end;
