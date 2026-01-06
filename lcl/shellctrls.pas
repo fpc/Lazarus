@@ -66,6 +66,7 @@ type
     //more data to sort by size, date... etc
     isFolder: Boolean;
     constructor Create(const DirInfo: TSearchRec; ABasePath: String);
+    function FileName: String;
     property BasePath: String read FBasePath;
     property FileInfo: TSearchRec read FFileInfo write FFileInfo;
   end;
@@ -406,6 +407,7 @@ type
     property SmallImages;
     property SmallImagesWidth;
     property SortColumn;
+    property SortDirection;
     property SortType;
     property StateImages;
     property TabStop;
@@ -662,6 +664,11 @@ begin
   FFileInfo := DirInfo;
   FBasePath:= ABasePath;
   isFolder:=DirInfo.Attr and FaDirectory > 0;
+end;
+
+function TFileItem.FileName: String;
+begin
+  Result := IncludeTrailingPathDelimiter(FBasePath) + FFileInfo.Name;
 end;
 
 
