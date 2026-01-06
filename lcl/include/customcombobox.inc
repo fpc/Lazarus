@@ -89,6 +89,9 @@ begin
   TStringList(FItems).Sorted := Sorted;
 
   inherited DestroyWnd;
+
+  if FCanvas <> nil then
+    TControlCanvas(FCanvas).FreeHandle;
 end;
 
 procedure TCustomComboBox.DoAutoAdjustLayout(
