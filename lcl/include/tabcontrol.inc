@@ -634,6 +634,13 @@ begin
   EndUpdate;
 end;
 
+procedure TTabControl.DestroyWnd;
+begin
+  inherited DestroyWnd;
+  if FCanvas <> nil then
+    TControlCanvas(FCanvas).FreeHandle;
+end;
+
 procedure TTabControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin

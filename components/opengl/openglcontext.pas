@@ -187,6 +187,7 @@ type
     class procedure WSRegisterClass; override;
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
+    procedure DestroyWnd; override;
     procedure UpdateFrameTimeDiff;
     procedure OpenGLAttributesChanged;
     procedure CMDoubleBufferedChanged(var Message: TLMessage); message CM_DOUBLEBUFFEREDCHANGED;
@@ -529,6 +530,14 @@ procedure TCustomOpenGLControl.WMSize(var Message: TLMSize);
 begin
   if (Message.SizeType and Size_SourceIsInterface)>0 then
     DoOnResize;
+end;
+
+procedure TCustomOpenGLControl.DestroyWnd;
+begin
+  inherited DestroyWnd;
+
+  if FCanvas <> nil then
+    TControlCanvas(FCanvas).FreeHandle;
 end;
 
 procedure TCustomOpenGLControl.UpdateFrameTimeDiff;

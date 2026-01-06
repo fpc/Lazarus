@@ -839,6 +839,7 @@ type
     procedure Change; override;
     procedure CreateWnd; override;
     procedure DestroyHandle; override;
+    procedure DestroyWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetDragMode(Value: TDragMode); override;
     procedure SetTabIndex(Value: Integer); virtual;
