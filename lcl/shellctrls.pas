@@ -2040,10 +2040,7 @@ end;
 function CompareDates_FoldersFirst(AName1, AName2: String; ADate1, ADate2: TDateTime;
   IsFolder1, IsFolder2: Boolean): Integer;
 begin
-  if IsFolder1 and IsFolder2 then
-    Result := AnsiCompareText(AName1, AName2)
-  else
-  if not (IsFolder1 and IsFolder2) then
+  if IsFolder1 = IsFolder2 then
     Result := CompareValue(ADate1, ADate2)
   else
   if IsFolder1 then
@@ -2091,7 +2088,7 @@ begin
           if SLV.FileSortType = fstFoldersFirst then
             Result := CompareDates_FoldersFirst(info1.Name, info2.Name, info1.TimeStamp, info2.TimeStamp, isFolder1, isFolder2)
           else
-            Result := CompareValue(info1.Time, info2.Time);
+            Result := CompareValue(info1.TimeStamp, info2.TimeStamp);
         cidCustom:
           if Assigned(SLV.OnSortCompare) then
           begin
