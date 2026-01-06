@@ -330,7 +330,7 @@ begin
   Highlighter.AttachToLines(TheLines);
   try
     Highlighter.CurrentLines := TheLines;
-    Highlighter.ScanRanges;
+    Highlighter.PrepareLines;
 
     // initialization
     fBuffer.Position := 0;

@@ -132,8 +132,8 @@ begin
   else FHLCLow := Min(FHLCLow, AIndex);
 
   if FHLCHigh < 0
-  then FHLCHigh := AIndex + ACount
-  else FHLCHigh := Max(FHLCHigh, AIndex + ACount);
+  then FHLCHigh := AIndex + ACount - 1
+  else FHLCHigh := Max(FHLCHigh, AIndex + ACount - 1);
 end;
 
 procedure TTestHighlightMulti.SetRealLinesText;

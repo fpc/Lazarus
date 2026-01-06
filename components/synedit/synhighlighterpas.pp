@@ -1034,7 +1034,8 @@ type
     function GetRangeClass: TLazHighlighterRangeClass; override;
     procedure CreateRootCodeFoldBlock; override;
     function CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList; override;
-    function UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
+    function UpdateRangeInfoAtEOL: Boolean; override; // Returns true if range changed
+    function DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx = - 1; AMaxTime: integer = 0): integer; override;
 
     property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
     function TopPascalCodeFoldBlockType
@@ -1823,7 +1824,7 @@ procedure TSynPasSyn.SetCaseLabelAttriMatchesElseOtherwise(AValue: Boolean);
 begin
   if FCaseLabelAttriMatchesElseOtherwise = AValue then Exit;
   FCaseLabelAttriMatchesElseOtherwise := AValue;
-  FAttributeChangeNeedScan := True;
+  RequestFullRescan;
   DefHighlightChange(self);
 end;
 
@@ -7882,18 +7883,26 @@ begin
   Result := TSynHighlighterPasRangeList.Create;
 end;
 
-function TSynPasSyn.UpdateRangeInfoAtLine(Index: Integer): Boolean;
+function TSynPasSyn.UpdateRangeInfoAtEOL: Boolean;
 var
   r: TSynPasRangeInfo;
 begin
   Result := inherited;
-  r := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[Index];
+  r := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex];
   Result := Result
         or (FSynPasRangeInfo.EndLevelIfDef <> r.EndLevelIfDef)
         or (FSynPasRangeInfo.MinLevelIfDef <> r.MinLevelIfDef)
         or (FSynPasRangeInfo.EndLevelRegion <> r.EndLevelRegion)
         or (FSynPasRangeInfo.MinLevelRegion <> r.MinLevelRegion);
-  TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[Index] := FSynPasRangeInfo;
+  TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex] := FSynPasRangeInfo;
+end;
+
+function TSynPasSyn.DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx;
+  AMaxTime: integer): integer;
+begin
+  if AFirstLineIdx = CurrentRanges.UnsentValidationStartLine then
+    CurrentRanges.UpdateUnsentValidationStartLine(AFirstLineIdx - 1); // TODO: check if LastLineCodeFoldLevelFix changes
+  Result := inherited DoPrepareLines(AFirstLineIdx, AMinimumRequiredLineIdx, AMaxTime);
 end;
 
 function TSynPasSyn.GetFoldConfigCount: Integer;

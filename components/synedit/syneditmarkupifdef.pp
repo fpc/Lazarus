@@ -3772,7 +3772,7 @@ procedure TSynEditMarkupIfDef.PrepareHighlighter;
 begin
   Highlighter.CurrentLines := Lines;
   if Highlighter.NeedScan then DebugLn('******** Highlighter.NeedScan ************');
-  Highlighter.ScanRanges;
+  Highlighter.PrepareLines;
 end;
 
 function TSynEditMarkupIfDef.HasEnabledMarkup: Boolean;

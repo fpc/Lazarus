@@ -258,7 +258,7 @@ procedure TSynBeautifierPascal.InitPasHighlighter;
 begin
   FPasHighlighter := TSynPasSyn(TSynEdit(CurrentEditor).Highlighter);
   FPasHighlighter.CurrentLines := CurrentLines;
-  FPasHighlighter.ScanRanges;
+  FPasHighlighter.PrepareLines;
 end;
 
 function TSynBeautifierPascal.GetFoldEndLevelForIdx(AIndex: Integer): Integer;

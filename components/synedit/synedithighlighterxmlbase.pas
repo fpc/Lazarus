@@ -78,7 +78,7 @@ type
     FXmlRangeInfoClosePos: integer;
   protected
     function  CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList; override;
-    function  UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
+    function  UpdateRangeInfoAtEOL: Boolean; override; // Returns true if range changed
 
     function  StartXmlCodeFoldBlock(ABlockType: Integer): Boolean;
     function  StartXmlNodeCodeFoldBlock(ABlockType: Integer; OpenPos: Integer;
@@ -101,11 +101,11 @@ begin
   Result := TSynHighlighterXmlRangeList.Create;
 end;
 
-function TSynCustomXmlHighlighter.UpdateRangeInfoAtLine(Index: Integer): Boolean;
+function TSynCustomXmlHighlighter.UpdateRangeInfoAtEOL: Boolean;
 var
   InfoOpenLenChanged, InfoCloseLenChanged: Boolean;
 begin
-  Result := inherited UpdateRangeInfoAtLine(Index);
+  Result := inherited UpdateRangeInfoAtEOL;
   InfoOpenLenChanged := Length(FXmlRangeInfo.ElementOpenList) <> FXmlRangeInfoOpenPos;
   InfoCloseLenChanged := Length(FXmlRangeInfo.ElementCloseList) <> FXmlRangeInfoClosePos;
   if FXmlRangeInfoChanged or InfoOpenLenChanged or InfoCloseLenChanged then begin

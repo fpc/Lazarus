@@ -310,10 +310,11 @@ type
     procedure SchemeChanged;
     procedure DetachHighlighter(AHighlighter: TSynCustomHighlighter; AScheme: TSynHighlighterMultiScheme);
     procedure AttachHighlighter(AHighlighter: TSynCustomHighlighter; AScheme: TSynHighlighterMultiScheme);
-    function  PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean = False): Integer; override;
+    function DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx = - 1;
+      AMaxTime: integer = 0): integer; override;
     property CurrentRanges: TSynHighlighterMultiRangeList read GetCurrentRanges;
     property KnownRanges[Index: Integer]: TSynHighlighterMultiRangeList read GetKnownMultiRanges;
-    procedure DoDetachingFromLines(Lines: TSynEditStringsBase; ARangeList: TLazHighlighterLineRangeList); override;
+    procedure DoDetachingFromLines(Lines: TLazEditStringsBase; ARangeList: TLazHighlighterLineRangeList); override;
   public
     class function GetLanguageName: string; override;
   public
@@ -327,8 +328,8 @@ type
     function  GetTokenAttributeEx: TLazCustomEditTextAttribute; override;
     function  GetTokenKind: integer; override;
     function  GetTokenPos: Integer; override; // 0-based
-    procedure SetLine(const NewValue: string; LineNumber: Integer); override;
-    function UpdateRangeInfoAtLine(Index: Integer): Boolean; override;
+    procedure InitForScaningLine; override;
+    function UpdateRangeInfoAtEOL: Boolean; override;
     function  GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -1097,13 +1098,15 @@ begin
   inherited Destroy;
 end;
 
-function TSynMultiSyn.PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean = False): Integer;
+function TSynMultiSyn.DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx;
+  AMaxTime: integer): integer;
 var
   i, j, c: Integer;
   SearchPos, NewSearchPos, TmpSearchPos: Integer;
   CurRegStart: TPoint;
-  CurRegTokenPos: Integer;
+  CurRegTokenPos, EndIndex: Integer;
   LineText: string;
+  EndTime: QWord;
 
   procedure StartScheme(NewScheme: TSynHighlighterMultiScheme;
     StartAtLine, StartAtChar, TokenAtChar: Integer);
@@ -1145,9 +1148,15 @@ var
 
 begin
   (* Scan regions *)
-  Result := StartIndex;
+  Result := AFirstLineIdx;
+
+  EndIndex := CurrentRanges.LastInvalidLine + 1;
+  if AMaxTime > 0 then
+    EndTime := GetTickCount64 + AMaxTime;
+
+
   {$IFDEF SynDebugMultiHL}
-  debugln(SYNDEBUG_MULTIHL, ['TSynMultiSyn.PerformScan StartIndex=', Result]);
+  debugln(SYNDEBUG_MULTIHL, ['TSynMultiSyn.DoPrepareLines AFirstLineIdx=', Result]);
   {$ENDIF}
 
   // last node may need to extend to next line
@@ -1179,12 +1188,7 @@ begin
     CurRegTokenPos := 0;
   StartAtLineIndex(Result);             // Set FCurScheme
 
-  dec(Result);
   repeat
-    inc(Result);
-    if Result <> StartIndex then
-      ContinueNextLine;
-
     LineText := CurrentLines[Result];
     FSchemes.CurrentLine := LineText;
     SearchPos := 1;
@@ -1214,8 +1218,13 @@ begin
       end;
     end;
 
-  until ((not UpdateRangeInfoAtLine(Result)) and (Result > EndIndex))
-     or (Result = c);
+    if (not UpdateRangeInfoAtEOL) and (Result > EndIndex) then
+      break;
+    if (Result >= c) or ( (AMaxTime>0) and (GetTickCount64>=EndTime) ) then
+      break;
+    inc(Result);
+    ContinueNextLine;
+  until False;
 
   if Result = c then begin
     i := length(CurrentLines[c]) +  1;
@@ -1243,17 +1252,20 @@ begin
   (* Scan nested Highlighters *)
   for i := 0 to Schemes.Count - 1 do
     if Schemes[i].Highlighter <> nil then begin
-      Schemes[i].Highlighter.ScanRanges;
+      Schemes[i].Highlighter.PrepareLines;
       j := Schemes[i].VirtualLines.SectionList.VirtualIdxToRealIdx(Schemes[i].VirtualLines.LastHLChangedLine);
       if Result < j then
         Result := j;
     end;
   if FDefaultHighlighter <> nil then begin
-    FDefaultHighlighter.ScanRanges;
+    FDefaultHighlighter.PrepareLines;
     j := DefaultVirtualLines.SectionList.VirtualIdxToRealIdx(DefaultVirtualLines.LastHLChangedLine);
     if Result < j then
       Result := j;
   end;
+
+  if Result <= c then // result is the last scanned line / not yet the next
+    inc(Result);
 end;
 
 procedure TSynMultiSyn.DoDetachingFromLines(Lines: TLazEditStringsBase;
@@ -1622,8 +1634,7 @@ begin
   Result := TSynHighlighterMultiRangeList(inherited CurrentRanges)
 end;
 
-procedure TSynMultiSyn.SetLine(const NewValue: string;
-  LineNumber: Integer);
+procedure TSynMultiSyn.InitForScaningLine;
   procedure InitRunSection(ASchemeIdx: Integer);
   var
     VLines: TSynHLightMultiVirtualLines;
@@ -1693,18 +1704,18 @@ begin
   Next;
 end;
 
-function TSynMultiSyn.UpdateRangeInfoAtLine(Index: Integer): Boolean;
+function TSynMultiSyn.UpdateRangeInfoAtEOL: Boolean;
 begin
-  Result := inherited UpdateRangeInfoAtLine(Index);
+  Result := inherited UpdateRangeInfoAtEOL;
   if not Result then begin
     if FCurScheme <> nil then
       Result := (FCurScheme.VirtualLines <> nil) and
                 (FCurScheme.VirtualLines.SectionList <> nil) and
-                (FCurScheme.VirtualLines.SectionList.IndexOfFirstSectionAtLineIdx(Index, -1, False) < 0)
+                (FCurScheme.VirtualLines.SectionList.IndexOfFirstSectionAtLineIdx(LineIndex, -1, False) < 0)
     else
       Result := (DefaultVirtualLines <> nil) and
                 (DefaultVirtualLines.SectionList <> nil) and
-                (DefaultVirtualLines.SectionList.IndexOfFirstSectionAtLineIdx(Index, -1, False) < 0);
+                (DefaultVirtualLines.SectionList.IndexOfFirstSectionAtLineIdx(LineIndex, -1, False) < 0);
   end;
 end;
 

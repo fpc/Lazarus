@@ -5952,7 +5952,7 @@ begin
   if fHighlighter = nil then
     exit;
   FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
-  FHighlighter.ScanRanges;
+  FHighlighter.PrepareLines;
 end;
 
 procedure TCustomSynEdit.ScanChangedLines(AChangedLinesStart, AChangedLinesEnd,
@@ -6071,11 +6071,13 @@ begin
   InvalidateLines(StartLine, StartLine + ACount - 1);
   InvalidateGutterLines(AIndex + 1, AIndex + 1 + ACount);
   FFoldedLinesView.FixFoldingAtTextIndex(AIndex, AIndex + ACount);
-  if sfAfterLoadFromFileNeeded in fStateFlags then
-    AfterLoadFromFile
-  else
-  if FPendingFoldState <> '' then
-    SetFoldState(FPendingFoldState);
+  if (Highlighter = nil) or (not Highlighter.NeedScan) then begin
+    if sfAfterLoadFromFileNeeded in fStateFlags then
+      AfterLoadFromFile
+    else
+    if FPendingFoldState <> '' then
+      SetFoldState(FPendingFoldState);
+  end;
 end;
 
 procedure TCustomSynEdit.DoHighlightAttribChanged(Sender: TObject);

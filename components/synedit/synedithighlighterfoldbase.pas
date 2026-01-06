@@ -534,8 +534,8 @@ type
     procedure ResetRange; override;
     procedure InitForScaningLine; override;
     procedure DoCurrentLinesChanged; override;
-    function PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean =
-      False): Integer; override;
+    function DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx = - 1;
+      AMaxTime: integer = 0): integer; override;
   public
     property FoldConfig[Index: Integer]: TSynCustomFoldConfig
       read GetFoldConfig write SetFoldConfig;
@@ -1885,11 +1885,11 @@ begin
   ClearFoldNodeList;
 end;
 
-function TSynCustomFoldHighlighter.PerformScan(StartIndex, EndIndex: Integer;
-  ForceEndIndex: Boolean): Integer;
+function TSynCustomFoldHighlighter.DoPrepareLines(AFirstLineIdx: IntIdx;
+  AMinimumRequiredLineIdx: IntIdx; AMaxTime: integer): integer;
 begin
   ClearFoldNodeList;
-  Result := inherited PerformScan(StartIndex, EndIndex, ForceEndIndex);
+  Result := inherited DoPrepareLines(AFirstLineIdx, AMinimumRequiredLineIdx, AMaxTime);
 
   FUncommittedFoldStackCount := 0;
   FUncommittedFoldNestCount := 0;

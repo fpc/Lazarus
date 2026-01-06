@@ -69,7 +69,7 @@ type
   protected
     function GetInstanceLanguageName: string; override;
     function CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList; override;
-    function UpdateRangeInfoAtLine(Index: Integer): Boolean; override;
+    function UpdateRangeInfoAtEOL: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -174,21 +174,21 @@ begin
   Result := TSynHighlighterTextMateRangeList.Create;
 end;
 
-function TSynTextMateSyn.UpdateRangeInfoAtLine(Index: Integer): Boolean;
+function TSynTextMateSyn.UpdateRangeInfoAtEOL: Boolean;
 var
   r: TSynTextMateRangeInfo;
   i: Integer;
 begin
   GetRange;
-  i := {%H-}Integer(TSynHighlighterTextMateRangeList(CurrentRanges).Range[Index]);
+  i := {%H-}Integer(TSynHighlighterTextMateRangeList(CurrentRanges).Range[LineIndex]);
   if i <> FCurrentRange then
     FTextMateGrammar.MainPatternList[i].DecRefCount;
 
   Result := inherited;
-  r := TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[Index];
+  r := TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[LineIndex];
   Result := Result
         or (FRangeInfo.FoldLevel <> r.FoldLevel);
-  TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[Index] := FRangeInfo;
+  TSynHighlighterTextMateRangeList(CurrentRanges).RangeInfo[LineIndex] := FRangeInfo;
 
   if i <> FCurrentRange then
     FTextMateGrammar.MainPatternList[Integer(i)].IncRefCount;

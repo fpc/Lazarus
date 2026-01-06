@@ -147,7 +147,6 @@ type
     FDrawDividerLevel: Integer;
     fEnabled: Boolean;
     fWordBreakChars: TSynIdentChars;
-    FIsScanning: Boolean;
     function GetKnownLines: TLazEditHighlighterAttachedLines; deprecated;
     procedure SetDrawDividerLevel(const AValue: Integer); deprecated;
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
@@ -168,13 +167,11 @@ type
     procedure SetSampleSource(Value: string); virtual;
     procedure AfterAttachedToRangeList(ARangeList: TLazHighlighterLineRangeList); virtual; deprecated 'use DoAttachedToLines // to be removed in 5.99';
     procedure BeforeDetachedFromRangeList(ARangeList: TLazHighlighterLineRangeList); virtual; deprecated 'use DoDetachingFromLines // to be removed in 5.99';
-    function UpdateRangeInfoAtLine(Index: Integer): Boolean; virtual; // Returns true if range changed
     // code fold - only valid if hcCodeFolding in Capabilities
     function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; virtual;
     function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; virtual;
     function GetDividerDrawConfigCount: Integer; virtual;
-    function PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean = False): Integer; virtual;
-    property IsScanning: Boolean read FIsScanning;
+    function PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean = False): Integer; virtual;  deprecated 'use DoPrepareLines / to be removed in 5.99';
     property KnownLines: TLazEditHighlighterAttachedLines read GetKnownLines; deprecated 'use AttachedLines // to be removed in 5.99';
     procedure RequestFullRescan; reintroduce; // deprecated 'to be removed in 5.99' // only needed to force a call to fAttrChangeHooks
     procedure SendAttributeChangeNotification; reintroduce; // deprecated 'to be removed in 5.99'
@@ -208,13 +205,13 @@ type
       read GetDrawDivider;
     property DrawDividerLevel: Integer read FDrawDividerLevel write SetDrawDividerLevel; deprecated;
   public
-    procedure ScanRanges;
+    procedure ScanRanges; deprecated 'use PrepareLines / to be removed in 5.99';
     (* IdleScanRanges
        Scan in small chunks during OnIdle; Return True, if more work avail
        This method is still under development. It may be changed, removed, un-virtualized, or anything.
        In future SynEdit & HL may have other IDLE tasks, and if and when that happens, there will be new ways to control this
     *)
-    function  IdleScanRanges: Boolean; virtual; experimental;
+    function  IdleScanRanges: Boolean; virtual; experimental;  deprecated 'use PrepareLines / to be removed in 5.99';
     function NeedScan: Boolean;
     procedure ScanAllRanges;
     procedure SetLine(const NewValue: String;
@@ -931,77 +928,14 @@ begin
   fAttrChangeHooks.Remove(TMethod(ANotifyEvent));
 end;
 
-function TSynCustomHighlighter.UpdateRangeInfoAtLine(Index: Integer): Boolean;
-var
-  r: Pointer;
-begin
-  r := GetRange;
-  Result := r <> CurrentRanges[Index];
-  if Result then
-    CurrentRanges[Index] := r;
-end;
-
 procedure TSynCustomHighlighter.ScanRanges;
-var
-  StartIndex, EndIndex: Integer;
 begin
-  StartIndex := CurrentRanges.FirstInvalidLine;
-  if (StartIndex < 0) then
-    exit;
-
-  EndIndex := CurrentRanges.LastInvalidLine + 1;
-  //debugln(['=== scan ',StartIndex,' - ',EndIndex]);
-  FIsScanning := True;
-  try
-    EndIndex :=  PerformScan(StartIndex, EndIndex);
-  finally
-    FIsScanning := False;
-  end;
-  assert(CurrentRanges.UnsentValidationStartLine <= StartIndex, 'TSynCustomHighlighter.ScanRanges: CurrentRanges.UnsentValidationStartLine <= StartIndex');
-  StartIndex := CurrentRanges.UnsentValidationStartLine; // include idle scanned
-  CurrentRanges.ValidateAll;
-  // Invalidate one line above, since folds can change depending on next line
-  // TODO: only classes with end-fold-last-line
-  if (StartIndex >= CurrentRanges.Count)
-  then CurrentLines.SendHighlightChanged(CurrentRanges.Count, 0)  // No lines scanned, validate because lines are gone / Do not need the extra line
-  else
-  if StartIndex > 0
-  then CurrentLines.SendHighlightChanged(StartIndex - 1, EndIndex - StartIndex + 1)
-  else CurrentLines.SendHighlightChanged(StartIndex,     EndIndex - StartIndex    );
+  PrepareLines;
 end;
 
 function TSynCustomHighlighter.IdleScanRanges: Boolean;
-var
-  StartIndex, EndIndex, RealEndIndex: Integer;
 begin
-  Result := False;
-  StartIndex := CurrentRanges.FirstInvalidLine;
-  if (StartIndex < 0) or (StartIndex >= CurrentRanges.Count) then
-    exit; // If StartIndex > 0 then ScanRanges will send the notification
-  EndIndex := CurrentRanges.LastInvalidLine + 1;
-
-  RealEndIndex := EndIndex;
-  if EndIndex > StartIndex + IDLE_SCAN_CHUNK_SIZE then
-    EndIndex := StartIndex + IDLE_SCAN_CHUNK_SIZE;
-  FIsScanning := True;
-  try
-    EndIndex :=  PerformScan(StartIndex, EndIndex, True);
-  finally
-    FIsScanning := False;
-  end;
-
-  if EndIndex >= RealEndIndex then begin
-    StartIndex := CurrentRanges.UnsentValidationStartLine; // include idle scanned
-//debugln(['=== IDLE SendHighlightChanged ',StartIndex,' - ',EndIndex]);
-    CurrentRanges.ValidateAll;
-  // Invalidate one line above, since folds can change depending on next line
-    CurrentLines.SendHighlightChanged(StartIndex - 1, EndIndex - StartIndex + 1);
-    exit;
-  end
-  else begin
-    CurrentRanges.UpdateFirstInvalidLine(EndIndex);
-    Result := True;
-  end;
+  Result := not PrepareLines(-1, 25);
 end;
 
 function TSynCustomHighlighter.NeedScan: Boolean;
@@ -1011,22 +945,11 @@ end;
 
 function TSynCustomHighlighter.PerformScan(StartIndex, EndIndex: Integer;
   ForceEndIndex: Boolean = False): Integer;
-var
-  c: Integer;
 begin
-  Result := StartIndex;
-  c := CurrentLines.Count;
-  if (c = 0) or (Result >= c) then
-    exit;
-  StartAtLineIndex(Result);
-  NextToEol;
-  while UpdateRangeInfoAtLine(Result) or (Result <= EndIndex) do begin
-    inc(Result);
-    if (Result = c) or (ForceEndIndex and (Result > EndIndex)) then
-      break;
-    ContinueNextLine;
-    NextToEol;
-  end;
+  if ForceEndIndex then
+    DoPrepareLines(StartIndex, -1, 25)
+  else
+    DoPrepareLines(StartIndex);
 end;
 
 procedure TSynCustomHighlighter.RequestFullRescan;
@@ -1073,7 +996,7 @@ end;
 procedure TSynCustomHighlighter.ScanAllRanges;
 begin
   CurrentRanges.InvalidateAll;
-  ScanRanges;
+  PrepareLines;
 end;
 
 procedure TSynCustomHighlighter.SetEnabled(const Value: boolean);
