@@ -474,9 +474,15 @@ end;
 
 procedure TLazEditASyncRunner.Release;
 begin
+  if Self = nil then
+    exit;
   FAutoFree := (FEditors.Count > 0);
   StopRunning;
-  if FAutoFree then exit;
+  if FAutoFree then
+    exit;
+
+  if Self = TheGlobalASyncRunner then
+    TheGlobalASyncRunner := nil;
   Destroy;
 end;
 
