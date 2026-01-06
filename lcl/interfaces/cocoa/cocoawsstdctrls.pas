@@ -176,6 +176,7 @@ type
 
     // WSControl functions
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont ); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     // WSEdit functions
@@ -1175,17 +1176,31 @@ end;
 class procedure TCocoaWSCustomEdit.SetColor(const AWinControl: TWinControl);
 var
   field : TCocoaTextField;
-  w     : NSWindow;
-  rsp   : NSResponder;
-  ed    : TCocoaFieldEditor;
 
   // maybe the bug of macOS, especially on macOS 26
-  // background color maybe not updated
+  // changing the background color while editing may not work.
   // see also: https://github.com/doublecmd/doublecmd/discussions/2683
-  procedure fixMacOSStrangeBehavior;
+  procedure ensureBackcolorApply;
   var
+    w     : NSWindow;
+    rsp   : NSResponder;
+    ed    : TCocoaFieldEditor;
     selected: NSRange;
   begin
+    w := NSView(AWinControl.Handle).window;
+    if not Assigned(w) then
+      Exit;
+
+    rsp := w.firstResponder;
+    if NOT Assigned(rsp) then
+      Exit;
+    if NOT (rsp.isKindOfClass(TCocoaFieldEditor)) then
+      Exit;
+
+    ed := TCocoaFieldEditor(rsp);
+    if NSObject(ed.delegate) <> NSView(AWinControl.Handle) then
+      Exit;
+
     selected:= ed.selectedRange;
     w.makeFirstResponder( field );
     ed.setSelectedRange( selected );
@@ -1200,16 +1215,19 @@ begin
   else
     field.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
 
-  w := NSView(AWinControl.Handle).window;
-  if not Assigned(w) then Exit;
-  rsp := w.firstResponder;
-  if (Assigned(rsp)) and (rsp.isKindOfClass(TCocoaFieldEditor)) then
-  begin
-    ed := TCocoaFieldEditor(rsp);
-    if (NSObject(ed.delegate) = NSView(AWinControl.Handle)) then
-      ed.lclReviseCursorColor;
-    fixMacOSStrangeBehavior;
-  end;
+  ensureBackcolorApply;
+end;
+
+class procedure TCocoaWSCustomEdit.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  field: NSTextField;
+  editor: TCocoaFieldEditor;
+begin
+  TCocoaWSWinControl.SetFont(AWinControl, AFont);
+  field:= NSTextField(AWinControl.Handle);
+  editor:= TCocoaFieldEditor(field.currentEditor);
+  editor.lclReviseCursorColor;
 end;
 
 class procedure TCocoaWSCustomEdit.SetBorderStyle(
