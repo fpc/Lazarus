@@ -349,6 +349,7 @@ type
     function FindColumn(AColumnID: TSLVColumnID; ACustomID: Integer = 0): TShellListColumn;
     function FindAndSelectItem(const ACaption: string): boolean;
     function GetPathFromItem(ANode: TListItem): string;
+    procedure Sort; override;
     procedure UpdateColumn(AColumn: TShellListColumn);
     procedure UpdateView;
     { Properties }
@@ -2001,6 +2002,126 @@ begin
   end;
 end;
 
+function CompareText_FoldersFirst(AText1, AText2: String;
+  IsFolder1, IsFolder2: Boolean): Integer;
+begin
+  if IsFolder1 = IsFolder2 then
+    Result := AnsiCompareText(AText1, AText2)
+  else
+  if IsFolder1 then
+    Result := -1
+  else
+    Result := +1;
+end;
+
+function CompareSizes_FoldersFirst(AName1, AName2: String; ASize1, ASize2: Int64;
+  IsFolder1, IsFolder2: Boolean): Integer;
+begin
+  if IsFolder1 and IsFolder2 then
+    Result := AnsiCompareText(AName1, AName2)
+  else
+  if not (IsFolder1 and IsFolder2) then
+    Result := CompareValue(ASize1, ASize2)
+  else
+  if IsFolder1 then
+    Result := -1
+  else
+  if IsFolder2 then
+    Result := +1;
+end;
+
+function CompareDates_FoldersFirst(AName1, AName2: String; ADate1, ADate2: TDateTime;
+  IsFolder1, IsFolder2: Boolean): Integer;
+begin
+  if IsFolder1 and IsFolder2 then
+    Result := AnsiCompareText(AName1, AName2)
+  else
+  if not (IsFolder1 and IsFolder2) then
+    Result := CompareValue(ADate1, ADate2)
+  else
+  if IsFolder1 then
+    Result := -1
+  else
+    Result := +1;
+end;
+
+function _CompareShellListViewItems(Item1, Item2: Pointer): Integer;
+var
+  SLV: TCustomShellListView;
+  SortCol: TShellListColumn;
+  Info1, Info2: TSearchRec;
+  FileItem1, FileItem2: TFileItem;
+  isFolder1, isFolder2: Boolean;
+  Str1, Str2: String;
+begin
+  Result := 0;
+  SLV := TCustomShellListView(TListItem(Item1).Owner.Owner);
+  if Assigned(SLV.OnCompare) then
+    SLV.OnCompare(SLV, TListItem(Item1), TListItem(Item2),0, Result)
+  else
+  begin
+    if SLV.SortType in [stData] then
+      Result := CompareValue(PtrUInt(TListItem(Item1).Data), PtrUInt(TListItem(Item2).Data))
+    else
+    begin
+      info1 := TShellListItem(Item1).FileInfo;
+      info2 := TShellListItem(Item2).FileInfo;
+      isFolder1 := (info1.Attr and faDirectory) <> 0;
+      isFolder2 := (info2.Attr and faDirectory) <> 0;
+      SortCol := TShellListColumn(SLV.Columns[SLV.SortColumn]);
+      case SortCol.ColumnID of
+        cidFileName:
+          if SLV.FileSortType = fstFoldersFirst then
+            Result := CompareText_FoldersFirst(info1.Name, info2.Name, isFolder1, isFolder2)
+          else
+            Result := AnsiCompareText(info1.Name, info2.Name);
+        cidSize:
+          if SLV.FileSortType = fstFoldersFirst then
+            Result := CompareSizes_FoldersFirst(info1.Name, info2.Name, info1.Size, info2.Size, isFolder1, isFolder2)
+          else
+            Result := CompareValue(info1.Size, info2.Size);
+        cidDateModified:
+          if SLV.FileSortType = fstFoldersFirst then
+            Result := CompareDates_FoldersFirst(info1.Name, info2.Name, info1.TimeStamp, info2.TimeStamp, isFolder1, isFolder2)
+          else
+            Result := CompareValue(info1.Time, info2.Time);
+        cidCustom:
+          if Assigned(SLV.OnSortCompare) then
+          begin
+            FileItem1 := TFileItem.Create(info1, SLV.Root);
+            FileItem2 := TFileItem.Create(info2, SLV.Root);
+            Result := SLV.OnSortCompare(FileItem1, FileItem2);
+            FileItem2.Free;
+            FileItem1.Free;
+          end;
+        else
+          // Attributes and FileTypes
+          if SLV.SortColumn <= TListItem(Item1).SubItems.Count then
+            Str1 := TListItem(Item1).SubItems.Strings[SLV.SortColumn-1]
+          else
+            Str1 := '';
+          if SLV.SortColumn <= TListItem(Item2).SubItems.Count then
+            Str2 := TListItem(Item2).SubItems.Strings[SLV.SortColumn-1]
+          else
+            Str2 := '';
+          if SLV.FileSortType = fstFoldersFirst then
+            Result := CompareText_FoldersFirst(Str1, Str2, IsFolder1, IsFolder2)
+          else
+            Result := AnsiCompareText(Str1, Str2);
+      end;
+    end;
+    if SLV.SortDirection = sdDescending then
+      Result := -Result;
+  end;
+end;
+
+procedure TCustomShellListView.Sort;
+begin
+  if SortType = stNone then exit;
+  if (SortColumn < 0) or (SortColumn >= ColumnCount) then exit;
+  SortWithParams(@_CompareShellListViewItems);
+end;
+
 function TCustomShellListView.FindColumn(AColumnID: TSLVColumnID;
   ACustomID: Integer = 0): TShellListColumn;
 var
@@ -2091,6 +2212,7 @@ end;
 constructor TCustomShellListView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  AutoSortIndicator := true;
 
   FUseBuiltInIcons := true;
 
@@ -2153,6 +2275,17 @@ begin
   Files := TStringList.Create;
   try
     Files.OwnsObjects := True;
+
+    // It is quite complicated to propagate the sort settings into GetFilesInDirectory.
+    // The Windows explorer resets sort params when changing folders, so let's do it, too.
+    if SortColumn <> -1 then Columns[SortColumn].SortIndicator := siNone;
+    SortColumn := 0;
+    SortDirection := sdAscending;
+    if FFileSortType <> fstNone then
+      Columns[0].SortIndicator := siAscending
+    else
+      Columns[0].SortIndicator := siNone;
+
     GetFilesInDirectory(FRoot, Trim(FMask), FObjectTypes, Files, FFileSortType,
                         FMaskCaseSensitivity, FOnSortCompare);
 
@@ -2187,7 +2320,6 @@ begin
         if Assigned(FOnFileAdded) then FOnFileAdded(Self,NewItem);
       end;
     end;
-    Sort;
   finally
     Files.Free;
     Items.EndUpdate;

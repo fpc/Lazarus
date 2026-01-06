@@ -1499,7 +1499,6 @@ type
     procedure SetViewOrigin(AValue: TPoint);
     procedure SetViewStyle(const Avalue: TViewStyle);
     procedure QueuedShowEditor(Data: PtrInt);
-    procedure SortWithParams(ACompareFunc: TListSortCompare);
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
     procedure CNDrawItem(var Message: TLMDrawListItem); message CN_DRAWITEM;
@@ -1552,6 +1551,7 @@ type
     procedure ImageChanged(Sender : TObject);
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SortWithParams(ACompareFunc: TListSortCompare);
 
     function IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean; virtual;
     function CustomDraw(const ARect: TRect; AStage: TCustomDrawStage): Boolean; virtual;                                                   // Return True if default drawing should be done
@@ -1632,7 +1632,7 @@ type
     destructor Destroy; override;
     procedure AddItem(Item: string; AObject: TObject);
     function AlphaSort: Boolean; // always sorts column 0 in sdAscending order
-    procedure Sort;
+    procedure Sort; virtual;
     function CustomSort(ASortProc: TLVCompare; AOptionalParam: PtrInt): Boolean;
     procedure BeginUpdate;
     procedure Clear;
