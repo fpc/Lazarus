@@ -1178,6 +1178,19 @@ var
   w     : NSWindow;
   rsp   : NSResponder;
   ed    : TCocoaFieldEditor;
+
+  // maybe the bug of macOS, especially on macOS 26
+  // background color maybe not updated
+  // see also: https://github.com/doublecmd/doublecmd/discussions/2683
+  procedure fixMacOSStrangeBehavior;
+  var
+    selected: NSRange;
+  begin
+    selected:= ed.selectedRange;
+    w.makeFirstResponder( field );
+    ed.setSelectedRange( selected );
+  end;
+
 begin
   field := GetTextField(AWinControl);
   if not Assigned(field) then Exit;
@@ -1195,6 +1208,7 @@ begin
     ed := TCocoaFieldEditor(rsp);
     if (NSObject(ed.delegate) = NSView(AWinControl.Handle)) then
       ed.lclReviseCursorColor;
+    fixMacOSStrangeBehavior;
   end;
 end;
 
