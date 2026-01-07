@@ -722,7 +722,9 @@ type
       Data: TStream);
     procedure ScanRanges;
     procedure ScanChangedLines(AChangedLinesStart, AChangedLinesEnd, AChangedLinesDiff: Integer; ATextChanged: Boolean);
-    procedure IdleScanRanges(Sender: TObject; var Done: Boolean);
+    procedure IdleScanRanges(AnEditorId: TLazEditEditorId; ATaskId: TLazEditTaskId;
+      AMaxTime: integer; var AData: Pointer; var ADone: boolean;
+      var APriorities: TTLazEditTaskPriorities);
     procedure DoBlockSelectionChanged(Sender: TObject);
     procedure SetBlockIndent(const AValue: integer);
     procedure SetCaretAndSelection(const ptCaret, ptBefore, ptAfter: TPoint;
@@ -2915,7 +2917,7 @@ var
 begin
   Destroying;
   inc(FPaintLock); // block all events during destruction
-  Application.RemoveOnIdleHandler(@IdleScanRanges);
+  GlobalASyncRunner.RemoveTask(@IdleScanRanges, Self);
   SurrenderPrimarySelection;
   Highlighter := nil;
   Beautifier:=nil;
@@ -5273,7 +5275,7 @@ var
   p: Integer;
 begin
   Exclude(fStateFlags, sfAfterHandleCreatedNeeded);
-  Application.RemoveOnIdleHandler(@IdleScanRanges);
+  GlobalASyncRunner.RemoveTask(@IdleScanRanges, Self);
   fStateFlags := fStateFlags - [sfHorizScrollbarVisible, sfVertScrollbarVisible];
 
   IncStatusChangeLock;
@@ -5959,9 +5961,8 @@ procedure TCustomSynEdit.ScanChangedLines(AChangedLinesStart, AChangedLinesEnd,
   AChangedLinesDiff: Integer; ATextChanged: Boolean);
 begin
   if WaitingForInitialSize then begin
-    Application.RemoveOnIdleHandler(@IdleScanRanges); // avoid duplicate add
     if assigned(FHighlighter) then
-      Application.AddOnIdleHandler(@IdleScanRanges, False);
+      GlobalASyncRunner.AddOrReplaceTask(@IdleScanRanges, Self, [tpPaintText]);
     exit;
   end;
 //TODO: exit if in paintlock ???
@@ -5979,19 +5980,16 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.IdleScanRanges(Sender: TObject; var Done: Boolean);
+procedure TCustomSynEdit.IdleScanRanges(AnEditorId: TLazEditEditorId; ATaskId: TLazEditTaskId;
+  AMaxTime: integer; var AData: Pointer; var ADone: boolean;
+  var APriorities: TTLazEditTaskPriorities);
 begin
-  Application.RemoveOnIdleHandler(@IdleScanRanges);
+  ADone := True;
   if not assigned(FHighlighter) then
     exit;
 
   FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
-  if not FHighlighter.IdleScanRanges{%H-} then
-    exit;
-
-  // Move to the end; give others a change too
-  Application.AddOnIdleHandler(@IdleScanRanges, False);
-  Done := False;
+  ADone := fHighlighter.PrepareLines(-1, AMaxTime);
 end;
 
 procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings; AIndex,
