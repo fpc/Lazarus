@@ -338,7 +338,7 @@ procedure TLazHighlighterLineRangeList.SetValidatedChangeStamp(AValue: QWord);
 begin
   if FValidatedChangeStamp = AValue then Exit;
   FValidatedChangeStamp := AValue;
-  //InvalidateAll;
+  InvalidateAll;
 end;
 
 procedure TLazHighlighterLineRangeList.LineTextChanged(AIndex: Integer; ACount: Integer);

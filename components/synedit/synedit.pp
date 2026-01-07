@@ -6092,7 +6092,8 @@ begin
     exit;
 
   FHighlighter.CurrentLines := FTheLinesView;
-  FHighlighter.ScanAllRanges;
+  // TODO: if not visible // needs handling when it becomes visible
+  FHighlighter.PrepareLines;
   fMarkupManager.TextChanged(1, FTheLinesView.Count, 0);
 end;
 
