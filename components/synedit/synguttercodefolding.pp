@@ -741,7 +741,7 @@ begin
     exit;
   hl := TSynCustomFoldHighlighter(SynEdit.Highlighter);
   hl.CurrentLines := ViewedTextBuffer;
-  if hl.NeedScan then
+  if hl.FirstUnpreparedLine >= 0 then
     exit;
   if not FMarkupInfoCurrentFold.IsEnabled then begin
     FFirstInvalidLine := -1;

@@ -3771,7 +3771,7 @@ end;
 procedure TSynEditMarkupIfDef.PrepareHighlighter;
 begin
   Highlighter.CurrentLines := Lines;
-  if Highlighter.NeedScan then DebugLn('******** Highlighter.NeedScan ************');
+  if Highlighter.FirstUnpreparedLine >= 0 then DebugLn('******** Highlighter.NeedScan ************');
   Highlighter.PrepareLines;
 end;
 

@@ -99,12 +99,12 @@ type
     procedure Insert(AnIndex, ACount: Integer); override;
     procedure Delete(AnIndex, ACount: Integer); override;
   protected
-    procedure Invalidate(AFrom, ATo: integer); inline;
     function GetRange(AnIndex: Integer): Pointer; virtual; abstract;
     procedure SetRange(AnIndex: Integer; const AValue: Pointer); virtual; abstract;
   public
     constructor Create;
 
+    procedure Invalidate(AFrom, ATo: integer); inline;
     procedure InvalidateAll;
     procedure ValidateAll;
     procedure UpdateFirstInvalidLine(ANewFirstInvalidLine: IntIdx);

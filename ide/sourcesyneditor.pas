@@ -1717,7 +1717,7 @@ begin
   if (not FShowTopInfo) or (not HandleAllocated) or (FFoldView.HighLighter = nil) then exit;
   if FSrcSynCaretChangedLock or not(FFoldView.HighLighter is TSynPasSyn) then exit;
 
-  if FFoldView.HighLighter.NeedScan then begin
+  if FFoldView.HighLighter.FirstUnpreparedLine >= 0 then begin
     FSrcSynCaretChangedNeeded := True;
     FTopInfoDisplay.LineMapCount := 0;
     exit;

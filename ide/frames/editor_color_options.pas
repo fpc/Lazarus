@@ -578,7 +578,8 @@ begin
       FCurrentHighlighter.Attribute[i].UpdateSupportedFeatures([lafAlwaysEnabled], []);
       FCurrentHighlighter.Attribute[i].Features := FCurrentHighlighter.Attribute[i].Features + [lafAlwaysEnabled];
     end;
-    FCurrentHighlighter.ScanAllRanges;
+    FCurrentHighlighter.MarkUnprepared;
+    FCurrentHighlighter.PrepareLines;
   end;
   for i := 0 to ColorPreview.MarkupManager.Count - 1 do begin
     ColorPreview.MarkupManager.Markup[i].MarkupInfo.UpdateSupportedFeatures([lafAlwaysEnabled], []);

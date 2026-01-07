@@ -240,6 +240,8 @@ type
      * Scan               *
      * ------------------ *)
     function PrepareLines(AMinimumRequiredLineIdx: IntIdx; AMaxTime: integer = 0): boolean; virtual; // true = all done
+    procedure MarkUnprepared(AFirstLineIdx: IntIdx = 0; ALastLineIdx: IntIdx = -1); virtual;
+    function FirstUnpreparedLine: IntIdx; virtual;
 
     (* ------------------ *
      * Token / Attributes *
@@ -319,6 +321,8 @@ type
     procedure ResetRange; virtual; abstract;
 
     function PrepareLines(AMinimumRequiredLineIdx: IntIdx = -1; AMaxTime: integer = 0): boolean; override;
+    procedure MarkUnprepared(AFirstLineIdx: IntIdx = 0; ALastLineIdx: IntIdx = - 1); override;
+    function FirstUnpreparedLine: IntIdx; override;
     property IsScanning: Boolean read FIsScanning;
 
     (* ------------------ *
@@ -616,6 +620,16 @@ begin
   Result := True;
 end;
 
+procedure TLazEditCustomHighlighter.MarkUnprepared(AFirstLineIdx: IntIdx; ALastLineIdx: IntIdx);
+begin
+  //
+end;
+
+function TLazEditCustomHighlighter.FirstUnpreparedLine: IntIdx;
+begin
+  Result := -1;
+end;
+
 function TLazEditCustomHighlighter.GetTokenAttributeEx: TLazCustomEditTextAttribute;
 var
   tp: Integer;
@@ -797,6 +811,7 @@ var
   FirstInvalidLineIdx, LastScannedLineIdx: IntIdx;
 begin
   Result := True; // all scanned
+
   FirstInvalidLineIdx := CurrentRanges.FirstInvalidLine;
   if (FirstInvalidLineIdx < 0) or
      ( (AMinimumRequiredLineIdx >= 0) and (AMinimumRequiredLineIdx < FirstInvalidLineIdx) )
@@ -825,6 +840,19 @@ begin
       LastScannedLineIdx := CurrentRanges.Count;
     CurrentLines.SendHighlightChanged(FirstInvalidLineIdx, Max(0, LastScannedLineIdx - FirstInvalidLineIdx));
   end;
+end;
+
+procedure TLazEditCustomRangesHighlighter.MarkUnprepared(AFirstLineIdx: IntIdx;
+  ALastLineIdx: IntIdx);
+begin
+  if AFirstLineIdx < AFirstLineIdx then
+    ALastLineIdx := CurrentRanges.Count -1;
+  CurrentRanges.Invalidate(AFirstLineIdx, ALastLineIdx);
+end;
+
+function TLazEditCustomRangesHighlighter.FirstUnpreparedLine: IntIdx;
+begin
+  Result := CurrentRanges.FirstInvalidLine;
 end;
 
 procedure TLazEditCustomRangesHighlighter.AttachToLines(ALines: TLazEditStringsBase);

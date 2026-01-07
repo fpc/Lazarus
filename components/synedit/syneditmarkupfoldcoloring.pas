@@ -1083,7 +1083,7 @@ begin
 
   fHighlighter.CurrentLines := Lines;
   // highlighter still scanning
-  if fHighlighter.NeedScan then
+  if fHighlighter.FirstUnpreparedLine >= 0 then
     exit;
 
   {$IFDEF SynEditMarkupFoldColoringDebug}

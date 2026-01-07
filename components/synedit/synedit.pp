@@ -6069,7 +6069,7 @@ begin
   InvalidateLines(StartLine, StartLine + ACount - 1);
   InvalidateGutterLines(AIndex + 1, AIndex + 1 + ACount);
   FFoldedLinesView.FixFoldingAtTextIndex(AIndex, AIndex + ACount);
-  if (Highlighter = nil) or (not Highlighter.NeedScan) then begin
+  if (Highlighter = nil) or (Highlighter.FirstUnpreparedLine < 0) then begin
     if sfAfterLoadFromFileNeeded in fStateFlags then
       AfterLoadFromFile
     else
@@ -6502,7 +6502,7 @@ procedure TCustomSynEdit.SetFoldState(const AValue: String);
 begin
   if assigned(fHighlighter) then begin
     fHighlighter.CurrentLines := FTheLinesView;
-    if fHighlighter.NeedScan then begin
+    if fHighlighter.FirstUnpreparedLine >= 0 then begin
       FPendingFoldState := AValue;
       exit;
     end;
@@ -8314,7 +8314,7 @@ end;
 procedure TCustomSynEdit.AfterLoadFromFile;
 begin
   if ( WaitingForInitialSize and
-       ( (fHighlighter = nil) or (fHighlighter.NeedScan) )
+       ( (fHighlighter = nil) or (fHighlighter.FirstUnpreparedLine >= 0) )
      ) or
      (FPaintLock > 1) or
      ( (FPaintLock = 1) and

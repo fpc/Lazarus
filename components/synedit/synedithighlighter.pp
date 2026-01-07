@@ -212,8 +212,8 @@ type
        In future SynEdit & HL may have other IDLE tasks, and if and when that happens, there will be new ways to control this
     *)
     function  IdleScanRanges: Boolean; virtual; experimental;  deprecated 'use PrepareLines / to be removed in 5.99';
-    function NeedScan: Boolean;
-    procedure ScanAllRanges;
+    function NeedScan: Boolean;  deprecated 'use FirstUnpreparedLine / to be removed in 5.99';
+    procedure ScanAllRanges; deprecated 'use MarkUnprepared / to be removed in 5.99';
     procedure SetLine(const NewValue: String;
                       LineNumber:Integer // 0 based
                       ); virtual; deprecated 'Use InitForScaningLine // to be removed in 5.99';
