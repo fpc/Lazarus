@@ -51,6 +51,8 @@ uses
   // LCL
   Controls, LCLType, Graphics, Menus, ImgList,
   LazLoggerBase,
+  // LazEdit
+  LazEditHighlighterUtils, LazEditTextAttributes,
   // synedit
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks,
@@ -62,7 +64,7 @@ uses
   SynEditMarkupHighAll, SynEditKeyCmds, SynEditMarkupIfDef, SynEditMiscProcs,
   SynPluginMultiCaret, SynEditPointClasses,
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
-  SynPluginExternalLink, SynPluginAutoBraces, LazEditTextAttributes,
+  SynPluginExternalLink, SynPluginAutoBraces,
   // IDE
   etSrcEditMarks, LazarusIDEStrConsts, SourceMarks, LazEditTextGridPainter;
 
@@ -410,7 +412,7 @@ type
     function GetInitializationLine: Integer;
     function GetInterfaceLine: Integer;
   protected
-    function CreateRangeList({%H-}ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
+    function CreateRangeList({%H-}ALines: TSynEditStringsBase): TLazHighlighterLineRangeList; override;
     function StartCodeFoldBlock(ABlockType: Pointer = nil;
       IncreaseLevel: Boolean = true; ForceDisabled: Boolean = False
       ): Boolean; override;
@@ -419,8 +421,7 @@ type
     //procedure DefHighlightChange(Sender: TObject);
 
 
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
-      LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     property InterfaceLine: Integer read GetInterfaceLine;
     property ImplementationLine: Integer read GetImplementationLine;
     property InitializationLine: Integer read GetInitializationLine;
@@ -2298,7 +2299,7 @@ begin
   Result := TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine;
 end;
 
-function TIDESynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;
+function TIDESynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TLazHighlighterLineRangeList;
 begin
   Result := TIDESynHighlighterPasRangeList.Create;
   TIDESynHighlighterPasRangeList(Result).FInterfaceLine := -1;
@@ -2343,19 +2344,19 @@ begin
     NestedBracketAttribs.Add;
 end;
 
-procedure TIDESynPasSyn.SetLine(const NewValue: string; LineNumber: Integer);
+procedure TIDESynPasSyn.InitForScaningLine;
 begin
   if assigned(CurrentRanges) then begin
-    if TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine = LineNumber + 1 then
+    if TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine = LineIndex + 1 then
       TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine := -1;
-    if TIDESynHighlighterPasRangeList(CurrentRanges).FImplementationLine = LineNumber + 1 then
+    if TIDESynHighlighterPasRangeList(CurrentRanges).FImplementationLine = LineIndex + 1 then
       TIDESynHighlighterPasRangeList(CurrentRanges).FImplementationLine := -1;
-    if TIDESynHighlighterPasRangeList(CurrentRanges).FInitializationLine = LineNumber + 1 then
+    if TIDESynHighlighterPasRangeList(CurrentRanges).FInitializationLine = LineIndex + 1 then
       TIDESynHighlighterPasRangeList(CurrentRanges).FInitializationLine := -1;
-    if TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine = LineNumber + 1 then
+    if TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine = LineIndex + 1 then
       TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine := -1;
   end;
-  inherited SetLine(NewValue, LineNumber);
+  inherited InitForScaningLine;
 end;
 
 { TIDESynFreePasSyn }

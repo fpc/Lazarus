@@ -503,7 +503,6 @@ type
 
   TIDESynTextSyn = class(TSynCustomHighlighter)
   private
-    FLineText: String;
 //    fTextAttri: TSynHighlighterAttributes;
     FPos: Integer;
   protected
@@ -512,7 +511,7 @@ type
     class function GetLanguageName: string; override;
     procedure ResetRange; override;
 
-    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
+    procedure InitForScaningLine; override;
     constructor Create(AOwner: TComponent); override;
     function GetEol: Boolean; override;
     function GetToken: string; override;
@@ -8582,10 +8581,9 @@ end;
 
 { TIDESynTextSyn }
 
-procedure TIDESynTextSyn.SetLine(const NewValue: String; LineNumber: Integer);
+procedure TIDESynTextSyn.InitForScaningLine;
 begin
-  inherited SetLine(NewValue, LineNumber);
-  FLineText := NewValue;
+  inherited InitForScaningLine;
   FPos := 0;
 end;
 
@@ -8618,14 +8616,14 @@ end;
 
 function TIDESynTextSyn.GetToken: string;
 begin
-  Result := FLineText;
+  Result := CurrentLineText;
 end;
 
 procedure TIDESynTextSyn.GetTokenEx(out TokenStart: PChar; out
   TokenLength: integer);
 begin
-  TokenStart := PChar(FLineText);
-  TokenLength := Length(FLineText);
+  TokenStart := PChar(CurrentLineText);
+  TokenLength := Length(CurrentLineText);
 end;
 
 function TIDESynTextSyn.GetTokenAttribute: TLazEditTextAttribute;
