@@ -234,7 +234,6 @@ begin
      ) and
      (bfOpen in fnd.BracketFlags)
   then begin
-    p := Editor.LogicalCaretXY;
 
     s := GetBracketToken(fnd.BracketKind, True, Editor.Highlighter);
     if (FFilterOpenTokens <> '') and
@@ -243,16 +242,18 @@ begin
     then
       exit;
 
+    p := Editor.LogicalCaretXY;
     s := GetBracketToken(fnd.BracketKind, False, Editor.Highlighter);
-    if (fnd.BracketLogLength > 1)
-    then begin
-      for i := Length(s)-1 downto 1 do begin
-        l := Editor.Lines[ToIdx(p.Y)];
-        if (strlcomp(@l[p.X], @s[1+Length(s)-i], i) = 0) and
-           (GetBracketTokenIndex(copy(s, 1 + Length(s)-i, Length(s)), False, Editor.Highlighter) >= 0)
-        then begin
-          s := copy(s, 1, Length(s)-i);
-          break;
+    if (fnd.BracketLogLength > 1) then begin
+      l := Editor.Lines[ToIdx(p.Y)];
+      if p.X <= Length(l) then begin
+        for i := Length(s)-1 downto 1 do begin
+          if (strlcomp(@l[p.X], @s[1+Length(s)-i], i) = 0) and
+             (GetBracketTokenIndex(copy(s, 1 + Length(s)-i, Length(s)), False, Editor.Highlighter) >= 0)
+          then begin
+            s := copy(s, 1, Length(s)-i);
+            break;
+          end;
         end;
       end;
     end;
