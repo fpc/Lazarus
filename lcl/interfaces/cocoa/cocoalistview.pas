@@ -8,13 +8,12 @@ interface
 
 uses
   // RTL, FCL, LCL
-  MacOSAll, CocoaAll,
+  CocoaAll,
   Classes, LCLType, SysUtils, LCLMessageGlue, LMessages,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   // Cocoa WS
   CocoaPrivate, CocoaCallback, CocoaListControl, CocoaWSCommon,
-  CocoaScrollers, CocoaWSScrollers, CocoaTextEdits, CocoaGDIObjects, CocoaUtils,
-  cocoa_extra;
+  CocoaScrollers, CocoaWSScrollers, CocoaTextEdits, CocoaGDIObjects, CocoaUtils;
 
 type
   {

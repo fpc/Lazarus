@@ -458,7 +458,8 @@ type
   end;
 {$ENDIF}
 
-// these constants are missing from CocoaAll for some reason
+// they have already been added to Cocoa_Extra;
+// they are kept here just for historical compatibility.
 const
   NSTextAlignmentLeft      = 0;
   NSTextAlignmentRight     = {$ifdef USE_IOS_VALUES}2{$else}1{$endif}; // it's 2 for iOS and family

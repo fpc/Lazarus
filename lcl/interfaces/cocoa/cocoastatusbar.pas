@@ -10,7 +10,7 @@ uses
   Classes, SysUtils,
   LCLType, LMessages, LCLMessageGlue, ComCtrls,
   CocoaAll, CocoaPrivate, CocoaCallback, CocoaGDIObjects ,CocoaWSCommon, CocoaUtils,
-  CocoaCustomControl;
+  CocoaCustomControl, Cocoa_Extra;
 
 type
   { IStatusBarCallback }
@@ -65,7 +65,7 @@ var
   cnt  : Integer;
   w    : Integer;
 const
-  CocoaAlign: array [TAlignment] of Integer = (NSNaturalTextAlignment, NSRightTextAlignment, NSCenterTextAlignment);
+  CocoaAlign: array [TAlignment] of Integer = (NSTextAlignmentLeft, NSTextAlignmentRight, NSTextAlignmentCenter);
 begin
   if not Assigned(barcallback) then Exit;
 
