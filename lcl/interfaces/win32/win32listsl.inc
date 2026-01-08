@@ -231,7 +231,29 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32ListStringList.GetObject(Index: Integer): TObject;
 begin
-  Result := TObject(PtrInt(Windows.SendMessage(FWin32List, FFlagGetItemData, Index, 0)));
+  if IsVirtualListBox then
+  begin
+    //debugln(['TWin32ListStringList.GetObject: Index=',Index]);
+    Result := nil;
+    if Assigned(TCustomListBox(FSender).OnDataObject) then
+      TCustomListBox(FSender).OnDataObject(FSender, Index, Result);
+    Exit;
+  end
+  else
+    Result := TObject(PtrInt(Windows.SendMessage(FWin32List, FFlagGetItemData, Index, 0)));
+end;
+
+function TWin32ListStringList.IndexOf(const S: string): Integer;
+begin
+  if IsVirtualListBox then
+  begin
+    //debugln(['TWin32ListStringList.IndexOf: Virtual Mode']);
+    Result := -1;
+    if Assigned(TCustomListBox(FSender).OnDataFind) then
+      Result := TCustomListBox(FSender).OnDataFind(FSender, S);
+  end
+  else
+    Result := inherited IndexOf(S);
 end;
 
 {------------------------------------------------------------------------------
@@ -319,6 +341,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.PutObject(Index: Integer; AObject: TObject);
 begin
+  if IsVirtualListBox then
+  begin
+    //debugln(['TWin32ListStringList.PutObject: Virtual Mode']);
+    Exit;
+  end;
   Windows.SendMessage(FWin32List, FFlagSetItemData, Index, LPARAM(AObject));
 end;
 

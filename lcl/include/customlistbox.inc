@@ -519,6 +519,11 @@ procedure TCustomListBox.SetStyle(Val: TListBoxStyle);
 begin
   if Val <> FStyle then
   begin
+    if Val = lbVirtual then
+    begin
+      debugln(['TCustomListBox.SetStyle: changing Style to lbVirtual -> Clear Items before setting Style']);
+      Items.Clear;  //temporary workaround? Prevent range check error in OnData if virtual count will become < current count
+    end;
     FStyle:= Val;
     if HandleAllocated then
       TWSCustomListBoxClass(WidgetSetClass).SetStyle(Self);
