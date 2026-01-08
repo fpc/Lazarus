@@ -1608,7 +1608,7 @@ Component Library).
 A combo-box is visually represented as an edit control and a scrollable list 
 of items which can be selected. The list can always be visible, or opened 
 when needed using a drop-down indicator. In addition, the items displayed on 
-the control be drawn using using the built-in mechanisms for the widgetset 
+the control are drawn using using the built-in mechanisms for the widgetset 
 class or using an owner-drawn style.
 </p>
 <p>
@@ -2129,18 +2129,21 @@ allocated, and before any child handles are allocated.
 </element>
 
 <element name="TCustomComboBox.DestroyWnd">
-<short>Destroys the handle for the control (and its children).</short>
+<short>
+Destroys the handle for the control (and its children).
+</short>
 <descr>
 <p>
-<var>DestroyWnd</var> is an overridden method in TCustomComboBox used to 
-destroy the handle for the windowed control. This occurs when the control is 
-freed, and when the handle is re-created in the widgetset class. DestroyWnd 
-ensures that values for the ItemIndex and Items properties are retrieved from 
-the widgetset class before it is destroyed or re-created. The value in Sorted 
-is applied to the Items retrieved from the widgetset class.
+<var>DestroyWnd</var> is an overridden method in <var>TCustomComboBox</var> 
+used to destroy the handle for the windowed control. This occurs when the 
+control is freed, and when the handle is re-created in the widgetset class. 
+DestroyWnd ensures that values for the ItemIndex and Items properties are 
+retrieved from the widgetset class before it is destroyed or re-created. The 
+value in Sorted is applied to the Items retrieved from the widgetset class.
 </p>
 <p>
-DestroyWnd calls the inherited method prior to exit.
+DestroyWnd calls the inherited method prior to exit to finalize the window 
+handle for the control.
 </p>
 </descr>
 <errors>
@@ -2152,7 +2155,7 @@ exception if a handle has not been allocated for the control.
 <link id="TCustomComboBox.Items"/>
 <link id="TCustomComboBox.Sorted"/>
 <link id="#lcl.controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
-<link id="#lcl.lclproc.RaiseGDBException">RaiseGDBException</link>
+<link id="#lazutils.laztracer.RaiseGDBException">RaiseGDBException</link>
 </seealso>
 </element>
 
@@ -4377,7 +4380,7 @@ implements the a combo-box component in the LCL (Lazarus Component Library).
 A combo-box is visually represented as an edit control and a scrollable list 
 of items which can be selected. The list can always be visible, or opened 
 when needed using a drop-down indicator. In addition, the items displayed on 
-the control be drawn using using the built-in mechanisms for the widgetset 
+the control are drawn using using the built-in mechanisms for the widgetset 
 class or using an owner-drawn style.
 </p>
 <p>
@@ -4402,12 +4405,12 @@ box, or selected either manually or by auto-completion from the Items in the
 list. At run-time, the entry selected from the list replaces the text in the 
 edit box, and <var>ItemIndex</var> holds the (zero-based) index number of the 
 selected item. If no value is selected from the drop-down list, the default 
-text (if any) remains for any information typed directly into the control Text, 
-and ItemIndex takes the value of -1.
+text (if any) remains for any information typed directly into the control 
+Text, and ItemIndex takes the value of -1.
 </p>
 <p>
-Use <var>Style</var> to control the display style and drawing mechanism enabled 
-for the drop-down list on the control.
+Use <var>Style</var> to control the display style and drawing mechanism 
+enabled for the drop-down list on the control.
 </p>
 <p>
 Use <var>AutoDropDown</var>, <var>AutoComplete</var>, 
