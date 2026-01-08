@@ -387,7 +387,7 @@ selected item is stored in FileName. CanClose is also set to True.
 </descr>
 <seealso>
 <link id="TLazarusFileDialogForm.Initialize"/>
-<link id="TLazarusFileDialogForm.FileName"/>
+<!-- <link id="TLazarusFileDialogForm.FileName"/> -->
 <link id="TLazarusFileDialogForm.ShellTreeView"/>
 <link id="TLazarusFileDialogForm.ShellListView"/>
 </seealso>
@@ -526,7 +526,7 @@ the value returned on the dialog form.
 </descr>
 <seealso>
 <link id="TLazarusFileDialogForm"/>
-<link id="TLazarusFileDialogForm.FileName"/>
+<!-- <link id="TLazarusFileDialogForm.FileName"/> -->
 <link id="#lcl.forms.TCustomForm.ShowModal">TCustomForm.ShowModal</link>
 </seealso>
 </element>
