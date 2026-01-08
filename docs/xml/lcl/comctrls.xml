@@ -7741,7 +7741,34 @@ Change does <b>not</b> call the inherited method.
 </element>
 
 <element name="TTabControl.CreateWnd" link="#lcl.comctrls.TCustomTabControl.CreateWnd"/>
+
 <element name="TTabControl.DestroyHandle" link="#lcl.controls.TWinControl.DestroyHandle"/>
+
+<element name="TTabControl.DestroyWnd">
+<short>
+Frees the handle for a Canvas allocated for the control.
+</short>
+<descr>
+<p>
+<var>DestroyWnd</var> is an overridden method in <var>TTabControl</var>. It 
+calls the inherited method on entry to free the handles for both the control 
+and its child Controls.
+</p>
+<p>
+DestroyWnd is called during execution of the DestroyHandle method which occurs 
+when the control is destroyed, or when the parent window handle for the 
+control is changed.
+</p>
+</descr>
+<seealso>
+<link id="TTabControl.DestroyHandle"/>
+<link id="#lcl.controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
+<link id="#lcl.controls.TWinControl.Controls">TWinControl.Controls</link>
+</seealso>
+<version>
+Added in LCL version 4.6.
+</version>
+</element>
 
 <element name="TTabControl.Notification">
 <short>
@@ -14297,7 +14324,6 @@ SortWithParams is called from the Sort and CustomSort methods.
 <link id="TCustomListView.SortType"/>
 <link id="TCustomListView.SortColumn"/>
 <link id="TCustomListView.SortDirection"/>
-<link id="TListItems.Sort"/>
 <link id="TListItem.Checked"/>
 <link id="TListItem.Selected"/>
 </seealso>
