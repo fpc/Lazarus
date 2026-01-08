@@ -144,7 +144,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -297,7 +297,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynLFMSyn.InitForScaningLine;
+procedure TSynLFMSyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

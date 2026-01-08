@@ -511,7 +511,7 @@ type
     class function GetLanguageName: string; override;
     procedure ResetRange; override;
 
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     constructor Create(AOwner: TComponent); override;
     function GetEol: Boolean; override;
     function GetToken: string; override;
@@ -8581,9 +8581,9 @@ end;
 
 { TIDESynTextSyn }
 
-procedure TIDESynTextSyn.InitForScaningLine;
+procedure TIDESynTextSyn.InitForScanningLine;
 begin
-  inherited InitForScaningLine;
+  inherited InitForScanningLine;
   FPos := 0;
 end;
 

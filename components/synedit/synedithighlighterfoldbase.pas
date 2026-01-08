@@ -532,7 +532,7 @@ type
 
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     procedure DoCurrentLinesChanged; override;
     function DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx = - 1;
       AMaxTime: integer = 0): integer; override;
@@ -1872,7 +1872,7 @@ begin
     FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
 end;
 
-procedure TSynCustomFoldHighlighter.InitForScaningLine;
+procedure TSynCustomFoldHighlighter.InitForScanningLine;
 begin
   inherited;
   FCodeFoldRange.MinimumCodeFoldBlockLevel := FCodeFoldRange.FCodeFoldStackSize;

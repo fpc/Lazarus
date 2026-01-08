@@ -88,7 +88,7 @@ type
     function GetTokenPos: Integer; override;
     procedure Next; override;
     procedure ResetRange; override;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     procedure SetRange(Value: Pointer); override;
     function UseUserSettings(settingIndex: integer): boolean; override;
     procedure EnumUserSettings(settings: TStrings); override;
@@ -259,7 +259,7 @@ begin
   //inherited ResetRange;
 end;
 
-procedure TSynPositionHighlighter.InitForScaningLine;
+procedure TSynPositionHighlighter.InitForScanningLine;
 var
   p: PPositionTokens;
 begin

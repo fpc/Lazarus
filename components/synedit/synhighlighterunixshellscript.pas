@@ -144,7 +144,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure InitForScaningLine; override; /////TL: Added 2003-06-11
+    procedure InitForScanningLine; override; /////TL: Added 2003-06-11
     function IsKeyword(const AKeyword: string): boolean; override;              //mh 2000-11-08
     function IsSecondKeyWord(aToken: string): Boolean;
     function GetToken: string; override;
@@ -335,7 +335,7 @@ begin
   fDefaultFilter := SYNS_FilterUNIXShellScript;
 end; { Create }
 
-procedure TSynUNIXShellScriptSyn.InitForScaningLine;
+procedure TSynUNIXShellScriptSyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

@@ -1120,7 +1120,7 @@ type
     procedure SetIsInNextToEOL; experimental; // scan without extra colors
 
     procedure ResetRange; override;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     procedure SetRange(Value: Pointer); override;
     function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; override;
 
@@ -4323,7 +4323,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TSynPasSyn.InitForScaningLine;
+procedure TSynPasSyn.InitForScanningLine;
 begin
   //DebugLn(['TSynPasSyn.SetLine START LineNumber=',LineNumber,' Line="',NewValue,'"']);
   if FNeedCustomTokenBuild then
@@ -4334,7 +4334,7 @@ begin
   Run := 0;
   FIsInSlash := False;
   FLastTokenTypeDeclExtraAttrib := eaNone;
-  Inherited InitForScaningLine;
+  Inherited InitForScanningLine;
   PasCodeFoldRange.LastLineCodeFoldLevelFix := 0;
   PasCodeFoldRange.PasFoldFixLevel := 0;
   FStartCodeFoldBlockLevel := PasCodeFoldRange.MinimumNestFoldBlockLevel;

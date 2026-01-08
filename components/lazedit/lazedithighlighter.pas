@@ -180,7 +180,7 @@ type
     (* ------------------ *
      * Current Line       *
      * ------------------ *)
-    procedure InitForScaningLine; virtual;
+    procedure InitForScanningLine; virtual;
     property  CurrentLineText: string read FLineText;
     property  LinePtr: Pchar read FLinePtr;
 
@@ -370,7 +370,7 @@ end;
 
 procedure TLazEditCustomHighlighter.DoStartAtLine;
 begin
-  InitForScaningLine;
+  InitForScanningLine;
 end;
 
 procedure TLazEditCustomHighlighter.DoBeginUpdate;
@@ -434,7 +434,7 @@ begin
   SendRescanNeededNotification;
 end;
 
-procedure TLazEditCustomHighlighter.InitForScaningLine;
+procedure TLazEditCustomHighlighter.InitForScanningLine;
 begin
   //
 end;
@@ -556,7 +556,7 @@ begin
   F_IsInNextToEOL := False;
 
   DoStartAtLine;
-  InitForScaningLine;
+  InitForScanningLine;
 end;
 
 procedure TLazEditCustomHighlighter.ContinueNextLine;
@@ -566,7 +566,7 @@ begin
   FLinePtr := PChar(FLineText);
   F_IsInNextToEOL := False;
 
-  InitForScaningLine;
+  InitForScanningLine;
 end;
 
 procedure TLazEditCustomHighlighter.SetAlternativeLineTextForGetTokens(const AnInjectedText: String;
@@ -578,7 +578,7 @@ begin
   F_IsInNextToEOL := False;
 
   DoStartAtLine;
-  InitForScaningLine;
+  InitForScanningLine;
 end;
 
 procedure TLazEditCustomHighlighter.NextToEol;

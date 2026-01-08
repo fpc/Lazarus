@@ -205,7 +205,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
 
@@ -674,7 +674,7 @@ begin
   fRange := rsUnknown;
 end;
 
-procedure TSynPHPSyn.InitForScaningLine;
+procedure TSynPHPSyn.InitForScanningLine;
 begin
   inherited;
   fLineLen := length(CurrentLineText);

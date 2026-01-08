@@ -328,7 +328,7 @@ type
     function  GetTokenAttributeEx: TLazCustomEditTextAttribute; override;
     function  GetTokenKind: integer; override;
     function  GetTokenPos: Integer; override; // 0-based
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function UpdateRangeInfoAtEOL: Boolean; override;
     function  GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override;
@@ -1634,7 +1634,7 @@ begin
   Result := TSynHighlighterMultiRangeList(inherited CurrentRanges)
 end;
 
-procedure TSynMultiSyn.InitForScaningLine;
+procedure TSynMultiSyn.InitForScanningLine;
   procedure InitRunSection(ASchemeIdx: Integer);
   var
     VLines: TSynHLightMultiVirtualLines;

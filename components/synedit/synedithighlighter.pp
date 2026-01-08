@@ -193,7 +193,7 @@ type
                      const aStoredName: String = ''): TLazEditTextAttribute;
     procedure Assign(Source: TPersistent); override;
   public
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override; deprecated;
     procedure ResetRange; override; deprecated;
@@ -216,7 +216,7 @@ type
     procedure ScanAllRanges; deprecated 'use MarkUnprepared / to be removed in 5.99';
     procedure SetLine(const NewValue: String;
                       LineNumber:Integer // 0 based
-                      ); virtual; deprecated 'Use InitForScaningLine // to be removed in 5.99';
+                      ); virtual; deprecated 'Use InitForScanningLine // to be removed in 5.99';
   public
     function UseUserSettings(settingIndex: integer): boolean; virtual;
     procedure EnumUserSettings(Settings: TStrings); virtual;
@@ -709,10 +709,10 @@ begin
     inherited Assign(Source);
 end;
 
-procedure TSynCustomHighlighter.InitForScaningLine;
+procedure TSynCustomHighlighter.InitForScanningLine;
 begin
   SetLine(CurrentLineText, LineIndex);
-  inherited InitForScaningLine;
+  inherited InitForScanningLine;
 end;
 
 procedure TSynCustomHighlighter.EnumUserSettings(Settings: TStrings);

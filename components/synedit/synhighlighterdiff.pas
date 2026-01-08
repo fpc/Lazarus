@@ -152,7 +152,7 @@ type
     procedure Next; override;
     function GetEol: Boolean; override;
 
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -674,7 +674,7 @@ begin
   Result := fTokenId = tkNull;
 end;
 
-procedure TSynDiffSyn.InitForScaningLine;
+procedure TSynDiffSyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

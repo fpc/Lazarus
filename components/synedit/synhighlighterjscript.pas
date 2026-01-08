@@ -297,7 +297,7 @@ type
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetToken: String; override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
@@ -1560,7 +1560,7 @@ begin
   fRange := rsUnknown;
 end;
 
-procedure TSynJScriptSyn.InitForScaningLine;
+procedure TSynJScriptSyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

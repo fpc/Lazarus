@@ -247,7 +247,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -814,7 +814,7 @@ begin
   fDefaultFilter := SYNS_FilterCPP;
 end; { Create }
 
-procedure TSynCppSyn.InitForScaningLine;
+procedure TSynCppSyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

@@ -107,7 +107,7 @@ type
     function GetTokenID: TtkTokenKind;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     procedure Next; override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
@@ -241,9 +241,9 @@ begin
   CodeFoldRange.RangeType := Pointer(PtrUInt(fRange));
 end;
 
-procedure TSynMarkdownSyn.InitForScaningLine;
+procedure TSynMarkdownSyn.InitForScanningLine;
 begin
-  inherited InitForScaningLine;
+  inherited InitForScanningLine;
   fLine := PChar(CurrentLineText);
   fLineLen := Length(CurrentLineText);
   Run := 0;

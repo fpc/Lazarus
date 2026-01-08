@@ -98,7 +98,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -188,7 +188,7 @@ begin
   MakeMethodTables;
 end; { Create }
 
-procedure TSynPoSyn.InitForScaningLine;
+procedure TSynPoSyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

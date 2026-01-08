@@ -87,7 +87,7 @@ type
     procedure EndXmlNodeCodeFoldBlock(ClosePos: Integer = -1; AName: String = '');
     function GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean): String; override;
   public
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function BracketKindCount: integer; override;
     function GetBracketContextAt(const ALineIdx: TLineIdx; const ALogX: IntPos;
       const AByteLen: Integer; const AKind: integer; var AFlags: TLazEditBracketInfoFlags; out
@@ -119,7 +119,7 @@ begin
   end;
 end;
 
-procedure TSynCustomXmlHighlighter.InitForScaningLine;
+procedure TSynCustomXmlHighlighter.InitForScanningLine;
 begin
   inherited;
   FXmlRangeInfo := TSynHighlighterXmlRangeList(CurrentRanges).XmlRangeInfo[LineIndex]; // From this line, not from the previous line

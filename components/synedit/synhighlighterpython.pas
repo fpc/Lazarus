@@ -154,7 +154,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetKeywordIdentifiers: TStringList; virtual;
     function GetToken: string; override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -458,7 +458,7 @@ begin
   inherited;
 end;
 
-procedure TSynPythonSyn.InitForScaningLine;
+procedure TSynPythonSyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

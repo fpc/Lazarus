@@ -199,7 +199,7 @@ type
     procedure Next; override;
     procedure ResetRange; override;
     procedure SetRange(Value: Pointer); override;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function SaveToRegistry(RootKey: HKEY; Key: string): boolean; override;
     function LoadFromRegistry(RootKey: HKEY; Key: string): boolean; override;
     procedure LoadHighLighter(aFile: string);
@@ -441,7 +441,7 @@ begin
   inherited Destroy;
 end; { Destroy }
 
-procedure TSynAnySyn.InitForScaningLine;
+procedure TSynAnySyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

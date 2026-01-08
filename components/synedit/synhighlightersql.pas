@@ -192,7 +192,7 @@ type
     function IsKeyword(const AKeyword: string): boolean; override;              // DJLP 2000-08-09
     procedure Next; override;
     procedure ResetRange; override;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     procedure SetRange(Value: Pointer); override;
   published
     property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
@@ -1527,7 +1527,7 @@ begin
     SQLDialect := TSynSQLSyn(Source).SQLDialect;
 end;
 
-procedure TSynSQLSyn.InitForScaningLine;
+procedure TSynSQLSyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

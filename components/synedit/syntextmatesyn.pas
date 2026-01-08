@@ -76,7 +76,7 @@ type
     procedure LoadGrammar(AGrammarDef: String);
     procedure LoadGrammar(AGrammarFile, AGrammarPath: String);
 
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     procedure Next; override;
     function GetEol: Boolean; override;
     function DebugAttrAtXPos(AXPos: Integer): String; // requires StartAtLineIndex before
@@ -249,15 +249,15 @@ begin
     FTextMateGrammar.LanguageName := AGrammarFile;
 end;
 
-procedure TSynTextMateSyn.InitForScaningLine;
+procedure TSynTextMateSyn.InitForScanningLine;
 var
   nd: TSynFoldNodeInfo;
 begin
-  inherited InitForScaningLine;
+  inherited InitForScanningLine;
 
   if FCurrentRange = -2 then
     FCurrentRange := FTextMateGrammar.CurrentPatternIndex;
-// TODO InitForScaningLine - keep range?
+// TODO InitForScanningLine - keep range?
 
   FTextMateGrammar.SetLine(CurrentLineText, FCurrentRange);
   FCurrentRange := -2;

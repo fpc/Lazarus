@@ -421,7 +421,7 @@ type
     //procedure DefHighlightChange(Sender: TObject);
 
 
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     property InterfaceLine: Integer read GetInterfaceLine;
     property ImplementationLine: Integer read GetImplementationLine;
     property InitializationLine: Integer read GetInitializationLine;
@@ -2344,7 +2344,7 @@ begin
     NestedBracketAttribs.Add;
 end;
 
-procedure TIDESynPasSyn.InitForScaningLine;
+procedure TIDESynPasSyn.InitForScanningLine;
 begin
   if assigned(CurrentRanges) then begin
     if TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine = LineIndex + 1 then
@@ -2356,7 +2356,7 @@ begin
     if TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine = LineIndex + 1 then
       TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine := -1;
   end;
-  inherited InitForScaningLine;
+  inherited InitForScanningLine;
 end;
 
 { TIDESynFreePasSyn }

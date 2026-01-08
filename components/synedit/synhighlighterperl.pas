@@ -377,7 +377,7 @@ type
       override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetToken: String; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -2026,7 +2026,7 @@ begin
   fDefaultFilter := SYNS_FilterPerl;
 end; { Create }
 
-procedure TSynPerlSyn.InitForScaningLine;
+procedure TSynPerlSyn.InitForScanningLine;
 begin
   inherited;
   Run := 0;

@@ -439,7 +439,7 @@ type
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
-    procedure InitForScaningLine; override;
+    procedure InitForScanningLine; override;
     function GetToken: string; override;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
@@ -2300,7 +2300,7 @@ begin
   fDefaultFilter := SYNS_FilterHTML;
 end;
 
-procedure TSynHTMLSyn.InitForScaningLine;
+procedure TSynHTMLSyn.InitForScanningLine;
 begin
   inherited;
   fLineLen := Length(CurrentLineText);
