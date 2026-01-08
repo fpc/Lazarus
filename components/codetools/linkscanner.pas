@@ -155,7 +155,6 @@ type
     cmFPC,
     cmDELPHI,
     cmDELPHIUNICODE,
-    cmGPC,
     cmTP,
     cmOBJFPC,
     cmMacPas,
@@ -168,7 +167,6 @@ const
     'FPC',
     'DELPHI',
     'DELPHIUNICODE',
-    'GPC',
     'TP',
     'OBJFPC',
     'MACPAS',
@@ -256,8 +254,6 @@ const
      cmsSystemcodepage,cmsDefault_unicodestring,
      cmsPrefixedAttributes,cmsArrayOperators,cmsUnderscoreIsSeparator,
      cmsFunctionReferences,cmsAnonymousFunctions],
-    // cmGPC
-    [cmsTp_procvar],
     // cmTP
     [cmsTp_procvar,cmsDuplicate_names],
     // cmOBJFPC
