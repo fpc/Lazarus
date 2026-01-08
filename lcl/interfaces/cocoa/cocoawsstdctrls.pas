@@ -1225,7 +1225,9 @@ var
   editor: TCocoaFieldEditor;
 begin
   TCocoaWSWinControl.SetFont(AWinControl, AFont);
-  field:= NSTextField(AWinControl.Handle);
+  field:= self.GetTextField(AWinControl);
+  if NOT Assigned(field) then
+    Exit;
   editor:= TCocoaFieldEditor(field.currentEditor);
   editor.lclReviseCursorColor;
 end;
