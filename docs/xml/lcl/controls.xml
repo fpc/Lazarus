@@ -2276,15 +2276,17 @@ Frees the Handle for the control canvas, and its device context when assigned.
 </short>
 <descr>
 <p>
-<var>FreeHandle</var> is an overridden method in TControlCanvas. It calls the 
-inherited method on entry to set the value in <var>Handle</var> to 0 (the 
-unassigned value). If a device context (DC) has been allocated for the window 
-handle (HWND), the <var>ReleaseDC</var> routine is called to release the 
-device context.
+<var>FreeHandle</var> is an overridden method in <var>TControlCanvas</var>. It 
+calls the inherited method on entry to set the value in <var>Handle</var> to 0 
+(the unassigned value). If a device context (DC) has been allocated for the 
+window handle (HWND), the <var>ReleaseDC</var> routine is called to release 
+the device context.
 </p>
 <p>
-FreeHandle is called when a new value is assigned to the <var>Control</var> 
-property, or when the class instance is freed.
+FreeHandle <b>MUST</b> be called when the Handle for a control which uses a 
+canvas instance is destroyed/released. For windowed controls this generally 
+occurs in the DestroyWnd method. For non-windowed controls this occurs when 
+the parent window handle is freed.
 </p>
 </descr>
 <seealso>
@@ -2293,6 +2295,9 @@ property, or when the class instance is freed.
 <link id="#lcl.graphics.TCanvas.Handle">TCanvas.Handle</link>
 <link id="#lcl.graphics.TCanvas.FreeHandle">TCanvas.FreeHandle</link>
 <link id="#lcl.lclintf.ReleaseDC">ReleaseDC</link>
+<link id="#lcl.controls.TWinControl.WindowHandle">TWinControl.WindowHandle</link>
+<link id="#lcl.controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
+<link id="#lcl.controls.TWinControl.DestroyHandle">TWinControl.DestroyHandle</link>
 </seealso>
 </element>
 
