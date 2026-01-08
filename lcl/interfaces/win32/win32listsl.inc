@@ -42,7 +42,10 @@ begin
   //Set proper win32 flags for ComboBox/ListBox and get/set Combo Height
   InitFlags;
   // Determine if the list is sorted
-  FSorted := (UINT(GetWindowLong(FWin32List, GWL_STYLE)) and FFlagSort <> 0);
+  if IsVirtualListBox then
+    FSorted := False
+  else
+    FSorted := (UINT(GetWindowLong(FWin32List, GWL_STYLE)) and FFlagSort <> 0);
 end;
 
 procedure TWin32ListStringList.InitFlags;
@@ -91,6 +94,11 @@ begin
   PutObject(AIndex, TObject(AData));
 end;
 
+function TWin32ListStringList.IsVirtualListBox: Boolean;
+begin
+  Result := (FSender is TCustomListBox) and (TCustomListBox(FSender).Style = lbVirtual);
+end;
+
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Sort
   Params:
@@ -99,6 +107,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.Sort;
 begin
+  if IsVirtualListBox then
+  begin
+    debugln(['TWin32ListStringList.Sort: Virtual Mode']);
+    Exit;
+  end;
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
   if not (csDestroyingHandle in FSender.ControlState) then
@@ -150,7 +163,15 @@ Var
   w: widestring = '';
 begin
   if (Index < 0) Or (Index >= Count) then
-    raise Exception.Create('Out of bounds.')
+    raise Exception.Create('Out of bounds.');
+  if IsVirtualListBox then
+  begin
+    //debugln(['TWin32ListStringList.Get: Index=',Index]);
+    Result := '';
+    if Assigned(TCustomListBox(FSender).OnData) then
+      TCustomListBox(FSender).OnData(FSender, Index, Result);
+    Exit;
+  end
   else
   begin
     SetLength(w, Windows.SendMessageW(FWin32List, FFlagGetTextLen, Index, 0));
@@ -178,6 +199,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.Clear;
 begin
+  if IsVirtualListBox then
+  begin
+    debugln(['TWin32ListStringList.Clear: Virtual Mode']);
+    Exit;
+  end;
   Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
 end;
 
@@ -189,6 +215,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.Delete(Index: Integer);
 begin
+  if IsVirtualListBox then
+  begin
+    debugln(['TWin32ListStringList.Delete: Virtual Mode']);
+    Exit;
+  end;
   Windows.SendMessage(FWin32List, FFlagDeleteString, Index, 0);
 end;
 
@@ -213,6 +244,11 @@ procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 var
   lItemIndex: Integer;
 begin
+  if IsVirtualListBox then
+  begin
+    debugln(['TWin32ListStringList.Insert: Virtual Mode']);
+    Exit;
+  end;
   if (FFlagGetCaretIndex <> 0) and (GetCount = 0) then
     lItemIndex := SendMessage(FWin32List, FFlagGetCaretIndex, 0, 0)
   else
@@ -238,6 +274,12 @@ var
   lSelected: Boolean;
   AData: Pointer;
 begin
+  if IsVirtualListBox then
+  begin
+    debugln(['TWin32ListStringList.Put: Virtual Mode']);
+    Exit;
+  end;
+
   if Sorted then
     Error(SSortedListError,0);
   // remember selection

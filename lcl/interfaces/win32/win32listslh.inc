@@ -62,6 +62,8 @@ Type
     procedure SetSorted(Val: Boolean); Virtual;
     function SaveData(AIndex: Integer): Pointer; virtual;
     procedure RestoreData(AIndex: Integer; AData: Pointer); virtual;
+
+    function IsVirtualListBox: Boolean;
   public
     constructor Create(List : HWND; TheOwner: TWinControl);
     function Add(const S: string): Integer; override;

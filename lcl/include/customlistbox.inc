@@ -82,9 +82,12 @@ begin
   case Style of
     lbOwnerDrawFixed: Params.Style := Params.Style or LBS_OWNERDRAWFIXED;
     lbOwnerDrawVariable: Params.Style := Params.Style or LBS_OWNERDRAWVARIABLE;
+    lbVirtual: Params.Style := Params.Style or LBS_NODATA or LBS_OWNERDRAWFIXED;
   end;
   Params.Style := Params.Style or
-    (WS_HSCROLL or WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or LBS_NOTIFY);
+    (WS_HSCROLL or WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_NOTIFY);
+  if (Style <> lbVirtual) then
+   Params.Style := Params.Style or LBS_HASSTRINGS;
 end;
 
 {------------------------------------------------------------------------------
@@ -248,6 +251,12 @@ begin
   FColumns := AValue;
   if HandleAllocated then
     TWSCustomListBoxClass(WidgetSetClass).SetColumnCount(Self, FColumns);
+end;
+
+procedure TCustomListBox.SetCount(AValue: Integer);
+begin
+  if (Style = lbVirtual) then
+    TWSCustomListBoxClass(WidgetSetClass).SetVirtualCount(Self, AValue);
 end;
 
 procedure TCustomListBox.SetScrollWidth(const AValue: Integer);

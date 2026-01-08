@@ -149,6 +149,8 @@ type
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
+
+    class procedure SetVirtualCount(const ACustomListBox: TCustomListBox; const ACount: integer); override;
   end;
 
   { TWin32WSListBox }
@@ -864,6 +866,7 @@ class function TWin32WSCustomListBox.CreateHandle(const AWinControl: TWinControl
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
+  Res: PtrInt;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
@@ -1059,6 +1062,17 @@ end;
 class procedure TWin32WSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
 begin
   Windows.SendMessage(ACustomListBox.Handle, LB_SETTOPINDEX, NewTopIndex, 0);
+end;
+
+class procedure TWin32WSCustomListBox.SetVirtualCount(const ACustomListBox: TCustomListBox; const ACount: integer);
+var
+  Res: LRESULT;
+begin
+  Res := SendMessage(ACustomListBox.Handle, LB_SETCOUNT, ACount, 0);
+  if (Res = LB_ERR) or (Res = LB_ERRSPACE) then
+  begin
+    Raise Exception.Create('Error in TWin32WSCustomListBox.SetVirtualCount.');
+  end;
 end;
 
 { TWin32WSCustomComboBox }

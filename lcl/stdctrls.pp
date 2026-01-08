@@ -532,6 +532,10 @@ type
     );
   TListBoxOptions = set of TListBoxOption;
 
+  TLBGetDataEvent = procedure(AControl: TWinControl; Index: Integer; var Data: String) of Object;
+  TLBGetDataObjectEvent = procedure(AControl: TWinControl; Index: Integer; var DataObject: TObject) of Object;
+  TLBFindDataEvent = function(AControl: TWinControl; FindString: string): Integer of Object;
+
   { TCustomListBox }
 
   TCustomListBox = class(TWinControl)
@@ -553,6 +557,9 @@ type
     FOnDrawItem: TDrawItemEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelectionChange: TSelectionChangeEvent;
+    FOnData: TLBGetDataEvent;
+    FOnDataObject: TLBGetDataObjectEvent;
+    FOnDataFind: TLBFindDataEvent;
     FOptions: TListBoxOptions;
     FScrollWidth: Integer;
     FSorted: boolean;
@@ -563,6 +570,7 @@ type
     function GetTopIndex: Integer;
     procedure RaiseIndexOutOfBounds(AIndex: integer);
     procedure SetColumns(const AValue: Integer);
+    procedure SetCount(AValue: Integer);
     procedure SetScrollWidth(const AValue: Integer);
     procedure SetTopIndex(const AValue: Integer);
     procedure UpdateSelectionMode;
@@ -638,7 +646,12 @@ type
                write FClickOnSelChange default true; // true is Delphi behaviour
     property Columns: Integer read FColumns write SetColumns default 0;
     property Constraints;
-    property Count: Integer read GetCount; // for Delphi compatability
+    property Count: Integer read GetCount write SetCount; // for virtual mode (currently functional on Windows only)
+
+    property OnData: TLBGetDataEvent read FOnData write FOnData;
+    property OnDataObject: TLBGetDataObjectEvent read FOnDataObject write FOnDataObject;  //not functional yet
+    property OnDataFind: TLBFindDataEvent read FOnDataFind write FOnDataFind;             //not functional yet
+
     property ExtendedSelect: boolean read FExtendedSelect write SetExtendedSelect default true;
     property Font;
     property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight default False; // not implemented
@@ -729,6 +742,9 @@ type
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
+    property OnData;
+    //property OnDataObject;
+    //property OnDataFind;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;

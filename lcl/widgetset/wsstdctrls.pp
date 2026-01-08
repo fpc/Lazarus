@@ -134,6 +134,8 @@ type
     class procedure SetStyle(const ACustomListBox: TCustomListBox); virtual;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); virtual;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); virtual;
+
+    class procedure SetVirtualCount(const ACustomListBox: TCustomListBox; const ACount: integer); virtual;
   end;
   TWSCustomListBoxClass = class of TWSCustomListBox;
   
@@ -416,6 +418,11 @@ end;
 
 class procedure TWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
   const NewTopIndex: integer);
+begin
+end;
+
+class procedure TWSCustomListBox.SetVirtualCount(
+  const ACustomListBox: TCustomListBox; const ACount: integer);
 begin
 end;
 
