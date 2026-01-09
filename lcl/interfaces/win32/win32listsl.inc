@@ -256,6 +256,21 @@ begin
     Result := inherited IndexOf(S);
 end;
 
+function TWin32ListStringList.IndexOf(const S: string; aStart: Integer): Integer;
+begin
+  if IsVirtualListBox then
+  begin
+    {
+     Problem: we cannot use OnDataFind here, since the signature won't match.
+     Delphi does not have IndexOf(String, Integer) variant, so they did not need to cater for this.
+     For the time being raie an exception
+     We ight consider implementing OnDatFindEx or simply return -1 as an alternative.
+    }
+    Raise Exception.Create('IndexOf(String, Integer) variant cannot be used when Style is lbVirtual');
+  end;
+  Result := inherited IndexOf(S, aStart);
+end;
+
 {------------------------------------------------------------------------------
   Method: TWin32ListStringList.Insert
   Params:
