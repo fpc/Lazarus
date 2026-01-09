@@ -41,7 +41,6 @@ resourcestring
   lisEdtDefsAllProjects = 'All projects';
   lisEdtDefsetFPCModeToDELPHI = 'set FPC mode to DELPHI';
   lisEdtDefsetFPCModeToTP = 'set FPC mode to TP';
-  lisEdtDefsetFPCModeToGPC = 'set FPC mode to GPC';
   lisEdtDefsetFPCModeToMacPas = 'set FPC mode to MacPas';
   lisEdtDefsetFPCModeToFPC = 'set FPC mode to FPC';
   lisEdtDefsetIOCHECKSOn = 'set IOCHECKS on';
