@@ -743,8 +743,8 @@ type
     property OnClick;
     property OnContextPopup;
     property OnData;
-    //property OnDataObject;
-    //property OnDataFind;
+    property OnDataObject;
+    property OnDataFind;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
