@@ -173,6 +173,17 @@ const
     );
   );
 
+  defaultFormConfig: TCocoaConfigForm = (
+    name: '*';
+    className: '';
+    isMainForm: False;
+
+    titleBar: (
+      transparent: False;
+      separatorStyle: NSTitlebarSeparatorStyleLine;
+    );
+  );
+
 procedure initIDECocoaConfigForms;
 begin
   if NSAppKitVersionNumber < NSAppKitVersionNumber11_0 then
@@ -185,7 +196,7 @@ begin
     TCocoaToolBarUtils.toClass(searchItemConfig)
   ];
 
-  CocoaConfigForms:= [ mainIDEFormConfig ];
+  CocoaConfigForms:= [ mainIDEFormConfig, defaultFormConfig ];
 
   IDEMainFormHandler:= TCocoaIDEMainFormHandler.create;
 end;
