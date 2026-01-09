@@ -317,6 +317,10 @@ var
   defaultArray: NSArray;
   allowedArray: NSArray;
 begin
+  Result:= nil;
+  if toolBarConfig.identifier.IsEmpty then
+    Exit;
+
   toolBar:= TCocoaToolBar.alloc.initWithIdentifier(
     StrToNSString(toolBarConfig.identifier) );
   toolBar.lclSetConfig( @toolBarConfig );
