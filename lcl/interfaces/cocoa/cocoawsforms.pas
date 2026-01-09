@@ -258,6 +258,9 @@ var
   currentStr: String;
 begin
   Result:= nil;
+  if name.IsEmpty then
+    Exit;
+
   count:= length( CocoaConfigForms );
 
   findStr:= ';' + name + ';';
