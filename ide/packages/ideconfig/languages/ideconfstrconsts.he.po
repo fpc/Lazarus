@@ -53,10 +53,6 @@ msgstr ""
 msgid "set FPC mode to FPC"
 msgstr ""
 
-#: ideconfstrconsts.lisedtdefsetfpcmodetogpc
-msgid "set FPC mode to GPC"
-msgstr ""
-
 #: ideconfstrconsts.lisedtdefsetfpcmodetomacpas
 msgid "set FPC mode to MacPas"
 msgstr ""

@@ -55,10 +55,6 @@ msgstr "установить режим FPC в DELPHI"
 msgid "set FPC mode to FPC"
 msgstr "установить режим FPC в FPC"
 
-#: ideconfstrconsts.lisedtdefsetfpcmodetogpc
-msgid "set FPC mode to GPC"
-msgstr "установить режим FPC в GPC"
-
 #: ideconfstrconsts.lisedtdefsetfpcmodetomacpas
 msgid "set FPC mode to MacPas"
 msgstr "установить режим FPC в MacPas"
