@@ -63,6 +63,7 @@ type
     procedure IconDetailsPanelResize(Sender: TObject);
   private
     FIconViewer: TIconThumbnailViewer;
+    FSearchWhileTyping: Boolean;
     FOnChange: TNotifyEvent;
     FOnFilter: TNotifyEvent;
     FOnIconDblClick: TNotifyEvent;
@@ -106,6 +107,7 @@ type
     property ImageIndex_ExecuteFilter: TImageIndex index 0 read GetImageIndex write SetImageIndex;
     property ImageIndex_ClearFilter: TImageIndex index 1 read GetImageIndex write SetImageIndex;
     property ImageList: TCustomImageList read GetImageList write SetImageList;
+    property SearchWhileTyping: Boolean read FSearchWhileTyping write FSearchWhileTyping;
     property SelectedIcon: TIconItem read GetSelectedIcon;
     property SizeFilter: String read GetSizeFilter write SetSizeFilter;
     property StyleFilter: String read GetStyleFilter write SetStyleFilter;
@@ -129,6 +131,8 @@ const
 constructor TIconViewerFrame.Create(AOwner: TComponent);
 begin
   inherited;
+  FSearchWhileTyping := true;
+
   FIconViewer := TIconThumbnailViewer.Create(self);
   FIconViewer.Align := alClient;
   FIconViewer.FocusedColor := clWindowText;
@@ -136,6 +140,10 @@ begin
   FIconViewer.OnDblClick := @DoIconViewerDblClick;
   FIconViewer.OnFilter := @DoIconViewerFilter;
   FIconViewer.OnSelect := @DoIconViewerSelect;
+  if FSearchWhileTyping then
+    cmbFilterByKeywords.OnChange := @cmbFilterByKeywordsEditingDone
+  else
+    cmbFilterByKeywords.OnEditingDone := @cmbFilterByKeywordsEditingDone;
 
   UpdateIconDetails;
   UpdateLanguage;
@@ -219,6 +227,7 @@ begin
   FIconViewer.FilterByIconKeywords := filter;
   AddKeywordFilterToHistory(filter);
   cmbFilterByKeywords.Text := filter;   // Must be after AddKeywordFilterToHistory!
+  cmbFilterByKeywords.SelStart := Length(filter);   // <-- Added by Corpsman
   UpdateIconCount;
 end;
 
