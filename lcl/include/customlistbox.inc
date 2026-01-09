@@ -256,7 +256,10 @@ end;
 procedure TCustomListBox.SetCount(AValue: Integer);
 begin
   if (Style = lbVirtual) then
-    TWSCustomListBoxClass(WidgetSetClass).SetVirtualCount(Self, AValue);
+    TWSCustomListBoxClass(WidgetSetClass).SetVirtualCount(Self, AValue)
+  else
+    //Todo: make resource string.
+    Raise Exception.Create('Count can only be set when Style is lbVirtual');   //For Delphi compatibility
 end;
 
 procedure TCustomListBox.SetScrollWidth(const AValue: Integer);
