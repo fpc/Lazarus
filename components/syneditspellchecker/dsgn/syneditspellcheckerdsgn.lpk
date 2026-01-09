@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="SynEditSpellCheckerDsgn"/>
+    <Type Value="DesignTime"/>
+    <Author Value="M Friebe"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx5024="True"/>
+        </CompilerMessages>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="IDE registration for: SynEditSpellChecker - spell check add-on for SynEdit"/>
+    <License Value="Either of: Modified LGPL-2 (as LCL) / Modified LGPL-3 / MPL 1.1 or 2.0
+
+Used &quot;uses&quot; units may have to be amended in case of chosing any subset of the Licenses.
+"/>
+    <Files>
+      <Item>
+        <Filename Value="synspellcheckdsgnregister.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="SynSpellCheckDsgnRegister"/>
+      </Item>
+      <Item>
+        <Filename Value="syn_spell_options.pas"/>
+        <UnitName Value="syn_spell_options"/>
+      </Item>
+      <Item>
+        <Filename Value="synspellcheckdsgnstrings.pas"/>
+        <UnitName Value="SynSpellCheckDsgnStrings"/>
+      </Item>
+      <Item>
+        <Filename Value="synspellcheckdsgnoptions.pas"/>
+        <UnitName Value="SynSpellCheckDsgnOptions"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazControlDsgn"/>
+      </Item>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEditSpellChecker"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

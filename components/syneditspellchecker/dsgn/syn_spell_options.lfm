@@ -1,0 +1,1576 @@
+object SynSpellOptionsFrame: TSynSpellOptionsFrame
+  Left = 0
+  Height = 951
+  Top = 0
+  Width = 1093
+  ClientHeight = 951
+  ClientWidth = 1093
+  LCLVersion = '4.99.0.0'
+  TabOrder = 0
+  DesignLeft = 5
+  DesignTop = 1
+  object bvDictionary: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 1081
+    Caption = 'bvDictionary'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = bvDictionary
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 121
+    Top = 27
+    Width = 1081
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 15
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 121
+    ClientWidth = 1081
+    TabOrder = 1
+    object lbLibraryPath: TLabel
+      Left = 6
+      Height = 15
+      Top = 6
+      Width = 88
+      BorderSpacing.Left = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'lbLibraryPath'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbLP: TLabel
+      Left = 100
+      Height = 15
+      Top = 6
+      Width = 1
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object EdLibPath: TFileNameEdit
+      AnchorSideLeft.Control = lbLP
+      AnchorSideTop.Control = lbLibraryPath
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 100
+      Height = 23
+      Top = 2
+      Width = 981
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      OnEditingDone = EdASpellOptsEditingDone
+    end
+    object lbDictionaryPath: TLabel
+      Left = 6
+      Height = 15
+      Top = 36
+      Width = 88
+      BorderSpacing.Left = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'lbDictionaryPath'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbDP: TLabel
+      Left = 100
+      Height = 15
+      Top = 36
+      Width = 1
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbLanguage: TLabel
+      Left = 6
+      Height = 15
+      Top = 66
+      Width = 88
+      BorderSpacing.Left = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'lbLanguage'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbL: TLabel
+      Left = 100
+      Height = 15
+      Top = 66
+      Width = 1
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object edLang: TEdit
+      AnchorSideLeft.Control = lbL
+      AnchorSideTop.Control = lbLanguage
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 100
+      Height = 23
+      Top = 62
+      Width = 981
+      Anchors = [akTop, akLeft, akRight]
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      Text = 'edLang'
+      OnEditingDone = EdASpellOptsEditingDone
+    end
+    object EdDictPath: TDirectoryEdit
+      AnchorSideLeft.Control = lbDP
+      AnchorSideTop.Control = lbDictionaryPath
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 100
+      Height = 23
+      Top = 32
+      Width = 981
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+      OnEditingDone = EdASpellOptsEditingDone
+    end
+    object lbUserDictPath: TLabel
+      Left = 6
+      Height = 15
+      Top = 96
+      Width = 88
+      BorderSpacing.Left = 6
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'lbUserDictPath'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbUsrDict: TLabel
+      Left = 100
+      Height = 15
+      Top = 96
+      Width = 1
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object EdUserDictPath: TFileNameEdit
+      AnchorSideLeft.Control = lbUsrDict
+      AnchorSideTop.Control = lbUsrDict
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 100
+      Height = 23
+      Top = 92
+      Width = 981
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+      OnEditingDone = EdASpellOptsEditingDone
+    end
+  end
+  object ErrTxt: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 46
+    Top = 154
+    Width = 1081
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    BorderStyle = bsNone
+    Font.Color = clRed
+    ParentFont = False
+    ParentShowHint = False
+    ReadOnly = True
+    ShowHint = True
+    TabOrder = 0
+  end
+  object lbLoadedWarn: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ErrTxt
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 206
+    Width = 1081
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Caption = 'lbLoadedWarn'
+    Font.Color = clRed
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    Visible = False
+  end
+  object bvMouse: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lbLoadedWarn
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 227
+    Width = 1081
+    Caption = 'bvMouse'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object cbMouseSuggest: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = bvMouse
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 248
+    Width = 109
+    BorderSpacing.Around = 6
+    Caption = 'cbMouseSuggest'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+    OnChange = cbMouseSuggestChange
+  end
+  object dropMouseSuggest: TComboBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbMouseSuggest
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 273
+    Width = 150
+    BorderSpacing.Around = 6
+    ItemHeight = 15
+    ParentShowHint = False
+    ShowHint = True
+    Style = csDropDownList
+    TabOrder = 3
+  end
+  object shMouseSuggest: TShiftStateSelector
+    AnchorSideLeft.Control = dropMouseSuggest
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = dropMouseSuggest
+    AnchorSideTop.Side = asrCenter
+    Left = 174
+    Height = 19
+    Top = 275
+    Width = 122
+    AutoSize = True
+    BorderSpacing.Left = 12
+    BorderSpacing.Around = 6
+    HasMask = True
+    Spacing = 5
+  end
+  object bvRules: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = dropMouseSuggest
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 302
+    Width = 1081
+    Caption = 'bvRules'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Font.Style = [fsBold]
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object Panel2: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = bvRules
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 578
+    Top = 323
+    Width = 1081
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BevelOuter = bvNone
+    ChildSizing.TopBottomSpacing = 4
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsSameSize
+    ChildSizing.ShrinkHorizontal = crsSameSize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 4
+    ClientHeight = 578
+    ClientWidth = 1081
+    TabOrder = 5
+    object lbHeadTokenL: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 20
+      Top = 4
+      Width = 442
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadTokenR1: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 20
+      Top = 4
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadTokenL1: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 20
+      Top = 4
+      Width = 441
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadTokenR: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 20
+      Top = 4
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object bvToken: TDividerBevel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = lbHeadTokenL
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      Left = 10
+      Height = 15
+      Top = 7
+      Width = 1051
+      Caption = 'bvToken'
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 10
+      BorderSpacing.Right = 20
+      Font.Style = [fsBold]
+      LeftIndent = 30
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbUpChars: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 15
+      Top = 32
+      Width = 55
+      BorderSpacing.CellAlignHorizontal = ccaLeftTop
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'lbUpChars'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchUpChars: TLabel
+      Left = 448
+      Height = 20
+      Top = 30
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object edUpChars: TEdit
+      AnchorSideLeft.Control = lbUpChars
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = anchUpChars
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchUpChars
+      AnchorSideRight.Side = asrBottom
+      Left = 61
+      Height = 23
+      Top = 29
+      Width = 477
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      Text = 'edUpChars'
+    end
+    object lbLowChars: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 15
+      Top = 32
+      Width = 62
+      BorderSpacing.CellAlignHorizontal = ccaLeftTop
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'lbLowChars'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchLowChars: TLabel
+      Left = 991
+      Height = 20
+      Top = 30
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object edLowChars: TEdit
+      AnchorSideLeft.Control = lbLowChars
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = anchLowChars
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchLowChars
+      AnchorSideRight.Side = asrBottom
+      Left = 612
+      Height = 23
+      Top = 29
+      Width = 469
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      Text = 'edLowChars'
+    end
+    object anchWMT1: TLabel
+      Left = 0
+      Height = 20
+      Top = 56
+      Width = 442
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWMT2: TLabel
+      Left = 448
+      Height = 20
+      Top = 56
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbWordMultiToken: TCheckBox
+      AnchorSideLeft.Control = anchWMT1
+      AnchorSideTop.Control = anchWXC1
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchWMT2
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 57
+      Width = 538
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbWordMultiToken'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+    object anchWXC1: TLabel
+      Left = 544
+      Height = 20
+      Top = 56
+      Width = 441
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWXC2: TLabel
+      Left = 991
+      Height = 20
+      Top = 56
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbWordXCaps: TCheckBox
+      AnchorSideLeft.Control = anchWXC1
+      AnchorSideTop.Control = anchWMT1
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchWXC2
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 19
+      Top = 57
+      Width = 537
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbWordXCaps'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
+    object lbWordIgnoreLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 82
+      Width = 442
+      Caption = 'lbWordIgnoreLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinWordIgnoreLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 82
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
+    end
+    object anchWIC1: TLabel
+      Left = 544
+      Height = 20
+      Top = 83
+      Width = 441
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWIC2: TLabel
+      Left = 991
+      Height = 20
+      Top = 83
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbWordIgnoreXCaps: TCheckBox
+      AnchorSideLeft.Control = anchWIC1
+      AnchorSideTop.Control = anchWIC1
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchWIC2
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 19
+      Top = 84
+      Width = 537
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbWordIgnoreXCaps'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
+    end
+    object lbTokenIgnoreLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 111
+      Width = 442
+      Caption = 'lbTokenIgnoreLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinTokenIgnoreLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 111
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 6
+    end
+    object anchTIC5: TLabel
+      Left = 544
+      Height = 23
+      Top = 111
+      Width = 441
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchTIC6: TLabel
+      Left = 991
+      Height = 23
+      Top = 111
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchTIC3: TLabel
+      Left = 0
+      Height = 20
+      Top = 140
+      Width = 442
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchTIC4: TLabel
+      Left = 448
+      Height = 20
+      Top = 140
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbTokenAllowXCaps: TCheckBox
+      AnchorSideLeft.Control = anchTIC5
+      AnchorSideTop.Control = anchTIC5
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchTIC6
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 19
+      Top = 113
+      Width = 537
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbTokenAllowXCaps'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 29
+    end
+    object anchTIC1: TLabel
+      Left = 544
+      Height = 20
+      Top = 140
+      Width = 441
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchTIC2: TLabel
+      Left = 991
+      Height = 20
+      Top = 140
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbTokenIgnoreXCaps: TCheckBox
+      AnchorSideLeft.Control = anchTIC1
+      AnchorSideTop.Control = anchTIC1
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchTIC2
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 19
+      Top = 141
+      Width = 537
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbTokenIgnoreXCaps'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
+    end
+    object lbLowTokenIgnoreLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 166
+      Width = 442
+      Caption = 'lbLowTokenIgnoreLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinLowTokenIgnoreLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 166
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 28
+    end
+    object anchWXC13: TLabel
+      Left = 544
+      Height = 20
+      Top = 167
+      Width = 441
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWXC14: TLabel
+      Left = 991
+      Height = 20
+      Top = 167
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartL: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 20
+      Top = 195
+      Width = 442
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartR: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 20
+      Top = 195
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartL2: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 20
+      Top = 195
+      Width = 441
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartR2: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 20
+      Top = 195
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object bvPartLeadMix: TDividerBevel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = lbHeadPartL
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      Left = 10
+      Height = 15
+      Top = 198
+      Width = 1051
+      Caption = 'bvPartLeadMix'
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 10
+      BorderSpacing.Right = 20
+      Font.Style = [fsBold]
+      LeftIndent = 30
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbPartLeadMin: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 221
+      Width = 442
+      Caption = 'lbPartLeadMin'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartLeadLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 221
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 8
+    end
+    object lbPartMixLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 23
+      Top = 221
+      Width = 441
+      Caption = 'lbPartMixLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartMixLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 23
+      Top = 221
+      Width = 90
+      AutoSize = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 9
+    end
+    object lbPartLeadIgnoreLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 250
+      Width = 442
+      Caption = 'lbPartLeadIgnoreLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartLeadIgnoreLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 250
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 10
+    end
+    object lbPartMixIgnoreLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 23
+      Top = 250
+      Width = 441
+      Caption = 'lbPartMixIgnoreLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartMixIgnoreLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 23
+      Top = 250
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 11
+    end
+    object lbPartLeadIgnoreRemain: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 279
+      Width = 442
+      Caption = 'lbPartLeadIgnoreRemain'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartLeadIgnoreRemain: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 279
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 12
+    end
+    object lbPartMixIgnoreRemain: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 23
+      Top = 279
+      Width = 441
+      Caption = 'lbPartMixIgnoreRemain'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartMixIgnoreRemain: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 23
+      Top = 279
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 13
+    end
+    object lbHeadPartL1: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 20
+      Top = 308
+      Width = 442
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartR1: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 20
+      Top = 308
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartL3: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 20
+      Top = 308
+      Width = 441
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartR3: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 20
+      Top = 308
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object bvPartUpLow: TDividerBevel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = lbHeadPartL1
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      Left = 10
+      Height = 15
+      Top = 311
+      Width = 1051
+      Caption = 'bvPartUpLow'
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 10
+      BorderSpacing.Right = 20
+      Font.Style = [fsBold]
+      LeftIndent = 30
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbPartUpLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 334
+      Width = 442
+      Caption = 'lbPartUpLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartUpLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 334
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 14
+    end
+    object lbPartLowLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 23
+      Top = 334
+      Width = 441
+      Caption = 'lbPartLowLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartLowLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 23
+      Top = 334
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 15
+    end
+    object lbPartUpIgnoreLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 363
+      Width = 442
+      Caption = 'lbPartUpIgnoreLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartUpIgnoreLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 363
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 16
+    end
+    object lbPartLowIgnoreLen: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 23
+      Top = 363
+      Width = 441
+      Caption = 'lbPartLowIgnoreLen'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartLowIgnoreLen: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 23
+      Top = 363
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 17
+    end
+    object lbPartUpIgnoreRemain: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 392
+      Width = 442
+      Caption = 'lbPartUpIgnoreRemain'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartUpIgnoreRemain: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 392
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 18
+    end
+    object lbPartLowIgnoreRemain: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 23
+      Top = 392
+      Width = 441
+      Caption = 'lbPartLowIgnoreRemain'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPartLowIgnoreRemain: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 23
+      Top = 392
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 19
+    end
+    object lbHeadPartL4: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 20
+      Top = 421
+      Width = 442
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartR4: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 20
+      Top = 421
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartL5: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 20
+      Top = 421
+      Width = 441
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object lbHeadPartR5: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 991
+      Height = 20
+      Top = 421
+      Width = 90
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object bvPrefix: TDividerBevel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideTop.Control = lbHeadPartL4
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel2
+      AnchorSideRight.Side = asrBottom
+      Left = 16
+      Height = 15
+      Top = 424
+      Width = 1039
+      Caption = 'bvPrefix'
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 10
+      BorderSpacing.Right = 20
+      BorderSpacing.Around = 6
+      Font.Style = [fsBold]
+      LeftIndent = 30
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWMT3: TLabel
+      Left = 0
+      Height = 20
+      Top = 447
+      Width = 442
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWMT4: TLabel
+      Left = 448
+      Height = 20
+      Top = 447
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbIgnoreUpArticle: TCheckBox
+      AnchorSideLeft.Control = anchWMT3
+      AnchorSideTop.Control = anchWXC3
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchWMT4
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 448
+      Width = 538
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbIgnoreUpArticle'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 20
+    end
+    object anchWXC3: TLabel
+      Left = 544
+      Height = 20
+      Top = 447
+      Width = 441
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWXC4: TLabel
+      Left = 991
+      Height = 20
+      Top = 447
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbIgnoreUpArticleCase: TCheckBox
+      AnchorSideLeft.Control = anchWXC3
+      AnchorSideTop.Control = anchWMT3
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchWXC4
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 19
+      Top = 448
+      Width = 537
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbIgnoreUpArticleCase'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 21
+    end
+    object anchWMT5: TLabel
+      Left = 0
+      Height = 20
+      Top = 473
+      Width = 442
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWMT6: TLabel
+      Left = 448
+      Height = 20
+      Top = 473
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbIgnoreLowArticle: TCheckBox
+      AnchorSideLeft.Control = anchWMT5
+      AnchorSideTop.Control = anchWXC5
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchWMT6
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 474
+      Width = 538
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbIgnoreLowArticle'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 22
+    end
+    object anchWXC5: TLabel
+      Left = 544
+      Height = 20
+      Top = 473
+      Width = 441
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWXC6: TLabel
+      Left = 991
+      Height = 20
+      Top = 473
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbIgnoreLowArticleCase: TCheckBox
+      AnchorSideLeft.Control = anchWXC5
+      AnchorSideTop.Control = anchWMT5
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchWXC6
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 19
+      Top = 474
+      Width = 537
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbIgnoreLowArticleCase'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 23
+    end
+    object lbIgnorePrefix: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 15
+      Top = 501
+      Width = 74
+      BorderSpacing.CellAlignHorizontal = ccaLeftTop
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = 'lbIgnorePrefix'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchUpChars1: TLabel
+      Left = 448
+      Height = 20
+      Top = 499
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object edIgnorePrefix: TEdit
+      AnchorSideLeft.Control = lbIgnorePrefix
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = anchUpChars1
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchUpChars1
+      AnchorSideRight.Side = asrBottom
+      Left = 80
+      Height = 23
+      Top = 498
+      Width = 458
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 24
+      Text = 'edIgnorePrefix'
+    end
+    object anchWXC9: TLabel
+      Left = 544
+      Height = 20
+      Top = 499
+      Width = 441
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWXC10: TLabel
+      Left = 991
+      Height = 20
+      Top = 499
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWXC7: TLabel
+      Left = 0
+      Height = 20
+      Top = 525
+      Width = 442
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWXC8: TLabel
+      Left = 448
+      Height = 20
+      Top = 525
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbIgnoreUpPrefixCase: TCheckBox
+      AnchorSideLeft.Control = anchWXC7
+      AnchorSideTop.Control = anchWXC7
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchWXC8
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 526
+      Width = 538
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbIgnoreUpPrefixCase'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 25
+    end
+    object anchWXC11: TLabel
+      Left = 544
+      Height = 20
+      Top = 525
+      Width = 441
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object anchWXC12: TLabel
+      Left = 991
+      Height = 20
+      Top = 525
+      Width = 90
+      BorderSpacing.CellAlignVertical = ccaCenter
+      Caption = ' '
+      Constraints.MinHeight = 20
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object cbIgnoreLowPrefixCase: TCheckBox
+      AnchorSideLeft.Control = anchWXC11
+      AnchorSideTop.Control = anchWXC11
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = anchWXC12
+      AnchorSideRight.Side = asrBottom
+      Left = 544
+      Height = 19
+      Top = 526
+      Width = 537
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'cbIgnoreLowPrefixCase'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 26
+    end
+    object lbPrefixRemain: TLabel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 23
+      Top = 551
+      Width = 442
+      Caption = 'lbPrefixRemain'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object spinPrefixRemain: TSpinEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 448
+      Height = 23
+      Top = 551
+      Width = 90
+      AutoSize = False
+      Constraints.MaxWidth = 90
+      Constraints.MinWidth = 90
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 27
+    end
+  end
+end
