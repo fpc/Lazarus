@@ -24,12 +24,13 @@ interface
 
 uses
   // RTL,FCL
-  MacOSAll, CocoaAll, Classes,
+  Classes, SysUtils,
   // LCL
   Controls, Forms, Graphics, LCLType, Messages, LMessages, LCLProc,
   // Widgetset
   WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
+  MacOSAll, CocoaAll,
   CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects,
   CocoaWindows, CocoaToolBar, CocoaCustomControl, CocoaScrollers, CocoaWSScrollers,
   CocoaUtils, CocoaMenus, Cocoa_Extra;
@@ -253,11 +254,16 @@ class function TCocoaFormUtils.getConfigByName( const name: String ):
 var
   i: Integer;
   count: Integer;
+  findStr: String;
+  currentStr: String;
 begin
   Result:= nil;
   count:= length( CocoaConfigForms );
+
+  findStr:= ';' + name + ';';
   for i:=0 to count-1 do begin
-    if name = CocoaConfigForms[i].name then begin
+    currentStr:= ';' + CocoaConfigForms[i].name + ';';
+    if currentStr.IndexOf(findStr) >= 0 then begin
       Result:= @CocoaConfigForms[i];
       Exit;
     end;
@@ -269,11 +275,16 @@ class function TCocoaFormUtils.getConfigByClassName( const aClassName: String ):
 var
   i: Integer;
   count: Integer;
+  findStr: String;
+  currentStr: String;
 begin
   Result:= nil;
   count:= length( CocoaConfigForms );
+
+  findStr:= ';' + aClassName + ';';
   for i:=0 to count-1 do begin
-    if aClassName = CocoaConfigForms[i].className then begin
+    currentStr:= ';' + CocoaConfigForms[i].className + ';';
+    if currentStr.IndexOf(findStr) >= 0 then begin
       Result:= @CocoaConfigForms[i];
       Exit;
     end;
@@ -818,8 +829,19 @@ var
     if Assigned(Result) then
       Exit;
 
-    if Application.MainForm = AWinControl then
+    if Application.MainForm = AWinControl then begin
       Result:= TCocoaFormUtils.getConfigForMainForm;
+      if Assigned(Result) then
+        Exit;
+    end;
+
+    Result:= TCocoaFormUtils.getConfigByName( '*' );
+    if Assigned(Result) then
+      Exit;
+
+    Result:= TCocoaFormUtils.getConfigByClassName( '*' );
+    if Assigned(Result) then
+      Exit;
   end;
 
   procedure applyCocoaConfigForm;
