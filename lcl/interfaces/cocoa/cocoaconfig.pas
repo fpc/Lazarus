@@ -175,6 +175,7 @@ type
   end;
 
   TCocoaConfigReadOnlyComboBox = record
+    minWidth: Integer;
     item: TCocoaConfigReadOnlyComboBoxItem;
   end;
 

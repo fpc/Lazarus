@@ -60,6 +60,7 @@ var
 var
   CocoaConfigComboBox: TCocoaConfigComboBox = (
     readOnly: (
+      minWidth: 38;
       item: ( defaultHeight: 18 )
     );
   );

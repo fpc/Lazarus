@@ -2310,9 +2310,15 @@ class procedure TCocoaWSCustomComboBox.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
-  // do not override PreferredWidth and Height
-  // see todo at TCocoaWSWinControl.GetPreferredSize
-  // once it's resolved, TCocoaWSCustomComboBox.GetPreferredSize could be removed
+  if NOT ComboBoxStyleIsReadOnly(TCustomComboBox(AWinControl).Style) then
+    Exit;
+
+  if TCocoaReadOnlyComboBox(AWinControl.Handle).isComboBoxEx then
+    Exit;
+
+  TCocoaWSWinControl.GetPreferredSize(AWinControl, PreferredWidth, PreferredHeight, WithThemeSpace);
+  if PreferredWidth < CocoaConfigComboBox.readOnly.minWidth then
+    PreferredWidth:= CocoaConfigComboBox.readOnly.minWidth;
 end;
 
 class procedure TCocoaWSCustomComboBox.SetText(const AWinControl: TWinControl;
