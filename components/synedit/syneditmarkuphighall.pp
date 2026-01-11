@@ -3224,7 +3224,7 @@ var
   i, j: Integer;
   g: TSynMarkupHighAllValidRange;
 begin
-  for i := 0 to FValidRanges.Count do begin
+  for i := 0 to FValidRanges.Count - 1 do begin
     g := FValidRanges.Gap[i];
     if (not g.StartPoint.HasData) or (g.StartPoint >= g.EndPoint) then continue;
     j := FMatches.IndexOf(g.StartPoint);
