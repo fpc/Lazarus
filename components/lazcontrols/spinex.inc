@@ -231,7 +231,7 @@ procedure TSpinEditExBase.EditMouseWheelUp(Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
   inherited EditMouseWheelUp(Shift, MousePos, Handled);
-  if not Handled then
+  if not Handled and not ReadOnly then
     SpinUpDown(True);
 end;
 
@@ -239,7 +239,7 @@ procedure TSpinEditExBase.EditMouseWheelDown(Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
   inherited EditMouseWheelDown(Shift, MousePos, Handled);
-  if not Handled then
+  if not Handled and not ReadOnly then
     SpinUpDown(False);
 end;
 
