@@ -418,67 +418,48 @@ var
   info: Stat;
   mode: mode_t;
 begin
-  Result := '';
-  if not (FpStat(AFilename,info{%H-}) = 0) then exit;
+  if not (fplstat(AFilename,info{%H-}) = 0) then exit('');
+
+  Result := '----------';
 
   // file or directory permissions
   // file type
   mode := info.st_mode;
   if STAT_IFLNK and mode = STAT_IFLNK then
-    Result := Result + 'l'
+    Result[1] := 'l'
   else
   if STAT_IFDIR and mode = STAT_IFDIR then
-    Result := Result + 'd'
+    Result[1] := 'd'
   else
   if STAT_IFBLK and mode = STAT_IFBLK then
-    Result := Result + 'b'
+    Result[1] := 'b'
   else
   if STAT_IFCHR and mode = STAT_IFCHR then
-    Result := Result + 'c'
-  else
-    Result := Result + '-';
+    Result[1] := 'c';
 
   // user permissions
   if STAT_IRUSR and mode = STAT_IRUsr then
-    Result := Result + 'r'
-  else
-    Result := Result + '-';
+    Result[2] := 'r';
   if STAT_IWUsr and mode = STAT_IWUsr then
-    Result := Result + 'w'
-  else
-    Result := Result + '-';
+    Result[3] := 'w';
   if STAT_IXUsr and mode = STAT_IXUsr then
-    Result := Result + 'x'
-  else
-    Result := Result + '-';
+    Result[4] := 'x';
 
   // group permissions
   if STAT_IRGRP and mode = STAT_IRGRP then
-    Result := Result + 'r'
-  else
-    Result := Result + '-';
+    Result[5] := 'r';
   if STAT_IWGRP and mode = STAT_IWGRP then
-    Result := Result + 'w'
-  else
-    Result := Result + '-';
+    Result[6] := 'w';
   if STAT_IXGRP and mode = STAT_IXGRP then
-    Result := Result + 'x'
-  else
-    Result := Result + '-';
+    Result[7] := 'x';
 
   // other permissions
   if STAT_IROTH and mode = STAT_IROTH then
-    Result := Result + 'r'
-  else
-    Result := Result + '-';
+    Result[8] := 'r';
   if STAT_IWOTH and mode = STAT_IWOTH then
-    Result := Result + 'w'
-  else
-    Result := Result + '-';
+    Result[9] := 'w';
   if STAT_IXOTH and mode = STAT_IXOTH then
-    Result := Result + 'x'
-  else
-    Result := Result + '-';
+    Result[10] := 'x';
 end;
 
 function GetAppConfigDirUTF8(Global: Boolean; Create: boolean = false): string;
