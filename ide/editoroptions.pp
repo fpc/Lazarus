@@ -7441,6 +7441,7 @@ begin
     FMarkupFoldLineAlpha := SrcAttr.FMarkupFoldLineAlpha;
     FDefaultSynFeatures  := SrcAttr.FDefaultSynFeatures;
     FMarkupAllOverviewColor := SrcAttr.FMarkupAllOverviewColor;
+    FRegisteredGroup     := SrcAttr.FRegisteredGroup;
   end;
 end;
 
