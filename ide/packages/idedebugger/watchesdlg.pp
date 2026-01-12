@@ -1648,8 +1648,12 @@ begin
             case ResData.ValueKind of
               rdkVariant: ResData := ResData.DerefData;
               rdkConvertRes: ResData := ResData.ConvertedRes;
-              rdkPointerVal: if (ResData.DerefData <> nil) and (ResData.DerefData.ValueKind in [rdkString, rdkWideString, rdkChar]) then
-                ResData := ResData.DerefData;
+              rdkPointerVal: begin
+                if (ResData.DerefData <> nil) and (ResData.DerefData.ValueKind in [rdkString, rdkWideString, rdkChar]) then
+                  ResData := ResData.DerefData
+                else
+                  break;
+              end;
               //rdkPCharOrString:
               else break;
             end;
