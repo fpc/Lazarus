@@ -784,7 +784,7 @@ begin
     exit;
 
   if AMinimumRequiredLineIdx < 0 then
-    AMinimumRequiredLineIdx := CurrentRanges.LastInvalidLine;
+    AMinimumRequiredLineIdx := CurrentRanges.LastInvalidLine + 1;
   if (AMinimumRequiredLineIdx >= Result) then
     AMinimumRequiredLineIdx := Result - 1;
 
@@ -808,7 +808,7 @@ end;
 function TLazEditCustomRangesHighlighter.PrepareLines(AMinimumRequiredLineIdx: IntIdx;
   AMaxTime: integer): boolean;
 var
-  FirstInvalidLineIdx, LastScannedLineIdx: IntIdx;
+  FirstInvalidLineIdx, NextUnscannedLineIdx: IntIdx;
 begin
   Result := True; // all scanned
 
@@ -820,25 +820,25 @@ begin
 
   FIsScanning := True;
   try
-    LastScannedLineIdx :=  DoPrepareLines(FirstInvalidLineIdx, AMinimumRequiredLineIdx, AMaxTime);
+    NextUnscannedLineIdx :=  DoPrepareLines(FirstInvalidLineIdx, AMinimumRequiredLineIdx, AMaxTime);
   finally
     FIsScanning := False;
   end;
 
   FirstInvalidLineIdx := CurrentRanges.UnsentValidationStartLine;
-  Result := (LastScannedLineIdx  > CurrentRanges.LastInvalidLine) or
-            (LastScannedLineIdx >= CurrentRanges.Count);
+  Result := (NextUnscannedLineIdx  > CurrentRanges.LastInvalidLine + 1) or
+            (NextUnscannedLineIdx >= CurrentRanges.Count);
   if Result then
     CurrentRanges.ValidateAll
   else
-    CurrentRanges.UpdateFirstInvalidLine(LastScannedLineIdx);
+    CurrentRanges.UpdateFirstInvalidLine(NextUnscannedLineIdx);
 
   if Result or (AMaxTime <= 0) or
-     ( (AMinimumRequiredLineIdx >= 0) and (LastScannedLineIdx >= AMinimumRequiredLineIdx) )
+     ( (AMinimumRequiredLineIdx >= 0) and (NextUnscannedLineIdx >= AMinimumRequiredLineIdx) )
   then begin
-    if (LastScannedLineIdx >= CurrentRanges.Count) then
-      LastScannedLineIdx := CurrentRanges.Count;
-    CurrentLines.SendHighlightChanged(FirstInvalidLineIdx, Max(0, LastScannedLineIdx - FirstInvalidLineIdx));
+    if (NextUnscannedLineIdx >= CurrentRanges.Count) then
+      NextUnscannedLineIdx := CurrentRanges.Count;
+    CurrentLines.SendHighlightChanged(FirstInvalidLineIdx, Max(0, NextUnscannedLineIdx - FirstInvalidLineIdx));
   end;
 end;
 

@@ -818,8 +818,8 @@ begin
   if IsUpdating then
     fUpdateChange := TRUE
   else begin
-    inherited SendAttributeChangeNotification;
     if FAttributeChangeNeedScan then inherited RequestFullRescan;
+    inherited SendAttributeChangeNotification;
     fAttrChangeHooks.CallNotifyEvents(self);
     FAttributeChangeNeedScan := False;
     DoDefHighlightChanged;

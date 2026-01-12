@@ -773,7 +773,7 @@ end;
 
 procedure TLazSynFoldNodeInfoList.SetLineClean(ALine: TLineIdx);
 begin
-  if (FLine = ALine) or (ALine < 0) then exit;
+  if (FValid and (FLine = ALine)) or (ALine < 0) then exit;
   Clear;
   FLine := ALine;
   FHighLighter.InitFoldNodeInfo(Self, FLine);
