@@ -860,6 +860,9 @@ var
 
     applyCocoaConfigTitleBar( pFormConfig^.titleBar );
     applyCocoaConfigToolBar( pFormConfig^.toolBar );
+
+    if Assigned(pFormConfig^.onCreate) then
+      pFormConfig^.onCreate( form );
   end;
 {$endif}
 
