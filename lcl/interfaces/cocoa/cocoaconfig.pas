@@ -22,8 +22,10 @@ type
   TCocoaConfigToolBarItems = Array of TCocoaConfigToolBarItemClassAbstract;
 
 type
-  TCocoaToolBarItemCreator = function ( const identifier: String;
+  TCocoaToolBarItemCreator = function (
+    const identifier: String;
     const items: TCocoaConfigToolBarItems ): NSToolbarItem;
+  TCocoaToolBarOnCreateHandler = procedure ( const form: TCustomForm );
   TCocoaToolBarItemActionHandler = procedure ( const Sender: id );
   TCocoaToolBarItemMenuOnGetMenu = procedure ( const menu: TMenu );
   TCocoaToolBarItemSharingOnGetItems = function ( item: NSToolBarItem ): TStringArray;
@@ -103,6 +105,7 @@ type
     isMainForm: Boolean;
     titleBar: TCocoaConfigTitleBar;
     toolBar: TCocoaConfigToolBar;
+    onCreate: TCocoaToolBarOnCreateHandler;
   end;
 
   TCocoaConfigForms = Array of TCocoaConfigForm;
