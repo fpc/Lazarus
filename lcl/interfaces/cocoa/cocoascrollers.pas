@@ -1013,6 +1013,9 @@ var
 begin
   inherited reflectScrolledClipView(cView);
 
+  if NOT isCustomRange then
+    Exit;
+
   currentX:= Round( cView.bounds.origin.x );
   if not self.documentView.isFlipped then begin
     currentY:= Round( self.documentView.frame.size.height - cView.bounds.origin.y - self.contentSize.height );
