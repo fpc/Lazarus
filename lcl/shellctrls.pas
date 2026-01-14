@@ -2445,7 +2445,7 @@ var
   nCol: Integer;
   colWidths: array of Integer = nil;
   weightName: Integer;
-  canv: TControlCanvas;
+  bmp: Graphics.TBitmap;
   fmt: String;
 begin
   if Self.Columns.Count < 3 then
@@ -2458,9 +2458,10 @@ begin
   nCol := ColumnCount;         // number of columns to receive  distributed space
 
   // Calculate fixed width of date column, if available.
-  canv := TControlCanvas.Create;
+  bmp := Graphics.TBitmap.Create;
   try
-    canv.Control := Self;
+    bmp.SetSize(1,1);
+    bmp.Canvas.Font.Assign(Font);
     testDate := EncodeDate(2000,12,29) + EncodeTime(12,0,0,0);
     for c := 0 to ColumnCount-1 do
     begin
@@ -2471,13 +2472,13 @@ begin
           fmt := DateColumnFormat
         else
           fmt := col.Format;
-        colWidths[c] := canv.TextWidth(FormatDateTime(fmt, testDate) + 'MM');   //'MM' to simulate the cell padding
+        colWidths[c] := bmp.Canvas.TextWidth(FormatDateTime(fmt, testDate) + 'MM');   //'MM' to simulate the cell padding
         dec(widthAvail, colWidths[c]);
         dec(nCol);
       end;
     end;
   finally
-    canv.Free;
+    bmp.Free;
   end;
 
   // If the space available is small, alloc a larger percentage to the secondary fields
