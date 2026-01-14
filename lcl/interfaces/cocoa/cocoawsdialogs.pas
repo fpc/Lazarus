@@ -499,6 +499,14 @@ begin
     openDlg := nil;
   end;
 
+  if FileDialog is TOpenDialog then
+  begin
+    if ofAllowBrowseAppBundle in TOpenDialog(FileDialog).OptionsEx then
+      saveDlg.setTreatsFilePackagesAsDirectories(True);
+    if ofUseAlternativeTitle in TOpenDialog(FileDialog).OptionsEx then
+      saveDlg.setMessage(StrToNSString(FileDialog.Title));
+  end;
+
   saveDlg.retain; // this is for OSX 10.6 (and we don't use ARC either)
 
   if not Assigned(lFilter) or (CocoaUseUTIFilter) then

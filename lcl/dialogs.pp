@@ -223,7 +223,9 @@ type
     ofOkButtonNeedsInteraction, // Windows Vista+: The OK button will be disabled until the user navigates the view or edits the filename (if applicable).
     ofForceFileSystem,          // Windows Vista+: Ensures that returned items are file system items.
     ofAllNonStorageItems,       // Windows Vista+: Enables the user to choose any item in the Shell namespace, not just those with SFGAO_STREAM or SFAGO_FILESYSTEM attributes. Flag cannot be combined with ofForceFileSystem.
-    ofUseXPStyleAsFallBack      // Windows Vista+: Use XP-style dialog if creating Vista-style dialog fails (e.g. when running under Windows Recovery).
+    ofUseXPStyleAsFallBack,     // Windows Vista+: Use XP-style dialog if creating Vista-style dialog fails (e.g. when running under Windows Recovery).
+    ofAllowBrowseAppBundle,     // macOS: All browsing .App bundles
+    ofUseAlternativeTitle       // macOS: Display a title in the dialog window
     // Intentionally not supported: ofDefaultNoMiniMode, ofHideMruPlaces: these values are not supported as of Windows 7.
   );
   TOpenOptionsEx = set of TOpenOptionEx;
