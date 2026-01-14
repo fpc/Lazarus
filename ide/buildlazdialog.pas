@@ -1429,7 +1429,7 @@ begin
   else
     AProfile.IdeBuildMode := bmBuild;
   AProfile.CleanOnce:=CleanOnceCheckBox.Checked;
-  AProfile.OptionsLines.Assign(OptionsMemo.Lines);
+  AProfile.OptionsLines.Text := OptionsMemo.Lines.Text; // not use Assign, Lines may contain word wraps!
   AProfile.Defines.Clear;
   for i:=0 to DefinesListBox.Items.Count-1 do
     if DefinesListBox.Checked[i] then
