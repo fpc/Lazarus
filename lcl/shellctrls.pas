@@ -2436,6 +2436,7 @@ end;
 
 procedure TCustomShellListView.AdjustColWidths;
 var
+  clientWid: Integer;
   colWidth: Integer;
   sumOfWidths: Integer;
   widthAvail: Integer;
@@ -2452,9 +2453,12 @@ begin
     Exit;
   if (Column[0].Width <> 0) and (not AutoSizeColumns) then
     Exit;
+  if Parent = nil then
+    Exit;
 
   SetLength(colWidths, ColumnCount);  // all colWidths are initialized with 0
-  widthAvail := ClientWidth;   // Width to be distributed
+  clientWid := ClientWidth;
+  widthAvail := clientWid;     // Width to be distributed
   nCol := ColumnCount;         // number of columns to receive  distributed space
 
   // Calculate fixed width of date column, if available.
@@ -2482,7 +2486,7 @@ begin
   end;
 
   // If the space available is small, alloc a larger percentage to the secondary fields
-  if ClientWidth < 400 then
+  if clientWid < 400 then
     weightName := 2
   else
     weightName := 4;
@@ -2497,7 +2501,7 @@ begin
       colWidths[c] := colWidth;
     inc(sumOfWidths, colWidths[c]);
   end;
-  inc(colWidths[0], ClientWidth - sumOfWidths); // distribute remaining space
+  inc(colWidths[0], clientWid - sumOfWidths); // distribute remaining space
 
   // Apply calculated colwidths to Columns
   BeginUpdate;
