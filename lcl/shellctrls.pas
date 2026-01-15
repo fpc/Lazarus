@@ -1916,7 +1916,6 @@ begin
   begin
     FMask := AValue;
     Clear;
-    Items.Clear;
     PopulateWithRoot();
   end;
 end;
@@ -1926,7 +1925,6 @@ begin
   if FFileSortType=AValue then Exit;
   FFileSortType:=AValue;
   Clear;
-  Items.Clear;
   PopulateWithRoot();
 end;
 
@@ -1964,7 +1962,6 @@ begin
     Exit;
   FOnSortCompare:=AValue;
   Clear;
-  Items.Clear;
   PopulateWithRoot();
 end;
 
@@ -2001,7 +1998,6 @@ begin
     BeginUpdate;
     try
       Clear;
-      Items.Clear;
       PopulateWithRoot();
     finally
       EndUpdate;
@@ -2496,7 +2492,6 @@ begin
   sumOfWidths := 0;
   for c := 0 to ColumnCount-1 do
   begin
-    col := TShellListColumn(Column[c]);
     if colWidths[c] = 0 then
       colWidths[c] := colWidth;
     inc(sumOfWidths, colWidths[c]);

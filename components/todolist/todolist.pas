@@ -406,8 +406,8 @@ begin
       begin
         if lvTodo.SortColumn = 0 then
         begin
-          Str1 := TListItem(Item1).Caption;
-          Str2 := TListItem(Item2).Caption;
+          Str1 := Item1.Caption;
+          Str2 := Item2.Caption;
         end else
           begin
             // Checks against Subitems.Count necessary??
