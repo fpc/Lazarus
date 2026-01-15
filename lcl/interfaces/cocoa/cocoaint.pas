@@ -509,10 +509,11 @@ begin
         CursorHelper.ForceSetDefaultCursor
       else
         CursorHelper.SetScreenCursor;
+      Application.DoBeforeMouseMessage( nil );
     end;
-  end;
-
-  if not Assigned(w) then begin
+  end
+  else
+  begin
     Application.DoBeforeMouseMessage( nil );
     Exit;
   end;
