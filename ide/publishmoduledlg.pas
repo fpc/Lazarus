@@ -285,15 +285,19 @@ begin
     if CurUnitInfo.IsPartOfProject then
     begin
       Result := CopyAFile(CurUnitInfo.Filename);
-      if Result<> mrOk then Exit;
+      if Result <> mrOk then Exit;
       if CurUnitInfo.IsMainUnit then
       begin                // Copy the main resource file in any case.
         RelatedFile := ChangeFileExt(CurUnitInfo.Filename, '.res');
-        if FileExistsUTF8(RelatedFile) then
+        if FileExistsUTF8(RelatedFile) then begin
           Result := CopyAFile(RelatedFile);
+          if Result <> mrOk then Exit;
+        end;
         RelatedFile := ChangeFileExt(CurUnitInfo.Filename, '.ico');
-        if FileExistsUTF8(RelatedFile) then
+        if FileExistsUTF8(RelatedFile) then begin
           Result := CopyAFile(RelatedFile);
+          if Result <> mrOk then Exit;
+        end;
       end;
     end;
   end;
@@ -318,11 +322,13 @@ begin
   for i:=0 to CurPackage.FileCount-1 do
   begin
     PkgFile := CurPackage.Files[i];
-    CopyAFile(PkgFile.Filename);
+    Result := CopyAFile(PkgFile.Filename);
+    if Result <> mrOk then Exit;
   end;
 end;
 
 function TPublisher.WriteProjectInfo: TModalResult;
+// Project Info has file suffix .lpi
 var
   CurProject: TProject;
   NewProjFilename: string;
@@ -331,18 +337,31 @@ begin
   NewProjFilename := FDestDir + ExtractRelativePath(FTopDir, CurProject.ProjectInfoFile);
   DeleteFileUTF8(NewProjFilename);
   Assert(CurProject.PublishOptions = FOptions, 'CurProject.PublishOptions <> FOptions');
-  FCopiedFiles.Add(CurProject.ProjectInfoFile); // Do not later by filter.
-  Result := CurProject.WriteProject(
+  FCopiedFiles.Add(CurProject.ProjectInfoFile);
+  Result := CurProject.WriteProject(              // Rewrite .lpi
       CurProject.PublishOptions.WriteFlags+pwfSkipSessionInfo+[pwfIgnoreModified],
       NewProjFilename,nil);
-  if Result<>mrOk then
+  if Result <> mrOk then
     DebugLn('Hint: [TPublisher] CurProject.WriteProject failed');
 end;
 
 function TPublisher.WritePackageInfo: TModalResult;
+// Package Info has file suffix .lpk
+var
+  CurPackage: TLazPackage;
+  PackPasFile: String;
 begin
   Result := mrOK;
-  // ToDo
+  CurPackage := TLazPackage(FProjPack);
+  // Copy .lpk file
+  Result := CopyAFile(CurPackage.Filename);
+  if Result <> mrOk then Exit;
+  FCopiedFiles.Add(CurPackage.Filename);
+  // Copy .pas file generated based on .lpk
+  PackPasFile := ChangeFileExt(CurPackage.Filename, '.pas');
+  Result := CopyAFile(PackPasFile);
+  if Result <> mrOk then Exit;
+  FCopiedFiles.Add(PackPasFile);
 end;
 
 function TPublisher.IsDrive(const AName: String): Boolean;
