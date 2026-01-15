@@ -186,6 +186,7 @@ type
   { TOpenSaveDelegate }
 
   TOpenSaveDelegate = objcclass(NSObject, NSOpenSavePanelDelegateProtocol)
+    cocoaFilePanel: NSSavePanel;
     FileDialog: TFileDialog;
     OpenDialog: TOpenDialog;
     selUrl: NSURL;
@@ -195,6 +196,7 @@ type
     function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: LCLObjCBoolean): NSString;
     procedure panel_willExpand(sender: id; expanding: LCLObjCBoolean);
     procedure panelSelectionDidChange(sender: id);
+    procedure treatsAsDirAction(sender: id); message 'treatsAsDirAction:';
   end;
 
   // Having path_shouldEnableURL is causing a slowness on a file selection
@@ -276,6 +278,12 @@ begin
   end;
 end;
 
+procedure TOpenSaveDelegate.treatsAsDirAction(sender: id);
+begin
+  cocoaFilePanel.setTreatsFilePackagesAsDirectories(
+    NOT cocoaFilePanel.treatsFilePackagesAsDirectories );
+end;
+
 { TCocoaWSFileDialog }
 
 {------------------------------------------------------------------------------
@@ -289,14 +297,12 @@ class procedure TCocoaWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog)
  }
 var
   FileDialog: TFileDialog absolute ACommonDialog;
+  filterComboBox: TCocoaFilterComboBox = nil;
   i: integer;
   openDlg: NSOpenPanel;
   saveDlg: NSSavePanel;
   InitName, InitDir: string;
   LocalPool: NSAutoReleasePool;
-  // filter accessory view
-  accessoryView: NSView;
-  lFilter: TCocoaFilterComboBox;
   callback: TOpenSaveDelegate;
 
   isMenuOn: Boolean;
@@ -305,108 +311,162 @@ var
   editMenuIndex: NSInteger = -1;
 
   // setup panel and its accessory view
-  procedure CreateAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
-  const
-    INT_MIN_ACCESSORYVIEW_WIDTH = 300;
-    OFS_HRZ = 10;
+  procedure attachAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
   var
-    lRect: NSRect;
-    lText: NSTextField;
-    lTextStr: NSString;
-    lDialogView: NSView;
-    lAccessoryWidth: Integer = INT_MIN_ACCESSORYVIEW_WIDTH;
-    w: Integer;
-    nw: Integer;
-    fw: Integer;
-  begin
-    // check if the accessory is necessary
-    if FileDialog.Filter = '' then Exit;
+    // filter accessory view
+    accessoryView: NSView;
+    treatsAsDirCheckbox: NSButton;
+    filterLabel: NSTextField;
 
-    // try to obtain the dialog size
-    lDialogView := NSView(ASaveOwner.contentView);
-    if lDialogView <> nil then
+    procedure createAccessoryView;
     begin
-      if (NSAppkitVersionNumber >= NSAppKitVersionNumber11_0) then
-        // starting with Big Sur, the dialog retains the last openned size
-        // causing the width to be increased on every openning of the dialog
-        // we'd simply force the lAccessoryWidth to start with the minimum width
-        lAccessoryWidth := INT_MIN_ACCESSORYVIEW_WIDTH
-      else if lDialogView.frame.size.width > INT_MIN_ACCESSORYVIEW_WIDTH then
-        lAccessoryWidth := Round(lDialogView.frame.size.width);
-    end;
-    lRect := GetNSRect(0, 0, lAccessoryWidth, 30);
-    accessoryView := NSView.alloc.initWithFrame(lRect);
-
-    // "Format:" label
-    lText := NSTextField.alloc.initWithFrame(NSNullRect);
-    {$ifdef BOOLFIX}
-    lText.setBezeled_(Ord(False));
-    lText.setDrawsBackground_(Ord(False));
-    lText.setEditable_(Ord(False));
-    lText.setSelectable_(Ord(False));
-    {$else}
-    lText.setBezeled(False);
-    lText.setDrawsBackground(False);
-    lText.setEditable(False);
-    lText.setSelectable(False);
-    {$endif}
-    lTextStr := NSStringUTF8(rsMacOSFileFormat);
-    lText.setStringValue(lTextStr);
-    lText.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(NSRegularControlSize)));
-    lText.sizeToFit;
-
-    // Combobox
-    lFilter := TCocoaFilterComboBox.alloc.initWithFrame(NSNullRect);
-    lFilter.IsOpenDialog := AOpenOwner <> nil;
-    if lFilter.IsOpenDialog then
-      lFilter.DialogHandle := AOpenOwner
-    else
-      lFilter.DialogHandle := ASaveOwner;
-    lFilter.Owner := FileDialog;
-    lFilter.setTarget(lFilter);
-    lFilter.setAction(objcselector('comboboxAction:'));
-    lFilter.updateFilterList();
-    if FileDialog.FilterIndex <= 0 then
-      lFilter.lastSelectedItemIndex := 0
-    else
-      lFilter.lastSelectedItemIndex := FileDialog.FilterIndex-1;
-    lFilter.lastSelectedItemIndex := lFilter.setDialogFilter(lFilter.lastSelectedItemIndex);
-    lFilter.sizeToFit;
-    lFilter.setAutoresizingMask(NSViewWidthSizable);
-    if FileDialog.FilterIndex>0 then
-      lFilter.selectItemAtIndex(FileDialog.FilterIndex-1);
-
-    // Trying to put controls into the center of the Acc-view
-    //  Label must fit in full. Whatever is left is for filter
-    w:=lAccessoryWidth - OFS_HRZ - OFS_HRZ;
-    fw:=Round(lFilter.frame.size.width);
-    nw:=Round(lText.frame.size.width + fw + OFS_HRZ);
-    if nw>w then begin
-      dec(fw, nw-w);
-      nw:=w;
+      accessoryView:= NSView.alloc.initWithFrame( NSMakeRect(0, 0, 1, 1) );
+      ASaveOwner.setAccessoryView( accessoryView );
+      accessoryView.release;
     end;
 
-    lText.setFrame(  NSMakeRect(
-       Round((w-nw) / 2+OFS_HRZ)
-       , 0
-       , lText.frame.size.width
-       , lFilter.frame.size.height
-    ));
+    procedure createTreatsAsDirCheckbox;
+    begin
+      treatsAsDirCheckbox:= NSButton.alloc.init;
+      treatsAsDirCheckbox.setButtonType( NSSwitchButton );
+      treatsAsDirCheckbox.setTarget( callback );
+      treatsAsDirCheckbox.setAction( ObjCSelector('treatsAsDirAction:') );
+      treatsAsDirCheckbox.setTitle( StrToNSString('Show File Package Contents') );
+      treatsAsDirCheckbox.setToolTip( StrToNSString('Such as .App Bundles') );
+      treatsAsDirCheckbox.sizeToFit;
+      if ofAllowBrowseAppBundle in TOpenDialog(FileDialog).OptionsEx then
+        treatsAsDirCheckbox.setState( NSOnState );
+      accessoryView.addSubview( treatsAsDirCheckbox );
+      treatsAsDirCheckbox.release;
+    end;
 
-    lFilter.setFrame( NSMakeRect(
-       lText.frame.origin.x+lText.frame.size.width+OFS_HRZ
-       ,4
-       ,fw
-       ,lFilter.frame.size.height
+    procedure createFilterLabel;
+    begin
+      filterLabel:= NSTextField.alloc.initWithFrame( NSZeroRect );
+      {$ifdef BOOLFIX}
+      filterLabel.setBezeled_(Ord(False));
+      filterLabel.setDrawsBackground_(Ord(False));
+      filterLabel.setEditable_(Ord(False));
+      filterLabel.setSelectable_(Ord(False));
+      {$else}
+      filterLabel.setBezeled( False );
+      filterLabel.setDrawsBackground( False );
+      filterLabel.setEditable( False );
+      filterLabel.setSelectable( False );
+      {$endif}
+      filterLabel.setStringValue( StrToNSString(rsMacOSFileFormat) );
+      filterLabel.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(NSRegularControlSize)));
+      filterLabel.sizeToFit;
+      accessoryView.addSubview(filterLabel);
+      filterLabel.release;
+    end;
+
+    procedure createFilterCombobox;
+    begin
+      filterComboBox:= TCocoaFilterComboBox.alloc.initWithFrame(NSNullRect);
+      filterComboBox.IsOpenDialog:= AOpenOwner <> nil;
+      if filterComboBox.IsOpenDialog then
+        filterComboBox.DialogHandle:= AOpenOwner
+      else
+        filterComboBox.DialogHandle:= ASaveOwner;
+      filterComboBox.Owner := FileDialog;
+      filterComboBox.setTarget( filterComboBox );
+      filterComboBox.setAction( objcselector('comboboxAction:') );
+      filterComboBox.updateFilterList();
+      if FileDialog.FilterIndex <= 0 then
+        filterComboBox.lastSelectedItemIndex := 0
+      else
+        filterComboBox.lastSelectedItemIndex := FileDialog.FilterIndex-1;
+      filterComboBox.lastSelectedItemIndex := filterComboBox.setDialogFilter(filterComboBox.lastSelectedItemIndex);
+      if FileDialog.FilterIndex>0 then
+        filterComboBox.selectItemAtIndex(FileDialog.FilterIndex-1);
+      filterComboBox.sizeToFit;
+      filterComboBox.setAutoresizingMask(NSViewWidthSizable);
+      accessoryView.addSubview( filterComboBox );
+      filterComboBox.release;
+    end;
+
+    procedure updateLayout;
+    const
+      MIN_ACCESSORYVIEW_WIDTH = 300;
+      OFS_HRZ = 10;
+    var
+      dialogView: NSView;
+      accessoryViewSize: NSSize;
+      clientWidth: Double;
+      filterWidthWithLabel: Double;
+      filterComboBoxWidth: Double;
+      filterY: Double;
+      treatsAsDirCheckboxX: Double;
+    begin
+      // starting with Big Sur, the dialog retains the last openned size
+      // causing the width to be increased on every openning of the dialog
+      // we'd simply force the width to start with the minimum width
+      accessoryViewSize.width := MIN_ACCESSORYVIEW_WIDTH;
+
+      // try to obtain the dialog size
+      dialogView:= NSView(ASaveOwner.contentView);
+      if (dialogView<>nil) and (NSAppkitVersionNumber<NSAppKitVersionNumber11_0) then begin
+        if dialogView.frame.size.width > MIN_ACCESSORYVIEW_WIDTH then
+          accessoryViewSize.width := dialogView.frame.size.width;
+      end;
+
+      accessoryViewSize.height:= treatsAsDirCheckbox.frame.size.height + OFS_HRZ*2;
+      if Assigned(filterComboBox) then
+        accessoryViewSize.height:= accessoryViewSize.height + filterComboBox.frame.size.height + OFS_HRZ;
+      accessoryView.setFrameSize( accessoryViewSize );
+
+      clientWidth:= accessoryViewSize.Width - OFS_HRZ - OFS_HRZ;
+
+      treatsAsDirCheckboxX:= (clientWidth-treatsAsDirCheckbox.frame.size.width)/2;
+      if treatsAsDirCheckboxX < 0 then
+        treatsAsDirCheckboxX:= 0;
+      treatsAsDirCheckbox.setFrameOrigin( NSMakePoint(treatsAsDirCheckboxX,4) );
+
+      if NOT Assigned(filterComboBox) then
+        Exit;
+
+      // Trying to put controls into the center of the Acc-view
+      //  Label must fit in full. Whatever is left is for filter
+      filterComboBoxWidth:= filterComboBox.frame.size.width;
+      filterWidthWithLabel:= filterLabel.frame.size.width + filterComboBoxWidth + OFS_HRZ;
+      if filterWidthWithLabel > clientWidth then begin
+        filterWidthWithLabel:= clientWidth;
+        filterComboBoxWidth:= filterWidthWithLabel - filterLabel.frame.size.width;
+      end;
+
+      filterY:= treatsAsDirCheckbox.frame.origin.y + treatsAsDirCheckbox.frame.size.height + OFS_HRZ;
+
+      filterLabel.setFrameOrigin(  NSMakePoint(
+         (clientWidth-filterWidthWithLabel) / 2,
+         filterY + (filterComboBox.frame.size.height - filterLabel.frame.size.height) / 2
       ));
 
-    accessoryView.addSubview(lText.autorelease);
-    accessoryView.addSubview(lFilter.autorelease);
+      filterComboBox.setFrame( NSMakeRect(
+         filterLabel.frame.origin.x + filterLabel.frame.size.width + OFS_HRZ,
+         filterY,
+         filterComboBoxWidth,
+         filterComboBox.frame.size.height
+      ));
+    end;
 
-    lFilter.setAutoresizingMask(NSViewWidthSizable);
+  begin
+    createAccessoryView;
+    createTreatsAsDirCheckbox;
+    if FileDialog.Filter <> EmptyStr then begin
+      createFilterLabel;
+      createFilterCombobox;
+    end;
+    updateLayout;
+  end;
 
-    lFilter.DialogHandle.setAccessoryView(accessoryView.autorelease);
-    lFilter.DialogHandle.setDelegate(lFilter);
+  class procedure createCallback;
+  begin
+    if (FileDialog.Filter = EmptyStr) or (CocoaUseUTIFilter) then
+      callback:= TOpenSaveDelegate.alloc
+    else
+      callback:= TOpenSaveDelegateWithFilter.alloc;
+    callback:= callback.init;
   end;
 
   class procedure ReplaceEditMenu();
@@ -449,8 +509,6 @@ begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSFileDialog.ShowModal for ' + ACommonDialog.Name);
   {$ENDIF}
-  lFilter := nil;
-
   LocalPool := NSAutoReleasePool.alloc.init;
 
   // two sources for init dir
@@ -463,6 +521,8 @@ begin
   // So we need to create our own accessory view
 
   FileDialog.UserChoice := mrCancel;
+
+  createCallback;
 
   //todo: Options
   if (FileDialog.FCompStyle = csOpenFileDialog) or
@@ -485,7 +545,7 @@ begin
       openDlg.setCanChooseFiles(True);
       openDlg.setCanChooseDirectories(False);
       // accessory view
-      CreateAccessoryView(openDlg, openDlg);
+      attachAccessoryView(openDlg, openDlg);
     end;
     saveDlg := openDlg;
   end
@@ -495,7 +555,7 @@ begin
     saveDlg.setCanCreateDirectories(True);
     saveDlg.setNameFieldStringValue(NSStringUtf8(InitName));
     // accessory view
-    CreateAccessoryView(nil, saveDlg);
+    attachAccessoryView(nil, saveDlg);
     openDlg := nil;
   end;
 
@@ -509,15 +569,10 @@ begin
 
   saveDlg.retain; // this is for OSX 10.6 (and we don't use ARC either)
 
-  if not Assigned(lFilter) or (CocoaUseUTIFilter) then
-    callback:=TOpenSaveDelegate.alloc
-  else begin
-    callback:=TOpenSaveDelegateWithFilter.alloc;
-  end;
-  callback.filter := lFilter;
-  callback := callback.init;
   callback.autorelease;
+  callback.filter := filterComboBox;
   callback.FileDialog := FileDialog;
+  callback.cocoaFilePanel := SaveDlg;
   if FileDialog is TOpenDialog then
     callback.OpenDialog := TOpenDialog(FileDialog);
   saveDlg.setDelegate(callback);
@@ -540,8 +595,8 @@ begin
             NSURL(openDlg.URLs.objectAtIndex(i)).path));
 
       FileDialog.UserChoice := mrOk;
-      if lFilter <> nil then
-        FileDialog.FilterIndex := lFilter.lastSelectedItemIndex+1;
+      if filterComboBox <> nil then
+        FileDialog.FilterIndex := filterComboBox.lastSelectedItemIndex+1;
     end;
     FileDialog.DoClose;
 
