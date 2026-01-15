@@ -1388,11 +1388,23 @@ var
       TopLeft := ParentChart.GraphToImage(graphBar.a);
       BottomRight := ParentChart.GraphToImage(graphBar.b);
       TAGeometry.NormalizeRect(imageBar);
-      if IsRotated then inc(imageBar.Right) else inc(imageBar.Bottom);
-
-      // Draw a line instead of an empty rectangle.
-      if (Bottom = Top) and IsRotated then Dec(Top);
-      if (Left = Right) and not IsRotated then Inc(Right);
+      if IsRotated then
+      begin
+        // Width zero: Do not draw anything.
+        if Left = Right then exit;
+        // Height zero: Draw a line instead of an empty rectangle
+        if (Bottom = Top) then Dec(Top);
+        // Optical improvement
+        inc(Right);
+      end else
+      begin
+        // Height zero: Do not draw anything.
+        if Top = Bottom then exit;
+        // Width zero: Draw a line instead of an empty rectangle
+        if (Left = Right) then inc(Right);
+        // Optical improvement
+        inc(Bottom);
+      end;
     end;
     DrawBar(imageBar);
   end;
