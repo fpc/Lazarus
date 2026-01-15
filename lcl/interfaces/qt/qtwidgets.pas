@@ -3281,7 +3281,7 @@ begin
   if (Modifiers = QtAltModifier) then
   begin
     if (QApplication_activeModalWidget() = nil) and
-      (QEvent_type(Event) <> QEventKeyRelease) and
+      (QEvent_type(Event) <> QEventKeyRelease) and (Text <> '') and
       QtWidgetSet.ShortcutInGlobalActions('Alt+'+Text, GlobalAction) then
     begin
       QtWidgetSet.TriggerGlobalAction(GlobalAction);
