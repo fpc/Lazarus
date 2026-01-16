@@ -29,11 +29,12 @@ type
     ButtonPanel1: TButtonPanel;
     FramePanel: TPanel;
     FramesTreeView: TTreeView;
+    procedure ButtonPanel1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end; 
 
 var
@@ -42,6 +43,8 @@ var
 procedure Register;
 
 implementation
+
+{$R *.lfm}
 
 procedure Register;
 begin
@@ -55,6 +58,9 @@ begin
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1Click;
 end;
 
-{$R *.lfm}
+procedure TEduOptionsDialog.ButtonPanel1Click(Sender: TObject);
+begin
+  ;
+end;
 
 end.
