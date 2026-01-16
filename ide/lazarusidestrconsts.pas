@@ -40,7 +40,6 @@ uses
   Classes, SysUtils;
 
 resourcestring
-  // *** Common single word resources that can be safely shared around Lazarus ***
 
   lisApply = 'Apply';
   lisBtnApply = '&Apply';
@@ -111,17 +110,12 @@ resourcestring
   lisSuccess = 'Success';
   lisAborted = 'Aborted';
 
-  // *** Common sentence resources that can be safely shared around Lazarus ***
-  //  Be careful, sharing sentences can lead to wrong translations in some places.
-
-  lisExportHtml = 'Export as HTML';
+  lisExportHtml = 'Export as HTML ...';
   lisMoveFiles = 'Move Files';
   lisMoveFiles2 = 'Move files?';
   lrsPLDDeleteSelected = 'Delete selected';
   lisMoveUp = 'Move Up';
   lisMoveDown = 'Move Down';
-
-  // *** Rest of the resource strings ***
 
   lisImportPackageListXml = 'Import package list';
   lisExportPackageListXml = 'Export package list';
