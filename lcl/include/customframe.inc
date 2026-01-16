@@ -255,6 +255,7 @@ constructor TFrame.Create(TheOwner: TComponent);
 begin
   FLCLVersion := lcl_version;
   inherited Create(TheOwner);
+  Name := '';  // added to fix issue #41999
 end;
 
 // included by forms.pp
