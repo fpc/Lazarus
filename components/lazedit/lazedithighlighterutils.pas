@@ -19,6 +19,7 @@
 unit LazEditHighlighterUtils;
 
 {$mode objfpc}{$H+}
+{$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 
 interface
 
@@ -98,6 +99,7 @@ type
   public
     procedure Insert(AnIndex, ACount: Integer); override;
     procedure Delete(AnIndex, ACount: Integer); override;
+    procedure Move(AFromIndex, AToIndex, ACount: Integer); override;
   protected
     function GetRange(AnIndex: Integer): Pointer; virtual; abstract;
     procedure SetRange(AnIndex: Integer; const AValue: Pointer); virtual; abstract;
@@ -364,14 +366,46 @@ end;
 
 procedure TLazHighlighterLineRangeList.Insert(AnIndex, ACount: Integer);
 begin
+  if (FFirstInvalidLine < 0) or (AnIndex < FFirstInvalidLine) then begin
+    FFirstInvalidLine := AnIndex;
+    FUnsentValidationStartLine := AnIndex;
+  end;
+  if AnIndex + ACount > FLastInvalidLine then
+    FLastInvalidLine := AnIndex + ACount
+  else
+  if FLastInvalidLine >= AnIndex then
+    FLastInvalidLine := FLastInvalidLine + ACount;
+
   inherited Insert(AnIndex, ACount);
   InsertedLines(AnIndex, ACount){%H-};
 end;
 
 procedure TLazHighlighterLineRangeList.Delete(AnIndex, ACount: Integer);
 begin
+  if (FFirstInvalidLine < 0) or (AnIndex < FFirstInvalidLine) then begin
+    FFirstInvalidLine := AnIndex;
+    FUnsentValidationStartLine := AnIndex;
+  end;
+  if AnIndex > FLastInvalidLine then
+    FLastInvalidLine := AnIndex
+  else
+  if FLastInvalidLine > AnIndex then
+    FLastInvalidLine := Max(AnIndex, FLastInvalidLine - ACount);
+
   inherited Delete(AnIndex, ACount);
   DeletedLines(AnIndex, ACount){%H-};
+end;
+
+procedure TLazHighlighterLineRangeList.Move(AFromIndex, AToIndex, ACount: Integer);
+begin
+  if (FFirstInvalidLine < 0) or (Min(AFromIndex, AToIndex)< FFirstInvalidLine) then begin
+    FFirstInvalidLine := Min(AFromIndex, AToIndex);
+    FUnsentValidationStartLine := Min(AFromIndex, AToIndex);
+  end;
+  if Max(AFromIndex, AToIndex) + ACount > FLastInvalidLine then
+    FLastInvalidLine := Max(AFromIndex, AToIndex) + ACount;
+
+  inherited Move(AFromIndex, AToIndex, ACount);
 end;
 
 procedure TLazHighlighterLineRangeList.Invalidate(AFrom, ATo: integer);

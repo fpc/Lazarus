@@ -117,6 +117,7 @@ type
 
   generic TGenLazEditLineItems<_B: TWrapGenBaseLazEditLineItems; _ListType> = class(_B.TBase)
   private type
+    __BASE = _B.TBase;
     TLineItemList = _ListType;
   private
     FLineItems: TLineItemList;
@@ -486,6 +487,8 @@ end;
 procedure TGenLazEditLineItems.Move(AFromIndex, AToIndex, ACount: Integer);
 begin
   FLineItems.MoveRows(AFromIndex, AToIndex, ACount);
+  if @__BASE.Move <> @TLazEditLineItems.Move then
+    inherited Move(AFromIndex, AToIndex, ACount);
 end;
 
 destructor TGenLazEditLineItems.Destroy;
@@ -497,11 +500,15 @@ end;
 procedure TGenLazEditLineItems.Insert(AnIndex, ACount: Integer);
 begin
   FLineItems.InsertRows(AnIndex, ACount);
+  if @__BASE.Insert <> @TLazEditLineItems.Insert then
+    inherited Insert(AnIndex, ACount);
 end;
 
 procedure TGenLazEditLineItems.Delete(AnIndex, ACount: Integer);
 begin
   FLineItems.DeleteRows(AnIndex, ACount);
+  if @__BASE.Delete <> @TLazEditLineItems.Delete then
+    inherited Delete(AnIndex, ACount);
 end;
 
 { TGenLazEditLineItemsVarSize }
