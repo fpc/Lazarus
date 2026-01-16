@@ -48,6 +48,8 @@ uses
   InputHistory,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
+  // IdeIntf
+  IDEWindowIntf,
   // IDE
   LazarusIDEStrConsts;
 
@@ -125,10 +127,14 @@ begin
   TxtBeforeLinesComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
   TxtAfterLinesComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
   EscQuotesStyleComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
+
+  IDEDialogLayoutList.ApplyLayout(self);
 end;
 
 procedure TMultiPasteDialog.FormDestroy(Sender: TObject);
 begin
+  IDEDialogLayoutList.SaveLayout(self);
+
   TxtBeforeLinesComboBox.AddHistoryItem(TxtBeforeLinesComboBox.Text,20,true,false);
   InputHistories.HistoryLists.GetList(hlFormatPasteTxtBefore,true,rltCaseSensitive)
     .Assign(TxtBeforeLinesComboBox.Items);
