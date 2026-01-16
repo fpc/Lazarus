@@ -1,0 +1,86 @@
+object FileSearcherForm: TFileSearcherForm
+  Left = 593
+  Height = 214
+  Top = 407
+  Width = 556
+  ActiveControl = edtSearch
+  BorderIcons = [biMaximize]
+  BorderStyle = bsSizeToolWin
+  Caption = 'Search file'
+  ClientHeight = 214
+  ClientWidth = 556
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  object bpFileSearch: TButtonPanel
+    Left = 6
+    Height = 56
+    Top = 152
+    Width = 544
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object Label1: TLabel
+    AnchorSideTop.Control = edtSearch
+    AnchorSideRight.Control = edtSearch
+    AnchorSideBottom.Control = edtSearch
+    AnchorSideBottom.Side = asrBottom
+    Left = 28
+    Height = 34
+    Top = 4
+    Width = 68
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoSize = False
+    BorderSpacing.Right = 8
+    Caption = 'Filename'
+    Layout = tlCenter
+  end
+  object edtSearch: TEdit
+    Left = 104
+    Height = 34
+    Top = 4
+    Width = 299
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 1
+    TextHint = 'Type filename'
+    OnChange = edtSearchChange
+  end
+  object LBFiles: TListBox
+    Left = 8
+    Height = 125
+    Top = 40
+    Width = 541
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    MultiSelect = True
+    Style = lbOwnerDrawFixed
+    TabOrder = 2
+    TopIndex = -1
+    OnDblClick = LBFilesDblClick
+    OnDrawItem = LBFilesDrawItem
+  end
+  object cbFilter: TFilterComboBox
+    AnchorSideTop.Control = edtSearch
+    AnchorSideBottom.Control = edtSearch
+    AnchorSideBottom.Side = asrBottom
+    Left = 412
+    Height = 34
+    Top = 4
+    Width = 137
+    Anchors = [akTop, akRight, akBottom]
+    Filter = 'Pascal files|*.pas;*.pp;*.inc;*.lpr;*.dpr|All files|*.*'
+    ItemIndex = 0
+    TabOrder = 3
+    OnChange = cbFilterChange
+  end
+end
