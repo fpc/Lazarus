@@ -152,12 +152,16 @@ type
   end;
 
 var
+  // https://developer.apple.com/documentation/appkit/nssavepanel/allowedfiletypes?language=objc
+  // setAllowedFileTypes supports extensions, not only UTI, it's LCL compatible.
+  // then "True" by default.
+  //
   // if set to "true", then OpenDialog would create UTI identifiers
   // for filtering files. As a result a broaded set of files might be available
   // than specified in the extensions filter.
   // "false" is forces the dialog to use panel_shouldEnableURL. It's a slower
   // check (due to security implications), but it's LCL compatible
-  CocoaUseUTIFilter : Boolean = false;
+  CocoaUseUTIFilter : Boolean = True;
 
 procedure FontToDict(src: TFont; dst: NSMutableDictionary);
 procedure DictToFont(src: NSDictionary; dst: TFont);
@@ -1042,7 +1046,7 @@ begin
         lExtensions := TStringList.Create;
         for m := 0 to Masks.Count - 1 do
         begin
-          if Masks[m] = '*.*' then
+          if (Masks[m]='*.*') or (Masks[m]='*') then
             continue;
 
           i:=Pos('.',Masks[m]);
@@ -1159,7 +1163,6 @@ var
   ns: NSString;
   i, lOSVer: Integer;
   lStr: String;
-  uti : CFStringRef;
   ext : string;
   j   : integer;
   UTIFilters: NSMutableArray;
@@ -1180,33 +1183,19 @@ begin
     begin
       ext := lCurFilter[i];
       if (ext='') then Continue;
-      if (ext='*.*') or (ext = '*') then begin
-        //uti:=CFSTR('public.content');
-        UTIFilters.removeAllObjects;
-        break;
-      end else begin
-        // using the last part of the extension, as Cocoa doesn't suppot
-        // complex extensions, such as .tar.gz
-        j:=length(ext);
-        while (j>0) and (ext[j]<>'.') do dec(j);
-        if (j>0) then inc(j);
-        ext := System.Copy(ext, j, length(ext));
-        // todo: this API is deprecated in macOS 11. There's no UTType ObjC class
-        //       to be used
-        uti:=UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension,
-          CFStringRef(NSString.stringWithUTF8String(PChar(ext))), CFSTR('public.data'));
-      end;
-      if Assigned(uti) then
-        UTIFilters.addObject(id(uti));
+      // using the last part of the extension, as Cocoa doesn't suppot
+      // complex extensions, such as .tar.gz
+      j:=length(ext);
+      while (j>0) and (ext[j]<>'.') do dec(j);
+      if (j>0) then inc(j);
+      ext := System.Copy(ext, j, length(ext));
+      UTIFilters.addObject(StrToNSString(ext));
     end;
 
     if (UTIFilters.count = 0) then
-    begin
-      // select any file
-      UTIFilters.addObject(id(CFSTR('public.content')));
-      UTIFilters.addObject(id(CFSTR('public.data')));
-    end;
-    DialogHandle.setAllowedFileTypes(UTIFilters);
+      DialogHandle.setAllowedFileTypes(nil)
+    else
+      DialogHandle.setAllowedFileTypes(UTIFilters);
     UTIFilters.release;
     exit;
   end;
