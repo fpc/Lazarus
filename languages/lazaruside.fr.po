@@ -9878,7 +9878,9 @@ msgid "Export environment options"
 msgstr "Exporter les options d'environnement"
 
 #: lazarusidestrconsts.lisexporthtml
-msgid "Export as HTML"
+#, fuzzy
+#| msgid "Export as HTML"
+msgid "Export as HTML ..."
 msgstr "Exporter en HTML"
 
 #: lazarusidestrconsts.lisexportimport

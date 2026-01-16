@@ -9857,7 +9857,9 @@ msgid "Export environment options"
 msgstr "Dışa aktarma ortamı seçenekleri"
 
 #: lazarusidestrconsts.lisexporthtml
-msgid "Export as HTML"
+#, fuzzy
+#| msgid "Export as HTML"
+msgid "Export as HTML ..."
 msgstr "HTML olarak dışa aktarma"
 
 #: lazarusidestrconsts.lisexportimport

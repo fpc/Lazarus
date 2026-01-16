@@ -9921,7 +9921,9 @@ msgid "Export environment options"
 msgstr "Vie ympäristön asetukset"
 
 #: lazarusidestrconsts.lisexporthtml
-msgid "Export as HTML"
+#, fuzzy
+#| msgid "Export as HTML"
+msgid "Export as HTML ..."
 msgstr "Vie HTML:nä"
 
 #: lazarusidestrconsts.lisexportimport
