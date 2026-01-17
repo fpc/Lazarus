@@ -33,7 +33,7 @@ uses
   // Widgetset
   WSLCLClasses, WSDialogs,
   // LCL Cocoa
-  CocoaConst, CocoaUtils, CocoaGDIObjects, Cocoa_Extra, CocoaMenus;
+  CocoaConfig, CocoaConst, CocoaUtils, CocoaGDIObjects, Cocoa_Extra, CocoaMenus;
 
 type
 
@@ -251,6 +251,7 @@ procedure TOpenSaveDelegate.treatsAsDirAction(sender: id);
 begin
   cocoaFilePanel.setTreatsFilePackagesAsDirectories(
     NOT cocoaFilePanel.treatsFilePackagesAsDirectories );
+  cocoaFilePanel.validateVisibleColumns;
 end;
 
 { TCocoaWSFileDialog }
@@ -283,6 +284,23 @@ var
     treatsAsDirCheckbox: NSButton;
     filterLabel: NSTextField;
 
+    function needFilePackagesSwitch: Boolean;
+    begin
+      if ofDontShowFilePackagesSwitch in TOpenDialog(lclFileDialog).OptionsEx then
+        Exit( False );
+      Result:= CocoaConfigFileDialog.accessoryView.showsFilePackagesSwitch;
+    end;
+
+    function needFilter: Boolean;
+    begin
+      Result:= lclFileDialog.Filter <> EmptyStr;
+    end;
+
+    function needAccessoryView: Boolean;
+    begin
+      Result:= needFilePackagesSwitch or needFilter;
+    end;
+
     procedure createAccessoryView;
     begin
       accessoryView:= NSView.alloc.initWithFrame( NSMakeRect(0, 0, 1, 1) );
@@ -299,7 +317,8 @@ var
       treatsAsDirCheckbox.setTitle( StrToNSString('Show File Package Contents') );
       treatsAsDirCheckbox.setToolTip( StrToNSString('Such as .App Bundles') );
       treatsAsDirCheckbox.sizeToFit;
-      if ofAllowBrowseAppBundle in TOpenDialog(lclFileDialog).OptionsEx then
+      if (ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx)
+          or CocoaConfigFileDialog.defaultFilePackagesSwitch then
         treatsAsDirCheckbox.setState( NSOnState );
       accessoryView.addSubview( treatsAsDirCheckbox );
       treatsAsDirCheckbox.release;
@@ -342,79 +361,89 @@ var
       if lclFileDialog.FilterIndex>0 then
         filterComboBox.selectItemAtIndex(lclFileDialog.FilterIndex-1);
       filterComboBox.sizeToFit;
-      filterComboBox.setAutoresizingMask(NSViewWidthSizable);
       accessoryView.addSubview( filterComboBox );
       filterComboBox.release;
     end;
 
     procedure updateLayout;
-    const
-      MIN_ACCESSORYVIEW_WIDTH = 300;
-      OFS_HRZ = 10;
     var
       dialogView: NSView;
       accessoryViewSize: NSSize;
       clientWidth: Double;
+      treatsAsDirCheckboxX: Double;
       filterWidthWithLabel: Double;
       filterComboBoxWidth: Double;
-      filterY: Double;
-      treatsAsDirCheckboxX: Double;
+      currentY: Double = 0;
+
+      procedure updateFilePackagesSwitchLayout;
+      begin
+        treatsAsDirCheckboxX:= (clientWidth-treatsAsDirCheckbox.frame.size.width)/2;
+        if treatsAsDirCheckboxX < 0 then
+          treatsAsDirCheckboxX:= 0;
+        treatsAsDirCheckbox.setFrameOrigin( NSMakePoint(treatsAsDirCheckboxX,0) );
+        currentY:= treatsAsDirCheckbox.frame.origin.y + treatsAsDirCheckbox.frame.size.height + CocoaConfigFileDialog.accessoryView.vertSpacing;
+      end;
+
+      procedure updateFilterLayout;
+      begin
+        // Trying to put controls into the center of the Acc-view
+        //  Label must fit in full. Whatever is left is for filter
+        filterComboBoxWidth:= filterComboBox.frame.size.width;
+        filterWidthWithLabel:= filterLabel.frame.size.width + filterComboBoxWidth + CocoaConfigFileDialog.accessoryView.horzSpacing;
+        if filterWidthWithLabel > clientWidth then begin
+          filterWidthWithLabel:= clientWidth;
+          filterComboBoxWidth:= filterWidthWithLabel - filterLabel.frame.size.width;
+        end;
+
+        filterLabel.setFrameOrigin(  NSMakePoint(
+           (clientWidth-filterWidthWithLabel) / 2,
+           currentY + (filterComboBox.frame.size.height - filterLabel.frame.size.height) / 2
+        ));
+
+        filterComboBox.setFrame( NSMakeRect(
+           filterLabel.frame.origin.x + filterLabel.frame.size.width + CocoaConfigFileDialog.accessoryView.horzSpacing,
+           currentY,
+           filterComboBoxWidth,
+           filterComboBox.frame.size.height
+        ));
+
+        currentY:= currentY + filterComboBox.frame.size.height + CocoaConfigFileDialog.accessoryView.vertSpacing;
+      end;
+
     begin
       // starting with Big Sur, the dialog retains the last openned size
       // causing the width to be increased on every openning of the dialog
       // we'd simply force the width to start with the minimum width
-      accessoryViewSize.width := MIN_ACCESSORYVIEW_WIDTH;
+      accessoryViewSize.width := CocoaConfigFileDialog.accessoryView.minWidth;
 
       // try to obtain the dialog size
       dialogView:= NSView(cocoaFileOwner.contentView);
       if (dialogView<>nil) and (NSAppkitVersionNumber<NSAppKitVersionNumber11_0) then begin
-        if dialogView.frame.size.width > MIN_ACCESSORYVIEW_WIDTH then
+        if dialogView.frame.size.width > CocoaConfigFileDialog.accessoryView.minWidth then
           accessoryViewSize.width := dialogView.frame.size.width;
       end;
 
-      accessoryViewSize.height:= treatsAsDirCheckbox.frame.size.height + OFS_HRZ*2;
-      if Assigned(filterComboBox) then
-        accessoryViewSize.height:= accessoryViewSize.height + filterComboBox.frame.size.height + OFS_HRZ;
+      clientWidth:= accessoryViewSize.Width - CocoaConfigFileDialog.accessoryView.horzSpacing * 2;
+
+      if needFilePackagesSwitch then
+        updateFilePackagesSwitchLayout;
+
+      if needFilter then
+        updateFilterLayout;
+
+      accessoryViewSize.height:= currentY;
       accessoryView.setFrameSize( accessoryViewSize );
-
-      clientWidth:= accessoryViewSize.Width - OFS_HRZ - OFS_HRZ;
-
-      treatsAsDirCheckboxX:= (clientWidth-treatsAsDirCheckbox.frame.size.width)/2;
-      if treatsAsDirCheckboxX < 0 then
-        treatsAsDirCheckboxX:= 0;
-      treatsAsDirCheckbox.setFrameOrigin( NSMakePoint(treatsAsDirCheckboxX,4) );
-
-      if NOT Assigned(filterComboBox) then
-        Exit;
-
-      // Trying to put controls into the center of the Acc-view
-      //  Label must fit in full. Whatever is left is for filter
-      filterComboBoxWidth:= filterComboBox.frame.size.width;
-      filterWidthWithLabel:= filterLabel.frame.size.width + filterComboBoxWidth + OFS_HRZ;
-      if filterWidthWithLabel > clientWidth then begin
-        filterWidthWithLabel:= clientWidth;
-        filterComboBoxWidth:= filterWidthWithLabel - filterLabel.frame.size.width;
-      end;
-
-      filterY:= treatsAsDirCheckbox.frame.origin.y + treatsAsDirCheckbox.frame.size.height + OFS_HRZ;
-
-      filterLabel.setFrameOrigin(  NSMakePoint(
-         (clientWidth-filterWidthWithLabel) / 2,
-         filterY + (filterComboBox.frame.size.height - filterLabel.frame.size.height) / 2
-      ));
-
-      filterComboBox.setFrame( NSMakeRect(
-         filterLabel.frame.origin.x + filterLabel.frame.size.width + OFS_HRZ,
-         filterY,
-         filterComboBoxWidth,
-         filterComboBox.frame.size.height
-      ));
     end;
 
   begin
+    if NOT needAccessoryView then
+      Exit;
+
     createAccessoryView;
-    createTreatsAsDirCheckbox;
-    if lclFileDialog.Filter <> EmptyStr then begin
+    if needFilePackagesSwitch then begin
+      createTreatsAsDirCheckbox;
+    end;
+    if needFilter then begin
       createFilterLabel;
       createFilterCombobox;
     end;
@@ -454,14 +483,11 @@ var
         cocoaOpenFilePanel.setCanChooseDirectories(True);
         cocoaOpenFilePanel.setCanChooseFiles(False);
         cocoaOpenFilePanel.setCanCreateDirectories(True);
-        cocoaOpenFilePanel.setAccessoryView(nil);
       end
       else
       begin
         cocoaOpenFilePanel.setCanChooseFiles(True);
         cocoaOpenFilePanel.setCanChooseDirectories(False);
-        // accessory view
-        attachAccessoryView(cocoaOpenFilePanel);
       end;
     end
     else if lclFileDialog.FCompStyle = csSaveFileDialog then
@@ -469,16 +495,17 @@ var
       cocoaFilePanel := NSSavePanel.savePanel;
       cocoaFilePanel.setCanCreateDirectories(True);
       cocoaFilePanel.setNameFieldStringValue(StrToNSString(InitName));
-      // accessory view
-      attachAccessoryView(cocoaFilePanel);
     end;
 
     cocoaFilePanel.setTitle( title );
     cocoaFilePanel.setDirectoryURL( url );
+    cocoaFilePanel.setShowsTagField( False );
+    attachAccessoryView(cocoaFilePanel);
 
     if lclFileDialog is TOpenDialog then
     begin
-      if ofAllowBrowseAppBundle in TOpenDialog(lclFileDialog).OptionsEx then
+      if (ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx)
+          or CocoaConfigFileDialog.defaultFilePackagesSwitch then
         cocoaFilePanel.setTreatsFilePackagesAsDirectories(True);
       if ofUseAlternativeTitle in TOpenDialog(lclFileDialog).OptionsEx then
         cocoaFilePanel.setMessage(title);
