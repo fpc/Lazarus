@@ -643,7 +643,7 @@ begin
   okButton := NSButton.alloc.initWithFrame(lRect);
   okButton.setButtonType(NSMomentaryPushInButton);
   okButton.setBezelStyle(NSRoundedBezelStyle);
-  okButton.setTitle(NSStringUtf8('Pick'));
+  okButton.setTitle(StrToNSString('Pick'));
   okButton.setAction(objcselector('pickColor'));
   okButton.setTarget(colorDelegate);
 
@@ -651,7 +651,7 @@ begin
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);
-  cancelButton.setTitle(NSStringUtf8('Cancel'));
+  cancelButton.setTitle(StrToNSString('Cancel'));
   cancelButton.SetAction(objcselector('exit'));
   cancelButton.setTarget(colorDelegate);
 
@@ -817,7 +817,7 @@ begin
   okButton := NSButton.alloc.initWithFrame(lRect);
   okButton.setButtonType(NSMomentaryPushInButton);
   okButton.setBezelStyle(NSRoundedBezelStyle);
-  okButton.setTitle(NSStringUtf8('Select'));
+  okButton.setTitle(StrToNSString('Select'));
   okButton.setAction(objcselector('selectFont'));
   okButton.setTarget(FontDelegate);
 
@@ -825,7 +825,7 @@ begin
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);
-  cancelButton.setTitle(NSStringUtf8('Cancel'));
+  cancelButton.setTitle(StrToNSString('Cancel'));
   cancelButton.SetAction(objcselector('exit'));
   cancelButton.setTarget(FontDelegate);
 

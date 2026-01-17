@@ -2057,7 +2057,7 @@ begin
     cmb.setUsesDataSource(true);
     cmb.setDataSource(cmb);
     cmb.setDelegate(cmb);
-    cmb.setStringValue(NSStringUtf8(AParams.Caption));
+    cmb.setStringValue(StrToNSString(AParams.Caption));
     cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
     if (cmb.respondsToSelector(ObjCSelector('cell'))) and Assigned(cmb.cell) then
       NSTextFieldCell(cmb.cell).setUsesSingleLineMode(true);
