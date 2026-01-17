@@ -174,7 +174,7 @@ type
 
   TOpenSaveDelegate = objcclass(NSObject, NSOpenSavePanelDelegateProtocol)
     cocoaFilePanel: NSSavePanel;
-    OpenDialog: TOpenDialog;
+    lclOpenFileDialog: TOpenDialog;
     selUrl: NSURL;
     procedure dealloc; override;
     procedure panel_didChangeToDirectoryURL(sender: id; url: NSURL);
@@ -193,8 +193,8 @@ end;
 
 procedure TOpenSaveDelegate.panel_didChangeToDirectoryURL(sender: id; url: NSURL);
 begin
-  if Assigned(OpenDialog) then
-    OpenDialog.DoFolderChange;
+  if Assigned(lclOpenFileDialog) then
+    lclOpenFileDialog.DoFolderChange;
 end;
 
 function TOpenSaveDelegate.panel_userEnteredFilename_confirmed(sender: id;
@@ -214,7 +214,7 @@ var
   ch : Boolean;     // set to true, if actually getting a new file name
 begin
   // it only matters for Open or Save dialogs
-  if not Assigned(OpenDialog) then Exit;
+  if not Assigned(lclOpenFileDialog) then Exit;
 
   sp := NSSavePanel(sender);
   ch := false;
@@ -242,8 +242,8 @@ begin
 
   if ch then
   begin
-    OpenDialog.FileName := NSStringToString(sp.URL.path);
-    OpenDialog.DoSelectionChange;
+    lclOpenFileDialog.FileName := NSStringToString(sp.URL.path);
+    lclOpenFileDialog.DoSelectionChange;
   end;
 end;
 
@@ -265,17 +265,13 @@ class procedure TCocoaWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog)
   Called by Execute method of TOpenDialog, TSaveDialog and TSelectDirectoryDialog.
  }
 var
-  FileDialog: TFileDialog absolute ACommonDialog;
-  filterComboBox: TCocoaFilterComboBox = nil;
-  i: integer;
-  openDlg: NSOpenPanel;
-  saveDlg: NSSavePanel;
-  InitName, InitDir: string;
-  LocalPool: NSAutoReleasePool;
+  lclFileDialog: TFileDialog absolute ACommonDialog;
+  cocoaFilePanel: NSSavePanel;
+  cocoaOpenFilePanel: NSOpenPanel absolute cocoaFilePanel;
   callback: TOpenSaveDelegate;
+  filterComboBox: TCocoaFilterComboBox = nil;
 
   isMenuOn: Boolean;
-
   oldEditMenu: NSMenuItem = nil;
   editMenuIndex: NSInteger = -1;
 
@@ -303,7 +299,7 @@ var
       treatsAsDirCheckbox.setTitle( StrToNSString('Show File Package Contents') );
       treatsAsDirCheckbox.setToolTip( StrToNSString('Such as .App Bundles') );
       treatsAsDirCheckbox.sizeToFit;
-      if ofAllowBrowseAppBundle in TOpenDialog(FileDialog).OptionsEx then
+      if ofAllowBrowseAppBundle in TOpenDialog(lclFileDialog).OptionsEx then
         treatsAsDirCheckbox.setState( NSOnState );
       accessoryView.addSubview( treatsAsDirCheckbox );
       treatsAsDirCheckbox.release;
@@ -334,17 +330,17 @@ var
     begin
       filterComboBox:= TCocoaFilterComboBox.alloc.initWithFrame(NSNullRect);
       filterComboBox.DialogHandle:= cocoaFileOwner;
-      filterComboBox.Owner := FileDialog;
+      filterComboBox.Owner := lclFileDialog;
       filterComboBox.setTarget( filterComboBox );
       filterComboBox.setAction( objcselector('comboboxAction:') );
       filterComboBox.updateFilterList();
-      if FileDialog.FilterIndex <= 0 then
+      if lclFileDialog.FilterIndex <= 0 then
         filterComboBox.lastSelectedItemIndex := 0
       else
-        filterComboBox.lastSelectedItemIndex := FileDialog.FilterIndex-1;
+        filterComboBox.lastSelectedItemIndex := lclFileDialog.FilterIndex-1;
       filterComboBox.lastSelectedItemIndex := filterComboBox.setDialogFilter(filterComboBox.lastSelectedItemIndex);
-      if FileDialog.FilterIndex>0 then
-        filterComboBox.selectItemAtIndex(FileDialog.FilterIndex-1);
+      if lclFileDialog.FilterIndex>0 then
+        filterComboBox.selectItemAtIndex(lclFileDialog.FilterIndex-1);
       filterComboBox.sizeToFit;
       filterComboBox.setAutoresizingMask(NSViewWidthSizable);
       accessoryView.addSubview( filterComboBox );
@@ -418,16 +414,81 @@ var
   begin
     createAccessoryView;
     createTreatsAsDirCheckbox;
-    if FileDialog.Filter <> EmptyStr then begin
+    if lclFileDialog.Filter <> EmptyStr then begin
       createFilterLabel;
       createFilterCombobox;
     end;
     updateLayout;
   end;
 
-  class procedure createCallback;
+  class procedure setCallback;
   begin
-    callback:= TOpenSaveDelegate.new;
+    callback:= TOpenSaveDelegate.new.autorelease;
+  end;
+
+  class procedure setFilePanel;
+  var
+    InitName: String;
+    InitDir: String;
+    title: NSString;
+    url: NSURL;
+  begin
+    // two sources for init dir
+    InitName := ExtractFileName(lclFileDialog.FileName);
+    InitDir := lclFileDialog.InitialDir;
+    if InitDir = '' then
+      InitDir := ExtractFileDir(lclFileDialog.FileName);
+    title:= StrToNSString(lclFileDialog.Title);
+    url:= NSURL.fileURLWithPath(StrToNSString(InitDir));
+
+    if (lclFileDialog.FCompStyle = csOpenFileDialog) or
+       (lclFileDialog.FCompStyle = csPreviewFileDialog) or
+      (lclFileDialog is TSelectDirectoryDialog)
+      then
+    begin
+      cocoaOpenFilePanel := NSOpenPanel.openPanel;
+      cocoaOpenFilePanel.setAllowsMultipleSelection(
+        ofAllowMultiSelect in TOpenDialog(lclFileDialog).Options);
+      if (lclFileDialog is TSelectDirectoryDialog) then
+      begin
+        cocoaOpenFilePanel.setCanChooseDirectories(True);
+        cocoaOpenFilePanel.setCanChooseFiles(False);
+        cocoaOpenFilePanel.setCanCreateDirectories(True);
+        cocoaOpenFilePanel.setAccessoryView(nil);
+      end
+      else
+      begin
+        cocoaOpenFilePanel.setCanChooseFiles(True);
+        cocoaOpenFilePanel.setCanChooseDirectories(False);
+        // accessory view
+        attachAccessoryView(cocoaOpenFilePanel);
+      end;
+    end
+    else if lclFileDialog.FCompStyle = csSaveFileDialog then
+    begin
+      cocoaFilePanel := NSSavePanel.savePanel;
+      cocoaFilePanel.setCanCreateDirectories(True);
+      cocoaFilePanel.setNameFieldStringValue(StrToNSString(InitName));
+      // accessory view
+      attachAccessoryView(cocoaFilePanel);
+    end;
+
+    cocoaFilePanel.setTitle( title );
+    cocoaFilePanel.setDirectoryURL( url );
+
+    if lclFileDialog is TOpenDialog then
+    begin
+      if ofAllowBrowseAppBundle in TOpenDialog(lclFileDialog).OptionsEx then
+        cocoaFilePanel.setTreatsFilePackagesAsDirectories(True);
+      if ofUseAlternativeTitle in TOpenDialog(lclFileDialog).OptionsEx then
+        cocoaFilePanel.setMessage(title);
+      if ofForceShowHidden in TOpenDialog(lclFileDialog).Options then
+        cocoaFilePanel.setShowsHiddenFiles(True);
+      callback.lclOpenFileDialog := TOpenDialog(lclFileDialog);
+    end;
+
+    callback.cocoaFilePanel := cocoaFilePanel;
+    cocoaFilePanel.setDelegate(callback);
   end;
 
   class procedure ReplaceEditMenu();
@@ -466,102 +527,39 @@ var
     end;
   end;
 
+  procedure getResultFromFilePanel;
+  var
+    url: NSURL;
+  begin
+    lclFileDialog.FileName := NSStringToString(cocoaFilePanel.URL.path);
+    lclFileDialog.Files.Clear;
+
+    if cocoaFilePanel.isKindOfClass(NSOpenPanel) then begin
+      for url in cocoaOpenFilePanel.URLs do
+        lclFileDialog.Files.Add( NSStringToString(url.path) );
+    end;
+
+    lclFileDialog.UserChoice := mrOk;
+    if filterComboBox <> nil then
+      lclFileDialog.FilterIndex := filterComboBox.lastSelectedItemIndex+1;
+  end;
+
 begin
   {$IFDEF VerboseWSClass}
   DebugLn('TCocoaWSFileDialog.ShowModal for ' + ACommonDialog.Name);
   {$ENDIF}
-  LocalPool := NSAutoReleasePool.alloc.init;
 
-  // two sources for init dir
-  InitName := ExtractFileName(FileDialog.FileName);
-  InitDir := FileDialog.InitialDir;
-  if InitDir = '' then
-    InitDir := ExtractFileDir(FileDialog.FileName);
-
-  // Cocoa doesn't supports a filter list selector like we know from windows natively
-  // So we need to create our own accessory view
-
-  FileDialog.UserChoice := mrCancel;
-
-  createCallback;
-
-  //todo: Options
-  if (FileDialog.FCompStyle = csOpenFileDialog) or
-     (FileDialog.FCompStyle = csPreviewFileDialog) or
-    (FileDialog is TSelectDirectoryDialog)
-    then
-  begin
-    openDlg := NSOpenPanel.openPanel;
-    openDlg.setAllowsMultipleSelection(ofAllowMultiSelect in
-      TOpenDialog(FileDialog).Options);
-    if (FileDialog is TSelectDirectoryDialog) then
-    begin
-      openDlg.setCanChooseDirectories(True);
-      openDlg.setCanChooseFiles(False);
-      openDlg.setCanCreateDirectories(True);
-      openDlg.setAccessoryView(nil);
-    end
-    else
-    begin
-      openDlg.setCanChooseFiles(True);
-      openDlg.setCanChooseDirectories(False);
-      // accessory view
-      attachAccessoryView(openDlg);
-    end;
-    saveDlg := openDlg;
-  end
-  else if FileDialog.FCompStyle = csSaveFileDialog then
-  begin
-    saveDlg := NSSavePanel.savePanel;
-    saveDlg.setCanCreateDirectories(True);
-    saveDlg.setNameFieldStringValue(NSStringUtf8(InitName));
-    // accessory view
-    attachAccessoryView(saveDlg);
-    openDlg := nil;
-  end;
-
-  if FileDialog is TOpenDialog then
-  begin
-    if ofAllowBrowseAppBundle in TOpenDialog(FileDialog).OptionsEx then
-      saveDlg.setTreatsFilePackagesAsDirectories(True);
-    if ofUseAlternativeTitle in TOpenDialog(FileDialog).OptionsEx then
-      saveDlg.setMessage(StrToNSString(FileDialog.Title));
-  end;
-
-  saveDlg.retain; // this is for OSX 10.6 (and we don't use ARC either)
-
-  callback.autorelease;
-  callback.cocoaFilePanel := SaveDlg;
-  if FileDialog is TOpenDialog then
-    callback.OpenDialog := TOpenDialog(FileDialog);
-  saveDlg.setDelegate(callback);
-  saveDlg.setTitle(NSStringUtf8(FileDialog.Title));
-  saveDlg.setDirectoryURL(NSURL.fileURLWithPath(NSStringUtf8(InitDir)));
-  UpdateOptions(FileDialog, saveDlg);
+  setCallback;
+  setFilePanel;
 
   isMenuOn := ToggleAppMenu(false);
   ReplaceEditMenu();
 
+  lclFileDialog.UserChoice := mrCancel;
   try
-    if saveDlg.runModal = NSOKButton then
-    begin
-      FileDialog.FileName := NSStringToString(saveDlg.URL.path);
-      FileDialog.Files.Clear;
-
-      if Assigned(openDlg) then
-        for i := 0 to openDlg.URLs.Count - 1 do
-          FileDialog.Files.Add(NSStringToString(
-            NSURL(openDlg.URLs.objectAtIndex(i)).path));
-
-      FileDialog.UserChoice := mrOk;
-      if filterComboBox <> nil then
-        FileDialog.FilterIndex := filterComboBox.lastSelectedItemIndex+1;
-    end;
-    FileDialog.DoClose;
-
-    // release everything
-    saveDlg.release;
-    LocalPool.Release;
+    if cocoaFilePanel.runModal = NSOKButton then
+      getResultFromFilePanel;
+    lclFileDialog.DoClose;
   finally
     RestoreEditMenu();
     ToggleAppMenu(isMenuOn);
