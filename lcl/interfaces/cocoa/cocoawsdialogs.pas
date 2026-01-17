@@ -284,6 +284,21 @@ var
     treatsAsDirCheckbox: NSButton;
     filterLabel: NSTextField;
 
+    function needFilePackagesSwitch: Boolean;
+    begin
+      Result:= CocoaConfigFileDialog.accessoryView.showsFilePackagesSwitch;
+    end;
+
+    function needFilter: Boolean;
+    begin
+      Result:= lclFileDialog.Filter <> EmptyStr;
+    end;
+
+    function needAccessoryView: Boolean;
+    begin
+      Result:= needFilePackagesSwitch or needFilter;
+    end;
+
     procedure createAccessoryView;
     begin
       accessoryView:= NSView.alloc.initWithFrame( NSMakeRect(0, 0, 1, 1) );
@@ -344,7 +359,6 @@ var
       if lclFileDialog.FilterIndex>0 then
         filterComboBox.selectItemAtIndex(lclFileDialog.FilterIndex-1);
       filterComboBox.sizeToFit;
-      filterComboBox.setAutoresizingMask(NSViewWidthSizable);
       accessoryView.addSubview( filterComboBox );
       filterComboBox.release;
     end;
@@ -357,10 +371,46 @@ var
       dialogView: NSView;
       accessoryViewSize: NSSize;
       clientWidth: Double;
+      treatsAsDirCheckboxX: Double;
       filterWidthWithLabel: Double;
       filterComboBoxWidth: Double;
-      filterY: Double;
-      treatsAsDirCheckboxX: Double;
+      currentY: Double = 0;
+
+      procedure updateFilePackagesSwitchLayout;
+      begin
+        treatsAsDirCheckboxX:= (clientWidth-treatsAsDirCheckbox.frame.size.width)/2;
+        if treatsAsDirCheckboxX < 0 then
+          treatsAsDirCheckboxX:= 0;
+        treatsAsDirCheckbox.setFrameOrigin( NSMakePoint(treatsAsDirCheckboxX,4) );
+        currentY:= treatsAsDirCheckbox.frame.origin.y + treatsAsDirCheckbox.frame.size.height + OFS_HRZ;
+      end;
+
+      procedure updateFilterLayout;
+      begin
+        // Trying to put controls into the center of the Acc-view
+        //  Label must fit in full. Whatever is left is for filter
+        filterComboBoxWidth:= filterComboBox.frame.size.width;
+        filterWidthWithLabel:= filterLabel.frame.size.width + filterComboBoxWidth + OFS_HRZ;
+        if filterWidthWithLabel > clientWidth then begin
+          filterWidthWithLabel:= clientWidth;
+          filterComboBoxWidth:= filterWidthWithLabel - filterLabel.frame.size.width;
+        end;
+
+        filterLabel.setFrameOrigin(  NSMakePoint(
+           (clientWidth-filterWidthWithLabel) / 2,
+           currentY + (filterComboBox.frame.size.height - filterLabel.frame.size.height) / 2
+        ));
+
+        filterComboBox.setFrame( NSMakeRect(
+           filterLabel.frame.origin.x + filterLabel.frame.size.width + OFS_HRZ,
+           currentY,
+           filterComboBoxWidth,
+           filterComboBox.frame.size.height
+        ));
+
+        currentY:= currentY + filterComboBox.frame.size.height + OFS_HRZ;
+      end;
+
     begin
       // starting with Big Sur, the dialog retains the last openned size
       // causing the width to be increased on every openning of the dialog
@@ -374,49 +424,27 @@ var
           accessoryViewSize.width := dialogView.frame.size.width;
       end;
 
-      accessoryViewSize.height:= treatsAsDirCheckbox.frame.size.height + OFS_HRZ*2;
-      if Assigned(filterComboBox) then
-        accessoryViewSize.height:= accessoryViewSize.height + filterComboBox.frame.size.height + OFS_HRZ;
-      accessoryView.setFrameSize( accessoryViewSize );
-
       clientWidth:= accessoryViewSize.Width - OFS_HRZ - OFS_HRZ;
 
-      treatsAsDirCheckboxX:= (clientWidth-treatsAsDirCheckbox.frame.size.width)/2;
-      if treatsAsDirCheckboxX < 0 then
-        treatsAsDirCheckboxX:= 0;
-      treatsAsDirCheckbox.setFrameOrigin( NSMakePoint(treatsAsDirCheckboxX,4) );
+      if needFilePackagesSwitch then
+        updateFilePackagesSwitchLayout;
 
-      if NOT Assigned(filterComboBox) then
-        Exit;
+      if needFilter then
+        updateFilterLayout;
 
-      // Trying to put controls into the center of the Acc-view
-      //  Label must fit in full. Whatever is left is for filter
-      filterComboBoxWidth:= filterComboBox.frame.size.width;
-      filterWidthWithLabel:= filterLabel.frame.size.width + filterComboBoxWidth + OFS_HRZ;
-      if filterWidthWithLabel > clientWidth then begin
-        filterWidthWithLabel:= clientWidth;
-        filterComboBoxWidth:= filterWidthWithLabel - filterLabel.frame.size.width;
-      end;
-
-      filterY:= treatsAsDirCheckbox.frame.origin.y + treatsAsDirCheckbox.frame.size.height + OFS_HRZ;
-
-      filterLabel.setFrameOrigin(  NSMakePoint(
-         (clientWidth-filterWidthWithLabel) / 2,
-         filterY + (filterComboBox.frame.size.height - filterLabel.frame.size.height) / 2
-      ));
-
-      filterComboBox.setFrame( NSMakeRect(
-         filterLabel.frame.origin.x + filterLabel.frame.size.width + OFS_HRZ,
-         filterY,
-         filterComboBoxWidth,
-         filterComboBox.frame.size.height
-      ));
+      accessoryViewSize.height:= currentY;
+      accessoryView.setFrameSize( accessoryViewSize );
     end;
 
   begin
+    if NOT needAccessoryView then
+      Exit;
+
     createAccessoryView;
-    createTreatsAsDirCheckbox;
-    if lclFileDialog.Filter <> EmptyStr then begin
+    if needFilePackagesSwitch then begin
+      createTreatsAsDirCheckbox;
+    end;
+    if needFilter then begin
       createFilterLabel;
       createFilterCombobox;
     end;
@@ -477,6 +505,7 @@ var
 
     cocoaFilePanel.setTitle( title );
     cocoaFilePanel.setDirectoryURL( url );
+    cocoaFilePanel.setShowsTagField( False );
 
     if lclFileDialog is TOpenDialog then
     begin
