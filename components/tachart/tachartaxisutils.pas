@@ -606,9 +606,16 @@ begin
 end;
 
 procedure TAxisDrawHelperY.GridLine(ACoord: Integer);
+var
+  y1, y2: Integer;
 begin
   if TryApplyStripes then
-    BarZ(FClipRect^.Left + 1, FPrevCoord, FClipRect^.Right, ACoord);
+  begin
+    y1 := FPrevCoord;
+    y2 := ACoord;
+    EnsureOrder(y1, y2);
+    BarZ(FClipRect^.Left + 1, y1, FClipRect^.Right, y2);
+  end;
   if (ACoord <> FClipRect^.Top) and (ACoord <> FClipRect^.Bottom) then
     LineZ(Point(FClipRect^.Left, ACoord), Point(FClipRect^.Right, ACoord));
 end;
