@@ -33,7 +33,7 @@ uses
   // Widgetset
   WSLCLClasses, WSDialogs,
   // LCL Cocoa
-  CocoaConst, CocoaUtils, CocoaGDIObjects, Cocoa_Extra, CocoaMenus;
+  CocoaConfig, CocoaConst, CocoaUtils, CocoaGDIObjects, Cocoa_Extra, CocoaMenus;
 
 type
 
@@ -251,6 +251,7 @@ procedure TOpenSaveDelegate.treatsAsDirAction(sender: id);
 begin
   cocoaFilePanel.setTreatsFilePackagesAsDirectories(
     NOT cocoaFilePanel.treatsFilePackagesAsDirectories );
+  cocoaFilePanel.validateVisibleColumns;
 end;
 
 { TCocoaWSFileDialog }
@@ -299,7 +300,8 @@ var
       treatsAsDirCheckbox.setTitle( StrToNSString('Show File Package Contents') );
       treatsAsDirCheckbox.setToolTip( StrToNSString('Such as .App Bundles') );
       treatsAsDirCheckbox.sizeToFit;
-      if ofAllowBrowseAppBundle in TOpenDialog(lclFileDialog).OptionsEx then
+      if (ofAllowBrowseAppBundle in TOpenDialog(lclFileDialog).OptionsEx)
+          or CocoaConfigFileDialog.defaultFilePackagesSwitch then
         treatsAsDirCheckbox.setState( NSOnState );
       accessoryView.addSubview( treatsAsDirCheckbox );
       treatsAsDirCheckbox.release;
