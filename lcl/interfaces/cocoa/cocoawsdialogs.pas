@@ -286,6 +286,8 @@ var
 
     function needFilePackagesSwitch: Boolean;
     begin
+      if ofDontShowFilePackagesSwitch in TOpenDialog(lclFileDialog).OptionsEx then
+        Exit( False );
       Result:= CocoaConfigFileDialog.accessoryView.showsFilePackagesSwitch;
     end;
 
@@ -315,7 +317,7 @@ var
       treatsAsDirCheckbox.setTitle( StrToNSString('Show File Package Contents') );
       treatsAsDirCheckbox.setToolTip( StrToNSString('Such as .App Bundles') );
       treatsAsDirCheckbox.sizeToFit;
-      if (ofAllowBrowseAppBundle in TOpenDialog(lclFileDialog).OptionsEx)
+      if (ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx)
           or CocoaConfigFileDialog.defaultFilePackagesSwitch then
         treatsAsDirCheckbox.setState( NSOnState );
       accessoryView.addSubview( treatsAsDirCheckbox );
@@ -506,7 +508,8 @@ var
 
     if lclFileDialog is TOpenDialog then
     begin
-      if ofAllowBrowseAppBundle in TOpenDialog(lclFileDialog).OptionsEx then
+      if (ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx)
+          or CocoaConfigFileDialog.defaultFilePackagesSwitch then
         cocoaFilePanel.setTreatsFilePackagesAsDirectories(True);
       if ofUseAlternativeTitle in TOpenDialog(lclFileDialog).OptionsEx then
         cocoaFilePanel.setMessage(title);

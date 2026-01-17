@@ -215,7 +215,7 @@ type
   TOpenOptions = set of TOpenOption;
 
   // WS specific options that cannot be (more or less) mapped to the standard TOpenOptions
-  // Currently just Windows Vista+ (IFileDialog) options
+  // Currently just Windows Vista+ (IFileDialog) and macOS options
   TOpenOptionEx = (
     ofHidePinnedPlaces,         // Windows Vista+: Hide items shown by default in the view's navigation pane.
     ofStrictFileTypes,          // Windows Vista+: In the Save dialog, only allow the user to choose a file that has one of the file name extensions specified through Filter property.
@@ -224,8 +224,21 @@ type
     ofForceFileSystem,          // Windows Vista+: Ensures that returned items are file system items.
     ofAllNonStorageItems,       // Windows Vista+: Enables the user to choose any item in the Shell namespace, not just those with SFGAO_STREAM or SFAGO_FILESYSTEM attributes. Flag cannot be combined with ofForceFileSystem.
     ofUseXPStyleAsFallBack,     // Windows Vista+: Use XP-style dialog if creating Vista-style dialog fails (e.g. when running under Windows Recovery).
-    ofAllowBrowseAppBundle,     // macOS: All browsing .App bundles
-    ofUseAlternativeTitle       // macOS: Display a title in the dialog window
+
+    // macOS: whether to add the "Show File Packages Contents" switch in FileDialog
+    // see also: showsFilePackagesSwitch in CocoaConfig.inc, it's global config.
+    ofDontShowFilePackagesSwitch,
+
+    // macOS: whether to treat File Packages(such as .App bundles) as a directory
+    // so that users can access File Packages Contents in the FileDialog.
+    // see also: defaultFilePackagesSwitch in CocoaConfig.inc, it's global config.
+    ofAllowsFilePackagesContents,
+
+    // macOS: Display a title in the dialog window
+    // the native OpenDialog does not show the title on newer version macOS.
+    // if it's set, a title will be simulated.
+    ofUseAlternativeTitle
+
     // Intentionally not supported: ofDefaultNoMiniMode, ofHideMruPlaces: these values are not supported as of Windows 7.
   );
   TOpenOptionsEx = set of TOpenOptionEx;
