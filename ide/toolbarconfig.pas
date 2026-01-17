@@ -206,13 +206,14 @@ end;
 
 procedure TToolBarConfig.UpdateButtonsState;
 var
-  I: Integer;
+  I, Cnt: Integer;
 begin
   I := lvToolbar.ItemIndex;
+  Cnt := lvToolbar.Items.Count;
   btnAdd.Enabled := Assigned(TV.Selected) and Assigned(TV.Selected.Data);
-  btnRemove.Enabled := (I>-1) and (I<lvToolbar.Items.Count-1);
-  btnMoveUp.Enabled := (I>0) and (I<lvToolbar.Items.Count-1);
-  btnMoveDown.Enabled := (I>-1) and (I<lvToolbar.Items.Count-2);
+  btnRemove.Enabled   := (I>-1) and (I<Cnt-1);
+  btnMoveUp.Enabled   := (I>0)  and (I<Cnt-1);
+  btnMoveDown.Enabled := (I>-1) and (I<Cnt-2);
   btnAddDivider.Enabled := True;
 end;
 
