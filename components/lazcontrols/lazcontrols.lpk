@@ -19,7 +19,7 @@
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="13">
+    <Files Count="14">
       <Item1>
         <Filename Value="checkboxthemed.pas"/>
         <UnitName Value="CheckBoxThemed"/>
@@ -70,8 +70,12 @@
       </Item12>
       <Item13>
         <Filename Value="laznumedit.pas"/>
-        <UnitName Value="laznumedit"/>
+        <UnitName Value="LazNumEdit"/>
       </Item13>
+      <Item14>
+        <Filename Value="shiftstateselector.pas"/>
+        <UnitName Value="ShiftStateSelector"/>
+      </Item14>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="docs"/>
