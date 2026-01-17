@@ -133,8 +133,6 @@ type
   TCocoaFilterComboBox = objcclass(NSPopUpButton, NSOpenSavePanelDelegateProtocol)
   private
     class procedure DoParseFilters(AFileDialog: TFileDialog; AOutput: TStringList); message 'DoParseFilters:AOutput:';
-    class function locateNSPanelBrowser(AView: NSView; AClass: Pobjc_class): NSView; message 'locateNSPanelBrowser:AClass:';
-    class procedure reloadNSPanelBrowser(APanel: NSSavePanel; AIsOpenDialog: Boolean); message 'reloadNSPanelBrowser:AIsOpenDialog:';
   public
     Owner: TFileDialog;
     DialogHandle: NSSavePanel;
@@ -147,21 +145,7 @@ type
     procedure updateFilterList(); message 'updateFilterList';
     function setDialogFilter(ASelectedFilterIndex: Integer): Integer; message 'setDialogFilter:';
     procedure comboboxAction(sender: id); message 'comboboxAction:';
-    // NSOpenSavePanelDelegateProtocol
-    function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean; message 'panel:shouldEnableURL:';
   end;
-
-var
-  // https://developer.apple.com/documentation/appkit/nssavepanel/allowedfiletypes?language=objc
-  // setAllowedFileTypes supports extensions, not only UTI, it's LCL compatible.
-  // then "True" by default.
-  //
-  // if set to "true", then OpenDialog would create UTI identifiers
-  // for filtering files. As a result a broaded set of files might be available
-  // than specified in the extensions filter.
-  // "false" is forces the dialog to use panel_shouldEnableURL. It's a slower
-  // check (due to security implications), but it's LCL compatible
-  CocoaUseUTIFilter : Boolean = True;
 
 procedure FontToDict(src: TFont; dst: NSMutableDictionary);
 procedure DictToFont(src: NSDictionary; dst: TFont);
@@ -202,28 +186,12 @@ type
     procedure panelSelectionDidChange(sender: id);
     procedure treatsAsDirAction(sender: id); message 'treatsAsDirAction:';
   end;
-
-  // Having path_shouldEnableURL is causing a slowness on a file selection
-  // Just having the method declared already introduces a lag in the file selection
-  TOpenSaveDelegateWithFilter = objcclass(TOpenSaveDelegate, NSOpenSavePanelDelegateProtocol)
-    function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean;
-  end;
-
 { TOpenSaveDelegate }
 
 procedure TOpenSaveDelegate.dealloc;
 begin
   if Assigned(selUrl) then selURL.release;
   inherited dealloc;
-end;
-
-function TOpenSaveDelegateWithFilter.panel_shouldEnableURL(sender: id; url: NSURL
-  ): LCLObjCBoolean;
-begin
-  if Assigned(filter) then
-    Result := filter.panel_shouldEnableURL(sender, url)
-  else
-    Result := true;
 end;
 
 procedure TOpenSaveDelegate.panel_didChangeToDirectoryURL(sender: id; url: NSURL);
@@ -466,11 +434,7 @@ var
 
   class procedure createCallback;
   begin
-    if (FileDialog.Filter = EmptyStr) or (CocoaUseUTIFilter) then
-      callback:= TOpenSaveDelegate.alloc
-    else
-      callback:= TOpenSaveDelegateWithFilter.alloc;
-    callback:= callback.init;
+    callback:= TOpenSaveDelegate.new;
   end;
 
   class procedure ReplaceEditMenu();
@@ -1072,49 +1036,6 @@ begin
   end;
 end;
 
-class function TCocoaFilterComboBox.locateNSPanelBrowser(AView: NSView; AClass: Pobjc_class): NSView;
-var
-  lSubview: NSView;
-begin
-  Result := nil;
-  for lSubView in AView.subviews do
-  begin
-    //lCurClass := lCurClass + '/' + NSStringToString(lSubview.className);
-    if lSubview.isKindOfClass_(AClass) then
-    begin
-      Exit(lSubview);
-    end;
-    if lSubview.subviews.count > 0 then
-    begin
-      Result := locateNSPanelBrowser(lSubview, AClass);
-    end;
-    if Result <> nil then Exit;
-  end;
-  Result := nil;
-end;
-
-class procedure TCocoaFilterComboBox.reloadNSPanelBrowser(APanel: NSSavePanel; AIsOpenDialog: Boolean);
-var
-  lBrowser: NSBrowser;
-  panelSelectionPath: NSArray;
-begin
-  //obtain browser
-  if AIsOpenDialog then
-  begin
-    lBrowser := NSBrowser(locateNSPanelBrowser(APanel.contentView, NSBrowser));
-    if lBrowser = nil then Exit;
-
-    //reload browser
-    panelSelectionPath := lBrowser.selectionIndexPaths; //otherwise the panel return the wrong urls
-    if lBrowser.lastColumn > 0 then
-    begin
-      lBrowser.reloadColumn(lBrowser.lastColumn-1);
-    end;
-    lBrowser.reloadColumn(lBrowser.lastColumn);
-    lBrowser.setSelectionIndexPaths(panelSelectionPath);
-  end;
-end;
-
 // This will recreate the contents of the filter combobox and fill the cache
 // which is utilized when a particular filter is selected (Filters: TStringList)
 procedure TCocoaFilterComboBox.updateFilterList();
@@ -1160,9 +1081,7 @@ end;
 function TCocoaFilterComboBox.setDialogFilter(ASelectedFilterIndex: Integer): Integer;
 var
   lCurFilter: TStringList;
-  ns: NSString;
-  i, lOSVer: Integer;
-  lStr: String;
+  i: Integer;
   ext : string;
   j   : integer;
   UTIFilters: NSMutableArray;
@@ -1172,65 +1091,29 @@ begin
     Result := -1;
     Exit;
   end;
-  if CocoaUseUTIFilter then
+  if (ASelectedFilterIndex < 0) or (ASelectedFilterIndex >= Filters.Count) then
+    ASelectedFilterIndex := 0;
+  Result := ASelectedFilterIndex;
+  lCurFilter := TStringList(Filters.Objects[ASelectedFilterIndex]);
+  UTIFilters := NSMutableArray.alloc.init;
+  for i:=0 to lCurFilter.Count-1 do
   begin
-    if (ASelectedFilterIndex < 0) or (ASelectedFilterIndex >= Filters.Count) then
-      ASelectedFilterIndex := 0;
-    Result := ASelectedFilterIndex;
-    lCurFilter := TStringList(Filters.Objects[ASelectedFilterIndex]);
-    UTIFilters := NSMutableArray.alloc.init;
-    for i:=0 to lCurFilter.Count-1 do
-    begin
-      ext := lCurFilter[i];
-      if (ext='') then Continue;
-      // using the last part of the extension, as Cocoa doesn't suppot
-      // complex extensions, such as .tar.gz
-      j:=length(ext);
-      while (j>0) and (ext[j]<>'.') do dec(j);
-      if (j>0) then inc(j);
-      ext := System.Copy(ext, j, length(ext));
-      UTIFilters.addObject(StrToNSString(ext));
-    end;
-
-    if (UTIFilters.count = 0) then
-      DialogHandle.setAllowedFileTypes(nil)
-    else
-      DialogHandle.setAllowedFileTypes(UTIFilters);
-    UTIFilters.release;
-    exit;
+    ext := lCurFilter[i];
+    if (ext='') then Continue;
+    // using the last part of the extension, as Cocoa doesn't suppot
+    // complex extensions, such as .tar.gz
+    j:=length(ext);
+    while (j>0) and (ext[j]<>'.') do dec(j);
+    if (j>0) then inc(j);
+    ext := System.Copy(ext, j, length(ext));
+    UTIFilters.addObject(StrToNSString(ext));
   end;
 
-  NSFilters.removeAllObjects();
-
-  if (Filters.Count > 0) and (ASelectedFilterIndex >= 0) and
-   (ASelectedFilterIndex < Filters.Count) then
-  begin
-    lCurFilter := TStringList(Filters.Objects[ASelectedFilterIndex]);
-    for i := 0 to lCurFilter.Count - 1 do
-    begin
-      lStr := lCurFilter.Strings[i];
-      ns := NSStringUtf8(lStr);
-      NSFilters.addObject(ns);
-      ns.release;
-    end;
-    Result := ASelectedFilterIndex;
-  end else
-    Result := -1;
-
-  DialogHandle.validateVisibleColumns();
-  // work around for bug in validateVisibleColumns() in Mavericks till 10.10.2
-  // see https://bugs.freepascal.org/view.php?id=28687
-  lOSVer := GetMacOSXVersion();
-  if (lOSVer >= $090000)
-     and (lOSVer <= $0A0A02)
-     and (NSAppKitVersionNumber >= NSAppKitVersionNumber10_7) then
-  begin
-    // won't work on 10.6
-    reloadNSPanelBrowser(DialogHandle, IsOpenDialog);
-  end;
-
-  // Felipe: setAllowedFileTypes generates misterious crashes on dialog close after combobox change if uncommented :(
-  // DialogHandle.setAllowedFileTypes(NSFilters);
+  if (UTIFilters.count = 0) then
+    DialogHandle.setAllowedFileTypes(nil)
+  else
+    DialogHandle.setAllowedFileTypes(UTIFilters);
+  UTIFilters.release;
 end;
 
 procedure TCocoaFilterComboBox.comboboxAction(sender: id);
@@ -1242,38 +1125,6 @@ begin
       Owner.IntfFileTypeChanged(indexOfSelectedItem+1);
   end;
   lastSelectedItemIndex := indexOfSelectedItem;
-end;
-
-function TCocoaFilterComboBox.panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean;
-var
-  lPath, lExt, lCurExt: NSString;
-  lExtStr, lCurExtStr: String;
-  i: Integer;
-  lIsDirectory: Boolean = True;
-  item: NSMenuItem;
-begin
-  // if there are no filters, accept everything
-  if NSFilters.count = 0 then Exit(True);
-
-  Result := False;
-  lPath := url.path;
-
-  // always allow selecting dirs, otherwise you can't change the directory
-  NSFileManager.defaultManager.fileExistsAtPath_isDirectory(lPath, @lIsDirectory);
-  if lIsDirectory then Exit(True);
-
-  for i := 0 to NSFilters.count - 1 do
-  begin
-    lCurExt := NSString(NSFilters.objectAtIndex(i));
-    // Match *.* to everything
-    if lCurExt.compare( NSString.stringWithUTF8String('.*') ) = NSOrderedSame then
-      Exit(True);
-
-    if lPath.length >= lCurExt.length then begin
-      lExt := lPath.substringFromIndex( lPath.length - lCurExt.length );
-      if lExt.caseInsensitiveCompare(lCurExt) = NSOrderedSame then Exit(True);
-    end;
-  end;
 end;
 
 end.
