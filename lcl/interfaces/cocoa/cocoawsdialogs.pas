@@ -364,9 +364,6 @@ var
     end;
 
     procedure updateLayout;
-    const
-      MIN_ACCESSORYVIEW_WIDTH = 300;
-      OFS_HRZ = 10;
     var
       dialogView: NSView;
       accessoryViewSize: NSSize;
@@ -381,8 +378,8 @@ var
         treatsAsDirCheckboxX:= (clientWidth-treatsAsDirCheckbox.frame.size.width)/2;
         if treatsAsDirCheckboxX < 0 then
           treatsAsDirCheckboxX:= 0;
-        treatsAsDirCheckbox.setFrameOrigin( NSMakePoint(treatsAsDirCheckboxX,4) );
-        currentY:= treatsAsDirCheckbox.frame.origin.y + treatsAsDirCheckbox.frame.size.height + OFS_HRZ;
+        treatsAsDirCheckbox.setFrameOrigin( NSMakePoint(treatsAsDirCheckboxX,0) );
+        currentY:= treatsAsDirCheckbox.frame.origin.y + treatsAsDirCheckbox.frame.size.height + CocoaConfigFileDialog.accessoryView.vertSpacing;
       end;
 
       procedure updateFilterLayout;
@@ -390,7 +387,7 @@ var
         // Trying to put controls into the center of the Acc-view
         //  Label must fit in full. Whatever is left is for filter
         filterComboBoxWidth:= filterComboBox.frame.size.width;
-        filterWidthWithLabel:= filterLabel.frame.size.width + filterComboBoxWidth + OFS_HRZ;
+        filterWidthWithLabel:= filterLabel.frame.size.width + filterComboBoxWidth + CocoaConfigFileDialog.accessoryView.horzSpacing;
         if filterWidthWithLabel > clientWidth then begin
           filterWidthWithLabel:= clientWidth;
           filterComboBoxWidth:= filterWidthWithLabel - filterLabel.frame.size.width;
@@ -402,29 +399,29 @@ var
         ));
 
         filterComboBox.setFrame( NSMakeRect(
-           filterLabel.frame.origin.x + filterLabel.frame.size.width + OFS_HRZ,
+           filterLabel.frame.origin.x + filterLabel.frame.size.width + CocoaConfigFileDialog.accessoryView.horzSpacing,
            currentY,
            filterComboBoxWidth,
            filterComboBox.frame.size.height
         ));
 
-        currentY:= currentY + filterComboBox.frame.size.height + OFS_HRZ;
+        currentY:= currentY + filterComboBox.frame.size.height + CocoaConfigFileDialog.accessoryView.vertSpacing;
       end;
 
     begin
       // starting with Big Sur, the dialog retains the last openned size
       // causing the width to be increased on every openning of the dialog
       // we'd simply force the width to start with the minimum width
-      accessoryViewSize.width := MIN_ACCESSORYVIEW_WIDTH;
+      accessoryViewSize.width := CocoaConfigFileDialog.accessoryView.minWidth;
 
       // try to obtain the dialog size
       dialogView:= NSView(cocoaFileOwner.contentView);
       if (dialogView<>nil) and (NSAppkitVersionNumber<NSAppKitVersionNumber11_0) then begin
-        if dialogView.frame.size.width > MIN_ACCESSORYVIEW_WIDTH then
+        if dialogView.frame.size.width > CocoaConfigFileDialog.accessoryView.minWidth then
           accessoryViewSize.width := dialogView.frame.size.width;
       end;
 
-      clientWidth:= accessoryViewSize.Width - OFS_HRZ - OFS_HRZ;
+      clientWidth:= accessoryViewSize.Width - CocoaConfigFileDialog.accessoryView.horzSpacing * 2;
 
       if needFilePackagesSwitch then
         updateFilePackagesSwitchLayout;
