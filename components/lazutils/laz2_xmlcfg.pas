@@ -158,6 +158,8 @@ type
   { TRttiXMLConfig }
 
   TRttiXMLConfig = class(TXMLConfig)
+  private
+    FCheckPropertyDefault: boolean;
   protected
     procedure WriteProperty(Path: String; Instance: TObject;
                             PropInfo: Pointer; DefInstance: TObject = nil;
@@ -170,6 +172,8 @@ type
                           DefObject: TObject= nil; OnlyProperty: String= '');
     procedure ReadObject(Path: String; Obj: TObject;
                           DefObject: TObject= nil; OnlyProperty: String= '');
+
+    property CheckPropertyDefault: boolean read FCheckPropertyDefault write FCheckPropertyDefault;
   end;
 
 
@@ -1163,59 +1167,91 @@ begin
     tkInteger, tkChar, tkEnumeration, tkSet, tkWChar, tkInt64, tkQWord:
       begin
         Value := GetOrdProp(Instance, PropInfo);
-        if (DefInstance <> nil) then
+        if (DefInstance <> nil) then begin
           DefValue := GetOrdProp(DefInstance, PropInfo);
-        if ((DefInstance <> nil)  and (Value = DefValue)) or
-           ((DefInstance =  nil)  and (not IsStoredProp(Instance, PropInfo)))
-        then
-          DeleteValue(Path)
-        else begin
-          case PropType^.Kind of
-            tkInteger:
-              begin                      // Check if this integer has a string identifier
-                IntToIdentFn := FindIntToIdent(PPropInfo(PropInfo)^.PropType);
-                if Assigned(IntToIdentFn) and IntToIdentFn(Value, Ident{%H-}) then
-                  SetValue(Path, Ident) // Integer can be written a human-readable identifier
-                else
-                  SetValue(Path, Value); // Integer has to be written just as number
-              end;
-            tkInt64,tkQWord:
-              SetValue(Path, Value); // Integer has to be written just as number
-            tkChar:
-              SetValue(Path, Chr(Value));
-            tkWChar:
-              SetValue(Path, Value);
-            tkSet:
-              begin
-                SetType := GetTypeData(PropType)^.CompType;
-                Ident := '';
-                for i := 0 to 31 do
-                  if (i in tset(Integer(Value))) then begin
-                    if Ident <> '' then Ident := Ident + ',';
-                    Ident := Ident + GetEnumName(PTypeInfo(SetType), i);
-                  end;
-                SetValue(Path, Ident);
-              end;
-            tkEnumeration:
-              SetValue(Path, GetEnumName(PropType, Value));
+          if (Value = DefValue) then begin
+            DeleteValue(Path);
+            exit;
           end;
+        end
+        else
+        if (not IsStoredProp(Instance, PropInfo)) then begin
+          DeleteValue(Path);
+          exit;
+        end
+        else
+        if FCheckPropertyDefault then begin
+          DefValue := PPropInfo(PropInfo)^.Default;
+          if (DefValue <> longint($80000000)) and (Value = DefValue) then begin
+            DeleteValue(Path);
+            exit;
+          end;
+        end;
+
+        case PropType^.Kind of
+          tkInteger:
+            begin                      // Check if this integer has a string identifier
+              IntToIdentFn := FindIntToIdent(PPropInfo(PropInfo)^.PropType);
+              if Assigned(IntToIdentFn) and IntToIdentFn(Value, Ident{%H-}) then
+                SetValue(Path, Ident) // Integer can be written a human-readable identifier
+              else
+                SetValue(Path, Value); // Integer has to be written just as number
+            end;
+          tkInt64,tkQWord:
+            SetValue(Path, Value); // Integer has to be written just as number
+          tkChar:
+            SetValue(Path, Chr(Value));
+          tkWChar:
+            SetValue(Path, Value);
+          tkSet:
+            begin
+              SetType := GetTypeData(PropType)^.CompType;
+              Ident := '';
+              for i := 0 to 31 do
+                if (i in tset(Integer(Value))) then begin
+                  if Ident <> '' then Ident := Ident + ',';
+                  Ident := Ident + GetEnumName(PTypeInfo(SetType), i);
+                end;
+              SetValue(Path, Ident);
+            end;
+          tkEnumeration:
+            SetValue(Path, GetEnumName(PropType, Value));
         end;
       end;
     tkFloat:
       begin
         FloatValue := GetFloatProp(Instance, PropInfo);
-        if (DefInstance <> nil) then
-         DefFloatValue := GetFloatProp(DefInstance, PropInfo);
-        if ((DefInstance <> nil)  and (DefFloatValue = FloatValue)) or
-           ((DefInstance =  nil)  and (not IsStoredProp(Instance, PropInfo)))
-        then
-          DeleteValue(Path)
+        if (DefInstance <> nil) then begin
+          DefFloatValue := GetFloatProp(DefInstance, PropInfo);
+          if (DefFloatValue = FloatValue) then begin
+            DeleteValue(Path);
+            exit;
+          end;
+        end
         else
-          SetValue(Path, FloatToStr(FloatValue));
+        if (not IsStoredProp(Instance, PropInfo)) then begin
+          DeleteValue(Path);
+          exit;
+        end
+        else
+        if FCheckPropertyDefault then begin
+          DefValue := PPropInfo(PropInfo)^.Default;
+          //DefFloatValue:=PSingle(@PropInfo^.Default)^;
+          if (DefValue <> longint($80000000)) and (FloatValue = PSingle(@DefValue)^) then begin
+            DeleteValue(Path);
+            exit;
+          end;
+        end;
+
+        SetValue(Path, FloatToStr(FloatValue));
       end;
     tkSString, tkLString, tkAString:
       begin
         StrValue := GetStrProp(Instance, PropInfo);
+        if (DefInstance = nil) and FCheckPropertyDefault and (StrValue = '') then begin
+          DeleteValue(Path);
+          exit;
+        end;
         if (DefInstance <> nil) then
            DefStrValue := GetStrProp(DefInstance, PropInfo);
         if ((DefInstance <> nil)  and (DefStrValue = StrValue)) or
@@ -1252,6 +1288,13 @@ begin
     tkBool:
       begin
         BoolValue := GetOrdProp(Instance, PropInfo)<>0;
+        if (DefInstance = nil) and FCheckPropertyDefault then begin
+          DefValue := PPropInfo(PropInfo)^.Default;
+          if (DefValue <> longint($80000000)) and (BoolValue = (DefValue<>0)) then begin
+            DeleteValue(Path);
+            exit;
+          end;
+        end;
         if (DefInstance <> nil) then
           DefBoolValue := GetOrdProp(DefInstance, PropInfo)<>0;
         if ((DefInstance <> nil) and (BoolValue = DefBoolValue)) or
