@@ -111,7 +111,10 @@ const
 
 const
   // drag target type for on drop files event invoking
-  FileDragTarget: TGtkTargetEntry = (target: 'text/uri-list'; flags: 0; info: 0;);
+  FileDragTarget: array[0..2] of TGtkTargetEntry = (
+    ( target:'STRING';        flags:0; info:0 ),
+    ( target:'text/plain';    flags:0; info:0 ),
+    ( target:'text/uri-list'; flags:0; info:0 ));
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);

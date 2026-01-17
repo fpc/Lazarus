@@ -462,7 +462,7 @@ begin
   {$ENDIF}
   if AValue then
     gtk_drag_dest_set(TGtk3Widget(AForm.Handle).Widget, GTK_DEST_DEFAULT_ALL,
-      @FileDragTarget, 1, [GDK_ACTION_COPY, GDK_ACTION_MOVE])
+      @FileDragTarget, 3, [GDK_ACTION_COPY, GDK_ACTION_MOVE])
   else
     gtk_drag_dest_unset(TGtk3Widget(AForm.Handle).Widget);
 end;

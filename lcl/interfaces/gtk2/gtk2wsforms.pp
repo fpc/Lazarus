@@ -713,7 +713,7 @@ class procedure TGtk2WSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
 begin
   if AValue then
     gtk_drag_dest_set({%H-}PGtkWidget(AForm.Handle), GTK_DEST_DEFAULT_ALL,
-      @FileDragTarget, 1, GDK_ACTION_COPY or GDK_ACTION_MOVE)
+      @FileDragTarget, 3, GDK_ACTION_COPY or GDK_ACTION_MOVE)
   else
     gtk_drag_dest_unset({%H-}PGtkWidget(AForm.Handle));
 end;
