@@ -363,9 +363,11 @@ begin
   FCopiedFiles.Add(CurPackage.Filename);
   // Copy .pas file generated based on .lpk
   PackPasFile := ChangeFileExt(CurPackage.Filename, '.pas');
-  Result := CopyAFile(PackPasFile);
-  if Result <> mrOk then Exit;
-  FCopiedFiles.Add(PackPasFile);
+  if FileExistsUTF8(PackPasFile) then begin // It may not have been generated yet.
+    Result := CopyAFile(PackPasFile);
+    if Result <> mrOk then Exit;
+    FCopiedFiles.Add(PackPasFile);
+  end;
 end;
 
 function TPublisher.IsDrive(const AName: String): Boolean;
