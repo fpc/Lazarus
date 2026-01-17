@@ -130,13 +130,12 @@ type
 
   { TCocoaFilterComboBox }
 
-  TCocoaFilterComboBox = objcclass(NSPopUpButton, NSOpenSavePanelDelegateProtocol)
+  TCocoaFilterComboBox = objcclass(NSPopUpButton)
   private
     class procedure DoParseFilters(AFileDialog: TFileDialog; AOutput: TStringList); message 'DoParseFilters:AOutput:';
   public
     Owner: TFileDialog;
     DialogHandle: NSSavePanel;
-    IsOpenDialog: Boolean;
     Filters: TStringList; // filled by updateFilterList()
     NSFilters: NSMutableArray;
     lastSelectedItemIndex: Integer; // -1 means invalid or none selected
@@ -175,10 +174,8 @@ type
 
   TOpenSaveDelegate = objcclass(NSObject, NSOpenSavePanelDelegateProtocol)
     cocoaFilePanel: NSSavePanel;
-    FileDialog: TFileDialog;
     OpenDialog: TOpenDialog;
     selUrl: NSURL;
-    filter: NSOpenSavePanelDelegateProtocol;
     procedure dealloc; override;
     procedure panel_didChangeToDirectoryURL(sender: id; url: NSURL);
     function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: LCLObjCBoolean): NSString;
@@ -283,7 +280,7 @@ var
   editMenuIndex: NSInteger = -1;
 
   // setup panel and its accessory view
-  procedure attachAccessoryView(AOpenOwner: NSOpenPanel; ASaveOwner: NSSavePanel);
+  procedure attachAccessoryView(cocoaFileOwner: NSSavePanel);
   var
     // filter accessory view
     accessoryView: NSView;
@@ -293,7 +290,7 @@ var
     procedure createAccessoryView;
     begin
       accessoryView:= NSView.alloc.initWithFrame( NSMakeRect(0, 0, 1, 1) );
-      ASaveOwner.setAccessoryView( accessoryView );
+      cocoaFileOwner.setAccessoryView( accessoryView );
       accessoryView.release;
     end;
 
@@ -336,11 +333,7 @@ var
     procedure createFilterCombobox;
     begin
       filterComboBox:= TCocoaFilterComboBox.alloc.initWithFrame(NSNullRect);
-      filterComboBox.IsOpenDialog:= AOpenOwner <> nil;
-      if filterComboBox.IsOpenDialog then
-        filterComboBox.DialogHandle:= AOpenOwner
-      else
-        filterComboBox.DialogHandle:= ASaveOwner;
+      filterComboBox.DialogHandle:= cocoaFileOwner;
       filterComboBox.Owner := FileDialog;
       filterComboBox.setTarget( filterComboBox );
       filterComboBox.setAction( objcselector('comboboxAction:') );
@@ -377,7 +370,7 @@ var
       accessoryViewSize.width := MIN_ACCESSORYVIEW_WIDTH;
 
       // try to obtain the dialog size
-      dialogView:= NSView(ASaveOwner.contentView);
+      dialogView:= NSView(cocoaFileOwner.contentView);
       if (dialogView<>nil) and (NSAppkitVersionNumber<NSAppKitVersionNumber11_0) then begin
         if dialogView.frame.size.width > MIN_ACCESSORYVIEW_WIDTH then
           accessoryViewSize.width := dialogView.frame.size.width;
@@ -513,7 +506,7 @@ begin
       openDlg.setCanChooseFiles(True);
       openDlg.setCanChooseDirectories(False);
       // accessory view
-      attachAccessoryView(openDlg, openDlg);
+      attachAccessoryView(openDlg);
     end;
     saveDlg := openDlg;
   end
@@ -523,7 +516,7 @@ begin
     saveDlg.setCanCreateDirectories(True);
     saveDlg.setNameFieldStringValue(NSStringUtf8(InitName));
     // accessory view
-    attachAccessoryView(nil, saveDlg);
+    attachAccessoryView(saveDlg);
     openDlg := nil;
   end;
 
@@ -538,8 +531,6 @@ begin
   saveDlg.retain; // this is for OSX 10.6 (and we don't use ARC either)
 
   callback.autorelease;
-  callback.filter := filterComboBox;
-  callback.FileDialog := FileDialog;
   callback.cocoaFilePanel := SaveDlg;
   if FileDialog is TOpenDialog then
     callback.OpenDialog := TOpenDialog(FileDialog);
@@ -991,7 +982,7 @@ end;
 
 class procedure TCocoaFilterComboBox.DoParseFilters(AFileDialog: TFileDialog; AOutput: TStringList);
 var
-  lFilterParser, lExtParser: TParseStringList;
+  lFilterParser: TParseStringList;
   Masks: TParseStringList;
   lFilterCounter, m: Integer;
   lFilterName, filterext, lCurExtension: String;
@@ -1013,14 +1004,11 @@ begin
           if (Masks[m]='*.*') or (Masks[m]='*') then
             continue;
 
-          i:=Pos('.',Masks[m]);
-          // ignore anything before the first dot (see #32069)
-          // storing the extension with leading '.'
-          // the dot is used later with file name comparison
-          if i>0 then
-            lCurExtension := System.Copy(Masks[m], i, length(Masks[m]))
+          i:= Masks[m].LastIndexOf('.');
+          if i>=0 then
+            lCurExtension := Masks[m].Substring(i+1)
           else
-            lCurExtension := '.'+Masks[m];
+            lCurExtension := Masks[m];
 
           lExtensions.Add(lowercase(lCurExtension));
         end;
@@ -1083,8 +1071,7 @@ var
   lCurFilter: TStringList;
   i: Integer;
   ext : string;
-  j   : integer;
-  UTIFilters: NSMutableArray;
+  fileTypes: NSMutableArray;
 begin
   if (Filters = nil) or (Filters.Count=0) then
   begin
@@ -1095,25 +1082,19 @@ begin
     ASelectedFilterIndex := 0;
   Result := ASelectedFilterIndex;
   lCurFilter := TStringList(Filters.Objects[ASelectedFilterIndex]);
-  UTIFilters := NSMutableArray.alloc.init;
+  fileTypes := NSMutableArray.alloc.init;
   for i:=0 to lCurFilter.Count-1 do
   begin
     ext := lCurFilter[i];
     if (ext='') then Continue;
-    // using the last part of the extension, as Cocoa doesn't suppot
-    // complex extensions, such as .tar.gz
-    j:=length(ext);
-    while (j>0) and (ext[j]<>'.') do dec(j);
-    if (j>0) then inc(j);
-    ext := System.Copy(ext, j, length(ext));
-    UTIFilters.addObject(StrToNSString(ext));
+    fileTypes.addObject(StrToNSString(ext));
   end;
 
-  if (UTIFilters.count = 0) then
+  if (fileTypes.count = 0) then
     DialogHandle.setAllowedFileTypes(nil)
   else
-    DialogHandle.setAllowedFileTypes(UTIFilters);
-  UTIFilters.release;
+    DialogHandle.setAllowedFileTypes(fileTypes);
+  fileTypes.release;
 end;
 
 procedure TCocoaFilterComboBox.comboboxAction(sender: id);
