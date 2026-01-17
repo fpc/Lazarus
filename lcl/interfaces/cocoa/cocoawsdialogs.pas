@@ -483,14 +483,11 @@ var
         cocoaOpenFilePanel.setCanChooseDirectories(True);
         cocoaOpenFilePanel.setCanChooseFiles(False);
         cocoaOpenFilePanel.setCanCreateDirectories(True);
-        cocoaOpenFilePanel.setAccessoryView(nil);
       end
       else
       begin
         cocoaOpenFilePanel.setCanChooseFiles(True);
         cocoaOpenFilePanel.setCanChooseDirectories(False);
-        // accessory view
-        attachAccessoryView(cocoaOpenFilePanel);
       end;
     end
     else if lclFileDialog.FCompStyle = csSaveFileDialog then
@@ -498,13 +495,12 @@ var
       cocoaFilePanel := NSSavePanel.savePanel;
       cocoaFilePanel.setCanCreateDirectories(True);
       cocoaFilePanel.setNameFieldStringValue(StrToNSString(InitName));
-      // accessory view
-      attachAccessoryView(cocoaFilePanel);
     end;
 
     cocoaFilePanel.setTitle( title );
     cocoaFilePanel.setDirectoryURL( url );
     cocoaFilePanel.setShowsTagField( False );
+    attachAccessoryView(cocoaFilePanel);
 
     if lclFileDialog is TOpenDialog then
     begin
