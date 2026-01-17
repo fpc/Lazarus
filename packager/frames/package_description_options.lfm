@@ -1,26 +1,27 @@
 object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
   Left = 0
-  Height = 384
+  Height = 505
   Top = 0
   Width = 552
-  ClientHeight = 384
+  ClientHeight = 505
   ClientWidth = 552
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 335
   DesignTop = 177
   object DescriptionGroupBox: TGroupBox
     Left = 0
-    Height = 96
+    Height = 176
     Top = 0
     Width = 552
     Align = alTop
     Caption = 'Description/Abstract'
-    ClientHeight = 77
+    ClientHeight = 147
     ClientWidth = 548
     TabOrder = 0
     object DescriptionMemo: TMemo
       Left = 6
-      Height = 65
+      Height = 135
       Top = 6
       Width = 536
       Align = alClient
@@ -32,21 +33,21 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
   object AuthorGroupBox: TGroupBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 58
-    Top = 102
+    Height = 90
+    Top = 182
     Width = 552
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Author:'
-    ClientHeight = 39
+    ClientHeight = 61
     ClientWidth = 548
     TabOrder = 1
     object AuthorEdit: TEdit
       AnchorSideBottom.Control = AuthorGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 27
+      Height = 32
       Top = 6
       Width = 536
       Align = alTop
@@ -56,19 +57,19 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
   end
   object LicenseGroupBox: TGroupBox
     Left = 0
-    Height = 106
-    Top = 166
+    Height = 115
+    Top = 278
     Width = 552
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     Caption = 'License:'
-    ClientHeight = 87
+    ClientHeight = 86
     ClientWidth = 548
     TabOrder = 2
     object LicenseMemo: TMemo
       Left = 6
-      Height = 75
+      Height = 74
       Top = 6
       Width = 536
       Align = alClient
@@ -79,23 +80,23 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
   end
   object VersionGroupBox: TGroupBox
     Left = 0
-    Height = 70
-    Top = 278
+    Height = 90
+    Top = 399
     Width = 552
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Version'
-    ClientHeight = 51
+    ClientHeight = 61
     ClientWidth = 548
     TabOrder = 3
     object VersionMajorLabel: TLabel
       AnchorSideLeft.Control = VersionGroupBox
       AnchorSideTop.Control = VersionGroupBox
       Left = 6
-      Height = 17
+      Height = 18
       Top = 0
-      Width = 40
+      Width = 37
       BorderSpacing.Left = 6
       Caption = 'Major'
       ParentColor = False
@@ -104,9 +105,9 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideLeft.Control = VersionMajorSpinEdit
       AnchorSideLeft.Side = asrBottom
       Left = 119
-      Height = 17
-      Top = 1
-      Width = 40
+      Height = 18
+      Top = 2
+      Width = 38
       Anchors = [akLeft]
       BorderSpacing.Left = 45
       Caption = 'Minor'
@@ -116,9 +117,9 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideLeft.Control = VersionMinorSpinEdit
       AnchorSideLeft.Side = asrBottom
       Left = 232
-      Height = 17
-      Top = 1
-      Width = 52
+      Height = 18
+      Top = 2
+      Width = 47
       Anchors = [akLeft]
       BorderSpacing.Left = 45
       Caption = 'Release'
@@ -128,9 +129,9 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideLeft.Control = VersionReleaseSpinEdit
       AnchorSideLeft.Side = asrBottom
       Left = 345
-      Height = 17
+      Height = 18
       Top = 0
-      Width = 92
+      Width = 87
       BorderSpacing.Left = 45
       Caption = 'Build Number'
       ParentColor = False
@@ -140,8 +141,8 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideTop.Control = VersionMajorLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 27
-      Top = 17
+      Height = 32
+      Top = 18
       Width = 68
       MaxValue = 9999
       TabOrder = 0
@@ -151,8 +152,8 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideTop.Control = VersionMinorLabel
       AnchorSideTop.Side = asrBottom
       Left = 119
-      Height = 27
-      Top = 18
+      Height = 32
+      Top = 20
       Width = 68
       MaxValue = 9999
       TabOrder = 1
@@ -162,8 +163,8 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideTop.Control = VersionReleaseLabel
       AnchorSideTop.Side = asrBottom
       Left = 232
-      Height = 27
-      Top = 18
+      Height = 32
+      Top = 20
       Width = 68
       MaxValue = 9999
       TabOrder = 2
@@ -173,8 +174,8 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
       AnchorSideTop.Control = VersionBuildLabel
       AnchorSideTop.Side = asrBottom
       Left = 345
-      Height = 27
-      Top = 17
+      Height = 32
+      Top = 18
       Width = 68
       MaxValue = 9999
       TabOrder = 3
@@ -182,9 +183,9 @@ object PackageDescriptionOptionsFrame: TPackageDescriptionOptionsFrame
     object dummyForSizing: TLabel
       AnchorSideTop.Control = VersionBuildSpinEdit
       AnchorSideTop.Side = asrBottom
-      Left = 421
+      Left = 0
       Height = 1
-      Top = 50
+      Top = 56
       Width = 1
       BorderSpacing.Top = 6
       ParentColor = False
