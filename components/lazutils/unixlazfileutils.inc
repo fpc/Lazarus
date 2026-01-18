@@ -42,6 +42,15 @@ begin
   Result:=SysUtils.FileExists(UTF8ToSys(Filename));
 end;
 
+function FileExistsTreatPackageAsFile(const Filename: string): boolean;
+begin
+  Result:= FileExistsUTF8(Filename);
+  {$IFDEF DARWIN}
+  if NOT Result then
+    Result:= IsDarwinFilePackage(Filename);
+  {$ENDIF}
+end;
+
 function DirectoryExistsUTF8(const Directory: string): Boolean;
 begin
   Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));

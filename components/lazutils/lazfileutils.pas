@@ -111,6 +111,7 @@ function FindPathInSearchPath(const APath, SearchPath: string): integer; overloa
 
 // file operations
 function FileExistsUTF8(const Filename: string): boolean;
+function FileExistsTreatPackageAsFile(const Filename: string): boolean; inline;
 function FileAgeUTF8(const FileName: string): int64; // -1 if not exists
 function UniversalFileAgeUtf8(const FileName: string): int64; // -1 if not exists
 function DirectoryExistsUTF8(const Directory: string): Boolean;
@@ -181,6 +182,7 @@ function ExtractFileRoot(FileName: String): String;
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 function GetDarwinNormalizedFilename(Filename: string; nForm:Integer=2): string;
+function IsDarwinFilePackage(Filename: string): Boolean;
 {$ENDIF}
 
 // windows paths
@@ -567,6 +569,28 @@ begin
   CFRelease(theString);
 end;
 
+function IsDarwinFilePackage(Filename: string): Boolean;
+var
+  cfFilename: CFStringRef;
+  cfURL: CFURLRef;
+  cfIsPackage: CFBooleanRef = nil;
+  ok: Boolean;
+begin
+  Result:= False;
+  cfFilename:= CFStringCreateWithFileSystemRepresentation(nil, PAnsiChar(FileName));
+  cfURL:= CFURLCreateWithFileSystemPath(nil, cfFilename, kCFURLPOSIXPathStyle, False);
+  ok:= CFURLCopyResourcePropertyForKey(
+         cfURL,
+         kCFURLIsPackageKey,
+         @cfIsPackage,
+         nil );
+  if ok then begin
+    Result:= CFBooleanGetValue(cfIsPackage);
+    CFRelease(cfIsPackage);
+  end;
+  CFRelease(cfFilename);
+  CFRelease(cfUrl);
+end;
 {$ENDIF}
 
 function ExtractFileNameOnly(const AFilename: string): string;
