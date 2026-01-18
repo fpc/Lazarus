@@ -590,7 +590,7 @@ end;
 
 function TOpenDialog.CheckFileMustExist(const AFileName: string): boolean;
 begin
-  if not FileExistsUTF8(AFilename) then begin
+  if not FileExistsTreatPackageAsFile(AFilename) then begin
     Result:=false;
     MessageDlg(rsfdFileMustExist,
                Format(rsfdFileNotExist,[AFileName]),mtError,
