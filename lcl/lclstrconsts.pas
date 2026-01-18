@@ -111,6 +111,11 @@ resourceString
   rsMacOSEditMenuPaste = 'Paste';
   rsMacOSEditMenuSelectAll = 'Select All';
 
+  rsMacOSFileDialogPackageSwitchTitle = 'Show File Package Contents';
+  rsMacOSFileDialogPackageSwitchTips = 'Treat File Packages (such as *.app files) as Directories to access their internal files';
+  rsMacOSColorDialogMbPick = 'Pick';
+  rsMacOSFontDialogMbSelect = 'Select';
+
   rsMacOSFileFormat = 'File Format:'; // used of FileDialog
 
   // gtk interface

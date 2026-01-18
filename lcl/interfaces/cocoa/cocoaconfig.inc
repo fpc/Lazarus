@@ -3,6 +3,15 @@
 {
   default config of Cocoa.
   we can modify the default config in the APP.
+
+  for example, when a FileDialog is first opened, .App Bundles appear as
+  a single file by default, and their internal contents are inaccessible.
+
+  if we want access to the contents of File Packages by default when
+  the FileDialog is first opened, we can add the code to the project.lpr:
+
+    uses CocoaConfig;
+    CocoaConfigFileDialog.allowsFilePackagesContents:= True;
 }
 
 var
@@ -55,6 +64,29 @@ var
 
     // some localized named might be too long to be returned properly by APIs
     useLocalizedFontName: False;
+  );
+
+var
+  CocoaConfigFileDialog: TCocoaConfigFileDialog = (
+
+    // whether to treat File Packages as a directory
+    // so that users can access File Packages Contents in the FileDialog.
+    // it is useful, for example, if users want to select the executable file
+    // or the configuration file in the App Bundles.
+    // this is the default setting when opening the FileDialog.
+    // by 'showsFilePackagesSwitch', APP can set whether to show a switch
+    // for the user to dynamically configure.
+    allowsFilePackagesContents: False;  // the default is OFF
+
+    accessoryView: (
+      // whether to add the "Show File Packages Contents" switch in FileDialog,
+      // allowing users to change it themselves.
+      showsFilePackagesSwitch: False;
+
+      minWidth: 300;
+      horzSpacing: 10;
+      vertSpacing: 10;
+    );
   );
 
 var

@@ -173,6 +173,19 @@ type
   end;
 
 type
+  TCocoaConfigFileDialogAccessoryView = record
+    showsFilePackagesSwitch: Boolean;
+    minWidth: Double;
+    horzSpacing: Double;
+    vertSpacing: Double;
+  end;
+
+  TCocoaConfigFileDialog = record
+    allowsFilePackagesContents: Boolean;
+    accessoryView: TCocoaConfigFileDialogAccessoryView;
+  end;
+
+type
   TCocoaConfigReadOnlyComboBoxItem = record
     defaultHeight: Integer;
   end;
