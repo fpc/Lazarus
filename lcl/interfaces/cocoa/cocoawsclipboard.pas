@@ -433,7 +433,7 @@ begin
     lDataType := ccdtBitmap;
   end;
   else
-    lNSStr := NSStringUtf8(AMimeType);
+    lNSStr := StrToNSString(AMimeType);
     lDataType := ccdtNonStandard;
   end;
 

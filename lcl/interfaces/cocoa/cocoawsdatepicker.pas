@@ -35,16 +35,6 @@ type
 
 implementation
 
-function AnsiStrToNSStr(value : AnsiString): NSString;
-begin
-  Result:= NSStringUtf8(String(value));
-end;
-
-function NSStrToAnsiStr(value: NSString): AnsiString;
-begin
-  Result:= AnsiString(NSStringToString(value));
-end;
-
 function AllocDatePicker(const ATarget: TWinControl; const AParams: TCreateParams): TCocoaDatePicker;
 var
   ns : NSString;
