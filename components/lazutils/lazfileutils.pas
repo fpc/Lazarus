@@ -677,6 +677,15 @@ begin
   Result:=true;
 end;
 
+function FileExistsTreatPackageAsFile(const Filename: string): boolean;
+begin
+  Result:= FileExistsUTF8(Filename);
+  {$IFDEF DARWIN}
+  if NOT Result then
+    Result:= IsDarwinFilePackage(Filename);
+  {$ENDIF}
+end;
+
 function FileIsText(const AFilename: string): boolean;
 var
   FileReadable: Boolean;
