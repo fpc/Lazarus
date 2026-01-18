@@ -32,10 +32,9 @@ msgid "Unable to find a HTML browser."
 msgstr "无法找到一个 HTML 浏览器。"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format, fuzzy
-#| msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+#, object-pascal-format
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options."
-msgstr "无法找到 HTML 浏览器。%s请在工具 -> 选项 -> 帮助 -> 帮助选项中定义一个"
+msgstr "无法找到 HTML 浏览器。%s请在工具 -> 选项 -> 帮助 -> 帮助选项中定义一个。"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 #, object-pascal-format
@@ -174,8 +173,6 @@ msgid "Cancel"
 msgstr "取消"
 
 #: lclstrconsts.rscannotfocus
-#, fuzzy
-#| msgid "Can not focus"
 msgid "Cannot focus"
 msgstr "无法聚焦"
 
@@ -287,9 +284,9 @@ msgid "Error creating device context for %s.%s"
 msgstr "创建 %s 的设备上下文时出错。%s"
 
 #: lclstrconsts.rserroroccurredinataddressframe
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
-msgstr "错误发生在 %s 地址 %s%s 帧 %s"
+msgstr "错误发生在 %s 地址%s %s%s 帧 %s"
 
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
@@ -518,10 +515,9 @@ msgid "Help"
 msgstr "帮助"
 
 #: lclstrconsts.rshelpalreadyregistered
-#, object-pascal-format, fuzzy
-#| msgid "%s: Already registered"
+#, object-pascal-format
 msgid "%s: already registered."
-msgstr "%s:已经注册"
+msgstr "%s：已经注册"
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "A help database was found for this topic, but this topic was not found"
@@ -546,16 +542,14 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "帮助上下文 %s 在数据库 \"%s\" 中未找到。"
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, object-pascal-format, fuzzy
-#| msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
+#, object-pascal-format
 msgid "Help Database \"%s\" did not find a viewer for a help page of type %s."
-msgstr "帮助数据库 \"%s\" 没有找到类型为 %s 的帮助页面的查看器"
+msgstr "帮助数据库 \"%s\" 没有找到类型为 %s 的帮助页面的查看器。"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, object-pascal-format, fuzzy
-#| msgid "Help Database \"%s\" not found"
+#, object-pascal-format
 msgid "Help Database \"%s\" not found."
-msgstr "未找到帮助数据库 \"%s\""
+msgstr "未找到帮助数据库 \"%s\"。"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 #, object-pascal-format
@@ -578,41 +572,36 @@ msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "帮助关键字\"%s\"未找到在数据库\"%s\"."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, object-pascal-format, fuzzy
-#| msgid "Help node \"%s\" has no Help Database"
+#, object-pascal-format
 msgid "Help node \"%s\" has no Help Database."
-msgstr "帮助节点 \"%s\" 没有帮助数据库"
+msgstr "帮助节点 \"%s\" 没有帮助数据库。"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "No help found for line %d, column %d of %s."
-msgstr "未找到关于 %s 的第 %d 行第 %d 列的帮助。"
+msgstr "未找到第 %d 行第 %d 列的关于 %s 的帮助。"
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#, fuzzy
-#| msgid "No help entries available for this topic"
 msgid "No help entries available for this topic."
-msgstr "没有可用的帮助条目此主题"
+msgstr "没有可用的帮助条目此主题。"
 
 #: lclstrconsts.rshelpnotfound
 msgid "No help found for this topic"
 msgstr "没有帮助找到对于这个主题(topic)"
 
 #: lclstrconsts.rshelpnotregistered
-#, object-pascal-format, fuzzy
-#| msgid "%s: Not registered"
+#, object-pascal-format
 msgid "%s: not registered."
-msgstr "%s: 没有注册"
+msgstr "%s: 没有注册。"
 
 #: lclstrconsts.rshelpselectorerror
 msgid "Help Selector Error"
 msgstr "帮助选择器错误"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, object-pascal-format, fuzzy
-#| msgid "There is no viewer for help type \"%s\""
+#, object-pascal-format
 msgid "There is no viewer for help type \"%s\"."
-msgstr "没有用于帮助类型 \"%s\" 的查看器"
+msgstr "没有用于帮助类型 \"%s\" 的查看器。"
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
@@ -1298,10 +1287,9 @@ msgid "Yellow"
 msgstr "黄色"
 
 #: lclstrconsts.scannotfocus
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Cannot focus a disabled or invisible window"
+#, object-pascal-format
 msgid "Cannot focus a disabled or invisible window \"%s\""
-msgstr "无法将焦点设置到已禁用或不可见的窗口"
+msgstr "无法将焦点设置到已禁用或不可见的窗口 \"%s\""
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
