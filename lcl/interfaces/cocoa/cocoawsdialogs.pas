@@ -181,7 +181,7 @@ type
     function panel_userEnteredFilename_confirmed(sender: id; filename: NSString; okFlag: LCLObjCBoolean): NSString;
     procedure panel_willExpand(sender: id; expanding: LCLObjCBoolean);
     procedure panelSelectionDidChange(sender: id);
-    procedure treatsAsDirAction(sender: id); message 'treatsAsDirAction:';
+    procedure showFilePackageContentsAction(sender: id); message 'showFilePackageContentsAction:';
   end;
 { TOpenSaveDelegate }
 
@@ -247,7 +247,7 @@ begin
   end;
 end;
 
-procedure TOpenSaveDelegate.treatsAsDirAction(sender: id);
+procedure TOpenSaveDelegate.showFilePackageContentsAction(sender: id);
 begin
   cocoaFilePanel.setTreatsFilePackagesAsDirectories(
     NOT cocoaFilePanel.treatsFilePackagesAsDirectories );
@@ -281,7 +281,7 @@ var
   var
     // filter accessory view
     accessoryView: NSView;
-    treatsAsDirCheckbox: NSButton;
+    showFilePackageContentsSwitch: NSButton;
     filterLabel: NSTextField;
 
     function needFilePackagesSwitch: Boolean;
@@ -301,30 +301,30 @@ var
       Result:= needFilePackagesSwitch or needFilter;
     end;
 
-    procedure createAccessoryView;
+    procedure setAccessoryView;
     begin
       accessoryView:= NSView.alloc.initWithFrame( NSMakeRect(0, 0, 1, 1) );
       cocoaFileOwner.setAccessoryView( accessoryView );
       accessoryView.release;
     end;
 
-    procedure createTreatsAsDirCheckbox;
+    procedure setShowFilePackageContentsSwitch;
     begin
-      treatsAsDirCheckbox:= NSButton.alloc.init;
-      treatsAsDirCheckbox.setButtonType( NSSwitchButton );
-      treatsAsDirCheckbox.setTarget( callback );
-      treatsAsDirCheckbox.setAction( ObjCSelector('treatsAsDirAction:') );
-      treatsAsDirCheckbox.setTitle( StrToNSString('Show File Package Contents') );
-      treatsAsDirCheckbox.setToolTip( StrToNSString('Such as .App Bundles') );
-      treatsAsDirCheckbox.sizeToFit;
+      showFilePackageContentsSwitch:= NSButton.alloc.init;
+      showFilePackageContentsSwitch.setButtonType( NSSwitchButton );
+      showFilePackageContentsSwitch.setTarget( callback );
+      showFilePackageContentsSwitch.setAction( ObjCSelector('showFilePackageContentsAction:') );
+      showFilePackageContentsSwitch.setTitle( StrToNSString('Show File Package Contents') );
+      showFilePackageContentsSwitch.setToolTip( StrToNSString('Such as .App Bundles') );
+      showFilePackageContentsSwitch.sizeToFit;
       if (ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx)
           or CocoaConfigFileDialog.defaultFilePackagesSwitch then
-        treatsAsDirCheckbox.setState( NSOnState );
-      accessoryView.addSubview( treatsAsDirCheckbox );
-      treatsAsDirCheckbox.release;
+        showFilePackageContentsSwitch.setState( NSOnState );
+      accessoryView.addSubview( showFilePackageContentsSwitch );
+      showFilePackageContentsSwitch.release;
     end;
 
-    procedure createFilterLabel;
+    procedure setFilterLabel;
     begin
       filterLabel:= NSTextField.alloc.initWithFrame( NSZeroRect );
       {$ifdef BOOLFIX}
@@ -345,7 +345,7 @@ var
       filterLabel.release;
     end;
 
-    procedure createFilterCombobox;
+    procedure setFilterCombobox;
     begin
       filterComboBox:= TCocoaFilterComboBox.alloc.initWithFrame(NSNullRect);
       filterComboBox.DialogHandle:= cocoaFileOwner;
@@ -370,18 +370,18 @@ var
       dialogView: NSView;
       accessoryViewSize: NSSize;
       clientWidth: Double;
-      treatsAsDirCheckboxX: Double;
+      showFilePackageContentsSwitchX: Double;
       filterWidthWithLabel: Double;
       filterComboBoxWidth: Double;
       currentY: Double = 0;
 
       procedure updateFilePackagesSwitchLayout;
       begin
-        treatsAsDirCheckboxX:= (clientWidth-treatsAsDirCheckbox.frame.size.width)/2;
-        if treatsAsDirCheckboxX < 0 then
-          treatsAsDirCheckboxX:= 0;
-        treatsAsDirCheckbox.setFrameOrigin( NSMakePoint(treatsAsDirCheckboxX,0) );
-        currentY:= treatsAsDirCheckbox.frame.origin.y + treatsAsDirCheckbox.frame.size.height + CocoaConfigFileDialog.accessoryView.vertSpacing;
+        showFilePackageContentsSwitchX:= (clientWidth-showFilePackageContentsSwitch.frame.size.width)/2;
+        if showFilePackageContentsSwitchX < 0 then
+          showFilePackageContentsSwitchX:= 0;
+        showFilePackageContentsSwitch.setFrameOrigin( NSMakePoint(showFilePackageContentsSwitchX,0) );
+        currentY:= showFilePackageContentsSwitch.frame.origin.y + showFilePackageContentsSwitch.frame.size.height + CocoaConfigFileDialog.accessoryView.vertSpacing;
       end;
 
       procedure updateFilterLayout;
@@ -439,13 +439,13 @@ var
     if NOT needAccessoryView then
       Exit;
 
-    createAccessoryView;
+    setAccessoryView;
     if needFilePackagesSwitch then begin
-      createTreatsAsDirCheckbox;
+      setShowFilePackageContentsSwitch;
     end;
     if needFilter then begin
-      createFilterLabel;
-      createFilterCombobox;
+      setFilterLabel;
+      setFilterCombobox;
     end;
     updateLayout;
   end;
