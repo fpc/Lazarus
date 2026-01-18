@@ -746,6 +746,10 @@ msgstr "Limetková"
 msgid "List index exceeds bounds (%d)"
 msgstr "Index zoznamu prekračuje hranice (%d)"
 
+#: lclstrconsts.rsmacoscolordialogmbpick
+msgid "Pick"
+msgstr ""
+
 #: lclstrconsts.rsmacoseditmenu
 msgctxt "lclstrconsts.rsmacoseditmenu"
 msgid "Edit"
@@ -777,9 +781,21 @@ msgstr "Vybrať všetko"
 msgid "Undo"
 msgstr "Späť"
 
+#: lclstrconsts.rsmacosfiledialogpackageswitchtips
+msgid "Treat File Packages (such as *.app files) as Directories to access their internal files"
+msgstr ""
+
+#: lclstrconsts.rsmacosfiledialogpackageswitchtitle
+msgid "Show File Package Contents"
+msgstr ""
+
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
 msgstr "Formát súboru:"
+
+#: lclstrconsts.rsmacosfontdialogmbselect
+msgid "Select"
+msgstr ""
 
 #: lclstrconsts.rsmacosmenuabout
 #, object-pascal-format

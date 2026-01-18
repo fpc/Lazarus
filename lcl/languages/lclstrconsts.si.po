@@ -756,6 +756,10 @@ msgstr "ලා කොළ පාට"
 msgid "List index exceeds bounds (%d)"
 msgstr "ලැයිස්තු දර්ශකය සීමා ඉක්මවයි (%d)"
 
+#: lclstrconsts.rsmacoscolordialogmbpick
+msgid "Pick"
+msgstr ""
+
 #: lclstrconsts.rsmacoseditmenu
 msgctxt "lclstrconsts.rsmacoseditmenu"
 msgid "Edit"
@@ -787,9 +791,21 @@ msgstr "සියල්ල තෝරන්න"
 msgid "Undo"
 msgstr "අහෝසි කරන්න"
 
+#: lclstrconsts.rsmacosfiledialogpackageswitchtips
+msgid "Treat File Packages (such as *.app files) as Directories to access their internal files"
+msgstr ""
+
+#: lclstrconsts.rsmacosfiledialogpackageswitchtitle
+msgid "Show File Package Contents"
+msgstr ""
+
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
 msgstr "ගොනු ආකෘතිය:"
+
+#: lclstrconsts.rsmacosfontdialogmbselect
+msgid "Select"
+msgstr ""
 
 #: lclstrconsts.rsmacosmenuabout
 #, object-pascal-format

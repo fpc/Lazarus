@@ -756,6 +756,10 @@ msgstr "青柠色"
 msgid "List index exceeds bounds (%d)"
 msgstr "列表索引超过限制 (%d)"
 
+#: lclstrconsts.rsmacoscolordialogmbpick
+msgid "Pick"
+msgstr "采集"
+
 #: lclstrconsts.rsmacoseditmenu
 msgctxt "lclstrconsts.rsmacoseditmenu"
 msgid "Edit"
@@ -787,9 +791,21 @@ msgstr "全选"
 msgid "Undo"
 msgstr "撤销"
 
+#: lclstrconsts.rsmacosfiledialogpackageswitchtips
+msgid "Treat File Packages (such as *.app files) as Directories to access their internal files"
+msgstr "将文件包（例如*.app文件）视为目录，允许访问文件包的内部文件"
+
+#: lclstrconsts.rsmacosfiledialogpackageswitchtitle
+msgid "Show File Package Contents"
+msgstr "显示包内容"
+
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
 msgstr "文件格式："
+
+#: lclstrconsts.rsmacosfontdialogmbselect
+msgid "Select"
+msgstr "选择"
 
 #: lclstrconsts.rsmacosmenuabout
 #, object-pascal-format
@@ -829,7 +845,7 @@ msgstr "褐红色"
 # 此处翻译为取消更合适，中止在这里表意不正确
 #: lclstrconsts.rsmbabort
 msgid "Abort"
-msgstr "取消(&C)"
+msgstr "放弃"
 
 #: lclstrconsts.rsmball
 msgid "&All"
@@ -838,7 +854,7 @@ msgstr "所有(&A)"
 #: lclstrconsts.rsmbcancel
 msgctxt "lclstrconsts.rsmbcancel"
 msgid "Cancel"
-msgstr "取消(&C)"
+msgstr "取消"
 
 #: lclstrconsts.rsmbclose
 msgid "&Close"
@@ -858,7 +874,7 @@ msgstr "否(&N)"
 
 #: lclstrconsts.rsmbnotoall
 msgid "No to all"
-msgstr "全部选否(&T)"
+msgstr "全部选否"
 
 #: lclstrconsts.rsmbok
 msgid "&OK"
