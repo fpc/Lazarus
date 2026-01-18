@@ -314,8 +314,8 @@ var
       showFilePackageContentsSwitch.setButtonType( NSSwitchButton );
       showFilePackageContentsSwitch.setTarget( callback );
       showFilePackageContentsSwitch.setAction( ObjCSelector('showFilePackageContentsAction:') );
-      showFilePackageContentsSwitch.setTitle( StrToNSString('Show File Package Contents') );
-      showFilePackageContentsSwitch.setToolTip( StrToNSString('Such as .App Bundles') );
+      showFilePackageContentsSwitch.setTitle( StrToNSString(rsMacOSFileDialogPackageSwitchTitle) );
+      showFilePackageContentsSwitch.setToolTip( StrToNSString(rsMacOSFileDialogPackageSwitchTips) );
       showFilePackageContentsSwitch.sizeToFit;
       if (ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx)
           or CocoaConfigFileDialog.defaultFilePackagesSwitch then
@@ -643,7 +643,7 @@ begin
   okButton := NSButton.alloc.initWithFrame(lRect);
   okButton.setButtonType(NSMomentaryPushInButton);
   okButton.setBezelStyle(NSRoundedBezelStyle);
-  okButton.setTitle(StrToNSString('Pick'));
+  okButton.setTitle(StrToNSString(rsMacOSColorDialogMbPick));
   okButton.setAction(objcselector('pickColor'));
   okButton.setTarget(colorDelegate);
 
@@ -651,7 +651,7 @@ begin
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);
-  cancelButton.setTitle(StrToNSString('Cancel'));
+  cancelButton.setTitle(ControlTitleToNSStr(rsMbCancel));
   cancelButton.SetAction(objcselector('exit'));
   cancelButton.setTarget(colorDelegate);
 
@@ -810,22 +810,22 @@ begin
   //fm.setDelegate(FontDelegate);
 
   // setup panel and its accessory view
-  lRect := GetNSRect(0, 0, 220, 30);
+  lRect := GetNSRect(0, 0, 220, 36);
   accessoryView := NSView.alloc.initWithFrame(lRect);
 
-  lRect := GetNSRect(110, 4, 110-8, 24);
+  lRect := GetNSRect(110, 6, 110-8, 24);
   okButton := NSButton.alloc.initWithFrame(lRect);
   okButton.setButtonType(NSMomentaryPushInButton);
   okButton.setBezelStyle(NSRoundedBezelStyle);
-  okButton.setTitle(StrToNSString('Select'));
+  okButton.setTitle(StrToNSString(rsMacOSFontDialogMbSelect));
   okButton.setAction(objcselector('selectFont'));
   okButton.setTarget(FontDelegate);
 
-  lRect := GetNSRect(8, 4, 110-8, 24);
+  lRect := GetNSRect(8, 6, 110-8, 24);
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);
-  cancelButton.setTitle(StrToNSString('Cancel'));
+  cancelButton.setTitle(ControlTitleToNSStr(rsMbCancel));
   cancelButton.SetAction(objcselector('exit'));
   cancelButton.setTarget(FontDelegate);
 
