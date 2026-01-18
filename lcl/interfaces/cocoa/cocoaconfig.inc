@@ -11,7 +11,7 @@
   the FileDialog is first opened, we can add the code to the project.lpr:
 
     uses CocoaConfig;
-    CocoaConfigFileDialog.defaultFilePackagesSwitch:= True;
+    CocoaConfigFileDialog.allowsFilePackagesContents:= True;
 }
 
 var
@@ -76,12 +76,12 @@ var
     // this is the default setting when opening the FileDialog.
     // by 'showsFilePackagesSwitch', APP can set whether to show a switch
     // for the user to dynamically configure.
-    defaultFilePackagesSwitch: False;  // the default is OFF
+    allowsFilePackagesContents: False;  // the default is OFF
 
     accessoryView: (
       // whether to add the "Show File Packages Contents" switch in FileDialog,
       // allowing users to change it themselves.
-      showsFilePackagesSwitch: True;
+      showsFilePackagesSwitch: False;
 
       minWidth: 300;
       horzSpacing: 10;

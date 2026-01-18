@@ -276,6 +276,13 @@ var
   oldEditMenu: NSMenuItem = nil;
   editMenuIndex: NSInteger = -1;
 
+  function allowsFilePackagesContents: Boolean;
+  begin
+    if ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx then
+      Exit( True );
+    Result:= CocoaConfigFileDialog.allowsFilePackagesContents;
+  end;
+
   // setup panel and its accessory view
   procedure attachAccessoryView(cocoaFileOwner: NSSavePanel);
   var
@@ -286,8 +293,8 @@ var
 
     function needFilePackagesSwitch: Boolean;
     begin
-      if ofDontShowFilePackagesSwitch in TOpenDialog(lclFileDialog).OptionsEx then
-        Exit( False );
+      if ofShowsFilePackagesSwitch in TOpenDialog(lclFileDialog).OptionsEx then
+        Exit( True );
       Result:= CocoaConfigFileDialog.accessoryView.showsFilePackagesSwitch;
     end;
 
@@ -317,8 +324,7 @@ var
       showFilePackageContentsSwitch.setTitle( StrToNSString(rsMacOSFileDialogPackageSwitchTitle) );
       showFilePackageContentsSwitch.setToolTip( StrToNSString(rsMacOSFileDialogPackageSwitchTips) );
       showFilePackageContentsSwitch.sizeToFit;
-      if (ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx)
-          or CocoaConfigFileDialog.defaultFilePackagesSwitch then
+      if allowsFilePackagesContents then
         showFilePackageContentsSwitch.setState( NSOnState );
       accessoryView.addSubview( showFilePackageContentsSwitch );
       showFilePackageContentsSwitch.release;
@@ -504,9 +510,7 @@ var
 
     if lclFileDialog is TOpenDialog then
     begin
-      if (ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx)
-          or CocoaConfigFileDialog.defaultFilePackagesSwitch then
-        cocoaFilePanel.setTreatsFilePackagesAsDirectories(True);
+      cocoaFilePanel.setTreatsFilePackagesAsDirectories(allowsFilePackagesContents);
       if ofUseAlternativeTitle in TOpenDialog(lclFileDialog).OptionsEx then
         cocoaFilePanel.setMessage(title);
       if ofForceShowHidden in TOpenDialog(lclFileDialog).Options then

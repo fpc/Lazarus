@@ -226,12 +226,12 @@ type
     ofUseXPStyleAsFallBack,     // Windows Vista+: Use XP-style dialog if creating Vista-style dialog fails (e.g. when running under Windows Recovery).
 
     // macOS: whether to add the "Show File Packages Contents" switch in FileDialog
-    // see also: showsFilePackagesSwitch in CocoaConfig.inc, it's global config.
-    ofDontShowFilePackagesSwitch,
+    // see also: showsFilePackagesSwitch in CocoaConfig.inc, it's the global config.
+    ofShowsFilePackagesSwitch,
 
     // macOS: whether to treat File Packages(such as .App bundles) as a directory
     // so that users can access File Packages Contents in the FileDialog.
-    // see also: defaultFilePackagesSwitch in CocoaConfig.inc, it's global config.
+    // see also: allowsFilePackagesContents in CocoaConfig.inc, it's the global config.
     ofAllowsFilePackagesContents,
 
     // macOS: Display a title in the dialog window

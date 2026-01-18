@@ -181,7 +181,7 @@ type
   end;
 
   TCocoaConfigFileDialog = record
-    defaultFilePackagesSwitch: Boolean;
+    allowsFilePackagesContents: Boolean;
     accessoryView: TCocoaConfigFileDialogAccessoryView;
   end;
 
