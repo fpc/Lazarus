@@ -370,11 +370,10 @@ begin
     FFirstInvalidLine := AnIndex;
     FUnsentValidationStartLine := AnIndex;
   end;
-  if AnIndex + ACount > FLastInvalidLine then
-    FLastInvalidLine := AnIndex + ACount
-  else
   if FLastInvalidLine >= AnIndex then
-    FLastInvalidLine := FLastInvalidLine + ACount;
+    FLastInvalidLine := FLastInvalidLine + ACount
+  else
+    FLastInvalidLine := AnIndex + ACount;
 
   inherited Insert(AnIndex, ACount);
   InsertedLines(AnIndex, ACount){%H-};
