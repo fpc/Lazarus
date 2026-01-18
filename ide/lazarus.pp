@@ -53,6 +53,9 @@ uses
   {$IF defined(Unix) and not defined(OPENBSD)}
   clocale,
   {$IFEND}
+  {$IFDEF DARWIN}
+  CocoaConfig,
+  {$ENDIF}
   SysUtils,
   Interfaces,
   IDEInstances,//keep IDEInstances up so that it will be initialized soon
@@ -121,6 +124,10 @@ begin
   // other forms including the design-mode forms.
   // It can be changed to MainFormOnTaskBar := True once we have a working inline form designer.
   Application.{%H-}MainFormOnTaskBar := False;
+  {$ENDIF}
+
+  {$IFDEF DARWIN}
+  CocoaConfigFileDialog.accessoryView.showsFilePackagesSwitch:= True;
   {$ENDIF}
 
   {$IF DEFINED(MSWINDOWS) AND DECLARED(GlobalSkipIfNoLeaks)}
