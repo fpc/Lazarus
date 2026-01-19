@@ -381,14 +381,14 @@ var
       showFilePackageContentsSwitchX: Double;
       filterWidthWithLabel: Double;
       filterComboBoxWidth: Double;
-      currentY: Double = 0;
+      currentY: Double;
 
       procedure updateFilePackagesSwitchLayout;
       begin
         showFilePackageContentsSwitchX:= (clientWidth-showFilePackageContentsSwitch.frame.size.width)/2;
         if showFilePackageContentsSwitchX < 0 then
           showFilePackageContentsSwitchX:= 0;
-        showFilePackageContentsSwitch.setFrameOrigin( NSMakePoint(showFilePackageContentsSwitchX,0) );
+        showFilePackageContentsSwitch.setFrameOrigin( NSMakePoint(showFilePackageContentsSwitchX,currentY) );
         currentY:= showFilePackageContentsSwitch.frame.origin.y + showFilePackageContentsSwitch.frame.size.height + config.accessoryView.vertSpacing;
       end;
 
@@ -423,6 +423,8 @@ var
       // causing the width to be increased on every openning of the dialog
       // we'd simply force the width to start with the minimum width
       accessoryViewSize.width := config.accessoryView.minWidth;
+
+      currentY:= config.accessoryView.baseY;
 
       // try to obtain the dialog size
       dialogView:= NSView(cocoaFileOwner.contentView);

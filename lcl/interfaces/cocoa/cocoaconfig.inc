@@ -85,6 +85,7 @@ var
         showsFilePackagesSwitch: False;
 
         minWidth: 300;
+        baseY: 0;
         horzSpacing: 10;
         vertSpacing: 10;
       );
@@ -95,6 +96,7 @@ var
       accessoryView: (
         showsFilePackagesSwitch: False;
         minWidth: 300;
+        baseY: 6;
         horzSpacing: 10;
         vertSpacing: 10;
       );
@@ -105,6 +107,7 @@ var
       accessoryView: (
         showsFilePackagesSwitch: False;
         minWidth: 300;
+        baseY: 0;
         horzSpacing: 10;
         vertSpacing: 10;
       );

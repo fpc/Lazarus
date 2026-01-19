@@ -176,6 +176,7 @@ type
   TCocoaConfigFileDialogAccessoryView = record
     showsFilePackagesSwitch: Boolean;
     minWidth: Double;
+    baseY: Double;
     horzSpacing: Double;
     vertSpacing: Double;
   end;
