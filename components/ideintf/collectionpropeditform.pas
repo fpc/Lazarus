@@ -46,11 +46,10 @@ type
     procedure SelectInObjectInspector(ForceUpdate: Boolean);
     procedure SelectionChanged(NewOwnerPersistent: TPersistent);
     procedure Modified;
-  protected
     procedure UpdateCaption;
-    procedure PersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: boolean);
     procedure ComponentRenamed(AComponent: TComponent);
     procedure GlobalSetSelection(const ASelection: TPersistentSelectionList);
+    procedure PersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: boolean);
     procedure PersistentDeleting(APersistent: TPersistent);
     procedure RefreshPropertyValues;
   public
@@ -214,8 +213,7 @@ procedure TCollectionPropertyEditorForm.UpdateCaption;
 var
   NewCaption: String;
 begin
-  //I think to match Delphi this should be formatted like
-  //"Editing ComponentName.PropertyName[Index]"
+  //To match Delphi formatting: "Editing ComponentName.PropertyName[Index]"
   if OwnerPersistent is TComponent then
     NewCaption := TComponent(OwnerPersistent).Name
   else
@@ -244,12 +242,6 @@ begin
   actMoveDown.Enabled := (I >= 0) and (I < CollectionListBox.Items.Count - 1);
 end;
 
-procedure TCollectionPropertyEditorForm.PersistentAdded(APersistent: TPersistent; Select: boolean);
-begin
-  //DebugLn('*** TCollectionPropertyEditorForm.PersistentAdded called ***');
-  FillCollectionListBox;
-end;
-
 procedure TCollectionPropertyEditorForm.ComponentRenamed(AComponent: TComponent);
 begin
   //DebugLn('*** TCollectionPropertyEditorForm.ComponentRenamed called ***');
@@ -269,6 +261,14 @@ begin
   SelectionChanged(ASelection[0]);
 end;
 
+procedure TCollectionPropertyEditorForm.PersistentAdded(APersistent: TPersistent; Select: boolean);
+begin
+  //DebugLn(['TCollectionPropertyEditorForm.PersistentAdded: APersistent=', APersistent, ', Select=', Select]);
+  FillCollectionListBox;
+  if OwnerPersistent is TControl then
+    TControl(OwnerPersistent).Update;
+end;
+
 procedure TCollectionPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
 begin
   //DebugLn(['TCollectionPropertyEditorForm.PersistentDeleting: APersistent=', APersistent,
@@ -281,7 +281,7 @@ begin
     if TCollectionItem(APersistent).Collection = Collection then
     begin
       TCollectionItem(APersistent).Collection := nil;
-      FillCollectionListBox;
+      PersistentAdded(APersistent, False); // Update like when item was added.
     end;
   end;
 end;
