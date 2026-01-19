@@ -272,6 +272,8 @@ var
   callback: TOpenSaveDelegate;
   filterComboBox: TCocoaFilterComboBox = nil;
 
+  config: TCocoaConfigFileDialogCommon;
+
   isMenuOn: Boolean;
   oldEditMenu: NSMenuItem = nil;
   editMenuIndex: NSInteger = -1;
@@ -280,7 +282,7 @@ var
   begin
     if ofAllowsFilePackagesContents in TOpenDialog(lclFileDialog).OptionsEx then
       Exit( True );
-    Result:= CocoaConfigFileDialog.allowsFilePackagesContents;
+    Result:= config.allowsFilePackagesContents;
   end;
 
   // setup panel and its accessory view
@@ -295,7 +297,7 @@ var
     begin
       if ofShowsFilePackagesSwitch in TOpenDialog(lclFileDialog).OptionsEx then
         Exit( True );
-      Result:= CocoaConfigFileDialog.accessoryView.showsFilePackagesSwitch;
+      Result:= config.accessoryView.showsFilePackagesSwitch;
     end;
 
     function needFilter: Boolean;
@@ -379,15 +381,15 @@ var
       showFilePackageContentsSwitchX: Double;
       filterWidthWithLabel: Double;
       filterComboBoxWidth: Double;
-      currentY: Double = 0;
+      currentY: Double;
 
       procedure updateFilePackagesSwitchLayout;
       begin
         showFilePackageContentsSwitchX:= (clientWidth-showFilePackageContentsSwitch.frame.size.width)/2;
         if showFilePackageContentsSwitchX < 0 then
           showFilePackageContentsSwitchX:= 0;
-        showFilePackageContentsSwitch.setFrameOrigin( NSMakePoint(showFilePackageContentsSwitchX,0) );
-        currentY:= showFilePackageContentsSwitch.frame.origin.y + showFilePackageContentsSwitch.frame.size.height + CocoaConfigFileDialog.accessoryView.vertSpacing;
+        showFilePackageContentsSwitch.setFrameOrigin( NSMakePoint(showFilePackageContentsSwitchX,currentY) );
+        currentY:= showFilePackageContentsSwitch.frame.origin.y + showFilePackageContentsSwitch.frame.size.height + config.accessoryView.vertSpacing;
       end;
 
       procedure updateFilterLayout;
@@ -395,7 +397,7 @@ var
         // Trying to put controls into the center of the Acc-view
         //  Label must fit in full. Whatever is left is for filter
         filterComboBoxWidth:= filterComboBox.frame.size.width;
-        filterWidthWithLabel:= filterLabel.frame.size.width + filterComboBoxWidth + CocoaConfigFileDialog.accessoryView.horzSpacing;
+        filterWidthWithLabel:= filterLabel.frame.size.width + filterComboBoxWidth + config.accessoryView.horzSpacing;
         if filterWidthWithLabel > clientWidth then begin
           filterWidthWithLabel:= clientWidth;
           filterComboBoxWidth:= filterWidthWithLabel - filterLabel.frame.size.width;
@@ -407,29 +409,31 @@ var
         ));
 
         filterComboBox.setFrame( NSMakeRect(
-           filterLabel.frame.origin.x + filterLabel.frame.size.width + CocoaConfigFileDialog.accessoryView.horzSpacing,
+           filterLabel.frame.origin.x + filterLabel.frame.size.width + config.accessoryView.horzSpacing,
            currentY,
            filterComboBoxWidth,
            filterComboBox.frame.size.height
         ));
 
-        currentY:= currentY + filterComboBox.frame.size.height + CocoaConfigFileDialog.accessoryView.vertSpacing;
+        currentY:= currentY + filterComboBox.frame.size.height + config.accessoryView.vertSpacing;
       end;
 
     begin
       // starting with Big Sur, the dialog retains the last openned size
       // causing the width to be increased on every openning of the dialog
       // we'd simply force the width to start with the minimum width
-      accessoryViewSize.width := CocoaConfigFileDialog.accessoryView.minWidth;
+      accessoryViewSize.width := config.accessoryView.minWidth;
+
+      currentY:= config.accessoryView.baseY;
 
       // try to obtain the dialog size
       dialogView:= NSView(cocoaFileOwner.contentView);
       if (dialogView<>nil) and (NSAppkitVersionNumber<NSAppKitVersionNumber11_0) then begin
-        if dialogView.frame.size.width > CocoaConfigFileDialog.accessoryView.minWidth then
+        if dialogView.frame.size.width > config.accessoryView.minWidth then
           accessoryViewSize.width := dialogView.frame.size.width;
       end;
 
-      clientWidth:= accessoryViewSize.Width - CocoaConfigFileDialog.accessoryView.horzSpacing * 2;
+      clientWidth:= accessoryViewSize.Width - config.accessoryView.horzSpacing * 2;
 
       if needFilePackagesSwitch then
         updateFilePackagesSwitchLayout;
@@ -482,22 +486,25 @@ var
       then
     begin
       cocoaOpenFilePanel := NSOpenPanel.openPanel;
-      cocoaOpenFilePanel.setAllowsMultipleSelection(
-        ofAllowMultiSelect in TOpenDialog(lclFileDialog).Options);
       if (lclFileDialog is TSelectDirectoryDialog) then
       begin
+        config:= CocoaConfigFileDialog.selectDirectory;
         cocoaOpenFilePanel.setCanChooseDirectories(True);
         cocoaOpenFilePanel.setCanChooseFiles(False);
         cocoaOpenFilePanel.setCanCreateDirectories(True);
       end
       else
       begin
+        config:= CocoaConfigFileDialog.open;
         cocoaOpenFilePanel.setCanChooseFiles(True);
         cocoaOpenFilePanel.setCanChooseDirectories(False);
       end;
+      cocoaOpenFilePanel.setAllowsMultipleSelection(
+        ofAllowMultiSelect in TOpenDialog(lclFileDialog).Options);
     end
     else if lclFileDialog.FCompStyle = csSaveFileDialog then
     begin
+      config:= CocoaConfigFileDialog.save;
       cocoaFilePanel := NSSavePanel.savePanel;
       cocoaFilePanel.setCanCreateDirectories(True);
       cocoaFilePanel.setNameFieldStringValue(StrToNSString(InitName));

@@ -368,6 +368,7 @@ type
   TFileNameEdit = class(TCustomEditButton)
   private
     FDialogOptions: TOpenOptions;
+    FDialogOptionsEx: TOpenOptionsEx;
     FFileName : String;
     FDialogFiles : TStrings;
     FDialogKind: TDialogKind;
@@ -403,6 +404,7 @@ type
     property DialogKind: TDialogKind read FDialogKind write FDialogKind default dkOpen;
     property DialogTitle: String read FDialogTitle write FDialogTitle;
     property DialogOptions: TOpenOptions read FDialogOptions write FDialogOptions default DefaultOpenDialogOptions;
+    property DialogOptionsEx: TOpenOptionsEx read FDialogOptionsEx write FDialogOptionsEx default [];
     property Filter: String read FFilter write FFilter;
     property FilterIndex: Integer read FFilterIndex write FFIlterIndex;
     property DefaultExt: String read FDefaultExt write FDefaultExt;
@@ -488,6 +490,7 @@ type
     FOnAcceptDir: TAcceptFileNameEvent;
     FShowHidden: Boolean;
     FDialogOptions: TOpenOptions;
+    FDialogOptionsEx: TOpenOptionsEx;
     function GetDirectory: String;
     procedure SetDirectory(const AValue: String);
   protected
@@ -506,6 +509,7 @@ type
     property OnAcceptDirectory: TAcceptFileNameEvent read FOnAcceptDir write FonAcceptDir;
     property DialogTitle: String read FDialogTitle write FDialogTitle;
     property DialogOptions: TOpenOptions read FDialogOptions write FDialogOptions default DefaultOpenDialogOptions;
+    property DialogOptionsEx: TOpenOptionsEx read FDialogOptionsEx write FDialogOptionsEx default [];
     property ShowHidden: Boolean read FShowHidden write FShowHidden;
     // TEditButton properties.
     property ButtonCaption;
@@ -1457,6 +1461,7 @@ begin
       O.FileName := ExtractFileName(Filename);
     end;
     O.Options := DialogOptions;
+    O.OptionsEx := DialogOptionsEx;
     O.Filter := Filter;
     O.FilterIndex := FilterIndex;
     if (InitialDir <> '') then   //don't force currentdir here, let WS do it's normal "magic" to decide where to open
@@ -1581,6 +1586,7 @@ begin
   end;
   // Set some common things.
   TSelectDirectoryDialog(Result).Options := DialogOptions;
+  TSelectDirectoryDialog(Result).OptionsEx := DialogOptionsEx;
   Result.Title := DialogTitle;
 end;
 
