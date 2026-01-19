@@ -71,7 +71,7 @@ type
 
   { TGtk3WSSaveDialog }
 
-  TGtk3WSSaveDialog = class(TWSSaveDialog)
+  TGtk3WSSaveDialog = class({TWSSaveDialog}TGtk3WSOpenDialog)
   published
   end;
 
