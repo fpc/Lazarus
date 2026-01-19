@@ -127,7 +127,10 @@ begin
   {$ENDIF}
 
   {$IFDEF DARWIN}
-  CocoaConfigFileDialog.accessoryView.showsFilePackagesSwitch:= True;
+  CocoaConfigFileDialog.open.accessoryView.showsFilePackagesSwitch:= True;
+  CocoaConfigFileDialog.save.allowsFilePackagesContents:= True;
+  CocoaConfigFileDialog.selectDirectory.allowsFilePackagesContents:= True;
+  CocoaConfigFileDialog.selectDirectory.accessoryView.showsFilePackagesSwitch:= True;
   {$ENDIF}
 
   {$IF DEFINED(MSWINDOWS) AND DECLARED(GlobalSkipIfNoLeaks)}
