@@ -269,14 +269,19 @@ end;
 
 procedure TCollectionPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
 begin
-  // For some reason this is called only when the whole collection is deleted,
-  // for example when changing to another project. Thus clear the whole collection.
-  DebugLn(['TCollectionPropertyEditorForm.PersistentDeleting: APersistent=', APersistent,
-           ', OwnerPersistent=', OwnerPersistent]);
-  SetCollection(nil, nil, '');
-  Hide;
-  UpdateButtons;
-  UpdateCaption;
+  //DebugLn(['TCollectionPropertyEditorForm.PersistentDeleting: APersistent=', APersistent,
+  //         ', OwnerPersistent=', OwnerPersistent]);
+  if APersistent = OwnerPersistent then
+    // The whole collection is deleted, like when changing to another project.
+    SetCollection(nil, nil, '')
+  else if APersistent is TCollectionItem then
+  begin
+    if TCollectionItem(APersistent).Collection = Collection then
+    begin
+      TCollectionItem(APersistent).Collection := nil;
+      FillCollectionListBox;
+    end;
+  end;
 end;
 
 procedure TCollectionPropertyEditorForm.RefreshPropertyValues;

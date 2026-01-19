@@ -11,11 +11,11 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
   ClientWidth = 190
   Constraints.MinHeight = 100
   Constraints.MinWidth = 190
+  Position = poDefaultPosOnly
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poDefaultPosOnly
-  LCLVersion = '2.1.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 42
