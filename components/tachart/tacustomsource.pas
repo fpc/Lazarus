@@ -121,7 +121,7 @@ type
     FScale: TIntegerTransformFunc;
     FUseY: Boolean;
 
-    function CountToStep(ACount: Integer): Double; inline;
+    function CountToStep(ACount: Integer): Double; {$IF FPC_FullVersion < 30300}inline;{$IFEND}  // workaround for issue #41581
     function IsAcceptableStep(AStep: Int64): Boolean; inline;
     procedure RoundToImage(var AValue: Double);
     function ToImage(AX: Double): Integer; inline;
