@@ -160,6 +160,7 @@ type
   TRttiXMLConfig = class(TXMLConfig)
   private
     FCheckPropertyDefault: boolean;
+    FWriteAllNestedObjects: boolean;
   protected
     procedure WriteProperty(Path: String; Instance: TObject;
                             PropInfo: Pointer; DefInstance: TObject = nil;
@@ -174,6 +175,7 @@ type
                           DefObject: TObject= nil; OnlyProperty: String= '');
 
     property CheckPropertyDefault: boolean read FCheckPropertyDefault write FCheckPropertyDefault;
+    property WriteAllNestedObjects: boolean read FWriteAllNestedObjects write FWriteAllNestedObjects;
   end;
 
 
@@ -1151,6 +1153,7 @@ var
   //Int64Value, DefInt64Value: Int64;
   BoolValue, DefBoolValue: boolean;
   obj: TObject;
+  PropList: PPropList;
 
 begin
   // do not stream properties without getter and setter
@@ -1307,7 +1310,11 @@ begin
     tkClass:
       begin
         obj := GetObjectProp(Instance, PropInfo);
-        if (obj is TPersistent) and IsStoredProp(Instance, PropInfo) then
+        if ( (obj is TPersistent) or
+             (FWriteAllNestedObjects and (GetPropList(Obj,PropList) > 0))
+           ) and
+           IsStoredProp(Instance, PropInfo)
+        then
           WriteObject(Path+'/', TPersistent(obj))
         else
           DeleteValue(Path);
@@ -1450,7 +1457,9 @@ begin
     tkClass:
       begin
         obj := GetObjectProp(Instance, PropInfo);
-        if (obj is TPersistent) and HasPath(Path, False) then
+        if ( (obj is TPersistent) or FWriteAllNestedObjects ) and
+           HasPath(Path, False)
+        then
           ReadObject(Path+'/', TPersistent(obj));
       end;
   end;
