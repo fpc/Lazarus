@@ -99,7 +99,7 @@ type
     class procedure OnDesignRefreshPropertyValues;
     class procedure OnDesignModified(Sender: TObject);
     class procedure OnDesignPersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: Boolean);
-    class procedure OnDesignPersistentDeleted({%H-}APersistent: TPersistent);
+    class procedure OnDesignPersistentDeleted({%H-}APersistent: Pointer);
     class procedure OnDesignMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
                       {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     class procedure OnDesignSetSelection(const ASelection: TPersistentSelectionList);
@@ -760,7 +760,7 @@ begin
   OnDesignModified(nil);
 end;
 
-class procedure TDockedMainIDE.OnDesignPersistentDeleted(APersistent: TPersistent);
+class procedure TDockedMainIDE.OnDesignPersistentDeleted(APersistent: Pointer);
 begin
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.OnDesignPersistentDeleted'); {$ENDIF}
   OnDesignModified(nil);

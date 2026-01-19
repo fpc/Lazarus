@@ -1439,6 +1439,7 @@ type
   TPropHookPersistentAdded = procedure(APersistent: TPersistent; Select: boolean
                                       ) of object;
   TPropHookPersistentDel = procedure(APersistent: TPersistent) of object;
+  TPropHookPersistentDeleted = procedure(APersistent: Pointer) of object;
   TPropHookDeletePersistent = procedure(var APersistent: TPersistent) of object;
   TPropHookCollectionChanged = procedure(Sender: TObject; aColl: TCollection) of object;
   TPropHookGetSelection = procedure(const ASelection: TPersistentSelectionList
@@ -1679,9 +1680,9 @@ type
     procedure RemoveHandlerPersistentDeleting(
                        const OnPersistentDeleting: TPropHookPersistentDel);
     procedure AddHandlerPersistentDeleted(
-                       const OnPersistentDeleted: TPropHookPersistentDel);
+                       const OnPersistentDeleted: TPropHookPersistentDeleted);
     procedure RemoveHandlerPersistentDeleted(
-                       const OnPersistentDeleted: TPropHookPersistentDel);
+                       const OnPersistentDeleted: TPropHookPersistentDeleted);
     procedure AddHandlerDeletePersistent(
                            const OnDeletePersistent: TPropHookDeletePersistent);
     procedure RemoveHandlerDeletePersistent(
@@ -7948,13 +7949,13 @@ begin
 end;
 
 procedure TPropertyEditorHook.AddHandlerPersistentDeleted(
-  const OnPersistentDeleted: TPropHookPersistentDel);
+  const OnPersistentDeleted: TPropHookPersistentDeleted);
 begin
   AddHandler(htPersistentDeleted,TMethod(OnPersistentDeleted));
 end;
 
 procedure TPropertyEditorHook.RemoveHandlerPersistentDeleted(
-  const OnPersistentDeleted: TPropHookPersistentDel);
+  const OnPersistentDeleted: TPropHookPersistentDeleted);
 begin
   RemoveHandler(htPersistentDeleted,TMethod(OnPersistentDeleted));
 end;

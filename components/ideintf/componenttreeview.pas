@@ -71,7 +71,7 @@ type
     procedure NodeExpanded(Sender: TObject; Node: TTreeNode);
     procedure OnCollectionChanged(Sender: TObject; aColl: TCollection);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
-    procedure OnPersistentDeleted(APersistent: TPersistent);
+    procedure OnPersistentDeleted(APersistent: Pointer);
     procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure RestoreExpand(ANode: TTreeNode);
     procedure SetIdleConnected(const AValue: boolean);
@@ -732,9 +732,20 @@ begin
   BuildComponentNodes(true);
 end;
 
-procedure TComponentTreeView.OnPersistentDeleted(APersistent: TPersistent);
+procedure TComponentTreeView.OnPersistentDeleted(APersistent: Pointer);
+var
+  aNode: TTreeNode;
 begin
-  OnPersistentDeleting(APersistent);
+  if APersistent=nil then exit;
+  aNode:=Items.GetFirstNode;
+  while aNode<>nil do begin
+    if aNode.Data=APersistent then begin
+      aNode.Data:=nil;
+      ChangeNode(ANode);
+      exit;
+    end;
+    aNode:=aNode.GetNext;
+  end;
 end;
 
 procedure TComponentTreeView.OnPersistentDeleting(APersistent: TPersistent);
