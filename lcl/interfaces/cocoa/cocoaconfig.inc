@@ -11,7 +11,7 @@
   the FileDialog is first opened, we can add the code to the project.lpr:
 
     uses CocoaConfig;
-    CocoaConfigFileDialog.allowsFilePackagesContents:= True;
+    CocoaConfigFileDialog.open.allowsFilePackagesContents:= True;
 }
 
 var
@@ -69,23 +69,48 @@ var
 var
   CocoaConfigFileDialog: TCocoaConfigFileDialog = (
 
-    // whether to treat File Packages as a directory
-    // so that users can access File Packages Contents in the FileDialog.
-    // it is useful, for example, if users want to select the executable file
-    // or the configuration file in the App Bundles.
-    // this is the default setting when opening the FileDialog.
-    // by 'showsFilePackagesSwitch', APP can set whether to show a switch
-    // for the user to dynamically configure.
-    allowsFilePackagesContents: False;  // the default is OFF
+    open: (
+      // whether to treat File Packages as a directory
+      // so that users can access File Packages Contents in the FileDialog.
+      // it is useful, for example, if users want to select the executable file
+      // or the configuration file in the App Bundles.
+      // this is the default setting when opening the FileDialog.
+      // by 'showsFilePackagesSwitch', APP can set whether to show a switch
+      // for the user to dynamically configure.
+      allowsFilePackagesContents: False;  // the default is OFF
 
-    accessoryView: (
-      // whether to add the "Show File Packages Contents" switch in FileDialog,
-      // allowing users to change it themselves.
-      showsFilePackagesSwitch: False;
+      accessoryView: (
+        // whether to add the "Show File Packages Contents" switch in FileDialog,
+        // allowing users to change it themselves.
+        showsFilePackagesSwitch: False;
 
-      minWidth: 300;
-      horzSpacing: 10;
-      vertSpacing: 10;
+        minWidth: 300;
+        baseY: 0;
+        horzSpacing: 10;
+        vertSpacing: 10;
+      );
+    );
+
+    save: (
+      allowsFilePackagesContents: False;
+      accessoryView: (
+        showsFilePackagesSwitch: False;
+        minWidth: 300;
+        baseY: 6;
+        horzSpacing: 10;
+        vertSpacing: 10;
+      );
+    );
+
+    selectDirectory: (
+      allowsFilePackagesContents: False;
+      accessoryView: (
+        showsFilePackagesSwitch: False;
+        minWidth: 300;
+        baseY: 0;
+        horzSpacing: 10;
+        vertSpacing: 10;
+      );
     );
   );
 
