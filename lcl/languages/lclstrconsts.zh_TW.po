@@ -167,7 +167,6 @@ msgid "Calculator"
 msgstr ""
 
 #: lclstrconsts.rscancelrecordhint
-#, fuzzy
 msgctxt "lclstrconsts.rscancelrecordhint"
 msgid "Cancel"
 msgstr "取消"
