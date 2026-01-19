@@ -180,9 +180,15 @@ type
     vertSpacing: Double;
   end;
 
-  TCocoaConfigFileDialog = record
+  TCocoaConfigFileDialogCommon = record
     allowsFilePackagesContents: Boolean;
     accessoryView: TCocoaConfigFileDialogAccessoryView;
+  end;
+
+  TCocoaConfigFileDialog = record
+    open: TCocoaConfigFileDialogCommon;
+    save: TCocoaConfigFileDialogCommon;
+    selectDirectory: TCocoaConfigFileDialogCommon;
   end;
 
 type
