@@ -808,6 +808,10 @@ msgstr "לימוני"
 msgid "List index exceeds bounds (%d)"
 msgstr "אינדקס הרשימה עובר את הגבול"
 
+#: lclstrconsts.rsmacoscolordialogmbpick
+msgid "Pick"
+msgstr ""
+
 #: lclstrconsts.rsmacoseditmenu
 msgctxt "lclstrconsts.rsmacoseditmenu"
 msgid "Edit"
@@ -839,8 +843,20 @@ msgstr "בחר הכל"
 msgid "Undo"
 msgstr "בטל פעולה"
 
+#: lclstrconsts.rsmacosfiledialogpackageswitchtips
+msgid "Treat File Packages (such as *.app files) as Directories to access their internal files"
+msgstr ""
+
+#: lclstrconsts.rsmacosfiledialogpackageswitchtitle
+msgid "Show File Package Contents"
+msgstr ""
+
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
+msgstr ""
+
+#: lclstrconsts.rsmacosfontdialogmbselect
+msgid "Select"
 msgstr ""
 
 #: lclstrconsts.rsmacosmenuabout

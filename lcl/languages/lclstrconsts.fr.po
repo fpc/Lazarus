@@ -784,6 +784,10 @@ msgstr "Vert citron"
 msgid "List index exceeds bounds (%d)"
 msgstr "Index de liste hors limites (%d)"
 
+#: lclstrconsts.rsmacoscolordialogmbpick
+msgid "Pick"
+msgstr ""
+
 #: lclstrconsts.rsmacoseditmenu
 msgctxt "lclstrconsts.rsmacoseditmenu"
 msgid "Edit"
@@ -815,9 +819,21 @@ msgstr "Tout sélectionner"
 msgid "Undo"
 msgstr "Annuler"
 
+#: lclstrconsts.rsmacosfiledialogpackageswitchtips
+msgid "Treat File Packages (such as *.app files) as Directories to access their internal files"
+msgstr ""
+
+#: lclstrconsts.rsmacosfiledialogpackageswitchtitle
+msgid "Show File Package Contents"
+msgstr ""
+
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
 msgstr "Format de fichier :"
+
+#: lclstrconsts.rsmacosfontdialogmbselect
+msgid "Select"
+msgstr ""
 
 #: lclstrconsts.rsmacosmenuabout
 #, object-pascal-format

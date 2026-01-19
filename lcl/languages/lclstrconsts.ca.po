@@ -807,6 +807,10 @@ msgstr ""
 msgid "List index exceeds bounds (%d)"
 msgstr "L'índex de la llista excedeix els límits (%d)"
 
+#: lclstrconsts.rsmacoscolordialogmbpick
+msgid "Pick"
+msgstr ""
+
 #: lclstrconsts.rsmacoseditmenu
 msgctxt "lclstrconsts.rsmacoseditmenu"
 msgid "Edit"
@@ -838,8 +842,20 @@ msgstr "Selecciona tot"
 msgid "Undo"
 msgstr "Desfà"
 
+#: lclstrconsts.rsmacosfiledialogpackageswitchtips
+msgid "Treat File Packages (such as *.app files) as Directories to access their internal files"
+msgstr ""
+
+#: lclstrconsts.rsmacosfiledialogpackageswitchtitle
+msgid "Show File Package Contents"
+msgstr ""
+
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
+msgstr ""
+
+#: lclstrconsts.rsmacosfontdialogmbselect
+msgid "Select"
 msgstr ""
 
 #: lclstrconsts.rsmacosmenuabout

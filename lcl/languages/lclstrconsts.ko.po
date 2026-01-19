@@ -785,6 +785,10 @@ msgstr "라임색"
 msgid "List index exceeds bounds (%d)"
 msgstr "목록 인덱스가 범위를 초과합니다 (%d)"
 
+#: lclstrconsts.rsmacoscolordialogmbpick
+msgid "Pick"
+msgstr ""
+
 #: lclstrconsts.rsmacoseditmenu
 msgctxt "lclstrconsts.rsmacoseditmenu"
 msgid "Edit"
@@ -816,9 +820,21 @@ msgstr "모두 선택"
 msgid "Undo"
 msgstr "실행 취소"
 
+#: lclstrconsts.rsmacosfiledialogpackageswitchtips
+msgid "Treat File Packages (such as *.app files) as Directories to access their internal files"
+msgstr ""
+
+#: lclstrconsts.rsmacosfiledialogpackageswitchtitle
+msgid "Show File Package Contents"
+msgstr ""
+
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
 msgstr "파일 형식:"
+
+#: lclstrconsts.rsmacosfontdialogmbselect
+msgid "Select"
+msgstr ""
 
 #: lclstrconsts.rsmacosmenuabout
 #, object-pascal-format
