@@ -111,11 +111,13 @@ begin
 end;
 
 procedure TCollectionPropertyEditorForm.actAddExecute(Sender: TObject);
+var
+  lItem: TCollectionItem;
 begin
   if Collection = nil then Exit;
-  Collection.Add;
-
-  FillCollectionListBox;
+  lItem := Collection.Add;
+  // notify about addition (this also call its own handler)
+  GlobalDesignHook.PersistentAdded(lItem, true);
   if CollectionListBox.Items.Count > 0 then
     CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
   SelectInObjectInspector(True);
