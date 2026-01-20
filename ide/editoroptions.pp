@@ -837,6 +837,60 @@ const
       )
     );
 
+  EditorOptionsFoldInfoSql: Array [0..24] of TEditorOptionsFoldInfo
+  = (
+      ( Name: dlgFoldSqlSelect;            Xml: 'Select';
+        Index: ord(cfbtSelect);            Enabled: True),
+      ( Name: dlgFoldSqlSubSelect;         Xml: 'SubSelect';
+        Index: ord(cfbtSubSelect);         Enabled: True),
+      ( Name: dlgFoldSqlUpdateSelect;      Xml: 'UpdateSelect';
+        Index: ord(cfbtUpdateSelect);      Enabled: True),
+      ( Name: dlgFoldSqlInsertSelect;      Xml: 'InsertSelect';
+        Index: ord(cfbtInsertSelect);      Enabled: True),
+      ( Name: dlgFoldSqlUpdate;                Xml: 'Update';
+        Index: ord(cfbtUpdate);            Enabled: True),
+      ( Name: dlgFoldSqlInsert;                   Xml: 'Insert';
+        Index: ord(cfbtInsert);            Enabled: True),
+      ( Name: dlgFoldSqlDelete;            Xml: 'Delete';
+        Index: ord(  cfbtDelete);          Enabled: True),
+      ( Name: dlgFoldSqlFrom;              Xml: 'From';
+        Index: ord(cfbtFrom);              Enabled: True),
+      ( Name: dlgFoldSqlJoin;              Xml: 'Join';
+        Index: ord(cfbtJoin);              Enabled: True),
+      ( Name: dlgFoldSqlJoinOn;            Xml: 'JoinOn';
+        Index: ord(cfbtJoinOn);            Enabled: True),
+      ( Name: dlgFoldSqlWhere;             Xml: 'Where';
+        Index: ord(cfbtWhere);             Enabled: True),
+      ( Name: dlgFoldSqlGroup;             Xml: 'Group';
+        Index: ord(cfbtGroup);             Enabled: True),
+      ( Name: dlgFoldSqlHaving;            Xml: 'Having';
+        Index: ord(cfbtHaving);            Enabled: True),
+      ( Name: dlgFoldSqlOrder;             Xml: 'Order';
+        Index: ord(cfbtOrder);             Enabled: True),
+      ( Name: dlgFoldSqlLimit;             Xml: 'Limit';
+        Index: ord(cfbtLimit);             Enabled: True),
+      ( Name: dlgFoldSqlInto;              Xml: 'Into';
+        Index: ord(cfbtInto);              Enabled: True),
+      ( Name: dlgFoldSqlValues;            Xml: 'Values';
+        Index: ord(cfbtValues);            Enabled: True),
+      ( Name: dlgFoldSqlSet;               Xml: 'Set';
+        Index: ord(cfbtSet);               Enabled: True),
+      ( Name: dlgFoldSqlCreateTable;       Xml: 'CreateTable';
+        Index: ord(cfbtCreateTable);       Enabled: True),
+      ( Name: dlgFoldSqlAlterTable;        Xml: 'AlterTable';
+        Index: ord(cfbtAlterTable);        Enabled: True),
+      ( Name: dlgFoldSqlDropTable;         Xml: 'DropTable';
+        Index: ord(cfbtDropTable);         Enabled: True),
+      ( Name: dlgFoldSqlCreateDb;          Xml: 'CreateDb';
+        Index: ord(cfbtCreateDb);          Enabled: True),
+      ( Name: dlgFoldSqlDropDb;            Xml: 'DropDb';
+        Index: ord(cfbtDropDb);            Enabled: True),
+      ( Name: dlgFoldSqlCreateProcedure;   Xml: 'CreateProcedure';
+        Index: ord(cfbtCreateProcedure);   Enabled: True),
+      ( Name: dlgFoldSqlBegin;             Xml: 'Begin';
+        Index: ord(cfbtBegin);             Enabled: True)
+    );
+
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
   EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of TEditorOptionsFoldRecord =
     ( (Count:  0; HasMarkup: False; Info: nil), // none
@@ -852,7 +906,7 @@ const
       (Count:  0; HasMarkup: False; Info: nil), // shell
       (Count:  0; HasMarkup: False; Info: nil), // python
       (Count:  0; HasMarkup: False; Info: nil), // php
-      (Count:  0; HasMarkup: False; Info: nil), // sql
+      (Count: 25; HasMarkup: True;  Info: @EditorOptionsFoldInfoSql[0]), // sql
       (Count:  0; HasMarkup: False; Info: nil), // css
       (Count:  0; HasMarkup: False; Info: nil), // jscript
       (Count:  3; HasMarkup: False; Info: @EditorOptionsFoldInfoDiff[0]), // Diff
@@ -3151,6 +3205,32 @@ begin
   EditorOptionsFoldInfoDiff[0].Name := lisFile;
   EditorOptionsFoldInfoDiff[1].Name := dlgFoldDiffChunk;
   EditorOptionsFoldInfoDiff[2].Name := dlgFoldDiffChunkSect;
+
+  EditorOptionsFoldInfoSql[0].Name := dlgFoldSqlSelect;
+  EditorOptionsFoldInfoSql[1].Name := dlgFoldSqlSubSelect;
+  EditorOptionsFoldInfoSql[2].Name := dlgFoldSqlUpdateSelect;
+  EditorOptionsFoldInfoSql[3].Name := dlgFoldSqlInsertSelect;
+  EditorOptionsFoldInfoSql[4].Name := dlgFoldSqlUpdate;
+  EditorOptionsFoldInfoSql[5].Name := dlgFoldSqlInsert;
+  EditorOptionsFoldInfoSql[6].Name := dlgFoldSqlDelete;
+  EditorOptionsFoldInfoSql[7].Name := dlgFoldSqlFrom;
+  EditorOptionsFoldInfoSql[8].Name := dlgFoldSqlJoin;
+  EditorOptionsFoldInfoSql[9].Name := dlgFoldSqlJoinOn;
+  EditorOptionsFoldInfoSql[10].Name := dlgFoldSqlWhere;
+  EditorOptionsFoldInfoSql[11].Name := dlgFoldSqlGroup;
+  EditorOptionsFoldInfoSql[12].Name := dlgFoldSqlHaving;
+  EditorOptionsFoldInfoSql[13].Name := dlgFoldSqlOrder;
+  EditorOptionsFoldInfoSql[14].Name := dlgFoldSqlLimit;
+  EditorOptionsFoldInfoSql[15].Name := dlgFoldSqlInto;
+  EditorOptionsFoldInfoSql[16].Name := dlgFoldSqlValues;
+  EditorOptionsFoldInfoSql[17].Name := dlgFoldSqlSet;
+  EditorOptionsFoldInfoSql[18].Name := dlgFoldSqlCreateTable;
+  EditorOptionsFoldInfoSql[19].Name := dlgFoldSqlAlterTable;
+  EditorOptionsFoldInfoSql[20].Name := dlgFoldSqlDropTable;
+  EditorOptionsFoldInfoSql[21].Name := dlgFoldSqlCreateDb;
+  EditorOptionsFoldInfoSql[22].Name := dlgFoldSqlDropDb;
+  EditorOptionsFoldInfoSql[23].Name := dlgFoldSqlCreateProcedure;
+  EditorOptionsFoldInfoSql[24].Name := dlgFoldSqlBegin;
 
   EditorOptionsDividerInfoPas[0].Name:=dlgDivPasUnitSectionName;
   EditorOptionsDividerInfoPas[1].Name:=dlgDivPasUsesName;

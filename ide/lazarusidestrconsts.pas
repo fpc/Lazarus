@@ -6196,6 +6196,31 @@ resourcestring
   lisWhenOpeningASymlinkFileOpenTheTargetFileTheSymlink = 'When opening a symlink file, open the '
     +'target file, the symlink file, or ask';
   lisWhenOpeningSymlink = 'When opening a Symlink';
+  dlgFoldSqlSelect = 'Select';
+  dlgFoldSqlSubSelect = 'Sub-Select';
+  dlgFoldSqlUpdateSelect = 'Update-Select';
+  dlgFoldSqlInsertSelect = 'Insert-Select';
+  dlgFoldSqlFrom = 'From';
+  dlgFoldSqlJoin = 'Join';
+  dlgFoldSqlJoinOn = 'Join-On';
+  dlgFoldSqlWhere = 'Where';
+  dlgFoldSqlGroup = 'Group';
+  dlgFoldSqlHaving = 'Having';
+  dlgFoldSqlOrder = 'Order';
+  dlgFoldSqlLimit = 'Limit';
+  dlgFoldSqlInto = 'Into';
+  dlgFoldSqlSet = 'Set';
+  dlgFoldSqlValues = 'Values';
+  dlgFoldSqlCreateTable = 'Create Table';
+  dlgFoldSqlAlterTable = 'Alter Table';
+  dlgFoldSqlDropTable = 'Drop Table';
+  dlgFoldSqlCreateDb = 'Create Db';
+  dlgFoldSqlDropDb = 'Drop Db';
+  dlgFoldSqlCreateProcedure = 'Create Procedure';
+  dlgFoldSqlBegin = 'Begin';
+  dlgFoldSqlUpdate = 'Update';
+  dlgFoldSqlInsert = 'Insert';
+  dlgFoldSqlDelete = 'Delete';
 
 implementation
 
