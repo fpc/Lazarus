@@ -531,9 +531,10 @@ begin
           IgnPos := -1;
         end;
       esWrong: begin
-          if IgnPos >= 0
-          then FErrorPos := IgnPos
-          else FErrorPos := FNextPartPos;
+          FErrorPos := FSearchPos;
+          //if IgnPos >= 0
+          //then FErrorPos := IgnPos
+          //else FErrorPos := FNextPartPos;
           ErrEndPos := FNextPartPos + FNextPartLen;
         end;
       esIgnored: begin
