@@ -66,7 +66,7 @@ implementation
 uses
   TAChartUtils, TADrawerCanvas;
 
-{$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
+{$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
 const
   FONT_DIR = '/usr/share/fonts/truetype/';
 {$ENDIF}
@@ -100,7 +100,7 @@ begin
   {$IFDEF LCLWin32}
   ChartLineSeries.Transparency := 128;
   {$ENDIF}
-  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
+  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
   ChartGUIConnectorAggPas.FontDir := FONT_DIR;
   {$ENDIF}
 
@@ -133,7 +133,7 @@ begin
   {$IFDEF USE_SYSTEM_COLORS}
   d.DoChartColorToFPColor := @ChartColorSysToFPColor;
   {$ENDIF}
-  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
+  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
   (d as TAggPasDrawer).FontDir := FONT_DIR;
   {$ENDIF}
   Chart.Draw(d, ChartPaintBox.Canvas.ClipRect);
@@ -144,7 +144,7 @@ begin
   // others it is red-green-blue. In principle, AggPas can handle this, but
   // since it is not maintained ATM, I chose the "easy way" to swap the red
   // and blue bytes.
-  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
+  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
   SwapRedBlue(FAggCanvas.Image.IntfImg);
   {$ENDIF}
   FBmp.LoadFromIntfImage(FAggCanvas.Image.IntfImg);

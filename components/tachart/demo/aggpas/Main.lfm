@@ -6,9 +6,9 @@ object MainForm: TMainForm
   Caption = 'MainForm'
   ClientHeight = 370
   ClientWidth = 785
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.3.0.0'
   object ChartPaintBox: TPaintBox
     AnchorSideLeft.Control = Bevel1
     AnchorSideLeft.Side = asrBottom
@@ -45,8 +45,8 @@ object MainForm: TMainForm
       Top = 0
       Width = 193
       Caption = 'Use AggPas for standard drawing'
-      OnClick = cbAggPasClick
       TabOrder = 0
+      OnClick = cbAggPasClick
     end
   end
   object Chart: TChart

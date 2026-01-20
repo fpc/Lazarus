@@ -6,13 +6,13 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 369
   ClientWidth = 629
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 369
     Top = 0
-    Width = 507
+    Width = 504
     AxisList = <    
       item
         Marks.LabelBrush.Style = bsClear
@@ -42,20 +42,21 @@ object Form1: TForm1
     end
   end
   object Panel1: TPanel
-    Left = 507
+    Left = 504
     Height = 369
     Top = 0
-    Width = 122
+    Width = 125
     Align = alRight
+    AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 369
-    ClientWidth = 122
+    ClientWidth = 125
     TabOrder = 1
     object rgMethod: TRadioGroup
       Left = 6
       Height = 89
       Top = 6
-      Width = 110
+      Width = 113
       Align = alTop
       AutoFill = True
       AutoSize = True
@@ -70,15 +71,15 @@ object Form1: TForm1
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
       ClientHeight = 69
-      ClientWidth = 106
+      ClientWidth = 109
       ItemIndex = 0
       Items.Strings = (
         'Grow'
         'Add'
         'Add then grow'
       )
-      OnClick = rgMethodClick
       TabOrder = 0
+      OnClick = rgMethodClick
     end
     object btnStartStop: TButton
       AnchorSideLeft.Control = seTime
@@ -91,14 +92,19 @@ object Form1: TForm1
       AutoSize = True
       BorderSpacing.Top = 8
       Caption = 'Start / stop'
-      OnClick = btnStartStopClick
       TabOrder = 1
+      OnClick = btnStartStopClick
     end
     object lblSkipped: TLabel
-      Left = 9
+      AnchorSideLeft.Control = Panel1
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
       Height = 1
-      Top = 340
+      Top = 362
       Width = 1
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Around = 6
     end
     object seTime: TSpinEdit
       AnchorSideLeft.Control = rgMethod
@@ -115,9 +121,9 @@ object Form1: TForm1
       Increment = 100
       MaxValue = 10000
       MinValue = 100
-      OnChange = seTimeChange
       TabOrder = 2
       Value = 1000
+      OnChange = seTimeChange
     end
   end
   object ListChartSource1: TListChartSource

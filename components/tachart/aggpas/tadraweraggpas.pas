@@ -385,7 +385,7 @@ begin
     fontName := 'LiberationSans-Regular'
   else
     fontName := AFont.Name;
-  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
+  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
   fontName := FFontDir + fontName + '.ttf';
   {$ENDIF}
   fontSize := IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
