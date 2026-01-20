@@ -1170,7 +1170,7 @@ begin
     end;
 
     // try with the last upper attributed to the lower
-    if (LeadEnd-UpStart > 1) and
+    if (UpEnd < LowEnd) and
        FLeadConstr.HasLen(UpStart, LeadEnd) and FMixedConstr.HasLen(LeadEnd, LowEnd)
     then begin
       if FLeadConstr.CanIgnore(UpStart, LeadEnd, LowEnd) and (not NoIgnoreAllowed) then begin
