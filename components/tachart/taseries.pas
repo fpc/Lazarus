@@ -1566,7 +1566,7 @@ begin
     ADrawer.Ellipse(ARect.Right, ARect.Top, ARect.Right + ADepth, ARect.Bottom);
   end else begin
     ADrawer.Ellipse(ARect.Left, ARect.Bottom, ARect.Right, ARect.Bottom - ADepth);
-    ADrawer.FillRect(ARect.Left, ARect.Bottom - depth2, ARect.Right, ARect.Top - depth2);
+    ADrawer.FillRect(ARect.Left, ARect.Top - depth2, ARect.Right, ARect.Bottom - depth2);
     ADrawer.Line(ARect.Left, ARect.Bottom - depth2, ARect.Left, ARect.Top - depth2);
     ADrawer.Line(ARect.Right, ARect.Bottom - depth2, ARect.Right, ARect.Top - depth2);
     ADrawer.BrushColor := GetDepthColor(ADrawer.BrushColor, true);
