@@ -2730,15 +2730,17 @@ begin
       Result := tkIdentifier;
   end
   else if KeyCompU('RECORD') then begin
-    StartPascalCodeFoldBlock(cfbtRecord);
-    //FNextTokenState := tsAtBeginOfStatement;
-    //if HasRangeCompilerModeswitch(pcsTypeHelpers) {and adv_record} then
-    FNextTokenState := tsAfterClass;
-    fRange := fRange - [rsInTypeSpecification, rsAfterEqual, rsProperty, rsInPropertyNameOrIndex,
-                        rsInProcHeader, rsInProcName, rsInParamDeclaration];
-    if HasRangeCompilerModeswitch(pcsTypeHelpers) {and adv_record} then
-      fRange := fRange + [rsInClassHeader]; // highlight helper
-      FOldRange := FOldRange - [rsInClassHeader];
+    if not(rsInGenericConstraint in fRange) then begin
+      StartPascalCodeFoldBlock(cfbtRecord);
+      //FNextTokenState := tsAtBeginOfStatement;
+      //if HasRangeCompilerModeswitch(pcsTypeHelpers) {and adv_record} then
+      FNextTokenState := tsAfterClass;
+      fRange := fRange - [rsInTypeSpecification, rsAfterEqual, rsProperty, rsInPropertyNameOrIndex,
+                          rsInProcHeader, rsInProcName, rsInParamDeclaration];
+      if HasRangeCompilerModeswitch(pcsTypeHelpers) {and adv_record} then
+        fRange := fRange + [rsInClassHeader]; // highlight helper
+        FOldRange := FOldRange - [rsInClassHeader];
+    end;
     Result := tkKey;
   end
   else if KeyCompU('ARRAY') then Result := tkKey
