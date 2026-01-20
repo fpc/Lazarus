@@ -572,7 +572,7 @@ const
   OCTCHARS = ['0' .. '7'];
   HEXINDICATOR = ['x', 'X'];
   OCTINDICATOR = ['o', 'O'];
-  LONGINDICATOR = ['l', 'L'];
+  //LONGINDICATOR = ['l', 'L'];
   IMAGINARYINDICATOR = ['j', 'J'];
   EXPONENTINDICATOR = ['e', 'E'];
   EXPONENTSIGN = ['+', '-'];
@@ -761,10 +761,10 @@ var
     // 0x123ABC
     if temp in HEXCHARS then begin
       Result := True;
-    // 0x123ABCL
-    end else if temp in LONGINDICATOR then begin
-      Inc (Run);
-      Result := False;
+    //// 0x123ABCL
+    //end else if temp in LONGINDICATOR then begin
+    //  Inc (Run);
+    //  Result := False;
     // 0x123.45: Error!
     end else if temp = DOT then begin
       Result := False;
@@ -784,10 +784,10 @@ var
     // 012345
     if temp in OCTCHARS then begin
       Result := True;
-    // 012345L
-    end else if temp in LONGINDICATOR then begin
-      Inc (Run);
-      Result := False;
+    //// 012345L
+    //end else if temp in LONGINDICATOR then begin
+    //  Inc (Run);
+    //  Result := False;
     // 0123e4
     end else if temp in EXPONENTINDICATOR then begin
       Result := HandleExponent;
