@@ -571,6 +571,7 @@ const
   HEXCHARS = ['a' .. 'f', 'A' .. 'F'] + INTCHARS;
   OCTCHARS = ['0' .. '7'];
   HEXINDICATOR = ['x', 'X'];
+  OCTINDICATOR = ['o', 'O'];
   LONGINDICATOR = ['l', 'L'];
   IMAGINARYINDICATOR = ['j', 'J'];
   EXPONENTINDICATOR = ['e', 'E'];
@@ -623,22 +624,23 @@ var
           Inc (Run);
           fTokenID := tkHex;
           State := nsHex;
+        // 0o17
+        end else if temp in OCTINDICATOR then begin
+          Inc (Run);
+          fTokenID := tkOct;
+          State := nsOct;
         // 0.45
         end else if temp = DOT then begin
           Inc (Run);
           State := nsDotFound;
           fTokenID := tkFloat;
         end else if temp in INTCHARS then begin
+          (* Before 3.0 (2008) this may have been octal
+             Now it is float (must have decimal dot, otherwise it is invalid)
+           *)
           Inc (Run);
-          // 0123 or 0123.45
-          if temp in OCTCHARS then begin
-            fTokenID := tkOct;
-            State := nsOct;
-          // 0899.45
-          end else begin
-            fTokenID := tkFloat;
-            State := nsFloatNeeded;
-          end; // if
+          fTokenID := tkFloat;
+          State := nsFloatNeeded;
         end; // if
       end; // ZERO
     end; // case
@@ -780,11 +782,7 @@ var
   function CheckOct: Boolean;
   begin
     // 012345
-    if temp in INTCHARS then begin
-      if not (temp in OCTCHARS) then begin
-        State := nsFloatNeeded;
-        fTokenID := tkFloat;
-      end; // if
+    if temp in OCTCHARS then begin
       Result := True;
     // 012345L
     end else if temp in LONGINDICATOR then begin
