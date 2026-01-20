@@ -1770,8 +1770,12 @@ begin
   if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count - 1) then
     exit(0);
   r := CurrentRanges[ALineIndex];
-  if (r <> nil) and (r <> NullRange) then
-    Result := TSynCustomHighlighterRange(r).CodeFoldStackSize
+  if (r <> nil) and (r <> NullRange) then begin
+    if sfbIncludeDisabled in AFilter.Flags then
+      Result := TSynCustomHighlighterRange(r).NestFoldStackSize
+    else
+      Result := TSynCustomHighlighterRange(r).CodeFoldStackSize;
+  end
   else
     Result:=0;
 end;
@@ -1785,8 +1789,12 @@ begin
   if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count - 1) then
     exit(0);
   r := CurrentRanges[ALineIndex];
-  if (r <> nil) and (r <> NullRange) then
-    Result := TSynCustomHighlighterRange(r).MinimumCodeFoldBlockLevel
+  if (r <> nil) and (r <> NullRange) then begin
+    if sfbIncludeDisabled in AFilter.Flags then
+      Result := TSynCustomHighlighterRange(r).MinimumNestFoldBlockLevel
+    else
+      Result := TSynCustomHighlighterRange(r).MinimumCodeFoldBlockLevel
+  end
   else
     Result:=0;
 end;
