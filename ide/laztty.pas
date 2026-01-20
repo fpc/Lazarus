@@ -32,42 +32,43 @@ function IsATTY(var t : text) : Boolean;
 
 const
 (* This allows compile-time removal of the colouring functionality under not supported platforms *)
-{$if defined(linux) or defined(MSWINDOWS) or defined(OS2) or defined(GO32V2) or defined(WATCOM) or defined(DARWIN)}
+{$if defined(linux) or defined(MSWINDOWS) or defined(OS2) or defined(GO32V2)
+  or defined(WATCOM) or defined(DARWIN) or defined(FREEBSD)}
   TTYCheckSupported = true;
-{$else defined(linux) or defined(MSWINDOWS) or defined(OS2) or defined(GO32V2) or defined(WATCOM) or defined(DARWIN)}
+{$else}
   TTYCheckSupported = false;
-{$endif defined(linux) or defined(MSWINDOWS) or defined(OS2) or defined(GO32V2) or defined(WATCOM) or defined(DARWIN)}
+{$endif}
 
 
 implementation
 
-{$if defined(linux) or defined(darwin)}
+{$if defined(linux) or defined(darwin) or defined(FREEBSD)}
   uses
    termio;
-{$endif defined(linux) or defined(darwin)}
+{$endif}
 {$ifdef mswindows}
   uses
    windows;
-{$endif mswindows}
+{$endif}
 {$ifdef os2}
   uses
    doscalls;
-{$endif os2}
+{$endif}
 {$if defined(GO32V2) or defined(WATCOM)}
   uses
    dos;
-{$endif defined(GO32V2) or defined(WATCOM)}
+{$endif}
 
 const
   CachedIsATTY : Boolean = false;
   IsATTYValue : Boolean = false;
 
-{$if defined(linux) or defined(darwin)}
+{$if defined(linux) or defined(darwin) or defined(FREEBSD)}
 function LinuxIsATTY(var t : text) : Boolean; inline;
 begin
   LinuxIsATTY:=termio.IsATTY(t)=1;
 end;
-{$endif defined(linux) or defined(darwin)}
+{$endif}
 
 {$ifdef MSWINDOWS}
 const
@@ -154,18 +155,18 @@ begin
   if not(CachedIsATTY) then
     begin
 (* If none of the supported values is defined, false is returned by default. *)
-{$if defined(linux) or defined(darwin)}
+{$if defined(linux) or defined(darwin) or defined(FREEBSD)}
       IsATTYValue:=LinuxIsATTY(t);
-{$endif defined(linux) or defined(darwin)}
+{$endif}
 {$ifdef MSWINDOWS}
       IsATTYValue:=WindowsIsATTY(t);
-{$endif MSWINDOWS}
+{$endif}
 {$ifdef OS2}
       IsATTYValue:=OS2IsATTY(t);
-{$endif OS2}
+{$endif}
 {$if defined(GO32V2) or defined(WATCOM)}
       IsATTYValue:=DosIsATTY(t);
-{$endif defined(GO32V2) or defined(WATCOM)}
+{$endif}
       CachedIsATTY:=true;
     end;
   Result:=IsATTYValue;
