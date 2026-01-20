@@ -413,7 +413,7 @@ begin
   if cbIgnoreLowArticleCase.Checked
   then co.Options := co.Options + [coIgnoreLowerArticleMustMatchCase]
   else co.Options := co.Options - [coIgnoreLowerArticleMustMatchCase];
-  edIgnorePrefix.Text;
+  co.IgnoreLettersAtStart := edIgnorePrefix.Text;
   if cbIgnoreUpPrefixCase.Checked
   then co.Options := co.Options + [coIgnoredUpperStartMustMatchCase]
   else co.Options := co.Options - [coIgnoredUpperStartMustMatchCase];
