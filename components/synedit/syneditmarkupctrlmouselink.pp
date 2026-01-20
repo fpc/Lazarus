@@ -509,6 +509,7 @@ var
   i: Integer;
 begin
   if (FCount = 0) or (FCache[0].State = AState) then begin
+    FCache[0].State     := AState;
     FCache[0].ShowLink  := AShouldShow;
     FCache[0].ClickLink := ACanClick;
     if (FCount = 0) then FCount := 1;
