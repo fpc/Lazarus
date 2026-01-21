@@ -1355,7 +1355,7 @@ resourcestring
   dlgFpcExecutable = 'Compiler executable (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
   dlgMakeExecutable = '"Make" executable';
-  dlgCompilerMessages = 'Compiler messages language file (*.msg)';
+  dlgCompilerMessages = 'Compiler messages language file for the Messages window (*.msg)';
   dlgFppkgConfigurationFile = 'Fppkg configuration file (e.g. fppkg.cfg)';
   lisSetThisToTranslateTheCompilerMessagesToAnotherLang = 'Set this to '
     +'translate the compiler messages to another language (i.e. not English). '
