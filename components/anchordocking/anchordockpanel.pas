@@ -26,6 +26,8 @@ procedure Register;
 
 implementation
 
+{$R anchordockpanel_icon.res}
+
 uses AnchorDocking;
 
 procedure TAnchorDockPanel.DragOver(Source: TObject; X, Y: Integer; State: TDragState;
@@ -64,7 +66,6 @@ end;
 
 procedure Register;
 begin
-  {$I anchordockpanel_icon.lrs}
   RegisterComponents('Additional',[TAnchorDockPanel]);
 end;
 
