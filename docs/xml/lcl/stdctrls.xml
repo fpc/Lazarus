@@ -4612,8 +4612,99 @@ enumeration. <var>TListBoxOptions</var> is the type used for the
 </seealso>
 </element>
 
+<element name="TLBGetDataEvent">
+<short>
+Specifies an object procedure type used to get the data for an item on a list 
+box control in "virtual mode".
+</short>
+<descr>
+<p>
+<var>TLBGetDataEvent</var> is the type used to implement the <var>OnData</var> 
+event handler in <var>TCustomListBox</var> / <var>TListBox</var>. Not used in 
+the current LCL version.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TCustomListBox.OnData"/>
+<link id="TCustomListBox.Style"/>
+<link id="TListBoxStyle"/>
+<link id="TListBox"/>
+</seealso>
+</element>
+<element name="TLBGetDataEvent.AControl">
+<short>
+Control for the event notification. Must be cast to TCustomListBox to access 
+members specific to the control.
+</short>
+</element>
+<element name="TLBGetDataEvent.Index">
+<short>
+Ordinal position for the virtual list item.
+</short>
+</element>
+<element name="TLBGetDataEvent.Data">
+<short>
+Content displayed for the virtual list item.
+</short>
+</element>
+
+<!-- TODO: Added in 6f438f77fb490e537907f5619d54e702f283674a. Needs content. -->
+<element name="TLBGetDataObjectEvent">
+<short>
+Specifies an object procedure type...	
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLBGetDataObjectEvent.AControl">
+<short>
+Control for the event notification. Must be cast to TCustomListBox to access 
+members specific to the control.
+</short>
+</element>
+<element name="TLBGetDataObjectEvent.Index">
+<short>
+Ordinal position for the virtual list item in its container.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLBGetDataObjectEvent.DataObject">
+<short/>
+</element>
+
+<!-- TODO: Added in 6f438f77fb490e537907f5619d54e702f283674a. Needs content. -->
+<element name="TLBFindDataEvent">
+<short>
+Specifies an object function type...	
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TLBFindDataEvent.Result">
+<short>
+Returns the ordinal position for a virtual list item with the specified value.
+</short>
+</element>
+<element name="TLBFindDataEvent.AControl">
+<short>
+Control for the event notification. Must be cast to TCustomListBox to access 
+members specific to the control.
+</short>
+</element>
+<element name="TLBFindDataEvent.FindString">
+<short>
+Value to locate in the virtual list items.
+</short>
+</element>
+
 <element name="TCustomListBox">
-<short>The base class for <var>TListBox</var>.</short>
+<short>
+The base class for <var>TListBox</var>.
+</short>
 <descr>
 <p>
 <var>TCustomListBox</var> is a <var>TWinControl</var> descendant which 
@@ -4623,11 +4714,28 @@ scrollable list which allows selection of one or more of the item values.
 <p>
 TCustomListBox provides methods, properties, and events used to display, 
 order, and select item values. The Items for the control can be assigned at 
-design-time in the Lazarus IDE, or stored at run-time. Owner-drawn styles are 
-available to render icons or bitmaps along with the text for the items, or 
-using a variable height for list items. A Canvas property is provided for 
-owner-drawn usage. Items in the list box can be display in one or more 
-columns.
+design-time in the Lazarus IDE, or stored at run-time.
+</p>
+<p>
+At design time, a click on the ellipsis character (<b>...</b>) next to the 
+<var>Items</var> entry in the Object Inspector opens a string-list editor in 
+which the individual text-strings for the list items can be entered or 
+edited. The editor also allows the entries to be sorted alphabetically in 
+normal or reverse order.
+</p>
+<p>
+Owner-drawn styles are available to render icons or bitmaps along with the text 
+for the items, or using a variable height for list items. A Canvas property is 
+provided for owner-drawn usage. Items in the list box can be displayed in one 
+or more columns.
+</p>
+<p>
+Use the <var>Styles</var> property to enable owner-drawn styles (with either 
+fixed or variable height list items) or the "virtual mode" where the items 
+displayed on the control are provided by event handlers. Use the 
+<var>OnMeasureItem</var> and <var>OnDrawItem</var> event handlers to measure 
+and render the owner-drawn list items. Use the <var>Canvas</var> property when 
+needed to implement an owner-drawn style.
 </p>
 <p>
 Do not create instances of TCustomListBox; use the <var>TListBox</var> 
@@ -4637,6 +4745,7 @@ descendant.
 <seealso>
 <link id="TListBox"/>
 <link id="#lcl.controls.TWinControl">TWinControl</link>
+<link id="HowToUseStdCtrls"/>
 </seealso>
 </element>
 
@@ -4656,6 +4765,12 @@ descendant.
 <element name="TCustomListBox.FOnDrawItem" link="#lcl.stdctrls.TCustomListBox.OnDrawItem"/>
 <element name="TCustomListBox.FOnMeasureItem" link="#lcl.stdctrls.TCustomListBox.OnMeasureItem"/>
 <element name="TCustomListBox.FOnSelectionChange" link="#lcl.stdctrls.TCustomListBox.OnSelectionChange"/>
+
+<element name="TCustomListBox.FOnData"/>
+<element name="TCustomListBox.FOnDataObject"/>
+<element name="TCustomListBox.FOnDataFind"/>
+<element name="TCustomListBox.FOptions"/>
+
 <element name="TCustomListBox.FScrollWidth" link="#lcl.stdctrls.TCustomListBox.ScrollWidth"/>
 <element name="TCustomListBox.FSorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
 <element name="TCustomListBox.FStyle" link="#lcl.stdctrls.TCustomListBox.Style"/>
@@ -4691,6 +4806,21 @@ the list box control.
 <element name="TCustomListBox.SetColumns" link="#lcl.stdctrls.TCustomListBox.Columns"/>
 <element name="TCustomListBox.SetColumns.AValue">
 <short>New value for the Columns property.</short>
+</element>
+
+<element name="TCustomListBox.SetCount">
+<short>
+Sets the value for the Count property.
+</short>
+<descr/>
+<seealso>
+<link id="TCustomListBox.Count"/>
+</seealso>
+</element>
+<element name="TCustomListBox.SetCount.AValue">
+<short>
+New value for the Count property.
+</short>
 </element>
 
 <element name="TCustomListBox.SetScrollWidth" link="#lcl.stdctrls.TCustomListBox.ScrollWidth"/>
@@ -6016,17 +6146,71 @@ The Columns property is not supported for the macOS Carbon, Cocoa, GTK2, QT4, QT
 <element name="TCustomListBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
 
 <element name="TCustomListBox.Count">
-<short>The number of items defined in the scrollable list box.</short>
+<short>
+The number of list items defined for the scrollable list box.
+</short>
 <descr>
 <p>
-<var>Count</var> is a read-only <var>Integer</var> property which indicates 
-the number of <var>Items</var> defined in the control. Count is provided for 
-Delphi compatibility, and redirects access to the Count property in Items.
+<var>Count</var> is an <var>Integer</var> property which indicates the number 
+of <var>Items</var> defined for the list box control. Count is provided for 
+Delphi compatibility, and redirects read access to the Count property in Items.
+</p>
+<p>
+In previous LCL versions, Count was a read-only property. Starting with LCL 
+version 5.0, it is writable and allows the number of items on the control to be 
+specified when the control is used in "virtual mode" (Style = lbVirtual). 
+Setting a new value for the property when Style has a value other than 
+lbVirtual causes an exception to be raised.
+</p>
+</descr>
+<errors>
+<p>
+Raises an exception when a new value is assigned to the property if Style is 
+not set to lbVirtual.
+</p>
+</errors>
+<seealso>
+<link id="TCustomListBox.Items"/>
+<link id="TCustomListBox.Style"/>
+</seealso>
+</element>
+
+<element name="TCustomListBox.OnData">
+<short>
+Event handler signalled to provide the data for a "virtual" item on the list 
+box control.
+</short>
+<descr>
+<p>
+Not used in the current LCL version.
 </p>
 </descr>
 <seealso>
+<link id="TCustomListBox.Style"/>
+<link id="TCustomListBox.Count"/>
 <link id="TCustomListBox.Items"/>
+<link id="TLBGetDataEvent"/>
 </seealso>
+</element>
+
+<!-- TODO: Needs content. Needs an implementation. -->
+<element name="TCustomListBox.OnDataObject">
+<short>
+Event handler signalled to get the TObject instance with the data for a 
+"virtual" item on the list box control. Not used in the current LCL version.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. Needs an implementation. -->
+<element name="TCustomListBox.OnDataFind">
+<short>
+Event handler signalled to get the ordinal position for a virtual list item 
+with the specified string value. Not used in the current LCL version.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <element name="TCustomListBox.ExtendedSelect">
@@ -6101,28 +6285,42 @@ MultiSelect is enabled.
 </element>
 
 <element name="TCustomListBox.Items">
-<short>The list of all items defined in the control.</short>
+<short>
+The list of items defined for the control.
+</short>
 <descr>
 <p>
 <var>Items</var> is a <var>TStrings</var> property which contains the string 
-values (and associated objects) displayed in the list box control. Reading 
-allows access to the contents of the list (TStrings compatible). Assign 
-another string list to the property to replace the Items in the control. 
-Internally, Items is cast to a <var>TExtendedStringList</var> type to access 
-the item attribute data for the entries.
+values (and associated objects) displayed on the list box control. Read 
+access to the contents of the list is TStrings compatible. Assign another 
+string list to the property to replace the Items in the control. Internally, 
+Items uses a <var>TExtendedStringList</var> type to access and maintain the 
+cached list items.
 </p>
 <p>
 Use <var>ItemIndex</var> to access the selected item in the list box control. 
+Use <var>Count</var> to access the number of entries in the Items property.
 Use the <var>Selected</var> property to select or de-select values in Items 
 when <var>MultiSelect</var> is enabled. Use <var>SelectRange</var> to select 
 a range of Items in the control.
 </p>
+<remark>
+Items is not used when the control is placed in "virtual mode" (Style = 
+lbVirtual). In virtual mode, the content for a list item is determined using 
+the <var>OnData</var>, <var>OnDataObject</var>, or <var>OnDataFind</var> event 
+handlers.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomListBox.ItemIndex"/>
+<link id="TCustomListBox.Count"/>
 <link id="TCustomListBox.Selected"/>
 <link id="TCustomListBox.MultiSelect"/>
 <link id="TCustomListBox.SelectRange"/>
+<link id="TCustomListBox.Style"/>
+<link id="TCustomListBox.OnData"/>
+<link id="TCustomListBox.OnDataObject"/>
+<link id="TCustomListBox.OnDataFind"/>
 <link id="#rtl.classes.TStrings">TStrings</link>
 </seealso>
 </element>
@@ -6458,23 +6656,43 @@ the change in order, or to update the <var>Sorted</var> property in
 
 <element name="TCustomListBox.Style">
 <short>
-Appearance of the list box (standard, owner-draw fixed, or owner-draw 
-variable).
+Controls the appearance of items on the list box control and indicates whether 
+the control uses "virtual mode".
 </short>
 <descr>
 <p>
 <var>Style</var> is a <var>TListBoxStyle</var> property which controls the 
-appearance of the <var>Items</var> drawn in the list box control. The default 
-value for the property is <var>lbStandard</var>, and causes the appearance 
-and text height native to the widgetset to be used. When another value from 
-TListBoxStyle is used, Items are drawn using the routine assigned to the 
-<var>OnDrawItem</var> event handler.
+content and appearance of the items drawn on the list box control. The property 
+value (along with others) is used to set parameter flags when the control is 
+created. The default value for the property is <var>lbStandard</var>, and 
+causes the appearance and text height native to the widgetset to be used to 
+draw the <var> Items</var> defined for the control.
+</p>
+<p>
+<var>lbOwnerDrawFixed</var> and <var>lbOwnerDrawVariable</var> cause the 
+control to use either the <var>OnDrawItem</var>  event handler or an internal 
+drawing routine to render the Items on the list box control. lbOwnerDrawFixed 
+indicates that all items have the fixed height specified in ItemHeight. 
+lbOwnerDrawVariable indicates that any given item has the height determined by 
+the OnMeasureItem event handler.
+</p>
+<p>
+<var>lbVirtual</var> indicates the the control is in "virtual mode" where the 
+items displayed on the control are provided by the OnData, OnDataEvent, or 
+OnDataFind event handlers. Items is <b>not</b> used to store the strings 
+displayed on the control. The value in Style is used when a new value is 
+assigned to the Count property. An exception is raised if the control is not in 
+"virtual mode" (Style = lbVirtual).
 </p>
 </descr>
 <seealso>
-<link id="TCustomListBox.Items"/>
+<link id="TCustomListBox.Count"/>
 <link id="TCustomListBox.ItemHeight"/>
+<link id="TCustomListBox.Items"/>
+<link id="TCustomListBox.DrawItem"/>
+<link id="TCustomListBox.MeasureItem"/>
 <link id="TCustomListBox.OnDrawItem"/>
+<link id="TCustomListBox.OnMeasureItem"/>
 <link id="TListBoxStyle"/>
 </seealso>
 </element>
@@ -6546,10 +6764,15 @@ focus rectangle for the selected item in the list box.
 <element name="TCustomListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TListBox">
-<short>Control which displays a scrollable list of strings.</short>
+<short>
+Control which displays a scrollable list of values.
+</short>
 <descr>
 <p>
-The strings are stored in the <var>Items</var> list.
+<var>TListBox</var> is a <var>TCustomListBox</var> descendant which implements 
+a scrollable list of values. The value are normally stored as strings in the 
+<var>Items</var> property. It allows selection of one or more of the item 
+values.
 </p>
 <p>
 At design time, a click on the ellipsis character (<b>...</b>) next to the 
@@ -6558,9 +6781,17 @@ which the individual text-strings for the list items can be entered or
 edited. The editor also allows the entries to be sorted alphabetically in 
 normal or reverse order.
 </p>
+<p>
+Use the <var>Styles</var> property to enable owner-drawn styles (with either 
+fixed or variable height list items) or the "virtual mode" where the items 
+displayed on the control are provided by event handlers. Use the 
+<var>OnMeasureItem</var> and <var>OnDrawItem</var> event handlers to measure 
+and render the owner-drawn list items. Use the <var>Canvas</var> property when 
+needed to implement an owner-drawn style.
+</p>
 </descr>
 <seealso>
-<link id="TComboBox"/>
+<link id="TCustomListBox"/>
 <link id="HowToUseStdCtrls"/>
 </seealso>
 </element>
@@ -6632,6 +6863,11 @@ density.
 <element name="TListBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TListBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+
+<element name="TListBox.OnData" link="#lcl.stdctrls.TCustomListBox.OnData"/>
+<element name="TListBox.OnData" link="#lcl.stdctrls.TCustomListBox.OnDataObject"/>
+<element name="TListBox.OnData" link="#lcl.stdctrls.TCustomListBox.OnDataFind"/>
+
 <element name="TListBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
 <element name="TListBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TListBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
