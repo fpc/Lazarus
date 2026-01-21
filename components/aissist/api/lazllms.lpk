@@ -3,6 +3,7 @@
   <Package Version="5">
     <Name Value="lazllms"/>
     <Type Value="RunAndDesignTime"/>
+    <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -10,6 +11,9 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
+    <Description Value="Lazarus APIs for requesting models and completions from a LLM"/>
+    <License Value="The usual Lazarus LGPL with linking exception"/>
+    <Version Major="1"/>
     <Files>
       <Item>
         <Filename Value="Claude/claude.Dto.pas"/>
