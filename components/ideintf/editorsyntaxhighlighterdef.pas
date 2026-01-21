@@ -6,7 +6,7 @@ unit EditorSyntaxHighlighterDef;
 interface
 
 uses
-  Classes, SysUtils, LazMethodList;
+  Classes, SysUtils, LazMethodList, Graphics;
 
 type
   TLazSyntaxHighlighter =
@@ -88,6 +88,9 @@ type
 
   IColorSchemeAttribute = interface ['{2572547D-217A-4A83-A910-0D808ECF3317}']
     procedure ApplyTo(aDest: TObject);
+    function GetMarkupAllOverviewColor: TColor;
+
+    property MarkupAllOverviewColor: TColor read GetMarkupAllOverviewColor; // hafMarkupAllOverview
   end;
 
   IColorSchemeLanguage = interface ['{40A0F5E1-ADD5-4E0E-BD14-583E244C4ACC}']

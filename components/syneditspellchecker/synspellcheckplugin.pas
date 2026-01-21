@@ -26,9 +26,9 @@ uses
   // LCL
   Classes, SysUtils, Graphics, Menus,
   // LazEdit
-  LazEditMiscProcs, LazEditHighlighter, LazEditTypes,
+  LazEditMiscProcs, LazEditHighlighter, LazEditTypes, LazEditASyncRunner,
   // SynEdit
-  SynEdit, SynEditMarkupHighAll, SynEditMiscClasses, SynEditMouseCmds,
+  SynEdit, SynEditMarkupHighAll, SynEditMiscClasses, SynEditMouseCmds, SynGutterLineOverview,
   // SynSpell
   SynSpellDictionary, SynSpellCheckWordBreaker, LazLoggerBase;
 
@@ -51,9 +51,11 @@ type
     FWordChecker: TSynSpellWordChecker;
   private
     procedure DoConfChanged(Sender: TObject);
+    procedure SetOverViewColor(AValue: TColor);
     procedure SetWordBreaker(AValue: TSynSpellWordBreaker);
     procedure SetWordChecker(AValue: TSynSpellWordChecker);
   protected
+    function GetASyncPriority(AnSearchInVisibleLines: boolean): TTLazEditTaskPriorities; override;
     procedure FindInitialize; override;
     function FindMatches(AStartPoint, AnEndPoint: TPoint; var AnIndex: Integer;
       AStopAfterLine: Integer = - 1; ABackward: Boolean = False): TPoint; override;
@@ -62,6 +64,7 @@ type
   public
     function HasMatchAt(p : TPoint): Boolean;
 
+    property OverViewColor: TColor write SetOverViewColor;
     property WordBreaker: TSynSpellWordBreaker read FWordBreaker write SetWordBreaker;
     property WordChecker: TSynSpellWordChecker read FWordChecker write SetWordChecker;
   end;
@@ -79,10 +82,12 @@ type
     FWordBreaker: TSynSpellWordBreaker;
     FWordChecker: TSynSpellWordChecker;
   private
+    FOverViewColor: TColor;
     procedure DoMarkupChanged(Sender: TObject);
     function GetSynSpellDict: TSynSpellDictionary;
     procedure MenuAddWordClicked(Sender: TObject);
     procedure MenuSuggestionClicked(Sender: TObject);
+    procedure SetOverViewColor(AValue: TColor);
   protected
     procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
     procedure DoEditorAdded(AValue: TCustomSynEdit); override;
@@ -98,6 +103,7 @@ type
                     ADictionary: TSynSpellDictionary);
 
     property MarkupInfo : TLazEditHighlighterAttributesModifier read FMarkupInfo;
+    property OverViewColor: TColor read FOverViewColor write SetOverViewColor;
     property MouseActions: TSynPluginSpellCheckMouseActions read FMouseActions;
     property SynSpellDict: TSynSpellDictionary read GetSynSpellDict;
     property WordBreaker: TSynSpellWordBreaker read FWordBreaker;
@@ -193,6 +199,28 @@ begin
   Invalidate;
 end;
 
+procedure TSynMarkupSpellCheck.SetOverViewColor(AValue: TColor);
+var
+  OG: TSynGutterLineOverview;
+begin
+  if AValue <> clNone then begin
+    OG := TSynEdit(SynEdit).RightGutter.LineOverviewPart;
+    if OG = nil then
+      OG := TSynEdit(SynEdit).Gutter.LineOverviewPart;
+    if OG <> nil then begin
+      if OverViewGutterPart = nil then
+        CreateOverviewGutterPart(OG, 14); // below "current word"
+      OverViewGutterPart.Color := AValue;
+      ScanMode := smsmASyncForceAll;
+    end;
+  end
+  else
+  if OverViewGutterPart <> nil then begin
+    OverViewGutterPart.Destroy;
+    ScanMode := smsmDirect;
+  end;
+end;
+
 procedure TSynMarkupSpellCheck.SetWordBreaker(AValue: TSynSpellWordBreaker);
 begin
   if FWordBreaker = AValue then Exit;
@@ -211,6 +239,15 @@ begin
   FWordChecker := AValue;
   if FWordChecker <> nil then
     FWordChecker.OnChanged := @DoConfChanged;
+end;
+
+function TSynMarkupSpellCheck.GetASyncPriority(AnSearchInVisibleLines: boolean
+  ): TTLazEditTaskPriorities;
+begin
+  if AnSearchInVisibleLines then
+    Result := [tpPaintOverview, tpPriorTop]  // between tpPaintExtra and overview
+  else
+    Result := [tpPaintOverview];
 end;
 
 procedure TSynMarkupSpellCheck.FindInitialize;
@@ -241,7 +278,7 @@ begin
       repeat
         MoreErr := WordChecker.GetNextError(ErrStart, ErrLen, True);
         ErrStart := WordStart + ErrStart;
-        Matches.Insert(AnIndex, Point(ErrStart, LineIdx+1), Point(ErrStart+ErrLen, LineIdx+1));
+        Matches.Insert(AnIndex, Point(ErrStart, ToPos(LineIdx)), Point(ErrStart+ErrLen, ToPos(LineIdx)));
         inc(AnIndex);
       until not MoreErr;
     end;
@@ -250,11 +287,11 @@ begin
     if ( (AStopAfterLine > 0) and (LineIdx > ToIdx(AStopAfterLine)) ) or
        (GetTickCount64 > AsyncEndTickTime)
     then begin
-      Result := Point(1, LineIdx+1);
+      Result := Point(1, ToPos(LineIdx));
       exit;
     end;
 
-  until (LineIdx > ToIdx(AnEndPoint.Y));
+  until (LineIdx >= ToIdx(AnEndPoint.Y));
   Result := AnEndPoint;
 end;
 
@@ -310,6 +347,15 @@ begin
     [setExtendBlock], scamAdjust);
 end;
 
+procedure TSynCustomPluginSpellCheck.SetOverViewColor(AValue: TColor);
+begin
+  if FOverViewColor = AValue then Exit;
+  FOverViewColor := AValue;
+
+  if FMarkup <> nil then
+    FMarkup.OverViewColor := FOverViewColor;
+end;
+
 procedure TSynCustomPluginSpellCheck.DoEditorRemoving(AValue: TCustomSynEdit);
 begin
   AValue.UnregisterMouseActionSearchHandler(@DoMouseActionSearch);
@@ -328,6 +374,7 @@ begin
   FMarkup.WordChecker := FWordChecker;
 
   AValue.MarkupManager.AddMarkUp(FMarkup);
+  FMarkup.OverViewColor := FOverViewColor;
   AValue.RegisterMouseActionExecHandler(@DoHandleMouseAction);
   AValue.RegisterMouseActionSearchHandler(@DoMouseActionSearch);
 

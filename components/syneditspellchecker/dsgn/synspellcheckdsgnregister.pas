@@ -76,7 +76,7 @@ begin
   AttribGroupIdx := IdeColorSchemeList.RegisterAttributeGroup(@SynSpellOptSpellChecking);
   for i := 0 to IdeSyntaxHighlighters.Count - 1 do
     IdeColorSchemeList.AddAttribute(AttribGroupIdx, i, 'SynSpellerMarkupError',
-      @AttribNameSpellError, [hafBackColor..hafFrameEdges], SpellErrorAttrib);
+      @AttribNameSpellError, [hafBackColor..hafFrameEdges, hafMarkupAllOverview], SpellErrorAttrib);
 end;
 
 procedure FreeAttribs;
@@ -117,8 +117,10 @@ begin
     dec(i);
   if i >= 0 then begin
     p := TSynCustomPluginSpellCheck(TSynEdit(ASrcEdit.EditorControl).Plugin[i]);
-    if attr <> nil then
+    if attr <> nil then begin
       attr.ApplyTo(p.MarkupInfo);
+      p.OverViewColor := attr.MarkupAllOverviewColor;
+    end;
 
     p.MouseActions.Clear;
     if SynSpellOptions.EnablePopupMenu then begin

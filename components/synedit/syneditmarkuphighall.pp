@@ -334,7 +334,7 @@ type
     procedure DoFoldChanged(Sender: TSynEditStrings; AnIndex, aCount: Integer);
     procedure SetScanOffScreenLimit(AValue: integer);
 
-    procedure ScheduleAsync;
+    procedure ScheduleAsync(AnSearchInVisibleLines: boolean); // TODO: Add option to search visible lines in async too
     procedure RemoveAsync;
     Procedure InvalidateMatches(AFirstLine, ALastLine, ALineDiffCount: Integer);
     procedure AssertGapsValid;
@@ -352,6 +352,7 @@ type
     function  HasSearchData: Boolean; virtual; abstract;
     function HasDisplayAbleMatches: Boolean; override;
     function  SearchStringMaxLines: Integer; virtual; abstract;
+    function GetASyncPriority(AnSearchInVisibleLines: boolean): TTLazEditTaskPriorities; virtual;
     procedure FindInitialize;  virtual; abstract;
     function  FindMatches(AStartPoint, AnEndPoint: TPoint;
                           var AnIndex: Integer;
@@ -3110,7 +3111,7 @@ begin
       ValidateMatches(not FNeedValidatePaint)
     else
     if smfNeedAsync in FFlags then
-      ScheduleAsync;
+      ScheduleAsync(False);
   end;
 end;
 
@@ -3181,11 +3182,11 @@ begin
   ValidateMatches(True); // Should only need to extend off screen
 end;
 
-procedure TSynEditMarkupHighlightAllBase.ScheduleAsync;
+procedure TSynEditMarkupHighlightAllBase.ScheduleAsync(AnSearchInVisibleLines: boolean);
 begin
   if FHasAsyncScheduled then
     exit;
-  GlobalASyncRunner.AddOrReplaceTask(@DoAsyncScan, SynEdit, [tpPaintExtra]);
+  GlobalASyncRunner.AddOrReplaceTask(@DoAsyncScan, SynEdit, GetASyncPriority(AnSearchInVisibleLines));
   FHasAsyncScheduled := True;
 end;
 
@@ -3583,7 +3584,7 @@ begin
     if not ValidateFillGaps then begin
       if SkipPaint then
         Include(FFlags, smfAsyncSkipPaint);
-      ScheduleAsync;
+      ScheduleAsync(False);
     end
     else if FOverViewGutterPart <> nil then
       FOverViewGutterPart.ReCalc;
@@ -3648,6 +3649,15 @@ function TSynEditMarkupHighlightAllBase.HasDisplayAbleMatches: Boolean;
 begin
   Result := (inherited HasDisplayAbleMatches) and
             ( (not HideSingleMatch) or (Matches.Count > 1) );
+end;
+
+function TSynEditMarkupHighlightAllBase.GetASyncPriority(AnSearchInVisibleLines: boolean
+  ): TTLazEditTaskPriorities;
+begin
+  if AnSearchInVisibleLines then
+    Result := [tpPaintExtra]
+  else
+    Result := [tpPaintOverview];
 end;
 
 procedure TSynEditMarkupHighlightAllBase.DoTextChanged(StartLine, EndLine,

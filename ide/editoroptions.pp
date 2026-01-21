@@ -344,6 +344,7 @@ type
     FUseSchemeGlobals: Boolean;
     function GetGroupName: String;
     function GetIsUsingSchemeGlobals: Boolean;
+    function GetMarkupAllOverviewColor: TColor;
     procedure SetMarkupAllOverviewColor(AValue: TColor);
     procedure SetMarkupFoldLineAlpha(AValue: Byte);
     procedure SetMarkupFoldLineColor(AValue: TColor);
@@ -7325,6 +7326,11 @@ end;
 function TColorSchemeAttribute.GetIsUsingSchemeGlobals: Boolean;
 begin
   Result := FUseSchemeGlobals and (GetSchemeGlobal <> nil);
+end;
+
+function TColorSchemeAttribute.GetMarkupAllOverviewColor: TColor;
+begin
+  Result := FMarkupAllOverviewColor;
 end;
 
 procedure TColorSchemeAttribute.SetMarkupAllOverviewColor(AValue: TColor);
