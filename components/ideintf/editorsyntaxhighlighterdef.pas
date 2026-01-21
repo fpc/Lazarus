@@ -12,7 +12,7 @@ type
   TLazSyntaxHighlighter =
   ( lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshCSS, lshJScript,
-    lshDiff, lshBat, lshIni, lshPo, lshPike
+    lshDiff, lshBat, lshIni, lshPo, lshPike, lshMarkdown
   );
 
   TIdeSyntaxHighlighterID = type integer;
@@ -67,7 +67,8 @@ const
     'Bat',
     'Ini',
     'PO',
-    'Pike'
+    'Pike',
+    'MarkDown'
   ) deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.99)';
 
 function GetSyntaxHighlighterCaption(h: TLazSyntaxHighlighter): string;     deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.99)';

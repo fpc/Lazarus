@@ -64,7 +64,7 @@ uses
   SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview, SynBeautifierPascal,
   SynEditTextDynTabExpander, SynEditTextTabExpander, SynTextMateSyn, SynEditStrConst,
   SynHighlighterPosition, SynGutterMarks, SynEditWrappedView, SynPluginExternalLink,
-  SynPluginAutoBraces,
+  SynPluginAutoBraces, SynHighlighterMarkdown,
   // codetools
   LinkScanner, CodeToolManager,
   // BuildIntf
@@ -578,7 +578,8 @@ const
       (Count: 0; Info: nil), // Ini
       (Count: 0; Info: nil), // Bat
       (Count: 0; Info: nil), // PO
-      (Count: 0; Info: nil)  // Pike
+      (Count: 0; Info: nil), // Pike
+      (Count: 0; Info: nil)  // Markdown
     );
 
 type
@@ -791,7 +792,8 @@ const
       (Count:  0; HasMarkup: False; Info: nil), // Bat
       (Count:  0; HasMarkup: False; Info: nil), // Ini
       (Count:  0; HasMarkup: False; Info: nil), // PO
-      (Count:  0; HasMarkup: False; Info: nil)  // Pike
+      (Count:  0; HasMarkup: False; Info: nil), // Pike
+      (Count:  0; HasMarkup: False; Info: nil)  // Markdown
     );
 
 const
@@ -831,7 +833,7 @@ const
     (nil, TIDESynTextSyn, TIDESynFreePasSyn, TIDESynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
     TSynPythonSyn, TSynPHPSyn, TSynSQLSyn,TSynCssSyn, TSynJScriptSyn, TSynDiffSyn,
-    TSynBatSyn, TSynIniSyn, TSynPoSyn, TSynPikeSyn) deprecated 'for internal use only';
+    TSynBatSyn, TSynIniSyn, TSynPoSyn, TSynPikeSyn, TSynMarkdownSyn) deprecated 'for internal use only';
 
 { Comments }
 const
@@ -856,7 +858,8 @@ const
     comtNone,  // Bat
     comtNone,  // Ini
     comtNone,  // po
-    comtCPP    // lshPike
+    comtCPP,   // lshPike
+    comtNone   // markdown
     ) deprecated 'for internal use only';
 
 const
@@ -4209,6 +4212,27 @@ begin
   with NewInfo do
   begin
     AddAttrSampleLines[ahaTextBlock] := 12;
+    MappedAttributes := TStringList.Create;
+    CaretXY := Point(1,1);
+  end;
+  Add(NewInfo);
+
+  // create info for markdown
+  NewInfo := TEditOptLanguageInfo.Create;
+  NewInfo.TheType := lshMarkdown;
+  NewInfo.DefaultCommentType := DefaultCommentTypes{%H-}[NewInfo.TheType];
+  NewInfo.SynInstance := LazSyntaxHighlighterClasses{%H-}[NewInfo.TheType].Create(nil);
+  NewInfo.SetBothFilextensions('md');
+  NewInfo.SampleSource := '### Header'+#13#10+
+                          'Example line'+#13#10+
+                          'Example line'+#13#10+
+                          '```'+#13#10+
+                          'text'+#13#10+
+                          '```'+#13#10+
+                          'Example'+#13#10;
+  with NewInfo do
+  begin
+    AddAttrSampleLines[ahaTextBlock] := 2;
     MappedAttributes := TStringList.Create;
     CaretXY := Point(1,1);
   end;
