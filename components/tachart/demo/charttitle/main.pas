@@ -42,6 +42,7 @@ type
     procedure seLeftMarginChange(Sender: TObject);
     procedure seRightMarginChange(Sender: TObject);
   private
+    FActivated: Boolean;
 
   public
 
@@ -127,8 +128,15 @@ end;
 
 procedure TMainForm.FormActivate(Sender: TObject);
 begin
-  Constraints.MinWidth := Width;
-  Constraints.MinHeight := Height;
+  if not FActivated then
+  begin
+    FActivated := True;
+    Constraints.MinWidth := Chart1.Width + Chart1.BorderSpacing.Around * 2 +
+      rgAlignment.Width + rgAlignment.BorderSpacing.Right;
+    Constraints.MinHeight := cbFrame.Top + cbFrame.Height + cbFrame.BorderSpacing.Bottom;
+    if Width < Constraints.MinWidth then Width := Constraints.MinWidth;
+    if Height < Constraints.MinHeight then Height := Constraints.MinHeight;
+  end;
 end;
 
 end.

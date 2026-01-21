@@ -57,7 +57,6 @@ type
     FOverlapPolicy: TChartMarksOverlapPolicy;
     FShape: TChartLabelShape;
     FTextFormat: TChartTextFormat;
-    FTextRect: TRect;
     procedure SetAlignment(AValue: TAlignment);
     procedure SetCalloutAngle(AValue: Cardinal);
     procedure SetClipped(AValue: Boolean);
@@ -96,7 +95,6 @@ type
       const AText: String; var APrevLabelPoly: TPointArray);
     function GetLabelPolygon(
       ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
-    function GetTextRect: TRect;
     function IsPointInLabel(ADrawer: IChartDrawer; 
       const APoint, ADataPoint, ALabelCenter: TPoint; const AText: String): Boolean;
     function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
@@ -481,18 +479,14 @@ begin
   if Assigned(OnGetShape) then
     OnGetShape(Self, b, Result);
   a := GetLabelAngle;
-  for i := 0 to High(Result) do
-    Result[i] := RotatePoint(Result[i], a);
+  if a <> 0 then
+    for i := 0 to High(Result) do
+      Result[i] := RotatePoint(Result[i], a);
 end;
 
 function TChartTextElement.GetLinkPen: TChartPen;
 begin
   Result := nil;
-end;
-
-function TChartTextElement.GetTextRect: TRect;
-begin
-  Result := FTextRect;
 end;
 
 function TChartTextElement.GetTextShiftNeeded: Boolean;
@@ -674,6 +668,9 @@ begin
   DrawLabel(ADrawer, FCenter, FCenter, GetRealCaption, FPolygon);
 end;
 
+{ Determines the bounding rectangle of the entire title (in case of FullWidth,
+  not only of the caption itself). The rect is centered around the origin (0,0),
+  it will later be moved to the position of the label center by GetLabelPoly. }
 function TChartTitle.GetBoundingBox(
   ADrawer: IChartDrawer; const ATextSize: TPoint): TRect;
 begin
@@ -684,19 +681,20 @@ begin
       taLeftJustify:
         begin
           Result.Left := -ATextSize.X div 2 - Margins.Left;
-          Result.Right := Result.Left + FOwner.Width;
+          Result.Right := Result.Left + FOwner.Width - 1;
           FCenter.X := ATextSize.X div 2 + Margins.Left;
         end;
       taRightJustify:
         begin
-          Result.Right := ATextSize.X div 2 + Margins.Right;
-          Result.Left := Result.Right - FOwner.Width;
+          Result.Right := ATextSize.X div 2 + Margins.Right - 1;
+          Result.Left := Result.Right - FOwner.Width + 1;
           FCenter.X := FOwner.Width - ATextSize.X div 2 - Margins.Right;
         end;
       taCenter:
         begin
           Result.Left := -FOwner.Width div 2;
-          Result.Right := +FOwner.Width div 2;
+          Result.Right := +FOwner.Width div 2 - 1;
+          FCenter.X := FOwner.Width div 2;
         end;
     end;
   end;
@@ -746,11 +744,12 @@ begin
     WordwrapCaption(ADrawer, ARight - ALeft);
 
   ptSize := MeasureLabel(ADrawer, GetRealCaption);
-  case Alignment of
-    taLeftJustify: FCenter.X := ALeft + ptSize.X div 2;
-    taRightJustify: FCenter.X := ARight - ptSize.X div 2;
-    taCenter: FCenter.X := (ALeft + ARight) div 2;
-  end;
+  if not FFullWidth then
+    case Alignment of
+      taLeftJustify: FCenter.X := ALeft + ptSize.X div 2;
+      taRightJustify: FCenter.X := ARight - ptSize.X div 2;
+      taCenter: FCenter.X := (ALeft + ARight) div 2;
+    end;
   FCenter.Y := AY + ADir * ptSize.Y div 2;
   AY += ADir * (ptSize.Y + Margin);
 end;
