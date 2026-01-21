@@ -295,6 +295,28 @@ Contains the path on the local file system where the file item is stored.
 </short>
 </element>
 
+<element name="TFileItem.FileName">
+<short>
+Returns the fully-qualified path and file name for the file item.
+</short>
+<descr>
+<p>
+FileName is a String function  used to get the fully-qualified path for the 
+file item. The return value contains the concatenated values from 
+<var>BasePath</var> and the name for the search item stored in 
+<var>FileInfo</var>. A path delimiter (DirectorySeparator) is used between the 
+concatenated values.
+</p>
+</descr>
+<version>
+Added in LCL version 5.0.
+</version>
+<seealso>
+<link id="TFileItem.BasePath"/>
+<link id="TFileItem.FileInfo"/>
+</seealso>
+</element>
+
 <element name="TFileItem.BasePath">
 <short>
 Path to the directory where the file item is stored on the local file system.
@@ -4087,6 +4109,7 @@ Modified in LCL version 4.0 to set the default value for the property to
 <element name="TShellListView.SmallImages" link="#lcl.comctrls.TCustomListView.SmallImages"/>
 <element name="TShellListView.SmallImagesWidth" link="#lcl.comctrls.TCustomListView.SmallImagesWidth"/>
 <element name="TShellListView.SortColumn" link="#lcl.comctrls.TCustomListView.SortColumn"/>
+<element name="TShellListView.SortDirection" link="#lcl.comctrls.TCustomListView.SortDirection"/>
 <element name="TShellListView.SortType" link="#lcl.comctrls.TCustomListView.SortType"/>
 <element name="TShellListView.StateImages" link="#lcl.comctrls.TCustomListView.StateImages"/>
 <element name="TShellListView.TabStop" link="#lcl.comctrls.TCustomListVIew.TabStop"/>
