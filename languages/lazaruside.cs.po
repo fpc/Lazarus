@@ -1351,7 +1351,9 @@ msgid "Compiler messages"
 msgstr "Zprávy překladače"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file (*.msg)"
+#, fuzzy
+#| msgid "Compiler messages language file (*.msg)"
+msgid "Compiler messages language file for the Messages window (*.msg)"
 msgstr "Jazykový soubor zpráv překladače (*.msg)"
 
 #: lazarusidestrconsts.dlgcompleteproperties

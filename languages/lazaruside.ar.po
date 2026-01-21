@@ -1331,7 +1331,7 @@ msgstr "تعاليق المترجم"
 #: lazarusidestrconsts.dlgcompilermessages
 #, fuzzy
 #| msgid "Compiler messages language file"
-msgid "Compiler messages language file (*.msg)"
+msgid "Compiler messages language file for the Messages window (*.msg)"
 msgstr "الجذاذة المحدّدة للغة تعاليق المترحم"
 
 #: lazarusidestrconsts.dlgcompleteproperties

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-01-17 01:51+0300\n"
+"PO-Revision-Date: 2026-01-21 23:09+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1324,8 +1324,8 @@ msgid "Compiler messages"
 msgstr "Сообщения компилятора"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file (*.msg)"
-msgstr "Языковой файл сообщений компилятора (*.msg)"
+msgid "Compiler messages language file for the Messages window (*.msg)"
+msgstr "Языковой файл компилятора для окна сообщений (*.msg)"
 
 #: lazarusidestrconsts.dlgcompleteproperties
 msgid "Complete properties"

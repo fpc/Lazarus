@@ -1332,7 +1332,9 @@ msgid "Compiler messages"
 msgstr "Derleyici mesajları"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file (*.msg)"
+#, fuzzy
+#| msgid "Compiler messages language file (*.msg)"
+msgid "Compiler messages language file for the Messages window (*.msg)"
 msgstr "Derleyici ileti dil dosyası (* .msg)"
 
 #: lazarusidestrconsts.dlgcompleteproperties

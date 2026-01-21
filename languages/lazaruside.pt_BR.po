@@ -1334,7 +1334,9 @@ msgid "Compiler messages"
 msgstr "Mensagens do compilador"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file (*.msg)"
+#, fuzzy
+#| msgid "Compiler messages language file (*.msg)"
+msgid "Compiler messages language file for the Messages window (*.msg)"
 msgstr "Arquivo de idioma das mensagens do compilador (*.msg)"
 
 #: lazarusidestrconsts.dlgcompleteproperties

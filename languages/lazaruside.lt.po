@@ -1367,7 +1367,9 @@ msgid "Compiler messages"
 msgstr "Kompiliatoriaus pranešimai"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file (*.msg)"
+#, fuzzy
+#| msgid "Compiler messages language file (*.msg)"
+msgid "Compiler messages language file for the Messages window (*.msg)"
 msgstr "Lokalizuotų kompiliatoriaus pranešimų failas (*.msg)"
 
 #: lazarusidestrconsts.dlgcompleteproperties
