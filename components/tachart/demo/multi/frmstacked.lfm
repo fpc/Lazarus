@@ -5,6 +5,10 @@ object StackedFrame: TStackedFrame
   Width = 581
   ClientHeight = 521
   ClientWidth = 581
+  Color = clWindow
+  LCLVersion = '4.99.0.0'
+  ParentBackground = False
+  ParentColor = False
   TabOrder = 0
   DesignLeft = 314
   DesignTop = 130
@@ -102,6 +106,7 @@ object StackedFrame: TStackedFrame
     BevelOuter = bvNone
     ClientHeight = 51
     ClientWidth = 573
+    ParentBackground = False
     TabOrder = 1
     object rgStackedSeries: TRadioGroup
       Left = 0
@@ -128,6 +133,7 @@ object StackedFrame: TStackedFrame
         'Bar'
         'Line'
       )
+      ParentBackground = False
       TabOrder = 0
       OnClick = rgStackedSeriesClick
     end
@@ -169,6 +175,7 @@ object StackedFrame: TStackedFrame
         'green'
         'blue'
       )
+      ParentBackground = False
       TabOrder = 2
       OnItemClick = cgShowStackLevelsItemClick
       Data = {

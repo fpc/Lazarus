@@ -57,6 +57,7 @@
         <Filename Value="frmbubble.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="BubbleFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="frmBubble"/>
       </Unit2>
@@ -64,6 +65,7 @@
         <Filename Value="frmstacked.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="StackedFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="frmStacked"/>
       </Unit3>
@@ -71,6 +73,7 @@
         <Filename Value="frmboxwhisker.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="BoxWhiskerFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="frmBoxWhisker"/>
       </Unit4>
@@ -78,6 +81,7 @@
         <Filename Value="frmohlc.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="OHLCFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="frmOHLC"/>
       </Unit5>
@@ -85,6 +89,7 @@
         <Filename Value="frmfield.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FieldFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="frmField"/>
       </Unit6>

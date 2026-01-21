@@ -107,13 +107,13 @@ begin
   if tPlan1 = tPlan2 then
     AFormattedMark := Format(
       '"%s"' + LineEnding +
-      '⯄ due %s', [
+      '● due %s', [
       txt, DateToStr(tPlan1)
     ])
   else
     AFormattedMark := Format(
       'Task "%s":' + LineEnding +
-      '⯄ %s - %s', [
+      '● %s - %s', [
       txt, DateToStr(tPlan1), DateToStr(tPlan2)
     ]);
 end;

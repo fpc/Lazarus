@@ -154,8 +154,8 @@ begin
     completeness := TGanttTask(item).PercentageComplete;
     AFormattedMark := Format(
       'Task "%s":' + LineEnding +
-      '⯄ %s - %s' + LineEnding +
-      '⯄ %.0f%% complete', [
+      '● %s - %s' + LineEnding +
+      '● %.0f%% complete', [
       txt, DateToStr(tPlan1), DateToStr(tPlan2), completeness
     ]);
   end
@@ -165,8 +165,8 @@ begin
     t := TGanttMileStone(item).DateDue;
     AFormattedMark := Format(
       '"%s":' + LineEnding +
-      '⯄ due %s' + LineEnding +
-      '⯄ %scomplete', [
+      '● due %s' + LineEnding +
+      '● %scomplete', [
       txt, DateToStr(t), NO_YES[TGanttMilestone(item).Complete]
     ]);
   end;

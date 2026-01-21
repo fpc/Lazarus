@@ -6,7 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 334
   ClientWidth = 725
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '4.99.0.0'
   object Chart1: TChart
     Left = 0
     Height = 296
@@ -23,6 +23,7 @@ object Form1: TForm1
       end    
       item
         Grid.Visible = False
+        Intervals.MaxLength = 70
         Alignment = calBottom
         Marks.LabelBrush.Style = bsClear
         Minors = <>
@@ -66,8 +67,8 @@ object Form1: TForm1
       AutoSize = True
       BorderSpacing.Left = 8
       Caption = 'Add bar'
-      OnClick = BtnAddBarClick
       TabOrder = 0
+      OnClick = BtnAddBarClick
     end
     object BtnAddLevel: TButton
       AnchorSideLeft.Control = BtnAddBar
@@ -81,8 +82,8 @@ object Form1: TForm1
       AutoSize = True
       BorderSpacing.Left = 8
       Caption = 'Add level'
-      OnClick = BtnAddLevelClick
       TabOrder = 1
+      OnClick = BtnAddLevelClick
     end
     object CbPercent: TCheckBox
       AnchorSideLeft.Control = BtnAddLevel
@@ -92,11 +93,11 @@ object Form1: TForm1
       Left = 167
       Height = 19
       Top = 10
-      Width = 48
+      Width = 46
       BorderSpacing.Left = 8
       Caption = '100%'
-      OnChange = CbPercentChange
       TabOrder = 2
+      OnChange = CbPercentChange
     end
     object BtnDelete: TButton
       AnchorSideTop.Control = Panel1
@@ -112,8 +113,8 @@ object Form1: TForm1
       BorderSpacing.Right = 8
       Caption = 'Delete selected'
       Enabled = False
-      OnClick = BtnDeleteClick
       TabOrder = 3
+      OnClick = BtnDeleteClick
     end
   end
   object ListBox1: TListBox
