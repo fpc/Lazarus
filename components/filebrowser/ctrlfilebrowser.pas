@@ -64,6 +64,7 @@ Type
       FSyncCurrentEditor: Boolean;
       FTreeFiller : TTreeCreatorThread;
       FFileList : TStrings;
+      FIndexingDoneEvent : Array of TNotifyEvent;
       procedure ActiveEditorChanged(Sender: TObject);
       procedure AddFileNodes(List: TStrings; aNode: TFileSystemEntry; aDir: String);
       procedure CreateFileList(aUseAbsolutePaths: boolean);
@@ -90,10 +91,10 @@ Type
       { Called by file browser window }
       procedure DoConfig(Sender: TObject);
       procedure SyncCurrentFile;
-      function FillingTree: boolean;
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
+      function FillingTree: boolean;
       procedure ConfigWindow(AForm: TFileBrowserForm); virtual;
       procedure OpenFiles(aEntries : TFileEntryArray);
       function GetResolvedRootDir : String;
@@ -102,6 +103,8 @@ Type
       procedure ReadConfig; virtual;
       procedure IndexRootDir;
       function FindFiles(aPattern: String; aOutFileList: TFileSearchResults; aMatchOptions : TFilenameMatchOptions; aExtMask : TMaskList): Integer;
+      procedure AddOnIndexingFinishedEvent(aEvent : TNotifyEvent);
+      procedure RemoveOnIndexingFinishedEvent(aEvent : TNotifyEvent);
       procedure Notification(AComponent: TComponent; Operation: TOperation); override;
       Property Root : TFileSystemEntry Read FRoot;
       property StartDir: TStartDir read FStartDir write SetStartDir;
@@ -160,6 +163,9 @@ end;
 
 procedure TFileBrowserController.TreeFillDone(Sender: TThread; aTree: TDirectoryEntry);
 
+var
+  i : integer;
+
 begin
   if (FTreeFiller<>Sender) then exit;
   FTreeFiller:=Nil;
@@ -167,6 +173,8 @@ begin
   FRoot:=aTree;
   CreateFileList(fsoAbsolutePaths in SearchOptions);
   AddIDEMessage(mluProgress,Format(SFilesFound,[FFileList.Count,GetResolvedRootDir]),'',0,0,SViewFilebrowser);
+  for I:=0 to Length(FIndexingDoneEvent)-1 do
+    FIndexingDoneEvent[i](Self);
 end;
 
 procedure TFileBrowserController.AddFileNodes(List : TStrings; aNode : TFileSystemEntry; aDir : String);
@@ -446,6 +454,31 @@ begin
         end;
     end;
   end;
+end;
+
+procedure TFileBrowserController.AddOnIndexingFinishedEvent(aEvent: TNotifyEvent);
+var
+  Len : Integer;
+begin
+  Len:=Length(FIndexingDoneEvent);
+  SetLength(FIndexingDoneEvent,Len+1);
+  FIndexingDoneEvent[len]:=aEvent;
+end;
+
+procedure TFileBrowserController.RemoveOnIndexingFinishedEvent(aEvent: TNotifyEvent);
+var
+  Idx,Len : Integer;
+begin
+  Len:=Length(FIndexingDoneEvent);
+  Idx:=Len;
+  While (Idx>=0) and (FIndexingDoneEvent[Idx]<>aEvent) do
+    Dec(Idx);
+  if idx>=0 then
+    begin
+    if Idx<(len-1) then
+      FIndexingDoneEvent[Idx]:=FIndexingDoneEvent[Len-1];
+    SetLength(FIndexingDoneEvent,Len-1);
+    end;
 end;
 
 procedure TFileBrowserController.ConfigWindow(AForm: TFileBrowserForm);
