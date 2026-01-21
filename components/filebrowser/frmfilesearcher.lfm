@@ -52,8 +52,10 @@ object FileSearcherForm: TFileSearcherForm
     Top = 4
     Width = 299
     Anchors = [akTop, akLeft, akRight]
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
-    TextHint = 'Type filename'
+    TextHint = 'Search term, must contain at least 2 characters'
     OnChange = edtSearchChange
   end
   object LBFiles: TListBox

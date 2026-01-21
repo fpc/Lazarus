@@ -29,6 +29,7 @@ type
     FController: TFileBrowserController;
     FResults: TFileSearchResults;
 
+    function CheckLength: Boolean;
     procedure DisableListBox(const aMsg: String);
     procedure DoFilter;
     procedure HandleIndexingDone(Sender: TObject);
@@ -44,6 +45,13 @@ implementation
 uses LCLType, LazIDEIntf;
 
 {$R *.lfm}
+
+resourcestring
+  SWarnTermTooShort = 'Search term too short (min 2 characters)';
+  SWarnControllerNotAssigned = 'Controller not assigned';
+  SWarnBuildingIndex = 'Building file index, please wait';
+  SWarnNoMatch = 'No files match your search term';
+  SSearchTerm = 'Search term, must contain at least 2 characters';
 
 { TFileSearcherForm }
 
@@ -67,6 +75,14 @@ begin
   end;
 end;
 
+Function TFileSearcherForm.CheckLength : Boolean;
+
+begin
+  Result:=(Length(edtSearch.Text)>=2);
+  if not Result then
+    DisableListBox(SWarnTermTooShort);
+end;
+
 procedure TFileSearcherForm.DoFilter;
 
 var
@@ -75,11 +91,14 @@ var
   lMatch : TFileSearchMatch;
 
 begin
-  if Not Assigned(FController) or (Length(edtSearch.Text)<2) then
+  if Not Assigned(FController) then
     begin
-    DisableListBox('Search term too short');
+    DisableListBox(SWarnControllerNotAssigned);
     exit;
     end;
+  if not CheckLength then
+    exit;
+
   FResults.Clear;
   lMatchOptions:=[];
   if (fsoMatchOnlyFileName in FController.SearchOptions) then
@@ -101,13 +120,13 @@ begin
   if LBFiles.Items.Count>0 then
     LBFiles.Enabled:=True
   else
-    DisableListBox('No files match your search term');
+    DisableListBox(SWarnNoMatch);
 end;
 
 procedure TFileSearcherForm.HandleIndexingDone(Sender: TObject);
 begin
   edtSearch.Enabled:=True;
-  DisableListBox('Search term too short');
+  CheckLength;
 end;
 
 function TFileSearcherForm.GetSelectedItems: TFileEntryArray;
@@ -145,9 +164,11 @@ begin
   FController.AddOnIndexingFinishedEvent(@HandleIndexingDone);
   if FController.FillingTree then
     begin
-    DisableListBox('Building file search index, search not yet available');
+    DisableListBox(SWarnBuildingIndex);
     edtSearch.Enabled:=False;
-    end;
+    end
+  else
+    CheckLength;
  end;
 
 procedure TFileSearcherForm.FormDestroy(Sender: TObject);
