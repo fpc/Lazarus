@@ -5,8 +5,8 @@ unit frmFileSearcher;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, StdCtrls, FileCtrl, filebrowsertypes,
-  ctrlfilebrowser, Types, Masks;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, StdCtrls, FileCtrl, Buttons, filebrowsertypes,
+  ctrlfilebrowser,Types, Masks;
 
 type
 
@@ -18,22 +18,29 @@ type
     edtSearch: TEdit;
     Label1: TLabel;
     LBFiles: TListBox;
+    SBConfigure: TSpeedButton;
     procedure cbFilterChange(Sender: TObject);
     procedure edtSearchChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LBFilesDblClick(Sender: TObject);
     procedure LBFilesDrawItem(Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
+    procedure SBConfigureClick(Sender: TObject);
   private
     FMask : TMaskList;
     FController: TFileBrowserController;
+    FOnConfigure: TNotifyEvent;
     FResults: TFileSearchResults;
-
+    // Check whether search term is long enough
     function CheckLength: Boolean;
+    // Disable listbox and show message in box
     procedure DisableListBox(const aMsg: String);
+    // Actually filter list
     procedure DoFilter;
+    // Callback when build of index is done
     procedure HandleIndexingDone(Sender: TObject);
   public
+    // selected file items
     Function GetSelectedItems : TFileEntryArray;
   end;
 
@@ -68,14 +75,14 @@ begin
   try
     LBFiles.Items.Clear;
     LBFiles.Items.Append('');
-    LBFiles.Items.Append(aMsg);
+    LBFiles.Items.Append('  '+aMsg); // 2 spaces has nicer indent
     LBFiles.Enabled:=False;
   finally
     LBFiles.Items.EndUpdate;
   end;
 end;
 
-Function TFileSearcherForm.CheckLength : Boolean;
+function TFileSearcherForm.CheckLength: Boolean;
 
 begin
   Result:=(Length(edtSearch.Text)>=2);
@@ -230,6 +237,11 @@ begin
     lCanvas.Brush.Color:=C;
     end;
   lCanvas.TextRect(aRect,aRect.Left,aRect.Top,S);
+end;
+
+procedure TFileSearcherForm.SBConfigureClick(Sender: TObject);
+begin
+  FController.ShowConfig;
 end;
 
 end.
