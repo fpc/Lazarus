@@ -1,9 +1,9 @@
 object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
   Left = 0
-  Height = 618
+  Height = 629
   Top = 0
   Width = 803
-  ClientHeight = 618
+  ClientHeight = 629
   ClientWidth = 803
   LCLVersion = '4.99.0.0'
   TabOrder = 0
@@ -117,12 +117,12 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
   end
   object GBSearch: TGroupBox
     Left = 0
-    Height = 129
+    Height = 160
     Top = 456
     Width = 803
     Align = alTop
     Caption = 'Search'
-    ClientHeight = 111
+    ClientHeight = 142
     ClientWidth = 801
     TabOrder = 2
     object CBMatchOnlyFilename: TCheckBox
@@ -145,9 +145,18 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       Left = 8
       Height = 23
       Top = 81
-      Width = 577
-      Caption = 'letters of search term can be not consecutive (other letters can appear in between)'
+      Width = 579
+      Caption = 'letters of search term can be non consecutive (other letters can appear in between)'
       TabOrder = 2
+      OnChange = CBUseLettersChange
+    end
+    object CBpartialMatch: TCheckBox
+      Left = 40
+      Height = 23
+      Top = 113
+      Width = 156
+      Caption = 'Allow partial match'
+      TabOrder = 3
     end
   end
   object GBFileTree: TGroupBox

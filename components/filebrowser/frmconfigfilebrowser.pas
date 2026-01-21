@@ -21,6 +21,7 @@ type
     CBMatchOnlyFilename: TCheckBox;
     CBUseAbsoluteFilenames: TCheckBox;
     CBUseLetters: TCheckBox;
+    CBpartialMatch: TCheckBox;
     DEStartDir: TDirectoryEdit;
     DERootDir: TDirectoryEdit;
     GBStartDir: TGroupBox;
@@ -35,8 +36,10 @@ type
     RBUseProjectDir: TRadioButton;
     RBRootUseProjectDir: TRadioButton;
     procedure CBShowFilesInlineChange(Sender: TObject);
+    procedure CBUseLettersChange(Sender: TObject);
   private
     procedure CheckDirsBeforeFiles;
+    procedure CheckPartial;
 
   public
     function GetTitle: String; override;
@@ -66,6 +69,18 @@ end;
 procedure TFileBrowserOptionsFrame.CBShowFilesInlineChange(Sender: TObject);
 begin
   CheckDirsBeforeFiles;
+end;
+
+procedure TFileBrowserOptionsFrame.CBUseLettersChange(Sender: TObject);
+begin
+  CheckPartial;
+end;
+
+procedure TFileBrowserOptionsFrame.CheckPartial;
+begin
+  CBPartialMatch.Enabled:=CBUseLetters.Checked;
+  if not CBPartialMatch.Enabled then
+    CBPartialMatch.Checked:=False;
 end;
 
 function TFileBrowserOptionsFrame.GetTitle: String;
@@ -112,6 +127,7 @@ begin
   CBUseAbsoluteFilenames.Checked:=fsoAbsolutePaths in C.SearchOptions;
   CBMatchOnlyFilename.Checked:=fsoMatchOnlyFileName in C.SearchOptions;
   CBUseLetters.Checked:=fsoUseLetters in C.SearchOptions;
+  CBPartialMatch.Checked:=fsoMatchPartial in C.SearchOptions;
   CheckDirsBeforeFiles;
 end;
 
@@ -161,6 +177,8 @@ begin
     Include(SO,fsoMatchOnlyFileName);
   if CBUseLetters.Checked then
     Include(SO,fsoUseLetters);
+  if CBpartialMatch.Checked then
+    Include(SO,fsoMatchPartial);
   C.SearchOptions:=SO;
   // Re-index
   if lRootDir<>C.GetResolvedRootDir then

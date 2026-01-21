@@ -9,10 +9,10 @@ uses
   LazIDEIntf, MenuIntf, IDECommands, ProjectIntf, IDEOptEditorIntf, IDEWindowIntf, BaseIDEIntf;
 
 Type
-    TFileSearchOption = (fsoMatchOnlyFileName,fsoAbsolutePaths,fsoUseLetters);
+    TFileSearchOption = (fsoMatchOnlyFileName,fsoAbsolutePaths,fsoUseLetters,fsoMatchPartial);
     TFileSearchOptions = Set of TFileSearchOption;
 
-    TFilenameMatchOption = (fmoFileNameOnly,fmoLetters);
+    TFilenameMatchOption = (fmoFileNameOnly,fmoLetters,fmoMatchPartial);
     TFilenameMatchOptions = set of TFilenameMatchOption;
 
     TMatchPosition = record
@@ -246,6 +246,8 @@ begin
         Include(Opts,fsoAbsolutePaths);
       if GetValue(KeySearchLetters,False) then
         Include(Opts,fsoUseLetters);
+      if GetValue(KeyMatchPartial,False) then
+        Include(Opts,fsoMatchPartial);
       SearchOptions:=Opts;
     finally
       Free;
@@ -343,6 +345,7 @@ begin
       SetDeleteValue(KeySearchMatchOnlyFilename,fsoMatchOnlyFileName in SearchOptions,False);
       SetDeleteValue(KeySearchAbsoluteFilenames,fsoAbsolutePaths in SearchOptions,False);
       SetDeleteValue(KeySearchLetters,fsoUseLetters in SearchOptions,False);
+      SetDeleteValue(KeyMatchPartial,fsoMatchPartial in SearchOptions,False);
       FNeedSave := False;
     finally
       Free;
@@ -397,7 +400,9 @@ function TFileBrowserController.FindFiles(aPattern: String;
           Inc(Result);
           end;
         Inc(lPtrnPos);
-        end;
+        end
+      else
+        WasMatch:=false;
       Inc(lNamePos);
     end;
     if (lPtrnPos < lPtrnLen) then
@@ -437,7 +442,10 @@ begin
       if fmoLetters in aMatchOptions then
         begin
         lMatchLen:=MatchesPattern(lFilename, lStartPos, lPtrn, lPositions);
-        isMatch:=lMatchLen>0;
+        if fmoMatchPartial in aMatchOptions then
+          isMatch:=lMatchLen>0
+        else
+          isMatch:=lMatchLen>=Length(lPtrn);
         if IsMatch then
           SetLength(lPositions,lMatchLen);
         end

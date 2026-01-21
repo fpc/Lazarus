@@ -29,7 +29,6 @@ type
   private
     FMask : TMaskList;
     FController: TFileBrowserController;
-    FOnConfigure: TNotifyEvent;
     FResults: TFileSearchResults;
     // Check whether search term is long enough
     function CheckLength: Boolean;
@@ -49,7 +48,7 @@ var
 
 implementation
 
-uses LCLType, LazIDEIntf;
+uses LazUTF8, LCLType, LazIDEIntf;
 
 {$R *.lfm}
 
@@ -58,7 +57,7 @@ resourcestring
   SWarnControllerNotAssigned = 'Controller not assigned';
   SWarnBuildingIndex = 'Building file index, please wait';
   SWarnNoMatch = 'No files match your search term';
-  SSearchTerm = 'Search term, must contain at least 2 characters';
+
 
 { TFileSearcherForm }
 
@@ -71,6 +70,7 @@ end;
 procedure TFileSearcherForm.DisableListBox(const aMsg : String);
 
 begin
+  FResults.Clear;
   LBFiles.Items.BeginUpdate;
   try
     LBFiles.Items.Clear;
@@ -85,7 +85,8 @@ end;
 function TFileSearcherForm.CheckLength: Boolean;
 
 begin
-  Result:=(Length(edtSearch.Text)>=2);
+  ShowMessage('"'+edtSearch.Text+'": '+IntToStr(Length(edtSearch.Text)));
+  Result:=(UTF8Length(edtSearch.Text)>=2);
   if not Result then
     DisableListBox(SWarnTermTooShort);
 end;
@@ -112,6 +113,8 @@ begin
     Include(lMatchOptions,fmoFileNameOnly);
   if (fsoUseLetters in FController.SearchOptions) then
     Include(lMatchOptions,fmoLetters);
+  if (fsoMatchPartial in FController.SearchOptions) then
+    Include(lMatchOptions,fmoMatchPartial);
   LBFiles.Items.BeginUpdate;
   try
     LBFiles.Items.Clear;
