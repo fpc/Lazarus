@@ -8,9 +8,9 @@ unit lazmarkdown;
 interface
 
 uses
-  markdown.canvasrender, markdown.control, markdown.regide, markdown.delimiter, MarkDown.Elements, Markdown.FPDocRender, 
-  Markdown.HTMLEntities, Markdown.HtmlRender, MarkDown.InlineText, MarkDown.LatexRender, markdown.lexer, MarkDown.Line, 
-  markdown.panel, MarkDown.Parser, Markdown.Processors, MarkDown.Render, MarkDown.Scanner, MarkDown.Utils, LazarusPackageIntf;
+  markdown.canvasrender, markdown.control, markdown.regide, MarkDown.Elements, Markdown.FPDocRender, Markdown.HTMLEntities, 
+  Markdown.HtmlRender, MarkDown.InlineText, MarkDown.LatexRender, MarkDown.Line, MarkDown.Parser, Markdown.Processors, 
+  MarkDown.Render, MarkDown.Scanner, MarkDown.Utils, LazarusPackageIntf;
 
 implementation
 

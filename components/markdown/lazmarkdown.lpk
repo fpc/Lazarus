@@ -29,10 +29,6 @@
         <UnitName Value="markdown.regide"/>
       </Item>
       <Item>
-        <Filename Value="Src_3_2/markdown.delimiter.pas"/>
-        <UnitName Value="markdown.delimiter"/>
-      </Item>
-      <Item>
         <Filename Value="Src_3_2/markdown.elements.pas"/>
         <UnitName Value="MarkDown.Elements"/>
       </Item>
@@ -57,16 +53,8 @@
         <UnitName Value="MarkDown.LatexRender"/>
       </Item>
       <Item>
-        <Filename Value="Src_3_2/markdown.lexer.pas"/>
-        <UnitName Value="markdown.lexer"/>
-      </Item>
-      <Item>
         <Filename Value="Src_3_2/markdown.line.pas"/>
         <UnitName Value="MarkDown.Line"/>
-      </Item>
-      <Item>
-        <Filename Value="Src_3_2/markdown.panel.pas"/>
-        <UnitName Value="markdown.panel"/>
       </Item>
       <Item>
         <Filename Value="Src_3_2/markdown.parser.pas"/>
