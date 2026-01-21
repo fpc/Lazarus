@@ -1,49 +1,49 @@
 object frmMain: TfrmMain
   Left = 319
-  Height = 543
+  Height = 578
   Top = 133
-  Width = 1026
+  Width = 1119
   Caption = 'Fit demo'
-  ClientHeight = 543
-  ClientWidth = 1026
-  OnCreate = FormCreate
+  ClientHeight = 578
+  ClientWidth = 1119
   ShowHint = True
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '4.99.0.0'
+  OnCreate = FormCreate
   object pnlParams: TPanel
     Left = 8
-    Height = 527
+    Height = 562
     Top = 8
-    Width = 440
+    Width = 456
     Align = alLeft
     BorderSpacing.Around = 8
     BevelOuter = bvNone
-    ClientHeight = 527
-    ClientWidth = 440
+    ClientHeight = 562
+    ClientWidth = 456
     TabOrder = 0
     object PageControl1: TPageControl
       Left = 0
-      Height = 527
+      Height = 562
       Top = 0
-      Width = 440
+      Width = 456
       ActivePage = TabSheet1
       Align = alClient
       TabIndex = 0
       TabOrder = 0
       object TabSheet1: TTabSheet
         Caption = 'Preparation'
-        ClientHeight = 499
-        ClientWidth = 432
+        ClientHeight = 534
+        ClientWidth = 448
         object gbDataGeneration: TGroupBox
           Left = 4
           Height = 157
           Top = 4
-          Width = 424
+          Width = 440
           Align = alTop
           AutoSize = True
           BorderSpacing.Around = 4
           Caption = ' Data generation '
           ClientHeight = 137
-          ClientWidth = 420
+          ClientWidth = 436
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 0
@@ -51,7 +51,7 @@ object frmMain: TfrmMain
             AnchorSideTop.Control = edNoiseY
             AnchorSideRight.Control = cbTestFunction
             AnchorSideRight.Side = asrBottom
-            Left = 389
+            Left = 405
             Height = 22
             Hint = 'Export data to verify fit with other software'
             Top = 31
@@ -101,20 +101,20 @@ object frmMain: TfrmMain
             AnchorSideTop.Control = gbDataGeneration
             AnchorSideRight.Control = gbDataGeneration
             AnchorSideRight.Side = asrBottom
-            Left = 100
+            Left = 101
             Height = 23
             Hint = 'Select a dataset for fitting'
             Top = 4
-            Width = 312
+            Width = 327
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 16
             BorderSpacing.Top = 4
             BorderSpacing.Right = 8
             ItemHeight = 15
-            OnSelect = cbTestFunctionSelect
             ParentFont = False
             Style = csDropDownList
             TabOrder = 0
+            OnSelect = cbTestFunctionSelect
           end
           object lblTestFunction: TLabel
             AnchorSideLeft.Control = gbDataGeneration
@@ -123,7 +123,7 @@ object frmMain: TfrmMain
             Left = 16
             Height = 15
             Top = 8
-            Width = 68
+            Width = 69
             BorderSpacing.Left = 16
             Caption = 'Test function'
             ParentFont = False
@@ -133,7 +133,7 @@ object frmMain: TfrmMain
             AnchorSideLeft.Side = asrBottom
             AnchorSideTop.Control = edNoiseY
             AnchorSideTop.Side = asrCenter
-            Left = 174
+            Left = 175
             Height = 15
             Top = 35
             Width = 64
@@ -156,7 +156,7 @@ object frmMain: TfrmMain
             AnchorSideLeft.Control = cbTestFunction
             AnchorSideTop.Control = cbTestFunction
             AnchorSideTop.Side = asrBottom
-            Left = 100
+            Left = 101
             Height = 23
             Top = 31
             Width = 66
@@ -164,16 +164,16 @@ object frmMain: TfrmMain
             BorderSpacing.Top = 4
             DecimalPlaces = 0
             MaxValue = 100
-            OnChange = edNoiseYChange
             ParentFont = False
             TabOrder = 1
             Value = 10
+            OnChange = edNoiseYChange
           end
           object edPointsCount: TSpinEdit
             AnchorSideLeft.Control = cbTestFunction
             AnchorSideTop.Control = edNoiseY
             AnchorSideTop.Side = asrBottom
-            Left = 100
+            Left = 101
             Height = 23
             Top = 58
             Width = 66
@@ -182,10 +182,10 @@ object frmMain: TfrmMain
             BorderSpacing.Bottom = 8
             MaxValue = 65535
             MinValue = 1
-            OnChange = edPointsCountChange
             ParentFont = False
             TabOrder = 2
             Value = 100
+            OnChange = edPointsCountChange
           end
           object lblNoiseY1: TLabel
             AnchorSideLeft.Control = lblTestFunction
@@ -207,7 +207,7 @@ object frmMain: TfrmMain
             Left = 8
             Height = 8
             Top = 89
-            Width = 404
+            Width = 420
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 8
             BorderSpacing.Right = 8
@@ -224,9 +224,9 @@ object frmMain: TfrmMain
             AutoSize = True
             BorderSpacing.Bottom = 12
             Caption = 'Load...'
-            OnClick = BtnLoadClick
             ParentFont = False
             TabOrder = 3
+            OnClick = BtnLoadClick
           end
           object Label1: TLabel
             AnchorSideLeft.Control = BtnLoad
@@ -239,7 +239,7 @@ object frmMain: TfrmMain
             Left = 93
             Height = 30
             Top = 97
-            Width = 327
+            Width = 343
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 16
             BorderSpacing.Bottom = 4
@@ -249,16 +249,17 @@ object frmMain: TfrmMain
         end
         object gbFitting: TGroupBox
           Left = 4
-          Height = 330
+          Height = 361
           Top = 169
-          Width = 424
+          Width = 440
           Align = alClient
           BorderSpacing.Left = 4
           BorderSpacing.Top = 8
           BorderSpacing.Right = 4
+          BorderSpacing.Bottom = 4
           Caption = ' Fitting '
-          ClientHeight = 310
-          ClientWidth = 420
+          ClientHeight = 341
+          ClientWidth = 436
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 1
@@ -271,13 +272,13 @@ object frmMain: TfrmMain
             Left = 14
             Height = 109
             Top = 151
-            Width = 392
+            Width = 408
             Anchors = [akTop, akLeft, akRight]
             AutoSize = True
             BorderSpacing.Top = 16
             Caption = 'Fit range'
             ClientHeight = 89
-            ClientWidth = 388
+            ClientWidth = 404
             Font.Style = [fsBold]
             ParentFont = False
             TabOrder = 3
@@ -287,13 +288,13 @@ object frmMain: TfrmMain
               Left = 16
               Height = 19
               Top = 4
-              Width = 95
+              Width = 93
               BorderSpacing.Left = 16
               BorderSpacing.Top = 4
               Caption = 'Use minimum'
-              OnClick = cbFitRangeUseMinClick
               ParentFont = False
               TabOrder = 0
+              OnClick = cbFitRangeUseMinClick
             end
             object cbFitRangeUseMax: TCheckBox
               AnchorSideLeft.Control = cbFitRangeUseMin
@@ -302,19 +303,19 @@ object frmMain: TfrmMain
               Left = 16
               Height = 19
               Top = 31
-              Width = 97
+              Width = 94
               BorderSpacing.Top = 8
               Caption = 'Use maximum'
-              OnClick = cbFitRangeUseMaxClick
               ParentFont = False
               TabOrder = 2
+              OnClick = cbFitRangeUseMaxClick
             end
             object edFitRangeMin: TFloatSpinEdit
               AnchorSideLeft.Control = cbFitRangeUseMin
               AnchorSideLeft.Side = asrBottom
               AnchorSideTop.Control = cbFitRangeUseMin
               AnchorSideTop.Side = asrCenter
-              Left = 143
+              Left = 141
               Height = 23
               Top = 2
               Width = 90
@@ -323,17 +324,17 @@ object frmMain: TfrmMain
               BorderSpacing.Top = 4
               MaxValue = 1E308
               MinValue = -1E308
-              OnChange = edFitRangeMinChange
               ParentFont = False
               TabOrder = 1
               Value = 5
               Visible = False
+              OnChange = edFitRangeMinChange
             end
             object edFitRangeMax: TFloatSpinEdit
               AnchorSideLeft.Control = edFitRangeMin
               AnchorSideTop.Control = cbFitRangeUseMax
               AnchorSideTop.Side = asrCenter
-              Left = 143
+              Left = 141
               Height = 23
               Top = 29
               Width = 90
@@ -341,11 +342,11 @@ object frmMain: TfrmMain
               BorderSpacing.Top = 4
               MaxValue = 1E308
               MinValue = -1E308
-              OnChange = edFitRangeMaxChange
               ParentFont = False
               TabOrder = 3
               Value = 20
               Visible = False
+              OnChange = edFitRangeMaxChange
             end
             object cbDrawFitRangeOnly: TCheckBox
               AnchorSideLeft.Control = cbFitRangeUseMin
@@ -354,16 +355,16 @@ object frmMain: TfrmMain
               Left = 16
               Height = 19
               Top = 58
-              Width = 179
+              Width = 177
               BorderSpacing.Top = 8
               BorderSpacing.Bottom = 12
               Caption = 'Draw fit curve in fit range only'
               Checked = True
               Enabled = False
-              OnClick = cbDrawFitRangeOnlyClick
               ParentFont = False
               State = cbChecked
               TabOrder = 4
+              OnClick = cbDrawFitRangeOnlyClick
             end
           end
           object edFitOrder: TSpinEdit
@@ -374,15 +375,15 @@ object frmMain: TfrmMain
             Left = 144
             Height = 23
             Top = 35
-            Width = 53
+            Width = 64
             Alignment = taRightJustify
             BorderSpacing.Left = 16
             BorderSpacing.Top = 8
             MaxValue = 100
-            OnChange = edFitOrderChange
             ParentFont = False
             TabOrder = 1
             Value = 2
+            OnChange = edFitOrderChange
           end
           object lblFitOrder: TLabel
             AnchorSideLeft.Control = lblFitEquation
@@ -405,7 +406,7 @@ object frmMain: TfrmMain
             Height = 23
             Hint = 'Select a function type to be used for fitting to the generated data'
             Top = 4
-            Width = 317
+            Width = 333
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 12
             BorderSpacing.Top = 4
@@ -418,10 +419,10 @@ object frmMain: TfrmMain
               'Power (y = a x^b, linear in log-log plot)'
               'Harmonic (y = b0 + b1*sin(x) + ...  + bn*sin(n*x)'
             )
-            OnSelect = cbFitEquationSelect
             ParentFont = False
             Style = csDropDownList
             TabOrder = 0
+            OnSelect = cbFitEquationSelect
           end
           object lblFitEquation: TLabel
             AnchorSideLeft.Control = gbFitting
@@ -444,13 +445,13 @@ object frmMain: TfrmMain
             Left = 14
             Height = 61
             Top = 74
-            Width = 392
+            Width = 408
             Anchors = [akTop, akLeft, akRight]
             AutoSize = True
             BorderSpacing.Top = 16
             Caption = 'Fixed parameters (check to keep constant)'
             ClientHeight = 41
-            ClientWidth = 388
+            ClientWidth = 404
             TabOrder = 2
             object cbFitParam0Fixed: TCheckBox
               AnchorSideLeft.Control = gbFixedParams
@@ -459,18 +460,18 @@ object frmMain: TfrmMain
               Left = 16
               Height = 19
               Top = 6
-              Width = 44
+              Width = 42
               BorderSpacing.Left = 16
               Caption = 'b0 ='
-              OnChange = cbFitParam0FixedChange
               ParentFont = False
               TabOrder = 0
+              OnChange = cbFitParam0FixedChange
             end
             object edFitParam0: TFloatSpinEdit
               AnchorSideLeft.Control = cbFitParam0Fixed
               AnchorSideLeft.Side = asrBottom
               AnchorSideTop.Control = gbFixedParams
-              Left = 64
+              Left = 62
               Height = 23
               Top = 4
               Width = 80
@@ -481,28 +482,28 @@ object frmMain: TfrmMain
               Enabled = False
               MaxValue = 1E308
               MinValue = -1E308
-              OnChange = FixedParamsChanged
               ParentFont = False
               TabOrder = 1
+              OnChange = FixedParamsChanged
             end
             object cbFitParam1Fixed: TCheckBox
               AnchorSideTop.Control = cbFitParam0Fixed
               AnchorSideRight.Control = edFitParam1
-              Left = 252
+              Left = 270
               Height = 19
               Top = 6
-              Width = 44
+              Width = 42
               Anchors = [akTop, akRight]
               Caption = 'b1 ='
-              OnChange = cbFitParam1FixedChange
               ParentFont = False
               TabOrder = 2
+              OnChange = cbFitParam1FixedChange
             end
             object edFitParam1: TFloatSpinEdit
               AnchorSideTop.Control = edFitParam0
               AnchorSideRight.Control = gbFixedParams
               AnchorSideRight.Side = asrBottom
-              Left = 296
+              Left = 312
               Height = 23
               Top = 4
               Width = 80
@@ -512,9 +513,9 @@ object frmMain: TfrmMain
               Enabled = False
               MaxValue = 1E308
               MinValue = -1E308
-              OnChange = FixedParamsChanged
               ParentFont = False
               TabOrder = 3
+              OnChange = FixedParamsChanged
             end
           end
           object edConfLevel: TFloatSpinEdit
@@ -522,7 +523,7 @@ object frmMain: TfrmMain
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = cbFitEquation
             AnchorSideRight.Side = asrBottom
-            Left = 344
+            Left = 360
             Height = 23
             Top = 272
             Width = 62
@@ -533,17 +534,17 @@ object frmMain: TfrmMain
             Increment = 0.01
             MaxValue = 0.99
             MinValue = 0.01
-            OnChange = edConfLevelChange
             ParentFont = False
             TabOrder = 4
             Value = 0.95
+            OnChange = edConfLevelChange
           end
           object lblConfLevel: TLabel
             AnchorSideLeft.Side = asrBottom
             AnchorSideTop.Control = edConfLevel
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = edConfLevel
-            Left = 248
+            Left = 264
             Height = 15
             Top = 276
             Width = 88
@@ -557,42 +558,43 @@ object frmMain: TfrmMain
       end
       object TabSheet2: TTabSheet
         Caption = 'Results'
-        ClientHeight = 499
-        ClientWidth = 432
+        ClientHeight = 534
+        ClientWidth = 448
         object lbResults: TListBox
           Left = 0
-          Height = 499
+          Height = 534
           Top = 0
-          Width = 432
+          Width = 448
           Align = alClient
           BorderStyle = bsNone
           Font.Height = -11
           Font.Name = 'Courier New'
           ItemHeight = 0
-          OnDrawItem = lbResultsDrawItem
           ParentFont = False
           Style = lbOwnerDrawFixed
           TabOrder = 0
+          OnDrawItem = lbResultsDrawItem
         end
       end
     end
   end
   object pnlChart: TPanel
-    Left = 469
-    Height = 527
+    Left = 485
+    Height = 562
     Top = 8
-    Width = 549
+    Width = 626
     Align = alClient
+    AutoSize = True
     BorderSpacing.Around = 8
     BevelOuter = bvNone
-    ClientHeight = 527
-    ClientWidth = 549
+    ClientHeight = 562
+    ClientWidth = 626
     TabOrder = 1
     object Chart: TChart
       Left = 0
-      Height = 485
+      Height = 520
       Top = 0
-      Width = 549
+      Width = 626
       AxisList = <      
         item
           Grid.Visible = False
@@ -637,6 +639,7 @@ object frmMain: TfrmMain
       Foot.Font.Color = clBlue
       Legend.Alignment = laTopCenter
       Legend.Font.Height = -13
+      Legend.SymbolWidth = 40
       Legend.Visible = True
       Title.Brush.Color = clBtnFace
       Title.Font.Color = clRed
@@ -667,6 +670,7 @@ object frmMain: TfrmMain
         ExtentAutoY = True
         Pen.Color = clRed
         Pen.Style = psDot
+        Pen.EnhancedBrokenLines = True
       end
       object LowerConfIntervalSeries: TFuncSeries
         Legend.Visible = False
@@ -676,6 +680,7 @@ object frmMain: TfrmMain
         ExtentAutoY = True
         Pen.Color = clRed
         Pen.Style = psDot
+        Pen.EnhancedBrokenLines = True
       end
       object UpperPredIntervalSeries: TFuncSeries
         Active = False
@@ -685,6 +690,7 @@ object frmMain: TfrmMain
         ExtentAutoY = True
         Pen.Color = clRed
         Pen.Style = psDash
+        Pen.EnhancedBrokenLines = True
       end
       object LowerPredIntervalSeries: TFuncSeries
         Legend.Visible = False
@@ -694,18 +700,19 @@ object frmMain: TfrmMain
         ExtentAutoY = True
         Pen.Color = clRed
         Pen.Style = psDash
+        Pen.EnhancedBrokenLines = True
       end
     end
     object pnlLog: TPanel
       Left = 0
       Height = 42
-      Top = 485
-      Width = 549
+      Top = 520
+      Width = 626
       Align = alBottom
       AutoSize = True
       BevelOuter = bvNone
       ClientHeight = 42
-      ClientWidth = 549
+      ClientWidth = 626
       TabOrder = 1
       object cbLogX: TCheckBox
         AnchorSideLeft.Control = pnlLog
@@ -713,10 +720,10 @@ object frmMain: TfrmMain
         Left = 0
         Height = 19
         Top = 0
-        Width = 93
+        Width = 90
         Caption = 'Logarithmic x'
-        OnClick = cbLogClick
         TabOrder = 0
+        OnClick = cbLogClick
       end
       object cbLogY: TCheckBox
         AnchorSideLeft.Control = cbLogX
@@ -725,84 +732,84 @@ object frmMain: TfrmMain
         Left = 0
         Height = 19
         Top = 19
-        Width = 93
+        Width = 91
         BorderSpacing.Bottom = 4
         Caption = 'Logarithmic y'
-        OnClick = cbLogClick
         TabOrder = 1
+        OnClick = cbLogClick
       end
       object cbShowErrorbars: TCheckBox
         AnchorSideLeft.Control = cbLogY
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = pnlLog
         AnchorSideTop.Side = asrCenter
-        Left = 109
+        Left = 107
         Height = 19
         Top = 12
-        Width = 102
+        Width = 100
         BorderSpacing.Left = 16
         Caption = 'Show error bars'
-        OnChange = cbShowErrorbarsChange
         TabOrder = 2
+        OnChange = cbShowErrorbarsChange
       end
       object cbShowConfidenceIntervals: TCheckBox
         AnchorSideLeft.Control = cbShowErrorbars
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = pnlLog
-        Left = 227
+        Left = 223
         Height = 19
         Top = 0
-        Width = 158
+        Width = 156
         BorderSpacing.Left = 16
         Caption = 'Show confidence intervals'
-        OnChange = cbShowConfidenceIntervalsChange
         TabOrder = 3
+        OnChange = cbShowConfidenceIntervalsChange
       end
       object cbShowPredictionIntervals: TCheckBox
         AnchorSideLeft.Control = cbShowConfidenceIntervals
         AnchorSideTop.Control = cbShowConfidenceIntervals
         AnchorSideTop.Side = asrBottom
-        Left = 227
+        Left = 223
         Height = 19
         Top = 19
-        Width = 153
+        Width = 151
         Caption = 'Show prediction intervals'
-        OnChange = cbShowPredictionIntervalsChange
         TabOrder = 4
+        OnChange = cbShowPredictionIntervalsChange
       end
       object cbHTML: TCheckBox
         AnchorSideLeft.Control = cbShowConfidenceIntervals
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = pnlLog
         AnchorSideTop.Side = asrCenter
-        Left = 401
+        Left = 395
         Height = 19
         Top = 12
-        Width = 52
+        Width = 51
         BorderSpacing.Left = 16
         Caption = 'HTML'
-        OnChange = cbHTMLChange
         TabOrder = 5
+        OnChange = cbHTMLChange
       end
       object cbCombinedExtent: TCheckBox
         AnchorSideLeft.Control = cbHTML
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = pnlLog
         AnchorSideTop.Side = asrCenter
-        Left = 469
+        Left = 462
         Height = 19
         Top = 12
-        Width = 112
+        Width = 109
         BorderSpacing.Left = 16
         Caption = 'Combined extent'
-        OnChange = cbCombinedExtentChange
         TabOrder = 6
+        OnChange = cbCombinedExtentChange
       end
     end
   end
   object Splitter1: TSplitter
-    Left = 456
-    Height = 543
+    Left = 472
+    Height = 578
     Top = 0
     Width = 5
     ResizeStyle = rsPattern

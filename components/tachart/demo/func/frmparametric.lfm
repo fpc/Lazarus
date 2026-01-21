@@ -5,6 +5,7 @@ object ParametricFrame: TParametricFrame
   Width = 622
   ClientHeight = 421
   ClientWidth = 622
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 543
   DesignTop = 227
@@ -64,8 +65,9 @@ object ParametricFrame: TParametricFrame
       Left = 24
       Height = 23
       Top = 182
-      Width = 50
+      Width = 58
       Alignment = taRightJustify
+      MaxValue = 100
       TabOrder = 0
       Value = 2
       OnChange = ParamChange
@@ -74,8 +76,9 @@ object ParametricFrame: TParametricFrame
       Left = 24
       Height = 23
       Top = 210
-      Width = 50
+      Width = 58
       Alignment = taRightJustify
+      MaxValue = 100
       TabOrder = 1
       Value = 2
       OnChange = ParamChange

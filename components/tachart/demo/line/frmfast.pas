@@ -69,7 +69,7 @@ begin
     s.AxisIndexY := Ord(cbRotated.Checked);
     s.AxisIndexX := 1 - s.AxisIndexY;
     s.ListSource.Sorted := cbSorted.Checked;
-    for j := 1 to POINTS_PER_SERIE do
+    for j := 1 to POINTS_PER_SERIES do
       s.AddXY(j, Random * 5 + Chart.SeriesCount * 10);
     Chart.AddSeries(s);
   end;

@@ -40,10 +40,12 @@ type
     procedure btnStopResumeClick(Sender: TObject);
     procedure cbFrozenAxesChange(Sender: TObject);
     procedure cbLiveViewChange(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure seViewportSizeChange(Sender: TObject);
     procedure TimerTimer(Sender: TObject);
   private
+    FActivated: Boolean;
     FStartTime: TDateTime;
 
   public
@@ -107,6 +109,17 @@ begin
   ChartLiveView1.Active := cbLiveView.Checked;
   if not ChartLiveView1.Active then
     Chart1.ZoomFull;
+end;
+
+procedure TForm1.FormActivate(Sender: TObject);
+begin
+  if not FActivated then
+  begin
+    FActivated := true;
+    Constraints.MinWidth := btnReset.Left + btnReset.Width + Panel1.BorderSpacing.Around*2;
+    if Width < Constraints.MinWidth then
+      Width := Constraints.MinWidth;
+  end;
 end;
 
 { Toggles between automatic scaling of the axes and predefined axis limits

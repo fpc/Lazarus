@@ -69,6 +69,7 @@ type
     procedure EdXErrPercentChange(Sender: TObject);
     procedure EdYErrPercentChange(Sender: TObject);
 
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
     procedure RbXErrConstChange(Sender: TObject);
@@ -89,6 +90,7 @@ type
       ASource: TUserDefinedChartSource; AIndex: Integer; var AItem: TChartDataItem);
 
   private
+    FActivated: Boolean;
     procedure PopulateListSource;
     procedure PopulateUserData;
     procedure SetXErrorBarParams;
@@ -276,6 +278,17 @@ end;
 procedure TMainForm.EdYErrPercentChange(Sender: TObject);
 begin
   SetYErrorBarParams;
+end;
+
+procedure TMainForm.FormActivate(Sender: TObject);
+begin
+  if not FActivated then
+  begin
+    FActivated := true;
+    AutoSize := false;
+    Constraints.MinHeight :=  cBRotated.Top + cbRotated.Height + cbRotated.BorderSpacing.Bottom;
+    if Height < Constraints.MinHeight then Height := Constraints.MinHeight;
+  end;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);

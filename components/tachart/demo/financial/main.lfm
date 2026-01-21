@@ -50,11 +50,6 @@ object MainForm: TMainForm
     Toolset = ChartToolset1
     Align = alClient
     object ohlcSeries: TOpenHighLowCloseSeries
-      CandlestickDownBrush.Color = clRed
-      CandlestickDownPen.Color = clMaroon
-      CandlestickLinePen.Color = clDefault
-      CandlestickUpBrush.Color = clLime
-      CandlestickUpPen.Color = clGreen
       DownLinePen.Color = clRed
       DownLinePen.Width = 2
       LinePen.Color = clLime

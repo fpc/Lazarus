@@ -385,7 +385,7 @@ begin
     exit;
 
   isRTL := IsRightToLeft;
-  
+
   Canvas.FillRect(ARect);
   if cloShowCheckboxes in Options then begin
     tbBase := ord(THEMED_BASE[FCheckStyle, Checked[AIndex]]);

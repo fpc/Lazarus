@@ -55,6 +55,7 @@ uses
 
 const
   DATA_FILE = 'data.txt';
+  DATE_FORMAT = 'yyyy-mm-dd';
 
 { TMainForm }
 
@@ -69,7 +70,7 @@ var
 begin
   fs := DefaultFormatSettings;
   fs.DateSeparator := '-';
-  fs.ShortDateFormat := 'yyyy/mm/dd'; //d/mmm/yyyy';
+  fs.ShortDateFormat := DATE_FORMAT;
   fs.DecimalSeparator := '.';
   dataList := TStringList.Create;
   try
@@ -78,7 +79,7 @@ begin
     try
       for i:=1 to dataList.Count-1 do begin   // skip header line
         lines.CommaText := dataList[i];
-        xDate := ScanDateTime('yyyy-mm-dd', lines[0]);
+        xDate := ScanDateTime(DATE_FORMAT, lines[0]);
         yOpen := StrToFloat(lines[1], fs);
         yHigh := StrToFloat(lines[2], fs);
         yLow := StrToFloat(lines[3], fs);
@@ -127,10 +128,12 @@ procedure TMainForm.DataPointHintTool_AllHint(ATool: TDataPointHintTool;
   const APoint: TPoint; var AHint: String);
 var
   ser: TOpenHighLowCloseSeries;
+  dt: TDateTime;
 begin
   ser := ATool.Series as TOpenHighLowCloseSeries;
+  dt := ScanDateTime(DATE_FORMAT, ser.ListSource[ATool.PointIndex]^.Text);
   AHint := AnsiToUTF8(Format('Date: %s'#13'  Open: %.2m'#13'  High: %.2m'#13'  Low: %.2m'#13'  Close: %.2m', [
-    FormatDateTime('dddddd', StrToDate(ser.ListSource[ATool.PointIndex]^.Text)),
+    DateToStr(dt),
     ser.ListSource[ATool.PointIndex]^.GetY(ser.YIndexOpen),
     ser.ListSource[ATool.PointIndex]^.GetY(ser.YIndexHigh),
     ser.ListSource[ATool.PointIndex]^.GetY(ser.YIndexHigh),
@@ -146,6 +149,7 @@ var
   idx: Integer;
   yidx: Integer;
   ohlcName: String;
+  dt: TDateTime;
 begin
   ser := ATool.Series as TOpenHighLowCloseSeries;
   idx := ATool.PointIndex;
@@ -158,8 +162,9 @@ begin
     ohlcName := 'Low'
   else if yidx = ohlcSeries.YIndexOpen then
     ohlcName := 'Open';
+  dt := ScanDateTime(DATE_FORMAT, ser.ListSource[idx]^.Text);
   AHint := AnsiToUTF8(Format('Date: %s'#13'  %s: %.2m', [
-    FormatDateTime('dddddd', StrToDate(ser.ListSource[idx]^.Text)),
+    DateToStr(dt),
     ohlcName,
     ser.ListSource[idx]^.GetY(yidx)
   ]));

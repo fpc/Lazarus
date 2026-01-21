@@ -1,18 +1,19 @@
 object MainForm: TMainForm
-  Left = 371
-  Height = 601
-  Top = 283
+  Left = 308
+  Height = 588
+  Top = 180
   Width = 1136
-  Caption = 'MainForm'
-  ClientHeight = 601
+  Caption = 'Error Bars Demo'
+  ClientHeight = 588
   ClientWidth = 1136
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
+  OnActivate = FormActivate
   OnCreate = FormCreate
   object Chart1: TChart
-    Left = 208
-    Height = 601
+    Left = 199
+    Height = 588
     Top = 0
-    Width = 502
+    Width = 511
     AxisList = <    
       item
         Grid.Color = clSilver
@@ -118,24 +119,24 @@ object MainForm: TMainForm
   end
   object Panel1: TPanel
     Left = 0
-    Height = 601
+    Height = 588
     Top = 0
-    Width = 208
+    Width = 199
     Align = alLeft
+    AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 601
-    ClientWidth = 208
+    ClientHeight = 588
+    ClientWidth = 199
     TabOrder = 1
     object CbRotated: TCheckBox
       AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = GbErrorBarStyle
       AnchorSideTop.Side = asrBottom
-      AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
       Left = 8
       Height = 19
-      Top = 574
+      Top = 549
       Width = 59
-      Anchors = [akLeft, akBottom]
       BorderSpacing.Left = 8
       BorderSpacing.Top = 8
       BorderSpacing.Bottom = 8
@@ -152,14 +153,14 @@ object MainForm: TMainForm
       Left = 8
       Height = 153
       Top = 117
-      Width = 192
+      Width = 183
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 8
       BorderSpacing.Around = 8
       Caption = 'x error bars'
       ClientHeight = 133
-      ClientWidth = 188
+      ClientWidth = 179
       TabOrder = 1
       object RbXErrConst: TRadioButton
         AnchorSideLeft.Control = CbXErrShow
@@ -209,13 +210,13 @@ object MainForm: TMainForm
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = GbXErr
         AnchorSideRight.Side = asrBottom
-        Left = 117
+        Left = 105
         Height = 23
         Top = 31
-        Width = 63
+        Width = 66
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 24
+        BorderSpacing.Left = 12
         BorderSpacing.Right = 8
         DecimalPlaces = 1
         Increment = 0.1
@@ -231,13 +232,13 @@ object MainForm: TMainForm
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = EdXErrConst
         AnchorSideRight.Side = asrBottom
-        Left = 117
+        Left = 105
         Height = 23
         Top = 54
-        Width = 63
+        Width = 66
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 24
+        BorderSpacing.Left = 12
         DecimalPlaces = 1
         Increment = 2
         MaxValue = 100
@@ -285,14 +286,14 @@ object MainForm: TMainForm
       Left = 8
       Height = 153
       Top = 286
-      Width = 192
+      Width = 183
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 8
       BorderSpacing.Around = 8
       Caption = 'y error bars'
       ClientHeight = 133
-      ClientWidth = 188
+      ClientWidth = 179
       TabOrder = 2
       object RbYErrConst: TRadioButton
         AnchorSideLeft.Control = CbYErrShow
@@ -342,13 +343,13 @@ object MainForm: TMainForm
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = GbYErr
         AnchorSideRight.Side = asrBottom
-        Left = 117
+        Left = 105
         Height = 23
         Top = 31
-        Width = 63
+        Width = 66
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 24
+        BorderSpacing.Left = 12
         BorderSpacing.Right = 8
         DecimalPlaces = 1
         Increment = 0.1
@@ -364,13 +365,13 @@ object MainForm: TMainForm
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = EdYErrConst
         AnchorSideRight.Side = asrBottom
-        Left = 117
+        Left = 105
         Height = 23
         Top = 54
-        Width = 63
+        Width = 66
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 24
+        BorderSpacing.Left = 12
         DecimalPlaces = 1
         Increment = 2
         MaxValue = 100
@@ -412,10 +413,13 @@ object MainForm: TMainForm
     object RgChartSource: TRadioGroup
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
       Left = 8
       Height = 93
       Top = 8
       Width = 183
+      Anchors = [akTop, akLeft, akRight]
       AutoFill = True
       AutoSize = True
       BorderSpacing.Around = 8
@@ -441,15 +445,15 @@ object MainForm: TMainForm
       OnClick = RgChartSourceClick
     end
     object GbErrorBarStyle: TGroupBox
-      AnchorSideLeft.Control = GbYErr
+      AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = GbYErr
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = GbYErr
+      AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 16
+      Left = 8
       Height = 78
       Top = 455
-      Width = 176
+      Width = 183
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 8
@@ -457,20 +461,21 @@ object MainForm: TMainForm
       BorderSpacing.Around = 8
       Caption = 'Error bar style'
       ClientHeight = 58
-      ClientWidth = 172
+      ClientWidth = 179
       TabOrder = 4
       object EdErrPenWidth: TSpinEdit
+        AnchorSideLeft.Control = LblErrLineWidth
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = GbErrorBarStyle
         AnchorSideRight.Control = GbErrorBarStyle
         AnchorSideRight.Side = asrBottom
-        Left = 103
+        Left = 84
         Height = 23
         Top = 4
-        Width = 61
+        Width = 87
         Alignment = taRightJustify
-        Anchors = [akTop, akRight]
-        BorderSpacing.Left = 24
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 12
         BorderSpacing.Top = 4
         BorderSpacing.Right = 8
         MaxValue = 5
@@ -507,13 +512,15 @@ object MainForm: TMainForm
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = EdErrPenWidth
         AnchorSideRight.Side = asrBottom
-        Left = 103
+        Left = 84
         Height = 22
         Top = 28
-        Width = 61
+        Width = 87
         Options = [ccoPatternBrush, ccoPatternPen]
         PenPattern = '1|1'
         PointerStyle = psNone
+        SymbolWidth = 40
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 1
         BorderSpacing.Bottom = 8
         ItemHeight = 16
@@ -525,7 +532,7 @@ object MainForm: TMainForm
   end
   object ChartListbox1: TChartListbox
     Left = 710
-    Height = 593
+    Height = 580
     Top = 4
     Width = 140
     Chart = Chart1
@@ -538,7 +545,7 @@ object MainForm: TMainForm
   end
   object StringGrid1: TStringGrid
     Left = 854
-    Height = 593
+    Height = 580
     Top = 4
     Width = 278
     Align = alRight

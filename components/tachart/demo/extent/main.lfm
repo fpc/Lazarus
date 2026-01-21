@@ -6,8 +6,8 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 397
   ClientWidth = 451
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 311
@@ -91,7 +91,7 @@ object Form1: TForm1
     object lblBoundValue: TLabel
       AnchorSideLeft.Control = cgUseBounds
       AnchorSideLeft.Side = asrBottom
-      Left = 184
+      Left = 180
       Height = 15
       Top = 20
       Width = 28
@@ -102,7 +102,7 @@ object Form1: TForm1
       Left = 8
       Height = 70
       Top = 8
-      Width = 160
+      Width = 156
       Align = alLeft
       AutoFill = True
       AutoSize = True
@@ -120,7 +120,7 @@ object Form1: TForm1
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 2
       ClientHeight = 50
-      ClientWidth = 156
+      ClientWidth = 152
       Columns = 2
       Items.Strings = (
         'Left'
@@ -128,8 +128,8 @@ object Form1: TForm1
         'Bottom'
         'Top'
       )
-      OnItemClick = cgUseBoundsItemClick
       TabOrder = 0
+      OnItemClick = cgUseBoundsItemClick
       Data = {
         0400000002020202
       }
@@ -138,36 +138,37 @@ object Form1: TForm1
       AnchorSideLeft.Control = lblBoundValue
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 220
+      Left = 216
       Height = 23
       Top = 16
-      Width = 50
+      Width = 70
+      Alignment = taRightJustify
       BorderSpacing.Left = 8
       BorderSpacing.Top = 16
       Increment = 0.1
       MaxValue = 10
       MinValue = 1
-      OnChange = fseBoundsChange
       TabOrder = 1
       Value = 1.7
+      OnChange = fseBoundsChange
     end
     object btnPrevExtent: TButton
       AnchorSideLeft.Control = lblBoundValue
-      Left = 184
+      Left = 180
       Height = 25
       Top = 48
-      Width = 107
+      Width = 106
       AutoSize = True
       Caption = 'Previous extent'
-      OnClick = btnPrevExtentClick
       TabOrder = 2
+      OnClick = btnPrevExtentClick
     end
     object lblHistory: TLabel
       AnchorSideLeft.Control = btnPrevExtent
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = btnPrevExtent
       AnchorSideTop.Side = asrCenter
-      Left = 307
+      Left = 302
       Height = 15
       Top = 53
       Width = 51
