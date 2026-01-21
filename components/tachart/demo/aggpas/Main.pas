@@ -2,8 +2,16 @@
   either directly or via the corresponding GUIConnector.
   
   Note that the AggPas version coming with Lazarus is unmaintained at the moment 
-  and rather buggy. Font support works fine only on Windows. On Linux, you must 
-  specify the directory with your fonts in the constant FONT_DIR defined below. 
+  and rather buggy.
+
+  Font support works fine only on Windows.
+
+  On Linux, a list of font directories is stored in an internal list
+  (FFontDirList) which very probably is not complete. It can be extended by
+  calling the drawer's AddFontDir. The property FontDir addresses the first
+  directory in the list. Writing to it adds the specified directory to the top
+  of the list, or if it already is contained, moves it to the top.
+
   On macOS (cocoa), text output is not supported at all.
 
   By default, system colors are not supported and usually rendered as black.
@@ -66,11 +74,6 @@ implementation
 uses
   TAChartUtils, TADrawerCanvas;
 
-{$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
-const
-  FONT_DIR = '/usr/share/fonts/truetype/';
-{$ENDIF}
-
 { TMainForm }
 
 procedure TMainForm.cbAggPasClick(Sender: TObject);
@@ -99,9 +102,6 @@ begin
   
   {$IFDEF LCLWin32}
   ChartLineSeries.Transparency := 128;
-  {$ENDIF}
-  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
-  ChartGUIConnectorAggPas.FontDir := FONT_DIR;
   {$ENDIF}
 
   {$IFDEF USE_SYSTEM_COLORS}
@@ -133,9 +133,6 @@ begin
   {$IFDEF USE_SYSTEM_COLORS}
   d.DoChartColorToFPColor := @ChartColorSysToFPColor;
   {$ENDIF}
-  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
-  (d as TAggPasDrawer).FontDir := FONT_DIR;
-  {$ENDIF}
   Chart.Draw(d, ChartPaintBox.Canvas.ClipRect);
   Chart.Title.Text.Text := 'Standard';
   Chart.EnableRedrawing;
@@ -144,7 +141,7 @@ begin
   // others it is red-green-blue. In principle, AggPas can handle this, but
   // since it is not maintained ATM, I chose the "easy way" to swap the red
   // and blue bytes.
-  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
+  {$IFDEF LINUX}
   SwapRedBlue(FAggCanvas.Image.IntfImg);
   {$ENDIF}
   FBmp.LoadFromIntfImage(FAggCanvas.Image.IntfImg);

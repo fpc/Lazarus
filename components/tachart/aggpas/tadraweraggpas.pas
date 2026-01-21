@@ -14,7 +14,7 @@ unit TADrawerAggPas;
 interface
 
 uses
-  Classes, FPCanvas, FPImage, Agg_LCL, TAChartUtils, TADrawUtils;
+  SysUtils, Classes, FPCanvas, FPImage, Agg_LCL, TAChartUtils, TADrawUtils;
 
 type
 
@@ -22,12 +22,14 @@ type
 
   TAggPasDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
-    FFontDir: String;
+    FFontDirList: TStrings;
     FPaintingPattern: Integer;
     FPatternPainter: TChartLinePatternPainter;
     function ApplyTransparency(AColor: TFPColor): TFPColor;
+    function GetFontDir: String;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
+    procedure SetFontDir(ADir: String);
     procedure SetPen(APen: TFPCustomPen);
   strict protected
     FCanvas: TAggLCLCanvas;
@@ -35,7 +37,9 @@ type
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
     constructor Create(ACanvas: TAggLCLCanvas);
+    destructor Destroy; override;
   public
+    procedure AddFontDir(ADir: String);
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart;
     procedure ClippingStart(const AClipRect: TRect);
@@ -74,7 +78,8 @@ type
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
     procedure SetPenStyle(AStyle: TFPPenStyle);
     procedure SetPenWidth(AWidth: Integer);
-    property FontDir: String read FFontDir write FFontDir;
+    // First directory in the FontDirList. Not used by Windows.
+    property FontDir: String read GetFontDir write SetFontDir;
   end;
 
 procedure SwapRedBlue(AImg: TFPCustomImage);
@@ -103,6 +108,11 @@ begin
 end;
 
 { TAggPasDrawer }
+
+procedure TAggPasDrawer.AddFontDir(ADir: String);
+begin
+  FFontDirList.Add(IncludeTrailingPathDelimiter(ADir));
+end;
 
 procedure TAggPasDrawer.AddToFontOrientation(ADelta: Integer);
 begin
@@ -136,6 +146,21 @@ constructor TAggPasDrawer.Create(ACanvas: TAggLCLCanvas);
 begin
   inherited Create;
   FCanvas := ACanvas;
+  FFontDirList := TStringList.Create;
+  {$IFDEF LINUX}
+  AddFontDir('/usr/share/cups/fonts/');
+  AddFontDir('/usr/share/fonts/truetype/');
+  AddFontDir('/usr/share/fonts/truetype/liberation/');
+  AddFontDir('/usr/share/fonts/TTF/');
+  AddFontDir('/usr/local/lib/X11/fonts/');
+  AddFontDir(GetUserDir + '.fonts/');
+  {$ENDIF}
+end;
+
+destructor TAggPasDrawer.Destroy;
+begin
+  FFontDirList.Free;
+  inherited Destroy;
 end;
 
 procedure TAggPasDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
@@ -165,6 +190,14 @@ begin
   Result.Blue := FCanvas.Font.AggColor.b shl 8;
 end;
 
+function TAggPasDrawer.GetFontDir: String;
+begin
+  if FFontDirList.Count > 0 then
+    Result := FFontDirList[0]
+  else
+    Result := '';
+end;
+
 function TAggPasDrawer.GetFontName: String;
 begin
   Result := FCanvas.Font.Name;
@@ -173,7 +206,8 @@ end;
 function TAggPasDrawer.GetFontSize: Integer;
 begin
   if FCanvas.Font.AggHeight = 0 then
-    Result := DEFAULT_FONT_SIZE else
+    Result := DEFAULT_FONT_SIZE
+  else
     Result := round(FCanvas.Font.AggHeight * 72 / 96);
 end;
 
@@ -379,20 +413,49 @@ procedure TAggPasDrawer.SetFont(AFont: TFPCustomFont);
 var
   f: TAggLCLFont;
   fontSize: Integer;
-  fontName: String;
+  fontName, fn: String;
+  found: Boolean = false;
+  i: Integer;
 begin
   if (AFont.Name = '') or (Lowercase(AFont.Name) = 'default') then
     fontName := 'LiberationSans-Regular'
   else
     fontName := AFont.Name;
-  {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5) or DEFINED(LCLQt6)}
-  fontName := FFontDir + fontName + '.ttf';
+
+  {$IFDEF LINUX}
+  for i := 0 to FFontDirList.Count-1 do
+  begin
+    fn := FFontDirList[i] + fontName + '.ttf';
+    if FileExists(fn) then
+    begin
+      found := true;
+      fontName := fn;
+      break;
+    end;
+  end;
+  if not found then
+    exit;
   {$ENDIF}
+
   fontSize := IfThen(AFont.Size = 0, DEFAULT_FONT_SIZE, AFont.Size);
   f := FCanvas.Font;
   f.LoadFromFile(fontName, f.SizeToAggHeight(fontSize), AFont.Bold, AFont.Italic);
   f.FPColor := ApplyTransparency(FPColorOrMono(AFont.FPColor));
   f.AggAngle := -OrientToRad(FGetFontOrientationFunc(AFont));
+end;
+
+procedure TAggPasDrawer.SetFontDir(ADir: String);
+var
+  idx: Integer;
+begin
+  if (ADir = '') or (ADir = GetFontDir) then
+    exit;
+  ADir := IncludeTrailingPathDelimiter(ADir);
+  idx := FFontDirList.IndexOf(ADir);
+  if idx = -1 then
+    FFontDirList.Insert(0, ADir)
+  else
+    FFontDirList.Move(idx, 0);
 end;
 
 type
