@@ -10,7 +10,7 @@ object FileSearcherForm: TFileSearcherForm
   ClientHeight = 214
   ClientWidth = 556
   Position = poScreenCenter
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object bpFileSearch: TButtonPanel
@@ -48,6 +48,7 @@ object FileSearcherForm: TFileSearcherForm
   object edtSearch: TEdit
     Left = 104
     Height = 34
+    Hint = 'Search term, must contain at least 2 characters'
     Top = 4
     Width = 299
     Anchors = [akTop, akLeft, akRight]

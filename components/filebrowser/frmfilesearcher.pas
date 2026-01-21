@@ -29,7 +29,9 @@ type
     FController: TFileBrowserController;
     FResults: TFileSearchResults;
 
+    procedure DisableListBox(const aMsg: String);
     procedure DoFilter;
+    procedure HandleIndexingDone(Sender: TObject);
   public
     Function GetSelectedItems : TFileEntryArray;
   end;
@@ -51,6 +53,20 @@ begin
   DoFilter;
 end;
 
+procedure TFileSearcherForm.DisableListBox(const aMsg : String);
+
+begin
+  LBFiles.Items.BeginUpdate;
+  try
+    LBFiles.Items.Clear;
+    LBFiles.Items.Append('');
+    LBFiles.Items.Append(aMsg);
+    LBFiles.Enabled:=False;
+  finally
+    LBFiles.Items.EndUpdate;
+  end;
+end;
+
 procedure TFileSearcherForm.DoFilter;
 
 var
@@ -60,13 +76,16 @@ var
 
 begin
   if Not Assigned(FController) or (Length(edtSearch.Text)<2) then
+    begin
+    DisableListBox('Search term too short');
     exit;
+    end;
+  FResults.Clear;
   lMatchOptions:=[];
   if (fsoMatchOnlyFileName in FController.SearchOptions) then
     Include(lMatchOptions,fmoFileNameOnly);
   if (fsoUseLetters in FController.SearchOptions) then
     Include(lMatchOptions,fmoLetters);
-  FResults.Clear;
   LBFiles.Items.BeginUpdate;
   try
     LBFiles.Items.Clear;
@@ -79,6 +98,16 @@ begin
   finally
     LBFiles.Items.EndUpdate;
   end;
+  if LBFiles.Items.Count>0 then
+    LBFiles.Enabled:=True
+  else
+    DisableListBox('No files match your search term');
+end;
+
+procedure TFileSearcherForm.HandleIndexingDone(Sender: TObject);
+begin
+  edtSearch.Enabled:=True;
+  DisableListBox('Search term too short');
 end;
 
 function TFileSearcherForm.GetSelectedItems: TFileEntryArray;
@@ -113,11 +142,18 @@ begin
   if cbFilter.Mask<>'' then
     FMask:=TMaskList.Create(cbFilter.Mask);
   FResults:=TFileSearchResults.Create;
-end;
+  FController.AddOnIndexingFinishedEvent(@HandleIndexingDone);
+  if FController.FillingTree then
+    begin
+    DisableListBox('Building file search index, search not yet available');
+    edtSearch.Enabled:=False;
+    end;
+ end;
 
 procedure TFileSearcherForm.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(FMask);
+  FController.RemoveOnIndexingFinishedEvent(@HandleIndexingDone);
+    FreeAndNil(FMask);
   FreeAndNil(FResults);
 end;
 
@@ -135,18 +171,31 @@ Var
   S,Term : String;
   lCanvas : TCanvas;
   lMatch : TFileSearchMatch;
+  lPositions : TMatchPositionArray;
   lPos : TMatchPosition;
 
 begin
   lCanvas:=LBFiles.Canvas;
-  lMatch:=fResults[Index];
-  S:=lMatch.FileName;
+  if Index>=FResults.Count then
+    begin
+    lPositions:=[];
+    if Index<LBFiles.Items.Count then
+      S:=LBFiles.Items[index]
+    else
+      S:='';
+    end
+  else
+    begin
+    lMatch:=fResults[Index];
+    S:=lMatch.FileName;
+    lPositions:=lMatch.MatchPositions;
+    end;
   lRect:=aRect;
   if not (odSelected in State) then
     begin
     c:=lCanvas.Brush.Color;
     lCanvas.Brush.Color:=clHighlight;
-    for lPos in lMatch.MatchPositions do
+    for lPos in lPositions do
       begin
       Term:=Copy(S,lPos.Pos,lPos.Len);
       W:=lCanvas.TextWidth(Term);
