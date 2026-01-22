@@ -328,7 +328,6 @@ type
     FSizeFunc: TSLVSizeFunc;
     { Methods specific to Lazarus }
     class procedure WSRegisterClass; override;
-    procedure AdjustColWidths;
     procedure CreateHandle; override;
     function CreateListColumns: TListColumns; override;
     function CreateListItem: TListItem; override;
@@ -347,6 +346,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     { Methods specific to Lazarus }
+    procedure AdjustColWidths;
     function FindColumn(AColumnID: TSLVColumnID; ACustomID: Integer = 0): TShellListColumn;
     function FindAndSelectItem(const ACaption: string): boolean;
     function GetPathFromItem(ANode: TListItem): string;
@@ -602,11 +602,19 @@ begin
   if AValue = FColumnID then exit;
   FColumnID := AValue;
   case FColumnID of
-    cidFileName: Caption := sShellCtrlsName;
-    cidSize: Caption := sShellCtrlsSize;
-    cidType: Caption := sShellCtrlsType;
-    cidAttr: Caption := sShellCtrlsAttributes;
-    cidDateModified: Caption := sShellCtrlsModificationDate;
+    cidFileName:
+      Caption := sShellCtrlsName;
+    cidSize:
+      begin
+        Caption := sShellCtrlsSize;
+        Alignment := taRightJustify;
+      end;
+    cidType:
+      Caption := sShellCtrlsType;
+    cidAttr:
+      Caption := sShellCtrlsAttributes;
+    cidDateModified:
+      Caption := sShellCtrlsModificationDate;
   end;
   Changed(true);
 end;
@@ -2200,7 +2208,11 @@ begin
       if AColumn.ColumnID = cidFileName then
         item.Caption := newText
       else
+      begin
+        while (AColumn.Index - 1 > item.SubItems.Count-1) do
+          item.SubItems.Add('');
         item.SubItems[AColumn.Index - 1] := newText;
+      end;
     end;
     if AColumn.ColumnID = cidDateModified then
       AdjustColWidths;
@@ -2372,19 +2384,9 @@ begin
   Columns.BeginUpdate;
   try
     Columns.Clear;
-    with TShellListColumn(Columns.Add) do
-    begin
-      ColumnID := cidFileName;
-    end;
-    with TShellListColumn(Columns.Add) do
-    begin
-      ColumnID := cidSize;
-      Alignment := taRightJustify;
-    end;
-    with TShellListcolumn(Columns.Add) do
-    begin
-      ColumnID := cidType;
-    end;
+    TShellListColumn(Columns.Add).ColumnID := cidFileName;
+    TShellListColumn(Columns.Add).ColumnID := cidSize;
+    TShellListcolumn(Columns.Add).ColumnID := cidType;
     AdjustColWidths;
   finally
     Columns.EndUpdate;
@@ -2445,7 +2447,7 @@ var
   bmp: Graphics.TBitmap;
   fmt: String;
 begin
-  if Self.Columns.Count < 3 then
+  if Self.Columns.Count < 2 then
     Exit;
   if (Column[0].Width <> 0) and (not AutoSizeColumns) then
     Exit;
