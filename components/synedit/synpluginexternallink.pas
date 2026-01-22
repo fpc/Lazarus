@@ -58,7 +58,7 @@ type
   TSynPluginExternalLink = class(TLazSynEditPlugin, IFPObserver)
   private
     FEnabled: boolean;
-    FMarkupInfo: TSynHighlighterAttributesModifier; // for chaching colors, while TSynEditMarkupMouseLink = nil
+    FMarkupInfo: TSynHighlighterAttributesModifier; // for caching colors, while TSynEditMarkupMouseLink = nil
     FMarkupLink: TSynEditMarkupMouseLink;
     FMouseActions: TSynPluginExternalLinkMouseActions;
     FOnLinkOpen: TSynPluginExternalLinkOnLinkOpen;

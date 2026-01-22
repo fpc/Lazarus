@@ -1100,8 +1100,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TLazEditHighlighterAttributes;
-      override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetToken: string; override;
@@ -1112,6 +1110,8 @@ type
     function GetTokenKind: integer; override;
     function GetTokenPos: Integer; override;
     function GetTokenLen: Integer; override;
+    function GetTokenClass: TLazEditTokenClass; override;
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function GetTokenIsComment: Boolean;
     function GetTokenIsCommentStart(AnIgnoreMultiLineSlash: Boolean = False): Boolean;
     function GetTokenIsCommentEnd: Boolean;
@@ -6236,17 +6236,18 @@ begin
   IsInNextToEOL := True;
 end;
 
-function TSynPasSyn.GetDefaultAttribute(Index: integer): TLazEditHighlighterAttributes;
+function TSynPasSyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 begin
-  case Index of
-    SYN_ATTR_COMMENT:    Result := FPasAttributes[attribComment];
-    SYN_ATTR_IDENTIFIER: Result := FPasAttributes[attribIdentifier];
-    SYN_ATTR_KEYWORD:    Result := FPasAttributes[attribKey];
-    SYN_ATTR_STRING:     Result := FPasAttributes[attribString];
-    SYN_ATTR_WHITESPACE: Result := FPasAttributes[attribSpace];
-    SYN_ATTR_NUMBER:     Result := FPasAttributes[attribNumber];
-    SYN_ATTR_DIRECTIVE:  Result := FPasAttributes[attribDirective];
-    SYN_ATTR_ASM:        Result := FPasAttributes[attribAsm];
+  case ATkClass of
+    tcComment:    Result := FPasAttributes[attribComment];
+    tcIdentifier: Result := FPasAttributes[attribIdentifier];
+    tcKeyword:    Result := FPasAttributes[attribKey];
+    tcString:     Result := FPasAttributes[attribString];
+    tcWhiteSpace: Result := FPasAttributes[attribSpace];
+    tcNumber:     Result := FPasAttributes[attribNumber];
+    tcDirective:  Result := FPasAttributes[attribDirective];
+    tcEmbedded:   Result := FPasAttributes[attribAsm];
   else
     Result := nil;
   end;
@@ -6502,6 +6503,26 @@ end;
 function TSynPasSyn.GetTokenLen: Integer;
 begin
   Result := Run-fTokenPos;
+end;
+
+function TSynPasSyn.GetTokenClass: TLazEditTokenClass;
+begin
+  Result := tcUnknown;
+  case FTokenID of
+    tkAsm:          Result := tcEmbedded;
+    tkComment:      Result := tcComment;
+    tkIdentifier:   Result := tcIdentifier;
+    tkKey:          Result := tcKeyword;
+    tkModifier:     Result := tcKeyword;
+    tkNull:         Result := tcUnknown;
+    tkNumber:       Result := tcNumber;
+    tkSpace:        Result := tcWhiteSpace;
+    tkString:       Result := tcString;
+    tkSymbol:       Result := tcSymbol;
+    tkDirective:    Result := tcDirective;
+    tkIDEDirective: Result := tcDirective;
+    tkUnknown:      Result := tcUnknown;
+  end;
 end;
 
 function TSynPasSyn.GetTokenIsComment: Boolean;

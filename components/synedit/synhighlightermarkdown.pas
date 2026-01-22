@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter,
   SynEditHighlighterFoldBase,
-  SynEditMiscProcs, LazEditTextAttributes;
+  SynEditMiscProcs, LazEditTextAttributes, LazEditHighlighter;
 
 
 type
@@ -101,7 +101,8 @@ type
     function GetTokenPos: Integer; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+      ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
@@ -194,11 +195,14 @@ begin
   Result:=FTokenPos;
 end;
 
-function TSynMarkdownSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynMarkdownSyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 begin
-  case Index of
-    SYN_ATTR_WHITESPACE: Result := SpaceAttri;
-    SYN_ATTR_IDENTIFIER: Result := TextAttri;
+  case ATkClass of
+    tcWhiteSpace: Result := SpaceAttri;
+    tcIdentifier: Result := TextAttri;
+    tcEmbedded: Result := CodeBlockAttri;
+    tcHeader: Result := HeaderAttri;
     else Result := nil;
   end;
 end;

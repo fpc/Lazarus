@@ -295,7 +295,6 @@ type
     FRunSectionInfo: Array of TRunSectionInfo;
     FSampleSource: string;
     function GetIdentChars: TSynIdentChars; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
     function GetAttribCount: integer; override;
     function GetAttribute(idx: integer): TLazEditTextAttribute; override;
     function GetSampleSource: string; override;
@@ -326,6 +325,8 @@ type
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     function  GetTokenAttribute: TLazEditTextAttribute; override;
     function  GetTokenAttributeEx: TLazCustomEditTextAttribute; override;
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+      ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function  GetTokenKind: integer; override;
     function  GetTokenPos: Integer; override; // 0-based
     procedure InitForScanningLine; override;
@@ -1321,7 +1322,8 @@ begin
   raise Exception.Create('bad attr idx');
 end;
 
-function TSynMultiSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynMultiSyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 var
   iHL: TSynCustomHighlighter;
 begin
@@ -1329,11 +1331,8 @@ begin
     iHL := FCurScheme.Highlighter
   else
     iHL := DefaultHighlighter;
-  { the typecast to TSynMultiSyn is only necessary because the
-  GetDefaultAttribute method is protected.
-  And don't worry: this really works }
   if iHL <> nil then begin
-    Result := TSynMultiSyn(iHL).GetDefaultAttribute(Index)
+    Result := iHL.GetTokenClassAttribute(ATkClass, ATkDetails)
   end else
     Result := nil;
 end;

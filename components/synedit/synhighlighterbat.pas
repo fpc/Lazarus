@@ -51,7 +51,7 @@ interface
 uses
   Classes,
   Graphics,
-  SynEditTypes, SynEditHighlighter, SynEditStrConst, LazEditTextAttributes;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst, LazEditTextAttributes, LazEditHighlighter;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
@@ -135,9 +135,9 @@ type
   public
     class function GetLanguageName: string; override;
   public
-    constructor Create(AOwner: TComponent); override;        
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
-      override;
+    constructor Create(AOwner: TComponent); override;
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+      ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     procedure InitForScanningLine; override;
@@ -537,15 +537,16 @@ begin
   if FTokenID <> tkSpace then fIgnoreComment := True;
 end;
 
-function TSynBatSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynBatSyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 begin
-  case Index of
-    SYN_ATTR_COMMENT: Result := fCommentAttri;
-    SYN_ATTR_IDENTIFIER: Result := fIdentifierAttri;
-    SYN_ATTR_KEYWORD: Result := fKeyAttri;
-    SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
-    SYN_ATTR_NUMBER: Result := fNumberAttri;
-    SYN_ATTR_VARIABLE: Result := fVariableAttri;
+  case ATkClass of
+    tcComment: Result := fCommentAttri;
+    tcIdentifier: Result := fIdentifierAttri;
+    tcKeyword: Result := fKeyAttri;
+    tcWhiteSpace: Result := fSpaceAttri;
+    tcNumber: Result := fNumberAttri;
+    tcVariable: Result := fVariableAttri;
   else
     Result := nil;
   end;

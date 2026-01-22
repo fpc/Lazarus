@@ -52,7 +52,8 @@ unit SimpleHl;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, LazEditTextAttributes;
+  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, LazEditTextAttributes,
+  LazEditHighlighter;
 
 type
 
@@ -90,7 +91,8 @@ type
     function GetToken: String; override;
     function GetTokenPos: Integer; override;
     function GetTokenKind: integer; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+      ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     constructor Create(AOwner: TComponent); override;
   published
     (* Define 4 Attributes, for the different highlights. *)
@@ -235,13 +237,14 @@ begin
   Result := FTokenPos - 1;
 end;
 
-function TSynDemoHl.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynDemoHl.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 begin
   // Some default attributes
-  case Index of
-    SYN_ATTR_COMMENT: Result := fSpecialAttri;
-    SYN_ATTR_IDENTIFIER: Result := fIdentifierAttri;
-    SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
+  case ATkClass of
+    tcComment: Result := fSpecialAttri;
+    tcIdentifier: Result := fIdentifierAttri;
+    tcWhiteSpace: Result := fSpaceAttri;
     else Result := nil;
   end;
 end;

@@ -94,8 +94,8 @@ type
     function IsKeyword(const AKeyword: string): boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
-      override;
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+      ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function GetEol: Boolean; override;
     function GetTokenID: TtkTokenKind;
     procedure InitForScanningLine; override;
@@ -363,13 +363,14 @@ begin
 
 end;
 
-function TSynPoSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynPoSyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 begin
-  case Index of
-    SYN_ATTR_COMMENT: Result := fCommentAttri;
-    SYN_ATTR_KEYWORD: Result := fKeyAttri;
-    SYN_ATTR_STRING: Result := fStringAttri;
-    SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
+  case ATkClass of
+    tcComment: Result := fCommentAttri;
+    tcKeyword: Result := fKeyAttri;
+    tcString: Result := fStringAttri;
+    tcWhiteSpace: Result := fSpaceAttri;
   else
     Result := nil;
   end;

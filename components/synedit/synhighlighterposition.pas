@@ -72,8 +72,6 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
     function GetPositionTokensSize(ItemCount: integer): integer;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
-      override;
   public
     class function GetLanguageName: string; override;
   public
@@ -146,12 +144,6 @@ function TSynPositionHighlighter.GetPositionTokensSize(ItemCount: integer
   ): integer;
 begin
   Result:=SizeOf(integer)+SizeOf(TPositionToken)*ItemCount;
-end;
-
-function TSynPositionHighlighter.GetDefaultAttribute(Index: integer
-  ): TSynHighlighterAttributes;
-begin
-  Result:=nil;
 end;
 
 class function TSynPositionHighlighter.GetLanguageName: string;

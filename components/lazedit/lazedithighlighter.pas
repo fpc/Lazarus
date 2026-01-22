@@ -109,8 +109,6 @@ type
   end;
 
 
-  TLazEditHighlighterAttachedLines = specialize TFPGList<TLazEditStringsBase>;
-
   TLazEditBracketInfoFlag = (
     bfOpen,              // If absent, then close
     bfUniform,           // no open/close, e.g. quote
@@ -123,12 +121,55 @@ type
   );
   TLazEditBracketInfoFlags = set of TLazEditBracketInfoFlag;
 
+  (* TLazEditTokenClass, TLazEditTokenDetails
+     - This info is optional for Highlighters to provide.
+     - TLazEditTokenDetails: absence of a detail is only meaningful if the detail
+                             appears in the mask.
+                           Otherwise, it simple mean: no info available on the detail.
+     - GetTokenDetailsMask: A HL may provide different masks for different tokens.
+     - GetTokenClassAttribute[Ex]: may ignore details
+  *)
+  TLazEditTokenClass = (
+    tcUnknown,
+    tcWhiteSpace,
+    tcSymbol,
+    tcDirective,
+    tcNumber,
+    tcString,
+    tcComment,
+    tcIdentifier,
+    tcKeyword,
+    tcVariable,
+    tcHeader,
+    tcError,
+    tcEmbedded
+  );
+  TLazEditTokenDetail = (
+    // tcWhiteSpace
+    tdFunctionalSpace, // e.g. indent in Python
+    // tcIdentifier, tcKeyword
+    tdKnownWord,    // Word is defined in the language (e.g. Keyword "begin", or non-keyword "stdcall", "break")
+    tdReservedWord, // Usually any Keyword, hardcoded in the language
+    // tcSymbol
+    tdBracket,
+    // tcSymbol, tcIdentifier, tcKeyword
+    tdOperator,
+    tdAssignment, // can be together with tdOperator: either both, or not known which
+    // tcString, tcComment
+    tdMultiLine
+  );
+  TLazEditTokenDetails = set of TLazEditTokenDetail;
+
+
+
   { TLazEditCustomHighlighter }
 
   TLazEditCustomHighlighter = class(TLazEditAttributeOwner)
   private type
     TLazEditHlUpdateFlag = (ufAttribChanged, ufRescanNeeded);
     TLazEditHlUpdateFlags = set of TLazEditHlUpdateFlag;
+  protected type
+    TLazEditHighlighterAttachedLines = specialize TFPGList<TLazEditStringsBase>;
   private const
     BRACKET_KIND_TOKEN_COUNT = 5;
     BRACKET_KIND_TOKEN_QUOTE_START = 3;
@@ -207,7 +248,7 @@ type
     function GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean): String; virtual;
 
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
 
     procedure BeginUpdate; inline;
@@ -252,6 +293,9 @@ type
     function GetTokenPos: Integer; virtual; abstract; // 0-based
     function GetTokenLen: Integer; virtual; abstract;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); virtual; abstract;
+    function GetTokenClass: TLazEditTokenClass; virtual;
+    function GetTokenDetails: TLazEditTokenDetails; virtual;
+    function GetTokenDetailsMask: TLazEditTokenDetails; virtual;
     (* GetTokenAttribute / GetEndOfLineAttribute
        The base attribute
      * GetTokenAttributeEx / GetEndOfLineAttributeEx
@@ -262,7 +306,8 @@ type
     function GetTokenAttributeList: TLazCustomEditTextAttributeArray;
     function GetEndOfLineAttribute: TLazEditTextAttribute; virtual; // valid after line was scanned to EOL
     function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; virtual; // valid after line was scanned to EOL
-
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; virtual;
+    function GetTokenClassAttributeEx(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazCustomEditTextAttribute; virtual;
     (* ------------------ *
      * Brackets           *
      * ------------------ *)
@@ -500,10 +545,10 @@ begin
   Result := BRACKET_KIND_TOKENS[AnOpeningToken, AnIndex]
 end;
 
-constructor TLazEditCustomHighlighter.Create(AOwner: TComponent);
+constructor TLazEditCustomHighlighter.Create(AnOwner: TComponent);
 begin
   FAttachedLines := TLazEditHighlighterAttachedLines.Create;
-  inherited Create(AOwner);
+  inherited Create(AnOwner);
 end;
 
 destructor TLazEditCustomHighlighter.Destroy;
@@ -601,7 +646,7 @@ begin
   ALogX := ToIdx(ALogX);
   if ARestartLineIfNeeded then begin
     if GetEol or (GetTokenPos > ALogX) then
-      StartAtLineIndex(FLineIndex); // TODO: avaid re-fetching CurrentLineText
+      StartAtLineIndex(FLineIndex); // TODO: avoid re-fetching CurrentLineText
   end;
 
   while not GetEol do begin
@@ -628,6 +673,33 @@ end;
 function TLazEditCustomHighlighter.FirstUnpreparedLine: IntIdx;
 begin
   Result := -1;
+end;
+
+function TLazEditCustomHighlighter.GetTokenClass: TLazEditTokenClass;
+var
+  a: TLazEditTextAttribute;
+begin
+  Result := tcUnknown;
+
+  a := GetTokenAttribute;
+  if a = nil then
+    exit;
+
+  for Result in TLazEditTokenClass do
+    if a = GetTokenClassAttribute(Result) then
+      exit;
+
+  Result := tcUnknown;
+end;
+
+function TLazEditCustomHighlighter.GetTokenDetails: TLazEditTokenDetails;
+begin
+  Result := [];
+end;
+
+function TLazEditCustomHighlighter.GetTokenDetailsMask: TLazEditTokenDetails;
+begin
+  Result := [];
 end;
 
 function TLazEditCustomHighlighter.GetTokenAttributeEx: TLazCustomEditTextAttribute;
@@ -667,6 +739,18 @@ end;
 function TLazEditCustomHighlighter.GetEndOfLineAttributeEx: TLazCustomEditTextAttribute;
 begin
   Result := GetEndOfLineAttribute;
+end;
+
+function TLazEditCustomHighlighter.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
+begin
+  Result := nil;
+end;
+
+function TLazEditCustomHighlighter.GetTokenClassAttributeEx(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazCustomEditTextAttribute;
+begin
+  Result := GetTokenClassAttributeEx(ATkClass, ATkDetails);
 end;
 
 function TLazEditCustomHighlighter.GetBracketContextAt(const ALineIdx: TLineIdx;
@@ -757,7 +841,7 @@ function TLazEditCustomRangesHighlighter.UpdateRangeInfoAtEOL: Boolean;
 var
   NewRange: Pointer;
 begin
-// TOOD: separat update / compare
+// TOOD: separate update / compare
   NewRange := GetRange;
   Result := NewRange <> CurrentRanges[LineIndex];
   if Result then

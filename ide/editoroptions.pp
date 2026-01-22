@@ -506,8 +506,6 @@ type
   private
 //    fTextAttri: TSynHighlighterAttributes;
     FPos: Integer;
-  protected
-    function GetDefaultAttribute({%H-}Index: integer): TSynHighlighterAttributes; override;
   public
     class function GetLanguageName: string; override;
     procedure ResetRange; override;
@@ -8616,12 +8614,6 @@ procedure TIDESynTextSyn.InitForScanningLine;
 begin
   inherited InitForScanningLine;
   FPos := 0;
-end;
-
-function TIDESynTextSyn.GetDefaultAttribute(Index: integer
-  ): TSynHighlighterAttributes;
-begin
-  Result := nil;
 end;
 
 class function TIDESynTextSyn.GetLanguageName: string;

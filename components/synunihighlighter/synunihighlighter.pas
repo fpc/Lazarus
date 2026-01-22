@@ -53,7 +53,7 @@ uses
   Classes, SysUtils,
   Graphics,
   GraphType, FileUtil,
-  SynEditTypes, SynEditHighlighter, LazEditTextAttributes;
+  SynEditTypes, SynEditHighlighter, LazEditTextAttributes, LazEditHighlighter;
 
 Const
   _Root='Root';
@@ -328,8 +328,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
-      override;
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function GetEOL: Boolean; override;
     function GetRange: Pointer; override;
     function GetToken: string; override;
@@ -1674,15 +1673,14 @@ begin
     fPrEol:=True;
 end;
 
-function TSynUniSyn.GetDefaultAttribute(Index: integer):
-  TSynHighlighterAttributes;
+function TSynUniSyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 begin
- case Index of
-    SYN_ATTR_COMMENT: Result := fCurrentRule.fDefaultAttri;
-    SYN_ATTR_IDENTIFIER: Result := fCurrentRule.fDefaultAttri;
-    SYN_ATTR_KEYWORD: Result := fCurrentRule.fDefaultAttri;
-    SYN_ATTR_STRING: Result := fCurrentRule.fDefaultAttri;
-    SYN_ATTR_WHITESPACE: Result := fCurrentRule.fDefaultAttri;
+ case ATkClass of
+    tcComment: Result := fCurrentRule.fDefaultAttri;
+    tcIdentifier: Result := fCurrentRule.fDefaultAttri;
+    tcKeyword: Result := fCurrentRule.fDefaultAttri;
+    tcString: Result := fCurrentRule.fDefaultAttri;
+    tcWhiteSpace: Result := fCurrentRule.fDefaultAttri;
     else Result := nil;
   end;
 end;

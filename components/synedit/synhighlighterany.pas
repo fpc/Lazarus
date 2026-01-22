@@ -58,7 +58,7 @@ interface
 
 uses
   SysUtils, Classes, LazUTF8, LazFileUtils, Controls, Graphics, Registry,
-  SynEditTypes, SynEditHighlighter, SynEditStrConst, LazEditTextAttributes;
+  SynEditTypes, SynEditHighlighter, SynEditStrConst, LazEditTextAttributes, LazEditHighlighter;
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
@@ -184,8 +184,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
-      override;
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
@@ -793,17 +792,18 @@ begin
   end;
 end;
 
-function TSynAnySyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynAnySyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 begin
-  case Index of
-    SYN_ATTR_COMMENT: Result := fCommentAttri;
-    SYN_ATTR_IDENTIFIER: Result := fIdentifierAttri;
-    SYN_ATTR_KEYWORD: Result := fKeyAttri;
-    SYN_ATTR_STRING: Result := fStringAttri;
-    SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
-    SYN_ATTR_SYMBOL: Result := fSymbolAttri;
-    SYN_ATTR_NUMBER: Result := fNumberAttri;
-    SYN_ATTR_DIRECTIVE: Result := fPreprocessorAttri;
+  case ATkClass of
+    tcComment: Result := fCommentAttri;
+    tcIdentifier: Result := fIdentifierAttri;
+    tcKeyword: Result := fKeyAttri;
+    tcString: Result := fStringAttri;
+    tcWhiteSpace: Result := fSpaceAttri;
+    tcSymbol: Result := fSymbolAttri;
+    tcNumber: Result := fNumberAttri;
+    tcDirective: Result := fPreprocessorAttri;
   else
     Result := nil;
   end;

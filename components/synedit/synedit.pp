@@ -10360,10 +10360,10 @@ procedure TCustomSynEdit.CaretAtIdentOrString(XY: TPoint; out AtIdent, NearStrin
 var
   PosX, PosY, Start: integer;
   Line, Token: string;
-  Attri, PrevAttri: TLazEditTextAttribute;
+  CurTkClass, PrevTkClass: TLazEditTokenClass;
 begin
   PosY := XY.Y -1;
-  PrevAttri := nil;
+  PrevTkClass := tcUnknown;
   AtIdent := False;
   NearString := False;
   //DebugLn('TCustomSynEdit.CaretAtIdentOrString: Enter');
@@ -10380,29 +10380,29 @@ begin
       begin
         Start := Highlighter.GetTokenPos + 1;
         Token := Highlighter.GetToken;
-        Attri := Highlighter.GetTokenAttribute;
+        CurTkClass := Highlighter.GetTokenClass;
         //DebugLn(['  CaretAtIdentOrString: Start=', Start, ', Token=', Token]);
         if PosX = Start then
         begin
-          AtIdent := (Attri = Highlighter.IdentifierAttribute)
-                  or (PrevAttri = Highlighter.IdentifierAttribute);
-          NearString := (Attri = Highlighter.StringAttribute)
-                 or (PrevAttri = Highlighter.StringAttribute); // If cursor is on end-quote.
-          //DebugLn(['   CaretAtIdentOrString: Success 1! Attri=', Attri,
+          AtIdent := (CurTkClass = tcIdentifier)
+                  or (PrevTkClass = tcIdentifier);
+          NearString := (CurTkClass = tcString)
+                 or (PrevTkClass = tcString); // If cursor is on end-quote.
+          //DebugLn(['   CaretAtIdentOrString: Success 1! CurTkClass=', CurTkClass,
           //         ', AtIdent=', AtIdent, ', NearString=', NearString]);
           exit;
         end;
         if (PosX >= Start) and (PosX <= Start + Length(Token))
-        and ( (Attri = Highlighter.IdentifierAttribute)
-           or (Attri = Highlighter.StringAttribute) )
+        and ( (CurTkClass = tcIdentifier)
+           or (CurTkClass = tcString) )
         then begin
-          AtIdent := Attri = Highlighter.IdentifierAttribute;
-          NearString := Attri = Highlighter.StringAttribute;
-          //DebugLn(['   CaretAtIdentOrString: Success 2! Attri=', Attri,
+          AtIdent := CurTkClass = tcIdentifier;
+          NearString := CurTkClass = tcString;
+          //DebugLn(['   CaretAtIdentOrString: Success 2! CurTkClass=', CurTkClass,
           //         ', AtIdent=', AtIdent, ', NearString=', NearString]);
           exit;
         end;
-        PrevAttri := Attri;
+        PrevTkClass := CurTkClass;
         Highlighter.Next;
       end;
     end;

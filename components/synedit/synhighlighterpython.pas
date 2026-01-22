@@ -51,7 +51,7 @@ interface
 uses
   IniFiles, //THashedStringList
   LCLIntf, LCLType,
-  SynEditHighlighter, SynEditTypes, SynEditStrConst, LazEditTextAttributes,
+  SynEditHighlighter, SynEditTypes, SynEditStrConst, LazEditTextAttributes, LazEditHighlighter,
   Graphics, SysUtils, Classes;
 
 const
@@ -149,8 +149,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
-      override;
+    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+      ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function GetEol: Boolean; override;
     function GetRange: Pointer; override;
     function GetTokenID: TtkTokenKind;
@@ -1160,14 +1160,16 @@ begin
   end;
 end;
 
-function TSynPythonSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynPythonSyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
+  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 begin
-  case Index of
-    SYN_ATTR_COMMENT: Result := fCommentAttri;
-    SYN_ATTR_KEYWORD: Result := fKeyAttri;
-    SYN_ATTR_WHITESPACE: Result := fSpaceAttri;
-    SYN_ATTR_SYMBOL: Result := fSymbolAttri;
-    SYN_ATTR_NUMBER: Result := fNumberAttri;
+  case ATkClass of
+    tcComment: Result := fCommentAttri;
+    tcKeyword: Result := fKeyAttri;
+    tcIdentifier: Result := fIdentifierAttri;
+    tcWhiteSpace: Result := fSpaceAttri;
+    tcString: Result := fSymbolAttri;
+    tcNumber: Result := fNumberAttri;
   else
     Result := nil;
   end;

@@ -88,16 +88,16 @@ const
     of the requested type.
     This list does *not* aim to be complete. It may be replaced in future.
   }
-  SYN_ATTR_COMMENT           =   0;
-  SYN_ATTR_IDENTIFIER        =   1;
-  SYN_ATTR_KEYWORD           =   2;
-  SYN_ATTR_STRING            =   3;
-  SYN_ATTR_WHITESPACE        =   4;
-  SYN_ATTR_SYMBOL            =   5;
-  SYN_ATTR_NUMBER            =   6;
-  SYN_ATTR_DIRECTIVE         =   7;
-  SYN_ATTR_ASM               =   8;
-  SYN_ATTR_VARIABLE          =   9;
+  SYN_ATTR_COMMENT           =   0 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
+  SYN_ATTR_IDENTIFIER        =   1 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
+  SYN_ATTR_KEYWORD           =   2 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
+  SYN_ATTR_STRING            =   3 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
+  SYN_ATTR_WHITESPACE        =   4 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
+  SYN_ATTR_SYMBOL            =   5 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
+  SYN_ATTR_NUMBER            =   6 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
+  SYN_ATTR_DIRECTIVE         =   7 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
+  SYN_ATTR_ASM               =   8 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
+  SYN_ATTR_VARIABLE          =   9 deprecated 'Use TLazEditTokenClass / to be removed in 5.99';
 
 type
 
@@ -157,7 +157,7 @@ type
     fUpdateChange: boolean;                                                     //mh 2001-09-13
     function GetInstanceLanguageName: string; virtual;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
-      virtual; abstract;
+      virtual; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     function GetDefaultFilter: string; virtual;
     function GetIdentChars: TSynIdentChars; virtual;
     procedure SetWordBreakChars(AChars: TSynIdentChars); virtual;
@@ -199,6 +199,7 @@ type
     procedure ResetRange; override; deprecated;
     //function GetTokenPos: Integer; override; // 0-based
     function GetTokenLen: Integer; override;
+    function GetTokenClass: TLazEditTokenClass; override; deprecated 'Sub-class needs to implement this';
     function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
 
     property DrawDivider[Index: integer]: TSynDividerDrawConfigSetting
@@ -234,17 +235,17 @@ type
     property SampleSource: string read GetSampleSource write SetSampleSource;
     // The below should be depricated and moved to those HL that actually implement them.
     property CommentAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_COMMENT read GetDefaultAttribute;
+      index SYN_ATTR_COMMENT read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     property IdentifierAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_IDENTIFIER read GetDefaultAttribute;
+      index SYN_ATTR_IDENTIFIER read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     property KeywordAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_KEYWORD read GetDefaultAttribute;
+      index SYN_ATTR_KEYWORD read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     property StringAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_STRING read GetDefaultAttribute;
+      index SYN_ATTR_STRING read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     property SymbolAttribute: TSynHighlighterAttributes                         //mh 2001-09-13
-      index SYN_ATTR_SYMBOL read GetDefaultAttribute;
+      index SYN_ATTR_SYMBOL read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     property WhitespaceAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_WHITESPACE read GetDefaultAttribute;
+      index SYN_ATTR_WHITESPACE read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
 
     property DividerDrawConfig[Index: Integer]: TSynDividerDrawConfig
       read GetDividerDrawConfig;
@@ -848,6 +849,30 @@ begin
   GetTokenEx(x, Result);
 end;
 
+function TSynCustomHighlighter.GetTokenClass: TLazEditTokenClass;
+var
+  a: TLazEditTextAttribute;
+begin
+  Result := inherited GetTokenClass;
+  if Result <> tcUnknown then
+    exit;
+  a := GetTokenAttribute;
+  if a = nil then
+    exit;
+
+  if      a = GetDefaultAttribute(SYN_ATTR_COMMENT) then    Result := tcComment
+  else if a = GetDefaultAttribute(SYN_ATTR_IDENTIFIER) then Result := tcIdentifier
+  else if a = GetDefaultAttribute(SYN_ATTR_KEYWORD) then    Result := tcKeyword
+  else if a = GetDefaultAttribute(SYN_ATTR_STRING) then     Result := tcString
+  else if a = GetDefaultAttribute(SYN_ATTR_WHITESPACE) then Result := tcWhiteSpace
+  else if a = GetDefaultAttribute(SYN_ATTR_SYMBOL) then     Result := tcSymbol
+  else if a = GetDefaultAttribute(SYN_ATTR_NUMBER) then     Result := tcNumber
+  else if a = GetDefaultAttribute(SYN_ATTR_DIRECTIVE) then  Result := tcDirective
+  else if a = GetDefaultAttribute(SYN_ATTR_ASM) then        Result := tcEmbedded
+  else if a = GetDefaultAttribute(SYN_ATTR_VARIABLE) then   Result := tcVariable
+  ;
+end;
+
 procedure TSynCustomHighlighter.SetWordBreakChars(AChars: TSynIdentChars);
 begin
   fWordBreakChars := AChars;
@@ -1026,6 +1051,23 @@ end;
 function TSynCustomHighlighter.GetInstanceLanguageName: string;
 begin
   Result := GetLanguageName;
+end;
+
+function TSynCustomHighlighter.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+begin
+  case Index of
+    SYN_ATTR_COMMENT:    Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcComment));
+    SYN_ATTR_IDENTIFIER: Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcIdentifier));
+    SYN_ATTR_KEYWORD:    Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcKeyword));
+    SYN_ATTR_STRING:     Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcString));
+    SYN_ATTR_WHITESPACE: Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcWhiteSpace));
+    SYN_ATTR_SYMBOL:     Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcSymbol));
+    SYN_ATTR_NUMBER:     Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcNumber));
+    SYN_ATTR_DIRECTIVE:  Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcDirective));
+    SYN_ATTR_ASM:        Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcEmbedded));
+    SYN_ATTR_VARIABLE:   Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcVariable));
+    otherwise Result := nil;
+  end;
 end;
 
 function TSynCustomHighlighter.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting;

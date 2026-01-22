@@ -86,8 +86,6 @@ type
     function GetTokenPos: Integer; override;
     function GetTokenKind: integer; override;
     function GetTokenAttribute: TLazEditTextAttribute; override;
-    //
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
 
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -398,11 +396,6 @@ end;
 function TSynTextMateSyn.GetTokenAttribute: TLazEditTextAttribute;
 begin
   Result := FCurrentAttrib;
-end;
-
-function TSynTextMateSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
-begin
-  Result := FAttriMap.Data[FTextMateGrammar.RootPattern.AttribInfo.TokId];
 end;
 
 procedure TSynTextMateSyn.SetRange(Value: Pointer);
