@@ -175,6 +175,7 @@ type
         Attr: TProcHeadAttributes = [phpInUpperCase];
         Search: TCorrespondingProcSearch = cpsAny): TCodeTreeNode;
     function FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
+    function FindMostOuterProcNode(ProcNode: TCodeTreeNode): TCodeTreeNode;
     function ProcBodyIsEmpty(ProcNode: TCodeTreeNode): boolean;
     function ExtractProcedureGroup(ProcNode: TCodeTreeNode): TPascalMethodGroup;
     function ExtractFuncResultType(ProcNode: TCodeTreeNode;
@@ -1234,6 +1235,29 @@ begin
       exit;
     Result:=Result.PriorBrother;
   end;
+end;
+
+function TPascalReaderTool.FindMostOuterProcNode(ProcNode: TCodeTreeNode
+  ): TCodeTreeNode;
+var LastGood: TCodeTreeNode;
+begin
+  Result:=nil;
+
+  if ProcNode=nil then exit
+  else
+  if ProcNode.Desc<>ctnProcedure then // begin block is a valid start also
+    ProcNode:=ProcNode.Parent;
+
+  LastGood:=nil;
+
+  while ProcNode<>nil do begin
+    if ProcNode.Desc=ctnProcedure then
+      LastGood:=ProcNode
+    else
+      break;
+    ProcNode:=ProcNode.Parent;
+  end;
+  Result:=LastGood;
 end;
 
 function TPascalReaderTool.ProcBodyIsEmpty(ProcNode: TCodeTreeNode): boolean;

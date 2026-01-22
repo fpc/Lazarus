@@ -1312,9 +1312,9 @@ var
   Ident: PChar;
   CurContextParent: TCodeTreeNode;
 
-  function ProtectedNodeIsInAllowedClass: boolean;
+  function ProtectedNodeIsInAllowedClass(HasStrict: boolean): boolean;
   var
-    CurClassNode: TCodeTreeNode;
+    CurClassNode, ANode: TCodeTreeNode;
     FoundClassContext: TFindContext;
   begin
     Result:=false;
@@ -1330,7 +1330,14 @@ var
       if IndexOfFindContext(FICTClassAndAncestorsAndExtClassOfHelper,@FoundClassContext)>=0 then begin
         // this class node is the class or one of the ancestors of the class or extended class of the helper+ancestors
         // of the start context of the identifier completion
-        exit(true);
+        if HasStrict then begin // check strict protected
+          if FoundClassContext.Tool<>self then begin
+            //debugln(['ProtectedNodeIsInAllowedClass: strict protected not allowed']);
+            exit;
+          end else
+            exit(true);
+        end else
+          exit(true);
       end;
     end;
     //DebugLn(['ProtectedNodeIsInAllowedClass hidden: ',FindContextToString(FoundContext)]);
@@ -1369,7 +1376,7 @@ var
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
   HasLowerVisibility: Boolean;
-  IsDottedIdent: Boolean;
+  IsDottedIdent, IsStrict, IsHelper: Boolean;
   PlaceForDotted: string;
 begin
   // proceed searching ...
@@ -1394,6 +1401,7 @@ begin
 
   ProtectedForeignClass:=false;
   Node:=FoundContext.Node;
+  if Node=nil then exit; // may it happen?
   if FoundContext.Tool=Self then begin
     // identifier is in the same unit
     //DebugLn('::: COLLECT IDENT in SELF ',FoundContext.Node.DescAsString,
@@ -1407,14 +1415,57 @@ begin
       // => do not show it
       exit;
     end;
-  end
-  else if Node<>nil then begin
+    Node:=Node.Parent;
+    if (Node<>nil) and (Node.Desc in AllClassSubSections) then
+      Node:=Node.Parent;
+
+    if (Node<>nil) and (Node.Desc in AllClassBaseSections) then begin
+      //debugln(['TIdentCompletionTool.CollectAllIdentifiers Node=',Node.DescAsString,' Context=',CurrentIdentifierList.Context.Node.DescAsString,' CtxVis=',NodeDescriptionAsString(CurrentIdentifierList.NewMemberVisibility)]);
+      IsStrict:= Node.Subdesc and ctnsHasStrictSpecifier>0;
+      if IsStrict then begin
+        if (Node.Desc=ctnClassPrivate) then begin
+        // strict private - only inside current class allowed
+          SubNode:=FindClassNodeForMethodBody(
+          FindMostOuterProcNode(CurrentIdentifierList.StartContext.Node),
+          true,false); // nested procedures must be handled also
+
+          if not FoundContext.Node.HasAsParent(SubNode) then begin
+            //debugln(['TIdentCompletionTool.CollectAllIdentifiers: ',
+            //  'strict private not allowed ']);
+            exit;
+          end;
+        end else
+        if (Node.Desc=ctnClassProtected) then begin
+          // strict protected - only inside current class descendants and the same unit allowed
+          // we are in the same unit
+            if not ProtectedNodeIsInAllowedClass(false) then
+            exit;
+        end;
+      end;
+    end;
+  end else
+  begin
     // identifier is in another unit
     Node:=Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassSubSections) then
       Node:=Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassBaseSections) then begin
       //debugln(['TIdentCompletionTool.CollectAllIdentifiers Node=',Node.DescAsString,' Context=',CurrentIdentifierList.Context.Node.DescAsString,' CtxVis=',NodeDescriptionAsString(CurrentIdentifierList.NewMemberVisibility)]);
+      if Node.Desc=ctnClassPrivate then exit; // private not allowed in other units
+      IsStrict:= Node.Subdesc and ctnsHasStrictSpecifier>0;
+      IsHelper:=false;
+      if IsStrict then begin
+        // strict protected - only inside current class allowed + a helper also in other unit
+        SubNode:=FindClassNodeForMethodBody(
+          FindMostOuterProcNode(CurrentIdentifierList.StartContext.Node),
+          true,false); // nested procedures must be handled also
+        if (SubNode<>nil) and
+        (SubNode.Desc in [ctnHelperFor, ctnRecordHelper, ctnClassHelper]) then
+          IsHelper:=true // helper is a caller
+        else
+          exit;
+      end;
+
       if (CurrentIdentifierList.NewMemberVisibility<>ctnNone)
       and (CurrentIdentifierList.NewMemberVisibility<Node.Desc)
       and (FoundContext.Node.Desc
@@ -1435,7 +1486,7 @@ begin
         begin
           // protected definitions are only accessible from descendants
           // or if visibility was raised (e.g. property)
-          if ProtectedNodeIsInAllowedClass then begin
+          if IsHelper or ProtectedNodeIsInAllowedClass(IsStrict) then begin
             // protected node in an ancestor => allowed
             //debugln('TIdentCompletionTool.CollectAllIdentifiers ALLOWED Protected in ANCESTOR '+StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)));
           end else if (FoundContext.Node.Desc=ctnProperty) then begin
@@ -3369,7 +3420,8 @@ begin
           // find class and ancestors if existing (needed for protected identifiers)
           if (GatherContext.Tool = Self) or HasInheritedKeyword then
           begin
-            FindContextClassAndAncestorsAndExtendedClassOfHelper(IdentStartXY, FICTClassAndAncestorsAndExtClassOfHelper);
+            FindContextClassAndAncestorsAndExtendedClassOfHelper(IdentStartXY,
+              FICTClassAndAncestorsAndExtClassOfHelper, GatherContext.Node);
           end;
 
           // check for incomplete context

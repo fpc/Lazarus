@@ -1149,10 +1149,15 @@ var
   OldSubSection: TCodeTreeNodeDesc;
   NewSection: TCodeTreeNodeDesc;
   SectionStart: Integer;
+  IsStrict: boolean;
 begin
+  IsStrict:=false;
   SectionStart:=CurPos.StartPos;
   NewSection:=ctnNone;
-  if UpAtomIs('STRICT') then ReadNextAtom;
+  if UpAtomIs('STRICT') then begin
+    IsStrict:=true;
+    ReadNextAtom;
+  end;
   if UpAtomIs('PUBLIC') then
     NewSection:=ctnClassPublic
   else if UpAtomIs('PRIVATE') then
@@ -1180,6 +1185,9 @@ begin
   // start new section
   CreateChildNode;
   CurNode.Desc:=NewSection;
+  if IsStrict then begin
+    CurNode.SubDesc:=ctnsHasStrictSpecifier;
+  end;
   CurNode.StartPos:=SectionStart;
   if (OldSubSection<>ctnNone)
   and (Scanner.CompilerMode=cmOBJFPC)

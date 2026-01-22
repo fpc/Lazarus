@@ -223,6 +223,7 @@ const
   ctnsHasParseError       = 1 shl 2;
   ctnsForwardDeclaration  = 1 shl 3;
   ctnsHasDefaultValue     = 1 shl 4;
+  ctnsHasStrictSpecifier  = 1 shl 5;
 
   ClassSectionNodeType: array[TPascalClassSection] of TCodeTreeNodeDesc = (
     ctnClassPrivate,

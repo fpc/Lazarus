@@ -1068,7 +1068,7 @@ type
       var ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean
       ): boolean; // without interfaces, recursive
     function FindContextClassAndAncestorsAndExtendedClassOfHelper(const CursorPos: TCodeXYPosition;
-      var ListOfPFindContext: TFPList): boolean; // without interfaces
+      var ListOfPFindContext: TFPList; DefaultNode: TCodeTreeNode = nil): boolean; // without interfaces
     function FindAncestorOfClass(ClassNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean; // returns false for TObject, IInterface, IUnknown
     function FindDefaultAncestorOfClass(ClassNode: TCodeTreeNode;
@@ -3593,10 +3593,16 @@ begin
       ANode:=Node.Parent;
       while ANode<>nil do begin
         case ANode.Desc of
-        ctnClassPrivate:
+        ctnClassPrivate: begin
+          if ANode.SubDesc and ctnsHasStrictSpecifier<>0 then
+            Result+='strict ';
           Result+='private ';
-        ctnClassProtected:
+        end;
+        ctnClassProtected: begin
+          if ANode.SubDesc and ctnsHasStrictSpecifier<>0 then
+            Result+='strict ';
           Result+='protected ';
+        end;
         ctnClassPublic:
           Result+='public ';
         ctnClassPublished:
@@ -6594,7 +6600,8 @@ begin
 end;
 
 function TFindDeclarationTool.FindContextClassAndAncestorsAndExtendedClassOfHelper
-  (const CursorPos: TCodeXYPosition; var ListOfPFindContext: TFPList): boolean;
+  (const CursorPos: TCodeXYPosition; var ListOfPFindContext: TFPList;
+    DefaultNode: TCodeTreeNode): boolean;
 // returns a list of nodes of AllClasses (ctnClass, ...)
 var
   CleanCursorPos: integer;
@@ -6615,6 +6622,8 @@ begin
     if (ANode.GetNodeOfType(ctnClassInheritance)<>nil) then
       exit;
     ClassNode:=FindClassNode(ANode);
+    if ClassNode=nil then
+      ClassNode:= DefaultNode;
     if (ClassNode=nil) or (ClassNode.Parent=nil)
     or (not (ClassNode.Parent.Desc in [ctnTypeDefinition,ctnGenericType])) then
       exit;
