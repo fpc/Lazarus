@@ -130,6 +130,7 @@ begin
     p.WordChecker.Assign(SynSpellOptions.CheckerOpts);
     (p.WordBreaker as TSynSpellWordBreakerSimpleUtf8).SpecialLetters :=
       SynSpellOptions.CheckerOpts.SpecialUpperLetters + SynSpellOptions.CheckerOpts.SpecialLowerLetters;
+    p.HighlighterOpts := [hoNoNumbers, hoNoKnownWords];
   end;
 end;
 

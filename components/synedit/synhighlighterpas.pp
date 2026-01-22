@@ -1111,6 +1111,8 @@ type
     function GetTokenPos: Integer; override;
     function GetTokenLen: Integer; override;
     function GetTokenClass: TLazEditTokenClass; override;
+    function GetTokenDetails: TLazEditTokenDetails; override;
+    function GetTokenDetailsMask: TLazEditTokenDetails; override;
     function GetTokenClassAttribute(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
     function GetTokenIsComment: Boolean;
     function GetTokenIsCommentStart(AnIgnoreMultiLineSlash: Boolean = False): Boolean;
@@ -6523,6 +6525,31 @@ begin
     tkIDEDirective: Result := tcDirective;
     tkUnknown:      Result := tcUnknown;
   end;
+end;
+
+function TSynPasSyn.GetTokenDetails: TLazEditTokenDetails;
+begin
+  Result := [];
+  case FTokenID of
+    //tkAsm:          Result := [];
+    //tkComment:      Result := [];
+    //tkIdentifier:   Result := [];
+    tkKey:          Result := [tdKnownWord];
+    tkModifier:     Result := [tdKnownWord];
+    //tkNull:         Result := [];
+    //tkNumber:       Result := [];
+    //tkSpace:        Result := [];
+    //tkString:       Result := [];
+    //tkSymbol:       Result := [];
+    //tkDirective:    Result := [];
+    //tkIDEDirective: Result := [];
+    //tkUnknown:      Result := [];
+  end;
+end;
+
+function TSynPasSyn.GetTokenDetailsMask: TLazEditTokenDetails;
+begin
+  Result := GetTokenDetails;
 end;
 
 function TSynPasSyn.GetTokenIsComment: Boolean;

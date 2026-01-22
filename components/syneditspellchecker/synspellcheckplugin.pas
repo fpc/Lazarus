@@ -29,6 +29,7 @@ uses
   LazEditMiscProcs, LazEditHighlighter, LazEditTypes, LazEditASyncRunner,
   // SynEdit
   SynEdit, SynEditMarkupHighAll, SynEditMiscClasses, SynEditMouseCmds, SynGutterLineOverview,
+  LazSynEditText,
   // SynSpell
   SynSpellDictionary, SynSpellCheckWordBreaker, LazLoggerBase;
 
@@ -42,6 +43,11 @@ type
     procedure AddCmdSuggestion(const AButton: TSynMouseButton; const AShift, AShiftMask: TShiftState);
   end;
 
+  TSynSpellCheckHighlighterOption = (
+    hoNoNumbers,
+    hoNoKnownWords
+  );
+  TSynSpellCheckHighlighterOptions = set of TSynSpellCheckHighlighterOption;
 
   { TSynMarkupSpellCheck }
 
@@ -50,23 +56,32 @@ type
     FWordBreaker: TSynSpellWordBreaker;
     FWordChecker: TSynSpellWordChecker;
   private
+    FHighlighter: TLazEditCustomHighlighter;
+    FHighlighterOpts: TSynSpellCheckHighlighterOptions;
     procedure DoConfChanged(Sender: TObject);
+    procedure SetHighlighterOpts(AValue: TSynSpellCheckHighlighterOptions);
     procedure SetOverViewColor(AValue: TColor);
     procedure SetWordBreaker(AValue: TSynSpellWordBreaker);
     procedure SetWordChecker(AValue: TSynSpellWordChecker);
+    procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
   protected
+    procedure SetLines(const AValue: TSynEditStringsLinked); override;
     function GetASyncPriority(AnSearchInVisibleLines: boolean): TTLazEditTaskPriorities; override;
+    //function LimitedValidationStartLine: IntPos; override;
+    function LimitedValidationEndLine: IntPos; override;
     procedure FindInitialize; override;
     function FindMatches(AStartPoint, AnEndPoint: TPoint; var AnIndex: Integer;
       AStopAfterLine: Integer = - 1; ABackward: Boolean = False): TPoint; override;
     function HasSearchData: Boolean; override;
     function SearchStringMaxLines: Integer; override;
   public
+    destructor Destroy; override;
     function HasMatchAt(p : TPoint): Boolean;
 
     property OverViewColor: TColor write SetOverViewColor;
     property WordBreaker: TSynSpellWordBreaker read FWordBreaker write SetWordBreaker;
     property WordChecker: TSynSpellWordChecker read FWordChecker write SetWordChecker;
+    property HighlighterOpts: TSynSpellCheckHighlighterOptions read FHighlighterOpts write SetHighlighterOpts;
   end;
 
   { TSynCustomPluginSpellCheck }
@@ -82,11 +97,13 @@ type
     FWordBreaker: TSynSpellWordBreaker;
     FWordChecker: TSynSpellWordChecker;
   private
+    FHighlighterOpts: TSynSpellCheckHighlighterOptions;
     FOverViewColor: TColor;
     procedure DoMarkupChanged(Sender: TObject);
     function GetSynSpellDict: TSynSpellDictionary;
     procedure MenuAddWordClicked(Sender: TObject);
     procedure MenuSuggestionClicked(Sender: TObject);
+    procedure SetHighlighterOpts(AValue: TSynSpellCheckHighlighterOptions);
     procedure SetOverViewColor(AValue: TColor);
   protected
     procedure DoEditorRemoving(AValue: TCustomSynEdit); override;
@@ -108,6 +125,7 @@ type
     property SynSpellDict: TSynSpellDictionary read GetSynSpellDict;
     property WordBreaker: TSynSpellWordBreaker read FWordBreaker;
     property WordChecker: TSynSpellWordChecker read FWordChecker;
+    property HighlighterOpts: TSynSpellCheckHighlighterOptions read FHighlighterOpts write SetHighlighterOpts;
   end;
 
 
@@ -199,6 +217,41 @@ begin
   Invalidate;
 end;
 
+procedure TSynMarkupSpellCheck.SetHighlighterOpts(AValue: TSynSpellCheckHighlighterOptions);
+begin
+  if FHighlighterOpts = AValue then Exit;
+  FHighlighterOpts := AValue;
+
+  if FHighlighterOpts <> [] then begin
+    FHighlighter := SynEdit.Highlighter;
+    Lines.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
+  end
+  else
+    FHighlighter := nil;
+
+  Invalidate;
+end;
+
+procedure TSynMarkupSpellCheck.DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount: Integer
+  );
+begin
+  if FHighlighterOpts <> [] then begin
+    FHighlighter := SynEdit.Highlighter;
+    ValidateMatches;
+  end;
+end;
+
+procedure TSynMarkupSpellCheck.SetLines(const AValue: TSynEditStringsLinked);
+begin
+  if Lines <> nil then
+    Lines.RemoveChangeHandler(senrHighlightChanged, @DoHighlightChanged);
+  inherited SetLines(AValue);
+  if (Lines <> nil) and (FHighlighterOpts <> []) then begin
+    FHighlighter := SynEdit.Highlighter;
+    Lines.AddChangeHandler(senrHighlightChanged, @DoHighlightChanged);
+  end;
+end;
+
 procedure TSynMarkupSpellCheck.SetOverViewColor(AValue: TColor);
 var
   OG: TSynGutterLineOverview;
@@ -250,6 +303,17 @@ begin
     Result := [tpPaintOverview];
 end;
 
+function TSynMarkupSpellCheck.LimitedValidationEndLine: IntPos;
+begin
+  Result := 0;
+  if FHighlighter = nil then
+    exit;
+
+  FHighlighter.CurrentLines := Lines;
+  Result := ToPos(FHighlighter.FirstUnpreparedLine - 1);
+if Result > 0 then writeln('limit ', Result);
+end;
+
 procedure TSynMarkupSpellCheck.FindInitialize;
 begin
   if (FWordBreaker = nil) or (FWordChecker = nil) then exit;
@@ -261,17 +325,40 @@ function TSynMarkupSpellCheck.FindMatches(AStartPoint, AnEndPoint: TPoint; var A
   AStopAfterLine: Integer; ABackward: Boolean): TPoint;
 var
   LineTxt: String;
-  LineIdx, WordStart, WordLen, ErrLen: Integer;
+  LineIdx, WordStart, WordLen, ErrLen, hx: Integer;
   ErrStart: IntPos;
   MoreErr: Boolean;
 begin
   if (FWordBreaker = nil) or (FWordChecker = nil) then exit;
+
+  if FHighlighter <> nil then
+    FHighlighter.CurrentLines := Lines;
+
   LineIdx := ToIdx(AStartPoint.Y);
   repeat
     LineTxt := Lines[LineIdx];
 
+    if FHighlighter <> nil then
+      FHighlighter.StartAtLineIndex(LineIdx);
+
     WordBreaker.SetLine(LineTxt);
     while WordBreaker.NextWord(WordStart, WordLen) do begin
+      if FHighlighter <> nil then begin
+        FHighlighter.NextToLogX(ToIdx(WordStart)+1);
+        hx := ToPos(FHighlighter.GetTokenPos);
+        if (hx <= WordStart) and (hx + FHighlighter.GetTokenLen >= WordStart + WordLen) then begin
+          if (hoNoNumbers in FHighlighterOpts) and
+             (FHighlighter.GetTokenClass in [tcNumber])
+          then
+            continue;
+          if (hoNoKnownWords in FHighlighterOpts) and
+             (tdKnownWord in FHighlighter.GetTokenDetails)
+          then
+            continue;
+        end;
+      end;
+
+
       if WordChecker.CheckWord(LineTxt, WordStart, WordLen) then
         continue;
 
@@ -304,6 +391,13 @@ end;
 function TSynMarkupSpellCheck.SearchStringMaxLines: Integer;
 begin
   Result := 1;
+end;
+
+destructor TSynMarkupSpellCheck.Destroy;
+begin
+  inherited Destroy;
+  if Lines <> nil then
+    Lines.RemoveChangeHandler(senrHighlightChanged, @DoHighlightChanged);
 end;
 
 function TSynMarkupSpellCheck.HasMatchAt(p: TPoint): Boolean;
@@ -347,6 +441,15 @@ begin
     [setExtendBlock], scamAdjust);
 end;
 
+procedure TSynCustomPluginSpellCheck.SetHighlighterOpts(AValue: TSynSpellCheckHighlighterOptions);
+begin
+  if FHighlighterOpts = AValue then Exit;
+  FHighlighterOpts := AValue;
+
+  if FMarkup <> nil then
+    FMarkup.HighlighterOpts := FHighlighterOpts;
+end;
+
 procedure TSynCustomPluginSpellCheck.SetOverViewColor(AValue: TColor);
 begin
   if FOverViewColor = AValue then Exit;
@@ -375,6 +478,7 @@ begin
 
   AValue.MarkupManager.AddMarkUp(FMarkup);
   FMarkup.OverViewColor := FOverViewColor;
+  FMarkup.HighlighterOpts := FHighlighterOpts;
   AValue.RegisterMouseActionExecHandler(@DoHandleMouseAction);
   AValue.RegisterMouseActionSearchHandler(@DoMouseActionSearch);
 
