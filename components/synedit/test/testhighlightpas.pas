@@ -397,7 +397,7 @@ begin
     if ExpTokens[i].Flags * [etiAttr, etiKind] = [etiKind] then begin
       case TtkTokenKind(ExpTokens[i].ExpKind) of
         tkIdentifier: ExpTokens[i].ExpAttr := PasHighLighter.IdentifierAttri;
-        tkKey:        ExpTokens[i].ExpAttr := PasHighLighter.KeywordAttribute;
+        tkKey:        ExpTokens[i].ExpAttr := PasHighLighter.KeyAttri;
         tkModifier:   ExpTokens[i].ExpAttr := PasHighLighter.ModifierAttri;
         tkSymbol:     ExpTokens[i].ExpAttr := PasHighLighter.SymbolAttri;
         tkString:     ExpTokens[i].ExpAttr := PasHighLighter.StringAttri;
@@ -1810,7 +1810,7 @@ begin
   ReCreateEdit;
   AtP := PasHighLighter.ProcedureHeaderName;
   AtI := PasHighLighter.IdentifierAttri;
-  AtK := PasHighLighter.KeywordAttribute;
+  AtK := PasHighLighter.KeyAttri;
 
   SetLines
     ([ 'Unit A;',
@@ -2033,7 +2033,7 @@ var
   i: Integer;
 begin
   ReCreateEdit;
-  AtK := PasHighLighter.KeywordAttribute;
+  AtK := PasHighLighter.KeyAttri;
 
   SetLines
     ([ 'Unit A;',
