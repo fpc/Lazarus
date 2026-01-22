@@ -172,15 +172,22 @@ end;
 procedure TIconViewerFrame.AddKeywordFilterToHistory(AFilter: String);
 var
   idx: Integer;
+  i: Integer;
 begin
   if AFilter = '' then
     exit;
 
-  idx := cmbFilterByKeywords.Items.IndexOf(AFilter);
-  if idx = -1 then
-    cmbFilterByKeywords.Items.Insert(0, AFilter)
+  if (cmbFilterByKeywords.Items.Count > 0) and (pos(cmbFilterByKeyWords.Items[0], AFilter) = 1) then
+    // Avoid "live search" adding to many history items
+    cmbFilterByKeywords.Items[0] := AFilter
   else
-    cmbFilterByKeywords.Items.Move(idx, 0);
+  begin
+    idx := cmbFilterByKeywords.Items.IndexOf(AFilter);
+    if idx = -1 then
+      cmbFilterByKeywords.Items.Insert(0, AFilter)
+    else
+      cmbFilterByKeywords.Items.Move(idx, 0);
+  end;
 
   while cmbFilterByKeywords.Items.Count > MAX_KEYWORDS_HISTORY do
     cmbFilterByKeywords.Items.Delete(cmbFilterByKeywords.Items.Count-1);
