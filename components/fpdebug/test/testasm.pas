@@ -757,6 +757,46 @@ begin
   IgnoreSizeWordPtr := False;
 
 
+  TestDis('rdrand r13w', #$66#$41#$0f#$c7#$f5,               'rdrand r13w');
+  TestDis('rdrand r13d', #$41#$0f#$c7#$f5,                   'rdrand r13d');
+  TestDis('rdrand r13' , #$49#$0f#$c7#$f5,                   'rdrand r13' );
+  TestDis('rdseed r13w', #$66#$41#$0f#$c7#$fd,               'rdseed r13w');
+  TestDis('rdseed r13d', #$41#$0f#$c7#$fd,                   'rdseed r13d');
+  TestDis('rdseed r13' , #$49#$0f#$c7#$fd,                   'rdseed r13' );
+  TestDis('rdrand r12w', #$66#$41#$0f#$c7#$f4,               'rdrand r12w');
+  TestDis('rdrand r12d', #$41#$0f#$c7#$f4,                   'rdrand r12d');
+  TestDis('rdrand r12' , #$49#$0f#$c7#$f4,                   'rdrand r12' );
+  TestDis('rdseed r12w', #$66#$41#$0f#$c7#$fc,               'rdseed r12w');
+  TestDis('rdseed r12d', #$41#$0f#$c7#$fc,                   'rdseed r12d');
+  TestDis('rdseed r12' , #$49#$0f#$c7#$fc,                   'rdseed r12' );
+  TestDis('rdrand rax' , #$48#$0f#$c7#$f0,                   'rdrand rax' );
+  TestDis('rdrand eax' , #$0f#$c7#$f0,                       'rdrand eax' );
+  TestDis('rdrand ax'  , #$66#$0f#$c7#$f0,                   'rdrand ax'  );
+  TestDis('rdseed rax' , #$48#$0f#$c7#$f8,                   'rdseed rax' );
+  TestDis('rdseed eax' , #$0f#$c7#$f8,                       'rdseed eax' );
+  TestDis('rdseed ax'  , #$66#$0f#$c7#$f8,                   'rdseed ax'  );
+  TestDis('rdrand rdx' , #$48#$0f#$c7#$f2,                   'rdrand rdx' );
+  TestDis('rdrand edx' , #$0f#$c7#$f2,                       'rdrand edx' );
+  TestDis('rdrand dx'  , #$66#$0f#$c7#$f2,                   'rdrand dx'  );
+  TestDis('rdseed rdx' , #$48#$0f#$c7#$fa,                   'rdseed rdx' );
+  TestDis('rdseed edx' , #$0f#$c7#$fa,                       'rdseed edx' );
+  TestDis('rdseed dx'  , #$66#$0f#$c7#$fa,                   'rdseed dx'  );
+  TestDis('rdrand rsp' , #$48#$0f#$c7#$f4,                   'rdrand rsp' );
+  TestDis('rdrand esp' , #$0f#$c7#$f4,                       'rdrand esp' );
+  TestDis('rdrand sp'  , #$66#$0f#$c7#$f4,                   'rdrand sp'  );
+  TestDis('rdseed rsp' , #$48#$0f#$c7#$fc,                   'rdseed rsp' );
+  TestDis('rdseed esp' , #$0f#$c7#$fc,                       'rdseed esp' );
+  TestDis('rdseed sp'  , #$66#$0f#$c7#$fc,                   'rdseed sp'  );
+  TestDis('rdrand rbp' , #$48#$0f#$c7#$f5,                   'rdrand rbp' );
+  TestDis('rdrand ebp' , #$0f#$c7#$f5,                       'rdrand ebp' );
+  TestDis('rdrand bp'  , #$66#$0f#$c7#$f5,                   'rdrand bp'  );
+  TestDis('rdseed rbp' , #$48#$0f#$c7#$fd,                   'rdseed rbp' );
+  TestDis('rdseed ebp' , #$0f#$c7#$fd,                       'rdseed ebp' );
+  TestDis('rdseed bp'  , #$66#$0f#$c7#$fd,                   'rdseed bp'  );
+
+
+
+
   Process.NewMode := dm32;
 
   TestDis('call   0x77cf4d10',           #$e8#$67#$70#$fc#$ff        ,  'call -$00038F99');
@@ -1178,6 +1218,25 @@ begin
   TestDis('vcvtps2ph XMMWORD PTR [eax*2+edi+$3],ymm3,$35', #$c4#$e3#$7d#$1d#$5c#$47#$03#$35,               'vcvtps2ph XMMWORD PTR [eax*2+edi+$3],ymm3,$35');
   TestDis('vcvtps2ph YMMWORD PTR [eax*2+edi+$3],zmm3,$35', #$62#$f3#$7d#$48#$1d#$9c#$47#$03#$00#$00#$00#$35, 'vcvtps2ph YMMWORD PTR [eax*2+edi+$3],zmm3,$35');
   IgnoreSizeWordPtr := False;
+
+
+
+  TestDis('rdrand eax', #$0f#$c7#$f0,                   'rdrand eax');
+  TestDis('rdrand ax' , #$66#$0f#$c7#$f0,               'rdrand ax');
+  TestDis('rdseed eax', #$0f#$c7#$f8,                   'rdseed eax');
+  TestDis('rdseed ax' , #$66#$0f#$c7#$f8,               'rdseed ax');
+  TestDis('rdrand edx', #$0f#$c7#$f2,                   'rdrand edx');
+  TestDis('rdrand dx' , #$66#$0f#$c7#$f2,               'rdrand dx');
+  TestDis('rdseed edx', #$0f#$c7#$fa,                   'rdseed edx');
+  TestDis('rdseed dx' , #$66#$0f#$c7#$fa,               'rdseed dx');
+  TestDis('rdrand esp', #$0f#$c7#$f4,                   'rdrand esp');
+  TestDis('rdrand sp' , #$66#$0f#$c7#$f4,               'rdrand sp');
+  TestDis('rdseed esp', #$0f#$c7#$fc,                   'rdseed esp');
+  TestDis('rdseed sp' , #$66#$0f#$c7#$fc,               'rdseed sp');
+  TestDis('rdrand ebp', #$0f#$c7#$f5,                   'rdrand ebp');
+  TestDis('rdrand bp' , #$66#$0f#$c7#$f5,               'rdrand bp');
+  TestDis('rdseed ebp', #$0f#$c7#$fd,                   'rdseed ebp');
+  TestDis('rdseed bp' , #$66#$0f#$c7#$fd,               'rdseed bp');
 
 
   Process.NewMode := dm64;
