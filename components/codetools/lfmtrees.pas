@@ -34,7 +34,7 @@ uses
   // LazUtils
   LazUtilities,
   // Codetools
-  FileProcs, BasicCodeTools, CodeCache, KeywordFuncLists;
+  FileProcs, CodeCache, KeywordFuncLists;
   
 type
   { TLFMTreeNode }
