@@ -499,11 +499,10 @@ procedure TToolBar.SetMenu(AValue: TMainMenu);
 begin
   if FMenu = AValue then Exit;
   if Assigned(FMenu) then
-  begin
     FMenu.FPODetachObserver(FMenuObserver);
-  end;
   FMenu := AValue;
-  if Assigned(FMenu) then FMenu.FPOAttachObserver(FMenuObserver);
+  if Assigned(FMenu) then
+    FMenu.FPOAttachObserver(FMenuObserver);
   UpdateVisibleBar;
 end;
 

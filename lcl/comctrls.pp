@@ -94,11 +94,14 @@ type
     property Width: Integer read FWidth write SetWidth;
   end;
 
-  TStatusPanels = class(TCollection)
+  { TStatusPanels }
+
+  TStatusPanels = class(TCollection, IFPObserver)
   private
     FStatusBar: TStatusBar;
     function GetItem(Index: Integer): TStatusPanel;
     procedure SetItem(Index: Integer; Value: TStatusPanel);
+    procedure FPOObservedChanged(ASender: TObject; Operation: TFPObservedOperation; Data: Pointer);
   protected
     function GetOwner: TPersistent; override;
     procedure Update(Item: TCollectionItem); override;
@@ -1263,7 +1266,7 @@ type
 
   { TListColumns }
 
-  TListColumns = class(TCollection)
+  TListColumns = class(TCollection, IFPObserver)
   private
     FOwner: TCustomListView;
     FItemNeedsUpdate: TCollectionItem;
@@ -1272,6 +1275,7 @@ type
     procedure WSCreateColumns;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
     procedure DoFinalizeWnd;
+    procedure FPOObservedChanged(ASender: TObject; Operation: TFPObservedOperation; Data: Pointer);
   protected
     function GetOwner: TPersistent; override;
   public

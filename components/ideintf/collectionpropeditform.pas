@@ -82,7 +82,6 @@ begin
   actMoveDown.ImageIndex := IDEImages.LoadImage('arrow_down');
   actMoveUp.ShortCut := scCtrl or VK_UP;
   actMoveDown.ShortCut := scCtrl or VK_DOWN;
-
   actAdd.Hint := oiColEditAdd;
   actDel.Hint := oiColEditDelete;
   actMoveUp.Hint := oiColEditUp;
@@ -120,6 +119,7 @@ begin
   if CollectionListBox.Items.Count > 0 then
     CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
   SelectInObjectInspector(True);
+  FPONotifyObservers(Sender, ooAddItem, Nil);
   UpdateButtons;
   UpdateCaption;
   Modified;
@@ -166,6 +166,7 @@ begin
       Item.Free;
       GlobalDesignHook.PersistentDeleted(Item);
       Item:=nil;
+      FPONotifyObservers(Sender, ooDeleteItem, Pointer(PtrInt(I)));
       // update listbox after whatever happened
       FillCollectionListBox;
       // set NewItemIndex
@@ -265,8 +266,6 @@ procedure TCollectionPropertyEditorForm.PersistentAdded(APersistent: TPersistent
 begin
   //DebugLn(['TCollectionPropertyEditorForm.PersistentAdded: APersistent=', APersistent, ', Select=', Select]);
   FillCollectionListBox;
-  if OwnerPersistent is TControl then
-    TControl(OwnerPersistent).Update;
 end;
 
 procedure TCollectionPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
@@ -281,7 +280,7 @@ begin
     if TCollectionItem(APersistent).Collection = Collection then
     begin
       TCollectionItem(APersistent).Collection := nil;
-      PersistentAdded(APersistent, False); // Update like when item was added.
+      FillCollectionListBox;
     end;
   end;
 end;
@@ -384,11 +383,18 @@ end;
 
 procedure TCollectionPropertyEditorForm.SetCollection(NewCollection: TCollection;
   NewOwnerPersistent: TPersistent; const NewPropName: String);
+var
+  Intf: IFPObserver;
 begin
   if (FCollection = NewCollection) and (FOwnerPersistent = NewOwnerPersistent)
     and (FPropertyName = NewPropName) then Exit;
 
+  if Assigned(FCollection) and FCollection.GetInterface(SGUIDObserver,Intf) then
+    FPODetachObserver(FCollection);
   FCollection := NewCollection;
+  if Assigned(FCollection) and FCollection.GetInterface(SGUIDObserver,Intf) then
+    FPOAttachObserver(FCollection);
+
   FOwnerPersistent := NewOwnerPersistent;
   FPropertyName := NewPropName;
   //debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),

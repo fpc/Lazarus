@@ -237,7 +237,7 @@ begin
   FAutoSize := AValue;
   Changed(False);  
   if not WSUpdateAllowed then Exit;
-  
+
   LV := TListColumns(Collection).FOwner;
   TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetAutosize(LV, Index, Self, FAutosize);
 end;
@@ -250,7 +250,7 @@ begin
   FImageIndex := AValue;
   Changed(False);
   if not WSUpdateAllowed then Exit;
-  
+
   LV := TListColumns(Collection).FOwner;
   TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetImage(LV, Index, Self, FImageIndex);
 end;
@@ -262,12 +262,13 @@ var
 begin
   OldIndex := Index;
   inherited;
-                     
   if OldIndex = Index then Exit;
   if not WSUpdateAllowed then Exit;
-  
   LV := TListColumns(Collection).FOwner;
   TWSCustomListViewClass(LV.WidgetSetClass).ColumnMove(LV, OldIndex, Index, Self);
+  { ToDo: Find a way to update columns in the actual ListView. LV.Update; does not work.
+    Why doesn't the widgetset call do it? TStatusPanel.SetIndex updates its panels.
+    This is an issue when moving items in the collection property editor. }
 end;
 
 function TListColumn.GetDisplayName: string;
