@@ -330,7 +330,6 @@ type
     TAttributeList = specialize TFPGObjectList<TLazEditTextAttribute>;
   strict private
     FAttributes: TAttributeList;
-
   protected
     procedure SetAttributesOnChange(AChangeEvent: TNotifyEvent; ASaveDefaultValues: Boolean = True);
     procedure SaveAttributeDefaultValues;
@@ -339,9 +338,11 @@ type
     procedure FreeHighlighterAttributes;
     function GetAttribCount: integer; virtual;
     function GetAttribute(AnIndex: integer): TLazEditTextAttribute; virtual;
+    procedure AssignAttributesByName(ASource: TLazEditAttributeOwner);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function IndexOfStoredName(AStoredName: string; AStartAtIdx: integer = 0): integer;
 
     property AttrCount: integer read GetAttribCount;
     property Attribute[AnIndex: integer]: TLazEditTextAttribute read GetAttribute;
@@ -1099,6 +1100,33 @@ begin
   Result := FAttributes[AnIndex];
 end;
 
+procedure TLazEditAttributeOwner.AssignAttributesByName(ASource: TLazEditAttributeOwner);
+var
+  c, i, j, o: Integer;
+  Attr: TLazEditTextAttribute;
+begin
+  // If ASource has an identical list of attributes then j will count up together with i
+  c := ASource.AttrCount;
+  j := 0;
+  for i := 0 to AttrCount do begin
+    Attr := Attribute[i];
+    if Attr.StoredName = '' then begin
+      if (j < c) and (ASource.Attribute[j].StoredName = '') then begin
+        if j = i then
+          Attr.Assign(ASource.Attribute[j]); // empty name, same position
+        inc(j);
+      end;
+      continue;
+    end;
+
+    o := ASource.IndexOfStoredName(Attr.StoredName, j);
+    if o = j then
+      inc(j);
+
+    Attr.Assign(ASource.Attribute[o]);
+  end;
+end;
+
 procedure TLazEditAttributeOwner.SetAttributesOnChange(AChangeEvent: TNotifyEvent;
   ASaveDefaultValues: Boolean);
 var
@@ -1146,6 +1174,16 @@ destructor TLazEditAttributeOwner.Destroy;
 begin
   inherited Destroy;
   FAttributes.Free; // will free all attributes
+end;
+
+function TLazEditAttributeOwner.IndexOfStoredName(AStoredName: string; AStartAtIdx: integer
+  ): integer;
+begin
+  for Result := AStartAtIdx to AttrCount - 1 do begin
+    if Attribute[Result].StoredName = AStoredName then
+      exit;
+  end;
+  Result := -1;
 end;
 
 { TLazEditTextAttributeModifierCollectionItem }

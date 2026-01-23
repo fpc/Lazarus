@@ -681,23 +681,12 @@ end;
 procedure TSynCustomHighlighter.Assign(Source: TPersistent);
 var
   Src: TSynCustomHighlighter;
-  i, j: integer;
-  SrcAttri: TLazEditTextAttribute;
-  StoredName: String;
+  i: integer;
 begin
   if Source is TSynCustomHighlighter then begin
     Src := TSynCustomHighlighter(Source);
-    for i := 0 to AttrCount - 1 do begin
-      // assign first attribute with the same name
-      StoredName := Attribute[i].StoredName;
-      for j := 0 to Src.AttrCount - 1 do begin
-        SrcAttri := Src.Attribute[j];
-        if StoredName = SrcAttri.StoredName then begin
-          Attribute[i].Assign(SrcAttri);
-          continue;
-        end;
-      end;
-    end;
+    AssignAttributesByName(Src);
+
     for i := 0 to DividerDrawConfigCount - 1 do
       DividerDrawConfig[i].Assign(Src.DividerDrawConfig[i]);
     // assign the sample source text only if same or descendant class
