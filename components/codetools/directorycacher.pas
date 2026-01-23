@@ -1338,6 +1338,14 @@ begin
     exit;
   end;
 
+  // first search in current directory
+  Result:=FindIncludeFile(IncFilename,AnyCase);
+  if Result<>'' then begin
+    Result:=Directory+Result;
+    exit;
+  end;
+
+  // then search via include path
   SearchPath:=Strings[ctdcsIncludePath];
   Result:=FindIncludeFileInCleanPath(IncFilename,SearchPath,AnyCase);
 

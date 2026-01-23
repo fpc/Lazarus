@@ -402,6 +402,7 @@ type
     function SetGlobalPath(const DefName, Description, MacroName, SearchPath: string): TDefineTemplate;
     function SetGlobalUnitPath(const UnitPath: string): TDefineTemplate;
     function SetGlobalIncludePath(const IncludePath: string): TDefineTemplate;
+    function AddIncludePath(DefName, Directory, IncPath: string): TDefineTemplate;
 
     // miscellaneous
     property OnGetMethodName: TOnGetMethodname read FOnGetMethodName
@@ -1956,6 +1957,37 @@ function TCodeToolManager.SetGlobalIncludePath(const IncludePath: string
   ): TDefineTemplate;
 begin
   Result:=SetGlobalPath('IncPath','Include search path',IncludePathMacroName,IncludePath);
+end;
+
+function TCodeToolManager.AddIncludePath(DefName, Directory, IncPath: string): TDefineTemplate;
+var
+  GlobalDef, IncDef: TDefineTemplate;
+  NewValue: String;
+begin
+  Result:=nil;
+  Directory:=ChompPathDelim(Directory);
+  if DefName='' then
+    raise ECodeToolManagerError.Create(20260123102823,'definition name missing');
+  if Directory='' then
+    raise ECodeToolManagerError.Create(20260123102841,'directory empty');
+
+  GlobalDef:=GetGlobalDefines;
+  Result:=GlobalDef.FindChildByName(DefName);
+  if Result=nil then begin
+    Result:=TDefineTemplate.Create(DefName,'Include path addition','',Directory,da_Directory);
+    GlobalDef.AddChild(Result);
+  end;
+
+  NewValue:='$('+IncludePathMacroName+');'+IncPath;
+  IncDef:=Result.FindChildByName('IncPath');
+  if IncDef=nil then begin
+    IncDef:=TDefineTemplate.Create('IncPath','',IncludePathMacroName,NewValue,da_Define);
+    Result.AddChild(IncDef);
+  end else if IncDef.Value=NewValue then
+    exit
+  else
+    IncDef.Value:=NewValue;
+  DefineTree.ClearCache;
 end;
 
 procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TFPList);

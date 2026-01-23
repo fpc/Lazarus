@@ -209,6 +209,8 @@ type
     // unit/include search
     procedure TestFindDeclaration_UnitSearch_CurrentDir;
     procedure TestFindDeclaration_UnitSearch_StarStar;
+    procedure TestFindDeclaration_IncludeSearch_MixedLowerUpper;
+    procedure TestFindDeclaration_IncludeSearch_FirstUnitDir;
     procedure TestFindDeclaration_IncludeSearch_DirectiveWithPath;
     procedure TestFindDeclaration_IncludeSearch_StarStar;
     procedure TestFindDeclaration_FindFPCSrcNameSpacedUnits;
@@ -2194,8 +2196,64 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.
-  TestFindDeclaration_IncludeSearch_DirectiveWithPath;
+procedure TTestFindDeclaration.TestFindDeclaration_IncludeSearch_MixedLowerUpper;
+var
+  MixedInc, LowerInc, UpperInc: TCodeBuffer;
+  Tool: TCodeTool;
+begin
+  MixedInc:=CodeToolBoss.CreateFile('miXed.Inc');
+  LowerInc:=CodeToolBoss.CreateFile('lower.inc');
+  UpperInc:=CodeToolBoss.CreateFile('UPPER.INC');
+  try
+    MixedInc.Source:='const cMixed = 1;';
+    LowerInc.Source:='const cLower = 2;';
+    UpperInc.Source:='const cUpper = 3;';
+
+    Add([
+    'unit Red;',
+    'interface',
+    '{$I miXed.Inc}', // test search exact
+    '{$I Lower.INC}', // test search lowercase
+    '{$I Upper.inc}', // test search uppercase
+    'implementation',
+    'end.']);
+    if not CodeToolBoss.Explore(Code,Tool,true) then begin
+      debugln('Error: '+CodeToolBoss.ErrorDbgMsg);
+      Fail('Explore failed: '+CodeToolBoss.ErrorMessage);
+    end;
+  finally
+    MixedInc.IsDeleted:=true;
+    LowerInc.IsDeleted:=true;
+    UpperInc.IsDeleted:=true;
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_IncludeSearch_FirstUnitDir;
+var
+  UnitCode: TCodeBuffer;
+  Dir, IncDir, IncPath, IncFile, ExpFile: String;
+  IncDef: TDefineTemplate;
+begin
+  UnitCode:=CodeToolBoss.LoadFile(ExpandFileName('moduletests/incsearch/Inc_UnitBeforePath.pas'),true,true);
+  if UnitCode=nil then
+    Fail('20260123134128');
+
+  Dir:=ExtractFilePath(UnitCode.Filename);
+  IncDir:=Dir+'inc';
+  IncDef:=CodeToolBoss.AddIncludePath('TestFindDeclaration_IncludeSearch_FirstUnitDir',Dir,IncDir);
+  try
+    IncPath:=CodeToolBoss.GetIncludePathForDirectory(Dir,true);
+    AssertEquals('include path',';'+IncDir,IncPath);
+
+    IncFile:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,'Inc_UnitBeforePath.inc');
+    ExpFile:=Dir+'Inc_UnitBeforePath.inc';
+    AssertEquals('include file',ExpFile,IncFile);
+  finally
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(IncDef);
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_IncludeSearch_DirectiveWithPath;
 var
   aFilename: String;
   StarCode: TCodeBuffer;
@@ -2203,7 +2261,7 @@ var
 begin
   aFilename:=ExpandFileNameUTF8(SetDirSeparators('moduletests/star/star.main.pas'));
   StarCode:=CodeToolBoss.LoadFile(aFilename,true,false);
-  if not CodeToolBoss.Explore(STarCode,Tool,true) then begin
+  if not CodeToolBoss.Explore(StarCode,Tool,true) then begin
     debugln('Error: '+CodeToolBoss.ErrorDbgMsg);
     Fail('Explore failed: '+CodeToolBoss.ErrorMessage);
   end;
