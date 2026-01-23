@@ -232,7 +232,7 @@ type
     // include files
     function FindIncludeFile(const IncFilename: string; AnyCase: boolean): string; override;
     function FindIncludeFileInPath(IncFilename: string; AnyCase: boolean): string;
-    function FindIncludeFileInCleanPath(IncFilename, SearchPath: string; AnyCase: boolean): string;
+    function FindIncludeFileInCleanPath(IncFilename, SearchPath: string; AnyCase: boolean): string; // SearchPath macros and dots must be resolved
     function FindNamespacedIncludeFile(const IncFilename: string): string;
 
     procedure IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
@@ -1203,7 +1203,7 @@ begin
 
     // see fpc source scanner.pas function preproc_factor(eval: Boolean):texprvalue;
     // first search IncFilename
-    // if IncFilename has not an ext of .inc, .pp, .pas, then search IncFilename plus .inc,.pp,.pas
+    // if IncFilename has no path and no ext of .inc, .pp, .pas, then search IncFilename plus .inc,.pp,.pas
     // Note: This means e.g. "a.b" will search "a.b", "a.b.inc", "a.b.pp" and "a.b.pas"
 
     IncFilenameP:=PChar(IncFilename);
@@ -1264,7 +1264,9 @@ begin
         DebugLn('TCTDirectoryCache.FindIncludeFile NEXT "',CurFilename,'" ExtStart=',dbgstr(CurExtP^));
       {$ENDIF}
       Stop:=false;
-      if IncExtP<>nil then begin
+      if PCTDirectoryListingHeader(@Files[Starts[m]])^.Attr and faDirectory>0 then
+        // skip directory
+      else if IncExtP<>nil then begin
         // include file with extension
         if AnyCase then begin
           if ComparePCharCaseInsensitiveASCII(CurExtP,IncExtP)=0 then
@@ -1321,7 +1323,7 @@ function TCTDirectoryCache.FindIncludeFileInPath(IncFilename: string;
   AnyCase: boolean): string;
 var
   HasPathDelims: Boolean;
-  SearchPath: String;
+  SearchPath, aPath, Dir: String;
 begin
   Result:='';
   {$IFDEF DebugDirCacheFindIncFile}
@@ -1332,17 +1334,27 @@ begin
 
   IncFilename:=ResolveDots(IncFilename);
 
-  HasPathDelims:=(System.Pos('/',IncFilename)>0) or (System.Pos('\',IncFilename)>0);
-  if HasPathDelims then begin
-    Result:=Pool.FindIncludeFileInCompletePath(Directory,IncFilename,AnyCase);
-    exit;
-  end;
+  aPath:=ExtractFilePath(IncFilename);
+  HasPathDelims:=aPath>'';
 
   // first search in current directory
-  Result:=FindIncludeFile(IncFilename,AnyCase);
-  if Result<>'' then begin
-    Result:=Directory+Result;
-    exit;
+  if HasPathDelims then begin
+    if Directory>'' then begin
+      Dir:=ResolveDots(Directory+aPath);
+      if Dir>'' then begin
+        Result:=Pool.FindIncludeFileInDirectory(Dir,ExtractFilename(IncFilename),AnyCase);
+        if Result<>'' then
+          exit;
+      end;
+    end else begin
+      // virtual directory does not support sub directories
+    end;
+  end else begin
+    Result:=FindIncludeFile(IncFilename,AnyCase);
+    if Result<>'' then begin
+      Result:=Directory+Result;
+      exit;
+    end;
   end;
 
   // then search via include path
@@ -1357,15 +1369,14 @@ end;
 function TCTDirectoryCache.FindIncludeFileInCleanPath(IncFilename,
   SearchPath: string; AnyCase: boolean): string;
 var
-  StartPos, p: Integer;
-  l: SizeInt;
-  CurPath: String;
-  IsAbsolute, HasPathDelims: Boolean;
+  l, StartPos, p: integer;
+  CurPath, aPath: String;
+  IsAbsolute: Boolean;
 begin
   Result:='';
-  HasPathDelims:=(System.Pos('/',IncFilename)>0) or (System.Pos('\',IncFilename)>0);
-  if HasPathDelims then
-    exit;
+  aPath:=ExtractFilePath(IncFilename);
+  if aPath>'' then
+    IncFilename:=ExtractFileName(IncFilename);
 
   StartPos:=1;
   l:=length(SearchPath);
@@ -1373,23 +1384,29 @@ begin
     p:=StartPos;
     while (p<=l) and (SearchPath[p]<>';') do inc(p);
     CurPath:=Trim(copy(SearchPath,StartPos,p-StartPos));
-    if CurPath<>'' then begin
-      IsAbsolute:=FilenameIsAbsolute(CurPath);
-      if (not IsAbsolute) and (Directory<>'') then begin
-        CurPath:=Directory+CurPath;
-        IsAbsolute:=true;
-      end;
-      //DebugLn('TCTDirectoryCache.FindIncludeFileInCleanPath CurPath="',CurPath,'"');
-      if IsAbsolute then begin
-        CurPath:=AppendPathDelim(CurPath);
-        Result:=Pool.FindIncludeFileInDirectory(CurPath,IncFilename,AnyCase);
-      end else if (CurPath='.') and (Directory='') then
-        Result:=Pool.FindVirtualInclude(IncFilename)
-      else
-        Result:='';
-      if Result<>'' then exit;
-    end;
     StartPos:=p+1;
+    if CurPath='' then continue;
+    if CurPath='.' then CurPath:='';
+    IsAbsolute:=FilenameIsAbsolute(CurPath);
+    if (not IsAbsolute) and (Directory<>'') then begin
+      CurPath:=Directory+CurPath;
+      IsAbsolute:=true;
+    end;
+    //DebugLn('TCTDirectoryCache.FindIncludeFileInCleanPath CurPath="',CurPath,'" aPath="',aPath,'" Inc="',IncFilename,'"');
+    if IsAbsolute then begin
+      CurPath:=AppendPathDelim(CurPath);
+      if aPath>'' then begin
+        if IsCTStarDirectory(CurPath,p)>ctsdNone then
+          continue; // * plus path is not yet supported
+        CurPath:=ResolveDots(CurPath+aPath);
+      end;
+      Result:=Pool.FindIncludeFileInDirectory(CurPath,IncFilename,AnyCase);
+    end else if Directory='' then begin
+      if (CurPath='') and (aPath='') then
+        Result:=Pool.FindVirtualInclude(IncFilename);
+    end else
+      Result:='';
+    if Result<>'' then exit;
   end;
   Result:='';
 end;
@@ -2005,12 +2022,18 @@ begin
   if Files=nil then exit;
   Starts:=FListing.Starts;
 
+  // check if IncFilename has include file extension .inc, .pp, .pas
   IncFilenameP:=PChar(IncFilename);
   l:=length(IncFilename);
   while (l>0) and (IncFilename[l]<>'.') do dec(l);
   if l>0 then begin
     IncExtP:=@IncFilename[l];
-    AUnitName:=LeftStr(IncFilename,l-1);
+    if IsPascalIncExt(IncExtP)>pietNone then
+      AUnitName:=LeftStr(IncFilename,l-1)
+    else begin
+      IncExtP:=nil;
+      AUnitName:=IncFilename;
+    end;
   end else begin
     IncExtP:=nil;
     AUnitName:=IncFilename;
@@ -2055,7 +2078,9 @@ begin
       DebugLn('TCTDirectoryCache.FindIncludeFile NEXT "',CurFilename,'" ExtStart=',dbgstr(CurExtP^));
     {$ENDIF}
     Stop:=false;
-    if IncExtP<>nil then begin
+    if PCTDirectoryListingHeader(@Files[Starts[m]])^.Attr and faDirectory>0 then
+      // skip directory
+    else if IncExtP<>nil then begin
       // include file with extension
       if AnyCase then begin
         if ComparePCharCaseInsensitiveASCII(CurExtP,IncExtP)=0 then
@@ -2093,7 +2118,7 @@ begin
     Result:=FListing.GetSubDirFilename(Best);
     exit;
   end;
-  {$IFDEF DebugDirCacheFindUnitSource}
+  {$IFDEF DebugDirCacheFindIncFile}
   if m<FListing.Count then
     //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
       DebugLn('TCTDirectoryCache.FindUnitSource LAST ',CurFilename);

@@ -4099,42 +4099,8 @@ var
   begin
     AnyCase:=Values.IsDefined('PAS2JS');
 
-    if HasPathDelims then begin
-      // find an include file with a path e.g. 'foo/bar.inc'
-      // -> search in 'foo/', do not search in include path
-      Dir:=ExtractFilePath(SrcFilename);
-      if Dir='' then begin
-        // searching in virtual directory is not yet supported
-        exit(false);
-      end;
-
-      Dir:=ResolveDots(Dir+ExtractFilePath(RelFilename));
-      RelFilename:=ExtractFileName(RelFilename);
-      FoundFilename:=DirectoryCachePool.FindIncludeFileInDirectory(Dir,RelFilename,AnyCase);
-      if FoundFilename<>'' then begin
-        {$IFDEF VerboseIncludeSearch}
-        DebugLn('TLinkScanner.Search Filename="',RelFilename,'" Found="',FoundFilename,'"');
-        {$ENDIF}
-        NewCode:=FOnLoadSource(Self,FoundFilename,true);
-        if (NewCode<>nil) then
-          exit(true);
-      end;
-      exit(false);
-    end;
-
-    // search in dir of unit
-    Dir:=ExtractFilePath(FMainSourceFilename);
-    FoundFilename:=DirectoryCachePool.FindIncludeFileInDirectory(Dir,RelFilename,AnyCase);
-    if FoundFilename<>'' then begin
-      {$IFDEF VerboseIncludeSearch}
-      DebugLn('TLinkScanner.Search Filename="',RelFilename,'" Found="',FoundFilename,'"');
-      {$ENDIF}
-      NewCode:=FOnLoadSource(Self,FoundFilename,true);
-      if (NewCode<>nil) then
-        exit(true);
-    end;
-
     // search in include path
+    Dir:=ExtractFilePath(FMainSourceFilename);
     FoundFilename:=DirectoryCachePool.FindIncludeFileInCompletePath(Dir,RelFilename,AnyCase);
     if FoundFilename<>'' then begin
       {$IFDEF VerboseIncludeSearch}
@@ -4146,7 +4112,7 @@ var
     end;
 
     if not HasPathDelims then begin
-      // search the include file in directories defines in fpc.cfg (by -Fi option)
+      // if unit is in fpc sources, use some heuristics
       if FilenameIsAbsolute(Dir)
           and Values.IsDefined('FPC')
           and OnFindIncFileInFPCSrcDir(Self,RelFilename,FoundFilename) then

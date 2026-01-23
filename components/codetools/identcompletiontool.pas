@@ -1314,7 +1314,7 @@ var
 
   function ProtectedNodeIsInAllowedClass(HasStrict: boolean): boolean;
   var
-    CurClassNode, ANode: TCodeTreeNode;
+    CurClassNode: TCodeTreeNode;
     FoundClassContext: TFindContext;
   begin
     Result:=false;
