@@ -214,6 +214,7 @@ type
     procedure TestFindDeclaration_IncludeSearch_DefaultExt;
     procedure TestFindDeclaration_IncludeSearch_FileWithPath;
     procedure TestFindDeclaration_IncludeSearch_DirectiveWithPath;
+    procedure TestFindDeclaration_IncludeSearch_Quotes;
     procedure TestFindDeclaration_IncludeSearch_StarStar;
     procedure TestFindDeclaration_FindFPCSrcNameSpacedUnits;
 
@@ -2319,6 +2320,30 @@ begin
   if not CodeToolBoss.Explore(StarCode,Tool,true) then begin
     debugln('Error: '+CodeToolBoss.ErrorDbgMsg);
     Fail('Explore failed: '+CodeToolBoss.ErrorMessage);
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_IncludeSearch_Quotes;
+var
+  MixedInc: TCodeBuffer;
+  Tool: TCodeTool;
+begin
+  MixedInc:=CodeToolBoss.CreateFile('miXed.Inc');
+  try
+    MixedInc.Source:='const cMixed = 1;';
+
+    Add([
+    'unit Red;',
+    'interface',
+    '{$I "miXed.Inc"}', // test search exact
+    'implementation',
+    'end.']);
+    if not CodeToolBoss.Explore(Code,Tool,true) then begin
+      debugln('Error: '+CodeToolBoss.ErrorDbgMsg);
+      Fail('Explore failed: '+CodeToolBoss.ErrorMessage);
+    end;
+  finally
+    MixedInc.IsDeleted:=true;
   end;
 end;
 

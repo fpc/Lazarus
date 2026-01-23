@@ -4136,17 +4136,31 @@ var
     Result:=false;
   end;
 
+var
+  c: char;
 begin
   {$IFDEF VerboseIncludeSearch}
   DebugLn('TLinkScanner.SearchIncludeFile Filename="',AFilename,'"');
   {$ENDIF}
   NewCode:=nil;
 
+  if AFilename='' then exit(false);
+  c:=AFilename[1];
+  if c in ['"',''''] then begin
+    System.Delete(AFilename,1,1);
+    if AFilename='' then exit(false);
+    if AFilename[length(AFilename)]=c then begin
+      System.Delete(AFilename,length(AFilename),1);
+      if AFilename='' then exit(false);
+    end;
+  end;
+
   // beware of 'dir/file.inc'
   HasPathDelims:=(System.Pos('/',AFilename)>0) or (System.Pos('\',AFilename)>0);
   if HasPathDelims then
     ForcePathDelims(AFilename);
   AFilename:=ResolveDots(AFilename);
+  if AFilename='' then exit(false);
 
   if not Assigned(FOnLoadSource) then begin
     NewCode:=nil;
