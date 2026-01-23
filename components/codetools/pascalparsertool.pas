@@ -5105,6 +5105,7 @@ var
   n: TCodeTreeNode;
   NodeEnd: Integer;
 begin
+  Result:=false;
   IsReferenceTo:=CurNode.Desc=ctnReferenceTo;
   n := CurNode;
   if IsReferenceTo then n := n.Parent;
@@ -5214,6 +5215,7 @@ begin
     CurNode.StartPos := NodeEnd; // empty proc head
   EndChildNode(NodeEnd);
   EndChildNode(NodeEnd);
+  Result:=true;
 end;
 
 function TPascalParserTool.KeyWordFuncTypeReferenceTo: boolean;
