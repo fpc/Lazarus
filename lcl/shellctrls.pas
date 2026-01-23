@@ -2447,7 +2447,7 @@ var
   bmp: Graphics.TBitmap;
   fmt: String;
 begin
-  if Self.Columns.Count < 2 then
+  if Self.Columns.Count < 1 then
     Exit;
   if (Column[0].Width <> 0) and (not AutoSizeColumns) then
     Exit;
