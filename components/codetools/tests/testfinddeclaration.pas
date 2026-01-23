@@ -211,6 +211,8 @@ type
     procedure TestFindDeclaration_UnitSearch_StarStar;
     procedure TestFindDeclaration_IncludeSearch_MixedLowerUpper;
     procedure TestFindDeclaration_IncludeSearch_FirstUnitDir;
+    procedure TestFindDeclaration_IncludeSearch_DefaultExt;
+    procedure TestFindDeclaration_IncludeSearch_FileWithPath;
     procedure TestFindDeclaration_IncludeSearch_DirectiveWithPath;
     procedure TestFindDeclaration_IncludeSearch_StarStar;
     procedure TestFindDeclaration_FindFPCSrcNameSpacedUnits;
@@ -2240,14 +2242,67 @@ begin
 
   Dir:=ExtractFilePath(UnitCode.Filename);
   IncDir:=Dir+'inc';
+  // test CodeToolBoss.AddIncludePath
   IncDef:=CodeToolBoss.AddIncludePath('TestFindDeclaration_IncludeSearch_FirstUnitDir',Dir,IncDir);
   try
     IncPath:=CodeToolBoss.GetIncludePathForDirectory(Dir,true);
     AssertEquals('include path',';'+IncDir,IncPath);
 
+    // test search in module directory before include path
     IncFile:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,'Inc_UnitBeforePath.inc');
     ExpFile:=Dir+'Inc_UnitBeforePath.inc';
     AssertEquals('include file',ExpFile,IncFile);
+  finally
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(IncDef);
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_IncludeSearch_DefaultExt;
+var
+  Dir, IncDir, IncPath, IncFile, ExpFile: String;
+  IncDef: TDefineTemplate;
+begin
+  Dir:=ExpandFileName('moduletests/incsearch/');
+  IncDir:=Dir+'inc';
+  // test CodeToolBoss.AddIncludePath
+  IncDef:=CodeToolBoss.AddIncludePath('TestFindDeclaration_IncludeSearch_DefaultExt',Dir,IncDir);
+  try
+    IncPath:=CodeToolBoss.GetIncludePathForDirectory(Dir,true);
+    AssertEquals('include path',';'+IncDir,IncPath);
+
+    // test search with default extension
+    IncFile:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,'IncFileDefaultExt');
+    ExpFile:=Dir+'IncFileDefaultExt.inc';
+    AssertEquals('include file',ExpFile,IncFile);
+  finally
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(IncDef);
+  end;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_IncludeSearch_FileWithPath;
+var
+  Dir, IncDir, IncPath, IncFile, ExpFile, Found: String;
+  IncDef: TDefineTemplate;
+begin
+  Dir:=ExpandFileName('moduletests/incsearch/');
+  IncDir:=Dir+'inc'+PathDelim;
+  // test CodeToolBoss.AddIncludePath
+  IncDef:=CodeToolBoss.AddIncludePath('TestFindDeclaration_IncludeSearch_FileWithPath',Dir,IncDir);
+  try
+    IncPath:=CodeToolBoss.GetIncludePathForDirectory(Dir,true);
+    AssertEquals('include path',';'+IncDir,IncPath);
+
+    // test searching an include file with path relative to module directory
+    IncFile:=SetDirSeparators('inc/sub/IncFileWithPath.inc');
+    Found:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,IncFile);
+    ExpFile:=Dir+IncFile;
+    AssertEquals('20260123150229 include file with path relative to folder',ExpFile,Found);
+
+    // test searching an include file with path relative to include path
+    IncFile:=SetDirSeparators('sub/IncFileWithPath.inc');
+    Found:=CodeToolBoss.DirectoryCachePool.FindIncludeFileInCompletePath(Dir,IncFile);
+    ExpFile:=IncDir+IncFile;
+    AssertEquals('20260123150232 include file with path relative to include path',ExpFile,Found);
   finally
     CodeToolBoss.DefineTree.RemoveDefineTemplate(IncDef);
   end;
