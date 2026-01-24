@@ -2116,6 +2116,9 @@ begin
   //DebugLn(Values.AsString);
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
   if Src='' then exit;
+
+  Values.Variables['CODETOOLS'] := '1';   // Predefined symbol.
+
   // begin scanning
   AddLink(SrcPos,Code);
   LastTokenType:=lsttNone;
