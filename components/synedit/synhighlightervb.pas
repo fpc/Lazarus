@@ -204,7 +204,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: String; override;
-    function IsFilterStored: Boolean; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -1051,8 +1051,6 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
-  fDefaultFilterInitialValue := SYNS_FilterVisualBASIC;
-  fDefaultFilter := fDefaultFilterInitialValue;
 end;
 
 procedure TSynVBSyn.InitForScanningLine;
@@ -1254,11 +1252,6 @@ begin
   Result := TSynValidStringChars;
 end;
 
-function TSynVBSyn.IsFilterStored: Boolean;
-begin
-  Result := fDefaultFilter <> fDefaultFilterInitialValue;
-end;
-
 class function TSynVBSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangVisualBASIC;
@@ -1282,6 +1275,11 @@ begin
             ''#13#10+
             '  I = I + @;  '' illegal character'#13#10+
             'End Function';
+end;
+
+function TSynVBSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterVisualBASIC;
 end;
 
 initialization

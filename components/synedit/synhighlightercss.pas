@@ -282,6 +282,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: String; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -1842,7 +1843,6 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterCSS;
   fRange := [];
 end;
 
@@ -2176,6 +2176,11 @@ begin
     '  font-family: "Arial";'#13#10 +
     '  font-size: 12pt;'#13#10 +
     '}';
+end;
+
+function TSynCssSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterCSS;
 end;
 
 function TSynCssSyn.KeyHash2(ToHash: PChar): Integer;

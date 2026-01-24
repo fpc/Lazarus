@@ -134,6 +134,7 @@ type
     procedure SetSecondKeys(const Value: TStrings);
   protected
     function GetIdentChars: TSynIdentChars; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -332,7 +333,6 @@ begin
 
   MakeMethodTables;
   fRange := rsUnknown;
-  fDefaultFilter := SYNS_FilterUNIXShellScript;
 end; { Create }
 
 procedure TSynUNIXShellScriptSyn.InitForScanningLine;
@@ -825,6 +825,11 @@ end;
 function TSynUNIXShellScriptSyn.GetIdentChars: TSynIdentChars;
 begin
   Result := ['_', '0'..'9', 'a'..'z', 'A'..'Z'];
+end;
+
+function TSynUNIXShellScriptSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterUNIXShellScript;
 end;
 
 class function TSynUNIXShellScriptSyn.GetLanguageName: string;

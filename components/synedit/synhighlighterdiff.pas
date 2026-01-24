@@ -561,7 +561,6 @@ begin
 
   SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;
-  fDefaultFilter := '';
   fRange := rsUnknown;
 end;
 

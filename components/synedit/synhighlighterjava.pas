@@ -205,6 +205,7 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: string; override;
     function GetExtTokenID: TxtkTokenKind;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -683,7 +684,6 @@ begin
 
   InitIdent;
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterJava;
 end; { Create }
 
 procedure TSynJavaSyn.InitForScanningLine;
@@ -1355,6 +1355,11 @@ begin
     Result := FExtTokenID
   else
     Result := xtkNonSymbol;
+end;
+
+function TSynJavaSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterJava;
 end;
 
 function TSynJavaSyn.GetTokenAttribute: TLazEditTextAttribute;

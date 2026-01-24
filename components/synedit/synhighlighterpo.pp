@@ -89,6 +89,7 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: String; override;
     function GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean): String; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
     function IsKeyword(const AKeyword: string): boolean; override;
@@ -184,7 +185,6 @@ begin
 
   SetAttributesOnChange(@DefHighlightChange);
 
-  fDefaultFilter      := SYNS_FilterPo;
   MakeMethodTables;
 end; { Create }
 
@@ -462,6 +462,11 @@ end;
 function TSynPoSyn.GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean): String;
 begin
   Result := PO_BRACKET_KIND_TOKENS[AnOpeningToken, AnIndex]
+end;
+
+function TSynPoSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterPo;
 end;
 
 function TSynPoSyn.IsKeyword(const AKeyword: string): boolean;

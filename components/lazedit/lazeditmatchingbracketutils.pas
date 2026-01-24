@@ -45,7 +45,6 @@ type
   end;
 
 
-  TCharset=set of char;
   TLazEditBracketCharsFilter = (bcfOnlyOpen, bcfOnlyClose);
   TLazEditBracketCharsFilters = set of TLazEditBracketCharsFilter;
 

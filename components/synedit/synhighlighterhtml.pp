@@ -430,6 +430,7 @@ type
 
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -2297,7 +2298,6 @@ begin
   InitIdent;
   MakeMethodTables;
   fRange := rsText;
-  fDefaultFilter := SYNS_FilterHTML;
 end;
 
 procedure TSynHTMLSyn.InitForScanningLine;
@@ -2828,6 +2828,11 @@ function TSynHTMLSyn.GetFoldConfigInternalCount: Integer;
 begin
   // include cfbtHtmlNone;
   Result := ord(high(THtmlCodeFoldBlockType)) - ord(low(THtmlCodeFoldBlockType)) + 1;
+end;
+
+function TSynHTMLSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterHTML;
 end;
 
 class function TSynHTMLSyn.GetLanguageName: string;

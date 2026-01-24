@@ -134,6 +134,7 @@ type
     function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -288,7 +289,6 @@ begin
   AddAttribute(fSymbolAttri);
   SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterLFM;
   fRange := rsUnknown;
 end;
 
@@ -679,6 +679,11 @@ function TSynLFMSyn.GetFoldConfigInternalCount: Integer;
 begin
   // include cfbtLfmNone
   Result := ord(high(TLfmCodeFoldBlockType)) - ord(low(TLfmCodeFoldBlockType)) + 1;
+end;
+
+function TSynLFMSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterLFM;
 end;
 
 initialization

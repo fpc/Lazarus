@@ -144,6 +144,7 @@ type
     property Keywords: TStringlist read FKeywords;
     property TokenID: TtkTokenKind read FTokenID;
 
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -365,6 +366,11 @@ begin
   else
     Result := tkIdentifier;
 end;
+
+function TSynPythonSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterPython;
+end;
   
 procedure TSynPythonSyn.MakeMethodTables;
 var
@@ -448,7 +454,6 @@ begin
   AddAttribute(fErrorAttri);
   SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterPython;
 end; { Create }
 
 destructor TSynPythonSyn.Destroy;

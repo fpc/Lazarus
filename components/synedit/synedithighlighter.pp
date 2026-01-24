@@ -152,18 +152,17 @@ type
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
   protected
     FAttributeChangeNeedScan: Boolean deprecated 'use RequestFullRescan // to be removed in 5.99';
-    fDefaultFilter: string;
-    fDefaultFilterInitialValue: string;
+    fDefaultFilter: string deprecated 'Use GetInitialDefaultFileFilterMask / to be removed in 5.99';
+    fDefaultFilterInitialValue: string deprecated 'Use GetInitialDefaultFileFilterMask / to be removed in 5.99';
     fUpdateChange: boolean;                                                     //mh 2001-09-13
     function GetInstanceLanguageName: string; virtual;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       virtual; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
-    function GetDefaultFilter: string; virtual;
-    function GetIdentChars: TSynIdentChars; virtual;
+    function GetDefaultFilter: string; virtual; deprecated'to be removed in 5.99';
     procedure SetWordBreakChars(AChars: TSynIdentChars); virtual;
-    function GetSampleSource: string; virtual;
-    function IsFilterStored: boolean; virtual;
-    procedure SetDefaultFilter(Value: string); virtual;
+    function IsFilterStored: boolean; virtual; deprecated'to be removed in 5.99';
+    function __OLD_FileFilterDefaultMask: string; override; deprecated'to be removed in 5.99';
+    procedure SetDefaultFilter(Value: string); virtual; deprecated'to be removed in 5.99';
     procedure SetSampleSource(Value: string); virtual;
     procedure AfterAttachedToRangeList(ARangeList: TLazHighlighterLineRangeList); virtual; deprecated 'use DoAttachedToLines // to be removed in 5.99';
     procedure BeforeDetachedFromRangeList(ARangeList: TLazHighlighterLineRangeList); virtual; deprecated 'use DoDetachingFromLines // to be removed in 5.99';
@@ -183,7 +182,6 @@ type
     procedure DefHighlightChange(Sender: TObject);
     property  AttributeChangeNeedScan: Boolean read FAttributeChangeNeedScan; deprecated 'use RequestFullRescan // to be removed in 5.99';
     class function GetCapabilities: TSynHighlighterCapabilities; virtual;
-    class function GetLanguageName: string; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -200,7 +198,6 @@ type
     //function GetTokenPos: Integer; override; // 0-based
     function GetTokenLen: Integer; override;
     function GetTokenClass: TLazEditTokenClass; override; deprecated 'Sub-class needs to implement this';
-    function IsKeyword(const AKeyword: string): boolean; virtual;               // DJLP 2000-08-09
 
     property DrawDivider[Index: integer]: TSynDividerDrawConfigSetting
       read GetDrawDivider;
@@ -227,12 +224,11 @@ type
     function SaveToFile(AFileName: String): boolean;                            //DDH 10/16/01
     procedure HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);  deprecated 'use senrHighlightRescanNeeded // to be removed in 5.99';
     procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);  deprecated 'use senrHighlightRescanNeeded // to be removed in 5.99';
-    property IdentChars: TSynIdentChars read GetIdentChars;
-    property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
+    property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;  deprecated 'to become read-only in 5.99';
     property LanguageName: string read GetInstanceLanguageName;
   public
-    property Capabilities: TSynHighlighterCapabilities read FCapabilities;
-    property SampleSource: string read GetSampleSource write SetSampleSource;
+    property Capabilities: TSynHighlighterCapabilities read FCapabilities;  deprecated 'to be removed in 5.99 / no replacement';
+    property SampleSource: string read GetSampleSource write SetSampleSource; deprecated 'to become read-only in 5.99';
     // The below should be depricated and moved to those HL that actually implement them.
     property CommentAttribute: TSynHighlighterAttributes
       index SYN_ATTR_COMMENT read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
@@ -251,9 +247,8 @@ type
       read GetDividerDrawConfig;
     property DividerDrawConfigCount: Integer read GetDividerDrawConfigCount;
   published
-    property DefaultFilter: string read GetDefaultFilter write SetDefaultFilter
-      stored IsFilterStored;
     property Enabled: boolean read fEnabled write SetEnabled default TRUE;      //DDH 2001-10-23
+        deprecated 'to be removed in 5.99 / no replacement - was never implemented';
   end;
 
   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
@@ -668,8 +663,10 @@ begin
   inherited Create(AOwner);
   fWordBreakChars := TSynWordBreakChars;
   fAttrChangeHooks := TMethodList.Create;
-  fDefaultFilter := '';
-  fDefaultFilterInitialValue := '';
+  if (fDefaultFilter = '') and
+     (TMethod(@GetDefaultFilter).Code <> pointer(@TSynCustomHighlighter.GetDefaultFilter))
+  then
+    fDefaultFilter := GetDefaultFilter;
 end;
 
 destructor TSynCustomHighlighter.Destroy;
@@ -693,7 +690,6 @@ begin
     if Src is ClassType then
       SampleSource := Src.SampleSource;
     fWordBreakChars := Src.WordBreakChars;
-    DefaultFilter := Src.DefaultFilter;
     Enabled := Src.Enabled;
   end else
     inherited Assign(Source);
@@ -826,11 +822,6 @@ begin
   Result := fDefaultFilter;
 end;
 
-function TSynCustomHighlighter.GetIdentChars: TSynIdentChars;
-begin
-  Result := ['_', 'A'..'Z', 'a'..'z', '0'..'9'];
-end;
-
 function TSynCustomHighlighter.GetTokenLen: Integer;
 var
   x: PChar;
@@ -867,14 +858,6 @@ begin
   fWordBreakChars := AChars;
 end;
 
-class function TSynCustomHighlighter.GetLanguageName: string;
-begin
-{$IFDEF SYN_DEVELOPMENT_CHECKS}
-  raise Exception.CreateFmt('%s.GetLanguageName not implemented', [ClassName]);
-{$ENDIF}
-  Result := '<Unknown>';
-end;
-
 function TSynCustomHighlighter.GetRange: Pointer;
 begin
   Result := nil;
@@ -890,11 +873,6 @@ begin
   //
 end;
 
-function TSynCustomHighlighter.GetSampleSource: string;
-begin
-  Result := '';
-end;
-
 procedure TSynCustomHighlighter.HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
 begin
   fAttrChangeHooks.Add(TMethod(ANotifyEvent));
@@ -905,12 +883,12 @@ begin
   Result := TRUE;
 end;
 
-{begin}                                                                         // DJLP 2000-08-09
-function TSynCustomHighlighter.IsKeyword(const AKeyword: string): boolean;
+function TSynCustomHighlighter.__OLD_FileFilterDefaultMask: string;
 begin
-  Result := FALSE;
+  // set by old code, instead of overriding GetInitialDefaultFileFilterMask;
+  Result := FDefaultFilterInitialValue;
+  if FDefaultFilter <> '' then Result := FDefaultFilter;
 end;
-{end}                                                                           // DJLP 2000-08-09
 
 procedure TSynCustomHighlighter.SetLine(const NewValue: String; LineNumber: Integer);
 begin

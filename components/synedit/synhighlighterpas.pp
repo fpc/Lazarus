@@ -1022,7 +1022,6 @@ type
     function KeyCompU(const AnUpperKey: string): Boolean; // Only a..z / Key must be already uppercase
     function KeyCompEx(AText1, AText2: pchar; ALen: Integer): Boolean;
     function GetIdentChars: TSynIdentChars; override;
-    function IsFilterStored: boolean; override;                                 //mh 2000-10-08
     procedure DoDefHighlightChanged; override;
   protected
     procedure DoAfterOperator; inline;
@@ -1094,6 +1093,7 @@ type
     procedure DoFoldConfigChanged(Sender: TObject); override;
 
     procedure DefineProperties(Filer: TFiler); override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetCapabilities: TSynHighlighterCapabilities; override;
     class function GetLanguageName: string; override;
@@ -4309,8 +4309,6 @@ begin
   MakeMethodTables;
   fRange := [];
   fAsmStart := False;
-  fDefaultFilterInitialValue := SYNS_FilterPascal;
-  fDefaultFilter := fDefaultFilterInitialValue;
 end; { Create }
 
 destructor TSynPasSyn.Destroy;
@@ -7983,6 +7981,11 @@ begin
   Filer.DefineProperty('TypeHelpers',    @DoReadLfmTypeHelpers, nil, False);
 end;
 
+function TSynPasSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterPascal;
+end;
+
 function TSynPasSyn.GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig;
 begin
   Result := FDividerDrawConfig[TSynPasDividerDrawLocation(Index)];
@@ -8127,12 +8130,6 @@ end;
 class function TSynPasSyn.GetCapabilities: TSynHighlighterCapabilities;
 begin
   Result := inherited GetCapabilities + [hcUserSettings];
-end;
-
-{begin}                                                                         //mh 2000-10-08
-function TSynPasSyn.IsFilterStored: boolean;
-begin
-  Result := fDefaultFilter <> fDefaultFilterInitialValue;
 end;
 
 procedure TSynPasSyn.DoDefHighlightChanged;

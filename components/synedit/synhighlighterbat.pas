@@ -132,6 +132,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: string; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -407,7 +408,6 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterBatch;
 end;
 
 procedure TSynBatSyn.InitForScanningLine;
@@ -622,6 +622,11 @@ begin
             'pause'#13#10 +
             'copy c:\*.pas d:\'#13#10 +
             'if errorlevel 1 echo Error in copy action!';
+end;
+
+function TSynBatSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterBatch;
 end;
 
 initialization

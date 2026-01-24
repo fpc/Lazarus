@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, Graphics, Controls, SynEditMarkup, SynEditMiscClasses, SynEditTypes,
   LazSynEditText, LazEditTextAttributes, LazEditMatchingBracketUtils, LazEditTypes,
-  LazEditASyncRunner;
+  LazEditASyncRunner, LazEditHighlighter;
 
 type
   TSynEditBracketHighlightStyle = (
@@ -46,7 +46,7 @@ type
     FBracketHighlightAntiPos: TLogTokenPos;
     FHighlightStyle: TSynEditBracketHighlightStyle;
     FNeedInvalidate: Boolean;
-    FBracketChars: Tcharset;
+    FBracketChars: TCharset;
     FBracketFinder: TBracketFinderAsync;
     procedure DoBracketSearchDone(ASender: TBracketFinderAsync);
     procedure SetHighlightStyle(const AValue: TSynEditBracketHighlightStyle);

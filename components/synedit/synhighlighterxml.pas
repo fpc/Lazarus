@@ -221,6 +221,7 @@ type
     function GetFoldConfigInstance(Index: Integer): TSynCustomFoldConfig; override;
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -367,7 +368,6 @@ begin
 
   MakeMethodTables;
   fRange := rsText;
-  fDefaultFilter := SYNS_FilterXML;
 end;
 
 procedure TSynXMLSyn.MakeMethodTables;
@@ -1200,6 +1200,11 @@ function TSynXMLSyn.GetFoldConfigInternalCount: Integer;
 begin
   // excluded cfbtXmlNone;
   Result := ord(high(TXmlCodeFoldBlockType)) - ord(low(TXmlCodeFoldBlockType)) + 1;
+end;
+
+function TSynXMLSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterXML;
 end;
 
 initialization

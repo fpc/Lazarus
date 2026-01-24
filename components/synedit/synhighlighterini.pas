@@ -110,6 +110,7 @@ type
     {General Stuff}
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: String; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -197,7 +198,6 @@ begin
   AddAttribute(fSymbolAttri);
   SetAttributesOnChange(@DefHighlightChange);
 
-  fDefaultFilter      := SYNS_FilterINI;
   FCommentTypes := [ictSemicolon];
   MakeMethodTables;
 end; { Create }
@@ -464,6 +464,11 @@ begin
             'Key=value'#13#10+
             'String="Arial"'#13#10+
             'Number=123456';
+end;
+
+function TSynIniSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterINI;
 end;
 
 initialization

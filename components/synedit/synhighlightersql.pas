@@ -171,6 +171,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource : String; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -1507,7 +1508,6 @@ begin
   AddAttribute(fCollationAttri);
   SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterSQL;
   fRange := rsUnknown;
   fDialect := sqlStandard;
   SQLDialect := sqlSybase;
@@ -2321,6 +2321,11 @@ begin
         '  SELECT SCOPE_IDENTITY()'#13#10 +
         'GO';
   end;
+end;
+
+function TSynSQLSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterSQL;
 end;
 
 initialization

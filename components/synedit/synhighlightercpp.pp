@@ -237,6 +237,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetExtTokenID: TxtkTokenKind;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetCapabilities: TSynHighlighterCapabilities; override;
     class function GetLanguageName: string; override;
@@ -811,7 +812,6 @@ begin
   MakeMethodTables;
   fRange := rsUnknown;
   fAsmStart := False;
-  fDefaultFilter := SYNS_FilterCPP;
 end; { Create }
 
 procedure TSynCppSyn.InitForScanningLine;
@@ -1527,6 +1527,11 @@ end;
 function TSynCppSyn.GetExtTokenID: TxtkTokenKind;
 begin
   Result := FExtTokenID;
+end;
+
+function TSynCppSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterCPP;
 end;
 
 function TSynCppSyn.GetTokenAttribute: TLazEditTextAttribute;

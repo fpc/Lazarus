@@ -273,7 +273,6 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: String; override;
-    function IsFilterStored: Boolean; override;
 
     // Open/Close Folds
     //procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
@@ -287,6 +286,7 @@ type
                    AIsFold: Boolean); override;
 
     function  CurrentJScriptCodeFoldBlockType: TJScriptFoldBlockType;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -1555,8 +1555,6 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
-  fDefaultFilterInitialValue := SYNS_FilterJScript;
-  fDefaultFilter := fDefaultFilterInitialValue;
   fRange := rsUnknown;
 end;
 
@@ -1913,11 +1911,6 @@ begin
   Result := TSynValidStringChars;
 end;
 
-function TSynJScriptSyn.IsFilterStored: Boolean;
-begin
-  Result := fDefaultFilter <> fDefaultFilterInitialValue;
-end;
-
 function TSynJScriptSyn.StartJScriptCodeFoldBlock(ABlockType: TJScriptFoldBlockType;
   OnlyEnabled: Boolean): Boolean;
 begin
@@ -1947,6 +1940,11 @@ begin
   p := TopCodeFoldBlockType(0);
   if p <> nil then
     result := TJScriptFoldBlockType(PtrUInt(p));
+end;
+
+function TSynJScriptSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterJScript;
 end;
 
 class function TSynJScriptSyn.GetLanguageName: string;

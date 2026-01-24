@@ -369,6 +369,7 @@ type
     procedure MakeMethodTables;
   protected
     function GetIdentChars: TSynIdentChars; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -2023,7 +2024,6 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterPerl;
 end; { Create }
 
 procedure TSynPerlSyn.InitForScanningLine;
@@ -2603,6 +2603,11 @@ end;
 function TSynPerlSyn.GetIdentChars: TSynIdentChars;
 begin
   Result := ['%', '@', '$', '_', '0'..'9', 'a'..'z', 'A'..'Z'] + TSynSpecialChars;
+end;
+
+function TSynPerlSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterPerl;
 end;
 
 class function TSynPerlSyn.GetLanguageName: string;

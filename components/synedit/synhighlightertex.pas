@@ -102,6 +102,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource : String; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -180,7 +181,6 @@ begin
 
   //*************************
   SetAttributesOnChange(@DefHighlightChange);
-  fDefaultFilter                := SYNS_FilterTeX;
   MakeMethodTables;
 end;  { Create }
 
@@ -396,6 +396,11 @@ begin
           '\begin{document}'+#13#10+
           'Here is a formula: $ (2x + 3)*5y $'+#13#10+
           '\end{document}';
+end;
+
+function TSynTeXSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterTeX;
 end;
 
 initialization

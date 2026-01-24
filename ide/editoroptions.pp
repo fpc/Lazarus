@@ -8629,7 +8629,6 @@ end;
 constructor TIDESynTextSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fDefaultFilter := '';
 end;
 
 function TIDESynTextSyn.GetEol: Boolean;

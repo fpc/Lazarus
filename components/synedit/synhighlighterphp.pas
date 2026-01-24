@@ -196,6 +196,7 @@ type
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource: string; override;
+    function GetInitialDefaultFileFilterMask: string; override;
   public
     class function GetLanguageName: string; override;
   public
@@ -670,7 +671,6 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
-  fDefaultFilter := SYNS_FilterPHP;
   fRange := rsUnknown;
 end;
 
@@ -1444,6 +1444,11 @@ begin
             '  $number += @; // illegal character'#13#10+
             '}';
 
+end;
+
+function TSynPHPSyn.GetInitialDefaultFileFilterMask: string;
+begin
+  Result := SYNS_FilterPHP;
 end;
 
 initialization
