@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, fgl, Math, LazClasses, LazListClasses, LazListClassesBase,
-  LazEditLineItemLists, LazEditTypes, Generics.Collections, Generics.Defaults;
+  LazEditLineItemLists, LazEditTypes, Graphics, Generics.Collections, Generics.Defaults;
 
 type
 
@@ -173,11 +173,49 @@ type
   TLazHighlighterLineRangeShiftList = specialize TGenLazHighlighterLineRangeShiftList<Pointer>;
 
 
+  TLazEditDividerDrawConfigSetting = Record
+    Color: TColor;
+  end;
+
+
+  { TLazEditDividerDrawConfig }
+
+  TLazEditDividerDrawConfig = class
+  private
+    FDepth: Integer;
+    FTopSetting, FNestSetting: TLazEditDividerDrawConfigSetting;
+    fOnChange: TNotifyEvent;
+    function GetNestColor: TColor; virtual;
+    function GetTopColor: TColor; virtual;
+    procedure SetNestColor(const AValue: TColor); virtual;
+    procedure SetTopColor(const AValue: TColor); virtual;
+  protected
+    function GetMaxDrawDepth: Integer; virtual;
+    procedure SetMaxDrawDepth(AValue: Integer); virtual;
+    procedure Changed;
+  public
+    // Do not use to set values, or you skip the change notification
+    property TopSetting: TLazEditDividerDrawConfigSetting read FTopSetting;
+    property NestSetting: TLazEditDividerDrawConfigSetting read FNestSetting;
+  public
+    constructor Create;
+    procedure Assign(Src: TLazEditDividerDrawConfig); virtual;
+    property MaxDrawDepth: Integer read GetMaxDrawDepth write SetMaxDrawDepth;
+    property TopColor: TColor read GetTopColor write SetTopColor;
+    property NestColor: TColor read GetNestColor write SetNestColor;
+    property OnChange: TNotifyEvent read fOnChange write fOnChange;
+  end;
+
 
 function GetHighlighterRangesForHighlighter(
     AnHighlighterClass: TClass {TSynCustomHighlighterClass};
     ANewClass: TLazHighlighterRangesClass
   ): TLazHighlighterRanges;
+
+{$WriteableConst off}
+const
+  SynEmptyDividerDrawConfigSetting: TLazEditDividerDrawConfigSetting =
+    ( Color: clNone );
 
 implementation
 
@@ -515,6 +553,64 @@ procedure TGenInitLazHighlighterLineRangeShiftList.Move(AFromIndex, AToIndex, AC
 begin
   inherited Move(AFromIndex, AToIndex, ACount);
   Invalidate(Min(AFromIndex, AToIndex), Max(AFromIndex, AToIndex)+ACount-1);
+end;
+
+{ TLazEditDividerDrawConfig }
+
+function TLazEditDividerDrawConfig.GetNestColor: TColor;
+begin
+  Result := FNestSetting.Color;
+end;
+
+function TLazEditDividerDrawConfig.GetTopColor: TColor;
+begin
+  Result := FTopSetting.Color;
+end;
+
+procedure TLazEditDividerDrawConfig.SetNestColor(const AValue: TColor);
+begin
+  if AValue = FNestSetting.Color then exit;
+  FNestSetting.Color := AValue;
+  Changed;
+end;
+
+procedure TLazEditDividerDrawConfig.SetTopColor(const AValue: TColor);
+begin
+  if AValue = FTopSetting.Color then exit;
+  FTopSetting.Color := AValue;
+  Changed;
+end;
+
+function TLazEditDividerDrawConfig.GetMaxDrawDepth: Integer;
+begin
+  Result := FDepth;
+end;
+
+procedure TLazEditDividerDrawConfig.SetMaxDrawDepth(AValue: Integer);
+begin
+  if FDepth = AValue then exit;
+  FDepth := AValue;
+  Changed;
+end;
+
+procedure TLazEditDividerDrawConfig.Changed;
+begin
+  if Assigned(fOnChange) then
+    fOnChange(Self);
+end;
+
+constructor TLazEditDividerDrawConfig.Create;
+begin
+  inherited;
+  FDepth := 0;
+  FTopSetting.Color := clDefault;
+  FNestSetting.Color := clDefault;
+end;
+
+procedure TLazEditDividerDrawConfig.Assign(Src: TLazEditDividerDrawConfig);
+begin
+  fOnChange := src.fOnChange;
+  FDepth := Src.FDepth;
 end;
 
 finalization

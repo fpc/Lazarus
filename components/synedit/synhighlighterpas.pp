@@ -797,7 +797,7 @@ type
     FModeSwitchesLoaded: Boolean;
     fD4syntax: boolean;
     // Divider
-    FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
+    FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TLazEditDividerDrawConfig;
 
     procedure DoCustomTokenChanged(Sender: TObject);
     procedure DoReadLfmNestedComments(Reader: TReader);
@@ -1080,8 +1080,8 @@ type
                                      AIncludeDisabled: Boolean = False): integer; // TODO deprecated; // foldable nodes
 
     // Divider
-    function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; override;
-    function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; override;
+    function GetDrawDivider(Index: integer): TLazEditDividerDrawConfigSetting; override;
+    function GetDividerDrawConfig(Index: Integer): TLazEditDividerDrawConfig; override;
     function GetDividerDrawConfigCount: Integer; override;
 
     // Fold Config
@@ -7727,7 +7727,7 @@ begin
   end;
 end;
 
-function TSynPasSyn.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting;
+function TSynPasSyn.GetDrawDivider(Index: integer): TLazEditDividerDrawConfigSetting;
   function CheckFoldNestLevel(MaxDepth, StartLvl: Integer;
     CountTypes, SkipTypes: TPascalCodeFoldBlockTypes;
     out ResultLvl: Integer): Boolean;
@@ -7863,7 +7863,7 @@ var
 begin
   for i := low(TSynPasDividerDrawLocation) to high(TSynPasDividerDrawLocation) do
   begin
-    FDividerDrawConfig[i] := TSynDividerDrawConfig.Create;
+    FDividerDrawConfig[i] := TLazEditDividerDrawConfig.Create;
     FDividerDrawConfig[i].MaxDrawDepth := PasDividerDrawLocationDefaults[i];
     FDividerDrawConfig[i].OnChange := @DefHighlightChange;
   end;
@@ -7986,7 +7986,7 @@ begin
   Result := SYNS_FilterPascal;
 end;
 
-function TSynPasSyn.GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig;
+function TSynPasSyn.GetDividerDrawConfig(Index: Integer): TLazEditDividerDrawConfig;
 begin
   Result := FDividerDrawConfig[TSynPasDividerDrawLocation(Index)];
 end;

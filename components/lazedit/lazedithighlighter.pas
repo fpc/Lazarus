@@ -249,6 +249,10 @@ type
       ASkipResultBounds: boolean = False
     );
 
+    function GetDrawDivider(Index: integer): TLazEditDividerDrawConfigSetting; virtual;
+    function GetDividerDrawConfig(Index: Integer): TLazEditDividerDrawConfig; virtual;
+    function GetDividerDrawConfigCount: Integer; virtual;
+
     (* ------------------ *
      * Brackets           *
      * ------------------ *)
@@ -258,6 +262,7 @@ type
     (* ------------------ *
      * Language info      *
      * ------------------ *)
+    function GetInstanceLanguageName: string; virtual;
     function GetInitialDefaultFileFilterMask: string; virtual;
     function GetIdentChars: TCharSet; virtual;
     function GetSampleSource: string; virtual;
@@ -324,6 +329,14 @@ type
     function GetEndOfLineAttributeEx: TLazCustomEditTextAttribute; virtual; // valid after line was scanned to EOL
     function GetTokenClassAttribute(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; virtual;
     function GetTokenClassAttributeEx(ATkClass: TLazEditTokenClass; ATkDetails: TLazEditTokenDetails = []): TLazCustomEditTextAttribute; virtual;
+
+    (* ------------------ *
+     * Divider            *
+     * ------------------ *)
+    property DrawDivider[Index: integer]: TLazEditDividerDrawConfigSetting read GetDrawDivider;
+    property DividerDrawConfig[Index: Integer]: TLazEditDividerDrawConfig
+      read GetDividerDrawConfig;
+    property DividerDrawConfigCount: Integer read GetDividerDrawConfigCount;
     (* ------------------ *
      * Brackets           *
      * ------------------ *)
@@ -340,6 +353,7 @@ type
      * ------------------ *)
     function IsKeyword(const AKeyword: string): boolean; virtual;
     class function GetLanguageName: string; virtual;
+    property LanguageName: string read GetInstanceLanguageName;
     property IdentChars: TCharSet read GetIdentChars;
     property WordBreakChars: TCharSet read GetWordBreakChars;
     property SampleSource: string read GetSampleSource;
@@ -588,10 +602,31 @@ begin
   FTokenAttributeMergeResult.Merge(AModifierAttrib);
 end;
 
+function TLazEditCustomHighlighter.GetDrawDivider(Index: integer
+  ): TLazEditDividerDrawConfigSetting;
+begin
+  Result := SynEmptyDividerDrawConfigSetting;
+end;
+
+function TLazEditCustomHighlighter.GetDividerDrawConfig(Index: Integer): TLazEditDividerDrawConfig;
+begin
+  Result := nil;
+end;
+
+function TLazEditCustomHighlighter.GetDividerDrawConfigCount: Integer;
+begin
+  Result := 0;
+end;
+
 function TLazEditCustomHighlighter.GetBracketKinds(AnIndex: integer; AnOpeningToken: boolean
   ): String;
 begin
   Result := BRACKET_KIND_TOKENS[AnOpeningToken, AnIndex]
+end;
+
+function TLazEditCustomHighlighter.GetInstanceLanguageName: string;
+begin
+  Result := GetLanguageName;
 end;
 
 function TLazEditCustomHighlighter.GetInitialDefaultFileFilterMask: string;
@@ -632,9 +667,16 @@ end;
 procedure TLazEditCustomHighlighter.Assign(ASource: TPersistent);
 var
   Src: TLazEditCustomHighlighter absolute ASource;
+  i: Integer;
 begin
   inherited Assign(ASource);
+  AssignAttributesByName(Src);
+
   if not (ASource is TLazEditCustomHighlighter) then exit;
+
+  if ASource.ClassType = ClassType then
+    for i := 0 to DividerDrawConfigCount - 1 do
+      DividerDrawConfig[i].Assign(Src.DividerDrawConfig[i]);
 
   FDefaultFileFilterMask := Src.FDefaultFileFilterMask;
 end;

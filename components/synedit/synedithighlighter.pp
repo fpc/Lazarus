@@ -101,52 +101,18 @@ const
 
 type
 
-  TSynDividerDrawConfigSetting = Record
-    Color: TColor;
-  end;
-
-const
-  SynEmptyDividerDrawConfigSetting: TSynDividerDrawConfigSetting =
-    ( Color: clNone );
-
-type
-  { TSynDividerDrawConfig }
-
-  TSynDividerDrawConfig = class
-  private
-    FDepth: Integer;
-    FTopSetting, FNestSetting: TSynDividerDrawConfigSetting;
-    fOnChange: TNotifyEvent;
-    function GetNestColor: TColor; virtual;
-    function GetTopColor: TColor; virtual;
-    procedure SetNestColor(const AValue: TColor); virtual;
-    procedure SetTopColor(const AValue: TColor); virtual;
-  protected
-    function GetMaxDrawDepth: Integer; virtual;
-    procedure SetMaxDrawDepth(AValue: Integer); virtual;
-    procedure Changed;
-  public
-    // Do not use to set values, or you skip the change notification
-    property TopSetting: TSynDividerDrawConfigSetting read FTopSetting;
-    property NestSetting: TSynDividerDrawConfigSetting read FNestSetting;
-  public
-    constructor Create;
-    procedure Assign(Src: TSynDividerDrawConfig); virtual;
-    property MaxDrawDepth: Integer read GetMaxDrawDepth write SetMaxDrawDepth;
-    property TopColor: TColor read GetTopColor write SetTopColor;
-    property NestColor: TColor read GetNestColor write SetNestColor;
-    property OnChange: TNotifyEvent read fOnChange write fOnChange;
-  end;
+  TSynDividerDrawConfigSetting = TLazEditDividerDrawConfigSetting;
+  TSynDividerDrawConfig = TLazEditDividerDrawConfig;
 
   { TSynCustomHighlighter }
 
   TSynCustomHighlighter = class(TLazEditCustomRangesHighlighter)
   private
     fAttrChangeHooks: TMethodList;
-    FCapabilities: TSynHighlighterCapabilities;
-    FDrawDividerLevel: Integer;
-    fEnabled: Boolean;
-    fWordBreakChars: TSynIdentChars;
+    FCapabilities: TSynHighlighterCapabilities deprecated;
+    FDrawDividerLevel: Integer deprecated;
+    fEnabled: Boolean deprecated;
+    fWordBreakChars: TSynIdentChars deprecated;
     function GetKnownLines: TLazEditHighlighterAttachedLines; deprecated;
     procedure SetDrawDividerLevel(const AValue: Integer); deprecated;
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
@@ -155,7 +121,6 @@ type
     fDefaultFilter: string deprecated 'Use GetInitialDefaultFileFilterMask / to be removed in 5.99';
     fDefaultFilterInitialValue: string deprecated 'Use GetInitialDefaultFileFilterMask / to be removed in 5.99';
     fUpdateChange: boolean;                                                     //mh 2001-09-13
-    function GetInstanceLanguageName: string; virtual;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
       virtual; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     function GetDefaultFilter: string; virtual; deprecated'to be removed in 5.99';
@@ -167,9 +132,6 @@ type
     procedure AfterAttachedToRangeList(ARangeList: TLazHighlighterLineRangeList); virtual; deprecated 'use DoAttachedToLines // to be removed in 5.99';
     procedure BeforeDetachedFromRangeList(ARangeList: TLazHighlighterLineRangeList); virtual; deprecated 'use DoDetachingFromLines // to be removed in 5.99';
     // code fold - only valid if hcCodeFolding in Capabilities
-    function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; virtual;
-    function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; virtual;
-    function GetDividerDrawConfigCount: Integer; virtual;
     function PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean = False): Integer; virtual;  deprecated 'use DoPrepareLines / to be removed in 5.99';
     property KnownLines: TLazEditHighlighterAttachedLines read GetKnownLines; deprecated 'use AttachedLines // to be removed in 5.99';
     procedure RequestFullRescan; reintroduce; // deprecated 'to be removed in 5.99' // only needed to force a call to fAttrChangeHooks
@@ -199,8 +161,6 @@ type
     function GetTokenLen: Integer; override;
     function GetTokenClass: TLazEditTokenClass; override; deprecated 'Sub-class needs to implement this';
 
-    property DrawDivider[Index: integer]: TSynDividerDrawConfigSetting
-      read GetDrawDivider;
     property DrawDividerLevel: Integer read FDrawDividerLevel write SetDrawDividerLevel; deprecated;
   public
     procedure ScanRanges; deprecated 'use PrepareLines / to be removed in 5.99';
@@ -225,7 +185,6 @@ type
     procedure HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);  deprecated 'use senrHighlightRescanNeeded // to be removed in 5.99';
     procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);  deprecated 'use senrHighlightRescanNeeded // to be removed in 5.99';
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;  deprecated 'to become read-only in 5.99';
-    property LanguageName: string read GetInstanceLanguageName;
   public
     property Capabilities: TSynHighlighterCapabilities read FCapabilities;  deprecated 'to be removed in 5.99 / no replacement';
     property SampleSource: string read GetSampleSource write SetSampleSource; deprecated 'to become read-only in 5.99';
@@ -242,10 +201,6 @@ type
       index SYN_ATTR_SYMBOL read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     property WhitespaceAttribute: TSynHighlighterAttributes
       index SYN_ATTR_WHITESPACE read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
-
-    property DividerDrawConfig[Index: Integer]: TSynDividerDrawConfig
-      read GetDividerDrawConfig;
-    property DividerDrawConfigCount: Integer read GetDividerDrawConfigCount;
   published
     property Enabled: boolean read fEnabled write SetEnabled default TRUE;      //DDH 2001-10-23
         deprecated 'to be removed in 5.99 / no replacement - was never implemented';
@@ -682,10 +637,6 @@ var
 begin
   if Source is TSynCustomHighlighter then begin
     Src := TSynCustomHighlighter(Source);
-    AssignAttributesByName(Src);
-
-    for i := 0 to DividerDrawConfigCount - 1 do
-      DividerDrawConfig[i].Assign(Src.DividerDrawConfig[i]);
     // assign the sample source text only if same or descendant class
     if Src is ClassType then
       SampleSource := Src.SampleSource;
@@ -1015,11 +966,6 @@ begin
   Result := AttachedLines;
 end;
 
-function TSynCustomHighlighter.GetInstanceLanguageName: string;
-begin
-  Result := GetLanguageName;
-end;
-
 function TSynCustomHighlighter.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
 begin
   case Index of
@@ -1035,79 +981,6 @@ begin
     SYN_ATTR_VARIABLE:   Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcVariable));
     otherwise Result := nil;
   end;
-end;
-
-function TSynCustomHighlighter.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting;
-begin
-  result := SynEmptyDividerDrawConfigSetting;
-end;
-
-function TSynCustomHighlighter.GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig;
-begin
-  Result := nil;
-end;
-
-function TSynCustomHighlighter.GetDividerDrawConfigCount: Integer;
-begin
-  Result := 0;
-end;
-
-{ TSynDividerDrawConfig }
-
-function TSynDividerDrawConfig.GetNestColor: TColor;
-begin
-  Result := FNestSetting.Color;
-end;
-
-function TSynDividerDrawConfig.GetTopColor: TColor;
-begin
-  Result := FTopSetting.Color;
-end;
-
-procedure TSynDividerDrawConfig.SetNestColor(const AValue: TColor);
-begin
-  if AValue = FNestSetting.Color then exit;
-  FNestSetting.Color := AValue;
-  Changed;
-end;
-
-procedure TSynDividerDrawConfig.SetTopColor(const AValue: TColor);
-begin
-  if AValue = FTopSetting.Color then exit;
-  FTopSetting.Color := AValue;
-  Changed;
-end;
-
-function TSynDividerDrawConfig.GetMaxDrawDepth: Integer;
-begin
-  Result := FDepth;
-end;
-
-procedure TSynDividerDrawConfig.SetMaxDrawDepth(AValue: Integer);
-begin
-  if FDepth = AValue then exit;
-  FDepth := AValue;
-  Changed;
-end;
-
-procedure TSynDividerDrawConfig.Changed;
-begin
-  if Assigned(fOnChange) then
-    fOnChange(Self);
-end;
-
-constructor TSynDividerDrawConfig.Create;
-begin
-  inherited;
-  FDepth := 0;
-  FTopSetting.Color := clDefault;
-  FNestSetting.Color := clDefault;
-end;
-
-procedure TSynDividerDrawConfig.Assign(Src: TSynDividerDrawConfig);
-begin
-  fOnChange := src.fOnChange;
-  FDepth := Src.FDepth;
 end;
 
 initialization

@@ -34,7 +34,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLProc, SynEditTypes, SynEditMiscProcs, SynEditHighlighter,
-  SynEditKeyCmds, SynEditTextBase, LazEditTextAttributes, LazEditLineItemLists, LazEditHighlighter;
+  SynEditKeyCmds, SynEditTextBase, LazEditTextAttributes, LazEditLineItemLists, LazEditHighlighter,
+  LazEditHighlighterUtils;
 
 type
   TSynEditStrings = class;
@@ -232,7 +233,7 @@ type
     procedure FinishHighlighterTokens; virtual;
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; virtual;
     function GetLinesCount: Integer; virtual;
-    function GetDrawDividerInfo: TSynDividerDrawConfigSetting; virtual;
+    function GetDrawDividerInfo: TLazEditDividerDrawConfigSetting; virtual;
 
     function TextToViewIndex(ATextIndex: TLineIdx): TLineRange; virtual;
     function ViewToTextIndex(AViewIndex: TLineIdx): TLineIdx; virtual;
@@ -680,7 +681,7 @@ begin
     Result := 0;
 end;
 
-function TLazSynDisplayView.GetDrawDividerInfo: TSynDividerDrawConfigSetting;
+function TLazSynDisplayView.GetDrawDividerInfo: TLazEditDividerDrawConfigSetting;
 begin
   if assigned(FNextView) then
     Result := FNextView.GetDrawDividerInfo

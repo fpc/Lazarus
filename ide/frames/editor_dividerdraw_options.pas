@@ -31,7 +31,7 @@ uses
   // IdeIntf
   EditorSyntaxHighlighterDef, IDEOptionsIntf, IDEOptEditorIntf,
   // SynEdit
-  SynEditHighlighter,
+  SynEditHighlighter, LazEditHighlighterUtils,
   // IDE
   EditorOptions, LazarusIDEStrConsts;
 
@@ -68,7 +68,7 @@ type
   private
     FHighlighters: array[TLazSyntaxHighlighter] of TSrcIDEHighlighter;
     FCurHighlighter: TSrcIDEHighlighter;
-    FCurDividerConf: TSynDividerDrawConfig;
+    FCurDividerConf: TLazEditDividerDrawConfig;
     FCurDivInfo: TEditorOptionsDividerRecord;
   protected
     function GetHighlighter(SynType: TLazSyntaxHighlighter;
@@ -133,7 +133,7 @@ end;
 procedure TEditorDividerDrawOptionsFrame.DividerConfigListBoxClick(Sender: TObject);
 var
   i: LongInt;
-  NewDiv: TSynDividerDrawConfig;
+  NewDiv: TLazEditDividerDrawConfig;
   b: Boolean;
 begin
   if not assigned(FCurHighlighter) then exit;

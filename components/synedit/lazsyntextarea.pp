@@ -14,7 +14,7 @@ uses
   // SynEdit
   SynEditTypes, SynEditMiscProcs, SynEditMiscClasses, LazSynEditText, SynEditMarkup,
   SynEditHighlighter, LazEditMiscProcs, LazEditTextAttributes,
-  LazEditTextGridPainter;
+  LazEditTextGridPainter, LazEditHighlighterUtils;
 
 
 type
@@ -1924,7 +1924,7 @@ var
   procedure PaintLines;
   var
     ypos: Integer;
-    DividerInfo: TSynDividerDrawConfigSetting;
+    DividerInfo: TLazEditDividerDrawConfigSetting;
     TV, cl: Integer;
     TokenInfoEx: TLazSynDisplayTokenInfoEx;
     MaxLine: Integer;

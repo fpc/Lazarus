@@ -49,7 +49,7 @@ interface
 uses
   Classes, SysUtils, Graphics, LCLProc, LazLoggerBase, LazListClasses,
   SynEditTypes, LazSynEditText, SynEditTextBase, SynEditMiscProcs, SynEditMiscClasses,
-  SynEditHighlighter, LazEditMiscProcs, LazEditLineItemLists;
+  SynEditHighlighter, LazEditMiscProcs, LazEditLineItemLists, LazEditHighlighterUtils;
 
 type
   TSynEditFlagsClass = class end; // For Register
@@ -153,7 +153,7 @@ type
     constructor Create(ABuffer: TSynEditStringList);
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out ASubLineIdx, AStartBytePos, AStartPhysPos, ALineByteLen: Integer); override;
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
-    function GetDrawDividerInfo: TSynDividerDrawConfigSetting; override;
+    function GetDrawDividerInfo: TLazEditDividerDrawConfigSetting; override;
     function GetLinesCount: Integer; override;
 
     function TextToViewIndex(ATextIndex: TLineIdx): TLineRange; override;
@@ -468,7 +468,7 @@ begin
   end;
 end;
 
-function TLazSynDisplayBuffer.GetDrawDividerInfo: TSynDividerDrawConfigSetting;
+function TLazSynDisplayBuffer.GetDrawDividerInfo: TLazEditDividerDrawConfigSetting;
 begin
   if CurrentTokenHighlighter <> nil then
     Result := CurrentTokenHighlighter.DrawDivider[CurrentTokenLine]

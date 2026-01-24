@@ -54,7 +54,7 @@ uses
   SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
   SynEditMarkupSpecialChar,
   // LazEdit
-  TextMateGrammar, LazEditTextAttributes,
+  TextMateGrammar, LazEditTextAttributes, LazEditHighlighterUtils,
   // SynEdit Highlighters
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterCPP, SynHighlighterHTML,
   SynHighlighterJava, SynHighlighterLFM, SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP,
@@ -6717,7 +6717,7 @@ end;
 procedure TEditorOptions.ReadHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
 var
   TheInfo: TEditorOptionsDividerRecord;
-  Conf: TSynDividerDrawConfig;
+  Conf: TLazEditDividerDrawConfig;
   ConfName: String;
   Path: String;
   i, h: Integer;
@@ -6759,7 +6759,7 @@ var
   DefSyn: TSrcIDEHighlighter;
   i, h:   Integer;
   Path:   String;
-  Conf, DefConf: TSynDividerDrawConfig;
+  Conf, DefConf: TLazEditDividerDrawConfig;
   TheInfo: TEditorOptionsDividerRecord;
   ConfName: String;
 begin
