@@ -2336,6 +2336,7 @@ begin
     'unit Red;',
     'interface',
     '{$I "miXed.Inc"}', // test search exact
+    '{$I ''miXed.Inc''}', // test search exact
     'implementation',
     'end.']);
     if not CodeToolBoss.Explore(Code,Tool,true) then begin

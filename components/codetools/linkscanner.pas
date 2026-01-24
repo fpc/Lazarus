@@ -3922,6 +3922,7 @@ function TLinkScanner.IncludeDirective: boolean;
 // filename can be 'filename with spaces'
 var
   IncFilename: string;
+  c: Char;
 begin
   Result:=false;
   if StoreDirectives then
@@ -3945,12 +3946,12 @@ begin
     AddLink(CommentEndPos,Code);
   end else begin
     IncFilename:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
-    if (IncFilename<>'') and (IncFilename[1]='''') then begin
-      if (IncFilename[length(IncFilename)]='''') then
-        IncFilename:=copy(IncFilename,2,length(IncFilename)-2)
-      else begin
-        SrcPos:=CommentInnerEndPos;
-        RaiseException(20170422130149,'missing ''');
+    if IncFilename<>'' then begin
+      c:=IncFilename[1];
+      if c in ['"',''''] then begin
+        System.Delete(IncFilename,1,1);
+        if (IncFilename<>'') and (IncFilename[length(IncFilename)]=c) then
+          System.Delete(IncFilename,length(IncFilename),1);
       end;
     end;
     ForcePathDelims(IncFilename);
@@ -4136,8 +4137,6 @@ var
     Result:=false;
   end;
 
-var
-  c: char;
 begin
   {$IFDEF VerboseIncludeSearch}
   DebugLn('TLinkScanner.SearchIncludeFile Filename="',AFilename,'"');
@@ -4145,15 +4144,6 @@ begin
   NewCode:=nil;
 
   if AFilename='' then exit(false);
-  c:=AFilename[1];
-  if c in ['"',''''] then begin
-    System.Delete(AFilename,1,1);
-    if AFilename='' then exit(false);
-    if AFilename[length(AFilename)]=c then begin
-      System.Delete(AFilename,length(AFilename),1);
-      if AFilename='' then exit(false);
-    end;
-  end;
 
   // beware of 'dir/file.inc'
   HasPathDelims:=(System.Pos('/',AFilename)>0) or (System.Pos('\',AFilename)>0);
