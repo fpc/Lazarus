@@ -9843,15 +9843,14 @@ begin
   gtk_widget_realize(Result);
 
   if wtHintWindow in FWidgetType then
-  begin
-    PGtkWindow(Result)^.show_all;
-  end else
+    PGtkWindow(Result)^.show_all
+  else
   begin
     if not Assigned(LCLObject.Parent) then
       gdk_window_set_decorations(Result^.window, decor);
-
     if not (csDesigning in AForm.ComponentState) then
-      UpdateWindowState;
+      if AForm.WindowState <> wsNormal then // issue #42025
+        UpdateWindowState;
   end;
   Result^.Hide; // issue #41412
 end;
