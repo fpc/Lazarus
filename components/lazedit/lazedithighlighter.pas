@@ -317,7 +317,7 @@ type
     function GetTokenKind: integer; virtual; abstract;
     function GetToken: String; virtual; abstract;
     function GetTokenPos: Integer; virtual; abstract; // 0-based
-    function GetTokenLen: Integer; virtual; abstract;
+    function GetTokenLen: Integer; virtual;
     procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); virtual; abstract;
     function GetTokenClass: TLazEditTokenClass; virtual;
     function GetTokenDetails: TLazEditTokenDetails; virtual;
@@ -824,6 +824,13 @@ end;
 function TLazEditCustomHighlighter.FirstUnpreparedLine: IntIdx;
 begin
   Result := -1;
+end;
+
+function TLazEditCustomHighlighter.GetTokenLen: Integer;
+var
+  p: PChar;
+begin
+  GetTokenEx(p, Result);
 end;
 
 function TLazEditCustomHighlighter.GetTokenClass: TLazEditTokenClass;
