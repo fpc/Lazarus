@@ -1327,7 +1327,7 @@ begin
   // This allows showing "/" in Linux, but in Windows it makes no sense to show the base
   if GetBasePath() <> '' then
   begin
-    NewNode := Items.AddChild(nil, GetBasePath());
+    NewNode := CreateRootNode(GetBasePath);
     NewNode.HasChildren := True;
     PopulateTreeNodeWithFiles(NewNode, GetBasePath());
     NewNode.Expand(False);
