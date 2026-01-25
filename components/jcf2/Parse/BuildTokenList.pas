@@ -86,6 +86,7 @@ type
     function TryBinNumber(const pcToken: TSourceToken): boolean; // ~bk 14.11.01
     function TryOctNumber(const pcToken: TSourceToken): boolean; // ~pktv 17.05.19
 
+    function TryDigraphs(const pcToken: TSourceToken): boolean;
     function TryDots(const pcToken: TSourceToken): boolean;
 
     function TryAssign(const pcToken: TSourceToken): boolean;
@@ -177,6 +178,8 @@ var
     if TrySlashComment(lcNewToken) then
       exit;
     if TryBracketStarComment(lcNewToken) then
+      exit;
+    if TryDigraphs(lcNewToken) then
       exit;
     { the rest }
     if TryWhiteSpace(lcNewToken) then
@@ -781,6 +784,8 @@ begin
     // have we got to the dot?
     if (Current = '.') then
     begin
+      if ForwardChar(1) = ')' then  //digraph .)
+        break;
       if CurrentChars(2) = '..' then
         break;
       if lbHasDecimalSep then
@@ -938,6 +943,27 @@ begin
   end;
 
   Result := True;
+end;
+
+{ try "(."   and ".)" digraphs. Same as   "[" "]"  }
+function TBuildTokenList.TryDigraphs(const pcToken: TSourceToken): boolean;
+begin
+  Result := False;
+  if (Current = '.') and (ForwardChar(1) = ')') then
+  begin
+    pcToken.TokenType := ttCloseSquareBracket;
+    pcToken.SourceCode := CurrentChars(2);
+    Consume(2);
+    Exit(True);
+  end
+  else
+  if (Current = '(') and (ForwardChar(1) = '.') then
+  begin
+    pcToken.TokenType := ttOpenSquareBracket;
+    pcToken.SourceCode := CurrentChars(2);
+    Consume(2);
+    Exit(True);
+  end;
 end;
 
 { try the range '..' operator and object access  '.' operator }
