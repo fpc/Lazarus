@@ -2503,8 +2503,12 @@ begin
   // Apply calculated colwidths to Columns
   BeginUpdate;
   try
-    for c := 0 to ColumnCount-1 do
-      Column[c].Width := colWidths[c];
+    for c := 0 to ColumnCount-1 do begin
+      if colWidths[c] < 0 then
+        debugln(['TCustomShellListView.AdjustColWidths: ColWidth=', colWidths[c]])
+      else
+        Column[c].Width := colWidths[c];
+    end;
   finally
     EndUpdate;
   end;
