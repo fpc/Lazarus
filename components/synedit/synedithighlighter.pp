@@ -136,7 +136,6 @@ type
     property KnownLines: TLazEditHighlighterAttachedLines read GetKnownLines; deprecated 'use AttachedLines // to be removed in 5.99';
     procedure RequestFullRescan; reintroduce; // deprecated 'to be removed in 5.99' // only needed to force a call to fAttrChangeHooks
     procedure SendAttributeChangeNotification; reintroduce; // deprecated 'to be removed in 5.99'
-    procedure DoDefHighlightChanged; virtual;
     procedure DoEndUpdate; override;
     procedure DoAttachedToLines(Lines: TLazEditStringsBase; ARangeList: TLazHighlighterLineRangeList); override;
     procedure DoDetachingFromLines(Lines: TLazEditStringsBase; ARangeList: TLazHighlighterLineRangeList); override;
@@ -759,7 +758,7 @@ begin
     inherited SendAttributeChangeNotification;
     fAttrChangeHooks.CallNotifyEvents(self);
     FAttributeChangeNeedScan := False;
-    DoDefHighlightChanged;
+    DoConfigChanged;
   end;
 end;
 
@@ -906,11 +905,6 @@ procedure TSynCustomHighlighter.SendAttributeChangeNotification;
 begin
   //inherited SendAttributeChangeNotification;
   DefHighlightChange(nil); // will call SendAttributeChangeNotification;
-end;
-
-procedure TSynCustomHighlighter.DoDefHighlightChanged;
-begin
-  //
 end;
 
 procedure TSynCustomHighlighter.DoEndUpdate;

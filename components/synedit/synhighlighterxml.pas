@@ -208,7 +208,7 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource : String; override;
   protected
-    procedure DoDefHighlightChanged; override;
+    procedure DoConfigChanged; override;
     // folding
     procedure CreateRootCodeFoldBlock; override;
 
@@ -364,7 +364,7 @@ begin
   AddAttribute(fTextAttri);
 
   SetAttributesOnChange(@DefHighlightChange);
-  DoDefHighlightChanged;
+  DoConfigChanged;
 
   MakeMethodTables;
   fRange := rsText;
@@ -1150,9 +1150,9 @@ begin
            '</root>';
 end;
 
-procedure TSynXMLSyn.DoDefHighlightChanged;
+procedure TSynXMLSyn.DoConfigChanged;
 begin
-  inherited DoDefHighlightChanged;
+  inherited DoConfigChanged;
   fRequiredStates := [];
   if fNamespaceColonAttri.IsEnabled or
      fNamespaceDefinitionAttri.IsEnabled or

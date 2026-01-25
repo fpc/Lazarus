@@ -1022,7 +1022,7 @@ type
     function KeyCompU(const AnUpperKey: string): Boolean; // Only a..z / Key must be already uppercase
     function KeyCompEx(AText1, AText2: pchar; ALen: Integer): Boolean;
     function GetIdentChars: TSynIdentChars; override;
-    procedure DoDefHighlightChanged; override;
+    procedure DoConfigChanged; override;
   protected
     procedure DoAfterOperator; inline;
     procedure EndStatement(ACurTfb: TPascalCodeFoldBlockType;
@@ -8132,11 +8132,11 @@ begin
   Result := inherited GetCapabilities + [hcUserSettings];
 end;
 
-procedure TSynPasSyn.DoDefHighlightChanged;
+procedure TSynPasSyn.DoConfigChanged;
 var
   i: Integer;
 begin
-  inherited DoDefHighlightChanged;
+  inherited DoConfigChanged;
 
   FRequiredStates := [];
 
