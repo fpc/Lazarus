@@ -96,12 +96,11 @@ type
 
   { TStatusPanels }
 
-  TStatusPanels = class(TCollection, IFPObserver)
+  TStatusPanels = class(TCollection)
   private
     FStatusBar: TStatusBar;
     function GetItem(Index: Integer): TStatusPanel;
     procedure SetItem(Index: Integer; Value: TStatusPanel);
-    procedure FPOObservedChanged(ASender: TObject; Operation: TFPObservedOperation; Data: Pointer);
   protected
     function GetOwner: TPersistent; override;
     procedure Update(Item: TCollectionItem); override;
@@ -174,6 +173,8 @@ type
     function GetPanelIndexAt(X, Y: Integer): Integer;
     function SizeGripEnabled: Boolean;
     function UpdatingStatusBar: boolean;
+    procedure Update; override;
+  public
     property Canvas: TCanvas read FCanvas;
   published
     property Action;
@@ -1266,7 +1267,7 @@ type
 
   { TListColumns }
 
-  TListColumns = class(TCollection, IFPObserver)
+  TListColumns = class(TCollection)
   private
     FOwner: TCustomListView;
     FItemNeedsUpdate: TCollectionItem;
@@ -1275,7 +1276,6 @@ type
     procedure WSCreateColumns;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
     procedure DoFinalizeWnd;
-    procedure FPOObservedChanged(ASender: TObject; Operation: TFPObservedOperation; Data: Pointer);
   protected
     function GetOwner: TPersistent; override;
   public

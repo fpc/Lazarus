@@ -70,19 +70,6 @@ begin
     Items[I].GetWidth; // store real width from WS into FWidth
 end;
 
-procedure TListColumns.FPOObservedChanged(ASender: TObject;
-  Operation: TFPObservedOperation; Data: Pointer);
-// Update columns when a user changes them in Collection Property Editor.
-begin
-  case Operation of
-    ooChange: ;
-    ooFree: ;
-    ooAddItem: Add;
-    ooDeleteItem: Delete(PtrInt(Data));
-    ooCustom: ;
-  end;
-end;
-
 procedure TListColumns.Update(Item: TCollectionItem);
 begin
   if (Item = nil) and FNeedsUpdate then

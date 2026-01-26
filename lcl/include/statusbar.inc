@@ -311,6 +311,12 @@ begin
   Result:=FUpdateLock>0;
 end;
 
+procedure TStatusBar.Update;
+begin
+  inherited Update;
+  UpdateHandleObject(-1, AllPanelsParts);
+end;
+
 {------------------------------------------------------------------------------
   procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
     PanelParts: TPanelParts);
@@ -318,6 +324,7 @@ end;
 procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
   PanelParts: TPanelParts);
 begin
+  Assert(PanelParts<>[], 'TStatusBar.InvalidatePanel: PanelParts is empty');
   if (PanelParts=[]) then exit;
   UpdateHandleObject(PanelIndex, PanelParts);
 end;
