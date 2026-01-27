@@ -82,14 +82,14 @@ begin
   Result := TListColumn(inherited GetItem(AIndex));
 end;
 
-procedure TListColumns.WSCreateColumns;
+procedure TListColumns.WSRecreateColumns;
 var
   n: Integer;
 begin
   // remove columns at first if exists to prevent doubling them
   for n := Count - 1 downto 0 do
     GetItem(n).WSDestroyColumn;
-    
+  // then create them
   for n := 0 to Count - 1 do
     GetItem(n).WSCreateColumn;
 end;

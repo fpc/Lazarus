@@ -584,7 +584,7 @@ begin
   LVC.SetViewStyle(Self, FViewStyle);
   
   // add columns
-  FColumns.WSCreateColumns;
+  FColumns.WSRecreateColumns;
   
   // set imagelists and item depending properties
   for lvil := Low(TListViewImageList) to High(TListViewImageList) do
@@ -1231,6 +1231,13 @@ end;
 procedure TCustomListView.BeginAutoDrag;
 begin
   BeginDrag(False);
+end;
+
+procedure TCustomListView.Update;
+// This is called from Columns property editor -> update columns.
+begin
+  inherited Update;
+  Columns.WSRecreateColumns;
 end;
 
 function TCustomListView.CreateListColumns: TListColumns;
@@ -1896,7 +1903,7 @@ procedure TCustomListView.Loaded;
 begin
   // create interface columns if needed
   if HandleAllocated then
-    FColumns.WSCreateColumns;
+    FColumns.WSRecreateColumns;
   inherited Loaded;
 end;
 
