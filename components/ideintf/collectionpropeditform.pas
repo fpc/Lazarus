@@ -206,6 +206,8 @@ begin
   FillCollectionListBox;
   SelectInObjectInspector(False);
   Modified;
+  if OwnerPersistent is TControl then
+    TControl(OwnerPersistent).Update;
 end;
 
 procedure TCollectionPropertyEditorForm.UpdateCaption;
