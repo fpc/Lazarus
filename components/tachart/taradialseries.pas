@@ -1302,7 +1302,6 @@ var
     end;
     DrawPart;
     if firstPointSet and CloseCircle then begin
-      SetLength(pts, 3);
       pts[0] := lastPoint;
       pts[1] := firstPoint;
       cnt := 2;
