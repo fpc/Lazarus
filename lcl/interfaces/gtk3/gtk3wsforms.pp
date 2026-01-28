@@ -240,29 +240,6 @@ begin
 end;
 {$ENDIF}
 
-function GetActiveGtkWindow: PGtkWindow;
-var
-  Toplevels, Node: PGList;
-  GtkWin: PGtkWidget;
-begin
-  Result := nil;
-  Toplevels := gtk_window_list_toplevels;
-  Node := Toplevels;
-
-  while Node <> nil do
-  begin
-    GtkWin := PGtkWidget(Node^.data);
-    if gtk_window_is_active(PGtkWindow(GtkWin)) then
-    begin
-      Result := PGtkWindow(GtkWin);
-      Break;
-    end;
-    Node := Node^.next;
-  end;
-
-  g_list_free(Toplevels);
-end;
-
 function ModalFilter(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn;
 begin
   Result := GDK_FILTER_REMOVE;
