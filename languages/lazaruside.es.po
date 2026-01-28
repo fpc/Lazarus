@@ -21929,6 +21929,10 @@ msgstr "Desplagar Ifdef inactivo"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "Desplegar Ifdef inactivo en selección"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "El archivo es de sólo lectura"

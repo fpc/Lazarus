@@ -21765,6 +21765,10 @@ msgstr "Expandir Ifdef inativo"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "Expandir Ifdef inativo na seleção"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Arquivo é somente leitura"

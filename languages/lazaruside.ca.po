@@ -22056,6 +22056,10 @@ msgstr ""
 msgid "Unfold inactive Ifdef in selection"
 msgstr ""
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "El fitxer és només de lectura"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-01-21 23:09+0300\n"
+"PO-Revision-Date: 2026-01-28 16:33+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -21459,6 +21459,10 @@ msgstr "Развернуть неактивный блок IFDEF"
 #: lazarusidestrconsts.synfunfoldinactiveifdefinselection
 msgid "Unfold inactive Ifdef in selection"
 msgstr "Развернуть неактивный блок IFDEF в выделенном"
+
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr "Переключать вкладки колёсиком мыши"
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"

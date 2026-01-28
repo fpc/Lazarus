@@ -21533,6 +21533,10 @@ msgstr "展开未激活的 Ifdef"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "在选区中展开未激活的 Ifdef"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "文件是只读的"

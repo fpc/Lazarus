@@ -22134,6 +22134,10 @@ msgstr ""
 msgid "Unfold inactive Ifdef in selection"
 msgstr ""
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Bestand is alleen-lezen"

@@ -21520,6 +21520,10 @@ msgstr "Etkin olmayan Ifdef'i açın"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "Seçimdeki etkin olmayan Ifdef'i açın"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Dosya salt okunur"

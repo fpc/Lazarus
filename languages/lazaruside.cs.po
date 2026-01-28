@@ -21797,6 +21797,10 @@ msgstr "Rozložit neaktivní Ifdef"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "Rozložit neaktivní Ifdef ve výběru"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Soubor je pouze ke čtení"

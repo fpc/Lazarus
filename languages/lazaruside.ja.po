@@ -21941,6 +21941,10 @@ msgstr "アクティブでないIfdefを展開"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "選択範囲のアクティブでないIfdefを展開"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "ファイルは読み込み専用です"

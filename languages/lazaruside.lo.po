@@ -21474,6 +21474,10 @@ msgstr "ຄາຍ Ifdef ທີ່ບໍ່ໄດ້ເຮັດວຽກອອ�
 msgid "Unfold inactive Ifdef in selection"
 msgstr "ຄາຍ Ifdef ທີ່ບໍ່ໄດ້ເຮັດວຽກອອກໃນສ່ວນທີ່ເລືອກ"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "ໄຟລ໌ເປັນແບບອ່ານຢ່າງດຽວ"

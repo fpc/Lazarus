@@ -21600,6 +21600,10 @@ msgstr "Poista passiivisen Ifdef:in laskostus"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "Poista passiivisen Ifdef:in laskostus valinnassa"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Tiedosto on vain luettavissa"

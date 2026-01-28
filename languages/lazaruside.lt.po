@@ -21979,6 +21979,10 @@ msgstr "Išskleisti neaktyvius „IFDEF“"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "Pažymėjime išskleisti neaktyvius „IFDEF“"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Failas tik skaitymui"

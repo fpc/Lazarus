@@ -21700,6 +21700,10 @@ msgstr "Розгорнути неактивний блок IFDEF"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "Розгорнути неактивний блок IFDEF у вибраному"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Файл тільки для читання"

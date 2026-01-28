@@ -21734,6 +21734,10 @@ msgstr "Inaktív Ifdef kinyitása"
 msgid "Unfold inactive Ifdef in selection"
 msgstr "Inaktív Ifdef kinyitása a kijelölésben"
 
+#: lazarusidestrconsts.synspelloptmousewheelchangestabs
+msgid "Mouse-wheel changes tabs"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "A fájl csak olvasható"
