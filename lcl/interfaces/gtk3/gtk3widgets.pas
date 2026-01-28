@@ -1019,6 +1019,8 @@ type
   TGtk3HintWindow = class(TGtk3Window)
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
+  public
+    procedure InitializeWidget; override;
   end;
 
   { TGtk3Dialog }
@@ -9843,9 +9845,7 @@ begin
 
   gtk_widget_realize(Result);
 
-  if wtHintWindow in FWidgetType then
-    PGtkWindow(Result)^.show_all
-  else
+  if not (wtHintWindow in FWidgetType) then
   begin
     if not Assigned(LCLObject.Parent) then
       gdk_window_set_decorations(Result^.window, decor);
@@ -10248,6 +10248,14 @@ begin
   FHasPaint := True;
   FWidgetType := [wtHintWindow];
   Result := inherited CreateWidget(Params);
+end;
+
+procedure TGtk3HintWindow.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  if GTK3WidgetSet.IsWayland then // ref.to #42033, X11 not need this (it lead to incorrect positioning)
+    PGtkWindow(Widget)^.set_transient_for(GetActiveGtkWindow);
+  PGtkWindow(Widget)^.show_all;
 end;
 
 { TGtk3Dialog }
