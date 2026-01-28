@@ -4045,12 +4045,15 @@ begin
     for i:=0 to Selection.Count-1 do
     begin
       Item:=Selection[i];
-      AComponent:=TComponent(Item.Persistent);
-      AncestorComponent:=TheFormEditor.GetAncestorInstance(AComponent);
-      if AncestorComponent<>nil then
-      begin
-        HasAncestorComponent:=true;
-        break;
+      if Item.Persistent is TComponent then // May not be a TComponent
+      begin // when a Collection is selected in OI and designer is right-clicked.
+        AComponent:=TComponent(Item.Persistent);
+        AncestorComponent:=TheFormEditor.GetAncestorInstance(AComponent);
+        if AncestorComponent<>nil then
+        begin
+          HasAncestorComponent:=true;
+          break;
+        end;
       end;
     end;
   finally
