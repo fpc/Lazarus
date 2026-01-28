@@ -56,19 +56,19 @@ msgstr "Больше не спрашивать"
 
 #: idedebuggerstringconstants.dbgoptfrmchooseformatter
 msgid "Choose formatter"
-msgstr ""
+msgstr "Выберите средство форматирования"
 
 #: idedebuggerstringconstants.dbgoptfrmformatterclass
 msgid "Formatter class:"
-msgstr ""
+msgstr "Класс средства форматирования:"
 
 #: idedebuggerstringconstants.dbgoptfrmname
 msgid "Name:"
-msgstr ""
+msgstr "Имя:"
 
 #: idedebuggerstringconstants.dbgoptfrmpleasechoosetheformattert
 msgid "Please choose the formatter to add."
-msgstr ""
+msgstr "Выберите средство форматирования для добавления."
 
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
