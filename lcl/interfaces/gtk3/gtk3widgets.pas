@@ -2834,7 +2834,8 @@ begin
 
   if (FCentralWidget <> nil) and (FCentralWidget <> FWidget) then
   begin
-    FCentralWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
+    if not gtk_widget_get_realized(FCentralWidget) then // THintWindow
+      FCentralWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
     g_signal_connect_data(FCentralWidget, 'event', TGCallback(@WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
