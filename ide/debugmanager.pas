@@ -64,7 +64,7 @@ uses
   {$ENDIF}
   DbgIntfDebuggerBase, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes, LazDebuggerIntfExcludedRoutines,
   // IDEDebugger
   IdeDebuggerStringConstants, DebuggerDlg, WatchesDlg, BreakPointsdlg,
   BreakPropertyDlg, LocalsDlg, WatchPropertyDlg, CallStackDlg, EvaluateDlg,
@@ -76,7 +76,7 @@ uses
   // IdeConfig
   LazConf, CompilerOptions,
   // IDE
-  SourceEditor, ProjectDefs, Project, ProjectDebugLink, MemViewerDlg,
+  SourceEditor, ProjectDefs, Project, ProjectDebugLink, MemViewerDlg, IdeDebuggerExcludedRoutines,
   LazarusIDEStrConsts, MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,
   DebugEventsForm, EnvGuiOptions, RunParamsOpts, RunParamOptions;
 
@@ -120,6 +120,7 @@ type
     procedure DoDebugConfChanged(Sender: TObject);
     procedure DoDisplayFormatChanged(Sender: TObject);
     procedure BreakAutoContinueTimer(Sender: TObject);
+    procedure DoExcludeRoutineChanged(Sender: TObject);
     procedure RunTimer(Sender: TObject);
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
@@ -1170,6 +1171,19 @@ begin
   FDebugger.Run;
 end;
 
+procedure TDebugManager.DoExcludeRoutineChanged(Sender: TObject);
+begin
+  FExcludedRoutines.BeginUpdate;
+
+  FExcludedRoutines.SetAllDeleted;
+  if DbgProjectLink.UseExcludeRoutineEntryConfigFromIDE then
+    DebuggerOptions.ExcludeRoutineEntryConfig.AssignEnabledTo(FExcludedRoutines);
+  if DbgProjectLink.UseExcludeRoutineEntryConfigFromProject then
+    DbgProjectLink.ExcludeRoutineEntryConfig.AssignEnabledTo(FExcludedRoutines);
+
+  FExcludedRoutines.EndUpdate;
+end;
+
 procedure TDebugManager.DoDebugConfChanged(Sender: TObject);
 var
   d: TDebugDialogType;
@@ -2138,6 +2152,7 @@ begin
   FWatches.OnWatchesInvalidated := @CallWatchesInvalidatedHandlers;
   FThreads := TIdeThreadsMonitor.Create;
   FExceptions := TProjectExceptions.Create;
+  FExcludedRoutines := TIdeDebuggerExcludeRoutineMainList.Create;
   FSignals := TIDESignals.Create;
   FLocals := TIdeLocalsMonitor.Create;
   FLineInfo := TIDELineInfo.Create;
@@ -2183,6 +2198,8 @@ begin
   DebuggerOptions.BackendConverterConfig.AddChangeNotification(@DoDebugConfChanged);
   DbgProjectLink.DisplayFormatConfigs.AddChangeNotification(@DoDisplayFormatChanged);
   DebuggerOptions.DisplayFormatConfigs.AddChangeNotification(@DoDisplayFormatChanged);
+  DbgProjectLink.ExcludeRoutineEntryConfig.AddChangeNotification(@DoExcludeRoutineChanged);
+  DebuggerOptions.ExcludeRoutineEntryConfig.AddChangeNotification(@DoExcludeRoutineChanged);
 end;
 
 destructor TDebugManager.Destroy;
@@ -2190,6 +2207,19 @@ var
   DialogType: TDebugDialogType;
 begin
   FDestroying := true;
+
+  if DbgProjectLink <> nil then begin
+    DbgProjectLink.ValueFormatterConfig.RemoveChangeNotification(@DoDisplayFormatChanged);
+    DbgProjectLink.BackendConverterConfig.RemoveChangeNotification(@DoDebugConfChanged);
+    DbgProjectLink.DisplayFormatConfigs.RemoveChangeNotification(@DoDisplayFormatChanged);
+    DbgProjectLink.ExcludeRoutineEntryConfig.RemoveChangeNotification(@DoExcludeRoutineChanged);
+  end;
+  if DebuggerOptions <> nil then begin
+    DebuggerOptions.ValueFormatterConfig.RemoveChangeNotification(@DoDisplayFormatChanged);
+    DebuggerOptions.BackendConverterConfig.RemoveChangeNotification(@DoDebugConfChanged);
+    DebuggerOptions.DisplayFormatConfigs.RemoveChangeNotification(@DoDisplayFormatChanged);
+    DebuggerOptions.ExcludeRoutineEntryConfig.RemoveChangeNotification(@DoExcludeRoutineChanged);
+  end;
 
   LazarusIDE.RemoveHandlerOnProjectClose(@DoProjectClose);
   FreeAndNil(FAutoContinueTimer);
@@ -2212,6 +2242,8 @@ begin
   FreeAndNil(FCallStack);
   FreeAndNil(FDisassembler);
   FreeAndNil(FExceptions);
+  FExcludedRoutines.Free;
+  FExcludedRoutines := nil;
   FreeAndNil(FSignals);
   FreeAndNil(FLocals);
   FreeAndNil(FLineInfo);
@@ -2233,6 +2265,7 @@ begin
   FWatches.Clear;
   FThreads.Clear;
   FExceptions.Reset;
+  //FExcludedRoutines.Clear;
   FSignals.Reset;
   FUserSourceFiles.Clear;
   FUnitInfoProvider.Clear;
@@ -3679,6 +3712,7 @@ begin
     FCallStack.Debugger := FDebugger;
 
     FDebugger.Exceptions := FExceptions;
+    FDebugger.ExcludedRoutines := FExcludedRoutines;
   end;
 end;
 

@@ -1,0 +1,273 @@
+object IdeDbgExcludedRoutineConfFrame: TIdeDbgExcludedRoutineConfFrame
+  Left = 0
+  Height = 561
+  Top = 0
+  Width = 759
+  ClientHeight = 561
+  ClientWidth = 759
+  LCLVersion = '4.99.0.0'
+  TabOrder = 0
+  DesignLeft = 459
+  DesignTop = 162
+  object PanelProjectOpts: TPanel
+    Left = 0
+    Height = 56
+    Top = 0
+    Width = 759
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 56
+    ClientWidth = 759
+    TabOrder = 3
+    Visible = False
+    object chkUseProjList: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 373
+      Caption = 'chkUseProjList'
+      TabOrder = 0
+    end
+    object chkUseGlobalList: TCheckBox
+      Left = 385
+      Height = 19
+      Top = 6
+      Width = 368
+      Caption = 'chkUseGlobalList'
+      TabOrder = 1
+    end
+    object chkStoreInSession: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 373
+      Caption = 'chkStoreInSession'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+  end
+  inline IdeDbgConfigItemCheckListFrame1: TIdeDbgConfigItemCheckListFrame
+    Top = 56
+    Width = 759
+    Align = alTop
+    ClientWidth = 759
+    inherited lstItems: TCheckListBox
+      Width = 579
+    end
+    inherited Panel2: TPanel
+      Left = 589
+    end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 8
+    Top = 212
+    Width = 759
+    Align = alTop
+    ResizeAnchor = akTop
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 341
+    Top = 220
+    Width = 759
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 341
+    ClientWidth = 759
+    TabOrder = 1
+    object lblName: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 5
+      Height = 15
+      Top = 5
+      Width = 45
+      BorderSpacing.Around = 5
+      Caption = 'lblName'
+    end
+    object EdName: TEdit
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = lblName
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 5
+      Height = 23
+      Top = 25
+      Width = 749
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 5
+      TabOrder = 0
+      OnChange = EdNameChange
+    end
+    object lblPath: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = EdName
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 5
+      Height = 15
+      Top = 53
+      Width = 749
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 5
+      Caption = 'lblPath'
+    end
+    object EdPath: TEdit
+      AnchorSideLeft.Control = dropPath
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblPath
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 160
+      Height = 23
+      Top = 73
+      Width = 594
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 5
+      TabOrder = 1
+      OnChange = EditChanged
+      OnEditingDone = EditDone
+    end
+    object dropPath: TComboBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = lblPath
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 5
+      Height = 23
+      Top = 73
+      Width = 150
+      BorderSpacing.Around = 5
+      ItemHeight = 15
+      Style = csDropDownList
+      TabOrder = 2
+      OnChange = DropChanged
+    end
+    object lblFunc: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = dropPath
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 5
+      Height = 15
+      Top = 101
+      Width = 749
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 5
+      Caption = 'lblFunc'
+    end
+    object dropFunc: TComboBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = lblFunc
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 5
+      Height = 23
+      Top = 121
+      Width = 150
+      BorderSpacing.Around = 5
+      ItemHeight = 15
+      Style = csDropDownList
+      TabOrder = 3
+      OnChange = DropChanged
+    end
+    object edFunc: TMemo
+      AnchorSideLeft.Control = dropFunc
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = lblFunc
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = lbWarn1
+      Left = 160
+      Height = 160
+      Top = 121
+      Width = 594
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 5
+      Constraints.MinHeight = 30
+      Lines.Strings = (
+        'edFunc'
+      )
+      TabOrder = 4
+      OnChange = EditChanged
+      OnEditingDone = EditDone
+    end
+    object lbWarn1: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = lbWarn2
+      Left = 5
+      Height = 15
+      Top = 286
+      Width = 749
+      Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Left = 5
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      Caption = 'lbWarn1'
+      Font.Color = 33023
+      ParentFont = False
+      WordWrap = True
+    end
+    object lbWarn2: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = lbWarn3
+      Left = 5
+      Height = 15
+      Top = 306
+      Width = 749
+      Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Left = 5
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      Caption = 'lbWarn2'
+      Font.Color = 33023
+      ParentFont = False
+      Visible = False
+      WordWrap = True
+    end
+    object lbWarn3: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 5
+      Height = 15
+      Top = 326
+      Width = 749
+      Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Left = 5
+      BorderSpacing.Top = 5
+      BorderSpacing.Right = 5
+      Caption = 'lbWarn3'
+      Font.Color = clRed
+      ParentFont = False
+      WordWrap = True
+    end
+  end
+end

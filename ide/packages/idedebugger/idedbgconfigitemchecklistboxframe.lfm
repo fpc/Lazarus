@@ -1,0 +1,82 @@
+object IdeDbgConfigItemCheckListFrame: TIdeDbgConfigItemCheckListFrame
+  Left = 0
+  Height = 156
+  Top = 0
+  Width = 722
+  ClientHeight = 156
+  ClientWidth = 722
+  LCLVersion = '4.99.0.0'
+  TabOrder = 0
+  DesignLeft = 387
+  DesignTop = 180
+  object lstItems: TCheckListBox
+    Left = 5
+    Height = 151
+    Top = 5
+    Width = 542
+    Align = alClient
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    BorderSpacing.Right = 5
+    ItemHeight = 0
+    TabOrder = 0
+    OnClick = lstItemsClick
+    OnItemClick = lstItemsItemClick
+  end
+  object Panel2: TPanel
+    Left = 552
+    Height = 156
+    Top = 0
+    Width = 170
+    Align = alRight
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 5
+    ChildSizing.TopBottomSpacing = 5
+    ChildSizing.HorizontalSpacing = 5
+    ChildSizing.VerticalSpacing = 5
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 156
+    ClientWidth = 170
+    TabOrder = 1
+    object btnAdd: TButton
+      Left = 5
+      Height = 25
+      Top = 5
+      Width = 160
+      Caption = 'btnAdd'
+      TabOrder = 0
+      OnClick = btnAddClick
+    end
+    object btnRemove: TButton
+      Left = 5
+      Height = 25
+      Top = 35
+      Width = 160
+      Caption = 'btnRemove'
+      TabOrder = 1
+      OnClick = btnRemoveClick
+    end
+    object btnUp: TButton
+      Left = 5
+      Height = 25
+      Top = 72
+      Width = 160
+      BorderSpacing.Top = 12
+      Caption = 'btnUp'
+      TabOrder = 2
+      OnClick = btnUpClick
+    end
+    object btnDown: TButton
+      Left = 5
+      Height = 25
+      Top = 102
+      Width = 160
+      Caption = 'btnDown'
+      TabOrder = 3
+      OnClick = btnDownClick
+    end
+  end
+end

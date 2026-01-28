@@ -17,7 +17,7 @@ uses
   DbgIntfDebuggerBase,
   // IdeDebugger
   IdeDebuggerStringConstants, IdeDebuggerBackendValueConv,
-  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats;
+  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, IdeDebuggerExcludedRoutines;
 
 type
 
@@ -144,6 +144,7 @@ type
     FPrimaryConfigPath: String;
     FSetupCheckIgnoreNoDefault: Boolean;
     FValueFormatterConfig: TIdeDbgValueFormatterSelectorList;
+    FExcludeRoutineEntryConfig: TIdeDebuggerExcludeRoutineConfList;
     FWatchesDetailPaneWordWrap: boolean;
     FXMLCfg: TRttiXMLConfig;
 
@@ -175,6 +176,7 @@ type
     property DisplayFormatConfigs: TDisplayFormatConfig read FDisplayFormatConfigs;
     property BackendConverterConfig: TIdeDbgValueConvertSelectorList read FBackendConverterConfig write FBackendConverterConfig;
     property ValueFormatterConfig: TIdeDbgValueFormatterSelectorList read FValueFormatterConfig write FValueFormatterConfig;
+    property ExcludeRoutineEntryConfig: TIdeDebuggerExcludeRoutineConfList read FExcludeRoutineEntryConfig write FExcludeRoutineEntryConfig;
 
     function DebuggerFilename: string;
     function GetParsedDebuggerFilename(AProjectDbgFileName: String = ''): string;
@@ -841,6 +843,7 @@ begin
   FDisplayFormatConfigs := TDisplayFormatConfig.Create(True);
   BackendConverterConfig := TIdeDbgValueConvertSelectorList.Create;
   FValueFormatterConfig := TIdeDbgValueFormatterSelectorList.Create;
+  FExcludeRoutineEntryConfig := TIdeDebuggerExcludeRoutineConfList.Create;
   Init;
 end;
 
@@ -856,6 +859,7 @@ begin
   BackendConverterConfig.Free;
   FDisplayFormatConfigs.Free;
   FValueFormatterConfig.Free;
+  FExcludeRoutineEntryConfig.Free;
   FDebuggerConfigList.Free;
 
   FXMLCfg.Free;
@@ -885,6 +889,7 @@ begin
   FDisplayFormatConfigs.LoadFromXml(FXMLCfg, Path + 'DisplayFormatConfigs/');
   FBackendConverterConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ValueConvert/');
   FValueFormatterConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ValueFormatter/');
+  FExcludeRoutineEntryConfig.LoadDataFromXMLConfig(FXMLCfg, Path + 'FpDebug/ExcludeRoutineEntries/');
 end;
 
 procedure TDebuggerOptions.Save;
@@ -907,6 +912,9 @@ begin
   if FValueFormatterConfig.Changed then
     FValueFormatterConfig.SaveDataToXMLConfig(FXMLCfg, Path + 'FpDebug/ValueFormatter/');
   FValueFormatterConfig.Changed := False;
+
+// TODO: changed since loaded?
+  FExcludeRoutineEntryConfig.SaveDataToXMLConfig(FXMLCfg, Path + 'FpDebug/ExcludeRoutineEntries/');
 
   SaveDebuggerPropertiesList;
 

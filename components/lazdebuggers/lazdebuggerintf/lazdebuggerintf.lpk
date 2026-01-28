@@ -11,6 +11,9 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True" idx5024="True"/>
+        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
@@ -53,9 +56,20 @@ See LCL license for details."/>
         <Filename Value="lazdebuggerintffloattypes.pas"/>
         <UnitName Value="LazDebuggerIntfFloatTypes"/>
       </Item>
+      <Item>
+        <Filename Value="lazdebuggerintfexcludedroutines.pas"/>
+        <UnitName Value="LazDebuggerIntfExcludedRoutines"/>
+      </Item>
+      <Item>
+        <Filename Value="lazdebuggerintfsynchronizedlist.pas"/>
+        <UnitName Value="LazDebuggerIntfSynchronizedList"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazUtils"/>
+      </Item>
       <Item>
         <PackageName Value="FCL"/>
       </Item>

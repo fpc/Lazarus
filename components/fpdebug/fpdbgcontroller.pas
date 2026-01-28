@@ -33,6 +33,7 @@ type
   TOnLibraryUnloadedEvent = procedure(var continue: boolean; ALibraryArray: TDbgLibraryArr) of object;
   TOnProcessLoopCycleEvent = procedure(var AFinishLoopAndSendEvents: boolean; var AnEventType: TFPDEvent;
     var ACurCommand: TDbgControllerCmd; var AnIsFinished: boolean) of object;
+  TOnCheckExcludedRoutine = function(ACommand: TDbgControllerCmd): Boolean of object;
 
   { TDbgControllerCmd }
 
@@ -56,6 +57,7 @@ type
     procedure ResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
     function NextInstruction: TDbgAsmInstruction; inline;
     property Thread: TDbgThread read FThread write SetThread;
+    property Process: TDbgProcess read FProcess;
   end;
 
   { TDbgControllerContinueCmd }
@@ -148,6 +150,7 @@ type
     FState: (siSteppingCurrent, siSteppingIn, siSteppingNested, siRunningStepOut);
     FStepCount, FNestDepth: Integer;
   protected
+    function CheckForIgnoredRoutine: boolean;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   public
@@ -267,6 +270,7 @@ type
     FMemManager: TFpDbgMemManager;
     FMemModel: TFpDbgMemModel;
     FDefaultContext: TFpDbgLocationContext;
+    FOnThreadCheckStepForIgnoredRoutine: TOnCheckExcludedRoutine;
     FStoredDefaultContext: TFpDbgLocationContext; // while function eval calling
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
     FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;
@@ -425,6 +429,7 @@ type
     property OnThreadBeforeProcessLoop: TNotifyEvent read FOnThreadBeforeProcessLoop write FOnThreadBeforeProcessLoop;
     property OnThreadProcessLoopCycleEvent: TOnProcessLoopCycleEvent read FOnThreadProcessLoopCycleEvent write FOnThreadProcessLoopCycleEvent;
     property OnThreadDebugOutputEvent: TDebugOutputEvent read FOnThreadDebugOutputEvent write SetOnThreadDebugOutputEvent;
+    property OnThreadCheckStepForIgnoredRoutine: TOnCheckExcludedRoutine read FOnThreadCheckStepForIgnoredRoutine write FOnThreadCheckStepForIgnoredRoutine;
 
     // Intermediate between FpDebugger and TDbgProcess.  Created by FPDebugger, so not owned by controller
     property ProcessConfig: TDbgProcessConfig read FProcessConfig write FProcessConfig;
@@ -1151,6 +1156,13 @@ begin
   inherited Create(AController, True);
 end;
 
+function TDbgControllerStepIntoLineCmd.CheckForIgnoredRoutine: boolean;
+begin
+  Result := False;
+  if (FController <> nil) and (FController.FOnThreadCheckStepForIgnoredRoutine <> nil) then
+    Result := FController.FOnThreadCheckStepForIgnoredRoutine(Self);
+end;
+
 procedure TDbgControllerStepIntoLineCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Finished: boolean);
 var
@@ -1180,6 +1192,16 @@ begin
     // we stepped into
     CompRes := FThread.CompareStepInfo;
     Finished := CompRes = dcsiNewLine;
+    // TODO: can we have exception or other events here?
+    //if Finished then begin
+    if Finished and (AnEvent <> deException) then begin
+      if CheckForIgnoredRoutine then begin
+        Finished := False;
+        FState := siRunningStepOut; // run to breakpoint
+        AnEvent:=deInternalContinue;
+        exit;
+      end;
+    end;
   end;
 
   if Finished and (AnEvent <> deException) then

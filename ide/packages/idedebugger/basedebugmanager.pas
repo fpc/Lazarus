@@ -47,9 +47,10 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
-  LazDebuggerIntf,
+  LazDebuggerIntf, LazDebuggerIntfExcludedRoutines,
   // IdeDebugger
-  IdeDebuggerBase, IdeDebuggerOpts, Debugger, IdeDebuggerWatchResPrinter;
+  IdeDebuggerBase, IdeDebuggerOpts, Debugger, IdeDebuggerWatchResPrinter,
+  IdeDebuggerExcludedRoutines;
 
 type
   TDebugDialogType = (
@@ -116,6 +117,7 @@ type
     FCallStack: TIdeCallStackMonitor;
     FDisassembler: TIDEDisassembler;
     FExceptions: TIDEExceptions;
+    FExcludedRoutines: TIdeDebuggerExcludeRoutineMainList;
     FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
     FBreakPointGroups: TIDEBreakPointGroups;
@@ -235,6 +237,7 @@ type
     property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
     property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
+    property ExcludedRoutines: TIdeDebuggerExcludeRoutineMainList read FExcludedRoutines;
     property CallStack: TIdeCallStackMonitor read FCallStack;
     property Disassembler: TIDEDisassembler read FDisassembler;
     property Locals: TIdeLocalsMonitor read FLocals;

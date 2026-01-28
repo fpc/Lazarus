@@ -12,7 +12,7 @@ uses
   DbgIntfDebuggerBase,
   // IdeDebugger
   IdeDebuggerOpts, IdeDebuggerBackendValueConv,
-  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
+  IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, IdeDebuggerExcludedRoutines,
   // IdeProject
   Project;
 
@@ -42,18 +42,27 @@ type
     FUseValueFormatterFromIDE: boolean;
     FUseValueFormatterFromProject: boolean;
     FValueFormatterConfig: TIdeDbgValueFormatterSelectorList;
+    FExcludeRoutineEntryConfig: TIdeDebuggerExcludeRoutineConfList;
+    FStoreExcludeRoutineEntryConfigInSession: boolean;
+    FUseExcludeRoutineEntryConfigFromIDE: boolean;
+    FUseExcludeRoutineEntryConfigFromProject: boolean;
+    FExcludeRoutineEntryConfigWasFromSession, FExcludeRoutineEntryConfigWasFromLPI: boolean;
+    procedure DoExcludeRoutineEntryConfigChanged(Sender: TObject);
     function GetCurrentDebuggerBackend: String;
     procedure SetDebuggerBackend(AValue: String);
     procedure SetProject(AValue: TProject); override;
     procedure SetStoreDebuggerClassConfInSession(AValue: boolean);
     procedure SetStoreBackendConverterConfigInSession(AValue: boolean);
     procedure SetStoreDisplayFormatConfigsInSession(AValue: boolean);
+    procedure SetStoreExcludeRoutineEntryConfigInSession(AValue: boolean);
     procedure SetStoreValueFormatterConfigInSession(AValue: boolean);
     procedure SetUseBackendConverterFromIDE(AValue: boolean);
     procedure SetUseBackendConverterFromProject(AValue: boolean);
     procedure BackendConverterConfigChanged(Sender: TObject);
     procedure SetUseDisplayFormatConfigsFromIDE(AValue: boolean);
     procedure SetUseDisplayFormatConfigsFromProject(AValue: boolean);
+    procedure SetUseExcludeRoutineEntryConfigFromIDE(AValue: boolean);
+    procedure SetUseExcludeRoutineEntryConfigFromProject(AValue: boolean);
     procedure SetUseValueFormatterFromIDE(AValue: boolean);
     procedure SetUseValueFormatterFromProject(AValue: boolean);
     procedure DisplayFormatConfigsChanged(Sender: TObject);
@@ -93,6 +102,7 @@ type
     property DisplayFormatConfigs: TDisplayFormatConfig read FDisplayFormatConfigs;
     property ValueFormatterConfig: TIdeDbgValueFormatterSelectorList read FValueFormatterConfig
                                                                      write FValueFormatterConfig;
+    property ExcludeRoutineEntryConfig: TIdeDebuggerExcludeRoutineConfList read FExcludeRoutineEntryConfig write FExcludeRoutineEntryConfig;
   published
     property StoreDisplayFormatConfigsInSession: boolean read FStoreDisplayFormatConfigsInSession
                                                         write SetStoreDisplayFormatConfigsInSession default False;
@@ -107,6 +117,13 @@ type
                                               write SetUseValueFormatterFromIDE default True;
     property UseValueFormatterFromProject: boolean read FUseValueFormatterFromProject
                                                   write SetUseValueFormatterFromProject default True;
+
+    property StoreExcludeRoutineEntryConfigInSession: boolean read FStoreExcludeRoutineEntryConfigInSession
+                                                        write SetStoreExcludeRoutineEntryConfigInSession default False;
+    property UseExcludeRoutineEntryConfigFromIDE: boolean read FUseExcludeRoutineEntryConfigFromIDE
+                                              write SetUseExcludeRoutineEntryConfigFromIDE default True;
+    property UseExcludeRoutineEntryConfigFromProject: boolean read FUseExcludeRoutineEntryConfigFromProject
+                                                  write SetUseExcludeRoutineEntryConfigFromProject default True;
   end;
 
 function GetDbgProjectLink: TProjectDebugLink;
@@ -142,6 +159,11 @@ begin
   FValueFormatterConfig.OnChanged := @ValueFormatterConfigChanged;
   FUseValueFormatterFromIDE := True;
   FUseValueFormatterFromProject := True;
+
+  FExcludeRoutineEntryConfig := TIdeDebuggerExcludeRoutineConfList.Create;
+  FUseExcludeRoutineEntryConfigFromIDE := True;
+  FUseExcludeRoutineEntryConfigFromProject := True;
+  FExcludeRoutineEntryConfig.AddChangeNotification(@DoExcludeRoutineEntryConfigChanged);
 end;
 
 destructor TProjectDebugLink.Destroy;
@@ -150,12 +172,23 @@ begin
   FreeAndNil(FBackendConverterConfig);
   FreeAndNil(FDisplayFormatConfigs);
   FreeAndNil(FValueFormatterConfig);
+  FreeAndNil(FExcludeRoutineEntryConfig);
   inherited Destroy;
 end;
 
 function TProjectDebugLink.GetCurrentDebuggerBackend: String;
 begin
   Result := FDebuggerBackend;
+end;
+
+procedure TProjectDebugLink.DoExcludeRoutineEntryConfigChanged(Sender: TObject);
+begin
+  if FProject = nil then
+    exit;
+  if FStoreExcludeRoutineEntryConfigInSession then
+    FProject.SessionModified := True
+  else
+    FProject.Modified := True;
 end;
 
 procedure TProjectDebugLink.SetDebuggerBackend(AValue: String);
@@ -199,6 +232,14 @@ procedure TProjectDebugLink.SetStoreDisplayFormatConfigsInSession(AValue: boolea
 begin
   if FStoreDisplayFormatConfigsInSession = AValue then Exit;
   FStoreDisplayFormatConfigsInSession := AValue;
+  FProject.Modified := True;
+  FProject.SessionModified := True;
+end;
+
+procedure TProjectDebugLink.SetStoreExcludeRoutineEntryConfigInSession(AValue: boolean);
+begin
+  if FStoreExcludeRoutineEntryConfigInSession = AValue then Exit;
+  FStoreExcludeRoutineEntryConfigInSession := AValue;
   FProject.Modified := True;
   FProject.SessionModified := True;
 end;
@@ -248,6 +289,22 @@ begin
   FProject.SessionModified := True;
 end;
 
+procedure TProjectDebugLink.SetUseExcludeRoutineEntryConfigFromIDE(AValue: boolean);
+begin
+  if FUseExcludeRoutineEntryConfigFromIDE = AValue then Exit;
+  FUseExcludeRoutineEntryConfigFromIDE := AValue;
+  FProject.SessionModified := True;
+  FExcludeRoutineEntryConfig.CallChangeNotifications;
+end;
+
+procedure TProjectDebugLink.SetUseExcludeRoutineEntryConfigFromProject(AValue: boolean);
+begin
+  if FUseExcludeRoutineEntryConfigFromProject = AValue then Exit;
+  FUseExcludeRoutineEntryConfigFromProject := AValue;
+  FProject.SessionModified := True;
+  FExcludeRoutineEntryConfig.CallChangeNotifications;
+end;
+
 procedure TProjectDebugLink.SetUseValueFormatterFromIDE(AValue: boolean);
 begin
   if FUseValueFormatterFromIDE = AValue then Exit;
@@ -292,12 +349,17 @@ begin
   FUseValueFormatterFromProject := True;
   FStoreValueFormatterConfigInSession := False;
 
+  FUseExcludeRoutineEntryConfigFromIDE := True;
+  FUseExcludeRoutineEntryConfigFromProject := True;
+  FStoreExcludeRoutineEntryConfigInSession := False;
+
   FDebuggerBackend := '';
 
   FDebuggerProperties.Clear;
   FDisplayFormatConfigs.Clear;
   FValueFormatterConfig.Clear;
   FBackendConverterConfig.Clear;
+  FExcludeRoutineEntryConfig.Clear;
 end;
 
 procedure TProjectDebugLink.BeforeReadProject;
@@ -337,6 +399,11 @@ begin
     FValueFormatterConfigWasFromLPI := True;
   end;
 
+  if not FStoreExcludeRoutineEntryConfigInSession then begin
+    FExcludeRoutineEntryConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/ExcludeRoutineEntries/');
+    FExcludeRoutineEntryConfigWasFromLPI := True;
+  end;
+
   aXMLConfig.ReadObject(Path+'Debugger/', Self);
 end;
 
@@ -363,6 +430,11 @@ begin
   if FStoreValueFormatterConfigInSession then begin
     FValueFormatterConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/ValueFormatter/');
     FValueFormatterConfigWasFromSession := True;
+  end;
+
+  if FStoreExcludeRoutineEntryConfigInSession then begin
+    FExcludeRoutineEntryConfig.LoadDataFromXMLConfig(aXMLConfig, Path+'Debugger/ExcludeRoutineEntries/');
+    FExcludeRoutineEntryConfigWasFromSession := True;
   end;
 
   aXMLConfig.ReadObject(Path+'Debugger/', Self);
@@ -402,6 +474,13 @@ begin
   FValueFormatterConfigWasFromSession := False;
   FValueFormatterConfigWasFromLPI := False;
 
+  if not FStoreExcludeRoutineEntryConfigInSession then
+    FExcludeRoutineEntryConfig.SaveDataToXMLConfig(aXMLConfig, Path+'Debugger/ExcludeRoutineEntries/')
+  else if FExcludeRoutineEntryConfigWasFromLPI then
+    aXMLConfig.DeletePath(Path+'Debugger/ExcludeRoutineEntries');
+  FStoreExcludeRoutineEntryConfigInSession := False;
+  FExcludeRoutineEntryConfigWasFromLPI := False;
+
   Def := TProjectDebugLink.Create;
   aXMLConfig.WriteObject(Path+'Debugger/', Self, Def);
   Def.Free;
@@ -440,6 +519,13 @@ begin
     aXMLConfig.DeletePath(Path+'Debugger/ValueFormatter');
   FValueFormatterConfigWasFromSession := False;
   FValueFormatterConfigWasFromLPI := False;
+
+  if FStoreExcludeRoutineEntryConfigInSession then
+    FExcludeRoutineEntryConfig.SaveDataToXMLConfig(aXMLConfig, Path+'Debugger/ExcludeRoutineEntries/')
+  else if FExcludeRoutineEntryConfigWasFromSession then
+    aXMLConfig.DeletePath(Path+'Debugger/ExcludeRoutineEntries');
+  FExcludeRoutineEntryConfigWasFromSession := False;
+  FExcludeRoutineEntryConfigWasFromLPI := False;
 
   Def := TProjectDebugLink.Create;
   aXMLConfig.WriteObject(Path+'Debugger/', Self, Def);

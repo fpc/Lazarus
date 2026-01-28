@@ -26,11 +26,12 @@ uses
   // LazUtils
   LazClasses, LazFileUtils, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazStringUtils, Maps,
   // DebuggerIntf
-  DbgIntfDebuggerBase, DbgIntfBaseTypes,
+  DbgIntfDebuggerBase, DbgIntfBaseTypes, RegExpr,
   // CmdLineDebuggerBase
   DebugProcess,
   // LazDebuggerLldb
-  LldbInstructions, LldbHelper, LazDebuggerIntf, LazDebuggerIntfBaseTypes;
+  LldbInstructions, LldbHelper, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  LazDebuggerIntfExcludedRoutines;
 
 type
 
@@ -312,6 +313,7 @@ type
     FTargetWidth: Byte;
     FTargetRegisters: array[0..2] of String;
     FLldbMissingBreakSetDisable: Boolean;
+    FMirroredExcludedRoutines: TDbgExeProcSelectorSyncTargetList;
     FExceptionInfo: record
       FReg0Cmd, FReg2Cmd, FExceptClassCmd, FExceptMsgCmd: String;
       FAtExcepiton: Boolean; // cleared in Setstate
@@ -345,6 +347,8 @@ type
     procedure SetErrorState(const AMsg: String; const AInfo: String = '');
     function DoExceptionHit(AExcClass, AExcMsg: String): Boolean;
     function DoBreakpointHit(BrkId: Integer): Boolean;
+    procedure ClearExcludedRoutines;
+    procedure UpdateExcludedRoutines(AForce: Boolean = False);
 
     property CurrentThreadId: Integer read FCurrentThreadId;
     property CurrentStackFrame: Integer read FCurrentStackFrame;
@@ -361,6 +365,7 @@ type
     function  CreateWatches: TWatchesSupplier; override;
     function  CreateThreads: TThreadsSupplier; override;
     function  GetTargetWidth: Byte; override;
+    procedure DoExcludedRoutinesChanged; override;
 
     function GetIsIdle: Boolean; override;
     class function  GetSupportedCommands: TDBGCommands; override;
@@ -395,6 +400,64 @@ implementation
 
 var
   DBG_VERBOSE: PLazLoggerLogGroup;
+
+type
+  TQuoteType = (
+    qtNone, qtDouble, qtSingle
+  );
+
+function EscapeText(ATxt: String; AQuoteType: TQuoteType): String;
+var
+  q: String;
+  s, d: Integer;
+begin
+  Result := ATxt;
+  if (pos(' ', ATxt) < 1) and (pos('\', ATxt) < 1) then
+    exit;
+
+  case AQuoteType of
+    qtDouble: q := '"';
+    qtSingle: q := '''';
+    otherwise  q := '';
+  end;
+
+  SetLength(Result, Length(ATxt)*2+2);
+
+  s := 0;
+  d := 1;
+
+  if q <> '' then begin
+    Result[d] := q[1];
+    inc(d);
+  end;
+
+  while s < Length(ATxt) do begin
+    inc(s);
+    case ATxt[s] of
+      '\', #10, #13: begin
+          Result[d] := '\';
+          inc(d);
+        end;
+      '''', '"': if (q = '') or (q = ATxt[s]) then begin
+          Result[d] := '\';
+          inc(d);
+        end;
+      ' ', #9: if q = '' then begin
+          Result[d] := '\';
+          inc(d);
+        end;
+    end;
+    Result[d] := ATxt[s];
+    inc(d);
+  end;
+
+  if q <> '' then begin
+    Result[d] := q[1];
+    inc(d);
+  end;
+
+  SetLength(Result, d-1);
+end;
 
 type
 
@@ -2958,6 +3021,11 @@ end;
 
 procedure TLldbDebugger.DoState(const OldState: TDBGState);
 begin
+  if (State = dsRun) and (OldState = dsInit) then
+    UpdateExcludedRoutines(True);
+  if State = dsStop then
+    ClearExcludedRoutines;
+
   inherited DoState(OldState);
   if (State = dsError) then
     TerminateLldb;
@@ -3012,6 +3080,66 @@ begin
   end;
 end;
 
+procedure TLldbDebugger.ClearExcludedRoutines;
+var
+  Instr: TLldbInstructionSettingSet;
+begin
+  Instr := TLldbInstructionSettingSet.Create('target.process.thread.step-avoid-regexp', '""', False);
+  FDebugInstructionQueue.QueueInstruction(Instr);
+  Instr.ReleaseReference;
+end;
+
+procedure TLldbDebugger.UpdateExcludedRoutines(AForce: Boolean);
+var
+  i, j: Integer;
+  c: QWord;
+  s, t: String;
+  e: TDbgExeProcSelectorSyncTargetList.TDbgExeProcSelectorListTemplate_Item;
+  l: TStringArray;
+  k: TDbgExeProcMatchNameKind;
+  Instr: TLldbInstructionSettingSet;
+begin
+  if FMirroredExcludedRoutines.MainList = nil then
+    exit;
+
+  c := FMirroredExcludedRoutines.ChangeStamp;
+  FMirroredExcludedRoutines.Update;
+  if AForce or (c <> FMirroredExcludedRoutines.ChangeStamp) then begin
+    s := '';
+
+    for i := 0 to FMirroredExcludedRoutines.Count - 1 do begin
+      e := FMirroredExcludedRoutines[i];
+      if e.FileMatchValue <> '' then Continue;
+      k := e.NameMatchKind;
+      l := e.NameMatchValue;
+      for j := 0 to Length(l) - 1 do begin
+        if s <> '' then s := s + '|';
+        case k of
+          mpkName:  s := s  + '(^' + QuoteRegExprMetaChars(l[j]) + '$)';
+          mpkRegEx: s := s  + '(' + l[j] + ')';
+        end;
+        t := UpperCase(l[j]);
+        if t <> l[j] then begin
+          case k of
+            mpkName:  s := s  + '|(^' + QuoteRegExprMetaChars(t) + '$)';
+            mpkRegEx: s := s  + '|(' + t + ')';
+          end;
+        end;
+      end;
+    end;
+
+    if s = '' then begin
+      ClearExcludedRoutines;
+    end
+    else begin
+      s := EscapeText(s, qtNone);
+      Instr := TLldbInstructionSettingSet.Create('target.process.thread.step-avoid-regexp', s, False);
+      FDebugInstructionQueue.QueueInstruction(Instr);
+      Instr.ReleaseReference;
+    end;
+  end;
+end;
+
 function TLldbDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
   Result := TLldbBreakPoints.Create(Self, TLldbBreakPoint);
@@ -3047,6 +3175,12 @@ begin
   Result := FTargetWidth;
 end;
 
+procedure TLldbDebugger.DoExcludedRoutinesChanged;
+begin
+  inherited DoExcludedRoutinesChanged;
+  FMirroredExcludedRoutines.MainList := ExcludedRoutines;
+end;
+
 function TLldbDebugger.GetIsIdle: Boolean;
 begin
   Result := FInIdle or ( (CommandQueue.Count = 0) and (CommandQueue.RunningCommand = nil) );
@@ -3068,6 +3202,8 @@ var
   EvalFlags: TWatcheEvaluateFlags;
 begin
   LockRelease;
+  if ACommand in [dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcStepIntoInstr, dcStepOverInstr] then
+    UpdateExcludedRoutines;
   try
     case ACommand of
       dcRun:         Result := LldbRun;
@@ -3136,6 +3272,9 @@ begin
   FDebugProcess := TDebugProcess.Create(AExternalDebugger);
   FDebugProcess.OnLineSent := @DoLineSentToDbg;
 
+  FMirroredExcludedRoutines := TDbgExeProcSelectorSyncTargetList.Create;
+
+
   FDebugInstructionQueue := TLldbInstructionQueue.Create(FDebugProcess);
   FDebugInstructionQueue.OnBeginLinesReceived := @DoBeginReceivingLines;
   FDebugInstructionQueue.OnEndLinesReceived := @DoEndReceivingLines;
@@ -3173,6 +3312,7 @@ begin
   FCommandQueue.Destroy;
   FDebugInstructionQueue.Destroy;
   FDebugProcess.Destroy;
+  FMirroredExcludedRoutines.Destroy
 end;
 
 procedure TLldbDebugger.Init;

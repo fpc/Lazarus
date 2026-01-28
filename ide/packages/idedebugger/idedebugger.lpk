@@ -13,6 +13,9 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
       <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True" idx5024="True" idx3123="True"/>
+        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
@@ -307,10 +310,31 @@
       <Item>
         <Filename Value="idedebuggervalueformatterordinaltoname.pas"/>
         <UnitName Value="IdeDebuggerValueFormatterOrdinalToName"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
       <Item>
         <Filename Value="memviewerdlg.pas"/>
         <UnitName Value="MemViewerDlg"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceBaseClassname Value=""/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggerexcludedroutines.pas"/>
+        <UnitName Value="IdeDebuggerExcludedRoutines"/>
+      </Item>
+      <Item>
+        <Filename Value="idedbgconfigitemchecklistboxframe.pas"/>
+        <UnitName Value="IdeDbgConfigItemCheckListBoxFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
+      </Item>
+      <Item>
+        <Filename Value="idedbgexcludedroutinessettingsframe.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="IdeDbgExcludedRoutinesSettingsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <ResourceBaseClassname Value=""/>
       </Item>
     </Files>
     <i18n>

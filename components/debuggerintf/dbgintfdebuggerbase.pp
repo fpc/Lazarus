@@ -51,7 +51,7 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
   DbgIntfCommonStrings, LazDebuggerIntf, LazDebuggerTemplate,
-  LazDebuggerIntfBaseTypes;
+  LazDebuggerIntfBaseTypes, LazDebuggerIntfExcludedRoutines;
 
 const
   DebuggerIntfVersion = 0;
@@ -1607,6 +1607,7 @@ type
     FErrorStateInfo: String;
     FErrorStateMessage: String;
     FExceptions: TBaseExceptions;
+    FExcludedRoutines: IDbgExcludedRoutinesIntf;
     FExitCode: Integer;
     FExternalDebugger: String;
     FFileName: String;
@@ -1657,6 +1658,7 @@ type
     procedure SetDebuggerEnvironment (const AValue: TStrings ); overload;
     procedure SetEnabledFeatures(AValue: TDBGFeatures);
     procedure SetEnvironment(const AValue: TStrings);
+    procedure SetExcludedRoutines(AValue: IDbgExcludedRoutinesIntf);
     procedure SetFileName(const AValue: String);
   protected
     procedure ResetStateToIdle; virtual;
@@ -1669,6 +1671,7 @@ type
     function  CreateWatches: TWatchesSupplier; virtual;
     function  CreateThreads: TThreadsSupplier; virtual;
     function  CreateSignals: TDBGSignals; virtual;
+    procedure DoExcludedRoutinesChanged; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
@@ -1793,6 +1796,7 @@ type
     property LineInfo: TDBGLineInfo read FLineInfo;                              // list of all source LineInfo
     property Registers: TRegisterSupplier read FRegisters;                           // list of all registers
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
+    property ExcludedRoutines: IDbgExcludedRoutinesIntf read FExcludedRoutines write SetExcludedRoutines;
     property ShowConsole: Boolean read FShowConsole write FShowConsole;          // Indicates if the debugger should create a console for the debuggee
     property PseudoTerminal: TPseudoTerminal read GetPseudoTerminal; experimental; // 'may be replaced with a more general API';
     property State: TDBGState read FState;                                       // The current state of the debugger
@@ -5387,6 +5391,11 @@ begin
   Result := TDBGSignals.Create(Self, TDBGSignal);
 end;
 
+procedure TDebuggerIntf.DoExcludedRoutinesChanged;
+begin
+  //
+end;
+
 function TDebuggerIntf.CreateWatches: TWatchesSupplier;
 begin
   Result := TWatchesSupplier.Create(Self);
@@ -5908,6 +5917,13 @@ end;
 procedure TDebuggerIntf.SetEnvironment(const AValue: TStrings);
 begin
   FEnvironment.Assign(AValue);
+end;
+
+procedure TDebuggerIntf.SetExcludedRoutines(AValue: IDbgExcludedRoutinesIntf);
+begin
+  if FExcludedRoutines = AValue then Exit;
+  FExcludedRoutines := AValue;
+  DoExcludedRoutinesChanged;
 end;
 
 procedure TDebuggerIntf.SetExitCode(const AValue: Integer);

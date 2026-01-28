@@ -44,6 +44,62 @@ msgstr ""
 msgid "Do not ask again"
 msgstr ""
 
+#: idedebuggerstringconstants.dbgoptexclrtfilenameequals
+msgid "Filename (equals)"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtfunctionequals
+msgid "Function (equals)"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtfunctionregex
+msgid "Function (regex)"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtmatchfunctionname
+msgid "Match function name:"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtmatchpathorfile
+msgid "Match path or file:"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtnewsteppingexclusion
+msgid "New stepping exclusion"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtpathfileregex
+msgid "Path/File (regex)"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtsomebackendsmaycomparecas
+msgid "Some backends may compare case-sensitive. Regex may be limited, if supported."
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtsomebackendsmayonlysuppor
+msgid "Some backends may only support function name (equal) checks"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtsteppingexclusions
+msgid "Stepping exclusions"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtstorestepexclusionsinsess
+msgid "Store step-exclusions in session"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtthisonlyaffectsthelistofe
+msgid "This only affects the list of exclusions below. The settings which list to use are always stored in the session."
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtusetheidegloballistofexcl
+msgid "Use the IDE global list of exclusions"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptexclrtusetheprojectlistofexclus
+msgid "Use the project list of exclusions"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgoptfrmchooseformatter
 msgid "Choose formatter"
 msgstr ""

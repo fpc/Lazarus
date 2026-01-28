@@ -33,10 +33,11 @@ interface
 
 uses
   Classes, {$IfDef WIN64}windows,{$EndIf} SysUtils, fgl, math, process,
-  Forms, Dialogs, syncobjs,
+  Forms, Dialogs, syncobjs, RegExpr, LazFileUtils,
   Maps, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, lazCollections,
   DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntfBaseTypes,
-  FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, FpDebugDebuggerBase, LazDebuggerIntf,
+  FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, FpDebugDebuggerBase,
+  LazDebuggerIntf, LazDebuggerIntfExcludedRoutines,
   // FpDebug
   {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}
   FpDbgClasses, FpDbgInfo, FpErrorMessages, FpPascalBuilder, FpdMemoryTools,
@@ -339,6 +340,7 @@ type
     FQuickPause, FRunQuickPauseTasks, FPauseForEvent, FInternalPauseForEvent, FSendingEvents: boolean;
     FExceptionStepper: TFpDebugExceptionStepping;
     FConsoleOutputThread: TThread;
+    FMirroredExcludedRoutines: TDbgExeProcSelectorSyncTargetList;
     // Helper vars to run in debug-thread
     FCacheLine, FCacheBytesRead: cardinal;
     FCacheFileName: string;
@@ -360,6 +362,7 @@ type
     FConsoleWinSize: TPoint;
     //
     procedure DoDebugOutput(Data: PtrInt);
+    function DoThreadCheckStepForIgnoredRoutine(ACommand: TDbgControllerCmd): Boolean;
     procedure DoThreadDebugOutput(Sender: TObject; ProcessId,
       ThreadId: Integer; AMessage: String);
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
@@ -399,6 +402,7 @@ type
     function CreateCallStack: TCallStackSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
     function CreateBreakPoints: TDBGBreakPoints; override;
+    procedure DoExcludedRoutinesChanged; override;
     function  RequestCommand(const ACommand: TDBGCommand;
                              const AParams: array of const;
                              const ACallback: TMethod): Boolean; override;
@@ -3646,6 +3650,12 @@ begin
   Result := TFPBreakPoints.Create(Self, TFPBreakpoint);
 end;
 
+procedure TFpDebugDebugger.DoExcludedRoutinesChanged;
+begin
+  inherited DoExcludedRoutinesChanged;
+  FMirroredExcludedRoutines.MainList := ExcludedRoutines;
+end;
+
 procedure TFpDebugDebugger.FDbgControllerDebugInfoLoaded(Sender: TObject);
 begin
   if (FDbgController <> nil) and (LineInfo <> nil) then begin
@@ -3752,6 +3762,83 @@ begin
   InterlockedExchange(FFpDebugOutputAsync, 0);
   while FFpDebugOutputQueue.PopItemTimeout(s, 50) = wrSignaled do
     EventLogHandler.LogCustomEvent(ecOutput, etOutputDebugString, s);
+end;
+
+function TFpDebugDebugger.DoThreadCheckStepForIgnoredRoutine(ACommand: TDbgControllerCmd): Boolean;
+  function MatchRegEx(r, t: string): boolean;
+  begin
+    try
+      Result := ExecRegExpr(r,t);
+    except
+      Result := False;
+    end;
+  end;
+var
+  Entry: IDbgExeProcSelectorIntf;
+  sym: TFpSymbol;
+  i, j: Integer;
+  NameLst: TStringArray;
+  s, v: String;
+  ModI: Boolean;
+begin
+  Result := false;
+  if ACommand.Thread = nil then
+    exit;
+  sym := ACommand.Thread.GetSymbolAtCurrentInstructionPtr;
+  if sym = nil then
+    exit;
+
+  ModI := RegExpr.RegExprModifierI;
+  try
+    RegExpr.RegExprModifierI := True;
+
+    for i := 0 to FMirroredExcludedRoutines.Count - 1 do begin
+      Entry := FMirroredExcludedRoutines[i];
+
+      s := Entry.GetFileMatchValue;
+      if s <> '' then begin
+        case Entry.GetFileMatchKind of
+          mfkFileName: begin
+            s := LowerCase(s);
+            v := LowerCase(ExtractFileName(sym.FileName));
+            if (v <> s) and (ExtractFileNameWithoutExt(v) <> s) then
+              continue;
+            end;
+          mfkFilePathRegEx:
+            if not MatchRegEx(s, sym.FileName) then
+              continue;
+          otherwise
+            continue; // not supported
+        end;
+
+        NameLst := Entry.GetNameMatchValue;
+        if NameLst = nil then
+          exit(True); // only filename test
+      end
+      else
+        NameLst := Entry.GetNameMatchValue;
+
+      for j := 0 to Length(NameLst) - 1 do begin
+        s := NameLst[j];
+        v := sym.Name;
+
+        if s <> '' then begin
+          case Entry.GetNameMatchKind of
+            mpkName:
+              if LowerCase(s) = LowerCase(v) then begin
+                exit(True);
+              end;
+            mpkRegEx:
+              if MatchRegEx(s, v) then begin
+                exit(True);
+              end;
+          end;
+        end;
+      end;
+    end;
+  finally
+    RegExpr.RegExprModifierI := ModI;
+  end;
 end;
 
 function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;
@@ -4163,6 +4250,8 @@ begin
   // don't start new commands while exit event is processed
   if FDbgController.Event in [deExitProcess, deDetachFromProcess] then
     exit;
+
+  FMirroredExcludedRoutines.Update;
 
   if (ACommand in [dcRun, dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcRunTo, dcJumpto,
       dcStepOverInstr, dcStepIntoInstr, dcAttach]) and
@@ -4793,6 +4882,7 @@ end;
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
 begin
   ProcessMessagesProc := @DoProcessMessages;
+  FMirroredExcludedRoutines := TDbgExeProcSelectorSyncTargetList.Create;
   inherited Create(AExternalDebugger);
   FSuspendedThreads := TThreadIdList.Create;
   FLockList := TFpDbgLockList.Create;
@@ -4820,6 +4910,7 @@ begin
   FDbgController.OnLibraryUnloadedEvent := @FDbgControllerLibraryUnloaded;
   FDbgController.OnThreadDebugOutputEvent  := @DoThreadDebugOutput;
   FDbgController.NextOnlyStopOnStartLine := TFpDebugDebuggerProperties(GetProperties).NextOnlyStopOnStartLine;
+  FDbgController.OnThreadCheckStepForIgnoredRoutine := @DoThreadCheckStepForIgnoredRoutine;
 
   FDbgController.OnThreadProcessLoopCycleEvent:=@FExceptionStepper.ThreadProcessLoopCycle;
   FDbgController.OnThreadBeforeProcessLoop:=@FExceptionStepper.ThreadBeforeLoop;
@@ -4862,6 +4953,7 @@ begin
   FreeAndNil(FWorkQueue);
   FreeAndNil(FLockList);
   FreeAndNil(FSuspendedThreads);
+  FreeAndNil(FMirroredExcludedRoutines);
 end;
 
 function TFpDebugDebugger.GetLocationRec(AnAddress: TDBGPtr;

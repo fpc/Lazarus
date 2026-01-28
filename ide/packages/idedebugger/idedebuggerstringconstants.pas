@@ -572,6 +572,23 @@ resourcestring
   DbgOptFrmFormatterClass = 'Formatter class:';
   DbgOptFrmName = 'Name:';
 
+  DbgOptExclRtNewSteppingExclusion = 'New stepping exclusion';
+  DbgOptExclRtMatchPathOrFile = 'Match path or file:';
+  DbgOptExclRtMatchFunctionName = 'Match function name:';
+  DbgOptExclRtFilenameEquals = 'Filename (equals)';
+  DbgOptExclRtPathFileRegex = 'Path/File (regex)';
+  DbgOptExclRtFunctionEquals = 'Function (equals)';
+  DbgOptExclRtFunctionRegex = 'Function (regex)';
+  DbgOptExclRtSteppingExclusions = 'Stepping exclusions';
+  DbgOptExclRtSomeBackendsMayCompareCas = 'Some backends may compare case-sensitive. Regex may be limited, if supported.';
+  DbgOptExclRtSomeBackendsMayOnlySuppor = 'Some backends may only support function name (equal) '
+    +'checks';
+  DbgOptExclRtStoreStepExclusionsInSess = 'Store step-exclusions in session';
+  DbgOptExclRtThisOnlyAffectsTheListOfE = 'This only affects the list of exclusions below. The '
+    +'settings which list to use are always stored in the session.';
+  DbgOptExclRtUseTheIDEGlobalListOfExcl = 'Use the IDE global list of exclusions';
+  DbgOptExclRtUseTheProjectListOfExclus = 'Use the project list of exclusions';
+
 implementation
 
 end.

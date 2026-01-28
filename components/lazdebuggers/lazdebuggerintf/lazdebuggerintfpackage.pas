@@ -9,7 +9,8 @@ interface
 
 uses
   LazDebuggerIntf, LazDebuggerTemplate, LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, 
-  DbgUtilsTypePatternList, LazDebuggerUtils, LazDebuggerIntfFloatTypes;
+  DbgUtilsTypePatternList, LazDebuggerUtils, LazDebuggerIntfFloatTypes, 
+  LazDebuggerIntfExcludedRoutines, LazDebuggerIntfSynchronizedList;
 
 implementation
 

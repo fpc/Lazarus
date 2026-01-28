@@ -65,6 +65,7 @@ uses
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   // CmdLineDebuggerBase
   DebuggerPropertiesBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  LazDebuggerIntfExcludedRoutines,
 {$IFDEF DBG_ENABLE_TERMINAL}
   DbgIntfPseudoTerminal,
 {$ENDIF}
@@ -144,6 +145,9 @@ type
   TGDBMIDebuggerCharsetEncoding = (gdceDefault, gdceLocale, gdceUtf8);
   TGDBMIDebuggerFilenameEncoding = (
     gdfeNone, gdfeDefault, gdfeEscSpace, gdfeQuote
+  );
+  TGDBMIDebuggerQuoteType = (
+    gdqNone, gdqDouble, gdqSingle
   );
   TGDBMIDebuggerStartBreak = (
     gdsbDefault, gdbsNone, gdsbEntry, gdsbMainAddr, gdsbMain, gdsbAddZero
@@ -897,6 +901,25 @@ type
     procedure RequestData(ALocals: IDbgLocalsListIntf); override;
   end;
 
+  { TGDBMIDebuggerCommandExcludedRoutineSet }
+
+  TGDBMIDebuggerCommandExcludedRoutineSet = class(TGDBMIDebuggerCommand)
+  private
+    FProcSelector: TDbgExeProcSelectorSyncTargetList.TDbgExeProcSelectorListTemplate_Item;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AnOwner: TGDBMIDebuggerBase; AProcSelector: TDbgExeProcSelectorSyncTargetList.TDbgExeProcSelectorListTemplate_Item);
+    property ProcSelector: TDbgExeProcSelectorSyncTargetList.TDbgExeProcSelectorListTemplate_Item read FProcSelector;
+  end;
+
+  { TGDBMIDebuggerCommandExcludedRoutineClearAll }
+
+  TGDBMIDebuggerCommandExcludedRoutineClearAll = class(TGDBMIDebuggerCommand)
+  protected
+    function DoExecute: Boolean; override;
+  end;
+
   { TGDBMIDebuggerBase }
 
   TGDBMIDebuggerBase = class(TGDBMICmdLineDebugger) // TODO: inherit from TDebugger direct
@@ -929,6 +952,8 @@ type
     FCurrentCmdIsAsync: Boolean;
     FAsyncModeEnabled: Boolean;
     FWasDisableLoadSymbolsForLibraries: Boolean;
+    FMirroredExcludedRoutines: TDbgExeProcSelectorSyncTargetList;
+
 
     // Internal Current values
     FCurrentStackFrame, FCurrentThreadId: Integer; // User set values
@@ -1012,6 +1037,9 @@ type
     procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
     procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
 
+    procedure ClearExcludedRoutines;
+    procedure UpdateExcludedRoutines(AForce: Boolean = False);
+    function EscapeText(ATxt: String; AQuoteType: TGDBMIDebuggerQuoteType): String;
     function ConvertPathFromGdbToLaz(APath: string; UnEscapeBackslash: Boolean = True): string;
     function ConvertToGDBPath(APath: string; ConvType: TConvertToGDBPathType = cgptNone): string;
     function EncodeCharsetForGDB(AString: string; ConvType: TCharsetToGDBType): string;
@@ -1051,6 +1079,7 @@ type
     property  PauseWaitState: TGDBMIPauseWaitState read FPauseWaitState;
     property  DebuggerFlags: TGDBMIDebuggerFlags read FDebuggerFlags;
     procedure DoUnknownException(Sender: TObject; AnException: Exception);
+    procedure DoExcludedRoutinesChanged; override;
 
     function CanForceBreakPoints: Boolean;
     function  CheckForInternalError(ALine, ACurCommandText: String): Boolean;
@@ -8620,6 +8649,7 @@ end;
 
 constructor TGDBMIDebuggerBase.Create(const AExternalDebugger: String);
 begin
+  FMirroredExcludedRoutines := TDbgExeProcSelectorSyncTargetList.Create;
   FMainAddrBreak   := TGDBMIInternalBreakPoint.Create('main');
   FPasMainAddrBreak:= TGDBMIInternalBreakPoint.Create('pascalmain');
   FBreakErrorBreak := TGDBMIInternalBreakPoint.Create('FPC_BREAK_ERROR');
@@ -8753,6 +8783,7 @@ begin
   FreeAndNil(FFpcSpecificHandlerCallFin);
   FreeAndNil(FSehFinallyBreaks);
   FreeAndNil(FSehCatchesBreaks);
+  FreeAndNil(FMirroredExcludedRoutines);
 end;
 
 procedure TGDBMIDebuggerBase.Done;
@@ -8866,7 +8897,12 @@ begin
   then FMaxLineForUnitCache.Clear;
 
   if not (State in [dsPause, dsInternalPause]) then
-    FStoppedReason := srNone;;
+    FStoppedReason := srNone;
+
+  if (State = dsRun) and (OldState = dsInit) then
+    UpdateExcludedRoutines(True);
+  if State = dsStop then
+    ClearExcludedRoutines;
 
   if State in [dsStop, dsError]
   then begin
@@ -8968,6 +9004,12 @@ begin
       Stop;
     end;
   end;
+end;
+
+procedure TGDBMIDebuggerBase.DoExcludedRoutinesChanged;
+begin
+  inherited DoExcludedRoutinesChanged;
+  FMirroredExcludedRoutines.MainList := ExcludedRoutines;
 end;
 
 function TGDBMIDebuggerBase.CanForceBreakPoints: Boolean;
@@ -9438,6 +9480,92 @@ end;
 procedure TGDBMIDebuggerBase.UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
 begin
   FCommandQueue.Remove(ACommand);
+end;
+
+procedure TGDBMIDebuggerBase.ClearExcludedRoutines;
+var
+  CmdClr: TGDBMIDebuggerCommandExcludedRoutineClearAll;
+begin
+  CmdClr := TGDBMIDebuggerCommandExcludedRoutineClearAll.Create(Self);
+  CmdClr.AddReference;
+  QueueCommand(CmdClr);
+end;
+
+procedure TGDBMIDebuggerBase.UpdateExcludedRoutines(AForce: Boolean);
+var
+  i, n: Integer;
+  CmdSet: TGDBMIDebuggerCommandExcludedRoutineSet;
+  c: QWord;
+begin
+  if FMirroredExcludedRoutines.MainList = nil then
+    exit;
+
+  c := FMirroredExcludedRoutines.ChangeStamp;
+  n := FMirroredExcludedRoutines.Count;
+  FMirroredExcludedRoutines.Update;
+  if AForce or (c <> FMirroredExcludedRoutines.ChangeStamp) then begin
+    if n > 0 then
+      ClearExcludedRoutines;
+
+    for i := 0 to FMirroredExcludedRoutines.Count - 1 do begin
+      CmdSet := TGDBMIDebuggerCommandExcludedRoutineSet.Create(Self, FMirroredExcludedRoutines[i]);
+      CmdSet.AddReference;
+      QueueCommand(CmdSet);
+    end;
+  end;
+end;
+
+function TGDBMIDebuggerBase.EscapeText(ATxt: String; AQuoteType: TGDBMIDebuggerQuoteType): String;
+var
+  q: String;
+  s, d: Integer;
+begin
+  Result := ATxt;
+  if (pos(' ', ATxt) < 1) and (pos('\', ATxt) < 1) then
+    exit;
+
+  case AQuoteType of
+    gdqDouble: q := '"';
+    gdqSingle: q := '''';
+    otherwise  q := '';
+  end;
+
+  SetLength(Result, Length(ATxt)*2+2);
+
+  s := 0;
+  d := 1;
+
+  if q <> '' then begin
+    Result[d] := q[1];
+    inc(d);
+  end;
+
+  while s < Length(ATxt) do begin
+    inc(s);
+    case ATxt[s] of
+      '\', #10, #13: begin
+          Result[d] := '\';
+          inc(d);
+        end;
+      '''', '"': if (q = '') or (q = ATxt[s]) then begin
+          Result[d] := '\';
+          inc(d);
+        end;
+      ' ', #9: if q = '' then begin
+          Result[d] := '\';
+          inc(d);
+        end;
+    end;
+    Result[d] := ATxt[s];
+    inc(d);
+  end;
+
+  if q <> '' then begin
+    Result[d] := q[1];
+    inc(d);
+  end;
+
+  SetLength(Result, d-1);
 end;
 
 function TGDBMIDebuggerBase.ConvertPathFromGdbToLaz(APath: string;
@@ -10213,6 +10341,9 @@ var
   EvalFlags: TWatcheEvaluateFlags;
 begin
   LockRelease;
+  if ACommand in [dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcStepIntoInstr, dcStepOverInstr] then
+    UpdateExcludedRoutines;
+
   try
     case ACommand of
       dcRun:         Result := GDBRun;
@@ -11326,6 +11457,122 @@ end;
 
 procedure TGDBMILocals.CancelEvaluation;
 begin
+end;
+
+{ TGDBMIDebuggerCommandExcludedRoutineSet }
+
+function TGDBMIDebuggerCommandExcludedRoutineSet.DoExecute: Boolean;
+  function EscPath(p: string): String;
+  begin
+    Result := p;
+    if DirectorySeparator <> '/' then
+      Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
+    if pos(' ', Result) > 0 then
+      Result := '"' + Result + '"';
+  end;
+var
+  l: TStringArray;
+  i, j: Integer;
+  f, s: String;
+begin
+  Result := True;
+
+  if (FTheDebugger.FGDBVersionMajor <= 7) then begin
+    f := FProcSelector.FileMatchValue;
+    if f <> '' then begin
+      case FProcSelector.FileMatchKind of
+        mfkFileName:      f := 'file ' + EscPath(f);
+        otherwise exit;
+      end;
+    end;
+
+    l := FProcSelector.NameMatchValue;
+    if Length(l) = 0 then begin
+      if f <> '' then
+        ExecuteCommand('skip %s', [f], [cfNoThreadContext, cfNoStackContext, cfscIgnoreState, cfscIgnoreError]);
+      exit;
+    end;
+
+    if f <> '' then exit;
+
+    for i := 0 to Length(l) - 1 do begin
+      s := '';
+      case FProcSelector.NameMatchKind of
+        mpkName:  s := 'function '+ FTheDebugger.EscapeText(l[i], gdqDouble);
+        otherwise continue;
+      end;
+      ExecuteCommand('skip %s', [s], [cfNoThreadContext, cfNoStackContext, cfscIgnoreState, cfscIgnoreError]);
+    end;
+
+    exit;
+  end;
+
+  f := FProcSelector.FileMatchValue;
+  if f <> '' then begin
+    case FProcSelector.FileMatchKind of
+      mfkFileName:      f := '-fi ' + EscPath(f);
+      mfkFilePathRegEx: begin
+        // Allowed only . and .* in regex => translate to ? and *
+        // gdb matches path separator with * too, so this should be correct.
+        UniqueString(f);
+        j := 1;
+        while j <= Length(f) do begin
+          case f[j] of
+            '\': delete(f, j, 1);
+            '.': if (j < Length(f)) and (f[j+1] = '*') then
+                   delete(f, j, 1)
+                 else
+                   f[j] := '?';
+          end;
+          inc(j);
+        end;
+        f := '-gfi ' + EscPath(f);
+      end;
+    end;
+  end;
+
+  l := FProcSelector.NameMatchValue;
+  if Length(l) = 0 then begin
+    if f <> '' then
+      ExecuteCommand('skip %s', [f], [cfNoThreadContext, cfNoStackContext, cfscIgnoreState, cfscIgnoreError]);
+    exit;
+  end;
+
+
+  for i := 0 to Length(l) - 1 do begin
+    s := '';
+    case FProcSelector.NameMatchKind of
+      mpkName:  s := f + ' -fu '+ FTheDebugger.EscapeText(l[i], gdqDouble);
+      mpkRegEx: s := f + ' -rfu '+ FTheDebugger.EscapeText(l[i], gdqDouble);
+    end;
+    ExecuteCommand('skip %s', [s], [cfNoThreadContext, cfNoStackContext, cfscIgnoreState, cfscIgnoreError]);
+
+    if l[i] <> UpperCase(l[i]) then begin
+      case FProcSelector.NameMatchKind of
+        mpkName:  s := f + ' -fu '+ FTheDebugger.EscapeText(UpperCase(l[i]), gdqDouble);
+        mpkRegEx: s := f + ' -rfu '+ FTheDebugger.EscapeText(UpperCase(l[i]), gdqDouble);
+      end;
+      ExecuteCommand('skip %s', [s], [cfNoThreadContext, cfNoStackContext, cfscIgnoreState, cfscIgnoreError]);
+    end;
+  end;
+
+end;
+
+constructor TGDBMIDebuggerCommandExcludedRoutineSet.Create(AnOwner: TGDBMIDebuggerBase;
+  AProcSelector: TDbgExeProcSelectorSyncTargetList.TDbgExeProcSelectorListTemplate_Item);
+begin
+  FProcSelector := AProcSelector;
+  inherited Create(AnOwner);
+end;
+
+{ TGDBMIDebuggerCommandExcludedRoutineClearAll }
+
+function TGDBMIDebuggerCommandExcludedRoutineClearAll.DoExecute: Boolean;
+var
+  R: TGDBMIExecResult;
+begin
+  ExecuteCommand('skip delete', [cfNoThreadContext, cfNoStackContext, cfscIgnoreState, cfscIgnoreError], R);
+  Result := True;
 end;
 
 {%endregion   ^^^^^  BreakPoints  ^^^^^  }
