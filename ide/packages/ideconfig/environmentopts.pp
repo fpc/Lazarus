@@ -258,6 +258,7 @@ type
     FMaxExtToolsInParallel: integer;
     FOldLazarusVersion: string;
     FStarDirectoryExcludes: string;
+    FWheelSelectTab: boolean;
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     // auto save
@@ -533,6 +534,9 @@ type
 
     // file filters
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
+
+  published
+    property WheelSelectTab: boolean read FWheelSelectTab write FWheelSelectTab;
   end;
 
 var
@@ -1008,6 +1012,8 @@ begin
     // language
     fLanguageID:=FXMLCfg.GetValue(Path+'Language/ID','');
 
+    FXMLCfg.ReadObject(Path, Self);
+
     // auto save
     FAskSaveSessionOnly:=FXMLCfg.GetValue(Path+'AutoSave/AskSaveSessionOnly',false);
     FAutoSaveEditorFiles:=FXMLCfg.GetValue(Path+'AutoSave/EditorFiles',true);
@@ -1297,6 +1303,7 @@ begin
       SubCfg.WriteToXml(OnlyDesktop);
     end;
 
+    FXMLCfg.WriteObject(Path, Self);
     FXMLCfg.Flush;
     FileUpdated;
   except

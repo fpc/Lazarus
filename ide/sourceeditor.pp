@@ -7157,7 +7157,6 @@ Begin
     EditorOpts.ApplyTabFontSettingsTo(FNotebook);
     TabStop := false;
     Align := alClient;
-    WheelSelectPage := True;
     APage:=TTabSheet.Create(FNotebook);
     APage.Caption:='unit1';
     APage.Parent:=FNotebook;
@@ -9847,6 +9846,8 @@ Begin
   Exclude(States,snWarnedFont);
   CheckFont;
   UpdatePageNames;
+
+  FNotebook.WheelSelectPage := EnvironmentOptions.WheelSelectTab;
 end;
 
 procedure TSourceNotebook.CheckFont;

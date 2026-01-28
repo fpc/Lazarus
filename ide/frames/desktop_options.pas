@@ -53,6 +53,8 @@ type
     AutoSaveIntervalInSecsComboBox: TComboBox;
     AutoSaveIntervalInSecsLabel: TLabel;
     AutoSaveProjectCheckBox: TCheckBox;
+    checkWheel: TCheckBox;
+    divWheel: TDividerBevel;
     lblLangChangeHint: TLabel;
     lblDropDownCount: TLabel;
     lblComboBoxes: TDividerBevel;
@@ -177,6 +179,8 @@ begin
   lblComboBoxes.Caption := lisComboBoxes;
   lblDropDownCount.Caption := lisDropDownCount;
   spDropDownCount.Hint := lisDropDownCountHint;
+
+  checkWheel.Caption := SynSpellOptMouseWheelChangesTabs;
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -223,7 +227,9 @@ begin
     AutoSaveProjectCheckBox.Checked:=EnvOpt.AutoSaveProject;
     SetComboBoxText(AutoSaveIntervalInSecsComboBox
        ,IntToStr(EnvOpt.AutoSaveIntervalInSecs),cstCaseInsensitive);
+
   end;
+  checkWheel.Checked := EnvOpt.WheelSelectTab;
 end;
 
 procedure TDesktopOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -273,6 +279,7 @@ begin
 
     // comboboxes
     EnvOpt.DropDownCount := spDropDownCount.Value;
+    EnvOpt.WheelSelectTab := checkWheel.Checked;
   end;
 end;
 
