@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, CheckLst, StdCtrls, Dialogs, Spin,
   StrUtils, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf,
-  laz.VirtualTrees, LazDebuggerIntf, IdeDebuggerStringConstants,
+  laz.VirtualTrees, SelectItemDialog, LazDebuggerIntf, IdeDebuggerStringConstants,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats;
 
 type
@@ -21,7 +21,6 @@ type
     btnUp: TButton;
     cbAppendOriginalValue: TComboBox;
     cbNesting: TCheckBox;
-    dropAction: TComboBox;
     EdName: TEdit;
     lblNestLvl: TLabel;
     lblDesc: TLabel;
@@ -48,7 +47,7 @@ type
     procedure SpinMaxNestChange(Sender: TObject);
     procedure SpinMinNestChange(Sender: TObject);
   private
-    FValFormmaterList: TIdeDbgValueFormatterSelectorList;
+    FValFormatterList: TIdeDbgValueFormatterSelectorList;
     FCurIdx: Integer;
     FCurFormatter: TIdeDbgValueFormatterSelector;
     FCurFormatterFrame: TFrame; // ILazDbgValueConverterSettingsFrameIntf
@@ -57,7 +56,7 @@ type
     procedure UpdateFormatterPanel;
     procedure FillList;
     procedure UpdateButtons;
-    procedure SetValFormmaterList(AValue: TIdeDbgValueFormatterSelectorList);
+    procedure SetValFormatterList(AValue: TIdeDbgValueFormatterSelectorList);
     function  UniqueName(AName: String; AnIgnoreCurrent: Boolean): String;
 
   public
@@ -66,7 +65,7 @@ type
     procedure SaveCurrent;
     procedure Setup;
 
-    property ValFormmaterList: TIdeDbgValueFormatterSelectorList read FValFormmaterList write SetValFormmaterList;
+    property ValFormatterList: TIdeDbgValueFormatterSelectorList read FValFormatterList write SetValFormatterList;
 
   end;
 
@@ -86,24 +85,32 @@ type
 
 procedure TIdeDbgVarFormatterFrame.btnAddClick(Sender: TObject);
 var
+  AClassNames: array of string;
   AName: String;
   obj: TIdeDbgValueFormatterSelector;
   i: Integer;
 begin
-  AName := InputBox(dlgIdeDbgNewItem, dlgIdeDbgEnterName, '');
-  if AName = '' then
+  AClassNames := nil;
+  SetLength(AClassNames, ValueFormatterRegistry.Count);
+  for i := 0 to ValueFormatterRegistry.Count - 1 do
+    AClassNames[i] := ValueFormatterRegistry[i].GetDisplayName;
+
+  AName := '';
+  i := ShowChooseItemDialog(DbgOptFrmChooseFormatter, DbgOptFrmPleaseChooseTheFormatterT,
+    DbgOptFrmFormatterClass, DbgOptFrmName, AName, AClassNames, '---');
+
+  if (AName = '') or (i < 0) then
     exit;
   AName := UniqueName(AName, False);
 
   SaveCurrent;
   FCurFormatter := nil;
 
-  i := dropAction.ItemIndex;
-  obj := TIdeDbgValueFormatterSelector.Create(TLazDbgIdeValueFormatterRegistryEntryClass(dropAction.Items.Objects[i]));
+  obj := TIdeDbgValueFormatterSelector.Create(ValueFormatterRegistry[i]);
   obj.Enabled := True;
   obj.Name := AName;
-  FValFormmaterList.Add(obj);
-  FValFormmaterList.Changed := True;
+  FValFormatterList.Add(obj);
+  FValFormatterList.Changed := True;
   FillList;
   lstFormatters.ItemIndex := lstFormatters.Count-1;
   lstFormattersClick(nil);
@@ -117,8 +124,8 @@ begin
   SaveCurrent;
   FCurFormatter := nil;
   i := lstFormatters.ItemIndex;
-  FValFormmaterList.Delete(i);
-  FValFormmaterList.Changed := True;
+  FValFormatterList.Delete(i);
+  FValFormatterList.Changed := True;
 
   FillList;
   if i >= lstFormatters.Count then
@@ -134,10 +141,10 @@ begin
   SaveCurrent;
   FCurFormatter := nil;
   i := lstFormatters.ItemIndex;
-  if (i < 0) or (i >= FValFormmaterList.Count-1) then
+  if (i < 0) or (i >= FValFormatterList.Count-1) then
     exit;
-  FValFormmaterList.Move(i, i+1);
-  FValFormmaterList.Changed := True;
+  FValFormatterList.Move(i, i+1);
+  FValFormatterList.Changed := True;
 
   FillList;
   lstFormatters.ItemIndex := i+1;
@@ -151,10 +158,10 @@ begin
   SaveCurrent;
   FCurFormatter := nil;
   i := lstFormatters.ItemIndex;
-  if (i < 1) or (i > FValFormmaterList.Count-1) then
+  if (i < 1) or (i > FValFormatterList.Count-1) then
     exit;
-  FValFormmaterList.Move(i, i-1);
-  FValFormmaterList.Changed := True;
+  FValFormatterList.Move(i, i-1);
+  FValFormatterList.Changed := True;
 
   FillList;
   lstFormatters.ItemIndex := i-1;
@@ -176,7 +183,7 @@ begin
   pnlCurrentFormatter.Enabled := lstFormatters.Count > 0;
 
   FCurIdx := lstFormatters.ItemIndex;
-  if (FCurIdx >= FValFormmaterList.Count) or (FCurIdx < 0) then begin
+  if (FCurIdx >= FValFormatterList.Count) or (FCurIdx < 0) then begin
     FCurIdx := -1;
     FCurFormatter := nil;
     lblDesc.Caption := '';
@@ -193,7 +200,7 @@ begin
   end
   else begin
     pnlCurrentFormatter.Enabled := True;
-    SetCurFormatter(FValFormmaterList[FCurIdx]);
+    SetCurFormatter(FValFormatterList[FCurIdx]);
     lblDesc.Caption := FCurFormatter.ValFormatterRegEntry.GetDisplayName;
     EdName.Text := FCurFormatter.Name;
     memoTypeNames.Text := FCurFormatter.MatchTypeNames.Text;
@@ -218,7 +225,7 @@ begin
 
   btnRemove.Enabled := FCurIdx >= 0;
   btnUp.Enabled     := FCurIdx >= 1;
-  btnDown.Enabled   := FCurIdx < FValFormmaterList.Count - 1;
+  btnDown.Enabled   := FCurIdx < FValFormatterList.Count - 1;
   pnlCurrentFormatter.Enabled := FCurIdx >= 0;
   pnlCurFormatterSetting.Enabled := FCurFormatter <> nil;
 
@@ -232,9 +239,9 @@ begin
     exit;
   end;
 
-  if (FValFormmaterList[Index].Enabled <> lstFormatters.Checked[Index]) then begin
-    FValFormmaterList[Index].Enabled := lstFormatters.Checked[Index];
-    FValFormmaterList.Changed := True;
+  if (FValFormatterList[Index].Enabled <> lstFormatters.Checked[Index]) then begin
+    FValFormatterList[Index].Enabled := lstFormatters.Checked[Index];
+    FValFormatterList.Changed := True;
   end;
 
   if FCurIdx <> lstFormatters.ItemIndex then
@@ -280,15 +287,15 @@ begin
   end;
 end;
 
-procedure TIdeDbgVarFormatterFrame.SetValFormmaterList(
+procedure TIdeDbgVarFormatterFrame.SetValFormatterList(
   AValue: TIdeDbgValueFormatterSelectorList);
 begin
-  if FValFormmaterList = AValue then Exit;
-  FValFormmaterList := AValue;
+  if FValFormatterList = AValue then Exit;
+  FValFormatterList := AValue;
   FCurFormatter := nil;
 
   FillList;
-  if FValFormmaterList.Count > 0 then begin
+  if FValFormatterList.Count > 0 then begin
     lstFormatters.ItemIndex := 0;
     lstFormattersClick(nil);
   end;
@@ -302,14 +309,14 @@ var
   s: String;
 begin
   Result := AName;
-  if (FValFormmaterList.IndexOf(AName) < 0) or
+  if (FValFormatterList.IndexOf(AName) < 0) or
      ( AnIgnoreCurrent and (FCurFormatter <> nil) and (AName = FCurFormatter.Name) )
   then
     exit;
 
   i := 1;
   s := AName+'('+IntToStr(i)+')';
-  while (FValFormmaterList.IndexOf(s) >= 0) and
+  while (FValFormatterList.IndexOf(s) >= 0) and
      not( AnIgnoreCurrent and (FCurFormatter <> nil) and (s = FCurFormatter.Name) )
   do begin
     inc(i);
@@ -327,8 +334,8 @@ begin
   FCurFormatter := nil;
 
   lstFormatters.Clear;
-  for i := 0 to FValFormmaterList.Count - 1 do begin
-    obj := FValFormmaterList[i];
+  for i := 0 to FValFormatterList.Count - 1 do begin
+    obj := FValFormatterList[i];
     lstFormatters.AddItem(obj.Name, nil);
     lstFormatters.Checked[i] := obj.Enabled;
   end;
@@ -336,7 +343,7 @@ end;
 
 procedure TIdeDbgVarFormatterFrame.UpdateButtons;
 begin
-  btnAdd.Enabled := dropAction.Items.Count > 0;
+  btnAdd.Enabled := ValueFormatterRegistry.Count > 0;
   btnRemove.Enabled := (lstFormatters.Count > 0) and (lstFormatters.ItemIndex >= 0);
   pnlCurrentFormatter.Enabled := FCurFormatter <> nil;
   pnlCurFormatterSetting.Enabled := FCurFormatter <> nil;
@@ -369,7 +376,7 @@ begin
      (FCurFormatter.LimitByNestMin <> SpinMinNest.Value) or
      (FCurFormatter.LimitByNestMax <> SpinMaxNest.Value)
   then begin
-    FValFormmaterList.Changed := True;
+    FValFormatterList.Changed := True;
     FCurFormatter.MatchTypeNames.Text := memoTypeNames.Text;
     FCurFormatter.Name := EdName.Text;
 
@@ -380,7 +387,7 @@ begin
 
 
   if FCurFormatter.OriginalValue <> TLazDbgIdeValFormatterOriginalValue(cbAppendOriginalValue.ItemIndex) then
-    FValFormmaterList.Changed := True;
+    FValFormatterList.Changed := True;
   FCurFormatter.OriginalValue := TLazDbgIdeValFormatterOriginalValue(cbAppendOriginalValue.ItemIndex);
 end;
 
@@ -407,13 +414,6 @@ begin
 
   FCurFormatter := nil;
   lblDesc.Caption := '';
-
-  dropAction.Clear;
-  AvailClass := ValueFormatterRegistry;
-  for i := 0 to AvailClass.Count - 1 do
-    dropAction.AddItem(AvailClass[i].GetDisplayName, TObject(AvailClass[i]));
-  if AvailClass.Count > 0 then
-    dropAction.ItemIndex := 0;
 
   UpdateButtons;
 end;

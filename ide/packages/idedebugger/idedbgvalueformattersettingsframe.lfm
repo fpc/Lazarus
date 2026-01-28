@@ -5,6 +5,7 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
   Width = 638
   ClientHeight = 541
   ClientWidth = 638
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 471
   DesignTop = 23
@@ -51,50 +52,41 @@ object IdeDbgVarFormatterFrame: TIdeDbgVarFormatterFrame
       ClientHeight = 160
       ClientWidth = 170
       TabOrder = 1
-      object dropAction: TComboBox
-        Left = 5
-        Height = 23
-        Top = 5
-        Width = 160
-        ItemHeight = 15
-        Style = csDropDownList
-        TabOrder = 0
-      end
       object btnAdd: TButton
         Left = 5
         Height = 25
-        Top = 33
+        Top = 5
         Width = 160
         Caption = 'btnAdd'
-        TabOrder = 1
+        TabOrder = 0
         OnClick = btnAddClick
       end
       object btnRemove: TButton
         Left = 5
         Height = 25
-        Top = 63
+        Top = 35
         Width = 160
         Caption = 'btnRemove'
-        TabOrder = 2
+        TabOrder = 1
         OnClick = btnRemoveClick
       end
       object btnUp: TButton
         Left = 5
         Height = 25
-        Top = 100
+        Top = 72
         Width = 160
         BorderSpacing.Top = 12
         Caption = 'btnUp'
-        TabOrder = 3
+        TabOrder = 2
         OnClick = btnUpClick
       end
       object btnDown: TButton
         Left = 5
         Height = 25
-        Top = 130
+        Top = 102
         Width = 160
         Caption = 'btnDown'
-        TabOrder = 4
+        TabOrder = 3
         OnClick = btnDownClick
       end
     end

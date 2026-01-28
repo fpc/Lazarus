@@ -567,6 +567,10 @@ resourcestring
   MemViewGroupWordBigEndian = 'Word (Big Endian)';
   MemViewGroupDWordBigEndian = 'DWord (Big Endian)';
   MemViewGroupQWordBigEndian = 'QWord (Big Endian)';
+  DbgOptFrmChooseFormatter = 'Choose formatter';
+  DbgOptFrmPleaseChooseTheFormatterT = 'Please choose the formatter to add.';
+  DbgOptFrmFormatterClass = 'Formatter class:';
+  DbgOptFrmName = 'Name:';
 
 implementation
 

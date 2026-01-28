@@ -64,7 +64,7 @@ begin
     FValFormatList := TIdeDbgValueFormatterSelectorList.Create;
   FValFormatList.Assign(DbgProjectLink.ValueFormatterConfig);
   FValFormatList.Changed := False;
-  IdeDbgVarFormatterFrame1.ValFormmaterList := FValFormatList;
+  IdeDbgVarFormatterFrame1.ValFormatterList := FValFormatList;
 
   chkStoreInSession.Checked := DbgProjectLink.StoreValueFormatterConfigInSession;
   chkUseGlobalList.Checked  := DbgProjectLink.UseValueFormatterFromIDE;

@@ -55,6 +55,22 @@ msgstr "序数到名称的转换"
 msgid "Do not ask again"
 msgstr "不再询问"
 
+#: idedebuggerstringconstants.dbgoptfrmchooseformatter
+msgid "Choose formatter"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptfrmformatterclass
+msgid "Formatter class:"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptfrmname
+msgid "Name:"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgoptfrmpleasechoosetheformattert
+msgid "Please choose the formatter to add."
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
 msgid "Max len"

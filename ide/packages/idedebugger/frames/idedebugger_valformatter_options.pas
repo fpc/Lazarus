@@ -63,7 +63,7 @@ begin
     FValFormatList := TIdeDbgValueFormatterSelectorList.Create;
   FValFormatList.Assign(DebuggerOptions.ValueFormatterConfig);
   FValFormatList.Changed := False;
-  IdeDbgVarFormatterFrame1.ValFormmaterList := FValFormatList;
+  IdeDbgVarFormatterFrame1.ValFormatterList := FValFormatList;
 end;
 
 procedure TIdeDbgValFormatOptionsFrame.WriteSettings(

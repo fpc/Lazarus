@@ -39,7 +39,7 @@ uses
   // IdeUtils
   InputHistory, DialogProcs,
   // LazDebuggerGDBMI
-  GDBMIDebugger, DividerBevel,
+  GDBMIDebugger, DividerBevel, SelectItemDialog,
   // IdeDebugger
   Debugger, IdeDebuggerOpts, EnvDebuggerOptions, ProjectDebugLink,
   // IdeConfig
@@ -263,22 +263,31 @@ begin
 end;
 
 procedure TDebuggerClassOptionsFrame.tbAddNewClick(Sender: TObject);
+var
+  AName: String;
+  i: Integer;
 begin
   UpdateDebuggerPathHistory;
   edNameExit(nil);
   UpdateDebuggerClass;
   cmbDebuggerPathEditingDone(nil);
 
-  FSelectedDbgPropertiesConfig := TDebuggerPropertiesConfig.CreateForDebuggerClass(TGDBMIDebugger, True);
-  FSelectedDbgPropertiesConfig.ConfigName := GetUniqueName(lisNew);
+  AName := lisNew;
+  i := ShowChooseItemDialog('New debugger backend',
+    'Please chose the debugger backend to add.', 'Class:', 'Name', AName, cmbDebuggerType.Items, '---');
+  if (i < 0) then
+    exit;
+
+  FSelectedDbgPropertiesConfig := TDebuggerPropertiesConfig.CreateForDebuggerClass(TDebuggerClass(cmbDebuggerType.Items.Objects[i]), True);
+  FSelectedDbgPropertiesConfig.ConfigName := GetUniqueName(AName);
   FCopiedDbgPropertiesConfigList.AddObject(FSelectedDbgPropertiesConfig.ConfigName, FSelectedDbgPropertiesConfig);
 
   FillNameDropDown;
   UpdateDebuggerClassDropDown;
   FetchDebuggerSpecificOptions;
 
-  cmbDebuggerType.Enabled := True;
-  BtnEditClass.Visible := False;
+  cmbDebuggerType.Enabled := False;
+  BtnEditClass.Visible := True;
   LblWarnClassChange.Visible := False;
   DoModifiedDbgPropertiesCountChanged;
 end;
