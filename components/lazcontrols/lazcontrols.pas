@@ -10,7 +10,7 @@ interface
 uses
   CheckBoxThemed, DividerBevel, ExtendedNotebook, ListFilterEdit, ListViewFilterEdit, 
   TreeFilterEdit, ShortPathEdit, LvlGraphCtrl, ExtendedTabControls, SpinEx, 
-  SmallOrderedSetEditor, LazNumEdit, ShiftStateSelector, LazarusPackageIntf;
+  SmallOrderedSetEditor, LazNumEdit, ShiftStateSelector, SelectItemDialog, LazarusPackageIntf;
 
 implementation
 

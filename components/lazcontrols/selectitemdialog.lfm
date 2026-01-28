@@ -1,0 +1,89 @@
+object SelectItemDialog: TSelectItemDialog
+  Left = 443
+  Height = 240
+  Top = 63
+  Width = 424
+  AutoSize = True
+  BorderStyle = bsToolWindow
+  Caption = 'SelectItemDialog'
+  ClientHeight = 240
+  ClientWidth = 424
+  FormStyle = fsStayOnTop
+  Position = poOwnerFormCenter
+  SnapOptions.SnapFormTarget = False
+  LCLVersion = '4.99.0.0'
+  object lbInfo: TLabel
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 412
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'lbInfo'
+  end
+  object lbNameCaption: TLabel
+    Left = 6
+    Height = 15
+    Top = 37
+    Width = 412
+    Align = alTop
+    BorderSpacing.Top = 10
+    BorderSpacing.Around = 6
+    Caption = 'lbNameCaption'
+  end
+  object edName: TEdit
+    Left = 6
+    Height = 23
+    Top = 58
+    Width = 412
+    Align = alTop
+    BorderSpacing.Around = 6
+    TabOrder = 0
+    OnChange = edNameChange
+  end
+  object lbDropCaption: TLabel
+    Left = 6
+    Height = 15
+    Top = 97
+    Width = 412
+    Align = alTop
+    BorderSpacing.Top = 10
+    BorderSpacing.Around = 6
+    Caption = 'lbDropCaption'
+  end
+  object cbSelection: TComboBox
+    Left = 6
+    Height = 23
+    Top = 118
+    Width = 412
+    Align = alTop
+    BorderSpacing.Bottom = 20
+    BorderSpacing.Around = 6
+    Constraints.MinWidth = 400
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 1
+    OnChange = cbSelectionChange
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 167
+    Width = 412
+    Align = alTop
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CloseButton.OnClick = CloseButtonClick
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    CancelButton.OnClick = CancelButtonClick
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+    ShowBevel = False
+  end
+end
