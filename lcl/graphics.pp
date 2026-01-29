@@ -1641,7 +1641,6 @@ type
     class function IsStreamFormatSupported(Stream: TStream): Boolean; override;
     procedure ReadData(Stream: TStream); override;
     procedure ReadStream(AStream: TMemoryStream; ASize: Longint); override;
-    procedure SetMasked(AValue: Boolean); override;
     procedure SetPixelFormat(AValue: TPixelFormat); override;
     procedure SetTransparent(Value: Boolean); override;
     procedure UnshareImage(CopyContent: boolean); override;

@@ -958,11 +958,6 @@ begin
   {$IFDEF VerboseLCLTodos}{$note Implement me (or raise exception)}{$ENDIF}
 end;
 
-procedure TCustomIcon.SetMasked(AValue: Boolean);
-begin
-  // nothing
-end;
-
 function TCustomIcon.GetBestIndexForSize(ASize: TSize): Integer;
 var
   BestDepth, i, dx, dy, dd: Integer;
