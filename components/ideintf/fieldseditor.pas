@@ -509,10 +509,8 @@ end;
 
 function TFieldsComponentEditor.GetVerb(Index: Integer): string;
 begin
-  case Index of
-    0: Result := fesFeTitle;
-    else Result := '';
-  end;
+  Assert(Index = 0, 'TFieldsComponentEditor.GetVerb');
+  Result := fesFeTitle;
 end;
 
 procedure TFieldsComponentEditor.ExecuteVerb(Index: Integer);

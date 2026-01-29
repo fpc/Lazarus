@@ -549,11 +549,8 @@ end;
 
 function TMaskEditEditor.GetVerb(Index: Integer): string;
 begin
-  case Index of
-    0: Result := sccsMaskEditor;
-    else
-      Result := '';
-  end;
+  Assert(Index = 0, 'TMaskEditEditor.GetVerb');
+  Result := sccsMaskEditor;
 end;
 
 function TMaskEditEditor.GetVerbCount: Integer;

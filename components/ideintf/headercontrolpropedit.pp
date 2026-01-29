@@ -51,8 +51,8 @@ end;
 
 function THeaderControlComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result := '';
-  if Index = 0 then Result := sccsHCEditSections;
+  Assert(Index = 0, 'THeaderControlComponentEditor.GetVerb');
+  Result := sccsHCEditSections;
 end;
 
 function THeaderControlComponentEditor.GetVerbCount: Integer;

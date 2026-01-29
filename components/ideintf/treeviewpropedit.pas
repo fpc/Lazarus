@@ -643,10 +643,8 @@ end;
 
 function TTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
-  if Index = 0 then
-    result := sccsTrEdt
-  else
-    result := '';
+  Assert(Index = 0, 'TTreeViewComponentEditor.GetVerb');
+  Result := sccsTrEdt;
 end;
 
 function TTreeViewComponentEditor.GetVerbCount: Integer;

@@ -4021,24 +4021,11 @@ begin
 end;
 
 function TPropertyEditor.GetVerb(Index: Integer): string;
-var
-  i: Integer;
 begin
-  Result := '';
-  i:=-1;
-  if HasDefaultValue then begin
-    inc(i);
-    if i=Index then begin
-      Result := Format(oisSetToDefault, [GetDefaultValue]);
-      exit;
-    end;
-  end;
-  if IsRevertableToInherited then begin
-    inc(i);
-    if i=Index then begin
-      Result := oisRevertToInherited;
-      exit;
-    end;
+  case Index of
+    0: Result := Format(oisSetToDefault, [GetDefaultValue]);
+    1: Result := oisRevertToInherited;
+    else Result := '';
   end;
 end;
 

@@ -1418,20 +1418,14 @@ end;
 
 function TCommonDialogComponentEditor.GetVerb(Index: integer): string;
 begin
-  case Index of
-    0:Result:=oisTestDialog;
-  else
-    Result:=inherited GetVerb(Index);
-  end;
+  Assert(Index = 0, 'TCommonDialogComponentEditor.GetVerb');
+  Result:=oisTestDialog;
 end;
 
 procedure TCommonDialogComponentEditor.ExecuteVerb(Index: integer);
 begin
-  case Index of
-    0:TestDialog;
-  else
-    inherited ExecuteVerb(Index);
-  end;
+  Assert(Index = 0, 'TCommonDialogComponentEditor.ExecuteVerb');
+  TestDialog;
 end;
 
 { TTaskDialogComponentEditor }
@@ -1448,20 +1442,13 @@ end;
 
 function TTaskDialogComponentEditor.GetVerb(Index: integer): string;
 begin
-  case Index of
-    0:Result:=oisTestDialog;
-  else
-    Result:=inherited GetVerb(Index);
-  end;
+  Assert(Index = 0, 'TTaskDialogComponentEditor.GetVerb');
+  Result:=oisTestDialog;
 end;
 
 procedure TTaskDialogComponentEditor.ExecuteVerb(Index: Integer);
 begin
-  case Index of
-    0: TestDialog;
-  else
-    inherited ExecuteVerb(Index);
-  end;
+  TestDialog;
 end;
 
 //------------------------------------------------------------------------------

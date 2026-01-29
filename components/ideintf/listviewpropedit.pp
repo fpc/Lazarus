@@ -350,12 +350,9 @@ end;
 
 function TListViewComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result := '';
   case Index of
     0: Result := sccsLvEdt;
     1: Result := sccsLvColEdt;
-    else
-      Result := '';
   end;
 end;
 

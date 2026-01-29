@@ -51,8 +51,8 @@ end;
 
 function TStatusBarComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result := '';
-  if Index = 0 then Result := sccsSBEditPanels;
+  Assert(Index = 0, 'TStatusBarComponentEditor.GetVerb');
+  Result := sccsSBEditPanels;
 end;
 
 function TStatusBarComponentEditor.GetVerbCount: Integer;
