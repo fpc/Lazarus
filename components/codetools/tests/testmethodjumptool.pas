@@ -36,10 +36,25 @@ type
     procedure TestMethodJump_IntfToImplSingleProcWrongParam;
     procedure TestMethodJump_SingleMethod;
     procedure TestMethodJump_MultiMethodWrongName;
+
+    // generic in delphi:
+    //  - generic param names in impl must match decl
+    //  - no constraints in impl
     procedure TestMethodJump_DelphiGenericClass;
     procedure TestMethodJump_DelphiGenericClass_GenOverload; // todo
     procedure TestMethodJump_DelphiGenericMethod;
+    procedure TestMethodJump_DelphiGenericMethod_Constraint_Class;
+
+    // generic in objfpc:
+    //  - requires keyword "generic" in declaration and implementation
+    //  - generic param names in impl must match decl
+    //  - no constraints in impl
+    //  - except "const": the whole must match, e.g. "const T: byte"
     procedure TestMethodJump_ObjFPCGenericMethod;
+    procedure TestMethodJump_ObjFPCGenericMethod_Constraint_Class;
+    procedure TestMethodJump_ObjFPCGenericMethod_Constraint_ClassKeyword;
+    procedure TestMethodJump_ObjFPCGenericMethod_Constraint_Const;
+
     procedure TestMethodJump_ParamWithAttribute;
   end;
 
@@ -340,6 +355,31 @@ begin
   TestJumpToMethod('a',false,'b',false,2);
 end;
 
+procedure TTestMethodJumpTool.TestMethodJump_DelphiGenericMethod_Constraint_Class;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode delphi}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    class procedure {a}Fly<Component:class>(aStyle: boolean); overload;',
+  '    procedure DoIt;',
+  '  end;',
+  'implementation',
+  'class procedure TBird.{b}Fly<Component:class>(aStyle: boolean);',
+  'begin',
+  '  {c}',
+  'end;',
+  'procedure TBird.DoIt;',
+  'begin',
+  'end;',
+  'begin',
+  'end.']);
+  TestJumpToMethod('a',false,'c',true);
+  TestJumpToMethod('c',false,'a',false);
+end;
+
 procedure TTestMethodJumpTool.TestMethodJump_ObjFPCGenericMethod;
 begin
   Add([
@@ -361,6 +401,79 @@ begin
   'end;',
   'end.']);
   TestJumpToMethod('a',false,'b',false,2);
+  TestJumpToMethod('c',false,'a',false);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_ObjFPCGenericMethod_Constraint_Class;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}',
+  'interface',
+  'type',
+  '  TWing = class end;',
+  '  TBird = class',
+  '    generic class function {a}Fly<T: TWing>(s: T): T;',
+  '    procedure DoIt;',
+  '  end;',
+  'implementation',
+  'generic class function TBird.{b}Fly<T>(s: T): T;',
+  'begin',
+  '  {c}',
+  'end;',
+  'procedure TBird.DoIt;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'c',true);
+  TestJumpToMethod('c',false,'a',false);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_ObjFPCGenericMethod_Constraint_ClassKeyword;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    generic class function {a}Fly<T: class>(s: T): T;',
+  '    procedure DoIt;',
+  '  end;',
+  'implementation',
+  'generic class function TBird.{b}Fly<T>(s: T): T;',
+  'begin',
+  '  {c}',
+  'end;',
+  'procedure TBird.DoIt;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'c',true);
+  TestJumpToMethod('c',false,'a',false);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_ObjFPCGenericMethod_Constraint_Const;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode objfpc}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    generic class function {a}Fly<const T: byte>(s: T): T;',
+  '    procedure DoIt;',
+  '  end;',
+  'implementation',
+  'generic class function TBird.{b}Fly<const T: byte>(s: T): T;',
+  'begin',
+  '  {c}',
+  'end;',
+  'procedure TBird.DoIt;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'c',true);
   TestJumpToMethod('c',false,'a',false);
 end;
 

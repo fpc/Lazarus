@@ -200,6 +200,7 @@ type
     procedure TestFindDeclaration_GenericsDelphi_FuncParam;
     procedure TestFindDeclaration_GenericsDelphi_PublicProcType;
     procedure TestFindDeclaration_GenericsDelphi_MultiGenParams;
+    procedure TestFindDeclaration_GenericsDelphi_MethodConstraints;
 
     // ampersands
     procedure TestFindDeclaration_Ampersand;
@@ -1506,6 +1507,23 @@ begin
   'begin',
   '  One.Fly;',
   '  Two.Fly;',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_GenericsDelphi_MethodConstraints;
+begin
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'type',
+  '  TBird = class',
+  '    class procedure Fly<Component:class,constructor>(aSpeed: word);',
+  '  end;',
+  'class procedure TBird.Fly<Component:class,constructor>(aSpeed: word);',
+  'begin',
+  'end;',
+  'begin',
   'end.']);
   FindDeclarations(Code);
 end;

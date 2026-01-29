@@ -4325,6 +4325,7 @@ function TPascalParserTool.ReadGenericParamList(Must, AllowConstraints: boolean;
   <name>=type;  // this is the only case where >= are two operators
   <name,name> = type;  // delphi style
   <T1: record; T2,T3: class; T4: constructor; T5: name> = type
+  Fly<S: class, constructor>()
 }
 begin
   Result := False;
@@ -4362,32 +4363,36 @@ begin
       end else if AtomIsChar('>') then begin
         break;
       end else if AllowConstraints and (CurPos.Flag=cafColon) then begin
-        // read constraints
-        ReadNextAtom;
-        if CurPos.Flag<>cafNone then begin
-          CreateChildNode(ctnGenericConstraint, ParserFlags);
-        end;
+        // read constraints: keyword(s) or types
+        repeat
+          ReadNextAtom;
+          if CurPos.Flag<>cafNone then begin
+            CreateChildNode(ctnGenericConstraint, ParserFlags);
+          end;
 
-        if UpAtomIs('RECORD') or UpAtomIs('CLASS') or UpAtomIs('CONSTRUCTOR')
-        then begin
-          // keyword
-        end else begin
-          ReadTypeReference(ParserFlags, False, False, [], True);
-          UndoReadNextAtom;
-        end;
-        EndChildNode(CurPos.EndPos, ParserFlags);
-        if not (ppDontCreateNodes in ParserFlags) then
-          CurNode.EndPos:=CurPos.EndPos;
+          if UpAtomIs('RECORD') or UpAtomIs('CLASS') or UpAtomIs('CONSTRUCTOR')
+          then begin
+            // keyword
+          end else begin
+            ReadTypeReference(ParserFlags, False, False, [], True);
+            UndoReadNextAtom;
+          end;
+          EndChildNode(CurPos.EndPos, ParserFlags);
+          if not (ppDontCreateNodes in ParserFlags) then
+            CurNode.EndPos:=CurPos.EndPos;
 
-        ReadNextAtom;
+          ReadNextAtom;
+        until CurPos.Flag<>cafComma;
+
         if AtomIs('>=') then begin
           // this is the rare case where >= are two separate atoms
           dec(CurPos.EndPos);
           break; // reached >
         end
-        else
-          if AtomIsChar('>') then break;
-        if not (CurPos.Flag=cafSemicolon) then begin
+        else if AtomIsChar('>') then
+          break;
+
+        if CurPos.Flag<>cafSemicolon then begin
           SaveRaiseCharExpectedButAtomFound(20170421195740,'>', ParserFlags);
           exit;
         end;

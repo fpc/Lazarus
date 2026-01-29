@@ -173,8 +173,7 @@ begin
   AnAVLNode:=ATree.FindLowest;
   while AnAVLNode<>nil do begin
     Result:=TCodeTreeNodeExtension(AnAVLNode.Data).Node;
-    if (ExtractProcName(Result,[phpWithoutClassName,phpInUpperCase])=
-      UpperProcName) then
+    if ExtractProcName(Result,[phpWithoutClassName,phpInUpperCase])=UpperProcName then
     begin
       // proc body found
       exit;
@@ -202,7 +201,7 @@ function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition; out
 
 const
   JumpToProcAttr = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers,
-                    phpWithParameterNames,phpWithResultType];
+                    phpWithParameterNames,phpWithResultType,phpWithoutGenericTypeConstraints];
 
   function JumpToProc(
     FromProcNode: TCodeTreeNode; FromProcAttr: TProcHeadAttributes;
@@ -218,7 +217,7 @@ const
     {$IFDEF CTDEBUG}
     DebugLn('TMethodJumpingCodeTool.FindJumpPoint.JumpToProc A ',dbgs(FromProcNode<>nil),' ',dbgs(ToProcNode<>nil));
     debugln(['  JumpToProc FromProcAttr=[',dbgs(FromProcAttr),']']);
-    debugln(['  JumpToProc ToProcAttr=[',dbgs(ToProcAttr),']']);
+    debugln(['  JumpToProc ToProcAttr  =[',dbgs(ToProcAttr),']']);
     {$ENDIF}
     FromProcHead:=ExtractProcHead(FromProcNode,FromProcAttr);
     ToProcHead:=ExtractProcHead(ToProcNode,ToProcAttr);
@@ -285,10 +284,8 @@ const
   begin
     Result:=false;
     if SearchForProcNode=nil then exit;
-    if Scanner.CompilerMode=cmOBJFPC then begin
-      Include(SearchForProcAttr,phpWithoutGenericParams);
-      Include(SearchInProcAttr,phpWithoutGenericParams);
-    end;
+    Include(SearchForProcAttr,phpWithoutGenericTypeConstraints);
+    Include(SearchInProcAttr,phpWithoutGenericTypeConstraints);
     SearchedProcHead:=ExtractProcHeadWithGroup(SearchForProcNode,SearchForProcAttr);
     {$IFDEF CTDEBUG}
     DebugLn('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Searching ',SearchForProcNode.DescAsString,' "',dbgs(SearchedProcHead),'"');
@@ -373,7 +370,7 @@ begin
   if ClassNode<>nil then begin
     // cursor is in class/object/interface definition
     // Interfaces have no method bodies, but if the class was refactored it has
-    // and then jumping is a nide feature
+    // and then jumping is a nice feature
     // => search in all implemented class procedures for the body
     {$IFDEF CTDEBUG}
     DebugLn('TMethodJumpingCodeTool.FindJumpPoint ClassNode=',ClassNode.DescAsString);
@@ -407,14 +404,14 @@ begin
       DebugLn('TMethodJumpingCodeTool.FindJumpPoint H Gather SearchForNodes ...');
       {$ENDIF}
       SearchForNodes:=GatherProcNodes(StartNode,
-         [phpInUpperCase,phpAddClassname,phpIgnoreProcsWithBody],
+         [phpInUpperCase,phpAddClassname,phpIgnoreProcsWithBody,phpWithoutGenericTypeConstraints],
          '');
       {$IFDEF CTDEBUG}
       DebugLn('TMethodJumpingCodeTool.FindJumpPoint I Gather SearchInNodes ...');
       {$ENDIF}
       // gather the method bodies
       SearchInNodes:=GatherProcNodes(TypeSectionNode,
-         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
+         [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname,phpWithoutGenericTypeConstraints],
          ExtractClassName(ClassNode,true,true));
       try
         {$IFDEF CTDEBUG}
@@ -429,10 +426,10 @@ begin
         // SearchForNodes now contains all method bodies, which do not have any
         // definition in class
         // -> first search for a method body with the same name
-        ProcNode:=FindProcNodeInTreeWithName(SearchInNodes,
-              ExtractProcName(CursorNode,[phpWithoutClassName,phpInUpperCase]));
+        SearchedProcName:=ExtractProcName(CursorNode,[phpWithoutClassName,phpInUpperCase]);
+        ProcNode:=FindProcNodeInTreeWithName(SearchInNodes,SearchedProcName);
         {$IFDEF CTDEBUG}
-        DebugLn('TMethodJumpingCodeTool.FindJumpPoint H DiffMethod with same name found = ',dbgs(ProcNode<>nil));
+        DebugLn('TMethodJumpingCodeTool.FindJumpPoint H DiffMethod with same name "',SearchedProcName,'" found = ',dbgs(ProcNode<>nil));
         {$ENDIF}
         if (ProcNode=nil) then begin
           // no method body with same name

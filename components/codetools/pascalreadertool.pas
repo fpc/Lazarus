@@ -619,7 +619,8 @@ function TPascalReaderTool.ExtractProcName(ProcNode: TCodeTreeNode;
 var
   ProcHeadNode: TCodeTreeNode;
   Part: String;
-  HasClassName: Boolean;
+  HasClassName, WithGenericParams, IsConst: Boolean;
+  Lvl, l, EndPos: Integer;
 begin
   Result:='';
   if [phpWithoutClassName,phpWithoutName]*Attr=
@@ -632,6 +633,8 @@ begin
   ProcHeadNode:=ProcNode.FirstChild;
   if (ProcHeadNode=nil) or (ProcHeadNode.StartPos<1) then exit;
   MoveCursorToNodeStart(ProcHeadNode);
+  EndPos:=ProcHeadNode.EndPos;
+  if EndPos<1 then EndPos:=SrcLen+1;
   HasClassName:=false;
   repeat
     ReadNextAtom;
@@ -641,6 +644,66 @@ begin
     else
       Part:=GetAtom;
     ReadNextAtom;
+    if AtomIsChar('<') then begin
+      // generic params
+      //   if phpWithoutGenericParams then skip
+      //   else
+      //     add <> and semicolon, e.g. <> <;> <;;>
+      //     and add const constraints, e.g. <const a: byte>
+      WithGenericParams:=not (phpWithoutGenericParams in Attr);
+      if WithGenericParams then Part:=Part+'<';
+      Lvl:=1;
+      IsConst:=false;
+      repeat
+        ReadNextAtom;
+        l:=CurPos.EndPos-CurPos.StartPos;
+        if (l=2) and AtomIs('>=') then
+          CurPos.EndPos:=CurPos.StartPos+1;
+        if l=1 then begin
+          case Src[CurPos.StartPos] of
+          '<':
+            begin
+              if IsConst then Part:=Part+'<';
+              inc(Lvl);
+            end;
+          '>':
+            begin
+              if Lvl=1 then begin
+                if WithGenericParams then Part:=Part+'>';
+                ReadNextAtom;
+                break;
+              end else if IsConst then
+                Part:=Part+'>';
+              dec(Lvl);
+            end;
+          ';':
+            if Lvl=1 then begin
+              IsConst:=false;
+              if WithGenericParams then Part:=Part+';';
+            end else if IsConst then
+              Part:=Part+';';
+          else
+            if IsConst then begin
+              if IsIdentChar[Part[length(Part)]] and (IsIdentChar[Src[CurPos.StartPos]]) then
+                Part:=Part+' ';
+              Part:=Part+GetAtom;
+            end;
+          end;
+        end else if (Lvl=1) and (not IsConst) and UpAtomIs('CONST') then begin
+          if WithGenericParams then Part:=Part+GetAtom;
+          ReadNextAtom;
+          if AtomIsIdentifier then begin
+            if WithGenericParams then Part:=Part+GetAtom;
+            ReadNextAtom;
+            if CurPos.Flag=cafColon then begin
+              if WithGenericParams then Part:=Part+':';
+              ReadNextAtom;
+              IsConst:=WithGenericParams;
+            end;
+          end;
+        end;
+      until CurPos.EndPos>=EndPos;
+    end;
     if (CurPos.Flag<>cafPoint) then begin
       // end of method identifier is the proc name
       if phpWithoutName in Attr then break;
@@ -667,7 +730,8 @@ function TPascalReaderTool.ExtractProcHead(ProcNode: TCodeTreeNode;
   Attr: TProcHeadAttributes): string;
 var
   TheClassName, s: string;
-  IsClassName, IsProcType, IsProcedure, IsFunction, IsOperator, IsGeneric, CanGeneric: Boolean;
+  IsClassName, IsProcType, IsProcedure, IsFunction, IsOperator, IsGeneric, CanGeneric,
+    aWithName, aWithGeneric: Boolean;
   EndPos: Integer;
   ParentNode: TCodeTreeNode;
   OldPos: TAtomPosition;
@@ -717,10 +781,10 @@ begin
   if ([phpAddClassname,phpWithoutClassName]*Attr=[phpAddClassName]) then
     PrependName(ExtractClassName(ProcNode,phpInUpperCase in Attr,true,Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]),TheClassName);
 
-  // reparse the clean source
+  // parse the clean source
   InitExtraction;
   MoveCursorToNodeStart(ProcNode);
-  // parse procedure head = start + name + parameterlist + result type ;
+  // parse procedure head = start + name (including genericparams) + parameterlist + result type ;
   ExtractNextAtom(false,Attr);
   // read procedure start keyword
   if (Scanner.CompilerMode in [cmOBJFPC]) and UpAtomIs('GENERIC') then begin
@@ -779,35 +843,38 @@ begin
         ReadNextAtom;
         if CanGeneric and AtomIsChar('<') then
         begin
-          repeat
-            ReadNextAtom;
-          until AtomIsChar('>') or (CurPos.EndPos > SrcLen);
-          ReadNextAtom;
+          if not ExtractNextSpecializeParams(false,[]) then
+            exit;
+          ExtractNextAtom(false,[]);
         end;
         IsClassName:=(CurPos.Flag=cafPoint);
         MoveCursorToAtomPos(OldPos);
         if IsClassName then begin
           // read class name
-          ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
+          aWithName:=not (phpWithoutClassName in Attr);
+          ExtractNextAtom(aWithName,Attr);
           if CanGeneric and AtomIsChar('<') then
           begin
-            if not ExtractNextSpecializeParams(false,Attr) then
+            aWithGeneric:=aWithName and not (phpWithoutGenericParams in Attr);
+            if not ExtractNextSpecializeParams(aWithGeneric,Attr) then
               exit;
-            ExtractNextAtom(false,Attr);
+            ExtractNextAtom(aWithGeneric,Attr);
           end;
           // read '.'
-          ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
+          ExtractNextAtom(aWithName,Attr);
           if ((not IsOperator)
           or (not WordIsCustomOperator.DoItCaseInsensitive(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
           and (not AtomIsIdentifier) then exit;
         end else begin
           // read name
+          aWithName:=not (phpWithoutName in Attr);
           ExtractNextAtom(not (phpWithoutName in Attr),Attr);
           if CanGeneric and AtomIsChar('<') then
           begin
-            if not ExtractNextSpecializeParams(false,Attr) then
+            aWithGeneric:=aWithName and not (phpWithoutGenericParams in Attr);
+            if not ExtractNextSpecializeParams(aWithGeneric,Attr) then
               exit;
-            ExtractNextAtom(false,Attr);
+            ExtractNextAtom(aWithGeneric,Attr);
           end;
           break;
         end;
@@ -1078,7 +1145,7 @@ begin
       then
       begin
         CurProcHead:=ExtractProcHeadWithGroup(Result,Attr);
-        //DebugLn(['TPascalReaderTool.FindProcNode B Cur="',dbgs(CurProcHead),'" =? "',dbgs(AProcHead),'" Result=',SameMethodHeaders(AProcHead, CurProcHead)]);
+        DebugLn(['TPascalReaderTool.FindProcNode B Cur="',dbgs(CurProcHead),'" =? "',dbgs(AProcHead),'" Result=',SameMethodHeaders(AProcHead, CurProcHead)]);
         if (CurProcHead.Name<>'')
             and SameMethodHeaders(AProcHead, CurProcHead) then
           exit;
@@ -1807,14 +1874,20 @@ function TPascalReaderTool.ExtractNextSpecializeParams(Add: boolean;
   var
     c: Boolean;
 
-  function ExtractNextTil(c: TCharSet; DoAdd: boolean): boolean;
+  function ExtractNextTil(const c: TCharSet; DoAdd: boolean): boolean;
   var
     CurC: Char;
+    l: Integer;
   begin
     Result:=false;
     repeat
       ExtractNextAtom(DoAdd,Attr);
-      if CurPos.EndPos-CurPos.StartPos=1 then begin
+      l:=CurPos.EndPos-CurPos.StartPos;
+      if (l=2) and AtomIs('>=') then begin
+        CurPos.EndPos:=CurPos.StartPos+1;
+        l:=1;
+      end;
+      if l=1 then begin
         CurC:=Src[CurPos.StartPos];
         if CurC in c then
           exit(true);
@@ -1838,19 +1911,19 @@ begin
   repeat
     ExtractNextAtom(Add, Attr); // read the opening < or the ;
     c := (CurPos.Flag = cafWord) and UpAtomIs('CONST');
-    if (phpWithoutGenericConstConstraints in Attr) and c then begin
+    if c and (phpWithoutGenericConstConstraints in Attr) then begin
       ExtractNextAtom(False, Attr);                // Skip the CONST
-      Result:=ExtractNextTil([':', ';', '>'], Add);     // exctrat the param name(s)
-      if (Result) and (Src[CurPos.StartPos] = ':') then
+      Result:=ExtractNextTil([':', ';', '>'], Add); // extract the param name(s)
+      if not Result then exit;
+      if Src[CurPos.StartPos] = ':' then
         Result:=ExtractNextTil([';', '>'], False); // skip the type
     end
     else begin
-      Result:=ExtractNextTil([':', ';', '>'], Add);  // Extract param name(s)
+      Result:=ExtractNextTil([':', ';', '>'], Add); // Extract param name(s)
       if (not Result) or (Src[CurPos.StartPos] = '>') then
         exit;
-      // at : / start of contstraint
-      if (Result) and (Src[CurPos.StartPos] = ':') then
-        Result:=ExtractNextTil([';', '>'], c or not (phpWithoutGenericTypeConstraints in Attr));
+      if Src[CurPos.StartPos] = ':' then
+        Result:=ExtractNextTil([';', '>'], c or not (phpWithoutGenericTypeConstraints in Attr)); // extract constraint
     end;
     if (not Result) or (Src[CurPos.StartPos] = '>') then
       exit;
