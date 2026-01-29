@@ -80,8 +80,6 @@ begin
   Result := THeaderSections.Create(Self);
 end;
 
-
-
 procedure TCustomHeaderControl.Loaded;
 begin
   inherited Loaded;
@@ -93,8 +91,8 @@ constructor TCustomHeaderControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSections := CreateSections;
-  ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csNoFocus, csOpaque] -
-    [csSetCaption];
+  ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csNoFocus, csOpaque]
+                               - [csSetCaption];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
 end;
@@ -122,9 +120,7 @@ procedure TCustomHeaderControl.DblClick;
 begin
   inherited DblClick;
   if FTracking then
-  begin
     SectionSeparatorDblClick(Sections[FSelectedSection]);
-  end;
 end;
 
 function TCustomHeaderControl.GetSectionAt(P: TPoint): Integer;
@@ -222,8 +218,8 @@ begin
     FDownPoint := Point(X, Y);
     if Button = mbLeft then
       if (X > HeaderBorderSize ) and
-         (GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y))) then
-      begin
+         (GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y)))
+      then begin
         FTracking:=true;
         FSelectedSection:=GetSectionAt(Point(X - HeaderBorderSize, Y));
         if FSelectedSection = -1 then
@@ -262,11 +258,11 @@ begin
       begin
         if (Sections[CurrentSectionIndex].GetLeft + Sections[CurrentSectionIndex].Width div 2 < X) then
           FEndDragSectionIndex:=CurrentSectionIndex+1
-         else
+        else
           FEndDragSectionIndex:=CurrentSectionIndex;
         if FEndDragSectionIndex < Sections.Count - 1 then
           FDragging:=SectionDrag(Sections[FSelectedSection],Sections[FEndDragSectionIndex])
-         else
+        else
           FDragging:=SectionDrag(Sections[FSelectedSection],Sections[Sections.Count - 1]);
         RePaint;
       end;
@@ -275,17 +271,18 @@ begin
     begin
       if DragReorder and (abs(X-FDownPoint.X) >= DragStartDistance) then
       begin
-       FDragging:=true;
-       FEndDragSectionIndex:=FSelectedSection;
+        FDragging:=true;
+        FEndDragSectionIndex:=FSelectedSection;
       end else
-       if GetSectionAt(Point(X, Y)) <> GetSectionAt(FDownPoint) then
-         FDown := False;
+        if GetSectionAt(Point(X, Y)) <> GetSectionAt(FDownPoint) then
+          FDown := False;
     end;
     if shift = [] then
       if (X > HeaderBorderSize) and
-         (GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y))) then
+         (GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y)))
+      then
         Cursor:=crSizeE
-       else
+      else
         Cursor:=FSavedCursor;
     UpdateState;
   end;
