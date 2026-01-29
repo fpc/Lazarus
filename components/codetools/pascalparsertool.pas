@@ -3496,38 +3496,12 @@ begin
     if CreateNodes then
       CurNode.Desc:=ctnVarDefinition;
     ReadNextAtom;
-    if ExceptionOnError then
-      AtomIsIdentifierSaveE(20180411194142)
-    else if not AtomIsIdentifier then
-      exit;
-    if CreateNodes then begin
-      // ctnIdentifier for the type
-      CreateChildNode;
-      CurNode.Desc:=ctnIdentifier;
-      CurNode.EndPos:=CurPos.EndPos;
-    end;
-    ReadNextAtom;
+    ReadTypeReference(CreateNodes);
   end;
-  if CurPos.Flag=cafPoint then begin
-    // for example: on Unit.Exception do ;
-    // or: on E:Unit.Exception do ;
-    ReadNextAtom;
-    if ExceptionOnError then
-      AtomIsIdentifierSaveE(20180411194146)
-    else if not AtomIsIdentifier then
-      exit;
-    if CreateNodes then begin
-      CurNode.EndPos:=CurPos.EndPos;
-    end;
-    ReadNextAtom;
-  end;
+
   if CreateNodes then begin
-    if CurNode.Desc=ctnIdentifier then begin
-      // close the type
-      CurNode.Parent.EndPos:=CurNode.EndPos;
-      EndChildNode;
-    end;
-    // close ctnVarDefinition or ctnOnIdentifier
+    // close ctnVarDefinition or ctnIdentifier
+    CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
   end;
   // read 'do'
@@ -3546,7 +3520,7 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode; // ctnOnStatement
     CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode; // ctnOnVariable
+    EndChildNode; // ctnOnBlock
   end;
   NeedUndo:=false;
   if CurPos.Flag=cafSemicolon then begin
@@ -4548,8 +4522,9 @@ function TPascalParserTool.ReadTypeReference(ParserFlags: TPascalParserFlags; Ex
     TFoo.specialize atype<char>.subtype
 }
 
-  var
-    LastEnd: Integer;
+var
+  LastEnd: Integer;
+
   procedure Next; inline;
   begin
     LastEnd := CurPos.EndPos;
@@ -4566,7 +4541,7 @@ begin
   Result := False;
   ParserFlagsSpecialize := ParserFlags;
   if ForceCreateSpecializeSubNodes then
-    exclude(ParserFlagsSpecialize, ppDontCreateNodes);
+    Exclude(ParserFlagsSpecialize, ppDontCreateNodes);
   if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
     (* If ForceCreateSpecializeSubNodes then the specialize can be closed.
        The surrounding node of the caller can handle multiple specialize children
