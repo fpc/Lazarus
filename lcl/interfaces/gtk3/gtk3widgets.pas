@@ -985,6 +985,7 @@ type
     procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
+    function GetWindowFunction(AForm: TCustomForm): TGdkWMFunction;
     function getText: String; override;
     procedure setText(const AValue: String); override;
   public
@@ -996,6 +997,7 @@ type
     function GetScrolledWindow: PGtkScrolledWindow; override;
     procedure InitializeWidget; override;
     function ShowState(nstate:integer):boolean; // winapi ShowWindow
+    procedure UpdateWindowFunctions; virtual;
     procedure UpdateWindowState; // LCL WindowState
     class function decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
   public
@@ -9760,6 +9762,21 @@ begin
   Result:=true
 end;
 
+procedure TGtk3Window.UpdateWindowFunctions;
+var
+  LWindow: PGdkWindow;
+begin
+  if Gtk3IsGtkWindow(Widget) then
+  begin
+    LWindow := Widget^.window;
+    if LWindow <> nil then
+    begin
+      LWindow^.set_decorations(decoration_flags(TCustomForm(LCLObject)));
+      LWindow^.set_functions(GetWindowFunction(TCustomForm(LCLObject))); // required for Fly DM
+    end;
+  end;
+end;
+
 procedure TGtk3Window.UpdateWindowState; // LCL WindowState
 const
   ShowCommands: array[TWindowState] of Integer =
@@ -9859,6 +9876,38 @@ end;
 function TGtk3Window.EatArrowKeys(const AKey: Word): Boolean;
 begin
   Result := False;
+end;
+
+function TGtk3Window.GetWindowFunction(AForm: TCustomForm): TGdkWMFunction;
+var
+  LBorderIcons: TBorderIcons;
+  LBorderStyle: TFormBorderStyle;
+begin
+  if csDesigning in AForm.ComponentState then
+    LBorderStyle := bsSizeable
+  else
+    LBorderStyle := AForm.BorderStyle;
+
+  LBorderIcons := AForm.BorderIcons;
+  if not (LBorderStyle in [bsSizeable]) then
+    Exclude(LBorderIcons, biMaximize);
+  if not (LBorderStyle in [bsSizeable, bsSingle]) then
+    Exclude(LBorderIcons, biMinimize);
+
+  Result := [GDK_FUNC_MOVE];
+  if (LBorderStyle in [bsNone, bsSizeable, bsSizeToolWin]) then
+    Include(Result, GDK_FUNC_RESIZE);
+  if biSystemMenu in LBorderIcons then
+    Include(Result, GDK_FUNC_CLOSE);
+  if biMinimize in LBorderIcons then
+    Include(Result, GDK_FUNC_MINIMIZE);
+  if biMaximize in LBorderIcons then
+    Include(Result, GDK_FUNC_MAXIMIZE);
+
+  if (AForm.Constraints.MinWidth  > 0) and (AForm.Constraints.MinWidth  = AForm.Constraints.MaxWidth) and
+     (AForm.Constraints.MinHeight > 0) and (AForm.Constraints.MinHeight = AForm.Constraints.MaxHeight)
+  then
+    Exclude(Result, GDK_FUNC_RESIZE);
 end;
 
 function TGtk3Window.getText: String;
@@ -10128,6 +10177,8 @@ begin
       TGCallback(@RangeValueChanged), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(PGtkRange(gtk_scrolled_window_get_vscrollbar(GetScrolledWindow)),'value-changed',
       TGCallback(@RangeValueChanged), Self, nil, G_CONNECT_DEFAULT);
+
+    UpdateWindowFunctions;
   end;
 end;
 

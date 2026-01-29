@@ -449,9 +449,7 @@ class procedure TGtk3WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetBorderIcons') then
     Exit;
-  {$IFDEF GTK3DEBUGCORE}
-  DebugLn('TGtk3WSCustomForm.SetBorderIcons');
-  {$ENDIF}
+  TGtk3Window(AForm.Handle).UpdateWindowFunctions;
 end;
 
 class procedure TGtk3WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
