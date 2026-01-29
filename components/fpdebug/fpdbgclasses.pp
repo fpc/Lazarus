@@ -241,6 +241,8 @@ type
     FStoredBreakpointInfoAddress: TDBGPtr;
     FPausedAtHardcodeBreakPoint: Boolean;
     FSuspendCount: Integer;
+    FSymbolAtCurrentInstructionPtr: TFpSymbol;
+    FNoSymbolAtCurrentInstructionPtr: Boolean;
 
     function GetRegisterValueList: TDbgRegisterValueList;
   protected
@@ -299,6 +301,7 @@ type
     procedure SetStackPointerRegisterValue(AValue: TDbgPtr); virtual; abstract;
     procedure SetInstructionPointerRegisterValue(AValue: TDbgPtr); virtual; abstract;
     function GetCurrentStackFrameInfo: TDbgStackFrameInfo;
+    function GetSymbolAtCurrentInstructionPtr: TFpSymbol;
 
     function AllocStackMem(ASize: Integer): TDbgPtr; virtual;
     procedure RestoreStackMem;
@@ -3617,18 +3620,19 @@ function TDbgThread.CompareStepInfo(AnAddr: TDBGPtr; ASubLine: Boolean
   ): TFPDCompareStepInfo;
 var
   Sym: TFpSymbol;
-  l: TDBGPtr;
+  l, AnAddr2: TDBGPtr;
 begin
   if FStoreStepSrcLineNo = -1 then begin // stepping from location with no line info
     Result := dcsiNewLine;
     exit;
   end;
 
-  if AnAddr = 0 then
-    AnAddr := GetInstructionPointerRegisterValue;
+  AnAddr2 := AnAddr;
+  if AnAddr2 = 0 then
+    AnAddr2 := GetInstructionPointerRegisterValue;
 
   if (FStoreStepStartAddr <> 0) then begin
-    if (AnAddr > FStoreStepStartAddr) and (AnAddr < FStoreStepEndAddr)
+    if (AnAddr2 > FStoreStepStartAddr) and (AnAddr2 < FStoreStepEndAddr)
     then begin
       result := dcsiSameLine;
       exit;
@@ -3641,14 +3645,21 @@ begin
     end;
   end;
 
-  sym := FProcess.FindProcSymbol(AnAddr);
+  if AnAddr = 0 then begin
+    sym := GetSymbolAtCurrentInstructionPtr;
+    if sym <> nil then
+      sym.AddReference;
+  end
+  else
+    sym := FProcess.FindProcSymbol(AnAddr2);
+
   if assigned(sym) then
   begin
     if sym is TFpSymbolDwarfDataProc then
       l := TFpSymbolDwarfDataProc(sym).LineUnfixed
     else
       l := Sym.Line;
-    debugln(FPDBG_COMMANDS, ['CompareStepInfo @IP=',AnAddr,' ',sym.FileName, ':',l, ' in ',sym.Name, ' @Func=',sym.Address.Address]);
+    debugln(FPDBG_COMMANDS, ['CompareStepInfo @IP=',AnAddr2,' ',sym.FileName, ':',l, ' in ',sym.Name, ' @Func=',sym.Address.Address]);
     if (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=l)) {or FStepOut}) then
       result := dcsiSameLine
     else if sym.FileName = '' then
@@ -3671,7 +3682,7 @@ var
   a: TDBGPtrArray;
 begin
   AnAddr := GetInstructionPointerRegisterValue;
-  sym := FProcess.FindProcSymbol(AnAddr);
+  sym := GetSymbolAtCurrentInstructionPtr;
   if (sym is TDbgDwarfSymbolBase) then
   begin
     CU := TDbgDwarfSymbolBase(sym).CompilationUnit;
@@ -3684,16 +3695,20 @@ begin
   end
   else
     Result := True;
-  sym.ReleaseReference;
 end;
 
 function TDbgThread.StoreStepInfo(AnAddr: TDBGPtr): boolean;
 var
   Sym: TFpSymbol;
 begin
-  if AnAddr = 0 then
+  if AnAddr = 0 then begin
     AnAddr := GetInstructionPointerRegisterValue;
-  sym := FProcess.FindProcSymbol(AnAddr);
+    sym := GetSymbolAtCurrentInstructionPtr;
+    if sym <> nil then
+      sym.AddReference;
+  end
+  else
+    sym := FProcess.FindProcSymbol(AnAddr);
   FStoreStepStartAddr := AnAddr;
   FStoreStepEndAddr := AnAddr;
   FStoreStepFuncAddr:=0;
@@ -3850,6 +3865,12 @@ end;
 
 procedure TDbgThread.BeforeContinue;
 begin
+  if FSymbolAtCurrentInstructionPtr <> nil then begin
+    FSymbolAtCurrentInstructionPtr.ReleaseReference;
+    FSymbolAtCurrentInstructionPtr := nil;
+  end;
+  FNoSymbolAtCurrentInstructionPtr := False;
+
   FPausedAtHardcodeBreakPoint := False;
   ClearHasBreakpointInfoForAddress;
 end;
@@ -3867,6 +3888,17 @@ end;
 function TDbgThread.GetCurrentStackFrameInfo: TDbgStackFrameInfo;
 begin
   Result := TDbgStackFrameInfo.Create(Self);
+end;
+
+function TDbgThread.GetSymbolAtCurrentInstructionPtr: TFpSymbol;
+begin
+  if (FSymbolAtCurrentInstructionPtr = nil) and
+     (not FNoSymbolAtCurrentInstructionPtr)
+  then begin
+    FSymbolAtCurrentInstructionPtr := FProcess.FindProcSymbol(GetInstructionPointerRegisterValue);
+    FNoSymbolAtCurrentInstructionPtr := FSymbolAtCurrentInstructionPtr = nil;
+  end;
+  Result := FSymbolAtCurrentInstructionPtr;
 end;
 
 function TDbgThread.AllocStackMem(ASize: Integer): TDbgPtr;
@@ -4022,6 +4054,8 @@ end;
 
 destructor TDbgThread.Destroy;
 begin
+  if FSymbolAtCurrentInstructionPtr <> nil then
+    FSymbolAtCurrentInstructionPtr.ReleaseReference;
   FProcess.ThreadDestroyed(Self);
   FreeAndNil(FRegisterValueList);
   FreeAndNil(FPreviousRegisterValueList);
