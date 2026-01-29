@@ -80,12 +80,14 @@ type
     FHasCaret: boolean;
     FOwner: PGtkWidget;
     FProps: TStringList;
+    FPostMessages: TThreadList;
     FWidgetMapped: boolean;
     FWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     function CanSendLCLMessage: Boolean;
     function GetCairoContext: Pcairo_t;
     function GetEnabled: Boolean;
     function GetFont: PPangoFontDescription;
+    function GetPostMessages: TThreadList;
     function GetStyleContext: PGtkStyleContext;
     function GetVisible: Boolean;
     procedure SetEnabled(AValue: Boolean);
@@ -215,6 +217,7 @@ type
     property HasCaret: boolean read FHasCaret write FHasCaret;
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
     property PaintData: TPaintData read FPaintData write FPaintData;
+    property PostMessages: TThreadList read GetPostMessages;
     property Shape: PGdkPixbuf read FShape write SetShape;
     property StyleContext: PGtkStyleContext read GetStyleContext write SetStyleContext;
     property Text: String read getText write setText;
@@ -2473,6 +2476,19 @@ begin
   end;
 end;
 
+function TGtk3Widget.GetPostMessages: TThreadList;
+var
+  LList: TThreadList;
+begin
+  if FPostMessages = nil then
+  begin
+    LList := TThreadList.Create;
+    LList := TThreadList(InterlockedCompareExchange(Pointer(FPostMessages), Pointer(LList), nil));
+    LList.Free;
+  end;
+  Result := FPostMessages;
+end;
+
 function TGtk3Widget.CanSendLCLMessage: Boolean;
 begin
   Result := IsWidgetOk and (LCLObject <> nil);
@@ -2597,8 +2613,24 @@ end;
 
 procedure TGtk3Widget.DestroyWidget;
 var
+  AList: TList;
   ATemp: PGtkWidget;
+  I: Integer;
 begin
+  if FPostMessages <> nil then
+  try
+    AList := FPostMessages.LockList;
+    try
+      for I := 0 to AList.Count - 1 do
+        g_idle_remove_by_data(AList[I]);
+      AList.Clear;
+    finally
+      FPostMessages.UnlockList;
+    end;
+  finally
+    FreeAndNil(FPostMessages);
+  end;
+
   if HasCaret and IsValidHandle then
     GTK3WidgetSet.DestroyCaret(HWND(Self));
 

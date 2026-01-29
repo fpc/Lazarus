@@ -3394,6 +3394,7 @@ begin
       AMessage.Msg := AMsg.Msg;
       AMessage.WParam := AMsg.AwParam;
       AMessage.LParam := AMsg.AlParam;
+      TGtk3Widget(AMsg.Handle).PostMessages.Remove(user_data);
       TGtk3Widget(AMsg.Handle).DeliverMessage(AMessage);
     end;
     g_idle_remove_by_data(user_data);
@@ -3417,6 +3418,7 @@ begin
     AEvent^.AwParam := wParam;
     AEvent^.AlParam := lParam;
     AEvent^.Result := 0;
+    TGtk3Widget(Handle).PostMessages.Add(AEvent);
     g_idle_add(@Gtk3ProcessPostMessage, AEvent);
     if GetCurrentThreadId <> MainThreadID then
     begin
