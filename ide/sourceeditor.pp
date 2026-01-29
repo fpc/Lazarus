@@ -759,7 +759,6 @@ type
     FHistoryList: TFPList; // list of TSourceEditor page order for when a window closes
     FHistoryDlg: TBrowseEditorTabHistoryDialog;
     FStopBtnIdx: Integer;
-    FNextNumForEditorName: Integer;
     FOnEditorPageCaptionUpdate: TMethodList;
   private
     FUpdateTabAndPageTimer: TTimer;
@@ -1560,6 +1559,7 @@ implementation
 {$R ../images/bookmark.res}
 
 var
+  TheGlobalNextNumForEditorName: QWord = 0;
   AWordCompletion: TWordCompletion = nil;
 
 var
@@ -5425,8 +5425,8 @@ Begin
   {$ENDIF}
   if not assigned(FEditor) then Begin
     FVisible := False;
-    NewName:='SynEdit'+IntToStr(AOwner.FNextNumForEditorName);
-    Inc(AOwner.FNextNumForEditorName);
+    NewName:='SynEdit_'+IntToStr(TheGlobalNextNumForEditorName);
+    Inc(TheGlobalNextNumForEditorName);
     FEditor := TIDESynEditor.Create(AOwner);
     FEditor.BeginUpdate;
     with FEditor do begin
