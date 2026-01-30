@@ -4780,9 +4780,9 @@ var
       if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then
         Result:=CheckResult(true,false);
     end else
-    if (ContextNode.Parent.Desc = ctnConstDefinition)
-    and (ContextNode.NextBrother<>nil)
-    and (Src[ContextNode.NextBrother.StartPos]='(') then
+    if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition]) and
+    (ContextNode.NextBrother<>nil) and
+    (Src[ContextNode.NextBrother.StartPos]='(') then
     begin
       if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then
         Result:=CheckResult(true,false);
@@ -5450,16 +5450,12 @@ begin
 
           ctnIdentifier:
             if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
-                and (ContextNode=ContextNode.Parent.LastChild)
-                and SearchInTypeOfVarConst then
-              exit
-            else
-            if (ContextNode.Parent.Desc = ctnConstDefinition)
-                and (StartContextNode.Desc = ctnConstant)
-                and IdentifierIsFollowedByColon // DeclOfConst : ofType = (ident1: value; ...);
-                and SearchInTypeOfVarConst then
-              exit;
-
+            then begin
+              if ((ContextNode=ContextNode.Parent.LastChild) // simple const
+                or IdentifierIsFollowedByColon) //const record, const array of record
+              and SearchInTypeOfVarConst then
+                exit;
+            end;
           ctnEnumIdentifier,ctnLabel:
             if SearchInEnumLabelDefinition then exit;
 
