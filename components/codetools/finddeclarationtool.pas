@@ -4777,9 +4777,15 @@ var
     if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
     and (Src[ContextNode.StartPos]='(') then
     begin
-      if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then begin
+      if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then
         Result:=CheckResult(true,false);
-      end;
+    end else
+    if (ContextNode.Parent.Desc = ctnConstDefinition)
+    and (ContextNode.NextBrother<>nil)
+    and (Src[ContextNode.NextBrother.StartPos]='(') then
+    begin
+      if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then
+        Result:=CheckResult(true,false);
     end;
   end;
 
@@ -5047,6 +5053,14 @@ var
       end else
         break;
     end;
+  end;
+  function IdentifierIsFollowedByColon: boolean;
+  begin
+    Result:=false;
+    Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
+    Params.IdentifierTool.ReadNextAtom;
+    Params.IdentifierTool.ReadNextAtom;
+    Result:= Params.IdentifierTool.CurPos.Flag=cafColon;
   end;
 
   function SearchNextNode: boolean;
@@ -5437,6 +5451,12 @@ begin
           ctnIdentifier:
             if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
                 and (ContextNode=ContextNode.Parent.LastChild)
+                and SearchInTypeOfVarConst then
+              exit
+            else
+            if (ContextNode.Parent.Desc = ctnConstDefinition)
+                and (StartContextNode.Desc = ctnConstant)
+                and IdentifierIsFollowedByColon // DeclOfConst : ofType = (ident1: value; ...);
                 and SearchInTypeOfVarConst then
               exit;
 
