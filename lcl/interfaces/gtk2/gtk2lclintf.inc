@@ -361,7 +361,7 @@ begin
                 // IsMasked test was added for issue #41070.
                 // IsMasked may have a bug with the small icon images.(?)
                 WithAlpha := ARawImage.IsMasked(True);
-                DebugLn(['TGtk2WidgetSet.RawImage_CreateBitmaps: TRawImage.IsMasked(True) returned ', WithAlpha]);
+                //DebugLn(['TGtk2WidgetSet.RawImage_CreateBitmaps: TRawImage.IsMasked(True) returned ', WithAlpha]);
               end;
             end
             else
