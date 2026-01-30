@@ -634,7 +634,6 @@ begin
     end else
       DebugLn('TGtk3WidgetSet.Gtk3Destroy app Windows list is null ');
     {$ENDIF}
-    FGtk3Application^.release;
     FGtk3Application^.unref;
     FGtk3Application := nil;
   end;
