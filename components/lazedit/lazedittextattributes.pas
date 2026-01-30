@@ -1334,7 +1334,7 @@ begin
   if (Length(List) < Count) or (Length(List) > Count + 12) then
     SetLength(List, Count);
   for i := 0 to Count - 1 do
-    Add()^ := L.List[i];
+    List[i] := L.List[i];
 end;
 
 { TLazEditTextAttributeMergeResult }
