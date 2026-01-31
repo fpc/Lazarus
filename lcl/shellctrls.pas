@@ -2394,12 +2394,20 @@ begin
 end;
 
 function TCustomShellListView.IsColumnsStored: Boolean;
+var
+  c: Integer;
 begin
   Result := not (
     (ColumnCount = 3) and
     (TShellListcolumn(Columns[0]).ColumnID = cidFileName) and
     (TShellListcolumn(Columns[1]).ColumnID = cidSize) and
-    (TShellListcolumn(Columns[2]).ColumnID = cidType)
+    (TShellListcolumn(Columns[2]).ColumnID = cidType) and
+    (TShellListColumn(Columns[0]).MaxWidth <> 0) and
+    (TShellListColumn(Columns[0]).MinWidth <> 0) and
+    (TShellListColumn(Columns[1]).MaxWidth <> 0) and
+    (TShellListColumn(Columns[1]).MinWidth <> 0) and
+    (TShellListColumn(Columns[2]).MaxWidth <> 0) and
+    (TShellListColumn(Columns[3]).MinWidth <> 0)
   );
 end;
 
@@ -2443,7 +2451,7 @@ var
   testDate: TDateTime;
   nCol: Integer;
   colWidths: array of Integer = nil;
-  weightName: Integer;
+  weightOfNameCol: Integer;
   bmp: Graphics.TBitmap;
   fmt: String;
 begin
@@ -2477,6 +2485,16 @@ begin
         colWidths[c] := bmp.Canvas.TextWidth(FormatDateTime(fmt, testDate) + 'MM');   //'MM' to simulate the cell padding
         dec(widthAvail, colWidths[c]);
         dec(nCol);
+      end else
+      if (col.MinWidth > 0) and (col.Width < col.MinWidth) then
+      begin
+        colWidths[c] := col.MinWidth;
+        dec(nCol);
+      end;
+      if (col.MaxWidth > 0) and (col.Width > col.MaxWidth) then
+      begin
+        colWidths[c] := col.MaxWidth;
+        dec(nCol);
       end;
     end;
   finally
@@ -2485,15 +2503,16 @@ begin
 
   // If the space available is small, alloc a larger percentage to the secondary fields
   if clientWid < 400 then
-    weightName := 2
+    weightOfNameCol := 2
   else
-    weightName := 4;
+    weightOfNameCol := 4;
 
-  colWidth := widthAvail div (nCol + weightName - 1);
-  colWidths[0] := weightName * colWidth;
+  colWidth := widthAvail div (nCol + weightOfNameCol - 1);
+  colWidths[0] := weightOfNameCol * colWidth;
   sumOfWidths := 0;
   for c := 0 to ColumnCount-1 do
   begin
+    col := TShellListColumn(Columns[c]);
     if colWidths[c] = 0 then
       colWidths[c] := colWidth;
     inc(sumOfWidths, colWidths[c]);
