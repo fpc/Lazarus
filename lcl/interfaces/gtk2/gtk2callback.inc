@@ -3504,8 +3504,14 @@ begin
   {$ENDIF}
   if (c^.Data.Data<>nil)
   and (c^.Data.Length>0) then begin
-    GetMem(TempBuf,c^.Data.Length);
-    Move(c^.Data.Data^,TempBuf^,c^.Data.Length);
+    {$IFDEF CPU64}
+    i:=c^.Data.Length shl 1;  // * 2
+    {$ELSE}
+    i:=c^.Data.Length;
+    {$ENDIF}
+    DebugLn(['[ClipboardSelectionReceivedHandler] DataLen=', i]);
+    GetMem(TempBuf,i);
+    Move(c^.Data.Data^,TempBuf^,i);
     c^.Data.Data:=TempBuf;
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('[ClipboardSelectionReceivedHandler] C FirstCharacter=',dbgs(ord(PChar(c^.Data.Data)[0])));
