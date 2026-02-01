@@ -2927,31 +2927,31 @@ begin
   p:=PChar(s);
 
   // try UTF-8 BOM (Byte Order Mark)
-  if CompareI(p,UTF8BOM,3) then begin
-    Result:=EncodingUTF8BOM;
-    exit;
-  end;
+  if CompareI(p,UTF8BOM,3) then
+    exit(EncodingUTF8BOM);
 
   // try ucs-2le BOM FF FE (ToDo: nowadays this BOM is UTF16LE)
-  if (p^=#$FF) and (p[1]=#$FE) then begin
-    Result:=EncodingUCS2LE;
-    exit;
-  end;
+  if (p^=#$FF) and (p[1]=#$FE) then
+    exit(EncodingUCS2LE);
 
   // try ucs-2be BOM FE FF (ToDo: nowadays this BOM is UTF16BE)
-  if (p^=#$FE) and (p[1]=#$FF) then begin
-    Result:=EncodingUCS2BE;
-    exit;
-  end;
+  if (p^=#$FE) and (p[1]=#$FF) then
+    exit(EncodingUCS2BE);
 
+  // skip possible {%mainunit ...} in front of {%encoding ...}
+  if CompareI(p,'{%mainunit ',11) then begin
+    inc(p,length('{%mainunit '));
+    while not (p^ in ['}',#0]) do inc(p);
+    if p^='}' then inc(p);
+    while (p^ in [' ',#9]) do inc(p);
+  end;
   // try {%encoding eee}
   if CompareI(p,'{%encoding ',11) then begin
     inc(p,length('{%encoding '));
     while (p^ in [' ',#9]) do inc(p);
     EndPos:=p;
     while not (EndPos^ in ['}',' ',#9,#0]) do inc(EndPos);
-    Result:=NormalizeEncoding(copy(s,p-PChar(s)+1,EndPos-p));
-    exit;
+    exit(NormalizeEncoding(copy(s,p-PChar(s)+1,EndPos-p)));
   end;
 
   // try UTF-8 (this includes ASCII)
@@ -2959,10 +2959,8 @@ begin
   repeat
     if ord(p^)<128 then begin
       // ASCII
-      if (p^=#0) and (p-PChar(s)>=l) then begin
-        Result:=EncodingUTF8;
-        exit;
-      end;
+      if (p^=#0) and (p-PChar(s)>=l) then
+        exit(EncodingUTF8);
       inc(p);
     end else begin
       i:=UTF8CodepointStrictSize(p);

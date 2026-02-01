@@ -4391,23 +4391,38 @@ begin
   Result:=copy(ASource,StartPos,EndPos-StartPos);
 end;
 
-function FindMainUnitHint(const ASource: string; out Filename: string
-  ): boolean;
+function FindMainUnitHint(const ASource: string; out Filename: string): boolean;
+// Find main unit name from directive {%MainUnit ...} at the beginning of file.
+// Allows another directive {%Encoding ...} in front of it.
+// No spaces allowed at text start.
 const
   IncludeByHintStart = '{%MainUnit ';
+  EncodingHintStart  = '{%Encoding ';
 var
-  MaxPos: Integer;
-  StartPos: Integer;
-  EndPos: LongInt;
+  MaxPos, StartPos, EndPos: Integer;
 begin
   Result:=false;
   Filename:='';
   MaxPos:=length(ASource);
-  StartPos:=length(IncludeByHintStart);
-  if not TextBeginsWith(PChar(Pointer(ASource)),// pointer type cast avoids #0 check
-          MaxPos,IncludeByHintStart,StartPos,false)
+  StartPos:=1;
+  // Skip possible {%Encoding ...} directive
+  if TextBeginsWith(@ASource[StartPos],MaxPos,
+                    EncodingHintStart,length(EncodingHintStart),false) then
+  begin
+    inc(StartPos,length(EncodingHintStart));
+    while (StartPos<=MaxPos) and (ASource[StartPos]<>'}') do inc(StartPos);
+    if StartPos>MaxPos then exit;
+    repeat
+      inc(StartPos);           // skip spaces and NewLines between directives
+    until (StartPos>MaxPos) or not (ASource[StartPos] in [' ',#9,#10,#13]);
+    if StartPos>MaxPos then exit;
+  end;
+  // Now try to find {%MainUnit ...}
+  if not TextBeginsWith(@ASource[StartPos],MaxPos-StartPos+1,
+                        IncludeByHintStart,length(IncludeByHintStart),false)
   then
     exit;
+  inc(StartPos,length(IncludeByHintStart)-1);
   while (StartPos<=MaxPos) and (ASource[StartPos]=' ') do inc(StartPos);
   EndPos:=StartPos;
   while (EndPos<=MaxPos) and (ASource[EndPos]<>'}') do inc(EndPos);

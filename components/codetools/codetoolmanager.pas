@@ -1508,8 +1508,7 @@ begin
   end;
 end;
 
-function TCodeToolManager.FindCodeOfMainUnitHint(Code: TCodeBuffer
-  ): TCodeBuffer;
+function TCodeToolManager.FindCodeOfMainUnitHint(Code: TCodeBuffer): TCodeBuffer;
 var
   MainUnitFilename: string;
 begin
