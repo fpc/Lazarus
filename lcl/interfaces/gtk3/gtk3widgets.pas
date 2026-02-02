@@ -9684,16 +9684,22 @@ end;
 class function TGtk3Window.WindowMoveEvent(awidget: PGtkWindow; AEvent: PGdkEventConfigure; adata: gpointer): gboolean; cdecl;
 var
   MoveMsg: TLMMove;
+  X, Y: gint;
 begin
   if Gtk3IsGtkWindow(aWidget) then
   begin
-    with MoveMsg do
+    MoveMsg.Result := 0;
+    MoveMsg.Msg := LM_MOVE;
+    MoveMsg.MoveType := Move_SourceIsInterface;
+    if GTK3WidgetSet.IsWayland or not aWidget^.get_mapped then
     begin
-      Result := 0;
-      Msg := LM_MOVE;
-      MoveType := Move_SourceIsInterface;
-      XPos := SmallInt(AEvent^.x);
-      YPos := SmallInt(AEvent^.y);
+      MoveMsg.XPos := SmallInt(AEvent^.x);
+      MoveMsg.YPos := SmallInt(AEvent^.y);
+    end
+    else begin // #42039
+      gtk_window_get_position(aWidget, @X, @Y);
+      MoveMsg.XPos := SmallInt(X);
+      MoveMsg.YPos := SmallInt(Y);
     end;
     Result := TGtk3Window(aData).DeliverMessage(MoveMsg) <> 0;
   end else
