@@ -1559,7 +1559,6 @@ implementation
 {$R ../images/bookmark.res}
 
 var
-  TheGlobalNextNumForEditorName: QWord = 0;
   AWordCompletion: TWordCompletion = nil;
 
 var
@@ -5417,7 +5416,6 @@ end;
 procedure TSourceEditor.CreateEditor(AOwner: TSourceNotebook;
   AParent: TWinControl; AReturnUpdating: boolean);
 var
-  NewName: string;
   bmp: TCustomBitmap;
 Begin
   {$IFDEF IDE_DEBUG}
@@ -5425,12 +5423,9 @@ Begin
   {$ENDIF}
   if not assigned(FEditor) then Begin
     FVisible := False;
-    NewName:='SynEdit_'+IntToStr(TheGlobalNextNumForEditorName);
-    Inc(TheGlobalNextNumForEditorName);
     FEditor := TIDESynEditor.Create(AOwner);
     FEditor.BeginUpdate;
     with FEditor do begin
-      Name:=NewName;
       Text:='';
       Align := alClient;
       Visible := False;
