@@ -336,7 +336,7 @@ begin
   //DebugLn(['TLazBuildApplication.OnCodeBufferDecodeLoaded Filename=',Filename,' Encoding=',GuessEncoding(Source)]);
   DiskEncoding:='';
   if DiskEncoding='' then
-    DiskEncoding:=GuessEncoding(Source);
+    DiskEncoding:=GuessPascalEncoding(Source);
   MemEncoding:=EncodingUTF8;
   if (DiskEncoding<>MemEncoding) then begin
     {$IFDEF VerboseIDEEncoding}

@@ -100,6 +100,7 @@ const
   UTF32LEBOM = #$FE#$FF#0#0;
 
 function GuessEncoding(const s: string): string;
+function GuessPascalEncoding(const s: string): string;
 
 {
   Note: Conversions to UTF8 will always set the target's codepage to CP_UTF8
@@ -2866,7 +2867,7 @@ begin
   List.Add('UCS-2BE');
 end;
 
-function GuessEncoding(const s: string): string;
+function GuessEncoding_sub(const s: string; IsPascal: boolean): string;
 
   function CompareI(p1, p2: PChar; Count: integer): boolean;
   var
@@ -2938,20 +2939,23 @@ begin
   if (p^=#$FE) and (p[1]=#$FF) then
     exit(EncodingUCS2BE);
 
-  // skip possible {%mainunit ...} in front of {%encoding ...}
-  if CompareI(p,'{%mainunit ',11) then begin
-    inc(p,length('{%mainunit '));
-    while not (p^ in ['}',#0]) do inc(p);
-    if p^='}' then inc(p);
-    while (p^ in [' ',#9]) do inc(p);
-  end;
-  // try {%encoding eee}
-  if CompareI(p,'{%encoding ',11) then begin
-    inc(p,length('{%encoding '));
-    while (p^ in [' ',#9]) do inc(p);
-    EndPos:=p;
-    while not (EndPos^ in ['}',' ',#9,#0]) do inc(EndPos);
-    exit(NormalizeEncoding(copy(s,p-PChar(s)+1,EndPos-p)));
+  if IsPascal then begin
+    // Check directives that use a Pascal comment syntax.
+    // skip possible {%mainunit ...} in front of {%encoding ...}
+    if CompareI(p,'{%mainunit ',11) then begin
+      inc(p,length('{%mainunit '));
+      while not (p^ in ['}',#0]) do inc(p);
+      if p^='}' then inc(p);
+      while (p^ in [' ',#9,#10,#13]) do inc(p);
+    end;
+    // try {%encoding eee}
+    if CompareI(p,'{%encoding ',11) then begin
+      inc(p,length('{%encoding '));
+      while (p^ in [' ',#9]) do inc(p);
+      EndPos:=p;
+      while not (EndPos^ in ['}',' ',#9,#0]) do inc(EndPos);
+      exit(NormalizeEncoding(copy(s,p-PChar(s)+1,EndPos-p)));
+    end;
   end;
 
   // try UTF-8 (this includes ASCII)
@@ -2986,6 +2990,15 @@ begin
   end;
 end;
 
+function GuessEncoding(const s: string): string;
+begin
+  Result:=GuessEncoding_sub(s, false);
+end;
+
+function GuessPascalEncoding(const s: string): string;
+begin
+  Result:=GuessEncoding_sub(s, true);
+end;
 
 function ConvertEncodingFromUTF8(const s, ToEncoding: string; out Encoded: boolean;
   SetTargetCodePage: boolean = false): string;

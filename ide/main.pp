@@ -10109,7 +10109,7 @@ begin
   if InputHistories<>nil then
     DiskEncoding:=InputHistories.FileEncodings[Filename];
   if DiskEncoding='' then
-    DiskEncoding:=GuessEncoding(Source)
+    DiskEncoding:=GuessPascalEncoding(Source)
   else if DiskEncoding=EncodingUTF8BOM then begin
     if (Source='') or not CompareMem(@UTF8BOM[1],@Source[1],length(UTF8BOM)) then
       DiskEncoding:=EncodingUTF8;
@@ -13009,7 +13009,7 @@ begin
     SetLength(s,fs.Size);
     if s<>'' then
       fs.Read(s[1],length(s));
-    Encoding:=GuessEncoding(s);
+    Encoding:=GuessPascalEncoding(s);
     s:=ConvertEncoding(s,Encoding,EncodingUTF8);
   finally
     fs.Free;
