@@ -2718,6 +2718,8 @@ begin
          (FChildClassCastType.DbgSymbol.SymbolType <> stType) or
          (FChildClassCastType.DbgSymbol.Kind <> skClass)
       then begin
+        SetError('Couldn''t find debug info for class: '+AClassName);
+        // TODO: return as TObject or add data address somehow
         ReleaseRefAndNil(FChildClassCastType);
         exit;
       end;
