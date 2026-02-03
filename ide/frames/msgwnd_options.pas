@@ -37,6 +37,7 @@ uses
   Forms, Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, Spin, Buttons,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEExternToolIntf, IDEImagesIntf,
+  DividerBevel,
   // IdeConfig
   EnvironmentOpts,
   // IDE
@@ -47,24 +48,22 @@ type
   { TMsgWndOptionsFrame }
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
+    OptionsBevel: TDividerBevel;
     MWCtrlLeftActionComboBox: TComboBox;
     MsgColorBox: TColorBox;
     MsgColorListBox: TColorListBox;
     MsgColorGroupBox: TGroupBox;
-    MWAlwaysDrawFocusedCheckBox: TCheckBox;
-    MWFocusCheckBox: TCheckBox;
+    cbAlwaysDrawFocused: TCheckBox;
+    cbFocusAtCompilation: TCheckBox;
     MWSetPastelColorsButton: TBitBtn;
-    MWShowFPCMsgLinesCompiledCheckBox: TCheckBox;
-    MWStayOnTopCheckBox: TCheckBox;
-    MWShowIconsCheckBox: TCheckBox;
-    MWMaxProcsLabel: TLabel;
-    MWMaxProcsSpinEdit: TSpinEdit;
-    MWOptsLeftBevel: TBevel;
+    cbShowFPCLinesCompiled: TCheckBox;
+    cbStayOnTop: TCheckBox;
+    cbShowIcons: TCheckBox;
+    lbMaxProcs: TLabel;
+    MaxProcsSpinEdit: TSpinEdit;
     MWColorBox: TColorBox;
     MWColorListBox: TColorListBox;
     MWColorsGroupBox: TGroupBox;
-    MWOptionsLabel: TLabel;
-    MWOptsRightBevel: TBevel;
     MWSetDefaultColorsButton: TBitBtn;
     MWSetEditorColorsButton: TButton;
     MWSpeedSetColorsGroupBox: TGroupBox;
@@ -195,13 +194,11 @@ var
 begin
   Page:=GeneralPage;
   if Page=nil then exit;
-
   {MWColorListBox.Colors[mwBackground]:=aSynEdit.Color;
   MWColorListBox.Colors[mwRunning]:=aSynEdit.
   MWColorListBox.Colors[mwSuccess]:=aSynEdit.
   MWColorListBox.Colors[mwFailed]:=aSynEdit.
   MWColorListBox.Colors[mwAutoHeader]:=aSynEdit.}
-
   MWColorBox.Selected := MWColorListBox.Selected;
 end;
 
@@ -225,8 +222,7 @@ end;
 constructor TMsgWndOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
-  MWOptionsLabel.Caption:=lisOptions;
+  OptionsBevel.Caption:=lisOptions;
   MWColorsGroupBox.Caption:= lisHeaderColors;
   MsgColorGroupBox.Caption:= lisMsgColors;
   MWSpeedSetColorsGroupBox.Caption:=lisSetAllColors;
@@ -235,17 +231,16 @@ begin
   MWSetPastelColorsButton.Caption:=lisPastelColors;
   IDEImages.AssignImage(MWSetPastelColorsButton, 'pastel_colors');
   MWSetEditorColorsButton.Caption:=lisEditorColors;
-  MWStayOnTopCheckBox.Caption:=lisWindowStaysOnTop;
-  MWShowIconsCheckBox.Caption:=dlgShowMessagesIcons;
-  MWShowIconsCheckBox.Hint:=dlgAnIconForErrorWarningHintIsShown;
-  MWAlwaysDrawFocusedCheckBox.Caption:=lisAlwaysDrawSelectedItemsFocused;
-  MWAlwaysDrawFocusedCheckBox.Hint:=lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN;
-  MWFocusCheckBox.Caption:=dlgEOFocusMessagesAtCompilation;
-  MWMaxProcsLabel.Caption:=Format(lisMaximumParallelProcesses0MeansDefault,
+  cbStayOnTop.Caption:=lisWindowStaysOnTop;
+  cbShowIcons.Caption:=dlgShowMessagesIcons;
+  cbShowIcons.Hint:=dlgAnIconForErrorWarningHintIsShown;
+  cbAlwaysDrawFocused.Caption:=lisAlwaysDrawSelectedItemsFocused;
+  cbAlwaysDrawFocused.Hint:=lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN;
+  cbFocusAtCompilation.Caption:=dlgEOFocusMessagesAtCompilation;
+  lbMaxProcs.Caption:=Format(lisMaximumParallelProcesses0MeansDefault,
                                   [IntToStr(DefaultMaxProcessCount)]);
-  MWShowFPCMsgLinesCompiledCheckBox.Caption:=lisShowFPCMessageLinesCompiled;
-  MWShowFPCMsgLinesCompiledCheckBox.Hint:=
-    lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt;
+  cbShowFPCLinesCompiled.Caption:=lisShowFPCMessageLinesCompiled;
+  cbShowFPCLinesCompiled.Hint:=lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt;
 end;
 
 function TMsgWndOptionsFrame.GetTitle: String;
@@ -276,13 +271,13 @@ begin
       MWColorListBox.Colors[ord(c)] := MsgViewColors[c];
     for u in TMessageLineUrgency do
       MsgColorListBox.Colors[ord(u)] := MsgColors[u];
-    MWStayOnTopCheckBox.Checked := MsgViewStayOnTop;
-    MWShowIconsCheckBox.Checked := ShowMessagesIcons;
-    MWAlwaysDrawFocusedCheckBox.Checked := MsgViewAlwaysDrawFocused;
-    MWFocusCheckBox.Checked := MsgViewFocus;
+    cbStayOnTop.Checked := MsgViewStayOnTop;
+    cbShowIcons.Checked := ShowMessagesIcons;
+    cbAlwaysDrawFocused.Checked := MsgViewAlwaysDrawFocused;
+    cbFocusAtCompilation.Checked := MsgViewFocus;
   end;
-  MWShowFPCMsgLinesCompiledCheckBox.Checked := EnvOpt.MsgViewShowFPCMsgLinesCompiled;
-  MWMaxProcsSpinEdit.Value := EnvOpt.MaxExtToolsInParallel;
+  cbShowFPCLinesCompiled.Checked := EnvOpt.MsgViewShowFPCMsgLinesCompiled;
+  MaxProcsSpinEdit.Value := EnvOpt.MaxExtToolsInParallel;
   fReady:=true;
 end;
 
@@ -301,13 +296,13 @@ begin
       MsgViewColors[c] := MWColorListBox.Colors[ord(c)];
     for u in TMessageLineUrgency do
       MsgColors[u] := MsgColorListBox.Colors[ord(u)];
-    MsgViewStayOnTop := MWStayOnTopCheckBox.Checked;
-    ShowMessagesIcons := MWShowIconsCheckBox.Checked;
-    MsgViewAlwaysDrawFocused := MWAlwaysDrawFocusedCheckBox.Checked;
-    MsgViewFocus := MWFocusCheckBox.Checked;
+    MsgViewStayOnTop := cbStayOnTop.Checked;
+    ShowMessagesIcons := cbShowIcons.Checked;
+    MsgViewAlwaysDrawFocused := cbAlwaysDrawFocused.Checked;
+    MsgViewFocus := cbFocusAtCompilation.Checked;
   end;
-  EnvOpt.MsgViewShowFPCMsgLinesCompiled := MWShowFPCMsgLinesCompiledCheckBox.Checked;
-  EnvOpt.MaxExtToolsInParallel := MWMaxProcsSpinEdit.Value;
+  EnvOpt.MsgViewShowFPCMsgLinesCompiled := cbShowFPCLinesCompiled.Checked;
+  EnvOpt.MaxExtToolsInParallel := MaxProcsSpinEdit.Value;
 end;
 
 class function TMsgWndOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

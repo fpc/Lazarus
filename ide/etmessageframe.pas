@@ -466,14 +466,23 @@ var
     MsgSaveShownToFileMenuItem: TIDEMenuCommand;
   MsgClearMenuItem: TIDEMenuCommand;
   MsgOptionsMenuItem: TIDEMenuCommand;
-  // FPC message specific menu items
+  // FPC settings, will be shown always.
+  MsgFpcOptionsMenuSection: TIDEMenuSection;
+    MsgFilenameStyleMenuSection: TIDEMenuSection;
+      MsgFileStyleShortMenuItem: TIDEMenuCommand;
+      MsgFileStyleRelativeMenuItem: TIDEMenuCommand;
+      MsgFileStyleFullMenuItem: TIDEMenuCommand;
+    MsgTranslateMenuItem: TIDEMenuCommand;
+    MsgShowIDMenuItem: TIDEMenuCommand;
+  MsgEditFpcHelpMenuItem: TIDEMenuCommand;
+  // FPC message filters etc., will be hidden for non-FPC messages.
   MsgQuickFixMenuSection: TIDEMenuSection;
-  MsgFilterMsgOfTypeMenuItem: TIDEMenuCommand;
-  MsgRemoveCompOptHideMenuSection: TIDEMenuSection;
+  MsgFilterMsgOfTypeMenuItem: TIDEMenuCommand;   // Filter all messages of type
+  MsgRemoveCompOptHideMenuSection: TIDEMenuSection;  // Remove hide message
   MsgRemoveMsgTypeFilterMenuSection: TIDEMenuSection;
-    MsgRemoveFilterMsgOneTypeMenuSection: TIDEMenuSection;
+    MsgRemoveFilterMsgOneTypeMenuSection: TIDEMenuSection; // Remove Filter all messages of type...
     MsgRemoveFilterAllMsgTypesMenuItem: TIDEMenuCommand;
-  MsgFilterBelowMenuSection: TIDEMenuSection;
+  MsgFilterBelowMenuSection: TIDEMenuSection;  // Filter non-urgent messages
     MsgFilterWarningsMenuItem: TIDEMenuCommand;
     MsgFilterNotesMenuItem: TIDEMenuCommand;
     MsgFilterHintsMenuItem: TIDEMenuCommand;
@@ -484,16 +493,8 @@ var
   MsgFiltersMenuSection: TIDEMenuSection;
     MsgSelectFilterMenuSection: TIDEMenuSection;
     MsgAddFilterMenuItem: TIDEMenuCommand;
-  MsgHelpMenuItem: TIDEMenuCommand;
-  MsgEditHelpMenuItem: TIDEMenuCommand;
-  MsgOptionsMenuSection: TIDEMenuSection;
-    MsgFilenameStyleMenuSection: TIDEMenuSection;
-      MsgFileStyleShortMenuItem: TIDEMenuCommand;
-      MsgFileStyleRelativeMenuItem: TIDEMenuCommand;
-      MsgFileStyleFullMenuItem: TIDEMenuCommand;
-    MsgTranslateMenuItem: TIDEMenuCommand;
-    MsgShowIDMenuItem: TIDEMenuCommand;
   MsgAboutSection: TIDEMenuSection;
+    MsgFpcHelpMenuItem: TIDEMenuCommand;
     MsgAboutToolMenuItem: TIDEMenuCommand;
     MsgOpenToolOptionsMenuItem: TIDEMenuCommand;
 
@@ -533,10 +534,26 @@ begin
       'Save Shown Messages to File', lisSaveShownMessagesToFile);
     MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent,
       'Save All Messages to File', lisSaveAllOriginalMessagesToFile);
-  MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', lisClear);
-  MsgOptionsMenuItem:=RegisterIDEMenuCommand(Root, 'Options',lisMenuGeneralOptions);
-  // FPC message specific menu items
-  MsgQuickFixMenuSection:=RegisterIDEMenuSection(Root, 'Quick Fix');
+  MsgClearMenuItem:=RegisterIDEMenuCommand(Root,'Clear',lisClear);
+  MsgOptionsMenuItem:=RegisterIDEMenuCommand(Root,'Options',lisMenuGeneralOptions);
+  // FPC settings, will be shown always.
+  MsgFpcOptionsMenuSection:=RegisterIDEMenuSection(Root,'Option Section');
+    Parent:=MsgFpcOptionsMenuSection;
+    Parent.ChildrenAsSubMenu:=true;
+    Parent.Caption:=lisFpcMessageOptions;
+    MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Parent,'Filename Styles');
+      Parent:=MsgFilenameStyleMenuSection;
+      Parent.ChildrenAsSubMenu:=true;
+      Parent.Caption:=lisFilenameStyle;
+      MsgFileStyleShortMenuItem:=RegisterIDEMenuCommand(Parent,'Short',lisShortNoPath);
+      MsgFileStyleRelativeMenuItem:=RegisterIDEMenuCommand(Parent,'Relative',lisRelative);
+      MsgFileStyleFullMenuItem:=RegisterIDEMenuCommand(Parent,'Full',lisFull);
+    Parent:=MsgFpcOptionsMenuSection;
+    MsgTranslateMenuItem:=RegisterIDEMenuCommand(Parent,'Translate',lisTranslateTheEnglishMessages);
+    MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent,'ShowID',lisShowMessageTypeID);
+  MsgEditFpcHelpMenuItem:=RegisterIDEMenuCommand(Root,'Edit help for messages',lisEditFpcMessageHelp);
+  // FPC message filters etc., will be hidden for non-FPC messages.
+  MsgQuickFixMenuSection:=RegisterIDEMenuSection(Root,'Quick Fix');
   MsgFilterMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'FilterMsgOfType',
     lisFilterAllMessagesOfCertainType);
   MsgRemoveCompOptHideMenuSection:=RegisterIDEMenuSection(Root,'RemoveCompOptHideMsg');
@@ -580,34 +597,15 @@ begin
     MsgFilterNoneMenuItem.GroupIndex:=2;
   MsgFilterHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root,
       'Filter Hints without Source Position', lisFilterHintsWithoutSourcePosition);
-  MsgFiltersMenuSection:=RegisterIDEMenuSection(Root,'Switch Filter Section');
+  MsgFiltersMenuSection:=RegisterIDEMenuSection(Root,'Custom Filter Section');
     Parent:=MsgFiltersMenuSection;
     Parent.ChildrenAsSubMenu:=true;
-    Parent.Caption:=lisSwitchFilterSettings;
+    Parent.Caption:=lisCustomFilterSettings;
     MsgSelectFilterMenuSection:=RegisterIDEMenuSection(Parent,'Filters');
-    MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent, 'Add Filter', lisAddFilter);
-  MsgHelpMenuItem := RegisterIDEMenuCommand(Root, 'Help for this message',lisHelp);
-  MsgEditHelpMenuItem := RegisterIDEMenuCommand(Root, 'Edit help for messages',lisEditHelp);
-  MsgOptionsMenuSection:=RegisterIDEMenuSection(Root,'Option Section');
-    Parent:=MsgOptionsMenuSection;
-    Parent.ChildrenAsSubMenu:=true;
-    Parent.Caption:=lisFpcMessageOptions;
-    MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Parent,'Filename Styles');
-      Parent:=MsgFilenameStyleMenuSection;
-      Parent.ChildrenAsSubMenu:=true;
-      Parent.Caption:=lisFilenameStyle;
-      MsgFileStyleShortMenuItem:=RegisterIDEMenuCommand(Parent, 'Short', lisShortNoPath);
-      MsgFileStyleRelativeMenuItem:=RegisterIDEMenuCommand(Parent, 'Relative', lisRelative);
-      MsgFileStyleFullMenuItem:=RegisterIDEMenuCommand(Parent, 'Full', lisFull);
-    Parent:=MsgOptionsMenuSection;
-    MsgTranslateMenuItem:=RegisterIDEMenuCommand(Parent, 'Translate',
-      lisTranslateTheEnglishMessages);
-    MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent, 'ShowID',
-      lisShowMessageTypeID);
+    MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent,'Add Filter',lisAddFilter);
   MsgAboutSection:=RegisterIDEMenuSection(Root,'About');
     Parent:=MsgAboutSection;
-    Parent.ChildrenAsSubMenu:=true;
-    Parent.Caption:=lisAbout;
+    MsgFpcHelpMenuItem:=RegisterIDEMenuCommand(Parent,'Help for this message',lisHelp);
     MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', lisAbout);
     MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool Options',
       lisOpenToolOptions);
@@ -3429,9 +3427,6 @@ begin
   MsgFilterBelowMenuSection.Visible:=aShow;
   MsgFilterHintsWithoutPosMenuItem.Visible:=aShow;
   MsgFiltersMenuSection.Visible:=aShow;
-  MsgHelpMenuItem.Visible:=aShow;
-  MsgEditHelpMenuItem.Visible:=aShow;
-  MsgOptionsMenuSection.Visible:=aShow;
   MsgAboutSection.Visible:=aShow;
 end;
 
@@ -3507,39 +3502,23 @@ begin
   MsgClearMenuItem.OnClick := @ClearMenuItemClick;
   MsgOptionsMenuItem.OnClick := @MoreOptionsMenuItemClick;
 
+  // FPC Options, Edit FPC Help
+  MsgFileStyleShortMenuItem   .Checked := FMessagesCtrl.FilenameStyle = mwfsShort;
+  MsgFileStyleRelativeMenuItem.Checked := FMessagesCtrl.FilenameStyle = mwfsRelative;
+  MsgFileStyleFullMenuItem    .Checked := FMessagesCtrl.FilenameStyle = mwfsFull;
+  MsgFileStyleShortMenuItem   .OnClick := @FileStyleMenuItemClick;
+  MsgFileStyleRelativeMenuItem.OnClick := @FileStyleMenuItemClick;
+  MsgFileStyleFullMenuItem    .OnClick := @FileStyleMenuItemClick;
+  MsgTranslateMenuItem.Checked := mcoShowTranslated in FMessagesCtrl.Options;
+  MsgShowIDMenuItem   .Checked := mcoShowMessageID  in FMessagesCtrl.Options;
+  MsgTranslateMenuItem.OnClick := @TranslateMenuItemClick;
+  MsgShowIDMenuItem   .OnClick := @ShowIDMenuItemClick;
+  MsgEditFpcHelpMenuItem.OnClick := @EditHelpMenuItemClick;
+
   // FPC specific menu items.
   ShowHideFpcMenuItems(FpcMsg);
   if not FpcMsg then             // This is a user defined external tool.
     Exit;                        // Don't process FPC compilation specific stuff.
-
-  // About
-  ToolCaption:='';
-  if View<>nil then
-  begin
-    MsgAboutToolMenuItem.Caption:=Format(lisAbout2, [View.Caption]);
-    MsgAboutSection.Visible:=true;
-    if (View.Tool<>nil) and (View.Tool.Data is TIDEExternalToolData) then begin
-      ToolData:=TIDEExternalToolData(View.Tool.Data);
-      if ToolData.Kind=IDEToolCompilePackage then
-        ToolCaption:=Format(lisCPOpenPackage, [ToolData.ModuleName]);
-    end;
-  end else
-    MsgAboutSection.Visible:=false;
-  MsgAboutToolMenuItem.OnClick:=@AboutToolMenuItemClick;
-  i:=1;  // Count of visible MenuItems
-  MsgOpenToolOptionsMenuItem.Visible:=ToolCaption<>'';
-  if MsgOpenToolOptionsMenuItem.Visible then
-  begin
-    inc(i);
-    //only assign caption if it is not empty to avoid its "unlocalizing",
-    //this is visible e.g. in EditorToolBar menu tree
-    MsgOpenToolOptionsMenuItem.Caption:=ToolCaption;
-  end
-  else
-    //assign default caption if item is not visible (needed for EditorToolBar)
-    MsgOpenToolOptionsMenuItem.Caption:=lisOpenToolOptions;
-  MsgOpenToolOptionsMenuItem.OnClick:=@OpenToolsOptionsMenuItemClick;
-  MsgAboutSection.ChildrenAsSubMenu:=i>1;
 
   // Filtering
   if CanFilterMsgType then begin
@@ -3575,24 +3554,34 @@ begin
   MsgFilterNotesMenuItem   .MenuItem.ShortCut := ShortCut(VK_4, [ssCtrl]);
   MsgFilterWarningsMenuItem.MenuItem.ShortCut := ShortCut(VK_5, [ssCtrl]);
 
-  // Help
-  MsgHelpMenuItem.Enabled := HasText;
-  MsgHelpMenuItem.OnClick := @HelpMenuItemClick;
-  MsgHelpMenuItem.MenuItem.ShortCut := ShortCut(VK_F1, []);
-  MsgEditHelpMenuItem.OnClick := @EditHelpMenuItemClick;
+  // FPC Help
+  MsgFpcHelpMenuItem.Enabled := HasText;
+  MsgFpcHelpMenuItem.OnClick := @HelpMenuItemClick;
+  MsgFpcHelpMenuItem.MenuItem.ShortCut := ShortCut(VK_F1, []);
 
-  // Options
-  MsgFileStyleShortMenuItem   .Checked := FMessagesCtrl.FilenameStyle = mwfsShort;
-  MsgFileStyleRelativeMenuItem.Checked := FMessagesCtrl.FilenameStyle = mwfsRelative;
-  MsgFileStyleFullMenuItem    .Checked := FMessagesCtrl.FilenameStyle = mwfsFull;
-  MsgFileStyleShortMenuItem   .OnClick := @FileStyleMenuItemClick;
-  MsgFileStyleRelativeMenuItem.OnClick := @FileStyleMenuItemClick;
-  MsgFileStyleFullMenuItem    .OnClick := @FileStyleMenuItemClick;
-
-  MsgTranslateMenuItem.Checked := mcoShowTranslated in FMessagesCtrl.Options;
-  MsgShowIDMenuItem   .Checked := mcoShowMessageID  in FMessagesCtrl.Options;
-  MsgTranslateMenuItem.OnClick := @TranslateMenuItemClick;
-  MsgShowIDMenuItem   .OnClick := @ShowIDMenuItemClick;
+  // About
+  ToolCaption:='';
+  if View<>nil then
+  begin
+    MsgAboutToolMenuItem.Caption:=Format(lisAbout2, [View.Caption]);
+    MsgAboutSection.Visible:=true;
+    if (View.Tool<>nil) and (View.Tool.Data is TIDEExternalToolData) then begin
+      ToolData:=TIDEExternalToolData(View.Tool.Data);
+      if ToolData.Kind=IDEToolCompilePackage then
+        ToolCaption:=Format(lisCPOpenPackage, [ToolData.ModuleName]);
+    end;
+  end else
+    MsgAboutSection.Visible:=false;
+  MsgAboutToolMenuItem.OnClick:=@AboutToolMenuItemClick;
+  MsgOpenToolOptionsMenuItem.Visible:=ToolCaption<>'';
+  if MsgOpenToolOptionsMenuItem.Visible then
+    //only assign caption if it is not empty to avoid its "unlocalizing",
+    //this is visible e.g. in EditorToolBar menu tree
+    MsgOpenToolOptionsMenuItem.Caption:=ToolCaption
+  else
+    //assign default caption if item is not visible (needed for EditorToolBar)
+    MsgOpenToolOptionsMenuItem.Caption:=lisOpenToolOptions;
+  MsgOpenToolOptionsMenuItem.OnClick:=@OpenToolsOptionsMenuItemClick;
 
   UpdateRemoveCompOptHideMsgItems;
   UpdateRemoveMsgTypeFilterItems;

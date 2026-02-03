@@ -11,27 +11,27 @@ object MessagesFrame: TMessagesFrame
   DesignTop = 171
   object SearchPanel: TPanel
     Left = 0
-    Height = 23
-    Top = 83
+    Height = 32
+    Top = 74
     Width = 444
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 23
+    ClientHeight = 32
     ClientWidth = 444
     TabOrder = 0
     object SearchEdit: TEdit
       AnchorSideLeft.Control = HideSearchSpeedButton
       AnchorSideLeft.Side = asrBottom
       Left = 33
-      Height = 23
-      Top = 1
+      Height = 32
+      Top = 0
       Width = 200
       BorderSpacing.Left = 10
       Constraints.MinWidth = 200
+      TabOrder = 0
       OnChange = SearchEditChange
       OnKeyDown = SearchEditKeyDown
-      TabOrder = 0
     end
     object SearchNextSpeedButton: TSpeedButton
       AnchorSideLeft.Control = SearchEdit
@@ -40,14 +40,14 @@ object MessagesFrame: TMessagesFrame
       AnchorSideBottom.Control = SearchEdit
       AnchorSideBottom.Side = asrBottom
       Left = 233
-      Height = 23
-      Top = 1
+      Height = 32
+      Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
       Flat = True
-      OnClick = SearchNextSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = SearchNextSpeedButtonClick
     end
     object SearchPrevSpeedButton: TSpeedButton
       AnchorSideLeft.Control = SearchNextSpeedButton
@@ -56,14 +56,14 @@ object MessagesFrame: TMessagesFrame
       AnchorSideBottom.Control = SearchNextSpeedButton
       AnchorSideBottom.Side = asrBottom
       Left = 256
-      Height = 23
-      Top = 1
+      Height = 32
+      Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
       Flat = True
-      OnClick = SearchPrevSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = SearchPrevSpeedButtonClick
     end
     object HideSearchSpeedButton: TSpeedButton
       AnchorSideLeft.Control = SearchPanel
@@ -71,19 +71,19 @@ object MessagesFrame: TMessagesFrame
       AnchorSideBottom.Control = SearchPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 32
       Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
       Flat = True
-      OnClick = HideSearchSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
+      OnClick = HideSearchSpeedButtonClick
     end
   end
   object MsgCtrlPopupMenu: TPopupMenu
     OnPopup = MsgCtrlPopupMenuPopup
-    left = 240
-    top = 25
+    Left = 240
+    Top = 25
   end
 end
