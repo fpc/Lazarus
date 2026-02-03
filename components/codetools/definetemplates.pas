@@ -244,7 +244,7 @@ const
     'ECMAScript6'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..106] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..109] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
@@ -305,6 +305,9 @@ const
     'powerpc64-aix-gtk',
     'powerpc64-aix-gtk2',
     'powerpc64-aix-nogui',
+    'powerpc64-freebsd-gtk',
+    'powerpc64-freebsd-gtk2',
+    'powerpc64-freebsd-nogui',
     'sparc-linux-gtk',
     'sparc-linux-gtk2',
     'sparc-linux-nogui',
