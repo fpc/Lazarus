@@ -8730,6 +8730,10 @@ msgstr "現在のエディタのカーソル列"
 msgid "Cursor row in current editor"
 msgstr "カーソル"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "これらのオプションは、マクロが置き換えられた後、コンパイラに送られます。"
@@ -9581,9 +9585,9 @@ msgstr ""
 msgid "Edit context help"
 msgstr "状況依存ヘルプを編集"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "ヘルプを編集"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr ""
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -14320,11 +14324,6 @@ msgstr ""
 "\n"
 "GNU ライブラリ一般公衆使用許諾書はこのライブラリとともに配布されているはずですが、もしなければ、次の住所に手紙でリクエストすることによって入手できます：Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA\n"
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "その他"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -18052,10 +18051,6 @@ msgstr "\"%s\" は無効な識別子です"
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "システム変数をオーバーライド"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "フィルタ設定を切り替え"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

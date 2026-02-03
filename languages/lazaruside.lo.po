@@ -8519,6 +8519,10 @@ msgstr "ຖັນເຄີເຊີໃນຕົວແກ້ໄຂປັດຈຸ
 msgid "Cursor row in current editor"
 msgstr "ແຖວເຄີເຊີໃນຕົວແກ້ໄຂປັດຈຸບັນ"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "ຕົວເລືອກເຫຼົ່ານີ້ຈະຖືກສົ່ງໄປຫາ compiler ຫຼັງຈາກ macros ຖືກແທນທີ່."
@@ -9358,9 +9362,9 @@ msgstr "ແກ້ໄຂ Build modes"
 msgid "Edit context help"
 msgstr "ແກ້ໄຂ Context help"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "ແກ້ໄຂ Help"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr ""
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -13988,11 +13992,6 @@ msgstr ""
 "\n"
 "ທ່ານຄວນໄດ້ຮັບສຳເນົາຂອງ GNU Library General Public License ພ້ອມກັບ library ນີ້; ຖ້າບໍ່, ໃຫ້ຂຽນຫາ Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "ເພີ່ມເຕີມ"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17660,10 +17659,6 @@ msgstr "\"%s\" ບໍ່ແມ່ນຊື່ລະບຸ (identifier) ທີ່
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "ຂຽນທັບຕົວປ່ຽນຂອງລະບົບ"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "ສະລັບການຕັ້ງຄ່າຕົວຕອງ"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

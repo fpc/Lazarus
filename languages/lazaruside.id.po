@@ -8789,6 +8789,10 @@ msgstr "Kolom kursor dalam editor saat ini"
 msgid "Cursor row in current editor"
 msgstr "Baris kursor dalam editor saat ini"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr ""
@@ -9641,8 +9645,8 @@ msgstr ""
 msgid "Edit context help"
 msgstr ""
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
 msgstr ""
 
 #: lazarusidestrconsts.liseditkey
@@ -14483,11 +14487,6 @@ msgid ""
 "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr "<description>%sHak Cipta (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr ""
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -18274,10 +18273,6 @@ msgstr "%s%s%s bukan pengenal yang benar."
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Timpa variabel sistem"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr ""
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

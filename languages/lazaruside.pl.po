@@ -8736,6 +8736,10 @@ msgstr "Kolumna w miejscu kursora"
 msgid "Cursor row in current editor"
 msgstr "Wiersz w miejscu kursora"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr ""
@@ -9587,9 +9591,9 @@ msgstr ""
 msgid "Edit context help"
 msgstr "Edycja pomocy kontekstowej"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "Edycja pomocy"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr ""
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -14264,11 +14268,6 @@ msgid ""
 "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr ""
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "Więcej"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17992,10 +17991,6 @@ msgstr "\"%s\" nie jest prawidłowym identyfikatorem."
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Przedefiniuj zmienną systemową"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "Zmień ustawienia filtrowania"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

@@ -8600,6 +8600,10 @@ msgstr "Kursorin sarake nykyisessä editorissa"
 msgid "Cursor row in current editor"
 msgstr "Kursorin rivi nykyisessä editorissa"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Nämä asetukset viedään kääntäjälle, kun makrot on korvattu."
@@ -9441,9 +9445,9 @@ msgstr ""
 msgid "Edit context help"
 msgstr "Muokkaa tilannekohtaista ohjetta"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "Muokkaa avustetta"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr ""
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -14063,11 +14067,6 @@ msgid ""
 "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr ""
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "Lisää"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17740,10 +17739,6 @@ msgstr "\"%s\" ei ole kelvollinen tunniste."
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Syrjäytä järjestelmän muuttuja"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "Vaihda suodattimen asetukset"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

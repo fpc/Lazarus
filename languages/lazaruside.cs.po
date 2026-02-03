@@ -8664,6 +8664,10 @@ msgstr "Sloupec kurzoru v aktuálním editoru"
 msgid "Cursor row in current editor"
 msgstr "Řádek kurzoru v aktuálním editoru"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Tyto volby jsou přímo předány překladači jakmile jsou makra nahrazena."
@@ -9514,9 +9518,9 @@ msgstr ""
 msgid "Edit context help"
 msgstr "Upravit kontextovou nápovědu"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "Upravit nápovědu"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr ""
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -14242,11 +14246,6 @@ msgstr ""
 "\n"
 "Kopii GNU Library General Public Licence by jste měli získat spolu s touto knihovnou, pokud ne, napište Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "Více"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17933,10 +17932,6 @@ msgstr "\"%s\" není platný identifikátor."
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Přepsat systémovou proměnou"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "Přepnout Nastavení Filtru"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

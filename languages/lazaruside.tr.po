@@ -8542,6 +8542,10 @@ msgstr "Geçerli düzenleyicideki imleç sütunu"
 msgid "Cursor row in current editor"
 msgstr "Geçerli düzenleyicideki imleç satırı"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Bu seçenekler makrolar değiştirildikten sonra derleyiciye aktarılır."
@@ -9381,9 +9385,9 @@ msgstr "Yapı modlarını düzenleme"
 msgid "Edit context help"
 msgstr "Bağlam yardımını düzenle"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "Yardım düzenle"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr ""
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -14015,11 +14019,6 @@ msgstr ""
 "\n"
 "GNU Kütüphanesi Genel Kamu Lisansının bir kopyasını bu kütüphane ile birlikte almış olmalısınız; olmasa da, Özgür Yazılım Vakfı, Inc.'e, 51 Franklin Street - Beşinci Kat, Boston, MA 02110-1335, ABD'ye yazmalısınız."
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "Daha fazla"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17660,10 +17659,6 @@ msgstr "\"%s\" geçerli bir tanımlayıcı değil."
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Sistem değişkenini geçersiz kıl"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "Filtre Ayarlarını Değiştir"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

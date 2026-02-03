@@ -8536,6 +8536,10 @@ msgstr "当前编辑器中的光标列"
 msgid "Cursor row in current editor"
 msgstr "当前编辑器中的光标行"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "在宏被替换后,这些选项将被传递到编译器."
@@ -9375,9 +9379,9 @@ msgstr "编辑构建模式"
 msgid "Edit context help"
 msgstr "编辑上下文帮助"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "编辑帮助"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr ""
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -14012,11 +14016,6 @@ msgstr ""
 "\n"
 "您应该已经收到了随本库附带的 GNU 库通用公共 许可证副本；如果没有，请写信至美国马萨诸塞州波士顿 51 Franklin Street, Fifth Floor, MA 02110-1335, USA 的自由软件基金会, Inc."
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "更多"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17683,10 +17682,6 @@ msgstr "\"%s\"不是一个有效的标识符."
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "覆盖系统变量"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "转换过滤器设置"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

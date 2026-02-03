@@ -8568,6 +8568,10 @@ msgstr "Stĺpec kurzora v aktuálnom editore"
 msgid "Cursor row in current editor"
 msgstr "Riadok kurzora v aktuálnom editore"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Tieto voľby sa odovzdajú prekladaču po nahradení makier."
@@ -9410,8 +9414,8 @@ msgstr "Upraviť režim vybudovania"
 msgid "Edit context help"
 msgstr "Upraviť kontextovú pomoc"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
 msgstr ""
 
 #: lazarusidestrconsts.liseditkey
@@ -14025,11 +14029,6 @@ msgid ""
 "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr "<description>%sCopyright (C) <year> <meno autora> <contact>%sTáto knižnica je slobodný softvér; môžete ju distribuovať a/alebo upravovať podľa ustanovení GNU Library General Public License tak ako ju zverenila Free Software Foundation; buď verzie 2 Licencie alebo (podľa vašej voľby) akoukoľvek novšej verzie s nasledujúcimi úpravami:%sAko špeciálny výnimka, vlastníci autorského práva tejto knižnice Vám dovoľujú prepojiť túto knižnicu s nezávislými modulmi za účelom vytvorenia programov, pričom nezávisí na licencii týchto nezávislých modulov, a kopírovať a distribuovať výsledné programy za podmienok poskytnutých podľa Vášho rozhodnutia, ktoré sa môžu líšiť pre každý nezávislý modul. Nezávislý modul je modul, ktorý nie je odvodený alebo založený na tejto knižnici. Ak upravujete túto knižnicu, môžete rozšíriť túto výnimku pre svoju verziu knižnice, ale nie je to vaša povinnosť. Ak to nechcete urobiť, zmažte túto výnimku zo svojej verzie. %sTento program je distribuovaný v nádeji, že bude užitočný, ale BEZ AKEJKOĽVEK ZÁRUKY; dokonca aj bbez záruky MERCHANTABILITY alebo FITNESS FOR A PARTICULAR PURPOSE. Ďalšie podrobnosti hľadajte v GNU Library General Public License. %sKópi GNU Library General Public License máte získať spolu s touto knižnicou, ak nie napíšte Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "Viac"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17718,10 +17717,6 @@ msgstr "\"%s\" nie je platný identifikátor."
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Prepísať systémovú premennú"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr ""
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

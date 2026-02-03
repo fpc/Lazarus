@@ -8597,6 +8597,10 @@ msgstr "Колонка курсору в цьому редакторі"
 msgid "Cursor row in current editor"
 msgstr "Рядок курсору в цьому редакторі"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Ці параметри передаються у компілятор після заміни макросів."
@@ -9442,9 +9446,9 @@ msgstr ""
 msgid "Edit context help"
 msgstr "Редагувати контекстну допомогу"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "Змінити довідку"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr ""
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -14126,11 +14130,6 @@ msgstr ""
 "\n"
 "Ви повинні були отримати копію ліцензії GNU LGPL з цією бібліотекою; якщо ви її не отримали, напишіть листа до Free Software Foundation, Inc. за адресою 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "Більше"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17821,10 +17820,6 @@ msgstr "\"%s\" не є коректним ідентифікатором."
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Змінювання системної змінної"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "Перемкнути налаштування фільтру"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

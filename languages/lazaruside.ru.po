@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-01-28 16:33+0300\n"
+"PO-Revision-Date: 2026-02-03 16:23+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -8508,6 +8508,10 @@ msgstr "Номер столбца под курсором в текущем ре
 msgid "Cursor row in current editor"
 msgstr "Номер строки под курсором в текущем редакторе"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr "Пользовательские параметры фильтрации"
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Эти параметры передаются компилятору после замены макросов."
@@ -9347,9 +9351,9 @@ msgstr "Изменить режимы сборки"
 msgid "Edit context help"
 msgstr "Редактировать контекстно-зависимую справку"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "Редактировать справку"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr "Редактировать справку для сообщений FPC ..."
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -13974,11 +13978,6 @@ msgstr ""
 "\n"
 "Вместе с данной библиотекой вы должны были получить экземпляр Стандартной Общественной Лицензии Ограниченного Применения GNU. Если вы его не получили, сообщите об этом в Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "Подробнее"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17646,10 +17645,6 @@ msgstr "\"%s\" не является корректным идентификат
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Перекрыть системную переменную"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "Настроить переключение фильтров"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."

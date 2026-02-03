@@ -8556,6 +8556,10 @@ msgstr "Cursor-Spalte im aktuellem Editor"
 msgid "Cursor row in current editor"
 msgstr "Cursor-Zeile im aktuellem Editor"
 
+#: lazarusidestrconsts.liscustomfiltersettings
+msgid "Custom Filter Settings"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed to the compiler after macros are replaced."
 msgstr "Diese Einstellungen werden direkt an den Compiler geleitet. Makros werden ersetzt und Zeilenumbrüche durch einzelne Leerzeichen ersetzt."
@@ -9393,9 +9397,9 @@ msgstr ""
 msgid "Edit context help"
 msgstr "Kontexthilfe bearbeiten"
 
-#: lazarusidestrconsts.lisedithelp
-msgid "Edit help"
-msgstr "Hilfe bearbeiten"
+#: lazarusidestrconsts.liseditfpcmessagehelp
+msgid "Edit FPC Message Help ..."
+msgstr ""
 
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
@@ -14000,11 +14004,6 @@ msgstr ""
 "\n"
 "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
-#: lazarusidestrconsts.lismore
-msgctxt "lazarusidestrconsts.lismore"
-msgid "More"
-msgstr "Weiter"
-
 #: lazarusidestrconsts.lismoresub
 msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More"
@@ -17661,10 +17660,6 @@ msgstr "\"%s\" ist als Bezeichner ungültig."
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Systemvariablen überschreiben"
-
-#: lazarusidestrconsts.lisswitchfiltersettings
-msgid "Switch Filter Settings"
-msgstr "Filtereinstellungen umschalten"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."
