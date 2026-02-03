@@ -416,7 +416,7 @@ resourcestring
   lisCopyAllShownMessagesToClipboard = 'Copy All Shown Messages to Clipboard';
   lisCopyAllOriginalMessagesToClipboard = 'Copy All/Original Messages to Clipboard';
   lisFpcMessageOptions = 'FPC Message Options';
-  lisEditFpcMessageHelp = 'Edit FPC Message Help';
+  lisEditFpcMessageHelp = 'Edit FPC Message Help ...';
   lisCopyItemToClipboard = 'Copy Item to Clipboard';
   lisCopySelectedItemToClipboard = 'Copy Selected Items to Clipboard';
   lisCopyAllItemsToClipboard = 'Copy All Items to Clipboard';
