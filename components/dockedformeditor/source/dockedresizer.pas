@@ -147,6 +147,8 @@ begin
 end;
 
 procedure TResizer.ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
+var
+  ADesignFormAssigned: boolean;
 begin
   case ScrollCode of
     scLineDown: ScrollPos := ScrollPos + 50;
@@ -162,8 +164,9 @@ begin
         if Sender = FScrollBarVert then ScrollPos := ScrollPos - ResizeControl.Height;
       end;
   end;
-
-  DesignForm.BeginUpdate;
+  ADesignFormAssigned := Assigned(FDesignForm);
+  if ADesignFormAssigned then
+    DesignForm.BeginUpdate;
   if Sender = FScrollBarVert then
   begin
     // Warning - don't overflow the range! (go to description for FRealMaxV)
@@ -177,13 +180,15 @@ begin
     ScrollPos := Max(ScrollPos, 0);
     FScrollPos.x := ScrollPos;
   end;
-  DesignForm.EndUpdate;
+  if ADesignFormAssigned then
+    DesignForm.EndUpdate;
   if not FPostponedAdjustResizeControl then
   begin
     ResizeControl.AdjustBounds(FScrollPos);
     ResizeControl.DesignerSetFocus;
   end;
-  DesignForm.Form.Invalidate;
+  if ADesignFormAssigned then
+    DesignForm.Form.Invalidate;
 end;
 
 constructor TResizer.Create(TheOwner: TWinControl);
