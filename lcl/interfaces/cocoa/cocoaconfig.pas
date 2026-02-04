@@ -336,6 +336,11 @@ type
   end;
 
 type
+  TCocoaConfigEdit = record
+    vertAlignCenter: Boolean;
+  end;
+
+type
   TCocoaConfigToggleBox = record
     bezelStyle: NSBezelStyle;
     buttonType: NSButtonType;

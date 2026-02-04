@@ -216,6 +216,15 @@ var
   );
 
 var
+  CocoaConfigEdit: TCocoaConfigEdit = (
+    // to compensate for the lack of TEdit vertical alignment property in VCL/LCL.
+    // to maintain compatibility, no adjustments are made by default,
+    // the text is aligned to the top on Cocoa.
+    // setting it to True will vertically center the text in TEdit.
+    vertAlignCenter: False;
+  );
+
+var
   CocoaConfigToggleBox: TCocoaConfigToggleBox = (
     bezelStyle: NSRoundedBezelStyle;
     buttonType: NSPushOnPushOffButton;

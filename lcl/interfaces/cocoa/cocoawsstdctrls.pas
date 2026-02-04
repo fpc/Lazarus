@@ -1150,26 +1150,55 @@ begin
   Result := TCocoaTextField(AWinControl.Handle);
 end;
 
-class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
+
+type
+  TCocoaVertCenterTextFieldCell = objcclass( NSTextFieldCell )
+    function drawingRectForBounds(theRect: NSRect): NSRect; override;
+  end;
+
+function TCocoaVertCenterTextFieldCell.drawingRectForBounds(theRect: NSRect): NSRect;
 var
-  field : TCocoaTextField;
-  cell  : NSTextFieldCell;
+  centerRect: NSRect;
 begin
-  if TCustomEdit(AWinControl).PasswordChar=#0
-    then field:=TCocoaTextField(AllocTextField(AWinControl, AParams))
-    else field:=TCocoaTextField(AllocSecureTextField(AWinControl, AParams));
+  centerRect.origin.x:= theRect.origin.x;
+  centerRect.origin.y:= (theRect.size.height-cellSize.height)/2;
+  centerRect.size.width:= theRect.size.width;
+  centerRect.size.height:= cellSize.width;
+
+  Result:= inherited drawingRectForBounds(centerRect);
+end;
+
+procedure SetTextFieldCell( const edit: TCustomEdit ; const field: TCocoaTextField );
+var
+  cell: NSTextFieldCell;
+begin
   if (field.respondsToSelector(ObjCSelector('cell'))) and Assigned(field.cell) then
   begin
-    cell := NSTextFieldCell(field.cell);
+    if CocoaConfigEdit.vertAlignCenter then begin
+      cell:= TCocoaVertCenterTextFieldCell.new;
+      field.setCell( cell );
+      cell.release;
+    end else begin
+      cell:= NSTextFieldCell(field.cell);
+    end;
     cell.setWraps(false);
     cell.setScrollable(true);
   end;
   if NOT field.fixedInitSetting then begin
-    TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
-    TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
-    UpdateControlFocusRing( field, AWinControl );
+    TextFieldSetBorderStyle(field, edit.BorderStyle);
+    TextFieldSetAllignment(field, edit.Alignment);
+    UpdateControlFocusRing( field, edit );
   end;
+end;
 
+class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
+var
+  field : TCocoaTextField;
+begin
+  if TCustomEdit(AWinControl).PasswordChar=#0
+    then field:=TCocoaTextField(AllocTextField(AWinControl, AParams))
+    else field:=TCocoaTextField(AllocSecureTextField(AWinControl, AParams));
+  SetTextFieldCell( TCustomEdit(AWinControl), field );
   Result:=TLCLHandle(field);
 end;
 
