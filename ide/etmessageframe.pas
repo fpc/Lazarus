@@ -474,7 +474,6 @@ var
       MsgFileStyleFullMenuItem: TIDEMenuCommand;
     MsgTranslateMenuItem: TIDEMenuCommand;
     MsgShowIDMenuItem: TIDEMenuCommand;
-  MsgEditFpcHelpMenuItem: TIDEMenuCommand;
   // FPC message filters etc., will be hidden for non-FPC messages.
   MsgQuickFixMenuSection: TIDEMenuSection;
   MsgFilterMsgOfTypeMenuItem: TIDEMenuCommand;   // Filter all messages of type
@@ -490,10 +489,11 @@ var
     MsgFilterDebugMenuItem: TIDEMenuCommand;
     MsgFilterNoneMenuItem: TIDEMenuCommand;
   MsgFilterHintsWithoutPosMenuItem: TIDEMenuCommand;
-  MsgFiltersMenuSection: TIDEMenuSection;
+  MsgCustomFilterMenuSection: TIDEMenuSection;
     MsgSelectFilterMenuSection: TIDEMenuSection;
     MsgAddFilterMenuItem: TIDEMenuCommand;
   MsgAboutSection: TIDEMenuSection;
+    MsgEditFpcHelpMenuItem: TIDEMenuCommand;
     MsgFpcHelpMenuItem: TIDEMenuCommand;
     MsgAboutToolMenuItem: TIDEMenuCommand;
     MsgOpenToolOptionsMenuItem: TIDEMenuCommand;
@@ -551,7 +551,6 @@ begin
     Parent:=MsgFpcOptionsMenuSection;
     MsgTranslateMenuItem:=RegisterIDEMenuCommand(Parent,'Translate',lisTranslateTheEnglishMessages);
     MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent,'ShowID',lisShowMessageTypeID);
-  MsgEditFpcHelpMenuItem:=RegisterIDEMenuCommand(Root,'Edit help for messages',lisEditFpcMessageHelp);
   // FPC message filters etc., will be hidden for non-FPC messages.
   MsgQuickFixMenuSection:=RegisterIDEMenuSection(Root,'Quick Fix');
   MsgFilterMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'FilterMsgOfType',
@@ -597,14 +596,15 @@ begin
     MsgFilterNoneMenuItem.GroupIndex:=2;
   MsgFilterHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root,
       'Filter Hints without Source Position', lisFilterHintsWithoutSourcePosition);
-  MsgFiltersMenuSection:=RegisterIDEMenuSection(Root,'Custom Filter Section');
-    Parent:=MsgFiltersMenuSection;
+  MsgCustomFilterMenuSection:=RegisterIDEMenuSection(Root,'Custom Filter Section');
+    Parent:=MsgCustomFilterMenuSection;
     Parent.ChildrenAsSubMenu:=true;
     Parent.Caption:=lisCustomFilterSettings;
     MsgSelectFilterMenuSection:=RegisterIDEMenuSection(Parent,'Filters');
     MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent,'Add Filter',lisAddFilter);
   MsgAboutSection:=RegisterIDEMenuSection(Root,'About');
     Parent:=MsgAboutSection;
+    MsgEditFpcHelpMenuItem:=RegisterIDEMenuCommand(Parent,'Edit help for messages',lisEditFpcMessageHelp);
     MsgFpcHelpMenuItem:=RegisterIDEMenuCommand(Parent,'Help for this message',lisHelp);
     MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', lisAbout);
     MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool Options',
@@ -3313,7 +3313,7 @@ begin
     IDEQuickFixes.SetMsgLines(CurLine);
     IDEQuickFixes.OnPopupMenu(MsgQuickFixMenuSection);
   end;
-  MsgQuickFixMenuSection.Visible:=MsgQuickFixMenuSection.Count>0;
+  //MsgQuickFixMenuSection.Visible:=MsgQuickFixMenuSection.Count>0;
 end;
 
 { TMessagesFrame }
@@ -3426,7 +3426,7 @@ begin
   MsgRemoveMsgTypeFilterMenuSection.Visible:=aShow;
   MsgFilterBelowMenuSection.Visible:=aShow;
   MsgFilterHintsWithoutPosMenuItem.Visible:=aShow;
-  MsgFiltersMenuSection.Visible:=aShow;
+  MsgCustomFilterMenuSection.Visible:=aShow;
   MsgAboutSection.Visible:=aShow;
 end;
 
@@ -3502,7 +3502,7 @@ begin
   MsgClearMenuItem.OnClick := @ClearMenuItemClick;
   MsgOptionsMenuItem.OnClick := @MoreOptionsMenuItemClick;
 
-  // FPC Options, Edit FPC Help
+  // FPC Options
   MsgFileStyleShortMenuItem   .Checked := FMessagesCtrl.FilenameStyle = mwfsShort;
   MsgFileStyleRelativeMenuItem.Checked := FMessagesCtrl.FilenameStyle = mwfsRelative;
   MsgFileStyleFullMenuItem    .Checked := FMessagesCtrl.FilenameStyle = mwfsFull;
@@ -3513,7 +3513,6 @@ begin
   MsgShowIDMenuItem   .Checked := mcoShowMessageID  in FMessagesCtrl.Options;
   MsgTranslateMenuItem.OnClick := @TranslateMenuItemClick;
   MsgShowIDMenuItem   .OnClick := @ShowIDMenuItemClick;
-  MsgEditFpcHelpMenuItem.OnClick := @EditHelpMenuItemClick;
 
   // FPC specific menu items.
   ShowHideFpcMenuItems(FpcMsg);
@@ -3555,6 +3554,8 @@ begin
   MsgFilterWarningsMenuItem.MenuItem.ShortCut := ShortCut(VK_5, [ssCtrl]);
 
   // FPC Help
+  MsgEditFpcHelpMenuItem.Enabled := HasText;
+  MsgEditFpcHelpMenuItem.OnClick := @EditHelpMenuItemClick;
   MsgFpcHelpMenuItem.Enabled := HasText;
   MsgFpcHelpMenuItem.OnClick := @HelpMenuItemClick;
   MsgFpcHelpMenuItem.MenuItem.ShortCut := ShortCut(VK_F1, []);
