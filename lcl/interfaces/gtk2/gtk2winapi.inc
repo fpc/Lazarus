@@ -544,7 +544,6 @@ begin
       end;
 
       // copy normal supported formats
-      debugln(['[TGtk2WidgetSet.ClipboardGetFormats] DataLen=', SizeOf(TClipboardFormat)*Count]);
       GetMem(List,SizeOf(TClipboardFormat)*Count);
       i:=0;
       while (i<Cnt) do begin
