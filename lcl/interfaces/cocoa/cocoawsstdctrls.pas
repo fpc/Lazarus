@@ -1168,7 +1168,7 @@ begin
   Result:= inherited drawingRectForBounds(centerRect);
 end;
 
-procedure SetTextFieldCell( const edit: TCustomEdit ; const field: TCocoaTextField );
+procedure SetTextFieldCell( const edit: TCustomEdit ; const field: NSTextField );
 var
   cell: NSTextFieldCell;
 begin
@@ -1184,22 +1184,26 @@ begin
     cell.setWraps(false);
     cell.setScrollable(true);
   end;
-  if NOT field.fixedInitSetting then begin
-    TextFieldSetBorderStyle(field, edit.BorderStyle);
-    TextFieldSetAllignment(field, edit.Alignment);
-    UpdateControlFocusRing( field, edit );
-  end;
+
+  if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
+    Exit;
+
+  TextFieldSetBorderStyle(field, edit.BorderStyle);
+  TextFieldSetAllignment(field, edit.Alignment);
+  UpdateControlFocusRing( field, edit );
 end;
 
 class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
-  field : TCocoaTextField;
+  field: NSTextField;
 begin
-  if TCustomEdit(AWinControl).PasswordChar=#0
-    then field:=TCocoaTextField(AllocTextField(AWinControl, AParams))
-    else field:=TCocoaTextField(AllocSecureTextField(AWinControl, AParams));
+  if TCustomEdit(AWinControl).PasswordChar=#0 then begin
+    field:= AllocTextField(AWinControl, AParams);
+  end else begin
+    field:= AllocSecureTextField(AWinControl, AParams);
+  end;
   SetTextFieldCell( TCustomEdit(AWinControl), field );
-  Result:=TLCLHandle(field);
+  Result:= TLCLHandle(field);
 end;
 
 class procedure TCocoaWSCustomEdit.SetColor(const AWinControl: TWinControl);
