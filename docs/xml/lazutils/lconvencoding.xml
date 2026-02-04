@@ -280,22 +280,15 @@ value, including: <var>UTF8BOM</var>, <var>UTF16LEBOM</var>, and
 the value.
 </p>
 <p>
-Next, it checks for an explicit '<b>{%encoding</b>' marker at the start of 
-the value. When present, the value after the marker (up to the closing 
-'<b>}</b>' character) is normalized and used as the return value.
-</p>
-<p>
 Finally, it checks for a valid UTF-8 encoding (which includes ASCII 
 characters). All characters in S are examined until a character whose UTF-8 
 code point is not valid is encountered.
 </p>
 <p>
-When <var>EncodingValid</var> is <b>True</b>, <var>EncodingAnsi</var> is 
-assumed. Otherwise, the default encoding for the platform is used. When the 
-return value is <var>EncodingUTF8</var>, it is changed to 
-'<b>ISO-8859-1</b>'. This is done because the system may use the UTF-8 
-encoding, but the value in S does not. ISO 8859-1 has a full mapping to 
-Unicode, and this prevents data loss in encoding conversions.
+If encoding cannot be determined, the default encoding for the platform is used.
+When it is <var>EncodingUTF8</var>, it is changed to '<b>ISO-8859-1</b>'.
+This is done because the system may use the UTF-8 encoding, but the value in S does not.
+ISO 8859-1 has a full mapping to Unicode, and this prevents data loss in encoding conversions.
 </p>
 </descr>
 <seealso/>
@@ -304,6 +297,32 @@ Unicode, and this prevents data loss in encoding conversions.
 <short>Encoding name detected, or a default value.</short>
 </element>
 <element name="GuessEncoding.s">
+<short>String with the content examined in the routine.</short>
+</element>
+
+<element name="GuessPascalEncoding">
+<short>Works like GuessEncoding but also supports <b>{%encoding ...}</b> directive.</short>
+<descr>
+<p>
+<var>GuessPascalEncoding</var> is a <var>String</var> function which tries to
+determine the encoding used for Pascal source code specified in <var>S</var>.
+The return value is like in <var>GuessEncoding</var>.
+</p>
+<p>
+First it checks S for various Byte Order Marks at the start, including
+<var>UTF8BOM</var>, <var>UTF16LEBOM</var>, and <var>UTF16BEBOM</var>.
+Then it checks for an explicit '<b>{%encoding</b>' marker at the start of
+the value. When present, the value after the marker (up to the closing
+'<b>}</b>' character) is normalized and used as the return value.
+Without a '<b>{%encoding</b>' marker the function continues like <var>GuessEncoding</var>.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="GuessPascalEncoding.Result">
+<short>Encoding name detected, or a default value.</short>
+</element>
+<element name="GuessPascalEncoding.s">
 <short>String with the content examined in the routine.</short>
 </element>
 

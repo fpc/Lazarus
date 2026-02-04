@@ -321,23 +321,18 @@ end;
 
 function GetDefaultTextEncoding: string;
 begin
-  if EncodingValid then begin
-    Result:=DefaultTextEncoding;
-    exit;
-  end;
-
+  if EncodingValid then
+    exit(DefaultTextEncoding);
   {$IFDEF Windows}
   Result:=GetWindowsEncoding;
   {$ELSE}
-  {$IFDEF Darwin}
-  Result:=EncodingUTF8;
-  {$ELSE}
-  Result:=GetUnixEncoding;
+    {$IFDEF Darwin}
+    Result:=EncodingUTF8;
+    {$ELSE}
+    Result:=GetUnixEncoding;
+    {$ENDIF}
   {$ENDIF}
-  {$ENDIF}
-
   Result:=NormalizeEncoding(Result);
-
   DefaultTextEncoding:=Result;
   EncodingValid:=true;
 end;
