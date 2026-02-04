@@ -3509,7 +3509,6 @@ begin
     {$ELSE}
     i:=c^.Data.Length;
     {$ENDIF}
-    DebugLn(['[ClipboardSelectionReceivedHandler] DataLen=', i]);
     GetMem(TempBuf,i);
     Move(c^.Data.Data^,TempBuf^,i);
     c^.Data.Data:=TempBuf;
