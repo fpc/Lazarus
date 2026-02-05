@@ -192,7 +192,8 @@ begin
   if (AIndex >= 0) then
   begin
     FAutoSizeControlList.Delete(AIndex);
-    AutoSizeControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+    if AutoSizeControl.AutoSizeDelayed then
+      AutoSizeControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
   end;
 end;
 
