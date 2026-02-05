@@ -196,6 +196,7 @@ type
     procedure SetStackChecks(const AValue: Boolean);
     procedure SetStackSize(const AValue: Integer);
     procedure SetSubtarget(AValue: string);
+    procedure SetTranslateMessages(AValue: Boolean);
     procedure SetTypedAddress(const AValue: Boolean);
     procedure SetStopAfterErrCount(const AValue: integer);
     procedure SetStripSymbols(const AValue: Boolean);
@@ -290,6 +291,7 @@ type
     fStopAfterErrCount: integer;
     // Turn specific types of compiler messages on or off
     fMessageFlags: TAbstractCompilerMsgIDFlags;
+    fTranslateMessages: Boolean;
     // Other tools:
     fExecuteBefore: TLazCompilationToolOptions;
     fExecuteAfter: TLazCompilationToolOptions;
@@ -467,6 +469,7 @@ type
     property WriteFPCLogo: Boolean read fWriteFPCLogo write SetWriteFPCLogo;
     property StopAfterErrCount: integer read fStopAfterErrCount write SetStopAfterErrCount;
     property MessageFlags: TAbstractCompilerMsgIDFlags read fMessageFlags;
+    property TranslateMessages: Boolean read fTranslateMessages write SetTranslateMessages;
     // other tools
     property ExecuteBefore: TLazCompilationToolOptions read fExecuteBefore;
     property ExecuteAfter: TLazCompilationToolOptions read fExecuteAfter;
@@ -838,6 +841,13 @@ procedure TLazCompilerOptions.SetSubtarget(AValue: string);
 begin
   if FSubtarget=AValue then Exit;
   FSubtarget:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetTranslateMessages(AValue: Boolean);
+begin
+  if fTranslateMessages=AValue then Exit;
+  fTranslateMessages:=AValue;
   IncreaseChangeStamp;
 end;
 

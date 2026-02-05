@@ -70,7 +70,7 @@ type
     procedure GetMsgFileNames(CompilerFilename, TargetOS, TargetCPU: string;
       out anEnglishFile, aTranslationFile: string); virtual; // (main thread)
     property DefaultEnglishFile: string read FDefaultEnglishFile write SetDefaultEnglishFile;
-    property DefaulTranslationFile: string read FDefaultTranslationFile write SetDefaultTranslationFile;
+    property DefaultTranslationFile: string read FDefaultTranslationFile write SetDefaultTranslationFile;
     property OnLoadFile: TETLoadFileEvent read FOnLoadFile write FOnLoadFile; // (main or workerthread)
   end;
 
@@ -412,7 +412,7 @@ var
 begin
   if fMsgFileStamp<>CompilerParseStamp then begin
     fCurrentEnglishFile:=DefaultEnglishFile;
-    fCurrentTranslationFile:=DefaulTranslationFile;
+    fCurrentTranslationFile:=DefaultTranslationFile;
     // English msg file
     // => use fpcsrcdir/compiler/msg/errore.msg
     // the fpcsrcdir might depend on the FPC version

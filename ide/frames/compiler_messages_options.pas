@@ -9,7 +9,7 @@ uses
   // LCL
   StdCtrls, CheckLst, Dialogs,
   // LazUtils
-  FileUtil, LazFileCache, LazLoggerBase,
+  LazLoggerBase,
   // LazControls
   ListFilterEdit,
   // CodeTools
@@ -17,9 +17,9 @@ uses
   // BuildIntf
   IDEOptionsIntf, IDEExternToolIntf, CompOptsIntf,
   // IdeIntf
-  IDEOptEditorIntf, IDEDialogs,
+  IDEOptEditorIntf,
   // IdeConfig
-  etFPCMsgFilePool, CompilerOptions,
+  etFPCMsgFilePool, CompilerOptions, EnvironmentOpts,
   // IDE
   LazarusIDEStrConsts;
 
@@ -28,23 +28,22 @@ type
   { TCompilerMessagesOptionsFrame }
 
   TCompilerMessagesOptionsFrame = class(TAbstractIDEOptionsEditor)
+    cbTranslate: TCheckBox;
     chklistCompMsg: TCheckListBox;
     editMsgFilter: TListFilterEdit;
     grpCompilerMessages: TGroupBox;
     lblFilter: TLabel;
-    MsgFileBrowseButton: TButton;
-    MsgFileEdit: TEdit;
-    UseMsgFileCheckBox: TCheckBox;
+    procedure cbTranslateChange(Sender: TObject);
     procedure chklistCompMsgItemClick(Sender: TObject; Index: integer);
     function CheckItem(Item: TObject): Boolean;
-    procedure MsgFileBrowseButtonClick(Sender: TObject);
-    procedure UseMsgFileCheckBoxChange(Sender: TObject);
   private
     TempMessages: TCompilerMsgIDFlags;
+    FMsgFile: TFPCMsgFilePoolItem;
+    FTransFile: TFPCMsgFilePoolItem;
+    procedure UpdateMessages;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
@@ -72,6 +71,11 @@ begin
     TempMessages[MsgId]:=cfvHide;
 end;
 
+procedure TCompilerMessagesOptionsFrame.cbTranslateChange(Sender: TObject);
+begin
+  UpdateMessages;
+end;
+
 function TCompilerMessagesOptionsFrame.CheckItem(Item: TObject): Boolean;
 var
   MsgId: Integer;
@@ -83,42 +87,17 @@ begin
   Result:=TempMessages[MsgId]<>cfvHide;
 end;
 
-procedure TCompilerMessagesOptionsFrame.MsgFileBrowseButtonClick(Sender: TObject
-  );
-var
-  OpenDialog: TOpenDialog;
-begin
-  OpenDialog:=IDEOpenDialogClass.Create(nil);
-  try
-    InitIDEFileDialog(OpenDialog);
-    OpenDialog.Title:=lisChooseAnFPCMessageFile;
-    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-    OpenDialog.Filter:=dlgFilterFPCMessageFile+' (*.msg)|*.msg|'+dlgFilterAll+'|'+
-      GetAllFilesMask;
-    if OpenDialog.Execute then
-      MsgFileEdit.Text:=OpenDialog.FileName;
-  finally
-    OpenDialog.Free;
-  end;
-end;
-
-procedure TCompilerMessagesOptionsFrame.UseMsgFileCheckBoxChange(Sender: TObject);
-begin
-  MsgFileEdit.Enabled:=UseMsgFileCheckBox.Checked;
-  MsgFileBrowseButton.Enabled:=UseMsgFileCheckBox.Checked;
-end;
-
 constructor TCompilerMessagesOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   TempMessages:=TCompilerMsgIDFlags.Create;
-  UseMsgFileCheckBox.Visible:=false;
-  MsgFileEdit.Visible:=false;
-  MsgFileBrowseButton.Visible:=false;
 end;
 
 destructor TCompilerMessagesOptionsFrame.Destroy;
 begin
+  FPCMsgFilePool.UnloadFile(FMsgFile);
+  if Assigned(FTransFile) then
+    FPCMsgFilePool.UnloadFile(FTransFile);
   FreeAndNil(TempMessages);
   inherited Destroy;
 end;
@@ -136,41 +115,37 @@ end;
 
 procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
-  topidx: Integer;
   CompOpts: TBaseCompilerOptions;
-  FPCMsgFile: TFPCMsgFilePoolItem;
-  i: Integer;
-  Item: TFPCMsgItem;
-  Urgency: TMessageLineUrgency;
-  s: String;
+  EnglishFN, TranslationFN: string;
 begin
   CompOpts:=AOptions as TBaseCompilerOptions;
-
-  topidx := chklistCompMsg.TopIndex;
   TempMessages.Assign(CompOpts.MessageFlags);
-  editMsgFilter.Items.Clear;
-  FPCMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(true,nil);
-  if FPCMsgFile<>nil then begin
-    try
-      for i:=0 to FPCMsgFile.MsgFile.Count-1 do begin
-        Item:=FPCMsgFile.MsgFile[i];
-        if Item.ID<=0 then continue;
-        Urgency:=FPCMsgToMsgUrgency(Item);
-        case Urgency of
-        mluHint: s:='Hint';
-        mluNote: s:='Note';
-        mluWarning: s:='Warning';
-        else continue;
-        end;
-        s+=': '+Item.Pattern;
-        editMsgFilter.Items.AddObject(s,TObject({%H-}Pointer(PtrUInt(Item.ID))));
-      end;
-    finally
-      FPCMsgFilePool.UnloadFile(FPCMsgFile);
+  cbTranslate.Checked:=CompOpts.TranslateMessages;
+
+  //FMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(true,nil);
+  //cbTranslate.Enabled:=EnvironmentOptions.CompilerMessagesFilename<>'';
+  //lisTranslateTheEnglishMessages;
+  FPCMsgFilePool.GetMsgFileNames(EnvironmentOptions.GetParsedCompilerFilename,
+                                 '','', EnglishFN, TranslationFN);
+  //debugln(['TCompilerMessagesOptionsFrame.ReadSettings EnglishFN=', EnglishFN,
+  //         ', TranslationFN=', TranslationFN]);
+  try
+    FMsgFile:=FPCMsgFilePool.LoadFile(EnglishFN,true,nil);
+    if TranslationFN<>'' then begin
+      FTransFile:=FPCMsgFilePool.LoadFile(TranslationFN,true,nil);
+      cbTranslate.Caption:=Format(dlgTranslateUsing,[ExtractFileName(TranslationFN)])
+    end
+    else begin
+      cbTranslate.Checked:=False;
+      cbTranslate.Enabled:=False;
+      cbTranslate.Caption:=dlgTranslateWithHint;
     end;
+  except
+    on E: Exception do
+      debugln(['WARNING: TCompilerMessagesOptionsFrame.ReadSettings failed to load file: '
+               + E.Message]);
   end;
-  editMsgFilter.InvalidateFilter;
-  chkListCompMsg.TopIndex := topidx;
+  UpdateMessages;
 end;
 
 procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -178,7 +153,41 @@ var
   CompOpts: TBaseCompilerOptions;
 begin
   CompOpts:=AOptions as TBaseCompilerOptions;
+  // Typecast here ensures the correct Assign methow is called.
   (CompOpts.MessageFlags as TCompilerMsgIDFlags).Assign(TempMessages);
+  CompOpts.TranslateMessages:=cbTranslate.Checked;
+end;
+
+procedure TCompilerMessagesOptionsFrame.UpdateMessages;
+var
+  Item: TFPCMsgItem;
+  MessagesFile: TFPCMsgFilePoolItem;
+  Urgency: TMessageLineUrgency;
+  i, TopIdx: Integer;
+  s: String;
+begin
+  TopIdx:=chklistCompMsg.TopIndex;
+  editMsgFilter.Items.Clear;
+  if cbTranslate.Checked then
+    MessagesFile:=FTransFile
+  else
+    MessagesFile:=FMsgFile;
+  if MessagesFile<>nil then
+    for i:=0 to MessagesFile.MsgFile.Count-1 do begin
+      Item:=MessagesFile.MsgFile[i];
+      if Item.ID<=0 then continue;
+      Urgency:=FPCMsgToMsgUrgency(Item);
+      case Urgency of
+      mluHint: s:='Hint';
+      mluNote: s:='Note';
+      mluWarning: s:='Warning';
+      else continue;
+      end;
+      s+=': '+Item.Pattern;
+      editMsgFilter.Items.AddObject(s,TObject({%H-}Pointer(PtrUInt(Item.ID))));
+    end;
+  editMsgFilter.InvalidateFilter;
+  chkListCompMsg.TopIndex:=TopIdx;
 end;
 
 class function TCompilerMessagesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -2653,6 +2653,8 @@ resourcestring
   
   // custom messages
   dlgCompilerMessage = 'Compiler messages';
+  dlgTranslateWithHint = 'Translate (select messages file in Environment->Files)';
+  dlgTranslateUsing = 'Translate using "%s"';
 
   // project options dialog
   dlgProjectOptionsFor = 'Options for Project: %s';
