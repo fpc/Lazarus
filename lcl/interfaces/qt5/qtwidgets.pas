@@ -7741,6 +7741,7 @@ end;
 
 function TQtMainWindow.getText: WideString;
 begin
+  Result := '';
   WindowTitle(@Result);
 end;
 
