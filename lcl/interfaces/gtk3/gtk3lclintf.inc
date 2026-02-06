@@ -1216,23 +1216,22 @@ end;
 
 function waithandle_iocallback({%H-}source: PGIOChannel; condition: TGIOCondition;
   data: gpointer): gboolean; cdecl;
-// var
-//  lEventHandler: PWaitHandleEventHandler absolute data;
+var
+  lEventHandler: PWaitHandleEventHandler absolute data;
 begin
   //DebugLn(['waithandle_iocallback lEventHandler=',HexStr(Cardinal(lEventHandler),8)]);
-  // lEventHandler^.OnEvent(lEventHandler^.UserData, condition);
+  lEventHandler^.OnEvent(lEventHandler^.UserData, DWORD(condition));
   Result := true;
 end;
 
 function TGtk3WidgetSet.AddEventHandler(AHandle: TLCLHandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
-//var
-  //giochannel: pgiochannel;
-  //lEventHandler: PWaitHandleEventHandler;
+var
+  giochannel: pgiochannel;
+  lEventHandler: PWaitHandleEventHandler;
 begin
   Result := nil;
   if AEventHandler = nil then exit;
-  (*
   New(lEventHandler);
   giochannel := g_io_channel_unix_new(AHandle);
   lEventHandler^.Handle := AHandle;
@@ -1240,7 +1239,7 @@ begin
   lEventHandler^.GIOChannel := giochannel;
   lEventHandler^.OnEvent := AEventHandler;
   lEventHandler^.GSourceID := g_io_add_watch(giochannel,
-    AFlags, @waithandle_iocallback, lEventHandler);
+    TGIOCondition(AFlags), @waithandle_iocallback, lEventHandler);
   //DebugLn(['TGtk3WidgetSet.AddEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),
   //         ' AHandle=',dbgs(lEventHandler^.Handle)]);
   lEventHandler^.PrevHandler := nil;
@@ -1249,15 +1248,13 @@ begin
     FWaitHandles^.PrevHandler := lEventHandler;
   FWaitHandles := lEventHandler;
   Result := lEventHandler;
-  *)
 end;
 
 
 procedure TGtk3WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
-// var
-//  lEventHandler: PWaitHandleEventHandler absolute AHandler;
+ var
+  lEventHandler: PWaitHandleEventHandler absolute AHandler;
 begin
-  (*
   if AHandler = nil then exit;
   g_source_remove(lEventHandler^.GSourceID);
   { channel will be freed with ref count drops to 0 }
@@ -1271,18 +1268,17 @@ begin
   //DebugLn(['TGtk3WidgetSet.RemoveEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),
   //         ' AHandle=',dbgs(lEventHandler^.Handle)]);
   Dispose(lEventHandler);
-  *)
   AHandler := nil;
 end;
 
 procedure TGtk3WidgetSet.SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword);
-// var
-//  lEventHandler: PWaitHandleEventHandler absolute AHandler;
+ var
+  lEventHandler: PWaitHandleEventHandler absolute AHandler;
 begin
   if AHandler = nil then exit;
-  // g_source_remove(lEventHandler^.GSourceID);
-  // lEventHandler^.GSourceID := g_io_add_watch(lEventHandler^.GIOChannel,
-  //  NewFlags, @waithandle_iocallback, lEventHandler);
+   g_source_remove(lEventHandler^.GSourceID);
+   lEventHandler^.GSourceID := g_io_add_watch(lEventHandler^.GIOChannel,
+     TGIOCondition(NewFlags), @waithandle_iocallback, lEventHandler);
   //DebugLn(['TGtk3WidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8),
   //        ' AHandle=',dbgs(lEventHandler^.Handle)]);
 end;

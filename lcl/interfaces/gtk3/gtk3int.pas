@@ -43,6 +43,20 @@ type
     TimerFunc  : TWSTimerProc; // owner function to handle timer
   end;
 
+  { TWaitHandleEventHandler }
+
+  PPWaitHandleEventHandler = ^PWaitHandleEventHandler;
+  PWaitHandleEventHandler = ^TWaitHandleEventHandler;
+  TWaitHandleEventHandler = record
+    Handle: TLCLHandle;
+    GIOChannel: pgiochannel;
+    GSourceID: guint;
+    UserData: PtrInt;
+    OnEvent: TWaitHandleEvent;
+    PrevHandler: PWaitHandleEventHandler;
+    NextHandler: PWaitHandleEventHandler;
+  end;
+
   { TGtk3WidgetSet }
 
   TGtk3WidgetSet = class(TWidgetSet)
@@ -52,6 +66,7 @@ type
     FMainPoll: PGPollFD;
     FGtk3Application: PGtkApplication;
     FDefaultAppFontName: String;
+    FWaitHandles: PWaitHandleEventHandler;
     {$IFDEF UNIX}
     FChildSignalHandlers: PChildSignalEventHandler;
     FOverlayScrolling:gboolean;
