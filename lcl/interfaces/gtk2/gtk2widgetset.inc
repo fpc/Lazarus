@@ -6021,7 +6021,7 @@ begin
 
           if (Visual <> nil) and (not SystemVisual) then
             gdk_visual_unref(Visual);
-          if Colormap <> nil then
+          if (Colormap <> nil) and (not SystemColormap) then
             gdk_colormap_unref(Colormap);
           {$IFDEF DebugGDKTraps}
           EndGDKErrorTrap;

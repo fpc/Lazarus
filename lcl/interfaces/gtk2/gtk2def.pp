@@ -159,6 +159,7 @@ type
       gdiBitmap: (
         Depth: integer;
         SystemVisual : Boolean;
+        SystemColormap : Boolean;
         Visual : PGDKVisual;
         Colormap : PGDKColormap;
         case GDIBitmapType: TGDIBitmapType of
