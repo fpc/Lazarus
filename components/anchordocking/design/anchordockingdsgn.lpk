@@ -19,7 +19,7 @@
     <License Value="GPL2 as the IDE
 "/>
     <Version Major="1"/>
-    <Files Count="4">
+    <Files Count="5">
       <Item1>
         <Filename Value="registeranchordocking.pas"/>
         <HasRegisterProc Value="True"/>
@@ -37,6 +37,10 @@
         <Filename Value="anchordockdsgninitialsetupframe.pas"/>
         <UnitName Value="AnchorDockDsgnInitialSetupFrame"/>
       </Item4>
+      <Item5>
+        <Filename Value="anchorbackuptool.pas"/>
+        <UnitName Value="AnchorBackupTool"/>
+      </Item5>
     </Files>
     <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="2">

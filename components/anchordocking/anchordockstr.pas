@@ -107,6 +107,17 @@ resourcestring
   adrsEnableAnchorDockHint = 'This option allows to organize groups of windows (or all windows) ' +
     'into a single window. For a "classic" IDE with only floating windows turn the option off.';
   SSingleMultiWindow = 'Single/Multi Window';
+  // Backup tool
+  adrsAnchorDockBackupRecovery = 'AnchorDock Backup Recovery';
+  adrsBackupSuccessful = 'Backup successful';
+  adrsBackupFailed = 'Backup failed';
+  adrsConfirm = 'Confirm';
+  adrsAreYouSure = 'Are you sure you want to restore the window layout? This will overwrite the current layout settings。';
+  adrsLayoutRestoredSuccessfully = 'Layout restored successfully!';
+  adrsUnableToReadFile = 'Unable to read the file';
+  adrsBackupCaption = 'Backup current layout';
+  adrsRestoreCaption = 'Restore selected layout';
+  adrsReady = 'Ready';
 
 implementation
 

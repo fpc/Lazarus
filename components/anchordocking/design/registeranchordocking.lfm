@@ -5,13 +5,14 @@ object AnchorDockIDEFrame: TAnchorDockIDEFrame
   Width = 495
   ClientHeight = 388
   ClientWidth = 495
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 407
   DesignTop = 295
   object NoteLabel: TLabel
     Left = 6
-    Height = 16
-    Top = 35
+    Height = 18
+    Top = 34
     Width = 483
     Align = alTop
     BorderSpacing.Around = 6
@@ -20,7 +21,7 @@ object AnchorDockIDEFrame: TAnchorDockIDEFrame
   end
   object cbEnableAnchorDocking: TCheckBox
     Left = 6
-    Height = 23
+    Height = 22
     Top = 6
     Width = 483
     Align = alTop

@@ -38,13 +38,16 @@ interface
 uses
   Math, Classes, SysUtils,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls,
+  LCLIntf, LCLType, Forms, Controls, Dialogs, StdCtrls,
   // LazUtils
   LazFileCache, LazFileUtils, LazLoggerBase,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  LCLIntf, IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf,
+  IDECommands, IDEWindowIntf, IDEOptEditorIntf, LazIDEIntf, MenuIntf,
   // AnchorDocking
-  AnchorDockStr, AnchorDocking, AnchorDesktopOptions, AnchorDockOptionsDlg;
+  AnchorDockStr, AnchorDocking, AnchorDesktopOptions, AnchorDockOptionsDlg,
+  AnchorBackupTool;
 
 type
 
@@ -121,6 +124,9 @@ implementation
 {$R *.lfm}
 
 procedure Register;
+var
+  CmdCat: TIDECommandCategory;
+  IdeCmd: TIDECommand;
 begin
   AnchorDockGlobalOptions.LoadSafe;
   if not AnchorDockGlobalOptions.EnableAnchorDock then begin
@@ -128,14 +134,21 @@ begin
                                                   AnchorDockOptionsID)^.Index;
     exit;
   end;
-
   // Calling IDEDockMaster will create it, if it hasn't already been created.
   if not (IDEDockMaster is TIDEAnchorDockMaster) then
     exit;
-
   // add options frame
   AnchorDockOptionsID:=RegisterIDEOptionsEditor(GroupEnvironment,TAnchorDockIDEFrame,
                                                 AnchorDockOptionsID)^.Index;
+  // Register a backup tool
+  CmdCat:=IDECommandList.FindCategoryByName(CommandCategoryCustomName);
+  // register shortcut
+  IdeCmd:=RegisterIDECommand(CmdCat, 'QFDockbk', adrsAnchorDockBackupRecovery,
+    IDEShortCut(VK_UNKNOWN, []), // <- set here your default shortcut
+    CleanIDEShortCut, nil, @ShowDockbkFrm);
+  // register menu item in Tools menu
+  RegisterIDEMenuCommand(itmSecondaryTools,'QFDockbk',adrsAnchorDockBackupRecovery,
+    nil, nil, IdeCmd, 'tanchordockpanel');
 end;
 
 { TIDEAnchorDockMaster }
@@ -514,8 +527,7 @@ begin
   end;
 end;
 
-class function TAnchorDockIDEFrame.
-  SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TAnchorDockIDEFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result:=IDEEditorGroups.GetByIndex(GroupEnvironment)^.GroupClass;
 end;
