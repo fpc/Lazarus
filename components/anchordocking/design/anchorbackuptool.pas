@@ -12,6 +12,7 @@ uses
   Classes, SysUtils,
   LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, Buttons, XMLPropStorage,
   FileUtil, LazFileUtils, LazLoggerBase,
+  IDEOptionsIntf,
   IDECommands, IDEWindowIntf, MenuIntf, IDEImagesIntf, LazIDEIntf,
   AnchorDocking, AnchorDockStr;
 
@@ -22,6 +23,7 @@ type
   TDockBackupFrm = class(TForm)
     btnBackup: TBitBtn;
     btnRestore: TBitBtn;
+    btnRestoreDefault: TBitBtn;
     lblStatus: TLabel;
     ListBox1: TListBox;
     Memo1: TMemo;
@@ -32,11 +34,13 @@ type
     Splitter1: TSplitter;
     procedure btnBackupClick(Sender: TObject);
     procedure btnRestoreClick(Sender: TObject);
+    procedure btnRestoreDefaultClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
   private
     FBackupDir: string;
     procedure LoadBackupList;
+    procedure RestoreLayout(aBackupFile: string);
     procedure UpdateStatus(const Msg: string; IsError: Boolean = False);
   public
 
@@ -63,11 +67,13 @@ end;
 procedure TDockBackupFrm.FormCreate(Sender: TObject);
 begin
   self.Caption := adrsAnchorDockBackupRecovery;
-  btnBackup.Caption := adrsBackupCaption;
-  btnRestore.Caption := adrsRestoreCaption;
+  btnBackup.Caption := adrsBackupCurrentLayout;
+  btnRestore.Caption := adrsRestoreSelectedLayout;
   btnRestore.Enabled := False;  // Until a filename is selected.
+  btnRestoreDefault.Caption := adrsRestoreDefaultLayout;
   IDEImages.AssignImage(btnBackup, 'menu_saveas');
   IDEImages.AssignImage(btnRestore, 'restore_default');
+  IDEImages.AssignImage(btnRestoreDefault, 'ce_default');
   // 设置默认路径
   FBackupDir := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + 'backups' + PathDelim;
   ForceDirectories(FBackupDir);
@@ -101,24 +107,17 @@ begin
 end;
 
 procedure TDockBackupFrm.btnRestoreClick(Sender: TObject);
-var
-  BackupFile: string;
-  XMLConfig: TXMLConfigStorage;
 begin
   Assert(ListBox1.ItemIndex>=0, 'TDockBackupFrm.btnRestoreClick: ListBox1.ItemIndex');
-  BackupFile := FBackupDir + ListBox1.Items[ListBox1.ItemIndex];
-  if MessageDlg(adrsConfirm, adrsAreYouSure,
-                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-  begin
-    try
-      XMLConfig:=TXMLConfigStorage.Create(BackupFile,True);
-      DockMaster.LoadLayoutFromConfig(XMLConfig,true);
-      DockMaster.LoadSettingsFromConfig(XMLConfig);
-      UpdateStatus(adrsLayoutRestoredSuccessfully, False);
-    finally
-      XMLConfig.Free;
-    end;
-  end;
+  RestoreLayout(FBackupDir + ListBox1.Items[ListBox1.ItemIndex]);
+end;
+
+procedure TDockBackupFrm.btnRestoreDefaultClick(Sender: TObject);
+begin
+  //debugln(['TDockBackupFrm.btnRestoreDefaultClick LazarusDirectory=',
+  //          IDEEnvironmentOptions.GetParsedLazarusDirectory]);
+  RestoreLayout(IDEEnvironmentOptions.GetParsedLazarusDirectory
+               +'components/anchordocking/design/ADLayoutDefault.xml');
 end;
 
 procedure TDockBackupFrm.ListBox1SelectionChange(Sender: TObject; User: boolean);
@@ -151,6 +150,24 @@ begin
         ListBox1.Items.Add(ExtractFileName(Files[i]));
     finally
       Files.Free;
+    end;
+  end;
+end;
+
+procedure TDockBackupFrm.RestoreLayout(aBackupFile: string);
+var
+  XMLConfig: TXMLConfigStorage;
+begin
+  if MessageDlg(adrsConfirm, adrsAreYouSure,
+                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    try
+      XMLConfig := TXMLConfigStorage.Create(aBackupFile,True);
+      DockMaster.LoadLayoutFromConfig(XMLConfig,true);
+      DockMaster.LoadSettingsFromConfig(XMLConfig);
+      UpdateStatus(adrsLayoutRestoredSuccessfully, False);
+    finally
+      XMLConfig.Free;
     end;
   end;
 end;

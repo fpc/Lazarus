@@ -59,7 +59,7 @@ object DockBackupFrm: TDockBackupFrm
         AnchorSideTop.Control = btnBackup
         AnchorSideBottom.Control = btnRestore
         Left = 5
-        Height = 339
+        Height = 283
         Top = 60
         Width = 255
         Align = alClient
@@ -77,7 +77,7 @@ object DockBackupFrm: TDockBackupFrm
         AnchorSideTop.Side = asrBottom
         Left = 5
         Height = 50
-        Top = 404
+        Top = 348
         Width = 255
         Align = alBottom
         Anchors = [akLeft, akRight]
@@ -101,6 +101,22 @@ object DockBackupFrm: TDockBackupFrm
         Caption = 'Backup current layout'
         TabOrder = 2
         OnClick = btnBackupClick
+      end
+      object btnRestoreDefault: TBitBtn
+        AnchorSideLeft.Control = Panel3
+        AnchorSideTop.Control = ListBox1
+        AnchorSideTop.Side = asrBottom
+        Left = 5
+        Height = 50
+        Top = 404
+        Width = 255
+        Align = alBottom
+        Anchors = [akLeft, akRight]
+        BorderSpacing.Left = 5
+        BorderSpacing.Bottom = 6
+        Caption = 'Restore default layout'
+        TabOrder = 3
+        OnClick = btnRestoreDefaultClick
       end
     end
     object Memo1: TMemo

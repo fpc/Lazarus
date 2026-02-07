@@ -115,8 +115,9 @@ resourcestring
   adrsAreYouSure = 'Are you sure you want to restore the window layout? This will overwrite the current layout settings。';
   adrsLayoutRestoredSuccessfully = 'Layout restored successfully!';
   adrsUnableToReadFile = 'Unable to read the file';
-  adrsBackupCaption = 'Backup current layout';
-  adrsRestoreCaption = 'Restore selected layout';
+  adrsBackupCurrentLayout = 'Backup current layout';
+  adrsRestoreSelectedLayout = 'Restore selected layout';
+  adrsRestoreDefaultLayout = 'Restore default layout';
   adrsReady = 'Ready';
 
 implementation
