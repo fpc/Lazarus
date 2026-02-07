@@ -705,7 +705,7 @@ var
     // First line for line type ltFromOrigin
     if LineType = ltFromOrigin then begin
       origin := ParentChart.GraphToImage(AxisToGraph(ZeroDoublePoint));
-      ADrawer.SetPenParams(FLinePen.Style, col1, FLinePen.Width);
+      ADrawer.SetPenParams(FLinePen.Style, col1, ADrawer.Scale(FLinePen.Width));
       ADrawer.Line(origin, imgPt1);
     end;
 
