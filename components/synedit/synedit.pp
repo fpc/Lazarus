@@ -3986,7 +3986,7 @@ begin
   end;
 
   if (sfAfterHandleCreatedNeeded in fStateFlags) and (not AutoSizeDelayed) {and HandleAllocated} then begin
-    DoIncPaintLock(nil);  // prevent calculations during inherited and ONLY during inherited
+    DoIncPaintLock(nil);  // TODO: need painlock?  This was copied with the comment "prevent calculations during inherited and ONLY during inherited"
     try
       DoHandleInitialSizeFinished;
     finally
@@ -5268,6 +5268,8 @@ function TCustomSynEdit.WaitingForInitialSize: boolean;
 begin
   Result := ((sfAfterHandleCreatedNeeded in fStateFlags) and AutoSizeDelayed) or
             (not HandleAllocated);
+  if (not Result) and ((sfAfterHandleCreatedNeeded in fStateFlags)) then
+    DoHandleInitialSizeFinished;
 end;
 
 procedure TCustomSynEdit.DoHandleInitialSizeFinished;
@@ -5320,7 +5322,8 @@ begin
     DoIncPaintLock(nil);  // prevent calculations during inherited and ONLY during inherited
     try
       inherited DoAllAutoSize;
-      DoHandleInitialSizeFinished;
+      if (sfAfterHandleCreatedNeeded in fStateFlags) then // may have been called in DoResize
+        DoHandleInitialSizeFinished;
     finally
       DoDecPaintLock(nil); // run UpdateScrollBars
     end;
