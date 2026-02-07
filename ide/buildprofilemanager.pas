@@ -61,7 +61,7 @@ type
   TBuildLazarusProfile = class
   private
     FCleanOnce: boolean;
-    fOwnerCnt: TBuildLazarusProfiles;
+    fOwner: TBuildLazarusProfiles;
     fName: string;
     FSubtarget: string;
     fTargetOS: string;
@@ -74,6 +74,7 @@ type
     fDefines: TStringList;      // Defines selected for this profile.
     fTargetDirHistory: TStringList; // History
     function GetExtraOptions: string;
+    function GetTranslatedName: string;
     procedure SetExtraOptions(const AValue: string);
   public
     constructor Create(AOwnerCnt: TBuildLazarusProfiles; AName: string);
@@ -86,6 +87,7 @@ type
     function GetParsedTargetDirectory(Macros: TTransferMacroList): string;
   public
     property Name: string read fName;
+    property TranslatedName: string read GetTranslatedName;
     property ExtraOptions: string read GetExtraOptions write SetExtraOptions;
     property TargetOS: string read fTargetOS write fTargetOS;
     property TargetDirectory: string read fTargetDirectory write fTargetDirectory;
@@ -113,6 +115,7 @@ type
     function GetCurrentProfile: TBuildLazarusProfile;
     function GetItems(Index: integer): TBuildLazarusProfile;
   public
+    fTranslatedProfileNames: array[0..3] of string;
     constructor Create;
     destructor Destroy; override;
     procedure Clear; override;
@@ -122,6 +125,8 @@ type
     procedure Load(XMLConfig: TXMLConfig; const Path: string; const FileVersion: integer);
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
     procedure Move(CurIndex, NewIndex: Integer); // Replaces TList.Move
+    function Default2TranslatedProfile(aName: string): string;
+    //function Translated2DefaultProfile(aName: string): string;
   public
     property RestartAfterBuild: boolean read fRestartAfterBuild write fRestartAfterBuild;
     property ConfirmBuild: boolean read fConfirmBuild write fConfirmBuild;
@@ -175,6 +180,14 @@ implementation
 const
   DefaultTargetDirectory = ''; // empty will be replaced by '$(ConfDir)/bin';
 
+  // Same names as in resourcestrings but not translated.
+  // Works together with TBuildLazarusProfiles.fTranslatedProfileNames.
+  DefaultProfileNames: array[0..3] of string = (
+    'Normal IDE',           // Matches lisLazBuildNormalIDE
+    'Debug IDE',            // Matches lisLazBuildDebugIDE
+    'Optimized IDE',        // Matches lisLazBuildOptimizedIDE
+    'Clean Up + Build all'  // Matches lisLazCleanUpBuildAll
+  );
 
 function IdeBuildModeToStr(BuildMode: TIdeBuildMode): string;
 begin
@@ -202,7 +215,7 @@ constructor TBuildLazarusProfile.Create(AOwnerCnt: TBuildLazarusProfiles;
                                         AName: string);
 begin
   inherited Create;
-  fOwnerCnt:=AOwnerCnt;
+  fOwner:=AOwnerCnt;
   fName:=AName;
   fOptions:=TStringList.Create;
   fDefines:=TStringList.Create;
@@ -296,8 +309,7 @@ begin
   if Result='' then exit;
   if not Macros.SubstituteStr(Result) then begin
     DebugLn('TBuildLazarusProfile.GetParsedTargetDirectory macro aborted Options.TargetDirectory=',TargetDirectory);
-    Result:='';
-    exit;
+    exit('');
   end;
   Result:=TrimAndExpandDirectory(Result,EnvironmentOptions.GetParsedLazarusDirectory);
 end;
@@ -313,6 +325,11 @@ begin
   for i:=0 to fDefines.Count-1 do
     Result:=Result+' -d'+fDefines[i];
   Result:=Trim(Result);
+end;
+
+function TBuildLazarusProfile.GetTranslatedName: string;
+begin
+  Result:=fOwner.Default2TranslatedProfile(fName);
 end;
 
 procedure TBuildLazarusProfile.SetExtraOptions(const AValue: string);
@@ -331,6 +348,11 @@ begin
   fAllDefines:=TStringList.Create;
   fSelected:=TStringList.Create;
   fStaticAutoInstallPackages:=TStringList.Create;
+  // Works together with DefaultProfileNames
+  fTranslatedProfileNames[0]:=lisLazBuildNormalIDE;
+  fTranslatedProfileNames[1]:=lisLazBuildDebugIDE;
+  fTranslatedProfileNames[2]:=lisLazBuildOptimizedIDE;
+  fTranslatedProfileNames[3]:=lisLazCleanUpBuildAll;
 end;
 
 destructor TBuildLazarusProfiles.Destroy;
@@ -385,10 +407,10 @@ var
   Platfrm: TLCLPlatform;
 begin
   Platfrm:=GetDefaultLCLWidgetType;
-
+  debugln(['TBuildLazarusProfiles.CreateDefaults ']);
   // Build Normal IDE
-  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildNormalIDE);
-  with Profile, fOwnerCnt do begin
+  Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[0]); //lisLazBuildNormalIDE
+  with Profile, fOwner do begin
     fTargetPlatform:=Platfrm;
     fIdeBuildMode:=bmBuild;
     fUpdateRevisionInc:=True;
@@ -397,8 +419,8 @@ begin
   Result:=Add(Profile);
 
   // Build Debug IDE
-  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildDebugIDE);
-  with Profile, fOwnerCnt do begin
+  Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[1]); //lisLazBuildDebugIDE
+  with Profile, fOwner do begin
     fTargetPlatform:=Platfrm;
     fIdeBuildMode:=bmBuild;
     fUpdateRevisionInc:=True;
@@ -412,8 +434,8 @@ begin
   Add(Profile);
 
   // Build Optimised IDE
-  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildOptimizedIDE);
-  with Profile, fOwnerCnt do begin
+  Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[2]); //lisLazBuildOptimizedIDE
+  with Profile, fOwner do begin
     fTargetPlatform:=Platfrm;
     fIdeBuildMode:=bmBuild;
     fUpdateRevisionInc:=True;
@@ -422,8 +444,8 @@ begin
   Add(Profile);
 
   // Clean Up + Build all
-  Profile:=TBuildLazarusProfile.Create(Self, lisLazCleanUpBuildAll);
-  with Profile, fOwnerCnt do begin
+  Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[3]); //lisLazCleanUpBuildAll
+  with Profile, fOwner do begin
     fTargetPlatform:=Platfrm;
     fIdeBuildMode:=bmCleanAllBuild;
     fUpdateRevisionInc:=True;
@@ -496,6 +518,7 @@ begin
   for i:=0 to Count-1 do begin
     ProfPath:=Path+'Profiles/Profile'+IntToStr(i)+'/';
     n:=Items[i].Name;
+    debugln(['TBuildLazarusProfiles.Save Item=', n, ', XMLConfig=', XMLConfig.Filename]);
     XMLConfig.SetDeleteValue(ProfPath+'Name',n,'');
     Items[i].Save(XMLConfig, ProfPath);
   end;
@@ -516,6 +539,26 @@ begin
   fCurrentIndex:=NewIndex;
 end;
 
+function TBuildLazarusProfiles.Default2TranslatedProfile(aName: string): string;
+var
+  i: Integer;
+begin
+  for i:=Low(DefaultProfileNames) to High(DefaultProfileNames) do
+    if DefaultProfileNames[i]=aName then
+      exit(fTranslatedProfileNames[i]);
+  Result:=aName; // No translation, not a preconfigured profile.
+end;
+{
+function TBuildLazarusProfiles.Translated2DefaultProfile(aName: string): string;
+var
+  i: Integer;
+begin
+  for i:=Low(fTranslatedProfileNames) to High(fTranslatedProfileNames) do
+    if fTranslatedProfileNames[i]=aName then
+      exit(DefaultProfileNames[i]);
+  Result:=aName;  // Not a preconfigured profile.
+end;
+}
 function TBuildLazarusProfiles.GetCurrentProfile: TBuildLazarusProfile;
 begin
   Result:=Items[fCurrentIndex];
@@ -564,7 +607,7 @@ var
 begin
   fProfsToManage.Assign(AProfiles);
   for i:=0 to fProfsToManage.Count-1 do
-    ProfilesListBox.Items.Add(fProfsToManage[i].Name);
+    ProfilesListBox.Items.Add(fProfsToManage[i].TranslatedName);
   ProfilesListBox.ItemIndex:=fProfsToManage.CurrentIndex;
 end;
 
@@ -607,7 +650,7 @@ begin
     lisLazBuildAreYouSureYouWantToDeleteThisBuildProfile, mtConfirmation,
     [mbYes, mbNo])=mrYes then
   begin
-    SelI:=fProfsToManage.Selected.IndexOf(fProfsToManage[i].fName);
+    SelI:=fProfsToManage.Selected.IndexOf(fProfsToManage[i].TranslatedName);
     if SelI>-1 then
       fProfsToManage.Selected.Delete(SelI);
     // New last item index.
@@ -634,7 +677,7 @@ begin
 
   Str:= ProfilesListbox.Items[i];
   if not InputQuery(lisLazBuildRenameProf, lisLazBuildRenameProfInfo, Str) then Exit;
-  if Str='' then Exit;
+  if (Str='') or (Str=ProfilesListbox.Items[i]) then Exit;
 
   // Update ProfsToManage collection.
   fProfsToManage[i].fName:=Str;

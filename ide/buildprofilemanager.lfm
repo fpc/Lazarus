@@ -7,10 +7,10 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
   Caption = 'Build Profiles'
   ClientHeight = 435
   ClientWidth = 360
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.5'
   object ProfilesPanel: TPanel
     Left = 0
     Height = 435

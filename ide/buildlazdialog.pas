@@ -1455,7 +1455,7 @@ begin
   BuildProfileComboBox.Items.BeginUpdate;
   BuildProfileComboBox.Items.Clear;
   for i:=0 to fProfiles.Count-1 do
-    BuildProfileComboBox.Items.Add(fProfiles[i].Name);
+    BuildProfileComboBox.Items.Add(fProfiles[i].TranslatedName);
   BuildProfileCombobox.ItemIndex:=fProfiles.CurrentIndex;
   CopyProfileToUI(fProfiles.Current); // Copy current selection to UI.
   BuildProfileComboBox.Items.EndUpdate;
