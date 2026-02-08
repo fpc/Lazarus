@@ -108,15 +108,16 @@ resourcestring
     'into a single window. For a "classic" IDE with only floating windows turn the option off.';
   SSingleMultiWindow = 'Single/Multi Window';
   // Backup tool
-  adrsAnchorDockBackupRecovery = 'AnchorDock Backup Recovery';
-  adrsBackupSuccessful = 'Backup successful';
+  adrsAnchorDockBackupRecovery = 'Backup/Restore Anchordocking Layout';
+  adrsAnchorDockBackupRecoveryCaption = 'Backup/Restore Anchordocking Layout';
+  adrsBackupSuccessful = 'Backup successful: %s';
   adrsBackupFailed = 'Backup failed';
   adrsConfirm = 'Confirm';
   adrsAreYouSureToRestore = 'Are you sure you want to restore the window layout?' +
     ' This will overwrite the current layout settings.';
   adrsAreYouSureToDelete = 'Are you sure you want to delete the backup file?';
-  adrsLayoutRestoredSuccessfully = 'Layout restored successfully!';
-  adrsUnableToReadFile = 'Unable to read the file';
+  adrsLayoutRestoredSuccessfully = 'Layout restored successfully';
+  adrsUnableToReadFile = 'Unable to read the file: %s';
   adrsUnableToDeleteFile = 'Unable to delete the file';
   adrsBackupCurrentLayout = 'Backup current layout';
   adrsRestoreSelectedLayout = 'Restore selected layout';

@@ -68,7 +68,7 @@ end;
 
 procedure TDockBackupFrm.FormCreate(Sender: TObject);
 begin
-  self.Caption := adrsAnchorDockBackupRecovery;
+  self.Caption := adrsAnchorDockBackupRecoveryCaption;
   btnBackup.Caption  := adrsBackupCurrentLayout;
   btnRestore.Caption := adrsRestoreSelectedLayout;
   btnDelete.Caption  := adrsDeleteSelectedLayout;
@@ -79,10 +79,8 @@ begin
   IDEImages.AssignImage(btnRestore, 'restore_default');
   IDEImages.AssignImage(btnDelete,  'laz_delete');
   IDEImages.AssignImage(btnDefault, 'ce_default');
-  // 设置默认路径
   FBackupDir := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) + 'backups' + PathDelim;
   ForceDirectories(FBackupDir);
-  // 加载备份列表
   LoadBackupList;
   UpdateStatus(adrsReady);
 end;
@@ -102,7 +100,7 @@ begin
       XMLConfig.WriteToDisk;
     finally
       XMLConfig.Free;
-      UpdateStatus(adrsBackupSuccessful+': ' + ExtractFileName(BackupFile));
+      UpdateStatus(Format(adrsBackupSuccessful, [ExtractFileName(BackupFile)]));
       LoadBackupList;
     end;
   except
@@ -154,7 +152,7 @@ begin
     UpdateStatus(ListBox1.Items[ListBox1.ItemIndex]);
   except
     on E: Exception do
-      Memo1.Lines.Add(adrsUnableToReadFile+': ' + E.Message);
+      Memo1.Lines.Add(Format(adrsUnableToReadFile, [E.Message]));
   end;
 end;
 
@@ -170,7 +168,7 @@ begin
     try
       FindAllFiles(Files, FBackupDir, 'dockbackup_*.xml', False);
       Files.Sort;
-      for i := Files.Count - 1 downto 0 do  // 从最新到最旧排序
+      for i := Files.Count - 1 downto 0 do
         ListBox1.Items.Add(ExtractFileName(Files[i]));
     finally
       Files.Free;

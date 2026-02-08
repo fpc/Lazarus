@@ -147,7 +147,7 @@ begin
     IDEShortCut(VK_UNKNOWN, []), // <- set here your default shortcut
     CleanIDEShortCut, nil, @ShowDockbkFrm);
   // register menu item in Tools menu
-  RegisterIDEMenuCommand(itmSecondaryTools,'QFDockbk',adrsAnchorDockBackupRecovery,
+  RegisterIDEMenuCommand(itmSecondaryTools,'QFDockbk',adrsAnchorDockBackupRecovery+' ...',
     nil, nil, IdeCmd, 'tanchordockpanel');
 end;
 
