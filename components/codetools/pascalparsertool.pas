@@ -5010,6 +5010,8 @@ function TPascalParserTool.KeyWordFuncTypeArray: boolean;
 }
 
   function ReadElemType: boolean;
+  var
+    EndOfType: integer;
   begin
     if CurPos.Flag in [cafSemicolon,cafRoundBracketClose,cafEdgedBracketClose]
     then begin
@@ -5021,8 +5023,12 @@ function TPascalParserTool.KeyWordFuncTypeArray: boolean;
       if not UpAtomIs('OF') then
         SaveRaiseStringExpectedButAtomFound(20170425090708,'"of"');
       ReadNextAtom;
+      EndOfType:=CurPos.EndPos;
       Result:=ParseType(CurPos.StartPos);
-      CurNode.EndPos:=CurPos.StartPos;
+      if CurNode.Desc=ctnRangedArrayType then
+        CurNode.EndPos:=EndOfType // note: ParseType has different ending than ReadTillTypeEnd
+      else
+        CurNode.EndPos:=CurPos.StartPos;
       EndChildNode; // close array
     end;
   end;

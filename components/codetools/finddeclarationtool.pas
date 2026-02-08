@@ -4774,18 +4774,19 @@ var
   begin
     Result:=false;
     //debugln(['SearchInTypeOfVarConst ',ContextNode.Parent.DescAsString]);
-    if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
-    and (Src[ContextNode.StartPos]='(') then
+    if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition]) then
     begin
-      if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then
-        Result:=CheckResult(true,false);
-    end else
-    if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition]) and
-    (ContextNode.NextBrother<>nil) and
-    (Src[ContextNode.NextBrother.StartPos]='(') then
-    begin
-      if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then
-        Result:=CheckResult(true,false);
+      if (Src[ContextNode.StartPos]='(') then
+      begin
+        if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then
+          Result:=CheckResult(true,false);
+      end else
+      if (ContextNode.NextBrother<>nil) and
+      (Src[ContextNode.NextBrother.StartPos]='(') then
+      begin
+        if FindIdentifierInTypeOfConstant(ContextNode.Parent,Params) then
+          Result:=CheckResult(true,false);
+      end;
     end;
   end;
 
@@ -5448,7 +5449,7 @@ begin
             if SearchInGenericType(Params.IdentSpecializeNodeParamCount) then exit;
           // ctnGenericParams: skip here, it was searched before searching the ancestors
 
-          ctnIdentifier:
+          ctnIdentifier, ctnRangedArrayType:
             if (ContextNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition])
             then begin
               if ((ContextNode=ContextNode.Parent.LastChild) // simple const
@@ -9922,17 +9923,48 @@ var
   ExprType: TExpressionType;
   TypeParams: TFindDeclarationParams;
   OldInput: TFindDeclarationInput;
+
 begin
   Result:=false;
   //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ',VarConstNode.DescAsString]);
   TypeNode:=VarConstNode.FirstChild;
   if TypeNode=nil then exit;
-  if TypeNode.Desc=ctnIdentifier then begin
+  if TypeNode.Desc in [ctnIdentifier, ctnRangedArrayType] then begin
     // resolve type
     //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ']);
     TypeParams:=TFindDeclarationParams.Create(Params);
     try
-      TypeParams.ContextNode:=TypeNode;
+      if (TypeNode.Desc = ctnIdentifier) then begin
+        if (TypeNode.NextBrother<>nil) and (TypeNode.NextBrother.Desc=ctnConstant) then begin
+        // const/var a: TypeArrayOfRecords = ();
+          // find TypeArrayOfRecords
+          TypeParams.ContextNode:=TypeNode.Parent;
+          TypeParams.SetIdentifier(Self,nil,nil);
+          TypeParams.Flags:=fdfDefaultForExpressions;
+          ExprType:=FindExpressionTypeOfTerm(TypeNode.StartPos,-1,TypeParams,false);
+
+          if (ExprType.Desc=xtContext) then begin
+            if (ExprType.Context.Node.Desc=ctnRangedArrayType) then begin
+            // if an array found then switch context
+              TypeNode:=ExprType.Context.Node;
+              TypeParams.Clear;
+              TypeParams.ContextNode:=TypeNode;
+            end else
+            if (ExprType.Context.Node.Desc=ctnRecordType) then
+              // record = OK
+            else
+              exit;
+          end;
+        end else
+          TypeParams.ContextNode:=TypeNode;
+      end;
+      if (TypeNode.Desc = ctnRangedArrayType) then begin
+        // const/var a: array [0..1] of recordtype = ();
+        TypeParams.ContextNode:=TypeNode.Parent;
+        while (TypeNode<>nil) and (TypeNode.Desc = ctnRangedArrayType) do
+          TypeNode:=TypeNode.LastChild;
+      end;
+
       TypeParams.SetIdentifier(Self,nil,nil);
       TypeParams.Flags:=fdfDefaultForExpressions;
       ExprType:=FindExpressionTypeOfTerm(TypeNode.StartPos,-1,TypeParams,false);

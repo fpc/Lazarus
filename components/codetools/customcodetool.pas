@@ -221,6 +221,7 @@ type
     procedure MoveCursorToNearestAtom(ACleanPos: integer);
     procedure MoveCursorToLastNodeAtom(ANode: TCodeTreeNode);
     function IsPCharInSrc(ACleanPos: PChar): boolean;
+    function GetPosPCharInSrc(ACleanPos: PChar): integer; // utility for debugging
 
     // read atoms
     procedure ReadNextAtom;
@@ -2488,6 +2489,18 @@ begin
   if p>ACleanPos then exit;
   if ACleanPos>p+SrcLen then exit;
   Result:=true;
+end;
+
+function TCustomCodeTool.GetPosPCharInSrc(ACleanPos: PChar): integer;
+var
+  p: PChar;
+begin
+  Result:=0;
+  if Src='' then exit;
+  p:=PChar(Src);
+  if p>ACleanPos then exit;
+  if ACleanPos>p+SrcLen then exit;
+  Result:= 1+integer(ACleanPos)-integer(p);
 end;
 
 procedure TCustomCodeTool.CreateChildNode(Desc: TCodeTreeNodeDesc);
