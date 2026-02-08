@@ -27,7 +27,13 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Pelės judesio kelias pikseliais, po kurio pradedamas tempimo veiksmas"
 
 #: anchordockstr.adrsanchordockbackuprecovery
-msgid "AnchorDock Backup Recovery"
+msgctxt "anchordockstr.adrsanchordockbackuprecovery"
+msgid "Backup/Restore Anchordocking Layout"
+msgstr ""
+
+#: anchordockstr.adrsanchordockbackuprecoverycaption
+msgctxt "anchordockstr.adrsanchordockbackuprecoverycaption"
+msgid "Backup/Restore Anchordocking Layout"
 msgstr ""
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
@@ -71,7 +77,8 @@ msgid "Backup failed"
 msgstr ""
 
 #: anchordockstr.adrsbackupsuccessful
-msgid "Backup successful"
+#, object-pascal-format
+msgid "Backup successful: %s"
 msgstr ""
 
 #: anchordockstr.adrsbottom
@@ -206,7 +213,7 @@ msgid "Highlight header of focused docked control"
 msgstr ""
 
 #: anchordockstr.adrslayoutrestoredsuccessfully
-msgid "Layout restored successfully!"
+msgid "Layout restored successfully"
 msgstr ""
 
 #: anchordockstr.adrsleft
@@ -360,7 +367,8 @@ msgid "Unable to delete the file"
 msgstr ""
 
 #: anchordockstr.adrsunabletoreadfile
-msgid "Unable to read the file"
+#, object-pascal-format
+msgid "Unable to read the file: %s"
 msgstr ""
 
 #: anchordockstr.adrsundock

@@ -25,7 +25,13 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Quantidade de \"pixels\" que o mouse deve arrastar antes que arrastar se inicie"
 
 #: anchordockstr.adrsanchordockbackuprecovery
-msgid "AnchorDock Backup Recovery"
+msgctxt "anchordockstr.adrsanchordockbackuprecovery"
+msgid "Backup/Restore Anchordocking Layout"
+msgstr ""
+
+#: anchordockstr.adrsanchordockbackuprecoverycaption
+msgctxt "anchordockstr.adrsanchordockbackuprecoverycaption"
+msgid "Backup/Restore Anchordocking Layout"
 msgstr ""
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
@@ -69,7 +75,8 @@ msgid "Backup failed"
 msgstr ""
 
 #: anchordockstr.adrsbackupsuccessful
-msgid "Backup successful"
+#, object-pascal-format
+msgid "Backup successful: %s"
 msgstr ""
 
 #: anchordockstr.adrsbottom
@@ -204,7 +211,7 @@ msgid "Highlight header of focused docked control"
 msgstr "Realçar cabeçalho do controles ancorado focado"
 
 #: anchordockstr.adrslayoutrestoredsuccessfully
-msgid "Layout restored successfully!"
+msgid "Layout restored successfully"
 msgstr ""
 
 #: anchordockstr.adrsleft
@@ -358,7 +365,8 @@ msgid "Unable to delete the file"
 msgstr ""
 
 #: anchordockstr.adrsunabletoreadfile
-msgid "Unable to read the file"
+#, object-pascal-format
+msgid "Unable to read the file: %s"
 msgstr ""
 
 #: anchordockstr.adrsundock

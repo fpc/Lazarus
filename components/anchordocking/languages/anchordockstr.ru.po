@@ -25,8 +25,14 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Число пикселов, на которые должна переместиться мышь для начала операции перетаскивания"
 
 #: anchordockstr.adrsanchordockbackuprecovery
-msgid "AnchorDock Backup Recovery"
-msgstr ""
+msgctxt "anchordockstr.adrsanchordockbackuprecovery"
+msgid "Backup/Restore Anchordocking Layout"
+msgstr "Сохранить/восстановить разбивку окон Anchordocking"
+
+#: anchordockstr.adrsanchordockbackuprecoverycaption
+msgctxt "anchordockstr.adrsanchordockbackuprecoverycaption"
+msgid "Backup/Restore Anchordocking Layout"
+msgstr "Сохранение/восстановление разбивки окон Anchordocking"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 #, object-pascal-format
@@ -50,11 +56,11 @@ msgstr "Вкладка не должна иметь привязок: Узел=\
 
 #: anchordockstr.adrsareyousuretodelete
 msgid "Are you sure you want to delete the backup file?"
-msgstr ""
+msgstr "Вы уверены, что хотите удалить файл резервной копии?"
 
 #: anchordockstr.adrsareyousuretorestore
 msgid "Are you sure you want to restore the window layout? This will overwrite the current layout settings."
-msgstr ""
+msgstr "Вы уверены, что хотите восстановить разбивку окон? Это действие приведёт к перезаписи текущего состояния."
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -62,15 +68,16 @@ msgstr "Автоматическое"
 
 #: anchordockstr.adrsbackupcurrentlayout
 msgid "Backup current layout"
-msgstr ""
+msgstr "Сохранить текущую разбивку"
 
 #: anchordockstr.adrsbackupfailed
 msgid "Backup failed"
-msgstr ""
+msgstr "Невозможно создать резервную копию"
 
 #: anchordockstr.adrsbackupsuccessful
-msgid "Backup successful"
-msgstr ""
+#, object-pascal-format
+msgid "Backup successful: %s"
+msgstr "Резервная копия успешно создана: %s"
 
 #: anchordockstr.adrsbottom
 msgid "bottom"
@@ -82,7 +89,7 @@ msgstr "Закрыть"
 
 #: anchordockstr.adrsconfirm
 msgid "Confirm"
-msgstr ""
+msgstr "Подтверждение"
 
 #: anchordockstr.adrscontrolisalreadyadocksite
 msgid "control is already a docksite"
@@ -95,7 +102,7 @@ msgstr "Пользовательская область стыковки \"%s\" 
 
 #: anchordockstr.adrsdeleteselectedlayout
 msgid "Delete selected layout"
-msgstr ""
+msgstr "Удалить выбранную разбивку"
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
@@ -204,8 +211,8 @@ msgid "Highlight header of focused docked control"
 msgstr "Выделять заголовок пристыкованного объекта в фокусе"
 
 #: anchordockstr.adrslayoutrestoredsuccessfully
-msgid "Layout restored successfully!"
-msgstr ""
+msgid "Layout restored successfully"
+msgstr "Разбивка окон успешно восстановлена"
 
 #: anchordockstr.adrsleft
 msgid "left"
@@ -284,7 +291,7 @@ msgstr "Выход из %s"
 
 #: anchordockstr.adrsready
 msgid "Ready"
-msgstr ""
+msgstr "Готово"
 
 #: anchordockstr.adrsrequestedbutcreated
 #, object-pascal-format
@@ -293,11 +300,11 @@ msgstr "Запрошен %s, но создан %s"
 
 #: anchordockstr.adrsrestoredefaultlayout
 msgid "Restore default layout"
-msgstr ""
+msgstr "Восстановить разбивку по умолчанию"
 
 #: anchordockstr.adrsrestoreselectedlayout
 msgid "Restore selected layout"
-msgstr ""
+msgstr "Восстановить выбранную разбивку"
 
 #: anchordockstr.adrsright
 msgid "right"
@@ -355,11 +362,12 @@ msgstr "Для использования anchordocking сначала удал�
 
 #: anchordockstr.adrsunabletodeletefile
 msgid "Unable to delete the file"
-msgstr ""
+msgstr "Невозможно удалить файл"
 
 #: anchordockstr.adrsunabletoreadfile
-msgid "Unable to read the file"
-msgstr ""
+#, object-pascal-format
+msgid "Unable to read the file: %s"
+msgstr "Невозможно прочитать файл: %s"
 
 #: anchordockstr.adrsundock
 msgid "Undock"
@@ -371,7 +379,7 @@ msgstr "Классическая IDE (многооконная):"
 
 #: anchordockstr.setupmultiwindowideinfo
 msgid "The \"modern\" single Window mode still allows you to undock individual Windows and have several groups of Windows. The IDE will show additional \"Dock-Handles\" in each Window, which will allow you to change layout, but also require additional space."
-msgstr "\"Современный\" однооконный режим позволяет отстыковывать отдельные окна и иметь несколько групп окон. IDE отобразит дополнительные заголовки в каждом окне, которые позволят менять порядок окон, но в то же время потребуют дополнительного пространства."
+msgstr "\"Современный\" однооконный режим позволяет отстыковывать отдельные окна и иметь несколько групп окон. IDE отобразит дополнительные заголовки в каждом окне, которые позволят менять разбивку окон, но в то же время потребуют дополнительного пространства."
 
 #: anchordockstr.setupmultiwindowidemodern
 msgid "Modern IDE (Single-Window):"

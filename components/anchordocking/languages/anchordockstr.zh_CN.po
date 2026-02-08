@@ -26,8 +26,16 @@ msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "开始拖动前鼠标必须拖动的像素数"
 
 #: anchordockstr.adrsanchordockbackuprecovery
-msgid "AnchorDock Backup Recovery"
+#, fuzzy
+#| msgid "AnchorDock Backup Recovery"
+msgctxt "anchordockstr.adrsanchordockbackuprecovery"
+msgid "Backup/Restore Anchordocking Layout"
 msgstr "Lazarus IDE布局备份恢复工具"
+
+#: anchordockstr.adrsanchordockbackuprecoverycaption
+msgctxt "anchordockstr.adrsanchordockbackuprecoverycaption"
+msgid "Backup/Restore Anchordocking Layout"
+msgstr ""
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 #, object-pascal-format
@@ -70,7 +78,9 @@ msgid "Backup failed"
 msgstr "备份失败"
 
 #: anchordockstr.adrsbackupsuccessful
-msgid "Backup successful"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Backup successful"
+msgid "Backup successful: %s"
 msgstr "备份成功"
 
 #: anchordockstr.adrsbottom
@@ -205,7 +215,9 @@ msgid "Highlight header of focused docked control"
 msgstr "高亮显示聚焦停靠控件的标题栏"
 
 #: anchordockstr.adrslayoutrestoredsuccessfully
-msgid "Layout restored successfully!"
+#, fuzzy
+#| msgid "Layout restored successfully!"
+msgid "Layout restored successfully"
 msgstr "布局恢复成功"
 
 #: anchordockstr.adrsleft
@@ -359,7 +371,9 @@ msgid "Unable to delete the file"
 msgstr "无法删除文件"
 
 #: anchordockstr.adrsunabletoreadfile
-msgid "Unable to read the file"
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to read the file"
+msgid "Unable to read the file: %s"
 msgstr "无法读取文件"
 
 #: anchordockstr.adrsundock
