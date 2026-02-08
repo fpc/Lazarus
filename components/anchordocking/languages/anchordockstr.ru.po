@@ -24,6 +24,10 @@ msgstr "Разрешать областям стыковки сворачива�
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Число пикселов, на которые должна переместиться мышь для начала операции перетаскивания"
 
+#: anchordockstr.adrsanchordockbackuprecovery
+msgid "AnchorDock Backup Recovery"
+msgstr ""
+
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 #, object-pascal-format
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -44,9 +48,29 @@ msgstr "Привязка к неверной стороне разделител
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Вкладка не должна иметь привязок: Узел=\"%s\" Родитель=%s Тип родителя=%s Anchors[%s]=\"%s\""
 
+#: anchordockstr.adrsareyousuretodelete
+msgid "Are you sure you want to delete the backup file?"
+msgstr ""
+
+#: anchordockstr.adrsareyousuretorestore
+msgid "Are you sure you want to restore the window layout? This will overwrite the current layout settings."
+msgstr ""
+
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
 msgstr "Автоматическое"
+
+#: anchordockstr.adrsbackupcurrentlayout
+msgid "Backup current layout"
+msgstr ""
+
+#: anchordockstr.adrsbackupfailed
+msgid "Backup failed"
+msgstr ""
+
+#: anchordockstr.adrsbackupsuccessful
+msgid "Backup successful"
+msgstr ""
 
 #: anchordockstr.adrsbottom
 msgid "bottom"
@@ -56,6 +80,10 @@ msgstr "снизу"
 msgid "Close"
 msgstr "Закрыть"
 
+#: anchordockstr.adrsconfirm
+msgid "Confirm"
+msgstr ""
+
 #: anchordockstr.adrscontrolisalreadyadocksite
 msgid "control is already a docksite"
 msgstr "объект уже является областью стыковки"
@@ -64,6 +92,10 @@ msgstr "объект уже является областью стыковки"
 #, object-pascal-format
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Пользовательская область стыковки \"%s\" может иметь только один стыковочный элемент."
+
+#: anchordockstr.adrsdeleteselectedlayout
+msgid "Delete selected layout"
+msgstr ""
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
@@ -171,6 +203,10 @@ msgstr "Выделять объект в фокусе"
 msgid "Highlight header of focused docked control"
 msgstr "Выделять заголовок пристыкованного объекта в фокусе"
 
+#: anchordockstr.adrslayoutrestoredsuccessfully
+msgid "Layout restored successfully!"
+msgstr ""
+
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "слева"
@@ -246,10 +282,22 @@ msgstr "Не поддерживается: %s имеет родителя %s"
 msgid "Quit %s"
 msgstr "Выход из %s"
 
+#: anchordockstr.adrsready
+msgid "Ready"
+msgstr ""
+
 #: anchordockstr.adrsrequestedbutcreated
 #, object-pascal-format
 msgid "%s requested, but %s created"
 msgstr "Запрошен %s, но создан %s"
+
+#: anchordockstr.adrsrestoredefaultlayout
+msgid "Restore default layout"
+msgstr ""
+
+#: anchordockstr.adrsrestoreselectedlayout
+msgid "Restore selected layout"
+msgstr ""
 
 #: anchordockstr.adrsright
 msgid "right"
@@ -304,6 +352,14 @@ msgstr "сверху"
 #, object-pascal-format
 msgid "To use anchordocking you must first uninstall %s"
 msgstr "Для использования anchordocking сначала удалите %s"
+
+#: anchordockstr.adrsunabletodeletefile
+msgid "Unable to delete the file"
+msgstr ""
+
+#: anchordockstr.adrsunabletoreadfile
+msgid "Unable to read the file"
+msgstr ""
 
 #: anchordockstr.adrsundock
 msgid "Undock"

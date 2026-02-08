@@ -25,6 +25,10 @@ msgstr "允许停靠的站点最小化"
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "开始拖动前鼠标必须拖动的像素数"
 
+#: anchordockstr.adrsanchordockbackuprecovery
+msgid "AnchorDock Backup Recovery"
+msgstr ""
+
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 #, object-pascal-format
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -45,9 +49,29 @@ msgstr "锚定到分割器的错误一侧：Node=\"%s\" Anchors[%s]=\"%s\""
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "页面不得被锚定：Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 
+#: anchordockstr.adrsareyousuretodelete
+msgid "Are you sure you want to delete the backup file?"
+msgstr ""
+
+#: anchordockstr.adrsareyousuretorestore
+msgid "Are you sure you want to restore the window layout? This will overwrite the current layout settings."
+msgstr ""
+
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
 msgstr "自动地"
+
+#: anchordockstr.adrsbackupcurrentlayout
+msgid "Backup current layout"
+msgstr ""
+
+#: anchordockstr.adrsbackupfailed
+msgid "Backup failed"
+msgstr ""
+
+#: anchordockstr.adrsbackupsuccessful
+msgid "Backup successful"
+msgstr ""
 
 #: anchordockstr.adrsbottom
 msgid "bottom"
@@ -57,6 +81,10 @@ msgstr "底部"
 msgid "Close"
 msgstr "关闭"
 
+#: anchordockstr.adrsconfirm
+msgid "Confirm"
+msgstr ""
+
 #: anchordockstr.adrscontrolisalreadyadocksite
 msgid "control is already a docksite"
 msgstr "控件已经是停靠站"
@@ -65,6 +93,10 @@ msgstr "控件已经是停靠站"
 #, object-pascal-format
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "自定义停靠点 \"%s\" 只能有一个站点。"
+
+#: anchordockstr.adrsdeleteselectedlayout
+msgid "Delete selected layout"
+msgstr ""
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
@@ -172,6 +204,10 @@ msgstr "高亮聚焦"
 msgid "Highlight header of focused docked control"
 msgstr "高亮显示聚焦停靠控件的标题栏"
 
+#: anchordockstr.adrslayoutrestoredsuccessfully
+msgid "Layout restored successfully!"
+msgstr ""
+
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "左"
@@ -247,10 +283,22 @@ msgstr "不支持：%s 有父 %s"
 msgid "Quit %s"
 msgstr "退出 %s"
 
+#: anchordockstr.adrsready
+msgid "Ready"
+msgstr ""
+
 #: anchordockstr.adrsrequestedbutcreated
 #, object-pascal-format
 msgid "%s requested, but %s created"
 msgstr "请求 %s，但创建了 %s"
+
+#: anchordockstr.adrsrestoredefaultlayout
+msgid "Restore default layout"
+msgstr ""
+
+#: anchordockstr.adrsrestoreselectedlayout
+msgid "Restore selected layout"
+msgstr ""
 
 #: anchordockstr.adrsright
 msgid "right"
@@ -305,6 +353,14 @@ msgstr "顶部"
 #, object-pascal-format
 msgid "To use anchordocking you must first uninstall %s"
 msgstr "要使用 anchordocking，您必须先卸载 %s"
+
+#: anchordockstr.adrsunabletodeletefile
+msgid "Unable to delete the file"
+msgstr ""
+
+#: anchordockstr.adrsunabletoreadfile
+msgid "Unable to read the file"
+msgstr ""
 
 #: anchordockstr.adrsundock
 msgid "Undock"

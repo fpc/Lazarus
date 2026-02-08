@@ -112,11 +112,15 @@ resourcestring
   adrsBackupSuccessful = 'Backup successful';
   adrsBackupFailed = 'Backup failed';
   adrsConfirm = 'Confirm';
-  adrsAreYouSure = 'Are you sure you want to restore the window layout? This will overwrite the current layout settings。';
+  adrsAreYouSureToRestore = 'Are you sure you want to restore the window layout?' +
+    ' This will overwrite the current layout settings.';
+  adrsAreYouSureToDelete = 'Are you sure you want to delete the backup file?';
   adrsLayoutRestoredSuccessfully = 'Layout restored successfully!';
   adrsUnableToReadFile = 'Unable to read the file';
+  adrsUnableToDeleteFile = 'Unable to delete the file';
   adrsBackupCurrentLayout = 'Backup current layout';
   adrsRestoreSelectedLayout = 'Restore selected layout';
+  adrsDeleteSelectedLayout = 'Delete selected layout';
   adrsRestoreDefaultLayout = 'Restore default layout';
   adrsReady = 'Ready';
 
