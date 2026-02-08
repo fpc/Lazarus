@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fgl, LazClasses, Laz2_XMLCfg, IdeDebuggerUtils,
-  IdeDbgConfigItemCheckListBoxFrame, System.AnsiStrings, LazDebuggerIntfExcludedRoutines,
+  IdeDbgConfigItemCheckListBoxFrame, LazDebuggerIntfExcludedRoutines,
   LazDebuggerIntfSynchronizedList;
 
 type
