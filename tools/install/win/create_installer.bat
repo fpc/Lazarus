@@ -76,6 +76,10 @@ SET BUILDDIR=c:\temp\lazbuild
 if NOT [%LAZTEMPBUILDDIR%]==[] SET BUILDDIR=%LAZTEMPBUILDDIR%
 
 ::=====================================================================
+::=====================================================================
+:: DONE SETTING DEFAULTS
+::=====================================================================
+::=====================================================================
 :: no change needed after this.
 
 :: Some internal variables
@@ -119,6 +123,9 @@ IF [%LAZREVISION%] == [] GOTO SVNVERERR
 :: Remove : from revision if present
 SET LAZREVISION=%LAZREVISION::=_%
 
+::=====================================================================
+::=====================================================================
+
 ECHO Starting at: > %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
 
@@ -126,26 +133,27 @@ ECHO Starting at: > %LOGFILE%
 SET OLDPATH=%PATH%
 SET PATH=%FPCBINDIR%
 
-::---------------------------------------------------------------------
-:: copy lazarus dir
 rmdir /s /q %BUILDDIR%
 mkdir %BUILDDIR%
-%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore . >> %LOGFILE%
 
-rem cp -pr %LAZGITDIR%\* %BUILDDIR% >> %LOGFILE%
-IF %ERRORLEVEL% NEQ 0 GOTO GITERR
-call svn2revisioninc.bat %LAZGITDIR% %BUILDDIR%\ide\revision.inc
+::=====================================================================
+::=====================================================================
+:: BUILD FPC
+::=====================================================================
+::=====================================================================
 
 ::---------------------------------------------------------------------
 call build-fpc.bat
 
 :: INSTALL_BINDIR is set by build-fpc.bat
+:: copy gnu binaries (as.exe, ld.exe, ...)
 mkdir %BUILDDIR%\fpcbins
 %GIT% -C %FPCGITDIR% --work-tree=%BUILDDIR%\fpcbins restore --source=HEAD:%FPCBINTREE% . >> %LOGFILE%
 IF %ERRORLEVEL% NEQ 0 GOTO GITERR
 mv -f %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
 %FPCBINDIR%\rm -rf %BUILDDIR%\fpcbins
 del %INSTALL_BINDIR%\gdb.exe
+
 :: copy from 32 bit, missing in 64bit
 for %%T in ( cpp.exe gcc.exe windres.exe windres.h ) DO if not exist %INSTALL_BINDIR%\%%T copy %FPCGITDIR%\install\binw32\%%T %INSTALL_BINDIR%\
 
@@ -153,7 +161,22 @@ for %%T in ( cpp.exe gcc.exe windres.exe windres.h ) DO if not exist %INSTALL_BI
 if not exist %INSTALL_BINDIR%\fpc.exe goto WARNING_NO_COMPILER_MADE
 if not exist %INSTALL_BINDIR%\fpcmkcfg.exe goto WARNING_NO_COMPILER_MADE
 
+
+:: temporary fpc.cfg to build lazarus
 %INSTALL_BINDIR%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
+
+
+::=====================================================================
+::=====================================================================
+:: BUILD Lazarus
+::=====================================================================
+::=====================================================================
+
+::---------------------------------------------------------------------
+:: copy lazarus dir
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore . >> %LOGFILE%
+IF %ERRORLEVEL% NEQ 0 GOTO GITERR
+call svn2revisioninc.bat %LAZGITDIR% %BUILDDIR%\ide\revision.inc
 
 ::---------------------------------------------------------------------
 call build-lazarus.bat
@@ -172,8 +195,12 @@ gmkdir -p %BUILDDIR%\mingw\%FPCFULLTARGET%
 cp -pr %GDBDIR%\* %BUILDDIR%\mingw\%FPCFULLTARGET%
 :NOGDB
 
-::---------------------------------------------------------------------
-:: create the installer
+::=====================================================================
+::=====================================================================
+:: BUILD installer
+::=====================================================================
+::=====================================================================
+
 IF [%BUILDLAZRELEASE%]==[] GOTO SNAPSHOT
 SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-%FPCTARGETOS%
 if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-fpc-%FPCFULLVERSION%-%FPCTARGETOS%
