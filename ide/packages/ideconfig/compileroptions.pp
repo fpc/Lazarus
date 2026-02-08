@@ -3792,6 +3792,7 @@ begin
     Src:=TCompilerMsgIDFlags(Source);
     if Equals(Src) then exit;
     // copy node structure and Data references
+    Clear;
     fTree.Assign(Src.fTree);
     // clone data
     Node:=fTree.FindLowest;
