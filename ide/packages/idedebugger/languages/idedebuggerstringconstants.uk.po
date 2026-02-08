@@ -89,7 +89,7 @@ msgid "Some backends may compare case-sensitive. Regex may be limited, if suppor
 msgstr ""
 
 #: idedebuggerstringconstants.dbgoptexclrtsomebackendsmayonlysuppor
-msgid "Some backends may only support function name (equal) checks"
+msgid "Some backends may only support function name (equal) checks."
 msgstr ""
 
 #: idedebuggerstringconstants.dbgoptexclrtsteppingexclusions
