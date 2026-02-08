@@ -179,7 +179,7 @@ begin
   while i >= 0 do begin
     m := GetSyncTargetEntry(i);
     if m.HasDeletedOrigin then
-      DeleteSyncedEntryAt(-1, i, nil, nil);
+      DeleteSyncedEntryAt(-1, i, _SRC_LIST(nil), nil);
     dec(i);
   end;
 end;
