@@ -174,11 +174,11 @@ begin
 end;
 
 procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  CompOpts: TBaseCompilerOptions;
 begin
-  with AOptions as TBaseCompilerOptions do
-  begin
-    MessageFlags.Assign(TempMessages);
-  end;
+  CompOpts:=AOptions as TBaseCompilerOptions;
+  (CompOpts.MessageFlags as TCompilerMsgIDFlags).Assign(TempMessages);
 end;
 
 class function TCompilerMessagesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
