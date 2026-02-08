@@ -27,7 +27,7 @@ msgstr "开始拖动前鼠标必须拖动的像素数"
 
 #: anchordockstr.adrsanchordockbackuprecovery
 msgid "AnchorDock Backup Recovery"
-msgstr ""
+msgstr "Lazarus IDE布局备份恢复工具"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 #, object-pascal-format
@@ -51,11 +51,11 @@ msgstr "页面不得被锚定：Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=
 
 #: anchordockstr.adrsareyousuretodelete
 msgid "Are you sure you want to delete the backup file?"
-msgstr ""
+msgstr "您确定要删除备份文件吗？"
 
 #: anchordockstr.adrsareyousuretorestore
 msgid "Are you sure you want to restore the window layout? This will overwrite the current layout settings."
-msgstr ""
+msgstr "您确定要恢复窗口布局吗？这将覆盖当前的布局设置。"
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -63,15 +63,15 @@ msgstr "自动地"
 
 #: anchordockstr.adrsbackupcurrentlayout
 msgid "Backup current layout"
-msgstr ""
+msgstr "备份当前布局"
 
 #: anchordockstr.adrsbackupfailed
 msgid "Backup failed"
-msgstr ""
+msgstr "备份失败"
 
 #: anchordockstr.adrsbackupsuccessful
 msgid "Backup successful"
-msgstr ""
+msgstr "备份成功"
 
 #: anchordockstr.adrsbottom
 msgid "bottom"
@@ -83,7 +83,7 @@ msgstr "关闭"
 
 #: anchordockstr.adrsconfirm
 msgid "Confirm"
-msgstr ""
+msgstr "确认"
 
 #: anchordockstr.adrscontrolisalreadyadocksite
 msgid "control is already a docksite"
@@ -96,7 +96,7 @@ msgstr "自定义停靠点 \"%s\" 只能有一个站点。"
 
 #: anchordockstr.adrsdeleteselectedlayout
 msgid "Delete selected layout"
-msgstr ""
+msgstr "选删除中的布局"
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
@@ -206,7 +206,7 @@ msgstr "高亮显示聚焦停靠控件的标题栏"
 
 #: anchordockstr.adrslayoutrestoredsuccessfully
 msgid "Layout restored successfully!"
-msgstr ""
+msgstr "布局恢复成功"
 
 #: anchordockstr.adrsleft
 msgid "left"
@@ -285,7 +285,7 @@ msgstr "退出 %s"
 
 #: anchordockstr.adrsready
 msgid "Ready"
-msgstr ""
+msgstr "就绪"
 
 #: anchordockstr.adrsrequestedbutcreated
 #, object-pascal-format
@@ -294,11 +294,11 @@ msgstr "请求 %s，但创建了 %s"
 
 #: anchordockstr.adrsrestoredefaultlayout
 msgid "Restore default layout"
-msgstr ""
+msgstr "恢复默认布局"
 
 #: anchordockstr.adrsrestoreselectedlayout
 msgid "Restore selected layout"
-msgstr ""
+msgstr "恢复选中的布局"
 
 #: anchordockstr.adrsright
 msgid "right"
@@ -356,11 +356,11 @@ msgstr "要使用 anchordocking，您必须先卸载 %s"
 
 #: anchordockstr.adrsunabletodeletefile
 msgid "Unable to delete the file"
-msgstr ""
+msgstr "无法删除文件"
 
 #: anchordockstr.adrsunabletoreadfile
 msgid "Unable to read the file"
-msgstr ""
+msgstr "无法读取文件"
 
 #: anchordockstr.adrsundock
 msgid "Undock"
