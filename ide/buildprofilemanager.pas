@@ -407,7 +407,6 @@ var
   Platfrm: TLCLPlatform;
 begin
   Platfrm:=GetDefaultLCLWidgetType;
-  debugln(['TBuildLazarusProfiles.CreateDefaults ']);
   // Build Normal IDE
   Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[0]); //lisLazBuildNormalIDE
   with Profile, fOwner do begin
@@ -511,15 +510,13 @@ end;
 procedure TBuildLazarusProfiles.Save(XMLConfig: TXMLConfig; const Path: string);
 var
   i: Integer;
-  ProfPath, n: string;
+  ProfPath: string;
 begin
   // Save list of profiles.
   XMLConfig.SetDeleteValue(Path+'Profiles/Count',Count,0);
   for i:=0 to Count-1 do begin
     ProfPath:=Path+'Profiles/Profile'+IntToStr(i)+'/';
-    n:=Items[i].Name;
-    debugln(['TBuildLazarusProfiles.Save Item=', n, ', XMLConfig=', XMLConfig.Filename]);
-    XMLConfig.SetDeleteValue(ProfPath+'Name',n,'');
+    XMLConfig.SetDeleteValue(ProfPath+'Name', Items[i].Name ,'');
     Items[i].Save(XMLConfig, ProfPath);
   end;
   // Current profile ItemIndex.
