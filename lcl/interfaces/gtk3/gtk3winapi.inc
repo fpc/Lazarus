@@ -2996,12 +2996,27 @@ begin
   Result:=inherited GetWindowExtEx(DC, Size);
 end;
 
+type
+  TGtk3WidgetAccess = class(TGtk3Widget);
+
 function TGtk3WidgetSet.GetWindowLong(Handle: HWND; int: Integer): PtrInt;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.GetWindowLong not implemented ...');
-  {$ENDIF}
-  Result:=inherited GetWindowLong(Handle, int);
+  Result := 0;
+  if Handle <> 0 then
+    case int of
+      GWL_HWNDPARENT:
+        Result := PtrInt(TGtk3WidgetAccess(Handle).getParent);
+      GWL_STYLE:
+        Result := TGtk3WidgetAccess(Handle).FParams.Style;
+      GWL_EXSTYLE:
+        Result := TGtk3WidgetAccess(Handle).FParams.ExStyle;
+      GWL_USERDATA:
+        Result := {%H-}PtrInt(TGtk3WidgetAccess(Handle).Widget^.get_data('Userdata'));
+      GWL_HINSTANCE:
+        Result := {%H-}PtrInt(TGtk3WidgetAccess(Handle).Widget^.get_data('HInstance'));
+      GWL_ID:
+        Result := {%H-}PtrInt(TGtk3WidgetAccess(Handle).Widget^.get_data('Id'));
+    end; //case
 end;
 
 function TGtk3WidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
@@ -4505,10 +4520,20 @@ end;
 function TGtk3WidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
   NewLong: PtrInt): PtrInt;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.SetWindowLong not implemented ...');
-  {$ENDIF}
-  Result:=inherited SetWindowLong(Handle, Idx, NewLong);
+  Result := 0;
+  if Handle <> 0 then
+    case Idx of
+      GWL_STYLE:
+        TGtk3WidgetAccess(Handle).FParams.Style := NewLong;
+      GWL_EXSTYLE:
+        TGtk3WidgetAccess(Handle).FParams.ExStyle := NewLong;
+      GWL_USERDATA:
+        TGtk3WidgetAccess(Handle).Widget^.set_data('Userdata', {%H-}gpointer(NewLong));
+      GWL_ID:
+        TGtk3WidgetAccess(Handle).Widget^.set_data('Id', {%H-}gpointer(NewLong));
+      GWL_HINSTANCE:
+        TGtk3WidgetAccess(Handle).Widget^.set_data('HInstance', {%H-}gpointer(NewLong));
+    end;
 end;
 
 function TGtk3WidgetSet.SetWindowOrgEx(dc: hdc; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
