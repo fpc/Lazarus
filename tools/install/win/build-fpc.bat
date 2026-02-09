@@ -24,22 +24,21 @@ cp -pr %SOURCE_DIR%\packages %BUILDDIR%\fpc\source\packages >> %LOGFILE%
 
 :: build compiler
 %MAKEEXE% clean PP=%RELEASE_PPC% >> %LOGFILE% 2>&1
-%MAKEEXE% compiler_cycle PP=%RELEASE_PPC% >> %LOGFILE% 2>&1
+%MAKEEXE% compiler_cycle PP=%RELEASE_PPC% OPT="%FPC_BUILD_OPTS%" >> %LOGFILE% 2>&1
 
 FOR /F %%L IN ('%SOURCE_DIR%\compiler\utils\fpc.exe -PB') DO SET COMPILER=%SOURCE_DIR%\compiler\%%L
 FOR /F %%L IN ('%COMPILER% -iV') DO SET FPCVERSION=%%L
 FOR /F %%L IN ('%COMPILER% -iW') DO SET FPCFULLVERSION=%%L
 
 %MAKEEXE% rtl_clean PP=%COMPILER% >> %LOGFILE%
-%MAKEEXE% rtl packages PP=%COMPILER% OPT="-Ur -CX" >> %LOGFILE%
+%MAKEEXE% rtl packages PP=%COMPILER% OPT="-Ur -CX %RTL_BUILD_OPTS%" >> %LOGFILE%
 
-%MAKEEXE% utils PP=%COMPILER% OPT="-CX -XX -Xs" DATA2INC=%SOURCE_DIR%\utils\data2inc >> %LOGFILE%
+%MAKEEXE% utils PP=%COMPILER% OPT="-CX -XX -Xs %FPC_BUILD_OPTS%" DATA2INC=%SOURCE_DIR%\utils\data2inc >> %LOGFILE%
 
 SET INSTALL_BASE=%BUILDDIR%\fpc\%FPCVERSION%
 SET INSTALL_BINDIR=%INSTALL_BASE%\bin\%FPCFULLTARGET%
 
 SET FPCMAKE=%SOURCE_DIR%\utils\fpcm\bin\%FPCFULLTARGET%\fpcmake.exe
-IF "%FPCVERSION:~0,3%" == "2.6" SET FPCMAKE=%SOURCE_DIR%\utils\fpcm\fpcmake.exe
 
 %MAKEEXE% compiler_install rtl_install packages_install utils_install INSTALL_PREFIX=%INSTALL_BASE% PP=%COMPILER% FPCMAKE=%FPCMAKE% >> %LOGFILE%
 

@@ -45,6 +45,7 @@ for %%T in ( cpp.exe gcc.exe windres.exe windres.h ) DO if not exist %INSTALL_BI
 if not exist %INSTALL_BINDIR%\fpc.exe goto WARNING_NO_COMPILER_MADE
 if not exist %INSTALL_BINDIR%\fpcmkcfg.exe goto WARNING_NO_COMPILER_MADE
 
+if [%FPC_ONLY%]==[1] GOTO NOLAZ
 
 :: temporary fpc.cfg to build lazarus
 %INSTALL_BINDIR%\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
@@ -85,6 +86,8 @@ cp -pr %GDBDIR%\* %BUILDDIR%\mingw\%FPCFULLTARGET%
 ::=====================================================================
 ::=====================================================================
 
+SET ISSFILE=lazarus.iss
+
 IF [%BUILDLAZRELEASE%]==[] GOTO SNAPSHOT
 SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-%FPCTARGETOS%
 if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-fpc-%FPCFULLVERSION%-%FPCTARGETOS%
@@ -94,8 +97,28 @@ GOTO GO_ON
 SET OutputFileName=lazarus-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
 if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
 
+GOTO GO_ON
+
+::=====================================================================
+:: FPC ONLY
+:NOLAZ
+
+SET ISSFILE=lazarus-cross.iss
+mkdir %BUILDDIR%\image
+
+if not [%FPC_ONLY_DIR%]==[] SET %FPC_ONLY_DIR% = fpc
+if not [%FPC_ONLY_DIR%]==[] mv %BUILDDIR%\fpc  %BUILDDIR%\image\%FPC_ONLY_DIR%
+
+if  [%IDE_WIDGETSET%]==[] SET IDE_WIDGETSET=%FPCTARGETOS%
+if  [%IDE_WIDGETSET%]==[] SET IDE_WIDGETSET=
+
+SET OutputFileName=fpc-%FPCFULLVERSION%-%FPCTARGETOS%
+
+::=====================================================================
+:: INSTALLER (Laz or fpc only)
 :GO_ON
 SET OutputFileName=%OutputFileName::=_%
+
 
 :: %LAZBUILD_HOOK_DIR% is a directory, that can contain scripts to be hooked into the build process. Further hooks can be defined the same way
 if not [%LAZBUILD_HOOK_DIR%]==[] if exist %LAZBUILD_HOOK_DIR%\lazhook_before_iscc.bat call %LAZBUILD_HOOK_DIR%\lazhook_before_iscc.bat
@@ -103,7 +126,7 @@ if not [%LAZBUILD_HOOK_DIR%]==[] if exist %LAZBUILD_HOOK_DIR%\lazhook_before_isc
 if not [%LAZBUILD_MAKE282_SRC%]==[] if exist %LAZBUILD_MAKE282_SRC% copy %LAZBUILD_MAKE282_SRC% %INSTALL_BINDIR%\make.exe
 
 
-%ISCC% lazarus.iss >> installer.log
+%ISCC% %ISSFILE% >> installer.log
 
 :: do not delete build dir, if installer failed.
 if not exist "output\%OutputFileName%.exe" goto WARNING_INSTALLER_FAILED

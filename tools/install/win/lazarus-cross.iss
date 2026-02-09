@@ -20,13 +20,21 @@ EnableISX=true
 #define FPCFullSource GetEnv('FPCFullSource')
 #define FPCFullTarget GetEnv('FPCFullTarget')
 #define AppName "Lazarus"
+#define FPCDIR GetEnv('FPC_ONLY_DIR')
+#if FPCDIR!=""
+  #define AppName "FPC" + GetEnv('FPCVERSION') + GetEnv('FPC_ONLY_NAME') + " for Lazarus"
+#endif
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
 #define OutputFileName GetEnv('OutputFileName')
 #define CrossTargetCPU GetEnv('TARGETCPU')
 #define CrossTagetOs GetEnv('TARGETOS')
 [Setup]
+#if CrossTagetOs!=""
 AppName={#AppName} - Addon for target {#CrossTagetOs}-{#CrossTargetCPU}
+#else
+AppName={#AppName} (Addon)
+#endif
 UpdateUninstallLogAppName=no
 ;UninstallDisplayName={#AppName} {#AppVersion}
 ; AddId: registry/uninstall info: Max 127 char
@@ -64,6 +72,11 @@ DisableDirPage=no
 
 [Files]
 Source: {#BuildDir}\image\*.*; DestDir: {app}; Flags: recursesubdirs
+
+[Run]
+#if FPCDIR!=""
+Filename: {app}\{#FPCDIR}\{#FPCVersion}\bin\{#FPCFullTarget}\fpcmkcfg.exe; Parameters: "-d ""basepath={app}\{#FPCDIR}\$FPCVERSION"" -o ""{app}\{#FPCDIR}\{#FPCVersion}\bin\{#FPCFullTarget}\fpc.cfg"""; Flags: runhidden; Languages: ; WorkingDir: {app}\{#FPCDIR}\{#FPCVersion}\bin\{#FPCFullTarget}
+#endif
 
 [INI]
 Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: https://www.lazarus-ide.org/
