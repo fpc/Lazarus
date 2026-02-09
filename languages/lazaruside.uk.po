@@ -4563,6 +4563,15 @@ msgstr "Перемкнути як стільницю зневадження"
 msgid "Current Class/Proc Hint"
 msgstr "Підказка поточного класу/процесу"
 
+#: lazarusidestrconsts.dlgtranslateusing
+#, object-pascal-format
+msgid "Translate using \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgtranslatewithhint
+msgid "Translate (select messages file in Tools -> Options -> Environment -> Files)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Стиль обрізання пробілів"

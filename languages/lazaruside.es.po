@@ -4687,6 +4687,15 @@ msgstr "Cambiar como escritorio de depuración"
 msgid "Current Class/Proc Hint"
 msgstr "Pista del actual clase/Procedimiento"
 
+#: lazarusidestrconsts.dlgtranslateusing
+#, object-pascal-format
+msgid "Translate using \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgtranslatewithhint
+msgid "Translate (select messages file in Tools -> Options -> Environment -> Files)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Estilo de recorte de espacios"

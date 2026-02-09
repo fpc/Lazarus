@@ -4680,6 +4680,15 @@ msgstr ""
 msgid "Current Class/Proc Hint"
 msgstr "Consigli della Classe/Proc corrente"
 
+#: lazarusidestrconsts.dlgtranslateusing
+#, object-pascal-format
+msgid "Translate using \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgtranslatewithhint
+msgid "Translate (select messages file in Tools -> Options -> Environment -> Files)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Stile di pulitura spazi"

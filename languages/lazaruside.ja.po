@@ -4668,6 +4668,15 @@ msgstr "デバッグデスクトップを切り替え"
 msgid "Current Class/Proc Hint"
 msgstr "現在のクラス/手続きヒント"
 
+#: lazarusidestrconsts.dlgtranslateusing
+#, object-pascal-format
+msgid "Translate using \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgtranslatewithhint
+msgid "Translate (select messages file in Tools -> Options -> Environment -> Files)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "空白スタイルをトリム"

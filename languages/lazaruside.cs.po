@@ -4614,6 +4614,15 @@ msgstr "Přepnout jako ladící plochu"
 msgid "Current Class/Proc Hint"
 msgstr "Tip aktuální třídy/procedury"
 
+#: lazarusidestrconsts.dlgtranslateusing
+#, object-pascal-format
+msgid "Translate using \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgtranslatewithhint
+msgid "Translate (select messages file in Tools -> Options -> Environment -> Files)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Styl ořezání mezer"

@@ -4545,6 +4545,15 @@ msgstr "Debug-Desktop Eigenschaft umschalten"
 msgid "Current Class/Proc Hint"
 msgstr "Aktueller Klassen-/Prozedurenhinweis"
 
+#: lazarusidestrconsts.dlgtranslateusing
+#, object-pascal-format
+msgid "Translate using \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dlgtranslatewithhint
+msgid "Translate (select messages file in Tools -> Options -> Environment -> Files)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
 msgstr "Leerzeichenbehandlung"
