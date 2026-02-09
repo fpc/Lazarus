@@ -2468,11 +2468,9 @@ begin
 
   with MonitorRect do
     lpmi^.rcMonitor := Bounds(x, y, width, height);
-  // there is no way to determine workarea in gtk
   gdk_screen_get_monitor_workarea(gdk_screen_get_default, Monitor, @MonitorWorkArea);
   with MonitorWorkArea do
     lpmi^.rcWork := Bounds(x, y, width, height);
-  lpmi^.rcWork := lpmi^.rcMonitor;
   if Monitor = gdk_screen_get_primary_monitor(gdk_screen_get_default) then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
