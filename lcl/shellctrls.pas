@@ -2003,12 +2003,14 @@ begin
     and not DirectoryExistsUtf8(ExpandFilenameUtf8(Value)) then
       Raise EInvalidPath.CreateFmt(sShellCtrlsInvalidRoot,[Value]);
     FRoot := Value;
+    Screen.BeginWaitCursor;
     BeginUpdate;
     try
       Clear;
       PopulateWithRoot();
     finally
       EndUpdate;
+      Screen.EndWaitCursor;
     end;
   end;
 end;
@@ -2283,6 +2285,7 @@ begin
     Exit;
   end;
 
+  Screen.BeginWaitCursor;
   Items.BeginUpdate;
   Files := TStringList.Create;
   try
@@ -2335,6 +2338,7 @@ begin
   finally
     Files.Free;
     Items.EndUpdate;
+    Screen.EndWaitCursor;
   end;
 end;
 
