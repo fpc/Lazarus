@@ -2480,15 +2480,22 @@ begin
 
   applyBrush;
 
-  cairo_rectangle(pcr, x + PixelOffset, y + PixelOffset, w - 1, h - 1);
-
-  if (CurrentBrush.Style <> BS_NULL) then
+  if (w = 1) or (h = 1) then // #42049
   begin
-    cairo_fill_preserve(pcr); // Preserve path for border
-    // Must paint border, filling is not enough
-    SetSourceColor(FCurrentBrush.Color);
-    cairo_set_line_width(pcr, 1);
-    cairo_stroke(pcr);
+    cairo_rectangle(pcr, x + PixelOffset, y + PixelOffset, w, h);
+    cairo_fill(pcr);
+  end
+  else // original solution, ref.to #36374
+  begin
+    cairo_rectangle(pcr, x + PixelOffset, y + PixelOffset, w - 1, h - 1);
+    if (CurrentBrush.Style <> BS_NULL) then
+    begin
+      cairo_fill_preserve(pcr); // Preserve path for border
+      // Must paint border, filling is not enough
+      SetSourceColor(FCurrentBrush.Color);
+      cairo_set_line_width(pcr, 1);
+      cairo_stroke(pcr);
+    end;
   end;
   CurrentBrush := ATempBrush;
 end;
