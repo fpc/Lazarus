@@ -1,65 +1,29 @@
-:: check all the necessary parameters are given
-if [%1]==[] goto USAGE
-if [%2]==[] goto USAGE
-if [%3]==[] goto USAGE
 if [%4]==[] goto USAGE
 if [%5]==[] goto USAGE
 
-:: Set some environment variables from the command line
-:: Path to the fpc sources checked out of fpcbuild git repository
-SET FPCGITDIR=%1
+call defaults.bat %1 %2 %6 %3 "" "" ""
 
-:: Path to the lazarus sources checked out of subversion
-SET LAZGITDIR=%2
+if [%USAGE%] ==[1] goto USAGE
 
-:: Path to latest release compiler
-SET RELEASE_PPC=%3
 
 SET TARGETCPU=%4
 SET TARGETOS=%5
 
-SET LAZGITBINDIR=%6
 SET SKIPCROSS=%7
 SET LOCAL_INST_PREFIX=%8
 if [%LOCAL_INST_PREFIX%] == [] SET LOCAL_INST_PREFIX=i386-win32
+
 
 ::=====================================================================
 :: Find required programs
 :: These settings are dependent on the configuration of the build machine
 
-:: Path to the directory containing the binutils for each target in a 
+:: Path to the directory containing the binutils for each target in a
 :: separate directory, for example arm-wince for the arm-wince target
 if [%BINUTILSDIR%]==[] SET BINUTILSDIR=c:\lazarus\source\binutils
 
-:: Path to build directory. 
-:: In this directory an image of the installation will be built.
-SET BUILDDIR=c:\temp\lazbuild
-
-::---------------------------------------------------------------------
-:: Path to the Inno Setup Compiler
-:: It may or may not have quotes, make sure it has.
-SET ISCC="%ISCC%"
-SET ISCC=%ISCC:"=%
-SET ISCC="%ISCC%"
-if not [%ISCC%]==[""] goto ISCC_DONE
-SET ISCC="%ProgramFiles32bits%\Inno Setup 5\iscc.exe"
-if not exist %ISCC% SET SET ISCC="%ProgramFiles%\Inno Setup 5\iscc.exe"
-:: NO fallback to PATH
-:ISCC_DONE
-
-::---------------------------------------------------------------------
-:: Path to the git executable; make sure it has quotes
-SET GIT="%GIT%"
-SET GIT=%GIT:"=%
-SET GIT="%GIT%"
-if not [%GIT%]==[""] GOTO GIT_DONE
-:: set Subversion; if it doesn't exist try TortoiseGIT 32bits and 64bits else error info
-SET GIT="%ProgramFiles%\Git\bin\git.exe"
-if not exist %GIT% SET GIT="%ProgramFiles%\Git\mingw64\bin\git.exe"
-if not exist %GIT% SET GIT="%ProgramFiles32bits%\Git\bin\git.exe"
-:: Use GIT in Path
-if not exist %GIT% SET GIT=git.exe
-:GIT_DONE
+SET FPCFULLTARGET=%TARGETCPU%-%TARGETOS%
+SET FPCBINDIR=%FPCGITDIR%\install\binw32
 
 :: Some internal variables
 SET OLDCURDIR=%CD%
@@ -67,14 +31,7 @@ SET OLDCURDRIVE=%CD:~,2%
 SET FPCGITDRIVE=%FPCGITDIR:~,2%
 SET BUILDDRIVE=%BUILDDIR:~,2%
 
-
-SET FPCBINDIR=%FPCGITDIR%\install\binw32
-FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
-SET FPCFULLTARGET=%TARGETCPU%-%TARGETOS%
-FOR /F %%F IN ('"%GIT% -C %LAZGITDIR% log -1 --pretty=format:%%h" ') DO set LAZREVISION=%%F
-
 SET TIMESTAMP=%date:~9,4%%date:~6,2%%date:~3,2%-%time:~,2%%time:~3,2%%time:~6,2%
-SET MAKEEXE=%FPCBINDIR%\make.exe
 
 :: set path to make sure the right tools are used
 SET OLDPATH=%PATH%
