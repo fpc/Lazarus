@@ -8466,6 +8466,8 @@ begin
     csl := cs.ColorSchemeBySynHl[h];
     if csl = nil then
       continue;
+    if csl.FAttributes.IndexOf(AStoredName)>=0 then
+      continue;
 
     csa := TColorSchemeAttribute.Create(csl, AName, AStoredName);
     csa.Clear;
