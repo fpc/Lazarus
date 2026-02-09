@@ -1372,7 +1372,7 @@ var
   
 var
   NewItem: TIdentifierListItem;
-  Node, SubNode: TCodeTreeNode;
+  Node, SubNode, InnerClass: TCodeTreeNode;
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
   HasLowerVisibility: Boolean;
@@ -1428,12 +1428,20 @@ begin
           SubNode:=FindClassNodeForMethodBody(
           FindMostOuterProcNode(CurrentIdentifierList.StartContext.Node),
           true,false); // nested procedures must be handled also
-
+          if SubNode=nil then // not a method
+            //OK, strict private inside class
+          else
           if not FoundContext.Node.HasAsParent(SubNode) then begin
             //debugln(['TIdentCompletionTool.CollectAllIdentifiers: ',
             //  'strict private not allowed ']);
             exit;
           end;
+          // check if not in a nested class
+          SubNode:=FindClassNode(CurrentIdentifierList.StartContext.Node);
+          InnerClass:=FindClassNode(Node);
+          if (SubNode<>InnerClass) and
+          InnerClass.HasAsParent(SubNode) then
+            exit;
         end else
         if (Node.Desc=ctnClassProtected) then begin
           // strict protected - only inside current class descendants and the same unit allowed
