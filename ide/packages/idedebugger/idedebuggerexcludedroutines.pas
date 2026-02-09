@@ -556,7 +556,9 @@ end;
 
 destructor TIdeDebuggerExcludeRoutineMainList.Destroy;
 begin
+  SetAllDeleted;
   inherited Destroy;
+  DoDestroy;
   FMap.Free;
 end;
 
