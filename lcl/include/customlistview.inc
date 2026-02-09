@@ -1285,6 +1285,7 @@ end;
 
 procedure TCustomListView.Clear;
 begin
+  TWSCustomListViewClass(WidgetSetClass).Clear(self);
   FListItems.Clear;
 end;
 

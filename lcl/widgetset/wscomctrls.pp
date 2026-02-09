@@ -144,6 +144,7 @@ type
     // LV
     class procedure BeginUpdate(const ALV: TCustomListView); virtual;
     class procedure EndUpdate(const ALV: TCustomListView); virtual;
+    class procedure Clear(const ALV: TCustomListView); virtual;
 
     class function GetBoundingRect(const ALV: TCustomListView): TRect; virtual;
     class function GetDropTarget(const ALV: TCustomListView): Integer; virtual;
@@ -663,6 +664,10 @@ begin
 end;
 
 class procedure TWSCustomListView.EndUpdate(const ALV: TCustomListView);
+begin
+end;
+
+class procedure TWSCustomListView.Clear(const ALV: TCustomlistView);
 begin
 end;
 
