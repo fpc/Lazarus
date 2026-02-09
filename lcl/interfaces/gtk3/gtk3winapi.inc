@@ -166,6 +166,11 @@ begin
     selection^.set_(LFormat, 8, nil, 0);
 end;
 
+function TGtk3WidgetSet.ClipboardFormatNeedsNullByte(const AFormat: TPredefinedClipboardFormat): Boolean;
+begin
+  Result := False;
+end;
+
 function TGtk3WidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
 var p: PChar;
 begin

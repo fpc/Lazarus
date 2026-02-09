@@ -38,6 +38,7 @@ function CallWindowProc({%H-}lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT
 function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean; override;
 
 // clipboard
+function ClipboardFormatNeedsNullByte(const AFormat: TPredefinedClipboardFormat): Boolean; override;
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; override;
 function ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean; override;
