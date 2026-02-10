@@ -269,7 +269,7 @@ begin
   if (HashKey >= 0) and (HashKey < Count) then
     Result := HE(inherited Items[HashKey])
   else
-    Result := nil;
+    Result := HE(nil);
 end;
 
 procedure TGenSynHashEntryList.Put(HashKey: Integer; Entry: HE);
