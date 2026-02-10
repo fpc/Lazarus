@@ -540,7 +540,6 @@ resourcestring
   lisShortNoPath = 'Short, no path';
   lisRelative = 'Relative';
   lisFull = 'Full';
-  lisTranslateTheEnglishMessages = 'Translate the English Messages';
   lisShowMessageTypeID = 'Show Message Type ID';
   lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo = 'tool stopped with '
     +'exit code %s. Use context menu to get more information.';
