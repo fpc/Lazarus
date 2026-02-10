@@ -18848,10 +18848,6 @@ msgstr "Górne krawędzie równomiernie"
 msgid "Total Pages: %s"
 msgstr "Wszystkich stron: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Tłumacz angielskie komunikaty"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Drzewo wymaga odświeżenia"

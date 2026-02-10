@@ -18508,10 +18508,6 @@ msgstr "ໄລຍະຫ່າງດ້ານເທິງເທົ່າກັນ
 msgid "Total Pages: %s"
 msgstr "ໜ້າທັງໝົດ: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "ແປຂໍ້ຄວາມພາສາອັງກິດ"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Tree ຕ້ອງການການຣີເຟຣຊ"

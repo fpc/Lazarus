@@ -18511,10 +18511,6 @@ msgstr "Gleichmäßiger oberer Rand"
 msgid "Total Pages: %s"
 msgstr ""
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Englische Nachrichten übersetzen"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Baum muß aktualisiert werden"

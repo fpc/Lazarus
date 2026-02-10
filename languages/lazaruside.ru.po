@@ -18494,10 +18494,6 @@ msgstr "Равномерно по верхним краям"
 msgid "Total Pages: %s"
 msgstr "Всего вкладок: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Переводить сообщения с английского"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Дерево требует обновления"

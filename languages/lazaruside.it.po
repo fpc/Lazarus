@@ -18923,10 +18923,6 @@ msgstr "Spazia in cima equidistante"
 msgid "Total Pages: %s"
 msgstr ""
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Tradurre i messaggi dall'inglese"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "L'albero necessita di refresh"

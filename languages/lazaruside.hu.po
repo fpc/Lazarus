@@ -18712,10 +18712,6 @@ msgstr "Felső oldali távolságok egyenlően"
 msgid "Total Pages: %s"
 msgstr "Összes lap: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Az angol üzenetek lefordítása"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Frissíteni kell a fát"

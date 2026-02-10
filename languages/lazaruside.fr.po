@@ -18581,10 +18581,6 @@ msgstr "Espacement égal en haut"
 msgid "Total Pages: %s"
 msgstr "Total des pages : %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Traduire les messages"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "L'arborescence a besoin d'un rafraichissement"

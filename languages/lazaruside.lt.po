@@ -18956,10 +18956,6 @@ msgstr "Tolygiai rikiuoti pagal viršutinius kraštus"
 msgid "Total Pages: %s"
 msgstr "Viso lapų: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Versti Anglų kalbos pranešimus"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Medį būtina naujinti"

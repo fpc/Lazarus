@@ -18739,10 +18739,6 @@ msgstr "Justificar acima"
 msgid "Total Pages: %s"
 msgstr "Páginas totais: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Traduzir as mensagens em inglês"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Árvore necessita atualização"

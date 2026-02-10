@@ -18785,10 +18785,6 @@ msgstr "Horní mezery stejně"
 msgid "Total Pages: %s"
 msgstr "Celkem stránek: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Přeložit Anglické Zprávy"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Strom potřebuje obnovení"

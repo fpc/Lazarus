@@ -18673,10 +18673,6 @@ msgstr "Рівномірно верхні краї"
 msgid "Total Pages: %s"
 msgstr "Всього сторінок: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Перекласти англійські повідомлення"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Дерево потребує оновлення"

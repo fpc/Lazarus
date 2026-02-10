@@ -18915,10 +18915,6 @@ msgstr "上端の間隔を均等に"
 msgid "Total Pages: %s"
 msgstr "全ページ: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "英語のメッセージを翻訳"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "ツリーは、リフレッシュを必要とします"

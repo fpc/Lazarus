@@ -18510,10 +18510,6 @@ msgstr "Üst alan eşit olarak"
 msgid "Total Pages: %s"
 msgstr "Toplam sayfa: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "İngilizce Mesajları Çevir"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Ağacın yenilenmesi gerekiyor"

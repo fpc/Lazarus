@@ -18472,10 +18472,6 @@ msgstr ""
 msgid "Total Pages: %s"
 msgstr ""
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr ""
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr ""

@@ -18908,10 +18908,6 @@ msgstr "Igualar espacio superior"
 msgid "Total Pages: %s"
 msgstr "Total de páginas: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Traducir los Mensajes en Inglés"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "El árbol necesita actualizarse"

@@ -18531,10 +18531,6 @@ msgstr "顶部空间相等"
 msgid "Total Pages: %s"
 msgstr "总页数:%s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "翻译英文信息"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "树需要刷新"

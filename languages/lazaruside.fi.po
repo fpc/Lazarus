@@ -18592,10 +18592,6 @@ msgstr "Tasaa välit ylhäällä"
 msgid "Total Pages: %s"
 msgstr "Sivuja yhteensä: %s"
 
-#: lazarusidestrconsts.listranslatetheenglishmessages
-msgid "Translate the English Messages"
-msgstr "Käännä englanninkieliset viestit"
-
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Puu pitää päivittää"
