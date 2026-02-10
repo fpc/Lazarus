@@ -44,7 +44,7 @@ uses
   MemCheck,
   {$ENDIF}
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
-  CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
+  CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists, DirectoryCacher,
   // BuildIntf
   NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf,
   IDEExternToolIntf, ComponentReg, BaseIDEIntf,
@@ -263,10 +263,12 @@ function JumpToCodetoolErrorAndAskToAbort(Ask: boolean): TModalResult;
 function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectItem): TModalResult;
 function SelectUnitComponents(DlgCaption: string; ItemType: TIDEProjectItem;
   Files: TStringList): TModalResult;
-// unit search
+// unit/include search
 function FindUnitFileImpl(const AFilename: string; TheOwner: TObject = nil;
                           Flags: TFindUnitFileFlags = []): string;
 function FindSourceFileImpl(const AFilename, BaseDirectory: string;
+                            Flags: TFindSourceFlags): string;
+function FindSourceFileLeftPathWrong(AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string;
 function FindUnitsOfOwnerImpl(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings;
 // project
@@ -3359,7 +3361,11 @@ begin
   if FilenameIsAbsolute(AFilename) then
   begin
     Result := AFilename;
-    if not FileExistsCached(Result) then
+    if FileExistsCached(AFilename) then
+      exit(Result);
+    if fsfWrongLeftPath in Flags then
+      Result:=FindSourceFileLeftPathWrong(AFilename,BaseDirectory,Flags)
+    else
       Result := '';
     Exit;
   end;
@@ -3437,6 +3443,125 @@ begin
   end;
 
   Result:='';
+end;
+
+function FindSourceFileLeftPathWrong(AFilename, BaseDirectory: string; Flags: TFindSourceFlags
+  ): string;
+var
+  Parts: array of string;
+  PartCnt, BestFolderMatch: integer;
+  ShortFile: string;
+
+  function CountMatchingFolders(const CurFilename: string): integer;
+  var
+    p, StartP: integer;
+    aPart: String;
+  begin
+    Result:=0;
+    p:=length(CurFilename)+1;
+    while Result<PartCnt do begin
+      // get next folder
+      StartP:=p;
+      while (StartP>1) and not (CurFilename[StartP-1]=PathDelim) do
+        dec(StartP);
+      aPart:=copy(CurFilename,StartP,p-StartP);
+      if AnsiCompareText(aPart,Parts[PartCnt-Result-1])<>0 then
+        break;
+      inc(Result);
+      // skip path delims
+      p:=StartP;
+      while (p>1) and not (CurFilename[p-1]=PathDelim) do
+        dec(p);
+      if p=1 then break;
+    end;
+  end;
+
+  procedure SearchInPath(const SearchPath: string);
+  var
+    p, CurMatch: Integer;
+    CurDir, CurFilename: String;
+    Dir: TCTDirectoryCache;
+  begin
+    p:=1;
+    repeat
+      CurDir:=GetNextDirectoryInSearchPath(SearchPath,p);
+      if CurDir='' then break;
+      Dir:=CodeToolBoss.DirectoryCachePool.GetCache(CurDir,true,false);
+      CurFilename:=Dir.FindFile(ShortFile,ctsfcAllCase);
+      if CurFilename='' then continue;
+      CurMatch:=CountMatchingFolders(CurFilename);
+      if CurMatch>BestFolderMatch then
+      begin
+        BestFolderMatch:=CurMatch;
+        FindSourceFileLeftPathWrong:=CurFilename;
+      end;
+    until false;
+  end;
+
+var
+  DirCache: TCTDirectoryCache;
+  CurFilename, SearchPath: String;
+  p, StartP, CurMatch, i: Integer;
+  UnitSetCache: TFPCUnitSetCache;
+  SrcCache: TFPCSourceCache;
+begin
+  Result:='';
+
+  AFilename:=ResolveDots(AFilename);
+  ShortFile:=ExtractFileName(AFilename);
+  if ShortFile='' then exit;
+
+  // split AFilename into Parts
+  Parts:=[];
+  PartCnt:=0;
+  p:=1;
+  repeat
+    while (p<=length(AFilename)) and (AFilename[p]=PathDelim) do
+      inc(p);
+    StartP:=p;
+    while (p<=length(AFilename)) and not (AFilename[p]=PathDelim) do
+      inc(p);
+    Insert(copy(AFilename,StartP,p-StartP),Parts,PartCnt);
+    inc(PartCnt);
+  until p>length(AFilename);
+
+  BestFolderMatch:=0;
+
+  // search in complete src path (unit+include+compiled src paths )
+  if (BaseDirectory>'') and not not FilenameIsAbsolute(BaseDirectory) then
+    BaseDirectory:='';
+  DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(BaseDirectory,true,false);
+  SearchPath:=DirCache.Strings[ctdcsCompleteSrcPath];
+  SearchInPath(SearchPath);
+
+  // search in debug path
+  if (fsfUseDebugPath in Flags) and (Project1<>nil) then begin
+    SearchPath:=EnvironmentOptions.GetParsedDebuggerSearchPath;
+    SearchPath:=MergeSearchPaths(Project1.CompilerOptions.GetDebugPath(false),
+                                 SearchPath);
+    SearchPath:=TrimSearchPath(SearchPath,BaseDirectory);
+    SearchInPath(SearchPath);
+  end;
+
+  // search in FPC sources
+  UnitSetCache:=CodeToolBoss.GetUnitSetForDirectory(BaseDirectory);
+  if UnitSetCache<>nil then
+  begin
+    SrcCache:=UnitSetCache.GetSourceCache(true);
+    if (SrcCache<>nil) and (SrcCache.Files<>nil) then
+    begin
+      for i:=0 to SrcCache.Files.Count-1 do
+      begin
+        CurFilename:=SrcCache.Files[i];
+        CurMatch:=CountMatchingFolders(CurFilename);
+        if (CurMatch>1) and (CurMatch>BestFolderMatch) then
+        begin
+          BestFolderMatch:=CurMatch;
+          Result:=CurFilename;
+        end;
+      end;
+    end;
+  end;
 end;
 
 function FindUnitsOfOwnerImpl(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings;
