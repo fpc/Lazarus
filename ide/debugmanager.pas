@@ -886,7 +886,7 @@ begin
       begin
         Filename := TrimFilename(AUnitinfo.LocationName);
         Filename := MainIDE.FindSourceFile(Filename, Project1.Directory,
-                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
+                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath, fsfWrongLeftPath,
                        {fsfMapTempToVirtualFiles,} fsfSkipPackages]);
         Result := Filename <> '';
         if not Result then
@@ -925,7 +925,7 @@ begin
   // => fix that
   Filename := TrimFilename(Filename);
   SrcFile := MainIDE.FindSourceFile(Filename, Project1.Directory,
-                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath{,
+                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath, fsfWrongLeftPath{,
                        fsfMapTempToVirtualFiles}]);
   if (SrcFile <> '') and (not FilenameIsAbsolute(SrcFile)) and
      (Project1.IsVirtual) and
@@ -1019,7 +1019,7 @@ begin
     begin
       AbsFilename := MainIDE.FindSourceFile(AFilename, Project1.Directory,
                     [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
-                     fsfMapTempToVirtualFiles]);
+                     fsfMapTempToVirtualFiles, fsfWrongLeftPath]);
       if AbsFilename='' then
       begin
         debugln(['Note: TDebugManager.JumpToUnitSource: file not found: "',AFileName,'"']);
