@@ -153,7 +153,7 @@ type
     {parent}
     class procedure BeginUpdate(const ALV: TCustomListView); override;
     class procedure EndUpdate(const ALV: TCustomListView); override;
-    class procedure Clear(const ALV: TCustomListView); override;
+    class function Clear(const ALV: TCustomListView): Boolean; override;
 
     class function GetFocused(const ALV: TCustomListView): Integer; override;
     class function GetHitTestInfoAt( const ALV: TCustomListView; X, Y: Integer ) : THitTests; override;
@@ -1861,13 +1861,13 @@ begin
     QtWidget.setUpdatesEnabled(True);
 end;
 
-class procedure TQtWSCustomListView.Clear(const ALV: TCustomListView);
+class function TQtWSCustomListView.Clear(const ALV: TCustomListView): Boolean;
 var
   QtListWidget: TQtListWidget;
   QtTreeWidget: TQtTreeWidget;
 begin
   if not WSCheckHandleAllocated(ALV, 'Clear') then
-    exit;
+    exit(false);
   if IsIconView(ALV) then
   begin
     QtListWidget := TQtListWidget(ALV.Handle);
@@ -1877,6 +1877,8 @@ begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     QtTreeWidget.ClearItems;
   end;
+  ALV.Items.Clear;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

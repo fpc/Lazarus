@@ -1136,6 +1136,14 @@ begin
   SendMessage(hLV,WM_SETREDRAW,WPARAM(True),0);
 end;
 
+class function TWin32WSCustomlistView.Clear(const ALV: TCustomListView): Boolean;
+begin
+  if not WSCheckHandleallocated(ALV, 'Clear') then
+    exit(false);
+
+  Result := ListView_DeleteAllItems(ALV.Handle) <> 0;
+end;
+
 class function TWin32WSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 begin
   Result := Rect(0,0,0,0); 

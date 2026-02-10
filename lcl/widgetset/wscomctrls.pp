@@ -144,7 +144,7 @@ type
     // LV
     class procedure BeginUpdate(const ALV: TCustomListView); virtual;
     class procedure EndUpdate(const ALV: TCustomListView); virtual;
-    class procedure Clear(const ALV: TCustomListView); virtual;
+    class function Clear(const ALV: TCustomListView): Boolean; virtual;
 
     class function GetBoundingRect(const ALV: TCustomListView): TRect; virtual;
     class function GetDropTarget(const ALV: TCustomListView): Integer; virtual;
@@ -667,8 +667,11 @@ class procedure TWSCustomListView.EndUpdate(const ALV: TCustomListView);
 begin
 end;
 
-class procedure TWSCustomListView.Clear(const ALV: TCustomlistView);
+// Returns true when the widget had been able to clear all list items.
+// Otherwise the LCL method must clear the list by itself (by calling FastClear).
+class function TWSCustomListView.Clear(const ALV: TCustomlistView): Boolean;
 begin
+  Result := false;
 end;
 
 class function TWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;

@@ -1283,10 +1283,29 @@ begin
     FOnEditing(Self, Item, Result);
 end;
 
+// Clears the listview items all at once.
 procedure TCustomListView.Clear;
 begin
-  TWSCustomListViewClass(WidgetSetClass).Clear(self);
-  FListItems.Clear;
+  if not TWSCustomListViewClass(WidgetSetClass).Clear(self) then
+    FastClear;
+end;
+
+// Fast clearing method called by the widgetset if it has no way to clear all
+// items at once rather than one-by-one.
+procedure TCustomListView.FastClear;
+var
+  hadHandle: Boolean;
+begin
+  if FListItems.Count > 200 then
+  begin
+    hadHandle := HandleAllocated;
+    if hadHandle then
+      DestroyHandle;
+    FListItems.Clear;
+    if hadHandle then
+      HandleNeeded;
+  end else
+    FListItems.Clear;
 end;
 
 {------------------------------------------------------------------------------}

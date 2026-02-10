@@ -121,6 +121,9 @@ end;
 
 {------------------------------------------------------------------------------
    TListItems Clear
+
+   Note: This method can be slow when many items are available. Calling the
+   ListView method Clear usually is much faster (Issue #42040).
 ------------------------------------------------------------------------------}
 procedure TListItems.Clear;
 begin

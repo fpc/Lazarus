@@ -162,6 +162,7 @@ type
 
     class procedure BeginUpdate(const ALV: TCustomListView); override;
     class procedure EndUpdate(const ALV: TCustomListView); override;
+    class function Clear(const ALV: TCustomlistView): Boolean; override;
 
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
     class function GetDropTarget(const ALV: TCustomListView): Integer; override;

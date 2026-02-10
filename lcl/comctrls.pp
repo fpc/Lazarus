@@ -1639,6 +1639,7 @@ type
     function CustomSort(ASortProc: TLVCompare; AOptionalParam: PtrInt): Boolean;
     procedure BeginUpdate;
     procedure Clear;
+    procedure FastClear;
     procedure EndUpdate;
     procedure Repaint; override;
     function FindCaption(StartIndex: Integer; Value: string;
