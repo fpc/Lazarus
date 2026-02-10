@@ -3462,17 +3462,18 @@ var
     while Result<PartCnt do begin
       // get next folder
       StartP:=p;
-      while (StartP>1) and not (CurFilename[StartP-1]=PathDelim) do
+      while (StartP>1) and (CurFilename[StartP-1]<>PathDelim) do
         dec(StartP);
+      if StartP=p then exit;
       aPart:=copy(CurFilename,StartP,p-StartP);
       if AnsiCompareText(aPart,Parts[PartCnt-Result-1])<>0 then
         break;
       inc(Result);
       // skip path delims
       p:=StartP;
-      while (p>1) and not (CurFilename[p-1]=PathDelim) do
+      while (p>1) and (CurFilename[p-1]=PathDelim) do
         dec(p);
-      if p=1 then break;
+      if p=1 then exit;
     end;
   end;
 
@@ -3554,7 +3555,7 @@ begin
       begin
         CurFilename:=SrcCache.Files[i];
         CurMatch:=CountMatchingFolders(CurFilename);
-        if (CurMatch>1) and (CurMatch>BestFolderMatch) then
+        if CurMatch>BestFolderMatch then
         begin
           BestFolderMatch:=CurMatch;
           Result:=CurFilename;
