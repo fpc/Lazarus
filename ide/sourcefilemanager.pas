@@ -3501,10 +3501,12 @@ var
 
 var
   DirCache: TCTDirectoryCache;
-  CurFilename, SearchPath: String;
-  p, StartP, CurMatch, i: Integer;
+  CurFilename, SearchPath, Targets: String;
+  p, StartP, CurMatch, i, Score, BestFPCScore: Integer;
   UnitSetCache: TFPCUnitSetCache;
   SrcCache: TFPCSourceCache;
+  Rules: TFPCSourceRules;
+  TargetRules: TAVLTree;
 begin
   Result:='';
 
@@ -3546,22 +3548,48 @@ begin
 
   // search in FPC sources
   UnitSetCache:=CodeToolBoss.GetUnitSetForDirectory(BaseDirectory);
-  if UnitSetCache<>nil then
-  begin
-    SrcCache:=UnitSetCache.GetSourceCache(true);
-    if (SrcCache<>nil) and (SrcCache.Files<>nil) then
+  BestFPCScore:=low(integer);
+  Rules:=nil;
+  Targets:='';
+  TargetRules:=nil;
+  try
+    if UnitSetCache<>nil then
     begin
-      for i:=0 to SrcCache.Files.Count-1 do
+      SrcCache:=UnitSetCache.GetSourceCache(true);
+      if (SrcCache<>nil) and (SrcCache.Files<>nil) then
       begin
-        CurFilename:=SrcCache.Files[i];
-        CurMatch:=CountMatchingFolders(CurFilename);
-        if CurMatch>BestFolderMatch then
+        for i:=0 to SrcCache.Files.Count-1 do
         begin
-          BestFolderMatch:=CurMatch;
-          Result:=CurFilename;
+          CurFilename:=SrcCache.Files[i];
+          CurMatch:=CountMatchingFolders(CurFilename);
+          Score:=low(integer);
+          if (CurMatch=BestFolderMatch) and (BestFPCScore>low(integer)) then
+          begin
+            // multiple fpc src candidates -> use rules
+            Score:=Rules.GetScore(CurFilename,Targets,TargetRules);
+            if Score>BestFPCScore then
+              BestFolderMatch:=0;
+          end;
+
+          if CurMatch>BestFolderMatch then
+          begin
+            BestFolderMatch:=CurMatch;
+            Result:=AppendPathDelim(UnitSetCache.FPCSourceDirectory)+CurFilename;
+            if Rules=nil then
+            begin
+              Rules:=UnitSetCache.GetSourceRules(true);
+              Targets:=Rules.GetDefaultTargets(UnitSetCache.TargetOS,UnitSetCache.TargetCPU);
+              Rules.GetRulesForTargets(Targets,TargetRules);
+            end;
+            if Score=low(integer) then
+              Score:=Rules.GetScore(CurFilename,Targets,TargetRules);
+            BestFPCScore:=Score;
+          end;
         end;
       end;
     end;
+  finally
+    TargetRules.Free;
   end;
 end;
 

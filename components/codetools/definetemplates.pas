@@ -753,8 +753,12 @@ type
     function GetDefaultTargets(TargetOS, TargetCPU: string): string;
     procedure GetRulesForTargets(Targets: string;
                                  var RulesSortedForFilenameStart: TAVLTree);
-    function GetScore(Filename: string;
-                      RulesSortedForFilenameStart: TAVLTree): integer;
+    function GetScore(const Filename, // without FPCDIR
+                      aTargets: string;
+                      RulesSortedForFilenameStart: TAVLTree): integer; // target score plus rules exactly matching filename
+    function GetFileScore(Filename: string; // without FPCDIR
+                      RulesSortedForFilenameStart: TAVLTree): integer; // sum of rules exactly matching filename
+    function CountMatches(aTargets, aTxt: PChar): integer;
     property Score: integer read FScore write FScore; // used for Add
     property Targets: string read FTargets write SetTargets; // used for Add, e.g. win32,unix,bsd or * for all
     property ChangeStamp: integer read FChangeStamp;
@@ -2231,49 +2235,7 @@ end;
 function GatherUnitsInFPCSources(Files: TStringList; TargetOS: string;
   TargetCPU: string; Duplicates: TStringToStringTree;
   Rules: TFPCSourceRules; const DebugUnitName: string): TStringToStringTree;
-{ returns tree unit name to file name (maybe relative)
-}
-
-  function CountMatches(Targets, aTxt: PChar): integer;
-  // check how many of the comma separated words in Targets are in words of aTxt
-  var
-    TxtStartPos: PChar;
-    TargetPos: PChar;
-    TxtPos: PChar;
-  begin
-    Result:=0;
-    if (aTxt=nil) or (Targets=nil) then exit;
-    TxtStartPos:=aTxt;
-    while true do begin
-      while (not (IsIdentChar[TxtStartPos^])) do begin
-        if TxtStartPos^=#0 then exit;
-        inc(TxtStartPos);
-      end;
-      //DebugLn(['CountMatches TxtStartPos=',TxtStartPos]);
-      TargetPos:=Targets;
-      repeat
-        while (TargetPos^=',') do inc(TargetPos);
-        if TargetPos^=#0 then break;
-        //DebugLn(['CountMatches TargetPos=',TargetPos]);
-        TxtPos:=TxtStartPos;
-        while (TxtPos^=TargetPos^) and (not (TargetPos^ in [#0,','])) do begin
-          inc(TargetPos);
-          inc(TxtPos);
-        end;
-        //DebugLn(['CountMatches Test TargetPos=',TargetPos,' TxtPos=',TxtPos]);
-        if (TargetPos^ in [#0,',']) and (not IsIdentChar[TxtPos^]) then begin
-          // the target fits
-          //DebugLn(['CountMatches FITS']);
-          inc(Result);
-        end;
-        // try next target
-        while not (TargetPos^ in [#0,',']) do inc(TargetPos);
-      until TargetPos^=#0;
-      // next txt word
-      while IsIdentChar[TxtStartPos^] do inc(TxtStartPos);
-    end;
-  end;
-
+// returns tree unit name to file name (maybe relative)
 var
   i: Integer;
   Filename: string;
@@ -2304,7 +2266,7 @@ begin
   try
     // get Score rules for duplicate units
     Rules.GetRulesForTargets(Targets,TargetRules);
-    //DebugLn(['GatherUnitsInFPCSources ',Rules.GetScore('packages/h',TargetRules)]);
+    //DebugLn(['GatherUnitsInFPCSources ',Rules.GetFileScore('packages/h',TargetRules)]);
     //exit;
 
     if (TargetRules<>nil) and (TargetRules.Count=0) then
@@ -2325,12 +2287,12 @@ begin
         end else begin
           // a new directory => recompute directory score
           // default heuristic: add one point for every target in directory
-          DirScore:=CountMatches(PChar(Targets),PChar(Directory));
+          DirScore:=Rules.CountMatches(PChar(Targets),PChar(Directory));
         end;
         Score:=DirScore;
         // apply target rules
         if TargetRules<>nil then
-          inc(Score,Rules.GetScore(Filename,TargetRules));
+          inc(Score,Rules.GetFileScore(Filename,TargetRules));
         // add or update unitlink
         Unit_Name:=ExtractFileNameOnly(Filename);
         Node:=Links.FindKey(Pointer(Unit_Name),@CompareUnitNameWithUnitNameLink);
@@ -7752,7 +7714,15 @@ begin
       RulesSortedForFilenameStart.Add(Items[i]);
 end;
 
-function TFPCSourceRules.GetScore(Filename: string;
+function TFPCSourceRules.GetScore(const Filename, aTargets: string;
+  RulesSortedForFilenameStart: TAVLTree): integer;
+begin
+  Result:=CountMatches(PChar(aTargets),PChar(Filename));
+  if RulesSortedForFilenameStart<>nil then
+    Result:=Result+GetFileScore(Filename,RulesSortedForFilenameStart);
+end;
+
+function TFPCSourceRules.GetFileScore(Filename: string;
   RulesSortedForFilenameStart: TAVLTree): integer;
 var
   Node: TAVLTreeNode;
@@ -7778,6 +7748,46 @@ begin
     if Rule.FitsFilename(Filename) then
       inc(Result,Rule.Score);
     Node:=RulesSortedForFilenameStart.FindPrecessor(Node);
+  end;
+end;
+
+function TFPCSourceRules.CountMatches(aTargets, aTxt: PChar): integer;
+// check how many of the comma separated words in Targets are in words of aTxt
+var
+  TxtStartPos: PChar;
+  TargetPos: PChar;
+  TxtPos: PChar;
+begin
+  Result:=0;
+  if (aTxt=nil) or (aTargets=nil) then exit;
+  TxtStartPos:=aTxt;
+  while true do begin
+    while (not (IsIdentChar[TxtStartPos^])) do begin
+      if TxtStartPos^=#0 then exit;
+      inc(TxtStartPos);
+    end;
+    //DebugLn(['CountMatches TxtStartPos=',TxtStartPos]);
+    TargetPos:=aTargets;
+    repeat
+      while (TargetPos^=',') do inc(TargetPos);
+      if TargetPos^=#0 then break;
+      //DebugLn(['CountMatches TargetPos=',TargetPos]);
+      TxtPos:=TxtStartPos;
+      while (TxtPos^=TargetPos^) and (not (TargetPos^ in [#0,','])) do begin
+        inc(TargetPos);
+        inc(TxtPos);
+      end;
+      //DebugLn(['CountMatches Test TargetPos=',TargetPos,' TxtPos=',TxtPos]);
+      if (TargetPos^ in [#0,',']) and (not IsIdentChar[TxtPos^]) then begin
+        // the target fits
+        //DebugLn(['CountMatches FITS']);
+        inc(Result);
+      end;
+      // try next target
+      while not (TargetPos^ in [#0,',']) do inc(TargetPos);
+    until TargetPos^=#0;
+    // next txt word
+    while IsIdentChar[TxtStartPos^] do inc(TxtStartPos);
   end;
 end;
 
