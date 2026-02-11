@@ -27,8 +27,10 @@ type
     procedure edtSearchChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure LBFilesDblClick(Sender: TObject);
-    procedure LBFilesDrawItem(Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
+    procedure LBFilesDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure SBConfigureClick(Sender: TObject);
   private
     FMask : TMaskList;
@@ -186,8 +188,15 @@ begin
 procedure TFileSearcherForm.FormDestroy(Sender: TObject);
 begin
   FController.RemoveOnIndexingFinishedEvent(@HandleIndexingDone);
-    FreeAndNil(FMask);
+  FreeAndNil(FMask);
   FreeAndNil(FResults);
+end;
+
+procedure TFileSearcherForm.FormShow(Sender: TObject);
+begin
+  // Needed as a workaround for QTx bug #42053.
+  cbFilter.ItemIndex:=-1;
+  cbFilter.ItemIndex:=0;
 end;
 
 procedure TFileSearcherForm.LBFilesDblClick(Sender: TObject);
@@ -195,8 +204,8 @@ begin
   Modalresult:=mrOK;
 end;
 
-procedure TFileSearcherForm.LBFilesDrawItem(Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
-
+procedure TFileSearcherForm.LBFilesDrawItem(Control: TWinControl; Index: Integer;
+  ARect: TRect; State: TOwnerDrawState);
 Var
   W,L : Integer;
   lRect : TRect;
@@ -206,7 +215,6 @@ Var
   lMatch : TFileSearchMatch;
   lPositions : TMatchPositionArray;
   lPos : TMatchPosition;
-
 begin
   lCanvas:=LBFiles.Canvas;
   if Index>=FResults.Count then
@@ -225,7 +233,7 @@ begin
     end;
   lRect:=aRect;
   if not (odSelected in State) then
-    begin
+  begin
     c:=lCanvas.Brush.Color;
     lCanvas.Brush.Color:=clHighlight;
     for lPos in lPositions do
@@ -240,7 +248,9 @@ begin
       lCanvas.FillRect(lRect);
       end;
     lCanvas.Brush.Color:=C;
-    end;
+  end
+  else
+    lCanvas.FillRect(ARect);
   lCanvas.TextRect(aRect,aRect.Left,aRect.Top,S);
 end;
 
