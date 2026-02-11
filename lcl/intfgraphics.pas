@@ -3653,6 +3653,7 @@ begin
     FLineStarts^.Init(Width, Height, Desc.BitsPerPixel, Desc.LineEnd, Desc.LineOrder);
     New(FMaskLineStarts);
     FMaskLineStarts^.Init(Width, Height, Desc.MaskBitsPerPixel, Desc.MaskLineEnd, Desc.LineOrder);
+    FMaskSet := ARawImage.IsMasked(false);
     ChooseGetSetColorFunctions;
   finally
     EndUpdate;
