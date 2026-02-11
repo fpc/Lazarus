@@ -5,10 +5,10 @@ unit frmConfigFileBrowser;
 interface
 
 uses
-  // IdeIntf
-  Classes, SysUtils, Forms, Controls, StdCtrls,
-  Dialogs, FileCtrl, ComCtrls, ExtCtrls,  EditBtn,
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs;
+  SysUtils,
+  StdCtrls, Dialogs,  EditBtn,
+  IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf,
+  FileBrowserTypes, CtrlFileBrowser;
 
 type
 
@@ -51,8 +51,6 @@ type
   end;
 
 implementation
-
-uses lazIDEIntf, filebrowsertypes, ctrlfilebrowser;
 
 {$R *.lfm}
 

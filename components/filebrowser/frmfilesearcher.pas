@@ -5,8 +5,12 @@ unit frmFileSearcher;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, StdCtrls, FileCtrl, Buttons, filebrowsertypes,
-  ctrlfilebrowser,Types, Masks;
+  Classes, SysUtils, Types,
+  Masks, LazUTF8, LazLoggerBase,
+  LCLType, Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, StdCtrls,
+  FileCtrl, Buttons,
+  LazIDEIntf,
+  FileBrowserTypes, CtrlFileBrowser;
 
 type
 
@@ -48,8 +52,6 @@ var
 
 implementation
 
-uses LazUTF8, LCLType, LazIDEIntf;
-
 {$R *.lfm}
 
 resourcestring
@@ -85,7 +87,7 @@ end;
 function TFileSearcherForm.CheckLength: Boolean;
 
 begin
-  ShowMessage('"'+edtSearch.Text+'": '+IntToStr(Length(edtSearch.Text)));
+  //ShowMessage('"'+edtSearch.Text+'": '+IntToStr(Length(edtSearch.Text)));
   Result:=(UTF8Length(edtSearch.Text)>=2);
   if not Result then
     DisableListBox(SWarnTermTooShort);

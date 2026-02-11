@@ -5,8 +5,12 @@ unit CtrlFileBrowser;
 interface
 
 uses
-  Classes, SysUtils, contnrs, frmFileBrowser, forms, filebrowsertypes, SrcEditorIntf, Masks,
-  LazIDEIntf, MenuIntf, IDECommands, ProjectIntf, IDEOptEditorIntf, IDEWindowIntf, BaseIDEIntf;
+  Classes, SysUtils, Contnrs,
+  forms, Controls,
+  Masks, StrUtils, LazConfigStorage, LazLoggerBase,
+  BaseIDEIntf, ProjectIntf, IDEExternToolIntf, IDEMsgIntf,
+  LazIDEIntf, SrcEditorIntf, MenuIntf, IDECommands, IDEOptEditorIntf, IDEWindowIntf,
+  frmFileBrowser, FileBrowserTypes;
 
 Type
     TFileSearchOption = (fsoMatchOnlyFileName,fsoAbsolutePaths,fsoUseLetters,fsoMatchPartial);
@@ -122,8 +126,6 @@ Type
 
 
 implementation
-
-uses Controls, StrUtils, IDEMsgIntf, IDEExternToolIntf, LazConfigStorage;
 
 { TFileSearchMatch }
 

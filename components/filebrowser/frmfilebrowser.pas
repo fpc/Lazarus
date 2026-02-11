@@ -5,6 +5,7 @@ unit frmFileBrowser;
 interface
 
 uses
+  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
   Classes, SysUtils,
   // LCL
   LCLType, Forms, Controls, Dialogs, FileCtrl, ComCtrls, StdCtrls, ExtCtrls,
@@ -111,11 +112,6 @@ var
 implementation
 
 {$R frmfilebrowser.lfm}
-
-{$IFDEF MSWINDOWS}
-uses
-  Windows;
-{$ENDIF}
 
 const
   cFilter = 'All Files (' + AllFilesMask + ')|' + AllFilesMask +

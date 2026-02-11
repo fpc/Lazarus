@@ -7,16 +7,14 @@ interface
 uses
   Classes, SysUtils,
   LazLoggerBase,
-  Controls, Forms,
-  LazIDEIntf, MenuIntf, IDECommands, IDEWindowIntf, BaseIDEIntf,
+  LCLType, Controls, Forms,
+  LazIDEIntf, MenuIntf, IDECommands, IDEWindowIntf,
   IDEOptionsIntf, IDEOptEditorIntf,
-  frmFileBrowser, ctrlfilebrowser, frmconfigfilebrowser;
+  frmFileBrowser, CtrlFileBrowser, frmConfigFileBrowser, frmFileSearcher, FileBrowserTypes;
 
 procedure Register;
 
 implementation
-
-uses lcltype,frmfilesearcher,filebrowsertypes;
 
 var
   FileBrowserOptionsFrameID: integer = 2000;
