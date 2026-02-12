@@ -126,7 +126,7 @@ const
   KeyDirectoriesBeforeFiles     = 'DirectoriesBeforeFiles';
   KeySyncCurrentEditor = 'SyncCurrentEditor';
   KeySearchMatchOnlyFilename = 'MatchOnlyFileNames';
-  KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
+  //KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
   KeySearchLetters = 'SearchLetters';
   KeyMatchPartial = 'MatchPartial';
 

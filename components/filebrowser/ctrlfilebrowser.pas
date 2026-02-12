@@ -13,7 +13,7 @@ uses
   frmFileBrowser, FileBrowserTypes;
 
 Type
-    TFileSearchOption = (fsoMatchOnlyFileName,fsoAbsolutePaths,fsoUseLetters,fsoMatchPartial);
+    TFileSearchOption = (fsoMatchOnlyFileName,{fsoAbsolutePaths,}fsoUseLetters,fsoMatchPartial);
     TFileSearchOptions = Set of TFileSearchOption;
 
     TFilenameMatchOption = (fmoFileNameOnly,fmoLetters,fmoMatchPartial);
@@ -175,7 +175,7 @@ begin
   FTreeFiller:=Nil;
   FreeAndNil(FRoot);
   FRoot:=aTree;
-  CreateFileList(fsoAbsolutePaths in SearchOptions);
+  CreateFileList(False {fsoAbsolutePaths in SearchOptions});
   AddIDEMessage(mluProgress,Format(SFilesFound,[FFileList.Count,GetResolvedRootDir]),'',0,0,SViewFilebrowser);
   for I:=0 to Length(FIndexingDoneEvent)-1 do
     FIndexingDoneEvent[i](Self);
@@ -243,8 +243,8 @@ begin
       FSyncCurrentEditor:=GetValue(KeySyncCurrentEditor,DefaultSyncCurrentEditor);
       if GetValue(KeySearchMatchOnlyFilename,False) then
         Include(Opts,fsoMatchOnlyFileName);
-      if GetValue(KeySearchAbsoluteFilenames,False) then
-        Include(Opts,fsoAbsolutePaths);
+      //if GetValue(KeySearchAbsoluteFilenames,False) then
+      //  Include(Opts,fsoAbsolutePaths);
       if GetValue(KeySearchLetters,False) then
         Include(Opts,fsoUseLetters);
       if GetValue(KeyMatchPartial,False) then
@@ -353,7 +353,7 @@ begin
       SetDeleteValue(KeyDirectoriesBeforeFiles, FDirectoriesBeforeFiles, DefaultDirectoriesBeforeFiles);
       SetDeleteValue(KeySyncCurrentEditor,FSyncCurrentEditor, DefaultSyncCurrentEditor);
       SetDeleteValue(KeySearchMatchOnlyFilename,fsoMatchOnlyFileName in SearchOptions,False);
-      SetDeleteValue(KeySearchAbsoluteFilenames,fsoAbsolutePaths in SearchOptions,False);
+      //SetDeleteValue(KeySearchAbsoluteFilenames,fsoAbsolutePaths in SearchOptions,False);
       SetDeleteValue(KeySearchLetters,fsoUseLetters in SearchOptions,False);
       SetDeleteValue(KeyMatchPartial,fsoMatchPartial in SearchOptions,False);
       FNeedSave := False;

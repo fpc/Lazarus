@@ -40,7 +40,6 @@ type
   private
     procedure CheckDirsBeforeFiles;
     procedure CheckPartial;
-
   public
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -87,11 +86,9 @@ begin
 end;
 
 procedure TFileBrowserOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
-
 begin
-  //
+  CBUseAbsoluteFilenames.Enabled:=False;   // fsoAbsolutePaths flag is removed.
 end;
-
 
 procedure TFileBrowserOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
@@ -122,7 +119,7 @@ begin
   CBShowFilesInline.Checked:=C.FilesInTree;
   CBShowDirectoriesBeforeFiles.Checked:=C.DirectoriesBeforeFiles;
   CBSyncCurrentEditor.Checked:=C.SyncCurrentEditor;
-  CBUseAbsoluteFilenames.Checked:=fsoAbsolutePaths in C.SearchOptions;
+  //CBUseAbsoluteFilenames.Checked:=fsoAbsolutePaths in C.SearchOptions;
   CBMatchOnlyFilename.Checked:=fsoMatchOnlyFileName in C.SearchOptions;
   CBUseLetters.Checked:=fsoUseLetters in C.SearchOptions;
   CBPartialMatch.Checked:=fsoMatchPartial in C.SearchOptions;
@@ -169,8 +166,8 @@ begin
   C.FilesInTree:=CBShowFilesInline.Checked;
   C.SyncCurrentEditor:=CBSyncCurrentEditor.Checked;
   SO:=[];
-  if CBUseAbsoluteFilenames.Checked then
-    Include(SO,fsoAbsolutePaths);
+  //if CBUseAbsoluteFilenames.Checked then
+  //  Include(SO,fsoAbsolutePaths);
   if CBMatchOnlyFilename.Checked then
     Include(SO,fsoMatchOnlyFileName);
   if CBUseLetters.Checked then
