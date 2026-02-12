@@ -115,8 +115,7 @@ begin
     rdCustomDir: RB  := RBRootThisDir;
   end;
   RB.Checked := True;
-  if C.RootDir=rdCustomDir then
-    DERootDir.Directory:=C.CustomRootDir;
+  DERootDir.Directory:=C.CustomRootDir;
   CBShowFilesInline.Checked:=C.FilesInTree;
   CBShowDirectoriesBeforeFiles.Checked:=C.DirectoriesBeforeFiles;
   CBSyncCurrentEditor.Checked:=C.SyncCurrentEditor;
@@ -158,10 +157,7 @@ begin
     RD:=rdUserDir
   else
     RD:=rdCustomDir;
-  if rD=rdCustomDir then
-    C.CustomRootDir:=DERootDir.Directory
-  else
-    C.CustomRootDir:='';
+  C.CustomRootDir:=DERootDir.Directory;
   C.RootDir:=rD;
   C.FilesInTree:=CBShowFilesInline.Checked;
   C.SyncCurrentEditor:=CBSyncCurrentEditor.Checked;
