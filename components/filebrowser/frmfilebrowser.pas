@@ -491,24 +491,22 @@ begin
 end;
 
 procedure TFileBrowserForm.ConfigNode(aNode : TTreeNode; aEntry : TFileSystemEntry);
-
 var
   Idx : Integer;
-
 begin
   aNode.Data:=aEntry;
-  Case aEntry.EntryType of
+{  Case aEntry.EntryType of
     etDirectory : Idx:=0;
     etFile : Idx:=1;
     etSymlink : Idx:=2;
-  end;
+  end;  }
+  Idx:=Ord(aEntry.EntryType);
   aNode.ImageIndex:=Idx;
   aNode.SelectedIndex:=Idx;
   aNode.HasChildren:=aEntry.HasEntries(ShowHidden);
 end;
 
 function TFileBrowserForm.AddNode(aSibling : TTreeNode; aEntry : TFileSystemEntry) : TTreeNode;
-
 begin
   Result:=TV.Items.Add(nil, aEntry.Name);
   ConfigNode(Result,aEntry);
