@@ -13,7 +13,6 @@ object FileSearcherForm: TFileSearcherForm
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnShow = FormShow
   object bpFileSearch: TButtonPanel
     Left = 6
     Height = 56

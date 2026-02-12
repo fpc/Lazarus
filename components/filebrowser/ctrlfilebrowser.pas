@@ -32,7 +32,7 @@ Type
       FFileName: string;
       FMatchPositions : TMatchPositionArray;
     Public
-      Constructor create(const aFileName : string; aEntry : TFileEntry; const aPositions : TMatchPositionArray);
+      Constructor Create(const aFileName : string; aEntry : TFileEntry; const aPositions : TMatchPositionArray);
       Property FileName : string Read FFileName;
       Property Entry : TFileEntry Read FEntry;
       Property MatchPositions : TMatchPositionArray Read FMatchPositions;
@@ -55,6 +55,7 @@ Type
       FConfigFrame: TAbstractIDEOptionsEditorClass;
       FCustomStartDir: string;
       FDirectoriesBeforeFiles: Boolean;
+      FIdleConnected: boolean;
       FLastOpenedDir: string;
       FRoot: TFileSystemEntry;
       FSearchOptions: TFileSearchOptions;
@@ -72,6 +73,8 @@ Type
       procedure ActiveEditorChanged(Sender: TObject);
       procedure AddFileNodes(List: TStrings; aNode: TFileSystemEntry; aDir: String);
       procedure CreateFileList(aUseAbsolutePaths: boolean);
+      procedure DoIdle(Sender: TObject; var {%H-}Done: Boolean);
+      procedure DoFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
       function DoProjectChanged(Sender: TObject; AProject: TLazProject): TModalResult;
       procedure DoSelectDir(Sender: TObject);
       function GetProjectDir: String;
@@ -80,13 +83,13 @@ Type
       procedure SetCustomStartDir(AValue: string);
       procedure SetDirectoriesBeforeFiles(AValue: Boolean);
       procedure SetFilesInTree(AValue: Boolean);
+      procedure SetIdleConnected(AValue: boolean);
       procedure SetLastOpenedDir(AValue: string);
       procedure SetRootDir(AValue: TRootDir);
       procedure SetSearchOptions(AValue: TFileSearchOptions);
       procedure SetSplitterPos(AValue: integer);
       procedure SetStartDir(AValue: TStartDir);
       procedure SetSyncCurrentEditor(AValue: Boolean);
-      procedure OnFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
       procedure TreeFillDone(Sender: TThread; aTree: TDirectoryEntry);
       procedure TreeFillError(Sender: TThread; const aError: String);
     protected
@@ -98,6 +101,7 @@ Type
     public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
+      procedure Init;
       function FillingTree: boolean;
       procedure ConfigWindow(AForm: TFileBrowserForm); virtual;
       procedure OpenFiles(aEntries : TFileEntryArray);
@@ -110,7 +114,8 @@ Type
       procedure AddOnIndexingFinishedEvent(aEvent : TNotifyEvent);
       procedure RemoveOnIndexingFinishedEvent(aEvent : TNotifyEvent);
       procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-      Property Root : TFileSystemEntry Read FRoot;
+    public
+      property Root : TFileSystemEntry Read FRoot;
       property StartDir: TStartDir read FStartDir write SetStartDir;
       property RootDir: TRootDir read FRootDir write SetRootDir;
       property CustomStartDir: string read FCustomStartDir write SetCustomStartDir;
@@ -118,10 +123,11 @@ Type
       property LastOpenedDir: string read FLastOpenedDir write SetLastOpenedDir;
       property SyncCurrentEditor : Boolean Read FSyncCurrentEditor Write SetSyncCurrentEditor;
       property SplitterPos: integer read FSplitterPos write SetSplitterPos;
-      Property FilesInTree : Boolean Read FFilesInTree Write SetFilesInTree;
-      Property DirectoriesBeforeFiles : Boolean Read FDirectoriesBeforeFiles Write SetDirectoriesBeforeFiles;
-      Property ConfigFrame : TAbstractIDEOptionsEditorClass Read FConfigFrame Write FConfigFrame;
+      property FilesInTree : Boolean Read FFilesInTree Write SetFilesInTree;
+      property DirectoriesBeforeFiles : Boolean Read FDirectoriesBeforeFiles Write SetDirectoriesBeforeFiles;
+      property ConfigFrame : TAbstractIDEOptionsEditorClass Read FConfigFrame Write FConfigFrame;
       property SearchOptions : TFileSearchOptions Read FSearchOptions Write SetSearchOptions;
+      property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     end;
 
 
@@ -129,7 +135,7 @@ implementation
 
 { TFileSearchMatch }
 
-constructor TFileSearchMatch.create(const aFileName: string;
+constructor TFileSearchMatch.Create(const aFileName: string;
   aEntry: TFileEntry; const aPositions: TMatchPositionArray);
 begin
   FFileName:=aFileName;
@@ -156,18 +162,14 @@ end;
 
 { TFileBrowserController }
 
-
 procedure TFileBrowserController.TreeFillError(Sender: TThread; const aError : String);
-
 begin
   AddIDEMessage(mluError,Format(SErrSearching,[GetResolvedRootDir,aError]),'',0,0,SViewFilebrowser);
 end;
 
 procedure TFileBrowserController.TreeFillDone(Sender: TThread; aTree: TDirectoryEntry);
-
 var
   i : integer;
-
 begin
   if (FTreeFiller<>Sender) then exit;
   FTreeFiller:=Nil;
@@ -177,14 +179,14 @@ begin
   AddIDEMessage(mluProgress,Format(SFilesFound,[FFileList.Count,GetResolvedRootDir]),'',0,0,SViewFilebrowser);
   for I:=0 to Length(FIndexingDoneEvent)-1 do
     FIndexingDoneEvent[i](Self);
+  // Monitor project changes only after the first scan.
+  LazarusIDE.AddHandlerOnProjectOpened(@DoProjectChanged);
 end;
 
 procedure TFileBrowserController.AddFileNodes(List : TStrings; aNode : TFileSystemEntry; aDir : String);
-
 var
   FN : String;
   i : Integer;
-
 begin
   FN:=aDir;
   if FN<>'' then
@@ -196,12 +198,11 @@ begin
     List.AddObject(FN,aNode);
   etDirectory:
     For I:=0 to ANode.EntryCount-1 do
-      AddFileNodes(List,ANode.Entries[I],FN);
+      AddFileNodes(List, ANode.Entries[I], FN);
   end;
 end;
 
 procedure TFileBrowserController.CreateFileList(aUseAbsolutePaths : boolean);
-
 var
   lList,l2 : TStrings;
   lDir : String;
@@ -227,8 +228,6 @@ procedure TFileBrowserController.ReadConfig;
 var
   Storage : TConfigStorage;
   Opts : TFileSearchOptions;
-
-
 begin
   Opts:=[];
   Storage:=GetIDEConfigStorage(SConfigFile, True);
@@ -256,7 +255,6 @@ begin
     end;
 end;
 
-
 procedure TFileBrowserController.SetCustomRootDir(AValue: string);
 begin
   if FCustomRootDir=AValue then Exit;
@@ -283,6 +281,16 @@ begin
   if FFilesInTree=AValue then Exit;
   FFilesInTree:=AValue;
   FNeedSave:=true;
+end;
+
+procedure TFileBrowserController.SetIdleConnected(AValue: boolean);
+begin
+  if FIdleConnected=AValue then Exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@DoIdle)
+  else
+    Application.RemoveOnIdleHandler(@DoIdle);
 end;
 
 procedure TFileBrowserController.SetLastOpenedDir(AValue: string);
@@ -355,18 +363,18 @@ begin
 end;
 
 function TFileBrowserController.FillingTree : boolean;
-
 begin
   Result:=Assigned(FTreeFiller);
 end;
 
 procedure TFileBrowserController.IndexRootDir;
-
 var
   lDir : String;
 begin
   if FillingTree then
     Exit;
+  if (RootDir = rdProjectDir) and (LazarusIDE.ActiveProject = nil) then
+    debugln(['TFileBrowserController.IndexRootDir: No Project loaded, using temp directory.']);
   lDir:=GetResolvedRootDir;
   // Do not recurse, thread handles it, it needs to react to terminate...
   FTreeFiller:=TTreeCreatorThread.Create(lDir,[],@TreeFillDone,@TreeFillError);
@@ -377,7 +385,8 @@ function TFileBrowserController.FindFiles(aPattern: String;
   aOutFileList: TFileSearchResults; aMatchOptions: TFilenameMatchOptions;
   aExtMask: TMaskList): Integer;
   
-  function MatchesPattern(const aName: string; aStartPos: Integer; const aPtrn: string; var aPositions : TMatchPositionArray): Integer;
+  function MatchesPattern(const aName: string; aStartPos: Integer; const aPtrn: string;
+    var aPositions : TMatchPositionArray): Integer;
   var
     wasMatch : boolean;
     lPtrnLen,lNameLen,lPtrnPos, lNamePos: Integer;
@@ -459,7 +468,8 @@ begin
         end;
       if IsMatch then
         begin
-        Match:=TFileSearchMatch.Create(FFileList[lFileIdx],TFileEntry(FFileList.Objects[lFileIdx]),lPositions);
+        Match:=TFileSearchMatch.Create(FFileList[lFileIdx],
+                            TFileEntry(FFileList.Objects[lFileIdx]), lPositions);
         aOutFileList.Add(Match);
         end;
     end;
@@ -499,7 +509,7 @@ begin
   aForm.OnOpenFile := @DoOpenFile;
   aForm.OnConfigure := @DoConfig;
   aForm.OnSelectDir := @DoSelectDir;
-  aForm.AddHandlerClose(@OnFormClose);
+  aForm.AddHandlerClose(@DoFormClose);
   aForm.TV.Height:=FSplitterPos;
 
   aForm.RootDirectory:=GetResolvedRootDir;
@@ -511,26 +521,22 @@ begin
 end;
 
 procedure TFileBrowserController.OpenFiles(aEntries: TFileEntryArray);
-
 var
   E : TFileEntry;
-
 begin
   for E in aEntries do
     DoOpenFile(Self,E.AbsolutePath);
 end;
 
 function TFileBrowserController.GetProjectDir : String;
-
 begin
   if Assigned(LazarusIDE.ActiveProject) then
-    Result:=ExtractFilePath(LazarusIDE.ActiveProject.ProjectInfoFile)
+    Result:=LazarusIDE.ActiveProject.Directory
   else
     Result:=GetTempDir(False);
 end;
 
 function TFileBrowserController.GetResolvedStartDir: String;
-
 begin
   Case StartDir of
     sdProjectDir : Result:=GetProjectDir;
@@ -558,8 +564,7 @@ begin
   LazarusIDE.DoOpenEditorFile(AFileName, 0, 0, Flags);
 end;
 
-
-procedure TFileBrowserController.OnFormClose(Sender: TObject;
+procedure TFileBrowserController.DoFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   SplitterPos:=FileBrowserForm.Splitter1.Top;
@@ -571,27 +576,27 @@ begin
     LastOpenedDir := FileBrowserForm.CurrentDirectory;
 end;
 
+procedure TFileBrowserController.DoIdle(Sender: TObject; var Done: Boolean);
+begin
+  IndexRootDir;        // Scanning files for the first time.
+  IdleConnected:=false;
+end;
+
 function TFileBrowserController.DoProjectChanged(Sender: TObject; AProject: TLazProject): TModalResult;
-
-var
-  aPath : String;
-
 begin
   Result:=mrOK;
-  if Assigned(FileBrowserForm) then
-    begin
-    APath:=ExcludeTrailingPathDelimiter(ExtractFilePath(aProject.ProjectInfoFile));
-    if RootDir=rdProjectDir then
-      FileBrowserForm.RootDirectory:=aPath;
-    if StartDir=sdProjectDir then
-      FileBrowserForm.CurrentDirectory:=aPath;
-    end;
-
+  Assert(Assigned(AProject), 'TFileBrowserController.DoProjectChanged: No project!');
+  if RootDir=rdProjectDir then
+  begin
+    if Assigned(FileBrowserForm) then
+      FileBrowserForm.RootDirectory:=aProject.Directory;
+    IndexRootDir;
+  end;
+  if (StartDir=sdProjectDir) and (Assigned(FileBrowserForm)) then
+    FileBrowserForm.CurrentDirectory:=aProject.Directory;
 end;
 
 procedure TFileBrowserController.ActiveEditorChanged(Sender: TObject);
-
-
 begin
   if not Assigned(SourceEditorManagerIntf.ActiveEditor) then
     exit;
@@ -600,7 +605,6 @@ begin
 end;
 
 procedure TFileBrowserController.SyncCurrentFile;
-
 begin
   if Not (Assigned(FileBrowserForm) and SyncCurrentEditor) then
     exit;
@@ -617,7 +621,6 @@ end;
 constructor TFileBrowserController.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  LazarusIDE.AddHandlerOnProjectOpened(@DoProjectChanged);
   if SourceEditorManagerIntf <> nil then
     SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
   FDirectoriesBeforeFiles:=DefaultDirectoriesBeforeFiles;
@@ -631,15 +634,21 @@ begin
     FTreeFiller.Terminate;
   FreeAndNil(FFileList);
   FreeAndNil(FRoot);
+  LazarusIDE.RemoveHandlerOnProjectOpened(@DoProjectChanged);
   if SourceEditorManagerIntf <> nil then
     SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
   if FNeedSave then
     WriteConfig;
+  IdleConnected:=false;
   inherited;
 end;
 
-function TFileBrowserController.ShowConfig: Boolean;
+procedure TFileBrowserController.Init;
+begin
+  IdleConnected:=True;
+end;
 
+function TFileBrowserController.ShowConfig: Boolean;
 begin
   Result:=LazarusIDE.DoOpenIDEOptions(ConfigFrame);
 end;
@@ -650,8 +659,6 @@ begin
   if (AComponent = FileBrowserForm) and (opRemove = Operation) then
     FileBrowserForm := nil;
 end;
-
-
 
 end.
 

@@ -26,13 +26,9 @@ begin
 end;
 
 procedure ShowFileSearcher(Sender: TObject);
-
 var
   Entries : TFileEntryArray;
-
-var
   C: TFileBrowserController;
-
 begin
   Entries:=[];
   With TFileSearcherForm.Create(Application) do
@@ -52,10 +48,8 @@ end;
 
 
 procedure CreateFileBrowser(Sender: TObject; aFormName: string; var AForm: TCustomForm; DoDisableAutoSizing: boolean);
-
 var
   C: TFileBrowserController;
-
 begin
   // sanity check to avoid clashing with another package that has registered a window with the same name
   if CompareText(aFormName,'FileBrowser')<>0 then begin
@@ -74,24 +68,20 @@ end;
 
 
 procedure CreateController;
-
 var
   C: TFileBrowserController;
-
 begin
   C := LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if (C = nil) then
     begin
     C := TFileBrowserController.Create(LazarusIDE.OwningComponent);
     C.Name:='IDEFileBrowserController';
-    if C.GetResolvedRootDir<>'' then
-      C.IndexRootDir;
+    C.Init;
     end;
   C.ConfigFrame:=TFileBrowserOptionsFrame;
 end;
 
 procedure Register;
-
 var
   CmdCatViewMenu: TIDECommandCategory;
   ViewFileBrowserCommand: TIDECommand;
@@ -126,7 +116,6 @@ begin
   // add IDE options frame
   FileBrowserOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TFileBrowserOptionsFrame,
                                               FileBrowserOptionsFrameID)^.Index;
-
 end;
 
 end.

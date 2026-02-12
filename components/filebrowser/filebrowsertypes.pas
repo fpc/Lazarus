@@ -253,7 +253,6 @@ var
 begin
   Clear;
   CurrentDir:=IncludeTrailingPathDelimiter(AbsolutePath);
-  CurrentDir:=CurrentDir;
   if SysUtils.FindFirst(CurrentDir+AllFilesMask,faAnyFile or faSymLink, Info) <> 0 then
      Exit;
   Try
@@ -399,10 +398,8 @@ begin
 end;
 
 procedure TTreeCreatorThread.FillNode(N : TDirectoryEntry);
-
 var
   i : integer;
-
 begin
   N.ReadEntries(FOptions);
   For I:=0 to N.EntryCount-1 do

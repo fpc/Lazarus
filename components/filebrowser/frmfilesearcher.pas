@@ -27,7 +27,6 @@ type
     procedure edtSearchChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure LBFilesDblClick(Sender: TObject);
     procedure LBFilesDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
@@ -89,7 +88,7 @@ end;
 function TFileSearcherForm.CheckLength: Boolean;
 
 begin
-  //ShowMessage('"'+edtSearch.Text+'": '+IntToStr(Length(edtSearch.Text)));
+  DebugLn(['"', edtSearch.Text, '": ', Length(edtSearch.Text)]);
   Result:=(UTF8Length(edtSearch.Text)>=2);
   if not Result then
     DisableListBox(SWarnTermTooShort);
@@ -122,7 +121,7 @@ begin
   LBFiles.Items.BeginUpdate;
   try
     LBFiles.Items.Clear;
-    FController.FindFiles(edtSearch.Text,FResults,lMatchOptions,FMask);
+    FController.FindFiles(edtSearch.Text, FResults, lMatchOptions, FMask);
     for Idx:=0 to FResults.Count-1 do
       begin
       lMatch:=FResults[Idx];
@@ -169,12 +168,13 @@ begin
 end;
 
 procedure TFileSearcherForm.FormCreate(Sender: TObject);
-
 begin
-  FController:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
+  cbFilter.ItemIndex:=-1;  // Needed as a workaround for QTx bug #42053.
+  cbFilter.ItemIndex:=0;
   if cbFilter.Mask<>'' then
     FMask:=TMaskList.Create(cbFilter.Mask);
   FResults:=TFileSearchResults.Create;
+  FController:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   FController.AddOnIndexingFinishedEvent(@HandleIndexingDone);
   if FController.FillingTree then
     begin
@@ -192,13 +192,6 @@ begin
   FreeAndNil(FResults);
 end;
 
-procedure TFileSearcherForm.FormShow(Sender: TObject);
-begin
-  // Needed as a workaround for QTx bug #42053.
-  cbFilter.ItemIndex:=-1;
-  cbFilter.ItemIndex:=0;
-end;
-
 procedure TFileSearcherForm.LBFilesDblClick(Sender: TObject);
 begin
   Modalresult:=mrOK;
@@ -207,10 +200,10 @@ end;
 procedure TFileSearcherForm.LBFilesDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
 Var
-  W,L : Integer;
+  TernW, StartW : Integer;
+  FN, Term, Start : String;
   lRect : TRect;
   C : TColor;
-  S,Term : String;
   lCanvas : TCanvas;
   lMatch : TFileSearchMatch;
   lPositions : TMatchPositionArray;
@@ -221,37 +214,40 @@ begin
     begin
     lPositions:=[];
     if Index<LBFiles.Items.Count then
-      S:=LBFiles.Items[index]
+      FN:=LBFiles.Items[index]
     else
-      S:='';
+      FN:='';
     end
   else
     begin
     lMatch:=fResults[Index];
-    S:=lMatch.FileName;
+    FN:=lMatch.FileName;
     lPositions:=lMatch.MatchPositions;
     end;
   lRect:=aRect;
-  if not (odSelected in State) then
-  begin
+  if odSelected in State then begin
+    lCanvas.Brush.Color:=clHighlight;
+    lCanvas.FillRect(ARect);
+    lCanvas.Brush.Color:=clBackground;
+  end
+  else begin
     c:=lCanvas.Brush.Color;
     lCanvas.Brush.Color:=clHighlight;
     for lPos in lPositions do
       begin
-      Term:=Copy(S,lPos.Pos,lPos.Len);
-      W:=lCanvas.TextWidth(Term);
-      L:=lCanvas.TextWidth(Copy(S,1,lPos.Pos-1));
-      lRect.Left:=aRect.Left+L;
-      lRect.Right:=aRect.Left+L+W;
+      Start:=Copy(FN, 1, lPos.Pos-1);
+      Term:=Copy(FN, lPos.Pos, lPos.Len);
+      StartW:=lCanvas.TextWidth(Start);
+      TernW:=lCanvas.TextWidth(Term);
+      lRect.Left:=aRect.Left+StartW;
+      lRect.Right:=aRect.Left+StartW+TernW;
       if lrect.Right>aRect.Right then
         lrect.Right:=aRect.Right;
       lCanvas.FillRect(lRect);
       end;
     lCanvas.Brush.Color:=C;
-  end
-  else
-    lCanvas.FillRect(ARect);
-  lCanvas.TextRect(aRect,aRect.Left,aRect.Top,S);
+  end;
+  lCanvas.TextRect(aRect, aRect.Left, aRect.Top, FN);
 end;
 
 procedure TFileSearcherForm.SBConfigureClick(Sender: TObject);
