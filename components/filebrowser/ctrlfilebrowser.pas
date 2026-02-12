@@ -116,6 +116,7 @@ Type
       procedure ReadConfig; virtual;
       procedure IndexRootDir;
       function FindFiles(aPattern: String; aOutFileList: TFileSearchResults; aMatchOptions : TFilenameMatchOptions; aExtMask : TMaskList): Integer;
+      function FileCount: integer;
       procedure AddOnIndexingFinishedEvent(aEvent : TNotifyEvent);
       procedure RemoveOnIndexingFinishedEvent(aEvent : TNotifyEvent);
       procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -527,6 +528,11 @@ begin
         end;
     end;
   end;
+end;
+
+function TFileBrowserController.FileCount: integer;
+begin
+  Result:=FFileList.Count;
 end;
 
 procedure TFileBrowserController.AddOnIndexingFinishedEvent(aEvent: TNotifyEvent);

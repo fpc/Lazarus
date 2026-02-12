@@ -9,7 +9,7 @@ uses
   Masks, LazUTF8, LazLoggerBase,
   LCLType, Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, StdCtrls,
   FileCtrl, Buttons,
-  LazIDEIntf,
+  LazIDEIntf, IDEWindowIntf,
   FileBrowserTypes, CtrlFileBrowser;
 
 type
@@ -21,6 +21,7 @@ type
     cbFilter: TFilterComboBox;
     edtSearch: TEdit;
     Label1: TLabel;
+    lbStatus: TLabel;
     LBFiles: TListBox;
     SBConfigure: TSpeedButton;
     procedure cbFilterChange(Sender: TObject);
@@ -30,6 +31,7 @@ type
     procedure LBFilesDblClick(Sender: TObject);
     procedure LBFilesDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
+    procedure LBFilesSelectionChange(Sender: TObject; User: boolean);
     procedure SBConfigureClick(Sender: TObject);
   private
     FMask : TMaskList;
@@ -119,6 +121,7 @@ begin
   finally
     LBFiles.Items.EndUpdate;
   end;
+  lbStatus.Caption:=Format('%d / %d matches', [FResults.Count, FController.FileCount]);;
   if LBFiles.Items.Count>0 then
     LBFiles.Enabled:=True
   else
@@ -157,12 +160,16 @@ end;
 
 procedure TFileSearcherForm.FormCreate(Sender: TObject);
 begin
+  IDEDialogLayoutList.ApplyLayout(Self,600,450);
   cbFilter.ItemIndex:=-1;  // Needed as a workaround for QTx bug #42053.
   cbFilter.ItemIndex:=0;
   if cbFilter.Mask<>'' then
     FMask:=TMaskList.Create(cbFilter.Mask);
   FResults:=TFileSearchResults.Create;
   FController:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
+  edtSearch.Hint:=Format('Search term, at least %d char', [FController.MinSearchLen]);
+  edtSearch.TextHint:=edtSearch.Hint;
+  bpFileSearch.OKButton.Enabled:=False;
   FController.AddOnIndexingFinishedEvent(@HandleIndexingDone);
   if FController.FillingTree then
   begin
@@ -180,11 +187,17 @@ begin
   FController.RemoveOnIndexingFinishedEvent(@HandleIndexingDone);
   FreeAndNil(FMask);
   FreeAndNil(FResults);
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TFileSearcherForm.LBFilesDblClick(Sender: TObject);
 begin
-  Modalresult:=mrOK;
+  ModalResult:=mrOK;
+end;
+
+procedure TFileSearcherForm.LBFilesSelectionChange(Sender: TObject; User: boolean);
+begin
+  bpFileSearch.OKButton.Enabled:=(Sender as TListBox).ItemIndex>=0;
 end;
 
 procedure TFileSearcherForm.LBFilesDrawItem(Control: TWinControl; Index: Integer;

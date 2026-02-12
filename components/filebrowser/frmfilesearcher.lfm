@@ -1,23 +1,23 @@
 object FileSearcherForm: TFileSearcherForm
-  Left = 943
-  Height = 252
-  Top = 454
-  Width = 504
+  Left = 464
+  Height = 316
+  Top = 387
+  Width = 623
   ActiveControl = edtSearch
   BorderIcons = [biMaximize]
   BorderStyle = bsSizeToolWin
   Caption = 'Search file'
-  ClientHeight = 252
-  ClientWidth = 504
+  ClientHeight = 316
+  ClientWidth = 623
   Position = poScreenCenter
   LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   object bpFileSearch: TButtonPanel
     Left = 6
-    Height = 56
-    Top = 190
-    Width = 492
+    Height = 37
+    Top = 273
+    Width = 611
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -31,38 +31,37 @@ object FileSearcherForm: TFileSearcherForm
   end
   object Label1: TLabel
     AnchorSideTop.Control = edtSearch
+    AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = edtSearch
     AnchorSideBottom.Control = edtSearch
     AnchorSideBottom.Side = asrBottom
-    Left = 28
-    Height = 34
-    Top = 4
-    Width = 68
+    Left = 8
+    Height = 18
+    Top = 10
+    Width = 56
     Alignment = taRightJustify
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    AutoSize = False
-    BorderSpacing.Right = 8
+    BorderSpacing.Right = 6
     Caption = 'Filename'
     Layout = tlCenter
   end
   object edtSearch: TEdit
-    Left = 104
-    Height = 34
-    Hint = 'Search term, must contain at least 2 characters'
-    Top = 4
-    Width = 196
-    Anchors = [akTop, akLeft, akRight]
+    AnchorSideLeft.Control = Label1
+    AnchorSideLeft.Side = asrBottom
+    Left = 70
+    Height = 32
+    Top = 3
+    Width = 210
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
-    TextHint = 'Search term, must contain at least 2 characters'
     OnChange = edtSearchChange
   end
   object LBFiles: TListBox
+    AnchorSideBottom.Control = bpFileSearch
     Left = 8
-    Height = 136
+    Height = 227
     Top = 40
-    Width = 489
+    Width = 608
     Anchors = [akTop, akLeft, akRight, akBottom]
     ItemHeight = 0
     MultiSelect = True
@@ -71,16 +70,20 @@ object FileSearcherForm: TFileSearcherForm
     TopIndex = -1
     OnDblClick = LBFilesDblClick
     OnDrawItem = LBFilesDrawItem
+    OnSelectionChange = LBFilesSelectionChange
   end
   object cbFilter: TFilterComboBox
+    AnchorSideLeft.Control = edtSearch
+    AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = edtSearch
     AnchorSideBottom.Control = edtSearch
     AnchorSideBottom.Side = asrBottom
-    Left = 308
-    Height = 34
-    Top = 4
-    Width = 137
-    Anchors = [akTop, akRight, akBottom]
+    Left = 288
+    Height = 32
+    Top = 3
+    Width = 120
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Left = 8
     Filter = 'Pascal files|*.pas;*.pp;*.inc;*.lpr;*.dpr|All files|*.*'
     ItemIndex = 0
     TabOrder = 3
@@ -90,9 +93,9 @@ object FileSearcherForm: TFileSearcherForm
     AnchorSideTop.Control = edtSearch
     AnchorSideBottom.Control = edtSearch
     AnchorSideBottom.Side = asrBottom
-    Left = 455
-    Height = 34
-    Top = 4
+    Left = 582
+    Height = 32
+    Top = 3
     Width = 34
     Anchors = [akTop, akRight, akBottom]
     Glyph.Data = {
@@ -172,5 +175,17 @@ object FileSearcherForm: TFileSearcherForm
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
     }
     OnClick = SBConfigureClick
+  end
+  object lbStatus: TLabel
+    AnchorSideLeft.Control = cbFilter
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbFilter
+    AnchorSideTop.Side = asrCenter
+    Left = 416
+    Height = 18
+    Top = 10
+    Width = 39
+    BorderSpacing.Left = 8
+    Caption = 'Status'
   end
 end
