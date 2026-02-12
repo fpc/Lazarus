@@ -170,7 +170,7 @@ type
 
   TCocoaWSCustomEdit = class(TWSCustomEdit)
   public
-    class function GetTextField(AWinControl: TWinControl): TCocoaTextField;
+    class function GetTextField(AWinControl: TWinControl): NSTextField;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
@@ -1134,7 +1134,7 @@ end;
 
 { TCocoaWSCustomEdit }
 
-class function TCocoaWSCustomEdit.GetTextField(AWinControl: TWinControl): TCocoaTextField;
+class function TCocoaWSCustomEdit.GetTextField(AWinControl: TWinControl): NSTextField;
 begin
   if not Assigned(AWinControl) or (not AWinControl.HandleAllocated) or (AWinControl.Handle=0) then
   begin
@@ -1147,7 +1147,7 @@ begin
     Exit(nil);
   end;
 
-  Result := TCocoaTextField(AWinControl.Handle);
+  Result := NSTextField(AWinControl.Handle);
 end;
 
 
@@ -1208,7 +1208,7 @@ end;
 
 class procedure TCocoaWSCustomEdit.SetColor(const AWinControl: TWinControl);
 var
-  field : TCocoaTextField;
+  field : NSTextField;
 
   // maybe the bug of macOS, especially on macOS 26
   // changing the background color while editing may not work.
@@ -1268,9 +1268,9 @@ end;
 class procedure TCocoaWSCustomEdit.SetBorderStyle(
   const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 var
-  field : TCocoaTextField;
+  field: NSTextField;
 begin
-  field := GetTextField(AWinControl);
+  field:= GetTextField(AWinControl);
   if not Assigned(field) then Exit;
   {$ifdef BOOLFIX}
   field.setBordered_( ObjCBool(ABorderStyle <> bsNone) );
@@ -1284,7 +1284,7 @@ end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 var
-  field : TCocoaTextField;
+  field : NSTextField;
   txt   :  NSText;
 begin
   Result:=0;
@@ -1298,8 +1298,8 @@ end;
 
 class function TCocoaWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 var
-  field : TCocoaTextField;
-  txt   :  NSText;
+  field : NSTextField;
+  txt   : NSText;
 begin
   Result:=0;
   field := GetTextField(ACustomEdit);
@@ -1313,12 +1313,12 @@ end;
 class procedure TCocoaWSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
   const NewAlignment: TAlignment);
 var
-  field: TCocoaTextField;
+  field: NSTextField;
 begin
   field := GetTextField(ACustomEdit);
   if not Assigned(field) then
     Exit;
-  if field.fixedInitSetting then
+  if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
     Exit;
   TextFieldSetAllignment(field, NewAlignment);
 end;
@@ -1345,7 +1345,7 @@ end;
 
 class procedure TCocoaWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 var
-  lHandle: TCocoaTextField;
+  lHandle: NSTextField;
   w : NSWindow;
   t : NSText;
   isFocused: Boolean;
@@ -1401,7 +1401,7 @@ end;
 
 class procedure TCocoaWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
 var
-  lHandle: TCocoaTextField;
+  lHandle: NSTextField;
   curEditor:  NSText;
   lRange: NSRange;
 begin
@@ -1416,7 +1416,7 @@ end;
 
 class procedure TCocoaWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 var
-  lHandle: TCocoaTextField;
+  lHandle: NSTextField;
   curEditor:  NSText;
   lRange: NSRange;
 begin
