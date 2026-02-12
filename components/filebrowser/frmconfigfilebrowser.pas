@@ -134,12 +134,10 @@ var
   SD : TStartDir;
   RD : TRootDir;
   SO : TFileSearchOptions;
-  lRootDir: String;
 begin
   C:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if not Assigned(C) then
     exit;
-  lRootDir:=C.GetResolvedRootDir;
   if RBUseProjectDir.Checked then
     SD:=sdProjectDir
   else if RBLastDir.Checked then
@@ -160,11 +158,11 @@ begin
     RD:=rdUserDir
   else
     RD:=rdCustomDir;
-  C.RootDir:=rD;
   if rD=rdCustomDir then
     C.CustomRootDir:=DERootDir.Directory
   else
     C.CustomRootDir:='';
+  C.RootDir:=rD;
   C.FilesInTree:=CBShowFilesInline.Checked;
   C.SyncCurrentEditor:=CBSyncCurrentEditor.Checked;
   SO:=[];
@@ -178,9 +176,6 @@ begin
   //  Include(SO,fsoMatchPartial);
   C.MinSearchLen:=seMinSearchLen.Value;
   C.SearchOptions:=SO;
-  // Re-index
-  if lRootDir<>C.GetResolvedRootDir then
-    C.IndexRootDir;
   C.WriteConfig;
 end;
 

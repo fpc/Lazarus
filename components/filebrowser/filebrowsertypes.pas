@@ -9,7 +9,6 @@ uses
 
 type
   TStartDir = (sdProjectDir, sdLastOpened, sdCustomDir);
-
   TRootDir = (rdProjectDir, rdUserDir, rdRootDir, rdCustomDir);
 
   EFileEntry = Class(Exception);
@@ -95,16 +94,20 @@ Type
     FRootDir : String;
     FOptions : TReadEntryOptions;
     FOnDone : TTreeDoneEvent;
+    FOnCancelled : TTreeDoneEvent;
     FOnError : TTreeErrorEvent;
     FNode : TDirectoryEntry;
     FError : String;
   Protected
     procedure FillNode(N: TDirectoryEntry);
     procedure DoDone;
+    procedure DoCancelled;
     procedure DoError;
   Public
-    constructor Create(aRootDir: String; aOptions: TReadEntryOptions; aOnDone: TTreeDoneEvent; aOnError : TTreeErrorEvent);
-    procedure execute; override;
+    constructor Create(aRootDir: String; aOptions: TReadEntryOptions;
+      aOnDone: TTreeDoneEvent; aOnCancelled: TTreeDoneEvent; aOnError : TTreeErrorEvent);
+    procedure Execute; override;
+    property RootDir: String read FRootDir;
   end;
 
 
@@ -123,7 +126,7 @@ const
   KeyCustomRootDir    = 'CustomRootDir';
   KeySplitterPos      = 'SplitterPos';
   KeyFilesInTree      = 'FilesInTree';
-  KeyDirectoriesBeforeFiles     = 'DirectoriesBeforeFiles';
+  KeyDirectoriesBeforeFiles = 'DirectoriesBeforeFiles';
   KeySyncCurrentEditor = 'SyncCurrentEditor';
   KeySearchMatchOnlyFilename = 'MatchOnlyFileNames';
   //KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
@@ -136,8 +139,9 @@ const
 resourcestring
   SFileBrowserIDEMenuCaption = 'File Browser';
   SFileSearcherIDEMenuCaption = 'File Searcher';
-  SErrSearching = 'Error searching for files in directory "%s": %s';
   SFilesFound = 'Collected %d files in directory "%s"';
+  SFilesCancelled = 'Cancelled after collecting %d files in directory "%s"';
+  SErrSearching = 'Error searching for files in directory "%s": %s';
   SSearchingFiles = 'Start collecting files in directory "%s"';
   // File Searcher
   SWarnTermTooShort = 'Search term too short (min %d characters)';
@@ -393,15 +397,16 @@ end;
 
 { TTreeCreatorThread }
 
-constructor TTreeCreatorThread.Create(aRootDir: String;
-  aOptions: TReadEntryOptions; aOnDone: TTreeDoneEvent;
-  aOnError: TTreeErrorEvent);
+constructor TTreeCreatorThread.Create(aRootDir: String; aOptions: TReadEntryOptions;
+  aOnDone: TTreeDoneEvent; aOnCancelled: TTreeDoneEvent; aOnError: TTreeErrorEvent);
 begin
   FRootDir:=aRootDir;
   FOptions:=aOptions;
   FOnDone:=aOnDone;
+  FOnCancelled:=aOnCancelled;
   FOnError:=aOnError;
   Inherited Create(false);
+  FreeOnTerminate:=True;
 end;
 
 procedure TTreeCreatorThread.FillNode(N : TDirectoryEntry);
@@ -420,21 +425,26 @@ end;
 
 procedure TTreeCreatorThread.DoDone;
 begin
+  if FOnDOne=nil then exit;
   FOnDone(Self,FNode);
-  // Caller is responsible for freeing now...
+  FNode:=Nil;      // Caller is responsible for freeing now...
+end;
+
+procedure TTreeCreatorThread.DoCancelled;
+begin
+  if FOnCancelled=nil then exit;
+  FOnCancelled(Self,FNode);
   FNode:=Nil;
 end;
 
 procedure TTreeCreatorThread.DoError;
 begin
-  if assigned(FonError) then
-    FOnError(Self,FError);
+  if FonError=nil then exit;
+  FOnError(Self,FError);
 end;
 
-procedure TTreeCreatorThread.execute;
-
+procedure TTreeCreatorThread.Execute;
 begin
-
   FNode:=TDirectoryEntry.Create(Nil,FRootDir);
   try
     Try
@@ -448,11 +458,15 @@ begin
         Terminate;
         end;
     end;
-    if Not Terminated then
-      begin
-      if Assigned(FOnDOne) then
+    if Terminated then
+    begin
+      if Assigned(FOnCancelled) and (FError='') then
+        Synchronize(@DoCancelled);
+    end
+    else begin
+      if Assigned(FOnDone) then
         Synchronize(@DoDone);
-      end;
+    end;
   finally
     FNode.Free;
   end;

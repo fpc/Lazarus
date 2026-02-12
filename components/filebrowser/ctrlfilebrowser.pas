@@ -55,7 +55,8 @@ Type
       FConfigFrame: TAbstractIDEOptionsEditorClass;
       FCustomStartDir: string;
       FDirectoriesBeforeFiles: Boolean;
-      FIdleConnected: boolean;
+      FIdleConnected: Boolean;
+      FHasProjectOpenedHandler: Boolean;
       FLastOpenedDir: string;
       FMinSearchLen: integer;
       FRoot: TFileSystemEntry;
@@ -84,7 +85,7 @@ Type
       procedure SetCustomStartDir(AValue: string);
       procedure SetDirectoriesBeforeFiles(AValue: Boolean);
       procedure SetFilesInTree(AValue: Boolean);
-      procedure SetIdleConnected(AValue: boolean);
+      procedure SetIdleConnected(AValue: Boolean);
       procedure SetLastOpenedDir(AValue: string);
       procedure SetMinSearchLen(AValue: integer);
       procedure SetRootDir(AValue: TRootDir);
@@ -92,7 +93,9 @@ Type
       procedure SetSplitterPos(AValue: integer);
       procedure SetStartDir(AValue: TStartDir);
       procedure SetSyncCurrentEditor(AValue: Boolean);
+      procedure TerminateRunningThread;
       procedure TreeFillDone(Sender: TThread; aTree: TDirectoryEntry);
+      procedure TreeFillCancelled(Sender: TThread; aTree: TDirectoryEntry);
       procedure TreeFillError(Sender: TThread; const aError: String);
     protected
       { Called by file browser window }
@@ -165,25 +168,46 @@ end;
 
 { TFileBrowserController }
 
-procedure TFileBrowserController.TreeFillError(Sender: TThread; const aError : String);
-begin
-  AddIDEMessage(mluError,Format(SErrSearching,[GetResolvedRootDir,aError]),'',0,0,SViewFilebrowser);
-end;
-
 procedure TFileBrowserController.TreeFillDone(Sender: TThread; aTree: TDirectoryEntry);
 var
   i : integer;
+  Dir: String;
 begin
   if (FTreeFiller<>Sender) then exit;
+  debugln(['TFileBrowserController.TreeFillDone FTreeFiller=', FTreeFiller, ', FRoot=', FRoot]);
+  Dir:=FTreeFiller.RootDir;
   FTreeFiller:=Nil;
   FreeAndNil(FRoot);
   FRoot:=aTree;
   CreateFileList(False {fsoAbsolutePaths in SearchOptions});
-  AddIDEMessage(mluProgress,Format(SFilesFound,[FFileList.Count,GetResolvedRootDir]),'',0,0,SViewFilebrowser);
-  for I:=0 to Length(FIndexingDoneEvent)-1 do
+  AddIDEMessage(mluProgress,Format(SFilesFound,[FFileList.Count,Dir]),'',0,0,SViewFilebrowser);
+  for i:=0 to Length(FIndexingDoneEvent)-1 do
     FIndexingDoneEvent[i](Self);
   // Monitor project changes only after the first scan.
-  LazarusIDE.AddHandlerOnProjectOpened(@DoProjectChanged);
+  if not FHasProjectOpenedHandler then
+  begin
+    LazarusIDE.AddHandlerOnProjectOpened(@DoProjectChanged);
+    FHasProjectOpenedHandler:=True;
+  end;
+end;
+
+procedure TFileBrowserController.TreeFillCancelled(Sender: TThread; aTree: TDirectoryEntry);
+var
+  Dir: String;
+begin
+  if (FTreeFiller<>Sender) then exit;
+  debugln(['TFileBrowserController.TreeFillCancelled FTreeFiller=', FTreeFiller, ', FRoot=', FRoot, ', aTree=', aTree]);
+  Dir:=FTreeFiller.RootDir;
+  FTreeFiller:=Nil;
+  FreeAndNil(FRoot);
+  aTree.Free;
+  AddIDEMessage(mluProgress,Format(SFilesCancelled,[FFileList.Count,Dir]),'',0,0,SViewFilebrowser);
+end;
+
+procedure TFileBrowserController.TreeFillError(Sender: TThread; const aError : String);
+begin
+  FTreeFiller:=Nil;
+  AddIDEMessage(mluError,Format(SErrSearching,[GetResolvedRootDir,aError]),'',0,0,SViewFilebrowser);
 end;
 
 procedure TFileBrowserController.AddFileNodes(List : TStrings; aNode : TFileSystemEntry; aDir : String);
@@ -287,7 +311,7 @@ begin
   FNeedSave:=true;
 end;
 
-procedure TFileBrowserController.SetIdleConnected(AValue: boolean);
+procedure TFileBrowserController.SetIdleConnected(AValue: Boolean);
 begin
   if FIdleConnected=AValue then Exit;
   FIdleConnected:=AValue;
@@ -316,6 +340,8 @@ begin
   if FRootDir=AValue then Exit;
   FRootDir:=AValue;
   FNeedSave:=True;
+  debugln(['TFileBrowserController.SetRootDir Calling IndexRootDir']);
+  IndexRootDir;
 end;
 
 procedure TFileBrowserController.SetSearchOptions(AValue: TFileSearchOptions);
@@ -379,17 +405,33 @@ begin
   Result:=Assigned(FTreeFiller);
 end;
 
+procedure TFileBrowserController.TerminateRunningThread;
+// If the thread is alive, call its Terminate and then wait for it to finish.
+// The thread behaves well and shuts down quickly.
+begin
+  if FTreeFiller=nil then exit;
+  FTreeFiller.Terminate;
+  Screen.BeginWaitCursor;
+  try
+    debugln(['TFileBrowserController.TerminateRunningThread FTreeFiller.WaitFor ...']);
+    FTreeFiller.WaitFor;
+  finally
+    Screen.EndWaitCursor;
+    debugln(['TFileBrowserController.TerminateRunningThread FTreeFiller finished!']);
+  end;
+end;
+
 procedure TFileBrowserController.IndexRootDir;
 var
   lDir : String;
 begin
-  if FillingTree then
-    Exit;
+  TerminateRunningThread;
   if (RootDir = rdProjectDir) and (LazarusIDE.ActiveProject = nil) then
     debugln(['TFileBrowserController.IndexRootDir: No Project loaded, using temp directory.']);
   lDir:=GetResolvedRootDir;
   // Do not recurse, thread handles it, it needs to react to terminate...
-  FTreeFiller:=TTreeCreatorThread.Create(lDir,[],@TreeFillDone,@TreeFillError);
+  debugln(['TFileBrowserController.IndexRootDir: Creating thread.']);
+  FTreeFiller:=TTreeCreatorThread.Create(lDir,[],@TreeFillDone,@TreeFillCancelled,@TreeFillError);
   AddIDEMessage(mluVerbose,Format(SSearchingFiles,[lDir]),'',0,0,SViewFilebrowser);
 end;
 
@@ -524,7 +566,7 @@ begin
   aForm.TV.Height:=FSplitterPos;
 
   aForm.RootDirectory:=GetResolvedRootDir;
-  aForm.CurrentDirectory := GetResolvedStartDir;
+  aForm.CurrentDirectory:=GetResolvedStartDir;
   aForm.FilesInTree:=FilesInTree;
   aForm.DirectoriesBeforeFiles:=DirectoriesBeforeFiles;
   if FCurrentEditorFile<>'' then
@@ -589,6 +631,7 @@ end;
 
 procedure TFileBrowserController.DoIdle(Sender: TObject; var Done: Boolean);
 begin
+  debugln(['TFileBrowserController.DoIdle Calling IndexRootDir']);
   IndexRootDir;        // Scanning files for the first time.
   IdleConnected:=false;
 end;
@@ -601,6 +644,7 @@ begin
   begin
     if Assigned(FileBrowserForm) then
       FileBrowserForm.RootDirectory:=aProject.Directory;
+    debugln(['TFileBrowserController.DoProjectChanged Calling IndexRootDir']);
     IndexRootDir;
   end;
   if (StartDir=sdProjectDir) and (Assigned(FileBrowserForm)) then
@@ -641,13 +685,14 @@ end;
 
 destructor TFileBrowserController.Destroy;
 begin
-  if Assigned(FTreeFiller) then
-    FTreeFiller.Terminate;
-  FreeAndNil(FFileList);
-  FreeAndNil(FRoot);
-  LazarusIDE.RemoveHandlerOnProjectOpened(@DoProjectChanged);
+  if FHasProjectOpenedHandler then
+    LazarusIDE.RemoveHandlerOnProjectOpened(@DoProjectChanged);
   if SourceEditorManagerIntf <> nil then
     SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate,@ActiveEditorChanged);
+  debugln(['TFileBrowserController.Destroy FTreeFiller=', FTreeFiller, ', FFileList=', FFileList]);
+  TerminateRunningThread;
+  FreeAndNil(FFileList);
+  FreeAndNil(FRoot);
   if FNeedSave then
     WriteConfig;
   IdleConnected:=false;
