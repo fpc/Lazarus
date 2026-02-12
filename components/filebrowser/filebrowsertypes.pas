@@ -128,7 +128,8 @@ const
   KeySearchMatchOnlyFilename = 'MatchOnlyFileNames';
   //KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
   KeySearchLetters = 'SearchLetters';
-  KeyMatchPartial = 'MatchPartial';
+  //KeyMatchPartial = 'MatchPartial';
+  KeyMinSearchLen = 'MinSearchLen';
 
   SViewFilebrowser = 'File browser';
 
@@ -138,6 +139,12 @@ resourcestring
   SErrSearching = 'Error searching for files in directory "%s": %s';
   SFilesFound = 'Collected %d files in directory "%s"';
   SSearchingFiles = 'Start collecting files in directory "%s"';
+  // File Searcher
+  SWarnTermTooShort = 'Search term too short (min %d characters)';
+  SWarnControllerNotAssigned = 'Controller not assigned';
+  SWarnBuildingIndex = 'Building file index, please wait';
+  SWarnNoMatch = 'No files match your search term';
+
 
 implementation
 

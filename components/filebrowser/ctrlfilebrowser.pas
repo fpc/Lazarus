@@ -7,16 +7,16 @@ interface
 uses
   Classes, SysUtils, Contnrs,
   forms, Controls,
-  Masks, StrUtils, LazConfigStorage, LazLoggerBase,
+  Masks, StrUtils, LazUTF8, LazConfigStorage, LazLoggerBase,
   BaseIDEIntf, ProjectIntf, IDEExternToolIntf, IDEMsgIntf,
   LazIDEIntf, SrcEditorIntf, MenuIntf, IDECommands, IDEOptEditorIntf, IDEWindowIntf,
   frmFileBrowser, FileBrowserTypes;
 
 Type
-    TFileSearchOption = (fsoMatchOnlyFileName,{fsoAbsolutePaths,}fsoUseLetters,fsoMatchPartial);
+    TFileSearchOption = (fsoMatchOnlyFileName,{fsoAbsolutePaths,}fsoUseLetters{,fsoMatchPartial});
     TFileSearchOptions = Set of TFileSearchOption;
 
-    TFilenameMatchOption = (fmoFileNameOnly,fmoLetters,fmoMatchPartial);
+    TFilenameMatchOption = (fmoFileNameOnly,fmoLetters{,fmoMatchPartial});
     TFilenameMatchOptions = set of TFilenameMatchOption;
 
     TMatchPosition = record
@@ -57,6 +57,7 @@ Type
       FDirectoriesBeforeFiles: Boolean;
       FIdleConnected: boolean;
       FLastOpenedDir: string;
+      FMinSearchLen: integer;
       FRoot: TFileSystemEntry;
       FSearchOptions: TFileSearchOptions;
       FStartDir: TStartDir;
@@ -85,6 +86,7 @@ Type
       procedure SetFilesInTree(AValue: Boolean);
       procedure SetIdleConnected(AValue: boolean);
       procedure SetLastOpenedDir(AValue: string);
+      procedure SetMinSearchLen(AValue: integer);
       procedure SetRootDir(AValue: TRootDir);
       procedure SetSearchOptions(AValue: TFileSearchOptions);
       procedure SetSplitterPos(AValue: integer);
@@ -121,12 +123,13 @@ Type
       property CustomStartDir: string read FCustomStartDir write SetCustomStartDir;
       property CustomRootDir: string read FCustomRootDir write SetCustomRootDir;
       property LastOpenedDir: string read FLastOpenedDir write SetLastOpenedDir;
-      property SyncCurrentEditor : Boolean Read FSyncCurrentEditor Write SetSyncCurrentEditor;
+      property SyncCurrentEditor: Boolean Read FSyncCurrentEditor Write SetSyncCurrentEditor;
       property SplitterPos: integer read FSplitterPos write SetSplitterPos;
-      property FilesInTree : Boolean Read FFilesInTree Write SetFilesInTree;
+      property FilesInTree: Boolean Read FFilesInTree Write SetFilesInTree;
       property DirectoriesBeforeFiles : Boolean Read FDirectoriesBeforeFiles Write SetDirectoriesBeforeFiles;
-      property ConfigFrame : TAbstractIDEOptionsEditorClass Read FConfigFrame Write FConfigFrame;
-      property SearchOptions : TFileSearchOptions Read FSearchOptions Write SetSearchOptions;
+      property SearchOptions: TFileSearchOptions Read FSearchOptions Write SetSearchOptions;
+      property MinSearchLen: integer read FMinSearchLen write SetMinSearchLen;
+      property ConfigFrame: TAbstractIDEOptionsEditorClass Read FConfigFrame Write FConfigFrame;
       property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     end;
 
@@ -190,7 +193,7 @@ var
 begin
   FN:=aDir;
   if FN<>'' then
-     FN:=IncludeTrailingPathDelimiter(FN);
+    FN:=IncludeTrailingPathDelimiter(FN);
   FN:=FN+aNode.Name;
   case aNode.EntryType of
   etFile,
@@ -247,8 +250,9 @@ begin
       //  Include(Opts,fsoAbsolutePaths);
       if GetValue(KeySearchLetters,False) then
         Include(Opts,fsoUseLetters);
-      if GetValue(KeyMatchPartial,False) then
-        Include(Opts,fsoMatchPartial);
+      //if GetValue(KeyMatchPartial,False) then
+      //  Include(Opts,fsoMatchPartial);
+      FMinSearchLen:=GetValue(KeyMinSearchLen, 2);
       SearchOptions:=Opts;
     finally
       Free;
@@ -297,6 +301,13 @@ procedure TFileBrowserController.SetLastOpenedDir(AValue: string);
 begin
   if FLastOpenedDir=AValue then Exit;
   FLastOpenedDir:=AValue;
+  FNeedSave:=True;
+end;
+
+procedure TFileBrowserController.SetMinSearchLen(AValue: integer);
+begin
+  if FMinSearchLen=AValue then Exit;
+  FMinSearchLen:=AValue;
   FNeedSave:=True;
 end;
 
@@ -351,11 +362,12 @@ begin
       SetDeleteValue(KeySplitterPos, FSplitterPos, DefaultSplitterPos);
       SetDeleteValue(KeyFilesInTree, FFilesInTree, DefaultFilesInTree);
       SetDeleteValue(KeyDirectoriesBeforeFiles, FDirectoriesBeforeFiles, DefaultDirectoriesBeforeFiles);
-      SetDeleteValue(KeySyncCurrentEditor,FSyncCurrentEditor, DefaultSyncCurrentEditor);
-      SetDeleteValue(KeySearchMatchOnlyFilename,fsoMatchOnlyFileName in SearchOptions,False);
+      SetDeleteValue(KeySyncCurrentEditor, FSyncCurrentEditor, DefaultSyncCurrentEditor);
+      SetDeleteValue(KeySearchMatchOnlyFilename, fsoMatchOnlyFileName in SearchOptions,False);
       //SetDeleteValue(KeySearchAbsoluteFilenames,fsoAbsolutePaths in SearchOptions,False);
-      SetDeleteValue(KeySearchLetters,fsoUseLetters in SearchOptions,False);
-      SetDeleteValue(KeyMatchPartial,fsoMatchPartial in SearchOptions,False);
+      SetDeleteValue(KeySearchLetters, fsoUseLetters in SearchOptions,False);
+      //SetDeleteValue(KeyMatchPartial,fsoMatchPartial in SearchOptions,False);
+      SetDeleteValue(KeyMinSearchLen, FMinSearchLen, 2);
       FNeedSave := False;
     finally
       Free;
@@ -429,8 +441,7 @@ var
 
 begin
   Result:=0;
-  if (FFileList=Nil) or (Length(aPattern)<2) then exit;
-
+  Assert(Assigned(FFileList) and (UTF8Length(aPattern) >= MinSearchLen), 'FindFiles: Error');
   lPtrn := Lowercase(aPattern);
 
   For lFileIdx:=0 to FFileList.Count-1 do
@@ -453,9 +464,9 @@ begin
       if fmoLetters in aMatchOptions then
         begin
         lMatchLen:=MatchesPattern(lFilename, lStartPos, lPtrn, lPositions);
-        if fmoMatchPartial in aMatchOptions then
-          isMatch:=lMatchLen>0
-        else
+        //if fmoMatchPartial in aMatchOptions then
+        //  isMatch:=lMatchLen>0
+        //else
           isMatch:=lMatchLen>=Length(lPtrn);
         if IsMatch then
           SetLength(lPositions,lMatchLen);

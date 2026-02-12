@@ -55,15 +55,7 @@ implementation
 
 {$R *.lfm}
 
-resourcestring
-  SWarnTermTooShort = 'Search term too short (min 2 characters)';
-  SWarnControllerNotAssigned = 'Controller not assigned';
-  SWarnBuildingIndex = 'Building file index, please wait';
-  SWarnNoMatch = 'No files match your search term';
-
-
 { TFileSearcherForm }
-
 
 procedure TFileSearcherForm.edtSearchChange(Sender: TObject);
 begin
@@ -71,7 +63,6 @@ begin
 end;
 
 procedure TFileSearcherForm.DisableListBox(const aMsg : String);
-
 begin
   FResults.Clear;
   LBFiles.Items.BeginUpdate;
@@ -86,27 +77,25 @@ begin
 end;
 
 function TFileSearcherForm.CheckLength: Boolean;
-
 begin
-  DebugLn(['"', edtSearch.Text, '": ', Length(edtSearch.Text)]);
-  Result:=(UTF8Length(edtSearch.Text)>=2);
+  //DebugLn(['"', edtSearch.Text, '": ', Length(edtSearch.Text)]);
+  Result:=UTF8Length(edtSearch.Text) >= FController.MinSearchLen;
   if not Result then
-    DisableListBox(SWarnTermTooShort);
+    DisableListBox(Format(SWarnTermTooShort, [FController.MinSearchLen]));
 end;
 
 procedure TFileSearcherForm.DoFilter;
-
 var
   lMatchOptions : TFilenameMatchOptions;
   Idx : Integer;
   lMatch : TFileSearchMatch;
-
 begin
   if Not Assigned(FController) then
     begin
     DisableListBox(SWarnControllerNotAssigned);
     exit;
     end;
+  //debugln(['TFileSearcherForm.DoFilter Calling CheckLength']);
   if not CheckLength then
     exit;
 
@@ -116,8 +105,8 @@ begin
     Include(lMatchOptions,fmoFileNameOnly);
   if (fsoUseLetters in FController.SearchOptions) then
     Include(lMatchOptions,fmoLetters);
-  if (fsoMatchPartial in FController.SearchOptions) then
-    Include(lMatchOptions,fmoMatchPartial);
+  //if (fsoMatchPartial in FController.SearchOptions) then
+  //  Include(lMatchOptions,fmoMatchPartial);
   LBFiles.Items.BeginUpdate;
   try
     LBFiles.Items.Clear;
@@ -139,14 +128,13 @@ end;
 procedure TFileSearcherForm.HandleIndexingDone(Sender: TObject);
 begin
   edtSearch.Enabled:=True;
+  //debugln(['TFileSearcherForm.HandleIndexingDone Calling CheckLength. edtSearch=', edtSearch.Text]);
   CheckLength;
 end;
 
 function TFileSearcherForm.GetSelectedItems: TFileEntryArray;
-
 var
   Idx,I: Integer;
-
 begin
   Result:=[];
   SetLength(Result,LBFiles.SelCount);
@@ -177,12 +165,14 @@ begin
   FController:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   FController.AddOnIndexingFinishedEvent(@HandleIndexingDone);
   if FController.FillingTree then
-    begin
+  begin
     DisableListBox(SWarnBuildingIndex);
     edtSearch.Enabled:=False;
-    end
-  else
+  end
+  else begin
+    //debugln(['TFileSearcherForm.FormCreate Calling CheckLength']);
     CheckLength;
+  end;
  end;
 
 procedure TFileSearcherForm.FormDestroy(Sender: TObject);

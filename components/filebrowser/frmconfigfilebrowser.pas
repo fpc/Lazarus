@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils,
-  StdCtrls, Dialogs,  EditBtn,
+  StdCtrls, Dialogs,  EditBtn, Spin,
   IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf,
   FileBrowserTypes, CtrlFileBrowser;
 
@@ -28,6 +28,7 @@ type
     GBStartDir1: TGroupBox;
     GBSearch: TGroupBox;
     GBFileTree: TGroupBox;
+    lbMinSearchLen: TLabel;
     RBLastDir: TRadioButton;
     RBRootFileSystemRoot: TRadioButton;
     RBRootUserDir: TRadioButton;
@@ -35,6 +36,7 @@ type
     RBRootThisDir: TRadioButton;
     RBUseProjectDir: TRadioButton;
     RBRootUseProjectDir: TRadioButton;
+    seMinSearchLen: TSpinEdit;
     procedure CBShowFilesInlineChange(Sender: TObject);
     procedure CBUseLettersChange(Sender: TObject);
   private
@@ -94,7 +96,6 @@ procedure TFileBrowserOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   C : TFileBrowserController;
   RB: TRadioButton;
-
 begin
   C:=LazarusIDE.OwningComponent.FindComponent('IDEFileBrowserController') as TFileBrowserController;
   if not Assigned(C) then
@@ -122,7 +123,8 @@ begin
   //CBUseAbsoluteFilenames.Checked:=fsoAbsolutePaths in C.SearchOptions;
   CBMatchOnlyFilename.Checked:=fsoMatchOnlyFileName in C.SearchOptions;
   CBUseLetters.Checked:=fsoUseLetters in C.SearchOptions;
-  CBPartialMatch.Checked:=fsoMatchPartial in C.SearchOptions;
+  //CBPartialMatch.Checked:=fsoMatchPartial in C.SearchOptions;
+  seMinSearchLen.Value:=C.MinSearchLen;
   CheckDirsBeforeFiles;
 end;
 
@@ -172,8 +174,9 @@ begin
     Include(SO,fsoMatchOnlyFileName);
   if CBUseLetters.Checked then
     Include(SO,fsoUseLetters);
-  if CBpartialMatch.Checked then
-    Include(SO,fsoMatchPartial);
+  //if CBpartialMatch.Checked then
+  //  Include(SO,fsoMatchPartial);
+  C.MinSearchLen:=seMinSearchLen.Value;
   C.SearchOptions:=SO;
   // Re-index
   if lRootDir<>C.GetResolvedRootDir then
