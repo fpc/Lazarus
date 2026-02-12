@@ -236,6 +236,9 @@ del %INSTALL_BINDIR%\fpc.cfg
 cd %OLDCURDIR%
 FOR /F %%F IN ('%LAZGITDIR%\tools\install\get_lazarus_version.bat') DO set LAZVERSION=%%F
 
+:: change name postfix in installer-file-name
+if not [%INST_TARGET_NAME%]==[] SET FPCSourceOS=%INST_TARGET_NAME%
+
 SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-cross-%FPCFULLTARGET%-%FPCSourceOS%
 if [%BUILDLAZRELEASE%]==[] SET OutputFileName=lazarus-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-cross-%FPCFULLTARGET%-%FPCSourceOS%
 

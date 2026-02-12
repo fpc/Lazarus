@@ -77,6 +77,10 @@ Set the environment as in B.1
      the replace text utility / lpi in the Lazarus repository tools\install\win\ReplaceText\
 
 
+  SET INST_TARGET_NAME=win64
+     when building the cross-win-32bit installer, that is to be used by the 64bit IDE
+     This changes the last bit of the istaller filename lazarus-x.y-fpc-a.b.c-cross-i386-win32-WIN32 to WIN64 
+     (the last segment should indicate the target on which the install should run)
 
 
 Call the script:
