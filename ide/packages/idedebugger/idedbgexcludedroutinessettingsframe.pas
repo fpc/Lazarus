@@ -64,6 +64,7 @@ type
     FChangeStamp: QWord;
   public
     constructor Create(AnOwner: TComponent); override;
+    destructor Destroy; override;
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings({%H-}AnOptions: TAbstractIDEOptions); override;
@@ -290,6 +291,12 @@ begin
   IdeDbgExcludedRoutineConfFrame := TIdeDbgExcludedRoutineConfFrame.Create(AnOwner);
   IdeDbgExcludedRoutineConfFrame.Align := alClient;
   IdeDbgExcludedRoutineConfFrame.Parent := Self;
+end;
+
+destructor TIdeDbgExcludedRoutine_IdeOptionsFrame.Destroy;
+begin
+  inherited Destroy;
+  FExcludedRoutineConfList.Free;
 end;
 
 function TIdeDbgExcludedRoutine_IdeOptionsFrame.GetTitle: String;
