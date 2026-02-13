@@ -468,7 +468,9 @@ end;
 
 class function  TGtk3WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 begin
-  Result := 0;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetTopIndex') then
+    Exit(-1);
+  Result := TGtk3ListBox(ACustomListBox.Handle).GetIndexAtXY(0, 1);;
 end;
 
 class procedure TGtk3WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
