@@ -1132,12 +1132,16 @@ begin
     newDocSize:= contentSize;
 
     lclBar:= lclControl.HorzScrollBar;
-    if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
-      newDocSize.Width:= lclBar.Range;
+    if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then begin
+      if lclBar.Range > newDocSize.Width then
+        newDocSize.Width:= lclBar.Range;
+    end;
 
     lclBar:= lclControl.VertScrollBar;
-    if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then
-      newDocSize.Height:= lclBar.Range;
+    if lclBar.Visible and (lclBar.Range<>0) and (lclBar.Range>lclBar.Page) then begin
+      if lclBar.Range > newDocSize.Height then
+        newDocSize.Height:= lclBar.Range;
+    end;
 
     documentView.setFrameSize(newDocSize);
   end;
