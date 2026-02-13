@@ -161,8 +161,6 @@ end;
 procedure TFileSearcherForm.FormCreate(Sender: TObject);
 begin
   IDEDialogLayoutList.ApplyLayout(Self,600,450);
-  cbFilter.ItemIndex:=-1;  // Needed as a workaround for QTx bug #42053.
-  cbFilter.ItemIndex:=0;
   if cbFilter.Mask<>'' then
     FMask:=TMaskList.Create(cbFilter.Mask);
   FResults:=TFileSearchResults.Create;
