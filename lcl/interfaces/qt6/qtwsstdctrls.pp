@@ -1444,7 +1444,10 @@ begin
   Text := TCustomComboBox(AWinControl).Text;
   QtComboBox.FList.Assign(TCustomComboBox(AWinControl).Items);
   QtComboBox.setCurrentIndex(ItemIndex);
-  QtComboBox.setText(Text{%H-});
+  if (ItemIndex >= 0) and (ItemIndex < TCustomComboBox(AWinControl).Items.Count) then
+    QtComboBox.setText(TCustomComboBox(AWinControl).Items[ItemIndex]{%H-})
+  else
+    QtComboBox.setText(Text{%H-});
   QtComboBox.setEditable((AParams.Style and CBS_DROPDOWN <> 0) or
     (AParams.Style and CBS_SIMPLE <> 0));
 
