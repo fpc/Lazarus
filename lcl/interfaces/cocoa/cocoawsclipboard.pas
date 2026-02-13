@@ -433,7 +433,8 @@ begin
     lDataType := ccdtBitmap;
   end;
   else
-    lNSStr := StrToNSString(AMimeType);
+    // released in TCocoaClipboardData.Destroy()
+    lNSStr := NSStringUtf8(AMimeType);
     lDataType := ccdtNonStandard;
   end;
 
