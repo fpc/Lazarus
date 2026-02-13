@@ -698,6 +698,7 @@ function  cairo_get_source(cr: Pcairo_t): Pcairo_pattern_t; cdecl; external LIB_
 function  cairo_get_tolerance(cr: Pcairo_t): Double; cdecl; external LIB_CAIRO;
 function  cairo_get_antialias(cr: Pcairo_t): Tcairo_antialias_t; cdecl; external LIB_CAIRO;
 procedure cairo_get_current_point(cr: Pcairo_t; x, y: PDouble); cdecl; external LIB_CAIRO;
+function cairo_has_current_point(cr: Pcairo_t):Tcairo_bool_t; cdecl; external LIB_CAIRO;
 function  cairo_get_fill_rule(cr: Pcairo_t): Tcairo_fill_rule_t; cdecl; external LIB_CAIRO;
 function  cairo_get_line_width(cr: Pcairo_t): Double; cdecl; external LIB_CAIRO;
 function  cairo_get_line_cap(cr: Pcairo_t): Tcairo_line_cap_t; cdecl; external LIB_CAIRO;
