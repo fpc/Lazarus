@@ -172,16 +172,18 @@ end;
 procedure TFileBrowserController.TreeFillDone(Sender: TThread; aTree: TDirectoryEntry);
 var
   i : integer;
-  Dir: String;
+  Dir, TimeS: String;
 begin
   if (FTreeFiller<>Sender) then exit;
-  debugln(['TFileBrowserController.TreeFillDone FTreeFiller=', FTreeFiller, ', FRoot=', FRoot]);
+  debugln(['TFileBrowserController.TreeFillDone FRoot=', FRoot]);
   Dir:=FTreeFiller.RootDir;
+  TimeS:=FormatDateTime('h:n:s', Now - FTreeFiller.StartTime);
   FTreeFiller:=Nil;
   FreeAndNil(FRoot);
   FRoot:=aTree;
   CreateFileList(False {fsoAbsolutePaths in SearchOptions});
-  AddIDEMessage(mluProgress,Format(SFilesFound,[FFileList.Count,Dir]),'',0,0,SViewFilebrowser);
+  AddIDEMessage(mluProgress, Format(SFilesFound,[FFileList.Count, Dir, TimeS]),
+                '',0,0, SViewFilebrowser);
   for i:=0 to Length(FIndexingDoneEvent)-1 do
     FIndexingDoneEvent[i](Self);
   // Monitor project changes only after the first scan.
@@ -194,15 +196,17 @@ end;
 
 procedure TFileBrowserController.TreeFillCancelled(Sender: TThread; aTree: TDirectoryEntry);
 var
-  Dir: String;
+  Dir, TimeS: String;
 begin
   if (FTreeFiller<>Sender) then exit;
-  debugln(['TFileBrowserController.TreeFillCancelled FTreeFiller=', FTreeFiller, ', FRoot=', FRoot, ', aTree=', aTree]);
+  debugln(['TFileBrowserController.TreeFillCancelled FRoot=', FRoot, ', aTree=', aTree]);
   Dir:=FTreeFiller.RootDir;
+  TimeS:=FormatDateTime('h:n:s', Now - FTreeFiller.StartTime);
   FTreeFiller:=Nil;
   FreeAndNil(FRoot);
   aTree.Free;
-  AddIDEMessage(mluProgress,Format(SFilesCancelled,[FFileList.Count,Dir]),'',0,0,SViewFilebrowser);
+  AddIDEMessage(mluProgress, Format(SFilesCancelled,[FFileList.Count, Dir, TimeS]),
+                '',0,0, SViewFilebrowser);
 end;
 
 procedure TFileBrowserController.TreeFillError(Sender: TThread; const aError : String);

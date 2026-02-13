@@ -98,6 +98,7 @@ Type
     FOnError : TTreeErrorEvent;
     FNode : TDirectoryEntry;
     FError : String;
+    FStartTime: TDateTime;
   Protected
     procedure FillNode(N: TDirectoryEntry);
     procedure DoDone;
@@ -108,6 +109,7 @@ Type
       aOnDone: TTreeDoneEvent; aOnCancelled: TTreeDoneEvent; aOnError : TTreeErrorEvent);
     procedure Execute; override;
     property RootDir: String read FRootDir;
+    property StartTime: TDateTime read FStartTime;
   end;
 
 
@@ -139,8 +141,8 @@ const
 resourcestring
   SFileBrowserIDEMenuCaption = 'File Browser';
   SFileSearcherIDEMenuCaption = 'File Searcher';
-  SFilesFound = 'Collected %d files in directory "%s"';
-  SFilesCancelled = 'Cancelled after collecting %d files in directory "%s"';
+  SFilesFound = 'Collected %d files in directory "%s", in %s.';
+  SFilesCancelled = 'Cancelled after collecting %d files in directory "%s", in %s.';
   SErrSearching = 'Error searching for files in directory "%s": %s';
   SSearchingFiles = 'Start collecting files in directory "%s"';
   // File Searcher
@@ -407,6 +409,7 @@ begin
   FOnError:=aOnError;
   Inherited Create(false);
   FreeOnTerminate:=True;
+  FStartTime:=Now;
 end;
 
 procedure TTreeCreatorThread.FillNode(N : TDirectoryEntry);
