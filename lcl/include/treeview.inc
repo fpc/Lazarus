@@ -2255,13 +2255,10 @@ begin
   BeginUpdate;
   ClearCache;
   Node := GetLastNode;
-  if Assigned(Node) then
+  while Assigned(Node) do
   begin
-    while Assigned(Node) do
-    begin
-      Node.Delete;
-      Node := GetLastNode;
-    end;
+    Node.Delete;
+    Node := GetLastNode;
   end;
   FSelection.Clear;
   if (FOwner <> nil) then
