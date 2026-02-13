@@ -39,6 +39,7 @@ type
     procedure FileListBoxDblClick(Sender: TObject);
     procedure cbFilePanelChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure TVDblClick(Sender: TObject);
     procedure TVExpanded(Sender: TObject; Node: TTreeNode);
@@ -203,7 +204,6 @@ end;
 procedure TFileBrowserForm.cbFilePanelChange(Sender: TObject);
 begin
   FileListBox.Mask := cbFilePanel.Text;
-
 end;
 
 procedure TFileBrowserForm.FormCreate(Sender: TObject);
@@ -212,6 +212,11 @@ begin
   InitializeTreeview;
   cbFilePanel.Filter := cFilter;
   cbTreeFilter.Filter := cFilter;
+end;
+
+procedure TFileBrowserForm.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FRoot);
 end;
 
 procedure TFileBrowserForm.FormShow(Sender: TObject);
@@ -466,8 +471,7 @@ begin
   Dir:=RootDirectory;
   if Dir='' then
     Dir:=PathDelim;
-  if Assigned(FRoot) then
-    FreeAndNil(FRoot);
+  FreeAndNil(FRoot);
   FRoot:=TDirectoryEntry.Create(Nil,ExcludeTrailingPathDelimiter(Dir));
   { Remove the path delimiter unless this is root. }
   if (Dir<>PathDelim) and (Dir[length(Dir)] = PathDelim) then

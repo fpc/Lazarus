@@ -10,6 +10,7 @@ object FileBrowserForm: TFileBrowserForm
   LCLVersion = '4.99.0.0'
   OnActivate = FormActivate
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   object TV: TTreeView
     Left = 0
