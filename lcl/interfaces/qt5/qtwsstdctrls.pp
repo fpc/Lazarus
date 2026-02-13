@@ -1444,7 +1444,7 @@ begin
   Text := TCustomComboBox(AWinControl).Text;
   QtComboBox.FList.Assign(TCustomComboBox(AWinControl).Items);
   QtComboBox.setCurrentIndex(ItemIndex);
-  if (ItemIndex >= 0) and (ItemIndex < TCustomComboBox(AWinControl).Items.Count) then
+  if (Text = '') and (ItemIndex >= 0) and (ItemIndex < TCustomComboBox(AWinControl).Items.Count) then
     QtComboBox.setText(TCustomComboBox(AWinControl).Items[ItemIndex]{%H-})
   else
     QtComboBox.setText(Text{%H-});
