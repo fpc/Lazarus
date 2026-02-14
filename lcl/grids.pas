@@ -7861,7 +7861,7 @@ begin
       if not FEditorKey and (Shift = [ssModifier]) then
         doPasteFromClipboard;
     VK_X:
-      if not FEditorKey and (Shift = [ssShift]) then
+      if not FEditorKey and (Shift = [ssModifier]) then
         doCutToClipboard;
     VK_DELETE:
       if not FEditorKey and EditingAllowed(FCol) and
