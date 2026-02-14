@@ -122,7 +122,7 @@ begin
   //CBUseAbsoluteFilenames.Checked:=fsoAbsolutePaths in C.SearchOptions;
   CBMatchOnlyFilename.Checked:=fsoMatchOnlyFileName in C.SearchOptions;
   CBUseLetters.Checked:=fsoUseLetters in C.SearchOptions;
-  //CBPartialMatch.Checked:=fsoMatchPartial in C.SearchOptions;
+  CBPartialMatch.Checked:=fsoMatchPartial in C.SearchOptions;
   seMinSearchLen.Value:=C.MinSearchLen;
   CheckDirsBeforeFiles;
 end;
@@ -168,8 +168,8 @@ begin
     Include(SO,fsoMatchOnlyFileName);
   if CBUseLetters.Checked then
     Include(SO,fsoUseLetters);
-  //if CBpartialMatch.Checked then
-  //  Include(SO,fsoMatchPartial);
+  if CBpartialMatch.Checked then
+    Include(SO,fsoMatchPartial);
   C.MinSearchLen:=seMinSearchLen.Value;
   C.SearchOptions:=SO;
   C.WriteConfig;

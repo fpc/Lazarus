@@ -11,23 +11,23 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
   DesignTop = 247
   object GBStartDir1: TGroupBox
     Left = 0
-    Height = 165
+    Height = 160
     Top = 0
     Width = 597
     Align = alTop
     AutoSize = True
     Caption = 'Root directory'
-    ClientHeight = 136
-    ClientWidth = 593
+    ClientHeight = 142
+    ClientWidth = 595
     TabOrder = 0
     object DERootDir: TDirectoryEdit
       AnchorSideTop.Control = RBRootThisDir
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 32
-      Height = 32
-      Top = 97
-      Width = 552
+      Height = 34
+      Top = 101
+      Width = 554
       ShowHidden = False
       ButtonWidth = 23
       NumGlyphs = 1
@@ -41,9 +41,9 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = RBRootUserDir
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 22
-      Top = 75
-      Width = 175
+      Height = 23
+      Top = 78
+      Width = 191
       BorderSpacing.Top = 3
       Caption = 'Always use this directory'
       TabOrder = 1
@@ -53,18 +53,18 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = RBRootUseProjectDir
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 22
-      Top = 25
-      Width = 117
+      Height = 23
+      Top = 26
+      Width = 131
       BorderSpacing.Top = 3
       Caption = 'Filesystem root'
       TabOrder = 2
     end
     object RBRootUseProjectDir: TRadioButton
       Left = 8
-      Height = 22
+      Height = 23
       Top = 0
-      Width = 199
+      Width = 220
       BorderSpacing.Left = 8
       Caption = 'Use current project directory'
       Checked = True
@@ -76,9 +76,9 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = RBRootFileSystemRoot
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 22
-      Top = 50
-      Width = 111
+      Height = 23
+      Top = 52
+      Width = 122
       BorderSpacing.Top = 3
       Caption = 'User directory'
       TabOrder = 4
@@ -86,22 +86,22 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
   end
   object GBStartDir: TGroupBox
     Left = 0
-    Height = 140
-    Top = 165
+    Height = 134
+    Top = 160
     Width = 597
     Align = alTop
     AutoSize = True
     Caption = 'Initial directory'
-    ClientHeight = 111
-    ClientWidth = 593
+    ClientHeight = 116
+    ClientWidth = 595
     TabOrder = 1
     object DEStartDir: TDirectoryEdit
       AnchorSideTop.Control = RBThisDir
       AnchorSideTop.Side = asrBottom
       Left = 32
-      Height = 32
-      Top = 72
-      Width = 550
+      Height = 34
+      Top = 75
+      Width = 552
       ShowHidden = False
       ButtonWidth = 23
       NumGlyphs = 1
@@ -115,9 +115,9 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = RBLastDir
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 22
-      Top = 50
-      Width = 175
+      Height = 23
+      Top = 52
+      Width = 191
       BorderSpacing.Top = 3
       Caption = 'Always use this directory'
       TabOrder = 1
@@ -127,18 +127,18 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = RBUseProjectDir
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 22
-      Top = 25
-      Width = 180
+      Height = 23
+      Top = 26
+      Width = 198
       BorderSpacing.Top = 3
       Caption = 'Use last opened directory'
       TabOrder = 2
     end
     object RBUseProjectDir: TRadioButton
       Left = 8
-      Height = 22
+      Height = 23
       Top = 0
-      Width = 199
+      Width = 220
       BorderSpacing.Left = 8
       Caption = 'Use current project directory'
       Checked = True
@@ -148,20 +148,20 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
   end
   object GBSearch: TGroupBox
     Left = 0
-    Height = 143
-    Top = 413
+    Height = 137
+    Top = 394
     Width = 597
     Align = alTop
     AutoSize = True
     Caption = 'Search'
-    ClientHeight = 114
-    ClientWidth = 593
+    ClientHeight = 119
+    ClientWidth = 595
     TabOrder = 2
     object CBMatchOnlyFilename: TCheckBox
       Left = 8
-      Height = 22
+      Height = 23
       Top = 0
-      Width = 207
+      Width = 223
       BorderSpacing.Left = 8
       Caption = 'Search matches only filename'
       TabOrder = 0
@@ -171,9 +171,9 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = CBMatchOnlyFilename
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 22
-      Top = 25
-      Width = 176
+      Height = 23
+      Top = 26
+      Width = 191
       BorderSpacing.Top = 3
       Caption = 'Show absolute filenames'
       TabOrder = 1
@@ -183,9 +183,9 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = CBUseAbsoluteFilenames
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 22
-      Top = 50
-      Width = 305
+      Height = 23
+      Top = 52
+      Width = 331
       BorderSpacing.Top = 3
       Caption = 'Letters of search term can be non consecutive'
       TabOrder = 2
@@ -195,22 +195,21 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = CBUseLetters
       AnchorSideTop.Side = asrBottom
       Left = 384
-      Height = 22
-      Top = 72
-      Width = 142
+      Height = 23
+      Top = 75
+      Width = 156
       BorderSpacing.Bottom = 7
       Caption = 'Allow partial match'
       TabOrder = 3
-      Visible = False
     end
     object seMinSearchLen: TSpinEdit
       AnchorSideLeft.Control = lbMinSearchLen
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = CBUseLetters
       AnchorSideTop.Side = asrBottom
-      Left = 196
-      Height = 32
-      Top = 75
+      Left = 208
+      Height = 34
+      Top = 78
       Width = 64
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
@@ -222,29 +221,29 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = seMinSearchLen
       AnchorSideTop.Side = asrCenter
       Left = 11
-      Height = 18
-      Top = 82
-      Width = 179
+      Height = 17
+      Top = 87
+      Width = 191
       BorderSpacing.Left = 3
       Caption = 'Minimum search term length'
     end
   end
   object GBFileTree: TGroupBox
     Left = 0
-    Height = 108
-    Top = 305
+    Height = 100
+    Top = 294
     Width = 597
     Align = alTop
     AutoSize = True
     Caption = 'File browser tree'
-    ClientHeight = 79
-    ClientWidth = 593
+    ClientHeight = 82
+    ClientWidth = 595
     TabOrder = 3
     object CBShowFilesInline: TCheckBox
       Left = 8
-      Height = 22
+      Height = 23
       Top = 0
-      Width = 194
+      Width = 207
       BorderSpacing.Left = 8
       Caption = 'Show files in main tree view'
       TabOrder = 0
@@ -254,9 +253,9 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = CBShowFilesInline
       AnchorSideTop.Side = asrBottom
       Left = 36
-      Height = 22
-      Top = 25
-      Width = 197
+      Height = 23
+      Top = 26
+      Width = 218
       BorderSpacing.Top = 3
       Caption = 'Show directories before files'
       TabOrder = 1
@@ -266,9 +265,9 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       AnchorSideTop.Control = CBShowDirectoriesBeforeFiles
       AnchorSideTop.Side = asrBottom
       Left = 8
-      Height = 22
-      Top = 50
-      Width = 279
+      Height = 23
+      Top = 52
+      Width = 304
       BorderSpacing.Top = 3
       BorderSpacing.Bottom = 7
       Caption = 'Keep synchronized with current editor file'

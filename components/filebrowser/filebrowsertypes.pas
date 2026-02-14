@@ -133,7 +133,7 @@ const
   KeySearchMatchOnlyFilename = 'MatchOnlyFileNames';
   //KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
   KeySearchLetters = 'SearchLetters';
-  //KeyMatchPartial = 'MatchPartial';
+  KeyMatchPartial = 'MatchPartial';
   KeyMinSearchLen = 'MinSearchLen';
 
   SViewFilebrowser = 'File browser';

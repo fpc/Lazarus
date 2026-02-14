@@ -13,10 +13,10 @@ uses
   frmFileBrowser, FileBrowserTypes;
 
 Type
-    TFileSearchOption = (fsoMatchOnlyFileName,{fsoAbsolutePaths,}fsoUseLetters{,fsoMatchPartial});
+    TFileSearchOption = (fsoMatchOnlyFileName,{fsoAbsolutePaths,}fsoUseLetters,fsoMatchPartial);
     TFileSearchOptions = Set of TFileSearchOption;
 
-    TFilenameMatchOption = (fmoFileNameOnly,fmoLetters{,fmoMatchPartial});
+    TFilenameMatchOption = (fmoFileNameOnly,fmoLetters,fmoMatchPartial);
     TFilenameMatchOptions = set of TFilenameMatchOption;
 
     TMatchPosition = record
@@ -279,8 +279,8 @@ begin
       //  Include(Opts,fsoAbsolutePaths);
       if GetValue(KeySearchLetters,False) then
         Include(Opts,fsoUseLetters);
-      //if GetValue(KeyMatchPartial,False) then
-      //  Include(Opts,fsoMatchPartial);
+      if GetValue(KeyMatchPartial,False) then
+        Include(Opts,fsoMatchPartial);
       FMinSearchLen:=GetValue(KeyMinSearchLen, 2);
       SearchOptions:=Opts;
     finally
@@ -397,7 +397,7 @@ begin
       SetDeleteValue(KeySearchMatchOnlyFilename, fsoMatchOnlyFileName in SearchOptions,False);
       //SetDeleteValue(KeySearchAbsoluteFilenames,fsoAbsolutePaths in SearchOptions,False);
       SetDeleteValue(KeySearchLetters, fsoUseLetters in SearchOptions,False);
-      //SetDeleteValue(KeyMatchPartial,fsoMatchPartial in SearchOptions,False);
+      SetDeleteValue(KeyMatchPartial,fsoMatchPartial in SearchOptions,False);
       SetDeleteValue(KeyMinSearchLen, FMinSearchLen, 2);
       FNeedSave := False;
     finally
@@ -511,9 +511,9 @@ begin
       if fmoLetters in aMatchOptions then
         begin
         lMatchLen:=MatchesPattern(lFilename, lStartPos, lPtrn, lPositions);
-        //if fmoMatchPartial in aMatchOptions then
-        //  isMatch:=lMatchLen>0
-        //else
+        if fmoMatchPartial in aMatchOptions then
+          isMatch:=lMatchLen>0
+        else
           isMatch:=lMatchLen>=Length(lPtrn);
         if IsMatch then
           SetLength(lPositions,lMatchLen);

@@ -107,8 +107,8 @@ begin
     Include(lMatchOptions,fmoFileNameOnly);
   if (fsoUseLetters in FController.SearchOptions) then
     Include(lMatchOptions,fmoLetters);
-  //if (fsoMatchPartial in FController.SearchOptions) then
-  //  Include(lMatchOptions,fmoMatchPartial);
+  if (fsoMatchPartial in FController.SearchOptions) then
+    Include(lMatchOptions,fmoMatchPartial);
   LBFiles.Items.BeginUpdate;
   try
     LBFiles.Items.Clear;
