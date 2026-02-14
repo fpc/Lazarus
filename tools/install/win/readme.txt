@@ -4,6 +4,7 @@ A. Setup the build machine.
 B. Run create_installer.bat.
 C. Build cross installer add-on
 D. Other info
+E. UpdateInnoRemovedFilesFromGitDiff
 
 ### A Setup the build machine. ###
 
@@ -112,3 +113,11 @@ Environment %LAZBUILD_HOOK_DIR% can be set to a folder containing the script
 This will be run immediately before running the inno builder.
 => THis is NOT used to build the official installer
 
+
+### E. UpdateInnoRemovedFilesFromGitDiff ###
+
+Update the files
+  RemovedFiles32.iss
+  RemovedFiles64.iss
+
+  UpdateInnoRemovedFilesFromGitDiff.exe C:\lazarus_git_root_dir  lazarus_X_Y lazarus_X_Z > RemovedFiles32.iss
