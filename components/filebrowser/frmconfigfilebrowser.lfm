@@ -7,8 +7,8 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
   ClientWidth = 597
   LCLVersion = '4.99.0.0'
   TabOrder = 0
-  DesignLeft = 616
-  DesignTop = 247
+  DesignLeft = 500
+  DesignTop = 246
   object GBStartDir1: TGroupBox
     Left = 0
     Height = 165
@@ -16,7 +16,7 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
     Width = 597
     Align = alTop
     AutoSize = True
-    Caption = 'Root directory'
+    Caption = 'Root directory and scanning options'
     ClientHeight = 136
     ClientWidth = 593
     TabOrder = 0
@@ -37,8 +37,8 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       TabOrder = 0
     end
     object RBRootThisDir: TRadioButton
-      AnchorSideLeft.Control = RBRootUserDir
-      AnchorSideTop.Control = RBRootUserDir
+      AnchorSideLeft.Control = RBRootFileSystemRoot
+      AnchorSideTop.Control = RBRootFileSystemRoot
       AnchorSideTop.Side = asrBottom
       Left = 8
       Height = 22
@@ -49,39 +49,59 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       TabOrder = 1
     end
     object RBRootFileSystemRoot: TRadioButton
-      AnchorSideLeft.Control = RBRootUseProjectDir
-      AnchorSideTop.Control = RBRootUseProjectDir
+      AnchorSideLeft.Control = RBRootUserDir
+      AnchorSideTop.Control = RBRootUserDir
       AnchorSideTop.Side = asrBottom
       Left = 8
       Height = 22
-      Top = 25
+      Top = 50
       Width = 117
       BorderSpacing.Top = 3
       Caption = 'Filesystem root'
       TabOrder = 2
     end
-    object RBRootUseProjectDir: TRadioButton
+    object RBRootProjectDir: TRadioButton
       Left = 8
       Height = 22
       Top = 0
-      Width = 199
+      Width = 175
       BorderSpacing.Left = 8
-      Caption = 'Use current project directory'
+      Caption = 'Current project directory'
       Checked = True
       TabOrder = 3
       TabStop = True
     end
     object RBRootUserDir: TRadioButton
-      AnchorSideLeft.Control = RBRootFileSystemRoot
-      AnchorSideTop.Control = RBRootFileSystemRoot
+      AnchorSideLeft.Control = RBRootProjectDir
+      AnchorSideTop.Control = RBRootProjectDir
       AnchorSideTop.Side = asrBottom
       Left = 8
       Height = 22
-      Top = 50
+      Top = 25
       Width = 111
       BorderSpacing.Top = 3
       Caption = 'User directory'
       TabOrder = 4
+    end
+    object cbFollowSymlinks: TCheckBox
+      AnchorSideLeft.Control = cbHiddenFiles
+      AnchorSideTop.Control = cbHiddenFiles
+      AnchorSideTop.Side = asrBottom
+      Left = 304
+      Height = 22
+      Top = 25
+      Width = 120
+      BorderSpacing.Top = 3
+      Caption = 'Follow symlinks'
+      TabOrder = 5
+    end
+    object cbHiddenFiles: TCheckBox
+      Left = 304
+      Height = 22
+      Top = 0
+      Width = 144
+      Caption = 'Include hidden files'
+      TabOrder = 6
     end
   end
   object GBStartDir: TGroupBox
@@ -138,9 +158,9 @@ object FileBrowserOptionsFrame: TFileBrowserOptionsFrame
       Left = 8
       Height = 22
       Top = 0
-      Width = 199
+      Width = 175
       BorderSpacing.Left = 8
-      Caption = 'Use current project directory'
+      Caption = 'Current project directory'
       Checked = True
       TabOrder = 3
       TabStop = True

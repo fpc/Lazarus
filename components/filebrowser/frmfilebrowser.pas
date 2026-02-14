@@ -287,7 +287,7 @@ begin
     Include(lTypes,etFile);
   rOptions:=[];
   if ShowHidden then
-    Include(rOptions,reoHidden);
+    Include(rOptions,reoHiddenFiles);
   if NodeEntry.HasEntries(ShowHidden,lTypes) and (NodeEntry.EntryCount=0) then
     NodeEntry.ReadEntries(rOptions);
   if DirectoriesBeforeFiles then
@@ -508,11 +508,6 @@ var
   Idx : Integer;
 begin
   aNode.Data:=aEntry;
-{  Case aEntry.EntryType of
-    etDirectory : Idx:=0;
-    etFile : Idx:=1;
-    etSymlink : Idx:=2;
-  end;  }
   Idx:=Ord(aEntry.EntryType);
   aNode.ImageIndex:=Idx;
   aNode.SelectedIndex:=Idx;

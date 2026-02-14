@@ -17,6 +17,8 @@ type
   TFileBrowserOptionsFrame = class(TAbstractIDEOptionsEditor)
     CBShowDirectoriesBeforeFiles: TCheckBox;
     CBShowFilesInline: TCheckBox;
+    cbHiddenFiles: TCheckBox;
+    cbFollowSymlinks: TCheckBox;
     CBSyncCurrentEditor: TCheckBox;
     CBMatchOnlyFilename: TCheckBox;
     CBUseAbsoluteFilenames: TCheckBox;
@@ -35,7 +37,7 @@ type
     RBThisDir: TRadioButton;
     RBRootThisDir: TRadioButton;
     RBUseProjectDir: TRadioButton;
-    RBRootUseProjectDir: TRadioButton;
+    RBRootProjectDir: TRadioButton;
     seMinSearchLen: TSpinEdit;
     procedure CBShowFilesInlineChange(Sender: TObject);
     procedure CBUseLettersChange(Sender: TObject);
@@ -116,6 +118,8 @@ begin
   end;
   RB.Checked := True;
   DERootDir.Directory:=C.CustomRootDir;
+  cbHiddenFiles.Checked:=C.HiddenFiles;
+  cbFollowSymlinks.Checked:=C.FollowSymlinks;
   CBShowFilesInline.Checked:=C.FilesInTree;
   CBShowDirectoriesBeforeFiles.Checked:=C.DirectoriesBeforeFiles;
   CBSyncCurrentEditor.Checked:=C.SyncCurrentEditor;
@@ -149,7 +153,7 @@ begin
   else
     C.CustomStartDir:='';
 
-  if RBRootUseProjectDir.Checked then
+  if RBRootProjectDir.Checked then
     RD:=rdProjectDir
   else if RBRootFileSystemRoot.Checked then
     RD:=rdRootDir
@@ -159,8 +163,10 @@ begin
     RD:=rdCustomDir;
   C.CustomRootDir:=DERootDir.Directory;
   C.RootDir:=rD;
-  C.FilesInTree:=CBShowFilesInline.Checked;
+  C.HiddenFiles:=cbHiddenFiles.Checked;
+  C.FollowSymlinks:=cbFollowSymlinks.Checked;
   C.SyncCurrentEditor:=CBSyncCurrentEditor.Checked;
+  C.FilesInTree:=CBShowFilesInline.Checked;
   SO:=[];
   //if CBUseAbsoluteFilenames.Checked then
   //  Include(SO,fsoAbsolutePaths);

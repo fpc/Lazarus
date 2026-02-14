@@ -55,6 +55,8 @@ Type
       FConfigFrame: TAbstractIDEOptionsEditorClass;
       FCustomStartDir: string;
       FDirectoriesBeforeFiles: Boolean;
+      FHiddenFiles: Boolean;
+      FFollowSymlinks: Boolean;
       FIdleConnected: Boolean;
       FHasProjectOpenedHandler: Boolean;
       FLastOpenedDir: string;
@@ -85,6 +87,8 @@ Type
       procedure SetCustomStartDir(AValue: string);
       procedure SetDirectoriesBeforeFiles(AValue: Boolean);
       procedure SetFilesInTree(AValue: Boolean);
+      procedure SetFollowSymlinks(AValue: Boolean);
+      procedure SetHiddenFiles(AValue: Boolean);
       procedure SetIdleConnected(AValue: Boolean);
       procedure SetLastOpenedDir(AValue: string);
       procedure SetMinSearchLen(AValue: integer);
@@ -127,6 +131,8 @@ Type
       property CustomStartDir: string read FCustomStartDir write SetCustomStartDir;
       property CustomRootDir: string read FCustomRootDir write SetCustomRootDir;
       property LastOpenedDir: string read FLastOpenedDir write SetLastOpenedDir;
+      property HiddenFiles: Boolean read FHiddenFiles write SetHiddenFiles;
+      property FollowSymlinks: Boolean read FFollowSymlinks write SetFollowSymlinks;
       property SyncCurrentEditor: Boolean Read FSyncCurrentEditor Write SetSyncCurrentEditor;
       property SplitterPos: integer read FSplitterPos write SetSplitterPos;
       property FilesInTree: Boolean Read FFilesInTree Write SetFilesInTree;
@@ -177,7 +183,7 @@ begin
   if (FTreeFiller<>Sender) then exit;
   debugln(['TFileBrowserController.TreeFillDone FRoot=', FRoot]);
   Dir:=FTreeFiller.RootDir;
-  TimeS:=FormatDateTime('h:n:s', Now - FTreeFiller.StartTime);
+  TimeS:=FormatDateTime('h:nn:ss', Now - FTreeFiller.StartTime);
   FTreeFiller:=Nil;
   FreeAndNil(FRoot);
   FRoot:=aTree;
@@ -201,7 +207,7 @@ begin
   if (FTreeFiller<>Sender) then exit;
   debugln(['TFileBrowserController.TreeFillCancelled FRoot=', FRoot, ', aTree=', aTree]);
   Dir:=FTreeFiller.RootDir;
-  TimeS:=FormatDateTime('h:n:s', Now - FTreeFiller.StartTime);
+  TimeS:=FormatDateTime('h:nn:ss', Now - FTreeFiller.StartTime);
   FTreeFiller:=Nil;
   FreeAndNil(FRoot);
   aTree.Free;
@@ -272,6 +278,8 @@ begin
       FSplitterPos:=GetValue(KeySplitterPos, DefaultSplitterPos);
       FFilesInTree:=GetValue(KeyFilesInTree, DefaultFilesInTree);
       FDirectoriesBeforeFiles:=GetValue(KeyDirectoriesBeforeFiles,DefaultDirectoriesBeforeFiles);
+      FHiddenFiles:=GetValue(KeyHiddenFiles,False);
+      FFollowSymlinks:=GetValue(KeyFollowSymlinks,False);
       FSyncCurrentEditor:=GetValue(KeySyncCurrentEditor,DefaultSyncCurrentEditor);
       if GetValue(KeySearchMatchOnlyFilename,False) then
         Include(Opts,fsoMatchOnlyFileName);
@@ -314,6 +322,20 @@ begin
   if FFilesInTree=AValue then Exit;
   FFilesInTree:=AValue;
   FNeedSave:=true;
+end;
+
+procedure TFileBrowserController.SetHiddenFiles(AValue: Boolean);
+begin
+  if FHiddenFiles=AValue then Exit;
+  FHiddenFiles:=AValue;
+  FNeedSave:=true;
+end;
+
+procedure TFileBrowserController.SetFollowSymlinks(AValue: Boolean);
+begin
+  if FFollowSymlinks=AValue then Exit;
+  FFollowSymlinks:=AValue;
+  FNeedSave:=True;
 end;
 
 procedure TFileBrowserController.SetIdleConnected(AValue: Boolean);
@@ -393,6 +415,8 @@ begin
       SetDeleteValue(KeySplitterPos, FSplitterPos, DefaultSplitterPos);
       SetDeleteValue(KeyFilesInTree, FFilesInTree, DefaultFilesInTree);
       SetDeleteValue(KeyDirectoriesBeforeFiles, FDirectoriesBeforeFiles, DefaultDirectoriesBeforeFiles);
+      SetDeleteValue(KeyHiddenFiles, FHiddenFiles, False);
+      SetDeleteValue(KeyFollowSymlinks, FFollowSymlinks, False);
       SetDeleteValue(KeySyncCurrentEditor, FSyncCurrentEditor, DefaultSyncCurrentEditor);
       SetDeleteValue(KeySearchMatchOnlyFilename, fsoMatchOnlyFileName in SearchOptions,False);
       //SetDeleteValue(KeySearchAbsoluteFilenames,fsoAbsolutePaths in SearchOptions,False);
@@ -429,14 +453,20 @@ end;
 procedure TFileBrowserController.IndexRootDir;
 var
   lDir : String;
+  Opt: TReadEntryOptions;
 begin
   TerminateRunningThread;
   if (RootDir = rdProjectDir) and (LazarusIDE.ActiveProject = nil) then
     debugln(['TFileBrowserController.IndexRootDir: No Project loaded, using temp directory.']);
   lDir:=GetResolvedRootDir;
+  Opt:=[];
+  if HiddenFiles then
+    Include(Opt, reoHiddenFiles);
+  if FollowSymlinks then
+    Include(Opt, reoFollowSymlinks);
   // Do not recurse, thread handles it, it needs to react to terminate...
   debugln(['TFileBrowserController.IndexRootDir: Creating thread.']);
-  FTreeFiller:=TTreeCreatorThread.Create(lDir,[],@TreeFillDone,@TreeFillCancelled,@TreeFillError);
+  FTreeFiller:=TTreeCreatorThread.Create(lDir,Opt,@TreeFillDone,@TreeFillCancelled,@TreeFillError);
   AddIDEMessage(mluVerbose,Format(SSearchingFiles,[lDir]),'',0,0,SViewFilebrowser);
 end;
 

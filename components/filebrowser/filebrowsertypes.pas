@@ -16,7 +16,7 @@ type
   TEntryType = (etDirectory,etFile,etSymlink);
   TEntryTypes = Set of TEntryType;
 
-  TReadEntryOption = (reoHidden,reoRecurse);
+  TReadEntryOption = (reoHiddenFiles, reoRecurse, reoFollowSymlinks);
   TReadEntryOptions = Set of TReadEntryOption;
 
 Const
@@ -121,20 +121,22 @@ const
   DefaultSyncCurrentEditor = False;
   DefaultSplitterPos = 150;
 
-  SConfigFile         = 'idebrowserwin.xml';
-  KeyStartDir         = 'StartDir';
-  KeyRootDir          = 'RootDir';
-  KeyCustomStartDir   = 'CustomDir';
-  KeyCustomRootDir    = 'CustomRootDir';
-  KeySplitterPos      = 'SplitterPos';
-  KeyFilesInTree      = 'FilesInTree';
+  SConfigFile       = 'idebrowserwin.xml';
+  KeyStartDir       = 'StartDir';
+  KeyRootDir        = 'RootDir';
+  KeyCustomStartDir = 'CustomDir';
+  KeyCustomRootDir  = 'CustomRootDir';
+  KeySplitterPos    = 'SplitterPos';
+  KeyFilesInTree    = 'FilesInTree';
   KeyDirectoriesBeforeFiles = 'DirectoriesBeforeFiles';
+  KeyHiddenFiles    = 'HiddenFiles';
+  KeyFollowSymlinks = 'FollowSymlinks';
   KeySyncCurrentEditor = 'SyncCurrentEditor';
   KeySearchMatchOnlyFilename = 'MatchOnlyFileNames';
   //KeySearchAbsoluteFilenames = 'AbsoluteFileNames';
-  KeySearchLetters = 'SearchLetters';
-  KeyMatchPartial = 'MatchPartial';
-  KeyMinSearchLen = 'MinSearchLen';
+  KeySearchLetters  = 'SearchLetters';
+  KeyMatchPartial   = 'MatchPartial';
+  KeyMinSearchLen   = 'MinSearchLen';
 
   SViewFilebrowser = 'File browser';
 
@@ -260,60 +262,62 @@ var
   Entry : TFileSystemEntry;
   CurrentDir: string;
   LinkTarget : RawByteString;
-  isHidden : Boolean;
   isType : TEntryType;
-
+  FileAttr: longint;
 begin
   Clear;
   CurrentDir:=IncludeTrailingPathDelimiter(AbsolutePath);
-  if SysUtils.FindFirst(CurrentDir+AllFilesMask,faAnyFile or faSymLink, Info) <> 0 then
+  FileAttr:=faAnyFile;
+  if reoFollowSymlinks in aOptions then
+    FileAttr:=FileAttr or faSymLink;
+  if SysUtils.FindFirst(CurrentDir+AllFilesMask, FileAttr, Info) <> 0 then
      Exit;
   Try
-      repeat
-        With Info do
+    repeat
+      if (Info.Name = '') or (Info.Name = '.') or (Info.Name = '..') then
+        Continue;           // check if special dir
+      if ((faHidden and Info.Attr)<>0) and Not (reoHiddenFiles in aOptions) then
+        Continue;
+      if (faDirectory and Info.Attr) <> 0 then
+        isType:=etDirectory
+      else if (faSymLink and Info.Attr) <> 0 then
+        isType:=etSymlink
+      else
+        isType:=etFile;
+      Entry:=Nil;
+      case IsType of
+        etFile : Entry:=TFileEntry.Create(Self,Info.Name);
+        etDirectory :
           begin
-          if Name = '' then
-            Continue;
-          // check if special dir
-          if ((Name = '.') or (Name = '..')) then
-            Continue;
-          isHidden:=((faHidden and Attr)<>0);
-          if isHidden and Not (reoHidden in aOptions) then
-            Continue;
-
-          if ((faDirectory and Attr) <> 0) then
-            isType:=etDirectory
-          else if ((faSymLink and Attr) <> 0) then
-            isType:=etSymlink
-          else
-            isType:=etFile;
-          case IsType of
-            etFile : Entry:=TFileEntry.Create(Self,Name);
-            etDirectory : Entry:=TDirectoryEntry.Create(Self,Name);
-            etSymlink :
-              begin
-              try
-              if not FileGetSymLinkTarget(CurrentDir+Name,LinkTarget) then
-                LinkTarget:='<?>';
-              except
-                // We get an exception in 3.2.2
-                LinkTarget:='<?>';
-              end;
-              Entry:=TSymLinkEntry.Create(Self,Name,LinkTarget);
-              end;
-          else
-            Entry:=Nil;
+            // Some Unix dirs cause a recursive loop. Skip them. Should be configurable.
+            if (CurrentDir='/')
+            and ((Info.Name='dev') or (Info.Name='sys') or (Info.Name='proc')) then
+              Continue;
+            Entry:=TDirectoryEntry.Create(Self,Info.Name);
           end;
-          if Assigned(Entry) then
-            AddEntry(Entry);
-          if reoRecurse in aOptions then
-            Entry.ReadEntries(aOptions);
-          // We found at least one entry, so exit.
+        etSymlink :
+          begin
+            Assert(reoFollowSymlinks in aOptions, 'TDirectoryEntry.ReadEntries: No reoFollowSymlinks');
+            try
+              if not FileGetSymLinkTarget(CurrentDir+Info.Name,LinkTarget) then
+                LinkTarget:='<?>';
+            except
+              // We get an exception in 3.2.2
+              LinkTarget:='<?>';
+            end;
+            Entry:=TSymLinkEntry.Create(Self,Info.Name,LinkTarget);
           end;
-        until SysUtils.FindNext(Info) <> 0;
-    finally
-      SysUtils.FindClose(Info);
-    end;
+      end;
+      if Assigned(Entry) then
+        AddEntry(Entry);
+      // reoRecurse is never added to Options.(?)
+      Assert(not (reoRecurse in aOptions), 'ReadEntries: reoRecurse after all!');
+      //if reoRecurse in aOptions then
+      //  Entry.ReadEntries(aOptions);
+    until SysUtils.FindNext(Info) <> 0;
+  finally
+    SysUtils.FindClose(Info);
+  end;
 end;
 
 class function TDirectoryEntry.EntryType: TEntryType;
