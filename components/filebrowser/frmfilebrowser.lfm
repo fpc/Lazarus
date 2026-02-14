@@ -15,7 +15,7 @@ object FileBrowserForm: TFileBrowserForm
   object TV: TTreeView
     Left = 0
     Height = 185
-    Top = 65
+    Top = 76
     Width = 345
     Align = alTop
     HideSelection = False
@@ -75,25 +75,25 @@ object FileBrowserForm: TFileBrowserForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 250
+    Top = 261
     Width = 345
     Align = alTop
     ResizeAnchor = akTop
   end
   object pnlFiles: TPanel
     Left = 0
-    Height = 212
-    Top = 255
+    Height = 201
+    Top = 266
     Width = 345
     Align = alClient
     BevelOuter = bvNone
     Caption = 'pnlFiles'
-    ClientHeight = 212
+    ClientHeight = 201
     ClientWidth = 345
     TabOrder = 3
     object cbFilePanel: TFilterComboBox
       Left = 0
-      Height = 23
+      Height = 34
       Top = 0
       Width = 345
       Align = alTop
@@ -103,21 +103,22 @@ object FileBrowserForm: TFileBrowserForm
     end
     object FileListBox: TFileListBox
       Left = 0
-      Height = 189
-      Top = 23
+      Height = 167
+      Top = 34
       Width = 345
       Align = alClient
       Directory = '/home/graemeg'
       FileType = [ftArchive, ftNormal]
       ItemHeight = 0
       TabOrder = 1
+      TopIndex = -1
       OnDblClick = FileListBoxDblClick
       OnKeyPress = FileListBoxKeyPress
     end
   end
   object cbTreeFilter: TFilterComboBox
     Left = 0
-    Height = 23
+    Height = 34
     Top = 42
     Width = 345
     Align = alTop

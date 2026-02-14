@@ -73,6 +73,7 @@ type
     procedure SetFilesIntree(AValue: Boolean);
     procedure SetRootDir(const Value: string);
     procedure InitializeTreeview;
+    procedure SetShowHidden(AValue: Boolean);
     procedure SetTreeFileMask(AValue: String);
     function ShowEntry(aEntry: TFilesystemEntry): boolean;
     {$IFDEF MSWINDOWS}
@@ -91,7 +92,7 @@ type
     { Directory the treeview starts from }
     property RootDirectory: string read FRootDir write SetRootDir;
     { Must we show hidden directories - not working on unix type systems }
-    property ShowHidden: Boolean read FShowHidden write FShowHidden default False;
+    property ShowHidden: Boolean read FShowHidden write SetShowHidden default False;
     { Called when user double-clicks file name }
     property OnOpenFile: TOpenFileEvent read FOnOpenFile write FOnOpenFile;
     { Called when user clicks configure button }
@@ -184,10 +185,6 @@ end;
 procedure TFileBrowserForm.cbHiddenChange(Sender: TObject);
 begin
   ShowHidden := cbHidden.Checked;
-  if ShowHidden then
-    FileListBox.FileType := FileListBox.FileType + [ftHidden]
-  else
-    FileListBox.FileType := FileListBox.FileType - [ftHidden];
 end;
 
 procedure TFileBrowserForm.cbTreeFilterChange(Sender: TObject);
@@ -243,9 +240,9 @@ end;
 function TFileBrowserForm.ShowEntry(aEntry : TFilesystemEntry) : boolean;
 
 begin
-  Result:=(aEntry.EntryType=etDirectory);
+  Result:=(aEntry.EntryType=etDirectory) ;
   if Not Result then
-    Result:=(FSelectedMask=Nil) or FSelectedMask.Matches(aEntry.Name);
+    Result:=FFilesInTree and ((FSelectedMask=Nil) or FSelectedMask.Matches(aEntry.Name));
 end;
 
 procedure TFileBrowserForm.AddEntries(Node: TTreeNode);
@@ -440,8 +437,20 @@ begin
   TV.Items.Clear;
   pnlFiles.Visible:=not FilesInTree;
   Splitter1.Visible:=Not FilesInTree;
+  cbTreeFilter.Visible:=FilesInTree;
   if FilesInTree then
-    TV.Align:=alClient;
+    TV.Align:=alClient
+end;
+
+procedure TFileBrowserForm.SetShowHidden(AValue: Boolean);
+begin
+  if FShowHidden=AValue then Exit;
+  FShowHidden:=AValue;
+  if ShowHidden then
+    FileListBox.FileType := FileListBox.FileType + [ftHidden]
+  else
+    FileListBox.FileType := FileListBox.FileType - [ftHidden];
+  InitializeTreeview;
 end;
 
 procedure TFileBrowserForm.SetTreeFileMask(AValue: String);
