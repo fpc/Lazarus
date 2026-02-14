@@ -6,8 +6,12 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  lresources, Menus, db, sqldbrestbridge, sqldbRestSchema, SynEdit, SynHighlighterSQL,
-  sqldbschemaedittools, frasqldbresourcefields, frasqldbresourceparams;
+  lresources, Menus, db,
+  // SynEdit
+  SynEdit, SynHighlighterSQL,
+  // SQLRest
+  sqldbrestbridge, sqldbRestSchema, sqldbschemaedittools,
+  frasqldbresourcefields, frasqldbresourceparams;
 
 
 
