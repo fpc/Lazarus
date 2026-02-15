@@ -84,8 +84,8 @@ Type
   end;
   TFileEntryArray = Array of TFileEntry;
 
-  TTreeDoneEvent = procedure (Sender : TThread; aTree : TDirectoryEntry) of object;
-  TTreeErrorEvent = procedure (Sender : TThread; const aError : String) of object;
+  TTreeDoneEvent = procedure (Sender: TThread) of object;
+  TTreeErrorEvent = procedure (Sender: TThread; const aError: String) of object;
 
   { TTreeCreatorThread }
 
@@ -93,19 +93,21 @@ Type
   Private
     FRootDir : String;
     FOptions : TReadEntryOptions;
+    FFileList : TStrings;
     FOnDone : TTreeDoneEvent;
     FOnCancelled : TTreeDoneEvent;
     FOnError : TTreeErrorEvent;
     FNode : TDirectoryEntry;
     FError : String;
     FStartTime: TDateTime;
-  Protected
+  //Protected
+    procedure AddFileNodes(aNode: TFileSystemEntry; aDir: String);
     procedure FillNode(N: TDirectoryEntry);
     procedure DoDone;
     procedure DoCancelled;
     procedure DoError;
   Public
-    constructor Create(aRootDir: String; aOptions: TReadEntryOptions;
+    constructor Create(aRootDir: String; aOptions: TReadEntryOptions; aFileList: TStrings;
       aOnDone: TTreeDoneEvent; aOnCancelled: TTreeDoneEvent; aOnError : TTreeErrorEvent);
     procedure Execute; override;
     property RootDir: String read FRootDir;
@@ -139,6 +141,9 @@ const
   KeyMinSearchLen   = 'MinSearchLen';
 
   SViewFilebrowser = 'File browser';
+
+var
+  FCritSec: TRTLCriticalSection;
 
 resourcestring
   SFileBrowserIDEMenuCaption = 'File Browser';
@@ -404,16 +409,37 @@ end;
 { TTreeCreatorThread }
 
 constructor TTreeCreatorThread.Create(aRootDir: String; aOptions: TReadEntryOptions;
-  aOnDone: TTreeDoneEvent; aOnCancelled: TTreeDoneEvent; aOnError: TTreeErrorEvent);
+  aFileList: TStrings; aOnDone: TTreeDoneEvent;
+  aOnCancelled: TTreeDoneEvent; aOnError: TTreeErrorEvent);
 begin
   FRootDir:=aRootDir;
   FOptions:=aOptions;
+  FFileList:=aFileList;
   FOnDone:=aOnDone;
   FOnCancelled:=aOnCancelled;
   FOnError:=aOnError;
   Inherited Create(false);
   FreeOnTerminate:=True;
   FStartTime:=Now;
+end;
+
+procedure TTreeCreatorThread.AddFileNodes(aNode : TFileSystemEntry; aDir : String);
+var
+  FN : String;
+  I : Integer;
+begin
+  FN:=aDir;
+  if FN<>'' then
+    FN:=IncludeTrailingPathDelimiter(FN);
+  FN:=FN+aNode.Name;
+  case aNode.EntryType of
+    etFile,
+    etSymlink:
+      FFileList.AddObject(FN, aNode);
+    etDirectory:
+      For I:=0 to ANode.EntryCount-1 do
+        AddFileNodes(ANode.Entries[I], FN);
+  end;
 end;
 
 procedure TTreeCreatorThread.FillNode(N : TDirectoryEntry);
@@ -433,15 +459,13 @@ end;
 procedure TTreeCreatorThread.DoDone;
 begin
   if FOnDOne=nil then exit;
-  FOnDone(Self,FNode);
-  FNode:=Nil;      // Caller is responsible for freeing now...
+  FOnDone(Self);
 end;
 
 procedure TTreeCreatorThread.DoCancelled;
 begin
   if FOnCancelled=nil then exit;
-  FOnCancelled(Self,FNode);
-  FNode:=Nil;
+  FOnCancelled(Self);
 end;
 
 procedure TTreeCreatorThread.DoError;
@@ -471,6 +495,11 @@ begin
         Synchronize(@DoCancelled);
     end
     else begin
+      // Critical section
+      EnterCriticalsection(FCritSec);
+      FFileList.Clear;
+      AddFileNodes(FNode, '');
+      LeaveCriticalSection(FCritSec);
       if Assigned(FOnDone) then
         Synchronize(@DoDone);
     end;
