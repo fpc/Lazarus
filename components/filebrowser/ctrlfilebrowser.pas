@@ -58,6 +58,7 @@ Type
       FHiddenFiles: Boolean;
       FFollowSymlinks: Boolean;
       FIdleConnected: Boolean;
+      FIdleHandlerWasCalled: Boolean;
       FHasProjectOpenedHandler: Boolean;
       FLastOpenedDir: string;
       FMinSearchLen: integer;
@@ -112,7 +113,7 @@ Type
       destructor Destroy; override;
       procedure Init;
       function FillingTree: boolean;
-      procedure ConfigWindow(AForm: TFileBrowserForm); virtual;
+      procedure ConfigBrowser;
       procedure OpenFiles(aEntries : TFileEntryArray);
       function GetResolvedRootDir : String;
       function ShowConfig: Boolean;
@@ -140,6 +141,7 @@ Type
       property SearchOptions: TFileSearchOptions Read FSearchOptions Write SetSearchOptions;
       property MinSearchLen: integer read FMinSearchLen write SetMinSearchLen;
       property ConfigFrame: TAbstractIDEOptionsEditorClass Read FConfigFrame Write FConfigFrame;
+      property IdleHandlerWasCalled: Boolean read FIdleHandlerWasCalled;
       property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     end;
 
@@ -594,21 +596,22 @@ begin
     end;
 end;
 
-procedure TFileBrowserController.ConfigWindow(AForm: TFileBrowserForm);
-
+procedure TFileBrowserController.ConfigBrowser;
 begin
-  aForm.Caption:=SFileBrowserIDEMenuCaption;
-  aForm.FreeNotification(Self);
-  aForm.OnOpenFile := @DoOpenFile;
-  aForm.OnConfigure := @DoConfig;
-  aForm.OnSelectDir := @DoSelectDir;
-  aForm.AddHandlerClose(@DoFormClose);
-  aForm.TV.Height:=FSplitterPos;
+  debugln(['TFileBrowserController.ConfigBrowser Form=', FileBrowserForm]);
+  FileBrowserForm.Caption := SFileBrowserIDEMenuCaption;
+  FileBrowserForm.FreeNotification(Self);
+  FileBrowserForm.OnOpenFile := @DoOpenFile;
+  FileBrowserForm.OnConfigure := @DoConfig;
+  FileBrowserForm.OnSelectDir := @DoSelectDir;
+  FileBrowserForm.AddHandlerClose(@DoFormClose);
+  FileBrowserForm.TV.Height := FSplitterPos;
 
-  aForm.RootDirectory:=GetResolvedRootDir;
-  aForm.CurrentDirectory:=GetResolvedStartDir;
-  aForm.FilesInTree:=FilesInTree;
-  aForm.DirectoriesBeforeFiles:=DirectoriesBeforeFiles;
+  FileBrowserForm.RootDirectory:=GetResolvedRootDir;
+  FileBrowserForm.CurrentDirectory:=GetResolvedStartDir;
+  FileBrowserForm.FilesInTree:=FilesInTree;
+  FileBrowserForm.DirectoriesBeforeFiles:=DirectoriesBeforeFiles;
+  FileBrowserForm.ShowFiles;
   if FCurrentEditorFile<>'' then
     SyncCurrentFile;
 end;
@@ -671,8 +674,12 @@ end;
 
 procedure TFileBrowserController.DoIdle(Sender: TObject; var Done: Boolean);
 begin
-  debugln(['TFileBrowserController.DoIdle Calling IndexRootDir']);
+  debugln(['TFileBrowserController.DoIdle Calling IndexRootDir. FileBrowserForm=', FileBrowserForm]);
   IndexRootDir;        // Scanning files for the first time.
+  if Assigned(FileBrowserForm) then
+    ConfigBrowser;  // Browser initial values
+  // This handler is called only once in the beginning.
+  FIdleHandlerWasCalled:=True;
   IdleConnected:=false;
 end;
 

@@ -60,8 +60,9 @@ begin
   IDEWindowCreators.CreateForm(AForm,TFileBrowserForm,true,C);
   AForm.Name:=aFormName;
   FileBrowserForm:=AForm as TFileBrowserForm;
-  C.ConfigWindow(FileBrowserForm);
-  FileBrowserForm.ShowFiles;
+  // OnIdle handler calls ConfigBrowser if the windows existed then.
+  if C.IdleHandlerWasCalled then  // Apparently it didn't.
+    C.ConfigBrowser;
   if not DoDisableAutoSizing then
     AForm.EnableAutoSizing;
 end;
@@ -76,7 +77,7 @@ begin
     begin
     C := TFileBrowserController.Create(LazarusIDE.OwningComponent);
     C.Name:='IDEFileBrowserController';
-    C.Init;
+    C.Init;  // This enables an OnIdle handler which then reads data.
     end;
   C.ConfigFrame:=TFileBrowserOptionsFrame;
 end;
