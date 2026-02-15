@@ -220,6 +220,9 @@ begin
       if i = 0 then begin
         i := LineIndex - 1;
         lvl := FoldBlockEndLevel(i);
+        k := CurrentCodeFoldBlockLevel; //CodeFoldRange.CodeFoldStackSize;
+        if k < lvl then
+          lvl := k;
         while i >= 0 do begin
           if FoldBlockMinLevel(i) < lvl then begin
             LInfo := TSynHighlighterXmlRangeList(CurrentRanges).XmlRangeInfo[i].ElementOpenList;
@@ -246,7 +249,7 @@ begin
         FXmlRangeInfo.ElementCloseList[FXmlRangeInfoClosePos] := cnt;
         FXmlRangeInfoChanged := true;
       end;
-    end else begin  // append - modified will be deteced by the new length
+    end else begin  // append - modified will be detected by the new length
       SetLength(FXmlRangeInfo.ElementCloseList, FXmlRangeInfoClosePos + 10);
       FXmlRangeInfo.ElementCloseList[FXmlRangeInfoClosePos] := cnt;
     end;
