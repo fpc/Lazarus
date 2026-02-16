@@ -676,6 +676,15 @@ var
   end;
 
   procedure DrawColoredLines;
+
+    procedure DrawLine(const AP1, AP2: TPoint);
+    begin
+      if Depth = 0 then
+        ADrawer.Line(AP1, AP2)
+      else
+        ADrawer.DrawLineDepth(AP1, AP2, ADrawer.Scale(Depth));
+    end;
+
   var
     i, n: Integer;
     gp: TDoublepoint;
@@ -709,11 +718,20 @@ var
 
     ADrawer.SetEnhancedBrokenLines(FLinePen.EnhancedBrokenLines);
 
+    if Styles <> nil then
+      Styles.Apply(ADrawer, AIndex, Depth = 0);
+
+    if (Depth <> 0) and (Styles = nil) then begin
+      ADrawer.SetBrushParams(bsSolid, col1);
+      ADrawer.SetPenParams(LinePen.Style, clBlack);
+    end;
+
     // First line for line type ltFromOrigin
     if LineType = ltFromOrigin then begin
       origin := ParentChart.GraphToImage(AxisToGraph(ZeroDoublePoint));
-      ADrawer.SetPenParams(FLinePen.Style, col1, ADrawer.Scale(FLinePen.Width));
-      ADrawer.Line(origin, imgPt1);
+      if Depth = 0 then
+        ADrawer.SetPenParams(FLinePen.Style, col1, ADrawer.Scale(FLinePen.Width));
+      DrawLine(origin, imgPt1);
     end;
 
     // iterate through all other points
@@ -735,21 +753,24 @@ var
             ceLineAfter, cePointAndLineAfter: col := col1;
             else raise Exception.Create('TLineSeries: ColorEach error');
           end;
-          ADrawer.SetPenColor(col);
+          if Depth = 0 then
+            ADrawer.SetPenColor(col)
+          else
+            ADrawer.SetBrushParams(bsSolid, col);
           case LineType of
             ltFromPrevious:
-              ADrawer.Line(imgPt1, imgPt2);
+              DrawLine(imgPt1, imgPt2);
             ltStepXY:
               begin
                 pt := Point(imgPt2.x, imgPt1.Y);
-                ADrawer.Line(imgPt1, pt);
-                ADrawer.Line(pt, imgPt2);
+                DrawLine(imgPt1, pt);
+                DrawLine(pt, imgPt2);
               end;
             ltStepYX:
               begin
                 pt := Point(imgPt1.x, imgPt2.Y);
-                ADrawer.Line(imgPt1, pt);
-                ADrawer.Line(pt, imgPt2);
+                DrawLine(imgPt1, pt);
+                DrawLine(pt, imgPt2);
               end;
             ltStepCenterXY, ltStepCenterYX:
               begin
@@ -763,12 +784,12 @@ var
                   pt1 := Point(imgPt1.x, (imgPt1.y + imgPt2.y) div 2);
                   pt2 := Point(imgPt2.x, pt1.y);
                 end;
-                ADrawer.Line(imgPt1, pt1);
-                ADrawer.Line(pt1, pt2);
-                ADrawer.Line(pt2, imgPt2);
+                DrawLine(imgPt1, pt1);
+                DrawLine(pt1, pt2);
+                DrawLine(pt2, imgPt2);
               end;
             ltFromOrigin:
-              ADrawer.Line(origin, imgPt2);
+              DrawLine(origin, imgPt2);
             else
               raise EChartError.Create('[TLineSeries.DrawSingleLineInStack] Unhandled LineType');
           end;
