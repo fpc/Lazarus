@@ -5,6 +5,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
   Width = 459
   ClientHeight = 424
   ClientWidth = 459
+  LCLVersion = '4.99.0.0'
   ParentFont = False
   TabOrder = 0
   Visible = False
@@ -29,6 +30,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     TabOrder = 0
     OnKeyPress = FilterEditKeyPress
     FilteredTreeview = TreeView
+    ShowChildrenOfTopLevelMatch = True
   end
   object FindKeyButton: TBitBtn
     AnchorSideLeft.Side = asrBottom

@@ -94,6 +94,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
         TabOrder = 0
         FilteredTreeview = CategoryTree
         ExpandAllInitially = True
+        ShowChildrenOfTopLevelMatch = True
       end
       object CategoryTree: TTreeView
         Left = 0

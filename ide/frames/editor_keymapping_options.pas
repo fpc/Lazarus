@@ -271,18 +271,15 @@ function TEditorKeymappingOptionsFrame.FilterEditFilterItem(ItemData: Pointer;
 var
   KeyRel: TKeyCommandRelation;
 begin
-  Done:=True;
+  Done:=False;
   Result:=False;
-  if TObject(ItemData) is TKeyCommandRelation then
-  begin
-    KeyRel:=TKeyCommandRelation(ItemData);      // Tree item is actual key command.
-    Done:=False;
-    Result:=KeyMapKeyFilter.Key1<>VK_UNKNOWN;
-    if Result then begin                        // Key filter is defined.
+  // Tree item is actual key command, not TKeyCommandCategory.
+  if (TObject(ItemData) is TKeyCommandRelation)
+  and (KeyMapKeyFilter.Key1<>VK_UNKNOWN) then begin // Key filter is defined.
       Done:=True;
+      KeyRel:=TKeyCommandRelation(ItemData);
       Result:=(CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutA)=0)
            or (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutB)=0);
-    end;
   end;
 end;
 
