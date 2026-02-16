@@ -1097,7 +1097,7 @@ begin
   FHelper.FClipRect := AClipRect;
   FHelper.FDrawer := ADrawer;
   FHelper.FTransf := ATransf;
-  FHelper.FZOffset.Y := Min(ZPosition, AMaxZPosition);
+  FHelper.FZOffset.Y := ADrawer.Scale(Min(ZPosition, AMaxZPosition));
   FHelper.FZOffset.X := -FHelper.FZOffset.Y;
   FHelper.FAtDataOnly := AtDataOnly;
   FHelper.FMaxForMarks := NegInfinity;
