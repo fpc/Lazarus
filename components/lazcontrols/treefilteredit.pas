@@ -126,6 +126,7 @@ type
     fImageIndexDirectory: integer;  // Needed if directory structure is shown.
     FScrolledPos: TPoint;
     fSelectionList: TStringList;    // Store/restore the old selections here.
+    fShowChildrenOfTopMatch: Boolean; // Used when the top item is a category.
     fShowDirHierarchy: Boolean;     // Show directories / files as a tree structure.
     fBranches: TBranchList;         // Items under these nodes can be sorted.
     fExpandAllInitially: Boolean;   // Expand all levels when searched for the first time.
@@ -166,7 +167,9 @@ type
     property ShowDirHierarchy: Boolean read fShowDirHierarchy write SetShowDirHierarchy;
   published
     property FilteredTreeview: TCustomTreeview read fFilteredTreeview write SetFilteredTreeview;
-    property ExpandAllInitially: Boolean read fExpandAllInitially write fExpandAllInitially default False;
+    property ExpandAllInitially: Boolean read fExpandAllInitially write fExpandAllInitially;
+    property ShowChildrenOfTopLevelMatch: Boolean read fShowChildrenOfTopMatch
+                                                 write fShowChildrenOfTopMatch;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
     property OnFilterNode: TFilterNodeEvent read fOnFilterNode write fOnFilterNode;
   end;
@@ -758,6 +761,21 @@ begin
   InvalidateFilter;
 end;
 
+function ShowAllChildren(RootNode: TTreeNode): Boolean;
+var
+  Node: TTreeNode;
+begin
+  Result := True;
+  RootNode.Visible := True;
+  RootNode.Expanded := True;
+  Node := RootNode.GetFirstChild;
+  while Node<>nil do
+  begin
+    ShowAllChildren(Node);
+    Node := Node.GetNextSibling;
+  end;
+end;
+
 function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Filter all tree branches recursively, setting Node.Visible as needed.
 // Returns True if Node or its siblings or child nodes have visible items.
@@ -777,11 +795,15 @@ begin
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.
-    Node.Visible := FilterTree(Node.GetFirstChild) or Pass;
-    if Node.Visible then begin                 // Collapse all when Filter=''.
-      if (Filter<>'') or (fExpandAllInitially and fIsFirstUpdate) then
-        Node.Expanded := True;
-      Result := True;
+    if Pass and fShowChildrenOfTopMatch and (Filter<>'') and (Node.Parent=nil) then
+      Result := ShowAllChildren(Node)
+    else begin
+      Node.Visible := FilterTree(Node.GetFirstChild) or Pass;
+      if Node.Visible then begin                 // Collapse all when Filter=''.
+        if (Filter<>'') or (fExpandAllInitially and fIsFirstUpdate) then
+          Node.Expanded := True;
+        Result := True;
+      end;
     end;
     Node := Node.GetNextSibling;
   end;
