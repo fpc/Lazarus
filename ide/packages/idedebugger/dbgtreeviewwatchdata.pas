@@ -516,9 +516,10 @@ begin
     (* If the watch is ddsRequested or ddsEvaluating => keep any expanded tree-nodes. (Avoid flicker)
        > ddsEvaluating includes "not HasAllValidParents"
        If the debugger is running => keey any expanded tree-nodes
+       > ddsInvalid happens when the debugger changes from pause to run, and the watch had not been evaluated
     *)
 
-    if (not(AWatchAbleResult.Validity in [ddsRequested, ddsEvaluating])) and
+    if (not(AWatchAbleResult.Validity in [ddsRequested, ddsEvaluating, ddsInvalid])) and
        ((DebugBoss = nil) or (DebugBoss.State <> dsRun))
     then begin
       TypInfo := AWatchAbleResult.TypeInfo;
