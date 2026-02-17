@@ -669,32 +669,32 @@ end;
 
 procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);
 var
-  P: NSPoint;
+  rect: NSRect;
   scrollView: NSScrollView;
 begin
-  // 1. convert to window base
   // Convert from View-lcl to View-cocoa
-  P.x := X;
+  rect.size:= NSZeroSize;
+  rect.origin.x:= X;
   if isFlipped then
-    p.y := Y
+    rect.origin.y:= Y
   else
-    P.y := frame.size.height-y;   // convert to Cocoa system
-
-  scrollView:= self.enclosingScrollView;
-  if Assigned(scrollView) and (scrollView.documentView=self) then begin
-    P.y:= P.y + Round(scrollView.documentVisibleRect.origin.y);
-  end;
+    rect.origin.y:= frame.size.height - y;
 
   // Convert from View-cocoa to Window-cocoa
-  P := convertPoint_ToView(P, nil);
+  rect.origin:= self.convertPoint_ToView( rect.origin, nil );
 
-  // Convert from Window-cocoa to Window-lcl
-  X := Round(P.X);
-  Y := Round(window.frame.size.height-P.Y); // convert to LCL system
+  // Convert from Window-cocoa to Screen-cocoa
+  rect:= window.convertRectToScreen( rect );
 
-  // 2. convert window to screen
-  // Use window function to convert fomr Window-lcl to Screen-lcl
-  window.lclLocalToScreen(X, Y);
+  // Convert from Screen-cocoa to Screen-lcl
+  x:= Round( rect.origin.x );
+  y:= Round( NSGlobalScreenBottom - rect.origin.y );
+
+  if NOT (lclGetTarget is TScrollingWinControl) then begin
+    scrollView:= self.enclosingScrollView;
+    if Assigned(scrollView) and (scrollView.documentView=self) then
+      y:= y + Round(scrollView.documentVisibleRect.origin.y);
+  end;
 end;
 
 procedure LCLViewExtension.lclScreenToLocal(var X, Y: Integer);
