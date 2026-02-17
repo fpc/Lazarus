@@ -13486,6 +13486,8 @@ function TFindDeclarationTool.IsBaseCompatible(const TargetType,
 // test if ExpressionType can be assigned to TargetType
 // both expression types must be base types
 var TargetNode, ExprNode: TCodeTreeNode;
+  ExprOfElement: TExpressionType;
+  TargetParams: TFindDeclarationParams;
 begin
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.IsBaseCompatible] START ',
@@ -13508,6 +13510,24 @@ begin
       begin
         TargetNode:=TargetType.Context.Node;
         ExprNode:=ExpressionType.Context.Node;
+        if (TargetNode.Desc=ctnOpenArrayType) and (ExprNode.Desc<>ctnOpenArrayType) then begin
+        // switch TargetNode to node of declaration of an array element type
+          try
+            TargetParams:= TFindDeclarationParams.Create(Params);
+            TargetParams.SetIdentifier(Self,nil,nil);
+            TargetParams.Flags:=fdfDefaultForExpressions;
+            ExprOfElement:=CleanExpressionType;
+            ExprOfElement:=
+              FindExpressionTypeOfTerm(TargetNode.FirstChild.StartPos,-1,Params,false);
+            if ExprOfElement.Desc=xtContext then
+              TargetNode:=ExprOfElement.Context.Node
+            else
+              exit;
+          finally
+            TargetParams.Free;
+          end;
+        end;
+
         {$IFDEF ShowExprEval}
         DebugLn('[TFindDeclarationTool.IsBaseCompatible] C ',
         ' TargetContext="',copy(TargetType.Context.Tool.Src,TargetType.Context.Node.StartPos,20),'"',
@@ -13578,7 +13598,7 @@ begin
         Result:=tcCompatible
       else if (TargetNode.Desc in [ctnOpenArrayType,ctnRangedArrayType])
         and (TargetNode.LastChild<>nil)
-        and (TargetNode.LastChild.Desc=ctnOfConstType)
+        and (TargetNode.LastChild.Desc in [ctnOfConstType, ctnIdentifier])
         and (ExpressionType.Desc=xtConstSet)
       then
         Result:=tcCompatible;
