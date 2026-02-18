@@ -13516,7 +13516,6 @@ begin
             TargetParams:= TFindDeclarationParams.Create(Params);
             TargetParams.SetIdentifier(Self,nil,nil);
             TargetParams.Flags:=fdfDefaultForExpressions;
-            ExprOfElement:=CleanExpressionType;
             ExprOfElement:=
               FindExpressionTypeOfTerm(TargetNode.FirstChild.StartPos,-1,Params,false);
             if ExprOfElement.Desc=xtContext then
