@@ -728,8 +728,6 @@ begin
   if (Source is TCustomEdit) then s := TCustomEdit(Source).SelText;
 
   if s <> '' then begin
-    if (GetSelectedSnapshot <> nil) then
-      Target := nil; // add at end
 
     BeginUpdate;
     DebugBoss.Watches.CurrentWatches.BeginUpdate;
@@ -740,6 +738,12 @@ begin
       if EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass then
         AWatch.EvaluateFlags := [defClassAutoCast];
 
+      if (GetSelectedSnapshot <> nil) then begin
+        // The watch is not in the snapshot. Force displaying it to provide feedback.
+        // It will be cleared of the list on the next change of snapshot.
+        FWatchTreeMgr.AddWatchData(AWatch);
+      end
+      else
       if Target <> nil then begin
         NewNode := nil;
         if (Mode = dmAbove) then
