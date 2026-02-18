@@ -67,7 +67,7 @@ type
     fMissingUnits: TStringList;          // Units not found in search path.
     function FindMissingUnits: boolean;
     procedure ToBeRenamedOrRemoved(AOldName, ANewName: string);
-    procedure FindReplacement(AUnitUpdater: TStringMapUpdater;
+    procedure FindReplacement(AUnitUpdater: TNameUpdater;
                               AMapToEdit: TStringToStringTree);
     function AddDelphiAndLCLSections: Boolean;
     function RemoveUnits: boolean;
@@ -337,7 +337,7 @@ begin
   end;
 end;
 
-procedure TUsedUnits.FindReplacement(AUnitUpdater: TStringMapUpdater;
+procedure TUsedUnits.FindReplacement(AUnitUpdater: TNameUpdater;
                                      AMapToEdit: TStringToStringTree);
 var
   i: integer;
@@ -586,7 +586,7 @@ function TUsedUnitsTool.Prepare: TModalResult;
 // Find missing units and mark some of them to be replaced later.
 // More units can be marked for add, remove, rename and comment during conversion.
 var
-  UnitUpdater: TStringMapUpdater;
+  UnitUpdater: TNameUpdater;
   MapToEdit: TStringToStringTree;
   Node: TAVLTreeNode;
   Item: PStringToStringItem;
@@ -597,12 +597,13 @@ begin
   // Add unit 'Interfaces' if project uses 'Forms' and doesn't have 'Interfaces' yet.
   if fIsMainFile then begin
     if ( fMainUsedUnits.fExistingUnits.Find('forms', i)
+      or fMainUsedUnits.fExistingUnits.Find('Vcl.Forms', i)
       or fImplUsedUnits.fExistingUnits.Find('forms', i) )
     and (not fMainUsedUnits.fExistingUnits.Find('interfaces', i) )
     and (not fImplUsedUnits.fExistingUnits.Find('interfaces', i) ) then
       fMainUsedUnits.fUnitsToAddForLCL.Add('Interfaces');
   end;
-  UnitUpdater:=TStringMapUpdater.Create(fCTLink.Settings.ReplaceUnits);
+  UnitUpdater:=TNameUpdater.Create(fCTLink.Settings.ReplaceUnits);
   try
     MapToEdit:=Nil;
     if fCTLink.Settings.UnitsReplaceMode=rlInteractive then

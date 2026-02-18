@@ -390,7 +390,7 @@ function TConvDelphiCodeTool.FixMainClassAncestor(const AClassName: string;
 // Replace the ancestor type of main form with a fall-back type if needed.
 var
   ANode, InheritanceNode: TCodeTreeNode;
-  TypeUpdater: TStringMapUpdater;
+  TypeUpdater: TNameUpdater;
   OldType, NewType: String;
 begin
   Result:=false;
@@ -410,7 +410,7 @@ begin
       ReadNextAtom;
       OldType:=GetAtom;
     end;
-    TypeUpdater:=TStringMapUpdater.Create(AReplaceTypes);
+    TypeUpdater:=TNameUpdater.Create(AReplaceTypes);
     try
       // Find replacement for ancestor type maybe using regexp syntax.
       if TypeUpdater.FindReplacement(OldType, NewType) then begin

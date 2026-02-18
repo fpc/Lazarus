@@ -5,7 +5,7 @@ unit ReplaceNamesUnit;
 interface
 
 uses
-  Classes, SysUtils, RegExpr,
+  Classes, SysUtils, StrUtils, RegExpr, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, Grids, Menus, ButtonPanel,
   // LazUtils
@@ -20,11 +20,20 @@ type
   TStringMapUpdater = class
   private
     fStringToStringMap: TStringToStringTree;
-    fSeenNames: TStringMap;
+    fMapNames: TStringList;  // Names (keys) in fStringToStringMap.
+    fNoReplacementNames: TStringMap;
   public
     constructor Create(AStringToStringMap: TStringToStringTree);
     destructor Destroy; override;
     function FindReplacement(AIdent: string; out AReplacement: string): boolean;
+  end;
+
+  { TNameUpdater }
+
+  TNameUpdater = class(TStringMapUpdater)
+  public
+    //constructor Create(AStringToStringMap: TStringToStringTree);
+    //destructor Destroy; override;
   end;
 
   { TGridUpdater }
@@ -32,7 +41,8 @@ type
   TGridUpdater = class(TStringMapUpdater)
   private
     fGrid: TStringGrid;
-    GridEndInd: Integer;
+    fSeenNames: TStringMap;
+    fGridEndInd: Integer;
   public
     constructor Create(AStringToStringMap: TStringToStringTree; AGrid: TStringGrid);
     destructor Destroy; override;
@@ -198,18 +208,36 @@ begin
   end;
 end;
 
+procedure GetMapNames(Map: TStringToStringTree; List: TStrings);
+var
+  Node: TAvlTreeNode;
+  Item: PStringMapItem;
+begin
+  Node:=Map.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringMapItem(Node.Data);
+    if EndsStr('\.(.+)', Item^.Name) then
+      List.Insert(0, Item^.Name)  // Put RegExp for dotted unit names first.
+    else
+      List.Add(Item^.Name);
+    Node:=Node.Successor;
+  end;
+end;
 
 { TStringMapUpdater }
 
 constructor TStringMapUpdater.Create(AStringToStringMap: TStringToStringTree);
 begin
   fStringToStringMap:=AStringToStringMap;
-  fSeenNames:=TStringMap.Create(False);
+  fMapNames:=TStringList.Create;
+  GetMapNames(fStringToStringMap, fMapNames);
+  fNoReplacementNames:=TStringMap.Create(False);
 end;
 
 destructor TStringMapUpdater.Destroy;
 begin
-  fSeenNames.Free;
+  fNoReplacementNames.Free;
+  fMapNames.Free;
   inherited Destroy;
 end;
 
@@ -218,53 +246,72 @@ function TStringMapUpdater.FindReplacement(AIdent: string;
 // Try to find a matching replacement using regular expression.
 var
   RE: TRegExpr;
-  MapNames: TStringList;  // Names (keys) in fStringToStringMap.
   i: Integer;
   Key: string;
+  IsDotted: Boolean;
 begin
-  if fStringToStringMap.Contains(AIdent) then begin
-    AReplacement:=fStringToStringMap[AIdent];
-    Result:=true;
-  end
-  else begin                     // Not found by name, try regexp.
-    Result:=false;
-    AReplacement:='';
-    RE:=TRegExpr.Create;
-    MapNames:=TStringList.Create;
-    try
-      RE.ModifierI:=True;
-      fStringToStringMap.GetNames(MapNames);
-      for i:=0 to MapNames.Count-1 do begin
-        Key:=MapNames[i]; // fMapNames has names extracted from fStringToStringMap.
-        // If key contains special chars, assume it is a regexp.
-        if (Pos('(',Key)>0) or (Pos('*',Key)>0) or (Pos('+',Key)>0) then begin
-          RE.Expression:=Key;
-          if RE.Exec(AIdent) then begin  // Match with regexp.
-            AReplacement:=RE.Substitute(fStringToStringMap[Key]);
-            Result:=true;
-            Break;
+  Result:=false;
+  AReplacement:='';
+  if fNoReplacementNames.Contains(AIdent) then  // Already tried, no replacement.
+    exit;
+  repeat
+    IsDotted:=False;
+    if fStringToStringMap.Contains(AIdent) then begin
+      AReplacement:=fStringToStringMap[AIdent];
+      Result:=true;
+    end
+    else begin                     // Not found by name, try RegExp.
+      RE:=TRegExpr.Create;
+      try
+        RE.ModifierI:=True;
+        for i:=0 to fMapNames.Count-1 do begin
+          Key:=fMapNames[i]; // fMapNames has names extracted from fStringToStringMap.
+          // If key contains special chars, assume it is a RegExp.
+          if (Pos('(',Key)>0) or (Pos('*',Key)>0) or (Pos('+',Key)>0) then begin
+            RE.Expression:=Key;
+            if RE.Exec(AIdent) then begin // Match with RegExp.
+              Result:=true;
+              AReplacement:=RE.Substitute(fStringToStringMap[Key]);
+              AIdent:=AReplacement;  // Continue with the replacement if first part
+              IsDotted:=EndsStr('\.(.+)', Key);  // of dotted name was stripped.
+              Break;
+            end;
           end;
         end;
+      finally
+        RE.Free;
       end;
-    finally
-      MapNames.Free;
-      RE.Free;
     end;
-  end;
+  until not IsDotted;
+  if not Result then
+    fNoReplacementNames.Add(AIdent);    // Means AOldIdent had no replacement.
 end;
 
+{ TNameUpdater }
+{
+constructor TNameUpdater.Create(AStringToStringMap: TStringToStringTree);
+begin
+  inherited;
+end;
 
+destructor TNameUpdater.Destroy;
+begin
+  inherited Destroy;
+end;
+}
 { TGridUpdater }
 
 constructor TGridUpdater.Create(AStringToStringMap: TStringToStringTree; AGrid: TStringGrid);
 begin
   inherited Create(AStringToStringMap);
   fGrid:=AGrid;
-  GridEndInd:=1;
+  fSeenNames:=TStringMap.Create(False);
+  fGridEndInd:=1;
 end;
 
 destructor TGridUpdater.Destroy;
 begin
+  fSeenNames.Free;
   inherited Destroy;
 end;
 
@@ -276,11 +323,11 @@ begin
     // Add only one instance of each name.
     fSeenNames.Add(AOldIdent);
     FindReplacement(AOldIdent, Result);
-    if fGrid.RowCount<GridEndInd+1 then
-      fGrid.RowCount:=GridEndInd+1;
-    fGrid.Cells[0,GridEndInd]:=AOldIdent;
-    fGrid.Cells[1,GridEndInd]:=Result;
-    Inc(GridEndInd);
+    if fGrid.RowCount<fGridEndInd+1 then
+      fGrid.RowCount:=fGridEndInd+1;
+    fGrid.Cells[0,fGridEndInd]:=AOldIdent;
+    fGrid.Cells[1,fGridEndInd]:=Result;
+    Inc(fGridEndInd);
   end
   else
     Result:='';
