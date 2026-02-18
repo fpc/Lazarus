@@ -964,6 +964,12 @@ end;
 function TDbgTreeView.DetermineDropMode(const P: TPoint; var HitInfo: THitInfo;
   var NodeRect: TRect): TDropMode;
 begin
+  if not Assigned(HitInfo.HitNode) and (HitInfo.HitPositions * [hiAbove,hiBelow] = []) then begin
+    HitInfo.HitNode := GetLastVisibleNoInit;
+    NodeRect := GetDisplayRect(HitInfo.HitNode, HitInfo.HitColumn, False);
+    Result := dmBelow;
+  end
+  else
   if Assigned(HitInfo.HitNode) then
   begin
     if ((NodeRect.Top + NodeRect.Bottom) div 2) > P.Y then

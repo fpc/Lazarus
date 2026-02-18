@@ -1274,6 +1274,9 @@ begin
      (FDraggingGroupHeader)
   then
     DropMode := dmNowhere;
+
+  if (HitInfo.HitNode <> nil) and (GetGroupFrame(HitInfo.HitNode) <> nil) then // header node
+    DropMode := dmNowhere
 end;
 
 procedure TBreakPointsDlg.tvBreakPointsFocusChanged(Sender: TBaseVirtualTree;
