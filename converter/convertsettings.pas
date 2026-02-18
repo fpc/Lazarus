@@ -497,6 +497,11 @@ begin
   TheMap:=fReplaceUnits;
   LoadStringToStringTree('UnitReplacements/', TheMap);
   // Add default values for configuration if ConfigStorage doesn't have them
+  // Remove the first part of dotted unit names.
+  MapReplacement('^Winapi\.(.+)',       '$1');         // Windows units.
+  MapReplacement('^System\.(.+)',       '$1');
+  MapReplacement('^Vcl\.(.+)',          '$1');
+  // Windows specifig types need special treatment.
   MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
   MapReplacement('WinTypes',            'LCLIntf, LCLType, LMessages');
   MapReplacement('WinProcs',            'LCLIntf, LCLType, LMessages');
