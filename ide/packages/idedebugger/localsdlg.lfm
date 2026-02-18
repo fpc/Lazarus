@@ -9,6 +9,7 @@ object LocalsDlg: TLocalsDlg
   Caption = 'Locals'
   ClientHeight = 200
   ClientWidth = 500
+  LCLVersion = '4.99.0.0'
   OnShow = FormShow
   object vtLocals: TDbgTreeView
     Left = 0
@@ -33,7 +34,7 @@ object LocalsDlg: TLocalsDlg
     Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
     PopupMenu = PopupMenu1
     TabOrder = 0
-    TreeOptions.AutoOptions = [toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
+    TreeOptions.AutoOptions = [toAutoScroll, toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
     TreeOptions.MiscOptions = [toFullRepaintOnResize, toInitOnSave, toWheelPanning]
     TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseExplorerTheme]
     TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toRightClickSelect]

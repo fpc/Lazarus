@@ -10,6 +10,7 @@ object WatchesDlg: TWatchesDlg
   ClientHeight = 240
   ClientWidth = 520
   KeyPreview = True
+  LCLVersion = '4.99.0.0'
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -159,7 +160,7 @@ object WatchesDlg: TWatchesDlg
       Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
       PopupMenu = mnuPopup
       TabOrder = 1
-      TreeOptions.AutoOptions = [toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
+      TreeOptions.AutoOptions = [toAutoScroll, toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
       TreeOptions.MiscOptions = [toFullRepaintOnResize, toInitOnSave, toWheelPanning]
       TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseExplorerTheme]
       TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toRightClickSelect]
