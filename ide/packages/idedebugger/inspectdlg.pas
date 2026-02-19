@@ -778,7 +778,16 @@ begin
       if (not Docked) and (not WatchInspectNav1.DropDownOpen) then
         Close;
     end;
-    VK_UP, VK_DOWN, VK_HOME, VK_END, VK_PRIOR, VK_NEXT: begin
+    VK_HOME, VK_END: begin
+      if FInKeyForward then exit;
+      if WatchInspectNav1.edFilter.Focused then
+        exit;
+      if (ssCtrl in Shift) or (not WatchInspectNav1.EdInspect.Focused) then begin
+        Exclude(Shift, ssCtrl);
+        SentToGrid;
+      end;
+    end;
+    VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT: begin
       if FInKeyForward then exit;
       if (ssCtrl in Shift) or (not WatchInspectNav1.EdInspect.Focused) then begin
         Exclude(Shift, ssCtrl);
