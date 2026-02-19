@@ -5311,7 +5311,7 @@ begin
      (TWinControl(Result).ControlCount > 0) then
   begin
     // in LCL ClientOrigin contains the scroll offset. At least this is so
-    // for win32 and gtk2
+    // for win32 and gtk2 and Cocoa
     OldClientOrigin := ClientOrigin;
     NewClientOrigin := TWinControl(Result).ClientOrigin;
     NewPos := Pos;

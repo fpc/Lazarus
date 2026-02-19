@@ -3441,14 +3441,19 @@ const
 var
   WinControl: TWinControl;
   Control: TControl;
+  clientPos: TPoint;
+  flags: TControlAtPosFlags;
 begin
   Result := nil;
   WinControl := FindLCLWindow(Position, AllowDisabled);
   if Assigned(WinControl) then
   begin
     Result := WinControl;
-    Control := WinControl.ControlAtPos(WinControl.ScreenToClient(Position),
-                        [capfAllowWinControls, capfRecursive] + DisabledFlag[AllowDisabled]);
+    clientPos := WinControl.ScreenToClient(Position);
+    clientPos.Offset(WinControl.GetClientScrollOffset());
+    flags := [capfAllowWinControls, capfRecursive, capfHasScrollOffset]
+            + DisabledFlag[AllowDisabled];
+    Control := WinControl.ControlAtPos(clientPos, flags);
     //debugln(['FindControlAtPosition ',dbgs(Position),' ',DbgSName(WinControl),' ',dbgs(WinControl.ScreenToClient(Position)),' ',DbgSName(Control)]);
     if Assigned(Control) then
       Result := Control;
