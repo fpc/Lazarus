@@ -10,6 +10,7 @@ object EvaluateDlg: TEvaluateDlg
   Constraints.MinHeight = 200
   Constraints.MinWidth = 300
   KeyPreview = True
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
@@ -22,6 +23,8 @@ object EvaluateDlg: TEvaluateDlg
     Align = alClient
     ScrollBars = ssAutoBoth
     TabOrder = 1
+    OnDragDrop = DoDragDrop
+    OnDragOver = DoDragOver
     OnMouseDown = FormMouseDown
   end
   inline WatchInspectNav1: TWatchInspectNav
@@ -167,9 +170,13 @@ object EvaluateDlg: TEvaluateDlg
       ClientWidth = 420
       inherited EdInspect: TComboBox
         Width = 398
+        OnDragDrop = DoDragDrop
+        OnDragOver = DoDragOver
       end
       inherited BtnExecute: TSpeedButton
         Left = 399
+        OnDragDrop = DoDragDrop
+        OnDragOver = DoDragOver
       end
     end
   end

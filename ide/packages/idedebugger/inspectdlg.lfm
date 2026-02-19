@@ -10,7 +10,7 @@ object IDEInspectDlg: TIDEInspectDlg
   Constraints.MinHeight = 200
   Constraints.MinWidth = 200
   KeyPreview = True
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
@@ -32,17 +32,25 @@ object IDEInspectDlg: TIDEInspectDlg
     Align = alClient
     TabIndex = 3
     TabOrder = 1
+    OnDragDrop = DoDragDrop
+    OnDragOver = DoDragOver
     OnMouseDown = DataGridMouseDown
     object DataPage: TTabSheet
       Caption = 'DataPage'
+      OnDragDrop = DoDragDrop
+      OnDragOver = DoDragOver
       OnMouseDown = DataGridMouseDown
     end
     object PropertiesPage: TTabSheet
       Caption = 'PropertiesPage'
+      OnDragDrop = DoDragDrop
+      OnDragOver = DoDragOver
       OnMouseDown = DataGridMouseDown
     end
     object MethodsPage: TTabSheet
       Caption = 'MethodsPage'
+      OnDragDrop = DoDragDrop
+      OnDragOver = DoDragOver
       OnMouseDown = DataGridMouseDown
     end
     object ErrorPage: TTabSheet
@@ -51,6 +59,8 @@ object IDEInspectDlg: TIDEInspectDlg
       ClientWidth = 488
       PopupMenu = PopupMenu1
       TabVisible = False
+      OnDragDrop = DoDragDrop
+      OnDragOver = DoDragOver
       OnMouseDown = DataGridMouseDown
       object ErrorLabel: TLabel
         Left = 0
@@ -60,6 +70,8 @@ object IDEInspectDlg: TIDEInspectDlg
         Align = alTop
         ParentColor = False
         PopupMenu = PopupMenu1
+        OnDragDrop = DoDragDrop
+        OnDragOver = DoDragOver
         OnMouseDown = DataGridMouseDown
       end
     end
@@ -188,11 +200,17 @@ object IDEInspectDlg: TIDEInspectDlg
     inherited Panel1: TPanel
       Width = 498
       ClientWidth = 498
+      OnDragDrop = DoDragDrop
+      OnDragOver = DoDragOver
       inherited EdInspect: TComboBox
         Width = 476
+        OnDragDrop = DoDragDrop
+        OnDragOver = DoDragOver
       end
       inherited BtnExecute: TSpeedButton
         Left = 477
+        OnDragDrop = DoDragDrop
+        OnDragOver = DoDragOver
       end
     end
   end

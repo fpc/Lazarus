@@ -6,7 +6,7 @@ object MemViewDlg: TMemViewDlg
   Caption = 'MemViewDlg'
   ClientHeight = 240
   ClientWidth = 800
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -44,6 +44,8 @@ object MemViewDlg: TMemViewDlg
       Width = 150
       AutoSize = False
       TabOrder = 0
+      OnDragDrop = edMemViewerDragDrop
+      OnDragOver = edMemViewerDragOver
       OnEditingDone = edAddressBaseEditingDone
     end
     object edAddressOffs: TLazIntegerEdit
@@ -140,6 +142,8 @@ object MemViewDlg: TMemViewDlg
     ParentColor = False
     ParentFont = False
     TabOrder = 1
+    OnDragDrop = edMemViewerDragDrop
+    OnDragOver = edMemViewerDragOver
     Gutter.Width = 102
     Gutter.MouseActions = <>
     RightGutter.Width = 0

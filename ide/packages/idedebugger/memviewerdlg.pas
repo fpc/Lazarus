@@ -55,6 +55,9 @@ type
     procedure edAddressOffsEditingDone(Sender: TObject);
     procedure edDataLenKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure edMemViewerDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure edMemViewerDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState;
+      var Accept: Boolean);
     procedure menuGroupItemClicked(Sender: TObject);
     procedure SynGutterLineNumber1FormatLineNumber(
       Sender: TSynGutterLineNumber; ALine: integer; out AText: string;
@@ -214,6 +217,62 @@ begin
   if v <> 0 then begin
     Key := 0;
     edDataLen.Value := edDataLen.CurrentValue + v;
+  end;
+end;
+
+procedure TMemViewDlg.edMemViewerDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+var
+  IDrag: IIdeDbgDragDropWatchSource;
+begin
+  Accept := ( (Source is TSynEdit) and (TSynEdit(Source).SelAvail) ) or
+            ( (Source is TCustomEdit) and (TCustomEdit(Source).SelText <> '') );
+
+  if (not Accept) and (
+      Source.GetInterface(IIdeDbgDragDropWatchSource, IDrag) or
+      ( (Source is TComponent) and
+        TComponent(Source).Owner.GetInterface(IIdeDbgDragDropWatchSource, IDrag) )
+  )
+  then begin
+    Accept := IDrag.DragWatchCount(Source) = 1; // must be exactly one
+    IDrag.DragWatchDone(Source);
+  end;
+end;
+
+procedure TMemViewDlg.edMemViewerDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  s: String;
+  IDrag: IIdeDbgDragDropWatchSource;
+  AWatch: TCurrentWatch;
+begin
+  if (Source is TSynEdit) then begin
+    if TSynEdit(Source).SelAvail then
+      Execute(TSynEdit(Source).SelText);
+    exit;
+  end;
+
+  if (Source is TCustomEdit) then begin
+    s := TCustomEdit(Source).SelText;
+    if s <> '' then
+      Execute(s);
+    exit;
+  end;
+
+  if Source.GetInterface(IIdeDbgDragDropWatchSource, IDrag) or
+     ( (Source is TComponent) and
+       TComponent(Source).Owner.GetInterface(IIdeDbgDragDropWatchSource, IDrag) )
+  then begin
+    if IDrag.DragWatchCount(Source) = 1 then begin
+      FWatches.BeginUpdate;
+      AWatch := FWatches.Add(''); // Do not destroy the watch, UpdateData will take care of it
+      IDrag.DragWatchInit(Source, 0, AWatch);
+      s := AWatch.Expression;
+      AWatch.Destroy;
+      FWatches.EndUpdate;
+      Execute(s);
+    end;
+    IDrag.DragWatchDone(Source);
+    exit;
   end;
 end;
 

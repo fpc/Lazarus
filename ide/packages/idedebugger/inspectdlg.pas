@@ -57,7 +57,7 @@ type
 
   { TIDEInspectDlg }
 
-  TIDEInspectDlg = class(TDebuggerDlg)
+  TIDEInspectDlg = class(TDebuggerDlg, IIdeDbgDragDropWatchSource)
     ErrorLabel: TLabel;
     menuCopyValue: TMenuItem;
     PageControl: TPageControl;
@@ -70,6 +70,9 @@ type
     TimerFilter: TTimer;
     TimerClearData: TTimer;
     WatchInspectNav1: TWatchInspectNav;
+    procedure DoDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure DoDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState;
+      var Accept: Boolean);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -101,6 +104,7 @@ type
     FExpressionWasEvaluated: Boolean;
     FInKeyForward: Boolean;
 
+    function GetExpressionForRow(ARow: Integer; out AltExpr: String): String;
     procedure ArrayNavChanged(Sender: TArrayNavigationBar; AValue: Int64);
     procedure DoAddEval(Sender: TObject);
     procedure DoAddWatch(Sender: TObject);
@@ -138,6 +142,9 @@ type
     procedure ShowMethodsFields;
     //procedure ShowError;
     procedure Clear(Sender: TObject = nil);
+    function DragWatchCount(ASender: TObject): integer;
+    procedure DragWatchInit(ASender: TObject; AnIndex: integer; AWatch: TIdeWatch);
+    procedure DragWatchDone(ASender: TObject);
   protected
     function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
     procedure ColSizeSetter(AColId: Integer; ASize: Integer);
@@ -186,6 +193,17 @@ end;
 procedure TIDEInspectDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TIDEInspectDlg.DoDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState;
+  var Accept: Boolean);
+begin
+  Accept := WatchInspectNav1.CanReadFromDragObject(Source);
+end;
+
+procedure TIDEInspectDlg.DoDragDrop(Sender, Source: TObject; X, Y: Integer);
+begin
+  WatchInspectNav1.ReadFromDragObject(Source);
 end;
 
 procedure TIDEInspectDlg.FormCreate(Sender: TObject);
@@ -640,45 +658,42 @@ begin
   EdFilterDone(nil);
 end;
 
-procedure TIDEInspectDlg.DataGridDoubleClick(Sender: TObject);
+function TIDEInspectDlg.GetExpressionForRow(ARow: Integer; out AltExpr: String): String;
 var
-  i: Integer;
-  s, t: String;
+  t: String;
 begin
-  if (WatchInspectNav1.CurrentWatchValue = nil) or (WatchInspectNav1.Expression = '') then exit;
+  Result := '';
+  AltExpr := '';
+  if (WatchInspectNav1.CurrentWatchValue = nil) or (WatchInspectNav1.Expression = '') or
+     (ARow < 1) or (ARow >= FGridData.RowCount)
+  then
+    exit;
 
   if WatchInspectNav1.CurrentWatchValue.TypeInfo <> nil then begin
 
     if (WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind in [skClass, skRecord, skObject]) then begin
-      i := FGridData.Row;
-      if (i < 1) or (i >= FGridData.RowCount) then exit;
-      s := FGridData.Cells[1, i];
+      Result := FGridData.Cells[1, ARow];
 
       if WatchInspectNav1.UseInstanceIsDown and (WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind = skClass) then
-        Execute(FGridData.Cells[0, i] + '(' + WatchInspectNav1.Expression + ').' + s)
+        Result := FGridData.Cells[0, ARow] + '(' + WatchInspectNav1.Expression + ').' + Result
       else
-        Execute(WatchInspectNav1.Expression + '.' + s);
+        Result := WatchInspectNav1.Expression + '.' + Result;
       exit;
     end;
 
     if (WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind in [skPointer]) then begin
-      i := FGridData.Row;
-      if (i < 1) or (i >= FGridData.RowCount) then exit;
-      s := FGridData.Cells[1, i];
-      t := FGridData.Cells[2, i];
-      Execute('(' + WatchInspectNav1.Expression + ')^');
-      if not FExpressionWasEvaluated then
-        FAlternateExpression := t + '(' + WatchInspectNav1.Expression + ')[0]';
+      Result := FGridData.Cells[1, ARow];
+      t := FGridData.Cells[2, ARow];
+      Result := '(' + WatchInspectNav1.Expression + ')^';
+      AltExpr := t + '(' + WatchInspectNav1.Expression + ')[0]';
       exit;
     end;
 
     if (WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind in [skSimple]) and (WatchInspectNav1.CurrentWatchValue.TypeInfo.Attributes*[saArray,saDynArray] <> []) then begin
       if WatchInspectNav1.CurrentWatchValue.TypeInfo.Len < 1 then exit;
       if WatchInspectNav1.CurrentWatchValue.TypeInfo.Fields.Count > 0 then begin
-        i := FGridData.Row;
-        if (i < 1) or (i >= FGridData.RowCount) then exit;
-        s := FGridData.Cells[1, i];
-        Execute(WatchInspectNav1.Expression + '[' + s + ']');
+        Result := FGridData.Cells[1, ARow];
+        Result := WatchInspectNav1.Expression + '[' + Result + ']';
       end
       else begin
         //
@@ -690,50 +705,49 @@ begin
   if FCurrentResData <> nil then begin
     case FCurrentResData.ValueKind of
       rdkPointerVal: begin
-          i := FGridData.Row;
-          if (i < 1) or (i >= FGridData.RowCount) then exit;
-          s := FGridData.Cells[1, i];
-          t := FGridData.Cells[2, i];
-          Execute('(' + WatchInspectNav1.Expression + ')^');
-          if not FExpressionWasEvaluated then
-            FAlternateExpression := t + '(' + WatchInspectNav1.Expression + ')[0]';
+          Result := FGridData.Cells[1, ARow];
+          t := FGridData.Cells[2, ARow];
+          Result := '(' + WatchInspectNav1.Expression + ')^';
+          AltExpr := t + '(' + WatchInspectNav1.Expression + ')[0]';
         end;
       rdkArray: begin
-          i := FGridData.Row;
-          if (i < 1) or (i >= FGridData.RowCount) then exit;
-          s := FGridData.Cells[1, i];
-          Execute(GetExpressionForArrayElement(WatchInspectNav1.Expression, s));
+          Result := FGridData.Cells[1, ARow];
+          Result := GetExpressionForArrayElement(WatchInspectNav1.Expression, Result);
         end;
       rdkStruct: begin
-          i := FGridData.Row;
-          if (i < 1) or (i >= FGridData.RowCount) then exit;
-          s := FGridData.Cells[1, i];
+          Result := FGridData.Cells[1, ARow];
 
           if WatchInspectNav1.UseInstanceIsDown and (FCurrentResData.StructType in [dstClass, dstObject]) then
-            Execute(FGridData.Cells[0, i] + '(' + WatchInspectNav1.Expression + ').' + s)
+            Result := FGridData.Cells[0, ARow] + '(' + WatchInspectNav1.Expression + ').' + Result
           else
-            Execute(WatchInspectNav1.Expression + '.' + s);
+            Result := WatchInspectNav1.Expression + '.' + Result;
         end;
 
       otherwise begin
-          i := FGridData.Row;
-          if (i < 1) or (i >= FGridData.RowCount) then exit;
 
-          if FCurrentResData.ArrayLength > 0 then begin
-            s := WatchInspectNav1.CurrentWatchValue.ExpressionForChildEntry(FGridData.Cells[1, i]);
-            if s <> '' then
-              Execute(s);
-          end
+          if FCurrentResData.ArrayLength > 0 then
+            Result := WatchInspectNav1.CurrentWatchValue.ExpressionForChildEntry(FGridData.Cells[1, ARow])
           else
-          if FCurrentResData.FieldCount > 0 then begin
-            s := WatchInspectNav1.CurrentWatchValue.ExpressionForChildField(FGridData.Cells[1, i]);
-            if s <> '' then
-              Execute(s);
-          end;
+          if FCurrentResData.FieldCount > 0 then
+            Result := WatchInspectNav1.CurrentWatchValue.ExpressionForChildField(FGridData.Cells[1, ARow]);
         end;
     end;
   end;
+end;
 
+procedure TIDEInspectDlg.DataGridDoubleClick(Sender: TObject);
+var
+  i: Integer;
+  s, t: String;
+begin
+  if (WatchInspectNav1.CurrentWatchValue = nil) or (WatchInspectNav1.Expression = '') then exit;
+
+  s := GetExpressionForRow(FGridData.Row, t);
+  if s <> '' then begin
+    Execute(s);
+    if (t <> '') and (not FExpressionWasEvaluated) then
+      FAlternateExpression := t;
+  end;
 end;
 
 procedure TIDEInspectDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -1211,6 +1225,32 @@ begin
   StatusBar1.SimpleText:='';
 end;
 
+function TIDEInspectDlg.DragWatchCount(ASender: TObject): integer;
+var
+  t: String;
+begin
+  Result := 0;
+  if (ASender = FGridData) and (GetExpressionForRow(FGridData.Row, t) <> '') then
+    Result := 1;
+end;
+
+procedure TIDEInspectDlg.DragWatchInit(ASender: TObject; AnIndex: integer; AWatch: TIdeWatch);
+var
+  i: Integer;
+  t: String;
+begin
+  i := FGridData.Row;
+  if (ASender = FGridData) and (AnIndex = 0) and (i >= 0) and (i < FGridData.RowCount) then begin
+    WatchInspectNav1.InitWatch(AWatch);
+    AWatch.Expression := GetExpressionForRow(FGridData.Row, t);
+  end;
+end;
+
+procedure TIDEInspectDlg.DragWatchDone(ASender: TObject);
+begin
+  //
+end;
+
 function TIDEInspectDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
   ASize := -1;
@@ -1275,20 +1315,26 @@ begin
   WatchInspectNav1.edFilter.OnEditingDone := @EdFilterDone;
   WatchInspectNav1.edFilter.OnButtonClick := @EdFilterClear;
 
-  FGridData:=TStringGrid.Create(DataPage);
+  FGridData:=TStringGrid.Create(Self);
   FGridData.TabAdvance := aaNone;
   DataPage.InsertControl(FGridData);
   GridDataSetup(True);
+  FGridData.DragMode := dmAutomatic;
 
-  FGridMethods:=TStringGrid.Create(MethodsPage);
+  FGridMethods:=TStringGrid.Create(Self);
   FGridMethods.TabAdvance := aaNone;
   MethodsPage.InsertControl(FGridMethods);
   GridMethodsSetup(True);
 
   FGridData.OnDblClick := @DataGridDoubleClick;
+  FGridData.OnDragOver := @DoDragOver;
+  FGridData.OnDragDrop := @DoDragDrop;
   FGridData.OnMouseDown := @DataGridMouseDown;
   FGridData.PopupMenu := PopupMenu1;
+
   FGridMethods.OnMouseDown := @DataGridMouseDown;
+  FGridMethods.OnDragOver := @DoDragOver;
+  FGridMethods.OnDragDrop := @DoDragDrop;
   FGridMethods.PopupMenu := PopupMenu1;
 
   WatchInspectNav1.btnUseInstance.Down := EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass;

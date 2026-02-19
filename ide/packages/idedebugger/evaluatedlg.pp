@@ -69,6 +69,9 @@ type
     txtResult: TMemo;
     WatchInspectNav1: TWatchInspectNav;
     procedure BtnExecModifyClick(Sender: TObject);
+    procedure DoDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure DoDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState;
+      var Accept: Boolean);
     procedure EdModifyKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -400,6 +403,17 @@ begin
     exit;
   end;
   Modify;
+end;
+
+procedure TEvaluateDlg.DoDragDrop(Sender, Source: TObject; X, Y: Integer);
+begin
+  WatchInspectNav1.ReadFromDragObject(Source);
+end;
+
+procedure TEvaluateDlg.DoDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState;
+  var Accept: Boolean);
+begin
+  Accept := WatchInspectNav1.CanReadFromDragObject(Source);
 end;
 
 procedure TEvaluateDlg.FormShow(Sender: TObject);

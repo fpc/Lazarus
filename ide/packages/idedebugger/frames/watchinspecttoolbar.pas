@@ -13,7 +13,7 @@ uses
   // LazControls
   SpinEx,
   // IdeIntf
-  IDEImagesIntf, IdeDebuggerWatchValueIntf,
+  IDEImagesIntf, IdeDebuggerWatchValueIntf, SynEdit,
   // Debugger
   LazDebuggerIntf, IdeDebuggerStringConstants, ArrayNavigationFrame,
   IdeDebuggerOpts, Debugger, IdeDebuggerBackendValueConv, IdeDebuggerBase,
@@ -157,6 +157,8 @@ type
 
     procedure InitWatch(AWatch: TIdeWatch);
     procedure ReadFromWatch(AWatch: TWatch; AlternateExpression: String = '');
+    function  CanReadFromDragObject(AnObject: TObject): boolean;
+    procedure ReadFromDragObject(AnObject: TObject);
 
     procedure Execute(const AnExpression: ansistring; ASkipHistory: Boolean = False);
     procedure UpdateData(AForceClear: Boolean = False);// context changed instead
@@ -882,6 +884,59 @@ begin
       Execute(AWatch.Expression);
   finally
     EndUpdate;
+  end;
+end;
+
+function TWatchInspectNav.CanReadFromDragObject(AnObject: TObject): boolean;
+var
+  IDrag: IIdeDbgDragDropWatchSource;
+begin
+  Result := ( (AnObject is TSynEdit) and (TSynEdit(AnObject).SelAvail) ) or
+            ( (AnObject is TCustomEdit) and (TCustomEdit(AnObject).SelText <> '') );
+
+  if (not Result) and (
+      AnObject.GetInterface(IIdeDbgDragDropWatchSource, IDrag) or
+      ( (AnObject is TComponent) and
+        TComponent(AnObject).Owner.GetInterface(IIdeDbgDragDropWatchSource, IDrag) )
+  )
+  then begin
+    Result := IDrag.DragWatchCount(AnObject) = 1; // must be exactly one
+    IDrag.DragWatchDone(AnObject);
+  end;
+end;
+
+procedure TWatchInspectNav.ReadFromDragObject(AnObject: TObject);
+var
+  s: String;
+  IDrag: IIdeDbgDragDropWatchSource;
+  AWatch: TCurrentWatch;
+begin
+  if (AnObject is TSynEdit) then begin
+    if TSynEdit(AnObject).SelAvail then
+      Execute(TSynEdit(AnObject).SelText);
+    exit;
+  end;
+
+  if (AnObject is TCustomEdit) then begin
+    s := TCustomEdit(AnObject).SelText;
+    if s <> '' then
+      Execute(s);
+    exit;
+  end;
+
+  if AnObject.GetInterface(IIdeDbgDragDropWatchSource, IDrag) or
+     ( (AnObject is TComponent) and
+       TComponent(AnObject).Owner.GetInterface(IIdeDbgDragDropWatchSource, IDrag) )
+  then begin
+    if IDrag.DragWatchCount(AnObject) = 1 then begin
+      FInspectWatches.BeginUpdate;
+      AWatch := FInspectWatches.Add(''); // Do not destroy the watch, UpdateData will take care of it
+      IDrag.DragWatchInit(AnObject, 0, AWatch);
+      FInspectWatches.EndUpdate;
+      ReadFromWatch(AWatch);
+    end;
+    IDrag.DragWatchDone(AnObject);
+    exit;
   end;
 end;
 

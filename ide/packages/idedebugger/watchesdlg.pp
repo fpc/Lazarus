@@ -72,7 +72,7 @@ type
 
   { TWatchesDlg }
 
-  TWatchesDlg = class(TDebuggerDlg)
+  TWatchesDlg = class(TDebuggerDlg, IIdeDbgDragDropWatchSource)
     actDeleteAll: TAction;
     actDeleteSelected: TAction;
     actDisableAll: TAction;
@@ -185,6 +185,8 @@ type
     MAX_GRID_VALUE_LEN = 4096;
   private
     FQueuedUnLockCommandProcessing: Boolean;
+    FSelectedForDrag: TNodeArray;
+
     procedure ApplyPreset(APreset: TWatchDisplayFormatPreset);
     procedure DoFormatPresetClickedIde(Sender: TObject);
     procedure DoFormatPresetClickedProject(Sender: TObject);
@@ -192,6 +194,10 @@ type
     function GetWatches: TIdeWatches;
     procedure ContextChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
+
+    function DragWatchCount(ASender: TObject): integer;
+    procedure DragWatchInit(ASender: TObject; AnIndex: integer; AWatch: TIdeWatch);
+    procedure DragWatchDone(ASender: TObject);
   private
     FInSetup: integer;
     FWatchTreeMgr: TDbgTreeViewWatchValueMgr;
@@ -1128,6 +1134,27 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+function TWatchesDlg.DragWatchCount(ASender: TObject): integer;
+begin
+  if ASender <> tvWatches then exit(0);
+  FSelectedForDrag := tvWatches.GetSortedSelection(True);
+  Result := Length(FSelectedForDrag);
+end;
+
+procedure TWatchesDlg.DragWatchInit(ASender: TObject; AnIndex: integer; AWatch: TIdeWatch);
+var
+  SrcLocal: TIdeWatch;
+begin
+  SrcLocal := TIdeWatch(tvWatches.NodeItem[FSelectedForDrag[AnIndex]]);
+  AWatch.Assign(SrcLocal);
+  AWatch.DisplayName := '';
+end;
+
+procedure TWatchesDlg.DragWatchDone(ASender: TObject);
+begin
+  FSelectedForDrag := nil;
 end;
 
 function TWatchesDlg.GetWatches: TIdeWatches;
