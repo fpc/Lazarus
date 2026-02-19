@@ -781,6 +781,13 @@ begin
   //don't steal focus if a control outside is ActiveControl
   if (Self = ActiveControl) or Self.ContainsControl(ActiveControl) then
   begin
+    //restore last focused control from APage if any.
+    if Assigned(APage.FLastFocusedControl) and APage.ContainsControl(APage.FLastFocusedControl)
+      and APage.FLastFocusedControl.CanFocus then
+    begin
+      ParentForm.ActiveControl := APage.FLastFocusedControl;
+      exit;
+    end;
     C := APage.FindNextControl(Self, True, True, False);
     if Assigned(C) then
       ParentForm.ActiveControl := C;
@@ -861,7 +868,7 @@ begin
   DoSendTabSize;
 end;
 
-function TCustoMTabControl.TabHeightIsStored: Boolean;
+function TCustomTabControl.TabHeightIsStored: Boolean;
 begin
   Result := TabHeight > 0;
 end;
@@ -1037,10 +1044,34 @@ end;
 
 procedure TCustomTabControl.Notification(AComponent: TComponent;
   Operation: TOperation);
+var
+  i: Integer;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = Images) then
     SetImages(nil);
+  if (Operation = opRemove) and (AComponent is TWinControl) then
+  begin
+    for i := 0 to PageCount - 1 do
+      if Page[i].FLastFocusedControl = AComponent then
+        Page[i].FLastFocusedControl := nil;
+  end;
+end;
+
+procedure TCustomTabControl.WMSetFocus(var Message: TLMSetFocus);
+var
+  APage: TCustomPage;
+  AForm: TCustomForm;
+begin
+  inherited;
+  AForm := GetParentForm(Self);
+  if Assigned(AForm) and (FPageIndex >= 0) and (FPageIndex < PageCount) then
+  begin
+    APage := Page[FPageIndex];
+    if Assigned(APage) and Assigned(AForm.LastActiveControl)
+      and APage.ContainsControl(AForm.LastActiveControl) then
+        APage.FLastFocusedControl := AForm.LastActiveControl;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1164,21 +1195,19 @@ end;
 
 function HasFocusedControl(APage: TCustomPage): Boolean;
 var
-  i: Integer;
   lForm: TCustomForm;
 begin
   Result := False;
   lForm := GetParentForm(APage);
-  if (lForm=nil) or not lForm.Focused then Exit;
-  for i := 0 to APage.ControlCount - 1 do
-    if APage.Controls[i] = lForm.ActiveControl then
-      Exit(True);
+  if (lForm=nil) or not lForm.Active then Exit;
+  Result := APage.ContainsControl(lForm.ActiveControl);
 end;
 
 procedure TCustomTabControl.ShowCurrentPage;
 // Makes sure Visible = true for page which has index FPageIndex
 var
-  CurPage: TCustomPage;
+  CurPage, OldPage: TCustomPage;
+  AForm: TCustomForm;
 begin
   CurPage := nil;
   if (FPageIndex < 0) or (FPageIndex >= PageCount) then Exit;
@@ -1188,6 +1217,23 @@ begin
   if (FPageIndexOnLastChange < 0) or (FPageIndexOnLastChange >= PageCount)
   or (FPageIndexOnLastChange = FPageIndex) then
     Exit;
+  if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) then
+    OldPage := Page[FPageIndexOnLastChange]
+  else
+    OldPage := nil;
+  if Assigned(OldPage) then
+  begin
+    AForm := GetParentForm(Self);
+    if Assigned(AForm) then
+    begin
+      if OldPage.ContainsControl(AForm.ActiveControl) then
+        OldPage.FLastFocusedControl := AForm.ActiveControl
+      else
+      if Assigned(AForm.LastActiveControl) and OldPage.ContainsControl(AForm.LastActiveControl) then
+        OldPage.FLastFocusedControl := AForm.LastActiveControl;
+    end;
+  end;
+
   if CurPage.Enabled and HasFocusedControl(Page[FPageIndexOnLastChange]) then
     CurPage.SetFocus;
   Page[FPageIndexOnLastChange].Visible := False;

@@ -15,7 +15,7 @@
 constructor TCustomPage.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-
+  FLastFocusedControl := nil;
   FImageIndex := -1;
   FCompStyle := csPage;
   FTabVisible := True;
