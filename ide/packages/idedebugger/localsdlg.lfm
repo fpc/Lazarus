@@ -18,6 +18,8 @@ object LocalsDlg: TLocalsDlg
     Width = 500
     Align = alClient
     DefaultNodeHeight = 19
+    DragMode = dmAutomatic
+    DragType = dtVCL
     Header.AutoSizeIndex = 0
     Header.Columns = <    
       item

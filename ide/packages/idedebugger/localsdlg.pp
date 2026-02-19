@@ -61,7 +61,7 @@ type
 
   { TLocalsDlg }
 
-  TLocalsDlg = class(TDebuggerDlg)
+  TLocalsDlg = class(TDebuggerDlg, IIdeDbgDragDropWatchSource)
     actInspect: TAction;
     actEvaluate: TAction;
     actCopyName: TAction;
@@ -122,6 +122,8 @@ type
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FWatchPrinter: TWatchResultPrinter;
     FLocolsTreeMgr: TDbgTreeViewLocalsValueMgr;
+    FSelectedForDrag: TNodeArray;
+
 
     FUpdateFlags: set of (ufNeedUpdating);
     function GetSelected: TLocalsValue; // The focused Selected Node
@@ -137,6 +139,10 @@ type
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function GetStackframe: Integer;
     function  GetSelectedSnapshot: TSnapshot;
+
+    function DragWatchCount(ASender: TObject): integer;
+    procedure DragWatchInit(ASender: TObject; AnIndex: integer; AWatch: TIdeWatch);
+    procedure DragWatchDone(ASender: TObject);
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
@@ -752,6 +758,26 @@ begin
   Result := nil;
   if (SnapshotManager <> nil) and (SnapshotManager.SelectedEntry <> nil)
   then Result := SnapshotManager.SelectedEntry;
+end;
+
+function TLocalsDlg.DragWatchCount(ASender: TObject): integer;
+begin
+  if ASender <> vtLocals then exit(0);
+  FSelectedForDrag := vtLocals.GetSortedSelection(True);
+  Result := Length(FSelectedForDrag);
+end;
+
+procedure TLocalsDlg.DragWatchInit(ASender: TObject; AnIndex: integer; AWatch: TIdeWatch);
+var
+  SrcLocal: TIdeLocalsValue;
+begin
+  SrcLocal := TIdeLocalsValue(vtLocals.NodeItem[FSelectedForDrag[AnIndex]]);
+  AWatch.Expression := SrcLocal.Name;
+end;
+
+procedure TLocalsDlg.DragWatchDone(ASender: TObject);
+begin
+  FSelectedForDrag := nil;
 end;
 
 procedure TLocalsDlg.DoBeginUpdate;

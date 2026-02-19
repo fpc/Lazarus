@@ -930,6 +930,12 @@ type
     property OnWatchesInvalidated: TNotifyEvent read FOnWatchesInvalidated write FOnWatchesInvalidated;       // user-modified / xml-storable data modified
   end;
 
+  IIdeDbgDragDropWatchSource = interface ['{F23DEB34-C9D7-4E47-A5EC-0B54323919BC}']
+    function DragWatchCount(ASender: TObject): integer; // must call done, after this
+    procedure DragWatchInit(ASender: TObject; AnIndex: integer; AWatch: TIdeWatch);
+    procedure DragWatchDone(ASender: TObject);
+  end;
+
   {%endregion   ^^^^^  Watches  ^^^^^   }
 
 {%region Locals ***************************************************************

@@ -648,6 +648,8 @@ var
   Nodes: TNodeArray;
   Target, N, NTarget, NewNode: PVirtualNode;
   AWatch, ASourceWatch: TIdeWatch;
+  IDrag: IIdeDbgDragDropWatchSource;
+  i: Integer;
 begin
   Target := tvWatches.DropTargetNode;
 
@@ -658,6 +660,8 @@ begin
       NTarget := tvWatches.NodeParent[Target];
     end;
   end;
+  if (Mode = dmAbove) and (Target <> nil) then
+    Target := tvWatches.GetPreviousSiblingNoInit(Target);
 
   if Source = tvWatches then begin
     if (not (FWatchesInView is TCurrentWatches)) or (GetSelectedSnapshot <> nil) then
@@ -669,9 +673,6 @@ begin
     Nodes := tvWatches.GetSortedSelection(True);
     if Length(Nodes) = 0 then
       exit;
-
-    if (Mode = dmAbove) and (Target <> nil) then
-      Target := tvWatches.GetPreviousSiblingNoInit(Target);
 
     BeginUpdate;
     try
@@ -723,6 +724,43 @@ begin
     exit;
   end;
 
+  if Source.GetInterface(IIdeDbgDragDropWatchSource, IDrag) or
+     ( (Source is TComponent) and
+       TComponent(Source).Owner.GetInterface(IIdeDbgDragDropWatchSource, IDrag)
+     )
+  then begin
+    for i := 0 to IDrag.DragWatchCount(Source) - 1 do begin
+      BeginUpdate;
+      try
+        DebugBoss.Watches.CurrentWatches.BeginUpdate;
+        AWatch := DebugBoss.Watches.CurrentWatches.Add('');
+        AWatch.Enabled       := True;
+        AWatch.DisplayFormat := DefaultWatchDisplayFormat;
+        if EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass then
+          AWatch.EvaluateFlags := [defClassAutoCast];
+        IDrag.DragWatchInit(Source, i, AWatch);
+        DebugBoss.Watches.CurrentWatches.EndUpdate;
+
+        if (GetSelectedSnapshot <> nil) then begin
+          // The watch is not in the snapshot. Force displaying it to provide feedback.
+          // It will be cleared of the list on the next change of snapshot.
+          FWatchTreeMgr.AddWatchData(AWatch);
+        end
+        else
+        if tvWatches.DropTargetNode <> nil then begin
+          NewNode := nil;
+          MoveWatchToBelow(AWatch, NewNode, Target);
+          Target := NewNode;
+        end;
+      finally
+        EndUpdate;
+      end;
+    end;
+    IDrag.DragWatchDone(Source);
+    exit;
+  end;
+
+
   s := '';
   if (Source is TSynEdit) then s := TSynEdit(Source).SelText;
   if (Source is TCustomEdit) then s := TCustomEdit(Source).SelText;
@@ -730,13 +768,14 @@ begin
   if s <> '' then begin
 
     BeginUpdate;
-    DebugBoss.Watches.CurrentWatches.BeginUpdate;
     try
+      DebugBoss.Watches.CurrentWatches.BeginUpdate;
       AWatch := DebugBoss.Watches.CurrentWatches.Add(s);
       AWatch.DisplayFormat := DefaultWatchDisplayFormat;
       AWatch.Enabled       := True;
       if EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass then
         AWatch.EvaluateFlags := [defClassAutoCast];
+      DebugBoss.Watches.CurrentWatches.EndUpdate;
 
       if (GetSelectedSnapshot <> nil) then begin
         // The watch is not in the snapshot. Force displaying it to provide feedback.
@@ -744,14 +783,11 @@ begin
         FWatchTreeMgr.AddWatchData(AWatch);
       end
       else
-      if Target <> nil then begin
+      if tvWatches.DropTargetNode <> nil then begin
         NewNode := nil;
-        if (Mode = dmAbove) then
-          Target := tvWatches.GetPreviousSiblingNoInit(Target);
         MoveWatchToBelow(AWatch, NewNode, Target);
       end;
     finally
-      DebugBoss.Watches.CurrentWatches.EndUpdate;
       EndUpdate;
     end;
   end;
@@ -762,6 +798,7 @@ procedure TWatchesDlg.tvWatchesDragOver(Sender: TBaseVirtualTree;
   Mode: TDropMode; var Effect: LongWord; var Accept: Boolean);
 var
   N, Target: PVirtualNode;
+  IDrag: IIdeDbgDragDropWatchSource;
 begin
   Accept := (Mode in [dmAbove, dmBelow]) and
             (tvWatches.DropTargetNode <> nil);
@@ -773,6 +810,16 @@ begin
               (GetSelectedSnapshot = nil)
             )
             ;
+
+  if (not Accept) and (
+      Source.GetInterface(IIdeDbgDragDropWatchSource, IDrag) or
+      ( (Source is TComponent) and
+        TComponent(Source).Owner.GetInterface(IIdeDbgDragDropWatchSource, IDrag) )
+  )
+  then begin
+    Accept := IDrag.DragWatchCount(Source) > 0;
+    IDrag.DragWatchDone(Source);
+  end;
 
   if Accept then begin
     case Mode of
