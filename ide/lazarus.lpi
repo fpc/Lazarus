@@ -753,6 +753,7 @@
         <Filename Value="editorfilemanager.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="EditorFileManager"/>
       </Unit>
       <Unit>
         <Filename Value="lfmunitresource.pas"/>
@@ -823,6 +824,7 @@
       <Unit>
         <Filename Value="basebuildmanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BaseBuildManager"/>
       </Unit>
       <Unit>
         <Filename Value="buildlazdialog.pas"/>
@@ -840,6 +842,7 @@
       <Unit>
         <Filename Value="codecontextform.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="CodeContextForm"/>
       </Unit>
       <Unit>
         <Filename Value="mainbar.pas"/>
@@ -921,6 +924,7 @@
         <Filename Value="fpdocselectlink.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="FPDocSelectLink"/>
       </Unit>
       <Unit>
         <Filename Value="srcedithintfrm.pas"/>
@@ -941,6 +945,7 @@
         <Filename Value="extractprocdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="ExtractProcDlg"/>
       </Unit>
       <Unit>
         <Filename Value="buildmodesmanager.pas"/>
@@ -1165,6 +1170,7 @@
         <Filename Value="addtoprojectdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="AddToProjectDlg"/>
       </Unit>
       <Unit>
         <Filename Value="sysvaruseroverridedlg.pas"/>

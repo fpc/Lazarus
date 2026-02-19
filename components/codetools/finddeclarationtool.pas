@@ -13600,13 +13600,23 @@ begin
         and (TargetNode.LastChild.Desc in [ctnOfConstType, ctnIdentifier])
         and (ExpressionType.Desc=xtConstSet)
       then
-        Result:=tcCompatible;
-    end
-    else if (ExpressionType.Desc=xtContext) then begin
-      ExprNode:=ExpressionType.Context.Node;
-      if (TargetType.Desc=xtFile) and (ExprNode.Desc=ctnFileType)
-      then
         Result:=tcCompatible
+      else if (TargetNode.Desc=ctnProcedureType)
+        and (TargetNode.FirstChild.FirstChild.Desc=ctnIdentifier) //simple type
+        and (ExpressionType.Desc = xtPointer)
+      then
+      begin
+        // more checking needed, now only boolean result allowed
+        //debugln(GetIdentifier(@TargetType.Context.Tool.src[TargetNode.FirstChild.FirstChild.StartPos]));
+        if TargetType.Context.Tool.CompareSrcIdentifiers(TargetNode.FirstChild.FirstChild.StartPos,'boolean')
+        then
+          Result:=tcCompatible;
+      end else begin
+        ExprNode:=ExpressionType.Context.Node;
+        if (TargetType.Desc=xtFile) and (ExprNode.Desc=ctnFileType)
+        then
+          Result:=tcCompatible
+      end;
     end;
   end;
   {$IFDEF ShowExprEval}
