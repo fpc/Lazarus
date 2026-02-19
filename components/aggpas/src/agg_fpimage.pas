@@ -575,7 +575,7 @@ type
 
     procedure AggEllipse(const cx ,cy ,rx ,ry : double );
 
-    procedure AggArc (const cx ,cy ,rx ,ry ,start ,endangle : double ); // start: 0 at 3'o clock, clockwise in rad: 180deg = 1pi
+    procedure AggArc (const cx ,cy ,rx ,ry ,startangle ,endangle : double ); // start: 0 at 3'o clock, counterclockwise in rad: 180deg = 1pi
     procedure AggStar(const cx, cy, r1, r2, startAngle: double; numRays: integer);
 
     procedure AggCurve(const x1 ,y1 ,x2 ,y2 ,x3 ,y3 : double );
@@ -1945,13 +1945,13 @@ begin
   AggDrawPath(AGG_FillAndStroke );
 end;
 
-procedure TAggFPCanvas.AggArc(const cx, cy, rx, ry, start, endangle: double);
+procedure TAggFPCanvas.AggArc(const cx, cy, rx, ry, startangle, endangle: double);
 var
   ar : agg_arc.arc;
 begin
   Path.m_path.remove_all;
 
-  ar.Construct(cx ,cy ,rx ,ry ,endangle ,start ,false );
+  ar.Construct(cx ,cy ,rx ,ry ,startangle ,endangle ,true);
 
   Path.m_path.add_path(@ar ,0 ,false );
 

@@ -315,10 +315,11 @@ end;
 procedure TAggLCLCanvas.Arc(ALeft, ATop, ARight, ABottom,
   StartAngle, AngleLength: Integer);
 { Use Arc to draw an elliptically curved line with the current Pen.
-  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
-  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
-  counter-clockwise while negative values mean clockwise direction.
-  Zero degrees is at the 3'o clock position.
+  The angles StartAngle and AngleLength are 1/16th of a degree. For example,
+  a full circle equals 5760 (16*360).
+  Positive values of StartAngle and AngleLength mean counter-clockwise while 
+  negative values mean clockwise direction.
+  Zero degrees is at the 3 o'clock position.
 }
 var
   cx, cy, rx, ry, start, endangle, h: double;

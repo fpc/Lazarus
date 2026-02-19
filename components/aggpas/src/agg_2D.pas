@@ -427,7 +427,7 @@ type
 
    procedure ellipse(cx ,cy ,rx ,ry : double );
 
-   procedure arc (cx ,cy ,rx ,ry ,start ,sweep : double );
+   procedure arc (cx ,cy ,rx ,ry ,startA ,endA : double);
    procedure star(cx ,cy ,r1 ,r2 ,startAngle : double; numRays : int );
 
    procedure curve(x1 ,y1 ,x2 ,y2 ,x3 ,y3 : double ); overload;
@@ -1991,18 +1991,18 @@ begin
 end;
 
 { ARC }
-procedure Agg2D.arc(cx ,cy ,rx ,ry ,start ,sweep : double );
+procedure Agg2D.arc(cx ,cy ,rx ,ry ,startA ,endA : double);
 var
  ar : {bezier_}agg_arc.arc;
 
 begin
  m_path.remove_all;
 
- ar.Construct(cx ,cy ,rx ,ry ,start ,sweep ,false );
+ ar.Construct(cx ,cy ,rx ,ry ,startA ,endA, true);
 
  m_path.add_path(@ar ,0 ,false );
 
- drawPath(StrokeOnly );
+ drawPath(FillAndStroke);
 
 end;
 
