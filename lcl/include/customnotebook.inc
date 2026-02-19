@@ -1050,8 +1050,7 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = Images) then
     SetImages(nil);
-  if (Operation = opRemove) and (AComponent is TWinControl)
-     and HandleAllocated and not (csDestroying in ComponentState) then
+  if (Operation = opRemove) and (AComponent is TWinControl) and (FAccess <> nil) then
   begin
     for i := 0 to PageCount - 1 do
       if Page[i].FLastFocusedControl = AComponent then
