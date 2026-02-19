@@ -413,7 +413,7 @@ begin
       clr := GetDefaultPenColor
     else
       clr := FAxis.TickColor;
-    FDrawer.SetPenParams(psSolid, clr, FAxis.TickWidth);
+    FDrawer.SetPenParams(psSolid, clr, FDrawer.Scale(FAxis.TickWidth));
     DrawLabelAndTick(coord, AFixedCoord, AText);
   end;
 end;
