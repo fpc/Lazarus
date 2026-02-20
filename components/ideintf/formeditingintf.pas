@@ -16,13 +16,15 @@ unit FormEditingIntf;
 interface
 
 uses
-  Classes, TypInfo, types, Math,
+  Classes, TypInfo, Types, Math,
   // LCL
   LCLClasses, Forms, Controls,
   // LazUtils
   CompWriterPas, LazLoggerBase,
+  // BuildIntf
+  UnitResourceIntf,
   // IdeIntf
-  ComponentEditors, ObjectInspector, UnitResources;
+  ComponentEditors, ObjectInspector;
   
 const
   ComponentPaletteImageWidth = 24;

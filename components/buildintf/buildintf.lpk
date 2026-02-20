@@ -74,6 +74,10 @@
         <UnitName Value="PackageLinkIntf"/>
       </Item>
       <Item>
+        <Filename Value="projectgroupintf.pp"/>
+        <UnitName Value="ProjectGroupIntf"/>
+      </Item>
+      <Item>
         <Filename Value="projectintf.pas"/>
         <UnitName Value="ProjectIntf"/>
       </Item>
@@ -90,8 +94,8 @@
         <UnitName Value="PublishModuleIntf"/>
       </Item>
       <Item>
-        <Filename Value="projectgroupintf.pp"/>
-        <UnitName Value="ProjectGroupIntf"/>
+        <Filename Value="unitresourceintf.pas"/>
+        <UnitName Value="UnitResourceIntf"/>
       </Item>
     </Files>
     <LazDoc Paths="docs"/>

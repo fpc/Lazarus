@@ -3,7 +3,7 @@
 
    fpmake.pp for BuildIntf 1.0
 
-   This file was generated on 25.07.2025
+   This file was generated on 20.02.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -58,11 +58,12 @@ begin
     t.Dependencies.AddUnit('packagedependencyintf');
     t.Dependencies.AddUnit('packageintf');
     t.Dependencies.AddUnit('packagelinkintf');
+    t.Dependencies.AddUnit('projectgroupintf');
     t.Dependencies.AddUnit('projectintf');
     t.Dependencies.AddUnit('projectresourcesintf');
     t.Dependencies.AddUnit('projpackintf');
     t.Dependencies.AddUnit('publishmoduleintf');
-    t.Dependencies.AddUnit('projectgroupintf');
+    t.Dependencies.AddUnit('unitresourceintf');
 
     T:=P.Targets.AddUnit('baseideintf.pas');
     T:=P.Targets.AddUnit('buildstrconsts.pas');
@@ -78,11 +79,12 @@ begin
     T:=P.Targets.AddUnit('packagedependencyintf.pas');
     T:=P.Targets.AddUnit('packageintf.pas');
     T:=P.Targets.AddUnit('packagelinkintf.pas');
+    T:=P.Targets.AddUnit('projectgroupintf.pp');
     T:=P.Targets.AddUnit('projectintf.pas');
     T:=P.Targets.AddUnit('projectresourcesintf.pas');
     T:=P.Targets.AddUnit('projpackintf.pas');
     T:=P.Targets.AddUnit('publishmoduleintf.pas');
-    T:=P.Targets.AddUnit('projectgroupintf.pp');
+    T:=P.Targets.AddUnit('unitresourceintf.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('buildintf.compiled');

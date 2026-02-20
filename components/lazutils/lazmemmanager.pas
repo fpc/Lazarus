@@ -1,6 +1,6 @@
 {
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of the LazUtils package
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
@@ -14,7 +14,7 @@
     An own memory manager is somewhat faster and makes debugging and
     profiling easier.
 }
-unit LCLMemManager;
+unit LazMemManager;
 
 {$mode objfpc}{$H+}
 
@@ -30,7 +30,7 @@ type
   end;
 
   { memory manager template }
-  
+
   TLCLMemManager = class
   private
     procedure SetMaxFreeRatio(NewValue: integer);
@@ -58,10 +58,10 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
-  
-  
+
+
   { TLCLNonFreeMemManager - a memory manager for records without freeing }
-  
+
   TLCLEnumItemsMethod = procedure(Item: Pointer) of object;
 
   TLCLNonFreeMemManager = class
@@ -85,14 +85,14 @@ type
   end;
 
   { TExtMemoryStream }
-  
+
   TExtMemoryStream = class(TMemoryStream)
   protected
     function Realloc(var NewCapacity: PtrInt): Pointer; override;
   public
     property Capacity;
   end;
-  
+
 
 implementation
 

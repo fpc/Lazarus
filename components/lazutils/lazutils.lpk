@@ -39,7 +39,15 @@
         <Type Value="Text"/>
       </Item>
       <Item>
+        <Filename Value="amigalazfileutils.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
         <Filename Value="asiancodepagefunctions.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="asiancodepages.inc"/>
         <Type Value="Include"/>
       </Item>
       <Item>
@@ -53,6 +61,10 @@
       <Item>
         <Filename Value="codepagescommon.pas"/>
         <UnitName Value="CodepagesCommon"/>
+      </Item>
+      <Item>
+        <Filename Value="commoncodepages.inc"/>
+        <Type Value="Include"/>
       </Item>
       <Item>
         <Filename Value="compwriterpas.pas"/>
@@ -160,7 +172,7 @@
       </Item>
       <Item>
         <Filename Value="lazcollections.pas"/>
-        <UnitName Value="lazCollections"/>
+        <UnitName Value="LazCollections"/>
       </Item>
       <Item>
         <Filename Value="lazconfigstorage.pas"/>
@@ -195,6 +207,10 @@
         <UnitName Value="LazListClasses"/>
       </Item>
       <Item>
+        <Filename Value="lazlistclassesbase.pas"/>
+        <UnitName Value="LazListClassesBase"/>
+      </Item>
+      <Item>
         <Filename Value="lazlogger.pas"/>
         <UnitName Value="LazLogger"/>
       </Item>
@@ -209,6 +225,10 @@
       <Item>
         <Filename Value="lazloggerprofiling.pas"/>
         <UnitName Value="LazLoggerProfiling"/>
+      </Item>
+      <Item>
+        <Filename Value="lazmemmanager.pas"/>
+        <UnitName Value="LazMemManager"/>
       </Item>
       <Item>
         <Filename Value="lazmethodlist.pas"/>
@@ -283,6 +303,10 @@
         <UnitName Value="ObjectLists"/>
       </Item>
       <Item>
+        <Filename Value="plist2json.pas"/>
+        <UnitName Value="PList2JSon"/>
+      </Item>
+      <Item>
         <Filename Value="stringhashlist.pas"/>
         <UnitName Value="StringHashList"/>
       </Item>
@@ -321,26 +345,6 @@
       <Item>
         <Filename Value="winlazutf8.inc"/>
         <Type Value="Include"/>
-      </Item>
-      <Item>
-        <Filename Value="amigalazfileutils.inc"/>
-        <Type Value="Include"/>
-      </Item>
-      <Item>
-        <Filename Value="asiancodepages.inc"/>
-        <Type Value="Include"/>
-      </Item>
-      <Item>
-        <Filename Value="commoncodepages.inc"/>
-        <Type Value="Include"/>
-      </Item>
-      <Item>
-        <Filename Value="plist2json.pas"/>
-        <UnitName Value="plist2json"/>
-      </Item>
-      <Item>
-        <Filename Value="lazlistclassesbase.pas"/>
-        <UnitName Value="LazListClassesBase"/>
       </Item>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>

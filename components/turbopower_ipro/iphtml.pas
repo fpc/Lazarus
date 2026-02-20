@@ -54,7 +54,7 @@ uses
   LCLType, LCLIntf,
   Types, contnrs, SysUtils, Classes, TypInfo, Variants,
   // LCL
-  LResources, LMessages, Messages, LCLMemManager,
+  LResources, LMessages, Messages,
   Graphics, Controls, StdCtrls, ExtCtrls, Buttons, Forms, ClipBrd, Dialogs,
   {$IFDEF UseGifImageUnit} //TODO all of this units not exists
     GifImage,
@@ -71,7 +71,7 @@ uses
     IpPNGImg,
   {$ENDIF}
   // LazUtils
-  LazStringUtils, LConvEncoding, LazUTF8, LazLoggerBase, AvgLvlTree,
+  LazStringUtils, LConvEncoding, LazUTF8, LazLoggerBase, LazMemManager, AvgLvlTree,
   // TurboPower_ipro
   IpConst, IpUtils, IpHtmlTypes, IpHtmlClasses, IpHtmlProp, IpMsg,
   IpCSS, IpHtmlUtils, IpHtmlTabList;

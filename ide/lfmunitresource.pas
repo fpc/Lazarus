@@ -37,6 +37,8 @@ uses
   LazFileCache, LazFileUtils,
   // Codetools
   CodeCache, CodeToolManager,
+  // BuildIntf
+  UnitResourceIntf,
   // IDEIntf
   UnitResources, SrcEditorIntf,
   // IDE

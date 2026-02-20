@@ -59,10 +59,10 @@ uses
   // BuildIntf
   ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, PackageLinkIntf,
   NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf, ComponentReg, BaseIDEIntf,
+  UnitResourceIntf,
   // IdeIntf
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   IdeIntfStrConsts, ComponentEditors, PropEdits, IDEDialogs,
-  UnitResources,
   // IdeUtils
   IdeUtilsPkgStrConsts, InputHistory, DialogProcs,
   // IdeConfig

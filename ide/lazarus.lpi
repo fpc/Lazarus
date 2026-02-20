@@ -701,6 +701,7 @@
         <ComponentName Value="MessagesView"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="etMessagesWnd"/>
       </Unit>
       <Unit>
         <Filename Value="frames/project_resources_options.pas"/>

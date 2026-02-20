@@ -31,7 +31,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
-  Classes, SysUtils, LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray,
+  Classes, SysUtils, LCLIntf, LCLProc, LCLType, LazMemManager, DynHashArray,
   GraphType, GtkExtra, GtkGlobals;
   
 {$ifdef TraceGdiCalls}

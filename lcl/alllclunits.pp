@@ -8,27 +8,26 @@ unit alllclunits;
 interface
 
 uses
-  CheckLst, Clipbrd, ColorBox, ComCtrls, Controls, CustomTimer, DBActns, 
-  DBCtrls, DBGrids, DefaultTranslator, Dialogs, ExtCtrls, ExtDlgs, 
-  ExtGraphics, FileCtrl, Forms, Graphics, GraphUtil, Grids, HelpIntfs, 
-  IcnsTypes, ImageListCache, ImgList, IniPropStorage, InterfaceBase, 
-  IntfGraphics, LazHelpHTML, LazHelpIntf, LCLClasses, LCLIntf, LCLMemManager, 
-  LCLMessageGlue, LCLProc, LCLResCache, LCLStrConsts, LCLType, Menus, 
-  LCLUnicodeData, LCLVersion, LMessages, LResources, MaskEdit, PairSplitter, 
-  PopupNotifier, PostScriptCanvas, PostScriptPrinter, PostScriptUnicode, 
-  Printers, PropertyStorage, RubberBand, ShellCtrls, Spin, StdActns, StdCtrls, 
-  Themes, TmSchema, Toolwin, UTrace, XMLPropStorage, TimePopup, Messages, 
-  WSButtons, WSCalendar, WSCheckLst, WSComCtrls, WSControls, WSDesigner, 
-  WSDialogs, WSExtCtrls, WSExtDlgs, WSFactory, WSForms, WSGrids, WSImgList, 
-  WSLCLClasses, WSMenus, WSPairSplitter, WSProc, WSReferences, WSSpin, 
-  WSStdCtrls, WSToolwin, ActnList, AsyncProcess, ButtonPanel, Buttons, 
-  Calendar, RegisterLCL, ValEdit, LazCanvas, LazDialogs, LazRegions, 
-  CustomDrawn_Common, CustomDrawnControls, CustomDrawnDrawers, LazDeviceApis, 
-  LDockTree, LazFreeTypeIntfDrawer, CustomDrawn_WinXP, CustomDrawn_Android, 
-  Arrow, EditBtn, ComboEx, DBExtCtrls, CustomDrawn_Mac, CalcForm, 
-  LCLTranslator, GroupedEdit, WSLazDeviceAPIS, LCLPlatformDef, IndustrialBase, 
-  JSONPropStorage, LCLExceptionStackTrace, DialogRes, TaskDlgEmulation, 
-  TreeStorage, LazarusPackageIntf;
+  ActnList, Arrow, AsyncProcess, ButtonPanel, Buttons, Calendar, CheckLst, 
+  Clipbrd, ColorBox, ComboEx, ComCtrls, Controls, CustomDrawn_Android, 
+  CustomDrawn_Common, CustomDrawn_Mac, CustomDrawn_WinXP, CustomDrawnControls, 
+  CustomDrawnDrawers, CustomTimer, DBActns, DBCtrls, DBExtCtrls, DBGrids, 
+  DefaultTranslator, DialogRes, Dialogs, EditBtn, ExtCtrls, ExtDlgs, 
+  ExtGraphics, FileCtrl, Forms, Graphics, GraphUtil, Grids, GroupedEdit, 
+  HelpIntfs, IcnsTypes, ImageListCache, ImgList, IndustrialBase, 
+  IniPropStorage, InterfaceBase, IntfGraphics, JSONPropStorage, LazCanvas, 
+  LazDeviceApis, LazDialogs, LazFreeTypeIntfDrawer, LazHelpHTML, LazHelpIntf, 
+  LazRegions, LCLClasses, LCLExceptionStackTrace, LCLIntf, LCLMessageGlue, 
+  LCLPlatformDef, LCLProc, LCLResCache, LCLStrConsts, LCLTranslator, LCLType, 
+  LCLUnicodeData, LCLVersion, LDockTree, LMessages, LResources, MaskEdit, 
+  Menus, PairSplitter, PopupNotifier, PostScriptCanvas, PostScriptPrinter, 
+  PostScriptUnicode, Printers, PropertyStorage, RegisterLCL, RubberBand, 
+  ShellCtrls, Spin, StdActns, StdCtrls, TaskDlgEmulation, Themes, TmSchema, 
+  Toolwin, TreeStorage, UTrace, ValEdit, XMLPropStorage, CalcForm, TimePopup, 
+  Messages, WSButtons, WSCalendar, WSCheckLst, WSComCtrls, WSControls, 
+  WSDesigner, WSDialogs, WSExtCtrls, WSExtDlgs, WSFactory, WSForms, WSGrids, 
+  WSImgList, WSLazDeviceAPIS, WSLCLClasses, WSMenus, WSPairSplitter, WSProc, 
+  WSReferences, WSSpin, WSStdCtrls, WSToolwin, LazarusPackageIntf;
 
 implementation
 

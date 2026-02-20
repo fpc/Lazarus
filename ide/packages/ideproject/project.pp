@@ -47,19 +47,18 @@ uses
   // RTL + FCL
   Classes, SysUtils, TypInfo, System.UITypes,
   // LCL
-  Forms, Dialogs,
+  Forms,
   // CodeTools
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
   LinkScanner, CodeToolManager, CodeCache, CodeTree, StdCodeTools,
   // LazUtils
-  FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
+  FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache,
   LazLoggerBase, LazTracer, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps, AvgLvlTree,
   // BuildIntf
   BaseIDEIntf, ProjPackIntf, ProjectIntf, PackageIntf, MacroIntf, MacroDefIntf,
-  CompOptsIntf, IDEOptionsIntf,
+  CompOptsIntf, IDEOptionsIntf, LazMsgWorker, UnitResourceIntf,
   // IDEIntf
-  PropEdits, UnitResources, EditorSyntaxHighlighterDef, SrcEditorIntf,
-  IDEOptEditorIntf, IDEDialogs,
+  UnitResources, EditorSyntaxHighlighterDef, SrcEditorIntf, IDEOptEditorIntf,
   // IdeUtils
   IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
@@ -1080,6 +1079,7 @@ const
   OldProjectTypeNames : array[TOldProjectType] of string = (
       'Application', 'Program', 'Custom program'
     );
+  mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];  // Same as in LCL Dialogs.
 
 var
   Project1: TProject absolute LazProject1;// the main project
@@ -1529,7 +1529,7 @@ begin
     end else begin
       ACaption:=lisCodeToolsDefsWriteError;
       AText:=Format(lisUnableToWriteFile2, [Filename]);
-      Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
+      Result:=LazMessageWorker(ACaption,AText,mtError,mbAbortRetryIgnore);
       if Result=mrCancel then exit; // dialog closed via button in caption or [Esc]/[Alt+F4]
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
@@ -1553,7 +1553,7 @@ begin
     if not fSource.SaveToFile(AFileName) then begin
       ACaption:=lisCodeToolsDefsWriteError;
       AText:=Format(lisUnableToWriteFile2, [AFilename]);
-      Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
+      Result:=LazMessageWorker(ACaption,AText,mtError,mbAbortRetryIgnore);
       if Result=mrCancel then exit; // dialog closed via button in caption or [Esc]/[Alt+F4]
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
@@ -1577,7 +1577,7 @@ begin
     if NewSource=nil then begin
       ACaption:=lisCodeToolsDefsReadError;
       AText:=Format(lisUnableToReadFile2, [Filename]);
-      Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
+      Result:=LazMessageWorker(ACaption,AText,mtError,mbAbortRetryIgnore);
       if Result in [mrAbort,mrIgnore,mrCancel] then
         exit;
     end else begin
@@ -3007,7 +3007,7 @@ const
   Path = ProjOptionsPath;
 begin
   if (FFileVersion=0) and (FXMLConfig.GetListItemCount(Path+'Units/', 'Unit', true)=0) then
-    if IDEMessageDialog(lisStrangeLpiFile,
+    if LazMessageWorker(lisStrangeLpiFile,
         Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
         mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore
     then exit;
@@ -3136,7 +3136,7 @@ begin
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
     except
       on E: Exception do begin
-        IDEMessageDialog(lisUnableToReadLpi,
+        LazMessageWorker(lisUnableToReadLpi,
             Format(lisUnableToReadTheProjectInfoFile,[LineEnding,PIFile])+LineEnding+E.Message,
             mtError, [mbOk]);
         Result:=mrCancel;
@@ -3153,7 +3153,7 @@ begin
       FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename,true)
     except
       on E: Exception do begin
-        IDEMessageDialog(lisUnableToReadLpi,
+        LazMessageWorker(lisUnableToReadLpi,
             Format(lisUnableToReadTheProjectInfoFile,[LineEnding,Filename])+LineEnding+E.Message,
             mtError, [mbOk]);
         Result:=mrCancel;
@@ -3203,7 +3203,7 @@ begin
       FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename);
       LoadFromSession;
     except
-      IDEMessageDialog(lisCCOErrorCaption,
+      LazMessageWorker(lisCCOErrorCaption,
         Format(lisUnableToReadTheProjectInfoFile, [LineEnding,Filename]),
         mtError,[mbOk]);
       Result:=mrCancel;
@@ -3511,7 +3511,7 @@ begin
           Msg:=lisUnableToWriteTheProjectInfoFileError
         else
           Msg:=lisUnableToWriteTheProjectSessionFileError;
-        IDEMessageDialog(lisCodeToolsDefsWriteError,
+        LazMessageWorker(lisCodeToolsDefsWriteError,
           Format(Msg, [LineEnding, Filename, LineEnding, E.Message])
           ,mtError,[mbOk]);
         Result:=mrCancel;
@@ -3526,7 +3526,7 @@ begin
         SaveToSession;
     except
       on E: Exception do begin
-        Result:=IDEMessageDialog(lisCodeToolsDefsWriteError,
+        Result:=LazMessageWorker(lisCodeToolsDefsWriteError,
           Format(lisUnableToWriteToFile2, [Filename]), mtError,[mbRetry,mbAbort]);
       end;
     end;
@@ -5214,7 +5214,7 @@ begin
   NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
   if NewUnitPaths<>'' then begin
     NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,Directory);
-    r:=IDEMessageDialog(lisExtendUnitPath,
+    r:=LazMessageWorker(lisExtendUnitPath,
       Format(lisExtendUnitSearchPathOfProjectWith, [#13, NewUnitPaths]),
       mtConfirmation, [mbYes, mbNo, mbCancel]);
     case r of
@@ -5235,7 +5235,7 @@ begin
   NewIncPaths:=RemoveSearchPaths(NewIncPaths,CurIncPaths);
   if NewIncPaths<>'' then begin
     NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,Directory);
-    r:=IDEMessageDialog(lisExtendIncludePath,
+    r:=LazMessageWorker(lisExtendIncludePath,
       Format(lisExtendIncludeFilesSearchPathOfProjectWith, [#13, NewIncPaths]),
       mtConfirmation, [mbYes, mbNo, mbCancel]);
     case r of
@@ -5286,7 +5286,7 @@ begin
         if IgnoreErrors then begin
           Result:=mrOk;
         end else begin
-          Result:=IDEMessageDialog(lisPkgMangErrorReadingFile,
+          Result:=LazMessageWorker(lisPkgMangErrorReadingFile,
             Format(lisProjMangUnableToReadStateFileOfProjectError,
                    [StateFile, IDAsString, LineEnding, E.Message]),
             mtError,[mbAbort]);
@@ -5331,7 +5331,7 @@ begin
     StateFlags:=StateFlags+[lpsfStateFileLoaded];
   except
     on E: Exception do begin
-      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
+      Result:=LazMessageWorker(lisPkgMangErrorWritingFile,
         Format(lisProjMangUnableToWriteStateFileForProjectError,
                [IDAsString, LineEnding, E.Message]),
         mtError,[mbCancel]);

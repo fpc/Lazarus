@@ -35,10 +35,10 @@ uses
   Classes, SysUtils, TypInfo, Math, fpjson, AVL_Tree, Contnrs,
   // LCL
   Controls, Forms, Dialogs, LCLIntf, LCLType, LclStrConsts,
-  LResources, LCLMemManager,
+  LResources,
   // LazUtils
   LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazLoggerBase,
-  LazUtilities, LazStringUtils, LazUTF8, LazTracer, AvgLvlTree,
+  LazUtilities, LazStringUtils, LazMemManager, LazUTF8, LazTracer, AvgLvlTree,
   // Codetools
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
@@ -47,7 +47,7 @@ uses
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists, DirectoryCacher,
   // BuildIntf
   NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf,
-  IDEExternToolIntf, ComponentReg, BaseIDEIntf,
+  IDEExternToolIntf, ComponentReg, BaseIDEIntf, UnitResourceIntf,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,

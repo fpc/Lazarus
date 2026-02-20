@@ -44,11 +44,13 @@ uses
   {$ENDIF}
   Classes, SysUtils, TypInfo, AVL_Tree,
   // LCL
-  Forms, Controls, Dialogs, LResources, LCLMemManager, LCLProc,
+  Forms, Controls, Dialogs, LResources, LCLProc,
   //LazUtils
-  AvgLvlTree, LazUtilities, LazStringUtils, LazLoggerBase, LazTracer,
+  AvgLvlTree, LazUtilities, LazStringUtils, LazMemManager, LazLoggerBase, LazTracer,
   // CodeTools
   BasicCodeTools,
+  // BuildIntf
+  UnitResourceIntf,
   // IdeIntf
   PackageDependencyIntf, PropEditUtils, PropEdits, UnitResources, IDEDialogs,
   // IDE

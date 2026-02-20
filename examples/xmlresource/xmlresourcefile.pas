@@ -5,10 +5,12 @@ unit xmlresourcefile;
 interface
 
 uses
-  Classes, Controls, SysUtils, RtlConsts,
-  LCLMemManager, forms, LazFileUtils,
-  dom, XMLRead, XMLWrite,
-  ProjectIntf, UnitResources, CodeCache, CodeToolManager;
+  Classes, Controls, SysUtils, RtlConsts, System.UITypes, dom, XMLRead, XMLWrite,
+  Forms,
+  LazFileUtils, LazMemManager,
+  UnitResourceIntf, ProjectIntf,
+  UnitResources,
+  CodeCache, CodeToolManager;
 
 type
 
@@ -30,6 +32,7 @@ type
       out LFMType, LFMComponentName, LFMClassName: string; out
       LCLVersion: string; out MissingClasses: TStrings;
       out AmbiguousClasses: TFPList): TModalResult; override;
+    class function DefaultComponentClass: TComponentClass; override;
   end;
 
   { TXMLReader }
@@ -683,4 +686,10 @@ begin
   end;
 end;
 
+class function TXMLUnitResourcefileFormat.DefaultComponentClass: TComponentClass;
+begin
+  Result:=TForm;
+end;
+
 end.
+
