@@ -671,6 +671,7 @@ procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);
 var
   rect: NSRect;
   scrollView: NSScrollView;
+  scrollOffset: NSPoint;
 begin
   // Convert from View-lcl to View-cocoa
   rect.size:= NSZeroSize;
@@ -692,8 +693,11 @@ begin
 
   if NOT (lclGetTarget is TScrollingWinControl) then begin
     scrollView:= self.enclosingScrollView;
-    if Assigned(scrollView) and (scrollView.documentView=self) then
-      y:= y + Round(scrollView.documentVisibleRect.origin.y);
+    if Assigned(scrollView) and (scrollView.documentView=self) then begin
+      scrollOffset:= scrollView.documentVisibleRect.origin;
+      x:= x + Round(scrollOffset.x);
+      y:= y + Round(scrollOffset.y);
+    end;
   end;
 end;
 
