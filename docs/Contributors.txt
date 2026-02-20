@@ -112,6 +112,7 @@ Jeffrey A. Wormsley
 Jeroen van Idekinge
 Jesus Reyes
 JiXian Yang
+Joeny Ang
 Jörg Braun - German translation
 Johannes Muller
 Jonas Maebe
