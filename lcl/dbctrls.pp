@@ -932,6 +932,7 @@ Type
     property DropDownRows: Integer read GetDropDownRows write SetDropDownRows default 7;
     property Enabled;
     property Font;
+    property ItemWidth;
     property KeyField: string read GetKeyField write SetKeyField;
     property ListField: string read GetListField write SetListField;
     property ListFieldIndex: Integer read GetListFieldIndex write SetListFieldIndex;
