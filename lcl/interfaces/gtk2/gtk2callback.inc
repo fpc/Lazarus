@@ -1779,10 +1779,13 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton; data: gPoi
     {gtk_notebook have weird behaviour when clicked.
      if there's active control on page it'll loose it's
      focus and trigger OnExit (tab is taking focus).
-     issue #20493}
+     issue #20493
+     Issue #42065: Always set the flag unconditionally: even when the notebook itself has GTK
+     focus (e.g. after visiting an empty page), we need the wwiTabWidgetFocusCheck
+     block in AfterSwitchPage to remove GTK_CAN_FOCUS from the notebook and fire
+     GtkFocusAfterTabSwitch so the intended control gets focus restored.}
     Info := GetWidgetInfo(Widget);
-    if not gtk_widget_is_focus(Widget) then
-      Include(Info^.Flags, wwiTabWidgetFocusCheck);
+    Include(Info^.Flags, wwiTabWidgetFocusCheck);
   end;
 
 var

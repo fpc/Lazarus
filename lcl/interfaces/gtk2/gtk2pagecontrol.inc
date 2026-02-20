@@ -88,6 +88,23 @@ begin
   end;
 end;
 
+// Called via g_idle_add to explicitly focus a widget after GTK finishes its
+// own focus handling triggered by the tab-switch button press. issue #42065
+function GtkFocusAfterTabSwitch(AWidget: Pointer): gboolean; cdecl;
+var
+  W: PGtkWidget;
+  TopLevel: PGtkWidget;
+begin
+  Result := False;
+  if AWidget = nil then exit;
+  W := PGtkWidget(AWidget);
+  if not (GTK_WIDGET_REALIZED(W) and GTK_WIDGET_VISIBLE(W) and GTK_WIDGET_MAPPED(W)) then exit;
+  TopLevel := gtk_widget_get_toplevel(W);
+  if GTK_IS_WINDOW(TopLevel) and (gtk_window_get_focus(PGtkWindow(TopLevel)) = W) then
+    exit;
+  gtk_widget_grab_focus(W);
+end;
+
 function GtkWSNotebook_AfterSwitchPage(widget: PGtkWidget; {%H-}page: Pgtkwidget; pagenum: integer; data: gPointer): GBoolean; cdecl;
 var
   Mess: TLMNotify;
@@ -131,6 +148,16 @@ begin
         Pg := TCustomTabControl(Data).Page[LCLPageIndex]
       else
         Pg := nil;
+
+      //Prefer LCL's ActiveControl, which MaybeSelectFirstControlOnPage sets to
+      //the intended target (FLastFocusedControl or first focusable control).
+      //GTK's Focused state may not reflect the right widget if GTK's own
+      //traversal ran before this handler, or for nested (non-direct-child) controls.
+      //issue #42065
+      if Assigned(Pg) and (AParentForm.ActiveControl is TWinControl) and
+         Pg.ContainsControl(TWinControl(AParentForm.ActiveControl)) then
+        ACtl := TWinControl(AParentForm.ActiveControl)
+      else
       if Assigned(Pg) then
       begin
         for i := 0 to Pg.ControlCount - 1 do
@@ -143,8 +170,6 @@ begin
           end;
         end;
       end;
-      if (ACtl = nil) and (Pg <> nil) then
-        ACtl := AParentForm.ActiveControl;
     end else
       ACtl := nil;
 
@@ -172,6 +197,23 @@ begin
         end;
       end;
       g_idle_add(@GtkRestoreFocusFix, Widget);
+      //After GTK finishes its own focus traversal (triggered by the button
+      //press), explicitly re-focus ACtl. MaybeSelectFirstControlOnPage sets
+      //focus inside the signal handler but GTK may advance it afterwards,
+      //especially for controls nested inside panels - non-direct page children.
+      //Issue #42065.
+      if ACtl.HandleAllocated then
+      begin
+        Info := GetWidgetInfo({%H-}PGtkWidget(ACtl.Handle));
+        if Info <> nil then
+        begin
+          if Info^.CoreWidget <> nil then
+            ChildWidget := Info^.CoreWidget
+          else
+            ChildWidget := Info^.ClientWidget;
+          g_idle_add(@GtkFocusAfterTabSwitch, ChildWidget);
+        end;
+      end;
     end;
   end;
 end;
