@@ -221,7 +221,7 @@ type
     procedure MoveCursorToNearestAtom(ACleanPos: integer);
     procedure MoveCursorToLastNodeAtom(ANode: TCodeTreeNode);
     function IsPCharInSrc(ACleanPos: PChar): boolean;
-    function GetPosPCharInSrc(ACleanPos: PChar): integer; // utility for debugging
+    function ConvertSrcPCharToPos(SrcPos: PChar): integer;
 
     // read atoms
     procedure ReadNextAtom;
@@ -2491,16 +2491,27 @@ begin
   Result:=true;
 end;
 
-function TCustomCodeTool.GetPosPCharInSrc(ACleanPos: PChar): integer;
-var
-  p: PChar;
+function TCustomCodeTool.ConvertSrcPCharToPos(SrcPos: PChar): integer;
+  procedure RaiseSrcEmpty;
+  begin
+    RaiseException(20251030122053,'[TCustomCodeTool.ConvertSrcPCharToPos - PChar] Src empty',true);
+  end;
+  procedure RaiseNotInSrc;
+  begin
+    RaiseException(20251030122053,'[TCustomCodeTool.ConvertSrcPCharToPos - PChar] '
+      +'CleanPos not in Src',true);
+  end;
+
+var NewPos: integer;
 begin
   Result:=0;
-  if Src='' then exit;
-  p:=PChar(Src);
-  if p>ACleanPos then exit;
-  if ACleanPos>p+SrcLen then exit;
-  Result:= 1+integer(ACleanPos)-integer(p);
+  if Src='' then
+    RaiseSrcEmpty;
+  NewPos:=PtrInt({%H-}PtrUInt(SrcPos))-PtrInt({%H-}PtrUInt(@Src[1]))+1;
+  if (NewPos<1) or (NewPos>SrcLen) then
+    RaiseNotInSrc
+  else
+    Result:=NewPos;
 end;
 
 procedure TCustomCodeTool.CreateChildNode(Desc: TCodeTreeNodeDesc);

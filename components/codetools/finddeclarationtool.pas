@@ -13487,7 +13487,8 @@ function TFindDeclarationTool.IsBaseCompatible(const TargetType,
 // both expression types must be base types
 var TargetNode, ExprNode: TCodeTreeNode;
   ExprOfElement: TExpressionType;
-  TargetParams: TFindDeclarationParams;
+  ExprParams: TFindDeclarationParams;
+  s: string;
 begin
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.IsBaseCompatible] START ',
@@ -13510,22 +13511,6 @@ begin
       begin
         TargetNode:=TargetType.Context.Node;
         ExprNode:=ExpressionType.Context.Node;
-        if (TargetNode.Desc=ctnOpenArrayType) and (ExprNode.Desc<>ctnOpenArrayType) then begin
-        // switch TargetNode to node of declaration of an array element type
-          try
-            TargetParams:= TFindDeclarationParams.Create(Params);
-            TargetParams.SetIdentifier(Self,nil,nil);
-            TargetParams.Flags:=fdfDefaultForExpressions;
-            ExprOfElement:=
-              FindExpressionTypeOfTerm(TargetNode.FirstChild.StartPos,-1,Params,false);
-            if ExprOfElement.Desc=xtContext then
-              TargetNode:=ExprOfElement.Context.Node
-            else
-              exit;
-          finally
-            TargetParams.Free;
-          end;
-        end;
 
         {$IFDEF ShowExprEval}
         DebugLn('[TFindDeclarationTool.IsBaseCompatible] C ',
@@ -13606,11 +13591,38 @@ begin
         and (ExpressionType.Desc = xtPointer)
       then
       begin
-        // more checking needed, now only boolean result allowed
-        //debugln(GetIdentifier(@TargetType.Context.Tool.src[TargetNode.FirstChild.FirstChild.StartPos]));
-        if TargetType.Context.Tool.CompareSrcIdentifiers(TargetNode.FirstChild.FirstChild.StartPos,'boolean')
-        then
+        //if ExpressionType.Context.Node<>nil then
+        //  debugln(GetIdentifier(@ExpressionType.Context.Tool.src
+        //  [ExpressionType.Context.Node.StartPos]));
+
+        try
+          ExprParams:= TFindDeclarationParams.Create(Params);
+          ExprParams.SetIdentifier(Self, @ExpressionType.Context.Tool.src
+            [ExpressionType.Context.Node.StartPos],nil);
+          ExprParams.Flags:=fdfDefaultForExpressions;
+          ExprParams.ContextNode:=ExpressionType.Context.Node;
+
+          ExprOfElement:=CleanExpressionType;
+          FindDeclarationOfIdentAtParam(ExprParams,ExprOfElement);
+
+          if ExprOfElement.Desc=xtContext then
+            ExprNode:=ExprOfElement.Context.Node
+          else
+            exit;
+        finally
+          ExprParams.Free;
+        end;
+
+        ExprNode:= ExprOfElement.Context.Tool.GetProcResultNode(ExprNode);
+        if (ExprNode<>nil) then begin  // result type identifier found
+          s:= GetIdentifier(@ExprOfElement.Context.Tool.Src[ExprNode.StartPos]);
+          //debugln(['Type of function result = ',s]);
+
+          if CompareIdentifiers(
+            @TargetType.Context.Tool.Src[TargetNode.FirstChild.FirstChild.StartPos],
+            PChar(s))=0 then
           Result:=tcCompatible;
+        end;
       end else begin
         ExprNode:=ExpressionType.Context.Node;
         if (TargetType.Desc=xtFile) and (ExprNode.Desc=ctnFileType)
