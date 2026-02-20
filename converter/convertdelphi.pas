@@ -33,7 +33,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, contnrs, IniFiles,
+  Classes, SysUtils, contnrs, IniFiles, System.UITypes,
   // LCL
   Forms, Controls, Dialogs,
   // CodeTools
@@ -44,14 +44,17 @@ uses
   // BuildIntf
   PackageIntf, ProjectIntf, ComponentReg, IDEExternToolIntf,
   // IDEIntf
-  IDEDialogs, LazIDEIntf, IDEOptEditorIntf, EditorSyntaxHighlighterDef,
+  IDEDialogs, LazIDEIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IdeUtilsPkgStrConsts, DialogProcs,
   // IdeConfig
   IDEProcs, SearchPathProcs, ParsedCompilerOpts, CompilerOptions, ProjPackCommon,
+  // IdeProject
+  Project,
+  // IdePackager
+  PackageDefs, EditablePackage, PackageSystem,
   // IDE
-  DialogProcs, Project, PackageDefs, EditablePackage, PackageSystem, PackageEditor,
-  BasePkgManager, LazarusIDEStrConsts, SourceFileManager,
+  LazarusIDEStrConsts, SourceFileManager, PackageEditor, BasePkgManager,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
   UsedUnits;
@@ -1583,7 +1586,6 @@ begin
   if LazProject.MainUnitInfo=nil then begin
     // add .lpr file to project as main unit
     MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fPascalBuffer);
-    Assert(Assigned(IDEEditorOptions), 'TConvertDelphiProject.CreateMainSourceFile: IDEEditorOptions is Nil.');
     MainUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(MainUnitInfo,false);
     LazProject.MainFileID:=0;
