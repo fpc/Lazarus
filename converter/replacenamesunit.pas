@@ -284,7 +284,7 @@ begin
     end;
   until not IsDotted;
   if not Result then
-    fNoReplacementNames.Add(AIdent);    // Means AOldIdent had no replacement.
+    fNoReplacementNames.Add(AIdent);    // Means AIdent had no replacement.
 end;
 
 { TNameUpdater }
