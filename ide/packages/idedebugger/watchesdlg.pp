@@ -632,7 +632,7 @@ begin
       inc(NewIdx);
 
     tvWatches.MoveTo(AWatchNode, ADestNode, amInsertAfter, False);
-    ADestWatch.Index := NewIdx;
+    AWatch.Index := NewIdx;
   end;
 end;
 
