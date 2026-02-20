@@ -5363,12 +5363,32 @@ begin
   end;
 end;
 
-// function GtkNotebookAfterSwitchPage(widget: PGtkWidget; pagenum: integer; data: gPointer): GBoolean; cdecl;
+//Issue 42065:Called via g_idle_add after GtkNotebookAfterSwitchPage returns.
+function Gtk3FocusAfterTabSwitch(AData: Pointer): gboolean; cdecl;
+var
+  W: PGtkWidget;
+begin
+  Result := False;
+  W := PGtkWidget(AData);
+  if W = nil then
+    exit;
+  if not (W^.get_realized and W^.get_visible) then
+    exit;
+  if W^.has_focus then
+    exit;
+  W^.grab_focus;
+end;
+
 procedure GtkNotebookAfterSwitchPage(widget: PGtkWidget; {%H-}page: PGtkWidget; pagenum: integer; data: gPointer); cdecl;
 var
   Mess: TLMNotify;
   NMHdr: tagNMHDR;
   LCLPageIndex: Integer;
+  ATabCtl: TCustomTabControl;
+  AParentForm: TCustomForm;
+  Pg: TCustomPage;
+  ACtl: TWinControl;
+  W: PGtkWidget;
 begin
   if widget=nil then ;
   if TGtk3Widget(Data).InUpdate then
@@ -5389,12 +5409,34 @@ begin
   NMHdr.idFrom := LCLPageIndex;
   Mess.NMHdr := @NMHdr;
   TGtk3Widget(Data).DeliverMessage(Mess);
+  {Issue #42065:Capture the target widget NOW synchronously before GTK3's post-switch-page
+   processing can move focus to the notebook and override ActiveControl.}
+  W := nil;
+  ATabCtl := TCustomTabControl(TGtk3NoteBook(Data).LCLObject);
+  AParentForm := GetParentForm(ATabCtl);
+  if Assigned(AParentForm) and (AParentForm.ActiveControl is TWinControl) then
+  begin
+    if ATabCtl.PageIndex >= 0 then
+      Pg := ATabCtl.Page[ATabCtl.PageIndex]
+    else
+      Pg := nil;
+    if Assigned(Pg) then
+    begin
+      ACtl := TWinControl(AParentForm.ActiveControl);
+      if Pg.ContainsControl(ACtl) and ACtl.HandleAllocated and not (ACtl is TCustomPage) then
+        W := TGtk3Widget(ACtl.Handle).GetContainerWidget;
+    end;
+  end;
+  if W <> nil then
+    g_idle_add(@Gtk3FocusAfterTabSwitch, W);
 end;
 
 function BackNoteBookSignal(AData: Pointer): gboolean; cdecl;
 var
   AWidget: PGtkNotebook;
+  {$IFDEF GTK3DEBUGNOTEBOOK}
   APageNum: PtrInt;
+  {$ENDIF}
   ACurrentPage: gint;
 begin
   Result := False;
@@ -5404,7 +5446,9 @@ begin
   if g_object_get_data(AWidget,'switch-page-signal-stopped') <> nil then
   begin
     Result := True;
+    {$IFDEF GTK3DEBUGNOTEBOOK}
     APageNum := {%H-}PtrInt(g_object_get_data(AWidget,'switch-page-signal-stopped'));
+    {$ENDIF}
     ACurrentPage := AWidget^.get_current_page;
     g_object_set_data(AWidget,'switch-page-signal-stopped', nil);
     {$IFDEF GTK3DEBUGNOTEBOOK}
@@ -5484,7 +5528,6 @@ begin
   Alloc.Height := Params.Height;
 
   g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookSwitchPage), Self, nil, G_CONNECT_DEFAULT);
-  // this one triggers after above switch-page
   g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, G_CONNECT_DEFAULT);
   PGtkNotebook(Result)^.set_scrollable(True);
 
