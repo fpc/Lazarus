@@ -635,8 +635,6 @@ begin
     if not fOwnerConverter.fSettings.SameDfmFile then
       Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
                              [lbfCheckIfText,lbfUpdateFromDisk],true);
-    if fUnitInfo<>nil then
-      Result:=LoadLFM(fUnitInfo,fLFMBuffer,[ofOnlyIfExists],[]);
   end;
 end;
 
@@ -1486,7 +1484,7 @@ begin
     for i:=0 to Cnt-1 do begin
       Package:=PackageGraph.Packages[i];
       if Package.IsVirtual then
-        continue; // skip unsaved package
+        Continue;   // Skip unsaved package.
       if PackageGraph.LazarusBasePackages.IndexOf(Package)>=0 then
         Continue;   // Skip base packages.
       SearchPath:=Package.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false)
