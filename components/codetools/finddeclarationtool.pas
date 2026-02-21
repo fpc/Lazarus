@@ -13587,6 +13587,7 @@ begin
       then
         Result:=tcCompatible
       else if (TargetNode.Desc=ctnProcedureType)
+        and (TargetNode.FirstChild.FirstChild<>nil)
         and (TargetNode.FirstChild.FirstChild.Desc=ctnIdentifier) //simple type
         and (ExpressionType.Desc = xtPointer)
       then
