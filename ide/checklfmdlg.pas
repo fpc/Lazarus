@@ -71,7 +71,7 @@ type
     fLFMSynEdit: TSynEdit;
     fErrorsListBox: TListBox;
     // Refactored and moved from dialog class:
-    procedure LoadLFM;
+    procedure LoadFormFile;
     function RemoveAll: TModalResult;
     procedure FindNiceNodeBounds(LFMNode: TLFMTreeNode;
                                  out StartPos, EndPos: integer);
@@ -420,14 +420,14 @@ begin
   try
     fLFMSynEdit:=CheckLFMDialog.LFMSynEdit;
     fErrorsListBox:=CheckLFMDialog.ErrorsListBox;
-    LoadLFM;
+    LoadFormFile;
     Result:=CheckLFMDialog.ShowModal;
   finally
     CheckLFMDialog.Free;
   end;
 end;
 
-procedure TLFMChecker.LoadLFM;
+procedure TLFMChecker.LoadFormFile;
 begin
   fLFMSynEdit.Lines.Text:=fLFMBuffer.Source;
   FillErrorsListBox;

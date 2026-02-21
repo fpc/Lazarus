@@ -95,7 +95,7 @@ type
     function ShowConvertLFMWizard: TModalResult;
   protected
     function FixMissingComponentClasses(aMissingTypes: TClassList): TModalResult; override;
-    procedure LoadLFM;
+    procedure LoadFormFile;
   public
     constructor Create(ACTLink: TCodeToolLink; ALFMBuffer: TCodeBuffer);
     destructor Destroy; override;
@@ -579,7 +579,7 @@ begin
     fErrorsListBox:=FixLFMDialog.ErrorsListBox;
     fPropReplaceGrid:=FixLFMDialog.PropReplaceGrid;
     fTypeReplaceGrid:=FixLFMDialog.TypeReplaceGrid;
-    LoadLFM;
+    LoadFormFile;
     if ((fSettings.PropReplaceMode=rlAutomatic) or not fHasMissingProperties)
     and ((fSettings.TypeReplaceMode=raAutomatic) or not fHasMissingObjectTypes) then
       Result:=ReplaceAndRemoveAll  // Can return mrRetry.
@@ -630,9 +630,9 @@ begin
   end;
 end;
 
-procedure TLFMFixer.LoadLFM;
+procedure TLFMFixer.LoadFormFile;
 begin
-  inherited LoadLFM;
+  inherited LoadFormFile;
   FillReplaceGrids;         // Fill both ReplaceGrids.
 end;
 
