@@ -133,6 +133,7 @@ type
       ResultText: String; ResultDBGType: TDBGType);
 
     procedure ClearTree(OnlyClearNodeData: boolean = False);
+    procedure LocalsAnyChanged(Sender: TObject);
     procedure LocalsChanged(Sender: TObject);
     procedure SubLocalChanged(Sender: TObject);
     function  GetThreadId: Integer;
@@ -167,6 +168,7 @@ type
   protected
     function WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; override;
     function WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; override;
+    function GetTrackingIdFor(AWatchAble: TObject): string; override;
 
     function GetFieldAsText(Nd: PVirtualNode; AWatchAble: TObject;
       AWatchAbleResult: IWatchAbleResultIntf; AField: TTreeViewDataToTextField;
@@ -345,6 +347,7 @@ begin
   ThreadsNotification.OnCurrent   := @LocalsChanged;
   CallstackNotification.OnCurrent := @LocalsChanged;
   SnapshotNotification.OnCurrent  := @LocalsChanged;
+  SnapshotNotification.OnChange   := @LocalsAnyChanged;
   FWatchPrinter := TWatchResultPrinter.Create;
   FWatchPrinter.FormatFlags := [rpfClearMultiLine];
   FLocolsTreeMgr := TDbgTreeViewLocalsValueMgr.Create(vtLocals);
@@ -868,6 +871,12 @@ begin
     vtLocals.Clear;
 end;
 
+procedure TLocalsDlg.LocalsAnyChanged(Sender: TObject);
+begin
+  if SnapshotManager.Snapshots.Count = 0 then
+    FLocolsTreeMgr.ClearOutdatedTrackingIdData;
+end;
+
 { TDbgTreeViewLocalsValueMgr }
 
 function TDbgTreeViewLocalsValueMgr.WatchAbleResultFromNode(AVNode: PVirtualNode
@@ -880,6 +889,11 @@ function TDbgTreeViewLocalsValueMgr.WatchAbleResultFromObject(
   AWatchAble: TObject): IWatchAbleResultIntf;
 begin
   Result := TIdeLocalsValue(AWatchAble);
+end;
+
+function TDbgTreeViewLocalsValueMgr.GetTrackingIdFor(AWatchAble: TObject): string;
+begin
+  Result := TIdeLocalsValue(AWatchAble).Name;
 end;
 
 function TDbgTreeViewLocalsValueMgr.GetFieldAsText(Nd: PVirtualNode;

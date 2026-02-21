@@ -193,6 +193,7 @@ type
     procedure DoUnLockCommandProcessing(Data: PtrInt);
     function GetWatches: TIdeWatches;
     procedure ContextChanged(Sender: TObject);
+    procedure SnapshotAnyChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
 
     function DragWatchCount(ASender: TObject): integer;
@@ -251,6 +252,8 @@ type
 
     function WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; override;
     function WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; override;
+    function GetTrackingIdFor(AWatchAble: TObject): string; override;
+    function HasWatchAbleForTrackingId(ATrackingId: string): boolean; override;
 
     function GetFieldAsText(Nd: PVirtualNode; AWatchAble: TObject;
       AWatchAbleResult: IWatchAbleResultIntf; AField: TTreeViewDataToTextField;
@@ -313,6 +316,7 @@ begin
   ThreadsNotification.OnCurrent   := @ContextChanged;
   CallstackNotification.OnCurrent := @ContextChanged;
   SnapshotNotification.OnCurrent  := @SnapshotChanged;
+  SnapshotNotification.OnChange   := @SnapshotAnyChanged;
 
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
@@ -948,6 +952,12 @@ begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.ContextChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]);
   if (DebugBoss <> nil) and (DebugBoss.State in [dsPause, dsInternalPause]) then
     UpdateAll;
+end;
+
+procedure TWatchesDlg.SnapshotAnyChanged(Sender: TObject);
+begin
+  if SnapshotManager.Snapshots.Count = 0 then
+    FWatchTreeMgr.ClearOutdatedTrackingIdData;
 end;
 
 procedure TWatchesDlg.actEnableSelectedExecute(Sender: TObject);
@@ -1722,6 +1732,30 @@ begin
   if AWatchAble = nil then exit(nil);
 
   Result := TIdeWatch(AWatchAble).Values[FWatchDlg.GetThreadId, FWatchDlg.GetStackframe];
+end;
+
+function TDbgTreeViewWatchValueMgr.GetTrackingIdFor(AWatchAble: TObject): string;
+begin
+  Result := TIdeWatch(AWatchAble).TrackingID;
+end;
+
+function TDbgTreeViewWatchValueMgr.HasWatchAbleForTrackingId(ATrackingId: string): boolean;
+var
+  i: Integer;
+  s: string;
+begin
+  Result := False;
+  for i := 0 to FWatchDlg.FWatchesInView.Count - 1 do begin
+    s := FWatchDlg.FWatchesInView[i].TrackingID;
+    if s = '' then continue;
+    if ( (Length(s) = Length(ATrackingId)) or
+         ( (Length(s) < Length(ATrackingId)) and
+         (ATrackingId[Length(s)+1] = #1) )
+       ) and
+       (StrLComp(PChar(ATrackingId), PChar(s), Length(s)) = 0)
+    then
+      exit(True);
+  end;
 end;
 
 function TDbgTreeViewWatchValueMgr.GetFieldAsText(Nd: PVirtualNode;

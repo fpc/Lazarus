@@ -605,6 +605,7 @@ type
   private
     FChildWatches: TIdeWatches;
     FDisplayName: String;
+    FTrackingID: string;
     FParentWatch: TIdeWatch;
     FSliceIndexStartPos, FSliceIndexLen: Integer;
 
@@ -612,6 +613,7 @@ type
     function GetChildrenByNameAsArrayEntry(AName: Int64; DerefCount: Integer): TIdeWatch;
     function GetChildrenByNameAsField(AName, AClassName: String; DerefCount: Integer): TIdeWatch;
     function GetTopParentWatch: TIdeWatch;
+    function GetTrackingID: string;
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
     function GetAnyValidParentWatchValue(AThreadId: Integer; AStackFrame: Integer): TIdeWatchValue;
     function GetWatchDisplayName: String;
@@ -652,6 +654,7 @@ type
     property ParentWatch: TIdeWatch read FParentWatch;
     property TopParentWatch: TIdeWatch read GetTopParentWatch;
     property DisplayName: String read GetWatchDisplayName write SetDisplayName;
+    property TrackingID: string read GetTrackingID; // experimental
   public
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TIdeWatchValue
              read GetValue;
@@ -2826,6 +2829,7 @@ procedure TSnapshotManager.ClearHistory;
 begin
   FHistoryList.Clear;
   HistorySelected := False;
+  DoChanged;
 end;
 
 procedure TSnapshotManager.ClearSnapshots;
@@ -6952,8 +6956,10 @@ end;
 procedure TIdeWatch.AssignTo(Dest: TPersistent);
 begin
   inherited AssignTo(Dest);
-  if Dest is TIdeWatch then
+  if Dest is TIdeWatch then begin
     TIdeWatch(Dest).FDisplayName := FDisplayName;
+    TIdeWatch(Dest).FTrackingID := TrackingID; // call getter, make sure it has a value
+  end;
 end;
 
 procedure TIdeWatch.InitChildWatches;
@@ -6970,6 +6976,25 @@ begin
   Result := Self;
   while Result.FParentWatch <> nil do
     Result := Result.FParentWatch;
+end;
+
+function TIdeWatch.GetTrackingID: string;
+const
+  NextId: QWord = 0;
+var
+  p: TIdeWatch;
+begin
+  p := ParentWatch;
+  if p <> nil then begin
+    Result := p.TrackingID + #01 + DisplayName;
+    exit;
+  end;
+
+  if FTrackingID = '' then begin
+    inc(NextId);
+    FTrackingID := IntToStr(NextId);
+  end;
+  Result := FTrackingID;
 end;
 
 function TIdeWatch.GetChildWatch(ADispName, AnExpr: String): TIdeWatch;

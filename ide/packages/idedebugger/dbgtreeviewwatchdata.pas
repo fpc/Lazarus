@@ -1,14 +1,15 @@
 unit DbgTreeViewWatchData;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch advancedrecords}
 
 interface
 
 uses
-  Classes, SysUtils, Math, IdeDebuggerBase, DebuggerTreeView, IdeDebuggerWatchResult,
+  Classes, SysUtils, Math, fgl, IdeDebuggerBase, DebuggerTreeView, IdeDebuggerWatchResult,
   ArrayNavigationFrame, BaseDebugManager, IdeDebuggerWatchResPrinter, Debugger, laz.VirtualTrees,
-  DbgIntfDebuggerBase, IdeDebuggerWatchValueIntf, Controls, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes;
+  DbgIntfDebuggerBase, IdeDebuggerWatchValueIntf, LazIDEIntf, ProjectIntf, Controls, Forms,
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes;
 
 type
 
@@ -20,6 +21,15 @@ type
   TTreeViewDataToTextFields = set of TTreeViewDataToTextField;
   TTreeViewDataToTextOptions = set of TTreeViewDataToTextOption;
 
+  { TDbgTreeViewTrackedData }
+
+  TDbgTreeViewTrackedData = record
+    Expanded: Boolean;
+    class operator =(a,b: TDbgTreeViewTrackedData): boolean;
+  end;
+
+  TDbgTreeViewTrackedDataMap = specialize TFPGMap<string, TDbgTreeViewTrackedData>;
+
   { TDbgTreeViewWatchDataMgr }
 
   TDbgTreeViewWatchDataMgr = class
@@ -27,7 +37,14 @@ type
     FCancelUpdate: Boolean;
     FDisplayFormatResolver: TDisplayFormatResolver;
     FTreeView: TDbgTreeView;
+    FDbgTreeViewTrackedDataMap: TDbgTreeViewTrackedDataMap;
+    FCurrentTrackId: String;
     FExpandingWatchAbleResult: TObject;
+
+    function DoProjectChanged(Sender: TObject; AProject: TLazProject): TModalResult;
+    function GetDbgTreeViewTrackedData(AWatchAble: TObject; out AData: TDbgTreeViewTrackedData): Boolean;
+    function GetDbgTreeViewTrackedData(AWatchAble: TObject; out AnIndex: Integer): TDbgTreeViewTrackedData;
+    procedure UpdateDbgTreeViewTrackedData(AnIndex: Integer; AData: TDbgTreeViewTrackedData);
 
     procedure TreeNodeRightButtonClicked(Sender: TDbgTreeView; ANode: PVirtualNode);
     procedure TreeViewCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -41,6 +58,8 @@ type
   protected
     function  WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; virtual; abstract;
     function  WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; virtual; abstract;
+    function  GetTrackingIdFor(AWatchAble: TObject): string; virtual;
+    function  HasWatchAbleForTrackingId(ATrackingId: string): boolean; virtual;
 
     function GetFieldAsText(Nd: PVirtualNode;
       AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; //AVNode: PVirtualNode
@@ -56,10 +75,13 @@ type
     procedure DoUpdateOldSubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord);
   public
     constructor Create(ATreeView: TDbgTreeView);
-    //destructor Destroy; override;
+    destructor Destroy; override;
 
     function AddWatchData(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf = nil; AVNode: PVirtualNode = nil): PVirtualNode;
     procedure UpdateWatchData(AWatchAble: TObject; AVNode: PVirtualNode; AWatchAbleResult: IWatchAbleResultIntf = nil; AnIgnoreNodeVisible: Boolean = False);
+
+    procedure ClearTrackingIdData;
+    procedure ClearOutdatedTrackingIdData;
 
     function GetAsText(AScope: TTreeViewDataScope;
       AFields: TTreeViewDataToTextFields;
@@ -71,6 +93,13 @@ type
   end;
 
 implementation
+
+{ TDbgTreeViewTrackedData }
+
+class operator TDbgTreeViewTrackedData. = (a, b: TDbgTreeViewTrackedData): boolean;
+begin
+  Result := (a.Expanded = b.Expanded);
+end;
 
 { TDbgTreeViewWatchDataMgr }
 
@@ -115,6 +144,16 @@ begin
 
     UpdateSubItems(AWatchAble, AWatchAbleResult, VNode, c);
   end;
+end;
+
+function TDbgTreeViewWatchDataMgr.GetTrackingIdFor(AWatchAble: TObject): string;
+begin
+  Result := '';
+end;
+
+function TDbgTreeViewWatchDataMgr.HasWatchAbleForTrackingId(ATrackingId: string): boolean;
+begin
+  Result := True;
 end;
 
 function TDbgTreeViewWatchDataMgr.GetFieldAsText(Nd: PVirtualNode;
@@ -382,10 +421,17 @@ procedure TDbgTreeViewWatchDataMgr.TreeViewExpanded(Sender: TBaseVirtualTree;
 var
   Nav: TArrayNavigationBar;
   AWatchAble: TObject;
+  i: Integer;
+  TrckData: TDbgTreeViewTrackedData;
 begin
   Nav := TArrayNavigationBar(FTreeView.NodeControl[Node]);
   if Nav <> nil then
     Nav.UpdateCollapsedExpanded;
+
+  AWatchAble := FTreeView.NodeItem[Node];
+  TrckData := GetDbgTreeViewTrackedData(AWatchAble, i);
+  TrckData.Expanded := True;
+  UpdateDbgTreeViewTrackedData(i, TrckData);
 
   Node := FTreeView.GetFirstChildNoInit(Node);
   while Node <> nil do begin
@@ -399,11 +445,62 @@ end;
 procedure TDbgTreeViewWatchDataMgr.TreeViewCollapsed(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
   Nav: TArrayNavigationBar;
+  AWatchAble: TObject;
+  i: Integer;
+  TrckData: TDbgTreeViewTrackedData;
 begin
   FTreeView.NodeControlVisible[Node] := False;
   Nav := TArrayNavigationBar(FTreeView.NodeControl[Node]);
   if Nav <> nil then
     Nav.UpdateCollapsedExpanded;
+
+  AWatchAble := FTreeView.NodeItem[Node];
+  TrckData := GetDbgTreeViewTrackedData(AWatchAble, i);
+  TrckData.Expanded := False;
+  UpdateDbgTreeViewTrackedData(i, TrckData);
+end;
+
+function TDbgTreeViewWatchDataMgr.GetDbgTreeViewTrackedData(AWatchAble: TObject; out
+  AData: TDbgTreeViewTrackedData): Boolean;
+var
+  i: Integer;
+begin
+  AData := GetDbgTreeViewTrackedData(AWatchAble, i);
+  Result := i >= 0;
+end;
+
+function TDbgTreeViewWatchDataMgr.DoProjectChanged(Sender: TObject; AProject: TLazProject
+  ): TModalResult;
+begin
+  ClearTrackingIdData;
+  Result := mrOK;
+end;
+
+function TDbgTreeViewWatchDataMgr.GetDbgTreeViewTrackedData(AWatchAble: TObject; out
+  AnIndex: Integer): TDbgTreeViewTrackedData;
+begin
+  Result := Default(TDbgTreeViewTrackedData);
+  AnIndex := -1;
+  FCurrentTrackId := GetTrackingIdFor(AWatchAble);
+  if FCurrentTrackId <> '' then begin
+    AnIndex := FDbgTreeViewTrackedDataMap.IndexOf(FCurrentTrackId);
+    if AnIndex >= 0 then
+      Result := FDbgTreeViewTrackedDataMap.Data[AnIndex];
+  end;
+end;
+
+procedure TDbgTreeViewWatchDataMgr.UpdateDbgTreeViewTrackedData(AnIndex: Integer;
+  AData: TDbgTreeViewTrackedData);
+begin
+  if AData = Default(TDbgTreeViewTrackedData) then begin
+    if AnIndex >= 0 then
+      FDbgTreeViewTrackedDataMap.Delete(AnIndex);
+  end
+  else
+  if AnIndex >= 0 then
+    FDbgTreeViewTrackedDataMap.Data[AnIndex] := AData
+  else
+    AnIndex := FDbgTreeViewTrackedDataMap.Add(FCurrentTrackId, AData);
 end;
 
 procedure TDbgTreeViewWatchDataMgr.TreeNodeRightButtonClicked(Sender: TDbgTreeView;
@@ -449,12 +546,23 @@ end;
 
 constructor TDbgTreeViewWatchDataMgr.Create(ATreeView: TDbgTreeView);
 begin
+  FDbgTreeViewTrackedDataMap := TDbgTreeViewTrackedDataMap.Create;
   FTreeView := ATreeView;
   FTreeView.OnItemRemoved  := @DoItemRemovedFromView;
   FTreeView.OnExpanded     := @TreeViewExpanded;
   FTreeView.OnCollapsed    := @TreeViewCollapsed;
   FTreeView.OnInitChildren := @TreeViewInitChildren;
   FTreeView.OnNodeRightButtonClick:= @TreeNodeRightButtonClicked;
+  LazarusIDE.AddHandlerOnProjectClose(@DoProjectChanged);
+  LazarusIDE.AddHandlerOnProjectOpening(@DoProjectChanged);
+end;
+
+destructor TDbgTreeViewWatchDataMgr.Destroy;
+begin
+  LazarusIDE.RemoveHandlerOnProjectClose(@DoProjectChanged);
+  LazarusIDE.RemoveHandlerOnProjectOpening(@DoProjectChanged);
+  inherited Destroy;
+  FDbgTreeViewTrackedDataMap.Destroy;
 end;
 
 function TDbgTreeViewWatchDataMgr.AddWatchData(AWatchAble: TObject;
@@ -494,6 +602,7 @@ var
   ResData: TWatchResultData;
   HasChildren: Boolean;
   c: LongWord;
+  TrckData: TDbgTreeViewTrackedData;
 begin
   if not (FTreeView.FullyVisible[AVNode] or AnIgnoreNodeVisible) then
     exit;
@@ -542,14 +651,39 @@ begin
           UpdateSubItems(AWatchAble, AWatchAbleResult, AVNode, c);
         end;
       end
-      else
-      if AWatchAble <> FExpandingWatchAbleResult then begin
-        FTreeView.DeleteChildren(AVNode, False);
-        FTreeView.NodeControl[AVNode] := nil
+      else begin
+        if HasChildren and
+          GetDbgTreeViewTrackedData(AWatchAble, TrckData) and
+          TrckData.Expanded
+        then begin
+          FTreeView.Expanded[AVNode] := True;
+        end
+        else
+        if AWatchAble <> FExpandingWatchAbleResult then begin
+          FTreeView.DeleteChildren(AVNode, False);
+          FTreeView.NodeControl[AVNode] := nil
+        end;
       end;
     end
   finally
     FTreeView.EndUpdate;
+  end;
+end;
+
+procedure TDbgTreeViewWatchDataMgr.ClearTrackingIdData;
+begin
+  FDbgTreeViewTrackedDataMap.Clear;
+end;
+
+procedure TDbgTreeViewWatchDataMgr.ClearOutdatedTrackingIdData;
+var
+  i: Integer;
+begin
+  i := FDbgTreeViewTrackedDataMap.Count - 1;
+  while i >= 0 do begin
+    if not HasWatchAbleForTrackingId(FDbgTreeViewTrackedDataMap.Keys[i]) then
+      FDbgTreeViewTrackedDataMap.Delete(i);
+    dec(i);
   end;
 end;
 
