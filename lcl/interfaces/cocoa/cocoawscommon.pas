@@ -918,6 +918,23 @@ var
                                // srchPt - is the one to use for each chidlren (clPt<>srchPt for TScrollBox)
   menuHandled : Boolean;
   mc: Integer; // modal counter
+
+  function shouldBypassCocoa: Boolean;
+  var
+    ret: id;
+  begin
+    Result:= False;
+    if NOT Assigned(Target) then
+      Exit;
+    if NOT (csDesigning in Target.ComponentState) then
+      Exit;
+    Result:= True;
+    if NOT Owner.respondsToSelector( ObjcSelector('lclBypassCocoa:') ) then
+      Exit;
+    ret:= Owner.performSelector_withObject( ObjcSelector('lclBypassCocoa:'), Event );
+    Result:= NSNumber(ret).boolValue;
+  end;
+
 begin
   if Assigned(Owner) and not NSObjectIsLCLEnabled(Owner) then
   begin
@@ -928,7 +945,7 @@ begin
   // If LCL control is provided and it's in designing state.
   // The default resolution: Notify LCL about event, but don't let Cocoa
   // do anything with it. (Result=true)
-  Result := Assigned(Target) and (csDesigning in Target.ComponentState);
+  Result := shouldBypassCocoa();
 
   lCaptureControlCallback := GetCaptureControlCallback();
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [Target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
