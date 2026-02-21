@@ -53,10 +53,10 @@ uses
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
   UnitResources,
   // IdeUtils
-  IdeUtilsPkgStrConsts, DialogProcs, InputHistory,
+  InputHistory,
   // IdeConfig
-  EnvironmentOpts, SearchPathProcs, TransferMacros, RecentListProcs, IDEProcs,
-  ParsedCompilerOpts, CompilerOptions,
+  EnvironmentOpts, SearchPathProcs, TransferMacros, RecentListProcs,
+  IDEProcs, DialogProcs, ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageSystem,
   // IdeProject

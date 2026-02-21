@@ -5,6 +5,19 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.lisafilealreadyexistsreplaceit
+#, object-pascal-format
+msgid "A file \"%s\" already exists.%sReplace it?"
+msgstr "Failas „%s“ jau egzistuoja.%sPerrašyti?"
+
+#: ideconfstrconsts.lisccoerrorcaption
+msgid "Error"
+msgstr "Klaida"
+
+#: ideconfstrconsts.liscodetoolsdefswriteerror
+msgid "Write error"
+msgstr "Klaida rašant"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Kompiliuoti projektą"
@@ -34,6 +47,14 @@ msgstr "Komponento pavadinimas „%s“ nėra tinkamas identifikatorius"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ", procesorius: %s"
+
+#: ideconfstrconsts.lisdeletefilefailed
+msgid "Delete file failed"
+msgstr "Nepavyko ištrinti failą"
+
+#: ideconfstrconsts.lisdirectorynotwritable
+msgid "Directory not writable"
+msgstr "Aplanke draudžiama rašyti"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -83,6 +104,37 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvoptdlgdirectorynotfound
+msgid "Directory not found"
+msgstr "Aplankas nerastas"
+
+#: ideconfstrconsts.liserrorloadingfrom
+#, object-pascal-format
+msgid "Error loading %s from%s%s%s%s"
+msgstr "Įvyko klaida %s įkeliant iš %s%s%s%s"
+
+#: ideconfstrconsts.liserrorsavingto
+#, object-pascal-format
+msgid "Error saving %s to%s%s%s%s"
+msgstr "Įvyko klaida %s rašant į%s%s%s%s"
+
+#: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
+#, object-pascal-format
+msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
+msgstr "Nepanašu kad failas „%s“%s yra teksto failas.%sVis tiek jį atverti?"
+
+#: ideconfstrconsts.lisfileisnotwritable
+msgid "File is not writable"
+msgstr "Failas tik skaitymui"
+
+#: ideconfstrconsts.lisfileissymlink
+msgid "File is symlink"
+msgstr "Failas yra simbolinė nuoroda"
+
+#: ideconfstrconsts.lisfilenottext
+msgid "File not text"
+msgstr "Ne teksto failas"
+
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
@@ -102,20 +154,82 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr "Nepaisyti ir tęsti"
+
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Režimas: %s"
+
+#: ideconfstrconsts.lisnotimplemented
+msgid "Not implemented"
+msgstr "Neįgyvendinta"
+
+#: ideconfstrconsts.lisnotimplementedyet
+#, object-pascal-format
+msgid "Not implemented yet:%s%s"
+msgstr "Dar neįgyvendinta:%s%s"
+
+#: ideconfstrconsts.lisopensymlink
+msgid "Open symlink"
+msgstr "Atverti simbolinę nuorodą"
+
+#: ideconfstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Atvert paskyrą"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
 msgstr ", operacinė sistema: %s"
 
+#: ideconfstrconsts.lisoverwritefile
+msgid "Overwrite file?"
+msgstr "Perrašyti failą?"
+
+#: ideconfstrconsts.lisoverwritefileondisk
+msgid "Overwrite file on disk"
+msgstr "Perrašyti failą diske"
+
+#: ideconfstrconsts.lispkgmangunabletocreatedirectory
+msgid "Unable to create directory"
+msgstr "Nepavyko sukurti aplanką"
+
+#: ideconfstrconsts.lispkgmangunabletodeletefile
+#, object-pascal-format
+msgid "Unable to delete file \"%s\"."
+msgstr "Nepavyko ištrinti failą „%s“."
+
+#: ideconfstrconsts.lisreaderror
+msgid "Read Error"
+msgstr "Skaitymo klaida"
+
+#: ideconfstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr ", Tikslas: %s"
+
+#: ideconfstrconsts.listhecodetoolsfoundanerror
+#, object-pascal-format
+msgid "The Codetools found an error:%s%s"
+msgstr "„CodeTools“ rado klaidą:%s%s"
+
+#: ideconfstrconsts.listhedirectoryisnotwritable
+#, object-pascal-format
+msgid "The directory \"%s\" is not writable."
+msgstr "Aplanke „%s“ rašyti draudžiama."
+
+#: ideconfstrconsts.listhefileisasymlinkopeninstead
+#, object-pascal-format
+msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
+msgstr "Failas „%s“ yra simbolinė nuoroda.%sAr vietoj jo atverti „%s“?"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -149,4 +263,112 @@ msgstr "Funkcija: ištraukti tik kelią"
 #, object-pascal-format
 msgid "(unknown macro: %s)"
 msgstr "(nežinoma makrokomanda: %s)"
+
+#: ideconfstrconsts.lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr "Nepavyko kopijuoti failą"
+
+#: ideconfstrconsts.lisunabletocopyfileto
+#, object-pascal-format
+msgid "Unable to copy file \"%s\"%sto \"%s\""
+msgstr "Nepavyko kopijuoti failą „%s“%sį „%s“"
+
+#: ideconfstrconsts.lisunabletocreatedirectory
+#, object-pascal-format
+msgid "Unable to create directory \"%s\"."
+msgstr "Nepavyko sukurti aplanką „%s“."
+
+#: ideconfstrconsts.lisunabletocreatefile
+msgid "Unable to create file"
+msgstr "Failas nesiduoda sukuriamas"
+
+#: ideconfstrconsts.lisunabletocreatefile2
+#, object-pascal-format
+msgid "Unable to create file \"%s\""
+msgstr "Nepavyko sukurti failą „%s“"
+
+#: ideconfstrconsts.lisunabletocreatefile3
+#, object-pascal-format
+msgid "Unable to create file%s\"%s\""
+msgstr "Nepavyko sukurti failą%s„%s“"
+
+#: ideconfstrconsts.lisunabletocreatelinkwithtarget
+#, object-pascal-format
+msgid "Unable to create link \"%s\" with target \"%s\""
+msgstr "Nepavyko sukurti saito „%s“, kurio paskirtis „%s“"
+
+#: ideconfstrconsts.lisunabletoreadfile
+msgid "Unable to read file"
+msgstr "Nepavyko įkelti failą"
+
+#: ideconfstrconsts.lisunabletoreadfile2
+#, object-pascal-format
+msgid "Unable to read file \"%s\"."
+msgstr "Nepavyko skaityti iš failo „%s“!"
+
+#: ideconfstrconsts.lisunabletoreadfileerror
+#, object-pascal-format
+msgid "Unable to read file \"%s\"%sError: %s"
+msgstr "Nepavyko skaityti iš failo „%s“.%sKlaida: %s"
+
+#: ideconfstrconsts.lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr "Nepavyko pervadinti failą"
+
+#: ideconfstrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"!"
+msgstr "Nepavyko pervadinti failą „%s“ į „%s“!"
+
+#: ideconfstrconsts.lisunabletorenamefileto2
+#, object-pascal-format
+msgid "Unable to rename file \"%s\"%sto \"%s\"."
+msgstr "Nepavyko pervadinti failą „%s“%sį „%s“."
+
+#: ideconfstrconsts.lisunabletowrite2
+#, object-pascal-format
+msgid "Unable to write \"%s\""
+msgstr "Neina rašyti į „%s“"
+
+#: ideconfstrconsts.lisunabletowritefile
+msgid "Unable to write file"
+msgstr "Nepavyko rašyti į failą"
+
+#: ideconfstrconsts.lisunabletowritefile2
+#, object-pascal-format
+msgid "Unable to write file \"%s\"."
+msgstr "Nepavyko rašyti į failą „%s“."
+
+#: ideconfstrconsts.lisunabletowritefileerror
+#, object-pascal-format
+msgid "Unable to write file \"%s\"%sError: %s"
+msgstr "Nepavyko rašyti į failą „%s“%sKlaida: %s"
+
+#: ideconfstrconsts.lisunabletowritetofile2
+#, object-pascal-format
+msgid "Unable to write to file \"%s\"."
+msgstr "Nepavyko rašyti į failą „%s“."
+
+#: ideconfstrconsts.lisunabletowritexmlstreamtoerror
+#, object-pascal-format
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr "Neina rašyti xml srauto į %s%sKlaida: %s"
+
+#: ideconfstrconsts.liswriteerror
+msgid "Write Error"
+msgstr "Rašymo klaida"
+
+#: ideconfstrconsts.liswriteerrorfile
+#, object-pascal-format
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr "Klaida rašant: %s%sFailas: %s%s%s"
+
+#: ideconfstrconsts.lisxmlerror
+msgid "XML Error"
+msgstr "XML klaida"
+
+#: ideconfstrconsts.lisxmlparsererrorinfileerror
+#, object-pascal-format
+msgid "XML parser error in file %s%sError: %s"
+msgstr "XML analizatorius klaida, failas: %s%sKlaida: %s"
 

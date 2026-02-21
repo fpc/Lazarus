@@ -59,10 +59,10 @@ uses
   // Package registration
   LazarusPackageIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts, DialogProcs, IDETranslations,
+  IDETranslations,
   // IdeConfig
-  EnvironmentOpts, LazConf, TransferMacros, IDEProcs, SearchPathProcs,
-  ParsedCompilerOpts, CompilerOptions, FppkgHelper,
+  EnvironmentOpts, LazConf, TransferMacros, IDEProcs, DialogProcs, SearchPathProcs,
+  ParsedCompilerOpts, CompilerOptions, FppkgHelper, IdeConfStrConsts,
   // IdePackager
   IdePackagerStrConsts, PackageLinks, PackageDefs, PkgSysBasePkgs, EditablePackage;
 

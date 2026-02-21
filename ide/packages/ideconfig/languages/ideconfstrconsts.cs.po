@@ -5,6 +5,19 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.lisafilealreadyexistsreplaceit
+#, object-pascal-format
+msgid "A file \"%s\" already exists.%sReplace it?"
+msgstr "Soubor \"%s\" už existuje.%sNahradit?"
+
+#: ideconfstrconsts.lisccoerrorcaption
+msgid "Error"
+msgstr "Chyba"
+
+#: ideconfstrconsts.liscodetoolsdefswriteerror
+msgid "Write error"
+msgstr "Chyba zápisu"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Přeložit projekt"
@@ -34,6 +47,14 @@ msgstr "Jméno komponenty \"%s\" není platný identifikátor"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ", CPU: %s"
+
+#: ideconfstrconsts.lisdeletefilefailed
+msgid "Delete file failed"
+msgstr "Odstranění souboru selhalo"
+
+#: ideconfstrconsts.lisdirectorynotwritable
+msgid "Directory not writable"
+msgstr "Adresář není zapisovatelný"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -83,6 +104,37 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvoptdlgdirectorynotfound
+msgid "Directory not found"
+msgstr "Adresář nenalezen"
+
+#: ideconfstrconsts.liserrorloadingfrom
+#, object-pascal-format
+msgid "Error loading %s from%s%s%s%s"
+msgstr "Chyba načítání %s z%s%s%s%s"
+
+#: ideconfstrconsts.liserrorsavingto
+#, object-pascal-format
+msgid "Error saving %s to%s%s%s%s"
+msgstr "Chyba ukládání %s do %s%s%s%s"
+
+#: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
+#, object-pascal-format
+msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
+msgstr "Soubor \"%s\"%snevypadá jako textový soubor.%sPřesto otevřít?"
+
+#: ideconfstrconsts.lisfileisnotwritable
+msgid "File is not writable"
+msgstr "Soubor není zapisovatelný"
+
+#: ideconfstrconsts.lisfileissymlink
+msgid "File is symlink"
+msgstr "Soubor je symbolický odkaz"
+
+#: ideconfstrconsts.lisfilenottext
+msgid "File not text"
+msgstr "Soubor není textový"
+
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
@@ -102,20 +154,82 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr "Ignorovat a pokračovat"
+
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Režim: %s"
+
+#: ideconfstrconsts.lisnotimplemented
+msgid "Not implemented"
+msgstr "Doposud neimplementováno"
+
+#: ideconfstrconsts.lisnotimplementedyet
+#, object-pascal-format
+msgid "Not implemented yet:%s%s"
+msgstr "Zatím neimplementováno:%s%s"
+
+#: ideconfstrconsts.lisopensymlink
+msgid "Open symlink"
+msgstr "Otevřít symbolický odkaz"
+
+#: ideconfstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Otevřít cíl"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
 msgstr ", OS: %s"
 
+#: ideconfstrconsts.lisoverwritefile
+msgid "Overwrite file?"
+msgstr "Přepsat soubor?"
+
+#: ideconfstrconsts.lisoverwritefileondisk
+msgid "Overwrite file on disk"
+msgstr "Přepsat soubor na disku"
+
+#: ideconfstrconsts.lispkgmangunabletocreatedirectory
+msgid "Unable to create directory"
+msgstr "Nelze vytvořit adresář"
+
+#: ideconfstrconsts.lispkgmangunabletodeletefile
+#, object-pascal-format
+msgid "Unable to delete file \"%s\"."
+msgstr "Nelze smazat soubor \"%s\"."
+
+#: ideconfstrconsts.lisreaderror
+msgid "Read Error"
+msgstr "Chyba čtení"
+
+#: ideconfstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr ", Cíl: %s"
+
+#: ideconfstrconsts.listhecodetoolsfoundanerror
+#, object-pascal-format
+msgid "The Codetools found an error:%s%s"
+msgstr "CodeTools našly chybu:%s%s"
+
+#: ideconfstrconsts.listhedirectoryisnotwritable
+#, object-pascal-format
+msgid "The directory \"%s\" is not writable."
+msgstr "Adresář \"%s\" není zapisovatelný."
+
+#: ideconfstrconsts.listhefileisasymlinkopeninstead
+#, object-pascal-format
+msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
+msgstr "Soubor \"%s\" je symbolický odkaz.%sOtevřít místo něj \"%s\"?"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -149,4 +263,112 @@ msgstr "Funkce: vytáhnout cestu"
 #, object-pascal-format
 msgid "(unknown macro: %s)"
 msgstr "(neznámé makro: %s)"
+
+#: ideconfstrconsts.lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr "Soubor nelze zkopírovat"
+
+#: ideconfstrconsts.lisunabletocopyfileto
+#, object-pascal-format
+msgid "Unable to copy file \"%s\"%sto \"%s\""
+msgstr "Nelze zkopírovat soubor \"%s\"%sna \"%s\""
+
+#: ideconfstrconsts.lisunabletocreatedirectory
+#, object-pascal-format
+msgid "Unable to create directory \"%s\"."
+msgstr "Nelze vytvořit adresář \"%s\"."
+
+#: ideconfstrconsts.lisunabletocreatefile
+msgid "Unable to create file"
+msgstr "Nelze vytvořit soubor"
+
+#: ideconfstrconsts.lisunabletocreatefile2
+#, object-pascal-format
+msgid "Unable to create file \"%s\""
+msgstr "Nelze vytvořit soubor \"%s\""
+
+#: ideconfstrconsts.lisunabletocreatefile3
+#, object-pascal-format
+msgid "Unable to create file%s\"%s\""
+msgstr "Nelze vytvořit soubor %s\"%s\""
+
+#: ideconfstrconsts.lisunabletocreatelinkwithtarget
+#, object-pascal-format
+msgid "Unable to create link \"%s\" with target \"%s\""
+msgstr "Nelze vytvořit odkaz \"%s\" s cílem \"%s\""
+
+#: ideconfstrconsts.lisunabletoreadfile
+msgid "Unable to read file"
+msgstr "Nelze přečíst soubor"
+
+#: ideconfstrconsts.lisunabletoreadfile2
+#, object-pascal-format
+msgid "Unable to read file \"%s\"."
+msgstr "Nelze přečíst soubor \"%s\"."
+
+#: ideconfstrconsts.lisunabletoreadfileerror
+#, object-pascal-format
+msgid "Unable to read file \"%s\"%sError: %s"
+msgstr "Nelze číst soubor \"%s\"%sChyba: %s"
+
+#: ideconfstrconsts.lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr "Soubor nelze přejmenovat"
+
+#: ideconfstrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"!"
+msgstr "Nelze přejmenovat soubor \"%s\" na \"%s\"!"
+
+#: ideconfstrconsts.lisunabletorenamefileto2
+#, object-pascal-format
+msgid "Unable to rename file \"%s\"%sto \"%s\"."
+msgstr "Nelze přejmenovat soubor \"%s\"%sna \"%s\"."
+
+#: ideconfstrconsts.lisunabletowrite2
+#, object-pascal-format
+msgid "Unable to write \"%s\""
+msgstr "Nelze zapisovat do \"%s\""
+
+#: ideconfstrconsts.lisunabletowritefile
+msgid "Unable to write file"
+msgstr "Nelze zapsat soubor"
+
+#: ideconfstrconsts.lisunabletowritefile2
+#, object-pascal-format
+msgid "Unable to write file \"%s\"."
+msgstr "Nemožný zápis do souboru \"%s\"."
+
+#: ideconfstrconsts.lisunabletowritefileerror
+#, object-pascal-format
+msgid "Unable to write file \"%s\"%sError: %s"
+msgstr "Nelze zapisovat do souboru \"%s\"%sChyba: %s"
+
+#: ideconfstrconsts.lisunabletowritetofile2
+#, object-pascal-format
+msgid "Unable to write to file \"%s\"."
+msgstr "Nelze zapsat do souboru \"%s\"."
+
+#: ideconfstrconsts.lisunabletowritexmlstreamtoerror
+#, object-pascal-format
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr "Nelze zapsat xml proud do %s%sChyba: %s"
+
+#: ideconfstrconsts.liswriteerror
+msgid "Write Error"
+msgstr "Chyba zápisu"
+
+#: ideconfstrconsts.liswriteerrorfile
+#, object-pascal-format
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr "Chyba zápisu: %s%sSoubor: %s%s%s"
+
+#: ideconfstrconsts.lisxmlerror
+msgid "XML Error"
+msgstr "Chyba XML"
+
+#: ideconfstrconsts.lisxmlparsererrorinfileerror
+#, object-pascal-format
+msgid "XML parser error in file %s%sError: %s"
+msgstr "Chyba XML analyzátoru v souboru %s%sChyba: %s"
 

@@ -53,8 +53,8 @@ uses
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf,
   IDEOptEditorIntf, IDEDialogs, ComponentEditors,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
+  // IdeConfig
+  IdeConfStrConsts,
   // IdeProject
   IdeProjectStrConsts,
   // IDE

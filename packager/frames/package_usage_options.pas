@@ -13,9 +13,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
   // IdeConfic
-  IDEProcs,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
+  IDEProcs, IdeConfStrConsts,
   // IdePackager
   IdePackagerStrConsts,
   // IDE

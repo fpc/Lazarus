@@ -12,10 +12,8 @@ uses
   LazFileUtils,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, PackageIntf,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
   // IdeConfig
-  IDEProcs,
+  IDEProcs, IdeConfStrConsts,
   // IDE
   PackageDefs, LazarusIDEStrConsts, PathEditorDlg, CodeHelp, SearchPathProcs;
 

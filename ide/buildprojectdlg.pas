@@ -40,9 +40,9 @@ uses
   // IDEIntf
   IdeIntfStrConsts, IDEDialogs, IDEImagesIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory,
+  InputHistory,
   // IdeConfig
-  EnvironmentOpts, RecentListProcs,
+  EnvironmentOpts, RecentListProcs, IdeConfStrConsts,
   // IDE
   PackageDefs, PackageSystem, LazarusIDEStrConsts, Project;
 

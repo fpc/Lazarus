@@ -38,9 +38,9 @@ uses
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory,
+  InputHistory,
   // IdeConfig
-  RecentListProcs, LazConf, EnvironmentOpts, TransferMacros,
+  RecentListProcs, LazConf, EnvironmentOpts, TransferMacros, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, ShowDeletingFilesDlg;
 

@@ -46,10 +46,12 @@ uses
   PropEdits, ObjectInspector, TextTools, IDEDialogs, LazHelpIntf, MacroIntf,
   IDEWindowIntf, IDEMsgIntf, PackageIntf, LazIDEIntf, HelpFPDoc, IDEHelpIntf,
   IdeIntfStrConsts, IDEExternToolIntf, IDEImagesIntf,
+  // IdeConfig
+  EnvironmentOpts, DialogProcs, LazConf,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, ObjInspExt, EnvironmentOpts, AboutFrm,
+  LazarusIDEStrConsts, ObjInspExt, AboutFrm,
   Project, MainBar, IDEFPDocFileSearch, PackageDefs, PackageSystem, HelpOptions,
-  MainIntf, LazConf, HelpFPCMessages, CodeHelp, IDEWindowHelp, CodeBrowser;
+  MainIntf, HelpFPCMessages, CodeHelp, IDEWindowHelp, CodeBrowser;
 
 type
 

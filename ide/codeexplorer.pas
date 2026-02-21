@@ -50,8 +50,8 @@ uses
   PascalParserTool,
   // IDEIntf
   LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf, IDEDialogs, IDEImagesIntf,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
+  // IdeConfig
+  IdeConfStrConsts,
   // IdePackager
   IdePackagerStrConsts,
   // IDE

@@ -64,10 +64,11 @@ uses
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   IdeIntfStrConsts, ComponentEditors, PropEdits, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory, DialogProcs,
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs, SearchPathProcs,
-  TransferMacros, IDECmdLine, IDEProcs, ParsedCompilerOpts, CompilerOptions,
+  TransferMacros, IDECmdLine, IDEProcs, DialogProcs,
+  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts,
   // IdePackager
   IdePackagerStrConsts,
   // FCL registration

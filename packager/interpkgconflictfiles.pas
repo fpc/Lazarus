@@ -66,10 +66,10 @@ uses
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, IDEMsgIntf,
   // IdeConfig
-  EnvironmentOpts, TransferMacros, IDEProcs, SearchPathProcs,
+  EnvironmentOpts, TransferMacros, IDEProcs, DialogProcs, SearchPathProcs,
   ParsedCompilerOpts, CompilerOptions,
   // IDE
-  DialogProcs, LazarusIDEStrConsts, PackageDefs, PackageSystem;
+  LazarusIDEStrConsts, PackageDefs, PackageSystem;
 
 type
   TPGInterPkgOwnerInfo = class

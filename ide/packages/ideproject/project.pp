@@ -60,11 +60,11 @@ uses
   // IDEIntf
   UnitResources, EditorSyntaxHighlighterDef, SrcEditorIntf, IDEOptEditorIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory,
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   IDECmdLine, IDEProcs, CompOptsModes, ProjectBuildMode, ModeMatrixOpts,
-  ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon,
+  ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon, IdeConfStrConsts,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageSystem,
   // IdeProject

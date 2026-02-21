@@ -44,10 +44,8 @@ uses
   ProjectIntf, PackageIntf, CompOptsIntf, IDEExternToolIntf,
   // IDEIntf
   IDEImagesIntf, MenuIntf, IDECommands, IDEDialogs, LazIDEIntf, IdeIntfStrConsts,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, CompilerOptions,
+  EnvironmentOpts, IDEOptionDefs, CompilerOptions, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, HelpFPCMessages, etSrcEditMarks,
   MsgWnd_Options, etQuickFixes, ExtTools, EnvGuiOptions;

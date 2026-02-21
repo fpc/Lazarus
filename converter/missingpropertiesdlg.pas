@@ -45,8 +45,8 @@ uses
   ComponentReg,
   // IdeIntf
   IDEExternToolIntf, IDEImagesIntf,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
+  // IdeConfig
+  IdeConfStrConsts,
   // IdeProject
   IdeProjectStrConsts,
   // IDE

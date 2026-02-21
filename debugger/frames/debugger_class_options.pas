@@ -37,13 +37,13 @@ uses
   // IdeIntf
   PropEdits, ObjectInspector, IDEOptEditorIntf, IDEUtils, IdeIntfStrConsts,
   // IdeUtils
-  InputHistory, DialogProcs,
+  InputHistory,
+  // IdeConfig
+  EnvironmentOpts, TransferMacros, DialogProcs,
   // LazDebuggerGDBMI
   GDBMIDebugger, DividerBevel, SelectItemDialog,
   // IdeDebugger
   Debugger, IdeDebuggerOpts, EnvDebuggerOptions, ProjectDebugLink,
-  // IdeConfig
-  EnvironmentOpts, TransferMacros,
   // IDE
   LazarusIDEStrConsts, PathEditorDlg, DebugManager, EnvGuiOptions;
 

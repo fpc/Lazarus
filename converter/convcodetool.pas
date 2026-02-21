@@ -32,7 +32,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, contnrs, strutils,
+  Classes, SysUtils, Contnrs, StrUtils,
   // LCL
   Forms, Controls,
   // CodeTools

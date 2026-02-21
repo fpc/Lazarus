@@ -23,22 +23,24 @@
  Abstract:
    Registers the lfm resource format of forms.
 }
-unit lfmUnitResource;
+unit LfmUnitResource;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, AVL_Tree, System.UITypes,
   // LCL
-  Forms,
+  Forms, LResources,
   // LazUtils
-  LazFileCache, LazFileUtils,
-  // Codetools
+  LazFileCache, LazFileUtils, LazLoggerBase,
+  // CodeTools
   CodeCache, CodeToolManager,
+  // IdeConfig
+  DialogProcs,
   // BuildIntf
-  UnitResourceIntf,
+  UnitResourceIntf, LazMsgWorker,
   // IDEIntf
   UnitResources, SrcEditorIntf,
   // IDE
@@ -56,6 +58,9 @@ type
       LFMType, LFMComponentName, LFMClassName: string; out LCLVersion: string;
       out MissingClasses: TStrings; out AmbiguousClasses: TFPList): TModalResult; override;
   end;
+
+  function ConvertLFMToLRSFileInteractive(const LFMFilename,
+                           LRSFilename: string; ShowAbort: boolean): TModalResult;
 
 implementation
 
@@ -102,6 +107,64 @@ begin
     LFMUnitResCache.Add(Result);
   end else
     Result:=nil;
+end;
+
+function ConvertLFMToLRSFileInteractive(const LFMFilename,
+  LRSFilename: string; ShowAbort: boolean): TModalResult;
+var
+  LFMMemStream, LRSMemStream: TMemoryStream;
+  LFMBuffer: TCodeBuffer;
+  LRSBuffer: TCodeBuffer;
+  FormClassName: String;
+  BinStream: TMemoryStream;
+begin
+  // read lfm file
+  Result:=LoadCodeBuffer(LFMBuffer,LFMFilename,[lbfUpdateFromDisk],ShowAbort);
+  if Result<>mrOk then exit;
+  //debugln(['ConvertLFMToLRSFileInteractive ',LFMBuffer.Filename,' DiskEncoding=',LFMBuffer.DiskEncoding,' MemEncoding=',LFMBuffer.MemEncoding]);
+  LFMMemStream:=nil;
+  LRSMemStream:=nil;
+  try
+    LFMMemStream:=TMemoryStream.Create;
+    LFMBuffer.SaveToStream(LFMMemStream);
+    LFMMemStream.Position:=0;
+    LRSMemStream:=TMemoryStream.Create;
+    try
+      FormClassName:=FindLFMClassName(LFMMemStream);
+      //debugln(['ConvertLFMToLRSFileInteractive FormClassName="',FormClassName,'"']);
+      BinStream:=TMemoryStream.Create;
+      try
+        LRSObjectTextToBinary(LFMMemStream,BinStream);
+        BinStream.Position:=0;
+        BinaryToLazarusResourceCode(BinStream,LRSMemStream,FormClassName,'FORMDATA');
+      finally
+        BinStream.Free;
+      end;
+    except
+      on E: Exception do begin
+        DebugLn('LFMtoLRSstream ',E.Message);
+        DebugLn(['Error: (lazarus) [ConvertLFMToLRSFileInteractive] unable to convert '+LFMFilename+' to '+LRSFilename+':'+LineEnding
+          +E.Message]);
+        Result:=LazMessageDialogAb('Error',
+          'Error while converting '+LFMFilename+' to '+LRSFilename+':'+LineEnding
+          +E.Message,mtError,[mbCancel,mbIgnore],ShowAbort);
+        exit;
+      end;
+    end;
+    LRSMemStream.Position:=0;
+    // save lrs file
+    LRSBuffer:=CodeToolBoss.CreateFile(LRSFilename);
+    if (LRSBuffer<>nil) then begin
+      LRSBuffer.LoadFromStream(LRSMemStream);
+      Result:=SaveCodeBuffer(LRSBuffer);
+    end else begin
+      Result:=mrCancel;
+      DebugLn('Error: (lazarus) [ConvertLFMToLRSFileInteractive] unable to create codebuffer ',LRSFilename);
+    end;
+  finally
+    LFMMemStream.Free;
+    LRSMemStream.Free;
+  end;
 end;
 
 { TLFMUnitResourcefileFormat }

@@ -36,10 +36,8 @@ uses
   IDEOptionsIntf, CompOptsIntf, MacroIntf,
   // IdeIntf
   IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
   // IdeConfig
-  ParsedCompilerOpts, CompilerOptions,
+  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, PackageDefs;
 

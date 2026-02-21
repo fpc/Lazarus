@@ -43,8 +43,8 @@ uses
   CodeToolsStructs, CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IdeIntf
   IdeIntfStrConsts, SrcEditorIntf, LazIDEIntf, PropEdits, IDEDialogs,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
+  // IdeConfig
+  IdeConfStrConsts,
   // IDE
   CustomFormEditor, JitForms, Project, LazarusIDEStrConsts, EditorOptions;
 

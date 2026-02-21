@@ -29,9 +29,9 @@ uses
   // IdeIntf
   IDEWindowIntf, SrcEditorIntf, IDEDialogs, IdeIntfStrConsts,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory,
+  InputHistory,
   // IdeConfig
-  EnvironmentOpts, SearchPathProcs,
+  EnvironmentOpts, SearchPathProcs, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, InputhistoryWithSearchOpt, EditorOptions, Project,
   SearchFrm, SearchResultView;

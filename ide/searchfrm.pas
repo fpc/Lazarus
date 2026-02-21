@@ -44,9 +44,9 @@ uses
   // IDEIntf
   IdeIntfStrConsts, IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory,
+  InputHistory,
   // IdeConfig
-  SearchPathProcs,
+  SearchPathProcs, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, SearchResultView, Project;
 

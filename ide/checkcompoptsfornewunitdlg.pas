@@ -40,9 +40,9 @@ uses
   // IdeIntf
   IdeIntfStrConsts, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory,
+  InputHistory,
   // IdeConfig
-  TransferMacros,
+  TransferMacros, IdeConfStrConsts,
   // IDE
   Project, LazarusIDEStrConsts;
 

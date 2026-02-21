@@ -51,9 +51,9 @@ uses
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory,
+  InputHistory,
   // IdeConfig
-  RecentListProcs,
+  RecentListProcs, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, EditorOptions, MiscOptions, MainBase, SourceEditor,
   Project;

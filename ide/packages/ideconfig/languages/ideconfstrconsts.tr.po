@@ -5,6 +5,19 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.lisafilealreadyexistsreplaceit
+#, object-pascal-format
+msgid "A file \"%s\" already exists.%sReplace it?"
+msgstr "\"%s\" dosyası zaten var.%s Değiştirilsin mi?"
+
+#: ideconfstrconsts.lisccoerrorcaption
+msgid "Error"
+msgstr "Hata"
+
+#: ideconfstrconsts.liscodetoolsdefswriteerror
+msgid "Write error"
+msgstr "Yazma hatası"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Projeyi Derle"
@@ -34,6 +47,14 @@ msgstr "Bileşen adı \"%s\" geçerli bir tanımlayıcı değil"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ", CPU: %s"
+
+#: ideconfstrconsts.lisdeletefilefailed
+msgid "Delete file failed"
+msgstr "Dosya silinemedi"
+
+#: ideconfstrconsts.lisdirectorynotwritable
+msgid "Directory not writable"
+msgstr "Dizin yazılabilir değil"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -83,6 +104,37 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvoptdlgdirectorynotfound
+msgid "Directory not found"
+msgstr "Dizin bulunamadı"
+
+#: ideconfstrconsts.liserrorloadingfrom
+#, object-pascal-format
+msgid "Error loading %s from%s%s%s%s"
+msgstr "%s%s%s%s adresinden %s yüklenirken hata oluştu"
+
+#: ideconfstrconsts.liserrorsavingto
+#, object-pascal-format
+msgid "Error saving %s to%s%s%s%s"
+msgstr "%s, %s %s %s %s'ye kaydedilirken hata oluştu"
+
+#: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
+#, object-pascal-format
+msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
+msgstr "\"%s\"%s dosyası bir metin dosyasına benzemiyor.%s Yine de açılsın mı?"
+
+#: ideconfstrconsts.lisfileisnotwritable
+msgid "File is not writable"
+msgstr "Dosya yazılabilir değil"
+
+#: ideconfstrconsts.lisfileissymlink
+msgid "File is symlink"
+msgstr "Dosya sembolik bağ"
+
+#: ideconfstrconsts.lisfilenottext
+msgid "File not text"
+msgstr "Metin değil dosya"
+
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
@@ -102,20 +154,82 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr "Yoksay ve devam et"
+
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Mod: %s"
+
+#: ideconfstrconsts.lisnotimplemented
+msgid "Not implemented"
+msgstr "Uygulanmadı"
+
+#: ideconfstrconsts.lisnotimplementedyet
+#, object-pascal-format
+msgid "Not implemented yet:%s%s"
+msgstr "Henüz uygulanmadı: %s %s"
+
+#: ideconfstrconsts.lisopensymlink
+msgid "Open symlink"
+msgstr "Sembolik bağı aç"
+
+#: ideconfstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Hedefi Aç"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
 msgstr ", OS: %s"
 
+#: ideconfstrconsts.lisoverwritefile
+msgid "Overwrite file?"
+msgstr "Dosyanın üzerine yazılsın mı?"
+
+#: ideconfstrconsts.lisoverwritefileondisk
+msgid "Overwrite file on disk"
+msgstr "Diskdeki dosya üzerine yaz"
+
+#: ideconfstrconsts.lispkgmangunabletocreatedirectory
+msgid "Unable to create directory"
+msgstr "Dizin oluşturulamadı"
+
+#: ideconfstrconsts.lispkgmangunabletodeletefile
+#, object-pascal-format
+msgid "Unable to delete file \"%s\"."
+msgstr "Dosya \"%s\" silinemiyor."
+
+#: ideconfstrconsts.lisreaderror
+msgid "Read Error"
+msgstr "Okuma hatası"
+
+#: ideconfstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr ", Hedef: %s"
+
+#: ideconfstrconsts.listhecodetoolsfoundanerror
+#, object-pascal-format
+msgid "The Codetools found an error:%s%s"
+msgstr "Kod aracı bir hata buldu: %s%s"
+
+#: ideconfstrconsts.listhedirectoryisnotwritable
+#, object-pascal-format
+msgid "The directory \"%s\" is not writable."
+msgstr "\"%s\"dizini yazılabilir değil."
+
+#: ideconfstrconsts.listhefileisasymlinkopeninstead
+#, object-pascal-format
+msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
+msgstr "\"%s\"dosyası bir sembolik bağ.%s \"%s\" yerine Aç?"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -149,4 +263,112 @@ msgstr "Fonksiyon: dosya yolunu ayıkla"
 #, object-pascal-format
 msgid "(unknown macro: %s)"
 msgstr "(Bilinmeyen makro: %s)"
+
+#: ideconfstrconsts.lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr "Dosya kopyalanamıyor"
+
+#: ideconfstrconsts.lisunabletocopyfileto
+#, object-pascal-format
+msgid "Unable to copy file \"%s\"%sto \"%s\""
+msgstr "Dosya \"%s\"%s ye \"%s\" kopyalanamıyor"
+
+#: ideconfstrconsts.lisunabletocreatedirectory
+#, object-pascal-format
+msgid "Unable to create directory \"%s\"."
+msgstr "\"%s\" dizini oluşturulamadı."
+
+#: ideconfstrconsts.lisunabletocreatefile
+msgid "Unable to create file"
+msgstr "Dosya oluşturulamadı"
+
+#: ideconfstrconsts.lisunabletocreatefile2
+#, object-pascal-format
+msgid "Unable to create file \"%s\""
+msgstr "\"%s\" dosyası oluşturulamadı."
+
+#: ideconfstrconsts.lisunabletocreatefile3
+#, object-pascal-format
+msgid "Unable to create file%s\"%s\""
+msgstr "%s dosyası \" %s\" dosyası oluşturulamadı."
+
+#: ideconfstrconsts.lisunabletocreatelinkwithtarget
+#, object-pascal-format
+msgid "Unable to create link \"%s\" with target \"%s\""
+msgstr "Hedef \"%s\"\" ile \" %s \" bağlantısı oluşturulamadı"
+
+#: ideconfstrconsts.lisunabletoreadfile
+msgid "Unable to read file"
+msgstr "Dosyayı okunamıyor"
+
+#: ideconfstrconsts.lisunabletoreadfile2
+#, object-pascal-format
+msgid "Unable to read file \"%s\"."
+msgstr "Dosya \"%s\" okunamadı."
+
+#: ideconfstrconsts.lisunabletoreadfileerror
+#, object-pascal-format
+msgid "Unable to read file \"%s\"%sError: %s"
+msgstr "Dosya okunamıyor \"%s\"%sHata: %s"
+
+#: ideconfstrconsts.lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr "Dosya yeniden adlandırılamıyor"
+
+#: ideconfstrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"!"
+msgstr "\"%s\" dosyasını \"%s\" olarak yeniden adlandırılamadı!"
+
+#: ideconfstrconsts.lisunabletorenamefileto2
+#, object-pascal-format
+msgid "Unable to rename file \"%s\"%sto \"%s\"."
+msgstr "\"%s\"%s Dosyasını \"%s\" yeniden adlandırılamıyor."
+
+#: ideconfstrconsts.lisunabletowrite2
+#, object-pascal-format
+msgid "Unable to write \"%s\""
+msgstr "\"%s\" yazamıyor"
+
+#: ideconfstrconsts.lisunabletowritefile
+msgid "Unable to write file"
+msgstr "Dosya yazamadı"
+
+#: ideconfstrconsts.lisunabletowritefile2
+#, object-pascal-format
+msgid "Unable to write file \"%s\"."
+msgstr "Dosya \"%s\" yazılamadı."
+
+#: ideconfstrconsts.lisunabletowritefileerror
+#, object-pascal-format
+msgid "Unable to write file \"%s\"%sError: %s"
+msgstr "Dosya \"%s\"%sHata: %s yazılamıyor"
+
+#: ideconfstrconsts.lisunabletowritetofile2
+#, object-pascal-format
+msgid "Unable to write to file \"%s\"."
+msgstr "\"%s\" dosyasına yazılamıyor."
+
+#: ideconfstrconsts.lisunabletowritexmlstreamtoerror
+#, object-pascal-format
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr "%s%s xml akışı yazılamadı Hata:%s"
+
+#: ideconfstrconsts.liswriteerror
+msgid "Write Error"
+msgstr "Yazma Hatası"
+
+#: ideconfstrconsts.liswriteerrorfile
+#, object-pascal-format
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr "Yazma hatası: %s%sDosya: %s%s%s"
+
+#: ideconfstrconsts.lisxmlerror
+msgid "XML Error"
+msgstr "XML Hatası"
+
+#: ideconfstrconsts.lisxmlparsererrorinfileerror
+#, object-pascal-format
+msgid "XML parser error in file %s%sError: %s"
+msgstr "%s  dosyasındaki XML ayrıştırıcı hatası %sHata:%s"
 

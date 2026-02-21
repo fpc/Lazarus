@@ -8,6 +8,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: TyPoEditor 0.2\n"
 
+#: ideconfstrconsts.lisafilealreadyexistsreplaceit
+#, object-pascal-format
+msgid "A file \"%s\" already exists.%sReplace it?"
+msgstr "文件 \"%s\" 已存在%s是否替换？"
+
+#: ideconfstrconsts.lisccoerrorcaption
+msgid "Error"
+msgstr "错误"
+
+#: ideconfstrconsts.liscodetoolsdefswriteerror
+msgid "Write error"
+msgstr "写入错误"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "编译项目"
@@ -37,6 +50,14 @@ msgstr "组件名称 \"%s\" 不是有效的标识符"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ", CPU: %s"
+
+#: ideconfstrconsts.lisdeletefilefailed
+msgid "Delete file failed"
+msgstr "删除文件失败"
+
+#: ideconfstrconsts.lisdirectorynotwritable
+msgid "Directory not writable"
+msgstr "目录不可写"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -86,6 +107,37 @@ msgstr "使用 LineInfo 单元"
 msgid "Endless loop in macros"
 msgstr "宏中出现无限循环"
 
+#: ideconfstrconsts.lisenvoptdlgdirectorynotfound
+msgid "Directory not found"
+msgstr "目录未找到"
+
+#: ideconfstrconsts.liserrorloadingfrom
+#, object-pascal-format
+msgid "Error loading %s from%s%s%s%s"
+msgstr "加载 %s 时出错从 %s%s%s%s"
+
+#: ideconfstrconsts.liserrorsavingto
+#, object-pascal-format
+msgid "Error saving %s to%s%s%s%s"
+msgstr "保存 %s 到 %s 时出错 %s%s%s"
+
+#: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
+#, object-pascal-format
+msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
+msgstr "文件 \"%s\"%s看起来不是一个文本文件。%s仍然打开它吗？"
+
+#: ideconfstrconsts.lisfileisnotwritable
+msgid "File is not writable"
+msgstr "文件不可写"
+
+#: ideconfstrconsts.lisfileissymlink
+msgid "File is symlink"
+msgstr "文件是符号链接"
+
+#: ideconfstrconsts.lisfilenottext
+msgid "File not text"
+msgstr "文件不是文本文件"
+
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
@@ -105,20 +157,82 @@ msgstr "未能找到为 Fppkg 配置的编译器 [%s]。"
 msgid "Fppkg reports that the RTL is not installed."
 msgstr "Fppkg 报告说 RTL 未安装。"
 
+#: ideconfstrconsts.lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr "忽略并继续"
+
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ",模式: %s"
+
+#: ideconfstrconsts.lisnotimplemented
+msgid "Not implemented"
+msgstr "未实现"
+
+#: ideconfstrconsts.lisnotimplementedyet
+#, object-pascal-format
+msgid "Not implemented yet:%s%s"
+msgstr "尚未实现：%s%s"
+
+#: ideconfstrconsts.lisopensymlink
+msgid "Open symlink"
+msgstr "打开符号链接"
+
+#: ideconfstrconsts.lisopentarget
+msgid "Open target"
+msgstr "打开目标"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
 msgstr ",操作系统:%s"
 
+#: ideconfstrconsts.lisoverwritefile
+msgid "Overwrite file?"
+msgstr "覆盖文件?"
+
+#: ideconfstrconsts.lisoverwritefileondisk
+msgid "Overwrite file on disk"
+msgstr "覆盖磁盘上的文件"
+
+#: ideconfstrconsts.lispkgmangunabletocreatedirectory
+msgid "Unable to create directory"
+msgstr "不能创建目录"
+
+#: ideconfstrconsts.lispkgmangunabletodeletefile
+#, object-pascal-format
+msgid "Unable to delete file \"%s\"."
+msgstr "无法删除文件 \"%s\"。"
+
+#: ideconfstrconsts.lisreaderror
+msgid "Read Error"
+msgstr "读取错误"
+
+#: ideconfstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr "，目标：%s"
+
+#: ideconfstrconsts.listhecodetoolsfoundanerror
+#, object-pascal-format
+msgid "The Codetools found an error:%s%s"
+msgstr "Codetools 发现一个错误：%s%s"
+
+#: ideconfstrconsts.listhedirectoryisnotwritable
+#, object-pascal-format
+msgid "The directory \"%s\" is not writable."
+msgstr "目录 \"%s\" 不可写。"
+
+#: ideconfstrconsts.listhefileisasymlinkopeninstead
+#, object-pascal-format
+msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
+msgstr "文件 \"%s\" 是一个符号链接。%s要打开 \"%s\" 吗？"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -152,4 +266,112 @@ msgstr "功能：提取文件路径"
 #, object-pascal-format
 msgid "(unknown macro: %s)"
 msgstr "(未知宏：%s)"
+
+#: ideconfstrconsts.lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr "无法复制文件"
+
+#: ideconfstrconsts.lisunabletocopyfileto
+#, object-pascal-format
+msgid "Unable to copy file \"%s\"%sto \"%s\""
+msgstr "无法将文件 \"%s\"%s复制到 \"%s\""
+
+#: ideconfstrconsts.lisunabletocreatedirectory
+#, object-pascal-format
+msgid "Unable to create directory \"%s\"."
+msgstr "无法创建目录 \"%s\"。"
+
+#: ideconfstrconsts.lisunabletocreatefile
+msgid "Unable to create file"
+msgstr "无法创建文件"
+
+#: ideconfstrconsts.lisunabletocreatefile2
+#, object-pascal-format
+msgid "Unable to create file \"%s\""
+msgstr "无法创建文件 \"%s\""
+
+#: ideconfstrconsts.lisunabletocreatefile3
+#, object-pascal-format
+msgid "Unable to create file%s\"%s\""
+msgstr "无法创建文件%s\"%s\""
+
+#: ideconfstrconsts.lisunabletocreatelinkwithtarget
+#, object-pascal-format
+msgid "Unable to create link \"%s\" with target \"%s\""
+msgstr "无法创建链接 \"%s\" 目标为 \"%s\""
+
+#: ideconfstrconsts.lisunabletoreadfile
+msgid "Unable to read file"
+msgstr "无法读取文件"
+
+#: ideconfstrconsts.lisunabletoreadfile2
+#, object-pascal-format
+msgid "Unable to read file \"%s\"."
+msgstr "无法读取文件 \"%s\"。"
+
+#: ideconfstrconsts.lisunabletoreadfileerror
+#, object-pascal-format
+msgid "Unable to read file \"%s\"%sError: %s"
+msgstr "无法读取文件 \"%s\"%s 错误：%s"
+
+#: ideconfstrconsts.lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr "无法重命名文件"
+
+#: ideconfstrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"!"
+msgstr "无法将文件 \"%s\" 重命名为 \"%s\"！"
+
+#: ideconfstrconsts.lisunabletorenamefileto2
+#, object-pascal-format
+msgid "Unable to rename file \"%s\"%sto \"%s\"."
+msgstr "无法将文件 \"%s\"%s 重命名为 \"%s\"。"
+
+#: ideconfstrconsts.lisunabletowrite2
+#, object-pascal-format
+msgid "Unable to write \"%s\""
+msgstr "无法写入\"%s\""
+
+#: ideconfstrconsts.lisunabletowritefile
+msgid "Unable to write file"
+msgstr "无法写入文件"
+
+#: ideconfstrconsts.lisunabletowritefile2
+#, object-pascal-format
+msgid "Unable to write file \"%s\"."
+msgstr "无法写入文件 \"%s\"。"
+
+#: ideconfstrconsts.lisunabletowritefileerror
+#, object-pascal-format
+msgid "Unable to write file \"%s\"%sError: %s"
+msgstr "无法写入文件 \"%s\" %s 错误：%s"
+
+#: ideconfstrconsts.lisunabletowritetofile2
+#, object-pascal-format
+msgid "Unable to write to file \"%s\"."
+msgstr "无法写入到文件 \"%s\"。"
+
+#: ideconfstrconsts.lisunabletowritexmlstreamtoerror
+#, object-pascal-format
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr "无法将 xml 流写入到 %s%s，错误：%s"
+
+#: ideconfstrconsts.liswriteerror
+msgid "Write Error"
+msgstr "写入错误"
+
+#: ideconfstrconsts.liswriteerrorfile
+#, object-pascal-format
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr "写入错误：%s%s 文件：%s%s%s"
+
+#: ideconfstrconsts.lisxmlerror
+msgid "XML Error"
+msgstr "XML 错误"
+
+#: ideconfstrconsts.lisxmlparsererrorinfileerror
+#, object-pascal-format
+msgid "XML parser error in file %s%sError: %s"
+msgstr "在文件 %s%s 中发现 XML 解析错误，错误：%s"
 

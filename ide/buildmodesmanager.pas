@@ -39,11 +39,9 @@ uses
   // IdeIntf
   CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf, IDEWindowIntf,
   IDEDialogs, IdeIntfStrConsts,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
   // IdeConfig
   EnvironmentOpts, TransferMacros, SearchPathProcs, ProjectBuildMode,
-  ParsedCompilerOpts, CompilerOptions,
+  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts,
   // IDE
   MainBase, MainBar, BasePkgManager, PackageDefs, Project,
   BaseBuildManager, Compiler_ModeMatrix, BuildModeDiffDlg, GenericCheckList,

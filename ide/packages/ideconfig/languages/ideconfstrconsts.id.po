@@ -5,6 +5,20 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.lisafilealreadyexistsreplaceit
+#, object-pascal-format, fuzzy, badformat
+#| msgid "A file %s%s%s already exists.%sReplace it?"
+msgid "A file \"%s\" already exists.%sReplace it?"
+msgstr "File %s%s%s sudah ada.%sTimpa saja?"
+
+#: ideconfstrconsts.lisccoerrorcaption
+msgid "Error"
+msgstr "Salah"
+
+#: ideconfstrconsts.liscodetoolsdefswriteerror
+msgid "Write error"
+msgstr "Penulisan salah"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr ""
@@ -34,6 +48,14 @@ msgstr "Nama komponen %s%s%s bukan pengenal yang benar"
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
+msgstr ""
+
+#: ideconfstrconsts.lisdeletefilefailed
+msgid "Delete file failed"
+msgstr "Penghapusan file gagal"
+
+#: ideconfstrconsts.lisdirectorynotwritable
+msgid "Directory not writable"
 msgstr ""
 
 #: ideconfstrconsts.lisedtdefallpackages
@@ -84,6 +106,38 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvoptdlgdirectorynotfound
+msgid "Directory not found"
+msgstr "Direktori tidak ditemukan"
+
+#: ideconfstrconsts.liserrorloadingfrom
+#, object-pascal-format
+msgid "Error loading %s from%s%s%s%s"
+msgstr ""
+
+#: ideconfstrconsts.liserrorsavingto
+#, object-pascal-format
+msgid "Error saving %s to%s%s%s%s"
+msgstr ""
+
+#: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
+#, object-pascal-format, fuzzy, badformat
+#| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
+msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
+msgstr "File %s%s%s%ssepertinya bukan file teks.%sBuka saja?"
+
+#: ideconfstrconsts.lisfileisnotwritable
+msgid "File is not writable"
+msgstr "File tidak bisa diulisi"
+
+#: ideconfstrconsts.lisfileissymlink
+msgid "File is symlink"
+msgstr ""
+
+#: ideconfstrconsts.lisfilenottext
+msgid "File not text"
+msgstr "File bukan teks"
+
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
@@ -103,9 +157,30 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr ""
+
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
+msgstr ""
+
+#: ideconfstrconsts.lisnotimplemented
+msgid "Not implemented"
+msgstr ""
+
+#: ideconfstrconsts.lisnotimplementedyet
+#, object-pascal-format
+msgid "Not implemented yet:%s%s"
+msgstr ""
+
+#: ideconfstrconsts.lisopensymlink
+msgid "Open symlink"
+msgstr ""
+
+#: ideconfstrconsts.lisopentarget
+msgid "Open target"
 msgstr ""
 
 #: ideconfstrconsts.lisos
@@ -113,9 +188,51 @@ msgstr ""
 msgid ", OS: %s"
 msgstr ""
 
+#: ideconfstrconsts.lisoverwritefile
+msgid "Overwrite file?"
+msgstr "Timpa file?"
+
+#: ideconfstrconsts.lisoverwritefileondisk
+msgid "Overwrite file on disk"
+msgstr "Timpa file pada disk"
+
+#: ideconfstrconsts.lispkgmangunabletocreatedirectory
+msgid "Unable to create directory"
+msgstr "Tidak bisa membuat direktori"
+
+#: ideconfstrconsts.lispkgmangunabletodeletefile
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to delete file %s%s%s."
+msgid "Unable to delete file \"%s\"."
+msgstr "Tidak bisa menghapus file %s%s%s."
+
+#: ideconfstrconsts.lisreaderror
+msgid "Read Error"
+msgstr "Pembacaan Salah"
+
+#: ideconfstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
+msgstr ""
+
+#: ideconfstrconsts.listhecodetoolsfoundanerror
+#, object-pascal-format
+msgid "The Codetools found an error:%s%s"
+msgstr ""
+
+#: ideconfstrconsts.listhedirectoryisnotwritable
+#, object-pascal-format
+msgid "The directory \"%s\" is not writable."
+msgstr ""
+
+#: ideconfstrconsts.listhefileisasymlinkopeninstead
+#, object-pascal-format
+msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
@@ -152,4 +269,120 @@ msgstr "Fungsi: ekstrak path file"
 #, object-pascal-format
 msgid "(unknown macro: %s)"
 msgstr "(makro tidak dikenal: %s)"
+
+#: ideconfstrconsts.lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr "Tidak bisa meng-copy file"
+
+#: ideconfstrconsts.lisunabletocopyfileto
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to copy file %s%s%s%sto %s%s%s"
+msgid "Unable to copy file \"%s\"%sto \"%s\""
+msgstr "Tidak bisa meng- copy file %s%s%s%sto %s%s%s"
+
+#: ideconfstrconsts.lisunabletocreatedirectory
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to create directory %s%s%s."
+msgid "Unable to create directory \"%s\"."
+msgstr "Tidak bisa membuat direktori %s%s%s."
+
+#: ideconfstrconsts.lisunabletocreatefile
+msgid "Unable to create file"
+msgstr "Tidak bisa membuat file"
+
+#: ideconfstrconsts.lisunabletocreatefile2
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to create file %s%s%s"
+msgid "Unable to create file \"%s\""
+msgstr "Tidak bisa membuat file %s%s%s"
+
+#: ideconfstrconsts.lisunabletocreatefile3
+#, object-pascal-format
+msgid "Unable to create file%s\"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisunabletocreatelinkwithtarget
+#, object-pascal-format
+msgid "Unable to create link \"%s\" with target \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisunabletoreadfile
+msgid "Unable to read file"
+msgstr "Tidak bisa membaca file"
+
+#: ideconfstrconsts.lisunabletoreadfile2
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to read file %s%s%s!"
+msgid "Unable to read file \"%s\"."
+msgstr "Tidak bisa membaca file %s%s%s!"
+
+#: ideconfstrconsts.lisunabletoreadfileerror
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to read file %s%s%s%sError: %s"
+msgid "Unable to read file \"%s\"%sError: %s"
+msgstr "Tidak bisa membaca file %s%s%s%sKesalahan: %s"
+
+#: ideconfstrconsts.lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr "Tidak bisa mengganti nama file"
+
+#: ideconfstrconsts.lisunabletorenamefileto
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to rename file %s%s%s to %s%s%s!"
+msgid "Unable to rename file \"%s\" to \"%s\"!"
+msgstr "Tidak bisa mengganti nama file %s%s%s to %s%s%s!"
+
+#: ideconfstrconsts.lisunabletorenamefileto2
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to rename file %s%s%s%sto %s%s%s."
+msgid "Unable to rename file \"%s\"%sto \"%s\"."
+msgstr "Tidak bisa mengganti nama file %s%s%s%sto %s%s%s."
+
+#: ideconfstrconsts.lisunabletowrite2
+#, object-pascal-format
+msgid "Unable to write \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisunabletowritefile
+msgid "Unable to write file"
+msgstr "Tidak bisa menuliskan file"
+
+#: ideconfstrconsts.lisunabletowritefile2
+#, object-pascal-format
+msgid "Unable to write file \"%s\"."
+msgstr ""
+
+#: ideconfstrconsts.lisunabletowritefileerror
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to write file %s%s%s%sError: %s"
+msgid "Unable to write file \"%s\"%sError: %s"
+msgstr "Tidak bisa menulis file %s%s%s%sKesalahan: %s"
+
+#: ideconfstrconsts.lisunabletowritetofile2
+#, object-pascal-format
+msgid "Unable to write to file \"%s\"."
+msgstr ""
+
+#: ideconfstrconsts.lisunabletowritexmlstreamtoerror
+#, object-pascal-format
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr ""
+
+#: ideconfstrconsts.liswriteerror
+msgid "Write Error"
+msgstr "Penulisan Salah"
+
+#: ideconfstrconsts.liswriteerrorfile
+#, object-pascal-format
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
+#: ideconfstrconsts.lisxmlerror
+msgid "XML Error"
+msgstr ""
+
+#: ideconfstrconsts.lisxmlparsererrorinfileerror
+#, object-pascal-format
+msgid "XML parser error in file %s%sError: %s"
+msgstr ""
 

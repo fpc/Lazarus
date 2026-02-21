@@ -37,10 +37,12 @@ uses
   FileUtil, LazFileUtils, DividerBevel, LazConfigStorage, AvgLvlTree,
   // CodeTools
   CodeToolManager, CodeCache,
+  // IdeConfig
+  DialogProcs,
   // IdeIntf
   IdeIntfStrConsts, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, IDEImagesIntf,
   // IDE
-  DialogProcs, LazarusIDEStrConsts,
+  LazarusIDEStrConsts,
   // Converter
   ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 

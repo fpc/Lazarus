@@ -51,15 +51,15 @@ uses
   // IDEIntf
   IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts, DialogProcs, InputHistory,
+  IdeUtilsPkgStrConsts, InputHistory,
   // IdeConfig
   LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
-  IDEProcs, etMakeMsgParser, etFPCMsgFilePool, EditDefineTree,
+  IDEProcs, DialogProcs, etMakeMsgParser, etFPCMsgFilePool, EditDefineTree,
   ParsedCompilerOpts, CompilerOptions, Compiler,
   // IdePackager
   IdePackagerStrConsts,
   // IDE
-  LazarusIDEStrConsts, ProjectResources,
+  LazarusIDEStrConsts, ProjectResources, LfmUnitResource,
   MiscOptions, ExtTools, etFPCMsgParser, etPas2jsMsgParser,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
   ApplicationBundle, IdeTransferMacros, SearchPathProcs, RunParamOptions;

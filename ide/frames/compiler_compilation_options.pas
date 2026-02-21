@@ -20,9 +20,9 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  LazConf, EnvironmentOpts, RecentListProcs, CompilerOptions,
+  LazConf, DialogProcs, EnvironmentOpts, RecentListProcs, CompilerOptions,
   // IDE
-  LazarusIDEStrConsts, Project, PackageDefs, DialogProcs, InitialSetupProc;
+  LazarusIDEStrConsts, Project, PackageDefs, InitialSetupProc;
 
 type
 

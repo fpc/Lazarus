@@ -23,10 +23,6 @@ Files in this package are for the main configuration of the IDE."/>
     <Version Major="1"/>
     <Files>
       <Item>
-        <Filename Value="dialogprocs.pas"/>
-        <UnitName Value="DialogProcs"/>
-      </Item>
-      <Item>
         <Filename Value="idetranslations.pas"/>
         <UnitName Value="IDETranslations"/>
       </Item>

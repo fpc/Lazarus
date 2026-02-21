@@ -5,6 +5,19 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.lisafilealreadyexistsreplaceit
+#, object-pascal-format
+msgid "A file \"%s\" already exists.%sReplace it?"
+msgstr "Файл \"%s\" вже існує.%s Замінити?"
+
+#: ideconfstrconsts.lisccoerrorcaption
+msgid "Error"
+msgstr "Помилка"
+
+#: ideconfstrconsts.liscodetoolsdefswriteerror
+msgid "Write error"
+msgstr "Помилка запису"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Компіляція проєкту"
@@ -34,6 +47,14 @@ msgstr "Назва компонента \"%s\" є некоректним іде�
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ", ЦП: %s"
+
+#: ideconfstrconsts.lisdeletefilefailed
+msgid "Delete file failed"
+msgstr "Видалення файлу не вдалося"
+
+#: ideconfstrconsts.lisdirectorynotwritable
+msgid "Directory not writable"
+msgstr "Тека не доступна для запису"
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -83,6 +104,37 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvoptdlgdirectorynotfound
+msgid "Directory not found"
+msgstr "Теки не існує"
+
+#: ideconfstrconsts.liserrorloadingfrom
+#, object-pascal-format
+msgid "Error loading %s from%s%s%s%s"
+msgstr "Помилка завантаження %s з%s%s%s%s"
+
+#: ideconfstrconsts.liserrorsavingto
+#, object-pascal-format
+msgid "Error saving %s to%s%s%s%s"
+msgstr "Помилка збереження %s до%s%s%s%s"
+
+#: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
+#, object-pascal-format
+msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
+msgstr "Файл \"%s\"%sне схожий на текстовий.%sВсе одно відкрити?"
+
+#: ideconfstrconsts.lisfileisnotwritable
+msgid "File is not writable"
+msgstr "У файл не можна писати"
+
+#: ideconfstrconsts.lisfileissymlink
+msgid "File is symlink"
+msgstr "Файл є символьним посиланням"
+
+#: ideconfstrconsts.lisfilenottext
+msgid "File not text"
+msgstr "Не текстовий файл"
+
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
@@ -102,20 +154,82 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr "Знехтувати і продовжити"
+
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Режим: %s"
+
+#: ideconfstrconsts.lisnotimplemented
+msgid "Not implemented"
+msgstr "Не реалізовано"
+
+#: ideconfstrconsts.lisnotimplementedyet
+#, object-pascal-format
+msgid "Not implemented yet:%s%s"
+msgstr "Ще не реалізовано:%s%s"
+
+#: ideconfstrconsts.lisopensymlink
+msgid "Open symlink"
+msgstr "Відкрити символьне посилання"
+
+#: ideconfstrconsts.lisopentarget
+msgid "Open target"
+msgstr "Відкрити ціль"
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
 msgstr ", ОС: %s"
 
+#: ideconfstrconsts.lisoverwritefile
+msgid "Overwrite file?"
+msgstr "Переписати файл?"
+
+#: ideconfstrconsts.lisoverwritefileondisk
+msgid "Overwrite file on disk"
+msgstr "Переписати файл на диску"
+
+#: ideconfstrconsts.lispkgmangunabletocreatedirectory
+msgid "Unable to create directory"
+msgstr "Неможливо створити теку"
+
+#: ideconfstrconsts.lispkgmangunabletodeletefile
+#, object-pascal-format
+msgid "Unable to delete file \"%s\"."
+msgstr "Неможливо видалити файл \"%s\"."
+
+#: ideconfstrconsts.lisreaderror
+msgid "Read Error"
+msgstr "Помилка читання"
+
+#: ideconfstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr ", ціль: %s"
+
+#: ideconfstrconsts.listhecodetoolsfoundanerror
+#, object-pascal-format
+msgid "The Codetools found an error:%s%s"
+msgstr "Codetools знайшов помилку:%s%s"
+
+#: ideconfstrconsts.listhedirectoryisnotwritable
+#, object-pascal-format
+msgid "The directory \"%s\" is not writable."
+msgstr "Тека \"%s\" недоступна для запису."
+
+#: ideconfstrconsts.listhefileisasymlinkopeninstead
+#, object-pascal-format
+msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
+msgstr "Файл \"%s\" є символьним посиланням.%sВідкрити замість нього \"%s\"?"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -149,4 +263,112 @@ msgstr "Функція: витягнути шлях до файлу"
 #, object-pascal-format
 msgid "(unknown macro: %s)"
 msgstr "(невідомий макрос: %s)"
+
+#: ideconfstrconsts.lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr "Неможливо скопіювати файл"
+
+#: ideconfstrconsts.lisunabletocopyfileto
+#, object-pascal-format
+msgid "Unable to copy file \"%s\"%sto \"%s\""
+msgstr "Неможливо скопіювати файл \"%s\"%sу \"%s\""
+
+#: ideconfstrconsts.lisunabletocreatedirectory
+#, object-pascal-format
+msgid "Unable to create directory \"%s\"."
+msgstr "Неможливо створити теку \"%s\"."
+
+#: ideconfstrconsts.lisunabletocreatefile
+msgid "Unable to create file"
+msgstr "Неможливо створити файл"
+
+#: ideconfstrconsts.lisunabletocreatefile2
+#, object-pascal-format
+msgid "Unable to create file \"%s\""
+msgstr "Неможливо створити файл \"%s\"."
+
+#: ideconfstrconsts.lisunabletocreatefile3
+#, object-pascal-format
+msgid "Unable to create file%s\"%s\""
+msgstr "Неможливо створити файл%s\"%s\""
+
+#: ideconfstrconsts.lisunabletocreatelinkwithtarget
+#, object-pascal-format
+msgid "Unable to create link \"%s\" with target \"%s\""
+msgstr "Неможливо створити посилання \"%s\" з ціллю \"%s\""
+
+#: ideconfstrconsts.lisunabletoreadfile
+msgid "Unable to read file"
+msgstr "Неможливо прочитати файл"
+
+#: ideconfstrconsts.lisunabletoreadfile2
+#, object-pascal-format
+msgid "Unable to read file \"%s\"."
+msgstr "Неможливо прочитати файл \"%s\"."
+
+#: ideconfstrconsts.lisunabletoreadfileerror
+#, object-pascal-format
+msgid "Unable to read file \"%s\"%sError: %s"
+msgstr "Неможливо прочитати файл \"%s\"%sПомилка: %s"
+
+#: ideconfstrconsts.lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr "Неможливо змінити назву файла"
+
+#: ideconfstrconsts.lisunabletorenamefileto
+#, object-pascal-format
+msgid "Unable to rename file \"%s\" to \"%s\"!"
+msgstr "Неможливо змінити назву файлу \"%s\" на \"%s\"!"
+
+#: ideconfstrconsts.lisunabletorenamefileto2
+#, object-pascal-format
+msgid "Unable to rename file \"%s\"%sto \"%s\"."
+msgstr "Неможливо перейменувати файл \"%s\"%sна \"%s\"."
+
+#: ideconfstrconsts.lisunabletowrite2
+#, object-pascal-format
+msgid "Unable to write \"%s\""
+msgstr "Неможливо записати \"%s\""
+
+#: ideconfstrconsts.lisunabletowritefile
+msgid "Unable to write file"
+msgstr "Неможливо записати файл"
+
+#: ideconfstrconsts.lisunabletowritefile2
+#, object-pascal-format
+msgid "Unable to write file \"%s\"."
+msgstr "Неможливо записати файл \"%s\"."
+
+#: ideconfstrconsts.lisunabletowritefileerror
+#, object-pascal-format
+msgid "Unable to write file \"%s\"%sError: %s"
+msgstr "Неможливо записати файл \"%s\"%sError: %s"
+
+#: ideconfstrconsts.lisunabletowritetofile2
+#, object-pascal-format
+msgid "Unable to write to file \"%s\"."
+msgstr "Неможливо записати у файл \"%s\"."
+
+#: ideconfstrconsts.lisunabletowritexmlstreamtoerror
+#, object-pascal-format
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr "Неможливо записати xml-потік до %s%sПомилка: %s"
+
+#: ideconfstrconsts.liswriteerror
+msgid "Write Error"
+msgstr "Помилка запису"
+
+#: ideconfstrconsts.liswriteerrorfile
+#, object-pascal-format
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr "Помилка запису: %s%sФайл: %s%s%s"
+
+#: ideconfstrconsts.lisxmlerror
+msgid "XML Error"
+msgstr "Помилка XML"
+
+#: ideconfstrconsts.lisxmlparsererrorinfileerror
+#, object-pascal-format
+msgid "XML parser error in file %s%sError: %s"
+msgstr "Помилка розбору XML у файлі %s%sПомилка: %s"
 

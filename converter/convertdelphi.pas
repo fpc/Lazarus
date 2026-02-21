@@ -33,7 +33,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, contnrs, IniFiles, System.UITypes,
+  Classes, SysUtils, Contnrs, IniFiles, System.UITypes,
   // LCL
   Forms, Controls, Dialogs,
   // CodeTools
@@ -45,10 +45,9 @@ uses
   PackageIntf, ProjectIntf, ComponentReg, IDEExternToolIntf,
   // IDEIntf
   IDEDialogs, LazIDEIntf,
-  // IdeUtils
-  IdeUtilsPkgStrConsts, DialogProcs,
   // IdeConfig
-  IDEProcs, SearchPathProcs, ParsedCompilerOpts, CompilerOptions, ProjPackCommon,
+  IDEProcs, DialogProcs, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
+  ProjPackCommon, IdeConfStrConsts,
   // IdeProject
   Project,
   // IdePackager

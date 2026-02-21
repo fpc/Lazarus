@@ -73,9 +73,10 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, TransferMacros, IDEProcs, ProjectBuildMode,
+  EnvironmentOpts, IDEOptionDefs, TransferMacros, IDEProcs, DialogProcs,
+  ProjectBuildMode,
   // IDE
-  LazarusIDEStrConsts, MainBase, MainBar, DialogProcs, Project,
+  LazarusIDEStrConsts, MainBase, MainBar, Project,
   BuildManager, AddToProjectDlg, EnvGuiOptions,
   BasePkgManager, ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs,
   AddPkgDependencyDlg, AddFPMakeDependencyDlg;

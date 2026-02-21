@@ -41,9 +41,9 @@ uses
   // IdeIntf
   IDEOptEditorIntf, IDEDialogs, IDEUtils,
   // IdeUtils
-  IdeUtilsPkgStrConsts, DialogProcs, InputHistory,
+  InputHistory,
   // IdeConfig
-  EnvironmentOpts, LazConf,
+  EnvironmentOpts, DialogProcs, LazConf, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, InitialSetupProc, EnvGuiOptions;
 

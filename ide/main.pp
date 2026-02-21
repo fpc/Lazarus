@@ -86,8 +86,7 @@ uses
   IDECommands, IDEWindowIntf, IDEDialogs, SrcEditorIntf, IDEMsgIntf,
   MenuIntf, LazIDEIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors,
   IdeIntfStrConsts, ToolBarIntf, SelEdits, ComponentTreeView,
-  // IdeUtils
-  InputHistory,
+  // LazEdit
   LazEditTextAttributes,
   // protocol
   IDEProtocol,
@@ -102,7 +101,7 @@ uses
   CodeHelp, HelpOptions,
   // designer
   JITForms, ComponentPalette, ComponentList, CompPagesPopup, IdeCoolbarData,
-  ObjInspExt, Designer, FormEditor, CustomFormEditor, lfmUnitResource,
+  ObjInspExt, Designer, FormEditor, CustomFormEditor, LfmUnitResource,
   ControlSelection, AnchorEditor, TabOrderDlg, MenuEditor, MenuEditorForm,
   // LRT stuff
   Translations,
@@ -121,9 +120,10 @@ uses
   // converter
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
   // IdeUtils
-  IdeUtilsPkg, IdeUtilsPkgStrConsts,
+  InputHistory, IdeUtilsPkg, IdeUtilsPkgStrConsts,
   // IdeConfig
-  IdeConfig, LazConf, EnvironmentOpts, TransferMacros, IDECmdLine, IDEGuiCmdLine, IDEProcs,
+  LazConf, EnvironmentOpts, TransferMacros, IDECmdLine, IDEGuiCmdLine,
+  IDEProcs, IdeConfStrConsts,
   // IdePackager,
   IdePackager, IdePackagerStrConsts,
   // IdeProject,

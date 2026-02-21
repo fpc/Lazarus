@@ -46,7 +46,7 @@ uses
   KeywordFuncLists, BasicCodeTools, CodeToolManager, CodeCache,
   // IdeIntf
   ProjectIntf, ProjectResourcesIntf, CompOptsIntf,
-  // IdeUtils
+  // IdeConfig
   DialogProcs,
   // IdeProject
   IdeProjectStrConsts,

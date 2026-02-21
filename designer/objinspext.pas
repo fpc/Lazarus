@@ -29,8 +29,10 @@ uses
   BaseIDEIntf, ProjectIntf,
   // IdeIntf
   IdeIntfStrConsts, LazIDEIntf, ObjectInspector, OIFavoriteProperties, PropEdits, IDEDialogs,
+  // IdeConfig
+  DialogProcs, LazConf,
   // IDE
-  DialogProcs, LazConf, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
   { TOIAddRemoveFavoriteDlg }

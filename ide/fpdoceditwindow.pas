@@ -39,13 +39,13 @@ uses
   ExtCtrls, Forms, Graphics, LCLType,
   // Synedit
   SynEdit, SynHighlighterXML, SynEditFoldedView, SynEditWrappedView,
-  // codetools
+  // Codetools
   FileProcs, CodeCache, CodeToolManager, CTXMLFixFragment, FindDeclarationTool, CodeTree,
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, Menus,
   SrcEditorIntf, IDEDialogs, LazFileUtils, IDEImagesIntf, IDEHelpIntf,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
+  // IdeConfig
+  IdeConfStrConsts,
   // IDE
   IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;

@@ -5,7 +5,7 @@ unit ConverterTypes;
 interface
 
 uses
-  Classes, SysUtils, contnrs;
+  Classes, SysUtils, Contnrs;
 
 type
 

@@ -5,6 +5,20 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.lisafilealreadyexistsreplaceit
+#, object-pascal-format, fuzzy, badformat
+#| msgid "A file %s%s%s already exists.%sReplace it?"
+msgid "A file \"%s\" already exists.%sReplace it?"
+msgstr "Ja existeix un fitxer %s%s%s. %sVoleu que el substitueixi?"
+
+#: ideconfstrconsts.lisccoerrorcaption
+msgid "Error"
+msgstr "S'ha produït un error"
+
+#: ideconfstrconsts.liscodetoolsdefswriteerror
+msgid "Write error"
+msgstr "S'ha produït un error d'escriptura"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr ""
@@ -34,6 +48,14 @@ msgstr "El nom de component %s%s%s no és un identificador vàlid"
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
+msgstr ""
+
+#: ideconfstrconsts.lisdeletefilefailed
+msgid "Delete file failed"
+msgstr "Ha fallat l'eliminació del fitxer"
+
+#: ideconfstrconsts.lisdirectorynotwritable
+msgid "Directory not writable"
 msgstr ""
 
 #: ideconfstrconsts.lisedtdefallpackages
@@ -84,6 +106,38 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvoptdlgdirectorynotfound
+msgid "Directory not found"
+msgstr "No s'ha trobat el directori"
+
+#: ideconfstrconsts.liserrorloadingfrom
+#, object-pascal-format
+msgid "Error loading %s from%s%s%s%s"
+msgstr ""
+
+#: ideconfstrconsts.liserrorsavingto
+#, object-pascal-format
+msgid "Error saving %s to%s%s%s%s"
+msgstr ""
+
+#: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
+#, object-pascal-format, fuzzy, badformat
+#| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
+msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
+msgstr "El fitxer %s%s%s%sno sembla un fitxer de text.%sEl voleu obrir igualment?"
+
+#: ideconfstrconsts.lisfileisnotwritable
+msgid "File is not writable"
+msgstr "No es pot escriure en el fitxer"
+
+#: ideconfstrconsts.lisfileissymlink
+msgid "File is symlink"
+msgstr ""
+
+#: ideconfstrconsts.lisfilenottext
+msgid "File not text"
+msgstr "No és un fitxer de text"
+
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
@@ -103,9 +157,30 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr ""
+
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
+msgstr ""
+
+#: ideconfstrconsts.lisnotimplemented
+msgid "Not implemented"
+msgstr ""
+
+#: ideconfstrconsts.lisnotimplementedyet
+#, object-pascal-format
+msgid "Not implemented yet:%s%s"
+msgstr ""
+
+#: ideconfstrconsts.lisopensymlink
+msgid "Open symlink"
+msgstr ""
+
+#: ideconfstrconsts.lisopentarget
+msgid "Open target"
 msgstr ""
 
 #: ideconfstrconsts.lisos
@@ -113,9 +188,51 @@ msgstr ""
 msgid ", OS: %s"
 msgstr ""
 
+#: ideconfstrconsts.lisoverwritefile
+msgid "Overwrite file?"
+msgstr "Voleu sobrescriure el fitxer?"
+
+#: ideconfstrconsts.lisoverwritefileondisk
+msgid "Overwrite file on disk"
+msgstr "Sobreescriu arxiu al disc"
+
+#: ideconfstrconsts.lispkgmangunabletocreatedirectory
+msgid "Unable to create directory"
+msgstr "No es pot crear el directori"
+
+#: ideconfstrconsts.lispkgmangunabletodeletefile
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to delete file %s%s%s."
+msgid "Unable to delete file \"%s\"."
+msgstr "No es pot eliminar el fitxer %s%s%s."
+
+#: ideconfstrconsts.lisreaderror
+msgid "Read Error"
+msgstr "S'ha produït un error de lectura"
+
+#: ideconfstrconsts.lissourceanddestinationarethesame
+#, object-pascal-format
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
+msgstr ""
+
+#: ideconfstrconsts.listhecodetoolsfoundanerror
+#, object-pascal-format
+msgid "The Codetools found an error:%s%s"
+msgstr ""
+
+#: ideconfstrconsts.listhedirectoryisnotwritable
+#, object-pascal-format
+msgid "The directory \"%s\" is not writable."
+msgstr ""
+
+#: ideconfstrconsts.listhefileisasymlinkopeninstead
+#, object-pascal-format
+msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
@@ -152,4 +269,120 @@ msgstr "Funció: extreure la trajectòria del fitxer"
 #, object-pascal-format
 msgid "(unknown macro: %s)"
 msgstr "(macroinstrucció desconeguda: %s)"
+
+#: ideconfstrconsts.lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr "No es pot copiar el fitxer"
+
+#: ideconfstrconsts.lisunabletocopyfileto
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to copy file %s%s%s%sto %s%s%s"
+msgid "Unable to copy file \"%s\"%sto \"%s\""
+msgstr "No es pot copiar el fitxer %s%s%s%sa %s%s%s"
+
+#: ideconfstrconsts.lisunabletocreatedirectory
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to create directory %s%s%s."
+msgid "Unable to create directory \"%s\"."
+msgstr "No es pot crear el directori %s%s%s"
+
+#: ideconfstrconsts.lisunabletocreatefile
+msgid "Unable to create file"
+msgstr "No es pot crear el fitxer"
+
+#: ideconfstrconsts.lisunabletocreatefile2
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to create file %s%s%s"
+msgid "Unable to create file \"%s\""
+msgstr "No es pot crear el fitxer %s%s%s"
+
+#: ideconfstrconsts.lisunabletocreatefile3
+#, object-pascal-format
+msgid "Unable to create file%s\"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisunabletocreatelinkwithtarget
+#, object-pascal-format
+msgid "Unable to create link \"%s\" with target \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisunabletoreadfile
+msgid "Unable to read file"
+msgstr "No es pot llegir el fitxer"
+
+#: ideconfstrconsts.lisunabletoreadfile2
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to read file %s%s%s!"
+msgid "Unable to read file \"%s\"."
+msgstr "No es pot llegir el fitxer %s%s%s!"
+
+#: ideconfstrconsts.lisunabletoreadfileerror
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to read file %s%s%s%sError: %s"
+msgid "Unable to read file \"%s\"%sError: %s"
+msgstr "No es pot llegir el fitxer %s%s%s%sError: %s"
+
+#: ideconfstrconsts.lisunabletorenamefile
+msgid "Unable to rename file"
+msgstr "No es pot canviar el nom del fitxer"
+
+#: ideconfstrconsts.lisunabletorenamefileto
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to rename file %s%s%s to %s%s%s!"
+msgid "Unable to rename file \"%s\" to \"%s\"!"
+msgstr "No es pot canviar el nom del fitxer %s%s%s a %s%s%s!"
+
+#: ideconfstrconsts.lisunabletorenamefileto2
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to rename file %s%s%s%sto %s%s%s."
+msgid "Unable to rename file \"%s\"%sto \"%s\"."
+msgstr "No es pot canviar el nom del fitxer %s%s%s%sa %s%s%s."
+
+#: ideconfstrconsts.lisunabletowrite2
+#, object-pascal-format
+msgid "Unable to write \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisunabletowritefile
+msgid "Unable to write file"
+msgstr "No es pot escriure el fitxer"
+
+#: ideconfstrconsts.lisunabletowritefile2
+#, object-pascal-format
+msgid "Unable to write file \"%s\"."
+msgstr ""
+
+#: ideconfstrconsts.lisunabletowritefileerror
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to write file %s%s%s%sError: %s"
+msgid "Unable to write file \"%s\"%sError: %s"
+msgstr "No es pot escriure el fitxer %s%s%s%sError: %s"
+
+#: ideconfstrconsts.lisunabletowritetofile2
+#, object-pascal-format
+msgid "Unable to write to file \"%s\"."
+msgstr ""
+
+#: ideconfstrconsts.lisunabletowritexmlstreamtoerror
+#, object-pascal-format
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr ""
+
+#: ideconfstrconsts.liswriteerror
+msgid "Write Error"
+msgstr "S'ha produït un error d'escriptura"
+
+#: ideconfstrconsts.liswriteerrorfile
+#, object-pascal-format
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
+#: ideconfstrconsts.lisxmlerror
+msgid "XML Error"
+msgstr ""
+
+#: ideconfstrconsts.lisxmlparsererrorinfileerror
+#, object-pascal-format
+msgid "XML parser error in file %s%sError: %s"
+msgstr ""
 

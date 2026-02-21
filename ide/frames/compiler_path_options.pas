@@ -12,10 +12,8 @@ uses
   LazFileUtils, LazFileCache, LazLoggerBase,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, CompOptsIntf, IDEImagesIntf, IDEDialogs,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
   // IdeConfig
-  SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
+  SearchPathProcs, ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts,
   // IDE
   Project, LazarusIDEStrConsts, PathEditorDlg,
   CheckCompilerOpts, ShowCompilerOpts, ImExportCompilerOpts;

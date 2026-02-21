@@ -37,16 +37,14 @@ interface
 
 uses
   Classes, SysUtils, System.UITypes,
-  // LCL
-  LResources, Dialogs, ComCtrls,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, Laz2_XMLCfg, LazLoggerBase,
   // CodeTools
   CodeToolsConfig, CodeCache, CodeToolManager,
   // BuildIntf
   LazMsgWorker,
-  // IdeUtils
-  IdeUtilsPkgStrConsts;
+  // IdeConfig
+  IdeConfStrConsts;
 
 type
   // load buffer flags
@@ -60,13 +58,8 @@ type
     );
   TLoadBufferFlags = set of TLoadBufferFlag;
   
-  TOnBackupFileInteractive =
-                       function(const Filename: string): TModalResult of object;
+  TOnBackupFileInteractive = function(const Filename: string): TModalResult of object;
                        
-  TOnDragOverTreeView = function(Sender, Source: TObject; X, Y: Integer;
-      out TargetTVNode: TTreeNode; out TargetTVType: TTreeViewInsertMarkType
-      ): boolean of object;
-
 var
   OnBackupFileInteractive: TOnBackupFileInteractive = nil;
 
@@ -114,8 +107,6 @@ function DeleteFileInteractive(const Filename: string;
 function SaveLazStringToFile(const Filename, Content: string;
                         ErrorButtons: TMsgDlgButtons; const Context: string = ''
                         ): TModalResult;
-function ConvertLFMToLRSFileInteractive(const LFMFilename,
-                         LRSFilename: string; ShowAbort: boolean): TModalResult;
 procedure NotImplementedDialog(const Feature: string);
 
 function SimpleDirectoryCheck(const OldDir, NewDir,
@@ -656,66 +647,6 @@ begin
          Format(lisWriteErrorFile, [E.Message, LineEnding, Filename, LineEnding, Context]),
          mtError,[mbAbort]+ErrorButtons);
     end;
-  end;
-end;
-
-function ConvertLFMToLRSFileInteractive(const LFMFilename,
-  LRSFilename: string; ShowAbort: boolean): TModalResult;
-var
-  LFMMemStream, LRSMemStream: TMemoryStream;
-  LFMBuffer: TCodeBuffer;
-  LRSBuffer: TCodeBuffer;
-  FormClassName: String;
-  BinStream: TMemoryStream;
-begin
-  // read lfm file
-  Result:=LoadCodeBuffer(LFMBuffer,LFMFilename,[lbfUpdateFromDisk],ShowAbort);
-  if Result<>mrOk then exit;
-  //debugln(['ConvertLFMToLRSFileInteractive ',LFMBuffer.Filename,' DiskEncoding=',LFMBuffer.DiskEncoding,' MemEncoding=',LFMBuffer.MemEncoding]);
-  LFMMemStream:=nil;
-  LRSMemStream:=nil;
-  try
-    LFMMemStream:=TMemoryStream.Create;
-    LFMBuffer.SaveToStream(LFMMemStream);
-    LFMMemStream.Position:=0;
-    LRSMemStream:=TMemoryStream.Create;
-    try
-      FormClassName:=FindLFMClassName(LFMMemStream);
-      //debugln(['ConvertLFMToLRSFileInteractive FormClassName="',FormClassName,'"']);
-      BinStream:=TMemoryStream.Create;
-      try
-        LRSObjectTextToBinary(LFMMemStream,BinStream);
-        BinStream.Position:=0;
-        BinaryToLazarusResourceCode(BinStream,LRSMemStream,FormClassName,'FORMDATA');
-      finally
-        BinStream.Free;
-      end;
-    except
-      on E: Exception do begin
-        {$IFNDEF DisableChecks}
-        DebugLn('LFMtoLRSstream ',E.Message);
-        {$ENDIF}
-        debugln(['Error: (lazarus) [ConvertLFMToLRSFileInteractive] unable to convert '+LFMFilename+' to '+LRSFilename+':'+LineEnding
-          +E.Message]);
-        Result:=LazMessageDialogAb('Error',
-          'Error while converting '+LFMFilename+' to '+LRSFilename+':'+LineEnding
-          +E.Message,mtError,[mbCancel,mbIgnore],ShowAbort);
-        exit;
-      end;
-    end;
-    LRSMemStream.Position:=0;
-    // save lrs file
-    LRSBuffer:=CodeToolBoss.CreateFile(LRSFilename);
-    if (LRSBuffer<>nil) then begin
-      LRSBuffer.LoadFromStream(LRSMemStream);
-      Result:=SaveCodeBuffer(LRSBuffer);
-    end else begin
-      Result:=mrCancel;
-      debugln('Error: (lazarus) [ConvertLFMToLRSFileInteractive] unable to create codebuffer ',LRSFilename);
-    end;
-  finally
-    LFMMemStream.Free;
-    LRSMemStream.Free;
   end;
 end;
 

@@ -8,7 +8,7 @@ unit IdeUtilsPkg;
 interface
 
 uses
-  DialogProcs, IDETranslations, IdeUtilsPkgStrConsts, InputHistory, LazarusPackageIntf;
+  IDETranslations, IdeUtilsPkgStrConsts, InputHistory, LazarusPackageIntf;
 
 implementation
 

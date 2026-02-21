@@ -60,10 +60,14 @@ uses
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
   IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf, IDEExternToolIntf, ProjectIntf,
   IDEImagesIntf,
+  // IdeConfig
+  DialogProcs, IDEOptionDefs, EnvironmentOpts, SearchPathProcs,
+  // IdeProject
+  Project,
+  // IdePackager
+  PackageSystem, PackageDefs,
   // IDE
-  Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
-  IDEOptionDefs, etFPCMsgParser, BasePkgManager, EnvironmentOpts,
-  SearchPathProcs;
+  LazarusIDEStrConsts, etFPCMsgParser, BasePkgManager;
 
 
 type

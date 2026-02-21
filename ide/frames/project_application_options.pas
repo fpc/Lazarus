@@ -15,10 +15,8 @@ uses
   DividerBevel,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
   // IdeConfig
-  CompilerOptions,
+  CompilerOptions, IdeConfStrConsts,
   // IdeProject
   IdeProjectStrConsts,
   // IDE

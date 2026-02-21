@@ -39,11 +39,11 @@ uses
   // BuildIntf
   ComponentReg, NewItemIntf, PackageIntf,
   // IDEIntf
-  FormEditingIntf, IDEWindowIntf, IDEDialogs,
+  IDEWindowIntf, IDEDialogs,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory,
+  InputHistory,
   // IdeConfig
-  EnvironmentOpts,
+  EnvironmentOpts, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, PackageSystem, PackageDefs, ProjPackChecks;
   

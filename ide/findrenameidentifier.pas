@@ -45,9 +45,9 @@ uses
   IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf, ProjectIntf,
   IDEDialogs,
   // IdeUtils
-  DialogProcs, InputHistory,
-  // LazConfig
-  TransferMacros, IDEProcs, SearchPathProcs, EnvironmentOpts,
+  InputHistory,
+  // IdeConfig
+  TransferMacros, IDEProcs, DialogProcs, SearchPathProcs, EnvironmentOpts,
   // IDE
   LazarusIDEStrConsts, MiscOptions, CustomFormEditor, CodeToolsOptions, SearchResultView,
   CodeHelp, SourceFileManager, Project;

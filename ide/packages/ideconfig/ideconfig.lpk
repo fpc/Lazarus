@@ -40,6 +40,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="CoolBarOptions"/>
       </Item>
       <Item>
+        <Filename Value="dialogprocs.pas"/>
+        <UnitName Value="DialogProcs"/>
+      </Item>
+      <Item>
         <Filename Value="diffpatch.pas"/>
         <UnitName Value="DiffPatch"/>
       </Item>

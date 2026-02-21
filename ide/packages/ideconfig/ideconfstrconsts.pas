@@ -53,7 +53,60 @@ resourcestring
   lisFppkgCompilerNotExists = 'The compiler [%s] configured for Fppkg does not exist.';
   lisFppkgCompilerNotExecutable = 'The compiler [%s] configured for Fppkg is not an executable.';
   lisFppkgCompilerNotFound = 'Could not find the compiler [%s] configured for Fppkg.';
-
+  // Mostly DialogProcs
+  lisUnableToRenameFile = 'Unable to rename file';
+  lisUnableToRenameFileTo = 'Unable to rename file "%s" to "%s"!';
+  lisUnableToRenameFileTo2= 'Unable to rename file "%s"%sto "%s".';
+  lisUnableToCopyFile = 'Unable to copy file';
+  lisUnableToCopyFileTo = 'Unable to copy file "%s"%sto "%s"';
+  lisSourceAndDestinationAreTheSame = 'Source and Destination are the same:%s%s';
+  lisFileNotText = 'File not text';
+  lisFileDoesNotLookLikeATextFileOpenItAnyway = 'File "%s"'
+    +'%sdoes not look like a text file.'
+    +'%sOpen it anyway?';
+  lisWriteError = 'Write Error';
+  lisReadError = 'Read Error';
+  lisUnableToReadFile = 'Unable to read file';
+  lisUnableToReadFile2 = 'Unable to read file "%s".';
+  lisUnableToReadFileError = 'Unable to read file "%s"%sError: %s';
+  lisCodeToolsDefsWriteError = 'Write error';
+  lisUnableToWrite2 = 'Unable to write "%s"';
+  lisUnableToWriteFile = 'Unable to write file';
+  lisUnableToWriteFile2 = 'Unable to write file "%s".';
+  lisUnableToWriteToFile2 = 'Unable to write to file "%s".';
+  lisCCOErrorCaption = 'Error';
+  lisErrorLoadingFrom = 'Error loading %s from%s%s%s%s';
+  lisErrorSavingTo = 'Error saving %s to%s%s%s%s';
+  lisXMLError = 'XML Error';
+  lisXMLParserErrorInFileError = 'XML parser error in file %s%sError: %s';
+  lisUnableToWriteXmlStreamToError = 'Unable to write xml stream to %s%sError: %s';
+  lisUnableToCreateFile = 'Unable to create file';
+  lisUnableToCreateFile2 = 'Unable to create file "%s"';
+  lisUnableToCreateFile3 = 'Unable to create file%s"%s"';
+  lisOverwriteFile = 'Overwrite file?';
+  lisOverwriteFileOnDisk = 'Overwrite file on disk';
+  lisAFileAlreadyExistsReplaceIt = 'A file "%s" already exists.'
+    +'%sReplace it?';
+  lisUnableToWriteFileError = 'Unable to write file "%s"%sError: %s';
+  lisFileIsNotWritable = 'File is not writable';
+  lisFileIsSymlink = 'File is symlink';
+  lisTheFileIsASymlinkOpenInstead = 'The file "%s" is a symlink.'
+    +'%sOpen "%s" instead?';
+  lisOpenTarget = 'Open target';
+  lisOpenSymlink = 'Open symlink';
+  lisUnableToCreateLinkWithTarget = 'Unable to create link "%s" with target "%s"';
+  lisPkgMangUnableToCreateDirectory = 'Unable to create directory';
+  lisUnableToCreateDirectory = 'Unable to create directory "%s".';
+  lisDirectoryNotWritable = 'Directory not writable';
+  lisTheDirectoryIsNotWritable = 'The directory "%s" is not writable.';
+  lisPkgMangUnableToDeleteFile = 'Unable to delete file "%s".';
+  lisDeleteFileFailed = 'Delete file failed';
+  lisWriteErrorFile = 'Write error: %s%sFile: %s%s%s';
+  lisNotImplemented = 'Not implemented';
+  lisNotImplementedYet = 'Not implemented yet:%s%s';
+  lisEnvOptDlgDirectoryNotFound = 'Directory not found';
+  lisIgnoreAndContinue = 'Ignore and continue';
+  lisTheCodetoolsFoundAnError = 'The Codetools found an error:%s%s';
 
 implementation
 

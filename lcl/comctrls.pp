@@ -3441,6 +3441,10 @@ type
 
   THideSelectionMode = (hsmGray, hsmHide);
 
+  TOnDragOverTreeView = function(Sender, Source: TObject; X, Y: Integer;
+      out TargetTVNode: TTreeNode; out TargetTVType: TTreeViewInsertMarkType
+      ): boolean of object;
+
   TCustomTreeView = class(TCustomControl)
   private
     FAccessibilityOn: Boolean;

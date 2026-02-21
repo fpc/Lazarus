@@ -52,7 +52,9 @@ uses
   // IdeIntf
   IDEImagesIntf, IdeIntfStrConsts, IDEDialogs, IDEWindowIntf,
   // IdeUtils
-  IdeUtilsPkgStrConsts, InputHistory,
+  InputHistory,
+  // IdeConfig
+  IdeConfStrConsts,
   // IdeProject
   IdeProjectStrConsts,
   // IdeConfig

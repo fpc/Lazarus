@@ -42,8 +42,8 @@ uses
   SynEdit, SynHighlighterPas, SynEditAutoComplete, SynEditTypes,
   // codetools
   CodeToolManager, CodeCache, KeywordFuncLists, BasicCodeTools, PascalParserTool,
-  // IdeUtils
-  IdeUtilsPkgStrConsts,
+  // IdeConfig
+  IdeConfStrConsts,
   // IDEIntf
   SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEDialogs,
   // IDE

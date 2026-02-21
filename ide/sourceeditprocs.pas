@@ -49,9 +49,10 @@ uses
   IdentCompletionTool, PascalReaderTool,
   // IdeIntf
   LazIDEIntf, IDEImagesIntf, TextTools, IDETextConverter,
+  // IdeConfig
+  DialogProcs,
   // IDE
-  DialogProcs, EditorOptions, CodeToolsOptions, SourceSynEditor, SourceMarks,
-  LazEditTextAttributes;
+  EditorOptions, CodeToolsOptions, SourceSynEditor, SourceMarks, LazEditTextAttributes;
 
 type
 

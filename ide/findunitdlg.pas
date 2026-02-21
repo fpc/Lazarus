@@ -43,9 +43,11 @@ uses
   CodeToolsStrConsts, CodeCache, CodeToolManager,
   // IDEIntf
   IdeIntfStrConsts, LazIDEIntf, IDEMsgIntf, PackageLinkIntf, PackageIntf, IDEExternToolIntf,
+  // IdeConfig
+  DialogProcs, SearchPathProcs,
   // IDE
-  DialogProcs, PackageDefs, Project, LazarusIDEStrConsts,
-  etFPCMsgParser, SearchPathProcs, PackageLinks, PackageSystem, BasePkgManager;
+  PackageDefs, Project, LazarusIDEStrConsts,
+  etFPCMsgParser, PackageLinks, PackageSystem, BasePkgManager;
 
 type
   TFindUnitDialog = class;
