@@ -82,6 +82,7 @@ type
     procedure lclClearCallback; override;
     function lclClientFrame: TRect; override;
     function lclGetFrameToLayoutDelta: TRect; override;
+    function lclBypassCocoa(const event: NSEvent): NSNumber; message 'lclBypassCocoa:';
     // NSTabViewDelegateProtocol
     function tabView_shouldSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem): Boolean; message 'tabView:shouldSelectTabViewItem:';
     procedure tabView_willSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem); message 'tabView:willSelectTabViewItem:';
@@ -652,6 +653,11 @@ begin
     Result.Top := 5;
     Result.Bottom := -7;
   end;
+end;
+
+function TCocoaTabControl.lclBypassCocoa(const event: NSEvent): NSNumber;
+begin
+  Result:= NSNumber.numberWithBool( False );
 end;
 
 function TCocoaTabControl.tabView_shouldSelectTabViewItem(tabView: NSTabView;
