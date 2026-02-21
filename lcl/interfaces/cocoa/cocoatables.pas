@@ -799,7 +799,8 @@ end;
 
 procedure TCocoaTableListView.mouseMoved(event: NSEvent);
 begin
-  inherited mouseMoved(event);
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited;
 end;
 
 function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView
