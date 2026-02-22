@@ -2802,8 +2802,22 @@ class function TGtk3Widget.MoveTabFocus(aWidget: PGtkWidget;
   aDirection: TGtkDirectionType; aData: gPointer): gBoolean; cdecl;
 var
   aForm: TCustomForm;
+  AParent: PGtkWidget;
 begin
   Result := gtk_true;  // we are usually toplevel here
+  {Issue #42065: During a tab page switch the GTK class handler
+  calls child_focus() on the new page,
+  which fires focus on child widgets. Suppress PerformTab here
+  to prevent the LCL from wrapping to the wrong control.
+  Start from aWidget itself: if focus fires on the GtkNotebook directly
+  (not a descendant), the flag stored on it is found immediately.}
+  AParent := aWidget;
+  while AParent <> nil do
+  begin
+    if g_object_get_data(AParent, 'lcl-tab-switch-active') <> nil then
+      exit;
+    AParent := AParent^.get_parent;
+  end;
   aForm := GetParentForm(TGtk3Widget(aData).LCLObject);
   if Assigned(aForm.ActiveControl) then
     aForm.ActiveControl.PerformTab(aDirection = GTK_DIR_TAB_FORWARD);
@@ -3493,10 +3507,10 @@ end;
 
 procedure TGtk3Widget.SetFocus;
 begin
-  if GetContainerWidget^.can_focus then
+  if GetContainerWidget^.can_focus and GetContainerWidget^.get_mapped then
     GetContainerWidget^.grab_focus
   else
-  if FWidget^.can_focus then
+  if FWidget^.can_focus and FWidget^.get_mapped then
     FWidget^.grab_focus;
 end;
 
@@ -5364,12 +5378,21 @@ begin
 end;
 
 //Issue 42065:Called via g_idle_add after GtkNotebookAfterSwitchPage returns.
+//AData is the GtkNotebook widget; the target focus widget is stored on it via
+//g_object_set_data('lcl-tab-focus-widget').
 function Gtk3FocusAfterTabSwitch(AData: Pointer): gboolean; cdecl;
 var
+  ANotebook: PGtkWidget;
   W: PGtkWidget;
 begin
   Result := False;
-  W := PGtkWidget(AData);
+  ANotebook := PGtkWidget(AData);
+  if ANotebook = nil then
+    exit;
+  //Always clear in-progress flag first so MoveTabFocus is re-enabled.
+  g_object_set_data(ANotebook, 'lcl-tab-switch-active', nil);
+  W := PGtkWidget(g_object_get_data(ANotebook, 'lcl-tab-focus-widget'));
+  g_object_set_data(ANotebook, 'lcl-tab-focus-widget', nil);
   if W = nil then
     exit;
   if not (W^.get_realized and W^.get_visible) then
@@ -5427,8 +5450,17 @@ begin
         W := TGtk3Widget(ACtl.Handle).GetContainerWidget;
     end;
   end;
-  if W <> nil then
-    g_idle_add(@Gtk3FocusAfterTabSwitch, W);
+  {Issue #42065: Always set flag and idle regardless of W: suppresses MoveTabFocus->PerformTab
+   during the GTK class handler AND during WMSetFocus's inherited delegation.
+   Without this, a second visit to an empty tab leaves ActiveControl outside the
+   TabControl, and on the return switch the flag is absent -> MoveTabFocus fires
+   and corrupts focus before MaybeSelectFirstControlOnPage can correct it.
+   Gtk3FocusAfterTabSwitch handles W=nil correctly (clears flag and exits).}
+  g_object_set_data(TGtk3NoteBook(Data).FCentralWidget,
+    'lcl-tab-switch-active', Pointer(1));
+  g_object_set_data(TGtk3NoteBook(Data).FCentralWidget,
+    'lcl-tab-focus-widget', W);
+  g_idle_add(@Gtk3FocusAfterTabSwitch, TGtk3NoteBook(Data).FCentralWidget);
 end;
 
 function BackNoteBookSignal(AData: Pointer): gboolean; cdecl;
