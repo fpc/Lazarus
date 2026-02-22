@@ -334,8 +334,6 @@ var
   lView: NSView;
   pt: NSPoint;
   cr: TRect;
-  es: NSScrollView;
-  r: NSRect;
 begin
   if Owner.isKindOfClass(NSWindow) then
   begin
@@ -364,16 +362,8 @@ begin
     PtForChildCtrls.x := PtForChildCtrls.x + cr.Left;
     PtForChildCtrls.y := PtForChildCtrls.y + cr.Top;
 
-    if Target is TScrollingWinControl then begin
-      es := NSView(Owner).enclosingScrollView;
-      if Assigned(es) and (es.documentView = NSView(Owner)) then begin
-        r := es.documentVisibleRect;
-        if NOT NSView(Owner).isFlipped then
-          r.origin.y := (es.documentView.frame.size.height - r.size.height - r.origin.y);
-        inc(PtForChildCtrls.y, Round(r.origin.y));
-        inc(PtForChildCtrls.x, Round(r.origin.x));
-      end;
-    end;
+    if Target is TScrollingWinControl then
+      lclOffsetWithEnclosingScrollView(NSView(Owner), PtForChildCtrls.x, PtForChildCtrls.y);
 
   end else
   begin

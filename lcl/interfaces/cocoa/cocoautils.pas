@@ -49,6 +49,7 @@ procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
 function GetScreenPointFromEvent(const event: NSEvent): NSPoint;
+procedure lclOffsetWithEnclosingScrollView( const view: NSView; var x: Integer; var y: Integer );
 
 function ScreenPointFromLCLToNS(const lclPoint: TPoint): NSPoint;
 function ScreenPointFromNSToLCL(const cocoaPoint: NSPoint): TPoint;
@@ -1464,6 +1465,26 @@ begin
     NSMakePoint(img.size.height / 2, img.size.width / 2)
   );
   img.release;
+end;
+
+procedure lclOffsetWithEnclosingScrollView(
+  const view: NSView;
+  var x: Integer;
+  var y: Integer );
+var
+  es: NSScrollView;
+  r: NSRect;
+begin
+  es:= view.enclosingScrollView;
+  if NOT Assigned(es) then
+    Exit;
+  if es.documentView <> view then
+    Exit;
+  r:= es.documentVisibleRect;
+  if NOT view.isFlipped then
+    r.origin.y:= es.documentView.frame.size.height - r.size.height - r.origin.y;
+  inc( x, Round(r.origin.x) );
+  inc( y, Round(r.origin.y) );
 end;
 
 end.
