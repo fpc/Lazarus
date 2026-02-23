@@ -1745,6 +1745,8 @@ var
   s: string;
 begin
   Result := False;
+  if FWatchDlg.FWatchesInView = nil then
+    exit;
   for i := 0 to FWatchDlg.FWatchesInView.Count - 1 do begin
     s := FWatchDlg.FWatchesInView[i].TrackingID;
     if s = '' then continue;
