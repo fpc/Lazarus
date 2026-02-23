@@ -568,6 +568,10 @@ begin
     AdjustFormClientToWindowSize(AHandle, xSize);
     Dec(ioSize.cy, xSize.cy);
     Dec(ioSize.cx, xSize.cx);
+    // Workaround for issue #32017
+    // Due to clientRect and BorderWidth being at diff PPI the result can be negative.
+    if ioSize.cy < 0 then ioSize.cy := 0;
+    if ioSize.cx < 0 then ioSize.cx := 0;
   end;
 end;
 
