@@ -336,7 +336,9 @@ begin
     //button contains borders,margins and padding
     if TGtk3ComboBox(aWidget).GetButtonWidget <> nil then
     begin
-      TGtk3ComboBox(aWidget).GetButtonWidget^.realize;
+      if not TGtk3ComboBox(aWidget).GetButtonWidget^.get_realized and
+         Gtk3IsGtkWindow(TGtk3ComboBox(aWidget).GetButtonWidget^.get_toplevel) then
+        TGtk3ComboBox(aWidget).GetButtonWidget^.realize;
       {$IFDEF GTK3DEBUGCELLRENDERER}
       InspectStyleContext(TGtk3ComboBox(aWidget).GetButtonWidget);
       {$ENDIF}

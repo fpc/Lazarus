@@ -36,18 +36,13 @@ begin
   if not Assigned(AControl) then
     Exit;
 
-  // writeln('====> FGPW(',dbgsName(AControl.LCLObject),'): AutoSize=', AControl.LCLObject.AutoSize,' minW=',min_width^,' natW=',nat_width^,' LCLWidth=',AControl.LCLWidth,' LCLHeight=',AControl.LCLHeight);
-
+  //Keep min_width from the parent class: it encodes the tab-bar CSS minimum.
+  //Resetting it to 0 allows GTK3 to allocate < CSS minimum, causing negative
+  //content widths in the CSS gadget distributor. Fixes warning msgs in console.
   if AControl.LCLWidth = 0 then
-  begin
-    min_width^ := 0;
-    nat_width^ := AControl.LCLObject.Width;
-  end else
-  begin
-    min_width^ := 0;
-    nat_width^ := AControl.LCLWidth;
-  end;
-  // writeln('<==== FGPW(',dbgsName(AControl.LCLObject),'): AutoSize=', AControl.LCLObject.AutoSize,' minW=',min_width^,' natW=',nat_width^,' LCLWidth=',AControl.LCLWidth,' LCLHeight=',AControl.LCLHeight,' LCLW=',AControl.LCLObject.Width,' LCLH=',AControl.LCLObject.Height);
+    nat_width^ := Max(min_width^, AControl.LCLObject.Width)
+  else
+    nat_width^ := Max(min_width^, AControl.LCLWidth);
 end;
 
 procedure LCLGtkNotebookGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
@@ -83,18 +78,35 @@ begin
   if not Assigned(AControl) then
     Exit;
 
-  // writeln('====> FGPH(',dbgsName(AControl.LCLObject),'): AutoSize=', AControl.LCLObject.AutoSize,' minH=',min_height^,' natH=',nat_height^,' LCLWidth=',AControl.LCLWidth,' Height=',AControl.LCLHeight);
-
+  //Keep min_height from the parent class: it encodes the CSS minimum for the
+  //tab bar. Resetting it to 0 allowed GTK3 to hand us allocations smaller
+  //than the tab bar needs, driving the CSS gadget distributor negative and
+  //producing size >= 0 assertion failures in GtkScrollbar / LCLGtkNotebook.
   if AControl.LCLHeight = 0 then
-  begin
-    min_height^ := 0; //, AControl.LCLObject.Height);
-    nat_height^ := Max(0, AControl.LCLObject.Height);
-  end else
-  begin
-    min_height^ := 0; // Max(36, AControl.LCLHeight);
-    nat_height^ := Max(0, AControl.LCLHeight);
-  end;
-  // writeln('<==== FGPH(',dbgsName(AControl.LCLObject),'): AutoSize=', AControl.LCLObject.AutoSize,' minH=',min_height^,' natH=',nat_height^,' LCLWidth=',AControl.LCLWidth,' Height=',AControl.LCLHeight);
+    nat_height^ := Max(min_height^, AControl.LCLObject.Height)
+  else
+    nat_height^ := Max(min_height^, AControl.LCLHeight);
+end;
+
+procedure LCLGtkNotebookSizeAllocate(widget: PGtkWidget; allocation: PGtkAllocation); cdecl;
+var
+  ParentClass: PGtkWidgetClass;
+  min_h, nat_h: gint;
+  ClampedAlloc: TGtkAllocation;
+begin
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
+    Exit;
+  //Clamp allocation height to the parent-class CSS minimum.
+  //size_allocate bypasses get_preferred_height, so even a correct minimum
+  //returned there won't prevent direct allocations smaller than the tab-bar
+  //height, which drive the CSS gadget distributor negative and produce
+  //size >= 0 assertions in LCLGtkNotebook, GtkScrollbar and GtkScrolledWindow.
+  ParentClass^.get_preferred_height(widget, @min_h, @nat_h);
+  ClampedAlloc := allocation^;
+  if ClampedAlloc.height < min_h then
+    ClampedAlloc.height := min_h;
+  ParentClass^.size_allocate(widget, @ClampedAlloc);
 end;
 
 procedure LCLGtkNotebookClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
@@ -104,6 +116,7 @@ begin
   AWidgetClass := PGtkWidgetClass(klass);
   AWidgetClass^.get_preferred_width := @LCLGtkNotebookGetPreferredWidth;
   AWidgetClass^.get_preferred_height := @LCLGtkNotebookGetPreferredHeight;
+  AWidgetClass^.size_allocate := @LCLGtkNotebookSizeAllocate;
 end;
 
 procedure LCLGtkNotebookInstanceInit({%H-}instance: PGTypeInstance; {%H-}klass: PGTypeClass); cdecl;

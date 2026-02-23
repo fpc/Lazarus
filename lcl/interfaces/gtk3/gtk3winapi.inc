@@ -4629,7 +4629,7 @@ begin
   else
     PCR := TGtk3Region(hRgn).Handle;
   gtk_widget_shape_combine_region(TGtk3Widget(hWnd).Widget, PCR);
-  if bRedraw then
+  if bRedraw and Gtk3IsGtkWindow(TGtk3Widget(hWnd).Widget^.get_toplevel) then
     TGtk3Widget(hWnd).Widget^.realize;
   Result:=1;
 end;

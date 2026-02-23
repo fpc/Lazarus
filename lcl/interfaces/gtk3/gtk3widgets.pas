@@ -1662,10 +1662,16 @@ begin
   begin
     Msg.Width := Word(NewSize.cx);
     Msg.Height := Word(NewSize.cy);
+
+    {Guard against layout loops.}
+    if (ACtl.WidgetType * [wtWindow, wtDialog] = []) and
+       (Msg.Width = Word(ACtl.LCLObject.Width)) and
+       (Msg.Height = Word(ACtl.LCLObject.Height)) then
+      exit;
   end else
   begin
-    Msg.Width := ACtl.LCLObject.Width;//Word(NewSize.cx);
-    Msg.Height := ACtl.LCLObject.Height;//Word(NewSize.cy);
+    Msg.Width := ACtl.LCLObject.Width;
+    Msg.Height := ACtl.LCLObject.Height;
   end;
 
   ACtl.DeliverMessage(Msg);
@@ -1713,6 +1719,7 @@ end;
 function TGtk3SplitterSide.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   Result:=TGtkScrolledWindow.new(nil, nil);
+  PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
 end;
 
 { TGtk3Paned }
@@ -3171,14 +3178,21 @@ begin
 
   BeginUpdate;
   try
-    {fixes gtk3 assertion}
-    if not Widget^.get_realized then
+    {Only realize if the entire widget hierarchy is rooted at a GtkWindow.
+     GTK3 realize walks ancestors recursively; any unanchored ancestor
+     (one without a GtkWindow at the root) triggers the assertion
+     widget->priv->anchored || GTK_IS_INVISIBLE. Checking get_parent <> nil
+     is insufficient because only the root-level anchoring matters.}
+    if not Widget^.get_realized and Gtk3IsGtkWindow(Widget^.get_toplevel) then
       Widget^.realize;
 
     //this should be removed in future.
     Widget^.set_size_request(AWidth,AHeight);
 
-    if Gtk3IsContainer(Widget) then // according to the gtk3 docs only GtkContainer should call this
+    {size_allocate only makes sense on a realized container; calling it on
+     an unrealized one triggers internal GTK3 CSS layout with whatever tiny
+     garbage allocation GTK assigned, producing size >= 0 assertions.}
+    if Gtk3IsContainer(Widget) and Widget^.get_realized then
       Widget^.size_allocate(@ARect);
 
     if Widget^.get_visible then
@@ -3187,8 +3201,12 @@ begin
     if LCLObject.Parent <> nil then
       Move(ALeft, ATop);
 
-    // we must trigger get_preferred_width after changing size
-    Widget^.queue_resize;
+    {Do NOT call Widget^.queue_resize here.
+     queue_resize propagates up the parent chain to the top-level GtkWindow,
+     causing WindowSizeAllocate to fire (with InUpdate=false, since queue_resize
+     only schedules the re-layout for the next GTK frame). WindowSizeAllocate
+     then delivers LM_SIZE to LCL, which re-layouts and calls SetBounds again,
+     which calls queue_resize again -> infinite loop.}
     if [wtCustomControl, wtScrollingWinControl] * WidgetType <> [] then
     begin
       if Gtk3IsGdkWindow(Widget^.get_window) then
@@ -8693,12 +8711,11 @@ begin
 
   BeginUpdate;
   try
-    {fixes gtk3 assertion}
-    if not Widget^.get_realized then
+    if not Widget^.get_realized and Gtk3IsGtkWindow(Widget^.get_toplevel) then
       Widget^.realize;
 
-
-    Widget^.size_allocate(@ARect);
+    if Widget^.get_realized then
+      Widget^.size_allocate(@ARect);
 
     if Widget^.get_visible then
       Widget^.set_allocation(@Alloc);
@@ -9940,6 +9957,7 @@ begin
   end else
   begin
     Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+    PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   end;
   Text := Params.Caption;
@@ -9973,7 +9991,14 @@ begin
   with PGtkScrolledWindow(FScrollWin)^.get_hadjustment^ do
     LCLHAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
 
-  gtk_widget_realize(Result);
+  {Embedded forms (LCLObject.Parent <> nil) create a GtkScrolledWindow as
+   their root widget; it has no parent yet at this point, so calling
+   gtk_widget_realize on it fires widget->priv->anchored assertion (cca 20 times
+   with anchordocked, once per dock panel).
+   Only realize top-level GtkWindows here, embedded GtkScrolledWindows will be realized automatically when they
+   are added to their parent widget tree.}
+  if not Assigned(LCLObject.Parent) then
+    gtk_widget_realize(Result);
 
   if not (wtHintWindow in FWidgetType) then
   begin
@@ -10159,7 +10184,6 @@ var
   AHints: TGdkWindowHints;
   AFixedWidthHeight: Boolean;
   AForm: TCustomForm;
-  AMinSize, ANaturalSize: gint;
   Alloc:TGtkAllocation;
   x, y: gint;
 begin
@@ -10170,15 +10194,31 @@ begin
   ARect.width := AWidth;
   ARect.Height := AHeight;
   try
-    {fixes gtk3 assertion}
-    Widget^.get_preferred_width(@AMinSize, @ANaturalSize);
-    Widget^.get_preferred_height(@AMinSize, @ANaturalSize);
     Widget^.get_allocation(@Alloc);
     {$IFDEF GTK3DEBUGFORMS}
     with Alloc do
-      DebugLn(Format('TGtk3Window.setBounds(%d, %d, %d, %d) Natural w=%d h=%d alloc x %d y %d w %d h %d',[ALeft, ATop ,AWidth, AHeight, ANaturalSize, ANaturalSize2, x, y, width, height]));
+      DebugLn(Format('TGtk3Window.setBounds(%d, %d, %d, %d) alloc x %d y %d w %d h %d',[ALeft, ATop ,AWidth, AHeight, x, y, width, height]));
     {$ENDIF}
+    if not Gtk3IsGtkWindow(fWidget) then
+    begin
 
+      //Embedded form - root widget is GtkScrolledWindow in parent's GtkLayout.
+      Widget^.set_size_request(AWidth, AHeight);
+
+      {Update position tracking in the parent GtkLayout so repositioning
+       survives the next parent layout pass (GtkLayout uses child->x/y from
+       gtk_layout_move, not from size_allocate's x/y).}
+      if Gtk3IsLayout(Widget^.get_parent) then
+      begin
+        x := 0;
+        y := 0;
+        if Gtk3IsGdkWindow(PGtkLayout(Widget^.get_parent)^.get_bin_window) then
+          PGtkLayout(Widget^.get_parent)^.get_bin_window^.get_position(@x, @y);
+        PGtkLayout(Widget^.get_parent)^.move(Widget, ALeft - x, ATop - y);
+      end else
+      if Gtk3IsFixed(Widget^.get_parent) then
+        PGtkFixed(Widget^.get_parent)^.move(Widget, ALeft, ATop);
+    end;
     Widget^.size_allocate(@ARect);
     if Gtk3IsGtkWindow(fWidget)
         and not (csDesigning in AForm.ComponentState) {and (AForm.Parent = nil) and (AForm.ParentWindow = 0)} then

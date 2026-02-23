@@ -1128,7 +1128,8 @@ begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList') then
     exit;
 
-  TGtk3ListView(ALV.Handle).GetContainerWidget^.realize;
+  if Gtk3IsGtkWindow(TGtk3ListView(ALV.Handle).GetContainerWidget^.get_toplevel) then
+    TGtk3ListView(ALV.Handle).GetContainerWidget^.realize;
   TGtk3ListView(ALV.Handle).GetContainerWidget^.queue_draw;
 
   if ((AList = lvilLarge) and (TLVHack(ALV).ViewStyle = vsIcon)) or

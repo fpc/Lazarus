@@ -524,7 +524,8 @@ begin
     // and everything just on time.
     if not (wtScrollingWin in wgt.WidgetType) then
     begin
-      wgt.GetContainerWidget^.realize;
+      if Gtk3IsGtkWindow(wgt.GetContainerWidget^.get_toplevel) then
+        wgt.GetContainerWidget^.realize;
     end;
   end;
   wgt.EndUpdate;
