@@ -97,6 +97,9 @@ begin
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
     Exit;
+  //Skip tiny placeholder allocations (height < 2) BEFORE clamping.
+  if allocation^.height < 2 then
+    Exit;
   //Clamp allocation height to the parent-class CSS minimum.
   //size_allocate bypasses get_preferred_height, so even a correct minimum
   //returned there won't prevent direct allocations smaller than the tab-bar
@@ -106,7 +109,33 @@ begin
   ClampedAlloc := allocation^;
   if ClampedAlloc.height < min_h then
     ClampedAlloc.height := min_h;
+
+  //Skip.The real allocation arrives once the parent
+  //has real dimensions.
+  if (min_h > 0) and (ClampedAlloc.height <= min_h) then
+    Exit;
   ParentClass^.size_allocate(widget, @ClampedAlloc);
+end;
+
+function LCLGtkNotebookDraw(widget: PGtkWidget; cr: Pcairo_t): gboolean; cdecl;
+var
+  ParentClass: PGtkWidgetClass;
+  min_h, nat_h: gint;
+  alloc: TGtkAllocation;
+begin
+  Result := gboolean(False);
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  if not Assigned(ParentClass) or not Assigned(ParentClass^.draw) then
+    Exit;
+  widget^.get_allocation(@alloc);
+  //Guard against drawing when the allocated height is insufficient for the
+  //tab-bar header CSS gadget.
+  if alloc.height < 2 then
+    Exit;
+  ParentClass^.get_preferred_height(widget, @min_h, @nat_h);
+  if (min_h > 0) and (alloc.height < min_h) then
+    Exit;
+  Result := ParentClass^.draw(widget, cr);
 end;
 
 procedure LCLGtkNotebookClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
@@ -117,6 +146,7 @@ begin
   AWidgetClass^.get_preferred_width := @LCLGtkNotebookGetPreferredWidth;
   AWidgetClass^.get_preferred_height := @LCLGtkNotebookGetPreferredHeight;
   AWidgetClass^.size_allocate := @LCLGtkNotebookSizeAllocate;
+  AWidgetClass^.draw := @LCLGtkNotebookDraw;
 end;
 
 procedure LCLGtkNotebookInstanceInit({%H-}instance: PGTypeInstance; {%H-}klass: PGTypeClass); cdecl;
