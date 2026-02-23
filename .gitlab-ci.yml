@@ -318,7 +318,7 @@ docs-fpdoc-stable:
     - make lazbuild FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64
     - cd $TEST_PATH
     - $CI_PROJECT_DIR/lazbuild --compiler=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64 --lazarusdir=$CI_PROJECT_DIR $TEST_PROJECT_NAME
-    - $TEST_PROJECT_RUNCMD --all --format=junit --file=$CI_PROJECT_DIR/$OUTPUT_FILE
+    - FPCDIR=/fpcsrc/$FPC_MAIN_VER $TEST_PROJECT_RUNCMD --all --format=junit --file=$CI_PROJECT_DIR/$OUTPUT_FILE
   artifacts:
     when: always
     paths:
@@ -331,7 +331,7 @@ tests-codetools:
   variables:
     TEST_PATH: components/codetools/tests
     TEST_PROJECT_NAME: runtestscodetools.lpi
-    TEST_PROJECT_RUNCMD: FPCDIR=/fpcsrc/$FPC_MAIN_VER ./runtestscodetools
+    TEST_PROJECT_RUNCMD: ./runtestscodetools
     OUTPUT_FILE: testresults_codetools.xml
   rules:
     - !reference [.runscheduled, rules]
