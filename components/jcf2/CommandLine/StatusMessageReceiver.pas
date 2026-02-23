@@ -49,7 +49,7 @@ type
 implementation
 
 uses
-  SysUtils, converter, LazFileUtils, JcfMiscFunctions;
+  SysUtils, Converter, LazFileUtils, JcfMiscFunctions;
 
 { An attempt at an emacs version  }
 procedure TStatusMesssageReceiver.OnReceiveStatusMessage(const psFile, psMessage: string;

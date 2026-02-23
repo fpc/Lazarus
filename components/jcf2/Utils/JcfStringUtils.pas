@@ -84,6 +84,10 @@ const
   NativeLineBreak = NativeLineFeed;
   PathSeparator    = '/';
   {$ENDIF UNIX}
+  {$IFDEF CPUWASM}
+  NativeLineBreak = NativeLineFeed;
+  PathSeparator    = '/';
+  {$ENDIF}
   DirDelimiter = PathSeparator;
   NativeHexDigits      = ['0'..'9', 'A'..'F', 'a'..'f'];
   NativeWhiteSpace     = [NativeTab, NativeLineFeed, NativeVerticalTab,

@@ -32,6 +32,13 @@ uses
   JcfMiscFunctions, JcfStringUtils, StatusMessageReceiver,
   JcfUiTools, JcfUiToolsNoGUI, CommandLineReturnCode, CommandLineConstants;
 
+{$IFDEF UNIX}
+{$DEFINE UNIXLIKE}
+{$ENDIF}
+{$IFDEF CPUWASM}
+{$DEFINE UNIXLIKE}
+{$ENDIF}
+
 const
   CONFIG_FILE_NAME = 'jcfsettings.cfg';
 
@@ -88,8 +95,10 @@ var
     { look for something that is not a -/\ param }
       lsOpt := ParamStr(liLoop);
 
-      if (StrLeft(lsOpt, 1) <> '-') and {$IFNDEF UNIX} (StrLeft(lsOpt, 1) <> '/') and {$ENDIF}
-        (StrLeft(lsOpt, 1) <> '\') and (StrLeft(lsOpt, 1) <> '?') then
+      if (StrLeft(lsOpt, 1) <> '-')
+         {$IFNDEF UNIXLIKE} and (StrLeft(lsOpt, 1) <> '/'){$ENDIF}
+         and (StrLeft(lsOpt, 1) <> '\')
+         and (StrLeft(lsOpt, 1) <> '?') then
       begin
       // must be a path
         lsPath := StrTrimQuotes(lsOpt);

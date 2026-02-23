@@ -115,7 +115,7 @@ implementation
 
 uses
   { local }
-  JcfStringUtils, FileUtil,
+  JcfStringUtils, {$IFNDEF CPUWASM} FileUtil, {$else} LazFileUtils, {$ENDIF}
   JcfMiscFunctions, JcfLog,
   JcfRegistrySettings, JcfSettings, JcfUnicodeFiles, JcfUiTools, System.UITypes,
   jcfbaseConsts;
@@ -152,7 +152,7 @@ begin
     exit;
   end;
 
-  if FileSize(psInputFileName) < 1 then
+  if {$IFDEF CPUWASM}FileSizeUTF8{$ELSE}FileSize{$ENDIF}(psInputFileName) < 1 then
   begin
     SendStatusMessage(psInputFileName, Format(lisMsgTheFileIsEmpty, [psInputFileName]),
       mtInputError, -1, -1);
