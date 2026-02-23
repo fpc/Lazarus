@@ -28,6 +28,17 @@ var
   OldNoteBookButtonPress: GtkNotebookButtonPressEventProc = nil;
   OldNoteBookKeyPress: GtkNotebookKeyPressEventProc = nil;
 
+//issue #41116
+function GtkNotebookMapAfterCB(widget: PGtkWidget; {%H-}data: gPointer): GBoolean; cdecl;
+var
+  EventWin: PGdkWindow;
+begin
+  Result := False;
+  EventWin := PGtkNotebook(widget)^.event_window;
+  if EventWin <> nil then
+    gdk_window_raise(EventWin);
+end;
+
 // this was created as a workaround of a tnotebook eating rightclick of custom controls
 function Notebook_Button_Press(widget:PGtkWidget; event:PGdkEventButton):gboolean; cdecl;
 begin
@@ -263,6 +274,9 @@ begin
   TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
   ConnectSignal(PGtkObject(AGtkWidget), 'switch_page', @GtkWSNotebook_SwitchPage, AWidgetInfo^.LCLObject);
   ConnectSignalAfter(PGtkObject(AGtkWidget), 'switch_page', @GtkWSNotebook_AfterSwitchPage, AWidgetInfo^.LCLObject);
+  //After notebook maps, raise its event_window above the inner EventBox's
+  //event_window of any parent GtkEventBox. Issue #41116.
+  g_signal_connect_after(PGtkObject(AGtkWidget), 'map', TGCallback(@GtkNotebookMapAfterCB), nil);
 end;
 
 class function TGtk2WSCustomTabControl.CreateTTabControlHandle(
