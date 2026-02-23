@@ -217,10 +217,14 @@ uses
   {$IFDEF HASAMIGA}
   exec, amigados;
   {$ELSE}
+    {$IFDEF CPUWASM}
+    wasiutil;
+    {$ELSE}
     {$IFDEF darwin}
     MacOSAll,
     {$ENDIF}
     Unix, BaseUnix;
+    {$ENDIF}
   {$ENDIF}
 {$ENDIF}
 
@@ -231,7 +235,11 @@ uses
   {$IFDEF HASAMIGA}
     {$I amigalazfileutils.inc}
   {$ELSE}
+    {$IFDEF CPUWASM}
+    {$I wasilazfileutils.inc}
+    {$ELSE}
     {$I unixlazfileutils.inc}
+    {$ENDIF}
   {$ENDIF}
 {$ENDIF}
 
