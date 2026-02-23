@@ -312,59 +312,49 @@ docs-fpdoc-stable:
   rules:
     - !reference [.manualjob, rules]
 
-tests-codetools: # run Codetools tests and output results in JUnit format (for this FPC 3.3.1 and up is needed)
+.tests-base: # run Codetools tests and output results in JUnit format (for this FPC 3.3.1 and up is needed)
   stage: build
+  script:
+    - make lazbuild FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64
+    - cd $TEST_PATH
+    - $CI_PROJECT_DIR/lazbuild --compiler=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64 --lazarusdir=$CI_PROJECT_DIR $TEST_PROJECT_NAME
+    - $TEST_PROJECT_RUNCMD --all --format=junit --file=$CI_PROJECT_DIR/$OUTPUT_FILE
+  artifacts:
+    when: always
+    paths:
+      - $OUTPUT_FILE
+    reports:
+      junit: $OUTPUT_FILE
+
+tests-codetools:
+  extends: .tests-base
   variables:
+    TEST_PATH: components/codetools/tests
+    TEST_PROJECT_NAME: runtestscodetools.lpi
+    TEST_PROJECT_RUNCMD: FPCDIR=/fpcsrc/$FPC_MAIN_VER ./runtestscodetools
     OUTPUT_FILE: testresults_codetools.xml
-  script:
-    - make lazbuild FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64
-    - cd components/codetools/tests
-    - $CI_PROJECT_DIR/lazbuild --compiler=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64 --lazarusdir=$CI_PROJECT_DIR runtestscodetools.lpi
-    - FPCDIR=/fpcsrc/$FPC_MAIN_VER ./runtestscodetools --all --format=junit --file=$CI_PROJECT_DIR/$OUTPUT_FILE
-  artifacts:
-    when: always
-    paths:
-      - $OUTPUT_FILE
-    reports:
-      junit: $OUTPUT_FILE
   rules:
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
 
-tests-fpdebug: # run FPDebug tests and output results in JUnit format (for this FPC 3.3.1 and up is needed)
-  stage: build
+tests-fpdebug:
+  extends: .tests-base
   variables:
+    TEST_PATH: components/fpdebug/test
+    TEST_PROJECT_NAME: FpTest.lpi
+    TEST_PROJECT_RUNCMD: ./fptest
     OUTPUT_FILE: testresults_fpdebug.xml
-  script:
-    - make lazbuild FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64
-    - cd components/fpdebug/test
-    - $CI_PROJECT_DIR/lazbuild --compiler=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64 --lazarusdir=$CI_PROJECT_DIR FpTest.lpi
-    - ./fptest --all --format=junit --file=$CI_PROJECT_DIR/$OUTPUT_FILE
-  artifacts:
-    when: always
-    paths:
-      - $OUTPUT_FILE
-    reports:
-      junit: $OUTPUT_FILE
   rules:
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
 
-tests-lcl: # run LCL tests and output results in JUnit format (for this FPC 3.3.1 and up is needed)
-  stage: build
+tests-lcl:
+  extends: .tests-base
   variables:
+    TEST_PATH: lcl/testcase
+    TEST_PROJECT_NAME: test_lcl.lpi
+    TEST_PROJECT_RUNCMD: ./test_lcl
     OUTPUT_FILE: testresults_lcl.xml
-  script:
-    - make lazbuild FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64
-    - cd lcl/testcase
-    - $CI_PROJECT_DIR/lazbuild --compiler=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64 --lazarusdir=$CI_PROJECT_DIR test_lcl.lpi
-    - ./test_lcl --all --format=junit --file=$CI_PROJECT_DIR/$OUTPUT_FILE
-  artifacts:
-    when: always
-    paths:
-      - $OUTPUT_FILE
-    reports:
-      junit: $OUTPUT_FILE
   rules:
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
