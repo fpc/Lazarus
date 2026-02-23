@@ -2837,6 +2837,8 @@ begin
       exit;
     end;
   end;
+  if (Node<>nil) and (Node.Desc=ctnEndPoint) then // a "gap" case added
+    exit;
 
   if (Result=nil) and ExceptionOnNotFound then begin
     RaiseNoNodeFoundAtCursor;

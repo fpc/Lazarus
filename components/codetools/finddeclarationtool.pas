@@ -13543,13 +13543,30 @@ begin
           end;
         end else begin
           // different context type
-          
+          if (TargetNode.Desc=ctnOpenArrayType) and (ExprNode.Desc<>ctnOpenArrayType) then begin
+          // switch TargetNode to node of declaration of an array element type
+            try
+              ExprParams:= TFindDeclarationParams.Create(Params);
+              ExprParams.SetIdentifier(Self,nil,nil);
+              ExprParams.ContextNode:= TargetNode;
+              ExprOfElement:=
+                FindExpressionTypeOfTerm(TargetNode.FirstChild.StartPos,-1,ExprParams,false);
+              if ExprOfElement.Desc=xtContext then
+                TargetNode:=ExprOfElement.Context.Node
+              else
+                exit;
+            finally
+              ExprParams.Free;
+            end;
+
+            if TargetNode = ExprNode then
+              Result:=tcExact;
+          end;
         end;
       end;
     else
       Result:=tcExact;
     end;
-    
   end else if ((TargetType.Desc=xtPointer)
       and (ExpressionType.Desc=xtContext)
       and (ExpressionType.Context.Node.Desc in AllClasses))
