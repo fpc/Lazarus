@@ -147,12 +147,15 @@ end;
 
 class function TGtk3WSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
+var
+  Gtk3CustomControl: TGtk3CustomControl;
 begin
-  // For now default to the old creation routines
   {$IFDEF GTK3DEBUGCORE}
-  DebugLn('TGtk3WSWinControl.CreateHandle');
+  DebugLn('TGtk3WSWinControl.CreateHandle for ', DbgsName(AWinControl));
   {$ENDIF}
-  Result := 0;
+  //TODO: rethink this, customcontrol is overhead here.
+  Gtk3CustomControl := TGtk3CustomControl.Create(AWinControl, AParams);
+  Result := TLCLHandle(Gtk3CustomControl);
 end;
 
 class procedure TGtk3WSWinControl.DestroyHandle(const AWinControl: TWinControl);
