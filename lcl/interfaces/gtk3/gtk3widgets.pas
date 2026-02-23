@@ -3152,6 +3152,7 @@ procedure TGtk3Widget.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
 var
   ARect: TGdkRectangle;
   Alloc: TGtkAllocation;
+  CurW, CurH: gint;
 begin
   if (Widget=nil) then
     exit;
@@ -3186,19 +3187,19 @@ begin
     if not Widget^.get_realized and Gtk3IsGtkWindow(Widget^.get_toplevel) then
       Widget^.realize;
 
-    //this should be removed in future.
-    Widget^.set_size_request(AWidth,AHeight);
+    //call set_size_request ONLY if something actually changed.
+    Widget^.get_size_request(@CurW, @CurH);
+    if (CurW <> AWidth) or (CurH <> AHeight) then
+      Widget^.set_size_request(AWidth,AHeight);
 
     {size_allocate only makes sense on a realized container; calling it on
      an unrealized one triggers internal GTK3 CSS layout with whatever tiny
      garbage allocation GTK assigned, producing size >= 0 assertions.}
     if Gtk3IsContainer(Widget) and Widget^.get_realized then
     begin
-      {Skip the call when the allocation is smaller than the border extents
-       can absorb, set_size_request above already tells GTK our desired size.}
-      if Gtk3IsScrolledWindow(Widget) and
-         (PGtkScrolledWindow(Widget)^.get_shadow_type <> GTK_SHADOW_NONE) and
-         ((ARect.width < 2) or (ARect.height < 2)) then
+      {Skip size_allocate on any container when the allocation is a tiny
+       placeholder (width or height < 2px).}
+      if (ARect.width < 2) or (ARect.height < 2) then
         //skip
       else
         Widget^.size_allocate(@ARect);
@@ -5405,28 +5406,36 @@ begin
 end;
 
 //Issue 42065:Called via g_idle_add after GtkNotebookAfterSwitchPage returns.
-//AData is the GtkNotebook widget; the target focus widget is stored on it via
-//g_object_set_data('lcl-tab-focus-widget').
+//AData is FCentralWidget (GtkLayout) of the notebook; the flag and target
+//focus widget are stored on it via g_object_set_data. FCentralWidget was
+//g_object_ref'd before g_idle_add so its memory is valid here even if the
+//widget was destroyed. Always unref at the end.
 function Gtk3FocusAfterTabSwitch(AData: Pointer): gboolean; cdecl;
 var
-  ANotebook: PGtkWidget;
+  ACentralWidget: PGtkWidget;
   W: PGtkWidget;
 begin
   Result := False;
-  ANotebook := PGtkWidget(AData);
-  if ANotebook = nil then
+  ACentralWidget := PGtkWidget(AData);
+  if ACentralWidget = nil then
     exit;
-  //Always clear in-progress flag first so MoveTabFocus is re-enabled.
-  g_object_set_data(ANotebook, 'lcl-tab-switch-active', nil);
-  W := PGtkWidget(g_object_get_data(ANotebook, 'lcl-tab-focus-widget'));
-  g_object_set_data(ANotebook, 'lcl-tab-focus-widget', nil);
-  if W = nil then
-    exit;
-  if not (W^.get_realized and W^.get_visible) then
-    exit;
-  if W^.has_focus then
-    exit;
-  W^.grab_focus;
+  try
+    //Always clear in-progress flag first so MoveTabFocus is re-enabled.
+    if not Gtk3IsWidget(ACentralWidget) then
+      exit;
+    g_object_set_data(ACentralWidget, 'lcl-tab-switch-active', nil);
+    W := PGtkWidget(g_object_get_data(ACentralWidget, 'lcl-tab-focus-widget'));
+    g_object_set_data(ACentralWidget, 'lcl-tab-focus-widget', nil);
+    if W = nil then
+      exit;
+    if not (W^.get_realized and W^.get_visible) then
+      exit;
+    if W^.has_focus then
+      exit;
+    W^.grab_focus;
+  finally
+    g_object_unref(PGObject(ACentralWidget));
+  end;
 end;
 
 procedure GtkNotebookAfterSwitchPage(widget: PGtkWidget; {%H-}page: PGtkWidget; pagenum: integer; data: gPointer); cdecl;
@@ -5487,6 +5496,9 @@ begin
     'lcl-tab-switch-active', Pointer(1));
   g_object_set_data(TGtk3NoteBook(Data).FCentralWidget,
     'lcl-tab-focus-widget', W);
+  //g_object_ref so FCentralWidget stays valid until Gtk3FocusAfterTabSwitch
+  //fires; the idle handler always calls g_object_unref in its finally block.
+  g_object_ref(PGObject(TGtk3NoteBook(Data).FCentralWidget));
   g_idle_add(@Gtk3FocusAfterTabSwitch, TGtk3NoteBook(Data).FCentralWidget);
 end;
 
@@ -5500,30 +5512,36 @@ var
 begin
   Result := False;
   AWidget := PGtkNoteBook(AData);
-  if not Gtk3IsWidget(AWidget) then
-    exit;
-  if g_object_get_data(AWidget,'switch-page-signal-stopped') <> nil then
-  begin
-    Result := True;
-    {$IFDEF GTK3DEBUGNOTEBOOK}
-    APageNum := {%H-}PtrInt(g_object_get_data(AWidget,'switch-page-signal-stopped'));
-    {$ENDIF}
-    ACurrentPage := AWidget^.get_current_page;
-    g_object_set_data(AWidget,'switch-page-signal-stopped', nil);
-    {$IFDEF GTK3DEBUGNOTEBOOK}
-    DebugLn('BackNoteBookSignal back notebook switch-page signal currpage=',dbgs(AWidget^.get_current_page),' blockedPage ',dbgs(APageNum));
-    {$ENDIF}
-    if ACurrentPage<0 then ;
-    // must hook into notebook^.priv to unlock APageNum
-    // AWidget^.set_current_page(AWidget^.get_current_page);
-    // g_object_thaw_notify(AWidget^.get_nth_page(AWidget^.get_current_page));
-    // PGtkFixed(AWidget^.get_nth_page(AWidget^.get_current_page))^.
-    // g_signal_emit_by_name(AWidget,'switch-page',[AWidget^.get_nth_page(APageNum), APageNum, gPointer(HwndFromGtkWidget(AWidget)), nil{AWidget, True, gPointer(HwndFromGtkWidget(AWidget))}]);
-    // AWidget^.notify('page');
-    // g_signal_stop_emission_by_name(AWidget, 'switch-page');
-    // g_signal_emit_by_name(AWidget,'switch-page',[G_TYPE_NONE, AWidget, AWidget^.get_nth_page(AWidget^.get_current_page), AWidget^.get_current_page, gPointer(HwndFromGtkWidget(AWidget))]);
+  //AWidget was g_object_ref'd before g_idle_add so its memory is valid here
+  //even if the GTK widget was destroyed before the idle fired. Always unref.
+  try
+    if not Gtk3IsWidget(AWidget) then
+      exit;
+    if g_object_get_data(AWidget,'switch-page-signal-stopped') <> nil then
+    begin
+      Result := True;
+      {$IFDEF GTK3DEBUGNOTEBOOK}
+      APageNum := {%H-}PtrInt(g_object_get_data(AWidget,'switch-page-signal-stopped'));
+      {$ENDIF}
+      ACurrentPage := AWidget^.get_current_page;
+      g_object_set_data(AWidget,'switch-page-signal-stopped', nil);
+      {$IFDEF GTK3DEBUGNOTEBOOK}
+      DebugLn('BackNoteBookSignal back notebook switch-page signal currpage=',dbgs(AWidget^.get_current_page),' blockedPage ',dbgs(APageNum));
+      {$ENDIF}
+      if ACurrentPage<0 then ;
+      // must hook into notebook^.priv to unlock APageNum
+      // AWidget^.set_current_page(AWidget^.get_current_page);
+      // g_object_thaw_notify(AWidget^.get_nth_page(AWidget^.get_current_page));
+      // PGtkFixed(AWidget^.get_nth_page(AWidget^.get_current_page))^.
+      // g_signal_emit_by_name(AWidget,'switch-page',[AWidget^.get_nth_page(APageNum), APageNum, gPointer(HwndFromGtkWidget(AWidget)), nil{AWidget, True, gPointer(HwndFromGtkWidget(AWidget))}]);
+      // AWidget^.notify('page');
+      // g_signal_stop_emission_by_name(AWidget, 'switch-page');
+      // g_signal_emit_by_name(AWidget,'switch-page',[G_TYPE_NONE, AWidget, AWidget^.get_nth_page(AWidget^.get_current_page), AWidget^.get_current_page, gPointer(HwndFromGtkWidget(AWidget))]);
+    end;
+    g_idle_remove_by_data(AData);
+  finally
+    g_object_unref(PGObject(AWidget));
   end;
-  g_idle_remove_by_data(AData);
 end;
 
 procedure GtkNotebookSwitchPage(widget: PGtkWidget; {%H-}page: PGtkWidget; pagenum: integer; data: gPointer); cdecl;
@@ -5563,6 +5581,7 @@ begin
     g_object_set_data(Widget,'switch-page-signal-stopped', {%H-}GPointer(pageNum));
     g_signal_stop_emission_by_name(PGObject(Widget), 'switch-page');
     // GtkNotebookAfterSwitchPage(Widget, page, pagenum, data);
+    g_object_ref(PGObject(Widget));
     g_idle_add(@BackNoteBookSignal, Widget);
     Exit;
   end;
@@ -10195,6 +10214,7 @@ var
   AForm: TCustomForm;
   Alloc:TGtkAllocation;
   x, y: gint;
+  CurW, CurH: gint;
 begin
   AForm := TCustomForm(LCLObject);
   BeginUpdate;
@@ -10212,7 +10232,10 @@ begin
     begin
 
       //Embedded form - root widget is GtkScrolledWindow in parent's GtkLayout.
-      Widget^.set_size_request(AWidth, AHeight);
+      //Only update if changed: set_size_request triggers queue_resize internally.
+      Widget^.get_size_request(@CurW, @CurH);
+      if (CurW <> AWidth) or (CurH <> AHeight) then
+        Widget^.set_size_request(AWidth, AHeight);
 
       {Update position tracking in the parent GtkLayout so repositioning
        survives the next parent layout pass (GtkLayout uses child->x/y from
@@ -10228,7 +10251,9 @@ begin
       if Gtk3IsFixed(Widget^.get_parent) then
         PGtkFixed(Widget^.get_parent)^.move(Widget, ALeft, ATop);
     end;
-    Widget^.size_allocate(@ARect);
+
+    if Gtk3IsGtkWindow(fWidget) or ((ARect.width >= 2) and (ARect.height >= 2)) then
+      Widget^.size_allocate(@ARect);
     if Gtk3IsGtkWindow(fWidget)
         and not (csDesigning in AForm.ComponentState) {and (AForm.Parent = nil) and (AForm.ParentWindow = 0)} then
     begin
