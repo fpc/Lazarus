@@ -3193,7 +3193,16 @@ begin
      an unrealized one triggers internal GTK3 CSS layout with whatever tiny
      garbage allocation GTK assigned, producing size >= 0 assertions.}
     if Gtk3IsContainer(Widget) and Widget^.get_realized then
-      Widget^.size_allocate(@ARect);
+    begin
+      {Skip the call when the allocation is smaller than the border extents
+       can absorb, set_size_request above already tells GTK our desired size.}
+      if Gtk3IsScrolledWindow(Widget) and
+         (PGtkScrolledWindow(Widget)^.get_shadow_type <> GTK_SHADOW_NONE) and
+         ((ARect.width < 2) or (ARect.height < 2)) then
+        //skip
+      else
+        Widget^.size_allocate(@ARect);
+    end;
 
     if Widget^.get_visible then
       Widget^.set_allocation(@Alloc);
