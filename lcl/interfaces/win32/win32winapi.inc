@@ -2483,13 +2483,10 @@ function TWin32WidgetSet.GetWindowSize(Handle : hwnd;
   var
     xSize: Windows.SIZE;
   begin
-    if (Height<>0) and (Width<>0) then
-    begin
-      xSize := TSize.Create(0, 0);
-      AdjustFormClientToWindowSize(Handle, xSize);
-      Dec(Height, xSize.Height);
-      Dec(Width, xSize.Width);
-    end;
+    xSize.Create(Width, Height);
+    AdjustWindowSizeToFormClient(Handle, xSize);
+    Width := xSize.cx;
+    Height := xSize.cy;
   end;
 
   procedure SetWidthHeightFromRect(const R: TRect); inline;

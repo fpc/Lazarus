@@ -281,6 +281,7 @@ function OpenThemeDataForDpi(hwnd: HWND; pszClassList: LPCWSTR; dpi: UINT): HTHE
 
 procedure AdjustFormClientToWindowSize(const AHandle: HANDLE; var ioSize: TSize); overload;
 procedure AdjustFormClientToWindowSize(aHasMenu: Boolean; dwStyle, dwExStyle: DWORD; dpi: UINT; var ioSize: TSize); overload;
+procedure AdjustWindowSizeToFormClient(const AHandle: HANDLE; var ioSize: TSize); overload;
 
 type
 
@@ -555,6 +556,19 @@ begin
   ioSize.Width := SizeRect.Width;
   ioSize.Height := SizeRect.Height;
   {$ENDIF}
+end;
+
+procedure AdjustWindowSizeToFormClient(const AHandle: HANDLE; var ioSize: TSize);
+var
+  xSize: Windows.SIZE;
+begin
+  if (ioSize.cy<>0) and (ioSize.cx<>0) then
+  begin
+    xSize := TSize.Create(0, 0);
+    AdjustFormClientToWindowSize(AHandle, xSize);
+    Dec(ioSize.cy, xSize.cy);
+    Dec(ioSize.cx, xSize.cx);
+  end;
 end;
 
 {$I win32listsl.inc}

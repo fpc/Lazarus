@@ -2009,7 +2009,8 @@ var
   CancelEndSession : Boolean; // used by WM_QUERYENDSESSION
   // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
   CharCodeNotEmpty: boolean;
-  R: TRect;
+  R, PpiRect: TRect;
+  PpiSize: TSize;
   ACtl: TWinControl;
   LMouseEvent: TTRACKMOUSEEVENT;
   MaximizedActiveChild: WINBOOL;
@@ -2073,7 +2074,17 @@ begin
         CurrentIMEWindow := 0;
       SetLMessageAndParams(LM_ACTIVATE);
     end;
-    WM_DPICHANGED: SetLMessageAndParams(LM_DPICHANGED);
+    WM_DPICHANGED: begin
+      SetLMessageAndParams(LM_DPICHANGED);
+      if (LParam <> 0) and (lWinControl <> nil) and (lWinControl.HandleAllocated) then begin
+        PpiRect := PRect(LParam)^;
+        PpiSize.Create(PpiRect.Width, PpiRect.Height);
+        AdjustWindowSizeToFormClient(lWinControl.Handle, PpiSize);
+        PpiRect.Width := PpiSize.Width;
+        PpiRect.Height := PpiSize.Height;
+        LMessage.lParam := Windows.LPARAM(@PpiRect);
+      end;
+    end;
     WM_IME_ENDCOMPOSITION:
     begin
       {IME Windows the composition has finished}

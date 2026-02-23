@@ -2268,6 +2268,9 @@ begin
       try
         AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, NewDpi,
           Width, MulDiv(Width, NewDpi, PixelsPerInch));
+
+        if Msg.lParam <> 0 then
+          SetBounds(PRect(Msg.lParam)^.Left, PRect(Msg.lParam)^.Top, PRect(Msg.lParam)^.Width, PRect(Msg.lParam)^.Height);
       finally
         for L := 0 to I do
           BeginUpdateBounds;
