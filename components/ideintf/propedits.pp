@@ -4035,23 +4035,10 @@ begin
 end;
 
 procedure TPropertyEditor.ExecuteVerb(Index: Integer);
-var
-  i: Integer;
 begin
-  i:=-1;
-  if HasDefaultValue then begin
-    inc(i);
-    if i=Index then begin
-      SetValue(GetDefaultValue);
-      exit;
-    end;
-  end;
-  if IsRevertableToInherited then begin
-    inc(i);
-    if i=Index then begin
-      RevertToInherited;
-      exit;
-    end;
+  case Index of
+    0: SetValue(GetDefaultValue);
+    1: RevertToInherited;
   end;
 end;
 
