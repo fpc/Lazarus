@@ -5184,8 +5184,8 @@ begin
   s := CurGrid.CurrentEditValue;
   CurRow.Editor.ExecuteVerb((Sender as TMenuItem).Tag);
   // CurrentEditValue was changed through event handlers. Compare with old value.
-  if CurGrid.CurrentEditValue <> s then
-    CurGrid.SetRowValue(false, true);
+  if (CurGrid.CurrentEditValue <> s) and Assigned(FOnModified) then
+    FOnModified(Self);
   DebugLn(['Executed verb number ', (Sender as TMenuItem).Tag, ', VisualValue: ', s, ', CurRow: ', CurRow]);
 end;
 
