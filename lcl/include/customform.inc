@@ -2266,12 +2266,14 @@ begin
         Inc(I);
       end;
       try
+        DisableAutoSizing;
         AutoAdjustLayout(lapAutoAdjustForDPI, PixelsPerInch, NewDpi,
           Width, MulDiv(Width, NewDpi, PixelsPerInch));
 
         if Msg.lParam <> 0 then
           SetBounds(PRect(Msg.lParam)^.Left, PRect(Msg.lParam)^.Top, PRect(Msg.lParam)^.Width, PRect(Msg.lParam)^.Height);
       finally
+        EnableAutoSizing;
         for L := 0 to I do
           BeginUpdateBounds;
       end;
