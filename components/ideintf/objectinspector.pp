@@ -5181,11 +5181,11 @@ var
 begin
   CurGrid:=GetActivePropertyGrid;
   CurRow := GetActivePropertyRow;
+  s := CurGrid.CurrentEditValue;
   CurRow.Editor.ExecuteVerb((Sender as TMenuItem).Tag);
-  s := CurRow.Editor.GetVisualValue;
-  CurGrid.CurrentEditValue := s;
-  RefreshPropertyValues;
-  Invalidate;
+  // CurrentEditValue was changed through event handlers. Compare with old value.
+  if CurGrid.CurrentEditValue <> s then
+    CurGrid.SetRowValue(false, true);
   DebugLn(['Executed verb number ', (Sender as TMenuItem).Tag, ', VisualValue: ', s, ', CurRow: ', CurRow]);
 end;
 
