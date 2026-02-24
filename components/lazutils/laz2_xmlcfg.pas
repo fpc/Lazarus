@@ -164,15 +164,25 @@ type
   protected
     procedure WriteProperty(Path: String; Instance: TObject;
                             PropInfo: Pointer; DefInstance: TObject = nil;
-                            OnlyProperty: String= '');
+                            OnlyProperty: String = '');
+    procedure WriteProperty(Path: String; Instance: TObject;
+                            PropInfo: Pointer; DefInstance: TObject = nil;
+                            const OnlyProperty: array of String);
     procedure ReadProperty(Path: String; Instance: TObject;
                             PropInfo: Pointer; DefInstance: TObject = nil;
                             OnlyProperty: String= '');
+    procedure ReadProperty(Path: String; Instance: TObject;
+                            PropInfo: Pointer; DefInstance: TObject = nil;
+                            const OnlyProperty: array of String);
   public
     procedure WriteObject(Path: String; Obj: TObject;
                           DefObject: TObject= nil; OnlyProperty: String= '');
+    procedure WriteObject(Path: String; Obj: TObject;
+                          DefObject: TObject; const OnlyProperty: array of String);
     procedure ReadObject(Path: String; Obj: TObject;
                           DefObject: TObject= nil; OnlyProperty: String= '');
+    procedure ReadObject(Path: String; Obj: TObject;
+                          DefObject: TObject; const OnlyProperty: array of String);
 
     property CheckPropertyDefault: boolean read FCheckPropertyDefault write FCheckPropertyDefault;
     property WriteAllNestedObjects: boolean read FWriteAllNestedObjects write FWriteAllNestedObjects;
@@ -1118,33 +1128,25 @@ end;
 
 { TRttiXMLConfig }
 
-procedure TRttiXMLConfig.WriteObject(Path: String; Obj: TObject;
-  DefObject: TObject; OnlyProperty: String);
-var
-  PropCount,i : integer;
-  PropList  : PPropList;
+procedure TRttiXMLConfig.WriteProperty(Path: String; Instance: TObject; PropInfo: Pointer;
+  DefInstance: TObject; OnlyProperty: String);
 begin
-  PropCount:=GetPropList(Obj,PropList);
-  if PropCount>0 then begin
-    try
-      for i := 0 to PropCount-1 do
-        WriteProperty(Path, Obj, PropList^[i], DefObject, OnlyProperty);
-    finally
-      Freemem(PropList);
-    end;
-  end;
+  if OnlyProperty = '' then
+    WriteProperty(Path, Instance, PropInfo, DefInstance, [])
+  else
+    WriteProperty(Path, Instance, PropInfo, DefInstance, [OnlyProperty]);
 end;
 
 // based on FPC TWriter
 procedure TRttiXMLConfig.WriteProperty(Path: String; Instance: TObject;
-  PropInfo: Pointer; DefInstance: TObject; OnlyProperty: String);
+  PropInfo: Pointer; DefInstance: TObject; const OnlyProperty: array of String);
 type
   tset = set of 0..31;
 var
   i: Integer;
   PropType: PTypeInfo;
   Value, DefValue: Int64;
-  Ident: String;
+  Ident, n: String;
   IntToIdentFn: TIntToIdent;
   SetType: Pointer;
   FloatValue, DefFloatValue: Extended;
@@ -1161,10 +1163,18 @@ begin
           Assigned(PPropInfo(PropInfo)^.SetProc)) then
     exit;
 
+  if Length(OnlyProperty) > 0 then begin
+    n := PPropInfo(PropInfo)^.Name;
+    for i := 0 to Length(OnlyProperty) - 1 do
+      if (n = OnlyProperty[i]) then begin
+        n := '';
+        break
+      end;
+    if n <> '' then exit; // not in list
+  end;
+
   PropType := PPropInfo(PropInfo)^.PropType;
   Path := Path + PPropInfo(PropInfo)^.Name;
-  if (OnlyProperty <> '') and (OnlyProperty <> PPropInfo(PropInfo)^.Name) then
-    exit;
 
   case PropType^.Kind of
     tkInteger, tkChar, tkEnumeration, tkSet, tkWChar, tkInt64, tkQWord:
@@ -1322,8 +1332,17 @@ begin
   end;
 end;
 
-procedure TRttiXMLConfig.ReadProperty(Path: String; Instance: TObject;
-  PropInfo: Pointer; DefInstance: TObject; OnlyProperty: String);
+procedure TRttiXMLConfig.ReadProperty(Path: String; Instance: TObject; PropInfo: Pointer;
+  DefInstance: TObject; OnlyProperty: String);
+begin
+  if OnlyProperty = '' then
+    ReadProperty(Path, Instance, PropInfo, DefInstance, [])
+  else
+    ReadProperty(Path, Instance, PropInfo, DefInstance, [OnlyProperty]);
+end;
+
+procedure TRttiXMLConfig.ReadProperty(Path: String; Instance: TObject; PropInfo: Pointer;
+  DefInstance: TObject; const OnlyProperty: array of String);
 type
   tset = set of 0..31;
 var
@@ -1336,7 +1355,7 @@ var
   SetType: Pointer;
   FloatValue, DefFloatValue: Extended;
   //WStrValue, WDefStrValue: WideString;
-  StrValue, DefStrValue: String;
+  StrValue, DefStrValue, n: String;
   //Int64Value, DefInt64Value: Int64;
   BoolValue, DefBoolValue: boolean;
   obj: TObject;
@@ -1347,10 +1366,19 @@ begin
           Assigned(PPropInfo(PropInfo)^.SetProc)) then
     exit;
 
+  if Length(OnlyProperty) > 0 then begin
+    n := PPropInfo(PropInfo)^.Name;
+    for i := 0 to Length(OnlyProperty) - 1 do
+      if (n = OnlyProperty[i]) then begin
+        n := '';
+        break
+      end;
+    if n <> '' then exit; // not in list
+  end;
+
   PropType := PPropInfo(PropInfo)^.PropType;
   Path := Path + PPropInfo(PropInfo)^.Name;
-  if (OnlyProperty <> '') and (OnlyProperty <> PPropInfo(PropInfo)^.Name) then
-    exit;
+
   if DefInstance = nil then
     DefInstance := Instance;
 
@@ -1465,8 +1493,43 @@ begin
   end;
 end;
 
-procedure TRttiXMLConfig.ReadObject(Path: String; Obj: TObject;
-  DefObject: TObject; OnlyProperty: String);
+procedure TRttiXMLConfig.WriteObject(Path: String; Obj: TObject; DefObject: TObject;
+  OnlyProperty: String);
+begin
+  if OnlyProperty = '' then
+    WriteObject(Path, Obj, DefObject, [])
+  else
+    WriteObject(Path, Obj, DefObject, [OnlyProperty]);
+end;
+
+procedure TRttiXMLConfig.WriteObject(Path: String; Obj: TObject; DefObject: TObject;
+  const OnlyProperty: array of String);
+var
+  PropCount,i : integer;
+  PropList  : PPropList;
+begin
+  PropCount:=GetPropList(Obj,PropList);
+  if PropCount>0 then begin
+    try
+      for i := 0 to PropCount-1 do
+        WriteProperty(Path, Obj, PropList^[i], DefObject, OnlyProperty);
+    finally
+      Freemem(PropList);
+    end;
+  end;
+end;
+
+procedure TRttiXMLConfig.ReadObject(Path: String; Obj: TObject; DefObject: TObject;
+  OnlyProperty: String);
+begin
+  if OnlyProperty = '' then
+    ReadObject(Path, Obj, DefObject, [])
+  else
+    ReadObject(Path, Obj, DefObject, [OnlyProperty]);
+end;
+
+procedure TRttiXMLConfig.ReadObject(Path: String; Obj: TObject; DefObject: TObject;
+  const OnlyProperty: array of String);
 var
   PropCount,i : integer;
   PropList  : PPropList;

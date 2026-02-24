@@ -376,6 +376,12 @@ end;
 
 procedure TProjectDebugLink.LoadFromLPI(aXMLConfig: TRttiXMLConfig; Path: string);
 begin
+  aXMLConfig.ReadObject(Path+'Debugger/', Self, nil, [
+    'StoreDisplayFormatConfigsInSession',
+    'StoreValueFormatterConfigInSession',
+    'StoreExcludeRoutineEntryConfigInSession'
+  ]);
+
   FStoreDebuggerClassConfInSession := aXMLConfig.GetValue(Path+'Debugger/StoreDebuggerClassConfInSession/Value', False);
   if not FStoreDebuggerClassConfInSession then begin
     FDebuggerProperties.LoadFromXml(aXMLConfig, Path+'Debugger/ClassConfig/');
@@ -404,7 +410,6 @@ begin
     FExcludeRoutineEntryConfigWasFromLPI := True;
   end;
 
-  aXMLConfig.ReadObject(Path+'Debugger/', Self);
 end;
 
 procedure TProjectDebugLink.LoadFromSession(aXMLConfig: TRttiXMLConfig; Path: string);
@@ -437,12 +442,19 @@ begin
     FExcludeRoutineEntryConfigWasFromSession := True;
   end;
 
-  aXMLConfig.ReadObject(Path+'Debugger/', Self);
+  aXMLConfig.ReadObject(Path+'Debugger/', Self, nil, [
+    'UseDisplayFormatConfigsFromIDE',
+    'UseDisplayFormatConfigsFromProject',
+    'UseValueFormatterFromIDE',
+    'UseValueFormatterFromProject',
+    'UseExcludeRoutineEntryConfigFromIDE',
+    'UseExcludeRoutineEntryConfigFromProject'
+  ]);
 end;
 
 procedure TProjectDebugLink.SaveToLPI(aXMLConfig: TRttiXMLConfig; Path: string);
 var
-  Def: TProjectDebugLink;
+  pd: Boolean;
 begin
   aXMLConfig.DeletePath(Path+'Debugger/Backend'); // remove old value from trunk 2.1
   aXMLConfig.SetDeleteValue(Path+'Debugger/StoreDebuggerClassConfInSession/Value', FStoreDebuggerClassConfInSession, False);
@@ -481,14 +493,19 @@ begin
   FStoreExcludeRoutineEntryConfigInSession := False;
   FExcludeRoutineEntryConfigWasFromLPI := False;
 
-  Def := TProjectDebugLink.Create;
-  aXMLConfig.WriteObject(Path+'Debugger/', Self, Def);
-  Def.Free;
+  pd := aXMLConfig.CheckPropertyDefault;
+  aXMLConfig.CheckPropertyDefault := True;
+  aXMLConfig.WriteObject(Path+'Debugger/', Self, nil, [
+    'StoreDisplayFormatConfigsInSession',
+    'StoreValueFormatterConfigInSession',
+    'StoreExcludeRoutineEntryConfigInSession'
+  ]);
+  aXMLConfig.CheckPropertyDefault := pd;
 end;
 
 procedure TProjectDebugLink.SaveToSession(aXMLConfig: TRttiXMLConfig; Path: string);
 var
-  Def: TProjectDebugLink;
+  pd: Boolean;
 begin
   aXMLConfig.SetDeleteValue(Path+'Debugger/Backend/Value', DebuggerBackend, '');
   if FStoreDebuggerClassConfInSession then
@@ -527,9 +544,17 @@ begin
   FExcludeRoutineEntryConfigWasFromSession := False;
   FExcludeRoutineEntryConfigWasFromLPI := False;
 
-  Def := TProjectDebugLink.Create;
-  aXMLConfig.WriteObject(Path+'Debugger/', Self, Def);
-  Def.Free;
+  pd := aXMLConfig.CheckPropertyDefault;
+  aXMLConfig.CheckPropertyDefault := True;
+  aXMLConfig.WriteObject(Path+'Debugger/', Self, nil, [
+    'UseDisplayFormatConfigsFromIDE',
+    'UseDisplayFormatConfigsFromProject',
+    'UseValueFormatterFromIDE',
+    'UseValueFormatterFromProject',
+    'UseExcludeRoutineEntryConfigFromIDE',
+    'UseExcludeRoutineEntryConfigFromProject'
+  ]);
+  aXMLConfig.CheckPropertyDefault := pd;
 end;
 
 function TProjectDebugLink.DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
