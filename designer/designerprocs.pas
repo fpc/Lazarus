@@ -390,7 +390,7 @@ begin
     RegComp:=IDEComponentPalette.FindRegComponent(AComponent.ClassType);
     Result:=(RegComp=nil) or (RegComp.OrigPageName='');
     if Result then begin
-      DebugLn(['---ComponentIsInvisible: Adding ', AComponent, ' to InvisibleClasses.---']);
+      //DebugLn(['---ComponentIsInvisible: Adding ', AComponent, ' to InvisibleClasses.---']);
       InvisibleClasses.Add(AComponent.ClassType);
     end;
   end;
