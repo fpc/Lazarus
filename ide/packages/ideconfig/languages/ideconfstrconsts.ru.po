@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
@@ -70,19 +70,19 @@ msgstr "Все проекты"
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
-msgstr "установить режим FPC в DELPHI"
+msgstr "Установить режим FPC в DELPHI"
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetofpc
 msgid "set FPC mode to FPC"
-msgstr "установить режим FPC в FPC"
+msgstr "Установить режим FPC в FPC"
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetomacpas
 msgid "set FPC mode to MacPas"
-msgstr "установить режим FPC в MacPas"
+msgstr "Установить режим FPC в MacPas"
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetotp
 msgid "set FPC mode to TP"
-msgstr "установить режим FPC в TP"
+msgstr "Установить режим FPC в TP"
 
 #: ideconfstrconsts.lisedtdefsetiocheckson
 msgid "set IOCHECKS on"
@@ -98,11 +98,11 @@ msgstr "Включить RANGECHECKS"
 
 #: ideconfstrconsts.lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
-msgstr "использовать модуль HeapTrc"
+msgstr "Использовать модуль HeapTrc"
 
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
-msgstr "использовать модуль LineInfo"
+msgstr "Использовать модуль LineInfo"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -213,7 +213,7 @@ msgstr "Ошибка чтения"
 #: ideconfstrconsts.lissourceanddestinationarethesame
 #, object-pascal-format
 msgid "Source and Destination are the same:%s%s"
-msgstr ""
+msgstr "Путь назначения совпадает с исходным:%s%s"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
