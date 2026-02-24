@@ -73,6 +73,7 @@ type
     class function MoveTabFocus(aWidget: PGtkWidget;
       aDirection: TGtkDirectionType; aData: gPointer): gBoolean; cdecl; static;
     class function WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl; static; {main event filter of widget}
+    class function WidgetFocusIn(AWidget: PGtkWidget; Event: PGdkEventFocus; AData: gpointer): gboolean; cdecl; static;
   strict private
     FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     FEnterLeaveTime: Cardinal;
@@ -828,6 +829,8 @@ type
   strict private
     class procedure ComboSizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     class procedure ComboBoxChanged({%H-}ACombo: PGtkComboBox; AData: gpointer); cdecl; static;
+    class procedure EntryChanged({%H-}AEntry: PGtkEntry; AData: gpointer); cdecl; static;
+    class function EntryFocusIn(AEntry: PGtkWidget; Event: PGdkEventFocus; AData: gpointer): gboolean; cdecl; static;
     class procedure NotifySignal(AObject: PGObject; pspec: PGParamSpec; AData: GPointer); cdecl; static;
   protected
     procedure ConnectSizeAllocateSignal(ToWidget:PGtkWidget);override;
@@ -978,6 +981,8 @@ type
     procedure SetIcon(AValue: PGdkPixBuf);
     procedure SetSkipTaskBarHint(AValue: Boolean);
     procedure SetTitle(const AValue: String);
+    class procedure TrackWindowActivate(AObject: PGObject; APSpec: PGParamSpec;
+      Data: gpointer); cdecl; static;
   strict private
     class function WindowMapEvent(awidget:PGtkWindow;AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl; static; //uses lcl-window-first-map data.
     class function WindowMoveEvent(awidget: PGtkWindow; AEvent: PGdkEventConfigure; adata: gpointer): gboolean; cdecl; static;
@@ -1008,7 +1013,6 @@ type
     procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer); override;
     destructor Destroy; override;
     procedure Activate; override;
-    procedure ActivateWindow(AEvent: PGdkEvent);
     function CloseQuery: Boolean;
     function GetWindow: PGdkWindow; override;
     function GetMenuBar: PGtkMenuBar;
@@ -1414,11 +1418,6 @@ begin
     end;
   GDK_VISIBILITY_NOTIFY:
     begin
-      // ONLY HERE WE CAN CATCH Activate/Deactivate but problem is that
-      // PGtkWindow does not update active property properly
-      // so PGtkWindow(Widget)^.is_active returns TRUE even if window isn't active anymore
-      if wtWindow in TGtk3Widget(Data).WidgetType then
-        TGtk3Window(Data).ActivateWindow(Event);
       // Result := TGtk3Widget(Data).GtkEventShowHide(Widget, Event);
       // DebugLn('****** GDK_VISIBILITY_NOTIFY FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
@@ -1933,6 +1932,16 @@ begin
   DeliverMessage(Msg);
 end;
 
+
+class function TGtk3Widget.WidgetFocusIn(AWidget: PGtkWidget;
+  Event: PGdkEventFocus; AData: gpointer): gboolean; cdecl;
+begin
+  Result := False;
+  if AData = nil then
+    Exit;
+  TGtk3Widget(AData).GtkEventFocus(AWidget, PGdkEvent(Event));
+end;
+
 procedure TGtk3Widget.GtkEventDestroy; cdecl;
 var
   Msg: TLMessage;
@@ -2180,7 +2189,8 @@ begin
       exit;
   end;
 
-  if AKeyPress and (length(AEventString) > 0) then
+  if AKeyPress and (length(AEventString) > 0) and
+    not (Sender^.is_toplevel and (PGtkWindow(Sender)^.get_focus <> nil)) then
   begin
     UTF8Char := AEventString;
     // TODO: If not IsControlKey
@@ -2868,6 +2878,13 @@ begin
   g_signal_connect_data(FWidget, 'destroy', TGCallback(@DestroyWidgetEvent), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FWidget, 'event', TGCallback(@WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
 
+  if FWidgetType * [wtWindow, wtDialog, wtHintWindow] = [] then
+  begin
+    g_signal_connect_data(FWidget, 'focus-in-event', TGCallback(@WidgetFocusIn), Self, nil, G_CONNECT_DEFAULT);
+    if FWidget <> GetContainerWidget then
+      g_signal_connect_data(GetContainerWidget, 'focus-in-event', TGCallback(@WidgetFocusIn), Self, nil, G_CONNECT_DEFAULT);
+  end;
+
   g_signal_connect_data(GetContainerWidget, 'enter-notify-event', TGCallback(@MouseEnterNotify), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(getContainerWidget, 'leave-notify-event', TGCallback(@MouseLeaveNotify), Self, nil, G_CONNECT_DEFAULT);
 
@@ -3534,12 +3551,27 @@ begin
 end;
 
 procedure TGtk3Widget.SetFocus;
+var
+  TopLevel: PGtkWidget;
+  FocusWidget: PGtkWidget;
 begin
   if GetContainerWidget^.can_focus and GetContainerWidget^.get_mapped then
     GetContainerWidget^.grab_focus
   else
   if FWidget^.can_focus and FWidget^.get_mapped then
-    FWidget^.grab_focus;
+    FWidget^.grab_focus
+  else
+  begin
+    TopLevel := FWidget^.get_toplevel;
+    if Gtk3IsGtkWindow(TopLevel) and not TopLevel^.get_mapped then
+    begin
+      if GetContainerWidget^.can_focus then
+        FocusWidget := GetContainerWidget
+      else
+        FocusWidget := FWidget;
+      PGtkWindow(TopLevel)^.set_focus(FocusWidget);
+    end;
+  end;
 end;
 
 procedure TGtk3Widget.SetParent(AParent: TGtk3Widget; const ALeft, ATop: Integer
@@ -8560,10 +8592,16 @@ begin
     ItemList := TGtkListStoreStringList.Create(PGtkListStore(PGtkComboBox(Result)^.get_model), 0, LCLObject);
     g_object_set_data(PGObject(Result), GtkListItemLCLListTag, ItemList);
 
-    PGtkComboBox(Result)^.set_entry_text_column(0);
     // do not allow combo button to get focus, entry should take focus
     if PGtkComboBox(Result)^.priv3^.button <> nil then
       PGtkComboBox(Result)^.priv3^.button^.set_can_focus(False);
+
+    // Set up text column so GTK fills the entry on item selection and installs
+    // GtkEntryCompletion. GTK also installs an internal
+    // gtk_combo_box_entry_contents_changed handler that calls set_active(true)
+    // whenever entry text changes and not active, clearing the entry text.
+    // That internal handler is disconnected in InitializeWidget.
+    PGtkComboBox(Result)^.set_entry_text_column(0);
 
     bs := Self.LCLObject.Caption;
     pos := 0;
@@ -8756,27 +8794,78 @@ begin
 end;
 
 procedure TGtk3ComboBox.SetFocus;
+var
+  AChild: PGtkWidget;
+  TopLevel: PGtkWidget;
+  AWalk: PGtkWidget;
+  FocusMsg: TLMessage;
 begin
   {$IFDEF GTK3DEBUGFOCUS}
   DebugLn('TGtk3ComboBox.SetFocus LCLObject ',dbgsName(LCLObject),' WidgetOK ',dbgs(IsWidgetOK),
   ' FWidget <> GetContainerWidget ',dbgs(FWidget <> GetContainerWidget));
   {$ENDIF}
-  if Assigned(LCLObject) then
+  if not Assigned(LCLObject) then
   begin
-    if IsWidgetOK then
-    begin
-      if PGtkComboBox(FWidget)^.has_entry then
-        FWidget^.grab_focus
-      else
-      if GetButtonWidget <> nil then
-        GetButtonWidget^.grab_focus;
-    end else
-      inherited SetFocus;
-  end else
     inherited SetFocus;
+    Exit;
+  end;
+  if not IsWidgetOK then
+  begin
+    inherited SetFocus;
+    Exit;
+  end;
+  if PGtkComboBox(FWidget)^.has_entry then
+  begin
+    // Entry combo: focus must go to the GtkEntry child.
+    // GtkComboBox itself has can_focus=False; grab_focus on it is a no-op.
+    AChild := PGtkComboBox(FWidget)^.get_child;
+    if AChild^.get_mapped then
+    begin
+      AChild^.grab_focus;
+      // grab_focus emits focus-in-event SIGNAL directly on the entry — not
+      // through the GDK event loop — so WidgetEvent never fires and LM_SETFOCUS
+      // is never delivered automatically. Deliver it explicitly so that
+      // TWinControl.WndProc -> Form.SetFocusedControl is called, giving the
+      // combo the LCL focus ring and updating ActiveControl.
+      FillChar(FocusMsg{%H-}, SizeOf(FocusMsg), #0);
+      FocusMsg.Msg := LM_SETFOCUS;
+      DeliverMessage(FocusMsg);
+    end else
+    begin
+      // Entry not mapped yet. Use gtk_window_set_focus as
+      // pending focus so GTK delivers focus-in to the entry when the window
+      // gains its first focus-in event.
+      // EXCEPTION: during a notebook tab-switch the "lcl-tab-switch-active"
+      // flag is set on an ancestor notebook. In that case skip - the
+      // Gtk3FocusAfterTabSwitch idle will call grab_focus after the page shows.
+      // Pre-setting priv->focus_widget here would cause that idle's grab_focus
+      // to hit GTK's old = new no-op guard and the entry would never get focus-in.
+      AWalk := FWidget^.get_parent;
+      while AWalk <> nil do
+      begin
+        if g_object_get_data(AWalk, 'lcl-tab-switch-active') <> nil then
+          Exit;  // tab-switch: idle handles it
+        AWalk := AWalk^.get_parent;
+      end;
+      TopLevel := FWidget^.get_toplevel;
+      if Gtk3IsGtkWindow(TopLevel) then
+        PGtkWindow(TopLevel)^.set_focus(AChild);
+    end;
+  end
+  else
+  begin
+    // Non-entry combo: grab_focus forwards internally to the button (can_focus=True
+    // by default). The button's 'event' signal cannot be connected (invalid for
+    // GtkCssGadget type), so WidgetEvent never fires for button focus-in and
+    // LM_SETFOCUS is never delivered automatically. Deliver it explicitly.
+    FWidget^.grab_focus;
+    FillChar(FocusMsg{%H-}, SizeOf(FocusMsg), #0);
+    FocusMsg.Msg := LM_SETFOCUS;
+    DeliverMessage(FocusMsg);
+  end;
 end;
 
-class procedure TGtk3ComboBox.ComboBoxChanged({%H-}ACombo: PGtkComboBox; AData: gpointer); cdecl;
+class procedure TGtk3ComboBox.ComboBoxChanged(ACombo: PGtkComboBox; AData: gpointer); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -8784,15 +8873,50 @@ begin
   begin
     if TGtk3Widget(AData).InUpdate then
       Exit;
-    FillChar(Msg{%H-}, SizeOf(Msg), #0);
-    Msg.Msg := LM_CHANGED;
-    TGtk3Widget(AData).DeliverMessage(Msg);
+    if not PGtkComboBox(ACombo)^.has_entry then
+    begin
+      FillChar(Msg{%H-}, SizeOf(Msg), #0);
+      Msg.Msg := LM_CHANGED;
+      TGtk3Widget(AData).DeliverMessage(Msg);
+    end;
   end;
 end;
 
+class procedure TGtk3ComboBox.EntryChanged(AEntry: PGtkEntry; AData: gpointer); cdecl;
+var
+  Msg: TLMessage;
+begin
+  if AData = nil then
+    Exit;
+  if TGtk3Widget(AData).InUpdate then
+    Exit;
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  Msg.Msg := LM_CHANGED;
+  TGtk3Widget(AData).DeliverMessage(Msg);
+end;
+
+
+class function TGtk3ComboBox.EntryFocusIn(AEntry: PGtkWidget;
+  Event: PGdkEventFocus; AData: gpointer): gboolean; cdecl;
+begin
+  Result := False;
+  if AData = nil then
+    Exit;
+  TGtk3Widget(AData).GtkEventFocus(AEntry, PGdkEvent(Event));
+end;
+
 function GtkPopupCloseUp(AData: Pointer): gboolean; cdecl;
+var
+  FocusMsg: TLMessage;
 begin
   LCLSendCloseUpMsg(TGtk3Widget(AData).LCLObject);
+  if not PGtkComboBox(TGtk3Widget(AData).Widget)^.has_entry then
+  begin
+    TGtk3Widget(AData).Widget^.grab_focus;
+    FillChar(FocusMsg{%H-}, SizeOf(FocusMsg), #0);
+    FocusMsg.Msg := LM_SETFOCUS;
+    TGtk3Widget(AData).DeliverMessage(FocusMsg);
+  end;
   Result := False;// stop the timer
 end;
 
@@ -8838,6 +8962,17 @@ begin
   begin
     g_object_set_data(PGtkComboBox(FWidget)^.get_child, 'lclwidget', Self);
     g_signal_connect_data(PGtkComboBox(FWidget)^.get_child, 'event', TGCallback(@WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
+    // Catch focus-in-event SIGNAL emitted directly by gtk_widget_map/send_focus_change
+    // - not through GDK event loop, so WidgetEvent never fires for this case.
+    g_signal_connect_data(PGtkComboBox(FWidget)^.get_child, 'focus-in-event', TGCallback(@EntryFocusIn), Self, nil, G_CONNECT_DEFAULT);
+    // Forward entry text changes as LM_CHANGED.
+    g_signal_connect_data(PGtkComboBox(FWidget)^.get_child, 'changed', TGCallback(@EntryChanged), Self, nil, G_CONNECT_DEFAULT);
+    // Disconnect GTK's internal gtk_combo_box_entry_contents_changed, which was
+    // installed by set_entry_text_column (in CreateWidget) with the combo widget
+    // as data. That handler calls set_active(true) whenever entry text changes and
+    // not active, which clears the entry text via gtk_entry_set_text().
+    g_signal_handlers_disconnect_matched(PGObject(PGtkComboBox(FWidget)^.get_child),
+      [G_SIGNAL_MATCH_DATA], 0, 0, nil, nil, FWidget);
   end;
   if GetCellView <> nil then
   begin
@@ -9943,6 +10078,29 @@ begin
   ShowState(ShowCommands[TCustomForm(LCLObject).WindowState]);
 end;
 
+class procedure TGtk3Window.TrackWindowActivate(AObject: PGObject; APSpec: PGParamSpec; Data: gpointer); cdecl;
+var
+  IsActive: gboolean;
+  MsgActivate: TLMActivate;
+  AIsActivated: Boolean;
+begin
+  g_object_get(AObject, 'is-active', [@IsActive, nil]);
+
+  FillChar(MsgActivate{%H-}, SizeOf(MsgActivate), #0);
+  AIsActivated := TCustomForm(TGtk3Window(Data).LCLObject).Active;
+  if (IsActive = AIsActivated) or (TGtk3Window(Data).LCLObject.Parent <> nil) then
+    exit;
+
+  MsgActivate.Msg := LM_ACTIVATE;
+  if IsActive then
+    MsgActivate.Active := WA_ACTIVE
+  else
+    MsgActivate.Active := WA_INACTIVE;
+  MsgActivate.ActiveWindow := HWND(TGtk3Window(Data).LCLObject.Handle);
+
+  TGtk3Window(Data).DeliverMessage(MsgActivate);
+end;
+
 function TGtk3Window.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AForm: TCustomForm;
@@ -10008,6 +10166,8 @@ begin
   PGtkContainer(Result)^.add(FBox);
 
   g_signal_connect_data(Result,'window-state-event', TGCallback(@WindowStateSignal), Self, nil, G_CONNECT_DEFAULT);
+
+  g_signal_connect_data(Result, 'notify::is-active', TGCallback(@TrackWindowActivate), Self, nil, G_CONNECT_DEFAULT);
 
   g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
@@ -10389,39 +10549,6 @@ begin
       PGtkWindow(FWidget)^.present;
       PGtkWindow(FWidget)^.activate;
     end;
-  end;
-end;
-
-procedure TGtk3Window.ActivateWindow(AEvent: PGdkEvent);
-var
-  MsgActivate: TLMActivate;
-  FIsActivated: Boolean;
-begin
-  if not Gtk3IsGtkWindow(FWidget) then exit;
-
-  //gtk3 does not handle activate/deactivate at all
-  //even cannot catch it via GDK_FOCUS event ?!?
-  FillChar(MsgActivate{%H-}, SizeOf(MsgActivate), #0);
-  MsgActivate.Msg := LM_ACTIVATE;
-
-  if (AEvent <> nil) and PGtkWindow(Widget)^.is_active then
-    MsgActivate.Active := WA_ACTIVE
-  else
-    MsgActivate.Active := WA_INACTIVE;
-  MsgActivate.ActiveWindow := HWND(Self);
-
-  // DebugLn('TGtk3Window.ActivateWindow ',dbgsName(LCLObject),' Active ',dbgs(PGtkWindow(Widget)^.is_active),
-  // ' CustomFormActive ',dbgs(TCustomForm(LCLObject).Active));
-  FIsActivated := TCustomForm(LCLObject).Active;
-  {do not send activate if form is already activated,
-   also do not send activate if TCustomForm.Parent is assigned
-   since it's form embedded into another control or form}
-  if (Boolean(MsgActivate.Active) = FIsActivated) or (LCLObject.Parent <> nil) then
-  else
-  begin
-    // DebugLn('TGtk3Window.ActivateWindow Active ',dbgs(MsgActivate.Active = WA_ACTIVE),
-    //  ' Message delivery to lcl ',dbgs(MsgActivate.Active));
-    DeliverMessage(MsgActivate);
   end;
 end;
 
