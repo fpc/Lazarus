@@ -221,6 +221,9 @@ begin
     FExternalImages := nil;
     ResetExternalImageIndexes;
     FExternalImageWidth := 0;
+    // Issue #34261: the following is part of the patch provided in the report,
+    // but I don't see a difference whether it's here or not...
+    //LCLGlyphs.GetBitmap(LCLGlyphs.GetImageIndex(FLCLGlyphResourceName), FOriginal);
   end;
   DoChange;
 end;
@@ -338,6 +341,7 @@ begin
   FExternalImageIndexes[AState] := AExternalImageIndex;
   if FExternalImageIndexes[AState] >= 0 then
     ClearLCLGlyph;
+  FOriginal.Clear;
   DoChange;
 end;
 
@@ -348,6 +352,7 @@ begin
   FExternalImages := AExternalImages;
   if FExternalImages<>nil then
     ClearLCLGlyph;
+  FOriginal.Clear;
   DoChange;
 end;
 

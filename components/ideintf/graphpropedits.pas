@@ -296,6 +296,7 @@ begin
     if (TheDialog.ShowModal = mrOK) and TheDialog.Modified then
     begin
       ABitmap.Assign(TheDialog.Graphic);
+      TBitBtn(GetComponent(0)).Kind := bkCustom;
       Modified;
     end;
   finally

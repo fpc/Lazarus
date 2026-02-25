@@ -162,6 +162,7 @@ end;
 
 procedure TCustomBitBtn.SetGlyph(AValue: TBitmap);
 begin
+  Kind := bkCustom;
   FButtonGlyph.Glyph := AValue;
   InvalidatePreferredSize;
   AdjustSize;
