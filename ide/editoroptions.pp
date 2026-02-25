@@ -36,11 +36,15 @@ unit EditorOptions;
   {$ENDIF}
 {$ENDIF}
 
+{$IFDEF LCLNoGui}
+  {$ERROR needs gui}
+{$ENDIF}
+
 interface
 
 uses
   // RTL, FCL
-  Classes, SysUtils, typinfo, fgl, Math, resource,
+  Classes, SysUtils, typinfo, fgl, resource,
   // LCL
   Graphics, LResources, Forms, Dialogs, ComCtrls, LCLType, Controls, LCLProc,
   // LazUtils
