@@ -6405,7 +6405,7 @@ begin
       SmallPos := Pos
     else
       SmallPos := High(SmallPos);
-    {$note to get this correct we must use TQtWidget.CreateFrom() for scrollbars}
+    {$note to get this correct we must use TGtk3Widget.CreateFrom() for scrollbars}
     ScrollBar := HWND(TGtk3Widget(AData)); // HWND({%H-}PtrUInt(ARange));
     ScrollCode := Gtk3ScrollTypeToScrollCode(AScrollType);
   end;
