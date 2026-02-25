@@ -3554,6 +3554,7 @@ var
   B1, B2: Byte;
   W1, W2: WideString;
   Org1, Org2: PChar;
+  WCRes: PtrInt;
 begin
   Result := 0;
   Org1 := S1;
@@ -3596,10 +3597,22 @@ begin
     //writeln('UCS: CL1=',CL1,', CL2=',CL2);
     //writeln('S1 = "',S1,'"');
     //writeln('S2 = "',S2,'"');
+    //ToDo: handle the case that either of these Codepoints can be the half of a combining Codepoint
+    //in which case converting them to WideString makes little sense
     W1 := Utf8ToUtf16(S1, CL1);
     W2 := Utf8ToUtf16(S2, CL2);
-    //writeln('UCS: W1 = ',Word(W1[1]),' W2 = ',Word(W2[1]));
-    Result := WideCompareStr(W1, W2);
+    //writeln('UTf8CompareStr: W1 = ',W1,' [',Word(W1[1]).ToHexString,'] W2 = ',W2,' [',Word(W2[1]).ToHexString,']');
+    WCRes := WideCompareStr(W1, W2);
+    if (WCRes < 0) then
+      Result := -1
+    else if (WCRes > 0) then
+      Result := 1;
+    {
+      If WideCompareStr returns 0 at this point, the codepoints in question may be considered
+      "zero weight" characters by the OS (may depend on locale).
+      We already know they are not the same, so in this case we simply return the "fallback result" we set above.
+      Issue #42071
+    }
   end
   else
     //Strings are the same up and until size of smallest one
