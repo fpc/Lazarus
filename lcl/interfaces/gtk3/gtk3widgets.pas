@@ -2820,8 +2820,26 @@ class function TGtk3Widget.MoveTabFocus(aWidget: PGtkWidget;
 var
   aForm: TCustomForm;
   AParent: PGtkWidget;
+  AToplevel: PGtkWidget;
 begin
   Result := gtk_true;  // we are usually toplevel here
+
+  {If the window does not yet have GTK focus, this 'focus' signal is fired
+  by gtk_window_show -> gtk_window_move_focus during window map, not by a
+  real Tab keypress.
+  Returning gtk_true here would block GTK's class handler
+  and leave priv->focus_widget = nil, AND calling PerformTab would silently
+  move ActiveControl away from the LCL-intended control (e.g. from
+  TextToFindComboBox to the next control in TabOrder).
+  Let GTK's class handler
+  run instead so it sets priv->focus_widget naturally via gtk_container_focus.}
+  AToplevel := aWidget^.get_toplevel;
+  if (AToplevel <> nil) and Gtk3IsGtkWindow(ATopLevel) and
+     not gtk_window_has_toplevel_focus(PGtkWindow(AToplevel)) then
+  begin
+    Result := gtk_false;
+    Exit;
+  end;
   {Issue #42065: During a tab page switch the GTK class handler
   calls child_focus() on the new page,
   which fires focus on child widgets. Suppress PerformTab here
