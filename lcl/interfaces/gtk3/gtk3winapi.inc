@@ -156,8 +156,21 @@ begin
   begin
     LStream := TMemoryStream.Create;
     try
-      LData^.OnRequest(TClipboardFormat(LFormat), LStream);
-      selection^.set_(LFormat, 8, LStream.Memory, LStream.Size);
+      {Fix for paste from TSynEdit and similar}
+      if (LFormat = TGdkAtom.intern('UTF8_STRING', False)) or
+         (LFormat = TGdkAtom.intern('COMPOUND_TEXT', False)) or
+         (LFormat = TGdkAtom.intern('STRING', False)) or
+         (LFormat = TGdkAtom.intern('TEXT', False)) then
+      begin
+        LData^.OnRequest(TClipboardFormat(TGdkAtom.intern('text/plain', False)), LStream);
+        if LStream.Size > 0 then
+          selection^.set_text(PChar(LStream.Memory), LStream.Size);
+      end
+      else
+      begin
+        LData^.OnRequest(TClipboardFormat(LFormat), LStream);
+        selection^.set_(LFormat, 8, LStream.Memory, LStream.Size);
+      end;
     finally
       LStream.Free;
     end;
@@ -241,6 +254,8 @@ var
   pclp:PGtkClipboard;
   pcname:PgdkAtom;
   i:integer;
+  LExtraCount: Integer;
+  LTotalCount: Integer;
 begin
   pcname:=GetClipboardAtom(ClipboardType);
   if pcname = nil then exit(False);
@@ -253,16 +268,44 @@ begin
     exit(false);
   end;
 
+  {Add UTF8_STRING, COMPOUND_TEXT, STRING, TEXT when text/plain is present,
+   so native GTK3 controls can find a text target via gtk_clipboard_request_text().
+   This mirrors the GTK2 widgetset behaviour and now paste from eg TSynEdit
+   works fine.}
+  LExtraCount := 0;
+  for i := 0 to FormatCount - 1 do
+    if PGdkAtom(Formats[i]) = TGdkAtom.intern('text/plain', False) then
+    begin
+      LExtraCount := 4;
+      Break;
+    end;
+  LTotalCount := FormatCount + LExtraCount;
+
   New(data);
   data^.OnRequest := OnRequestProc;
   data^.ClipboardType := ClipboardType;
-  data^.FormatCount := FormatCount;
-  data^.Formats := AllocMem(FormatCount * SizeOf(TGtkTargetEntry));
+  data^.FormatCount := LTotalCount;
+  data^.Formats := AllocMem(LTotalCount * SizeOf(TGtkTargetEntry));
   for i := 0 to FormatCount - 1 do
   begin
     data^.Formats[i].info := i;
     data^.Formats[i].flags := 0;
     data^.Formats[i].target := gdk_atom_name(PGdkAtom(Formats[i])^);
+  end;
+  if LExtraCount > 0 then
+  begin
+    data^.Formats[FormatCount + 0].info := FormatCount;
+    data^.Formats[FormatCount + 0].flags := 0;
+    data^.Formats[FormatCount + 0].target := g_strdup('UTF8_STRING');
+    data^.Formats[FormatCount + 1].info := FormatCount + 1;
+    data^.Formats[FormatCount + 1].flags := 0;
+    data^.Formats[FormatCount + 1].target := g_strdup('COMPOUND_TEXT');
+    data^.Formats[FormatCount + 2].info := FormatCount + 2;
+    data^.Formats[FormatCount + 2].flags := 0;
+    data^.Formats[FormatCount + 2].target := g_strdup('STRING');
+    data^.Formats[FormatCount + 3].info := FormatCount + 3;
+    data^.Formats[FormatCount + 3].flags := 0;
+    data^.Formats[FormatCount + 3].target := g_strdup('TEXT');
   end;
   FClipboardData[ClipboardType] := data;
   Result := pclp^.set_with_data(data^.Formats, data^.FormatCount,
