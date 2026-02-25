@@ -441,6 +441,7 @@ type
     function getClientOffset:TPoint; override;
     function getClientRect: TRect; override;
     procedure setTabImage(aBitmap: TBitmap);
+    procedure SetLabelAngle(const ATabPosition: TTabPosition);
     property CloseButtonVisible: boolean read GetCloseButtonVisible write SetCloseButtonVisible;
   end;
 
@@ -793,6 +794,18 @@ type
     procedure setText(const AValue: String); override;
   public
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle;
+  end;
+
+  { TGtk3WinControlPanel }
+  // A lightweight GtkLayout-based container for pure TWinControl subclasses
+  // that act as transparent structural containers without custom painting.
+  // Unlike TGtk3CustomControl, this has no GtkScrolledWindow overhead,
+  // no wtScrollingWin flag (so ShowHide immediately realizes the GtkLayout),
+  // and uses TGtk3Widget.getClientRect (get_allocation based) for reliable
+  // client-rect queries at any point after SetBounds.
+  TGtk3WinControlPanel = class(TGtk3Panel)
+  protected
+    function CreateWidget(const {%H-}Params: TCreateParams): PGtkWidget; override;
   end;
 
   { TGtk3GroupBox }
@@ -3899,6 +3912,16 @@ begin
     Widget^.queue_draw;
 end;
 
+{ TGtk3WinControlPanel }
+
+function TGtk3WinControlPanel.CreateWidget(const Params: TCreateParams): PGtkWidget;
+begin
+  Result := inherited CreateWidget(Params);
+  //Pure structural container - suppress LCL paint events.
+  //Drawing is handled by child controls.
+  FHasPaint := False;
+end;
+
 { TGtk3GroupBox }
 
 class procedure TGtk3GroupBox.GroupBoxLayoutSizeAllocate(
@@ -5342,6 +5365,9 @@ begin
 
   g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@TabSheetLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FCloseButton, 'clicked', TGCallback(@TabCloseClicked), Self, nil, G_CONNECT_DEFAULT);
+  //Set label angle to match parent notebook's tab position - vertical for LEFT/RIGHT
+  if Assigned(LCLObject.Parent) then
+    SetLabelAngle(TCustomTabControl(LCLObject.Parent).TabPosition);
 end;
 
 procedure TGtk3Page.DestroyWidget;
@@ -5426,6 +5452,18 @@ begin
     FImageWidget^.set_from_pixbuf(aPixBuf);
     FImageWidget^.set_visible(True);
     aPixbuf^.unref;
+  end;
+end;
+
+procedure TGtk3Page.SetLabelAngle(const ATabPosition: TTabPosition);
+begin
+  if not Assigned(FPageLabel) then
+    exit;
+  case ATabPosition of
+    tpLeft:   FPageLabel^.set_angle(90.0);
+    tpRight:  FPageLabel^.set_angle(270.0);
+  else
+    FPageLabel^.set_angle(0.0);
   end;
 end;
 
@@ -5662,16 +5700,17 @@ end;
 
 function TGtk3NoteBook.GetTabSize(AWinControl:TWinControl):integer;
 var
-  AWidget: PGtkWidget;
-  Alloc:TGtkAllocation;
-  APage:PGtkWidget;
-  APageAlloc:TGtkAllocation;
   R:TRect;
 begin
   Result := 0;
   if not WidgetMapped then
-    Result := DefaultClientRect.Height
-  else
+  begin
+    if not IsRectEmpty(FDefaultClientRect) then
+      if PGtkNotebook(GetContainerWidget)^.tab_pos in [GTK_POS_LEFT, GTK_POS_RIGHT] then
+        Result := LCLObject.Width - FDefaultClientRect.Width
+      else
+        Result := LCLObject.Height - FDefaultClientRect.Height;
+  end else
   begin
     R := getClientRect;
     if PGtkNotebook(GetContainerWidget)^.tab_pos in [GTK_POS_TOP, GTK_POS_BOTTOM] then
@@ -5686,7 +5725,6 @@ var
   AAlloc: TGtkAllocation;
   ACurrentPage: gint;
   APage: PGtkWidget;
-  ATabSheet:HWND;
 begin
   Result := Rect(0, 0, 0, 0);
   ACurrentPage := -1;
@@ -5699,6 +5737,11 @@ begin
   end else
   if PGtkNoteBook(GetContainerWidget)^.get_n_pages = 0 then
   begin
+    if not IsRectEmpty(FDefaultClientRect) then
+    begin
+      Result := FDefaultClientRect;
+      exit;
+    end;
     GetContainerWidget^.get_allocation(@AAlloc);
     Result := RectFromGtkAllocation(AAlloc);
     Types.OffsetRect(Result, -Result.Left, -Result.Top);
@@ -5708,10 +5751,8 @@ begin
     if (ACurrentPage >= 0) then
     begin
       APage := PGtkNoteBook(GetContainerWidget)^.get_nth_page(ACurrentPage);
-      ATabSheet := HwndFromGtkWidget(APage);
-      if (ATabSheet <> 0) and TGtk3Widget(ATabSheet).WidgetMapped then
-        APage^.get_allocation(@AAlloc)
-      else
+      APage^.get_allocation(@AAlloc);
+      if AAlloc.width <= 1 then
         GetContainerWidget^.get_allocation(@AAlloc);
       Result := RectFromGtkAllocation(AAlloc);
       Types.OffsetRect(Result, -Result.Left, -Result.Top);
@@ -5834,9 +5875,20 @@ const
     { tpLeft   } GTK_POS_LEFT,
     { tpRight  } GTK_POS_RIGHT
   );
+var
+  i: Integer;
+  APage: TCustomPage;
 begin
-  if IsWidgetOK then
-    PGtkNoteBook(GetContainerWidget)^.set_tab_pos(GtkPositionTypeMap[ATabPosition]);
+  if not IsWidgetOK then
+    exit;
+  PGtkNoteBook(GetContainerWidget)^.set_tab_pos(GtkPositionTypeMap[ATabPosition]);
+  //Update label angle on all existing pages so text is vertical for LEFT/RIGHT tabs
+  for i := 0 to TCustomTabControl(LCLObject).PageCount - 1 do
+  begin
+    APage := TCustomTabControl(LCLObject).Page[i];
+    if APage.HandleAllocated then
+      TGtk3Page(APage.Handle).SetLabelAngle(ATabPosition);
+  end;
 end;
 
 procedure TGtk3NoteBook.SetTabLabelText(AChild: TCustomPage; const AText: String);

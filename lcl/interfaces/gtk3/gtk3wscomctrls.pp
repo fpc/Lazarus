@@ -1341,7 +1341,7 @@ begin
 end;
 
 {used when handle of TCustomTabControl isn't allocated or TGt3Widget(Handle).WidgetMapped = false}
-function MeasureClientRect(const {%H-}AWinControl: TWinControl; const {%H-}ALeft, {%H-}ATop, AWidth, AHeight: integer): TRect;
+function MeasureClientRect(const AWinControl: TWinControl; const {%H-}ALeft, {%H-}ATop, AWidth, AHeight: integer): TRect;
 var
   ANoteBook: PGtkNoteBook;
   APage:PGtkBox;
@@ -1373,10 +1373,25 @@ begin
   APage^.set_child_packing(AFixed, True, True, 0, GTK_PACK_START);
   Alloc.x := 1;
   Alloc.y := 1;
-  Alloc.width := 300;
-  Alloc.Height := 200;
+
+  if AWidth > 10 then
+    Alloc.width := AWidth
+  else
+    Alloc.width := 300;
+  if AHeight > 10 then
+    Alloc.Height := AHeight
+  else
+    Alloc.Height := 200;
   ANoteBook^.append_page(APage, gtk_label_new('Tab1'));
   ANoteBook^.set_current_page(0);
+
+  if AWinControl is TCustomTabControl then
+    case TCustomTabControl(AWinControl).TabPosition of
+      tpTop:    ANoteBook^.set_tab_pos(GTK_POS_TOP);
+      tpBottom: ANoteBook^.set_tab_pos(GTK_POS_BOTTOM);
+      tpLeft:   ANoteBook^.set_tab_pos(GTK_POS_LEFT);
+      tpRight:  ANoteBook^.set_tab_pos(GTK_POS_RIGHT);
+    end;
 
   gtk_box_pack_start(abox, ANoteBook, True, True, 0);
   aBox^.set_child_packing(aNoteBook, True, True, 0, GTK_PACK_START);
