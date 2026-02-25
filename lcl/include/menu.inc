@@ -12,13 +12,6 @@
  *****************************************************************************
 }
 
-{------------------------------------------------------------------------------
-  Method: TMenu.Create
-  Params:  AOwner: the owner of the class
-  Returns: Nothing
-
-  Constructor for the class.
- ------------------------------------------------------------------------------}
 constructor TMenu.Create(AOwner: TComponent);
 begin
   FItems := TMenuItem.Create(Self);
@@ -33,11 +26,6 @@ begin
   inherited Create(AOwner);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TMenu.SetImages(const AValue: TCustomImageList);
-
-  Creates the handle ( = object).
- ------------------------------------------------------------------------------}
 procedure TMenu.SetImages(const AValue: TCustomImageList);
 begin
   if FImages <> nil then
@@ -129,10 +117,6 @@ begin
   ParentBidiModeChanged(Owner);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TMenu.SetParent(const AValue: TComponent);
-
- ------------------------------------------------------------------------------}
 procedure TMenu.SetParent(const AValue: TComponent);
 begin
   if FParent = AValue then Exit;
@@ -154,14 +138,8 @@ begin
   FItems.AutoLineReduction := AValue;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenu.CreateHandle
-  Params:  None
-  Returns: Nothing
-
-  Creates the handle ( = object).
- ------------------------------------------------------------------------------}
 procedure TMenu.CreateHandle;
+// Creates a handle ( = object).
 begin
   FItems.Handle := TWSMenuClass(WidgetSetClass).CreateHandle(Self);
   FItems.CheckChildrenHandles;
@@ -178,13 +156,6 @@ begin
   if Assigned(FOnChange) then FOnChange(Self, Source, Rebuild);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TMenu.Destroy
-  Params:  None
-  Returns: Nothing
-
-  Destructor for the class.
- ------------------------------------------------------------------------------}
 destructor TMenu.Destroy;
 begin
   FreeAndNil(FItems);
@@ -192,14 +163,8 @@ begin
   inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TMenu.FindItem
-  Params:
-  Returns: the menu item with the shortcut
-
-
- ------------------------------------------------------------------------------}
 function TMenu.FindItem(AValue: PtrInt; Kind: TFindItemKind): TMenuItem;
+// Returns a menu item with the shortcut
 
   function Find(Item: TMenuItem): TMenuItem;
   var
@@ -372,13 +337,6 @@ begin
   Result := FItems.HandleAllocated;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenu.HandleNeeded
-  Params:  AOwner: the owner of the class
-  Returns: Nothing
-
-  Description of the procedure for the class.
- ------------------------------------------------------------------------------}
 procedure TMenu.HandleNeeded;
 begin
   if not HandleAllocated then CreateHandle;
@@ -402,13 +360,6 @@ begin
   Result := not FParentBidiMode;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TMenu.IsRightToLeft
-  Params:
-  Returns:
-
-
- ------------------------------------------------------------------------------}
 function TMenu.IsRightToLeft : Boolean;
 Begin
   Result := BidiMode <> bdLeftToRight;

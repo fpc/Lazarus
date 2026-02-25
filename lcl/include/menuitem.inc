@@ -12,13 +12,6 @@
  *****************************************************************************
 }
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.Add
-  Params:  Item:
-  Returns: Nothing
-
-  Description of the procedure for the class.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.Add(Item: TMenuItem);
 begin
   Insert(GetCount, Item);
@@ -32,9 +25,6 @@ begin
     Add(AItems[i]);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TMenuItem.AddSeparator;
- ------------------------------------------------------------------------------}
 procedure TMenuItem.AddSeparator;
 var
   Item: TMenuItem;
@@ -44,12 +34,8 @@ begin
   Add(Item);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TMenuItem.Click;
-  
-  Call hooks and actions.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.Click;
+// Call hooks and actions.
 
   function OnClickIsActionExecute: boolean;
   begin
@@ -86,13 +72,6 @@ begin
     ActionLink.Execute(Self);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TMenuItem.Create
-  Params:  TheOwner: the owner of the class
-  Returns: Nothing
-
-  Constructor for the class.
- ------------------------------------------------------------------------------}
 constructor TMenuItem.Create(TheOwner: TComponent);
 begin
   //DebugLn('TMenuItem.Create START TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
@@ -122,14 +101,8 @@ begin
   //DebugLn('TMenuItem.Create END TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.CreateHandle
-  Params:  None
-  Returns: Nothing
-
-  Creates the handle ( = object).
- ------------------------------------------------------------------------------}
 procedure TMenuItem.CreateHandle;
+// Creates a handle ( = object).
 begin
   //DebugLn('TMenuItem.CreateHandle ',dbgsName(Self),' ',dbgs(Self));
   //DebugLn('TMenuItem.CreateHandle START ',Name,':',ClassName);
@@ -153,13 +126,6 @@ begin
   //DebugLn('TMenuItem.CreateHandle END ',Name,':',ClassName);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.Delete
-  Params:  Index:
-  Returns: Nothing
-
-  Description of the procedure for the class.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.Delete(Index: Integer);
 var
   Cur: TMenuItem;
@@ -176,13 +142,6 @@ begin
   MenuChanged(Count = 0);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TMenuItem.Destroy
-  Params:  None
-  Returns: Nothing
-
-  Destructor for the class.
- ------------------------------------------------------------------------------}
 destructor TMenuItem.Destroy;
 var
   i : integer;
@@ -218,8 +177,7 @@ begin
 end;
 
 
-{ Find the menu item with a Caption of ACaption. Also for compatability with
-  Delphi. }
+{ Find the menu item with a Caption of ACaption. Also for compatability with Delphi. }
 function TMenuItem.Find(const ACaption: string): TMenuItem;
 var
   Idx: Integer;
@@ -235,11 +193,6 @@ begin
   Result := TMenuItemEnumerator.Create(Self);
 end;
 
-{------------------------------------------------------------------------------
-  function TMenuItem.GetImageList: TCustomImageList;
-
-
- ------------------------------------------------------------------------------}
 procedure TMenuItem.GetImageList(out aImages: TCustomImageList; out
   aImagesWidth: Integer);
 var
@@ -272,11 +225,6 @@ begin
   GetImageList(Result, x);
 end;
 
-{------------------------------------------------------------------------------
-  function TMenuItem.GetParentComponent: TComponent;
-
-
- ------------------------------------------------------------------------------}
 function TMenuItem.GetParentComponent: TComponent;
 begin
   if (FParent <> nil) and (FParent.FMenu <> nil) then
@@ -285,9 +233,6 @@ begin
     Result := FParent;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.DoClicked
- ------------------------------------------------------------------------------}
 procedure TMenuItem.DoClicked(var msg);
 begin
   //  CheckChildrenHandles;    <- This is already called when menuitem is created.
@@ -479,7 +424,6 @@ end;
   Function: TMenuItem.GetChildren
   Params:   Proc - proc to be called for each child
   	    Root - root component
-  Returns:  nothing
 
   For each item call "proc"
  ------------------------------------------------------------------------------}
@@ -565,8 +509,6 @@ end;
   Function: TMenuItem.GetCount
   Params:   none
   Returns:  Number of child menuitems.
-
-  Returns the number of child menuitems.
  ------------------------------------------------------------------------------}
 function TMenuItem.GetCount: Integer;
 begin
@@ -600,26 +542,12 @@ begin
   Result := FBitmap;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TMenuItem.GetHandle
-  Params:   none
-  Returns:  String containing output from the function.
-
-  Description of the function for the class.
- ------------------------------------------------------------------------------}
 function TMenuItem.GetHandle: HMenu;
 begin
   HandleNeeded;
   Result := FHandle;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TMenuItem.GetItem
-  Params:   none
-  Returns:  String containing output from the function.
-
-  Description of the function for the class.
- ------------------------------------------------------------------------------}
 function TMenuItem.GetItem(Index: Integer): TMenuItem;
 begin
   if FItems = nil then
@@ -662,13 +590,6 @@ begin
   Result := Item.FMenu;
 end;
 
-{------------------------------------------------------------------------------
-  Function: TMenuItem.GetParent
-  Params:   none
-  Returns:  String containing output from the function.
-
-  Description of the function for the class.
- ------------------------------------------------------------------------------}
 function TMenuItem.GetParent: TMenuItem;
 begin
   Result := FParent;
@@ -785,10 +706,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function: TMenuItem.GetParentMenu
-  Params:   none
   Returns:  The (popup)menu containing this item.
-
-
  ------------------------------------------------------------------------------}
 function TMenuItem.GetParentMenu: TMenu;
 var
@@ -802,9 +720,7 @@ end;
 {------------------------------------------------------------------------------
   Function: TMenuItem.GetIsRightToLeft
   Returns:  Get IsRightToLeft value from Menu
-  
  ------------------------------------------------------------------------------}
-
 function TMenuItem.GetIsRightToLeft: Boolean;
 var
   LMenu:TMenu;
@@ -825,13 +741,6 @@ begin
   HandleAllocated := (FHandle <> 0);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.HandleNeeded
-  Params:  AOwner: the owner of the class
-  Returns: Nothing
-
-  Description of the procedure for the class.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.HandleNeeded;
 begin
   if not HandleAllocated then CreateHandle;
@@ -944,7 +853,6 @@ end;
   Method:  TMenuItem.HasParent
   Params:
   Returns: True - the item has a parent responsible for streaming
-
  ------------------------------------------------------------------------------}
 function TMenuItem.HasParent : Boolean;
 begin
@@ -998,8 +906,6 @@ end;
 {------------------------------------------------------------------------------
   Function:TMenuItem.IndexOf
   Params:  Item: The index requested for.
-  Returns: Nothing
-
   Returns the index of the menuitem.
  ------------------------------------------------------------------------------}
 function TMenuItem.IndexOf(Item: TMenuItem): Integer;
@@ -1043,12 +949,6 @@ begin
   Result := -1;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.MenuChanged
-  Params:  Rebuild : Boolean
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
 procedure TMenuItem.MenuChanged(Rebuild : Boolean);
 var
   Source: TMenuItem;
@@ -1060,21 +960,12 @@ begin
   if Assigned(FOnChange) then FOnChange(Self, Source, Rebuild);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TMenuItem.SetChildOrder(Child: TComponent; Order: Integer);
-
-  Reposition the MenuItem
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetChildOrder(Child: TComponent; Order: Integer);
+// Reposition the MenuItem
 begin
   (Child as TMenuItem).MenuIndex := Order;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TMenuItem.Remove(Item: TMenuItem);
-
-
- ------------------------------------------------------------------------------}
 procedure TMenuItem.Remove(Item: TMenuItem);
 var
   I: Integer;
@@ -1085,9 +976,6 @@ begin
   Delete(I);
 end;
 
-{------------------------------------------------------------------------------
-  function TMenuItem.IsInMenuBar: boolean;
- ------------------------------------------------------------------------------}
 function TMenuItem.IsInMenuBar: boolean;
 var
   AMergedParent: TMenuItem;
@@ -1096,12 +984,8 @@ begin
   Result := (AMergedParent <> nil) and (AMergedParent.FMenu <> nil) and (AMergedParent.FMenu is TMainMenu);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TMenuItem.Clear;
-  
-  Deletes all children
- ------------------------------------------------------------------------------}
 procedure TMenuItem.Clear;
+// Deletes all children
 var
   I: Integer;
 begin
@@ -1114,9 +998,6 @@ begin
   Result := FBitmap <> nil;
 end;
 
-{------------------------------------------------------------------------------
-  function TMenuItem.GetIconSize: TPoint;
- ------------------------------------------------------------------------------}
 function TMenuItem.GetIconSize(ADC: HDC; DPI: Integer): TPoint;
 var
   AImageList: TCustomImageList;
@@ -1241,30 +1122,20 @@ end;
 {------------------------------------------------------------------------------
   function TMenuItem.IsCheckItem: boolean;
 
-  Results true if 'Checked' or 'RadioItem' or 'AutoCheck'
-  or 'ShowAlwaysCheckable'
+  Results true if 'Checked' or 'RadioItem' or 'AutoCheck' or 'ShowAlwaysCheckable'
  ------------------------------------------------------------------------------}
 function TMenuItem.IsCheckItem: boolean;
 begin
   Result := Checked or RadioItem or AutoCheck or ShowAlwaysCheckable;
 end;
 
-
-{ Returns true if the current menu item is a Line (menu seperator). Added for
-  Delphi compatability as well. }
+{ Returns true if the current menu item is a Line (menu seperator).
+  Added for Delphi compatability as well. }
 function TMenuItem.IsLine: Boolean;
 begin
   Result := FCaption = cLineCaption;
 end;
 
-
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.SetCaption
-  Params:  Value:
-  Returns: Nothing
-
-  Sets the caption of a menuItem.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetCaption(const AValue: TTranslateString);
 begin
   if FCaption = AValue then exit;
@@ -1319,13 +1190,6 @@ begin
   OwnerFormDesignerModified(Self);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.SetEnabled
-  Params:  Value:
-  Returns: Nothing
-
-  Enables a menuItem.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetEnabled(AValue: Boolean);
 begin
   if FEnabled <> AValue then
@@ -1337,11 +1201,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TMenuItem.SetBitmap(const AValue: TBitmap);
-
-  Reposition the MenuItem
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetBitmap(const AValue: TBitmap);
 begin
   // ImageList have highest priority
@@ -1433,11 +1292,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TMenuItem.SetRightJustify(const AValue: boolean);
-
-  Enables a menuItem.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetRightJustify(const AValue: boolean);
 begin
   if FRightJustify = AValue then Exit;
@@ -1490,13 +1344,6 @@ begin
   UpdateImages;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.SetImageIndex
-  Params:  Value:
-  Returns: Nothing
-
-  Enables a menuItem.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetImageIndex(AValue: TImageIndex);
 var
   AImageList: TCustomImageList;
@@ -1517,13 +1364,6 @@ begin
   MenuChanged(False);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.SetParentComponent
-  Params:  Value:
-  Returns: Nothing
-
-  Enables a menuItem.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetParentComponent(AValue : TComponent);
 begin
   if (FParent = AValue) then exit;
@@ -1542,13 +1382,6 @@ begin
    end;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.SetGroupIndex
-  Params:  Value: Byte
-  Returns: Nothing
-
-  Set the GroupIndex
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetGroupIndex(AValue: Byte);
 begin
   if FGroupIndex <> AValue then
@@ -1568,13 +1401,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.SetShortCut
-  Params:  Value: TShortCut
-  Returns: Nothing
-
-  Set the ShortCut
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetShortCut(const AValue : TShortCut);
 Begin
   if FShortCut <> AValue then
@@ -1593,13 +1419,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.SetVisible
-  Params:  Value: Visibility
-  Returns: Nothing
-
-  Description of the procedure for the class.
- ------------------------------------------------------------------------------}
 procedure TMenuItem.SetVisible(AValue: Boolean);
 begin
   if FVisible = AValue then Exit;
@@ -1687,7 +1506,6 @@ end;
 {------------------------------------------------------------------------------
   Method:  TMenuItem.ShortcutChanged
   Params:  OldValue: Old shortcut, Value: New shortcut
-  Returns: Nothing
 
   Installs a new shortCut, removes an old one.
  ------------------------------------------------------------------------------}
@@ -1716,8 +1534,6 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.TurnSiblingsOff
-  Params:  none
-  Returns: Nothing
 
   Unchecks all siblings.
   In contrary to Delphi this will not use SetChecked, because this is up to the
