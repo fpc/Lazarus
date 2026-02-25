@@ -3051,42 +3051,32 @@ end;
 
 function TGtk3Widget.ClientToScreen(var P: TPoint): boolean;
 var
-  TempAlloc: TGtkAllocation;
-  Pt: TPoint;
-  w,tw:PgtkWidget;
   x,y:integer;
-  gw:PgdkWindow;
+  gw:PGdkWindow;
+  tw:PGtkWidget;
 begin
   Result := False;
-  Pt := Point(0, 0);
-
   if not IsWidgetOk then
   begin
     DebugLn('TGtk3Widget.ClientToScreen invalid widget ...');
     exit;
   end;
 
-  { most usable source
-    https://stackoverflow.com/questions/2088962/how-do-you-find-the-absolute-position-of-a-gtk-widget-in-a-window
-  }
-
-  w:=fWidget;
-  tw:=w^.get_toplevel;
-  gw:=tw^.window;
-  while Assigned(w) {and (w<>tw)} do
+  // https://stackoverflow.com/questions/2088962/how-do-you-find-the-absolute-position-of-a-gtk-widget-in-a-window
+  tw := FWidget^.get_toplevel;
+  Result := GetContainerWidget^.translate_coordinates(tw, 0, 0, @x, @y);
+  if Result then
   begin
-    w^.get_allocation(@TempAlloc);
-    pt.X:=pt.X+TempAlloc.X;
-    pt.Y:=pt.Y+TempAlloc.Y;
-    w:=w^.parent;
+    p.x+=x;
+    p.y+=y;
+    gw := tw^.get_window;
+    if gw <> nil then
+    begin
+      gw^.get_origin(@x,@y); // required for X11
+      p.x+=x;
+      p.y+=y;
+    end;
   end;
-
-  gw^.get_origin(@x,@y);
-  pt.x+=x;
-  pt.y+=y;
-  p:=pt;
-  Result:=true;
-
 end;
 
 function TGtk3Widget.ScreenToClient(var P: TPoint): Integer;
