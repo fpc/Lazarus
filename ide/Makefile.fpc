@@ -211,7 +211,7 @@ lazbuilder: $(COMPILER_UNITTARGETDIR)
         $(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZBUILD_OPT) $(OPT)'
 
 #-----------------------------------------------------------------------------
-all: ide starter lazbuilder
+all: lazbuilder ide starter
 
 #-----------------------------------------------------------------------------
 cleanide:

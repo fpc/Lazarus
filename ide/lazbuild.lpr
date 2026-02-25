@@ -1560,6 +1560,7 @@ var
   I: Integer;
 begin
   {$IF FPC_FULLVERSION<30301}CaseSensitiveOptions:=False;{$endif}
+  IsLong:=false;
   I:=FindOptionIndex(S, IsLong);
   Result:=I<>-1;
   if Result then

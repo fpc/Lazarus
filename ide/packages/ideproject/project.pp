@@ -476,8 +476,8 @@ type
     { TIdeLazProjectFileListEnumerator }
 
     TIdeLazProjectFileListEnumerator = object(TLazProjectFileListEnumerator)
-    private
-      function GetCurrent: TLazProjectFile; virtual;
+    protected
+      function GetCurrent: TLazProjectFile;
     public
       constructor Create(AList: TLazProjectFileList; AData: TUnitInfoList);
       function MoveNext: Boolean; virtual;

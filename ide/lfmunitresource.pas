@@ -42,9 +42,12 @@ uses
   // BuildIntf
   UnitResourceIntf, LazMsgWorker,
   // IDEIntf
-  UnitResources, SrcEditorIntf,
+  UnitResources, SrcEditorIntf
+  {$IFNDEF LCLNoGui}
   // IDE
-  CheckLFMDlg;
+  ,CheckLFMDlg
+  {$ENDIF}
+  ;
 
 type
 
@@ -225,9 +228,20 @@ class function TLFMUnitResourcefileFormat.QuickCheckResourceBuffer(
   LFMClassName: string; out LCLVersion: string; out MissingClasses: TStrings;
   out AmbiguousClasses: TFPList): TModalResult;
 begin
+  {$IFDEF LCLNoGui}
+  Result:=mrCancel;
+  if (PascalBuffer=nil) or (LFMBuffer=nil) then ;
+  LFMType:='';
+  LFMComponentName:='';
+  LFMClassName:='';
+  LCLVersion:='';
+  MissingClasses:=nil;
+  AmbiguousClasses:=nil;
+  {$ELSE}
   Result := QuickCheckLFMBuffer(PascalBuffer as TCodeBuffer,
     LFMBuffer as TCodeBuffer, LFMType, LFMComponentName, LFMClassName,
     LCLVersion, MissingClasses, AmbiguousClasses);
+  {$ENDIF}
 end;
 
 initialization
