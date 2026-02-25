@@ -6368,6 +6368,21 @@ begin
   else
     Msg.Msg := LM_VSCROLL;
 
+  {Convert pixel position back to logical if Adjustment was pixel-converted by
+   ChangeLogicalToAbsolute. LCLVAdj/LCLHAdj stores original logical values when
+   conversion was applied.}
+  if Msg.Msg = LM_HSCROLL then
+  begin
+    if Assigned(ACtl.LCLHAdj) and (ACtl.LCLHAdj^.upper > 0) and
+       (ARange^.adjustment^.upper > ACtl.LCLHAdj^.upper + 0.5) then
+      AValue := AValue * ACtl.LCLHAdj^.upper / ARange^.adjustment^.upper;
+  end else
+  begin
+    if Assigned(ACtl.LCLVAdj) and (ACtl.LCLVAdj^.upper > 0) and
+       (ARange^.adjustment^.upper > ACtl.LCLVAdj^.upper + 0.5) then
+      AValue := AValue * ACtl.LCLVAdj^.upper / ARange^.adjustment^.upper;
+  end;
+
   if ARange^.adjustment^.page_size > 0 then
   begin
     {we must use cached values since gtk3 has it's own meaning about page_size}
@@ -6466,6 +6481,19 @@ begin
       Msg.ScrollCode := SB_THUMBTRACK
     else
       Msg.ScrollCode := SB_THUMBPOSITION;
+
+    //Convert pixel position back to logical if needed
+    if Msg.Msg = LM_VSCROLL then
+    begin
+      if Assigned(Control.LCLVAdj) and (Control.LCLVAdj^.upper > 0) and
+         (Adjustment^.upper > Control.LCLVAdj^.upper + 0.5) then
+        CurrentValue := CurrentValue * Control.LCLVAdj^.upper / Adjustment^.upper;
+    end else
+    begin
+      if Assigned(Control.LCLHAdj) and (Control.LCLHAdj^.upper > 0) and
+         (Adjustment^.upper > Control.LCLHAdj^.upper + 0.5) then
+        CurrentValue := CurrentValue * Control.LCLHAdj^.upper / Adjustment^.upper;
+    end;
 
     Msg.Pos := Round(CurrentValue);
     Msg.ScrollBar := HWND(Control);

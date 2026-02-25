@@ -4177,6 +4177,7 @@ var
   //OverlayFactor: integer;
   AControl: TGtk3Widget absolute Handle;
   R: TRect;
+  LLogicalMin, LLogicalMax, LLogicalPage, LLogicalPos: Integer;
   {$IFDEF GTK3DEBUGSCROLL}
   S: String;
   {$ENDIF}
@@ -4302,8 +4303,13 @@ var
     begin
       if (AControl is TGtk3ScrollableWin) and Assigned(TGtk3ScrollableWin(AControl).LCLVAdj) then
       begin
-        with Adjustment^ do
-          TGtk3ScrollableWin(AControl).LCLVAdj^.configure(value, lower, upper, step_increment, page_increment, page_size);
+        if HaveLogicalValues then
+          TGtk3ScrollableWin(AControl).LCLVAdj^.configure(LLogicalPos, LLogicalMin,
+            LLogicalMax - LLogicalMin, 1, LLogicalPage, LLogicalPage)
+        else
+          with Adjustment^ do
+            TGtk3ScrollableWin(AControl).LCLVAdj^.configure(value, lower, upper,
+              step_increment, page_increment, page_size);
         g_object_set_data(Adjustment,'lcl-have-adjust', gPointer(1));
       end;
     end else
@@ -4311,8 +4317,13 @@ var
     begin
       if (AControl is TGtk3ScrollableWin) and Assigned(TGtk3ScrollableWin(AControl).LCLHAdj) then
       begin
-        with Adjustment^ do
-          TGtk3ScrollableWin(AControl).LCLHAdj^.configure(value, lower, upper, step_increment, page_increment, page_size);
+        if HaveLogicalValues then
+          TGtk3ScrollableWin(AControl).LCLHAdj^.configure(LLogicalPos, LLogicalMin,
+            LLogicalMax - LLogicalMin, 1, LLogicalPage, LLogicalPage)
+        else
+          with Adjustment^ do
+            TGtk3ScrollableWin(AControl).LCLHAdj^.configure(value, lower, upper,
+              step_increment, page_increment, page_size);
         g_object_set_data(Adjustment,'lcl-have-adjust', gPointer(1));
       end;
     end;
@@ -4380,6 +4391,10 @@ begin
 
   HasChanged := False;
   HaveLogicalValues := False;
+  LLogicalMin := 0;
+  LLogicalMax := 0;
+  LLogicalPage := 0;
+  LLogicalPos := 0;
 
   {$IFDEF GTK3DEBUGSCROLL}
   S := '';
@@ -4429,6 +4444,10 @@ begin
         if ([wtScrollingWinControl] * AControl.WidgetType = []) and
           NeedsRecalculation(ScrollInfo.nMax, ScrollInfo.nPage, R.Width) then
         begin
+          LLogicalMin := ScrollInfo.nMin;
+          LLogicalMax := ScrollInfo.nMax;
+          LLogicalPage := ScrollInfo.nPage;
+          LLogicalPos := ScrollInfo.nPos;
           HaveLogicalValues := True;
           ChangeLogicalToAbsolute(AControl, ScrollInfo, SB_HORZ, R);
         end;
@@ -4447,6 +4466,10 @@ begin
         if ([wtScrollingWinControl] * AControl.WidgetType = []) and
           NeedsRecalculation(ScrollInfo.nMax, ScrollInfo.nPage, R.Height) then
         begin
+          LLogicalMin := ScrollInfo.nMin;
+          LLogicalMax := ScrollInfo.nMax;
+          LLogicalPage := ScrollInfo.nPage;
+          LLogicalPos := ScrollInfo.nPos;
           HaveLogicalValues := True;
           ChangeLogicalToAbsolute(AControl, ScrollInfo, SB_VERT, R);
         end;
