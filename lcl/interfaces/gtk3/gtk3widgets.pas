@@ -2231,7 +2231,9 @@ begin
   end;
 
   if AKeyPress and (length(AEventString) > 0) and
-    not (Sender^.is_toplevel and (PGtkWindow(Sender)^.get_focus <> nil)) then
+    not (Sender^.is_toplevel and (PGtkWindow(Sender)^.get_focus <> nil) and
+      (Gtk3IsEntry(PGObject(PGtkWindow(Sender)^.get_focus)) or
+       Gtk3IsTextView(PGObject(PGtkWindow(Sender)^.get_focus)))) then
   begin
     UTF8Char := AEventString;
     // TODO: If not IsControlKey
@@ -4255,8 +4257,16 @@ end;
 function TGtk3GroupBox.getClientRect:TRect;
 var
   Alloc:TGtkAllocation;
-  R: TRect;
 begin
+  if Assigned(FCentralWidget) then
+  begin
+    FCentralWidget^.get_allocation(@Alloc);
+    if (Alloc.width > 1) or (Alloc.height > 1) then
+    begin
+      Result := Rect(0, 0, Alloc.width, Alloc.height);
+      exit;
+    end;
+  end;
   Result := GetInnerClientRect(Widget);
   Types.OffsetRect(Result, -Result.Left, -Result.Top);
 end;
@@ -6561,6 +6571,7 @@ var
   MaxValue: gdouble;
   StateFlags: TGtkStateFlags;
   ACtl: TGtk3ScrollableWin;
+  AAtGTKMax: Boolean;
 begin
   Result := gtk_false;
 
@@ -6572,6 +6583,9 @@ begin
     Msg.Msg := LM_HSCROLL
   else
     Msg.Msg := LM_VSCROLL;
+
+  AAtGTKMax := (ARange^.adjustment^.page_size > 0) and
+               (AValue >= ARange^.adjustment^.upper - ARange^.adjustment^.page_size - 0.5);
 
   {Convert pixel position back to logical if Adjustment was pixel-converted by
    ChangeLogicalToAbsolute. LCLVAdj/LCLHAdj stores original logical values when
@@ -6590,18 +6604,25 @@ begin
 
   if ARange^.adjustment^.page_size > 0 then
   begin
-    {we must use cached values since gtk3 has it's own meaning about page_size}
     if Msg.Msg = LM_HSCROLL then
-      MaxValue := ACtl.LCLHAdj^.upper - ACtl.LCLHAdj^.page_size
+      MaxValue := ACtl.LCLHAdj^.upper - ACtl.LCLHAdj^.page_size + 1
     else
-      MaxValue := ACtl.LCLVAdj^.upper - ACtl.LCLVAdj^.page_size;
-  end else
-    MaxValue := ARange^.adjustment^.upper;
+      MaxValue := ACtl.LCLVAdj^.upper - ACtl.LCLVAdj^.page_size + 1;
 
-  if (AValue > MaxValue) then
-    AValue := MaxValue
-  else if (AValue < ARange^.adjustment^.lower) then
-    AValue := ARange^.adjustment^.lower;
+    if AAtGTKMax then
+      AValue := MaxValue
+    else if (AValue > MaxValue) then
+      AValue := MaxValue
+    else if (AValue < ARange^.adjustment^.lower) then
+      AValue := ARange^.adjustment^.lower;
+  end else
+  begin
+    MaxValue := ARange^.adjustment^.upper;
+    if (AValue > MaxValue) then
+      AValue := MaxValue
+    else if (AValue < ARange^.adjustment^.lower) then
+      AValue := ARange^.adjustment^.lower;
+  end;
 
   with Msg do
   begin
@@ -6645,6 +6666,7 @@ var
   Msg: TLMVScroll;
   APressed, AMouseOver: boolean;
   Adjustment: PGtkAdjustment;
+  AAtGTKMax: Boolean;
 begin
   Control := TGtk3ScrollableWin(data);
   {$IFDEF GTK3DEBUGSCROLL}
@@ -6687,17 +6709,26 @@ begin
     else
       Msg.ScrollCode := SB_THUMBPOSITION;
 
+    AAtGTKMax := (Adjustment^.page_size > 0) and
+                 (CurrentValue >= Adjustment^.upper - Adjustment^.page_size - 0.5);
+
     //Convert pixel position back to logical if needed
     if Msg.Msg = LM_VSCROLL then
     begin
       if Assigned(Control.LCLVAdj) and (Control.LCLVAdj^.upper > 0) and
          (Adjustment^.upper > Control.LCLVAdj^.upper + 0.5) then
         CurrentValue := CurrentValue * Control.LCLVAdj^.upper / Adjustment^.upper;
+
+      if AAtGTKMax and Assigned(Control.LCLVAdj) and (Control.LCLVAdj^.page_size > 0) then
+        CurrentValue := Control.LCLVAdj^.upper - Control.LCLVAdj^.page_size + 1;
     end else
     begin
       if Assigned(Control.LCLHAdj) and (Control.LCLHAdj^.upper > 0) and
          (Adjustment^.upper > Control.LCLHAdj^.upper + 0.5) then
         CurrentValue := CurrentValue * Control.LCLHAdj^.upper / Adjustment^.upper;
+
+      if AAtGTKMax and Assigned(Control.LCLHAdj) and (Control.LCLHAdj^.page_size > 0) then
+        CurrentValue := Control.LCLHAdj^.upper - Control.LCLHAdj^.page_size + 1;
     end;
 
     Msg.Pos := Round(CurrentValue);
@@ -9782,39 +9813,30 @@ var
   w, h, x, y, VOffset, HOffset: gint;
   AViewPort: PGtkViewport;
   Bar:PGtkScrollbar;
-  AWindow: PGdkWindow;
   AHorzPolicy, AVertPolicy: TGtkPolicyType;
 begin
   if [wtLayout] * WidgetType <> [] then
   begin
-    Result := Rect(0, 0, 0, 0);
-    AWindow := PGtkLayout(getContainerWidget)^.get_window;
-    if (AWindow <> nil) and Gtk3IsGdkWindow(AWindow) then
+    HOffset := 0;
+    VOffset := 0;
+    gtk_scrolled_window_get_policy(PGtkScrolledWindow(Widget), @AHorzPolicy, @AVertPolicy);
+    if AHorzPolicy < GTK_POLICY_NEVER then
     begin
-      HOffset := 0;
-      VOffset := 0;
-      gtk_scrolled_window_get_policy(PGtkScrolledWindow(Widget), @AHorzPolicy, @AVertPolicy);
-      if AHorzPolicy < GTK_POLICY_NEVER then
-      begin
-        Bar := getHorizontalScrollbar;
-        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
-          HOffset := Bar^.get_allocated_height;
-      end;
-      if AVertPolicy < GTK_POLICY_NEVER then
-      begin
-        Bar := getVerticalScrollbar;
-        if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
-          VOffset := Bar^.get_allocated_width
-      end;
-
-      Result := Rect(0, 0, AWindow^.get_width - VOffset, AWindow^.get_height - HOffset);
-    end else
-    begin
-      //we are not ready, provide at least scrolledwindow size as clientrect for now.
-      Result := Rect(0, 0, PGtkLayout(GetContainerWidget)^.get_allocated_width, PGtkLayout(GetContainerWidget)^.get_allocated_height);
-      if (Result.Width <= 1) and (Result.Height <= 1) then
-        Result := Rect(0, 0, Widget^.get_allocated_width, Widget^.get_allocated_height);
+      Bar := getHorizontalScrollbar;
+      if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
+        HOffset := Bar^.get_allocated_height;
     end;
+    if AVertPolicy < GTK_POLICY_NEVER then
+    begin
+      Bar := getVerticalScrollbar;
+      if (Bar <> nil) and Gtk3IsWidget(Bar) and Bar^.get_visible and GTK3WidgetSet.OverlayScrolling then
+        VOffset := Bar^.get_allocated_width;
+    end;
+    Result := Rect(0, 0,
+      GetContainerWidget^.get_allocated_width  - VOffset,
+      GetContainerWidget^.get_allocated_height - HOffset);
+    if (Result.Width <= 1) and (Result.Height <= 1) then
+      Result := Rect(0, 0, Widget^.get_allocated_width, Widget^.get_allocated_height);
   end else //we are wtContext - GtkFixed based.
   begin
     AViewport := getViewport;

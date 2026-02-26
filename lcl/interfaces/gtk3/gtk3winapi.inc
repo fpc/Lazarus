@@ -4340,8 +4340,8 @@ var
 
   procedure HandleRedraw;
   var
-    AHorzPolicy:TGtkPolicyType;
-    AVertPolicy:TGtkPolicyType;
+    AHorzPolicy: TGtkPolicyType;
+    AVertPolicy: TGtkPolicyType;
   begin
     if bRedraw then
     begin
@@ -4351,7 +4351,8 @@ var
         case SBStyle of
           SB_HORZ:
           begin
-            if AHorzPolicy <> POLICY[IsScrollbarVis] then
+            if (AHorzPolicy <> POLICY[IsScrollbarVis]) and
+              PGtkWidget(ScrollWin)^.get_mapped then
               ScrollWin^.set_policy(POLICY[IsScrollbarVis], AVertPolicy);
             if Gtk3WidgetSet.OverlayScrolling and Gtk3IsWidget(Scrollbar) and
               ScrollBar^.get_visible then
@@ -4366,7 +4367,8 @@ var
           end;
           SB_VERT:
           begin
-            if AVertPolicy <> POLICY[IsScrollbarVis] then
+            if (AVertPolicy <> POLICY[IsScrollbarVis]) and
+              PGtkWidget(ScrollWin)^.get_mapped then
               ScrollWin^.set_policy(AHorzPolicy, POLICY[IsScrollbarVis]);
             if Gtk3WidgetSet.OverlayScrolling and Gtk3IsWidget(Scrollbar) and
               ScrollBar^.get_visible then
