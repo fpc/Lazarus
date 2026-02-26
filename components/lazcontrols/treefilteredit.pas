@@ -167,7 +167,7 @@ type
     property ShowDirHierarchy: Boolean read fShowDirHierarchy write SetShowDirHierarchy;
   published
     property FilteredTreeview: TCustomTreeview read fFilteredTreeview write SetFilteredTreeview;
-    property ExpandAllInitially: Boolean read fExpandAllInitially write fExpandAllInitially;
+    property ExpandAllInitially: Boolean read fExpandAllInitially write fExpandAllInitially default false;
     property ShowChildrenOfTopLevelMatch: Boolean read fShowChildrenOfTopMatch write fShowChildrenOfTopMatch default false;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
     property OnFilterNode: TFilterNodeEvent read fOnFilterNode write fOnFilterNode;
