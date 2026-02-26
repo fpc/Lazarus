@@ -9760,6 +9760,9 @@ begin
   NColor := LCLObject.Color;
   P.X := Round(GetScrolledWindow^.get_hadjustment^.get_value);
   P.Y := Round(GetScrolledWindow^.get_vadjustment^.get_value);
+  //Clip the Cairo context to the viewport bounds, fixes cairo bleeding to adjacent controls.
+  cairo_rectangle(FCairoContext, 0, 0, LCLObject.ClientWidth, LCLObject.ClientHeight);
+  cairo_clip(FCairoContext);
   if (NColor <> clNone) and (NColor <> clDefault) then
   begin
     DC.CurrentBrush.Color := ColorToRGB(NColor);

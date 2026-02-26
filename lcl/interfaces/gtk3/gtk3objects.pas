@@ -2232,6 +2232,13 @@ begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawSurface ');
   {$ENDIF}
+  {Use cairo_save/restore so that the existing clip eg viewport clip set by
+   DoBeforeLCLPaint and/or GTK's draw-signal clip is preserved after this
+   call.Old code used cairo_reset_clip which destroyed the viewport
+   clip, allowing subsequent text drawing to bleed outside the widget.
+   TODO: test on wayland}
+  cairo_save(pcr);
+
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
 
   with targetRect^ do
@@ -2269,7 +2276,7 @@ begin
   cairo_clip(pcr);
   cairo_paint(pcr);
 
-  cairo_reset_clip(pcr);
+  cairo_restore(pcr);
 end;
 
 procedure TGtk3DeviceContext.drawImage(targetRect: PRect; image: PGdkPixBuf;
@@ -2298,6 +2305,9 @@ begin
   DebugLn('TGtk3DeviceContext.DrawImage ');
   {$ENDIF}
 
+  //preserve existing clip, see drawSurface comment
+  cairo_save(pcr);
+
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
   gdk_cairo_set_source_pixbuf(pcr, Image, 0, 0);
 
@@ -2316,7 +2326,7 @@ begin
 
   cairo_clip(pcr);
   cairo_paint(pcr);
-  cairo_reset_clip(pcr);
+  cairo_restore(pcr);
 end;
 
 procedure TGtk3DeviceContext.drawPixmap(p: PPoint; pm: PGdkPixbuf; sr: PRect);
