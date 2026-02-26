@@ -1923,6 +1923,10 @@ begin
     else
       LMMove.Msg := LM_NULL;
   end;
+  if LMMove.YPos = -32000 then begin
+    //debugln(['TWindowProcHelper.DoMsgMove SKIP minimized pos']);
+    exit(True);
+  end;
   if lWinControl <> nil then
   begin
     {$IFDEF VerboseSizeMsg}
@@ -2477,6 +2481,12 @@ begin
     WM_TIMER:  SetLMessageAndParams(LM_TIMER);
     WM_WINDOWPOSCHANGING:
     begin
+      if (PWindowPos(LParam)^.y=-32000) then begin
+        //debugln(['WM_WINDOWPOSCHANGING SKIP minimized pos']);
+        if lWinControl <> nil then
+          lWinControl.InvalidateClientRectCache(false);
+        exit(0);
+      end;
       with TLMWindowPosMsg(LMessage) Do
       begin
         Msg := LM_WINDOWPOSCHANGING;
@@ -2486,6 +2496,12 @@ begin
     end;
     WM_WINDOWPOSCHANGED:
     begin
+      if (PWindowPos(LParam)^.y=-32000) then begin
+        //debugln(['WM_WINDOWPOSCHANGED SKIP minimized pos']);
+        if lWinControl <> nil then
+          lWinControl.InvalidateClientRectCache(false);
+        exit(0);
+      end;
       with TLMWindowPosMsg(LMessage) Do
       begin
         Msg := LM_WINDOWPOSCHANGED;
