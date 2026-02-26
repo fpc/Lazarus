@@ -168,8 +168,7 @@ type
   published
     property FilteredTreeview: TCustomTreeview read fFilteredTreeview write SetFilteredTreeview;
     property ExpandAllInitially: Boolean read fExpandAllInitially write fExpandAllInitially;
-    property ShowChildrenOfTopLevelMatch: Boolean read fShowChildrenOfTopMatch
-                                                 write fShowChildrenOfTopMatch;
+    property ShowChildrenOfTopLevelMatch: Boolean read fShowChildrenOfTopMatch write fShowChildrenOfTopMatch default false;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
     property OnFilterNode: TFilterNodeEvent read fOnFilterNode write fOnFilterNode;
   end;
@@ -703,6 +702,7 @@ begin
   fSelectionList:=TStringList.Create;
   fImageIndexDirectory := -1;
   fExpandAllInitially := False;
+  fShowChildrenOfTopMatch := False;
 end;
 
 destructor TTreeFilterEdit.Destroy;
