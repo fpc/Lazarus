@@ -1320,7 +1320,8 @@ begin
     tkClass:
       begin
         obj := GetObjectProp(Instance, PropInfo);
-        if ( (obj is TPersistent) or
+        if (obj <> nil) and
+           ( (obj is TPersistent) or
              (FWriteAllNestedObjects and (GetPropList(Obj,PropList) > 0))
            ) and
            IsStoredProp(Instance, PropInfo)
@@ -1485,7 +1486,8 @@ begin
     tkClass:
       begin
         obj := GetObjectProp(Instance, PropInfo);
-        if ( (obj is TPersistent) or FWriteAllNestedObjects ) and
+        if (obj <> nil) and
+           ( (obj is TPersistent) or FWriteAllNestedObjects ) and
            HasPath(Path, False)
         then
           ReadObject(Path+'/', TPersistent(obj));
