@@ -272,7 +272,7 @@ type
     destructor Destroy; override;
     procedure InvalidateFilter;
     procedure ResetFilter;
-    function ForceFilter(AFilter: String) : String;
+    function ForceFilter(AFilter: String): String;
     procedure StoreSelection; virtual; abstract;
     procedure RestoreSelection; virtual; abstract;
   public
@@ -1221,7 +1221,7 @@ procedure TCustomControlFilterEdit.SetFilter(AValue: string);
 begin
   if Text=AValue then Exit;
   Text:=AValue;           // ApplyFilter will be called by EditChange handler.
-  InternalSetFilter(AValue);
+  //InternalSetFilter(AValue);
 end;
 
 procedure TCustomControlFilterEdit.SetFilterOptions(AValue: TFilterStringOptions);
@@ -1378,10 +1378,9 @@ function TCustomControlFilterEdit.ForceFilter(AFilter: String): String;
 // Apply a new filter immediately without waiting for idle. Returns the previous filter.
 begin
   Result := FFilter;
-  if fFilter <> AFilter then begin
-    FFilter := AFilter;
-    ApplyFilter(True);
-  end;
+  if FFilter = AFilter then exit;
+  Filter := AFilter;
+  ApplyFilter(True);
 end;
 
 function TCustomControlFilterEdit.GetDefaultGlyphName: string;
