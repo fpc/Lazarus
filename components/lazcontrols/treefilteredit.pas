@@ -126,7 +126,7 @@ type
     fImageIndexDirectory: integer;  // Needed if directory structure is shown.
     FScrolledPos: TPoint;
     fSelectionList: TStringList;    // Store/restore the old selections here.
-    fShowChildrenOfTopMatch: Boolean; // Used when the top item is a category.
+    fShowChildrenOfMatch: Boolean;  // Used when the item is a category.
     fShowDirHierarchy: Boolean;     // Show directories / files as a tree structure.
     fBranches: TBranchList;         // Items under these nodes can be sorted.
     fExpandAllInitially: Boolean;   // Expand all levels when searched for the first time.
@@ -168,7 +168,7 @@ type
   published
     property FilteredTreeview: TCustomTreeview read fFilteredTreeview write SetFilteredTreeview;
     property ExpandAllInitially: Boolean read fExpandAllInitially write fExpandAllInitially default false;
-    property ShowChildrenOfTopLevelMatch: Boolean read fShowChildrenOfTopMatch write fShowChildrenOfTopMatch default false;
+    property ShowChildrenOfMatch: Boolean read fShowChildrenOfMatch write fShowChildrenOfMatch default false;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
     property OnFilterNode: TFilterNodeEvent read fOnFilterNode write fOnFilterNode;
   end;
@@ -702,7 +702,7 @@ begin
   fSelectionList:=TStringList.Create;
   fImageIndexDirectory := -1;
   fExpandAllInitially := False;
-  fShowChildrenOfTopMatch := False;
+  fShowChildrenOfMatch := False;
 end;
 
 destructor TTreeFilterEdit.Destroy;
@@ -795,7 +795,7 @@ begin
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.
-    if Pass and fShowChildrenOfTopMatch and (Filter<>'') and (Node.Parent=nil) then
+    if Pass and fShowChildrenOfMatch and (Filter<>'') then
       Result := ShowAllChildren(Node)
     else begin
       Node.Visible := FilterTree(Node.GetFirstChild) or Pass;

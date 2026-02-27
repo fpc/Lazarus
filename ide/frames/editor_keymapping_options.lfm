@@ -30,7 +30,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     TabOrder = 0
     OnKeyPress = FilterEditKeyPress
     FilteredTreeview = TreeView
-    ShowChildrenOfTopLevelMatch = True
+    ShowChildrenOfMatch = True
   end
   object FindKeyButton: TBitBtn
     AnchorSideLeft.Side = asrBottom
