@@ -1280,8 +1280,7 @@ class procedure TGtk3WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
 begin
   if not WSCheckHandleAllocated(AStatusBar, 'PanelUpdate') then
     Exit;
-  // inherited PanelUpdate(AStatusBar, PanelIndex);
-  writeln('WARNING: TGtk3WSStatusBar.PanelUpdate PanelIndex=',PanelIndex,' NOT IMPLEMENTED YET.');
+  TGtk3StatusBar(AStatusBar.Handle).PanelUpdate(AStatusBar, PanelIndex);
 end;
 
 class procedure TGtk3WSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
@@ -1315,9 +1314,9 @@ end;
 class procedure TGtk3WSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
   SizeGrip: Boolean);
 begin
- if not WSCheckHandleAllocated(AStatusBar, 'SetSizeGrip') then
+  if not WSCheckHandleAllocated(AStatusBar, 'SetSizeGrip') then
     Exit;
-  // inherited SetSizeGrip(AStatusBar, SizeGrip);
+  TGtk3StatusBar(AStatusBar.Handle).SetSizeGrip(SizeGrip);
 end;
 
 class procedure TGtk3WSStatusBar.SetText(const AWinControl: TWinControl;
