@@ -198,6 +198,7 @@ end;
 
 {$IFDEF UNIX}
 var
+  _thread_sync_pending: integer;
   threadsync_pipein, threadsync_pipeout: cint;
   threadsync_giochannel: pgiochannel;
   childsig_pending: boolean;
@@ -224,6 +225,7 @@ var
   var
     thrashspace: array[1..1024] of byte;
   begin
+    InterlockedExchange(_thread_sync_pending, 0);
     // read the sent bytes
     fpread(threadsync_pipein, {%H-}thrashspace[1], 1);
 
@@ -288,6 +290,9 @@ procedure TGtk3WidgetSet.PrepareSynchronize(AObject: TObject);
 var
   thrash: char;
 begin
+  if InterlockedExchange(_thread_sync_pending, 1) = 1 then
+    exit; // signal already pending
+
   // wake up GUI thread by sending a byte through the threadsync pipe
   thrash:='l';
   fpwrite(threadsync_pipeout, thrash, 1);
