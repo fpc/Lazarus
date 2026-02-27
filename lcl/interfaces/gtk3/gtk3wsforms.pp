@@ -260,37 +260,36 @@ var
   procedure CheckAndFixGeometry;
   const
     WaitDelay: gulong = 4000;
-    WaitLoops: integer = 4;
   var
     x, y, w, h: gint;
+    IsBorderLess: Boolean;
   begin
+
+    IsBorderLess := (AForm.BorderStyle = bsNone) or
+                          (not AWindow^.get_decorated);
+
     AWindow^.window^.get_geometry(@x, @y, @w, @h);
-    x := 0; // we don't use result of get_geometry
-    y := 0;
+    x := 0; y := 0;
+
     if (AWindow^.transient_for <> nil) and not AWindow^.get_decorated then
-    begin
       if Assigned(AForm.PopupParent) or (AForm.PopupMode = pmAuto) then
         AWindow^.transient_for^.window^.get_origin(@x, @y);
-    end else
-    begin
-      x := 0;
-      y := 0;
-    end;
 
     with AWinControl do
       AWindow^.window^.move_resize(Left + x, Top + y, Width, Height);
 
-    AWindow^.window^.process_updates(True);
-    //Give a little breath to WM.
-    for x := 0 to WaitLoops - 1 do
+    //Force the move to the server
+    gdk_display_flush(gdk_window_get_display(AWindow^.window));
+
+    if IsBorderLess then
     begin
       g_usleep(WaitDelay);
-      g_main_context_iteration(nil, false);
+      g_main_context_iteration(nil, False);
     end;
 
-    //Note that here may be still wrong geometry under x11,
-    //but LCL should be happy at this point.
+    AWindow^.window^.process_updates(True);
   end;
+
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.ShowHide handleAllocated=',dbgs(AWinControl.HandleAllocated));
