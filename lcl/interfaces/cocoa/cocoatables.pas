@@ -328,24 +328,24 @@ begin
   Result := TCocoaTableListView.alloc;
 end;
 
-function updateNSTextFieldWithTFont( cocoaField: NSTextField; lclFont: TFont ):
-  Boolean;
+function updateNSTextFieldWithTFont(
+  const cocoaField: NSTextField;
+  const lclFont: TFont ): Boolean;
 var
-  saveFontColor: TColor;
   cocoaFont: NSFont;
   cocoaColor: NSColor;
+  tempFont: TFont;
 begin
   Result:= False;
-  saveFontColor:= lclFont.Color;
 
-  lclFont.Color:= clDefault;
-  if NOT lclFont.isDefault then begin
+  tempFont:= TFont( lclFont.CopyFont );
+  tempFont.Color:= clDefault;
+  if NOT tempFont.isDefault then begin
     cocoaFont:= TCocoaFont(lclFont.Reference.Handle).Font;
     cocoaField.setFont( cocoaFont );
     Result:= True;
   end;
 
-  lclFont.Color:= saveFontColor;
   if lclFont.Color <> clDefault then begin
     cocoaColor:= ColorToNSColor(ColorToRGB(lclFont.Color));
     cocoaField.setTextColor( cocoaColor );
