@@ -59,13 +59,21 @@ end;
 procedure Gtk3MainEventLoop(AEvent: PGdkEvent; {%H-}AData: gPointer); cdecl;
 var
   AWS: TGtk3WidgetSet;
+  ETime: guint32;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('** TGtk3WidgetSet.Gtk3MainEventLoop **');
   {$ENDIF}
+  AWS := TGtk3WidgetSet(AData);
+
+  if (AEvent^.type_ in [GDK_KEY_PRESS, GDK_BUTTON_PRESS, GDK_TOUCH_BEGIN, GDK_SCROLL]) then
+  begin
+    ETime := gdk_event_get_time(AEvent);
+    if ETime <> 0 then
+      AWS.LastUserEventTime := ETime;
+  end else
   if (AEvent^.type_ = GDK_FOCUS_CHANGE) then
   begin
-    AWS := TGtk3WidgetSet(AData);
     if AEvent^.focus_change.in_ <> 0 then
     begin
       if AWS.ActivityCounter <= 0 then
@@ -321,6 +329,7 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('** TGtk3WidgetSet.Create **');
   {$ENDIF}
+  LastUserEventTime := GDK_CURRENT_TIME;
   Gtk3Create;
   FMainPoll := nil;
   Gtk3MPF := g_main_context_get_poll_func(g_main_context_default);

@@ -63,6 +63,7 @@ type
   private
     FIsWayland: boolean;
     FActivityCounter: integer;
+    FLastUserEventTime: guint32;
     FMainPoll: PGPollFD;
     FGtk3Application: PGtkApplication;
     FDefaultAppFontName: String;
@@ -177,6 +178,7 @@ type
     property AppIcon: PGdkPixbuf read FAppIcon;
     property DefaultAppFontName: String read FDefaultAppFontName;
     property Gtk3Application: PGtkApplication read FGtk3Application;
+    property LastUserEventTime: guint32 read FLastUserEventTime write FLastUserEventTime;
     property OverlayScrolling: gboolean read FOverlayScrolling write FOverlayScrolling;
 
     {$i gtk3winapih.inc}
