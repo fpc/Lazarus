@@ -266,37 +266,42 @@ var
     GdkDisplay: PGdkDisplay;
     IsX11: Boolean;
   begin
-    IsBorderLess := (AForm.BorderStyle = bsNone) or (not AWindow^.get_decorated);
     GdkDisplay := gdk_window_get_display(AWindow^.window);
     IsX11 := not Gtk3WidgetSet.IsWayland;
+    IsBorderLess := (AForm.BorderStyle = bsNone) or (not AWindow^.get_decorated);
 
-    if IsX11 and IsBorderLess then
+    if not IsX11 then
+    begin
+      AWindow^.show_all;
+      gdk_display_flush(GdkDisplay);
+      exit;
+    end;
+
+    if IsBorderLess then
     begin
       if AForm.AlphaBlend then
         TargetOpacity := AForm.AlphaBlendValue / 255.0
       else
         TargetOpacity := 1.0;
+
       gdk_window_set_opacity(AWindow^.window, 0.0);
       AWindow^.show_all;
     end;
 
     AWindow^.window^.get_geometry(@x, @y, @w, @h);
-    x := 0; y := 0;
+    x := 0;
+    y := 0;
 
     if (AWindow^.transient_for <> nil) and not AWindow^.get_decorated then
       if Assigned(AForm.PopupParent) or (AForm.PopupMode = pmAuto) then
         AWindow^.transient_for^.window^.get_origin(@x, @y);
 
-    //Under wayland only size will apply.
     with AWinControl do
       AWindow^.window^.move_resize(Left + x, Top + y, Width, Height);
 
-    if IsX11 then
-      gdk_display_sync(GdkDisplay)
-    else
-      gdk_display_flush(GdkDisplay);
+    gdk_display_sync(GdkDisplay);
 
-    if IsX11 and IsBorderLess then
+    if IsBorderLess then
     begin
       g_usleep(WaitDelay);
       g_main_context_iteration(nil, False);
@@ -309,6 +314,7 @@ var
     if not IsBorderLess then
       AWindow^.show_all;
   end;
+
 
 begin
   {$IFDEF GTK3DEBUGCORE}
