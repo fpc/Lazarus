@@ -241,7 +241,7 @@ type
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
     function OnRenameFile(const OldFilename, NewFilename: string;
                           IsPartOfProject: boolean): TModalResult; override;
-    function FindIncludeFileInProjectDependencies(aProject: TProject;
+    function FindIncludeFileInProjectDependencies(AProject: TLazProject;
                           const Filename: string): string; override;
     function GetOwnersOfUnit(const UnitFilename: string): TFPList; override;
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); override;
@@ -284,17 +284,17 @@ type
     function RevertPackages(APackageList: TStringList): TModalResult; override;
 
     // project
-    function OpenProjectDependencies(AProject: TProject;
+    function OpenProjectDependencies(AProject: TLazProject;
                                 ReportMissing: boolean): TModalResult; override;
-    function CheckProjectHasInstalledPackages(AProject: TProject; 
+    function CheckProjectHasInstalledPackages(AProject: TLazProject;
                                   Interactive: boolean): TModalResult; override;
-    function CanOpenDesignerForm(AnUnitInfo: TUnitInfo; 
+    function CanOpenDesignerForm(AnUnitInfo: TLazProjectFile;
                                  Interactive: boolean): TModalResult; override;
-    function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
+    function AddProjectDependency(AProject: TLazProject; APackage: TLazPackage;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
-    function AddProjectDependency(AProject: TProject;
+    function AddProjectDependency(AProject: TLazProject;
                                   ADependency: TPkgDependency): TModalResult; override;
-    function AddProjectDependencies(AProject: TProject; const Packages: string;
+    function AddProjectDependencies(AProject: TLazProject; const Packages: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function ProjectInspectorAddDependency(Sender: TObject;
                            ADependency: TPkgDependency): TModalResult; override;
@@ -336,7 +336,7 @@ type
     function GetPackageOfEditorItem(Sender: TObject): TIDEPackage; override;
 
     // package compilation
-    function DoCompileProjectDependencies(AProject: TProject;
+    function DoCompileProjectDependencies(AProject: TLazProject;
                                Flags: TPkgCompileFlags): TModalResult; override;
     function DoCompilePackage(APackage: TIDEPackage; Flags: TPkgCompileFlags;
                               ShowAbort: boolean): TModalResult; override;
@@ -3319,7 +3319,7 @@ begin
   end;
 end;
 
-function TPkgManager.OpenProjectDependencies(AProject: TProject;
+function TPkgManager.OpenProjectDependencies(AProject: TLazProject;
   ReportMissing: boolean): TModalResult;
 var
   BrokenDependencies: TFPList;
@@ -3330,7 +3330,7 @@ begin
   Result := mrOk;
   OpmRes := mrOk;
 
-  Dependency:=AProject.FirstRequiredDependency;
+  Dependency:=TProject(AProject).FirstRequiredDependency;
   while Dependency<>nil do begin
     IgnorePackage:=PackageGraph.FindPackageWithName(Dependency.PackageName,nil);
     if (IgnorePackage<>nil) and Dependency.IsCompatible(IgnorePackage) then
@@ -3341,7 +3341,7 @@ begin
 
   if ReportMissing then begin
     BrokenDependencies := PackageGraph.FindAllBrokenDependencies(nil,
-                                               AProject.FirstRequiredDependency);
+                                     TProject(AProject).FirstRequiredDependency);
     if Assigned(BrokenDependencies) then
     begin
       if Assigned(OPMInterface) then
@@ -3349,7 +3349,7 @@ begin
         OpmRes := ResolveBrokenDependenciesOnline(BrokenDependencies);
         FreeAndNil(BrokenDependencies);
         BrokenDependencies := PackageGraph.FindAllBrokenDependencies(nil,
-                                               AProject.FirstRequiredDependency);
+                                     TProject(AProject).FirstRequiredDependency);
       end;
       Result := ShowBrokenDependenciesReport(BrokenDependencies);
       BrokenDependencies.Free;
@@ -3360,7 +3360,7 @@ begin
     MainIDEInterface.DoBuildLazarus([])
 end;
 
-function TPkgManager.AddProjectDependency(AProject: TProject;
+function TPkgManager.AddProjectDependency(AProject: TLazProject;
   APackage: TLazPackage; OnlyTestIfPossible: boolean): TModalResult;
 var
   NewDependency: TPkgDependency;
@@ -3371,7 +3371,7 @@ begin
 
   // check if there is a dependency, that requires another version
   ConflictDependency:=PackageGraph.FindConflictRecursively(
-    AProject.FirstRequiredDependency,APackage);
+    TProject(AProject).FirstRequiredDependency,APackage);
   if ConflictDependency<>nil then begin
     DebugLn(['Error: (lazarus) [TPkgManager.AddProjectDependency] ',APackage.IDAsString,' conflicts with ',ConflictDependency.AsString]);
     Result:=mrCancel;
@@ -3379,7 +3379,7 @@ begin
   end;
 
   // check if the dependency is already there
-  if FindDependencyByNameInList(AProject.FirstRequiredDependency,pddRequires,
+  if FindDependencyByNameInList(TProject(AProject).FirstRequiredDependency,pddRequires,
     APackage.Name)<>nil
   then begin
     // package already there
@@ -3388,7 +3388,7 @@ begin
   end;
 
   ProvidingAPackage:=PackageGraph.FindPackageProvidingName(
-    AProject.FirstRequiredDependency,APackage.Name);
+    TProject(AProject).FirstRequiredDependency,APackage.Name);
   if ProvidingAPackage<>nil then
   begin
     // package is already provided by another package
@@ -3404,11 +3404,11 @@ begin
   Result:=AddProjectDependency(AProject,NewDependency);
 end;
 
-function TPkgManager.AddProjectDependency(AProject: TProject;
+function TPkgManager.AddProjectDependency(AProject: TLazProject;
   ADependency: TPkgDependency): TModalResult;
 begin
   Result:=mrOk;
-  AProject.AddRequiredDependency(ADependency);
+  TProject(AProject).AddRequiredDependency(ADependency);
   PackageGraph.OpenDependency(ADependency,false);
   Project1.DefineTemplates.AllChanged(false);
   if (ADependency.RequiredPackage<>nil)
@@ -3417,12 +3417,12 @@ begin
   and ((ADependency.RequiredPackage.PackageType<>lptDesignTime)
        or (pfUseDesignTimePackages in AProject.Flags))
   then begin
-    AddUnitToProjectMainUsesSection(AProject,
+    AddUnitToProjectMainUsesSection(TProject(AProject),
       ExtractFileNameOnly(ADependency.RequiredPackage.GetCompileSourceFilename),'');
   end;
 end;
 
-function TPkgManager.AddProjectDependencies(AProject: TProject;
+function TPkgManager.AddProjectDependencies(AProject: TLazProject;
   const Packages: string; OnlyTestIfPossible: boolean): TModalResult;
 var
   RequiredPackages: TStrings;
@@ -3451,7 +3451,7 @@ begin
   end;
 end;
 
-function TPkgManager.CheckProjectHasInstalledPackages(AProject: TProject; 
+function TPkgManager.CheckProjectHasInstalledPackages(AProject: TLazProject;
   Interactive: boolean): TModalResult;
 var
   MissingUnits: TFPList;
@@ -3462,7 +3462,7 @@ var
 begin
   Result:=mrOk;
   MissingUnits:=PackageGraph.FindNotInstalledRegisterUnits(nil,
-                                              AProject.FirstRequiredDependency);
+                                     TProject(AProject).FirstRequiredDependency);
   if MissingUnits<>nil then begin
     if Interactive then begin 
       Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti,
@@ -3485,12 +3485,12 @@ begin
         end else if Result=mrYes then
         begin
           // install
-          AProject.AutoOpenDesignerFormsDisabled:=true;
+          TProject(AProject).AutoOpenDesignerFormsDisabled:=true;
           InstallPackages(PkgList,[piiifRebuildIDE]);
           Result:=mrAbort;
         end else begin
           // do not warn again
-          AProject.AutoOpenDesignerFormsDisabled:=true;
+          TProject(AProject).AutoOpenDesignerFormsDisabled:=true;
         end;
       finally
         PkgList.Free;
@@ -4180,7 +4180,7 @@ begin
   end;
 end;
 
-function TPkgManager.DoCompileProjectDependencies(AProject: TProject;
+function TPkgManager.DoCompileProjectDependencies(AProject: TLazProject;
   Flags: TPkgCompileFlags): TModalResult;
 var
   CompilePolicy: TPackageUpdatePolicy;
@@ -4188,8 +4188,8 @@ begin
   // check graph for cycles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
     Result:=CheckPackageGraphForCompilation(nil,
-                                            AProject.FirstRequiredDependency,
-                                            AProject.Directory,false);
+                                      TProject(AProject).FirstRequiredDependency,
+                                      AProject.Directory,false);
     if Result<>mrOk then exit;
   end;
   
@@ -4207,7 +4207,7 @@ begin
       if pcfCompileDependenciesClean in Flags then
         CompilePolicy:=pupOnRebuildingAll;
       Result:=PackageGraph.CompileRequiredPackages(nil,
-                                AProject.FirstRequiredDependency,
+                                TProject(AProject).FirstRequiredDependency,
                                 not (pfUseDesignTimePackages in AProject.Flags),
                                 pcfCompileTwice in Flags,
                                 CompilePolicy);
@@ -4309,7 +4309,7 @@ end;
     
   Search filename in the include paths of all required packages
 ------------------------------------------------------------------------------}
-function TPkgManager.FindIncludeFileInProjectDependencies(aProject: TProject;
+function TPkgManager.FindIncludeFileInProjectDependencies(AProject: TLazProject;
   const Filename: string): string;
 var
   APackage: TLazPackage;
@@ -4321,7 +4321,7 @@ begin
   if FilenameIsAbsolute(Filename) then
     exit(Filename);
   PkgList:=nil;
-  PackageGraph.GetAllRequiredPackages(nil,aProject.FirstRequiredDependency,
+  PackageGraph.GetAllRequiredPackages(nil,TProject(AProject).FirstRequiredDependency,
     PkgList,[pirCompileOrder]);
   if PkgList=nil then exit;
   try
@@ -6611,14 +6611,14 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.CanOpenDesignerForm(AnUnitInfo: TUnitInfo;
+function TPkgManager.CanOpenDesignerForm(AnUnitInfo: TLazProjectFile;
   Interactive: boolean): TModalResult;
 var
   AProject: TProject;
 begin
   Result:=mrCancel;
   if AnUnitInfo=nil then exit;
-  AProject:=AnUnitInfo.Project;
+  AProject:=TUnitInfo(AnUnitInfo).Project;
   if AProject=nil then exit;
   Result:=CheckProjectHasInstalledPackages(AProject,Interactive);
 end;

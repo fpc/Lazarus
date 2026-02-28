@@ -23,6 +23,18 @@ Files in this package are for the main configuration of the IDE."/>
     <Version Major="1"/>
     <Files>
       <Item>
+        <Filename Value="basepkgmanager.pas"/>
+        <UnitName Value="BasePkgManager"/>
+      </Item>
+      <Item>
+        <Filename Value="editablepackage.pas"/>
+        <UnitName Value="EditablePackage"/>
+      </Item>
+      <Item>
+        <Filename Value="idepackagerstrconsts.pas"/>
+        <UnitName Value="IdePackagerStrConsts"/>
+      </Item>
+      <Item>
         <Filename Value="packagedefs.pas"/>
         <UnitName Value="PackageDefs"/>
       </Item>
@@ -37,15 +49,6 @@ Files in this package are for the main configuration of the IDE."/>
       <Item>
         <Filename Value="pkgsysbasepkgs.pas"/>
         <UnitName Value="PkgSysBasePkgs"/>
-      </Item>
-      <Item>
-        <Filename Value="idepackagerstrconsts.pas"/>
-        <UnitName Value="IdePackagerStrConsts"/>
-      </Item>
-      <Item>
-        <Filename Value="editablepackage.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="EditablePackage"/>
       </Item>
     </Files>
     <i18n>

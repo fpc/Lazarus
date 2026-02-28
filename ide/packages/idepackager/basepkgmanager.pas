@@ -37,21 +37,17 @@ unit BasePkgManager;
 
 interface
 
-{$I ide.inc}
-
 uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
   TypInfo, Classes, SysUtils, System.UITypes,
-  // LazUtils
-  LazFileUtils, LazLoggerBase,
   // BuildIntf
-  PackageIntf, BaseIDEIntf,
+  PackageIntf, ProjectIntf, BaseIDEIntf,
   // IdeConfig
-  EnvironmentOpts, CompilerOptions,
+  CompilerOptions,
   // IdeProject
-  Project,
+  //Project,
   // IdePackager
   PackageDefs;
 
@@ -63,7 +59,7 @@ type
     // initialization and menu
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    
+
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;
@@ -76,7 +72,7 @@ type
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;
     function OnRenameFile(const OldFilename, NewFilename: string;
                           IsPartOfProject: boolean): TModalResult; virtual; abstract;
-    function FindIncludeFileInProjectDependencies(Project1: TProject;
+    function FindIncludeFileInProjectDependencies(AProject: TLazProject;
                           const Filename: string): string; virtual; abstract;
     function SearchFile(const AFilename: string;
                         SearchFlags: TSearchIDEFileFlags;
@@ -87,16 +83,16 @@ type
                      RequiredUnitname: string): TModalResult; virtual; abstract;
 
     // project
-    function OpenProjectDependencies(AProject: TProject;
+    function OpenProjectDependencies(AProject: TLazProject;
                        ReportMissing: boolean): TModalResult; virtual; abstract;
-    function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
+    function AddProjectDependency(AProject: TLazProject; APackage: TLazPackage;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
-    function AddProjectDependency(AProject: TProject;
+    function AddProjectDependency(AProject: TLazProject;
                                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
-    function AddProjectDependencies(AProject: TProject; const Packages: string;
+    function AddProjectDependencies(AProject: TLazProject; const Packages: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
-    function CheckProjectHasInstalledPackages(AProject: TProject; Interactive: boolean): TModalResult; virtual; abstract;
-    function CanOpenDesignerForm(AnUnitInfo: TUnitInfo; 
+    function CheckProjectHasInstalledPackages(AProject: TLazProject; Interactive: boolean): TModalResult; virtual; abstract;
+    function CanOpenDesignerForm(AnUnitInfo: TLazProjectFile;
                                  Interactive: boolean): TModalResult; virtual; abstract;
     function ProjectInspectorAddDependency(Sender: TObject;
                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
@@ -132,7 +128,7 @@ type
     procedure LazarusSrcDirChanged; virtual; abstract;
 
     // package compilation
-    function DoCompileProjectDependencies(AProject: TProject;
+    function DoCompileProjectDependencies(AProject: TLazProject;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
 
     // package installation
@@ -148,7 +144,7 @@ type
                                     Proc: TGetStrProc); virtual; abstract;
     function FindUsableComponent(CurRoot: TPersistent;
                   const ComponentPath: string): TComponent; virtual; abstract;
-    function FindReferencedRootComponent(CurRoot: TPersistent; 
+    function FindReferencedRootComponent(CurRoot: TPersistent;
          const ComponentName: string): TComponent; virtual; abstract;
 
     procedure IDEComponentPaletteOpenPackage(Sender: TObject); virtual; abstract;
@@ -157,7 +153,7 @@ type
 
 var
   PkgBoss: TBasePkgManager;
-  
+
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;
 function PkgOpenFlagsToString(Flags: TPkgOpenFlags): string;
 
