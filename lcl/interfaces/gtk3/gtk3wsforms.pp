@@ -425,16 +425,33 @@ begin
 
     //See issue #41412
     CheckAndFixGeometry;
-    //AWindow^.show_all;
-    //AMask := AWindow^.window^.get_events;
+
     AWindow^.window^.set_events(GDK_ALL_EVENTS_MASK);
     if not IsFormDesign(AForm) then
-      AWindow^.present;
+    begin
+      //If LM_NCHITTEST=true, do not attack WM
+      if not AWindow^.window^.get_pass_through then
+        AWindow^.present_with_time(Gtk3WidgetSet.LastUserEventTime);
+
+      if Gtk3WidgetSet.IsWayland and (AWindow^.get_window_type = GTK_WINDOW_POPUP) and AWindow^.get_accept_focus
+        and not AWindow^.window^.get_pass_through then
+      begin
+        //wayland, add grab
+        //TODO: gdk_display_device_is_grabbed
+        gtk_device_grab_add(PGtkWidget(AWindow),
+          gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)), False);
+      end;
+    end;
   end else
   begin
     if not IsFormDesign(AForm) and
       ((fsModal in AForm.FormState) or (AForm.BorderStyle = bsNone)) then
     begin
+      //wayland, remove grab
+      if Gtk3WidgetSet.IsWayland and (AWindow^.get_window_type = GTK_WINDOW_POPUP) and AWindow^.get_accept_focus
+        and not AWindow^.window^.get_pass_through then
+          gtk_device_grab_remove(PGtkWidget(AWindow),
+            gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)));
       if AWindow^.transient_for <> nil then
       begin
         if (fsModal in AForm.FormState) and Gtk3IsGdkWindow(AWindow^.transient_for^.window) then

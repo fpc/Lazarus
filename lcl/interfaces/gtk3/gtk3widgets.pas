@@ -1028,6 +1028,8 @@ type
     class function WindowMoveEvent(awidget: PGtkWindow; AEvent: PGdkEventConfigure; adata: gpointer): gboolean; cdecl; static;
     class procedure WindowSizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     class function WindowStateSignal(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gPointer): gboolean; cdecl; static;
+    class procedure WaylandPopupSetFocus(AWindow: PGtkWindow; AWidget: PGtkWidget;
+      AData: gpointer); cdecl; static;
   protected
     FFirstMapRect: TRect;
     procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
@@ -1473,7 +1475,7 @@ begin
     end;
   GDK_GRAB_BROKEN:  //could be broken eg. because of popupmenu
     begin
-      DebugLn('****** GDK_GRAB_BROKEN (no problem if popupmenu is activated) ' + dbgsName(TGtk3Widget(Data).LCLObject));
+      DebugLn('****** GDK_GRAB_BROKEN (no problem if popupmenu or hint is activated) ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
   otherwise
     DebugLn('****** GDK unhandled event type ' + dbgsName(TGtk3Widget(Data).LCLObject));
@@ -1746,6 +1748,13 @@ var
   Gtk3Widget: TGtk3Widget;
 begin
   Gtk3Widget := TGtk3Widget(AData);
+
+  if (wtWindow in Gtk3Widget.WidgetType) and Gtk3WidgetSet.IsWayland and
+     (PGtkWindow(AWidget)^.get_window_type = GTK_WINDOW_POPUP) and
+     PGtkWindow(AWidget)^.get_accept_focus then
+    gtk_device_grab_remove(AWidget,
+      gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)));
+
   {do not pass message to LCL if LCL setted up control visibility}
   if Gtk3Widget.inUpdate then
     exit;
@@ -10762,11 +10771,20 @@ begin
     if FWidgetType = [wtHintWindow] then
       Result := TGtkWindow.new(GTK_WINDOW_POPUP)
     else
+    if GTK3WidgetSet.IsWayland and (AForm.BorderStyle = bsNone) then
+    begin
+      Result := TGtkWindow.new(GTK_WINDOW_POPUP); // Wayland: borderless xdg-popup for correct positioning
+      if not (csNoFocus in AForm.ControlStyle) then
+      begin
+        PGtkWindow(Result)^.set_accept_focus(True);
+        PGtkWindow(Result)^.set_focus_on_map(True);
+      end;
+    end else
       Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
     FWidget:=Result;
     FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
     Title:=Params.Caption;
-    if FWidgetType = [wtHintWindow] then
+    if (FWidgetType = [wtHintWindow]) or (Gtk3WidgetSet.IsWayland and (AForm.BorderStyle = bsNone)) then
       decor := []
     else
       decor:=decoration_flags(AForm);
@@ -10828,7 +10846,14 @@ begin
    Only realize top-level GtkWindows here, embedded GtkScrolledWindows will be realized automatically when they
    are added to their parent widget tree.}
   if not Assigned(LCLObject.Parent) then
+  begin
+    // xdg-popup requires transient_for set BEFORE realize so the compositor
+    // has a parent surface to anchor the popup to.
+    if GTK3WidgetSet.IsWayland and (AForm.BorderStyle = bsNone) and
+       not (wtHintWindow in FWidgetType) then
+      PGtkWindow(Result)^.set_transient_for(GetActiveGtkWindow);
     gtk_widget_realize(Result);
+  end;
 
   if not (wtHintWindow in FWidgetType) then
   begin
@@ -11133,9 +11158,52 @@ begin
     Result := nil;
 end;
 
+class procedure TGtk3Window.WaylandPopupSetFocus(AWindow: PGtkWindow;
+  AWidget: PGtkWidget; AData: gpointer); cdecl;
+var
+  AOldWidget: PGtkWidget;
+  AFocusEvent: TGdkEvent;
+begin
+  //used only for wayland, and only if
+  if AWindow^.is_active then
+    exit;
+  if AWindow^.get_window_type <> GTK_WINDOW_POPUP then
+    exit;
+  if not AWindow^.get_accept_focus then
+    exit;
+
+  if AWidget = nil then
+    exit;
+
+  AOldWidget := AWindow^.get_focus; //old focus widget, before default handler runs
+
+  //Send focus-out to old widget
+  if (AOldWidget <> nil) and (AOldWidget <> AWidget) then
+  begin
+    FillChar(AFocusEvent{%H-}, SizeOf(AFocusEvent), 0);
+    AFocusEvent.focus_change.type_ := GDK_FOCUS_CHANGE;
+    AFocusEvent.focus_change.send_event := 1;
+    AFocusEvent.focus_change.in_ := 0;
+    gtk_widget_send_focus_change(AOldWidget, @AFocusEvent);
+  end;
+
+  // Send focus-in to new widget (only if actually changing widget)
+  if (AWidget <> nil) and (AWidget <> AOldWidget) then
+  begin
+    FillChar(AFocusEvent{%H-}, SizeOf(AFocusEvent), 0);
+    AFocusEvent.focus_change.type_ := GDK_FOCUS_CHANGE;
+    AFocusEvent.focus_change.send_event := 1;
+    AFocusEvent.focus_change.in_ := 1;
+    gtk_widget_send_focus_change(AWidget, @AFocusEvent);
+  end;
+end;
+
 procedure TGtk3Window.InitializeWidget;
 begin
   inherited InitializeWidget;
+  if GTK3WidgetSet.IsWayland and (wtWindow in FWidgetType) then
+    g_signal_connect_data(PGtkWidget(FWidget), 'set-focus',
+      TGCallback(@WaylandPopupSetFocus), Self, nil, G_CONNECT_DEFAULT);
   if not IsDesigning then
   begin
     g_signal_connect_data(gtk_scrolled_window_get_hscrollbar(GetScrolledWindow), 'change-value',
@@ -11159,6 +11227,11 @@ begin
     FIcon^.unref;
     FIcon := nil;
   end;
+  if IsValidHandle and Gtk3WidgetSet.IsWayland and
+     (PGtkWindow(FWidget)^.get_window_type = GTK_WINDOW_POPUP) and
+     PGtkWindow(FWidget)^.get_accept_focus then
+    gtk_device_grab_remove(PGtkWidget(FWidget),
+      gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)));
   inherited Destroy;
 end;
 
@@ -11239,11 +11312,31 @@ begin
 end;
 
 procedure TGtk3HintWindow.InitializeWidget;
+  procedure SetPassThroughRecursive(AGdkWindow: PGdkWindow);
+  var
+    AChildren: PGList;
+    AItem: PGList;
+  begin
+    if not Gtk3IsGdkWindow(AGdkWindow) then
+      exit;
+    AGdkWindow^.set_pass_through(True);
+    AChildren := AGdkWindow^.get_children;
+    AItem := AChildren;
+    while AItem <> nil do
+    begin
+      SetPassThroughRecursive(PGdkWindow(AItem^.data));
+      AItem := AItem^.next;
+    end;
+    g_list_free(AChildren);
+  end;
 begin
   inherited InitializeWidget;
   if GTK3WidgetSet.IsWayland then // ref.to #42033, X11 not need this (it lead to incorrect positioning)
     PGtkWindow(Widget)^.set_transient_for(GetActiveGtkWindow);
   PGtkWindow(Widget)^.show_all;
+  if Gtk3IsGdkWindow(Widget^.window) and
+     (LCLObject.Perform(LM_NCHITTEST, 0, 0) = HTTRANSPARENT) then
+    SetPassThroughRecursive(Widget^.window);
 end;
 
 { TGtk3Dialog }
