@@ -100,6 +100,7 @@ type
     class procedure MapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl; static; {GtkWindow never sends this signal !}
     class function MouseEnterNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl; static;
     class function MouseLeaveNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl; static;
+    class function Gtk3PopupMenuCB(AWidget: PGtkWidget; AData: gpointer): gboolean; cdecl; static;
     class function ScrollEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: GPointer): GBoolean; cdecl; static;
     class procedure SizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     class procedure WidgetHide({%H-}AWidget:PGtkWidget; AData:gpointer); cdecl; static;
@@ -2155,6 +2156,10 @@ begin
   // this is just for testing purposes.
   ACharCode := GdkKeyToLCLKey(KeyValue);
 
+  if (ACharCode >= VK_F1) and (ACharCode <= VK_F24) and
+     (gdk_keyval_to_unicode(AEvent.keyval) > 0) then
+    ACharCode := VK_UNKNOWN;
+
   {$IFDEF GTK3DEBUGKEYPRESS}
   writeln('==== ACharCode=',ACharCode,' KeyValue=',KeyValue);
   {$ENDIF}
@@ -2822,6 +2827,19 @@ begin
     Result := gtk_true;
 end;
 
+class function TGtk3Widget.Gtk3PopupMenuCB(AWidget: PGtkWidget; AData: gpointer): gboolean; cdecl;
+var
+  Msg: TLMContextMenu;
+begin
+  Result := gtk_false;
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  Msg.Msg := LM_CONTEXTMENU;
+  //keyboard popup-menu, coords must be -1,-1
+  Msg.XPos := -1;
+  Msg.YPos := -1;
+  Result := TGtk3Widget(AData).DeliverMessage(Msg) <> 0;
+end;
+
 class procedure TGtk3Widget.DragDataReceived(aWidget:PGtkWidget; aContext: PGdkDragContext;
   x:gint; y:gint; selection_data: PGtkSelectionData; info:guint; time:guint; aData: gPointer);cdecl;
 var
@@ -2974,6 +2992,10 @@ begin
     g_signal_connect_data(FWidget, 'focus-in-event', TGCallback(@WidgetFocusIn), Self, nil, G_CONNECT_DEFAULT);
     if FWidget <> GetContainerWidget then
       g_signal_connect_data(GetContainerWidget, 'focus-in-event', TGCallback(@WidgetFocusIn), Self, nil, G_CONNECT_DEFAULT);
+    //keyboard context menu
+    g_signal_connect_data(FWidget, 'popup-menu', TGCallback(@Gtk3PopupMenuCB), Self, nil, G_CONNECT_DEFAULT);
+    if FWidget <> GetContainerWidget then
+      g_signal_connect_data(GetContainerWidget, 'popup-menu', TGCallback(@Gtk3PopupMenuCB), Self, nil, G_CONNECT_DEFAULT);
   end;
 
   g_signal_connect_data(FWidget, 'enter-notify-event', TGCallback(@MouseEnterNotify), Self, nil, G_CONNECT_DEFAULT);
@@ -6761,6 +6783,7 @@ var
   x, y, win_x, win_y: gint;
   allocation: TGtkAllocation;
   state: TGdkModifierType;
+  AWindow: PGdkWindow;
 begin
   Result := False;
   AMouseOver := False;
@@ -6777,12 +6800,14 @@ begin
     Exit;
   end;
 
+  AWindow := gtk_widget_get_window(scrollbar);
+
   screen := scrollbar^.get_screen;
   if (screen = nil) then
     screen := gdk_screen_get_default;
 
   gdk_device_get_position(pointer, @screen, @x, @y);
-  gdk_window_get_origin(gtk_widget_get_window(scrollbar), @win_x, @win_y);
+  gdk_window_get_origin(AWindow, @win_x, @win_y);
 
   // Translate the pointer position to the scrollbar's local coordinates
   x := x - win_x;
@@ -6796,7 +6821,7 @@ begin
      (y >= allocation.y) and (y < allocation.y + allocation.height) then
   begin
     // Get the button state
-    gdk_device_get_state(pointer, gtk_widget_get_window(scrollbar), nil, @state);
+    gdk_device_get_state(pointer, AWindow, nil, @state);
     AMouseOver := True;
     Result := (ACheckModifier in state);
     {$IFDEF GTK3DEBUGSCROLL}
