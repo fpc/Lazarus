@@ -25,6 +25,8 @@ type
     class function getCallback( const lclListView: TCustomListView ):
       TLCLListViewCallback;
   published
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     // Column
@@ -138,6 +140,16 @@ begin
   if NOT Assigned(cocoaListView) then
     Exit;
   Result:= cocoaListView.callback;
+end;
+
+class procedure TCocoaWSCustomListView.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  cocoaListView: TCocoaListView;
+begin
+  if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
+  cocoaListView:= TCocoaListView(AWinControl.Handle);
+  cocoaListView.reloadData;
 end;
 
 class function TCocoaWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
