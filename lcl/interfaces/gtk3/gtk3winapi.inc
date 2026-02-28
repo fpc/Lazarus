@@ -3141,21 +3141,42 @@ begin
     begin
       if Assigned(AGdkWindow) then
       begin
+        // get_origin gives the screen position of the GDK client window.
+        // On Wayland this is always 0,0 - no global screen coordinates.
         AGdkWindow^.get_origin(@x, @y);
-        AGdkWindow^.get_frame_extents(@Allocation);
-        AWidth := Allocation.Width;
-        AHeight := Allocation.Height;
+        if IsWayland then
+          AWindow^.get_size(@aWidth, @aHeight)
+        else
+        begin
+          AGdkWindow^.get_frame_extents(@Allocation);
+          aWidth := Allocation.Width;
+          aHeight := Allocation.Height;
+        end;
       end else
       begin
-        AWindow^.get_position(@x, @y);
+        // Window not yet realized/mapped - best effort fallback
+        if IsWayland then
+        begin
+          x := 0;
+          y := 0;
+        end else
+          AWindow^.get_position(@x, @y);
         AWindow^.get_size(@aWidth, @aHeight);
       end;
-      ARect := Bounds(x, Y, AWidth, AHeight);
+      ARect := Bounds(x, y, aWidth, aHeight);
       Result := 1;
     end else
     begin
       TGtk3Widget(Handle).Widget^.get_allocation(@Allocation);
-      ARect := Bounds(Allocation.x, Allocation.y, Allocation.width, Allocation.height);
+      AGdkWindow := TGtk3Widget(Handle).Widget^.get_window;
+      if AGdkWindow <> nil then
+      begin
+        AGdkWindow^.get_origin(@x, @y);
+        ARect := Bounds(x + Allocation.x, y + Allocation.y,
+          Allocation.width, Allocation.height);
+      end else
+        ARect := Bounds(Allocation.x, Allocation.y,
+          Allocation.width, Allocation.height);
       Result := -1;
     end;
   end;
