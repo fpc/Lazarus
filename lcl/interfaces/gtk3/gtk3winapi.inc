@@ -2036,6 +2036,7 @@ begin
   if Handle = 0 then
     Exit(False);
   ARect := TGtk3Widget(handle).getClientBounds;
+  Types.OffsetRect(ARect, -ARect.Left, -ARect.Top);
   Result := True;
 end;
 
