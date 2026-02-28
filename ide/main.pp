@@ -2600,7 +2600,7 @@ begin
     if AForm=MainIDEBar then continue;
     if IsFormDesign(AForm) then continue;
     if AForm.Parent<>nil then continue;
-    if PkgBoss.IsPackageEditorForm(AForm) then continue;
+    if AForm is TPackageEditorForm then continue;
     if not AForm.CloseQuery then exit(false);
   end;
   Result:=true;
@@ -6729,7 +6729,7 @@ begin
     ProjInspector.OnRemoveFile:=@ProjInspectorRemoveFile;
     ProjInspector.OnRemoveDependency:=@PkgBoss.ProjectInspectorRemoveDependency;
     ProjInspector.OnReAddDependency:=@PkgBoss.ProjectInspectorReAddDependency;
-    ProjInspector.OnDragOverTreeView:=@PkgBoss.ProjectInspectorDragOverTreeView;
+    ProjInspector.OnDragOverTreeView:=@TPkgManager(PkgBoss).ProjectInspectorDragOverTreeView;
     ProjInspector.OnDragDropTreeView:=@PkgBoss.ProjectInspectorDragDropTreeView;
     ProjInspector.OnCopyMoveFiles:=@PkgBoss.ProjectInspectorCopyMoveFiles;
 
@@ -8963,7 +8963,7 @@ begin
           // keep package
           CurPackage:=TEditablePackage(APackageList.Objects[i]);
           if CurPackage.Editor=nil then begin
-            if PkgBoss.DoOpenPackage(CurPackage,[pofMultiOpen],false)=mrAbort then
+            if TPkgManager(PkgBoss).DoOpenPackage(CurPackage,[pofMultiOpen],false)=mrAbort then
               exit;
           end;
           CurPackage.Modified:=true;
@@ -12398,7 +12398,7 @@ end;
 
 procedure TMainIDE.SrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
 begin
-  PkgBoss.OnSourceEditorPopupMenu(AddMenuItemProc);
+  TPkgManager(PkgBoss).SourceEditorPopupMenu(AddMenuItemProc);
 end;
 
 procedure TMainIDE.SrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);

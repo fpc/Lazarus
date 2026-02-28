@@ -234,7 +234,7 @@ type
     procedure AddToMenuRecentPackages(const Filename: string);
     procedure SaveSettings; override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
-    procedure OnSourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc); override;
+    procedure SourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
     procedure TranslateResourceStrings; override;
 
     // files
@@ -306,27 +306,25 @@ type
       X, Y: Integer); override;
     function ProjectInspectorDragOverTreeView(Sender, Source: TObject;
       X, Y: Integer; out TargetTVNode: TTreeNode;
-      out TargetTVType: TTreeViewInsertMarkType): boolean; override;
+      out TargetTVType: TTreeViewInsertMarkType): boolean;
     procedure ProjectInspectorCopyMoveFiles(Sender: TObject); override;
 
     // package editors
-    function CanClosePackageEditor(APackage: TEditablePackage): TModalResult; override;
     function CanCloseAllPackageEditors: TModalResult; override;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function DoNewPackage: TModalResult; override;
     function DoShowLoadedPkgDlg: TModalResult; override;
-    function DoOpenPackage(APackage: TEditablePackage; Flags: TPkgOpenFlags;
+    function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags;
                            ShowAbort: boolean): TModalResult; override;
     function DoOpenPackageWithName(const APackageName: string;
                          Flags: TPkgOpenFlags; ShowAbort: boolean): TModalResult; override;
     function DoOpenPackageFile(AFilename: string;
                          Flags: TPkgOpenFlags;
                          ShowAbort: boolean): TModalResult; override;
-    function IsPackageEditorForm(AForm: TCustomForm): boolean; override;
     procedure OpenHiddenModifiedPackages; override;
-    function DoSavePackage(APackage: TEditablePackage; Flags: TPkgSaveFlags): TModalResult; override;
+    function DoSavePackage(APackage: TLazPackage; Flags: TPkgSaveFlags): TModalResult; override;
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; override;
-    function DoClosePackageEditor(APackage: TEditablePackage): TModalResult; override;
+    function DoClosePackageEditor(APackage: TLazPackage): TModalResult; override;
     function DoCloseAllPackageEditors: TModalResult; override;
     function DoAddActiveUnitToAPackage: TModalResult;
     function DoNewPackageComponent: TModalResult;
@@ -415,10 +413,55 @@ type
 var
   LazPackageDescriptors: TLazPackageDescriptors;
 
+//procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency; out Description: string);
+//procedure GetDirectoryOfDependencyOwner(Dependency: TPkgDependency; out Directory: string);
+
+
 implementation
 
 const
   constNewPackageName = 'NewPackage'; //must be valid Pascal identifier, thus should not be allowed to be translated
+
+procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency; out Description: string);
+var
+  DepOwner: TObject;
+begin
+  DepOwner:=Dependency.Owner;
+  if (DepOwner<>nil) then begin
+    if DepOwner is TLazPackage then begin
+      Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]);
+    end else if DepOwner is TProject then begin
+      Description:=Format(lisPkgMangProject, [ExtractFileNameOnly(TProject(
+        DepOwner).ProjectInfoFile)]);
+    end else if (DepOwner=PkgBoss) or (DepOwner=PackageGraph) then begin
+      Description:=lisLazarus;
+    end else begin
+      Description:=dbgsName(DepOwner)
+    end;
+  end else begin
+    Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]);
+  end;
+end;
+
+procedure GetDirectoryOfDependencyOwner(Dependency: TPkgDependency; out Directory: string);
+var
+  DepOwner: TObject;
+begin
+  DepOwner:=Dependency.Owner;
+  if (DepOwner<>nil) then begin
+    if DepOwner is TLazPackage then begin
+      Directory:=TLazPackage(DepOwner).Directory;
+    end else if DepOwner is TProject then begin
+      Directory:=TProject(DepOwner).Directory;
+    end else if DepOwner=PkgBoss then begin
+      Directory:=EnvironmentOptions.GetParsedLazarusDirectory;
+    end else begin
+      Directory:=''
+    end;
+  end else begin
+    Directory:=''
+  end;
+end;
 
 { TPkgManager }
 
@@ -3080,7 +3123,7 @@ begin
   end;
 end;
 
-procedure TPkgManager.OnSourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
+procedure TPkgManager.SourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
 var
   APackage: TIDEPackage;
 begin
@@ -3484,8 +3527,8 @@ begin
   Result:=DoOpenPackage(APackage,[pofAddToRecent],false);
 end;
 
-function TPkgManager.DoOpenPackage(APackage: TEditablePackage;
-  Flags: TPkgOpenFlags; ShowAbort: boolean): TModalResult;
+function TPkgManager.DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags;
+  ShowAbort: boolean): TModalResult;
 var
   AFilename: String;
 begin
@@ -3494,7 +3537,7 @@ begin
   if (pofRevert in Flags) and (FileExistsCached(AFilename)) then
     exit(DoOpenPackageFile(AFilename,Flags,ShowAbort));
   // open a package editor
-  PackageEditors.OpenEditor(APackage,true);
+  PackageEditors.OpenEditor(TEditablePackage(APackage),true);
   PackageGraph.RebuildDefineTemplates;
   // add to recent packages
   if (pofAddToRecent in Flags) and FileExistsCached(AFilename) then
@@ -3505,7 +3548,7 @@ end;
 function TPkgManager.DoOpenPackageWithName(const APackageName: string;
   Flags: TPkgOpenFlags; ShowAbort: boolean): TModalResult;
 var
-  APackage: TEditablePackage;
+  APackage: TLazPackage;
   NewDependency: TPkgDependency;
   LoadResult: TLoadPackageResult;
 begin
@@ -3519,7 +3562,7 @@ begin
   finally
     NewDependency.Free;
   end;
-  APackage:=TEditablePackage(PackageGraph.FindPackageWithName(APackageName,nil));
+  APackage:=PackageGraph.FindPackageWithName(APackageName,nil);
   if APackage=nil then exit;
   Result:=DoOpenPackage(APackage,Flags,ShowAbort);
 end;
@@ -3654,11 +3697,6 @@ begin
   MainIDEInterface.UpdateHighlighters;
 end;
 
-function TPkgManager.IsPackageEditorForm(AForm: TCustomForm): boolean;
-begin
-  Result:=AForm is TPackageEditorForm;
-end;
-
 procedure TPkgManager.OpenHiddenModifiedPackages;
 var
   i: Integer;
@@ -3673,8 +3711,8 @@ begin
   end;
 end;
 
-function TPkgManager.DoSavePackage(APackage: TEditablePackage;
-  Flags: TPkgSaveFlags): TModalResult;
+function TPkgManager.DoSavePackage(APackage: TLazPackage; Flags: TPkgSaveFlags
+  ): TModalResult;
 var
   XMLConfig: TCodeBufXMLConfig;
   PkgLink: TPackageLink;
@@ -3709,7 +3747,7 @@ begin
 
   // save package
   if (psfSaveAs in Flags) then begin
-    Result:=DoShowSavePackageAsDialog(APackage);
+    Result:=DoShowSavePackageAsDialog(TEditablePackage(APackage));
     if Result<>mrOk then exit;
   end;
   
@@ -3758,8 +3796,8 @@ begin
     AddToMenuRecentPackages(APackage.Filename);
   end;
 
-  if APackage.Editor<>nil then
-    APackage.Editor.UpdateAll(true);
+  if TEditablePackage(APackage).Editor<>nil then
+    TEditablePackage(APackage).Editor.UpdateAll(true);
   Result:=mrOk;
 end;
 
@@ -6560,11 +6598,6 @@ begin
   CopyMoveFiles(Sender);
 end;
 
-function TPkgManager.CanClosePackageEditor(APackage: TEditablePackage): TModalResult;
-begin
-  Result:=APackage.Editor.CanCloseEditor;
-end;
-
 function TPkgManager.CanCloseAllPackageEditors: TModalResult;
 var
   APackage: TEditablePackage;
@@ -6572,7 +6605,7 @@ var
 begin
   for i:=0 to PackageEditors.Count-1 do begin
     APackage:=PackageEditors.Editors[i].LazPackage;
-    Result:=CanClosePackageEditor(APackage);
+    Result:=APackage.Editor.CanCloseEditor;
     if Result<>mrOk then exit;
   end;
   Result:=mrOk;
@@ -6590,10 +6623,10 @@ begin
   Result:=CheckProjectHasInstalledPackages(AProject,Interactive);
 end;
 
-function TPkgManager.DoClosePackageEditor(APackage: TEditablePackage): TModalResult;
+function TPkgManager.DoClosePackageEditor(APackage: TLazPackage): TModalResult;
 begin
-  if APackage.Editor<>nil then
-    APackage.Editor.Free;
+  if TEditablePackage(APackage).Editor<>nil then
+    TEditablePackage(APackage).Editor.Free;
   Result:=mrOk;
 end;
 

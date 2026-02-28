@@ -51,7 +51,7 @@ uses
   PackageDependencyIntf, PackageLinkIntf, PackageIntf, MacroIntf,
   // IdeConfig
   EnvironmentOpts, LazConf, IDEProcs,
-  // IDE
+  // IdePackager
   PackageDefs;
   
 const

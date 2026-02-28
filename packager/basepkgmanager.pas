@@ -40,22 +40,20 @@ interface
 {$I ide.inc}
 
 uses
-{$IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-{$ENDIF}
-  TypInfo, Classes, SysUtils,
+  {$ENDIF}
+  TypInfo, Classes, SysUtils, System.UITypes,
   // LazUtils
   LazFileUtils, LazLoggerBase,
-  // LCL
-  Forms, ComCtrls,
   // BuildIntf
   PackageIntf, BaseIDEIntf,
-  // IdeIntf
-  MenuIntf, IdeIntfStrConsts,
   // IdeConfig
   EnvironmentOpts, CompilerOptions,
-  // IDE
-  LazarusIDEStrConsts, PackageDefs, EditablePackage, PackageSystem, Project;
+  // IdeProject
+  Project,
+  // IdePackager
+  PackageDefs;
 
 type
   { TBasePkgManager }
@@ -72,7 +70,6 @@ type
     procedure SetRecentPackagesMenu; virtual; abstract;
     procedure SaveSettings; virtual; abstract;
     procedure ProcessCommand(Command: word; var Handled: boolean); virtual; abstract;
-    procedure OnSourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc); virtual; abstract;
     procedure TranslateResourceStrings; virtual; abstract;
 
     // files
@@ -109,26 +106,21 @@ type
                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
     procedure ProjectInspectorDragDropTreeView(Sender, Source: TObject;
       X, Y: Integer); virtual; abstract;
-    function ProjectInspectorDragOverTreeView(Sender, Source: TObject;
-      X, Y: Integer; out TargetTVNode: TTreeNode;
-      out TargetTVType: TTreeViewInsertMarkType): boolean; virtual; abstract;
     procedure ProjectInspectorCopyMoveFiles(Sender: TObject); virtual; abstract;
 
     // package editors
-    function CanClosePackageEditor(APackage: TEditablePackage): TModalResult; virtual; abstract;
     function CanCloseAllPackageEditors: TModalResult; virtual; abstract;
     function DoNewPackage: TModalResult; virtual; abstract;
-    function DoOpenPackage(APackage: TEditablePackage; Flags: TPkgOpenFlags;
+    function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags;
                            ShowAbort: boolean): TModalResult; virtual; abstract;
-    function DoSavePackage(APackage: TEditablePackage;
+    function DoSavePackage(APackage: TLazPackage;
                           Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
 
-    function DoClosePackageEditor(APackage: TEditablePackage): TModalResult; virtual; abstract;
+    function DoClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
     function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
     function ApplyDependency(CurDependency: TPkgDependency): TModalResult; virtual; abstract;
-    function IsPackageEditorForm(AForm: TCustomForm): boolean; virtual; abstract;
     procedure OpenHiddenModifiedPackages; virtual; abstract;
 
     // package graph
@@ -169,11 +161,6 @@ var
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;
 function PkgOpenFlagsToString(Flags: TPkgOpenFlags): string;
 
-procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency;
-                                          out Description: string);
-procedure GetDirectoryOfDependencyOwner(Dependency: TPkgDependency;
-                                        out Directory: string);
-
 
 implementation
 
@@ -207,49 +194,6 @@ begin
     Result:=Result+s;
   end;
   Result:='['+Result+']';
-end;
-
-procedure GetDescriptionOfDependencyOwner(Dependency: TPkgDependency;
-  out Description: string);
-var
-  DepOwner: TObject;
-begin
-  DepOwner:=Dependency.Owner;
-  if (DepOwner<>nil) then begin
-    if DepOwner is TLazPackage then begin
-      Description:=Format(lisPkgMangPackage, [TLazPackage(DepOwner).IDAsString]);
-    end else if DepOwner is TProject then begin
-      Description:=Format(lisPkgMangProject, [ExtractFileNameOnly(TProject(
-        DepOwner).ProjectInfoFile)]);
-    end else if (DepOwner=PkgBoss) or (DepOwner=PackageGraph) then begin
-      Description:=lisLazarus;
-    end else begin
-      Description:=dbgsName(DepOwner)
-    end;
-  end else begin
-    Description:=Format(lisPkgMangDependencyWithoutOwner, [Dependency.AsString]);
-  end;
-end;
-
-procedure GetDirectoryOfDependencyOwner(Dependency: TPkgDependency;
-  out Directory: string);
-var
-  DepOwner: TObject;
-begin
-  DepOwner:=Dependency.Owner;
-  if (DepOwner<>nil) then begin
-    if DepOwner is TLazPackage then begin
-      Directory:=TLazPackage(DepOwner).Directory;
-    end else if DepOwner is TProject then begin
-      Directory:=TProject(DepOwner).Directory;
-    end else if DepOwner=PkgBoss then begin
-      Directory:=EnvironmentOptions.GetParsedLazarusDirectory;
-    end else begin
-      Directory:=''
-    end;
-  end else begin
-    Directory:=''
-  end;
 end;
 
 { TBasePkgManager }
