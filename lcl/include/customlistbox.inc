@@ -471,12 +471,13 @@ end;
 
 function TCustomListBox.GetItemHeight: Integer;
 begin
+  Result:= 0;
   if HandleAllocated and (Style = lbStandard) then
   begin
     with ItemRect(TopIndex) do
       Result := Bottom - Top;
-  end
-  else
+  end;
+  if Result = 0 then
     Result := FItemHeight;
 end;
 
