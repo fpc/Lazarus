@@ -1699,7 +1699,7 @@ begin
   if AWinControl.HandleAllocated then
   begin
     TGtk3Page(AWinControl.Handle).LCLWidth := aWidth;
-    TGtk3Page(AWinControl.Handle).LCLWidth := aHeight;
+    TGtk3Page(AWinControl.Handle).LCLHeight := aHeight;
   end;
 end;
 
