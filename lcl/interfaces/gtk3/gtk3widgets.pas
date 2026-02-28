@@ -431,6 +431,8 @@ type
   strict private
     class procedure TabSheetLayoutSizeAllocate(AWidget: PGtkWidget;
       AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
+    class procedure CentralWidgetMapped(AWidget: PGtkWidget;
+      Data: gpointer); cdecl; static;
     class procedure TabCloseClicked(aButton: PGtkButton; aData: gPointer);
       cdecl; static;
   protected
@@ -1514,44 +1516,13 @@ begin
   with ARect do
     DebugLn(' Rect ',Format('x %d y %d w %d h %d',[Left,Top,Right - Left, Bottom - Top]));
   {$ENDIF}
-  if ARect.Left<ARect.Right then ;
 
   AWindow := AWidget^.get_window;
   // at least TPanel needs this
   if Gtk3IsGdkWindow(AWindow) and (g_object_get_data(AWindow,'lclwidget') = nil) then
     g_object_set_data(AWindow,'lclwidget', TGtk3Widget(Data));
   if (AWindow <> nil) and AWidget^.get_has_window then
-  begin
-    // do resize to lcl size when mapping widget
     gdk_window_set_events(AWindow, GDK_DEFAULT_EVENTS_MASK);
-  {  if not (wtWindow in TGtk3Widget(Data).WidgetType) then
-    begin }
-      with TGtk3Widget(Data).LCLObject do
-      begin
-        xx := Left;
-        yy := Top;
-        w := Width;
-        h := Height;
-      end;
-      TGtk3Widget(Data).BeginUpdate;
-      AWindow^.move(xx, yy);
-      AWindow^.resize(w, h);
-      TGtk3Widget(Data).EndUpdate;
-  {  end else
-    begin
-      // DebugLn('TGtk3Window is mapped , setting lclwidget property to PGdkWindow ...');
-      // now we set 'lclwidget' to our window.
-      // g_object_set_data(AWindow,'lclwidget', TGtk3Widget(Data));
-    end;}
-  end else
-  begin
-    if wtMemo in TGtk3Widget(Data).WidgetType then
-    begin
-      // gdk_window_get_geometry(AWindow, @xx,@yy,@w,@h);
-      // gdk_window_get_position(AWindow, @xx,@yy);
-      // DebugLn(' ***** Window ',Format('x %d y %d w %d h %d',[xx,yy,w,h]),' lclobject ',dbgsName(TGtk3Widget(Data).LCLObject));
-    end;
-  end;
 end;
 
 function SubtractScroll(AWidget: PGtkWidget; APosition: TPoint): TPoint;
@@ -5781,6 +5752,21 @@ begin
   end;
 end;
 
+class procedure TGtk3Page.CentralWidgetMapped(AWidget: PGtkWidget; Data: gpointer); cdecl;
+var
+  ACtl: TGtk3Widget;
+  AAlloc: TGtkAllocation;
+begin
+  ACtl := TGtk3Widget(Data);
+  if ACtl.InUpdate then
+    Exit;
+  AWidget^.get_allocation(@AAlloc);
+  if (AAlloc.width <= 1) or (AAlloc.height <= 1) then
+    Exit;
+  if ACtl.LCLObject.ClientRectNeedsInterfaceUpdate then
+    ACtl.LCLObject.DoAdjustClientRectChange;
+end;
+
 class procedure TGtk3Page.TabCloseClicked(aButton: PGtkButton; aData: gPointer); cdecl;
 begin
   with TCustomTabControl(TCustomPage(TGtk3Page(aData).LCLObject).Parent) do
@@ -5792,6 +5778,7 @@ begin
   //TODO: check if FWidget size-allocate is needed at all.
   //g_signal_connect_data(ToWidget,'size-allocate',TGCallback(@SizeAllocate), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@TabSheetLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FCentralWidget,'map',TGCallback(@CentralWidgetMapped), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
