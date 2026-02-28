@@ -1366,6 +1366,12 @@ procedure TCocoaTableListItem.prepareForReuse;
 begin
   Inherited;
 
+  if Assigned(self.textField) then begin
+    self.textField.removeFromSuperview;
+    self.textField.release;
+    self.setTextField(nil);
+  end;
+
   if Assigned(self.imageView) then begin
     self.imageView.removeFromSuperview;
     self.imageView.release;

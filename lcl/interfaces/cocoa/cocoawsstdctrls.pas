@@ -144,6 +144,7 @@ type
   TCocoaWSCustomListBox = class(TWSCustomListBox)
   published
     class procedure DragStart(const ACustomListBox: TCustomListBox); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont ); override;
 
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
@@ -2796,6 +2797,18 @@ begin
 
   ScrollViewSetBorderStyle(list.enclosingScrollView, ABorderStyle);
   UpdateControlFocusRing(list, AWinControl);
+end;
+
+class procedure TCocoaWSCustomListBox.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  ACustomListBox: TCustomListBox absolute AWinControl;
+  list: TCocoaTableListView;
+begin
+  list:= getTableViewFromLCLListBox(ACustomListBox);
+  if not Assigned(list) then
+    Exit;
+  list.reloadData;
 end;
 
 class procedure TCocoaWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
