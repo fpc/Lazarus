@@ -86,10 +86,6 @@ type
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
-    class procedure GetPreferredSize(const {%H-}AWinControl: TWinControl;
-                        var {%H-}PreferredWidth, PreferredHeight: integer;
-                        {%H-}WithThemeSpace: Boolean); override;
-
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; {%H-}SizeGrip: Boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
@@ -1296,19 +1292,9 @@ end;
 
 class procedure TGtk3WSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
-  // inherited Update(AStatusBar);
   if not WSCheckHandleAllocated(AStatusBar, 'Update') then
     Exit;
-  //writeln('TGtk3WSStatusBar.Update ');
   TGtk3StatusBar(AStatusBar.Handle).UpdateStatusBar(AStatusBar);
-end;
-
-class procedure TGtk3WSStatusBar.GetPreferredSize(
-  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
-  WithThemeSpace: Boolean);
-begin
-  inherited GetPreferredSize(AWinControl, PreferredWidth, PreferredHeight,
-    WithThemeSpace);
 end;
 
 class procedure TGtk3WSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
