@@ -2956,6 +2956,7 @@ var
   APangoMetrics: PPangoFontMetrics;
   aRect: TPangoRectangle;
   APangoWeight: TPangoWeight;
+  lineH: Integer;
 begin
   Result := False;
   if IsValidDC(DC) then
@@ -2994,6 +2995,20 @@ begin
     pango_layout_set_text(AFont.Layout, 'W', 1);
     pango_layout_get_pixel_size(AFont.Layout, @aRect.width, @aRect.height);
     TM.tmMaxCharWidth := Max(TM.tmMaxCharWidth,aRect.width);
+
+    //Internal leading: gap from top of logical area to top of ink e.g. space
+    //above capital H.
+    //ink_rect.y is in Pango units, positive = below the
+    //logical top, i.e. there IS a gap: that gap is the internal leading.
+    pango_layout_set_text(AFont.Layout, 'H', 1);
+    pango_layout_get_extents(AFont.Layout, @aRect, nil);
+    TM.tmInternalLeading := Max(0, PANGO_PIXELS(aRect.y));
+
+    //External leading: extra spacing above/below the cell that the font
+    //designer reserved for line gaps.  Compare pixel line height of H to
+    //the cell height (ascent + descent) already stored in TM.tmHeight.
+    pango_layout_get_pixel_size(AFont.Layout, nil, @lineH);
+    TM.tmExternalLeading := Max(0, lineH - TM.tmHeight);
 
     APangoWeight := AFont.Handle^.get_weight;
 
@@ -4514,7 +4529,7 @@ begin
   if ((ScrollInfo.fMask and (SIF_RANGE or SIF_PAGE)) <> 0) and
      ((SBStyle=SB_HORZ) or (SBStyle=SB_VERT))
   then begin
-    if (Adjustment^.lower >= (Adjustment^.upper-Max(adjustment^.page_size-1,0)))
+    if (Adjustment^.lower >= (Adjustment^.upper-Max(adjustment^.page_size,0)))
     then begin
       if (ScrollInfo.fMask and SIF_DISABLENOSCROLL) = 0 then
         IsScrollbarVis := False
