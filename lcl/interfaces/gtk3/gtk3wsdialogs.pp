@@ -1243,18 +1243,6 @@ begin
   gtk_widget_show(PreviewWidget);
 end;
 
-{
-  Adds some functionality to a gtk file selection dialog.
-  - multiselection
-  - range selection
-  - close on escape
-  - file information
-  - history pulldown
-  - filter pulldown
-  - preview control
-
-  requires: gtk+ 2.6
-}
 class function TGtk3WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 var
   OpenDialog: TOpenDialog absolute ACommonDialog;
@@ -1262,9 +1250,6 @@ var
   InitialFilename: String;
   Dlg: TGtk3Dialog;
   Chooser: PGtkFileChooser;
-  //FrameWidget: PGtkWidget;
-  //HBox: PGtkWidget;
-  //FileDetailLabel: PGtkWidget;
 begin
   Dlg := TGtk3FileDialog.Create(ACommonDialog);
   Result := TLCLHandle(Dlg);
@@ -1286,10 +1271,10 @@ begin
     gtk_file_chooser_set_select_multiple(Chooser, True);
 
   // History List - a frame with an option menu
-  CreateOpenDialogHistory(OpenDialog, Dlg.Widget);
+  TGtk3WSOpenDialog.CreateOpenDialogHistory(OpenDialog, Dlg.Widget);
 
   // Filter
-  CreateOpenDialogFilter(OpenDialog, Chooser);
+  TGtk3WSOpenDialog.CreateOpenDialogFilter(OpenDialog, Chooser);
 
   // connect change event
   g_signal_connect_data(Dlg.Widget,
