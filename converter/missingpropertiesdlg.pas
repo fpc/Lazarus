@@ -35,9 +35,9 @@ uses
   // codetools
   CodeCache, CodeToolManager, CodeCompletionTool, LFMTrees,
   // BuildIntf
-  ComponentReg,
+  ComponentReg, IDEExternToolIntf,
   // IdeIntf
-  IDEExternToolIntf, IDEImagesIntf,
+  IDEImagesIntf,
   // IdeConfig
   IdeConfStrConsts,
   // IdeProject

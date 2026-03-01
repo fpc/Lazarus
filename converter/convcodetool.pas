@@ -40,7 +40,7 @@ uses
   LinkScanner, CodeCache, SourceChanger,
   // LazUtils
   LazFileUtils, AvgLvlTree,
-  // IdeIntf
+  // BuildIntf
   IDEExternToolIntf,
   // IDE
   {!} LazarusIDEStrConsts,

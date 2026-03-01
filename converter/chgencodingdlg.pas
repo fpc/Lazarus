@@ -41,10 +41,13 @@ uses
   // IDEIntf
   IdeIntfStrConsts, IDEWindowIntf, SrcEditorIntf, IDEImagesIntf,
   // IdeConfig
-  IDEProcs,
+  IDEProcs, EnvironmentOpts, SearchPathProcs,
+  // IdePackager
+  PackageDefs, PackageSystem,
+  // IdeProject
+  Project,
   // IDE
-  PackageDefs, PackageSystem, Project, LazarusIDEStrConsts,
-  EnvironmentOpts, SearchPathProcs;
+  LazarusIDEStrConsts;
 
 type
 

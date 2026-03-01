@@ -52,7 +52,7 @@ uses
   Controls, LCLType, Graphics, Menus, ImgList,
   LazLoggerBase,
   // LazEdit
-  LazEditHighlighterUtils, LazEditTextAttributes,
+  LazEditHighlighterUtils, LazEditTextAttributes, LazEditTextGridPainter,
   // synedit
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks,
@@ -66,7 +66,7 @@ uses
   SynEditMarkupFoldColoring, SynEditTextTabExpander, SynEditMouseCmds, SynEditWrappedView,
   SynPluginExternalLink, SynPluginAutoBraces,
   // IDE
-  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks, LazEditTextGridPainter;
+  etSrcEditMarks, LazarusIDEStrConsts, SourceMarks;
 
 type
 

@@ -38,7 +38,7 @@ uses
   // CodeTools
   CodeToolManager,
   // IdeIntf
-  IdeIntfStrConsts, IDEImagesIntf, IDEMsgIntf, LazIDEIntf,IDEDialogs,
+  IdeIntfStrConsts, IDEImagesIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts,
   // Converter

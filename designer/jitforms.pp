@@ -50,12 +50,16 @@ uses
   // CodeTools
   BasicCodeTools,
   // BuildIntf
-  UnitResourceIntf,
+  UnitResourceIntf, PackageDependencyIntf,
+  // IdePackager
+  PackageDefs,
+  // IdePproject
+  Project,
   // IdeIntf
-  PackageDependencyIntf, PropEditUtils, PropEdits, UnitResources, IDEDialogs,
+  PropEditUtils, PropEdits, UnitResources, IDEDialogs,
   // IDE
   {$IFDEF VerboseJITForms}DesignerProcs,{$ENDIF}
-  PackageDefs, Project, EnvGuiOptions;
+  EnvGuiOptions;
 
 type
   //----------------------------------------------------------------------------

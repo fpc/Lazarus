@@ -37,15 +37,15 @@ uses
   Graphics, Controls, Forms, ImgList,
   // LazUtils
   LazLoggerBase, LazFileUtils,
-  // LazEdit
-  LazEditTextAttributes,
   // Codetools
   KeywordFuncLists,
+  // BuildIntf
+  IDEExternToolIntf,
+  // LazEdit
+  LazEditTextAttributes,
   // SynEdit
-  SynEditMarkupGutterMark,
-  SynEditMarks, SynEditMiscClasses, SynEditTypes, SynEdit, LazSynEditText, SynEditHighlighter,
-  // IdeIntf
-  IDEExternToolIntf;
+  SynEditMarkupGutterMark, SynEditMarks, SynEditMiscClasses, SynEditTypes, SynEdit,
+  LazSynEditText, SynEditHighlighter;
 
 type
 

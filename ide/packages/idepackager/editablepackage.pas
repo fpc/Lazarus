@@ -8,7 +8,7 @@ uses
   Classes, SysUtils,
   // LCL
   Forms,
-  // IDE
+  // IdePackager
   PackageDefs;
 
 type
