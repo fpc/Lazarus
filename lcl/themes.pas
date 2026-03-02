@@ -2107,7 +2107,7 @@ var
   ADrawFlags: DWord;
   Bevel: TGraphicsBevelCut;
   ARect: TRect;
-  Tmp: Integer;
+  Tmp, AMinSize: Integer;
 begin
   // default painting
   ARect := R; // in order to pass by reference
@@ -2262,6 +2262,42 @@ begin
             TREIS_SELECTEDNOTFOCUS: FillWithColor(ARect, clBtnFace);
             TREIS_HOTSELECTED: FillWithColor(ARect, clHighlight);
           end;
+        end;
+      end;
+    teRebar:
+      begin
+        case Details.Part of
+          RP_GRIPPER:
+            begin
+              AMinSize := GetSystemMetrics(SM_CXMENUCHECK);
+              Tmp := Min(AMinSize, (R.Right - R.Left) div 2);
+              ARect := Rect(
+                (R.Left + R.Right - Tmp) div 2,
+                R.Top + 1,
+                (R.Left + R.Right + Tmp) div 2,
+                R.Bottom - 1);
+              //There's no HOT or PRESSED states for RP_GRIPPER
+              FillWithColor(ARect, ColorToRgb(clHighlight));
+            end;
+          RP_GRIPPERVERT:
+            begin
+              AMinSize := GetSystemMetrics(SM_CYMENUCHECK);
+              Tmp := Min(AMinSize, (R.Bottom - R.Top) div 2);
+              ARect := Rect(
+                R.Left + 1,
+                (R.Top + R.Bottom - Tmp) div 2,
+                R.Right - 1,
+                (R.Top + R.Bottom + Tmp) div 2);
+              //There's no HOT or PRESSED states for RP_GRIPPERVERT
+              FillWithColor(ARect, ColorToRgb(clHighlight));
+            end;
+          RP_BAND:
+            begin
+              if Details.State in [SPLITS_HOT, SPLITS_PRESSED] then
+                FillWithColor(ARect, clBtnHighlight)
+              else
+                FillWithColor(ARect, clBtnFace);
+            end;
         end;
       end;
     teToolTip:
