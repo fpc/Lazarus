@@ -3934,7 +3934,7 @@ begin
   if Handle <> 0 then
   begin
     if wtWindow in TGtk3Widget(Handle).WidgetType then
-      PGtkWindow(TGtk3Window(Handle).Widget)^.present;
+      PGtkWindow(TGtk3Window(Handle).Widget)^.present_with_time(LastUserEventTime);
   end;
 end;
 
