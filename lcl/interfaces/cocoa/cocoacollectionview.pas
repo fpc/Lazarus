@@ -848,14 +848,9 @@ begin
 end;
 
 procedure TCocoaCollectionView.updateItemLayout(item: TCocoaCollectionItem);
-var
-  lclControl: TControl;
 begin
   self.styleHandler.onUpdateItemLayout( item );
-
-  lclControl:= TControl(lclGetTarget);
-  if Assigned(lclControl) then
-    TCocoaTextFieldUtil.setLCLFont( item.textField, lclControl.font );
+  TCocoaTextFieldUtil.setLCLFont( item.textField, lclGetTarget );
 end;
 
 procedure TCocoaCollectionView.redrawVisibleItems;

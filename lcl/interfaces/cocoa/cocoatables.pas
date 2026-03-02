@@ -1190,7 +1190,6 @@ end;
 procedure TCocoaTableListItem.createTextField;
 var
   fieldControl: NSTextField;
-  lclControl: TControl;
 begin
   if Assigned(self.textField) then
     Exit;
@@ -1201,10 +1200,7 @@ begin
   fieldControl.setEditable( False );
   fieldControl.setLineBreakMode( NSLineBreakByTruncatingTail );
   fieldControl.setAllowsExpansionToolTips(True);
-
-  lclControl:= TControl(_tableView.lclGetTarget);
-  if Assigned(lclControl) then
-    TCocoaTextFieldUtil.setLCLFont( fieldControl, lclControl.font );
+  TCocoaTextFieldUtil.setLCLFont( fieldControl, _tableView.lclGetTarget );
 
   self.setTextField( fieldControl );
   self.addSubview( fieldControl );

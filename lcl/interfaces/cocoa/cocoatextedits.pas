@@ -29,7 +29,7 @@ interface
 uses
   Types, Classes, SysUtils,
   Math, // needed for MinDouble, MaxDouble
-  LCLType, Graphics,
+  LCLType, Graphics, Controls,
   MacOSAll, CocoaAll, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaPrivate, CocoaCallback;
 
@@ -195,7 +195,10 @@ type
   public
     class function setLCLFont(
       const cocoaField: NSTextField;
-      const lclFont: TFont ): Boolean;
+      const lclFont: TFont ): Boolean; overload;
+    class function setLCLFont(
+      const cocoaField: NSTextField;
+      const lclControl: TObject ): Boolean; overload;
   end;
 
 type
@@ -1005,6 +1008,17 @@ begin
     cocoaColor:= ColorToNSColor(ColorToRGB(lclFont.Color));
     cocoaField.setTextColor( cocoaColor );
   end;
+end;
+
+class function TCocoaTextFieldUtil.setLCLFont(
+  const cocoaField: NSTextField;
+  const lclControl: TObject): Boolean;
+begin
+  if NOT Assigned(lclControl) then
+    Exit;
+  if NOT (lclControl is TControl) then
+    Exit;
+  TCocoaTextFieldUtil.setLCLFont( cocoaField, TControl(lclControl).Font );
 end;
 
 { TCocoaTextField }
