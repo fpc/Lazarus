@@ -29,7 +29,7 @@ interface
 uses
   Types, Classes, SysUtils,
   Math, // needed for MinDouble, MaxDouble
-  LCLType,
+  LCLType, Graphics, Controls,
   MacOSAll, CocoaAll, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaPrivate, CocoaCallback;
 
@@ -187,6 +187,18 @@ type
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
+  end;
+
+  { TCocoaTextFieldUtil }
+
+  TCocoaTextFieldUtil = class
+  public
+    class function setLCLFont(
+      const cocoaField: NSTextField;
+      const lclFont: TFont ): Boolean; overload;
+    class function setLCLFont(
+      const cocoaField: NSTextField;
+      const lclControl: TObject ): Boolean; overload;
   end;
 
 type
@@ -970,6 +982,43 @@ begin
       inherited mouseMoved(event);
   end else
     inherited scrollWheel(event);
+end;
+
+{ TCocoaTextFieldUtil }
+
+class function TCocoaTextFieldUtil.setLCLFont(
+  const cocoaField: NSTextField;
+  const lclFont: TFont): Boolean;
+var
+  cocoaFont: NSFont;
+  cocoaColor: NSColor;
+  tempFont: TFont;
+begin
+  Result:= False;
+
+  tempFont:= TFont( lclFont.CopyFont );
+  tempFont.Color:= clDefault;
+  if NOT tempFont.isDefault then begin
+    cocoaFont:= TCocoaFont(lclFont.Reference.Handle).Font;
+    cocoaField.setFont( cocoaFont );
+    Result:= True;
+  end;
+
+  if lclFont.Color <> clDefault then begin
+    cocoaColor:= ColorToNSColor(ColorToRGB(lclFont.Color));
+    cocoaField.setTextColor( cocoaColor );
+  end;
+end;
+
+class function TCocoaTextFieldUtil.setLCLFont(
+  const cocoaField: NSTextField;
+  const lclControl: TObject): Boolean;
+begin
+  if NOT Assigned(lclControl) then
+    Exit;
+  if NOT (lclControl is TControl) then
+    Exit;
+  TCocoaTextFieldUtil.setLCLFont( cocoaField, TControl(lclControl).Font );
 end;
 
 { TCocoaTextField }

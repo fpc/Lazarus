@@ -201,6 +201,7 @@ type
     function scrollView: TCocoaScrollView; message 'scrollView';
     function WSHandler: TCocoaWSListViewHandler; message 'WSHandler';
     function initializing: Boolean; message 'isinitializing';
+    procedure reloadData; message 'reloadData';
 
     function getLCLControlCanvas: TCanvas; message 'getLCLControlCanvas';
     procedure setCaptionEditor( captionEditor: TCocoaTextField ); message 'setCaptionEditor:';
@@ -235,6 +236,11 @@ end;
 function TCocoaListView.initializing: Boolean;
 begin
   Result:= _initializing;
+end;
+
+procedure TCocoaListView.reloadData;
+begin
+  TCocoaListViewBackendControlProtocol(_backendControl).backend_reloadData;
 end;
 
 function TCocoaListView.getLCLControlCanvas: TCanvas;
@@ -347,7 +353,7 @@ begin
     _initializing:= True;
     callback.callTargetInitializeWnd;
     _initializing:= False;
-    TCocoaListViewBackendControlProtocol(_backendControl).backend_reloadData;
+    self.reloadData;
   end;
   _needsCallLclInit:= True;
 end;
