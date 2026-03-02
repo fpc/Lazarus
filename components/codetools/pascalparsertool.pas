@@ -1507,6 +1507,7 @@ begin
           if (CurPos.Flag=cafEdgedBracketOpen) and AllowAttributes then begin
             ReadAttribute;
             ReadNextAtom;
+            ReadPrefixModifier; // [Ref] const Param - attribute before modifier
           end;
           if not AtomIsIdentifier then begin
             if ExceptionOnError then
