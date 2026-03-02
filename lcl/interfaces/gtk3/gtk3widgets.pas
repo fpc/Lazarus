@@ -3512,6 +3512,8 @@ procedure TGtk3Widget.Move(ALeft, ATop: Integer);
 var
   AParent: TGtk3Widget;
   XOffset, YOffset: Integer;
+  LabelOffset: Integer;
+  CWAlloc, FrameAlloc: TGtkAllocation;
   aWindow: PGdkWindow;
   GtkLeft, GtkTop: integer;
 begin
@@ -3537,6 +3539,16 @@ begin
         aWindow^.get_position(@XOffset, @YOffset);
       GtkLeft := ALeft - XOffset;
       GtkTop := ATop - YOffset;
+
+      if wtGroupBox in AParent.WidgetType then
+      begin
+        AParent.GetContainerWidget^.get_allocation(@CWAlloc);
+        AParent.Widget^.get_allocation(@FrameAlloc);
+        LabelOffset := CWAlloc.y - FrameAlloc.y;
+        if LabelOffset > 0 then
+          GtkTop := Max(0, GtkTop - LabelOffset);
+      end;
+
       //Compare actual GTK coordinates so scroll-offset changes are not missed.
       if (GtkLeft = LCLLeft) and (GtkTop = LCLTop) then
         Exit;
@@ -4583,18 +4595,7 @@ begin
 end;
 
 function TGtk3GroupBox.getClientRect:TRect;
-var
-  Alloc:TGtkAllocation;
 begin
-  if Assigned(FCentralWidget) then
-  begin
-    FCentralWidget^.get_allocation(@Alloc);
-    if (Alloc.width > 1) or (Alloc.height > 1) then
-    begin
-      Result := Rect(0, 0, Alloc.width, Alloc.height);
-      exit;
-    end;
-  end;
   Result := GetInnerClientRect(Widget);
   Types.OffsetRect(Result, -Result.Left, -Result.Top);
 end;
