@@ -12,7 +12,7 @@ uses
   MacOSAll, CocoaAll,
   CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConfig, CocoaConst, CocoaUtils,
   CocoaListView, CocoaTextEdits, CocoaGDIObjects,
-  LCLType, Graphics, Controls, ComCtrls, StdCtrls, ImgList, Forms;
+  LCLType, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
 type
 
@@ -610,30 +610,6 @@ begin
   end;
 end;
 
-function updateNSTextFieldWithTFont(
-  const cocoaField: NSTextField;
-  const lclFont: TFont ): Boolean;
-var
-  cocoaFont: NSFont;
-  cocoaColor: NSColor;
-  tempFont: TFont;
-begin
-  Result:= False;
-
-  tempFont:= TFont( lclFont.CopyFont );
-  tempFont.Color:= clDefault;
-  if NOT tempFont.isDefault then begin
-    cocoaFont:= TCocoaFont(lclFont.Reference.Handle).Font;
-    cocoaField.setFont( cocoaFont );
-    Result:= True;
-  end;
-
-  if lclFont.Color <> clDefault then begin
-    cocoaColor:= ColorToNSColor(ColorToRGB(lclFont.Color));
-    cocoaField.setTextColor( cocoaColor );
-  end;
-end;
-
 procedure TCocoaCollectionItem.loadView;
 var
   itemView: TCocoaCollectionItemView;
@@ -879,7 +855,7 @@ begin
 
   lclControl:= TControl(lclGetTarget);
   if Assigned(lclControl) then
-    updateNSTextFieldWithTFont( item.textField, lclControl.font );
+    TCocoaTextFieldUtil.setLCLFont( item.textField, lclControl.font );
 end;
 
 procedure TCocoaCollectionView.redrawVisibleItems;
