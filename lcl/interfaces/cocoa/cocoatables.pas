@@ -328,30 +328,6 @@ begin
   Result := TCocoaTableListView.alloc;
 end;
 
-function updateNSTextFieldWithTFont( cocoaField: NSTextField; lclFont: TFont ):
-  Boolean;
-var
-  saveFontColor: TColor;
-  cocoaFont: NSFont;
-  cocoaColor: NSColor;
-begin
-  Result:= False;
-  saveFontColor:= lclFont.Color;
-
-  lclFont.Color:= clDefault;
-  if NOT lclFont.isDefault then begin
-    cocoaFont:= TCocoaFont(lclFont.Reference.Handle).Font;
-    cocoaField.setFont( cocoaFont );
-    Result:= True;
-  end;
-
-  lclFont.Color:= saveFontColor;
-  if lclFont.Color <> clDefault then begin
-    cocoaColor:= ColorToNSColor(ColorToRGB(lclFont.Color));
-    cocoaField.setTextColor( cocoaColor );
-  end;
-end;
-
 procedure drawNSViewBackground( view: NSView; lclBrush: TBrush );
 var
   ctx: TCocoaContext;
@@ -1205,7 +1181,7 @@ begin
     // in Perferences-Component Palette.
     hideAllSubviews( self );
   end else begin
-    if updateNSTextFieldWithTFont(self.textField, cocoaTLV.lclGetCanvas.Font) then
+    if TCocoaTextFieldUtil.setLCLFont(self.textField, cocoaTLV.lclGetCanvas.Font) then
       updateItemLayout( row, col );
     inherited drawRect(dirtyRect);
   end;
@@ -1224,6 +1200,8 @@ begin
   fieldControl.setEditable( False );
   fieldControl.setLineBreakMode( NSLineBreakByTruncatingTail );
   fieldControl.setAllowsExpansionToolTips(True);
+  TCocoaTextFieldUtil.setLCLFont( fieldControl, _tableView.lclGetTarget );
+
   self.setTextField( fieldControl );
   self.addSubview( fieldControl );
 end;
@@ -1359,6 +1337,12 @@ end;
 procedure TCocoaTableListItem.prepareForReuse;
 begin
   Inherited;
+
+  if Assigned(self.textField) then begin
+    self.textField.removeFromSuperview;
+    self.textField.release;
+    self.setTextField(nil);
+  end;
 
   if Assigned(self.imageView) then begin
     self.imageView.removeFromSuperview;
