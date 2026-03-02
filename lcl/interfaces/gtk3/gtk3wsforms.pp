@@ -512,8 +512,8 @@ class procedure TGtk3WSCustomForm.SetFormStyle(const AForm: TCustomform;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetFormStyle') then
     Exit;
-  {$IFDEF GTK3DEBUGCORE}
-  DebugLn('TGtk3WSCustomForm.SetFormStyle');
+  {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGFORMS)}
+  DebugLn('TGtk3WSCustomForm.SetFormStyle: NOT IMPLEMENTED !');
   {$ENDIF}
 end;
     
@@ -535,7 +535,7 @@ var
 begin
   if not WSCheckHandleAllocated(AForm, 'SetShowInTaskbar') then
     Exit;
-  {$IFDEF GTK3DEBUGCORE}
+  {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGFORMS)}
   DebugLn('TGtk3WSCustomForm.SetShowInTaskbar');
   {$ENDIF}
   if (AForm.Parent <> nil) or
@@ -554,8 +554,8 @@ class procedure TGtk3WSCustomForm.SetZPosition(const AWinControl: TWinControl; c
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetZPosition') then
     Exit;
-  {$IFDEF GTK3DEBUGCORE}
-  DebugLn('TGtk3WSCustomForm.SetZPosition');
+  {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGFORMS)}
+  DebugLn('TGtk3WSCustomForm.SetZPosition: NOT IMPLEMENTED');
   {$ENDIF}
 end;
 
