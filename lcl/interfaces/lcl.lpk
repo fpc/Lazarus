@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="570">
+    <Files Count="572">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2809,6 +2809,14 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSDragImage"/>
       </Item570>
+      <Item571>
+        <Filename Value="gtk3/gtk3lclmenuitem.inc"/>
+        <Type Value="Include"/>
+      </Item571>
+      <Item572>
+        <Filename Value="gtk3/gtk3lclscrolledwindow.inc"/>
+        <Type Value="Include"/>
+      </Item572>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

@@ -60,6 +60,14 @@ type
 
   TGtk3GroupBoxType = (gbtGroupBox, gbtCheckGroup, gbtRadioGroup);
 
+  { TGtk3MenuItemHelper }
+
+  TGtk3MenuItemHelper = class helper for TMenuItem
+  public
+    function GTK3DrawItem(ACanvas: TCanvas; ARect: TRect; AState: TOwnerDrawState): Boolean;
+    function GTK3MeasureItem(ACanvas: TCanvas; var AWidth, AHeight: Integer): Boolean;
+  end;
+
   { TGtk3Widget }
 
   TGtk3Widget = class(TGtk3Object, IUnknown)
@@ -74,6 +82,7 @@ type
       aDirection: TGtkDirectionType; aData: gPointer): gBoolean; cdecl; static;
     class function WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl; static; {main event filter of widget}
     class function WidgetFocusIn(AWidget: PGtkWidget; Event: PGdkEventFocus; AData: gpointer): gboolean; cdecl; static;
+    class procedure DestroyWidgetEvent({%H-}w: PGtkWidget;{%H-}data:gpointer); cdecl; static;
   strict private
     FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     FEnterLeaveTime: Cardinal;
@@ -95,7 +104,6 @@ type
     procedure SetFont(AValue: PPangoFontDescription);
     procedure SetShape(AValue: PGdkPixbuf);
     procedure SetStyleContext({%H-}AValue: PGtkStyleContext);
-    class procedure DestroyWidgetEvent({%H-}w: PGtkWidget;{%H-}data:gpointer); cdecl; static;
     class function DrawWidget(AWidget: PGtkWidget; AContext: Pcairo_t; Data: gpointer): gboolean; cdecl; static;
     class procedure MapWidget(AWidget: PGtkWidget; Data: gPointer); cdecl; static; {GtkWindow never sends this signal !}
     class function MouseEnterNotify(aWidget: PGtkWidget; aEvent: PGdkEventCrossing; aData: gpointer): gboolean; cdecl; static;
@@ -530,15 +538,21 @@ type
     procedure SetCaption(const AValue: string);
   strict private
     class procedure MenuItemActivated(AItem:PGtkMenuItem;AData:GPointer); cdecl; static;
+    class procedure MenuItemSelect(AItem:PGtkMenuItem;AData:GPointer); cdecl; static;
+    class procedure MenuItemDeselect(AItem:PGtkMenuItem;AData:GPointer); cdecl; static;
     class function MenuItemEvent(AWidget:PGtkWidget;event:PGdkEvent; data:GPointer):gboolean; cdecl; static;
+    class function MenuItemDraw(AWidget:PGtkWidget;cr:Pcairo_t;AData:GPointer):gboolean; cdecl; static;
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
+    procedure ConnectMenuSignals; // connect all menu item signals to FWidget
   public
     Lock:integer;
     MenuItem: TMenuItem;
     constructor Create(const AMenuItem: TMenuItem); virtual; overload;
     procedure InitializeWidget; override;
+    procedure ReplaceWidget;
     procedure SetCheck(ACheck:boolean);
+    procedure SetShortCut(AShortCut, AShortCutKey2: TShortCut);
     property Caption: string read GetCaption write SetCaption;
   end;
 
@@ -979,6 +993,7 @@ type
       procedure InitializeWidget; override;
       function getViewport: PGtkViewport; override;
       procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
+      procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
       function getClientRect: TRect; override;
       function getHorizontalScrollbar: PGtkScrollbar; override;
       function getVerticalScrollbar: PGtkScrollbar; override;
@@ -1269,6 +1284,8 @@ end;
 {$i gtk3lclspinbutton.inc}
 {$i gtk3lclframe.inc}
 {$i gtk3lclnotebook.inc}
+{$i gtk3lclmenuitem.inc}
+{$i gtk3lclscrolledwindow.inc}
 
 class function TGtk3Widget.WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 var
@@ -5924,6 +5941,10 @@ var
   vX, vY: integer;
   ATranslated: boolean;
 begin
+  {$note Still not perfect. When some unit is loaded into
+   dockedformeditor while working in IDE, then it bleeds down by size
+   of horizontal scrollbar, so it's not visible. Check what happens
+   when new Tabsheet is added.}
   vX := 0;
   vY := 0;
   ATranslated := False;
@@ -6513,6 +6534,20 @@ begin
   inherited Create(AMenuItem.GetParentMenu, nil);
 end;
 
+{ TGtk3MenuItemHelper }
+
+function TGtk3MenuItemHelper.GTK3DrawItem(ACanvas: TCanvas; ARect: TRect;
+  AState: TOwnerDrawState): Boolean;
+begin
+  Result := DoDrawItem(ACanvas, ARect, AState);
+end;
+
+function TGtk3MenuItemHelper.GTK3MeasureItem(ACanvas: TCanvas;
+  var AWidth, AHeight: Integer): Boolean;
+begin
+  Result := DoMeasureItem(ACanvas, AWidth, AHeight);
+end;
+
 { TGtk3MenuItem }
 
 function TGtk3MenuItem.GetCaption: string;
@@ -6545,7 +6580,7 @@ begin
   else
   if (MenuItem.HasIcon) then
   begin
-    pimgmenu := TGtkImageMenuItem.new();
+    pimgmenu := LCLGtkImageMenuItemNew();
     MenuItem.UpdateImage(true);
     img:=Tgtk3Image(MenuItem.Bitmap.Handle);
     picon := TGtkImage.new_from_pixbuf(img.Handle);
@@ -6555,7 +6590,7 @@ begin
   end else
   if MenuItem.RadioItem and not MenuItem.HasIcon then
   begin
-    Result := TGtkRadioMenuItem.new(nil);
+    Result := PGtkWidget(LCLGtkRadioMenuItemNew());
     if Assigned(menuItem.Parent) then
     begin
       //Scan backwards to find any sibling radio item with the same GroupIndex
@@ -6580,11 +6615,11 @@ begin
   else
   if MenuItem.IsCheckItem and not MenuItem.HasIcon then
   begin
-    Result := TGtkCheckMenuItem.new;
+    Result := PGtkWidget(LCLGtkCheckMenuItemNew());
     PGtkCheckMenuItem(Result)^.set_active(MenuItem.Checked);
   end
   else
-    Result := TGtkMenuItem.new;
+    Result := PGtkWidget(LCLGtkMenuItemNew());
 
   if Assigned(Result) and (MenuItem.Caption <> cLineCaption) {and not MenuItem.HasIcon} then
   begin
@@ -6592,8 +6627,6 @@ begin
     PGtkMenuItem(Result)^.set_label(PgChar(ReplaceAmpersandsWithUnderscores(MenuItem.Caption)));
     PGtkMenuItem(Result)^.set_sensitive(MenuItem.Enabled);
   end;
-
-
 end;
 
 constructor TGtk3MenuItem.Create(const AMenuItem: TMenuItem);
@@ -6713,7 +6746,11 @@ begin
       // DebugLn('****** GDK_SCROLL ' + dbgsName(TGtk3Widget(Data).LCLObject));
     end;
   else
-    DebugLn('TGtk3MenuItem.MenuItemEvent unhandled event.');
+    begin
+      {$IFDEF GTK3DEBUGMENU}
+      DebugLn('TGtk3MenuItem.MenuItemEvent unhandled event: ', Gtk3EventToStr(event^.type_));
+      {$ENDIF}
+    end;
   end;
 end;
 
@@ -6738,32 +6775,245 @@ begin
   end;
 end;
 
+class procedure TGtk3MenuItem.MenuItemSelect({%H-}AItem: PGtkMenuItem; AData: GPointer); cdecl;
+var
+  GtkItem: TGtk3MenuItem;
+begin
+  GtkItem := TGtk3MenuItem(AData);
+  if Assigned(GtkItem) and Assigned(GtkItem.MenuItem) then
+    GtkItem.MenuItem.IntfDoSelect;
+end;
+
+class procedure TGtk3MenuItem.MenuItemDeselect({%H-}AItem: PGtkMenuItem; {%H-}AData: GPointer); cdecl;
+begin
+  if Assigned(Application) then
+    Application.Hint := '';
+end;
+
+class function TGtk3MenuItem.MenuItemDraw(AWidget: PGtkWidget; cr: Pcairo_t;
+  AData: GPointer): gboolean; cdecl;
+var
+  GtkItem: TGtk3MenuItem;
+  AMenuItem: TMenuItem;
+  AParentMenu: TMenu;
+  ADC: TGtk3DeviceContext;
+  ACanvas: TCanvas;
+  AAlloc: TGtkAllocation;
+  ARect: TRect;
+  AState: TOwnerDrawState;
+  GtkState: TGtkStateFlags;
+begin
+  Result := gboolean(False);
+
+  GtkItem := TGtk3MenuItem(HwndFromGtkWidget(AWidget));
+  if not Assigned(GtkItem) or not Assigned(GtkItem.MenuItem) then
+    Exit;
+  AMenuItem := GtkItem.MenuItem;
+
+  if not Assigned(AMenuItem.OnDrawItem) then
+  begin
+    AParentMenu := AMenuItem.GetParentMenu;
+    if not Assigned(AParentMenu) or not Assigned(AParentMenu.OnDrawItem) then
+      Exit;
+  end;
+
+
+  AWidget^.get_allocation(@AAlloc);
+  ARect := Rect(0, 0, AAlloc.width, AAlloc.height);
+
+  GtkState := AWidget^.get_state_flags;
+  AState := [];
+  if GTK_STATE_FLAG_PRELIGHT in GtkState then
+    Include(AState, odSelected);
+  if GTK_STATE_FLAG_INSENSITIVE in GtkState then
+  begin
+    Include(AState, odDisabled);
+    Include(AState, odGrayed);
+  end;
+  if GTK_STATE_FLAG_FOCUSED in GtkState then
+    Include(AState, odFocused);
+
+  if not AMenuItem.Enabled then
+  begin
+    Include(AState, odDisabled);
+    Include(AState, odGrayed);
+  end;
+  if AMenuItem.Checked then
+    Include(AState, odChecked);
+
+  ADC := TGtk3DeviceContext.CreateFromCairo(AWidget, cr);
+  ACanvas := TCanvas.Create;
+  ACanvas.Handle := HDC(ADC);
+  try
+    if AMenuItem.GTK3DrawItem(ACanvas, ARect, AState) then
+      Result := gboolean(True);
+  finally
+    ACanvas.Handle := 0;
+    ACanvas.Free;
+    ADC.Free;
+  end;
+end;
+
+procedure TGtk3MenuItem.ConnectMenuSignals;
+begin
+  if not gtk_widget_get_realized(FWidget) then
+    FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
+
+  g_signal_connect_data(FWidget, 'destroy', TGCallback(@DestroyWidgetEvent), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget, 'event', TGCallback(@MenuItemEvent), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget, 'activate', TGCallback(@MenuItemActivated), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget, 'select', TGCallback(@MenuItemSelect), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget, 'deselect', TGCallback(@MenuItemDeselect), Self, nil, G_CONNECT_DEFAULT);
+
+  if not Gtk3WidgetIsA(FWidget, gtk_separator_menu_item_get_type) then
+    g_signal_connect_data(FWidget, 'draw', TGCallback(@MenuItemDraw), Self, nil, G_CONNECT_DEFAULT);
+end;
+
 procedure TGtk3MenuItem.InitializeWidget;
 begin
   FWidget := CreateWidget(FParams);
   LCLIntf.SetProp(HWND(Self),'lclwidget',Self);
-
-  // move signal connections into attach events
-  FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
-  g_signal_connect_data(FWidget, 'event', TGCallback(@MenuItemEvent), Self, nil, G_CONNECT_DEFAULT);
-  g_signal_connect_data(FWidget,'activate',TGCallBack(@MenuItemActivated), Self, nil, G_CONNECT_DEFAULT);
-  // must hide all by default
-  // FWidget^.hide;
+  ConnectMenuSignals;
 end;
 
 procedure TGtk3MenuItem.SetCheck(ACheck: boolean);
 begin
-  if Self.IsValidHandle then
-  begin
-    inc(Lock);
-    try
-      PGtkCheckMenuItem(fWidget)^.active := ACheck;
-    finally
-      dec(Lock);
-    end;
+  if not Self.IsValidHandle then
+    Exit;
+  if not Gtk3WidgetIsA(FWidget, gtk_check_menu_item_get_type) then
+    Exit;
+  inc(Lock);
+  try
+    PGtkCheckMenuItem(FWidget)^.active := ACheck;
+  finally
+    dec(Lock);
   end;
 end;
 
+procedure TGtk3MenuItem.ReplaceWidget;
+var
+  AParent: PGtkMenuShell;
+  AChildren: PGList;
+  ANode: PGList;
+  APosition: gint;
+  AVisible: gboolean;
+  OldWidget: PGtkWidget;
+begin
+  if not Assigned(FWidget) then
+    Exit;
+
+  OldWidget := FWidget;
+  AParent := PGtkMenuShell(OldWidget^.get_parent);
+  AVisible := OldWidget^.get_visible;
+
+  APosition := -1;
+  if Assigned(AParent) then
+  begin
+    AChildren := PGtkContainer(AParent)^.get_children;
+    ANode := AChildren;
+    APosition := 0;
+    while Assigned(ANode) do
+    begin
+      if ANode^.data = OldWidget then
+        break;
+      Inc(APosition);
+      ANode := ANode^.next;
+    end;
+    if not Assigned(ANode) then
+      APosition := -1; //not found, so append
+    g_list_free(AChildren);
+  end;
+
+  g_object_ref(PGObject(OldWidget));
+  try
+    if Assigned(AParent) then
+      AParent^.remove(OldWidget)
+    else
+      OldWidget^.destroy_;
+  finally
+    g_object_unref(PGObject(OldWidget));
+  end;
+  FWidget := nil;
+
+  FWidget := CreateWidget(FParams);
+
+  g_object_set_data(PGObject(FWidget), 'lclwidget', Self);
+
+  ConnectMenuSignals;
+
+  if Assigned(AParent) and (APosition >= 0) then
+    AParent^.insert(FWidget, APosition);
+
+  if Assigned(MenuItem) and (MenuItem.ShortCut <> 0) then
+    SetShortCut(MenuItem.ShortCut, MenuItem.ShortCutKey2);
+
+  if AVisible then
+    FWidget^.show;
+end;
+
+procedure TGtk3MenuItem.SetShortCut(AShortCut, {%H-}AShortCutKey2: TShortCut);
+var
+  CurKey: Word;
+  CurShift: TShiftState;
+  GdkKey: guint;
+  GdkMods: TGdkModifierType;
+  LabelChild: PGtkAccelLabel;
+begin
+  if not IsWidgetOK then
+    Exit;
+
+  if Gtk3WidgetIsA(FWidget, gtk_separator_menu_item_get_type) then
+    Exit;
+  LabelChild := PGtkAccelLabel(PGtkBin(FWidget)^.get_child);
+  if not Assigned(LabelChild) then
+    Exit;
+  if not Gtk3WidgetIsA(PGtkWidget(LabelChild), gtk_accel_label_get_type) then
+    Exit;
+
+  if AShortCut = 0 then
+  begin
+    LabelChild^.set_accel(0, []);
+    Exit;
+  end;
+
+  ShortCutToKey(AShortCut, CurKey, CurShift);
+
+  case CurKey of
+    VK_A..VK_Z: GdkKey := CurKey;
+    VK_0..VK_9: GdkKey := CurKey;
+    VK_SPACE: GdkKey := GDK_KEY_space;
+    VK_RETURN: GdkKey := GDK_KEY_Return;
+    VK_TAB: GdkKey := GDK_KEY_Tab;
+    VK_ESCAPE: GdkKey := GDK_KEY_Escape;
+    VK_BACK: GdkKey := GDK_KEY_BackSpace;
+    VK_DELETE: GdkKey := GDK_KEY_Delete;
+    VK_INSERT: GdkKey := GDK_KEY_Insert;
+    VK_HOME: GdkKey := GDK_KEY_Home;
+    VK_END: GdkKey := GDK_KEY_End;
+    VK_PRIOR: GdkKey := GDK_KEY_Prior;
+    VK_NEXT: GdkKey := GDK_KEY_Next;
+    VK_LEFT: GdkKey := GDK_KEY_Left;
+    VK_RIGHT: GdkKey := GDK_KEY_Right;
+    VK_UP: GdkKey := GDK_KEY_Up;
+    VK_DOWN: GdkKey := GDK_KEY_Down;
+    VK_F1..VK_F24: GdkKey := GDK_KEY_F1 + (CurKey - VK_F1);
+  else
+    GdkKey := 0;
+  end;
+
+  GdkMods := [];
+  if ssShift in CurShift then
+    Include(GdkMods, GDK_SHIFT_MASK);
+  if ssCtrl in CurShift then
+    Include(GdkMods, GDK_CONTROL_MASK);
+  if ssAlt in CurShift then
+    Include(GdkMods, GDK_MOD1_MASK);
+  if ssMeta in CurShift then
+    Include(GdkMods, GDK_SUPER_MASK);
+
+  if GdkKey <> 0 then
+    LabelChild^.set_accel(GdkKey, GdkMods);
+end;
 
 { TGtk3ScrollableWin}
 
@@ -7388,7 +7638,7 @@ begin
   AMemo := TCustomMemo(LCLObject);
 
   FWidgetType := FWidgetType + [wtMemo, wtScrollingWin];
-  Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+  Result := LCLGtkScrolledWindowNew;
 
   FCentralWidget := PGtkTextView(TGtkTextView.new);
 
@@ -7714,7 +7964,7 @@ begin
   AListBox := TCustomListBox(LCLObject);
 
 
-  Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+  Result := LCLGtkScrolledWindowNew;
   Result^.show;
 
   ListStore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
@@ -8118,7 +8368,7 @@ begin
   ACheckListBox := TCustomCheckListBox(LCLObject);
   FListBoxStyle := lbStandard;
 
-  Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+  Result := LCLGtkScrolledWindowNew;
   Result^.show;
 
   ListStore := gtk_list_store_new (4, [G_TYPE_UCHAR, G_TYPE_STRING, G_TYPE_POINTER, G_TYPE_BOOLEAN, nil]);
@@ -8305,7 +8555,7 @@ begin
   FPreselectedIndices := nil;
   FWidgetType := FWidgetType + [wtTreeModel, wtListView, wtScrollingWin];
   AListView := TCustomListViewHack(LCLObject);
-  Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+  Result := LCLGtkScrolledWindowNew;
 
   PtrType := G_TYPE_POINTER;
   FViewStyle := AListView.ViewStyle;
@@ -10126,7 +10376,11 @@ begin
   if LCLObject is TUpDown then
     include(FWidgetType,wtSpinEdit);
 
-  Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+  // Use LCLGtkScrolledWindow subclass so that size_allocate with tiny
+  // dimensions (height < 2) is silently skipped.  Without this guard, when
+  // LCL collapses a TCustomControl to height=0 the parent GtkLayout still
+  // calls size_allocate(width,0).
+  Result := PGtkScrolledWindow(LCLGtkScrolledWindowNew);
 
   FCentralWidget := TGtkLayout.new(nil, nil);
 
@@ -10230,6 +10484,35 @@ begin
   begin
     PreferredWidth := 0;
     PreferredHeight := 0;
+  end;
+end;
+
+procedure TGtk3CustomControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+var
+  AReqW, AReqH: gint;
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+  if (Widget = nil) then
+    Exit;
+  // IMPORTANT: When a wtScrollingWin widget (TScrollBox, TScrollingWinControl, etc.) is
+  // sized to 0,0 (e.g. TIpHtmlPanel hidden by splitter in Object Inspector), inherited
+  // calls set_size_request(0,0) which removes the CSS minimum floor.
+  // GTK then allocates 0px to GtkScrolledWindow -> scrollbar gets 1px ->
+  // content height = 1-CSS_extents < 0 -> gtk_box_gadget_distribute assertion
+  // fails and queue_resize loops forever.
+  // Fix: replace explicit-zero request with -1 which means "use CSS minimum" so GTK
+  // can still allocate the widget at its natural CSS minimum when the LCL
+  // gives a zero dimension. zeljan
+  if wtScrollingWin in WidgetType then
+  begin
+    if (AWidth <= 0) or (AHeight <= 0) then
+    begin
+      AReqW := AWidth;
+      AReqH := AHeight;
+      if AReqW <= 0 then AReqW := -1;
+      if AReqH <= 0 then AReqH := -1;
+      Widget^.set_size_request(AReqW, AReqH);
+    end;
   end;
 end;
 

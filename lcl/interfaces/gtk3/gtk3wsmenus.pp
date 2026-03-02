@@ -71,187 +71,14 @@ type
 
 
 implementation
-uses gtk3widgets;
-{. $I gtk2defines.inc}
+uses gtk3widgets, gtk3int;
 
 var
   MenuWidget: PGtkWidget = nil;
 
-function Gtk3MenuItemButtonPress(widget: PGtkWidget; event: PGdkEventButton;
- {%H-} user_data: gpointer): gboolean; cdecl;
-var
-  Parent: PGtkWidget;
-  // WidgetInfo: PWidgetInfo;
-begin
-  Result := False;
-  (*
-  if (event^._type = GDK_BUTTON_PRESS) then
-  begin
-    Parent := gtk_widget_get_parent(Widget);
-    if (Parent <> nil) and GTK_IS_MENU_BAR(Parent) then
-    begin
-      if (gtk_menu_item_get_submenu(PGtkMenuItem(Widget)) = nil) then
-      begin
-        WidgetInfo := GetWidgetInfo(Widget);
-        if Assigned(TMenuItem(WidgetInfo^.LCLObject).OnClick) then
-        begin
-          gtk_menu_item_activate(PGtkMenuItem(Widget));
-          // must be true because of issue #22616
-          Result := True;
-        end;
-      end;
-    end;
-  end;
-  *)
-end;
-
-function Gtk3MenuItemActivate(widget: PGtkMenuItem; data: gPointer) : GBoolean; cdecl;
-var
-  Mess: TLMActivate;
-  LCLMenuItem: TMenuItem;
-begin
-  Result:= True;
-  (*
-  ResetDefaultIMContext;
-
-  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
-
-  LCLMenuItem := TMenuItem(Data);
-
-  // the gtk fires activate for radio buttons when unchecking them
-  // the LCL expects only uncheck
-  if LCLMenuItem.RadioItem
-  and GtkWidgetIsA(PGtkWidget(Widget), GTK_TYPE_CHECK_MENU_ITEM)
-  and (not gtk_check_menu_item_get_active(PGTKCheckMenuItem(Widget))) then Exit;
-
-  FillChar(Mess{%H-}, SizeOf(Mess), #0);
-  Mess.Msg := LM_ACTIVATE;
-  Mess.Active := WA_ACTIVE;
-  Mess.Minimized := False;
-  Mess.ActiveWindow := 0;
-  Mess.Result := 0;
-  DeliverMessage(Data, Mess);
-
-  Result := CallBackDefaultReturn;
-  *)
-end;
-
-function Gtk3MenuItemToggled(AMenuItem: PGTKCheckMenuItem;
-                             AData: gPointer): GBoolean; cdecl;
-var
-  LCLMenuItem: TMenuItem;
-  Mess: TLMessage;
-  b: Boolean;
-  w: PGtkWidget;
-  // WidgetInfo: PWidgetInfo;
-begin
-  Result := False; //CallBackDefaultReturn;
-  (*
-  if LockOnChange(PgtkObject(AMenuItem),0) > 0 then Exit;
-
-  LCLMenuItem := TMenuItem(AData);
-
-  if (csDesigning in LCLMenuItem.ComponentState) then
-    exit;
-
-  w := gtk_get_event_widget(gtk_get_current_event);
-
-  if not GTK_IS_RADIO_MENU_ITEM(w) then
-    exit;
-
-  b := gtk_check_menu_item_get_active(AMenuItem);
-
-  if not LCLMenuItem.Checked then
-    g_signal_stop_emission_by_name(AMenuItem, 'toggled')
-  else
-    g_signal_stop_emission_by_name(AMenuItem, 'activate');
-
-  if b <> LCLMenuItem.Checked then
-    gtk_check_menu_item_set_active(AMenuItem, LCLMenuItem.Checked);
-
-  {we must trigger OnClick() somehow, since we stopped signals}
-  if b and (w <> nil) and (w <> PGtkWidget(AMenuItem)) then
-  begin
-    WidgetInfo := GetWidgetInfo(w);
-    FillChar(Mess{%H-},SizeOf(Mess),#0);
-    Mess.Msg := LM_ACTIVATE;
-    WidgetInfo^.LCLObject.Dispatch(Mess);
-  end;
-  *)
-end;
-
-function Gtk3MenuItemSelect({%H-}item: PGtkMenuItem; AMenuItem: gPointer): GBoolean; cdecl;
-begin
-  TMenuItem(AMenuItem).IntfDoSelect;
-  Result := False;
-end;
-
-procedure Gtk3MenuItemToggleSizeRequest(AMenuItem: PGtkMenuItem; requisition: Pgint; LCLItem: TMenuItem); cdecl;
-var
-  spacing: guint;
-  IconWidth: Integer;
-begin
-  (*
-  if LCLItem.HasIcon then
-  begin
-    IconWidth := LCLItem.GetIconSize.X;
-    if IconWidth > 0 then
-    begin
-      gtk_widget_style_get(PGtkWidget(AMenuItem), 'toggle-spacing', [@spacing, nil]);
-      requisition^ := IconWidth + spacing;
-    end
-    else
-      requisition^ := 0;
-  end
-  else
-    GTK_MENU_ITEM_GET_CLASS(AMenuItem)^.toggle_size_request(AMenuItem, requisition);
-   *)
-end;
-
-procedure Gtk3MenuItemSizeRequest(AMenuItem: PGtkMenuItem; requisition: PGtkRequisition; LCLItem: TMenuItem); cdecl;
-var
-  IconHeight: Integer;
-begin
-  (*
-  GTK_WIDGET_GET_CLASS(AMenuItem)^.size_request(PGtkWidget(AMenuItem), requisition);
-  IconHeight := LCLItem.GetIconSize.Y;
-  if requisition^.height < IconHeight then
-    requisition^.height := IconHeight;
-  *)
-end;
-
-function Gtk3MenuItemDeselect({%H-}item: Pointer; {%H-}AMenuItem: TMenuItem): GBoolean; cdecl;
-begin
-  Application.Hint := '';
-  Result := False;
-end;
-
 { TGtk3WSMenuItem }
-(*
-class procedure TGtk3WSMenuItem.SetCallbacks(const AGtkWidget: PGtkWidget;
-  const AWidgetInfo: PWidgetInfo);
-begin
-  // connect activate signal (i.e. clicked)
-  {button-press-event is needed by root menu items which have not
-  submenu, but OnClick() is assigned - fix for #15986 }
-  g_signal_connect_after(PGTKObject(AGtkWidget), 'button-press-event',
-    TGTKSignalFunc(@Gtk2MenuItemButtonPress), AWidgetInfo^.LCLObject);
-  g_signal_connect(PGTKObject(AGtkWidget), 'activate',
-                   TGTKSignalFunc(@Gtk2MenuItemActivate), AWidgetInfo^.LCLObject);
-  g_signal_connect(PGTKObject(AGtkWidget), 'select',
-    TGTKSignalFunc(@Gtk2MenuItemSelect), AWidgetInfo^.LCLObject);
-  g_signal_connect(PGTKObject(AGtkWidget), 'deselect',
-    TGTKSignalFunc(@Gtk2MenuItemDeselect), AWidgetInfo^.LCLObject);
-  g_signal_connect(PGTKObject(AGtkWidget), 'toggle-size-request',
-    TGTKSignalFunc(@Gtk2MenuItemToggleSizeRequest), AWidgetInfo^.LCLObject);
-  g_signal_connect(PGTKObject(AGtkWidget), 'size-request',
-    TGTKSignalFunc(@Gtk2MenuItemSizeRequest), AWidgetInfo^.LCLObject);
-end;
-*)
 
 class procedure TGtk3WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
-// var
-//  MenuItem, ParentMenuWidget, ContainerMenu: PGtkWidget;
 var
   MenuItem: TGtk3MenuItem;
   ParentMenuWidget, ContainerMenu: PGtkWidget;
@@ -294,13 +121,6 @@ begin
     AForm := TCustomForm(AMenuItem.GetParentMenu.Parent);
     PGtkMenuBar(TGtk3Window(AForm.Handle).GetMenuBar)^.append(PGtkMenuItem(MenuItem.Widget));
   end else
-  (*
-  if (AMenuItem.GetParentMenu is TPopupMenu) then
-  begin
-    DebugLn('Attaching item to PopupMenu ...');
-    PGtkMenu(TGtk3Menu(AMenuItem.GetParentMenu.Handle).Widget)^.append(TGtk3MenuItem(AMenuItem.Handle).Widget);
-  end else
-  *)
   begin
     if Gtk3IsMenu(ParentMenuWidget) then
       ContainerMenu := ParentMenuWidget
@@ -341,11 +161,6 @@ begin
 end;
 
 class function TGtk3WSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
-(*
-var
-  Widget: PGtkWidget;
-  WidgetInfo: PWidgetInfo;
-  *)
 var
   AMenu: TGtk3Menu;
 begin
@@ -362,67 +177,16 @@ begin
 
   if AMenuItem.Visible then
     TGtk3MenuItem(Result).show;
-
-  // create the menuitem widget (normal, check or radio)
-  (*
-  if AMenuItem.Caption = cLineCaption then // create separator
-    Widget := gtk_menu_item_new
-  else
-  if AMenuItem.RadioItem and not AMenuItem.HasIcon then
-    Widget := gtk_radio_menu_item_new(nil)
-  else
-  if AMenuItem.IsCheckItem or AMenuItem.HasIcon then
-    Widget := gtk_check_menu_item_new
-  else
-    Widget := gtk_menu_item_new;
-
-  WidgetInfo := CreateWidgetInfo(Widget);
-  WidgetInfo^.LCLObject := AMenuItem;
-
-  if GtkWidgetIsA(Widget, GTK_TYPE_CHECK_MENU_ITEM) then
-  begin
-    // check or radio
-    // set 'ShowAlwaysCheckable'
-    gtk_check_menu_item_set_show_toggle(PGtkCheckMenuItem(Widget),
-      AMenuItem.ShowAlwaysCheckable);
-    // set 'Checked'
-    gtk_check_menu_item_set_active(PGtkCheckMenuItem(Widget),
-      AMenuItem.Checked);
-
-    g_signal_connect(PGTKObject(Widget), 'toggled',
-      TGTKSignalFunc(@Gtk2MenuItemToggled), Pointer(AMenuItem));
-  end;
-
-  // set attributes (enabled and rightjustify)
-  gtk_widget_set_sensitive(Widget,
-                     AMenuItem.Enabled and (AMenuItem.Caption <> cLineCaption));
-  if AMenuItem.RightJustify then
-    gtk_menu_item_right_justify(PGtkMenuItem(Widget));
-
-  // create the hbox containing the label and the icon
-  UpdateInnerMenuItem(AMenuItem, Widget);
-
-  SetCallbacks(Widget, WidgetInfo);
-
-  gtk_widget_show(Widget);
-  {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenuItem));
-  {$ENDIF}
-  Result := HMENU({%H-}PtrUInt(Widget));
-  *)
 end;
 
 class procedure TGtk3WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   { TODO: cleanup }
   TGtk3MenuItem(AMenuItem.Handle).Free;
-  // TGtk2WidgetSet(WidgetSet).DestroyLCLComponent(AMenuItem);
 end;
 
 class procedure TGtk3WSMenuItem.SetCaption(const AMenuItem: TMenuItem;
   const ACaption: string);
-// var
-//  MenuItemWidget: TGtk3MenuItem;
 begin
   if not WSCheckMenuItem(AMenuItem, 'SetCaption') then
     Exit;
@@ -430,36 +194,15 @@ begin
   DebugLn('TGtk3WSMenuItem.SetCaption ',ACaption);
   {$ENDIF}
   TGtk3MenuItem(AMenuItem.Handle).Caption := ACaption;
-  // MenuItemWidget := TGtk3MenuItem(AMenuItem.Handle);
-  // gtk_menu_item_set_label(PGtkMenuItem(MenuItemWidget.Widget), PgChar(AMenuItem.Caption));
-  // UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
-  // gtk_widget_set_sensitive({%H-}PGtkWidget(AMenuItem.Handle),
-  // AMenuItem.Enabled and (ACaption <> cLineCaption));
 end;
 
 class procedure TGtk3WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const ShortCutK1, ShortCutK2: TShortCut);
-//var
-  //MenuWidget: PGtkMenuItem;
-  //accel_path: String;
-  //CurKey: Word;
-  //CurShift: TShiftState;
 begin
-  if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then  Exit;
-
-  //Gtk3: Use Gtk2 implementation for this ... cannot find anything
-  // usefull for this in Gtk3 .... seem that old implementation could work
-  // Temporary: At least it writes the names of the shortcuts
-  //  UpdateInnerMenuItem(AMenuItem, {%H-}PGTKWidget(AMenuItem.Handle), ShortCutK1, ShortCutK2);
-  // PGtkMenuItem(nil)^.add_accelerator();
-{  // Gets the inner widgets. They should already be created by now
-  MenuWidget := PGtkMenuItem(AMenuItem.Handle);
-  if (MenuWidget=nil) then Exit;
-  // Converts the shortcut to a gtk friendly format and sets it
-  ShortCutToKey(NewShortCut, CurKey, CurShift);
-  accel_path := 'LCLApp/Menu/' + GetAcceleratorString(CurKey, CurShift);
-  gtk_accel_map_add_entry(accel_path, CurKey, ShiftToGdkModifierType);
-  gtk_menu_item_set_accel_path(); }
+  if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then
+    Exit;
+  if AMenuItem.HandleAllocated then
+    TGtk3MenuItem(AMenuItem.Handle).SetShortCut(ShortCutK1, ShortCutK2);
 end;
 
 class procedure TGtk3WSMenuItem.SetVisible(const AMenuItem: TMenuItem;
@@ -478,44 +221,23 @@ end;
 class function TGtk3WSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
 var
-  IsRadio: Boolean;
-  Group: PGSList;
   Item: TGtk3MenuItem;
 begin
-  Result:=false;
+  Result := False;
   if not WSCheckMenuItem(AMenuItem, 'SetCheck') then
     Exit;
-  if AMenuItem.HandleAllocated then
-  begin
-     Item := TGtk3MenuItem(AMenuItem.Handle);
-     Item.SetCheck(Checked);
-  end else
+  if not AMenuItem.HandleAllocated then
   begin
     AMenuItem.RecreateHandle;
     Result := True;
+    Exit;
   end;
-  (*
-  Item := {%H-}Pointer(AMenuItem.Handle);
-  IsRadio := gtk_is_radio_menu_item(Item);
-  if IsRadio or gtk_is_check_menu_item(Item)
-  then begin
-    if IsRadio
-    then begin
-      Group := gtk_radio_menu_item_group(Item);
-      LockRadioGroupOnChange(Group, +1);
-    end
-    else LockOnChange(Item, +1);
-    gtk_check_menu_item_set_active(Item, Checked);
-    if IsRadio
-    then LockRadioGroupOnChange(Group, -1)
-    else LockOnChange(Item, -1);
-    Result := True;
-  end
-  else begin
-    AMenuItem.RecreateHandle;
-    Result := True;
-  end;
-  *)
+  Item := TGtk3MenuItem(AMenuItem.Handle);
+  if AMenuItem.IsCheckItem and
+     not Gtk3WidgetIsA(Item.Widget, gtk_check_menu_item_get_type) then
+    Item.ReplaceWidget;
+  Item.SetCheck(Checked);
+  Result := True;
 end;
 
 class function TGtk3WSMenuItem.SetEnable(const AMenuItem: TMenuItem;
@@ -524,17 +246,27 @@ begin
   Result := False;
   if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
     Exit;
-  TGtk3Widget(AMenuItem.Handle).Enabled := Enabled and (AMenuItem.Caption <> cLineCaption);
-  // gtk_widget_set_sensitive({%H-}PGtkWidget(AMenuItem.Handle),
-  //  Enabled and (AMenuItem.Caption <> cLineCaption));
+  TGtk3Widget(AMenuItem.Handle).Enabled := Enabled and not AMenuItem.IsLine;
   Result := True;
 end;
 
 class function TGtk3WSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
   const RadioItem: boolean): boolean;
+var
+  Item: TGtk3MenuItem;
+  IsAlreadyRadio: Boolean;
 begin
-  AMenuItem.RecreateHandle;
   Result := True;
+  if not AMenuItem.HandleAllocated then
+  begin
+    AMenuItem.RecreateHandle;
+    Exit;
+  end;
+  Item := TGtk3MenuItem(AMenuItem.Handle);
+  IsAlreadyRadio := Gtk3IsRadioMenuItem(PGObject(Item.Widget));
+  if RadioItem = IsAlreadyRadio then
+    Exit;
+  Item.ReplaceWidget;
 end;
 
 class function TGtk3WSMenuItem.SetRightJustify(const AMenuItem: TMenuItem;
@@ -553,56 +285,28 @@ begin
 end;
 
 class procedure TGtk3WSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
-  const HasIcon: Boolean; const AIcon: TBitmap);
+  const HasIcon: Boolean; const {%H-}AIcon: TBitmap);
+var
+  Item: TGtk3MenuItem;
 begin
   if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
     Exit;
-  if HasIcon then
+  if not AMenuItem.HandleAllocated then
+  begin
     AMenuItem.RecreateHandle;
+    Exit;
+  end;
+  Item := TGtk3MenuItem(AMenuItem.Handle);
+  if HasIcon <> Gtk3WidgetIsA(Item.Widget, gtk_image_menu_item_get_type) then
+    Item.ReplaceWidget;
 end;
 
 { TGtk3WSMenu }
 
 class function TGtk3WSMenu.CreateHandle(const AMenu: TMenu): HMENU;
-(*
-var
-  Widget: PGtkWidget;
-  WidgetInfo: PWidgetInfo;
-  Box: Pointer;
-  ParentForm: TCustomForm;
-const
-  MenuDirection : array[Boolean] of Longint = (
-    GTK_PACK_DIRECTION_LTR,
-    GTK_PACK_DIRECTION_RTL);
-  *)
 var
   AParams: TCreateParams;
 begin
-  (*
-  Widget := gtk_menu_bar_new();
-  // get the VBox, the form has one child, a VBox
-  ParentForm := TCustomForm(AMenu.Parent);
-  if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
-    RaiseGDBException('MainMenu without form');
-  if ParentForm.Menu <> AMenu then
-    RaiseGDBException('Form already has a MainMenu');
-  if ParentForm.HandleAllocated then
-  begin
-    Box := {%H-}PGTKBin(ParentForm.Handle)^.Child;
-    gtk_box_pack_start(Box, Widget, False, False, 0);
-  end;
-
-  gtk_menu_bar_set_pack_direction(PGtkMenuBar(Widget), MenuDirection[AMenu.UseRightToLeftAlignment]);
-  gtk_widget_show(Widget);
-
-  {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenu));
-  {$ENDIF}
-  Result := {%H-}HMENU(Widget);
-  WidgetInfo := CreateWidgetInfo(Widget);
-  WidgetInfo^.LCLObject := AMenu;
-  // no callbacks for main menu
-  *)
   if (AMenu is TMainMenu) and (AMenu.Owner is TCustomForm) then
   begin
     {$IFDEF GTK3DEBUGMENUS}
@@ -664,38 +368,6 @@ var
 begin
   X^ := TGtk3Menu(TPopupMenu(AData).Handle).PopupPoint.X;
   Y^ := TGtk3Menu(TPopupMenu(AData).Handle).PopupPoint.Y;
-  (*
-  X^ := PPoint(WidgetInfo^.UserData)^.X;
-  Y^ := PPoint(WidgetInfo^.UserData)^.Y;
-
-  if WidgetInfo^.LCLObject is TPopupMenu then
-  begin
-    // make menu to fit the screen vertically
-    gtk_widget_size_request(PGtkWidget(menu), @Requisition);
-    ScreenHeight := gdk_screen_height();
-    if Y^ + Requisition.height > ScreenHeight then
-    begin
-      Y^ := ScreenHeight - Requisition.height;
-      if Y^ < 0 then Y^ := 0;
-    end;
-
-    // get actual alignment
-    Alignment := TPopupMenu(WidgetInfo^.LCLObject).Alignment;
-    if TPopupMenu(WidgetInfo^.LCLObject).UseRightToLeftAlignment then
-    begin
-      if Alignment = paLeft then
-        Alignment := paRight
-      else
-      if Alignment = paRight then
-        Alignment := paLeft;
-    end;
-
-    case Alignment of
-      paCenter: X^ := X^ - Requisition.width div 2;
-      paRight: X^ := X^ - Requisition.width;
-    end;
-  end;
-  *)
 end;
 
 function gtkWSPopupDelayedClose(Data: Pointer): gboolean; cdecl;
@@ -716,22 +388,7 @@ begin
 end;
 
 class function TGtk3WSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
-(*
-var
-  Widget: PGtkWidget;
-  WidgetInfo: PWidgetInfo;
-  *)
 begin
-  (*
-  Widget := gtk_menu_new;
-  Result := HMENU({%H-}PtrUInt(Widget));
-  {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Widget, dbgsName(Sender));
-  {$ENDIF}
-  WidgetInfo := CreateWidgetInfo(Widget);
-  WidgetInfo^.LCLObject := AMenu;
-  SetCallbacks(Widget, WidgetInfo);
-  *)
   {$IFDEF GTK3DEBUGMENUS}
   DebugLn('****** TGtk3WSPopupMenu.CreateHandle ******');
   {$ENDIF}
@@ -754,36 +411,8 @@ begin
   {$IFDEF GTK3DEBUGMENUS}
   DebugLn('TGtk3WSPopupMenu.Popup X=',dbgs(X),' Y=',dbgs(Y));
   {$ENDIF}
-  // gtk_menu_popdown(PGtkMenu(TGtk3Widget(APopupMenu.Handle).Widget));
-  // PGtkMenu(TGtk3Widget(APopupMenu.Handle).Widget)^.show_all;
   PGtkMenu(TGtk3Menu(APopupMenu.Handle).Widget)^.popup(nil, nil,
-    TGtkMenuPositionFunc(AProc), APopupMenu, 0, gtk_get_current_event_time);
-
-  // TGtk3Widget(APopupMenu.Handle).Show;
-  (*
-  MenuWidget := {%H-}PGtkWidget(APopupMenu.Handle);
-  WidgetInfo := GetWidgetInfo(MenuWidget);
-  WidgetInfo^.UserData := @APoint;
-  WidgetInfo^.DataOwner := False;
-  // MenuWidget can be either GtkMenu or GtkMenuItem submenu
-  if GTK_IS_MENU_ITEM(MenuWidget) then
-    MenuWidget := gtk_menu_item_get_submenu(PGtkMenuItem(MenuWidget));
-  gtk_menu_popup(PGtkMenu(MenuWidget), nil, nil, TGtkMenuPositionFunc(AProc),
-                 WidgetInfo, 0, gtk_get_current_event_time());
-  repeat
-    try
-      WidgetSet.AppProcessMessages; // process all events
-    except
-      if Application.CaptureExceptions then
-        Application.HandleException(APopupMenu)
-      else
-        raise;
-    end;
-    if Application.Terminated or not Assigned(MenuWidget) then
-      break;
-    Application.Idle(true);
-  until False;
-  *)
+    TGtkMenuPositionFunc(AProc), APopupMenu, 0, Gtk3WidgetSet.LastUserEventTime);
 end;
 
 end.

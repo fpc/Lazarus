@@ -93,11 +93,53 @@ begin
   end;
 end;
 
+procedure LCLGtkFrameSizeAllocate(widget: PGtkWidget; allocation: PGtkAllocation); cdecl;
+var
+  ParentClass: PGtkWidgetClass;
+  labelWidget: PGtkWidget;
+  ctx: PGtkStyleContext;
+  border, padding, margin: TGtkBorder;
+  labelMinH, decorH: gint;
+begin
+  // Compute decoration threshold for THIS widget on every call.
+  decorH := 2; // fallback. At least 2 px so height=0 always skips
+  labelWidget := PGtkFrame(widget)^.get_label_widget;
+  if Assigned(labelWidget) and Gtk3IsWidget(labelWidget) then
+  begin
+    labelMinH := 0;
+    gtk_widget_get_preferred_height(labelWidget, @labelMinH, nil);
+    if labelMinH > 0 then
+      inc(decorH, labelMinH);
+  end;
+  ctx := widget^.get_style_context;
+  if Assigned(ctx) then
+  begin
+    FillChar(border{%H-}, SizeOf(border), 0);
+    FillChar(padding{%H-}, SizeOf(padding), 0);
+    FillChar(margin{%H-}, SizeOf(margin), 0);
+    ctx^.get_border(GTK_STATE_FLAG_NORMAL, @border);
+    ctx^.get_padding(GTK_STATE_FLAG_NORMAL, @padding);
+    ctx^.get_margin(GTK_STATE_FLAG_NORMAL, @margin);
+    inc(decorH, gint(border.top)   + gint(border.bottom)
+              + gint(padding.top)  + gint(padding.bottom)
+              + gint(margin.top)   + gint(margin.bottom));
+  end;
+
+  if allocation^.height < decorH then
+    Exit; // Allocation too small for frame decoration, so skip to prevent cascade.
+
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  if not Assigned(ParentClass) or not Assigned(ParentClass^.size_allocate) then
+    Exit;
+  ParentClass^.size_allocate(widget, allocation);
+end;
+
 procedure LCLGtkFrameClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;
 var
   AWidgetClass: PGtkWidgetClass;
 begin
   AWidgetClass := PGtkWidgetClass(klass);
+  AWidgetClass^.size_allocate := @LCLGtkFrameSizeAllocate;
   AWidgetClass^.get_preferred_width := @LCLGtkFrameGetPreferredWidth;
   AWidgetClass^.get_preferred_height := @LCLGtkFrameGetPreferredHeight;
 end;
