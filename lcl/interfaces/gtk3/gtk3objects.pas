@@ -2486,8 +2486,10 @@ begin
   {$ifdef VerboseGtk3DeviceContext}
   //DebugLn('TGtk3DeviceContext.fillRect ',Format('x %d y %d w %d h %d',[x, y, w, h]));
   {$endif}
+
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
 
+  cairo_stroke(pcr);  //issue #42082 flush thick-pen accumulated sub-paths with pen colour
   if ABrush <> 0 then
   begin
     ATempBrush := FCurrentBrush;
@@ -2764,7 +2766,6 @@ var
 begin
   if not Assigned(pcr) then
     exit(False);
-
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
   ApplyPen;
 
@@ -2833,7 +2834,11 @@ begin
 
   if cairo_has_current_point(pcr)<>0 then
     cairo_get_current_point(pcr, @fLastPenX, @fLastPenY);
-  cairo_stroke_preserve(pcr);
+  //issue #42082, stroke with pens width <= 1
+  if fCurrentPen.Width <= 1 then
+    cairo_stroke(pcr)
+  else
+    cairo_stroke_preserve(pcr);
   Result := True;
 end;
 
