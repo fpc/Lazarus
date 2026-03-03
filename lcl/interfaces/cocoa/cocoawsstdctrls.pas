@@ -378,7 +378,6 @@ type
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
-function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
 function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
 function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
 function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
@@ -433,15 +432,6 @@ begin
     if btnBezel <> 0 then
       Result.setBezelStyle(btnBezel);
     Result.setButtonType(btnType);
-  end;
-end;
-
-function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
-begin
-  Result := TCocoaTextView.alloc.lclInitWithCreateParams(AParams);
-  if Assigned(Result) then
-  begin
-    TCocoaTextView(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
   end;
 end;
 
