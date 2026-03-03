@@ -391,8 +391,6 @@ procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
   SkipChangeEvent: Boolean = true);
-procedure TextFieldSetTextHint(txt: NSTextField; const str: string);
-procedure ObjSetTextHint(obj: NSObject; const str: string);
 
 function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
@@ -491,26 +489,6 @@ begin
   end
   else
     btn.setState(buttonState[NewState]);
-end;
-
-procedure TextFieldSetTextHint(txt: NSTextField; const str: string);
-var
-  ns : NSString;
-begin
-  if not Assigned(txt) then Exit;
-  if str <> '' then begin
-    ns := NSStringUtf8(str);
-    txt.setPlaceholderString(ns);
-    ns.release;
-  end else begin
-    txt.setPlaceholderString(nil);
-  end;
-end;
-
-procedure ObjSetTextHint(obj: NSObject; const str: string);
-begin
-  if not Assigned(obj) or not obj.isKindOfClass(NSTextField) then Exit;
-  TextFieldSetTextHint(NSTextField(obj), str);
 end;
 
 function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
@@ -1449,7 +1427,7 @@ class procedure TCocoaWSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
 begin
   if NSAppKitVersionNumber <= NSAppKitVersionNumber10_10 then Exit;
   if (ACustomEdit.HandleAllocated) then
-    ObjSetTextHint(NSObject(ACustomEdit.Handle), ATextHint);
+    TCocoaTextFieldUtil.setTextHint(NSObject(ACustomEdit.Handle), ATextHint);
 end;
 
 { TCocoaMemoStrings }
@@ -2298,7 +2276,7 @@ begin
     Exit;
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
-  ObjSetTextHint(NSObject(ACustomComboBox.Handle), ATextHint);
+  TCocoaTextFieldUtil.setTextHint(NSObject(ACustomComboBox.Handle), ATextHint);
 end;
 
 { TCocoaWSToggleBox }

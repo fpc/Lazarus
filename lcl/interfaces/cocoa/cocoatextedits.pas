@@ -211,7 +211,14 @@ type
       const align: TAlignment );
     class procedure setBorderStyle(
       const textField: NSTextField;
-      const borderStyle: TBorderStyle);
+      const borderStyle: TBorderStyle );
+    class procedure setTextHint(
+      const textField: NSTextField;
+      const str: String ); overload;
+    class procedure setTextHint(
+      const obj: NSObject;
+      const str: String ); overload;
+
   end;
 
 type
@@ -1096,6 +1103,31 @@ begin
   {$else}
   textField.setBezeled(borderStyle <> bsNone);
   {$endif}
+end;
+
+class procedure TCocoaTextFieldUtil.setTextHint(
+  const textField: NSTextField;
+  const str: String);
+var
+  ns : NSString;
+begin
+  if not Assigned(textField) then Exit;
+  if str <> '' then begin
+    ns := NSStringUtf8(str);
+    textField.setPlaceholderString(ns);
+    ns.release;
+  end else begin
+    textField.setPlaceholderString(nil);
+  end;
+end;
+
+class procedure TCocoaTextFieldUtil.setTextHint(
+  const obj: NSObject;
+  const str: String );
+begin
+  if not Assigned(obj) or not obj.isKindOfClass(NSTextField) then
+    Exit;
+  TCocoaTextFieldUtil.setTextHint( NSTextField(obj), str );
 end;
 
 { TCocoaTextField }
