@@ -194,15 +194,21 @@ type
   TCocoaTextFieldUtil = class
   public
     class function setLCLFont(
-      const cocoaField: NSTextField;
+      const textField: NSTextField;
       const lclFont: TFont ): Boolean; overload;
     class function setLCLFont(
-      const cocoaField: NSTextField;
+      const textField: NSTextField;
       const lclControl: TObject ): Boolean; overload;
     class procedure setWordWrap(
       const textView: NSTextView;
       const scrollView: NSScrollView;
-      const wordWrap: Boolean);
+      const wordWrap: Boolean );
+    class procedure setAllignment(
+      const textView: NSTextView;
+      const align: TAlignment );
+    class procedure setAllignment(
+      const textField: NSTextField;
+      const align: TAlignment );
   end;
 
 type
@@ -991,7 +997,7 @@ end;
 { TCocoaTextFieldUtil }
 
 class function TCocoaTextFieldUtil.setLCLFont(
-  const cocoaField: NSTextField;
+  const textField: NSTextField;
   const lclFont: TFont): Boolean;
 var
   cocoaFont: NSFont;
@@ -1004,18 +1010,18 @@ begin
   tempFont.Color:= clDefault;
   if NOT tempFont.isDefault then begin
     cocoaFont:= TCocoaFont(lclFont.Reference.Handle).Font;
-    cocoaField.setFont( cocoaFont );
+    textField.setFont( cocoaFont );
     Result:= True;
   end;
 
   if lclFont.Color <> clDefault then begin
     cocoaColor:= ColorToNSColor(ColorToRGB(lclFont.Color));
-    cocoaField.setTextColor( cocoaColor );
+    textField.setTextColor( cocoaColor );
   end;
 end;
 
 class function TCocoaTextFieldUtil.setLCLFont(
-  const cocoaField: NSTextField;
+  const textField: NSTextField;
   const lclControl: TObject): Boolean;
 begin
   Result:= False;
@@ -1023,7 +1029,7 @@ begin
     Exit;
   if NOT (lclControl is TControl) then
     Exit;
-  Result:= TCocoaTextFieldUtil.setLCLFont( cocoaField, TControl(lclControl).Font );
+  Result:= TCocoaTextFieldUtil.setLCLFont( textField, TControl(lclControl).Font );
 end;
 
 class procedure TCocoaTextFieldUtil.setWordWrap(
@@ -1054,6 +1060,26 @@ begin
     textView.setAutoresizingMask(0);
   end;
   textView.sizeToFit;
+end;
+
+class procedure TCocoaTextFieldUtil.setAllignment(
+  const textView: NSTextView;
+  const align: TAlignment);
+begin
+  if NOT Assigned(textView) then
+    Exit;
+  //todo: for bidi modes, there's "NSTextAlignmentNatural"
+  textView.setAlignment( TCocoaTypeUtil.alignment(align) );
+end;
+
+class procedure TCocoaTextFieldUtil.setAllignment(
+  const textField: NSTextField;
+  const align: TAlignment);
+begin
+  if NOT Assigned(textField) then
+    Exit;
+  //todo: for bidi modes, there's "NSTextAlignmentNatural"
+  textField.setAlignment( TCocoaTypeUtil.alignment(align) );
 end;
 
 { TCocoaTextField }

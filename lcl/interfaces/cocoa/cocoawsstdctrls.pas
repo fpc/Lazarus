@@ -388,9 +388,6 @@ function getTableViewFromLCLListBox( const AListBox: TCustomListBox ):
   TCocoaTableListView;
 procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 
-function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
-procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
-procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
 procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
@@ -1110,7 +1107,7 @@ begin
   field.setEditable(False);
   field.setSelectable(False);
   {$endif}
-  field.setAlignment( AlignmentLCLToCocoa(lclStaticText.Alignment) );
+  TCocoaTextFieldUtil.setAllignment(field, lclStaticText.Alignment);
   Result:=TLCLHandle(field);
 end;
 
@@ -1119,7 +1116,7 @@ class procedure TCocoaWSCustomStaticText.SetAlignment(
 begin
   if not Assigned(ACustomStaticText) or (not ACustomStaticText.HandleAllocated) or (ACustomStaticText.Handle=0) then
     exit;
-  NSTextField(ACustomStaticText.Handle).setAlignment( AlignmentLCLToCocoa(NewAlignment) );
+  TCocoaTextFieldUtil.setAllignment(NSTextField(ACustomStaticText.Handle), NewAlignment);
 end;
 
 { TCocoaWSCustomEdit }
@@ -1179,7 +1176,7 @@ begin
     Exit;
 
   TextFieldSetBorderStyle(field, edit.BorderStyle);
-  TextFieldSetAllignment(field, edit.Alignment);
+  TCocoaTextFieldUtil.setAllignment(field, edit.Alignment);
   UpdateControlFocusRing( field, edit );
 end;
 
@@ -1310,7 +1307,7 @@ begin
     Exit;
   if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
     Exit;
-  TextFieldSetAllignment(field, NewAlignment);
+  TCocoaTextFieldUtil.setAllignment(field, NewAlignment);
 end;
 
 class procedure TCocoaWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
@@ -1654,30 +1651,6 @@ end;
 
 { TCocoaWSCustomMemo }
 
-function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
-begin
-  case al of
-    taRightJustify:
-      Result := NSTextAlignmentRight;
-    taCenter:
-      Result := NSTextAlignmentCenter;
-  else
-    Result:= NSTextAlignmentLeft;
-  end;
-end;
-
-procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
-begin
-  //todo: for bidi modes, there's "NSTextAlignmentNatural"
-  txt.setAlignment( AlignmentLCLToCocoa(align) );
-end;
-
-procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
-begin
-  //todo: for bidi modes, there's "NSTextAlignmentNatural"
-  txt.setAlignment( AlignmentLCLToCocoa(align) );
-end;
-
 class function TCocoaWSCustomMemo.GetTextView(AWinControl: TWinControl): TCocoaTextView;
 var
   lScroll: TCocoaScrollView;
@@ -1775,7 +1748,7 @@ begin
   scr.callback := txt.callback;
 
   TCocoaTextFieldUtil.setWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
-  TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
+  TCocoaTextFieldUtil.setAllignment(txt, TCustomMemo(AWinControl).Alignment);
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
   txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
   txt.release;
@@ -1911,8 +1884,7 @@ var
   txt: TCocoaTextView;
 begin
   txt := GetTextView(ACustomEdit);
-  if Assigned(txt) then
-    TextViewSetAllignment(txt, NewAlignment);
+  TCocoaTextFieldUtil.setAllignment(txt, NewAlignment);
 end;
 
 class function TCocoaWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
