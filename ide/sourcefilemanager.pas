@@ -51,7 +51,6 @@ uses
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
-  UnitResources,
   // IdeUtils
   InputHistory,
   // IdeConfig
@@ -6682,7 +6681,7 @@ begin
         end;
 
         if NewComponent<>nil then
-          AnUnitInfo.ResourceBaseClass:=GetComponentBaseClass(NewComponent.ClassType);
+          AnUnitInfo.ResourceBaseClass:=ComponentBaseClassFunc(NewComponent.ClassType);
 
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;

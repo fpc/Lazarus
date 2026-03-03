@@ -45,7 +45,6 @@ type
     class function FindComponentClass(aClassName: string): TComponentClass; override;
   end;
 
-function GetComponentBaseClass(aClass: TClass): TPFComponentBaseClass;
 
 
 implementation
@@ -129,6 +128,9 @@ begin
   else
     Result:=nil;
 end;
+
+initialization
+  ComponentBaseClassFunc := @GetComponentBaseClass;
 
 end.
 

@@ -58,7 +58,7 @@ uses
   BaseIDEIntf, ProjPackIntf, ProjectIntf, PackageIntf, MacroIntf, MacroDefIntf,
   CompOptsIntf, IDEOptionsIntf, LazMsgWorker, UnitResourceIntf,
   // IDEIntf
-  UnitResources, EditorSyntaxHighlighterDef, SrcEditorIntf, IDEOptEditorIntf,
+  EditorSyntaxHighlighterDef, SrcEditorIntf, IDEOptEditorIntf,
   // IdeUtils
   InputHistory,
   // IdeConfig
@@ -2513,7 +2513,7 @@ begin
   if fComponent=nil then
     ClearComponentDependencies
   else
-    FResourceBaseClass:=GetComponentBaseClass(fComponent.ClassType);
+    FResourceBaseClass:=ComponentBaseClassFunc(fComponent.ClassType);
 end;
 
 procedure TUnitInfo.SetHasErrorInLFM(AValue: boolean);

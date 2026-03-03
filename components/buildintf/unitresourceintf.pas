@@ -15,7 +15,10 @@ interface
 
 uses
   Classes, SysUtils, System.UITypes,
-  LazMemManager;
+  // LazUtils
+  LazMemManager,
+  // BuildIntf
+  ProjPackIntf;
 
 type
   { TUnitResourceFileFormat }
@@ -42,9 +45,11 @@ type
   end;
   TUnitResourceFileFormatClass = class of TUnitResourceFileFormat;
   TUnitResourceFileFormatArr = array of TUnitResourceFileFormatClass;
+  TComponentBaseClassFunc = function(aClass: TClass): TPFComponentBaseClass;
 
 var
-  LFMUnitResourceFileFormat: TUnitResourcefileFormatClass = nil;// set by IDE
+  LFMUnitResourceFileFormat: TUnitResourcefileFormatClass; // set by IDE
+  ComponentBaseClassFunc: TComponentBaseClassFunc;         // set by UnitResources initialization
 
 procedure RegisterUnitResourcefileFormat(AResourceFileFormat: TUnitResourcefileFormatClass);
 function GetUnitResourcefileFormats: TUnitResourcefileFormatArr;
