@@ -209,6 +209,9 @@ type
     class procedure setAllignment(
       const textField: NSTextField;
       const align: TAlignment );
+    class procedure setBorderStyle(
+      const textField: NSTextField;
+      const borderStyle: TBorderStyle);
   end;
 
 type
@@ -1080,6 +1083,19 @@ begin
     Exit;
   //todo: for bidi modes, there's "NSTextAlignmentNatural"
   textField.setAlignment( TCocoaTypeUtil.alignment(align) );
+end;
+
+class procedure TCocoaTextFieldUtil.setBorderStyle(
+  const textField: NSTextField;
+  const borderStyle: TBorderStyle );
+begin
+  if not Assigned(textField) then
+    Exit;
+  {$ifdef BOOLFIX}
+  textField.setBezeled_(Ord(borderStyle <> bsNone));
+  {$else}
+  textField.setBezeled(borderStyle <> bsNone);
+  {$endif}
 end;
 
 { TCocoaTextField }

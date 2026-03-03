@@ -388,7 +388,6 @@ function getTableViewFromLCLListBox( const AListBox: TCustomListBox ):
   TCocoaTableListView;
 procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 
-procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
   SkipChangeEvent: Boolean = true);
@@ -452,16 +451,6 @@ begin
     TCocoaSecureTextField(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSText(Result.currentEditor, AParams.Caption);
   end;
-end;
-
-procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
-begin
-  if not Assigned(txt) then Exit;
-  {$ifdef BOOLFIX}
-  txt.setBezeled_(Ord(astyle <> bsNone));
-  {$else}
-  txt.setBezeled(astyle <> bsNone);
-  {$endif}
 end;
 
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
@@ -1175,7 +1164,7 @@ begin
   if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
     Exit;
 
-  TextFieldSetBorderStyle(field, edit.BorderStyle);
+  TCocoaTextFieldUtil.setBorderStyle(field, edit.BorderStyle);
   TCocoaTextFieldUtil.setAllignment(field, edit.Alignment);
   UpdateControlFocusRing( field, edit );
 end;
