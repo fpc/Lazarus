@@ -22,6 +22,13 @@ type
     function lclClassName: shortstring; message 'lclClassName';
   end;
 
+  { TCocoaTypeUtil }
+
+  TCocoaTypeUtil = class
+  public
+    class function alignment( lclAlignment: TAlignment ): NSTextAlignment;
+  end;
+
 const
   NSNullRect : NSRect = (origin:(x:0; y:0); size:(width:0; height:0));
 
@@ -1094,6 +1101,20 @@ end;
 function NSLCLDebugExtension.lclClassName: shortstring;
 begin
   Result := NSStringToString(self.className);
+end;
+
+{ TCocoaTypeUtil }
+
+class function TCocoaTypeUtil.alignment( lclAlignment: TAlignment ): NSTextAlignment;
+begin
+  case lclAlignment of
+    taRightJustify:
+      Result := NSTextAlignmentRight;
+    taCenter:
+      Result := NSTextAlignmentCenter;
+  else
+    Result:= NSTextAlignmentLeft;
+  end;
 end;
 
 function VirtualKeyCodeToMacString(AKey: Word): NSString;

@@ -378,7 +378,6 @@ type
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
-function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
 function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
 function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
 function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
@@ -389,16 +388,9 @@ function getTableViewFromLCLListBox( const AListBox: TCustomListBox ):
   TCocoaTableListView;
 procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 
-procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWrap: Boolean);
-function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
-procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
-procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
-procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
   SkipChangeEvent: Boolean = true);
-procedure TextFieldSetTextHint(txt: NSTextField; const str: string);
-procedure ObjSetTextHint(obj: NSObject; const str: string);
 
 function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
@@ -436,15 +428,6 @@ begin
   end;
 end;
 
-function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
-begin
-  Result := TCocoaTextView.alloc.lclInitWithCreateParams(AParams);
-  if Assigned(Result) then
-  begin
-    TCocoaTextView(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
-  end;
-end;
-
 function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
 begin
   Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
@@ -466,16 +449,6 @@ begin
     TCocoaSecureTextField(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSText(Result.currentEditor, AParams.Caption);
   end;
-end;
-
-procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
-begin
-  if not Assigned(txt) then Exit;
-  {$ifdef BOOLFIX}
-  txt.setBezeled_(Ord(astyle <> bsNone));
-  {$else}
-  txt.setBezeled(astyle <> bsNone);
-  {$endif}
 end;
 
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
@@ -516,26 +489,6 @@ begin
   end
   else
     btn.setState(buttonState[NewState]);
-end;
-
-procedure TextFieldSetTextHint(txt: NSTextField; const str: string);
-var
-  ns : NSString;
-begin
-  if not Assigned(txt) then Exit;
-  if str <> '' then begin
-    ns := NSStringUtf8(str);
-    txt.setPlaceholderString(ns);
-    ns.release;
-  end else begin
-    txt.setPlaceholderString(nil);
-  end;
-end;
-
-procedure ObjSetTextHint(obj: NSObject; const str: string);
-begin
-  if not Assigned(obj) or not obj.isKindOfClass(NSTextField) then Exit;
-  TextFieldSetTextHint(NSTextField(obj), str);
 end;
 
 function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
@@ -1121,7 +1074,7 @@ begin
   field.setEditable(False);
   field.setSelectable(False);
   {$endif}
-  field.setAlignment( AlignmentLCLToCocoa(lclStaticText.Alignment) );
+  TCocoaTextFieldUtil.setAllignment(field, lclStaticText.Alignment);
   Result:=TLCLHandle(field);
 end;
 
@@ -1130,7 +1083,7 @@ class procedure TCocoaWSCustomStaticText.SetAlignment(
 begin
   if not Assigned(ACustomStaticText) or (not ACustomStaticText.HandleAllocated) or (ACustomStaticText.Handle=0) then
     exit;
-  NSTextField(ACustomStaticText.Handle).setAlignment( AlignmentLCLToCocoa(NewAlignment) );
+  TCocoaTextFieldUtil.setAllignment(NSTextField(ACustomStaticText.Handle), NewAlignment);
 end;
 
 { TCocoaWSCustomEdit }
@@ -1189,8 +1142,8 @@ begin
   if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
     Exit;
 
-  TextFieldSetBorderStyle(field, edit.BorderStyle);
-  TextFieldSetAllignment(field, edit.Alignment);
+  TCocoaTextFieldUtil.setBorderStyle(field, edit.BorderStyle);
+  TCocoaTextFieldUtil.setAllignment(field, edit.Alignment);
   UpdateControlFocusRing( field, edit );
 end;
 
@@ -1321,7 +1274,7 @@ begin
     Exit;
   if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
     Exit;
-  TextFieldSetAllignment(field, NewAlignment);
+  TCocoaTextFieldUtil.setAllignment(field, NewAlignment);
 end;
 
 class procedure TCocoaWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
@@ -1474,7 +1427,7 @@ class procedure TCocoaWSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
 begin
   if NSAppKitVersionNumber <= NSAppKitVersionNumber10_10 then Exit;
   if (ACustomEdit.HandleAllocated) then
-    ObjSetTextHint(NSObject(ACustomEdit.Handle), ATextHint);
+    TCocoaTextFieldUtil.setTextHint(NSObject(ACustomEdit.Handle), ATextHint);
 end;
 
 { TCocoaMemoStrings }
@@ -1665,57 +1618,6 @@ end;
 
 { TCocoaWSCustomMemo }
 
-procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWrap: Boolean);
-var
-  layoutSize: NSSize;
-begin
-  if NewWordWrap then
-  begin
-    layoutSize := lScroll.contentSize();
-    layoutSize := GetNSSize(layoutSize.width, CGFloat_Max);
-    txt.textContainer.setContainerSize(layoutSize);
-    txt.textContainer.setWidthTracksTextView(True);
-    txt.setHorizontallyResizable(false);
-    txt.setAutoresizingMask(NSViewWidthSizable);
-    layoutSize.height:=txt.frame.size.height;
-    txt.setFrameSize(layoutSize);
-  end
-  else
-  begin
-    txt.textContainer.setWidthTracksTextView(False);
-    layoutSize := GetNSSize(CGFloat_Max, CGFloat_Max);
-    txt.textContainer.setContainerSize(layoutSize);
-    txt.textContainer.setWidthTracksTextView(False);
-    txt.setHorizontallyResizable(true);
-    txt.setAutoresizingMask(0);
-  end;
-  txt.sizeToFit;
-end;
-
-function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
-begin
-  case al of
-    taRightJustify:
-      Result := NSTextAlignmentRight;
-    taCenter:
-      Result := NSTextAlignmentCenter;
-  else
-    Result:= NSTextAlignmentLeft;
-  end;
-end;
-
-procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
-begin
-  //todo: for bidi modes, there's "NSTextAlignmentNatural"
-  txt.setAlignment( AlignmentLCLToCocoa(align) );
-end;
-
-procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
-begin
-  //todo: for bidi modes, there's "NSTextAlignmentNatural"
-  txt.setAlignment( AlignmentLCLToCocoa(align) );
-end;
-
 class function TCocoaWSCustomMemo.GetTextView(AWinControl: TWinControl): TCocoaTextView;
 var
   lScroll: TCocoaScrollView;
@@ -1812,8 +1714,8 @@ begin
 
   scr.callback := txt.callback;
 
-  TextViewSetWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
-  TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
+  TCocoaTextFieldUtil.setWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
+  TCocoaTextFieldUtil.setAllignment(txt, TCustomMemo(AWinControl).Alignment);
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
   txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
   txt.release;
@@ -1949,8 +1851,7 @@ var
   txt: TCocoaTextView;
 begin
   txt := GetTextView(ACustomEdit);
-  if Assigned(txt) then
-    TextViewSetAllignment(txt, NewAlignment);
+  TCocoaTextFieldUtil.setAllignment(txt, NewAlignment);
 end;
 
 class function TCocoaWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
@@ -2026,7 +1927,7 @@ begin
   lScroll := GetScrollView(ACustomMemo);
   if (not Assigned(txt)) or (not Assigned(lScroll)) then Exit;
 
-  TextViewSetWordWrap(txt, lScroll, NewWordWrap);
+  TCocoaTextFieldUtil.setWordWrap(txt, lScroll, NewWordWrap);
 end;
 
 class procedure TCocoaWSCustomMemo.SetText(const AWinControl:TWinControl;const AText:String);
@@ -2375,7 +2276,7 @@ begin
     Exit;
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
-  ObjSetTextHint(NSObject(ACustomComboBox.Handle), ATextHint);
+  TCocoaTextFieldUtil.setTextHint(NSObject(ACustomComboBox.Handle), ATextHint);
 end;
 
 { TCocoaWSToggleBox }
