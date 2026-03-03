@@ -194,11 +194,31 @@ type
   TCocoaTextFieldUtil = class
   public
     class function setLCLFont(
-      const cocoaField: NSTextField;
+      const textField: NSTextField;
       const lclFont: TFont ): Boolean; overload;
     class function setLCLFont(
-      const cocoaField: NSTextField;
+      const textField: NSTextField;
       const lclControl: TObject ): Boolean; overload;
+    class procedure setWordWrap(
+      const textView: NSTextView;
+      const scrollView: NSScrollView;
+      const wordWrap: Boolean );
+    class procedure setAllignment(
+      const textView: NSTextView;
+      const align: TAlignment );
+    class procedure setAllignment(
+      const textField: NSTextField;
+      const align: TAlignment );
+    class procedure setBorderStyle(
+      const textField: NSTextField;
+      const borderStyle: TBorderStyle );
+    class procedure setTextHint(
+      const textField: NSTextField;
+      const str: String ); overload;
+    class procedure setTextHint(
+      const obj: NSObject;
+      const str: String ); overload;
+
   end;
 
 type
@@ -987,7 +1007,7 @@ end;
 { TCocoaTextFieldUtil }
 
 class function TCocoaTextFieldUtil.setLCLFont(
-  const cocoaField: NSTextField;
+  const textField: NSTextField;
   const lclFont: TFont): Boolean;
 var
   cocoaFont: NSFont;
@@ -1000,18 +1020,18 @@ begin
   tempFont.Color:= clDefault;
   if NOT tempFont.isDefault then begin
     cocoaFont:= TCocoaFont(lclFont.Reference.Handle).Font;
-    cocoaField.setFont( cocoaFont );
+    textField.setFont( cocoaFont );
     Result:= True;
   end;
 
   if lclFont.Color <> clDefault then begin
     cocoaColor:= ColorToNSColor(ColorToRGB(lclFont.Color));
-    cocoaField.setTextColor( cocoaColor );
+    textField.setTextColor( cocoaColor );
   end;
 end;
 
 class function TCocoaTextFieldUtil.setLCLFont(
-  const cocoaField: NSTextField;
+  const textField: NSTextField;
   const lclControl: TObject): Boolean;
 begin
   Result:= False;
@@ -1019,7 +1039,95 @@ begin
     Exit;
   if NOT (lclControl is TControl) then
     Exit;
-  Result:= TCocoaTextFieldUtil.setLCLFont( cocoaField, TControl(lclControl).Font );
+  Result:= TCocoaTextFieldUtil.setLCLFont( textField, TControl(lclControl).Font );
+end;
+
+class procedure TCocoaTextFieldUtil.setWordWrap(
+  const textView: NSTextView;
+  const scrollView: NSScrollView;
+  const wordWrap: Boolean);
+var
+  layoutSize: NSSize;
+begin
+  if wordWrap then
+  begin
+    layoutSize := scrollView.contentSize();
+    layoutSize := GetNSSize(layoutSize.width, CGFloat_Max);
+    textView.textContainer.setContainerSize(layoutSize);
+    textView.textContainer.setWidthTracksTextView(True);
+    textView.setHorizontallyResizable(false);
+    textView.setAutoresizingMask(NSViewWidthSizable);
+    layoutSize.height:=textView.frame.size.height;
+    textView.setFrameSize(layoutSize);
+  end
+  else
+  begin
+    textView.textContainer.setWidthTracksTextView(False);
+    layoutSize := GetNSSize(CGFloat_Max, CGFloat_Max);
+    textView.textContainer.setContainerSize(layoutSize);
+    textView.textContainer.setWidthTracksTextView(False);
+    textView.setHorizontallyResizable(true);
+    textView.setAutoresizingMask(0);
+  end;
+  textView.sizeToFit;
+end;
+
+class procedure TCocoaTextFieldUtil.setAllignment(
+  const textView: NSTextView;
+  const align: TAlignment);
+begin
+  if NOT Assigned(textView) then
+    Exit;
+  //todo: for bidi modes, there's "NSTextAlignmentNatural"
+  textView.setAlignment( TCocoaTypeUtil.alignment(align) );
+end;
+
+class procedure TCocoaTextFieldUtil.setAllignment(
+  const textField: NSTextField;
+  const align: TAlignment);
+begin
+  if NOT Assigned(textField) then
+    Exit;
+  //todo: for bidi modes, there's "NSTextAlignmentNatural"
+  textField.setAlignment( TCocoaTypeUtil.alignment(align) );
+end;
+
+class procedure TCocoaTextFieldUtil.setBorderStyle(
+  const textField: NSTextField;
+  const borderStyle: TBorderStyle );
+begin
+  if not Assigned(textField) then
+    Exit;
+  {$ifdef BOOLFIX}
+  textField.setBezeled_(Ord(borderStyle <> bsNone));
+  {$else}
+  textField.setBezeled(borderStyle <> bsNone);
+  {$endif}
+end;
+
+class procedure TCocoaTextFieldUtil.setTextHint(
+  const textField: NSTextField;
+  const str: String);
+var
+  ns : NSString;
+begin
+  if not Assigned(textField) then Exit;
+  if str <> '' then begin
+    ns := NSStringUtf8(str);
+    textField.setPlaceholderString(ns);
+    ns.release;
+  end else begin
+    textField.setPlaceholderString(nil);
+  end;
+end;
+
+class procedure TCocoaTextFieldUtil.setTextHint(
+  const obj: NSObject;
+  const str: String );
+begin
+  if not Assigned(obj) or not obj.isKindOfClass(NSTextField) then
+    Exit;
+  TCocoaTextFieldUtil.setTextHint( NSTextField(obj), str );
 end;
 
 { TCocoaTextField }
