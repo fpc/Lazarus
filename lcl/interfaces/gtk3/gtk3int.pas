@@ -30,9 +30,9 @@ uses
   // LCL
   LCLPlatformDef, InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue,
   LazLogger,
-  Controls, Forms, Graphics, GraphUtil, IntfGraphics, StdCtrls, ComCtrls,
+  Controls, Forms, Graphics, GraphUtil, IntfGraphics, StdCtrls, ComCtrls, Themes,
   LazGtk3, LazGdk3, LazGlib2, LazGObject2, LazCairo1, LazPango1, LazGio2,
-  LazGdkPixbuf2, gtk3widgets, gtk3objects, gtk3procs, gtk3boxes, gtk3caret;
+  LazGdkPixbuf2, gtk3widgets, gtk3objects, gtk3procs;
 
 type
 
@@ -110,6 +110,8 @@ type
     FDragImageListIcon: PGtkImage;
     FDragHotSpot: TPoint;
     FDragImageLock: Boolean;
+
+    function CreateThemeServices: TThemeServices; override;
 
   public
     function IsWayland: boolean;
@@ -198,6 +200,7 @@ function HwndFromGtkWidget(AWidget: PGtkWidget): HWND;
 implementation
 
 uses
+  gtk3boxes, gtk3caret, gtk3themes,
   {%H-}Gtk3WSFactory{%H-};
 
 {------------------------------------------------------------------------------

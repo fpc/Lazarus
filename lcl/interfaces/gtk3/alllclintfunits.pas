@@ -21,7 +21,9 @@ uses
   gtk3wsstdctrls,
   gtk3wsmenus,
   gtk3wschecklst,
+  Gtk3WSSplitter,
   gtk3int,
-  gtk3widgets;
+  gtk3widgets,
+  gtk3themes;
 implementation
 end.

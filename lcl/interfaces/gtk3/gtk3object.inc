@@ -1101,3 +1101,9 @@ begin
   end;
 end;
 
+
+function TGtk3WidgetSet.CreateThemeServices: TThemeServices;
+begin
+  Result := TGTK3ThemeServices.Create;
+end;
+
