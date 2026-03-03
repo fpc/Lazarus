@@ -730,10 +730,10 @@ type
     tkeGenParamLow  = tkeGenParamOpen;
     tkeGenParamHigh = tkeGenParamComma;
 
-    PAS_BRACKET_KIND_TOKEN_COUNT = 8;
+    PAS_BRACKET_KIND_TOKEN_COUNT = 9;
     PAS_BRACKET_KIND_TOKENS: array [Boolean, 0..PAS_BRACKET_KIND_TOKEN_COUNT-1] of string =
-      ( (')', ']', '}', '>', '*)', '''', '''''', '"'),
-        ('(', '[', '{', '<', '(*', '''', '''''', '"')
+      ( (')', ']', '}', '>', '*)', '''', '''''', '"', '`'),
+        ('(', '[', '{', '<', '(*', '''', '''''', '"', '`')
       );
 
   private type
@@ -4854,6 +4854,7 @@ var
   IsInWord, WasInWord, ct: Boolean;
 begin
   fTokenID := tkString;
+  Include(FOldRange, rsBacktickString); // for the closing tick
 
   if not (IsInNextToEOL or IsScanning) and (Run = fTokenPos)then begin
     if (IsLetterChar[LinePtr[Run]]) and
@@ -6798,6 +6799,7 @@ const
   KIND_STRING_BOUND = ord(high(TtkTokenKindEx)) + 1;
   KIND_ANSI_BOUND   = ord(high(TtkTokenKindEx)) + 2;
   KIND_BOR_BOUND    = ord(high(TtkTokenKindEx)) + 3;
+  KIND_BACKTICK_STRING_BOUND = ord(high(TtkTokenKindEx)) + 4;
 var
   LogIdx: Integer;
 begin
@@ -6860,7 +6862,7 @@ begin
          AFlags := AFlags + [bfUnknownNestLevel];
        end;
     5: begin // ''
-         if FTokenID = tkString then begin
+         if (FTokenID = tkString) and not (rsBacktickString in (FOldRange+fRange)) then begin
            AFlags := AFlags + [bfNotNestable, bfSingleLine] - [bfNoLanguageContext, bfUnknownNestLevel, bfUniform];
            AContext := KIND_STRING_BOUND;
            if  IsOpeningString(LogIdx) then
@@ -6885,6 +6887,23 @@ begin
        end;
     7: begin // ""
          AFlags := AFlags + [bfUniform, bfNotNestable, bfNoLanguageContext] - [bfOpen, bfSingleLine];
+       end;
+    8: begin // ` backtick
+         if (FTokenID = tkString) and (rsBacktickString in (FOldRange+fRange)) then begin
+           AFlags := AFlags + [bfNotNestable, bfSingleLine] - [bfNoLanguageContext, bfUnknownNestLevel, bfUniform];
+           AContext := KIND_BACKTICK_STRING_BOUND;
+           if  IsOpeningString(LogIdx) then
+             AFlags := AFlags + [bfOpen]  // string start
+           else
+           if  IsClosinngString(LogIdx) then
+             AFlags := AFlags - [bfOpen]  // string end
+           else
+             exit(false);                 // middle of string, escaped '' will be called with different AKind
+         end
+         else begin
+           // outside of string
+           AFlags := AFlags + [bfUniform, bfNotNestable] - [bfOpen];
+         end;
        end;
   end;
 end;
