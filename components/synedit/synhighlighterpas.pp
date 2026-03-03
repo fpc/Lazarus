@@ -84,6 +84,7 @@ type
     rsSlash,        // // : Only if it's from the "start of line" (ignore lead whitespace). Used for calling SlashCommentProc 
     rsIDEDirective, // {%
     rsDirective,    // {$
+    rsBacktickString,
     rsAsm,          // assembler block
     rsProperty,
     rsInPropertyNameOrIndex, // Set by "property" kept until "read/write/...": property NAME [IDX: TTYPE]: TTYPE read ...
@@ -969,6 +970,8 @@ type
     procedure AnsiProc;
     procedure BorProc;
     procedure BraceOpenProc;
+    procedure BacktickProc;
+    procedure BacktickContinueProc;
     procedure ColonProc;
     procedure GreaterProc;
     procedure CRProc;
@@ -4208,7 +4211,8 @@ begin
         fProcTable[I] := @IdentProc;
       '^': fProcTable[I] := @CaretProc;
       '{': fProcTable[I] := @BraceOpenProc;
-      '}', '!', '('..'/', ':'..'@', '[', ']', '\', '`', '~':
+      '`': fProcTable[I] := @BacktickProc;
+      '}', '!', '('..'/', ':'..'@', '[', ']', '\', '~':
         begin
           case I of
             ',': fProcTable[I] := @CommaProc;
@@ -4825,6 +4829,99 @@ begin
     if (reCommentSubTokens in FRequiredStates) then
       exit;
     BorProc;
+  end;
+end;
+
+procedure TSynPasSyn.BacktickProc;
+begin
+  FTokenID := tkString;
+  Include(fRange, rsBacktickString);
+
+  if not (IsInNextToEOL or IsScanning) and
+    GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup)
+  then begin
+    Inc(Run);
+    Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+    exit;
+  end;
+  Inc(Run);
+
+  BacktickContinueProc;
+end;
+
+procedure TSynPasSyn.BacktickContinueProc;
+var
+  IsInWord, WasInWord, ct: Boolean;
+begin
+  fTokenID := tkString;
+
+  if not (IsInNextToEOL or IsScanning) and (Run = fTokenPos)then begin
+    if (IsLetterChar[LinePtr[Run]]) and
+       ( (Run = 0) or
+         not((IsLetterChar[LinePtr[Run-1]] or IsUnderScoreOrNumberChar[LinePtr[Run-1]]))
+       )
+    then begin
+      if GetCustomTokenAndNext(tkString, FCustomTokenMarkup) then begin
+        Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+        exit;
+      end;
+    end;
+  end;
+
+  IsInWord := False;
+  WasInWord := (IsInNextToEOL or IsScanning); // don't run checks
+  while (not (LinePtr[Run] in [#0{, #10, #13}])) do begin
+    if LinePtr[Run] = '`' then begin
+      if (LinePtr[Run+1] = '`') then begin
+        // escaped
+        if (not (IsInNextToEOL or IsScanning)) and
+           GetCustomSymbolToken(tkString, 2, FCustomTokenMarkup, Run <> fTokenPos)
+        then begin
+          if (Run = fTokenPos) then
+            inc(Run, 2);
+          Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+          exit;
+        end;
+        Inc(Run);
+      end
+      else begin
+        // string end
+        if not (IsInNextToEOL or IsScanning) then begin
+          ct := GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup, Run <> fTokenPos);
+          if ct and (Run <> fTokenPos) then begin
+            Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+            exit;
+          end;
+        end;
+        Inc(Run);
+        Exclude(fRange, rsBacktickString);
+
+        // modifiers like "alias" take a string as argument
+        if (PasCodeFoldRange.BracketNestLevel = 0) then begin
+          if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsInProcHeader]) and
+             (TopPascalCodeFoldBlockType in ProcModifierAllowed)
+          then
+            FRange := FRange + [rsInProcHeader];
+          FOldRange := FOldRange - [rsInObjcProtocol];
+        end;
+
+        exit;
+      end;
+    end
+    else
+    if (not WasInWord) and IsLetterChar[LinePtr[Run]] then begin
+      if GetCustomTokenAndNext(tkString, FCustomTokenMarkup, True) then begin
+        Include(FTokenExtraAttribs, eaPartTokenNotAtEnd);
+        exit;
+      end;
+    end;
+
+    Inc(Run);
+
+    if not (IsInNextToEOL or IsScanning) then begin
+      WasInWord := IsInWord;
+      IsInWord := (IsLetterChar[LinePtr[Run]] or IsUnderScoreOrNumberChar[LinePtr[Run]]);
+    end;
   end;
 end;
 
@@ -6097,6 +6194,8 @@ begin
   end;
   if rsAnsiMultiDQ in fRange then
     StringProc_MultiLineDQ()
+  else if (rsBacktickString in fRange) then
+    BacktickContinueProc
   else
   case LinePtr[Run] of
      #0: NullProc;
