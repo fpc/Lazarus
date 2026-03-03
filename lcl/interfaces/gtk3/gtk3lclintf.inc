@@ -375,6 +375,7 @@ begin
   Result := False;
   Result := CheckBitmap(ABitmap, 'RawImage_DescriptionFromBitmap');
   if not Result then Exit;
+  if Image.Handle = nil then Exit;
 
   //FillStandardDescription(ADesc);
   ADesc.Init;
@@ -786,6 +787,7 @@ begin
   Result := false;
 
   if not CheckBitmap(ABitmap, 'RawImage_FromBitmap') then Exit;
+  if Image.Handle = nil then Exit;
   if (AMask <> 0) and not CheckBitmap(AMask, 'RawImage_FromBitmap (mask)') then Exit;
 
   ARawImage.Init;

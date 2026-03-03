@@ -1178,7 +1178,12 @@ begin
     finally
       cairo_surface_destroy(ASurface);
     end;
-    gdk_pixbuf_fill(FHandle, 0);
+    // gdk_pixbuf_get_from_surface can return nil (e.g. format quirks, memory).
+    // Fall back to a plain zeroed pixbuf so FHandle is never nil after construction.
+    if FHandle = nil then
+      FHandle := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, w, h);
+    if FHandle <> nil then
+      gdk_pixbuf_fill(FHandle, 0);
   end else
     FHandle := TGdkPixbuf.new_from_data(AData, GDK_COLORSPACE_RGB, format=CAIRO_FORMAT_ARGB32, 8, width, height, 0, nil, nil);
 end;
@@ -1211,7 +1216,10 @@ begin
     finally
       cairo_surface_destroy(ASurface);
     end;
-    gdk_pixbuf_fill(FHandle, 0);
+    if FHandle = nil then
+      FHandle := gdk_pixbuf_new(GDK_COLORSPACE_RGB, True, 8, w, h);
+    if FHandle <> nil then
+      gdk_pixbuf_fill(FHandle, 0);
   end else
   begin
     FHandle := TGdkPixbuf.new_from_data(AData, GDK_COLORSPACE_RGB, format=CAIRO_FORMAT_ARGB32, 8, width, height, bytesPerLine, nil, nil);
