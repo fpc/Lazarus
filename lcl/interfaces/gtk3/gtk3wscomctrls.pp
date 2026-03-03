@@ -1534,6 +1534,7 @@ var
   i: integer;
   AList: PGList;
   Allocation: TGtkAllocation;
+  NbAlloc: TGtkAllocation;
   ARect: TRect;
 begin
   Result:=-1;
@@ -1541,6 +1542,8 @@ begin
     exit;
   NoteBookWidget := PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget);
   if (NotebookWidget=nil) then exit;
+
+  gtk_widget_get_allocation(PGtkWidget(NoteBookWidget), @NbAlloc);
 
   AList := NoteBookWidget^.get_children;
   try
@@ -1554,6 +1557,7 @@ begin
         begin
           gtk_widget_get_allocation(TabWidget, @Allocation);
           ARect := RectFromGdkRect(Allocation);
+          Types.OffsetRect(ARect, -NbAlloc.x, -NbAlloc.y);
           if PtInRect(ARect, AClientPos) then
           begin
             Result := I;

@@ -464,9 +464,11 @@ type
   TGtk3NoteBook = class (TGtk3Container)
   private
     FDefaultClientRect:TRect;
+    FRightClickUpPending: Boolean; // guard against double LM_RBUTTONUP delivery
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
+    function GtkEventMouse(Sender: PGtkWidget; Event: PGdkEvent): Boolean; override; cdecl;
     procedure InitializeWidget; override;
     function GetTabSize(AWinControl: TWinControl): integer; {returns size of tab. Height if orientation is top/bottom, width if orientation is left/right}
     function getClientRect: TRect; override;
@@ -6233,6 +6235,61 @@ begin
     g_object_ref(PGObject(Widget));
     g_idle_add(@BackNoteBookSignal, Widget);
     Exit;
+  end;
+end;
+
+function TGtk3NoteBook.GtkEventMouse(Sender: PGtkWidget; Event: PGdkEvent): Boolean; cdecl;
+var
+  ActiveSheet: TTabSheet;
+  P: TPoint;
+  PM: TPopupMenu;
+  MsgUp: TLMMouse;
+begin
+  // Fix for GDK_BUTTON_RELEASE: if we already synthesised LM_RBUTTONUP from
+  // the press handler, consume the real release (which may arrive if the gesture
+  // theory is wrong or the GTK version differs) to prevent a double OnMouseUp.
+  if (Event^.type_ = GDK_BUTTON_RELEASE) and (Event^.button.button = 3) and
+     (LCLObject is TPageControl) and FRightClickUpPending then
+  begin
+    FRightClickUpPending := False;
+    Exit(True); // synthetic up was already delivered from button-press
+  end;
+
+  Result := inherited GtkEventMouse(Sender, Event);
+
+  if (Event^.type_ = GDK_BUTTON_PRESS) and (Event^.button.button = 3) and
+     (LCLObject is TPageControl) then
+  begin
+    if not Result and (TCustomTabControl(LCLObject).PopupMenu = nil)
+      and (LCLObject is TPageControl) then
+    begin
+      ActiveSheet := TPageControl(LCLObject).ActivePage;
+      if Assigned(ActiveSheet) then
+      begin
+        PM := ActiveSheet.PopupMenu;
+        if Assigned(PM) and PM.AutoPopup then
+        begin
+          PM.PopupComponent := ActiveSheet;
+          P := Point(Round(Event^.button.x_root), Round(Event^.button.y_root));
+          PM.Popup(P.X, P.Y);
+          Result := True; // popup handled from button-press
+        end;
+      end;
+    end;
+
+    if not Result then
+    begin
+      FillChar(MsgUp{%H-}, SizeOf(MsgUp), 0);
+      MsgUp.Msg := LM_RBUTTONUP;
+      MsgUp.Keys := MK_RBUTTON;
+      MsgUp.XPos := SmallInt(Round(Event^.button.x));
+      MsgUp.YPos := SmallInt(Round(Event^.button.y));
+      FRightClickUpPending := True;
+      DeliverMessage(MsgUp, True);
+      FRightClickUpPending := False;
+    end;
+
+    Result := True;
   end;
 end;
 
