@@ -1014,11 +1014,12 @@ class function TCocoaTextFieldUtil.setLCLFont(
   const cocoaField: NSTextField;
   const lclControl: TObject): Boolean;
 begin
+  Result:= False;
   if NOT Assigned(lclControl) then
     Exit;
   if NOT (lclControl is TControl) then
     Exit;
-  TCocoaTextFieldUtil.setLCLFont( cocoaField, TControl(lclControl).Font );
+  Result:= TCocoaTextFieldUtil.setLCLFont( cocoaField, TControl(lclControl).Font );
 end;
 
 { TCocoaTextField }
