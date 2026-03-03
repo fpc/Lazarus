@@ -3177,7 +3177,7 @@ begin
       end else
         ARect := Bounds(Allocation.x, Allocation.y,
           Allocation.width, Allocation.height);
-      Result := -1;
+      Result := 1;
     end;
   end;
 end;
