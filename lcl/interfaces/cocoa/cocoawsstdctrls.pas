@@ -388,7 +388,6 @@ function getTableViewFromLCLListBox( const AListBox: TCustomListBox ):
   TCocoaTableListView;
 procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 
-procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWrap: Boolean);
 function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
 procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
 procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
@@ -1655,33 +1654,6 @@ end;
 
 { TCocoaWSCustomMemo }
 
-procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWrap: Boolean);
-var
-  layoutSize: NSSize;
-begin
-  if NewWordWrap then
-  begin
-    layoutSize := lScroll.contentSize();
-    layoutSize := GetNSSize(layoutSize.width, CGFloat_Max);
-    txt.textContainer.setContainerSize(layoutSize);
-    txt.textContainer.setWidthTracksTextView(True);
-    txt.setHorizontallyResizable(false);
-    txt.setAutoresizingMask(NSViewWidthSizable);
-    layoutSize.height:=txt.frame.size.height;
-    txt.setFrameSize(layoutSize);
-  end
-  else
-  begin
-    txt.textContainer.setWidthTracksTextView(False);
-    layoutSize := GetNSSize(CGFloat_Max, CGFloat_Max);
-    txt.textContainer.setContainerSize(layoutSize);
-    txt.textContainer.setWidthTracksTextView(False);
-    txt.setHorizontallyResizable(true);
-    txt.setAutoresizingMask(0);
-  end;
-  txt.sizeToFit;
-end;
-
 function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
 begin
   case al of
@@ -1802,7 +1774,7 @@ begin
 
   scr.callback := txt.callback;
 
-  TextViewSetWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
+  TCocoaTextFieldUtil.setWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
   TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
   txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
@@ -2016,7 +1988,7 @@ begin
   lScroll := GetScrollView(ACustomMemo);
   if (not Assigned(txt)) or (not Assigned(lScroll)) then Exit;
 
-  TextViewSetWordWrap(txt, lScroll, NewWordWrap);
+  TCocoaTextFieldUtil.setWordWrap(txt, lScroll, NewWordWrap);
 end;
 
 class procedure TCocoaWSCustomMemo.SetText(const AWinControl:TWinControl;const AText:String);

@@ -199,6 +199,10 @@ type
     class function setLCLFont(
       const cocoaField: NSTextField;
       const lclControl: TObject ): Boolean; overload;
+    class procedure setWordWrap(
+      const textView: NSTextView;
+      const scrollView: NSScrollView;
+      const wordWrap: Boolean);
   end;
 
 type
@@ -1020,6 +1024,36 @@ begin
   if NOT (lclControl is TControl) then
     Exit;
   Result:= TCocoaTextFieldUtil.setLCLFont( cocoaField, TControl(lclControl).Font );
+end;
+
+class procedure TCocoaTextFieldUtil.setWordWrap(
+  const textView: NSTextView;
+  const scrollView: NSScrollView;
+  const wordWrap: Boolean);
+var
+  layoutSize: NSSize;
+begin
+  if wordWrap then
+  begin
+    layoutSize := scrollView.contentSize();
+    layoutSize := GetNSSize(layoutSize.width, CGFloat_Max);
+    textView.textContainer.setContainerSize(layoutSize);
+    textView.textContainer.setWidthTracksTextView(True);
+    textView.setHorizontallyResizable(false);
+    textView.setAutoresizingMask(NSViewWidthSizable);
+    layoutSize.height:=textView.frame.size.height;
+    textView.setFrameSize(layoutSize);
+  end
+  else
+  begin
+    textView.textContainer.setWidthTracksTextView(False);
+    layoutSize := GetNSSize(CGFloat_Max, CGFloat_Max);
+    textView.textContainer.setContainerSize(layoutSize);
+    textView.textContainer.setWidthTracksTextView(False);
+    textView.setHorizontallyResizable(true);
+    textView.setAutoresizingMask(0);
+  end;
+  textView.sizeToFit;
 end;
 
 { TCocoaTextField }
