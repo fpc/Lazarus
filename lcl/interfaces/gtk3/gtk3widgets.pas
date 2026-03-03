@@ -5862,7 +5862,7 @@ begin
 
   FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
   FPageLabel^.set_use_underline(true);
-  image := gtk_image_new_from_icon_name('window-close', GTK_ICON_SIZE_MENU);
+  image := gtk_image_new_from_icon_name('window-close', GTK_ICON_SIZE_LARGE_TOOLBAR);
   FCloseButton := gtk_button_new();
   gtk_button_set_relief(PGtkButton(FCloseButton), GTK_RELIEF_NONE);
   gtk_container_add(PGtkContainer(FCloseButton), image);
