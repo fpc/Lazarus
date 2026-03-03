@@ -26,40 +26,37 @@ type
   { TGtk3WSPairSplitterSide }
 
   TGtk3WSPairSplitterSide = class(TWSPairSplitterSide)
-  published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
+  private
+  protected
+  public
   end;
 
   { TGtk3WSCustomPairSplitter }
 
   TGtk3WSCustomPairSplitter = class(TWSCustomPairSplitter)
-  published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
-    class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; override;
-    class function RemoveSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; override;
-    class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; override;
-    // special cursor handling
-    class function GetSplitterCursor(ASplitter: TCustomPairSplitter; var ACursor: TCursor): Boolean; override;
-    class function SetSplitterCursor(ASplitter: TCustomPairSplitter; ACursor: TCursor): Boolean; override;
+  private
+  protected
+  public
   end;
 
 implementation
-uses
-  wsproc,gtk3widgets,lazgtk3;
 
 { TGtk3WSPairSplitterSide }
 
+(*
 class function TGtk3WSPairSplitterSide.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
   Result:=TLCLHandle(TGtk3Window.Create(AWinControl, AParams));
 end;
+*)
 
 { TGtk3WSSplitter }
 
 
 { TGtk3WSCustomPairSplitter }
 
+(*
 class function TGtk3WSCustomPairSplitter.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
@@ -129,7 +126,7 @@ begin
   //ASplitter.Cursor:=ACursor;
   Result:=false;
 end;
-
+*)
 
 end.
 
