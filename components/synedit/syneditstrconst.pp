@@ -134,6 +134,10 @@ resourcestring
   SYNS_AttrSQLKey               =  'SQL keyword';  
   SYNS_AttrSQLPlus              =  'SQL*Plus command';
   SYNS_AttrString               =  'String';
+  SYNS_AttrStringSingle         =  'Single quoted String';
+  SYNS_AttrStringHash           =  'Ordinal Char (Hash)';
+  SYNS_AttrStringCaret          =  'Ctrl Char (Caret)';
+  SYNS_AttrStringBacktick       =  'Backtick String';
   SYNS_AttrSymbol               =  'Symbol';
   SYNS_AttrProcedureHeaderName  =  'Procedure header name';
   SYNS_AttrPropertyName            = 'Property name';
@@ -281,6 +285,10 @@ const
   SYNS_XML_AttrSQLKey               =  'SQL keyword';
   SYNS_XML_AttrSQLPlus              =  'SQL*Plus command';
   SYNS_XML_AttrString               =  'String';
+  SYNS_XML_AttrStringSingle         =  'String_Singlequote';
+  SYNS_XML_AttrStringHash           =  'String_Hash';
+  SYNS_XML_AttrStringCaret          =  'String_Caret';
+  SYNS_XML_AttrStringBacktick       =  'String_Backtick';
   SYNS_XML_AttrSymbol               =  'Symbol';
   SYNS_XML_AttrProcedureHeaderName  =  'Procedure header name';
   SYNS_XML_AttrPropertyName            = 'Property name';

@@ -211,6 +211,10 @@ type
     reCommentAnsi,
     reCommentCurly,
     reCommentSlash,
+    reStringSingle,
+    reStringHash,
+    reStringCaret,
+    reStringBacktick,
     reCommentSubTokens   // generate stand-alone tokens for each comment (and nested comment) open/close
   );
   TRequiredStates = set of TRequiredState;
@@ -691,6 +695,10 @@ type
       attribCommentAnsi,
       attribCommentCurly,
       attribCommentSlash,
+      attribStringSingle,
+      attribStringHash,
+      attribStringCaret,
+      attribStringBacktick,
       attribIDEDirective,
       attribProcedureHeaderName,
       attribPropertyName,
@@ -1170,6 +1178,10 @@ type
     property NumberAttri: TLazEditHighlighterAttributes                         index attribNumber                  read GetAttribute write SetAttribute;
     property SpaceAttri: TLazEditHighlighterAttributes                          index attribSpace                   read GetAttribute write SetAttribute;
     property StringAttri: TLazEditHighlighterAttributes_Eol                     index attribString                  read GetAttribute_Eol write SetAttribute;
+    property StringSingleAttri: TLazEditHighlighterAttributesModifier_Eol       index attribStringSingle            read GetAttribute_ModEol write SetAttribute;
+    property StringHashAttri: TLazEditHighlighterAttributesModifier_Eol         index attribStringHash              read GetAttribute_ModEol write SetAttribute;
+    property StringCaretAttri: TLazEditHighlighterAttributesModifier_Eol        index attribStringCaret             read GetAttribute_ModEol write SetAttribute;
+    property StringBacktickAttri: TLazEditHighlighterAttributesModifier_Eol     index attribStringBacktick          read GetAttribute_ModEol write SetAttribute;
     property SymbolAttri: TLazEditHighlighterAttributes                         index attribSymbol                  read GetAttribute write SetAttribute;
 
     property PropertyNameAttr: TLazEditHighlighterAttributesModifier            index attribPropertyName            read GetAttribute_Mod write SetAttribute;
@@ -4268,6 +4280,13 @@ begin
   CreateAttribute(attribNumber, TLazEditHighlighterAttributes, @SYNS_AttrNumber, SYNS_XML_AttrNumber);
   CreateAttribute(attribSpace, TLazEditHighlighterAttributes, @SYNS_AttrSpace, SYNS_XML_AttrSpace);
   CreateAttribute(attribString, TLazEditHighlighterAttributes_Eol, @SYNS_AttrString, SYNS_XML_AttrString);
+  CreateAttribute(attribStringSingle, TLazEditHighlighterAttributesModifier_Eol, @SYNS_AttrStringSingle, SYNS_XML_AttrStringSingle);
+  CreateAttribute(attribStringHash, TLazEditHighlighterAttributesModifier_Eol, @SYNS_AttrStringHash, SYNS_XML_AttrStringHash);
+  CreateAttribute(attribStringCaret, TLazEditHighlighterAttributesModifier_Eol, @SYNS_AttrStringCaret, SYNS_XML_AttrStringCaret);
+  CreateAttribute(attribStringBacktick, TLazEditHighlighterAttributesModifier_Eol, @SYNS_AttrStringBacktick, SYNS_XML_AttrStringBacktick, [lafPastEOL]);
+  FPasAttributesMod[attribStringBacktick].Features:= [lafPastEOL];
+
+
   CreateAttribute(attribSymbol, TLazEditHighlighterAttributes, @SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   CreateAttribute(attribProcedureHeaderName, TLazEditHighlighterAttributesModifier, @SYNS_AttrProcedureHeaderName, SYNS_XML_AttrProcedureHeaderName);
 
@@ -4366,6 +4385,8 @@ end;
 procedure TSynPasSyn.AsciiCharProc;
 begin
   fTokenID := tkString;
+  if reStringHash in FRequiredStates then
+    FCustomCommentTokenMarkup := FPasAttributesMod[attribStringHash];
   inc(Run);
   case LinePtr[Run] of
     '%':
@@ -4836,6 +4857,8 @@ procedure TSynPasSyn.BacktickProc;
 begin
   FTokenID := tkString;
   Include(fRange, rsBacktickString);
+  if reStringBacktick in FRequiredStates then
+    FCustomCommentTokenMarkup := FPasAttributesMod[attribStringBacktick];
 
   if not (IsInNextToEOL or IsScanning) and
     GetCustomSymbolToken(tkString, 1, FCustomTokenMarkup)
@@ -4855,6 +4878,8 @@ var
 begin
   fTokenID := tkString;
   Include(FOldRange, rsBacktickString); // for the closing tick
+  if reStringBacktick in FRequiredStates then
+    FCustomCommentTokenMarkup := FPasAttributesMod[attribStringBacktick];
 
   if not (IsInNextToEOL or IsScanning) and (Run = fTokenPos)then begin
     if (IsLetterChar[LinePtr[Run]]) and
@@ -5134,6 +5159,8 @@ begin
       end;
       inc(Run);
     end;
+    if reStringCaret in FRequiredStates then
+      FCustomCommentTokenMarkup := FPasAttributesMod[attribStringCaret];
     fTokenID := tkString;
   end
   else begin
@@ -5725,6 +5752,8 @@ var
   IsInWord, WasInWord, ct: Boolean;
 begin
   fTokenID := tkString;
+  if reStringSingle in FRequiredStates then
+    FCustomCommentTokenMarkup := FPasAttributesMod[attribStringSingle];
 
   if FInString then begin
     if not (IsInNextToEOL or IsScanning) then begin
@@ -6748,6 +6777,11 @@ begin
     if FHadSlashLastLine or (LastLinePasFoldLevelFix(LineIndex+1, FOLDGROUP_PASCAL, True) = 0) then begin
       Result := Merge(FPasAttributes[attribComment], FPasAttributesMod[attribCommentSlash]);
     end;
+  end
+  else
+  if fRange * [rsBacktickString] <> [] then begin
+    if lafPastEOL in FPasAttributesMod[attribStringBacktick].Features then
+      Result := Merge(FPasAttributes[attribString], FPasAttributesMod[attribStringBacktick]);
   end
   else
   if fRange * [rsAnsiMultiDQ] <> [] then begin
@@ -8261,6 +8295,11 @@ begin
   if FPasAttributesMod[attribCommentAnsi].IsEnabled then  Include(FRequiredStates, reCommentAnsi);
   if FPasAttributesMod[attribCommentCurly].IsEnabled then Include(FRequiredStates, reCommentCurly);
   if FPasAttributesMod[attribCommentSlash].IsEnabled then Include(FRequiredStates, reCommentSlash);
+
+  if FPasAttributesMod[attribStringSingle].IsEnabled then Include(FRequiredStates, reStringSingle);
+  if FPasAttributesMod[attribStringHash].IsEnabled then Include(FRequiredStates, reStringHash);
+  if FPasAttributesMod[attribStringCaret].IsEnabled then Include(FRequiredStates, reStringCaret);
+  if FPasAttributesMod[attribStringBacktick].IsEnabled then Include(FRequiredStates, reStringBacktick);
 
   //if FPasAttributesMod[attribPasDocKeyWord].IsEnabled then begin
   //end;

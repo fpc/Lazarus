@@ -1372,6 +1372,9 @@ procedure TEditorColorOptionsFrame.FillColorElementListBox;
         SYNS_XML_AttrCommentAnsi, SYNS_XML_AttrCommentCurly, SYNS_XML_AttrCommentSlash,
         SYNS_XML_AttrPasDocKey, SYNS_XML_AttrPasDocSymbol, SYNS_XML_AttrPasDocUnknown:
           AGroupName := dlgAddHiAttrGroup_Comment;
+        SYNS_XML_AttrStringSingle, SYNS_XML_AttrStringHash, SYNS_XML_AttrStringCaret,
+        SYNS_XML_AttrStringBacktick:
+          AGroupName := dlgAddHiAttrGroup_String;
         SYNS_XML_AttrProcedureHeaderName, SYNS_XML_AttrPropertyName,
         SYNS_XML_AttrProcedureHeaderParam, SYNS_XML_AttrProcedureHeaderResult,
         SYNS_XML_AttrProcedureHeaderType,  SYNS_XML_AttrProcedureHeaderValue:

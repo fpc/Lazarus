@@ -2220,6 +2220,7 @@ resourcestring
   dlgAddHiAttrGroup_Suffix_NBrackets  = '(Nested Brackets)';
   dlgAddHiAttrGroup_Suffix_EntryType  = '(entry type)';
   dlgAddHiAttrGroup_Comment      = 'Comments';
+  dlgAddHiAttrGroup_String       = 'Strings';
   dlgAddHiAttrGroup_ProgHeader   = 'Procedure Header';
   dlgAddHiAttrGroup_DeclSection  = 'Declaration Blocks';
   dlgAddHiAttrGroup_SpecializeGenericSection  = 'Specialize/Generic Blocks';

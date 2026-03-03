@@ -505,6 +505,22 @@ msgstr "Eckige Klammer"
 msgid "String"
 msgstr "Zeichenkette"
 
+#: syneditstrconst.syns_attrstringbacktick
+msgid "Backtick String"
+msgstr ""
+
+#: syneditstrconst.syns_attrstringcaret
+msgid "Ctrl Char (Caret)"
+msgstr ""
+
+#: syneditstrconst.syns_attrstringhash
+msgid "Ordinal Char (Hash)"
+msgstr ""
+
+#: syneditstrconst.syns_attrstringsingle
+msgid "Single quoted String"
+msgstr ""
+
 #: syneditstrconst.syns_attrstructmember
 msgid "Structure member"
 msgstr ""
