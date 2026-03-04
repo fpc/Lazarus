@@ -118,7 +118,7 @@ uses
   SourceEditProcs, ViewUnit_dlg, FPDocEditWindow,
   etQuickFixes, etMessageFrame, etMessagesWnd,
   // converter
-  ChgEncodingDlg, ConvertMainPlugin, MissingPropertiesDlg, LazXMLForms,
+  ChgEncodingDlg, ConvertMainPlugin, ConvMissingProp, LazXMLForms,
   // IdeUtils
   InputHistory, IdeUtilsPkg, IdeUtilsPkgStrConsts,
   // IdeConfig

@@ -75,12 +75,10 @@ type
     function RemoveAll: TModalResult;
     procedure FindNiceNodeBounds(LFMNode: TLFMTreeNode;
                                  out StartPos, EndPos: integer);
-    function FindListBoxError: TLFMError;
     procedure WriteLFMErrors;
     function FindAndFixMissingComponentClasses: TModalResult;
     function FixMissingComponentClasses(aMissingTypes: TClassList): TModalResult; virtual;
     procedure FillErrorsListBox;
-    procedure JumpToError(LFMError: TLFMError);
     procedure AddReplacement(LFMChangeList: TObjectList; StartPos, EndPos: integer;
                              const NewText: string);
     function ApplyReplacements(LFMChangeList: TList): boolean;
@@ -89,9 +87,12 @@ type
     destructor Destroy; override;
     function Repair: TModalResult;
     function AutomaticFixIsPossible: boolean;
+    function FindListBoxError: TLFMError;
+    procedure JumpToError(LFMError: TLFMError);
   public
     property PascalBuffer: TCodeBuffer read fPascalBuffer;
     property LFMBuffer: TCodeBuffer read fLFMBuffer;
+    property LFMTree: TLFMTree read fLFMTree;
     property ShowMessages: boolean read fShowMessages write fShowMessages;
     property RootMustBeClassInUnit: boolean read fRootMustBeClassInUnit
                                            write fRootMustBeClassInUnit;

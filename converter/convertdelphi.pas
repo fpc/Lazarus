@@ -49,7 +49,7 @@ uses
   // IDE
   LazarusIDEStrConsts,
   // Converter
-  ConvertBase, ConverterTypes, ConvCodeTool, MissingPropertiesDlg, UsedUnits;
+  ConvertBase, ConverterTypes, ConvCodeTool, ConvMissingProp, UsedUnits;
 
 const
   SettingDelphiModeTemplName = 'Setting Delphi Mode';
