@@ -172,7 +172,7 @@ begin
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
   AProject.LazCompilerOptions.Win32GraphicApp:=true;
-  AProject.LazCompilerOptions.TargetFilename:='fpunitproject1';
+  AProject.LazCompilerOptions.TargetFilename:='fpcunitproject1';
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   Result:=mrOK;
 end;
@@ -484,7 +484,7 @@ begin
 
   // compiler options
   AProject.LazCompilerOptions.UseLineInfoUnit:=true;
-  AProject.LazCompilerOptions.TargetFilename:='fpunitproject1';
+  AProject.LazCompilerOptions.TargetFilename:='fpcunitproject1';
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   Result:=mrOK;
 end;
