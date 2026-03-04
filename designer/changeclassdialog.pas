@@ -44,10 +44,14 @@ uses
   LFMTrees, CodeCache, CodeToolManager,
   // BuildIntf
   ComponentReg,
+  // IdeProject
+  Project,
+  // IdeConfig
+  EnvironmentOpts,
   // IdeIntf
   PropEdits, ComponentEditors, FormEditingIntf, SrcEditorIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, CheckLFMDlg, Project, MainIntf, EnvironmentOpts;
+  LazarusIDEStrConsts, CheckerLFM, MainIntf;
 
 type
 

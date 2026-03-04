@@ -45,7 +45,7 @@ uses
   UnitResources, SrcEditorIntf
   {$IFNDEF LCLNoGui}
   // IDE
-  ,CheckLFMDlg
+  ,CheckerLFM
   {$ENDIF}
   ;
 

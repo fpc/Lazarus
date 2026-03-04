@@ -68,7 +68,7 @@ uses
   ProjectInspector, SourceSynEditor, SourceEditor,
   EditorOptions, CustomFormEditor, ControlSelection,
   FormEditor, EmptyMethodsDlg, BaseDebugManager, BuildManager,
-  EditorMacroListViewer, BuildModesManager, ViewUnit_Dlg, CheckLFMDlg,
+  EditorMacroListViewer, BuildModesManager, ViewUnit_Dlg, CheckerLFM,
   etMessagesWnd, DebugManager, EnvGuiOptions, Designer, DesignerProcs;
 
 type

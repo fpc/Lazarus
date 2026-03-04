@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, Contnrs,
   // LCL
-  Forms, Controls, Grids, LResources, Dialogs, StdCtrls,
+  Forms, Controls, Grids, LResources, Dialogs,
   // LazUtils
   LazFileUtils, LazUTF8, LazLoggerBase, AvgLvlTree,
   // Codetools
@@ -39,7 +39,7 @@ uses
   // IdeProject
   IdeProjectStrConsts,
   // IDE
-  LazarusIDEStrConsts, CheckLFMDlg,
+  LazarusIDEStrConsts, CheckerLFM,
   // Converter
   ConvertBase, ConverterTypes, ReplaceNamesUnit, ConvCodeTool, FormFileConv, UsedUnits;
 
