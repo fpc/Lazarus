@@ -242,7 +242,7 @@ end;
 function TFileDescPascalUnitFPCUnitTestCase.GetInterfaceUsesSection: string;
 begin
   Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+', fpcunit, testutils, testregistry';
+  Result:=Result+', fpcunit, testregistry';
 end;
 
 function TFileDescPascalUnitFPCUnitTestCase.GetLocalizedName: string;
