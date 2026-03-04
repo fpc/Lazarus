@@ -2178,7 +2178,12 @@ begin
     ' EAT ',EatArrowKeys(ACharCode));
   {$ENDIF}
 
-  if (ACharCode = VK_UNKNOWN) and (MK_CONTROL and LCLModifiers <> 0) then
+  //if (ACharCode = VK_UNKNOWN) and (MK_CONTROL and LCLModifiers <> 0) then
+  if (MK_CONTROL and LCLModifiers <> 0) and
+     ((ACharCode = VK_UNKNOWN) or
+      not (((ACharCode >= VK_0) and (ACharCode <= VK_9)) or
+        ((ACharCode >= VK_A) and (ACharCode <= VK_Z)) or
+      (ACharCode >= VK_F1))) then
   begin
     Keymap := gdk_keymap_get_for_display(gdk_display_get_default);
     if gdk_keymap_get_entries_for_keycode(Keymap, AEvent.hardware_keycode, @KeymapKeys, @KeySyms, @KeySymCount) then
