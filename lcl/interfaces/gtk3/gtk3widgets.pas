@@ -4334,8 +4334,9 @@ var
   uWidth, uHeight: guint;
   aCtl: TGtk3Widget;
 begin
-
-  if not AWidget^.get_mapped then Exit;
+  if not AWidget^.get_mapped and
+     ((AGdkRect^.width <= 1) or (AGdkRect^.height <= 1)) then
+    Exit;
 
   HSize := AGdkRect^.Width;
   VSize := AGdkRect^.Height;
@@ -4474,7 +4475,9 @@ begin
       exit;
   end;
 
-  if not AWidget^.get_mapped then Exit;
+  if not AWidget^.get_mapped and
+     ((AGdkRect^.width <= 1) or (AGdkRect^.height <= 1)) then
+    Exit;
 
   {$IF DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGGROUPBOX)}
   if not ACtl.LCLObject.AutoSize and (ACtl.LCLWidth > 0) and (ACtl.LCLHeight > 0) and
