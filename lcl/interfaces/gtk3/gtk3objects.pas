@@ -541,7 +541,7 @@ begin
 
     DSTINVERT,
     R2_NOTXORPEN:
-      Result := CAIRO_OPERATOR_XOR; //just for testing CAIRO_OPERATOR_DIFFERENCE;
+      Result := CAIRO_OPERATOR_DIFFERENCE; //Issue #42089
 
     WHITENESS,
     R2_WHITE:
