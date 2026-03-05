@@ -1175,8 +1175,15 @@ begin
               gtk_button_get_type, 'button', 'titlebutton', State, AScreen);
             if BtnClass <> '' then
               gtk_style_context_add_class(Context, BtnClass);
+            // Clip background/frame to button rect, the theme CSS for hover/pressed
+            // renders the icon via -gtk-icon-source at a fixed native size that
+            // overflows our rect. Clipping prevents that overflow.
+            cairo_save(Cr);
+            cairo_rectangle(Cr, X, Y, Width, Height);
+            cairo_clip(Cr);
             gtk_render_background(Context, Cr, X, Y, Width, Height);
             gtk_render_frame(Context, Cr, X, Y, Width, Height);
+            cairo_restore(Cr);
 
             if BtnIconName <> '' then
             begin
@@ -1188,6 +1195,11 @@ begin
                 [GTK_ICON_LOOKUP_FORCE_SIZE], nil);
               if Pixbuf <> nil then
               begin
+                // Render icon in Normal state so PRELIGHT/ACTIVE context state
+                // does not apply gtk_render_icon's state effects on top of the
+                // already-drawn hover background.
+                if GTK_STATE_FLAG_PRELIGHT in State then
+                  gtk_style_context_set_state(Context, GTK_STATE_FLAG_NORMAL);
                 gtk_render_icon(Context, Cr, Pixbuf, ArrowX, ArrowY);
                 g_object_unref(Pixbuf);
               end;
