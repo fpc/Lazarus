@@ -6868,7 +6868,13 @@ var
   function IsDeclarationNode(Node: TCodeTreeNode): boolean;
   begin
     UseProcHead(Node);
-    if (Node=DeclarationNode) or (Node=AliasDeclarationNode) then exit(true);
+    if (Node=DeclarationNode) or (Node=AliasDeclarationNode) or
+    // forward class (ident = class)
+    ( (Node.Desc=ctnTypeDefinition) and
+      (Node.FirstChild.Desc=ctnClass) and
+      (Node.FirstChild=Node.LastChild) )
+    then
+      exit(true);
 
     // check method overrides
     if Node.Desc=ctnProcedureHead then begin
