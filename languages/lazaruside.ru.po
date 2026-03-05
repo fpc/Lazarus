@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-03-01 22:51+0300\n"
+"PO-Revision-Date: 2026-03-06 01:56+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -588,6 +588,10 @@ msgstr "Заголовок процедуры"
 #: lazarusidestrconsts.dlgaddhiattrgroup_specializegenericsection
 msgid "Specialize/Generic Blocks"
 msgstr "Блоки Specialize/Generic"
+
+#: lazarusidestrconsts.dlgaddhiattrgroup_string
+msgid "Strings"
+msgstr "Строки"
 
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
 msgid "(Custom)"

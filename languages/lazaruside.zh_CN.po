@@ -589,6 +589,10 @@ msgstr "过程头"
 msgid "Specialize/Generic Blocks"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_string
+msgid "Strings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
 msgid "(Custom)"
 msgstr "（自定义）"

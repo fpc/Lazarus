@@ -588,6 +588,10 @@ msgstr "ຫົວຂໍ້ໂປຣຊີເຢີ"
 msgid "Specialize/Generic Blocks"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrgroup_string
+msgid "Strings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrgroup_suffix_custom
 msgid "(Custom)"
 msgstr "(ກຳນົດເອງ)"
