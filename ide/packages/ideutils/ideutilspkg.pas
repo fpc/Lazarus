@@ -8,7 +8,8 @@ unit IdeUtilsPkg;
 interface
 
 uses
-  IDETranslations, IdeUtilsPkgStrConsts, InputHistory, LazarusPackageIntf;
+  CheckerLfmBase, IDETranslations, IdeUtilsPkgStrConsts, InputHistory, 
+  LazarusPackageIntf;
 
 implementation
 

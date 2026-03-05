@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeUtilsPkg 1.0
 
-   This file was generated on 13/04/2024
+   This file was generated on 05.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -30,14 +30,13 @@ begin
 
     P.Author:='Lazarus Team';
     P.License:='GPLv2';
-    P.Description:='-- This package is part of the IDE --'#13#10'This package does not guarantee any particular interface/API. Files are maintained for the use by the IDE.'#13#10''#13#10'Files in this package are for the main configuration of the IDE.';
+    P.Description:='-- This package is part of the IDE --'#10'This package does not guarantee any particular interface/API. Files are maintained for the use by the IDE.'#10''#10'Files in this package are for the main configuration of the IDE.';
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('synedit');
     D := P.Dependencies.Add('ideconfig');
     D := P.Dependencies.Add('ideintf');
-    D := P.Dependencies.Add('codetools');
-    D := P.Dependencies.Add('lclbase');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
@@ -49,12 +48,12 @@ begin
     P.Options.Add('-dLCL$(LCLWidgetType)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('ideutilspkg.pas');
-    t.Dependencies.AddUnit('dialogprocs');
+    t.Dependencies.AddUnit('checkerlfmbase');
     t.Dependencies.AddUnit('idetranslations');
     t.Dependencies.AddUnit('ideutilspkgstrconsts');
     t.Dependencies.AddUnit('inputhistory');
 
-    T:=P.Targets.AddUnit('dialogprocs.pas');
+    T:=P.Targets.AddUnit('checkerlfmbase.pas');
     T:=P.Targets.AddUnit('idetranslations.pas');
     T:=P.Targets.AddUnit('ideutilspkgstrconsts.pas');
     T:=P.Targets.AddUnit('inputhistory.pas');

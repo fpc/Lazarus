@@ -44,7 +44,7 @@ uses
   // LazEdit
   LazEditTextAttributes,
   // SynEdit
-  SynEditMarkupGutterMark, SynEditMarks, SynEditMiscClasses, SynEditTypes, SynEdit,
+  SynEditMarkupGutterMark, SynEditMarks, SynEditMiscClasses, SynEdit,
   LazSynEditText, SynEditHighlighter;
 
 type

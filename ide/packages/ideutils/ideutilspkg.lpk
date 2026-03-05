@@ -23,6 +23,10 @@ Files in this package are for the main configuration of the IDE."/>
     <Version Major="1"/>
     <Files>
       <Item>
+        <Filename Value="checkerlfmbase.pas"/>
+        <UnitName Value="CheckerLfmBase"/>
+      </Item>
+      <Item>
         <Filename Value="idetranslations.pas"/>
         <UnitName Value="IDETranslations"/>
       </Item>
@@ -40,6 +44,9 @@ Files in this package are for the main configuration of the IDE."/>
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
       <Item>
         <PackageName Value="IdeConfig"/>
       </Item>

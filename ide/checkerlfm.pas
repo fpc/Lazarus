@@ -32,17 +32,19 @@ interface
 
 uses
   // FCL
-  Classes, SysUtils, Math, TypInfo, Contnrs, System.UITypes,
+  Classes, SysUtils, TypInfo, Contnrs, System.UITypes,
   // LCL
-  LResources, Forms, StdCtrls,
+  LResources, Forms,
   // LazUtils
-  LazStringUtils, LazLoggerBase, LazTracer, AvgLvlTree,
+  LazStringUtils, AvgLvlTree, LazLoggerBase,
   // CodeTools
-  BasicCodeTools, CodeCache, CodeToolManager, LFMTrees,
+  CodeCache, CodeToolManager, LFMTrees,
   // SynEdit
   SynEdit,
   // BuildIntf
   PackageIntf, ComponentReg,
+  // IdeUtils
+  CheckerLfmBase,
   // IDEIntf
   IDEExternToolIntf, IDEMsgIntf, IDEDialogs, PropEdits, PropEditUtils,
   // IDE
@@ -52,7 +54,7 @@ type
 
   { TLfmChecker }
 
-  TLFMChecker = class
+  TLFMChecker = class(TCheckerLFMBase)
   private
     fShowMessages: boolean;
     procedure WriteUnitError(Code: TCodeBuffer; X, Y: integer; const ErrorMessage: string);
@@ -60,45 +62,16 @@ type
     function CheckUnit: boolean;
     function ShowRepairLFMWizard: TModalResult; // Show the interactive user interface.
   protected
-    fPascalBuffer: TCodeBuffer;
-    fLFMBuffer: TCodeBuffer;
-    fLFMTree: TLFMTree;
-    fRootMustBeClassInUnit: boolean;
-    fRootMustBeClassInIntf: boolean;
-    fObjectsMustExist: boolean;
-    // References to controls in UI:
-    fLFMSynEdit: TSynEdit;
-    fErrorsListBox: TListBox;
-    // Refactored and moved from dialog class:
-    procedure LoadFormFile;
-    procedure FindNiceNodeBounds(LFMNode: TLFMTreeNode;
-                                 out StartPos, EndPos: integer);
     procedure WriteLFMErrors;
-    function FindAndFixMissingComponentClasses: TModalResult;
-    function FixMissingComponentClasses(aMissingTypes: TClassList): TModalResult; virtual;
-    procedure FillErrorsListBox;
-    procedure AddReplacement(LFMChangeList: TObjectList; StartPos, EndPos: integer;
-                             const NewText: string);
-    function ApplyReplacements(LFMChangeList: TList): boolean;
+    function FixMissingComponentClasses(aMissingTypes: TClassList): TModalResult; override;
   public
-    constructor Create(APascalBuffer, ALFMBuffer: TCodeBuffer);
-    destructor Destroy; override;
+    //constructor Create(APascalBuffer, ALFMBuffer: TCodeBuffer);
+    //destructor Destroy; override;
     function RemoveAll: TModalResult;
     function Repair: TModalResult;
     function AutomaticFixIsPossible: boolean;
-    function FindListBoxError: TLFMError;
-    procedure JumpToError(LFMError: TLFMError);
   public
-    property PascalBuffer: TCodeBuffer read fPascalBuffer;
-    property LFMBuffer: TCodeBuffer read fLFMBuffer;
-    property LFMTree: TLFMTree read fLFMTree;
     property ShowMessages: boolean read fShowMessages write fShowMessages;
-    property RootMustBeClassInUnit: boolean read fRootMustBeClassInUnit
-                                           write fRootMustBeClassInUnit;
-    property RootMustBeClassInIntf: boolean read fRootMustBeClassInIntf
-                                           write fRootMustBeClassInIntf;
-    property ObjectsMustExist: boolean read fObjectsMustExist
-                                       write fObjectsMustExist;
   end;
 
 // check and repair lfm files
@@ -123,13 +96,6 @@ implementation
 
 uses
   CheckLFMDlg;
-
-type
-  TLFMChangeEntry = class
-  public
-    StartPos, EndPos: integer;
-    NewText: string;
-  end;
 
 function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer; out LFMType,
   LFMComponentName, LFMClassName: string; out LCLVersion: string; out
@@ -373,20 +339,17 @@ begin
 end;
 
 { TLFMChecker }
-
+{
 constructor TLFMChecker.Create(APascalBuffer, ALFMBuffer: TCodeBuffer);
 begin
-  fPascalBuffer:=APascalBuffer;
-  fLFMBuffer:=ALFMBuffer;
-  fRootMustBeClassInIntf:=false;
-  fObjectsMustExist:=false;
+  inherited Create(APascalBuffer, ALFMBuffer);
 end;
 
 destructor TLFMChecker.Destroy;
 begin
   inherited Destroy;
 end;
-
+}
 function TLFMChecker.ShowRepairLFMWizard: TModalResult;
 var
   CheckLFMDialog: TCheckLFMDialog;
@@ -401,12 +364,6 @@ begin
   finally
     CheckLFMDialog.Free;
   end;
-end;
-
-procedure TLFMChecker.LoadFormFile;
-begin
-  fLFMSynEdit.Lines.Text:=fLFMBuffer.Source;
-  FillErrorsListBox;
 end;
 
 function TLFMChecker.Repair: TModalResult;
@@ -461,38 +418,6 @@ begin
     CurError:=CurError.NextError;
   end;
   Application.ProcessMessages;
-end;
-
-function TLFMChecker.FindAndFixMissingComponentClasses: TModalResult;
-// returns true, if after adding units to uses section all errors are fixed
-var
-  CurError: TLFMError;
-  MissingObjectTypes: TClassList;
-  RegComp: TRegisteredComponent;
-  AClassName: String;
-begin
-  Result:=mrOK;
-  MissingObjectTypes:=TClassList.Create;
-  try
-    // collect all missing object types
-    CurError:=fLFMTree.FirstError;
-    while CurError<>nil do begin
-      if CurError.IsMissingObjectType then begin
-        AClassName:=(CurError.Node as TLFMObjectNode).TypeName;
-        RegComp:=IDEComponentPalette.FindRegComponent(AClassName);
-        if Assigned(RegComp) and (RegComp.GetUnitName<>'')
-        and (MissingObjectTypes.IndexOf(RegComp.ComponentClass)<0)
-        then
-          MissingObjectTypes.Add(RegComp.ComponentClass);
-      end;
-      CurError:=CurError.NextError;
-    end;
-    // Now the list contains only types that are found in IDE.
-    if MissingObjectTypes.Count>0 then
-      Result:=FixMissingComponentClasses(MissingObjectTypes); // Fix them.
-  finally
-    MissingObjectTypes.Free;
-  end;
 end;
 
 function TLFMChecker.FixMissingComponentClasses(aMissingTypes: TClassList): TModalResult;
@@ -561,130 +486,6 @@ begin
   finally
     Replacements.Free;
   end;
-end;
-
-procedure TLFMChecker.FindNiceNodeBounds(LFMNode: TLFMTreeNode;
-  out StartPos, EndPos: integer);
-var
-  Src: String;
-begin
-  Src:=fLFMBuffer.Source;
-  StartPos:=FindLineEndOrCodeInFrontOfPosition(Src,LFMNode.StartPos,1,false,true);
-  EndPos:=FindLineEndOrCodeInFrontOfPosition(Src,LFMNode.EndPos,1,false,true);
-  EndPos:=FindLineEndOrCodeAfterPosition(Src,EndPos,length(Src),false);
-end;
-
-function TLFMChecker.FindListBoxError: TLFMError;
-var
-  i: Integer;
-begin
-  Result:=nil;
-  i:=fErrorsListBox.ItemIndex;
-  if (i<0) or (i>=fErrorsListBox.Items.Count) then exit;
-  Result:=fLFMTree.FirstError;
-  while Result<>nil do begin
-    if i=0 then exit;
-    Result:=Result.NextError;
-    dec(i);
-  end;
-end;
-
-procedure TLFMChecker.FillErrorsListBox;
-var
-  CurError: TLFMError;
-  Filename: String;
-  Msg: String;
-begin
-  fErrorsListBox.Items.BeginUpdate;
-  fErrorsListBox.Items.Clear;
-  if fLFMTree<>nil then begin
-    Filename:=ExtractFileName(fLFMBuffer.Filename);
-    CurError:=fLFMTree.FirstError;
-    while CurError<>nil do begin
-      Msg:=Filename
-           +'('+IntToStr(CurError.Caret.Y)+','+IntToStr(CurError.Caret.X)+')'
-           +' Error: '
-           +CurError.ErrorMessage;
-      fErrorsListBox.Items.Add(Msg);
-      CurError:=CurError.NextError;
-    end;
-  end;
-  fErrorsListBox.Items.EndUpdate;
-end;
-
-procedure TLFMChecker.JumpToError(LFMError: TLFMError);
-begin
-  if LFMError=nil then exit;
-  fLFMSynEdit.CaretXY:=LFMError.Caret;
-end;
-
-procedure TLFMChecker.AddReplacement(LFMChangeList: TObjectList;
-  StartPos, EndPos: integer; const NewText: string);
-var
-  Entry: TLFMChangeEntry;
-  NewEntry: TLFMChangeEntry;
-  i: Integer;
-begin
-  if StartPos>EndPos then
-    RaiseGDBException('TCheckLFMDialog.AddReplaceMent StartPos>EndPos');
-  // check for intersection
-  for i:=0 to LFMChangeList.Count-1 do begin
-    Entry:=TLFMChangeEntry(LFMChangeList[i]);
-    if ((Entry.StartPos<EndPos) and (Entry.EndPos>StartPos)) then begin
-      // New and Entry intersects
-      if (Entry.NewText='') and (NewText='') then begin
-        // both are deletes => combine
-        StartPos:=Min(StartPos,Entry.StartPos);
-        EndPos:=Max(EndPos,Entry.EndPos);
-      end else begin
-        // not allowed
-        RaiseGDBException('TCheckLFMDialog.AddReplaceMent invalid Intersection');
-      end;
-    end;
-  end;
-  // combine deletions
-  if NewText='' then begin
-    for i:=LFMChangeList.Count-1 downto 0 do begin
-      Entry:=TLFMChangeEntry(LFMChangeList[i]);
-      if ((Entry.StartPos<EndPos) and (Entry.EndPos>StartPos)) then
-        // New and Entry intersects -> remove Entry
-        LFMChangeList.Delete(i);
-    end;
-  end;
-  // insert new entry
-  NewEntry:=TLFMChangeEntry.Create;
-  NewEntry.NewText:=NewText;
-  NewEntry.StartPos:=StartPos;
-  NewEntry.EndPos:=EndPos;
-  if LFMChangeList.Count=0 then begin
-    LFMChangeList.Add(NewEntry);
-  end else begin
-    for i:=0 to LFMChangeList.Count-1 do begin
-      Entry:=TLFMChangeEntry(LFMChangeList[i]);
-      if EndPos<=Entry.StartPos then begin
-        // insert in front
-        LFMChangeList.Insert(i,NewEntry);
-        break;
-      end else if i=LFMChangeList.Count-1 then begin
-        // insert behind
-        LFMChangeList.Add(NewEntry);
-        break;
-      end;
-    end;
-  end;
-end;
-
-function TLFMChecker.ApplyReplacements(LFMChangeList: TList): boolean;
-var
-  i: Integer;
-  Entry: TLFMChangeEntry;
-begin
-  Result:=false;
-  for i:=LfmChangeList.Count-1 downto 0 do begin
-    Entry:=TLFMChangeEntry(LfmChangeList[i]);
-    fLFMBuffer.Replace(Entry.StartPos,Entry.EndPos-Entry.StartPos,Entry.NewText);
-  end;
-  Result:=true;
 end;
 
 function TLFMChecker.AutomaticFixIsPossible: boolean;

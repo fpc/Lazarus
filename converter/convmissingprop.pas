@@ -25,21 +25,19 @@ unit ConvMissingProp;
 interface
 
 uses
-  Classes, SysUtils, Contnrs,
+  Classes, SysUtils, Contnrs, System.UITypes,
   // LCL
-  Forms, Controls, Grids, LResources, Dialogs,
+  Grids, LResources, Dialogs,
   // LazUtils
-  LazFileUtils, LazUTF8, LazLoggerBase, AvgLvlTree,
+  LazFileUtils, LazUTF8, AvgLvlTree, LazLoggerBase,
   // Codetools
   CodeCache, CodeToolManager, CodeCompletionTool, LFMTrees,
   // BuildIntf
   ComponentReg, IDEExternToolIntf,
-  // IdeConfig
-  IdeConfStrConsts,
-  // IdeProject
-  IdeProjectStrConsts,
-  // IDE
-  LazarusIDEStrConsts, CheckerLFM,
+  // IdeConfig, IdeProject, IDE
+  IdeConfStrConsts, IdeProjectStrConsts, LazarusIDEStrConsts,
+  // IdeUtils
+  CheckerLfmBase,
   // Converter
   ConvertBase, ConverterTypes, ReplaceNamesUnit, ConvCodeTool, FormFileConv, UsedUnits;
 
@@ -63,7 +61,7 @@ type
 
   { TLfmFixer }
 
-  TLFMFixer = class(TLFMChecker)
+  TLFMFixer = class(TCheckerLFMBase)
   private
     fCTLink: TCodeToolLink;
     fSettings: TConvertSettings;

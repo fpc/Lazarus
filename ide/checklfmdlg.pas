@@ -76,13 +76,6 @@ implementation
 
 {$R *.lfm}
 
-type
-  TLFMChangeEntry = class
-  public
-    StartPos, EndPos: integer;
-    NewText: string;
-  end;
-
 { TCheckLFMDialog }
 
 constructor TCheckLFMDialog.Create(AOwner: TComponent; ALfmChecker: TLFMChecker);
