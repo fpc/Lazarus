@@ -977,16 +977,16 @@ begin
   //we use gtk2 trick here ...
   {$warning TODO surpress signalling in TGtk3ListView if lcl_gtkwidget_in_update is <> nil
    so it won't trigger selection changes etc.}
-  g_object_set_data(PGObject(ALV.Handle), 'lcl_gtkwidget_in_update', ALV);
-  g_object_freeze_notify(PGObject(ALV.Handle));
+  g_object_set_data(PGObject(TGtk3Widget(ALV.Handle).Widget), 'lcl_gtkwidget_in_update', ALV);
+  g_object_freeze_notify(TGtk3Widget(ALV.Handle).Widget);
 end;
 
 class procedure TGtk3WSCustomListView.EndUpdate(const ALV: TCustomListView);
 begin
   if not WSCheckHandleAllocated(ALV, 'EndUpdate') then
     Exit;
-  g_object_set_data(PGObject(ALV.Handle), 'lcl_gtkwidget_in_update', nil);
-  g_object_thaw_notify(PGObject(ALV.Handle));
+  g_object_set_data(PGObject(TGtk3Widget(ALV.Handle).Widget), 'lcl_gtkwidget_in_update', nil);
+  g_object_thaw_notify(TGtk3Widget(ALV.Handle).Widget);
   gtk_widget_queue_draw(TGtk3ListView(ALV.Handle).GetContainerWidget);
 end;
 
