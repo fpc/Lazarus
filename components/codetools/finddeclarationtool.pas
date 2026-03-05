@@ -4938,6 +4938,10 @@ var
       HelperKind:=fdhlkDelphiHelper;
     Helpers:=Params.GetHelpers(HelperKind);
     if Helpers=nil then exit;
+    if (StartContextNode.Desc=ctnEnumIdentifier)
+    and (StartContextNode.Parent.Desc=ctnEnumerationType) then
+      StartContextNode:=StartContextNode.Parent;
+
     if not Helpers.IterateFromClassNode(StartContextNode,Self,
       HelperContext,HelperIterator) then exit;
     //debugln(['SearchInHelpers START at least one helper found, iterating...']);
@@ -5370,9 +5374,13 @@ begin
 
   // find class helper functions
   SearchInHelpersInTheEnd := False;
-  if (fdfSearchInHelpers in Flags)
-    and (ContextNode.Desc in [ctnClass,ctnRecordType,ctnTypeType,ctnObjCClass,ctnEnumerationType,ctnRangedArrayType,ctnOpenArrayType])
-    and (ContextNode.Parent<>nil) and (ContextNode.Parent.Desc in [ctnTypeDefinition, ctnGenericType])
+  if (fdfSearchInHelpers in Flags) and (
+    (ContextNode.Desc in [ctnClass,ctnRecordType,ctnTypeType,ctnObjCClass,
+                          ctnEnumerationType,ctnRangedArrayType,ctnOpenArrayType])
+    and (ContextNode.Parent<>nil)
+    and (ContextNode.Parent.Desc in [ctnTypeDefinition, ctnGenericType])
+    or ((ContextNode.Desc=ctnEnumIdentifier) and (ContextNode.Parent.Desc=ctnEnumerationType))
+  )
   then begin
     if (fdfSearchInHelpersInTheEnd in Flags) then
       SearchInHelpersInTheEnd := True
@@ -11375,7 +11383,12 @@ var
       end else if ExprType.Context.Node.Desc in AllPointContexts then begin
         // ok, allowed
         break;
-      end else begin
+      end else if (ExprType.Context.Node.Desc=ctnEnumIdentifier) and
+        (ExprType.Context.Node.Parent.Desc=ctnEnumerationType) then begin
+        // enum can have a helper to type so "enum1. " is ok
+        break;
+      end
+      else begin
         // not allowed
         //debugln(['ResolvePoint ',ExprTypeToString(ExprType)]);
         MoveCursorToCleanPos(CurAtom.StartPos);
