@@ -159,6 +159,7 @@ type
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
+    class procedure SelectAll(const ALV: TCustomListView; const AIsSet: Boolean); override;
     class procedure SetAllocBy(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const {%H-}AValue: Integer); override;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const {%H-}AValue: TListHotTrackStyles); override;
@@ -1080,6 +1081,12 @@ begin
   DebugLn('TGtk3WSCustomListView.GetVisibleRowCount ');
   Result := 0;
   // Result:=inherited GetVisibleRowCount(ALV);
+end;
+
+class procedure TGtk3WSCustomListView.SelectAll(const ALV: TCustomListView;
+  const AIsSet: Boolean);
+begin
+  DebugLn('TGtk3WSCustomListView.SelectAll ');
 end;
 
 class procedure TGtk3WSCustomListView.SetAllocBy(const ALV: TCustomListView;
