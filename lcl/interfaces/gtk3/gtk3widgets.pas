@@ -213,6 +213,8 @@ type
     procedure Move(ALeft, ATop: Integer);
     procedure Activate; virtual;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); virtual;
+    function PaintWidget: PGtkWidget;
+    function PaintWindow: PGdkWindow;
     procedure Repaint(const ARect: PRect = nil); virtual;
     procedure SetCursor(ACursor: HCURSOR);
     procedure SetFocus; virtual;
@@ -3612,41 +3614,82 @@ begin
   end;
 end;
 
+function TGtk3Widget.PaintWidget: PGtkWidget;
+begin
+  Result := GetContainerWidget;
+  if Result = nil then
+    Result := FWidget;
+end;
+
+function TGtk3Widget.PaintWindow: PGdkWindow;
+var
+  W: PGtkWidget;
+begin
+  Result := nil;
+
+  W := PaintWidget;
+  if W = nil then
+    exit;
+
+  if not W^.get_realized then
+    exit;
+
+  if Gtk3IsLayout(W) then
+    Result := PGtkLayout(W)^.get_bin_window
+  else
+    Result := W^.get_window;
+
+  if not Gtk3IsGdkWindow(Result) then
+    Result := nil;
+end;
+
 procedure TGtk3Widget.Repaint(const ARect: PRect);
 var
-  aLayout: PGtkLayout;
-  aWindow: PGdkWindow;
-  cr, tmpCtx: Pcairo_t;
-  aRegion: Pcairo_region_t;
-  tmpSurf: Pcairo_surface_t;
-  ACairoRect: Tcairo_rectangle_int_t;
+  W: PGtkWidget;
+  Win: PGdkWindow;
+  R: TGdkRectangle;
+  X, Y, Wd, Hd: Integer;
 begin
-  if [wtLayout] * WidgetType <> [] then
+  if not IsWidgetOK then
+    exit;
+
+  W := PaintWidget;
+  if W = nil then
+    exit;
+
+  if not W^.get_realized or not W^.get_mapped then
+    exit;
+
+  if ARect <> nil then
   begin
-    aLayout := PGtkLayout(GetContainerWidget);
-    if Gtk3IsGdkWindow(aLayout^.get_bin_window) then
-    begin
-      //TODO: implement ARect
-      aWindow := aLayout^.get_bin_window;
-      cr := gdk_cairo_create(aWindow);
-      aRegion := gdk_window_get_visible_region(aWindow);
-      cairo_region_get_extents(aRegion, @ACairoRect);
-      tmpSurf := cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, ACairoRect.Width, ACairoRect.Height);
-      tmpCtx := cairo_create(tmpSurf);
-      cairo_translate(tmpCtx, ACairoRect.X, ACairoRect.Y);
-      gtk_widget_draw(aLayout, tmpCtx);
-      cairo_set_source_surface(cr, tmpSurf, 0, 0);
-      cairo_paint(cr);
-      cairo_destroy(tmpCtx);
-      cairo_surface_destroy(tmpSurf);
-      cairo_destroy(cr);
-      cairo_region_destroy(aRegion);
+    X := ARect^.Left;
+    Y := ARect^.Top;
+    Wd := ARect^.Right - ARect^.Left;
+    Hd := ARect^.Bottom - ARect^.Top;
+
+    if (Wd <= 0) or (Hd <= 0) then
       exit;
+
+    W^.queue_draw_area(X, Y, Wd, Hd);
+  end else
+    W^.queue_draw;
+
+  Win := PaintWindow;
+  if Gtk3IsGdkWindow(Win) then
+  begin
+    if ARect <> nil then
+    begin
+      R.x := X;
+      R.y := Y;
+      R.width := Wd;
+      R.height := Hd;
+      gdk_window_invalidate_rect(Win, @R, True);
     end;
+    gdk_display_flush(gdk_window_get_display(Win));
   end;
-  GetContainerWidget^.queue_draw;
-  if GetContainerWidget^.get_has_window and Gtk3IsGdkWindow(GetContainerWidget^.window) then
-    GetContainerWidget^.window^.process_updates(True);
+  //process only small amount of events, so our repaint triggers on time.
+  while g_main_context_iteration(g_main_context_default(), False) do
+    break;
 end;
 
 procedure TGtk3Widget.SetCursor(ACursor: HCURSOR);
@@ -3724,28 +3767,34 @@ begin
 end;
 
 procedure TGtk3Widget.Update(ARect: PRect);
+var
+  W: PGtkWidget;
+  X, Y, Wd, Hd: Integer;
 begin
-  if IsWidgetOK then
+
+  if not IsWidgetOK then
+    exit;
+
+  W := PaintWidget;
+  if W = nil then
+    exit;
+
+  if not W^.get_realized then
+    exit;
+
+  if ARect <> nil then
   begin
-    if (ARect <> nil) then
-    begin
-      if (aRect^.Width > 0) and (ARect^.Height > 0) then
-      begin
-        with ARect^ do
-          FWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
-        if FWidget <> GetContainerWidget then
-          with ARect^ do
-            GetContainerWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
-      end;
-    end else
-    begin
-      //FWidget^.queue_draw;
-      if FWidget <> GetContainerWidget then
-        GetContainerWidget^.queue_draw
-      else
-        FWidget^.queue_draw;
-    end;
-  end;
+    X := ARect^.Left;
+    Y := ARect^.Top;
+    Wd := ARect^.Right - ARect^.Left;
+    Hd := ARect^.Bottom - ARect^.Top;
+
+    if (Wd <= 0) or (Hd <= 0) then
+      exit;
+
+    W^.queue_draw_area(X, Y, Wd, Hd);
+  end else
+    W^.queue_draw;
 end;
 
 const
