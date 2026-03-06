@@ -1320,15 +1320,18 @@ begin
     tkClass:
       begin
         obj := GetObjectProp(Instance, PropInfo);
-        if (obj <> nil) and
-           ( (obj is TPersistent) or
-             (FWriteAllNestedObjects and (GetPropList(Obj,PropList) > 0))
-           ) and
-           IsStoredProp(Instance, PropInfo)
-        then
-          WriteObject(Path+'/', TPersistent(obj))
-        else
-          DeleteValue(Path);
+        if (obj <> nil) then begin
+          i := GetPropList(Obj,PropList);
+          if ( (obj is TPersistent) or
+               (FWriteAllNestedObjects and (i > 0))
+             ) and
+             IsStoredProp(Instance, PropInfo)
+          then
+            WriteObject(Path+'/', TPersistent(obj))
+          else
+            DeleteValue(Path);
+          if i > 0 then Freemem(PropList);
+        end;
       end;
   end;
 end;
