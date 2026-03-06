@@ -73,11 +73,7 @@ type
     destructor Destroy; override;
     procedure JumpToError(LFMError: TLFMError);
     function FindListBoxError: TLFMError;
-    //function ConvertAndRepair: TModalResult;
-    //function ReplaceAndRemoveAll: TModalResult;
   public
-    //property Settings: TConvertSettings read fSettings write fSettings;
-    //property UsedUnitsTool: TUsedUnitsTool read fUsedUnitsTool write fUsedUnitsTool;
     property PascalBuffer: TCodeBuffer read fPascalBuffer;
     property LFMBuffer: TCodeBuffer read fLFMBuffer;
     property LFMTree: TLFMTree read fLFMTree;

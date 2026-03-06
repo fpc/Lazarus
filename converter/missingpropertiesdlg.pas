@@ -31,11 +31,11 @@ uses
   // LazUtils
   LazFileUtils,
   // SynEdit
-  SynHighlighterLFM, SynEdit, SynEditMiscClasses,
+  SynEdit, SynHighlighterLFM, SynEditMiscClasses,
   // Codetools
   LFMTrees,
   // IdeIntf
-  IDEImagesIntf,
+  IDEImagesIntf, IDEOptEditorIntf,
   // IDE
   LazarusIDEStrConsts, EditorOptions, SourceMarks,
   // Converter
@@ -104,8 +104,9 @@ begin
   TypesText.Caption:=lisTypes;
   ReplaceAllButton.Caption:=lisReplaceRemoveUnknown;
   IDEImages.AssignImage(ReplaceAllButton, 'laz_refresh');
-  EditorOpts.GetHighlighterSettings(SynLFMSyn1);
-  EditorOpts.GetSynEditSettings(LFMSynEdit);
+  // Get SynEdit options for LFM.
+  IDEEditorOptions.GetHighlighterObjSettings(SynLFMSyn1);
+  IDEEditorOptions.GetSynEditorSettings(LFMSynEdit);
 end;
 
 procedure TFixLFMDialog.ReplaceAllButtonClick(Sender: TObject);
