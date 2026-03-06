@@ -3685,6 +3685,7 @@ begin
       R.height := Hd;
       gdk_window_invalidate_rect(Win, @R, True);
     end;
+    gdk_window_process_updates(Win, True);
     gdk_display_flush(gdk_window_get_display(Win));
   end;
   //process only small amount of events, so our repaint triggers on time.
