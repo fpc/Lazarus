@@ -29,6 +29,25 @@ type
     class function alignment( lclAlignment: TAlignment ): NSTextAlignment;
   end;
 
+  { TCocoaScreenUtil }
+
+  TCocoaScreenUtil = class
+    class function toCocoa(const lclPoint: TPoint): NSPoint; overload;
+    class function toLCL(const cocoaPoint: NSPoint): TPoint; overload;
+    class function toCocoa(const lclRect: TRect): NSRect; overload;
+    class function toLCL(const cocoaRect: NSRect): TRect; overload;
+
+    class function primaryScreen: NSScreen;
+    class function primaryScreenFrame: NSRect;
+    class function globalScreenFrame: NSRect;
+    class function globalScreenLCLFrame: NSRect;
+    class function globalScreenBottom: CGFloat;
+
+    class function indexToHMonitor(i: NSUInteger): HMonitor;
+    class function HMonitorToIndex(h: HMonitor): NSUInteger;
+    class function getScreenFromHMonitor(h: HMonitor): NSScreen;
+  end;
+
 const
   NSNullRect : NSRect = (origin:(x:0; y:0); size:(width:0; height:0));
 
@@ -57,27 +76,6 @@ procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
 function GetScreenPointFromEvent(const event: NSEvent): NSPoint;
 procedure lclOffsetWithEnclosingScrollView( const view: NSView; var x: Integer; var y: Integer );
-
-type
-
-  { TCocoaScreenUtil }
-
-  TCocoaScreenUtil = class
-    class function toCocoa(const lclPoint: TPoint): NSPoint; overload;
-    class function toLCL(const cocoaPoint: NSPoint): TPoint; overload;
-    class function toCocoa(const lclRect: TRect): NSRect; overload;
-    class function toLCL(const cocoaRect: NSRect): TRect; overload;
-
-    class function primaryScreen: NSScreen;
-    class function primaryScreenFrame: NSRect;
-    class function globalScreenFrame: NSRect;
-    class function globalScreenLCLFrame: NSRect;
-    class function globalScreenBottom: CGFloat;
-  end;
-
-function IndexToHMonitor(i: NSUInteger): HMonitor;
-function HMonitorToIndex(h: HMonitor): NSUInteger;
-function getScreenFromHMonitor(h: HMonitor): NSScreen;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
@@ -943,19 +941,19 @@ end;
 // services, it was identified that NSScreen object CAN change without any notification.
 // so, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
 // is used.
-function IndexToHMonitor(i: NSUInteger): HMonitor;
+class function TCocoaScreenUtil.indexToHMonitor(i: NSUInteger): HMonitor;
 begin
   if i = NSIntegerMax then Result := 0
   else Result := i + 1;
 end;
 
-function HMonitorToIndex(h: HMonitor): NSUInteger;
+class function TCocoaScreenUtil.HMonitorToIndex(h: HMonitor): NSUInteger;
 begin
   if h = 0 then Result := NSIntegerMax
   else Result := NSUInteger(h)-1;
 end;
 
-function getScreenFromHMonitor(h: HMonitor): NSScreen;
+class function TCocoaScreenUtil.getScreenFromHMonitor(h: HMonitor): NSScreen;
 var
   index: NSUInteger;
 begin

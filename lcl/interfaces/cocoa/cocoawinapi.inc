@@ -858,7 +858,7 @@ begin
   end;
   for i := 0 to NSScreen.screens.count - 1 do
   begin
-    Result := Result and lpfnEnum(IndexToHMonitor(i), 0, nil, dwData);
+    Result := Result and lpfnEnum(TCocoaScreenUtil.indexToHMonitor(i), 0, nil, dwData);
     if not Result then break;
   end;
 end;
@@ -1265,7 +1265,7 @@ var
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
   if not Result then Exit;
-  ScreenID := getScreenFromHMonitor( hMonitor );
+  ScreenID := TCocoaScreenUtil.getScreenFromHMonitor( hMonitor );
   Result := Assigned(ScreenID);
   if not Result then Exit;
 
@@ -1273,7 +1273,7 @@ begin
   lpmi^.rcWork:= TCocoaScreenUtil.toLCL( ScreenID.visibleFrame );
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
-  if HMonitorToIndex(hMonitor) = 0 then
+  if TCocoaScreenUtil.HMonitorToIndex(hMonitor) = 0 then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
     lpmi^.dwFlags := 0;
@@ -2009,13 +2009,13 @@ begin
   for i := 0 to NSScreen.screens.count - 1 do begin
     screen:= NSScreen( NSScreen.screens.objectAtIndex(i) );
     if NSPointInRect(point, screen.frame) then begin
-      Result:= IndexToHMonitor( i );
+      Result:= TCocoaScreenUtil.indexToHMonitor( i );
       Exit;
     end;
   end;
 
   if dwFlags<>MONITOR_DEFAULTTONULL then
-    Result:= IndexToHMonitor( 0 );
+    Result:= TCocoaScreenUtil.indexToHMonitor( 0 );
 end;
 
 function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;

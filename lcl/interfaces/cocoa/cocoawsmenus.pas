@@ -537,7 +537,7 @@ begin
 
   menu := TCocoaMenu(APopupMenu.Handle);
   point:= TPoint.Create( x, y );
-  screen:= getScreenFromHMonitor( CocoaWidgetSet.MonitorFromPoint(point, MONITOR_DEFAULTTONULL) );
+  screen:= TCocoaScreenUtil.getScreenFromHMonitor( CocoaWidgetSet.MonitorFromPoint(point, MONITOR_DEFAULTTONULL) );
 
   mouseY:= TCocoaScreenUtil.globalScreenBottom - y;
   if Assigned(screen) then begin
