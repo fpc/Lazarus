@@ -583,7 +583,7 @@ begin
   ADesc.Height := Image.Height;
 
   ADesc.BitOrder := riboReversedBits;
-  ADesc.ByteOrder := riboLSBFirst;
+  ADesc.ByteOrder := DefaultByteOrder;
   ADesc.LineOrder := riloTopToBottom;
   ADesc.LineEnd := rileDWordBoundary;
 

@@ -64,7 +64,7 @@ begin
 //  Desc.PaletteColorCount := 0;
 
   Desc.BitOrder := riboReversedBits;
-  Desc.ByteOrder := riboLSBFirst;
+  Desc.ByteOrder := DefaultByteOrder;
   Desc.LineOrder := riloTopToBottom;
 
   Desc.BitsPerPixel := 32;
