@@ -7176,11 +7176,10 @@ class procedure TGtk3ScrollableWin.ScrolledLayoutSizeAllocate(
   AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
 var
   hadj, vadj: PGtkAdjustment;
-  //aWindow: PGdkWindow;
-  //aCtl: TGtk3Widget absolute Data;
-  HSize,VSize: integer;
+  HSize, VSize: integer;
   uWidth, uHeight: guint;
   aCtl: TGtk3Widget;
+  ViewportChanged: boolean;
 begin
 
   if not AWidget^.get_mapped then Exit;
@@ -7205,24 +7204,29 @@ begin
   PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
 
   aCtl := TGtk3Widget(Data);
+
+  ViewportChanged := (AGdkRect^.height <> Round(vadj^.page_size)) or
+                    (AGdkRect^.width  <> Round(hadj^.page_size));
+
   {$IFDEF GTK3DEBUGRESIZE}
   if Assigned(ACtl.LCLObject) then
-    writeln(Format('ScrolledLayoutSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s wt=%d',
-      [dbgsName(ACtl.LCLObject), AGdkRect^.width, AGdkRect^.height,
+    writeln(Format('[%d] ScrolledLayoutSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s wt=%d VPChg=%s',
+      [GetTickCount64, dbgsName(ACtl.LCLObject), AGdkRect^.width, AGdkRect^.height,
        ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True),
-       LongInt(ACtl.FWidgetType)]));
+       LongInt(ACtl.FWidgetType), BoolToStr(ViewportChanged, True)]));
+  {$ENDIF}
+  {$IFDEF GTK3DEBUGSCROLLEDWIN}
+  if Assigned(ACtl.LCLObject) and (wtScrollingWinControl in ACtl.FWidgetType) then
+    writeln(Format('[%d] ScrolledLayoutSizeAllocate %s gdk_h=%d vadj_upper=%.1f vadj_page=%.1f VSize=%d uHeight=%d VPChg=%s HSize=%d uWidth=%d',
+      [GetTickCount64, dbgsName(ACtl.LCLObject), AGdkRect^.height, vadj^.upper, vadj^.page_size,
+       VSize, uHeight, BoolToStr(ViewportChanged, True), HSize, uWidth]));
   {$ENDIF}
 
-  if ((uWidth <> HSize) or (uHeight <> VSize)) then // not (TGtk3Widget(Data) is TGtk3Window) then
+  if (uWidth <> HSize) or (uHeight <> VSize) then
     PGtkLayout(aWidget)^.set_size(HSize, VSize);
 
-  if not TGtk3Widget(Data).InUpdate and TGtk3Widget(Data).LCLObject.ClientRectNeedsInterfaceUpdate then
-  begin
-    {$IFDEF GTK3DEBUGRESIZE}
-    writeln('===> ScrolledLayoutSizeAllocate is calling  TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange !!!! Visible=',TGtk3Widget(Data).Visible);
-    {$ENDIF}
-    TGtk3Widget(Data).LCLObject.DoAdjustClientRectChange;
-  end;
+  if not aCtl.InUpdate and ViewportChanged then
+    aCtl.LCLObject.DoAdjustClientRectChange(True);
 end;
 
 class function TGtk3ScrollableWin.CheckIfScrollbarPressed(scrollbar: PGtkWidget; out AMouseOver: boolean;
@@ -10624,6 +10628,7 @@ begin
     HOffset := 0;
     VOffset := 0;
     gtk_scrolled_window_get_policy(PGtkScrolledWindow(Widget), @AHorzPolicy, @AVertPolicy);
+
     if AHorzPolicy < GTK_POLICY_NEVER then
     begin
       Bar := getHorizontalScrollbar;
@@ -10639,6 +10644,13 @@ begin
     Result := Rect(0, 0,
       GetContainerWidget^.get_allocated_width  - VOffset,
       GetContainerWidget^.get_allocated_height - HOffset);
+    {$IFDEF GTK3DEBUGSCROLLEDWIN}
+    if wtScrollingWinControl in FWidgetType then
+      writeln(Format('getClientRect %s CW_w=%d CW_h=%d Widget_w=%d Widget_h=%d VOffset=%d HOffset=%d policy_h=%d policy_v=%d Result=%s',
+        [dbgsName(LCLObject), GetContainerWidget^.get_allocated_width, GetContainerWidget^.get_allocated_height,
+         Widget^.get_allocated_width, Widget^.get_allocated_height, VOffset, HOffset,
+         Ord(AHorzPolicy), Ord(AVertPolicy), dbgs(Result)]));
+    {$ENDIF}
     if (Result.Width <= 1) and (Result.Height <= 1) then
       Result := Rect(0, 0, Widget^.get_allocated_width, Widget^.get_allocated_height);
   end else //we are wtContext - GtkFixed based.
@@ -11001,9 +11013,9 @@ begin
   if not (csDesigning in ACtl.LCLObject.ComponentState) and ACtl.InUpdate then
     exit;
 
-  {$IFDEF GTK3DEBUGRESIZE}
-  writeln(Format('WindowSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s',
-    [dbgsName(ACtl.LCLObject), NewSize.cx, NewSize.cy,
+  {$IFDEF GTK3DEBUGSCROLLEDWIN}
+  writeln(Format('[%d] WindowSizeAllocate %s gdk w=%d h=%d LCL w=%d h=%d InUpd=%s',
+    [GetTickCount64, dbgsName(ACtl.LCLObject), NewSize.cx, NewSize.cy,
      ACtl.LCLObject.Width, ACtl.LCLObject.Height, BoolToStr(ACtl.InUpdate, True)]));
   {$ENDIF}
 
@@ -11032,9 +11044,24 @@ begin
      not (GDK_WINDOW_STATE_FULLSCREEN in AState) and
      (NewSize.cx = ACtl.LCLObject.Width) and
      (NewSize.cy = ACtl.LCLObject.Height) then
+  begin
+    {$IFDEF GTK3DEBUGSCROLLEDWIN}
+    writeln('  early exit, values are the same ... need upd  ? ',ACtl.LCLObject.ClientRectNeedsInterfaceUpdate);
+    if ACtl.LCLObject.ClientRectNeedsInterfaceUpdate then
+      ACtl.LCLObject.InvalidateClientRectCache(True);
+    {$ENDIF}
     exit;
+  end;
 
+  {$IFDEF GTK3DEBUGSCROLLEDWIN}
+  writeln(Format('[%d] WindowSizeAllocate %s DeliverMessage w=%d h=%d stype=%d',
+    [GetTickCount64, dbgsName(ACtl.LCLObject), NewSize.cx, NewSize.cy, Msg.SizeType]));
+  {$ENDIF}
   ACtl.DeliverMessage(Msg);
+  {$IFDEF GTK3DEBUGSCROLLEDWIN}
+  writeln(Format('[%d] WindowSizeAllocate %s DeliverMessage DONE',
+    [GetTickCount64, dbgsName(ACtl.LCLObject)]));
+  {$ENDIF}
 end;
 
 class function TGtk3Window.WindowMapEvent(awidget: PGtkWindow; AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl;
@@ -11280,7 +11307,7 @@ begin
       FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl, wtWindow];
   end else
   begin
-    Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+    Result := PGtkScrolledWindow(LCLGtkScrolledWindowNew); // PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
     PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
     FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
   end;
@@ -11288,7 +11315,7 @@ begin
 
   FBox := TGtkVBox.new(GTK_ORIENTATION_VERTICAL, 0);
 
-  FScrollWin := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+  FScrollWin := PGtkScrolledWindow(LCLGtkScrolledWindowNew); //PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
   g_object_set_data(FScrollWin,'lclscrollingwindow',GPointer(1));
   g_object_set_data(PGObject(FScrollWin), 'lclwidget', Self);
 
