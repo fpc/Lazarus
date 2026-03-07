@@ -1545,6 +1545,9 @@ var
   Alloc:TGtkAllocation;
   abox:PGtkBox;
   AWindow:PGtkWindow;
+  Context: PGtkStyleContext;
+  State: TGtkStateFlags;
+  Border, Padding: TGtkBorder;
 begin
   Result := Rect(0, 0, 0, 0);
   AWindow := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
@@ -1598,10 +1601,21 @@ begin
   AWindow^.realize;
   AWindow^.show_all;
   APage^.get_allocation(@Alloc);
+
+  Context := gtk_widget_get_style_context(PGtkWidget(ANoteBook));
+  State := gtk_style_context_get_state(Context);
+
+  gtk_style_context_get_border(Context, State, @Border);
+  gtk_style_context_get_padding(Context, State, @Padding);
+
   Result := Bounds(0, 0, Alloc.Width, Alloc.Height);
+  Result.Width := Alloc.Width - (Border.left + Border.right + Padding.left + Padding.right);
+  Result.Height := Alloc.Height - (Border.top + Border.bottom + Padding.top + Padding.bottom);
+  {$IFDEF GTK3DEBUGLAYOUT}
+  writeln('===MeasureClientRect: ',dbgsName(AWinControl),' Result=',dbgs(Result),' B.top=',Border.Top,' B.B=',Border.bottom,' Pad T=',Padding.top,' Pad B=',Padding.bottom);
+  {$ENDIF}
   AWindow^.set_visible(false);
   AWindow^.destroy_;
-
 end;
 
 {used when handle of TCustomTabControl isn't allocated or TGt3Widget(Handle).WidgetMapped = false}
