@@ -687,6 +687,8 @@ end;
 
 procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
 begin
+  CursorHelper.setWindowActivating;
+
   if Assigned(callback) then
     callback.Activate;
 

@@ -32,8 +32,10 @@ type
 
   TCursorHelper = class
   private
+    _windowActivating: Boolean;
     _lastCursor: NSCursor;
   public
+    procedure setWindowActivating;
     procedure SetNewCursor( newCursor:TCocoaCursor );
     procedure ForceSetDefaultCursor;
     procedure SetCursorOnActive;
@@ -96,13 +98,34 @@ end;
 procedure TCursorHelper.SetNewCursor( newCursor:TCocoaCursor );
 var
   currentCursor: NSCursor;
+  // the cursor may be changed by the macOS, for example, it may be
+  // automatically changed to IBeam when moved into an Edit
+  notChangedBySystem: Boolean;
 begin
   currentCursor:= NSCursor.currentCursor;
-  if (_lastCursor=nil) or (currentCursor=NSCursor.arrowCursor) or (currentCursor=_lastCursor) then
-  begin
+
+  // 1. when the Form initially becomes the keyWindow, it will
+  //    set _windowActivating to True via TCursorHelper.setWindowActivating().
+  // 2. the purpose of checking _windowActivating here is to prevent the APP
+  //    from setting the Cursor again after TCursorHelper.setWindowActivating().
+  // 3. one example is Lazaurs IDE, which checks for resource updates and
+  //    reloads when it gains focus, at which point it calls
+  //    Screen.BeginWaitCursor() to set the cursor.
+  // 4. if it happens between TCursorHelper.setWindowActivating() and
+  //    here (by TCursorHelper.SetCursorOnActive()), and this check is missing,
+  //    Screen.EndWaitCursor() will fail to restore the cursor
+  //    due to the incorrect notChangedBySystem.
+  if _windowActivating then begin
+    notChangedBySystem:= (currentCursor=NSCursor.arrowCursor);
+  end else begin
+    notChangedBySystem:= (_lastCursor=nil) or (currentCursor=NSCursor.arrowCursor) or (currentCursor=_lastCursor);
+  end;
+
+  if notChangedBySystem then begin
     newCursor.SetCursor;
     _lastCursor:= newCursor.Cursor;
   end;
+  _windowActivating:= False;
 end;
 
 procedure TCursorHelper.ForceSetDefaultCursor;
@@ -112,15 +135,16 @@ begin
   newCursor:= TCocoaCursor(Screen.Cursors[crDefault]);
   newCursor.SetCursor;
   _lastCursor:= newCursor.Cursor;
+  _windowActivating:= False;
 end;
 
 procedure TCursorHelper.SetCursorOnActive;
 begin
-  _lastCursor:= NSCursor.arrowCursor;
-  if Screen.Cursor<>crDefault then
-    SetScreenCursor
-  else
+  if Screen.Cursor<>crDefault then begin
+    SetScreenCursor;
+  end else begin
     SetCursorAtMousePos;
+  end;
 end;
 
 class procedure TCursorHelper.SetCursorAtMousePos;
@@ -151,6 +175,7 @@ end;
 procedure TCursorHelper.SetScreenCursor;
 begin
   _lastCursor:= nil;
+  _windowActivating:= False;
   TCocoaCursor(Screen.Cursors[Screen.Cursor]).SetCursor;
 end;
 
@@ -158,6 +183,11 @@ procedure TCursorHelper.SetScreenCursorWhenNotDefault;
 begin
   if Screen.Cursor<>crDefault then
     SetScreenCursor;
+end;
+
+procedure TCursorHelper.setWindowActivating;
+begin
+  _windowActivating:= True;
 end;
 
 initialization
