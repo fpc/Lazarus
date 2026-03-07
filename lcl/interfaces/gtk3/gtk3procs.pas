@@ -26,7 +26,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Controls, StdCtrls, Graphics,
   LazGtk3, LazGdk3, LazGLib2, LazGObject2, LazGdkPixbuf2, LazPango1, Lazcairo1,
-  LCLType, InterfaceBase;
+  LCLType, LMessages, InterfaceBase;
 
 type
   GType = TGType;
@@ -344,12 +344,33 @@ var
   StandardStyles: array[TLazGtkStyle] of PStyleObject;
   Styles: TStrings;
 
+{$IFDEF GTK3USEDEFERREDRESIZING}
+  {Resize notification queues - filled by size-allocate signal handlers,
+   drained by Gtk3DrainResizeQueue called from AppProcessMessages.
+   No lock needed: GTK signal handlers always run on the main thread.
+   Will be an option to synchronous LM_SIZE/resize() which is
+   default atm.}
+  FWidgetsResized:    TFPList; // outer widgets  -> Phase 2 LM_SIZE
+  FFixWidgetsResized: TFPList; // client widgets -> Phase 3 DoAdjustClientRectChange
+  FPendingOuterSizes: TFPList; // pending GTK outer (FWidget) allocations for Phase 2
+  { True while Gtk3DrainResizeQueue is executing - prevents re-entrant drains
+    triggered by SetBounds -> size_allocate -> signal handlers during delivery. }
+  Gtk3DrainInProgress: Boolean;
+
+procedure Gtk3SaveSizeNotification(ALCLObject: TWinControl);
+procedure Gtk3SaveClientSizeNotification(ALCLObject: TWinControl);
+procedure Gtk3StorePendingOuterSize(ACtl: TWinControl; AW, AH: Integer);
+function  Gtk3TakePendingOuterSize(ACtl: TWinControl; out AW, AH: Integer): Boolean;
+procedure Gtk3RemoveFromResizeQueue(ALCLObject: TWinControl);
+procedure Gtk3DrainResizeQueue;
+{$ENDIF GTK3USEDEFERREDRESIZING}
 
 
-  procedure AddCharsetEncoding(CharSet: Byte; CharSetReg, CharSetCod: CharSetStr;
-    ToEnum:boolean=true; CrPart:boolean=false; CcPart:boolean=false);
-  procedure ClearCharsetEncodings;
-  procedure CreateDefaultCharsetEncodings;
+
+procedure AddCharsetEncoding(CharSet: Byte; CharSetReg, CharSetCod: CharSetStr;
+  ToEnum:boolean=true; CrPart:boolean=false; CcPart:boolean=false);
+procedure ClearCharsetEncodings;
+procedure CreateDefaultCharsetEncodings;
 
 function PANGO_PIXELS(d:integer):integer; inline;
 function GetStyleWidget(aStyle: TLazGtkStyle): PGtkWidget;
@@ -361,7 +382,7 @@ function PangoFontHasItalicFace(AContext: PPangoContext; const AFamilyName: Stri
 function GetPangoFontDefaultStretch(const AFamilyName: string): TPangoStretch;
 
 implementation
-uses LCLProc, gtk3objects, LazLogger;
+uses LCLProc, gtk3objects, gtk3widgets, LazLogger;
 
 function PANGO_PIXELS(d:integer):integer;
 begin
@@ -1583,5 +1604,189 @@ begin
     end;
   end;
 end;
+
+{$IFDEF GTK3USEDEFERREDRESIZING}
+procedure Gtk3SaveSizeNotification(ALCLObject: TWinControl);
+begin
+  if FWidgetsResized.IndexOf(ALCLObject) < 0 then
+    FWidgetsResized.Add(ALCLObject);
+end;
+
+procedure Gtk3SaveClientSizeNotification(ALCLObject: TWinControl);
+begin
+  if FFixWidgetsResized.IndexOf(ALCLObject) < 0 then
+    FFixWidgetsResized.Add(ALCLObject);
+end;
+
+type
+  PGtk3PendingSize = ^TGtk3PendingSize;
+  TGtk3PendingSize = record
+    Ctrl: Pointer;  // TWinControl (raw pointer, avoids circular unit dep)
+    W, H: Integer;
+  end;
+
+procedure Gtk3StorePendingOuterSize(ACtl: TWinControl; AW, AH: Integer);
+var
+  I: Integer;
+  P: PGtk3PendingSize;
+begin
+  for I := 0 to FPendingOuterSizes.Count - 1 do
+  begin
+    P := PGtk3PendingSize(FPendingOuterSizes[I]);
+    if P^.Ctrl = Pointer(ACtl) then
+    begin
+      P^.W := AW;
+      P^.H := AH;
+      Exit;
+    end;
+  end;
+  New(P);
+  P^.Ctrl := Pointer(ACtl);
+  P^.W := AW;
+  P^.H := AH;
+  FPendingOuterSizes.Add(P);
+end;
+
+function Gtk3TakePendingOuterSize(ACtl: TWinControl; out AW, AH: Integer): Boolean;
+var
+  I: Integer;
+  P: PGtk3PendingSize;
+begin
+  Result := False;
+  AW := 0;
+  AH := 0;
+  for I := 0 to FPendingOuterSizes.Count - 1 do
+  begin
+    P := PGtk3PendingSize(FPendingOuterSizes[I]);
+    if P^.Ctrl = Pointer(ACtl) then
+    begin
+      AW := P^.W;
+      AH := P^.H;
+      FPendingOuterSizes.Delete(I);
+      Dispose(P);
+      Result := True;
+      Exit;
+    end;
+  end;
+end;
+
+procedure Gtk3RemoveFromResizeQueue(ALCLObject: TWinControl);
+var
+  I: Integer;
+  P: PGtk3PendingSize;
+begin
+  // Called from TGtk3Widget.DestroyWidget to prevent the drain from accessing
+  // a freed TWinControl. The control may be destroyed between the time its
+  // size-allocate signal queued an entry and the next AppProcessMessages call.
+  FWidgetsResized.Remove(ALCLObject);
+  FFixWidgetsResized.Remove(ALCLObject);
+  for I := FPendingOuterSizes.Count - 1 downto 0 do
+  begin
+    P := PGtk3PendingSize(FPendingOuterSizes[I]);
+    if P^.Ctrl = Pointer(ALCLObject) then
+    begin
+      FPendingOuterSizes.Delete(I);
+      Dispose(P);
+      Break;
+    end;
+  end;
+end;
+
+procedure Gtk3DrainResizeQueue;
+var
+  I: Integer;
+  ACtl: TWinControl;
+  SizeMsg: TLMSize;
+  MainList, FixList: TFPList;
+  PW, PH: Integer;
+begin
+  if Gtk3DrainInProgress then Exit;
+  if (FWidgetsResized.Count = 0) and (FFixWidgetsResized.Count = 0) then Exit;
+  // Snapshot and clear before processing to handle re-entrant additions cleanly.
+  Gtk3DrainInProgress := True;
+  MainList := TFPList.Create;
+  FixList  := TFPList.Create;
+  try
+    MainList.Assign(FWidgetsResized);
+    FixList.Assign(FFixWidgetsResized);
+    FWidgetsResized.Clear;
+    FFixWidgetsResized.Clear;
+
+    // Phase 1: Invalidate client rect caches for layout/client widgets.
+    for I := 0 to FixList.Count - 1 do
+    begin
+      ACtl := TWinControl(FixList[I]);
+      if Assigned(ACtl) and ACtl.HandleAllocated then
+      begin
+        if TGtk3Widget(ACtl.Handle).InUpdate then Continue;
+        ACtl.InvalidateClientRectCache(False);
+      end;
+    end;
+
+    // Phase 2: Deliver LM_SIZE for outer/main widgets.
+    // LM_SIZE -> WMSize -> SetBounds -> AlignControls.
+    // Skip controls that are currently inside BeginUpdate/EndUpdate (InUpdate=True)
+    // — they are already being processed by SetBounds; delivering LM_SIZE again
+    // would cause a redundant re-layout.
+    for I := 0 to MainList.Count - 1 do
+    begin
+      ACtl := TWinControl(MainList[I]);
+      if Assigned(ACtl) and ACtl.HandleAllocated then
+      begin
+        if TGtk3Widget(ACtl.Handle).InUpdate then Continue;
+        FillChar(SizeMsg{%H-}, SizeOf(SizeMsg), 0);
+        SizeMsg.Msg      := LM_SIZE;
+        SizeMsg.SizeType := SIZE_RESTORED or Size_SourceIsInterface;
+        if Gtk3TakePendingOuterSize(ACtl, PW, PH) then
+        begin
+          SizeMsg.Width  := Word(PW);
+          SizeMsg.Height := Word(PH);
+        end else
+        begin
+          SizeMsg.Width  := Word(ACtl.Width);
+          SizeMsg.Height := Word(ACtl.Height);
+        end;
+        ACtl.WindowProc(TLMessage(SizeMsg));
+      end;
+    end;
+
+    // Phase 3: DoAdjustClientRectChange for layout/client widgets (after LM_SIZE).
+    // Skip controls that are also in MainList — for those, DoAdjustClientRectChange
+    // is already triggered via WMSize -> AlignControls. Skipping avoids a duplicate
+    // Resize/LayoutButtons call.
+    for I := 0 to FixList.Count - 1 do
+    begin
+      ACtl := TWinControl(FixList[I]);
+      if Assigned(ACtl) and ACtl.HandleAllocated then
+      begin
+        if MainList.IndexOf(ACtl) >= 0 then Continue;
+        if TGtk3Widget(ACtl.Handle).InUpdate then Continue;
+        ACtl.DoAdjustClientRectChange(False);
+      end;
+    end;
+
+  finally
+    MainList.Free;
+    FixList.Free;
+    Gtk3DrainInProgress := False;
+  end;
+end;
+
+
+initialization
+  FWidgetsResized    := TFPList.Create;
+  FFixWidgetsResized := TFPList.Create;
+  FPendingOuterSizes := TFPList.Create;
+
+finalization
+  FreeAndNil(FWidgetsResized);
+  FreeAndNil(FFixWidgetsResized);
+  while FPendingOuterSizes.Count > 0 do
+  begin
+    Dispose(PGtk3PendingSize(FPendingOuterSizes[0]));
+    FPendingOuterSizes.Delete(0);
+  end;
+  FreeAndNil(FPendingOuterSizes);
+{$ENDIF GTK3USEDEFERREDRESIZING}
 
 end.
