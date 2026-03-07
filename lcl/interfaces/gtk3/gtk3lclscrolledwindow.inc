@@ -97,14 +97,17 @@ begin
   vscroll := PGtkScrolledWindow(widget)^.get_vscrollbar;
   hscroll := PGtkScrolledWindow(widget)^.get_hscrollbar;
 
-  // Unmapped vscroll: only outer CSS extents can cascade, use extents as threshold.
-  // Mapped vscroll: inner gadgets (trough/slider) also cascade, use preferred_height.
+  // Mapped vscroll: inner gadgets (trough/slider) cascade - use preferred_height.
+  // Unmapped vscroll: get_preferred_height still reads from CSS even when not
+  // mapped, GTK CSS layout is map-independent.
   threshH := LCLScrolledWinExtentsH;
-  if vActive and Assigned(vscroll) and Gtk3IsWidget(vscroll) and vscroll^.get_mapped then
+  if vActive and Assigned(vscroll) and Gtk3IsWidget(vscroll) then
   begin
     minSize := 0;
     gtk_widget_get_preferred_height(vscroll, @minSize, nil);
-    if minSize > 0 then
+    if (minSize > 0) and
+       (vscroll^.get_mapped or
+        (allocation^.height < minSize + LCLScrolledWinExtentsH)) then
       threshH := minSize + LCLScrolledWinExtentsH;
   end;
 
