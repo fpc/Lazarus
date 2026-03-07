@@ -1152,8 +1152,8 @@ begin
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 1;
     SPI_GETWORKAREA:
     begin
-      NSToLCLRect( NSPrimaryScreen.visibleFrame,
-                   NSPrimaryScreenFrame.size.height,
+      NSToLCLRect( TCocoaScreenUtil.primaryScreen.visibleFrame,
+                   TCocoaScreenUtil.primaryScreenFrame.size.height,
                    TRect(pvParam^) );
     end;
   else
@@ -1185,7 +1185,7 @@ begin
   if view.isKindOfClass(TCocoaWindowContent) then begin
     // handle is Form / Window
     if (not contentView.isembedded) and Assigned(contentView.window) then
-      ARect := ScreenRectFromNSToLCL( contentView.window.frame )
+      ARect := TCocoaScreenUtil.toLCL( contentView.window.frame )
     else
       ARect := contentView.lclFrame;
   end else begin
@@ -1269,8 +1269,8 @@ begin
   Result := Assigned(ScreenID);
   if not Result then Exit;
 
-  lpmi^.rcMonitor:= ScreenRectFromNSToLCL( ScreenID.frame );
-  lpmi^.rcWork:= ScreenRectFromNSToLCL( ScreenID.visibleFrame );
+  lpmi^.rcMonitor:= TCocoaScreenUtil.toLCL( ScreenID.frame );
+  lpmi^.rcWork:= TCocoaScreenUtil.toLCL( ScreenID.visibleFrame );
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
   if HMonitorToIndex(hMonitor) = 0 then
@@ -1565,7 +1565,7 @@ begin
     Exit;
 
   p.x:=Point.X;
-  p.y:=NSGlobalScreenBottom-Point.Y;
+  p.y:=TCocoaScreenUtil.globalScreenBottom-Point.Y;
   window := GetCocoaWindowAtPos(p);
   if Assigned(window) then
     Result:= HWND(window.contentView);
@@ -2002,7 +2002,7 @@ var
   i: Integer;
 begin
   Result:= 0;
-  point:= ScreenPointFromLCLToNS( ptScreenCoords );
+  point:= TCocoaScreenUtil.toCocoa( ptScreenCoords );
   if point.y>=1 then         // NSPointInRect is (upper,left) inside
     point.y:= point.y-1;     // (lower,right) outside
 
@@ -2785,18 +2785,18 @@ begin
       Result := Round(NSScroller.scrollerWidthForControlSize_scrollerStyle(NSRegularControlSize, NSScrollerStyleLegacy));
     SM_CXSCREEN,
     SM_CXFULLSCREEN:
-      Result := Round(NSPrimaryScreenFrame.size.width);
+      Result := Round(TCocoaScreenUtil.primaryScreenFrame.size.width);
     SM_CYSCREEN,
     SM_CYFULLSCREEN:
-      Result := Round(NSPrimaryScreenFrame.size.height);
+      Result := Round(TCocoaScreenUtil.primaryScreenFrame.size.height);
     SM_CXVIRTUALSCREEN:
-      Result := Round(NSGlobalScreenLCLFrame.size.width);
+      Result := Round(TCocoaScreenUtil.globalScreenLCLFrame.size.width);
     SM_CYVIRTUALSCREEN:
-      Result := Round(NSGlobalScreenLCLFrame.size.height);
+      Result := Round(TCocoaScreenUtil.globalScreenLCLFrame.size.height);
     SM_XVIRTUALSCREEN:
-      Result := Round(NSGlobalScreenLCLFrame.origin.x);
+      Result := Round(TCocoaScreenUtil.globalScreenLCLFrame.origin.x);
     SM_YVIRTUALSCREEN:
-      Result := Round(NSGlobalScreenLCLFrame.origin.y);
+      Result := Round(TCocoaScreenUtil.globalScreenLCLFrame.origin.y);
     SM_CXSMICON,
     SM_CYSMICON:
       Result := 16;

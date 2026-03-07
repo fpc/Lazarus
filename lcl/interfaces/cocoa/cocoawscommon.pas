@@ -384,7 +384,7 @@ begin
   begin
     f := lWindow.frame;
     Point.x := Point.x + f.origin.x;
-    Point.y := NSGlobalScreenBottom - ( Point.y + f.origin.y );
+    Point.y := TCocoaScreenUtil.globalScreenBottom - ( Point.y + f.origin.y );
   end;
 end;
 

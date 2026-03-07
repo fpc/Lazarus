@@ -54,7 +54,7 @@ implementation
 
 function CocoaGetCursorPos(var lpPoint: TPoint ): Boolean;
 begin
-  lpPoint:= ScreenPointFromNSToLCL( NSEvent.mouseLocation );
+  lpPoint:= TCocoaScreenUtil.toLCL( NSEvent.mouseLocation );
   Result := True;
 end;
 

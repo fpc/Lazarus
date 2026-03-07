@@ -427,7 +427,7 @@ begin
   if not isembedded then
   begin
     //Window bounds should return "client rect" in screen coordinates
-    wfrm := ScreenRectFromNSToLCL(window.frame);
+    wfrm := TCocoaScreenUtil.toLCL(window.frame);
     Types.OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
 end;
@@ -1141,7 +1141,7 @@ var
 begin
   f := frame;
   inc(X, Round(f.origin.x));
-  inc(Y, Round(NSGlobalScreenBottom - NSMaxY(f)));
+  inc(Y, Round(TCocoaScreenUtil.globalScreenBottom - NSMaxY(f)));
 end;
 
 procedure LCLWindowExtension.lclScreenToLocal(var X, Y: Integer);
@@ -1150,7 +1150,7 @@ var
 begin
   f := frame;
   dec(X, Round(f.origin.x));
-  dec(Y, Round(NSGlobalScreenBottom - NSMaxY(f)));
+  dec(Y, Round(TCocoaScreenUtil.globalScreenBottom - NSMaxY(f)));
 end;
 
 function LCLWindowExtension.lclFrame: TRect;
@@ -1158,7 +1158,7 @@ begin
   if Assigned(contentView) then
     Result:= contentView.lclFrame
   else
-    Result:= ScreenRectFromNSToLCL( frame );
+    Result:= TCocoaScreenUtil.toLCL( frame );
 end;
 
 function LCLWindowExtension.lclGetTopBarHeight:integer;
@@ -1179,7 +1179,7 @@ var
   ns : NSRect;
   h  : integer;
 begin
-  ns:= ScreenRectFromLCLToNS( r );
+  ns:= TCocoaScreenUtil.toCocoa( r );
 
   // add topbar height
   h:= lclGetTopBarHeight;

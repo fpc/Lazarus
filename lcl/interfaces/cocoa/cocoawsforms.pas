@@ -1096,7 +1096,7 @@ var
   imageRef: CGImageRef;
 begin
   rect:= win.contentRectForFrameRect( win.frame );
-  rect:= RectToNSRect( ScreenRectFromNSToLCL(rect) );
+  rect:= RectToNSRect( TCocoaScreenUtil.toLCL(rect) );
   imageRef:= CGWindowListCreateImage(
     rect,
     kCGWindowListOptionIncludingWindow,

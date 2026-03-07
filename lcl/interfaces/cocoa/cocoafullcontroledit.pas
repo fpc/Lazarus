@@ -368,7 +368,7 @@ begin
   end else begin
     rect:= getLookupWordBound;
   end;
-  LCLToNSRect( rect, NSGlobalScreenBottom, Result );
+  LCLToNSRect( rect, TCocoaScreenUtil.globalScreenBottom, Result );
 end;
 
 procedure TCocoaFullControlEdit.unmarkText;
@@ -486,7 +486,7 @@ begin
   Result:= NSNotFound;
   if NOT Assigned(self.lwHandler) then
     Exit;
-  lclPoint:= ScreenPointFromNSToLCL( aPoint );
+  lclPoint:= TCocoaScreenUtil.toLCL( aPoint );
   self.lwHandler.LWRowColForScreenPoint( params, lclPoint );
   if params.col >= 0 then
     Result:= LWParamsToRange(params).location;

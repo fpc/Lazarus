@@ -58,16 +58,22 @@ procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 function GetScreenPointFromEvent(const event: NSEvent): NSPoint;
 procedure lclOffsetWithEnclosingScrollView( const view: NSView; var x: Integer; var y: Integer );
 
-function ScreenPointFromLCLToNS(const lclPoint: TPoint): NSPoint;
-function ScreenPointFromNSToLCL(const cocoaPoint: NSPoint): TPoint;
-function ScreenRectFromLCLToNS(const lclRect: TRect): NSRect;
-function ScreenRectFromNSToLCL(const cocoaRect: NSRect): TRect;
+type
 
-function NSPrimaryScreen: NSScreen;
-function NSPrimaryScreenFrame: NSRect;
-function NSGlobalScreenFrame: NSRect;
-function NSGlobalScreenLCLFrame: NSRect;
-function NSGlobalScreenBottom: CGFloat;
+  { TCocoaScreenUtil }
+
+  TCocoaScreenUtil = class
+    class function toCocoa(const lclPoint: TPoint): NSPoint; overload;
+    class function toLCL(const cocoaPoint: NSPoint): TPoint; overload;
+    class function toCocoa(const lclRect: TRect): NSRect; overload;
+    class function toLCL(const cocoaRect: NSRect): TRect; overload;
+
+    class function primaryScreen: NSScreen;
+    class function primaryScreenFrame: NSRect;
+    class function globalScreenFrame: NSRect;
+    class function globalScreenLCLFrame: NSRect;
+    class function globalScreenBottom: CGFloat;
+  end;
 
 function IndexToHMonitor(i: NSUInteger): HMonitor;
 function HMonitorToIndex(h: HMonitor): NSUInteger;
@@ -858,31 +864,33 @@ begin
   Result:= rect.origin;
 end;
 
-function ScreenPointFromLCLToNS(const lclPoint: TPoint): NSPoint;
+{ TCocoaScreenUtil }
+
+class function TCocoaScreenUtil.toCocoa(const lclPoint: TPoint): NSPoint;
 begin
   Result.x:= lclPoint.x;
-  Result.y:= NSGlobalScreenBottom - lclPoint.y;
+  Result.y:= globalScreenBottom - lclPoint.y;
 end;
 
-function ScreenPointFromNSToLCL(const cocoaPoint: NSPoint): TPoint;
+class function TCocoaScreenUtil.toLCL(const cocoaPoint: NSPoint): TPoint;
 begin
   Result.x:= Round( cocoaPoint.x );
-  Result.y:= Round( NSGlobalScreenBottom - cocoaPoint.y );
+  Result.y:= Round( globalScreenBottom - cocoaPoint.y );
 end;
 
-function ScreenRectFromLCLToNS(const lclRect: TRect): NSRect;
+class function TCocoaScreenUtil.toCocoa(const lclRect: TRect): NSRect;
 begin
   Result.origin.x:= lclRect.left;
-  Result.origin.y:= NSGlobalScreenBottom - lclRect.bottom;
+  Result.origin.y:= globalScreenBottom - lclRect.bottom;
   Result.size.width:= lclRect.Right - lclRect.Left;
   Result.size.height:= lclRect.Bottom - lclRect.Top;
 end;
 
-function ScreenRectFromNSToLCL(const cocoaRect: NSRect): TRect;
+class function TCocoaScreenUtil.toLCL(const cocoaRect: NSRect): TRect;
 var
   bottom: CGFloat;
 begin
-  bottom:= NSGlobalScreenBottom;
+  bottom:= globalScreenBottom;
   Result.Left:= Round( cocoaRect.origin.x );
   Result.Top:= Round( bottom - NSMaxY(cocoaRect) );
   Result.Right:= Round( cocoaRect.origin.x + cocoaRect.size.width );
@@ -890,19 +898,19 @@ begin
 end;
 
 // primary display
-function NSPrimaryScreen: NSScreen;
+class function TCocoaScreenUtil.primaryScreen: NSScreen;
 begin
   Result := NSScreen(NSScreen.screens.objectAtIndex(0));
 end;
 
 // the frame of primary display
-function NSPrimaryScreenFrame: NSRect;
+class function TCocoaScreenUtil.primaryScreenFrame: NSRect;
 begin
-  Result := NSPrimaryScreen.frame;
+  Result := primaryScreen.frame;
 end;
 
 // the frame of global full virtual display, in LCL coordinate (left,bottom)
-function NSGlobalScreenFrame: NSRect;
+class function TCocoaScreenUtil.globalScreenFrame: NSRect;
 var
   globalFrame: NSRect;
   screen: NSScreen;
@@ -915,25 +923,25 @@ begin
 end;
 
 // the frame of global full virtual display, in LCL coordinate (left,top)
-function NSGlobalScreenLCLFrame: NSRect;
+class function TCocoaScreenUtil.globalScreenLCLFrame: NSRect;
 begin
-  Result:= NSGlobalScreenFrame;
-  Result.origin.y:= NSPrimaryScreenFrame.size.height - NSMaxY(Result);
+  Result:= globalScreenFrame;
+  Result.origin.y:= primaryScreenFrame.size.height - NSMaxY(Result);
 end;
 
 // the bottom of global full virtual display
 // for cocoa window/screen to lcl coordinate
-function NSGlobalScreenBottom: CGFloat;
+class function TCocoaScreenUtil.globalScreenBottom: CGFloat;
 begin
-  Result:= NSMaxY( NSGlobalScreenFrame );
+  Result:= NSMaxY( globalScreenFrame );
 end;
 
-// According to the documentation of NSScreen.screen It's recommended
-// not to cache NSScreen objects stored in the array. As those might change.
-// However, according to the same documentation, the objects can change
+// according to the documentation of NSScreen.screen, it's recommended
+// NOT to cache NSScreen objects stored in the array, as those might change.
+// however, according to the same documentation, the objects can change
 // only with a notificatio sent out. BUT while using a macincloud (remote desktop)
 // services, it was identified that NSScreen object CAN change without any notification.
-// So, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
+// so, instead of passing NSScreen as HMonitor, only INDEX+1 in NSScreen.screen
 // is used.
 function IndexToHMonitor(i: NSUInteger): HMonitor;
 begin

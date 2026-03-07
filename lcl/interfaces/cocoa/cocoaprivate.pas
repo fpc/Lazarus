@@ -687,7 +687,7 @@ begin
 
   // Convert from Screen-cocoa to Screen-lcl
   x:= Round( rect.origin.x );
-  y:= Round( NSGlobalScreenBottom - rect.origin.y );
+  y:= Round( TCocoaScreenUtil.globalScreenBottom - rect.origin.y );
 
   if NOT (lclGetTarget is TScrollingWinControl) then
     lclOffsetWithEnclosingScrollView(self, x, y );

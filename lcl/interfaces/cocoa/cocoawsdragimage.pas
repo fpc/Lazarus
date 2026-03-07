@@ -55,7 +55,7 @@ begin
   if Result then begin
     Dec( X, _dragHotSpot.X );
     Dec( Y, _dragHotSpot.Y );
-    localPoint:= ScreenPointFromLCLToNS( TPoint.Create(X,Y) );
+    localPoint:= TCocoaScreenUtil.toCocoa( TPoint.Create(X,Y) );
     localPoint.y:= localPoint.y - _dragImage.frame.size.height;
     _dragImage.setFrameOrigin( localPoint );
     _dragImage.orderFront( nil );
