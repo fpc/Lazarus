@@ -636,10 +636,10 @@ begin
     colorPanel.setRestorable(false);
   if cdShowAlphaChannel in colorDialog.Options then begin
     colorPanel.setShowsAlpha( True );
-    colorPanel.setColor( ColorAlphaToNSColor(ColorDialog.Color, ColorDialog.AlphaChannel) );
+    colorPanel.setColor( TCocoaColorUtil.toColor(ColorDialog.Color, ColorDialog.AlphaChannel) );
   end else begin
     colorPanel.setShowsAlpha( False );
-    colorPanel.setColor( ColorToNSColor(ColorDialog.Color) );
+    colorPanel.setColor( TCocoaColorUtil.toColor(ColorDialog.Color) );
   end;
 
   colorDelegate := TColorPanelDelegate.alloc.init();
@@ -707,7 +707,7 @@ begin
     NSNumber.numberWithInt( StkStyle[fsStrikeOut in src.Style]),
     NSStrikethroughStyleAttributeName);
   if (src.Color <> clDefault) then
-    dst.setObject_forKey(ColorToNSColor(src.Color), NSForegroundColorAttributeName);
+    dst.setObject_forKey(TCocoaColorUtil.toColor(src.Color), NSForegroundColorAttributeName);
 end;
 
 function ObjToNum(obj: NSObject; defVal: integer): Integer;
@@ -743,7 +743,7 @@ begin
   obj := src.objectForKey(NSForegroundColorAttributeName);
   if (Assigned(obj) and obj.isKindOfClass(NSColor)) then
   begin
-    cl := NSColorToColorRef(NSColor(obj));
+    cl := TCocoaColorUtil.toColorRefWithAnyColor(NSColor(obj));
   end;
 
   dst.Style := fs;
@@ -885,11 +885,11 @@ var
   alpha: Byte;
 begin
   if cdShowAlphaChannel in colorDialog.Options then begin
-    NSColorToColorAlpha( colorPanel.color, lclColor, alpha );
+    TCocoaColorUtil.toColorAlpha( colorPanel.color, lclColor, alpha );
     ColorDialog.Color:= lclColor;
     ColorDialog.AlphaChannel:= alpha;
   end else begin
-    ColorDialog.Color:= NSColorToColorRef(colorPanel.color);
+    ColorDialog.Color:= TCocoaColorUtil.toColorRefWithAnyColor(colorPanel.color);
   end;
 end;
 

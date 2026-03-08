@@ -1695,7 +1695,7 @@ begin
   cg := CGContext;
   if not Assigned(cg) then Exit;
 
-  fillbrush:=TCocoaBrush.Create(ColorToNSColor(ColorRef(AColor)));
+  fillbrush:=TCocoaBrush.Create(TCocoaColorUtil.toColor(ColorRef(AColor)));
   fillbrush.Apply(self);
 
   r.origin.x:=x;
@@ -2057,9 +2057,9 @@ begin
     Str := NSStringUTF8(UTF8Chars, Count);
     try
 
-      lForegroundColor := SysColorToNSColor(SysColorToSysColorIndex(FForegroundColor));
+      lForegroundColor := TCocoaColorUtil.sysIndexToColor(SysColorToSysColorIndex(FForegroundColor));
       if lForegroundColor = nil then
-        lForegroundColor := ColorToNSColor(ColorToRGB(FForegroundColor));
+        lForegroundColor := TCocoaColorUtil.toColor(ColorToRGB(FForegroundColor));
 
       Dict := NSMutableDictionary.dictionaryWithObjectsAndKeys(
             Font.Font, kCTFontAttributeName,
@@ -2067,7 +2067,7 @@ begin
             nil);
 
       if FillBg then
-        Dict.setObject_forKey(ColorToNSColor(FBackgroundColor), NSBackgroundColorAttributeName);
+        Dict.setObject_forKey(TCocoaColorUtil.toColor(FBackgroundColor), NSBackgroundColorAttributeName);
 
       if cfs_Underline in Font.Style then
         Dict.setObject_forKey(NSNumber.numberWithInteger(UnderlineStyle), NSUnderlineStyleAttributeName);
@@ -3219,10 +3219,10 @@ begin
       CGImageGetHeight(APatternInfoPtr^.image));
   if APatternInfoPtr^.colorMode = cpmContextColor then
   begin
-    ColorToRGBFloat(APatternInfoPtr^.bgColor, sR, sG, sB);
+    TCocoaColorUtil.getRGBValue(APatternInfoPtr^.bgColor, sR, sG, sB);
     CGContextSetRGBFillColor(c, sR, sG, sB, 1);
     CGContextFillRect(c, R);
-    ColorToRGBFloat(APatternInfoPtr^.fgColor, sR, sG, sB);
+    TCocoaColorUtil.getRGBValue(APatternInfoPtr^.fgColor, sR, sG, sB);
     CGContextSetRGBFillColor(c, sR, sG, sB, 1);
   end;
   CGContextDrawImage(c, R, APatternInfoPtr^.image);
@@ -3246,7 +3246,7 @@ begin
   APatternInfoPtr := GetMem(sizeof(TCocoapatternInfo));
   APatternInfoPtr^.image := FImage;
   CGImageRetain(APatternInfoPtr^.image);
-  APatternInfoPtr^.bgColor := RGBToColorFloat(Red/255, Green/255, Blue/255);
+  APatternInfoPtr^.bgColor := TCocoaColorUtil.toColorRef(Red/255, Green/255, Blue/255);
   APatternInfoPtr^.fgColor := FFgColor;
   APatternInfoPtr^.colorMode := FPatternColorMode;
 
@@ -3339,13 +3339,13 @@ begin
   RGBColor := AColor.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
 
   if Assigned(RGBColor) then
-    SetColor(NSColorToRGB(RGBColor), True)
+    SetColor(TCocoaColorUtil.toColorRefWithRGBColor(RGBColor), True)
   else
   begin
     PatternColor := AColor.colorUsingColorSpaceName(NSPatternColorSpace);
     if Assigned(PatternColor) then
     begin
-      SetColor(NSColorToColorRef(PatternColor.patternImage.backgroundColor), False);
+      SetColor(TCocoaColorUtil.toColorRefWithAnyColor(PatternColor.patternImage.backgroundColor), False);
       SetImage(PatternColor.patternImage);
     end
     else
@@ -3402,13 +3402,13 @@ begin
   FImage := nil;
   RGBColor := AColor.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
   if Assigned(RGBColor) then
-    inherited Create(NSColorToRGB(RGBColor), True, AGlobal)
+    inherited Create(TCocoaColorUtil.toColorRefWithRGBColor(RGBColor), True, AGlobal)
   else
   begin
     PatternColor := AColor.colorUsingColorSpaceName(NSPatternColorSpace);
     if Assigned(PatternColor) then
     begin
-      inherited Create(NSColorToColorRef(PatternColor.patternImage.backgroundColor), False, AGlobal);
+      inherited Create(TCocoaColorUtil.toColorRefWithAnyColor(PatternColor.patternImage.backgroundColor), False, AGlobal);
       SetImage(PatternColor.patternImage);
     end
     else
@@ -3520,7 +3520,7 @@ begin
           BaseSpace := CGColorSpaceCreateDeviceRGB;
           SetColor(ADC.BkColor, True);
           FFgColor:=ColorToRGB(ADC.TextColor);
-          ColorToRGBFloat(FFgColor, sR, sG, sB);
+          TCocoaColorUtil.getRGBValue(FFgColor, sR, sG, sB);
           RGBA[0]:=sR;
           RGBA[1]:=sG;
           RGBA[2]:=sB;

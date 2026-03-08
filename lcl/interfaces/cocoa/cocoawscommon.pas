@@ -1513,7 +1513,7 @@ begin
   lTarget := TWinControl(GetTarget());
   if (lTarget.Color <> clDefault) and (lTarget.Color <> clBtnFace)  and (lTarget.Color <> clNone) then
   begin
-    ColorToNSColor(ColorToRGB(lTarget.Color)).set_();
+    TCocoaColorUtil.toColor(ColorToRGB(lTarget.Color)).set_();
     // NSRectFill() always requires the coordinate system of the lower left corner
     // of the origin, contrary to the Rect provided to LCL in
     // TLCLCommonCallback.Draw() and TLCLCommonCallback.DrawOverlay()
@@ -1908,7 +1908,7 @@ begin
     if AFont.Color = clDefault then
       Obj.setTextColor(NSColor.controlTextColor)
     else
-      Obj.setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
+      Obj.setTextColor(TCocoaColorUtil.toColor(ColorToRGB(AFont.Color)));
   end;
 end;
 

@@ -39,6 +39,21 @@ type
     class procedure toRect(const lcl: TRect; ParentHeight: Double; out ns: NSRect); overload;
   end;
 
+  TCocoaColorUtil = class
+  public
+    class procedure getRGBValue(cl: TColorRef; var r,g,b: Single); inline;
+    class function toColorRef(r,g,b: Single): TColorRef; inline;
+    // extract ColorRef from NSColor in RGB colorspace
+    class function toColorRefWithRGBColor(const Color: NSColor): TColorRef; inline;
+    // extract ColorRef from any NSColor
+    class function toColorRefWithAnyColor(const Color: NSColor): TColorRef;
+    class procedure toColorAlpha(const Color: NSColor;var lclColor: TColor;var Alpha: Byte);
+    class function toColor(const Color: TColorRef): NSColor; inline; overload;
+    class function toColor(const Color: TColorRef; const Alpha: Byte): NSColor; overload;
+    // convert to known NSColor or nil
+    class function sysIndexToColor(nIndex: Integer): NSColor;
+  end;
+
   { TCocoaScreenUtil }
 
   TCocoaScreenUtil = class
@@ -91,18 +106,6 @@ function GetNSText(text: NSText): string; inline;
 procedure SetNSControlValue(c: NSControl; const S: String); inline;
 function GetNSControlValue(c: NSControl): String; inline;
 procedure NSControlMoveCaretToTheEnd(c: NSControl);
-
-procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
-function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
-// extract ColorRef from NSColor in RGB colorspace
-function NSColorToRGB(const Color: NSColor): TColorRef; inline;
-// extract ColorRef from any NSColor
-function NSColorToColorRef(const Color: NSColor): TColorRef;
-procedure NSColorToColorAlpha(const Color: NSColor;var lclColor: TColor;var Alpha: Byte);
-function ColorToNSColor(const Color: TColorRef): NSColor; inline;
-function ColorAlphaToNSColor(const Color: TColorRef; const Alpha: Byte): NSColor;
-// convert to known NSColor or nil
-function SysColorToNSColor(nIndex: Integer): NSColor;
 
 // "dark" is not a good reference, as Apple might add more and more themes
 function IsDarkPossible: Boolean; inline;
@@ -432,19 +435,19 @@ begin
   end;
 end;
 
-procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
+class procedure TCocoaColorUtil.getRGBValue(cl: TColorRef; var r,g,b: Single); inline;
 begin
   R:=(cl and $FF) / $FF;
   G:=((cl shr 8) and $FF) / $FF;
   B:=((cl shr 16) and $FF) / $FF;
 end;
 
-function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
+class function TCocoaColorUtil.toColorRef(r,g,b: Single): TColorRef; inline;
 begin
   Result:=(Round(b*$FF) shl 16) or (Round(g*$FF) shl 8) or Round(r*$FF);
 end;
 
-function NSColorToRGB(const Color: NSColor): TColorRef; inline;
+class function TCocoaColorUtil.toColorRefWithRGBColor(const Color: NSColor): TColorRef; inline;
 var
   alpha: CGFloat;
 begin
@@ -452,12 +455,12 @@ begin
   // Thus RGB needs to be multiplied by it.
   alpha := Color.alphaComponent;
   with Color do
-    Result := RGBToColorFloat(redComponent*alpha, greenComponent*alpha, blueComponent*alpha);
+    Result := toColorRef(redComponent*alpha, greenComponent*alpha, blueComponent*alpha);
 end;
 
-function NSColorToColorRef(const Color: NSColor): TColorRef;
+class function TCocoaColorUtil.toColorRefWithAnyColor(const Color: NSColor): TColorRef;
 
-function AverageColor(Color1, Color2: TColorRef): TColorRef; inline;
+ function AverageColor(Color1, Color2: TColorRef): TColorRef; inline;
   begin
     if Color1 = Color2 then
       Result := Color1
@@ -498,9 +501,9 @@ begin
             if Assigned(RGBColor) then
             begin
               if (x = 0) and (y = 0) then
-                Result := NSColorToRGB(RGBColor)
+                Result := toColorRefWithRGBColor(RGBColor)
               else
-                Result := AverageColor(Result, NSColorToRGB(RGBColor))
+                Result := AverageColor(Result, toColorRefWithRGBColor(RGBColor))
             end
             else
             begin
@@ -512,11 +515,11 @@ begin
     end;
   end
   else
-    Result := NSColorToRGB(RGBColor);
+    Result := toColorRefWithRGBColor(RGBColor);
   LocalPool.release;
 end;
 
-procedure NSColorToColorAlpha(const Color: NSColor; var lclColor: TColor;
+class procedure TCocoaColorUtil.toColorAlpha(const Color: NSColor; var lclColor: TColor;
   var Alpha: Byte);
 begin
   lclColor:= ((Round(Color.blueComponent*$FF)) shl 16) +
@@ -525,7 +528,7 @@ begin
   alpha:= Round(Color.alphaComponent*$FF);
 end;
 
-function ColorToNSColor(const Color: TColorRef): NSColor; inline;
+class function TCocoaColorUtil.toColor(const Color: TColorRef): NSColor; inline;
 begin
   Result := NSColor.colorWithDeviceRed_green_blue_alpha(
     (Color and $FF) / $FF,
@@ -533,7 +536,7 @@ begin
     ((Color shr 16) and $FF) / $FF, 1);
 end;
 
-function ColorAlphaToNSColor(const Color: TColorRef; const Alpha: Byte): NSColor;
+class function TCocoaColorUtil.toColor(const Color: TColorRef; const Alpha: Byte): NSColor;
 begin
   Result := NSColor.colorWithDeviceRed_green_blue_alpha(
     (Color and $FF) / $FF,
@@ -542,7 +545,7 @@ begin
     Alpha / $FF );
 end;
 
-function SysColorToNSColor(nIndex: Integer): NSColor;
+class function TCocoaColorUtil.sysIndexToColor(nIndex: Integer): NSColor;
 const
   ToolTipBack     = $C9FCF9;
   ToolTipBack1010 = $EDEDED;
@@ -622,13 +625,13 @@ begin
       if NSAppKitVersionNumber >= NSAppKitVersionNumber10_14 then
       begin
         if IsPaintDark then
-          Result := ColorToNSColor(ToolTipBack1014Dark)
+          Result := toColor(ToolTipBack1014Dark)
         else
-          Result := ColorToNSColor(ToolTipBack1014);
+          Result := toColor(ToolTipBack1014);
       end else if NSAppKitVersionNumber >= NSAppKitVersionNumber10_10 then
-        Result := ColorToNSColor(ToolTipBack1010)
+        Result := toColor(ToolTipBack1010)
       else
-        Result := ColorToNSColor(ToolTipBack);
+        Result := toColor(ToolTipBack);
     end;
   else
     Result := nil;

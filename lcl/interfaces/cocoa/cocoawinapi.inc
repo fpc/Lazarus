@@ -1776,7 +1776,7 @@ begin
   Color := TCocoaBrush(SysBrush).Color;
 
   if Assigned(Color) then
-    Result := NSColorToColorRef(Color)
+    Result := TCocoaColorUtil.toColorRefWithAnyColor(Color)
   else
     Result := 0;
 end;
@@ -1791,11 +1791,11 @@ begin
     Exit;
   end;
   if (FSysColorBrushes[nIndex] = 0) then
-    FSysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(SysColorToNSColor(nIndex), True))
+    FSysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(TCocoaColorUtil.sysIndexToColor(nIndex), True))
   else
   begin
     // system wide can change the color on the fly
-    TCocoaBrush(FSysColorBrushes[nIndex]).Color := SysColorToNSColor(nIndex)
+    TCocoaBrush(FSysColorBrushes[nIndex]).Color := TCocoaColorUtil.sysIndexToColor(nIndex)
   end;
 
   Result := FSysColorBrushes[nIndex];
@@ -2954,7 +2954,7 @@ begin
     Element := PInteger(@lpaElements)[n];
     if (Element > MAX_SYS_COLORS) or (Element < 0) then 
       Exit;
-    Color := ColorToNSColor(PDWord(@lpaRgbValues)[n]);
+    Color := TCocoaColorUtil.toColor(PDWord(@lpaRgbValues)[n]);
     if (FSysColorBrushes[Element] <> 0) then
       TCocoaBrush(FSysColorBrushes[Element]).Color := Color
     else
