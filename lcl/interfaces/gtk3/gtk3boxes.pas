@@ -125,21 +125,21 @@ end;
 class function TGtk3DialogFactory.gtk_resp_to_lcl(const gtk_resp:TGtkResponseType):integer;
 begin
   case gtk_resp of
-  GTK_RESPONSE_OK: Result:=ID_OK;
-  GTK_RESPONSE_CANCEL: Result:=id_Cancel;
-  GTK_RESPONSE_CLOSE: Result:=id_Close;
-  GTK_RESPONSE_YES: Result:=id_Yes;
-  GTK_RESPONSE_NO: Result:=id_No;
+  GTK_RESPONSE_OK: Result:=mrOk;
+  GTK_RESPONSE_CANCEL: Result:=mrCancel;
+  GTK_RESPONSE_CLOSE: Result:=mrClose;
+  GTK_RESPONSE_YES: Result:=mrYes;
+  GTK_RESPONSE_NO: Result:=mrNo;
 
-  GTK_RESPONSE_NONE: Result:=0;
-  GTK_RESPONSE_REJECT: Result:=id_abort;
-  GTK_RESPONSE_ACCEPT: Result:=id_Yes;
+  GTK_RESPONSE_NONE: Result:=mrNone;
+  GTK_RESPONSE_REJECT: Result:=mrAbort;
+  GTK_RESPONSE_ACCEPT: Result:=mrYesToAll;
 
-  GTK_RESPONSE_LCL_RETRY: Result:=id_Retry;
-  GTK_RESPONSE_LCL_IGNORE:  Result:=id_Ignore;
-  GTK_RESPONSE_LCL_ALL:  Result:=idButtonAll;
-  GTK_RESPONSE_LCL_NOTOALL: Result:=idButtonNoToAll;
-  //GTK_RESPONSE_LCL_YESTOALL: Result:= idButtonYesToAll;
+  GTK_RESPONSE_LCL_RETRY: Result:=mrRetry;
+  GTK_RESPONSE_LCL_IGNORE:  Result:=mrIgnore;
+  GTK_RESPONSE_LCL_ALL:  Result:=mrAll;
+  GTK_RESPONSE_LCL_NOTOALL: Result:=mrNoToAll;
+  //GTK_RESPONSE_LCL_YESTOALL: Result:= mrYesToAll;
   else
     Result:=Integer(gtk_resp);
   end;
