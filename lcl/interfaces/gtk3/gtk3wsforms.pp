@@ -274,6 +274,11 @@ var
     if not IsX11 then
     begin
       AWindow^.show_all;
+      {On Wayland the surface is created at show_all time, so we must apply opacity now.
+       gtk_widget_set_opacity called in CreateWidget may not persist for popup
+       surfaces because the wl_surface doesn't exist until mapping.}
+      if AForm.AlphaBlend then
+        PGtkWidget(AWindow)^.set_opacity(AForm.AlphaBlendValue / 255.0);
       gdk_display_flush(GdkDisplay);
       exit;
     end;
