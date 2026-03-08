@@ -44,67 +44,85 @@ begin
   gtk_widget_destroy({%H-}PGtkWidget(ARubberBand));
 end;
 
+// Custom draw for the dock image popup.
+function DockImageDrawCB(AWidget: PGtkWidget; cr: Pcairo_t;
+  {%H-}AData: gpointer): gboolean; cdecl;
+var
+  W, H: gint;
+  SysCol: TColor;
+  R, G, B: Double;
+  Grad: Pcairo_pattern_t;
+begin
+  Result := False;
+  W := AWidget^.get_allocated_width;
+  H := AWidget^.get_allocated_height;
+  if (W <= 0) or (H <= 0) then Exit;
+
+  //ColorToRGB returns $00BBGGRR - Windows/LCL BGR layout.
+  SysCol := ColorToRGB(TColor(GTK3WidgetSet.GetSysColor(COLOR_HIGHLIGHT)));
+  R := (SysCol and $FF) / 255.0;
+  G := ((SysCol shr 8) and $FF) / 255.0;
+  B := ((SysCol shr 16) and $FF) / 255.0;
+
+  // Clear to transparent, required for RGBA windows.
+  cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+  cairo_set_source_rgba(cr, 0, 0, 0, 0);
+  cairo_paint(cr);
+  cairo_set_operator(cr, CAIRO_OPERATOR_OVER);
+
+  // Semi-transparent top-to-bottom gradient fill.
+  Grad := cairo_pattern_create_linear(0, 0, 0, H);
+  cairo_pattern_add_color_stop_rgba(Grad, 0, R,       G,       B,       0.45);
+  cairo_pattern_add_color_stop_rgba(Grad, 1, R * 0.7, G * 0.7, B * 0.7, 0.45);
+  cairo_set_source(cr, Grad);
+  cairo_rectangle(cr, 0, 0, W, H);
+  cairo_fill(cr);
+  cairo_pattern_destroy(Grad);
+
+  cairo_set_source_rgba(cr, R * 0.55, G * 0.55, B * 0.55, 1.0);
+  cairo_set_line_width(cr, 2);
+  cairo_rectangle(cr, 1, 1, W - 2, H - 2);
+  cairo_stroke(cr);
+
+  Result := True; // suppress GTK default paint
+end;
+
 procedure TGtk3WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect;
   AOperation: TDockImageOperation);
-//const
-//  LineWidth = 2;
 var
   dx, dy: integer;
-  (*
-  Mask: PGdkBitmap;
-  gc: PGdkGC;
-  AColor: TGdkColor;
-  Colormap: PGdkColormap;
   Screen: PGdkScreen;
-  *)
+  Visual: PGdkVisual;
 begin
   dx := ANewRect.Right - ANewRect.Left;
   dy := ANewRect.Bottom - ANewRect.Top;
-  if dx < 0 then
-    dx := 0;
-  if dy < 0 then
-    dy := 0;
-  (*
+  if dx < 0 then dx := 0;
+  if dy < 0 then dy := 0;
+
   if FDockImage = nil then
   begin
-    // dock image is just a window without title
+    // Decoration-free popup rendered entirely by DockImageDrawCB.
     FDockImage := gtk_window_new(GTK_WINDOW_POPUP);
-    gtk_window_set_default_size(PGtkWindow(FDockImage),
-      dx, dy);
-    gtk_widget_realize(FDockImage);
-    gdk_window_set_decorations(FDockImage^.window, 0);
-    gdk_window_set_functions(FDockImage^.window, GDK_FUNC_RESIZE or GDK_FUNC_CLOSE);
-    SetWidgetColor(FDockImage, clNone, clGradientActiveCaption, [GTK_STATE_NORMAL]);
-    // attemp to make window semi-transparent
+    // RGBA visual so Cairo transparent areas are truly transparent.
     Screen := gtk_widget_get_screen(FDockImage);
-    Colormap := gdk_screen_get_rgba_colormap(Screen);
-    if (Colormap <> nil) and gdk_screen_is_composited(Screen) then
-      gtk_widget_set_colormap(FDockImage, Colormap);
+    Visual := gdk_screen_get_rgba_visual(Screen);
+    if (Visual <> nil) and gdk_screen_is_composited(Screen) then
+      gtk_widget_set_visual(FDockImage, Visual);
+    FDockImage^.set_app_paintable(True);
+    gtk_widget_realize(FDockImage);
+    gdk_window_set_decorations(FDockImage^.window, []);
+    gdk_window_set_functions(FDockImage^.window, [GDK_FUNC_RESIZE, GDK_FUNC_CLOSE]);
+    g_signal_connect_data(PGObject(FDockImage), 'draw', TGCallback(@DockImageDrawCB), nil, nil, G_CONNECT_DEFAULT);
   end;
 
-  gdk_window_move_resize(FDockImage^.window, ANewRect.Left, ANewRect.Top,
-    dx, dy);
-  if (dx > 0) and (dy > 0) then
-  begin
-    // create a hole inside window
-    Mask := gdk_pixmap_new(nil, dx, dy, 1);
-    gc := gdk_gc_new(Mask);
-    AColor.pixel := 1;
-    gdk_gc_set_foreground(gc, @AColor);
-    gdk_draw_rectangle(Mask, gc, 1, 0, 0, dx, dy);
-    AColor.pixel := 0;
-    gdk_gc_set_foreground(gc, @AColor);
-    gdk_draw_rectangle(Mask, gc, 1, LineWidth, LineWidth,
-      dx - LineWidth * 2, dy - LineWidth * 2);
-    gdk_gc_unref(gc);
-    gtk_widget_shape_combine_mask(FDockImage, Mask, 0, 0);
-    gdk_pixmap_unref(Mask);
-  end;
+  PGtkWindow(FDockImage)^.move(ANewRect.Left, ANewRect.Top);
+  PGtkWindow(FDockImage)^.resize(dx, dy);
+
   case AOperation of
     disShow: gtk_widget_show(FDockImage);
+    disMove: ; // move/resize applied above; draw callback handles repaint
     disHide: gtk_widget_hide(FDockImage);
   end;
-  *)
 end;
 
 

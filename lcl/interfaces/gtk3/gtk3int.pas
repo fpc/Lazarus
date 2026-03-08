@@ -106,6 +106,8 @@ type
     // tmp
     cssProvider:PGtkCssProvider;
 
+    FDockImage: PGtkWidget;
+
     FDragImageList: PGtkWidget;
     FDragImageListIcon: PGtkImage;
     FDragHotSpot: TPoint;

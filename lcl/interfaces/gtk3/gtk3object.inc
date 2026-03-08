@@ -120,6 +120,12 @@ begin
   GTK3WidgetSet := nil;
   WakeMainThread := nil;
 
+  if FDockImage <> nil then
+  begin
+    gtk_widget_destroy(FDockImage);
+    FDockImage := nil;
+  end;
+
   if Assigned(FAppIcon) then
     FAppIcon^.unref;
   FAppIcon := nil;
@@ -314,6 +320,8 @@ var
 begin
   SetExceptionMask([exInvalidOp, exDenormalized, exZeroDivide, exOverflow, exUnderflow, exPrecision]);
   inherited Create;
+  FDockImage := nil;
+
   FDragImageList := nil;
   FDragImageListIcon := nil;
   FDragHotSpot := Point(0, 0);
