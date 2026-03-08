@@ -355,7 +355,7 @@ var
 
     procedure setFilterCombobox;
     begin
-      filterComboBox:= TCocoaFilterComboBox.alloc.initWithFrame(NSNullRect);
+      filterComboBox:= TCocoaFilterComboBox.alloc.initWithFrame(NSZeroRect);
       filterComboBox.DialogHandle:= cocoaFileOwner;
       filterComboBox.Owner := lclFileDialog;
       filterComboBox.setTarget( filterComboBox );

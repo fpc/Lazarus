@@ -73,9 +73,6 @@ type
     class function getScreenFromHMonitor(h: HMonitor): NSScreen;
   end;
 
-const
-  NSNullRect : NSRect = (origin:(x:0; y:0); size:(width:0; height:0));
-
 function StringArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
 function UrlArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
 
@@ -488,7 +485,7 @@ begin
     else
     begin
       // compute an average color of the top left 2x2 rectangle
-      ImageRep := PatternColor.patternImage.bestRepresentationForRect_context_hints(NSNullRect, nil, nil);
+      ImageRep := PatternColor.patternImage.bestRepresentationForRect_context_hints(NSZeroRect, nil, nil);
       if (ImageRep = nil) or not ImageRep.isKindOfClass(NSBitmapImageRep) then
         Result := 0
       else
