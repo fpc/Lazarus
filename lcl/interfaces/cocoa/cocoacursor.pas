@@ -161,7 +161,7 @@ begin
   CocoaGetCursorPos(P);
 
   rect:= NSZeroRect;
-  rect.origin:= LCLToNSPoint(P, window.screen.frame.size.height);
+  rect.origin:= TCocoaTypeUtil.toPoint(P, window.screen.frame.size.height);
   rect:= window.convertRectFromScreen(rect);
 
   event:= NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(

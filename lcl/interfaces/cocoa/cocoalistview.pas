@@ -651,7 +651,7 @@ var
   rect: TRect;
 begin
   ALV:= TCustomListViewAccess(self.listView);
-  rect:= NSRectToRect( self.Owner.lclContentView.bounds );
+  rect:= TCocoaTypeUtil.toRect( self.Owner.lclContentView.bounds );
   if col=0 then
     drawTarget:= dtItem
   else if col>0 then

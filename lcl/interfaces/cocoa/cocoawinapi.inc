@@ -521,7 +521,7 @@ begin
   if IconInfo^.fIcon then
     Result := HICON(ABitmap)
   else
-    Result := HICON(TCocoaCursor.CreateFromBitmap(ABitmap, GetNSPoint(IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
+    Result := HICON(TCocoaCursor.CreateFromBitmap(ABitmap, TCocoaTypeUtil.GetNSPoint(IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
 end;
 
 function TCocoaWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
@@ -1152,7 +1152,7 @@ begin
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 1;
     SPI_GETWORKAREA:
     begin
-      NSToLCLRect( TCocoaScreenUtil.primaryScreen.visibleFrame,
+      TCocoaTypeUtil.toRect( TCocoaScreenUtil.primaryScreen.visibleFrame,
                    TCocoaScreenUtil.primaryScreenFrame.size.height,
                    TRect(pvParam^) );
     end;
@@ -2576,7 +2576,7 @@ begin
   // therefore we can only test bounding box of the clipping path.
 
   ClipBox := CGContextGetClipBoundingBox(ctx.CGContext);
-  Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
+  Result := IntersectRect(R, ARect, TCocoaTypeUtil.toRect(ClipBox));
 end;
 
 function TCocoaWidgetSet.ReleaseCapture : Boolean;

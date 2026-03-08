@@ -26,7 +26,23 @@ type
 
   TCocoaTypeUtil = class
   public
-    class function alignment( lclAlignment: TAlignment ): NSTextAlignment;
+    class function toAlignment( lclAlignment: TAlignment ): NSTextAlignment;
+
+    class function toPoint(APt: TPoint; ParentHeight: Single): NSPoint; overload;
+    class function toPoint(APt: NSPoint; ParentHeight: Single): TPoint; overload;
+
+    class function toRect(const R: TRect): CGRect; overload;
+    class function toRect(const c: CGRect): TRect; overload;
+    class function toSortedRect(X1, Y1, X2, Y2: Integer): CGRect;
+
+    class procedure toRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect); overload;
+    class procedure toRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect); overload;
+
+    // the corresponding function already exists in FPC and can be removed later.
+    class function GetNSSize(width, height: CGFloat): NSSize; inline;
+    class function GetCGRect(x1, y1, x2, y2: Integer): CGRect; inline;
+    class function GetNSRect(x, y, width, height: Integer): NSRect; inline;
+    class function GetNSPoint(x,y: single): NSPoint; inline;
   end;
 
   { TCocoaScreenUtil }
@@ -55,24 +71,6 @@ function StringArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
 function UrlArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
 
 procedure hideAllSubviews( parent: NSView );
-
-function GetNSSize(width, height: CGFloat): NSSize; inline;
-
-function GetNSPoint(x,y: single): NSPoint; inline;
-function LCLToNSPoint(APt: TPoint; ParentHeight: Single): NSPoint;
-function NSPointToLCL(APt: NSPoint; ParentHeight: Single): TPoint;
-
-function GetCGRect(x1, y1, x2, y2: Integer): CGRect; inline;
-function GetCGRectSorted(X1, Y1, X2, Y2: Integer): CGRect;
-function RectToCGRect(const R: TRect): CGRect;
-function CGRectToRect(const c: CGRect): TRect;
-
-function GetNSRect(x, y, width, height: Integer): NSRect; inline;
-function RectToNSRect(const r: TRect): NSRect;
-function NSRectToRect(const NS: NSRect): TRect;
-
-procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
-procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 
 function GetScreenPointFromEvent(const event: NSEvent): NSPoint;
 procedure lclOffsetWithEnclosingScrollView( const view: NSView; var x: Integer; var y: Integer );
@@ -728,31 +726,31 @@ begin
     Result := NSView(obj).window;
 end;
 
-function GetNSSize(width, height: CGFloat): NSSize; inline;
+class function TCocoaTypeUtil.GetNSSize(width, height: CGFloat): NSSize; inline;
 begin
   Result.height := height;
   Result.width := width;
 end;
 
-function GetNSPoint(x, y: single): NSPoint;
+class function TCocoaTypeUtil.GetNSPoint(x, y: single): NSPoint;
 begin
   Result.x := x;
   Result.y := y;
 end;
 
-function LCLToNSPoint(APt: TPoint; ParentHeight: Single): NSPoint;
+class function TCocoaTypeUtil.toPoint(APt: TPoint; ParentHeight: Single): NSPoint;
 begin
   Result.X := APt.X;
   Result.Y := ParentHeight - APt.Y;
 end;
 
-function NSPointToLCL(APt: NSPoint; ParentHeight: Single): TPoint;
+class function TCocoaTypeUtil.toPoint(APt: NSPoint; ParentHeight: Single): TPoint;
 begin
   Result.X := Round(APt.X);
   Result.Y := Round(ParentHeight - APt.Y);
 end;
 
-function GetNSRect(x, y, width, height: Integer): NSRect;
+class function TCocoaTypeUtil.GetNSRect(x, y, width, height: Integer): NSRect;
 begin
   with Result do
   begin
@@ -763,7 +761,7 @@ begin
   end;
 end;
 
-function GetCGRect(x1, y1, x2, y2: Integer): CGRect;
+class function TCocoaTypeUtil.GetCGRect(x1, y1, x2, y2: Integer): CGRect;
 begin
   with Result do
   begin
@@ -774,7 +772,7 @@ begin
   end;
 end;
 
-function GetCGRectSorted(X1, Y1, X2, Y2: Integer): CGRect;
+class function TCocoaTypeUtil.toSortedRect(X1, Y1, X2, Y2: Integer): CGRect;
 begin
   if X1 <= X2 then
   begin
@@ -799,13 +797,13 @@ begin
   end;
 end;
 
-function RectToCGRect(const R: TRect): CGRect;
+class function TCocoaTypeUtil.toRect(const R: TRect): CGRect;
 begin
   with R do
     Result := GetCGRect(Left, Top, Right, Bottom);
 end;
 
-function CGRectToRect(const c: CGRect): TRect;
+class function TCocoaTypeUtil.toRect(const c: CGRect): TRect;
 begin
   if CGRectIsEmpty(c) <> 0 then
     Result := Rect(0,0,0,0)
@@ -819,21 +817,7 @@ begin
 end;
 end;
 
-function RectToNSRect(const r: TRect): NSRect;
-begin
-  with R do
-    Result := GetNSRect(Left, Top, Right - Left, Bottom - Top);
-end;
-
-function NSRectToRect(const NS: NSRect): TRect;
-begin
-  Result.Left := Round(ns.origin.x);
-  Result.Top := Round(ns.origin.y);
-  Result.Right := Round(ns.origin.x + ns.size.width);
-  Result.Bottom := Round(ns.origin.y + ns.size.height);
-end;
-
-procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
+class procedure TCocoaTypeUtil.toRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 begin
   lcl.Left := Round(ns.origin.x);
   lcl.Top := Round(ParentHeight - ns.size.height - ns.origin.y);
@@ -841,7 +825,7 @@ begin
   lcl.Bottom := Round(lcl.Top + ns.size.height);
 end;
 
-procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
+class procedure TCocoaTypeUtil.toRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
 begin
   ns.origin.x:=lcl.left;
   ns.origin.y:=ParentHeight-lcl.bottom;
@@ -966,7 +950,7 @@ end;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 begin
-  with params do Result:=GetNSRect(X,Y,Width,Height);
+  with params do Result:=TCocoaTypeUtil.GetNSRect(X,Y,Width,Height);
 end;
 
 function NSStringUtf8(s: PChar; len: Integer = -1): NSString;
@@ -1131,7 +1115,7 @@ end;
 
 { TCocoaTypeUtil }
 
-class function TCocoaTypeUtil.alignment( lclAlignment: TAlignment ): NSTextAlignment;
+class function TCocoaTypeUtil.toAlignment( lclAlignment: TAlignment ): NSTextAlignment;
 begin
   case lclAlignment of
     taRightJustify:

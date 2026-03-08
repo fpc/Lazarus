@@ -639,7 +639,7 @@ begin
     lClientPos.y := pt.Y;
   end
   else
-    lClientPos := LCLToNSPoint(pt, lTabControl.frame.size.height);
+    lClientPos := TCocoaTypeUtil.toPoint(pt, lTabControl.frame.size.height);
 
   lTabPage := lTabControl.tabViewItemAtPoint(lClientPos);
   if not Assigned(lTabPage) then

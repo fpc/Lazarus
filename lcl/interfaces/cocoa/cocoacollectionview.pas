@@ -1150,7 +1150,7 @@ begin
       end
   end;
 
-  Result:= NSRectToRect( frame );
+  Result:= TCocoaTypeUtil.toRect( frame );
 end;
 
 procedure TCocoaWSListView_CollectionViewHandler.ItemExchange(

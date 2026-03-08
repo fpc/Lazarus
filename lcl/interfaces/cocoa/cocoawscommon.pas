@@ -1495,7 +1495,7 @@ begin
 
       FillChar(PS, SizeOf(TPaintStruct), 0);
       PS.hdc := HDC(FContext);
-      PS.rcPaint := NSRectToRect(nsr);
+      PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(FContext), @PS);
       if FHasCaret then
         DrawCaret;
@@ -1543,7 +1543,7 @@ begin
 
       FillChar(PS, SizeOf(TPaintStruct), 0);
       PS.hdc := HDC(FContext);
-      PS.rcPaint := NSRectToRect(nsr);
+      PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(FContext), @PS);
     end;
   finally

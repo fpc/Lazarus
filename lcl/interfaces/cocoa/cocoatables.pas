@@ -305,7 +305,7 @@ begin
     Exit;
   end;
   nsr:=tbl.frameOfCellAtColumn_row(col,row);
-  r:=NSRectToRect(nsr);
+  r:=TCocoaTypeUtil.toRect(nsr);
   Result := True;
 end;
 
@@ -536,7 +536,7 @@ begin
     if isChecked(self,row) then
       Include(ItemState, odChecked);
 
-    Result:= self.callback.drawItem(row, ctx, NSRectToRect(canvasRect), ItemState);
+    Result:= self.callback.drawItem(row, ctx, TCocoaTypeUtil.toRect(canvasRect), ItemState);
   finally
     ctx.Free;
   end;
@@ -1391,8 +1391,8 @@ begin
   if row >= numberOfRowsInTableView(self) then
     Exit;
 
-  frameRect.origin:= GetNSPoint(0,0);
-  frameRect.size:= GetNSSize(tableColumn.width, rowHeight);
+  frameRect.origin:= TCocoaTypeUtil.GetNSPoint(0,0);
+  frameRect.size:= TCocoaTypeUtil.GetNSSize(tableColumn.width, rowHeight);
 
   item:= TCocoaTableListItem(makeViewWithIdentifier_owner(NSSTR('tblview'), self));
   if item = nil then begin
@@ -1737,7 +1737,7 @@ begin
       end;
   end;
 
-  Result:= NSRectToRect( frame );
+  Result:= TCocoaTypeUtil.toRect( frame );
 end;
 
 procedure TCocoaWSListView_TableViewHandler.ItemExchange(

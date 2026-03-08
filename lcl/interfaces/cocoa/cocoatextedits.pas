@@ -733,7 +733,7 @@ begin
 
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   try
-    ctxRect:= NSRectToRect( bounds );
+    ctxRect:= TCocoaTypeUtil.toRect( bounds );
     ctx.InitDraw( ctxRect.Width, ctxRect.Height );
     combobox.callback.ComboBoxDrawItem(itemIndex, ctx, ctxRect, isHighlighted, false);
   finally
@@ -1052,7 +1052,7 @@ begin
   if wordWrap then
   begin
     layoutSize := scrollView.contentSize();
-    layoutSize := GetNSSize(layoutSize.width, CGFloat_Max);
+    layoutSize := TCocoaTypeUtil.GetNSSize(layoutSize.width, CGFloat_Max);
     textView.textContainer.setContainerSize(layoutSize);
     textView.textContainer.setWidthTracksTextView(True);
     textView.setHorizontallyResizable(false);
@@ -1063,7 +1063,7 @@ begin
   else
   begin
     textView.textContainer.setWidthTracksTextView(False);
-    layoutSize := GetNSSize(CGFloat_Max, CGFloat_Max);
+    layoutSize := TCocoaTypeUtil.GetNSSize(CGFloat_Max, CGFloat_Max);
     textView.textContainer.setContainerSize(layoutSize);
     textView.textContainer.setWidthTracksTextView(False);
     textView.setHorizontallyResizable(true);
@@ -1079,7 +1079,7 @@ begin
   if NOT Assigned(textView) then
     Exit;
   //todo: for bidi modes, there's "NSTextAlignmentNatural"
-  textView.setAlignment( TCocoaTypeUtil.alignment(align) );
+  textView.setAlignment( TCocoaTypeUtil.toAlignment(align) );
 end;
 
 class procedure TCocoaTextFieldUtil.setAllignment(
@@ -1089,7 +1089,7 @@ begin
   if NOT Assigned(textField) then
     Exit;
   //todo: for bidi modes, there's "NSTextAlignmentNatural"
-  textField.setAlignment( TCocoaTypeUtil.alignment(align) );
+  textField.setAlignment( TCocoaTypeUtil.toAlignment(align) );
 end;
 
 class procedure TCocoaTextFieldUtil.setBorderStyle(
@@ -2420,13 +2420,13 @@ begin
   svHeight := GetNSViewSuperViewHeight(Self);
   if Assigned(superview) and NOT superview.isFlipped then
   begin
-    LCLToNSRect(lRect, svHeight, ns);
-    LCLToNSRect(lStepperRect, svHeight, lStepperNS);
+    TCocoaTypeUtil.toRect(lRect, svHeight, ns);
+    TCocoaTypeUtil.toRect(lStepperRect, svHeight, lStepperNS);
   end
   else
   begin
-    ns := RectToNSRect(lRect);
-    lStepperNS := RectToNSRect(lStepperRect);
+    ns := TCocoaTypeUtil.toRect(lRect);
+    lStepperNS := TCocoaTypeUtil.toRect(lStepperRect);
   end;
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   WriteLn(Format('LCLViewExtension.lclSetFrame: %s Bounds=%s height=%d ns_pos=%d %d ns_size=%d %d',
