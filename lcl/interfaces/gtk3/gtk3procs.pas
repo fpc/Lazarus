@@ -411,12 +411,51 @@ function GdkEventToStr(AEvent: TGdkEventType): String;
 function GtkModifierStateToShiftState(AState: TGdkModifierType;
     AIsKeyEvent: Boolean): Cardinal;
 
+{Returns True when the left mouse button (Button1) is currently held down.
+ Intended to detect whether the user is actively drag-resizing a window frame.
+ Uses GDK seat pointer query - no X11/Xlib headers needed. On the X11 GDK
+ backend, gdk_device_get_state calls XQueryPointer internally, which returns
+ the real button state even during a WM pointer grab (drag-resize).
+ AWidget may be any realized GtkWidget or GtkWindow cast to PGtkWidget;
+ pass nil to query against the default root window.}
+function Gtk3IsPointerButtonDown(AWidget: PGtkWidget): Boolean;
+
 implementation
 uses LCLProc, gtk3objects, gtk3widgets, LazLogger;
 
 function PANGO_PIXELS(d:integer):integer;
 begin
   Result:=((d + 512) shr 10);
+end;
+
+function Gtk3IsPointerButtonDown(AWidget: PGtkWidget): Boolean;
+var
+  display: PGdkDisplay;
+  seat: PGdkSeat;
+  pointer: PGdkDevice;
+  gdkwin: PGdkWindow;
+  mask: TGdkModifierType;
+begin
+  Result := False;
+  display := gdk_display_get_default;
+  if not Assigned(display) then
+    exit;
+  seat := gdk_display_get_default_seat(display);
+  if not Assigned(seat) then
+    exit;
+  pointer := gdk_seat_get_pointer(seat);
+  if not Assigned(pointer) then
+    exit;
+  gdkwin := nil;
+  if Assigned(AWidget) and gtk_widget_get_realized(AWidget) then
+    gdkwin := gtk_widget_get_window(AWidget);
+  if gdkwin = nil then
+    gdkwin := gdk_get_default_root_window;
+  mask := [];
+  gdk_device_get_state(pointer, gdkwin, nil, @mask);
+  {x11 gtk_grab_get_current = nil, wayland gtk_grab_get_current returns widget, so wayland IS accurrate.
+  gdk_display_device_is_grabbed(display, pointer) returns false in both cases :( }
+  Result := GDK_BUTTON1_MASK in mask;
 end;
 
 function GdkEventToStr(AEvent: TGdkEventType): String;
