@@ -2386,7 +2386,7 @@ begin
     cap.release;
 
     // set a content view in order to be able to customize drawing for labels/color
-    ns := TCocoaTypeUtil.GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+    ns := NSMakeRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
     lGroupBoxContents := TCocoaCustomControl.alloc.initWithFrame(ns);
     lGroupBoxContents.callback := box.callback; //TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
     //str := Format('%X=%X', [PtrUInt(box.callback), PtrUInt(lGroupBoxContents.callback)]);

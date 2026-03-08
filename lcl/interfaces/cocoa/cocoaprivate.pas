@@ -563,7 +563,7 @@ begin
     TCocoaTypeUtil.toRect(Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
       p.frame.size.height, ns)
   else
-    ns := TCocoaTypeUtil.GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+    ns := NSMakeRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
 
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   if Assigned(p) then

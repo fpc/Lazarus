@@ -1052,7 +1052,7 @@ begin
   if wordWrap then
   begin
     layoutSize := scrollView.contentSize();
-    layoutSize := TCocoaTypeUtil.GetNSSize(layoutSize.width, CGFloat_Max);
+    layoutSize := NSMakeSize(layoutSize.width, CGFloat_Max);
     textView.textContainer.setContainerSize(layoutSize);
     textView.textContainer.setWidthTracksTextView(True);
     textView.setHorizontallyResizable(false);
@@ -1063,7 +1063,7 @@ begin
   else
   begin
     textView.textContainer.setWidthTracksTextView(False);
-    layoutSize := TCocoaTypeUtil.GetNSSize(CGFloat_Max, CGFloat_Max);
+    layoutSize := NSMakeSize(CGFloat_Max, CGFloat_Max);
     textView.textContainer.setContainerSize(layoutSize);
     textView.textContainer.setWidthTracksTextView(False);
     textView.setHorizontallyResizable(true);

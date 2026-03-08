@@ -521,7 +521,7 @@ begin
   if IconInfo^.fIcon then
     Result := HICON(ABitmap)
   else
-    Result := HICON(TCocoaCursor.CreateFromBitmap(ABitmap, TCocoaTypeUtil.GetNSPoint(IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
+    Result := HICON(TCocoaCursor.CreateFromBitmap(ABitmap, NSMakePoint(IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
 end;
 
 function TCocoaWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;

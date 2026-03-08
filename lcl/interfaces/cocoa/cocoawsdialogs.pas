@@ -647,10 +647,10 @@ begin
   colorDelegate.ColorDialog := ColorDialog;
 
   // setup panel and its accessory view
-  lRect := TCocoaTypeUtil.GetNSRect(0, 0, 220, 30);
+  lRect := NSMakeRect(0, 0, 220, 30);
   accessoryView := NSView.alloc.initWithFrame(lRect);
 
-  lRect := TCocoaTypeUtil.GetNSRect(110, 4, 110-8, 24);
+  lRect := NSMakeRect(110, 4, 110-8, 24);
   okButton := NSButton.alloc.initWithFrame(lRect);
   okButton.setButtonType(NSMomentaryPushInButton);
   okButton.setBezelStyle(NSRoundedBezelStyle);
@@ -658,7 +658,7 @@ begin
   okButton.setAction(objcselector('pickColor'));
   okButton.setTarget(colorDelegate);
 
-  lRect := TCocoaTypeUtil.GetNSRect(8, 4, 110-8, 24);
+  lRect := NSMakeRect(8, 4, 110-8, 24);
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);
@@ -821,10 +821,10 @@ begin
   //fm.setDelegate(FontDelegate);
 
   // setup panel and its accessory view
-  lRect := TCocoaTypeUtil.GetNSRect(0, 0, 220, 36);
+  lRect := NSMakeRect(0, 0, 220, 36);
   accessoryView := NSView.alloc.initWithFrame(lRect);
 
-  lRect := TCocoaTypeUtil.GetNSRect(110, 6, 110-8, 24);
+  lRect := NSMakeRect(110, 6, 110-8, 24);
   okButton := NSButton.alloc.initWithFrame(lRect);
   okButton.setButtonType(NSMomentaryPushInButton);
   okButton.setBezelStyle(NSRoundedBezelStyle);
@@ -832,7 +832,7 @@ begin
   okButton.setAction(objcselector('selectFont'));
   okButton.setTarget(FontDelegate);
 
-  lRect := TCocoaTypeUtil.GetNSRect(8, 6, 110-8, 24);
+  lRect := NSMakeRect(8, 6, 110-8, 24);
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);

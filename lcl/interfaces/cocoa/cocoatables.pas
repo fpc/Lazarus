@@ -1391,8 +1391,8 @@ begin
   if row >= numberOfRowsInTableView(self) then
     Exit;
 
-  frameRect.origin:= TCocoaTypeUtil.GetNSPoint(0,0);
-  frameRect.size:= TCocoaTypeUtil.GetNSSize(tableColumn.width, rowHeight);
+  frameRect.origin:= NSZeroPoint;
+  frameRect.size:= NSMakeSize(tableColumn.width, rowHeight);
 
   item:= TCocoaTableListItem(makeViewWithIdentifier_owner(NSSTR('tblview'), self));
   if item = nil then begin

@@ -2405,8 +2405,8 @@ begin
     imageRep:= NSBitmapImageRep.alloc.initWithCGImage(cgImage);
   end;
 
-  Result := DrawImageRep( TCocoaTypeUtil.GetNSRect(X, Y, Width, Height),
-                          TCocoaTypeUtil.GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight),
+  Result := DrawImageRep( NSMakeRect(X, Y, Width, Height),
+                          NSMakeRect(XSrc, YSrc, SrcWidth, SrcHeight),
                           imageRep );
 
   if Assigned(maskImage) then begin
@@ -2704,7 +2704,7 @@ end;
 constructor TCocoaRegion.Create(const X1, Y1, X2, Y2: Integer);
 begin
   inherited Create(False);
-  FShape := HIShapeCreateWithRect(TCocoaTypeUtil.GetCGRect(X1, Y1, X2, Y2));
+  FShape := HIShapeCreateWithRect(TCocoaTypeUtil.toRect(Rect(X1, Y1, X2, Y2)));
 end;
 
 {------------------------------------------------------------------------------
@@ -2750,7 +2750,7 @@ var
   begin
     //DebugLn('AddPart:' + DbgS(X1) + ' - ' + DbgS(X2) + ', ' + DbgS(Y));
 
-    R := HIShapeCreateWithRect(TCocoaTypeUtil.GetCGRect(X1, Y, X2, Y + 1));
+    R := HIShapeCreateWithRect(TCocoaTypeUtil.toRect(Rect(X1, Y, X2, Y + 1)));
     HIShapeUnion(FShape, R, FShape);
     CFRelease(R);
   end;
@@ -2960,7 +2960,7 @@ begin
         if HIShapeIsEmpty(FShape) then
           {HIShapeCreateDifference doesn't work properly if original shape is empty}
           {to simulate "emptieness" very big shape is created }
-          Shape := HIShapeCreateWithRect(TCocoaTypeUtil.GetCGRect(MinCoord, MinCoord, MaxSize, MaxSize)); // create clip nothing.
+          Shape := HIShapeCreateWithRect(NSMakeRect(MinCoord, MinCoord, MaxSize, MaxSize)); // create clip nothing.
 
         Shape := HIShapeCreateDifference(FShape, ARegion.Shape);
         Result := GetType;
@@ -3282,7 +3282,7 @@ begin
     FImage := CGImageMaskCreate(8, 8, 1, 1, 1, CGDataProvider, nil, 0);
     CGDataProviderRelease(CGDataProvider);
     FPatternColorMode := cpmBrushColor;
-    CreateCGPattern(TCocoaTypeUtil.GetCGRect(0 , 0, 8, 8), 0);
+    CreateCGPattern(NSMakeRect(0 , 0, 8, 8), 0);
   end;
 end;
 
@@ -3311,7 +3311,7 @@ begin
     FImage := CGImageCreateCopy(MacOSAll.CGImageRef( FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil)));
     FPatternColorMode := cpmBitmap;
   end;
-  CreateCGPattern(TCocoaTypeUtil.GetCGRect(0, 0, AWidth, AHeight), Ord(FPatternColorMode = cpmBitmap));
+  CreateCGPattern(NSMakeRect(0, 0, AWidth, AHeight), Ord(FPatternColorMode = cpmBitmap));
 end;
 
 procedure TCocoaBrush.SetImage(AImage: NSImage);
