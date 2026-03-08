@@ -172,9 +172,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk3WidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 begin
-  Result := False;
-  // IsValidGDIObject(Font)
-  //        and FontIsMonoSpaceFont({%H-}PGdiObject(Font)^.GDIFontObject);
+  Result := IsValidGDIObject(Font) and TGtk3Font(Font).IsMonospace;
 end;
 
 {------------------------------------------------------------------------------

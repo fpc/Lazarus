@@ -73,6 +73,7 @@ type
     function Get(szbuf:integer;pbuf:pointer):integer; override;
     destructor Destroy; override;
     procedure UpdateLogFont;
+    function IsMonospace: boolean;
     property FontName: String read FFontName write FFontName;
     property Handle: PPangoFontDescription read FHandle;
     property Layout: PPangoLayout read FLayout;
@@ -929,6 +930,28 @@ begin
     end;
 
     fLogFont.lfHeight:=sz;//round(sz/PANGO_SCALE);
+  end;
+end;
+
+function TGtk3Font.IsMonospace: boolean;
+var
+  TempLayout: PPangoLayout;
+  w1, w2, h: gint;
+begin
+  Result := False;
+  if not Assigned(FLayout) then
+    exit;
+  TempLayout := pango_layout_copy(FLayout);
+  try
+    pango_layout_set_text(TempLayout, 'i', -1);
+    pango_layout_get_size(TempLayout, @w1, @h);
+
+    pango_layout_set_text(TempLayout, 'm', -1);
+    pango_layout_get_size(TempLayout, @w2, @h);
+
+    Result := (w1 = w2) and (w1 > 0);
+  finally
+    g_object_unref(TempLayout);
   end;
 end;
 
