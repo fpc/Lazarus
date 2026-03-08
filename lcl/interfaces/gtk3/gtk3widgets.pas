@@ -4647,10 +4647,10 @@ begin
   Result := 0;
   if not IsWidgetOk then
     exit;
-  if PGtkEditable(Widget)^.get_selection_bounds(@AStart, @AStop) then
-  begin
-    Result := AStart;
-  end;
+  if gtk_editable_get_selection_bounds(PGtkEditable(Widget), @AStart, @AStop) then
+    Result := AStart
+  else
+    Result := gtk_editable_get_position(PGtkEditable(Widget));
 end;
 
 function TGtk3Editable.getSelLength: Integer;
