@@ -1038,6 +1038,15 @@ type
     FScrollWin: PGtkScrolledWindow;
     FMenuBar: PGtkMenuBar;
     FBox: PGtkBox;
+    {Deferred resize: when SetBounds is called from within the synchronous
+     WindowSizeAllocate delivery, resize() is deferred to a g_idle_add callback
+     that fires once the GDK event queue is empty  - no echo loop. }
+    FInWindowSizeAllocate: Boolean;
+    FPendingResizeSource: guint;
+    FPendingResizeW: gint;
+    FPendingResizeH: gint;
+    FLastResizeW: gint; // last size we actually called resize() with
+    FLastResizeH: gint; // used to detect WM bounce (clamp to natural min)
     function GetSkipTaskBarHint: Boolean;
     function GetTitle: String;
     procedure SetIcon(AValue: PGdkPixBuf);
@@ -1052,6 +1061,7 @@ type
     class function WindowStateSignal(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gPointer): gboolean; cdecl; static;
     class procedure WaylandPopupSetFocus(AWindow: PGtkWindow; AWidget: PGtkWidget;
       AData: gpointer); cdecl; static;
+    class function DeferredResizeCB(data: gpointer): gboolean; cdecl; static;
   protected
     FFirstMapRect: TRect;
     procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
@@ -1186,101 +1196,6 @@ implementation
 
 uses {$IFDEF GTK3DEBUGKEYPRESS}TypInfo,{$ENDIF}gtk3int, gtk3caret, imglist,
   uriparser, lclproc, LazLogger;
-
-const
-
-  GDK_DEFAULT_EVENTS_MASK = [
-    GDK_EXPOSURE_MASK, {2}
-    GDK_POINTER_MOTION_MASK, {4}
-    GDK_POINTER_MOTION_HINT_MASK, {8}
-    GDK_BUTTON_MOTION_MASK, {16}
-    GDK_BUTTON1_MOTION_MASK, {32}
-    GDK_BUTTON2_MOTION_MASK, {64}
-    GDK_BUTTON3_MOTION_MASK, {128}
-    GDK_BUTTON_PRESS_MASK, {256}
-    GDK_BUTTON_RELEASE_MASK, {512}
-    GDK_KEY_PRESS_MASK, {1024}
-    GDK_KEY_RELEASE_MASK, {2048}
-    GDK_ENTER_NOTIFY_MASK, {4096}
-    GDK_LEAVE_NOTIFY_MASK, {8192}
-    GDK_FOCUS_CHANGE_MASK, {16384}
-    GDK_STRUCTURE_MASK, {32768}
-    GDK_PROPERTY_CHANGE_MASK, {65536}
-    GDK_VISIBILITY_NOTIFY_MASK, {131072}
-    GDK_PROXIMITY_IN_MASK, {262144}
-    GDK_PROXIMITY_OUT_MASK, {524288}
-    GDK_SUBSTRUCTURE_MASK, {1048576}
-    GDK_SCROLL_MASK, {2097152}
-    GDK_TOUCH_MASK {4194304}
- // GDK_SMOOTH_SCROLL_MASK {8388608} //there is a bug in GTK3, see https://stackoverflow.com/questions/11775161/gtk3-get-mouse-scroll-direction
-  ];
-
-function Gtk3EventToStr(AEvent: TGdkEventType): String;
-begin
-  Result := 'GDK_NOTHING';
-  case AEvent of
-    GDK_DELETE: Result := 'GDK_DELETE';
-    GDK_DESTROY: Result := 'GDK_DESTROY';
-    GDK_EXPOSE: Result := 'GDK_EXPOSE';
-    GDK_MOTION_NOTIFY: Result := 'GDK_MOTION_NOTIFY';
-    GDK_BUTTON_PRESS: Result := 'GDK_BUTTON_PRESS';
-    GDK_2BUTTON_PRESS: Result := 'GDK_2BUTTON_PRESS';
-    GDK_3BUTTON_PRESS: Result := 'GDK_3BUTTON_PRESS';
-    GDK_BUTTON_RELEASE: Result := 'GDK_BUTTON_RELEASE';
-    GDK_KEY_PRESS: Result := 'GDK_KEY_PRESS';
-    GDK_KEY_RELEASE: Result := 'GDK_KEY_RELEASE';
-    GDK_ENTER_NOTIFY: Result := 'GDK_ENTER_NOTIFY';
-    GDK_LEAVE_NOTIFY: Result := 'GDK_LEAVE_NOTIFY';
-    GDK_FOCUS_CHANGE: Result := 'GDK_FOCUS_CHANGE';
-    GDK_CONFIGURE: Result := 'GDK_CONFIGURE';
-    GDK_MAP: Result := 'GDK_MAP';
-    GDK_UNMAP: Result := 'GDK_UNMAP';
-    GDK_PROPERTY_NOTIFY: Result := 'GDK_PROPERTY_NOTIFY';
-    GDK_SELECTION_CLEAR: Result := 'GDK_SELECTION_CLEAR';
-    GDK_SELECTION_REQUEST: Result := 'GDK_SELECTION_REQUEST';
-    GDK_SELECTION_NOTIFY: Result := 'GDK_SELECTION_NOTIFY';
-    GDK_PROXIMITY_IN: Result := 'GDK_PROXIMITY_IN';
-    GDK_PROXIMITY_OUT: Result := 'GDK_PROXIMITY_OUT';
-    GDK_DRAG_ENTER: Result := 'GDK_DRAG_ENTER';
-    GDK_DRAG_LEAVE: Result := 'GDK_DRAG_LEAVE';
-    GDK_DRAG_MOTION_: Result := 'GDK_DRAG_MOTION_';
-    GDK_DRAG_STATUS_: Result := 'GDK_DRAG_STATUS_';
-    GDK_DROP_START: Result := 'GDK_DROP_START';
-    GDK_DROP_FINISHED: Result := 'GDK_DROP_FINISHED';
-    GDK_CLIENT_EVENT: Result := 'GDK_CLIENT_EVENT';
-    GDK_VISIBILITY_NOTIFY: Result := 'GDK_VISIBILITY_NOTIFY';
-    GDK_SCROLL: Result := 'GDK_SCROLL';
-    GDK_WINDOW_STATE: Result := 'GDK_WINDOW_STATE';
-    GDK_SETTING: Result := 'GDK_SETTING';
-    GDK_OWNER_CHANGE: Result := 'GDK_OWNER_CHANGE';
-    GDK_GRAB_BROKEN: Result := 'GDK_GRAB_BROKEN';
-    GDK_DAMAGE: Result := 'GDK_DAMAGE';
-    GDK_TOUCH_BEGIN: Result := 'GDK_TOUCH_BEGIN';
-    GDK_TOUCH_UPDATE: Result := 'GDK_TOUCH_UPDATE';
-    GDK_TOUCH_END: Result := 'GDK_TOUCH_END';
-    GDK_TOUCH_CANCEL: Result := 'GDK_TOUCH_CANCEL';
-    GDK_EVENT_LAST: Result := 'GDK_EVENT_LAST';
-    else
-      Result := 'UNKNOWN GDK EVENT';
-  end;
-end;
-
-function GtkModifierStateToShiftState(AState: TGdkModifierType;
-    AIsKeyEvent: Boolean): Cardinal;
-begin
-  Result := 0;
-  if GDK_SHIFT_MASK in AState  then
-    Result := Result or MK_SHIFT;
-  if GDK_CONTROL_MASK in AState  then
-    Result := Result or MK_CONTROL;
-  if GDK_MOD1_MASK in AState  then
-  begin
-    if AIsKeyEvent then
-      Result := Result or KF_ALTDOWN
-    else
-      Result := Result or MK_ALT;
-  end;
-end;
 
 {$i gtk3lclcombobox.inc}
 {$i gtk3lclentry.inc}
@@ -1743,8 +1658,10 @@ begin
   if (wtWindow in Gtk3Widget.WidgetType) and Gtk3WidgetSet.IsWayland and
      (PGtkWindow(AWidget)^.get_window_type = GTK_WINDOW_POPUP) and
      PGtkWindow(AWidget)^.get_accept_focus then
+  begin
     gtk_device_grab_remove(AWidget,
       gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)));
+  end;
 
   {do not pass message to LCL if LCL setted up control visibility}
   if Gtk3Widget.inUpdate then
@@ -5817,7 +5734,7 @@ var
   FWAlloc: TGtkAllocation;
   {$ENDIF}
 begin
-  if not AWidget^.get_visible then
+  if not AWidget^.get_mapped then
     exit;
 
   HSize := AGdkRect^.Width;
@@ -10937,7 +10854,7 @@ begin
     exit;
   end else
   begin
-    //DebugLn(format('other changes state=%.08x mask=%.08x',[AState,msk]));
+    //DebugLn(format('other changes state=%.08x mask=%.08x',[AState, msk]));
     exit;
   end;
 
@@ -11057,7 +10974,12 @@ begin
   writeln(Format('[%d] WindowSizeAllocate %s DeliverMessage w=%d h=%d stype=%d',
     [GetTickCount64, dbgsName(ACtl.LCLObject), NewSize.cx, NewSize.cy, Msg.SizeType]));
   {$ENDIF}
-  ACtl.DeliverMessage(Msg);
+  TGtk3Window(ACtl).FInWindowSizeAllocate := True;
+  try
+    ACtl.DeliverMessage(Msg);
+  finally
+    TGtk3Window(ACtl).FInWindowSizeAllocate := False;
+  end;
   {$IFDEF GTK3DEBUGSCROLLEDWIN}
   writeln(Format('[%d] WindowSizeAllocate %s DeliverMessage DONE',
     [GetTickCount64, dbgsName(ACtl.LCLObject)]));
@@ -11535,6 +11457,58 @@ begin
   {$ENDIF}
 end;
 
+class function TGtk3Window.DeferredResizeCB(data: gpointer): gboolean; cdecl;
+{ Idle callback: fires when the GDK event queue is empty - no WM events pending.
+  data is the TGtk3Window instance passed from SetBounds. }
+var
+  AWin: TGtk3Window;
+  WinW, WinH: gint;
+  Alloc: TGtkAllocation;
+begin
+  Result := gtk_false;
+  AWin := TGtk3Window(data);
+  AWin.FPendingResizeSource := 0;
+  if AWin.InUpdate then Exit;
+  if not Gtk3IsWidget(AWin.Widget) then
+    exit;
+
+  // Use get_allocation(), NOT gtk_window_get_size(), for the comparison.
+  AWin.Widget^.get_allocation(@Alloc);
+  WinW := Alloc.width;
+  WinH := Alloc.height;
+
+  (*
+  writeln(Format('DeferredResizeCB: pending=%dx%d WM=%dx%d last=%dx%d GTC64=%d',
+    [AWin.FPendingResizeW, AWin.FPendingResizeH,
+     WinW, WinH,
+     AWin.FLastResizeW, AWin.FLastResizeH, GetTickCount64]));
+  *)
+  // Skip if the WM has already given us what we want.
+  if (AWin.FPendingResizeW = WinW) and (AWin.FPendingResizeH = WinH) then
+  begin
+    //writeln('DeferredResizeCB: skip (WM already correct)');
+    AWin.FLastResizeW := 0;
+    AWin.FLastResizeH := 0;
+    Exit;
+  end;
+
+  // Skip if we already tried this exact size and the WM bounced it back.
+  // Without this guard the cycle: resize(H_lcl) -> WM gives H_wm_min ->
+  // WSA -> SetBounds(H_lcl) -> DeferredResizeCB -> resize(H_lcl) -> ...
+  if (AWin.FLastResizeW = AWin.FPendingResizeW) and
+     (AWin.FLastResizeH = AWin.FPendingResizeH) then
+  begin
+    //writeln('DeferredResizeCB: skip (WM rejected, bounce detected) pending=',
+    //  AWin.FPendingResizeW, 'x', AWin.FPendingResizeH, ' WM=', WinW, 'x', WinH);
+    Exit;
+  end;
+
+  AWin.FLastResizeW := AWin.FPendingResizeW;
+  AWin.FLastResizeH := AWin.FPendingResizeH;
+  // writeln('DeferredResizeCB: calling resize(*******) PENDINGW=',AWin.FPendingResizeW, ' H=',AWin.FPendingResizeH,'  LCLW=',AWin.LCLObject.Width,' LCLH=',AWin.LCLObject.Height);
+  PGtkWindow(AWin.Widget)^.resize(AWin.FPendingResizeW, AWin.FPendingResizeH);
+end;
+
 procedure TGtk3Window.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
 var
   ARect: TGdkRectangle;
@@ -11627,15 +11601,31 @@ begin
       {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
       writeln('Window ',dbgsName(LCLObject),' move/size ',dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
       {$ENDIF}
-      PGtkWindow(Widget)^.resize(AWidth, AHeight);
-
-      {Must apply transient window origin here. Not sure if this is needed for decorated windows,
-       but non decorated with popupparent must align.}
-      x := 0;
-      y := 0;
-      if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil) then
-        PGtkWindow(Widget)^.transient_for^.window^.get_origin(@x, @y);
-      PGtkWindow(Widget)^.move(ALeft + x, ATop + y);
+      if FInWindowSizeAllocate then
+      begin
+        // Unified defer for both X11 and Wayland.
+        if (FPendingResizeW <> AWidth) or (FPendingResizeH <> AHeight) then
+        begin
+          FLastResizeW := 0;
+          FLastResizeH := 0;
+        end;
+        FPendingResizeW := AWidth;
+        FPendingResizeH := AHeight;
+        if FPendingResizeSource = 0 then
+          FPendingResizeSource := g_idle_add(@TGtk3Window.DeferredResizeCB, Self);
+      end else
+      begin
+        //writeln(Format('SetBounds DIRECT: %dx%d InWSA=False GTC64=%d',
+        //  [AWidth, AHeight, GetTickCount64]));
+        PGtkWindow(Widget)^.resize(AWidth, AHeight);
+        {Must apply transient window origin here. Not sure if this is needed for
+         decorated windows, but non decorated with popupparent must align.}
+        x := 0;
+        y := 0;
+        if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil) then
+          PGtkWindow(Widget)^.transient_for^.window^.get_origin(@x, @y);
+        PGtkWindow(Widget)^.move(ALeft + x, ATop + y);
+      end;
     end;
   finally
     EndUpdate;
@@ -11730,6 +11720,11 @@ end;
 
 destructor TGtk3Window.Destroy;
 begin
+  if FPendingResizeSource <> 0 then
+  begin
+    g_source_remove(FPendingResizeSource);
+    FPendingResizeSource := 0;
+  end;
   if Gtk3IsGdkPixbuf(FIcon) then
   begin
     FIcon^.unref;

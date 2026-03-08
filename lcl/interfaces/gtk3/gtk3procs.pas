@@ -93,6 +93,32 @@ type
   end;
 
 const
+  GDK_DEFAULT_EVENTS_MASK = [
+    GDK_EXPOSURE_MASK, {2}
+    GDK_POINTER_MOTION_MASK, {4}
+    GDK_POINTER_MOTION_HINT_MASK, {8}
+    GDK_BUTTON_MOTION_MASK, {16}
+    GDK_BUTTON1_MOTION_MASK, {32}
+    GDK_BUTTON2_MOTION_MASK, {64}
+    GDK_BUTTON3_MOTION_MASK, {128}
+    GDK_BUTTON_PRESS_MASK, {256}
+    GDK_BUTTON_RELEASE_MASK, {512}
+    GDK_KEY_PRESS_MASK, {1024}
+    GDK_KEY_RELEASE_MASK, {2048}
+    GDK_ENTER_NOTIFY_MASK, {4096}
+    GDK_LEAVE_NOTIFY_MASK, {8192}
+    GDK_FOCUS_CHANGE_MASK, {16384}
+    GDK_STRUCTURE_MASK, {32768}
+    GDK_PROPERTY_CHANGE_MASK, {65536}
+    GDK_VISIBILITY_NOTIFY_MASK, {131072}
+    GDK_PROXIMITY_IN_MASK, {262144}
+    GDK_PROXIMITY_OUT_MASK, {524288}
+    GDK_SUBSTRUCTURE_MASK, {1048576}
+    GDK_SCROLL_MASK, {2097152}
+    GDK_TOUCH_MASK {4194304}
+ // GDK_SMOOTH_SCROLL_MASK {8388608} //there is a bug in GTK3, see https://stackoverflow.com/questions/11775161/gtk3-get-mouse-scroll-direction
+  ];
+
   SysColorMap: array [0..MAX_SYS_COLORS] of DWORD = (
     $C0C0C0,     {COLOR_SCROLLBAR}
     $808000,     {COLOR_BACKGROUND}
@@ -381,12 +407,83 @@ function AppendPangoFontFaceSuffixes(AFamilyName: string; AStretch: TPangoStretc
 function PangoFontHasItalicFace(AContext: PPangoContext; const AFamilyName: String): Boolean;
 function GetPangoFontDefaultStretch(const AFamilyName: string): TPangoStretch;
 
+function GdkEventToStr(AEvent: TGdkEventType): String;
+function GtkModifierStateToShiftState(AState: TGdkModifierType;
+    AIsKeyEvent: Boolean): Cardinal;
+
 implementation
 uses LCLProc, gtk3objects, gtk3widgets, LazLogger;
 
 function PANGO_PIXELS(d:integer):integer;
 begin
   Result:=((d + 512) shr 10);
+end;
+
+function GdkEventToStr(AEvent: TGdkEventType): String;
+begin
+  Result := 'GDK_NOTHING';
+  case AEvent of
+    GDK_DELETE: Result := 'GDK_DELETE';
+    GDK_DESTROY: Result := 'GDK_DESTROY';
+    GDK_EXPOSE: Result := 'GDK_EXPOSE';
+    GDK_MOTION_NOTIFY: Result := 'GDK_MOTION_NOTIFY';
+    GDK_BUTTON_PRESS: Result := 'GDK_BUTTON_PRESS';
+    GDK_2BUTTON_PRESS: Result := 'GDK_2BUTTON_PRESS';
+    GDK_3BUTTON_PRESS: Result := 'GDK_3BUTTON_PRESS';
+    GDK_BUTTON_RELEASE: Result := 'GDK_BUTTON_RELEASE';
+    GDK_KEY_PRESS: Result := 'GDK_KEY_PRESS';
+    GDK_KEY_RELEASE: Result := 'GDK_KEY_RELEASE';
+    GDK_ENTER_NOTIFY: Result := 'GDK_ENTER_NOTIFY';
+    GDK_LEAVE_NOTIFY: Result := 'GDK_LEAVE_NOTIFY';
+    GDK_FOCUS_CHANGE: Result := 'GDK_FOCUS_CHANGE';
+    GDK_CONFIGURE: Result := 'GDK_CONFIGURE';
+    GDK_MAP: Result := 'GDK_MAP';
+    GDK_UNMAP: Result := 'GDK_UNMAP';
+    GDK_PROPERTY_NOTIFY: Result := 'GDK_PROPERTY_NOTIFY';
+    GDK_SELECTION_CLEAR: Result := 'GDK_SELECTION_CLEAR';
+    GDK_SELECTION_REQUEST: Result := 'GDK_SELECTION_REQUEST';
+    GDK_SELECTION_NOTIFY: Result := 'GDK_SELECTION_NOTIFY';
+    GDK_PROXIMITY_IN: Result := 'GDK_PROXIMITY_IN';
+    GDK_PROXIMITY_OUT: Result := 'GDK_PROXIMITY_OUT';
+    GDK_DRAG_ENTER: Result := 'GDK_DRAG_ENTER';
+    GDK_DRAG_LEAVE: Result := 'GDK_DRAG_LEAVE';
+    GDK_DRAG_MOTION_: Result := 'GDK_DRAG_MOTION_';
+    GDK_DRAG_STATUS_: Result := 'GDK_DRAG_STATUS_';
+    GDK_DROP_START: Result := 'GDK_DROP_START';
+    GDK_DROP_FINISHED: Result := 'GDK_DROP_FINISHED';
+    GDK_CLIENT_EVENT: Result := 'GDK_CLIENT_EVENT';
+    GDK_VISIBILITY_NOTIFY: Result := 'GDK_VISIBILITY_NOTIFY';
+    GDK_SCROLL: Result := 'GDK_SCROLL';
+    GDK_WINDOW_STATE: Result := 'GDK_WINDOW_STATE';
+    GDK_SETTING: Result := 'GDK_SETTING';
+    GDK_OWNER_CHANGE: Result := 'GDK_OWNER_CHANGE';
+    GDK_GRAB_BROKEN: Result := 'GDK_GRAB_BROKEN';
+    GDK_DAMAGE: Result := 'GDK_DAMAGE';
+    GDK_TOUCH_BEGIN: Result := 'GDK_TOUCH_BEGIN';
+    GDK_TOUCH_UPDATE: Result := 'GDK_TOUCH_UPDATE';
+    GDK_TOUCH_END: Result := 'GDK_TOUCH_END';
+    GDK_TOUCH_CANCEL: Result := 'GDK_TOUCH_CANCEL';
+    GDK_EVENT_LAST: Result := 'GDK_EVENT_LAST';
+    else
+      Result := 'UNKNOWN GDK EVENT';
+  end;
+end;
+
+function GtkModifierStateToShiftState(AState: TGdkModifierType;
+    AIsKeyEvent: Boolean): Cardinal;
+begin
+  Result := 0;
+  if GDK_SHIFT_MASK in AState  then
+    Result := Result or MK_SHIFT;
+  if GDK_CONTROL_MASK in AState  then
+    Result := Result or MK_CONTROL;
+  if GDK_MOD1_MASK in AState  then
+  begin
+    if AIsKeyEvent then
+      Result := Result or KF_ALTDOWN
+    else
+      Result := Result or MK_ALT;
+  end;
 end;
 
 procedure ExtractPangoFontFaceSuffixes(var AFontName: string; out AStretch: TPangoStretch; out AWeight: TPangoWeight);
