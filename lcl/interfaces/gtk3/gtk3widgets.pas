@@ -1030,6 +1030,24 @@ type
   end;
 
 
+  { TGtk3WindowResizeState }
+
+  TGtk3WindowResizeState = record
+    InWindowSizeAllocate: Boolean;
+    PendingResizeSource: guint;
+    PendingResizeW: gint;
+    PendingResizeH: gint;
+    LastResizeW: gint;
+    LastResizeH: gint;
+    LastWSATime: Int64;
+    PrevWSATime: Int64;
+    // CSD shadow margin = get_allocation - get_size (0 on X11 with SSD).
+    // Stored here so SetBounds and DeferredResizeCB can convert from
+    // allocation-space (what LCL tracks) to content-space (what resize() takes).
+    ShadowW: gint;
+    ShadowH: gint;
+  end;
+
   { TGtk3Window }
 
   TGtk3Window = class(TGtk3ScrollingWinControl) {we are TGtk3Bin actually, but it won't hurt since we need scroll}
@@ -1041,12 +1059,7 @@ type
     {Deferred resize: when SetBounds is called from within the synchronous
      WindowSizeAllocate delivery, resize() is deferred to a g_idle_add callback
      that fires once the GDK event queue is empty  - no echo loop. }
-    FInWindowSizeAllocate: Boolean;
-    FPendingResizeSource: guint;
-    FPendingResizeW: gint;
-    FPendingResizeH: gint;
-    FLastResizeW: gint; // last size we actually called resize() with
-    FLastResizeH: gint; // used to detect WM bounce (clamp to natural min)
+    FResizeState: TGtk3WindowResizeState;
     function GetSkipTaskBarHint: Boolean;
     function GetTitle: String;
     procedure SetIcon(AValue: PGdkPixBuf);
@@ -5762,7 +5775,11 @@ begin
     // TabSheet is never updated from the page side. Call Parent (TPageControl)
     // .DoAdjustClientRectChange instead, because GtkLayout size IS actually changed.
     if not ACtl.InUpdate and Assigned(ACtl.LCLObject.Parent) then
+    begin
+      if Gtk3WidgetSet.IsWayland then
+        ACtl.LCLObject.InvalidateClientRectCache(True);
       ACtl.LCLObject.Parent.DoAdjustClientRectChange(True);
+    end;
   end;
 end;
 
@@ -10878,6 +10895,7 @@ var
   AState: TGdkWindowState;
   Alloc: TGtkAllocation;
   ADefW, ADefH: gint;
+  SzW, SzH: gint;
 begin
   if AWidget=nil then ;
 
@@ -10897,7 +10915,7 @@ begin
     end;
   end;
 
-  {$IFDEF GTK3DEBUGFORMS}
+  {$IF DEFINED(GTK3DEBUGFORMS) OR DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGDEFERREDRESIZE)}
   if Assigned(ACtl.LCLObject) then
   begin
     with ACtl.LCLObject do
@@ -10974,11 +10992,24 @@ begin
   writeln(Format('[%d] WindowSizeAllocate %s DeliverMessage w=%d h=%d stype=%d',
     [GetTickCount64, dbgsName(ACtl.LCLObject), NewSize.cx, NewSize.cy, Msg.SizeType]));
   {$ENDIF}
-  TGtk3Window(ACtl).FInWindowSizeAllocate := True;
+  // Update CSD shadow: allocation (from size-allocate) minus content (from get_size).
+  // On X11 with SSD there is no shadow so get_size = allocation => ShadowW/H = 0.
+  // On Wayland with CSD the shadow is included in AGdkRect but not in get_size().
+  // resize() takes content size, so SetBounds and DeferredResizeCB subtract shadow.
+  SzW := 0; SzH := 0;
+  PGtkWindow(AWidget)^.get_size(@SzW, @SzH);
+  if (SzW > 0) and (SzH > 0) then
+  begin
+    TGtk3Window(ACtl).FResizeState.ShadowW := Max(0, AGdkRect^.Width  - SzW);
+    TGtk3Window(ACtl).FResizeState.ShadowH := Max(0, AGdkRect^.Height - SzH);
+  end;
+  TGtk3Window(ACtl).FResizeState.PrevWSATime := TGtk3Window(ACtl).FResizeState.LastWSATime;
+  TGtk3Window(ACtl).FResizeState.LastWSATime := GetTickCount64;
+  TGtk3Window(ACtl).FResizeState.InWindowSizeAllocate := True;
   try
     ACtl.DeliverMessage(Msg);
   finally
-    TGtk3Window(ACtl).FInWindowSizeAllocate := False;
+    TGtk3Window(ACtl).FResizeState.InWindowSizeAllocate := False;
   end;
   {$IFDEF GTK3DEBUGSCROLLEDWIN}
   writeln(Format('[%d] WindowSizeAllocate %s DeliverMessage DONE',
@@ -11462,51 +11493,61 @@ class function TGtk3Window.DeferredResizeCB(data: gpointer): gboolean; cdecl;
   data is the TGtk3Window instance passed from SetBounds. }
 var
   AWin: TGtk3Window;
-  WinW, WinH: gint;
+  WinW, WinH, SizeW,SizeH: gint;
   Alloc: TGtkAllocation;
+  AFrameClock: PGdkFrameClock;
 begin
   Result := gtk_false;
   AWin := TGtk3Window(data);
-  AWin.FPendingResizeSource := 0;
+  AWin.FResizeState.PendingResizeSource := 0;
   if AWin.InUpdate then Exit;
   if not Gtk3IsWidget(AWin.Widget) then
     exit;
 
   // Use get_allocation(), NOT gtk_window_get_size(), for the comparison.
+  // On Wayland with CSD, get_size() subtracts shadow margin but size-allocate
+  // includes it — get_allocation() keeps both in the same coordinate space.
+  // On X11 (SSD, shadow_width=0): get_allocation() == get_size().
   AWin.Widget^.get_allocation(@Alloc);
   WinW := Alloc.width;
   WinH := Alloc.height;
 
-  (*
-  writeln(Format('DeferredResizeCB: pending=%dx%d WM=%dx%d last=%dx%d GTC64=%d',
-    [AWin.FPendingResizeW, AWin.FPendingResizeH,
-     WinW, WinH,
-     AWin.FLastResizeW, AWin.FLastResizeH, GetTickCount64]));
-  *)
   // Skip if the WM has already given us what we want.
-  if (AWin.FPendingResizeW = WinW) and (AWin.FPendingResizeH = WinH) then
+  if (AWin.FResizeState.PendingResizeW = WinW) and (AWin.FResizeState.PendingResizeH = WinH) then
   begin
-    //writeln('DeferredResizeCB: skip (WM already correct)');
-    AWin.FLastResizeW := 0;
-    AWin.FLastResizeH := 0;
+    AWin.FResizeState.LastResizeW := 0;
+    AWin.FResizeState.LastResizeH := 0;
+    // On X11: get_size() (from ConfigureNotify) may briefly lag behind
+    // get_allocation() (from size-allocate). queue_resize + queue_draw force
+    // GTK to re-layout from the current allocation so children get the right size.
+    PGtkWindow(AWin.Widget)^.get_size(@SizeW, @SizeH);
+    if (SizeW <> WinW) or (SizeH <> WinH) then
+    begin
+      PGtkWindow(AWin.Widget)^.queue_resize;
+      // Explicitly request the layout phase so GTK processes queue_resize
+      // at the next VSync tick rather than waiting for a natural frame.
+      AFrameClock := AWin.Widget^.get_frame_clock;
+      if Assigned(AFrameClock) then
+        AFrameClock^.request_phase([GDK_FRAME_CLOCK_PHASE_LAYOUT]);
+    end;
     Exit;
   end;
 
   // Skip if we already tried this exact size and the WM bounced it back.
   // Without this guard the cycle: resize(H_lcl) -> WM gives H_wm_min ->
   // WSA -> SetBounds(H_lcl) -> DeferredResizeCB -> resize(H_lcl) -> ...
-  if (AWin.FLastResizeW = AWin.FPendingResizeW) and
-     (AWin.FLastResizeH = AWin.FPendingResizeH) then
-  begin
-    //writeln('DeferredResizeCB: skip (WM rejected, bounce detected) pending=',
-    //  AWin.FPendingResizeW, 'x', AWin.FPendingResizeH, ' WM=', WinW, 'x', WinH);
+  if (AWin.FResizeState.LastResizeW = AWin.FResizeState.PendingResizeW) and
+     (AWin.FResizeState.LastResizeH = AWin.FResizeState.PendingResizeH) then
     Exit;
-  end;
 
-  AWin.FLastResizeW := AWin.FPendingResizeW;
-  AWin.FLastResizeH := AWin.FPendingResizeH;
-  // writeln('DeferredResizeCB: calling resize(*******) PENDINGW=',AWin.FPendingResizeW, ' H=',AWin.FPendingResizeH,'  LCLW=',AWin.LCLObject.Width,' LCLH=',AWin.LCLObject.Height);
-  PGtkWindow(AWin.Widget)^.resize(AWin.FPendingResizeW, AWin.FPendingResizeH);
+  AWin.FResizeState.LastResizeW := AWin.FResizeState.PendingResizeW;
+  AWin.FResizeState.LastResizeH := AWin.FResizeState.PendingResizeH;
+  PGtkWindow(AWin.Widget)^.resize(
+    AWin.FResizeState.PendingResizeW - AWin.FResizeState.ShadowW,
+    AWin.FResizeState.PendingResizeH - AWin.FResizeState.ShadowH);
+  AFrameClock := AWin.Widget^.get_frame_clock;
+  if Assigned(AFrameClock) then
+    AFrameClock^.request_phase([GDK_FRAME_CLOCK_PHASE_LAYOUT]);
 end;
 
 procedure TGtk3Window.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
@@ -11518,6 +11559,7 @@ var
   AForm: TCustomForm;
   Alloc:TGtkAllocation;
   x, y: gint;
+  WSAInterval: Int64;
 begin
   AForm := TCustomForm(LCLObject);
   BeginUpdate;
@@ -11598,26 +11640,80 @@ begin
     begin
       //PGtkWindow(Widget)^.set_default_size(AWidth, AHeight);
       PGtkWindow(Widget)^.set_resizable(true);
+      // Override GTK's natural minimum size hint so the WM allows resizing
+      // to any size during drag. Without this, _NET_WM_NORMAL_HINTS.PMinSize
+      // reflects GTK's preferred minimum (e.g. 140px for form content) and the
+      // WM rejects resize() calls below that floor, showing a rubber-band but
+      // not actually resizing the window. LCL manages size constraints itself.
+      if not AFixedWidthHeight then
+      begin
+        FillChar(Geometry, SizeOf(Geometry), 0);
+        Geometry.min_width := 1;
+        Geometry.min_height := 1;
+        PGtkWindow(Widget)^.set_geometry_hints(nil, @Geometry, [GDK_HINT_MIN_SIZE]);
+      end;
       {$IF DEFINED(GTK3DEBUGCORE) OR DEFINED(GTK3DEBUGSIZE)}
       writeln('Window ',dbgsName(LCLObject),' move/size ',dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
       {$ENDIF}
-      if FInWindowSizeAllocate then
+      if FResizeState.InWindowSizeAllocate then
       begin
-        // Unified defer for both X11 and Wayland.
-        if (FPendingResizeW <> AWidth) or (FPendingResizeH <> AHeight) then
+        // Inside WindowSizeAllocate: decide defer vs sync based on drag speed.
+        // WSAInterval = time between the two most recent WSA calls (ms).
+        // During active mouse drag on X11: ConfigureNotify fires per mouse move,
+        // so WSA fires every 16-33ms => interval < 50ms => defer.
+        // Re-entrant WSA from our own move() => check_resize: interval ≈ 0ms
+        // => also defers => breaks the CONFIGURE SEND=1 storm after one level.
+        // Form show / programmatic / slow drag: large interval => sync directly.
+        // Wayland: always defer (move() is compositor no-op but resize() async
+        // without defer causes slow compositor-roundtrip loop).
+        WSAInterval := FResizeState.LastWSATime - FResizeState.PrevWSATime;
+        if AIsWayland or
+           (Gtk3IsPointerButtonDown(Widget) and (WSAInterval < 50)) then
         begin
-          FLastResizeW := 0;
-          FLastResizeH := 0;
+          // Defer: user is drag-resizing fast (X11), or Wayland path.
+          if (FResizeState.PendingResizeW <> AWidth) or (FResizeState.PendingResizeH <> AHeight) then
+          begin
+            FResizeState.LastResizeW := 0;
+            FResizeState.LastResizeH := 0;
+          end;
+          FResizeState.PendingResizeW := AWidth;
+          FResizeState.PendingResizeH := AHeight;
+          PGtkWindow(Widget)^.queue_resize;
+          {$IF DEFINED(GTK3DEBUGSCROLLEDWIN) OR DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGDEFERREDRESIZE)}
+          writeln(Format('SetBounds DIRECT ADD DeferredResizeCB: %dx%d InWSA=False GTC64=%d WAYLAND=%s',
+            [AWidth, AHeight, GetTickCount64, BoolToStr(Gtk3WIdgetSet.IsWayland, True)]));
+          {$ENDIF}
+
+          if not AIsWayland and (FResizeState.PendingResizeSource = 0) then
+            FResizeState.PendingResizeSource := g_idle_add(@TGtk3Window.DeferredResizeCB, Self);
+        end else
+        begin
+          {$IF DEFINED(GTK3DEBUGSCROLLEDWIN) OR DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGDEFERREDRESIZE)}
+          writeln(Format('SetBounds DIRECT DRAG STOPPED: %dx%d InWSA=False GTC64=%d',
+            [AWidth, AHeight, GetTickCount64]));
+          {$ENDIF}
+          // Sync: slow/stopped drag, form show, or programmatic resize.
+          // Safe here: large WSA interval means no rapid re-entrance expected.
+          // If move() does trigger re-entrant WSA, its interval ~ 0ms => defers.
+          PGtkWindow(Widget)^.resize(AWidth, AHeight);
+          x := 0;
+          y := 0;
+          if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil) then
+            PGtkWindow(Widget)^.transient_for^.window^.get_origin(@x, @y);
+          PGtkWindow(Widget)^.move(ALeft + x, ATop + y);
         end;
-        FPendingResizeW := AWidth;
-        FPendingResizeH := AHeight;
-        if FPendingResizeSource = 0 then
-          FPendingResizeSource := g_idle_add(@TGtk3Window.DeferredResizeCB, Self);
       end else
       begin
-        //writeln(Format('SetBounds DIRECT: %dx%d InWSA=False GTC64=%d',
-        //  [AWidth, AHeight, GetTickCount64]));
-        PGtkWindow(Widget)^.resize(AWidth, AHeight);
+        {$IF DEFINED(GTK3DEBUGSCROLLEDWIN) OR DEFINED(GTK3DEBUGSIZE) OR DEFINED(GTK3DEBUGDEFERREDRESIZE)}
+        writeln(Format('SetBounds DIRECT: %dx%d InWSA=False GTC64=%d shadow=%dx%d',
+          [AWidth, AHeight, GetTickCount64,
+           FResizeState.ShadowW, FResizeState.ShadowH]));
+        {$ENDIF}
+        // ShadowW/H = allocation - get_size, updated each WSA. 0 on X11 (SSD).
+        // resize() takes content size. AWidth/AHeight are in allocation space.
+        PGtkWindow(Widget)^.resize(
+          AWidth - FResizeState.ShadowW,
+          AHeight - FResizeState.ShadowH);
         {Must apply transient window origin here. Not sure if this is needed for
          decorated windows, but non decorated with popupparent must align.}
         x := 0;
@@ -11720,10 +11816,10 @@ end;
 
 destructor TGtk3Window.Destroy;
 begin
-  if FPendingResizeSource <> 0 then
+  if FResizeState.PendingResizeSource <> 0 then
   begin
-    g_source_remove(FPendingResizeSource);
-    FPendingResizeSource := 0;
+    g_source_remove(FResizeState.PendingResizeSource);
+    FResizeState.PendingResizeSource := 0;
   end;
   if Gtk3IsGdkPixbuf(FIcon) then
   begin
