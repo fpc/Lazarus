@@ -91,7 +91,7 @@ type
   end;
 
 const
-  {$IF FPC_FULLVERSION>=30300}
+  {$IF FPC_FULLVERSION>=30203}
   fpDefault = System.UITypes.fpDefault;
   fpVariable = System.UITypes.fpVariable;
   fpFixed = System.UITypes.fpFixed;
