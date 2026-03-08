@@ -467,6 +467,8 @@ type
   private
     FDefaultClientRect:TRect;
     FRightClickUpPending: Boolean; // guard against double LM_RBUTTONUP delivery
+    class function NotebookMouseScroll(AWidget: PGtkWidget;
+      AEvent: PGdkEventScroll; AData: gpointer): gboolean; cdecl; static;
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
@@ -6205,6 +6207,20 @@ begin
   end;
 end;
 
+class function TGtk3NoteBook.NotebookMouseScroll(AWidget: PGtkWidget;
+  AEvent: PGdkEventScroll; AData: gpointer): gboolean; cdecl;
+var
+  Notebook: PGtkNotebook;
+begin
+  Notebook := PGtkNotebook(AWidget);
+  // Check the scroll direction
+  case AEvent^.direction of
+    GDK_SCROLL_UP: Notebook^.prev_page;
+    GDK_SCROLL_DOWN: Notebook^.next_page;
+  end;
+  Result := True;
+end;
+
 function TGtk3NoteBook.GtkEventMouse(Sender: PGtkWidget; Event: PGdkEvent): Boolean; cdecl;
 var
   ActiveSheet: TTabSheet;
@@ -6280,6 +6296,7 @@ begin
 
   g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookSwitchPage), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FCentralWidget,'scroll-event', TGCallback(@NotebookMouseScroll), Self, nil, [G_CONNECT_AFTER]);
   PGtkNotebook(Result)^.set_scrollable(True);
 
   FCentralWidget^.show_all;
