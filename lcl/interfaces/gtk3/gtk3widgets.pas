@@ -5301,15 +5301,20 @@ end;
 class procedure TGtk3ScrollBar.ScrollBarValueChanged(adjustment:PGtkAdjustment;data:
   gpointer);cdecl;
 var
-  scr: TScrollBar;
+  scr: TCustomScrollBar;
+  Msg: TLMScroll;
 begin
-  scr := TScrollbar(TGtk3Widget(data).LCLObject);
-  {$note this must be fixed. Do not call LCL directly from here but send proper messages}
-  scr.SetParams(
-     round(adjustment^.value),
-     round(adjustment^.lower),
-     round(adjustment^.upper),
-     round(adjustment^.page_size));
+  if TGtk3Widget(data).InUpdate then Exit;
+  scr := TCustomScrollBar(TGtk3Widget(data).LCLObject);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
+  if scr.Kind = sbHorizontal then
+    Msg.Msg := LM_HSCROLL
+  else
+    Msg.Msg := LM_VSCROLL;
+  Msg.ScrollCode := SB_THUMBTRACK;
+  Msg.Pos := Round(adjustment^.value);
+  Msg.ScrollBar := HWND(TGtk3Widget(data));
+  TGtk3Widget(data).DeliverMessage(Msg);
 end;
 
 function TGtk3ScrollBar.CreateWidget(const Params: TCreateParams): PGtkWidget;
