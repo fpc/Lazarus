@@ -4249,7 +4249,9 @@ var
           if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
             PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, ScrollInfo.nMax)
           else
-            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, Round(adjustment^.upper));
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(uWidth, Round(adjustment^.upper + 0.5)); //eg TTreeView
+          PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
+          TGtk3ScrollableWin(AControl).LCLObject.InvalidateClientRectCache(False);
         end;
       end else
       if SBStyle = SB_HORZ then
@@ -4259,7 +4261,9 @@ var
           if HaveLogicalValues and (ScrollInfo.nPage = ScrollInfo.nMax) and (ScrollInfo.nMax > 0) then
             PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(ScrollInfo.nMax, uHeight)
           else
-            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(Round(adjustment^.upper), uHeight);
+            PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.set_size(Round(adjustment^.upper + 0.5), uHeight);
+          PGtkLayout(TGtk3ScrollableWin(AControl).GetContainerWidget)^.queue_resize;
+          TGtk3ScrollableWin(AControl).LCLObject.InvalidateClientRectCache(False);
         end;
       end;
     end;
