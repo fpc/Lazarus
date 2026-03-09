@@ -174,12 +174,6 @@ begin
   FCaptureControl:= 0;
   FWaitingDropFiles := NSMutableArray.alloc.init;
 
-  NSMessageWnd := NSStringUTF8('HWND');
-  NSMessageMsg := NSStringUTF8('MSG');
-  NSMessageWParam := NSStringUTF8('WPARAM');
-  NSMessageLParam := NSStringUTF8('LPARAM');
-  NSMessageResult := NSStringUTF8('RESULT');
-
   DefaultBrush := TCocoaBrush.CreateDefault(True);
   DefaultPen := TCocoaPen.CreateDefault(True);
   DefaultFont := TCocoaFont.CreateDefault(True);
@@ -226,12 +220,6 @@ begin
   // Need to destroy the caret here.. or CustomTimer must be verified.
   // or CocoaCaret should not use TTimer at all (use raw cocoa timer)
   DestroyGlobalCaret;
-
-  NSMessageWnd.release;
-  NSMessageMsg.release;
-  NSMessageWParam.release;
-  NSMessageLParam.release;
-  NSMessageResult.release;
 
   // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
 

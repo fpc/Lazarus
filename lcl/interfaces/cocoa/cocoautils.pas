@@ -11,10 +11,6 @@ uses
   SysUtils, Types, LCLType, LCLProc,
   Graphics, GraphType;
 
-var
-  // post message/send message string. Created by TCocoaWidgetSet
-  NSMessageWnd, NSMessageMsg, NSMessageWParam, NSMessageLParam, NSMessageResult: NSString;
-
 type
   { NSLCLDebugExtension }
 
