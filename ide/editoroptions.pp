@@ -74,7 +74,8 @@ uses
   // BuildIntf
   IDEOptionsIntf, MacroIntf,
   // IDEIntf
-  IDECommands, SrcEditorIntf, IDEOptEditorIntf, IDEDialogs, EditorSyntaxHighlighterDef,
+  IDECommands, SrcEditorIntf, EditorOptionsIntf, IDEOptEditorIntf, IDEDialogs,
+  EditorSyntaxHighlighterDef,
   // IdeConfig
   LazConf,
   // IDE

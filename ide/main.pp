@@ -84,8 +84,8 @@ uses
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
   IDECommands, IDEWindowIntf, IDEDialogs, SrcEditorIntf, IDEMsgIntf,
-  MenuIntf, LazIDEIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors,
-  IdeIntfStrConsts, ToolBarIntf, SelEdits, ComponentTreeView,
+  MenuIntf, LazIDEIntf, EditorOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
+  IdeIntfStrConsts, ToolBarIntf, SelEdits, ComponentEditors, ComponentTreeView,
   // LazEdit
   LazEditTextAttributes,
   // protocol

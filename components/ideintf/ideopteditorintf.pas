@@ -29,11 +29,9 @@ uses
   // LCL
   Controls, Buttons, Forms, StdCtrls, Graphics, ComCtrls, Grids,
   // LazUtils
-  LazStringUtils, LazUTF8,
+  LazUTF8,
   // BuildIntf
-  IDEOptionsIntf,
-  // IdeIntf
-  EditorSyntaxHighlighterDef;
+  IDEOptionsIntf;
 
 type
   // forward
@@ -46,17 +44,6 @@ type
     constructor Create(AStyles: TFontStyles);
   end;
   TDefaultFontList = TStringList;
-
-  TIDEEditorOptions = class(TAbstractIDEEnvironmentOptions)
-  protected
-    function GetTabPosition: TTabPosition; virtual; abstract;
-  public
-    procedure GetHighlighterObjSettings(Syn: TObject); virtual; abstract;
-    procedure GetSynEditorSettings(ASynEdit: TObject; SimilarEdit: TObject = nil); virtual; abstract;
-    // read-only access to options needed by external packages.
-    // feel free to extend when needed
-    property TabPosition: TTabPosition read GetTabPosition;
-  end;
 
   { TAbstractIDEOptionsEditor base frame class for all options frames (global, project and packages) }
 
@@ -174,7 +161,6 @@ function RegisterIDEOptionsEditor(AGroupIndex: Integer;
 function IDEEditorGroups: TIDEOptionsGroupList;
 
 var
-  IDEEditorOptions: TIDEEditorOptions;
   // Certain packages may want to reach Editor Color Options.
   EditorColorOptionsEditorClass: TAbstractIDEOptionsEditorClass;
 

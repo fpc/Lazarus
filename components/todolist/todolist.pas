@@ -73,7 +73,7 @@ uses
   // BuildIntf
   PackageIntf, ProjectIntf,
   // IDEIntf
-  LazIDEIntf, IDEImagesIntf, MenuIntf, SrcEditorIntf, IDEOptEditorIntf,
+  LazIDEIntf, IDEImagesIntf, MenuIntf, SrcEditorIntf, EditorOptionsIntf, IDEOptEditorIntf,
   // ToDoList
   ToDoListCore, ToDoListStrConsts;
 

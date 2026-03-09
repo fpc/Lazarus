@@ -19,7 +19,7 @@ uses
   // SynEdit
   SynEdit, SynEditHighlighter, SynEditMiscClasses,
   // IdeIntf
-  IDEWindowIntf, IDECommands, IDEImagesIntf, SrcEditorIntf, IDEOptEditorIntf,
+  IDEWindowIntf, IDECommands, IDEImagesIntf, SrcEditorIntf, EditorOptionsIntf,
   IdeIntfStrConsts, EditorSyntaxHighlighterDef,
   // DebuggerIntf
   DbgIntfDebuggerBase,

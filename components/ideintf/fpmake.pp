@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 25.07.2025
+   This file was generated on 09.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -51,6 +51,7 @@ begin
     T:=P.Targets.AddUnit('ideintf.pas');
     t.Dependencies.AddUnit('actionseditor');
     t.Dependencies.AddUnit('actionseditorstd');
+    t.Dependencies.AddUnit('bufdatasetdsgn');
     t.Dependencies.AddUnit('changeparentdlg');
     t.Dependencies.AddUnit('checkgroupeditordlg');
     t.Dependencies.AddUnit('checklistboxeditordlg');
@@ -60,6 +61,7 @@ begin
     t.Dependencies.AddUnit('componenttreeview');
     t.Dependencies.AddUnit('dbgridcolumnspropeditform');
     t.Dependencies.AddUnit('dbpropedits');
+    t.Dependencies.AddUnit('editoroptionsintf');
     t.Dependencies.AddUnit('editorsyntaxhighlighterdef');
     t.Dependencies.AddUnit('fieldseditor');
     t.Dependencies.AddUnit('fieldslist');
@@ -71,9 +73,12 @@ begin
     t.Dependencies.AddUnit('headercontrolpropedit');
     t.Dependencies.AddUnit('helpfpdoc');
     t.Dependencies.AddUnit('idecommands');
+    t.Dependencies.AddUnit('idedebuggervalueformatterintf');
+    t.Dependencies.AddUnit('idedebuggerwatchvalueintf');
     t.Dependencies.AddUnit('idedialogs');
     t.Dependencies.AddUnit('idehelpintf');
     t.Dependencies.AddUnit('ideimagesintf');
+    t.Dependencies.AddUnit('ideintfstrconsts');
     t.Dependencies.AddUnit('idemsgintf');
     t.Dependencies.AddUnit('ideopteditorintf');
     t.Dependencies.AddUnit('idetextconverter');
@@ -90,8 +95,12 @@ begin
     t.Dependencies.AddUnit('objectinspector');
     t.Dependencies.AddUnit('objinspstrconsts');
     t.Dependencies.AddUnit('oifavoriteproperties');
+    t.Dependencies.AddUnit('pagespropeditdlg');
+    t.Dependencies.AddUnit('propeditconfig');
     t.Dependencies.AddUnit('propedits');
     t.Dependencies.AddUnit('propeditutils');
+    t.Dependencies.AddUnit('selectdatasetdlg');
+    t.Dependencies.AddUnit('seledits');
     t.Dependencies.AddUnit('srceditorintf');
     t.Dependencies.AddUnit('statusbarpropedit');
     t.Dependencies.AddUnit('stringspropeditdlg');
@@ -99,17 +108,10 @@ begin
     t.Dependencies.AddUnit('toolbarintf');
     t.Dependencies.AddUnit('treeviewpropedit');
     t.Dependencies.AddUnit('unitresources');
-    t.Dependencies.AddUnit('bufdatasetdsgn');
-    t.Dependencies.AddUnit('selectdatasetdlg');
-    t.Dependencies.AddUnit('seledits');
-    t.Dependencies.AddUnit('ideintfstrconsts');
-    t.Dependencies.AddUnit('pagespropeditdlg');
-    t.Dependencies.AddUnit('propeditconfig');
-    t.Dependencies.AddUnit('idedebuggerwatchvalueintf');
-    t.Dependencies.AddUnit('idedebuggervalueformatterintf');
 
     T:=P.Targets.AddUnit('actionseditor.pas');
     T:=P.Targets.AddUnit('actionseditorstd.pas');
+    T:=P.Targets.AddUnit('bufdatasetdsgn.pas');
     T:=P.Targets.AddUnit('changeparentdlg.pas');
     T:=P.Targets.AddUnit('checkgroupeditordlg.pas');
     T:=P.Targets.AddUnit('checklistboxeditordlg.pas');
@@ -119,6 +121,7 @@ begin
     T:=P.Targets.AddUnit('componenttreeview.pas');
     T:=P.Targets.AddUnit('dbgridcolumnspropeditform.pas');
     T:=P.Targets.AddUnit('dbpropedits.pas');
+    T:=P.Targets.AddUnit('editoroptionsintf.pas');
     T:=P.Targets.AddUnit('editorsyntaxhighlighterdef.pas');
     T:=P.Targets.AddUnit('fieldseditor.pas');
     T:=P.Targets.AddUnit('fieldslist.pas');
@@ -130,9 +133,12 @@ begin
     T:=P.Targets.AddUnit('headercontrolpropedit.pp');
     T:=P.Targets.AddUnit('helpfpdoc.pas');
     T:=P.Targets.AddUnit('idecommands.pas');
+    T:=P.Targets.AddUnit('idedebuggervalueformatterintf.pas');
+    T:=P.Targets.AddUnit('idedebuggerwatchvalueintf.pas');
     T:=P.Targets.AddUnit('idedialogs.pas');
     T:=P.Targets.AddUnit('idehelpintf.pas');
     T:=P.Targets.AddUnit('ideimagesintf.pas');
+    T:=P.Targets.AddUnit('ideintfstrconsts.pas');
     T:=P.Targets.AddUnit('idemsgintf.pas');
     T:=P.Targets.AddUnit('ideopteditorintf.pas');
     T:=P.Targets.AddUnit('idetextconverter.pas');
@@ -149,8 +155,12 @@ begin
     T:=P.Targets.AddUnit('objectinspector.pp');
     T:=P.Targets.AddUnit('objinspstrconsts.pas');
     T:=P.Targets.AddUnit('oifavoriteproperties.pas');
+    P.Targets.AddImplicitUnit('pagespropeditdlg.pas');
+    T:=P.Targets.AddUnit('propeditconfig.pp');
     T:=P.Targets.AddUnit('propedits.pp');
     T:=P.Targets.AddUnit('propeditutils.pp');
+    T:=P.Targets.AddUnit('selectdatasetdlg.pas');
+    T:=P.Targets.AddUnit('seledits.pas');
     T:=P.Targets.AddUnit('srceditorintf.pas');
     T:=P.Targets.AddUnit('statusbarpropedit.pp');
     T:=P.Targets.AddUnit('stringspropeditdlg.pas');
@@ -158,14 +168,6 @@ begin
     T:=P.Targets.AddUnit('toolbarintf.pas');
     T:=P.Targets.AddUnit('treeviewpropedit.pas');
     T:=P.Targets.AddUnit('unitresources.pas');
-    T:=P.Targets.AddUnit('bufdatasetdsgn.pas');
-    T:=P.Targets.AddUnit('selectdatasetdlg.pas');
-    T:=P.Targets.AddUnit('seledits.pas');
-    T:=P.Targets.AddUnit('ideintfstrconsts.pas');
-    P.Targets.AddImplicitUnit('pagespropeditdlg.pas');
-    T:=P.Targets.AddUnit('propeditconfig.pp');
-    T:=P.Targets.AddUnit('idedebuggerwatchvalueintf.pas');
-    T:=P.Targets.AddUnit('idedebuggervalueformatterintf.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('ideintf.compiled');

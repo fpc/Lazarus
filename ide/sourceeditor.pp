@@ -66,7 +66,7 @@ uses
   // IdeIntf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs, IDECommands,
-  EditorSyntaxHighlighterDef, IdeIntfStrConsts, IDEOptEditorIntf,
+  EditorSyntaxHighlighterDef, IdeIntfStrConsts, EditorOptionsIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes,
   // IdeDebugger

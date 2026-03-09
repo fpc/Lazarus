@@ -35,7 +35,7 @@ uses
   // Codetools
   LFMTrees,
   // IdeIntf
-  IDEImagesIntf, IDEOptEditorIntf,
+  IDEImagesIntf, EditorOptionsIntf,
   // IDE
   LazarusIDEStrConsts, EditorOptions, SourceMarks,
   // Converter

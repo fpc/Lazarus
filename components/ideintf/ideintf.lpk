@@ -35,6 +35,10 @@
         <Type Value="LFM"/>
       </Item>
       <Item>
+        <Filename Value="bufdatasetdsgn.pas"/>
+        <UnitName Value="bufdatasetdsgn"/>
+      </Item>
+      <Item>
         <Filename Value="changeparentdlg.pas"/>
         <UnitName Value="ChangeParentDlg"/>
       </Item>
@@ -85,6 +89,10 @@
       <Item>
         <Filename Value="dbpropedits.pas"/>
         <UnitName Value="DBPropEdits"/>
+      </Item>
+      <Item>
+        <Filename Value="editoroptionsintf.pas"/>
+        <UnitName Value="editoroptionsintf"/>
       </Item>
       <Item>
         <Filename Value="editorsyntaxhighlighterdef.pas"/>
@@ -151,6 +159,14 @@
         <UnitName Value="IDECommands"/>
       </Item>
       <Item>
+        <Filename Value="idedebuggervalueformatterintf.pas"/>
+        <UnitName Value="IdeDebuggerValueFormatterIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="idedebuggerwatchvalueintf.pas"/>
+        <UnitName Value="IdeDebuggerWatchValueIntf"/>
+      </Item>
+      <Item>
         <Filename Value="idedialogs.pas"/>
         <UnitName Value="IDEDialogs"/>
       </Item>
@@ -161,6 +177,10 @@
       <Item>
         <Filename Value="ideimagesintf.pas"/>
         <UnitName Value="IDEImagesIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="ideintfstrconsts.pas"/>
+        <UnitName Value="IdeIntfStrConsts"/>
       </Item>
       <Item>
         <Filename Value="idemsgintf.pas"/>
@@ -256,12 +276,29 @@
         <UnitName Value="OIFavoriteProperties"/>
       </Item>
       <Item>
+        <Filename Value="pagespropeditdlg.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="PagesPropEditDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="propeditconfig.pp"/>
+        <UnitName Value="PropEditConfig"/>
+      </Item>
+      <Item>
         <Filename Value="propedits.pp"/>
         <UnitName Value="PropEdits"/>
       </Item>
       <Item>
         <Filename Value="propeditutils.pp"/>
         <UnitName Value="PropEditUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="selectdatasetdlg.pas"/>
+        <UnitName Value="selectdatasetdlg"/>
+      </Item>
+      <Item>
+        <Filename Value="seledits.pas"/>
+        <UnitName Value="SelEdits"/>
       </Item>
       <Item>
         <Filename Value="srceditorintf.pas"/>
@@ -298,39 +335,6 @@
       <Item>
         <Filename Value="unitresources.pas"/>
         <UnitName Value="UnitResources"/>
-      </Item>
-      <Item>
-        <Filename Value="bufdatasetdsgn.pas"/>
-        <UnitName Value="bufdatasetdsgn"/>
-      </Item>
-      <Item>
-        <Filename Value="selectdatasetdlg.pas"/>
-        <UnitName Value="selectdatasetdlg"/>
-      </Item>
-      <Item>
-        <Filename Value="seledits.pas"/>
-        <UnitName Value="SelEdits"/>
-      </Item>
-      <Item>
-        <Filename Value="ideintfstrconsts.pas"/>
-        <UnitName Value="IdeIntfStrConsts"/>
-      </Item>
-      <Item>
-        <Filename Value="pagespropeditdlg.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="PagesPropEditDlg"/>
-      </Item>
-      <Item>
-        <Filename Value="propeditconfig.pp"/>
-        <UnitName Value="PropEditConfig"/>
-      </Item>
-      <Item>
-        <Filename Value="idedebuggerwatchvalueintf.pas"/>
-        <UnitName Value="IdeDebuggerWatchValueIntf"/>
-      </Item>
-      <Item>
-        <Filename Value="idedebuggervalueformatterintf.pas"/>
-        <UnitName Value="IdeDebuggerValueFormatterIntf"/>
       </Item>
     </Files>
     <LazDoc Paths="docs"/>
