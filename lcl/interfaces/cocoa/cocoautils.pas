@@ -166,7 +166,6 @@ function CFStringToString(AString: CFStringRef): String; inline;
 procedure CreateCFString(const S: String; out AString: CFStringRef);
 procedure CreateCFString(const Data: CFDataRef; Encoding: CFStringEncoding; out AString: CFStringRef);
 procedure FreeCFString(var AString: CFStringRef);
-function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): CFDataRef;
 
 implementation
 
@@ -1191,28 +1190,6 @@ begin
   if StrSize > 0 then
     CFStringGetBytes(AString, StrRange, Encoding,
       Ord('?'), False, @Result[1], StrSize, StrSize);
-end;
-
-{------------------------------------------------------------------------------
-  Name:    CFStringToData
-  Params:  AString  - Core Foundation string ref
-           Encoding - Result data encoding format
-  Returns: CFDataRef
-
-  Converts Core Foundation string to data
- ------------------------------------------------------------------------------}
-function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding): CFDataRef;
-var
-  S: String;
-begin
-  Result := nil;
-  if AString = nil then Exit;
-  S := CFStringToStr(AString, Encoding);
-
-  if Length(S) > 0 then
-    Result := CFDataCreate(nil, @S[1], Length(S))
-  else
-    Result := CFDataCreate(nil, nil, 0);
 end;
 
 class function TCocoaTypeUtil.toDateTime(const aDateTime : TDateTime): NSDate;
