@@ -807,6 +807,8 @@ type
     procedure DoBeforeLCLPaint; override;
     procedure setText(const AValue: String); override;
   public
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle;
   end;
 
@@ -4290,6 +4292,14 @@ begin
   FText := AValue;
   if Self.Visible then
     Widget^.queue_draw;
+end;
+
+procedure TGtk3Panel.preferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  //inherited preferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
+  PreferredWidth := 0;
+  PreferredHeight := 0;
 end;
 
 procedure TGtk3Panel.ConnectSizeAllocateSignal(ToWidget: PGtkWidget);
