@@ -110,7 +110,7 @@ const
     AllClasses+[ctnProcedure, ctnWithVariable];
   
 type
-  TNodeCacheEntryFlag = (ncefSearchedInParents, ncefSearchedInAncestors);
+  TNodeCacheEntryFlag = (ncefSearchedInParents, ncefSearchedInAncestors, nceOverlapped);
   TNodeCacheEntryFlags = set of TNodeCacheEntryFlag;
   
   PCodeTreeNodeCacheEntry = ^TCodeTreeNodeCacheEntry;
@@ -299,7 +299,7 @@ type
 const
   ncefAllSearchRanges = [ncefSearchedInAncestors,ncefSearchedInParents];
   NodeCacheEntryFlagNames: array[TNodeCacheEntryFlag] of string = (
-      'SearchedInParents', 'SearchedInAncestors'
+      'SearchedInParents', 'SearchedInAncestors', 'Overlapped'
     );
 
 var
@@ -903,6 +903,7 @@ begin
   end else begin
     // identifier was already searched in this range
     OldEntry:=PCodeTreeNodeCacheEntry(OldNode.Data);
+    if nceOverlapped in OldEntry^.Flags then exit;
     NewSearchRangeFlags:=(ncefAllSearchRanges * (OldEntry^.Flags+Flags));
     if ((NewNode=OldEntry^.NewNode)
     and (NewTool=OldEntry^.NewTool))
@@ -916,8 +917,9 @@ begin
         OldEntry^.CleanEndPos:=CleanEndPos;
       OldEntry^.Flags:=NewSearchRangeFlags;
     end else begin
+      OldEntry^.Flags:= [nceOverlapped]; // cache invalid, don't use
       // different FindContext with overlapping search ranges
-      RaiseConflictException('conflicting cache nodes');
+      //RaiseConflictException('conflicting cache nodes');
     end;
   end;
 end;
@@ -928,6 +930,8 @@ begin
   Node:=FindLeftMostAVLNode(Identifier);
   if Node<>nil then begin
     Result:=PCodeTreeNodeCacheEntry(Node.Data);
+    if nceOverlapped in Result^.Flags then
+      Result:=nil;
   end else begin
     Result:=nil;
   end;
@@ -985,7 +989,9 @@ begin
   if Result<>nil then begin
     Entry:=PCodeTreeNodeCacheEntry(Result.Data);
     if (CleanStartPos>=Entry^.CleanEndPos)
-    or (CleanEndPos<=Entry^.CleanStartPos) then begin
+    or (CleanEndPos<=Entry^.CleanStartPos)
+    or (nceOverlapped in Entry^.Flags)
+    then begin
       // node is not in range
       Result:=nil;
     end;
@@ -1132,8 +1138,11 @@ function TCodeTreeNodeCache.FindInRange(Identifier: PChar; CleanStartPos,
 var Node: TAVLTreeNode;
 begin
   Node:=FindAVLNodeInRange(Identifier,CleanStartPos,CleanEndPos);
-  if Node<>nil then
-    Result:=PCodeTreeNodeCacheEntry(Node.Data)
+  if Node<>nil then begin
+    Result:=PCodeTreeNodeCacheEntry(Node.Data);
+    if nceOverlapped in Result^.Flags then
+      Result:=nil;
+  end
   else
     Result:=nil;
 end;
