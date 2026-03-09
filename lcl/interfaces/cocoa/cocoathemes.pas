@@ -429,12 +429,12 @@ begin
     TVP_TREEITEM:
     begin
       case Details.State of
-        TREIS_NORMAL: lColor := ColorToNSColor(ColorToRGB(clWindow));
-        TREIS_HOT: lColor := ColorToNSColor(ColorToRGB(clHotLight));
+        TREIS_NORMAL: lColor := TCocoaColorUtil.toColor(ColorToRGB(clWindow));
+        TREIS_HOT: lColor := TCocoaColorUtil.toColor(ColorToRGB(clHotLight));
         TREIS_SELECTED: lColor := NSColor.alternateSelectedControlColor;
-        TREIS_DISABLED: lColor := ColorToNSColor(ColorToRGB(clWindow));
+        TREIS_DISABLED: lColor := TCocoaColorUtil.toColor(ColorToRGB(clWindow));
         TREIS_SELECTEDNOTFOCUS: lColor := NSColor.secondarySelectedControlColor;
-        TREIS_HOTSELECTED: lColor := ColorToNSColor(ColorToRGB(clHighlight));
+        TREIS_HOTSELECTED: lColor := TCocoaColorUtil.toColor(ColorToRGB(clHighlight));
       else
         lColor := NSColor.blackColor;
       end;
@@ -488,7 +488,7 @@ begin
       end;
 
       // select the appropriate brush & pen
-      lColor := ColorToNSColor(Graphics.RGBToColor(121, 121, 121));
+      lColor := TCocoaColorUtil.toColor(Graphics.RGBToColor(121, 121, 121));
       lBrush := TCocoaBrush.Create(lColor, False);
       lOldBrush := LCLIntf.SelectObject(HDC(DC), HGDIOBJ(lBrush));
 
@@ -893,7 +893,7 @@ begin
      (Details.State = TREIS_SELECTED) then
   begin
     OldColor := Canvas.Font.Color;
-    Canvas.Font.Color := NSColorToColorRef(NSColor.alternateSelectedControlTextColor);
+    Canvas.Font.Color := TCocoaColorUtil.toColorRefWithAnyColor(NSColor.alternateSelectedControlTextColor);
     Details.Part := 0; // Keep inherited from changing font color
     inherited;
     Canvas.Font.Color := OldColor;
@@ -981,9 +981,9 @@ begin
   if NOT dst.ctx.isFlipped then begin
     CGContextTranslateCTM(dst.ctx.CGContext, 0, dst.Size.cy);
     CGContextScaleCTM(dst.ctx.CGContext, 1, -1);
-    LCLToNSRect(R, dst.size.cy, dstRect);
+    TCocoaTypeUtil.toRect(R, dst.size.cy, dstRect);
   end else begin
-    dstRect:= RectTONSRect(R);
+    dstRect:= TCocoaTypeUtil.toRect(R);
   end;
 end;
 

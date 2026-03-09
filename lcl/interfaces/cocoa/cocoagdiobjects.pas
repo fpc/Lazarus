@@ -1154,7 +1154,7 @@ begin
   if ImageRep = nil then
     Result := nil
   else
-    Result := CGImageCreateWithImageInRect(MacOSAll.CGImageRef(ImageRep.CGImage), RectToCGRect(ARect));
+    Result := CGImageCreateWithImageInRect(MacOSAll.CGImageRef(ImageRep.CGImage), TCocoaTypeUtil.toRect(ARect));
 end;
 
 
@@ -1167,7 +1167,7 @@ begin
   try
     Mask := CGImageMaskCreate(FWidth, FHeight, FBitsPerPixel,
       FBitsPerPixel, FBytesPerRow, CGDataProvider, nil, 0);
-    Result := CGImageCreateWithImageInRect(Mask, RectToCGRect(ARect));
+    Result := CGImageCreateWithImageInRect(Mask, TCocoaTypeUtil.toRect(ARect));
   finally
     CGDataProviderRelease(CGDataProvider);
     CGImageRelease(Mask);
@@ -1284,7 +1284,7 @@ end;
 
 function TCocoaContext.GetClipRect: TRect;
 begin
-  Result := CGRectToRect(CGContextGetClipBoundingBox(CGContext));
+  Result := TCocoaTypeUtil.toRect(CGContextGetClipBoundingBox(CGContext));
 end;
 
 function TCocoaContext.SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): TCocoaRegionType;
@@ -1609,7 +1609,7 @@ begin
     DefaultBrush.Apply(Self, False);
     CGContextSetBlendMode(CGContext, kCGBlendModeDifference);
 
-    CGContextFillRect(CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
+    CGContextFillRect(CGContext, TCocoaTypeUtil.toSortedRect(X1, Y1, X2, Y2));
   finally
 {$if FPC_FULLVERSION < 30300}
     ctx.instanceRestoreGraphicsState;
@@ -1695,7 +1695,7 @@ begin
   cg := CGContext;
   if not Assigned(cg) then Exit;
 
-  fillbrush:=TCocoaBrush.Create(ColorToNSColor(ColorRef(AColor)));
+  fillbrush:=TCocoaBrush.Create(TCocoaColorUtil.toColor(ColorRef(AColor)));
   fillbrush.Apply(self);
 
   r.origin.x:=x;
@@ -2043,7 +2043,7 @@ begin
     if ((Options and ETO_CLIPPED) <> 0) and (Count > 0) then
     begin
       CGContextBeginPath(cg);
-      CGContextAddRect(cg, RectToCGrect(Rect^));
+      CGContextAddRect(cg, TCocoaTypeUtil.toRect(Rect^));
       CGContextClip(cg);
     end;
   end;
@@ -2057,9 +2057,9 @@ begin
     Str := NSStringUTF8(UTF8Chars, Count);
     try
 
-      lForegroundColor := SysColorToNSColor(SysColorToSysColorIndex(FForegroundColor));
+      lForegroundColor := TCocoaColorUtil.sysIndexToColor(SysColorToSysColorIndex(FForegroundColor));
       if lForegroundColor = nil then
-        lForegroundColor := ColorToNSColor(ColorToRGB(FForegroundColor));
+        lForegroundColor := TCocoaColorUtil.toColor(ColorToRGB(FForegroundColor));
 
       Dict := NSMutableDictionary.dictionaryWithObjectsAndKeys(
             Font.Font, kCTFontAttributeName,
@@ -2067,7 +2067,7 @@ begin
             nil);
 
       if FillBg then
-        Dict.setObject_forKey(ColorToNSColor(FBackgroundColor), NSBackgroundColorAttributeName);
+        Dict.setObject_forKey(TCocoaColorUtil.toColor(FBackgroundColor), NSBackgroundColorAttributeName);
 
       if cfs_Underline in Font.Style then
         Dict.setObject_forKey(NSNumber.numberWithInteger(UnderlineStyle), NSUnderlineStyleAttributeName);
@@ -2294,7 +2294,7 @@ begin
       boxview.setBoxType(NSBoxSecondary);
     r:=ARect;
     InflateRect(r, dx, dy);
-    ns := RectToNSRect(r);
+    ns := TCocoaTypeUtil.toRect(r);
     // used for size only, position is ignored
     boxview.setFrame(ns);
     yy := ns.size.height+ns.origin.y+1;
@@ -2405,8 +2405,8 @@ begin
     imageRep:= NSBitmapImageRep.alloc.initWithCGImage(cgImage);
   end;
 
-  Result := DrawImageRep( GetNSRect(X, Y, Width, Height),
-                          GetNSRect(XSrc, YSrc, SrcWidth, SrcHeight),
+  Result := DrawImageRep( NSMakeRect(X, Y, Width, Height),
+                          NSMakeRect(XSrc, YSrc, SrcWidth, SrcHeight),
                           imageRep );
 
   if Assigned(maskImage) then begin
@@ -2704,7 +2704,7 @@ end;
 constructor TCocoaRegion.Create(const X1, Y1, X2, Y2: Integer);
 begin
   inherited Create(False);
-  FShape := HIShapeCreateWithRect(GetCGRect(X1, Y1, X2, Y2));
+  FShape := HIShapeCreateWithRect(TCocoaTypeUtil.toRect(Rect(X1, Y1, X2, Y2)));
 end;
 
 {------------------------------------------------------------------------------
@@ -2750,7 +2750,7 @@ var
   begin
     //DebugLn('AddPart:' + DbgS(X1) + ' - ' + DbgS(X2) + ', ' + DbgS(Y));
 
-    R := HIShapeCreateWithRect(GetCGRect(X1, Y, X2, Y + 1));
+    R := HIShapeCreateWithRect(TCocoaTypeUtil.toRect(Rect(X1, Y, X2, Y + 1)));
     HIShapeUnion(FShape, R, FShape);
     CFRelease(R);
   end;
@@ -2879,7 +2879,7 @@ begin
     Exit;
   end;
 
-  Result := CGRectToRect(R);
+  Result := TCocoaTypeUtil.toRect(R);
 end;
 
 {------------------------------------------------------------------------------
@@ -2960,7 +2960,7 @@ begin
         if HIShapeIsEmpty(FShape) then
           {HIShapeCreateDifference doesn't work properly if original shape is empty}
           {to simulate "emptieness" very big shape is created }
-          Shape := HIShapeCreateWithRect(GetCGRect(MinCoord, MinCoord, MaxSize, MaxSize)); // create clip nothing.
+          Shape := HIShapeCreateWithRect(NSMakeRect(MinCoord, MinCoord, MaxSize, MaxSize)); // create clip nothing.
 
         Shape := HIShapeCreateDifference(FShape, ARegion.Shape);
         Result := GetType;
@@ -3219,10 +3219,10 @@ begin
       CGImageGetHeight(APatternInfoPtr^.image));
   if APatternInfoPtr^.colorMode = cpmContextColor then
   begin
-    ColorToRGBFloat(APatternInfoPtr^.bgColor, sR, sG, sB);
+    TCocoaColorUtil.getRGBValue(APatternInfoPtr^.bgColor, sR, sG, sB);
     CGContextSetRGBFillColor(c, sR, sG, sB, 1);
     CGContextFillRect(c, R);
-    ColorToRGBFloat(APatternInfoPtr^.fgColor, sR, sG, sB);
+    TCocoaColorUtil.getRGBValue(APatternInfoPtr^.fgColor, sR, sG, sB);
     CGContextSetRGBFillColor(c, sR, sG, sB, 1);
   end;
   CGContextDrawImage(c, R, APatternInfoPtr^.image);
@@ -3246,7 +3246,7 @@ begin
   APatternInfoPtr := GetMem(sizeof(TCocoapatternInfo));
   APatternInfoPtr^.image := FImage;
   CGImageRetain(APatternInfoPtr^.image);
-  APatternInfoPtr^.bgColor := RGBToColorFloat(Red/255, Green/255, Blue/255);
+  APatternInfoPtr^.bgColor := TCocoaColorUtil.toColorRef(Red/255, Green/255, Blue/255);
   APatternInfoPtr^.fgColor := FFgColor;
   APatternInfoPtr^.colorMode := FPatternColorMode;
 
@@ -3282,7 +3282,7 @@ begin
     FImage := CGImageMaskCreate(8, 8, 1, 1, 1, CGDataProvider, nil, 0);
     CGDataProviderRelease(CGDataProvider);
     FPatternColorMode := cpmBrushColor;
-    CreateCGPattern(GetCGRect(0 , 0, 8, 8), 0);
+    CreateCGPattern(NSMakeRect(0 , 0, 8, 8), 0);
   end;
 end;
 
@@ -3311,7 +3311,7 @@ begin
     FImage := CGImageCreateCopy(MacOSAll.CGImageRef( FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil)));
     FPatternColorMode := cpmBitmap;
   end;
-  CreateCGPattern(GetCGRect(0, 0, AWidth, AHeight), Ord(FPatternColorMode = cpmBitmap));
+  CreateCGPattern(NSMakeRect(0, 0, AWidth, AHeight), Ord(FPatternColorMode = cpmBitmap));
 end;
 
 procedure TCocoaBrush.SetImage(AImage: NSImage);
@@ -3339,13 +3339,13 @@ begin
   RGBColor := AColor.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
 
   if Assigned(RGBColor) then
-    SetColor(NSColorToRGB(RGBColor), True)
+    SetColor(TCocoaColorUtil.toColorRefWithRGBColor(RGBColor), True)
   else
   begin
     PatternColor := AColor.colorUsingColorSpaceName(NSPatternColorSpace);
     if Assigned(PatternColor) then
     begin
-      SetColor(NSColorToColorRef(PatternColor.patternImage.backgroundColor), False);
+      SetColor(TCocoaColorUtil.toColorRefWithAnyColor(PatternColor.patternImage.backgroundColor), False);
       SetImage(PatternColor.patternImage);
     end
     else
@@ -3402,13 +3402,13 @@ begin
   FImage := nil;
   RGBColor := AColor.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
   if Assigned(RGBColor) then
-    inherited Create(NSColorToRGB(RGBColor), True, AGlobal)
+    inherited Create(TCocoaColorUtil.toColorRefWithRGBColor(RGBColor), True, AGlobal)
   else
   begin
     PatternColor := AColor.colorUsingColorSpaceName(NSPatternColorSpace);
     if Assigned(PatternColor) then
     begin
-      inherited Create(NSColorToColorRef(PatternColor.patternImage.backgroundColor), False, AGlobal);
+      inherited Create(TCocoaColorUtil.toColorRefWithAnyColor(PatternColor.patternImage.backgroundColor), False, AGlobal);
       SetImage(PatternColor.patternImage);
     end
     else
@@ -3520,7 +3520,7 @@ begin
           BaseSpace := CGColorSpaceCreateDeviceRGB;
           SetColor(ADC.BkColor, True);
           FFgColor:=ColorToRGB(ADC.TextColor);
-          ColorToRGBFloat(FFgColor, sR, sG, sB);
+          TCocoaColorUtil.getRGBValue(FFgColor, sR, sG, sB);
           RGBA[0]:=sR;
           RGBA[1]:=sG;
           RGBA[2]:=sB;

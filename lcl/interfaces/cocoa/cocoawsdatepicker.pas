@@ -52,7 +52,7 @@ begin
 
     Result.setTimeZone(NSTimeZone.localTimeZone);
 
-    Result.setDateValue(DateTimeToNSDate(Now));
+    Result.setDateValue(TCocoaTypeUtil.toDateTime(Now));
 
     Result.setDatePickerStyle(NSDatePickerStyle_Stepper);
 
@@ -99,12 +99,12 @@ end;
 
 class function  TCocoaWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 begin
-  Result:= NSDateToDateTime(NSDatePickerCell(ACalendar.Handle).dateValue);
+  Result:= TCocoaTypeUtil.toDateTime(NSDatePickerCell(ACalendar.Handle).dateValue);
 end;
 
 class procedure TCocoaWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 begin
-  NSDatePickerCell(ACalendar.Handle).setDateValue(DateTimeToNSDate(ADateTime));
+  NSDatePickerCell(ACalendar.Handle).setDateValue(TCocoaTypeUtil.toDateTime(ADateTime));
 end;
 
 class function TCocoaWSCustomCalendar.HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart;

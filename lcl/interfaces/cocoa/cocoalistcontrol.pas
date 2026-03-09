@@ -230,7 +230,7 @@ end;
 
 procedure TCocoaTableListControlProcessor.onOwnerDrawItem( rowView: NSView );
 begin
-  hideAllSubviews( rowView );
+  TCocoaControlUtil.hideAllSubviews( rowView );
 end;
 
 { TCocoaListControlStringList }

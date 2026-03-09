@@ -421,7 +421,7 @@ begin
     Result:= Result.lclInitWithCreateParams(AParams);
     TCocoaButton(Result).callback := ACallBackClass.Create(Result, ATarget);
 
-    Result.setTitle(ControlTitleToNSStr(AParams.Caption));
+    Result.setTitle(TCocoaControlUtil.toMacOSTitle(AParams.Caption));
     if btnBezel <> 0 then
       Result.setBezelStyle(btnBezel);
     Result.setButtonType(btnType);
@@ -436,7 +436,7 @@ begin
     if NOT Result.fixedInitSetting then
       Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
     Result.callback := TLCLCommonCallback.Create(Result, ATarget);
-    SetNSControlValue(Result, AParams.Caption);
+    TCocoaControlUtil.setStringValue(Result, AParams.Caption);
   end;
 end;
 
@@ -447,7 +447,7 @@ begin
   begin
     Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
     TCocoaSecureTextField(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
-    SetNSText(Result.currentEditor, AParams.Caption);
+    TCocoaTextControlUtil.setStringValue(Result.currentEditor, AParams.Caption);
   end;
 end;
 
@@ -557,7 +557,7 @@ begin
     try
       FillChar(PS^, SizeOf(TPaintStruct), 0);
       PS^.hdc := HDC(ctx);
-      PS^.rcPaint := NSRectToRect(nsr);
+      PS^.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(ctx), PS);
     finally
       Dispose(PS);
@@ -882,7 +882,7 @@ var
   btn : NSButton;
 begin
   btn := NSButton(AWinControl.Handle);
-  btn.setTitle(ControlTitleToNSStr(AText));
+  btn.setTitle(TCocoaControlUtil.toMacOSTitle(AText));
 
   if NOT ((AWinControl is TCustomButton) or (AWinControl is TToggleBox)) then
     Exit;
@@ -1074,7 +1074,7 @@ begin
   field.setEditable(False);
   field.setSelectable(False);
   {$endif}
-  TCocoaTextFieldUtil.setAllignment(field, lclStaticText.Alignment);
+  TCocoaTextControlUtil.setAllignment(field, lclStaticText.Alignment);
   Result:=TLCLHandle(field);
 end;
 
@@ -1083,7 +1083,7 @@ class procedure TCocoaWSCustomStaticText.SetAlignment(
 begin
   if not Assigned(ACustomStaticText) or (not ACustomStaticText.HandleAllocated) or (ACustomStaticText.Handle=0) then
     exit;
-  TCocoaTextFieldUtil.setAllignment(NSTextField(ACustomStaticText.Handle), NewAlignment);
+  TCocoaTextControlUtil.setAllignment(NSTextField(ACustomStaticText.Handle), NewAlignment);
 end;
 
 { TCocoaWSCustomEdit }
@@ -1142,8 +1142,8 @@ begin
   if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
     Exit;
 
-  TCocoaTextFieldUtil.setBorderStyle(field, edit.BorderStyle);
-  TCocoaTextFieldUtil.setAllignment(field, edit.Alignment);
+  TCocoaTextControlUtil.setBorderStyle(field, edit.BorderStyle);
+  TCocoaTextControlUtil.setAllignment(field, edit.Alignment);
   UpdateControlFocusRing( field, edit );
 end;
 
@@ -1200,7 +1200,7 @@ begin
   if (AWinControl.Color = clDefault) or (AWinControl.Color = clWindow) or (AWinControl.Color = clBackground)  then
     field.setBackgroundColor( NSColor.textBackgroundColor )
   else
-    field.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
+    field.setBackgroundColor( TCocoaColorUtil.toColor(ColorToRGB(AWinControl.Color)));
 
   ensureBackcolorApply;
 end;
@@ -1274,7 +1274,7 @@ begin
     Exit;
   if field.isKindOfClass(TCocoaTextField) and TCocoaTextField(field).fixedInitSetting then
     Exit;
-  TCocoaTextFieldUtil.setAllignment(field, NewAlignment);
+  TCocoaTextControlUtil.setAllignment(field, NewAlignment);
 end;
 
 class procedure TCocoaWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
@@ -1427,7 +1427,7 @@ class procedure TCocoaWSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
 begin
   if NSAppKitVersionNumber <= NSAppKitVersionNumber10_10 then Exit;
   if (ACustomEdit.HandleAllocated) then
-    TCocoaTextFieldUtil.setTextHint(NSObject(ACustomEdit.Handle), ATextHint);
+    TCocoaTextControlUtil.setTextHint(NSObject(ACustomEdit.Handle), ATextHint);
 end;
 
 { TCocoaMemoStrings }
@@ -1454,7 +1454,7 @@ end;
 
 procedure TCocoaMemoStrings.SetTextStr(const Value: string);
 begin
-  SetNSText(FTextView, LineBreaksToUnix(Value));
+  TCocoaTextControlUtil.setStringValue(FTextView, LineBreaksToUnix(Value));
 
   FTextView.textDidChange(nil);
 end;
@@ -1710,12 +1710,12 @@ begin
   txt.callback := lcl;
   txt.setDelegate(txt);
 
-  SetNSText(txt, AParams.Caption);
+  TCocoaTextControlUtil.setStringValue(txt, AParams.Caption);
 
   scr.callback := txt.callback;
 
-  TCocoaTextFieldUtil.setWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
-  TCocoaTextFieldUtil.setAllignment(txt, TCustomMemo(AWinControl).Alignment);
+  TCocoaTextControlUtil.setWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
+  TCocoaTextControlUtil.setAllignment(txt, TCustomMemo(AWinControl).Alignment);
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
   txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
   txt.release;
@@ -1732,7 +1732,7 @@ begin
   if (AWinControl.Color = clDefault) or (AWinControl.Color = clWindow) or (AWinControl.Color = clBackground) then
     txt.setBackgroundColor( NSColor.textBackgroundColor )
   else
-    txt.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
+    txt.setBackgroundColor( TCocoaColorUtil.toColor(ColorToRGB(AWinControl.Color)));
 end;
 
 class procedure TCocoaWSCustomMemo.SetSelStart(const ACustomEdit: TCustomEdit;
@@ -1851,7 +1851,7 @@ var
   txt: TCocoaTextView;
 begin
   txt := GetTextView(ACustomEdit);
-  TCocoaTextFieldUtil.setAllignment(txt, NewAlignment);
+  TCocoaTextControlUtil.setAllignment(txt, NewAlignment);
 end;
 
 class function TCocoaWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
@@ -1927,7 +1927,7 @@ begin
   lScroll := GetScrollView(ACustomMemo);
   if (not Assigned(txt)) or (not Assigned(lScroll)) then Exit;
 
-  TCocoaTextFieldUtil.setWordWrap(txt, lScroll, NewWordWrap);
+  TCocoaTextControlUtil.setWordWrap(txt, lScroll, NewWordWrap);
 end;
 
 class procedure TCocoaWSCustomMemo.SetText(const AWinControl:TWinControl;const AText:String);
@@ -1936,7 +1936,7 @@ var
 begin
   txt := GetTextView(AWinControl);
   if not Assigned(txt) then Exit;
-  SetNSText(txt, LineBreaksToUnix(AText));
+  TCocoaTextControlUtil.setStringValue(txt, LineBreaksToUnix(AText));
 end;
 
 class function TCocoaWSCustomMemo.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
@@ -2276,7 +2276,7 @@ begin
     Exit;
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
-  TCocoaTextFieldUtil.setTextHint(NSObject(ACustomComboBox.Handle), ATextHint);
+  TCocoaTextControlUtil.setTextHint(NSObject(ACustomComboBox.Handle), ATextHint);
 end;
 
 { TCocoaWSToggleBox }
@@ -2386,7 +2386,7 @@ begin
     cap.release;
 
     // set a content view in order to be able to customize drawing for labels/color
-    ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+    ns := NSMakeRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
     lGroupBoxContents := TCocoaCustomControl.alloc.initWithFrame(ns);
     lGroupBoxContents.callback := box.callback; //TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
     //str := Format('%X=%X', [PtrUInt(box.callback), PtrUInt(lGroupBoxContents.callback)]);
@@ -2411,7 +2411,7 @@ var
   box: TCocoaGroupBox;
 begin
   box := TCocoaGroupBox(AWinControl.Handle);
-  box.setTitle(ControlTitleToNSStr(AText));
+  box.setTitle(TCocoaControlUtil.toMacOSTitle(AText));
 end;
 
 class procedure TCocoaWSCustomGroupBox.SetFont(const AWinControl: TWinControl;
@@ -2777,7 +2777,7 @@ procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
 var
   cb: ICommonCallBack;
 begin
-  SetNSControlValue(ctrl, text);
+  TCocoaControlUtil.setStringValue(ctrl, text);
   cb := ctrl.lclGetcallback;
   if Assigned(cb) then // cb.SendOnChange;
     cb.SendOnTextChanged;

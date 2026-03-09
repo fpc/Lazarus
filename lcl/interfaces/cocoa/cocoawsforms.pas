@@ -330,7 +330,7 @@ begin
     Exit;
   end;
 
-  R := CreateParamsToNSRect(AParams);
+  R := TCocoaTypeUtil.toRect(AParams);
   {$ifdef BOOLFIX}
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer_(R, WinMask, NSBackingStoreBuffered, Ord(False)));
   {$else}
@@ -871,7 +871,7 @@ begin
   //      if parent is specified neither Window nor Panel needs to be created
   //      the only thing that needs to be created is Content
 
-  R := CreateParamsToNSRect(AParams);
+  R := TCocoaTypeUtil.toRect(AParams);
   if R.size.width<1 then R.size.width:=1;
   if R.size.height<1 then R.size.height:=1;
 
@@ -928,7 +928,7 @@ begin
     cb.window := win;
 
     win.setDelegate(win);
-    ns := ControlTitleToNSStr( AWinControl.Caption );
+    ns := TCocoaControlUtil.toMacOSTitle( AWinControl.Caption );
     win.setTitle(ns);
     {$ifdef BOOLFIX}
     win.setReleasedWhenClosed_(Ord(False)); // do not release automatically
@@ -1078,7 +1078,7 @@ begin
   if not AWinControl.HandleAllocated then
     Exit;
   win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
-  ns := ControlTitleToNSStr( AText );
+  ns := TCocoaControlUtil.toMacOSTitle( AText );
   if Assigned(win) then
     NSwindow(win).setTitle(ns)
   else
@@ -1096,7 +1096,7 @@ var
   imageRef: CGImageRef;
 begin
   rect:= win.contentRectForFrameRect( win.frame );
-  rect:= RectToNSRect( ScreenRectFromNSToLCL(rect) );
+  rect:= TCocoaTypeUtil.toRect( TCocoaScreenUtil.toLCL(rect) );
   imageRef:= CGWindowListCreateImage(
     rect,
     kCGWindowListOptionIncludingWindow,

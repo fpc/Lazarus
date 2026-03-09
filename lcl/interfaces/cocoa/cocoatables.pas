@@ -305,7 +305,7 @@ begin
     Exit;
   end;
   nsr:=tbl.frameOfCellAtColumn_row(col,row);
-  r:=NSRectToRect(nsr);
+  r:=TCocoaTypeUtil.toRect(nsr);
   Result := True;
 end;
 
@@ -536,7 +536,7 @@ begin
     if isChecked(self,row) then
       Include(ItemState, odChecked);
 
-    Result:= self.callback.drawItem(row, ctx, NSRectToRect(canvasRect), ItemState);
+    Result:= self.callback.drawItem(row, ctx, TCocoaTypeUtil.toRect(canvasRect), ItemState);
   finally
     ctx.Free;
   end;
@@ -591,7 +591,7 @@ begin
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
     // we can only hide the SubviewViews to get the same effect.
-    hideAllSubviews( self );
+    TCocoaControlUtil.hideAllSubviews( self );
   end else begin
     drawNSViewBackground( self, self.lclGetCanvas.Brush );
     inherited;
@@ -1179,9 +1179,9 @@ begin
     // we can only hide the CellViews to get the same effect.
     // in the Lazarus IDE, there is a ListView with OnCustomDrawItem
     // in Perferences-Component Palette.
-    hideAllSubviews( self );
+    TCocoaControlUtil.hideAllSubviews( self );
   end else begin
-    if TCocoaTextFieldUtil.setLCLFont(self.textField, cocoaTLV.lclGetCanvas.Font) then
+    if TCocoaTextControlUtil.setLCLFont(self.textField, cocoaTLV.lclGetCanvas.Font) then
       updateItemLayout( row, col );
     inherited drawRect(dirtyRect);
   end;
@@ -1200,7 +1200,7 @@ begin
   fieldControl.setEditable( False );
   fieldControl.setLineBreakMode( NSLineBreakByTruncatingTail );
   fieldControl.setAllowsExpansionToolTips(True);
-  TCocoaTextFieldUtil.setLCLFont( fieldControl, _tableView.lclGetTarget );
+  TCocoaTextControlUtil.setLCLFont( fieldControl, _tableView.lclGetTarget );
 
   self.setTextField( fieldControl );
   self.addSubview( fieldControl );
@@ -1391,8 +1391,8 @@ begin
   if row >= numberOfRowsInTableView(self) then
     Exit;
 
-  frameRect.origin:= GetNSPoint(0,0);
-  frameRect.size:= GetNSSize(tableColumn.width, rowHeight);
+  frameRect.origin:= NSZeroPoint;
+  frameRect.size:= NSMakeSize(tableColumn.width, rowHeight);
 
   item:= TCocoaTableListItem(makeViewWithIdentifier_owner(NSSTR('tblview'), self));
   if item = nil then begin
@@ -1737,7 +1737,7 @@ begin
       end;
   end;
 
-  Result:= NSRectToRect( frame );
+  Result:= TCocoaTypeUtil.toRect( frame );
 end;
 
 procedure TCocoaWSListView_TableViewHandler.ItemExchange(
