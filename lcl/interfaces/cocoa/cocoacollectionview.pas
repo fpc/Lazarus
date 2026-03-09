@@ -850,7 +850,7 @@ end;
 procedure TCocoaCollectionView.updateItemLayout(item: TCocoaCollectionItem);
 begin
   self.styleHandler.onUpdateItemLayout( item );
-  TCocoaTextFieldUtil.setLCLFont( item.textField, lclGetTarget );
+  TCocoaTextControlUtil.setLCLFont( item.textField, lclGetTarget );
 end;
 
 procedure TCocoaCollectionView.redrawVisibleItems;

@@ -189,10 +189,15 @@ type
     procedure scrollWheel(event: NSEvent); override;
   end;
 
-  { TCocoaTextFieldUtil }
+  { TCocoaTextControlUtil }
 
-  TCocoaTextFieldUtil = class
+  TCocoaTextControlUtil = class
   public
+    class procedure setStringValue(
+      const text: NSText;
+      const s: String );
+    class function getStringValue(
+      const text: NSText ): String;
     class function setLCLFont(
       const textField: NSTextField;
       const lclFont: TFont ): Boolean; overload;
@@ -218,7 +223,6 @@ type
     class procedure setTextHint(
       const obj: NSObject;
       const str: String ); overload;
-
   end;
 
 type
@@ -1004,9 +1008,33 @@ begin
     inherited scrollWheel(event);
 end;
 
-{ TCocoaTextFieldUtil }
+{ TCocoaTextControlUtil }
 
-class function TCocoaTextFieldUtil.setLCLFont(
+class procedure TCocoaTextControlUtil.setStringValue(
+  const text: NSText;
+  const s: String );
+var
+  ns: NSString;
+begin
+  if Assigned(text) then
+  begin
+    ns := NSStringUTF8(s);
+    text.setString(ns);
+    ns.release;
+    if Assigned(text.undoManager) then
+      text.undoManager.removeAllActions;
+  end;
+end;
+
+class function TCocoaTextControlUtil.getStringValue( const text: NSText ): String;
+begin
+  if Assigned(text) then
+    Result := NSStringToString(text.string_)
+  else
+    Result := '';
+end;
+
+class function TCocoaTextControlUtil.setLCLFont(
   const textField: NSTextField;
   const lclFont: TFont): Boolean;
 var
@@ -1030,7 +1058,7 @@ begin
   end;
 end;
 
-class function TCocoaTextFieldUtil.setLCLFont(
+class function TCocoaTextControlUtil.setLCLFont(
   const textField: NSTextField;
   const lclControl: TObject): Boolean;
 begin
@@ -1039,10 +1067,10 @@ begin
     Exit;
   if NOT (lclControl is TControl) then
     Exit;
-  Result:= TCocoaTextFieldUtil.setLCLFont( textField, TControl(lclControl).Font );
+  Result:= TCocoaTextControlUtil.setLCLFont( textField, TControl(lclControl).Font );
 end;
 
-class procedure TCocoaTextFieldUtil.setWordWrap(
+class procedure TCocoaTextControlUtil.setWordWrap(
   const textView: NSTextView;
   const scrollView: NSScrollView;
   const wordWrap: Boolean);
@@ -1072,7 +1100,7 @@ begin
   textView.sizeToFit;
 end;
 
-class procedure TCocoaTextFieldUtil.setAllignment(
+class procedure TCocoaTextControlUtil.setAllignment(
   const textView: NSTextView;
   const align: TAlignment);
 begin
@@ -1082,7 +1110,7 @@ begin
   textView.setAlignment( TCocoaTypeUtil.toAlignment(align) );
 end;
 
-class procedure TCocoaTextFieldUtil.setAllignment(
+class procedure TCocoaTextControlUtil.setAllignment(
   const textField: NSTextField;
   const align: TAlignment);
 begin
@@ -1092,7 +1120,7 @@ begin
   textField.setAlignment( TCocoaTypeUtil.toAlignment(align) );
 end;
 
-class procedure TCocoaTextFieldUtil.setBorderStyle(
+class procedure TCocoaTextControlUtil.setBorderStyle(
   const textField: NSTextField;
   const borderStyle: TBorderStyle );
 begin
@@ -1105,7 +1133,7 @@ begin
   {$endif}
 end;
 
-class procedure TCocoaTextFieldUtil.setTextHint(
+class procedure TCocoaTextControlUtil.setTextHint(
   const textField: NSTextField;
   const str: String);
 var
@@ -1121,13 +1149,13 @@ begin
   end;
 end;
 
-class procedure TCocoaTextFieldUtil.setTextHint(
+class procedure TCocoaTextControlUtil.setTextHint(
   const obj: NSObject;
   const str: String );
 begin
   if not Assigned(obj) or not obj.isKindOfClass(NSTextField) then
     Exit;
-  TCocoaTextFieldUtil.setTextHint( NSTextField(obj), str );
+  TCocoaTextControlUtil.setTextHint( NSTextField(obj), str );
 end;
 
 { TCocoaTextField }

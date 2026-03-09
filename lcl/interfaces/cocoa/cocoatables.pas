@@ -1181,7 +1181,7 @@ begin
     // in Perferences-Component Palette.
     hideAllSubviews( self );
   end else begin
-    if TCocoaTextFieldUtil.setLCLFont(self.textField, cocoaTLV.lclGetCanvas.Font) then
+    if TCocoaTextControlUtil.setLCLFont(self.textField, cocoaTLV.lclGetCanvas.Font) then
       updateItemLayout( row, col );
     inherited drawRect(dirtyRect);
   end;
@@ -1200,7 +1200,7 @@ begin
   fieldControl.setEditable( False );
   fieldControl.setLineBreakMode( NSLineBreakByTruncatingTail );
   fieldControl.setAllowsExpansionToolTips(True);
-  TCocoaTextFieldUtil.setLCLFont( fieldControl, _tableView.lclGetTarget );
+  TCocoaTextControlUtil.setLCLFont( fieldControl, _tableView.lclGetTarget );
 
   self.setTextField( fieldControl );
   self.addSubview( fieldControl );

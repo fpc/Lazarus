@@ -1732,7 +1732,7 @@ begin
     Exit;
   obj := NSObject(AWinControl.Handle);
   if obj.isKindOfClass_(NSControl) then
-    SetNSControlValue(NSControl(obj), AText);
+    TCocoaControlUtil.setStringValue(NSControl(obj), AText);
 end;
 
 class function TCocoaWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
@@ -1745,7 +1745,7 @@ begin
   obj := NSObject(AWinControl.Handle);
   Result := obj.isKindOfClass_(NSControl);
   if Result then
-    AText := GetNSControlValue(NSControl(obj));
+    AText := TCocoaControlUtil.getStringValue(NSControl(obj));
 end;
 
 class function TCocoaWSWinControl.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;

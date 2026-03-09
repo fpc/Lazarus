@@ -55,6 +55,13 @@ type
     class function getRawKeyChar(ev: NSEvent): System.WideChar;
   end;
 
+  TCocoaControlUtil = class
+  public
+    class procedure setStringValue(c: NSControl; const S: String); inline;
+    class function getStringValue(c: NSControl): String; inline;
+    class procedure moveCaretToTheEnd(c: NSControl);
+  end;
+
   TCocoaColorUtil = class
   public
     class procedure getRGBValue(cl: TColorRef; var r,g,b: Single); inline;
@@ -111,13 +118,6 @@ function StringRemoveAcceleration(const str: String): String;
 function GetNSObjectWindow(obj: NSObject): NSWindow;
 
 function getNSStringObject( const aString: id ) : NSString;
-
-procedure SetNSText(text: NSText; const s: String); inline;
-function GetNSText(text: NSText): string; inline;
-
-procedure SetNSControlValue(c: NSControl; const S: String); inline;
-function GetNSControlValue(c: NSControl): String; inline;
-procedure NSControlMoveCaretToTheEnd(c: NSControl);
 
 // "dark" is not a good reference, as Apple might add more and more themes
 function IsDarkPossible: Boolean; inline;
@@ -1006,29 +1006,7 @@ begin
     Result:= NSString( aString );
 end;
 
-procedure SetNSText(text: NSText; const s: String); inline;
-var
-  ns: NSString;
-begin
-  if Assigned(text) then
-  begin
-    ns := NSStringUTF8(s);
-    text.setString(ns);
-    ns.release;
-    if Assigned(text.undoManager) then
-      text.undoManager.removeAllActions;
-  end;
-end;
-
-function GetNSText(text: NSText): string; inline;
-begin
-  if Assigned(text) then
-    Result := NSStringToString(text.string_)
-  else
-    Result := '';
-end;
-
-procedure SetNSControlValue(c: NSControl; const S: String); inline;
+class procedure TCocoaControlUtil.setStringValue(c: NSControl; const S: String); inline;
 var
   ns: NSString;
 begin
@@ -1040,7 +1018,7 @@ begin
   end;
 end;
 
-function GetNSControlValue(c: NSControl): String; inline;
+class function TCocoaControlUtil.getStringValue(c: NSControl): String; inline;
 begin
   if Assigned(c) then
     Result := NSStringToString(c.stringValue)
@@ -1048,7 +1026,7 @@ begin
     Result := '';
 end;
 
-procedure NSControlMoveCaretToTheEnd(c: NSControl);
+class procedure TCocoaControlUtil.moveCaretToTheEnd(c: NSControl);
 var
   range: NSRange;
 begin
