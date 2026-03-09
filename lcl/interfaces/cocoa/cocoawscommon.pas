@@ -1127,7 +1127,7 @@ begin
     end
     else
     begin
-      if Event.window<>GetCocoaWindowAtPos(GetScreenPointFromEvent(Event)) then
+      if Event.window<>GetCocoaWindowAtPos(TCocoaScreenUtil.getScreenPoint(Event)) then
         exit;
 
       rect:=Target.BoundsRect;

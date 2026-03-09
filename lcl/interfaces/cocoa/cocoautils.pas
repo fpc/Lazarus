@@ -28,6 +28,9 @@ type
   public
     class function toAlignment( lclAlignment: TAlignment ): NSTextAlignment;
 
+    class function toDateTime(const aDateTime : TDateTime): NSDate; overload;
+    class function toDateTime(const aDateTime: NSDate): TDateTime; overload;
+
     class function toPoint(APt: TPoint; ParentHeight: Double): NSPoint; overload;
     class function toPoint(APt: NSPoint; ParentHeight: Double): TPoint; overload;
 
@@ -37,6 +40,8 @@ type
 
     class procedure toRect(const ns: NSRect; ParentHeight: Double; out lcl: TRect); overload;
     class procedure toRect(const lcl: TRect; ParentHeight: Double; out ns: NSRect); overload;
+
+    class function toRect(const params: TCreateParams): NSRect; overload;
   end;
 
   TCocoaColorUtil = class
@@ -57,6 +62,8 @@ type
   { TCocoaScreenUtil }
 
   TCocoaScreenUtil = class
+    class function getScreenPoint(const event: NSEvent): NSPoint;
+
     class function toCocoa(const lclPoint: TPoint): NSPoint; overload;
     class function toLCL(const cocoaPoint: NSPoint): TPoint; overload;
     class function toCocoa(const lclRect: TRect): NSRect; overload;
@@ -78,10 +85,7 @@ function UrlArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
 
 procedure hideAllSubviews( parent: NSView );
 
-function GetScreenPointFromEvent(const event: NSEvent): NSPoint;
 procedure lclOffsetWithEnclosingScrollView( const view: NSView; var x: Integer; var y: Integer );
-
-function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
 function NSStringUtf8(s: PChar; len: Integer = -1): NSString;
 function NSStringUtf8(const s: String): NSString;
@@ -137,12 +141,6 @@ procedure CreateCFString(const S: String; out AString: CFStringRef);
 procedure CreateCFString(const Data: CFDataRef; Encoding: CFStringEncoding; out AString: CFStringRef);
 procedure FreeCFString(var AString: CFStringRef);
 function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): CFDataRef;
-
-function GetCurrentEventTime: double;
-function GetMacOSXVersion: Integer;
-
-function DateTimeToNSDate(const aDateTime : TDateTime): NSDate;
-function NSDateToDateTime(const aDateTime: NSDate): TDateTime;
 
 // The function removes single '&' and '(...)', and replaced '&&' with '&'
 // (removing LCL (Windows) specific caption convention
@@ -793,7 +791,9 @@ begin
   ns.size.height:=lcl.Bottom-lcl.Top;
 end;
 
-function GetScreenPointFromEvent(const event: NSEvent): NSPoint;
+{ TCocoaScreenUtil }
+
+class function TCocoaScreenUtil.getScreenPoint(const event: NSEvent): NSPoint;
 var
   rect: NSRect;
 begin
@@ -805,8 +805,6 @@ begin
   rect:= event.window.convertRectToScreen( rect );
   Result:= rect.origin;
 end;
-
-{ TCocoaScreenUtil }
 
 class function TCocoaScreenUtil.toCocoa(const lclPoint: TPoint): NSPoint;
 begin
@@ -908,7 +906,7 @@ begin
   Result:= NSScreen( NSScreen.screens.objectAtIndex(index) );
 end;
 
-function CreateParamsToNSRect(const params: TCreateParams): NSRect;
+class function TCocoaTypeUtil.toRect(const params: TCreateParams): NSRect;
 begin
   with params do Result:=NSMakeRect(X,Y,Width,Height);
 end;
@@ -1270,47 +1268,7 @@ begin
     Result := CFDataCreate(nil, nil, 0);
 end;
 
-function GetCurrentEventTime: double;
-// returns seconds since system startup
-begin
-  Result := AbsoluteToDuration(UpTime) / 1000.0;
-end;
-
-function GetMacOSXVersion: Integer;
-var
-  lVersionNSStr: NSString;
-  lVersionStr: string;
-  lParser: TStringList;
-  lMajor: integer = 0;
-  lMinor: integer = 0;
-  lFix: integer = 0;
-begin
-  Result := 0;
-  lVersionNSStr := NSProcessInfo.processInfo.operatingSystemVersionString;
-  lVersionStr := NSStringToString(lVersionNSStr);
-  lParser := TStringList.Create;
-  try
-    lParser.Delimiter := ' ';
-    lParser.DelimitedText := lVersionStr;
-    if lParser.Count >= 2 then
-    begin
-      lVersionStr := lParser.Strings[1];
-      lParser.Delimiter := '.';
-      lParser.DelimitedText := lVersionStr;
-      if lParser.Count = 3 then
-      begin
-        TryStrToInt(lParser.Strings[0], lMajor);
-        TryStrToInt(lParser.Strings[1], lMinor);
-        TryStrToInt(lParser.Strings[2], lFix);
-      end;
-    end;
-  finally
-    lParser.Free;
-  end;
-  Result := lMajor*$10000 + lMinor*$100 + lFix;
-end;
-
-function DateTimeToNSDate(const aDateTime : TDateTime): NSDate;
+class function TCocoaTypeUtil.toDateTime(const aDateTime : TDateTime): NSDate;
 {var
   ti : NSTimeInterval;
 begin
@@ -1335,7 +1293,7 @@ begin
   cmp.release;
 end;
 
-function NSDateToDateTime(const aDateTime: NSDate): TDateTime;
+class function TCocoaTypeUtil.toDateTime(const aDateTime: NSDate): TDateTime;
 var
   cmp : NSDateComponents;
   mn : TdateTime;

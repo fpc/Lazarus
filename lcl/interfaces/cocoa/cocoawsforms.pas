@@ -330,7 +330,7 @@ begin
     Exit;
   end;
 
-  R := CreateParamsToNSRect(AParams);
+  R := TCocoaTypeUtil.toRect(AParams);
   {$ifdef BOOLFIX}
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer_(R, WinMask, NSBackingStoreBuffered, Ord(False)));
   {$else}
@@ -871,7 +871,7 @@ begin
   //      if parent is specified neither Window nor Panel needs to be created
   //      the only thing that needs to be created is Content
 
-  R := CreateParamsToNSRect(AParams);
+  R := TCocoaTypeUtil.toRect(AParams);
   if R.size.width<1 then R.size.width:=1;
   if R.size.height<1 then R.size.height:=1;
 
