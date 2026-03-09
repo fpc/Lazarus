@@ -308,8 +308,6 @@ begin
         anAlert.setAccessoryView(cancelAccessory);
       end;
 
-      ApplicationWillShowModal;
-
       if Assigned(sheetOfWindow) then
       begin
         if not (modalSheet) then
