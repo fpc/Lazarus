@@ -388,7 +388,7 @@ begin
 
   unmarkText;
 
-  nsText:= getNSStringObject(aString).copy;
+  nsText:= TCocoaStringUtil.getNSStringObject(aString).copy;
   performSelector_withObject_afterDelay(ObjCSelector('DoCallInputClientInsertText:'), nsText, 0 );
 end;
 
@@ -398,7 +398,7 @@ var
   textView: NSTextView;
   nsText: NSString;
 begin
-  nsText:= getNSStringObject(aString);
+  nsText:= TCocoaStringUtil.getNSStringObject(aString);
   if nsText.length > 0 then
   begin
     _inIME:= true;

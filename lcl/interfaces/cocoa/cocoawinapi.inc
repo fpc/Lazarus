@@ -521,7 +521,7 @@ begin
   if IconInfo^.fIcon then
     Result := HICON(ABitmap)
   else
-    Result := HICON(TCocoaCursor.CreateFromBitmap(ABitmap, GetNSPoint(IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
+    Result := HICON(TCocoaCursor.CreateFromBitmap(ABitmap, NSMakePoint(IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
 end;
 
 function TCocoaWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
@@ -858,7 +858,7 @@ begin
   end;
   for i := 0 to NSScreen.screens.count - 1 do
   begin
-    Result := Result and lpfnEnum(IndexToHMonitor(i), 0, nil, dwData);
+    Result := Result and lpfnEnum(TCocoaScreenUtil.indexToHMonitor(i), 0, nil, dwData);
     if not Result then break;
   end;
 end;
@@ -1152,8 +1152,8 @@ begin
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 1;
     SPI_GETWORKAREA:
     begin
-      NSToLCLRect( NSPrimaryScreen.visibleFrame,
-                   NSPrimaryScreenFrame.size.height,
+      TCocoaTypeUtil.toRect( TCocoaScreenUtil.primaryScreen.visibleFrame,
+                   TCocoaScreenUtil.primaryScreenFrame.size.height,
                    TRect(pvParam^) );
     end;
   else
@@ -1185,7 +1185,7 @@ begin
   if view.isKindOfClass(TCocoaWindowContent) then begin
     // handle is Form / Window
     if (not contentView.isembedded) and Assigned(contentView.window) then
-      ARect := ScreenRectFromNSToLCL( contentView.window.frame )
+      ARect := TCocoaScreenUtil.toLCL( contentView.window.frame )
     else
       ARect := contentView.lclFrame;
   end else begin
@@ -1265,15 +1265,15 @@ var
 begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
   if not Result then Exit;
-  ScreenID := getScreenFromHMonitor( hMonitor );
+  ScreenID := TCocoaScreenUtil.getScreenFromHMonitor( hMonitor );
   Result := Assigned(ScreenID);
   if not Result then Exit;
 
-  lpmi^.rcMonitor:= ScreenRectFromNSToLCL( ScreenID.frame );
-  lpmi^.rcWork:= ScreenRectFromNSToLCL( ScreenID.visibleFrame );
+  lpmi^.rcMonitor:= TCocoaScreenUtil.toLCL( ScreenID.frame );
+  lpmi^.rcWork:= TCocoaScreenUtil.toLCL( ScreenID.visibleFrame );
   // according to the documentation the primary (0,0 coord screen)
   // is always and index 0
-  if HMonitorToIndex(hMonitor) = 0 then
+  if TCocoaScreenUtil.HMonitorToIndex(hMonitor) = 0 then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
     lpmi^.dwFlags := 0;
@@ -1565,7 +1565,7 @@ begin
     Exit;
 
   p.x:=Point.X;
-  p.y:=NSGlobalScreenBottom-Point.Y;
+  p.y:=TCocoaScreenUtil.globalScreenBottom-Point.Y;
   window := GetCocoaWindowAtPos(p);
   if Assigned(window) then
     Result:= HWND(window.contentView);
@@ -1776,7 +1776,7 @@ begin
   Color := TCocoaBrush(SysBrush).Color;
 
   if Assigned(Color) then
-    Result := NSColorToColorRef(Color)
+    Result := TCocoaColorUtil.toColorRefWithAnyColor(Color)
   else
     Result := 0;
 end;
@@ -1791,11 +1791,11 @@ begin
     Exit;
   end;
   if (FSysColorBrushes[nIndex] = 0) then
-    FSysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(SysColorToNSColor(nIndex), True))
+    FSysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(TCocoaColorUtil.sysIndexToColor(nIndex), True))
   else
   begin
     // system wide can change the color on the fly
-    TCocoaBrush(FSysColorBrushes[nIndex]).Color := SysColorToNSColor(nIndex)
+    TCocoaBrush(FSysColorBrushes[nIndex]).Color := TCocoaColorUtil.sysIndexToColor(nIndex)
   end;
 
   Result := FSysColorBrushes[nIndex];
@@ -2002,20 +2002,20 @@ var
   i: Integer;
 begin
   Result:= 0;
-  point:= ScreenPointFromLCLToNS( ptScreenCoords );
+  point:= TCocoaScreenUtil.toCocoa( ptScreenCoords );
   if point.y>=1 then         // NSPointInRect is (upper,left) inside
     point.y:= point.y-1;     // (lower,right) outside
 
   for i := 0 to NSScreen.screens.count - 1 do begin
     screen:= NSScreen( NSScreen.screens.objectAtIndex(i) );
     if NSPointInRect(point, screen.frame) then begin
-      Result:= IndexToHMonitor( i );
+      Result:= TCocoaScreenUtil.indexToHMonitor( i );
       Exit;
     end;
   end;
 
   if dwFlags<>MONITOR_DEFAULTTONULL then
-    Result:= IndexToHMonitor( 0 );
+    Result:= TCocoaScreenUtil.indexToHMonitor( 0 );
 end;
 
 function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
@@ -2576,7 +2576,7 @@ begin
   // therefore we can only test bounding box of the clipping path.
 
   ClipBox := CGContextGetClipBoundingBox(ctx.CGContext);
-  Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
+  Result := IntersectRect(R, ARect, TCocoaTypeUtil.toRect(ClipBox));
 end;
 
 function TCocoaWidgetSet.ReleaseCapture : Boolean;
@@ -2670,7 +2670,7 @@ begin
     NSApp.activateIgnoringOtherApps(True);
     {$endif}
     Obj := NSObject(HWnd);
-    lWin := NSWindow(GetNSObjectWindow(Obj));
+    lWin := NSWindow(TCocoaControlUtil.getNSWindow(Obj));
     if lWin <> nil then
       lWin.makeKeyAndOrderFront(NSApp)
     else
@@ -2685,7 +2685,7 @@ var
 begin
   Result := False;
 
-  lWin := NSWindow(GetNSObjectWindow(NSObject(AWindowHandle)));
+  lWin := NSWindow(TCocoaControlUtil.getNSWindow(NSObject(AWindowHandle)));
 
   frm := HWNDToForm(AWindowHandle);
   if Assigned(frm) and (csDesigning in frm.ComponentState) then begin
@@ -2785,18 +2785,18 @@ begin
       Result := Round(NSScroller.scrollerWidthForControlSize_scrollerStyle(NSRegularControlSize, NSScrollerStyleLegacy));
     SM_CXSCREEN,
     SM_CXFULLSCREEN:
-      Result := Round(NSPrimaryScreenFrame.size.width);
+      Result := Round(TCocoaScreenUtil.primaryScreenFrame.size.width);
     SM_CYSCREEN,
     SM_CYFULLSCREEN:
-      Result := Round(NSPrimaryScreenFrame.size.height);
+      Result := Round(TCocoaScreenUtil.primaryScreenFrame.size.height);
     SM_CXVIRTUALSCREEN:
-      Result := Round(NSGlobalScreenLCLFrame.size.width);
+      Result := Round(TCocoaScreenUtil.globalScreenLCLFrame.size.width);
     SM_CYVIRTUALSCREEN:
-      Result := Round(NSGlobalScreenLCLFrame.size.height);
+      Result := Round(TCocoaScreenUtil.globalScreenLCLFrame.size.height);
     SM_XVIRTUALSCREEN:
-      Result := Round(NSGlobalScreenLCLFrame.origin.x);
+      Result := Round(TCocoaScreenUtil.globalScreenLCLFrame.origin.x);
     SM_YVIRTUALSCREEN:
-      Result := Round(NSGlobalScreenLCLFrame.origin.y);
+      Result := Round(TCocoaScreenUtil.globalScreenLCLFrame.origin.y);
     SM_CXSMICON,
     SM_CYSMICON:
       Result := 16;
@@ -2954,7 +2954,7 @@ begin
     Element := PInteger(@lpaElements)[n];
     if (Element > MAX_SYS_COLORS) or (Element < 0) then 
       Exit;
-    Color := ColorToNSColor(PDWord(@lpaRgbValues)[n]);
+    Color := TCocoaColorUtil.toColor(PDWord(@lpaRgbValues)[n]);
     if (FSysColorBrushes[Element] <> 0) then
       TCocoaBrush(FSysColorBrushes[Element]).Color := Color
     else

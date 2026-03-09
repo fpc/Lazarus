@@ -355,7 +355,7 @@ var
 
     procedure setFilterCombobox;
     begin
-      filterComboBox:= TCocoaFilterComboBox.alloc.initWithFrame(NSNullRect);
+      filterComboBox:= TCocoaFilterComboBox.alloc.initWithFrame(NSZeroRect);
       filterComboBox.DialogHandle:= cocoaFileOwner;
       filterComboBox.Owner := lclFileDialog;
       filterComboBox.setTarget( filterComboBox );
@@ -634,17 +634,17 @@ begin
   colorPanel := NSColorPanel.sharedColorPanel();
   if (colorPanel.respondsToSelector(ObjCSelector('setRestorable:'))) then
     colorPanel.setRestorable(false);
-  colorPanel.setColor(ColorToNSColor(ColorDialog.Color));
+  colorPanel.setColor(TCocoaColorUtil.toColor(ColorDialog.Color));
 
   colorDelegate := TColorPanelDelegate.alloc.init();
   colorDelegate.colorPanel := colorPanel;
   colorDelegate.ColorDialog := ColorDialog;
 
   // setup panel and its accessory view
-  lRect := GetNSRect(0, 0, 220, 30);
+  lRect := NSMakeRect(0, 0, 220, 30);
   accessoryView := NSView.alloc.initWithFrame(lRect);
 
-  lRect := GetNSRect(110, 4, 110-8, 24);
+  lRect := NSMakeRect(110, 4, 110-8, 24);
   okButton := NSButton.alloc.initWithFrame(lRect);
   okButton.setButtonType(NSMomentaryPushInButton);
   okButton.setBezelStyle(NSRoundedBezelStyle);
@@ -652,11 +652,11 @@ begin
   okButton.setAction(objcselector('pickColor'));
   okButton.setTarget(colorDelegate);
 
-  lRect := GetNSRect(8, 4, 110-8, 24);
+  lRect := NSMakeRect(8, 4, 110-8, 24);
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);
-  cancelButton.setTitle(ControlTitleToNSStr(rsMbCancel));
+  cancelButton.setTitle(TCocoaControlUtil.toMacOSTitle(rsMbCancel));
   cancelButton.SetAction(objcselector('exit'));
   cancelButton.setTarget(colorDelegate);
 
@@ -701,7 +701,7 @@ begin
     NSNumber.numberWithInt( StkStyle[fsStrikeOut in src.Style]),
     NSStrikethroughStyleAttributeName);
   if (src.Color <> clDefault) then
-    dst.setObject_forKey(ColorToNSColor(src.Color), NSForegroundColorAttributeName);
+    dst.setObject_forKey(TCocoaColorUtil.toColor(src.Color), NSForegroundColorAttributeName);
 end;
 
 function ObjToNum(obj: NSObject; defVal: integer): Integer;
@@ -737,7 +737,7 @@ begin
   obj := src.objectForKey(NSForegroundColorAttributeName);
   if (Assigned(obj) and obj.isKindOfClass(NSColor)) then
   begin
-    cl := NSColorToColorRef(NSColor(obj));
+    cl := TCocoaColorUtil.toColorRefWithAnyColor(NSColor(obj));
   end;
 
   dst.Style := fs;
@@ -815,10 +815,10 @@ begin
   //fm.setDelegate(FontDelegate);
 
   // setup panel and its accessory view
-  lRect := GetNSRect(0, 0, 220, 36);
+  lRect := NSMakeRect(0, 0, 220, 36);
   accessoryView := NSView.alloc.initWithFrame(lRect);
 
-  lRect := GetNSRect(110, 6, 110-8, 24);
+  lRect := NSMakeRect(110, 6, 110-8, 24);
   okButton := NSButton.alloc.initWithFrame(lRect);
   okButton.setButtonType(NSMomentaryPushInButton);
   okButton.setBezelStyle(NSRoundedBezelStyle);
@@ -826,11 +826,11 @@ begin
   okButton.setAction(objcselector('selectFont'));
   okButton.setTarget(FontDelegate);
 
-  lRect := GetNSRect(8, 6, 110-8, 24);
+  lRect := NSMakeRect(8, 6, 110-8, 24);
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);
-  cancelButton.setTitle(ControlTitleToNSStr(rsMbCancel));
+  cancelButton.setTitle(TCocoaControlUtil.toMacOSTitle(rsMbCancel));
   cancelButton.SetAction(objcselector('exit'));
   cancelButton.setTarget(FontDelegate);
 
@@ -875,7 +875,7 @@ end;
 
 procedure TColorPanelDelegate.doPickColor;
 begin
-  ColorDialog.Color := NSColorToColorRef(colorPanel.color);
+  ColorDialog.Color := TCocoaColorUtil.toColorRefWithAnyColor(colorPanel.color);
 end;
 
 procedure TColorPanelDelegate.pickColor;

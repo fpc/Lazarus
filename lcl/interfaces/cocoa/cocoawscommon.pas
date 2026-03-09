@@ -363,7 +363,7 @@ begin
     PtForChildCtrls.y := PtForChildCtrls.y + cr.Top;
 
     if Target is TScrollingWinControl then
-      lclOffsetWithEnclosingScrollView(NSView(Owner), PtForChildCtrls.x, PtForChildCtrls.y);
+      TCocoaControlUtil.lclOffsetWithEnclosingScrollView(NSView(Owner), PtForChildCtrls.x, PtForChildCtrls.y);
 
   end else
   begin
@@ -379,12 +379,12 @@ var
   f: NSRect;
   lWindow: NSWindow;
 begin
-  lWindow := NSWindow(GetNSObjectWindow(Owner));
+  lWindow := NSWindow(TCocoaControlUtil.getNSWindow(Owner));
   if lWindow <> nil then
   begin
     f := lWindow.frame;
     Point.x := Point.x + f.origin.x;
-    Point.y := NSGlobalScreenBottom - ( Point.y + f.origin.y );
+    Point.y := TCocoaScreenUtil.globalScreenBottom - ( Point.y + f.origin.y );
   end;
 end;
 
@@ -580,12 +580,12 @@ begin
     and ((Event.modifierFlags and NSNumericPadKeyMask) = 0) // num pad should be checked by KeyCode
   then
   begin
-    VKKeyCode := MacCharToVK(ignModChr.characterAtIndex(0));
+    VKKeyCode := TCocoaKeyUtil.charToVK(ignModChr.characterAtIndex(0));
     if VKKeyCode = VK_UNKNOWN then
-      VKKeyCode := MacCodeToVK(KeyCode); // fallback
+      VKKeyCode := TCocoaKeyUtil.codeToVK(KeyCode); // fallback
   end
   else
-    VKKeyCode := MacCodeToVK(KeyCode);
+    VKKeyCode := TCocoaKeyUtil.codeToVK(KeyCode);
 
   if Assigned(CocoaConfigApplication.events.keyEventToVK) then
     VKKeyCode := CocoaConfigApplication.events.keyEventToVK(Event);
@@ -1127,7 +1127,7 @@ begin
     end
     else
     begin
-      if Event.window<>GetCocoaWindowAtPos(GetScreenPointFromEvent(Event)) then
+      if Event.window<>GetCocoaWindowAtPos(TCocoaScreenUtil.getScreenPoint(Event)) then
         exit;
 
       rect:=Target.BoundsRect;
@@ -1495,7 +1495,7 @@ begin
 
       FillChar(PS, SizeOf(TPaintStruct), 0);
       PS.hdc := HDC(FContext);
-      PS.rcPaint := NSRectToRect(nsr);
+      PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(FContext), @PS);
       if FHasCaret then
         DrawCaret;
@@ -1513,7 +1513,7 @@ begin
   lTarget := TWinControl(GetTarget());
   if (lTarget.Color <> clDefault) and (lTarget.Color <> clBtnFace)  and (lTarget.Color <> clNone) then
   begin
-    ColorToNSColor(ColorToRGB(lTarget.Color)).set_();
+    TCocoaColorUtil.toColor(ColorToRGB(lTarget.Color)).set_();
     // NSRectFill() always requires the coordinate system of the lower left corner
     // of the origin, contrary to the Rect provided to LCL in
     // TLCLCommonCallback.Draw() and TLCLCommonCallback.DrawOverlay()
@@ -1543,7 +1543,7 @@ begin
 
       FillChar(PS, SizeOf(TPaintStruct), 0);
       PS.hdc := HDC(FContext);
-      PS.rcPaint := NSRectToRect(nsr);
+      PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(FContext), @PS);
     end;
   finally
@@ -1732,7 +1732,7 @@ begin
     Exit;
   obj := NSObject(AWinControl.Handle);
   if obj.isKindOfClass_(NSControl) then
-    SetNSControlValue(NSControl(obj), AText);
+    TCocoaControlUtil.setStringValue(NSControl(obj), AText);
 end;
 
 class function TCocoaWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
@@ -1745,7 +1745,7 @@ begin
   obj := NSObject(AWinControl.Handle);
   Result := obj.isKindOfClass_(NSControl);
   if Result then
-    AText := GetNSControlValue(NSControl(obj));
+    AText := TCocoaControlUtil.getStringValue(NSControl(obj));
 end;
 
 class function TCocoaWSWinControl.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
@@ -1908,7 +1908,7 @@ begin
     if AFont.Color = clDefault then
       Obj.setTextColor(NSColor.controlTextColor)
     else
-      Obj.setTextColor(ColorToNSColor(ColorToRGB(AFont.Color)));
+      Obj.setTextColor(TCocoaColorUtil.toColor(ColorToRGB(AFont.Color)));
   end;
 end;
 

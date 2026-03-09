@@ -336,9 +336,9 @@ begin
     Result := inherited lclClientFrame
   else
     if v.isFlipped then
-      Result := NSRectToRect( v.frame )
+      Result := TCocoaTypeUtil.toRect( v.frame )
     else
-      NSToLCLRect(v.frame, frame.size.height, Result);
+      TCocoaTypeUtil.toRect(v.frame, frame.size.height, Result);
 end;
 
 function TCocoaGroupBox.lclContentView: NSView;
@@ -560,10 +560,10 @@ begin
     p := NSView(AParams.WndParent).lclContentView;
 
   if Assigned(p) and p.isFlipped then
-    LCLToNSRect(Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
+    TCocoaTypeUtil.toRect(Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
       p.frame.size.height, ns)
   else
-    ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+    ns := NSMakeRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
 
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   if Assigned(p) then
@@ -687,10 +687,10 @@ begin
 
   // Convert from Screen-cocoa to Screen-lcl
   x:= Round( rect.origin.x );
-  y:= Round( NSGlobalScreenBottom - rect.origin.y );
+  y:= Round( TCocoaScreenUtil.globalScreenBottom - rect.origin.y );
 
   if NOT (lclGetTarget is TScrollingWinControl) then
-    lclOffsetWithEnclosingScrollView(self, x, y );
+    TCocoaControlUtil.lclOffsetWithEnclosingScrollView(self, x, y );
 end;
 
 procedure LCLViewExtension.lclScreenToLocal(var X, Y: Integer);
@@ -727,10 +727,10 @@ var
 begin
   v := superview;
   if Assigned(v) and not v.isFlipped then
-    NSToLCLRect(frame, v.frame.size.height, Result)
+    TCocoaTypeUtil.toRect(frame, v.frame.size.height, Result)
   else
-    Result := NSRectToRect(frame);
-  AddLayoutToFrame( lclGetFrameToLayoutDelta, Result);
+    Result := TCocoaTypeUtil.toRect(frame);
+  TCocoaControlUtil.addLayoutDelta( lclGetFrameToLayoutDelta, Result);
 end;
 
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
@@ -740,15 +740,15 @@ var
   rr : TRect;
 begin
   rr := r;
-  SubLayoutFromFrame( lclGetFrameToLayoutDelta, rr);
+  TCocoaControlUtil.subLayoutDelta( lclGetFrameToLayoutDelta, rr);
 
   svHeight := GetNSViewSuperViewHeight(Self);
   if Assigned(superview) and not superview.isFlipped then
   begin
-    LCLToNSRect(rr, svHeight, ns)
+    TCocoaTypeUtil.toRect(rr, svHeight, ns)
   end
   else
-    ns := RectToNSRect(rr);
+    ns := TCocoaTypeUtil.toRect(rr);
 
   if ns.size.width<1 then ns.size.width:=1;
   if ns.size.height<1 then ns.size.height:=1;

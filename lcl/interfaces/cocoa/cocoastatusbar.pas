@@ -104,7 +104,7 @@ begin
     panelCell.setAlignment(CocoaAlign[al]);
     panelCell.drawWithFrame_inView(dr, Self);
     cs.release;
-    barcallback.DrawPanel(i, NSRectToRect(nr));
+    barcallback.DrawPanel(i, TCocoaTypeUtil.toRect(nr));
     inc(x, w);
     if x > r.Right then break; // no place left
   end;

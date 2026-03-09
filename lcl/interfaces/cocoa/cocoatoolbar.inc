@@ -325,8 +325,8 @@ begin
     StrToNSString(toolBarConfig.identifier) );
   toolBar.lclSetConfig( @toolBarConfig );
 
-  defaultArray:= StringArrayFromLCLToNS( toolBarConfig.defaultItemsIdentifiers );
-  allowedArray:= StringArrayFromLCLToNS( toolBarConfig.allowedItemsIdentifiers );
+  defaultArray:= TCocoaCollectionUtil.stringArrayToNSArray( toolBarConfig.defaultItemsIdentifiers );
+  allowedArray:= TCocoaCollectionUtil.stringArrayToNSArray( toolBarConfig.allowedItemsIdentifiers );
 
   toolBar.setDisplayMode( toolBarConfig.displayMode );
   toolBar.setAllowsUserCustomization( toolBarConfig.allowsUserCustomization );
@@ -403,7 +403,7 @@ var
   lclArray: TStringArray;
 begin
   lclArray:= _onGetItems( pickerToolbarItem );
-  Result:= UrlArrayFromLCLToNS( lclArray );
+  Result:= TCocoaCollectionUtil.urlArrayToNSArray( lclArray );
 end;
 
 procedure TCocoaToolBarItemSharingDelegate.lclSetOnGetItems(

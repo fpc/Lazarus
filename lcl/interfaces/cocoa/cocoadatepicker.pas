@@ -49,7 +49,7 @@ begin
   if assigned(callback) then
   begin
     // Save Date BEFORE mouse click/down event
-    oldDate:= NSDateToDateTime(Self.dateValue);
+    oldDate:= TCocoaTypeUtil.toDateTime(Self.dateValue);
 
     if not callback.MouseUpDownEvent(event) then
     begin
@@ -57,7 +57,7 @@ begin
       inherited mouseDown(event);
 
       // After mouse event, has our date changed
-      newDate:= NSDateToDateTime(Self.dateValue);
+      newDate:= TCocoaTypeUtil.toDateTime(Self.dateValue);
       dateClicked:= (oldDate <> newDate);
       if dateClicked and Assigned(callback) then
         callback.SendOnChange;

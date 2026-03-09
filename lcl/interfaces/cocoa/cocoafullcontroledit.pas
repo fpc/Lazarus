@@ -207,7 +207,7 @@ begin
   if params.isFirstCall then imeHandler.IMESessionBegin;
 
   // get IME Intermediate Text
-  nsText:= getNSStringObject( aString );
+  nsText:= TCocoaStringUtil.getNSStringObject( aString );
   setIMEParamsText( params, nsText );
 
   // some IME want to select subRange of Intermediate Text
@@ -260,7 +260,7 @@ begin
   params.isFirstCall:= not hasMarkedText();
 
   // IME final text
-  nsText:= getNSStringObject( aString );
+  nsText:= TCocoaStringUtil.getNSStringObject( aString );
   setIMEParamsText( params, nsText );
 
   // some IME want to eat some chars, such as inputting DeadKeys
@@ -368,7 +368,7 @@ begin
   end else begin
     rect:= getLookupWordBound;
   end;
-  LCLToNSRect( rect, NSGlobalScreenBottom, Result );
+  TCocoaTypeUtil.toRect( rect, TCocoaScreenUtil.globalScreenBottom, Result );
 end;
 
 procedure TCocoaFullControlEdit.unmarkText;
@@ -486,7 +486,7 @@ begin
   Result:= NSNotFound;
   if NOT Assigned(self.lwHandler) then
     Exit;
-  lclPoint:= ScreenPointFromNSToLCL( aPoint );
+  lclPoint:= TCocoaScreenUtil.toLCL( aPoint );
   self.lwHandler.LWRowColForScreenPoint( params, lclPoint );
   if params.col >= 0 then
     Result:= LWParamsToRange(params).location;

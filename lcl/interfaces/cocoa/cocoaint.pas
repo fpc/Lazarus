@@ -87,7 +87,6 @@ type
     procedure sendEvent(theEvent: NSEvent); override;
     function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
 
-    function runModalForWindow(theWindow: NSWindow): NSInteger; override;
     procedure lclSyncCheck(arg: id); message 'lclSyncCheck:';
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
     function isRunning: objc.ObjCBOOL; override;
@@ -730,13 +729,6 @@ begin
       end;
     end;
   end;
-end;
-
-function TCocoaApplication.runModalForWindow(theWindow: NSWindow): NSInteger;
-begin
-  ApplicationWillShowModal;
-
-  Result:=inherited runModalForWindow(theWindow);
 end;
 
 procedure TCocoaApplication.lclSyncCheck(arg: id);

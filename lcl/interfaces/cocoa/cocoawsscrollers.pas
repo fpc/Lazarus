@@ -41,7 +41,7 @@ begin
     Exit(nil);
   r := AView.lclFrame;
   p := AView.superview;
-  Result := TCocoaScrollView.alloc.initWithFrame(NSNullRect);
+  Result := TCocoaScrollView.alloc.initWithFrame(NSZeroRect);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
   {$ifdef BOOLFIX}
@@ -73,7 +73,7 @@ begin
   r := AView.lclFrame;
   p := AView.superview;
   p.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable);
-  Result := TCocoaManualScrollView.alloc.initWithFrame(NSNullRect);
+  Result := TCocoaManualScrollView.alloc.initWithFrame(NSZeroRect);
   Result.setAcceptsTouchEvents(true);
   Result.setAutoresizesSubviews(false);
   if Assigned(p) then p.addSubView(Result);
@@ -105,7 +105,7 @@ begin
     Exit(nil);
   r := AView.lclFrame;
   p := AView.superview;
-  Result := TCocoaManualScrollHost.alloc.initWithFrame(NSNullRect);
+  Result := TCocoaManualScrollHost.alloc.initWithFrame(NSZeroRect);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
   {$ifdef BOOLFIX}
