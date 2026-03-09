@@ -82,6 +82,8 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLHandle; override;
+    class function  GetDefaultClientRect(const AWinControl: TWinControl;
+      const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect): boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
@@ -156,6 +158,79 @@ begin
 end;
 
 { TGtk3WSCustomForm }
+
+function MeasureFormClientRect(const AWidth, AHeight: Integer;
+  const AHasMenu: Boolean): TRect;
+var
+  AWindow: PGtkWindow;
+  ABox: PGtkBox;
+  AScrollWin: PGtkScrolledWindow;
+  ALayout: PGtkLayout;
+  Alloc: TGtkAllocation;
+begin
+  Result := Rect(0, 0, AWidth, AHeight);
+  if (AWidth <= 0) or (AHeight <= 0) then
+    Exit;
+  AWindow := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_decorated(AWindow, False);
+  gtk_widget_set_app_paintable(PGtkWidget(AWindow), gtk_true);
+  gtk_widget_set_size_request(PGtkWidget(AWindow), 1, 1);
+  gtk_window_set_default_size(AWindow, AWidth, AHeight);
+  gtk_window_set_focus_on_map(AWindow, False);
+  gtk_window_set_position(AWindow, GTK_WIN_POS_NONE);
+  gtk_window_set_keep_below(AWindow, True);
+  ABox := gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  gtk_container_add(PGtkContainer(AWindow), PGtkWidget(ABox));
+  if AHasMenu then
+    gtk_box_pack_start(ABox, PGtkWidget(gtk_menu_bar_new), False, False, 0);
+  AScrollWin := gtk_scrolled_window_new(nil, nil);
+  gtk_scrolled_window_set_policy(AScrollWin, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+  gtk_box_pack_start(ABox, PGtkWidget(AScrollWin), True, True, 0);
+  ALayout := gtk_layout_new(nil, nil);
+  gtk_container_add(PGtkContainer(AScrollWin), PGtkWidget(ALayout));
+  PGtkWidget(AWindow)^.show_all;
+  PGtkWidget(ALayout)^.get_allocation(@Alloc);
+  if (Alloc.width > 1) and (Alloc.height > 1) then
+    Result := Rect(0, 0, Alloc.width, Alloc.height);
+  PGtkWidget(AWindow)^.set_visible(False);
+  PGtkWidget(AWindow)^.destroy_;
+end;
+
+class function TGtk3WSCustomForm.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): boolean;
+var
+  AWindow: TGtk3Window;
+  Alloc: TGtkAllocation;
+  MinH, NatH: gint;
+begin
+  Result := False;
+  if AWinControl.HandleAllocated then
+  begin
+    AWindow := TGtk3Window(AWinControl.Handle);
+    AWindow.GetContainerWidget^.get_allocation(@Alloc);
+    if (Alloc.width > 1) or (Alloc.height > 1) then
+      exit;
+    aClientRect := Rect(0, 0, aWidth, aHeight);
+    if Assigned(AWindow.GetMenuBar) then
+    begin
+      MinH := 0;
+      NatH := 0;
+      PGtkWidget(AWindow.GetMenuBar)^.get_preferred_height(@MinH, @NatH);
+      if NatH > 0 then
+        Dec(aClientRect.Bottom, NatH)
+      else if MinH > 0 then
+        Dec(aClientRect.Bottom, MinH);
+      if aClientRect.Bottom < 0 then
+        aClientRect.Bottom := 0;
+    end;
+  end else
+  begin
+    aClientRect := MeasureFormClientRect(aWidth, aHeight,
+      (AWinControl is TCustomForm) and (TCustomForm(AWinControl).Menu <> nil));
+  end;
+  Result := True;
+end;
 
 class function TGtk3WSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
