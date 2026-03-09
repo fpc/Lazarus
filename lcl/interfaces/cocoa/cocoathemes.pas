@@ -1015,16 +1015,8 @@ begin
 end;
 
 class function TCocoaThemeServices.isDark: Boolean;
-var
-  appearanceName: NSString;
 begin
-  Result:= False;
-  if not NSApp.respondsToSelector( ObjCSelector('effectiveAppearance') ) then
-    Exit;
-  if not Assigned(NSApp.effectiveAppearance) then
-    Exit;
-  appearanceName:= NSApp.effectiveAppearance.Name;
-  Result:= appearanceName.isEqualToString(NSSTR_DARK_NAME) or appearanceName.isEqualToString(NSSTR_DARK_NAME_VIBRANT);
+  Result:= TCocoaThemeUtil.isDark;
 end;
 
 end.
