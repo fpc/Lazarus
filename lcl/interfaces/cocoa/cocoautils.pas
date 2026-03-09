@@ -44,6 +44,12 @@ type
     class function toRect(const params: TCreateParams): NSRect; overload;
   end;
 
+  TCocoaCollectionUtil = class
+  public
+    class function stringArrayToNSArray(const lclArray: TStringArray): NSArray;
+    class function urlArrayToNSArray(const lclArray: TStringArray): NSArray;
+  end;
+
   TCocoaStringUtil = class
   public
     class function removeLineBreak(const str: NSString): NSString;
@@ -126,9 +132,6 @@ type
     class function getScreenFromHMonitor(h: HMonitor): NSScreen;
   end;
 
-function StringArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
-function UrlArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
-
 function NSStringUtf8(s: PChar; len: Integer = -1): NSString;
 function NSStringUtf8(const s: String): NSString;
 function StrToNSString(const s: string; AutoRelease: Boolean = true): NSString;
@@ -169,7 +172,7 @@ procedure FreeCFString(var AString: CFStringRef);
 
 implementation
 
-function StringArrayFromLCLToNS( const lclArray: TStringArray ): NSArray;
+class function TCocoaCollectionUtil.stringArrayToNSArray( const lclArray: TStringArray ): NSArray;
 var
   cocoaArray: NSMutableArray;
   i: Integer;
@@ -186,7 +189,7 @@ begin
   Result:= cocoaArray;
 end;
 
-function UrlArrayFromLCLToNS(const lclArray:TStringArray): NSArray;
+class function TCocoaCollectionUtil.urlArrayToNSArray(const lclArray:TStringArray): NSArray;
 var
   cocoaArray: NSMutableArray;
   cocoaUrl: NSUrl;
