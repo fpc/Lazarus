@@ -2670,7 +2670,7 @@ begin
     NSApp.activateIgnoringOtherApps(True);
     {$endif}
     Obj := NSObject(HWnd);
-    lWin := NSWindow(GetNSObjectWindow(Obj));
+    lWin := NSWindow(TCocoaControlUtil.getNSWindow(Obj));
     if lWin <> nil then
       lWin.makeKeyAndOrderFront(NSApp)
     else
@@ -2685,7 +2685,7 @@ var
 begin
   Result := False;
 
-  lWin := NSWindow(GetNSObjectWindow(NSObject(AWindowHandle)));
+  lWin := NSWindow(TCocoaControlUtil.getNSWindow(NSObject(AWindowHandle)));
 
   frm := HWNDToForm(AWindowHandle);
   if Assigned(frm) and (csDesigning in frm.ComponentState) then begin

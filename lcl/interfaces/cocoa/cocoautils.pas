@@ -76,6 +76,7 @@ type
     class function getStringValue(const c: NSControl): String; inline;
     class function toMacOSTitle(const ATitle: String): NSString;
     class procedure moveCaretToTheEnd(const c: NSControl);
+    class function getNSWindow(const obj: NSObject): NSWindow;
     class procedure hideAllSubviews( const parent: NSView );
     class procedure addLayoutDelta(const layout: TRect; var frame: TRect);
     class procedure subLayoutDelta(const layout: TRect; var frame: TRect);
@@ -138,8 +139,6 @@ function StrToNSString(const s: string; AutoRelease: Boolean = true): NSString;
 function StrToNSStr(const s: string; AutoRelease: Boolean = true): NSString; inline;
 function NSStringToString(ns: NSString): String;
 function NSStringToUnicodeString(ns: NSString): UnicodeString;
-
-function GetNSObjectWindow(obj: NSObject): NSWindow;
 
 // "dark" is not a good reference, as Apple might add more and more themes
 function IsDarkPossible: Boolean; inline;
@@ -678,7 +677,7 @@ begin
   result:=CFStringToStr(AString);
 end;
 
-function GetNSObjectWindow(obj: NSObject): NSWindow;
+class function TCocoaControlUtil.getNSWindow(const obj: NSObject): NSWindow;
 begin
   Result := nil;
   if not Assigned(obj) then Exit;

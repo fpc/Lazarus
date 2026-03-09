@@ -379,7 +379,7 @@ var
   f: NSRect;
   lWindow: NSWindow;
 begin
-  lWindow := NSWindow(GetNSObjectWindow(Owner));
+  lWindow := NSWindow(TCocoaControlUtil.getNSWindow(Owner));
   if lWindow <> nil then
   begin
     f := lWindow.frame;
