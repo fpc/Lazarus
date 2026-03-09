@@ -59,7 +59,6 @@ type
     LazarusInstancesCB: TComboBox;
     LazarusInstancesLabel: TLabel;
     OpenLastProjectAtStartCheckBox: TCheckBox;
-    procedure OpenLastProjectAtStartCheckBoxChange(Sender: TObject);
   private
     FOldOpenLastProjectAtStart: boolean;
     FOldProjectTemplateAtStart: string;
@@ -79,10 +78,6 @@ implementation
 
 { TIdeStartupFrame }
 
-procedure TIdeStartupFrame.OpenLastProjectAtStartCheckBoxChange(Sender: TObject);
-begin
-  ProjectTypeCB.Enabled := not (Sender as TCheckBox).Checked;
-end;
 {
 function TIdeStartupFrame.Check: Boolean;
 begin

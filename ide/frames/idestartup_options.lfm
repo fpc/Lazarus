@@ -20,7 +20,6 @@ object IdeStartupFrame: TIdeStartupFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'OpenLastProjectAtStartCheckBox'
-    OnChange = OpenLastProjectAtStartCheckBoxChange
     TabOrder = 1
   end
   object divFileAssociation: TDividerBevel
