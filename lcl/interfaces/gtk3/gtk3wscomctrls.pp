@@ -1739,7 +1739,7 @@ var
   i: integer;
   AList: PGList;
   Allocation: TGtkAllocation;
-  NbAlloc: TGtkAllocation;
+  gx, gy: gint;
   ARect: TRect;
 begin
   Result:=-1;
@@ -1747,8 +1747,6 @@ begin
     exit;
   NoteBookWidget := PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget);
   if (NotebookWidget=nil) then exit;
-
-  gtk_widget_get_allocation(PGtkWidget(NoteBookWidget), @NbAlloc);
 
   AList := NoteBookWidget^.get_children;
   try
@@ -1761,8 +1759,10 @@ begin
         if TabWidget <> nil then
         begin
           gtk_widget_get_allocation(TabWidget, @Allocation);
-          ARect := RectFromGdkRect(Allocation);
-          Types.OffsetRect(ARect, -NbAlloc.x, -NbAlloc.y);
+          gx := 0;
+          gy := 0;
+          TabWidget^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @gx, @gy);
+          ARect := Rect(gx, gy, gx + Allocation.width, gy + Allocation.height);
           if PtInRect(ARect, AClientPos) then
           begin
             Result := I;
@@ -1785,7 +1785,7 @@ var
   Count: guint;
   AList: PGList;
   Allocation: TGtkAllocation;
-  X, Y: gint;
+  gx, gy: gint;
 begin
   Result := inherited;
   if (ATabControl is TTabControl) then
@@ -1805,18 +1805,10 @@ begin
       if TabWidget <> nil then
       begin
         gtk_widget_get_allocation(TabWidget, @Allocation);
-        Result := RectFromGdkRect(Allocation);
-        gtk_widget_get_allocation(NoteBookWidget, @Allocation);
-        Y := Allocation.y;
-        X := Allocation.x;
-        if Y <= 0 then
-          exit;
-        case ATabControl.TabPosition of
-          tpTop, tpBottom:
-              OffsetRect(Result, 0, -Y);
-          tpLeft, tpRight:
-            OffsetRect(Result, -X, -Y);
-        end;
+        gx := 0;
+        gy := 0;
+        TabWidget^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @gx, @gy);
+        Result := Rect(gx, gy, gx + Allocation.width, gy + Allocation.height);
       end;
     end;
   finally
