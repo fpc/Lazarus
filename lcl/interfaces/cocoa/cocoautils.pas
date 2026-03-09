@@ -94,6 +94,17 @@ type
     class function sysIndexToColor(nIndex: Integer): NSColor;
   end;
 
+  TCocoaImageUtil = class
+    class procedure fillStandardDescription(
+      out Desc: TRawImageDescription );
+    class function copyAndRotateImage(
+      const src: NSImage;
+      const degrees: Double ): NSImage;
+    class function copyAndRotateCursor(
+      const src: NSCursor;
+      const degrees: Double ): NSCursor;
+  end;
+
   { TCocoaScreenUtil }
 
   TCocoaScreenUtil = class
@@ -152,15 +163,10 @@ const
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
 function CFStringToString(AString: CFStringRef): String; inline;
 
-procedure FillStandardDescription(out Desc: TRawImageDescription);
-
 procedure CreateCFString(const S: String; out AString: CFStringRef);
 procedure CreateCFString(const Data: CFDataRef; Encoding: CFStringEncoding; out AString: CFStringRef);
 procedure FreeCFString(var AString: CFStringRef);
 function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): CFDataRef;
-
-function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
-function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
 
 implementation
 
@@ -1072,6 +1078,7 @@ begin
     then Result:=NSString.stringWithCharacters_length(@w, 1)
     else Result:=NSString.string_;
 end;
+
 {------------------------------------------------------------------------------
   Name:    FillStandardDescription
   Params:  Desc - Raw image description
@@ -1079,7 +1086,7 @@ end;
   Fills the raw image description with standard Cocoa internal image storing
   description
  ------------------------------------------------------------------------------}
-procedure FillStandardDescription(out Desc: TRawImageDescription);
+class procedure TCocoaImageUtil.fillStandardDescription(out Desc: TRawImageDescription);
 begin
   Desc.Init;
 
@@ -1294,7 +1301,9 @@ begin
     Result := System.WideChar(m.characterAtIndex(0));
 end;
 
-function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
+class function TCocoaImageUtil.copyAndRotateImage(
+  const src: NSImage;
+  const degrees: Double ): NSImage;
 var
   imageBounds : NSRect;
   pathBounds  : NSBezierPath;
@@ -1340,11 +1349,13 @@ begin
   transform.release;
 end;
 
-function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
+class function TCocoaImageUtil.copyAndRotateCursor(
+  const src: NSCursor;
+  const degrees: Double ): NSCursor;
 var
   img : NSImage;
 begin
-  img := AllocImageRotatedByDegrees(src.image, degrees);
+  img := copyAndRotateImage(src.image, degrees);
   //todo: a better hotspot detection
   Result := NSCursor.alloc.initWithImage_hotSpot(
     img,

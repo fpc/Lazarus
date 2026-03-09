@@ -36,16 +36,16 @@ begin
     crIBeam       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.IBeamCursor));
     crSizeNS,
     crVSplit      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpDownCursor));
-    crSizeNESW    : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeLeftRightCursor,  45) ));
-    crSizeNWSE    : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeLeftRightCursor, -45) ));
+    crSizeNESW    : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( TCocoaImageUtil.copyAndRotateCursor(NSCursor.resizeLeftRightCursor,  45) ));
+    crSizeNWSE    : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( TCocoaImageUtil.copyAndRotateCursor(NSCursor.resizeLeftRightCursor, -45) ));
     crSizeWE,
     crHSplit      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftRightCursor));
     crSizeN       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpCursor));
-    crSizeNW      : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeLeftCursor, -45) ));
-    crSizeSW      : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeLeftCursor, 45) ));
+    crSizeNW      : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( TCocoaImageUtil.copyAndRotateCursor(NSCursor.resizeLeftCursor, -45) ));
+    crSizeSW      : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( TCocoaImageUtil.copyAndRotateCursor(NSCursor.resizeLeftCursor, 45) ));
     crSizeW       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftCursor));
-    crSizeNE      : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeRightCursor,  45) ));
-    crSizeSE      : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( AllocCursorFromCursorByDegrees(NSCursor.resizeRightCursor, -45) ));
+    crSizeNE      : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( TCocoaImageUtil.copyAndRotateCursor(NSCursor.resizeRightCursor,  45) ));
+    crSizeSE      : Result := HCursor(TCocoaCursor.CreateFromCustomCursor( TCocoaImageUtil.copyAndRotateCursor(NSCursor.resizeRightCursor, -45) ));
     crSizeE       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeRightCursor));
     crSizeS       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeDownCursor));
     crNo,
@@ -553,7 +553,7 @@ function TCocoaWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRa
 begin
   Result := False;
 
-  FillStandardDescription(ADesc);
+  TCocoaImageUtil.fillStandardDescription(ADesc);
   if (ADC <> 0) and CheckDC(ADC, 'RawImage_DescriptionFromDevice') then
   begin
     with TCocoaContext(ADC).Size do
@@ -722,7 +722,7 @@ begin
 
   { Fills the image description }
   ARawImage.Init;
-  FillStandardDescription(ARawImage.Description);
+  TCocoaImageUtil.fillStandardDescription(ARawImage.Description);
   if Assigned(ScreenImage) then begin
     ARawImage.Description.Height := CGImageGetHeight(ScreenImage);
     ARawImage.Description.Width := CGImageGetWidth(ScreenImage);
