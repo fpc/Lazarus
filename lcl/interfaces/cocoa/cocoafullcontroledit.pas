@@ -207,7 +207,7 @@ begin
   if params.isFirstCall then imeHandler.IMESessionBegin;
 
   // get IME Intermediate Text
-  nsText:= getNSStringObject( aString );
+  nsText:= TCocoaStringUtil.getNSStringObject( aString );
   setIMEParamsText( params, nsText );
 
   // some IME want to select subRange of Intermediate Text
@@ -260,7 +260,7 @@ begin
   params.isFirstCall:= not hasMarkedText();
 
   // IME final text
-  nsText:= getNSStringObject( aString );
+  nsText:= TCocoaStringUtil.getNSStringObject( aString );
   setIMEParamsText( params, nsText );
 
   // some IME want to eat some chars, such as inputting DeadKeys

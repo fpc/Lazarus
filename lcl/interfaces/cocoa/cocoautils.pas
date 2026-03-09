@@ -44,6 +44,13 @@ type
     class function toRect(const params: TCreateParams): NSRect; overload;
   end;
 
+  TCocoaStringUtil = class
+  public
+    class function removeLineBreak(const str: NSString): NSString;
+    class function removeAcceleration(const str: String): String;
+    class function getNSStringObject( const aString: id ) : NSString;
+  end;
+
   TCocoaKeyUtil = class
   private
   const
@@ -112,12 +119,7 @@ function StrToNSStr(const s: string; AutoRelease: Boolean = true): NSString; inl
 function NSStringToString(ns: NSString): String;
 function NSStringToUnicodeString(ns: NSString): UnicodeString;
 
-function NSStringRemoveLineBreak(const str: NSString): NSString;
-function StringRemoveAcceleration(const str: String): String;
-
 function GetNSObjectWindow(obj: NSObject): NSWindow;
-
-function getNSStringObject( const aString: id ) : NSString;
 
 // "dark" is not a good reference, as Apple might add more and more themes
 function IsDarkPossible: Boolean; inline;
@@ -968,7 +970,7 @@ begin
   ns.getCharacters_range(unicharPtr(Result), NSMakeRange(0, ns.length));
 end;
 
-function NSStringRemoveLineBreak(const str: NSString): NSString;
+class function TCocoaStringUtil.removeLineBreak(const str: NSString): NSString;
 begin
   Result:= str.stringByReplacingOccurrencesOfString_withString( NSSTR_LINE_FEED, NSString.string_ );
   Result:= Result.stringByReplacingOccurrencesOfString_withString( NSSTR_CARRIAGE_RETURN, NSString.string_ );
@@ -976,7 +978,7 @@ begin
   Result:= Result.stringByReplacingOccurrencesOfString_withString( NSSTR_PARAGRAPH_SEPARATOR, NSString.string_ );
 end;
 
-function StringRemoveAcceleration(const str: String): String;
+class function TCocoaStringUtil.removeAcceleration(const str: String): String;
 var
   posAmp: Integer;
   posRight: Integer;
@@ -998,7 +1000,7 @@ begin
   Result:= str.Substring(0,posLeft).Trim;
 end;
 
-function getNSStringObject( const aString: id ) : NSString;
+class function TCocoaStringUtil.getNSStringObject( const aString: id ) : NSString;
 begin
   if aString.isKindOfClass( NSAttributedString ) then
     Result:= NSAttributedString( aString ).string_
@@ -1291,7 +1293,7 @@ end;
 
 function ControlTitleToStr(const ATitle: string): String;
 begin
-  Result:= StringRemoveAcceleration(ATitle);
+  Result:= TCocoaStringUtil.removeAcceleration(ATitle);
 end;
 
 function ControlTitleToNSStr(const ATitle: string): NSString;

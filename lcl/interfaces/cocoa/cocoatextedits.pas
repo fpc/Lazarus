@@ -1190,7 +1190,7 @@ var
   newString: NSString;   // need not release
 begin
   Result:= true;
-  newString:= NSStringRemoveLineBreak( replacementString );
+  newString:= TCocoaStringUtil.removeLineBreak( replacementString );
   if newString.length <> replacementString.length then
   begin
     // only handled if there is line-break in replacementString
