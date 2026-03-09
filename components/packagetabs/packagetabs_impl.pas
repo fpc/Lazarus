@@ -40,7 +40,7 @@ uses
   PackageDefs,
   // IdeIntf
   SrcEditorIntf, PackageIntf, LazIDEIntf, IDEImagesIntf, IDECommands,
-  IDEOptEditorIntf, ProjectIntf,
+  IDEOptEditorIntf, ProjectIntf, EditorOptionsIntf,
   // PackageTabs
   PackageTabsStr;
 
