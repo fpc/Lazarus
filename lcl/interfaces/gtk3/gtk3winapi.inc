@@ -83,7 +83,6 @@ begin
   {$endif}
   // Result:=inherited ClientToScreen(Handle, P);
   Result := False;
-  P := Point(0, 0);
   if IsValidHandle(Handle) then
     Result := TGtk3Widget(Handle).ClientToScreen(P);
   {$ifdef VerboseGtk3WinApi}

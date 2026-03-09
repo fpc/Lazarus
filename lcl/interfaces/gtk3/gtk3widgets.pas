@@ -173,7 +173,7 @@ type
     procedure OffsetMousePos(const aGlobalX, aGlobalY: double; APoint: PPoint); virtual;
 
     function ClientToScreen(var P:TPoint):boolean; virtual;
-    function ScreenToClient(var P: TPoint): Integer;
+    function ScreenToClient(var P: TPoint): Integer; virtual;
 
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
     function GtkEventKey(Sender: PGtkWidget; Event: PGdkEvent; AKeyPress: Boolean): Boolean; virtual; cdecl;
@@ -584,12 +584,14 @@ type
     LCLVAdj: PGtkAdjustment; // used to keep LCL values
     LCLHAdj: PGtkAdjustment; // used to keep LCL values
     function ClientToScreen(var P:TPoint):boolean; override;
+    function ScreenToClient(var P: TPoint): Integer; override;
     procedure DestroyWidget; override;
     {result = true if scrollbar is pressed by mouse, AMouseOver if mouse is over scrollbar pressed or not.}
     class function CheckIfScrollbarPressed(scrollbar: PGtkWidget; out AMouseOver:
        boolean; const ACheckModifier: TGdkModifierTypeIdx): boolean;
     procedure InitializeWidget; override;
     procedure OffsetMousePos(const aGlobalX, aGlobalY: double; APoint: PPoint); override;
+    procedure Update(ARect: PRect); override;
     procedure SetScrollBarsSignalHandlers(const AIsHorizontalScrollBar: boolean);
     function getClientBounds: TRect; override;
     function getViewport: PGtkViewport; virtual;
@@ -994,7 +996,6 @@ type
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
       function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
     public
-      procedure Update(ARect: PRect); override;
       procedure DoBeforeLCLPaint; override;
       procedure InitializeWidget; override;
       function getViewport: PGtkViewport; override;
@@ -1021,8 +1022,6 @@ type
       AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
     protected
       function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
-  public
-    function ClientToScreen(var P: TPoint): boolean; override;
   end;
 
   { TGtk3Splitter }
@@ -1870,11 +1869,11 @@ begin
           P.Y := P.Y + Round(AScrolledWin^.get_vadjustment^.get_value);
         TGtk3DeviceContext(Msg.DC).ScrollbarsOffset := Point(P.X, P.Y);
         cairo_translate(AContext, -P.X, -P.Y);
-        with TGtk3DeviceContext(Msg.DC).fncOrigin do
-        begin
-          X := X - P.X;
-          Y := Y - P.Y;
-        end;
+        inc(localClip.Left,   P.X);
+        inc(localClip.Top,    P.Y);
+        inc(localClip.Right,  P.X);
+        inc(localClip.Bottom, P.Y);
+        Msg.PaintStruct^.rcPaint := localClip;
       end;
       DoBeforeLCLPaint;
       LCLObject.WindowProc(TLMessage(Msg));
@@ -2916,7 +2915,7 @@ begin
     FWidget^.set_allocation(@ARect);
   end;
   LCLIntf.SetProp(HWND(Self),'lclwidget',Self);
-
+  g_object_set_data(PGObject(FWidget), 'lclwidget', Self);
   // connect events
   // move signal connections into attach events
   if not gtk_widget_get_realized(FWidget) then
@@ -2958,6 +2957,7 @@ begin
 
   if (FCentralWidget <> nil) and (FCentralWidget <> FWidget) then
   begin
+    g_object_set_data(PGObject(FCentralWidget), 'lclwidget', Self);
     if not gtk_widget_get_realized(FCentralWidget) then // THintWindow
       FCentralWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
     g_signal_connect_data(FCentralWidget, 'event', TGCallback(@WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
@@ -7292,6 +7292,33 @@ begin
   end;
 end;
 
+procedure TGtk3ScrollableWin.Update(ARect: PRect);
+var
+  R: TRect;
+  HAdj: PGtkAdjustment;
+  VAdj: PGtkAdjustment;
+  AScrollWin: PGtkScrolledWindow;
+begin
+  if (ARect <> nil) and (ARect^.Width > 0) and (ARect^.Height > 0) and
+     (wtScrollingWinControl in WidgetType) then
+  begin
+    AScrollWin := getScrolledWindow;
+    if Gtk3IsScrolledWindow(AScrollWin) then
+    begin
+      HAdj := AScrollWin^.get_hadjustment;
+      VAdj := AScrollWin^.get_vadjustment;
+      R := ARect^;
+      dec(R.Left,   Round(HAdj^.get_value));
+      dec(R.Top,    Round(VAdj^.get_value));
+      dec(R.Right,  Round(HAdj^.get_value));
+      dec(R.Bottom, Round(VAdj^.get_value));
+      inherited Update(@R);
+      Exit;
+    end;
+  end;
+  inherited Update(ARect);
+end;
+
 class function TGtk3ScrollableWin.RangeChangeValue(ARange: PGtkRange;
   AScrollType: TGtkScrollType; AValue: gdouble; AData: gPointer): gboolean;
   cdecl;
@@ -7475,19 +7502,47 @@ end;
 
 function TGtk3ScrollableWin.ClientToScreen(var P: TPoint): boolean;
 var
-  gx, gy, wx, wy: gint;
+  gx, gy: gint;
+  AWindow: PGdkWindow;
 begin
-  if not Widget^.is_toplevel then
+  if [wtScrollingWinControl, wtWindow, wtHintWindow] * WidgetType <> [] then
+    AWindow := PaintWindow
+  else
+  if wtCustomControl in WidgetType then
+    AWindow := GetContainerWidget^.get_window
+  else
+    AWindow := nil;
+
+  if Gtk3IsGdkWindow(AWindow) then
   begin
-    Result := getContainerWidget^.translate_coordinates(GetContainerWidget^.get_toplevel, P.X, P.Y, @gx, @gy);
-    if Result then
-    begin
-      gdk_window_get_origin(gtk_widget_get_toplevel(GetContainerWidget)^.window, @wx, @wy);
-      P := Point(gx + wx, gy + wy);
-    end else
-      Result := inherited ClientToScreen(P);
+    gdk_window_get_origin(AWindow, @gx, @gy);
+    P := Point(P.X + gx, P.Y + gy);
+    Result := True;
   end else
     Result := inherited ClientToScreen(P);
+end;
+
+function TGtk3ScrollableWin.ScreenToClient(var P: TPoint): Integer;
+var
+  gx, gy: gint;
+  AWindow: PGdkWindow;
+begin
+  if [wtScrollingWinControl, wtWindow, wtHintWindow] * WidgetType <> [] then
+    AWindow := PaintWindow
+  else
+  if wtCustomControl in WidgetType then
+    AWindow := GetContainerWidget^.get_window
+  else
+    AWindow := nil;
+
+  if Gtk3IsGdkWindow(AWindow) then
+  begin
+    gdk_window_get_origin(AWindow, @gx, @gy);
+    dec(P.X, gx);
+    dec(P.Y, gy);
+    Result := 0;
+  end else
+    Result := inherited ScreenToClient(P);
 end;
 
 procedure TGtk3ScrollableWin.DestroyWidget;
@@ -10461,22 +10516,6 @@ begin
   Result := False;
 end;
 
-procedure TGtk3CustomControl.Update(ARect: PRect);
-begin
-  if IsWidgetOK then
-  begin
-    if (ARect <> nil) then
-    begin
-      if (aRect^.Width > 0) and (ARect^.Height > 0) then
-      begin
-        with ARect^ do
-          GetContainerWidget^.queue_draw_area(Left, Top, Right - Left, Bottom - Top);
-      end;
-    end else
-      GetContainerWidget^.queue_draw;
-  end;
-end;
-
 procedure TGtk3CustomControl.DoBeforeLCLPaint;
 var
   DC: TGtk3DeviceContext;
@@ -10771,25 +10810,6 @@ begin
   FHasPaint := True;
   Result := inherited CreateWidget(Params);
   Include(FWidgetType, wtScrollingWinControl);
-end;
-
-function TGtk3ScrollingWinControl.ClientToScreen(var P: TPoint): boolean;
-var
-  gx, gy: gint;
-  ABinWindow: PGdkWindow;
-begin
-  if not Widget^.is_toplevel and Gtk3IsLayout(PGObject(GetContainerWidget)) then
-  begin
-    ABinWindow := PGtkLayout(GetContainerWidget)^.get_bin_window;
-    if Gtk3IsGdkWindow(PGObject(ABinWindow)) then
-    begin
-      ABinWindow^.get_origin(@gx, @gy);
-      P := Point(P.X + gx, P.Y + gy);
-      Result := True;
-      Exit;
-    end;
-  end;
-  Result := inherited ClientToScreen(P);
 end;
 
 { TGtk3Window }
