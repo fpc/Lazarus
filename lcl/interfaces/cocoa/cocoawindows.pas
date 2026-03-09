@@ -368,7 +368,7 @@ begin
   flags:= event.modifierFlags and NSModsMask;
   if Assigned(wincallback) and (flags=0) then
   begin
-    ch := NSEventRawKeyChar(event);
+    ch := TCocoaKeyUtil.getRawKeyChar(event);
     if  (((ch = System.WideChar(NSCarriageReturnCharacter)) and wincallback.HasDefaultControl)
       or ((ch = System.WideChar(NSEnterCharacter)) and wincallback.HasDefaultControl)
       or ((ch = #27{Escape}) and wincallback.HasCancelControl)) then

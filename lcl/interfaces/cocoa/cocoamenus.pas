@@ -144,7 +144,7 @@ var
   s: TShiftState;
 begin
   ShortCutToKey(AShortCut, w, s);
-  key := VirtualKeyCodeToMacString(w);
+  key := TCocoaKeyUtil.codeToString(w);
   shiftKeyMask := 0;
   if ssShift in s then
     ShiftKeyMask := ShiftKeyMask + NSShiftKeyMask;

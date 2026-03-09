@@ -580,12 +580,12 @@ begin
     and ((Event.modifierFlags and NSNumericPadKeyMask) = 0) // num pad should be checked by KeyCode
   then
   begin
-    VKKeyCode := MacCharToVK(ignModChr.characterAtIndex(0));
+    VKKeyCode := TCocoaKeyUtil.charToVK(ignModChr.characterAtIndex(0));
     if VKKeyCode = VK_UNKNOWN then
-      VKKeyCode := MacCodeToVK(KeyCode); // fallback
+      VKKeyCode := TCocoaKeyUtil.codeToVK(KeyCode); // fallback
   end
   else
-    VKKeyCode := MacCodeToVK(KeyCode);
+    VKKeyCode := TCocoaKeyUtil.codeToVK(KeyCode);
 
   if Assigned(CocoaConfigApplication.events.keyEventToVK) then
     VKKeyCode := CocoaConfigApplication.events.keyEventToVK(Event);

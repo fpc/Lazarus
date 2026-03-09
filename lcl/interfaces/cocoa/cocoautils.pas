@@ -44,6 +44,17 @@ type
     class function toRect(const params: TCreateParams): NSRect; overload;
   end;
 
+  TCocoaKeyUtil = class
+  private
+  const
+    kVK_SubMenu = $6E;
+  public
+    class function codeToString(AKey: Word): NSString;
+    class function codeToVK(AKey: Word): Word;
+    class function charToVK(achar: unichar): Word;
+    class function getRawKeyChar(ev: NSEvent): System.WideChar;
+  end;
+
   TCocoaColorUtil = class
   public
     class procedure getRGBValue(cl: TColorRef; var r,g,b: Single); inline;
@@ -133,8 +144,6 @@ const
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
 function CFStringToString(AString: CFStringRef): String; inline;
 
-function VirtualKeyCodeToMacString(AKey: Word): NSString;
-
 procedure FillStandardDescription(out Desc: TRawImageDescription);
 
 procedure CreateCFString(const S: String; out AString: CFStringRef);
@@ -152,21 +161,7 @@ function ControlTitleToNSStr(const ATitle: string): NSString;
 procedure AddLayoutToFrame(const layout: TRect; var frame: TRect);
 procedure SubLayoutFromFrame(const layout: TRect; var frame: TRect);
 
-// MacOSX Virtual Key Codes missing from MacOSAll.Events.pas
-const
-  kVK_SubMenu = $6E;
-
-function MacCodeToVK(AKey: Word): Word;
-
-function MacCharToVK(achar: unichar): Word;
-
 procedure ApplicationWillShowModal;
-
-const
-  // Shift, Control, Alt and Command
-  KeysModifiers = NSShiftKeyMask or NSControlKeyMask or NSAlternateKeyMask or NSCommandKeyMask;
-
-function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
 
 function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
 function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
@@ -248,7 +243,7 @@ begin
   //  abort() called
 end;
 
-function MacCodeToVK(AKey: Word): Word;
+class function TCocoaKeyUtil.codeToVK(AKey: Word): Word;
 begin
   case AKey of
     kVK_ANSI_A : Result :=  VK_A;
@@ -399,12 +394,12 @@ begin
   end;
 end;
 
-function MacCharToVK(achar: unichar): Word;
+class function TCocoaKeyUtil.charToVK(achar: unichar): Word;
 var
   ch : AnsiChar;
 begin
   // only handle printable characters here in Ansi range
-  // all other should be taken care of in MacCodeToVk
+  // all other should be taken care of in codeToVK
   if (achar < 32) or (achar>127) then begin
     Result := VK_UNKNOWN;
     Exit;
@@ -1085,7 +1080,7 @@ begin
   end;
 end;
 
-function VirtualKeyCodeToMacString(AKey: Word): NSString;
+class function TCocoaKeyUtil.codeToString(AKey: Word): NSString;
 type
   WideChar = System.WideChar;
 var
@@ -1346,7 +1341,7 @@ begin
   dec(frame.Bottom, layout.Bottom);
 end;
 
-function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
+class function TCocoaKeyUtil.getRawKeyChar(ev: NSEvent): System.WideChar;
 var
   m : NSString;
 begin
