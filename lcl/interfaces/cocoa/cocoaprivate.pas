@@ -690,7 +690,7 @@ begin
   y:= Round( TCocoaScreenUtil.globalScreenBottom - rect.origin.y );
 
   if NOT (lclGetTarget is TScrollingWinControl) then
-    lclOffsetWithEnclosingScrollView(self, x, y );
+    TCocoaControlUtil.lclOffsetWithEnclosingScrollView(self, x, y );
 end;
 
 procedure LCLViewExtension.lclScreenToLocal(var X, Y: Integer);
@@ -730,7 +730,7 @@ begin
     TCocoaTypeUtil.toRect(frame, v.frame.size.height, Result)
   else
     Result := TCocoaTypeUtil.toRect(frame);
-  AddLayoutToFrame( lclGetFrameToLayoutDelta, Result);
+  TCocoaControlUtil.addLayoutDelta( lclGetFrameToLayoutDelta, Result);
 end;
 
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
@@ -740,7 +740,7 @@ var
   rr : TRect;
 begin
   rr := r;
-  SubLayoutFromFrame( lclGetFrameToLayoutDelta, rr);
+  TCocoaControlUtil.subLayoutDelta( lclGetFrameToLayoutDelta, rr);
 
   svHeight := GetNSViewSuperViewHeight(Self);
   if Assigned(superview) and not superview.isFlipped then

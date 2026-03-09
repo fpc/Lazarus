@@ -662,7 +662,7 @@ begin
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);
-  cancelButton.setTitle(ControlTitleToNSStr(rsMbCancel));
+  cancelButton.setTitle(TCocoaControlUtil.toMacOSTitle(rsMbCancel));
   cancelButton.SetAction(objcselector('exit'));
   cancelButton.setTarget(colorDelegate);
 
@@ -836,7 +836,7 @@ begin
   cancelButton := NSButton.alloc.initWithFrame(lRect);
   cancelButton.setButtonType(NSMomentaryPushInButton);
   cancelButton.setBezelStyle(NSRoundedBezelStyle);
-  cancelButton.setTitle(ControlTitleToNSStr(rsMbCancel));
+  cancelButton.setTitle(TCocoaControlUtil.toMacOSTitle(rsMbCancel));
   cancelButton.SetAction(objcselector('exit'));
   cancelButton.setTarget(FontDelegate);
 

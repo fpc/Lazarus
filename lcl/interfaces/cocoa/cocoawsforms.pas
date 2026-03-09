@@ -928,7 +928,7 @@ begin
     cb.window := win;
 
     win.setDelegate(win);
-    ns := ControlTitleToNSStr( AWinControl.Caption );
+    ns := TCocoaControlUtil.toMacOSTitle( AWinControl.Caption );
     win.setTitle(ns);
     {$ifdef BOOLFIX}
     win.setReleasedWhenClosed_(Ord(False)); // do not release automatically
@@ -1078,7 +1078,7 @@ begin
   if not AWinControl.HandleAllocated then
     Exit;
   win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
-  ns := ControlTitleToNSStr( AText );
+  ns := TCocoaControlUtil.toMacOSTitle( AText );
   if Assigned(win) then
     NSwindow(win).setTitle(ns)
   else

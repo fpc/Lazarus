@@ -363,7 +363,7 @@ begin
     PtForChildCtrls.y := PtForChildCtrls.y + cr.Top;
 
     if Target is TScrollingWinControl then
-      lclOffsetWithEnclosingScrollView(NSView(Owner), PtForChildCtrls.x, PtForChildCtrls.y);
+      TCocoaControlUtil.lclOffsetWithEnclosingScrollView(NSView(Owner), PtForChildCtrls.x, PtForChildCtrls.y);
 
   end else
   begin

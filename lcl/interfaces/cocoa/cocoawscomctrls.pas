@@ -443,7 +443,7 @@ var
   lHintStr: string;
 begin
   // title
-  ACocoaControl.setLabel(ControlTitleToNSStr(ACustomPage.Caption));
+  ACocoaControl.setLabel(TCocoaControlUtil.toMacOSTitle(ACustomPage.Caption));
 
   // hint
   if ACustomPage.ShowHint then lHintStr := ACustomPage.Hint
@@ -469,7 +469,7 @@ begin
 
   page := GetCocoaTabPageFromHandle(AWinControl.Handle);
   if not Assigned(page) then Exit;
-  page.setLabel(ControlTitleToNSStr(AText));
+  page.setLabel(TCocoaControlUtil.toMacOSTitle(AText));
 
   if (AWinControl.Parent <> nil)
     and (AWinControl.Parent is TCustomTabControl)

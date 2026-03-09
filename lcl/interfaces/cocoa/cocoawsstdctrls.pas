@@ -421,7 +421,7 @@ begin
     Result:= Result.lclInitWithCreateParams(AParams);
     TCocoaButton(Result).callback := ACallBackClass.Create(Result, ATarget);
 
-    Result.setTitle(ControlTitleToNSStr(AParams.Caption));
+    Result.setTitle(TCocoaControlUtil.toMacOSTitle(AParams.Caption));
     if btnBezel <> 0 then
       Result.setBezelStyle(btnBezel);
     Result.setButtonType(btnType);
@@ -882,7 +882,7 @@ var
   btn : NSButton;
 begin
   btn := NSButton(AWinControl.Handle);
-  btn.setTitle(ControlTitleToNSStr(AText));
+  btn.setTitle(TCocoaControlUtil.toMacOSTitle(AText));
 
   if NOT ((AWinControl is TCustomButton) or (AWinControl is TToggleBox)) then
     Exit;
@@ -2411,7 +2411,7 @@ var
   box: TCocoaGroupBox;
 begin
   box := TCocoaGroupBox(AWinControl.Handle);
-  box.setTitle(ControlTitleToNSStr(AText));
+  box.setTitle(TCocoaControlUtil.toMacOSTitle(AText));
 end;
 
 class procedure TCocoaWSCustomGroupBox.SetFont(const AWinControl: TWinControl;

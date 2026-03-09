@@ -47,6 +47,8 @@ type
   TCocoaStringUtil = class
   public
     class function removeLineBreak(const str: NSString): NSString;
+    // The function removes single '&' and '(...)', and replaced '&&' with '&'
+    // (removing LCL (Windows) specific caption convention
     class function removeAcceleration(const str: String): String;
     class function getNSStringObject( const aString: id ) : NSString;
   end;
@@ -64,9 +66,17 @@ type
 
   TCocoaControlUtil = class
   public
-    class procedure setStringValue(c: NSControl; const S: String); inline;
-    class function getStringValue(c: NSControl): String; inline;
-    class procedure moveCaretToTheEnd(c: NSControl);
+    class procedure setStringValue(const c: NSControl; const S: String); inline;
+    class function getStringValue(const c: NSControl): String; inline;
+    class function toMacOSTitle(const ATitle: String): NSString;
+    class procedure moveCaretToTheEnd(const c: NSControl);
+    class procedure hideAllSubviews( const parent: NSView );
+    class procedure addLayoutDelta(const layout: TRect; var frame: TRect);
+    class procedure subLayoutDelta(const layout: TRect; var frame: TRect);
+    class procedure lclOffsetWithEnclosingScrollView(
+      const view: NSView;
+      var x: Integer;
+      var y: Integer );
   end;
 
   TCocoaColorUtil = class
@@ -108,10 +118,6 @@ type
 function StringArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
 function UrlArrayFromLCLToNS(const lclArray: TStringArray): NSArray;
 
-procedure hideAllSubviews( parent: NSView );
-
-procedure lclOffsetWithEnclosingScrollView( const view: NSView; var x: Integer; var y: Integer );
-
 function NSStringUtf8(s: PChar; len: Integer = -1): NSString;
 function NSStringUtf8(const s: String): NSString;
 function StrToNSString(const s: string; AutoRelease: Boolean = true): NSString;
@@ -152,16 +158,6 @@ procedure CreateCFString(const S: String; out AString: CFStringRef);
 procedure CreateCFString(const Data: CFDataRef; Encoding: CFStringEncoding; out AString: CFStringRef);
 procedure FreeCFString(var AString: CFStringRef);
 function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): CFDataRef;
-
-// The function removes single '&' and '(...)', and replaced '&&' with '&'
-// (removing LCL (Windows) specific caption convention
-function ControlTitleToStr(const ATitle: string): String; inline;
-// The returned NSString doesn't require a release
-// (it would happen in NSAutoRelease pool)
-function ControlTitleToNSStr(const ATitle: string): NSString;
-
-procedure AddLayoutToFrame(const layout: TRect; var frame: TRect);
-procedure SubLayoutFromFrame(const layout: TRect; var frame: TRect);
 
 procedure ApplicationWillShowModal;
 
@@ -208,7 +204,7 @@ begin
   Result:= cocoaArray;
 end;
 
-procedure hideAllSubviews( parent: NSView );
+class procedure TCocoaControlUtil.hideAllSubviews( const parent: NSView );
 var
   view: NSView;
 begin
@@ -1008,7 +1004,7 @@ begin
     Result:= NSString( aString );
 end;
 
-class procedure TCocoaControlUtil.setStringValue(c: NSControl; const S: String); inline;
+class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String); inline;
 var
   ns: NSString;
 begin
@@ -1020,7 +1016,7 @@ begin
   end;
 end;
 
-class function TCocoaControlUtil.getStringValue(c: NSControl): String; inline;
+class function TCocoaControlUtil.getStringValue(const c: NSControl): String; inline;
 begin
   if Assigned(c) then
     Result := NSStringToString(c.stringValue)
@@ -1028,7 +1024,7 @@ begin
     Result := '';
 end;
 
-class procedure TCocoaControlUtil.moveCaretToTheEnd(c: NSControl);
+class procedure TCocoaControlUtil.moveCaretToTheEnd(const c: NSControl);
 var
   range: NSRange;
 begin
@@ -1291,21 +1287,18 @@ begin
   Result := Result + mn;
 end;
 
-function ControlTitleToStr(const ATitle: string): String;
-begin
-  Result:= TCocoaStringUtil.removeAcceleration(ATitle);
-end;
-
-function ControlTitleToNSStr(const ATitle: string): NSString;
+class function TCocoaControlUtil.toMacOSTitle(const ATitle: string): NSString;
 var
-  t: string;
+  t: String;
 begin
-  t := ControlTitleToStr(ATitle);
-  if t = '' then Result:=NSString.string_ // empty string
-  else Result := NSString.stringWithUTF8String( @t[1] );
+  t:= TCocoaStringUtil.removeAcceleration(ATitle);
+  if t = '' then
+    Result:= NSString.string_ // empty string
+  else
+    Result:= NSString.stringWithUTF8String( @t[1] );
 end;
 
-procedure AddLayoutToFrame(const layout: TRect; var frame: TRect);
+class procedure TCocoaControlUtil.addLayoutDelta(const layout: TRect; var frame: TRect);
 begin
   inc(frame.Left, layout.Left);
   inc(frame.Top, layout.Top);
@@ -1313,7 +1306,7 @@ begin
   inc(frame.Bottom, layout.Bottom);
 end;
 
-procedure SubLayoutFromFrame(const layout: TRect; var frame: TRect);
+class procedure TCocoaControlUtil.subLayoutDelta(const layout: TRect; var frame: TRect);
 begin
   dec(frame.Left, layout.Left);
   dec(frame.Top, layout.Top);
@@ -1391,7 +1384,7 @@ begin
   img.release;
 end;
 
-procedure lclOffsetWithEnclosingScrollView(
+class procedure TCocoaControlUtil.lclOffsetWithEnclosingScrollView(
   const view: NSView;
   var x: Integer;
   var y: Integer );

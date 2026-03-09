@@ -274,7 +274,7 @@ var
 begin
   ShortcutToKeyEquivalent(ashortCut, key, mask);
   Result := item.initWithTitle_action_keyEquivalent(
-    ControlTitleToNSStr(Atitle),
+    TCocoaControlUtil.toMacOSTitle(Atitle),
     objcselector('lclItemSelected:'), // Selector is Hard-coded, that's why it's LCLMenuItemInit
     key);
   NSMenuItem(Result).setKeyEquivalentModifierMask(mask);
@@ -578,7 +578,7 @@ begin
   item.setTarget(nil);
   item.setAction(nil);
   submenu.addItem(item);
-  itemSubMenu := NSMenu.alloc.initWithTitle( ControlTitleToNSStr(rsMacOSMenuServices));
+  itemSubMenu := NSMenu.alloc.initWithTitle( TCocoaControlUtil.toMacOSTitle(rsMacOSMenuServices));
   item.setSubmenu(itemSubMenu);
   NSApplication(NSApp).setServicesMenu(itemSubMenu);
   itemSubMenu.release;

@@ -100,7 +100,7 @@ implementation
 
 function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
 begin
-  Result := TCocoaMenu.alloc.initWithTitle(ControlTitleToNSStr(atitle));
+  Result := TCocoaMenu.alloc.initWithTitle(TCocoaControlUtil.toMacOSTitle(atitle));
   Result.setAutoenablesItems(false);
 end;
 
@@ -227,7 +227,7 @@ begin
   begin
     Menu := NSMenu(MenuObj);
     item := NSMenuItem(NSMenuItem.alloc).initWithTitle_action_keyEquivalent(
-      ControlTitleToNSStr(AMenuItem.Caption), nil, NSString.string_ );
+      TCocoaControlUtil.toMacOSTitle(AMenuItem.Caption), nil, NSString.string_ );
     item.setSubmenu( Menu );
     Parent.insertItem_atIndex(NSMenuItem(item), idx);
     item.release;
