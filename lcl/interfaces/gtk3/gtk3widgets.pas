@@ -10488,12 +10488,10 @@ begin
     exit;
 
   DC := TGtk3DeviceContext(Context);
-
   NColor := LCLObject.Color;
-  P.X := Round(GetScrolledWindow^.get_hadjustment^.get_value);
-  P.Y := Round(GetScrolledWindow^.get_vadjustment^.get_value);
-  //Clip the Cairo context to the viewport bounds, fixes cairo bleeding to adjacent controls.
-  cairo_rectangle(FCairoContext, 0, 0, LCLObject.ClientWidth, LCLObject.ClientHeight);
+  P := DC.ScrollbarsOffset;
+  // Clip to the full viewport
+  cairo_rectangle(FCairoContext, P.X, P.Y, LCLObject.ClientWidth, LCLObject.ClientHeight);
   cairo_clip(FCairoContext);
   if (NColor <> clNone) and (NColor <> clDefault) then
   begin
@@ -12494,11 +12492,13 @@ begin
           P.Y := P.Y + Round(AScrolledWin^.get_vadjustment^.get_value);
         TGtk3DeviceContext(Msg.DC).ScrollbarsOffset := Point(P.X, P.Y);
         cairo_translate(AContext, -P.X, -P.Y);
-        with TGtk3DeviceContext(Msg.DC).fncOrigin do
-        begin
-          X := X - P.X;
-          Y := Y - P.Y;
-        end;
+        // Matches winapi - ACanvas.ClipRect is in logical/content coords.
+        inc(localClip.Left,  P.X);
+        inc(localClip.Top,   P.Y);
+        inc(localClip.Right, P.X);
+        inc(localClip.Bottom, P.Y);
+        Msg.PaintStruct^.rcPaint := localClip;
+
       end;
 
       //DoBeforeLCLPaint;
