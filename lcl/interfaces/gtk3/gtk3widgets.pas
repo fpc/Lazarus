@@ -580,6 +580,8 @@ type
     class function RangeChangeValue(ARange: PGtkRange; AScrollType: TGtkScrollType;
       AValue: gdouble; AData: gPointer): gboolean; cdecl; static;
     class procedure RangeValueChanged(range: PGtkRange; data: gpointer); cdecl; static;
+
+    procedure SetColor(AValue: TColor); override;
   public
     LCLVAdj: PGtkAdjustment; // used to keep LCL values
     LCLHAdj: PGtkAdjustment; // used to keep LCL values
@@ -659,7 +661,6 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
-    procedure SetColor(AValue: TColor); override;
   public
     procedure InitializeWidget; override;
     function getHorizontalScrollbar: PGtkScrollbar; override;
@@ -715,7 +716,6 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
-    procedure SetColor(AValue: TColor); override;
     class function selection_changed(AIconView: PGtkIconView; aData: gPointer):gboolean; cdecl; static;
   public
     destructor Destroy; override;
@@ -7589,6 +7589,63 @@ begin
   Control.EndUpdate;
 end;
 
+procedure TGtk3ScrollableWin.SetColor(AValue: TColor);
+var
+  ADisabledColor, BgColor: TGdkRGBA;
+  AContainerWidget: PGtkWidget;
+  AOldProvider: PGtkCssProvider;
+  ANewProvider: PGtkCssProvider;
+  ACSS: AnsiString;
+begin
+  if [wtCustomControl, wtScrollingWinControl, wtWindow, wtHintWindow] * WidgetType <> [] then
+  begin
+    inherited SetColor(AValue);
+  end else
+  begin
+    AContainerWidget := getContainerWidget;
+    BgColor := TColortoTGdkRGBA(ColorToRgb(AValue));
+
+    AContainerWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
+    //override all
+    if AValue = clDefault then
+      gtk_widget_override_background_color(AContainerWidget, GTK_STATE_FLAG_NORMAL, nil)
+    else
+      gtk_widget_override_background_color(AContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
+    //return system highlight color
+    BgColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
+    gtk_widget_override_background_color(AContainerWidget, [GTK_STATE_FLAG_SELECTED], @BgColor);
+    gtk_widget_override_background_color(AContainerWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
+
+    {GtkTextView (our TMemo) text selection is rendered internally via the CSS
+     "text selection" node, gtk_widget_override_background_color with GTK_STATE_FLAG_SELECTED has
+     no effect on it. Apply a CSS provider to restore the highlight color.}
+    if wtMemo in WidgetType then
+    begin
+      AOldProvider := PGtkCssProvider(
+        g_object_get_data(PGObject(AContainerWidget), 'lcl-sel-css'));
+      if Assigned(AOldProvider) then
+      begin
+        gtk_style_context_remove_provider(AContainerWidget^.get_style_context,
+          PGtkStyleProvider(AOldProvider));
+        g_object_unref(gpointer(AOldProvider));
+        g_object_set_data(PGObject(AContainerWidget), 'lcl-sel-css', nil);
+      end;
+      if AValue <> clDefault then
+      begin
+        //BgColor already holds clHighlight at this point
+        ACSS := Format('textview text selection { background-color: #%02x%02x%02x; }',
+          [Round(BgColor.red * 255), Round(BgColor.green * 255), Round(BgColor.blue * 255)]);
+        ANewProvider := gtk_css_provider_new;
+        gtk_css_provider_load_from_data(ANewProvider, PChar(ACSS), -1, nil);
+        gtk_style_context_add_provider(AContainerWidget^.get_style_context,
+          PGtkStyleProvider(ANewProvider),
+          GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        g_object_set_data(PGObject(AContainerWidget), 'lcl-sel-css', ANewProvider);
+      end;
+    end;
+  end;
+end;
+
 function TGtk3ScrollableWin.ClientToScreen(var P: TPoint): boolean;
 var
   gx, gy: gint;
@@ -8218,25 +8275,6 @@ end;
 function TGtk3ListBox.EatArrowKeys(const AKey: Word): Boolean;
 begin
   Result := False;
-end;
-
-procedure TGtk3ListBox.SetColor(AValue: TColor);
-var
-  ADisabledColor, BgColor: TGdkRGBA;
-begin
-
-  BgColor := TColortoTGdkRGBA(ColorToRgb(AValue));
-
-  getContainerWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
-  //override all
-  if AValue = clDefault then
-    gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, nil)
-  else
-    gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
-  //return system highlight color
-  BgColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
-  gtk_widget_override_background_color(getContainerWidget, [GTK_STATE_FLAG_SELECTED], @BgColor);
-  gtk_widget_override_background_color(getContainerWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
 end;
 
 procedure TGtk3ListBox.InitializeWidget;
@@ -8870,25 +8908,6 @@ end;
 function TGtk3ListView.EatArrowKeys(const AKey: Word): Boolean;
 begin
   Result := False;
-end;
-
-procedure TGtk3ListView.SetColor(AValue: TColor);
-var
-  ADisabledColor, BgColor: TGdkRGBA;
-begin
-
-  BgColor := TColortoTGdkRGBA(ColorToRgb(AValue));
-
-  getContainerWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
-  //override all
-  if AValue = clDefault then
-    gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, nil)
-  else
-    gtk_widget_override_background_color(getContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
-  //return system highlight color
-  BgColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
-  gtk_widget_override_background_color(getContainerWidget, [GTK_STATE_FLAG_SELECTED], @BgColor);
-  gtk_widget_override_background_color(getContainerWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
 end;
 
 destructor TGtk3ListView.Destroy;
