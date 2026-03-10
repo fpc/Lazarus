@@ -6,7 +6,13 @@ unit EditorSyntaxHighlighterDef;
 interface
 
 uses
-  Classes, SysUtils, LazMethodList, Graphics;
+  Classes, SysUtils,
+  // LazUtils
+  LazMethodList,
+  // LCL
+  Graphics,
+  // LazEdit
+  LazEditHighlighter;
 
 type
   TLazSyntaxHighlighter =
@@ -104,7 +110,7 @@ type
     function GetName: String;
     function Count: integer;
     function GetLanguage(AnIndex: Integer): IColorSchemeLanguage;
-    function GetLanguageForHighlighter(AnHiglighter: TObject): IColorSchemeLanguage;
+    function GetLanguageForHighlighter(AnHiglighter: TLazEditCustomRangesHighlighter): IColorSchemeLanguage;
     function GetLanguageForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID): IColorSchemeLanguage;
   end;
 

@@ -92,7 +92,7 @@
       </Item>
       <Item>
         <Filename Value="editoroptionsintf.pas"/>
-        <UnitName Value="editoroptionsintf"/>
+        <UnitName Value="EditorOptionsIntf"/>
       </Item>
       <Item>
         <Filename Value="editorsyntaxhighlighterdef.pas"/>
@@ -343,6 +343,9 @@
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazEdit"/>
+      </Item>
       <Item>
         <PackageName Value="DebuggerIntf"/>
       </Item>

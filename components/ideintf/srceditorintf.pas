@@ -22,7 +22,9 @@ uses
   // BuildIntf
   ProjectIntf,
   // IdeIntf
-  IDECommands;
+  IDECommands,
+  // LazEdit
+  LazEditHighlighter;
   
 type
   TSourceMarklingType = (
@@ -406,7 +408,7 @@ type
              read GetUniqueSourceEditors;
     // Editor Preferences
     function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
-    function GetHighlighterSettings(Highlighter: TObject): boolean; virtual; abstract;
+    function GetHighlighterSettings(Highlighter: TLazEditCustomRangesHighlighter): boolean; virtual; abstract;
     // Messages
     procedure ClearErrorLines; virtual; abstract;
     // General source functions

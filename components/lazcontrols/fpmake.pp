@@ -3,7 +3,7 @@
 
    fpmake.pp for LazControls 1.0.1
 
-   This file was generated on 13-1-2016
+   This file was generated on 10.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -18,18 +18,23 @@ procedure add_LazControls(const ADirectory: string);
 var
   P : TPackage;
   T : TTarget;
+  D : TDependency;
 
 begin
   with Installer do
     begin
-    P:=AddPAckage('lazcontrols');
-    P.Version:='1.0.1';
+    P:=AddPackage('lazcontrols');
+    P.Version:='1.0.1-0';
 
     P.Directory:=ADirectory;
 
+    P.Author:='Lazarus Team';
+    P.License:='modified LGPL-2';
+    P.Description:='Some extra LCL controls needed by the IDE.';
+
     P.Flags.Add('LazarusDsgnPkg');
 
-    P.Dependencies.Add('lcl');
+    D := P.Dependencies.Add('lcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
@@ -51,6 +56,10 @@ begin
     t.Dependencies.AddUnit('lvlgraphctrl');
     t.Dependencies.AddUnit('extendedtabcontrols');
     t.Dependencies.AddUnit('spinex');
+    t.Dependencies.AddUnit('smallorderedseteditor');
+    t.Dependencies.AddUnit('laznumedit');
+    t.Dependencies.AddUnit('shiftstateselector');
+    t.Dependencies.AddUnit('selectitemdialog');
 
     T:=P.Targets.AddUnit('checkboxthemed.pas');
     T:=P.Targets.AddUnit('dividerbevel.pas');
@@ -62,9 +71,14 @@ begin
     T:=P.Targets.AddUnit('lvlgraphctrl.pas');
     T:=P.Targets.AddUnit('extendedtabcontrols.pas');
     T:=P.Targets.AddUnit('spinex.pp');
+    T:=P.Targets.AddUnit('smallorderedseteditor.pas');
+    T:=P.Targets.AddUnit('laznumedit.pas');
+    T:=P.Targets.AddUnit('shiftstateselector.pas');
+    T:=P.Targets.AddUnit('selectitemdialog.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
-    P.InstallFiles.Add('LazControls.compiled',AllOSes,'$(unitinstalldir)');
+    P.Sources.AddSrc('lazcontrols.compiled');
+    P.InstallFiles.Add('lazcontrols.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;

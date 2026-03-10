@@ -1,10 +1,9 @@
 {
    File generated automatically by Lazarus Package Manager
-   Created with the Fppkgpackagemanager package installed
 
    fpmake.pp for DebuggerIntf 0.1
 
-   This file was generated on 27-03-22
+   This file was generated on 10.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -36,7 +35,7 @@ begin
     P.Flags.Add('LazarusDsgnPkg');
 
     D := P.Dependencies.Add('lazdebuggerintf');
-    D := P.Dependencies.Add('lclbase');
+    D := P.Dependencies.Add('lazutils');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
@@ -46,24 +45,32 @@ begin
     P.Options.Add('-venibq');
     P.Options.Add('-vw-h-');
     P.Options.Add('-vm4046');
+    P.UnitPath.Add('fcl-proc331');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('debuggerintf.pas');
-    D := T.Dependencies.AddUnit('DbgIntfBaseTypes');
-    D := T.Dependencies.AddUnit('DbgIntfDebuggerBase');
-    D := T.Dependencies.AddUnit('DbgIntfMiscClasses');
-    D := T.Dependencies.AddUnit('IDEMiniLibC');
-    D := T.Dependencies.AddUnit('DbgIntfPseudoTerminal');
-    D := T.Dependencies.AddUnit('DbgIntfCommonStrings');
-    T := P.Targets.AddImplicitUnit('dbgintfbasetypes.pas');
-    T := P.Targets.AddImplicitUnit('dbgintfdebuggerbase.pp');
-    T := P.Targets.AddImplicitUnit('dbgintfmiscclasses.pas');
-    T := P.Targets.AddImplicitUnit('ideminilibc.pas');
-    T := P.Targets.AddImplicitUnit('dbgintfpseudoterminal.pas');
-    T := P.Targets.AddImplicitUnit('dbgintfcommonstrings.pas');
+    t.Dependencies.AddUnit('dbgintfbasetypes');
+    t.Dependencies.AddUnit('dbgintfdebuggerbase');
+    t.Dependencies.AddUnit('dbgintfmiscclasses');
+    t.Dependencies.AddUnit('ideminilibc');
+    t.Dependencies.AddUnit('dbgintfpseudoterminal');
+    t.Dependencies.AddUnit('dbgintfcommonstrings');
+    t.Dependencies.AddUnit('dbgintfprocess');
+    t.Dependencies.AddUnit('pipes331');
+    t.Dependencies.AddUnit('process331');
+
+    T:=P.Targets.AddUnit('dbgintfbasetypes.pas');
+    T:=P.Targets.AddUnit('dbgintfdebuggerbase.pp');
+    T:=P.Targets.AddUnit('dbgintfmiscclasses.pas');
+    T:=P.Targets.AddUnit('ideminilibc.pas');
+    T:=P.Targets.AddUnit('dbgintfpseudoterminal.pas');
+    T:=P.Targets.AddUnit('dbgintfcommonstrings.pas');
+    T:=P.Targets.AddUnit('dbgintfprocess.pas');
+    P.Targets.AddImplicitUnit('fcl-proc331/pipes331.pp');
+    P.Targets.AddImplicitUnit('fcl-proc331/process331.pp');
 
     // copy the compiled file, so the IDE knows how the package was compiled
-    P.Sources.AddSrc('DebuggerIntf.compiled');
-    P.InstallFiles.Add('DebuggerIntf.compiled',AllOSes,'$(unitinstalldir)');
+    P.Sources.AddSrc('debuggerintf.compiled');
+    P.InstallFiles.Add('debuggerintf.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;

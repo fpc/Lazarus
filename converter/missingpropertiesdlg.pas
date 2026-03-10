@@ -37,7 +37,7 @@ uses
   // IdeIntf
   IDEImagesIntf, EditorOptionsIntf,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, SourceMarks,
+  LazarusIDEStrConsts,
   // Converter
   ConvMissingProp;
 
@@ -127,7 +127,7 @@ begin
   CurError:=fLfmFixer.LFMTree.FindErrorAtLine(Line);
   if CurError = nil then Exit;
   Special := True;
-  EditorOpts.SetMarkupColor(SynLFMSyn1, ahaErrorLine, AMarkup);
+  IDEEditorOptions.SetMarkupColor(SynLFMSyn1, 'ahaErrorLine', AMarkup);
 end;
 
 end.

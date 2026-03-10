@@ -3,7 +3,7 @@
 
    fpmake.pp for LazEdit 1.0
 
-   This file was generated on 06/04/2025
+   This file was generated on 10.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -29,12 +29,10 @@ begin
     P.Directory:=ADirectory;
 
     P.Author:='See each unit';
-    P.License:='modified LGPL-2'#13#10'Additional licenses may be granted in each individual file. See the headers in each file.';
+    P.License:='modified LGPL-2'#10'Additional licenses may be granted in each individual file. See the headers in each file.';
     P.Description:='Tools/Units to be used by SynEdit (or other editors)';
 
     D := P.Dependencies.Add('lclbase');
-    D := P.Dependencies.Add('lazutils');
-    D := P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
@@ -42,6 +40,7 @@ begin
     P.Options.Add('-gl');
     P.Options.Add('-l');
     P.Options.Add('-vewnhibq');
+    P.Options.Add('-vm6058,5024,3123');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('lazedit.pas');
     t.Dependencies.AddUnit('textmategrammar');
@@ -50,7 +49,13 @@ begin
     t.Dependencies.AddUnit('xregexpr_unicodedata');
     t.Dependencies.AddUnit('lazeditmiscprocs');
     t.Dependencies.AddUnit('lazedithighlighterutils');
+    t.Dependencies.AddUnit('lazedittextgridpainter');
     t.Dependencies.AddUnit('lazedittextattributes');
+    t.Dependencies.AddUnit('lazeditlineitemlists');
+    t.Dependencies.AddUnit('lazedithighlighter');
+    t.Dependencies.AddUnit('lazedittypes');
+    t.Dependencies.AddUnit('lazeditmatchingbracketutils');
+    t.Dependencies.AddUnit('lazeditasyncrunner');
 
     T:=P.Targets.AddUnit('textmategrammar.pas');
     T:=P.Targets.AddUnit('xHyperLinksDecorator.pas');
@@ -58,7 +63,13 @@ begin
     T:=P.Targets.AddUnit('xregexpr_unicodedata.pas');
     T:=P.Targets.AddUnit('lazeditmiscprocs.pas');
     T:=P.Targets.AddUnit('lazedithighlighterutils.pas');
+    T:=P.Targets.AddUnit('lazedittextgridpainter.pas');
     T:=P.Targets.AddUnit('lazedittextattributes.pas');
+    T:=P.Targets.AddUnit('lazeditlineitemlists.pas');
+    T:=P.Targets.AddUnit('lazedithighlighter.pas');
+    T:=P.Targets.AddUnit('lazedittypes.pas');
+    T:=P.Targets.AddUnit('lazeditmatchingbracketutils.pas');
+    T:=P.Targets.AddUnit('lazeditasyncrunner.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('lazedit.compiled');

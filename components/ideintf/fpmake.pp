@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 09.03.2026
+   This file was generated on 10.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -34,6 +34,7 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('lazedit');
     D := P.Dependencies.Add('debuggerintf');
     D := P.Dependencies.Add('buildintf');
     D := P.Dependencies.Add('lazcontrols');

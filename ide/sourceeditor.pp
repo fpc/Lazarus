@@ -63,6 +63,8 @@ uses
   SynPluginMultiCaret, SynPluginSyncronizedEditBase, SourceSynEditor, SynExportHTML,
   SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef, SynBeautifierPascal,
   SynEditMarkupSpecialLine,
+  // LazEdit
+  LazEditTextAttributes, LazEditHighlighter,
   // IdeIntf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs, IDECommands,
@@ -83,7 +85,7 @@ uses
   EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,
   SourceMarks, SearchFrm, MultiPasteDlg, EditorMacroListViewer,
   EditorToolbarStatic, editortoolbar_options, InputhistoryWithSearchOpt,
-  FPDocHints, MainIntf, GotoFrm, LazEditTextAttributes;
+  FPDocHints, MainIntf, GotoFrm;
 
 type
   TSourceNotebook = class;
@@ -1055,7 +1057,8 @@ type
     function  UniqueSourceEditorCount: integer; override;
     // Settings
     function  GetEditorControlSettings(EditControl: TControl): boolean; override;
-    function  GetHighlighterSettings(Highlighter: TObject): boolean; override;
+    function GetHighlighterSettings(Highlighter: TLazEditCustomRangesHighlighter
+      ): boolean; override;
   private
     // Completion Plugins
     FCompletionPlugins: TFPList;
@@ -10410,7 +10413,8 @@ begin
   end;
 end;
 
-function TSourceEditorManagerBase.GetHighlighterSettings(Highlighter: TObject): boolean;
+function TSourceEditorManagerBase.GetHighlighterSettings(Highlighter: TLazEditCustomRangesHighlighter
+  ): boolean;
 begin
   Result:=true;
   if Highlighter is TSynCustomHighlighter then begin
