@@ -147,6 +147,7 @@ object WatchInspectNav: TWatchInspectNav
       Left = 461
       Top = 2
       Style = tbsCheck
+      Visible = False
       OnClick = btnWordWrapClick
     end
     object tbDivCol: TToolButton
