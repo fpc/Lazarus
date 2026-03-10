@@ -169,41 +169,14 @@ const
   GTK_FIXED_INSTANCE_SIZE = SizeOf(TGtkFixed);
 
 procedure LCLGtkFixedGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
-var
-  AControl: TGtk3Widget;
-  ParentClass: PGtkWidgetClass;
 begin
   if not Assigned(min_width) or not Assigned(nat_width) then
-  begin
-    DebugLn('Error: LCLGtkFixedGetPreferredWidth invalid params.');
     Exit;
-  end;
-
-  if not Gtk3IsWidget(widget) then
-  begin
-    DebugLn('Error: LCLGtkFixedGetPreferredWidth widget param is not PGtkWidget.');
-    Exit;
-  end;
-
-  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
-  if not Assigned(ParentClass) then
-  begin
-    DebugLn('Error: LCLGtkFixedGetPreferredWidth cannot get ParentClass !');
-    Exit;
-  end;
-
-  // Call parent class implementation
-  ParentClass^.get_preferred_width(widget, min_width, nat_width);
-  // writeln('LCLFixed preferred min_width=',min_width^,' natural w=',nat_width^);
-  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
-  if not Assigned(AControl) then
-  begin
-    DebugLn('Error: LCLGtkFixedGetPreferredWidth cannot get TGtk3Widget for widget parameter.');
-    Exit;
-  end;
-
-  min_width^ := 1;
-  nat_width^ := 1;
+  { LCLGtkFixed (Toolbars): TRULY SOFT WIDTH }
+  { We force 10px to break the expansion loop. Child positions (e.g. x=1950) }
+  { in a docked IDE otherwise 'push' the window to be too wide. }
+  min_width^ := 10;
+  nat_width^ := 10;
 end;
 
 procedure LCLGtkFixedGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
@@ -230,9 +203,6 @@ begin
     Exit;
   end;
 
-  // Call parent class implementation
-  ParentClass^.get_preferred_height(widget, min_height, nat_height);
-
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then
   begin
@@ -240,8 +210,27 @@ begin
     Exit;
   end;
 
-  min_height^ := 1;
-  nat_height^ := 1;
+  // Call parent class implementation
+  ParentClass^.get_preferred_height(widget, min_height, nat_height);
+
+  { LCLGtkFixed (Toolbars): KEEP HARD HEIGHT to prevent 1px collapse.
+    Only apply the floor when the control is intended to be visible.
+    When LCL explicitly sets Height=0 (control collapsed), report 0 so GTK
+    does not prevent the widget from collapsing to zero. }
+  if AControl.LCLHeight > 0 then
+  begin
+    min_height^ := Max(min_height^, AControl.LCLHeight);
+    nat_height^ := Max(nat_height^, min_height^);
+  end else if Assigned(AControl.LCLObject) and (AControl.LCLObject.Height > 0) then
+  begin
+    min_height^ := Max(min_height^, AControl.LCLObject.Height);
+    nat_height^ := Max(nat_height^, min_height^);
+  end else
+  begin
+    { Height=0: collapsed intentionally — ensure at least 0, not 10 }
+    if min_height^ < 0 then min_height^ := 0;
+    nat_height^ := Max(nat_height^, min_height^);
+  end;
 end;
 
 procedure LCLGtkFixedClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;

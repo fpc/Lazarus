@@ -22,7 +22,7 @@ unit Gtk3Widgets;
 interface
 
 uses
-  Classes, SysUtils, types, math,
+  Classes, SysUtils, StrUtils, types, math,
   // LCL
   Controls, StdCtrls, ExtCtrls, Buttons, ComCtrls, Graphics, Dialogs, Forms, Menus, ExtDlgs,
   Spin, CheckLst, PairSplitter, LCLType, LMessages, LCLMessageGlue, LCLIntf,
@@ -3255,30 +3255,83 @@ begin
     {size_allocate only makes sense on a realized container; calling it on
      an unrealized one triggers internal GTK3 CSS layout with whatever tiny
      garbage allocation GTK assigned, producing size >= 0 assertions.}
+    {$IFDEF GTK3DEBUGHEIGHTZERO}
+    if (AHeight <= 5) and Assigned(LCLObject) then
+      writeln(Format('SetBounds H=%d: %s IsContainer=%s realized=%s mapped=%s child_vis=%s has_win=%s widget_type=%s',
+        [AHeight,
+         LCLObject.Name + ':' + LCLObject.ClassName,
+         BoolToStr(Gtk3IsContainer(Widget), True),
+         BoolToStr(Widget^.get_realized, True),
+         BoolToStr(Widget^.get_mapped, True),
+         BoolToStr(Widget^.get_child_visible, True),
+         BoolToStr(Widget^.get_has_window, True),
+         g_type_name(Widget^.g_type_instance.g_class^.g_type)]));
+    {$ENDIF}
     if Gtk3IsContainer(Widget) and Widget^.get_realized then
     begin
       {Skip size_allocate on any container when the allocation is a tiny
        placeholder (width or height < 2px).}
       if (ARect.width < 2) or (ARect.height < 2) then
-        //skip
+      begin
+        { Collapse: mark widget as not child-visible so the parent container
+          (GtkLayout) unmaps it and recursively hides all descendant GdkWindows.
+          We treat h=1 the same as h=0 because LCL's AlignControls often
+          allocates a 1px minimum to alBottom controls whose Height was set to 0
+          (integer arithmetic leftover), which would otherwise cause GTK to
+          inflate the widget to its preferred height (~42px for a TListBox). }
+        if (ARect.width = 0) or (ARect.height <= 1) then
+        begin
+          {$IFDEF GTK3DEBUGHEIGHTZERO}
+          if Assigned(LCLObject) then
+            writeln(Format('SetBounds H=%d: calling set_child_visible(False) for %s (was child_vis=%s)',
+              [ARect.height,
+               LCLObject.Name + ':' + LCLObject.ClassName,
+               BoolToStr(Widget^.get_child_visible, True)]));
+          {$ENDIF}
+          Widget^.set_child_visible(False);
+          {$IFDEF GTK3DEBUGHEIGHTZERO}
+          if Assigned(LCLObject) then
+            writeln(Format('SetBounds H=%d: after set_child_visible(False): mapped=%s',
+              [ARect.height, BoolToStr(Widget^.get_mapped, True)]));
+          {$ENDIF}
+        end;
+      end
       else
+      begin
+        { Restore child-visibility if it was suppressed by a prior collapse. }
+        if not Widget^.get_child_visible then
+        begin
+          {$IFDEF GTK3DEBUGHEIGHTZERO}
+          if Assigned(LCLObject) then
+            writeln(Format('SetBounds H>0: restoring set_child_visible(True) for %s h=%d',
+              [LCLObject.Name + ':' + LCLObject.ClassName, AHeight]));
+          {$ENDIF}
+          Widget^.set_child_visible(True);
+        end;
         Widget^.size_allocate(@ARect);
-    end;
+      end;
+    end
+    {$IFDEF GTK3DEBUGHEIGHTZERO}
+    else if (AHeight <= 1) and Assigned(LCLObject) then
+      writeln(Format('SetBounds H=%d: SKIPPED set_child_visible (IsContainer=%s realized=%s)',
+        [AHeight, BoolToStr(Gtk3IsContainer(Widget), True), BoolToStr(Widget^.get_realized, True)]))
+    {$ENDIF}
+    ;
 
     if Widget^.get_visible then
       Widget^.set_allocation(@Alloc);
 
     Widget^.get_size_request(@CurW, @CurH);
     if (CurW <> AWidth) or (CurH <> AHeight) then
+    begin
+      {$IFDEF GTK3DEBUGHEIGHTZERO}
+      if (AHeight = 0) and Assigned(LCLObject) then
+        writeln(Format('SetBounds H=0: set_size_request(%d,%d) for %s',
+          [AWidth, AHeight, LCLObject.Name + ':' + LCLObject.ClassName]));
+      {$ENDIF}
       Widget^.set_size_request(AWidth, AHeight);
+    end;
     Move(ALeft, ATop);
-
-    {Removed: process_updates(True) for wtCustomControl/wtScrollingWinControl.
-     Forcing synchronous GTK rendering on every SetBounds call during drag
-     resize blocks each mouse-move event behind a full GTK render+layout flush
-     and also prematurely fires deferred size-allocate signals from the previous
-     resize cycle (causing spurious DoAdjustClientRectChange). GTK's own
-     queue_draw/queue_resize mechanism correctly batches repaints to idle.}
   finally
     EndUpdate;
   end;
@@ -8084,6 +8137,12 @@ begin
 
 
   Result := LCLGtkScrolledWindowNew;
+  {$IFDEF GTK3DEBUGHEIGHTZERO}
+  writeln(Format('TGtk3ListBox.CreateWidget: LCLGtkScrolledWindowNew → %p type=%s lcl=%s',
+    [PGtkWidget(Result),
+     g_type_name(PGtkWidget(Result)^.g_type_instance.g_class^.g_type),
+     IfThen(Assigned(LCLObject), LCLObject.Name + ':' + LCLObject.ClassName, 'nil')]));
+  {$ENDIF}
   Result^.show;
 
   ListStore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
@@ -8120,6 +8179,7 @@ begin
   PGtkScrolledWindow(Result)^.get_vscrollbar^.set_can_focus(False);
   PGtkScrolledWindow(Result)^.get_hscrollbar^.set_can_focus(False);
   PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+
   FListBoxStyle := AListBox.Style;
   if FListBoxStyle <> lbOwnerDrawVariable then
   begin
@@ -10519,6 +10579,18 @@ begin
     LCLVAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
   with PGtkScrolledWindow(Result)^.get_hadjustment^ do
     LCLHAdj := gtk_adjustment_new(value, lower, upper, step_increment, page_increment, page_size);
+
+  // Disconnect GtkLayout's bin_window from BOTH scroll adjustments for pure TCustomControl
+  // TGtk3ScrollingWinControl.CreateWidget reconnects both after this call,
+  // because TScrollBox children placed via gtk_layout_put at document
+  // coordinates NEED the bin_window to move when the user scrolls.
+  //
+  // gtk_adjustment_new returns a floating GObject; set_[hv]adjustment sinks it.
+  // Do NOT unref - GtkLayout takes ownership.
+  PGtkScrollable(FCentralWidget)^.set_hadjustment(
+    gtk_adjustment_new(0, 0, 1, 1, 1, 0));
+  PGtkScrollable(FCentralWidget)^.set_vadjustment(
+    gtk_adjustment_new(0, 0, 1, 1, 1, 0));
 end;
 
 function TGtk3CustomControl.EatArrowKeys(const AKey: Word): Boolean;
@@ -10820,6 +10892,13 @@ begin
   FHasPaint := True;
   Result := inherited CreateWidget(Params);
   Include(FWidgetType, wtScrollingWinControl);
+  // TGtk3CustomControl disconnects adjustments, so LCL can easy manage
+  // TCustomControl. TScrollingWinControl is different beast, so
+  // back adjustments into game.
+  PGtkScrollable(FCentralWidget)^.set_hadjustment(
+    gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(Result)));
+  PGtkScrollable(FCentralWidget)^.set_vadjustment(
+    gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(Result)));
 end;
 
 { TGtk3Window }
@@ -12394,6 +12473,9 @@ begin
   {$IFDEF GTK3DEBUGDESIGNER}
   writeln('>BringDesignerToFront ');
   {$ENDIF}
+  if Gtk3IsLayout(getContainerWidget) and Gtk3IsGdkWindow(PGtkLayout(getContainerWidget)^.get_bin_window) then
+    PGtkLayout(getContainerWidget)^.get_bin_window^.raise_
+  else
   if Gtk3IsGdkWindow(getContainerWidget^.window) then
     getContainerWidget^.window^.raise_;
   {$IFDEF GTK3DEBUGDESIGNER}
