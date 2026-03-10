@@ -199,6 +199,8 @@ begin
           FCancelControl := nil;
         if AComponent = FLastFocusedControl then
           FLastFocusedControl := nil;
+        if AComponent = FLastActiveControl then
+          FLastActiveControl := nil;
         // then do stuff which can trigger things
         if Assigned(FActionLists) and (AComponent is TCustomActionList) then
           DoRemoveActionList(TCustomActionList(AComponent))
@@ -508,7 +510,7 @@ end;
 procedure TCustomForm.WMActivate(var Message: TLMActivate);
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('TCustomForm.WMActivate A ',DbgSName(Self),' Msg.Active=',dbgs(Message.Active));
+  DebugLn('TCustomForm.WMActivate A ',DbgSName(Self),' Msg.Active=',dbgs(Message.Active),' ParentWindow=',dbgHex(ParentWindow),' Parent=',dbgHex(PtrUInt(Parent)));
   {$ENDIF}
   if (Parent = nil) and (ParentWindow = 0) and
      (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then

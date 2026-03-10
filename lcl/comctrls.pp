@@ -261,6 +261,7 @@ type
     procedure DoHide; virtual;
     procedure DoShow; virtual;
     procedure DestroyHandle; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RealSetText(const AValue: TCaption); override;
   public
     constructor Create(TheOwner: TComponent); override;

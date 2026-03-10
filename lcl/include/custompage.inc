@@ -207,6 +207,13 @@ begin
   Exclude(FFlags,pfAdded);
 end;
 
+procedure TCustomPage.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FLastFocusedControl) then
+    FLastFocusedControl := nil;
+end;
+
 procedure TCustomPage.RealSetText(const AValue: TCaption);
 begin
   if (Parent <> nil) and Parent.HandleAllocated and (not (csLoading in ComponentState)) then

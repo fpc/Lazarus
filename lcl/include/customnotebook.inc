@@ -1227,10 +1227,16 @@ begin
     if Assigned(AForm) then
     begin
       if OldPage.ContainsControl(AForm.ActiveControl) then
-        OldPage.FLastFocusedControl := AForm.ActiveControl
+      begin
+        OldPage.FLastFocusedControl := AForm.ActiveControl;
+        OldPage.FreeNotification(AForm.ActiveControl);
+      end
       else
       if Assigned(AForm.LastActiveControl) and OldPage.ContainsControl(AForm.LastActiveControl) then
+      begin
         OldPage.FLastFocusedControl := AForm.LastActiveControl;
+        OldPage.FreeNotification(AForm.LastActiveControl);
+      end;
     end;
   end;
 
