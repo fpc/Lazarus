@@ -110,7 +110,7 @@ const
     AllClasses+[ctnProcedure, ctnWithVariable];
   
 type
-  TNodeCacheEntryFlag = (ncefSearchedInParents, ncefSearchedInAncestors, nceOverlapped);
+  TNodeCacheEntryFlag = (ncefSearchedInParents, ncefSearchedInAncestors, ncefOverlapped);
   TNodeCacheEntryFlags = set of TNodeCacheEntryFlag;
   
   PCodeTreeNodeCacheEntry = ^TCodeTreeNodeCacheEntry;
@@ -903,7 +903,7 @@ begin
   end else begin
     // identifier was already searched in this range
     OldEntry:=PCodeTreeNodeCacheEntry(OldNode.Data);
-    if nceOverlapped in OldEntry^.Flags then exit;
+    if ncefOverlapped in OldEntry^.Flags then exit;
     NewSearchRangeFlags:=(ncefAllSearchRanges * (OldEntry^.Flags+Flags));
     if ((NewNode=OldEntry^.NewNode)
     and (NewTool=OldEntry^.NewTool))
@@ -917,7 +917,7 @@ begin
         OldEntry^.CleanEndPos:=CleanEndPos;
       OldEntry^.Flags:=NewSearchRangeFlags;
     end else begin
-      OldEntry^.Flags:= [nceOverlapped]; // cache invalid, don't use
+      OldEntry^.Flags:= [ncefOverlapped]; // cache invalid, don't use
       // different FindContext with overlapping search ranges
       //RaiseConflictException('conflicting cache nodes');
     end;
@@ -930,7 +930,7 @@ begin
   Node:=FindLeftMostAVLNode(Identifier);
   if Node<>nil then begin
     Result:=PCodeTreeNodeCacheEntry(Node.Data);
-    if nceOverlapped in Result^.Flags then
+    if ncefOverlapped in Result^.Flags then
       Result:=nil;
   end else begin
     Result:=nil;
@@ -990,7 +990,7 @@ begin
     Entry:=PCodeTreeNodeCacheEntry(Result.Data);
     if (CleanStartPos>=Entry^.CleanEndPos)
     or (CleanEndPos<=Entry^.CleanStartPos)
-    or (nceOverlapped in Entry^.Flags)
+    or (ncefOverlapped in Entry^.Flags)
     then begin
       // node is not in range
       Result:=nil;
@@ -1140,7 +1140,7 @@ begin
   Node:=FindAVLNodeInRange(Identifier,CleanStartPos,CleanEndPos);
   if Node<>nil then begin
     Result:=PCodeTreeNodeCacheEntry(Node.Data);
-    if nceOverlapped in Result^.Flags then
+    if ncefOverlapped in Result^.Flags then
       Result:=nil;
   end
   else
