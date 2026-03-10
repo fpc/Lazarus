@@ -130,6 +130,11 @@ var
   );
 
 var
+  CocoaConfigStatusBar: TCocoaConfigStatusBar = (
+    defaultHeight: 18;
+  );
+
+var
   CocoaConfigListView: TCocoaConfigListView = (
     vsReport: (
       tableViewStyle: NSTableViewStyleAutomatic;

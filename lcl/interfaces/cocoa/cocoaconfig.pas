@@ -211,6 +211,11 @@ type
   end;
 
 type
+  TCocoaConfigStatusBar = record
+    defaultHeight: Integer;
+  end;
+
+type
   TCocoaConfigSize = record
     width: Double;
     height: Double;

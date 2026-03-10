@@ -14,7 +14,7 @@ uses
   LCLType, Controls, ComCtrls, LCLMessageGlue, LMessages,
   WSComCtrls,
   MacOSAll, CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects, CocoaUtils,
+  CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects, CocoaConfig, CocoaUtils,
   CocoaTabControls, CocoaButtons, CocoaStatusBar;
 
 type
@@ -362,7 +362,7 @@ class procedure TCocoaWSStatusBar.GetPreferredSize(const AWinControl: TWinContro
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
   PreferredWidth := 0;
-  PreferredHeight := STATUSBAR_DEFAULT_HEIGHT;
+  PreferredHeight := CocoaConfigStatusBar.defaultHeight;
 end;
 
 { TCocoaWSCustomPage }
