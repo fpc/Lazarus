@@ -199,10 +199,14 @@ type
 
   TCocoaConfigReadOnlyComboBox = record
     minWidth: Integer;
+    roundSize: Integer;
+    buttonWidth: Integer;
     item: TCocoaConfigReadOnlyComboBoxItem;
   end;
 
   TCocoaConfigComboBox = record
+    minHeight: Integer;
+    maxHeight: Integer;
     readOnly: TCocoaConfigReadOnlyComboBox;
   end;
 

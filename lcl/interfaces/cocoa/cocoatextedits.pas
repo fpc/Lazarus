@@ -37,19 +37,6 @@ const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
   SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
 
-  // From Interface Builder MacOSX 10.6
-  // The heights are from layout rectangle.
-  COMBOBOX_REG_HEIGHT   = 20;
-  COMBOBOX_SMALL_HEIGHT = 17;
-  COMBOBOX_MINI_HEIGHT  = 14;
-
-  COMBOBOX_RO_REG_HEIGHT   = 20;
-  COMBOBOX_RO_SMALL_HEIGHT = 17;
-  COMBOBOX_RO_MINI_HEIGHT  = 15;
-
-  COMBOBOX_RO_ROUND_SIZE = 7;
-  COMBOBOX_RO_BUTTON_WIDTH = 18;
-
 type
 
   TCocoaFieldEditor = objcclass;
@@ -1898,9 +1885,9 @@ begin
       // the APP can get better effect by drawing in the cropped rectangle.
       // the APP can also expand the rectangle if it knows what it is doing.
       Types.OffsetRect(dr, -dr.Left, -dr.Top);
-      inc( dr.Left, COMBOBOX_RO_ROUND_SIZE );
+      inc( dr.Left, CocoaConfigComboBox.readOnly.roundSize );
       inc( dr.Top, 2 );
-      dec( dr.Right, COMBOBOX_RO_BUTTON_WIDTH );
+      dec( dr.Right, CocoaConfigComboBox.readOnly.buttonWidth );
       inc( dr.Bottom, 1 );
 
       ctx.InitDraw(dr.Width, dr.Height);
