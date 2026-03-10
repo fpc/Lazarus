@@ -33,10 +33,6 @@ uses
   MacOSAll, CocoaAll, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaPrivate, CocoaCallback;
 
-const
-  SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
-  SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
-
 type
 
   TCocoaFieldEditor = objcclass;
@@ -2264,8 +2260,8 @@ begin
   //lParams.Style := AParams.Style or WS_VISIBLE;
 
   // Stepper
-  lParams.X := AParams.X + AParams.Width - SPINEDIT_DEFAULT_STEPPER_WIDTH;
-  lParams.Width := SPINEDIT_DEFAULT_STEPPER_WIDTH;
+  lParams.X := AParams.X + AParams.Width - CocoaConfigSpinEdit.stepperDefaultWidth;
+  lParams.Width := CocoaConfigSpinEdit.stepperDefaultWidth;
   Stepper := TCocoaSpinEditStepper.alloc.lclInitWithCreateParams(lParams);
   TCocoaSpinEditStepper(Stepper).callback := callback;
   Stepper.setValueWraps(False);
@@ -2406,7 +2402,7 @@ var
 begin
   lRect := r;
   lStepperRect := r;
-  lRect.Right := lRect.Right - SPINEDIT_DEFAULT_STEPPER_WIDTH;
+  lRect.Right := lRect.Right - CocoaConfigSpinEdit.stepperDefaultWidth;
   lStepperRect.Left := lRect.Right;
   svHeight := GetNSViewSuperViewHeight(Self);
   if Assigned(superview) and NOT superview.isFlipped then

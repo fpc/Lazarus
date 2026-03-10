@@ -31,10 +31,6 @@ uses
   Types, Classes, SysUtils, LCLType, Forms, LazUTF8,
   MacOSAll, CocoaAll, CocoaCallback, CocoaCursor, cocoa_extra, CocoaUtils;
 
-const
-  SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
-  SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
-
 type
   // Some components might be using CocoaPrivate for use of LCLObjCBoolean
   // Thus this declaration needs to be here.

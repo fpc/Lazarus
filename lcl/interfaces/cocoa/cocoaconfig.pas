@@ -211,6 +211,11 @@ type
   end;
 
 type
+  TCocoaConfigSpinEdit = record
+    stepperDefaultWidth: Integer;
+  end;
+
+type
   TCocoaConfigStatusBar = record
     defaultHeight: Integer;
   end;

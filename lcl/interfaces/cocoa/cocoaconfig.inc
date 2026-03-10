@@ -130,6 +130,11 @@ var
   );
 
 var
+  CocoaConfigSpinEdit: TCocoaConfigSpinEdit = (
+    stepperDefaultWidth: 15;
+  );
+
+var
   CocoaConfigStatusBar: TCocoaConfigStatusBar = (
     defaultHeight: 18;
   );
