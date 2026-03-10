@@ -1225,6 +1225,8 @@ uses {$IFDEF GTK3DEBUGKEYPRESS}TypInfo,{$ENDIF}gtk3int, gtk3caret, imglist,
 class function TGtk3Widget.WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 var
   AForm: TCustomForm;
+  AFocusedWidget: PGtkWidget;
+  AFocusedLCL: TGtk3Widget;
 begin
   {$IFDEF GTK3DEBUGCOMBOBOX}
   if (Data <> nil) and (wtComboBox in TGtk3Widget(Data).WidgetType) and
@@ -1364,13 +1366,32 @@ begin
     end;
   GDK_KEY_PRESS:
     begin
-      if Widget^.has_focus or Widget^.is_toplevel then
-        Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
+      if Widget^.has_focus then
+        Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True)
+      else if Widget^.is_toplevel then
+      begin
+        AFocusedWidget := PGtkWindow(Widget)^.get_focus;
+        AFocusedLCL := nil;
+        if Assigned(AFocusedWidget) and (AFocusedWidget <> Widget) then
+          AFocusedLCL := TGtk3Widget(HwndFromGtkWidget(AFocusedWidget));
+        // Only fire from window level when no focused LCL child exists.
+        if not Assigned(AFocusedLCL) then
+          Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
+      end;
     end;
   GDK_KEY_RELEASE:
     begin
-      if Widget^.has_focus or Widget^.is_toplevel then // or (Widget = TGtk3Widget(data).GetContainerWidget) then
-        Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
+      if Widget^.has_focus then
+        Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False)
+      else if Widget^.is_toplevel then
+      begin
+        AFocusedWidget := PGtkWindow(Widget)^.get_focus;
+        AFocusedLCL := nil;
+        if Assigned(AFocusedWidget) and (AFocusedWidget <> Widget) then
+          AFocusedLCL := TGtk3Widget(HwndFromGtkWidget(AFocusedWidget));
+        if not Assigned(AFocusedLCL) then
+          Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
+      end;
     end;
   GDK_ENTER_NOTIFY:
     begin
@@ -2175,11 +2196,8 @@ begin
     if not CanSendLCLMessage then
       exit;
 
-    {$warning workaround for GtkTreeView key bindings.Must find out what LCL does with
-     this keys.}
-    if {IsArrowKey and} ([wtListBox,wtListView,wtEntry,wtMemo,wtComboBox] * WidgetType <> []) then
-    // let gtk3 select cell for now. Must check what LCL does with arrow keys
-    // since gtk3 becomes crazy after delivery of this message
+    if IsArrowKey and ([wtListBox,wtListView,wtEntry,wtMemo,wtComboBox] * WidgetType <> []) then
+    // skip LM_KEYDOWN for arrow keys on native controls only
     else
     if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = 0) then
     begin
