@@ -1373,7 +1373,11 @@ begin
         AFocusedWidget := PGtkWindow(Widget)^.get_focus;
         AFocusedLCL := nil;
         if Assigned(AFocusedWidget) and (AFocusedWidget <> Widget) then
+        begin
           AFocusedLCL := TGtk3Widget(HwndFromGtkWidget(AFocusedWidget));
+          if Assigned(AFocusedLCL) and (AFocusedLCL = TGtk3Widget(Data)) then
+            AFocusedLCL := nil;
+        end;
         // Only fire from window level when no focused LCL child exists.
         if not Assigned(AFocusedLCL) then
           Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, True);
@@ -1388,7 +1392,11 @@ begin
         AFocusedWidget := PGtkWindow(Widget)^.get_focus;
         AFocusedLCL := nil;
         if Assigned(AFocusedWidget) and (AFocusedWidget <> Widget) then
+        begin
           AFocusedLCL := TGtk3Widget(HwndFromGtkWidget(AFocusedWidget));
+          if Assigned(AFocusedLCL) and (AFocusedLCL = TGtk3Widget(Data)) then
+            AFocusedLCL := nil;
+        end;
         if not Assigned(AFocusedLCL) then
           Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
       end;
