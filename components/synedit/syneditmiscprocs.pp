@@ -42,7 +42,7 @@ unit SynEditMiscProcs;
 interface
 
 uses
-  LCLIntf, LCLType, Classes, SynEditTypes, Graphics, SysUtils, LazEditMiscProcs;
+  LCLIntf, LCLType, Classes, SynEditTypes, Graphics, SysUtils;
 
 type
   PIntArray = ^TIntArray;
