@@ -14582,6 +14582,18 @@ begin
                   +Params.Flags*[fdfOverrideStringTypesWithFirstParamType];
     ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos,
                                        @AliasType);
+    if (ExprType.Desc=xtContext) and
+    (ExprType.Context.Node.Desc=ctnProcedureType) and
+    (ExprType.Context.Node.FirstChild.FirstChild<>nil) and
+    (ExprType.Context.Node.FirstChild.FirstChild.Desc=ctnIdentifier) then begin
+      // reference to function, switch to result type
+
+      // debugln(['Result type is ',
+      //  GetIdentifier(@ExprType.Context.Tool.Src[ExprType.Context.Node.FirstChild.
+      //  FirstChild.StartPos])]);
+
+      AliasType.Node:=ExprType.Context.Node.FirstChild.FirstChild;
+    end;
   end;
 
   if AliasType.Node<>nil then begin
