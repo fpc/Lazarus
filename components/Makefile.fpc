@@ -51,12 +51,12 @@ lazbuildpackages:
 lazbuildlclpackages:
 	$(MAKE) -C fpdebug
 	$(MAKE) -C lazcontrols
+	$(MAKE) -C lazedit
 	$(MAKE) -C ideintf
 	$(MAKE) -C lazdebuggers/cmdlinedebuggerbase
 	$(MAKE) -C lazdebuggers/lazdebuggerlldb
 	$(MAKE) -C lazdebuggers/lazdebuggerfplldb
 	$(MAKE) -C lazdebuggers/lazdebuggerfp
-	$(MAKE) -C lazedit
 	$(MAKE) -C synedit
 
 #-----------------------------------------------------------------------------
