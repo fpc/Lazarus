@@ -1161,6 +1161,7 @@ end;
 
 destructor TChatControl.TMarkdownDisplayChatItem.destroy;
 begin
+  FreeAndNil(FControl);
   inherited destroy;
 end;
 
