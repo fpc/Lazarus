@@ -15,7 +15,7 @@ uses
   WSComCtrls,
   MacOSAll, CocoaAll,
   CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects, CocoaConfig, CocoaUtils,
-  CocoaTabControls, CocoaButtons, CocoaStatusBar, CocoaProgressIndicator;
+  CocoaTabControls, CocoaButtons, CocoaStatusBar, CocoaProgressIndicator, CocoaSlider;
 
 type
 
