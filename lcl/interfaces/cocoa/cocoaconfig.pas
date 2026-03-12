@@ -215,9 +215,12 @@ type
     stepperDefaultWidth: Integer;
   end;
 
-type
   TCocoaConfigStatusBar = record
     defaultHeight: Integer;
+  end;
+
+  TCocoaConfigProgressIndicator = record
+    smallHeight: Integer;
   end;
 
 type

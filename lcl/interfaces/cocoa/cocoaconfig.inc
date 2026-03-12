@@ -134,9 +134,12 @@ var
     stepperDefaultWidth: 15;
   );
 
-var
   CocoaConfigStatusBar: TCocoaConfigStatusBar = (
     defaultHeight: 18;
+  );
+
+  CocoaConfigProgressIndicator: TCocoaConfigProgressIndicator = (
+    smallHeight: 10;
   );
 
 var

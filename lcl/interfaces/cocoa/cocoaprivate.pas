@@ -29,7 +29,8 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLType, Forms, LazUTF8,
-  MacOSAll, CocoaAll, CocoaCallback, CocoaCursor, cocoa_extra, CocoaUtils;
+  MacOSAll, CocoaAll,
+  CocoaCallback, CocoaCursor, CocoaConfig, Cocoa_Extra, CocoaUtils;
 
 type
   // Some components might be using CocoaPrivate for use of LCLObjCBoolean
@@ -120,10 +121,6 @@ type
     function lclGetFrameToLayoutDelta: TRect; override;
   end;
 
-
-const
-  PROGRESS_REG_HEIGHT   = 16; // no longer applies on later macOS version
-  PROGRESS_SMALL_HEIGHT = 10;
 
 type
   { TCocoaProgressIndicator }
@@ -832,7 +829,7 @@ end;
 
 procedure TCocoaProgressIndicator.lclSetFrame(const r: TRect);
 begin
-  SetNSControlSize(self, r.Bottom - r.Top, 0, PROGRESS_SMALL_HEIGHT, true);
+  SetNSControlSize(self, r.Bottom - r.Top, 0, CocoaConfigProgressIndicator.smallHeight, True);
   inherited lclSetFrame(r);
 end;
 
