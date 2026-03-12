@@ -18,6 +18,13 @@ type
     function lclClassName: shortstring; message 'lclClassName';
   end;
 
+  { TCocoaApplicationUtil }
+
+  TCocoaApplicationUtil = class
+  public
+    class function isMainThread: Boolean;
+  end;
+
   { TCocoaTypeUtil }
 
   TCocoaTypeUtil = class
@@ -81,9 +88,15 @@ type
     class function toMacOSTitle(const ATitle: String): NSString;
     class procedure moveCaretToTheEnd(const c: NSControl);
     class function getNSWindow(const obj: NSObject): NSWindow;
+    class function getSuperViewHeight(const view: NSView): CGFloat;
     class procedure hideAllSubviews( const parent: NSView );
     class procedure addLayoutDelta(const layout: TRect; var frame: TRect);
     class procedure subLayoutDelta(const layout: TRect; var frame: TRect);
+    class procedure setDefaultMargin(const AView: NSView);
+    class procedure setSize(
+      const ctrl: NSView;
+      const newHeight, miniHeight, smallHeight: Integer;
+      const AutoChangeFont: Boolean );
     class procedure lclOffsetWithEnclosingScrollView(
       const view: NSView;
       var x: Integer;
@@ -172,6 +185,13 @@ implementation
 function NSLCLDebugExtension.lclClassName: shortstring;
 begin
   Result := NSStringToString(self.className);
+end;
+
+{ TCocoaApplicationUtil }
+
+class function TCocoaApplicationUtil.isMainThread: Boolean;
+begin
+  Result := NSThread.currentThread.isMainThread;
 end;
 
 { TCocoaTypeUtil }
@@ -657,6 +677,21 @@ begin
     Result := NSView(obj).window;
 end;
 
+class function TCocoaControlUtil.getSuperViewHeight(const view: NSView
+  ): CGFloat;
+begin
+  Result := -1;
+  if not Assigned(view) then Exit;
+  if not Assigned(view.superview) then Exit;
+  //if view.superview.isKindOfClass_(TCocoaTabPageView) then
+    //Result := TCocoaTabPageView(view.superview).tabview.contentRect.size.height
+  //else
+    Result := view.superview.frame.size.height;
+  {$IFDEF COCOA_SUPERVIEW_HEIGHT}
+  WriteLn(Format('GetNSViewSuperViewHeight Result=%f', [Result]));
+  {$ENDIF}
+end;
+
 class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String); inline;
 var
   ns: NSString;
@@ -688,7 +723,7 @@ begin
   end;
 end;
 
-class function TCocoaControlUtil.toMacOSTitle(const ATitle: string): NSString;
+class function TCocoaControlUtil.toMacOSTitle(const ATitle: String): NSString;
 var
   t: String;
 begin
@@ -713,6 +748,43 @@ begin
   dec(frame.Top, layout.Top);
   dec(frame.Right, layout.Right);
   dec(frame.Bottom, layout.Bottom);
+end;
+
+class procedure TCocoaControlUtil.setDefaultMargin(const AView: NSView);
+var
+  mask: NSUInteger;
+begin
+  if not Assigned(AView) then Exit;
+  if Assigned(AView.superview) and AView.superview.isFlipped then
+    mask:= NSViewMaxYMargin or NSViewMaxXMargin
+  else
+    mask:= NSViewMinYMargin or NSViewMaxXMargin;
+  AView.setAutoresizingMask(mask);
+end;
+
+class procedure TCocoaControlUtil.setSize(
+  const ctrl: NSView;
+  const newHeight, miniHeight, smallHeight: Integer;
+  const AutoChangeFont: Boolean);
+var
+  sz : NSControlSize;
+begin
+  if (miniHeight>0) and (newHeight<=miniHeight) then
+    sz:=NSMiniControlSize
+  else if (smallHeight>0) and (newHeight<=smallHeight) then
+    sz:=NSSmallControlSize
+  else
+    sz:=NSRegularControlSize;
+
+  if ctrl.respondsToSelector(ObjCSelector('setControlSize:')) then
+    ctrl.setControlSize(sz)
+  else if ctrl.respondsToSelector(ObjCSelector('cell')) then
+  begin
+    if NSCell(ctrl.cell).controlSize<>sz then
+        NSCell(ctrl.cell).setControlSize(sz);
+  end;
+  if AutoChangeFont and (ctrl.respondsToSelector(ObjCSelector('setFont:'))) then
+    ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
 end;
 
 class procedure TCocoaControlUtil.lclOffsetWithEnclosingScrollView(

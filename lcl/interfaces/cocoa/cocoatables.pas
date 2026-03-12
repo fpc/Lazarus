@@ -578,7 +578,7 @@ begin
   if NOT Assigned(self.callback) then
     Exit;
 
-  if CheckMainThread then
+  if TCocoaApplicationUtil.isMainThread then
     self.callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 
   if NOT self.callback.isCustomDrawSupported then begin

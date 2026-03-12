@@ -24,7 +24,8 @@ interface
 
 uses
   Types, Classes, SysUtils, Graphics, Controls,
-  MacOSAll, CocoaAll, CocoaConst, CocoaWSCommon, CocoaPrivate, CocoaCallback;
+  MacOSAll, CocoaAll,
+  CocoaConst, CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaUtils;
 
 
 const
@@ -293,7 +294,7 @@ begin
   newFrame.Height:= Round( Size.height );
 
   if (miniHeight<>0) or (smallHeight<>0) then
-    SetNSControlSize(Self,newFrame.Bottom-newFrame.Top,miniHeight, smallHeight, adjustFontToControlSize);
+    TCocoaControlUtil.setSize(Self,newFrame.Bottom-newFrame.Top,miniHeight, smallHeight, adjustFontToControlSize);
   inherited lclSetFrame(newFrame);
 end;
 
@@ -414,7 +415,7 @@ procedure TCocoaButton.drawRect(dirtyRect: NSRect);
 var ctx: NSGraphicsContext;
 begin
   inherited drawRect(dirtyRect);
-  if CheckMainThread and Assigned(callback) then
+  if TCocoaApplicationUtil.isMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
 

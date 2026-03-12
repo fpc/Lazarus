@@ -2404,7 +2404,7 @@ begin
   lStepperRect := r;
   lRect.Right := lRect.Right - CocoaConfigSpinEdit.stepperDefaultWidth;
   lStepperRect.Left := lRect.Right;
-  svHeight := GetNSViewSuperViewHeight(Self);
+  svHeight := TCocoaControlUtil.getSuperViewHeight(Self);
   if Assigned(superview) and NOT superview.isFlipped then
   begin
     TCocoaTypeUtil.toRect(lRect, svHeight, ns);

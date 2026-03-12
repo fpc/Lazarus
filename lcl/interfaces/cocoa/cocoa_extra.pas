@@ -417,6 +417,13 @@ type
     {$endif}
   end;
 
+  NSViewControlSizeExt = objccategory external (NSView)
+    function controlSize: Integer; message 'controlSize';
+    procedure setControlSize(ASize: Integer); message 'setControlSize:';
+    function cell: id; message 'cell';
+    procedure setFont(afont: NSFont); message 'setFont:';
+  end;
+
   NSLayoutConstraint = objcclass external (NSObject)
     function isActive: Boolean; message 'isActive';
     procedure setActive(Active: Boolean); message 'setActive:';

@@ -57,7 +57,7 @@ begin
   AView.setHidden(false);
   {$endif}
   if AReleaseView then AView.release;
-  SetViewDefaults(Result);
+  TCocoaControlUtil.setDefaultMargin(Result);
 end;
 
 function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
@@ -90,7 +90,7 @@ begin
   AView.setHidden(false);
   {$endif}
   AView.release;
-  SetViewDefaults(Result);
+  TCocoaControlUtil.setDefaultMargin(Result);
   if AView.isKindOfClass(TCocoaCustomControl) then
     TCocoaCustomControl(AView).auxMouseByParent := true;
 end;
@@ -124,7 +124,7 @@ begin
   {$else}
   AView.setHidden(false);
   {$endif}
-  SetViewDefaults(Result);
+  TCocoaControlUtil.setDefaultMargin(Result);
 end;
 
 procedure LCLScrollViewAdjustSize(control: TWinControl);

@@ -195,12 +195,6 @@ type
   TCocoaSliderCell = objcclass(NSSliderCell)
   end;
 
-procedure SetViewDefaults(AView: NSView);
-function CheckMainThread: Boolean;
-function GetNSViewSuperViewHeight(view: NSView): CGFloat;
-
-procedure SetNSControlSize(ctrl: NSView; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
-
 var
   // todo: this should be a threadvar
   TrackedControl : NSObject = nil;
@@ -210,8 +204,6 @@ var
   // The flag is checked in Menus to avoid "double" Cmd+Q menu
   LoopHiJackEnded : Boolean = false;
   {$endif}
-
-function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 
 function NSViewIsLCLEnabled(v: NSView): Boolean;
 function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
@@ -254,44 +246,6 @@ begin
   end
   else
     Result := false;
-end;
-
-function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
-begin
-  Result := Assigned(cb1) and Assigned(cb2);
-  if Result then
-    Result := (cb1 = cb2) or (cb1.GetTarget = cb2.GetTarget);
-end;
-
-procedure SetViewDefaults(AView: NSView);
-var
-  mask: NSUInteger;
-begin
-  if not Assigned(AView) then Exit;
-  if Assigned(AView.superview) and AView.superview.isFlipped then
-    mask:= NSViewMaxYMargin or NSViewMaxXMargin
-  else
-    mask:= NSViewMinYMargin or NSViewMaxXMargin;
-  AView.setAutoresizingMask(mask);
-end;
-
-function CheckMainThread: Boolean;
-begin
-  Result := NSThread.currentThread.isMainThread;
-end;
-
-function GetNSViewSuperViewHeight(view: NSView): CGFloat;
-begin
-  Result := -1;
-  if not Assigned(view) then Exit;
-  if not Assigned(view.superview) then Exit;
-  //if view.superview.isKindOfClass_(TCocoaTabPageView) then
-    //Result := TCocoaTabPageView(view.superview).tabview.contentRect.size.height
-  //else
-    Result := view.superview.frame.size.height;
-  {$IFDEF COCOA_SUPERVIEW_HEIGHT}
-  WriteLn(Format('GetNSViewSuperViewHeight Result=%f', [Result]));
-  {$ENDIF}
 end;
 
 { TManualTicks }
@@ -585,7 +539,7 @@ begin
 
   if Assigned(p) then
     p.lclContentView.addSubview(Result);
-  SetViewDefaults(Result);
+  TCocoaControlUtil.setDefaultMargin(Result);
 end;
 
 function LCLViewExtension.lclIsEnabled: Boolean;
@@ -734,7 +688,7 @@ begin
   rr := r;
   TCocoaControlUtil.subLayoutDelta( lclGetFrameToLayoutDelta, rr);
 
-  svHeight := GetNSViewSuperViewHeight(Self);
+  svHeight := TCocoaControlUtil.getSuperViewHeight(Self);
   if Assigned(superview) and not superview.isFlipped then
   begin
     TCocoaTypeUtil.toRect(rr, svHeight, ns)
@@ -829,7 +783,7 @@ end;
 
 procedure TCocoaProgressIndicator.lclSetFrame(const r: TRect);
 begin
-  SetNSControlSize(self, r.Bottom - r.Top, 0, CocoaConfigProgressIndicator.smallHeight, True);
+  TCocoaControlUtil.setSize(self, r.Bottom - r.Top, 0, CocoaConfigProgressIndicator.smallHeight, True);
   inherited lclSetFrame(r);
 end;
 
@@ -1097,37 +1051,6 @@ begin
   wantReturn := false;
   wantAll := false;
 end;
-
-type
-  NSViewControlSizeExt = objccategory external (NSView)
-    function controlSize: Integer; message 'controlSize';
-    procedure setControlSize(ASize: Integer); message 'setControlSize:';
-    function cell: id; message 'cell';
-    procedure setFont(afont: NSFont); message 'setFont:';
-  end;
-
-procedure SetNSControlSize(ctrl: NSView; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
-var
-  sz : NSControlSize;
-begin
-  if (miniHeight>0) and (newHeight<=miniHeight) then
-    sz:=NSMiniControlSize
-  else if (smallHeight>0) and (newHeight<=smallHeight) then
-    sz:=NSSmallControlSize
-  else
-    sz:=NSRegularControlSize;
-
-  if ctrl.respondsToSelector(ObjCSelector('setControlSize:')) then
-    ctrl.setControlSize(sz)
-  else if ctrl.respondsToSelector(ObjCSelector('cell')) then
-  begin
-    if NSCell(ctrl.cell).controlSize<>sz then
-        NSCell(ctrl.cell).setControlSize(sz);
-  end;
-  if AutoChangeFont and (ctrl.respondsToSelector(ObjCSelector('setFont:'))) then
-    ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
-end;
-
 
 end.
 
