@@ -1141,11 +1141,28 @@ begin
   FAlignment := AValue;
   // Define the "inside" direction of an axis such that rotated labels with
   // rotation center at the text start or end never reach into the chart.
+  // Rotate the title of left/right axes by 90 degrees.
   case FAlignment of
-    calBottom: FMarks.SetInsideDir(0, +1);
-    calTop   : FMarks.SetInsideDir(0, -1);
-    calLeft  : FMarks.SetInsideDir(+1, 0);
-    calRight : FMarks.SetInsideDir(-1, 0);
+    calBottom:
+      begin
+        FMarks.SetInsideDir(0, +1);
+        FTitle.LabelFont.Orientation := 0;
+      end;
+    calTop:
+      begin
+        FMarks.SetInsideDir(0, -1);
+        FTitle.LabelFont.Orientation := 0;
+      end;
+    calLeft:
+      begin
+        FMarks.SetInsideDir(+1, 0);
+        FTitle.LabelFont.Orientation := 900;
+      end;
+    calRight:
+      begin
+        FMarks.SetInsideDir(-1, 0);
+        FTitle.LabelFont.Orientation := -900;
+      end;
   end;
   StyleChanged(Self);
 end;
