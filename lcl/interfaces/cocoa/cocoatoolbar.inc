@@ -9,8 +9,7 @@ interface
 uses
   Classes, SysUtils,
   Forms, Menus,
-  CocoaAll, CocoaPrivate, CocoaConfig, CocoaWindows, CocoaMenus,
-  Cocoa_Extra, CocoaUtils;
+  CocoaAll, CocoaConfig, CocoaWindows, CocoaMenus, Cocoa_Extra, CocoaUtils;
 
 type
   PCocoaConfigToolBar = ^TCocoaConfigToolBar;

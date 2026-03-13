@@ -34,7 +34,7 @@ uses
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate, CocoaCallback, CocoaListControl, CocoaTables,
+  CocoaPrivate, CocoaCallback, CocoaListControl, CocoaTables, CocoaGroupBox,
   CocoaConst, CocoaConfig, CocoaWSCommon, CocoaUtils,
   CocoaGDIObjects, CocoaButtons, CocoaTextEdits,
   CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
@@ -922,7 +922,7 @@ var
 begin
   button:= TCocoaButton(AWinControl.Handle);
   size := button.fittingSize();
-  SetNSControlSize(button, Round(size.height), button.miniHeight, button.smallHeight, button.adjustFontToControlSize);
+  TCocoaViewUtil.setSize(button, Round(size.height), button.miniHeight, button.smallHeight, button.adjustFontToControlSize);
   size := button.fittingSize();
   if button.controlSize = NSRegularControlSize then begin
     size.width:= size.width - 12;
@@ -2005,7 +2005,11 @@ begin
   end;
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints
-  AWinControl.Constraints.SetInterfaceConstraints(0,COMBOBOX_MINI_HEIGHT,0,COMBOBOX_REG_HEIGHT);
+  AWinControl.Constraints.SetInterfaceConstraints(
+    0,
+    CocoaConfigComboBox.minHeight,
+    0,
+    CocoaConfigComboBox.maxHeight );
 end;
 
 class procedure TCocoaWSCustomComboBox.SetBorderStyle(

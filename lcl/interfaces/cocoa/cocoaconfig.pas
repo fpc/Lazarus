@@ -199,11 +199,28 @@ type
 
   TCocoaConfigReadOnlyComboBox = record
     minWidth: Integer;
+    roundSize: Integer;
+    buttonWidth: Integer;
     item: TCocoaConfigReadOnlyComboBoxItem;
   end;
 
   TCocoaConfigComboBox = record
+    minHeight: Integer;
+    maxHeight: Integer;
     readOnly: TCocoaConfigReadOnlyComboBox;
+  end;
+
+type
+  TCocoaConfigSpinEdit = record
+    stepperDefaultWidth: Integer;
+  end;
+
+  TCocoaConfigStatusBar = record
+    defaultHeight: Integer;
+  end;
+
+  TCocoaConfigProgressIndicator = record
+    smallHeight: Integer;
   end;
 
 type

@@ -15,28 +15,51 @@
 unit CocoaPrivate;
 
 {$mode objfpc}{$H+}
-{$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
 {$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
-{.$DEFINE COCOA_SPIN_DEBUG}
-{.$DEFINE COCOA_SPINEDIT_INSIDE_CONTAINER}
-{.$DEFINE COCOA_SUPERVIEW_HEIGHT}
 
 interface
 
 uses
   Types, Classes, SysUtils, LCLType, Forms, LazUTF8,
-  MacOSAll, CocoaAll, CocoaCallback, CocoaCursor, cocoa_extra, CocoaUtils;
-
-const
-  SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
-  SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
-  STATUSBAR_DEFAULT_HEIGHT = 18;
+  MacOSAll, CocoaAll,
+  CocoaCallback, CocoaCursor, CocoaConfig, Cocoa_Extra, CocoaUtils;
 
 type
+
+  TCocoaViewUtil = class
+    class function isLCLEnabled(v: NSView): Boolean;
+    class function isLCLEnabled(obj: NSObject): Boolean;
+    class function canLCLFocus(v: NSView): Boolean;
+    class function getSuperViewHeight(const view: NSView): CGFloat;
+    class procedure hideAllSubviews( const parent: NSView );
+    class procedure addLayoutDelta(const layout: TRect; var frame: TRect);
+    class procedure subLayoutDelta(const layout: TRect; var frame: TRect);
+    class procedure setDefaultMargin(const AView: NSView);
+    class procedure setSize(
+      const ctrl: NSView;
+      const newHeight, miniHeight, smallHeight: Integer;
+      const AutoChangeFont: Boolean );
+    class procedure lclOffsetWithEnclosingScrollView(
+      const view: NSView;
+      var x: Integer;
+      var y: Integer );
+  end;
+
+  { TCocoaControlUtil }
+
+  TCocoaControlUtil = class
+  public
+    class procedure setStringValue(const c: NSControl; const S: String); inline;
+    class function getStringValue(const c: NSControl): String; inline;
+    class function toMacOSTitle(const ATitle: String): NSString;
+    class procedure moveCaretToTheEnd(const c: NSControl);
+    class function getNSWindow(const obj: NSObject): NSWindow;
+  end;
+
   // Some components might be using CocoaPrivate for use of LCLObjCBoolean
   // Thus this declaration needs to be here.
   LCLObjCBoolean = cocoa_extra.LCLObjCBoolean;
@@ -112,103 +135,6 @@ type
     procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:'; reintroduce;
   end;
 
-  { TCocoaGroupBox }
-
-  TCocoaGroupBox = objcclass(NSBox)
-  public
-    callback: ICommonCallback;
-    function acceptsFirstResponder: LCLObjCBoolean; override;
-    function lclGetCallback: ICommonCallback; override;
-    procedure lclClearCallback; override;
-    function lclClientFrame: TRect; override;
-    function lclContentView: NSView; override;
-    function lclGetFrameToLayoutDelta: TRect; override;
-  end;
-
-
-const
-  PROGRESS_REG_HEIGHT   = 16; // no longer applies on later macOS version
-  PROGRESS_SMALL_HEIGHT = 10;
-
-type
-  { TCocoaProgressIndicator }
-
-  TCocoaProgressIndicator = objcclass(NSProgressIndicator)
-    callback: ICommonCallback;
-    function acceptsFirstResponder: LCLObjCBoolean; override;
-    function lclGetCallback: ICommonCallback; override;
-    procedure lclClearCallback; override;
-    function lclGetFrameToLayoutDelta: TRect; override;
-    procedure lclSetFrame(const r: TRect); override;
-    // mouse
-    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
-    procedure mouseDown(event: NSEvent); override;
-    procedure mouseUp(event: NSEvent); override;
-    procedure rightMouseDown(event: NSEvent); override;
-    procedure rightMouseUp(event: NSEvent); override;
-    procedure rightMouseDragged(event: NSEvent); override;
-    procedure otherMouseDown(event: NSEvent); override;
-    procedure otherMouseUp(event: NSEvent); override;
-    procedure otherMouseDragged(event: NSEvent); override;
-    procedure mouseDragged(event: NSEvent); override;
-    procedure mouseMoved(event: NSEvent); override;
-    procedure scrollWheel(event: NSEvent); override;
-  end;
-
-  { TManualTicks }
-
-  TManualTicks = class(TObject)
-    count : integer;
-    //todo: keep sorted and do binary search
-    ticks : array of Integer;
-    draw  : Boolean;
-    function AddTick(atick: integer): Boolean;
-  end;
-
-  { TCocoaSlider }
-
-  TCocoaSlider = objcclass(NSSlider)
-    callback  : ICommonCallback;
-    intval    : Integer;
-    man       : TManualTicks;
-
-    procedure dealloc; override;
-    procedure drawRect(dirtyRect: NSRect); override;
-
-    function acceptsFirstResponder: LCLObjCBoolean; override;
-    function lclGetCallback: ICommonCallback; override;
-    procedure lclClearCallback; override;
-    //
-    procedure SnapToInteger(AExtraFactor: Integer = 0); message 'SnapToInteger:';
-    procedure sliderAction(sender: id); message 'sliderAction:';
-    // mouse
-    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
-    procedure mouseDown(event: NSEvent); override;
-    procedure mouseUp(event: NSEvent); override;
-    procedure rightMouseDown(event: NSEvent); override;
-    procedure rightMouseUp(event: NSEvent); override;
-    procedure rightMouseDragged(event: NSEvent); override;
-    procedure otherMouseDown(event: NSEvent); override;
-    procedure otherMouseUp(event: NSEvent); override;
-    procedure otherMouseDragged(event: NSEvent); override;
-    procedure mouseDragged(event: NSEvent); override;
-    procedure mouseMoved(event: NSEvent); override;
-    procedure scrollWheel(event: NSEvent); override;
-
-    procedure lclAddManTick(atick : integer); message 'lclAddManTick:';
-    procedure lclSetManTickDraw(adraw: Boolean); message 'lclSetManTickDraw:';
-    procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); override;
-  end;
-
-  TCocoaSliderCell = objcclass(NSSliderCell)
-  end;
-
-procedure SetViewDefaults(AView: NSView);
-function CheckMainThread: Boolean;
-function GetNSViewSuperViewHeight(view: NSView): CGFloat;
-
-procedure SetNSControlSize(ctrl: NSView; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
-
 var
   // todo: this should be a threadvar
   TrackedControl : NSObject = nil;
@@ -219,23 +145,17 @@ var
   LoopHiJackEnded : Boolean = false;
   {$endif}
 
-function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
-
-function NSViewIsLCLEnabled(v: NSView): Boolean;
-function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
-function NSViewCanFocus(v: NSView): Boolean;
-
 implementation
 
-function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
+class function TCocoaViewUtil.isLCLEnabled(obj: NSObject): Boolean;
 begin
   if obj.isKindOfClass(NSView) then
-    Result := NSViewIsLCLEnabled(NSView(obj))
+    Result := isLCLEnabled(NSView(obj))
   else
     Result := obj.lclIsEnabled;
 end;
 
-function NSViewIsLCLEnabled(v: NSView): Boolean;
+class function TCocoaViewUtil.isLCLEnabled(v: NSView): Boolean;
 begin
   Result := true;
   while Assigned(v) do
@@ -248,7 +168,7 @@ begin
   end;
 end;
 
-function NSViewCanFocus(v: NSView): Boolean;
+class function TCocoaViewUtil.canLCLFocus(v: NSView): Boolean;
 var
   cb: ICommonCallback;
 begin
@@ -264,31 +184,8 @@ begin
     Result := false;
 end;
 
-function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
-begin
-  Result := Assigned(cb1) and Assigned(cb2);
-  if Result then
-    Result := (cb1 = cb2) or (cb1.GetTarget = cb2.GetTarget);
-end;
-
-procedure SetViewDefaults(AView: NSView);
-var
-  mask: NSUInteger;
-begin
-  if not Assigned(AView) then Exit;
-  if Assigned(AView.superview) and AView.superview.isFlipped then
-    mask:= NSViewMaxYMargin or NSViewMaxXMargin
-  else
-    mask:= NSViewMinYMargin or NSViewMaxXMargin;
-  AView.setAutoresizingMask(mask);
-end;
-
-function CheckMainThread: Boolean;
-begin
-  Result := NSThread.currentThread.isMainThread;
-end;
-
-function GetNSViewSuperViewHeight(view: NSView): CGFloat;
+class function TCocoaViewUtil.getSuperViewHeight(const view: NSView
+  ): CGFloat;
 begin
   Result := -1;
   if not Assigned(view) then Exit;
@@ -302,71 +199,139 @@ begin
   {$ENDIF}
 end;
 
-{ TManualTicks }
-
-function TManualTicks.AddTick(atick: integer): Boolean;
+class procedure TCocoaViewUtil.hideAllSubviews( const parent: NSView );
 var
-  i : integer;
+  view: NSView;
 begin
-  //todo: must be a binary search
-  for i:=0 to length(ticks)-1 do
-    if ticks[i]=atick then begin
-      Result:=false;
-      Exit;
-    end;
-
-  // adding new tick
-  if length(ticks)=count then begin
-    if count=0 then SetLength(ticks, 8)
-    else SetLength(ticks, count * 2);
-  end;
-  ticks[count]:=atick;
-  inc(count);
-  Result := true;
+  for view in parent.subviews do
+    view.setHidden( True );
 end;
 
-{ TCocoaGroupBox }
-
-function TCocoaGroupBox.lclClientFrame: TRect;
-var
-  v : NSView;
+class procedure TCocoaViewUtil.addLayoutDelta(const layout: TRect; var frame: TRect);
 begin
-  v:=contentView;
-  if not Assigned(v) then
-    Result := inherited lclClientFrame
+  inc(frame.Left, layout.Left);
+  inc(frame.Top, layout.Top);
+  inc(frame.Right, layout.Right);
+  inc(frame.Bottom, layout.Bottom);
+end;
+
+class procedure TCocoaViewUtil.subLayoutDelta(const layout: TRect; var frame: TRect);
+begin
+  dec(frame.Left, layout.Left);
+  dec(frame.Top, layout.Top);
+  dec(frame.Right, layout.Right);
+  dec(frame.Bottom, layout.Bottom);
+end;
+
+class procedure TCocoaViewUtil.setDefaultMargin(const AView: NSView);
+var
+  mask: NSUInteger;
+begin
+  if not Assigned(AView) then Exit;
+  if Assigned(AView.superview) and AView.superview.isFlipped then
+    mask:= NSViewMaxYMargin or NSViewMaxXMargin
   else
-    if v.isFlipped then
-      Result := TCocoaTypeUtil.toRect( v.frame )
-    else
-      TCocoaTypeUtil.toRect(v.frame, frame.size.height, Result);
+    mask:= NSViewMinYMargin or NSViewMaxXMargin;
+  AView.setAutoresizingMask(mask);
 end;
 
-function TCocoaGroupBox.lclContentView: NSView;
+class procedure TCocoaViewUtil.setSize(
+  const ctrl: NSView;
+  const newHeight, miniHeight, smallHeight: Integer;
+  const AutoChangeFont: Boolean);
+var
+  sz : NSControlSize;
 begin
-  Result := NSView(contentView);
+  if (miniHeight>0) and (newHeight<=miniHeight) then
+    sz:=NSMiniControlSize
+  else if (smallHeight>0) and (newHeight<=smallHeight) then
+    sz:=NSSmallControlSize
+  else
+    sz:=NSRegularControlSize;
+
+  if ctrl.respondsToSelector(ObjCSelector('setControlSize:')) then
+    ctrl.setControlSize(sz)
+  else if ctrl.respondsToSelector(ObjCSelector('cell')) then
+  begin
+    if NSCell(ctrl.cell).controlSize<>sz then
+        NSCell(ctrl.cell).setControlSize(sz);
+  end;
+  if AutoChangeFont and (ctrl.respondsToSelector(ObjCSelector('setFont:'))) then
+    ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
 end;
 
-function TCocoaGroupBox.lclGetFrameToLayoutDelta: TRect;
+class procedure TCocoaViewUtil.lclOffsetWithEnclosingScrollView(
+  const view: NSView;
+  var x: Integer;
+  var y: Integer );
+var
+  es: NSScrollView;
+  r: NSRect;
 begin
-  Result.Left := 3;
-  Result.Right := -3;
-  Result.Top := 0;
-  Result.Bottom := -4;
+  es:= view.enclosingScrollView;
+  if NOT Assigned(es) then
+    Exit;
+  if es.documentView <> view then
+    Exit;
+  r:= es.documentVisibleRect;
+  if NOT view.isFlipped then
+    r.origin.y:= es.documentView.frame.size.height - r.size.height - r.origin.y;
+  inc( x, Round(r.origin.x) );
+  inc( y, Round(r.origin.y) );
 end;
 
-function TCocoaGroupBox.acceptsFirstResponder: LCLObjCBoolean;
+{ TCocoaControlUtil }
+
+class function TCocoaControlUtil.getNSWindow(const obj: NSObject): NSWindow;
 begin
-  Result := True;
+  Result := nil;
+  if not Assigned(obj) then Exit;
+  if obj.isKindOfClass_(NSWindow) then
+    Result := NSWindow(obj)
+  else if obj.isKindOfClass_(NSView) then
+    Result := NSView(obj).window;
 end;
 
-function TCocoaGroupBox.lclGetCallback: ICommonCallback;
+class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String); inline;
+var
+  ns: NSString;
 begin
-  Result := callback;
+  if Assigned(c) then
+  begin
+    ns := NSStringUtf8(S);
+    c.setStringValue(ns);
+    ns.release;
+  end;
 end;
 
-procedure TCocoaGroupBox.lclClearCallback;
+class function TCocoaControlUtil.getStringValue(const c: NSControl): String; inline;
 begin
-  callback := nil;
+  if Assigned(c) then
+    Result := NSStringToString(c.stringValue)
+  else
+    Result := '';
+end;
+
+class procedure TCocoaControlUtil.moveCaretToTheEnd(const c: NSControl);
+var
+  range: NSRange;
+begin
+  if c.currentEditor <> nil then begin
+    range.location:= NSUIntegerMax;
+    range.length:= 0;
+    c.currentEditor.setSelectedRange( range );
+  end;
+end;
+
+class function TCocoaControlUtil.toMacOSTitle(const ATitle: String): NSString;
+var
+  t: String;
+begin
+  t:= TCocoaStringUtil.removeAcceleration(ATitle);
+  if t = '' then
+    Result:= NSString.string_ // empty string
+  else
+    Result:= NSString.stringWithUTF8String( @t[1] );
 end;
 
 { LCLObjectExtension }
@@ -542,7 +507,7 @@ begin
   {$ifdef BOOLFIX}
   SetEnabled_( Ord(AEnabled and NSViewIsLCLEnabled(self.superview) ));
   {$else}
-  SetEnabled( AEnabled and NSViewIsLCLEnabled(self.superview) );
+  SetEnabled( AEnabled and TCocoaViewUtil.isLCLEnabled(self.superview) );
   {$endif}
   inherited lclSetEnabled(AEnabled);
 end;
@@ -593,7 +558,7 @@ begin
 
   if Assigned(p) then
     p.lclContentView.addSubview(Result);
-  SetViewDefaults(Result);
+  TCocoaViewUtil.setDefaultMargin(Result);
 end;
 
 function LCLViewExtension.lclIsEnabled: Boolean;
@@ -690,7 +655,7 @@ begin
   y:= Round( TCocoaScreenUtil.globalScreenBottom - rect.origin.y );
 
   if NOT (lclGetTarget is TScrollingWinControl) then
-    TCocoaControlUtil.lclOffsetWithEnclosingScrollView(self, x, y );
+    TCocoaViewUtil.lclOffsetWithEnclosingScrollView(self, x, y );
 end;
 
 procedure LCLViewExtension.lclScreenToLocal(var X, Y: Integer);
@@ -730,7 +695,7 @@ begin
     TCocoaTypeUtil.toRect(frame, v.frame.size.height, Result)
   else
     Result := TCocoaTypeUtil.toRect(frame);
-  TCocoaControlUtil.addLayoutDelta( lclGetFrameToLayoutDelta, Result);
+  TCocoaViewUtil.addLayoutDelta( lclGetFrameToLayoutDelta, Result);
 end;
 
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
@@ -740,9 +705,9 @@ var
   rr : TRect;
 begin
   rr := r;
-  TCocoaControlUtil.subLayoutDelta( lclGetFrameToLayoutDelta, rr);
+  TCocoaViewUtil.subLayoutDelta( lclGetFrameToLayoutDelta, rr);
 
-  svHeight := GetNSViewSuperViewHeight(Self);
+  svHeight := TCocoaViewUtil.getSuperViewHeight(Self);
   if Assigned(superview) and not superview.isFlipped then
   begin
     TCocoaTypeUtil.toRect(rr, svHeight, ns)
@@ -799,343 +764,6 @@ begin
   Point.X := Point.X - dlt.Left;
   Point.Y := Point.Y - dlt.Top;
 end;
-
-{ TCocoaProgressIndicator }
-
-function TCocoaProgressIndicator.acceptsFirstResponder: LCLObjCBoolean;
-begin
-  Result:=True;
-end;
-
-function TCocoaProgressIndicator.lclGetCallback: ICommonCallback;
-begin
-  Result:=callback;
-end;
-
-procedure TCocoaProgressIndicator.lclClearCallback;
-begin
-  callback:=nil;
-end;
-
-function TCocoaProgressIndicator.lclGetFrameToLayoutDelta: TRect;
-begin
-  case controlSize of
-    NSSmallControlSize, NSMiniControlSize:
-    begin
-      Result.Left := 1;
-      Result.Right := -1;
-      Result.Top := 0;
-      Result.Bottom := -2;
-    end;
-  else
-    Result.Left := 2;
-    Result.Right := -2;
-    Result.Top := 0;
-    Result.Bottom := -4;
-  end;
-end;
-
-procedure TCocoaProgressIndicator.lclSetFrame(const r: TRect);
-begin
-  SetNSControlSize(self, r.Bottom - r.Top, 0, PROGRESS_SMALL_HEIGHT, true);
-  inherited lclSetFrame(r);
-end;
-
-function TCocoaProgressIndicator.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
-begin
-  Result:=true;
-end;
-
-procedure TCocoaProgressIndicator.mouseDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-  begin
-    inherited mouseDown(event);
-
-    callback.MouseUpDownEvent(event, true);
-  end;
-end;
-
-procedure TCocoaProgressIndicator.mouseUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseUp(event);
-end;
-
-procedure TCocoaProgressIndicator.rightMouseDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDown(event);
-end;
-
-procedure TCocoaProgressIndicator.rightMouseUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseUp(event);
-end;
-
-procedure TCocoaProgressIndicator.rightMouseDragged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDragged(event);
-end;
-
-procedure TCocoaProgressIndicator.otherMouseDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
-end;
-
-procedure TCocoaProgressIndicator.otherMouseUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseUp(event);
-end;
-
-procedure TCocoaProgressIndicator.otherMouseDragged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited otherMouseDragged(event);
-end;
-
-procedure TCocoaProgressIndicator.mouseDragged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseDragged(event);
-end;
-
-procedure TCocoaProgressIndicator.mouseMoved(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseMoved(event);
-end;
-
-procedure TCocoaProgressIndicator.scrollWheel(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.scrollWheel(event) then
-    inherited scrollWheel(event);
-end;
-
-
-{ TCocoaSlider }
-
-function GetManTicks(slider: TCocoaSlider): TManualTicks;
-begin
-  if not Assigned(slider.man) then
-    slider.man := TManualTicks.Create;
-  Result := slider.man;
-end;
-
-procedure TCocoaSlider.dealloc;
-begin
-  man.Free;
-  inherited dealloc;
-end;
-
-procedure TCocoaSlider.drawRect(dirtyRect: NSRect);
-var
-  i  : integer;
-  nr : NSRect;
-  xr : NSRect;
-  dr : NSRect;
-  nm : integer;
-  ctx : NSGraphicsContext;
-  pth : NSBezierPath;
-begin
-  if not Assigned(man) or (not man.draw) then begin
-    inherited drawRect(dirtyRect);
-    Exit;
-  end;
-
-  nm := round(maxValue - minValue);
-  if nm = 0 then Exit;
-  if numberOfTickMarks < 2 then Exit;
-
-  nr := rectOfTickMarkAtIndex(0);
-  xr := rectOfTickMarkAtIndex(1);
-
-  ctx := NSGraphicsContext.currentContext;
-  pth := NSBezierPath.bezierPath;
-  NSColor.controlShadowColor.setFill;
-  dr:=nr;
-  dr.origin.y := dr.origin.y + 1;
-  dr.size.height := dr.size.height - 1;
-  for i := 0 to man.count - 1 do begin
-    dr.origin.x := round(nr.origin.x + (xr.origin.x - nr.origin.x) * (man.ticks[i] - minValue) / nm);
-    pth.fillRect(dr);
-  end;
-  inherited drawRect(dirtyRect);
-end;
-
-function TCocoaSlider.acceptsFirstResponder: LCLObjCBoolean;
-begin
-  Result := True;
-end;
-
-function TCocoaSlider.lclGetCallback: ICommonCallback;
-begin
-  Result:=callback;
-end;
-
-procedure TCocoaSlider.lclClearCallback;
-begin
-  callback := nil;
-end;
-
-procedure TCocoaSlider.SnapToInteger(AExtraFactor: Integer);
-begin
-  setIntValue(Round(doubleValue() + AExtraFactor));
-end;
-
-procedure TCocoaSlider.sliderAction(sender: id);
-var
-  newval: Integer;
-begin
-  SnapToInteger();
-  newval := intValue;
-  if newval <> intval then begin
-    intval := newval;
-    // OnChange event
-    if callback <> nil then
-      callback.SendOnChange();
-  end;
-end;
-
-function TCocoaSlider.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
-begin
-  Result:=true;
-end;
-
-procedure TCocoaSlider.mouseDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-  begin
-    inherited mouseDown(event);
-
-    callback.MouseUpDownEvent(event, true);
-  end;
-end;
-
-procedure TCocoaSlider.mouseUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited mouseUp(event);
-end;
-
-procedure TCocoaSlider.rightMouseDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDown(event);
-end;
-
-procedure TCocoaSlider.rightMouseUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseUp(event);
-end;
-
-procedure TCocoaSlider.rightMouseDragged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDragged(event);
-end;
-
-procedure TCocoaSlider.otherMouseDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
-end;
-
-procedure TCocoaSlider.otherMouseUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseUp(event);
-end;
-
-procedure TCocoaSlider.otherMouseDragged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited otherMouseDragged(event);
-end;
-
-procedure TCocoaSlider.mouseDragged(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseDragged(event);
-end;
-
-procedure TCocoaSlider.mouseMoved(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseMoved(event);
-end;
-
-procedure TCocoaSlider.scrollWheel(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.scrollWheel(event) then
-    inherited scrollWheel(event);
-end;
-
-procedure TCocoaSlider.lclAddManTick(atick: integer);
-var
-  mn : TManualTicks;
-begin
-  mn := GetManTicks(self);
-  if mn.AddTick(atick) then
-  begin
-    if mn.draw then self.setNeedsDisplay_(true);
-  end;
-end;
-
-procedure TCocoaSlider.lclSetManTickDraw(adraw: Boolean);
-var
-  mn : TManualTicks;
-begin
-  mn := GetManTicks(self);
-  if mn.draw=adraw then Exit;
-  mn.draw:=adraw;
-  self.setNeedsDisplay_(true);
-end;
-
-procedure TCocoaSlider.lclExpectedKeys(var wantTabs, wantArrows, wantReturn,
-  wantAll: Boolean);
-begin
-  wantTabs := false;
-  wantArrows := true;
-  wantReturn := false;
-  wantAll := false;
-end;
-
-type
-  NSViewControlSizeExt = objccategory external (NSView)
-    function controlSize: Integer; message 'controlSize';
-    procedure setControlSize(ASize: Integer); message 'setControlSize:';
-    function cell: id; message 'cell';
-    procedure setFont(afont: NSFont); message 'setFont:';
-  end;
-
-procedure SetNSControlSize(ctrl: NSView; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
-var
-  sz : NSControlSize;
-begin
-  if (miniHeight>0) and (newHeight<=miniHeight) then
-    sz:=NSMiniControlSize
-  else if (smallHeight>0) and (newHeight<=smallHeight) then
-    sz:=NSSmallControlSize
-  else
-    sz:=NSRegularControlSize;
-
-  if ctrl.respondsToSelector(ObjCSelector('setControlSize:')) then
-    ctrl.setControlSize(sz)
-  else if ctrl.respondsToSelector(ObjCSelector('cell')) then
-  begin
-    if NSCell(ctrl.cell).controlSize<>sz then
-        NSCell(ctrl.cell).setControlSize(sz);
-  end;
-  if AutoChangeFont and (ctrl.respondsToSelector(ObjCSelector('setFont:'))) then
-    ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
-end;
-
 
 end.
 

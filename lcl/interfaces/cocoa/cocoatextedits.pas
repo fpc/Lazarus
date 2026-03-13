@@ -33,23 +33,6 @@ uses
   MacOSAll, CocoaAll, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaPrivate, CocoaCallback;
 
-const
-  SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
-  SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
-
-  // From Interface Builder MacOSX 10.6
-  // The heights are from layout rectangle.
-  COMBOBOX_REG_HEIGHT   = 20;
-  COMBOBOX_SMALL_HEIGHT = 17;
-  COMBOBOX_MINI_HEIGHT  = 14;
-
-  COMBOBOX_RO_REG_HEIGHT   = 20;
-  COMBOBOX_RO_SMALL_HEIGHT = 17;
-  COMBOBOX_RO_MINI_HEIGHT  = 15;
-
-  COMBOBOX_RO_ROUND_SIZE = 7;
-  COMBOBOX_RO_BUTTON_WIDTH = 18;
-
 type
 
   TCocoaFieldEditor = objcclass;
@@ -503,33 +486,9 @@ const
   NSTextAlignmentJustified = 3;
   NSTextAlignmentNatural   = 4;
 
-function GetFieldEditor(afield: NSTextField): TCocoaFieldEditor;
-
 implementation
 
 uses CocoaWSStdCtrls;
-
-function GetFieldEditor(afield: NSTextField): TCocoaFieldEditor;
-var
-  lFieldEditor: TCocoaFieldEditor;
-  lText: NSText;
-  window: NSWindow;
-begin
-  Result := nil;
-  if not Assigned(afield) then Exit;
-  window := afield.window;
-  if window = nil then Exit;
-
-  {$ifdef BOOLFIX}
-  lText := window.fieldEditor_forObject_(Ord(True), afield);
-  {$else}
-  lText := window.fieldEditor_forObject(True, afield);
-  {$endif}
-  if (lText <> nil) and lText.isKindOfClass_(TCocoaFieldEditor) then
-  begin
-    Result := TCocoaFieldEditor(lText);
-  end;
-end;
 
 { TCocoaReadOnlyComboBoxList }
 
@@ -648,7 +607,7 @@ end;
 
 function TCocoaSpinEditStepper.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
-  Result := NSViewCanFocus(Self);
+  Result := TCocoaViewUtil.canLCLFocus(Self);
 end;
 
 procedure TCocoaSpinEditStepper.mouseDown(event: NSEvent);
@@ -1162,7 +1121,7 @@ end;
 
 function TCocoaTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := NSViewCanFocus(Self);
+  Result := TCocoaViewUtil.canLCLFocus(Self);
 end;
 
 function TCocoaTextField.lclGetCallback: ICommonCallback;
@@ -1304,7 +1263,7 @@ end;
 
 function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := NSViewCanFocus(Self);
+  Result := TCocoaViewUtil.canLCLFocus(Self);
 end;
 
 function TCocoaTextView.lclGetCallback: ICommonCallback;
@@ -1429,7 +1388,7 @@ end;
 
 function TCocoaSecureTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := NSViewCanFocus(Self);
+  Result := TCocoaViewUtil.canLCLFocus(Self);
 end;
 
 function TCocoaSecureTextField.lclGetCallback: ICommonCallback;
@@ -1582,7 +1541,7 @@ end;
 
 function TCocoaComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := NSViewCanFocus(Self);
+  Result := TCocoaViewUtil.canLCLFocus(Self);
 end;
 
 procedure TCocoaComboBox.textDidChange(notification: NSNotification);
@@ -1778,7 +1737,7 @@ end;
 
 function TCocoaReadOnlyComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := NSViewCanFocus(Self);
+  Result := TCocoaViewUtil.canLCLFocus(Self);
 end;
 
 function TCocoaReadOnlyComboBox.initWithFrame(frameRect: NSRect): id;
@@ -1922,9 +1881,9 @@ begin
       // the APP can get better effect by drawing in the cropped rectangle.
       // the APP can also expand the rectangle if it knows what it is doing.
       Types.OffsetRect(dr, -dr.Left, -dr.Top);
-      inc( dr.Left, COMBOBOX_RO_ROUND_SIZE );
+      inc( dr.Left, CocoaConfigComboBox.readOnly.roundSize );
       inc( dr.Top, 2 );
-      dec( dr.Right, COMBOBOX_RO_BUTTON_WIDTH );
+      dec( dr.Right, CocoaConfigComboBox.readOnly.buttonWidth );
       inc( dr.Bottom, 1 );
 
       ctx.InitDraw(dr.Width, dr.Height);
@@ -2301,8 +2260,8 @@ begin
   //lParams.Style := AParams.Style or WS_VISIBLE;
 
   // Stepper
-  lParams.X := AParams.X + AParams.Width - SPINEDIT_DEFAULT_STEPPER_WIDTH;
-  lParams.Width := SPINEDIT_DEFAULT_STEPPER_WIDTH;
+  lParams.X := AParams.X + AParams.Width - CocoaConfigSpinEdit.stepperDefaultWidth;
+  lParams.Width := CocoaConfigSpinEdit.stepperDefaultWidth;
   Stepper := TCocoaSpinEditStepper.alloc.lclInitWithCreateParams(lParams);
   TCocoaSpinEditStepper(Stepper).callback := callback;
   Stepper.setValueWraps(False);
@@ -2412,7 +2371,7 @@ end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := NSViewCanFocus(Self);
+  Result := TCocoaViewUtil.canLCLFocus(Self);
 end;
 
 function TCocoaSpinEdit.lclGetCallback: ICommonCallback;
@@ -2443,9 +2402,9 @@ var
 begin
   lRect := r;
   lStepperRect := r;
-  lRect.Right := lRect.Right - SPINEDIT_DEFAULT_STEPPER_WIDTH;
+  lRect.Right := lRect.Right - CocoaConfigSpinEdit.stepperDefaultWidth;
   lStepperRect.Left := lRect.Right;
-  svHeight := GetNSViewSuperViewHeight(Self);
+  svHeight := TCocoaViewUtil.getSuperViewHeight(Self);
   if Assigned(superview) and NOT superview.isFlipped then
   begin
     TCocoaTypeUtil.toRect(lRect, svHeight, ns);

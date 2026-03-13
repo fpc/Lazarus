@@ -9,7 +9,7 @@ interface
 uses
   Classes, SysUtils,
   LclType,
-  MacOSAll, CocoaAll, CocoaGDIObjects;
+  CocoaAll, CocoaGDIObjects;
 
 type
   { ICommonCallback }

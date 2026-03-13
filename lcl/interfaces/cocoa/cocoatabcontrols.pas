@@ -25,7 +25,7 @@ interface
 uses
   Types, Classes, SysUtils,
   MacOSAll, CocoaAll, CocoaUtils, CocoaPrivate, CocoaCallback, CocoaConst,
-  CocoaCustomControl;
+  CocoaCustomControl, CocoaGroupBox;
 
 type
 

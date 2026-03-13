@@ -8,8 +8,7 @@ interface
 uses
   Classes, SysUtils,
   LCLType, Graphics, Controls, ComCtrls, StdCtrls,
-  CocoaAll, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects,
-  CocoaUtils;
+  CocoaAll, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects;
 
 type
   {
@@ -230,7 +229,7 @@ end;
 
 procedure TCocoaTableListControlProcessor.onOwnerDrawItem( rowView: NSView );
 begin
-  TCocoaControlUtil.hideAllSubviews( rowView );
+  TCocoaViewUtil.hideAllSubviews( rowView );
 end;
 
 { TCocoaListControlStringList }
