@@ -21,7 +21,7 @@ program test4_2pagecontrol;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
+  Interfaces, FPCAdds, LazLogger, LazUtilities, LCLType, Classes, Controls, Forms, TypInfo,
   LMessages, Buttons, ExtCtrls, ComCtrls, Graphics, StdCtrls;
 
 type
@@ -162,9 +162,13 @@ procedure TForm1.InsertPageLeftButtonClick(Sender: TObject);
 var
   i: LongInt;
 begin
-  i:=PagesListBox.ItemIndex;
-  if (i<0) or (i>=PageControl1.PageCount) then i:=PageControl1.PageIndex;
-  AddNewPage(i);
+  if PageControl1.PageCount=0 then
+    AddNewPage(0)
+  else begin
+    i:=PagesListBox.ItemIndex;
+    if (i<0) or (i>=PageControl1.PageCount) then i:=PageControl1.PageIndex;
+    AddNewPage(i);
+  end;
 end;
 
 procedure TForm1.InsertPageRightButtonClick(Sender: TObject);
@@ -257,10 +261,8 @@ end;
 procedure TForm1.FillPagesListBox;
 var
   i: Integer;
-  OldItemIndex: LongInt;
 begin
   PagesListBox.Items.BeginUpdate;
-  OldItemIndex:=PagesListBox.ItemIndex;
   for i:=0 to PageControl1.PageCount-1 do begin
     if PagesListBox.Items.Count>i then begin
       PagesListBox.Items[i]:=PageControl1.Pages[i].Name;
@@ -270,7 +272,7 @@ begin
   end;
   while (PagesListBox.Items.Count>PageControl1.PageCount) do
     PagesListBox.Items.Delete(PagesListBox.Items.Count-1);
-  PagesListBox.ItemIndex:=OldItemIndex;
+  PagesListBox.ItemIndex:=PageControl1.ActivePageIndex;
   PagesListBox.Items.EndUpdate;
   if PagesListBox.ItemIndex>=0 then
     PageVisibleCheckBox.Checked:=
@@ -280,7 +282,6 @@ end;
 var
   Form1: TForm1 = nil;
 begin
-  Application.Title:='test4_1synedit';
   Application.Initialize;
   Application.CreateForm(TForm1,Form1);
   Application.Run;

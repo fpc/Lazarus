@@ -21,7 +21,7 @@ program test3_2listboxdrawitem;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, SysUtils, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms,
+  Interfaces, SysUtils, FPCAdds, LazLogger, LCLType, Classes, Controls, Forms,
   TypInfo, LCLIntf, LMessages, Buttons, ExtCtrls, StdCtrls, Graphics;
 
 type

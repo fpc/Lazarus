@@ -26,7 +26,7 @@ program Test3_1comboboxselect;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
+  Interfaces, FPCAdds, LazLogger, LCLType, Classes, Controls, Forms, TypInfo,
   LMessages, StdCtrls, Buttons;
 
 type
@@ -128,7 +128,6 @@ end;
 var
   Form1: TForm1 = nil;
 begin
-  Application.Title:='test1_1simpleform1';
   Application.Initialize;
   Application.CreateForm(TForm1,Form1);
   debugln('Form1.Bounds=',dbgs(Form1.BoundsRect));
