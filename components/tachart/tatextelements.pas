@@ -42,6 +42,8 @@ type
 
   TChartTextRotationCenter = (rcCenter, rcEdge, rcLeft, rcRight);
 
+  TChartTextAnchor = (ctaStart, ctaCenter, ctaEnd);
+
   TChartTextElement = class;
 
   TChartGetShapeEvent = procedure (
@@ -135,6 +137,7 @@ type
 
   TChartTitle = class(TChartTextElement)
   strict private
+    FAnchor: TChartTextAnchor;
     FBrush: TBrush;
     FCenter: TPoint;
     FFont: TFont;
@@ -148,6 +151,7 @@ type
 
     function GetRealCaption: String;
     function IsWordwrapped: Boolean;
+    procedure SetAnchor(AValue: TChartTextAnchor);
     procedure SetBrush(AValue: TBrush);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartTitleFramePen);
@@ -174,10 +178,11 @@ type
     procedure UpdateBidiMode;
   published
     property Alignment default taCenter;
+    property Anchor: TChartTextAnchor read FAnchor write SetAnchor default ctaCenter; // Is ignored when FullWidth=true
     property Brush: TBrush read FBrush write SetBrush;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartTitleFramePen read FFrame write SetFrame;
-    property FullWidth: Boolean read FFullWidth write SetFullWidth default false;
+    property FullWidth: Boolean read FFullWidth write SetFullWidth default false; deprecated 'Use Anchor instead'; // to be removed in v5.99
     property Margin: TChartDistance
       read FMargin write SetMargin default DEF_MARGIN;
     property OnGetShape;
@@ -627,6 +632,7 @@ procedure TChartTitle.Assign(ASource: TPersistent);
 begin
   if ASource is TChartTitle then
     with TChartTitle(ASource) do begin
+      Self.Anchor := Anchor;
       Self.FBrush.Assign(Brush);
       Self.FFont.Assign(Font);
       Self.FFrame.Assign(Frame);
@@ -643,6 +649,7 @@ begin
   inherited Create(AOwner);
 
   FAlignment := taCenter;
+  FAnchor := ctaCenter;
   InitHelper(FBrush, TChartTitleBrush);
   InitHelper(FFont, TFont);
   FFont.Color := clDefault;
@@ -673,30 +680,38 @@ end;
   it will later be moved to the position of the label center by GetLabelPoly. }
 function TChartTitle.GetBoundingBox(
   ADrawer: IChartDrawer; const ATextSize: TPoint): TRect;
+const
+  ALIGNMENT_ANCHORS: array[TAlignment] of TChartTextAnchor = (
+    ctaStart, ctaEnd, ctaCenter);
+var
+  titleAnchor: TChartTextAnchor;
 begin
   Result := inherited;
+
   if FullWidth then
-  begin
-    case Alignment of
-      taLeftJustify:
-        begin
-          Result.Left := -ATextSize.X div 2 - Margins.Left;
-          Result.Right := Result.Left + FOwner.Width - 1;
-          FCenter.X := ATextSize.X div 2 + Margins.Left;
-        end;
-      taRightJustify:
-        begin
-          Result.Right := ATextSize.X div 2 + Margins.Right - 1;
-          Result.Left := Result.Right - FOwner.Width + 1;
-          FCenter.X := FOwner.Width - ATextSize.X div 2 - Margins.Right;
-        end;
-      taCenter:
-        begin
-          Result.Left := -FOwner.Width div 2;
-          Result.Right := +FOwner.Width div 2 - 1;
-          FCenter.X := FOwner.Width div 2;
-        end;
-    end;
+    titleAnchor := ALIGNMENT_ANCHORS[Alignment]
+  else
+    titleAnchor := FAnchor;
+
+  case titleAnchor of
+    ctaStart:
+      begin
+        Result.Left := -ATextSize.X div 2 - Margins.Left;
+        Result.Right := Result.Left + FOwner.Width - 1;
+        FCenter.X := ATextSize.X div 2 + Margins.Left;
+      end;
+    ctaCenter:
+      begin
+        Result.Left := -FOwner.Width div 2;
+        Result.Right := +FOwner.Width div 2 - 1;
+        FCenter.X := FOwner.Width div 2;
+      end;
+    ctaEnd:
+      begin
+        Result.Right := ATextSize.X div 2 + Margins.Right - 1;
+        Result.Left := Result.Right - FOwner.Width + 1;
+        FCenter.X := FOwner.Width - ATextSize.X div 2 - Margins.Right;
+      end;
   end;
 end;
 
@@ -752,6 +767,13 @@ begin
     end;
   FCenter.Y := AY + ADir * ptSize.Y div 2;
   AY += ADir * (ptSize.Y + Margin);
+end;
+
+procedure TChartTitle.SetAnchor(AValue: TChartTextAnchor);
+begin
+  if FAnchor = AValue then exit;
+  FAnchor := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartTitle.SetBrush(AValue: TBrush);

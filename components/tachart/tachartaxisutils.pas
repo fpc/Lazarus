@@ -39,21 +39,23 @@ type
 
   TChartAxisTitle = class(TCustomChartAxisTitle)
   strict private
+    FAnchor: TChartTextAnchor;
     FCaption: TCaption;
     FPositionOnMarks: Boolean;
     FWordwrap: Boolean;
 
     function GetFont: TFont;
+    procedure SetAnchor(AValue: TChartTextAnchor);
     procedure SetCaption(AValue: TCaption);
     procedure SetFont(AValue: TFont);
     procedure SetPositionOnMarks(AValue: Boolean);
     procedure SetWordwrap(AValue: Boolean);
   public
     constructor Create(AOwner: TCustomChart);
-
-  public
     procedure Assign(Source: TPersistent); override;
   published
+    property Anchor: TChartTextAnchor
+      read FAnchor write SetAnchor default ctaCenter;
     property Caption: TCaption read FCaption write SetCaption;
     property Distance default DEF_TITLE_DISTANCE;
     property Frame;
@@ -626,6 +628,7 @@ procedure TChartAxisTitle.Assign(Source: TPersistent);
 begin
   if Source is TChartAxisTitle then
     with TChartAxisTitle(Source) do begin
+      Self.FAnchor := FAnchor;
       Self.FLabelBrush.Assign(FLabelBrush);
       Self.FLabelFont.Assign(FLabelFont);
       Self.FLinkPen.Assign(FLinkPen);
@@ -637,6 +640,7 @@ end;
 constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FAnchor := ctaCenter;
   FDistance := DEF_TITLE_DISTANCE;
   FLabelBrush.Style := bsClear;
   FVisible := false;
@@ -645,6 +649,13 @@ end;
 function TChartAxisTitle.GetFont: TFont;
 begin
   Result := LabelFont;
+end;
+
+procedure TChartAxisTitle.SetAnchor(AValue: TChartTextAnchor);
+begin
+  if FAnchor = AValue then exit;
+  FAnchor := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartAxisTitle.SetCaption(AValue: TCaption);

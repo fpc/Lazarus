@@ -304,7 +304,7 @@ implementation
 
 uses
   LResources, Math, LazMethodList, PropEdits,
-  TAChartStrConsts, TAGeometry, TAMath;
+  TAChartStrConsts, TAGeometry, TAMath, TATextElements;
 
 var
   VIdentityTransform: TChartAxisTransformations;
@@ -937,12 +937,15 @@ var
   v: Boolean;
   d: IChartDrawer;
 
-  function TitleSize: Integer;
+  function TitleSize(out ATextLength: Integer): Integer;
   begin
     if not Title.Visible or (Title.Caption = '') then exit(0);
     // Workaround for issue #19780, fix after upgrade to FPC 2.6.
     with Title.MeasureLabel(d, GetRealTitle) do
+    begin
+      ATextLength := IfThen(v, cy, cx);
       Result := IfThen(v, cx, cy);
+    end;
     if Title.DistanceToCenter then
       Result := Result div 2;
     Result += d.Scale(Title.Distance);
@@ -966,8 +969,29 @@ var
     end;
   end;
 
+  function CalcTitlePosition(AMin, AMax, ATextLength: Integer): Integer;
+  var
+    halfTextLen: Integer;
+  begin
+    halfTextLen := ATextLength div 2;
+    case Title.Anchor of
+      ctaStart:
+        if Inverted then
+          Result := IfThen(v, AMin + halfTextlen, AMax - halfTextLen)
+        else
+          Result := IfThen(v, AMax - halfTextlen, AMin + halfTextLen);
+      ctaCenter:
+        Result := (AMax + AMin) div 2;
+      ctaEnd:
+        if Inverted then
+          Result := IfThen(v, AMax - halfTextLen, AMin + halfTextLen)
+        else
+          Result := IfThen(v, AMin + halfTextLen, AMax - halfTextLen);
+    end;
+  end;
+
 var
-  sz, rmin, rmax, c, i, j, minc, maxc, mini, maxi: Integer;
+  sz, rmin, rmax, c, i, j, minc, maxc, mini, maxi, txtLen: Integer;
   minorValues: TChartValueTextArray;
   pv: Double = NaN;
   cv: Double;
@@ -1015,7 +1039,7 @@ begin
 
   with AMeasureData do begin
     FSize := Max(sz, FSize);
-    FTitleSize := Max(TitleSize, FTitleSize);
+    FTitleSize := Max(TitleSize(txtLen), FTitleSize);
     FMargin := Max(Margin, FMargin);
   end;
 
@@ -1024,13 +1048,13 @@ begin
     UpdateFirstLast(maxc, maxi, rmin, rmax);
   end;
   if not Title.PositionOnMarks then
-    FTitlePos := (rmin + rmax) div 2
+    FTitlePos := CalcTitlePosition(rmin, rmax, txtLen)
   else if minc < MaxInt then begin
     c := FHelper.GraphToImage(FHelper.FMaxForMarks);
     if c < maxc then maxc := c;
     c := FHelper.GraphToImage(FHelper.FMinForMarks);
     if c > minc then minc := c;
-    FTitlePos := (maxc + minc) div 2
+    FTitlePos := CalcTitlePosition(minc, maxc, txtLen);
   end else
     FTitlePos := MaxInt;
 
