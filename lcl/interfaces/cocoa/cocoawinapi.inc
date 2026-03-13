@@ -717,7 +717,7 @@ begin
     if (CaptureControl <> 0)
       and (not bEnable)
       and (obj.isKindOfClass(NSView))
-      and NSViewIsLCLEnabled(NSView(obj)) then
+      and TCocoaViewUtil.isLCLEnabled(NSView(obj)) then
       ReleaseCapture
   end;
 end;

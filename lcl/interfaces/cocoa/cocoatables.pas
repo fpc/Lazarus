@@ -472,7 +472,7 @@ end;
 
 function TCocoaTableListView.acceptsFirstResponder: LCLObjCBoolean;
 begin
-  Result := NSViewCanFocus(Self);
+  Result := TCocoaViewUtil.canLCLFocus(Self);
 end;
 
 function TCocoaTableListView.lclGetCallback: ICommonCallback;

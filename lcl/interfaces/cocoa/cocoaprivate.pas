@@ -29,6 +29,13 @@ uses
   CocoaCallback, CocoaCursor, CocoaConfig, Cocoa_Extra, CocoaUtils;
 
 type
+
+  TCocoaViewUtil = class
+    class function isLCLEnabled(v: NSView): Boolean;
+    class function isLCLEnabled(obj: NSObject): Boolean;
+    class function canLCLFocus(v: NSView): Boolean;
+  end;
+
   // Some components might be using CocoaPrivate for use of LCLObjCBoolean
   // Thus this declaration needs to be here.
   LCLObjCBoolean = cocoa_extra.LCLObjCBoolean;
@@ -114,21 +121,17 @@ var
   LoopHiJackEnded : Boolean = false;
   {$endif}
 
-function NSViewIsLCLEnabled(v: NSView): Boolean;
-function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
-function NSViewCanFocus(v: NSView): Boolean;
-
 implementation
 
-function NSObjectIsLCLEnabled(obj: NSObject): Boolean;
+class function TCocoaViewUtil.isLCLEnabled(obj: NSObject): Boolean;
 begin
   if obj.isKindOfClass(NSView) then
-    Result := NSViewIsLCLEnabled(NSView(obj))
+    Result := isLCLEnabled(NSView(obj))
   else
     Result := obj.lclIsEnabled;
 end;
 
-function NSViewIsLCLEnabled(v: NSView): Boolean;
+class function TCocoaViewUtil.isLCLEnabled(v: NSView): Boolean;
 begin
   Result := true;
   while Assigned(v) do
@@ -141,7 +144,7 @@ begin
   end;
 end;
 
-function NSViewCanFocus(v: NSView): Boolean;
+class function TCocoaViewUtil.canLCLFocus(v: NSView): Boolean;
 var
   cb: ICommonCallback;
 begin
@@ -330,7 +333,7 @@ begin
   {$ifdef BOOLFIX}
   SetEnabled_( Ord(AEnabled and NSViewIsLCLEnabled(self.superview) ));
   {$else}
-  SetEnabled( AEnabled and NSViewIsLCLEnabled(self.superview) );
+  SetEnabled( AEnabled and TCocoaViewUtil.isLCLEnabled(self.superview) );
   {$endif}
   inherited lclSetEnabled(AEnabled);
 end;
