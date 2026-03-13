@@ -8,7 +8,7 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="test3_1listboxdrawitem"/>
+      <Title Value="test3_2listboxdrawitem"/>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>

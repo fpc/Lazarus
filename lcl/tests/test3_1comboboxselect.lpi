@@ -10,7 +10,7 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="test1_1simpleform1"/>
+      <Title Value="test3_1comboboxselect"/>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>

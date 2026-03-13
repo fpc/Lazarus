@@ -11,7 +11,7 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="test4_1synedit"/>
+      <Title Value="test4_3listview"/>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>

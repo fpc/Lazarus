@@ -128,7 +128,6 @@ end;
 var
   Form1: TForm1 = nil;
 begin
-  Application.Title:='test1_1simpleform1';
   Application.Initialize;
   Application.CreateForm(TForm1,Form1);
   debugln('Form1.Bounds=',dbgs(Form1.BoundsRect));

@@ -282,7 +282,6 @@ end;
 var
   Form1: TForm1 = nil;
 begin
-  Application.Title:='test4_1synedit';
   Application.Initialize;
   Application.CreateForm(TForm1,Form1);
   Application.Run;
