@@ -160,7 +160,7 @@ begin
   if Assigned(callback) then
     callback.DrawBackground(NSGraphicsContext.currentContext, bounds, dirtyRect);
 
-  if CheckMainThread and Assigned(callback) then
+  if TCocoaApplicationUtil.isMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
   dec(isdrawing);
 

@@ -116,10 +116,30 @@ var
 
 var
   CocoaConfigComboBox: TCocoaConfigComboBox = (
+    // From Interface Builder MacOSX 10.6
+    // The heights are from layout rectangle.
+    minHeight: 14;
+    maxHeight: 20;
+
     readOnly: (
       minWidth: 38;
+      roundSize: 7;
+      buttonWidth: 18;
       item: ( defaultHeight: 18 )
     );
+  );
+
+var
+  CocoaConfigSpinEdit: TCocoaConfigSpinEdit = (
+    stepperDefaultWidth: 15;
+  );
+
+  CocoaConfigStatusBar: TCocoaConfigStatusBar = (
+    defaultHeight: 18;
+  );
+
+  CocoaConfigProgressIndicator: TCocoaConfigProgressIndicator = (
+    smallHeight: 10;
   );
 
 var

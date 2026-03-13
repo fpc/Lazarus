@@ -18,6 +18,13 @@ type
     function lclClassName: shortstring; message 'lclClassName';
   end;
 
+  { TCocoaApplicationUtil }
+
+  TCocoaApplicationUtil = class
+  public
+    class function isMainThread: Boolean;
+  end;
+
   { TCocoaTypeUtil }
 
   TCocoaTypeUtil = class
@@ -70,24 +77,6 @@ type
     class function codeToVK(AKey: Word): Word;
     class function charToVK(achar: unichar): Word;
     class function getRawKeyChar(ev: NSEvent): System.WideChar;
-  end;
-
-  { TCocoaControlUtil }
-
-  TCocoaControlUtil = class
-  public
-    class procedure setStringValue(const c: NSControl; const S: String); inline;
-    class function getStringValue(const c: NSControl): String; inline;
-    class function toMacOSTitle(const ATitle: String): NSString;
-    class procedure moveCaretToTheEnd(const c: NSControl);
-    class function getNSWindow(const obj: NSObject): NSWindow;
-    class procedure hideAllSubviews( const parent: NSView );
-    class procedure addLayoutDelta(const layout: TRect; var frame: TRect);
-    class procedure subLayoutDelta(const layout: TRect; var frame: TRect);
-    class procedure lclOffsetWithEnclosingScrollView(
-      const view: NSView;
-      var x: Integer;
-      var y: Integer );
   end;
 
   { TCocoaColorUtil }
@@ -172,6 +161,13 @@ implementation
 function NSLCLDebugExtension.lclClassName: shortstring;
 begin
   Result := NSStringToString(self.className);
+end;
+
+{ TCocoaApplicationUtil }
+
+class function TCocoaApplicationUtil.isMainThread: Boolean;
+begin
+  Result := NSThread.currentThread.isMainThread;
 end;
 
 { TCocoaTypeUtil }
@@ -635,104 +631,6 @@ begin
   if w<>#0
     then Result:=NSString.stringWithCharacters_length(@w, 1)
     else Result:=NSString.string_;
-end;
-
-{ TCocoaControlUtil }
-
-class procedure TCocoaControlUtil.hideAllSubviews( const parent: NSView );
-var
-  view: NSView;
-begin
-  for view in parent.subviews do
-    view.setHidden( True );
-end;
-
-class function TCocoaControlUtil.getNSWindow(const obj: NSObject): NSWindow;
-begin
-  Result := nil;
-  if not Assigned(obj) then Exit;
-  if obj.isKindOfClass_(NSWindow) then
-    Result := NSWindow(obj)
-  else if obj.isKindOfClass_(NSView) then
-    Result := NSView(obj).window;
-end;
-
-class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String); inline;
-var
-  ns: NSString;
-begin
-  if Assigned(c) then
-  begin
-    ns := NSStringUtf8(S);
-    c.setStringValue(ns);
-    ns.release;
-  end;
-end;
-
-class function TCocoaControlUtil.getStringValue(const c: NSControl): String; inline;
-begin
-  if Assigned(c) then
-    Result := NSStringToString(c.stringValue)
-  else
-    Result := '';
-end;
-
-class procedure TCocoaControlUtil.moveCaretToTheEnd(const c: NSControl);
-var
-  range: NSRange;
-begin
-  if c.currentEditor <> nil then begin
-    range.location:= NSUIntegerMax;
-    range.length:= 0;
-    c.currentEditor.setSelectedRange( range );
-  end;
-end;
-
-class function TCocoaControlUtil.toMacOSTitle(const ATitle: string): NSString;
-var
-  t: String;
-begin
-  t:= TCocoaStringUtil.removeAcceleration(ATitle);
-  if t = '' then
-    Result:= NSString.string_ // empty string
-  else
-    Result:= NSString.stringWithUTF8String( @t[1] );
-end;
-
-class procedure TCocoaControlUtil.addLayoutDelta(const layout: TRect; var frame: TRect);
-begin
-  inc(frame.Left, layout.Left);
-  inc(frame.Top, layout.Top);
-  inc(frame.Right, layout.Right);
-  inc(frame.Bottom, layout.Bottom);
-end;
-
-class procedure TCocoaControlUtil.subLayoutDelta(const layout: TRect; var frame: TRect);
-begin
-  dec(frame.Left, layout.Left);
-  dec(frame.Top, layout.Top);
-  dec(frame.Right, layout.Right);
-  dec(frame.Bottom, layout.Bottom);
-end;
-
-class procedure TCocoaControlUtil.lclOffsetWithEnclosingScrollView(
-  const view: NSView;
-  var x: Integer;
-  var y: Integer );
-var
-  es: NSScrollView;
-  r: NSRect;
-begin
-  es:= view.enclosingScrollView;
-  if NOT Assigned(es) then
-    Exit;
-  if es.documentView <> view then
-    Exit;
-  r:= es.documentVisibleRect;
-  if NOT view.isFlipped then
-    r.origin.y:= es.documentView.frame.size.height - r.size.height - r.origin.y;
-  inc( x, Round(r.origin.x) );
-  inc( y, Round(r.origin.y) );
 end;
 
 { TCocoaColorUtil }
