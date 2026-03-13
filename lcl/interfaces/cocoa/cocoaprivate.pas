@@ -34,6 +34,30 @@ type
     class function isLCLEnabled(v: NSView): Boolean;
     class function isLCLEnabled(obj: NSObject): Boolean;
     class function canLCLFocus(v: NSView): Boolean;
+    class function getSuperViewHeight(const view: NSView): CGFloat;
+    class procedure hideAllSubviews( const parent: NSView );
+    class procedure addLayoutDelta(const layout: TRect; var frame: TRect);
+    class procedure subLayoutDelta(const layout: TRect; var frame: TRect);
+    class procedure setDefaultMargin(const AView: NSView);
+    class procedure setSize(
+      const ctrl: NSView;
+      const newHeight, miniHeight, smallHeight: Integer;
+      const AutoChangeFont: Boolean );
+    class procedure lclOffsetWithEnclosingScrollView(
+      const view: NSView;
+      var x: Integer;
+      var y: Integer );
+  end;
+
+  { TCocoaControlUtil }
+
+  TCocoaControlUtil = class
+  public
+    class procedure setStringValue(const c: NSControl; const S: String); inline;
+    class function getStringValue(const c: NSControl): String; inline;
+    class function toMacOSTitle(const ATitle: String): NSString;
+    class procedure moveCaretToTheEnd(const c: NSControl);
+    class function getNSWindow(const obj: NSObject): NSWindow;
   end;
 
   // Some components might be using CocoaPrivate for use of LCLObjCBoolean
@@ -158,6 +182,156 @@ begin
   end
   else
     Result := false;
+end;
+
+class function TCocoaViewUtil.getSuperViewHeight(const view: NSView
+  ): CGFloat;
+begin
+  Result := -1;
+  if not Assigned(view) then Exit;
+  if not Assigned(view.superview) then Exit;
+  //if view.superview.isKindOfClass_(TCocoaTabPageView) then
+    //Result := TCocoaTabPageView(view.superview).tabview.contentRect.size.height
+  //else
+    Result := view.superview.frame.size.height;
+  {$IFDEF COCOA_SUPERVIEW_HEIGHT}
+  WriteLn(Format('GetNSViewSuperViewHeight Result=%f', [Result]));
+  {$ENDIF}
+end;
+
+class procedure TCocoaViewUtil.hideAllSubviews( const parent: NSView );
+var
+  view: NSView;
+begin
+  for view in parent.subviews do
+    view.setHidden( True );
+end;
+
+class procedure TCocoaViewUtil.addLayoutDelta(const layout: TRect; var frame: TRect);
+begin
+  inc(frame.Left, layout.Left);
+  inc(frame.Top, layout.Top);
+  inc(frame.Right, layout.Right);
+  inc(frame.Bottom, layout.Bottom);
+end;
+
+class procedure TCocoaViewUtil.subLayoutDelta(const layout: TRect; var frame: TRect);
+begin
+  dec(frame.Left, layout.Left);
+  dec(frame.Top, layout.Top);
+  dec(frame.Right, layout.Right);
+  dec(frame.Bottom, layout.Bottom);
+end;
+
+class procedure TCocoaViewUtil.setDefaultMargin(const AView: NSView);
+var
+  mask: NSUInteger;
+begin
+  if not Assigned(AView) then Exit;
+  if Assigned(AView.superview) and AView.superview.isFlipped then
+    mask:= NSViewMaxYMargin or NSViewMaxXMargin
+  else
+    mask:= NSViewMinYMargin or NSViewMaxXMargin;
+  AView.setAutoresizingMask(mask);
+end;
+
+class procedure TCocoaViewUtil.setSize(
+  const ctrl: NSView;
+  const newHeight, miniHeight, smallHeight: Integer;
+  const AutoChangeFont: Boolean);
+var
+  sz : NSControlSize;
+begin
+  if (miniHeight>0) and (newHeight<=miniHeight) then
+    sz:=NSMiniControlSize
+  else if (smallHeight>0) and (newHeight<=smallHeight) then
+    sz:=NSSmallControlSize
+  else
+    sz:=NSRegularControlSize;
+
+  if ctrl.respondsToSelector(ObjCSelector('setControlSize:')) then
+    ctrl.setControlSize(sz)
+  else if ctrl.respondsToSelector(ObjCSelector('cell')) then
+  begin
+    if NSCell(ctrl.cell).controlSize<>sz then
+        NSCell(ctrl.cell).setControlSize(sz);
+  end;
+  if AutoChangeFont and (ctrl.respondsToSelector(ObjCSelector('setFont:'))) then
+    ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
+end;
+
+class procedure TCocoaViewUtil.lclOffsetWithEnclosingScrollView(
+  const view: NSView;
+  var x: Integer;
+  var y: Integer );
+var
+  es: NSScrollView;
+  r: NSRect;
+begin
+  es:= view.enclosingScrollView;
+  if NOT Assigned(es) then
+    Exit;
+  if es.documentView <> view then
+    Exit;
+  r:= es.documentVisibleRect;
+  if NOT view.isFlipped then
+    r.origin.y:= es.documentView.frame.size.height - r.size.height - r.origin.y;
+  inc( x, Round(r.origin.x) );
+  inc( y, Round(r.origin.y) );
+end;
+
+{ TCocoaControlUtil }
+
+class function TCocoaControlUtil.getNSWindow(const obj: NSObject): NSWindow;
+begin
+  Result := nil;
+  if not Assigned(obj) then Exit;
+  if obj.isKindOfClass_(NSWindow) then
+    Result := NSWindow(obj)
+  else if obj.isKindOfClass_(NSView) then
+    Result := NSView(obj).window;
+end;
+
+class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String); inline;
+var
+  ns: NSString;
+begin
+  if Assigned(c) then
+  begin
+    ns := NSStringUtf8(S);
+    c.setStringValue(ns);
+    ns.release;
+  end;
+end;
+
+class function TCocoaControlUtil.getStringValue(const c: NSControl): String; inline;
+begin
+  if Assigned(c) then
+    Result := NSStringToString(c.stringValue)
+  else
+    Result := '';
+end;
+
+class procedure TCocoaControlUtil.moveCaretToTheEnd(const c: NSControl);
+var
+  range: NSRange;
+begin
+  if c.currentEditor <> nil then begin
+    range.location:= NSUIntegerMax;
+    range.length:= 0;
+    c.currentEditor.setSelectedRange( range );
+  end;
+end;
+
+class function TCocoaControlUtil.toMacOSTitle(const ATitle: String): NSString;
+var
+  t: String;
+begin
+  t:= TCocoaStringUtil.removeAcceleration(ATitle);
+  if t = '' then
+    Result:= NSString.string_ // empty string
+  else
+    Result:= NSString.stringWithUTF8String( @t[1] );
 end;
 
 { LCLObjectExtension }
@@ -384,7 +558,7 @@ begin
 
   if Assigned(p) then
     p.lclContentView.addSubview(Result);
-  TCocoaControlUtil.setDefaultMargin(Result);
+  TCocoaViewUtil.setDefaultMargin(Result);
 end;
 
 function LCLViewExtension.lclIsEnabled: Boolean;
@@ -481,7 +655,7 @@ begin
   y:= Round( TCocoaScreenUtil.globalScreenBottom - rect.origin.y );
 
   if NOT (lclGetTarget is TScrollingWinControl) then
-    TCocoaControlUtil.lclOffsetWithEnclosingScrollView(self, x, y );
+    TCocoaViewUtil.lclOffsetWithEnclosingScrollView(self, x, y );
 end;
 
 procedure LCLViewExtension.lclScreenToLocal(var X, Y: Integer);
@@ -521,7 +695,7 @@ begin
     TCocoaTypeUtil.toRect(frame, v.frame.size.height, Result)
   else
     Result := TCocoaTypeUtil.toRect(frame);
-  TCocoaControlUtil.addLayoutDelta( lclGetFrameToLayoutDelta, Result);
+  TCocoaViewUtil.addLayoutDelta( lclGetFrameToLayoutDelta, Result);
 end;
 
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
@@ -531,9 +705,9 @@ var
   rr : TRect;
 begin
   rr := r;
-  TCocoaControlUtil.subLayoutDelta( lclGetFrameToLayoutDelta, rr);
+  TCocoaViewUtil.subLayoutDelta( lclGetFrameToLayoutDelta, rr);
 
-  svHeight := TCocoaControlUtil.getSuperViewHeight(Self);
+  svHeight := TCocoaViewUtil.getSuperViewHeight(Self);
   if Assigned(superview) and not superview.isFlipped then
   begin
     TCocoaTypeUtil.toRect(rr, svHeight, ns)

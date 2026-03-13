@@ -922,7 +922,7 @@ var
 begin
   button:= TCocoaButton(AWinControl.Handle);
   size := button.fittingSize();
-  TCocoaControlUtil.setSize(button, Round(size.height), button.miniHeight, button.smallHeight, button.adjustFontToControlSize);
+  TCocoaViewUtil.setSize(button, Round(size.height), button.miniHeight, button.smallHeight, button.adjustFontToControlSize);
   size := button.fittingSize();
   if button.controlSize = NSRegularControlSize then begin
     size.width:= size.width - 12;

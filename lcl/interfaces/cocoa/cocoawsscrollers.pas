@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Controls, Forms,
-  CocoaAll, CocoaPrivate, CocoaCustomControl, CocoaScrollers, CocoaUtils;
+  CocoaAll, CocoaPrivate, CocoaCustomControl, CocoaScrollers;
 
 type
   { TASyncLCLControlAdjustSizer }
@@ -57,7 +57,7 @@ begin
   AView.setHidden(false);
   {$endif}
   if AReleaseView then AView.release;
-  TCocoaControlUtil.setDefaultMargin(Result);
+  TCocoaViewUtil.setDefaultMargin(Result);
 end;
 
 function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
@@ -90,7 +90,7 @@ begin
   AView.setHidden(false);
   {$endif}
   AView.release;
-  TCocoaControlUtil.setDefaultMargin(Result);
+  TCocoaViewUtil.setDefaultMargin(Result);
   if AView.isKindOfClass(TCocoaCustomControl) then
     TCocoaCustomControl(AView).auxMouseByParent := true;
 end;
@@ -124,7 +124,7 @@ begin
   {$else}
   AView.setHidden(false);
   {$endif}
-  TCocoaControlUtil.setDefaultMargin(Result);
+  TCocoaViewUtil.setDefaultMargin(Result);
 end;
 
 procedure LCLScrollViewAdjustSize(control: TWinControl);

@@ -33,7 +33,8 @@ uses
   // Widgetset
   WSMenus,
   // LCL Cocoa
-  CocoaConfig, CocoaInt, CocoaMenus, CocoaWSCommon, CocoaUtils, CocoaGDIObjects;
+  CocoaPrivate, CocoaConfig, CocoaInt, CocoaMenus, CocoaWSCommon,
+  CocoaGDIObjects, CocoaUtils;
 
 type
 

@@ -591,7 +591,7 @@ begin
   if done then begin
     // the Cocoa default drawing cannot be skipped in NSTableView,
     // we can only hide the SubviewViews to get the same effect.
-    TCocoaControlUtil.hideAllSubviews( self );
+    TCocoaViewUtil.hideAllSubviews( self );
   end else begin
     drawNSViewBackground( self, self.lclGetCanvas.Brush );
     inherited;
@@ -1179,7 +1179,7 @@ begin
     // we can only hide the CellViews to get the same effect.
     // in the Lazarus IDE, there is a ListView with OnCustomDrawItem
     // in Perferences-Component Palette.
-    TCocoaControlUtil.hideAllSubviews( self );
+    TCocoaViewUtil.hideAllSubviews( self );
   end else begin
     if TCocoaTextControlUtil.setLCLFont(self.textField, cocoaTLV.lclGetCanvas.Font) then
       updateItemLayout( row, col );

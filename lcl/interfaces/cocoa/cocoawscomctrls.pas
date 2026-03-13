@@ -14,7 +14,7 @@ uses
   LCLType, Controls, ComCtrls, LCLMessageGlue, LMessages,
   WSComCtrls,
   MacOSAll, CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects, CocoaConfig, CocoaUtils,
+  CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaConfig, CocoaUtils,
   CocoaTabControls, CocoaButtons, CocoaStatusBar, CocoaProgressIndicator, CocoaSlider;
 
 type

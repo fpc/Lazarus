@@ -294,7 +294,7 @@ begin
   newFrame.Height:= Round( Size.height );
 
   if (miniHeight<>0) or (smallHeight<>0) then
-    TCocoaControlUtil.setSize(Self,newFrame.Bottom-newFrame.Top,miniHeight, smallHeight, adjustFontToControlSize);
+    TCocoaViewUtil.setSize(Self,newFrame.Bottom-newFrame.Top,miniHeight, smallHeight, adjustFontToControlSize);
   inherited lclSetFrame(newFrame);
 end;
 

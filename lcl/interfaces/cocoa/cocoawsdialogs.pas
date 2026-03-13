@@ -33,7 +33,8 @@ uses
   // Widgetset
   WSLCLClasses, WSDialogs,
   // LCL Cocoa
-  CocoaConfig, CocoaConst, CocoaUtils, CocoaGDIObjects, Cocoa_Extra, CocoaMenus;
+  CocoaPrivate, CocoaConfig, CocoaConst, CocoaGDIObjects, CocoaMenus,
+  CocoaUtils, Cocoa_Extra;
 
 type
 

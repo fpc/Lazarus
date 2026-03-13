@@ -11,7 +11,7 @@ uses
   Classes, SysUtils,
   MacOSAll, CocoaAll,
   CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaConfig, CocoaConst, CocoaUtils,
-  CocoaListView, CocoaTextEdits, CocoaGDIObjects,
+  CocoaListView, CocoaTextEdits,
   LCLType, Controls, ComCtrls, StdCtrls, ImgList, Forms;
 
 type

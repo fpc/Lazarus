@@ -8,8 +8,8 @@ interface
 
 uses
   Classes, SysUtils,
-  MacOSAll, CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaConfig, CocoaUtils;
+  CocoaAll,
+  CocoaPrivate, CocoaCallback, CocoaConfig;
 
 type
 
@@ -76,7 +76,7 @@ end;
 
 procedure TCocoaProgressIndicator.lclSetFrame(const r: TRect);
 begin
-  TCocoaControlUtil.setSize(self, r.Bottom - r.Top, 0, CocoaConfigProgressIndicator.smallHeight, True);
+  TCocoaViewUtil.setSize(self, r.Bottom - r.Top, 0, CocoaConfigProgressIndicator.smallHeight, True);
   inherited lclSetFrame(r);
 end;
 
