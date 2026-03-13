@@ -21,7 +21,7 @@ program test1_6checkgroup;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
+  Interfaces, FPCAdds, LazLogger, LCLType, Classes, Controls, Forms, TypInfo,
   LMessages, StdCtrls, ExtCtrls, Buttons;
 
 type

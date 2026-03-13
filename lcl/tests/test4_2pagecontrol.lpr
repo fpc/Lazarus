@@ -21,7 +21,7 @@ program test4_2pagecontrol;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, FPCAdds, LCLProc, LazUtilities, LCLType, Classes, Controls, Forms, TypInfo,
+  Interfaces, FPCAdds, LazLogger, LazUtilities, LCLType, Classes, Controls, Forms, TypInfo,
   LMessages, Buttons, ExtCtrls, ComCtrls, Graphics, StdCtrls;
 
 type

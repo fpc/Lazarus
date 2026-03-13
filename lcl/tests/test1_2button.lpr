@@ -21,7 +21,7 @@ program test1_2button;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
+  Interfaces, FPCAdds, LazLogger, LCLType, Classes, Controls, Forms, TypInfo,
   LMessages, stdctrls;
 
 type

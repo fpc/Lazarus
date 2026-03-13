@@ -21,7 +21,7 @@ program Test4_1Synedit;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Classes, SysUtils, LCLProc, LCLType, Controls, Forms, TypInfo,
+  Interfaces, Classes, SysUtils, LazLogger, LCLType, Controls, Forms, TypInfo,
   ExtCtrls, ComCtrls, SynEdit, SynHighlighterPas, Graphics;
 
 type

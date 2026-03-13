@@ -22,7 +22,7 @@ program test2_2labelattributes;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Classes, SysUtils, FPCAdds, LCLProc, LCLType, Controls, Forms,
+  Interfaces, Classes, SysUtils, FPCAdds, LazLogger, LCLType, Controls, Forms,
   TypInfo, LMessages, StdCtrls, ExtCtrls;
 
 type

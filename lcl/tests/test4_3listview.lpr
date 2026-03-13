@@ -21,7 +21,7 @@ program test4_3listview;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
+  Interfaces, FPCAdds, LazLogger, LCLType, Classes, Controls, Forms, TypInfo,
   LMessages, Buttons, ExtCtrls, ComCtrls, SynEdit, SynHighlighterPas,
   Graphics;
 
