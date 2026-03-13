@@ -1145,7 +1145,7 @@ begin
       then
       begin
         CurProcHead:=ExtractProcHeadWithGroup(Result,Attr);
-        DebugLn(['TPascalReaderTool.FindProcNode B Cur="',dbgs(CurProcHead),'" =? "',dbgs(AProcHead),'" Result=',SameMethodHeaders(AProcHead, CurProcHead)]);
+        //DebugLn(['TPascalReaderTool.FindProcNode B Cur="',dbgs(CurProcHead),'" =? "',dbgs(AProcHead),'" Result=',SameMethodHeaders(AProcHead, CurProcHead)]);
         if (CurProcHead.Name<>'')
             and SameMethodHeaders(AProcHead, CurProcHead) then
           exit;
