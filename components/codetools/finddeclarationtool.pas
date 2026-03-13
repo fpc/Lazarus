@@ -14530,10 +14530,11 @@ function TFindDeclarationTool.FindTermTypeAsString(TermPos: TAtomPosition;
   Params: TFindDeclarationParams;
   out ExprType: TExpressionType): string;
 var
-  EdgedBracketsStartPos: integer;
-  SetNode: TCodeTreeNode;
+  EdgedBracketsStartPos, i : integer;
+  SetNode, ClassNode, ExprClassNode: TCodeTreeNode;
   SetTool: TFindDeclarationTool;
   AliasType: TFindContext;
+  Ancestors: TFPList;
 begin
   //debugln(['TFindDeclarationTool.FindTermTypeAsString START']);
   {$IFDEF CheckNodeTool}CheckNodeTool(Params.ContextNode);{$ENDIF}
@@ -14602,6 +14603,30 @@ begin
     ExprType.Context:=AliasType;
   end;
   Result:=FindExprTypeAsString(ExprType,TermPos.StartPos);
+
+  if Result='' then exit;
+  if AliasType.Node<>nil then begin
+    ClassNode:=FindClassNode(AliasType.Node);
+    if ClassNode=nil then exit;
+    ExprClassNode:= FindClassNode(Params.StartNode);
+    if ExprClassNode = ClassNode then exit; // inside a class no full path needed
+
+    if (GetClassVisibility(AliasType.Node)=ctnClassProtected) and (ExprClassNode<>nil) then begin
+      // check inheritance for protected type
+      Ancestors:=nil;
+      try
+        FindClassAndAncestors(ExprClassNode, Ancestors,false);
+        if Ancestors<>nil then
+        for i:=0 to Ancestors.Count-1 do begin
+          if TFindContext(Ancestors.Items[i]^).Node=ClassNode then
+            exit; // ancestor has a type defined
+        end;
+      finally
+        Ancestors.Free;
+      end;
+    end;
+    Result:=ExtractClassName(ClassNode, false)+'.'+Result;
+  end;
 end;
 
 function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
