@@ -503,6 +503,7 @@ begin
   TickLength := DEF_TICK_LENGTH;
   TickWidth := DEF_TICK_WIDTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
+  FTitle.LabelFont.Orientation := 900;  // default alignment is calLeft --> vertical title
   FMarginsForMarks := true;
   FMarks.SetInsideDir(1, 0);
   FOrthogonalAxisIndex := -1;
