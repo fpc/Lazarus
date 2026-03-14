@@ -261,14 +261,6 @@ type
 var
   CocoaWidgetSet: TCocoaWidgetSet;
 
-function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
-function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
-
-function CocoaPromptUser(const DialogCaption, DialogMessage: String;
-    DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
-    EscapeResult: Longint;
-    sheetOfWindow: NSWindow = nil; modalSheet: Boolean = false): Longint;
-
 implementation
 
 // NSCursor doesn't support any wait cursor, so we need to use a non-native one
@@ -285,6 +277,32 @@ const
 
 var
   MainPool : NSAutoreleasePool = nil;
+
+type
+
+  TCocoaScrollUtil = class
+  public
+    class function getFromScrollInfo(
+      const bar: TCocoaScrollBar;
+      const scrollInfo: TScrollInfo ): Integer;
+    class function setToScrollInfo(
+      const bar: TCocoaScrollBar;
+      var scrollInfo: TScrollInfo ): Boolean;
+  end;
+
+  TCocoaDialogUtil = class
+  public
+    class function promptUser(
+      const DialogCaption : string;
+      const DialogMessage : string;
+      const DialogType    : LongInt;
+      const Buttons       : PLongInt;
+      const ButtonCount   : LongInt;
+      const DefaultIndex  : LongInt;
+      const EscapeResult  : LongInt;
+      const sheetOfWindow : NSWindow = nil;
+      const modalSheet    : Boolean = False ): LongInt;
+  end;
 
 function HWNDToTargetObject(AFormHandle: HWND): TObject;
 var
@@ -336,7 +354,9 @@ begin
   NSApp.postEvent_atStart(ev, false);
 end;
 
-function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
+class function TCocoaScrollUtil.getFromScrollInfo(
+  const bar: TCocoaScrollBar;
+  const scrollInfo: TScrollInfo ): Integer;
 var
   pg  : Integer;
   mn  : Integer;
@@ -349,16 +369,16 @@ begin
     Exit;
   end;
 
-  if ScrollInfo.fMask and SIF_PAGE>0 then
+  if scrollInfo.fMask and SIF_PAGE>0 then
   begin
-    pg:=ScrollInfo.nPage;
+    pg:=scrollInfo.nPage;
   end
   else pg:=bar.pageInt;
 
-  if ScrollInfo.fMask and SIF_RANGE>0 then
+  if scrollInfo.fMask and SIF_RANGE>0 then
   begin
-    mn:=ScrollInfo.nMin;
-    mx:=ScrollInfo.nMax;
+    mn:=scrollInfo.nMin;
+    mx:=scrollInfo.nMax;
   end
   else
   begin
@@ -374,7 +394,7 @@ begin
   {$endif}
 
   // if changed page or range, the knob changes
-  if ScrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then
+  if scrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then
   begin
     if dl<>0 then
       bar.setKnobProportion(pg/dl)
@@ -385,27 +405,29 @@ begin
     bar.maxInt:=mx;
   end;
 
-  if ScrollInfo.fMask and SIF_POS > 0 then
-    bar.lclSetPos( ScrollInfo.nPos );
+  if scrollInfo.fMask and SIF_POS > 0 then
+    bar.lclSetPos( scrollInfo.nPos );
 
   Result:=bar.lclPos;
 end;
 
-function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
+class function TCocoaScrollUtil.setToScrollInfo(
+  const bar: TCocoaScrollBar;
+  var scrollInfo: TScrollInfo ): Boolean;
 var
   l : integer;
 begin
   Result:=Assigned(bar);
   if not Result then Exit;
 
-  FillChar(ScrollInfo, sizeof(ScrollInfo), 0);
-  ScrollInfo.cbSize:=sizeof(ScrollInfo);
-  ScrollInfo.fMask:=SIF_ALL;
-  ScrollInfo.nMin:=bar.minInt;
-  ScrollInfo.nMax:=bar.maxInt;
-  ScrollInfo.nPage:=bar.pageInt;
-  ScrollInfo.nPos:=bar.lclPos;
-  ScrollInfo.nTrackPos:=ScrollInfo.nPos;
+  FillChar(scrollInfo, sizeof(scrollInfo), 0);
+  scrollInfo.cbSize:=sizeof(scrollInfo);
+  scrollInfo.fMask:=SIF_ALL;
+  scrollInfo.nMin:=bar.minInt;
+  scrollInfo.nMax:=bar.maxInt;
+  scrollInfo.nPage:=bar.pageInt;
+  scrollInfo.nPos:=bar.lclPos;
+  scrollInfo.nTrackPos:=scrollInfo.nPos;
   Result:=true;
 end;
 
