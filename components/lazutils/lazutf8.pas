@@ -888,6 +888,14 @@ begin
   Result := UTF8CodepointToByteIndex(UTF8Str, Len, CharIndex);
 end;
 
+const
+  InvalidReplaceChars = [#0] + [#$80..#$FF];
+
+procedure RaiseInvalidReplaceChar(ReplaceChar: char);
+begin
+  raise Exception.Create('UTF8FixBroken: Invalid ReplaceChar #$'+IntToHex(ord(ReplaceChar),2));
+end;
+
 { fix any broken UTF8 sequences with the specified character }
 procedure UTF8FixBroken(P: PChar; ReplaceChar: char = #$20);
 var
@@ -895,6 +903,8 @@ var
   c: cardinal;
 begin
   if p=nil then exit;
+  if ReplaceChar in InvalidReplaceChars then
+    RaiseInvalidReplaceChar(ReplaceChar);
   while p^<>#0 do begin
     b:=ord(p^);
     if b<%10000000 then begin
@@ -959,6 +969,8 @@ end;
 procedure UTF8FixBroken(var S: string; ReplaceChar: char = #$20);
 begin
   if S='' then exit;
+  if ReplaceChar in InvalidReplaceChars then
+    RaiseInvalidReplaceChar(ReplaceChar);
   if FindInvalidUTF8Codepoint(PChar(S),length(S))<0 then exit;
   UniqueString(S);
   UTF8FixBroken(PChar(S), ReplaceChar);
