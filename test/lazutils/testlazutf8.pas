@@ -222,14 +222,52 @@ end;
 procedure TTestLazUTF8.TestUTF8FixBroken;
 
   procedure t(const S, Expected: string);
+  const
+    AllowedReplaceChars = [#1..#$7F];
   var
-    Actual: String;
+    Actual, SpecExpected: String;
+    ExceptRaised: Boolean;
+    ExceptMsg: String;
+    c: Char;
   begin
+    { testing with default argument }
     Actual:=S;
     UTF8FixBroken(Actual);
     AssertEquals('S: '+dbgMemRange(PChar(S),length(S)),
       dbgMemRange(PChar(Expected),length(Expected)),
       dbgMemRange(PChar(Actual),length(Actual)));
+    { testing allowed values for argument }
+    for c in AllowedReplaceChars do
+    begin
+      SpecExpected:=StringReplace(Expected,' ',c,[rfReplaceAll]);
+      Actual:=S;
+      UTF8FixBroken(Actual, c);
+      AssertEquals('S: '+dbgMemRange(PChar(S),length(S)),
+        dbgMemRange(PChar(SpecExpected),length(SpecExpected)),
+        dbgMemRange(PChar(Actual),length(Actual)));
+    end;
+    { testing invalid values for argument (exception expected) }
+    for c in [#0..#$FF] - AllowedReplaceChars do
+    begin
+      Actual:=S;
+      ExceptRaised:=false;
+      ExceptMsg:='';
+      try
+        UTF8FixBroken(Actual, c);
+      except
+        on E: Exception do
+        begin
+          ExceptRaised:=true;
+          ExceptMsg:=E.Message;
+        end;
+      end;
+      AssertTrue(ExceptRaised);
+      AssertEquals('UTF8FixBroken: Invalid ReplaceChar #$'+IntToHex(ord(c),2),ExceptMsg);
+      // text should remain unchanged
+      AssertEquals('S: '+dbgMemRange(PChar(S),length(S)),
+        dbgMemRange(PChar(S),length(S)),
+        dbgMemRange(PChar(Actual),length(Actual)));
+    end;
   end;
 
 begin
