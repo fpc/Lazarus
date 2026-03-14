@@ -200,7 +200,7 @@ type
       index SYN_ATTR_SYMBOL read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     property WhitespaceAttribute: TSynHighlighterAttributes
       index SYN_ATTR_WHITESPACE read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
-  published
+  public
     property Enabled: boolean read fEnabled write SetEnabled default TRUE;      //DDH 2001-10-23
         deprecated 'to be removed in 5.99 / no replacement - was never implemented';
   end;
