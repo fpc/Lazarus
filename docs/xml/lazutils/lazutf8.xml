@@ -1158,7 +1158,8 @@ either a PChar or a String type.
 </p>
 <p>
 <var>ReplaceChar</var> contains the character used to replace any invalid UTF-8 
-characters found in the input value. The default value for ReplaceChar is the 
+characters found in the input value. Must be in the ASCII range and not null 
+($01..$7F), otherwise an exception will be thrown. The default value is the
 Space character (Hex $20 Decimal 32).
 </p>
 <p>
@@ -1196,8 +1197,9 @@ String with the UTF-8-encoded values examined in the routine.
 </element>
 <element name="UTF8FixBroken.ReplaceChar">
 <short>
-Character used to replace invalid codepoints in the input argument. The default 
-value for the argument is the Space character (decimal 32 hex $20).
+Character used to replace invalid codepoints in the input argument. Must be in 
+the ASCII range and not null ($01..$7F), otherwise an exception will be thrown.
+The default value for the argument is the Space character (decimal 32 hex $20).
 </short>
 </element>
 
