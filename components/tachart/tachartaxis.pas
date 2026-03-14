@@ -173,6 +173,8 @@ type
       ATest: TChartAxisHitTests = ALL_CHARTAXIS_HITTESTS): TChartAxisHitTests; virtual;
     function GetLabeledAxisRect: TRect;
     procedure Draw;
+    procedure DrawGrid;
+    procedure DrawAxisLine;
     procedure DrawTitle(ASize: Integer);
     function GetChart: TCustomChart; inline;
     function GetOrthogonalAxis: TChartAxis;
@@ -664,6 +666,23 @@ begin
 end;
 
 procedure TChartAxis.Draw;
+begin
+  DrawGrid;
+  DrawAxisLine;
+end;
+
+procedure TChartAxis.DrawAxisLine;
+var
+  fixedCoord: Integer;
+begin
+  if not Visible then exit;
+  fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
+  FHelper.BeginDrawing;
+  FHelper.DrawAxisLine(AxisPen, fixedCoord);
+  FHelper.EndDrawing;
+end;
+
+procedure TChartAxis.DrawGrid;
 
   procedure DrawMinors(AFixedCoord: Integer; AMin, AMax: Double);
   const
@@ -688,7 +707,7 @@ procedure TChartAxis.Draw;
           isFlipped := (AMin < AMax) and (trMin > trMax);
           FValueMin := Max(trMin, FValueMin);
           FValueMax := Min(trMax, FValueMax);
-          if (not isFlipped and (FValueMax <= FValueMin)) or 
+          if (not isFlipped and (FValueMax <= FValueMin)) or
              (isFlipped and (FValueMax >= FValueMin))
           then
             continue;
@@ -1412,12 +1431,29 @@ begin
 end;
 
 procedure TChartAxisList.Draw(ACurrentZ: Integer; var AIndex: Integer);
+var
+  idx: Integer;
 begin
+  // step 1: draw all grids
+  idx := AIndex;
+  while idx < FZOrder.Count do
+    with TChartAxis(FZOrder[idx]) do begin
+      if ACurrentZ < ZPosition then break;
+      try
+        DrawGrid;
+      except
+        Visible := false;
+        raise;
+      end;
+      idx += 1;
+    end;
+
+  // step 2: draw all axis lines and axis titles.
   while AIndex < FZOrder.Count do
     with TChartAxis(FZOrder[AIndex]) do begin
       if ACurrentZ < ZPosition then break;
       try
-        Draw;
+        DrawAxisLine;
         DrawTitle(FGroups[FGroupIndex].FTitleSize);
       except
         Visible := false;
