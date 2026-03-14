@@ -472,11 +472,17 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
+    procedure OffsetMousePos(const aGlobalX, aGlobalY: double; APoint: PPoint); override;
+    function ClientToScreen(var P: TPoint): Boolean; override;
+    function ScreenToClient(var P: TPoint): Integer; override;
     function GtkEventMouse(Sender: PGtkWidget; Event: PGdkEvent): Boolean; override; cdecl;
+    function GtkEventMouseMove(Sender: PGtkWidget; Event: PGdkEvent): Boolean; override; cdecl;
     procedure InitializeWidget; override;
     function GetTabSize(AWinControl: TWinControl): integer; {returns size of tab. Height if orientation is top/bottom, width if orientation is left/right}
     function getClientRect: TRect; override;
     function getPagesCount: integer;
+    function GetTabIndexAtPos(const AWidgetPos: TPoint; out APageIndex: integer
+      ): TWinControl;
     procedure InsertPage(ACustomPage: TCustomPage; AIndex: Integer);
     procedure MovePage(ACustomPage: TCustomPage; ANewIndex: Integer);
     procedure RemovePage(AIndex: Integer);
@@ -2299,6 +2305,7 @@ var
   MousePos: TPoint;
   MButton: guint;
   SavedHandle: PtrUInt;
+  AParentControl: TWinControl;
 begin
   Result := gtk_false;
   {$IF DEFINED(GTK3DEBUGEVENTS) OR DEFINED(GTK3DEBUGMOUSE)}
@@ -2412,6 +2419,21 @@ begin
       exit;
 
     Result := DeliverMessage(MsgPopup, True) <> 0;
+
+    // If still not handled and we are not a notebook (notebooks have their own
+    // ActiveSheet.PopupMenu special path in the override), propagate
+    // LM_CONTEXTMENU up the LCL parent chain - mirrors DefWindowProc / Qt.
+    if not Result and not (wtNotebook in WidgetType) and Assigned(LCLObject) then
+    begin
+      AParentControl := LCLObject.Parent;
+      while Assigned(AParentControl) and (MsgPopup.Result = 0) do
+      begin
+        MsgPopup.Result := 0;
+        AParentControl.Dispatch(TLMessage(MsgPopup));
+        AParentControl := AParentControl.Parent;
+      end;
+      Result := MsgPopup.Result <> 0;
+    end;
   end;
 
   if wtPanel in WidgetType then
@@ -5943,6 +5965,11 @@ begin
     g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
 
+  g_object_set_data(FPageBox,'lclwidget', Self);
+  g_object_set_data(FPageLabel,'lclwidget', Self);
+  g_object_set_data(FImageWidget,'lclwidget', Self);
+  g_object_set_data(FCloseButton,'lclwidget', Self);
+
   g_signal_connect_data(FCloseButton, 'clicked', TGCallback(@TabCloseClicked), Self, nil, G_CONNECT_DEFAULT);
   //Set label angle to match parent notebook's tab position - vertical for LEFT/RIGHT
   if Assigned(LCLObject.Parent) then
@@ -6316,6 +6343,9 @@ var
   P: TPoint;
   PM: TPopupMenu;
   MsgUp: TLMMouse;
+  NoteBookWidget: PGtkNotebook;
+  ContentPage: PGtkWidget;
+  cx, cy: gint;
 begin
   // Fix for GDK_BUTTON_RELEASE: if we already synthesised LM_RBUTTONUP from
   // the press handler, consume the real release (which may arrive if the gesture
@@ -6351,17 +6381,270 @@ begin
 
     if not Result then
     begin
+      //Synthesise LM_RBUTTONUP with LCL-client coords (same convention as
+      //OffsetMousePos override). Subtract the content-area offset so that
+      //IndexOfPageAt(X,Y) in NotebookMouseUp receives the same coordinate
+      //space that GetTabIndexAtPos class function expects.
+      NoteBookWidget := PGtkNotebook(GetContainerWidget);
+      cx := 0;
+      cy := 0;
+      if (NoteBookWidget <> nil) and (NoteBookWidget^.get_n_pages > 0) then
+      begin
+        ContentPage := NoteBookWidget^.get_nth_page(NoteBookWidget^.get_current_page);
+        if Assigned(ContentPage) then
+          ContentPage^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @cx, @cy);
+      end;
       FillChar(MsgUp{%H-}, SizeOf(MsgUp), 0);
       MsgUp.Msg := LM_RBUTTONUP;
       MsgUp.Keys := MK_RBUTTON;
-      MsgUp.XPos := SmallInt(Round(Event^.button.x));
-      MsgUp.YPos := SmallInt(Round(Event^.button.y));
+      MsgUp.XPos := SmallInt(Round(Event^.button.x) - cx);
+      MsgUp.YPos := SmallInt(Round(Event^.button.y) - cy);
       FRightClickUpPending := True;
       DeliverMessage(MsgUp, True);
       FRightClickUpPending := False;
     end;
 
     Result := True;
+  end;
+end;
+
+function TGtk3NoteBook.GetTabIndexAtPos(const AWidgetPos: TPoint; out APageIndex: integer): TWinControl;
+var
+  NoteBookWidget: PGtkNotebook;
+  TabWidget, PageWidget: PGtkWidget;
+  i: integer;
+  AList: PGList;
+  Allocation: TGtkAllocation;
+  gx, gy: gint;
+  ARect: TRect;
+  APageHandle: HWND;
+begin
+  Result := nil;
+  APageIndex := -1;
+  NoteBookWidget := PGtkNotebook(GetContainerWidget);
+  if (NotebookWidget=nil) then
+    exit;
+  Result := nil;
+  AList := NoteBookWidget^.get_children;
+  try
+    for i := 0 to g_list_length(AList) - 1 do
+    begin
+      PageWidget := NoteBookWidget^.get_nth_page(i);
+      if (PageWidget<>nil) then
+      begin
+        TabWidget := NoteBookWidget^.get_tab_label(PageWidget);
+        if TabWidget <> nil then
+        begin
+          gtk_widget_get_allocation(TabWidget, @Allocation);
+          gx := 0;
+          gy := 0;
+          TabWidget^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @gx, @gy);
+          ARect := Rect(gx, gy, gx + Allocation.width, gy + Allocation.height);
+          if PtInRect(ARect, AWidgetPos) then
+          begin
+            APageHandle := HwndFromGtkWidget(TabWidget);
+            if APageHandle > 0 then
+              Result := TGtk3Page(APageHandle).LCLObject;
+            APageIndex := I;
+            break;
+          end;
+        end;
+      end;
+    end;
+  finally
+    if AList <> nil then
+      g_list_free(Alist);
+  end;
+end;
+
+procedure TGtk3NoteBook.OffsetMousePos(const aGlobalX, aGlobalY: double; APoint: PPoint);
+var
+  NoteBookWidget: PGtkNotebook;
+  ContentPage: PGtkWidget;
+  cx, cy: gint;
+begin
+  inherited;
+  // Subtract content area origin so that delivered mouse event coords are in
+  // LCL-client space (origin = content area top-left), matching what
+  // ScreenToClient returns.
+  NoteBookWidget := PGtkNotebook(GetContainerWidget);
+  if (NoteBookWidget <> nil) and (NoteBookWidget^.get_n_pages > 0) then
+  begin
+    ContentPage := NoteBookWidget^.get_nth_page(NoteBookWidget^.get_current_page);
+    if Assigned(ContentPage) then
+    begin
+      cx := 0;
+      cy := 0;
+      ContentPage^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @cx, @cy);
+      dec(APoint^.X, cx);
+      dec(APoint^.Y, cy);
+    end;
+  end;
+end;
+
+function TGtk3NoteBook.ClientToScreen(var P: TPoint): Boolean;
+var
+  NoteBookWidget: PGtkNotebook;
+  ContentPage: PGtkWidget;
+  cx, cy: gint;
+begin
+  Result := inherited ClientToScreen(P);
+  //Shift by content-area origin so that P=(0,0) maps to the screen position
+  //of the tab content area below the tab bar, not the notebook widget top-left.
+  //This makes GetClientOrigin return the correct value, which in turn makes
+  //TControl.ScreenToClient (used by FindControlAtPosition and NotebookShowTabHint)
+  //produce true LCL-client coords instead of widget-local coords.
+  NoteBookWidget := PGtkNotebook(GetContainerWidget);
+  if (NoteBookWidget <> nil) and (NoteBookWidget^.get_n_pages > 0) then
+  begin
+    ContentPage := NoteBookWidget^.get_nth_page(NoteBookWidget^.get_current_page);
+    if Assigned(ContentPage) then
+    begin
+      cx := 0;
+      cy := 0;
+      ContentPage^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @cx, @cy);
+      inc(P.X, cx);
+      inc(P.Y, cy);
+    end;
+  end;
+end;
+
+function TGtk3NoteBook.ScreenToClient(var P: TPoint): Integer;
+var
+  NoteBookWidget: PGtkNotebook;
+  ContentPage: PGtkWidget;
+  cx, cy: gint;
+  {$IFDEF GTK3DEBUGHINTS}
+  PBefore: TPoint;
+  {$ENDIF}
+begin
+  {$IFDEF GTK3DEBUGHINTS}
+  PBefore := P;
+  {$ENDIF}
+  Result := inherited ScreenToClient(P);
+  //Subtract content-area origin so coords are in LCL-client space
+  //(origin = content area top-left, below tab bar), same as OffsetMousePos.
+  //NotebookShowTabHint calls IndexOfPageAt(ScreenToClient(Mouse.CursorPos))
+  //which then calls GetTabIndexAtPos; GetTabIndexAtPos adds cy back to convert
+  //LCL-client => widget-local for tab label hit-testing.
+  NoteBookWidget := PGtkNotebook(GetContainerWidget);
+  if (NoteBookWidget <> nil) and (NoteBookWidget^.get_n_pages > 0) then
+  begin
+    ContentPage := NoteBookWidget^.get_nth_page(NoteBookWidget^.get_current_page);
+    if Assigned(ContentPage) then
+    begin
+      cx := 0;
+      cy := 0;
+      ContentPage^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @cx, @cy);
+      dec(P.X, cx);
+      dec(P.Y, cy);
+    end;
+  end;
+  {$IFDEF GTK3DEBUGHINTS}
+  writeln('TGtk3NoteBook.ScreenToClient: screenIn=',PBefore.X,',',PBefore.Y,
+    ' cx=',cx,' cy=',cy,' clientOut=',P.X,',',P.Y);
+  {$ENDIF}
+end;
+
+function TGtk3NoteBook.GtkEventMouseMove(Sender: PGtkWidget; Event: PGdkEvent
+  ): Boolean; cdecl;
+var
+  Msg: TLMMouseMove;
+  MousePos, WidgetPos: TPoint;
+  ADisplay: PGdkDisplay;
+  ASeat: PGdkSeat;
+  ADevice: PGdkDevice;
+  X, Y: gint;
+  AMask: TGdkModifierType;
+  ATabIndex, HoveredIdx: integer;
+  ATabSheet, HoveredPage: TWinControl;
+  {$IFDEF GTK3DEBUGEVENTS}
+  R: TRect;
+  {$ENDIF}
+begin
+  Result := False;
+
+  {$IFDEF GTK3DEBUGEVENTS}
+  R := GetClientBounds;
+  DebugLn(['GtkEventMouseMove: ',dbgsName(LCLObject),' Send=',dbgs(Event^.motion.send_event),
+  ' state=',dbgs(LongInt(event^.motion.state)),
+  ' x=',dbgs(Round(event^.motion.x)),
+  ' y=',dbgs(Round(event^.motion.y)),
+  ' x_root=',dbgs(Round(event^.motion.x_root)),
+  ' y_root=',dbgs(Round(event^.motion.y_root)),
+  ' STOP PROCESSING ? ',dbgs(Event^.motion.send_event = NO_PROPAGATION_TO_PARENT),
+  ' GtkBounds ',dbgs(R),' LCLBounds ',dbgs(LCLObject.BoundsRect),' W=',dbgs(LCLObject.Width)]
+  );
+  {$ENDIF}
+
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+
+  if Event^.motion.send_event = NO_PROPAGATION_TO_PARENT then
+  begin
+    //Event propagated up from a child (e.g. SynEdit) with NO_PROPAGATION flag.
+    //Only notify when cursor is actually over a tab label so the hint mechanism
+    //can start the hint timer for TPageControl. Ignore content-area events.
+    WidgetPos := Point(Round(Event^.motion.x), Round(Event^.motion.y));
+    HoveredPage := GetTabIndexAtPos(WidgetPos, HoveredIdx);
+    if Assigned(HoveredPage) then
+    begin
+      Msg.Msg := LM_MOUSEMOVE;
+      Msg.XPos := SmallInt(WidgetPos.X);
+      Msg.YPos := SmallInt(WidgetPos.Y);
+      NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
+    end;
+    Exit;
+  end;
+
+  //we use GDK_POINTER_MOTION_HINT_MASK, so we cannot trust Event^.motion position
+  if Event^.motion.is_hint = 1 then
+  begin
+    ADisplay := gtk_widget_get_display(Sender);
+    ASeat := gdk_display_get_default_seat(ADisplay);
+    ADevice := gdk_seat_get_pointer(ASeat);
+    gdk_window_get_device_position(Event^.motion.window, ADevice, @X, @Y, @AMask);
+  end else
+  begin
+    X := Round(Event^.motion.x);
+    Y := Round(Event^.motion.y);
+    AMask := Event^.motion.state;
+  end;
+
+  MousePos.x := X;
+  MousePos.y := Y;
+
+  OffsetMousePos(Event^.motion.x_root, Event^.motion.y_root, @MousePos);
+
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
+
+  if Mouse.CursorPos=MousePos then exit;
+
+  Msg.Keys := GdkModifierStateToLCL(aMask, False);
+
+  Msg.Msg := LM_MOUSEMOVE;
+
+  //Use pre-OffsetMousePos widget-local coords for the instance method which
+  //compares against GTK tab-label allocations (also in widget-local space).
+  ATabSheet := GetTabIndexAtPos(Point(X, Y), ATabIndex);
+  {$IFDEF GTK3DEBUGHINTS}
+  writeln('GtkEventMouseMove NoteBook: X=',X,' Y=',Y,
+    ' MousePos=',MousePos.X,',',MousePos.Y,
+    ' ATabIndex=',ATabIndex,' ATabSheet=',DbgSName(ATabSheet),
+    ' NoteBook=',DbgSName(LCLObject));
+  {$ENDIF}
+  if Assigned(ATabSheet) then
+  begin
+    NotifyApplicationUserInput(ATabSheet, PLMessage(@Msg)^);
+    if Widget^.get_parent <> nil then
+      Event^.motion.send_event := NO_PROPAGATION_TO_PARENT;
+    TGtk3Page(ATabSheet.Handle).DeliverMessage(Msg, True);
+  end else
+  begin
+    NotifyApplicationUserInput(LCLObject, PLMessage(@Msg)^);
+    if Widget^.get_parent <> nil then
+      Event^.motion.send_event := NO_PROPAGATION_TO_PARENT;
+    DeliverMessage(Msg, True);
   end;
 end;
 

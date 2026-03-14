@@ -1735,18 +1735,33 @@ class function TGtk3WSCustomTabControl.GetTabIndexAtPos(
   const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer;
 var
   NoteBookWidget: PGtkNotebook;
-  TabWidget, PageWidget: PGtkWidget;
+  TabWidget, PageWidget, ActivePage: PGtkWidget;
   i: integer;
   AList: PGList;
   Allocation: TGtkAllocation;
-  gx, gy: gint;
+  gx, gy, cx, cy: gint;
   ARect: TRect;
+  APosWidget: TPoint;
 begin
   Result:=-1;
   if (ATabControl is TTabControl) then
     exit;
   NoteBookWidget := PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget);
   if (NotebookWidget=nil) then exit;
+
+  //AClientPos is in LCL client coords (origin at content area top-left).
+  //Tab labels are positioned in GkNotebook widget-local coords where (0,0)
+  //is the notebook top-left and the tab bar is above the content area.
+  //Convert AClientPos to widget-local by adding the content area offset (cx,cy).
+  cx := 0;
+  cy := 0;
+  if NoteBookWidget^.get_n_pages > 0 then
+  begin
+    ActivePage := NoteBookWidget^.get_nth_page(NoteBookWidget^.get_current_page);
+    if Assigned(ActivePage) then
+      ActivePage^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @cx, @cy);
+  end;
+  APosWidget := Point(AClientPos.X + cx, AClientPos.Y + cy);
 
   AList := NoteBookWidget^.get_children;
   try
@@ -1763,7 +1778,7 @@ begin
           gy := 0;
           TabWidget^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @gx, @gy);
           ARect := Rect(gx, gy, gx + Allocation.width, gy + Allocation.height);
-          if PtInRect(ARect, AClientPos) then
+          if PtInRect(ARect, APosWidget) then
           begin
             Result := I;
             break;
