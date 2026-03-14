@@ -216,14 +216,16 @@ end;
   Shows modal dialog or window sheet with the specified caption, message
   and buttons and prompts user to push one.
  ------------------------------------------------------------------------------}
-function CocoaPromptUser(const DialogCaption : string;
-                                     const DialogMessage : string;
-                                           DialogType    : LongInt;
-                                           Buttons       : PLongInt;
-                                           ButtonCount   : LongInt;
-                                           DefaultIndex  : LongInt;
-                                           EscapeResult  : LongInt;
-  sheetOfWindow : NSWindow; modalSheet: Boolean) : LongInt;
+class function TCocoaDialogUtil.promptUser(
+  const DialogCaption : string;
+  const DialogMessage : string;
+  const DialogType    : LongInt;
+  const Buttons       : PLongInt;
+  const ButtonCount   : LongInt;
+  const DefaultIndex  : LongInt;
+  const EscapeResult  : LongInt;
+  const sheetOfWindow : NSWindow;
+  const modalSheet: Boolean ): LongInt;
 {Implements MessageDlg.}
 var
   anAlert: NSAlert;
@@ -382,7 +384,7 @@ function TCocoaWidgetSet.PromptUser(const DialogCaption, DialogMessage: String;
   DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
   EscapeResult: Longint): Longint;
 begin
-  Result := CocoaPromptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount,
+  Result := TCocoaDialogUtil.promptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount,
     DefaultIndex, EscapeResult);
 end;  {TCocoaWidgetSet.PromptUser}
 
@@ -472,7 +474,7 @@ begin
   else
     SheetWnd := NSView(HWnd).window();
 
-  Result := CocoaPromptUser(
+  Result := TCocoaDialogUtil.promptUser(
     string(lpCaption),
     string(lpText),
     DialogType,

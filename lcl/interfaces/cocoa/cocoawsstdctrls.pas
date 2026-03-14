@@ -379,8 +379,6 @@ type
   end;
 
 function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
-function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
-function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
 
 function getCallbackFromLCLListBox( const AListBox: TCustomListBox ):
   TLCLListBoxCallback;
@@ -388,23 +386,21 @@ function getTableViewFromLCLListBox( const AListBox: TCustomListBox ):
   TCocoaTableListView;
 procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 
-procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
-procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
-  SkipChangeEvent: Boolean = true);
-
-function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
-function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
-function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
-function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
-procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
+implementation
 
 // Sets the control text and then calls controls callback (if any)
 // with TextChange (CM_TEXTCHANGED) event.
 // Cocoa control do not fire a notification, if text is changed programmatically
 // LCL expects a change notification in either way. (by software or by user)
 procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
-
-implementation
+var
+  cb: ICommonCallBack;
+begin
+  TCocoaControlUtil.setStringValue(ctrl, text);
+  cb := ctrl.lclGetcallback;
+  if Assigned(cb) then // cb.SendOnChange;
+    cb.SendOnTextChanged;
+end;
 
 function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
 begin
@@ -446,7 +442,7 @@ begin
   if Assigned(Result) then
   begin
     Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
-    TCocoaSecureTextField(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
+    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
     TCocoaTextControlUtil.setStringValue(Result.currentEditor, AParams.Caption);
   end;
 end;
@@ -2775,16 +2771,6 @@ begin
   view := getTableViewFromLCLListBox(ACustomListBox);
   if not Assigned(view) then Exit();
   view.scrollRowToVisible(NewTopIndex);
-end;
-
-procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
-var
-  cb: ICommonCallBack;
-begin
-  TCocoaControlUtil.setStringValue(ctrl, text);
-  cb := ctrl.lclGetcallback;
-  if Assigned(cb) then // cb.SendOnChange;
-    cb.SendOnTextChanged;
 end;
 
 end.

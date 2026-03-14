@@ -211,6 +211,14 @@ type
     function stringValue: NSString; message 'stringValue';
   end;
 
+  { TCocoaWindowUtil }
+
+  TCocoaWindowUtil = class
+  public
+    class function getWindow(const obj: NSObject): NSWindow;
+    class function getWindowAtPos(const p: NSPoint): NSWindow;
+  end;
+
 implementation
 
 { TCocoaDesignOverlay }
@@ -523,6 +531,48 @@ function TCocoaWindowContent.stringValue: NSString;
 begin
   Result := _stringValue;
 end;
+
+{ TCocoaWindowUtil }
+
+class function TCocoaWindowUtil.getWindow(const obj: NSObject): NSWindow;
+begin
+  Result := nil;
+  if not Assigned(obj) then Exit;
+  if obj.isKindOfClass_(NSWindow) then
+    Result := NSWindow(obj)
+  else if obj.isKindOfClass_(NSView) then
+    Result := NSView(obj).window;
+end;
+
+// ensure that gets the correct window at mouse pos
+// 1. in Z-Order
+// 2. on the active Space
+// 3. in current App
+// 4. is visible window
+// 5. is not the misc window like Menu Bar
+class function TCocoaWindowUtil.getWindowAtPos(const p: NSPoint): NSWindow;
+var
+  windowNumber: NSInteger;
+  windowNumbers: NSArray;
+  window: NSWindow;
+begin
+  Result := nil;
+
+  // ensure 1
+  windowNumber := NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
+  windowNumbers := NSWindow.windowNumbersWithOptions(0);
+
+  // ensure 2, 3, 4
+  if not windowNumbers.containsObject(NSNumber.numberWithInt(windowNumber)) then
+    exit;
+
+  // ensure 5
+  window := NSApp.windowWithWindowNumber(windowNumber);
+  if Assigned(window) and (window.isKindOfClass(TCocoaWindow) or window.isKindOfClass(TCocoaPanel)) then
+    Result := window;
+end;
+
+
 
 { TCocoaPanel }
 

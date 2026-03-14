@@ -261,28 +261,7 @@ type
 var
   CocoaWidgetSet: TCocoaWidgetSet;
 
-function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
-function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
-
-function CocoaPromptUser(const DialogCaption, DialogMessage: String;
-    DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
-    EscapeResult: Longint;
-    sheetOfWindow: NSWindow = nil; modalSheet: Boolean = false): Longint;
-
-function GetCocoaWindowAtPos(p: NSPoint): NSWindow;
-
-// The function tries to initialize the proper application class.
-// The desired application class can be specified in info.plit
-// by specifying NSPrincipalClass property.
-// If then principal class has been found (in the bundle binaries)
-// InitApplication function will try to call its "sharedApplication" method.
-// If principle class is not specified, then TCocoaApplication is used.
-// You should always specify either TCocoaApplication or
-// a class derived from TCocoaApplication, in order for LCL to fucntion properly
-function InitApplication: TCocoaApplication;
-
 implementation
-
 
 // NSCursor doesn't support any wait cursor, so we need to use a non-native one
 // Not supporting it at all would result in crashes in Screen.Cursor := crHourGlass;
@@ -298,6 +277,32 @@ const
 
 var
   MainPool : NSAutoreleasePool = nil;
+
+type
+
+  TCocoaScrollUtil = class
+  public
+    class function getFromScrollInfo(
+      const bar: TCocoaScrollBar;
+      const scrollInfo: TScrollInfo ): Integer;
+    class function setToScrollInfo(
+      const bar: TCocoaScrollBar;
+      var scrollInfo: TScrollInfo ): Boolean;
+  end;
+
+  TCocoaDialogUtil = class
+  public
+    class function promptUser(
+      const DialogCaption : string;
+      const DialogMessage : string;
+      const DialogType    : LongInt;
+      const Buttons       : PLongInt;
+      const ButtonCount   : LongInt;
+      const DefaultIndex  : LongInt;
+      const EscapeResult  : LongInt;
+      const sheetOfWindow : NSWindow = nil;
+      const modalSheet    : Boolean = False ): LongInt;
+  end;
 
 function HWNDToTargetObject(AFormHandle: HWND): TObject;
 var
@@ -349,7 +354,9 @@ begin
   NSApp.postEvent_atStart(ev, false);
 end;
 
-function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
+class function TCocoaScrollUtil.getFromScrollInfo(
+  const bar: TCocoaScrollBar;
+  const scrollInfo: TScrollInfo ): Integer;
 var
   pg  : Integer;
   mn  : Integer;
@@ -362,16 +369,16 @@ begin
     Exit;
   end;
 
-  if ScrollInfo.fMask and SIF_PAGE>0 then
+  if scrollInfo.fMask and SIF_PAGE>0 then
   begin
-    pg:=ScrollInfo.nPage;
+    pg:=scrollInfo.nPage;
   end
   else pg:=bar.pageInt;
 
-  if ScrollInfo.fMask and SIF_RANGE>0 then
+  if scrollInfo.fMask and SIF_RANGE>0 then
   begin
-    mn:=ScrollInfo.nMin;
-    mx:=ScrollInfo.nMax;
+    mn:=scrollInfo.nMin;
+    mx:=scrollInfo.nMax;
   end
   else
   begin
@@ -387,7 +394,7 @@ begin
   {$endif}
 
   // if changed page or range, the knob changes
-  if ScrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then
+  if scrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then
   begin
     if dl<>0 then
       bar.setKnobProportion(pg/dl)
@@ -398,27 +405,29 @@ begin
     bar.maxInt:=mx;
   end;
 
-  if ScrollInfo.fMask and SIF_POS > 0 then
-    bar.lclSetPos( ScrollInfo.nPos );
+  if scrollInfo.fMask and SIF_POS > 0 then
+    bar.lclSetPos( scrollInfo.nPos );
 
   Result:=bar.lclPos;
 end;
 
-function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
+class function TCocoaScrollUtil.setToScrollInfo(
+  const bar: TCocoaScrollBar;
+  var scrollInfo: TScrollInfo ): Boolean;
 var
   l : integer;
 begin
   Result:=Assigned(bar);
   if not Result then Exit;
 
-  FillChar(ScrollInfo, sizeof(ScrollInfo), 0);
-  ScrollInfo.cbSize:=sizeof(ScrollInfo);
-  ScrollInfo.fMask:=SIF_ALL;
-  ScrollInfo.nMin:=bar.minInt;
-  ScrollInfo.nMax:=bar.maxInt;
-  ScrollInfo.nPage:=bar.pageInt;
-  ScrollInfo.nPos:=bar.lclPos;
-  ScrollInfo.nTrackPos:=ScrollInfo.nPos;
+  FillChar(scrollInfo, sizeof(scrollInfo), 0);
+  scrollInfo.cbSize:=sizeof(scrollInfo);
+  scrollInfo.fMask:=SIF_ALL;
+  scrollInfo.nMin:=bar.minInt;
+  scrollInfo.nMax:=bar.maxInt;
+  scrollInfo.nPage:=bar.pageInt;
+  scrollInfo.nPos:=bar.lclPos;
+  scrollInfo.nTrackPos:=scrollInfo.nPos;
   Result:=true;
 end;
 
@@ -455,34 +464,6 @@ begin
 end;
 {$endif}
 
-// ensure that gets the correct window at mouse pos
-// 1. in Z-Order
-// 2. on the active Space
-// 3. in current App
-// 4. is visible window
-// 5. is not the misc window like Menu Bar
-function GetCocoaWindowAtPos(p: NSPoint): NSWindow;
-var
-  windowNumber: NSInteger;
-  windowNumbers: NSArray;
-  window: NSWindow;
-begin
-  Result := nil;
-
-  // ensure 1
-  windowNumber := NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
-  windowNumbers := NSWindow.windowNumbersWithOptions(0);
-
-  // ensure 2, 3, 4
-  if not windowNumbers.containsObject(NSNumber.numberWithInt(windowNumber)) then
-    exit;
-
-  // ensure 5
-  window := NSApp.windowWithWindowNumber(windowNumber);
-  if Assigned(window) and (window.isKindOfClass(TCocoaWindow) or window.isKindOfClass(TCocoaPanel)) then
-    Result := window;
-end;
-
 procedure ForwardMouseMove(app: NSApplication; theEvent: NSEvent);
 var
   w   : NSWindow;
@@ -494,7 +475,7 @@ begin
     exit;
 
   p := theEvent.mouseLocation;
-  w := GetCocoaWindowAtPos(p);;
+  w := TCocoaWindowUtil.getWindowAtPos(p);;
 
   if Assigned(w) then
   begin
@@ -796,6 +777,14 @@ type
     function sharedApplication: NSApplication; message 'sharedApplication';
   end;
 
+// The function tries to initialize the proper application class.
+// The desired application class can be specified in info.plit
+// by specifying NSPrincipalClass property.
+// If then principal class has been found (in the bundle binaries)
+// InitApplication function will try to call its "sharedApplication" method.
+// If principle class is not specified, then TCocoaApplication is used.
+// You should always specify either TCocoaApplication or
+// a class derived from TCocoaApplication, in order for LCL to fucntion properly
 function InitApplication: TCocoaApplication;
 var
   bun : NSBundle;
