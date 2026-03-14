@@ -1566,7 +1566,7 @@ begin
 
   p.x:=Point.X;
   p.y:=TCocoaScreenUtil.globalScreenBottom-Point.Y;
-  window := GetCocoaWindowAtPos(p);
+  window := TCocoaWindowUtil.getWindowAtPos(p);
   if Assigned(window) then
     Result:= HWND(window.contentView);
 end;
@@ -1714,14 +1714,14 @@ begin
     obj := TCocoaManualScrollHost(obj).documentView;
 
   if obj.isKindOfClass(TCocoaScrollBar) then
-    Result := CocoaScrollBarGetScrollInfo(TCocoaScrollBar(obj), scrollInfo)
+    Result := TCocoaScrollUtil.setToScrollInfo(TCocoaScrollBar(obj), scrollInfo)
   else
   if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
     if BarFlag = SB_Vert then
-      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller), scrollInfo)
+      Result := TCocoaScrollUtil.setToScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller), scrollInfo)
     else
-      Result := CocoaScrollBarGetScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller), scrollInfo);
+      Result := TCocoaScrollUtil.setToScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller), scrollInfo);
   end else if obj.isKindOfClass(TCocoaScrollView) then
     TCocoaScrollView(obj).fillScrollInfo(BarFlag, scrollInfo)
   else
@@ -1894,7 +1894,7 @@ begin
 
     if Assigned(bar) then
     begin
-      Result := CocoaScrollBarSetScrollInfo(bar, ScrollInfo);
+      Result := TCocoaScrollUtil.getFromScrollInfo(bar, ScrollInfo);
       //debugln('TCocoaWidgetSet.SetScrollInfo page=',bar.pageInt,' min=',bar.minInt,' max=',bar.maxInt,' ',bar.lclPos);
       ShowScrollBar(Handle, SBStyle, bar.pageInt < bar.maxInt-bar.minInt);
     end
@@ -1906,7 +1906,7 @@ begin
 
   end else if obj.isKindOfClass(TCocoaScrollBar) then
   begin
-    Result := CocoaScrollBarSetScrollInfo(TCocoaScrollBar(obj), ScrollInfo);
+    Result := TCocoaScrollUtil.getFromScrollInfo(TCocoaScrollBar(obj), ScrollInfo);
   end
   else
     Result := 0;
@@ -2670,7 +2670,7 @@ begin
     NSApp.activateIgnoringOtherApps(True);
     {$endif}
     Obj := NSObject(HWnd);
-    lWin := NSWindow(TCocoaControlUtil.getNSWindow(Obj));
+    lWin := NSWindow(TCocoaWindowUtil.getWindow(Obj));
     if lWin <> nil then
       lWin.makeKeyAndOrderFront(NSApp)
     else
@@ -2685,7 +2685,7 @@ var
 begin
   Result := False;
 
-  lWin := NSWindow(TCocoaControlUtil.getNSWindow(NSObject(AWindowHandle)));
+  lWin := NSWindow(TCocoaWindowUtil.getWindow(NSObject(AWindowHandle)));
 
   frm := HWNDToForm(AWindowHandle);
   if Assigned(frm) and (csDesigning in frm.ComponentState) then begin
