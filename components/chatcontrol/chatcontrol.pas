@@ -319,7 +319,7 @@ Type
 implementation
 
 uses
-  LCLType, Clipbrd;
+  LCLIntf, LCLType, Clipbrd;
 
 { TChatItem }
 
@@ -626,7 +626,7 @@ var
 begin
   for I:=0 to FChatList.Count-1 do
     if FChatList[i] is TMarkdownDisplayChatItem then
-      TMarkdownDisplayChatItem(FChatList[i]).SetMarkdownColorProperty(aIndex,FMarkdownSizes[aIndex]);
+      TMarkdownDisplayChatItem(FChatList[i]).SetMarkdownColorProperty(aIndex,FMarkdownColors[aIndex]);
 end;
 
 
@@ -681,7 +681,7 @@ var
   Idx : Integer;
 begin
   for Idx:=0 to MaxColorIdx do
-    aItem.SetMarkdownProperty(Idx,FMarkDownColors[Idx]);
+    aItem.SetMarkdownColorProperty(Idx,FMarkDownColors[Idx]);
   for Idx:=0 to MaxStringIdx do
     aItem.SetMarkdownProperty(Idx,FMarkDownStrings[Idx]);
   for Idx:=0 to MaxIntegerIdx do
@@ -804,6 +804,7 @@ begin
   ItemPadding:=DefaultItemPadding;
   ItemMargin:=DefaultItemMargin;
   InitMarkdownProperties;
+  VertScrollBar.Visible:=True;
 end;
 
 
@@ -1014,14 +1015,16 @@ procedure TChatControl.TPlainDisplayChatItem.LayoutAt(aTop, aPadding, aMargin: I
 var
   lPos : TPoint;
   lSize : TPoint;
+  ScrollbarWidth: Integer;
 
 begin
+  ScrollbarWidth := GetSystemMetrics(SM_CXVSCROLL);
   lPos.Y:=aTop;
   lSize.X:=TextLabel.Width;
   lSize.Y:=TextLabel.Height;
   Case Side of
    tsLeft : lPos.X:=4;
-   tsRight : lPos.X:=TextLabel.Parent.Width-lSize.X-2*aPadding-aMargin;
+   tsRight : lPos.X:=TextLabel.Parent.Width-lSize.X-2*aPadding-aMargin-ScrollBarWidth;
   end;
   TextBackground.RoundRectHorizontalRadius:=aPadding;
   TextBackground.RoundRectVerticalRadius:=aPadding;
@@ -1142,14 +1145,16 @@ procedure TChatControl.TMarkdownDisplayChatItem.LayoutAt(aTop, aPadding, aMargin
 var
   lPos : TPoint;
   lSize : TPoint;
+  ScrollbarWidth: Integer;
 
 begin
+  ScrollbarWidth := GetSystemMetrics(SM_CXVSCROLL);
   lPos.Y:=aTop;
   lSize.X:=FControl.Width;
   lSize.Y:=FControl.Height;
   Case Side of
    tsLeft : lPos.X:=4;
-   tsRight : lPos.X:=FControl.Parent.Width-lSize.X-2*aPadding-aMargin;
+   tsRight : lPos.X:=FControl.Parent.ClientWidth-lSize.X-2*aPadding-aMargin - ScrollbarWidth;
   end;
   TextBackground.RoundRectHorizontalRadius:=aPadding;
   TextBackground.RoundRectVerticalRadius:=aPadding;
