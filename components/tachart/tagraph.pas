@@ -712,7 +712,6 @@ const
   DEFAULT_CHART_WIDTH = 300;
   DEFAULT_CHART_HEIGHT = 200;
   DEFAULT_CHART_TITLE = 'TAChart';
-  FONT_VERTICAL = 900;
 begin
   inherited Create(AOwner);
 

@@ -19,7 +19,8 @@ uses
   TATypes, TATextElements;
 
 const
-  DEF_TITLE_DISTANCE = 4;
+  DEF_AXIS_TITLE_DISTANCE = 4;
+  DEF_AXIS_TITLE_ANCHOR_DISTANCE = 0;
 
 type
   TChartAxisBrush = TClearBrush;
@@ -40,12 +41,14 @@ type
   TChartAxisTitle = class(TCustomChartAxisTitle)
   strict private
     FAnchor: TChartTextAnchor;
+    FAnchorDistance: Integer;
     FCaption: TCaption;
     FPositionOnMarks: Boolean;
     FWordwrap: Boolean;
 
     function GetFont: TFont;
     procedure SetAnchor(AValue: TChartTextAnchor);
+    procedure SetAnchorDistance(AValue: Integer);
     procedure SetCaption(AValue: TCaption);
     procedure SetFont(AValue: TFont);
     procedure SetPositionOnMarks(AValue: Boolean);
@@ -56,8 +59,10 @@ type
   published
     property Anchor: TChartTextAnchor
       read FAnchor write SetAnchor default ctaCenter;
+    property AnchorDistance: Integer
+      read FAnchorDistance write SetAnchorDistance default DEF_AXIS_TITLE_ANCHOR_DISTANCE;
     property Caption: TCaption read FCaption write SetCaption;
-    property Distance default DEF_TITLE_DISTANCE;
+    property Distance default DEF_AXIS_TITLE_DISTANCE;
     property Frame;
     property LabelBrush;
     property PositionOnMarks: Boolean
@@ -629,6 +634,7 @@ begin
   if Source is TChartAxisTitle then
     with TChartAxisTitle(Source) do begin
       Self.FAnchor := FAnchor;
+      Self.FAnchorDistance := FAnchorDistance;
       Self.FLabelBrush.Assign(FLabelBrush);
       Self.FLabelFont.Assign(FLabelFont);
       Self.FLinkPen.Assign(FLinkPen);
@@ -641,7 +647,8 @@ constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FAnchor := ctaCenter;
-  FDistance := DEF_TITLE_DISTANCE;
+  FAnchorDistance := DEF_AXIS_TITLE_ANCHOR_DISTANCE;
+  FDistance := DEF_AXIS_TITLE_DISTANCE;
   FLabelBrush.Style := bsClear;
   FVisible := false;
 end;
@@ -655,6 +662,13 @@ procedure TChartAxisTitle.SetAnchor(AValue: TChartTextAnchor);
 begin
   if FAnchor = AValue then exit;
   FAnchor := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxisTitle.SetAnchorDistance(AValue: Integer);
+begin
+  if FAnchorDistance = AValue then exit;
+  FAnchorDistance := AValue;
   StyleChanged(Self);
 end;
 

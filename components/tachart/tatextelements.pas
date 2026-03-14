@@ -25,6 +25,7 @@ uses
 const
   DEF_LABEL_MARGIN_X = 4;
   DEF_LABEL_MARGIN_Y = 2;
+  DEF_ANCHOR_DISTANCE = 0;
 
 type
   TChartMarksOverlapPolicy = (opIgnore, opHideNeighbour);
@@ -138,6 +139,7 @@ type
   TChartTitle = class(TChartTextElement)
   strict private
     FAnchor: TChartTextAnchor;
+    FAnchorDistance: Integer;
     FBrush: TBrush;
     FCenter: TPoint;
     FFont: TFont;
@@ -152,6 +154,7 @@ type
     function GetRealCaption: String;
     function IsWordwrapped: Boolean;
     procedure SetAnchor(AValue: TChartTextAnchor);
+    procedure SetAnchorDistance(AValue: Integer);
     procedure SetBrush(AValue: TBrush);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartTitleFramePen);
@@ -179,6 +182,7 @@ type
   published
     property Alignment default taCenter;
     property Anchor: TChartTextAnchor read FAnchor write SetAnchor default ctaCenter; // Is ignored when FullWidth=true
+    property AnchorDistance: Integer read FAnchorDistance write SetAnchorDistance default DEF_ANCHOR_DISTANCE;
     property Brush: TBrush read FBrush write SetBrush;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartTitleFramePen read FFrame write SetFrame;
@@ -633,6 +637,7 @@ begin
   if ASource is TChartTitle then
     with TChartTitle(ASource) do begin
       Self.Anchor := Anchor;
+      Self.AnchorDistance := AnchorDistance;
       Self.FBrush.Assign(Brush);
       Self.FFont.Assign(Font);
       Self.FFrame.Assign(Frame);
@@ -650,6 +655,7 @@ begin
 
   FAlignment := taCenter;
   FAnchor := ctaCenter;
+  FAnchorDistance := DEF_ANCHOR_DISTANCE;
   InitHelper(FBrush, TChartTitleBrush);
   InitHelper(FFont, TFont);
   FFont.Color := clDefault;
@@ -773,6 +779,13 @@ procedure TChartTitle.SetAnchor(AValue: TChartTextAnchor);
 begin
   if FAnchor = AValue then exit;
   FAnchor := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartTitle.SetAnchorDistance(AValue: Integer);
+begin
+  if FAnchorDistance = AValue then exit;
+  FAnchorDistance := AValue;
   StyleChanged(Self);
 end;
 

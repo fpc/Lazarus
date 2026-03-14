@@ -503,7 +503,7 @@ begin
   TickLength := DEF_TICK_LENGTH;
   TickWidth := DEF_TICK_WIDTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
-  FTitle.LabelFont.Orientation := 900;  // default alignment is calLeft --> vertical title
+  FTitle.LabelFont.Orientation := FONT_VERTICAL;  // default alignment is calLeft --> vertical title
   FMarginsForMarks := true;
   FMarks.SetInsideDir(1, 0);
   FOrthogonalAxisIndex := -1;
@@ -912,7 +912,7 @@ end;
 function TChartAxis.IsWordwrappedTitle: Boolean;
 begin
   Result := Title.Wordwrap and (
-    ((FAlignment in [calLeft, calRight]) and (abs(Title.LabelFont.Orientation) = 900)) or
+    ((FAlignment in [calLeft, calRight]) and (abs(Title.LabelFont.Orientation) = FONT_VERTICAL)) or
     ((FAlignment in [calTop, calBottom]) and (Title.LabelFont.Orientation = 0)) );
 end;
 
@@ -971,22 +971,20 @@ var
 
   function CalcTitlePosition(AMin, AMax, ATextLength: Integer): Integer;
   var
-    halfTextLen: Integer;
+    delta: Integer;
+    inv: Boolean;
   begin
-    halfTextLen := ATextLength div 2;
+    delta := ATextLength div 2 + 1 + Drawer.Scale(Title.AnchorDistance);
+    AMin := AMin + delta;
+    AMax := AMax - delta;
+    if not v then inv := Inverted xor GetChart.IsRightToLeft else inv := Inverted;
     case Title.Anchor of
       ctaStart:
-        if Inverted then
-          Result := IfThen(v, AMin + halfTextlen, AMax - halfTextLen)
-        else
-          Result := IfThen(v, AMax - halfTextlen, AMin + halfTextLen);
+        Result := IfThen(v xor inv, AMax, AMin);
       ctaCenter:
         Result := (AMax + AMin) div 2;
       ctaEnd:
-        if Inverted then
-          Result := IfThen(v, AMax - halfTextLen, AMin + halfTextLen)
-        else
-          Result := IfThen(v, AMin + halfTextLen, AMax - halfTextLen);
+        Result := IfThen(v xor inv, AMin, AMax);
     end;
   end;
 
@@ -1181,12 +1179,12 @@ begin
     calLeft:
       begin
         FMarks.SetInsideDir(+1, 0);
-        FTitle.LabelFont.Orientation := 900;
+        FTitle.LabelFont.Orientation := FONT_VERTICAL;
       end;
     calRight:
       begin
         FMarks.SetInsideDir(-1, 0);
-        FTitle.LabelFont.Orientation := -900;
+        FTitle.LabelFont.Orientation := FONT_VERTICAL;
       end;
   end;
   StyleChanged(Self);

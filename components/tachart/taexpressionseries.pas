@@ -121,6 +121,11 @@ type
     property Variable: String read FVariable write SetVariable;
     property Domain: String read FDomain write SetDomain;
     property Expression: String read FExpression write SetExpression;
+
+    // inherited
+    property Epsilon;
+    property PixelOversampling;
+    property StepMode;
   end;
 
   TExpressionColorMapSeries = class(TCustomColorMapSeries)
