@@ -934,6 +934,7 @@ procedure TTableProcessor.ParseTableLine(aTable: TMarkDownTableBlock; aLine: TMa
 var
   lRow : TMarkDownTableRowBlock;
   lLen,lStart, i : integer;
+  lMaxCells, lCellCount : integer;
   lEscaped : boolean;
   lLine : string;
   lChar : char;
@@ -944,13 +945,18 @@ var
     lCell : String;
 
   begin
+    if (lMaxCells>0) and (lCellCount>=lMaxCells) then
+      exit;
     lCell:=copy(aLine.Line, aStart, aEnd-aStart);
     lCell:=StringReplace(Trim(lCell),'\|', '|',[rfReplaceAll]);
     TMarkDownTextBlock.Create(lRow,aLine.LineNo,lCell);
+    Inc(lCellCount);
   end;
 
 begin
   lRow:=TMarkDownTableRowBlock.Create(aTable,aLine.LineNo);
+  lMaxCells:=Length(aTable.Columns);
+  lCellCount:=0;
   i:=1;
   lStart:=1;
   lEscaped:=false;
