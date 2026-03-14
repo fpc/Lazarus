@@ -57,7 +57,6 @@ type
     class function getStringValue(const c: NSControl): String; inline;
     class function toMacOSTitle(const ATitle: String): NSString;
     class procedure moveCaretToTheEnd(const c: NSControl);
-    class function getNSWindow(const obj: NSObject): NSWindow;
   end;
 
   // Some components might be using CocoaPrivate for use of LCLObjCBoolean
@@ -281,16 +280,6 @@ begin
 end;
 
 { TCocoaControlUtil }
-
-class function TCocoaControlUtil.getNSWindow(const obj: NSObject): NSWindow;
-begin
-  Result := nil;
-  if not Assigned(obj) then Exit;
-  if obj.isKindOfClass_(NSWindow) then
-    Result := NSWindow(obj)
-  else if obj.isKindOfClass_(NSView) then
-    Result := NSView(obj).window;
-end;
 
 class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String); inline;
 var

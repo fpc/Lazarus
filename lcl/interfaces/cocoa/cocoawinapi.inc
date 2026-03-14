@@ -1566,7 +1566,7 @@ begin
 
   p.x:=Point.X;
   p.y:=TCocoaScreenUtil.globalScreenBottom-Point.Y;
-  window := GetCocoaWindowAtPos(p);
+  window := TCocoaWindowUtil.getWindowAtPos(p);
   if Assigned(window) then
     Result:= HWND(window.contentView);
 end;
@@ -2670,7 +2670,7 @@ begin
     NSApp.activateIgnoringOtherApps(True);
     {$endif}
     Obj := NSObject(HWnd);
-    lWin := NSWindow(TCocoaControlUtil.getNSWindow(Obj));
+    lWin := NSWindow(TCocoaWindowUtil.getWindow(Obj));
     if lWin <> nil then
       lWin.makeKeyAndOrderFront(NSApp)
     else
@@ -2685,7 +2685,7 @@ var
 begin
   Result := False;
 
-  lWin := NSWindow(TCocoaControlUtil.getNSWindow(NSObject(AWindowHandle)));
+  lWin := NSWindow(TCocoaWindowUtil.getWindow(NSObject(AWindowHandle)));
 
   frm := HWNDToForm(AWindowHandle);
   if Assigned(frm) and (csDesigning in frm.ComponentState) then begin

@@ -13,7 +13,7 @@ uses
   StdCtrls,
   CocoaAll, CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
   CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, CocoaFullControlEdit,
-  CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra;
+  CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra;
 
 type
   { TLCLCommonCallback }
@@ -379,7 +379,7 @@ var
   f: NSRect;
   lWindow: NSWindow;
 begin
-  lWindow := NSWindow(TCocoaControlUtil.getNSWindow(Owner));
+  lWindow := NSWindow(TCocoaWindowUtil.getWindow(Owner));
   if lWindow <> nil then
   begin
     f := lWindow.frame;
@@ -1127,7 +1127,7 @@ begin
     end
     else
     begin
-      if Event.window<>GetCocoaWindowAtPos(TCocoaScreenUtil.getScreenPoint(Event)) then
+      if Event.window<>TCocoaWindowUtil.getWindowAtPos(TCocoaScreenUtil.getScreenPoint(Event)) then
         exit;
 
       rect:=Target.BoundsRect;

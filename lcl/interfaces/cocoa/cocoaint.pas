@@ -269,20 +269,7 @@ function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     EscapeResult: Longint;
     sheetOfWindow: NSWindow = nil; modalSheet: Boolean = false): Longint;
 
-function GetCocoaWindowAtPos(p: NSPoint): NSWindow;
-
-// The function tries to initialize the proper application class.
-// The desired application class can be specified in info.plit
-// by specifying NSPrincipalClass property.
-// If then principal class has been found (in the bundle binaries)
-// InitApplication function will try to call its "sharedApplication" method.
-// If principle class is not specified, then TCocoaApplication is used.
-// You should always specify either TCocoaApplication or
-// a class derived from TCocoaApplication, in order for LCL to fucntion properly
-function InitApplication: TCocoaApplication;
-
 implementation
-
 
 // NSCursor doesn't support any wait cursor, so we need to use a non-native one
 // Not supporting it at all would result in crashes in Screen.Cursor := crHourGlass;
@@ -455,34 +442,6 @@ begin
 end;
 {$endif}
 
-// ensure that gets the correct window at mouse pos
-// 1. in Z-Order
-// 2. on the active Space
-// 3. in current App
-// 4. is visible window
-// 5. is not the misc window like Menu Bar
-function GetCocoaWindowAtPos(p: NSPoint): NSWindow;
-var
-  windowNumber: NSInteger;
-  windowNumbers: NSArray;
-  window: NSWindow;
-begin
-  Result := nil;
-
-  // ensure 1
-  windowNumber := NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
-  windowNumbers := NSWindow.windowNumbersWithOptions(0);
-
-  // ensure 2, 3, 4
-  if not windowNumbers.containsObject(NSNumber.numberWithInt(windowNumber)) then
-    exit;
-
-  // ensure 5
-  window := NSApp.windowWithWindowNumber(windowNumber);
-  if Assigned(window) and (window.isKindOfClass(TCocoaWindow) or window.isKindOfClass(TCocoaPanel)) then
-    Result := window;
-end;
-
 procedure ForwardMouseMove(app: NSApplication; theEvent: NSEvent);
 var
   w   : NSWindow;
@@ -494,7 +453,7 @@ begin
     exit;
 
   p := theEvent.mouseLocation;
-  w := GetCocoaWindowAtPos(p);;
+  w := TCocoaWindowUtil.getWindowAtPos(p);;
 
   if Assigned(w) then
   begin
@@ -796,6 +755,14 @@ type
     function sharedApplication: NSApplication; message 'sharedApplication';
   end;
 
+// The function tries to initialize the proper application class.
+// The desired application class can be specified in info.plit
+// by specifying NSPrincipalClass property.
+// If then principal class has been found (in the bundle binaries)
+// InitApplication function will try to call its "sharedApplication" method.
+// If principle class is not specified, then TCocoaApplication is used.
+// You should always specify either TCocoaApplication or
+// a class derived from TCocoaApplication, in order for LCL to fucntion properly
 function InitApplication: TCocoaApplication;
 var
   bun : NSBundle;
