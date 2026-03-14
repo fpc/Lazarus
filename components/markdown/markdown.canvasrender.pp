@@ -25,7 +25,7 @@ unit markdown.canvasrender;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, Graphics, Types, MarkDown.Elements, MarkDown.Parser, MarkDown.Render, Markdown.HTMLEntities, LazUTF8;
+  SysUtils, Classes, Contnrs, Graphics, Types, Math, MarkDown.Elements, MarkDown.Parser, MarkDown.Render, Markdown.HTMLEntities, LazUTF8;
 
 type
   TLayoutItemKind = (
@@ -1941,7 +1941,7 @@ begin
  For lRow:=0 to aTable.ChildCount-1 do
    begin
    FRowHeights[lRow]:=0;
-   For lColumn:=0 to aTable.Children[lRow].ChildCount-1 do
+   For lColumn:=0 to Min(aTable.Children[lRow].ChildCount-1, TotalColumns-1) do
      begin
      Cell:=aTable.Children[lRow].Children[lColumn];
 
@@ -1999,9 +1999,9 @@ procedure TCanvasMarkDownTableBlockRenderer.MeasureTableColumns(const aTableMode
   begin
     BestWidth:=0;
     WordBuffer:='';
-    ScanIndex:=1;
     for Text in aTexts do
       begin
+      ScanIndex:=1;
       while ScanIndex<=length(Text) do
         begin
         if (Text[ScanIndex]=' ') or (Text[ScanIndex]=#9) or (Text[ScanIndex]=#10) or (Text[ScanIndex]=#13) then
@@ -2041,7 +2041,7 @@ begin
    For lRow:=0 to aTableModel.ChildCount-1 do
      begin
      lRowBlock:=aTableModel.Children[lRow] as TMarkDownTableRowBlock;
-     For lColumn:=0 to lRowBlock.ChildCount-1 do
+     For lColumn:=0 to Min(lRowBlock.ChildCount-1, TotalColumns-1) do
        begin
        Cell:=lRowBlock.Children[lColumn];
        Texts.Clear;
@@ -2220,7 +2220,7 @@ begin
     Itm:=CreateLayoutItem(likLine,CurrentX,CurrentY);
     Itm.DeltaX:=FTableRenderer.AvailableWidth;
     end;
-  For lColumn:=0 to aBlock.ChildCount-1 do
+  For lColumn:=0 to Min(aBlock.ChildCount-1, Length(FTableRenderer.ColLayout)-1) do
     begin
     Cell:=aBlock.Children[lColumn];
     CellWidth:=FTableRenderer.ColLayout[lColumn].Width;
