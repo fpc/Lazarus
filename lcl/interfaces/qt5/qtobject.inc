@@ -44,8 +44,14 @@ begin
     begin
       //As of Qt5 5.14 it is same as Qt6. Qt translates system DPI to scale factor,
       //so we always have fonts dpi 96, but scaling is changed.
+      //Qt5 bug on windows: eg dpi 120, qt reports 120 and canvas scale factor 1,
+      //with dpi 144, it reports 96 and canvas scale factor 2. It is not same
+      //as on x11 and wayland, so we stop double scaling (LCL + Qt) here for
+      //MSWin target.
+      {$IFNDEF MSWINDOWS}
       QCoreApplication_setAttribute(QtAA_EnableHighDpiScaling, True);
       QCoreApplication_setAttribute(QtAA_UseHighDpiPixmaps, True);
+      {$ENDIF}
     end;
     App := QApplication_Create(@argc, argv);
   end;
