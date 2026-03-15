@@ -2423,7 +2423,10 @@ begin
     // If still not handled and we are not a notebook (notebooks have their own
     // ActiveSheet.PopupMenu special path in the override), propagate
     // LM_CONTEXTMENU up the LCL parent chain - mirrors DefWindowProc / Qt.
-    if not Result and not (wtNotebook in WidgetType) and Assigned(LCLObject) then
+    // Do NOT propagate for GTK-native editing widgets (wtMemo=GtkTextView,
+    // wtEntry=GtkEntry): GTK shows its own cut/copy/paste popup for those.
+    if not Result and not (wtNotebook in WidgetType) and
+       ([wtMemo, wtEntry] * WidgetType = []) and Assigned(LCLObject) then
     begin
       AParentControl := LCLObject.Parent;
       while Assigned(AParentControl) and (MsgPopup.Result = 0) do
@@ -5939,7 +5942,10 @@ begin
 
   FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
   FPageLabel^.set_use_underline(true);
-  image := gtk_image_new_from_icon_name('window-close', GTK_ICON_SIZE_LARGE_TOOLBAR);
+  if (Screen.PixelsPerInch > 100) then
+    image := gtk_image_new_from_icon_name('window-close', GTK_ICON_SIZE_LARGE_TOOLBAR)
+  else
+    image := gtk_image_new_from_icon_name('window-close', GTK_ICON_SIZE_SMALL_TOOLBAR);
   FCloseButton := gtk_button_new();
   gtk_button_set_relief(PGtkButton(FCloseButton), GTK_RELIEF_NONE);
   gtk_container_add(PGtkContainer(FCloseButton), image);
