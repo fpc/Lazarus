@@ -408,7 +408,7 @@ type
              read GetUniqueSourceEditors;
     // Editor Preferences
     function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
-    function GetHighlighterSettings(Highlighter: TLazEditCustomRangesHighlighter): boolean; virtual; abstract;
+    function GetHighlighterSettings(Highlighter: TLazEditCustomHighlighter): boolean; virtual; abstract;
     // Messages
     procedure ClearErrorLines; virtual; abstract;
     // General source functions

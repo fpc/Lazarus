@@ -17,12 +17,12 @@ type
   protected
     function GetTabPosition: TTabPosition; virtual; abstract;
   public
-    // Syn is TLazEditCustomRangesHighlighter (TSynCustomHighlighter, TSrcIDEHighlighter).
-    procedure GetHighlighterObjSettings(ASynHL: TLazEditCustomRangesHighlighter); virtual; abstract;
+    // Syn is TLazEditCustomHighlighter (TSynCustomHighlighter, TSrcIDEHighlighter).
+    procedure GetHighlighterObjSettings(ASynHL: TLazEditCustomHighlighter); virtual; abstract;
     // ASynEdit and SimilarEdit are TSynEdit.
     procedure GetSynEditorSettings(ASynEdit: TCustomControl;
                                 SimilarEdit: TCustomControl = nil); virtual; abstract;
-    procedure SetMarkupColor(ASynHL: TLazEditCustomRangesHighlighter;
+    procedure SetMarkupColor(ASynHL: TLazEditCustomHighlighter;
                        AddHilightAttrName: string;
                        aMarkup: TLazEditTextAttributeModifier); virtual; abstract;
   public

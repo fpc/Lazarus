@@ -110,7 +110,7 @@ type
     function GetName: String;
     function Count: integer;
     function GetLanguage(AnIndex: Integer): IColorSchemeLanguage;
-    function GetLanguageForHighlighter(AnHiglighter: TLazEditCustomRangesHighlighter): IColorSchemeLanguage;
+    function GetLanguageForHighlighter(AnHiglighter: TLazEditCustomHighlighter): IColorSchemeLanguage;
     function GetLanguageForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID): IColorSchemeLanguage;
   end;
 

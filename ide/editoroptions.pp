@@ -450,11 +450,11 @@ type
     FColorSchemes: TColorSchemesMap; //Array of TColorSchemeLanguage;
     FDefaultColors: TColorSchemeLanguage;
     function GetColorScheme(Index: integer): TColorSchemeLanguage;
-    function GetColorSchemeBySynHl(Index: TLazEditCustomRangesHighlighter): TColorSchemeLanguage;
+    function GetColorSchemeBySynHl(Index: TLazEditCustomHighlighter): TColorSchemeLanguage;
     // IColorScheme
     function GetName: String;
     function GetLanguage(AnIndex: Integer): IColorSchemeLanguage;
-    function GetLanguageForHighlighter(AnHiglighter: TLazEditCustomRangesHighlighter): IColorSchemeLanguage;
+    function GetLanguageForHighlighter(AnHiglighter: TLazEditCustomHighlighter): IColorSchemeLanguage;
     function GetLanguageForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID): IColorSchemeLanguage;
   public
     constructor Create(const AName: String);
@@ -469,7 +469,7 @@ type
     property  Name: string read FName;
     property  DefaultColors: TColorSchemeLanguage read FDefaultColors;
     property  ColorScheme[Index: integer]: TColorSchemeLanguage read GetColorScheme;
-    property  ColorSchemeBySynHl[Index: TLazEditCustomRangesHighlighter]: TColorSchemeLanguage read GetColorSchemeBySynHl;
+    property  ColorSchemeBySynHl[Index: TLazEditCustomHighlighter]: TColorSchemeLanguage read GetColorSchemeBySynHl;
   end;
 
   { TColorSchemeFactory }
@@ -1950,7 +1950,7 @@ type
     function GetHighlighterList: TEditOptLangList;
     procedure Init;
     function GetCodeTemplateFileNameExpand: String;
-    function GetColorSchemeLanguage(aHighLighter: TLazEditCustomRangesHighlighter;
+    function GetColorSchemeLanguage(aHighLighter: TLazEditCustomHighlighter;
                           SynColorSchemeName: String = ''): TColorSchemeLanguage;
   protected
   public
@@ -1977,7 +1977,7 @@ type
     procedure ReadDefaultsForHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     procedure WriteHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     // read highlight settings from config file
-    procedure GetHighlighterObjSettings(ASynHL: TLazEditCustomRangesHighlighter); override;
+    procedure GetHighlighterObjSettings(ASynHL: TLazEditCustomHighlighter); override;
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
     procedure GetSynEditorSettings(ASynEdit: TCustomControl; SimilarEdit: TCustomControl = nil); override;
     procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil; AHighlighterId: TIdeSyntaxHighlighterID = IdeHighlighterUnknownId); // read synedit settings from config file
@@ -1986,7 +1986,7 @@ type
     procedure SetMarkupColor(ASynHL: TSrcIDEHighlighter;
                              AddHilightAttr: TAdditionalHilightAttribute;
                              aMarkup: TLazEditTextAttributeModifier); overload;
-    procedure SetMarkupColor(ASynHL: TLazEditCustomRangesHighlighter;
+    procedure SetMarkupColor(ASynHL: TLazEditCustomHighlighter;
                              AddHilightAttrName: string;
                              aMarkup: TLazEditTextAttributeModifier); override; overload;
     procedure SetMarkupColors(aSynEd: TSynEdit);
@@ -6546,7 +6546,7 @@ begin
   end;
 end;
 
-function TEditorOptions.GetColorSchemeLanguage(aHighLighter: TLazEditCustomRangesHighlighter;
+function TEditorOptions.GetColorSchemeLanguage(aHighLighter: TLazEditCustomHighlighter;
   SynColorSchemeName: String): TColorSchemeLanguage;
 var
   Scheme: TColorScheme;
@@ -6798,7 +6798,7 @@ begin
   end;
 end;
 
-procedure TEditorOptions.GetHighlighterObjSettings(ASynHL: TLazEditCustomRangesHighlighter);
+procedure TEditorOptions.GetHighlighterObjSettings(ASynHL: TLazEditCustomHighlighter);
 begin
   GetHighlighterSettings(TSrcIDEHighlighter(ASynHL));
 end;
@@ -6880,7 +6880,7 @@ begin
 }
 end;
 
-procedure TEditorOptions.SetMarkupColor(ASynHL: TLazEditCustomRangesHighlighter;
+procedure TEditorOptions.SetMarkupColor(ASynHL: TLazEditCustomHighlighter;
   AddHilightAttrName: string; aMarkup: TLazEditTextAttributeModifier);
 var
   SchemeGrp: TColorScheme;
@@ -8272,7 +8272,7 @@ end;
 { TColorScheme }
 
 function TColorScheme.GetColorSchemeBySynHl(
-  Index: TLazEditCustomRangesHighlighter): TColorSchemeLanguage;
+  Index: TLazEditCustomHighlighter): TColorSchemeLanguage;
 begin
   if Index = nil then
     Result := FColorSchemes['']
@@ -8300,7 +8300,7 @@ begin
 end;
 
 function TColorScheme.GetLanguageForHighlighter(
-  AnHiglighter: TLazEditCustomRangesHighlighter): IColorSchemeLanguage;
+  AnHiglighter: TLazEditCustomHighlighter): IColorSchemeLanguage;
 begin
   Result := ColorSchemeBySynHl[AnHiglighter as TSynCustomHighlighter];
 end;

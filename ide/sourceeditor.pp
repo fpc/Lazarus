@@ -1057,7 +1057,7 @@ type
     function  UniqueSourceEditorCount: integer; override;
     // Settings
     function  GetEditorControlSettings(EditControl: TControl): boolean; override;
-    function GetHighlighterSettings(Highlighter: TLazEditCustomRangesHighlighter
+    function GetHighlighterSettings(Highlighter: TLazEditCustomHighlighter
       ): boolean; override;
   private
     // Completion Plugins
@@ -10413,7 +10413,7 @@ begin
   end;
 end;
 
-function TSourceEditorManagerBase.GetHighlighterSettings(Highlighter: TLazEditCustomRangesHighlighter
+function TSourceEditorManagerBase.GetHighlighterSettings(Highlighter: TLazEditCustomHighlighter
   ): boolean;
 begin
   Result:=true;
