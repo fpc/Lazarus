@@ -373,16 +373,24 @@ begin
 
   if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
   begin
-    NewData := GetMem(ARawImage.MaskSize*8);
-    FillChar(NewData^,  ARawImage.MaskSize*8,$00);
-    //Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize*8);
-  end
-  else
+    //Compute correct 1-bit mask row stride matching the description
+    ARowStride := GetBytesPerLine(Desc.Width, 1, Desc.MaskLineEnd);
+    //Allocate and copy only the actual 1-bit mask data
+    NewData := GetMem(ARowStride * Desc.Height);
+    if ARowStride * PtrUInt(Desc.Height) <= ARawImage.MaskSize then
+      Move(ARawImage.Mask^, NewData^, ARowStride * Desc.Height)
+    else
+      FillChar(NewData^, ARowStride * Desc.Height, $00);
+    //Store as width=1, height=H, rowstride=MaskRowStride RGBA pixbuf.
+    //numBytes = ARowStride * H = exact 1-bit data size, so RawImage_FromBitmap
+    //copies the right amount and GetMask_Generic reads correct bit values.
+    AMask := HBitmap(TGtk3Image.Create(NewData, 1, Desc.Height, ARowStride, CAIRO_FORMAT_ARGB32, True));
+  end else
+  begin
     NewData := nil;
-
-
-  ARowStride := GetBytesPerLine(Desc.Width, {Desc.BitsPerPixel}8, rilebyteBoundary);
-  AMask := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, CAIRO_FORMAT_A8, True));
+    ARowStride := GetBytesPerLine(Desc.Width, 1, rilebyteBoundary);
+    AMask := HBitmap(TGtk3Image.Create(nil, Desc.Width, Desc.Height, ARowStride, CAIRO_FORMAT_A8, True));
+  end;
 
 end;
 
