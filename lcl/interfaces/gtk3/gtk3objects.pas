@@ -2266,7 +2266,7 @@ begin
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
 
   with targetRect^ do
-    cairo_rectangle(pcr, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
+    cairo_rectangle(pcr, Left, Top, Right - Left, Bottom - Top);
 
   if (aPixBuf <> nil) and (Surface = nil) then
     gdk_cairo_set_source_pixbuf(pcr, aPixBuf, 0, 0)
@@ -2281,6 +2281,11 @@ begin
   );
   cairo_matrix_translate(@M, -targetRect^.Left, -targetRect^.Top);
   cairo_pattern_set_matrix(cairo_get_source(pcr), @M);
+
+  //Use NEAREST filter for 1:1 scale to prevent bilinear blur
+  if ((sourceRect^.Right - sourceRect^.Left) = (targetRect^.Right - targetRect^.Left)) and
+     ((sourceRect^.Bottom - sourceRect^.Top) = (targetRect^.Bottom - targetRect^.Top)) then
+    cairo_pattern_set_filter(cairo_get_source(pcr), CAIRO_FILTER_NEAREST);
 
   cairo_clip(pcr);
   cairo_paint(pcr);
@@ -2300,8 +2305,9 @@ begin
   gdk_cairo_set_source_pixbuf(pcr, Image, 0, 0);
 
   with targetRect^ do
-    cairo_rectangle(pcr, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
+    cairo_rectangle(pcr, Left, Top, Right - Left, Bottom - Top);
 
+  cairo_pattern_set_filter(cairo_get_source(pcr), CAIRO_FILTER_NEAREST);
   cairo_paint(pcr);
 end;
 
@@ -2320,8 +2326,9 @@ begin
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
   gdk_cairo_set_source_pixbuf(pcr, Image, 0, 0);
 
+  //No PixelOffset for image rendering - causes sub-pixel blur at integer coords
   with targetRect^ do
-    cairo_rectangle(pcr, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
+    cairo_rectangle(pcr, Left, Top, Right - Left, Bottom - Top);
 
   cairo_matrix_init_identity(@M);
   cairo_matrix_translate(@M, SourceRect^.Left, SourceRect^.Top);
@@ -2332,6 +2339,11 @@ begin
   cairo_matrix_translate(@M, -targetRect^.Left, -targetRect^.Top);
 
   cairo_pattern_set_matrix(cairo_get_source(pcr), @M);
+
+  //Use NEAREST filter for 1:1 scale to prevent bilinear blur
+  if ((sourceRect^.Right - sourceRect^.Left) = (targetRect^.Right - targetRect^.Left)) and
+     ((sourceRect^.Bottom - sourceRect^.Top) = (targetRect^.Bottom - targetRect^.Top)) then
+    cairo_pattern_set_filter(cairo_get_source(pcr), CAIRO_FILTER_NEAREST);
 
   cairo_clip(pcr);
   cairo_paint(pcr);
@@ -2921,6 +2933,7 @@ begin
                     APixBuf^.get_width, APixBuf^.get_height);
   ATempCr := cairo_create(CairoSurface);
   gdk_cairo_set_source_pixbuf(ATempCr, APixBuf, 0, 0);
+  cairo_pattern_set_filter(cairo_get_source(ATempCr), CAIRO_FILTER_NEAREST);
   cairo_paint(ATempCr);
   cairo_destroy(ATempCr);
 

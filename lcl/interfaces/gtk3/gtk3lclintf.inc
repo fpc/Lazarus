@@ -296,7 +296,6 @@ begin
     if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3) then
     begin
       // put components in right order
-
       DstRowPtr := NewData;
       SrcRowPtr := ArawImage.Data;
       y := Desc.Height;
@@ -310,7 +309,10 @@ begin
           Dst[0] := Src[Ridx];
           Dst[1] := Src[Gidx];
           Dst[2] := Src[Bidx];
-          Dst[3] := Src[Aidx] ;
+          if Desc.AlphaPrec > 0 then
+            Dst[3] := Src[Aidx]
+          else
+            Dst[3] := $FF;
 
           Inc(Src, 4);
           Inc(Dst, 4);
@@ -322,6 +324,27 @@ begin
       end;
     end else begin
       System.Move(ArawImage.Data^, NewData^, ArawImage.DataSize);
+      {If source has no alpha channel, fill alpha bytes to fully opaque.
+       After the move, data is in RGBA order (this branch: Ridx=0,Gidx=1,Bidx=2,Aidx=3),
+       so alpha is already at byte 3 - but if AlphaPrec=0 it may be 0 because of padding.}
+      if (Desc.AlphaPrec = 0) and (Desc.BitsPerPixel = 32) then
+      begin
+        DstRowPtr := NewData;
+        y := Desc.Height;
+        while y > 0 do
+        begin
+          Dst := DstRowPtr;
+          x := Desc.Width;
+          while x > 0 do
+          begin
+            Dst[3] := $FF;
+            Inc(Dst, 4);
+            Dec(x);
+          end;
+          Inc(DstRowPtr, ARowstride);
+          Dec(y);
+        end;
+      end;
     end;
 
   end
@@ -337,7 +360,8 @@ begin
   else
     Exit(False);
   end;
-  ARowStride := GetBytesPerLine(Desc.Width, Desc.BitsPerPixel, rileDWordBoundary);
+  if NewData = nil then
+    ARowStride := GetBytesPerLine(Desc.Width, Desc.BitsPerPixel, rileDWordBoundary);
   ABitmap := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, ImageFormat,
                      {not ASkipMask}true));  // Using ASkipMask for DataOwner param prevents a crash later.
   Result := ABitmap <> 0;
@@ -399,7 +423,7 @@ begin
   ADesc.Height := Image.Height;
 
   ADesc.BitOrder := riboReversedBits;
-  ADesc.ByteOrder := riboLSBFirst;
+  ADesc.ByteOrder := DefaultByteOrder;
   ADesc.LineOrder := riloTopToBottom;
   ADesc.LineEnd := rileDWordBoundary;
 
@@ -546,7 +570,7 @@ begin
     ADesc.Depth := 32;
     ADesc.BitsPerPixel := 32;
     ADesc.LineEnd := rileDWordBoundary;
-    ADesc.ByteOrder := riboLSBFirst;
+    ADesc.ByteOrder := DefaultByteOrder;
 
     ADesc.RedPrec := 8;
     ADesc.RedShift := 0;
@@ -566,7 +590,7 @@ begin
     ADesc.Depth := Depth;
     ADesc.BitsPerPixel := 32;
     ADesc.LineEnd := rileDWordBoundary;
-    ADesc.ByteOrder := riboLSBFirst;
+    ADesc.ByteOrder := DefaultByteOrder;
     ADesc.MaskBitsPerPixel := 0;
     ADesc.MaskShift := 0;
     ADesc.MaskLineEnd := rileByteBoundary;
@@ -639,7 +663,7 @@ begin
     ADesc.Depth := 32;
     ADesc.BitsPerPixel := 32;
     ADesc.LineEnd := rileDWordBoundary;
-    ADesc.ByteOrder := riboLSBFirst;
+    ADesc.ByteOrder := DefaultByteOrder;
 
     ADesc.RedPrec := 8;
     ADesc.RedShift := 0;
