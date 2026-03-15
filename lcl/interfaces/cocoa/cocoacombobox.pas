@@ -202,7 +202,7 @@ type
 
 implementation
 
-uses CocoaWSStdCtrls;
+uses CocoaWSComboBox;
 
 { TCocoaReadOnlyComboBoxList }
 

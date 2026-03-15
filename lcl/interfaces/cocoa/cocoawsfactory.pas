@@ -18,6 +18,7 @@ uses
   CocoaWSDialogs,
   CocoaWSTextEdits,
   CocoaWSSpin,
+  CocoaWSComboBox,
   CocoaWSListBox,
   CocoaWSCheckLst,
   CocoaWSDatePicker,
