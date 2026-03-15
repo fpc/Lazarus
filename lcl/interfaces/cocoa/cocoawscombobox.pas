@@ -8,13 +8,13 @@ unit CocoaWSComboBox;
 interface
 
 uses
-  Types, Classes, SysUtils,
+  Classes, SysUtils,
   LCLType, Graphics, Forms, Controls, StdCtrls, ComboEx,
   LMessages, LCLMessageGlue,
   WSStdCtrls, WSLCLClasses,
   LazUTF8,
-  MacOSAll, CocoaAll,
-  CocoaConfig, CocoaUtils, CocoaGDIObjects, CocoaPrivate, CocoaCallback,
+  CocoaAll,
+  CocoaConfig, CocoaUtils, CocoaGDIObjects, CocoaPrivate,
   CocoaComboBox, CocoaTextEdits, CocoaWSTextEdits, CocoaWSCommon, Cocoa_Extra;
 
 type
@@ -31,19 +31,19 @@ type
   public
     constructor Create(cocoaCmb:NSObject);
   public
-    class procedure ResetTextIfNecessary(cocoaCmb:NSObject; ANewText:String);
     class procedure SetLastIndex(cocoaCmb:NSObject);
   end;
 
-  { TLCLComboboxCallback }
+  { TLCLComboBoxCallback }
 
-  TLCLComboboxCallback = class(TLCLCommonCallback, IComboBoxCallback)
+  TLCLComboBoxCallback = class(TLCLCommonCallback, IComboBoxCallback)
   public
     isShowPopup: Boolean;
     procedure ComboBoxWillPopUp;
     procedure ComboBoxWillDismiss;
     procedure ComboBoxSelectionDidChange;
     procedure ComboBoxSelectionIsChanging;
+    procedure ComboBoxResetTextIfNecessary(ANewText: String);
 
     procedure GetRowHeight(rowidx: integer; var h: Integer);
     procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext;
@@ -55,8 +55,6 @@ type
   TCocoaWSCustomComboBox = class(TWSCustomComboBox)
   public
     class function getNSText(const ACustomComboBox: TCustomComboBox): NSText;
-    class function GetObjectItemIndex(const AObject: TObject): integer;
-    class function GetObjectAutoComplete(const AObject: TObject): boolean;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
@@ -91,35 +89,6 @@ type
   end;
 
 implementation
-
-function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
-begin
-  Result := not AStyle.HasEditBox;
-end;
-
-function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
-begin
-  Result := Assigned(cmb) and (ComboBoxStyleIsReadOnly(cmb.Style));
-end;
-
-function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
-begin
-  Result := AStyle.IsOwnerDrawn;
-end;
-
-function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
-begin
-  Result := AStyle.IsVariable;
-end;
-
-procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
-begin
-  {$IFDEF BOOLFIX}
-  box.setBezeled_(Ord(astyle <> bsNone));
-  {$else}
-  box.setBezeled(astyle <> bsNone);
-  {$endif}
-end;
 
 { TComboBoxAsyncHelper }
 
@@ -161,21 +130,6 @@ begin
   end;
 end;
 
-class procedure TComboBoxAsyncHelper.ResetTextIfNecessary(cocoaCmb:NSObject; ANewText:String);
-var
-  helper: TComboBoxAsyncHelper;
-  cmb: TCustomComboBox;
-begin
-  cmb:= TCustomComboBox(cocoaCmb.lclGetTarget);
-  if not Assigned(cmb) then
-    exit;
-  if not (cbactRetainPrefixCase in cmb.AutoCompleteText) then
-    exit;
-  helper:= TComboBoxAsyncHelper.Create(cocoaCmb);
-  helper._newText:= ANewText;
-  Application.QueueAsyncCall(@helper.AsyncResetText, 0);
-end;
-
 class procedure TComboBoxAsyncHelper.SetLastIndex(cocoaCmb:NSObject);
 var
   helper: TComboBoxAsyncHelper;
@@ -184,39 +138,54 @@ begin
   Application.QueueAsyncCall(@helper.AsyncSetLastIndex, 0);
 end;
 
-{ TLCLComboboxCallback }
+{ TLCLComboBoxCallback }
 
 type
   TCustomComboBoxAccess = class(TCustomComboBox);
 
-procedure TLCLComboboxCallback.ComboBoxWillPopUp;
+procedure TLCLComboBoxCallback.ComboBoxWillPopUp;
 begin
   isShowPopup := true;
   LCLSendDropDownMsg(Target);
 end;
 
-procedure TLCLComboboxCallback.ComboBoxWillDismiss;
+procedure TLCLComboBoxCallback.ComboBoxWillDismiss;
 begin
   LCLSendCloseUpMsg(Target);
   isShowPopup := false;
 end;
 
-procedure TLCLComboboxCallback.ComboBoxSelectionDidChange;
+procedure TLCLComboBoxCallback.ComboBoxSelectionDidChange;
 begin
   SendSimpleMessage(Target, LM_SELCHANGE);
 end;
 
-procedure TLCLComboboxCallback.ComboBoxSelectionIsChanging;
+procedure TLCLComboBoxCallback.ComboBoxSelectionIsChanging;
 begin
 
 end;
 
-procedure TLCLComboboxCallback.GetRowHeight(rowidx: integer; var h: Integer);
+procedure TLCLComboBoxCallback.ComboBoxResetTextIfNecessary(ANewText: String);
+var
+  helper: TComboBoxAsyncHelper;
+  cmb: TCustomComboBox;
+begin
+  cmb:= TCustomComboBox(Target);
+  if not Assigned(cmb) then
+    exit;
+  if not (cbactRetainPrefixCase in cmb.AutoCompleteText) then
+    exit;
+  helper:= TComboBoxAsyncHelper.Create(Owner);
+  helper._newText:= ANewText;
+  Application.QueueAsyncCall(@helper.AsyncResetText, 0);
+end;
+
+procedure TLCLComboBoxCallback.GetRowHeight(rowidx: integer; var h: Integer);
 begin
   TCustomComboBoxAccess(Target).MeasureItem(rowidx, h);
 end;
 
-procedure TLCLComboboxCallback.ComboBoxDrawItem(itemIndex: Integer;
+procedure TLCLComboBoxCallback.ComboBoxDrawItem(itemIndex: Integer;
   ctx: TCocoaContext; const r: TRect; isSelected: Boolean; backgroundPainted: Boolean);
 var
   itemstruct: TDrawListItemStruct;
@@ -253,7 +222,7 @@ var
   rocmb: TCocoaReadOnlyComboBox;
 begin
   Result:=0;
-  if ComboBoxIsReadOnly(TCustomComboBox(AWinControl)) then
+  if TCocoaComboBoxUtil.isReadOnly(TCustomComboBox(AWinControl)) then
   begin
     rocmb := NSView(TCocoaReadOnlyComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(rocmb) then Exit;
@@ -261,11 +230,11 @@ begin
     rocmb.list:=TCocoaReadOnlyComboBoxList.Create(rocmb);
     rocmb.lastSelectedItemIndex:= -1;
     TComboBoxAsyncHelper.SetLastIndex(rocmb);
-    rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
+    rocmb.callback:=TLCLComboBoxCallback.Create(rocmb, AWinControl);
     Result:=TLCLHandle(rocmb);
     rocmb.lclSetDefaultItemHeight( TCustomComboBoxAccess(AWinControl).ItemHeight );
-    rocmb.isOwnerDrawn := ComboBoxIsOwnerDrawn(TCustomComboBox(AWinControl).Style);
-    rocmb.isOwnerMeasure := ComboBoxIsVariable(TCustomComboBox(AWinControl).Style);
+    rocmb.isOwnerDrawn := TCocoaComboBoxUtil.isOwnerDrawn(TCustomComboBox(AWinControl).Style);
+    rocmb.isOwnerMeasure := TCocoaComboBoxUtil.isVariable(TCustomComboBox(AWinControl).Style);
   end
   else
   begin
@@ -277,7 +246,7 @@ begin
     cmb.setDataSource(cmb);
     cmb.setDelegate(cmb);
     cmb.setStringValue(StrToNSString(AParams.Caption));
-    cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
+    cmb.callback:=TLCLComboBoxCallback.Create(cmb, AWinControl);
     if (cmb.respondsToSelector(ObjCSelector('cell'))) and Assigned(cmb.cell) then
       NSTextFieldCell(cmb.cell).setUsesSingleLineMode(true);
     // default BorderStyle for TComboBox is bsNone! and it looks ugly!
@@ -304,7 +273,7 @@ begin
   if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
   ACustomComboBox:= TCustomComboBox(AWinControl);
 
-  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
+  if TCocoaComboBoxUtil.isReadOnly(ACustomComboBox.Style) then
     //Result := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
   else
   begin
@@ -361,22 +330,6 @@ begin
     Result:= txt.selectedRange.length;
 end;
 
-class function TCocoaWSCustomComboBox.GetObjectItemIndex(const AObject: TObject): integer;
-begin
-  if AObject is TCustomComboBox then
-    Result:= GetItemIndex( TCustomComboBox(AObject) )
-  else
-    Result:= -1;
-end;
-
-class function TCocoaWSCustomComboBox.GetObjectAutoComplete(const AObject: TObject): boolean;
-begin
-  if AObject is TCustomComboBox then
-    Result:= TCustomComboBox(AObject).AutoComplete
-  else
-    Result:= false;
-end;
-
 class procedure TCocoaWSCustomComboBox.SetSelStart(
   const ACustomComboBox: TCustomComboBox; NewStart: integer);
 var
@@ -407,23 +360,8 @@ end;
 
 class function TCocoaWSCustomComboBox.GetItemIndex(const ACustomComboBox:
   TCustomComboBox):integer;
-var
-  idx : NSInteger;
 begin
-  if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
-  begin
-    Result:=-1;
-    Exit;
-  end;
-
-  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
-    idx := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
-  else
-    idx := ACustomComboBox.MatchListItem(ACustomComboBox.Text);
-  if idx = NSNotFound then
-    Result := -1
-  else
-    Result := Integer(idx);
+  Result := TCocoaComboBoxUtil.getCurrentIndex(ACustomComboBox);
 end;
 
 class procedure TCocoaWSCustomComboBox.SetItemIndex(const ACustomComboBox:
@@ -434,7 +372,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
+  if TCocoaComboBoxUtil.isReadOnly(ACustomComboBox.Style) then
   begin
     rocmb := TCocoaReadOnlyComboBox(ACustomComboBox.Handle);
     rocmb.lastSelectedItemIndex := NewIndex;
@@ -475,7 +413,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then Exit;
+  if TCocoaComboBoxUtil.isReadOnly(ACustomComboBox.Style) then Exit;
   TCocoaComboBox(ACustomComboBox.Handle).setNumberOfVisibleItems(NewCount);
 end;
 
@@ -487,7 +425,7 @@ begin
     Exit;
   end;
 
-  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
+  if TCocoaComboBoxUtil.isReadOnly(ACustomComboBox.Style) then
     Result:=TCocoaReadOnlyComboBox(ACustomComboBox.Handle).list
   else
     Result:=TCocoaComboBox(ACustomComboBox.Handle).list;
@@ -511,7 +449,7 @@ begin
     Exit;
   end;
 
-  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
+  if TCocoaComboBoxUtil.isReadOnly(ACustomComboBox.Style) then
     Result:=TCocoaReadOnlyComboBox(ACustomComboBox.Handle).lclGetDefaultItemHeight
   else
     Result:=Round(TCocoaComboBox(ACustomComboBox.Handle).itemHeight);
@@ -523,7 +461,7 @@ begin
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
 
-  if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
+  if TCocoaComboBoxUtil.isReadOnly(ACustomComboBox.Style) then
     TCocoaReadOnlyComboBox(ACustomComboBox.Handle).lclSetDefaultItemHeight(AItemHeight)
   else
     TCocoaComboBox(ACustomComboBox.Handle).setItemHeight(AItemHeight);
@@ -533,7 +471,7 @@ class procedure TCocoaWSCustomComboBox.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
-  if NOT ComboBoxStyleIsReadOnly(TCustomComboBox(AWinControl).Style) then
+  if NOT TCocoaComboBoxUtil.isReadOnly(TCustomComboBox(AWinControl).Style) then
     Exit;
 
   if TCocoaReadOnlyComboBox(AWinControl.Handle).isComboBoxEx then

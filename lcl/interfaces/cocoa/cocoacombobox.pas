@@ -9,7 +9,7 @@ interface
 
 uses
   Types, Classes, SysUtils,
-  LCLType, Graphics, Controls,
+  LCLType, Graphics, Controls, StdCtrls,
   MacOSAll, CocoaAll, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaPrivate, CocoaCallback;
 
@@ -21,6 +21,8 @@ type
 
   TCocoaComboBoxList = class(TStringList);
 
+  { TCocoaEditComboBoxList }
+
   TCocoaEditComboBoxList = class(TCocoaComboBoxList)
   protected
     FOwner: TCocoaComboBox;
@@ -31,11 +33,14 @@ type
     constructor Create(AOwner: TCocoaComboBox);
   end;
 
+  { IComboboxCallBack }
+
   IComboboxCallBack = interface(ICommonCallBack)
     procedure ComboBoxWillPopUp;
     procedure ComboBoxWillDismiss;
     procedure ComboBoxSelectionDidChange;
     procedure ComboBoxSelectionIsChanging;
+    procedure ComboBoxResetTextIfNecessary(ANewText:String);
 
     procedure GetRowHeight(rowidx: integer; var h: Integer);
     procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext;
@@ -200,9 +205,80 @@ type
     procedure scrollWheel(event: NSEvent); override;
   end;
 
+  { TCocoaComboBoxUtil }
+
+  TCocoaComboBoxUtil = class
+  public
+    class function isReadOnly(AStyle: TComboBoxStyle): Boolean; overload;
+    class function isReadOnly(cmb: TCustomComboBox): Boolean; overload;
+    class function isOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
+    class function isVariable(AStyle: TComboBoxStyle): Boolean;
+
+    class function getCurrentIndex(const ACustomComboBox: TCustomComboBox): integer; overload;
+    class function getCurrentIndex(const AObject: TObject): integer; overload;
+    class function getAutoComplete(const AObject: TObject): boolean;
+  end;
+
 implementation
 
-uses CocoaWSComboBox;
+{ TCocoaComboBoxUtil }
+
+class function TCocoaComboBoxUtil.isReadOnly(AStyle: TComboBoxStyle): Boolean;
+begin
+  Result := not AStyle.HasEditBox;
+end;
+
+class function TCocoaComboBoxUtil.isReadOnly(cmb: TCustomComboBox): Boolean;
+begin
+  Result := Assigned(cmb) and (isReadOnly(cmb.Style));
+end;
+
+class function TCocoaComboBoxUtil.isOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
+begin
+  Result := AStyle.IsOwnerDrawn;
+end;
+
+class function TCocoaComboBoxUtil.isVariable(AStyle: TComboBoxStyle): Boolean;
+begin
+  Result := AStyle.IsVariable;
+end;
+
+class function TCocoaComboBoxUtil.getCurrentIndex(const ACustomComboBox:
+  TCustomComboBox):integer;
+var
+  idx : NSInteger;
+begin
+  if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
+  begin
+    Result:=-1;
+    Exit;
+  end;
+
+  if isReadOnly(ACustomComboBox.Style) then
+    idx := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
+  else
+    idx := ACustomComboBox.MatchListItem(ACustomComboBox.Text);
+  if idx = NSNotFound then
+    Result := -1
+  else
+    Result := Integer(idx);
+end;
+
+class function TCocoaComboBoxUtil.getCurrentIndex(const AObject: TObject): integer;
+begin
+  if AObject is TCustomComboBox then
+    Result:= getCurrentIndex( TCustomComboBox(AObject) )
+  else
+    Result:= -1;
+end;
+
+class function TCocoaComboBoxUtil.getAutoComplete(const AObject: TObject): boolean;
+begin
+  if AObject is TCustomComboBox then
+    Result:= TCustomComboBox(AObject).AutoComplete
+  else
+    Result:= false;
+end;
 
 { TCocoaReadOnlyComboBoxList }
 
@@ -489,23 +565,27 @@ var
   idx : integer;
   lclString: String;
   lclCmb : TObject;
+  cb: IComboboxCallBack;
 begin
   idx := indexOfSelectedItem;
   lclString := string_.UTF8String;
   lclCmb := lclGetTarget;
-  if (idx>=0) and (idx<list.Count) and (list[idx]=lclString) then
+  if (idx>=0) and (idx<list.Count) and (list[idx]=lclString) then begin
     // this is used for the case of the same items in the combobox
-    Result:=idx
+    Result:=idx;
+  end
   else
   begin
-    idx := TCocoaWSCustomComboBox.GetObjectItemIndex(lclCmb);
+    idx := TCocoaComboBoxUtil.getCurrentIndex(lclCmb);
     if idx<0 then
       Result := NSNotFound
     else
     begin
       // ComboBox.Text will be set to the List Item value after comboBox_indexOfItemWithStringValue()
       // so if cbactRetainPrefixCase set, ComboBox.Text should be reset Async
-      TComboBoxAsyncHelper.ResetTextIfNecessary(self, lclString);
+      cb:= IComboboxCallBack(lclGetCallback);
+      if Assigned(cb) then
+        cb.ComboBoxResetTextIfNecessary(lclString);
       Result := idx;
     end;
   end;
@@ -536,7 +616,7 @@ end;
 
 procedure TCocoaComboBox.comboBoxWillPopUp(notification: NSNotification);
 begin
-  self.setCompletes( TCocoaWSCustomComboBox.GetObjectAutoComplete(lclGetTarget) );
+  self.setCompletes( TCocoaComboBoxUtil.getAutoComplete(lclGetTarget) );
   callback.ComboBoxWillPopUp;
   isDown:=true;
 end;
