@@ -4861,6 +4861,8 @@ var
   SrcContext: TGtk3DeviceContext absolute SrcDC;
   ATargetRect, ASrcRect, AMaskRect: TRect;
   Origin: TPoint;
+  FreshSrcPixbuf: PGdkPixbuf;
+  SrcW, SrcH: Integer;
 begin
   Result := False;
 
@@ -4878,16 +4880,25 @@ begin
   AMaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
   GetWindowOrgEx(SrcDC, @Origin);
   ASrcRect.Offset(SrcContext.fncOrigin.X - Origin.x, SrcContext.fncOrigin.Y - Origin.y);
-  if (mask<>0) then
-    DestContext.drawImage1(@ATargetRect, SrcContext.CurrentImage.Handle , @ASrcRect, TGtk3Image(mask).Handle, @AMaskRect)
-  else
+  if (mask <> 0) then
   begin
-    if (cairo_surface_get_type(SrcContext.CairoSurface) = CAIRO_SURFACE_TYPE_IMAGE) and
-      Assigned(SrcContext.CurrentImage) and Assigned(SrcContext.CurrentImage.Handle) then
-        DestContext.drawSurface(@ATargetRect,SrcContext.CairoSurface , @ASrcRect, SrcContext.CurrentImage.Handle, nil, nil)
-    else
-      DestContext.drawSurface(@ATargetRect,SrcContext.CairoSurface , @ASrcRect, nil, nil, nil);
-  end;
+    FreshSrcPixbuf := nil;
+    if Assigned(SrcContext.CairoSurface) and
+       (cairo_surface_get_type(SrcContext.CairoSurface) = CAIRO_SURFACE_TYPE_IMAGE) then
+    begin
+      SrcW := cairo_image_surface_get_width(SrcContext.CairoSurface);
+      SrcH := cairo_image_surface_get_height(SrcContext.CairoSurface);
+      FreshSrcPixbuf := gdk_pixbuf_get_from_surface(SrcContext.CairoSurface, 0, 0, SrcW, SrcH);
+    end;
+    if FreshSrcPixbuf = nil then
+      FreshSrcPixbuf := SrcContext.CurrentImage.Handle;  // fallback
+    DestContext.drawImage1(@ATargetRect, FreshSrcPixbuf, @ASrcRect,
+      TGtk3Image(mask).Handle, @AMaskRect);
+    if FreshSrcPixbuf <> SrcContext.CurrentImage.Handle then
+      g_object_unref(FreshSrcPixbuf);
+  end else
+    DestContext.drawSurface(@ATargetRect, SrcContext.CairoSurface, @ASrcRect, nil, nil, nil);
+
   {$ifdef VerboseGtk3DeviceContext}
     DebugLn('Trace:< [TGtk3WidgetSet.StretchMaskBlt]');
   {$endif}

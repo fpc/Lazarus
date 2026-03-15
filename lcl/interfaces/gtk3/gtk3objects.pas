@@ -1246,13 +1246,6 @@ begin
   end else
   begin
     FHandle := TGdkPixbuf.new_from_data(AData, GDK_COLORSPACE_RGB, format=CAIRO_FORMAT_ARGB32, 8, width, height, bytesPerLine, nil, nil);
-    if (format = CAIRO_FORMAT_ARGB32) then
-    begin
-      if IsPixelDataEmpty(AData, Height, BytesPerLine) then
-        g_object_set_data(FHandle,'lcl_color_swap', Self)
-      else
-        g_object_set_data(FHandle,'lcl_no_color_swap', Self);
-    end;
   end;
 end;
 
@@ -2275,24 +2268,9 @@ begin
   with targetRect^ do
     cairo_rectangle(pcr, Left + PixelOffset, Top + PixelOffset, Right - Left, Bottom - Top);
 
-  if aPixBuf <> nil then
-  begin
-    aPixBuf^.ref;
-    //this fixes problem with some images being R & B swapped when blitted onto dest.
-    if (cairo_surface_get_type(CairoSurface) <> cairo_surface_get_type(Surface)) and
-      (g_object_get_data(aPixBuf,'lcl_color_swap') <> nil) then
-    begin
-      SwapRedBlueChannels(aPixBuf);
-      gdk_cairo_set_source_pixbuf(pcr, aPixBuf, 0, 0);
-    end else
-    begin
-      if g_object_get_data(aPixBuf,'lcl_no_color_swap') <> nil then
-        gdk_cairo_set_source_pixbuf(pcr, aPixBuf, 0, 0)
-      else
-        cairo_set_source_surface(pcr, Surface, 0, 0);
-    end;
-    aPixBuf^.unref;
-  end else
+  if (aPixBuf <> nil) and (Surface = nil) then
+    gdk_cairo_set_source_pixbuf(pcr, aPixBuf, 0, 0)
+  else
     cairo_set_source_surface(pcr, Surface, 0, 0);
 
   cairo_matrix_init_identity(@M);
@@ -2924,29 +2902,28 @@ end;
 procedure TGtk3DeviceContext.SetImage(AImage: TGtk3Image);
 var
   APixBuf: PGdkPixbuf;
+  ATempCr: Pcairo_t;
 begin
   FCurrentImage := AImage;
   cairo_destroy(pcr);
+  FCairo := nil;
   APixBuf := AImage.Handle;
   if not Gtk3IsGdkPixbuf(APixBuf) then
   begin
     DebugLn('ERROR: TGtk3DeviceContext.SetImage image handle isn''t PGdkPixbuf.');
     exit;
   end;
-  (*
-  DebugLn('TGtk3DeviceContext.SetImage w=',dbgs(APixBuf^.width),' h=',dbgs(APixBuf^.height),
-  ' RowStride ',dbgs(APixBuf^.rowstride),' BPS=',dbgs(APixBuf^.get_bits_per_sample),
-  ' BLEN ',dbgs(APixbuf^.get_byte_length),' channels ',dbgs(APixBuf^.get_n_channels),
-  ' ALPHA ',dbgs(APixbuf^.get_has_alpha));
-  *)
+
   if FOwnsSurface and (CairoSurface <> nil) then
     cairo_surface_destroy(CairoSurface);
 
-  CairoSurface := cairo_image_surface_create_for_data(APixBuf^.pixels,
-                                                AImage.Format,
-                                                APixBuf^.get_width,
-                                                APixBuf^.get_height,
-                                                APixBuf^.rowstride);
+  CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+                    APixBuf^.get_width, APixBuf^.get_height);
+  ATempCr := cairo_create(CairoSurface);
+  gdk_cairo_set_source_pixbuf(ATempCr, APixBuf, 0, 0);
+  cairo_paint(ATempCr);
+  cairo_destroy(ATempCr);
+
   FCairo := cairo_create(CairoSurface);
   FOwnsSurface := true;
 end;
