@@ -1882,15 +1882,31 @@ function TCodeCompletionCodeTool.CompleteVariableAssignment(CleanCursorPos,
   OldTopLine: integer; CursorNode: TCodeTreeNode; var NewPos: TCodeXYPosition;
   var NewTopLine: integer; SourceChangeCache: TSourceChangeCache; Interactive: Boolean
   ): boolean;
+
+  function IsInCommaSeparated(Item:string; List: string):boolean;
+  var i: integer;
+  begin
+    Result:=false;
+    i:=1;
+    repeat
+      if CompareDottedIdentifiers(PChar(@List[i]),PChar(Item))=0 then  // ready for dotted
+        exit (true);
+      while (List[i]<>',') and (i<Length(List)) do inc(i);
+      if i>=Length(List) then exit;
+      inc(i); // skip ','
+    until false;
+  end;
+
 var
   VarNameAtom, AssignmentOperator, TermAtom: TAtomPosition;
   NewType: string;
   Params: TFindDeclarationParams;
   ExprType: TExpressionType;
-  MissingUnit, NewName: String;
+  MissingUnit, NewName, DeclSourceName, HiddenUnits: String;
   ResExprContext, OrigExprContext: TFindContext;
   ProcNode, ClassNode: TCodeTreeNode;
   CCOptions: TCodeCreationDlgResult;
+  AddSourceName: boolean;
 begin
   Result:=false;
 
@@ -1957,8 +1973,27 @@ begin
           Params,Params.NewNode);
         OrigExprContext:=ExprType.Context.Tool.FindBaseTypeOfNode(
           Params,ExprType.Context.Node);
-        if (ResExprContext.Tool <> OrigExprContext.Tool)
-        and (ResExprContext.Tool.ExtractSourceName <> 'objpas') then // the "source" types are different -> add unit to the type
+
+        AddSourceName:=true; // will be validated
+        if (ResExprContext.Tool <> OrigExprContext.Tool) then begin // check simple types
+          DeclSourceName:=OrigExprContext.Tool.ExtractSourceName;
+          HiddenUnits:=ResExprContext.Tool.Scanner.GetHiddenUsedUnits;
+          AddSourceName := not IsInCommaSeparated(DeclSourceName, HiddenUnits);
+          //debugln(['source=',DeclSourceName]);
+          //debugln(['hidden=',HiddenUnits]);
+          //debugln(['add source name = ', AddSourceName]);
+        end;
+        if AddSourceName then begin // check if declaration isn't shadowed
+          Params.SetIdentifier(Self, PChar(NewType),nil);
+          Params.ContextNode := CursorNode;
+          Params.Flags := fdfDefaultForExpressions;
+          if FindIdentifierInContext(Params) then begin
+            if Params.NewNode=ExprType.Context.Node then
+            // the same decl nodes =  not shadowed, may be in other unit also
+              AddSourceName:=false;
+          end;
+        end;
+        if AddSourceName then // -> add unit to the type
           NewType := ExprType.Context.Tool.ExtractSourceName + '.' + NewType
         else
         begin // the "source" types are the same -> set ExprType to found Params.New* so that unit adding is avoided (with MissingUnit)
