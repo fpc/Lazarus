@@ -43,12 +43,13 @@ uses
   // LazUtils
   LazLoggerBase, LazUTF8,
   // LCL
-  Clipbrd, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType, LMessages, Dialogs, SpinEx,
-  laz.VirtualTrees,
+  Clipbrd, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType, LMessages, Dialogs, Graphics,
+  SpinEx, laz.VirtualTrees,
   //SynEdit
   SynEdit,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf,
+  IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts, IdeDebuggerWatchValueIntf, SrcEditorIntf,
+  EditorOptionsIntf,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
   // LazDebuggerIntf
@@ -188,6 +189,7 @@ type
     FSelectedForDrag: TNodeArray;
 
     procedure ApplyPreset(APreset: TWatchDisplayFormatPreset);
+    procedure DoEditorOptsChanged(Sender: TObject);
     procedure DoFormatPresetClickedIde(Sender: TObject);
     procedure DoFormatPresetClickedProject(Sender: TObject);
     procedure DoUnLockCommandProcessing(Data: PtrInt);
@@ -392,6 +394,9 @@ begin
   tvWatches.Header.Columns[1].Width := COL_WIDTHS[COL_WATCH_VALUE];
   tvWatches.Header.Columns[2].Width := COL_WIDTHS[COL_WATCH_DATAADDR];
 
+  tvWatches.EllipsisColor := WatchesColorsHL.AttrEllipsis.Foreground;
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorOptsChanged, @DoEditorOptsChanged);
+
   inc(FInSetup);
   tbWordWrap.Down := DebuggerOptions.WatchesDetailPaneWordWrap;
   dec(FInSetup);
@@ -403,6 +408,8 @@ end;
 destructor TWatchesDlg.Destroy;
 begin
   Application.RemoveAsyncCalls(Self);
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorOptsChanged, @DoEditorOptsChanged);
   if FQueuedUnLockCommandProcessing then
     DebugBoss.UnLockCommandProcessing;
   FQueuedUnLockCommandProcessing := False;
@@ -1226,6 +1233,13 @@ begin
   end;
 end;
 
+procedure TWatchesDlg.DoEditorOptsChanged(Sender: TObject);
+begin
+  IDEEditorOptions.GetHighlighterObjSettings(WatchesColorsHL);
+  tvWatches.EllipsisColor := WatchesColorsHL.AttrEllipsis.Foreground;
+  UpdateAll;
+end;
+
 procedure TWatchesDlg.DoFormatPresetClickedIde(Sender: TObject);
 var
   i: PtrInt;
@@ -1863,6 +1877,7 @@ begin
 
   if (AWatchAbleResult = nil) then begin
     TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
+    TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrUnknown.Foreground);
     exit;
   end;
 
@@ -1911,17 +1926,32 @@ begin
         end;
         TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := ClearMultiline(WatchValueStr, FWatchDlg.MAX_GRID_VALUE_LEN);
       end;
+      case AWatchAbleResult.Validity of
+        ddsUnknown, ddsInvalid:
+          TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrUnknown.Foreground);
+        ddsRequested, ddsEvaluating:
+          TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrEvaluating.Foreground);
+        ddsError:
+          TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrError.Foreground);
+      end;
     end
-    else
-    if (FWatchDlg.GetSelectedSnapshot = nil) and
-       (DebugBoss <> nil) and (DebugBoss.State in [dsPause, dsInternalPause])
-    then
-      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<evaluating>'
-    else
-      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
+    else begin
+      if (FWatchDlg.GetSelectedSnapshot = nil) and
+         (DebugBoss <> nil) and (DebugBoss.State in [dsPause, dsInternalPause])
+      then begin
+        TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<evaluating>';
+        TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrEvaluating.Foreground);
+      end
+      else begin
+        TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
+        TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrUnknown.Foreground);
+      end;
+    end;
   end
-  else
+  else begin
     TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<disabled>';
+    TreeView.SetNodeTextColor(AVNode, COL_WATCH_VALUE-1, WatchesColorsHL.AttrDisabled.Foreground);
+  end;
 
 end;
 

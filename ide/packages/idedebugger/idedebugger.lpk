@@ -50,6 +50,7 @@
       </Item>
       <Item>
         <Filename Value="idedebuggerutils.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="IdeDebuggerUtils"/>
       </Item>
       <Item>

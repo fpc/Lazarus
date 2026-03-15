@@ -131,6 +131,33 @@ msgstr ""
 msgid "Please choose the formatter to add."
 msgstr ""
 
+#: idedebuggerstringconstants.dbgwatchcolordisabled
+msgctxt "idedebuggerstringconstants.dbgwatchcolordisabled"
+msgid "Disabled"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgwatchcolorellipsis
+msgid "Ellipsis"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgwatchcolorerror
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dbgwatchcolorerror"
+msgid "Error"
+msgstr "S'ha produït un error"
+
+#: idedebuggerstringconstants.dbgwatchcolorevaluating
+msgid "Evaluating"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgwatchcolors
+msgid "Watches/Locals"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgwatchcolorunknown
+msgid "Unknown"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
 msgid "Max len"
@@ -1100,6 +1127,7 @@ msgid "Auto continue after:"
 msgstr ""
 
 #: idedebuggerstringconstants.lisbpsdisabled
+msgctxt "idedebuggerstringconstants.lisbpsdisabled"
 msgid "Disabled"
 msgstr ""
 

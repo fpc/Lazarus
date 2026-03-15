@@ -161,6 +161,13 @@ resourcestring
 
   lisWatchToWatchPoint = 'Create &Data/Watch Breakpoint ...';
 
+  DbgWatchColors = 'Watches/Locals';
+  DbgWatchColorError = 'Error';
+  DbgWatchColorEllipsis = 'Ellipsis';
+  DbgWatchColorDisabled = 'Disabled';
+  DbgWatchColorEvaluating = 'Evaluating';
+  DbgWatchColorUnknown = 'Unknown';
+
   // Mem viewer
   liswlMemView = 'Memory';
 

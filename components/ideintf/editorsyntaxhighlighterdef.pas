@@ -35,6 +35,7 @@ type
     NotForSourceEdit: boolean;
     procedure Init;
   end;
+
   TNonSrcIDEHighlighter = class(TLazEditCustomHighlighter); // Hold colors, not related to SourceEditor
 
   { TIdeSyntaxHighlighterList }
@@ -105,6 +106,22 @@ type
       hafCustomWords
     );
   TColorSchemeAttributeFeatures = set of TColorSchemeAttributeFeature;
+
+  { TIdeCustomHighlighterAttributes }
+
+  TIdeCustomHighlighterAttributes = class(TLazEditHighlighterAttributes)
+  private
+    FAttrFeatures: TColorSchemeAttributeFeatures;
+  public
+    property AttrFeatures: TColorSchemeAttributeFeatures read FAttrFeatures write FAttrFeatures;
+  end;
+  TIdeCustomHighlighterAttributesModifier = class(TLazEditHighlighterAttributesModifier)
+  private
+    FAttrFeatures: TColorSchemeAttributeFeatures;
+  public
+    property AttrFeatures: TColorSchemeAttributeFeatures read FAttrFeatures write FAttrFeatures;
+  end;
+
 
   IColorSchemeAttribute = interface ['{2572547D-217A-4A83-A910-0D808ECF3317}']
     procedure ApplyTo(aDest: TObject); deprecated 'Use ApplyTo(TLazEditTextAttribute) // to be removed in 5.99';
@@ -195,6 +212,7 @@ begin
   DefaultFileExtensions := '';
   SampleSource          := '';
   DefaultCommentType    := comtNone;
+  MappedAttributes      := nil;
   CaretXY               := Point(1,1);
 end;
 

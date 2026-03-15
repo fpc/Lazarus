@@ -38,12 +38,12 @@ interface
 uses
   SysUtils, Classes, StrUtils,
   // LCL
-  Forms, ClipBrd, ComCtrls, ActnList, Menus, Controls,
+  Forms, ClipBrd, ComCtrls, ActnList, Menus, Controls, Graphics,
   laz.VirtualTrees,
   // LazUtils
   LazLoggerBase, LazStringUtils, LazUTF8,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, IdeDebuggerWatchValueIntf,
+  IDEWindowIntf, IDEImagesIntf, IdeDebuggerWatchValueIntf, SrcEditorIntf, EditorOptionsIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerIntf
@@ -126,6 +126,7 @@ type
 
 
     FUpdateFlags: set of (ufNeedUpdating);
+    procedure DoEditorOptsChanged(Sender: TObject);
     function GetSelected: TLocalsValue; // The focused Selected Node
     procedure CopyRAWValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
@@ -383,11 +384,16 @@ begin
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
     vtLocals.Header.Columns[i].Width := COL_WIDTHS[i];
 
+  vtLocals.EllipsisColor := WatchesColorsHL.AttrEllipsis.Foreground;
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorOptsChanged, @DoEditorOptsChanged);
+
   DebugConfigChanged;
 end;
 
 destructor TLocalsDlg.Destroy;
 begin
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorOptsChanged, @DoEditorOptsChanged);
   ClearTree;
   inherited Destroy;
   FWatchPrinter.free;
@@ -504,6 +510,13 @@ end;
 function TLocalsDlg.GetSelected: TLocalsValue;
 begin
   Result := TLocalsValue(vtLocals.FocusedItem(True));
+end;
+
+procedure TLocalsDlg.DoEditorOptsChanged(Sender: TObject);
+begin
+  IDEEditorOptions.GetHighlighterObjSettings(WatchesColorsHL);
+  vtLocals.EllipsisColor := WatchesColorsHL.AttrEllipsis.Foreground;
+  LocalsChanged(nil);
 end;
 
 procedure TLocalsDlg.actInspectExecute(Sender: TObject);
@@ -1002,6 +1015,14 @@ begin
   end;
   TreeView.NodeText[AVNode, 0] := TIdeLocalsValue(AWatchAble).DisplayName;
   TreeView.NodeText[AVNode, 1] := WatchValueStr;
+  case AWatchAbleResult.Validity of
+    ddsUnknown, ddsInvalid:
+      TreeView.SetNodeTextColor(AVNode, 1, WatchesColorsHL.AttrUnknown.Foreground);
+    ddsRequested, ddsEvaluating:
+      TreeView.SetNodeTextColor(AVNode, 1, WatchesColorsHL.AttrEvaluating.Foreground);
+    ddsError:
+      TreeView.SetNodeTextColor(AVNode, 1, WatchesColorsHL.AttrError.Foreground);
+  end;
 
   if (ResData <> nil) and (ResData.HasDataAddress) then begin
     da := ResData.DataAddress;

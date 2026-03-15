@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Types, Math, laz.VirtualTrees, SpinEx, GraphType, LMessages, Controls,
-  ImgList, LCLIntf, Graphics;
+  ImgList, LCLIntf, Graphics, LCLType;
 
 type
 
@@ -42,6 +42,16 @@ type
     function GetEnumerator: TVTVirtualItemNodeEnumerator;
   end;
 
+  TDbgTreeNodeText = record
+    Txt: String;
+    ColorInfo: array of record
+      Start, Len: integer;
+      Color: TColor;
+      CachedWidth, CachedWidthBefore: integer;
+    end;
+  end;
+  PDbgTreeNodeText = ^TDbgTreeNodeText;
+
   TDbgTreeNodeData = record
     Item: TObject;  // Must be the first field.  Node.AddChild will write the new "Item" at UserData^  (aka the memory at the start of UserData)
     ImageIndex: Array of Integer;
@@ -49,9 +59,9 @@ type
       ImageIndex: integer;
       Rect: TRect;
     end;
-    CachedText: Array of String;
+    CachedText: Array of TDbgTreeNodeText;
     CachedColumnData: array of record
-      ShortenWidth1, ShortenWidth2: integer;
+      ShortenWidth1, ShortenWidth2, ShortenResTextLen: integer;
       ShortenResText: string;
       ColWidth: integer;
     end;
@@ -73,6 +83,7 @@ type
   private
     FCheckControlsVisibleLock: integer;
     FCheckControlsVisibleRunning, FCheckControlsVisibleAgain: Boolean;
+    FEllipsisColor: TColor;
     FInToggle: boolean;
     FFirstControlNode: PVirtualNode; // not ordered
     FLazImages: TCustomImageList;
@@ -125,6 +136,7 @@ type
     procedure PaintNodeButton(ACanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
       const R: TRect; ButtonX, ButtonY: Integer; ABidiMode: TBiDiMode); override;
     procedure DoPaintNode(var PaintInfo: TVTPaintInfo); override;
+    procedure DoTextDrawing(var PaintInfo: TVTPaintInfo; const AText: String; CellRect: TRect; DrawFormat: Cardinal); override;
 
     // Mouse
     function DetermineDropMode(const P: TPoint; var HitInfo: THitInfo;
@@ -168,6 +180,9 @@ type
     function ControlNodes: TVTVirtualItemNodeEnumeration;
 
     function GetNodeData(Node: PVirtualNode): PDbgTreeNodeData; reintroduce;
+    procedure ClearNodeTextColor(Node: PVirtualNode; AColumn: integer);
+    procedure SetNodeTextColor(Node: PVirtualNode; AColumn: Integer; AColor: TColor);  // must be added in ascending order
+    procedure AddNodeTextColor(Node: PVirtualNode; AColumn, AFrom, ALen: Integer; AColor: TColor);  // must be added in ascending order
     property NodeItem[Node: PVirtualNode]: TObject read GetNodeItem write SetNodeItem;
     property NodeText[Node: PVirtualNode; AColumn: integer]: String read GetNodeText write SetNodeText;
     property NodeImageIndex[Node: PVirtualNode; AColumn: integer]: Integer read GetNodeImageIndex write SetNodeImageIndex;
@@ -184,6 +199,7 @@ type
     property OnDetermineDropMode: TDetermineDropModeEvent read FOnDetermineDropMode write FOnDetermineDropMode;
     property LastDropMode;
 
+    property EllipsisColor: TColor read FEllipsisColor write FEllipsisColor;
     property LazImages: TCustomImageList read FLazImages write FLazImages;
     property NodeRightButtonImgIdx[Node: PVirtualNode]: Integer read GetNodeRightButtonImgIdx write SetNodeRightButtonImgIdx;
     property NodeRightButtonRect[Node: PVirtualNode]: TRect read GetNodeRightButtonRect;
@@ -280,7 +296,7 @@ begin
   Result := '';
   Data := GetNodeData(Node);
   if (Data <> nil) and (AColumn < Length(Data^.CachedText)) then
-    Result := Data^.CachedText[AColumn];
+    Result := Data^.CachedText[AColumn].Txt;
 end;
 
 function TDbgTreeView.GetNodeRightButtonImgIdx(Node: PVirtualNode): Integer;
@@ -328,10 +344,12 @@ begin
       SetLength(Data^.CachedText, AColumn + 1);
       SetLength(Data^.CachedColumnData, AColumn + 1);
     end;
-    Data^.CachedText[AColumn] := AValue;
+    Data^.CachedText[AColumn].Txt := AValue;
+    SetLength(Data^.CachedText[AColumn].ColorInfo, 0);
     Data^.CachedColumnData[AColumn].ColWidth := -1;
     Data^.CachedColumnData[AColumn].ShortenWidth1 := -1;
     Data^.CachedColumnData[AColumn].ShortenResText := '';
+    Data^.CachedColumnData[AColumn].ShortenResTextLen := -1;
   end;
 end;
 
@@ -846,6 +864,98 @@ begin
   PaintInfo.ContentRect.Bottom := b;
 end;
 
+procedure TDbgTreeView.DoTextDrawing(var PaintInfo: TVTPaintInfo; const AText: String;
+  CellRect: TRect; DrawFormat: Cardinal);
+var
+  DefaultDraw: Boolean;
+  Data: PDbgTreeNodeData;
+  i, Column, TxtX, TxtL, x, l, w: integer;
+  CachedText: PDbgTreeNodeText;
+  r: TRect;
+  c: TColor;
+begin
+  DefaultDraw := True;
+  if Assigned(OnDrawText) then
+    OnDrawText(Self, PaintInfo.Canvas, PaintInfo.Node, PaintInfo.Column, AText, CellRect, DefaultDraw);
+  if not DefaultDraw then
+    exit;
+
+  Data := GetNodeData(PaintInfo.Node);
+
+  Column := PaintInfo.Column;
+  CachedText := @Data^.CachedText[Column];
+
+  TxtX := 1;
+  TxtL := Length(AText);
+
+  if (FEllipsisColor <> clNone) and (FEllipsisColor <> clDefault) and
+     (AText = Data^.CachedColumnData[Column].ShortenResText)
+  then begin
+    if (Data^.CachedColumnData[Column].ShortenResTextLen > 0) and
+       (TxtL > Data^.CachedColumnData[Column].ShortenResTextLen)
+    then
+      TxtL := Data^.CachedColumnData[Column].ShortenResTextLen;
+  end
+  else
+  if Length(CachedText^.ColorInfo) = 0 then begin
+    DrawText(PaintInfo.Canvas.Handle, PChar(AText), Length(AText), CellRect, DrawFormat);
+    exit;
+  end;
+
+  for i := 0 to length(CachedText^.ColorInfo) - 1 do begin
+    x := CachedText^.ColorInfo[i].Start;
+    l := CachedText^.ColorInfo[i].Len;
+
+    if x > TxtX then begin
+      r := CellRect;
+      DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, x - TxtX), r, DrawFormat);
+      w := CachedText^.ColorInfo[i].CachedWidthBefore;
+      if w < 0 then begin
+        r := CellRect;
+        DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, x - TxtX), r, DrawFormat + DT_CALCRECT);
+        w := r.Width;
+        CachedText^.ColorInfo[i].CachedWidthBefore := w;
+      end;
+      CellRect.Left := CellRect.Left + w;
+      TxtX := x;
+      if TxtX > TxtL then break;
+    end;
+
+    r := CellRect;
+    c := PaintInfo.Canvas.Font.Color;
+    PaintInfo.Canvas.Font.Color := CachedText^.ColorInfo[i].Color;
+    DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, l), r, DrawFormat);
+    w := CachedText^.ColorInfo[i].CachedWidth;
+    if w < 0 then begin
+      r := CellRect;
+      DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, l), r, DrawFormat + DT_CALCRECT);
+      w := r.Width;
+      CachedText^.ColorInfo[i].CachedWidth := w;
+    end;
+    CellRect.Left := CellRect.Left + w;
+    PaintInfo.Canvas.Font.Color := c;
+    TxtX := x + l;
+    if TxtX > TxtL then break;
+  end;
+
+  if TxtX <= TxtL then begin
+    r := CellRect;
+    DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], TxtL-TxtX+1, r, DrawFormat);
+    if TxtL < Length(AText) then begin
+      r := CellRect;
+      DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], TxtL-TxtX+1, r, DrawFormat + DT_CALCRECT);
+      CellRect.Left := r.Right;
+    end;
+  end;
+
+  if TxtL < Length(AText) then begin
+    c := PaintInfo.Canvas.Font.Color;
+    PaintInfo.Canvas.Font.Color := EllipsisColor;
+    DrawText(PaintInfo.Canvas.Handle, @AText[TxtL+1], Length(AText)-TxtL, CellRect, DrawFormat);
+    PaintInfo.Canvas.Font.Color := c;
+  end;
+end;
+
 procedure TDbgTreeView.PaintNodeButton(ACanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
   const R: TRect; ButtonX, ButtonY: Integer; ABidiMode: TBiDiMode);
 var
@@ -1066,18 +1176,37 @@ function TDbgTreeView.DoShortenString(ACanvas: TCanvas; ANode: PVirtualNode;
   AColumn: TColumnIndex; const S: String; AWidth: Integer; AnEllipsisWidth: Integer): String;
 var
   NData: PDbgTreeNodeData;
+  l: SizeInt;
+  i: Integer;
+  CachedText: PDbgTreeNodeText;
 begin
   NData := GetNodeData(ANode);
-  if (AColumn < Length(NData^.CachedText)) and (s = NData^.CachedText[AColumn]) then begin
+  if (AColumn < Length(NData^.CachedText)) and (s = NData^.CachedText[AColumn].Txt) then begin
     if (AWidth = NData^.CachedColumnData[AColumn].ShortenWidth1) and (AnEllipsisWidth = NData^.CachedColumnData[AColumn].ShortenWidth2) then begin
       Result := NData^.CachedColumnData[AColumn].ShortenResText;
       exit;
     end;
 
+    // cache may have a clipped length
+    CachedText := @NData^.CachedText[AColumn];
+    for i := 0 to length(CachedText^.ColorInfo) - 1 do begin
+      CachedText^.ColorInfo[i].CachedWidthBefore := -1;
+      CachedText^.ColorInfo[i].CachedWidth := -1;
+    end;
+
     Result := inherited DoShortenString(ACanvas, ANode, AColumn, S, AWidth, AnEllipsisWidth);
+    l := Length(Result);
+    if l < Length(s) then begin
+      l := max(0, l - 3);
+      while (l > 0) and
+            ((l > Length(s)) or (Result[l] <> s[l]))
+      do
+        dec(l);
+    end;
     NData^.CachedColumnData[AColumn].ShortenWidth1 := AWidth;
     NData^.CachedColumnData[AColumn].ShortenWidth2 := AnEllipsisWidth;
-    NData^.CachedColumnData[AColumn].ShortenResText := Result;
+    NData^.CachedColumnData[AColumn].ShortenResText    := Result;
+    NData^.CachedColumnData[AColumn].ShortenResTextLen := l;
     exit;
   end;
 
@@ -1131,6 +1260,60 @@ end;
 function TDbgTreeView.GetNodeData(Node: PVirtualNode): PDbgTreeNodeData;
 begin
   Result := PDbgTreeNodeData(inherited GetNodeData(Node));
+end;
+
+procedure TDbgTreeView.ClearNodeTextColor(Node: PVirtualNode; AColumn: integer);
+var
+  Data: PDbgTreeNodeData;
+begin
+  Data := GetNodeData(Node);
+  if (Data = nil) or (Length(Data^.CachedText) <= AColumn) then
+    exit;
+  SetLength(Data^.CachedText[AColumn].ColorInfo, 0);
+end;
+
+procedure TDbgTreeView.SetNodeTextColor(Node: PVirtualNode; AColumn: Integer; AColor: TColor);
+var
+  Data: PDbgTreeNodeData;
+begin
+  if (AColor = clNone) or (AColor = clDefault) then
+    exit;
+
+  AColor := ColorToRGB(AColor);
+
+  Data := GetNodeData(Node);
+  if Data = nil then
+    exit;
+
+  SetLength(Data^.CachedText[AColumn].ColorInfo, 1);
+  with Data^.CachedText[AColumn].ColorInfo[0] do begin
+    Start := 1;
+    Len   := Length(Data^.CachedText[AColumn].Txt);
+    Color := AColor;
+    CachedWidthBefore := -1;
+    CachedWidth := -1;
+  end;
+end;
+
+procedure TDbgTreeView.AddNodeTextColor(Node: PVirtualNode; AColumn, AFrom, ALen: Integer;
+  AColor: TColor);
+var
+  Data: PDbgTreeNodeData;
+  l: SizeInt;
+begin
+  Data := GetNodeData(Node);
+  if Data = nil then
+    exit;
+
+  l := Length(Data^.CachedText[AColumn].ColorInfo);
+  SetLength(Data^.CachedText[AColumn].ColorInfo, l+1);
+  with Data^.CachedText[AColumn].ColorInfo[l] do begin
+    Start := AFrom;
+    Len   := ALen;
+    Color := AColor;
+    CachedWidthBefore := -1;
+    CachedWidth := -1;
+  end;
 end;
 
 function TDbgTreeView.GetFocusedNode(OnlySelected: Boolean;

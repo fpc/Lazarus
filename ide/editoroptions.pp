@@ -414,7 +414,8 @@ type
       IsSchemeDefault: Boolean);
     constructor CreateFromXml(AGroup: TColorScheme; AIdeHighlighterID: TIdeSyntaxHighlighterID;
       aXMLConfig: TRttiXMLConfig; const aPath: String; IsSchemeDefault: Boolean;
-      aPascalScheme: TColorSchemeLanguage = nil; MappedAttributes: TStringList = nil);
+      aPascalScheme: TColorSchemeLanguage = nil; MappedAttributes: TStringList = nil;
+      ALoadWithSelfAsDefault: boolean = False);
     destructor  Destroy; override;
     procedure Clear;
     procedure Assign(Src: TColorSchemeLanguage); reintroduce;
@@ -7705,16 +7706,18 @@ constructor TColorSchemeLanguage.CreateWithDefColor(AGroup: TColorScheme;
   AIdeHighlighterID: TIdeSyntaxHighlighterID; IsSchemeDefault: Boolean);
 begin
   Create(AGroup, AIdeHighlighterID, IsSchemeDefault);
-  FDefaultAttribute := TColorSchemeAttribute.Create(Self, @dlgAddHiAttrDefault, 'ahaDefault');
-  FDefaultAttribute.AttrFeatures := [hafBackColor, hafForeColor];
-  FDefaultAttribute.Group := agnDefault;
-  FAttributes.AddObject(FDefaultAttribute.StoredName, FDefaultAttribute);
+  if not (FHighlighter is TNonSrcIDEHighlighter) then begin
+    FDefaultAttribute := TColorSchemeAttribute.Create(Self, @dlgAddHiAttrDefault, 'ahaDefault');
+    FDefaultAttribute.AttrFeatures := [hafBackColor, hafForeColor];
+    FDefaultAttribute.Group := agnDefault;
+    FAttributes.AddObject(FDefaultAttribute.StoredName, FDefaultAttribute);
+  end;
 end;
 
 constructor TColorSchemeLanguage.CreateFromXml(AGroup: TColorScheme;
-  AIdeHighlighterID: TIdeSyntaxHighlighterID; aXMLConfig: TRttiXMLConfig;
-  const aPath: String; IsSchemeDefault: Boolean;
-  aPascalScheme: TColorSchemeLanguage; MappedAttributes: TStringList);
+  AIdeHighlighterID: TIdeSyntaxHighlighterID; aXMLConfig: TRttiXMLConfig; const aPath: String;
+  IsSchemeDefault: Boolean; aPascalScheme: TColorSchemeLanguage; MappedAttributes: TStringList;
+  ALoadWithSelfAsDefault: boolean);
 var
   hla: TLazEditTextAttribute;
   csa, pasattr: TColorSchemeAttribute;
@@ -7728,12 +7731,12 @@ begin
   if FHighlighter <> nil then begin
     for i := 0 to FHighlighter.AttrCount - 1 do begin
       hla := FHighlighter.Attribute[i];
-      if hla.StoredName = FDefaultAttribute.StoredName then continue;
+      if (FDefaultAttribute <> nil) and (hla.StoredName = FDefaultAttribute.StoredName) then continue;
       csa := TColorSchemeAttribute.Create(Self, hla.Caption, hla.StoredName);
       csa.Assign(hla);
       csa.Group := agnLanguage;
       csa.FDefaultSynFeatures := csa.Features;
-      if (FHighlighter <> nil) and (FHighlighter is TNonSrcIDEHighlighter) then
+      if (FHighlighter <> nil) and (FHighlighter is TNonSrcIDEHighlighter) then begin
         if hla is TSynHighlighterLazCustomPasAttribute then
           csa.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask, hafCustomWords]
         else
@@ -7741,7 +7744,15 @@ begin
           csa.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafStyle, hafStyleMask]
         else
           csa.AttrFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle];
+      end;
+      if hla is TIdeCustomHighlighterAttributes then
+        csa.FAttrFeatures := TIdeCustomHighlighterAttributes(hla).AttrFeatures
+      else
+      if hla is TIdeCustomHighlighterAttributesModifier then
+        csa.FAttrFeatures := TIdeCustomHighlighterAttributesModifier(hla).AttrFeatures;
       FAttributes.AddObject(csa.StoredName, csa);
+      if FDefaultAttribute = nil then
+        FDefaultAttribute := csa;
     end;
   end;
 
@@ -7781,7 +7792,10 @@ begin
   end;
 
   FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
-  LoadFromXml(aXMLConfig, aPath, nil, FormatVersion);
+  if ALoadWithSelfAsDefault then
+    LoadFromXml(aXMLConfig, aPath, Self, FormatVersion)
+  else
+    LoadFromXml(aXMLConfig, aPath, nil, FormatVersion);
 end;
 
 destructor TColorSchemeLanguage.Destroy;
@@ -8745,7 +8759,7 @@ begin
     if cs.FColorSchemes.IndexOf(n) < 0 then begin
       XmlConf := cs.GetXmlConf;
       cs.FColorSchemes[n] := TColorSchemeLanguage.CreateFromXml(cs, Result, XmlConf,
-        XML_COL_PATH, False, nil, NewInfo.MappedAttributes);
+        XML_COL_PATH, False, nil, NewInfo.MappedAttributes, True);
       if XmlConf <> nil then
         cs.ReleaseXmlConf;
     end;

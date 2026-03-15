@@ -5,7 +5,8 @@ unit IdeDebuggerUtils;
 interface
 
 uses
-  Classes, SysUtils, Math, LazMethodList;
+  Classes, SysUtils, Math, LazMethodList, EditorSyntaxHighlighterDef, SrcEditorIntf,
+  EditorOptionsIntf, LazEditTextAttributes, Graphics, IdeDebuggerStringConstants;
 
 type
 
@@ -25,6 +26,25 @@ type
 
   TQuoteTextOpt = (qtMultiLine);
   TQuoteTextOpts = set of TQuoteTextOpt;
+
+  { TIdeDbgWatchesHighlighter }
+
+  TIdeDbgWatchesHighlighter = class(TNonSrcIDEHighlighter)
+  private
+    FAttrDisabled: TIdeCustomHighlighterAttributes;
+    FAttrEllipsis: TIdeCustomHighlighterAttributes;
+    FAttrError: TIdeCustomHighlighterAttributes;
+    FAttrEvaluating: TIdeCustomHighlighterAttributes;
+    FAttrUnknown: TIdeCustomHighlighterAttributes;
+  public
+    constructor Create(AOwner: TComponent); override;
+    class function GetLanguageName: string; override;
+    property AttrError: TIdeCustomHighlighterAttributes      read FAttrError;
+    property AttrEllipsis: TIdeCustomHighlighterAttributes   read FAttrEllipsis;
+    property AttrDisabled: TIdeCustomHighlighterAttributes   read FAttrDisabled;
+    property AttrEvaluating: TIdeCustomHighlighterAttributes read FAttrEvaluating;
+    property AttrUnknown: TIdeCustomHighlighterAttributes    read FAttrUnknown;
+  end;
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
 function QuoteText(AText: Utf8String; AnOpts: TQuoteTextOpts = []): UTf8String;
@@ -48,7 +68,55 @@ function LimitTextLength(const AValue: ansistring; AMaxChars: integer): ansistri
 function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: String): AnsiString; overload;
 function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: Int64): AnsiString; overload;
 
+procedure Register;
+
+var
+  WatchesColorsHL: TIdeDbgWatchesHighlighter;
+
 implementation
+
+{ TIdeDbgWatchesHighlighter }
+
+constructor TIdeDbgWatchesHighlighter.Create(AOwner: TComponent);
+  function InitAttr(ACaption: PString; AStoredName: String; AColor: TColor): TIdeCustomHighlighterAttributes;
+  begin
+    Result := TIdeCustomHighlighterAttributes.Create(ACaption, AStoredName);
+    Result.Foreground   := AColor;
+    Result.AttrFeatures := [hafForeColor];
+    Result.InternalSaveDefaultValues;
+    AddAttribute(Result);
+  end;
+begin
+  inherited Create(AOwner);
+  FreeHighlighterAttributes;
+
+  FAttrError      := InitAttr(@DbgWatchColorError,      'WatchValueError',    clRed);
+  FAttrEllipsis   := InitAttr(@DbgWatchColorEllipsis,   'WatchValueEllipsis', clGray);
+  FAttrDisabled   := InitAttr(@DbgWatchColorDisabled,   'WatchValueDisabled', clDkGray);
+  FAttrEvaluating := InitAttr(@DbgWatchColorEvaluating, 'WatchValueEval',     clDkGray);
+  FAttrUnknown    := InitAttr(@DbgWatchColorUnknown,    'WatchValueUnknown',  clDkGray);
+end;
+
+class function TIdeDbgWatchesHighlighter.GetLanguageName: string;
+begin
+  Result := DbgWatchColors;
+end;
+
+procedure Register;
+var
+  Info: TIdeHighlighterInfo;
+  i: TIdeSyntaxHighlighterID;
+begin
+  // create info for asm Window
+  Info.Init;
+  with Info do
+  begin
+    SampleSource := '-';
+  end;
+
+  i := IdeColorSchemeList.AddHighlighter(TIdeDbgWatchesHighlighter.Create(nil), Info);
+  WatchesColorsHL := TIdeDbgWatchesHighlighter(IdeSyntaxHighlighters.SharedInstances[i]);
+end;
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
 begin
