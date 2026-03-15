@@ -17,6 +17,7 @@ uses
   CocoaWSComCtrls,
   CocoaWSDialogs,
   CocoaWSSpin,
+  CocoaWSListBox,
   CocoaWSCheckLst,
   CocoaWSDatePicker,
   CocoaWSListView,
