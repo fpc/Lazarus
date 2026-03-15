@@ -585,12 +585,6 @@ begin
      IsHot(Details) then
     Include(Result, GTK_STATE_FLAG_FOCUSED);
 
-  // specific states
-  {when toolbar = flat, toolbar buttons should be flat too.}
-  if (Details.Element = teToolBar) and
-     (Details.State in [TS_HOT, TS_DISABLED]) then
-    Include(Result, GTK_STATE_FLAG_DROP_ACTIVE);
-
   // define orientations
   if ((Details.Element = teRebar) and (Details.Part = RP_GRIPPER)) or
      ((Details.Element = teToolBar) and (Details.Part = TP_SEPARATOR)) or
