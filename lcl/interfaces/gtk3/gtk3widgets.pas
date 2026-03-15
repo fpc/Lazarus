@@ -10056,6 +10056,16 @@ begin
     // That internal handler is disconnected in InitializeWidget.
     PGtkComboBox(Result)^.set_entry_text_column(0);
 
+    if ACombo.Style.IsOwnerDrawn then
+    begin
+      gtk_cell_layout_clear(PGtkCellLayout(Result));
+      renderer := LCLIntfCellRenderer_New();
+      g_object_set_data(PGObject(renderer), 'lclwidget', Self);
+      gtk_cell_layout_pack_start(PGtkCellLayout(Result), renderer, True);
+      gtk_cell_layout_set_cell_data_func(PGtkCellLayout(Result), renderer,
+        @LCLIntfCellRenderer_CellDataFunc, Self, nil);
+    end;
+
     bs := Self.LCLObject.Caption;
     pos := 0;
     {%H-}PGtkEditable(PGtkComboBox(Result)^.get_child)^.insert_text(pgChar(PChar(bs)),length(bs),@pos);

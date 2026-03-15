@@ -26,6 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLProc, Controls, StdCtrls, ComCtrls, LMessages,
+  Graphics,
   LazGObject2, LazGtk3, LazGdk3, LazGLib2, Gtk3Procs, LazCairo1,
   LazPango1, LazLogger;
   
@@ -146,7 +147,7 @@ var
   R1, R2: TGdkRectangle;
 begin
   {$IFDEF GTK3DEBUGCELLRENDERER}
-  // DebugLn('*** LCLIntfCellRenderer_GetAlignedArea ***');
+  //DebugLn('*** LCLIntfCellRenderer_GetAlignedArea ***');
   {$ENDIF}
   CellClass := PLCLIntfCellRendererClass(cell^.g_type_instance.g_class);
   CellClass^.DefaultGetAlignedArea(cell, widget, flags, cell_area, aligned_area);
@@ -589,6 +590,9 @@ var
   TmpDC1,
   TmpDC2: HDC;
   SkipDefaultPaint: Boolean;
+  Lw: TGtk3Widget;
+  AParentWidget: PGtkWidget;
+  AParentFlags: TGtkStateFlags;
 begin
   // DebugLn('*** LCLIntfCellRenderer_Render widget=',dbgHex(PtrUInt(Widget)), ' HWND=',dbgs(HwndFromGtkWidget(Widget)));
   {DebugLn(['LCLIntfCellRenderer_Render cell=',dbgs(cell),
@@ -700,6 +704,14 @@ begin
     // send LM_DrawListItem message
     AWinControl := GetControl(widget);
     // DebugLn('Paint 2 ** ', dbgsName(AWinControl));
+    // For combo popup, widget is GtkTreeView inside a separate GtkWindow,
+    // GetControl's parent-walk finds nothing. Fall back to lclwidget on cell.
+    if AWinControl = nil then
+    begin
+      Lw := TGtk3Widget(g_object_get_data(PGObject(cell), 'lclwidget'));
+      if Assigned(Lw) and (Lw.LCLObject is TWinControl) then
+        AWinControl := TWinControl(Lw.LCLObject);
+    end;
     if AWinControl = Nil then exit;
     if [csDestroying,csLoading]*AWinControl.ComponentState<>[] then exit;
   
@@ -721,6 +733,7 @@ begin
 
     // collect state flags
     State:=[odBackgroundPainted];
+
     if GTK_CELL_RENDERER_SELECTED in flags then begin
       Include(State, odSelected);
     end;
@@ -739,6 +752,17 @@ begin
       if TCustomComboBox(AWinControl).DroppedDown and (GTK_CELL_RENDERER_PRELIT in flags) then
         Include(State,odSelected);
     end;
+
+    if not (odSelected in State) then
+    begin
+      AParentWidget := Widget^.get_parent;
+      AParentFlags := [];
+      if Assigned(AParentWidget) then
+        AParentFlags := AParentWidget^.get_state_flags;
+      if (GTK_STATE_FLAG_PRELIGHT in AParentFlags) or
+         (GTK_STATE_FLAG_SELECTED in AParentFlags) then
+        Include(State, odSelected);
+    end;
   end else // is a listview
   begin
     LVStage := cdPostPaint;
@@ -750,8 +774,6 @@ begin
     Exit;
   end;
 
-  // ListBox and ComboBox
-  // create message and deliverFillChar(Msg,SizeOf(Msg),0);
   // DebugLn('Paint 4 listbox or combobox  ** ', dbgsName(AWinControl));
   Msg.Msg:=LM_DrawListItem;
   New(Msg.DrawListItemStruct);
@@ -761,20 +783,10 @@ begin
     begin
       ItemID := UINT(ItemIndex);
       Area := AreaRect;
-      (*
-      DebugLn('LCLIntfCellRenderer_Render Widget is: TGtk3Widget.Widget ? ',dbgs(Widget = TGtk3Widget(AWinControl.Handle).Widget),
-       ' ContainerWidget ? ',dbgs(Widget = TGtk3Widget(AWinControl.Handle).GetContainerWidget),
-        ' CAIRO ?!? ',dbgHex(PtrUInt(cr)),' AreaR ',dbgs(Area),' AreaH ',dbgs(Area.Bottom - Area.Top));
-      *)
       DCWidget := Widget;
       if (DCWidget^.parent<>nil) and
         Gtk3IsMenuItem(DCWidget^.parent) then
-      begin
-        // the Widget is a sub widget of a menu item
-        // -> allow the LCL to paint over the whole menu item
-        DCWidget := DCWidget^.parent;
-        Area := Rect(0,0,DCWidget^.get_allocated_width,DCWidget^.get_allocated_height);
-      end;
+          DCWidget := DCWidget^.parent;
       DC := GTK3WidgetSet.CreateDCForWidget(DCWidget, nil, cr);
       ItemState:=State;
     end;
