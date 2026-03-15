@@ -12,7 +12,7 @@ uses
   // LCL
   Graphics,
   // LazEdit
-  LazEditHighlighter;
+  LazEditHighlighter, LazEditTextAttributes;
 
 type
   TLazSyntaxHighlighter =
@@ -93,7 +93,8 @@ type
   TColorSchemeAttributeFeatures = set of TColorSchemeAttributeFeature;
 
   IColorSchemeAttribute = interface ['{2572547D-217A-4A83-A910-0D808ECF3317}']
-    procedure ApplyTo(aDest: TObject);
+    procedure ApplyTo(aDest: TObject); deprecated 'Use ApplyTo(TLazEditTextAttribute) // to be removed in 5.99';
+    procedure ApplyTo(aDest: TLazEditTextAttribute);
     function GetMarkupAllOverviewColor: TColor;
 
     property MarkupAllOverviewColor: TColor read GetMarkupAllOverviewColor; // hafMarkupAllOverview
@@ -118,7 +119,8 @@ type
     function Count: integer;
     function GetScheme(AnIndex: Integer): IColorScheme;
     function GetScheme(AName: String): IColorScheme;
-    function GetCurrentSchemeForHighlighter(AnHiglighter: TObject): IColorScheme;
+    function GetCurrentSchemeForHighlighter(AnHiglighter: TObject): IColorScheme; deprecated 'Use GetCurrentSchemeForHighlighter(TLazEditCustomHighlighter) // to be removed in 5.99';
+    function GetCurrentSchemeForHighlighter(AnHiglighter: TLazEditCustomHighlighter): IColorScheme;
     function GetCurrentSchemeForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID): IColorScheme;
 
     procedure RegisterChangedHandler(AnHandler: TNotifyEvent);

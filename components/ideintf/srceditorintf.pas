@@ -407,8 +407,8 @@ type
     property UniqueSourceEditors[Index: integer]: TSourceEditorInterface
              read GetUniqueSourceEditors;
     // Editor Preferences
-    function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract;
-    function GetHighlighterSettings(Highlighter: TLazEditCustomHighlighter): boolean; virtual; abstract;
+    function GetEditorControlSettings(EditControl: TControl): boolean; virtual; abstract; deprecated 'use IDEEditorOptions.GetSynEditorSettings // to be removed in 5.99';
+    function GetHighlighterSettings(Highlighter: TLazEditCustomHighlighter): boolean; virtual; abstract; deprecated 'use IDEEditorOptions.GetHighlighterSettings // to be removed in 5.99';
     // Messages
     procedure ClearErrorLines; virtual; abstract;
     // General source functions

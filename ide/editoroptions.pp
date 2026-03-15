@@ -355,7 +355,7 @@ type
     procedure SetMarkupFoldLineColor(AValue: TColor);
     procedure SetMarkupFoldLineStyle(AValue: TSynLineStyle);
     // IColorSchemeAttribute
-    procedure ApplyTo(aDest: TObject);
+    procedure ApplyTo(aDest: TObject);  deprecated 'Use ApplyTo(TLazEditTextAttribute) // to be removed in 5.99';
   protected
     procedure Init; override;
     procedure AssignColorsFrom(ASource: TLazCustomEditTextAttribute); override;
@@ -363,7 +363,8 @@ type
     constructor Create(ASchemeLang: TColorSchemeLanguage; attribName: PString;
                        const aStoredName: String = '');
     function IsEnabled: boolean; override;
-    procedure ApplyTo(aDest: TLazEditTextAttribute; aDefault: TColorSchemeAttribute = nil);
+    procedure ApplyTo(aDest: TLazEditTextAttribute);  // IColorSchemeAttribute
+    procedure ApplyTo(aDest: TLazEditTextAttribute; aDefault: TColorSchemeAttribute);
     procedure Assign(Src: TPersistent); override;
     function Equals(Other: TColorSchemeAttribute): Boolean; reintroduce;
     function GetStoredValuesForAttrib: TColorSchemeAttribute; // The IDE default colors from the resources
@@ -482,7 +483,8 @@ type
     // IColorSchemeList
     function GetScheme(AnIndex: Integer): IColorScheme;
     function GetScheme(AName: String): IColorScheme;
-    function GetCurrentSchemeForHighlighter(AnHiglighter: TObject {TLazEditCustomHighlighter}): IColorScheme;
+    function GetCurrentSchemeForHighlighter(AnHiglighter: TObject): IColorScheme;  deprecated 'Use GetCurrentSchemeForHighlighter(TLazEditCustomHighlighter) // to be removed in 5.99';
+    function GetCurrentSchemeForHighlighter(AnHiglighter: TLazEditCustomHighlighter): IColorScheme;
     function GetCurrentSchemeForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID): IColorScheme;
     procedure RegisterChangedHandler(AnHandler: TNotifyEvent);
     procedure UnregisterChangedHandler(AnHandler: TNotifyEvent);
@@ -1977,8 +1979,8 @@ type
     procedure ReadDefaultsForHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     procedure WriteHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     // read highlight settings from config file
-    procedure GetHighlighterObjSettings(ASynHL: TLazEditCustomHighlighter); override;
-    procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
+    procedure GetHighlighterObjSettings(ASynHL: TLazEditCustomHighlighter); override;  deprecated 'to be remove in 5.99';
+    procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); override; // read highlight settings from config file
     procedure GetSynEditorSettings(ASynEdit: TCustomControl; SimilarEdit: TCustomControl = nil); override;
     procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil; AHighlighterId: TIdeSyntaxHighlighterID = IdeHighlighterUnknownId); // read synedit settings from config file
     procedure UpdateSynEditSettingsForHighlighter(ASynEdit: TSynEdit; AHighlighterId: TIdeSyntaxHighlighterID);
@@ -7419,6 +7421,11 @@ begin
             (FMarkupAllOverviewColor <> clNone);
 end;
 
+procedure TColorSchemeAttribute.ApplyTo(aDest: TLazEditTextAttribute);
+begin
+  ApplyTo(aDest, nil);
+end;
+
 procedure TColorSchemeAttribute.ApplyTo(aDest: TLazEditTextAttribute;
   aDefault: TColorSchemeAttribute);
 // aDefault (if supplied) is usually the Schemes agnDefault / DefaultAttribute
@@ -8458,9 +8465,15 @@ end;
 
 function TColorSchemeFactory.GetCurrentSchemeForHighlighter(AnHiglighter: TObject): IColorScheme;
 begin
+  Result := GetCurrentSchemeForHighlighter(AnHiglighter as TLazEditCustomHighlighter);
+end;
+
+function TColorSchemeFactory.GetCurrentSchemeForHighlighter(AnHiglighter: TLazEditCustomHighlighter
+  ): IColorScheme;
+begin
   Result := nil;
   if EditorOpts <> nil then
-    Result := EditorOpts.UserColorSchemeGroup.GetColorSchemeGroup(EditorOpts.ReadColorScheme((AnHiglighter as TSrcIDEHighlighter).LanguageName));
+    Result := EditorOpts.UserColorSchemeGroup.GetColorSchemeGroup(EditorOpts.ReadColorScheme(AnHiglighter.LanguageName));
 end;
 
 function TColorSchemeFactory.GetCurrentSchemeForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID

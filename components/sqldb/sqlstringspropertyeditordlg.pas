@@ -12,7 +12,7 @@ uses
   // LazUtils
   FileUtil, LazStringUtils,
   // IdeIntf
-  SrcEditorIntf,
+  SrcEditorIntf, EditorOptionsIntf,
   // SynEdit
   SynEdit, SynHighlighterSQL,
   // SqlDb
@@ -101,8 +101,8 @@ implementation
 constructor TSQLStringsPropertyEditorDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  SourceEditorManagerIntf.GetEditorControlSettings(SQLEditor);
-  SourceEditorManagerIntf.GetHighlighterSettings(SQLHighlighter);
+  IDEEditorOptions.GetSynEditorSettings(SQLEditor);
+  IDEEditorOptions.GetHighlighterSettings(SQLHighlighter);
   EditorTabSheet.Caption := SSQLTabCaption;
   ResultTabSheet.Caption := SResultTabCaption;
   MetaTabSheet.Caption := SMetaTabCaption;

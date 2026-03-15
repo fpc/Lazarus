@@ -18,7 +18,8 @@ type
     function GetTabPosition: TTabPosition; virtual; abstract;
   public
     // Syn is TLazEditCustomHighlighter (TSynCustomHighlighter, TSrcIDEHighlighter).
-    procedure GetHighlighterObjSettings(ASynHL: TLazEditCustomHighlighter); virtual; abstract;
+    procedure GetHighlighterObjSettings(ASynHL: TLazEditCustomHighlighter); virtual; abstract; deprecated 'use GetHighlighterSettings / to be removed in Lazarus 5.99';
+    procedure GetHighlighterSettings(ASynHL: TLazEditCustomHighlighter); virtual; abstract;
     // ASynEdit and SimilarEdit are TSynEdit.
     procedure GetSynEditorSettings(ASynEdit: TCustomControl;
                                 SimilarEdit: TCustomControl = nil); virtual; abstract;

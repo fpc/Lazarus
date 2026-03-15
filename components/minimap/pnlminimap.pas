@@ -16,7 +16,7 @@ interface
 uses
   Classes, SysUtils, Controls, ExtCtrls, SynEdit, SrcEditorIntf, Graphics, lclType,
   SynEditMarkupSpecialLine, SynEditTypes, SynEditMiscClasses, SynEditMarkupBracket, LazLogger,
-  LazLoggerBase, LazEditTextAttributes;
+  LazLoggerBase, LazEditTextAttributes, EditorOptionsIntf;
 
 Const
   DefaultViewFontSize        = 3;
@@ -212,7 +212,7 @@ begin
     LineHighlightColor.Background := clNone;
     LineHighlightColor.Foreground := clNone;
     end;
-  SourceEditorManagerIntf.GetEditorControlSettings(FMiniSynEdit);
+  IDEEditorOptions.GetSynEditorSettings(FMiniSynEdit);
 //  FMiniSynEdit.SelectionMode:=;
   FMiniSynEdit.Keystrokes.Clear;
   AddKey(ecUp,KeyToShortCut(VK_UP,[]));
