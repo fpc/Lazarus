@@ -306,7 +306,7 @@ type
     (* ------------------ *
      * Scan               *
      * ------------------ *)
-    function PrepareLines(AMinimumRequiredLineIdx: IntIdx; AMaxTime: integer = 0): boolean; virtual; // true = all done
+    function PrepareLines(AMinimumRequiredLineIdx: IntIdx = -1; AMaxTime: integer = 0): boolean; virtual; // true = all done
     procedure MarkUnprepared(AFirstLineIdx: IntIdx = 0; ALastLineIdx: IntIdx = -1); virtual;
     function FirstUnpreparedLine: IntIdx; virtual;
 

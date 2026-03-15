@@ -38,7 +38,7 @@ uses
   SynEditMarkupSpecialLine, SynEditMarkup, SynCompletion,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
-  EditorSyntaxHighlighterDef, LazEditTextAttributes,
+  EditorSyntaxHighlighterDef, LazEditTextAttributes, LazEditHighlighter,
   // IdeConfig
   IDEProcs, LazConf,
   // IDE
@@ -665,7 +665,7 @@ begin
     Attri := TLazEditTextAttribute(AttriList[Length(AttriList) - 1]);
 
   if Attri = nil then
-    Attri := FCurrentHighlighter.WhitespaceAttribute;
+    Attri := FCurrentHighlighter.GetTokenClassAttribute(tcWhiteSpace);
   if FMouseDownAttr = nil then
     FMouseDownAttr := Attri;
 
@@ -1609,7 +1609,7 @@ begin
     try
       for a := Low(PreviewEdits) to High(PreviewEdits) do begin
         if UseSyntaxHighlightCheckBox.Down then
-          PreviewEdits[a].Highlighter := FCurrentHighlighter
+          PreviewEdits[a].Highlighter := FCurrentHighlighter as TSynCustomHighlighter
         else
           PreviewEdits[a].Highlighter := nil;
         PreviewEdits[a].Lines.Text := EditorOpts.HighlighterList[CurLanguageID].SampleSource;

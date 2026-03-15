@@ -87,7 +87,7 @@ const
 
 type
   TPreviewPasSyn = TIDESynFreePasSyn;
-  TSrcIDEHighlighter = TSynCustomHighlighter;
+  TSrcIDEHighlighter = TLazEditCustomHighlighter;
   // TSynPositionHighlighter - minimum implementation needed.
   TNonSrcIDEHighlighter = class(TSynPositionHighlighter); // Hold colors, not related to SourceEditor
 
@@ -392,7 +392,7 @@ type
   private
     FDefaultAttribute: TColorSchemeAttribute;
     FAttributes: TQuickStringlist; // TColorSchemeAttribute
-    FHighlighter: TSynCustomHighlighter;
+    FHighlighter: TLazEditCustomHighlighter;
     FIdeHighlighterID: TIdeSyntaxHighlighterID;
     FOwner: TColorScheme;
     FLanguageName: String;
@@ -426,7 +426,7 @@ type
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
       Defaults: TColorSchemeLanguage);
     procedure ApplyTo(ASynEdit: TSynEdit); // Write markup, etc
-    procedure ApplyTo(AHLighter: TSynCustomHighlighter);
+    procedure ApplyTo(AHLighter: TLazEditCustomHighlighter);
     function  AttributeCount: Integer;
     property  Name: String read GetName;
     property  IdeHighlighterID: TIdeSyntaxHighlighterID read FIdeHighlighterID;
@@ -436,7 +436,7 @@ type
               read GetAttributeByEnum;
     property  AttributeAtPos[Index: Integer]: TColorSchemeAttribute read GetAttributeAtPos;
     property  DefaultAttribute: TColorSchemeAttribute read FDefaultAttribute;
-    property  SharedHighlighter: TSynCustomHighlighter read FHighlighter;
+    property  SharedHighlighter: TLazEditCustomHighlighter read FHighlighter;
     property  SupportsFileExt: Boolean read GetSupportsFileExt;
   end;
 
@@ -482,7 +482,7 @@ type
     // IColorSchemeList
     function GetScheme(AnIndex: Integer): IColorScheme;
     function GetScheme(AName: String): IColorScheme;
-    function GetCurrentSchemeForHighlighter(AnHiglighter: TObject {TSynCustomHighlighter}): IColorScheme;
+    function GetCurrentSchemeForHighlighter(AnHiglighter: TObject {TLazEditCustomHighlighter}): IColorScheme;
     function GetCurrentSchemeForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID): IColorScheme;
     procedure RegisterChangedHandler(AnHandler: TNotifyEvent);
     procedure UnregisterChangedHandler(AnHandler: TNotifyEvent);
@@ -953,10 +953,10 @@ type
 
     property Captions       [AnID: TIdeSyntaxHighlighterID]: String  read GetCaptions;
     property Names          [AnID: TIdeSyntaxHighlighterID]: String  read GetNames;
-    property SynHlClasses   [AnID: TIdeSyntaxHighlighterID]: TClass  read GetSynHlClasses;     // class of TSynCustomHighlighter
+    property SynHlClasses   [AnID: TIdeSyntaxHighlighterID]: TClass  read GetSynHlClasses;     // class of TLazEditCustomHighlighter
 deprecated 'NONOONONONONONOONON only create ONE ????';
-    property SharedInstances[AnID: TIdeSyntaxHighlighterID]: TObject read GetSharedInstances; // TSynCustomHighlighter
-    property SharedSynInstances[AnID: TIdeSyntaxHighlighterID]: TSrcIDEHighlighter read GetSharedSynInstances; // TSynCustomHighlighter
+    property SharedInstances[AnID: TIdeSyntaxHighlighterID]: TObject read GetSharedInstances;
+    property SharedSynInstances[AnID: TIdeSyntaxHighlighterID]: TSrcIDEHighlighter read GetSharedSynInstances;
   end;
 
   TMouseOptGutterLeftType = (
@@ -6888,7 +6888,7 @@ var
   Attrib: TColorSchemeAttribute;
 begin
   if Assigned(ASynHL) then begin
-    Scheme := GetColorSchemeLanguage({TSynCustomHighlighter(}ASynHL);
+    Scheme := GetColorSchemeLanguage(ASynHL);
   end else begin
     SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[DefaultColorSchemeName];
     if SchemeGrp = nil then
@@ -7953,9 +7953,10 @@ begin
   // Version 5 and before stored the global background on the Whitespace attribute.
   // If a whitespace Attribute was loaded (UseSchemeGlobals=false) then copy it
   if (FormatVersion <= 5) and (DefaultAttribute <> nil)
-  and (FHighlighter <> nil) and (FHighlighter.WhitespaceAttribute <> nil) then
+  //and (FHighlighter <> nil) and (FHighlighter.WhitespaceAttribute <> nil) then
+  and (FHighlighter <> nil) and (FHighlighter.GetTokenClassAttribute(tcWhiteSpace) <> nil) then
   begin
-    CurAttr := Attribute[FHighlighter.WhitespaceAttribute.StoredName];
+    CurAttr := Attribute[FHighlighter.GetTokenClassAttribute(tcWhiteSpace).StoredName];
     if (CurAttr <> nil) and not CurAttr.UseSchemeGlobals then
       DefaultAttribute.Background := CurAttr.Background;
   end;
@@ -8245,7 +8246,7 @@ begin
   end;
 end;
 
-procedure TColorSchemeLanguage.ApplyTo(AHLighter: TSynCustomHighlighter);
+procedure TColorSchemeLanguage.ApplyTo(AHLighter: TLazEditCustomHighlighter);
 var
   i: Integer;
   Attr: TColorSchemeAttribute;
@@ -8302,7 +8303,7 @@ end;
 function TColorScheme.GetLanguageForHighlighter(
   AnHiglighter: TLazEditCustomHighlighter): IColorSchemeLanguage;
 begin
-  Result := ColorSchemeBySynHl[AnHiglighter as TSynCustomHighlighter];
+  Result := ColorSchemeBySynHl[AnHiglighter];
 end;
 
 function TColorScheme.GetColorScheme(Index: integer): TColorSchemeLanguage;
@@ -8459,7 +8460,7 @@ function TColorSchemeFactory.GetCurrentSchemeForHighlighter(AnHiglighter: TObjec
 begin
   Result := nil;
   if EditorOpts <> nil then
-    Result := EditorOpts.UserColorSchemeGroup.GetColorSchemeGroup(EditorOpts.ReadColorScheme((AnHiglighter as TSynCustomHighlighter).LanguageName));
+    Result := EditorOpts.UserColorSchemeGroup.GetColorSchemeGroup(EditorOpts.ReadColorScheme((AnHiglighter as TSrcIDEHighlighter).LanguageName));
 end;
 
 function TColorSchemeFactory.GetCurrentSchemeForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID
@@ -8494,7 +8495,7 @@ procedure TColorSchemeFactory.InternalAddAttribute(AnAttrGroup: integer;
   AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;
   AFeatures: TColorSchemeAttributeFeatures; ADefaults: TObject);
 var
-  h: TSynCustomHighlighter;
+  h: TSrcIDEHighlighter;
   i: Integer;
   cs: TColorScheme;
   csl: TColorSchemeLanguage;
