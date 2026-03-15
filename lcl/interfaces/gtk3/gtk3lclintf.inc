@@ -803,9 +803,14 @@ begin
     ADesc.BitsPerPixel := 32
   else
   if ADesc.BitsPerPixel > 1 then
-    ADesc.BitsPerPixel := 8;
-  if (riqfMask in AFlags) then
-    RawImage_DescriptionFromDrawable(ADesc, nil, riqfAlpha in AFlags);
+    ADesc.BitsPerPixel := 8
+  else
+  if ADesc.BitsPerPixel = 32 then
+  begin
+    ADesc.Depth := 32;
+    ADesc.AlphaPrec := 8;
+    ADesc.AlphaShift := 24;
+  end;
 end;
 
 {------------------------------------------------------------------------------
