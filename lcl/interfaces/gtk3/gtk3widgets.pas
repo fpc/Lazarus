@@ -5934,6 +5934,9 @@ end;
 function TGtk3Page.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   image: PGtkImage;
+  AMonitor: PGdkMonitor;
+  AScaleFactor: gint;
+  AIconSize: TGtkIconSize;
 begin
   FWidgetType := FWidgetType + [wtLayout];
   FPageBox := TGtkBox.new(GTK_ORIENTATION_HORIZONTAL, 4);
@@ -5942,10 +5945,15 @@ begin
 
   FPageLabel:= TGtkLabel.new(PChar(Params.Caption));
   FPageLabel^.set_use_underline(true);
-  if (Screen.PixelsPerInch > 100) then
-    image := gtk_image_new_from_icon_name('window-close', GTK_ICON_SIZE_LARGE_TOOLBAR)
+  AScaleFactor := 1;
+  AMonitor := gdk_display_get_primary_monitor(gdk_display_get_default);
+  if Assigned(AMonitor) then
+    AScaleFactor := AMonitor^.get_scale_factor;
+  if (AScaleFactor > 1) or (Screen.PixelsPerInch > 100) then
+    AIconSize := GTK_ICON_SIZE_LARGE_TOOLBAR
   else
-    image := gtk_image_new_from_icon_name('window-close', GTK_ICON_SIZE_SMALL_TOOLBAR);
+    AIconSize := GTK_ICON_SIZE_SMALL_TOOLBAR;
+  image := gtk_image_new_from_icon_name('window-close', AIconSize);
   FCloseButton := gtk_button_new();
   gtk_button_set_relief(PGtkButton(FCloseButton), GTK_RELIEF_NONE);
   gtk_container_add(PGtkContainer(FCloseButton), image);
