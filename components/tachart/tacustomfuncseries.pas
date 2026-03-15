@@ -68,10 +68,12 @@ type
     type
       TOnPoint = procedure (AXg, AXa: Double) of object;
   protected
+    FAdaptivePts: Boolean;
     FAxisToGraphXr, FAxisToGraphYr, FGraphToAxisXr: TTransformFunc;
     FExtent: TDoubleRect;
     FGraphStep: Double;
     FSeries: TCustomChartSeries;
+    procedure ForEachAdaptivePoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); virtual;
     procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); virtual; abstract;
   public
     constructor Create(ASeries: TCustomChartSeries; ACalc: TTransformFunc;
@@ -87,10 +89,14 @@ type
   private
     FDomainExclusions: TIntervalList;
   protected
+    FEpsilon: Integer;
+    FPixelOversampling: Integer;
+    procedure ForEachAdaptivePoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); override;
     procedure ForEachPoint(AXg, AXMax: Double; AOnMoveTo, AOnLineTo: TOnPoint); override;
   public
     constructor Create(ASeries: TCustomChartSeries; ADomainExclusions: TIntervalList;
       ACalc: TTransformFunc; AStep: Integer; AEnhancedPen: Boolean = false);
+    procedure SetAdaptiveMode(APixelOversampling, AEpsilon: Integer);
   end;
 
   TPointsDrawFuncHelper = class(TCustomDrawFuncHelper)
@@ -135,7 +141,10 @@ begin
   FExtentYMin := @AMinY;
   FExtentYMax := @AMaxY;
   with XRange do
-    ForEachPoint(AMinX, AMaxX, @UpdateExtent, @UpdateExtent);
+    if FAdaptivePts then
+      ForEachAdaptivePoint(FStart, FEnd, @UpdateExtent, @UpdateExtent)
+    else
+      ForEachPoint(AMinX, AMaxX, @UpdateExtent, @UpdateExtent);
 end;
 
 procedure TCustomDrawFuncHelper.CheckForNearestPoint(AXg, AXa: Double);
@@ -194,10 +203,21 @@ begin
   savedPenStyle := ADrawer.GetPenStyle;
 
   with XRange do
-    ForEachPoint(FStart, FEnd, @MoveTo, @LineTo);
+    if FAdaptivePts then
+      ForEachAdaptivePoint(FStart, FEnd, @MoveTo, @LineTo)
+    else
+      ForEachPoint(FStart, FEnd, @MoveTo, @LineTo);
 
   ADrawer.SetEnhancedBrokenLines(false);
   ADrawer.SetPenStyle(savedPenStyle);
+end;
+
+procedure TCustomDrawFuncHelper.ForEachAdaptivePoint(AXg, AXMax: Double;
+  AOnMoveTo, AOnLineTo: TOnPoint);
+begin
+  Unused(AXg, AXMax);
+  Unused(AOnMoveTo, AOnLineTo);
+  raise EChartError.Create('Adaptive point spacing not implemented for this type of series.');
 end;
 
 function TCustomDrawFuncHelper.GetNearestPoint(
@@ -221,9 +241,14 @@ begin
     else
       r := DoubleInterval(NegInfinity, SafeInfinity);
   with XRange do
-    ForEachPoint(
-      Max(r.FStart, FStart), Min(r.FEnd, FEnd),
-      @CheckForNearestPoint, @CheckForNearestPoint);
+    if FAdaptivePts then
+      ForEachAdaptivePoint(
+        Max(r.FStart, FStart), Min(r.FEnd, FEnd),
+        @CheckForNearestPoint, @CheckForNearestPoint)
+    else
+      ForEachPoint(
+        Max(r.FStart, FStart), Min(r.FEnd, FEnd),
+        @CheckForNearestPoint, @CheckForNearestPoint);
 
   Result := AResults.FDist < Sqr(AParams.FRadius) + 1;
 end;
@@ -233,6 +258,8 @@ var
   p, t: TDoublePoint;
   inExtent: Boolean;
 begin
+  if IsNaN(AXg) then
+    exit;
   CalcAt(AXg, AXa, p, inExtent);
   if IsNaN(p) then
     exit;
@@ -311,6 +338,201 @@ begin
     AXg := xg1;
     xa := xa1;
   end;
+end;
+
+// "Swing-Door-Trend Algorithm" (SDTA) to reduce amount of data points. Samples
+// differing in y by less than FEpsilon pixels are dropped. This allows
+// massive oversampling to better detect sharp maxima and minima of the function.
+// https://softwaredocs.weatherford.com/cygnet/94/Content/Topics/History/CygNet%20Swinging%20Door%20Compression.htm
+//
+// Adapted from code by forum user "hedgehog":
+// https://forum.lazarus.freepascal.org/index.php/topic,73628.msg578118.html#msg578118
+procedure TDrawFuncHelper.ForEachAdaptivePoint(AXg, AXMax: Double;
+  AOnMoveTo, AOnLineTo: TOnPoint);
+var
+  dx: Double;    // Step size to advance along curve
+  complete: Boolean;
+
+  procedure DoLineTo(AGraphPt, AAxisPt: TDoublePoint);
+  begin
+    if FSeries.IsRotated then
+      AOnLineTo(AGraphPt.Y, AAxisPt.Y)
+    else
+      AOnLineTo(AGraphPt.X, AAxisPt.X);
+  end;
+
+  procedure DoMoveTo(AGraphPt, AAxisPt: TDoublePoint);
+  begin
+    if FSeries.IsRotated then
+      AOnMoveTo(AGraphPt.Y, AAxisPt.Y)
+    else
+      AOnMoveTo(AGraphPt.X, AAxisPt.X);
+  end;
+
+  // Function returns false when drawing operations already have been done
+  // due to DomainExclusion. Otherwise the calling procedure must continue to
+  // find the next drawing point by SDTA and draw the line segment.
+  function GetNextPointOfLine(var xg, xa: Double; var hint: Integer;
+    out AGraphPt, AAxisPt: TDoublePoint): Boolean;
+  var
+    xg1, xa1, ya: Double;
+  begin
+    Result := true;
+
+    xg1 := xg + dx;
+    if xg1 >= AXMax then
+    begin
+      xg1 := AXMax;
+      complete := true;
+    end;
+    xa1 := FGraphToAxisXr(xg1);
+
+    // Check for domain exclusions between xa and xa1
+    if Assigned(FDomainExclusions) and FDomainExclusions.Intersect(xa, xa1, hint) then
+    begin
+      AOnLineTo(xg, xa);
+      xa := xa1;
+      xg := FAxisToGraphXr(xa);
+      Result := false;
+      if xg > AXMax then
+      begin
+        // Domain exclusion is at the end of the curve
+        complete := true;
+        AGraphPt := FMakeDP(NaN, NaN);   // Prevent final DoLineTo
+        AAxisPt := FMakeDP(NaN, NaN);
+        exit;
+      end else
+        AOnMoveTo(xg, xa);
+    end else
+    begin
+      xg := xg1;
+      xa := FGraphToAxisXr(xg);
+    end;
+
+    ya := FCalc(xa);
+    AGraphPt := FMakeDP(xg, FAxisToGraphYr(ya));
+    AAxisPt := FMakeDP(xa, ya);
+  end;
+
+  procedure CalcSlopes(ABasePoint, APoint: TDoublePoint;
+    out LowSlope, HighSlope: Double);
+  var
+    imgY: Integer;
+    delta: Double;
+  begin
+    if FSeries.IsRotated then
+    begin
+      delta := APoint.Y - ABasePoint.Y;
+      imgY := FChart.XGraphToImage(APoint.X);
+      LowSlope := (FChart.XImageToGraph(imgY - FEpsilon) - ABasePoint.X) / delta;
+      HighSlope := (FChart.XImageToGraph(imgY + FEpsilon) - ABasePoint.X) / delta;
+    end else
+    begin
+      delta := APoint.X - ABasePoint.X;
+      imgY := FChart.YGraphToImage(APoint.Y);
+      LowSlope := (FChart.YImageToGraph(imgY + FEpsilon) - ABasePoint.Y) / delta;
+      HighSlope := (FChart.YImageToGraph(imgY - FEpsilon) - ABasePoint.Y) / delta;
+    end;
+  end;
+
+var
+  archPg: TDoublePoint;         // "archived point", in graph coordinates
+  heldPa: TDoublePoint;         // "held point", in axis coordinates
+  heldPg: TDoublePoint;         // "held point", in graph coordinates
+  testPa: TDoublePoint;         // "new (test) point", in axis coordinates
+  testPg: TDoublePoint;         // "new (test) point", in graph coordinates;
+  xa, ya: Double;               // x and y in axis coordinates
+  upperSlope, lowerSlope, testSlope: Double;  // slopes for SDTA testing
+  tmpUpperSlope, tmpLowerSlope: Double;
+  hint: Integer;                // Index of found domain exclusion
+  onePx: Double;                // Size of 1 pixel in graph units
+begin
+  // We'll calculate FPixelOverSampling samples per pixel differing in x by dx.
+  if FSeries.IsRotated then
+    onePx := FChart.YImageToGraph(1) - FChart.YImageToGraph(0)
+  else
+    onePx := FChart.XImageToGraph(1) - FChart.XImageToGraph(0);
+  dx := abs(onePx) / FPixelOverSampling;
+
+  xa := FGraphToAxisXr(AXg);
+  hint := 0;
+  if Assigned(FDomainExclusions) and FDomainExclusions.Intersect(xa, xa, hint) then
+    AXg := FAxisToGraphXr(xa);
+
+  if AXg < AXMax then
+    AOnMoveTo(AXg, xa)
+  else
+    exit;
+
+  // Get the first point - this is the "archived point"
+  ya := FCalc(xa);
+  archPg := FMakeDP(AXg, FAxisToGraphXr(ya));
+
+  // Get next point - this will be the "held point"
+  // Hopefully there is no DomainExclusion between archived and held point... To be fixed!
+  GetNextPointOfLine(AXg, xa, hint, heldPg, heldPa);
+
+  complete := false;
+  while not complete do
+  begin
+    // Calculate the +/- epsilon slopes
+    CalcSlopes(archPg, heldPg, lowerSlope, upperSlope);
+
+    while (not complete) do begin
+      // Get next point - this will be a "test point"
+      if GetNextPointOfLine(AXg, xa, hint, testPg, testPa) then
+      begin
+        // slope of the line archived-to-test-point
+        if FSeries.IsRotated then
+          testSlope := (testPg.X - archPg.X)/(testPg.Y - archPg.Y)
+        else
+          testSlope := (testPg.Y - archPg.Y)/(testPg.X - archPg.X);
+
+        if not InRange(testSlope, lowerSlope, upperSlope) or (testPg.X >= archPg.X + FGraphStep) then
+        begin
+          // new point is outside the critical aperture window
+          // draw line from archived to held point
+          DoLineTo(heldPg, heldPa);
+
+          // held point becomes new archived point
+          //archPa := heldPa;
+          archPg := heldPg;
+
+          // test point becomes new held point
+          heldPa := testPa;
+          heldPg := testPg;
+
+          // Return to outer loop
+          break;
+        end;
+
+        // Test point becomes the held point
+        heldPg := testPg;
+        heldPa := testPa;
+
+        // Update the slopes of the critical aperture window for the new held point
+        CalcSlopes(archPg, heldPg, tmpLowerSlope, tmpUpperSlope);
+        if tmpLowerSlope > lowerSlope then lowerSlope := tmpLowerSlope;
+        if tmpUpperSlope < upperSlope then upperSlope := tmpUpperSlope;
+      end else
+      if not complete then
+      begin
+        // This part is entered when the prev GetNextPointOfLine had detected
+        // a DomainExclusion.
+        archPg := testPg;
+        GetNextPointOfLine(AXg, xa, hint, heldPg, heldPa);
+        break;
+      end;
+    end;
+  end;
+  DoLineTo(testPg, testPa);
+end;
+
+procedure TDrawFuncHelper.SetAdaptiveMode(APixelOversampling, AEpsilon: Integer);
+begin
+  FAdaptivePts := true;
+  FPixelOversampling := APixelOversampling;
+  FEpsilon := AEpsilon;
 end;
 
 

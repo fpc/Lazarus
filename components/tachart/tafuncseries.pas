@@ -24,6 +24,8 @@ uses
 
 const
   DEF_FUNC_STEP = 2;
+  DEF_ADAPTIVE_FUNC_STEP = 20;
+  DEF_PIXEL_OVERSAMPLING = 16;
   DEF_SPLINE_DEGREE = 3;
   DEF_SPLINE_STEP = 4;
   DEF_FIT_STEP = 4;
@@ -36,21 +38,36 @@ type
 
   TFuncSeriesStep = 1..MaxInt;
 
+  TFuncStepMode = (smConstant, smAdaptive);
+
   TCustomFuncSeries = class(TBasicFuncSeries)
   strict private
     FDomainExclusions: TIntervalList;
+    FEpsilon: Integer;
     FExtentAutoY: Boolean;
     FPen: TEnhancedChartPen;
+    FPixelOverSampling: Integer;
+    FSavedStep: array[TFuncStepMode] of TFuncSeriesStep;
     FStep: TFuncSeriesStep;
+    FStepMode: TFuncStepMode;
 
+    procedure SetEpsilon(AValue: Integer);
     procedure SetExtentAutoY(AValue: Boolean);
     procedure SetPen(AValue: TEnhancedChartPen);
+    procedure SetPixelOverSampling(AValue: Integer);
     procedure SetStep(AValue: TFuncSeriesStep);
+    procedure SetStepMode(AValue: TFuncStepMode);
 
   protected
     function DoCalculate(AX: Double): Double; virtual; abstract;
     procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
+    property Epsilon: Integer
+      read FEpsilon write FEpsilon default 1;
+    property PixelOversampling: Integer
+      read FPixelOverSampling write SetPixelOversampling default DEF_PIXEL_OVERSAMPLING;
+    property StepMode: TFuncStepMode
+      read FStepMode write SetStepMode default smConstant;
 
   public
     procedure Assign(ASource: TPersistent); override;
@@ -85,6 +102,9 @@ type
     procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
   published
+    property Epsilon;
+    property PixelOverSampling;
+    property StepMode;
     property OnCalculate: TFuncCalculateEvent
       read FOnCalculate write SetOnCalculate;
   end;
@@ -602,9 +622,12 @@ begin
   if ASource is TCustomFuncSeries then
     with TCustomFuncSeries(ASource) do begin
       Self.FDomainExclusions.Assign(FDomainExclusions);
+      Self.FEpsilon := FEpsilon;
       Self.FExtentAutoY := FExtentAutoY;
       Self.Pen := FPen;
+      Self.FPixelOverSampling := FPixelOverSampling;
       Self.FStep := FStep;
+      Self.FStepMode := FStepMode;
     end;
   inherited Assign(ASource);
 end;
@@ -616,7 +639,12 @@ begin
   FDomainExclusions.OnChange := @StyleChanged;
   FPen := TEnhancedChartPen.Create;
   FPen.OnChange := @StyleChanged;
-  FStep := DEF_FUNC_STEP;
+  FPixelOverSampling := DEF_PIXEL_OVERSAMPLING;
+  FSavedStep[smConstant] := DEF_FUNC_STEP;
+  FSavedStep[smAdaptive] := DEF_ADAPTIVE_FUNC_STEP;
+  FStepMode := smConstant;
+  FStep := FSavedStep[FStepMode];
+  FEpsilon := 1;
 end;
 
 destructor TCustomFuncSeries.Destroy;
@@ -637,8 +665,10 @@ begin
     ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
   else
     ADrawer.SetPenColor(Pen.Color);
-  with TDrawFuncHelper.Create( Self, DomainExclusions, @DoCalculate, Step, Pen.EnhancedBrokenLines) do
+  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step, Pen.EnhancedBrokenLines) do
     try
+      if (Self.StepMode = smAdaptive) then
+        SetAdaptiveMode(Self.PixelOversampling, Self.Epsilon);
       DrawFunction(ADrawer);
     finally
       Free;
@@ -657,6 +687,8 @@ begin
 
   with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
     try
+      if (Self.StepMode = smAdaptive) then
+        SetAdaptiveMode(Self.PixelOversampling, Self.Epsilon);
       ymin := SafeInfinity;
       ymax := NegInfinity;
       CalcAxisExtentY(ABounds.a.X, ABounds.b.X, ymin, ymax);
@@ -688,10 +720,19 @@ begin
 
   with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
     try
+      if (Self.StepMode = smAdaptive) then
+        SetAdaptiveMode(Self.PixelOversampling, Self.Epsilon);
       Result := GetNearestPoint(AParams, AResults);
     finally
       Free;
     end;
+end;
+
+procedure TCustomFuncSeries.SetEpsilon(AValue: Integer);
+begin
+  if FEpsilon = AValue then exit;
+  FEpsilon := abs(AValue);
+  UpdateParentChart;
 end;
 
 procedure TCustomFuncSeries.SetExtentAutoY(AValue: Boolean);
@@ -712,6 +753,23 @@ procedure TCustomFuncSeries.SetStep(AValue: TFuncSeriesStep);
 begin
   if FStep = AValue then exit;
   FStep := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomFuncSeries.SetStepMode(AValue: TFuncStepMode);
+begin
+  if FStepMode = AValue then exit;
+  FSavedStep[FStepMode] := FStep;
+  FStepMode := AValue;
+  FStep := FSavedStep[FStepMode];
+  UpdateParentChart;
+end;
+
+procedure TCustomFuncSeries.SetPixelOverSampling(AValue: Integer);
+begin
+  if FPixelOverSampling = AValue then exit;
+  if AValue <= 0 then AValue := 1;
+  FPixelOverSampling := AValue;
   UpdateParentChart;
 end;
 
