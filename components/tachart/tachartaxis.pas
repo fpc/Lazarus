@@ -505,7 +505,6 @@ begin
   TickLength := DEF_TICK_LENGTH;
   TickWidth := DEF_TICK_WIDTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
-  FTitle.LabelFont.Orientation := FONT_VERTICAL;  // default alignment is calLeft --> vertical title
   FMarginsForMarks := true;
   FMarks.SetInsideDir(1, 0);
   FOrthogonalAxisIndex := -1;
@@ -1183,28 +1182,11 @@ begin
   FAlignment := AValue;
   // Define the "inside" direction of an axis such that rotated labels with
   // rotation center at the text start or end never reach into the chart.
-  // Rotate the title of left/right axes by 90 degrees.
   case FAlignment of
-    calBottom:
-      begin
-        FMarks.SetInsideDir(0, +1);
-        FTitle.LabelFont.Orientation := 0;
-      end;
-    calTop:
-      begin
-        FMarks.SetInsideDir(0, -1);
-        FTitle.LabelFont.Orientation := 0;
-      end;
-    calLeft:
-      begin
-        FMarks.SetInsideDir(+1, 0);
-        FTitle.LabelFont.Orientation := FONT_VERTICAL;
-      end;
-    calRight:
-      begin
-        FMarks.SetInsideDir(-1, 0);
-        FTitle.LabelFont.Orientation := FONT_VERTICAL;
-      end;
+    calBottom: FMarks.SetInsideDir(0, +1);
+    calTop   : FMarks.SetInsideDir(0, -1);
+    calLeft  : FMarks.SetInsideDir(+1, 0);
+    calRight : FMarks.SetInsideDir(-1, 0);
   end;
   StyleChanged(Self);
 end;
