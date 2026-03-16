@@ -5236,19 +5236,15 @@ end;
 
 procedure TGtk3Entry.SetSelText(const ASelText: string);
 var
-  AEntry: PGtkEntry;
-  AText: Pgchar;
-  APos: SizeInt;
+  AEditable: PGtkEditable;
+  APos: gint;
 begin
   if not IsWidgetOK then
     exit;
-  AEntry := PGtkEntry(Widget);
-  AText := AEntry^.get_text;
-  if AText = nil then
-    exit;
-  APos := Pos(aSelText, StrPas(AText));
-  if APos > 0 then
-    PGtkEditable(AEntry)^.select_region(APos - 1, APos - 1 + length(ASelText));
+  AEditable := PGtkEditable(Widget);
+  AEditable^.delete_selection;
+  APos := AEditable^.get_position;
+  AEditable^.insert_text(PgChar(ASelText), Length(ASelText), @APos);
 end;
 
 function TGtk3Entry.GetTextHint:string;
@@ -8450,21 +8446,14 @@ end;
 procedure TGtk3Memo.setSelText(const ANewSelText: string);
 var
   StartIter, EndIter: TGtkTextIter;
-  AText: PChar;
-  StartPos: gint;
   Buffer: PGtkTextBuffer;
 begin
   Buffer := PGtkTextView(GetContainerWidget)^.get_buffer;
-  gtk_text_buffer_get_start_iter(Buffer, @StartIter);
-  gtk_text_buffer_get_end_iter(Buffer, @EndIter);
-  AText := gtk_text_buffer_get_text(Buffer, @StartIter, @EndIter, False);
-  StartPos := Pos(ANewSelText, StrPas(AText)) - 1;
-  if StartPos >= 0 then
-  begin
-    gtk_text_buffer_get_iter_at_offset(Buffer, @StartIter, StartPos);
-    gtk_text_buffer_get_iter_at_offset(Buffer, @EndIter, StartPos + Length(ANewSelText));
-    gtk_text_buffer_select_range(Buffer, @StartIter, @EndIter);
-  end;
+  if gtk_text_buffer_get_has_selection(Buffer) then
+    gtk_text_buffer_delete_selection(Buffer, True, True);
+  gtk_text_buffer_get_iter_at_mark(Buffer, @StartIter,
+    gtk_text_buffer_get_insert(Buffer));
+  gtk_text_buffer_insert(Buffer, @StartIter, PgChar(ANewSelText), Length(ANewSelText));
 end;
 
 function TGtk3Memo.GetAlignment: TAlignment;
