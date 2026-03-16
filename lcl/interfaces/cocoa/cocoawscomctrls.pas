@@ -6,16 +6,13 @@ interface
 {$modeswitch objectivec2}
 {$include cocoadefines.inc}
 
-{.$DEFINE COCOA_DEBUG_TABCONTROL}
-{.$DEFINE COCOA_DEBUG_LISTVIEW}
-
 uses
   Classes, Math, SysUtils,
-  LCLType, Controls, ComCtrls, LCLMessageGlue, LMessages,
+  LCLType, Controls, ComCtrls,
   WSComCtrls,
   MacOSAll, CocoaAll,
   CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaConfig, CocoaUtils,
-  CocoaTabControls, CocoaButtons, CocoaStatusBar, CocoaProgressIndicator, CocoaSlider;
+  CocoaButtons, CocoaStatusBar, CocoaProgressIndicator, CocoaSlider;
 
 type
 
@@ -53,25 +50,6 @@ type
     class procedure SetWrap(const AUpDown: TCustomUpDown; ADoWrap: Boolean); override;
   end;
 
-  { TCarbonWSUpDown }
-
-  TCarbonWSUpDown = class(TWSUpDown)
-  published
-  end;
-
-  { TCocoaWSToolButton }
-
-  TCocoaWSToolButton = class(TWSToolButton)
-  published
-  end;
-
-  { TCarbonWSToolBar }
-
-  TCarbonWSToolBar = class(TWSToolBar)
-  published
-    //class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
-  end;
-
   { TCocoaWSTrackBar }
 
   TCocoaWSTrackBar = class(TWSTrackBar)
@@ -83,18 +61,6 @@ type
     class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;
     class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
-  end;
-
-  { TCocoaWSCustomTreeView }
-
-  TCocoaWSCustomTreeView = class(TWSCustomTreeView)
-  published
-  end;
-
-  { TCocoaWSTreeView }
-
-  TCocoaWSTreeView = class(TWSTreeView)
-  published
   end;
 
 implementation

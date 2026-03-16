@@ -7,23 +7,16 @@ interface
 {$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_TABCONTROL}
-{.$DEFINE COCOA_DEBUG_LISTVIEW}
 
 uses
-  Classes, Math, SysUtils,
+  Classes, SysUtils,
   LCLType, Controls, ComCtrls, LCLMessageGlue, LMessages,
   WSComCtrls,
-  MacOSAll, CocoaAll,
+  CocoaAll,
   CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaConfig, CocoaUtils,
-  CocoaTabControls, CocoaButtons, CocoaStatusBar, CocoaProgressIndicator, CocoaSlider;
+  CocoaTabControls;
 
 type
-
-  { TCocoaWSTabSheet }
-
-  TCocoaWSTabSheet = class(TWSTabSheet)
-  published
-  end;
 
   { TLCLTabControlCallback }
 
