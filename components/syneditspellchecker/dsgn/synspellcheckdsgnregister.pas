@@ -66,8 +66,9 @@ begin
   // Register colors before the IDE loads them
   AttribGroupIdx := IdeColorSchemeList.RegisterAttributeGroup(@SynSpellOptSpellChecking);
   for i := 0 to IdeSyntaxHighlighters.Count - 1 do
-    IdeColorSchemeList.AddAttribute(AttribGroupIdx, i, 'SynSpellerMarkupError',
-      @AttribNameSpellError, [hafBackColor..hafFrameEdges, hafMarkupAllOverview], SpellErrorAttrib);
+    if not (IdeSyntaxHighlighters.SharedInstances[i] is TNonSrcIDEHighlighter) then
+      IdeColorSchemeList.AddAttribute(AttribGroupIdx, i, 'SynSpellerMarkupError',
+        @AttribNameSpellError, [hafBackColor..hafFrameEdges, hafMarkupAllOverview], SpellErrorAttrib);
 end;
 
 procedure FreeAttribs;
