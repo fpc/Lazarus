@@ -816,6 +816,8 @@ begin
               G_TYPE_NONE, 'toolbutton', nil,
               gtk_button_get_type, 'button', 'toolbutton',
               State, AScreen);
+            if Details.State in [1, 4] then
+              gtk_style_context_add_class(Context, 'flat');
             gtk_render_background(Context, Cr, X, Y, Width, Height);
             gtk_render_frame(Context, Cr, X, Y, Width, Height);
             if GTK_STATE_FLAG_FOCUSED in State then
@@ -827,6 +829,8 @@ begin
             // Arrow-only area: button background/frame + pan-down-symbolic icon.
             Context := MakeCtx3(gtk_toolbar_get_type, 'toolbar', nil, G_TYPE_NONE, 'toolbutton', nil,
               gtk_button_get_type, 'button', 'toolbutton', State, AScreen);
+            if Details.State in [1, 4] then
+              gtk_style_context_add_class(Context, 'flat');
             gtk_render_background(Context, Cr, X, Y, Width, Height);
             gtk_render_frame(Context, Cr, X, Y, Width, Height);
             ArrowSz := Min(Width, Height) div 2;
