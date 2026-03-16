@@ -120,7 +120,6 @@ begin
     // To not parse the FPC sources every time, the options are saved to a file.
     Options.LoadFromFile(ConfigFilename);
   end;
-  DebugLn(['Possible EnvVars: PP, FPCDIR, LAZARUSDIR, FPCTARGET, FPCTARGETCPU']);
   Options.InitWithEnvironmentVariables;
 
   if HasOption('submitter') then
