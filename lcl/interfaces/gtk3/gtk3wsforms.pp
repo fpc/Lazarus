@@ -485,16 +485,19 @@ begin
     if not IsFormDesign(AForm) and
       ((fsModal in AForm.FormState) or (AForm.BorderStyle = bsNone)) then
     begin
-      //wayland, remove grab
-      if Gtk3WidgetSet.IsWayland and (AWindow^.get_window_type = GTK_WINDOW_POPUP) and AWindow^.get_accept_focus
-        and not AWindow^.window^.get_pass_through then
-          gtk_device_grab_remove(PGtkWidget(AWindow),
-            gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)));
-      if AWindow^.transient_for <> nil then
+      if AWindow <> nil then
       begin
-        if (fsModal in AForm.FormState) and Gtk3IsGdkWindow(AWindow^.transient_for^.window) then
-          gdk_window_remove_filter(AWindow^.transient_for^.window, TGdkFilterFunc(@ModalFilter), AGtk3Widget);
-        AWindow^.set_transient_for(nil);
+        //wayland, remove grab
+        if Gtk3WidgetSet.IsWayland and (AWindow^.get_window_type = GTK_WINDOW_POPUP) and AWindow^.get_accept_focus
+          and not AWindow^.window^.get_pass_through then
+            gtk_device_grab_remove(PGtkWidget(AWindow),
+              gdk_seat_get_keyboard(gdk_display_get_default_seat(gdk_display_get_default)));
+        if AWindow^.transient_for <> nil then
+        begin
+          if (fsModal in AForm.FormState) and Gtk3IsGdkWindow(AWindow^.transient_for^.window) then
+            gdk_window_remove_filter(AWindow^.transient_for^.window, TGdkFilterFunc(@ModalFilter), AGtk3Widget);
+          AWindow^.set_transient_for(nil);
+        end;
       end;
     end;
   end;
