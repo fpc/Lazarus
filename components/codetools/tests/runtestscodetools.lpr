@@ -26,10 +26,14 @@ program runtestscodetools;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, sysutils, consoletestrunner, dom, fpcunit, LazLogger,
+  Classes, sysutils, dom,
+  // FPCUnit
+  fpcunit, consoletestrunner,
+  // LazUtils
+  LazLogger, LazUTF8, LazFileUtils,
+  // CodeTools
   CodeToolManager, CodeToolsConfig,
-  TestGlobals,
-  // non Pascal
+  // Test suites
   TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
@@ -42,6 +46,23 @@ uses
 
 const
   ConfigFilename = 'codetools.config';
+
+const
+  CDefaultLazarusSrcDirs: array of string = (
+    '..\..\..' // only current installation
+  );
+  CDefaultFPCSrcDirs: array of string = (
+    '..\..\..\fpc\3.2.2\source', // official installer
+    '..\..\..\..\fpcsrc' // another installations (e.g. FpcUpDeluxe)
+    {$IFDEF WINDOWS}
+    ,'C:\lazarus\fpc\3.2.2\source'
+    ,'C:\fpcsrc'
+    {$ENDIF}
+    {$IFDEF LINUX}
+    ,'/usr/share/fpcsrc/3.2.2'
+    ,'~/freepascal/fpc'
+    {$ENDIF}
+  );
 
 type
 
@@ -73,6 +94,22 @@ begin
 end;
 
 function TCTTestRunner.ParseOptions: Boolean;
+  //
+  function FindDefaultDir(Dirs: array of string): string;
+  var
+    lExeDir, lPath, lFullPath: string;
+  begin
+    lExeDir := ExtractFileDir(ParamStrUTF8(0));
+    for lPath in Dirs do
+    begin
+      // expand paths relative to the executable file
+      lFullPath := ExpandFileNameUTF8(lPath, lExeDir);
+      if DirectoryExistsUTF8(lFullPath) then
+        exit(lFullPath);
+    end;
+    result := '';
+  end;
+  //
 begin
   Result:=inherited ParseOptions;
 
@@ -91,9 +128,9 @@ begin
     FMachine := GetOptionValue('machine');
 
   if Options.FPCSrcDir='' then
-    Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
+    Options.FPCSrcDir:=FindDefaultDir(CDefaultFPCSrcDirs);
   if Options.LazarusSrcDir='' then
-    Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
+    Options.LazarusSrcDir:=FindDefaultDir(CDefaultLazarusSrcDirs);
 
   // some tests assume a working folder "components\codetools\tests"
   SetCurrentDirUTF8(ExtractFileDir(ParamStrUTF8(0)));
