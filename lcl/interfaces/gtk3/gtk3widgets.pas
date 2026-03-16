@@ -2480,55 +2480,199 @@ procedure TGtk3Widget.SetFontColor(AValue: TColor);
 var
   AColor: TGdkRGBA;
   i: TGtkStateType;
+  Provider: PGtkCssProvider;
+  CSSData: String;
+  RGBA: LongWord;
+  ATargetWidget: PGtkWidget;
 begin
-  if IsWidgetOK then
+  if not IsWidgetOK then Exit;
+
+  if [wtListBox, wtListView] * WidgetType <> [] then
+  begin
+    RGBA := ColorToRGB(AValue);
+    CSSData := Format('treeview.view { color: #%.2x%.2x%.2x; }',
+               [Red(RGBA), Green(RGBA), Blue(RGBA)]);
+    Provider := gtk_css_provider_new();
+    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(GetContainerWidget),
+                                   PGtkStyleProvider(Provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(Provider);
+  end else
+  if wtSpinEdit in WidgetType then
+  begin
+    RGBA := ColorToRGB(AValue);
+    CSSData := Format('spinbutton { color: #%.2x%.2x%.2x; }',
+               [Red(RGBA), Green(RGBA), Blue(RGBA)]);
+    Provider := gtk_css_provider_new();
+    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(FWidget),
+                                   PGtkStyleProvider(Provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(Provider);
+  end else
+  if wtEntry in WidgetType then
+  begin
+    RGBA := ColorToRGB(AValue);
+    CSSData := Format('entry { color: #%.2x%.2x%.2x; }',
+               [Red(RGBA), Green(RGBA), Blue(RGBA)]);
+    Provider := gtk_css_provider_new();
+    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(FWidget),
+                                   PGtkStyleProvider(Provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(Provider);
+  end else
+  if wtMemo in WidgetType then
+  begin
+    RGBA := ColorToRGB(AValue);
+    CSSData := Format('text { color: #%.2x%.2x%.2x; }',
+               [Red(RGBA), Green(RGBA), Blue(RGBA)]);
+    Provider := gtk_css_provider_new();
+    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(GetContainerWidget),
+                                   PGtkStyleProvider(Provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(Provider);
+  end else
+  if (wtComboBox in WidgetType) then
+  begin
+    ATargetWidget := PGtkComboBox(FWidget)^.get_child;
+    RGBA := ColorToRGB(AValue);
+    if PGtkComboBox(FWidget)^.has_entry then
+      CSSData := Format('entry { color: #%.2x%.2x%.2x; }', [Red(RGBA), Green(RGBA), Blue(RGBA)])
+    else
+      CSSData := Format('combobox button.combo cellview { color: #%.2x%.2x%.2x; }', [Red(RGBA), Green(RGBA), Blue(RGBA)]);
+    Provider := gtk_css_provider_new();
+    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(ATargetWidget),
+                                   PGtkStyleProvider(Provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(Provider);
+  end else
   begin
     AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
     if FWidget <> GetContainerWidget then
-    begin
       with FWidget^ do
-      begin
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
           override_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
-      end;
-    end;
     with GetContainerWidget^ do
-    begin
       for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
         override_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
-    end;
   end;
 end;
 
 procedure TGtk3Widget.SetColor(AValue: TColor);
 var
   AColor: TGdkRGBA;
+  ADisabledColor: TGdkRGBA;
   i: TGtkStateType;
+  Provider: PGtkCssProvider;
+  CSSData: String;
+  RGBA: LongWord;
+  ATargetWidget: PGtkWidget;
+  AOldProvider: PGtkCssProvider;
+  ANewProvider: PGtkCssProvider;
+  ACSS: AnsiString;
 begin
-  if IsWidgetOK then
+  if not IsWidgetOK then Exit;
+
+  if [wtEntry, wtSpinEdit] * WidgetType <> [] then
+  begin
+    if AValue = clDefault then
+      CSSData := 'entry { background-color: initial; background-image: none; }'
+    else
+    begin
+      RGBA := ColorToRGB(AValue);
+      CSSData := Format('entry { background-color: #%.2x%.2x%.2x; background-image: none; }',
+                 [Red(RGBA), Green(RGBA), Blue(RGBA)]);
+    end;
+    Provider := gtk_css_provider_new();
+    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(FWidget),
+                                   PGtkStyleProvider(Provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(Provider);
+  end else
+  if wtMemo in WidgetType then
+  begin
+    ATargetWidget := GetContainerWidget; // FCentralWidget = GtkTextView
+    AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
+    ATargetWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
+    if AValue = clDefault then
+      gtk_widget_override_background_color(ATargetWidget, GTK_STATE_FLAG_NORMAL, nil)
+    else
+      gtk_widget_override_background_color(ATargetWidget, GTK_STATE_FLAG_NORMAL, @AColor);
+    AColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
+    gtk_widget_override_background_color(ATargetWidget, [GTK_STATE_FLAG_SELECTED], @AColor);
+    gtk_widget_override_background_color(ATargetWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
+
+    AOldProvider := PGtkCssProvider(g_object_get_data(PGObject(ATargetWidget), 'lcl-sel-css'));
+    if Assigned(AOldProvider) then
+    begin
+      gtk_style_context_remove_provider(ATargetWidget^.get_style_context,
+        PGtkStyleProvider(AOldProvider));
+      g_object_unref(gpointer(AOldProvider));
+      g_object_set_data(PGObject(ATargetWidget), 'lcl-sel-css', nil);
+    end;
+    if AValue <> clDefault then
+    begin
+      ACSS := Format('textview text selection { background-color: #%02x%02x%02x; }',
+        [Round(AColor.red * 255), Round(AColor.green * 255), Round(AColor.blue * 255)]);
+      ANewProvider := gtk_css_provider_new;
+      gtk_css_provider_load_from_data(ANewProvider, PChar(ACSS), -1, nil);
+      gtk_style_context_add_provider(ATargetWidget^.get_style_context,
+        PGtkStyleProvider(ANewProvider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+      g_object_set_data(PGObject(ATargetWidget), 'lcl-sel-css', ANewProvider);
+    end;
+  end else
+  if (wtComboBox in WidgetType) then
+  begin
+    if PGtkComboBox(FWidget)^.has_entry then
+    begin
+      ATargetWidget := PGtkComboBox(FWidget)^.get_child;
+      if AValue = clDefault then
+        CSSData := 'entry { background-color: initial; background-image: none; }'
+      else
+      begin
+        RGBA := ColorToRGB(AValue);
+        CSSData := Format('entry { background-color: #%.2x%.2x%.2x; background-image: none; }',
+                   [Red(RGBA), Green(RGBA), Blue(RGBA)]);
+      end;
+    end else
+    begin
+      ATargetWidget := PGtkComboBox(FWidget)^.get_child;
+      if AValue = clDefault then
+        CSSData := 'combobox button.combo cellview { background-color: initial; background-image: none; }'
+      else
+      begin
+        RGBA := ColorToRGB(AValue);
+        CSSData := Format('combobox button.combo cellview { background-color: #%.2x%.2x%.2x; background-image: none; }',
+                   [Red(RGBA), Green(RGBA), Blue(RGBA)]);
+      end;
+    end;
+    Provider := gtk_css_provider_new();
+    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(ATargetWidget),
+                                   PGtkStyleProvider(Provider),
+                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(Provider);
+  end else
   begin
     AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
     if FWidget <> GetContainerWidget then
-    begin
       with FWidget^ do
-      begin
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
           if AValue = clDefault then
             override_background_color(TGtkStateFlags(1 shl (i - 1)), nil)
           else
             override_background_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
-      end;
-    end;
     with GetContainerWidget^ do
-    begin
       for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-      begin
         if AValue = clDefault then
           override_background_color(TGtkStateFlags(1 shl (i - 1)), nil)
         else
           override_background_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
-      end;
-    end;
   end;
 end;
 
@@ -7890,57 +8034,22 @@ procedure TGtk3ScrollableWin.SetColor(AValue: TColor);
 var
   ADisabledColor, BgColor: TGdkRGBA;
   AContainerWidget: PGtkWidget;
-  AOldProvider: PGtkCssProvider;
-  ANewProvider: PGtkCssProvider;
-  ACSS: AnsiString;
 begin
-  if [wtCustomControl, wtScrollingWinControl, wtWindow, wtHintWindow] * WidgetType <> [] then
+  if [wtCustomControl, wtScrollingWinControl, wtWindow, wtHintWindow, wtMemo] * WidgetType <> [] then
   begin
     inherited SetColor(AValue);
-  end else
-  begin
-    AContainerWidget := getContainerWidget;
-    BgColor := TColortoTGdkRGBA(ColorToRgb(AValue));
-
-    AContainerWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
-    //override all
-    if AValue = clDefault then
-      gtk_widget_override_background_color(AContainerWidget, GTK_STATE_FLAG_NORMAL, nil)
-    else
-      gtk_widget_override_background_color(AContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
-    //return system highlight color
-    BgColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
-    gtk_widget_override_background_color(AContainerWidget, [GTK_STATE_FLAG_SELECTED], @BgColor);
-    gtk_widget_override_background_color(AContainerWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
-
-    {GtkTextView (our TMemo) text selection is rendered internally via the CSS
-     "text selection" node, gtk_widget_override_background_color with GTK_STATE_FLAG_SELECTED has
-     no effect on it. Apply a CSS provider to restore the highlight color.}
-    if wtMemo in WidgetType then
-    begin
-      AOldProvider := PGtkCssProvider(
-        g_object_get_data(PGObject(AContainerWidget), 'lcl-sel-css'));
-      if Assigned(AOldProvider) then
-      begin
-        gtk_style_context_remove_provider(AContainerWidget^.get_style_context,
-          PGtkStyleProvider(AOldProvider));
-        g_object_unref(gpointer(AOldProvider));
-        g_object_set_data(PGObject(AContainerWidget), 'lcl-sel-css', nil);
-      end;
-      if AValue <> clDefault then
-      begin
-        //BgColor already holds clHighlight at this point
-        ACSS := Format('textview text selection { background-color: #%02x%02x%02x; }',
-          [Round(BgColor.red * 255), Round(BgColor.green * 255), Round(BgColor.blue * 255)]);
-        ANewProvider := gtk_css_provider_new;
-        gtk_css_provider_load_from_data(ANewProvider, PChar(ACSS), -1, nil);
-        gtk_style_context_add_provider(AContainerWidget^.get_style_context,
-          PGtkStyleProvider(ANewProvider),
-          GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-        g_object_set_data(PGObject(AContainerWidget), 'lcl-sel-css', ANewProvider);
-      end;
-    end;
+    Exit;
   end;
+  AContainerWidget := getContainerWidget;
+  BgColor := TColortoTGdkRGBA(ColorToRgb(AValue));
+  AContainerWidget^.get_style_context^.get_background_color([GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
+  if AValue = clDefault then
+    gtk_widget_override_background_color(AContainerWidget, GTK_STATE_FLAG_NORMAL, nil)
+  else
+    gtk_widget_override_background_color(AContainerWidget, GTK_STATE_FLAG_NORMAL, @BgColor);
+  BgColor := TColortoTGdkRGBA(ColorToRgb(clHighlight));
+  gtk_widget_override_background_color(AContainerWidget, [GTK_STATE_FLAG_SELECTED], @BgColor);
+  gtk_widget_override_background_color(AContainerWidget, [GTK_STATE_FLAG_INSENSITIVE], @ADisabledColor);
 end;
 
 function TGtk3ScrollableWin.ClientToScreen(var P: TPoint): boolean;
