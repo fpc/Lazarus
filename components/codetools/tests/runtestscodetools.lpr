@@ -95,7 +95,7 @@ end;
 
 function TCTTestRunner.ParseOptions: Boolean;
   //
-  function FindDefaultDir(Dirs: array of string): string;
+  function FindDefaultDir(Dirs: array of string; EnvVar: string): string;
   var
     lExeDir, lPath, lFullPath: string;
   begin
@@ -107,7 +107,8 @@ function TCTTestRunner.ParseOptions: Boolean;
       if DirectoryExistsUTF8(lFullPath) then
         exit(lFullPath);
     end;
-    result := '';
+    writeln('Error: The environment variable "',EnvVar,'" is not assigned');
+    halt(1);
   end;
   //
 begin
@@ -128,9 +129,9 @@ begin
     FMachine := GetOptionValue('machine');
 
   if Options.FPCSrcDir='' then
-    Options.FPCSrcDir:=FindDefaultDir(CDefaultFPCSrcDirs);
+    Options.FPCSrcDir:=FindDefaultDir(CDefaultFPCSrcDirs,'FPCDIR');
   if Options.LazarusSrcDir='' then
-    Options.LazarusSrcDir:=FindDefaultDir(CDefaultLazarusSrcDirs);
+    Options.LazarusSrcDir:=FindDefaultDir(CDefaultLazarusSrcDirs,'LAZARUSDIR');
 
   // some tests assume a working folder "components\codetools\tests"
   SetCurrentDirUTF8(ExtractFileDir(ParamStrUTF8(0)));
