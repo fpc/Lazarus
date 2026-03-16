@@ -54,6 +54,7 @@ type
   TCocoaControlUtil = class
   public
     class procedure setStringValue(const c: NSControl; const S: String); inline;
+    class procedure setStringValueAndSendEvent(const ctrl: NSControl; const text: String);
     class function getStringValue(const c: NSControl): String; inline;
     class function toMacOSTitle(const ATitle: String): NSString;
     class procedure moveCaretToTheEnd(const c: NSControl);
@@ -291,6 +292,22 @@ begin
     c.setStringValue(ns);
     ns.release;
   end;
+end;
+
+// Sets the control text and then calls controls callback (if any)
+// with TextChange (CM_TEXTCHANGED) event.
+// Cocoa control do not fire a notification, if text is changed programmatically
+// LCL expects a change notification in either way. (by software or by user)
+class procedure TCocoaControlUtil.setStringValueAndSendEvent(
+  const ctrl: NSControl;
+  const text: String );
+var
+  cb: ICommonCallBack;
+begin
+  TCocoaControlUtil.setStringValue(ctrl, text);
+  cb:= ctrl.lclGetcallback;
+  if Assigned(cb) then // cb.SendOnChange;
+    cb.SendOnTextChanged;
 end;
 
 class function TCocoaControlUtil.getStringValue(const c: NSControl): String; inline;

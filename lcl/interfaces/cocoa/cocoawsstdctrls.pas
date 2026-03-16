@@ -24,16 +24,16 @@ interface
 
 uses
   // Libs
-  MacOSAll, CocoaAll, Classes, sysutils,
+  CocoaAll, Classes, sysutils,
   // LCL
   Controls, StdCtrls, Graphics, LCLType, Forms,
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate, CocoaCallback, CocoaListControl, CocoaTables, CocoaGroupBox,
+  CocoaPrivate, CocoaCallback, CocoaGroupBox,
   CocoaConst, CocoaConfig, CocoaWSCommon, CocoaWSButtons, CocoaUtils,
   CocoaGDIObjects, CocoaTextEdits, CocoaWSTextEdits,
-  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
+  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers;
 
 type
 
@@ -83,7 +83,7 @@ var
   lclStaticText: TCustomStaticText absolute AWinControl;
   field: NSTextField;
 begin
-  field := NSTextField(AllocTextField(AWinControl, AParams));
+  field := TCocoaWSTextControlUtil.createTextField(AWinControl, AParams);
   {$ifdef BOOLFIX}
   field.setBezeled_(Ord(False));
   field.setDrawsBackground_(Ord(False));

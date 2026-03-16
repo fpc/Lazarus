@@ -113,47 +113,19 @@ type
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
   end;
 
-function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
-procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
+  { TCocoaWSTextControlUtil }
+
+  TCocoaWSTextControlUtil = class
+  public
+    class function createTextField(
+      const ATarget: TWinControl;
+      const AParams: TCreateParams ): TCocoaTextField;
+    class function createSecureTextField(
+      const ATarget: TWinControl;
+      const AParams: TCreateParams ): TCocoaSecureTextField;
+  end;
 
 implementation
-
-function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
-begin
-  Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
-  if Assigned(Result) then
-  begin
-    if NOT Result.fixedInitSetting then
-      Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
-    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
-    TCocoaControlUtil.setStringValue(Result, AParams.Caption);
-  end;
-end;
-
-function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
-begin
-  Result := TCocoaSecureTextField.alloc.lclInitWithCreateParams(AParams);
-  if Assigned(Result) then
-  begin
-    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
-    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
-    TCocoaTextControlUtil.setStringValue(Result.currentEditor, AParams.Caption);
-  end;
-end;
-
-// Sets the control text and then calls controls callback (if any)
-// with TextChange (CM_TEXTCHANGED) event.
-// Cocoa control do not fire a notification, if text is changed programmatically
-// LCL expects a change notification in either way. (by software or by user)
-procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
-var
-  cb: ICommonCallBack;
-begin
-  TCocoaControlUtil.setStringValue(ctrl, text);
-  cb := ctrl.lclGetcallback;
-  if Assigned(cb) then // cb.SendOnChange;
-    cb.SendOnTextChanged;
-end;
 
 { TCocoaWSCustomEdit }
 
@@ -221,9 +193,9 @@ var
   field: NSTextField;
 begin
   if TCustomEdit(AWinControl).PasswordChar=#0 then begin
-    field:= AllocTextField(AWinControl, AParams);
+    field:= TCocoaWSTextControlUtil.createTextField(AWinControl, AParams);
   end else begin
-    field:= AllocSecureTextField(AWinControl, AParams);
+    field:= TCocoaWSTextControlUtil.createSecureTextField(AWinControl, AParams);
   end;
   SetTextFieldCell( TCustomEdit(AWinControl), field );
   Result:= TLCLHandle(field);
@@ -488,7 +460,7 @@ begin
   mxl := TCustomEdit(AWinControl).MaxLength;
   if (mxl > 0) and (UTF8Length(txt) > mxl) then
     txt := UTF8Copy(txt, 1, mxl);
-  ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), txt);
+  TCocoaControlUtil.setStringValueAndSendEvent(NSControl(AWinControl.Handle), txt);
 end;
 
 class procedure TCocoaWSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
@@ -1016,6 +988,35 @@ begin
   Result := Assigned(txt);
   if Result then
     AText := NSStringToString(txt.string_);
+end;
+
+{ TCocoaWSTextControlUtil }
+
+class function TCocoaWSTextControlUtil.createTextField(
+  const ATarget: TWinControl;
+  const AParams: TCreateParams ): TCocoaTextField;
+begin
+  Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(Result) then
+  begin
+    if NOT Result.fixedInitSetting then
+      Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
+    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
+    TCocoaControlUtil.setStringValue(Result, AParams.Caption);
+  end;
+end;
+
+class function TCocoaWSTextControlUtil.createSecureTextField(
+  const ATarget: TWinControl;
+  const AParams: TCreateParams): TCocoaSecureTextField;
+begin
+  Result := TCocoaSecureTextField.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(Result) then
+  begin
+    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
+    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
+    TCocoaTextControlUtil.setStringValue(Result.currentEditor, AParams.Caption);
+  end;
 end;
 
 end.

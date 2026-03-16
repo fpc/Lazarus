@@ -491,7 +491,7 @@ begin
   begin
     cmb:= NSControl(AWinControl.Handle);
     cmb.setStringValue(NSString.string_);
-    ControlSetTextWithChangeEvent(cmb, AText);
+    TCocoaControlUtil.setStringValueAndSendEvent(cmb, AText);
   end;
 end;
 
