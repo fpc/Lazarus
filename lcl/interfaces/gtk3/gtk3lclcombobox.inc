@@ -139,38 +139,29 @@ begin
   end;
 end;
 
-{$IFDEF GTK3DEBUGCOMBOBOX}
 function LCLGtkComboBoxDraw(widget: PGtkWidget; cairo: Pcairo_t): gboolean; cdecl;
 var
   ParentClass: PGtkWidgetClass;
   Alloc: TGtkAllocation;
-  ARect, AreaRect: TGdkRectangle;
+  {$IFDEF GTK3DEBUGCOMBOBOX}
+  ARect: TGdkRectangle;
   dx, dy, dw, dh: Double;
-  Layout: PPangoLayout;
-  aText: Pgchar;
-  APangoContext: PPangoContext;
-  aArea: PGtkCellArea;
-  column: PGtkTreeViewColumn;
+  {$ENDIF}
 begin
-  //PLAYGROUND ONLY !
   widget^.get_allocation(@Alloc);
-
-  //APangoContext := gtk_widget_get_pango_context(Widget);
-
-  gdk_cairo_get_clip_rectangle(cairo, @ARect);
-  //cairo_get_current_point(cairo, @dx, @dy);
-  cairo_clip_extents(cairo, @dx, @dy, @dw, @dh);
-  //aRegion := gdk_cairo_get_drawing_context(cairo)^.get_clip;
+  //Prevent cairo bleeding over right corner of combobox
+  cairo_save(cairo);
+  cairo_rectangle(cairo, 0, 0, Alloc.width, Alloc.height);
+  cairo_clip(cairo);
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
-  //cairo_translate(cairo, -dx, -dy);
-  writeln('Overriden comboBox draw ...',dbgs(RectFromGdkRect(Alloc)),' ClipRect=',dbgs(RectFromGdkRect(ARect)),' CurrX=',dbgs(dx),' Y=',dbgs(dy),' W=',dbgs(dw),' H=',dbgs(dh));
+  {$IFDEF GTK3DEBUGCOMBOBOX}
+  gdk_cairo_get_clip_rectangle(cairo, @ARect);
+  cairo_clip_extents(cairo, @dx, @dy, @dw, @dh);
+  writeln('LCLGtkComboBoxDraw alloc=',dbgs(RectFromGdkRect(Alloc)),' ClipRect=',dbgs(RectFromGdkRect(ARect)),' CairoClip x=',dbgs(dx),' y=',dbgs(dy),' w=',dbgs(dw),' h=',dbgs(dh));
+  {$ENDIF}
   Result := ParentClass^.draw(widget, cairo);
-
-  cairo_user_to_device(cairo, @dx, @dy);
-  cairo_user_to_device(cairo, @dw, @dh);
-  writeln('Cairo to device dx=',dbgs(dx),' dy=',dbgs(dy),' dw=',dbgs(dw-dx),' dh=',dbgs(dh-dy));
+  cairo_restore(cairo);
 end;
-{$ENDIF}
 
 procedure LCLGtkComboBoxClassInit(klass: PGTypeClass; data: Pointer); cdecl;
   {$IFDEF GTK3DEBUGCOMBOBOX}
@@ -189,10 +180,8 @@ begin
   AWidgetClass := PGtkWidgetClass(klass);
   AWidgetClass^.get_preferred_width := @LCLGtkComboBoxGetPreferredWidth;
   AWidgetClass^.get_preferred_height := @LCLGtkComboBoxGetPreferredHeight;
-  {$IFDEF GTK3DEBUGCOMBOBOX}
   AWidgetClass^.draw := @LCLGtkComboBoxDraw;
-  //debug - looks ok.
-  //WalkTypeHierarchy(klass);
+  {$IFDEF GTK3DEBUGCOMBOBOX}
   WalkParentClassHierarchy(klass);
   {$ENDIF}
 end;
