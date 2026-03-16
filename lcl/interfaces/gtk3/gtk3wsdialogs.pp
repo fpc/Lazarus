@@ -449,9 +449,15 @@ begin
   //DebugLn(['Gtk3FileChooserResponseCB ']);
   theDialog := TFileDialog(TGtk3Dialog(Data).CommonDialog);
 
-  if arg1 = GTK_RESPONSE_CANCEL then
+  if (arg1 = GTK_RESPONSE_CANCEL) or (arg1 = GTK_RESPONSE_DELETE_EVENT) or
+     (arg1 = GTK_RESPONSE_NONE) or (arg1 = GTK_RESPONSE_REJECT) then
   begin
     TheDialog.UserChoice := mrCancel;
+    Exit;
+  end;
+  if arg1 = GTK_RESPONSE_CLOSE then
+  begin
+    TheDialog.UserChoice := mrClose;
     Exit;
   end;
 

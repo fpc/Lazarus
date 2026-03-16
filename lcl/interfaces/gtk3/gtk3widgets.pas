@@ -3337,7 +3337,9 @@ function TGtk3Widget.ScreenToClient(var P: TPoint): Integer;
 var
   AGtkWidget: PGtkWidget;
   AWindow: PGdkWindow;
-  X,Y: Integer;
+  X, Y: Integer;
+  WX, WY: gint;
+  AToplevel: PGtkWidget;
   Allocation: TGtkAllocation;
 begin
   Result:=-1;
@@ -3345,15 +3347,30 @@ begin
   if Assigned(AGtkWidget) and Gtk3IsGdkWindow(AGtkWidget^.window) then
   begin
     AWindow := AGtkWidget^.window;
-    PGdkWindow(AWindow)^.get_origin(@X, @Y);
     AGtkWidget^.get_allocation(@Allocation);
+    //On Wayland, get_origin on sub-windows gives wrong values for nested widgets
+    //both windowed and windowless. Use translate_coordinates to toplevel instead.
+    if Gtk3WidgetSet.IsWayland then
+    begin
+      AToplevel := FWidget^.get_toplevel;
+      if Gtk3IsGdkWindow(AToplevel^.get_window) then
+      begin
+        AGtkWidget^.translate_coordinates(AToplevel, 0, 0, @WX, @WY);
+        AToplevel^.get_window^.get_origin(@X, @Y);
+        dec(P.X, X + WX);
+        dec(P.Y, Y + WY);
+        Result := 0;
+        exit;
+      end;
+    end;
     if not AGtkWidget^.get_has_window and (AGtkWidget^.get_parent <> nil) then
     begin
-      AGtkWidget^.get_allocation(@Allocation);
+      PGdkWindow(AWindow)^.get_origin(@X, @Y);
       P.X := P.X - X - Allocation.x;
       P.Y := P.Y - Y - Allocation.y;
       exit;
     end;
+    PGdkWindow(AWindow)^.get_origin(@X, @Y);
   end else
   if Gtk3IsGdkWindow(fWidget^.window) then
   begin
@@ -12633,7 +12650,8 @@ begin
   begin
     Self.CommonDialog.UserChoice:=mrOk;
   end else
-  if response_id=GTK_RESPONSE_CANCEL then
+  if (response_id=GTK_RESPONSE_CANCEL) or (response_id=GTK_RESPONSE_DELETE_EVENT) or
+     (response_id=GTK_RESPONSE_NONE) or (response_id=GTK_RESPONSE_REJECT) then
   begin
     Self.CommonDialog.UserChoice:=mrCancel;
   end else
