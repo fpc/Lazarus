@@ -226,6 +226,9 @@ var
   x,y:integer;
   src,dst,SrcRowPtr,DstRowPtr:pbyte;
   ridx,gidx,bidx,aidx:byte;
+  Src1BitStride, MaskStride: PtrUInt;
+  MaskPtr: PByte;
+  ColorBit, MaskBit: Boolean;
 begin
   Result := False;
   ABitmap := 0;
@@ -257,7 +260,51 @@ begin
 
     if desc.BitsPerPixel = 1 then
     begin
-      DbgS('Bit depth not implemented '+inttostr(desc.BitsPerPixel));
+      //Expand 1-bit monochrome to 32-bit RGBA for GdkPixbuf compatibility.
+      //GdkPixbuf has no sub-byte pixel format support.
+      Src1BitStride := GetBytesPerLine(Desc.Width, 1, Desc.LineEnd);
+      ARowStride := PtrUInt(Desc.Width) * 4;
+      FreeMem(NewData);
+      NewData := AllocMem(ARowStride * Desc.Height);
+      MaskStride := 0;
+      if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
+        MaskStride := GetBytesPerLine(Desc.Width, 1, Desc.MaskLineEnd);
+      SrcRowPtr := ARawImage.Data;
+      DstRowPtr := NewData;
+      for y := 0 to Integer(Desc.Height) - 1 do
+      begin
+        Src := SrcRowPtr;
+        Dst := DstRowPtr;
+        for x := 0 to Integer(Desc.Width) - 1 do
+        begin
+          if Desc.BitOrder = riboReversedBits then
+            ColorBit := (Src[x shr 3] and ($80 shr (x and 7))) <> 0
+          else
+            ColorBit := (Src[x shr 3] and (1 shl (x and 7))) <> 0;
+          MaskBit := False;
+          if MaskStride > 0 then
+          begin
+            MaskPtr := PByte(ARawImage.Mask) + PtrUInt(y) * MaskStride;
+            if Desc.MaskBitOrder = riboReversedBits then
+              MaskBit := (MaskPtr[x shr 3] and ($80 shr (x and 7))) <> 0
+            else
+              MaskBit := (MaskPtr[x shr 3] and (1 shl (x and 7))) <> 0;
+          end;
+          if MaskBit then
+          begin
+            Dst[0] := 0; Dst[1] := 0; Dst[2] := 0; Dst[3] := 0;
+          end else if ColorBit then
+          begin
+            Dst[0] := 255; Dst[1] := 255; Dst[2] := 255; Dst[3] := 255;
+          end else
+          begin
+            Dst[0] := 0; Dst[1] := 0; Dst[2] := 0; Dst[3] := 255;
+          end;
+          Inc(Dst, 4);
+        end;
+        Inc(SrcRowPtr, Src1BitStride);
+        Inc(DstRowPtr, ARowStride);
+      end;
     end
     else if desc.BitsPerPixel = 8 then
     begin
@@ -353,7 +400,7 @@ begin
 
   // this is only a rough implementation, there is no check against bitsperpixel
   case Desc.BitsPerPixel of
-    1: ImageFormat := CAIRO_FORMAT_A1;
+    1: ImageFormat := CAIRO_FORMAT_ARGB32;
     8: ImageFormat := CAIRO_FORMAT_A8;
     24: ImageFormat := CAIRO_FORMAT_RGB24;
     32: ImageFormat := CAIRO_FORMAT_ARGB32;
