@@ -16,6 +16,7 @@ uses
   CocoaWSStdCtrls,
   CocoaWSComCtrls,
   CocoaWSDialogs,
+  CocoaWSTabControls,
   CocoaWSTextEdits,
   CocoaWSSpin,
   CocoaWSComboBox,
