@@ -30,7 +30,7 @@ uses
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate, CocoaCallback, CocoaGroupBox,
+  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaGroupBox,
   CocoaConst, CocoaConfig, CocoaWSCommon, CocoaWSButtons, CocoaUtils,
   CocoaGDIObjects, CocoaTextEdits, CocoaWSTextEdits,
   CocoaCustomControl, CocoaScrollers, CocoaWSScrollers;

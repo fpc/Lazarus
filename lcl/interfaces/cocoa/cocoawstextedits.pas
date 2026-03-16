@@ -15,7 +15,7 @@ uses
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaGDIObjects, CocoaCallback,
+  CocoaWSCommon, CocoaPrivate, CocoaGDIObjects, CocoaCallback, CocoaCommonCallback,
   CocoaConst, CocoaConfig, CocoaUtils, Cocoa_Extra,
   CocoaTextEdits, CocoaScrollers, CocoaWSScrollers;
 

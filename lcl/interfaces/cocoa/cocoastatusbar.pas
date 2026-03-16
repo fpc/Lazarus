@@ -9,8 +9,9 @@ interface
 uses
   Classes, SysUtils,
   LCLType, LMessages, LCLMessageGlue, ComCtrls,
-  CocoaAll, CocoaPrivate, CocoaCallback, CocoaGDIObjects ,CocoaWSCommon, CocoaUtils,
-  CocoaCustomControl, Cocoa_Extra;
+  CocoaAll,
+  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaGDIObjects,
+  CocoaWSCommon, CocoaUtils, CocoaCustomControl, Cocoa_Extra;
 
 type
   { IStatusBarCallback }

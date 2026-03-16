@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="582">
+    <Files Count="583">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2867,6 +2867,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSTabControls"/>
       </Item582>
+      <Item583>
+        <Filename Value="cocoa/cocoacommoncallback.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaCommonCallback"/>
+      </Item583>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

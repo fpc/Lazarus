@@ -15,7 +15,8 @@ uses
   LazUTF8,
   CocoaAll,
   CocoaConfig, CocoaUtils, CocoaGDIObjects, CocoaPrivate,
-  CocoaComboBox, CocoaTextEdits, CocoaWSTextEdits, CocoaWSCommon, Cocoa_Extra;
+  CocoaComboBox, CocoaTextEdits, CocoaWSTextEdits,
+  CocoaCommonCallback, CocoaWSCommon, Cocoa_Extra;
 
 type
 

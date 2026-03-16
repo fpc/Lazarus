@@ -31,9 +31,9 @@ uses
   WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
   MacOSAll, CocoaAll,
-  CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects,
-  CocoaWindows, CocoaToolBar, CocoaCustomControl, CocoaScrollers, CocoaWSScrollers,
-  CocoaUtils, CocoaMenus, Cocoa_Extra;
+  CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaWSCommon,
+  CocoaGDIObjects, CocoaWindows, CocoaToolBar, CocoaCustomControl, CocoaScrollers,
+  CocoaWSScrollers, CocoaUtils, CocoaMenus, Cocoa_Extra;
 
 type
   { TLCLWindowCallback }

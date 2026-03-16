@@ -11,7 +11,7 @@ uses
   LCLType, Controls, ComCtrls,
   WSComCtrls,
   MacOSAll, CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaConfig, CocoaUtils,
+  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaWSCommon, CocoaConfig, CocoaUtils,
   CocoaButtons, CocoaStatusBar, CocoaProgressIndicator, CocoaSlider;
 
 type
