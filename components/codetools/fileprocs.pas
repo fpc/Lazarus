@@ -259,10 +259,8 @@ function CompareAddrWithCTLineInfoCacheItem(Addr, Item: Pointer): integer;
 implementation
 
 // to get more detailed error messages consider the os
-{$IF not (defined(Windows) or defined(HASAMIGA))}
 uses
-  Unix;
-{$ENDIF}
+  {$IF not (defined(Windows) or defined(HASAMIGA))}Unix, {$ENDIF}DateUtils;
 
 procedure CTIncreaseChangeStamp(var ChangeStamp: integer);
 begin
@@ -1876,18 +1874,11 @@ end;
 function UniversalFileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime
   ): TDateTime;
 begin
-  try
-    {$if defined(windows) or (FPC_FULLVERSION<30203)}
-    // On Windows FileTime is assumed to be local time, no timezone added.
-    // Remove the "FPC_FULLVERSION" part when FPC 3.2.4 is the minimum requirement.
-    Result:=FileDateToDateTime(aFileDate);
-    {$else}
-    // FileTime is already universal, just convert to TDateTime.
-    Result:=FileDateToUniversal(aFileDate);
-    {$endif}
-  except
+  // File time is always in seconds since Epoch (ie Linux formatted) regardless of platform
+  if aFileDate >= 0 then
+    Result:=UnixToDateTime(aFileDate)
+  else
     Result:=Default;
-  end;
 end;
 
 function UniversalFileAgeToStr(aFileAge: TCTFileAgeTime): string;

@@ -212,7 +212,7 @@ implementation
 // to get more detailed error messages consider the os
 uses
 {$IFDEF Windows}
-  Windows {$IFnDEF WinCE}, ShlObj, ActiveX, WinDirs{$ENDIF};
+  Windows, DateUtils {$IFnDEF WinCE}, ShlObj, ActiveX, WinDirs{$ENDIF};
 {$ELSE}
   {$IFDEF HASAMIGA}
   exec, amigados;

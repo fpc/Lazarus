@@ -136,20 +136,26 @@ end;
 
 function TUnicodeSearchRecHelper.UniversalTime: int64;
 var
-  tmpdtime: longint;
+  LSystemTime: TSystemTime;
 begin
-  If FileTimeToDosDateTime(FindData.ftLastWriteTime,longrec(tmpdtime).hi,longrec(tmpdtime).lo) then
-    Result:=tmpdtime
+  if FileTimeToSystemtime(FindData.ftLastWriteTime, LSystemTime) then
+    begin
+      Result := DateTimeToUnix(EncodeDate(LSystemTime.Year, LSystemTime.Month, LSystemTime.Day) +
+                               EncodeTime(LSystemTime.Hour, LSystemTime.Minute, LSystemTime.Second, 0));
+    end
   else
     Result:=-1;
 end;
 
 function TRawbyteSearchRecHelper.UniversalTime: int64;
 var
-  tmpdtime: longint;
+  LSystemTime: TSystemTime;
 begin
-  If FileTimeToDosDateTime(FindData.ftLastWriteTime,longrec(tmpdtime).hi,longrec(tmpdtime).lo) then
-    Result:=tmpdtime
+  if FileTimeToSystemtime(FindData.ftLastWriteTime, LSystemTime) then
+    begin
+      Result := DateTimeToUnix(EncodeDate(LSystemTime.Year, LSystemTime.Month, LSystemTime.Day) +
+                               EncodeTime(LSystemTime.Hour, LSystemTime.Minute, LSystemTime.Second, 0));
+    end
   else
     Result:=-1;
 end;
@@ -158,9 +164,10 @@ function UniversalFileAge (Const FileName : UnicodeString): Int64;
 var
   Handle: THandle;
   FindData: TWin32FindDataW;
-  tmpdtime: longint;
+  LSystemTime: TSystemTime;
   A: integer;
 begin
+  // Universal time is always in seconds from Epoch, regardless of O/S
   for A:=1 to Length(FileName) do
     if CharInSet(FileName[A],['?','*']) then
       Exit(-1);
@@ -169,8 +176,12 @@ begin
   begin
     Windows.FindClose(Handle);
     if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY) = 0 then
-      If FileTimeToDosDateTime(FindData.ftLastWriteTime,longrec(tmpdtime).hi,longrec(tmpdtime).lo) then
-        exit(tmpdtime);
+      if FileTimeToSystemtime(FindData.ftLastWriteTime, LSystemTime) then
+        begin
+          Result := DateTimeToUnix(EncodeDate(LSystemTime.Year, LSystemTime.Month, LSystemTime.Day) +
+                                   EncodeTime(LSystemTime.Hour, LSystemTime.Minute, LSystemTime.Second, 0));
+          exit;
+        end;
   end;
   Result := -1;
 end;
