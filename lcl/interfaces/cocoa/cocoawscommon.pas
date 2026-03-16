@@ -13,19 +13,11 @@ uses
   StdCtrls,
   CocoaAll,
   CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils,
-  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, CocoaFullControlEdit,
-  CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra,
-  CocoaCallback, CocoaCommonCallback;
+  CocoaWSCustomControl, CocoaScrollers, CocoaWSScrollers,
+  CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra,
+  CocoaCallback;
 
 type
-
-  { TLCLFullControlEditCallBack }
-
-  // CallBack for LCL Full Control Edit (such as SynEdit/ATSynEdit)
-  TLCLFullControlEditCallBack = class(TLCLCommonCallBack)
-  protected
-    procedure KeyEvPrepare(Event: NSEvent); override;
-  end;
 
   { TCocoaWSControl }
 
@@ -59,21 +51,9 @@ type
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
   end;
 
-  { TCocoaWSCustomControl }
-
-  TCocoaWSCustomControl = class(TWSCustomControl)
-  published
-    class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLHandle; override;
-    class procedure SetBorderStyle(const AWinControl: TWinControl;
-      const ABorderStyle: TBorderStyle); override;
-  end;
-
 procedure UpdateControlFocusRing( cocoaControl: NSView; lclControl: TWinControl );
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
 procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
-
-function ButtonStateToShiftState(BtnState: PtrUInt): TShiftState;
 
 function NSObjectDebugStr(obj: NSObject): string;
 function CallbackDebugStr(cb: ICommonCallback): string;
@@ -122,35 +102,6 @@ var
   LastMouse: TLastMouseInfo;
   LastMouseLeftButtonAsRight: Boolean;
 
-function ButtonStateToShiftState(BtnState: PtrUInt): TShiftState;
-begin
-  Result := [];
-  if BtnState and MK_SHIFT > 0 then Include(Result, ssShift);
-  if BtnState and MK_CONTROL > 0 then Include(Result, ssCtrl);
-  if BtnState and MK_ALT > 0 then Include(Result, ssAlt);
-  if BtnState and MK_LBUTTON > 0 then Include(Result, ssLeft);
-  if BtnState and MK_RBUTTON > 0 then Include(Result, ssRight);
-  if BtnState and MK_MBUTTON > 0 then Include(Result, ssMiddle);
-  if BtnState and MK_XBUTTON1 > 0 then Include(Result, ssExtra1);
-  if BtnState and MK_XBUTTON2 > 0 then Include(Result, ssExtra2);
-  // what MK_xxx used for Meta?
-end;
-
-function CocoaModifiersToShiftState(AModifiers: NSUInteger; AMouseButtons: NSUInteger): TShiftState;
-begin
-  Result := [];
-  if AModifiers and NSShiftKeyMask <> 0 then Include(Result, ssShift);
-  if AModifiers and NSControlKeyMask <> 0 then Include(Result, ssCtrl);
-  if AModifiers and NSAlternateKeyMask <> 0 then Include(Result, ssAlt);
-  if AModifiers and NSCommandKeyMask <> 0 then Include(Result, ssMeta);
-
-  if AMouseButtons and (1 shl 0) <> 0 then Include(Result, ssLeft);
-  if AMouseButtons and (1 shl 1) <> 0 then Include(Result, ssRight);
-  if AMouseButtons and (1 shl 2) <> 0 then Include(Result, ssMiddle);
-  if AMouseButtons and (1 shl 3) <> 0 then Include(Result, ssExtra1);
-  if AMouseButtons and (1 shl 4) <> 0 then Include(Result, ssExtra2);
-end;
-
 procedure UpdateControlFocusRing(cocoaControl: NSView; lclControl: TWinControl);
 const
   NSFocusRing : array [TBorderStyle] of NSBorderType = (
@@ -180,22 +131,6 @@ begin
   AScroll.setHasVerticalScroller(VerticalScrollerVisible[AStyles]);
   AScroll.setHasHorizontalScroller(HorizontalScrollerVisible[AStyles]);
   AScroll.setAutohidesScrollers(ScrollerAutoHide[AStyles]);
-end;
-
-{ TLCLFullControlEditCallBack }
-
-{
-  Key Step for IME (such as Chinese/Japanese/Korean and DeadKeys)
-  1. set _sendChar:=false to avoid KeyDown Event being eaten
-     in IntfUTF8KeyPress() or CN_CHAR message.
-  2. KeyDown Event will be handled in TCocoaFullControlEdit.keyDown(),
-     and NSInputContext.sendEvent() will be called in it,
-     and function in NSTextInputClient will be called.
-}
-procedure TLCLFullControlEditCallback.KeyEvPrepare(Event: NSEvent);
-begin
-  inherited;
-  _sendChar := false;
 end;
 
 { TCocoaWSControl }
@@ -594,88 +529,6 @@ begin
   bc.DrawImageRep(
     NSMakeRect(0,0, f.size.width, f.size.height),
     f, b);
-end;
-
-{ TCocoaWSCustomControl }
-
-function SendIMCompostionMessage(
-  const control: TWinControl; const WParam: LclType.WPARAM ): PtrInt;
-var
-  Mess : TLMessage;
-begin
-  FillChar(Mess,SizeOf(Mess),0);
-  Mess.Msg:= LM_IM_COMPOSITION;
-  Mess.WParam:= WParam;
-  Result:= DeliverMessage( control,  Mess );
-end;
-
-// get IMEHandler by LM_IM_COMPOSITION message
-function getControlIMEHandler(const control: TWinControl): ICocoaIMEControl;
-var
-  handle : PtrInt;
-begin
-  handle := SendIMCompostionMessage( control, IM_MESSAGE_WPARAM_GET_IME_HANDLER );
-  Result := TObject(handle) as ICocoaIMEControl;
-end;
-
-// get Lookup Word Handler by LM_IM_COMPOSITION message
-function getControlLWHandler(const control: TWinControl): ICocoaLookupWord;
-var
-  handle: PtrInt;
-begin
-  Result:= nil;
-  handle := SendIMCompostionMessage( control, IM_MESSAGE_WPARAM_GET_LW_HANDLER );
-  if TObject(handle) is ICocoaLookupWord then
-    Result:= TObject(handle) as ICocoaLookupWord;
-end;
-
-class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLHandle;
-var
-  ctrl : TCocoaCustomControl;
-  sl   : TCocoaManualScrollView;
-  hs   : TCocoaManualScrollHost;
-  lcl  : TLCLCommonCallback;
-  imeHandler : ICocoaIMEControl;
-begin
-  imeHandler := getControlIMEHandler(AWinControl);
-  if Assigned(imeHandler) then
-  begin
-    // AWinControl implements ICocoaIMEControl
-    // AWinControl is a Full Control Edit (such as SynEdit/ATSynEdit)
-    ctrl := TCocoaFullControlEdit.alloc.lclInitWithCreateParams(AParams);
-    lcl := TLCLFullControlEditCallback.Create(ctrl, AWinControl);
-    TCocoaFullControlEdit(ctrl).imeHandler:= imeHandler;
-    TCocoaFullControlEdit(ctrl).lwHandler:= getControlLWHandler(AWinControl);
-  end
-  else
-  begin
-    // AWinControl not implements ICocoaIMEControl
-    // AWinControl is a normal Custom Control
-    ctrl := TCocoaCustomControlWithBaseInputClient.alloc.lclInitWithCreateParams(AParams);
-    lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
-  end;
-  lcl.BlockCocoaUpDown := true;
-  lcl.BlockCocoaKeyBeep := true; // prevent "dings" on keyDown for custom controls (i.e. SynEdit)
-  ctrl.callback := lcl;
-
-  sl := EmbedInManualScrollView(ctrl);
-  sl.callback := ctrl.callback;
-
-  hs := EmbedInManualScrollHost(sl);
-  hs.callback := ctrl.callback;
-  lcl.SetHandleFrame(hs);
-
-  ScrollViewSetBorderStyle(hs, TCustomControl(AWinControl).BorderStyle );
-
-  Result := TLCLHandle(hs);
-end;
-
-class procedure TCocoaWSCustomControl.SetBorderStyle(
-  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
-begin
-  if not Assigned(AWinControl) or not (AWinControl.HandleAllocated) then Exit;
-  ScrollViewSetBorderStyle(  TCocoaManualScrollHost(AWinControl.Handle), ABorderStyle );
 end;
 
 function NSObjectDebugStr(obj: NSObject): string;

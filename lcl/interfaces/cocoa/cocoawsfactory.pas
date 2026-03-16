@@ -24,7 +24,8 @@ uses
   CocoaWSCheckLst,
   CocoaWSDatePicker,
   CocoaWSListView,
-  CocoaWSDragImage;
+  CocoaWSDragImage,
+  CocoaWSCustomControl;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
