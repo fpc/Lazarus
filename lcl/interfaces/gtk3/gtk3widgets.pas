@@ -3464,42 +3464,45 @@ begin
     {$ENDIF}
     if Gtk3IsContainer(Widget) and Widget^.get_realized then
     begin
-      {Skip size_allocate on any container when the allocation is a tiny
-       placeholder (width or height < 2px).}
-      if (ARect.width < 2) or (ARect.height < 2) then
+      if (ARect.width = 0) or (ARect.height <= 1) then
       begin
-        { Collapse: mark widget as not child-visible so the parent container
-          (GtkLayout) unmaps it and recursively hides all descendant GdkWindows.
-          We treat h=1 the same as h=0 because LCL's AlignControls often
-          allocates a 1px minimum to alBottom controls whose Height was set to 0
-          (integer arithmetic leftover), which would otherwise cause GTK to
-          inflate the widget to its preferred height (~42px for a TListBox). }
-        if (ARect.width = 0) or (ARect.height <= 1) then
-        begin
-          {$IFDEF GTK3DEBUGHEIGHTZERO}
-          if Assigned(LCLObject) then
-            writeln(Format('SetBounds H=%d: calling set_child_visible(False) for %s (was child_vis=%s)',
-              [ARect.height,
-               LCLObject.Name + ':' + LCLObject.ClassName,
-               BoolToStr(Widget^.get_child_visible, True)]));
-          {$ENDIF}
-          Widget^.set_child_visible(False);
-          {$IFDEF GTK3DEBUGHEIGHTZERO}
-          if Assigned(LCLObject) then
-            writeln(Format('SetBounds H=%d: after set_child_visible(False): mapped=%s',
-              [ARect.height, BoolToStr(Widget^.get_mapped, True)]));
-          {$ENDIF}
-        end;
+        (*
+        Collapse: height<=1 or width=0 means the widget should be hidden.
+        We treat h=1 the same as h=0 because LCL's AlignControls often
+        allocates a 1px minimum to alBottom controls whose Height was set to 0
+        (integer arithmetic leftover), which would otherwise cause GTK to
+        inflate the widget to its preferred height (~42px for a TListBox).
+        For width=0 with a real height, first call size_allocate while still
+        mapped so that PanelLayoutSizeAllocate fires and collapses the
+        GtkLayout bin_window to 0 width - prevents paint artifacts when a
+        splitter is dragged to the left edge leaving a 0-wide panel visible.
+        *)
+        if (ARect.width = 0) and (ARect.height > 1) then
+          Widget^.size_allocate(@ARect);
+        {$IFDEF GTK3DEBUGHEIGHTZERO}
+        if Assigned(LCLObject) then
+          writeln(Format('SetBounds W=%d H=%d: calling set_child_visible(False) for %s (was child_vis=%s)',
+            [ARect.width, ARect.height,
+             LCLObject.Name + ':' + LCLObject.ClassName,
+             BoolToStr(Widget^.get_child_visible, True)]));
+        {$ENDIF}
+        Widget^.set_child_visible(False);
+        {$IFDEF GTK3DEBUGHEIGHTZERO}
+        if Assigned(LCLObject) then
+          writeln(Format('SetBounds W=%d H=%d: after set_child_visible(False): mapped=%s',
+            [ARect.width, ARect.height, BoolToStr(Widget^.get_mapped, True)]));
+        {$ENDIF}
       end
       else
       begin
-        { Restore child-visibility if it was suppressed by a prior collapse. }
+        //Normal allocation, width>=1 and height>=2. Restore child visibility
+        //if it was suppressed by a prior collapse, then allocate.
         if not Widget^.get_child_visible then
         begin
           {$IFDEF GTK3DEBUGHEIGHTZERO}
           if Assigned(LCLObject) then
-            writeln(Format('SetBounds H>0: restoring set_child_visible(True) for %s h=%d',
-              [LCLObject.Name + ':' + LCLObject.ClassName, AHeight]));
+            writeln(Format('SetBounds W>0 H>1: restoring set_child_visible(True) for %s w=%d h=%d',
+              [LCLObject.Name + ':' + LCLObject.ClassName, AWidth, AHeight]));
           {$ENDIF}
           Widget^.set_child_visible(True);
         end;
