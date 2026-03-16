@@ -3654,7 +3654,8 @@ begin
     exit;
   if Gtk3IsObject(TGtk3Widget(Handle).Widget) then
     g_object_set_data(TGtk3Widget(Handle).Widget, Str, nil);
-  if TGtk3Widget(Handle).GetContainerWidget <> TGtk3Widget(Handle).Widget then
+  if (TGtk3Widget(Handle).Widget <> nil) and
+     (TGtk3Widget(Handle).GetContainerWidget <> TGtk3Widget(Handle).Widget) then
   begin
     if Gtk3IsObject(TGtk3Widget(Handle).GetContainerWidget) then
       g_object_set_data(TGtk3Widget(Handle).GetContainerWidget, Str, nil);
