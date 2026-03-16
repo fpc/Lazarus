@@ -759,10 +759,38 @@ end;
 function TGtk3WidgetSet.CreateStandardCursor(ACursor: SmallInt): HCURSOR;
 var
   CursorValue: TGdkCursorType;
+  CursorName: string;
+  NamedHandle: PGdkCursor;
 begin
   Result := 0;
   if ACursor < crLow then Exit;
   if ACursor > crHigh then Exit;
+
+  //Try CSS/theme named cursors first for types not in the GDK legacy enum.
+  CursorName := '';
+  case TCursor(ACursor) of
+    crNo:        CursorName := 'not-allowed';
+    crNoDrop:    CursorName := 'no-drop';
+    crDrag:      CursorName := 'move';
+    crMultiDrag: CursorName := 'copy';
+    crSQLWait:   CursorName := 'wait';
+    crAppStart:  CursorName := 'progress';
+    crHourGlass: CursorName := 'wait';
+    crHSplit:    CursorName := 'col-resize';
+    crVSplit:    CursorName := 'row-resize';
+    crSizeAll:   CursorName := 'all-scroll';
+  end;
+  if CursorName <> '' then
+  begin
+    NamedHandle := gdk_cursor_new_from_name(gdk_display_get_default, PChar(CursorName));
+    if NamedHandle <> nil then
+    begin
+      Result := HCURSOR(TGtk3Cursor.Create(NamedHandle));
+      exit;
+    end;
+  end;
+
+  CursorValue := GDK_CURSOR_IS_PIXMAP;
   case TCursor(ACursor) of
     crDefault:  CursorValue := GDK_LEFT_PTR;
     crArrow:    CursorValue := GDK_Arrow;
@@ -781,19 +809,16 @@ begin
     crSizeS:    CursorValue := GDK_BOTTOM_SIDE;
     crSizeSE:   CursorValue := GDK_BOTTOM_RIGHT_CORNER;
     crUpArrow:  CursorValue := GDK_LEFT_PTR;
-    crHourGlass:CursorValue := GDK_WATCH;
-    crHSplit:   CursorValue := GDK_SB_H_DOUBLE_ARROW;
-    crVSplit:   CursorValue := GDK_SB_V_DOUBLE_ARROW;
-    crAppStart: CursorValue := GDK_LEFT_PTR;
+    crHourGlass:CursorValue := GDK_WATCH; // fallback if 'wait' not in theme
+    crHSplit:   CursorValue := GDK_SB_H_DOUBLE_ARROW; // fallback if 'col-resize' not in theme
+    crVSplit:   CursorValue := GDK_SB_V_DOUBLE_ARROW; // fallback if 'row-resize' not in theme
+    crAppStart: CursorValue := GDK_WATCH; // fallback if 'progress' not in theme
     crHelp:     CursorValue := GDK_QUESTION_ARROW;
     crHandPoint:CursorValue := GDK_Hand2;
-    crSizeAll:  CursorValue := GDK_FLEUR;
-  else
-    CursorValue := GDK_CURSOR_IS_PIXMAP;
+    crSizeAll:  CursorValue := GDK_FLEUR; // fallback if 'all-scroll' not in theme
   end;
   if CursorValue <> GDK_CURSOR_IS_PIXMAP then
     Result := HCURSOR(TGtk3Cursor.Create(CursorValue));
-    // HCURSOR({%H-}PtrUInt(gdk_cursor_new(CursorValue)));
 end;
 
 function TGtk3WidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;

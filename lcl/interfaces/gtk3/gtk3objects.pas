@@ -192,6 +192,7 @@ type
     constructor Create(pixbuf:PGdkPixbuf;x,y:gint); overload;
     constructor Create(img:TGtk3Image); overload;
     constructor Create(ACur: TGdkCursorType); overload;
+    constructor Create(AHandle: PGdkCursor); overload;
     destructor Destroy; override;
     property Handle:PGdkCursor read fHandle;
   end;
@@ -686,9 +687,16 @@ begin
   FHandle := gdk_cursor_new(ACur);
 end;
 
+constructor TGtk3Cursor.Create(AHandle: PGdkCursor);
+begin
+  inherited Create;
+  FHandle := AHandle;
+end;
+
 destructor TGtk3Cursor.Destroy;
 begin
-  FHandle^.unref;
+  if FHandle <> nil then
+    FHandle^.unref;
   inherited Destroy;
 end;
 
