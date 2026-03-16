@@ -126,6 +126,12 @@ begin
     FDockImage := nil;
   end;
 
+  if FDragIPCWidget <> nil then
+  begin
+    gtk_widget_destroy(FDragIPCWidget);
+    FDragIPCWidget := nil;
+  end;
+
   if Assigned(FAppIcon) then
     FAppIcon^.unref;
   FAppIcon := nil;
@@ -771,7 +777,7 @@ begin
   case TCursor(ACursor) of
     crNo:        CursorName := 'not-allowed';
     crNoDrop:    CursorName := 'no-drop';
-    crDrag:      CursorName := 'move';
+    //crDrag:      CursorName := 'move'; we use LCL cursor to be compat with other ws.
     crMultiDrag: CursorName := 'copy';
     crSQLWait:   CursorName := 'wait';
     crAppStart:  CursorName := 'progress';

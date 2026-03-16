@@ -1775,7 +1775,7 @@ var
   ADisplay: PGdkDisplay;
   ASeat: PGdkSeat;
   ADevice: PGdkDevice;
-  X, Y: gint;
+  X, Y, WX, WY: gint;
   AMask: TGdkModifierType;
   {$IFDEF GTK3DEBUGEVENTS}
   R: TRect;
@@ -1801,7 +1801,32 @@ begin
 
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
-  //we use GDK_POINTER_MOTION_HINT_MASK, so we cannot trust Event^.motion position
+  ADevice := nil;
+  {we use GDK_POINTER_MOTION_HINT_MASK, so we cannot trust Event^.motion position
+   Also: during LCL drag (gtk_grab_add), GTK redirects events to the grabbed
+   widget but event->motion.window/x/y stay relative to the ORIGINAL window
+   under the pointer. Detect this mismatch and re-query coords relative to our
+   own container window to get correct widget-relative coordinates.
+   For windowless widgets (e.g. GtkButton), GetContainerWidget^.window returns
+   the parent's window. Re-query from that parent window, then subtract the
+   widget's own position within the toplevel to get widget-relative coords.
+   Note: there's still strange problem with Wayland coordinates during dnd. 20260316}
+  if Gtk3IsGdkWindow(GetContainerWidget^.window) and
+     (GetContainerWidget^.window <> Event^.motion.window) then
+  begin
+    ADisplay := gtk_widget_get_display(Sender);
+    ASeat := gdk_display_get_default_seat(ADisplay);
+    ADevice := gdk_seat_get_pointer(ASeat);
+    gdk_window_get_device_position(GetContainerWidget^.window, ADevice, @X, @Y, @AMask);
+    if not GetContainerWidget^.get_has_window then
+    begin
+      //Windowless widget: X/Y are relative to the parent (shared) GDK window.
+      //Subtract the widget's position within its toplevel to get widget-relative.
+      GetContainerWidget^.translate_coordinates(FWidget^.get_toplevel, 0, 0, @WX, @WY);
+      dec(X, WX);
+      dec(Y, WY);
+    end;
+  end else
   if Event^.motion.is_hint = 1 then
   begin
     ADisplay := gtk_widget_get_display(Sender);

@@ -116,6 +116,11 @@ type
     function CreateThemeServices: TThemeServices; override;
 
   public
+    // LCL drag cursor state. Used by SetGlobalCursor in gtk3procs and ReleaseCapture.
+    FDragIPCWidget: PGtkWidget;
+    FDragSeatGrabActive: Boolean;
+    FDragGrabWidget: PGtkWidget;
+    FDragGrabBrokenHandlerID: gulong;
     function IsWayland: boolean;
     function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow; cr: Pcairo_t): HDC;
     procedure AddWindow(AWindow: PGtkWindow);

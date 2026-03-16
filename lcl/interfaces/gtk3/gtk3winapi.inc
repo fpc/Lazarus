@@ -3621,7 +3621,8 @@ end;
 function TGtk3WidgetSet.ReleaseCapture: Boolean;
 var
   AWidget: TGtk3Widget;
-  aCurrentGrab:PGtkWidget;
+  aCurrentGrab: PGtkWidget;
+  ASeat: PGdkSeat;
 begin
   {$IFDEF VerboseGtk3WinApi}
   DebugLn('TGtk3WidgetSet.ReleaseCapture');
@@ -3633,6 +3634,22 @@ begin
     aCurrentGrab := gtk_grab_get_current;
     if aCurrentGrab <> nil then
       gtk_grab_remove(aCurrentGrab);
+    //If SetGlobalCursor called gdk_seat_grab during drag to update the cursor,
+    //disconnect the grab-broken-event suppression handler and release the grab.
+    if FDragSeatGrabActive then
+    begin
+      if Assigned(FDragGrabWidget) and (FDragGrabBrokenHandlerID <> 0) then
+      begin
+        g_signal_handler_disconnect(PGObject(FDragGrabWidget),
+          FDragGrabBrokenHandlerID);
+        FDragGrabBrokenHandlerID := 0;
+        FDragGrabWidget := nil;
+      end;
+      ASeat := gdk_display_get_default_seat(gdk_display_get_default);
+      if Assigned(ASeat) then
+        gdk_seat_ungrab(ASeat);
+      FDragSeatGrabActive := False;
+    end;
   end;
 end;
 
@@ -3995,9 +4012,6 @@ end;
 
 function TGtk3WidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.SetCursor not implemented ...');
-  {$ENDIF}
   Result := FGlobalCursor;
   if ACursor = FGlobalCursor then Exit;
   if ACursor = Screen.Cursors[crDefault]
