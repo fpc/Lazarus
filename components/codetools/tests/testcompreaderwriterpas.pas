@@ -927,7 +927,7 @@ begin
   if Result<>'' then
     FStream.Read(Result[1],length(Result));
   {$IFDEF VerboseCompWriterPas}
-  writeln('TTestCompReaderWriterPas.WriteDescendant "',Result,'"');
+  debugln('TTestCompReaderWriterPas.WriteDescendant "',Result,'"');
   {$ENDIF}
 end;
 
@@ -950,8 +950,8 @@ begin
   if cwpoNoSelf in Writer.Options then
     ExpS:=ExpS+'end;'+LineEnding;
   ExpS:=ExpS+CSPDefaultSignatureEnd+LineEnding;
-  //writeln('TTestCompReaderWriterPas.TestWriteDescendant ACTUAL=',Actual);
-  //writeln('TTestCompReaderWriterPas.TestWriteDescendant EXP=',ExpS);
+  //debugln('TTestCompReaderWriterPas.TestWriteDescendant ACTUAL=',Actual);
+  //debugln('TTestCompReaderWriterPas.TestWriteDescendant EXP=',ExpS);
   CheckDiff(Msg,ExpS,Actual);
   AssertEquals(Msg+' NeedAccessClass',NeedAccessClass,Writer.NeedAccessClass);
 end;

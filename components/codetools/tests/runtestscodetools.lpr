@@ -72,6 +72,7 @@ type
   private
     FSubmitter: string;
     FMachine: string;
+    procedure DummyLog(Sender: TObject; {%H-}S: string; var Handled: Boolean);
   protected
     Options: TCodeToolsOptions;
     procedure AppendLongOpts; override;
@@ -85,12 +86,18 @@ type
 
 { TCTTestRunner }
 
+procedure TCTTestRunner.DummyLog(Sender: TObject; S: string; var Handled: Boolean);
+begin
+  Handled:=true;
+end;
+
 procedure TCTTestRunner.AppendLongOpts;
 begin
   inherited AppendLongOpts;
   LongOpts.Add('machine:');
   LongOpts.Add('submitter:');
   LongOpts.Add('filemask:');
+  LongOpts.Add('verbose');
 end;
 
 function TCTTestRunner.ParseOptions: Boolean;
@@ -121,6 +128,12 @@ begin
     Options.LoadFromFile(ConfigFilename);
   end;
   Options.InitWithEnvironmentVariables;
+
+  if not HasOption('verbose') then
+  begin
+    LazLogger.DebugLogger.OnDebugLn:=@DummyLog;
+    LazLogger.DebugLogger.OnDbgOut:=@DummyLog;
+  end;
 
   if HasOption('submitter') then
     FSubmitter := GetOptionValue('submitter');
@@ -154,6 +167,7 @@ begin
   writeln('Command line parameters:');
   writeln('  --submitter=SubmitterName     name of sumbitter of the test results');
   writeln('  --machine=MachineName         name of the machine the test runs on');
+  writeln('  --verbose                     display debug output of tests');
 end;
 
 destructor TCTTestRunner.Destroy;
