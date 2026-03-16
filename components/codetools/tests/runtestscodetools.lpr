@@ -95,6 +95,9 @@ begin
   if Options.LazarusSrcDir='' then
     Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
 
+  // some tests assume a working folder "components\codetools\tests"
+  SetCurrentDirUTF8(ExtractFileDir(ParamStrUTF8(0)));
+
   CodeToolBoss.Init(Options);
 
   // save the options and the FPC unit links results.
