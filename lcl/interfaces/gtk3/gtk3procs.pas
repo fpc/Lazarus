@@ -1561,7 +1561,7 @@ begin
     // Override any old default cursor
     g_object_steal_data(PGObject(AWindow), 'havesavedcursor'); // OK?
     g_object_steal_data(PGObject(AWindow), 'savedcursor');
-    gdk_window_set_cursor(AWindow, nil);
+    gdk_window_set_cursor(AWindow, Cursor);
     Exit;
   end;
   if Cursor <> nil then
@@ -1633,6 +1633,12 @@ var
   List: PGList;
   Window: PGdkWindow;
   ACursorHandle: HCURSOR;
+  AGdkCursor: PGdkCursor;
+  ADisplay: PGdkDisplay;
+  ASeat: PGdkSeat;
+  APointer: PGdkDevice;
+  AChild, ADeepestWin, ARootWin: PGdkWindow;
+  AX, AY: gint;
 begin
   if Cursor > 0 then
     ACursorHandle := HCURSOR(TGtk3Cursor(Cursor).Handle)
@@ -1650,6 +1656,35 @@ begin
     List := List^.Next;
   end;
   g_list_free(TopList);
+
+  //gdk_window_get_children only returns native windows, GTK3 non-native
+  //GDK windows (e.g. GtkLayout^bin_window) are invisible to that traversal.
+  //So we walk the full GDK window tree.
+  AGdkCursor := PGdkCursor(ACursorHandle);
+  ADisplay := gdk_display_get_default;
+  if Assigned(ADisplay) then
+  begin
+    ASeat := gdk_display_get_default_seat(ADisplay);
+    if Assigned(ASeat) then
+    begin
+      APointer := gdk_seat_get_pointer(ASeat);
+      if Assigned(APointer) then
+      begin
+        AX := 0;
+        AY := 0;
+        ARootWin := gdk_get_default_root_window;
+        ADeepestWin := ARootWin;
+        AChild := gdk_window_get_device_position(ADeepestWin, APointer, @AX, @AY, nil);
+        while Assigned(AChild) do
+        begin
+          ADeepestWin := AChild;
+          AChild := gdk_window_get_device_position(ADeepestWin, APointer, @AX, @AY, nil);
+        end;
+        if ADeepestWin <> ARootWin then
+          gdk_window_set_cursor(ADeepestWin, AGdkCursor);
+      end;
+    end;
+  end;
 end;
 
 function G_OBJECT_TYPE_NAME(AWidget:PGObject):string;
