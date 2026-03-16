@@ -1256,7 +1256,7 @@ end;
 
 function TCocoaWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 begin
-  Result:= CocoaGetCursorPos(lpPoint);
+  Result:= TCocoaCursorUtil.getCurrentLCLPos(lpPoint);
 end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
@@ -2613,7 +2613,7 @@ end;
 function TCocoaWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
 begin
   if (ACursor=0) or (ACursor=Screen.Cursors[crDefault]) then
-    CursorHelper.SetCursorAtMousePos
+    TCocoaCursorUtil.setCursorByCurrentPos
   else
     CursorHelper.SetNewCursor( TCocoaCursor(ACursor) );
   Result := 0;
