@@ -1084,6 +1084,7 @@ type
     class procedure WaylandPopupSetFocus(AWindow: PGtkWindow; AWidget: PGtkWidget;
       AData: gpointer); cdecl; static;
     class function DeferredResizeCB(data: gpointer): gboolean; cdecl; static;
+    class function MenuBarEnterNotify(AWidget: PGtkWidget; AEvent: PGdkEventCrossing; AData: gpointer): gboolean; cdecl; static;
   protected
     FFirstMapRect: TRect;
     procedure ConnectSizeAllocateSignal(ToWidget: PGtkWidget); override;
@@ -3891,6 +3892,12 @@ begin
       and Gtk3IsGdkWindow(PGtkLayout(GetContainerWidget)^.get_bin_window) then
     begin
       SetWindowCursor(PGtkLayout(GetContainerWidget)^.get_bin_window, LCursor, False, LCursorIsDefault);
+      if GetContainerWidget^.get_has_window and
+         Gtk3IsGdkWindow(GetContainerWidget^.window) then
+        SetWindowCursor(GetContainerWidget^.window, LCursor, False, LCursorIsDefault);
+      if (Widget <> GetContainerWidget) and Widget^.get_has_window and
+         Gtk3IsGdkWindow(Widget^.window) then
+        SetWindowCursor(Widget^.window, LCursor, False, LCursorIsDefault);
     end else
     if GetContainerWidget^.get_has_window and Gtk3IsGdkWindow(GetContainerWidget^.window) then
       SetWindowCursor(GetContainerWidget^.window, LCursor, False, LCursorIsDefault)
@@ -12455,6 +12462,22 @@ begin
   Result := FWidget^.window;
 end;
 
+class function TGtk3Window.MenuBarEnterNotify(AWidget: PGtkWidget;
+  AEvent: PGdkEventCrossing; AData: gpointer): gboolean; cdecl;
+var
+  Win: TGtk3Window;
+  CursorHdl: HCURSOR;
+begin
+  Result := False;
+  Win := TGtk3Window(AData);
+  if not Win.IsWidgetOk then
+    exit;
+  CursorHdl := Screen.Cursors[TWinControl(Win.LCLObject).Cursor];
+  if (CursorHdl <> 0) and (AEvent^.window <> nil) then
+    gdk_window_set_cursor(AEvent^.window,
+      PGdkCursor(TGtk3Cursor(CursorHdl).Handle));
+end;
+
 function TGtk3Window.GetMenuBar: PGtkMenuBar;
 var
   ABox:PGtkBox;
@@ -12469,6 +12492,8 @@ begin
     g_object_set_data(Widget,'lclmenubar',GPointer(1));
     ABox := PGtkBox(PGtkWindow(Widget)^.get_child);
     ABox^.pack_start(FMenuBar, False, False, 0);
+    g_signal_connect_data(PGObject(FMenuBar), 'enter-notify-event',
+      TGCallback(@MenuBarEnterNotify), Self, nil, G_CONNECT_DEFAULT);
   end;
   Result := FMenuBar;
 end;
