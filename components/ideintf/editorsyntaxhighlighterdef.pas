@@ -127,15 +127,15 @@ type
     procedure UnregisterChangedHandler(AnHandler: TNotifyEvent);
 
     function RegisterAttributeGroup(AName: PString): integer; // pointer to resource string
-    procedure AddAttribute(AnAttrGroup: integer; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TObject = nil);
+    procedure AddAttribute(AnAttrGroup: integer; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TLazCustomEditTextAttribute = nil);
   end;
 
 var
   IdeSyntaxHighlighters: TIdeSyntaxHighlighterList;
   IdeColorSchemeList: IColorSchemeList;
 
-procedure RegisterOnIdeColorSchemeListCreated(AnHandler: TNotifyEvent);
-procedure _IDE_CallOnIdeColorSchemeListCreated;
+procedure RegisterOnIdeColorSchemeListCreated(AnHandler: TNotifyEvent); deprecated 'AddAttribute can be called in package registration // to be removed in 5.99';
+procedure _IDE_CallOnIdeColorSchemeListCreated;  deprecated 'AddAttribute can be called in package registration // to be removed in 5.99';
 
 
 implementation

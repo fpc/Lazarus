@@ -423,7 +423,8 @@ type
     function GetStoredValuesForLanguage: TColorSchemeLanguage; // The IDE default colors from the resources
     function IndexOfAttr(AnAttr: TColorSchemeAttribute): Integer;
     procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; const aPath: String;
-      Defaults: TColorSchemeLanguage; ColorVersion: Integer; const aOldPath: String = '');
+      Defaults: TColorSchemeLanguage; ColorVersion: Integer; const aOldPath: String = '';
+      AnAttribOnly: TColorSchemeAttribute = nil);
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
       Defaults: TColorSchemeLanguage);
     procedure ApplyTo(ASynEdit: TSynEdit); // Write markup, etc
@@ -457,6 +458,9 @@ type
     function GetLanguage(AnIndex: Integer): IColorSchemeLanguage;
     function GetLanguageForHighlighter(AnHiglighter: TLazEditCustomHighlighter): IColorSchemeLanguage;
     function GetLanguageForHighlighter(AnHighlighterId: TIdeSyntaxHighlighterID): IColorSchemeLanguage;
+  protected
+    function GetXmlConf: TRttiXMLConfig; virtual;
+    procedure ReleaseXmlConf; virtual;
   public
     constructor Create(const AName: String);
     constructor CreateFromXml(aXMLConfig: TRttiXMLConfig; const AName, aPath: String);
@@ -473,11 +477,51 @@ type
     property  ColorSchemeBySynHl[Index: TLazEditCustomHighlighter]: TColorSchemeLanguage read GetColorSchemeBySynHl;
   end;
 
+  { TColorSchemeFromResource }
+
+  TColorSchemeFromResource = class(TColorScheme)
+  private
+    FResourceName: string;
+    FStream: TLazarusResourceStream;
+    FXmlConf: TRttiXMLConfig;
+    procedure DoReleaseXmlConf(Data: PtrInt);
+  protected
+    function GetXmlConf: TRttiXMLConfig; override;
+    procedure ReleaseXmlConf; override;
+  public
+    constructor CreateFrom(AResourceName: String; const AName, aPath: String);
+    destructor Destroy; override;
+  end;
+
+  { TColorSchemeFromFile }
+
+  TColorSchemeFromFile = class(TColorScheme)
+  private
+    FFileName: string;
+    FXmlConf: TRttiXMLConfig;
+    procedure DoReleaseXmlConf(Data: PtrInt);
+  protected
+    function GetXmlConf: TRttiXMLConfig; override;
+    procedure ReleaseXmlConf; override;
+  public
+    constructor CreateFrom(aXMLConfig: TRttiXMLConfig; const AFileName, AName, aPath: String);
+    destructor Destroy; override;
+  end;
+
+  TColorSchemeFactory = class;
+
+  TColorSchemeAttribAddedEvent = procedure(ASender: TColorSchemeFactory; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String) of object;
+
   { TColorSchemeFactory }
 
   TColorSchemeFactory = class(TObject, IColorSchemeList)
+  private const
+    XML_COL_PATH = 'Lazarus/ColorSchemes/';
+  private type
+    TColorSchemeAttribAddedEventList = specialize TFPGList<TColorSchemeAttribAddedEvent>;
   private
     FMappings: TQuickStringlist; // TColorScheme
+    FColorSchemeAttribAddedEventList: TColorSchemeAttribAddedEventList;
     function GetColorSchemeGroup(const Index: String): TColorScheme;
     function GetColorSchemeGroupAtPos(Index: Integer): TColorScheme;
     // IColorSchemeList
@@ -489,8 +533,9 @@ type
     procedure RegisterChangedHandler(AnHandler: TNotifyEvent);
     procedure UnregisterChangedHandler(AnHandler: TNotifyEvent);
     function RegisterAttributeGroup(AName: PString): integer; // pointer to resource string
-    procedure InternalAddAttribute(AnAttrGroup: integer; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TObject = nil);
-    procedure AddAttribute(AnAttrGroup: integer; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TObject = nil);
+    procedure InternalAddAttribute(AnAttrGroup: integer; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TLazCustomEditTextAttribute = nil);
+    procedure AddAttribute(AnAttrGroup: integer; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TLazCustomEditTextAttribute = nil);
+    procedure AddAttributeFromFactory(AFactory: TColorSchemeFactory; AnHighlighterId: TIdeSyntaxHighlighterID; const AStoredName: string; aXMLConfig: TRttiXMLConfig = nil; APath: String = '');
   public
     constructor Create;
     destructor  Destroy; override;
@@ -501,8 +546,10 @@ type
       Defaults: TColorSchemeFactory; const aOldPath: String = '');
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; const aPath: String;
       Defaults: TColorSchemeFactory);
-    procedure RegisterScheme(aXMLConfig: TRttiXMLConfig; AName: String; const  aPath: String);
+    procedure RegisterScheme(AColorScheme: TColorScheme);
     procedure GetRegisteredSchemes(AList: TStrings);
+    procedure AddAttribAddedEvent(AnEvent: TColorSchemeAttribAddedEvent);
+    procedure RemoveAttribAddedEvent(AnEvent: TColorSchemeAttribAddedEvent);
     property  ColorSchemeGroup[const Index: String]: TColorScheme read GetColorSchemeGroup;
     property  ColorSchemeGroupAtPos[Index: Integer]: TColorScheme read GetColorSchemeGroupAtPos;
   end;
@@ -1949,6 +1996,8 @@ type
     // Default values for RttiXmlConfig using published properties.
     FDefaultValues: TEditorOptionsDefaults;
 
+    procedure DoColorAttribAdded(ASender: TColorSchemeFactory;
+      AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String);
     function GetHighlighterList: TEditOptLangList;
     procedure Init;
     function GetCodeTemplateFileNameExpand: String;
@@ -2950,22 +2999,6 @@ var
   i, j, c: Integer;
   XMLConfig: TRttiXMLConfig;
   n: String;
-
-  procedure AddFromResource(AResName, ASchemeName: String);
-  var
-    FPResource: TFPResourceHandle;
-    Stream: TLazarusResourceStream;
-  begin
-    FPResource := FindResource(HInstance, PChar(AResName), PChar(RT_RCDATA));
-    if FPResource = 0 then exit;
-    Stream := TLazarusResourceStream.CreateFromHandle(HInstance, FPResource);
-    XMLConfig := TRttiXMLConfig.Create('');
-    XMLConfig.ReadFromStream(Stream);
-    TheColorSchemeFactorSingleton.RegisterScheme(XMLConfig, ASchemeName, 'Lazarus/ColorSchemes/');
-    FreeAndNil(XMLConfig);
-    FreeAndNil(Stream);
-  end;
-
 begin
   if not Assigned(TheColorSchemeFactorSingleton) then begin
     HighlighterList.Init; // defer init
@@ -2974,11 +3007,11 @@ begin
     TheColorSchemeFactorSingleton := TColorSchemeFactory.Create;
     // register all built-in color schemes
 
-    AddFromResource('ColorSchemeDefault', 'Default');
-    AddFromResource('ColorSchemeTwilight', 'Twilight');
-    AddFromResource('ColorSchemePascalClassic', 'Pascal Classic');
-    AddFromResource('ColorSchemeOcean', 'Ocean');
-    AddFromResource('ColorSchemeDelphi', 'Delphi');
+    TheColorSchemeFactorSingleton.RegisterScheme(TColorSchemeFromResource.CreateFrom('ColorSchemeDefault',       'Default',  TColorSchemeFactory.XML_COL_PATH));
+    TheColorSchemeFactorSingleton.RegisterScheme(TColorSchemeFromResource.CreateFrom('ColorSchemeTwilight',      'Twilight', TColorSchemeFactory.XML_COL_PATH));
+    TheColorSchemeFactorSingleton.RegisterScheme(TColorSchemeFromResource.CreateFrom('ColorSchemePascalClassic', 'Pascal Classic', TColorSchemeFactory.XML_COL_PATH));
+    TheColorSchemeFactorSingleton.RegisterScheme(TColorSchemeFromResource.CreateFrom('ColorSchemeOcean',         'Ocean',    TColorSchemeFactory.XML_COL_PATH));
+    TheColorSchemeFactorSingleton.RegisterScheme(TColorSchemeFromResource.CreateFrom('ColorSchemeDelphi',        'Delphi',   TColorSchemeFactory.XML_COL_PATH));
     DefaultColorSchemeName := 'Default';
 
     if DirectoryExistsUTF8(UserSchemeDirectory(False)) then begin
@@ -2991,7 +3024,9 @@ begin
           for j := 1 to c do begin
             n := XMLConfig.GetValue('Lazarus/ColorSchemes/Names/Item'+IntToStr(j)+'/Value', '');
             if n <> '' then
-              TheColorSchemeFactorSingleton.RegisterScheme(XMLConfig, n, 'Lazarus/ColorSchemes/');
+              TheColorSchemeFactorSingleton.RegisterScheme(
+                TColorSchemeFromFile.CreateFrom(XMLConfig, FileList[i], n, TColorSchemeFactory.XML_COL_PATH)
+              );
           end;
         except
           ShowMessage(Format(dlgUserSchemeError, [FileList[i]]));
@@ -5901,6 +5936,7 @@ begin
   // Color options
   FUserColorSchemeGroup := TColorSchemeFactory.Create;
   FUserColorSchemeGroup.Assign(ColorSchemeFactory); // Copy from global singleton.
+  ColorSchemeFactory.AddAttribAddedEvent(@DoColorAttribAdded);
   fUserDefinedColors := TEditorUserDefinedWordsList.Create;
   fUserDefinedColors.UseGlobalIDECommandList := True;
   // Markup Current Word
@@ -5916,6 +5952,12 @@ end;
 function TEditorOptions.GetHighlighterList: TEditOptLangList;
 begin
   Result := EditorOptions.HighlighterList;
+end;
+
+procedure TEditorOptions.DoColorAttribAdded(ASender: TColorSchemeFactory;
+  AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String);
+begin
+  fUserColorSchemeGroup.AddAttributeFromFactory(ColorSchemeFactory, AnHighlighterId, AStoredName, XMLConfig, 'EditorOptions/Color/');
 end;
 
 function TEditorOptions.GetCodeTemplateFileNameExpand: String;
@@ -7857,9 +7899,9 @@ begin
   Result := FAttributes.IndexOfObject(AnAttr);
 end;
 
-procedure TColorSchemeLanguage.LoadFromXml(aXMLConfig: TRttiXMLConfig;
-  const aPath: String; Defaults: TColorSchemeLanguage; ColorVersion: Integer;
-  const aOldPath: String);
+procedure TColorSchemeLanguage.LoadFromXml(aXMLConfig: TRttiXMLConfig; const aPath: String;
+  Defaults: TColorSchemeLanguage; ColorVersion: Integer; const aOldPath: String;
+  AnAttribOnly: TColorSchemeAttribute);
 var
   Def, EmptyDef, CurAttr: TColorSchemeAttribute;
   FormatVersion, RealFormatVersion: longint;
@@ -7890,7 +7932,8 @@ begin
     FormatVersion := 6;
   end;
 
-  if (aOldPath <> '') and (FormatVersion > 1) and aXMLConfig.HasChildPaths(TmpPath)
+  if (AnAttribOnly = nil) and (aOldPath <> '') and (FormatVersion > 1) and
+     aXMLConfig.HasChildPaths(TmpPath)
   then begin
     // convert some old data (loading user settings only):
     // aOldPath should be 'EditorOptions/Display/'
@@ -7919,6 +7962,8 @@ begin
 
   for i := 0 to AttributeCount - 1 do begin
     CurAttr := AttributeAtPos[i];
+    if (AnAttribOnly <> nil) and (CurAttr <> AnAttribOnly) then
+      continue;
     Def := nil;
     if (ColorVersion < 14) and (RealFormatVersion < 14) and
        (Defaults = nil) and
@@ -8307,6 +8352,16 @@ begin
   Result := ColorSchemeBySynHl[HighlighterList.SharedSynInstances[AnHighlighterId]];
 end;
 
+function TColorScheme.GetXmlConf: TRttiXMLConfig;
+begin
+  Result := nil;
+end;
+
+procedure TColorScheme.ReleaseXmlConf;
+begin
+  //
+end;
+
 function TColorScheme.GetLanguageForHighlighter(
   AnHiglighter: TLazEditCustomHighlighter): IColorSchemeLanguage;
 begin
@@ -8430,6 +8485,90 @@ begin
   aXMLConfig.SetValue(aPath + 'Version', EditorOptsFormatVersion);
 end;
 
+{ TColorSchemeFromResource }
+
+procedure TColorSchemeFromResource.DoReleaseXmlConf(Data: PtrInt);
+begin
+  FreeAndNil(FXmlConf);
+  FreeAndNil(FStream);
+end;
+
+function TColorSchemeFromResource.GetXmlConf: TRttiXMLConfig;
+var
+  h: TFPResourceHMODULE;
+  FPResource: TFPResourceHandle;
+begin
+  Application.RemoveAsyncCalls(Self);
+  Result := FXmlConf;
+  if Result <> nil then
+    exit;
+
+  h := HInstance;
+  FPResource := FindResource(h, PChar(FResourceName), PChar(RT_RCDATA));
+  if FPResource = 0 then exit;
+  FStream := TLazarusResourceStream.CreateFromHandle(h, FPResource);
+  FXmlConf := TRttiXMLConfig.Create('');
+  FXmlConf.ReadFromStream(FStream);
+  Result := FXmlConf;
+end;
+
+procedure TColorSchemeFromResource.ReleaseXmlConf;
+begin
+  Application.QueueAsyncCall(@DoReleaseXmlConf, 0);
+end;
+
+constructor TColorSchemeFromResource.CreateFrom(AResourceName: String; const AName, aPath: String);
+begin
+  FResourceName := AResourceName;
+  CreateFromXml(GetXmlConf, AName, aPath);
+end;
+
+destructor TColorSchemeFromResource.Destroy;
+begin
+  Application.RemoveAsyncCalls(Self);
+  DoReleaseXmlConf(0);
+  inherited Destroy;
+end;
+
+{ TColorSchemeFromFile }
+
+procedure TColorSchemeFromFile.DoReleaseXmlConf(Data: PtrInt);
+begin
+  FreeAndNil(FXmlConf);
+end;
+
+function TColorSchemeFromFile.GetXmlConf: TRttiXMLConfig;
+begin
+  Application.RemoveAsyncCalls(Self);
+  Result := FXmlConf;
+  if Result <> nil then
+    exit;
+
+  FXmlConf := TRttiXMLConfig.Create(FFileName);
+  Result := FXmlConf;
+end;
+
+procedure TColorSchemeFromFile.ReleaseXmlConf;
+begin
+  Application.QueueAsyncCall(@DoReleaseXmlConf, 0);
+end;
+
+constructor TColorSchemeFromFile.CreateFrom(aXMLConfig: TRttiXMLConfig; const AFileName, AName,
+  aPath: String);
+var
+  XmlConf: TRttiXMLConfig;
+begin
+  FFileName := AFileName;
+  CreateFromXml(aXMLConfig, AName, aPath);
+end;
+
+destructor TColorSchemeFromFile.Destroy;
+begin
+  Application.RemoveAsyncCalls(Self);
+  DoReleaseXmlConf(0);
+  inherited Destroy;
+end;
+
 { TColorSchemeFactory }
 
 function TColorSchemeFactory.GetColorSchemeGroup(const Index: String
@@ -8506,18 +8645,21 @@ end;
 
 procedure TColorSchemeFactory.InternalAddAttribute(AnAttrGroup: integer;
   AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;
-  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TObject);
+  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TLazCustomEditTextAttribute);
 var
   h: TSrcIDEHighlighter;
-  i: Integer;
+  i, ColSchemeFormatVersion: Integer;
   cs: TColorScheme;
   csl: TColorSchemeLanguage;
   csa: TColorSchemeAttribute;
+  AXmlConf: TRttiXMLConfig;
 begin
   h := HighlighterList.SharedSynInstances[AnHighlighterId];
   if h = nil then
     exit;
 
+  AXmlConf := nil;
+  ColSchemeFormatVersion := -1;
   for i := 0 to FMappings.Count - 1 do begin
     cs := ColorSchemeGroupAtPos[i];
     csl := cs.ColorSchemeBySynHl[h];
@@ -8529,11 +8671,20 @@ begin
     csa := TColorSchemeAttribute.Create(csl, AName, AStoredName);
     csa.Clear;
     if ADefaults <> nil then begin
-      csa.AssignSupportedFeaturesFrom(ADefaults as TLazEditTextAttribute);
-      csa.AssignColors(ADefaults as TLazEditTextAttribute);
+      csa.AssignSupportedFeaturesFrom(ADefaults);
+      csa.AssignColors(ADefaults);
     end;
     csa.InternalSaveDefaultValues;
     csa.FDefaultSynFeatures := csa.Features;
+
+    AXmlConf := cs.GetXmlConf;
+    if AXmlConf <> nil then begin
+      if ColSchemeFormatVersion < 0 then
+        ColSchemeFormatVersion := AXmlConf.GetValue(XML_COL_PATH + 'Version', 0);
+      csl.LoadFromXml(AXmlConf, XML_COL_PATH, nil, ColSchemeFormatVersion, '', csa);
+    end;
+
+    csa.InternalSaveDefaultValues;
 
     csa.FGroup := agnRegistered;
     csa.FRegisteredGroup := AnAttrGroup;
@@ -8541,15 +8692,68 @@ begin
 
     csl.FAttributes.AddObject(AStoredName, csa);
   end;
+  if FColorSchemeAttribAddedEventList <> nil then
+    for i := 0 to FColorSchemeAttribAddedEventList.Count-1 do
+      FColorSchemeAttribAddedEventList[i](Self, AnHighlighterId, AStoredName);
+
+  if AXmlConf <> nil then
+    cs.ReleaseXmlConf;
 end;
 
 procedure TColorSchemeFactory.AddAttribute(AnAttrGroup: integer;
   AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;
-  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TObject);
+  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TLazCustomEditTextAttribute);
 begin
   InternalAddAttribute(AnAttrGroup, AnHighlighterId, AStoredName, AName, AFeatures, ADefaults);
   if EditorOpts <> nil then
     EditorOpts.UserColorSchemeGroup.InternalAddAttribute(AnAttrGroup, AnHighlighterId, AStoredName, AName, AFeatures, ADefaults);
+end;
+
+procedure TColorSchemeFactory.AddAttributeFromFactory(AFactory: TColorSchemeFactory;
+  AnHighlighterId: TIdeSyntaxHighlighterID; const AStoredName: string; aXMLConfig: TRttiXMLConfig;
+  APath: String);
+var
+  h: TLazEditCustomHighlighter;
+  i, ColSchemeFormatVersion: Integer;
+  TargetColorScheme, SrcColorScheme: TColorScheme;
+  TargetCsLang, SrcCsLang: TColorSchemeLanguage;
+  csa, SrcCsa: TColorSchemeAttribute;
+begin
+  h := HighlighterList.SharedSynInstances[AnHighlighterId];
+  if h = nil then
+    exit;
+
+  ColSchemeFormatVersion := -1;
+  for i := 0 to FMappings.Count - 1 do begin
+    TargetColorScheme := ColorSchemeGroupAtPos[i];
+    SrcColorScheme := AFactory.ColorSchemeGroup[TargetColorScheme.Name];
+    if SrcColorScheme = nil then
+      continue;
+
+    TargetCsLang := TargetColorScheme.ColorSchemeBySynHl[h];
+    if TargetCsLang = nil then
+      continue;
+    SrcCsLang := SrcColorScheme.ColorSchemeBySynHl[h];
+    if SrcCsLang = nil then
+      continue;
+    SrcCsa := SrcCsLang.Attribute[AStoredName];
+    if SrcCsa = nil then
+      continue;
+
+    csa := TargetCsLang.Attribute[AStoredName];
+    if csa = nil then begin
+      csa := TColorSchemeAttribute.Create(TargetCsLang, SrcCsa.Caption, AStoredName);
+      TargetCsLang.FAttributes.AddObject(AStoredName, csa);
+    end;
+    csa.Assign(SrcCsa);
+
+
+    if aXMLConfig <> nil then begin
+      if ColSchemeFormatVersion < 0 then
+        ColSchemeFormatVersion := aXMLConfig.GetValue(APath + 'Version', 0);
+      TargetCsLang.LoadFromXml(aXMLConfig, APath, SrcCsLang, ColSchemeFormatVersion, '', csa);
+    end;
+  end;
 end;
 
 constructor TColorSchemeFactory.Create;
@@ -8563,6 +8767,7 @@ destructor TColorSchemeFactory.Destroy;
 begin
   Clear;
   FreeAndNil(FMappings);
+  FreeAndNil(FColorSchemeAttribAddedEventList);
   inherited Destroy;
 end;
 
@@ -8633,12 +8838,12 @@ begin
   end
 end;
 
-procedure TColorSchemeFactory.RegisterScheme(aXMLConfig: TRttiXMLConfig;
-  AName: String; const aPath: String);
+procedure TColorSchemeFactory.RegisterScheme(AColorScheme: TColorScheme);
 var
-  lMapping: TColorScheme;
+  AName: String;
   i, j: integer;
 begin
+  AName := AColorScheme.Name;
   i := FMappings.IndexOf(AName);
   if i <> -1 then begin
     j := 0;
@@ -8647,10 +8852,9 @@ begin
       i := FMappings.IndexOf(AName+'_'+IntToStr(j));
     until i = -1;
     AName := AName+'_'+IntToStr(j);
-    DebugLn(['TColorSchemeFactory.RegisterScheme: Adjusting AName to ', AName]);
+    //DebugLn(['TColorSchemeFactory.RegisterScheme: Adjusting AName to ', AName]);
   end;
-  lMapping := TColorScheme.CreateFromXml(aXMLConfig, AName, aPath);
-  FMappings.AddObject(AName, lMapping);
+  FMappings.AddObject(AName, AColorScheme);
 end;
 
 procedure TColorSchemeFactory.GetRegisteredSchemes(AList: TStrings);
@@ -8665,6 +8869,22 @@ begin
   finally
     AList.EndUpdate;
   end;
+end;
+
+procedure TColorSchemeFactory.AddAttribAddedEvent(AnEvent: TColorSchemeAttribAddedEvent);
+begin
+  if FColorSchemeAttribAddedEventList = nil then
+    FColorSchemeAttribAddedEventList := TColorSchemeAttribAddedEventList.Create;
+
+  FColorSchemeAttribAddedEventList.Add(AnEvent);
+end;
+
+procedure TColorSchemeFactory.RemoveAttribAddedEvent(AnEvent: TColorSchemeAttribAddedEvent);
+begin
+  if FColorSchemeAttribAddedEventList = nil then
+    exit;
+
+  FColorSchemeAttribAddedEventList.Remove(AnEvent);
 end;
 
 { TIDESynTextSyn }

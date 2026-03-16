@@ -63,19 +63,11 @@ type
   TTodoEditorHandler = class
     procedure DoEditorCreated(Sender: TObject);
     procedure DoColorsChanged(Sender: TObject);
-    procedure DoRegisterAttribs(Sender: TObject);
   end;
 
 var
   AttribGroupIdx: Integer;
   CommentAttribTodo, CommentAttribFixMe, CommentAttribDone, CommentAttribNote: TSynSelectedColor;
-
-procedure Register;
-begin
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate, @TTodoEditorHandler(nil).DoEditorCreated);
-  SourceEditorManagerIntf.RegisterChangeEvent(semEditorCloned, @TTodoEditorHandler(nil).DoEditorCreated);
-  TTodoEditorHandler(nil).DoColorsChanged(nil);
-end;
 
 procedure RegisterAttribs;
 var
@@ -123,6 +115,14 @@ begin
   CommentAttribNote.Free;
 end;
 
+procedure Register;
+begin
+  RegisterAttribs;
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorCreate, @TTodoEditorHandler(nil).DoEditorCreated);
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorCloned, @TTodoEditorHandler(nil).DoEditorCreated);
+  TTodoEditorHandler(nil).DoColorsChanged(nil);
+end;
+
 { TTodoEditorHandler }
 
 procedure TTodoEditorHandler.DoEditorCreated(Sender: TObject);
@@ -151,11 +151,6 @@ begin
   attr.ApplyTo(CommentAttribDone);
   attr := csl.GetAttributeIntf('LazTodoListCommentNote');
   attr.ApplyTo(CommentAttribNote);
-end;
-
-procedure TTodoEditorHandler.DoRegisterAttribs(Sender: TObject);
-begin
-  RegisterAttribs;
 end;
 
 { TSynEditTodoMarkup }
@@ -606,8 +601,6 @@ begin
   end;
 end;
 
-initialization
-  RegisterOnIdeColorSchemeListCreated(@TTodoEditorHandler(nil).DoRegisterAttribs);
 finalization
   FreeAttribs;
 end.
