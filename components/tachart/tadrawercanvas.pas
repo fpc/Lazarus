@@ -488,7 +488,7 @@ begin
         Pen.Color := FMonochromeColor;
     end;
     if scalePen in FScaleItems then
-      Pen.Width := Scale(Pen.Width);
+      Pen.Width := Self.Scale(Pen.Width);
 
     if Assigned(FPatternPainter) then
       FPatternPainter.Prepare(Pen.Style, Pen.Width);
