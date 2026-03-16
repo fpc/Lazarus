@@ -115,7 +115,7 @@ var
   btn: NSButton;
   cl: NSButtonCell;
 begin
-  btn := AllocButton(AWinControl, TLCLCheckBoxCallback, AParams,
+  btn := TCocoaWSButtonUtil.allocButton(AWinControl, TLCLCheckBoxCallback, AParams,
            CocoaConfigToggleBox.bezelStyle, CocoaConfigToggleBox.buttonType);
   cl := NSButtonCell(NSButton(btn).cell);
   cl.setShowsStateBy(cl.showsStateBy or NSContentsCellMask);

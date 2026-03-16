@@ -27,17 +27,14 @@ uses
   MacOSAll, CocoaAll,
   CocoaConst, CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaUtils;
 
-
 const
   // these heights were received from Xcode interface builder,
   // where the height cannot be changed for a button control the actual size
   // of the button (the difference between top pixel and bottom pixel,
   // is less than frame size also
-
   PUSHBTN_REG_HEIGHT   = 20;
   PUSHBTN_SMALL_HEIGHT = 17;
   PUSHBTN_MINI_HEIGHT  = 14;
-
 
 type
 
@@ -47,7 +44,6 @@ type
     procedure ButtonClick;
     procedure GetAllowMixedState(var allowed: Boolean);
   end;
-
 
   { TCocoaButton }
 
@@ -93,8 +89,12 @@ type
     procedure setState(astate: NSInteger); override;
   end;
 
+  { TCocoaButtonNeedFocusRing }
+
   TCocoaButtonNeedFocusRing = objcclass(TCocoaButton)
   end;
+
+  { IStepperCallback }
 
   IStepperCallback = interface(ICommonCallback)
     procedure BeforeChange(var Allowed: Boolean);
@@ -123,11 +123,20 @@ type
     procedure lclClearCallback; override;
   end;
 
-function adjustButtonSizeIfNecessary( button: NSButton; aSize: NSSize ): NSSize;
+  { TCocoaButtonUtil }
+
+  TCocoaButtonUtil = class
+  public
+    class function adjustSizeIfNecessary(
+      const button: NSButton;
+      const aSize: NSSize ): NSSize;
+  end;
 
 implementation
 
-function adjustButtonSizeIfNecessary(button: NSButton; aSize: NSSize): NSSize;
+class function TCocoaButtonUtil.adjustSizeIfNecessary(
+  const button: NSButton;
+  const aSize: NSSize): NSSize;
 begin
   Result:= aSize;
   if button.bezelStyle = NSRegularSquareBezelStyle then begin
@@ -287,7 +296,7 @@ begin
   }
   Size.width:= r.Width;
   Size.height:= r.Height;
-  Size:= adjustButtonSizeIfNecessary( self, Size );
+  Size:= TCocoaButtonUtil.adjustSizeIfNecessary( self, Size );
 
   newFrame:= r;
   newFrame.Width:= Round( Size.width );
