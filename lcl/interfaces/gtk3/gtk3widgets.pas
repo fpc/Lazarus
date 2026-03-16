@@ -3887,6 +3887,11 @@ begin
   begin
     LCursor := HCURSOR(TGtk3Cursor(ACursor).Handle);
     LCursorIsDefault := ACursor = Screen.Cursors[crDefault];
+    if (wtLayout in WidgetType) and Gtk3IsLayout(GetContainerWidget)
+      and Gtk3IsGdkWindow(PGtkLayout(GetContainerWidget)^.get_bin_window) then
+    begin
+      SetWindowCursor(PGtkLayout(GetContainerWidget)^.get_bin_window, LCursor, False, LCursorIsDefault);
+    end else
     if GetContainerWidget^.get_has_window and Gtk3IsGdkWindow(GetContainerWidget^.window) then
       SetWindowCursor(GetContainerWidget^.window, LCursor, False, LCursorIsDefault)
     else
