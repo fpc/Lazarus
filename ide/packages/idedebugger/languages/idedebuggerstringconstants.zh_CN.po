@@ -29,6 +29,18 @@ msgstr "- 添加新组 -"
 msgid "No group"
 msgstr "无组"
 
+#: idedebuggerstringconstants.dbgasmwindowlinktarget
+msgid "Link target line"
+msgstr "链接目标行"
+
+#: idedebuggerstringconstants.dbgasmwindowsourcefunc
+msgid "Function name"
+msgstr "函数名称"
+
+#: idedebuggerstringconstants.dbgasmwindowsourceline
+msgid "Source line"
+msgstr "源代码行"
+
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
@@ -645,6 +657,22 @@ msgstr "预设"
 msgctxt "idedebuggerstringconstants.dispformattargetwatches"
 msgid "Watches"
 msgstr "监视点"
+
+#: idedebuggerstringconstants.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrlinehighlight
+msgid "Current line highlight"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrmouselink
+msgid "Mouse link"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrtextblock
+msgid "Selected text"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"

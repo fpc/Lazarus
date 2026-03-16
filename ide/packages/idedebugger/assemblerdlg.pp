@@ -15,9 +15,9 @@ uses
   // Codetools
   CodeToolManager, CodeCache,
   // LazEdit
-  LazEditTextAttributes,
+  LazEditTextAttributes, LazEditHighlighter,
   // SynEdit
-  SynEdit, SynEditHighlighter, SynEditMiscClasses,
+  SynEdit, SynEditHighlighter, SynEditMiscClasses, SynHighlighterPosition,
   // IdeIntf
   IDEWindowIntf, IDECommands, IDEImagesIntf, SrcEditorIntf, EditorOptionsIntf,
   IdeIntfStrConsts, EditorSyntaxHighlighterDef,
@@ -163,7 +163,7 @@ type
     FImgNoSourceLine: Integer;
     FImageTarget: Integer;
 
-    FHighLigther: TSynCustomHighlighter;
+    FHighLigther: TLazEditCustomHighlighter;
     FDefAttrib, FSrcCodeAttrib, FSrcFuncAttrib: TSynHighlighterAttributes;
     FSelAttrib, FCurLineAttrib, FJmpLinkAttrib, FJmpTargetAttrib: TSynHighlighterAttributesModifier;
     FMergeCol: TLazEditTextAttributeMergeResult;
@@ -212,6 +212,7 @@ type
     property BreakPoints;
   end;
 
+  procedure Register;
 
 var
   IdeAsmWinHlId: integer;
@@ -222,6 +223,65 @@ implementation
 
 var
   AsmWindowCreator: TIDEWindowCreator;
+
+type
+  { TIDEAsmWinHighlighter }
+
+  TIDEAsmWinHighlighter = class(TNonSrcIDEHighlighter)
+  public
+    constructor Create(AOwner: TComponent); override;
+    class function GetLanguageName: string; override;
+  end;
+
+{ TIDEAsmWinHighlighter }
+
+constructor TIDEAsmWinHighlighter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FreeHighlighterAttributes;
+  AddAttribute( TSynHighlighterAttributes.Create(@dlgAddHiAttrDefault, 'ahaDefault')  );
+  AddAttribute( TSynHighlighterAttributes.Create(@dbgAsmWindowSourceLine, 'ahaAsmSourceLine')  );
+  AddAttribute( TSynHighlighterAttributes.Create(@dbgAsmWindowSourceFunc, 'ahaAsmSourceFunc')  );
+  AddAttribute( TSynHighlighterAttributesModifier.Create(@dlgAddHiAttrTextBlock, 'ahaTextBlock') );
+  AddAttribute( TSynHighlighterAttributesModifier.Create(@dlgAddHiAttrLineHighlight, 'ahaLineHighlight') );
+  AddAttribute( TSynHighlighterAttributesModifier.Create(@dlgAddHiAttrMouseLink, 'ahaMouseLink') );
+  AddAttribute( TSynHighlighterAttributesModifier.Create(@dbgAsmWindowLinkTarget, 'ahaAsmLinkTarget') );
+end;
+
+class function TIDEAsmWinHighlighter.GetLanguageName: string;
+begin
+  Result := 'Disassembler Window';
+end;
+
+
+procedure Register;
+var
+  Info: TIdeHighlighterInfo;
+begin
+  // create info for asm Window
+  Info.Init;
+  with Info do
+  begin
+    SampleSource :=
+      '0000000100001537 4889C3                   mov rbx,rax'+#13#10+
+      '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
+      '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10+
+      '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
+      '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10+
+      '0000000100001537 4889C3                   mov rbx,rax'+#13#10+
+      '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
+      '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10+
+      '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
+      '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10;
+    //AddAttrSampleLines[ahaTextBlock] := 5;
+    MappedAttributes := TStringList.Create;
+    MappedAttributes.Add('ahaAsmSourceLine=Reserved word');
+    MappedAttributes.Add('ahaAsmSourceFunc=Reserved word');
+    CaretXY := Point(40,4);
+  end;
+
+  IdeAsmWinHlId := IdeColorSchemeList.AddHighlighter(TIDEAsmWinHighlighter.Create(nil), Info);
+end;
 
 { THistoryEntry }
 
@@ -1143,7 +1203,7 @@ var
   Syn: TSynEdit;
   i: Integer;
 begin
-  FHighLigther := TSynCustomHighlighter(IdeSyntaxHighlighters.SharedInstances[IdeAsmWinHlId]);
+  FHighLigther := TLazEditCustomHighlighter(IdeSyntaxHighlighters.SharedInstances[IdeAsmWinHlId]);
   IDEEditorOptions.GetHighlighterObjSettings(FHighLigther);
 
   Syn := TSynEdit.Create(nil);

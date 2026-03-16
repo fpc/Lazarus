@@ -29,18 +29,6 @@ msgstr "ໂດດໄປໜ້າ"
 msgid "Search Instantly"
 msgstr "ຄົ້ນຫາທັນທີ"
 
-#: lazarusidestrconsts.dbgasmwindowlinktarget
-msgid "Link target line"
-msgstr "ເຊື່ອມຕໍ່ແຖວເປົ້າໝາຍ"
-
-#: lazarusidestrconsts.dbgasmwindowsourcefunc
-msgid "Function name"
-msgstr "ຊື່ຟັງຊັນ"
-
-#: lazarusidestrconsts.dbgasmwindowsourceline
-msgid "Source line"
-msgstr "ແຖວຊອດໂຄ້ດ"
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"

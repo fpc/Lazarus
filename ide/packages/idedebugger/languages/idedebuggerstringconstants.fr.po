@@ -22,6 +22,18 @@ msgstr ""
 msgid "No group"
 msgstr ""
 
+#: idedebuggerstringconstants.dbgasmwindowlinktarget
+msgid "Link target line"
+msgstr "Ligne cible du lien"
+
+#: idedebuggerstringconstants.dbgasmwindowsourcefunc
+msgid "Function name"
+msgstr "Nom de fonction"
+
+#: idedebuggerstringconstants.dbgasmwindowsourceline
+msgid "Source line"
+msgstr "Ligne de source"
+
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
@@ -650,6 +662,22 @@ msgstr ""
 msgctxt "idedebuggerstringconstants.dispformattargetwatches"
 msgid "Watches"
 msgstr "Suivis"
+
+#: idedebuggerstringconstants.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrlinehighlight
+msgid "Current line highlight"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrmouselink
+msgid "Mouse link"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrtextblock
+msgid "Selected text"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
 #, fuzzy

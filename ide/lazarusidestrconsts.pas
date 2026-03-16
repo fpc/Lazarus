@@ -2202,10 +2202,6 @@ resourcestring
   dlgAddHiAttrCustom              = 'Custom %d';
   dlgAddHiAttrNestedBracket       = 'Nested bracket %d';
 
-  dbgAsmWindowSourceLine          = 'Source line';
-  dbgAsmWindowSourceFunc          = 'Function name';
-  dbgAsmWindowLinkTarget          = 'Link target line';
-
   dlgAddHiAttrGroupDefault  = 'Global';
   dlgAddHiAttrGroupText     = 'Text';
   dlgAddHiAttrGroupLine     = 'Line';

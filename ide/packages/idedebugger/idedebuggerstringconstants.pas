@@ -330,6 +330,14 @@ resourcestring
   rsEnterPID = 'Enter PID';
   dlgUnitDepRefresh      = 'Refresh';
 
+  dlgAddHiAttrDefault             = 'Default Text';
+  dlgAddHiAttrTextBlock           = 'Selected text';
+  dlgAddHiAttrMouseLink           = 'Mouse link';
+  dlgAddHiAttrLineHighlight       = 'Current line highlight';
+  dbgAsmWindowSourceLine          = 'Source line';
+  dbgAsmWindowSourceFunc          = 'Function name';
+  dbgAsmWindowLinkTarget          = 'Link target line';
+
   //Disassembler dialog
   lisDisAssAssembler = 'Assembler';
   lisMenuViewAssembler = 'Assembler';

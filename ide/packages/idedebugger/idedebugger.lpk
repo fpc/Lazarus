@@ -213,6 +213,7 @@
       </Item>
       <Item>
         <Filename Value="assemblerdlg.pp"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="AssemblerDlg"/>
         <ResourceBaseClass Value="Form"/>
         <ResourceBaseClassname Value=""/>

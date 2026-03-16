@@ -28,6 +28,18 @@ msgstr "- Добавить новую группу -"
 msgid "No group"
 msgstr "Не в группе"
 
+#: idedebuggerstringconstants.dbgasmwindowlinktarget
+msgid "Link target line"
+msgstr "Целевая строка ссылки"
+
+#: idedebuggerstringconstants.dbgasmwindowsourcefunc
+msgid "Function name"
+msgstr "Имя функции"
+
+#: idedebuggerstringconstants.dbgasmwindowsourceline
+msgid "Source line"
+msgstr "Строка исходного кода"
+
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
@@ -644,6 +656,22 @@ msgstr "Предустановки"
 msgctxt "idedebuggerstringconstants.dispformattargetwatches"
 msgid "Watches"
 msgstr "Наблюдения"
+
+#: idedebuggerstringconstants.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrlinehighlight
+msgid "Current line highlight"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrmouselink
+msgid "Mouse link"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrtextblock
+msgid "Selected text"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"

@@ -592,7 +592,7 @@ begin
   Attri := nil;
   ColorPreview.GetHighlighterAttriAtRowCol(XY, Token, Attri);
 
-  if (not InGutter) and (not ColorPreview.Highlighter.GetEol) then begin
+  if (not InGutter) and (ColorPreview.Highlighter <> nil) and (not ColorPreview.Highlighter.GetEol) then begin
     AttriList := ColorPreview.Highlighter.GetTokenAttributeList;
 
     ColorPreview.MarkupManager.BeginMarkup;
@@ -1608,7 +1608,9 @@ begin
       PreviewEdits[a].BeginUpdate;
     try
       for a := Low(PreviewEdits) to High(PreviewEdits) do begin
-        if UseSyntaxHighlightCheckBox.Down then
+        if UseSyntaxHighlightCheckBox.Down
+        and (FCurrentHighlighter is TSynCustomHighlighter)
+        then
           PreviewEdits[a].Highlighter := FCurrentHighlighter as TSynCustomHighlighter
         else
           PreviewEdits[a].Highlighter := nil;

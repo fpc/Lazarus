@@ -33,18 +33,6 @@ msgstr "Saut vers l'avant"
 msgid "Search Instantly"
 msgstr ""
 
-#: lazarusidestrconsts.dbgasmwindowlinktarget
-msgid "Link target line"
-msgstr "Ligne cible du lien"
-
-#: lazarusidestrconsts.dbgasmwindowsourcefunc
-msgid "Function name"
-msgstr "Nom de fonction"
-
-#: lazarusidestrconsts.dbgasmwindowsourceline
-msgid "Source line"
-msgstr "Ligne de source"
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"

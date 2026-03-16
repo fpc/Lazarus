@@ -30,18 +30,6 @@ msgstr "转到下一个"
 msgid "Search Instantly"
 msgstr "即时搜索"
 
-#: lazarusidestrconsts.dbgasmwindowlinktarget
-msgid "Link target line"
-msgstr "链接目标行"
-
-#: lazarusidestrconsts.dbgasmwindowsourcefunc
-msgid "Function name"
-msgstr "函数名称"
-
-#: lazarusidestrconsts.dbgasmwindowsourceline
-msgid "Source line"
-msgstr "源代码行"
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"

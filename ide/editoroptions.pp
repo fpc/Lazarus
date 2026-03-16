@@ -89,7 +89,6 @@ type
   TPreviewPasSyn = TIDESynFreePasSyn;
   TSrcIDEHighlighter = TLazEditCustomHighlighter;
   // TSynPositionHighlighter - minimum implementation needed.
-  TNonSrcIDEHighlighter = class(TSynPositionHighlighter); // Hold colors, not related to SourceEditor
 
   TSynHighlightElement = TLazEditTextAttribute deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
   TCustomSynClass = class of TSrcIDEHighlighter;
@@ -511,6 +510,7 @@ type
   TColorSchemeFactory = class;
 
   TColorSchemeAttribAddedEvent = procedure(ASender: TColorSchemeFactory; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String) of object;
+  TColorSchemeHighlighterAddedEvent = procedure(ASender: TColorSchemeFactory; AnHighlighterId: TIdeSyntaxHighlighterID) of object;
 
   { TColorSchemeFactory }
 
@@ -519,9 +519,11 @@ type
     XML_COL_PATH = 'Lazarus/ColorSchemes/';
   private type
     TColorSchemeAttribAddedEventList = specialize TFPGList<TColorSchemeAttribAddedEvent>;
+    TColorSchemeHighlighterAddedEventList = specialize TFPGList<TColorSchemeHighlighterAddedEvent>;
   private
     FMappings: TQuickStringlist; // TColorScheme
     FColorSchemeAttribAddedEventList: TColorSchemeAttribAddedEventList;
+    FColorSchemeHighlighterAddedEventList: TColorSchemeHighlighterAddedEventList;
     function GetColorSchemeGroup(const Index: String): TColorScheme;
     function GetColorSchemeGroupAtPos(Index: Integer): TColorScheme;
     // IColorSchemeList
@@ -536,6 +538,8 @@ type
     procedure InternalAddAttribute(AnAttrGroup: integer; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TLazCustomEditTextAttribute = nil);
     procedure AddAttribute(AnAttrGroup: integer; AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String; AName: PString;  AFeatures: TColorSchemeAttributeFeatures; ADefaults: TLazCustomEditTextAttribute = nil);
     procedure AddAttributeFromFactory(AFactory: TColorSchemeFactory; AnHighlighterId: TIdeSyntaxHighlighterID; const AStoredName: string; aXMLConfig: TRttiXMLConfig = nil; APath: String = '');
+    function AddHighlighter(AnHighlighter: TLazEditCustomHighlighter; AnIdeInfo: TIdeHighlighterInfo): TIdeSyntaxHighlighterID;
+    procedure AddHighlighterFromFactory(AFactory: TColorSchemeFactory; AnHighlighterId: TIdeSyntaxHighlighterID; aXMLConfig: TRttiXMLConfig = nil; APath: String = '');
   public
     constructor Create;
     destructor  Destroy; override;
@@ -550,6 +554,8 @@ type
     procedure GetRegisteredSchemes(AList: TStrings);
     procedure AddAttribAddedEvent(AnEvent: TColorSchemeAttribAddedEvent);
     procedure RemoveAttribAddedEvent(AnEvent: TColorSchemeAttribAddedEvent);
+    procedure AddHighlighterAddedEvent(AnEvent: TColorSchemeHighlighterAddedEvent);
+    procedure RemoveHighlighterAddedEvent(AnEvent: TColorSchemeHighlighterAddedEvent);
     property  ColorSchemeGroup[const Index: String]: TColorScheme read GetColorSchemeGroup;
     property  ColorSchemeGroupAtPos[Index: Integer]: TColorScheme read GetColorSchemeGroupAtPos;
   end;
@@ -943,6 +949,7 @@ type
     FileExtensions: String; // divided by semicolon, e.g. 'pas;pp;inc'
     DefaultFileExtensions: string;
     SampleSource: String;
+    // TODO: AddAttrSampleLines > replace by Map(XmlName: String, line: int)
     AddAttrSampleLines: array[TAdditionalHilightAttribute] of Integer; // first line = 1
 //    MappedAttributes: TStringList; // map attributes to pascal
     DefaultCommentType: TCommentType;
@@ -978,7 +985,7 @@ type
     function GetIdForName(AName: String): TIdeSyntaxHighlighterID;
     function GetCaptions(AnID: TIdeSyntaxHighlighterID): String;
     function GetNames(AnID: TIdeSyntaxHighlighterID): String;
-    function GetSharedInstances(AnID: TIdeSyntaxHighlighterID): TObject;
+    function GetSharedInstances(AnID: TIdeSyntaxHighlighterID): TLazEditCustomHighlighter;
     function GetSynHlClasses(AnID: TIdeSyntaxHighlighterID): TClass;
 
     function GetIdForLazSyntaxHighlighter(AnHighlighterType: TLazSyntaxHighlighter): TIdeSyntaxHighlighterID;
@@ -1004,7 +1011,7 @@ type
     property Names          [AnID: TIdeSyntaxHighlighterID]: String  read GetNames;
     property SynHlClasses   [AnID: TIdeSyntaxHighlighterID]: TClass  read GetSynHlClasses;     // class of TLazEditCustomHighlighter
 deprecated 'NONOONONONONONOONON only create ONE ????';
-    property SharedInstances[AnID: TIdeSyntaxHighlighterID]: TObject read GetSharedInstances;
+    property SharedInstances[AnID: TIdeSyntaxHighlighterID]: TLazEditCustomHighlighter read GetSharedInstances;
     property SharedSynInstances[AnID: TIdeSyntaxHighlighterID]: TSrcIDEHighlighter read GetSharedSynInstances;
   end;
 
@@ -1998,6 +2005,8 @@ type
 
     procedure DoColorAttribAdded(ASender: TColorSchemeFactory;
       AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String);
+    procedure DoHighlighterAdded(ASender: TColorSchemeFactory;
+      AnHighlighterId: TIdeSyntaxHighlighterID);
     function GetHighlighterList: TEditOptLangList;
     procedure Init;
     function GetCodeTemplateFileNameExpand: String;
@@ -2151,14 +2160,6 @@ type
     // Multi window
     property MultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList
         read FMultiWinEditAccessOrder write FMultiWinEditAccessOrder;
-  end;
-
-  { TIDEAsmWinHighlighter }
-
-  TIDEAsmWinHighlighter = class(TNonSrcIDEHighlighter) // TODO: move to AssemblerDlg, when editoropts become a package
-  public
-    constructor Create(AOwner: TComponent); override;
-    class function GetLanguageName: string; override;
   end;
 
 var
@@ -3458,7 +3459,7 @@ begin
 end;
 
 function TEditOptLangList.GetSharedInstances(AnID: TIdeSyntaxHighlighterID
-  ): TObject;
+  ): TLazEditCustomHighlighter;
 begin
   if AnID < 0 then // lshNone;
     exit(nil);
@@ -4282,36 +4283,6 @@ begin
     CaretXY := Point(1,1);
   end;
   Add(NewInfo);
-
-  // create info for asm Window
-  // TODO: move to debugger package
-  NewInfo := TEditOptLanguageInfo.Create;
-  NewInfo.TheType := lshNone;
-  NewInfo.DefaultCommentType := comtNone;
-  NewInfo.SynInstance := TIDEAsmWinHighlighter.Create(nil);
-  NewInfo.SetBothFilextensions('');
-  NewInfo.SampleSource :=
-    '0000000100001537 4889C3                   mov rbx,rax'+#13#10+
-    '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
-    '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10+
-    '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
-    '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10+
-    '0000000100001537 4889C3                   mov rbx,rax'+#13#10+
-    '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
-    '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10+
-    '000000010000153A 4889D9                   mov rcx,rbx'+#13#10+
-    '000000010000153D E8EE6D0000               call +$00006DEE    # $0000000100008330 fpc_writeln_end text.inc:694'+#13#10;
-  with NewInfo do
-  begin
-    AddAttrSampleLines[ahaTextBlock] := 5;
-    MappedAttributes := TStringList.Create;
-    MappedAttributes.Add('ahaAsmSourceLine=Reserved word');
-    MappedAttributes.Add('ahaAsmSourceFunc=Reserved word');
-    CaretXY := Point(40,4);
-  end;
-  IdeAsmWinHlId :=
-  Add(NewInfo);
-
 
   dir := AppendPathDelim(AppendPathDelim(UserSchemeDirectory(False)) + 'tml');
   if DirectoryExistsUTF8(dir) then begin
@@ -5937,6 +5908,7 @@ begin
   FUserColorSchemeGroup := TColorSchemeFactory.Create;
   FUserColorSchemeGroup.Assign(ColorSchemeFactory); // Copy from global singleton.
   ColorSchemeFactory.AddAttribAddedEvent(@DoColorAttribAdded);
+  ColorSchemeFactory.AddHighlighterAddedEvent(@DoHighlighterAdded);
   fUserDefinedColors := TEditorUserDefinedWordsList.Create;
   fUserDefinedColors.UseGlobalIDECommandList := True;
   // Markup Current Word
@@ -5958,6 +5930,12 @@ procedure TEditorOptions.DoColorAttribAdded(ASender: TColorSchemeFactory;
   AnHighlighterId: TIdeSyntaxHighlighterID; AStoredName: String);
 begin
   fUserColorSchemeGroup.AddAttributeFromFactory(ColorSchemeFactory, AnHighlighterId, AStoredName, XMLConfig, 'EditorOptions/Color/');
+end;
+
+procedure TEditorOptions.DoHighlighterAdded(ASender: TColorSchemeFactory;
+  AnHighlighterId: TIdeSyntaxHighlighterID);
+begin
+  fUserColorSchemeGroup.AddHighlighterFromFactory(ColorSchemeFactory, AnHighlighterId, XMLConfig, 'EditorOptions/Color/');
 end;
 
 function TEditorOptions.GetCodeTemplateFileNameExpand: String;
@@ -7335,26 +7313,6 @@ begin
   ASynEdit.ReadOnly := True;
 end;
 
-{ TIDEAsmWinHighlighter }
-
-constructor TIDEAsmWinHighlighter.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FreeHighlighterAttributes;
-  AddAttribute( TSynHighlighterAttributes.Create(@dlgAddHiAttrDefault, 'ahaDefault')  );
-  AddAttribute( TSynHighlighterAttributes.Create(@dbgAsmWindowSourceLine, 'ahaAsmSourceLine')  );
-  AddAttribute( TSynHighlighterAttributes.Create(@dbgAsmWindowSourceFunc, 'ahaAsmSourceFunc')  );
-  AddAttribute( TSynHighlighterAttributesModifier.Create(@AdditionalHighlightAttributes[ahaTextBlock], GetAddiHilightAttrName(ahaTextBlock)) );
-  AddAttribute( TSynHighlighterAttributesModifier.Create(@AdditionalHighlightAttributes[ahaLineHighlight], GetAddiHilightAttrName(ahaLineHighlight)) );
-  AddAttribute( TSynHighlighterAttributesModifier.Create(@AdditionalHighlightAttributes[ahaMouseLink], GetAddiHilightAttrName(ahaMouseLink)) );
-  AddAttribute( TSynHighlighterAttributesModifier.Create(@dbgAsmWindowLinkTarget, 'ahaAsmLinkTarget') );
-end;
-
-class function TIDEAsmWinHighlighter.GetLanguageName: string;
-begin
-  Result := 'Disassembler Window';
-end;
-
 { TColorSchemeAttribute }
 
 procedure TColorSchemeAttribute.SetMarkupFoldLineAlpha(AValue: Byte);
@@ -7804,6 +7762,8 @@ begin
   end;
   FAttributes.Sorted := true;
 
+  if aXMLConfig = nil then
+    exit;
   if (not FIsSchemeDefault) and (aPascalScheme <> nil) and (MappedAttributes <> nil) then begin
     TmpPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/'  + 'Scheme' + StrToValidXMLName(Name) + '/';
     if not aXMLConfig.HasPath(TmpPath, False) then begin
@@ -7860,7 +7820,7 @@ begin
     j := FAttributes.IndexOf(SrcAttr.StoredName);
     if j >= 0 then begin
       Attr := TColorSchemeAttribute(FAttributes.Objects[j]);
-      DebugLn(['      Use existing attr ', Attr.StoredName]);
+      //DebugLn(['      Use existing attr ', Attr.StoredName]);
       FAttributes.Delete(j);
     end
     else begin
@@ -8658,7 +8618,6 @@ begin
   if h = nil then
     exit;
 
-  AXmlConf := nil;
   ColSchemeFormatVersion := -1;
   for i := 0 to FMappings.Count - 1 do begin
     cs := ColorSchemeGroupAtPos[i];
@@ -8682,6 +8641,7 @@ begin
       if ColSchemeFormatVersion < 0 then
         ColSchemeFormatVersion := AXmlConf.GetValue(XML_COL_PATH + 'Version', 0);
       csl.LoadFromXml(AXmlConf, XML_COL_PATH, nil, ColSchemeFormatVersion, '', csa);
+      cs.ReleaseXmlConf;
     end;
 
     csa.InternalSaveDefaultValues;
@@ -8695,9 +8655,6 @@ begin
   if FColorSchemeAttribAddedEventList <> nil then
     for i := 0 to FColorSchemeAttribAddedEventList.Count-1 do
       FColorSchemeAttribAddedEventList[i](Self, AnHighlighterId, AStoredName);
-
-  if AXmlConf <> nil then
-    cs.ReleaseXmlConf;
 end;
 
 procedure TColorSchemeFactory.AddAttribute(AnAttrGroup: integer;
@@ -8756,6 +8713,84 @@ begin
   end;
 end;
 
+function TColorSchemeFactory.AddHighlighter(AnHighlighter: TLazEditCustomHighlighter;
+  AnIdeInfo: TIdeHighlighterInfo): TIdeSyntaxHighlighterID;
+var
+  NewInfo: TEditOptLanguageInfo;
+  n: String;
+  i: Integer;
+  cs: TColorScheme;
+  XmlConf: TRttiXMLConfig;
+begin
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshNone;
+    DefaultCommentType    := AnIdeInfo.DefaultCommentType;
+    SynInstance           := AnHighlighter as TLazEditCustomHighlighter;
+    FileExtensions        := AnIdeInfo.FileExtensions;
+    DefaultFileExtensions := AnIdeInfo.DefaultFileExtensions;
+    SampleSource          := AnIdeInfo.SampleSource;
+    MappedAttributes      := AnIdeInfo.MappedAttributes;
+    if MappedAttributes = nil then
+      MappedAttributes    := TStringList.Create;
+    CaretXY := AnIdeInfo.CaretXY;
+  end;
+  Result := EditorOptions.HighlighterList.Add(NewInfo);
+
+  n := (AnHighlighter as TLazEditCustomHighlighter).LanguageName;
+  for i := 0 to FMappings.Count - 1 do begin
+    cs := ColorSchemeGroupAtPos[i];
+
+    if cs.FColorSchemes.IndexOf(n) < 0 then begin
+      XmlConf := cs.GetXmlConf;
+      cs.FColorSchemes[n] := TColorSchemeLanguage.CreateFromXml(cs, Result, XmlConf,
+        XML_COL_PATH, False, nil, NewInfo.MappedAttributes);
+      if XmlConf <> nil then
+        cs.ReleaseXmlConf;
+    end;
+  end;
+  if FColorSchemeHighlighterAddedEventList <> nil then
+    for i := 0 to FColorSchemeHighlighterAddedEventList.Count-1 do
+      FColorSchemeHighlighterAddedEventList[i](Self, Result);
+end;
+
+procedure TColorSchemeFactory.AddHighlighterFromFactory(AFactory: TColorSchemeFactory;
+  AnHighlighterId: TIdeSyntaxHighlighterID; aXMLConfig: TRttiXMLConfig; APath: String);
+var
+  i: Integer;
+  h: TLazEditCustomHighlighter;
+//  i, ColSchemeFormatVersion: Integer;
+  TargetColorScheme, SrcColorScheme: TColorScheme;
+  TargetCsLang, SrcCsLang: TColorSchemeLanguage;
+begin
+  h := HighlighterList.SharedSynInstances[AnHighlighterId];
+  if h = nil then
+    exit;
+
+//  n := (AnHighlighter as TLazEditCustomHighlighter).LanguageName;
+  for i := 0 to FMappings.Count - 1 do begin
+    TargetColorScheme := ColorSchemeGroupAtPos[i];
+    SrcColorScheme := AFactory.ColorSchemeGroup[TargetColorScheme.Name];
+    if SrcColorScheme = nil then
+      continue;
+    SrcCsLang := SrcColorScheme.ColorSchemeBySynHl[h];
+    if SrcCsLang = nil then
+      continue;
+
+    TargetCsLang := TargetColorScheme.ColorSchemeBySynHl[h];
+    if TargetCsLang = nil then begin
+      TargetCsLang := TColorSchemeLanguage.CreateFromXml(TargetColorScheme, AnHighlighterId, nil,
+        APath, False, nil, nil);
+      TargetColorScheme.FColorSchemes[h.LanguageName] := TargetCsLang;
+    end;
+    TargetCsLang.Assign(SrcCsLang);
+    TargetCsLang.LoadFromXml(aXMLConfig, APath, SrcCsLang,
+      aXMLConfig.GetValue(aPath + 'Version', 0)
+    );
+  end;
+end;
+
 constructor TColorSchemeFactory.Create;
 begin
   inherited Create;
@@ -8768,6 +8803,7 @@ begin
   Clear;
   FreeAndNil(FMappings);
   FreeAndNil(FColorSchemeAttribAddedEventList);
+  FreeAndNil(FColorSchemeHighlighterAddedEventList);
   inherited Destroy;
 end;
 
@@ -8885,6 +8921,23 @@ begin
     exit;
 
   FColorSchemeAttribAddedEventList.Remove(AnEvent);
+end;
+
+procedure TColorSchemeFactory.AddHighlighterAddedEvent(AnEvent: TColorSchemeHighlighterAddedEvent);
+begin
+  if FColorSchemeHighlighterAddedEventList = nil then
+    FColorSchemeHighlighterAddedEventList := TColorSchemeHighlighterAddedEventList.Create;
+
+  FColorSchemeHighlighterAddedEventList.Add(AnEvent);
+end;
+
+procedure TColorSchemeFactory.RemoveHighlighterAddedEvent(
+  AnEvent: TColorSchemeHighlighterAddedEvent);
+begin
+  if FColorSchemeHighlighterAddedEventList = nil then
+    exit;
+
+  FColorSchemeHighlighterAddedEventList.Remove(AnEvent);
 end;
 
 { TIDESynTextSyn }

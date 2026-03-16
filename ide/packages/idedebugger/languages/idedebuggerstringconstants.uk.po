@@ -30,6 +30,18 @@ msgstr ""
 msgid "No group"
 msgstr ""
 
+#: idedebuggerstringconstants.dbgasmwindowlinktarget
+msgid "Link target line"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgasmwindowsourcefunc
+msgid "Function name"
+msgstr ""
+
+#: idedebuggerstringconstants.dbgasmwindowsourceline
+msgid "Source line"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"
@@ -660,6 +672,22 @@ msgstr ""
 msgctxt "idedebuggerstringconstants.dispformattargetwatches"
 msgid "Watches"
 msgstr "Спостереження"
+
+#: idedebuggerstringconstants.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrlinehighlight
+msgid "Current line highlight"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrmouselink
+msgid "Mouse link"
+msgstr ""
+
+#: idedebuggerstringconstants.dlgaddhiattrtextblock
+msgid "Selected text"
+msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"

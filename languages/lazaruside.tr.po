@@ -37,18 +37,6 @@ msgstr "İleriye Atla"
 msgid "Search Instantly"
 msgstr ""
 
-#: lazarusidestrconsts.dbgasmwindowlinktarget
-msgid "Link target line"
-msgstr "Bağlantı hedef hattı"
-
-#: lazarusidestrconsts.dbgasmwindowsourcefunc
-msgid "Function name"
-msgstr "Fonksiyon adı"
-
-#: lazarusidestrconsts.dbgasmwindowsourceline
-msgid "Source line"
-msgstr "Kaynak hattı"
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"

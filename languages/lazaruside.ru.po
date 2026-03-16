@@ -30,18 +30,6 @@ msgstr "Перейти вперёд"
 msgid "Search Instantly"
 msgstr "Найти мгновенно"
 
-#: lazarusidestrconsts.dbgasmwindowlinktarget
-msgid "Link target line"
-msgstr "Целевая строка ссылки"
-
-#: lazarusidestrconsts.dbgasmwindowsourcefunc
-msgid "Function name"
-msgstr "Имя функции"
-
-#: lazarusidestrconsts.dbgasmwindowsourceline
-msgid "Source line"
-msgstr "Строка исходного кода"
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"
