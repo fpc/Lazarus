@@ -132,7 +132,7 @@ type
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
-    constructor Create(AOpenTerminal: Boolean);
+    constructor Create(AOpenTerminal: Boolean; const AWorkingDir: String = '');
   end;
 
   { TLldbInstructionProcessStep }
@@ -740,12 +740,18 @@ begin
   Result := True; // Ignore any "process stopped", before "launched"
 end;
 
-constructor TLldbInstructionProcessLaunch.Create(AOpenTerminal: Boolean);
+constructor TLldbInstructionProcessLaunch.Create(AOpenTerminal: Boolean;
+  const AWorkingDir: String);
+var
+  s: String;
 begin
   if AOpenTerminal then
-    inherited Create('process launch --tty')
+    s := 'process launch --tty'
   else
-    inherited Create('process launch -n');
+    s := 'process launch -n';
+  if AWorkingDir <> '' then
+    s := s + ' -w ' + AWorkingDir;
+  inherited Create(s);
 end;
 
 { TLldbInstructionProcessStep }

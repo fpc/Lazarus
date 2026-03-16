@@ -2574,7 +2574,8 @@ begin
   SetDebuggerState(dsRun);
   // the state change allows breakpoints to be set, before the run command is issued.
 
-  FRunInstr := TLldbInstructionProcessLaunch.Create(TLldbDebuggerProperties(Debugger.GetProperties).LaunchNewTerminal);
+  FRunInstr := TLldbInstructionProcessLaunch.Create(
+    TLldbDebuggerProperties(Debugger.GetProperties).LaunchNewTerminal, Debugger.WorkingDir);
   FRunInstr.OnSuccess := @LaunchInstructionSucceeded;
   FRunInstr.OnFailure := @InstructionFailed;
   QueueInstruction(FRunInstr);
