@@ -1777,6 +1777,7 @@ var
   ADevice: PGdkDevice;
   X, Y, WX, WY: gint;
   AMask: TGdkModifierType;
+  AParentWidget: PGtkWidget;
   {$IFDEF GTK3DEBUGEVENTS}
   R: TRect;
   {$ENDIF}
@@ -1807,10 +1808,11 @@ begin
    widget but event->motion.window/x/y stay relative to the ORIGINAL window
    under the pointer. Detect this mismatch and re-query coords relative to our
    own container window to get correct widget-relative coordinates.
-   For windowless widgets (e.g. GtkButton), GetContainerWidget^.window returns
-   the parent's window. Re-query from that parent window, then subtract the
-   widget's own position within the toplevel to get widget-relative coords.
-   Note: there's still strange problem with Wayland coordinates during dnd. 20260316}
+   For windowless widgets (e.g. GtkButton, GtkComboBox), GetContainerWidget^.window
+   returns the parent's shared GDK window. Re-query from that parent window, then
+   subtract the widget's position within that parent window (via gdk_window_get_user_data
+   to find the owning widget) to get correct widget-relative coordinates on both
+   X11 and Wayland. 20260316}
   if Gtk3IsGdkWindow(GetContainerWidget^.window) and
      (GetContainerWidget^.window <> Event^.motion.window) then
   begin
@@ -1820,9 +1822,12 @@ begin
     gdk_window_get_device_position(GetContainerWidget^.window, ADevice, @X, @Y, @AMask);
     if not GetContainerWidget^.get_has_window then
     begin
-      //Windowless widget: X/Y are relative to the parent (shared) GDK window.
-      //Subtract the widget's position within its toplevel to get widget-relative.
-      GetContainerWidget^.translate_coordinates(FWidget^.get_toplevel, 0, 0, @WX, @WY);
+      AParentWidget := nil;
+      gdk_window_get_user_data(GetContainerWidget^.window, @AParentWidget);
+      if Gtk3IsWidget(AParentWidget) then
+        GetContainerWidget^.translate_coordinates(AParentWidget, 0, 0, @WX, @WY)
+      else
+        GetContainerWidget^.translate_coordinates(FWidget^.get_toplevel, 0, 0, @WX, @WY);
       dec(X, WX);
       dec(Y, WY);
     end;
