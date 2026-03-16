@@ -1865,7 +1865,10 @@ begin
   if (topParent is TCustomForm) and not (topParent is THintWindow) then
   begin
     if NSView(TCustomForm(topParent).handle).window <> NSApp.keyWindow then
-      exit;
+    begin
+      CursorHelper.ForceSetDefaultCursor;
+      Exit;
+    end;
   end;
 
   // control cursor only need be set when mouse in AWinControl.
