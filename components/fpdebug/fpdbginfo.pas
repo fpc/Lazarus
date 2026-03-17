@@ -632,6 +632,7 @@ type
     procedure SetForwardToSymbol(AValue: TFpSymbol); inline;
     procedure ForwardToSymbolNeeded; virtual;
     function  GetForwardToSymbol: TFpSymbol; inline;
+    function  HasForwardToSymbol: Boolean; inline;
   protected
     procedure KindNeeded; override;
     procedure NameNeeded; override;
@@ -2136,6 +2137,11 @@ begin
     ForwardToSymbolNeeded;
   end;
   Result := FForwardToSymbol;
+end;
+
+function TFpSymbolForwarder.HasForwardToSymbol: Boolean;
+begin
+  Result := FForwardToSymbol <> nil;
 end;
 
 procedure TFpSymbolForwarder.KindNeeded;
