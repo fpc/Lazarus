@@ -1334,7 +1334,15 @@ begin
           LCLIntf.SetFocus(HWND(TGtk3Widget(Data)));
       end;
 
-      if TGtk3Widget(Data).LCLObject is TButtonControl then exit;
+      if TGtk3Widget(Data).LCLObject is TButtonControl then
+      begin
+        if csDesigning in TGtk3Widget(Data).LCLObject.ComponentState then
+        begin
+          TGtk3Widget(Data).GtkEventMouse(Widget, Event);
+          Result := gtk_true;
+        end;
+        exit;
+      end;
 
       Result:=TGtk3Widget(Data).GtkEventMouse(Widget , Event);
     end;
@@ -1410,6 +1418,9 @@ begin
     end;
   GDK_ENTER_NOTIFY:
     begin
+      if Assigned(TGtk3Widget(Data).LCLObject) and
+        (csDesigning in TGtk3Widget(Data).LCLObject.ComponentState) then
+        Result := gtk_true;
     end;
   GDK_LEAVE_NOTIFY:
     begin
@@ -5978,12 +5989,9 @@ end;
 { TGtk3Container }
 
 function disableMouseButtonEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
-var
-  AEvent: TGdkEvent;
 begin
   Result := TGtk3Widget(user_data).GtkEventMouse(Widget, Event);
-  {TODO: check if we can block button_press also}
-  if event^.type_ = GDK_BUTTON_RELEASE then
+  if event^.type_ in [GDK_BUTTON_PRESS, GDK_BUTTON_RELEASE] then
     Result := True;
 end;
 
@@ -6012,15 +6020,6 @@ begin
   inherited InitializeWidget;
   if IsDesigning then
   begin
-    (*
-    if (Widget <> getContainerWidget) then
-    begin
-      //Widget^.set_events([GDK_BUTTON_PRESS_MASK, GDK_BUTTON_RELEASE_MASK]);
-      g_signal_connect_data(Widget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(Widget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(Widget, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
-    end;
-    *)
     g_signal_connect_data(GetContainerWidget, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(GetContainerWidget, 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
@@ -6215,22 +6214,12 @@ begin
 end;
 
 function TGtk3Page.ClientToScreen(var P: TPoint): boolean;
-var
-  aParent: PGtkWidget;
-  Alloc, Allocation: TGtkAllocation;
 begin
-
+  //parent already contains correct clientRect
   if Assigned(LCLObject.Parent) then
     Result := TGtk3Widget(LCLObject.Parent.Handle).ClientToScreen(P)
   else
     Result := inherited ClientToScreen(P);
-
-  aParent := gtk_widget_get_parent(Widget);
-  aParent^.get_allocation(@Alloc);
-  Self.Widget^.get_allocation(@Allocation);
-
-  P.X := P.X - (Alloc.X - Allocation.X);
-  P.Y := P.Y - (Alloc.Y - Allocation.Y);
 end;
 
 function TGtk3Page.getClientOffset: TPoint;
@@ -10304,6 +10293,15 @@ begin
     if Assigned(PGtkComboBox(Result)^.priv3^.arrow) then
       g_object_set_data(PGObject(PGtkComboBox(Result)^.priv3^.arrow), 'lclwidget', Self);
 
+    //disable combo button in design mode.
+    if IsDesigning then
+    begin
+      if Assigned(PGtkComboBox(Result)^.priv3^.button) then
+        PGtkComboBox(Result)^.priv3^.button^.set_sensitive(gtk_false);
+      if Assigned(PGtkComboBox(Result)^.priv3^.arrow) then
+        PGtkComboBox(Result)^.priv3^.arrow^.set_sensitive(gtk_false);
+    end;
+
     FCentralWidget := nil;   //FWidget will be returned from getContainerWidget
     // we need cell renderer, but we need f***g GtkEventBox too
     // maybe an workaround is possible for csDropDownList (use entry with readonly param).
@@ -13096,7 +13094,8 @@ procedure TGtk3DesignWidget.InitializeWidget;
 begin
   inherited InitializeWidget;
   g_signal_handler_disconnect(getContainerWidget, FDrawSignal);
-  g_signal_connect_data(getContainerWidget,'draw', TGCallback(@Gtk3DrawDesigner), Self, nil, G_CONNECT_DEFAULT);
+  //we must run after default gtk draw of control.
+  g_signal_connect_data(getContainerWidget,'draw', TGCallback(@Gtk3DrawDesigner), Self, nil, [G_CONNECT_AFTER]);
   BringDesignerToFront;
 end;
 
@@ -13139,8 +13138,6 @@ begin
   Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
   Msg.PaintStruct^.hdc := FDesignContext;
 
-  P := getClientOffset;
-  TGtk3DeviceContext(Msg.DC).translate(P);
   try
     try
       if wtScrollingWinControl in WidgetType then

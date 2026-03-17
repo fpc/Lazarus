@@ -125,44 +125,47 @@ begin
   end;
 end;
 
-
 procedure TGtk3WidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
 var
-  x, y: Integer;
   gc: TGdkRGBA;
   GtkDC: TGtk3DeviceContext absolute DC;
-  DotSize: integer;
+  DotSize: Integer;
+  DashArray: array[0..1] of Double;
+  y: Integer;
 begin
   if not IsValidDC(DC) then
+    exit;
+  if (DX < 1) or (DY < 1) or (R.Right <= R.Left) or (R.Bottom <= R.Top) then
     exit;
 
   gc := TColortoTGdkRGBA(ColorToRGB(GtkDC.CurrentPen.Color));
   DotSize := Max(1, GtkDC.CurrentPen.Width);
 
   GtkDC.Save;
-
   GtkDC.Translate(GtkDC.ScrollbarsOffset);
   cairo_set_source_rgb(GtkDC.pcr, gc.red, gc.green, gc.blue);
-
   cairo_set_antialias(GtkDC.pcr, CAIRO_ANTIALIAS_NONE);
+  cairo_set_line_width(GtkDC.pcr, DotSize);
+  cairo_set_line_cap(GtkDC.pcr, CAIRO_LINE_CAP_BUTT);
+
+  if DotSize < DX then
+  begin
+    DashArray[0] := DotSize;
+    DashArray[1] := DX - DotSize;
+    cairo_set_dash(GtkDC.pcr, @DashArray[0], 2, 0);
+  end;
 
   y := R.Top;
   while y < R.Bottom do
   begin
-    x := R.Left;
-    while x < R.Right do
-    begin
-      cairo_rectangle(GtkDC.pcr, x, y, DotSize, DotSize);
-      x := x + DX;
-    end;
+    cairo_move_to(GtkDC.pcr, R.Left, y + DotSize * 0.5);
+    cairo_line_to(GtkDC.pcr, R.Right, y + DotSize * 0.5);
     y := y + DY;
   end;
+  cairo_stroke(GtkDC.pcr);
 
-  cairo_fill(GtkDC.pcr);
-  cairo_new_path(GtkDC.pcr);
   GtkDC.Restore;
 end;
-
 
 {------------------------------------------------------------------------------
   function TGtk3WidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
@@ -1408,12 +1411,9 @@ end;
 
 function TGtk3WidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
 begin
-  Result := False;
-  {Seem that this below is ok only if we are widgetset which cannot paint outside of paint event.
   Result := IsValidHandle(WindowHandle) and (TGtk3Widget(WindowHandle) is TGtk3DesignWidget);
   if Result then
     Result := TGtk3DesignWidget(WindowHandle).DesignContext = DC;
-  }
 end;
 
 function TGtk3WidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
