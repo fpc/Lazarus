@@ -10,7 +10,8 @@ uses
   Classes, SysUtils, LCLType,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   WSComCtrls,
-  CocoaAll, CocoaPrivate, CocoaScrollers,
+  CocoaAll,
+  CocoaPrivate, CocoaScrollers, Cocoa_Extra,
   CocoaListControl, CocoaListView, CocoaTables, CocoaCollectionView;
 
 type
@@ -95,7 +96,8 @@ type
 
   TCocoaWSListViewUtil = class
   public
-    class function createListView: TCocoaTableListView;
+    class function createTableView: TCocoaTableListView;
+    class function createCollectionView(const style: TViewStyle): TCocoaCollectionView;
   end;
 
 implementation
@@ -105,10 +107,34 @@ type
 
 { TCocoaWSListViewUtil }
 
-class function TCocoaWSListViewUtil.createListView: TCocoaTableListView;
+class function TCocoaWSListViewUtil.createTableView: TCocoaTableListView;
 begin
   // init will happen outside
   Result := TCocoaTableListView.alloc;
+end;
+
+class function TCocoaWSListViewUtil.createCollectionView(
+  const style: TViewStyle): TCocoaCollectionView;
+var
+  styleHandler: TCocoaListView_CollectionView_StyleHandler;
+begin
+  Result:= TCocoaCollectionView.new;
+
+  case style of
+    vsIcon:
+      styleHandler:= TCocoaListView_CollectionView_LargeIconHandler.Create( Result );
+    vsSmallIcon:
+      styleHandler:= TCocoaListView_CollectionView_SmallIconHandler.Create( Result );
+    vsList:
+      styleHandler:= TCocoaListView_CollectionView_ListHandler.Create( Result );
+  end;
+
+  Result.styleHandler:= styleHandler;
+  Result.setDataSource( Result );
+  Result.setDelegate( NSCollectionViewDelegateProtocol_1011(Result) );
+  Result.setCollectionViewLayout( NSCollectionViewFlowLayout.new.autorelease );
+  Result.registerClass_forItemWithIdentifier( TCocoaCollectionItem, NSSTR('Cell') );
+  Result.setSelectable( True );
 end;
 
 procedure CocoaListViewAllocFuncImpl(const listView: NSView; const viewStyle: TViewStyle; out backendControl: NSView; out WSHandler: TCocoaWSListViewHandler );
@@ -117,12 +143,12 @@ var
   processor: TCocoaTableViewProcessor;
 begin
   if viewStyle = vsReport then begin
-    backendControl:= TCocoaWSListViewUtil.createListView;
+    backendControl:= TCocoaWSListViewUtil.createTableView;
     processor:= TCocoaTableListViewProcessor.Create;
     TCocoaTableListView(backendControl).lclSetProcessor( processor );
     WSHandler:= TCocoaWSListView_TableViewHandler.Create( cocoaListView );
   end else begin
-    backendControl:= AllocCocoaCollectionView( viewStyle );
+    backendControl:= TCocoaWSListViewUtil.createCollectionView( viewStyle );
     WSHandler:= TCocoaWSListView_CollectionViewHandler.Create( cocoaListView );
   end;
 end;

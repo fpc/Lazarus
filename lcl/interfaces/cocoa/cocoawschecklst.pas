@@ -138,7 +138,7 @@ var
   processor: TCocoaTableViewProcessor;
   lclCheckListBox: TCustomCheckListBox absolute AWinControl;
 begin
-  list := TCocoaWSListViewUtil.createListView.lclInitWithCreateParams(AParams);
+  list := TCocoaWSListViewUtil.createTableView.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
   begin
     Result := 0;
