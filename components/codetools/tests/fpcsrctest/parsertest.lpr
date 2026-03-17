@@ -37,7 +37,7 @@ type
   protected
     Options: TCodeToolsOptions;
     procedure AppendLongOpts; override;
-    procedure ParseOptions; override;
+    function ParseOptions: boolean; override;
     procedure WriteCustomHelp; override;
 
     procedure ExtendXmlDocument(Doc: TXMLDocument); override;
@@ -54,9 +54,10 @@ begin
   LongOpts.Add('submitter:');
 end;
 
-procedure TCTTestRunner.ParseOptions;
+function TCTTestRunner.ParseOptions: boolean;
 begin
-  inherited ParseOptions;
+  result := inherited ParseOptions;
+  if not result then exit;
 
   if Options=nil then
     Options:=TCodeToolsOptions.Create;
