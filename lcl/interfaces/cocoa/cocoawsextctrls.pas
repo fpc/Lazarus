@@ -30,8 +30,8 @@ uses
   // widgetset
   WSExtCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate, CocoaWSCommon, CocoaGDIObjects, CocoaConfig, Cocoa_Extra,
-  CocoaCustomControl, CocoaScrollers, CocoaMenus, CocoaUtils;
+  CocoaPrivate, CocoaCommonCallback, CocoaGDIObjects, CocoaConfig,
+  Cocoa_Extra, CocoaCustomControl, CocoaScrollers, CocoaMenus, CocoaUtils;
 
 type
 

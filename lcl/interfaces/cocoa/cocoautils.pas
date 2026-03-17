@@ -47,6 +47,21 @@ type
     class function toRect(const params: TCreateParams): NSRect; overload;
   end;
 
+  { TCocoaNumberUtil }
+
+  TCocoaNumberUtil = class
+  public
+    class function toInt(
+      const obj: NSObject;
+      const defaultValue: Integer = 0 ): Integer;
+    class function toDouble(
+      const obj: NSObject;
+      const defaultValue: Double = 0 ): Double;
+    class function toBoolean(
+      const obj: NSObject;
+      const defaultValue: Boolean = False ): Boolean;
+  end;
+
   { TCocoaCollectionUtil }
 
   TCocoaCollectionUtil = class
@@ -308,6 +323,38 @@ end;
 class function TCocoaTypeUtil.toRect(const params: TCreateParams): NSRect;
 begin
   with params do Result:=NSMakeRect(X,Y,Width,Height);
+end;
+
+{ TCocoaNumberUtil }
+
+class function TCocoaNumberUtil.toInt(
+  const obj: NSObject;
+  const defaultValue: Integer ): Integer;
+begin
+  if (obj = nil) or (not obj.isKindOfClass(NSNumber)) then
+    Result:= defaultValue
+  else
+    Result:= NSNumber(obj).integerValue;
+end;
+
+class function TCocoaNumberUtil.toDouble(
+  const obj: NSObject;
+  const defaultValue: Double ): Double;
+begin
+  if (obj = nil) or (not obj.isKindOfClass(NSNumber)) then
+    Result:= defaultValue
+  else
+    Result:= NSNumber(obj).doubleValue;
+end;
+
+class function TCocoaNumberUtil.toBoolean(
+  const obj: NSObject;
+  const defaultValue: Boolean ): Boolean;
+begin
+  if (obj = nil) or (not obj.isKindOfClass(NSNumber)) then
+    Result:= defaultValue
+  else
+    Result:= NSNumber(obj).boolValue;
 end;
 
 { TCocoaCollectionUtil }

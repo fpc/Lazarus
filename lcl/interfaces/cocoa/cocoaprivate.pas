@@ -24,11 +24,14 @@ unit CocoaPrivate;
 interface
 
 uses
-  Types, Classes, SysUtils, LCLType, Forms, LazUTF8,
+  Types, Classes, SysUtils, LCLType, Controls, Forms, Graphics,
+  LazUTF8,
   MacOSAll, CocoaAll,
-  CocoaCallback, CocoaCursor, CocoaConfig, Cocoa_Extra, CocoaUtils;
+  CocoaGDIObjects, CocoaCallback, CocoaCursor, CocoaConfig, Cocoa_Extra, CocoaUtils;
 
 type
+
+  { TCocoaViewUtil }
 
   TCocoaViewUtil = class
     class function isLCLEnabled(v: NSView): Boolean;
@@ -39,10 +42,16 @@ type
     class procedure addLayoutDelta(const layout: TRect; var frame: TRect);
     class procedure subLayoutDelta(const layout: TRect; var frame: TRect);
     class procedure setDefaultMargin(const AView: NSView);
+    class procedure updateFocusRing(
+      const cocoaControl: NSView;
+      const lclControl: TWinControl );
     class procedure setSize(
       const ctrl: NSView;
       const newHeight, miniHeight, smallHeight: Integer;
       const AutoChangeFont: Boolean );
+    class procedure drawBackground(
+      const view: NSView;
+      const lclBrush: TBrush );
     class procedure lclOffsetWithEnclosingScrollView(
       const view: NSView;
       var x: Integer;
@@ -54,6 +63,7 @@ type
   TCocoaControlUtil = class
   public
     class procedure setStringValue(const c: NSControl; const S: String); inline;
+    class procedure setStringValueAndSendEvent(const ctrl: NSControl; const text: String);
     class function getStringValue(const c: NSControl): String; inline;
     class function toMacOSTitle(const ATitle: String): NSString;
     class procedure moveCaretToTheEnd(const c: NSControl);
@@ -146,6 +156,9 @@ var
 
 implementation
 
+type
+  TWinControlAccess = class(TWinControl);
+
 class function TCocoaViewUtil.isLCLEnabled(obj: NSObject): Boolean;
 begin
   if obj.isKindOfClass(NSView) then
@@ -234,6 +247,32 @@ begin
   AView.setAutoresizingMask(mask);
 end;
 
+class procedure TCocoaViewUtil.updateFocusRing(
+  const cocoaControl: NSView;
+  const lclControl: TWinControl );
+const
+  NSFocusRing : array [TBorderStyle] of NSBorderType = (
+    NSFocusRingTypeNone,   // bsNone
+    NSFocusRingTypeDefault // bsSingle
+  );
+var
+  frs: TCocoaConfigFocusRing.Strategy;
+  borderStyle: TBorderStyle;
+begin
+  frs:= CocoaConfigFocusRing.getStrategy( cocoaControl.className );
+  case frs of
+    TCocoaConfigFocusRing.Strategy.none:
+      cocoaControl.setFocusRingType( NSFocusRingTypeNone );
+    TCocoaConfigFocusRing.Strategy.required:
+      cocoaControl.setFocusRingType( NSFocusRingTypeExterior );
+    TCocoaConfigFocusRing.Strategy.border: begin
+      borderStyle:= TWinControlAccess(lclControl).BorderStyle;
+      cocoaControl.setFocusRingType( NSFocusRing[borderStyle] );
+    end;
+ // TCocoaFocusRingStrategy.default: no need to set FocusRing
+  end;
+end;
+
 class procedure TCocoaViewUtil.setSize(
   const ctrl: NSView;
   const newHeight, miniHeight, smallHeight: Integer;
@@ -257,6 +296,31 @@ begin
   end;
   if AutoChangeFont and (ctrl.respondsToSelector(ObjCSelector('setFont:'))) then
     ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
+end;
+
+class procedure TCocoaViewUtil.drawBackground(
+  const view: NSView;
+  const lclBrush: TBrush );
+var
+  ctx: TCocoaContext;
+  cocoaBrush: TCocoaBrush;
+  width: Integer;
+  height: Integer;
+begin
+  if lclBrush.Color = clWhite then   // see also TBrush.create
+    Exit;
+
+  width:= Round( view.bounds.size.width );
+  height:= Round( view.bounds.size.height );
+
+  ctx := TCocoaContext.Create( NSGraphicsContext.currentContext );
+  ctx.InitDraw( width, height );
+  try
+    cocoaBrush:= TCocoaBrush( lclBrush.Reference.Handle );
+    ctx.Rectangle( 0, 0, width, height, True, cocoaBrush );
+  finally
+    ctx.Free;
+  end;
 end;
 
 class procedure TCocoaViewUtil.lclOffsetWithEnclosingScrollView(
@@ -291,6 +355,22 @@ begin
     c.setStringValue(ns);
     ns.release;
   end;
+end;
+
+// Sets the control text and then calls controls callback (if any)
+// with TextChange (CM_TEXTCHANGED) event.
+// Cocoa control do not fire a notification, if text is changed programmatically
+// LCL expects a change notification in either way. (by software or by user)
+class procedure TCocoaControlUtil.setStringValueAndSendEvent(
+  const ctrl: NSControl;
+  const text: String );
+var
+  cb: ICommonCallBack;
+begin
+  TCocoaControlUtil.setStringValue(ctrl, text);
+  cb:= ctrl.lclGetcallback;
+  if Assigned(cb) then // cb.SendOnChange;
+    cb.SendOnTextChanged;
 end;
 
 class function TCocoaControlUtil.getStringValue(const c: NSControl): String; inline;

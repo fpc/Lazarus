@@ -24,16 +24,16 @@ interface
 
 uses
   // Libs
-  MacOSAll, CocoaAll, Classes, sysutils,
+  CocoaAll, Classes, sysutils,
   // LCL
   Controls, StdCtrls, Graphics, LCLType, Forms,
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate, CocoaCallback, CocoaListControl, CocoaTables, CocoaGroupBox,
-  CocoaConst, CocoaConfig, CocoaWSCommon, CocoaWSButtons, CocoaUtils,
+  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaGroupBox,
+  CocoaConst, CocoaConfig, CocoaWSButtons, CocoaUtils,
   CocoaGDIObjects, CocoaTextEdits, CocoaWSTextEdits,
-  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, Cocoa_Extra;
+  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers;
 
 type
 
@@ -83,7 +83,7 @@ var
   lclStaticText: TCustomStaticText absolute AWinControl;
   field: NSTextField;
 begin
-  field := NSTextField(AllocTextField(AWinControl, AParams));
+  field := TCocoaWSTextControlUtil.createTextField(AWinControl, AParams);
   {$ifdef BOOLFIX}
   field.setBezeled_(Ord(False));
   field.setDrawsBackground_(Ord(False));
@@ -115,7 +115,7 @@ var
   btn: NSButton;
   cl: NSButtonCell;
 begin
-  btn := AllocButton(AWinControl, TLCLCheckBoxCallback, AParams,
+  btn := TCocoaWSButtonUtil.allocButton(AWinControl, TLCLCheckBoxCallback, AParams,
            CocoaConfigToggleBox.bezelStyle, CocoaConfigToggleBox.buttonType);
   cl := NSButtonCell(NSButton(btn).cell);
   cl.setShowsStateBy(cl.showsStateBy or NSContentsCellMask);
@@ -147,7 +147,7 @@ begin
   // due to the lack of the control over the Layout by TCocoaManualScrollView,
   // only the Legacy Style can be used for compatibility.
   // it's the same logical relationship as NSScrollView and NSScroller.
-  scr:= createLegacyScroller;
+  scr:= TCocoaScrollUtil.createLegacyScroller;
   scr.lclInitWithCreateParams(prm);
   scr.callback:=TLCLCommonCallback.Create(scr, AWinControl);
 

@@ -8,7 +8,8 @@ interface
 uses
   Classes, SysUtils,
   LCLType, Graphics, Controls, ComCtrls, StdCtrls,
-  CocoaAll, CocoaPrivate, CocoaCallback, CocoaWSCommon, CocoaGDIObjects;
+  CocoaAll,
+  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaGDIObjects;
 
 type
   {

@@ -16,6 +16,7 @@ uses
   CocoaWSStdCtrls,
   CocoaWSComCtrls,
   CocoaWSDialogs,
+  CocoaWSTabControls,
   CocoaWSTextEdits,
   CocoaWSSpin,
   CocoaWSComboBox,
@@ -23,7 +24,8 @@ uses
   CocoaWSCheckLst,
   CocoaWSDatePicker,
   CocoaWSListView,
-  CocoaWSDragImage;
+  CocoaWSDragImage,
+  CocoaWSCustomControl;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
