@@ -977,6 +977,7 @@ type
 
   TGtk3CheckBox = class(TGtk3ToggleButton)
   private
+    FSetState: TCheckBoxState;
     function GetState: TCheckBoxState;
     procedure SetState(AValue: TCheckBoxState);
   protected
@@ -10903,7 +10904,45 @@ end;
 class procedure TGtk3ToggleButton.ButtonToggled({%H-}AWidget: PGtkToggleButton; AData: gPointer); cdecl;
 var
   Msg: TLMessage;
+  ChkBox: TGtk3CheckBox;
+  NextState: TCheckBoxState;
 begin
+  if (TGtk3Widget(AData) is TGtk3CheckBox) and not (TGtk3Widget(AData) is TGtk3RadioButton) then
+  begin
+    ChkBox := TGtk3CheckBox(AData);
+    if not ChkBox.InUpdate then
+    begin
+      case ChkBox.FSetState of
+        cbUnchecked: NextState := cbChecked;
+        cbChecked:
+          if TCustomCheckBox(ChkBox.LCLObject).AllowGrayed then
+            NextState := cbGrayed
+          else
+            NextState := cbUnchecked;
+        cbGrayed: NextState := cbUnchecked;
+      else
+        NextState := cbUnchecked;
+      end;
+      //Correct GTK state if it differs from intended next state
+      if NextState <> ChkBox.GetState then
+      begin
+        ChkBox.BeginUpdate;
+        try
+          if NextState = cbGrayed then
+            PGtkCheckButton(ChkBox.FWidget)^.set_inconsistent(True)
+          else
+          begin
+            PGtkCheckButton(ChkBox.FWidget)^.set_inconsistent(False);
+            PGtkCheckButton(ChkBox.FWidget)^.set_active(NextState = cbChecked);
+          end;
+        finally
+          ChkBox.EndUpdate;
+        end;
+      end;
+      ChkBox.FSetState := NextState;
+    end;
+  end;
+
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_CHANGED;
   if (TGtk3Widget(AData).LCLObject <> nil) and not TGtk3Widget(AData).InUpdate then
@@ -10943,12 +10982,21 @@ end;
 
 procedure TGtk3CheckBox.SetState(AValue: TCheckBoxState);
 begin
+  FSetState := AValue;
   if IsWidgetOK then
   begin
-    if AValue = cbGrayed then
-      PGtkCheckButton(FWidget)^.set_inconsistent(True)
-    else
-      PGtkCheckButton(FWidget)^.set_active(AValue = cbChecked);
+    BeginUpdate;
+    try
+      if AValue = cbGrayed then
+        PGtkCheckButton(FWidget)^.set_inconsistent(True)
+      else
+      begin
+        PGtkCheckButton(FWidget)^.set_inconsistent(False);
+        PGtkCheckButton(FWidget)^.set_active(AValue = cbChecked);
+      end;
+    finally
+      EndUpdate;
+    end;
   end;
 end;
 
@@ -10959,6 +11007,7 @@ begin
   check := TGtkCheckButton.new;
   Result := PGtkWidget(check);
   check^.set_use_underline(True);
+  FSetState := TCustomCheckBox(LCLObject).State;
 end;
 
 procedure TGtk3CheckBox.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
