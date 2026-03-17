@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, Types, LCLType, Controls,
   LMessages, LCLMessageGlue, WSLCLClasses, LazLoggerBase,
   MacOSAll, CocoaAll,
-  CocoaWSCommon, CocoaPrivate, cocoacallback, CocoaUtils, Cocoa_Extra;
+  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaUtils, Cocoa_Extra;
 
 function LBackingScaleFactor(Handle: HWND): single;
 procedure LSetWantsBestResolutionOpenGLSurface(const AValue: boolean; Handle: HWND);
@@ -57,9 +57,6 @@ const
 type
   NSOpenGLViewFix = objccategory external (NSOpenGLView)
     procedure setWantsBestResolutionOpenGLSurface(bool: NSInteger); message 'setWantsBestResolutionOpenGLSurface:';
-  end;
-  NSScreenFix = objccategory external (NSScreen)
-    function backingScaleFactor: CGFloat ; message 'backingScaleFactor';
   end;
 
   { TCocoaOpenGLView }
@@ -193,10 +190,10 @@ begin
   if (AParams.WndParent <> 0) then
     p := NSObject(AParams.WndParent).lclContentView;
   if Assigned(p) then
-    LCLToNSRect(types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
+    TCocoaTypeUtil.toRect(types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
       p.frame.size.height, ns)
   else
-    ns := GetNSRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+    ns := NSMakeRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
   Attrs:=CreateOpenGLContextAttrList(DoubleBuffered,MajorVersion,MinorVersion, MultiSampling,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
     PixFmt:=NSOpenGLPixelFormat(NSOpenGLPixelFormat.alloc).initWithAttributes(Attrs);
@@ -216,7 +213,7 @@ begin
   View.setHidden(AParams.Style and WS_VISIBLE = 0);
   if Assigned(p) then
     p.addSubview(View);
-  SetViewDefaults(View);
+  TCocoaViewUtil.setDefaultMargin(View);
   View.Owner:=AWinControl;
   { If we wouldn't set View.openGLContext, it would get automatically created.
     But then aNSOpenGLContext is ignored, and so SharedContext and SharedControl don't work. }
@@ -518,7 +515,7 @@ var
 begin
   ctx := NSGraphicsContext.currentContext;
   inherited drawRect(dirtyRect);
-  if CheckMainThread and Assigned(callback) then
+  if TCocoaApplicationUtil.isMainThread and Assigned(callback) then
   begin
     if ctx = nil then
     begin
@@ -530,7 +527,7 @@ begin
       r.origin.x:=0;
       r.origin.y:=0;
       PS.hdc := HDC(0);
-      PS.rcPaint := NSRectToRect(r);
+      PS.rcPaint := TCocoaTypeUtil.toRect(r);
       LCLSendPaintMsg(Owner, HDC(0), @PS);
     end
     else
