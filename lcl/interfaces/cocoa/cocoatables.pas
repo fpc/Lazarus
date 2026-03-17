@@ -334,29 +334,6 @@ begin
   end;
 end;
 
-procedure drawNSViewBackground( view: NSView; lclBrush: TBrush );
-var
-  ctx: TCocoaContext;
-  cocoaBrush: TCocoaBrush;
-  width: Integer;
-  height: Integer;
-begin
-  if lclBrush.Color = clWhite then   // see also TBrush.create
-    Exit;
-
-  width:= Round( view.bounds.size.width );
-  height:= Round( view.bounds.size.height );
-
-  ctx := TCocoaContext.Create( NSGraphicsContext.currentContext );
-  ctx.InitDraw( width, height );
-  try
-    cocoaBrush:= TCocoaBrush( lclBrush.Reference.Handle );
-    ctx.Rectangle( 0, 0, width, height, True, cocoaBrush );
-  finally
-    ctx.Free;
-  end;
-end;
-
 procedure TCocoaTableRowView.drawRect(dirtyRect: NSRect);
 var
   done: Boolean;
@@ -376,7 +353,7 @@ begin
     if Assigned(self.tableView.lclGetPorcessor) then
       self.tableView.lclGetPorcessor.onOwnerDrawItem( self );
   end else begin
-    drawNSViewBackground( self, tableView.lclGetCanvas.Brush );
+    TCocoaViewUtil.drawBackground( self, tableView.lclGetCanvas.Brush );
     inherited drawRect( dirtyRect );
   end;
 end;
@@ -599,7 +576,7 @@ begin
     // we can only hide the SubviewViews to get the same effect.
     TCocoaViewUtil.hideAllSubviews( self );
   end else begin
-    drawNSViewBackground( self, self.lclGetCanvas.Brush );
+    TCocoaViewUtil.drawBackground( self, self.lclGetCanvas.Brush );
     inherited;
   end;
 end;
