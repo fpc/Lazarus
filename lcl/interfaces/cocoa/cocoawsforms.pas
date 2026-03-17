@@ -67,39 +67,12 @@ type
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
-
   { TCocoaWSScrollingWinControl }
 
   TCocoaWSScrollingWinControl = class(TWSScrollingWinControl)
-  private
-  protected
-  public
+  published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
-  end;
-
-  { TCocoaWSScrollBox }
-
-  TCocoaWSScrollBox = class(TWSScrollBox)
-  private
-  protected
-  public
-  end;
-
-  { TCocoaWSCustomFrame }
-
-  TCocoaWSCustomFrame = class(TWSCustomFrame)
-  private
-  protected
-  public
-  end;
-
-  { TCocoaWSFrame }
-
-  TCocoaWSFrame = class(TWSFrame)
-  private
-  protected
-  public
   end;
 
   { TCocoaWSCustomForm }
@@ -155,46 +128,13 @@ type
       message 'delaySetCollectionBehavior:form:';
   end;
 
-  { TCocoaWSForm }
-
-  TCocoaWSForm = class(TWSForm)
-  private
-  protected
-  public
-  end;
-
   { TCocoaWSHintWindow }
 
   TCocoaWSHintWindow = class(TWSHintWindow)
-  private
-  protected
-  public
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
-
-  { TCocoaWSScreen }
-
-  TCocoaWSScreen = class(TWSScreen)
-  private
-  protected
-  public
-  end;
-
-  { TCocoaWSApplicationProperties }
-
-  TCocoaWSApplicationProperties = class(TWSApplicationProperties)
-  private
-  protected
-  public
-  end;
-
-procedure ArrangeTabOrder(const AWinControl: TWinControl);
-procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
-
-var
-  CocoaIconsStyle: Boolean = false;
 
 implementation
 
