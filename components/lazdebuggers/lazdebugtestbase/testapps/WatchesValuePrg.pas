@@ -1165,7 +1165,27 @@ var
   dotdotArrayPPa, dotdotArrayPPb: PTRecArray;
   i1,i2: integer;
 
+type
+  TRecWithString = record
+    data:integer;
+    str:AnsiString;
+  end;
+  TRecWithStringArray = array of TRecWithString;
+var
+  RecWithStringArray: TRecWithStringArray;
+  i: integer;
+
 begin
+  SetLength(RecWithStringArray, 4);
+  RecWithStringArray[0].data := 42;
+  RecWithStringArray[0].str := '123';
+  RecWithStringArray[1].data := -42;
+  RecWithStringArray[1].str := 'abcdef';
+  RecWithStringArray[2].data := 0;
+  RecWithStringArray[2].str := '';
+  RecWithStringArray[3].data := 1;
+  RecWithStringArray[3].str := 'ABCD';
+
   U8Data1 := #$2267; //#$E2#$89#$A7;
   U8Data2 := #$2267'X';
   // access constant that are not passed as function arg

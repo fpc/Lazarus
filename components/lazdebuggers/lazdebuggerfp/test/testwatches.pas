@@ -1556,6 +1556,15 @@ begin
     t.Add('RecursePtrC1^^', 'RecursePtrC1^^', weMatch('.*', skPointer));
     t.Add('RecursePtrC1^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',   'RecursePtrC1^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^', weMatch('.*', skPointer));
 
+    t.Add('RecWithStringArray', 'RecWithStringArray', weArray([
+       weRecord([weInteger( 42).N('data'), weAnsiStr('123'   ).N('str').IgnKindPtr(stDwarf2).AddFlag([ehAnsiStringNil,ehChrIdxExpString], stDwarf2) ]),
+       weRecord([weInteger(-42).N('data'), weAnsiStr('abcdef').N('str').IgnKindPtr(stDwarf2).AddFlag([ehAnsiStringNil,ehChrIdxExpString], stDwarf2) ]),
+       weRecord([weInteger(  0).N('data'), weAnsiStr(''      ).N('str').IgnKindPtr(stDwarf2).AddFlag([ehAnsiStringNil,ehChrIdxExpString], stDwarf2) ]),
+       weRecord([weInteger(  1).N('data'), weAnsiStr('ABCD'  ).N('str').IgnKindPtr(stDwarf2).AddFlag([ehAnsiStringNil,ehChrIdxExpString], stDwarf2) ])
+      ], 4, 'TRecWithStringArray'
+    ));
+
+
     AddWatches(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatches(t, 'glob var',   'gv', 001, 'B');
     AddWatches(t, 'glob var (@)^',   '(@gv', 001, 'B', tlAny, ')^');

@@ -632,11 +632,13 @@ type
     function GetNestedSymbolByName(const AIndex: String): TFpSymbol; override;
 
     procedure Init; override;
+    procedure ResetNestedValueBounds; virtual;
   public
     class function CreateSubClass(const AName: String; AnInformationEntry: TDwarfInformationEntry): TFpSymbolDwarf;
     destructor Destroy; override;
     function GetNestedValue(AIndex: Int64): TFpValueDwarf; inline;
     function GetNestedValueByName(const AIndex: String): TFpValueDwarf; inline;
+    procedure ResetValueBounds; virtual;
     function StartScope: TDbgPtr; // return 0, if none. 0 includes all anyway
     property TypeInfo: TFpSymbolDwarfType read GetTypeInfo;
   end;
@@ -752,7 +754,6 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
 
       Bounds (and maybe all such data) should be stored on the value object)
     *)
-    procedure ResetValueBounds; virtual;
     function ReadStride(AValueObj: TFpValueDwarf; out AStride: TFpDbgValueSize): Boolean; inline;
   end;
 
@@ -885,6 +886,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
                             ATargetType: TFpSymbolDwarfType = nil): Boolean; override;
   public
     destructor Destroy; override;
+    procedure ResetValueBounds; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
   end;
 
@@ -924,6 +926,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetNestedSymbolCount: Integer; override;
   public
     destructor Destroy; override;
+    procedure ResetValueBounds; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
     function GetValueBounds(AValueObj: TFpValue; out ALowBound,
       AHighBound: Int64): Boolean; override;
@@ -1005,6 +1008,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetNestedSymbolCount: Integer; override;
   public
     destructor Destroy; override;
+    procedure ResetValueBounds; override;
   end;
 
   { TFpSymbolDwarfTypeVariant }
@@ -1023,6 +1027,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetValueObject: TFpValue; override;
   public
     destructor Destroy; override;
+    procedure ResetValueBounds; override;
     function MatchesDiscr(ADiscr: QWord): Boolean;
     function IsDefaultDiscr: Boolean;
   end;
@@ -1050,6 +1055,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
       out ADoneWork: Boolean; ATargetType: TFpSymbolDwarfType): Boolean; override;
   public
     destructor Destroy; override;
+    procedure ResetValueBounds; override;
     function GetTypedValueObject(ATypeCast: Boolean; AnOuterType: TFpSymbolDwarfType = nil): TFpValueDwarf; override;
   end;
 
@@ -1161,6 +1167,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   public
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry; AInfo: PDwarfAddressInfo);
     destructor Destroy; override;
+    procedure ResetValueBounds; override;
   end;
 
   { TFpSymbolDwarfDataVariable }
@@ -3912,7 +3919,7 @@ begin
   end;
 
   if (FLastMember = nil) or (FLastMember.RefCount > 1) or
-     (FLastMember is TFpValueDwarfArray) // TODO: change address, without calling Reset();
+     (FLastMember is TFpValueDwarfArray)
   then begin
     FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpValueDwarfArray.FLastMember'){$ENDIF};
     if (Length(AIndex) < FArraySymbol.NestedSymbolCount - FStartIndex) then begin
@@ -5096,6 +5103,37 @@ begin
     Result := nil;
 end;
 
+procedure TFpSymbolDwarf.ResetNestedValueBounds;
+var
+  i: Integer;
+  t: TFpSymbol;
+begin
+  for i := 0 to NestedSymbolCount-1 do begin
+    t := NestedSymbol[i];
+    if t is TFpSymbolDwarf then
+      TFpSymbolDwarf(t).ResetValueBounds;
+  end;
+end;
+
+procedure TFpSymbolDwarf.ResetValueBounds;
+var
+  t: TFpSymbol;
+  ti: TFpSymbolDwarfType;
+begin
+  if HasForwardToSymbol then begin
+    t := GetForwardToSymbol;
+    if (t <> FNestedTypeInfo) and (t is TFpSymbolDwarf) then
+      TFpSymbolDwarf(t).ResetValueBounds;
+  end;
+
+// TODO: typeinfo vs nestedtypeinfo
+  if FNestedTypeInfo = nil then
+    exit;
+  ti := NestedTypeInfo;
+  if (ti <> nil) then
+    ti.ResetValueBounds;
+end;
+
 function TFpSymbolDwarf.GetNestedSymbolEx(AIndex: Int64; out
   AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
 begin
@@ -5327,17 +5365,6 @@ begin
   if AnOuterType = nil then
     AnOuterType := Self;
   Result := TFpValueDwarfUnknown.Create(AnOuterType);
-end;
-
-procedure TFpSymbolDwarfType.ResetValueBounds;
-var
-  ti: TFpSymbolDwarfType;
-begin
-  if FNestedTypeInfo = nil then
-    exit;
-  ti := NestedTypeInfo;
-  if (ti <> nil) then
-    ti.ResetValueBounds;
 end;
 
 function TFpSymbolDwarfType.ReadStride(AValueObj: TFpValueDwarf; out
@@ -5733,6 +5760,7 @@ end;
 procedure TFpSymbolDwarfTypeSubRange.ResetValueBounds;
 begin
   inherited ResetValueBounds;
+  // TODO: keep rfConst? If they were read from DWARF definitions then they will be the same
   FLowBoundState := rfNotRead;
   FHighBoundState := rfNotRead;
   FCountState := rfNotRead;
@@ -5990,6 +6018,13 @@ begin
   FreeAndNil(FProcMembers);
   FLastMember.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FLastMember, 'TFpSymbolDwarfDataProc.FLastMember'){$ENDIF};
   inherited Destroy;
+end;
+
+procedure TFpSymbolDwarfTypeSubroutine.ResetValueBounds;
+begin
+  if FProcMembers <> nil then
+    ResetNestedValueBounds;
+  inherited ResetValueBounds;
 end;
 
 { TDbgDwarfIdentifierEnumElement }
@@ -6331,6 +6366,13 @@ begin
   inherited Destroy;
 end;
 
+procedure TFpSymbolDwarfTypeEnum.ResetValueBounds;
+begin
+  if FMembers <> nil then
+    ResetNestedValueBounds;
+  inherited ResetValueBounds;
+end;
+
 function TFpSymbolDwarfTypeEnum.GetValueBounds(AValueObj: TFpValue; out
   ALowBound, AHighBound: Int64): Boolean;
 begin
@@ -6545,6 +6587,13 @@ begin
   FOrdinalSym.ReleaseReference;
 end;
 
+procedure TFpSymbolDwarfDataMemberVariantPart.ResetValueBounds;
+begin
+  if FMembers <> nil then
+    ResetNestedValueBounds;
+  inherited ResetValueBounds;
+end;
+
 { TFpSymbolDwarfTypeVariant }
 
 procedure TFpSymbolDwarfTypeVariant.CreateMembers;
@@ -6638,6 +6687,13 @@ begin
   inherited Destroy;
   FreeAndNil(FMembers);
   FLastChildByName.ReleaseReference;
+end;
+
+procedure TFpSymbolDwarfTypeVariant.ResetValueBounds;
+begin
+  if FMembers <> nil then
+    ResetNestedValueBounds;
+  inherited ResetValueBounds;
 end;
 
 function TFpSymbolDwarfTypeVariant.MatchesDiscr(ADiscr: QWord): Boolean;
@@ -6771,6 +6827,13 @@ begin
   FreeAndNil(FMembers);
   FLastChildByName.ReleaseReference;
   inherited Destroy;
+end;
+
+procedure TFpSymbolDwarfTypeStructure.ResetValueBounds;
+begin
+  if FMembers <> nil then
+    ResetNestedValueBounds;
+  inherited ResetValueBounds;
 end;
 
 procedure TFpSymbolDwarfTypeStructure.CreateMembers;
@@ -7598,6 +7661,13 @@ begin
   FreeAndNil(FProcMembers);
   NilThenReleaseRef(FLastMember {$IFDEF WITH_REFCOUNT_DEBUG}, 'TFpSymbolDwarfDataProc.FLastMember'{$ENDIF});
   inherited Destroy;
+end;
+
+procedure TFpSymbolDwarfTypeProc.ResetValueBounds;
+begin
+  if FProcMembers <> nil then
+    ResetNestedValueBounds;
+  inherited ResetValueBounds;
 end;
 
 { TFpSymbolDwarfDataVariable }

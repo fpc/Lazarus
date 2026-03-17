@@ -48,6 +48,7 @@ type
      ehChrIdxExpString,   // Use "String" *IF* Debugger returns Pchar: 'x' String 'y'
      ehChrIdxExpPChar,    // Use "PChar" *IF* Debugger returns Pchar: 'x' String 'y'
      ehChrIdxSkip,        // SKIP checks " *IF* Debugger returns Pchar: 'x' String 'y'
+     ehAnsiStringNil,  // skip nil for empty string
      //ehChrIdxOnly,        // SKIP checks " *UNLESS* Debugger returns Pchar: 'x' String 'y'
      ehNoFieldOrder,  // structure: fields can be in any order
      ehMissingFields, // structure: fields may have gaps
@@ -1975,9 +1976,14 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
+    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
     if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
       v := FWatchResultPrinter.PrintWatchValue(AContext.WatchRes, TestWatchDisplayFormat, '');
-      ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
+      if ehAnsiStringNil in ehf then begin
+        // Got "nil^: ''"
+        if strlcomp(pchar(v), pchar('nil^: '), 6) = 0 then
+          delete(v, 1, 6)
+      end;
 
       // in dwarf 2 ansistring are pchar
       // widestring are always pwidechar
@@ -2035,6 +2041,11 @@ begin
       else
       if (AContext.WatchRes.ValueKind = rdkString) then begin
         v := AContext.WatchRes.AsString;
+        if ehAnsiStringNil in ehf then begin
+          // Got "nil^: ''"
+          if strlcomp(pchar(v), pchar('nil^: '), 6) = 0 then
+            delete(v, 1, 6)
+        end;
       end
       else begin
         TestEquals('got correct type', 'rdk...string', dbgs(AContext.WatchRes.ValueKind), AContext, AnIgnoreRsn);
