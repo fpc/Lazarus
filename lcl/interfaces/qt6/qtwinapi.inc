@@ -6895,13 +6895,24 @@ var
 
   function NeedScaling(const ADstRect, ASrcRect: TRect): boolean;
   var
+    DstScaleF: Single;
+
+    function ScaleFromDst(AValue: Integer): Integer;
+    begin
+      Result := Round(AValue * DstScaleF);
+    end;
+
+  var
     R: TRect;
     TgtW, TgtH,
     ClpW, ClpH: integer;
   begin
+    DstScaleF := QPaintDevice_devicePixelRatioF(QPaintEngine_paintDevice(
+      QPainter_paintEngine(DstQDC.Widget)));
 
     if not DstQDC.getClipping then
-      exit((Width <> SrcWidth) or (Height <> SrcHeight));
+      exit((ScaleFromDst(Width) <> SrcWidth) or
+           (ScaleFromDst(Height) <> SrcHeight));
 
     R := DstQDC.getClipRegion.getBoundingRect;
 
@@ -6911,7 +6922,8 @@ var
     ClpH := R.Bottom - R.Top;
 
     Result := PtInRect(R, Point(R.Left + 1, R.Top + 1)) and
-      (((ClpW <= TgtW) and (ClpH <= TgtH)) or ((TgtW < SrcWidth) and (TgtH < SrcHeight)));
+      (((ClpW <= TgtW) and (ClpH <= TgtH)) or
+       ((ScaleFromDst(TgtW) < SrcWidth) and (ScaleFromDst(TgtH) < SrcHeight)));
   end;
 
   procedure RenderPixmap(APixmap: QPixmapH; AMaskImg: QImageH; const AHighQuality: boolean);
