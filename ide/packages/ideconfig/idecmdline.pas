@@ -111,8 +111,6 @@ const
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid : Integer;
             out ShowSplashScreen: boolean);
-function GetCommandLineParameters(aCmdLineParams: TStrings;
-            isStartLazarus: Boolean = False) : string;
 function ExtractPrimaryConfigPath(aCmdLineParams: TStrings): string;
 function ExpandParamFile(const s: string): string;
 
@@ -357,25 +355,6 @@ begin
       DebugLn('Adding "%s" as a parameter', [Param]);
       aCmdLineParams.Add(Param);
     end;
-  end;
-end;
-
-function GetCommandLineParameters(aCmdLineParams: TStrings; isStartLazarus: Boolean): string;
-var
-  i: Integer;
-  s: String;
-begin
-  if isStartLazarus then
-    Result := ' '+NoSplashScreenOptLong+' '+StartedByStartLazarusOpt
-  else
-    Result := '';
-  for i := 0 to aCmdLineParams.Count - 1 do begin
-    s := aCmdLineParams[i];
-    // make sure that command line parameters are still
-    // double quoted, if they contain spaces
-    if pos(' ', s) > 0 then
-      s := '"' + s + '"';
-    Result := Result + ' ' + s;
   end;
 end;
 
