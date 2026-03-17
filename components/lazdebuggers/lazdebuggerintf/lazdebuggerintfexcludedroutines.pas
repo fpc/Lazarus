@@ -521,7 +521,8 @@ end;
 procedure TDbgExeProcSelectorSyncTargetList.Update;
 begin
   List.Sort(@DoCompareEntries);
-  UpdateListFrom(FMainList, FList.Count, FChangeStamp);
+  if FMainList <> nil then
+    UpdateListFrom(FMainList, FList.Count, FChangeStamp);
 end;
 
 procedure TDbgExeProcSelectorSyncTargetList.UpdateFrom(AList: IDbgExeProcSelectorListIntf;
