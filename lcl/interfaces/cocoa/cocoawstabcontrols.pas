@@ -227,7 +227,7 @@ begin
     and (AWinControl.Parent is TCustomTabControl)
     and (AWinControl.HandleAllocated)
   then
-    UpdateTabAndArrowVisibility( TCocoaTabControl(AWinControl.Parent.Handle) );
+    TCocoaTabControlUtil.updateTabAndArrowVisibility( TCocoaTabControl(AWinControl.Parent.Handle) );
 end;
 
 class function TCocoaWSCustomPage.GetText(const AWinControl: TWinControl;
@@ -427,7 +427,7 @@ begin
   idx := lTabControl.tabViewItems.indexOfObject( tb.tabPage );
   if idx = NSNotFound then Exit;
 
-  if not GetTabsRect(lTabControl, tr) then Exit;
+  if not TCocoaTabControlUtil.getTabsRect(lTabControl, tr) then Exit;
 
   SetLength(w, lTabControl.tabViewItems.count);
   if (length(w) = 0) then Exit; // no tabs!
