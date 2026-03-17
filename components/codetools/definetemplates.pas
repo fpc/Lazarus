@@ -2602,6 +2602,17 @@ begin
         da_DefineRecurse));
     RTLDir.AddChild(IFTempl);
 
+    // rtl: IF SrcOS=wasicommon then add include path rtl/wasicommon/wasiinc
+    IFTempl:=TDefineTemplate.Create('If SrcOS=wasicommon','If SrcOS=wasicommon',
+      '',''''+SrcOS+'''=''wasicommon''',da_If);
+    IFTempl.AddChild(TDefineTemplate.Create('Include Path wasicommon/wasiinc',
+        Format(ctsIncludeDirectoriesPlusDirs,['wasicommon/wasiinc']),
+        IncludePathMacroName,
+        IncPathMacro
+        +';'+Dir+'rtl'+DS+'wasicommon'+DS+'wasiinc',
+        da_DefineRecurse));
+    RTLDir.AddChild(IFTempl);
+
     // rtl: IF TargetOS=iphonesim then add include path rtl/unix, rtl/bsd, rtl/darwin
     IFTempl:=TDefineTemplate.Create('If TargetOS=iphonesim','If TargetOS=iphonesim',
       '',''''+TargetOSMacro+'''=''iphonesim''',da_If);
