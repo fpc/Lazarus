@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.6\n"
 
 #: idedebuggerstringconstants.arrnavautohide
 msgid "Hide automatically"
@@ -139,32 +139,30 @@ msgid "Please choose the formatter to add."
 msgstr "Выберите средство форматирования для добавления."
 
 #: idedebuggerstringconstants.dbgwatchcolordisabled
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgwatchcolordisabled"
 msgid "Disabled"
-msgstr "Отключённая"
+msgstr "Отключённые"
 
 #: idedebuggerstringconstants.dbgwatchcolorellipsis
 msgid "Ellipsis"
-msgstr ""
+msgstr "Многоточия"
 
 #: idedebuggerstringconstants.dbgwatchcolorerror
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgwatchcolorerror"
 msgid "Error"
-msgstr "Ошибка"
+msgstr "Ошибки"
 
 #: idedebuggerstringconstants.dbgwatchcolorevaluating
 msgid "Evaluating"
-msgstr ""
+msgstr "Вычисляющиеся"
 
 #: idedebuggerstringconstants.dbgwatchcolors
 msgid "Watches/Locals"
-msgstr ""
+msgstr "Наблюдения / локальные переменные"
 
 #: idedebuggerstringconstants.dbgwatchcolorunknown
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестные"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
@@ -687,19 +685,19 @@ msgstr "Наблюдения"
 
 #: idedebuggerstringconstants.dlgaddhiattrdefault
 msgid "Default Text"
-msgstr ""
+msgstr "Текст по умолчанию"
 
 #: idedebuggerstringconstants.dlgaddhiattrlinehighlight
 msgid "Current line highlight"
-msgstr ""
+msgstr "Подсветка текущей строки"
 
 #: idedebuggerstringconstants.dlgaddhiattrmouselink
 msgid "Mouse link"
-msgstr ""
+msgstr "Ссылка при наведении мыши"
 
 #: idedebuggerstringconstants.dlgaddhiattrtextblock
 msgid "Selected text"
-msgstr ""
+msgstr "Выделенный текст"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
