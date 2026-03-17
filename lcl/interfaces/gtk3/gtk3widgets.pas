@@ -2520,6 +2520,8 @@ begin
 end;
 
 procedure TGtk3Widget.SetFontColor(AValue: TColor);
+const
+  LCLColorKey = 'lclFontColorProv';
 var
   Provider: PGtkCssProvider;
   CSSData: String;
@@ -2527,23 +2529,35 @@ var
   RGBA: LongWord;
   ATargetWidget: PGtkWidget;
 
+  procedure RemoveColorProvider(AWidget: PGtkWidget);
+  var
+    OldProv: PGtkCssProvider;
+  begin
+    OldProv := PGtkCssProvider(g_object_get_data(PGObject(AWidget), LCLColorKey));
+    if Assigned(OldProv) then
+    begin
+      gtk_style_context_remove_provider(gtk_widget_get_style_context(AWidget),
+        PGtkStyleProvider(OldProv));
+      g_object_set_data(PGObject(AWidget), LCLColorKey, nil);
+    end;
+  end;
+
   procedure ApplyCSS(AWidget: PGtkWidget; const ARule: String);
   begin
+    RemoveColorProvider(AWidget);
     Provider := gtk_css_provider_new();
     gtk_css_provider_load_from_data(Provider, PChar(ARule), -1, nil);
     gtk_style_context_add_provider(gtk_widget_get_style_context(AWidget),
       PGtkStyleProvider(Provider),
       GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(Provider);
+    g_object_set_data_full(PGObject(AWidget), LCLColorKey, Provider,
+      TGDestroyNotify(@g_object_unref));
   end;
 
 begin
   if not IsWidgetOK then Exit;
 
-  //unset is same as override_color(nil) which is deprecated in gtk3
-  if AValue = clDefault then
-    CSSColor := 'unset'
-  else
+  if AValue <> clDefault then
   begin
     RGBA := ColorToRGB(AValue);
     CSSColor := Format('#%.2x%.2x%.2x', [Red(RGBA), Green(RGBA), Blue(RGBA)]);
@@ -2551,38 +2565,77 @@ begin
 
   if [wtListBox, wtListView] * WidgetType <> [] then
   begin
-    CSSData := Format('treeview.view { color: %s; }', [CSSColor]);
-    ApplyCSS(GetContainerWidget, CSSData);
+    if AValue = clDefault then
+      RemoveColorProvider(GetContainerWidget)
+    else
+      ApplyCSS(GetContainerWidget, Format('treeview.view { color: %s; }', [CSSColor]));
   end else
   if wtSpinEdit in WidgetType then
   begin
-    CSSData := Format('spinbutton { color: %s; }', [CSSColor]);
-    ApplyCSS(FWidget, CSSData);
+    if AValue = clDefault then
+      RemoveColorProvider(FWidget)
+    else
+      ApplyCSS(FWidget, Format('spinbutton { color: %s; }', [CSSColor]));
   end else
   if wtEntry in WidgetType then
   begin
-    CSSData := Format('entry { color: %s; }', [CSSColor]);
-    ApplyCSS(FWidget, CSSData);
+    if AValue = clDefault then
+      RemoveColorProvider(FWidget)
+    else
+      ApplyCSS(FWidget, Format('entry { color: %s; }', [CSSColor]));
   end else
   if wtMemo in WidgetType then
   begin
-    CSSData := Format('text { color: %s; }', [CSSColor]);
-    ApplyCSS(GetContainerWidget, CSSData);
+    if AValue = clDefault then
+      RemoveColorProvider(GetContainerWidget)
+    else
+      ApplyCSS(GetContainerWidget, Format('text { color: %s; }', [CSSColor]));
   end else
-  if (wtComboBox in WidgetType) then
+  if wtComboBox in WidgetType then
   begin
     ATargetWidget := PGtkComboBox(FWidget)^.get_child;
-    if PGtkComboBox(FWidget)^.has_entry then
-      CSSData := Format('entry { color: %s; }', [CSSColor])
+    if AValue = clDefault then
+      RemoveColorProvider(ATargetWidget)
     else
-      CSSData := Format('combobox button.combo cellview { color: %s; }', [CSSColor]);
-    ApplyCSS(ATargetWidget, CSSData);
+    begin
+      if PGtkComboBox(FWidget)^.has_entry then
+        CSSData := Format('entry { color: %s; }', [CSSColor])
+      else
+        CSSData := Format('combobox button.combo cellview { color: %s; }', [CSSColor]);
+      ApplyCSS(ATargetWidget, CSSData);
+    end;
+  end else
+  if wtGroupBox in WidgetType then
+  begin
+    ATargetWidget := PGtkFrame(FWidget)^.get_label_widget;
+    if Assigned(ATargetWidget) then
+    begin
+      if AValue = clDefault then
+        RemoveColorProvider(ATargetWidget)
+      else
+        ApplyCSS(ATargetWidget, Format('* { color: %s; }', [CSSColor]));
+    end;
+  end else
+  if wtStaticText in WidgetType then
+  begin
+    if AValue = clDefault then
+      RemoveColorProvider(GetContainerWidget)
+    else
+      ApplyCSS(GetContainerWidget, Format('* { color: %s; }', [CSSColor]));
   end else
   begin
-    CSSData := Format('* { color: %s; }', [CSSColor]);
-    if FWidget <> GetContainerWidget then
-      ApplyCSS(FWidget, CSSData);
-    ApplyCSS(GetContainerWidget, CSSData);
+    if AValue = clDefault then
+    begin
+      RemoveColorProvider(GetContainerWidget);
+      if FWidget <> GetContainerWidget then
+        RemoveColorProvider(FWidget);
+    end else
+    begin
+      CSSData := Format('* { color: %s; }', [CSSColor]);
+      if FWidget <> GetContainerWidget then
+        ApplyCSS(FWidget, CSSData);
+      ApplyCSS(GetContainerWidget, CSSData);
+    end;
   end;
 end;
 
