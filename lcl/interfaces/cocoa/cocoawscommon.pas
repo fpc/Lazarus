@@ -11,10 +11,9 @@ uses
   Types, Classes, Controls, SysUtils,
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
-  CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils,
-  CocoaWSCustomControl,
-  CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra,
-  CocoaCallback;
+  CocoaPrivate, CocoaInt, CocoaCallback, CocoaGDIObjects,
+  CocoaCursor, CocoaCaret, CocoaConfig, CocoaUtils, Cocoa_Extra,
+  CocoaWSCustomControl;
 
 type
 
@@ -50,14 +49,7 @@ type
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
   end;
 
-function NSObjectDebugStr(obj: NSObject): string;
-function CallbackDebugStr(cb: ICommonCallback): string;
-procedure DebugDumpParents(fromView: NSView);
-
 implementation
-
-uses
-  Math;
 
 var
   LastMouse: TLastMouseInfo;
@@ -459,39 +451,6 @@ begin
   bc.DrawImageRep(
     NSMakeRect(0,0, f.size.width, f.size.height),
     f, b);
-end;
-
-function NSObjectDebugStr(obj: NSObject): string;
-begin
-  Result := IntToStr(PtrUInt(obj));
-  if Assigned(obj) then
-    Result := Result +' '+obj.lclClassName+' lcl: '+CallbackDebugStr(obj.lclGetCallback);
-end;
-
-function CallbackDebugStr(cb: ICommonCallback): string;
-var
-  trg : TObject;
-begin
-  Result := IntToStr(PtrUInt(cb));
-  if Assigned(cb) then
-  begin
-    trg := cb.GetTarget;
-    Result := Result + ' trg: '+IntToStr(PtrUInt(trg));
-    if Assigned(trg) then
-    begin
-      Result := Result + ' '+trg.ClassName;
-      if trg is TWinControl then
-        Result := Result +' '+TWinControl(trg).Name;
-    end;
-  end;
-end;
-
-procedure DebugDumpParents(fromView: NSView);
-begin
-  while Assigned(fromView) do begin
-    writeln(fromView.lclClassName);
-    fromView := fromView.superView;
-  end;
 end;
 
 end.

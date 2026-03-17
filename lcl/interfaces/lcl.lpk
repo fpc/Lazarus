@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="584">
+    <Files Count="585">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2877,6 +2877,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSCustomControl"/>
       </Item584>
+      <Item585>
+        <Filename Value="cocoa/cocoadebug.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaDebug"/>
+      </Item585>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
