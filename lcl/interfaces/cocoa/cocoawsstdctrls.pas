@@ -147,7 +147,7 @@ begin
   // due to the lack of the control over the Layout by TCocoaManualScrollView,
   // only the Legacy Style can be used for compatibility.
   // it's the same logical relationship as NSScrollView and NSScroller.
-  scr:= createLegacyScroller;
+  scr:= TCocoaScrollUtil.createLegacyScroller;
   scr.lclInitWithCreateParams(prm);
   scr.callback:=TLCLCommonCallback.Create(scr, AWinControl);
 

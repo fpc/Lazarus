@@ -172,7 +172,7 @@ begin
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
 
-  ScrollViewSetBorderStyle(scroll, lclCheckListBox.BorderStyle);
+  TCocoaScrollUtil.setBorderStyle(scroll, lclCheckListBox.BorderStyle);
   UpdateControlFocusRing(list, AWinControl);
 
   Result := TLCLHandle(scroll);

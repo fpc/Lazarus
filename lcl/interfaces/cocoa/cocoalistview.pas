@@ -318,7 +318,7 @@ begin
   _scrollView.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable );
   _scrollView.callback:= self.callback;
   self.addSubview_positioned_relativeTo( _scrollView, NSWindowBelow, nil );
-  ScrollViewSetBorderStyle( _scrollView, callback.getBorderStyle );
+  TCocoaScrollUtil.setBorderStyle( _scrollView, callback.getBorderStyle );
   _scrollView.setFocusRingType( NSFocusRingTypeExterior );
   UpdateControlFocusRing( _backendControl, TWinControl(self.lclGetTarget) );
 

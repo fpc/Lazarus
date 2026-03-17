@@ -611,7 +611,7 @@ var
   lcl : TLCLCommonCallback;
 begin
   scrollcon:= TCocoaScrollView.alloc.lclInitWithCreateParams(AParams);
-  ScrollViewSetBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
+  TCocoaScrollUtil.setBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
   scrollcon.setDrawsBackground(false); // everything is covered anyway
   scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
   scrollcon.setAutohidesScrollers(True);
@@ -633,7 +633,7 @@ class procedure TCocoaWSScrollingWinControl.SetBorderStyle(
   const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
   if not Assigned(AWinControl) or not AWincontrol.HandleAllocated then Exit;
-  ScrollViewSetBorderStyle( NSScrollView(AWinControl.Handle), ABorderStyle);
+  TCocoaScrollUtil.setBorderStyle( NSScrollView(AWinControl.Handle), ABorderStyle);
 end;
 
 

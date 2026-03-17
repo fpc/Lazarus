@@ -10,10 +10,9 @@ interface
 uses
   Types, Classes, Controls, SysUtils,
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  StdCtrls,
   CocoaAll,
   CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils,
-  CocoaWSCustomControl, CocoaScrollers, CocoaWSScrollers,
+  CocoaWSCustomControl,
   CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra,
   CocoaCallback;
 
@@ -52,43 +51,10 @@ type
   end;
 
 procedure UpdateControlFocusRing( cocoaControl: NSView; lclControl: TWinControl );
-procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
-procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
 
 function NSObjectDebugStr(obj: NSObject): string;
 function CallbackDebugStr(cb: ICommonCallback): string;
 procedure DebugDumpParents(fromView: NSView);
-
-const
-  VerticalScrollerVisible: array[TScrollStyle] of boolean = (
- {ssNone          } false,
- {ssHorizontal    } false,
- {ssVertical      } true,
- {ssBoth          } true,
- {ssAutoHorizontal} false,
- {ssAutoVertical  } true,
- {ssAutoBoth      } true
-  );
-
-  HorizontalScrollerVisible: array[TScrollStyle] of boolean = (
- {ssNone          } false,
- {ssHorizontal    } true,
- {ssVertical      } false,
- {ssBoth          } true,
- {ssAutoHorizontal} true,
- {ssAutoVertical  } false,
- {ssAutoBoth      } true
-  );
-
-  ScrollerAutoHide: array[TScrollStyle] of boolean = (
- {ssNone          } false,
- {ssHorizontal    } false,
- {ssVertical      } false,
- {ssBoth          } false,
- {ssAutoHorizontal} true,
- {ssAutoVertical  } true,
- {ssAutoBoth      } true
-  );
 
 implementation
 
@@ -124,13 +90,6 @@ begin
     end;
  // TCocoaFocusRingStrategy.default: no need to set FocusRing
   end;
-end;
-
-procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
-begin
-  AScroll.setHasVerticalScroller(VerticalScrollerVisible[AStyles]);
-  AScroll.setHasHorizontalScroller(HorizontalScrollerVisible[AStyles]);
-  AScroll.setAutohidesScrollers(ScrollerAutoHide[AStyles]);
 end;
 
 { TCocoaWSControl }
@@ -562,17 +521,6 @@ begin
     writeln(fromView.lclClassName);
     fromView := fromView.superView;
   end;
-end;
-
-procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
-const
-  NSBorderStyle : array [TBorderStyle] of NSBorderType = (
-    NSNoBorder,   // bsNone
-    NSBezelBorder // bsSingle     (NSLineBorder is too thick)
-  );
-begin
-  if not Assigned(sv) then Exit;
-  sv.setBorderType( NSBorderStyle[astyle] );
 end;
 
 end.

@@ -380,7 +380,7 @@ begin
   scroll.setHasVerticalScroller(true);
   scroll.setHasHorizontalScroller(true);
   scroll.setAutohidesScrollers(true);
-  ScrollViewSetBorderStyle(scroll, lclListBox.BorderStyle);
+  TCocoaScrollUtil.setBorderStyle(scroll, lclListBox.BorderStyle);
   UpdateControlFocusRing(list, lclListBox);
 
   Result := TLCLHandle(scroll);
@@ -503,7 +503,7 @@ begin
   list := getTableViewFromLCLListBox( TCustomListBox(AWinControl) );
   if not Assigned(list) then Exit;
 
-  ScrollViewSetBorderStyle(list.enclosingScrollView, ABorderStyle);
+  TCocoaScrollUtil.setBorderStyle(list.enclosingScrollView, ABorderStyle);
   UpdateControlFocusRing(list, AWinControl);
 end;
 

@@ -10,7 +10,7 @@ uses
   Classes, SysUtils, LCLType,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   WSComCtrls,
-  CocoaAll, CocoaPrivate, CocoaWSCommon,
+  CocoaAll, CocoaPrivate, CocoaWSCommon, CocoaScrollers,
   CocoaListControl, CocoaListView, CocoaTables, CocoaCollectionView;
 
 type
@@ -174,7 +174,7 @@ var
 begin
   if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
   cocoaListView:= TCocoaListView(AWinControl.Handle);
-  ScrollViewSetBorderStyle(cocoaListView.scrollView, ABorderStyle);
+  TCocoaScrollUtil.setBorderStyle(cocoaListView.scrollView, ABorderStyle);
   UpdateControlFocusRing(cocoaListView.documentView, AWinControl);
 end;
 

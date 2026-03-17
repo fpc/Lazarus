@@ -715,12 +715,12 @@ begin
   txt.setMaxSize(NSMakeSize(10000000, 10000000));
   scr.setDocumentView(txt);
 
-  scr.setHasVerticalScroller(VerticalScrollerVisible[TMemo(AWinControl).ScrollBars]);
-  scr.setHasHorizontalScroller(HorizontalScrollerVisible[TMemo(AWinControl).ScrollBars]);
-  scr.setAutohidesScrollers(ScrollerAutoHide[TMemo(AWinControl).ScrollBars]);
+  scr.setHasVerticalScroller(VERT_SCROLLER_VISIBLE[TMemo(AWinControl).ScrollBars]);
+  scr.setHasHorizontalScroller(HORZ_SCROLLER_VISIBLE[TMemo(AWinControl).ScrollBars]);
+  scr.setAutohidesScrollers(SCROLLER_AUTO_HIDE_STYLE[TMemo(AWinControl).ScrollBars]);
   scr.setDrawsBackground(false);
 
-  ScrollViewSetBorderStyle(scr, TCustomMemo(AWinControl).BorderStyle);
+  TCocoaScrollUtil.setBorderStyle(scr, TCustomMemo(AWinControl).BorderStyle);
   scr.setFocusRingType( NSFocusRingTypeExterior );
 
   nr:=scr.documentVisibleRect;
@@ -813,7 +813,7 @@ begin
   sv := GetScrollView(AWinControl);
   if not Assigned(sv) then Exit;
 
-  ScrollViewSetBorderStyle(sv, ABorderStyle);
+  TCocoaScrollUtil.setBorderStyle(sv, ABorderStyle);
   UpdateControlFocusRing(sv.documentView, AWinControl);
 end;
 
@@ -935,7 +935,7 @@ end;
 
 class procedure TCocoaWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 begin
-  ScrollViewSetScrollStyles(TCocoaScrollView(ACustomMemo.Handle), NewScrollbars);
+  TCocoaScrollUtil.setScrollStyle(TCocoaScrollView(ACustomMemo.Handle), NewScrollbars);
 end;
 
 class procedure TCocoaWSCustomMemo.SetWantTabs(const ACustomMemo: TCustomMemo;
