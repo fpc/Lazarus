@@ -817,8 +817,8 @@ begin
         // the Apple's weight seems to be
         // 5.0 - for normal (where LCL = 400 is normal)
         // 9.0 - for bold (whre LCL = 800 is bold)
-        w := NSNumber(sub.objectAtIndex(2)).floatValue;
-        t := NSNumber(sub.objectAtIndex(3)).integerValue;
+        w := TCocoaNumberUtil.toDouble(sub.objectAtIndex(2));
+        t := TCocoaNumberUtil.toInt(sub.objectAtIndex(3));
 
         ELogFont.elfLogFont.lfWeight:=Round((w-1)*100);
         if ELogFont.elfLogFont.lfWeight >= FW_MAX then
@@ -1256,7 +1256,7 @@ end;
 
 function TCocoaWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 begin
-  Result:= CocoaGetCursorPos(lpPoint);
+  Result:= TCocoaCursorUtil.getCurrentLCLPos(lpPoint);
 end;
 
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
@@ -1865,7 +1865,7 @@ begin
         end;
       end;
       sc.ensureDocumentViewSizeChanged(documentSize, ensureWidth, ensureHeight);
-      LCLScrollViewAdjustSize(lclControl);
+      TCocoaWSScrollerUtil.asyncAdjustSize(lclControl);
 
       // frame changed, Need to update another ScrollBar too
       if SbStyle=SB_Horz then begin
@@ -2613,7 +2613,7 @@ end;
 function TCocoaWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
 begin
   if (ACursor=0) or (ACursor=Screen.Cursors[crDefault]) then
-    CursorHelper.SetCursorAtMousePos
+    TCocoaCursorUtil.setCursorByCurrentPos
   else
     CursorHelper.SetNewCursor( TCocoaCursor(ACursor) );
   Result := 0;

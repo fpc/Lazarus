@@ -41,23 +41,53 @@ type
     procedure SetCursorOnActive;
     procedure SetScreenCursor;
     procedure SetScreenCursorWhenNotDefault;
-  public
-    class procedure SetCursorAtMousePos;
   end;
 
-function CocoaGetCursorPos(var lpPoint: TPoint ): Boolean;
+  { TCocoaCursorUtil }
+
+  TCocoaCursorUtil = class
+  public
+    class function getCurrentLCLPos( var lpPoint: TPoint ): Boolean;
+    class procedure setCursorByCurrentPos;
+  end;
 
 var
   CursorHelper: TCursorHelper;
 
 implementation
 
-function CocoaGetCursorPos(var lpPoint: TPoint ): Boolean;
+{ TCocoaCursorUtil }
+
+class function TCocoaCursorUtil.getCurrentLCLPos(var lpPoint: TPoint): Boolean;
 begin
   lpPoint:= TCocoaScreenUtil.toLCL( NSEvent.mouseLocation );
   Result := True;
 end;
 
+class procedure TCocoaCursorUtil.setCursorByCurrentPos;
+var
+  P: TPoint;
+  rect: NSRect;
+  window: NSWindow;
+  event: NSEvent;
+begin
+  window:= NSAPP.keyWindow;
+  if not Assigned(window) then
+    exit;
+
+  TCocoaCursorUtil.getCurrentLCLPos(P);
+
+  rect:= NSZeroRect;
+  rect.origin:= TCocoaTypeUtil.toPoint(P, window.screen.frame.size.height);
+  rect:= window.convertRectFromScreen(rect);
+
+  event:= NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
+            NSMouseMoved,
+            rect.origin, 0, 0,
+            window.windowNumber, nil, 0, 0, 0);
+
+  NSApp.postEvent_atStart(event, true);
+end;
 
 { TCocoaCursor }
 constructor TCocoaCursor.CreateStandard(const ACursor: NSCursor);
@@ -143,33 +173,8 @@ begin
   if Screen.Cursor<>crDefault then begin
     SetScreenCursor;
   end else begin
-    SetCursorAtMousePos;
+    TCocoaCursorUtil.setCursorByCurrentPos;
   end;
-end;
-
-class procedure TCursorHelper.SetCursorAtMousePos;
-var
-  P: TPoint;
-  rect: NSRect;
-  window: NSWindow;
-  event: NSEvent;
-begin
-  window:= NSAPP.keyWindow;
-  if not Assigned(window) then
-    exit;
-
-  CocoaGetCursorPos(P);
-
-  rect:= NSZeroRect;
-  rect.origin:= TCocoaTypeUtil.toPoint(P, window.screen.frame.size.height);
-  rect:= window.convertRectFromScreen(rect);
-
-  event:= NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
-            NSMouseMoved,
-            rect.origin, 0, 0,
-            window.windowNumber, nil, 0, 0, 0);
-
-  NSApp.postEvent_atStart(event, true);
 end;
 
 procedure TCursorHelper.SetScreenCursor;

@@ -6,7 +6,7 @@ unit CocoaConst;
 interface
 
 uses
-  SysUtils, LCLStrConsts, LCLType, LCLProc,
+  SysUtils, LCLStrConsts, LCLType, LCLProc, StdCtrls,
   CocoaAll;
 
 type
@@ -47,6 +47,34 @@ const
   // a strange rectangular color block will be shown in the Button,
   // in dark mode.
   BUTTON_MIN_HEIGHT_NSRegularSquareBezelStyle = 26;
+
+const
+  VERT_SCROLLER_VISIBLE: array[TScrollStyle] of boolean = (
+  {ssNone          } false,
+  {ssHorizontal    } false,
+  {ssVertical      } true,
+  {ssBoth          } true,
+  {ssAutoHorizontal} false,
+  {ssAutoVertical  } true,
+  {ssAutoBoth      } true );
+
+  HORZ_SCROLLER_VISIBLE: array[TScrollStyle] of boolean = (
+  {ssNone          } false,
+  {ssHorizontal    } true,
+  {ssVertical      } false,
+  {ssBoth          } true,
+  {ssAutoHorizontal} true,
+  {ssAutoVertical  } false,
+  {ssAutoBoth      } true );
+
+  SCROLLER_AUTO_HIDE_STYLE: array[TScrollStyle] of boolean = (
+  {ssNone          } false,
+  {ssHorizontal    } false,
+  {ssVertical      } false,
+  {ssBoth          } false,
+  {ssAutoHorizontal} true,
+  {ssAutoVertical  } true,
+  {ssAutoBoth      } true );
 
 implementation
 

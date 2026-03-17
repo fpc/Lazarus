@@ -9,13 +9,13 @@ uses
   // Libs
   MacOSAll, CocoaAll, Classes, sysutils,
   // LCL
-  Graphics, Controls, StdCtrls, ComCtrls, LCLType, LCLMessageGlue, LMessages,
+  Graphics, Controls, StdCtrls, ComCtrls, LCLType,
   // LazUtils
   LazUTF8, TextStrings,
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaGDIObjects, CocoaCallback,
+  CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaCommonCallback,
   CocoaConst, CocoaConfig, CocoaUtils, Cocoa_Extra,
   CocoaTextEdits, CocoaScrollers, CocoaWSScrollers;
 
@@ -113,47 +113,19 @@ type
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
   end;
 
-function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
-procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
+  { TCocoaWSTextControlUtil }
+
+  TCocoaWSTextControlUtil = class
+  public
+    class function createTextField(
+      const ATarget: TWinControl;
+      const AParams: TCreateParams ): TCocoaTextField;
+    class function createSecureTextField(
+      const ATarget: TWinControl;
+      const AParams: TCreateParams ): TCocoaSecureTextField;
+  end;
 
 implementation
-
-function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
-begin
-  Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
-  if Assigned(Result) then
-  begin
-    if NOT Result.fixedInitSetting then
-      Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
-    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
-    TCocoaControlUtil.setStringValue(Result, AParams.Caption);
-  end;
-end;
-
-function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
-begin
-  Result := TCocoaSecureTextField.alloc.lclInitWithCreateParams(AParams);
-  if Assigned(Result) then
-  begin
-    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
-    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
-    TCocoaTextControlUtil.setStringValue(Result.currentEditor, AParams.Caption);
-  end;
-end;
-
-// Sets the control text and then calls controls callback (if any)
-// with TextChange (CM_TEXTCHANGED) event.
-// Cocoa control do not fire a notification, if text is changed programmatically
-// LCL expects a change notification in either way. (by software or by user)
-procedure ControlSetTextWithChangeEvent(ctrl: NSControl; const text: string);
-var
-  cb: ICommonCallBack;
-begin
-  TCocoaControlUtil.setStringValue(ctrl, text);
-  cb := ctrl.lclGetcallback;
-  if Assigned(cb) then // cb.SendOnChange;
-    cb.SendOnTextChanged;
-end;
 
 { TCocoaWSCustomEdit }
 
@@ -213,7 +185,7 @@ begin
 
   TCocoaTextControlUtil.setBorderStyle(field, edit.BorderStyle);
   TCocoaTextControlUtil.setAllignment(field, edit.Alignment);
-  UpdateControlFocusRing( field, edit );
+  TCocoaViewUtil.updateFocusRing( field, edit );
 end;
 
 class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
@@ -221,9 +193,9 @@ var
   field: NSTextField;
 begin
   if TCustomEdit(AWinControl).PasswordChar=#0 then begin
-    field:= AllocTextField(AWinControl, AParams);
+    field:= TCocoaWSTextControlUtil.createTextField(AWinControl, AParams);
   end else begin
-    field:= AllocSecureTextField(AWinControl, AParams);
+    field:= TCocoaWSTextControlUtil.createSecureTextField(AWinControl, AParams);
   end;
   SetTextFieldCell( TCustomEdit(AWinControl), field );
   Result:= TLCLHandle(field);
@@ -302,7 +274,7 @@ begin
   field.setBordered( ABorderStyle <> bsNone );
   field.setBezeled( ABorderStyle <> bsNone );
   {$endif}
-  UpdateControlFocusRing( field, AWinControl );
+  TCocoaViewUtil.updateFocusRing( field, AWinControl );
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -488,7 +460,7 @@ begin
   mxl := TCustomEdit(AWinControl).MaxLength;
   if (mxl > 0) and (UTF8Length(txt) > mxl) then
     txt := UTF8Copy(txt, 1, mxl);
-  ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), txt);
+  TCocoaControlUtil.setStringValueAndSendEvent(NSControl(AWinControl.Handle), txt);
 end;
 
 class procedure TCocoaWSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
@@ -743,12 +715,12 @@ begin
   txt.setMaxSize(NSMakeSize(10000000, 10000000));
   scr.setDocumentView(txt);
 
-  scr.setHasVerticalScroller(VerticalScrollerVisible[TMemo(AWinControl).ScrollBars]);
-  scr.setHasHorizontalScroller(HorizontalScrollerVisible[TMemo(AWinControl).ScrollBars]);
-  scr.setAutohidesScrollers(ScrollerAutoHide[TMemo(AWinControl).ScrollBars]);
+  scr.setHasVerticalScroller(VERT_SCROLLER_VISIBLE[TMemo(AWinControl).ScrollBars]);
+  scr.setHasHorizontalScroller(HORZ_SCROLLER_VISIBLE[TMemo(AWinControl).ScrollBars]);
+  scr.setAutohidesScrollers(SCROLLER_AUTO_HIDE_STYLE[TMemo(AWinControl).ScrollBars]);
   scr.setDrawsBackground(false);
 
-  ScrollViewSetBorderStyle(scr, TCustomMemo(AWinControl).BorderStyle);
+  TCocoaScrollUtil.setBorderStyle(scr, TCustomMemo(AWinControl).BorderStyle);
   scr.setFocusRingType( NSFocusRingTypeExterior );
 
   nr:=scr.documentVisibleRect;
@@ -772,7 +744,7 @@ begin
   // This makes NSTextView to be responsive to theme color change (Mojave 10.14)
   txt.setTextColor(NSColor.textColor);
   txt.setBackgroundColor(NSColor.textBackgroundColor);
-  UpdateControlFocusRing(txt, AWinControl);
+  TCocoaViewUtil.updateFocusRing(txt, AWinControl);
 
   lcl := TLCLCommonCallback.Create(txt, AWinControl);
   lcl.ForceReturnKeyDown := true;
@@ -841,8 +813,8 @@ begin
   sv := GetScrollView(AWinControl);
   if not Assigned(sv) then Exit;
 
-  ScrollViewSetBorderStyle(sv, ABorderStyle);
-  UpdateControlFocusRing(sv.documentView, AWinControl);
+  TCocoaScrollUtil.setBorderStyle(sv, ABorderStyle);
+  TCocoaViewUtil.updateFocusRing(sv.documentView, AWinControl);
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
@@ -963,7 +935,7 @@ end;
 
 class procedure TCocoaWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 begin
-  ScrollViewSetScrollStyles(TCocoaScrollView(ACustomMemo.Handle), NewScrollbars);
+  TCocoaScrollUtil.setScrollStyle(TCocoaScrollView(ACustomMemo.Handle), NewScrollbars);
 end;
 
 class procedure TCocoaWSCustomMemo.SetWantTabs(const ACustomMemo: TCustomMemo;
@@ -1016,6 +988,35 @@ begin
   Result := Assigned(txt);
   if Result then
     AText := NSStringToString(txt.string_);
+end;
+
+{ TCocoaWSTextControlUtil }
+
+class function TCocoaWSTextControlUtil.createTextField(
+  const ATarget: TWinControl;
+  const AParams: TCreateParams ): TCocoaTextField;
+begin
+  Result := TCocoaTextField.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(Result) then
+  begin
+    if NOT Result.fixedInitSetting then
+      Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
+    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
+    TCocoaControlUtil.setStringValue(Result, AParams.Caption);
+  end;
+end;
+
+class function TCocoaWSTextControlUtil.createSecureTextField(
+  const ATarget: TWinControl;
+  const AParams: TCreateParams): TCocoaSecureTextField;
+begin
+  Result := TCocoaSecureTextField.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(Result) then
+  begin
+    Result.setFont(NSFont.systemFontOfSize(NSFont.systemFontSize));
+    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
+    TCocoaTextControlUtil.setStringValue(Result.currentEditor, AParams.Caption);
+  end;
 end;
 
 end.

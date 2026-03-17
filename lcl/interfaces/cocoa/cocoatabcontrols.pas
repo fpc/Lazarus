@@ -149,49 +149,34 @@ type
     procedure setFrame(newValue: NSRect); override;
   end;
 
-function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
+  { TCocoaTabControlUtil }
 
-// Hack: The function attempts to determine the tabs view
-// if the view is found it would return its frame rect in LCL coordinates
-// if the view cannot be determinted, the function returns false
-// This is implemented as ObjC method, because "prevarr" and "nextarr"
-// are private methods.
-// It's unknown, if it's safe to cache the result, so the search is performed
-// everytime
-function GetTabsRect(tabs: TCocoaTabControl; var r: TRect): Boolean;
+  TCocoaTabControlUtil = class
+  public
+    class function indexOfTab(
+      const ahost: TCocoaTabControl;
+      const atab: NSTabViewItem ): Integer;
 
-procedure UpdateTabAndArrowVisibility(aview: TCocoaTabControl);
+    // Hack: The function attempts to determine the tabs view
+    // if the view is found it would return its frame rect in LCL coordinates
+    // if the view cannot be determinted, the function returns false
+    // This is implemented as ObjC method, because "prevarr" and "nextarr"
+    // are private methods.
+    // It's unknown, if it's safe to cache the result, so the search is performed
+    // everytime
+    class function getTabsRect(
+      const tabs: TCocoaTabControl;
+      var r: TRect ): Boolean;
+
+    class procedure updateTabAndArrowVisibility(
+      const aview: TCocoaTabControl);
+  end;
 
 implementation
 
-function GetTabsRect(tabs: TCocoaTabControl; var r: TRect): Boolean;
-var
-  i  : integer;
-  sv : NSView;
-  f  : NSRect;
-begin
-  Result:=Assigned(tabs);
-  if not Result then Exit;
-
-  for i:=0 to Integer(tabs.subviews.count)-1 do
-  begin
-    sv:=NSView(tabs.subviews.objectAtIndex(i));
-    if not Assigned(sv)
-       or (sv = tabs.nextarr)
-       or (sv = tabs.prevarr)
-       or (sv.isKindOfClass(TCocoaTabPageView))
-    then Continue;
-
-    f := sv.frame;
-    if tabs.isFlipped then
-      r := TCocoaTypeUtil.toRect( f )
-    else
-      TCocoaTypeUtil.toRect( f, tabs.frame.size.height, r );
-    Result := true;
-    Exit;
-  end;
-  Result:=false;
-end;
+const
+  ARROW_HORZ_OFFSET = 12;
+  ARROW_VERT_OFFSET = 10;
 
 function AllocArrowButton(tabControl:TCocoaTabControl; isPrev:Boolean): NSButton;
 var
@@ -217,10 +202,6 @@ begin
   Result:=btn;
 end;
 
-const
-  arrow_hofs = 12;
-  arrow_vofs = 10;
-
 procedure PlaceButton(isPrev: Boolean; abtn: NSButton; dst: NSTabView);
 var
   org: NSPoint;
@@ -228,14 +209,14 @@ begin
   if not assigned(abtn) then Exit;
 
   if dst.tabViewType = NSTopTabsBezelBorder then
-    org.y := arrow_vofs
+    org.y := ARROW_VERT_OFFSET
   else
-    org.y := dst.frame.size.height - abtn.frame.size.height - arrow_vofs;
+    org.y := dst.frame.size.height - abtn.frame.size.height - ARROW_VERT_OFFSET;
 
   if isPrev then
-    org.x := arrow_hofs
+    org.x := ARROW_HORZ_OFFSET
   else
-    org.x := dst.frame.size.width - abtn.frame.size.width - arrow_hofs;
+    org.x := dst.frame.size.width - abtn.frame.size.width - ARROW_HORZ_OFFSET;
 
   abtn.setFrameOrigin(org);
 end;
@@ -324,7 +305,7 @@ begin
     lwid[i] := lwid[i] + tbext;
 
   frw := aview.frame.size.width;
-  frw := frw - ((arrow_hofs + aview.nextarr.frame.size.width) * 2);
+  frw := frw - ((ARROW_HORZ_OFFSET + aview.nextarr.frame.size.width) * 2);
   if frw<0 then frw := 0;
 
   ofs := aview.currentIndex;
@@ -375,7 +356,24 @@ begin
     aview.removeTabViewItem( arr.objectAtIndex(j));
 end;
 
-procedure UpdateTabAndArrowVisibility(aview: TCocoaTabControl);
+{ TCocoaTabControlUtil }
+
+class function TCocoaTabControlUtil.indexOfTab(
+  const ahost: TCocoaTabControl;
+  const atab: NSTabViewItem ): Integer;
+var
+  idx : NSUInteger;
+begin
+  idx := ahost.fulltabs.indexOfObject(atab);
+  if idx=NSUIntegerMax then Result:=-1
+  else begin
+    if idx>MaxInt then Result:=-1
+    else Result:=Integer(idx);
+  end;
+end;
+
+class procedure TCocoaTabControlUtil.updateTabAndArrowVisibility(
+  const aview: TCocoaTabControl );
 var
   showNext : Boolean;
   showPrev : Boolean;
@@ -412,16 +410,35 @@ begin
   end;
 end;
 
-function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
+class function TCocoaTabControlUtil.getTabsRect(
+  const tabs: TCocoaTabControl;
+  var r: TRect ): Boolean;
 var
-  idx : NSUInteger;
+  i  : integer;
+  sv : NSView;
+  f  : NSRect;
 begin
-  idx := ahost.fulltabs.indexOfObject(atab);
-  if idx=NSUIntegerMax then Result:=-1
-  else begin
-    if idx>MaxInt then Result:=-1
-    else Result:=Integer(idx);
+  Result:=Assigned(tabs);
+  if not Result then Exit;
+
+  for i:=0 to Integer(tabs.subviews.count)-1 do
+  begin
+    sv:=NSView(tabs.subviews.objectAtIndex(i));
+    if not Assigned(sv)
+       or (sv = tabs.nextarr)
+       or (sv = tabs.prevarr)
+       or (sv.isKindOfClass(TCocoaTabPageView))
+    then Continue;
+
+    f := sv.frame;
+    if tabs.isFlipped then
+      r := TCocoaTypeUtil.toRect( f )
+    else
+      TCocoaTypeUtil.toRect( f, tabs.frame.size.height, r );
+    Result := true;
+    Exit;
   end;
+  Result:=false;
 end;
 
 { TCocoaTabPageView }
@@ -562,13 +579,13 @@ begin
   if not Assigned(nextarr) then
     AllocPrevNext( self );
 
-  UpdateTabAndArrowVisibility(self);
+  TCocoaTabControlUtil.updateTabAndArrowVisibility(self);
 end;
 
 procedure TCocoaTabControl.setTabViewType(newValue: NSTabViewType);
 begin
   Inherited;
-  UpdateTabAndArrowVisibility(self);
+  TCocoaTabControlUtil.updateTabAndArrowVisibility(self);
 end;
 
 procedure TCocoaTabControl.extselectTabViewItemAtIndex( index:NSInteger );
@@ -588,7 +605,7 @@ begin
     attachAllTabs;
     inherited selectTabViewItemAtIndex( index );
     leftKeepAmount:= oldKeepAmount;
-    UpdateTabAndArrowVisibility( self );
+    TCocoaTabControlUtil.updateTabAndArrowVisibility( self );
   end;
 end;
 
@@ -666,7 +683,7 @@ begin
   Result := True;
   if Assigned(callback) then
   begin
-    Result:= callback.shouldSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+    Result:= callback.shouldSelectTabViewItem( TCocoaTabControlUtil.indexOfTab( self, tabViewItem) );
   end;
 end;
 
@@ -675,7 +692,7 @@ procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;
 begin
   if Assigned(callback) then
   begin
-    callback.willSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+    callback.willSelectTabViewItem( TCocoaTabControlUtil.indexOfTab( self, tabViewItem) );
   end;
 end;
 
@@ -687,7 +704,7 @@ begin
   if triggeringByLCL then
     exit;
 
-  currentIndex:= IndexOfTab( self, tabViewItem );
+  currentIndex:= TCocoaTabControlUtil.indexOfTab( self, tabViewItem );
   leftKeepAmount:= currentIndex - visibleLeftIndex;
 
   if Assigned(callback) then
@@ -893,7 +910,7 @@ begin
       inc( currentIndex );
   end;
 
-  UpdateTabAndArrowVisibility( self );
+  TCocoaTabControlUtil.updateTabAndArrowVisibility( self );
 end;
 
 procedure TCocoaTabControl.exttabInsertTabViewItem_atIndex(
@@ -905,7 +922,7 @@ begin
   if index <= currentIndex then
     inc( currentIndex );
 
-  UpdateTabAndArrowVisibility( self );
+  TCocoaTabControlUtil.updateTabAndArrowVisibility( self );
 end;
 
 procedure TCocoaTabControl.exttabRemoveTabViewItem( removedTabPage: NSTabViewItem );
@@ -944,7 +961,7 @@ begin
       end;
     end;
 
-    UpdateTabAndArrowVisibility( self );
+    TCocoaTabControlUtil.updateTabAndArrowVisibility( self );
   finally
     triggeringByLCL:= false;
   end;

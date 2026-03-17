@@ -199,12 +199,6 @@ type
       const {%H-}ASortDirection: TSortDirection); override;
   end;
 
-function AllocCocoaCollectionView( style: TViewStyle ): TCocoaCollectionView;
-function indexPathsWithOneIndex( cv: NSCollectionView; AIndex: Integer ): NSSet;
-function realVisibleItems( cv: NSCollectionView ): NSArray;
-
-implementation
-
 type
   { TCocoaListView_CollectionView_LargeIconHandler }
   TCocoaListView_CollectionView_LargeIconHandler = class(TCocoaListView_CollectionView_StyleHandler)
@@ -231,28 +225,7 @@ type
     procedure onAdjustTextEditor( lv: TCocoaListView; var aFrame: NSRect ); override;
   end;
 
-function AllocCocoaCollectionView( style: TViewStyle ): TCocoaCollectionView;
-var
-  styleHandler: TCocoaListView_CollectionView_StyleHandler;
-begin
-  Result:= TCocoaCollectionView.new;
-
-  case style of
-    vsIcon:
-      styleHandler:= TCocoaListView_CollectionView_LargeIconHandler.Create( Result );
-    vsSmallIcon:
-      styleHandler:= TCocoaListView_CollectionView_SmallIconHandler.Create( Result );
-    vsList:
-      styleHandler:= TCocoaListView_CollectionView_ListHandler.Create( Result );
-  end;
-
-  Result.styleHandler:= styleHandler;
-  Result.setDataSource( Result );
-  Result.setDelegate( NSCollectionViewDelegateProtocol_1011(Result) );
-  Result.setCollectionViewLayout( NSCollectionViewFlowLayout.new.autorelease );
-  Result.registerClass_forItemWithIdentifier( TCocoaCollectionItem, NSSTR('Cell') );
-  Result.setSelectable( True );
-end;
+implementation
 
 function indexPathsWithOneIndex( cv: NSCollectionView; AIndex: Integer ): NSSet;
 var

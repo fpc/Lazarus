@@ -129,28 +129,6 @@ type
     function validModesForFontPanel(afontPanel: NSFontPanel): NSUInteger; override;
   end;
 
-  { TCocoaFilterComboBox }
-
-  TCocoaFilterComboBox = objcclass(NSPopUpButton)
-  private
-    class procedure DoParseFilters(AFileDialog: TFileDialog; AOutput: TStringList); message 'DoParseFilters:AOutput:';
-  public
-    Owner: TFileDialog;
-    DialogHandle: NSSavePanel;
-    Filters: TStringList; // filled by updateFilterList()
-    NSFilters: NSMutableArray;
-    lastSelectedItemIndex: Integer; // -1 means invalid or none selected
-    class function alloc: id; override;
-    procedure dealloc; override;
-    procedure updateFilterList(); message 'updateFilterList';
-    function setDialogFilter(ASelectedFilterIndex: Integer): Integer; message 'setDialogFilter:';
-    procedure comboboxAction(sender: id); message 'comboboxAction:';
-  end;
-
-procedure FontToDict(src: TFont; dst: NSMutableDictionary);
-procedure DictToFont(src: NSDictionary; dst: TFont);
-function DictToCocoaFontStyle(src: NSDictionary): TCocoaFontStyle;
-
 implementation
 
 // API irony.
@@ -171,6 +149,24 @@ end;
 
 type
 
+  { TCocoaFilterComboBox }
+
+  TCocoaFilterComboBox = objcclass(NSPopUpButton)
+  private
+    class procedure DoParseFilters(AFileDialog: TFileDialog; AOutput: TStringList); message 'DoParseFilters:AOutput:';
+  public
+    Owner: TFileDialog;
+    DialogHandle: NSSavePanel;
+    Filters: TStringList; // filled by updateFilterList()
+    NSFilters: NSMutableArray;
+    lastSelectedItemIndex: Integer; // -1 means invalid or none selected
+    class function alloc: id; override;
+    procedure dealloc; override;
+    procedure updateFilterList(); message 'updateFilterList';
+    function setDialogFilter(ASelectedFilterIndex: Integer): Integer; message 'setDialogFilter:';
+    procedure comboboxAction(sender: id); message 'comboboxAction:';
+  end;
+
   { TOpenSaveDelegate }
 
   TOpenSaveDelegate = objcclass(NSObject, NSOpenSavePanelDelegateProtocol)
@@ -184,6 +180,7 @@ type
     procedure panelSelectionDidChange(sender: id);
     procedure showFilePackageContentsAction(sender: id); message 'showFilePackageContentsAction:';
   end;
+
 { TOpenSaveDelegate }
 
 procedure TOpenSaveDelegate.dealloc;
@@ -705,14 +702,6 @@ begin
     dst.setObject_forKey(TCocoaColorUtil.toColor(src.Color), NSForegroundColorAttributeName);
 end;
 
-function ObjToNum(obj: NSObject; defVal: integer): Integer;
-begin
-  if (obj = nil) or (not obj.isKindOfClass(NSNumber)) then
-    Result := defVal
-  else
-    Result := Integer(NSNumber(obj).integerValue);
-end;
-
 procedure DictToFont(src: NSDictionary; dst: TFont);
 var
   obj : NSObject;
@@ -725,12 +714,12 @@ begin
   fs := dst.Style;
   cl := dst.Color;
 
-  if ObjToNum( src.objectForKey(NSUnderlineStyleAttributeName), 0) = NSUnderlineStyleNone then
+  if TCocoaNumberUtil.toInt(src.objectForKey(NSUnderlineStyleAttributeName)) = NSUnderlineStyleNone then
     Exclude(fs, fsUnderline)
   else
     Include(fs, fsUnderline);
 
-  if ObjToNum( src.objectForKey(NSStrikethroughStyleAttributeName), 0) = NSUnderlineStyleNone then
+  if TCocoaNumberUtil.toInt(src.objectForKey(NSStrikethroughStyleAttributeName)) = NSUnderlineStyleNone then
     Exclude(fs, fsStrikeOut)
   else
     Include(fs, fsStrikeOut);
@@ -751,12 +740,12 @@ begin
   Result := [];
   if (src = nil) then Exit;
 
-  if ObjToNum( src.objectForKey(NSUnderlineStyleAttributeName), 0) = NSUnderlineStyleNone then
+  if TCocoaNumberUtil.toInt(src.objectForKey(NSUnderlineStyleAttributeName)) = NSUnderlineStyleNone then
     Exclude(Result, cfs_Underline)
   else
     Include(Result, cfs_Underline);
 
-  if ObjToNum( src.objectForKey(NSStrikethroughStyleAttributeName), 0) = NSUnderlineStyleNone then
+  if TCocoaNumberUtil.toInt(src.objectForKey(NSStrikethroughStyleAttributeName)) = NSUnderlineStyleNone then
     Exclude(Result, cfs_Strikeout)
   else
     Include(Result, cfs_Strikeout);

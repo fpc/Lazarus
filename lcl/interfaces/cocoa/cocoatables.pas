@@ -28,8 +28,8 @@ uses
   LCLType, LCLMessageGlue, LMessages, Controls, Graphics,
   ComCtrls, StdCtrls, ImgList, Forms,
   MacOSAll, CocoaAll,
-  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaListControl,
-  CocoaConst, CocoaConfig, CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
+  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaScrollers, CocoaListControl,
+  CocoaConst, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaListView, CocoaTextEdits;
 
 type
@@ -251,11 +251,18 @@ type
     procedure onSelectionChanged( tv: NSTableView ); override;
   end;
 
-function AllocCocoaTableListView: TCocoaTableListView;
-
-function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
-function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
-function LCLGetTopRow(tbl: NSTableView): Integer;
+  TCocoaTableUtil = class
+  public
+    class function getRowOfLCLCoord(
+      const tbl: NSTableView;
+      const X,Y: Integer ): Integer;
+    class function getItemLCLRect(
+      const tbl: NSTableView;
+      const row, col: Integer;
+      var r: TRect ): Boolean;
+    class function getTopRow(
+      const tbl: NSTableView ): Integer;
+  end;
 
 implementation
 
@@ -270,7 +277,9 @@ type
     procedure drawRect(dirtyRect: NSRect); override;
   end;
 
-function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
+class function TCocoaTableUtil.getRowOfLCLCoord(
+  const tbl: NSTableView;
+  const X,Y: Integer ): Integer;
 var
   pt : NSPoint;
   sc : NSScrollView;
@@ -295,7 +304,10 @@ begin
   Result := tbl.rowAtPoint(pt);
 end;
 
-function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
+class function TCocoaTableUtil.getItemLCLRect(
+  const tbl: NSTableView;
+  const row, col: Integer;
+  var r: TRect ): Boolean;
 var
   nsr : NSRect;
 begin
@@ -309,7 +321,7 @@ begin
   Result := True;
 end;
 
-function LCLGetTopRow(tbl: NSTableView): Integer;
+class function TCocoaTableUtil.getTopRow(const tbl: NSTableView): Integer;
 var
   visRange: NSRange;
 begin
@@ -319,35 +331,6 @@ begin
   begin
     visRange := tbl.rowsInRect(tbl.visibleRect());
     Result := visRange.location;
-  end;
-end;
-
-function AllocCocoaTableListView: TCocoaTableListView;
-begin
-  // init will happen outside
-  Result := TCocoaTableListView.alloc;
-end;
-
-procedure drawNSViewBackground( view: NSView; lclBrush: TBrush );
-var
-  ctx: TCocoaContext;
-  cocoaBrush: TCocoaBrush;
-  width: Integer;
-  height: Integer;
-begin
-  if lclBrush.Color = clWhite then   // see also TBrush.create
-    Exit;
-
-  width:= Round( view.bounds.size.width );
-  height:= Round( view.bounds.size.height );
-
-  ctx := TCocoaContext.Create( NSGraphicsContext.currentContext );
-  ctx.InitDraw( width, height );
-  try
-    cocoaBrush:= TCocoaBrush( lclBrush.Reference.Handle );
-    ctx.Rectangle( 0, 0, width, height, True, cocoaBrush );
-  finally
-    ctx.Free;
   end;
 end;
 
@@ -370,7 +353,7 @@ begin
     if Assigned(self.tableView.lclGetPorcessor) then
       self.tableView.lclGetPorcessor.onOwnerDrawItem( self );
   end else begin
-    drawNSViewBackground( self, tableView.lclGetCanvas.Brush );
+    TCocoaViewUtil.drawBackground( self, tableView.lclGetCanvas.Brush );
     inherited drawRect( dirtyRect );
   end;
 end;
@@ -593,7 +576,7 @@ begin
     // we can only hide the SubviewViews to get the same effect.
     TCocoaViewUtil.hideAllSubviews( self );
   end else begin
-    drawNSViewBackground( self, self.lclGetCanvas.Brush );
+    TCocoaViewUtil.drawBackground( self, self.lclGetCanvas.Brush );
     inherited;
   end;
 end;
@@ -1835,7 +1818,7 @@ end;
 function TCocoaWSListView_TableViewHandler.GetItemAt(x, y: integer
   ): Integer;
 begin
-  Result:= LCLCoordToRow(_tableView, x,y);
+  Result:= TCocoaTableUtil.getRowOfLCLCoord(_tableView, x,y);
 end;
 
 function TCocoaWSListView_TableViewHandler.GetSelCount: Integer;
@@ -1850,7 +1833,7 @@ end;
 
 function TCocoaWSListView_TableViewHandler.GetTopItem: Integer;
 begin
-  Result:= LCLGetTopRow( _tableView );
+  Result:= TCocoaTableUtil.getTopRow( _tableView );
 end;
 
 function TCocoaWSListView_TableViewHandler.GetVisibleRowCount: Integer;
@@ -1948,7 +1931,7 @@ end;
 procedure TCocoaWSListView_TableViewHandler.SetScrollBars(
   const AValue: TScrollStyle);
 begin
-  ScrollViewSetScrollStyles(_listView.scrollView, AValue);
+  TCocoaScrollUtil.setScrollStyle(_listView.scrollView, AValue);
 
   {$ifdef BOOLFIX}
   _listView.setNeedsDisplay__(Ord(true));

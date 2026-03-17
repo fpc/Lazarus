@@ -269,7 +269,7 @@ begin
   begin
     window.enableCursorRects;
     window.resetCursorRects;
-    CursorHelper.SetCursorAtMousePos;
+    TCocoaCursorUtil.setCursorByCurrentPos;
   end;
 
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then

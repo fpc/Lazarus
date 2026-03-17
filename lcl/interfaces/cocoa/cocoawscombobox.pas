@@ -15,7 +15,8 @@ uses
   LazUTF8,
   CocoaAll,
   CocoaConfig, CocoaUtils, CocoaGDIObjects, CocoaPrivate,
-  CocoaComboBox, CocoaTextEdits, CocoaWSTextEdits, CocoaWSCommon, Cocoa_Extra;
+  CocoaComboBox, CocoaTextEdits,
+  CocoaCommonCallback, CocoaWSCommon, Cocoa_Extra;
 
 type
 
@@ -254,7 +255,7 @@ begin
     // to be tested and considered
     //ComboBoxSetBorderStyle(cmb, TCustomComboBoxAccess(AWinControl).BorderStyle);
     Result:=TLCLHandle(cmb);
-    UpdateControlFocusRing(cmb, AWinControl);
+    TCocoaViewUtil.updateFocusRing(cmb, AWinControl);
   end;
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints
@@ -491,7 +492,7 @@ begin
   begin
     cmb:= NSControl(AWinControl.Handle);
     cmb.setStringValue(NSString.string_);
-    ControlSetTextWithChangeEvent(cmb, AText);
+    TCocoaControlUtil.setStringValueAndSendEvent(cmb, AText);
   end;
 end;
 

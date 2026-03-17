@@ -29,7 +29,7 @@ uses
   // widgetset
   WSButtons, WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate, CocoaGDIObjects, CocoaWSCommon,
+  CocoaPrivate, CocoaGDIObjects, CocoaWSCommon, CocoaCommonCallback,
   CocoaUtils, cocoa_extra, CocoaButtons;
 
 type
@@ -116,11 +116,32 @@ type
   published
   end;
 
-function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
+  { TCocoaWSButtonUtil }
+
+  TCocoaWSButtonUtil = class
+  public
+    class function allocButton(
+      const ATarget: TWinControl;
+      const ACallBackClass: TLCLButtonCallBackClass;
+      const AParams: TCreateParams;
+      const btnBezel: NSBezelStyle;
+      const btnType: NSButtonType ): TCocoaButton;
+    class procedure setState(
+      const btn: NSButton;
+      const NewState: TCheckBoxState;
+      const SkipChangeEvent: Boolean = True );
+    class procedure switchRadioButton(
+      const checkedRadio: NSButton );
+  end;
 
 implementation
 
-function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
+class function TCocoaWSButtonUtil.allocButton(
+  const ATarget: TWinControl;
+  const ACallBackClass: TLCLButtonCallBackClass;
+  const AParams: TCreateParams;
+  const btnBezel: NSBezelStyle;
+  const btnType: NSButtonType ): TCocoaButton;
 begin
   case btnType of
     NSMomentaryLightButton,
@@ -142,8 +163,10 @@ begin
   end;
 end;
 
-procedure ButtonSetState(btn: NSButton; NewState: TCheckBoxState;
-  SkipChangeEvent: Boolean = true);
+class procedure TCocoaWSButtonUtil.setState(
+  const btn: NSButton;
+  const NewState: TCheckBoxState;
+  const SkipChangeEvent: Boolean = True );
 const
   buttonState: array [TcheckBoxState] of NSInteger =
     (NSOffState, NSOnState, NSMixedState);
@@ -170,7 +193,8 @@ begin
     btn.setState(buttonState[NewState]);
 end;
 
-procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
+class procedure TCocoaWSButtonUtil.switchRadioButton(
+  const checkedRadio: NSButton );
 var
   SubView : NSView;
 begin
@@ -232,12 +256,21 @@ end;
 
   Creates new button control in Cocoa interface with the specified parameters
  ------------------------------------------------------------------------------}
-class function TCocoaWSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLHandle;
+class function TCocoaWSButton.CreateHandle(
+  const AWinControl: TWinControl;
+  const AParams: TCreateParams ): TLCLHandle;
+const
+  // these heights were received from Xcode interface builder,
+  // where the height cannot be changed for a button control the actual size
+  // of the button (the difference between top pixel and bottom pixel,
+  // is less than frame size also
+  PUSHBTN_REG_HEIGHT   = 20;
+  PUSHBTN_SMALL_HEIGHT = 17;
+  PUSHBTN_MINI_HEIGHT  = 14;
 var
   btn: TCocoaButton;
 begin
-  btn := AllocButton(AWinControl, TLCLButtonCallback, AParams, NSRoundedBezelStyle, NSMomentaryLightButton);
+  btn := TCocoaWSButtonUtil.allocButton(AWinControl, TLCLButtonCallback, AParams, NSRoundedBezelStyle, NSMomentaryLightButton);
   btn.smallHeight := PUSHBTN_SMALL_HEIGHT;
   btn.miniHeight := PUSHBTN_MINI_HEIGHT;
   btn.adjustFontToControlSize:=true;
@@ -314,7 +347,7 @@ begin
   if button.controlSize = NSRegularControlSize then begin
     size.width:= size.width - 12;
     size.height:= size.height - 6;
-    size:= adjustButtonSizeIfNecessary(button, size);
+    size:= TCocoaButtonUtil.adjustSizeIfNecessary(button, size);
   end;
   PreferredWidth:= Round(size.width);
   PreferredHeight:= Round(size.height);
@@ -351,7 +384,7 @@ var
   btn: TCocoaButton;
   cb: IButtonCallback;
 begin
-  btn := AllocButton(AWinControl, TLCLCheckBoxCallBack, AParams, 0, NSSwitchButton);
+  btn := TCocoaWSButtonUtil.allocButton(AWinControl, TLCLCheckBoxCallBack, AParams, 0, NSSwitchButton);
   // changes in AllowGrayed are never sent to WS!
   // so it should be checked at create time (and at SetNextState?)
   if TCustomCheckBox(AWinControl).AllowGrayed then
@@ -398,7 +431,7 @@ const
   buttonState: array [TcheckBoxState] of NSInteger = (NSOffState, NSOnState, NSMixedState);
 begin
   if not ACustomCheckBox.HandleAllocated then Exit;
-  ButtonSetState(NSButton(ACustomCheckBox.Handle), NewState);
+  TCocoaWSButtonUtil.setState(NSButton(ACustomCheckBox.Handle), NewState);
 end;
 
 class procedure TCocoaWSCustomCheckBox.GetPreferredSize(
@@ -441,7 +474,7 @@ var
 begin
   if not Owner.lclIsEnabled() then Exit;
   if NSButton(Owner).state = NSOnState then
-    RadioButtonSwitchSiblings(NSButton(Owner));
+    TCocoaWSButtonUtil.switchRadioButton(NSButton(Owner));
   inherited ButtonClick;
 end;
 
@@ -452,7 +485,7 @@ class function TCocoaWSRadioButton.CreateHandle(const AWinControl: TWinControl;
 var
   btn: TCocoaButton;
 begin
-  btn := AllocButton(AWinControl, TLCLRadioButtonCallback, AParams, 0, NSRadioButton);
+  btn := TCocoaWSButtonUtil.allocButton(AWinControl, TLCLRadioButtonCallback, AParams, 0, NSRadioButton);
   Result := TLCLHandle(btn);
 end;
 
@@ -464,8 +497,8 @@ begin
   if not ACustomCheckBox.HandleAllocated then Exit;
   btn := NSButton(ACustomCheckBox.Handle);
   if NewState = cbChecked then
-    RadioButtonSwitchSiblings(btn);
-  ButtonSetState(btn, NewState);
+    TCocoaWSButtonUtil.switchRadioButton(btn);
+  TCocoaWSButtonUtil.setState(btn, NewState);
 end;
 
 { TCocoaWSBitBtn }
@@ -497,7 +530,7 @@ class function TCocoaWSBitBtn.CreateHandle(const AWinControl: TWinControl;
 var
   btn: NSButton;
 begin
-  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSRegularSquareBezelStyle, NSMomentaryPushInButton);
+  btn := TCocoaWSButtonUtil.allocButton(AWinControl, TLCLButtonCallBack, AParams, NSRegularSquareBezelStyle, NSMomentaryPushInButton);
   Result := TLCLHandle(btn);
 end;
 
@@ -515,7 +548,7 @@ begin
   if lButton.Glyph <> nil then
     Size.Height := Max(Size.Height, lButton.Glyph.Height + 6); // This nr is arbitrary
 
-  Size:= adjustButtonSizeIfNecessary( lButtonHandle, Size );
+  Size:= TCocoaButtonUtil.adjustSizeIfNecessary( lButtonHandle, Size );
   PreferredWidth := Round(Size.Width);
   PreferredHeight := Round(Size.Height);
 end;

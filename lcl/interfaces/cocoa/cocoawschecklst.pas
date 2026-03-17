@@ -29,8 +29,9 @@ uses
   // Widgetset
   WSCheckLst, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaConfig, CocoaGDIObjects,
-  CocoaWSListBox, CocoaListControl, CocoaTables, CocoaScrollers, CocoaWSScrollers;
+  CocoaPrivate, CocoaConfig, CocoaGDIObjects,
+  CocoaWSListBox, CocoaListControl, CocoaTables, CocoaScrollers,
+  CocoaWSListView, CocoaWSScrollers;
 
 type
 
@@ -137,7 +138,7 @@ var
   processor: TCocoaTableViewProcessor;
   lclCheckListBox: TCustomCheckListBox absolute AWinControl;
 begin
-  list := AllocCocoaTableListView.lclInitWithCreateParams(AParams);
+  list := TCocoaWSListViewUtil.createTableView.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
   begin
     Result := 0;
@@ -160,9 +161,9 @@ begin
   //list.AllowMixedState := TCustomCheckListBox(AWinControl).AllowGrayed;
   list.isOwnerDraw := lclCheckListBox.Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
-  ListBoxSetStyle(list, TCustomListBox(AWinControl).Style);
+  TCocoaWSListBoxUtil.setStyle(list, TCustomListBox(AWinControl).Style);
 
-  scroll := EmbedInScrollView(list);
+  scroll := TCocoaWSScrollerUtil.embedInScrollView(list);
   if not Assigned(scroll) then
   begin
     Result := 0;
@@ -172,8 +173,8 @@ begin
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
 
-  ScrollViewSetBorderStyle(scroll, lclCheckListBox.BorderStyle);
-  UpdateControlFocusRing(list, AWinControl);
+  TCocoaScrollUtil.setBorderStyle(scroll, lclCheckListBox.BorderStyle);
+  TCocoaViewUtil.updateFocusRing(list, AWinControl);
 
   Result := TLCLHandle(scroll);
 end;
@@ -196,7 +197,7 @@ var
 begin
   Result:= cbUnchecked;
 
-  lclcb:= TLCLCheckboxListCallback( getCallbackFromLCLListBox(ACheckListBox) );
+  lclcb:= TLCLCheckboxListCallback( TCocoaWSListBoxUtil.getCallback(ACheckListBox) );
   if NOT Assigned(lclcb) then
     Exit;
 
@@ -224,14 +225,14 @@ var
   lclcb : TLCLCheckboxListCallback;
   checkState: Integer;
 begin
-  lclcb:= TLCLCheckboxListCallback( getCallbackFromLCLListBox(ACheckListBox) );
+  lclcb:= TLCLCheckboxListCallback( TCocoaWSListBoxUtil.getCallback(ACheckListBox) );
   if NOT Assigned(lclcb) then
     Exit;
 
   checkState:= checkStateArray[AState];
   lclcb.setInternalCheckState( AIndex, checkState );
 
-  cocoaTLV:= getTableViewFromLCLListBox( ACheckListBox );
+  cocoaTLV:= TCocoaWSListBoxUtil.getTableListView( ACheckListBox );
   cocoaTLV.reloadDataForRow_column( AIndex, 0 );
 end;
 
