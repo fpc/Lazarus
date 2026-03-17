@@ -14,7 +14,8 @@ uses
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
   CocoaPrivate, CocoaGDIObjects,
-  CocoaListControl, CocoaTables, CocoaScrollers, CocoaWSScrollers;
+  CocoaListControl, CocoaTables, CocoaScrollers,
+  CocoaWSListView, CocoaWSScrollers;
 
 type
 
@@ -339,7 +340,7 @@ var
   lclListBox: TCustomListBox absolute AWinControl;
   cb  : TLCLListBoxCallback;
 begin
-  list := AllocCocoaTableListView.lclInitWithCreateParams(AParams);
+  list := TCocoaWSListViewUtil.createListView.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
   begin
     Result := 0;
@@ -409,7 +410,7 @@ begin
     Exit();
   end;
 
-  Result := LCLCoordToRow(list, x,y);
+  Result := TCocoaTableUtil.getRowOfLCLCoord(list, x,y);
 end;
 
 class function TCocoaWSCustomListBox.GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean;
@@ -421,7 +422,7 @@ begin
 
   view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit(False);
-  Result := LCLGetItemRect(view, Index, 0, ARect);
+  Result := TCocoaTableUtil.getItemLCLRect(view, Index, 0, ARect);
 end;
 
 class function TCocoaWSCustomListBox.GetScrollWidth(const ACustomListBox: TCustomListBox): Integer;
@@ -488,7 +489,7 @@ var
 begin
   view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit(-1);
-  Result := LCLGetTopRow(view);
+  Result := TCocoaTableUtil.getTopRow(view);
 end;
 
 class procedure TCocoaWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);

@@ -30,7 +30,8 @@ uses
   WSCheckLst, WSLCLClasses,
   // LCL Cocoa
   CocoaPrivate, CocoaConfig, CocoaGDIObjects,
-  CocoaWSListBox, CocoaListControl, CocoaTables, CocoaScrollers, CocoaWSScrollers;
+  CocoaWSListBox, CocoaListControl, CocoaTables, CocoaScrollers,
+  CocoaWSListView, CocoaWSScrollers;
 
 type
 
@@ -137,7 +138,7 @@ var
   processor: TCocoaTableViewProcessor;
   lclCheckListBox: TCustomCheckListBox absolute AWinControl;
 begin
-  list := AllocCocoaTableListView.lclInitWithCreateParams(AParams);
+  list := TCocoaWSListViewUtil.createListView.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
   begin
     Result := 0;

@@ -251,11 +251,18 @@ type
     procedure onSelectionChanged( tv: NSTableView ); override;
   end;
 
-function AllocCocoaTableListView: TCocoaTableListView;
-
-function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
-function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
-function LCLGetTopRow(tbl: NSTableView): Integer;
+  TCocoaTableUtil = class
+  public
+    class function getRowOfLCLCoord(
+      const tbl: NSTableView;
+      const X,Y: Integer ): Integer;
+    class function getItemLCLRect(
+      const tbl: NSTableView;
+      const row, col: Integer;
+      var r: TRect ): Boolean;
+    class function getTopRow(
+      const tbl: NSTableView ): Integer;
+  end;
 
 implementation
 
@@ -270,7 +277,9 @@ type
     procedure drawRect(dirtyRect: NSRect); override;
   end;
 
-function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
+class function TCocoaTableUtil.getRowOfLCLCoord(
+  const tbl: NSTableView;
+  const X,Y: Integer ): Integer;
 var
   pt : NSPoint;
   sc : NSScrollView;
@@ -295,7 +304,10 @@ begin
   Result := tbl.rowAtPoint(pt);
 end;
 
-function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
+class function TCocoaTableUtil.getItemLCLRect(
+  const tbl: NSTableView;
+  const row, col: Integer;
+  var r: TRect ): Boolean;
 var
   nsr : NSRect;
 begin
@@ -309,7 +321,7 @@ begin
   Result := True;
 end;
 
-function LCLGetTopRow(tbl: NSTableView): Integer;
+class function TCocoaTableUtil.getTopRow(const tbl: NSTableView): Integer;
 var
   visRange: NSRange;
 begin
@@ -320,12 +332,6 @@ begin
     visRange := tbl.rowsInRect(tbl.visibleRect());
     Result := visRange.location;
   end;
-end;
-
-function AllocCocoaTableListView: TCocoaTableListView;
-begin
-  // init will happen outside
-  Result := TCocoaTableListView.alloc;
 end;
 
 procedure drawNSViewBackground( view: NSView; lclBrush: TBrush );
@@ -1835,7 +1841,7 @@ end;
 function TCocoaWSListView_TableViewHandler.GetItemAt(x, y: integer
   ): Integer;
 begin
-  Result:= LCLCoordToRow(_tableView, x,y);
+  Result:= TCocoaTableUtil.getRowOfLCLCoord(_tableView, x,y);
 end;
 
 function TCocoaWSListView_TableViewHandler.GetSelCount: Integer;
@@ -1850,7 +1856,7 @@ end;
 
 function TCocoaWSListView_TableViewHandler.GetTopItem: Integer;
 begin
-  Result:= LCLGetTopRow( _tableView );
+  Result:= TCocoaTableUtil.getTopRow( _tableView );
 end;
 
 function TCocoaWSListView_TableViewHandler.GetVisibleRowCount: Integer;

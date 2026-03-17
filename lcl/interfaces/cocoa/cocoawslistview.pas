@@ -91,10 +91,25 @@ type
     class procedure SetViewStyle(const ALV: TCustomListView; const AValue: TViewStyle); override;
   end;
 
+  { TCocoaWSListViewUtil }
+
+  TCocoaWSListViewUtil = class
+  public
+    class function createListView: TCocoaTableListView;
+  end;
+
 implementation
 
 type
   TCustomListViewAccess = class(TCustomListView);
+
+{ TCocoaWSListViewUtil }
+
+class function TCocoaWSListViewUtil.createListView: TCocoaTableListView;
+begin
+  // init will happen outside
+  Result := TCocoaTableListView.alloc;
+end;
 
 procedure CocoaListViewAllocFuncImpl(const listView: NSView; const viewStyle: TViewStyle; out backendControl: NSView; out WSHandler: TCocoaWSListViewHandler );
 var
@@ -102,7 +117,7 @@ var
   processor: TCocoaTableViewProcessor;
 begin
   if viewStyle = vsReport then begin
-    backendControl:= AllocCocoaTableListView;
+    backendControl:= TCocoaWSListViewUtil.createListView;
     processor:= TCocoaTableListViewProcessor.Create;
     TCocoaTableListView(backendControl).lclSetProcessor( processor );
     WSHandler:= TCocoaWSListView_TableViewHandler.Create( cocoaListView );
