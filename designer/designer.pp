@@ -356,6 +356,7 @@ type
     procedure PaintGrid; override;
     procedure PaintClientGrid(AWinControl: TWinControl;
        aDDC: TDesignerDeviceContext);
+    procedure PaintGraphicControlsOnDC(AWinControl: TWinControl; DC: HDC);
     procedure DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); override;
     procedure CheckFormBounds;
@@ -2023,7 +2024,16 @@ begin
     LastPaintSender:=Sender;
 
     if IsDesignerDC(Form.Handle, TheMessage.DC) then
-      DoPaintDesignerItems
+    begin
+      if WidgetSet.GetLCLCapability(lcCanDrawOutsideOnPaint) = LCL_CAPABILITY_NO then
+      begin
+        if (Sender is TWinControl) and (csAcceptsControls in Sender.ControlStyle) then
+          PaintClientGrid(TWinControl(Sender), DDC);
+        if Sender is TWinControl then
+          PaintGraphicControlsOnDC(TWinControl(Sender), TheMessage.DC);
+      end;
+      DoPaintDesignerItems;
+    end
     else
     begin
       // client grid
@@ -3234,7 +3244,7 @@ var
   Count: integer;
   i: integer;
   CurControl: TControl;
-  R: TRect;
+  R, ClipBox: TRect;
   P: TPoint;
 begin
   if (AWinControl=nil)
@@ -3243,6 +3253,8 @@ begin
 
   aDDC.BeginPainting;
   try
+    if GetClipBox(aDDC.DC, @ClipBox) = NullRegion then exit;
+
     // exclude all child control areas
     Count:=AWinControl.ControlCount;
     for i := 0 to Count - 1 do begin
@@ -3250,6 +3262,9 @@ begin
         if (Visible or ((csDesigning in ComponentState)
           and not (csNoDesignVisible in ControlStyle)))
         then begin
+          if (Left >= ClipBox.Right) or (Left + Width <= ClipBox.Left) or
+             (Top >= ClipBox.Bottom) or (Top + Height <= ClipBox.Top) then
+            Continue;
           Clip := ExcludeClipRect(aDDC.DC, Left, Top, Left + Width, Top + Height);
           if Clip = NullRegion then exit;
         end;
@@ -3266,6 +3281,8 @@ begin
       R := AWinControl.ClientRect;
       R.BottomRight := R.BottomRight + Point(GridSizeX, GridSizeY);
       Types.OffsetRect(R, RoundToMultiple(P.X, GridSizeX), RoundToMultiple(P.Y, GridSizeY));
+      //Clamp to dirty area, reduces dot count from O(form) to O(dirty rect).
+      if not Types.IntersectRect(R, R, ClipBox) then exit;
       DrawGrid(ADDC.Canvas.Handle, R, GridSizeX, GridSizeY);
     end;
     
@@ -3287,6 +3304,40 @@ begin
     end;
   finally
     aDDC.EndPainting;
+  end;
+end;
+
+{TDesigner.PaintGraphicControlsOnDC: Paint TGraphicControl children eg TLabel,
+ TImage, etc. directly onto DC. Called from the IsDesignerDC=True branch of
+ PaintControl, after PaintClientGrid, so graphic controls appear on top of the grid dots.
+ We use TObject.Dispatch to call each control's paint handler directly,
+ bypassing the designer WindowProc hook to avoid double-drawing of designer items.}
+procedure TDesigner.PaintGraphicControlsOnDC(AWinControl: TWinControl; DC: HDC);
+var
+  I, SaveIndex: Integer;
+  Ctl: TControl;
+  Msg: TLMPaint;
+begin
+  if AWinControl = nil then
+    exit;
+  for I := 0 to AWinControl.ControlCount - 1 do
+  begin
+    Ctl := AWinControl.Controls[I];
+    if Ctl is TWinControl then
+      continue;
+    if not (Ctl.Visible or ((csDesigning in Ctl.ComponentState) and
+      not (csNoDesignVisible in Ctl.ControlStyle))) then
+        continue;
+    if not RectVisible(DC, Ctl.BoundsRect) then
+      continue;
+    SaveIndex := SaveDC(DC);
+    MoveWindowOrg(DC, Ctl.Left, Ctl.Top);
+    IntersectClipRect(DC, 0, 0, Ctl.Width, Ctl.Height);
+    FillChar(Msg{%H-}, SizeOf(Msg), 0);
+    Msg.Msg := LM_PAINT;
+    Msg.DC := DC;
+    Ctl.Dispatch(TLMessage(Msg));
+    RestoreDC(DC, SaveIndex);
   end;
 end;
 
