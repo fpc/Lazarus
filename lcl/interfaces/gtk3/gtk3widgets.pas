@@ -2521,87 +2521,68 @@ end;
 
 procedure TGtk3Widget.SetFontColor(AValue: TColor);
 var
-  AColor: TGdkRGBA;
-  i: TGtkStateType;
   Provider: PGtkCssProvider;
   CSSData: String;
+  CSSColor: String;
   RGBA: LongWord;
   ATargetWidget: PGtkWidget;
+
+  procedure ApplyCSS(AWidget: PGtkWidget; const ARule: String);
+  begin
+    Provider := gtk_css_provider_new();
+    gtk_css_provider_load_from_data(Provider, PChar(ARule), -1, nil);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(AWidget),
+      PGtkStyleProvider(Provider),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(Provider);
+  end;
+
 begin
   if not IsWidgetOK then Exit;
 
-  if [wtListBox, wtListView] * WidgetType <> [] then
+  //unset is same as override_color(nil) which is deprecated in gtk3
+  if AValue = clDefault then
+    CSSColor := 'unset'
+  else
   begin
     RGBA := ColorToRGB(AValue);
-    CSSData := Format('treeview.view { color: #%.2x%.2x%.2x; }',
-               [Red(RGBA), Green(RGBA), Blue(RGBA)]);
-    Provider := gtk_css_provider_new();
-    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
-    gtk_style_context_add_provider(gtk_widget_get_style_context(GetContainerWidget),
-                                   PGtkStyleProvider(Provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(Provider);
+    CSSColor := Format('#%.2x%.2x%.2x', [Red(RGBA), Green(RGBA), Blue(RGBA)]);
+  end;
+
+  if [wtListBox, wtListView] * WidgetType <> [] then
+  begin
+    CSSData := Format('treeview.view { color: %s; }', [CSSColor]);
+    ApplyCSS(GetContainerWidget, CSSData);
   end else
   if wtSpinEdit in WidgetType then
   begin
-    RGBA := ColorToRGB(AValue);
-    CSSData := Format('spinbutton { color: #%.2x%.2x%.2x; }',
-               [Red(RGBA), Green(RGBA), Blue(RGBA)]);
-    Provider := gtk_css_provider_new();
-    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
-    gtk_style_context_add_provider(gtk_widget_get_style_context(FWidget),
-                                   PGtkStyleProvider(Provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(Provider);
+    CSSData := Format('spinbutton { color: %s; }', [CSSColor]);
+    ApplyCSS(FWidget, CSSData);
   end else
   if wtEntry in WidgetType then
   begin
-    RGBA := ColorToRGB(AValue);
-    CSSData := Format('entry { color: #%.2x%.2x%.2x; }',
-               [Red(RGBA), Green(RGBA), Blue(RGBA)]);
-    Provider := gtk_css_provider_new();
-    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
-    gtk_style_context_add_provider(gtk_widget_get_style_context(FWidget),
-                                   PGtkStyleProvider(Provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(Provider);
+    CSSData := Format('entry { color: %s; }', [CSSColor]);
+    ApplyCSS(FWidget, CSSData);
   end else
   if wtMemo in WidgetType then
   begin
-    RGBA := ColorToRGB(AValue);
-    CSSData := Format('text { color: #%.2x%.2x%.2x; }',
-               [Red(RGBA), Green(RGBA), Blue(RGBA)]);
-    Provider := gtk_css_provider_new();
-    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
-    gtk_style_context_add_provider(gtk_widget_get_style_context(GetContainerWidget),
-                                   PGtkStyleProvider(Provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(Provider);
+    CSSData := Format('text { color: %s; }', [CSSColor]);
+    ApplyCSS(GetContainerWidget, CSSData);
   end else
   if (wtComboBox in WidgetType) then
   begin
     ATargetWidget := PGtkComboBox(FWidget)^.get_child;
-    RGBA := ColorToRGB(AValue);
     if PGtkComboBox(FWidget)^.has_entry then
-      CSSData := Format('entry { color: #%.2x%.2x%.2x; }', [Red(RGBA), Green(RGBA), Blue(RGBA)])
+      CSSData := Format('entry { color: %s; }', [CSSColor])
     else
-      CSSData := Format('combobox button.combo cellview { color: #%.2x%.2x%.2x; }', [Red(RGBA), Green(RGBA), Blue(RGBA)]);
-    Provider := gtk_css_provider_new();
-    gtk_css_provider_load_from_data(Provider, PChar(CSSData), -1, nil);
-    gtk_style_context_add_provider(gtk_widget_get_style_context(ATargetWidget),
-                                   PGtkStyleProvider(Provider),
-                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    g_object_unref(Provider);
+      CSSData := Format('combobox button.combo cellview { color: %s; }', [CSSColor]);
+    ApplyCSS(ATargetWidget, CSSData);
   end else
   begin
-    AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
+    CSSData := Format('* { color: %s; }', [CSSColor]);
     if FWidget <> GetContainerWidget then
-      with FWidget^ do
-        for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-          override_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
-    with GetContainerWidget^ do
-      for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-        override_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
+      ApplyCSS(FWidget, CSSData);
+    ApplyCSS(GetContainerWidget, CSSData);
   end;
 end;
 
