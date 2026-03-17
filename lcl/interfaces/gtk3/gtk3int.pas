@@ -293,6 +293,7 @@ function TGtk3WidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
   lcTextHint: Result := LCL_CAPABILITY_YES;
+  lcCanDrawOutsideOnPaint: Result := LCL_CAPABILITY_NO;
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

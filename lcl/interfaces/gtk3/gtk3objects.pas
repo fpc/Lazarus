@@ -221,6 +221,12 @@ type
     FBkMode: integer;
     FCanvasScaleFactor: double;
     FXorMode: boolean;
+    //Accumulated clip region, mirrors what we set via SetClipRegion/ResetClip.
+    //Needed because gdk_cairo_get_clip_rectangle returns only the bounding box,
+    //causing ExcludeClipRect accumulation to lose intermediate holes.
+    FClipRegion: Pcairo_region_t;
+    //Per-save-level stack so cairo_save/cairo_restore keeps FClipRegion in sync.
+    FClipStack: TFPList;
     function GetBkColor:TColorRef;
     function GetOffset: TPoint;
     function GetRasterOp: integer;
@@ -313,6 +319,7 @@ type
     property CurrentRegion: TGtk3Region read FCurrentRegion;
     property CurrentTextColor: TColorRef read FCurrentTextColor write FCurrentTextColor;
     property CanvasScaleFactor: double read FCanvasScaleFactor write SetCanvasScaleFactor;
+    property ClipRegion: Pcairo_region_t read FClipRegion;
     property Offset: TPoint read GetOffset write SetOffset;
     property OwnsSurface: Boolean read FOwnsSurface;
     property RasterOp: integer read GetRasterOp write SetRasterOp; //automatically maps cairo_operator_t to winapi ROP.
@@ -2011,6 +2018,8 @@ begin
   FLastPenY := 0;
   FBgBrush := nil; // created on demand
   FBkMode := TRANSPARENT;
+  FClipRegion := nil;
+  FClipStack := TFPList.Create;
   FCurrentImage := nil;
   FCurrentRegion := nil;
   FBrush := TGtk3Brush.Create;
@@ -2033,6 +2042,8 @@ begin
 end;
 
 procedure TGtk3DeviceContext.DeleteObjects;
+var
+  i: Integer;
 begin
   if Assigned(FBrush) then
     FreeAndNil(FBrush);
@@ -2044,6 +2055,19 @@ begin
     FreeAndNil(FvImage);
   if Assigned(FBgBrush) then
     FreeAndNil(FBgBrush);
+  if FClipRegion <> nil then
+  begin
+    cairo_region_destroy(FClipRegion);
+    FClipRegion := nil;
+  end;
+  if Assigned(FClipStack) then
+  begin
+    for i := 0 to FClipStack.Count - 1 do
+      if FClipStack[i] <> nil then
+        cairo_region_destroy(Pcairo_region_t(FClipStack[i]));
+    FClipStack.Clear;
+    FreeAndNil(FClipStack);
+  end;
 end;
 
 procedure TGtk3DeviceContext.drawPixel(x, y: Integer; AColor: TColor);
@@ -2908,6 +2932,10 @@ begin
     cairo_reset_clip(pcr);
     gdk_cairo_region(pcr, ARgn.FHandle);
     cairo_clip(pcr);
+    //Mirror the clip region so GetClipRGN can return the exact region
+    if FClipRegion <> nil then
+      cairo_region_destroy(FClipRegion);
+    FClipRegion := cairo_region_copy(ARgn.FHandle);
   end;
 end;
 
@@ -2953,7 +2981,14 @@ function TGtk3DeviceContext.ResetClip: Integer;
 begin
   Result := NullRegion;
   if Assigned(pcr) then
+  begin
     cairo_reset_clip(pcr);
+    if FClipRegion <> nil then
+    begin
+      cairo_region_destroy(FClipRegion);
+      FClipRegion := nil;
+    end;
+  end;
 end;
 
 procedure TGtk3DeviceContext.TranslateCairoToDevice;
@@ -2979,15 +3014,31 @@ end;
 procedure TGtk3DeviceContext.Save;
 begin
   cairo_save(pcr);
+  //Push current FClipRegion so Restore can bring it back
+  if FClipRegion <> nil then
+    FClipStack.Add(cairo_region_copy(FClipRegion))
+  else
+    FClipStack.Add(nil);
   inc(FDCSaveCounter);
 end;
 
 procedure TGtk3DeviceContext.Restore;
+var
+  Saved: Pcairo_region_t;
 begin
   dec(FDCSaveCounter);
   cairo_restore(pcr);
   if FDCSaveCounter < 0 then
     DebugLn('WARNING: TGtk3DeviceContext: Cairo restore called without save.');
+  //Pop saved FClipRegion
+  if FClipStack.Count > 0 then
+  begin
+    Saved := Pcairo_region_t(FClipStack.Last);
+    FClipStack.Delete(FClipStack.Count - 1);
+    if FClipRegion <> nil then
+      cairo_region_destroy(FClipRegion);
+    FClipRegion := Saved; //may be nil = no explicit clip
+  end;
 end;
 
 procedure TGtk3DeviceContext.SetCanvasScaleFactor(const AValue: double);

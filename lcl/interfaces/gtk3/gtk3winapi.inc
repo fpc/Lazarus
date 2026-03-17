@@ -2053,24 +2053,37 @@ end;
 function TGtk3WidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
 var
   GtkDC: TGtk3DeviceContext absolute DC;
-  cr: Pcairo_t;
-  //Pt: TPoint;
   ARect: TGdkRectangle;
+  CRRect: Tcairo_rectangle_int_t;
 begin
-  //{$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  //DebugLn('WARNING: TGtk3WidgetSet.GetClipBox not implemented ...');
-  //{$ENDIF}
   Result := NULLREGION;
   if lpRect <> nil then
     lpRect^ := Rect(0,0,0,0);
 
   if not IsValidDC(DC) then
-    Result := ERROR;
-
-  if Result <> ERROR then
   begin
-    cr := GtkDC.pcr;
-    if gdk_cairo_get_clip_rectangle(cr, @ARect) then
+    Result := ERROR;
+    exit;
+  end;
+
+  //We prefer FClipRegion, which is actually exact accumulated region
+  //from SetClipRegion/ExcludeClipRect over gdk_cairo_get_clip_rectangle
+  //which returns only the bounding box.
+  if GtkDC.ClipRegion <> nil then
+  begin
+    cairo_region_get_extents(GtkDC.ClipRegion, @CRRect);
+    if (CRRect.width > 0) and (CRRect.height > 0) then
+    begin
+      lpRect^ := Rect(CRRect.x, CRRect.y, CRRect.x + CRRect.width, CRRect.y + CRRect.height);
+      if cairo_region_num_rectangles(GtkDC.ClipRegion) = 1 then
+        Result := SimpleRegion
+      else
+        Result := ComplexRegion;
+    end;
+  end
+  else
+  begin
+    if gdk_cairo_get_clip_rectangle(GtkDC.pcr, @ARect) then
     begin
       lpRect^ := RectFromGdkRect(ARect);
       Result := SimpleRegion;
@@ -2080,23 +2093,29 @@ end;
 
 function TGtk3WidgetSet.GetClipRGN(DC: hDC; RGN: hRGN): Longint;
 var
+  GtkDC: TGtk3DeviceContext absolute DC;
   ARect: TGdkRectangle;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.GetClipRgn not implemented ...');
-  {$ENDIF}
   Result := -1;
   if not IsValidDC(DC) or (RGN = 0) then
     exit;
-  gdk_cairo_get_clip_rectangle(TGtk3DeviceContext(DC).pcr, @ARect);
-  // DebugLn('GetClipRgn ',dbgs(TGtk3Region(RGN).GetExtents),' clipRect ',dbgs(RectFromGdkRect(ARect)));
-  if IsRectEmpty(RectFromGdkRect(ARect)) then
-    exit(0)
-  else
+  if GtkDC.ClipRegion <> nil then
   begin
     cairo_region_destroy(TGtk3Region(RGN).Handle);
-    TGtk3Region(RGN).Handle := cairo_region_create_rectangle(Pcairo_rectangle_int_t(@ARect));
+    TGtk3Region(RGN).Handle := cairo_region_copy(GtkDC.ClipRegion);
     Result := 1;
+  end
+  else
+  begin
+    gdk_cairo_get_clip_rectangle(GtkDC.pcr, @ARect);
+    if IsRectEmpty(RectFromGdkRect(ARect)) then
+      exit(0)
+    else
+    begin
+      cairo_region_destroy(TGtk3Region(RGN).Handle);
+      TGtk3Region(RGN).Handle := cairo_region_create_rectangle(Pcairo_rectangle_int_t(@ARect));
+      Result := 1;
+    end;
   end;
 end;
 
