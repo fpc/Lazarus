@@ -11,6 +11,17 @@ uses
   LCLtype, LclProc, WSCalendar,
   CocoaInt, CocoaCommonCallback, CocoaDatePicker, CocoaUtils, CocoaPrivate;
 
+type
+  TCocoaWSCustomCalendar = class(TWSCustomCalendar)
+  published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
+    class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
+    class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
+    class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
+  end;
+
+implementation
+
 const
   singleDateMode                          = 0;
   rangeDateMode                           = 1;
@@ -23,17 +34,6 @@ const
   NSYearMonthDatePickerElementFlag        = $00c0;
   NSYearMonthDayDatePickerElementFlag     = $00e0;
   NSEraDatePickerElementFlag              = $0100;
-
-type
-  TCocoaWSCustomCalendar = class(TWSCustomCalendar)
-  published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
-    class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
-    class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
-    class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
-  end;
-
-implementation
 
 function AllocDatePicker(const ATarget: TWinControl; const AParams: TCreateParams): TCocoaDatePicker;
 var
