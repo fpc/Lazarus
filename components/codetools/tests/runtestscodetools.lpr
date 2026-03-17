@@ -52,14 +52,14 @@ const
     '..\..\..' // only current installation
   );
   CDefaultFPCSrcDirs: array of string = (
-    '..\..\..\fpc\3.2.2\source', // official installer
+    '..\..\..\fpc\%v\source', // official installer
     '..\..\..\..\fpcsrc' // another installations (e.g. FpcUpDeluxe)
     {$IFDEF WINDOWS}
-    ,'C:\lazarus\fpc\3.2.2\source'
+    ,'C:\lazarus\fpc\%v\source'
     ,'C:\fpcsrc'
     {$ENDIF}
     {$IFDEF LINUX}
-    ,'/usr/share/fpcsrc/3.2.2'
+    ,'/usr/share/fpcsrc/%v'
     ,'~/freepascal/fpc'
     {$ENDIF}
   );
@@ -104,15 +104,25 @@ function TCTTestRunner.ParseOptions: Boolean;
   //
   function FindDefaultDir(Dirs: array of string; EnvVar: string): string;
   var
-    lExeDir, lPath, lFullPath: string;
+    lExeDir, lPath, lFullPath, s: string;
+    lMajor, lMinor, lRev: integer;
   begin
     lExeDir := ExtractFileDir(ParamStrUTF8(0));
-    for lPath in Dirs do
-    begin
+    for lPath in Dirs do begin
       // expand paths relative to the executable file
       lFullPath := ExpandFileNameUTF8(lPath, lExeDir);
-      if DirectoryExistsUTF8(lFullPath) then
-        exit(lFullPath);
+      if pos('%v', lFullPath) <= 0 then begin
+        if DirectoryExistsUTF8(lFullPath) then
+          exit(lFullPath);
+      end else begin
+        for lMajor := 9 downto 0 do
+        for lMinor := 9 downto 0 do
+        for lRev := 9 downto 0 do begin
+          s := StringReplace(lFullPath, '%v', Format('%d.%d.%d', [lMajor, lMinor, lRev]), []);
+          if DirectoryExistsUTF8(s) then
+            exit(s);
+        end;
+      end;
     end;
     writeln('Error: The environment variable "',EnvVar,'" is not assigned');
     halt(1);
