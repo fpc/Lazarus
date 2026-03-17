@@ -9,7 +9,7 @@ uses
   Classes, SysUtils,
   LCLType, Graphics, Controls, ComCtrls, StdCtrls,
   CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaWSCommon, CocoaGDIObjects;
+  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaGDIObjects;
 
 type
   {

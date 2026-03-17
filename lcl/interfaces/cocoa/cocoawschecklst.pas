@@ -162,7 +162,7 @@ begin
 
   TCocoaWSListBoxUtil.setStyle(list, TCustomListBox(AWinControl).Style);
 
-  scroll := EmbedInScrollView(list);
+  scroll := TCocoaWSScrollerUtil.embedInScrollView(list);
   if not Assigned(scroll) then
   begin
     Result := 0;

@@ -7,13 +7,13 @@ interface
 
 uses
   // Libs
-  MacOSAll, CocoaAll, Classes, sysutils,
+  CocoaAll, Classes, sysutils,
   // LCL
   Graphics, Controls, StdCtrls, ComCtrls, LCLType, LCLMessageGlue, LMessages,
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaGDIObjects,
+  CocoaPrivate, CocoaGDIObjects,
   CocoaListControl, CocoaTables, CocoaScrollers, CocoaWSScrollers;
 
 type
@@ -380,7 +380,7 @@ begin
 
   TCocoaWSListBoxUtil.setStyle(list, TCustomListBox(AWinControl).Style);
 
-  scroll := EmbedInScrollView(list);
+  scroll := TCocoaWSScrollerUtil.embedInScrollView(list);
   if not Assigned(scroll) then
   begin
     Result := 0;

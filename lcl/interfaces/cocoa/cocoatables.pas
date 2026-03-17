@@ -29,7 +29,7 @@ uses
   ComCtrls, StdCtrls, ImgList, Forms,
   MacOSAll, CocoaAll,
   CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaScrollers, CocoaListControl,
-  CocoaConst, CocoaConfig, CocoaWSCommon, CocoaUtils, CocoaGDIObjects,
+  CocoaConst, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaListView, CocoaTextEdits;
 
 type

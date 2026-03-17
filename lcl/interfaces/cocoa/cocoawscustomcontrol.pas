@@ -8,14 +8,13 @@ unit CocoaWSCustomControl;
 interface
 
 uses
-  Types, Classes, Controls, SysUtils,
+  Classes, Controls, SysUtils,
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  StdCtrls,
   CocoaAll,
-  CocoaInt, CocoaConfig, CocoaPrivate, CocoaUtils,
+  CocoaInt, CocoaConfig, CocoaPrivate,
   CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, CocoaFullControlEdit,
-  CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra,
-  CocoaCallback, CocoaCommonCallback;
+  CocoaCursor, CocoaCaret,
+  CocoaCommonCallback;
 
 type
 
@@ -129,10 +128,10 @@ begin
   lcl.BlockCocoaKeyBeep := true; // prevent "dings" on keyDown for custom controls (i.e. SynEdit)
   ctrl.callback := lcl;
 
-  sl := EmbedInManualScrollView(ctrl);
+  sl := TCocoaWSScrollerUtil.embedInManualScrollView(ctrl);
   sl.callback := ctrl.callback;
 
-  hs := EmbedInManualScrollHost(sl);
+  hs := TCocoaWSScrollerUtil.embedInManualScrollHost(sl);
   hs.callback := ctrl.callback;
   lcl.SetHandleFrame(hs);
 

@@ -1865,7 +1865,7 @@ begin
         end;
       end;
       sc.ensureDocumentViewSizeChanged(documentSize, ensureWidth, ensureHeight);
-      LCLScrollViewAdjustSize(lclControl);
+      TCocoaWSScrollerUtil.adjustSize(lclControl);
 
       // frame changed, Need to update another ScrollBar too
       if SbStyle=SB_Horz then begin
