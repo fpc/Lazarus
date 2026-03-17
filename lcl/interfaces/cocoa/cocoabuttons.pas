@@ -25,7 +25,7 @@ interface
 uses
   Types, Classes, SysUtils, Graphics, Controls,
   MacOSAll, CocoaAll,
-  CocoaConst, CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaUtils;
+  CocoaConst, CocoaPrivate, CocoaCallback, CocoaUtils;
 
 const
   // these heights were received from Xcode interface builder,
@@ -406,7 +406,7 @@ begin
   begin
     setTarget(Self);
     setAction(objcselector('actionButtonClick:'));
-    UpdateControlFocusRing( self, TWinControl(lclGetTarget) );
+    TCocoaViewUtil.updateFocusRing( self, TWinControl(lclGetTarget) );
   //  todo: find a way to release notifications below
   //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('boundsDidChange:'), NSViewBoundsDidChangeNotification, Result);
   //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('frameDidChange:'), NSViewFrameDidChangeNotification, Result);

@@ -50,8 +50,6 @@ type
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
   end;
 
-procedure UpdateControlFocusRing( cocoaControl: NSView; lclControl: TWinControl );
-
 function NSObjectDebugStr(obj: NSObject): string;
 function CallbackDebugStr(cb: ICommonCallback): string;
 procedure DebugDumpParents(fromView: NSView);
@@ -61,36 +59,9 @@ implementation
 uses
   Math;
 
-type
-  TWinControlAccess = class(TWinControl);
-
 var
   LastMouse: TLastMouseInfo;
   LastMouseLeftButtonAsRight: Boolean;
-
-procedure UpdateControlFocusRing(cocoaControl: NSView; lclControl: TWinControl);
-const
-  NSFocusRing : array [TBorderStyle] of NSBorderType = (
-    NSFocusRingTypeNone,   // bsNone
-    NSFocusRingTypeDefault // bsSingle
-  );
-var
-  frs: TCocoaConfigFocusRing.Strategy;
-  borderStyle: TBorderStyle;
-begin
-  frs:= CocoaConfigFocusRing.getStrategy( cocoaControl.className );
-  case frs of
-    TCocoaConfigFocusRing.Strategy.none:
-      cocoaControl.setFocusRingType( NSFocusRingTypeNone );
-    TCocoaConfigFocusRing.Strategy.required:
-      cocoaControl.setFocusRingType( NSFocusRingTypeExterior );
-    TCocoaConfigFocusRing.Strategy.border: begin
-      borderStyle:= TWinControlAccess(lclControl).BorderStyle;
-      cocoaControl.setFocusRingType( NSFocusRing[borderStyle] );
-    end;
- // TCocoaFocusRingStrategy.default: no need to set FocusRing
-  end;
-end;
 
 { TCocoaWSControl }
 

@@ -381,7 +381,7 @@ begin
   scroll.setHasHorizontalScroller(true);
   scroll.setAutohidesScrollers(true);
   TCocoaScrollUtil.setBorderStyle(scroll, lclListBox.BorderStyle);
-  UpdateControlFocusRing(list, lclListBox);
+  TCocoaViewUtil.updateFocusRing(list, lclListBox);
 
   Result := TLCLHandle(scroll);
 end;
@@ -504,7 +504,7 @@ begin
   if not Assigned(list) then Exit;
 
   TCocoaScrollUtil.setBorderStyle(list.enclosingScrollView, ABorderStyle);
-  UpdateControlFocusRing(list, AWinControl);
+  TCocoaViewUtil.updateFocusRing(list, AWinControl);
 end;
 
 class procedure TCocoaWSCustomListBox.SetFont(const AWinControl: TWinControl;

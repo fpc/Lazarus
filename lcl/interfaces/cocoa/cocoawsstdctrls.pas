@@ -31,7 +31,7 @@ uses
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
   CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaGroupBox,
-  CocoaConst, CocoaConfig, CocoaWSCommon, CocoaWSButtons, CocoaUtils,
+  CocoaConst, CocoaConfig, CocoaWSButtons, CocoaUtils,
   CocoaGDIObjects, CocoaTextEdits, CocoaWSTextEdits,
   CocoaCustomControl, CocoaScrollers, CocoaWSScrollers;
 

@@ -9,7 +9,7 @@ uses
   CocoaAll,
   Classes, SysUtils, Controls, Calendar,
   LCLtype, LclProc, WSCalendar,
-  CocoaInt, CocoaCommonCallback, CocoaWSCommon, CocoaDatePicker, CocoaUtils, CocoaPrivate;
+  CocoaInt, CocoaCommonCallback, CocoaDatePicker, CocoaUtils, CocoaPrivate;
 
 const
   singleDateMode                          = 0;

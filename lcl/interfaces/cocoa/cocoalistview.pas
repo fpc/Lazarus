@@ -12,7 +12,7 @@ uses
   Classes, LCLType, SysUtils, LCLMessageGlue, LMessages,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   // Cocoa WS
-  CocoaPrivate, CocoaCallback, CocoaListControl, CocoaWSCommon,
+  CocoaPrivate, CocoaCallback, CocoaListControl,
   CocoaScrollers, CocoaWSScrollers, CocoaTextEdits, CocoaGDIObjects, CocoaUtils;
 
 type
@@ -320,15 +320,12 @@ begin
   self.addSubview_positioned_relativeTo( _scrollView, NSWindowBelow, nil );
   TCocoaScrollUtil.setBorderStyle( _scrollView, callback.getBorderStyle );
   _scrollView.setFocusRingType( NSFocusRingTypeExterior );
-  UpdateControlFocusRing( _backendControl, TWinControl(self.lclGetTarget) );
+  TCocoaViewUtil.updateFocusRing( _backendControl, TWinControl(self.lclGetTarget) );
 
   backendControlAccess:= TCocoaListViewBackendControlProtocol(_backendControl);
   backendControlAccess.backend_setCallback( self.callback );
   backendControlAccess.backend_onInit;
 end;
-
-type
-  TWinControlAccess = class(TWinControl);
 
 procedure TCocoaListView.releaseControls;
 begin

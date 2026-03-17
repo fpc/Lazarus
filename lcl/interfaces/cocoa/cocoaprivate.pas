@@ -24,11 +24,14 @@ unit CocoaPrivate;
 interface
 
 uses
-  Types, Classes, SysUtils, LCLType, Forms, LazUTF8,
+  Types, Classes, SysUtils, LCLType, Controls, Forms,
+  LazUTF8,
   MacOSAll, CocoaAll,
   CocoaCallback, CocoaCursor, CocoaConfig, Cocoa_Extra, CocoaUtils;
 
 type
+
+  { TCocoaViewUtil }
 
   TCocoaViewUtil = class
     class function isLCLEnabled(v: NSView): Boolean;
@@ -39,6 +42,9 @@ type
     class procedure addLayoutDelta(const layout: TRect; var frame: TRect);
     class procedure subLayoutDelta(const layout: TRect; var frame: TRect);
     class procedure setDefaultMargin(const AView: NSView);
+    class procedure updateFocusRing(
+      const cocoaControl: NSView;
+      const lclControl: TWinControl );
     class procedure setSize(
       const ctrl: NSView;
       const newHeight, miniHeight, smallHeight: Integer;
@@ -147,6 +153,9 @@ var
 
 implementation
 
+type
+  TWinControlAccess = class(TWinControl);
+
 class function TCocoaViewUtil.isLCLEnabled(obj: NSObject): Boolean;
 begin
   if obj.isKindOfClass(NSView) then
@@ -233,6 +242,32 @@ begin
   else
     mask:= NSViewMinYMargin or NSViewMaxXMargin;
   AView.setAutoresizingMask(mask);
+end;
+
+class procedure TCocoaViewUtil.updateFocusRing(
+  const cocoaControl: NSView;
+  const lclControl: TWinControl );
+const
+  NSFocusRing : array [TBorderStyle] of NSBorderType = (
+    NSFocusRingTypeNone,   // bsNone
+    NSFocusRingTypeDefault // bsSingle
+  );
+var
+  frs: TCocoaConfigFocusRing.Strategy;
+  borderStyle: TBorderStyle;
+begin
+  frs:= CocoaConfigFocusRing.getStrategy( cocoaControl.className );
+  case frs of
+    TCocoaConfigFocusRing.Strategy.none:
+      cocoaControl.setFocusRingType( NSFocusRingTypeNone );
+    TCocoaConfigFocusRing.Strategy.required:
+      cocoaControl.setFocusRingType( NSFocusRingTypeExterior );
+    TCocoaConfigFocusRing.Strategy.border: begin
+      borderStyle:= TWinControlAccess(lclControl).BorderStyle;
+      cocoaControl.setFocusRingType( NSFocusRing[borderStyle] );
+    end;
+ // TCocoaFocusRingStrategy.default: no need to set FocusRing
+  end;
 end;
 
 class procedure TCocoaViewUtil.setSize(

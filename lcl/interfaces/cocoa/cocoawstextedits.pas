@@ -9,13 +9,13 @@ uses
   // Libs
   MacOSAll, CocoaAll, Classes, sysutils,
   // LCL
-  Graphics, Controls, StdCtrls, ComCtrls, LCLType, LCLMessageGlue, LMessages,
+  Graphics, Controls, StdCtrls, ComCtrls, LCLType,
   // LazUtils
   LazUTF8, TextStrings,
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaGDIObjects, CocoaCallback, CocoaCommonCallback,
+  CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaCommonCallback,
   CocoaConst, CocoaConfig, CocoaUtils, Cocoa_Extra,
   CocoaTextEdits, CocoaScrollers, CocoaWSScrollers;
 
@@ -185,7 +185,7 @@ begin
 
   TCocoaTextControlUtil.setBorderStyle(field, edit.BorderStyle);
   TCocoaTextControlUtil.setAllignment(field, edit.Alignment);
-  UpdateControlFocusRing( field, edit );
+  TCocoaViewUtil.updateFocusRing( field, edit );
 end;
 
 class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
@@ -274,7 +274,7 @@ begin
   field.setBordered( ABorderStyle <> bsNone );
   field.setBezeled( ABorderStyle <> bsNone );
   {$endif}
-  UpdateControlFocusRing( field, AWinControl );
+  TCocoaViewUtil.updateFocusRing( field, AWinControl );
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -744,7 +744,7 @@ begin
   // This makes NSTextView to be responsive to theme color change (Mojave 10.14)
   txt.setTextColor(NSColor.textColor);
   txt.setBackgroundColor(NSColor.textBackgroundColor);
-  UpdateControlFocusRing(txt, AWinControl);
+  TCocoaViewUtil.updateFocusRing(txt, AWinControl);
 
   lcl := TLCLCommonCallback.Create(txt, AWinControl);
   lcl.ForceReturnKeyDown := true;
@@ -814,7 +814,7 @@ begin
   if not Assigned(sv) then Exit;
 
   TCocoaScrollUtil.setBorderStyle(sv, ABorderStyle);
-  UpdateControlFocusRing(sv.documentView, AWinControl);
+  TCocoaViewUtil.updateFocusRing(sv.documentView, AWinControl);
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
