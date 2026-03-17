@@ -3141,6 +3141,14 @@ begin
       height := LCLObject.Height;
     end;
     FWidget^.set_allocation(@ARect);
+
+    if Assigned(LCLObject) and not LCLObject.HandleObjectShouldBeVisible and
+      ([wtLayout] * WidgetType <> []) and not (LCLObject is TCustomForm) then
+    begin
+      FWidget^.set_no_show_all(True);
+      FWidget^.hide;
+    end;
+
   end;
   LCLIntf.SetProp(HWND(Self),'lclwidget',Self);
   g_object_set_data(PGObject(FWidget), 'lclwidget', Self);
@@ -5994,7 +6002,8 @@ begin
       Widget^.set_no_show_all(True);
       Widget^.hide;
     end;
-  end;
+  end else
+    Widget^.set_no_show_all(False);
   inherited SetVisible(AValue);
 end;
 
@@ -11781,7 +11790,13 @@ var
   AState: TGdkWindowState;
 begin
   if not Gtk3IsGtkWindow(fWidget) then
-    exit(false);
+  begin
+    if nstate = SW_HIDE then
+      FWidget^.hide
+    else
+      FWidget^.show;
+    exit(true);
+  end;
   case nstate of
     SW_HIDE: PGtkWindow(FWidget)^.hide;
     SW_SHOWNORMAL:
@@ -11903,7 +11918,7 @@ begin
   begin
     Result := PGtkScrolledWindow(LCLGtkScrolledWindowNew); // PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
     PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-    FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
+    FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl];
   end;
   Text := Params.Caption;
 
@@ -12161,15 +12176,18 @@ begin
     // On X11: get_size() (from ConfigureNotify) may briefly lag behind
     // get_allocation() (from size-allocate). queue_resize + queue_draw force
     // GTK to re-layout from the current allocation so children get the right size.
-    PGtkWindow(AWin.Widget)^.get_size(@SizeW, @SizeH);
-    if (SizeW <> WinW) or (SizeH <> WinH) then
+    if Gtk3IsGtkWindow(AWin.Widget) then
     begin
-      PGtkWindow(AWin.Widget)^.queue_resize;
-      // Explicitly request the layout phase so GTK processes queue_resize
-      // at the next VSync tick rather than waiting for a natural frame.
-      AFrameClock := AWin.Widget^.get_frame_clock;
-      if Assigned(AFrameClock) then
-        AFrameClock^.request_phase([GDK_FRAME_CLOCK_PHASE_LAYOUT]);
+      PGtkWindow(AWin.Widget)^.get_size(@SizeW, @SizeH);
+      if (SizeW <> WinW) or (SizeH <> WinH) then
+      begin
+        PGtkWindow(AWin.Widget)^.queue_resize;
+        // Explicitly request the layout phase so GTK processes queue_resize
+        // at the next VSync tick rather than waiting for a natural frame.
+        AFrameClock := AWin.Widget^.get_frame_clock;
+        if Assigned(AFrameClock) then
+          AFrameClock^.request_phase([GDK_FRAME_CLOCK_PHASE_LAYOUT]);
+      end;
     end;
     Exit;
   end;
@@ -12183,6 +12201,7 @@ begin
 
   AWin.FResizeState.LastResizeW := AWin.FResizeState.PendingResizeW;
   AWin.FResizeState.LastResizeH := AWin.FResizeState.PendingResizeH;
+  if not Gtk3IsGtkWindow(AWin.Widget) then Exit;
   PGtkWindow(AWin.Widget)^.resize(
     AWin.FResizeState.PendingResizeW - AWin.FResizeState.ShadowW,
     AWin.FResizeState.PendingResizeH - AWin.FResizeState.ShadowH);
