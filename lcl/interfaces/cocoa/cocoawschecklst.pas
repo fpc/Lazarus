@@ -29,7 +29,7 @@ uses
   // Widgetset
   WSCheckLst, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaConfig, CocoaGDIObjects,
+  CocoaPrivate, CocoaConfig, CocoaGDIObjects,
   CocoaWSListBox, CocoaListControl, CocoaTables, CocoaScrollers, CocoaWSScrollers;
 
 type
@@ -160,7 +160,7 @@ begin
   //list.AllowMixedState := TCustomCheckListBox(AWinControl).AllowGrayed;
   list.isOwnerDraw := lclCheckListBox.Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
-  ListBoxSetStyle(list, TCustomListBox(AWinControl).Style);
+  TCocoaWSListBoxUtil.setStyle(list, TCustomListBox(AWinControl).Style);
 
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
@@ -196,7 +196,7 @@ var
 begin
   Result:= cbUnchecked;
 
-  lclcb:= TLCLCheckboxListCallback( getCallbackFromLCLListBox(ACheckListBox) );
+  lclcb:= TLCLCheckboxListCallback( TCocoaWSListBoxUtil.getCallback(ACheckListBox) );
   if NOT Assigned(lclcb) then
     Exit;
 
@@ -224,14 +224,14 @@ var
   lclcb : TLCLCheckboxListCallback;
   checkState: Integer;
 begin
-  lclcb:= TLCLCheckboxListCallback( getCallbackFromLCLListBox(ACheckListBox) );
+  lclcb:= TLCLCheckboxListCallback( TCocoaWSListBoxUtil.getCallback(ACheckListBox) );
   if NOT Assigned(lclcb) then
     Exit;
 
   checkState:= checkStateArray[AState];
   lclcb.setInternalCheckState( AIndex, checkState );
 
-  cocoaTLV:= getTableViewFromLCLListBox( ACheckListBox );
+  cocoaTLV:= TCocoaWSListBoxUtil.getTableListView( ACheckListBox );
   cocoaTLV.reloadDataForRow_column( AIndex, 0 );
 end;
 

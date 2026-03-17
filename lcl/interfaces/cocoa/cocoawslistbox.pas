@@ -93,13 +93,56 @@ type
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
   end;
 
-function getCallbackFromLCLListBox( const AListBox: TCustomListBox ):
-  TLCLListBoxCallback;
-function getTableViewFromLCLListBox( const AListBox: TCustomListBox ):
-  TCocoaTableListView;
-procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
+  { TCocoaWSListBoxUtil }
+
+  TCocoaWSListBoxUtil = class
+  public
+    class function getCallback(
+      const AListBox: TCustomListBox ): TLCLListBoxCallback;
+    class function getTableListView(
+      const AListBox: TCustomListBox ): TCocoaTableListView;
+    class procedure setStyle(
+      const list: TCocoaTableListView;
+      const AStyle: TListBoxStyle);
+  end;
 
 implementation
+
+{ TCocoaWSListBoxUtil }
+
+class function TCocoaWSListBoxUtil.getTableListView(
+  const AListBox: TCustomListBox ): TCocoaTableListView;
+var
+  scrollView: NSScrollView;
+begin
+  Result:= nil;
+  if NOT Assigned(AListBox) or NOT AListBox.HandleAllocated then
+    Exit;
+  scrollView:= NSSCrollView( AListBox.Handle );
+  Result:= TCocoaTableListView( scrollView.documentView );
+end;
+
+class function TCocoaWSListBoxUtil.getCallback(
+  const AListBox: TCustomListBox ): TLCLListBoxCallback;
+var
+  cocoaListView: TCocoaTableListView;
+begin
+  Result:= nil;
+  cocoaListView:= getTableListView( AListBox );
+  if Assigned(cocoaListView) then
+    Result:= TLCLListBoxCallback( cocoaListView.callback );
+end;
+
+class procedure TCocoaWSListBoxUtil.setStyle(
+  const list: TCocoaTableListView;
+  const AStyle: TListBoxStyle );
+begin
+  if not Assigned(list) then Exit;
+  list.isOwnerDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
+  list.isDynamicRowHeight := AStyle = lbOwnerDrawVariable;
+  //todo: if flag isCustomRowHeight changes in runtime
+  //      noteHeightOfRowsWithIndexesChanged, should be sent to listview
+end;
 
 { TLCLListBoxCallback }
 
@@ -237,44 +280,12 @@ end;
 
 { TCocoaWSCustomListBox }
 
-function getTableViewFromLCLListBox( const AListBox: TCustomListBox ):
-  TCocoaTableListView;
-var
-  scrollView: NSScrollView;
-begin
-  Result:= nil;
-  if NOT Assigned(AListBox) or NOT AListBox.HandleAllocated then
-    Exit;
-  scrollView:= NSSCrollView( AListBox.Handle );
-  Result:= TCocoaTableListView( scrollView.documentView );
-end;
-
-function getCallbackFromLCLListBox( const AListBox: TCustomListBox ):
-  TLCLListBoxCallback;
-var
-  cocoaListView: TCocoaTableListView;
-begin
-  Result:= nil;
-  cocoaListView:= getTableViewFromLCLListBox( AListBox );
-  if Assigned(cocoaListView) then
-    Result:= TLCLListBoxCallback( cocoaListView.callback );
-end;
-
-procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
-begin
-  if not Assigned(list) then Exit;
-  list.isOwnerDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
-  list.isDynamicRowHeight := AStyle = lbOwnerDrawVariable;
-  //todo: if flag isCustomRowHeight changes in runtime
-  //      noteHeightOfRowsWithIndexesChanged, should be sent to listview
-end;
-
 class procedure TCocoaWSCustomListBox.DragStart(
   const ACustomListBox: TCustomListBox);
 var
   lclcb : TLCLListBoxCallback;
 begin
-  lclcb:= getCallbackFromLCLListBox( ACustomListBox );
+  lclcb:= TCocoaWSListBoxUtil.getCallback( ACustomListBox );
   if NOT Assigned(lclcb) then
     Exit;
   lclcb.BlockCocoaMouseMove:=true;
@@ -367,7 +378,7 @@ begin
     list.setRowHeight(list.CustomRowHeight);
   end;
 
-  ListBoxSetStyle(list, TCustomListBox(AWinControl).Style);
+  TCocoaWSListBoxUtil.setStyle(list, TCustomListBox(AWinControl).Style);
 
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
@@ -391,7 +402,7 @@ var
   list: TCocoaTableListView;
   lPoint: NSPoint;
 begin
-  list := getTableViewFromLCLListBox(ACustomListBox);
+  list := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(list) then
   begin
     Result:=-1;
@@ -408,7 +419,7 @@ var
 begin
   Result := False;
 
-  view := getTableViewFromLCLListBox(ACustomListBox);
+  view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit(False);
   Result := LCLGetItemRect(view, Index, 0, ARect);
 end;
@@ -417,7 +428,7 @@ class function TCocoaWSCustomListBox.GetScrollWidth(const ACustomListBox: TCusto
 var
   view: TCocoaTableListView;
 begin
-  view := getTableViewFromLCLListBox(ACustomListBox);
+  view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit(0);
   Result := view.ScrollWidth;
 end;
@@ -427,7 +438,7 @@ var
   view: TCocoaTableListView;
   indexset: NSIndexSet;
 begin
-  view:=getTableViewFromLCLListBox(ACustomListBox);
+  view:=TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit(-1);
 
   indexset:=view.selectedRowIndexes();
@@ -442,7 +453,7 @@ var
   view: TCocoaTableListView;
   selection: NSIndexSet;
 begin
-  view := getTableViewFromLCLListBox(ACustomListBox);
+  view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit(0);
   selection := view.selectedRowIndexes();
   Result := selection.count();
@@ -454,7 +465,7 @@ var
   view: TCocoaTableListView;
   selection: NSIndexSet;
 begin
-  view := getTableViewFromLCLListBox(ACustomListBox);
+  view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit(False);
   if AIndex < 0 then Exit(False);
   selection := view.selectedRowIndexes();
@@ -465,7 +476,7 @@ class function TCocoaWSCustomListBox.GetStrings(const ACustomListBox: TCustomLis
 var
   lclcb : TLCLListBoxCallback;
 begin
-  lclcb:= getCallbackFromLCLListBox( ACustomListBox );
+  lclcb:= TCocoaWSListBoxUtil.getCallback( ACustomListBox );
   if NOT Assigned(lclcb) then
     Exit;
   Result:= lclcb.strings;
@@ -475,7 +486,7 @@ class function TCocoaWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomLi
 var
   view: TCocoaTableListView;
 begin
-  view := getTableViewFromLCLListBox(ACustomListBox);
+  view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit(-1);
   Result := LCLGetTopRow(view);
 end;
@@ -485,12 +496,12 @@ var
   cocoaTLV:TCocoaTableListView;
   lclcb: TLCLListBoxCallback;
 begin
-  lclcb:= getCallbackFromLCLListBox( ACustomListBox );
+  lclcb:= TCocoaWSListBoxUtil.getCallback( ACustomListBox );
   if NOT Assigned(lclcb) then
     Exit;
 
   if lclcb.getItemStableSelection(AIndex) <> ASelected then begin
-    cocoaTLV:= getTableViewFromLCLListBox( ACustomListBox );
+    cocoaTLV:= TCocoaWSListBoxUtil.getTableListView( ACustomListBox );
     cocoaTLV.selectOneItemByIndex( AIndex, ASelected );
   end;
 end;
@@ -500,7 +511,7 @@ class procedure TCocoaWSCustomListBox.SetBorderStyle(
 var
   list: TCocoaTableListView;
 begin
-  list := getTableViewFromLCLListBox( TCustomListBox(AWinControl) );
+  list := TCocoaWSListBoxUtil.getTableListView( TCustomListBox(AWinControl) );
   if not Assigned(list) then Exit;
 
   TCocoaScrollUtil.setBorderStyle(list.enclosingScrollView, ABorderStyle);
@@ -513,7 +524,7 @@ var
   ACustomListBox: TCustomListBox absolute AWinControl;
   list: TCocoaTableListView;
 begin
-  list:= getTableViewFromLCLListBox(ACustomListBox);
+  list:= TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(list) then
     Exit;
   list.reloadData;
@@ -523,7 +534,7 @@ class procedure TCocoaWSCustomListBox.SetItemIndex(const ACustomListBox: TCustom
 var
   list: TCocoaTableListView;
 begin
-  list := getTableViewFromLCLListBox(ACustomListBox);
+  list := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(list) then Exit();
 
   if (AIndex < 0) then
@@ -540,7 +551,7 @@ var
   view: TCocoaTableListView;
   column: NSTableColumn;
 begin
-  view := getTableViewFromLCLListBox(ACustomListBox);
+  view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit;
   view.ScrollWidth := AScrollWidth;
   column := NSTableColumn(view.tableColumns.objectAtIndex(0));
@@ -557,7 +568,7 @@ class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCu
 var
   list: TCocoaTableListView;
 begin
-  list := getTableViewFromLCLListBox(ACustomListBox);
+  list := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(list) then Exit();
   list.setAllowsMultipleSelection(AMultiSelect);
 end;
@@ -566,8 +577,8 @@ class procedure TCocoaWSCustomListBox.SetStyle(const ACustomListBox: TCustomList
 var
   view: TCocoaTableListView;
 begin
-  view := getTableViewFromLCLListBox(ACustomListBox);
-  ListBoxSetStyle(view, ACustomListBox.Style);
+  view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
+  TCocoaWSListBoxUtil.setStyle(view, ACustomListBox.Style);
   view.reloadData;
 end;
 
@@ -575,7 +586,7 @@ class procedure TCocoaWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomL
 var
   view: TCocoaTableListView;
 begin
-  view := getTableViewFromLCLListBox(ACustomListBox);
+  view := TCocoaWSListBoxUtil.getTableListView(ACustomListBox);
   if not Assigned(view) then Exit();
   view.scrollRowToVisible(NewTopIndex);
 end;
