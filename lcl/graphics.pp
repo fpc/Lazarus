@@ -1162,7 +1162,7 @@ type
     function TextExtent(const Text: string): TSize; virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     function TextHeight(const Text: string): Integer; virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     function TextWidth(const Text: string): Integer; virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
-    function TextFitInfo(const Text: string; MaxWidth: Integer): Integer;
+    function TextFitInfo(const Text: string; MaxWidth: Integer): Integer; virtual;
     function HandleAllocated: boolean; virtual;
     function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
   public
