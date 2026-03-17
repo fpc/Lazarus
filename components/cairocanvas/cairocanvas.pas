@@ -31,17 +31,29 @@ uses
   // LCL
   Printers, LCLType, LCLProc, Graphics,
   // LazUtils
-  GraphMath,
+  GraphMath
   //CairoCanvas
-  Cairo
   {$ifdef pangocairo}
-  ,Pango, PangoCairo, GLib2
+  {$IFNDEF LCLGtk3}
+  ,Cairo ,Pango, PangoCairo, GLib2
+  {$ENDIF}
+  {$IFDEF LCLGtk3}
+  ,Lazcairo1 ,LazPango1, LazPangoCairo1, LazGLib2
+  {$ENDIF}
   {$endif}
   ;
 
 type
   TSquaredCorners = set of (scTopLeft,scBottomLeft,scBottomRight,scTopRight);
-
+  {$IFDEF LCLGtk3}
+  cairo_status_t = Tcairo_status_t;
+  cairo_line_cap_t = Tcairo_line_cap_t;
+  cairo_matrix_t = Tcairo_matrix_t;
+  cairo_font_slant_t = Tcairo_font_slant_t;
+  cairo_font_weight_t = Tcairo_font_weight_t;
+  cairo_text_extents_t = Tcairo_text_extents_t;
+  cairo_font_extents_t = Tcairo_font_extents_t;
+  {$ENDIF}
   { TCairoPrinterCanvas }
 
   TCairoPrinterCanvas = class(TFilePrinterCanvas)
@@ -129,6 +141,7 @@ type
     procedure TextOut(X,Y: Integer; const Text: String); override;
     procedure TextRect(ARect: TRect; X1, Y1: integer; const Text: string; const Style: TTextStyle); override;
     function TextExtent(const Text: string): TSize; override;
+    function TextFitInfo(const Text: string; MaxWidth: Integer): Integer; override;
     function GetTextMetrics(out M: TLCLTextMetric): boolean; override;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); override;
     procedure SetPixel(X,Y: Integer; Value: TColor); override;
@@ -195,7 +208,7 @@ type
 implementation
 
 uses
-  IntfGraphics, GraphType, FPimage;
+  IntfGraphics, GraphType, FPimage, LazUTF8;
 
 const
   Dash_Dash:        array [0..1] of double = (18, 6);             //____ ____
@@ -1056,7 +1069,11 @@ begin
   pango_cairo_update_layout(cr, layout);
   // get the same text origin as cairo_show_text (baseline left, instead of Pango's top left)
   pango_cairo_show_layout_line (cr, pango_layout_get_line (layout, 0));
+  {$IFDEF LCLGtk3}
+  layout^.unref;
+  {$ELSE}
   g_object_unref(layout);
+  {$ENDIF}
   {$endif}
   cairo_restore(cr);
   Changed;
@@ -1215,7 +1232,11 @@ begin
       {$endif}
     end;
     {$ifdef pangocairo}
+    {$IFDEF LCLGtk3}
+    layout^.unref;
+    {$ELSE}
     g_object_unref(layout);
+    {$ENDIF}
     {$endif}
 
   finally
@@ -1243,12 +1264,38 @@ begin
   pango_layout_get_extents(Layout, nil, @theRect);
   Result.cx := Round((theRect.width/PANGO_SCALE)/ScaleX);
   Result.cy := Round((theRect.height/PANGO_SCALE)/ScaleY);
+  {$IFDEF LCLGtk3}
+  layout^.unref;
+  {$ELSE}
   g_object_unref(Layout);
+  {$ENDIF}
   {$else}
   cairo_text_extents(cr, PChar(Text), @extents); //transformation matrix is here ignored
   Result.cx := Round((extents.width)/ScaleX+extents.x_bearing);
   Result.cy := Round((extents.height)/ScaleY-extents.y_bearing);
   {$endif}
+end;
+
+function TCairoPrinterCanvas.TextFitInfo(const Text: string; MaxWidth: Integer): Integer;
+var
+  Lo, Hi, Mid: Integer;
+  SubText: String;
+begin
+  Result := UTF8Length(Text);
+  if TextExtent(Text).cx <= MaxWidth then
+    Exit;
+  Lo := 0;
+  Hi := Result;
+  while Lo < Hi do
+  begin
+    Mid := (Lo + Hi + 1) div 2;
+    SubText := UTF8Copy(Text, 1, Mid);
+    if TextExtent(SubText).cx <= MaxWidth then
+      Lo := Mid
+    else
+      Hi := Mid - 1;
+  end;
+  Result := Lo;
 end;
 
 function TCairoPrinterCanvas.GetTextMetrics(out M: TLCLTextMetric): boolean;

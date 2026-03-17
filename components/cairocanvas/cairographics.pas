@@ -5,7 +5,11 @@ unit CairoGraphics;
 interface
 
 uses
-  Types, CairoCanvas, Cairo, LCLType, LCLIntf, LMessages,
+  Types, CairoCanvas,
+  {$IFNDEF LCLGtk3}
+  Cairo,
+  {$ENDIF}
+  LCLType, LCLIntf, LMessages,
   Classes, Controls, ExtCtrls, Graphics;
 
 type
