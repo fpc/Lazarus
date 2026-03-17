@@ -481,7 +481,7 @@ var
   FoundTool: TFindDeclarationTool;
   FoundCleanPos: Integer;
   FoundNode: TCodeTreeNode;
-  NameStartPos, i, j, l, IdentifierStartPos, IdentifierEndPos,
+  NameStartPos, i, j, l, el, IdentifierStartPos, IdentifierEndPos,
     BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop, CommentEnd2: Integer;
   Marker, ExpectedType, NewType, ExpectedCompletion, ExpectedTerm,
     ExpectedCompletionPart, ExpectedTermPart, ExpectedTermPartEx, s: String;
@@ -750,7 +750,8 @@ begin
                     if Marker='declaration' then begin
                       // last identifier is enough
                       l:=length(s);
-                      if ((l=length(ExpectedTerm)) or (ExpectedTerm[length(ExpectedTerm)-l]='.'))
+                      el:=length(ExpectedTerm);
+                      if ((l=el) or ((el>l) and (ExpectedTerm[el-l]='.')))
                       and (CompareText(s,RightStr(ExpectedTerm,l))=0)
                       then break;
                     end;
