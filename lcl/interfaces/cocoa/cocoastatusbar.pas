@@ -11,7 +11,7 @@ uses
   LCLType, LMessages, LCLMessageGlue, ComCtrls,
   CocoaAll,
   CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaGDIObjects,
-  CocoaWSCommon, CocoaUtils, CocoaCustomControl, Cocoa_Extra;
+  CocoaUtils, CocoaCustomControl, Cocoa_Extra;
 
 type
   { IStatusBarCallback }

@@ -11,17 +11,6 @@ uses
 
 type
 
-  { TASyncLCLControlAdjustSizer }
-
-  TASyncLCLControlAdjustSizer = class
-  private
-    _control: TWinControl;
-    _doing: Boolean;
-    procedure doAdjustSize(data: PtrInt);
-  public
-    procedure adjustSize(control: TWinControl);
-  end;
-
   { TCocoaWSScrollerUtil }
 
   TCocoaWSScrollerUtil = class
@@ -34,13 +23,26 @@ type
     class function embedInManualScrollHost(
       const AView: TCocoaManualScrollView ): TCocoaManualScrollHost;
 
-    class procedure adjustSize(const control: TWinControl);
+    class procedure asyncAdjustSize(const control: TWinControl);
+  end;
+
+implementation
+
+type
+
+  { TASyncLCLControlAdjustSizer }
+
+  TASyncLCLControlAdjustSizer = class
+  private
+    _control: TWinControl;
+    _doing: Boolean;
+    procedure doAdjustSize(data: PtrInt);
+  public
+    procedure adjustSize(control: TWinControl);
   end;
 
 var
   ASyncLCLControlAdjustSizer: TASyncLCLControlAdjustSizer;
-
-implementation
 
 { TCocoaWSScrollerUtil }
 
@@ -142,7 +144,7 @@ begin
   TCocoaViewUtil.setDefaultMargin(Result);
 end;
 
-class procedure TCocoaWSScrollerUtil.adjustSize(
+class procedure TCocoaWSScrollerUtil.asyncAdjustSize(
   const control: TWinControl);
 begin
   if NSScroller.preferredScrollerStyle = NSScrollerStyleOverlay then
