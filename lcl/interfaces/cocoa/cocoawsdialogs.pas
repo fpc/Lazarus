@@ -711,14 +711,6 @@ begin
     dst.setObject_forKey(TCocoaColorUtil.toColor(src.Color), NSForegroundColorAttributeName);
 end;
 
-function ObjToNum(obj: NSObject; defVal: integer): Integer;
-begin
-  if (obj = nil) or (not obj.isKindOfClass(NSNumber)) then
-    Result := defVal
-  else
-    Result := Integer(NSNumber(obj).integerValue);
-end;
-
 procedure DictToFont(src: NSDictionary; dst: TFont);
 var
   obj : NSObject;
@@ -731,12 +723,12 @@ begin
   fs := dst.Style;
   cl := dst.Color;
 
-  if ObjToNum( src.objectForKey(NSUnderlineStyleAttributeName), 0) = NSUnderlineStyleNone then
+  if TCocoaNumberUtil.toInt(src.objectForKey(NSUnderlineStyleAttributeName)) = NSUnderlineStyleNone then
     Exclude(fs, fsUnderline)
   else
     Include(fs, fsUnderline);
 
-  if ObjToNum( src.objectForKey(NSStrikethroughStyleAttributeName), 0) = NSUnderlineStyleNone then
+  if TCocoaNumberUtil.toInt(src.objectForKey(NSStrikethroughStyleAttributeName)) = NSUnderlineStyleNone then
     Exclude(fs, fsStrikeOut)
   else
     Include(fs, fsStrikeOut);
@@ -757,12 +749,12 @@ begin
   Result := [];
   if (src = nil) then Exit;
 
-  if ObjToNum( src.objectForKey(NSUnderlineStyleAttributeName), 0) = NSUnderlineStyleNone then
+  if TCocoaNumberUtil.toInt(src.objectForKey(NSUnderlineStyleAttributeName)) = NSUnderlineStyleNone then
     Exclude(Result, cfs_Underline)
   else
     Include(Result, cfs_Underline);
 
-  if ObjToNum( src.objectForKey(NSStrikethroughStyleAttributeName), 0) = NSUnderlineStyleNone then
+  if TCocoaNumberUtil.toInt(src.objectForKey(NSStrikethroughStyleAttributeName)) = NSUnderlineStyleNone then
     Exclude(Result, cfs_Strikeout)
   else
     Include(Result, cfs_Strikeout);

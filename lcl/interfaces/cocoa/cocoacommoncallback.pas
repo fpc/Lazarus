@@ -783,7 +783,7 @@ var
     if NOT Owner.respondsToSelector( ObjcSelector('lclBypassCocoa:') ) then
       Exit;
     ret:= Owner.performSelector_withObject( ObjcSelector('lclBypassCocoa:'), Event );
-    Result:= NSNumber(ret).boolValue;
+    Result:= TCocoaNumberUtil.toBoolean( ret );
   end;
 
 begin

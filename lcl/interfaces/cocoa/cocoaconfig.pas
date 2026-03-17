@@ -10,7 +10,7 @@ interface
 uses
   Forms, SysUtils,
   Menus,
-  CocoaAll, Cocoa_Extra, CocoaConst;
+  CocoaAll, Cocoa_Extra, CocoaConst, CocoaUtils;
 
 type
   TCocoaConfigToolBarItemClassAbstract = class
@@ -450,12 +450,10 @@ end;
 function TCocoaConfigFocusRing.getStrategy(
   AClassName: NSString): Strategy;
 var
-  valueObject: NSNumber;
+  number: Integer;
 begin
-  Result:= TCocoaConfigFocusRing.Strategy.default;
-  valueObject:= NSNumber( _strategies.valueForKey(AClassName) );
-  if Assigned(valueObject) then
-    Result:= TCocoaConfigFocusRing.Strategy(valueObject.intValue);
+  number:= TCocoaNumberUtil.toInt( _strategies.valueForKey(AClassName) );
+  Result:= TCocoaConfigFocusRing.Strategy( number );
 end;
 
 function getCocoaScrollerDefaultKnobColor: NSColor;

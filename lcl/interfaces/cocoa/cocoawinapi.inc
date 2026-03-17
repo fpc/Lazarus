@@ -817,8 +817,8 @@ begin
         // the Apple's weight seems to be
         // 5.0 - for normal (where LCL = 400 is normal)
         // 9.0 - for bold (whre LCL = 800 is bold)
-        w := NSNumber(sub.objectAtIndex(2)).floatValue;
-        t := NSNumber(sub.objectAtIndex(3)).integerValue;
+        w := TCocoaNumberUtil.toDouble(sub.objectAtIndex(2));
+        t := TCocoaNumberUtil.toInt(sub.objectAtIndex(3));
 
         ELogFont.elfLogFont.lfWeight:=Round((w-1)*100);
         if ELogFont.elfLogFont.lfWeight >= FW_MAX then

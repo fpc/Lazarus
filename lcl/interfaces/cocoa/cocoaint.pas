@@ -660,12 +660,12 @@ end;
 procedure TCocoaApplication.observeValueForKeyPath_ofObject_change_context(
   keyPath: NSString; object_: id; change: NSDictionary; context_: pointer);
 var
-  prior: NSNumber;
+  prior: Integer;
 begin
   Inherited observeValueForKeyPath_ofObject_change_context( keyPath, object_, change, context_ );
   if keyPath.isEqualToString(NSSTR('effectiveAppearance')) then begin
-    prior:= NSNumber( change.valueForKey( NSSTR('notificationIsPrior') ) );
-    if prior.intValue > 0 then
+    prior:= TCocoaNumberUtil.toInt( change.valueForKey(NSSTR('notificationIsPrior')) );
+    if prior > 0 then
       Exit;
     NSAppearance.setCurrentAppearance( self.effectiveAppearance );
     TCocoaThemeServices.darwinThemeChangedNotify;
