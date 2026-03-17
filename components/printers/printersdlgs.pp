@@ -164,7 +164,7 @@ implementation
       uses qtobjects, qt6, qtint, LazUTF8;
       {$I qtprndialogs.inc}
     {$ENDIF}
-    {$IFDEF LCLGtk2}
+    {$IF DEFINED(LCLGtk2) OR DEFINED(LCLGtk3)}
       uses udlgSelectPrinter, udlgPropertiesPrinter, udlgPageSetup, Printer4LazStrConst;
       {$I cupsprndialogs.inc}
     {$ENDIF}

@@ -47,7 +47,7 @@ interface
     {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
       {$I qtprinters_h.inc}
     {$ENDIF}
-    {$IFDEF LCLGtk2}
+    {$IF DEFINED(LCLGtk2) OR DEFINED(LCLGtk3)}
       {$I cupsprinters_h.inc}
     {$ENDIF}
   {$ELSE}
@@ -84,7 +84,7 @@ implementation
     {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5) OR DEFINED(LCLQt6)}
       {$I qtprinters.inc}
     {$ENDIF}
-    {$IFDEF LCLGtk2}
+    {$IF DEFINED(LCLGtk2) OR DEFINED(LCLGtk3)}
       {$I cupsprinters.inc}
     {$ENDIF}
   {$ELSE}
