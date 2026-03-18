@@ -1988,9 +1988,16 @@ begin
           Params.ContextNode := CursorNode;
           Params.Flags := fdfDefaultForExpressions;
           if FindIdentifierInContext(Params) then begin
-            if Params.NewNode=ExprType.Context.Node then
+            if ((Params.NewNode.Desc=ctnTypeDefinition) and
+            (ExprType.Context.Node.Desc=ctnTypeDefinition) and
+            (Params.NewNode=ExprType.Context.Node))
+            or
+            ((Params.NewNode.Desc=ctnTypeDefinition) and
+            (ExprType.Context.Node.Desc in AllClasses) and
+            (Params.NewNode.FirstChild=ExprType.Context.Node)) then
             // the same decl nodes =  not shadowed, may be in other unit also
               AddSourceName:=false;
+
           end;
         end;
         if AddSourceName then // -> add unit to the type
