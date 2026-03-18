@@ -3376,6 +3376,51 @@ begin
   Result:=HMONITOR(nmon+1);
 end;
 
+function TGtk3WidgetSet.MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
+var
+  Display: PGdkDisplay;
+  Monitor: PGdkMonitor;
+  nMonitors, i: gint;
+  TargetRect, MonitorRect, Intersection: TGdkRectangle;
+  MaxArea, CurrentArea: Integer;
+  BestMonitor: Integer;
+begin
+
+  if lprcScreenCoords = nil then
+  begin
+    Result := HMONITOR(1);
+    Exit;
+  end;
+
+  Display := gdk_display_get_default;
+  nMonitors := gdk_display_get_n_monitors(Display);
+
+  TargetRect.x := lprcScreenCoords^.Left;
+  TargetRect.y := lprcScreenCoords^.Top;
+  TargetRect.width := lprcScreenCoords^.Width;
+  TargetRect.height := lprcScreenCoords^.Height;
+
+  MaxArea := -1;
+  BestMonitor := 0;
+
+  for i := 0 to nMonitors - 1 do
+  begin
+    Monitor := gdk_display_get_monitor(Display, i);
+    gdk_monitor_get_geometry(Monitor, @MonitorRect);
+
+    if gdk_rectangle_intersect(@TargetRect, @MonitorRect, @Intersection) then
+    begin
+      CurrentArea := Intersection.width * Intersection.height;
+      if CurrentArea > MaxArea then
+      begin
+        MaxArea := CurrentArea;
+        BestMonitor := i;
+      end;
+    end;
+  end;
+  Result := HMONITOR(BestMonitor + 1);
+end;
+
 function TGtk3WidgetSet.MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
 var
   pscr:PGdkScreen;
