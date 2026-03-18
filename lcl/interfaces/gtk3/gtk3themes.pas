@@ -57,7 +57,7 @@ type
   end;
 
 implementation
-uses LazGdkPixbuf2, Graphics, LazLogger, Math, gtk3procs, gtk3objects;
+uses LazGdkPixbuf2, Graphics, LazLogger, Math, gtk3procs, gtk3objects, gtk3int, LCLIntf;
 
 function RgbaToCSS(const C: TGdkRGBA): string;
 begin
@@ -271,25 +271,36 @@ function TGTK3ThemeServices.GetDetailSizeForPPI(Details: TThemedElementDetails;
 var
   AValue: TGValue;
   Context: PGtkStyleContext;
+  min_width, min_height: gint;
 begin
   Result := Size(0, 0);
   if Details.Element = teButton then
   begin
-      if (Byte(Details.Part) in [BP_CHECKBOX, BP_RADIOBUTTON]) then
-      begin
-        Context := GetStyleWidget(lgsCheckBox)^.get_style_context;
-        FillChar(AValue, SizeOf(TGValue), 0);
-        g_value_init(@AValue, G_TYPE_INT);
-        // 'indicator-size' is a widget style property, not a CSS property.
-        // Use gtk_style_context_get_style_property to avoid GTK warning.
-        gtk_style_context_get_style_property(Context, 'indicator-size', @AValue);
-        Result := Size(AValue.get_int, AValue.get_int);
-        g_value_unset(@AValue);
-        // Fall back to 16px if the theme does not register indicator-size.
-        if (Result.cx <= 0) or (Result.cy <= 0) then
-          Result := Size(16, 16);
-      end else
-        Result := inherited;
+    if (Byte(Details.Part) in [BP_CHECKBOX, BP_RADIOBUTTON]) then
+    begin
+      if Byte(Details.Part) = BP_CHECKBOX then
+        Context := GetStyleWidget(lgsCheckBox)^.get_style_context
+      else
+        Context := GetStyleWidget(lgsRadioButton)^.get_style_context;
+
+      gtk_style_context_save(Context);
+
+      if Byte(Details.Part) = BP_CHECKBOX then
+        gtk_style_context_add_class(Context, 'check')
+      else
+        gtk_style_context_add_class(Context, 'radio');
+
+      gtk_style_context_get(Context, gtk_style_context_get_state(Context),
+        ['min-width', @min_width, 'min-height', @min_height, nil]);
+
+      if (min_width <= 0) or (min_height <= 0) then
+        Result := Size(16, 16)
+      else
+        Result := Size(min_width, min_height);
+      gtk_style_context_restore(Context);
+
+    end else
+      Result := inherited;
   end else
   if Details.Element = teTreeview then
   begin
@@ -468,8 +479,12 @@ begin
   gtk_style_context_set_state(Context, State);
   gtk_widget_path_unref(Path);
 
+  if not Gtk3WidgetSet.GetThemeName.Contains('Breeze', True) then
+    exit(Context);
+
   {$note could not find the way to draw proper checkbox and radio,
-   so use this CSS hack for now. Željan}
+   so use this CSS hack for now. Željan.
+   This fix below belongs to Breeze theme only}
   CSS := Format(
 
   '%0:s { ' +
