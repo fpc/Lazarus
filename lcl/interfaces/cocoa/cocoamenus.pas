@@ -10,9 +10,9 @@ uses
   // RTL
   sysutils,
   // LCL
-  Forms, Menus, LCLType, Classes, LCLStrConsts,
+  Forms, Menus, Graphics, ImgList, LCLType, Classes, LCLStrConsts,
   // LCL Cocoa
-  CocoaAll, CocoaPrivate, CocoaCallback, CocoaUtils, CocoaConfig, CocoaConst;
+  CocoaAll, CocoaPrivate, CocoaGDIObjects, CocoaCallback, CocoaUtils, CocoaConfig, CocoaConst;
 
 type
   IMenuItemCallback = interface(ICommonCallBack)
@@ -76,10 +76,6 @@ type
     class function toggleAppMenu(
       const ALogicalEnabled: Boolean): Boolean;
 
-    class procedure setCheck(
-      const ANSMenuItem: NSMenuItem;
-      const Checked: Boolean );
-
     class function findEditMenu(
       const menu:NSMenu;
       const title:NSString ): NSMenuItem;
@@ -104,6 +100,15 @@ type
       const atitle: String;
       const VKKey: Word = 0;
       const State: TShiftState = [] ): id; overload;
+
+    class procedure setBitmap(
+      const item: TMenuItem;
+      const mn: NSMenuItem;
+      const bmp: TBitmap );
+
+    class procedure setCheck(
+      const ANSMenuItem: NSMenuItem;
+      const Checked: Boolean );
   end;
 
 var
@@ -591,15 +596,6 @@ begin
   isMenuEnabled := ALogicalEnabled;
 end;
 
-class procedure TCocoaMenuUtil.setCheck(
-  const ANSMenuItem: NSMenuItem;
-  const Checked: Boolean );
-const
-  menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
-begin
-  ANSMenuItem.setState( menustate[Checked] );
-end;
-
 function FindEditMenuByKeyEquivalent(const menu: NSMenu;
   const keyEquivalent:NSString): NSMenuItem;
 var
@@ -744,6 +740,49 @@ var
   mask  : NSUInteger;
 begin
   Result := init(item, atitle, ShortCut(VKKey, State));
+end;
+
+class procedure TCocoaMenuUtil.setCheck(
+  const ANSMenuItem: NSMenuItem;
+  const Checked: Boolean );
+const
+  menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
+begin
+  ANSMenuItem.setState( menustate[Checked] );
+end;
+
+class procedure TCocoaMenuUtil.setBitmap(
+  const item: TMenuItem;
+  const mn: NSMenuItem;
+  const bmp: TBitmap );
+var
+  image: NSImage;
+  imageWidth: Integer;
+  size: NSSize;
+  list: TCustomImageList;
+begin
+  if not Assigned(mn) then Exit;
+  if not Assigned(bmp) or (bmp.Handle = 0) then begin
+    mn.setImage(nil);
+    Exit;
+  end;
+
+  image:= TCocoaBitmap(bmp.Handle).Image;
+  size:= image.size;
+  item.GetImageList(list, imageWidth);
+  if imageWidth = 0 then
+    imageWidth:= Round(size.width);
+  if Round(size.width) = imageWidth then begin
+    mn.setImage(image);
+    Exit;
+  end;
+
+  size.width:= imageWidth;
+  size.height:= imageWidth;
+  image:= image.copy;
+  image.setSize(size);
+  mn.setImage(image);
+  image.release;
 end;
 
 finalization

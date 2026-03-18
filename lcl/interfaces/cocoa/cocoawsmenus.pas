@@ -92,10 +92,6 @@ type
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: Integer); override;
   end;
 
-procedure NSMenuItemSetBitmap(item: TMenuItem; mn: NSMenuItem; bmp: TBitmap);
-
-function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
-
 implementation
 
 function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
@@ -290,7 +286,7 @@ begin
     TCocoaMenuUtil.setCheck(item, AMenuItem.Checked);
 
     if AMenuItem.HasIcon and ((AMenuItem.ImageIndex>=0) or (AMenuItem.HasBitmap)) then
-      NSMenuItemSetBitmap(AMenuItem, item, AMenuItem.Bitmap);
+      TCocoaMenuUtil.setBitmap(AMenuItem, item, AMenuItem.Bitmap);
   end;
 
   Result:=HMENU(item);
@@ -467,44 +463,13 @@ begin
   NSMenuItem(AMenuItem.Handle).setState( menustate[RadioItem] );
 end;
 
-procedure NSMenuItemSetBitmap(item: TMenuItem; mn: NSMenuItem; bmp: TBitmap);
-var
-  image: NSImage;
-  imageWidth: Integer;
-  size: NSSize;
-  list: TCustomImageList;
-begin
-  if not Assigned(mn) then Exit;
-  if not Assigned(bmp) or (bmp.Handle = 0) then begin
-    mn.setImage(nil);
-    Exit;
-  end;
-
-  image:= TCocoaBitmap(bmp.Handle).Image;
-  size:= image.size;
-  item.GetImageList(list, imageWidth);
-  if imageWidth = 0 then
-    imageWidth:= Round(size.width);
-  if Round(size.width) = imageWidth then begin
-    mn.setImage(image);
-    Exit;
-  end;
-
-  size.width:= imageWidth;
-  size.height:= imageWidth;
-  image:= image.copy;
-  image.setSize(size);
-  mn.setImage(image);
-  image.release;
-end;
-
 class procedure TCocoaWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
   const HasIcon: Boolean; const AIcon: TBitmap);
 begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) then Exit;
 
   if NSObject(AMenuItem.Handle).isKindOfClass(NSMenuItem) then
-    NSMenuItemSetBitmap(AMenuItem, NSMenuItem(AMenuItem.Handle), AIcon);
+    TCocoaMenuUtil.setBitmap(AMenuItem, NSMenuItem(AMenuItem.Handle), AIcon);
 end;
 
 { TCocoaWSPopupMenu }
