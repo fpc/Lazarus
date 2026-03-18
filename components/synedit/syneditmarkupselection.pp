@@ -64,7 +64,8 @@ type
 
     property ColorTillEol: boolean read FColorTillEol write SetColorTillEol;
     property UseIncrementalColor : Boolean read FUseIncrementalColor write SetUseIncrementalColor;
-    property MarkupInfoSeletion : TSynHighlighterAttributesModifier_Eol read FMarkupInfoSelection;
+    property MarkupInfoSeletion : TSynHighlighterAttributesModifier_Eol read FMarkupInfoSelection; deprecated 'use MarkupInfoSelection';
+    property MarkupInfoSelection : TSynHighlighterAttributesModifier_Eol read FMarkupInfoSelection;
     property MarkupInfoIncr : TSynHighlighterAttributesModifier_Eol read FMarkupInfoIncr;
   end;
 

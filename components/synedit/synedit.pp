@@ -2516,7 +2516,7 @@ begin
   fMarkupSelection := TSynEditMarkupSelection.Create(self, FBlockSelection);
   fMarkupSpecialChar := TSynEditMarkupSpecialChar.Create(self);
 
-  fMarkupSelection.MarkupInfoSeletion.SetAllPriorities(50);
+  fMarkupSelection.MarkupInfoSelection.SetAllPriorities(50);
 
   fMarkupManager := TSynEditMarkupManager.Create(self);
   fMarkupManager.AddMarkUp(fMarkupSpecialChar);
@@ -3087,12 +3087,12 @@ end;
 
 function TCustomSynEdit.GetSelectedColor : TSynHighlighterAttributesModifier;
 begin
-  result := fMarkupSelection.MarkupInfoSeletion;
+  result := fMarkupSelection.MarkupInfoSelection;
 end;
 
 procedure TCustomSynEdit.SetSelectedColor(const AValue : TSynHighlighterAttributesModifier);
 begin
-  fMarkupSelection.MarkupInfoSeletion.Assign(AValue);
+  fMarkupSelection.MarkupInfoSelection.Assign(AValue);
 end;
 
 procedure TCustomSynEdit.SetSpecialLineColors(const AValue : TSpecialLineColorsEvent);
