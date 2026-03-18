@@ -138,7 +138,7 @@ object ToolBarConfig: TToolBarConfig
     ParentFont = False
     TabOrder = 0
     FilteredTreeview = TV
-    OnFilterNode = FilterEditFilterNode
+    ShowChildrenOfMatch = True
   end
   object Splitter1: TSplitter
     AnchorSideLeft.Control = TV

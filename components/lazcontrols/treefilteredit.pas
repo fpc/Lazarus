@@ -783,11 +783,11 @@ var
   PassCapt, PassEvent, Done: Boolean;
 begin
   Result := False;
-  PassCapt := False;
-  PassEvent := False;
-  Done := False;
   while Node<>nil do
   begin
+    PassCapt := False;
+    PassEvent := False;
+    Done := False;
     // Filter with event handler if there is one.
     if Assigned(fOnFilterNode) then
       PassEvent := fOnFilterNode(Node, Done);
@@ -795,7 +795,8 @@ begin
     if not (PassEvent or Done) then
       PassEvent := {PassEvent or} DoFilterEvents(Node.Text, Node.Data, Done);
     // Filter by node's caption text.
-    PassCapt := DoDefaultFilterItem(Node.Text, Node.Data);
+    if not Done then
+      PassCapt := DoDefaultFilterItem(Node.Text, Node.Data);
     if (PassCapt or PassEvent) and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // ShowChildrenOfMatch affects only if the Node.Text matched.

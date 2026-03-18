@@ -63,7 +63,6 @@ type
     Splitter1: TSplitter;
     TV: TTreeView;
     procedure btnHelpClick(Sender: TObject);
-    function FilterEditFilterNode({%H-}ItemNode: TTreeNode; out Done: Boolean): Boolean;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -196,12 +195,6 @@ end;
 procedure TToolBarConfig.btnHelpClick(Sender: TObject);
 begin
   OpenUrl('https://wiki.freepascal.org/IDE_Window:_Toolbar_Config');
-end;
-
-function TToolBarConfig.FilterEditFilterNode(ItemNode: TTreeNode; out Done: Boolean): Boolean;
-begin
-  Result := lvToolbar.FindCaption(0, ItemNode.Text, True, True, False) = Nil;
-  Done := not Result;
 end;
 
 procedure TToolBarConfig.UpdateButtonsState;
