@@ -215,6 +215,9 @@ type
     FCurrentRegion: TGtk3Region;
     FOwnsCairo: Boolean;
     FOwnsSurface: Boolean;
+    FBackTarget: PCairo_t;
+    FBackOriginX: Integer;
+    FBackOriginY: Integer;
     FPen: TGtk3Pen;
     FvClipRect: TRect;
     FCurrentPen: TGtk3Pen;
@@ -1949,6 +1952,7 @@ constructor TGtk3DeviceContext.CreateFromCairo(AWidget: PGtkWidget;
   ACairo: PCairo_t);
 var
   AGdkRect: TGdkRectangle;
+  W, H: Integer;
 begin
   {$ifdef VerboseGtk3DeviceContext}
     DebugLn('TGtk3DeviceContext.CreateFromCairo (',
@@ -1965,12 +1969,35 @@ begin
   ParentPixmap := nil;
   CairoSurface := nil;
   FOwnsSurface := False;
+  FBackTarget := nil;
+  FBackOriginX := 0;
+  FBackOriginY := 0;
   FCurrentTextColor := clBlack;
   FBkColor := clWhite;
   gdk_cairo_get_clip_rectangle(ACairo, @AGdkRect);
   FvClipRect := RectFromGdkRect(AGdkRect);
   FCairo := ACairo;
   CairoSurface := cairo_get_target(FCairo);
+
+  if cairo_surface_get_type(CairoSurface) in
+     [CAIRO_SURFACE_TYPE_XLIB, CAIRO_SURFACE_TYPE_XCB] then
+  begin
+    W := AGdkRect.width;
+    H := AGdkRect.height;
+    if (W <= 0) and (AWidget <> nil) then W := AWidget^.get_allocated_width;
+    if (H <= 0) and (AWidget <> nil) then H := AWidget^.get_allocated_height;
+    if W <= 0 then W := 1;
+    if H <= 0 then H := 1;
+    FBackTarget  := ACairo;
+    FBackOriginX := AGdkRect.x;
+    FBackOriginY := AGdkRect.y;
+    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, W, H);
+    FCairo       := cairo_create(CairoSurface);
+    cairo_translate(FCairo, -FBackOriginX, -FBackOriginY);
+    FOwnsCairo   := True;
+    FOwnsSurface := True;
+  end;
+
   CreateObjects;
 end;
 
@@ -1986,6 +2013,17 @@ begin
 
   if FDCSaveCounter > 0 then
     DebugLn('WARNING: TGtk3DeviceContext: Unpaired Cairo save/restore calls. Current count = ',dbgs(FDCSaveCounter),', but should be 0.');
+
+  if FBackTarget <> nil then
+  begin
+    cairo_surface_flush(CairoSurface);
+    cairo_save(FBackTarget);
+    cairo_set_source_surface(FBackTarget, CairoSurface, FBackOriginX, FBackOriginY);
+    cairo_set_operator(FBackTarget, CAIRO_OPERATOR_OVER);
+    cairo_paint(FBackTarget);
+    cairo_restore(FBackTarget);
+    FBackTarget := nil;
+  end;
 
   if FOwnsCairo and (FCairo <> nil) then
     cairo_destroy(FCairo);
