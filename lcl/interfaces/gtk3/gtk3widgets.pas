@@ -1965,7 +1965,7 @@ begin
       begin
         ACaret := TGtk3Caret(g_object_get_data(Sender,'gtk3-caret'));
         if ACaret.Visible then
-          ACaret.CairoDrawCaret(FCairoContext);
+          ACaret.CairoDrawCaret(TGtk3DeviceContext(FContext).pcr);
       end;
       if wtScrollingWinControl in WidgetType then
         cairo_translate(AContext, P.X, P.Y);
