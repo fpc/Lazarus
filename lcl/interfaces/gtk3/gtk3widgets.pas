@@ -12399,6 +12399,7 @@ begin
       begin
         x := 0;
         y := 0;
+        Widget^.size_allocate(@ARect);
         if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil) then
           PGtkWindow(Widget)^.transient_for^.window^.get_origin(@x, @y);
         Widget^.window^.move_resize(ALeft + x, ATop + y, AWidth, AHeight);
