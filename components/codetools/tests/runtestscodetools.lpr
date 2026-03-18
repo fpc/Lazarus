@@ -30,7 +30,9 @@ uses
   // FPCUnit
   fpcunit, consoletestrunner,
   // LazUtils
-  LazLogger, LazUTF8, LazFileUtils,
+  LazLogger, LazUTF8, LazStringUtils, LazFileUtils,
+  // IdeConfig
+  LazConf, EnvironmentOpts,
   // CodeTools
   CodeToolManager, CodeToolsConfig,
   // Test suites
@@ -46,23 +48,6 @@ uses
 
 const
   ConfigFilename = 'codetools.config';
-
-const
-  CDefaultLazarusSrcDirs: array of string = (
-    '..\..\..' // only current installation
-  );
-  CDefaultFPCSrcDirs: array of string = (
-    '..\..\..\fpc\%v\source', // official installer
-    '..\..\..\..\fpcsrc' // another installations (e.g. FpcUpDeluxe)
-    {$IFDEF WINDOWS}
-    ,'C:\lazarus\fpc\%v\source'
-    ,'C:\fpcsrc'
-    {$ENDIF}
-    {$IFDEF LINUX}
-    ,'/usr/share/fpcsrc/%v'
-    ,'~/freepascal/fpc'
-    {$ENDIF}
-  );
 
 type
 
@@ -84,6 +69,100 @@ type
     destructor Destroy; override;
   end;
 
+{ Utils }
+
+// TODO: refactor this in Lazarus packages
+
+// code is based on the GetParamsAndCfgFile function of the IDECmdLine unit
+function ReadLazarusCfgFile(aContent: TStringList; aParams: array of string): string;
+var
+  lLine, lPar, s: string;
+begin
+  result := '';
+  if aContent = nil then exit;
+  for s in aContent do
+  begin
+    lLine := Trim(s); // Lazarus ignores extra spaces
+    if lLine = '' then continue;
+    {$IFDEF WINDOWS} // file created by the Windows installer may have a system codepage
+    if FindInvalidUTF8Codepoint(PChar(lLine), length(lLine), true) > 0 then
+      lLine := WinCPToUTF8(lLine);
+    {$ENDIF WINDOWS}
+    for lPar in aParams do
+      if LazStartsText(lPar, lLine) then
+        result := RightStr(lLine, length(lLine) - length(lPar)).DeQuotedString('"');
+  end;
+end;
+
+// code is based on the GetParamsAndCfgFile function of the IDECmdLine unit
+function ReadLazarusCfgFile(aFileName: string; aParams: array of string): string;
+var
+  lCfgDir: string;
+  lContent: TStringList;
+begin
+  result := '';
+  if not FileExistsUTF8(aFileName) then exit;
+  lCfgDir := ExtractFileDir(aFileName);
+  lContent := TStringList.Create;
+  try
+    lContent.LoadFromFile(aFileName);
+    result := ReadLazarusCfgFile(lContent, aParams);
+    // expand relative filenames in "lazarus.cfg" using the path of the config file
+    result := ExpandFileNameUTF8(result, lCfgDir);
+  finally
+    FreeAndNil(lContent);
+  end;
+end;
+
+// code is based on LazBuild
+function LoadIdeEnvOpt(aLazDir: string): TEnvironmentOptions;
+const
+  cLazarusCfgName = 'lazarus.cfg';
+  cPCPOptLong  = '--primary-config-path=';
+  cPCPOptShort = '--pcp=';
+var
+  lExeDir, lLazDir, lCfgFile, lPCP: string;
+begin
+  if assigned(EnvironmentOptions) then FreeAndNil(EnvironmentOptions);
+  result := nil;
+  try
+    lExeDir := ExtractFileDir(ParamStrUTF8(0));
+    lLazDir := ExpandFileNameUTF8(aLazDir, lExeDir);
+    lCfgFile := AppendPathDelim(lLazDir) + cLazarusCfgName;
+    // scp
+    SetSecondaryConfigPath(lLazDir);
+    // pcp
+    if FileExistsUTF8(lCfgFile) then
+    begin
+      lPCP := ReadLazarusCfgFile(lCfgFile, [cPCPOptLong, cPCPOptShort]);
+      if lPCP <> '' then
+        SetPrimaryConfigPath(lPCP);
+    end;
+    // env
+    EnvironmentOptions := TEnvironmentOptions.Create;
+    EnvironmentOptions.CreateConfig;
+    EnvironmentOptions.Load(false);
+    result := EnvironmentOptions;
+  except
+    if result = nil then
+      FreeAndNil(EnvironmentOptions);
+  end;
+end;
+
+function ReadFPCSrcFromIdeOpts(aLazDir: string): string;
+begin
+  result := '';
+  try
+    try
+      if LoadIdeEnvOpt(aLazDir).FPCSourceDirectory <> '' then
+        result := EnvironmentOptions.GetParsedFPCSourceDirectory;
+    except // ignore
+    end;
+  finally
+    FreeAndNil(EnvironmentOptions);
+  end;
+end;
+
 { TCTTestRunner }
 
 procedure TCTTestRunner.DummyLog(Sender: TObject; S: string; var Handled: Boolean);
@@ -101,33 +180,8 @@ begin
 end;
 
 function TCTTestRunner.ParseOptions: Boolean;
-  //
-  function FindDefaultDir(Dirs: array of string; EnvVar: string): string;
-  var
-    lExeDir, lPath, lFullPath, s: string;
-    lMajor, lMinor, lRev: integer;
-  begin
-    lExeDir := ExtractFileDir(ParamStrUTF8(0));
-    for lPath in Dirs do begin
-      // expand paths relative to the executable file
-      lFullPath := ExpandFileNameUTF8(lPath, lExeDir);
-      if pos('%v', lFullPath) <= 0 then begin
-        if DirectoryExistsUTF8(lFullPath) then
-          exit(lFullPath);
-      end else begin
-        for lMajor := 9 downto 0 do
-        for lMinor := 9 downto 0 do
-        for lRev := 9 downto 0 do begin
-          s := StringReplace(lFullPath, '%v', Format('%d.%d.%d', [lMajor, lMinor, lRev]), []);
-          if DirectoryExistsUTF8(s) then
-            exit(s);
-        end;
-      end;
-    end;
-    writeln('Error: The environment variable "',EnvVar,'" is not assigned');
-    halt(1);
-  end;
-  //
+const
+  cLazarusSrcDir = '..\..\..'; // only current installation
 begin
   Result:=inherited ParseOptions;
 
@@ -150,10 +204,17 @@ begin
   if HasOption('machine') then
     FMachine := GetOptionValue('machine');
 
-  if Options.FPCSrcDir='' then
-    Options.FPCSrcDir:=FindDefaultDir(CDefaultFPCSrcDirs,'FPCDIR');
+  // assume that the CodeTools folder is always inside the Lazarus folder
   if Options.LazarusSrcDir='' then
-    Options.LazarusSrcDir:=FindDefaultDir(CDefaultLazarusSrcDirs,'LAZARUSDIR');
+    Options.LazarusSrcDir:=ExpandFileNameUTF8(cLazarusSrcDir,ExtractFileDir(ParamStrUTF8(0)));
+
+  // read folder from Lazarus configuration if not specified
+  if Options.FPCSrcDir='' then
+    Options.FPCSrcDir:=ReadFPCSrcFromIdeOpts(Options.LazarusSrcDir);
+  if Options.FPCSrcDir='' then begin
+    writeln('Error: The environment variable "','FPCDIR','" is not assigned');
+    halt(1);
+  end;
 
   // some tests assume a working folder "components\codetools\tests"
   SetCurrentDirUTF8(ExtractFileDir(ParamStrUTF8(0)));
