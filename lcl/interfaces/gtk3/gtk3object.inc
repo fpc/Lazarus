@@ -581,17 +581,35 @@ var
   ACSSProvider: PGtkCssProvider;
   ASettings: PGtkSettings;
   AValue: TGValue;
+  EnvTheme: string;
 begin
-  ASettings := gtk_settings_get_default;
-  FillByte(AValue{%H-}, SizeOf(AValue), 0);
-  AValue.init(G_TYPE_STRING);
-  ASettings^.get_property('gtk-theme-name', @AValue);
-  FThemeName := AValue.get_string;
-  AValue.unset;
-  ACSSProvider := gtk_css_provider_get_named(PGChar(FThemeName), '');
+  ACSSProvider := nil;
+  EnvTheme := GetEnvironmentVariable('GTK_THEME');
+
+  if EnvTheme <> '' then
+  begin
+    FThemeName := EnvTheme;
+    ACSSProvider := gtk_css_provider_get_named(PGChar(FThemeName), nil);
+  end;
+
   if not Assigned(ACSSProvider) then
+  begin
+    ASettings := gtk_settings_get_default;
+    FillByte(AValue{%H-}, SizeOf(AValue), 0);
+    AValue.init(G_TYPE_STRING);
+    g_object_get_property(PGObject(ASettings), 'gtk-theme-name', @AValue);
+    FThemeName := AValue.get_string;
+    AValue.unset;
+
+    ACSSProvider := gtk_css_provider_get_named(PGChar(FThemeName), nil);
+  end;
+
+  if not Assigned(ACSSProvider) then
+  begin
+    DebugLn('WARNING: Could not load any GTK3 theme CSS.');
     exit;
-  {$note from here we must parse css and get eg tooltip background-color and color etc.}
+  end;
+
   FCSSTheme.Text := gtk_css_provider_to_string(ACSSProvider);
 end;
 
