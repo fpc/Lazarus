@@ -9,7 +9,7 @@ uses
   classes,
   MacOSAll, CocoaAll, Cocoa_Extra, CocoaConst,
   SysUtils, Types, LCLType, LCLProc,
-  Graphics, GraphType;
+  Menus, Graphics, GraphType;
 
 type
   { NSLCLDebugExtension }
@@ -89,6 +89,12 @@ type
     class function codeToVK(AKey: Word): Word;
     class function charToVK(achar: unichar): Word;
     class function getRawKeyChar(ev: NSEvent): System.WideChar;
+
+    // the returned "Key" should not be released, as it's not memory owned
+    class procedure toKeyEquivalent(
+      const AShortCut: TShortcut;
+      out Key: NSString;
+      out shiftKeyMask: NSUInteger );
   end;
 
   { TCocoaColorUtil }
@@ -627,6 +633,37 @@ begin
     Result := #0
   else
     Result := System.WideChar(m.characterAtIndex(0));
+end;
+
+class procedure TCocoaKeyUtil.toKeyEquivalent(
+  const AShortCut: TShortcut;
+  out Key: NSString;
+  out shiftKeyMask: NSUInteger);
+var
+  w: word;
+  s: TShiftState;
+begin
+  ShortCutToKey(AShortCut, w, s);
+  key := TCocoaKeyUtil.codeToString(w);
+  shiftKeyMask := 0;
+  if ssShift in s then
+    ShiftKeyMask := ShiftKeyMask + NSShiftKeyMask;
+  if ssAlt in s then
+    ShiftKeyMask := ShiftKeyMask + NSAlternateKeyMask;
+  if ssCtrl in s then
+    ShiftKeyMask := ShiftKeyMask + NSControlKeyMask;
+  if ssMeta in s then
+    ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
+
+  // as a key , +/= is a rare case, both + and = are used as primary keys.
+  // ‘Shift+=’ for ‘+’
+  // ‘=’ for ‘='
+  if key.isEqualToString(NSSTR_KEY_PLUS) then begin
+    if (ShiftKeyMask and NSShiftKeyMask)=0 then
+      key := NSSTR_KEY_EQUALS
+    else
+      ShiftKeyMask := ShiftKeyMask - NSShiftKeyMask;
+  end;
 end;
 
 class function TCocoaKeyUtil.codeToString(AKey: Word): NSString;

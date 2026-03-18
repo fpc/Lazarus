@@ -97,9 +97,6 @@ type
 var
   menuItemHandleCreateFunc: TMenuItemHandleCreateFunc;
 
-// the returned "Key" should not be released, as it's not memory owned
-procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
-
 function FindEditMenu(const menu:NSMenu; const title:NSString): NSMenuItem;
 procedure AttachEditMenu(const menu:NSMenu; const index:Integer; const title:NSString );
 procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
@@ -156,34 +153,6 @@ var
   //
   // See topic: https://forum.lazarus.freepascal.org/index.php/topic,56419.0.html
   menuTrack : NSMutableArray;
-
-procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
-var
-  w: word;
-  s: TShiftState;
-begin
-  ShortCutToKey(AShortCut, w, s);
-  key := TCocoaKeyUtil.codeToString(w);
-  shiftKeyMask := 0;
-  if ssShift in s then
-    ShiftKeyMask := ShiftKeyMask + NSShiftKeyMask;
-  if ssAlt in s then
-    ShiftKeyMask := ShiftKeyMask + NSAlternateKeyMask;
-  if ssCtrl in s then
-    ShiftKeyMask := ShiftKeyMask + NSControlKeyMask;
-  if ssMeta in s then
-    ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
-
-  // as a key , +/= is a rare case, both + and = are used as primary keys.
-  // ‘Shift+=’ for ‘+’
-  // ‘=’ for ‘='
-  if key.isEqualToString(NSSTR_KEY_PLUS) then begin
-    if (ShiftKeyMask and NSShiftKeyMask)=0 then
-      key := NSSTR_KEY_EQUALS
-    else
-      ShiftKeyMask := ShiftKeyMask - NSShiftKeyMask;
-  end;
-end;
 
 function FindEditMenuByKeyEquivalent(const menu: NSMenu;
   const keyEquivalent:NSString): NSMenuItem;
@@ -468,7 +437,7 @@ var
     end;
     item.setTitle( StrToNSString(title) );
     item.setImage(nil);
-    ShortcutToKeyEquivalent(ShortCut(key,state), keyEquivalent, keyMask );
+    TCocoaKeyUtil.toKeyEquivalent(ShortCut(key,state), keyEquivalent, keyMask );
     item.setKeyEquivalent(keyEquivalent);
     item.setKeyEquivalentModifierMask(keyMask);
   end;
@@ -757,7 +726,7 @@ var
   key   : NSString;
   mask  : NSUInteger;
 begin
-  ShortcutToKeyEquivalent(ashortCut, key, mask);
+  TCocoaKeyUtil.toKeyEquivalent(ashortCut, key, mask);
   Result := item.initWithTitle_action_keyEquivalent(
     TCocoaControlUtil.toMacOSTitle(Atitle),
     objcselector('lclItemSelected:'), // Selector is Hard-coded, that's why it's init

@@ -377,7 +377,7 @@ var
   ShiftState: NSUInteger;
   ns: NSString;
 begin
-  ShortcutToKeyEquivalent(ShortCutK1, ns, ShiftState);
+  TCocoaKeyUtil.toKeyEquivalent(ShortCutK1, ns, ShiftState);
   TCocoaMenuItem(AMenuItem.Handle).setKeyEquivalentModifierMask(ShiftState);
   TCocoaMenuItem(AMenuItem.Handle).setKeyEquivalent(ns);
 end;
