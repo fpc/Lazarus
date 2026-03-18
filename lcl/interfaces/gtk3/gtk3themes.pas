@@ -456,7 +456,7 @@ var
   Context: PGtkStyleContext;
   Provider: PGtkCssProvider;
   CSS: string;
-  Pos: gint;
+  APos: gint;
   BaseBg, BaseFg, SelBg, SelFg, InsBg, InsFg: TGdkRGBA;
 begin
   if AScreen = nil then
@@ -470,16 +470,16 @@ begin
   gtk_widget_path_iter_set_object_name(Path, 0, AClassName);
   gtk_widget_path_iter_add_class(Path, 0, 'toggle');
   gtk_widget_path_iter_set_state(Path, 0, State);
-  Pos := gtk_widget_path_append_type(Path, G_TYPE_NONE);
-  gtk_widget_path_iter_set_object_name(Path, Pos, IndicatorName);
-  gtk_widget_path_iter_add_class(Path, Pos, IndicatorName);
-  gtk_widget_path_iter_set_state(Path, Pos, State);
+  APos := gtk_widget_path_append_type(Path, G_TYPE_NONE);
+  gtk_widget_path_iter_set_object_name(Path, APos, IndicatorName);
+  gtk_widget_path_iter_add_class(Path, APos, IndicatorName);
+  gtk_widget_path_iter_set_state(Path, APos, State);
   gtk_style_context_set_path(Context, Path);
   gtk_style_context_add_class(Context, IndicatorName);
   gtk_style_context_set_state(Context, State);
   gtk_widget_path_unref(Path);
 
-  if not Gtk3WidgetSet.GetThemeName.Contains('Breeze', True) then
+  if Pos('BREEZE', UpperCase(Gtk3WidgetSet.GetThemeName)) = 0 then
     exit(Context);
 
   {$note could not find the way to draw proper checkbox and radio,
