@@ -2991,7 +2991,21 @@ var
   ATempCr: Pcairo_t;
 begin
   FCurrentImage := AImage;
-  cairo_destroy(pcr);
+  if FXorMode then
+  begin
+    if FXorCairo <> nil then
+    begin
+      cairo_destroy(FXorCairo);
+      FXorCairo := nil;
+    end;
+    if FXorSurface <> nil then
+    begin
+      cairo_surface_destroy(FXorSurface);
+      FXorSurface := nil;
+    end;
+    FXorMode := False;
+  end;
+  cairo_destroy(FCairo);
   FCairo := nil;
   APixBuf := AImage.Handle;
   if not Gtk3IsGdkPixbuf(APixBuf) then
