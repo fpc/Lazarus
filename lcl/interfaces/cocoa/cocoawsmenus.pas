@@ -53,7 +53,6 @@ type
 
   TCocoaWSMenuItem = class(TWSMenuItem)
   private
-    class procedure Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
     // used from the MenuMadness example
     class function NSMenuCheckmark: NSImage;
     class function NSMenuRadio: NSImage;
@@ -151,13 +150,6 @@ begin
 end;
 
 { TCocoaWSMenuItem }
-
-class procedure TCocoaWSMenuItem.Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
-const
-  menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
-begin
-  ANSMenuItem.setState( menustate[Checked] );
-end;
 
 // used from the MenuMadness example
 class function TCocoaWSMenuItem.NSMenuCheckmark: NSImage;
@@ -270,7 +262,7 @@ begin
   end
   else
   begin
-    item := LCLMenuItemInit(TCocoaMenuItem.alloc, AMenuItem);
+    item := TCocoaMenuUtil.init(TCocoaMenuItem.alloc, AMenuItem);
     TCocoaMenuItem(item).FMenuItemTarget := AMenuItem;
 
     if AMenuItem.IsInMenuBar then
@@ -295,7 +287,7 @@ begin
     else
       item.setOnStateImage(NSMenuCheckmark);
 
-    Do_SetCheck(item, AMenuItem.Checked);
+    TCocoaMenuUtil.setCheck(item, AMenuItem.Checked);
 
     if AMenuItem.HasIcon and ((AMenuItem.ImageIndex>=0) or (AMenuItem.HasBitmap)) then
       NSMenuItemSetBitmap(AMenuItem, item, AMenuItem.Bitmap);
@@ -427,7 +419,7 @@ begin
   lHandle := NSMenuItem(AMenuItem.Handle);
   Result := Result and lHandle.isKindOfClass_(TCocoaMenuItem);
   if not Result then Exit;
-  TCocoaWSMenuItem.Do_SetCheck(lHandle, Checked);
+  TCocoaMenuUtil.setCheck(lHandle, Checked);
   lCocoaHandle.UncheckSiblings(True);
 end;
 

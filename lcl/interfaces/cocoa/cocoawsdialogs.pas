@@ -588,7 +588,7 @@ begin
   setCallback;
   setFilePanel;
 
-  isMenuOn := ToggleAppMenu(false);
+  isMenuOn := TCocoaMenuUtil.toggleAppMenu(false);
   ReplaceEditMenu();
 
   lclFileDialog.UserChoice := mrCancel;
@@ -598,7 +598,7 @@ begin
     lclFileDialog.DoClose;
   finally
     RestoreEditMenu();
-    ToggleAppMenu(isMenuOn);
+    TCocoaMenuUtil.toggleAppMenu(isMenuOn);
   end;
 
 end;  {TCocoaWSFileDialog.ShowModal}
@@ -681,12 +681,12 @@ begin
 *)
 
   // show panel
-  isMenuOn := ToggleAppMenu(false);
+  isMenuOn := TCocoaMenuUtil.toggleAppMenu(false);
   try
     colorPanel.makeKeyAndOrderFront(colorDelegate);
     NSApp.runModalForWindow(colorPanel);
   finally
-    ToggleAppMenu(isMenuOn);
+    TCocoaMenuUtil.toggleAppMenu(isMenuOn);
   end;
 end;
 
@@ -847,13 +847,13 @@ begin
 *)
 
   // show panel
-  isMenuOn := ToggleAppMenu(false);
+  isMenuOn := TCocoaMenuUtil.toggleAppMenu(false);
   try
     FontPanel.makeKeyAndOrderFront(FontDelegate);
     NSApp.runModalForWindow(FontPanel);
     fm.setDelegate(nil);
   finally
-    ToggleAppMenu(isMenuOn);
+    TCocoaMenuUtil.toggleAppMenu(isMenuOn);
   end;
 end;
 

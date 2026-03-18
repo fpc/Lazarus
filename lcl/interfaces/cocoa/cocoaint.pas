@@ -778,7 +778,7 @@ begin
 
   PrevMenuEnabled := MainMenuEnabled;
   MainMenuEnabled := true;
-  ToggleAppMenu(true);
+  TCocoaMenuUtil.toggleAppMenu(true);
   //if not Assigned(ACustomForm.Menu) then ToggleAppMenu(false);
 
   // for modal windows work around bug, but doesn't work :(
@@ -803,14 +803,14 @@ begin
 
   if not Assigned(Modals) then Modals := TList.Create;
 
-  MenuTrackCancelAll();
+  TCocoaMenuUtil.trackCancelAll();
 
   // If a modal menu has it's menu, then SetMainMenu has already been called
   // (Show is called for modal windows prior to ShowModal. Show triggers Activate and Active is doing MainMenu)
   if not hasMenu then begin
     Modals.Add( TModalSession.Create(awin, sess, MainMenuEnabled, NSApplication(NSApp).mainMenu, CurLCLMenu));
     MainMenuEnabled := false;
-    ToggleAppMenu(false); // modal menu doesn't have a window, disabling it
+    TCocoaMenuUtil.toggleAppMenu(false); // modal menu doesn't have a window, disabling it
   end else
     // if modal window has its own menu, then the prior window is rescord in "Prev" fields
     Modals.Add( TModalSession.Create(awin, sess, PrevMenuEnabled, PrevMenu, PrevLCLMenu));
@@ -832,7 +832,7 @@ begin
   DoSetMainMenu(ms.cocoaMenu, ms.lclMenu);
   PrevMenuEnabled := MainMenuEnabled;
   MainMenuEnabled := ms.prevMenuEnabled;
-  ToggleAppMenu(ms.prevMenuEnabled); // modal menu doesn't have a window, disabling it
+  TCocoaMenuUtil.toggleAppMenu(ms.prevMenuEnabled); // modal menu doesn't have a window, disabling it
 
   ms.Free;
   Modals.Delete(Modals.Count-1);
