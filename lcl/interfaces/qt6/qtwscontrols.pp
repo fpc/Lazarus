@@ -59,6 +59,7 @@ type
 
   TQtWSControl = class(TWSControl)
   published
+    class function GetCanvasScaleFactor(const AControl: TControl): Double; override;
   end;
 
   { TQtWSWinControl }
@@ -865,6 +866,16 @@ begin
     Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y) and
       TQtWidgetset(Widgetset).DragImageList_SetVisible(True);
   end;
+end;
+
+{ TQtWSControl }
+
+class function TQtWSControl.GetCanvasScaleFactor(const AControl: TControl
+			): Double;
+begin
+	Result := 1;
+  if Assigned(AControl.Parent) then
+    Result := AControl.Parent.GetCanvasScaleFactor;
 end;
 
 end.
