@@ -109,7 +109,6 @@ type
 var
   menuItemHandleCreateFunc: TMenuItemHandleCreateFunc;
 
-
 implementation
 
 uses
@@ -162,21 +161,6 @@ var
   //
   // See topic: https://forum.lazarus.freepascal.org/index.php/topic,56419.0.html
   menuTrack : NSMutableArray;
-
-function getHotkeyFromTitle( aTitle:String ): Word;
-var
-  i: Integer;
-  hotkeyChar: Char;
-begin
-  Result:= 0;
-  i:= aTitle.IndexOf( cHotkeyPrefix );
-  if (i<0) or (i>=aTitle.Length-1) then
-    Exit;
-
-  hotkeyChar:= aTitle.Chars[i+1];
-  if hotkeyChar <> cHotkeyPrefix then
-    Result:= Word( UpCase(hotkeyChar) );
-end;
 
 { TCocoaMenu }
 
@@ -724,7 +708,7 @@ begin
 
   if (lclMenuItem.Owner is TPopupMenu) and (aShortCut=0) then begin
     if not Assigned(lclMenuItem.Action) then begin
-      key:= getHotkeyFromTitle( aTitle );
+      key:= TCocoaStringUtil.getAcceleration( aTitle );
       if key<>0 then
         aShortCut:= ShortCut( key, [] );
     end;

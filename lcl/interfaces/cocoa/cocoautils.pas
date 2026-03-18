@@ -78,6 +78,7 @@ type
     // The function removes single '&' and '(...)', and replaced '&&' with '&'
     // (removing LCL (Windows) specific caption convention
     class function removeAcceleration(const str: String): String;
+    class function getAcceleration(const aTitle: String): Word;
     class function getNSStringObject( const aString: id ) : NSString;
   end;
 
@@ -430,6 +431,21 @@ begin
     Exit;
 
   Result:= str.Substring(0,posLeft).Trim;
+end;
+
+class function TCocoaStringUtil.getAcceleration(const aTitle: String): Word;
+var
+  i: Integer;
+  hotkeyChar: Char;
+begin
+  Result:= 0;
+  i:= aTitle.IndexOf( cHotkeyPrefix );
+  if (i<0) or (i>=aTitle.Length-1) then
+    Exit;
+
+  hotkeyChar:= aTitle.Chars[i+1];
+  if hotkeyChar <> cHotkeyPrefix then
+    Result:= Word( UpCase(hotkeyChar) );
 end;
 
 class function TCocoaStringUtil.getNSStringObject( const aString: id ) : NSString;
