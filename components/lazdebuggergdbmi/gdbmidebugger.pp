@@ -9489,6 +9489,7 @@ begin
   CmdClr := TGDBMIDebuggerCommandExcludedRoutineClearAll.Create(Self);
   CmdClr.AddReference;
   QueueCommand(CmdClr);
+  CmdClr.ReleaseReference;
 end;
 
 procedure TGDBMIDebuggerBase.UpdateExcludedRoutines(AForce: Boolean);
@@ -9511,6 +9512,7 @@ begin
       CmdSet := TGDBMIDebuggerCommandExcludedRoutineSet.Create(Self, FMirroredExcludedRoutines[i]);
       CmdSet.AddReference;
       QueueCommand(CmdSet);
+      CmdSet.ReleaseReference;
     end;
   end;
 end;
