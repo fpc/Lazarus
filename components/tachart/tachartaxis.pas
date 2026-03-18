@@ -1056,7 +1056,7 @@ begin
   with AMeasureData do begin
     FSize := Max(sz, FSize);
     FTitleSize := Max(TitleSize(txtLen), FTitleSize);
-    FMargin := Max(Margin, FMargin);
+    FMargin := Max(d.Scale(Margin), FMargin);
   end;
 
   if minc < MaxInt then begin
