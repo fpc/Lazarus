@@ -536,7 +536,7 @@ var
     if NOT Assigned(mainMenu) or (mainMenu.numberOfItems=0) then
       Exit;
 
-    oldEditMenu:= FindEditMenu(mainMenu, CocoaConst.NSSTR_EDIT_MENU);
+    oldEditMenu:= TCocoaMenuUtil.findEditMenu(mainMenu, CocoaConst.NSSTR_EDIT_MENU);
     if Assigned(oldEditMenu) then begin
       editMenuIndex:= mainMenu.indexOfItem(oldEditMenu);
       oldEditMenu.retain;
@@ -547,7 +547,7 @@ var
       editMenuTitle:= CocoaConst.NSSTR_EDIT_MENU;
     end;
 
-    AttachEditMenu( mainMenu, editMenuIndex, editMenuTitle );
+    TCocoaMenuUtil.attachEditMenu( mainMenu, editMenuIndex, editMenuTitle );
   end;
 
   class procedure RestoreEditMenu();
@@ -588,7 +588,7 @@ begin
   setCallback;
   setFilePanel;
 
-  isMenuOn := ToggleAppMenu(false);
+  isMenuOn := TCocoaMenuUtil.toggleAppMenu(false);
   ReplaceEditMenu();
 
   lclFileDialog.UserChoice := mrCancel;
@@ -598,7 +598,7 @@ begin
     lclFileDialog.DoClose;
   finally
     RestoreEditMenu();
-    ToggleAppMenu(isMenuOn);
+    TCocoaMenuUtil.toggleAppMenu(isMenuOn);
   end;
 
 end;  {TCocoaWSFileDialog.ShowModal}
@@ -681,12 +681,12 @@ begin
 *)
 
   // show panel
-  isMenuOn := ToggleAppMenu(false);
+  isMenuOn := TCocoaMenuUtil.toggleAppMenu(false);
   try
     colorPanel.makeKeyAndOrderFront(colorDelegate);
     NSApp.runModalForWindow(colorPanel);
   finally
-    ToggleAppMenu(isMenuOn);
+    TCocoaMenuUtil.toggleAppMenu(isMenuOn);
   end;
 end;
 
@@ -847,13 +847,13 @@ begin
 *)
 
   // show panel
-  isMenuOn := ToggleAppMenu(false);
+  isMenuOn := TCocoaMenuUtil.toggleAppMenu(false);
   try
     FontPanel.makeKeyAndOrderFront(FontDelegate);
     NSApp.runModalForWindow(FontPanel);
     fm.setDelegate(nil);
   finally
-    ToggleAppMenu(isMenuOn);
+    TCocoaMenuUtil.toggleAppMenu(isMenuOn);
   end;
 end;
 

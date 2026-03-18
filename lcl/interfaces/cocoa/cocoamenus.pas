@@ -10,9 +10,9 @@ uses
   // RTL
   sysutils,
   // LCL
-  Forms, Menus, LCLType, Classes, LCLStrConsts,
+  Forms, Menus, Graphics, ImgList, LCLType, Classes, LCLStrConsts,
   // LCL Cocoa
-  CocoaAll, CocoaPrivate, CocoaCallback, CocoaUtils, CocoaConfig, CocoaConst;
+  CocoaAll, CocoaPrivate, CocoaGDIObjects, CocoaCallback, CocoaUtils, CocoaConfig, CocoaConst;
 
 type
   IMenuItemCallback = interface(ICommonCallBack)
@@ -65,33 +65,67 @@ type
 
   TMenuItemHandleCreateFunc = function(const AMenuItem: TMenuItem): NSMenuItem;
 
-const
-  isMenuEnabled : Boolean = true;
+  { TCocoaMenuUtil }
+
+  TCocoaMenuUtil = class
+  public
+    class procedure trackStarted(const mn: NSMenu);
+    class procedure trackEnded(const mn: NSMenu);
+    class procedure trackCancelAll;
+
+    class function toggleAppMenu(
+      const ALogicalEnabled: Boolean): Boolean;
+
+    class function findEditMenu(
+      const menu:NSMenu;
+      const title:NSString ): NSMenuItem;
+    class procedure attachEditMenu(
+      const menu:NSMenu;
+      const index:Integer;
+      const title:NSString );
+
+    class procedure attachLCLMenu(
+      const menu: NSMenu;
+      const lclMenu: TMenuItem);
+  end;
+
+  { TCocoaMenuItemUtil }
+
+  TCocoaMenuItemUtil = class
+  public
+    class function init(
+      const item: NSMenuItem;
+      const lclMenuItem: TMenuItem ): id; overload;
+    class function init(
+      const item: NSMenuItem;
+      const atitle: String;
+      const ashortCut: TShortCut ): id; overload;
+    class function init(
+      const item: NSMenuItem;
+      const atitle: String;
+      const VKKey: Word = 0;
+      const State: TShiftState = [] ): id; overload;
+
+    class procedure setBitmap(
+      const item: TMenuItem;
+      const mn: NSMenuItem;
+      const bmp: TBitmap );
+
+    class procedure setCheck(
+      const ANSMenuItem: NSMenuItem;
+      const Checked: Boolean );
+  end;
 
 var
   menuItemHandleCreateFunc: TMenuItemHandleCreateFunc;
-
-procedure MenuTrackStarted(mn: NSMenu);
-procedure MenuTrackEnded(mn: NSMenu);
-procedure MenuTrackCancelAll;
-
-// the returned "Key" should not be released, as it's not memory owned
-procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
-
-function LCLMenuItemInit(item: NSMenuItem; const lclMenuItem: TMenuItem): id;
-function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
-function LCLMenuItemInit(item: NSMenuItem; const atitle: string; VKKey: Word = 0; State: TShiftState = []): id;
-function ToggleAppMenu(ALogicalEnabled: Boolean): Boolean;
-procedure Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
-
-function FindEditMenu(const menu:NSMenu; const title:NSString): NSMenuItem;
-procedure AttachEditMenu(const menu:NSMenu; const index:Integer; const title:NSString );
-procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
 
 implementation
 
 uses
   CocoaInt;
+
+var
+  isMenuEnabled : Boolean = true;
 
 type
   TCocoaMenuItem_HideApp = objcclass(NSMenuItem)
@@ -137,222 +171,6 @@ var
   //
   // See topic: https://forum.lazarus.freepascal.org/index.php/topic,56419.0.html
   menuTrack : NSMutableArray;
-
-procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
-var
-  w: word;
-  s: TShiftState;
-begin
-  ShortCutToKey(AShortCut, w, s);
-  key := TCocoaKeyUtil.codeToString(w);
-  shiftKeyMask := 0;
-  if ssShift in s then
-    ShiftKeyMask := ShiftKeyMask + NSShiftKeyMask;
-  if ssAlt in s then
-    ShiftKeyMask := ShiftKeyMask + NSAlternateKeyMask;
-  if ssCtrl in s then
-    ShiftKeyMask := ShiftKeyMask + NSControlKeyMask;
-  if ssMeta in s then
-    ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
-
-  // as a key , +/= is a rare case, both + and = are used as primary keys.
-  // ‘Shift+=’ for ‘+’
-  // ‘=’ for ‘='
-  if key.isEqualToString(NSSTR_KEY_PLUS) then begin
-    if (ShiftKeyMask and NSShiftKeyMask)=0 then
-      key := NSSTR_KEY_EQUALS
-    else
-      ShiftKeyMask := ShiftKeyMask - NSShiftKeyMask;
-  end;
-end;
-
-procedure ToggleAppNSMenu(mn: NSMenu; ALogicalEnabled: Boolean);
-var
-  it  : NSMenuItem;
-  obj : NSObject;
-  enb : Boolean;
-begin
-  if not Assigned(mn) then Exit;
-  for obj in mn.itemArray do begin
-    if not obj.isKindOfClass(NSMenuItem) then continue;
-    it := NSMenuItem(obj);
-    enb := ALogicalEnabled;
-    if enb and (it.isKindOfClass(TCocoaMenuItem)) then
-    begin
-      enb := not Assigned(TCocoaMenuItem(it).FMenuItemTarget)
-         or ( TCocoaMenuItem(it).FMenuItemTarget.Enabled );
-    end;
-    {$ifdef BOOLFIX}
-    it.setEnabled_( Ord(enb));
-    {$else}
-    it.setEnabled(enb);
-    {$endif}
-    if (it.hasSubmenu) then
-    begin
-      ToggleAppNSMenu(it.submenu, ALogicalEnabled);
-    end;
-  end;
-end;
-
-function ToggleAppMenu(ALogicalEnabled: Boolean): Boolean;
-begin
-  Result := isMenuEnabled;
-  ToggleAppNSMenu( NSApplication(NSApp).mainMenu, ALogicalEnabled );
-  isMenuEnabled := ALogicalEnabled;
-end;
-
-procedure Do_SetCheck(const ANSMenuItem: NSMenuItem; const Checked: boolean);
-const
-  menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
-begin
-  ANSMenuItem.setState( menustate[Checked] );
-end;
-
-function FindEditMenuByKeyEquivalent(const menu: NSMenu;
-  const keyEquivalent:NSString): NSMenuItem;
-var
-  item: NSMenuItem;
-  subItem: NSMenuItem;
-begin
-  Result:= nil;
-  if NOT Assigned(menu) then
-    Exit;
-
-  for item in menu.itemArray do begin
-    if item.hasSubmenu then begin
-      for subItem in item.submenu.itemArray do begin
-        if NOT keyEquivalent.isEqualToString(subItem.keyEquivalent) then
-          continue;
-        if subItem.keyEquivalentModifierMask <> NSCommandKeyMask then
-          continue;
-        Result:= item;
-        Exit;
-      end;
-    end;
-  end;
-end;
-
-function getHotkeyFromTitle( aTitle:String ): Word;
-var
-  i: Integer;
-  hotkeyChar: Char;
-begin
-  Result:= 0;
-  i:= aTitle.IndexOf( cHotkeyPrefix );
-  if (i<0) or (i>=aTitle.Length-1) then
-    Exit;
-
-  hotkeyChar:= aTitle.Chars[i+1];
-  if hotkeyChar <> cHotkeyPrefix then
-    Result:= Word( UpCase(hotkeyChar) );
-end;
-
-function LCLMenuItemInit(item: NSMenuItem; const lclMenuItem: TMenuItem): id;
-var
-  aShortCut: TShortCut;
-  aTitle: String;
-  key: Word;
-begin
-  aTitle := lclMenuItem.Caption;
-  aShortCut := lclMenuItem.ShortCut;
-
-  if (lclMenuItem.Owner is TPopupMenu) and (aShortCut=0) then begin
-    if not Assigned(lclMenuItem.Action) then begin
-      key:= getHotkeyFromTitle( aTitle );
-      if key<>0 then
-        aShortCut:= ShortCut( key, [] );
-    end;
-  end;
-
-  Result:= LCLMenuItemInit(item, aTitle, aShortCut);
-end;
-
-function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
-var
-  key   : NSString;
-  mask  : NSUInteger;
-begin
-  ShortcutToKeyEquivalent(ashortCut, key, mask);
-  Result := item.initWithTitle_action_keyEquivalent(
-    TCocoaControlUtil.toMacOSTitle(Atitle),
-    objcselector('lclItemSelected:'), // Selector is Hard-coded, that's why it's LCLMenuItemInit
-    key);
-  NSMenuItem(Result).setKeyEquivalentModifierMask(mask);
-  NSMenuItem(Result).setTarget(Result);
-end;
-
-function LCLMenuItemInit(item: NSMenuItem; const atitle: string; VKKey: Word; State: TShiftState): id;
-var
-  key   : NSString;
-  mask  : NSUInteger;
-begin
-  Result := LCLMenuItemInit(item, atitle, ShortCut(VKKey, State));
-end;
-
-function FindEditMenu(const menu: NSMenu; const title: NSString): NSMenuItem;
-var
-  index: NSInteger;
-begin
-  if NOT Assigned(menu) then
-    Exit;
-
-  index:= menu.indexOfItemWithTitle(title);
-  if index >= 0 then begin
-    Result:= menu.itemAtIndex(index);
-    Exit;
-  end;
-
-  Result:= FindEditMenuByKeyEquivalent(menu, NSSTR('c')); // Command+C
-end;
-
-procedure AttachEditMenu(const menu: NSMenu; const index: Integer;
-  const title: NSString);
-var
-  editMenu: NSMenuItem;
-  editSubmenu: NSMenu;
-begin
-  editMenu:= NSMenuItem.alloc.init;
-  editMenu.setTitle( title );
-  menu.insertItem_atIndex(editMenu, index);
-  editMenu.release;
-
-  editSubmenu:= NSMenu.alloc.initWithTitle(title);
-  editMenu.setSubmenu(editSubmenu);
-  editSubmenu.release;
-
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_UNDO, objcselector('undo:'), NSSTR('z'));
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_REDO, objcselector('redo:'), NSSTR('Z'));
-  editSubmenu.addItem(NSMenuItem.separatorItem);
-
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_CUT, objcselector('cut:'), NSSTR('x'));
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_COPY, objcselector('copy:'), NSSTR('c'));
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_PASTE, objcselector('paste:'), NSSTR('v'));
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_SELECTALL, objcselector('selectAll:'), NSSTR('a'));
-end;
-
-procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
-var
-  index: Integer;
-  lclItem: TMenuItem;
-  item: NSMenuItem;
-begin
-  if NOT Assigned(menu) then
-    Exit;
-  if NOT Assigned(lclMenu) then
-    Exit;
-
-  for index:=0 to lclMenu.Count-1 do begin
-    lclItem:= lclMenu.Items[index];
-    item:= menuItemHandleCreateFunc(lclItem);
-    menu.addItem(item);
-  end;
-end;
 
 { TCocoaMenu }
 
@@ -458,7 +276,7 @@ begin
       lSibling.HandleAllocated() then
     begin
       lSiblingHandle := NSMenuItem(lSibling.Handle);
-      Do_SetCheck(lSiblingHandle, False);
+      TCocoaMenuItemUtil.setCheck(lSiblingHandle, False);
     end;
   end;
 end;
@@ -533,7 +351,7 @@ var
     end;
     item.setTitle( StrToNSString(title) );
     item.setImage(nil);
-    ShortcutToKeyEquivalent(ShortCut(key,state), keyEquivalent, keyMask );
+    TCocoaKeyUtil.toKeyEquivalent(ShortCut(key,state), keyEquivalent, keyMask );
     item.setKeyEquivalent(keyEquivalent);
     item.setKeyEquivalentModifierMask(keyMask);
   end;
@@ -547,7 +365,7 @@ begin
     self.FMenuItemTarget:= CocoaConfigMenu.appMenu.customMenus;
 
   // APP Custom
-  NSMenuAddItemsFromLCLMenu(self.submenu, CocoaConfigMenu.appMenu.customMenus);
+  TCocoaMenuUtil.attachLCLMenu(self.submenu, CocoaConfigMenu.appMenu.customMenus);
 
   // About
   attachSpecialMenuItem(
@@ -574,7 +392,7 @@ begin
   submenu.addItem(NSMenuItem.separatorItem);
 
   // Services
-  item := LCLMenuItemInit( TCocoaMenuItem.alloc, rsMacOSMenuServices);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem.alloc, rsMacOSMenuServices);
   item.setTarget(nil);
   item.setAction(nil);
   submenu.addItem(item);
@@ -588,17 +406,17 @@ begin
   submenu.addItem(NSMenuItem.separatorItem);
 
   // Hide App     Meta-H
-  item := LCLMenuItemInit( TCocoaMenuItem_HideApp.alloc, Format(rsMacOSMenuHide, [Application.Title]), VK_H, [ssMeta]);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem_HideApp.alloc, Format(rsMacOSMenuHide, [Application.Title]), VK_H, [ssMeta]);
   submenu.addItem(item);
   item.release;
 
   // Hide Others  Meta-Alt-H
-  item := LCLMenuItemInit( TCocoaMenuItem_HideOthers.alloc, rsMacOSMenuHideOthers, VK_H, [ssMeta, ssAlt]);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem_HideOthers.alloc, rsMacOSMenuHideOthers, VK_H, [ssMeta, ssAlt]);
   submenu.addItem(item);
   item.release;
 
   // Show All
-  item := LCLMenuItemInit( TCocoaMenuItem_ShowAllApp.alloc, rsMacOSMenuShowAll);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem_ShowAllApp.alloc, rsMacOSMenuShowAll);
   submenu.addItem(item);
   item.release;
 
@@ -606,7 +424,7 @@ begin
   submenu.addItem(NSMenuItem.separatorItem);
 
   // Quit   Meta-Q
-  item := LCLMenuItemInit( TCocoaMenuItem_Quit.alloc, Format(rsMacOSMenuQuit, [Application.Title]), VK_Q, [ssMeta]);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem_Quit.alloc, Format(rsMacOSMenuQuit, [Application.Title]), VK_Q, [ssMeta]);
   submenu.addItem(item);
   item.release;
 end;
@@ -622,7 +440,7 @@ begin
   if not Assigned(menuItemCallback) then Exit;
   if not isMenuEnabled then Exit;
 
-  MenuTrackStarted(AMenu);
+  TCocoaMenuUtil.trackStarted(AMenu);
 
   if (menu.isKindOfClass(TCocoaMenu)) then
   begin
@@ -639,7 +457,7 @@ end;
 
 procedure TCocoaMenuItem.menuDidClose(AMenu: NSMenu);
 begin
-  MenuTrackEnded(AMenu);
+  TCocoaMenuUtil.trackEnded(AMenu);
 end;
 
 function TCocoaMenuItem.worksWhenModal: LCLObjCBoolean;
@@ -719,19 +537,21 @@ begin
     Application.Terminate;
 end;
 
-procedure MenuTrackStarted(mn: NSMenu);
+{ TCocoaMenuUtil }
+
+class procedure TCocoaMenuUtil.trackStarted(const mn: NSMenu);
 begin
   if not Assigned(menuTrack) then menuTrack := NSMutableArray.alloc.init;
   menuTrack.addObject(mn);
 end;
 
-procedure MenuTrackEnded(mn: NSMenu);
+class procedure TCocoaMenuUtil.trackEnded(const mn: NSMenu);
 begin
   if Assigned(menuTrack) then
     menuTrack.removeObject(mn);
 end;
 
-procedure MenuTrackCancelAll;
+class procedure TCocoaMenuUtil.trackCancelAll;
 var
   mn : NSMenu;
 begin
@@ -745,8 +565,235 @@ begin
   menuTrack.removeAllObjects;
 end;
 
+procedure doToggleAppMenu(mn: NSMenu; ALogicalEnabled: Boolean);
+var
+  it  : NSMenuItem;
+  obj : NSObject;
+  enb : Boolean;
+begin
+  if not Assigned(mn) then Exit;
+  for obj in mn.itemArray do begin
+    if not obj.isKindOfClass(NSMenuItem) then continue;
+    it := NSMenuItem(obj);
+    enb := ALogicalEnabled;
+    if enb and (it.isKindOfClass(TCocoaMenuItem)) then
+    begin
+      enb := not Assigned(TCocoaMenuItem(it).FMenuItemTarget)
+         or ( TCocoaMenuItem(it).FMenuItemTarget.Enabled );
+    end;
+    {$ifdef BOOLFIX}
+    it.setEnabled_( Ord(enb));
+    {$else}
+    it.setEnabled(enb);
+    {$endif}
+    if (it.hasSubmenu) then
+    begin
+      doToggleAppMenu(it.submenu, ALogicalEnabled);
+    end;
+  end;
+end;
+
+class function TCocoaMenuUtil.toggleAppMenu(
+  const ALogicalEnabled: Boolean): Boolean;
+begin
+  Result := isMenuEnabled;
+  doToggleAppMenu( NSApplication(NSApp).mainMenu, ALogicalEnabled );
+  isMenuEnabled := ALogicalEnabled;
+end;
+
+function FindEditMenuByKeyEquivalent(const menu: NSMenu;
+  const keyEquivalent:NSString): NSMenuItem;
+var
+  item: NSMenuItem;
+  subItem: NSMenuItem;
+begin
+  Result:= nil;
+  if NOT Assigned(menu) then
+    Exit;
+
+  for item in menu.itemArray do begin
+    if item.hasSubmenu then begin
+      for subItem in item.submenu.itemArray do begin
+        if NOT keyEquivalent.isEqualToString(subItem.keyEquivalent) then
+          continue;
+        if subItem.keyEquivalentModifierMask <> NSCommandKeyMask then
+          continue;
+        Result:= item;
+        Exit;
+      end;
+    end;
+  end;
+end;
+
+class function TCocoaMenuUtil.findEditMenu(
+  const menu: NSMenu;
+  const title: NSString ): NSMenuItem;
+var
+  index: NSInteger;
+begin
+  if NOT Assigned(menu) then
+    Exit;
+
+  index:= menu.indexOfItemWithTitle(title);
+  if index >= 0 then begin
+    Result:= menu.itemAtIndex(index);
+    Exit;
+  end;
+
+  Result:= FindEditMenuByKeyEquivalent(menu, NSSTR('c')); // Command+C
+end;
+
+class procedure TCocoaMenuUtil.attachEditMenu(
+  const menu: NSMenu;
+  const index: Integer;
+  const title: NSString );
+var
+  editMenu: NSMenuItem;
+  editSubmenu: NSMenu;
+begin
+  editMenu:= NSMenuItem.alloc.init;
+  editMenu.setTitle( title );
+  menu.insertItem_atIndex(editMenu, index);
+  editMenu.release;
+
+  editSubmenu:= NSMenu.alloc.initWithTitle(title);
+  editMenu.setSubmenu(editSubmenu);
+  editSubmenu.release;
+
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_UNDO, objcselector('undo:'), NSSTR('z'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_REDO, objcselector('redo:'), NSSTR('Z'));
+  editSubmenu.addItem(NSMenuItem.separatorItem);
+
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_CUT, objcselector('cut:'), NSSTR('x'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_COPY, objcselector('copy:'), NSSTR('c'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_PASTE, objcselector('paste:'), NSSTR('v'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_SELECTALL, objcselector('selectAll:'), NSSTR('a'));
+end;
+
+class procedure TCocoaMenuUtil.attachLCLMenu(
+  const menu: NSMenu;
+  const lclMenu: TMenuItem);
+var
+  index: Integer;
+  lclItem: TMenuItem;
+  item: NSMenuItem;
+begin
+  if NOT Assigned(menu) then
+    Exit;
+  if NOT Assigned(lclMenu) then
+    Exit;
+
+  for index:=0 to lclMenu.Count-1 do begin
+    lclItem:= lclMenu.Items[index];
+    item:= menuItemHandleCreateFunc(lclItem);
+    menu.addItem(item);
+  end;
+end;
+
+{ TCocoaMenuItemUtil }
+
+class function TCocoaMenuItemUtil.init(
+  const item: NSMenuItem;
+  const lclMenuItem: TMenuItem ): id;
+var
+  aShortCut: TShortCut;
+  aTitle: String;
+  key: Word;
+begin
+  aTitle := lclMenuItem.Caption;
+  aShortCut := lclMenuItem.ShortCut;
+
+  if (lclMenuItem.Owner is TPopupMenu) and (aShortCut=0) then begin
+    if not Assigned(lclMenuItem.Action) then begin
+      key:= TCocoaStringUtil.getAcceleration( aTitle );
+      if key<>0 then
+        aShortCut:= ShortCut( key, [] );
+    end;
+  end;
+
+  Result:= init(item, aTitle, aShortCut);
+end;
+
+class function TCocoaMenuItemUtil.init(
+  const item: NSMenuItem;
+  const atitle: String;
+  const ashortCut: TShortCut ): id;
+var
+  key   : NSString;
+  mask  : NSUInteger;
+begin
+  TCocoaKeyUtil.toKeyEquivalent(ashortCut, key, mask);
+  Result := item.initWithTitle_action_keyEquivalent(
+    TCocoaControlUtil.toMacOSTitle(Atitle),
+    objcselector('lclItemSelected:'), // Selector is Hard-coded, that's why it's init
+    key);
+  NSMenuItem(Result).setKeyEquivalentModifierMask(mask);
+  NSMenuItem(Result).setTarget(Result);
+end;
+
+class function TCocoaMenuItemUtil.init(
+  const item: NSMenuItem;
+  const atitle: String;
+  const VKKey: Word;
+  const State: TShiftState ): id;
+var
+  key   : NSString;
+  mask  : NSUInteger;
+begin
+  Result := init(item, atitle, ShortCut(VKKey, State));
+end;
+
+class procedure TCocoaMenuItemUtil.setCheck(
+  const ANSMenuItem: NSMenuItem;
+  const Checked: Boolean );
+const
+  menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
+begin
+  ANSMenuItem.setState( menustate[Checked] );
+end;
+
+class procedure TCocoaMenuItemUtil.setBitmap(
+  const item: TMenuItem;
+  const mn: NSMenuItem;
+  const bmp: TBitmap );
+var
+  image: NSImage;
+  imageWidth: Integer;
+  size: NSSize;
+  list: TCustomImageList;
+begin
+  if not Assigned(mn) then Exit;
+  if not Assigned(bmp) or (bmp.Handle = 0) then begin
+    mn.setImage(nil);
+    Exit;
+  end;
+
+  image:= TCocoaBitmap(bmp.Handle).Image;
+  size:= image.size;
+  item.GetImageList(list, imageWidth);
+  if imageWidth = 0 then
+    imageWidth:= Round(size.width);
+  if Round(size.width) = imageWidth then begin
+    mn.setImage(image);
+    Exit;
+  end;
+
+  size.width:= imageWidth;
+  size.height:= imageWidth;
+  image:= image.copy;
+  image.setSize(size);
+  mn.setImage(image);
+  image.release;
+end;
+
 finalization
-  MenuTrackCancelAll;
+  TCocoaMenuUtil.trackCancelAll;
   if menuTrack <> nil then menuTrack.release;
 
 end.

@@ -9,7 +9,7 @@ uses
   classes,
   MacOSAll, CocoaAll, Cocoa_Extra, CocoaConst,
   SysUtils, Types, LCLType, LCLProc,
-  Graphics, GraphType;
+  Menus, Graphics, GraphType;
 
 type
   { NSLCLDebugExtension }
@@ -78,6 +78,7 @@ type
     // The function removes single '&' and '(...)', and replaced '&&' with '&'
     // (removing LCL (Windows) specific caption convention
     class function removeAcceleration(const str: String): String;
+    class function getAcceleration(const aTitle: String): Word;
     class function getNSStringObject( const aString: id ) : NSString;
   end;
 
@@ -89,6 +90,12 @@ type
     class function codeToVK(AKey: Word): Word;
     class function charToVK(achar: unichar): Word;
     class function getRawKeyChar(ev: NSEvent): System.WideChar;
+
+    // the returned "Key" should not be released, as it's not memory owned
+    class procedure toKeyEquivalent(
+      const AShortCut: TShortcut;
+      out Key: NSString;
+      out shiftKeyMask: NSUInteger );
   end;
 
   { TCocoaColorUtil }
@@ -426,6 +433,21 @@ begin
   Result:= str.Substring(0,posLeft).Trim;
 end;
 
+class function TCocoaStringUtil.getAcceleration(const aTitle: String): Word;
+var
+  i: Integer;
+  hotkeyChar: Char;
+begin
+  Result:= 0;
+  i:= aTitle.IndexOf( cHotkeyPrefix );
+  if (i<0) or (i>=aTitle.Length-1) then
+    Exit;
+
+  hotkeyChar:= aTitle.Chars[i+1];
+  if hotkeyChar <> cHotkeyPrefix then
+    Result:= Word( UpCase(hotkeyChar) );
+end;
+
 class function TCocoaStringUtil.getNSStringObject( const aString: id ) : NSString;
 begin
   if aString.isKindOfClass( NSAttributedString ) then
@@ -627,6 +649,37 @@ begin
     Result := #0
   else
     Result := System.WideChar(m.characterAtIndex(0));
+end;
+
+class procedure TCocoaKeyUtil.toKeyEquivalent(
+  const AShortCut: TShortcut;
+  out Key: NSString;
+  out shiftKeyMask: NSUInteger);
+var
+  w: word;
+  s: TShiftState;
+begin
+  ShortCutToKey(AShortCut, w, s);
+  key := TCocoaKeyUtil.codeToString(w);
+  shiftKeyMask := 0;
+  if ssShift in s then
+    ShiftKeyMask := ShiftKeyMask + NSShiftKeyMask;
+  if ssAlt in s then
+    ShiftKeyMask := ShiftKeyMask + NSAlternateKeyMask;
+  if ssCtrl in s then
+    ShiftKeyMask := ShiftKeyMask + NSControlKeyMask;
+  if ssMeta in s then
+    ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
+
+  // as a key , +/= is a rare case, both + and = are used as primary keys.
+  // ‘Shift+=’ for ‘+’
+  // ‘=’ for ‘='
+  if key.isEqualToString(NSSTR_KEY_PLUS) then begin
+    if (ShiftKeyMask and NSShiftKeyMask)=0 then
+      key := NSSTR_KEY_EQUALS
+    else
+      ShiftKeyMask := ShiftKeyMask - NSShiftKeyMask;
+  end;
 end;
 
 class function TCocoaKeyUtil.codeToString(AKey: Word): NSString;
