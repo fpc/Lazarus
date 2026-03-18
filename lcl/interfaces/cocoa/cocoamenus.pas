@@ -80,6 +80,18 @@ type
       const ANSMenuItem: NSMenuItem;
       const Checked: Boolean );
 
+    class function findEditMenu(
+      const menu:NSMenu;
+      const title:NSString ): NSMenuItem;
+    class procedure attachEditMenu(
+      const menu:NSMenu;
+      const index:Integer;
+      const title:NSString );
+
+    class procedure attachLCLMenu(
+      const menu: NSMenu;
+      const lclMenu: TMenuItem);
+
     class function init(
       const item: NSMenuItem;
       const lclMenuItem: TMenuItem ): id; overload;
@@ -97,9 +109,6 @@ type
 var
   menuItemHandleCreateFunc: TMenuItemHandleCreateFunc;
 
-function FindEditMenu(const menu:NSMenu; const title:NSString): NSMenuItem;
-procedure AttachEditMenu(const menu:NSMenu; const index:Integer; const title:NSString );
-procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
 
 implementation
 
@@ -154,30 +163,6 @@ var
   // See topic: https://forum.lazarus.freepascal.org/index.php/topic,56419.0.html
   menuTrack : NSMutableArray;
 
-function FindEditMenuByKeyEquivalent(const menu: NSMenu;
-  const keyEquivalent:NSString): NSMenuItem;
-var
-  item: NSMenuItem;
-  subItem: NSMenuItem;
-begin
-  Result:= nil;
-  if NOT Assigned(menu) then
-    Exit;
-
-  for item in menu.itemArray do begin
-    if item.hasSubmenu then begin
-      for subItem in item.submenu.itemArray do begin
-        if NOT keyEquivalent.isEqualToString(subItem.keyEquivalent) then
-          continue;
-        if subItem.keyEquivalentModifierMask <> NSCommandKeyMask then
-          continue;
-        Result:= item;
-        Exit;
-      end;
-    end;
-  end;
-end;
-
 function getHotkeyFromTitle( aTitle:String ): Word;
 var
   i: Integer;
@@ -191,71 +176,6 @@ begin
   hotkeyChar:= aTitle.Chars[i+1];
   if hotkeyChar <> cHotkeyPrefix then
     Result:= Word( UpCase(hotkeyChar) );
-end;
-
-function FindEditMenu(const menu: NSMenu; const title: NSString): NSMenuItem;
-var
-  index: NSInteger;
-begin
-  if NOT Assigned(menu) then
-    Exit;
-
-  index:= menu.indexOfItemWithTitle(title);
-  if index >= 0 then begin
-    Result:= menu.itemAtIndex(index);
-    Exit;
-  end;
-
-  Result:= FindEditMenuByKeyEquivalent(menu, NSSTR('c')); // Command+C
-end;
-
-procedure AttachEditMenu(const menu: NSMenu; const index: Integer;
-  const title: NSString);
-var
-  editMenu: NSMenuItem;
-  editSubmenu: NSMenu;
-begin
-  editMenu:= NSMenuItem.alloc.init;
-  editMenu.setTitle( title );
-  menu.insertItem_atIndex(editMenu, index);
-  editMenu.release;
-
-  editSubmenu:= NSMenu.alloc.initWithTitle(title);
-  editMenu.setSubmenu(editSubmenu);
-  editSubmenu.release;
-
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_UNDO, objcselector('undo:'), NSSTR('z'));
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_REDO, objcselector('redo:'), NSSTR('Z'));
-  editSubmenu.addItem(NSMenuItem.separatorItem);
-
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_CUT, objcselector('cut:'), NSSTR('x'));
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_COPY, objcselector('copy:'), NSSTR('c'));
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_PASTE, objcselector('paste:'), NSSTR('v'));
-  editSubmenu.addItemWithTitle_action_keyEquivalent(
-    CocoaConst.NSSTR_EDIT_MENU_SELECTALL, objcselector('selectAll:'), NSSTR('a'));
-end;
-
-procedure NSMenuAddItemsFromLCLMenu(menu: NSMenu; lclMenu: TMenuItem);
-var
-  index: Integer;
-  lclItem: TMenuItem;
-  item: NSMenuItem;
-begin
-  if NOT Assigned(menu) then
-    Exit;
-  if NOT Assigned(lclMenu) then
-    Exit;
-
-  for index:=0 to lclMenu.Count-1 do begin
-    lclItem:= lclMenu.Items[index];
-    item:= menuItemHandleCreateFunc(lclItem);
-    menu.addItem(item);
-  end;
 end;
 
 { TCocoaMenu }
@@ -451,7 +371,7 @@ begin
     self.FMenuItemTarget:= CocoaConfigMenu.appMenu.customMenus;
 
   // APP Custom
-  NSMenuAddItemsFromLCLMenu(self.submenu, CocoaConfigMenu.appMenu.customMenus);
+  TCocoaMenuUtil.attachLCLMenu(self.submenu, CocoaConfigMenu.appMenu.customMenus);
 
   // About
   attachSpecialMenuItem(
@@ -694,6 +614,101 @@ const
   menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
 begin
   ANSMenuItem.setState( menustate[Checked] );
+end;
+
+function FindEditMenuByKeyEquivalent(const menu: NSMenu;
+  const keyEquivalent:NSString): NSMenuItem;
+var
+  item: NSMenuItem;
+  subItem: NSMenuItem;
+begin
+  Result:= nil;
+  if NOT Assigned(menu) then
+    Exit;
+
+  for item in menu.itemArray do begin
+    if item.hasSubmenu then begin
+      for subItem in item.submenu.itemArray do begin
+        if NOT keyEquivalent.isEqualToString(subItem.keyEquivalent) then
+          continue;
+        if subItem.keyEquivalentModifierMask <> NSCommandKeyMask then
+          continue;
+        Result:= item;
+        Exit;
+      end;
+    end;
+  end;
+end;
+
+class function TCocoaMenuUtil.findEditMenu(
+  const menu: NSMenu;
+  const title: NSString ): NSMenuItem;
+var
+  index: NSInteger;
+begin
+  if NOT Assigned(menu) then
+    Exit;
+
+  index:= menu.indexOfItemWithTitle(title);
+  if index >= 0 then begin
+    Result:= menu.itemAtIndex(index);
+    Exit;
+  end;
+
+  Result:= FindEditMenuByKeyEquivalent(menu, NSSTR('c')); // Command+C
+end;
+
+class procedure TCocoaMenuUtil.attachEditMenu(
+  const menu: NSMenu;
+  const index: Integer;
+  const title: NSString );
+var
+  editMenu: NSMenuItem;
+  editSubmenu: NSMenu;
+begin
+  editMenu:= NSMenuItem.alloc.init;
+  editMenu.setTitle( title );
+  menu.insertItem_atIndex(editMenu, index);
+  editMenu.release;
+
+  editSubmenu:= NSMenu.alloc.initWithTitle(title);
+  editMenu.setSubmenu(editSubmenu);
+  editSubmenu.release;
+
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_UNDO, objcselector('undo:'), NSSTR('z'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_REDO, objcselector('redo:'), NSSTR('Z'));
+  editSubmenu.addItem(NSMenuItem.separatorItem);
+
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_CUT, objcselector('cut:'), NSSTR('x'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_COPY, objcselector('copy:'), NSSTR('c'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_PASTE, objcselector('paste:'), NSSTR('v'));
+  editSubmenu.addItemWithTitle_action_keyEquivalent(
+    CocoaConst.NSSTR_EDIT_MENU_SELECTALL, objcselector('selectAll:'), NSSTR('a'));
+end;
+
+class procedure TCocoaMenuUtil.attachLCLMenu(
+  const menu: NSMenu;
+  const lclMenu: TMenuItem);
+var
+  index: Integer;
+  lclItem: TMenuItem;
+  item: NSMenuItem;
+begin
+  if NOT Assigned(menu) then
+    Exit;
+  if NOT Assigned(lclMenu) then
+    Exit;
+
+  for index:=0 to lclMenu.Count-1 do begin
+    lclItem:= lclMenu.Items[index];
+    item:= menuItemHandleCreateFunc(lclItem);
+    menu.addItem(item);
+  end;
 end;
 
 class function TCocoaMenuUtil.init(

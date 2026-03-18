@@ -536,7 +536,7 @@ var
     if NOT Assigned(mainMenu) or (mainMenu.numberOfItems=0) then
       Exit;
 
-    oldEditMenu:= FindEditMenu(mainMenu, CocoaConst.NSSTR_EDIT_MENU);
+    oldEditMenu:= TCocoaMenuUtil.findEditMenu(mainMenu, CocoaConst.NSSTR_EDIT_MENU);
     if Assigned(oldEditMenu) then begin
       editMenuIndex:= mainMenu.indexOfItem(oldEditMenu);
       oldEditMenu.retain;
@@ -547,7 +547,7 @@ var
       editMenuTitle:= CocoaConst.NSSTR_EDIT_MENU;
     end;
 
-    AttachEditMenu( mainMenu, editMenuIndex, editMenuTitle );
+    TCocoaMenuUtil.attachEditMenu( mainMenu, editMenuIndex, editMenuTitle );
   end;
 
   class procedure RestoreEditMenu();
