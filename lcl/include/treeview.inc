@@ -3863,7 +3863,7 @@ var
   ImageSize, StateImageSize: TSize;
 begin
   if (tvoAutoItemHeight in FOptions)
-  and HandleAllocated and Canvas.HandleAllocated then begin
+  and HandleAllocated and (Canvas.Handle <> 0) then begin
     NewDefItemHeight:=Canvas.TextHeight(TVAutoHeightString)+FDefItemSpace;
     ImageSize := GetImageSize;
     if Assigned(FStateImages) then
