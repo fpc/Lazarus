@@ -294,7 +294,7 @@ var
   const
     WaitDelay: gulong = 4000;
   var
-    x, y, w, h: gint;
+    x, y: gint;
     IsBorderLess: Boolean;
     TargetOpacity: Double;
     GdkDisplay: PGdkDisplay;
@@ -348,16 +348,8 @@ var
       AWindow^.show_all;
     end;
 
-    AWindow^.window^.get_geometry(@x, @y, @w, @h);
-    x := 0;
-    y := 0;
-
-    if (AWindow^.transient_for <> nil) and not AWindow^.get_decorated then
-      if Assigned(AForm.PopupParent) or (AForm.PopupMode = pmAuto) then
-        AWindow^.transient_for^.window^.get_origin(@x, @y);
-
     with AWinControl do
-      AWindow^.window^.move_resize(Left + x, Top + y, Width, Height);
+      AWindow^.window^.move_resize(Left, Top, Width, Height);
 
     gdk_display_flush(GdkDisplay);
 
