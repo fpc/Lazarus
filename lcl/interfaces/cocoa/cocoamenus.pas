@@ -87,7 +87,12 @@ type
     class procedure attachLCLMenu(
       const menu: NSMenu;
       const lclMenu: TMenuItem);
+  end;
 
+  { TCocoaMenuItemUtil }
+
+  TCocoaMenuItemUtil = class
+  public
     class function init(
       const item: NSMenuItem;
       const lclMenuItem: TMenuItem ): id; overload;
@@ -271,7 +276,7 @@ begin
       lSibling.HandleAllocated() then
     begin
       lSiblingHandle := NSMenuItem(lSibling.Handle);
-      TCocoaMenuUtil.setCheck(lSiblingHandle, False);
+      TCocoaMenuItemUtil.setCheck(lSiblingHandle, False);
     end;
   end;
 end;
@@ -387,7 +392,7 @@ begin
   submenu.addItem(NSMenuItem.separatorItem);
 
   // Services
-  item := TCocoaMenuUtil.init( TCocoaMenuItem.alloc, rsMacOSMenuServices);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem.alloc, rsMacOSMenuServices);
   item.setTarget(nil);
   item.setAction(nil);
   submenu.addItem(item);
@@ -401,17 +406,17 @@ begin
   submenu.addItem(NSMenuItem.separatorItem);
 
   // Hide App     Meta-H
-  item := TCocoaMenuUtil.init( TCocoaMenuItem_HideApp.alloc, Format(rsMacOSMenuHide, [Application.Title]), VK_H, [ssMeta]);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem_HideApp.alloc, Format(rsMacOSMenuHide, [Application.Title]), VK_H, [ssMeta]);
   submenu.addItem(item);
   item.release;
 
   // Hide Others  Meta-Alt-H
-  item := TCocoaMenuUtil.init( TCocoaMenuItem_HideOthers.alloc, rsMacOSMenuHideOthers, VK_H, [ssMeta, ssAlt]);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem_HideOthers.alloc, rsMacOSMenuHideOthers, VK_H, [ssMeta, ssAlt]);
   submenu.addItem(item);
   item.release;
 
   // Show All
-  item := TCocoaMenuUtil.init( TCocoaMenuItem_ShowAllApp.alloc, rsMacOSMenuShowAll);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem_ShowAllApp.alloc, rsMacOSMenuShowAll);
   submenu.addItem(item);
   item.release;
 
@@ -419,7 +424,7 @@ begin
   submenu.addItem(NSMenuItem.separatorItem);
 
   // Quit   Meta-Q
-  item := TCocoaMenuUtil.init( TCocoaMenuItem_Quit.alloc, Format(rsMacOSMenuQuit, [Application.Title]), VK_Q, [ssMeta]);
+  item := TCocoaMenuItemUtil.init( TCocoaMenuItem_Quit.alloc, Format(rsMacOSMenuQuit, [Application.Title]), VK_Q, [ssMeta]);
   submenu.addItem(item);
   item.release;
 end;
@@ -691,7 +696,9 @@ begin
   end;
 end;
 
-class function TCocoaMenuUtil.init(
+{ TCocoaMenuItemUtil }
+
+class function TCocoaMenuItemUtil.init(
   const item: NSMenuItem;
   const lclMenuItem: TMenuItem ): id;
 var
@@ -713,7 +720,7 @@ begin
   Result:= init(item, aTitle, aShortCut);
 end;
 
-class function TCocoaMenuUtil.init(
+class function TCocoaMenuItemUtil.init(
   const item: NSMenuItem;
   const atitle: String;
   const ashortCut: TShortCut ): id;
@@ -730,7 +737,7 @@ begin
   NSMenuItem(Result).setTarget(Result);
 end;
 
-class function TCocoaMenuUtil.init(
+class function TCocoaMenuItemUtil.init(
   const item: NSMenuItem;
   const atitle: String;
   const VKKey: Word;
@@ -742,7 +749,7 @@ begin
   Result := init(item, atitle, ShortCut(VKKey, State));
 end;
 
-class procedure TCocoaMenuUtil.setCheck(
+class procedure TCocoaMenuItemUtil.setCheck(
   const ANSMenuItem: NSMenuItem;
   const Checked: Boolean );
 const
@@ -751,7 +758,7 @@ begin
   ANSMenuItem.setState( menustate[Checked] );
 end;
 
-class procedure TCocoaMenuUtil.setBitmap(
+class procedure TCocoaMenuItemUtil.setBitmap(
   const item: TMenuItem;
   const mn: NSMenuItem;
   const bmp: TBitmap );

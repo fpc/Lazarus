@@ -258,7 +258,7 @@ begin
   end
   else
   begin
-    item := TCocoaMenuUtil.init(TCocoaMenuItem.alloc, AMenuItem);
+    item := TCocoaMenuItemUtil.init(TCocoaMenuItem.alloc, AMenuItem);
     TCocoaMenuItem(item).FMenuItemTarget := AMenuItem;
 
     if AMenuItem.IsInMenuBar then
@@ -283,10 +283,10 @@ begin
     else
       item.setOnStateImage(NSMenuCheckmark);
 
-    TCocoaMenuUtil.setCheck(item, AMenuItem.Checked);
+    TCocoaMenuItemUtil.setCheck(item, AMenuItem.Checked);
 
     if AMenuItem.HasIcon and ((AMenuItem.ImageIndex>=0) or (AMenuItem.HasBitmap)) then
-      TCocoaMenuUtil.setBitmap(AMenuItem, item, AMenuItem.Bitmap);
+      TCocoaMenuItemUtil.setBitmap(AMenuItem, item, AMenuItem.Bitmap);
   end;
 
   Result:=HMENU(item);
@@ -415,7 +415,7 @@ begin
   lHandle := NSMenuItem(AMenuItem.Handle);
   Result := Result and lHandle.isKindOfClass_(TCocoaMenuItem);
   if not Result then Exit;
-  TCocoaMenuUtil.setCheck(lHandle, Checked);
+  TCocoaMenuItemUtil.setCheck(lHandle, Checked);
   lCocoaHandle.UncheckSiblings(True);
 end;
 
@@ -469,7 +469,7 @@ begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) then Exit;
 
   if NSObject(AMenuItem.Handle).isKindOfClass(NSMenuItem) then
-    TCocoaMenuUtil.setBitmap(AMenuItem, NSMenuItem(AMenuItem.Handle), AIcon);
+    TCocoaMenuItemUtil.setBitmap(AMenuItem, NSMenuItem(AMenuItem.Handle), AIcon);
 end;
 
 { TCocoaWSPopupMenu }
