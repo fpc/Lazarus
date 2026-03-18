@@ -1,7 +1,7 @@
 object WatchPropertyDlg: TWatchPropertyDlg
-  Left = 513
+  Left = 439
   Height = 650
-  Top = 271
+  Top = 139
   Width = 750
   BorderIcons = [biSystemMenu]
   Caption = 'Watch Properties'
@@ -9,7 +9,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
   ClientWidth = 750
   Constraints.MinWidth = 500
   Position = poScreenCenter
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 26
@@ -31,13 +31,13 @@ object WatchPropertyDlg: TWatchPropertyDlg
   end
   object PanelTop: TPanel
     Left = 0
-    Height = 120
+    Height = 161
     Top = 0
     Width = 750
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 120
+    ClientHeight = 161
     ClientWidth = 750
     TabOrder = 0
     object lblExpression: TLabel
@@ -75,7 +75,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
       AnchorSideRight.Control = PanelTop
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 91
+      Height = 132
       Top = 29
       Width = 738
       Anchors = [akTop, akLeft, akRight]
@@ -88,7 +88,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
       ChildSizing.ShrinkHorizontal = crsSameSize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 2
-      ClientHeight = 91
+      ClientHeight = 132
       ClientWidth = 738
       TabOrder = 1
       object Spacer1: TLabel
@@ -171,7 +171,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
         AnchorSideRight.Control = Spacer2
         AnchorSideRight.Side = asrBottom
         Left = 371
-        Height = 84
+        Height = 132
         Top = 0
         Width = 367
         Anchors = [akTop, akLeft, akRight]
@@ -181,15 +181,69 @@ object WatchPropertyDlg: TWatchPropertyDlg
         ChildSizing.VerticalSpacing = 5
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 84
+        ClientHeight = 132
         ClientWidth = 367
         TabOrder = 4
-        object lblRepCount: TLabel
+        object lblSearchParent: TLabel
           AnchorSideTop.Side = asrCenter
           Left = 0
           Height = 23
           Top = 5
-          Width = 80
+          Width = 82
+          BorderSpacing.Top = 5
+          BorderSpacing.CellAlignVertical = ccaCenter
+          Caption = 'lblSearchParent'
+          Constraints.MinHeight = 23
+          Layout = tlCenter
+          ParentColor = False
+        end
+        object edSearchParent: TEdit
+          AnchorSideLeft.Control = lblSearchParent
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lblSearchParent
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = Panel2
+          AnchorSideRight.Side = asrBottom
+          Left = 87
+          Height = 23
+          Top = 5
+          Width = 280
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 5
+          TabOrder = 0
+          OnChange = edSearchParentChange
+          OnEditingDone = edSearchParentEditingDone
+        end
+        object lblSrchParentErr1: TLabel
+          Left = 0
+          Height = 15
+          Top = 33
+          Width = 82
+          Caption = ' '
+          Visible = False
+        end
+        object lblSrchParentErr2: TLabel
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = lblSrchParentErr1
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = Panel2
+          AnchorSideRight.Side = asrBottom
+          Left = 0
+          Height = 15
+          Top = 33
+          Width = 367
+          Anchors = [akTop, akLeft, akRight]
+          Caption = ' '
+          Font.Color = clRed
+          ParentFont = False
+          Visible = False
+        end
+        object lblRepCount: TLabel
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 23
+          Top = 53
+          Width = 82
           BorderSpacing.Top = 5
           BorderSpacing.CellAlignVertical = ccaCenter
           Caption = 'Repeat Count:'
@@ -197,12 +251,30 @@ object WatchPropertyDlg: TWatchPropertyDlg
           Layout = tlCenter
           ParentColor = False
         end
+        object txtRepCount: TSpinEdit
+          AnchorSideLeft.Control = lblRepCount
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lblRepCount
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = Panel2
+          AnchorSideRight.Side = asrBottom
+          Left = 87
+          Height = 23
+          Top = 53
+          Width = 280
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 5
+          MaxValue = 9999
+          TabOrder = 3
+          OnChange = txtRepCountChange
+        end
         object lblFpDbgConv: TLabel
           AnchorSideTop.Side = asrCenter
           Left = 0
           Height = 23
-          Top = 33
-          Width = 80
+          Top = 81
+          Width = 82
           BorderSpacing.CellAlignVertical = ccaCenter
           Caption = 'lblFpDbgConv'
           Constraints.MinHeight = 23
@@ -215,23 +287,23 @@ object WatchPropertyDlg: TWatchPropertyDlg
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = Panel2
           AnchorSideRight.Side = asrBottom
-          Left = 85
+          Left = 87
           Height = 23
-          Top = 33
-          Width = 282
+          Top = 81
+          Width = 280
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 5
           Constraints.MinWidth = 150
           ItemHeight = 15
           Style = csDropDownList
-          TabOrder = 0
+          TabOrder = 1
         end
         object lblValFormatter: TLabel
           AnchorSideTop.Side = asrCenter
           Left = 0
           Height = 23
-          Top = 61
-          Width = 80
+          Top = 109
+          Width = 82
           BorderSpacing.CellAlignVertical = ccaCenter
           Caption = 'lblValFormatter'
           Constraints.MinHeight = 23
@@ -244,50 +316,32 @@ object WatchPropertyDlg: TWatchPropertyDlg
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = Panel2
           AnchorSideRight.Side = asrBottom
-          Left = 85
+          Left = 87
           Height = 23
-          Top = 61
-          Width = 282
+          Top = 109
+          Width = 280
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 5
           Constraints.MinWidth = 150
           ItemHeight = 15
           Style = csDropDownList
-          TabOrder = 1
-        end
-        object txtRepCount: TSpinEdit
-          AnchorSideLeft.Control = lblRepCount
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = lblRepCount
-          AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = Panel2
-          AnchorSideRight.Side = asrBottom
-          Left = 85
-          Height = 23
-          Top = 5
-          Width = 282
-          Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 5
-          MaxValue = 9999
           TabOrder = 2
-          OnChange = txtRepCountChange
         end
       end
     end
   end
   inline DisplayFormatFrame1: TDisplayFormatFrame
     Left = 6
-    Height = 486
-    Top = 126
+    Height = 445
+    Top = 167
     Width = 738
     HorzScrollBar.Increment = 54
     HorzScrollBar.Page = 545
-    VertScrollBar.Increment = 48
-    VertScrollBar.Page = 486
+    VertScrollBar.Increment = 44
+    VertScrollBar.Page = 445
     Align = alClient
     BorderSpacing.Around = 6
-    ClientHeight = 486
+    ClientHeight = 445
     ClientWidth = 721
     TabOrder = 1
     inherited ToolBar1: TToolBar
@@ -1131,5 +1185,12 @@ object WatchPropertyDlg: TWatchPropertyDlg
         Width = 711
       end
     end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 600
+    OnTimer = Timer1Timer
+    Left = 493
+    Top = 45
   end
 end

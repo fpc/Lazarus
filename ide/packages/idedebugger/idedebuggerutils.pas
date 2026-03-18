@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LazMethodList, EditorSyntaxHighlighterDef, SrcEditorIntf,
-  EditorOptionsIntf, LazEditTextAttributes, Graphics, IdeDebuggerStringConstants;
+  EditorOptionsIntf, LazEditTextAttributes, Graphics, RegExpr, IdeDebuggerStringConstants;
 
 type
 
@@ -35,6 +35,7 @@ type
     FAttrEllipsis: TIdeCustomHighlighterAttributes;
     FAttrError: TIdeCustomHighlighterAttributes;
     FAttrEvaluating: TIdeCustomHighlighterAttributes;
+    FAttrFoundStackFrame: TIdeCustomHighlighterAttributes;
     FAttrUnknown: TIdeCustomHighlighterAttributes;
   public
     constructor Create(AOwner: TComponent); override;
@@ -44,7 +45,15 @@ type
     property AttrDisabled: TIdeCustomHighlighterAttributes   read FAttrDisabled;
     property AttrEvaluating: TIdeCustomHighlighterAttributes read FAttrEvaluating;
     property AttrUnknown: TIdeCustomHighlighterAttributes    read FAttrUnknown;
+    property AttrFoundStackFrame: TIdeCustomHighlighterAttributes  read FAttrFoundStackFrame;
   end;
+
+  TWatchParentSearchLimit = record
+    MaxCnt: integer;
+    NamePattern: string;
+  end;
+
+function ParseWatchParentSearchLimit(s: string): TWatchParentSearchLimit;
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
 function QuoteText(AText: Utf8String; AnOpts: TQuoteTextOpts = []): UTf8String;
@@ -95,6 +104,7 @@ begin
   FAttrDisabled   := InitAttr(@DbgWatchColorDisabled,   'WatchValueDisabled', clDkGray);
   FAttrEvaluating := InitAttr(@DbgWatchColorEvaluating, 'WatchValueEval',     clDkGray);
   FAttrUnknown    := InitAttr(@DbgWatchColorUnknown,    'WatchValueUnknown',  clDkGray);
+  FAttrFoundStackFrame  := InitAttr(@DbgWatchFoundStackFrame,  'WatchValueFoundStackFrame',  clFuchsia);
 end;
 
 class function TIdeDbgWatchesHighlighter.GetLanguageName: string;
@@ -116,6 +126,35 @@ begin
 
   i := IdeColorSchemeList.AddHighlighter(TIdeDbgWatchesHighlighter.Create(nil), Info);
   WatchesColorsHL := TIdeDbgWatchesHighlighter(IdeSyntaxHighlighters.SharedInstances[i]);
+end;
+
+function ParseWatchParentSearchLimit(s: string): TWatchParentSearchLimit;
+var
+  i: SizeInt;
+begin
+  Result := Default(TWatchParentSearchLimit);
+  Result.MaxCnt := -1;
+  if s = '' then
+    exit;
+
+  i := Pos(':', s);
+  if i > 0 then begin
+    Result.MaxCnt := StrToIntDef(copy(s,1,i-1), -1);
+    Result.NamePattern := copy(s, i+1, Length(s));
+  end
+  else
+  if s[1] in ['0'..'9'] then begin
+    Result.MaxCnt := StrToIntDef(s, -1);
+  end
+  else begin
+    Result.MaxCnt := 5;
+    Result.NamePattern := s;
+  end;
+  if Result.NamePattern  <> '' then begin
+    Result.NamePattern := QuoteRegExprMetaChars(Result.NamePattern);
+    Result.NamePattern := StringReplace(Result.NamePattern, '\*', '.*', [rfReplaceAll]);
+    Result.NamePattern := '^'+StringReplace(Result.NamePattern, '\?', '.', [rfReplaceAll])+'$';
+  end;
 end;
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;

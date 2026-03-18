@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, StdCtrls, Extctrls, ButtonPanel, Spin,
+  Forms, StdCtrls, Extctrls, ButtonPanel, Spin, Controls,
   // IdeIntf
   IdeIntfStrConsts, IdeDebuggerWatchValueIntf,
   // IdeConfig
@@ -52,7 +52,7 @@ uses
   LazDebuggerIntf,
   // IdeDebugger
   Debugger, IdeDebuggerOpts, BaseDebugManager, IdeDebuggerStringConstants, EnvDebuggerOptions,
-  ProjectDebugLink, IdeDebuggerBackendValueConv, IdeDebuggerValueFormatter,
+  ProjectDebugLink, IdeDebuggerBackendValueConv, IdeDebuggerValueFormatter, IdeDebuggerUtils,
   DisplayFormatConfigFrame;
 
 type
@@ -68,6 +68,10 @@ type
     DisplayFormatFrame1: TDisplayFormatFrame;
     dropFpDbgConv: TComboBox;
     dropValFormatter: TComboBox;
+    edSearchParent: TEdit;
+    lblSrchParentErr1: TLabel;
+    lblSearchParent: TLabel;
+    lblSrchParentErr2: TLabel;
     lblValFormatter: TLabel;
     Panel2: TPanel;
     Spacer1: TLabel;
@@ -77,10 +81,14 @@ type
     Panel1: TPanel;
     PanelTop: TPanel;
     Spacer2: TLabel;
+    Timer1: TTimer;
     txtExpression: TEdit;
     txtRepCount: TSpinEdit;
     procedure btnOKClick(Sender: TObject);
     procedure chkAllowFuncChange(Sender: TObject);
+    procedure edSearchParentChange(Sender: TObject);
+    procedure edSearchParentEditingDone(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
     procedure txtExpressionChange(Sender: TObject);
     procedure txtRepCountChange(Sender: TObject);
   private
@@ -138,6 +146,7 @@ begin
         if chkAllowFuncThreads.Checked
         then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defFunctionCallRunAllThreads];
         FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
+        FWatch.ParentFrameSearch := edSearchParent.Text;
 
         ValBackConvToWatch(FWatch, False);
         ValFormatterToWatch(FWatch, False);
@@ -170,6 +179,9 @@ begin
           if txtRepCount.Tag = 0 then
             FWatches[Idx].RepeatCount := txtRepCount.Value;
 
+          if edSearchParent.Tag = 0 then
+            FWatches[Idx].ParentFrameSearch := edSearchParent.Text;
+
           ValBackConvToWatch(FWatches[Idx], True);
           ValFormatterToWatch(FWatches[Idx], True);
 
@@ -199,6 +211,58 @@ begin
     (chkAllowFunc.Checked);
 end;
 
+procedure TWatchPropertyDlg.edSearchParentChange(Sender: TObject);
+var
+  s: TCaption;
+  l: TWatchParentSearchLimit;
+begin
+  edSearchParent.Tag := 0;
+
+  Timer1.Enabled := False;
+  s := edSearchParent.Text;
+  if s = '' then begin
+    lblSrchParentErr1.Visible := False;
+    lblSrchParentErr2.Visible := False;
+  end;
+
+  l := ParseWatchParentSearchLimit(s);
+  if l.MaxCnt < 0 then begin
+    Timer1.Enabled := not lblSrchParentErr1.Visible;
+  end
+  else begin
+    lblSrchParentErr1.Visible := False;
+    lblSrchParentErr2.Visible := False;
+  end;
+end;
+
+procedure TWatchPropertyDlg.edSearchParentEditingDone(Sender: TObject);
+var
+  s: TCaption;
+  l: TWatchParentSearchLimit;
+begin
+  Timer1.Enabled := False;
+  s := edSearchParent.Text;
+  if s = '' then begin
+    lblSrchParentErr1.Visible := False;
+    lblSrchParentErr2.Visible := False;
+  end;
+
+  l := ParseWatchParentSearchLimit(s);
+  lblSrchParentErr1.Visible := l.MaxCnt < 0;
+  lblSrchParentErr2.Visible := l.MaxCnt < 0;
+end;
+
+procedure TWatchPropertyDlg.Timer1Timer(Sender: TObject);
+var
+  l: TWatchParentSearchLimit;
+begin
+  l := ParseWatchParentSearchLimit(edSearchParent.Text);
+  if l.MaxCnt < 0 then begin
+    lblSrchParentErr1.Visible := True;
+    lblSrchParentErr2.Visible := True;
+  end;
+end;
+
 procedure TWatchPropertyDlg.txtExpressionChange(Sender: TObject);
 begin
   ButtonPanel.OKButton.Enabled := txtExpression.Text <> '';
@@ -217,6 +281,9 @@ begin
 
   lblExpression.Caption:= lisExpression;
   lblRepCount.Caption:= lisRepeatCount;
+  lblSearchParent.Caption:= lisSearchParent;
+  lblSrchParentErr2.Caption := lisSearchParentErr;
+  edSearchParent.TextHint := lisSearchParentHint;
   chkEnabled.Caption:= lisEnabled;
   chkAllowFunc.Caption:= lisAllowFunctio;
   chkAllowFuncThreads.Caption := drsRunAllThreadsWhileEvaluat;
@@ -385,6 +452,7 @@ begin
       DisplayFormatFrame1.DisplayFormat := DefaultWatchDisplayFormat;
       chkUseInstanceClass.Checked := EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass;
       txtRepCount.Text := '0';
+      edSearchParent.Text := '';
     end
     else begin
       txtExpression.Text          := FWatch.Expression;
@@ -394,6 +462,7 @@ begin
       chkAllowFunc.Checked        := defAllowFunctionCall in FWatch.EvaluateFlags;
       chkAllowFuncThreads.Checked := defFunctionCallRunAllThreads in FWatch.EvaluateFlags;
       txtRepCount.Text            := IntToStr(FWatch.RepeatCount);
+      edSearchParent.Text         := FWatch.ParentFrameSearch;
     end;
     DisplayFormatFrame1.CurrentResDataType := AResDataType;
     DisplayFormatFrame1.SelectDefaultButton;
@@ -412,6 +481,7 @@ begin
 
   dropFpDbgConv.ItemIndex := ValBackConvIndex(AWatch, False);
   dropValFormatter.ItemIndex := ValFormatterIndex(AWatch, False);
+  edSearchParentEditingDone(nil);
 end;
 
 constructor TWatchPropertyDlg.Create(AnOWner: TComponent; const AWatches: array of TIdeWatch);
@@ -419,6 +489,7 @@ var
   Idx: Integer;
   OptEnabled, OptUseInstanceClass, OptAllowFunc, OptFuncThreads: TBoolSet;
   OptRepeat, OptBackend, OptValFormatter: integer;
+  OptSearchStack: string;
 begin
   FMode := wpmMultiWatch;
   inherited Create(AnOWner);
@@ -439,6 +510,7 @@ begin
     OptRepeat           := MULTIOPT_INT_UNK;
     OptBackend          := MULTIOPT_INT_UNK;
     OptValFormatter     := MULTIOPT_INT_UNK;
+    OptSearchStack      := MULTIOPT_STR_UNK;
 
     DisplayFormatFrame1.DisplayFormatCount := Length(AWatches);
     SetLength(FWatches, Length(AWatches));
@@ -452,12 +524,22 @@ begin
       UpdateIntSetting(OptRepeat,       AWatches[Idx].RepeatCount);
       UpdateIntSetting(OptBackend,      ValBackConvIndex(AWatches[Idx], True));
       UpdateIntSetting(OptValFormatter, ValFormatterIndex(AWatches[Idx], True));
+      UpdateStrSetting(OptSearchStack,  AWatches[Idx].ParentFrameSearch);
     end;
     chkEnabled.State          := BoolsetToCBState(OptEnabled, False);
     chkUseInstanceClass.State := BoolsetToCBState(OptUseInstanceClass, False);
     chkAllowFunc.State        := BoolsetToCBState(OptAllowFunc, False);
     chkAllowFuncThreads.State := BoolsetToCBState(OptFuncThreads, False);
     IntToSpinEdit(txtRepCount, OptRepeat);
+    if (Pointer(OptSearchStack) = pointer(MULTIOPT_STR_MIX)) then begin
+      edSearchParent.Text := '';
+    end
+    else begin
+      edSearchParent.Text := OptSearchStack;
+      edSearchParentEditingDone(nil);
+    end;
+    edSearchParent.Tag := 1;
+
     if OptBackend < 0 then OptBackend := 0;
     if OptValFormatter < 0 then OptValFormatter := 0;
     dropFpDbgConv.ItemIndex    := OptBackend;
@@ -477,6 +559,8 @@ begin
   FMode := wpmDispFormat;
   inherited Create(AnOWner);
   PanelTop.Visible := False;
+  edSearchParent.Visible := False;
+  lblSearchParent.Visible := False;
   ButtonPanel.HelpButton.Visible := False;
   FDisplayFormat := ADisplayFormat;
 

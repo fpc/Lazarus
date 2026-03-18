@@ -157,6 +157,10 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+#: idedebuggerstringconstants.dbgwatchfoundstackframe
+msgid "stack frame (found)"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
 msgid "Max len"
@@ -1823,6 +1827,18 @@ msgstr "Registers"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
+msgstr ""
+
+#: idedebuggerstringconstants.lissearchparent
+msgid "Search Stack:"
+msgstr ""
+
+#: idedebuggerstringconstants.lissearchparenterr
+msgid "Invalid limit for \"Search Stack\""
+msgstr ""
+
+#: idedebuggerstringconstants.lissearchparenthint
+msgid "MaxCount:NamePattern"
 msgstr ""
 
 #: idedebuggerstringconstants.lissourcebreakpoint

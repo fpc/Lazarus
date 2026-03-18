@@ -42,11 +42,11 @@ interface
 uses
   TypInfo, Classes, SysUtils, math, Types, fgl,
   // LazUtils
-  Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
+  Laz2_XMLCfg, LazFileUtils, LazUtilities, LazLoggerBase,
   LazClasses, Maps, LazMethodList, Laz2_XMLWrite,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
-  IdeDebuggerWatchValueIntf, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  DbgIntfMiscClasses, DbgIntfDebuggerBase,
+  IdeDebuggerWatchValueIntf, RegExpr, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   LazDebuggerValueConverter, LazDebuggerTemplate, LazDebuggerIntfFloatTypes, IdeDebuggerBase,
   IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
   IdeDebuggerUtils, IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats, ProjectDebugLink;
@@ -208,10 +208,12 @@ type
   TCurrentLocals = class;
   TIDELineInfo = class;
   TIdeCallStack = class;
+  TCurrentCallStack = class;
   TIdeCallStackMonitor = class;
   TIdeThreadsMonitor = class;
   TSnapshotManager = class;
   TDebugger = class;
+  TIdeDebugManagerIntf = class;
 
   TOnSaveFilenameToConfig = procedure(var Filename: string) of object;
   TOnLoadFilenameFromConfig = procedure(var Filename: string) of object;
@@ -561,6 +563,7 @@ type
                        const AStackFrame: Integer
                       );
     destructor Destroy; override;
+    procedure StartEval; virtual;
     procedure Assign(AnOther: TWatchValue); override;
     property Watch: TIdeWatch read GetWatch;
 
@@ -759,7 +762,7 @@ type
     function CreateValueHandlerResult(AValueHandler: ILazDbgValueConverterIntf): IDbgWatchDataIntf;
 
     procedure CreateMemDump(AVal: RawByteString);
-    procedure CreateError(AVal: String);
+    procedure CreateError(AVal: String; AnErrorKind: TLzDbgErrorKind = dekUnknown);
 
     function  SetPCharShouldBeStringValue: IDbgWatchDataIntf;
     procedure SetTypeName(ATypeName: String);
@@ -786,6 +789,16 @@ type
 //    FUpdateCount: Integer;
     FDbgBackendConverter: TIdeDbgValueConvertSelector;
 
+    FParentFrameEvalIndex: integer;
+    FParentFrameEvalValue: TCurrentWatchValue;
+    FParentFrameLimits: TWatchParentSearchLimit;
+    FParentFrameCallstack: TCurrentCallStack;
+    FParentFrameNotifyList: TMethodList;
+    FParentFrameState: set of (pfInEval, pfNeedEvalAgain, pfDone, pfLocked, pfDestroy);
+
+    procedure DoCallStackCountChanged(Sender: TObject);
+    procedure DoParentFrameValueChanged(Sender: TObject);
+
   protected
   (* IDbgWatchValueIntf *)
     procedure DoBeginUpdating; override;
@@ -800,6 +813,9 @@ type
     FSnapShot: TIdeWatchValue;
     procedure SetSnapShot(const AValue: TIdeWatchValue);
   protected
+    procedure MaybeSearchParentFrameValue(ANewValidity: TDebuggerDataState);
+    procedure AddParentFrameNotification(ANotification: TNotifyEvent);
+    procedure RemoveParentFrameNotification(ANotification: TNotifyEvent);
     procedure SetWatch(AValue: TWatch); override;
     function GetBackendExpression: String; reintroduce;
     function GetValidity: TDebuggerDataState; override;
@@ -808,7 +824,9 @@ type
     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); override;
     function IDbgWatchValueIntf.GetExpression = GetBackendExpression;
   public
+    constructor Create(AOwnerWatch: TWatch); override; overload;
     destructor Destroy; override;
+    procedure StartEval; override;
     property SnapShot: TIdeWatchValue read FSnapShot write SetSnapShot;
     property OnValidityChanged: TNotifyEvent read FOnValidityChanged write FOnValidityChanged;
   end;
@@ -832,6 +850,7 @@ type
   private
     FSnapShot: TIdeWatch;
     FAdded: Boolean;
+    function GetDebugger: TIdeDebugManagerIntf;
     procedure SetSnapShot(const AValue: TIdeWatch);
   protected
     function CreateChildWatches: TIdeWatches; override;
@@ -847,6 +866,7 @@ type
                                 const APath: string); virtual;
     procedure SaveToXMLConfig(const AConfig: TXMLConfig;
                               const APath: string); virtual;
+    property Debugger: TIdeDebugManagerIntf read GetDebugger;
   end;
   TIDEWatchClass = class of TCurrentWatch;
 
@@ -854,6 +874,7 @@ type
 
   TCurrentWatches = class(TIdeWatches)
   private
+    FDebuggerIntf: TIdeDebugManagerIntf;
     FMonitor: TIdeWatchesMonitor;
     FSnapShot: TIdeWatches;
     FDestroying: Boolean;
@@ -882,6 +903,7 @@ type
     procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string;
       const ALegacyList: Boolean);
   public
+    property Debugger: TIdeDebugManagerIntf read FDebuggerIntf;
     property Items[const AnIndex: Integer]: TCurrentWatch read GetItem
                                                       write SetItem; default;
   end;
@@ -890,6 +912,7 @@ type
 
   TIdeWatchesMonitor = class(TWatchesMonitor)
   private
+    FDebuggerIntf: TIdeDebugManagerIntf;
     FWatches: TWatches;
     FSnapshots: TDebuggerDataSnapShotList;
     FOnModified: TNotifyEvent;
@@ -898,6 +921,7 @@ type
     FNotificationList: TWatchesNotificationList;
     function GetCurrentWatches: TCurrentWatches;
     function GetSnapshot(AnID: Pointer): TIdeWatches;
+    procedure SetDebugger(AValue: TIdeDebugManagerIntf);
   protected
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
@@ -929,6 +953,7 @@ type
 
     procedure BeginIgnoreModified;
     procedure EndIgnoreModified;
+    property Debugger: TIdeDebugManagerIntf read FDebuggerIntf write SetDebugger;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;       // user-modified / xml-storable data modified
     property OnWatchesInvalidated: TNotifyEvent read FOnWatchesInvalidated write FOnWatchesInvalidated;       // user-modified / xml-storable data modified
   end;
@@ -1470,6 +1495,7 @@ type
     FEntries: TMap;        // list of created entries
     FCount, FAtLeastCount, FAtLeastCountOld: Integer;
     FLowestUnknown, FHighestUnknown: Integer;
+    FCountChangedNotifyList: TMethodList;
     procedure SetSnapShot(const AValue: TIdeCallStack);
   protected
     function  GetCurrent: Integer; override;
@@ -1486,6 +1512,8 @@ type
     function GetLowestUnknown: Integer; override;
     function GetHighestUnknown: Integer; override;
     function GetNewCurrentIndex: Integer; override;
+    procedure AddCountChangedNotification(ANotification: TNotifyEvent);
+    procedure RemoveCountChangedNotification(ANotification: TNotifyEvent);
   public
     constructor Create(AMonitor: TIdeCallStackMonitor);
     destructor Destroy; override;
@@ -1990,6 +2018,23 @@ type
 (**                                                                          **)
 (******************************************************************************)
 (******************************************************************************)
+
+  TIdeDebugManagerIntf = class(TBaseDebugManagerIntf)
+  protected
+    FCallStack: TIdeCallStackMonitor;
+    FLocals: TIdeLocalsMonitor;
+    FWatches: TIdeWatchesMonitor;
+    FThreads: TIdeThreadsMonitor;
+    FSnapshots: TSnapshotManager;
+    FCurrentWatches: TCurrentWatches;
+  public
+    property CallStack: TIdeCallStackMonitor read FCallStack;
+    property Locals: TIdeLocalsMonitor read FLocals;
+    property Watches: TIdeWatchesMonitor read FWatches;
+    property Threads: TIdeThreadsMonitor read FThreads;
+    property Snapshots: TSnapshotManager read FSnapshots;
+    property CurrentWatches: TCurrentWatches read FCurrentWatches; // for the hint
+  end;
 
   TDBGEventRec = packed record
     case Boolean of
@@ -3081,7 +3126,7 @@ begin
       k := 0;
       while k < w.Count do begin
         if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
-        w[k].Values[i, j].Value;
+        w[k].Values[i, j].StartEval;
         inc(k);
       end;
       if (not(FCurrentState in [dsPause, dsInternalPause])) or
@@ -4069,13 +4114,13 @@ begin
   Result := FSubCurrentData;
 end;
 
-procedure TCurrentResData.CreateError(AVal: String);
+procedure TCurrentResData.CreateError(AVal: String; AnErrorKind: TLzDbgErrorKind);
 begin
   BeforeCreateError;
   if FNewResultData = nil then
-    FNewResultData := TWatchResultDataError.Create(AVal)
+    FNewResultData := TWatchResultDataError.Create(AVal, AnErrorKind)
   else
-    TWatchResultDataError(FNewResultData).Create(AVal);
+    TWatchResultDataError(FNewResultData).Create(AVal, AnErrorKind);
   if FStoredResultData <> nil then
     FNewResultData.SetTypeName(FStoredResultData.TypeName);
   AfterDataCreated;
@@ -4186,6 +4231,35 @@ end;
 
 { TCurrentWatchValue }
 
+procedure TCurrentWatchValue.DoParentFrameValueChanged(Sender: TObject);
+begin
+  assert(sender = FParentFrameEvalValue, 'TCurrentWatchValue.DoParentFrameValueChanged: sender = FParentFrameEvalValue');
+  if pfDestroy in FParentFrameEvalValue.FParentFrameState then begin
+    FParentFrameEvalValue := nil;
+    FParentFrameEvalIndex := -1;
+    FParentFrameState := [pfDone];
+    SetParentFrameFound(StackFrame);
+    exit;
+  end;
+
+  MaybeSearchParentFrameValue(ddsError);
+end;
+
+procedure TCurrentWatchValue.DoCallStackCountChanged(Sender: TObject);
+begin
+  assert(Sender = FParentFrameCallstack, 'TCurrentWatchValue.DoCallStackCountChanged: Sender = FParentFrameCallstack');
+  assert(FParentFrameEvalValue = nil, 'TCurrentWatchValue.DoCallStackCountChanged: FParentFrameEvalValue = nil');
+  if FParentFrameCallstack.Count < -1 then begin
+    FParentFrameCallstack := nil;
+    FParentFrameEvalIndex := -1;
+    FParentFrameState := [pfDone];
+    SetParentFrameFound(StackFrame);
+    exit;
+  end;
+
+  MaybeSearchParentFrameValue(ddsError);
+end;
+
 procedure TCurrentWatchValue.DoBeginUpdating;
 begin
   AddReference;
@@ -4211,6 +4285,8 @@ begin
   end
   else
     NewValid := ddsInvalid;
+
+  MaybeSearchParentFrameValue(NewValid); // ensure SetValidity will not trigger changes
 
   if Validity = ddsRequested then
     SetValidity(NewValid)
@@ -4256,6 +4332,153 @@ begin
   then FSnapShot.Assign(self);
 end;
 
+procedure TCurrentWatchValue.MaybeSearchParentFrameValue(ANewValidity: TDebuggerDataState);
+  procedure DoFound(AFrame: Integer);
+  begin
+    SetParentFrameFound(AFrame);
+    FParentFrameEvalIndex := -1;
+    if FParentFrameEvalValue <> nil then
+      FParentFrameEvalValue.RemoveParentFrameNotification(@DoParentFrameValueChanged);
+    FParentFrameEvalValue := nil;
+    if FParentFrameCallstack <> nil then
+      FParentFrameCallstack.RemoveCountChangedNotification(@DoCallStackCountChanged);
+    FParentFrameCallstack := nil;
+    FParentFrameState := [pfDone];
+
+    if FValidity <> ddsRequested then
+      DoDataValidityChanged(ddsRequested);
+  end;
+
+var
+  v: TDebuggerDataState;
+  CStackList: TCurrentCallStack;
+  CS: TIdeCallStackEntry;
+  s: String;
+  i: SizeInt;
+begin
+  if FParentFrameNotifyList <> nil then begin
+    if not (FValidity in [ddsUnknown, ddsRequested, ddsEvaluating]) then
+      FParentFrameNotifyList.CallNotifyEvents(Self);
+  end;
+  if FParentFrameState * [pfLocked, pfDone] <> [] then
+    exit;
+
+  if pfInEval in FParentFrameState then begin
+    Include(FParentFrameState, pfNeedEvalAgain);
+    exit;
+  end;
+  FParentFrameState := [];
+
+  if (ParentFrameFound >= 0) or (ANewValidity <> ddsError) or
+     (Watch = nil) or (Watch.ParentFrameSearch = '') or
+     not(ErrorKind in [dekIdentNotFound{, dekMemberNotFound}])
+  then
+    exit;
+
+  if FParentFrameEvalIndex < 0 then begin
+    FParentFrameEvalIndex := StackFrame+1;
+
+    FParentFrameLimits := ParseWatchParentSearchLimit(Watch.ParentFrameSearch);
+    if FParentFrameLimits.MaxCnt <= 0 then begin
+      DoFound(StackFrame);
+      exit;
+    end;
+  end;
+
+  FParentFrameState := [pfInEval];
+  try
+  repeat
+    Exclude(FParentFrameState, pfNeedEvalAgain);
+
+    if FParentFrameEvalValue <> nil then begin
+      v := FParentFrameEvalValue.Validity;
+      if v in [ddsUnknown, ddsRequested, ddsEvaluating] then
+        exit;
+
+      if (v <> ddsError) or not (FParentFrameEvalValue.ErrorKind in [dekIdentNotFound{, dekMemberNotFound}]) then begin
+        DoFound(FParentFrameEvalIndex);
+        exit;
+      end;
+
+      // Search next
+      FParentFrameEvalValue.RemoveParentFrameNotification(@DoParentFrameValueChanged);
+      FParentFrameEvalValue := nil;
+      inc(FParentFrameEvalIndex);
+    end;
+
+    if FParentFrameEvalIndex > StackFrame + FParentFrameLimits.MaxCnt then begin
+      DoFound(StackFrame);
+      exit;
+    end;
+    if FParentFrameLimits.NamePattern <> '' then begin
+      CStackList := FParentFrameCallstack;
+      if CStackList = nil then begin
+        CStackList := TCurrentWatches(TCurrentWatch(Watch).Collection).Debugger.CallStack.CurrentCallStackList.EntriesForThreads[ThreadId] as TCurrentCallStack;
+        CStackList.HasAtLeastCount(StackFrame + FParentFrameLimits.MaxCnt);
+      end;
+      case CStackList.HasAtLeastCount(StackFrame + FParentFrameEvalIndex) of
+        nbUnknown: begin
+          FParentFrameCallstack := CStackList;
+          CStackList.AddCountChangedNotification(@DoCallStackCountChanged);
+          exit; // wait
+        end;
+        nbFalse: begin
+            DoFound(StackFrame);
+            exit;
+          end;
+        otherwise begin // nbTrue
+            CS := CStackList.Entries[FParentFrameEvalIndex];
+            if (CS <> nil) and (CS.Validity in [ddsRequested, ddsEvaluating]) then
+              exit; // wait
+            if FParentFrameCallstack <> nil then
+              FParentFrameCallstack.RemoveCountChangedNotification(@DoCallStackCountChanged);
+            FParentFrameCallstack := nil;
+
+            if CS = nil then begin
+              s := '';
+            end
+            else begin
+              s := LowerCase(CS.FunctionName);
+              i := pos('(', s);
+              if i > 0 then delete(s,i,Length(s));
+            end;
+            if (s = '') or not ExecRegExpr(FParentFrameLimits.NamePattern, s) then begin
+              inc(FParentFrameEvalIndex);
+              include(FParentFrameState, pfNeedEvalAgain);
+              Continue;
+            end;
+          end;
+      end;
+    end;
+
+    FParentFrameEvalValue := Watch.Values[ThreadId, FParentFrameEvalIndex] as TCurrentWatchValue;
+    if FParentFrameEvalValue = nil then begin
+      DoFound(StackFrame);
+      exit;
+    end;
+
+    FParentFrameEvalValue.AddParentFrameNotification(@DoParentFrameValueChanged);
+    FParentFrameEvalValue.Value;
+
+  until not (pfNeedEvalAgain in FParentFrameState);
+  finally
+    FParentFrameState := FParentFrameState * [pfDone];
+  end;
+end;
+
+procedure TCurrentWatchValue.AddParentFrameNotification(ANotification: TNotifyEvent);
+begin
+  if FParentFrameNotifyList = nil then
+    FParentFrameNotifyList := TMethodList.Create;
+  FParentFrameNotifyList.Add(TMethod(ANotification));
+end;
+
+procedure TCurrentWatchValue.RemoveParentFrameNotification(ANotification: TNotifyEvent);
+begin
+  if FParentFrameNotifyList <> nil then
+    FParentFrameNotifyList.Remove(TMethod(ANotification));
+end;
+
 procedure TCurrentWatchValue.SetWatch(AValue: TWatch);
 begin
   CancelRequestData;
@@ -4272,7 +4495,9 @@ end;
 
 function TCurrentWatchValue.GetValidity: TDebuggerDataState;
 begin
-  if UpdateCount > 0 then
+  if (UpdateCount > 0) or
+     (FParentFrameEvalIndex >= 0)
+  then
     Result := ddsRequested  // prevent reading FValue
   else
     Result := inherited GetValidity;
@@ -4307,20 +4532,43 @@ begin
   if UpdateCount > 0 then
     exit;
   if Validity = ddsRequested then exit;
+  if FParentFrameEvalIndex >= 0 then exit;
+
   if Watch <> nil then
     TCurrentWatches(TCurrentWatch(Watch).Collection).Update(Watch);
   if FSnapShot <> nil
   then FSnapShot.Assign(self);
 
+  if FResultData <> nil then
+      MaybeSearchParentFrameValue(FValidity);
+
   if FOnValidityChanged <> nil then
     FOnValidityChanged(Self);
 end;
 
+constructor TCurrentWatchValue.Create(AOwnerWatch: TWatch);
+begin
+  FParentFrameState := [pfLocked];
+  FParentFrameEvalIndex := -1;
+  inherited Create(AOwnerWatch);
+end;
+
 destructor TCurrentWatchValue.Destroy;
-var
-  e: TMethodList;
 begin
   assert(UpdateCount=0, 'TCurrentWatchValue.Destroy: FUpdateCount=0');
+  FParentFrameState := [pfDestroy, pfLocked];
+  if FParentFrameEvalValue <> nil then begin
+    FParentFrameEvalValue.RemoveParentFrameNotification(@DoParentFrameValueChanged);
+    FParentFrameEvalValue := nil;
+  end;
+  if FParentFrameNotifyList <> nil then begin
+    FParentFrameNotifyList.CallNotifyEvents(Self);
+    FParentFrameNotifyList.Destroy;
+  end;
+  if FParentFrameCallstack <> nil then
+    FParentFrameCallstack.RemoveCountChangedNotification(@DoCallStackCountChanged);
+  FParentFrameCallstack := nil;
+
   FCurrentResData := FCurrentResData.RootResultData;
   if (FCurrentResData <> nil) and (FResultData = nil) then
     FCurrentResData.FreeResultAndSubData;
@@ -4328,6 +4576,13 @@ begin
   DoDestroy;
   FDbgBackendConverter.Free;
   inherited Destroy;
+end;
+
+procedure TCurrentWatchValue.StartEval;
+begin
+  Exclude(FParentFrameState, pfLocked);
+  Value;
+  MaybeSearchParentFrameValue(FValidity);
 end;
 
 { TCurrentWatchValueList }
@@ -4716,6 +4971,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TIdeWatchValue.StartEval;
+begin
+//
+end;
+
 procedure TIdeWatchValue.Assign(AnOther: TWatchValue);
 begin
   inherited Assign(AnOther);
@@ -4780,6 +5040,13 @@ end;
 function TIdeWatchesMonitor.GetSnapshot(AnID: Pointer): TIdeWatches;
 begin
   Result := TIdeWatches(FSnapshots.SnapShot[AnID]);
+end;
+
+procedure TIdeWatchesMonitor.SetDebugger(AValue: TIdeDebugManagerIntf);
+begin
+  if FDebuggerIntf = AValue then Exit;
+  FDebuggerIntf := AValue;
+  CurrentWatches.FDebuggerIntf := AValue;
 end;
 
 function TIdeWatchesMonitor.GetCurrentWatches: TCurrentWatches;
@@ -5043,6 +5310,13 @@ end;
 destructor TCurrentCallStack.Destroy;
 begin
   Clear;
+  // mark as destroying
+  FCount := -2;
+  FAtLeastCount := -2;
+  FCountValidity := ddsValid;
+  FAtLeastCountValidity := ddsValid;
+  if FCountChangedNotifyList <> nil then
+    FCountChangedNotifyList.CallNotifyEvents(Self);
   inherited Destroy;
   FreeAndNil(FEntries);
 end;
@@ -5166,6 +5440,19 @@ begin
   Result := FNewCurrentIndex;
 end;
 
+procedure TCurrentCallStack.AddCountChangedNotification(ANotification: TNotifyEvent);
+begin
+  if FCountChangedNotifyList = nil then
+    FCountChangedNotifyList := TMethodList.Create;
+  FCountChangedNotifyList.Add(TMethod(ANotification));
+end;
+
+procedure TCurrentCallStack.RemoveCountChangedNotification(ANotification: TNotifyEvent);
+begin
+  if FCountChangedNotifyList <> nil then
+    FCountChangedNotifyList.Remove(TMethod(ANotification));
+end;
+
 procedure TCurrentCallStack.PrepareRange(AIndex, ACount: Integer);
 var
   It: TMapIterator;
@@ -5221,6 +5508,10 @@ begin
   FLowestUnknown := -1;
   FHighestUnknown := -1;
   FMonitor.NotifyChange;
+  // Entries don't currently notice themself
+  // the backend calls this method on the list...
+  if FCountChangedNotifyList <> nil then
+    FCountChangedNotifyList.CallNotifyEvents(Self);
 end;
 
 function TCurrentCallStack.HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool;
@@ -5275,6 +5566,7 @@ begin
   if FCountValidity = AValidity then exit;
   DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TCurrentCallStack.SetCountValidity: FThreadId=', FThreadId, ' AValidity=',dbgs(AValidity)]);
   FCountValidity := AValidity;
+  FCountChangedNotifyList.CallNotifyEvents(Self);
   FMonitor.NotifyChange;
 end;
 
@@ -5289,6 +5581,7 @@ begin
   FAtLeastCountOld := -1;
   FAtLeastCountValidity := AValidity;
   FAtLeastCount := AMinCount;
+  FCountChangedNotifyList.CallNotifyEvents(Self);
   FMonitor.NotifyChange;
 end;
 
@@ -7116,6 +7409,7 @@ begin
   DoLoadDisplayFormatFromXMLConfig(AConfig, APath + 'DisplayFormat', '', FDisplayFormat);
 
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
+  FParentFrameSearch := AConfig.GetValue(APath + 'ParentFrameSearch', '');
 
   if AConfig.GetValue(APath + 'SkipFpDbgConv', False)
   then Include(FEvaluateFlags, defSkipValConv)
@@ -7152,6 +7446,7 @@ begin
   AConfig.SetDeleteValue(APath + 'AllowFunctionCall', defAllowFunctionCall in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionThreads', defFunctionCallRunAllThreads in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
+  AConfig.SetDeleteValue(APath + 'ParentFrameSearch', FParentFrameSearch, '');
 
   AConfig.DeleteValue(APath+'DisplayFormat');
   SaveDisplayFormatToXMLConfig(AConfig, APath+'DisplayFormat/', FDisplayFormat);
@@ -7210,6 +7505,11 @@ begin
       TCurrentWatches(FChildWatches).SnapShot := FSnapShot.FChildWatches;
     end;
   end;
+end;
+
+function TCurrentWatch.GetDebugger: TIdeDebugManagerIntf;
+begin
+  Result := TCurrentWatches(Collection).Debugger;
 end;
 
 function TCurrentWatch.CreateChildWatches: TIdeWatches;
@@ -7303,6 +7603,7 @@ begin
   DoLoadDisplayFormatFromXMLConfig(AConfig, APath + 'DisplayFormat', APath + 'DisplayStyle/Value', FDisplayFormat);
 
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
+  FParentFrameSearch := AConfig.GetValue(APath + 'ParentFrameSearch', '');
 
   if AConfig.GetValue(APath + 'SkipFpDbgConv', False)
   then Include(FEvaluateFlags, defSkipValConv)
@@ -7338,6 +7639,7 @@ begin
   AConfig.SetDeleteValue(APath + 'AllowFunctionCall', defAllowFunctionCall in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'AllowFunctionThreads', defFunctionCallRunAllThreads in FEvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
+  AConfig.SetDeleteValue(APath + 'ParentFrameSearch', FParentFrameSearch, '');
 
   AConfig.SetDeleteValue(APath + 'SkipFpDbgConv', defSkipValConv in FEvaluateFlags, False);
   if DbgBackendConverter <> nil then begin

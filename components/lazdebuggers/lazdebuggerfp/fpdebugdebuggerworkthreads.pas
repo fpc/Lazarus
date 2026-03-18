@@ -1172,7 +1172,7 @@ begin
       AResText := ErrorHandler.ErrorAsString(APasExpr.Error);
       if FWatchValue <> nil then begin
         FWatchValue.BeginUpdate;
-        FWatchValue.ResData.CreateError(AResText);
+        FWatchValue.ResData.CreateError(AResText, APasExpr.ErrorKind);
         FWatchValue.EndUpdate;
       end;
       exit;

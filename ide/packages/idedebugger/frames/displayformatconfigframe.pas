@@ -422,8 +422,11 @@ type
 const
   MULTIOPT_INT_MIX = low(integer);
   MULTIOPT_INT_UNK = low(integer)+1;
+  MULTIOPT_STR_MIX: string = #1#1;
+  MULTIOPT_STR_UNK: string = #2#2;
 
 procedure UpdateIntSetting(var CurVal: Integer; NewVal: integer);
+procedure UpdateStrSetting(var CurVal: string; NewVal: string);
 procedure SetSpinEditToInherit(ASpin: TSpinEdit);
 procedure IntToSpinEdit(ASpin: TSpinEdit; aVal: integer);
 
@@ -455,6 +458,13 @@ begin
   if (CurVal = MULTIOPT_INT_UNK) or (CurVal = NewVal)
   then CurVal := NewVal
   else CurVal := MULTIOPT_INT_MIX;
+end;
+
+procedure UpdateStrSetting(var CurVal: string; NewVal: string);
+begin
+  if (Pointer(CurVal) = pointer(MULTIOPT_STR_UNK)) or (CurVal = NewVal)
+  then CurVal := NewVal
+  else CurVal := MULTIOPT_STR_MIX;
 end;
 
 procedure SetSpinEditToInherit(ASpin: TSpinEdit);

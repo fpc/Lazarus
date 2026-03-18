@@ -167,6 +167,10 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+#: idedebuggerstringconstants.dbgwatchfoundstackframe
+msgid "stack frame (found)"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
 msgid "Max len"
@@ -1849,6 +1853,18 @@ msgstr "寄存器"
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "重复次数："
+
+#: idedebuggerstringconstants.lissearchparent
+msgid "Search Stack:"
+msgstr ""
+
+#: idedebuggerstringconstants.lissearchparenterr
+msgid "Invalid limit for \"Search Stack\""
+msgstr ""
+
+#: idedebuggerstringconstants.lissearchparenthint
+msgid "MaxCount:NamePattern"
+msgstr ""
 
 #: idedebuggerstringconstants.lissourcebreakpoint
 msgid "&Source Breakpoint ..."

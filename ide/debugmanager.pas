@@ -2160,6 +2160,8 @@ begin
   FDisassembler := TIDEDisassembler.Create;
   FRegisters := TIdeRegistersMonitor.Create;
 
+  FWatches.Debugger := Self;
+
   FCallStackNotification := TCallStackNotification.Create;
   FCallStackNotification.AddReference;
   FCallStack.AddNotification(FCallStackNotification);

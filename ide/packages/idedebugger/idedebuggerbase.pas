@@ -39,6 +39,9 @@ type
     function GetChildrenByNameAsField(AName, AClassName: String; DerefCount: Integer): TObject;
 
     function GetEnabled: Boolean;
+    function GetStackFrame: Integer;
+    function GetThreadId: Integer;
+    function GetErrorKind: TLzDbgErrorKind;
     function GetValidity: TDebuggerDataState;
 //    function GetDisplayFormat: TWatchDisplayFormat;
     function GetTypeInfo: TDBGType; deprecated;
@@ -54,6 +57,7 @@ type
     property TypeInfo: TDBGType read GetTypeInfo;
     property Value: string read GetValue; // for <Error> etc
     property ResultData: TWatchResultData read GetResultData;
+    //property ErrorKind: TLzDbgErrorKind read GetErrorKind;
   end;
 
   TWatch = class;
@@ -61,6 +65,8 @@ type
   { TWatchValue }
 
   TWatchValue = class(TRefCountedObject)
+  private
+    FParentFrameFound: integer;
   protected
     FWatch: TWatch;
     FIsMemDump: Boolean;
@@ -78,9 +84,12 @@ type
     function GetThreadId: Integer;
     function GetValidity: TDebuggerDataState; virtual;
     function GetIsValid: boolean; virtual;
+    function GetErrorKind: TLzDbgErrorKind;
+    function GetParentFrameFound: integer;
     procedure SetValidity(AValue: TDebuggerDataState); virtual;
     procedure SetTypeInfo(AValue: TDBGType);
     procedure SetTypeInfo(AValue: TDBGTypeBase);
+    procedure SetParentFrameFound(AValue: integer);
 
     function GetResultData: TWatchResultData; virtual;
     procedure SetResultData(AResultData: TWatchResultData);
@@ -117,6 +126,8 @@ type
     property Value: String read GetValue;
     property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
     property ResultData: TWatchResultData read GetResultData;
+    property ErrorKind: TLzDbgErrorKind read GetErrorKind;
+    property ParentFrameFound: integer read GetParentFrameFound;
   end;
   TWatchValueClass = class of TWatchValue;
 
@@ -170,6 +181,7 @@ type
     procedure SetExpression(AValue: String);
     procedure SetFirstIndexOffs(AValue: Int64);
     procedure SetDbgBackendConverter(AValue: TIdeDbgValueConvertSelector);
+    procedure SetParentFrameSearch(AValue: string);
     procedure SetRepeatCount(AValue: Integer);
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
   protected
@@ -178,6 +190,7 @@ type
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
     FRepeatCount: Integer;
+    FParentFrameSearch: string;
     FValueList: TWatchValueList;
 
     procedure DoModified; virtual;  // user-storable data: expression, enabled, display-format
@@ -205,6 +218,7 @@ type
     property EvaluateFlags: TWatcheEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
     property FirstIndexOffs: Int64 read FFirstIndexOffs write SetFirstIndexOffs;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
+    property ParentFrameSearch: string read FParentFrameSearch write SetParentFrameSearch;
     property DbgBackendConverter: TIdeDbgValueConvertSelector read FDbgBackendConverter write SetDbgBackendConverter;
     property DbgValueFormatter: TIdeDbgValueFormatterSelector read FDbgValueFormatter write SetDbgValueFormatter;
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
@@ -242,10 +256,12 @@ type
    { TLocalsValue }
 
   TLocalsValue = class(TDbgEntityValue)
+  private
   protected
     FName: String;
     FValue: TWatchResultData;
     function GetValue: String; virtual;
+    function GetErrorKind: TLzDbgErrorKind;
     function GetResultData: TWatchResultData; virtual;
     procedure DoAssign(AnOther: TDbgEntityValue); override;
   public
@@ -254,6 +270,7 @@ type
     property Name: String read FName;
     property Value: String read GetValue;
     property ResultData: TWatchResultData read GetResultData;
+    property ErrorKind: TLzDbgErrorKind read GetErrorKind;
   end;
 
  { TLocals }
@@ -549,6 +566,27 @@ begin
   Result := FFirstIndexOffs;
 end;
 
+function TWatchValue.GetErrorKind: TLzDbgErrorKind;
+begin
+  Result := dekUnknown;
+  if FResultData <> nil then
+    Result := FResultData.ErrorKind;
+end;
+
+procedure TWatchValue.SetParentFrameFound(AValue: integer);
+begin
+  if FParentFrameFound = AValue then Exit;
+  FParentFrameFound := AValue;
+end;
+
+function TWatchValue.GetParentFrameFound: integer;
+begin
+  if FParentFrameFound = FStackFrame then
+    Result := -1
+  else
+    Result := FParentFrameFound;
+end;
+
 procedure TWatchValue.SetWatch(AValue: TWatch);
 begin
   if FWatch = AValue then Exit;
@@ -622,6 +660,7 @@ end;
 constructor TWatchValue.Create(AOwnerWatch: TWatch);
 begin
   FWatch := AOwnerWatch;
+  FParentFrameFound := -1;
   inherited Create;
   AddReference;
 end;
@@ -646,6 +685,7 @@ begin
       FTypeInfo.Fields.Add(AnOther.FTypeInfo.Fields.Items[i]);
   end;
   FValidity      := AnOther.FValidity;
+  FParentFrameFound := AnOther.FParentFrameFound;
   FResultData.Free;
   FResultData := AnOther.FResultData.CreateCopy;
 end;
@@ -751,6 +791,16 @@ begin
   DoModified;
 end;
 
+procedure TWatch.SetParentFrameSearch(AValue: string);
+begin
+  if FParentFrameSearch = AValue then Exit;
+  FParentFrameSearch := AValue;
+
+  FValueList.Clear;
+  Changed;
+  DoModified;
+end;
+
 procedure TWatch.SetRepeatCount(AValue: Integer);
 begin
   if FRepeatCount = AValue then Exit;
@@ -796,6 +846,7 @@ begin
     TWatch(Dest).FFirstIndexOffs    := FFirstIndexOffs;
     TWatch(Dest).FRepeatCount   := FRepeatCount;
     TWatch(Dest).FEvaluateFlags := FEvaluateFlags;
+    TWatch(Dest).FParentFrameSearch := FParentFrameSearch;
     TWatch(Dest).DbgBackendConverter := DbgBackendConverter;
     TWatch(Dest).DbgValueFormatter := DbgValueFormatter;
     TWatch(Dest).FValueList.Assign(FValueList);
@@ -1102,6 +1153,13 @@ begin
 end;
 
 { TLocalsValue }
+
+function TLocalsValue.GetErrorKind: TLzDbgErrorKind;
+begin
+  Result := dekUnknown;
+  if FValue <> nil then
+    Result := FValue.ErrorKind;
+end;
 
 function TLocalsValue.GetValue: String;
 begin

@@ -95,6 +95,9 @@ resourcestring
   lisWatchPropert = 'Watch Properties';
   lisExpression = 'Expression:';
   lisRepeatCount = 'Repeat Count:';
+  lisSearchParent = 'Search Stack:';
+  lisSearchParentHint = 'MaxCount:NamePattern';
+  lisSearchParentErr = 'Invalid limit for "Search Stack"';
   lisDigits = 'Digits:';
   lisAllowFunctio = 'Allow Function Calls';
   lisStyle = 'Style';
@@ -167,6 +170,7 @@ resourcestring
   DbgWatchColorDisabled = 'Disabled';
   DbgWatchColorEvaluating = 'Evaluating';
   DbgWatchColorUnknown = 'Unknown';
+  DbgWatchFoundStackFrame = 'stack frame (found)';
 
   // Mem viewer
   liswlMemView = 'Memory';

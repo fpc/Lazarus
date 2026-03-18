@@ -109,26 +109,20 @@ type
   TDbgInitFlag = (difInitForAttach);
   TDbgInitFlags = set of TDbgInitFlag;
 
-  TBaseDebugManager = class(TBaseDebugManagerIntf)
+  TBaseDebugManager = class(TIdeDebugManagerIntf)
   private
     FHintWatchPrinter: TWatchResultPrinter;
   protected
     FDestroying: boolean;
-    FCallStack: TIdeCallStackMonitor;
     FDisassembler: TIDEDisassembler;
     FExceptions: TIDEExceptions;
     FExcludedRoutines: TIdeDebuggerExcludeRoutineMainList;
     FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
     FBreakPointGroups: TIDEBreakPointGroups;
-    FLocals: TIdeLocalsMonitor;
     FLineInfo: TIDELineInfo;
-    FWatches: TIdeWatchesMonitor;
-    FThreads: TIdeThreadsMonitor;
     FRegisters: TIdeRegistersMonitor;
-    FSnapshots: TSnapshotManager;
     FManagerStates: TDebugManagerStates;
-    FCurrentWatches: TCurrentWatches;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
     function GetPseudoTerminal: TPseudoTerminal; virtual; abstract;
@@ -238,22 +232,16 @@ type
     property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
     property ExcludedRoutines: TIdeDebuggerExcludeRoutineMainList read FExcludedRoutines;
-    property CallStack: TIdeCallStackMonitor read FCallStack;
     property Disassembler: TIDEDisassembler read FDisassembler;
-    property Locals: TIdeLocalsMonitor read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
     property Registers: TIdeRegistersMonitor read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
-    property Watches: TIdeWatchesMonitor read FWatches;
-    property Threads: TIdeThreadsMonitor read FThreads;
-    property Snapshots: TSnapshotManager read FSnapshots;
     property PseudoTerminal: TPseudoTerminal read GetPseudoTerminal; experimental; // 'may be replaced with a more general API';
     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
     property DebuggerClass: TDebuggerClass read GetCurrentDebuggerClass;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
     property Debugger: TDebuggerIntf read GetDebugger;
     {$ENDIF}
-    property CurrentWatches: TCurrentWatches read FCurrentWatches; // for the hint
     property HintWatchPrinter: TWatchResultPrinter read FHintWatchPrinter;
     property TargetWidth: Integer read GetTargetWidth;
   end;

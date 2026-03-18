@@ -46,7 +46,7 @@ type
     function GetElementName(AnIndex: integer): String; inline;     // Set/Array
     function GetDerefData: TWatchResultData; inline;               // Ptr
     function GetBoundType: TWatchResultData; inline;               // Ptr
-
+    function GetErrorKind: TLzDbgErrorKind; inline;
     function GetEntryTemplate: TWatchResultData; inline; // NESTED TYPE FOR NESTED STORAGE
 
     function GetDataAddress: TDBGPtr; inline;
@@ -361,6 +361,10 @@ type
   TWatchResultValueError = object(TWatchResultValueTextBase)
   protected const
     VKind = rdkError;
+  private
+    FErrorKind: TLzDbgErrorKind;
+  protected
+    function GetErrorKind: TLzDbgErrorKind; inline;
   end;
 
   TWatchResultValueVariant = object(TWatchResultValue)
@@ -839,6 +843,8 @@ type
     function GetFieldsIntf(AnIndex: Integer): TWatchResultDataFieldInfoIntf;
     function GetConvertedRes: TWatchResultData; virtual;
 
+    function GetErrorKind: TLzDbgErrorKind; virtual;
+
     function GetFieldVisibility: TLzDbgFieldVisibility; virtual; abstract;
 
   public
@@ -909,6 +915,8 @@ type
     property Fields[AnIndex: Integer]: TWatchResultDataFieldInfo read GetFields;
 
     property ConvertedRes: TWatchResultData read GetConvertedRes;
+
+    property ErrorKind: TLzDbgErrorKind read GetErrorKind;
 
     // variant
     property FieldVisibility: TLzDbgFieldVisibility read GetFieldVisibility;
@@ -1663,7 +1671,8 @@ type
   protected
     class function GetStorageClass: TWatchResultStorageClass; override;
   public
-    constructor Create(APrintedVal: String);
+    constructor Create(APrintedVal: String; AnErrorKind: TLzDbgErrorKind = dekUnknown);
+    function GetErrorKind: TLzDbgErrorKind; override;
   end;
 
 function dbgs(AResKind: TWatchResultDataKind): String; overload;
@@ -1796,6 +1805,11 @@ end;
 function TWatchResultValue.GetBoundType: TWatchResultData;
 begin
   Result := nil;
+end;
+
+function TWatchResultValue.GetErrorKind: TLzDbgErrorKind;
+begin
+  Result := dekUnknown;
 end;
 
 function TWatchResultValue.GetEntryTemplate: TWatchResultData;
@@ -2304,6 +2318,13 @@ procedure TWatchResultValueSet.SaveDataToXMLConfig(const AConfig: TXMLConfig;
 begin
   inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
   AConfig.SetDeleteValue(APath + 'Value', ''.Join(',', FNames), '');
+end;
+
+{ TWatchResultValueError }
+
+function TWatchResultValueError.GetErrorKind: TLzDbgErrorKind;
+begin
+  Result := FErrorKind;
 end;
 
 { TWatchResultValueVariant }
@@ -2983,6 +3004,11 @@ end;
 function TWatchResultData.GetConvertedRes: TWatchResultData;
 begin
   Result := Self;
+end;
+
+function TWatchResultData.GetErrorKind: TLzDbgErrorKind;
+begin
+  Result := dekUnknown;
 end;
 
 function TWatchResultData.GetTypeName: String;
@@ -5324,10 +5350,16 @@ begin
   Result := TErrorDataStorage;
 end;
 
-constructor TWatchResultDataError.Create(APrintedVal: String);
+constructor TWatchResultDataError.Create(APrintedVal: String; AnErrorKind: TLzDbgErrorKind);
 begin
   inherited Create;
   FData.FText := APrintedVal;
+  FData.FErrorKind := AnErrorKind;
+end;
+
+function TWatchResultDataError.GetErrorKind: TLzDbgErrorKind;
+begin
+  Result := FData.GetErrorKind;
 end;
 
 initialization

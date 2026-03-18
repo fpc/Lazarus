@@ -44,6 +44,7 @@ type
 
   TDbgTreeNodeText = record
     Txt: String;
+    BaseColor: TColor;
     ColorInfo: array of record
       Start, Len: integer;
       Color: TColor;
@@ -345,6 +346,7 @@ begin
       SetLength(Data^.CachedColumnData, AColumn + 1);
     end;
     Data^.CachedText[AColumn].Txt := AValue;
+    Data^.CachedText[AColumn].BaseColor := clDefault;
     SetLength(Data^.CachedText[AColumn].ColorInfo, 0);
     Data^.CachedColumnData[AColumn].ColWidth := -1;
     Data^.CachedColumnData[AColumn].ShortenWidth1 := -1;
@@ -872,7 +874,7 @@ var
   i, Column, TxtX, TxtL, x, l, w: integer;
   CachedText: PDbgTreeNodeText;
   r: TRect;
-  c: TColor;
+  c, c1: TColor;
 begin
   DefaultDraw := True;
   if Assigned(OnDrawText) then
@@ -888,71 +890,78 @@ begin
   TxtX := 1;
   TxtL := Length(AText);
 
-  if (FEllipsisColor <> clNone) and (FEllipsisColor <> clDefault) and
-     (AText = Data^.CachedColumnData[Column].ShortenResText)
-  then begin
-    if (Data^.CachedColumnData[Column].ShortenResTextLen > 0) and
-       (TxtL > Data^.CachedColumnData[Column].ShortenResTextLen)
-    then
-      TxtL := Data^.CachedColumnData[Column].ShortenResTextLen;
-  end
-  else
-  if Length(CachedText^.ColorInfo) = 0 then begin
-    DrawText(PaintInfo.Canvas.Handle, PChar(AText), Length(AText), CellRect, DrawFormat);
-    exit;
-  end;
+  c1 := PaintInfo.Canvas.Font.Color;
+  if CachedText^.BaseColor <> clDefault then
+    PaintInfo.Canvas.Font.Color := CachedText^.BaseColor;
+  try
+    if (FEllipsisColor <> clNone) and (FEllipsisColor <> clDefault) and
+       (AText = Data^.CachedColumnData[Column].ShortenResText)
+    then begin
+      if (Data^.CachedColumnData[Column].ShortenResTextLen > 0) and
+         (TxtL > Data^.CachedColumnData[Column].ShortenResTextLen)
+      then
+        TxtL := Data^.CachedColumnData[Column].ShortenResTextLen;
+    end
+    else
+    if Length(CachedText^.ColorInfo) = 0 then begin
+      DrawText(PaintInfo.Canvas.Handle, PChar(AText), Length(AText), CellRect, DrawFormat);
+      exit;
+    end;
 
-  for i := 0 to length(CachedText^.ColorInfo) - 1 do begin
-    x := CachedText^.ColorInfo[i].Start;
-    l := CachedText^.ColorInfo[i].Len;
+    for i := 0 to length(CachedText^.ColorInfo) - 1 do begin
+      x := CachedText^.ColorInfo[i].Start;
+      l := CachedText^.ColorInfo[i].Len;
 
-    if x > TxtX then begin
+      if x > TxtX then begin
+        r := CellRect;
+        DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, x - TxtX), r, DrawFormat);
+        w := CachedText^.ColorInfo[i].CachedWidthBefore;
+        if w < 0 then begin
+          r := CellRect;
+          DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, x - TxtX), r, DrawFormat + DT_CALCRECT);
+          w := r.Width;
+          CachedText^.ColorInfo[i].CachedWidthBefore := w;
+        end;
+        CellRect.Left := CellRect.Left + w;
+        TxtX := x;
+        if TxtX > TxtL then break;
+      end;
+
       r := CellRect;
-      DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, x - TxtX), r, DrawFormat);
-      w := CachedText^.ColorInfo[i].CachedWidthBefore;
+      c := PaintInfo.Canvas.Font.Color;
+      PaintInfo.Canvas.Font.Color := CachedText^.ColorInfo[i].Color;
+      DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, l), r, DrawFormat);
+      w := CachedText^.ColorInfo[i].CachedWidth;
       if w < 0 then begin
         r := CellRect;
-        DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, x - TxtX), r, DrawFormat + DT_CALCRECT);
+        DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, l), r, DrawFormat + DT_CALCRECT);
         w := r.Width;
-        CachedText^.ColorInfo[i].CachedWidthBefore := w;
+        CachedText^.ColorInfo[i].CachedWidth := w;
       end;
       CellRect.Left := CellRect.Left + w;
-      TxtX := x;
+      PaintInfo.Canvas.Font.Color := c;
+      TxtX := x + l;
       if TxtX > TxtL then break;
     end;
 
-    r := CellRect;
-    c := PaintInfo.Canvas.Font.Color;
-    PaintInfo.Canvas.Font.Color := CachedText^.ColorInfo[i].Color;
-    DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, l), r, DrawFormat);
-    w := CachedText^.ColorInfo[i].CachedWidth;
-    if w < 0 then begin
+    if TxtX <= TxtL then begin
       r := CellRect;
-      DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], min(TxtL, l), r, DrawFormat + DT_CALCRECT);
-      w := r.Width;
-      CachedText^.ColorInfo[i].CachedWidth := w;
+      DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], TxtL-TxtX+1, r, DrawFormat);
+      if TxtL < Length(AText) then begin
+        r := CellRect;
+        DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], TxtL-TxtX+1, r, DrawFormat + DT_CALCRECT);
+        CellRect.Left := r.Right;
+      end;
     end;
-    CellRect.Left := CellRect.Left + w;
-    PaintInfo.Canvas.Font.Color := c;
-    TxtX := x + l;
-    if TxtX > TxtL then break;
-  end;
 
-  if TxtX <= TxtL then begin
-    r := CellRect;
-    DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], TxtL-TxtX+1, r, DrawFormat);
     if TxtL < Length(AText) then begin
-      r := CellRect;
-      DrawText(PaintInfo.Canvas.Handle, @AText[TxtX], TxtL-TxtX+1, r, DrawFormat + DT_CALCRECT);
-      CellRect.Left := r.Right;
+      c := PaintInfo.Canvas.Font.Color;
+      PaintInfo.Canvas.Font.Color := EllipsisColor;
+      DrawText(PaintInfo.Canvas.Handle, @AText[TxtL+1], Length(AText)-TxtL, CellRect, DrawFormat);
+      PaintInfo.Canvas.Font.Color := c;
     end;
-  end;
-
-  if TxtL < Length(AText) then begin
-    c := PaintInfo.Canvas.Font.Color;
-    PaintInfo.Canvas.Font.Color := EllipsisColor;
-    DrawText(PaintInfo.Canvas.Handle, @AText[TxtL+1], Length(AText)-TxtL, CellRect, DrawFormat);
-    PaintInfo.Canvas.Font.Color := c;
+  finally
+    PaintInfo.Canvas.Font.Color := c1;
   end;
 end;
 
@@ -1269,6 +1278,8 @@ begin
   Data := GetNodeData(Node);
   if (Data = nil) or (Length(Data^.CachedText) <= AColumn) then
     exit;
+
+  Data^.CachedText[AColumn].BaseColor := clDefault;
   SetLength(Data^.CachedText[AColumn].ColorInfo, 0);
 end;
 
@@ -1276,23 +1287,16 @@ procedure TDbgTreeView.SetNodeTextColor(Node: PVirtualNode; AColumn: Integer; AC
 var
   Data: PDbgTreeNodeData;
 begin
-  if (AColor = clNone) or (AColor = clDefault) then
-    exit;
-
-  AColor := ColorToRGB(AColor);
-
   Data := GetNodeData(Node);
   if Data = nil then
     exit;
 
-  SetLength(Data^.CachedText[AColumn].ColorInfo, 1);
-  with Data^.CachedText[AColumn].ColorInfo[0] do begin
-    Start := 1;
-    Len   := Length(Data^.CachedText[AColumn].Txt);
-    Color := AColor;
-    CachedWidthBefore := -1;
-    CachedWidth := -1;
-  end;
+  if (AColor = clNone) or (AColor = clDefault) then
+    AColor := clDefault
+  else
+    AColor := ColorToRGB(AColor);
+
+  Data^.CachedText[AColumn].BaseColor := AColor;
 end;
 
 procedure TDbgTreeView.AddNodeTextColor(Node: PVirtualNode; AColumn, AFrom, ALen: Integer;
@@ -1301,13 +1305,16 @@ var
   Data: PDbgTreeNodeData;
   l: SizeInt;
 begin
+  if (AColor = clNone) or (AColor = clDefault) then
+    exit;
+
   Data := GetNodeData(Node);
   if Data = nil then
     exit;
 
-  l := Length(Data^.CachedText[AColumn].ColorInfo);
-  SetLength(Data^.CachedText[AColumn].ColorInfo, l+1);
-  with Data^.CachedText[AColumn].ColorInfo[l] do begin
+  AColor := ColorToRGB(AColor);
+  SetLength(Data^.CachedText[AColumn].ColorInfo, 1);
+  with Data^.CachedText[AColumn].ColorInfo[0] do begin
     Start := AFrom;
     Len   := ALen;
     Color := AColor;

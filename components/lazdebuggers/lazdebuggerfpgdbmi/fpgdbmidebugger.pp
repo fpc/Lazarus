@@ -1107,7 +1107,7 @@ begin
         Result := True;
         AResText := ErrorHandler.ErrorAsString(PasExpr.Error);
         if AWatchValue <> nil then begin;
-          AWatchValue.ResData.CreateError(AResText);
+          AWatchValue.ResData.CreateError(AResText, PasExpr.ErrorKind);
         end;
         exit;
       end;

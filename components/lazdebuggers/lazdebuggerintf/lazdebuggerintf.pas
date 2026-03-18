@@ -132,6 +132,14 @@ type
   {$If SizeOf(TLzDbgToken) < SizeOf(Pointer)} {$Error 'TLzDbgToken must be able to store pointers'} {$EndIf}
 
 
+  TLzDbgErrorKind = (
+    dekUnknown,
+    dekParser,              // Syntax error
+    dekIdentNotFound,       // Identifier not found in context
+    dekMemberNotFound,      // member on structure or qualified-enum not found
+    dekGlobalIdentNotFound, // qualified identifier not found: UnitFoo.Bar => UnitFoo was found, but has no bar
+    dekEvaluation
+  );
   TLzDbgFloatPrecission = (dfpSingle, dfpDouble, dfpExtended);
 //  TLzDbgSetData = bitpacked array [0..255] of boolean;
   TLzDbgStructType      = (dstUnknown, dstRecord, dstObject, dstClass, dstInterface, dstInternal);
@@ -202,7 +210,7 @@ type
     // Use SetDerefData to get the interface for the NON-converted result
     function CreateValueHandlerResult(AValueHandler: ILazDbgValueConverterIntf): IDbgWatchDataIntf;
     procedure CreateMemDump(AVal: RawByteString);
-    procedure CreateError(AVal: String);
+    procedure CreateError(AVal: String; AnErrorKind: TLzDbgErrorKind = dekUnknown);
 
     // For all Values
     (* SetPCharShouldBeStringValue:

@@ -164,6 +164,10 @@ msgstr "Наблюдения / локальные переменные"
 msgid "Unknown"
 msgstr "Неизвестные"
 
+#: idedebuggerstringconstants.dbgwatchfoundstackframe
+msgid "stack frame (found)"
+msgstr ""
+
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
 msgid "Max len"
@@ -1850,6 +1854,18 @@ msgstr "Регистры"
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Число повторов:"
+
+#: idedebuggerstringconstants.lissearchparent
+msgid "Search Stack:"
+msgstr ""
+
+#: idedebuggerstringconstants.lissearchparenterr
+msgid "Invalid limit for \"Search Stack\""
+msgstr ""
+
+#: idedebuggerstringconstants.lissearchparenthint
+msgid "MaxCount:NamePattern"
+msgstr ""
 
 #: idedebuggerstringconstants.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
