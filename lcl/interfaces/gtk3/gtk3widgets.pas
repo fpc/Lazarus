@@ -12398,6 +12398,9 @@ begin
       if (AForm.BorderStyle = bsNone) and Widget^.get_realized then
       begin
         Widget^.size_allocate(@ARect);
+        if (AWidth > 0) and (AHeight > 0) and
+           (PGtkWindow(Widget)^.get_window_type = GTK_WINDOW_POPUP) then
+          Widget^.set_size_request(AWidth, AHeight);
         Widget^.window^.move_resize(ALeft, ATop, AWidth, AHeight);
         gdk_display_flush(gdk_window_get_display(Widget^.window));
         Exit;

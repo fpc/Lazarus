@@ -306,6 +306,9 @@ var
 
     if not IsX11 then
     begin
+      if AWindow^.get_window_type = GTK_WINDOW_POPUP then
+        if (AWinControl.Width > 0) and (AWinControl.Height > 0) then
+          PGtkWidget(AWindow)^.set_size_request(AWinControl.Width, AWinControl.Height);
       AWindow^.show_all;
       {On Wayland the surface is created at show_all time, so we must apply opacity now.
        gtk_widget_set_opacity called in CreateWidget may not persist for popup
