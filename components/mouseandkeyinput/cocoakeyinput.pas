@@ -23,7 +23,7 @@ interface
 uses
   MacOSAll,
   Classes, SysUtils, Controls, Forms,
-  CocoaUtils, CGEventSource, CGEvent, CGEventTypes, CGRemoteOperation, CFBase,
+  Cocoa_Extra, CGEventSource, CGEvent, CGEventTypes, CGRemoteOperation, CFBase,
   KeyInputIntf;
 
 type
