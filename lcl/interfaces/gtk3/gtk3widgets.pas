@@ -1953,6 +1953,8 @@ begin
           P.Y := P.Y + Round(AScrolledWin^.get_vadjustment^.get_value);
         TGtk3DeviceContext(Msg.DC).ScrollbarsOffset := Point(P.X, P.Y);
         cairo_translate(AContext, -P.X, -P.Y);
+        if TGtk3DeviceContext(FContext).pcr <> AContext then
+          cairo_translate(TGtk3DeviceContext(FContext).pcr, -P.X, -P.Y);
         inc(localClip.Left,   P.X);
         inc(localClip.Top,    P.Y);
         inc(localClip.Right,  P.X);
@@ -1968,7 +1970,11 @@ begin
           ACaret.CairoDrawCaret(TGtk3DeviceContext(FContext).pcr);
       end;
       if wtScrollingWinControl in WidgetType then
+      begin
         cairo_translate(AContext, P.X, P.Y);
+        if TGtk3DeviceContext(FContext).pcr <> AContext then
+          cairo_translate(TGtk3DeviceContext(FContext).pcr, P.X, P.Y);
+      end;
     finally
       FCairoContext := nil;
       Fillchar(FPaintData, SizeOf(FPaintData), 0);
