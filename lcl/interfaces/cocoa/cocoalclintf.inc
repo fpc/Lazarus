@@ -324,13 +324,13 @@ begin
       end
       else
       begin
-        isMenuOn := ToggleAppMenu(false);
+        isMenuOn := TCocoaMenuUtil.toggleAppMenu(false);
         try
           Result := AnAlert.runModal;
           if Result = NSCancelButton then
             Result := EscapeResult;
         finally
-          ToggleAppMenu(isMenuOn); // modal menu doesn't have a window, disabling it
+          TCocoaMenuUtil.toggleAppMenu(isMenuOn); // modal menu doesn't have a window, disabling it
         end;
       end;
     finally

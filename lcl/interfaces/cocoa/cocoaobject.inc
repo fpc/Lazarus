@@ -735,7 +735,7 @@ function TAppDelegate.applicationDockMenu(sender: NSApplication): NSMenu;
 begin
   Result:= NSMenu.alloc.init;
   if Assigned(CocoaConfigMenu.dockMenu.customMenus) then
-    NSMenuAddItemsFromLCLMenu(Result, CocoaConfigMenu.dockMenu.customMenus);
+    TCocoaMenuUtil.attachLCLMenu(Result, CocoaConfigMenu.dockMenu.customMenus);
 end;
 
 procedure TAppDelegate.handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor);
