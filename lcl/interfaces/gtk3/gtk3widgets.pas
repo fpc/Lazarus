@@ -1328,11 +1328,15 @@ begin
         begin
           TGtk3ComboBox(Data).DumpPrivateStructValues('GDK_BUTTON_PRESS btn='+IntToStr(Event^.button.button));
         end;
-        if (wtWindow in TGtk3Widget(Data).WidgetType) then
+        AFocusedWidget := TGtk3Widget(Data).Widget^.get_toplevel;
+        if Gtk3WidgetSet.IsWayland or
+          (Gtk3IsGtkWindow(AFocusedWidget) and PGtkWindow(AFocusedWidget)^.is_active) then
         begin
-          TGtk3Widget(Data).Activate;
-        end else
-          LCLIntf.SetFocus(HWND(TGtk3Widget(Data)));
+          if (wtWindow in TGtk3Widget(Data).WidgetType) then
+            TGtk3Widget(Data).Activate
+          else
+            LCLIntf.SetFocus(HWND(TGtk3Widget(Data)));
+        end;
       end;
 
       if TGtk3Widget(Data).LCLObject is TButtonControl then
@@ -6419,6 +6423,8 @@ begin
       exit;
     W^.grab_focus;
   finally
+    if W <> nil then
+      g_object_unref(PGObject(W));
     g_object_unref(PGObject(ACentralWidget));
   end;
 end;
@@ -6481,8 +6487,8 @@ begin
     'lcl-tab-switch-active', Pointer(1));
   g_object_set_data(TGtk3NoteBook(Data).FCentralWidget,
     'lcl-tab-focus-widget', W);
-  //g_object_ref so FCentralWidget stays valid until Gtk3FocusAfterTabSwitch
-  //fires; the idle handler always calls g_object_unref in its finally block.
+  if W <> nil then
+    g_object_ref(PGObject(W));
   g_object_ref(PGObject(TGtk3NoteBook(Data).FCentralWidget));
   g_idle_add(@Gtk3FocusAfterTabSwitch, TGtk3NoteBook(Data).FCentralWidget);
 end;
@@ -11964,9 +11970,10 @@ begin
     if FWidgetType = [wtHintWindow] then
       Result := TGtkWindow.new(GTK_WINDOW_POPUP)
     else
-    if GTK3WidgetSet.IsWayland and (AForm.BorderStyle = bsNone) then
+    if (AForm.BorderStyle = bsNone) and
+       (Gtk3WidgetSet.IsWayland or (csNoFocus in AForm.ControlStyle)) then
     begin
-      Result := TGtkWindow.new(GTK_WINDOW_POPUP); // Wayland: borderless xdg-popup for correct positioning
+      Result := TGtkWindow.new(GTK_WINDOW_POPUP);
       if not (csNoFocus in AForm.ControlStyle) then
       begin
         PGtkWindow(Result)^.set_accept_focus(True);
@@ -11977,7 +11984,9 @@ begin
     FWidget:=Result;
     FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
     Title:=Params.Caption;
-    if (FWidgetType = [wtHintWindow]) or (Gtk3WidgetSet.IsWayland and (AForm.BorderStyle = bsNone)) then
+    if (FWidgetType = [wtHintWindow]) or
+       ((AForm.BorderStyle = bsNone) and
+        (Gtk3WidgetSet.IsWayland or (csNoFocus in AForm.ControlStyle))) then
       decor := []
     else
       decor:=decoration_flags(AForm);
@@ -12321,8 +12330,9 @@ begin
       Move(ALeft, ATop);
     end;
 
-    if Gtk3IsGtkWindow(fWidget) or ((ARect.width >= 2) and (ARect.height >= 2)) then
-      Widget^.size_allocate(@ARect);
+    if not ((AForm.BorderStyle = bsNone) and Widget^.get_realized) then
+      if Gtk3IsGtkWindow(fWidget) or ((ARect.width >= 2) and (ARect.height >= 2)) then
+        Widget^.size_allocate(@ARect);
     if Gtk3IsGtkWindow(fWidget)
         and not (csDesigning in AForm.ComponentState) {and (AForm.Parent = nil) and (AForm.ParentWindow = 0)} then
     begin
@@ -12379,13 +12389,17 @@ begin
 
     if Gtk3IsGtkWindow(FWidget) then
     begin
-      //PGtkWindow(Widget)^.set_default_size(AWidth, AHeight);
+      if (AForm.BorderStyle = bsNone) and Widget^.get_realized then
+      begin
+        x := 0;
+        y := 0;
+        if not PGtkWindow(Widget)^.get_decorated and (PGtkWindow(Widget)^.transient_for <> nil) then
+          PGtkWindow(Widget)^.transient_for^.window^.get_origin(@x, @y);
+        Widget^.window^.move_resize(ALeft + x, ATop + y, AWidth, AHeight);
+        gdk_display_flush(gdk_window_get_display(Widget^.window));
+        Exit;
+      end;
       PGtkWindow(Widget)^.set_resizable(true);
-      // Override GTK's natural minimum size hint so the WM allows resizing
-      // to any size during drag. Without this, _NET_WM_NORMAL_HINTS.PMinSize
-      // reflects GTK's preferred minimum (e.g. 140px for form content) and the
-      // WM rejects resize() calls below that floor, showing a rubber-band but
-      // not actually resizing the window. LCL manages size constraints itself.
       if not AFixedWidthHeight then
       begin
         FillChar(Geometry, SizeOf(Geometry), 0);
