@@ -4333,7 +4333,8 @@ begin
       for i := 0 to QStringList_size(AFormats) - 1 do
       begin
         QStringList_at(AFormats, @WStr, i);
-        if WStr = 'text/plain;charset=utf-8' then // do not translate
+        //issue #42099
+        if (WStr = 'UTF8_STRING') or (WStr = 'text/plain;charset=utf-8') then // do not translate
         begin
           MimeType := WStr;
           break;
