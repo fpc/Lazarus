@@ -26,13 +26,25 @@ program runtestscodetools;
 {$mode objfpc}{$H+}
 
 uses
+  {$IFDEF UNIX}
+  cthreads,
+  {$ENDIF}
+  {$IFDEF HASAMIGA}
+  athreads,
+  {$ENDIF}
   Classes, sysutils, dom,
   // FPCUnit
   fpcunit, consoletestrunner,
   // LazUtils
   LazLogger, LazUTF8, LazStringUtils, LazFileUtils,
+  // LCL (nogui)
+  Interfaces,
   // IdeConfig
-  LazConf, EnvironmentOpts,
+  LazConf, EnvironmentOpts, TransferMacros,
+  // BuildIntf
+  MacroIntf,
+  // IDE (in search path)
+  BuildManager,
   // CodeTools
   CodeToolManager, CodeToolsConfig,
   // Test suites
@@ -115,6 +127,14 @@ begin
 end;
 
 // code is based on LazBuild
+procedure FreeIdeEnvOpt;
+begin
+  FreeAndNil(GlobalMacroList);
+  FreeAndNil(IDEMacros);
+  FreeAndNil(MainBuildBoss);
+end;
+
+// code is based on LazBuild
 function LoadIdeEnvOpt(aLazDir: string): TEnvironmentOptions;
 const
   cLazarusCfgName = 'lazarus.cfg';
@@ -123,7 +143,7 @@ const
 var
   lExeDir, lLazDir, lCfgFile, lPCP: string;
 begin
-  if assigned(EnvironmentOptions) then FreeAndNil(EnvironmentOptions);
+  if assigned(EnvironmentOptions) then FreeIdeEnvOpt;
   result := nil;
   try
     lExeDir := ExtractFileDir(ParamStrUTF8(0));
@@ -138,14 +158,17 @@ begin
       if lPCP <> '' then
         SetPrimaryConfigPath(lPCP);
     end;
+    // macros
+    MainBuildBoss := TBuildManager.Create(nil); // creates EnvironmentOptions
+    MainBuildBoss.SetupTransferMacros;
+    (IDEMacros as TLazIDEMacros).LoadLazbuildMacros;
     // env
-    EnvironmentOptions := TEnvironmentOptions.Create;
     EnvironmentOptions.CreateConfig;
     EnvironmentOptions.Load(false);
     result := EnvironmentOptions;
   except
     if result = nil then
-      FreeAndNil(EnvironmentOptions);
+      FreeIdeEnvOpt;
   end;
 end;
 
@@ -159,7 +182,7 @@ begin
     except // ignore
     end;
   finally
-    FreeAndNil(EnvironmentOptions);
+    FreeIdeEnvOpt;
   end;
 end;
 
