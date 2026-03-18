@@ -41,6 +41,9 @@ const
   NSTextAlignmentJustified = 3;
   NSTextAlignmentNatural   = 4;
 
+const
+  kVK_SubMenu = $6E;
+
 type
   NSImageScaling = NSUInteger;
 const // NSImageScaling values
@@ -708,9 +711,6 @@ const
   NSWindowTabbingModeAutomatic  = 0; // The system automatically prefers to tab this window when appropriate
   NSWindowTabbingModePreferred  = 1; // The window explicitly should prefer to tab when shown
   NSWindowTabbingModeDisallowed = 2; // The window explicitly should not prefer to tab when shown
-
-const
-  NSKeyCodeTab  = 48;
 
 { NSTableView Animation Options }
 

@@ -84,9 +84,6 @@ type
   { TCocoaKeyUtil }
 
   TCocoaKeyUtil = class
-  private
-  const
-    kVK_SubMenu = $6E;
   public
     class function codeToString(AKey: Word): NSString;
     class function codeToVK(AKey: Word): Word;
