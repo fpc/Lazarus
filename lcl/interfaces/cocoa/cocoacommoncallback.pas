@@ -8,9 +8,9 @@ interface
 
 uses
   Types, Classes, Controls, SysUtils,
-  WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
+  LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll, CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
-  CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra;
+  CocoaApplication, CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, Cocoa_Extra;
 
 type
 
