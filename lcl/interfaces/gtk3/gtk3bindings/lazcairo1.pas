@@ -784,6 +784,8 @@ procedure cairo_surface_mark_dirty(surface: Pcairo_surface_t); cdecl; external L
 procedure cairo_surface_mark_dirty_rectangle(surface: Pcairo_surface_t; x, y, width, height: LongInt); cdecl; external LIB_CAIRO;
 procedure cairo_surface_set_device_offset(surface: Pcairo_surface_t; x_offset, y_offset: Double); cdecl; external LIB_CAIRO;
 procedure cairo_surface_get_device_offset(surface: Pcairo_surface_t; x_offset, y_offset: PDouble); cdecl; external LIB_CAIRO;
+procedure cairo_surface_set_device_scale(surface: Pcairo_surface_t; x_scale, y_scale: Double); cdecl; external LIB_CAIRO;
+procedure cairo_surface_get_device_scale(surface: Pcairo_surface_t; x_scale, y_scale: PDouble); cdecl; external LIB_CAIRO;
 procedure cairo_surface_set_fallback_resolution(surface: Pcairo_surface_t; x_pixels_per_inch, y_pixels_per_inch: Double); cdecl; external LIB_CAIRO;
 function cairo_surface_get_device(surface: Pcairo_surface_t): Pcairo_device_t; cdecl; external LIB_CAIRO;
 
