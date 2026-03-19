@@ -17443,10 +17443,6 @@ msgstr "Alt Prosedür"
 msgid "Sub Procedure on same level"
 msgstr "Aynı seviyedeki Alt Prosedür"
 
-#: lazarusidestrconsts.lissubtarget
-msgid "Subtarget"
-msgstr "Althedef"
-
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Başarılı"

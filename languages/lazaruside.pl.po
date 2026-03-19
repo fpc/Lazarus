@@ -17770,10 +17770,6 @@ msgstr "Podkatalog"
 msgid "Sub Procedure on same level"
 msgstr ""
 
-#: lazarusidestrconsts.lissubtarget
-msgid "Subtarget"
-msgstr ""
-
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Zakończony powodzeniem"

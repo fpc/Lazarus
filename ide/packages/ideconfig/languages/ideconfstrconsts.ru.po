@@ -365,7 +365,7 @@ msgstr "Исходная ОС"
 
 #: ideconfstrconsts.lissubtarget
 msgid "Subtarget"
-msgstr ""
+msgstr "Подцель"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format

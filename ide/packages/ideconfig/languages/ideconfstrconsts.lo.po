@@ -1,357 +1,352 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"PO-Revision-Date: 2025-05-22 00:13+0800\n"
-"Last-Translator: ACTom <i@actom.me>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: TyPoEditor 0.2\n"
 
 #: ideconfstrconsts.dlgfilterfpcmessagefile
 msgid "FPC message file"
-msgstr "FPC 消息文件"
+msgstr ""
 
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
-msgstr "文件 \"%s\" 已存在%s是否替换？"
+msgstr ""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
-msgstr "活动构建模式的标题"
+msgstr ""
 
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
-msgstr "错误"
+msgstr ""
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
-msgstr "写入错误"
+msgstr ""
 
 #: ideconfstrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
-msgstr "程序的命令行参数"
+msgstr ""
 
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
-msgstr "编译项目"
+msgstr ""
 
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
-msgstr "错误:无效的编译器:%s"
+msgstr ""
 
 #: ideconfstrconsts.liscompilerfilename
 msgid "Compiler filename"
-msgstr "编译器文件名"
+msgstr ""
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
-#, fuzzy
-#| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
-msgstr "提示: 您可以设置编译器路径在 工具->选项->文件->编译器路径"
+msgstr ""
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "组件名称 \"%s\" 是一个 Pascal 关键字。"
+msgstr ""
 
 #: ideconfstrconsts.liscomponentnameisnotavalididentifier
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "组件名称 \"%s\" 不是有效的标识符"
+msgstr ""
 
 #: ideconfstrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
-msgstr "Lazarus配置目录"
+msgstr ""
 
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
-msgstr ", CPU: %s"
+msgstr ""
 
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
-msgstr "删除文件失败"
+msgstr ""
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
-msgstr "目录不可写"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefallpackages
 msgid "All packages"
-msgstr "所有软件包"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefsallprojects
 msgid "All projects"
-msgstr "所有项目"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
-msgstr "将 FPC 模式设置为 DELPHI"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetofpc
 msgid "set FPC mode to FPC"
-msgstr "将 FPC 模式设置为 FPC"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetomacpas
 msgid "set FPC mode to MacPas"
-msgstr "将 FPC 模式设置为 MacPas"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefsetfpcmodetotp
 msgid "set FPC mode to TP"
-msgstr "将 FPC 模式设置为 TP"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefsetiocheckson
 msgid "set IOCHECKS on"
-msgstr "设置 IOCHECKS 开启"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefsetoverflowcheckson
 msgid "set OVERFLOWCHECKS on"
-msgstr "设置 OVERFLOWCHECKS 开启"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefsetrangecheckson
 msgid "set RANGECHECKS on"
-msgstr "设置 RANGECHECKS 为开"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
-msgstr "使用 HeapTrc 单元"
+msgstr ""
 
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
-msgstr "使用 LineInfo 单元"
+msgstr ""
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
-msgstr "宏中出现无限循环"
+msgstr ""
 
 #: ideconfstrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
-msgstr "环境变量,名称作为参数"
+msgstr ""
 
 #: ideconfstrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
-msgstr "目录未找到"
+msgstr ""
 
 #: ideconfstrconsts.liserrorloadingfrom
 #, object-pascal-format
 msgid "Error loading %s from%s%s%s%s"
-msgstr "加载 %s 时出错从 %s%s%s%s"
+msgstr ""
 
 #: ideconfstrconsts.liserrorsavingto
 #, object-pascal-format
 msgid "Error saving %s to%s%s%s%s"
-msgstr "保存 %s 到 %s 时出错 %s%s%s"
+msgstr ""
 
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "文件 \"%s\"%s看起来不是一个文本文件。%s仍然打开它吗？"
+msgstr ""
 
 #: ideconfstrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
-msgstr "程序的文件扩展名"
+msgstr ""
 
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
-msgstr "文件不可写"
+msgstr ""
 
 #: ideconfstrconsts.lisfileissymlink
 msgid "File is symlink"
-msgstr "文件是符号链接"
+msgstr ""
 
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
-msgstr "文件不是文本文件"
+msgstr ""
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
-msgstr "FP C版本作为一个数字（例如 20701）"
+msgstr ""
 
 #: ideconfstrconsts.lisfpcversioneg222
 msgid "FPC Version (e.g. 2.2.2)"
-msgstr "FPC 版本(比如2.2.2)"
+msgstr ""
 
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg is not an executable."
-msgstr "为 Fppkg 配置的编译器 [%s] 不是可执行文件。"
+msgstr ""
 
 #: ideconfstrconsts.lisfppkgcompilernotexists
 #, object-pascal-format
 msgid "The compiler [%s] configured for Fppkg does not exist."
-msgstr "配置给 Fppkg 的编译器 [%s] 不存在。"
+msgstr ""
 
 #: ideconfstrconsts.lisfppkgcompilernotfound
 #, object-pascal-format
 msgid "Could not find the compiler [%s] configured for Fppkg."
-msgstr "未能找到为 Fppkg 配置的编译器 [%s]。"
+msgstr ""
 
 #: ideconfstrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
-msgstr "Fppkg 报告说 RTL 未安装。"
+msgstr ""
 
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
-msgstr "Free Pascal源代码目录"
+msgstr ""
 
 #: ideconfstrconsts.lisidebuildoptions
 msgid "IDE build options"
-msgstr "IDE构建选项"
+msgstr ""
 
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
-msgstr "忽略并继续"
+msgstr ""
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
-msgstr "启动目标命令行"
+msgstr ""
 
 #: ideconfstrconsts.lislazarusdirectory
 msgid "Lazarus directory"
-msgstr "Lazarus 目录"
+msgstr ""
 
 #: ideconfstrconsts.lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr "Lazarus 语言 ID (例如 en、de、br、fi)"
+msgstr ""
 
 #: ideconfstrconsts.lislazaruslanguagename
 msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr "Lazarus 语言名称 (例如 英语、德语)"
+msgstr ""
 
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
-msgstr "Lazarus版本(例如1.2.4)"
+msgstr ""
 
 #: ideconfstrconsts.lislclwidgettype
 msgid "LCL &widget type"
-msgstr "LCL &控件类型"
+msgstr ""
 
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
-msgstr "生成可执行的"
+msgstr ""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
-msgstr ",模式: %s"
+msgstr ""
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
-msgstr "活动构建模式的名称"
+msgstr ""
 
 #: ideconfstrconsts.lisnewproject
 msgid "(new project)"
-msgstr "(新建项目)"
+msgstr ""
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
-msgstr "未实现"
+msgstr ""
 
 #: ideconfstrconsts.lisnotimplementedyet
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
-msgstr "尚未实现：%s%s"
+msgstr ""
 
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
-msgstr "打开符号链接"
+msgstr ""
 
 #: ideconfstrconsts.lisopentarget
 msgid "Open target"
-msgstr "打开目标"
+msgstr ""
 
 #: ideconfstrconsts.lisos
 #, object-pascal-format
 msgid ", OS: %s"
-msgstr ",操作系统:%s"
+msgstr ""
 
 #: ideconfstrconsts.lisoutputfilenameofproject
 msgid "Output filename of project"
-msgstr "项目的输出文件名称"
+msgstr ""
 
 #: ideconfstrconsts.lisoverwritefile
 msgid "Overwrite file?"
-msgstr "覆盖文件?"
+msgstr ""
 
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
-msgstr "覆盖磁盘上的文件"
+msgstr ""
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
-msgstr "instantfpc缓存的路径"
+msgstr ""
 
 #: ideconfstrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
-msgstr "Make实用程序的路径"
+msgstr ""
 
 #: ideconfstrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
-msgstr "不能创建目录"
+msgstr ""
 
 #: ideconfstrconsts.lispkgmangunabletodeletefile
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
-msgstr "无法删除文件 \"%s\"。"
+msgstr ""
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
-msgstr "最初的(Primary)配置路径"
+msgstr ""
 
 #: ideconfstrconsts.lisprojectdirectory
 msgid "Project directory"
-msgstr "项目目录"
+msgstr ""
 
 #: ideconfstrconsts.lisprojectfilename
 msgid "Project filename"
-msgstr "项目文件名称"
+msgstr ""
 
 #: ideconfstrconsts.lisprojectincpath
 msgid "Project Include Path"
-msgstr "项目包含路径"
+msgstr ""
 
 #: ideconfstrconsts.lisprojectmacroproperties
 msgid "Project macro properties"
-msgstr "项目宏命令属性"
+msgstr ""
 
 #: ideconfstrconsts.lisprojectnamespaces
 msgid "Project Namespaces"
-msgstr "项目名称空间(Namespaces)"
+msgstr ""
 
 #: ideconfstrconsts.lisprojectoutdir
 msgid "Project Output directory (e.g. the ppu directory)"
-msgstr "项目输出目录(例如 ppu目录)"
+msgstr ""
 
 #: ideconfstrconsts.lisprojectsrcpath
 msgid "Project Src Path"
-msgstr "项目源代码路径"
+msgstr ""
 
 #: ideconfstrconsts.lisprojectunitpath
 msgid "Project Unit Path"
-msgstr "项目单元路径"
+msgstr ""
 
 #: ideconfstrconsts.lisprojectver
 msgid "Project version"
-msgstr "项目 版本"
+msgstr ""
 
 #: ideconfstrconsts.lispublishprojdir
 msgid "Publish project directory"
-msgstr "发布项目目录"
+msgstr ""
 
 #: ideconfstrconsts.lisreaderror
 msgid "Read Error"
-msgstr "读取错误"
+msgstr ""
 
 #: ideconfstrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
-msgstr "第二个配置路径"
+msgstr ""
 
 #: ideconfstrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
 msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
-msgstr "$TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param) 的简称。如果子目标为空，则省略。"
+msgstr ""
 
 #: ideconfstrconsts.lissourceanddestinationarethesame
 #, object-pascal-format
@@ -360,194 +355,194 @@ msgstr ""
 
 #: ideconfstrconsts.lissrcos
 msgid "Src OS"
-msgstr "源代码操作系统"
+msgstr ""
 
 #: ideconfstrconsts.lissubtarget
 msgid "Subtarget"
-msgstr "子目标"
+msgstr "ເປົ້າໝາຍຍ່ອຍ"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
-msgstr "，目标：%s"
+msgstr ""
 
 #: ideconfstrconsts.listargetcpu
 msgid "Target CPU"
-msgstr "目标 CPU"
+msgstr ""
 
 #: ideconfstrconsts.listargetfilenameofproject
 msgid "Target filename of project"
-msgstr "项目目标文件名"
+msgstr ""
 
 #: ideconfstrconsts.listargetfilenameplusparams
 msgid "Target filename + params"
-msgstr "目标文件 + 参数"
+msgstr ""
 
 #: ideconfstrconsts.listargetos
 msgid "Target OS"
-msgstr "目标操作系统"
+msgstr ""
 
 #: ideconfstrconsts.listestdirectory
 msgid "Test directory"
-msgstr "测试目录"
+msgstr ""
 
 #: ideconfstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
 msgid "The Codetools found an error:%s%s"
-msgstr "Codetools 发现一个错误：%s%s"
+msgstr ""
 
 #: ideconfstrconsts.listhedirectoryisnotwritable
 #, object-pascal-format
 msgid "The directory \"%s\" is not writable."
-msgstr "目录 \"%s\" 不可写。"
+msgstr ""
 
 #: ideconfstrconsts.listhefileisasymlinkopeninstead
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
-msgstr "文件 \"%s\" 是一个符号链接。%s要打开 \"%s\" 吗？"
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
-msgstr "功能：追加路径分隔符"
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionchomppathdelimiter
 msgid "Function: remove trailing path delimiter"
-msgstr "功能：移除尾部路径分隔符"
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionenclosebrackets
 msgid "Function: enclose in ()"
-msgstr "功能：用 () 括起"
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
-msgstr "功能：提取文件扩展名"
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionextractfilenameextension
 msgid "Function: extract file name+extension"
-msgstr "功能：提取文件名+扩展名"
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionextractfilenameonly
 msgid "Function: extract file name only"
-msgstr "功能：仅提取文件名"
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionextractfilepath
 msgid "Function: extract file path"
-msgstr "功能：提取文件路径"
+msgstr ""
 
 #: ideconfstrconsts.listmunknownmacro
 #, object-pascal-format
 msgid "(unknown macro: %s)"
-msgstr "(未知宏：%s)"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
-msgstr "无法复制文件"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletocopyfileto
 #, object-pascal-format
 msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr "无法将文件 \"%s\"%s复制到 \"%s\""
+msgstr ""
 
 #: ideconfstrconsts.lisunabletocreatedirectory
 #, object-pascal-format
 msgid "Unable to create directory \"%s\"."
-msgstr "无法创建目录 \"%s\"。"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletocreatefile
 msgid "Unable to create file"
-msgstr "无法创建文件"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletocreatefile2
 #, object-pascal-format
 msgid "Unable to create file \"%s\""
-msgstr "无法创建文件 \"%s\""
+msgstr ""
 
 #: ideconfstrconsts.lisunabletocreatefile3
 #, object-pascal-format
 msgid "Unable to create file%s\"%s\""
-msgstr "无法创建文件%s\"%s\""
+msgstr ""
 
 #: ideconfstrconsts.lisunabletocreatelinkwithtarget
 #, object-pascal-format
 msgid "Unable to create link \"%s\" with target \"%s\""
-msgstr "无法创建链接 \"%s\" 目标为 \"%s\""
+msgstr ""
 
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
-msgstr "无法读取文件"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletoreadfile2
 #, object-pascal-format
 msgid "Unable to read file \"%s\"."
-msgstr "无法读取文件 \"%s\"。"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletoreadfileerror
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
-msgstr "无法读取文件 \"%s\"%s 错误：%s"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"
-msgstr "无法重命名文件"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletorenamefileto
 #, object-pascal-format
 msgid "Unable to rename file \"%s\" to \"%s\"!"
-msgstr "无法将文件 \"%s\" 重命名为 \"%s\"！"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletorenamefileto2
 #, object-pascal-format
 msgid "Unable to rename file \"%s\"%sto \"%s\"."
-msgstr "无法将文件 \"%s\"%s 重命名为 \"%s\"。"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletowrite2
 #, object-pascal-format
 msgid "Unable to write \"%s\""
-msgstr "无法写入\"%s\""
+msgstr ""
 
 #: ideconfstrconsts.lisunabletowritefile
 msgid "Unable to write file"
-msgstr "无法写入文件"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletowritefile2
 #, object-pascal-format
 msgid "Unable to write file \"%s\"."
-msgstr "无法写入文件 \"%s\"。"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletowritefileerror
 #, object-pascal-format
 msgid "Unable to write file \"%s\"%sError: %s"
-msgstr "无法写入文件 \"%s\" %s 错误：%s"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletowritetofile2
 #, object-pascal-format
 msgid "Unable to write to file \"%s\"."
-msgstr "无法写入到文件 \"%s\"。"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletowritexmlstreamtoerror
 #, object-pascal-format
 msgid "Unable to write xml stream to %s%sError: %s"
-msgstr "无法将 xml 流写入到 %s%s，错误：%s"
+msgstr ""
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
-msgstr "用户主目录"
+msgstr ""
 
 #: ideconfstrconsts.liswriteerror
 msgid "Write Error"
-msgstr "写入错误"
+msgstr ""
 
 #: ideconfstrconsts.liswriteerrorfile
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
-msgstr "写入错误：%s%s 文件：%s%s%s"
+msgstr ""
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"
-msgstr "XML 错误"
+msgstr ""
 
 #: ideconfstrconsts.lisxmlparsererrorinfileerror
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
-msgstr "在文件 %s%s 中发现 XML 解析错误，错误：%s"
+msgstr ""
 

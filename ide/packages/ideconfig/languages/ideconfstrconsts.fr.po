@@ -363,7 +363,7 @@ msgstr "Système d'exploitation source"
 
 #: ideconfstrconsts.lissubtarget
 msgid "Subtarget"
-msgstr ""
+msgstr "Sous-cible"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format

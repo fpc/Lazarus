@@ -363,7 +363,7 @@ msgstr "Zdrojový OS"
 
 #: ideconfstrconsts.lissubtarget
 msgid "Subtarget"
-msgstr ""
+msgstr "Podcieľ"
 
 #: ideconfstrconsts.listarget2
 #, object-pascal-format

@@ -17833,10 +17833,6 @@ msgstr "サブ手続き"
 msgid "Sub Procedure on same level"
 msgstr "同じレベルのサブ手続き"
 
-#: lazarusidestrconsts.lissubtarget
-msgid "Subtarget"
-msgstr ""
-
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "成功"

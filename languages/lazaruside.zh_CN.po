@@ -17467,10 +17467,6 @@ msgstr "子程序"
 msgid "Sub Procedure on same level"
 msgstr "同级子程序"
 
-#: lazarusidestrconsts.lissubtarget
-msgid "Subtarget"
-msgstr "子目标"
-
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "成功"

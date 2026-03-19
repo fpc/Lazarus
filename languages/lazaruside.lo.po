@@ -17444,10 +17444,6 @@ msgstr "ໂປຣຊີເຈີຍ່ອຍ"
 msgid "Sub Procedure on same level"
 msgstr "ໂປຣຊີເຈີຍ່ອຍໃນລະດັບດຽວກັນ"
 
-#: lazarusidestrconsts.lissubtarget
-msgid "Subtarget"
-msgstr "ເປົ້າໝາຍຍ່ອຍ"
-
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "ສຳເລັດ"
