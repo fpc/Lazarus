@@ -1983,7 +1983,7 @@ begin
     if aRight<0 then
       aRight:=ScreenR.Right+aRight // relative to right of screen
     else if (Right<>'') and (Right[1]='+') then
-      inc(aRight,DefBounds.Left) // relative to Left
+      aRight:=DefBounds.Left+AForm.Scale96ToScreen(aRight) // relative to Left, DPI-scaled
     else
       inc(aRight,ScreenR.Left); // relative to left of screen
   end;
@@ -2005,7 +2005,7 @@ begin
     if aBottom<0 then
       aBottom:=ScreenR.Bottom+aBottom // relative to bottom of screen
     else if (Bottom<>'') and (Bottom[1]='+') then
-      inc(aBottom,DefBounds.Top) // relative to Top
+      aBottom:=DefBounds.Top+AForm.Scale96ToScreen(aBottom) // relative to Top, DPI-scaled
     else
       inc(aBottom,ScreenR.Top); // relative to top of screen
   end;

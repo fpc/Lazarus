@@ -679,6 +679,8 @@ type
     procedure SetAutoSize(Value: Boolean); override;
     procedure SetAutoScroll(Value: Boolean); override;
     procedure SetScaled(const AScaled: Boolean); override;
+    procedure ConstrainedResize(var MinWidth, MinHeight,
+                                MaxWidth, MaxHeight: TConstraintSize); override;
     procedure DoAddActionList(List: TCustomActionList);
     procedure DoRemoveActionList(List: TCustomActionList);
     procedure ProcessResource; virtual;

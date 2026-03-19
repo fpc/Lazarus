@@ -3313,6 +3313,24 @@ begin
     TWSCustomFormClass(WidgetSetClass).ArrangeIcons(Self);
 end;
 
+procedure TCustomForm.ConstrainedResize(var MinWidth, MinHeight,
+  MaxWidth, MaxHeight: TConstraintSize);
+begin
+  //When this form is docked (Align <> alNone), the dock manager controls
+  //the layout and must be free to assign any size. Skip minimum-size
+  //constraints so DPI-scaled design-time minimums cannot cause the form
+  //to overflow its host site (e.g. after screen-fitting reduces the site
+  //below the DPI-scaled Constraints.MinHeight/MinWidth). Zeljan
+  //Maximum constraints and floating-window behaviour are unaffected.
+  if Align = alNone then
+    inherited ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight)
+  else begin
+    MinWidth  := 0;
+    MinHeight := 0;
+    inherited ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight);
+  end;
+end;
+
 //==============================================================================
 
 { TFormPropertyStorage }

@@ -2839,11 +2839,19 @@ var
 
     with Control do begin
       // get constraints
-      MinWidth:=Constraints.EffectiveMinWidth;
-      if MinWidth<0 then MinWidth:=0;
+      // When a TCustomForm is docked (Align <> alNone), DPI-scaled design-time
+      // minimum sizes must not prevent the dock host from fitting the form into
+      // the available screen-capped host site area. Zeljan.
+      if (Control is TCustomForm) and (Align <> alNone) then begin
+        MinWidth  := 0;
+        MinHeight := 0;
+      end else begin
+        MinWidth:=Constraints.EffectiveMinWidth;
+        if MinWidth<0 then MinWidth:=0;
+        MinHeight:=Constraints.EffectiveMinHeight;
+        if MinHeight<0 then MinHeight:=0;
+      end;
       MaxWidth:=Constraints.EffectiveMaxWidth;
-      MinHeight:=Constraints.EffectiveMinHeight;
-      if MinHeight<0 then MinHeight:=0;
       MaxHeight:=Constraints.EffectiveMaxHeight;
       
       // get anchors set by Align
@@ -3323,13 +3331,13 @@ begin
       //if AControl<>nil then DebugLn('  AControl=',AControl.Name,':',AControl.ClassName);
     //end;
     // first let the DockManager align controls
-    if DockSite and UseDockManager and (DockManager<>nil) then
+    if DockSite and UseDockManager and (DockManager<>nil) then begin
       DockManager.ResetBounds(false);
+    end;
     AdjustClientRect(RemainingClientRect);
     r:=GetLogicalClientRect;
     ParentClientWidth:=r.Right;
     ParentClientHeight:=r.Bottom;
-
     if NeedAlignWork then
     begin
       //DebugLn(['TWinControl.AlignControls  ',DbgSName(Self),' RemainingClientRect=',dbgs(RemainingClientRect),' ',dbgs(ClientRect)]);
@@ -7149,7 +7157,9 @@ begin
         NewClientSize := Size(ClientWidth, ClientHeight);
         if (OldClientSize.cx = NewClientSize.cx) and
            (OldClientSize.cy = NewClientSize.cy) then
+        begin
            Exit;
+        end;
       end;
     end;
     {$IFDEF VerboseAllAutoSize}
@@ -7196,7 +7206,9 @@ begin
     //debugln(['TWinControl.WMSize ',DbgSName(Self),' ClientRectNeedsInterfaceUpdate=',ClientRectNeedsInterfaceUpdate]);
   if ((Message.SizeType and Size_SourceIsInterface) > 0) and ((Message.SizeType and SIZE_MINIMIZED) = 0)
   and ClientRectNeedsInterfaceUpdate then
+  begin
     DoAdjustClientRectChange;
+  end;
   {$IFDEF VerboseClientRectBugFix}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
