@@ -1953,6 +1953,7 @@ constructor TGtk3DeviceContext.CreateFromCairo(AWidget: PGtkWidget;
 var
   AGdkRect: TGdkRectangle;
   W, H: Integer;
+  ACanvasScale: gint;
 begin
   {$ifdef VerboseGtk3DeviceContext}
     DebugLn('TGtk3DeviceContext.CreateFromCairo (',
@@ -1982,6 +1983,7 @@ begin
   if cairo_surface_get_type(CairoSurface) in
      [CAIRO_SURFACE_TYPE_XLIB, CAIRO_SURFACE_TYPE_XCB] then
   begin
+    ACanvasScale := gtk_widget_get_scale_factor(AWidget);
     W := AGdkRect.width;
     H := AGdkRect.height;
     if (W <= 0) and (AWidget <> nil) then W := AWidget^.get_allocated_width;
@@ -1991,7 +1993,8 @@ begin
     FBackTarget  := ACairo;
     FBackOriginX := AGdkRect.x;
     FBackOriginY := AGdkRect.y;
-    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, W, H);
+    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, W * ACanvasScale, H * ACanvasScale);
+    cairo_surface_set_device_scale(CairoSurface, ACanvasScale, ACanvasScale);
     FCairo       := cairo_create(CairoSurface);
     cairo_translate(FCairo, -FBackOriginX, -FBackOriginY);
     FOwnsCairo   := True;
