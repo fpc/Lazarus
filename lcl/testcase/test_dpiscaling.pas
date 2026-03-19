@@ -5,10 +5,13 @@ unit Test_DpiScaling;
 interface
 
 uses
-  Classes, SysUtils, math,
-  System.UITypes, fpcunit, testutils, testregistry,
-  Forms, StdCtrls, LResources, ExtCtrls, Controls, LMessages,
-  LazLoggerBase;
+  Classes, SysUtils, Math,
+  // FPCUnit
+  fpcunit, testregistry,
+  // LazUtils
+  LazLoggerBase,
+  // LCL
+  Forms, Controls, StdCtrls, ExtCtrls, LResources, LMessages;
 
 type
 
@@ -480,7 +483,7 @@ var
   BndIdxLeft, BndIdxTop, BndIdxRight, BndIdxBottom: Integer;
   PWidth, PHeight: Integer;
   LblBnd, LblBnd2: TRect;
-  x, y, ShrinkIdx: Integer;
+  ShrinkIdx: Integer;
   SkipAutoSizeLbl: Boolean;
   F2: Extended;
 begin

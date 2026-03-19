@@ -3,8 +3,13 @@ program test_lcl;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces,
-  Classes, consoletestrunner, Test_ChildSizing, Test_DpiScaling, Forms;
+  Classes,
+  // FPCUnit
+  consoletestrunner,
+  // LCL
+  Interfaces, Forms,
+  // Test suites
+  Test_ChildSizing, Test_DpiScaling;
 
 type
 
