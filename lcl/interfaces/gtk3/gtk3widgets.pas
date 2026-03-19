@@ -9524,13 +9524,13 @@ begin
   if ColumnIndex = 0 then
     ImageIndex := ListItem.ImageIndex
   else
-    if ColumnIndex -1 <= ListItem.SubItems.Count-1 then
-      ImageIndex := ListItem.SubItemImages[ColumnIndex-1];
+    if ColumnIndex - 1 <= ListItem.SubItems.Count - 1 then
+      ImageIndex := ListItem.SubItemImages[ColumnIndex - 1];
 
   if (ImageIndex > -1) and (ImageIndex <= AImages.Count-1) then
-    pb:=TGtk3Image(TBitmap(AImages.Items[ImageIndex]).Handle).Handle^.copy
+    pb := PGdkPixbuf(AImages.Items[ImageIndex])^.copy
   else
-    pb:=nil;
+    pb := nil;
 
   gv.set_instance(pb);
   PGtkCellRendererPixbuf(cell)^.set_property('pixbuf',@gv);
