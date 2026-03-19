@@ -227,7 +227,7 @@ begin
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   ParentClass^.get_preferred_height(widget, min_height, nat_height);
 
-  min_height^ := Max(min_height^, 10);
+  min_height^ := Max(10, Min(min_height^, LCLIntendedH));
   nat_height^ := Max(nat_height^, LCLIntendedH);
   nat_height^ := Max(nat_height^, min_height^);
   {$IFDEF GTK3DEBUGHEIGHTZERO}
