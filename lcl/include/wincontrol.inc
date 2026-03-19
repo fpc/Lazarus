@@ -2839,10 +2839,14 @@ var
 
     with Control do begin
       // get constraints
-      // When a TCustomForm is docked (Align <> alNone), DPI-scaled design-time
-      // minimum sizes must not prevent the dock host from fitting the form into
-      // the available screen-capped host site area. Zeljan.
-      if (Control is TCustomForm) and (Align <> alNone) then begin
+      // When a TCustomDesignControl (TCustomForm or TCustomFrame) is embedded in
+      // a host (Assigned(Parent)), DPI-scaled design-time minimum sizes must not
+      // prevent the dock host from fitting the control into the available
+      // screen-capped host site area. TCustomDesignControl is the exact base
+      // class that owns DesignTimePPI/Scaled, making it the right scope.
+      // Using Assigned(Parent) rather than Align<>alNone: a docked form/frame can
+      // have Align=alNone in rare cases yet still has a Parent assigned. Zeljan.
+      if (Control is TCustomDesignControl) and Assigned(Parent) then begin
         MinWidth  := 0;
         MinHeight := 0;
       end else begin

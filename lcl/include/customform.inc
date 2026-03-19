@@ -3316,13 +3316,15 @@ end;
 procedure TCustomForm.ConstrainedResize(var MinWidth, MinHeight,
   MaxWidth, MaxHeight: TConstraintSize);
 begin
-  //When this form is docked (Align <> alNone), the dock manager controls
-  //the layout and must be free to assign any size. Skip minimum-size
+  //When this form is embedded in a host (Assigned(Parent)), the dock manager
+  //controls the layout and must be free to assign any size. Skip minimum-size
   //constraints so DPI-scaled design-time minimums cannot cause the form
   //to overflow its host site (e.g. after screen-fitting reduces the site
   //below the DPI-scaled Constraints.MinHeight/MinWidth). Zeljan
   //Maximum constraints and floating-window behaviour are unaffected.
-  if Align = alNone then
+  //Using Assigned(Parent) rather than Align<>alNone because a docked form can
+  //have Align=alNone in rare cases yet still has a Parent assigned.
+  if not Assigned(Parent) then
     inherited ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight)
   else begin
     MinWidth  := 0;
