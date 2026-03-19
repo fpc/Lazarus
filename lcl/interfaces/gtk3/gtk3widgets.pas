@@ -12357,7 +12357,8 @@ begin
     begin
       Widget^.set_size_request(AWidth, AHeight);
       Move(ALeft, ATop);
-      LCLObject.InvalidateClientRectCache(False);
+      if (csDesigning in LCLObject.ComponentState) then
+        LCLObject.InvalidateClientRectCache(False);
     end;
 
     if not ((AForm.BorderStyle = bsNone) and Widget^.get_realized) then
