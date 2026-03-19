@@ -126,7 +126,7 @@ type
 
 
 implementation
-uses SysUtils, gtk3objects, gtk3procs, gtk3int;
+uses SysUtils, Forms, gtk3objects, gtk3procs, gtk3int;
 
 { TGtk3WSWinControl }
 
@@ -139,10 +139,74 @@ begin
 end;
 
 class procedure TGtk3WSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+var
+  AWidget: TGtk3Widget;
+  Geometry: TGdkGeometry;
+  AHints: TGdkWindowHints;
+  AFixedWidthHeight: Boolean;
+  AForm: TCustomForm;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSWinControl.ConstraintsChange');
   {$ENDIF}
+  if not AWinControl.HandleAllocated then Exit;
+  AWidget := TGtk3Widget(AWinControl.Handle);
+  if not Gtk3IsGtkWindow(AWidget.Widget) then Exit;
+  if not (AWinControl is TCustomForm) then Exit;
+  AForm := TCustomForm(AWinControl);
+  if csDesigning in AForm.ComponentState then Exit;
+
+  AFixedWidthHeight := AForm.BorderStyle in [bsDialog, bsSingle, bsToolWindow];
+
+  if Gtk3WidgetSet.IsWayland and AFixedWidthHeight then
+  begin
+    PGtkWindow(AWidget.Widget)^.set_resizable(False);
+    Exit;
+  end;
+
+  FillChar(Geometry, SizeOf(Geometry), 0);
+  with Geometry do
+  begin
+    if not AFixedWidthHeight and (AForm.Constraints.MinWidth > 0) then
+      min_width := AForm.Constraints.MinWidth
+    else
+      min_width := AForm.Width;
+    if not AFixedWidthHeight and (AForm.Constraints.MaxWidth > 0) then
+      max_width := AForm.Constraints.MaxWidth
+    else
+      max_width := AForm.Width;
+    if not AFixedWidthHeight and (AForm.Constraints.MinHeight > 0) then
+      min_height := AForm.Constraints.MinHeight
+    else
+      min_height := AForm.Height;
+    if not AFixedWidthHeight and (AForm.Constraints.MaxHeight > 0) then
+      max_height := AForm.Constraints.MaxHeight
+    else
+      max_height := AForm.Height;
+    base_width  := AForm.Width;
+    base_height := AForm.Height;
+    width_inc   := 1;
+    height_inc  := 1;
+    min_aspect  := 0;
+    max_aspect  := 1;
+    win_gravity := PGtkWindow(AWidget.Widget)^.get_gravity;
+  end;
+
+  if AFixedWidthHeight then
+    PGtkWindow(AWidget.Widget)^.set_geometry_hints(nil, @Geometry,
+      [GDK_HINT_POS, GDK_HINT_MIN_SIZE, GDK_HINT_MAX_SIZE])
+  else
+  begin
+    if AForm.BorderStyle <> bsNone then
+    begin
+      AHints := [GDK_HINT_POS, GDK_HINT_BASE_SIZE];
+      if (AForm.Constraints.MinWidth > 0) or (AForm.Constraints.MinHeight > 0) then
+        Include(AHints, GDK_HINT_MIN_SIZE);
+      if (AForm.Constraints.MaxWidth > 0) or (AForm.Constraints.MaxHeight > 0) then
+        Include(AHints, GDK_HINT_MAX_SIZE);
+      PGtkWindow(AWidget.Widget)^.set_geometry_hints(nil, @Geometry, AHints);
+    end;
+  end;
 end;
 
 class function TGtk3WSWinControl.CreateHandle(const AWinControl: TWinControl;
