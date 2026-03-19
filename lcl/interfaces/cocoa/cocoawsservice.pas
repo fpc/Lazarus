@@ -67,6 +67,8 @@ type
   public
     procedure DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
     procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
+  public
+    destructor Destroy; override;
   end;
 
 var
@@ -180,7 +182,9 @@ begin
   CurLCLMenu := ALCLMenu;
 
   if NOT Assigned(self.MainFormMenu) or (self.MainFormMenu.numberOfItems=0) then begin
+    self.MainFormMenu.release;
     self.MainFormMenu:= AMenu;
+    self.MainFormMenu.retain;
   end;
 
   if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then begin
@@ -237,6 +241,11 @@ begin
     lNSMenu.itemAtIndex(i).setTarget(TCocoaWSCustomForm.GetWindowFromHandle(CurModalForm));
   end;}
   {$endif}
+end;
+
+destructor TCocoaWidgetSetMenuService.Destroy;
+begin
+  self.MainFormMenu.release;
 end;
 
 initialization
