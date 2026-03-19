@@ -1,7 +1,4 @@
 {%MainUnit gtk3widgets.pas}
-const
-  GTK_FRAME_CLASS_SIZE = SizeOf(TGtkFrameClass);
-  GTK_FRAME_INSTANCE_SIZE = SizeOf(TGtkFrame);
 
 procedure LCLGtkFrameGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
 var
@@ -139,22 +136,23 @@ var
   LCLGtkFrameType: TGType = 0;
 
 function LCLGtkFrameGetType: TGType; cdecl;
-const
-  lcl_frame_type_info: TGTypeInfo = (
-    class_size: GTK_FRAME_CLASS_SIZE;
-    base_init: nil;
-    base_finalize: nil;
-    class_init: @LCLGtkFrameClassInit;
-    class_finalize: nil;
-    class_data: nil;
-    instance_size: GTK_FRAME_INSTANCE_SIZE;
-    n_preallocs: 0;
-    instance_init: @LCLGtkFrameInstanceInit;
-    value_table: nil;
-  );
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
 begin
   if LCLGtkFrameType = 0 then
-    LCLGtkFrameType := g_type_register_static(gtk_frame_get_type, 'LCLGtkFrame', @lcl_frame_type_info, G_TYPE_FLAG_NONE);
+  begin
+    ParentType := gtk_frame_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size    := guint16(Query.class_size);
+    Info.class_init    := @LCLGtkFrameClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkFrameInstanceInit;
+    LCLGtkFrameType := g_type_register_static(ParentType,
+      'LCLGtkFrame', @Info, G_TYPE_FLAG_NONE);
+  end;
   Result := LCLGtkFrameType;
 end;
 
@@ -164,9 +162,6 @@ begin
   Result := PGtkFrame(g_object_new(LCLGtkFrameGetType(),'shadow-type',[GTK_SHADOW_ETCHED_IN, nil]));
 end;
 
-const
-  GTK_FIXED_CLASS_SIZE = SizeOf(TGtkFixedClass);
-  GTK_FIXED_INSTANCE_SIZE = SizeOf(TGtkFixed);
 
 procedure LCLGtkFixedGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
 begin
@@ -251,22 +246,23 @@ var
   LCLGtkFixedType: TGType = 0;
 
 function LCLGtkFixedGetType: TGType; cdecl;
-const
-  lcl_fixed_type_info: TGTypeInfo = (
-    class_size: GTK_FIXED_CLASS_SIZE;
-    base_init: nil;
-    base_finalize: nil;
-    class_init: @LCLGtkFixedClassInit;
-    class_finalize: nil;
-    class_data: nil;
-    instance_size: GTK_FIXED_INSTANCE_SIZE;
-    n_preallocs: 0;
-    instance_init: @LCLGtkFixedInstanceInit;
-    value_table: nil;
-  );
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
 begin
   if LCLGtkFixedType = 0 then
-    LCLGtkFixedType := g_type_register_static(gtk_fixed_get_type, 'LCLGtkFixed', @lcl_fixed_type_info, G_TYPE_FLAG_NONE);
+  begin
+    ParentType := gtk_fixed_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size    := guint16(Query.class_size);
+    Info.class_init    := @LCLGtkFixedClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkFixedInstanceInit;
+    LCLGtkFixedType := g_type_register_static(ParentType,
+      'LCLGtkFixed', @Info, G_TYPE_FLAG_NONE);
+  end;
   Result := LCLGtkFixedType;
 end;
 
