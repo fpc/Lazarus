@@ -73,7 +73,8 @@ begin
   if Assigned(ALoop) then
   begin
     TCocoaApplication(NSApp).aloop:=ALoop;
-    DropWaitingFiles;
+    CocoaWidgetSetService.setReadyDropFiles;
+    CocoaWidgetSetService.dropWaitingFiles;
     NSApp.run();
   end;
 end;
@@ -172,7 +173,6 @@ begin
   inherited Create;
   FTerminating := False;
   FCaptureControl:= 0;
-  FWaitingDropFiles := NSMutableArray.alloc.init;
 
   DefaultBrush := TCocoaBrush.CreateDefault(True);
   DefaultPen := TCocoaPen.CreateDefault(True);
@@ -198,8 +198,6 @@ destructor TCocoaWidgetSet.Destroy;
 begin
   ReleaseToCollect(0);
   inherited Destroy;
-
-  FWaitingDropFiles.release;
 
   FreeStockItems;
 
@@ -509,44 +507,6 @@ begin
 
 end;
 
-procedure TCocoaWidgetSet.DropWaitingFiles;
-var
-  lFiles: array of string;
-  lNSStr: NSString;
-  i: Integer;
-begin
-  if FWaitingDropFiles.count = 0 then
-    exit;
-
-  SetLength(lFiles, FWaitingDropFiles.count);
-  for i := 0 to FWaitingDropFiles.count-1 do
-  begin
-    lNSStr := NSString(FWaitingDropFiles.objectAtIndex(i));
-    lFiles[i] := NSStringToString(lNSStr);
-  end;
-  Application.IntfDropFiles(lFiles);
-  if Application.MainForm<>nil then
-    Application.MainForm.IntfDropFiles(lFiles);
-
-  FWaitingDropFiles.removeAllObjects;
-end;
-
-// on MacOS, the system notifies the APP to open the files by calling
-// TAppDelegate.application_openFiles(). for example, double-click
-// the associated files in Finder to open the APP.
-// at this time, the MainForm may not have been created, and the notifies
-// information about the files will be lost.
-// including Lazarus IDE itself will also be affected by this issue on startup.
-// so save it in FWaitingDropFiles first, DropWaitingFiles() will be called
-// in TCocoaWidgetSet.AppRun().
-procedure TCocoaWidgetSet.DropFiles(filenames: NSArray);
-begin
-  FWaitingDropFiles.addObjectsFromArray(filenames);
-  if Assigned(TCocoaApplication(NSApp).aloop) then
-    DropWaitingFiles;
-end;
-
-
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.LCLPlatform
   Returns: lpCocoa - enum value for Cocoa widgetset
@@ -608,7 +568,7 @@ begin
     end;
   end;
   if filenames.count > 0 then
-    TCocoaWidgetSet(WidgetSet).DropFiles(filenames);
+    CocoaWidgetSetService.tryDropFiles(filenames);
   filenames.release;
 end;
 

@@ -28,7 +28,8 @@ interface
 uses
   Types, Classes, SysUtils, Math, GraphMath,
   LCLPlatformDef, InterfaceBase, GraphType,
-  MacOSAll, CocoaAll, CocoaConst, CocoaConfig, CocoaPrivate, CocoaCallback,
+  MacOSAll, CocoaAll,
+  CocoaWSService, CocoaConst, CocoaConfig, CocoaPrivate, CocoaCallback,
   CocoaUtils, Cocoa_Extra, CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows,
   CocoaScrollers, CocoaWSScrollers,
   CocoaWSClipboard, CocoaTextEdits,
@@ -129,7 +130,6 @@ type
     FNSApp: TCocoaApplication;
     FNSApp_Delegate: TAppDelegate;
     FCaptureControl: HWND;
-    FWaitingDropFiles: NSMutableArray;
     FSendingScrollWheelCount: Integer;
 
   protected
@@ -166,8 +166,6 @@ type
     function isSendingScrollWheelFromInterface(): Boolean;
 
     procedure SyncClipboard();
-    procedure DropWaitingFiles;
-    procedure DropFiles(filenames: NSArray);
 
     function PromptUser(const DialogCaption, DialogMessage: String;
       DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
