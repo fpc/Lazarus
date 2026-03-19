@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, CheckLst, StdCtrls, Dialogs, Spin,
   StrUtils, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf,
-  laz.VirtualTrees, SelectItemDialog, LazDebuggerIntf, IdeDebuggerStringConstants,
+  laz.VirtualTrees, SelectItemDialog, IdeDebuggerStringConstants,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats;
 
 type
@@ -392,9 +392,6 @@ begin
 end;
 
 procedure TIdeDbgVarFormatterFrame.Setup;
-var
-  AvailClass: TLazDbgIdeValueFormatterRegistry;
-  i: Integer;
 begin
   btnAdd.Caption       := dlgBackConvOptAddNew;
   btnRemove.Caption    := dlgBackConvOptRemove;

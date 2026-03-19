@@ -43,7 +43,7 @@ uses
   {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
   DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager, IdeDebuggerStringConstants,
   DebuggerTreeView, breakpointgroupframe, IdeDebuggerOpts, EnvDebuggerOptions, IdeIntfStrConsts,
-  SrcEditorIntf, IDEDialogs, laz.VirtualTrees, LazDebuggerIntf;
+  SrcEditorIntf, laz.VirtualTrees;
 
 type
   TBreakPointsDlgState = (
@@ -537,7 +537,6 @@ function TBreakPointsDlg.FindParentNode(const ABreakpoint: TIDEBreakPoint
   ): PVirtualNode;
 var
   BrkGroup: TIDEBreakPointGroup;
-  GrpHeader: TBreakpointGroupFrame;
 begin
   Result := tvBreakPoints.RootNode;
 

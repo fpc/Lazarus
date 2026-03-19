@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, Math, IdeDebuggerWatchResult, IdeDebuggerUtils, IdeDebuggerDisplayFormats,
   IdeDebuggerBase, IdeDebuggerStringConstants, IdeDebuggerValueFormatter, IdeDebuggerWatchResUtils,
-  LazDebuggerIntf, LazUTF8, IdeDebuggerWatchValueIntf, StrUtils, LazDebuggerUtils,
+  LazDebuggerIntf, LazUTF8, IdeDebuggerWatchValueIntf, LazDebuggerUtils,
   LazDebuggerIntfFloatTypes;
 
 type

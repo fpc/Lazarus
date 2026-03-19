@@ -1069,9 +1069,10 @@ type
     procedure SetValue(AValue: String);
 
     function ResData: IDbgWatchDataIntf; // new ResData for debugger to fill in
+    procedure RequestData;
+  protected
     procedure DoBeginUpdating; override;
     procedure DoEndUpdating; override;
-    procedure RequestData;
 
   protected
     function FindParentValue: TIdeLocalsValue; override;
@@ -1113,11 +1114,11 @@ type
     FCurrentValidity: TDebuggerDataState;
     function GetStackFrame: Integer;
     function GetThreadId: Integer;
-    procedure DoBeginUpdating; override;
-    procedure DoEndUpdating; override;
     procedure SetValidity(AValue: TDebuggerDataState);
     function Add(AName: String): IDbgWatchDataIntf; overload;
   protected
+    procedure DoBeginUpdating; override;
+    procedure DoEndUpdating; override;
     procedure FinishCurrentRes(AnInUpdate: Boolean = False);
     function CreateEntry: TDbgEntityValue; override;
     procedure SetSnapShot(const AValue: TIDELocals); override;
@@ -4815,7 +4816,6 @@ end;
 function TIdeWatchValue.FindParentValue: TIdeWatchValue;
 var
   ASourceWatch: TIdeWatch;
-  IsField, IsEntry: Boolean;
   cn: String;
 begin
   Result := nil;
@@ -4862,7 +4862,6 @@ end;
 
 function TIdeWatchValue.MaybeCopyResultForChild: boolean;
 var
-  IsField, IsEntry: Boolean;
   ASrcValue: TIdeWatchValue;
   f: TWatchResultDataFieldInfo;
   i: int64;
@@ -7437,8 +7436,6 @@ begin
 end;
 
 procedure TIdeWatch.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
-var
-  s: String;
 begin
   AConfig.SetDeleteValue(APath + 'Enabled', FEnabled, True);
   AConfig.SetDeleteValue(APath + 'Expression', FExpression, '');
@@ -7585,7 +7582,6 @@ end;
 
 procedure TCurrentWatch.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
 var
-  i: Integer;
   s: String;
 begin
   Expression := AConfig.GetValue(APath + 'Expression/Value', '');

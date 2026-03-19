@@ -369,6 +369,8 @@ var
   w, h: Integer;
 begin
   cbEnforceBound.GetPreferredSize(w, Result);
+  w := 0;
+  h := 0;
   edArrayStart.GetPreferredSize(w, h);
   Result := max(Result, h);
 end;

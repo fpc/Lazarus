@@ -41,8 +41,6 @@ uses
   // LCL
   LCLType, Forms, Controls, ComCtrls, StdCtrls, Menus, Dialogs, ExtCtrls,
   Buttons,
-  // LazUtils
-  LazClasses,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, IdeDebuggerWatchValueIntf,
   // IdeUtils

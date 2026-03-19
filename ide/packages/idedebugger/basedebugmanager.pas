@@ -38,8 +38,6 @@ uses
   Classes, SysUtils,
   // LCL
   Forms,
-  // LazUtils
-  Laz2_XMLCfg,
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf
@@ -47,7 +45,7 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
-  LazDebuggerIntf, LazDebuggerIntfExcludedRoutines,
+  LazDebuggerIntf,
   // IdeDebugger
   IdeDebuggerBase, IdeDebuggerOpts, Debugger, IdeDebuggerWatchResPrinter,
   IdeDebuggerExcludedRoutines;

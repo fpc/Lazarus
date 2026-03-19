@@ -737,7 +737,6 @@ end;
 
 procedure TIDEInspectDlg.DataGridDoubleClick(Sender: TObject);
 var
-  i: Integer;
   s, t: String;
 begin
   if (WatchInspectNav1.CurrentWatchValue = nil) or (WatchInspectNav1.Expression = '') then exit;

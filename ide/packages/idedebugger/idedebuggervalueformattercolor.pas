@@ -5,7 +5,7 @@ unit IdeDebuggerValueFormatterColor;
 interface
 
 uses
-  SysUtils, Math, Classes, Forms, Controls,
+  SysUtils, Classes, Forms, Controls,
   Graphics, StdCtrls, ExtCtrls,
   System.UITypes,  // register TColor
   {$IF FPC_FULLVERSION>030202}
@@ -13,12 +13,10 @@ uses
   {$ENDIF}
   // DebuggerIntf
   DbgIntfDebuggerBase, DbgIntfBaseTypes,
-  // LazDebuggerIntf
-  LazDebuggerIntf,
   // IdeIntf
   IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf, LazIDEIntf,
   // IdeDebugger
-  IdeDebuggerOpts, IdeDebuggerValueFormatter, IdeDebuggerStringConstants;
+  IdeDebuggerOpts, IdeDebuggerStringConstants;
 
 type
 

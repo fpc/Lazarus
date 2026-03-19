@@ -8,12 +8,10 @@ uses
   SysUtils, Math, Classes, Forms, StdCtrls,
   // DebuggerIntf
   DbgIntfDebuggerBase, DbgIntfBaseTypes,
-  // LazDebuggerIntf
-  LazDebuggerIntf,
   // IdeIntf
   IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf,
   // IdeDebugger
-  IdeDebuggerOpts, IdeDebuggerValueFormatter, IdeDebuggerStringConstants;
+  IdeDebuggerOpts, IdeDebuggerStringConstants;
 
 type
 

@@ -282,13 +282,10 @@ begin
 end;
 
 procedure TIdeDbgValConvFrame.SaveCurrent;
-var
-  AvailClass: TLazDbgValueConvertRegistry;
 begin
   if FCurConvConf = nil then
     exit;
 
-  AvailClass := ValueConverterRegistry;
   if ( (FCurConv = nil) or (FCurConvSettings = nil) or FCurConvSettings.WriteTo(FCurConv) ) or
      (TrimSet(FCurConvConf.MatchTypeNames.Text, [#1..#32]) <> TrimSet(memoTypeNames.Text, [#1..#32])) or
      (FCurConvConf.Converter <> FCurConv) or

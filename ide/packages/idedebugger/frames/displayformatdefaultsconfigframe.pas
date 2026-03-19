@@ -354,7 +354,7 @@ end;
 
 procedure TDisplayFormatDefaultsConfigFrame.RetrieveConfigs;
 var
-  j, i: Integer;
+  j: Integer;
   t: TDisplayFormatTarget;
   n: string;
   d: TWatchDisplayFormatPreset;

@@ -9,19 +9,19 @@ uses
   // LCL
   Graphics, Forms,
   // LazUtils
-  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, LazUTF8, LazStringUtils,
+  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, LazUTF8,
   Laz2_XMLCfg, Laz2_DOM,
   // CodeTools
-  FileProcs, SourceChanger, CodeCompletionTool,
+  FileProcs,
   // BuildIntf
-  ProjectIntf, IDEOptionsIntf, IDEExternToolIntf, ComponentReg,
+  ProjectIntf, IDEExternToolIntf,
   // IDEIntf
   ObjectInspector, IDEWindowIntf, IDEOptEditorIntf, SrcEditorIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, RecentListProcs, SearchPathProcs, LazConf, TransferMacros,
-  ModeMatrixOpts, CoolBarOptions, EditorToolBarOptions;
+  EnvironmentOpts, IDEOptionDefs, RecentListProcs, LazConf, TransferMacros,
+  ModeMatrixOpts;
 
 type
   { Debugging }

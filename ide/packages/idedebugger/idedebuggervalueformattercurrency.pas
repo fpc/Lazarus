@@ -5,15 +5,13 @@ unit IdeDebuggerValueFormatterCurrency;
 interface
 
 uses
-  SysUtils, Math,
+  SysUtils,
   // DebuggerIntf
-  DbgIntfDebuggerBase, DbgIntfBaseTypes,
-  // LazDebuggerIntf
-  LazDebuggerIntf,
+  DbgIntfDebuggerBase,
   // IdeIntf
    LazIDEIntf, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf,
   // IdeDebugger
-  IdeDebuggerOpts, IdeDebuggerValueFormatter, IdeDebuggerStringConstants;
+  IdeDebuggerOpts, IdeDebuggerStringConstants;
 
 type
 

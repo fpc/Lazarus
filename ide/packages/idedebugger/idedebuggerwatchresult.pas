@@ -1155,9 +1155,9 @@ type
   protected
     function GetHasDataAddress: Boolean; override;
     function GetDataAddress: TDBGPtr; override;
-    procedure SetDataAddress(AnAddr: TDbgPtr); override;
   public
     constructor Create(APrintedVal: RawByteString);
+    procedure SetDataAddress(AnAddr: TDbgPtr); override;
   end;
 
   { TWatchResultDataString }
@@ -1168,9 +1168,9 @@ type
   protected
     function GetHasDataAddress: Boolean; override;
     function GetDataAddress: TDBGPtr; override;
-    procedure SetDataAddress(AnAddr: TDbgPtr); override;
   public
     constructor Create(AStringVal: String);
+    procedure SetDataAddress(AnAddr: TDbgPtr); override;
   end;
 
   { TWatchResultDataWideString }
@@ -1181,9 +1181,9 @@ type
   protected
     function GetHasDataAddress: Boolean; override;
     function GetDataAddress: TDBGPtr; override;
-    procedure SetDataAddress(AnAddr: TDbgPtr); override;
   public
     constructor Create(AStringVal: WideString);
+    procedure SetDataAddress(AnAddr: TDbgPtr); override;
   end;
 
   { TGenericWatchResultDataSizedNum }

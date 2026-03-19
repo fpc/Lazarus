@@ -50,7 +50,6 @@ type
     procedure DoExcludeRoutineEntryConfigChanged(Sender: TObject);
     function GetCurrentDebuggerBackend: String;
     procedure SetDebuggerBackend(AValue: String);
-    procedure SetProject(AValue: TProject); override;
     procedure SetStoreDebuggerClassConfInSession(AValue: boolean);
     procedure SetStoreBackendConverterConfigInSession(AValue: boolean);
     procedure SetStoreDisplayFormatConfigsInSession(AValue: boolean);
@@ -69,6 +68,7 @@ type
     procedure ValueFormatterConfigChanged(Sender: TObject);
   protected
     procedure Clear; override;
+    procedure SetProject(AValue: TProject); override;
     procedure BeforeReadProject; override;
     procedure AfterReadProject; override;
     procedure LoadFromLPI(aXMLConfig: TRttiXMLConfig; Path: string); override;

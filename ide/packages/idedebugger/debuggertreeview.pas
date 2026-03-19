@@ -1303,7 +1303,6 @@ procedure TDbgTreeView.AddNodeTextColor(Node: PVirtualNode; AColumn, AFrom, ALen
   AColor: TColor);
 var
   Data: PDbgTreeNodeData;
-  l: SizeInt;
 begin
   if (AColor = clNone) or (AColor = clDefault) then
     exit;
