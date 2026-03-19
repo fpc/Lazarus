@@ -57,13 +57,14 @@ type
   { TCocoaWidgetSetMenuService }
 
   TCocoaWidgetSetMenuService = class
+  private
+    _mainFormMenu: NSMenu;
   public
-    MainMenuEnabled: Boolean; // the latest main menu status
-    PrevMenu : NSMenu;
-    PrevLCLMenu : TMenu;
-    CurLCLMenu: TMenu;
-    PrevMenuEnabled: Boolean; // previous mainmenu status
-    MainFormMenu: NSMenu;
+    mainMenuEnabled: Boolean; // the latest main menu status
+    prevMenu : NSMenu;
+    prevLCLMenu : TMenu;
+    currentLCLMenu: TMenu;
+    prevMenuEnabled: Boolean; // previous mainmenu status
   public
     procedure DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
     procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
@@ -174,21 +175,21 @@ var
   lCocoaMenu: TCocoaMenu absolute AMenu;
   appleMenuFound: Boolean = false;
 begin
-  if Assigned(PrevMenu) then PrevMenu.release;
-  PrevMenu := NSApplication(NSApp).mainMenu;
-  PrevMenu.retain;
+  if Assigned(prevMenu) then prevMenu.release;
+  prevMenu := NSApplication(NSApp).mainMenu;
+  prevMenu.retain;
 
-  PrevLCLMenu := CurLCLMenu;
-  CurLCLMenu := ALCLMenu;
+  prevLCLMenu := currentLCLMenu;
+  currentLCLMenu := ALCLMenu;
 
-  if NOT Assigned(self.MainFormMenu) or (self.MainFormMenu.numberOfItems=0) then begin
-    self.MainFormMenu.release;
-    self.MainFormMenu:= AMenu;
-    self.MainFormMenu.retain;
+  if NOT Assigned(_mainFormMenu) or (_mainFormMenu.numberOfItems=0) then begin
+    _mainFormMenu.release;
+    _mainFormMenu:= AMenu;
+    _mainFormMenu.retain;
   end;
 
   if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then begin
-    lCocoaMenu:= TCocoaMenu( self.MainFormMenu );
+    lCocoaMenu:= TCocoaMenu( _mainFormMenu );
     if NOT Assigned(lCocoaMenu) then
       lCocoaMenu:= TCocoaMenu.new.autorelease;
     NSApp.setMainMenu( lCocoaMenu );
@@ -228,8 +229,8 @@ procedure TCocoaWidgetSetMenuService.SetMainMenu(const AMenu: HMENU; const ALCLM
 begin
   DoSetMainMenu(NSMenu(AMenu), ALCLMenu);
 
-  PrevMenuEnabled := MainMenuEnabled;
-  MainMenuEnabled := true;
+  prevMenuEnabled := mainMenuEnabled;
+  mainMenuEnabled := true;
   TCocoaMenuUtil.toggleAppMenu(true);
   //if not Assigned(ACustomForm.Menu) then ToggleAppMenu(false);
 
@@ -245,7 +246,7 @@ end;
 
 destructor TCocoaWidgetSetMenuService.Destroy;
 begin
-  self.MainFormMenu.release;
+  _mainFormMenu.release;
 end;
 
 initialization

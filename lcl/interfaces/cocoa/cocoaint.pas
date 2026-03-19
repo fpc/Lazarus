@@ -694,12 +694,12 @@ begin
   // If a modal menu has it's menu, then SetMainMenu has already been called
   // (Show is called for modal windows prior to ShowModal. Show triggers Activate and Active is doing MainMenu)
   if not hasMenu then begin
-    Modals.Add( TModalSession.Create(awin, sess, CocoaWidgetSetMenuService.MainMenuEnabled, NSApplication(NSApp).mainMenu, CocoaWidgetSetMenuService.CurLCLMenu));
-    CocoaWidgetSetMenuService.MainMenuEnabled := false;
+    Modals.Add( TModalSession.Create(awin, sess, CocoaWidgetSetMenuService.mainMenuEnabled, NSApplication(NSApp).mainMenu, CocoaWidgetSetMenuService.currentLCLMenu));
+    CocoaWidgetSetMenuService.mainMenuEnabled := false;
     TCocoaMenuUtil.toggleAppMenu(false); // modal menu doesn't have a window, disabling it
   end else
     // if modal window has its own menu, then the prior window is rescord in "Prev" fields
-    Modals.Add( TModalSession.Create(awin, sess, CocoaWidgetSetMenuService.PrevMenuEnabled, CocoaWidgetSetMenuService.PrevMenu, CocoaWidgetSetMenuService.PrevLCLMenu));
+    Modals.Add( TModalSession.Create(awin, sess, CocoaWidgetSetMenuService.prevMenuEnabled, CocoaWidgetSetMenuService.prevMenu, CocoaWidgetSetMenuService.prevLCLMenu));
 
   Result := true;
   inc(ModalCounter);
@@ -716,8 +716,8 @@ begin
 
   // restoring the menu status that was before the modality
   CocoaWidgetSetMenuService.DoSetMainMenu(ms.cocoaMenu, ms.lclMenu);
-  CocoaWidgetSetMenuService.PrevMenuEnabled := CocoaWidgetSetMenuService.MainMenuEnabled;
-  CocoaWidgetSetMenuService.MainMenuEnabled := ms.prevMenuEnabled;
+  CocoaWidgetSetMenuService.prevMenuEnabled := CocoaWidgetSetMenuService.mainMenuEnabled;
+  CocoaWidgetSetMenuService.mainMenuEnabled := ms.prevMenuEnabled;
   TCocoaMenuUtil.toggleAppMenu(ms.prevMenuEnabled); // modal menu doesn't have a window, disabling it
 
   ms.Free;
