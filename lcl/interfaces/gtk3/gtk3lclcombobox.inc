@@ -1,9 +1,5 @@
 {%MainUnit gtk3widgets.pas}
 
-const
-  GTK_COMBO_BOX_CLASS_SIZE = SizeOf(TGtkComboBoxClass); //1048
-  GTK_COMBO_BOX_INSTANCE_SIZE = SizeOf(TGtkComboBox); //56
-
 
 procedure LCLGtkComboBoxGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
 var
@@ -207,22 +203,23 @@ var
   lclCombotype: TGType = 0;
 
 function LCLGtkComboBoxGetType: TGType; cdecl;
-const
-  lcl_combo_box_type_info: TGTypeInfo = (
-    class_size: GTK_COMBO_BOX_CLASS_SIZE;
-    base_init: nil;
-    base_finalize: nil;
-    class_init: @LCLGtkComboBoxClassInit;
-    class_finalize: nil;
-    class_data: nil;
-    instance_size: GTK_COMBO_BOX_INSTANCE_SIZE;
-    n_preallocs: 0;
-    instance_init: @LCLGtkComboBoxInit;
-    value_table: nil;
-  );
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
 begin
   if lclCombotype = 0 then
-    lclCombotype := g_type_register_static(gtk_combo_box_get_type, 'LCLGtkComboBox', PGTypeInfo(@lcl_combo_box_type_info), G_TYPE_FLAG_NONE);
+  begin
+    ParentType := gtk_combo_box_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size    := guint16(Query.class_size);
+    Info.class_init    := @LCLGtkComboBoxClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkComboBoxInit;
+    lclCombotype := g_type_register_static(ParentType,
+      'LCLGtkComboBox', @Info, G_TYPE_FLAG_NONE);
+  end;
   Result := lclCombotype;
 end;
 

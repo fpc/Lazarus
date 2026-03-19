@@ -19,16 +19,6 @@
  my tests shows that this approach works ok. zeljan.
  *)
 
-const
-  GTK_MENU_ITEM_CLASS_SIZE = SizeOf(TGtkMenuItemClass);
-  GTK_MENU_ITEM_INSTANCE_SIZE = SizeOf(TGtkMenuItem);
-  GTK_CHECK_MENU_ITEM_CLASS_SIZE = SizeOf(TGtkCheckMenuItemClass);
-  GTK_CHECK_MENU_ITEM_INSTANCE_SIZE = SizeOf(TGtkCheckMenuItem);
-  GTK_RADIO_MENU_ITEM_CLASS_SIZE = SizeOf(TGtkRadioMenuItemClass);
-  GTK_RADIO_MENU_ITEM_INSTANCE_SIZE = SizeOf(TGtkRadioMenuItem);
-  GTK_IMAGE_MENU_ITEM_CLASS_SIZE = SizeOf(TGtkImageMenuItemClass);
-  GTK_IMAGE_MENU_ITEM_INSTANCE_SIZE = SizeOf(TGtkImageMenuItem);
-
 function LCLGtkMenuItemMakeMeasureCairo: Pcairo_t;
 var
   Surf: Pcairo_surface_t;
@@ -165,23 +155,23 @@ var
   LCLGtkMenuItemType: TGType = 0;
 
 function LCLGtkMenuItemGetType: TGType;
-const
-  Info: TGTypeInfo = (
-    class_size: GTK_MENU_ITEM_CLASS_SIZE;
-    base_init: nil;
-    base_finalize: nil;
-    class_init: @LCLGtkMenuItemClassInit;
-    class_finalize: nil;
-    class_data: nil;
-    instance_size: GTK_MENU_ITEM_INSTANCE_SIZE;
-    n_preallocs: 0;
-    instance_init: @LCLGtkMenuItemAnyInstanceInit;
-    value_table: nil;
-  );
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
 begin
   if LCLGtkMenuItemType = 0 then
-    LCLGtkMenuItemType := g_type_register_static(gtk_menu_item_get_type,
+  begin
+    ParentType := gtk_menu_item_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size    := guint16(Query.class_size);
+    Info.class_init    := @LCLGtkMenuItemClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkMenuItemAnyInstanceInit;
+    LCLGtkMenuItemType := g_type_register_static(ParentType,
       'LCLGtkMenuItem', @Info, G_TYPE_FLAG_NONE);
+  end;
   Result := LCLGtkMenuItemType;
 end;
 
@@ -203,23 +193,23 @@ var
   LCLGtkCheckMenuItemType: TGType = 0;
 
 function LCLGtkCheckMenuItemGetType: TGType;
-const
-  Info: TGTypeInfo = (
-    class_size: GTK_CHECK_MENU_ITEM_CLASS_SIZE;
-    base_init: nil;
-    base_finalize: nil;
-    class_init: @LCLGtkCheckMenuItemClassInit;
-    class_finalize: nil;
-    class_data: nil;
-    instance_size: GTK_CHECK_MENU_ITEM_INSTANCE_SIZE;
-    n_preallocs: 0;
-    instance_init: @LCLGtkMenuItemAnyInstanceInit;
-    value_table: nil;
-  );
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
 begin
   if LCLGtkCheckMenuItemType = 0 then
-    LCLGtkCheckMenuItemType := g_type_register_static(gtk_check_menu_item_get_type,
+  begin
+    ParentType := gtk_check_menu_item_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size    := guint16(Query.class_size);
+    Info.class_init    := @LCLGtkCheckMenuItemClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkMenuItemAnyInstanceInit;
+    LCLGtkCheckMenuItemType := g_type_register_static(ParentType,
       'LCLGtkCheckMenuItem', @Info, G_TYPE_FLAG_NONE);
+  end;
   Result := LCLGtkCheckMenuItemType;
 end;
 
@@ -241,23 +231,23 @@ var
   LCLGtkRadioMenuItemType: TGType = 0;
 
 function LCLGtkRadioMenuItemGetType: TGType;
-const
-  Info: TGTypeInfo = (
-    class_size: GTK_RADIO_MENU_ITEM_CLASS_SIZE;
-    base_init: nil;
-    base_finalize: nil;
-    class_init: @LCLGtkRadioMenuItemClassInit;
-    class_finalize: nil;
-    class_data: nil;
-    instance_size: GTK_RADIO_MENU_ITEM_INSTANCE_SIZE;
-    n_preallocs: 0;
-    instance_init: @LCLGtkMenuItemAnyInstanceInit;
-    value_table: nil;
-  );
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
 begin
   if LCLGtkRadioMenuItemType = 0 then
-    LCLGtkRadioMenuItemType := g_type_register_static(gtk_radio_menu_item_get_type,
+  begin
+    ParentType := gtk_radio_menu_item_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size    := guint16(Query.class_size);
+    Info.class_init    := @LCLGtkRadioMenuItemClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkMenuItemAnyInstanceInit;
+    LCLGtkRadioMenuItemType := g_type_register_static(ParentType,
       'LCLGtkRadioMenuItem', @Info, G_TYPE_FLAG_NONE);
+  end;
   Result := LCLGtkRadioMenuItemType;
 end;
 
@@ -279,23 +269,23 @@ var
   LCLGtkImageMenuItemType: TGType = 0;
 
 function LCLGtkImageMenuItemGetType: TGType;
-const
-  Info: TGTypeInfo = (
-    class_size: GTK_IMAGE_MENU_ITEM_CLASS_SIZE;
-    base_init: nil;
-    base_finalize: nil;
-    class_init: @LCLGtkImageMenuItemClassInit;
-    class_finalize: nil;
-    class_data: nil;
-    instance_size: GTK_IMAGE_MENU_ITEM_INSTANCE_SIZE;
-    n_preallocs: 0;
-    instance_init: @LCLGtkMenuItemAnyInstanceInit;
-    value_table: nil;
-  );
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
 begin
   if LCLGtkImageMenuItemType = 0 then
-    LCLGtkImageMenuItemType := g_type_register_static(gtk_image_menu_item_get_type,
+  begin
+    ParentType := gtk_image_menu_item_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size    := guint16(Query.class_size);
+    Info.class_init    := @LCLGtkImageMenuItemClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkMenuItemAnyInstanceInit;
+    LCLGtkImageMenuItemType := g_type_register_static(ParentType,
       'LCLGtkImageMenuItem', @Info, G_TYPE_FLAG_NONE);
+  end;
   Result := LCLGtkImageMenuItemType;
 end;
 

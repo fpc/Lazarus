@@ -11723,12 +11723,12 @@ begin
      (NewSize.cx = ACtl.LCLObject.Width) and
      (NewSize.cy = ACtl.LCLObject.Height) then
   begin
-    {$IFDEF GTK3DEBUGSCROLLEDWIN}
-    writeln('  early exit, values are the same ... need upd  ? ',ACtl.LCLObject.ClientRectNeedsInterfaceUpdate);
-    if ACtl.LCLObject.ClientRectNeedsInterfaceUpdate then
-      ACtl.LCLObject.InvalidateClientRectCache(True);
-    {$ENDIF}
-    exit;
+    //If the client rect cache is stale, fall through to deliver LM_SIZE
+    //so WMSize->AlignControls runs with the correct client reect.
+    if not ACtl.LCLObject.ClientRectNeedsInterfaceUpdate then
+    begin
+      exit;
+    end;
   end;
 
   {$IFDEF GTK3DEBUGSCROLLEDWIN}
@@ -11739,8 +11739,10 @@ begin
   // On X11 with SSD there is no shadow so get_size = allocation => ShadowW/H = 0.
   // On Wayland with CSD the shadow is included in AGdkRect but not in get_size().
   // resize() takes content size, so SetBounds and DeferredResizeCB subtract shadow.
+  // Only valid for top-level GtkWindow widgets, embedded forms use GtkScrolledWindow.
   SzW := 0; SzH := 0;
-  PGtkWindow(AWidget)^.get_size(@SzW, @SzH);
+  if Gtk3IsGtkWindow(AWidget) then
+    PGtkWindow(AWidget)^.get_size(@SzW, @SzH);
   if (SzW > 0) and (SzH > 0) then
   begin
     TGtk3Window(ACtl).FResizeState.ShadowW := Max(0, AGdkRect^.Width  - SzW);
@@ -12208,8 +12210,15 @@ begin
           MenuSize := 0;
         Allocation.x := LCLObject.Left;
         Allocation.y := LCLObject.Top;
-        Allocation.width := LCLObject.Width - 1; // border
-        Allocation.Height := LCLObject.Height - MenuSize - 1;
+        if Assigned(LCLObject.Parent) then
+        begin
+          Allocation.width := LCLObject.Width;
+          Allocation.Height := LCLObject.Height - MenuSize;
+        end else
+        begin
+          Allocation.width := LCLObject.Width - 1; // border
+          Allocation.Height := LCLObject.Height - MenuSize - 1;
+        end;
       end else
       begin
         Allocation.X := -1;
@@ -12218,7 +12227,21 @@ begin
         Allocation.Height := 1;
       end;
     end else
+    begin
       FCentralWidget^.get_allocation(@Allocation);
+      //After reparenting into a realized site, FCentralWidget is realized but
+      //not yet size-allocated by a GTK layout pass, allocation is still 1x1.
+      //In that case we use LCLObject dimensions which were updated by SetBounds.
+      if Assigned(LCLObject.Parent) and (LCLObject is TCustomForm) and
+         (Allocation.Height < 2) then
+      begin
+        MenuSize := 0;
+        if (TCustomForm(LCLObject).Menu <> nil) or (FMenuBar <> nil) then
+          MenuSize := GetSystemMetrics(SM_CYMENU);
+        Allocation.width := LCLObject.Width;
+        Allocation.Height := LCLObject.Height - MenuSize;
+      end;
+    end;
   end;
 
   with Allocation do
@@ -12334,6 +12357,7 @@ begin
     begin
       Widget^.set_size_request(AWidth, AHeight);
       Move(ALeft, ATop);
+      LCLObject.InvalidateClientRectCache(False);
     end;
 
     if not ((AForm.BorderStyle = bsNone) and Widget^.get_realized) then

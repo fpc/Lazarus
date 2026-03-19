@@ -1,7 +1,4 @@
 {%MainUnit gtk3widgets.pas}
-const
-  GTK_SPIN_BUTTON_CLASS_SIZE = SizeOf(TGtkSpinButtonClass);
-  GTK_SPIN_BUTTON_INSTANCE_SIZE = SizeOf(TGtkSpinButton);
 
 procedure LCLGtkSpinButtonGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
 var
@@ -124,22 +121,23 @@ var
   LCLGtkSpinButtonType: TGType = 0;
 
 function LCLGtkSpinButtonGetType: TGType; cdecl;
-const
-  lcl_spin_button_type_info: TGTypeInfo = (
-    class_size: GTK_SPIN_BUTTON_CLASS_SIZE;
-    base_init: nil;
-    base_finalize: nil;
-    class_init: @LCLGtkSpinButtonClassInit;
-    class_finalize: nil;
-    class_data: nil;
-    instance_size: GTK_SPIN_BUTTON_INSTANCE_SIZE;
-    n_preallocs: 0;
-    instance_init: @LCLGtkSpinButtonInstanceInit;
-    value_table: nil;
-  );
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
 begin
   if LCLGtkSpinButtonType = 0 then
-    LCLGtkSpinButtonType := g_type_register_static(gtk_spin_button_get_type, 'LCLGtkSpinButton', @lcl_spin_button_type_info, G_TYPE_FLAG_NONE);
+  begin
+    ParentType := gtk_spin_button_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size    := guint16(Query.class_size);
+    Info.class_init    := @LCLGtkSpinButtonClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkSpinButtonInstanceInit;
+    LCLGtkSpinButtonType := g_type_register_static(ParentType,
+      'LCLGtkSpinButton', @Info, G_TYPE_FLAG_NONE);
+  end;
   Result := LCLGtkSpinButtonType;
 end;
 

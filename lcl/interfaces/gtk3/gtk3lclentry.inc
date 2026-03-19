@@ -1,9 +1,5 @@
 {%MainUnit gtk3widgets.pas}
 
-const
-  GTK_ENTRY_CLASS_SIZE = SizeOf(TGtkEntryClass);
-  GTK_ENTRY_INSTANCE_SIZE = SizeOf(TGtkEntry);
-
 procedure LCLGtkEntryGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
 var
   AControl: TGtk3Widget;
@@ -130,22 +126,23 @@ var
   LCLGtkEntryType: TGType = 0;
 
 function LCLGtkEntryGetType: TGType; cdecl;
-const
-  lcl_entry_type_info: TGTypeInfo = (
-    class_size: GTK_ENTRY_CLASS_SIZE;
-    base_init: nil;
-    base_finalize: nil;
-    class_init: @LCLGtkEntryClassInit;
-    class_finalize: nil;
-    class_data: nil;
-    instance_size: GTK_ENTRY_INSTANCE_SIZE;
-    n_preallocs: 0;
-    instance_init: @LCLGtkEntryInstanceInit;
-    value_table: nil;
-  );
+var
+  Query: TGTypeQuery;
+  Info: TGTypeInfo;
+  ParentType: TGType;
 begin
   if LCLGtkEntryType = 0 then
-    LCLGtkEntryType := g_type_register_static(gtk_entry_get_type, 'LCLGtkEntry', @lcl_entry_type_info, G_TYPE_FLAG_NONE);
+  begin
+    ParentType := gtk_entry_get_type;
+    g_type_query(ParentType, @Query);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info.class_size    := guint16(Query.class_size);
+    Info.class_init    := @LCLGtkEntryClassInit;
+    Info.instance_size := guint16(Query.instance_size);
+    Info.instance_init := @LCLGtkEntryInstanceInit;
+    LCLGtkEntryType := g_type_register_static(ParentType,
+      'LCLGtkEntry', @Info, G_TYPE_FLAG_NONE);
+  end;
   Result := LCLGtkEntryType;
 end;
 
