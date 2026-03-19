@@ -58,8 +58,8 @@ uses
   FileProcs, CodeTree, CTUnitGraph,
   // BuildIntf
   ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, PackageLinkIntf,
-  NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf, ComponentReg, BaseIDEIntf,
-  UnitResourceIntf,
+  NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf, ComponentReg,
+  BaseIDEIntf, UnitResourceIntf,
   // IdeIntf
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   IdeIntfStrConsts, ComponentEditors, PropEdits, IDEDialogs,
@@ -67,7 +67,7 @@ uses
   InputHistory, IDETranslations,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs, SearchPathProcs,
-  TransferMacros, IDECmdLine, IDEProcs, DialogProcs,
+  TransferMacros, IDECmdLine, IDEProcs, DialogProcs, BaseBuildManager,
   ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts,
   // IdePackager
   IdePackagerStrConsts, BasePkgManager, PackageDefs, EditablePackage,
@@ -82,8 +82,7 @@ uses
   BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector,
   PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg,
   PublishModuleDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,
-  ConfirmPkgListDlg, NewPkgComponentDlg, BaseBuildManager,
-  MainBar, MainIntf, MainBase;
+  ConfirmPkgListDlg, NewPkgComponentDlg, MainBar, MainIntf, MainBase;
 
 type
 

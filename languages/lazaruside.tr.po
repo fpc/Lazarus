@@ -1926,10 +1926,6 @@ msgstr "Delphi birimi"
 msgid "Executable"
 msgstr "Çalıştırılabilir"
 
-#: lazarusidestrconsts.dlgfilterfpcmessagefile
-msgid "FPC message file"
-msgstr "FPC mesaj dosyası"
-
 #: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
 msgid "Fppkg configuration file"
 msgstr "Fppkg yapılandırma dosyası"
@@ -6066,10 +6062,6 @@ msgstr "Geçerli bir %s.ppu bulunamadı"
 msgid "Compare files (not for creating patches)"
 msgstr "Dosyaları karşılaştır (yamalar oluşturmak için değil)"
 
-#: lazarusidestrconsts.liscaptionofactivebuildmode
-msgid "Caption of active build mode"
-msgstr ""
-
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
 msgid "%s (%s files)"
@@ -7578,10 +7570,6 @@ msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
 msgstr "Komut satırı parametreleri"
 
-#: lazarusidestrconsts.liscommandlineparamsofprogram
-msgid "Command line parameters of program"
-msgstr "Programın komut satırı parametreleri"
-
 #: lazarusidestrconsts.liscompile
 msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
@@ -7616,10 +7604,6 @@ msgstr "%s kayıp."
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Derleyici \"%s\" hedef %s- %s'yi desteklemez"
-
-#: lazarusidestrconsts.liscompilerfilename
-msgid "Compiler filename"
-msgstr "Derleyici dosya adı"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -7711,10 +7695,6 @@ msgstr "Şart"
 msgctxt "lazarusidestrconsts.lisconditionals"
 msgid "Conditionals"
 msgstr "Şartlılar"
-
-#: lazarusidestrconsts.lisconfigdirectory
-msgid "Lazarus config directory"
-msgstr "Lazarus yapılandırma dizini"
 
 #: lazarusidestrconsts.lisconfigfileofadditions
 msgid "Config file of additions:"
@@ -9574,10 +9554,6 @@ msgstr "Diskteki \"%s\"%s dosyasının kodlaması%s. Yeni kodlama%s."
 msgid "Enter new name for Macro \"%s\""
 msgstr "Makro için \"%s\"\" yeni ad girin"
 
-#: lazarusidestrconsts.lisenvironmentvariablenameasparameter
-msgid "Environment variable, name as parameter"
-msgstr "Ortam değişkeni, parametrenin adı"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Geçersiz hata ayıklayıcı dosya adı"
@@ -9961,10 +9937,6 @@ msgstr "Dosya: "
 msgid "File \"%s\" already exists."
 msgstr ""
 
-#: lazarusidestrconsts.lisfileextensionofprograms
-msgid "File extension of programs"
-msgstr "Programların dosya uzantıları"
-
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
 msgstr "Dosya filtresi"
@@ -10271,10 +10243,6 @@ msgstr "Windows için"
 msgid "Found version %s, expected %s"
 msgstr "%s sürümü bulundu, %s bekleniyor"
 
-#: lazarusidestrconsts.lisfpcfullversioneg20701
-msgid "FPC version as one number (e.g. 20701)"
-msgstr "Bir sayı olarak FPC sürümü (ör. 20701)"
-
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "FPC ileti dosyası:"
@@ -10302,10 +10270,6 @@ msgstr "FPC çok eski"
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
 msgstr "FPC Sürümü: "
-
-#: lazarusidestrconsts.lisfpcversioneg222
-msgid "FPC Version (e.g. 2.2.2)"
-msgstr "FPC Sürümü (ör. 2.2.2)"
 
 #: lazarusidestrconsts.lisfpdoceditor
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
@@ -10442,10 +10406,6 @@ msgstr "Free Pascal Derleyici mesajları"
 #: lazarusidestrconsts.lisfreepascalprefix
 msgid "Free Pascal compiler prefix"
 msgstr "Free Pascal derleyici öneki"
-
-#: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Free Pascal source directory"
-msgstr "Free Pascal kaynak dizini"
 
 #: lazarusidestrconsts.lisfrforwardsearch
 msgid "Forwar&d search"
@@ -10755,10 +10715,6 @@ msgstr "Açılıyor"
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IDE"
-
-#: lazarusidestrconsts.lisidebuildoptions
-msgid "IDE build options"
-msgstr "IDE kurulum seçenekleri"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
 msgid "Additional info to display in the IDE title"
@@ -11789,17 +11745,9 @@ msgstr "Son açılan"
 msgid "Launching application invalid"
 msgstr "Başlatma uygulaması geçersiz"
 
-#: lazarusidestrconsts.lislaunchingcmdline
-msgid "Launching target command line"
-msgstr "Hedef komut satırı başlatılıyor"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus Varsayılan"
-
-#: lazarusidestrconsts.lislazarusdirectory
-msgid "Lazarus directory"
-msgstr "Lazarus dizini"
 
 #: lazarusidestrconsts.lislazarusdirhint
 #, object-pascal-format
@@ -11818,14 +11766,6 @@ msgstr "Lazarus IDE v%s"
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr "Lazarus IDE"
-
-#: lazarusidestrconsts.lislazaruslanguageid
-msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr "Lazarus dil kimliği (ör. En, de, tr, fi)"
-
-#: lazarusidestrconsts.lislazaruslanguagename
-msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr "Lazarus dil adı (ör. Ingilizce, türkçe)"
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
@@ -11999,16 +11939,6 @@ msgstr "\"Lazarus Hakkında\" iletişim kutusundaki düzeltme bilgisini güncell
 #: lazarusidestrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
 msgstr "Temizle + Hepsini kur"
-
-#: lazarusidestrconsts.lislazver
-msgid "Lazarus Version (e.g. 1.2.4)"
-msgstr "Lazarus Sürümü (ör. 1.2.4)"
-
-#: lazarusidestrconsts.lislclwidgettype
-#, fuzzy
-#| msgid "LCL widget type"
-msgid "LCL &widget type"
-msgstr "LCL widget türü"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -12226,10 +12156,6 @@ msgstr "Büyük değişiklikler tespit edildi"
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Geçerli"
-
-#: lazarusidestrconsts.lismakeexe
-msgid "Make Executable"
-msgstr "Yürütülebilir Dosyayı Yap"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
@@ -14147,10 +14073,6 @@ msgstr "Ad"
 msgid "Name conflict"
 msgstr "İsim çakışması"
 
-#: lazarusidestrconsts.lisnameofactivebuildmode
-msgid "Name of active build mode"
-msgstr "Etkin yapı modunun adı"
-
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Yeni prosedürün adı"
@@ -14235,10 +14157,6 @@ msgstr "Sınıftaki yeni yöntem ve üye bildirimleri ... son bölümler alfabet
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
 msgstr "Yeni sayfa"
-
-#: lazarusidestrconsts.lisnewproject
-msgid "(new project)"
-msgstr "(yeni proje)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
@@ -14710,10 +14628,6 @@ msgstr "\"%s\" paketinin diğer kaynaklar yolu, zaten birim arama yolunda buluna
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "%s çıktı dizini \"%s\" Pascal birim kaynağını içeriyor"
 
-#: lazarusidestrconsts.lisoutputfilenameofproject
-msgid "Output filename of project"
-msgstr "Projenin çıktı dosya adı"
-
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For possible values see files in the \"languages\" directory. Example: \"--language=de\"."
 msgstr "Dili geçersiz kıl. Olası değerler için \"languages\" dizinindeki dosyalara bakın. Örnek: \"--language=tr\"."
@@ -14918,14 +14832,6 @@ msgstr "Arama yolları:"
 #: lazarusidestrconsts.lispathisnodirectory
 msgid "is not a directory"
 msgstr "bir dizin değil"
-
-#: lazarusidestrconsts.lispathoftheinstantfpccache
-msgid "path of the instantfpc cache"
-msgstr "anlık önbellek yolunun yolu"
-
-#: lazarusidestrconsts.lispathofthemakeutility
-msgid "Path of the make utility"
-msgstr "Make programının yolu"
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
@@ -16026,10 +15932,6 @@ msgstr "Önceden geçen kelime"
 msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "Lazarus'un yapılandırma dosyalarını depoladığı birincil yapılandırma dizini. Varsayılan değer \"%s\" dir."
 
-#: lazarusidestrconsts.lisprimaryconfigpath
-msgid "Primary config path"
-msgstr "Birincil yapılandırma yolu"
-
 #: lazarusidestrconsts.lisprior
 #, object-pascal-format
 msgid "prior %s"
@@ -16195,19 +16097,6 @@ msgstr "Proje değiştirildi"
 msgid "Project changed on disk"
 msgstr "Proje disk üzerinde değişti"
 
-#: lazarusidestrconsts.lisprojectdirectory
-msgctxt "lazarusidestrconsts.lisprojectdirectory"
-msgid "Project directory"
-msgstr "Proje dizini"
-
-#: lazarusidestrconsts.lisprojectfilename
-msgid "Project filename"
-msgstr "Proje dosya adı"
-
-#: lazarusidestrconsts.lisprojectincpath
-msgid "Project Include Path"
-msgstr "Projeyi yola dahil et"
-
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
 msgstr "Proje bilgi dosyası algılandı"
@@ -16225,21 +16114,9 @@ msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
 msgstr "Proje"
 
-#: lazarusidestrconsts.lisprojectmacroproperties
-msgid "Project macro properties"
-msgstr "Proje makro özellikleri"
-
-#: lazarusidestrconsts.lisprojectnamespaces
-msgid "Project Namespaces"
-msgstr "Proje alanadı"
-
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
 msgstr "Proje Seçenekleri"
-
-#: lazarusidestrconsts.lisprojectoutdir
-msgid "Project Output directory (e.g. the ppu directory)"
-msgstr "Proje Çıktı dizini (ör. Ppu dizini)"
 
 #: lazarusidestrconsts.lisprojectoutputdirectory
 msgid "Project output directory"
@@ -16291,21 +16168,9 @@ msgstr "%0:s%0:s dosyasında '%1:s' satırında %2:d"
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s satırındaki %1:s dosyasında: %2:d:%0:s%3:s"
 
-#: lazarusidestrconsts.lisprojectsrcpath
-msgid "Project Src Path"
-msgstr "Proje Src Yolu"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "proje birimi"
-
-#: lazarusidestrconsts.lisprojectunitpath
-msgid "Project Unit Path"
-msgstr "Proje Birimi Yolu"
-
-#: lazarusidestrconsts.lisprojectver
-msgid "Project version"
-msgstr ""
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -16399,10 +16264,6 @@ msgstr "%s yayınlandı"
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr "Proje/pakete ait dosyalar otomatik olarak eklenecektir."
-
-#: lazarusidestrconsts.lispublishprojdir
-msgid "Publish project directory"
-msgstr "Proje dizini yayınla"
 
 #: lazarusidestrconsts.lispublishproject
 msgid "Publish Project"
@@ -17054,10 +16915,6 @@ msgstr "Birim Ara \"%s\""
 msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "Lazarus'un yapılandırma şablon dosyalarını aradığı ikincil yapılandırma dizini. Varsayılan değer \"%s\" dir."
 
-#: lazarusidestrconsts.lissecondaryconfigpath
-msgid "Secondary config path"
-msgstr "İkincil yapılandırma yolu"
-
 #: lazarusidestrconsts.lissecondtest
 msgid "&Second test"
 msgstr "İkinci test"
@@ -17198,10 +17055,6 @@ msgstr "(Varsayılan girintiyi ayarla)"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Kısa:"
-
-#: lazarusidestrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
-msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
-msgstr "TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param)'ın kısa biçimi. Boşsa alt hedef atlanır."
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -17526,10 +17379,6 @@ msgstr "Kaynak yolları"
 msgid "Space equally"
 msgstr "Eşit alan"
 
-#: lazarusidestrconsts.lissrcos
-msgid "Src OS"
-msgstr "Src OS"
-
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"
 msgstr "Arama"
@@ -17712,10 +17561,6 @@ msgstr "%s için sekmeler"
 msgid "Target:"
 msgstr "Hedef:"
 
-#: lazarusidestrconsts.listargetcpu
-msgid "Target CPU"
-msgstr "Hedef CPU"
-
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"
 msgstr "Hedef dosya adı: (-o, boş = birim çıktı dizinini kullan)"
@@ -17724,22 +17569,9 @@ msgstr "Hedef dosya adı: (-o, boş = birim çıktı dizinini kullan)"
 msgid "Target file name (-o):"
 msgstr "Hedef dosya adı (-o):"
 
-#: lazarusidestrconsts.listargetfilenameofproject
-msgid "Target filename of project"
-msgstr "Projenin hedef dosya adı"
-
-#: lazarusidestrconsts.listargetfilenameplusparams
-msgid "Target filename + params"
-msgstr "Hedef dosya adı + parametreler"
-
 #: lazarusidestrconsts.listargetisreadonly
 msgid "Target is read only"
 msgstr "Hedef yalnızca okunabilir"
-
-#: lazarusidestrconsts.listargetos
-msgctxt "lazarusidestrconsts.listargetos"
-msgid "Target OS"
-msgstr "Hedef işletim Sistemi"
 
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
@@ -17753,10 +17585,6 @@ msgstr "Düzenlenebilir bir Hücre yerleştirin. Hücreler sekme tuşunu kullana
 #: lazarusidestrconsts.listemplatefile
 msgid "Template file"
 msgstr "Şablon dosyası"
-
-#: lazarusidestrconsts.listestdirectory
-msgid "Test directory"
-msgstr "Dizini test et"
 
 #: lazarusidestrconsts.listesturl
 msgid "Test URL"
@@ -19255,10 +19083,6 @@ msgstr "Listeden kaldır \"%s\""
 #, object-pascal-format
 msgid "Toggle on list \"%s\""
 msgstr "Listede \"%s\" aç/kapat"
-
-#: lazarusidestrconsts.lisusershomedirectory
-msgid "User's home directory"
-msgstr "Kullanıcının ana dizini"
 
 #: lazarusidestrconsts.lisuseunit
 msgid "Add Unit to Uses Section"

@@ -31,8 +31,12 @@ unit FPCSrcScan;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, LazFileUtils, DefineTemplates, CodeToolManager,
-  LazIDEIntf, LazarusIDEStrConsts, ProgressWnd, BaseBuildManager;
+  Classes, SysUtils,
+  FileProcs, DefineTemplates, CodeToolManager,
+  LazFileUtils,
+  BaseBuildManager,
+  LazIDEIntf,
+  LazarusIDEStrConsts, ProgressWnd;
 
 type
   TFPCSrcScans = class;

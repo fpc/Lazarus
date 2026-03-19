@@ -43,15 +43,17 @@ uses
   BaseIDEIntf, MacroIntf, PackageIntf, LazMsgWorker, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
   // IdeConfig
-  LazConf, IDECmdLine, TransferMacros, EnvironmentOpts, ParsedCompilerOpts, CompilerOptions,
+  LazConf, IDECmdLine, TransferMacros, EnvironmentOpts, ParsedCompilerOpts,
+  CompilerOptions, ModeMatrixOpts, BaseBuildManager,
+  // IdeUtils
+  IDETranslations,
   // IdePackager
-  IdePackagerStrConsts,
+  IdePackagerStrConsts, PackageDefs, PackageLinks, PackageSystem,
+  // IdeProject
+  Project,
   // IDE
-  InitialSetupProc, ExtToolsConsole, ApplicationBundle,
-  IDETranslations, LazarusIDEStrConsts, MiscOptions, Project, PackageDefs,
-  PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
-  BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts,
-  ColorTTY;
+  InitialSetupProc, ExtToolsConsole, ApplicationBundle, LazarusIDEStrConsts, MiscOptions,
+  InterPkgConflictFiles, BuildLazDialog, BuildProfileManager, BuildManager, ColorTTY;
 
 type
   TPkgAction = (
@@ -1300,7 +1302,7 @@ end;
 procedure TLazBuildApplication.SetupMacros;
 begin
   MainBuildBoss.SetupTransferMacros;
-  (IDEMacros as TLazIDEMacros).LoadLazbuildMacros;
+  IDEMacros.LoadBuildMacros;
 end;
 
 procedure TLazBuildApplication.SetupCodetools;

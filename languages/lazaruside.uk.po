@@ -1935,11 +1935,6 @@ msgctxt "lazarusidestrconsts.dlgfilterexecutable"
 msgid "Executable"
 msgstr "Виконуваний"
 
-#: lazarusidestrconsts.dlgfilterfpcmessagefile
-msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
-msgid "FPC message file"
-msgstr "Файл повідомлень FPC"
-
 #: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
 msgid "Fppkg configuration file"
 msgstr ""
@@ -6123,10 +6118,6 @@ msgstr "Неможливо знайти правильний %s.ppu"
 msgid "Compare files (not for creating patches)"
 msgstr "Порівняти файли (не для створення латок)"
 
-#: lazarusidestrconsts.liscaptionofactivebuildmode
-msgid "Caption of active build mode"
-msgstr ""
-
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
 msgid "%s (%s files)"
@@ -7633,10 +7624,6 @@ msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
 msgstr "Параметри командного рядка"
 
-#: lazarusidestrconsts.liscommandlineparamsofprogram
-msgid "Command line parameters of program"
-msgstr "Параметри командного рядка програми"
-
 #: lazarusidestrconsts.liscompile
 msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
@@ -7671,10 +7658,6 @@ msgstr "%s відсутній."
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Компілятор \"%s\" не підтримує ціль %s-%s"
-
-#: lazarusidestrconsts.liscompilerfilename
-msgid "Compiler filename"
-msgstr "Назва файлу компілятора"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -7766,10 +7749,6 @@ msgstr "Умова"
 msgctxt "lazarusidestrconsts.lisconditionals"
 msgid "Conditionals"
 msgstr "Умовні"
-
-#: lazarusidestrconsts.lisconfigdirectory
-msgid "Lazarus config directory"
-msgstr "Тека конфігурації Lazarus"
 
 #: lazarusidestrconsts.lisconfigfileofadditions
 msgid "Config file of additions:"
@@ -9635,10 +9614,6 @@ msgstr "Кодування файлу \"%s\"%sна диску - %s. Нове к�
 msgid "Enter new name for Macro \"%s\""
 msgstr "Введіть нову назву макросу \"%s\""
 
-#: lazarusidestrconsts.lisenvironmentvariablenameasparameter
-msgid "Environment variable, name as parameter"
-msgstr "Змінна оточення, назва як параметр"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Некоректна назва файлу зневаджувача"
@@ -10027,10 +10002,6 @@ msgstr "Файл:"
 msgid "File \"%s\" already exists."
 msgstr ""
 
-#: lazarusidestrconsts.lisfileextensionofprograms
-msgid "File extension of programs"
-msgstr "Розширення файлів програм"
-
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
 msgstr "Фільтр файлів"
@@ -10353,10 +10324,6 @@ msgstr "Для Windows"
 msgid "Found version %s, expected %s"
 msgstr "Знайдена версія %s, але очікувалась %s"
 
-#: lazarusidestrconsts.lisfpcfullversioneg20701
-msgid "FPC version as one number (e.g. 20701)"
-msgstr "Версія FPC одним числом (наприклад, 20701)"
-
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "Файл повідомлень FPC:"
@@ -10384,10 +10351,6 @@ msgstr "FPC надто старий"
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
 msgstr "Версія FPC: "
-
-#: lazarusidestrconsts.lisfpcversioneg222
-msgid "FPC Version (e.g. 2.2.2)"
-msgstr "Версія FPC (напр. 2.2.2)"
 
 #: lazarusidestrconsts.lisfpdoceditor
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
@@ -10525,10 +10488,6 @@ msgstr "Повідомлення компілятора Free Pascal"
 #: lazarusidestrconsts.lisfreepascalprefix
 msgid "Free Pascal compiler prefix"
 msgstr "Префікс компілятора Free Pascal"
-
-#: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Free Pascal source directory"
-msgstr "Тека сирців Free Pascal"
 
 #: lazarusidestrconsts.lisfrforwardsearch
 msgid "Forwar&d search"
@@ -10838,10 +10797,6 @@ msgstr "Відкривання"
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "ІСР"
-
-#: lazarusidestrconsts.lisidebuildoptions
-msgid "IDE build options"
-msgstr "Параметри збирання ІСР"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
 msgid "Additional info to display in the IDE title"
@@ -11881,17 +11836,9 @@ msgstr "Останнє відкрите"
 msgid "Launching application invalid"
 msgstr "Виконуваний застосунок є неправильним"
 
-#: lazarusidestrconsts.lislaunchingcmdline
-msgid "Launching target command line"
-msgstr "Командний рядок виконуваної програми"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Типове для Lazarus"
-
-#: lazarusidestrconsts.lislazarusdirectory
-msgid "Lazarus directory"
-msgstr "Тека Lazarus"
 
 #: lazarusidestrconsts.lislazarusdirhint
 #, object-pascal-format
@@ -11912,14 +11859,6 @@ msgstr "ІСР Lazarus v%s"
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr "Графічна оболонка Lazarus"
-
-#: lazarusidestrconsts.lislazaruslanguageid
-msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr "Мова графічної оболонки Lazarus (напр. en, uk, de, br, fi)"
-
-#: lazarusidestrconsts.lislazaruslanguagename
-msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr "Назва мови для Lazarus (напр. english, deutsch, ukrainain)"
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
@@ -12098,16 +12037,6 @@ msgstr "Оновити дані про ревізію в діалозі \"Про
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
 msgid "Clean Up + Build all"
 msgstr "Очистити + Зібрати все"
-
-#: lazarusidestrconsts.lislazver
-msgid "Lazarus Version (e.g. 1.2.4)"
-msgstr "Версія Lazarus (наприклад, 1.2.4)"
-
-#: lazarusidestrconsts.lislclwidgettype
-#, fuzzy
-#| msgid "LCL widget type"
-msgid "LCL &widget type"
-msgstr "Тип LCL widget"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -12325,10 +12254,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Поточний"
-
-#: lazarusidestrconsts.lismakeexe
-msgid "Make Executable"
-msgstr "Створити виконуваний"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
@@ -14258,10 +14183,6 @@ msgstr "Назва"
 msgid "Name conflict"
 msgstr "Конфлікт назв"
 
-#: lazarusidestrconsts.lisnameofactivebuildmode
-msgid "Name of active build mode"
-msgstr "Назва активного режиму збирання"
-
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Назва нової процедури"
@@ -14346,10 +14267,6 @@ msgstr "Оголошення нових методів і членів у роз
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
 msgstr "Нова сторінка"
-
-#: lazarusidestrconsts.lisnewproject
-msgid "(new project)"
-msgstr "(новий проєкт)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
@@ -14824,10 +14741,6 @@ msgstr "список шляхів до \"інших модулів\" пакун�
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "кінцева тека %s містить джерело модуля Pascal \"%s\""
 
-#: lazarusidestrconsts.lisoutputfilenameofproject
-msgid "Output filename of project"
-msgstr "Назва вихідного файлу проєкту"
-
 #: lazarusidestrconsts.lisoverridelanguage
 #, fuzzy
 #| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -15041,14 +14954,6 @@ msgstr "Шляхи пошуку:"
 #: lazarusidestrconsts.lispathisnodirectory
 msgid "is not a directory"
 msgstr "не є текою"
-
-#: lazarusidestrconsts.lispathoftheinstantfpccache
-msgid "path of the instantfpc cache"
-msgstr "шлях кешу instantfpc"
-
-#: lazarusidestrconsts.lispathofthemakeutility
-msgid "Path of the make utility"
-msgstr "Шлях утиліти make"
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
@@ -16159,10 +16064,6 @@ msgstr "Попереднє слово"
 msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "тека головних налаштувань, де Lazarus зберігає свої файли налаштувань. Типово"
 
-#: lazarusidestrconsts.lisprimaryconfigpath
-msgid "Primary config path"
-msgstr "Основний шлях конфігурації"
-
 #: lazarusidestrconsts.lisprior
 #, object-pascal-format
 msgid "prior %s"
@@ -16328,19 +16229,6 @@ msgstr "Проєкт змінено"
 msgid "Project changed on disk"
 msgstr "Проєкт змінився на диску"
 
-#: lazarusidestrconsts.lisprojectdirectory
-msgctxt "lazarusidestrconsts.lisprojectdirectory"
-msgid "Project directory"
-msgstr "Тека проєкту"
-
-#: lazarusidestrconsts.lisprojectfilename
-msgid "Project filename"
-msgstr "Назва файлу проєкту"
-
-#: lazarusidestrconsts.lisprojectincpath
-msgid "Project Include Path"
-msgstr "Шляхи, що включені до проєкту"
-
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
 msgstr "Виявлено info-файл проєкту"
@@ -16358,21 +16246,9 @@ msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
 msgstr "Проєкт"
 
-#: lazarusidestrconsts.lisprojectmacroproperties
-msgid "Project macro properties"
-msgstr "Властивості макросів проєкту"
-
-#: lazarusidestrconsts.lisprojectnamespaces
-msgid "Project Namespaces"
-msgstr "Простори назв проєкту"
-
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
 msgstr "Параметр проєкту"
-
-#: lazarusidestrconsts.lisprojectoutdir
-msgid "Project Output directory (e.g. the ppu directory)"
-msgstr "Вихідна тека проєкту (напр. тека ppu)"
 
 #: lazarusidestrconsts.lisprojectoutputdirectory
 msgid "Project output directory"
@@ -16424,21 +16300,9 @@ msgstr "%0:s%0:s У файлі '%1:s' рядок %2:d"
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s У файлі '%1:s' рядок %2:d:%0:s%3:s"
 
-#: lazarusidestrconsts.lisprojectsrcpath
-msgid "Project Src Path"
-msgstr "Шлях до сирців проєкту"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "модуль проєкту"
-
-#: lazarusidestrconsts.lisprojectunitpath
-msgid "Project Unit Path"
-msgstr "Шлях до модулів проєкту"
-
-#: lazarusidestrconsts.lisprojectver
-msgid "Project version"
-msgstr ""
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -16532,10 +16396,6 @@ msgstr "Опубліковано в %s"
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr "Файли, що належать до проєкта / пакунка, буде включено автоматично."
-
-#: lazarusidestrconsts.lispublishprojdir
-msgid "Publish project directory"
-msgstr "Тека публікації проєкту"
 
 #: lazarusidestrconsts.lispublishproject
 msgid "Publish Project"
@@ -17204,10 +17064,6 @@ msgstr "Знайти модуль \"%s\""
 msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "вторинна тека налаштувань, де Lazarus шукає свої шаблони налаштувань. Типово "
 
-#: lazarusidestrconsts.lissecondaryconfigpath
-msgid "Secondary config path"
-msgstr "Вторинний шлях конфігурації"
-
 #: lazarusidestrconsts.lissecondtest
 msgid "&Second test"
 msgstr "&Друга перевірка"
@@ -17349,10 +17205,6 @@ msgstr "(Встановити типові відступи)"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Коротко:"
-
-#: lazarusidestrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
-msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
-msgstr ""
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -17686,10 +17538,6 @@ msgstr "Шляхи до програмних файлів"
 msgid "Space equally"
 msgstr "Однакові проміжки"
 
-#: lazarusidestrconsts.lissrcos
-msgid "Src OS"
-msgstr "Джр ОС"
-
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"
 msgstr "Пошук"
@@ -17873,10 +17721,6 @@ msgstr "Вкладки для %s"
 msgid "Target:"
 msgstr "Ціль:"
 
-#: lazarusidestrconsts.listargetcpu
-msgid "Target CPU"
-msgstr "Для ЦП:"
-
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"
 msgstr "Назва цільового файлу: (-o, порожньо = викор. вихідну теку модуля)"
@@ -17885,22 +17729,9 @@ msgstr "Назва цільового файлу: (-o, порожньо = вик
 msgid "Target file name (-o):"
 msgstr "Назва цільового файлу (-o):"
 
-#: lazarusidestrconsts.listargetfilenameofproject
-msgid "Target filename of project"
-msgstr "Назва цільового файлу проєкту"
-
-#: lazarusidestrconsts.listargetfilenameplusparams
-msgid "Target filename + params"
-msgstr "Назва цільового файлу + параметри"
-
 #: lazarusidestrconsts.listargetisreadonly
 msgid "Target is read only"
 msgstr "Ціль доступна лише для читання"
-
-#: lazarusidestrconsts.listargetos
-msgctxt "lazarusidestrconsts.listargetos"
-msgid "Target OS"
-msgstr "Для якої ОС"
 
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
@@ -17914,10 +17745,6 @@ msgstr "Вставляє редаговану комірку. По комірк�
 #: lazarusidestrconsts.listemplatefile
 msgid "Template file"
 msgstr "Файл шаблона"
-
-#: lazarusidestrconsts.listestdirectory
-msgid "Test directory"
-msgstr "Тека проб"
 
 #: lazarusidestrconsts.listesturl
 msgid "Test URL"
@@ -19422,10 +19249,6 @@ msgstr "Вилучити зі списку \"%s\""
 #, object-pascal-format
 msgid "Toggle on list \"%s\""
 msgstr "Перемкнути у списку \"%s\""
-
-#: lazarusidestrconsts.lisusershomedirectory
-msgid "User's home directory"
-msgstr "Домашня тека користувача"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

@@ -43,6 +43,7 @@ type
     procedure Add(NewMacro: TTransferMacro); virtual; abstract; overload;
     function Add(const AName, AValue, ADescription: string;
       AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags): TTransferMacro; virtual; overload;
+    procedure LoadBuildMacros; virtual; abstract;
   end;
 
 const

@@ -5,11 +5,19 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.dlgfilterfpcmessagefile
+msgid "FPC message file"
+msgstr ""
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format, fuzzy, badformat
 #| msgid "A file %s%s%s already exists.%sReplace it?"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "הקובץ %s%s%s כבר קיים.%sהאם להחליפו?"
+
+#: ideconfstrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
@@ -19,6 +27,10 @@ msgstr "שגיאה"
 msgid "Write error"
 msgstr "שגיאת כתיבה"
 
+#: ideconfstrconsts.liscommandlineparamsofprogram
+msgid "Command line parameters of program"
+msgstr "פרמטרים של שורת הפקודה של התוכנה"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr ""
@@ -27,6 +39,10 @@ msgstr ""
 #, object-pascal-format, fuzzy, badformat
 msgid "Error: invalid compiler: %s"
 msgstr "שגיאה: מהדר s% לא חוקי"
+
+#: ideconfstrconsts.liscompilerfilename
+msgid "Compiler filename"
+msgstr "שם הקובץ של המהדר"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 #, fuzzy
@@ -45,6 +61,10 @@ msgstr "שם הרכיב  \"%s\" הוא מילת מפתח של פסקל"
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "שם הרכיב s%s%s% אינו מזהה חוקי"
+
+#: ideconfstrconsts.lisconfigdirectory
+msgid "Lazarus config directory"
+msgstr "ספריית הגדרות לזרוס"
 
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
@@ -107,6 +127,10 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvironmentvariablenameasparameter
+msgid "Environment variable, name as parameter"
+msgstr "משתנה סביבה, תן שם כמו לפרמטר"
+
 #: ideconfstrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
 msgstr "תיקייה לא נמצאה"
@@ -127,6 +151,10 @@ msgstr "שגיאה בשמירת s% ל s%s%s%s%"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
 msgstr "הקובץ s%s%s%s% לא נראה כמו קובץ טקסט. לפתוח אותו בכל זאת?"
 
+#: ideconfstrconsts.lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr "קובץ הרחבה של תכניות"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "הקובץ לא לכתיבה"
@@ -138,6 +166,14 @@ msgstr "הקובץ הוא קישור סימבולי"
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "הקובץ אינו קובץ טקסט"
+
+#: ideconfstrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr ""
+
+#: ideconfstrconsts.lisfpcversioneg222
+msgid "FPC Version (e.g. 2.2.2)"
+msgstr "גירסת FPC (למשל 2.2.2)"
 
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
@@ -158,14 +194,64 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreepascalsourcedirectory
+#, fuzzy
+#| msgid "Freepascal source directory"
+msgid "Free Pascal source directory"
+msgstr "ספריית קוד המקור של Freepascal"
+
+#: ideconfstrconsts.lisidebuildoptions
+msgid "IDE build options"
+msgstr "אפשרויות הבניה של ה IDE "
+
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "התעלם והמשך"
+
+#: ideconfstrconsts.lislaunchingcmdline
+msgid "Launching target command line"
+msgstr "טעינת שורת הפקודה המיועדת"
+
+#: ideconfstrconsts.lislazarusdirectory
+msgid "Lazarus directory"
+msgstr "הספרייה של לזרוס"
+
+#: ideconfstrconsts.lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr "מזהה השפה של לזרוס (למשל: en, de, br,fi, he)"
+
+#: ideconfstrconsts.lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr "שם השפה של לזרוס (למשל english, deutsch, hebrew)"
+
+#: ideconfstrconsts.lislazver
+msgid "Lazarus Version (e.g. 1.2.4)"
+msgstr ""
+
+#: ideconfstrconsts.lislclwidgettype
+#, fuzzy
+#| msgid "LCL Widget Type"
+msgid "LCL &widget type"
+msgstr "עצם מסוג LCL"
+
+#: ideconfstrconsts.lismakeexe
+msgid "Make Executable"
+msgstr "קובץ ריצה של Make"
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ""
+
+#: ideconfstrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr ""
+
+#: ideconfstrconsts.lisnewproject
+#, fuzzy
+#| msgid "%s - (new project)"
+msgid "(new project)"
+msgstr "פרוייקט חדש - s%"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -189,6 +275,10 @@ msgstr "פתח את המטרה"
 msgid ", OS: %s"
 msgstr ""
 
+#: ideconfstrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: ideconfstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "האם לשכתב את הקובץ מחדש?"
@@ -196,6 +286,14 @@ msgstr "האם לשכתב את הקובץ מחדש?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "משכתב את הקובץ מחדש על דיסק"
+
+#: ideconfstrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr ""
+
+#: ideconfstrconsts.lispathofthemakeutility
+msgid "Path of the make utility"
+msgstr "נתיב של שרותי make"
 
 #: ideconfstrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
@@ -207,19 +305,100 @@ msgstr "לא ניתן ליצור את הספרייה"
 msgid "Unable to delete file \"%s\"."
 msgstr "לא ניתן למחוק את הקובץ %s%s%s."
 
+#: ideconfstrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr ""
+
+#: ideconfstrconsts.lisprojectdirectory
+msgid "Project directory"
+msgstr "תיקיית הפרויקט"
+
+#: ideconfstrconsts.lisprojectfilename
+msgid "Project filename"
+msgstr "שם הקובץ של הפרויקט"
+
+#: ideconfstrconsts.lisprojectincpath
+msgid "Project Include Path"
+msgstr "פרוייקט כולל נתיב"
+
+#: ideconfstrconsts.lisprojectmacroproperties
+msgid "Project macro properties"
+msgstr "מאקרו תכונות הפרויקט"
+
+#: ideconfstrconsts.lisprojectnamespaces
+msgid "Project Namespaces"
+msgstr ""
+
+#: ideconfstrconsts.lisprojectoutdir
+msgid "Project Output directory (e.g. the ppu directory)"
+msgstr "תיקיית הפלט של הפרוייקט (למשל תיקיית ה ppu)"
+
+#: ideconfstrconsts.lisprojectsrcpath
+msgid "Project Src Path"
+msgstr "נתיב קוד המקור של הפרויקט"
+
+#: ideconfstrconsts.lisprojectunitpath
+msgid "Project Unit Path"
+msgstr "נתיב יחידות הפרויקט"
+
+#: ideconfstrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
+#: ideconfstrconsts.lispublishprojdir
+msgid "Publish project directory"
+msgstr "פרסם את ספריית הפרויקט"
+
 #: ideconfstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "שגיאת קריאה"
+
+#: ideconfstrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr ""
+
+#: ideconfstrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
+msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
+msgstr ""
 
 #: ideconfstrconsts.lissourceanddestinationarethesame
 #, object-pascal-format
 msgid "Source and Destination are the same:%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lissrcos
+#, fuzzy
+msgid "Src OS"
+msgstr "מערכת הפעלה של הקוד"
+
+#: ideconfstrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr ""
+
+#: ideconfstrconsts.listargetcpu
+msgid "Target CPU"
+msgstr "מעבד היעד"
+
+#: ideconfstrconsts.listargetfilenameofproject
+msgid "Target filename of project"
+msgstr "קובץ המטרה של הפרוייקט"
+
+#: ideconfstrconsts.listargetfilenameplusparams
+msgid "Target filename + params"
+msgstr "שם קובץ המטרה והפרמטרים שלו"
+
+#: ideconfstrconsts.listargetos
+msgid "Target OS"
+msgstr "מערכת ההפעלה המיועדת"
+
+#: ideconfstrconsts.listestdirectory
+msgid "Test directory"
+msgstr "תיקיית ביקורת"
 
 #: ideconfstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format, fuzzy, badformat
@@ -374,6 +553,10 @@ msgstr "לא יכול לכתוב לקובץ \"%s\" ."
 #, object-pascal-format
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "לא יכול לכתוב זרימת xml ל  %s%s שגיאה: %s"
+
+#: ideconfstrconsts.lisusershomedirectory
+msgid "User's home directory"
+msgstr "תיקיית הבית של המשתמש"
 
 #: ideconfstrconsts.liswriteerror
 msgid "Write Error"

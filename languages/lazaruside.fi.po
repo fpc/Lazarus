@@ -1931,10 +1931,6 @@ msgstr "Delphi-käännösyksikkö"
 msgid "Executable"
 msgstr "Suoritettava ohjelma"
 
-#: lazarusidestrconsts.dlgfilterfpcmessagefile
-msgid "FPC message file"
-msgstr "FPC viestitiedosto"
-
 #: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
 msgid "Fppkg configuration file"
 msgstr ""
@@ -6126,10 +6122,6 @@ msgstr "Ei löydy kelvollista %s.ppu"
 msgid "Compare files (not for creating patches)"
 msgstr "Vertaa tiedostoja (ei patch-korjauksia varten)"
 
-#: lazarusidestrconsts.liscaptionofactivebuildmode
-msgid "Caption of active build mode"
-msgstr ""
-
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
 msgid "%s (%s files)"
@@ -7640,10 +7632,6 @@ msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
 msgstr "Komentorivin parametrit"
 
-#: lazarusidestrconsts.liscommandlineparamsofprogram
-msgid "Command line parameters of program"
-msgstr "Ohjelman komentorivi-parametrit"
-
 #: lazarusidestrconsts.liscompile
 msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
@@ -7678,10 +7666,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Kääntäjä \"%s\" ei tue kohdetta %s-%s"
-
-#: lazarusidestrconsts.liscompilerfilename
-msgid "Compiler filename"
-msgstr "Kääntäjän tiedostonimi"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -7772,10 +7756,6 @@ msgstr "Ehto"
 msgctxt "lazarusidestrconsts.lisconditionals"
 msgid "Conditionals"
 msgstr "Ehdolliset"
-
-#: lazarusidestrconsts.lisconfigdirectory
-msgid "Lazarus config directory"
-msgstr "Lazaruksen asetushakemisto"
 
 #: lazarusidestrconsts.lisconfigfileofadditions
 msgid "Config file of additions:"
@@ -9633,10 +9613,6 @@ msgstr "Levyllä olevan tiedoston \"%s\"%skoodaus on %s. Uusi koodaus on %s."
 msgid "Enter new name for Macro \"%s\""
 msgstr "Anna uusi nimi Macrolle \"%s\""
 
-#: lazarusidestrconsts.lisenvironmentvariablenameasparameter
-msgid "Environment variable, name as parameter"
-msgstr "Ympäristömuuttuja, nimi parametrina"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Kelvoton debuggerin tiedostonimi"
@@ -10026,10 +10002,6 @@ msgstr "Tiedosto: "
 msgid "File \"%s\" already exists."
 msgstr ""
 
-#: lazarusidestrconsts.lisfileextensionofprograms
-msgid "File extension of programs"
-msgstr "Ohjelmien tiedostopääte"
-
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
 msgstr "Tiedoston suodin"
@@ -10351,10 +10323,6 @@ msgstr "Windowsille"
 msgid "Found version %s, expected %s"
 msgstr "Versio %s löytyi, odotettiin versiota %s"
 
-#: lazarusidestrconsts.lisfpcfullversioneg20701
-msgid "FPC version as one number (e.g. 20701)"
-msgstr "FPC versio numerona (esim. 20701)"
-
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "FPC viestitiedosto:"
@@ -10382,10 +10350,6 @@ msgstr "FPC on liian vanha"
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
 msgstr "FPC-versio: "
-
-#: lazarusidestrconsts.lisfpcversioneg222
-msgid "FPC Version (e.g. 2.2.2)"
-msgstr "FPC-versio (esim. 2.2.2)"
 
 #: lazarusidestrconsts.lisfpdoceditor
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
@@ -10523,10 +10487,6 @@ msgstr "Free Pascal -kääntäjän viestit"
 #: lazarusidestrconsts.lisfreepascalprefix
 msgid "Free Pascal compiler prefix"
 msgstr ""
-
-#: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Free Pascal source directory"
-msgstr "Free Pascal -lähdehakemisto"
 
 #: lazarusidestrconsts.lisfrforwardsearch
 msgid "Forwar&d search"
@@ -10827,10 +10787,6 @@ msgstr "Avaus"
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr ""
-
-#: lazarusidestrconsts.lisidebuildoptions
-msgid "IDE build options"
-msgstr "IDEn kokoamisen asetukset"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
 msgid "Additional info to display in the IDE title"
@@ -11846,17 +11802,9 @@ msgstr "Viimeinen avattu"
 msgid "Launching application invalid"
 msgstr "Käynnistävä ohjelma on kelvoton"
 
-#: lazarusidestrconsts.lislaunchingcmdline
-msgid "Launching target command line"
-msgstr "Käynnistävä kohteen komentorivi"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus oletukset"
-
-#: lazarusidestrconsts.lislazarusdirectory
-msgid "Lazarus directory"
-msgstr "Lazaruksen hakemisto"
 
 #: lazarusidestrconsts.lislazarusdirhint
 #, object-pascal-format
@@ -11877,14 +11825,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr ""
-
-#: lazarusidestrconsts.lislazaruslanguageid
-msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr "Lazarus kieli-ID (esim. en, de, br, fi)"
-
-#: lazarusidestrconsts.lislazaruslanguagename
-msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr "Lazarus kieli-nimi (esim. english, deutsch)"
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
@@ -12059,16 +11999,6 @@ msgstr "Päivitä revisiokenttä \"Tietoja Lazaruksesta\" ikkunassa"
 #: lazarusidestrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
 msgstr "Siivoa + kokoa kaikki"
-
-#: lazarusidestrconsts.lislazver
-msgid "Lazarus Version (e.g. 1.2.4)"
-msgstr "Lazarus Versio (esim. 1.2.4)"
-
-#: lazarusidestrconsts.lislclwidgettype
-#, fuzzy
-#| msgid "LCL widget type"
-msgid "LCL &widget type"
-msgstr "LCL-käyttöliittymäkirjasto"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -12279,10 +12209,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Nykyinen"
-
-#: lazarusidestrconsts.lismakeexe
-msgid "Make Executable"
-msgstr "Make-ohjelma"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
@@ -14195,10 +14121,6 @@ msgstr "Nimi"
 msgid "Name conflict"
 msgstr "Ristiriita nimessä"
 
-#: lazarusidestrconsts.lisnameofactivebuildmode
-msgid "Name of active build mode"
-msgstr "Aktiivisen koontamoodin nimi"
-
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Uuden aliohjelman nimi"
@@ -14283,10 +14205,6 @@ msgstr ""
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
 msgstr "Uusi sivu"
-
-#: lazarusidestrconsts.lisnewproject
-msgid "(new project)"
-msgstr "(uusi projekti)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
@@ -14759,10 +14677,6 @@ msgstr "paketin \"%s\" muut lähdekoodit polku sisältää hakemiston \"%s\", mi
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr ""
 
-#: lazarusidestrconsts.lisoutputfilenameofproject
-msgid "Output filename of project"
-msgstr ""
-
 #: lazarusidestrconsts.lisoverridelanguage
 #, fuzzy
 #| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -14976,14 +14890,6 @@ msgstr "Hakupolut:"
 #: lazarusidestrconsts.lispathisnodirectory
 msgid "is not a directory"
 msgstr ""
-
-#: lazarusidestrconsts.lispathoftheinstantfpccache
-msgid "path of the instantfpc cache"
-msgstr "polku instantfpc:n välimuistiin"
-
-#: lazarusidestrconsts.lispathofthemakeutility
-msgid "Path of the make utility"
-msgstr "Polku make-työkaluun"
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
@@ -16095,10 +16001,6 @@ msgstr "Edeltävä sana"
 msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "ensisijainen hakemisto, minne Lazarus tallentaa config-tiedostot. Oletus on "
 
-#: lazarusidestrconsts.lisprimaryconfigpath
-msgid "Primary config path"
-msgstr "Ensisijainen config-hakemisto"
-
 #: lazarusidestrconsts.lisprior
 #, object-pascal-format
 msgid "prior %s"
@@ -16264,19 +16166,6 @@ msgstr "Projekti on muuttunut"
 msgid "Project changed on disk"
 msgstr "Projektin tallennus on muuttunut"
 
-#: lazarusidestrconsts.lisprojectdirectory
-msgctxt "lazarusidestrconsts.lisprojectdirectory"
-msgid "Project directory"
-msgstr "Projektihakemisto"
-
-#: lazarusidestrconsts.lisprojectfilename
-msgid "Project filename"
-msgstr "Projektin tiedostonimi"
-
-#: lazarusidestrconsts.lisprojectincpath
-msgid "Project Include Path"
-msgstr "Projekti Include polku"
-
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
 msgstr "Tunnistettiin 'Project Info'-tiedostoksi"
@@ -16294,21 +16183,9 @@ msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
 msgstr "Projekti"
 
-#: lazarusidestrconsts.lisprojectmacroproperties
-msgid "Project macro properties"
-msgstr "Projektin makron ominaisuudet"
-
-#: lazarusidestrconsts.lisprojectnamespaces
-msgid "Project Namespaces"
-msgstr "Projektin nimiavaruudet"
-
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
 msgstr "Projektin valinnat"
-
-#: lazarusidestrconsts.lisprojectoutdir
-msgid "Project Output directory (e.g. the ppu directory)"
-msgstr "Projektin käännöshakemisto (esim. ppu hakemisto)"
 
 #: lazarusidestrconsts.lisprojectoutputdirectory
 msgid "Project output directory"
@@ -16360,21 +16237,9 @@ msgstr "%0:s%0:s Tiedostossa '%1:s' rivillä %2:d"
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s Tiedostossa '%1:s' rivillä %2:d:%0:s%3:s"
 
-#: lazarusidestrconsts.lisprojectsrcpath
-msgid "Project Src Path"
-msgstr "Projektin Src hakemisto"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "projektin käännösyksikkö"
-
-#: lazarusidestrconsts.lisprojectunitpath
-msgid "Project Unit Path"
-msgstr "Projektin käännösyksikköjen polku"
-
-#: lazarusidestrconsts.lisprojectver
-msgid "Project version"
-msgstr ""
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -16468,10 +16333,6 @@ msgstr ""
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr ""
-
-#: lazarusidestrconsts.lispublishprojdir
-msgid "Publish project directory"
-msgstr "Julkaistavan projektin hakemisto"
 
 #: lazarusidestrconsts.lispublishproject
 msgid "Publish Project"
@@ -17127,10 +16988,6 @@ msgstr "Etsi käännösyksikköä \"%s\""
 msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "Toinen asetushakemisto, mistä Lazarus etsii asetusten malleja. Oletus on "
 
-#: lazarusidestrconsts.lissecondaryconfigpath
-msgid "Secondary config path"
-msgstr "Toinen asetuspolku"
-
 #: lazarusidestrconsts.lissecondtest
 msgid "&Second test"
 msgstr "Toinen polku"
@@ -17271,10 +17128,6 @@ msgstr "(Aseta oletus sisennys)"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Lyhyt:"
-
-#: lazarusidestrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
-msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
-msgstr ""
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -17606,10 +17459,6 @@ msgstr "Lähdekoodin polut"
 msgid "Space equally"
 msgstr "Tasaa välit"
 
-#: lazarusidestrconsts.lissrcos
-msgid "Src OS"
-msgstr ""
-
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"
 msgstr "Etsitään"
@@ -17792,10 +17641,6 @@ msgstr "%s:n tabit"
 msgid "Target:"
 msgstr "Kohde:"
 
-#: lazarusidestrconsts.listargetcpu
-msgid "Target CPU"
-msgstr "Kohde-CPU"
-
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"
 msgstr "Kohdetiedoston nimi (-o, tyhjä = käytä käännöshakemistoa)"
@@ -17804,22 +17649,9 @@ msgstr "Kohdetiedoston nimi (-o, tyhjä = käytä käännöshakemistoa)"
 msgid "Target file name (-o):"
 msgstr "Kohdetiedoston nimi (-o):"
 
-#: lazarusidestrconsts.listargetfilenameofproject
-msgid "Target filename of project"
-msgstr "Projektin kohdetiedosto"
-
-#: lazarusidestrconsts.listargetfilenameplusparams
-msgid "Target filename + params"
-msgstr "Kohdetiedosto + parametrit"
-
 #: lazarusidestrconsts.listargetisreadonly
 msgid "Target is read only"
 msgstr "Kohde on vain luettavissa"
-
-#: lazarusidestrconsts.listargetos
-msgctxt "lazarusidestrconsts.listargetos"
-msgid "Target OS"
-msgstr "Kohdekäyttöjärjestelmä"
 
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
@@ -17833,10 +17665,6 @@ msgstr ""
 #: lazarusidestrconsts.listemplatefile
 msgid "Template file"
 msgstr "Mallinetiedosto"
-
-#: lazarusidestrconsts.listestdirectory
-msgid "Test directory"
-msgstr "Testihakemisto"
 
 #: lazarusidestrconsts.listesturl
 msgid "Test URL"
@@ -19341,10 +19169,6 @@ msgstr "Poista luettelosta \"%s\""
 #, object-pascal-format
 msgid "Toggle on list \"%s\""
 msgstr "Vaihda luettelosta \"%s\""
-
-#: lazarusidestrconsts.lisusershomedirectory
-msgid "User's home directory"
-msgstr "Käyttäjän kotihakemisto"
 
 #: lazarusidestrconsts.lisuseunit
 msgid "Add Unit to Uses Section"

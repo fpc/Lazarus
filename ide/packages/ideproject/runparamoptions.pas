@@ -97,6 +97,7 @@ type
     procedure SetActiveModeName(const AValue: string); override;
   public
     procedure AssignEnvironmentTo(Strings: TStrings); override;
+    function GetActiveMode: TAbstractRunParamsOptionsMode; override;
 
     function LegacyLoad(XMLConfig: TXMLConfig; const Path: string;
       AdjustPathDelims: boolean): TModalResult;
@@ -107,7 +108,7 @@ type
     function Save(XMLConfig: TXMLConfig; const Path: string;
       UsePathDelim: TPathDelimSwitch; const ASaveIn: TRunParamsOptionsModeSave;
       const ALegacyList: Boolean): TModalResult;
-    function GetActiveMode: TRunParamsOptionsMode;
+    //function GetActiveMode: TRunParamsOptionsMode;
   end;
 
 function FindTerminalInPath(const ATerm: String = ''): String;
@@ -215,13 +216,13 @@ begin
     inherited SetActiveModeName('');
 end;
 
-function TRunParamsOptions.GetActiveMode: TRunParamsOptionsMode;
+function TRunParamsOptions.GetActiveMode: TAbstractRunParamsOptionsMode;
 var
   AMode: TAbstractRunParamsOptionsMode;
 begin
   AMode := Find(ActiveModeName);
   if AMode=nil then exit(nil);
-  Result := AMode as TRunParamsOptionsMode;
+  Result := AMode {as TRunParamsOptionsMode};
 end;
 
 function TRunParamsOptions.LegacyLoad(XMLConfig: TXMLConfig;
@@ -244,7 +245,7 @@ var
 begin
   Result := mrOK;
 
-  AMode := GetActiveMode;
+  AMode := TRunParamsOptionsMode(GetActiveMode);
   if (AMode<>nil) and (AMode.SaveIn=rpsLPI) then
     AMode.LegacySave(XMLConfig, Path+'RunParams/', UsePathDelim);
 end;

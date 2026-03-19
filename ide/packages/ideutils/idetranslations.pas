@@ -37,7 +37,7 @@ uses
   LazFileUtils, LazFileCache, LazUTF8, Translations,
   // Codetools
   FileProcs, CodeToolManager, DirectoryCacher, CodeCache,
-  // IDE
+  // IdeUtils
   IdeUtilsPkgStrConsts;  { IDE Language (Human, not computer) }
 
 type
@@ -50,10 +50,9 @@ type
     property ID: string read FID;
   end;
   PLazarusTranslation = ^TLazarusTranslation;
-  
-  
+
   { TLazarusTranslations }
-  
+
   TLazarusTranslations = class
   private
     FCount: integer;

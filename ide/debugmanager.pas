@@ -74,11 +74,14 @@ uses
   IdeDebuggerBackendValueConv, Debugger, BaseDebugManager,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
   // IdeConfig
-  LazConf, CompilerOptions,
+  LazConf, CompilerOptions, BaseBuildManager,
+  // IdeProject
+  ProjectDefs, Project, RunParamOptions,
+  // IdeDebugger
+  ProjectDebugLink, IdeDebuggerExcludedRoutines,
   // IDE
-  SourceEditor, ProjectDefs, Project, ProjectDebugLink, MemViewerDlg, IdeDebuggerExcludedRoutines,
-  LazarusIDEStrConsts, MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,
-  DebugEventsForm, EnvGuiOptions, RunParamsOpts, RunParamOptions;
+  DebugEventsForm, LazarusIDEStrConsts, SourceEditor, SourceMarks, MemViewerDlg,
+  MainBar, MainIntf, MainBase, EnvGuiOptions, RunParamsOpts;
 
 type
 
@@ -2739,7 +2742,7 @@ var
   NewWorkingDir: String;
   NewDebuggerClass: TDebuggerClass;
   DbgCfg: TDebuggerPropertiesConfig;
-  AMode: TRunParamsOptionsMode;
+  AMode: TAbstractRunParamsOptionsMode;
 begin
 {$ifdef VerboseDebugger}
   DebugLn('[TDebugManager.DoInitDebugger] A');

@@ -442,12 +442,14 @@ type
     destructor Destroy; override;
   public
     procedure AssignEnvironmentTo(Strings: TStrings); virtual; abstract;
+    function GetActiveMode: TAbstractRunParamsOptionsMode; virtual; abstract;
 
     procedure Clear; virtual;
     procedure Delete(const AIndex: Integer);
     function Add(const AName: string): TAbstractRunParamsOptionsMode;
     function Find(const AName: string): TAbstractRunParamsOptionsMode;
     function GetOrCreate(const AName: string): TAbstractRunParamsOptionsMode;
+  public
     property Modes[AIndex: Integer]: TAbstractRunParamsOptionsMode read GetMode; default;
     property Count: Integer read GetCount;
     property ActiveModeName: string read fActiveModeName write SetActiveModeName;
@@ -621,6 +623,7 @@ type
                       SearchFlags: TProjectFileSearchFlags): TLazProjectFile; virtual; abstract;
     procedure UpdateExecutableType; virtual; abstract;
     function GetShortFilename(const Filename: string; UseUp: boolean): string; virtual; abstract;
+    function GetMainUnitSource: Pointer{TCodeBuffer}; virtual; abstract;
     procedure ConvertToLPIFilename(var AFilename: string); virtual; abstract;
     procedure ConvertFromLPIFilename(var AFilename: string); virtual; abstract;
     procedure LoadDefaultIcon; virtual;

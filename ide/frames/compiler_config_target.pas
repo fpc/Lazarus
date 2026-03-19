@@ -42,7 +42,7 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  RecentListProcs, TransferMacros, CompilerOptions,
+  RecentListProcs, TransferMacros, CompilerOptions, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, PackageDefs, Project, compiler_parsing_options;
 

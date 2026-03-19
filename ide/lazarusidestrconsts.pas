@@ -188,44 +188,11 @@ resourcestring
   // macros
   lisCursorColumnInCurrentEditor = 'Cursor column in current editor';
   lisCursorRowInCUrrentEditor = 'Cursor row in current editor';
-  lisCompilerFilename = 'Compiler filename';
-  lisShortFormOfTargetCPUParamTargetOSParamSubTargetPar = 'Short form of $'
-    +'TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is '
-    +'omitted if empty.';
   lisWordAtCursorInCurrentEditor = 'Word at cursor in current editor';
   lisExpandedFilenameOfCurrentEditor = 'Expanded filename of current editor file';
-  lisFreePascalSourceDirectory = 'Free Pascal source directory';
-  lisLazarusDirectory = 'Lazarus directory';
-  lisLazarusLanguageID = 'Lazarus language ID (e.g. en, de, br, fi)';
-  lisLazarusLanguageName = 'Lazarus language name (e.g. english, deutsch)';
-  lisLCLWidgetType = 'LCL &widget type';
-  lisTargetCPU = 'Target CPU';
-  lisTargetOS = 'Target OS';
-  lisSubtarget = 'Subtarget';
-  lisSrcOS = 'Src OS';
-  lisCommandLineParamsOfProgram = 'Command line parameters of program';
   lisPromptForValue = 'Prompt for value';
-  lisProjectFilename = 'Project filename';
-  lisProjectDirectory = 'Project directory';
   lisSaveCurrentEditorFile = 'Save current editor file';
   lisSaveAllModified = 'Save all modified files';
-  lisTargetFilenameOfProject = 'Target filename of project';
-  lisTargetFilenamePlusParams = 'Target filename + params';
-  lisOutputFilenameOfProject = 'Output filename of project';
-  lisTestDirectory = 'Test directory';
-  lisLaunchingCmdLine = 'Launching target command line';
-  lisPublishProjDir = 'Publish project directory';
-  lisProjectUnitPath = 'Project Unit Path';
-  lisProjectNamespaces = 'Project Namespaces';
-  lisProjectIncPath = 'Project Include Path';
-  lisProjectSrcPath = 'Project Src Path';
-  lisProjectOutDir = 'Project Output directory (e.g. the ppu directory)';
-  lisProjectVer = 'Project version';
-  lisEnvironmentVariableNameAsParameter = 'Environment variable, name as parameter';
-  lisUserSHomeDirectory = 'User''s home directory';
-  lisMakeExe = 'Make Executable';
-  lisPathOfTheMakeUtility = 'Path of the make utility';
-  lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
   lisKMOpenRecentProject = 'Open recent project';
   lisFileHasNoProject = 'File has no project';
@@ -244,7 +211,6 @@ resourcestring
     +'%sLoad this project again?';
   lisOpenProjectAgain = 'Open project again';
   lisStartWithANewProject = 'Start with a new project';
-  lisConfigDirectory = 'Lazarus config directory';
 
   // main bar menu
   lisMenuFile = '&File';
@@ -839,7 +805,6 @@ resourcestring
   lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
     +'found: "%s"%sThis file can be mistaken with "%s"%sDelete the ambiguous file?';
   lisLazarusEditorV = 'Lazarus IDE v%s';
-  lisnewProject = '(new project)';
   liscompiling = '%s (compiling ...)';
   lisdebugging = '%s (debugging ...)';
   lisRunning = '%s (running ...)';
@@ -1435,8 +1400,6 @@ resourcestring
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   lisAllBuildModes = '<All build modes>';
-  lisNameOfActiveBuildMode = 'Name of active build mode';
-  lisCaptionOfActiveBuildMode = 'Caption of active build mode';
   dlfReadOnlyColor = 'Read Only';
   dlgHighlightColor = 'Highlight Color';
   dlgHighlightFontColor = 'Highlight Font Color';
@@ -1528,7 +1491,6 @@ resourcestring
   dlgFilterDelphiForm = 'Delphi form';
   dlgFilterPascalFile = 'Pascal file';
   dlgFilterDciFile = 'DCI file';
-  dlgFilterFPCMessageFile = 'FPC message file';
   dlgFilterFppkgConfigurationFile = 'Fppkg configuration file';
   dlgFilterCodetoolsTemplateFile = 'CodeTools template file';
   dlgFilterImagesPng = 'PNG images';
@@ -5333,7 +5295,6 @@ resourcestring
   lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy = 'The component %s can '
     +'not be deleted because it is not owned by %s.';
   lisFilter3 = 'Filter: %s';
-  lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Show every n-th line number';
   lisShowOverviewGutter = 'Show overview gutter';
   lisTopInfoView = 'Show Class/Procedure hint';
@@ -5348,9 +5309,6 @@ resourcestring
   lisInsertPrintshortTag2 = 'Insert printshort tag';
   lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac = 'The unit search '
     +'path of "%s" contains the source directory "%s" of package %s';
-  lisFPCVersionEG222 = 'FPC Version (e.g. 2.2.2)';
-  lisFPCFullVersionEG20701 = 'FPC version as one number (e.g. 20701)';
-  lisLAZVer = 'Lazarus Version (e.g. 1.2.4)';
   lisMissingIdentifiers = 'Missing identifiers';
   lisChooseAFPDocLink = 'Choose a FPDoc link';
   lisLinkTarget = 'Link target';
@@ -5696,10 +5654,6 @@ resourcestring
     +'options to build Lazarus is not supported by this installation.%sThe '
     +'directory "%s" is not writable.%sSee the Lazarus website for other '
     +'ways to install Lazarus.';
-  lisIDEBuildOptions = 'IDE build options';
-  lisPathOfTheInstantfpcCache = 'path of the instantfpc cache';
-  lisPrimaryConfigPath = 'Primary config path';
-  lisSecondaryConfigPath = 'Secondary config path';
   lisSelected = 'Selected';
   lisSelectedAndChildControls = 'Selected and child controls';
 

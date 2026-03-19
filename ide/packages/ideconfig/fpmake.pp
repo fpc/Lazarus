@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeConfig 1.0
 
-   This file was generated on 01.11.2025
+   This file was generated on 20.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -48,10 +48,12 @@ begin
     P.IncludePath.Add('include/$(OS)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('ideconfig.pas');
+    t.Dependencies.AddUnit('basebuildmanager');
     t.Dependencies.AddUnit('compiler');
     t.Dependencies.AddUnit('compileroptions');
     t.Dependencies.AddUnit('compoptsmodes');
     t.Dependencies.AddUnit('coolbaroptions');
+    t.Dependencies.AddUnit('dialogprocs');
     t.Dependencies.AddUnit('diffpatch');
     t.Dependencies.AddUnit('editdefinetree');
     t.Dependencies.AddUnit('editortoolbaroptions');
@@ -76,10 +78,12 @@ begin
     t.Dependencies.AddUnit('toolbaroptionsbase');
     t.Dependencies.AddUnit('transfermacros');
 
+    T:=P.Targets.AddUnit('basebuildmanager.pas');
     T:=P.Targets.AddUnit('compiler.pp');
     T:=P.Targets.AddUnit('compileroptions.pp');
     T:=P.Targets.AddUnit('compoptsmodes.pas');
     T:=P.Targets.AddUnit('coolbaroptions.pas');
+    T:=P.Targets.AddUnit('dialogprocs.pas');
     T:=P.Targets.AddUnit('diffpatch.pas');
     T:=P.Targets.AddUnit('editdefinetree.pas');
     T:=P.Targets.AddUnit('editortoolbaroptions.pas');

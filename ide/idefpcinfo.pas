@@ -39,10 +39,12 @@ uses
   FPCAdds, LazFileUtils, LazUTF8,
   // IdeIntf
   IDEWindowIntf, LazIDEIntf,
+  // IdeProject
+  Project,
   // IdeConfig
-  EnvironmentOpts, TransferMacros, LazConf,
+  EnvironmentOpts, TransferMacros, LazConf, BaseBuildManager,
   // Other
-  BaseBuildManager, Project, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
 

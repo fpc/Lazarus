@@ -55,11 +55,14 @@ uses
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi
   GDBMIDebugger, DividerBevel,
+  // IdeDebugger
+  IdeDebuggerOpts,
   // IdeConfig
-  LazConf, EnvironmentOpts, TransferMacros, IDEProcs,
+  LazConf, EnvironmentOpts, TransferMacros, IDEProcs, BaseBuildManager,
   // IDE
-  LazarusIDEStrConsts, IDETranslations, BaseBuildManager, InitialSetupProc,
-  GenerateFppkgConfigurationDlg, LazarusPackageIntf, InitialSetupDlgDebuggerFrame, IdeDebuggerOpts;
+  LazarusPackageIntf,
+  LazarusIDEStrConsts, IDETranslations, InitialSetupProc,
+  GenerateFppkgConfigurationDlg, InitialSetupDlgDebuggerFrame;
   
 type
   TInitialSetupDialog = class;

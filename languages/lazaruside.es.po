@@ -1983,12 +1983,6 @@ msgctxt "lazarusidestrconsts.dlgfilterexecutable"
 msgid "Executable"
 msgstr "Ejecutable"
 
-#: lazarusidestrconsts.dlgfilterfpcmessagefile
-#, fuzzy
-msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
-msgid "FPC message file"
-msgstr "Archivo mensaje FPC"
-
 #: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
 msgid "Fppkg configuration file"
 msgstr ""
@@ -6256,10 +6250,6 @@ msgstr "No se puede encontrar un %s.ppu válido"
 msgid "Compare files (not for creating patches)"
 msgstr "Comparar ficheros (no para crear parches)"
 
-#: lazarusidestrconsts.liscaptionofactivebuildmode
-msgid "Caption of active build mode"
-msgstr ""
-
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
 msgid "%s (%s files)"
@@ -7778,10 +7768,6 @@ msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
 msgstr "Parámetros de la línea de comando"
 
-#: lazarusidestrconsts.liscommandlineparamsofprogram
-msgid "Command line parameters of program"
-msgstr "Parámetros de la línea de comandos del programa"
-
 #: lazarusidestrconsts.liscompile
 msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
@@ -7816,10 +7802,6 @@ msgstr "Falta %s."
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "El compilador \"%s\" no soporta el objetivo %s-%s"
-
-#: lazarusidestrconsts.liscompilerfilename
-msgid "Compiler filename"
-msgstr "Nombre de archivo del compilador"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -7911,10 +7893,6 @@ msgstr "Condición"
 msgctxt "lazarusidestrconsts.lisconditionals"
 msgid "Conditionals"
 msgstr "Condicionales"
-
-#: lazarusidestrconsts.lisconfigdirectory
-msgid "Lazarus config directory"
-msgstr "Directorio de configuración de Lazarus"
 
 #: lazarusidestrconsts.lisconfigfileofadditions
 msgid "Config file of additions:"
@@ -9804,10 +9782,6 @@ msgstr "La codificación de página del archivo \"%s\"%sen disco es %s. La nueva
 msgid "Enter new name for Macro \"%s\""
 msgstr "Entrar nuevo nombre para Macro \"%s\""
 
-#: lazarusidestrconsts.lisenvironmentvariablenameasparameter
-msgid "Environment variable, name as parameter"
-msgstr "Variable de Entorno, nombre como parámetro"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Nombre de archivo del depurador no válido"
@@ -10196,10 +10170,6 @@ msgstr "Archivo: "
 msgid "File \"%s\" already exists."
 msgstr ""
 
-#: lazarusidestrconsts.lisfileextensionofprograms
-msgid "File extension of programs"
-msgstr "Extensión de archivo de programas"
-
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
 msgstr "Filtro de archivos"
@@ -10519,10 +10489,6 @@ msgstr "Para Windows"
 msgid "Found version %s, expected %s"
 msgstr "Encontrada version %s, pero se esperaba %s"
 
-#: lazarusidestrconsts.lisfpcfullversioneg20701
-msgid "FPC version as one number (e.g. 20701)"
-msgstr "Versión de FPC como un número (e.g. 20701)"
-
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "Fichero de mensaje FPC:"
@@ -10550,10 +10516,6 @@ msgstr "FPC demasiado antiguo"
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
 msgstr "Versión FPC: "
-
-#: lazarusidestrconsts.lisfpcversioneg222
-msgid "FPC Version (e.g. 2.2.2)"
-msgstr "Versión FPC (ej. 2.2.2)"
 
 #: lazarusidestrconsts.lisfpdoceditor
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
@@ -10691,10 +10653,6 @@ msgstr "Mensajes del Compilador Free Pascal"
 #: lazarusidestrconsts.lisfreepascalprefix
 msgid "Free Pascal compiler prefix"
 msgstr "Prefijo del compilador de Free Pascal"
-
-#: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Free Pascal source directory"
-msgstr "Directorio de las fuentes de Free Pascal"
 
 #: lazarusidestrconsts.lisfrforwardsearch
 msgid "Forwar&d search"
@@ -11005,10 +10963,6 @@ msgstr "Apertura"
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IDE"
-
-#: lazarusidestrconsts.lisidebuildoptions
-msgid "IDE build options"
-msgstr "Opciones de construcción del IDE"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
 msgid "Additional info to display in the IDE title"
@@ -12063,17 +12017,9 @@ msgstr "Último abierto"
 msgid "Launching application invalid"
 msgstr "Lanzador de aplicación no válido"
 
-#: lazarusidestrconsts.lislaunchingcmdline
-msgid "Launching target command line"
-msgstr "Lanzando línea de comandos"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Predeterminados de Lazarus"
-
-#: lazarusidestrconsts.lislazarusdirectory
-msgid "Lazarus directory"
-msgstr "Directorio de Lazarus"
 
 #: lazarusidestrconsts.lislazarusdirhint
 #, object-pascal-format
@@ -12094,14 +12040,6 @@ msgstr "IDE de Lazarus v%s"
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr "IDE de Lazarus"
-
-#: lazarusidestrconsts.lislazaruslanguageid
-msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr "ID de idioma de Lazarus (por ejemplo: en, de, br, fi)"
-
-#: lazarusidestrconsts.lislazaruslanguagename
-msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr "Nombre de idioma de Lazarus (por ejemplo: inglés, holandés)"
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
@@ -12280,16 +12218,6 @@ msgstr "Actualizar la información de la revisión en el dialogo \"Acerca de Laz
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
 msgid "Clean Up + Build all"
 msgstr "Limpiar + Construir todo"
-
-#: lazarusidestrconsts.lislazver
-msgid "Lazarus Version (e.g. 1.2.4)"
-msgstr "Versión de Lazarus (e.g. 1.2.4)"
-
-#: lazarusidestrconsts.lislclwidgettype
-#, fuzzy
-#| msgid "LCL widget type"
-msgid "LCL &widget type"
-msgstr "Tipo de Widget LCL"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -12512,10 +12440,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Actual"
-
-#: lazarusidestrconsts.lismakeexe
-msgid "Make Executable"
-msgstr "Hacer ejecutable"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
@@ -14471,10 +14395,6 @@ msgstr "Nombre"
 msgid "Name conflict"
 msgstr "Conflicto de nombre"
 
-#: lazarusidestrconsts.lisnameofactivebuildmode
-msgid "Name of active build mode"
-msgstr "Nombre del modo de construcción activa"
-
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Nombre del nuevo procedimiento"
@@ -14561,10 +14481,6 @@ msgstr "Nuevo método o declaraciones de miembro en la sección class..end son i
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
 msgstr "Nueva página"
-
-#: lazarusidestrconsts.lisnewproject
-msgid "(new project)"
-msgstr "(nuevo proyecto)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
@@ -15041,10 +14957,6 @@ msgstr "otros trayectos de fuente de paquete \"%s\" contienen el directorio \"%s
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "directorio de salida de %s contiene la fuente de la unidad de Pascal \"%s\""
 
-#: lazarusidestrconsts.lisoutputfilenameofproject
-msgid "Output filename of project"
-msgstr "Nombre de archivo de salida del proyecto"
-
 #: lazarusidestrconsts.lisoverridelanguage
 #, fuzzy
 #| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -15258,14 +15170,6 @@ msgstr "Buscar rutas:"
 #: lazarusidestrconsts.lispathisnodirectory
 msgid "is not a directory"
 msgstr "no es un directorio"
-
-#: lazarusidestrconsts.lispathoftheinstantfpccache
-msgid "path of the instantfpc cache"
-msgstr "path para el cache instantfpc"
-
-#: lazarusidestrconsts.lispathofthemakeutility
-msgid "Path of the make utility"
-msgstr "Ruta a la utilidad make"
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
@@ -16386,10 +16290,6 @@ msgstr "Palabra anterior"
 msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "directorio de configuración primario, donde Lazarus guarda sus archivos de configuración. Por defecto es "
 
-#: lazarusidestrconsts.lisprimaryconfigpath
-msgid "Primary config path"
-msgstr "Ruta de configuración primaria"
-
 #: lazarusidestrconsts.lisprior
 #, object-pascal-format
 msgid "prior %s"
@@ -16556,19 +16456,6 @@ msgstr "Proyecto cambiado"
 msgid "Project changed on disk"
 msgstr "El proyecto ha cambiado en el disco"
 
-#: lazarusidestrconsts.lisprojectdirectory
-msgctxt "lazarusidestrconsts.lisprojectdirectory"
-msgid "Project directory"
-msgstr "Directorio del Proyecto"
-
-#: lazarusidestrconsts.lisprojectfilename
-msgid "Project filename"
-msgstr "Nombre de archivo del proyecto"
-
-#: lazarusidestrconsts.lisprojectincpath
-msgid "Project Include Path"
-msgstr "Ruta Include del proyecto"
-
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
 msgstr "Archivo de información del proyecto detectado"
@@ -16586,21 +16473,9 @@ msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
 msgstr "Proyecto"
 
-#: lazarusidestrconsts.lisprojectmacroproperties
-msgid "Project macro properties"
-msgstr "Propiedades de la macro del proyecto"
-
-#: lazarusidestrconsts.lisprojectnamespaces
-msgid "Project Namespaces"
-msgstr "Namespaces del proyecto"
-
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
 msgstr "Opción de proyecto"
-
-#: lazarusidestrconsts.lisprojectoutdir
-msgid "Project Output directory (e.g. the ppu directory)"
-msgstr "Directorio de salida del proyecto (ej. el directorio ppu)"
 
 #: lazarusidestrconsts.lisprojectoutputdirectory
 msgid "Project output directory"
@@ -16652,21 +16527,9 @@ msgstr "%0:s%0:s En archivo '%1:s' en linea %2:d"
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s En archivo '%1:s' en linea %2:d:%0:s%3:s"
 
-#: lazarusidestrconsts.lisprojectsrcpath
-msgid "Project Src Path"
-msgstr "Ruta fuente del proyecto"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "unidad del proyecto"
-
-#: lazarusidestrconsts.lisprojectunitpath
-msgid "Project Unit Path"
-msgstr "Ruta de Unidad del proyecto"
-
-#: lazarusidestrconsts.lisprojectver
-msgid "Project version"
-msgstr ""
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -16760,10 +16623,6 @@ msgstr "Publicado hacia %s"
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr "Los archivos que pertenecen al proyecto / paquete se incluirán automáticamente."
-
-#: lazarusidestrconsts.lispublishprojdir
-msgid "Publish project directory"
-msgstr "Directorio para publicar el proyecto"
 
 #: lazarusidestrconsts.lispublishproject
 msgid "Publish Project"
@@ -17424,10 +17283,6 @@ msgstr "Buscar Unidad  \"%s\""
 msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "directorio secundario de configuración, donde Lazarus busca las plantillas de archivos de configuración. Por defecto es "
 
-#: lazarusidestrconsts.lissecondaryconfigpath
-msgid "Secondary config path"
-msgstr "Ruta de configuración secundaria"
-
 #: lazarusidestrconsts.lissecondtest
 msgid "&Second test"
 msgstr "&Segunda prueba"
@@ -17569,10 +17424,6 @@ msgstr "(Configurar sangría predeterminada)"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Corto:"
-
-#: lazarusidestrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
-msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
-msgstr ""
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -17910,10 +17761,6 @@ msgstr "Rutas fuente"
 msgid "Space equally"
 msgstr "Igualar espacio"
 
-#: lazarusidestrconsts.lissrcos
-msgid "Src OS"
-msgstr "OS Fuente"
-
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"
 msgstr "Buscando"
@@ -18098,10 +17945,6 @@ msgstr "Tabs por %s"
 msgid "Target:"
 msgstr "Objetivo:"
 
-#: lazarusidestrconsts.listargetcpu
-msgid "Target CPU"
-msgstr "CPU objetivo"
-
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"
 msgstr "Nombre de archivo final: (-o, vacio = usar el directorio de salida de la unidad)"
@@ -18110,22 +17953,9 @@ msgstr "Nombre de archivo final: (-o, vacio = usar el directorio de salida de la
 msgid "Target file name (-o):"
 msgstr "Nombre del archivo final (-o):"
 
-#: lazarusidestrconsts.listargetfilenameofproject
-msgid "Target filename of project"
-msgstr "Nombre del archivo objetivo del proyecto"
-
-#: lazarusidestrconsts.listargetfilenameplusparams
-msgid "Target filename + params"
-msgstr "NombreDeArchivo + Parametros objetivo"
-
 #: lazarusidestrconsts.listargetisreadonly
 msgid "Target is read only"
 msgstr "El destino es de solo lectura"
-
-#: lazarusidestrconsts.listargetos
-msgctxt "lazarusidestrconsts.listargetos"
-msgid "Target OS"
-msgstr "OS objetivo"
 
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
@@ -18140,10 +17970,6 @@ msgstr "Inserta una celda editable. Las células se puede navegar con el tabulad
 #: lazarusidestrconsts.listemplatefile
 msgid "Template file"
 msgstr "Fichero plantilla"
-
-#: lazarusidestrconsts.listestdirectory
-msgid "Test directory"
-msgstr "Directorio de prueba"
 
 #: lazarusidestrconsts.listesturl
 msgid "Test URL"
@@ -19657,10 +19483,6 @@ msgstr "Quitar de la lista \"%s\""
 #, object-pascal-format
 msgid "Toggle on list \"%s\""
 msgstr "Cambiar en la lista \"%s\""
-
-#: lazarusidestrconsts.lisusershomedirectory
-msgid "User's home directory"
-msgstr "Directorio (home) del usuario"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

@@ -1960,11 +1960,6 @@ msgctxt "lazarusidestrconsts.dlgfilterexecutable"
 msgid "Executable"
 msgstr "Spustitelný"
 
-#: lazarusidestrconsts.dlgfilterfpcmessagefile
-msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
-msgid "FPC message file"
-msgstr "Soubor FPC zpráv"
-
 #: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
 msgid "Fppkg configuration file"
 msgstr ""
@@ -6176,10 +6171,6 @@ msgstr "Nelze najít validní %s.ppu"
 msgid "Compare files (not for creating patches)"
 msgstr "Porovnat soubory (nevytvářet záplaty)"
 
-#: lazarusidestrconsts.liscaptionofactivebuildmode
-msgid "Caption of active build mode"
-msgstr ""
-
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
 msgid "%s (%s files)"
@@ -7700,10 +7691,6 @@ msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
 msgstr "Parametry příkazové řádky"
 
-#: lazarusidestrconsts.liscommandlineparamsofprogram
-msgid "Command line parameters of program"
-msgstr "Parametry příkazového řádku programu"
-
 #: lazarusidestrconsts.liscompile
 msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
@@ -7738,10 +7725,6 @@ msgstr "chybí %s."
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "Překladač \"%s\" nepodporuje cíl %s-%s"
-
-#: lazarusidestrconsts.liscompilerfilename
-msgid "Compiler filename"
-msgstr "Jméno souboru překladače"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -7833,10 +7816,6 @@ msgstr "Podmínka"
 msgctxt "lazarusidestrconsts.lisconditionals"
 msgid "Conditionals"
 msgstr "Podmíněné"
-
-#: lazarusidestrconsts.lisconfigdirectory
-msgid "Lazarus config directory"
-msgstr "Konfigurační adresář Lazarusu"
 
 #: lazarusidestrconsts.lisconfigfileofadditions
 msgid "Config file of additions:"
@@ -9707,10 +9686,6 @@ msgstr "Kódování souboru \"%s\"%sna disku je %s. Nové kódování je %s."
 msgid "Enter new name for Macro \"%s\""
 msgstr "Zadejte nové jméno makra \"%s\""
 
-#: lazarusidestrconsts.lisenvironmentvariablenameasparameter
-msgid "Environment variable, name as parameter"
-msgstr "Proměnná prostředí, jméno jako parametr"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Neplatný název souboru ladiče"
@@ -10101,10 +10076,6 @@ msgstr "Soubor: "
 msgid "File \"%s\" already exists."
 msgstr ""
 
-#: lazarusidestrconsts.lisfileextensionofprograms
-msgid "File extension of programs"
-msgstr "Přípona souboru programu"
-
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
 msgstr "Filtr souboru"
@@ -10426,10 +10397,6 @@ msgstr "Pro Windows"
 msgid "Found version %s, expected %s"
 msgstr "Nalezena verze %s, očekávána %s"
 
-#: lazarusidestrconsts.lisfpcfullversioneg20701
-msgid "FPC version as one number (e.g. 20701)"
-msgstr "Verze FPC jako jedno číslo (např. 20701)"
-
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "Soubor zpráv FPC:"
@@ -10457,10 +10424,6 @@ msgstr "Příliš staré FPC"
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
 msgstr "Verze FPC: "
-
-#: lazarusidestrconsts.lisfpcversioneg222
-msgid "FPC Version (e.g. 2.2.2)"
-msgstr "Verze FPC (např. 2.2.2)"
 
 #: lazarusidestrconsts.lisfpdoceditor
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
@@ -10598,10 +10561,6 @@ msgstr "Zprávy Free Pascal Compileru"
 #: lazarusidestrconsts.lisfreepascalprefix
 msgid "Free Pascal compiler prefix"
 msgstr ""
-
-#: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Free Pascal source directory"
-msgstr "Zdrojový adresář Free Pascalu"
 
 #: lazarusidestrconsts.lisfrforwardsearch
 msgid "Forwar&d search"
@@ -10922,10 +10881,6 @@ msgstr "Otevírání"
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IDE"
-
-#: lazarusidestrconsts.lisidebuildoptions
-msgid "IDE build options"
-msgstr "Volby sestavení IDE"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
 msgid "Additional info to display in the IDE title"
@@ -11943,17 +11898,9 @@ msgstr "Poslední otevřené"
 msgid "Launching application invalid"
 msgstr "Neplatné spouštění aplikace"
 
-#: lazarusidestrconsts.lislaunchingcmdline
-msgid "Launching target command line"
-msgstr "Spouštění cílové příkazové řádky"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus Výchoí"
-
-#: lazarusidestrconsts.lislazarusdirectory
-msgid "Lazarus directory"
-msgstr "Adresář Lazarusu"
 
 #: lazarusidestrconsts.lislazarusdirhint
 #, object-pascal-format
@@ -11974,14 +11921,6 @@ msgstr "Lazarus IDE v%s"
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr "Lazarus IDE"
-
-#: lazarusidestrconsts.lislazaruslanguageid
-msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr "ID jazyka Lazarusu (např. en, de, br, cz)"
-
-#: lazarusidestrconsts.lislazaruslanguagename
-msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr "Jméno jazyka Lazarusu (např. angličtina, čeština)"
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
@@ -12160,16 +12099,6 @@ msgstr "Aktualizovat informace o revizi v dialogu \"O Lazarusu\""
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
 msgid "Clean Up + Build all"
 msgstr "Vyčistit + Sestavit vše"
-
-#: lazarusidestrconsts.lislazver
-msgid "Lazarus Version (e.g. 1.2.4)"
-msgstr "Verze Lazarusu (př. 1.2.4)"
-
-#: lazarusidestrconsts.lislclwidgettype
-#, fuzzy
-#| msgid "LCL widget type"
-msgid "LCL &widget type"
-msgstr "Typ LCL Widgetu"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -12399,10 +12328,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Aktuální"
-
-#: lazarusidestrconsts.lismakeexe
-msgid "Make Executable"
-msgstr "Vytvořit spustitelný"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
@@ -14374,10 +14299,6 @@ msgstr "Jméno"
 msgid "Name conflict"
 msgstr "Konflikt jmen"
 
-#: lazarusidestrconsts.lisnameofactivebuildmode
-msgid "Name of active build mode"
-msgstr "Jméno aktivního režimu sestavení"
-
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Jméno nové procedury"
@@ -14462,10 +14383,6 @@ msgstr "Nové metody a členy deklarace v class..end sekci jsou vloženy abecedn
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
 msgstr "Nová stránka"
-
-#: lazarusidestrconsts.lisnewproject
-msgid "(new project)"
-msgstr "(nový projekt)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
@@ -14940,10 +14857,6 @@ msgstr "jiná zdrojová cesta balíčku \"%s\" obsahuje adresář \"%s\", který
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "výstupní adresář %s obsahuje Pascalovskou zdrojovou jednotku \"%s\""
 
-#: lazarusidestrconsts.lisoutputfilenameofproject
-msgid "Output filename of project"
-msgstr ""
-
 #: lazarusidestrconsts.lisoverridelanguage
 #, fuzzy
 #| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -15157,14 +15070,6 @@ msgstr "Hledat cesty:"
 #: lazarusidestrconsts.lispathisnodirectory
 msgid "is not a directory"
 msgstr ""
-
-#: lazarusidestrconsts.lispathoftheinstantfpccache
-msgid "path of the instantfpc cache"
-msgstr "cesta instantfpc cache"
-
-#: lazarusidestrconsts.lispathofthemakeutility
-msgid "Path of the make utility"
-msgstr "Cesta nástroje make"
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
@@ -16278,10 +16183,6 @@ msgstr "Předcházející slovo"
 msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "hlavní konfigurační adresář, kde Lazarus uchovává své konfigurační soubory. Výchozí je "
 
-#: lazarusidestrconsts.lisprimaryconfigpath
-msgid "Primary config path"
-msgstr "Primární konfigurační cesta"
-
 #: lazarusidestrconsts.lisprior
 #, object-pascal-format
 msgid "prior %s"
@@ -16447,19 +16348,6 @@ msgstr "Projekt změněn"
 msgid "Project changed on disk"
 msgstr "Projekt změněn na disku"
 
-#: lazarusidestrconsts.lisprojectdirectory
-msgctxt "lazarusidestrconsts.lisprojectdirectory"
-msgid "Project directory"
-msgstr "Adresář projektu"
-
-#: lazarusidestrconsts.lisprojectfilename
-msgid "Project filename"
-msgstr "Jméno souboru projektu"
-
-#: lazarusidestrconsts.lisprojectincpath
-msgid "Project Include Path"
-msgstr "Cesta začleněných souborů projektu"
-
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
 msgstr "Zjištěn informační soubor projektu"
@@ -16477,21 +16365,9 @@ msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
 msgstr "Projekt"
 
-#: lazarusidestrconsts.lisprojectmacroproperties
-msgid "Project macro properties"
-msgstr "Vlastnosti makra projektu"
-
-#: lazarusidestrconsts.lisprojectnamespaces
-msgid "Project Namespaces"
-msgstr "Jméno prostory projektu"
-
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
 msgstr "Volva Projektu"
-
-#: lazarusidestrconsts.lisprojectoutdir
-msgid "Project Output directory (e.g. the ppu directory)"
-msgstr "Výstupní adresář projektu (např. ppu adresář)"
 
 #: lazarusidestrconsts.lisprojectoutputdirectory
 msgid "Project output directory"
@@ -16543,21 +16419,9 @@ msgstr "%0:s%0:s v souboru '%1:s' na řádce %2:d"
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s v souboru '%1:s' na řádce %2:d:%0:s%3:s"
 
-#: lazarusidestrconsts.lisprojectsrcpath
-msgid "Project Src Path"
-msgstr "Zdrojová cesta projektu"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "jednotka projektu"
-
-#: lazarusidestrconsts.lisprojectunitpath
-msgid "Project Unit Path"
-msgstr "Cesta jednotek projektu"
-
-#: lazarusidestrconsts.lisprojectver
-msgid "Project version"
-msgstr ""
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -16651,10 +16515,6 @@ msgstr "Zveřejněné do %s"
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr "Soubory patřící projektu / balíčku budou zahrnuty automaticky."
-
-#: lazarusidestrconsts.lispublishprojdir
-msgid "Publish project directory"
-msgstr "Zveřejni adresář projektu"
 
 #: lazarusidestrconsts.lispublishproject
 msgid "Publish Project"
@@ -17318,10 +17178,6 @@ msgstr "Hledat jednotku \"%s\""
 msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "druhotný konfigurační adresář, kde Lazarus hledá šablony konfiguračních souborů. Implicitní je "
 
-#: lazarusidestrconsts.lissecondaryconfigpath
-msgid "Secondary config path"
-msgstr "Druhotná konfigurační cesta"
-
 #: lazarusidestrconsts.lissecondtest
 msgid "&Second test"
 msgstr "&Druhý test"
@@ -17463,10 +17319,6 @@ msgstr "(Nastavení výchozího odsazování)"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Krátky:"
-
-#: lazarusidestrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
-msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
-msgstr ""
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -17798,10 +17650,6 @@ msgstr "Zdrojové cesty"
 msgid "Space equally"
 msgstr "Mezery stejně"
 
-#: lazarusidestrconsts.lissrcos
-msgid "Src OS"
-msgstr "Zdroj. OS"
-
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"
 msgstr "Hledání"
@@ -17985,10 +17833,6 @@ msgstr "Listy pro %s"
 msgid "Target:"
 msgstr "Cíl:"
 
-#: lazarusidestrconsts.listargetcpu
-msgid "Target CPU"
-msgstr "Cílový CPU"
-
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"
 msgstr "Jméno cílového souboru (prázdné = použít výstupní adresář jednotek):"
@@ -17997,22 +17841,9 @@ msgstr "Jméno cílového souboru (prázdné = použít výstupní adresář jed
 msgid "Target file name (-o):"
 msgstr "Jméno cílového souboru (-o):"
 
-#: lazarusidestrconsts.listargetfilenameofproject
-msgid "Target filename of project"
-msgstr "Cílové jméno souboru projektu"
-
-#: lazarusidestrconsts.listargetfilenameplusparams
-msgid "Target filename + params"
-msgstr "Cílové jméno souboru + parametry"
-
 #: lazarusidestrconsts.listargetisreadonly
 msgid "Target is read only"
 msgstr "Cíl je pouze ke čtení"
-
-#: lazarusidestrconsts.listargetos
-msgctxt "lazarusidestrconsts.listargetos"
-msgid "Target OS"
-msgstr "Cílový OS"
 
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
@@ -18026,10 +17857,6 @@ msgstr "Vloží upravitelné buňky. Mezi buňkami můžete přecházet kláveso
 #: lazarusidestrconsts.listemplatefile
 msgid "Template file"
 msgstr "Soubor šablony"
-
-#: lazarusidestrconsts.listestdirectory
-msgid "Test directory"
-msgstr "Testovací adresář"
 
 #: lazarusidestrconsts.listesturl
 msgid "Test URL"
@@ -19534,10 +19361,6 @@ msgstr "Odebrat ze seznamu \"%s\""
 #, object-pascal-format
 msgid "Toggle on list \"%s\""
 msgstr "Přepnout na seznamu \"%s\""
-
-#: lazarusidestrconsts.lisusershomedirectory
-msgid "User's home directory"
-msgstr "Uživatelský domovský adresář"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"

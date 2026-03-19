@@ -102,8 +102,8 @@ type
 
   TLazIDEMacros = class(TIDEMacros)
   private
-    FLazbuildMacroFileAge: int64; // file age when last time the lazbuild macros were stored
-    FLazbuildMacros: TStringListUTF8Fast; // last stored lazbuild macros
+    FBuildMacroFileAge: int64; // file age when last time the build macros were stored
+    FBuildMacros: TStringListUTF8Fast; // last stored build macros
   public
     destructor Destroy; override;
     function StrHasMacros(const s: string): boolean; override;
@@ -111,9 +111,9 @@ type
     function IsMacro(const Name: string): boolean; override;
     procedure Add(NewMacro: TTransferMacro);override; overload;
   public
-    // lazbuild macros
-    procedure LoadLazbuildMacros; // called by lazbuild
-    procedure SaveLazbuildMacros; // called by IDE
+    // macros for building and configuring
+    procedure LoadBuildMacros; override; // called by LazBuild and others
+    procedure SaveBuildMacros;           // called by IDE
   end;
 
 //type
@@ -512,7 +512,7 @@ end;
 
 destructor TLazIDEMacros.Destroy;
 begin
-  FreeAndNil(FLazbuildMacros);
+  FreeAndNil(FBuildMacros);
   inherited Destroy;
 end;
 
@@ -536,7 +536,7 @@ Begin
   GlobalMacroList.Add(NewMacro);
 end;
 
-procedure TLazIDEMacros.LoadLazbuildMacros;
+procedure TLazIDEMacros.LoadBuildMacros;
 var
   aFilename, s, aMacroName, Value: String;
   Macros: TTransferMacroList;
@@ -550,15 +550,15 @@ begin
   if not FileExistsCached(aFilename) then exit;
 
   Macros:=GlobalMacroList;
-  FLazbuildMacros:=TStringListUTF8Fast.Create;
+  FBuildMacros:=TStringListUTF8Fast.Create;
   EnvVars:=TStringListUTF8Fast.Create;
   Cfg:=GetIDEConfigStorage(aFilename,true);
   try
-    Cfg.GetValue('Macros',FLazbuildMacros);
+    Cfg.GetValue('Macros',FBuildMacros);
 
-    for i:=0 to FLazbuildMacros.Count-1 do
+    for i:=0 to FBuildMacros.Count-1 do
     begin
-      s:=FLazbuildMacros[i];
+      s:=FBuildMacros[i];
       p:=Pos('=',s);
       if (p<2) then continue;
       aMacroName:=LeftStr(s,p-1);
@@ -574,7 +574,7 @@ begin
   end;
 end;
 
-procedure TLazIDEMacros.SaveLazbuildMacros;
+procedure TLazIDEMacros.SaveBuildMacros;
 var
   aFilename, Value, s, aMacroName: String;
   i: Integer;
@@ -591,21 +591,21 @@ begin
   NeedSave:=false;
 
   // load old config
-  if FLazbuildMacros=nil then
+  if FBuildMacros=nil then
   begin
-    FLazbuildMacros:=TStringListUTF8Fast.Create;
+    FBuildMacros:=TStringListUTF8Fast.Create;
     Cfg:=GetIDEConfigStorage(aFilename,true);
     try
-      Cfg.GetValue('Macros',FLazbuildMacros);
+      Cfg.GetValue('Macros',FBuildMacros);
     finally
       Cfg.Free;
     end;
-    FLazbuildMacroFileAge:=UniversalFileAgeUTF8(aFilename);
+    FBuildMacroFileAge:=UniversalFileAgeUTF8(aFilename);
   end;
 
   // clean up old macros
-  for i:=FLazbuildMacros.Count-1 downto 0 do begin
-    s:=FLazbuildMacros[i];
+  for i:=FBuildMacros.Count-1 downto 0 do begin
+    s:=FBuildMacros[i];
     p:=Pos('=',s);
     if (p>1) then
     begin
@@ -614,7 +614,7 @@ begin
       if (aMacro<>nil) and (tmfLazbuild in aMacro.Flags) then
         continue;
     end;
-    FLazbuildMacros.Delete(i);
+    FBuildMacros.Delete(i);
     NeedSave:=true;
   end;
 
@@ -632,14 +632,14 @@ begin
       // currently the macro is not set -> keep the old value
       continue;
     end;
-    if FLazbuildMacros.Values[aMacro.Name]<>Value then
+    if FBuildMacros.Values[aMacro.Name]<>Value then
     begin
-      FLazbuildMacros.Values[aMacro.Name]:=Value;
+      FBuildMacros.Values[aMacro.Name]:=Value;
       NeedSave:=true;
     end;
   end;
 
-  if FLazbuildMacros.Count=0 then
+  if FBuildMacros.Count=0 then
   begin
     // no lazbuild macros -> delete config
     if FileExistsCached(aFilename) then
@@ -650,7 +650,7 @@ begin
   if (not NeedSave) then
   begin
     if (not FileExistsCached(aFilename))
-        or ((FLazbuildMacroFileAge<>0) and (FileAgeCached(aFilename)<>FLazbuildMacroFileAge)) then
+    or ((FBuildMacroFileAge<>0) and (FileAgeCached(aFilename)<>FBuildMacroFileAge)) then
       NeedSave:=true;
   end;
 
@@ -658,7 +658,7 @@ begin
 
   Cfg:=GetIDEConfigStorage(aFilename,false);
   try
-    FLazbuildMacros.Clear;
+    FBuildMacros.Clear;
     for i:=0 to Macros.Count-1 do
     begin
       aMacro:=Macros[i];
@@ -667,13 +667,13 @@ begin
         Value:=aMacro.LazbuildValue
       else
         Value:=aMacro.Value;
-      FLazbuildMacros.Add(aMacro.Name+'='+Value);
+      FBuildMacros.Add(aMacro.Name+'='+Value);
     end;
-    Cfg.SetValue('Macros',FLazbuildMacros);
+    Cfg.SetValue('Macros',FBuildMacros);
   finally
     Cfg.Free;
   end;
-  FLazbuildMacroFileAge:=UniversalFileAgeUTF8(aFilename);
+  FBuildMacroFileAge:=UniversalFileAgeUTF8(aFilename);
 end;
 
 

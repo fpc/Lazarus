@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, AVL_Tree, System.UITypes,
   // LCL
-  Forms, LResources,
+  LResources,
   // LazUtils
   LazFileCache, LazFileUtils, LazLoggerBase,
   // CodeTools

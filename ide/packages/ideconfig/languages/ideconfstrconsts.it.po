@@ -5,10 +5,19 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.dlgfilterfpcmessagefile
+#, fuzzy
+msgid "FPC message file"
+msgstr "File messaggi FPC"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Un file \"%s\" esiste gia.%sLo sostituisco?"
+
+#: ideconfstrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
@@ -18,6 +27,10 @@ msgstr "Errore"
 msgid "Write error"
 msgstr "Errore di scrittura"
 
+#: ideconfstrconsts.liscommandlineparamsofprogram
+msgid "Command line parameters of program"
+msgstr "Parametri della riga di comando del programma"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Compila il progetto"
@@ -26,6 +39,10 @@ msgstr "Compila il progetto"
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
 msgstr "Errore: compilatore non valido: %s"
+
+#: ideconfstrconsts.liscompilerfilename
+msgid "Compiler filename"
+msgstr "Nome file del compilatore"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 #, fuzzy
@@ -42,6 +59,10 @@ msgstr "Il nome del componente \"%s\" è una parola chiave pascal"
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Il nome del componente \"%s\" non è un identificatore valido"
+
+#: ideconfstrconsts.lisconfigdirectory
+msgid "Lazarus config directory"
+msgstr "Cartella della configurazione di Lazarus"
 
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
@@ -104,6 +125,10 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvironmentvariablenameasparameter
+msgid "Environment variable, name as parameter"
+msgstr "Variabile ambiente, nome come parametro"
+
 #: ideconfstrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
 msgstr "Cartella non trovata"
@@ -123,6 +148,10 @@ msgstr "Errore nel salvataggio di %s in %s%s%s%s"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
 msgstr "Il file \"%s\"%snon sembra un file di testo.%sAprirlo ugualmente?"
 
+#: ideconfstrconsts.lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr "Estensione dei file di programma"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Il file non è scrivibile"
@@ -134,6 +163,14 @@ msgstr "Il file è un symlink"
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "File non di testo"
+
+#: ideconfstrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr "Versione FPC come un solo numero (p.es. 20701)"
+
+#: ideconfstrconsts.lisfpcversioneg222
+msgid "FPC Version (e.g. 2.2.2)"
+msgstr "Versione FPC (es. 2.2.4)"
 
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
@@ -154,14 +191,60 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreepascalsourcedirectory
+msgid "Free Pascal source directory"
+msgstr "Cartella sorgente del Freepascal"
+
+#: ideconfstrconsts.lisidebuildoptions
+msgid "IDE build options"
+msgstr "Opzioni di build dell'IDE"
+
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "Ignora e continua"
+
+#: ideconfstrconsts.lislaunchingcmdline
+msgid "Launching target command line"
+msgstr "Esecuzione riga di comando di destinazione"
+
+#: ideconfstrconsts.lislazarusdirectory
+msgid "Lazarus directory"
+msgstr "Cartella di Lazarus"
+
+#: ideconfstrconsts.lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr "ID della lingua di Lazarus (es.: en, de, br)"
+
+#: ideconfstrconsts.lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr "Nome della lingua Lazarus (e.g. english, deutsch)"
+
+#: ideconfstrconsts.lislazver
+msgid "Lazarus Version (e.g. 1.2.4)"
+msgstr "Versione di Lazarus (p.es. 1.2.4)"
+
+#: ideconfstrconsts.lislclwidgettype
+#, fuzzy
+#| msgid "LCL widget type"
+msgid "LCL &widget type"
+msgstr "Tipo di widget LCL"
+
+#: ideconfstrconsts.lismakeexe
+msgid "Make Executable"
+msgstr "Crea l'eseguibile"
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Modalità: %s"
+
+#: ideconfstrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr "Nome del build mode attivo"
+
+#: ideconfstrconsts.lisnewproject
+msgid "(new project)"
+msgstr "(nuovo progetto)"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -185,6 +268,10 @@ msgstr "Apri destinazione"
 msgid ", OS: %s"
 msgstr ", OS: %s"
 
+#: ideconfstrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: ideconfstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Sovrascrivere il file?"
@@ -192,6 +279,14 @@ msgstr "Sovrascrivere il file?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Sovrascrivi il file su disco"
+
+#: ideconfstrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr "percorso della cache di instantfpc"
+
+#: ideconfstrconsts.lispathofthemakeutility
+msgid "Path of the make utility"
+msgstr "Cartella dell'utility make"
 
 #: ideconfstrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
@@ -202,19 +297,99 @@ msgstr "Impossibile creare la cartella"
 msgid "Unable to delete file \"%s\"."
 msgstr "Impossibile cancellare il file \"%s\"."
 
+#: ideconfstrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr "Percorso di configurazione primario"
+
+#: ideconfstrconsts.lisprojectdirectory
+msgid "Project directory"
+msgstr "Cartella progetto"
+
+#: ideconfstrconsts.lisprojectfilename
+msgid "Project filename"
+msgstr "Nome file progetto"
+
+#: ideconfstrconsts.lisprojectincpath
+msgid "Project Include Path"
+msgstr "Percorso degli include del progetto"
+
+#: ideconfstrconsts.lisprojectmacroproperties
+msgid "Project macro properties"
+msgstr "Proprietà delle macro del progetto"
+
+#: ideconfstrconsts.lisprojectnamespaces
+msgid "Project Namespaces"
+msgstr ""
+
+#: ideconfstrconsts.lisprojectoutdir
+msgid "Project Output directory (e.g. the ppu directory)"
+msgstr "Cartella di output del progetto (es. la cartella ppu)"
+
+#: ideconfstrconsts.lisprojectsrcpath
+msgid "Project Src Path"
+msgstr "Percorso dei sorgenti del progetto"
+
+#: ideconfstrconsts.lisprojectunitpath
+msgid "Project Unit Path"
+msgstr "Percorso della unit del progetto"
+
+#: ideconfstrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
+#: ideconfstrconsts.lispublishprojdir
+msgid "Publish project directory"
+msgstr "Pubblica cartella progetto"
+
 #: ideconfstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Errore di lettura"
+
+#: ideconfstrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr "Percorso di configurazione secondario"
+
+#: ideconfstrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
+msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
+msgstr ""
 
 #: ideconfstrconsts.lissourceanddestinationarethesame
 #, object-pascal-format
 msgid "Source and Destination are the same:%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lissrcos
+msgid "Src OS"
+msgstr "Cerca SO"
+
+#: ideconfstrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr ", Destinazione: %s"
+
+#: ideconfstrconsts.listargetcpu
+msgid "Target CPU"
+msgstr "CPU di destinazione"
+
+#: ideconfstrconsts.listargetfilenameofproject
+msgid "Target filename of project"
+msgstr "Nome file di destinazione del progetto"
+
+#: ideconfstrconsts.listargetfilenameplusparams
+msgid "Target filename + params"
+msgstr "Nome file di destinazione e parametri"
+
+#: ideconfstrconsts.listargetos
+msgid "Target OS"
+msgstr "SO di destinazione"
+
+#: ideconfstrconsts.listestdirectory
+msgid "Test directory"
+msgstr "Cartella di test"
 
 #: ideconfstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -353,6 +528,10 @@ msgstr "Impossibile scrivere sul file \"%s\"."
 #, object-pascal-format
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Impossibile scrivere uno stream xml su %s%sErrore: %s"
+
+#: ideconfstrconsts.lisusershomedirectory
+msgid "User's home directory"
+msgstr "Cartella home dell'utente"
 
 #: ideconfstrconsts.liswriteerror
 msgid "Write Error"

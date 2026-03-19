@@ -5333,7 +5333,7 @@ begin
     DebuggerOptions.Save; // before environment
     EnvironmentOptions.Save(false);
     EditorMacroListViewer.SaveGlobalInfo;
-    (IDEMacros as TLazIDEMacros).SaveLazbuildMacros;
+    (IDEMacros as TLazIDEMacros).SaveBuildMacros;
     //debugln('TMainIDE.SaveEnvironment A ',dbgsName(ObjectInspector1.Favorites));
     if (ObjectInspector1<>nil) and (ObjectInspector1.Favorites<>nil) then
       SaveOIFavoriteProperties(ObjectInspector1.Favorites);
@@ -7323,7 +7323,7 @@ function TMainIDE.DoInitProjectRun: TModalResult;
 var
   ProgramFilename: string;
   DebugClass: TDebuggerClass;
-  ARunMode: TRunParamsOptionsMode;
+  ARunMode: TAbstractRunParamsOptionsMode;
   ReqOpts: TDebugCompilerRequirements;
   Handled, SkipDebuggerThisTime: Boolean;
   DlgResult: TModalResult;
@@ -7534,7 +7534,7 @@ var
   RunCmdLine, RunWorkingDirectory, ExeFile, FileOut, FileErr: string;
   Params: TStringList;
   Handled: Boolean;
-  ARunMode: TRunParamsOptionsMode;
+  ARunMode: TAbstractRunParamsOptionsMode;
 begin
   debugln(['Hint: (lazarus) [TMainIDE.DoRunProjectWithoutDebug] START']);
   if Project1=nil then
@@ -7610,8 +7610,8 @@ begin
       {$ENDIF}
       if DBG_PROCESS_HAS_REDIRECT then begin
         if ARunMode.RedirectStdIn <> rprOff then
-          Process.SetRedirection(dtStdIn,  CreateAbsolutePath(ARunMode.FileNameStdIn, RunWorkingDirectory),  ARunMode.RedirectStdIn = rprOverwrite);
-
+          Process.SetRedirection(dtStdIn,CreateAbsolutePath(ARunMode.FileNameStdIn, RunWorkingDirectory),
+                                                            ARunMode.RedirectStdIn = rprOverwrite);
         FileOut := '';
         FileErr := '';
         if ARunMode.RedirectStdOut <> rprOff then
@@ -7623,7 +7623,8 @@ begin
            (FileOut = FileErr)
         then begin
           if ARunMode.FileNameStdOut <> '' then begin
-            Process.SetRedirection(dtStdOut, FileOut, (ARunMode.RedirectStdOut = rprOverwrite) or (ARunMode.RedirectStdErr = rprOverwrite));
+            Process.SetRedirection(dtStdOut, FileOut,
+              (ARunMode.RedirectStdOut = rprOverwrite) or (ARunMode.RedirectStdErr = rprOverwrite));
             Process.Options := Process.Options + [poStdErrToOutPut];
           end;
         end

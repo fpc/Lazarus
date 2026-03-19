@@ -5,10 +5,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.dlgfilterfpcmessagefile
+msgid "FPC message file"
+msgstr "Soubor FPC zpráv"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Soubor \"%s\" už existuje.%sNahradit?"
+
+#: ideconfstrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
@@ -18,6 +26,10 @@ msgstr "Chyba"
 msgid "Write error"
 msgstr "Chyba zápisu"
 
+#: ideconfstrconsts.liscommandlineparamsofprogram
+msgid "Command line parameters of program"
+msgstr "Parametry příkazového řádku programu"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Přeložit projekt"
@@ -26,6 +38,10 @@ msgstr "Přeložit projekt"
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
 msgstr "Chyba: neplatný překladač: %s"
+
+#: ideconfstrconsts.liscompilerfilename
+msgid "Compiler filename"
+msgstr "Jméno souboru překladače"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 #, fuzzy
@@ -42,6 +58,10 @@ msgstr "Jméno komponenty \"%s\" je klíčovým slovem Pascalu."
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Jméno komponenty \"%s\" není platný identifikátor"
+
+#: ideconfstrconsts.lisconfigdirectory
+msgid "Lazarus config directory"
+msgstr "Konfigurační adresář Lazarusu"
 
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
@@ -104,6 +124,10 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvironmentvariablenameasparameter
+msgid "Environment variable, name as parameter"
+msgstr "Proměnná prostředí, jméno jako parametr"
+
 #: ideconfstrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
 msgstr "Adresář nenalezen"
@@ -123,6 +147,10 @@ msgstr "Chyba ukládání %s do %s%s%s%s"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
 msgstr "Soubor \"%s\"%snevypadá jako textový soubor.%sPřesto otevřít?"
 
+#: ideconfstrconsts.lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr "Přípona souboru programu"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Soubor není zapisovatelný"
@@ -134,6 +162,14 @@ msgstr "Soubor je symbolický odkaz"
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "Soubor není textový"
+
+#: ideconfstrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr "Verze FPC jako jedno číslo (např. 20701)"
+
+#: ideconfstrconsts.lisfpcversioneg222
+msgid "FPC Version (e.g. 2.2.2)"
+msgstr "Verze FPC (např. 2.2.2)"
 
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
@@ -154,14 +190,60 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreepascalsourcedirectory
+msgid "Free Pascal source directory"
+msgstr "Zdrojový adresář Free Pascalu"
+
+#: ideconfstrconsts.lisidebuildoptions
+msgid "IDE build options"
+msgstr "Volby sestavení IDE"
+
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "Ignorovat a pokračovat"
+
+#: ideconfstrconsts.lislaunchingcmdline
+msgid "Launching target command line"
+msgstr "Spouštění cílové příkazové řádky"
+
+#: ideconfstrconsts.lislazarusdirectory
+msgid "Lazarus directory"
+msgstr "Adresář Lazarusu"
+
+#: ideconfstrconsts.lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr "ID jazyka Lazarusu (např. en, de, br, cz)"
+
+#: ideconfstrconsts.lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr "Jméno jazyka Lazarusu (např. angličtina, čeština)"
+
+#: ideconfstrconsts.lislazver
+msgid "Lazarus Version (e.g. 1.2.4)"
+msgstr "Verze Lazarusu (př. 1.2.4)"
+
+#: ideconfstrconsts.lislclwidgettype
+#, fuzzy
+#| msgid "LCL widget type"
+msgid "LCL &widget type"
+msgstr "Typ LCL Widgetu"
+
+#: ideconfstrconsts.lismakeexe
+msgid "Make Executable"
+msgstr "Vytvořit spustitelný"
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Režim: %s"
+
+#: ideconfstrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr "Jméno aktivního režimu sestavení"
+
+#: ideconfstrconsts.lisnewproject
+msgid "(new project)"
+msgstr "(nový projekt)"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -185,6 +267,10 @@ msgstr "Otevřít cíl"
 msgid ", OS: %s"
 msgstr ", OS: %s"
 
+#: ideconfstrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: ideconfstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Přepsat soubor?"
@@ -192,6 +278,14 @@ msgstr "Přepsat soubor?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Přepsat soubor na disku"
+
+#: ideconfstrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr "cesta instantfpc cache"
+
+#: ideconfstrconsts.lispathofthemakeutility
+msgid "Path of the make utility"
+msgstr "Cesta nástroje make"
 
 #: ideconfstrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
@@ -202,19 +296,99 @@ msgstr "Nelze vytvořit adresář"
 msgid "Unable to delete file \"%s\"."
 msgstr "Nelze smazat soubor \"%s\"."
 
+#: ideconfstrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr "Primární konfigurační cesta"
+
+#: ideconfstrconsts.lisprojectdirectory
+msgid "Project directory"
+msgstr "Adresář projektu"
+
+#: ideconfstrconsts.lisprojectfilename
+msgid "Project filename"
+msgstr "Jméno souboru projektu"
+
+#: ideconfstrconsts.lisprojectincpath
+msgid "Project Include Path"
+msgstr "Cesta začleněných souborů projektu"
+
+#: ideconfstrconsts.lisprojectmacroproperties
+msgid "Project macro properties"
+msgstr "Vlastnosti makra projektu"
+
+#: ideconfstrconsts.lisprojectnamespaces
+msgid "Project Namespaces"
+msgstr "Jméno prostory projektu"
+
+#: ideconfstrconsts.lisprojectoutdir
+msgid "Project Output directory (e.g. the ppu directory)"
+msgstr "Výstupní adresář projektu (např. ppu adresář)"
+
+#: ideconfstrconsts.lisprojectsrcpath
+msgid "Project Src Path"
+msgstr "Zdrojová cesta projektu"
+
+#: ideconfstrconsts.lisprojectunitpath
+msgid "Project Unit Path"
+msgstr "Cesta jednotek projektu"
+
+#: ideconfstrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
+#: ideconfstrconsts.lispublishprojdir
+msgid "Publish project directory"
+msgstr "Zveřejni adresář projektu"
+
 #: ideconfstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Chyba čtení"
+
+#: ideconfstrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr "Druhotná konfigurační cesta"
+
+#: ideconfstrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
+msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
+msgstr ""
 
 #: ideconfstrconsts.lissourceanddestinationarethesame
 #, object-pascal-format
 msgid "Source and Destination are the same:%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lissrcos
+msgid "Src OS"
+msgstr "Zdroj. OS"
+
+#: ideconfstrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr ", Cíl: %s"
+
+#: ideconfstrconsts.listargetcpu
+msgid "Target CPU"
+msgstr "Cílový CPU"
+
+#: ideconfstrconsts.listargetfilenameofproject
+msgid "Target filename of project"
+msgstr "Cílové jméno souboru projektu"
+
+#: ideconfstrconsts.listargetfilenameplusparams
+msgid "Target filename + params"
+msgstr "Cílové jméno souboru + parametry"
+
+#: ideconfstrconsts.listargetos
+msgid "Target OS"
+msgstr "Cílový OS"
+
+#: ideconfstrconsts.listestdirectory
+msgid "Test directory"
+msgstr "Testovací adresář"
 
 #: ideconfstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -353,6 +527,10 @@ msgstr "Nelze zapsat do souboru \"%s\"."
 #, object-pascal-format
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Nelze zapsat xml proud do %s%sChyba: %s"
+
+#: ideconfstrconsts.lisusershomedirectory
+msgid "User's home directory"
+msgstr "Uživatelský domovský adresář"
 
 #: ideconfstrconsts.liswriteerror
 msgid "Write Error"

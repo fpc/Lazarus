@@ -5,10 +5,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.dlgfilterfpcmessagefile
+msgid "FPC message file"
+msgstr "Файл повідомлень FPC"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Файл \"%s\" вже існує.%s Замінити?"
+
+#: ideconfstrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr ""
 
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
@@ -18,6 +26,10 @@ msgstr "Помилка"
 msgid "Write error"
 msgstr "Помилка запису"
 
+#: ideconfstrconsts.liscommandlineparamsofprogram
+msgid "Command line parameters of program"
+msgstr "Параметри командного рядка програми"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Компіляція проєкту"
@@ -26,6 +38,10 @@ msgstr "Компіляція проєкту"
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
 msgstr "Помилка: неправильний компілятор:%s"
+
+#: ideconfstrconsts.liscompilerfilename
+msgid "Compiler filename"
+msgstr "Назва файлу компілятора"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 #, fuzzy
@@ -42,6 +58,10 @@ msgstr "Назва компонента \"%s\" є ключовим словом 
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Назва компонента \"%s\" є некоректним ідентифікатором"
+
+#: ideconfstrconsts.lisconfigdirectory
+msgid "Lazarus config directory"
+msgstr "Тека конфігурації Lazarus"
 
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
@@ -104,6 +124,10 @@ msgstr ""
 msgid "Endless loop in macros"
 msgstr ""
 
+#: ideconfstrconsts.lisenvironmentvariablenameasparameter
+msgid "Environment variable, name as parameter"
+msgstr "Змінна оточення, назва як параметр"
+
 #: ideconfstrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
 msgstr "Теки не існує"
@@ -123,6 +147,10 @@ msgstr "Помилка збереження %s до%s%s%s%s"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
 msgstr "Файл \"%s\"%sне схожий на текстовий.%sВсе одно відкрити?"
 
+#: ideconfstrconsts.lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr "Розширення файлів програм"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "У файл не можна писати"
@@ -134,6 +162,14 @@ msgstr "Файл є символьним посиланням"
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "Не текстовий файл"
+
+#: ideconfstrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr "Версія FPC одним числом (наприклад, 20701)"
+
+#: ideconfstrconsts.lisfpcversioneg222
+msgid "FPC Version (e.g. 2.2.2)"
+msgstr "Версія FPC (напр. 2.2.2)"
 
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
@@ -154,14 +190,60 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreepascalsourcedirectory
+msgid "Free Pascal source directory"
+msgstr "Тека сирців Free Pascal"
+
+#: ideconfstrconsts.lisidebuildoptions
+msgid "IDE build options"
+msgstr "Параметри збирання ІСР"
+
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "Знехтувати і продовжити"
+
+#: ideconfstrconsts.lislaunchingcmdline
+msgid "Launching target command line"
+msgstr "Командний рядок виконуваної програми"
+
+#: ideconfstrconsts.lislazarusdirectory
+msgid "Lazarus directory"
+msgstr "Тека Lazarus"
+
+#: ideconfstrconsts.lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr "Мова графічної оболонки Lazarus (напр. en, uk, de, br, fi)"
+
+#: ideconfstrconsts.lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr "Назва мови для Lazarus (напр. english, deutsch, ukrainain)"
+
+#: ideconfstrconsts.lislazver
+msgid "Lazarus Version (e.g. 1.2.4)"
+msgstr "Версія Lazarus (наприклад, 1.2.4)"
+
+#: ideconfstrconsts.lislclwidgettype
+#, fuzzy
+#| msgid "LCL widget type"
+msgid "LCL &widget type"
+msgstr "Тип LCL widget"
+
+#: ideconfstrconsts.lismakeexe
+msgid "Make Executable"
+msgstr "Створити виконуваний"
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Режим: %s"
+
+#: ideconfstrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr "Назва активного режиму збирання"
+
+#: ideconfstrconsts.lisnewproject
+msgid "(new project)"
+msgstr "(новий проєкт)"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -185,6 +267,10 @@ msgstr "Відкрити ціль"
 msgid ", OS: %s"
 msgstr ", ОС: %s"
 
+#: ideconfstrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr "Назва вихідного файлу проєкту"
+
 #: ideconfstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Переписати файл?"
@@ -192,6 +278,14 @@ msgstr "Переписати файл?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Переписати файл на диску"
+
+#: ideconfstrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr "шлях кешу instantfpc"
+
+#: ideconfstrconsts.lispathofthemakeutility
+msgid "Path of the make utility"
+msgstr "Шлях утиліти make"
 
 #: ideconfstrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
@@ -202,19 +296,99 @@ msgstr "Неможливо створити теку"
 msgid "Unable to delete file \"%s\"."
 msgstr "Неможливо видалити файл \"%s\"."
 
+#: ideconfstrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr "Основний шлях конфігурації"
+
+#: ideconfstrconsts.lisprojectdirectory
+msgid "Project directory"
+msgstr "Тека проєкту"
+
+#: ideconfstrconsts.lisprojectfilename
+msgid "Project filename"
+msgstr "Назва файлу проєкту"
+
+#: ideconfstrconsts.lisprojectincpath
+msgid "Project Include Path"
+msgstr "Шляхи, що включені до проєкту"
+
+#: ideconfstrconsts.lisprojectmacroproperties
+msgid "Project macro properties"
+msgstr "Властивості макросів проєкту"
+
+#: ideconfstrconsts.lisprojectnamespaces
+msgid "Project Namespaces"
+msgstr "Простори назв проєкту"
+
+#: ideconfstrconsts.lisprojectoutdir
+msgid "Project Output directory (e.g. the ppu directory)"
+msgstr "Вихідна тека проєкту (напр. тека ppu)"
+
+#: ideconfstrconsts.lisprojectsrcpath
+msgid "Project Src Path"
+msgstr "Шлях до сирців проєкту"
+
+#: ideconfstrconsts.lisprojectunitpath
+msgid "Project Unit Path"
+msgstr "Шлях до модулів проєкту"
+
+#: ideconfstrconsts.lisprojectver
+msgid "Project version"
+msgstr ""
+
+#: ideconfstrconsts.lispublishprojdir
+msgid "Publish project directory"
+msgstr "Тека публікації проєкту"
+
 #: ideconfstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Помилка читання"
+
+#: ideconfstrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr "Вторинний шлях конфігурації"
+
+#: ideconfstrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
+msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
+msgstr ""
 
 #: ideconfstrconsts.lissourceanddestinationarethesame
 #, object-pascal-format
 msgid "Source and Destination are the same:%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lissrcos
+msgid "Src OS"
+msgstr "Джр ОС"
+
+#: ideconfstrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr ", ціль: %s"
+
+#: ideconfstrconsts.listargetcpu
+msgid "Target CPU"
+msgstr "Для ЦП:"
+
+#: ideconfstrconsts.listargetfilenameofproject
+msgid "Target filename of project"
+msgstr "Назва цільового файлу проєкту"
+
+#: ideconfstrconsts.listargetfilenameplusparams
+msgid "Target filename + params"
+msgstr "Назва цільового файлу + параметри"
+
+#: ideconfstrconsts.listargetos
+msgid "Target OS"
+msgstr "Для якої ОС"
+
+#: ideconfstrconsts.listestdirectory
+msgid "Test directory"
+msgstr "Тека проб"
 
 #: ideconfstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -353,6 +527,10 @@ msgstr "Неможливо записати у файл \"%s\"."
 #, object-pascal-format
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Неможливо записати xml-потік до %s%sПомилка: %s"
+
+#: ideconfstrconsts.lisusershomedirectory
+msgid "User's home directory"
+msgstr "Домашня тека користувача"
 
 #: ideconfstrconsts.liswriteerror
 msgid "Write Error"

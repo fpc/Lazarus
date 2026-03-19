@@ -41,13 +41,13 @@ uses
   IDEDialogs, IdeIntfStrConsts,
   // IdeConfig
   EnvironmentOpts, TransferMacros, SearchPathProcs, ProjectBuildMode,
-  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts,
+  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts, BaseBuildManager,
   // IdePackager
   BasePkgManager, PackageDefs,
   // IdeProject
   Project,
   // IDE
-  MainBase, MainBar, BaseBuildManager, Compiler_ModeMatrix, BuildModeDiffDlg,
+  MainBase, MainBar, Compiler_ModeMatrix, BuildModeDiffDlg,
   GenericCheckList, LazarusIDEStrConsts;
 
 type

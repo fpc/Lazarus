@@ -636,7 +636,7 @@ begin
   BootHandlers[ht][l]:=OnBoot;
 end;
 
-procedure RunBootHandlers(ht: TLazarusIDEBootHandlerType);Public name 'ideintf_LazIDEIntf_RunBootHandlers';
+procedure RunBootHandlers(ht: TLazarusIDEBootHandlerType); public name 'ideintf_LazIDEIntf_RunBootHandlers';
 var
   i: Integer;
 begin

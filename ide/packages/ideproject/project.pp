@@ -937,6 +937,7 @@ type
     function FileIsInProjectDir(const AFilename: string): boolean;
     procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
     function GetShortFilename(const Filename: string; UseUp: boolean): string; override;
+    function GetMainUnitSource: Pointer{TCodeBuffer}; override;
     procedure ConvertToLPIFilename(var AFilename: string); override;
     procedure ConvertFromLPIFilename(var AFilename: string); override;
 
@@ -4258,6 +4259,19 @@ begin
     if CompareFilenames(BaseDir,CurPath)=0 then
       delete(Result,1,length(CurPath));
   end;
+end;
+
+function TProject.GetMainUnitSource: Pointer;
+// Actually returns TCodeBuffer. The return value is a Pointer for dependency reasons.
+var
+  AnUnitInfo: TUnitInfo;
+  Code: TCodeBuffer;
+begin
+  Result:=nil;
+  AnUnitInfo:=MainUnitInfo;
+  if AnUnitInfo=nil then exit;
+  Code:=AnUnitInfo.Source;
+  Result:=Code;
 end;
 
 procedure TProject.ConvertToLPIFilename(var AFilename: string);

@@ -8,10 +8,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: TyPoEditor 0.2\n"
 
+#: ideconfstrconsts.dlgfilterfpcmessagefile
+msgid "FPC message file"
+msgstr "FPC 消息文件"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "文件 \"%s\" 已存在%s是否替换？"
+
+#: ideconfstrconsts.liscaptionofactivebuildmode
+msgid "Caption of active build mode"
+msgstr "活动构建模式的标题"
 
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
@@ -21,6 +29,10 @@ msgstr "错误"
 msgid "Write error"
 msgstr "写入错误"
 
+#: ideconfstrconsts.liscommandlineparamsofprogram
+msgid "Command line parameters of program"
+msgstr "程序的命令行参数"
+
 #: ideconfstrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "编译项目"
@@ -29,6 +41,10 @@ msgstr "编译项目"
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
 msgstr "错误:无效的编译器:%s"
+
+#: ideconfstrconsts.liscompilerfilename
+msgid "Compiler filename"
+msgstr "编译器文件名"
 
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 #, fuzzy
@@ -45,6 +61,10 @@ msgstr "组件名称 \"%s\" 是一个 Pascal 关键字。"
 #, object-pascal-format
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "组件名称 \"%s\" 不是有效的标识符"
+
+#: ideconfstrconsts.lisconfigdirectory
+msgid "Lazarus config directory"
+msgstr "Lazarus配置目录"
 
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
@@ -107,6 +127,10 @@ msgstr "使用 LineInfo 单元"
 msgid "Endless loop in macros"
 msgstr "宏中出现无限循环"
 
+#: ideconfstrconsts.lisenvironmentvariablenameasparameter
+msgid "Environment variable, name as parameter"
+msgstr "环境变量,名称作为参数"
+
 #: ideconfstrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
 msgstr "目录未找到"
@@ -126,6 +150,10 @@ msgstr "保存 %s 到 %s 时出错 %s%s%s"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
 msgstr "文件 \"%s\"%s看起来不是一个文本文件。%s仍然打开它吗？"
 
+#: ideconfstrconsts.lisfileextensionofprograms
+msgid "File extension of programs"
+msgstr "程序的文件扩展名"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "文件不可写"
@@ -137,6 +165,14 @@ msgstr "文件是符号链接"
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "文件不是文本文件"
+
+#: ideconfstrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr "FP C版本作为一个数字（例如 20701）"
+
+#: ideconfstrconsts.lisfpcversioneg222
+msgid "FPC Version (e.g. 2.2.2)"
+msgstr "FPC 版本(比如2.2.2)"
 
 #: ideconfstrconsts.lisfppkgcompilernotexecutable
 #, object-pascal-format
@@ -157,14 +193,58 @@ msgstr "未能找到为 Fppkg 配置的编译器 [%s]。"
 msgid "Fppkg reports that the RTL is not installed."
 msgstr "Fppkg 报告说 RTL 未安装。"
 
+#: ideconfstrconsts.lisfreepascalsourcedirectory
+msgid "Free Pascal source directory"
+msgstr "Free Pascal源代码目录"
+
+#: ideconfstrconsts.lisidebuildoptions
+msgid "IDE build options"
+msgstr "IDE构建选项"
+
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "忽略并继续"
+
+#: ideconfstrconsts.lislaunchingcmdline
+msgid "Launching target command line"
+msgstr "启动目标命令行"
+
+#: ideconfstrconsts.lislazarusdirectory
+msgid "Lazarus directory"
+msgstr "Lazarus 目录"
+
+#: ideconfstrconsts.lislazaruslanguageid
+msgid "Lazarus language ID (e.g. en, de, br, fi)"
+msgstr "Lazarus 语言 ID (例如 en、de、br、fi)"
+
+#: ideconfstrconsts.lislazaruslanguagename
+msgid "Lazarus language name (e.g. english, deutsch)"
+msgstr "Lazarus 语言名称 (例如 英语、德语)"
+
+#: ideconfstrconsts.lislazver
+msgid "Lazarus Version (e.g. 1.2.4)"
+msgstr "Lazarus版本(例如1.2.4)"
+
+#: ideconfstrconsts.lislclwidgettype
+msgid "LCL &widget type"
+msgstr "LCL &控件类型"
+
+#: ideconfstrconsts.lismakeexe
+msgid "Make Executable"
+msgstr "生成可执行的"
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ",模式: %s"
+
+#: ideconfstrconsts.lisnameofactivebuildmode
+msgid "Name of active build mode"
+msgstr "活动构建模式的名称"
+
+#: ideconfstrconsts.lisnewproject
+msgid "(new project)"
+msgstr "(新建项目)"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -188,6 +268,10 @@ msgstr "打开目标"
 msgid ", OS: %s"
 msgstr ",操作系统:%s"
 
+#: ideconfstrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr "项目的输出文件名称"
+
 #: ideconfstrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "覆盖文件?"
@@ -195,6 +279,14 @@ msgstr "覆盖文件?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "覆盖磁盘上的文件"
+
+#: ideconfstrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr "instantfpc缓存的路径"
+
+#: ideconfstrconsts.lispathofthemakeutility
+msgid "Path of the make utility"
+msgstr "Make实用程序的路径"
 
 #: ideconfstrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
@@ -205,19 +297,99 @@ msgstr "不能创建目录"
 msgid "Unable to delete file \"%s\"."
 msgstr "无法删除文件 \"%s\"。"
 
+#: ideconfstrconsts.lisprimaryconfigpath
+msgid "Primary config path"
+msgstr "最初的(Primary)配置路径"
+
+#: ideconfstrconsts.lisprojectdirectory
+msgid "Project directory"
+msgstr "项目目录"
+
+#: ideconfstrconsts.lisprojectfilename
+msgid "Project filename"
+msgstr "项目文件名称"
+
+#: ideconfstrconsts.lisprojectincpath
+msgid "Project Include Path"
+msgstr "项目包含路径"
+
+#: ideconfstrconsts.lisprojectmacroproperties
+msgid "Project macro properties"
+msgstr "项目宏命令属性"
+
+#: ideconfstrconsts.lisprojectnamespaces
+msgid "Project Namespaces"
+msgstr "项目名称空间(Namespaces)"
+
+#: ideconfstrconsts.lisprojectoutdir
+msgid "Project Output directory (e.g. the ppu directory)"
+msgstr "项目输出目录(例如 ppu目录)"
+
+#: ideconfstrconsts.lisprojectsrcpath
+msgid "Project Src Path"
+msgstr "项目源代码路径"
+
+#: ideconfstrconsts.lisprojectunitpath
+msgid "Project Unit Path"
+msgstr "项目单元路径"
+
+#: ideconfstrconsts.lisprojectver
+msgid "Project version"
+msgstr "项目 版本"
+
+#: ideconfstrconsts.lispublishprojdir
+msgid "Publish project directory"
+msgstr "发布项目目录"
+
 #: ideconfstrconsts.lisreaderror
 msgid "Read Error"
 msgstr "读取错误"
+
+#: ideconfstrconsts.lissecondaryconfigpath
+msgid "Secondary config path"
+msgstr "第二个配置路径"
+
+#: ideconfstrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
+msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
+msgstr "$TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param) 的简称。如果子目标为空，则省略。"
 
 #: ideconfstrconsts.lissourceanddestinationarethesame
 #, object-pascal-format
 msgid "Source and Destination are the same:%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lissrcos
+msgid "Src OS"
+msgstr "源代码操作系统"
+
+#: ideconfstrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
 msgstr "，目标：%s"
+
+#: ideconfstrconsts.listargetcpu
+msgid "Target CPU"
+msgstr "目标 CPU"
+
+#: ideconfstrconsts.listargetfilenameofproject
+msgid "Target filename of project"
+msgstr "项目目标文件名"
+
+#: ideconfstrconsts.listargetfilenameplusparams
+msgid "Target filename + params"
+msgstr "目标文件 + 参数"
+
+#: ideconfstrconsts.listargetos
+msgid "Target OS"
+msgstr "目标操作系统"
+
+#: ideconfstrconsts.listestdirectory
+msgid "Test directory"
+msgstr "测试目录"
 
 #: ideconfstrconsts.listhecodetoolsfoundanerror
 #, object-pascal-format
@@ -356,6 +528,10 @@ msgstr "无法写入到文件 \"%s\"。"
 #, object-pascal-format
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "无法将 xml 流写入到 %s%s，错误：%s"
+
+#: ideconfstrconsts.lisusershomedirectory
+msgid "User's home directory"
+msgstr "用户主目录"
 
 #: ideconfstrconsts.liswriteerror
 msgid "Write Error"

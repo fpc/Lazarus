@@ -1946,11 +1946,6 @@ msgctxt "lazarusidestrconsts.dlgfilterexecutable"
 msgid "Executable"
 msgstr "Futtatható"
 
-#: lazarusidestrconsts.dlgfilterfpcmessagefile
-msgctxt "lazarusidestrconsts.dlgfilterfpcmessagefile"
-msgid "FPC message file"
-msgstr "FPC üzenetfájl"
-
 #: lazarusidestrconsts.dlgfilterfppkgconfigurationfile
 msgid "Fppkg configuration file"
 msgstr ""
@@ -6136,10 +6131,6 @@ msgstr "Nem található érvényes %s.ppu"
 msgid "Compare files (not for creating patches)"
 msgstr "Fájlok összehasonlítása (nem foltok létrehozásához)"
 
-#: lazarusidestrconsts.liscaptionofactivebuildmode
-msgid "Caption of active build mode"
-msgstr ""
-
 #: lazarusidestrconsts.liscbpfiles
 #, object-pascal-format
 msgid "%s (%s files)"
@@ -7660,10 +7651,6 @@ msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
 msgstr "Parancssori paraméterek"
 
-#: lazarusidestrconsts.liscommandlineparamsofprogram
-msgid "Command line parameters of program"
-msgstr "A program parancssori paraméterei"
-
 #: lazarusidestrconsts.liscompile
 msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
@@ -7698,10 +7685,6 @@ msgstr "%s nem található."
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
 msgstr "A(z) \"%s\" fordító nem támogatja a célt: %s-%s"
-
-#: lazarusidestrconsts.liscompilerfilename
-msgid "Compiler filename"
-msgstr "Fordító fájlneve"
 
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
@@ -7793,10 +7776,6 @@ msgstr "Feltétel"
 msgctxt "lazarusidestrconsts.lisconditionals"
 msgid "Conditionals"
 msgstr "Feltételes definíciók"
-
-#: lazarusidestrconsts.lisconfigdirectory
-msgid "Lazarus config directory"
-msgstr "Lazarus beállítások könyvtára"
 
 #: lazarusidestrconsts.lisconfigfileofadditions
 msgid "Config file of additions:"
@@ -9663,10 +9642,6 @@ msgstr "A(z) \"%s\"%sfájl kódolása a lemezen: %s. Az új kódolás: %s."
 msgid "Enter new name for Macro \"%s\""
 msgstr "Új név megadása a \"%s\" makró számára"
 
-#: lazarusidestrconsts.lisenvironmentvariablenameasparameter
-msgid "Environment variable, name as parameter"
-msgstr "Környezeti változó, neve, mint paraméter"
-
 #: lazarusidestrconsts.lisenvoptdlginvaliddebuggerfilename
 msgid "Invalid debugger filename"
 msgstr "Érvénytelen hibakereső fájlnév"
@@ -10057,10 +10032,6 @@ msgstr "Fájl:"
 msgid "File \"%s\" already exists."
 msgstr ""
 
-#: lazarusidestrconsts.lisfileextensionofprograms
-msgid "File extension of programs"
-msgstr "Programok fájlkiterjesztése"
-
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
 msgstr "Fájlszűrő"
@@ -10383,10 +10354,6 @@ msgstr "Windows esetén"
 msgid "Found version %s, expected %s"
 msgstr "A talált változat: %s, a szükséges: %s"
 
-#: lazarusidestrconsts.lisfpcfullversioneg20701
-msgid "FPC version as one number (e.g. 20701)"
-msgstr "FPC változat egyetlen számként (pl. 20701)"
-
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
 msgstr "FPC üzenetfájl:"
@@ -10414,10 +10381,6 @@ msgstr "Az FPC túl régi"
 #: lazarusidestrconsts.lisfpcversion
 msgid "FPC Version: "
 msgstr "FPC változat:"
-
-#: lazarusidestrconsts.lisfpcversioneg222
-msgid "FPC Version (e.g. 2.2.2)"
-msgstr "FPC változat (pl. 2.2.2)"
 
 #: lazarusidestrconsts.lisfpdoceditor
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
@@ -10555,10 +10518,6 @@ msgstr "Free Pascal Compiler üzenetek"
 #: lazarusidestrconsts.lisfreepascalprefix
 msgid "Free Pascal compiler prefix"
 msgstr "a Free Pascal fordító útvonala"
-
-#: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Free Pascal source directory"
-msgstr "Free Pascal források könyvtára"
 
 #: lazarusidestrconsts.lisfrforwardsearch
 msgid "Forwar&d search"
@@ -10868,10 +10827,6 @@ msgstr "Megnyitás"
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IDE"
-
-#: lazarusidestrconsts.lisidebuildoptions
-msgid "IDE build options"
-msgstr "IDE építési beállítások"
 
 #: lazarusidestrconsts.lisidecaptioncustomhint
 msgid "Additional info to display in the IDE title"
@@ -11911,17 +11866,9 @@ msgstr "Legutóbb megnyitva"
 msgid "Launching application invalid"
 msgstr "Alkalmazás futtatása érvénytelen"
 
-#: lazarusidestrconsts.lislaunchingcmdline
-msgid "Launching target command line"
-msgstr "Cél parancssor futtatása"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus alapértelmezés"
-
-#: lazarusidestrconsts.lislazarusdirectory
-msgid "Lazarus directory"
-msgstr "Lazarus könyvtára"
 
 #: lazarusidestrconsts.lislazarusdirhint
 #, object-pascal-format
@@ -11942,14 +11889,6 @@ msgstr "Lazarus IDE v%s"
 #: lazarusidestrconsts.lislazaruside
 msgid "Lazarus IDE"
 msgstr "Lazarus IDE"
-
-#: lazarusidestrconsts.lislazaruslanguageid
-msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr "Lazarus nyelv azonosító (pl. en, de, br, fi)"
-
-#: lazarusidestrconsts.lislazaruslanguagename
-msgid "Lazarus language name (e.g. english, deutsch)"
-msgstr "Lazarus nyelv neve (pl. english, deutsch)"
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
@@ -12128,16 +12067,6 @@ msgstr "Revízió infó frissítése a \"Lazarus névjegye\" ablakban"
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
 msgid "Clean Up + Build all"
 msgstr "Tisztítás és minden építése"
-
-#: lazarusidestrconsts.lislazver
-msgid "Lazarus Version (e.g. 1.2.4)"
-msgstr "Lazarus változat (pl. 1.2.4)"
-
-#: lazarusidestrconsts.lislclwidgettype
-#, fuzzy
-#| msgid "LCL widget type"
-msgid "LCL &widget type"
-msgstr "LCL vezérlőkészlet típusa"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -12357,10 +12286,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Aktuális"
-
-#: lazarusidestrconsts.lismakeexe
-msgid "Make Executable"
-msgstr "Futtatható fájl készítése"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
@@ -14299,10 +14224,6 @@ msgstr "Név"
 msgid "Name conflict"
 msgstr "Név ütközés"
 
-#: lazarusidestrconsts.lisnameofactivebuildmode
-msgid "Name of active build mode"
-msgstr "Jelenlegi építési mód neve"
-
 #: lazarusidestrconsts.lisnameofnewprocedure
 msgid "Name of new procedure"
 msgstr "Új eljárás neve"
@@ -14387,10 +14308,6 @@ msgstr "Az új metódusok és tagok beszúrása a class..end szakaszba ábécér
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
 msgstr "Új lap"
-
-#: lazarusidestrconsts.lisnewproject
-msgid "(new project)"
-msgstr "(új projekt)"
 
 #: lazarusidestrconsts.lisnewrecordedmacrosnottobesaved
 msgid "New recorded macros. Not to be saved"
@@ -14865,10 +14782,6 @@ msgstr "A(z) \"%s\" csomag egyéb források útvonala tartalmazza a(z) \"%s\" k�
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "a(z) %s kimeneti könyvtára Pascal unit forráskódját tartalmazza: \"%s\""
 
-#: lazarusidestrconsts.lisoutputfilenameofproject
-msgid "Output filename of project"
-msgstr "A projekt kimeneti fájljának neve"
-
 #: lazarusidestrconsts.lisoverridelanguage
 #, fuzzy
 #| msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -15082,14 +14995,6 @@ msgstr "Keresési útvonalak:"
 #: lazarusidestrconsts.lispathisnodirectory
 msgid "is not a directory"
 msgstr "nem egy könyvtár"
-
-#: lazarusidestrconsts.lispathoftheinstantfpccache
-msgid "path of the instantfpc cache"
-msgstr "az instantfpc gyorsítótár útvonala"
-
-#: lazarusidestrconsts.lispathofthemakeutility
-msgid "Path of the make utility"
-msgstr "A make eszköz útvonala"
 
 #: lazarusidestrconsts.lispathtoinstance
 msgid "Path to failed Instance:"
@@ -16200,10 +16105,6 @@ msgstr "Megelőző szó"
 msgid "Primary config directory where Lazarus stores its config files. Default is \"%s\"."
 msgstr "Elsődleges beállítások könyvtára, ahol a Lazarus a beállítási fájlokat tárolja. Alapértelmezett:"
 
-#: lazarusidestrconsts.lisprimaryconfigpath
-msgid "Primary config path"
-msgstr "Elsődleges beállítások útvonala"
-
 #: lazarusidestrconsts.lisprior
 #, object-pascal-format
 msgid "prior %s"
@@ -16369,19 +16270,6 @@ msgstr "A projekt megváltozott"
 msgid "Project changed on disk"
 msgstr "A projekt megváltozott a lemezen"
 
-#: lazarusidestrconsts.lisprojectdirectory
-msgctxt "lazarusidestrconsts.lisprojectdirectory"
-msgid "Project directory"
-msgstr "Projekt könyvtár"
-
-#: lazarusidestrconsts.lisprojectfilename
-msgid "Project filename"
-msgstr "Projektfájl neve"
-
-#: lazarusidestrconsts.lisprojectincpath
-msgid "Project Include Path"
-msgstr "Projekt beemelhető fájljainak útvonala"
-
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
 msgstr "Projekt információs fájl törölve"
@@ -16399,21 +16287,9 @@ msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
 msgstr "Projekt"
 
-#: lazarusidestrconsts.lisprojectmacroproperties
-msgid "Project macro properties"
-msgstr "Projekt-makró tulajdonságok"
-
-#: lazarusidestrconsts.lisprojectnamespaces
-msgid "Project Namespaces"
-msgstr "Projekt névterei"
-
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
 msgstr "Projekt beállítás"
-
-#: lazarusidestrconsts.lisprojectoutdir
-msgid "Project Output directory (e.g. the ppu directory)"
-msgstr "Projekt kimeneti könyvtára (pl. a .ppu könyvtár)"
 
 #: lazarusidestrconsts.lisprojectoutputdirectory
 msgid "Project output directory"
@@ -16465,21 +16341,9 @@ msgstr "%0:s%0:s a(z) '%1:s' fájlban, a következő sorban: %2:d"
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr "%0:s%0:s a(z) '%1:s' fájlban, a következő sorban: %2:d:%0:s%3:s"
 
-#: lazarusidestrconsts.lisprojectsrcpath
-msgid "Project Src Path"
-msgstr "Projekt forrás útvonala"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "projekt unit"
-
-#: lazarusidestrconsts.lisprojectunitpath
-msgid "Project Unit Path"
-msgstr "Projekt unit elérési útja"
-
-#: lazarusidestrconsts.lisprojectver
-msgid "Project version"
-msgstr ""
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -16573,10 +16437,6 @@ msgstr "Közzétéve itt: %s"
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr "A projekthez/csomaghoz tartozó fájlok automatikusan beemelésre kerülnek."
-
-#: lazarusidestrconsts.lispublishprojdir
-msgid "Publish project directory"
-msgstr "Projekt könyvtár közzététele"
 
 #: lazarusidestrconsts.lispublishproject
 msgid "Publish Project"
@@ -17245,10 +17105,6 @@ msgstr "Unit keresése: \"%s\""
 msgid "Secondary config directory where Lazarus searches for config template files. Default is \"%s\"."
 msgstr "Másodlagos beállítások könyvtára, ahol a Lazarus keresi a beállítási sablon fájlokat. Alapértelmezett:"
 
-#: lazarusidestrconsts.lissecondaryconfigpath
-msgid "Secondary config path"
-msgstr "Másodlagos beállítások útvonala"
-
 #: lazarusidestrconsts.lissecondtest
 msgid "&Second test"
 msgstr "Második teszt"
@@ -17390,10 +17246,6 @@ msgstr "(Alapértelmezett behúzás beállítása)"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Rövidítés:"
-
-#: lazarusidestrconsts.lisshortformoftargetcpuparamtargetosparamsubtargetpar
-msgid "Short form of $TargetCPU(Param)-$TargetOS(Param)-$SubTarget(Param). Subtarget is omitted if empty."
-msgstr ""
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
@@ -17725,10 +17577,6 @@ msgstr "Forrás útvonalak"
 msgid "Space equally"
 msgstr "Azonos távolságra"
 
-#: lazarusidestrconsts.lissrcos
-msgid "Src OS"
-msgstr "Forrás OS"
-
 #: lazarusidestrconsts.lisssearching
 msgid "Searching"
 msgstr "Keresés"
@@ -17912,10 +17760,6 @@ msgstr "%s lapjai"
 msgid "Target:"
 msgstr "Cél:"
 
-#: lazarusidestrconsts.listargetcpu
-msgid "Target CPU"
-msgstr "Cél CPU"
-
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (-o, empty = use unit output directory)"
 msgstr "A Célfájl neve (-o, üres = a unitok kimeneti könyvtára)"
@@ -17924,22 +17768,9 @@ msgstr "A Célfájl neve (-o, üres = a unitok kimeneti könyvtára)"
 msgid "Target file name (-o):"
 msgstr "A célfájl neve (-o):"
 
-#: lazarusidestrconsts.listargetfilenameofproject
-msgid "Target filename of project"
-msgstr "Projekt cél fájlneve"
-
-#: lazarusidestrconsts.listargetfilenameplusparams
-msgid "Target filename + params"
-msgstr "Cél fájlnév + paraméterek"
-
 #: lazarusidestrconsts.listargetisreadonly
 msgid "Target is read only"
 msgstr "A cél csak olvasható"
-
-#: lazarusidestrconsts.listargetos
-msgctxt "lazarusidestrconsts.listargetos"
-msgid "Target OS"
-msgstr "Cél OS"
 
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
@@ -17953,10 +17784,6 @@ msgstr "Szerkeszthető cella beszúrása. A cellák között a TAB billenytűvel
 #: lazarusidestrconsts.listemplatefile
 msgid "Template file"
 msgstr "Sablonfájl"
-
-#: lazarusidestrconsts.listestdirectory
-msgid "Test directory"
-msgstr "Teszt könyvtár"
 
 #: lazarusidestrconsts.listesturl
 msgid "Test URL"
@@ -19461,10 +19288,6 @@ msgstr "Eltávolítás a listából: %s"
 #, object-pascal-format
 msgid "Toggle on list \"%s\""
 msgstr "Váltás a listán: \"%s\""
-
-#: lazarusidestrconsts.lisusershomedirectory
-msgid "User's home directory"
-msgstr "Felhasználó saját könyvtára"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
