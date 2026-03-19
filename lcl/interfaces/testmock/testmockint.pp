@@ -38,7 +38,7 @@ unit TestMockInt;
 interface
 
 uses
-  Classes, SysUtils, Types, Math,
+  Classes, SysUtils, Types, Math, fgl,
   InterfaceBase, LCLType, Controls, Forms, GraphType,
   LazUTF8, LazLoggerBase,
   TestMockMiscClasses, TestMockMessages;
@@ -52,6 +52,9 @@ type
   public
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppProcessMessages; override;
+
+    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc): TLCLHandle; override;
+    function DestroyTimer(TimerHandle: TLCLHandle): boolean; override;
 
 //    function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 //    //function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; override;
@@ -84,6 +87,15 @@ implementation
 uses
   TestMockWSFactory;
 
+type
+  TMockCreatedTimer = class
+    Interval: Integer;
+    Proc: TWSTimerProc;
+  end;
+  TMockCreatedTimerList = specialize TFPGList<TMockCreatedTimer>;
+var
+  MockCreatedTimerList: TMockCreatedTimerList = nil;
+
 { TTestMockWidgetSet }
 
 {$I mock_winapi.inc}
@@ -97,9 +109,44 @@ begin
 end;
 
 procedure TTestMockWidgetSet.AppProcessMessages;
+var
+  i: Integer;
 begin
-  //
+  if MockCreatedTimerList <> nil then begin
+    // TODO: sort by interval
+    i := MockCreatedTimerList.Count - 1;
+    while i >= 0 do begin
+      MockCreatedTimerList[i].Proc();
+      dec(i);
+      if i >= MockCreatedTimerList.Count then
+        i := MockCreatedTimerList.Count - 1;
+    end;
+  end;
+end;
+
+function TTestMockWidgetSet.CreateTimer(Interval: integer; TimerProc: TWSTimerProc): TLCLHandle;
+var
+  t: TMockCreatedTimer;
+begin
+  if MockCreatedTimerList = nil then
+    MockCreatedTimerList := TMockCreatedTimerList.Create;
+  t := TMockCreatedTimer.Create;
+  t.Interval := Interval;
+  t.Proc := TimerProc;
+  MockCreatedTimerList.Add(t);
+  Result := TLCLHandle(pointer(t));
+end;
+
+function TTestMockWidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
+begin
+  if MockCreatedTimerList.IndexOf(TMockCreatedTimer(pointer(TimerHandle))) < 0 then
+    raise Exception.Create('invalid timer handle');
+
+  MockCreatedTimerList.Remove(TMockCreatedTimer(pointer(TimerHandle)));
+  TMockCreatedTimer(pointer(TimerHandle)).Destroy;
 end;
 
 
+finalization
+  MockCreatedTimerList.Free;
 end.
