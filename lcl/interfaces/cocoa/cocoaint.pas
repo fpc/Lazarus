@@ -152,8 +152,6 @@ type
     SandboxingOn: Boolean;
     fClipboard: TCocoaWSClipboard;
 
-    // Clipboard
-
     function nextEvent(const eventExpDate: NSDate): NSEvent;
     function nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
 
@@ -171,8 +169,6 @@ type
 
     procedure SendCheckSynchronizeMessage;
     procedure OnWakeMainThread(Sender: TObject);
-
-    procedure DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
   public
     KeyWindow: NSWindow;
     KillingFocus: Boolean;
@@ -182,12 +178,6 @@ type
     ModalCounter: Integer; // the cheapest way to determine if modal window was called
                            // used in mouse handling (in callbackobject)
                            // Might not be needed, if native Modality used
-    MainMenuEnabled: Boolean; // the latest main menu status
-    PrevMenu : NSMenu;
-    PrevLCLMenu : TMenu;
-    CurLCLMenu: TMenu;
-    PrevMenuEnabled: Boolean; // previous mainmenu status
-    MainFormMenu: NSMenu;
 
     constructor Create; override;
     destructor Destroy; override;
@@ -222,7 +212,6 @@ type
     procedure FreeStockItems;
     procedure FreeSysColorBrushes;
 
-    procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
     function StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
     procedure EndModal(awin: NSWindow);
     function CurModalForm: NSWindow;
@@ -688,81 +677,6 @@ end;
 // the implementation of the extra LCL interface methods
 {$I cocoalclintf.inc}
 
-procedure TCocoaWidgetSet.DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
-var
-  i: Integer;
-  lCurItem: TMenuItem;
-  lMenuObj: NSObject;
-  lCocoaMenu: TCocoaMenu absolute AMenu;
-  appleMenuFound: Boolean = false;
-begin
-  if Assigned(PrevMenu) then PrevMenu.release;
-  PrevMenu := NSApplication(NSApp).mainMenu;
-  PrevMenu.retain;
-
-  PrevLCLMenu := CurLCLMenu;
-  CurLCLMenu := ALCLMenu;
-
-  if NOT Assigned(self.MainFormMenu) or (self.MainFormMenu.numberOfItems=0) then begin
-    self.MainFormMenu:= AMenu;
-  end;
-
-  if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then begin
-    lCocoaMenu:= TCocoaMenu( self.MainFormMenu );
-    if NOT Assigned(lCocoaMenu) then
-      lCocoaMenu:= TCocoaMenu.new.autorelease;
-    NSApp.setMainMenu( lCocoaMenu );
-    Exit;
-  end;
-
-  // Find the Apple menu, if the user provided any by setting the Caption to 
-  // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
-  // but its now private and in 10.10 it doesn't seam to do anything
-  // NSApp.setAppleMenu(NSMenu(lMenuObj));
-  for i := 0 to ALCLMenu.Items.Count-1 do
-  begin
-    lCurItem := ALCLMenu.Items.Items[i];
-    if not AMenu.isKindOfClass_(TCocoaMenu) then Break;
-    if not lCurItem.HandleAllocated then Continue;
-
-    lMenuObj := NSObject(lCurItem.Handle);
-    if not lMenuObj.isKindOfClass_(TCocoaMenuItem) then Continue;
-    if TCocoaMenuItem(lMenuObj).isValidAppleMenu() then
-    begin
-      lCocoaMenu.overrideAppleMenu(TCocoaMenuItem(lMenuObj));
-      appleMenuFound:= true;
-      Break;
-    end;
-  end;
-
-  if AMenu.isKindOfClass(TCocoaMenu) then begin
-    if NOT appleMenuFound then
-      lCocoaMenu.createAppleMenu();
-    lCocoaMenu.attachAppleMenu();
-  end;
-
-  NSApp.setMainMenu( AMenu );
-end;
-
-procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
-begin
-  DoSetMainMenu(NSMenu(AMenu), ALCLMenu);
-
-  PrevMenuEnabled := MainMenuEnabled;
-  MainMenuEnabled := true;
-  TCocoaMenuUtil.toggleAppMenu(true);
-  //if not Assigned(ACustomForm.Menu) then ToggleAppMenu(false);
-
-  // for modal windows work around bug, but doesn't work :(
-  {$ifdef COCOA_USE_NATIVE_MODAL}
-  {if CurModalForm <> nil then
-  for i := 0 to lNSMenu.numberOfItems()-1 do
-  begin
-    lNSMenu.itemAtIndex(i).setTarget(TCocoaWSCustomForm.GetWindowFromHandle(CurModalForm));
-  end;}
-  {$endif}
-end;
-
 function TCocoaWidgetSet.StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
 var
   sess : NSModalSession;
@@ -780,12 +694,12 @@ begin
   // If a modal menu has it's menu, then SetMainMenu has already been called
   // (Show is called for modal windows prior to ShowModal. Show triggers Activate and Active is doing MainMenu)
   if not hasMenu then begin
-    Modals.Add( TModalSession.Create(awin, sess, MainMenuEnabled, NSApplication(NSApp).mainMenu, CurLCLMenu));
-    MainMenuEnabled := false;
+    Modals.Add( TModalSession.Create(awin, sess, CocoaWidgetSetMenuService.MainMenuEnabled, NSApplication(NSApp).mainMenu, CocoaWidgetSetMenuService.CurLCLMenu));
+    CocoaWidgetSetMenuService.MainMenuEnabled := false;
     TCocoaMenuUtil.toggleAppMenu(false); // modal menu doesn't have a window, disabling it
   end else
     // if modal window has its own menu, then the prior window is rescord in "Prev" fields
-    Modals.Add( TModalSession.Create(awin, sess, PrevMenuEnabled, PrevMenu, PrevLCLMenu));
+    Modals.Add( TModalSession.Create(awin, sess, CocoaWidgetSetMenuService.PrevMenuEnabled, CocoaWidgetSetMenuService.PrevMenu, CocoaWidgetSetMenuService.PrevLCLMenu));
 
   Result := true;
   inc(ModalCounter);
@@ -801,9 +715,9 @@ begin
   NSApplication(NSApp).endModalSession(ms.sess);
 
   // restoring the menu status that was before the modality
-  DoSetMainMenu(ms.cocoaMenu, ms.lclMenu);
-  PrevMenuEnabled := MainMenuEnabled;
-  MainMenuEnabled := ms.prevMenuEnabled;
+  CocoaWidgetSetMenuService.DoSetMainMenu(ms.cocoaMenu, ms.lclMenu);
+  CocoaWidgetSetMenuService.PrevMenuEnabled := CocoaWidgetSetMenuService.MainMenuEnabled;
+  CocoaWidgetSetMenuService.MainMenuEnabled := ms.prevMenuEnabled;
   TCocoaMenuUtil.toggleAppMenu(ms.prevMenuEnabled); // modal menu doesn't have a window, disabling it
 
   ms.Free;

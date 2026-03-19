@@ -8,8 +8,9 @@ interface
 
 uses
   Classes, SysUtils,
-  Forms,
-  MacOSAll, CocoaAll, CocoaConst, CocoaUtils, Cocoa_Extra;
+  Forms, Menus, LCLType,
+  MacOSAll, CocoaAll,
+  CocoaMenus, CocoaConst, CocoaUtils, Cocoa_Extra;
 
 type
 
@@ -53,8 +54,24 @@ type
     destructor Destroy; override;
   end;
 
+  { TCocoaWidgetSetMenuService }
+
+  TCocoaWidgetSetMenuService = class
+  public
+    MainMenuEnabled: Boolean; // the latest main menu status
+    PrevMenu : NSMenu;
+    PrevLCLMenu : TMenu;
+    CurLCLMenu: TMenu;
+    PrevMenuEnabled: Boolean; // previous mainmenu status
+    MainFormMenu: NSMenu;
+  public
+    procedure DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
+    procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
+  end;
+
 var
   CocoaWidgetSetService: TCocoaWidgetSetService;
+  CocoaWidgetSetMenuService: TCocoaWidgetSetMenuService;
 
 implementation
 
@@ -145,11 +162,90 @@ begin
   _waitingReleasedLCLObjects.Free;
 end;
 
+{ TCocoaWidgetSetMenuService }
+
+procedure TCocoaWidgetSetMenuService.DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
+var
+  i: Integer;
+  lCurItem: TMenuItem;
+  lMenuObj: NSObject;
+  lCocoaMenu: TCocoaMenu absolute AMenu;
+  appleMenuFound: Boolean = false;
+begin
+  if Assigned(PrevMenu) then PrevMenu.release;
+  PrevMenu := NSApplication(NSApp).mainMenu;
+  PrevMenu.retain;
+
+  PrevLCLMenu := CurLCLMenu;
+  CurLCLMenu := ALCLMenu;
+
+  if NOT Assigned(self.MainFormMenu) or (self.MainFormMenu.numberOfItems=0) then begin
+    self.MainFormMenu:= AMenu;
+  end;
+
+  if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then begin
+    lCocoaMenu:= TCocoaMenu( self.MainFormMenu );
+    if NOT Assigned(lCocoaMenu) then
+      lCocoaMenu:= TCocoaMenu.new.autorelease;
+    NSApp.setMainMenu( lCocoaMenu );
+    Exit;
+  end;
+
+  // Find the Apple menu, if the user provided any by setting the Caption to 
+  // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
+  // but its now private and in 10.10 it doesn't seam to do anything
+  // NSApp.setAppleMenu(NSMenu(lMenuObj));
+  for i := 0 to ALCLMenu.Items.Count-1 do
+  begin
+    lCurItem := ALCLMenu.Items.Items[i];
+    if not AMenu.isKindOfClass_(TCocoaMenu) then Break;
+    if not lCurItem.HandleAllocated then Continue;
+
+    lMenuObj := NSObject(lCurItem.Handle);
+    if not lMenuObj.isKindOfClass_(TCocoaMenuItem) then Continue;
+    if TCocoaMenuItem(lMenuObj).isValidAppleMenu() then
+    begin
+      lCocoaMenu.overrideAppleMenu(TCocoaMenuItem(lMenuObj));
+      appleMenuFound:= true;
+      Break;
+    end;
+  end;
+
+  if AMenu.isKindOfClass(TCocoaMenu) then begin
+    if NOT appleMenuFound then
+      lCocoaMenu.createAppleMenu();
+    lCocoaMenu.attachAppleMenu();
+  end;
+
+  NSApp.setMainMenu( AMenu );
+end;
+
+procedure TCocoaWidgetSetMenuService.SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
+begin
+  DoSetMainMenu(NSMenu(AMenu), ALCLMenu);
+
+  PrevMenuEnabled := MainMenuEnabled;
+  MainMenuEnabled := true;
+  TCocoaMenuUtil.toggleAppMenu(true);
+  //if not Assigned(ACustomForm.Menu) then ToggleAppMenu(false);
+
+  // for modal windows work around bug, but doesn't work :(
+  {$ifdef COCOA_USE_NATIVE_MODAL}
+  {if CurModalForm <> nil then
+  for i := 0 to lNSMenu.numberOfItems()-1 do
+  begin
+    lNSMenu.itemAtIndex(i).setTarget(TCocoaWSCustomForm.GetWindowFromHandle(CurModalForm));
+  end;}
+  {$endif}
+end;
+
 initialization
   CocoaWidgetSetService:= TCocoaWidgetSetService.Create;
+  CocoaWidgetSetMenuService:= TCocoaWidgetSetMenuService.Create;
 
 finalization
   FreeAndNil( CocoaWidgetSetService );
+  FreeAndNil( CocoaWidgetSetMenuService );
 
 end.
 

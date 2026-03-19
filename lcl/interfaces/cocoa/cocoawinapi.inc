@@ -2700,7 +2700,7 @@ begin
   then
   begin
     if lWin.isKeyWindow or lWin.isMainWindow then
-      SetMainMenu(AMenuHandle, frm.Menu);
+      CocoaWidgetSetMenuService.SetMainMenu(AMenuHandle, frm.Menu);
     Result := True;
   end;
 end;

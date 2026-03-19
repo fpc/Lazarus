@@ -31,7 +31,7 @@ uses
   WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
   MacOSAll, CocoaAll,
-  CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaWSCommon,
+  CocoaInt, CocoaWSService, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaWSCommon,
   CocoaGDIObjects, CocoaWindows, CocoaToolBar, CocoaCustomControl, CocoaScrollers,
   CocoaWSScrollers, CocoaUtils, CocoaMenus, Cocoa_Extra;
 
@@ -387,13 +387,13 @@ begin
       begin
         if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenu) then
         begin
-          CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
+          CocoaWidgetSetMenuService.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
         end
         else
           debugln('Warning: Menu does not have a valid handle.');
       end
       else
-        CocoaWidgetSet.SetMainMenu(0, nil);
+        CocoaWidgetSetMenuService.SetMainMenu(0, nil);
     end;
 
     LCLSendActivateMsg(Target, WA_ACTIVE, false);
