@@ -167,8 +167,8 @@ end;
 
 function RegisterControl: Boolean; alias : 'WSRegisterControl';
 begin
-  //  RegisterWSComponent(TControl, TGtk3WSControl);
-  Result := False;
+  RegisterWSComponent(TControl, TGtk3WSControl);
+  Result := True;
 end;
 
 function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';

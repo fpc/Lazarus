@@ -66,6 +66,7 @@ type
   { TGtk3WSControl }
 
   TGtk3WSControl = class(TWSControl)
+    class function GetCanvasScaleFactor(const AControl: TControl): Double; override;
   end;
 
   TGtk3WSControlClass = class of TGtk3WSControl;
@@ -704,6 +705,16 @@ class function TGtk3WSDragImageListResolution.ShowDragImage(const ADragImageList
   ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean;
 begin
   Result := Gtk3Widgetset.DragImageList_DragMove(X, Y) and Gtk3Widgetset.DragImageList_SetVisible(True);
+end;
+
+{ TGtk3WSControl }
+
+class function TGtk3WSControl.GetCanvasScaleFactor(const AControl: TControl
+  ): Double;
+begin
+	Result := 1;
+  if Assigned(AControl.Parent) then
+    Result := AControl.Parent.GetCanvasScaleFactor;
 end;
 
 end.
