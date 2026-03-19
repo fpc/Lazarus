@@ -6119,7 +6119,7 @@ var
   HSize,VSize: integer;
   uWidth, uHeight: guint;
   aCtl: TGtk3Widget;
-  {$IFDEF GTK3DEBUGLAYOUT}
+  {$IF DEFINED(GTK3DEBUGLAYOUT) OR DEFINED(GTK3DEBUGRESIZE)}
   FWAlloc: TGtkAllocation;
   {$ENDIF}
 begin
