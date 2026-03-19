@@ -93,6 +93,7 @@ var
   Mode: QIconMode;
   ASize: TSize;
   AImageRes: TScaledImageListResolution;
+  AScaleFactor: Double;
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then
     Exit;
@@ -103,15 +104,25 @@ begin
   begin
     AGlyph := TBitmap.Create;
     APixmap := QPixmap_create();
+    AScaleFactor:= ABitBtn.GetCanvasScaleFactor;
 
     for Mode := QIconNormal to QIconSelected do
     begin
       AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode],
-        ABitBtn.Font.PixelsPerInch, ABitBtn.GetCanvasScaleFactor,
-        AImageRes, AIndex, AEffect);
+        ABitBtn.Font.PixelsPerInch, 1, AImageRes, AIndex, AEffect);
       AImageRes.GetBitmap(AIndex, AGlyph, AEffect);
       QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
       QIcon_addPixmap(AIcon, APixmap, Mode, QIconOn);
+
+      if AScaleFactor <> 1 then
+      begin
+        AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode],
+          ABitBtn.Font.PixelsPerInch, AScaleFactor, AImageRes, AIndex, AEffect);
+        AImageRes.GetBitmap(AIndex, AGlyph, AEffect);
+        QImage_setDevicePixelRatio(TQtImage(AGlyph.Handle).Handle, AScaleFactor);
+        QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
+        QIcon_addPixmap(AIcon, APixmap, Mode, QIconOn);
+      end;
     end;
     QPixmap_destroy(APixmap);
     AGlyph.Free;

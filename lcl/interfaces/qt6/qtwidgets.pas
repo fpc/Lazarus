@@ -6524,6 +6524,7 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 
     // now we paint icon & text
     APainter := QPainter_create(QWidget_to_QPaintDevice(Widget));
+    QPainter_setRenderHint(APainter, QPainterSmoothPixmapTransform);
     {$IFDEF USEQT4COMPATIBILEPAINTER}
     QPainter_setRenderHint(APainter, QPainterQt4CompatiblePainting);
     {$ENDIF}
