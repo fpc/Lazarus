@@ -11,7 +11,7 @@ uses
   Types, Classes, Controls, SysUtils,
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
-  CocoaPrivate, CocoaInt, CocoaCallback, CocoaGDIObjects,
+  CocoaPrivate, CocoaInt, CocoaWSService, CocoaCallback, CocoaGDIObjects,
   CocoaCursor, CocoaCaret, CocoaConfig, CocoaUtils, Cocoa_Extra,
   CocoaWSCustomControl;
 
@@ -132,7 +132,7 @@ begin
     // and is performing a self destruction. Thus there might be a code performing
     // even after DestroyHandle() was called. The destruction needs to be delayed
     // until after the event processing is done
-    CocoaWidgetSet.AddToCollect(CallbackObject);
+    CocoaWidgetSetService.addToBeReleasedLCLObjects(CallbackObject);
   end;
   obj.release;
 end;

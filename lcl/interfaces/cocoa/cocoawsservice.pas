@@ -23,6 +23,14 @@ type
     procedure setReadyDropFiles; inline;
     procedure dropWaitingFiles;
     procedure tryDropFiles( const filenames: NSArray );
+  private
+    // collecting objects that needs to be released AFTER an event
+    // has been processed
+    _waitingReleasedLCLObjects: TList;
+  public
+    procedure addToBeReleasedLCLObjects(const obj: TObject);
+    procedure releaseWaitingLCLObjects(const fromIdx: integer);
+    function countWaitingReleasedLCLObjects: Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -77,14 +85,40 @@ begin
     dropWaitingFiles;
 end;
 
+procedure TCocoaWidgetSetService.addToBeReleasedLCLObjects(const obj: TObject);
+begin
+  // let's try to find an object. Do not add a duplicate
+  if (_waitingReleasedLCLObjects.IndexOf(Obj)>=0) then Exit;
+  _waitingReleasedLCLObjects.Add(obj);
+end;
+
+procedure TCocoaWidgetSetService.releaseWaitingLCLObjects(const fromIdx: integer);
+var
+  i  : integer;
+begin
+  for i := fromIdx to _waitingReleasedLCLObjects.Count - 1 do
+  begin
+    TObject(_waitingReleasedLCLObjects[i]).Free;
+    _waitingReleasedLCLObjects[i]:=nil;
+  end;
+  _waitingReleasedLCLObjects.Pack;
+end;
+
+function TCocoaWidgetSetService.countWaitingReleasedLCLObjects: Integer;
+begin
+  Result := _waitingReleasedLCLObjects.Count;
+end;
+
 constructor TCocoaWidgetSetService.Create;
 begin
   _waitingDropFiles:= NSMutableArray.new;
+  _waitingReleasedLCLObjects := TList.Create;
 end;
 
 destructor TCocoaWidgetSetService.Destroy;
 begin
   _waitingDropFiles.release;
+  _waitingReleasedLCLObjects.Free;
 end;
 
 initialization

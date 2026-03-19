@@ -154,12 +154,6 @@ type
 
     // Clipboard
 
-    // collecting objects that needs to be released AFTER an event
-    // has been processed
-    ToCollect: TList;
-    function RetainToCollect: Integer;
-    procedure ReleaseToCollect(fromIdx: integer);
-
     function nextEvent(const eventExpDate: NSDate): NSEvent;
     function nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
 
@@ -253,7 +247,6 @@ type
     {$I cocoawinapih.inc}
     // the extra LCL interface methods
     {$I cocoalclintfh.inc}
-    procedure AddToCollect(obj: TObject);
   end;
   
 var
@@ -440,7 +433,7 @@ begin
   {$ifdef COCOALOOPNATIVE}
   try
   {$endif}
-  idx := CocoaWidgetSet.RetainToCollect;
+  idx := CocoaWidgetSetService.countWaitingReleasedLCLObjects;
   win := theEvent.window;
   if not Assigned(win) then win := self.keyWindow;
 
@@ -521,7 +514,7 @@ begin
 
   finally
 
-    CocoaWidgetSet.ReleaseToCollect(idx);
+    CocoaWidgetSetService.releaseWaitingLCLObjects(idx);
 
   end;
   {$ifdef COCOALOOPNATIVE}
@@ -859,30 +852,6 @@ end;
 function TCocoaWidgetSet.isModalSession: Boolean;
 begin
   Result := Assigned(Modals) and (Modals.Count > 0);
-end;
-
-procedure TCocoaWidgetSet.AddToCollect(obj: TObject);
-begin
-  // let's try to find an object. Do not add a duplicate
-  if (ToCollect.IndexOf(Obj)>=0) then Exit;
-  ToCollect.Add(obj);
-end;
-
-function TCocoaWidgetSet.RetainToCollect: Integer;
-begin
-  Result := ToCollect.Count;
-end;
-
-procedure TCocoaWidgetSet.ReleaseToCollect(fromIdx: integer);
-var
-  i  : integer;
-begin
-  for i := fromIdx to ToCollect.Count - 1 do
-  begin
-    TObject(ToCollect[i]).Free;
-    ToCollect[i]:=nil;
-  end;
-  ToCollect.Pack;
 end;
 
 initialization

@@ -186,7 +186,6 @@ begin
   InitStockItems;
 
   fClipboard := TCocoaWSClipboard.Create; // must be here otherwise clipboard calls before Application.Initialize crash
-  ToCollect := TList.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -196,7 +195,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCocoaWidgetSet.Destroy;
 begin
-  ReleaseToCollect(0);
+  CocoaWidgetSetService.releaseWaitingLCLObjects(0);
   inherited Destroy;
 
   FreeStockItems;
@@ -227,7 +226,6 @@ begin
   // then it finalization of WS dependent objects would fail (suppressed AVs)
   // and would cause leaks. (see #35400)
   InternalFinal;
-  ToCollect.Free;
 
   Modals.Free;
 
