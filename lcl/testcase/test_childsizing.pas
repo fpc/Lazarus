@@ -5,7 +5,11 @@ unit Test_ChildSizing;
 interface
 
 uses
-  Classes, SysUtils, Math, fpcunit, testutils, testregistry, Controls, Forms;
+  Classes, SysUtils, Math,
+  // FPCUnit
+  fpcunit, testregistry,
+  // LCL
+  Forms, Controls;
 
 type
   TIntegerArray = array of integer;
@@ -19,6 +23,7 @@ type
   protected
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
+  public
     function IsVisible: Boolean; override;
     function IsControlVisible: Boolean; override;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: Integer; Raw: Boolean = false;
@@ -40,9 +45,8 @@ type
   { TTestContainer }
 
   TTestContainer = class(TTestWinControl)
-  protected
-    function AutoSizeDelayedHandle: Boolean; override;
   public
+    function AutoSizeDelayedHandle: Boolean; override;
   end;
 
   TTestChildArray = array of TTestChild;
@@ -73,6 +77,7 @@ type
     function SumSpaces(s: TIntegerArray): integer;
   public
     class procedure AssertZero(Expected, Actual: integer); overload;
+  protected
     procedure TearDown; override;
   published
     procedure TestAnchorAlign;
@@ -93,8 +98,8 @@ type
   TTestChildSizingWithTempAutoSizing = class(TTestChildSizing)
   protected
     // Do nothing / let every change compute the size
-    procedure EnableAutoSizing(c: TWinControl); override;
-    procedure DisableAutoSizing(c: TWinControl); override;
+    procedure EnableAutoSizing({%H-}c: TWinControl); override;
+    procedure DisableAutoSizing({%H-}c: TWinControl); override;
   end;
 
 implementation
@@ -256,7 +261,7 @@ begin
   end;
 
   DisableAutoSizing(p);
-  SetLength(C, Length(AWidths));
+  SetLength(C{%H-}, Length(AWidths));
   for i := 0 to Length(AWidths) - 1 do
     if AInitContainerHeight then
       C[i] := TTestChild.Create(P, 10, AWidths[i])
@@ -282,7 +287,7 @@ function TTestChildSizing.GetLefts(C: TTestChildArray; ALowIdx, AHighIdx: intege
 var
   i: Integer;
 begin
-  SetLength(Result, AHighIdx - ALowIdx + 1);
+  SetLength(Result{%H-}, AHighIdx - ALowIdx + 1);
   for i := ALowIdx to AHighIdx do
     Result[i-ALowIdx] := C[i].Left;
 end;
@@ -291,7 +296,7 @@ function TTestChildSizing.GetWidths(C: TTestChildArray; ALowIdx, AHighIdx: integ
 var
   i: Integer;
 begin
-  SetLength(Result, AHighIdx - ALowIdx + 1);
+  SetLength(Result{%H-}, AHighIdx - ALowIdx + 1);
   for i := ALowIdx to AHighIdx do
     Result[i-ALowIdx] := C[i].Width;
 end;
@@ -310,7 +315,7 @@ function TTestChildSizing.GetSpaces(C: TTestChildArray; AStartX, ATotalWidth, AL
 var
   i: Integer;
 begin
-  SetLength(Result, AHighIdx - ALowIdx + 2);
+  SetLength(Result{%H-}, AHighIdx - ALowIdx + 2);
   Result[0] := C[ALowIdx].Left - AStartX;
   for i := ALowIdx to AHighIdx - 1 do
     Result[1+i-ALowIdx] := C[i+1].Left - (C[i].Left + C[i].Width);
@@ -496,7 +501,7 @@ end;
 procedure TTestChildSizing.TestScaleChildsConstrained;
 var
   C: TTestChildArray;
-  i, MinVal, ALeftSpace, AMidSpace, TotalSpace, j, k: Integer;
+  i, MinVal, ALeftSpace, AMidSpace, TotalSpace, j: Integer;
   WList, OldWList, LList, OldLList: TIntegerArray;
 begin
   for ALeftSpace := 0 to 3 do
