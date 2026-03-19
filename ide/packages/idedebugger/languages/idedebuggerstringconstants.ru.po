@@ -165,8 +165,8 @@ msgid "Unknown"
 msgstr "Неизвестные"
 
 #: idedebuggerstringconstants.dbgwatchfoundstackframe
-msgid "stack frame (found)"
-msgstr ""
+msgid "Stack frame (found)"
+msgstr "Фреймы стека (найденные)"
 
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
 msgctxt "idedebuggerstringconstants.dispformatarrayhidelenifless"
@@ -1857,15 +1857,15 @@ msgstr "Число повторов:"
 
 #: idedebuggerstringconstants.lissearchparent
 msgid "Search Stack:"
-msgstr ""
+msgstr "Стек поиска:"
 
 #: idedebuggerstringconstants.lissearchparenterr
-msgid "Invalid limit for \"Search Stack\""
-msgstr ""
+msgid "Invalid limit for \"Search Stack\"."
+msgstr "Предел для стека поиска некорректен."
 
 #: idedebuggerstringconstants.lissearchparenthint
 msgid "MaxCount:NamePattern"
-msgstr ""
+msgstr "ПределКоличества:ШаблонИмени"
 
 #: idedebuggerstringconstants.lissourcebreakpoint
 msgid "&Source Breakpoint ..."

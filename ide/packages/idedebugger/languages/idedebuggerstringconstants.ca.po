@@ -159,7 +159,7 @@ msgid "Unknown"
 msgstr ""
 
 #: idedebuggerstringconstants.dbgwatchfoundstackframe
-msgid "stack frame (found)"
+msgid "Stack frame (found)"
 msgstr ""
 
 #: idedebuggerstringconstants.dispformatarrayhidelenifless
@@ -1851,7 +1851,7 @@ msgid "Search Stack:"
 msgstr ""
 
 #: idedebuggerstringconstants.lissearchparenterr
-msgid "Invalid limit for \"Search Stack\""
+msgid "Invalid limit for \"Search Stack\"."
 msgstr ""
 
 #: idedebuggerstringconstants.lissearchparenthint
