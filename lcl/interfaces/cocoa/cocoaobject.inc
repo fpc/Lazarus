@@ -225,7 +225,7 @@ begin
   // (i.e. images). If autorelease pool is released After the widgetset object
   // then it finalization of WS dependent objects would fail (suppressed AVs)
   // and would cause leaks. (see #35400)
-  InternalFinal;
+  CocoaWidgetSetService.finalAutoreleaseMainPool;
 
   Modals.Free;
 

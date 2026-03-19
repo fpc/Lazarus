@@ -16,6 +16,15 @@ type
   { TCocoaWidgetSetService }
 
   TCocoaWidgetSetService = class
+
+  // on MacOS, the system notifies the APP to open the files by calling
+  // TAppDelegate.application_openFiles(). for example, double-click
+  // the associated files in Finder to open the APP.
+  // at this time, the MainForm may not have been created, and the notifies
+  // information about the files will be lost.
+  // including Lazarus IDE itself will also be affected by this issue on startup.
+  // so save it in _waitingDropFiles first, DropWaitingFiles() will be called
+  // in TCocoaWidgetSet.AppRun().
   private
     _readyDropFiles: Boolean;
     _waitingDropFiles: NSMutableArray;
@@ -23,14 +32,22 @@ type
     procedure setReadyDropFiles; inline;
     procedure dropWaitingFiles;
     procedure tryDropFiles( const filenames: NSArray );
+
+  // collecting objects that needs to be released AFTER an event
+  // has been processed
   private
-    // collecting objects that needs to be released AFTER an event
-    // has been processed
     _waitingReleasedLCLObjects: TList;
   public
     procedure addToBeReleasedLCLObjects(const obj: TObject);
     procedure releaseWaitingLCLObjects(const fromIdx: integer);
     function countWaitingReleasedLCLObjects: Integer;
+
+  // Cocoa Autorelease Main Pool
+  private
+    _autoreleaseMainPool : NSAutoreleasePool;
+  public
+    procedure initAutoreleaseMainPool;
+    procedure finalAutoreleaseMainPool;
   public
     constructor Create;
     destructor Destroy; override;
@@ -70,14 +87,6 @@ begin
   _waitingDropFiles.removeAllObjects;
 end;
 
-// on MacOS, the system notifies the APP to open the files by calling
-// TAppDelegate.application_openFiles(). for example, double-click
-// the associated files in Finder to open the APP.
-// at this time, the MainForm may not have been created, and the notifies
-// information about the files will be lost.
-// including Lazarus IDE itself will also be affected by this issue on startup.
-// so save it in _waitingDropFiles first, DropWaitingFiles() will be called
-// in TCocoaWidgetSet.AppRun().
 procedure TCocoaWidgetSetService.tryDropFiles(const filenames: NSArray);
 begin
   _waitingDropFiles.addObjectsFromArray(filenames);
@@ -107,6 +116,21 @@ end;
 function TCocoaWidgetSetService.countWaitingReleasedLCLObjects: Integer;
 begin
   Result := _waitingReleasedLCLObjects.Count;
+end;
+
+procedure TCocoaWidgetSetService.initAutoreleaseMainPool;
+begin
+  // MacOSX 10.6 reports a lot of warnings during initialization process
+  // adding the autorelease pool for the whole Cocoa widgetset
+  _autoreleaseMainPool:= NSAutoreleasePool.alloc.init;
+end;
+
+procedure TCocoaWidgetSetService.finalAutoreleaseMainPool;
+begin
+  if Assigned(_autoreleaseMainPool) then begin
+    _autoreleaseMainPool.release;
+    _autoreleaseMainPool := nil;
+  end;
 end;
 
 constructor TCocoaWidgetSetService.Create;

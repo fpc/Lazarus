@@ -266,9 +266,6 @@ const
   // Lack of documentation, provisional definition
   LazarusApplicationDefinedSubtypeWakeup = 13579;
 
-var
-  MainPool : NSAutoreleasePool = nil;
-
 type
 
   TCocoaDialogUtil = class
@@ -304,22 +301,6 @@ begin
   if Assigned(obj) and (obj is TCustomForm)
     then Result := TCustomForm(obj)
     else Result := nil;
-end;
-
-procedure InternalInit;
-begin
-  // MacOSX 10.6 reports a lot of warnings during initialization process
-  // adding the autorelease pool for the whole Cocoa widgetset
-  MainPool := NSAutoreleasePool.alloc.init;
-end;
-
-procedure InternalFinal;
-begin
-  if Assigned(MainPool) then
-  begin
-    MainPool.release;
-    MainPool := nil;
-  end;
 end;
 
 procedure wakeupEventLoop;
@@ -359,8 +340,8 @@ end;
 {$ifdef COCOALOOPOVERRIDE}
 procedure TCocoaApplication.run;
 begin
-  InternalFinal;   // MainPool Stage 1 final
-  InternalInit;    // MainPool Stage 2 init
+  CocoaWidgetSetService.finalAutoreleaseMainPool;   // MainPool Stage 1 final
+  CocoaWidgetSetService.initAutoreleaseMainPool;    // MainPool Stage 2 init
   {$ifdef COCOAPPRUNNING_SETINTPROPERTY}
   setValue_forKey(NSNumber.numberWithBool(true), NSSTR('_running'));
   {$endif}
@@ -855,10 +836,10 @@ begin
 end;
 
 initialization
-  InternalInit;   // MainPool Stage 1 init
+  CocoaWidgetSetService.initAutoreleaseMainPool;   // MainPool Stage 1 init
 //  {$I Cocoaimages.lrs}
 
 finalization
-  InternalFinal;  // MainPool Stage 2 Final
+  CocoaWidgetSetService.finalAutoreleaseMainPool;  // MainPool Stage 2 Final
 
 end.
