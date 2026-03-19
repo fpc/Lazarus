@@ -94,7 +94,7 @@ type
     function  ValBackConvIndex(const AWatch: TIdeWatch; AnIncludeUnknown: Boolean): integer;
     function  ValFormatterIndex(const AWatch: TIdeWatch; AnIncludeUnknown: Boolean): integer;
     procedure  ValBackConvToWatch(AWatch: TIdeWatch; AnIncludeUnknown: Boolean);
-    procedure  ValFormatterToWach(AWatch: TIdeWatch; AnIncludeUnknown: Boolean);
+    procedure  ValFormatterToWatch(AWatch: TIdeWatch; AnIncludeUnknown: Boolean);
   protected
     procedure SetVisible(Value: Boolean); override;
   public
@@ -140,7 +140,7 @@ begin
         FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
 
         ValBackConvToWatch(FWatch, False);
-        ValFormatterToWach(FWatch, False);
+        ValFormatterToWatch(FWatch, False);
 
         FWatch.Enabled := chkEnabled.Checked;
       finally
@@ -170,8 +170,8 @@ begin
           if txtRepCount.Tag = 0 then
             FWatches[Idx].RepeatCount := txtRepCount.Value;
 
-          ValBackConvToWatch(FWatches[Idx], False);
-          ValFormatterToWach(FWatches[Idx], False);
+          ValBackConvToWatch(FWatches[Idx], True);
+          ValFormatterToWatch(FWatches[Idx], True);
 
           case chkEnabled.State of
             cbUnchecked: FWatches[Idx].Enabled := False;
@@ -325,14 +325,14 @@ begin
   end;
 end;
 
-procedure TWatchPropertyDlg.ValFormatterToWach(AWatch: TIdeWatch; AnIncludeUnknown: Boolean);
+procedure TWatchPropertyDlg.ValFormatterToWatch(AWatch: TIdeWatch; AnIncludeUnknown: Boolean);
 var
   Offs: Integer;
   VFormatter: TIdeDbgValueFormatterSelector;
 begin
   Offs := 0;
   if AnIncludeUnknown then begin
-    if dropFpDbgConv.ItemIndex = 0 then
+    if dropValFormatter.ItemIndex = 0 then
       exit;
     Offs := 1;
   end;
