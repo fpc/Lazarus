@@ -2291,8 +2291,16 @@ begin
 
     LOGPIXELSX, LOGPIXELSY : { Logical pixels per inch in X and Y }
     begin
-      pscr := TGdkScreen.get_default;
-      Result := round(pscr^.get_resolution);
+      if IsValidDC(DC) and
+         (cairo_surface_get_type(cairo_get_target(TGtk3DeviceContext(DC).pcr)) in
+          [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
+           CAIRO_SURFACE_TYPE_SCRIPT]) then
+        Result := 72
+      else
+      begin
+        pscr := TGdkScreen.get_default;
+        Result := round(pscr^.get_resolution);
+      end;
     end;
   end;
 
