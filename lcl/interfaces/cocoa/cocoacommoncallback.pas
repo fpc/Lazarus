@@ -9,8 +9,8 @@ interface
 uses
   Types, Classes, Controls, SysUtils, Math,
   LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  CocoaAll,
-  CocoaWSModalService, CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
+  CocoaAll, CocoaInt,
+  CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
   CocoaApplication, CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, Cocoa_Extra;
 
 type
@@ -1220,11 +1220,11 @@ end;
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
   if not Assigned(Target) then Exit;
-  CocoaWidgetSet.KillingFocus:= true;
+  CocoaWidgetSetState.KillingFocus:= true;
   try
     LCLSendKillFocusMsg(Target);
   finally
-    CocoaWidgetSet.KillingFocus:= false;
+    CocoaWidgetSetState.KillingFocus:= false;
   end;
 end;
 

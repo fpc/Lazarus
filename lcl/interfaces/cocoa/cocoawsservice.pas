@@ -14,6 +14,14 @@ uses
 
 type
 
+  { TCocoaWidgetSetState }
+
+  TCocoaWidgetSetState = class
+  public
+    KeyWindow: NSWindow;
+    KillingFocus: Boolean;
+  end;
+
   { TCocoaWidgetSetService }
 
   TCocoaWidgetSetService = class
@@ -73,6 +81,7 @@ type
   end;
 
 var
+  CocoaWidgetSetState: TCocoaWidgetSetState;
   CocoaWidgetSetService: TCocoaWidgetSetService;
   CocoaWidgetSetMenuService: TCocoaWidgetSetMenuService;
 
@@ -250,12 +259,14 @@ begin
 end;
 
 initialization
+  CocoaWidgetSetState:= TCocoaWidgetSetState.Create;
   CocoaWidgetSetService:= TCocoaWidgetSetService.Create;
   CocoaWidgetSetMenuService:= TCocoaWidgetSetMenuService.Create;
 
 finalization
-  FreeAndNil( CocoaWidgetSetService );
   FreeAndNil( CocoaWidgetSetMenuService );
+  FreeAndNil( CocoaWidgetSetService );
+  FreeAndNil( CocoaWidgetSetState );
 
 end.
 

@@ -2318,12 +2318,12 @@ var
   lclobj : TObject;
 begin
   Result := 0;
-  if KillingFocus then
+  if CocoaWidgetSetState.KillingFocus then
     Exit;
 
   win := NSApp.keyWindow;
   if not Assigned(win) then
-    win := CocoaWidgetSet.KeyWindow;
+    win := CocoaWidgetSetState.KeyWindow;
   if not Assigned(win) then
     Exit;
 

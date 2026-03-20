@@ -96,9 +96,6 @@ type
     procedure SendCheckSynchronizeMessage;
     procedure OnWakeMainThread(Sender: TObject);
   public
-    KeyWindow: NSWindow;
-    KillingFocus: Boolean;
-
     constructor Create; override;
     destructor Destroy; override;
 

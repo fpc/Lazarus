@@ -363,7 +363,7 @@ var
   isDesign: Boolean;
   focusedCb: ICommonCallback;
 begin
-  CocoaWidgetSet.KeyWindow:= window;
+  CocoaWidgetSetState.KeyWindow:= window;
 
   if not IsActivating then
   begin
@@ -413,7 +413,7 @@ procedure TLCLWindowCallback.Deactivate;
 var
   focusedCb: ICommonCallback;
 begin
-  CocoaWidgetSet.KeyWindow:= nil;
+  CocoaWidgetSetState.KeyWindow:= nil;
 
   focusedCb:= window.firstResponder.lclGetCallback;
   if Assigned(focusedCb) then begin
