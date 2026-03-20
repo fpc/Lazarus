@@ -708,9 +708,9 @@ begin
     // It's possible that windows "disabled" by a another model window would be
     // re-enabled. This check verifies that only a window on the top of the modal stack
     // will be brought back active... what about other windows?
-    if bEnable and isModalSession and (obj.isKindOfClass(TCocoaWindowContent)) then begin
+    if bEnable and CocoaWidgetSetModalService.isModalSession and (obj.isKindOfClass(TCocoaWindowContent)) then begin
       if not (TCocoaWindowContent(obj).isembedded)
-        and not isTopModalWin(TCocoaWindowContent(obj).window) then Exit;
+        and not CocoaWidgetSetModalService.isTopModalWindow(TCocoaWindowContent(obj).window) then Exit;
     end;
     obj.lclSetEnabled(bEnable);
 

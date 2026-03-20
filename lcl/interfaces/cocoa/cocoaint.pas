@@ -99,12 +99,6 @@ type
     KeyWindow: NSWindow;
     KillingFocus: Boolean;
 
-    // modal session
-    Modals : TList;
-    ModalCounter: Integer; // the cheapest way to determine if modal window was called
-                           // used in mouse handling (in callbackobject)
-                           // Might not be needed, if native Modality used
-
     constructor Create; override;
     destructor Destroy; override;
 
@@ -137,12 +131,6 @@ type
     procedure InitStockItems;
     procedure FreeStockItems;
     procedure FreeSysColorBrushes;
-
-    function StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
-    procedure EndModal(awin: NSWindow);
-    function CurModalForm: NSWindow;
-    function isTopModalWin(awin: NSWindow): Boolean;
-    function isModalSession: Boolean;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -214,19 +202,6 @@ begin
     else Result := nil;
 end;
 
-procedure wakeupEventLoop;
-var
-  ev: NSevent;
-begin
-  ev := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
-          NSApplicationDefined,
-          NSZeroPoint,
-          0, 0, 0, nil,
-          LazarusApplicationDefinedSubtypeWakeup,
-          0, 0);
-  NSApp.postEvent_atStart(ev, false);
-end;
-
 type
   AppClassMethod = objccategory external (NSObject)
     function sharedApplication: NSApplication; message 'sharedApplication';
@@ -257,78 +232,6 @@ end;
 {$I cocoawinapi.inc}
 // the implementation of the extra LCL interface methods
 {$I cocoalclintf.inc}
-
-function TCocoaWidgetSet.StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
-var
-  sess : NSModalSession;
-begin
-  Result := false;
-  if not Assigned(awin) then Exit;
-
-  sess := NSApplication(NSApp).beginModalSessionForWindow(awin);
-  if not Assigned(sess) then Exit;
-
-  if not Assigned(Modals) then Modals := TList.Create;
-
-  TCocoaMenuUtil.trackCancelAll();
-
-  // If a modal menu has it's menu, then SetMainMenu has already been called
-  // (Show is called for modal windows prior to ShowModal. Show triggers Activate and Active is doing MainMenu)
-  if not hasMenu then begin
-    Modals.Add( TModalSession.Create(awin, sess, CocoaWidgetSetMenuService.mainMenuEnabled, NSApplication(NSApp).mainMenu, CocoaWidgetSetMenuService.currentLCLMenu));
-    CocoaWidgetSetMenuService.mainMenuEnabled := false;
-    TCocoaMenuUtil.toggleAppMenu(false); // modal menu doesn't have a window, disabling it
-  end else
-    // if modal window has its own menu, then the prior window is rescord in "Prev" fields
-    Modals.Add( TModalSession.Create(awin, sess, CocoaWidgetSetMenuService.prevMenuEnabled, CocoaWidgetSetMenuService.prevMenu, CocoaWidgetSetMenuService.prevLCLMenu));
-
-  Result := true;
-  inc(ModalCounter);
-end;
-
-procedure TCocoaWidgetSet.EndModal(awin: NSWindow);
-var
-  ms : TModalSession;
-begin
-  if not Assigned(Modals) or (Modals.Count = 0) then Exit;
-  ms := TModalSession(Modals[Modals.Count-1]);
-  if (ms.window <> awin) then Exit;
-  NSApplication(NSApp).endModalSession(ms.sess);
-
-  // restoring the menu status that was before the modality
-  CocoaWidgetSetMenuService.DoSetMainMenu(ms.cocoaMenu, ms.lclMenu);
-  CocoaWidgetSetMenuService.prevMenuEnabled := CocoaWidgetSetMenuService.mainMenuEnabled;
-  CocoaWidgetSetMenuService.mainMenuEnabled := ms.prevMenuEnabled;
-  TCocoaMenuUtil.toggleAppMenu(ms.prevMenuEnabled); // modal menu doesn't have a window, disabling it
-
-  ms.Free;
-  Modals.Delete(Modals.Count-1);
-
-  wakeupEventLoop;
-end;
-
-function TCocoaWidgetSet.CurModalForm: NSWindow;
-begin
-  if isModalSession then begin
-    Result := TModalSession(Modals[Modals.Count-1]).window;
-  end else begin
-    Result:= nil;
-  end;
-end;
-
-function TCocoaWidgetSet.isTopModalWin(awin: NSWindow): Boolean;
-begin
-  if Assigned(awin) then begin
-    Result:= CurModalForm=awin;
-  end else begin
-    Result:= false;
-  end;
-end;
-
-function TCocoaWidgetSet.isModalSession: Boolean;
-begin
-  Result := Assigned(Modals) and (Modals.Count > 0);
-end;
 
 initialization
   CocoaWidgetSetService.initAutoreleaseMainPool;   // MainPool Stage 1 init

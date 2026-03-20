@@ -23,6 +23,7 @@ type
   TCocoaApplicationUtil = class
   public
     class function isMainThread: Boolean;
+    class procedure wakeupEventLoop;
   end;
 
   { TCocoaTypeUtil }
@@ -187,6 +188,19 @@ end;
 class function TCocoaApplicationUtil.isMainThread: Boolean;
 begin
   Result := NSThread.currentThread.isMainThread;
+end;
+
+class procedure TCocoaApplicationUtil.wakeupEventLoop;
+var
+  ev: NSevent;
+begin
+  ev := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
+          NSApplicationDefined,
+          NSZeroPoint,
+          0, 0, 0, nil,
+          LazarusApplicationDefinedSubtypeWakeup,
+          0, 0);
+  NSApp.postEvent_atStart(ev, false);
 end;
 
 { TCocoaTypeUtil }

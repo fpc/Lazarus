@@ -7,9 +7,10 @@ unit CocoaCommonCallback;
 interface
 
 uses
-  Types, Classes, Controls, SysUtils,
+  Types, Classes, Controls, SysUtils, Math,
   LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  CocoaAll, CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
+  CocoaAll,
+  CocoaWSModalService, CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
   CocoaApplication, CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, Cocoa_Extra;
 
 type
@@ -122,9 +123,6 @@ type
   TLCLCommonCallBackClass = class of TLCLCommonCallBack;
 
 implementation
-
-uses
-  Math;
 
 var
   LastMouse: TLastMouseInfo;
@@ -860,7 +858,7 @@ begin
   end;
 
   Result := Result or (BlockCocoaUpDown and not AOverrideBlock);
-  mc := CocoaWidgetSet.ModalCounter;
+  mc := CocoaWidgetSetModalService.count;
   case lEventType of
     NSLeftMouseDown,
     NSRightMouseDown,
@@ -905,7 +903,7 @@ begin
     end;
   end;
 
-  if mc <> CocoaWidgetSet.ModalCounter then
+  if mc <> CocoaWidgetSetModalService.count then
   begin
     // showing of a modal window is causing "mouse" event to be lost.
     // so, preventing Cocoa from handling it

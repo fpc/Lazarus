@@ -227,8 +227,6 @@ begin
   // and would cause leaks. (see #35400)
   CocoaWidgetSetService.finalAutoreleaseMainPool;
 
-  Modals.Free;
-
   CocoaWidgetSet := nil;
 end;
 
@@ -246,7 +244,7 @@ begin
   {$ifdef COCOALOOPNATIVE}
   NSApp.stop(nil);
   {$else}
-  wakeupEventLoop;
+  TCocoaApplicationUtil.wakeupEventLoop;
   {$endif}
 end;
 
