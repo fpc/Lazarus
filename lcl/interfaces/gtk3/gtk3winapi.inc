@@ -1751,30 +1751,39 @@ begin
   DebugLn(Format('TGtk3WidgetSet.ExtTextOut x=%d y=%d Text=%s count=%d ',[X, Y, String(Str), Count]));
   {$ENDIF}
   if not IsValidDC(DC) then exit;
-  GtkDC.Save;
-  if Options and ETO_CLIPPED = ETO_CLIPPED then
+  //Only save/restore Cairo state when we need to modify it, reduce overhead
+  if (Options and ETO_CLIPPED = ETO_CLIPPED) or (Dx <> nil) then
   begin
-    cairo_rectangle(GtkDc.pcr, Rect^.Left, Rect^.Top, Rect^.Right-Rect^.Left, Rect^.Bottom-Rect^.Top);
-    cairo_clip(GtkDc.pcr);
-  end;
-  if Options and ETO_OPAQUE = ETO_OPAQUE then
-    GtkDC.fillRect(Rect, HBRUSH(GtkDC.BgBrush)); // use Color from setBkMode
-  if Dx <> nil then
-  begin
-    ScrX := X;
-    while Count > 0 do
+    GtkDC.Save;
+    if Options and ETO_CLIPPED = ETO_CLIPPED then
     begin
-      CharLen := UTF8CodepointSize(Str);
-      GtkDC.drawText(ScrX,Y,Str,CharLen, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
-      inc(ScrX, Dx^);
-      inc(Dx);
-      inc(Str, CharLen);
-      dec(Count, CharLen);
+      cairo_rectangle(GtkDc.pcr, Rect^.Left, Rect^.Top, Rect^.Right-Rect^.Left, Rect^.Bottom-Rect^.Top);
+      cairo_clip(GtkDc.pcr);
     end;
-  end
-  else
+    if Options and ETO_OPAQUE = ETO_OPAQUE then
+      GtkDC.fillRect(Rect, HBRUSH(GtkDC.BgBrush));
+    if Dx <> nil then
+    begin
+      ScrX := X;
+      while Count > 0 do
+      begin
+        CharLen := UTF8CodepointSize(Str);
+        GtkDC.drawText(ScrX,Y,Str,CharLen, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
+        inc(ScrX, Dx^);
+        inc(Dx);
+        inc(Str, CharLen);
+        dec(Count, CharLen);
+      end;
+    end
+    else
+      GtkDC.drawText(X,Y,Str,Count, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
+    GtkDC.Restore;
+  end else
+  begin
+    if Options and ETO_OPAQUE = ETO_OPAQUE then
+      GtkDC.fillRect(Rect, HBRUSH(GtkDC.BgBrush));
     GtkDC.drawText(X,Y,Str,Count, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
-  GtkDC.Restore;
+  end;
   Result := True;
 end;
 
@@ -2933,10 +2942,92 @@ begin
     Result := TColorRef(TGtk3DeviceContext(DC).CurrentTextColor);
 end;
 
+function TGtk3WidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
+  Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger;
+  var Size: TSize): Boolean;
+var
+  Layout: PPangoLayout;
+  Utf8Len: PtrInt;
+  Iter: PPangoLayoutIter;
+  CharRect: TPangoRectangle;
+  Accu, PixWidth: gint;
+  I: PtrInt;
+  OldStr: PChar;
+  SafeStr: String;
+begin
+  Result := False;
+  if not IsValidDC(DC) then
+    Exit;
+
+  Size.cx := 0;
+  Size.cy := 0;
+  if MaxCount <> nil then
+    MaxCount^ := 0;
+
+  if (Count <= 0) or (Str = nil) or (Str^ = #0) then
+    Exit(True);
+
+  Layout := {%H-}TGtk3DeviceContext(DC).CurrentFont.Layout;
+  OldStr := pango_layout_get_text(Layout);
+  if (Integer(StrLen(OldStr)) <> Count) or
+     ((Count > 0) and (CompareByte(Str^, OldStr^, Count) <> 0)) then
+  begin
+    if g_utf8_validate(Str, Count, nil) then
+      Layout^.set_text(Str, Count)
+    else
+    begin
+      SafeStr := Copy(Str, 1, Count);
+      UTF8FixBroken(SafeStr);
+      Layout^.set_text(PChar(SafeStr), Length(SafeStr));
+    end;
+  end;
+  Layout^.get_pixel_size(@Size.cx, @Size.cy);
+
+  OldStr := pango_layout_get_text(Layout);
+  Utf8Len := UTF8Length(OldStr, StrLen(OldStr));
+
+  if (PartialWidths = nil) and (MaxCount = nil) then
+    Exit(True);
+
+  if (PartialWidths = nil) and (MaxCount <> nil) then
+  begin
+    if Size.cx <= MaxWidth then
+    begin
+      MaxCount^ := Utf8Len;
+      Exit(True);
+    end;
+  end;
+
+  Accu := 0;
+  I := 0;
+  Iter := Layout^.get_iter;
+  repeat
+    pango_layout_iter_get_char_extents(Iter, @CharRect);
+    Inc(Accu, CharRect.width);
+    PixWidth := (Accu + (PANGO_SCALE div 2)) div PANGO_SCALE;
+
+    if MaxCount <> nil then
+    begin
+      if PixWidth > MaxWidth then
+        Break;
+      MaxCount^ := I + 1;
+    end;
+    if PartialWidths <> nil then
+      PartialWidths[I] := PixWidth;
+
+    Inc(I);
+  until not pango_layout_iter_next_char(Iter);
+  pango_layout_iter_free(Iter);
+
+  Result := True;
+end;
+
 function TGtk3WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 var
-  Utf8Str: String;
+  Layout: PPangoLayout;
+  OldStr: PChar;
+  SafeStr: String;
 begin
   Result := False;
   if not IsValidDC(DC) then
@@ -2948,13 +3039,21 @@ begin
     Exit;
   end;
 
-  if not g_utf8_validate(Str, Count, nil) then
-    Utf8Str := UTF8Copy(Utf8Encode(Str), 1, Count)
-  else
-    Utf8Str := UTF8Copy(Str, 1, Count);
-
-  {%H-}TGtk3DeviceContext(DC).CurrentFont.Layout^.set_text(PChar(Utf8Str), -1);
-  TGtk3DeviceContext(DC).CurrentFont.Layout^.get_pixel_size(@Size.Cx, @Size.CY);
+  Layout := {%H-}TGtk3DeviceContext(DC).CurrentFont.Layout;
+  OldStr := pango_layout_get_text(Layout);
+  if (Integer(StrLen(OldStr)) <> Count) or
+     ((Count > 0) and (CompareByte(Str^, OldStr^, Count) <> 0)) then
+  begin
+    if g_utf8_validate(Str, Count, nil) then
+      Layout^.set_text(Str, Count)
+    else
+    begin
+      SafeStr := Copy(Str, 1, Count);
+      UTF8FixBroken(SafeStr);
+      Layout^.set_text(PChar(SafeStr), Length(SafeStr));
+    end;
+  end;
+  Layout^.get_pixel_size(@Size.Cx, @Size.CY);
 
   Result := True;
 end;
@@ -3015,17 +3114,12 @@ begin
     pango_layout_get_pixel_size(AFont.Layout, @aRect.width, @aRect.height);
     TM.tmMaxCharWidth := Max(TM.tmMaxCharWidth,aRect.width);
 
-    //Internal leading: gap from top of logical area to top of ink e.g. space
-    //above capital H.
-    //ink_rect.y is in Pango units, positive = below the
-    //logical top, i.e. there IS a gap: that gap is the internal leading.
+    //tmInternalLeading=0 matches GTK2. Non-zero breaks TFont.Height round-trips.
     pango_layout_set_text(AFont.Layout, 'H', 1);
     pango_layout_get_extents(AFont.Layout, @aRect, nil);
-    TM.tmInternalLeading := Max(0, PANGO_PIXELS(aRect.y));
+    TM.tmInternalLeading := 0;
 
-    //External leading: extra spacing above/below the cell that the font
-    //designer reserved for line gaps.  Compare pixel line height of H to
-    //the cell height (ascent + descent) already stored in TM.tmHeight.
+    //External leading, line gap reserved by font designer.Compare pixel line height of H to tmHeight.
     pango_layout_get_pixel_size(AFont.Layout, nil, @lineH);
     TM.tmExternalLeading := Max(0, lineH - TM.tmHeight);
 

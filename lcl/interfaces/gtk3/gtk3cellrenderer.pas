@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLProc, Controls, StdCtrls, ComCtrls, LMessages,
-  Graphics,
+  Graphics, LazUTF8,
   LazGObject2, LazGtk3, LazGdk3, LazGLib2, Gtk3Procs, LazCairo1,
   LazPango1, LazLogger;
   
@@ -255,6 +255,7 @@ var
   alignment: TPangoAlignment;
   fontDescription: PPangoFontDescription;
   attributes: PPangoAttrList;
+  SafeText: String;
 begin
   Result := nil;
 
@@ -275,7 +276,16 @@ begin
   g_object_get_property(PGObject(cell), 'text', @gvalue);
   text := g_value_get_string(@gvalue);
   if Assigned(text) then
-    pango_layout_set_text(layout, text, -1);
+  begin
+    if g_utf8_validate(text, StrLen(text), nil) then
+      pango_layout_set_text(layout, text, StrLen(text))
+    else
+    begin
+      SafeText := text;
+      UTF8FixBroken(SafeText);
+      pango_layout_set_text(layout, PChar(SafeText), Length(SafeText));
+    end;
+  end;
   g_value_unset(@gvalue);
 
   g_value_init(@gvalue, G_TYPE_ENUM);
@@ -304,6 +314,7 @@ var
   APangoText: Pgchar;
   APangoWidth, APangoHeight: gint;
   ABorder, AMargin, APadding: TGtkBorder;
+  SafeText: String;
 begin
   {$IFDEF GTK3DEBUGCELLRENDERER}
   DebugLn('*** LCLIntfCellRenderer_GetPreferredWidth ***');
@@ -382,9 +393,18 @@ begin
   begin
     pango_layout_set_spacing(APangoLayout, 2);
     if APangoText = nil then
-      pango_layout_set_text(APangoLayout, 'Wj' , -1)
+      pango_layout_set_text(APangoLayout, 'Wj', -1)
     else
-      pango_layout_set_text(APangoLayout, APangoText , -1);
+    begin
+      if g_utf8_validate(APangoText, StrLen(APangoText), nil) then
+        pango_layout_set_text(APangoLayout, APangoText, StrLen(APangoText))
+      else
+      begin
+        SafeText := APangoText;
+        UTF8FixBroken(SafeText);
+        pango_layout_set_text(APangoLayout, PChar(SafeText), Length(SafeText));
+      end;
+    end;
     pango_layout_set_ellipsize(APangoLayout, PANGO_ELLIPSIZE_END);
     if APangoText <> nil then
       g_free(APangoText);

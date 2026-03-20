@@ -23,7 +23,8 @@ interface
 uses
   Types, Classes, SysUtils, LazCairo1, LazGtk3, LazGdk3, LazGObject2, LazGLib2,
   Themes, TmSchema,
-  LazPango1, LazPangoCairo1, LCLType;
+  LazPango1, LazPangoCairo1, LCLType,
+  LazUTF8;
 
 type
 
@@ -1238,11 +1239,19 @@ var
   Context: PGtkStyleContext;
   FontDesc: PPangoFontDescription;
   GtkDC: TGtk3DeviceContext absolute DC;
+  SafeS: String;
 begin
   Context := GetElementDetails(Details);
   gtk_style_context_set_state(Context, GetControlState(Details));
   Layout := pango_cairo_create_layout(GtkDc.pcr);
-  pango_layout_set_text(Layout, PChar(S), -1);
+  if g_utf8_validate(PChar(S), Length(S), nil) then
+    pango_layout_set_text(Layout, PChar(S), Length(S))
+  else
+  begin
+    SafeS := S;
+    UTF8FixBroken(SafeS);
+    pango_layout_set_text(Layout, PChar(SafeS), Length(SafeS));
+  end;
 
   FontDesc := GtkDC.CurrentFont.Handle;
   pango_layout_set_font_description(Layout, FontDesc);

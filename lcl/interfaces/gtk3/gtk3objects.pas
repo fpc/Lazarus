@@ -66,6 +66,8 @@ type
     FLogFont: TLogFont;
     FFontName: String;
     FHandle: PPangoFontDescription;
+    FInternalLeading: Integer; //pango logical top to ink top offset
+    FMetricsHeight: Integer; //tmAscent+tmDescent from pango_context_get_metrics, no line spacing
   public
     constructor Create(ACairo: Pcairo_t; AWidget: PGtkWidget = nil);
     constructor Create(ALogFont: TLogFont; const ALongFontName: String);
@@ -977,6 +979,9 @@ constructor TGtk3Font.Create(ACairo: Pcairo_t; AWidget: PGtkWidget);
 var
   AContext: PPangoContext;
   AOwnsContext: Boolean;
+  ADpi: gdouble;
+  inkRect: TPangoRectangle;
+  APangoMetrics: PPangoFontMetrics;
 begin
   inherited Create;
   AOwnsContext := not Gtk3IsWidget(AWidget);
@@ -987,6 +992,10 @@ begin
   end else
   begin
     AContext := pango_cairo_create_context(ACairo);
+    //Set resolution to the actual screen DPI so compatible DCs match widget DCs.
+    ADpi := gdk_screen_get_resolution(gdk_screen_get_default);
+    if ADpi <= 0 then ADpi := 96;
+    pango_cairo_context_set_resolution(AContext, ADpi);
     //DebugLn('TGtk3Font.Create AContext created from pango cairo ....');
   end;
   FHandle := pango_font_description_copy(pango_context_get_font_description(AContext));
@@ -1004,6 +1013,22 @@ begin
   end;
 
   FLayout^.set_font_description(FHandle);
+
+  FLayout^.set_text('H', 1);
+  pango_layout_get_extents(FLayout, @inkRect, nil);
+  FInternalLeading := Max(0, PANGO_PIXELS(inkRect.y));
+  FLayout^.set_text('', 0);
+
+  APangoMetrics := pango_context_get_metrics(FLayout^.get_context, FHandle, nil);
+  if APangoMetrics <> nil then
+  begin
+    FMetricsHeight := PANGO_PIXELS(pango_font_metrics_get_ascent(APangoMetrics))
+                    + PANGO_PIXELS(pango_font_metrics_get_descent(APangoMetrics))
+                    - FInternalLeading;
+    pango_font_metrics_unref(APangoMetrics);
+  end else
+    FMetricsHeight := 0;
+
   //DebugLn('TGtk3Font.Create1 ',FFontName);
   if AOwnsContext then
     g_object_unref(AContext);
@@ -1018,6 +1043,8 @@ var
   Family: string;
   Stretch: TPangoStretch;
   Weight: TPangoWeight;
+  inkRect: TPangoRectangle;
+  APangoMetrics: PPangoFontMetrics;
 begin
   inherited Create;
   FLogFont := ALogFont;
@@ -1070,6 +1097,23 @@ begin
     pango_layout_set_attributes(FLayout, AttrList);
     pango_attr_list_unref(AttrList);
   end;
+
+  //compute internal leading
+  FLayout^.set_text('H', 1);
+  pango_layout_get_extents(FLayout, @inkRect, nil);
+  FInternalLeading := Max(0, PANGO_PIXELS(inkRect.y));
+  FLayout^.set_text('', 0);
+
+  APangoMetrics := pango_context_get_metrics(FLayout^.get_context, FHandle, nil);
+  if APangoMetrics <> nil then
+  begin
+    FMetricsHeight := PANGO_PIXELS(pango_font_metrics_get_ascent(APangoMetrics))
+                    + PANGO_PIXELS(pango_font_metrics_get_descent(APangoMetrics))
+                    - FInternalLeading;
+    pango_font_metrics_unref(APangoMetrics);
+  end else
+    FMetricsHeight := 0;
+
   g_object_unref(AContext);
 end;
 
@@ -2214,38 +2258,46 @@ procedure TGtk3DeviceContext.drawText(x, y: Integer; AText: PChar; ALen: Integer
   const ABgFilled: Boolean);
 var
   R, G, B: Double;
-  gColor: TGdkColor;
-  Attr: PPangoAttribute;
-  AttrList: PPangoAttrList;
   ornt: Integer;
+  tw: gint;
+  OldStr: PChar;
+  SafeStr: String;
 begin
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
-
-  cairo_move_to(pcr, x, y);
 
   ornt := Self.FCurrentFont.FLogFont.lfOrientation;
   if ornt <> 0 then
     cairo_rotate(pcr, -Pi * (ornt / 10) / 180);
 
-  ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
-  cairo_set_source_rgb(pcr, R, G, B);
-
-  FCurrentFont.Layout^.set_text(AText, ALen);
+  //Skip set_text when unchanged, g_utf8_validate guards Pango
+  //only broken input allocates.
+  OldStr := pango_layout_get_text(FCurrentFont.Layout);
+  if (Integer(StrLen(OldStr)) <> ALen) or
+     ((ALen > 0) and (CompareByte(AText^, OldStr^, ALen) <> 0)) then
+  begin
+    if g_utf8_validate(AText, ALen, nil) then
+      FCurrentFont.Layout^.set_text(AText, ALen)
+    else
+    begin
+      SafeStr := Copy(AText, 1, ALen);
+      UTF8FixBroken(SafeStr);
+      FCurrentFont.Layout^.set_text(PChar(SafeStr), Length(SafeStr));
+    end;
+  end;
 
   if ABgFilled then
   begin
-    gColor := TColorToTGDKColor(FBgBrush.Color);
-    AttrList := pango_attr_list_new;
-    Attr := pango_attr_background_new(gColor.red, gColor.green, gColor.blue);
-    pango_attr_list_insert(AttrList, Attr);
-    FCurrentFont.Layout^.set_attributes(AttrList);
-    pango_attr_list_unref(AttrList);
+    FCurrentFont.Layout^.get_pixel_size(@tw, nil);
+    ColorToCairoRGB(ColorToRgb(TColor(FBgBrush.Color)), R, G, B);
+    cairo_set_source_rgb(pcr, R, G, B);
+    cairo_rectangle(pcr, x, y, tw, FCurrentFont.FMetricsHeight + FCurrentFont.FInternalLeading);
+    cairo_fill(pcr);
   end;
 
+  cairo_move_to(pcr, x, y);
+  ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
+  cairo_set_source_rgb(pcr, R, G, B);
   pango_cairo_show_layout(pcr, FCurrentFont.Layout);
-
-  if ABgFilled then
-    FCurrentFont.Layout^.set_attributes(nil);
 
   if ornt <> 0 then
     cairo_rotate(pcr, Pi * (ornt / 10) / 180);
@@ -3171,6 +3223,7 @@ var
   NewStr : PChar;
   AMetrics: PPangoFontMetrics;
   {ACharWidth,}ATextWidth,ATextHeight: gint;
+  SafeStr: String;
 begin
   if lbearing<>nil then
     lbearing^:=0;
@@ -3181,7 +3234,14 @@ begin
     NewStr := RemoveAmpersands(Str, StrLength)
   else
     NewStr := Str;
-  TheFont.Layout^.set_text(NewStr, StrLength);
+  if g_utf8_validate(NewStr, StrLen(NewStr), nil) then
+    TheFont.Layout^.set_text(NewStr, StrLen(NewStr))
+  else
+  begin
+    SafeStr := NewStr;
+    UTF8FixBroken(SafeStr);
+    TheFont.Layout^.set_text(PChar(SafeStr), Length(SafeStr));
+  end;
   // TheFont.Layout^.get_extents(@AInkRect, @ALogicalRect);
 
   AMetrics := pango_context_get_metrics(TheFont.Layout^.get_context, TheFont.Handle, TheFont.Layout^.get_context^.get_language);
