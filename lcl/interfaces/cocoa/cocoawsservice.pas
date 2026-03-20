@@ -21,6 +21,9 @@ type
     KeyWindow: NSWindow;
     KillingFocus: Boolean;
     CaptureControl: HWND;
+    FSendingScrollWheelCount: Integer;
+  public
+    function isSendingScrollWheelFromInterface: Boolean;
   end;
 
   { TCocoaWidgetSetService }
@@ -87,6 +90,13 @@ var
   CocoaWidgetSetMenuService: TCocoaWidgetSetMenuService;
 
 implementation
+
+{ TCocoaWidgetSetState }
+
+function TCocoaWidgetSetState.isSendingScrollWheelFromInterface: Boolean;
+begin
+  Result:= self.FSendingScrollWheelCount > 0;
+end;
 
 { TCocoaWidgetSetService }
 

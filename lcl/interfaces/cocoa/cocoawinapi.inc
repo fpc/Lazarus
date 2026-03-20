@@ -135,11 +135,6 @@ begin
   end;
 end;
 
-function TCocoaWidgetSet.isSendingScrollWheelFromInterface(): Boolean;
-begin
-  Result:= self.FSendingScrollWheelCount > 0;
-end;
-
 procedure TCocoaWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
 var
   hnd : NSObject;
@@ -221,11 +216,11 @@ const
   function SendMouseWheel(barFlag: Integer): LRESULT;
   begin
     Result:= 0;
-    inc( self.FSendingScrollWheelCount );
+    inc( CocoaWidgetSetState.FSendingScrollWheelCount );
     try
       Result:= CallMouseWheelHandler( barFlag );
     finally
-      dec( self.FSendingScrollWheelCount );
+      dec( CocoaWidgetSetState.FSendingScrollWheelCount );
     end;
   end;
 
@@ -1878,7 +1873,7 @@ begin
     end;
 
     // if frame changed, another ScrollBar has been updated
-    if NOT self.isSendingScrollWheelFromInterface then begin
+    if NOT CocoaWidgetSetState.isSendingScrollWheelFromInterface then begin
       if ScrollInfo.fMask and SIF_ALL > 0 then
         sc.applyScrollInfo(SBStyle, ScrollInfo);
     end;

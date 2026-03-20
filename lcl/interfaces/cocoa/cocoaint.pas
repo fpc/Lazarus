@@ -53,8 +53,11 @@ type
   TCocoaWidgetSet = class(TWidgetSet)
   private
     FTerminating: Boolean;
-    FSendingScrollWheelCount: Integer;
 
+    procedure AppRunMessages(onlyOne: Boolean; eventExpDate: NSDate);
+    function nextEvent(const eventExpDate: NSDate): NSEvent;
+    function nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
+    procedure SyncClipboard();
   protected
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -73,13 +76,6 @@ type
 
     fClipboard: TCocoaWSClipboard;
 
-    function nextEvent(const eventExpDate: NSDate): NSEvent;
-    function nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
-
-    function isSendingScrollWheelFromInterface(): Boolean;
-
-    procedure SyncClipboard();
-
     function PromptUser(const DialogCaption, DialogMessage: String;
       DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
       EscapeResult: Longint): Longint; override;
@@ -95,7 +91,6 @@ type
 
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
-    procedure AppRunMessages(onlyOne: Boolean; eventExpDate: NSDate);
     procedure AppWaitMessage; override;
     procedure AppProcessMessages; override;
     procedure AppTerminate; override;
