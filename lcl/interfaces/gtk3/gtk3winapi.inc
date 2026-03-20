@@ -3032,6 +3032,7 @@ var
   Layout: PPangoLayout;
   OldStr: PChar;
   SafeStr: String;
+  PangoLogRect: TPangoRectangle;
 begin
   Result := False;
   if not IsValidDC(DC) then
@@ -3060,8 +3061,12 @@ begin
   if cairo_surface_get_type(cairo_get_target(TGtk3DeviceContext(DC).pcr)) in
      [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
       CAIRO_SURFACE_TYPE_SCRIPT] then
-    pango_cairo_update_layout(TGtk3DeviceContext(DC).pcr, Layout);
-  Layout^.get_pixel_size(@Size.Cx, @Size.CY);
+  begin
+    Layout^.get_extents(nil, @{%H-}PangoLogRect);
+    Size.Cx := (PangoLogRect.width  + PANGO_SCALE - 1) div PANGO_SCALE;
+    Size.CY := (PangoLogRect.height + PANGO_SCALE - 1) div PANGO_SCALE;
+  end else
+    Layout^.get_pixel_size(@Size.Cx, @Size.CY);
 
   Result := True;
 end;
