@@ -308,7 +308,7 @@ type
     procedure ThreadProcessLoopCycle(var AFinishLoopAndSendEvents: boolean;
       var AnEventType: TFPDEvent; var ACurCommand: TDbgControllerCmd; var AnIsFinished: boolean);
     function  BreakpointHit(var &continue: boolean; const Breakpoint: TFpDbgBreakpoint): boolean;
-    procedure UserCommandRequested(var ACommand: TDBGCommand);
+    procedure UserCommandRequested(var ACommand: TDBGCommand; IsContinueLastStep: Boolean);
 
 //    procedure ClearState;
   end;
@@ -3499,8 +3499,8 @@ begin
     Result := False;
 end;
 
-procedure TFpDebugExceptionStepping.UserCommandRequested(
-  var ACommand: TDBGCommand);
+procedure TFpDebugExceptionStepping.UserCommandRequested(var ACommand: TDBGCommand;
+  IsContinueLastStep: Boolean);
 var
   st: TExceptStepState;
 begin
@@ -3526,6 +3526,9 @@ begin
       , bplSehW32Except, bplSehW32Finally
       {$ENDIF}
       ]);
+
+  if IsContinueLastStep then
+    exit;
 
   case st of
     esStoppedAtRaise: begin
@@ -4357,7 +4360,7 @@ begin
      not(FLastStepCommand in [dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcRunTo, dcJumpto, dcStepOverInstr, dcStepIntoInstr])
   then
     FLastStepCommand := Cmd;
-  FExceptionStepper.UserCommandRequested(FLastStepCommand);
+  FExceptionStepper.UserCommandRequested(FLastStepCommand, Cmd = dcContinueLastStep);
   case Cmd of
     dcRun:
       begin
