@@ -1745,6 +1745,7 @@ function TGtk3WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   GtkDC: TGtk3DeviceContext absolute DC;
   ScrX, CharLen: LongInt;
+  IsVectorSurf: Boolean;
 begin
   Result := False;
   {$IFDEF VerboseGtk3DeviceContext}
@@ -1764,15 +1765,23 @@ begin
       GtkDC.fillRect(Rect, HBRUSH(GtkDC.BgBrush));
     if Dx <> nil then
     begin
-      ScrX := X;
-      while Count > 0 do
+      IsVectorSurf := cairo_surface_get_type(cairo_get_target(GtkDC.pcr)) in
+        [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
+         CAIRO_SURFACE_TYPE_SCRIPT];
+      if IsVectorSurf then
+        GtkDC.drawText(X, Y, Str, Count, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush))
+      else
       begin
-        CharLen := UTF8CodepointSize(Str);
-        GtkDC.drawText(ScrX,Y,Str,CharLen, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
-        inc(ScrX, Dx^);
-        inc(Dx);
-        inc(Str, CharLen);
-        dec(Count, CharLen);
+        ScrX := X;
+        while Count > 0 do
+        begin
+          CharLen := UTF8CodepointSize(Str);
+          GtkDC.drawText(ScrX,Y,Str,CharLen, (GtkDC.BkMode=OPAQUE) and Assigned(GtkDC.BgBrush));
+          inc(ScrX, Dx^);
+          inc(Dx);
+          inc(Str, CharLen);
+          dec(Count, CharLen);
+        end;
       end;
     end
     else
