@@ -172,7 +172,6 @@ begin
   CocoaWidgetSet := Self;
   inherited Create;
   FTerminating := False;
-  FCaptureControl:= 0;
 
   DefaultBrush := TCocoaBrush.CreateDefault(True);
   DefaultPen := TCocoaPen.CreateDefault(True);

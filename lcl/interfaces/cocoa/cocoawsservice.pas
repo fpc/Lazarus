@@ -20,6 +20,7 @@ type
   public
     KeyWindow: NSWindow;
     KillingFocus: Boolean;
+    CaptureControl: HWND;
   end;
 
   { TCocoaWidgetSetService }

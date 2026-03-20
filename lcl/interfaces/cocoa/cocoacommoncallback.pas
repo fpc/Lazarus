@@ -9,7 +9,7 @@ interface
 uses
   Types, Classes, Controls, SysUtils, Math,
   LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  CocoaAll, CocoaInt,
+  CocoaAll,
   CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
   CocoaApplication, CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, Cocoa_Extra;
 
@@ -315,8 +315,8 @@ var
   lCaptureView: NSView;
 begin
   Result := nil;
-  if CocoaWidgetSet.CaptureControl = 0 then Exit;
-  obj := NSObject(CocoaWidgetSet.CaptureControl);
+  if CocoaWidgetSetState.CaptureControl = 0 then Exit;
+  obj := NSObject(CocoaWidgetSetState.CaptureControl);
   lCaptureView := obj.lclContentView;
   if (obj <> Owner) and (lCaptureView <> Owner) and not FIsEventRouting then
   begin

@@ -714,7 +714,7 @@ begin
     end;
     obj.lclSetEnabled(bEnable);
 
-    if (CaptureControl <> 0)
+    if (CocoaWidgetSetState.CaptureControl <> 0)
       and (not bEnable)
       and (obj.isKindOfClass(NSView))
       and TCocoaViewUtil.isLCLEnabled(NSView(obj)) then
@@ -1031,7 +1031,7 @@ end;
 
 function TCocoaWidgetSet.GetCapture: HWND;
 begin
-  Result:=FCaptureControl;
+  Result:= CocoaWidgetSetState.CaptureControl;
 end;
 
 function TCocoaWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
@@ -2541,8 +2541,8 @@ end;
 
 function TCocoaWidgetSet.SetCapture(AHandle: HWND): HWND;
 begin
-  Result := FCaptureControl;
-  FCaptureControl := AHandle;
+  Result := CocoaWidgetSetState.CaptureControl;
+  CocoaWidgetSetState.CaptureControl := AHandle;
 end;
 
 function TCocoaWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
@@ -2581,7 +2581,7 @@ end;
 
 function TCocoaWidgetSet.ReleaseCapture : Boolean;
 begin
-  FCaptureControl:=0;
+  CocoaWidgetSetState.CaptureControl := 0;
   Result := True;
 end;
 

@@ -55,7 +55,6 @@ type
     FTerminating: Boolean;
     FNSApp: TCocoaApplication;
     FNSApp_Delegate: TAppDelegate;
-    FCaptureControl: HWND;
     FSendingScrollWheelCount: Integer;
 
   protected
@@ -142,7 +141,6 @@ type
     function GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
     class function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
     property NSApp: TCocoaApplication read FNSApp;
-    property CaptureControl: HWND read FCaptureControl;
     // the winapi compatibility methods
     {$I cocoawinapih.inc}
     // the extra LCL interface methods
