@@ -87,9 +87,6 @@ type
       uType: Cardinal): Integer; override;
     function GetAppHandle: TLCLHandle; override;
     function CreateThemeServices: TThemeServices; override;
-
-    procedure SendCheckSynchronizeMessage;
-    procedure OnWakeMainThread(Sender: TObject);
   public
     constructor Create; override;
     destructor Destroy; override;

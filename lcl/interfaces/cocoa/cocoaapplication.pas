@@ -87,6 +87,26 @@ type
     procedure handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor); message 'handleQuitAppEvent:withReplyEvent:';
   end;
 
+  { TWakeMainThreadHandler }
+
+  TWakeMainThreadHandler = class
+  public
+    procedure OnWakeMainThread(Sender: TObject);
+  end;
+
+var
+  WakeMainThreadHandler: TWakeMainThreadHandler;
+
+{ TWakeMainThreadHandler }
+
+procedure TWakeMainThreadHandler.OnWakeMainThread(Sender: TObject);
+begin
+  NSApp.performSelectorOnMainThread_withObject_waitUntilDone(
+       ObjCSelector('lclSyncCheck:'), nil, false);
+end;
+
+{ TAppDelegate }
+
 // when the delegate implements application_openURLs(), macOS no longer calls
 // application_openFiles(). therefore, the action in application_openURLs is
 // determined based on the type of URL.
@@ -567,6 +587,7 @@ begin
   Stopped := true;
   inherited stop(sender);
 end;
+{$endif}
 
 procedure TCocoaApplication.observeValueForKeyPath_ofObject_change_context(
   keyPath: NSString; object_: id; change: NSDictionary; context_: pointer);
@@ -625,9 +646,15 @@ begin
 
   lDict := NSProcessInfo.processInfo.environment;
   Result._isInSandbox := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
+
+  WakeMainThread:= @WakeMainThreadHandler.OnWakeMainThread;
 end;
 
-{$endif}
+initialization
+  WakeMainThreadHandler:= TWakeMainThreadHandler.Create;
+
+finalization
+  FreeAndNil( WakeMainThreadHandler );
 
 end.
 

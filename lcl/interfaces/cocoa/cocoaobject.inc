@@ -29,7 +29,6 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
-  WakeMainThread := @OnWakeMainThread;
   ScreenInfo.PixelsPerInchX := CocoaConfigGlobal.basePPI;
   ScreenInfo.PixelsPerInchY := CocoaConfigGlobal.basePPI;
 
@@ -38,21 +37,6 @@ begin
   {$ifdef COCOALOOPOVERRIDE}
   NSApp.finishLaunching;
   {$endif}
-end;
-
-procedure TCocoaWidgetSet.SendCheckSynchronizeMessage;
-begin
-  NSApp.performSelectorOnMainThread_withObject_waitUntilDone(
-       ObjCSelector('lclSyncCheck:'), nil, false);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCocoaWidgetSet.OnWakeMainThread
-  Params:  Sender
- ------------------------------------------------------------------------------}
-procedure TCocoaWidgetSet.OnWakeMainThread(Sender: TObject);
-begin
-   SendCheckSynchronizeMessage;
 end;
 
 {------------------------------------------------------------------------------
