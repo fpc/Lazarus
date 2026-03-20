@@ -1763,6 +1763,10 @@ msgstr "%d - %d"
 msgid "&Break"
 msgstr "Przerwij"
 
+#: idedebuggerstringconstants.lismenucontinuelaststep
+msgid "Continue last Step"
+msgstr ""
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "Pomo&c"

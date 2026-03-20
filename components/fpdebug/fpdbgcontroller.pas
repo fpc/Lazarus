@@ -298,6 +298,7 @@ type
     FWorkingDirectory: string;
     // This only holds a reference to the LazDebugger instance
     FProcessConfig: TDbgProcessConfig;
+    function GetCanContinueStep: boolean;
     function GetCurrentThreadId: Integer;
     function GetDefaultContext: TFpDbgLocationContext;
     procedure SetCurrentThreadId(AValue: Integer);
@@ -331,6 +332,7 @@ type
     procedure StepOverInstr;
     procedure Next;
     procedure Step;
+    procedure ContinueLastStep;
     function Call(const FunctionAddress: TFpDbgMemLocation; const ABaseContext: TFpDbgLocationContext; const AMemReader: TFpDbgMemReaderBase; const AMemConverter: TFpDbgMemConvertor): TFpDbgInfoCallContext;
     procedure StepOut(AForceStoreStepInfo: Boolean = False);
     function Pause: boolean;
@@ -344,6 +346,7 @@ type
     property DefaultContext: TFpDbgLocationContext read GetDefaultContext; // CurrentThread, TopStackFrame
     property LastError: TFpError read FLastError;
     property Event: TFPDEvent read FPDEvent;
+    property CanContinueStep: boolean read GetCanContinueStep;
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
@@ -1605,6 +1608,14 @@ begin
   Result := FCurrentThread.ID;
 end;
 
+function TDbgController.GetCanContinueStep: boolean;
+begin
+  Result := (FCommandToBeFreed <> nil) and (
+              (FCommandToBeFreed is TDbgControllerStepIntoInstructionCmd) or
+              (FCommandToBeFreed is TDbgControllerHiddenBreakStepBaseCmd)
+            );
+end;
+
 function TDbgController.GetDefaultContext: TFpDbgLocationContext;
 begin
   Result := FStoredDefaultContext;
@@ -1775,6 +1786,12 @@ begin
   InitializeCommand(TDbgControllerStepIntoLineCmd.Create(self));
 end;
 
+procedure TDbgController.ContinueLastStep;
+begin
+  InitializeCommand(FCommandToBeFreed);
+  FCommandToBeFreed := nil;
+end;
+
 procedure TDbgController.StepOut(AForceStoreStepInfo: Boolean);
 begin
   InitializeCommand(TDbgControllerStepOutCmd.Create(self, AForceStoreStepInfo));
@@ -1835,7 +1852,8 @@ begin
     exit;
   end;
 
-  FreeAndNil(FCommandToBeFreed);
+  if (FCommand = nil) or not(FCommand is TDbgControllerCallRoutineCmd) then
+    FreeAndNil(FCommandToBeFreed);
   FCurrentProcess.DoBeforeProcessLoop;
 
   if FCommand <> nil then

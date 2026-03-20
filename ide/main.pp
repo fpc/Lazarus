@@ -370,6 +370,7 @@ type
     procedure mnuStepIntoInstrProjectClicked(Sender: TObject);
     procedure mnuStepOverInstrProjectClicked(Sender: TObject);
     procedure mnuStepOutProjectClicked(Sender: TObject);
+    procedure mnuContinueLastStepClicked(Sender: TObject);
     procedure mnuRunToCursorProjectClicked(Sender: TObject);
     procedure mnuStepToCursorProjectClicked(Sender: TObject);
     procedure mnuStopProjectClicked(Sender: TObject);
@@ -3156,6 +3157,7 @@ begin
     itmRunMenuStepInto.Command:=GetCommand(ecStepInto, @mnuStepIntoProjectClicked);
     itmRunMenuStepOver.Command:=GetCommand(ecStepOver, @mnuStepOverProjectClicked);
     itmRunMenuStepOut.Command:=GetCommand(ecStepOut, @mnuStepOutProjectClicked);
+    itmRunMenuContinueLastStep.Command:=GetCommand(ecContinueLastStep, @mnuContinueLastStepClicked);
     itmRunMenuRunToCursor.Command:=GetCommand(ecRunToCursor, @mnuRunToCursorProjectClicked);
     itmRunMenuStepToCursor.Command:=GetCommand(ecStepToCursor, @mnuStepToCursorProjectClicked);
     itmRunMenuStop.Command:=GetCommand(ecStopProgram, @mnuStopProjectClicked);
@@ -4769,6 +4771,11 @@ end;
 procedure TMainIDE.mnuStepOutProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStepOutProject;
+end;
+
+procedure TMainIDE.mnuContinueLastStepClicked(Sender: TObject);
+begin
+  DebugBoss.DoContinueLastStep;
 end;
 
 procedure TMainIDE.mnuRunToCursorProjectClicked(Sender: TObject);

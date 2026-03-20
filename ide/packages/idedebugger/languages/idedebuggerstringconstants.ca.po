@@ -1721,6 +1721,10 @@ msgstr ""
 msgid "&Break"
 msgstr ""
 
+#: idedebuggerstringconstants.lismenucontinuelaststep
+msgid "Continue last Step"
+msgstr ""
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "A&juda"

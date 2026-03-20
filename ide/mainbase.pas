@@ -1383,6 +1383,7 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuStepInto,'itmRunMenuStepInto',lisMenuStepInto,'menu_stepinto');
     CreateMenuItem(ParentMI,itmRunMenuStepOver,'itmRunMenuStepOver',lisMenuStepOver,'menu_stepover');
     CreateMenuItem(ParentMI,itmRunMenuStepOut,'itmRunMenuStepOut',lisMenuStepOut,'menu_stepout');
+    CreateMenuItem(ParentMI,itmRunMenuContinueLastStep,'itmRunMenuContinueLastStep',lisMenuContinueLastStep); //,'menu_continuestep');
     CreateMenuItem(ParentMI,itmRunMenuStepToCursor,'itmRunMenuStepToCursor',lisMenuStepToCursor,'menu_step_cursor');
     CreateMenuItem(ParentMI,itmRunMenuRunToCursor,'itmRunMenuRunToCursor',lisMenuRunToCursor,'menu_run_cursor');
     CreateMenuItem(ParentMI,itmRunMenuStop,'itmRunMenuStop',lisStop,'menu_stop', False);

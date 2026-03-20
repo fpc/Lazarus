@@ -1748,6 +1748,10 @@ msgstr "Max %d"
 msgid "&Break"
 msgstr ""
 
+#: idedebuggerstringconstants.lismenucontinuelaststep
+msgid "Continue last Step"
+msgstr ""
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Hilfe"

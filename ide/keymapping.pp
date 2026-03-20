@@ -829,6 +829,7 @@ begin
     ecStepIntoContext         : Result:= lisMenuStepIntoContext;
     ecStepOverContext         : Result:= lisMenuStepOverContext;
     ecStepOut                 : Result:= lisMenuStepOut;
+    ecContinueLastStep        : Result:= lisMenuContinueLastStep;
     ecAttach                  : Result:= srkmecAttach;
     ecDetach                  : Result:= srkmecDetach;
     ecStepToCursor             : Result:= lisMenuStepToCursor;
@@ -1498,6 +1499,7 @@ begin
   ecStepIntoInstr:       SetSingle(VK_F7,[ssAlt]);
   ecStepOverInstr:       SetSingle(VK_F8,[ssAlt]);
   ecStepOut:             SetSingle(VK_F8,[ssShift]);
+  ecContinueLastStep:    SetSingle(VK_F7,[ssShift]);
   ecStepToCursor:         SetSingle(VK_F4,[]);
   ecStopProgram:         SetSingle(VK_F2,[XCtrl]);
   ecRemoveBreakPoint:    SetSingle(VK_UNKNOWN,[]);
@@ -3352,6 +3354,7 @@ begin
   AddDefault(C, 'Step into context', lisMenuStepIntoContext, ecStepIntoContext);
   AddDefault(C, 'Step over context', lisMenuStepOverContext, ecStepOverContext);
   AddDefault(C, 'Step out', n(lisMenuStepOut), ecStepOut);
+  AddDefault(C, 'Continue last Step', n(lisMenuContinueLastStep), ecContinueLastStep);
   AddDefault(C, 'Step to cursor line', n(lisMenuStepToCursor), ecStepToCursor);
   AddDefault(C, 'Run to cursor line', n(lisMenuRunToCursor), ecRunToCursor);
   AddDefault(C, 'Stop program', lisKMStopProgram, ecStopProgram);

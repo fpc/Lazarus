@@ -1753,6 +1753,10 @@ msgstr "最大 %d"
 msgid "&Break"
 msgstr "ブレーク(&B)"
 
+#: idedebuggerstringconstants.lismenucontinuelaststep
+msgid "Continue last Step"
+msgstr ""
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "ヘルプ(&H)"

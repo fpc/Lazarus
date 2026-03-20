@@ -41,6 +41,7 @@ resourcestring
   lisMenuStepIntoContext = 'Step Into (Context)';
   lisMenuStepOverContext = 'Step Over (Context)';
   lisMenuStepOut = 'Step O&ut';
+  lisMenuContinueLastStep = 'Continue last Step';
   lisMenuStepToCursor = 'Step over to &Cursor';
 
   //

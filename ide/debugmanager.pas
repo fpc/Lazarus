@@ -256,6 +256,7 @@ type
     function DoStepIntoInstrProject: TModalResult; override;
     function DoStepOverInstrProject: TModalResult; override;
     function DoStepOutProject: TModalResult; override;
+    function DoContinueLastStep: TModalResult; override;
     function DoStepToCursor: TModalResult; override;
     function DoRunToCursor: TModalResult; override;
     function DoStopProject: TModalResult; override;
@@ -2414,6 +2415,8 @@ begin
     itmRunMenuStepOver.Enabled     := CanRunOrCont and (dcStepOver in AvailCommands);
     // Step out
     itmRunMenuStepOut.Enabled      := CanRunOrCont and (dcStepOut in AvailCommands) and (CurState = dsPause);
+    // continue last step
+    itmRunMenuContinueLastStep.Enabled := CanRunOrCont and (dcContinueLastStep in AvailCommands) and (CurState = dsPause);
     // Step to cursor
     itmRunMenuStepToCursor.Enabled := CanRunOrCont and (dcStepTo in AvailCommands);
     // Run to cursor
@@ -3068,6 +3071,22 @@ begin
   Result := mrOk;
 end;
 
+function TDebugManager.DoContinueLastStep: TModalResult;
+begin
+  Result := mrCancel;
+  if (MainIDE.ToolStatus <> itDebugger) or (FDebugger = nil) or Destroying
+  then Exit;
+  if not(dcContinueLastStep in FDebugger.Commands) then begin
+    Result := mrAbort;
+    Exit;
+  end;
+
+  FStepping:=True;
+  FAsmStepping := False;
+  FDebugger.ContinueLastStep;
+  Result := mrOk;
+end;
+
 function TDebugManager.DoStopProject: TModalResult;
 begin
   Result := mrCancel;
@@ -3138,6 +3157,7 @@ begin
                          end;
     ecStepOut:           if CanRun and (dcStepOut in AvailCommands) then DoStepOutProject;
     ecStepToCursor:      if CanRun and (dcStepTo  in AvailCommands) then DoStepToCursor;
+    ecContinueLastStep:  if CanRun and (dcContinueLastStep  in AvailCommands) then DoContinueLastStep;
     ecRunToCursor:       if CanRun and (dcRunTo   in AvailCommands) then DoRunToCursor;
     ecStopProgram:       DoStopProject;
     ecResetDebugger:     ResetDebugger;

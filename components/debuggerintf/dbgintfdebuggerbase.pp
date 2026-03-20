@@ -82,6 +82,7 @@ type
     dcStepInto,
     dcStepOut,
     dcStepTo,
+    dcContinueLastStep,
     dcRunTo,
     dcJumpto,
     dcAttach,
@@ -1743,6 +1744,7 @@ type
     procedure StepOverInstr;
     procedure StepIntoInstr;
     procedure StepOut;
+    procedure ContinueLastStep;
     procedure StepTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
@@ -1888,7 +1890,8 @@ const
              dcAttach, dcBreak, dcWatch, {dcEvaluate,} dcEnvironment,
              dcSendConsoleInput],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
-             dcStepOut, dcStepTo, dcRunTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
+             dcStepOut, dcStepTo, dcContinueLastStep,
+             dcRunTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
              dcEnvironment, dcSetStackFrame, dcDisassemble, dcSendConsoleInput {, dcSendSignal}],
   {dsInternalPause} // same as run, so not really used
             [dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput{, dcSendSignal}],
@@ -6089,6 +6092,12 @@ procedure TDebuggerIntf.StepOut;
 begin
   if ReqCmd(dcStepOut, []) then exit;
   DebugLn(DBG_WARNINGS, 'TDebuggerIntf.StepOut Class=', ClassName, ' failed.');
+end;
+
+procedure TDebuggerIntf.ContinueLastStep;
+begin
+  if ReqCmd(dcContinueLastStep, []) then exit;
+  DebugLn(DBG_WARNINGS, 'TDebuggerIntf.ContinueLastStep Class=', ClassName, ' failed.');
 end;
 
 procedure TDebuggerIntf.StepOver;

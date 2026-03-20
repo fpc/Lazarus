@@ -150,6 +150,7 @@ type
     function DoStepIntoProject: TModalResult; virtual; abstract;
     function DoStepOverProject: TModalResult; virtual; abstract;
     function DoStepOutProject: TModalResult; virtual; abstract;
+    function DoContinueLastStep: TModalResult; virtual; abstract;
     function DoStepIntoInstrProject: TModalResult; virtual; abstract;
     function DoStepOverInstrProject: TModalResult; virtual; abstract;
     function DoStepToCursor: TModalResult; virtual; abstract;

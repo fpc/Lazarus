@@ -2060,6 +2060,7 @@ const
     'StepInto',
     'StepOut',
     'StepTo',
+    'ContinueLastStep',
     'RunTo',
     'Jumpto',
     'Attach',

@@ -1731,6 +1731,10 @@ msgstr "最大 %d"
 msgid "&Break"
 msgstr "中断(&B)"
 
+#: idedebuggerstringconstants.lismenucontinuelaststep
+msgid "Continue last Step"
+msgstr ""
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "帮助(&H)"

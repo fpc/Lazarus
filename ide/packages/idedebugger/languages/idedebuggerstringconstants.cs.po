@@ -1753,6 +1753,10 @@ msgstr "Max %d"
 msgid "&Break"
 msgstr "&Přerušit"
 
+#: idedebuggerstringconstants.lismenucontinuelaststep
+msgid "Continue last Step"
+msgstr ""
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Nápověda"

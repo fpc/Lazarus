@@ -330,6 +330,7 @@ type
     FIsIdle: Boolean;
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FStartupCommand: TDBGCommand;
+    FLastStepCommand: TDBGCommand;
     FStartuRunToFile: string;
     FStartuRunToLine: LongInt;
     (* Each thread must only lock max one item at a time.
@@ -4346,13 +4347,17 @@ begin
   end;
 
   if ACommand in [dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr,
-                  dcStepTo, dcRunTo, dcStepOver, dcStepInto, dcStepOut, dcDetach]
+                  dcStepTo, dcRunTo, dcStepOver, dcStepInto, dcStepOut, dcContinueLastStep, dcDetach]
   then begin
     StopAllWorkers(True);
   end;
 
   Cmd := ACommand;
-  FExceptionStepper.UserCommandRequested(Cmd);
+  if (Cmd in [dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcRunTo, dcJumpto, dcStepOverInstr, dcStepIntoInstr]) or
+     not(FLastStepCommand in [dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcRunTo, dcJumpto, dcStepOverInstr, dcStepIntoInstr])
+  then
+    FLastStepCommand := Cmd;
+  FExceptionStepper.UserCommandRequested(FLastStepCommand);
   case Cmd of
     dcRun:
       begin
@@ -4377,6 +4382,12 @@ begin
     dcStepOverInstr:
       begin
         FDbgController.StepOverInstr;
+        StartDebugLoop;
+        result := true;
+      end;
+    dcContinueLastStep:
+      begin
+        FDbgController.ContinueLastStep;
         StartDebugLoop;
         result := true;
       end;
@@ -5124,6 +5135,8 @@ begin
   Result := inherited GetCommands;
   if State in [dsStop, dsIdle] then
     Result := Result - [dcStepOut, dcStepIntoInstr, dcStepOverInstr];
+  if (FDbgController = nil) or not(FDbgController.CanContinueStep) then
+    Result := Result - [dcContinueLastStep];
 end;
 
 procedure TFpDebugDebugger.LockCommandProcessing;
@@ -5141,7 +5154,8 @@ end;
 class function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
-           dcStepTo, dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcModify,
+           dcStepTo, dcContinueLastStep,
+           dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcModify,
            dcSendConsoleInput
            {$IFDEF windows} , dcAttach, dcDetach {$ENDIF}
            {$IFDEF linux} , dcAttach, dcDetach {$ENDIF}
@@ -5153,7 +5167,7 @@ class function TFpDebugDebugger.SupportedCommandsFor(AState: TDBGState
 begin
   Result := inherited SupportedCommandsFor(AState);
   if AState = dsStop then
-    Result := Result - [dcStepOut, dcStepIntoInstr, dcStepOverInstr];
+    Result := Result - [dcStepOut, dcStepIntoInstr, dcStepOverInstr, dcContinueLastStep];
 end;
 
 class function TFpDebugDebugger.SupportedFeatures: TDBGFeatures;

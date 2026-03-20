@@ -1753,6 +1753,10 @@ msgstr "Maksimaliai %d"
 msgid "&Break"
 msgstr "&Pertraukti"
 
+#: idedebuggerstringconstants.lismenucontinuelaststep
+msgid "Continue last Step"
+msgstr ""
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "Žin&ynas"
