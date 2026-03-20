@@ -79,6 +79,7 @@ begin
       if AWS.ActivityCounter <= 0 then
       begin
         AWS.ActivityCounter := 0;
+        Application.IntfAppDeactivate; // clear AppActive if idle hasn't run yet
         Application.IntfAppActivate;
       end;
       inc(AWS.FActivityCounter);
