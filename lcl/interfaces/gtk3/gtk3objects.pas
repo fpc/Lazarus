@@ -1045,7 +1045,6 @@ var
   Weight: TPangoWeight;
   inkRect: TPangoRectangle;
   APangoMetrics: PPangoFontMetrics;
-  ADpi: gdouble;
 begin
   inherited Create;
   FLogFont := ALogFont;
@@ -1068,11 +1067,7 @@ begin
   end;
   FFontName := FHandle^.get_family;
   if ALogFont.lfHeight <> 0 then
-  begin
-    ADpi := gdk_screen_get_resolution(gdk_screen_get_default);
-    if ADpi <= 0 then ADpi := 96;
-    FHandle^.set_size(Round(Abs(ALogFont.lfHeight) * 72 / ADpi * PANGO_SCALE));
-  end;
+    FHandle^.set_absolute_size(Abs(ALogFont.lfHeight) * PANGO_SCALE);
   if ALogFont.lfItalic > 0 then
     FHandle^.set_style(PANGO_STYLE_ITALIC);
   if Stretch <> PANGO_STRETCH_NORMAL then
