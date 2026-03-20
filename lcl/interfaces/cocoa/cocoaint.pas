@@ -53,8 +53,6 @@ type
   TCocoaWidgetSet = class(TWidgetSet)
   private
     FTerminating: Boolean;
-    FNSApp: TCocoaApplication;
-    FNSApp_Delegate: TAppDelegate;
     FSendingScrollWheelCount: Integer;
 
   protected
@@ -140,7 +138,6 @@ type
     function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCocoaBitmapType): Boolean;
     function GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
     class function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
-    property NSApp: TCocoaApplication read FNSApp;
     // the winapi compatibility methods
     {$I cocoawinapih.inc}
     // the extra LCL interface methods

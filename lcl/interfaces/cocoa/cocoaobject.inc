@@ -36,11 +36,10 @@ begin
   ScreenInfo.PixelsPerInchY := CocoaConfigGlobal.basePPI;
 
   { Creates the application NSApp object }
-  FNSApp := TCocoaApplication.InitApplication;
-  FNSApp_Delegate := TAppDelegate.alloc.init;
-  FNSApp.setDelegate( NSApplicationDelegateProtocol(FNSApp_Delegate) );
+  TCocoaApplication.InitApplication;
+  NSApp.setDelegate( TAppDelegate.new.autorelease );
   {$ifdef COCOALOOPOVERRIDE}
-  FNSApp.finishLaunching;
+  NSApp.finishLaunching;
   {$endif}
 
   // Sandboxing
