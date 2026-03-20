@@ -51,7 +51,7 @@ type
   TProjectIcon = class(TAbstractProjectResource)
   private
     FData: TIconData;
-    fFileAge: int64;
+    fFileAge: LongInt;
     fFileAgeValid: Boolean;
     FIcoFileName: string;
     function GetIsEmpry: Boolean;

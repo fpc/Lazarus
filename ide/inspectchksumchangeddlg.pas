@@ -73,7 +73,7 @@ type
   TICCFile = class(TComponent)
   public
     Filename: string;
-    Age: int64;
+    Age: integer;
     OwnerNames: TStringList;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

@@ -42,12 +42,12 @@ type
   public
     PPU: TPPU;
     Filename: string;
-    LoadDate: int64;
+    LoadDate: longint;
     LoadedParts: TPPUParts;
     ErrorMsg: string;
     constructor Create(aFilename: string);
     destructor Destroy; override;
-    function FileDateOnDisk: int64;
+    function FileDateOnDisk: longint;
     function NeedsUpdate(const Parts: TPPUParts = PPUPartsAll): boolean;
     function Load(const Parts: TPPUParts = PPUPartsAll): boolean;
     procedure Clear;
@@ -246,7 +246,7 @@ begin
   inherited Destroy;
 end;
 
-function TPPUTool.FileDateOnDisk: int64;
+function TPPUTool.FileDateOnDisk: longint;
 begin
   Result:=FileAgeCached(Filename);
 end;

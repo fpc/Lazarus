@@ -413,10 +413,10 @@ type
                                 IgnoreErrors, ShowAbort: boolean): TModalResult;
     procedure SetFlagDependenciesNeedBuild(Pkg: TLazPackage);
     function CheckCompileNeedDueToFPCUnits(TheOwner: TObject;
-                          StateFileAge: int64; var Note: string): boolean;
+                          StateFileAge: longint; var Note: string): boolean;
     function CheckCompileNeedDueToDependencies(TheOwner: TObject;
                          FirstDependency: TPkgDependency;
-                         SkipDesignTimePackages: boolean; StateFileAge: int64;
+                         SkipDesignTimePackages: boolean; StateFileAge: longint;
                          var Note: string): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     SkipDesignTimePackages, GroupCompile: boolean;
@@ -3462,7 +3462,7 @@ begin
 end;
 
 function TLazPackageGraph.CheckCompileNeedDueToFPCUnits(TheOwner: TObject;
-  StateFileAge: int64; var Note: string): boolean;
+  StateFileAge: longint; var Note: string): boolean;
 var
   AProject: TLazProject;
   Pkg: TLazPackage;
@@ -3535,8 +3535,8 @@ begin
         if ConsoleVerbosity>=0 then
           debugln(['Hint: (lazarus) global unit "',Filename,'" is newer than state file of package ',ID]);
         Note+='Global unit "'+Filename+'" is newer than state file of '+ID+':'+LineEnding
-          +'  Unit age='+UniversalFileAgeToLocalStr(FileAgeCached(Filename))+LineEnding
-          +'  State file age='+UniversalFileAgeToLocalStr(StateFileAge)+LineEnding;
+          +'  Unit age='+FileAgeToStr(FileAgeCached(Filename))+LineEnding
+          +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding;
         exit(true);
       end;
     end;
@@ -3547,7 +3547,7 @@ end;
 
 function TLazPackageGraph.CheckCompileNeedDueToDependencies(TheOwner: TObject;
   FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
-  StateFileAge: int64; var Note: string): TModalResult;
+  StateFileAge: longint; var Note: string): TModalResult;
 
   function GetOwnerID: string;
   begin
@@ -3606,8 +3606,8 @@ begin
         if StateFileAge<RequiredPackage.LastCompile[o].StateFileDate then begin
           DebugLn('Hint: (lazarus) State file of ',RequiredPackage.IDAsString,' is newer than state file of ',GetOwnerID);
           Note+='State file of '+RequiredPackage.IDAsString+' is newer than state file of '+GetOwnerID+LineEnding
-            +'  '+RequiredPackage.IDAsString+'='+UniversalFileAgeToLocalStr(RequiredPackage.LastCompile[o].StateFileDate)+LineEnding
-            +'  '+GetOwnerID+'='+UniversalFileAgeToLocalStr(StateFileAge)+LineEnding;
+            +'  '+RequiredPackage.IDAsString+'='+FileAgeToStr(RequiredPackage.LastCompile[o].StateFileDate)+LineEnding
+            +'  '+GetOwnerID+'='+FileAgeToStr(StateFileAge)+LineEnding;
           exit;
         end;
         // check output state file of required package
@@ -3620,12 +3620,12 @@ begin
           and FileExistsCached(OtherStateFile)
           and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
             DebugLn('Hint: (lazarus) State file of ',RequiredPackage.IDAsString,' "',OtherStateFile,'" (',
-                UniversalFileAgeToLocalStr(FileAgeCached(OtherStateFile)),')'
-              ,' is newer than state file ',GetOwnerID,'(',UniversalFileAgeToLocalStr(StateFileAge),')');
+                FileAgeToStr(FileAgeCached(OtherStateFile)),')'
+              ,' is newer than state file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
             Note+='State file of used package is newer than state file:'+LineEnding
               +'  Used package '+RequiredPackage.IDAsString+', file="'+OtherStateFile+'", '
-              +' age='+UniversalFileAgeToLocalStr(FileAgeCached(OtherStateFile))+LineEnding
-              +'  package '+GetOwnerID+', age='+UniversalFileAgeToLocalStr(StateFileAge)+LineEnding;
+              +' age='+FileAgeToStr(FileAgeCached(OtherStateFile))+LineEnding
+              +'  package '+GetOwnerID+', age='+FileAgeToStr(StateFileAge)+LineEnding;
             Result:=mrYes;
             exit;
           end;
@@ -3943,8 +3943,8 @@ begin
       DebugLn('  File="',CompilerFilename,'"');
       DebugLn('  State file="',Stats.StateFileName,'"');
       Note+='Compiler file "'+CompilerFilename+'" changed:'+LineEnding
-        +'  Old='+UniversalFileAgeToLocalStr(Stats.CompilerFileDate)+LineEnding
-        +'  Now='+UniversalFileAgeToLocalStr(FileAgeCached(CompilerFilename))+LineEnding
+        +'  Old='+UniversalFileAgeToStr(Stats.CompilerFileDate)+LineEnding
+        +'  Now='+UniversalFileAgeToStr(FileAgeCached(CompilerFilename))+LineEnding
         +'  State file="'+Stats.StateFileName+'"'+LineEnding;
       exit(mrYes);
     end;
@@ -3960,9 +3960,9 @@ begin
       if StateFileAge<FileAgeCached(SrcFilename) then begin
         DebugLn('Hint: (lazarus) source disk file modified of ',APackage.IDAsString,': ',SrcFilename);
         Note+='Source file "'+SrcFilename+'" modified:'+LineEnding
-          +'  Source file age='+UniversalFileAgeToLocalStr(FileAgeCached(SrcFilename))+LineEnding
+          +'  Source file age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
           +'  State file="'+Stats.StateFileName+'"'+LineEnding
-          +'  State file age='+UniversalFileAgeToLocalStr(StateFileAge)+LineEnding;
+          +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding;
         exit(mrYes);
       end;
       if SrcEditFileIsModified(SrcFilename) then begin
@@ -4011,9 +4011,9 @@ begin
       DebugLn('Hint: (lazarus) State file older than lpk ',APackage.IDAsString);
       DebugLn('  State file="',Stats.StateFileName,'"');
       Note+='State file older than lpk:'+LineEnding
-        +'  State file age='+UniversalFileAgeToLocalStr(StateFileAge)+LineEnding
+        +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
         +'  State file="'+Stats.StateFileName+'"'+LineEnding
-        +'  LPK age='+UniversalFileAgeToLocalStr(FileAgeCached(APackage.Filename))+LineEnding;
+        +'  LPK age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
       exit(mrYes);
     end;
     for i:=0 to APackage.FileCount-1 do begin
@@ -4029,9 +4029,9 @@ begin
         DebugLn('Hint: (lazarus) Source file has changed ',APackage.IDAsString,' ',CurFile.Filename);
         DebugLn('  State file="',Stats.StateFileName,'"');
         Note+='State file older than source "'+AFilename+'"'+LineEnding
-          +'  State file age='+UniversalFileAgeToLocalStr(StateFileAge)+LineEnding
+          +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
           +'  State file="'+Stats.StateFileName+'"'+LineEnding
-          +'  Src file age='+UniversalFileAgeToLocalStr(FileAgeCached(AFilename))+LineEnding;
+          +'  Src file age='+FileAgeToStr(FileAgeCached(AFilename))+LineEnding;
         exit(mrYes);
       end;
       if FilenameIsPascalUnit(AFilename) then begin
@@ -4041,9 +4041,9 @@ begin
           DebugLn('Hint: (lazarus) LFM has changed ',APackage.IDAsString,' ',LFMFilename);
           DebugLn('  State file="',Stats.StateFileName,'"');
           Note+='State file older than resource "'+LFMFilename+'"'+LineEnding
-            +'  State file age='+UniversalFileAgeToLocalStr(StateFileAge)+LineEnding
+            +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
             +'  State file="'+Stats.StateFileName+'"'+LineEnding
-            +'  Resource file age='+UniversalFileAgeToLocalStr(FileAgeCached(LFMFilename))+LineEnding;
+            +'  Resource file age='+FileAgeToStr(FileAgeCached(LFMFilename))+LineEnding;
           exit(mrYes);
         end;
       end;
@@ -4063,8 +4063,7 @@ function TLazPackageGraph.LoadPackageCompiledStateFile(APackage: TLazPackage;
   ): TModalResult;
 var
   Stats: TPkgLastCompileStats;
-  StateFileAge: int64;
-  MakefileVersion: LongInt;
+  StateFileAge, MakefileVersion: LongInt;
   XMLConfig: TXMLConfig;
   MakefileValue, Params: String;
 begin

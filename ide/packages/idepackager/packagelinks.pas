@@ -120,7 +120,7 @@ type
     function GetNewerLink(Link1, Link2: TLazPackageLink): TLazPackageLink;
     function GetNewestLink(Link1, Link2, Link3: TLazPackageLink): TLazPackageLink;
   public
-    UserLinkLoadTime: int64;
+    UserLinkLoadTime: longint;
     UserLinkLoadTimeValid: boolean;
     constructor Create;
     destructor Destroy; override;
@@ -845,7 +845,7 @@ begin
   // check if file needs saving
   if not NeedSaveUserLinks(ConfigFilename) then exit;
   if ConsoleVerbosity>1 then
-    DebugLn(['Hint: (lazarus) TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,' ',UniversalFileAgeUTF8(ConfigFilename)=UserLinkLoadTime,' Immediately=',Immediately]);
+    DebugLn(['Hint: (lazarus) TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,' ',FileAgeUTF8(ConfigFilename)=UserLinkLoadTime,' Immediately=',Immediately]);
 
   if Immediately then begin
     QueueSaveUserLinks:=false;

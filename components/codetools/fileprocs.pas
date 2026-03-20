@@ -153,7 +153,7 @@ function SimpleFormat(const Fmt: String; const Args: Array of const): String;
 
 // misc
 function FileAgeToStr(aFileAge: int64): string;
-function UniversalFileAgeToLocalStr(aFileAge: TCTFileAgeTime): string;
+function UniversalFileAgeToStr(aFileAge: TCTFileAgeTime): string;
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
 // debugging
@@ -1881,15 +1881,9 @@ begin
     Result:=Default;
 end;
 
-function UniversalFileAgeToLocalStr(aFileAge: TCTFileAgeTime): string;
-var
-  LDate: TDateTime;
-  LOffset: integer;
+function UniversalFileAgeToStr(aFileAge: TCTFileAgeTime): string;
 begin
-  LDate := UniversalFileDateToDateTimeDef(aFileAge);
-  if GetLocalTimeOffset(LDate, true, LOffset) then
-    LDate := LDate - (LOffset/MinsPerDay);
-  Result:=DateTimeToStr(LDate);
+  Result:=DateTimeToStr(UniversalFileDateToDateTimeDef(aFileAge));
 end;
 
 //------------------------------------------------------------------------------
