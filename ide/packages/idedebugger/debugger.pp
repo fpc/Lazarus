@@ -5315,8 +5315,10 @@ begin
   FAtLeastCount := -2;
   FCountValidity := ddsValid;
   FAtLeastCountValidity := ddsValid;
-  if FCountChangedNotifyList <> nil then
+  if FCountChangedNotifyList <> nil then begin
     FCountChangedNotifyList.CallNotifyEvents(Self);
+    FCountChangedNotifyList.Destroy;
+  end;
   inherited Destroy;
   FreeAndNil(FEntries);
 end;
