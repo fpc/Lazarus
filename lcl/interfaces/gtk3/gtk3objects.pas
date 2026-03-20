@@ -2262,8 +2262,20 @@ var
   tw: gint;
   OldStr: PChar;
   SafeStr: String;
+  OldDPI: gdouble;
+  IsVectorSurface: Boolean;
 begin
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+
+  IsVectorSurface := cairo_surface_get_type(cairo_get_target(pcr)) in
+    [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
+     CAIRO_SURFACE_TYPE_SCRIPT];
+  OldDPI := 0;
+  if IsVectorSurface then
+  begin
+    OldDPI := pango_cairo_context_get_resolution(FCurrentFont.Layout^.get_context);
+    pango_cairo_context_set_resolution(FCurrentFont.Layout^.get_context, 72.0);
+  end;
 
   ornt := Self.FCurrentFont.FLogFont.lfOrientation;
   if ornt <> 0 then
@@ -2298,6 +2310,9 @@ begin
   ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
   cairo_set_source_rgb(pcr, R, G, B);
   pango_cairo_show_layout(pcr, FCurrentFont.Layout);
+
+  if IsVectorSurface then
+    pango_cairo_context_set_resolution(FCurrentFont.Layout^.get_context, OldDPI);
 
   if ornt <> 0 then
     cairo_rotate(pcr, Pi * (ornt / 10) / 180);
