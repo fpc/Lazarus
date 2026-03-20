@@ -866,7 +866,7 @@ type
     Kind: TPascalCompiler;
     CompilerDate: longint;
     RealCompiler: string; // when Compiler is fpc.exe, this is the real compiler (e.g. ppc386.exe)
-    RealCompilerDate: longint;
+    RealCompilerDate: int64;
     RealTargetOS: string;
     RealTargetCPU: string;
     RealTargetCPUCompiler: string; // the ppc<target>.exe in PATH for TargetCPU

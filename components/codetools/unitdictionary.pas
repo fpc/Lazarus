@@ -78,7 +78,7 @@ type
 
   TUDUnit = class(TUDFileItem)
   public
-    FileAge: longint;
+    FileAge: int64;
     ToolStamp: integer;
     FirstIdentifier, LastIdentifier: TUDIdentifier;
     Groups: TMTAVLTree; // tree of TUDUnitGroup sorted with CompareIDItems

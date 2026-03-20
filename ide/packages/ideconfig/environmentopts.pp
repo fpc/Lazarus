@@ -252,7 +252,7 @@ type
     fRegisteredSubConfig: TObjectList;
     // config file
     FFilename: string;
-    FFileAge: longint;
+    FFileAge: int64;
     FFileVersion: integer;
     FFileHasChangedOnDisk: boolean;
     FMaxExtToolsInParallel: integer;

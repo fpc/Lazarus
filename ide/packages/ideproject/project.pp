@@ -674,7 +674,7 @@ type
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
     FJumpHistory: TProjectJumpHistory;
-    FLastCompilerFileDate: integer;
+    FLastCompilerFileDate: int64;
     FLastCompilerFilename: string;
     FLastCompilerParams: TStrings;
     fLastReadLPIFileDate: TDateTime;
@@ -696,14 +696,14 @@ type
     fProjectInfoFile: String;  // the lpi filename
     fProjectInfoFileBuffer: TCodeBuffer;
     fProjectInfoFileBufChangeStamp: integer;
-    fProjectInfoFileDate: LongInt;
+    fProjectInfoFileDate: int64;
     FPublishOptions: TPublishProjectOptions;
     FRevertLockCount: integer;
     FSessionModifiedBackup: boolean;
     FSessionStorePathDelim: TPathDelimSwitch;
     FSkipCheckLCLInterfaces: boolean;
     FSourceDirectories: TFileReferenceList;
-    FStateFileDate: longint;
+    FStateFileDate: int64;
     FStateFlags: TLazProjectStateFlags;
     FStorePathDelim: TPathDelimSwitch;
     FUnitList: TIdeLazProjectFileList;  // list of _all_ units (TUnitInfo)
@@ -1025,7 +1025,7 @@ type
     property IDAsWord: string read GetIDAsWord;
     property IDEOptions: TProjectIDEOptions read GetIDEOptions;
     property JumpHistory: TProjectJumpHistory read FJumpHistory write FJumpHistory;
-    property LastCompilerFileDate: integer read FLastCompilerFileDate
+    property LastCompilerFileDate: int64 read FLastCompilerFileDate
                                           write FLastCompilerFileDate;
     property LastCompilerFilename: string read FLastCompilerFilename
                                           write FLastCompilerFilename;
@@ -1056,7 +1056,7 @@ type
     property RunParameterOptions: TRunParamsOptions read GetRunParameterOptions;
     property HistoryLists: THistoryLists read FHistoryLists;
     property SourceDirectories: TFileReferenceList read GetSourceDirectories;
-    property StateFileDate: longint read FStateFileDate write FStateFileDate;
+    property StateFileDate: int64 read FStateFileDate write FStateFileDate;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
     property SessionStorePathDelim: TPathDelimSwitch read FSessionStorePathDelim write FSessionStorePathDelim;
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write SetStorePathDelim;
@@ -5265,7 +5265,7 @@ function TProject.LoadStateFile(IgnoreErrors: boolean): TModalResult;
 var
   XMLConfig: TXMLConfig;
   StateFile: String;
-  CurStateFileAge: Integer;
+  CurStateFileAge: int64;
 begin
   StateFile:=GetStateFilename;
   if (not FilenameIsAbsolute(StateFile)) or (not FileExistsUTF8(StateFile)) then
@@ -5319,7 +5319,7 @@ function TProject.SaveStateFile(const CompilerFilename: string;
 var
   XMLConfig: TXMLConfig;
   StateFile: String;
-  CompilerFileDate: Integer;
+  CompilerFileDate: int64;
 begin
   StateFile:=GetStateFilename;
   if not FilenameIsAbsolute(StateFile) then exit(mrOk);
