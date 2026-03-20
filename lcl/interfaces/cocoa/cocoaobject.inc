@@ -25,43 +25,18 @@
   Initialize Cocoa Widget Set
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
-var
-  lDict: NSDictionary;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppInit');
   {$ENDIF}
-  WakeMainThread := @OnWakeMainThread;
   ScreenInfo.PixelsPerInchX := CocoaConfigGlobal.basePPI;
   ScreenInfo.PixelsPerInchY := CocoaConfigGlobal.basePPI;
 
   { Creates the application NSApp object }
-  FNSApp := InitApplication;
-  FNSApp_Delegate := TAppDelegate.alloc.init;
-  FNSApp.setDelegate( NSApplicationDelegateProtocol(FNSApp_Delegate) );
+  TCocoaApplication.initApplication;
   {$ifdef COCOALOOPOVERRIDE}
-  FNSApp.finishLaunching;
+  NSApp.finishLaunching;
   {$endif}
-
-  // Sandboxing
-  lDict := NSProcessInfo.processInfo.environment;
-  SandboxingOn := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
-end;
-
-procedure TCocoaWidgetSet.SendCheckSynchronizeMessage;
-begin
-  InitApplication
-    .performSelectorOnMainThread_withObject_waitUntilDone(
-       ObjCSelector('lclSyncCheck:'), nil, false);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCocoaWidgetSet.OnWakeMainThread
-  Params:  Sender
- ------------------------------------------------------------------------------}
-procedure TCocoaWidgetSet.OnWakeMainThread(Sender: TObject);
-begin
-   SendCheckSynchronizeMessage;
 end;
 
 {------------------------------------------------------------------------------

@@ -18,25 +18,14 @@ type
 
   TCocoaAppOnOpenURLNotify = procedure (const url: NSURL) of object;
 
-  { TAppDelegate }
-
-  TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocolFix)
-  public
-    procedure application_openURLs(sender: NSApplication; urls: NSArray);
-    procedure applicationDidHide(notification: NSNotification);
-    procedure applicationDidUnhide(notification: NSNotification);
-    procedure applicationDidBecomeActive(notification: NSNotification);
-    procedure applicationDidResignActive(notification: NSNotification);
-    procedure applicationDidChangeScreenParameters(notification: NSNotification);
-    procedure applicationWillFinishLaunching(notification: NSNotification);
-    function applicationDockMenu(sender: NSApplication): NSMenu;
-    procedure handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor); message 'handleQuitAppEvent:withReplyEvent:';
-  end;
-
   { TCocoaApplication }
 
   TCocoaApplication = objcclass(NSApplication)
+  private
+    _isInSandbox: Boolean;
+  public
     aloop : TApplicationMainLoop;
+    // Sandboxing
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
     isrun : Boolean;
     Stopped : Boolean;
@@ -63,14 +52,60 @@ type
       object_: id; change: NSDictionary; context_: pointer); override;
 
     procedure onOpenURL( const url: NSURL ); message 'lclOnOpenURL:';
+
+    function isInSandbox: Boolean; message 'lclIsInSandbox';
   private
     _onOpenURLObserver: TCocoaAppOnOpenURLNotify;
   public
     procedure setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify );
       message 'lclSetOpenURLObserver:';
+  public
+    class function initApplication: TCocoaApplication;
+      message 'lclInitApplication';
   end;
 
 implementation
+
+type
+
+  TCocoaSharedApplicationExt = objccategory external (NSObject)
+    function sharedApplication: NSApplication; message 'sharedApplication';
+  end;
+
+  { TAppDelegate }
+
+  TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocolFix)
+  public
+    procedure application_openURLs(sender: NSApplication; urls: NSArray);
+    procedure applicationDidHide(notification: NSNotification);
+    procedure applicationDidUnhide(notification: NSNotification);
+    procedure applicationDidBecomeActive(notification: NSNotification);
+    procedure applicationDidResignActive(notification: NSNotification);
+    procedure applicationDidChangeScreenParameters(notification: NSNotification);
+    procedure applicationWillFinishLaunching(notification: NSNotification);
+    function applicationDockMenu(sender: NSApplication): NSMenu;
+    procedure handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor); message 'handleQuitAppEvent:withReplyEvent:';
+  end;
+
+  { TWakeMainThreadHandler }
+
+  TWakeMainThreadHandler = class
+  public
+    procedure OnWakeMainThread(Sender: TObject);
+  end;
+
+var
+  WakeMainThreadHandler: TWakeMainThreadHandler;
+
+{ TWakeMainThreadHandler }
+
+procedure TWakeMainThreadHandler.OnWakeMainThread(Sender: TObject);
+begin
+  NSApp.performSelectorOnMainThread_withObject_waitUntilDone(
+       ObjCSelector('lclSyncCheck:'), nil, false);
+end;
+
+{ TAppDelegate }
 
 // when the delegate implements application_openURLs(), macOS no longer calls
 // application_openFiles(). therefore, the action in application_openURLs is
@@ -552,6 +587,7 @@ begin
   Stopped := true;
   inherited stop(sender);
 end;
+{$endif}
 
 procedure TCocoaApplication.observeValueForKeyPath_ofObject_change_context(
   keyPath: NSString; object_: id; change: NSDictionary; context_: pointer);
@@ -574,12 +610,51 @@ begin
     _onOpenURLObserver( url );
 end;
 
+function TCocoaApplication.isInSandbox: Boolean;
+begin
+  Result:= _isInSandbox;
+end;
+
 procedure TCocoaApplication.setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify);
 begin
   _onOpenURLObserver:= onOpenURLObserver;
 end;
 
-{$endif}
+// The function tries to initialize the proper application class.
+// The desired application class can be specified in info.plit
+// by specifying NSPrincipalClass property.
+// If then principal class has been found (in the bundle binaries)
+// InitApplication function will try to call its "sharedApplication" method.
+// If principle class is not specified, then TCocoaApplication is used.
+// You should always specify either TCocoaApplication or
+// a class derived from TCocoaApplication, in order for LCL to fucntion properly
+class function TCocoaApplication.initApplication: TCocoaApplication;
+var
+  bun : NSBundle;
+  appDelegate: TAppDelegate;
+  lDict: NSDictionary;
+begin
+  bun := NSBundle.mainBundle;
+  if Assigned(bun) and Assigned(bun.principalClass) then
+    Result := TCocoaApplication(NSObject(bun.principalClass).sharedApplication)
+  else
+    Result := TCocoaApplication(TCocoaApplication.sharedApplication);
+
+  appDelegate:= TAppDelegate.new;
+  Result.setDelegate( NSApplicationDelegateProtocol(appDelegate) );
+  appDelegate.release;
+
+  lDict := NSProcessInfo.processInfo.environment;
+  Result._isInSandbox := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
+
+  WakeMainThread:= @WakeMainThreadHandler.OnWakeMainThread;
+end;
+
+initialization
+  WakeMainThreadHandler:= TWakeMainThreadHandler.Create;
+
+finalization
+  FreeAndNil( WakeMainThreadHandler );
 
 end.
 

@@ -53,8 +53,6 @@ type
   TCocoaWidgetSet = class(TWidgetSet)
   private
     FTerminating: Boolean;
-    FNSApp: TCocoaApplication;
-    FNSApp_Delegate: TAppDelegate;
     FSendingScrollWheelCount: Integer;
 
   protected
@@ -73,8 +71,6 @@ type
 
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
 
-    // Sandboxing
-    SandboxingOn: Boolean;
     fClipboard: TCocoaWSClipboard;
 
     function nextEvent(const eventExpDate: NSDate): NSEvent;
@@ -91,9 +87,6 @@ type
       uType: Cardinal): Integer; override;
     function GetAppHandle: TLCLHandle; override;
     function CreateThemeServices: TThemeServices; override;
-
-    procedure SendCheckSynchronizeMessage;
-    procedure OnWakeMainThread(Sender: TObject);
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -140,7 +133,6 @@ type
     function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCocoaBitmapType): Boolean;
     function GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
     class function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
-    property NSApp: TCocoaApplication read FNSApp;
     // the winapi compatibility methods
     {$I cocoawinapih.inc}
     // the extra LCL interface methods
@@ -195,30 +187,6 @@ begin
   if Assigned(obj) and (obj is TCustomForm)
     then Result := TCustomForm(obj)
     else Result := nil;
-end;
-
-type
-  AppClassMethod = objccategory external (NSObject)
-    function sharedApplication: NSApplication; message 'sharedApplication';
-  end;
-
-// The function tries to initialize the proper application class.
-// The desired application class can be specified in info.plit
-// by specifying NSPrincipalClass property.
-// If then principal class has been found (in the bundle binaries)
-// InitApplication function will try to call its "sharedApplication" method.
-// If principle class is not specified, then TCocoaApplication is used.
-// You should always specify either TCocoaApplication or
-// a class derived from TCocoaApplication, in order for LCL to fucntion properly
-function InitApplication: TCocoaApplication;
-var
-  bun : NSBundle;
-begin
-  bun := NSBundle.mainBundle;
-  if Assigned(bun) and Assigned(bun.principalClass) then
-    Result := TCocoaApplication(NSObject(bun.principalClass).sharedApplication)
-  else
-    Result := TCocoaApplication(TCocoaApplication.sharedApplication);
 end;
 
 // the implementation of the utility methods
