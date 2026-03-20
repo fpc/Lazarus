@@ -7,10 +7,11 @@ unit CocoaCommonCallback;
 interface
 
 uses
-  Types, Classes, Controls, SysUtils,
-  WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
-  CocoaAll, CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
-  CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, cocoa_extra;
+  Types, Classes, Controls, SysUtils, Math,
+  LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
+  CocoaAll,
+  CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
+  CocoaApplication, CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, Cocoa_Extra;
 
 type
 
@@ -122,9 +123,6 @@ type
   TLCLCommonCallBackClass = class of TLCLCommonCallBack;
 
 implementation
-
-uses
-  Math;
 
 var
   LastMouse: TLastMouseInfo;
@@ -317,8 +315,8 @@ var
   lCaptureView: NSView;
 begin
   Result := nil;
-  if CocoaWidgetSet.CaptureControl = 0 then Exit;
-  obj := NSObject(CocoaWidgetSet.CaptureControl);
+  if CocoaWidgetSetState.CaptureControl = 0 then Exit;
+  obj := NSObject(CocoaWidgetSetState.CaptureControl);
   lCaptureView := obj.lclContentView;
   if (obj <> Owner) and (lCaptureView <> Owner) and not FIsEventRouting then
   begin
@@ -860,7 +858,7 @@ begin
   end;
 
   Result := Result or (BlockCocoaUpDown and not AOverrideBlock);
-  mc := CocoaWidgetSet.ModalCounter;
+  mc := CocoaWidgetSetModalService.count;
   case lEventType of
     NSLeftMouseDown,
     NSRightMouseDown,
@@ -905,7 +903,7 @@ begin
     end;
   end;
 
-  if mc <> CocoaWidgetSet.ModalCounter then
+  if mc <> CocoaWidgetSetModalService.count then
   begin
     // showing of a modal window is causing "mouse" event to be lost.
     // so, preventing Cocoa from handling it
@@ -1222,11 +1220,11 @@ end;
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
   if not Assigned(Target) then Exit;
-  CocoaWidgetSet.KillingFocus:= true;
+  CocoaWidgetSetState.KillingFocus:= true;
   try
     LCLSendKillFocusMsg(Target);
   finally
-    CocoaWidgetSet.KillingFocus:= false;
+    CocoaWidgetSetState.KillingFocus:= false;
   end;
 end;
 
