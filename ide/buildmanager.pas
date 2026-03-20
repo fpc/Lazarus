@@ -1526,7 +1526,7 @@ begin
   if not (FileExistsUTF8(Filename)) then exit;
   // check if file in lpi
   IsPartOfProject:=(Project1<>nil)
-                  and (Project1.FindFile(Filename,[pfsfOnlyProjectFiles])<>nil);
+               and (Project1.FindFile(Filename,[pfsfOnlyProjectFiles])<>nil);
   // check if file in source directory of project
   if (not IsPartOfProject) and (Project1<>nil)
     and (SearchDirectoryInMaskedSearchPath(Project1.SourceDirectories.CreateSearchPathFromAllFiles,
@@ -1908,7 +1908,7 @@ function TBuildManager.GetBuildMacroValuesHandler(Options: TLazCompilerOptions;
     Target:=GetModeMatrixTarget(Options);
     if EnvironmentOptions<>nil then
       ApplyBuildMatrixMacros(EnvironmentOptions.BuildMatrixOptions,Target,ActiveMode,Vars);
-    if BuildTarget<>nil then begin
+    if FBuildTarget<>nil then begin
       ApplyBuildMatrixMacros(BuildTarget.BuildModes.SharedMatrixOptions,Target,ActiveMode,Vars);
       ApplyBuildMatrixMacros(BuildTarget.BuildModes.SessionMatrixOptions,Target,ActiveMode,Vars);
     end;
@@ -2016,9 +2016,9 @@ begin
     EnvironmentOptions.BuildMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
   if FBuildTarget<>nil then begin
     if bmgtProject in Types then
-      TProject(FBuildTarget).BuildModes.SharedMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
+      BuildTarget.BuildModes.SharedMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
     if bmgtSession in Types then
-      TProject(FBuildTarget).BuildModes.SessionMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
+      BuildTarget.BuildModes.SessionMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
   end;
 end;
 
@@ -2034,9 +2034,9 @@ begin
     EnvironmentOptions.BuildMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
   if FBuildTarget<>nil then begin
     if bmgtProject in Types then
-      TProject(FBuildTarget).BuildModes.SharedMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
+      BuildTarget.BuildModes.SharedMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
     if bmgtSession in Types then
-      TProject(FBuildTarget).BuildModes.SessionMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
+      BuildTarget.BuildModes.SessionMatrixOptions.GetOutputDirectory(Target,ActiveMode,OutDir);
   end;
 end;
 

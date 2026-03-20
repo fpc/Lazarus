@@ -163,9 +163,6 @@ type
     function GetTargetOS: string;
     procedure SetupTransferMacros; virtual;
     procedure TranslateMacros;
-  public
-    //property BuildTarget: TLazProject read FBuildTarget;
-    //property BuildTarget: TProject read FBuildTarget; // TProject or nil
   end;
 
   { TBaseBuildManager }
