@@ -36,7 +36,7 @@ begin
   ScreenInfo.PixelsPerInchY := CocoaConfigGlobal.basePPI;
 
   { Creates the application NSApp object }
-  FNSApp := InitApplication;
+  FNSApp := TCocoaApplication.InitApplication;
   FNSApp_Delegate := TAppDelegate.alloc.init;
   FNSApp.setDelegate( NSApplicationDelegateProtocol(FNSApp_Delegate) );
   {$ifdef COCOALOOPOVERRIDE}
@@ -50,8 +50,7 @@ end;
 
 procedure TCocoaWidgetSet.SendCheckSynchronizeMessage;
 begin
-  InitApplication
-    .performSelectorOnMainThread_withObject_waitUntilDone(
+  NSApp.performSelectorOnMainThread_withObject_waitUntilDone(
        ObjCSelector('lclSyncCheck:'), nil, false);
 end;
 

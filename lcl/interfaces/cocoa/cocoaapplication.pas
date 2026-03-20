@@ -68,6 +68,14 @@ type
   public
     procedure setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify );
       message 'lclSetOpenURLObserver:';
+  public
+    class function InitApplication: TCocoaApplication;
+      message 'lclInitApplication';
+  end;
+
+type
+  AppClassMethod = objccategory external (NSObject)
+    function sharedApplication: NSApplication; message 'sharedApplication';
   end;
 
 implementation
@@ -577,6 +585,25 @@ end;
 procedure TCocoaApplication.setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify);
 begin
   _onOpenURLObserver:= onOpenURLObserver;
+end;
+
+// The function tries to initialize the proper application class.
+// The desired application class can be specified in info.plit
+// by specifying NSPrincipalClass property.
+// If then principal class has been found (in the bundle binaries)
+// InitApplication function will try to call its "sharedApplication" method.
+// If principle class is not specified, then TCocoaApplication is used.
+// You should always specify either TCocoaApplication or
+// a class derived from TCocoaApplication, in order for LCL to fucntion properly
+class function TCocoaApplication.InitApplication: TCocoaApplication;
+var
+  bun : NSBundle;
+begin
+  bun := NSBundle.mainBundle;
+  if Assigned(bun) and Assigned(bun.principalClass) then
+    Result := TCocoaApplication(NSObject(bun.principalClass).sharedApplication)
+  else
+    Result := TCocoaApplication(TCocoaApplication.sharedApplication);
 end;
 
 {$endif}
