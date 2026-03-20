@@ -37,14 +37,10 @@ uses
   fpcunit, consoletestrunner,
   // LazUtils
   LazLogger, LazUTF8, LazStringUtils, LazFileUtils,
-  // LCL (nogui)
-  Interfaces,
   // IdeConfig
-  LazConf, EnvironmentOpts, TransferMacros,
+  LazConf, EnvironmentOpts, TransferMacros, BaseBuildManager,
   // BuildIntf
   MacroIntf,
-  // IDE (in search path)
-  BuildManager,
   // CodeTools
   CodeToolManager, CodeToolsConfig,
   // Test suites
@@ -80,6 +76,9 @@ type
   public
     destructor Destroy; override;
   end;
+
+var
+  MyMacroConf: TMacroConfig;
 
 { Utils }
 
@@ -131,7 +130,7 @@ procedure FreeIdeEnvOpt;
 begin
   FreeAndNil(GlobalMacroList);
   FreeAndNil(IDEMacros);
-  FreeAndNil(MainBuildBoss);
+  FreeAndNil(MyMacroConf);
 end;
 
 // code is based on LazBuild
@@ -159,9 +158,9 @@ begin
         SetPrimaryConfigPath(lPCP);
     end;
     // macros
-    MainBuildBoss := TBuildManager.Create(nil); // creates EnvironmentOptions
-    MainBuildBoss.SetupTransferMacros;
-    (IDEMacros as TLazIDEMacros).LoadLazbuildMacros;
+    MyMacroConf := TMacroConfig.Create(nil); // creates EnvironmentOptions
+    MyMacroConf.SetupTransferMacros;
+    IDEMacros.LoadBuildMacros;
     // env
     EnvironmentOptions.CreateConfig;
     EnvironmentOptions.Load(false);
