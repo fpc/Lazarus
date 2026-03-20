@@ -43,6 +43,7 @@ type
     FAnchor: TChartTextAnchor;
     FAnchorDistance: Integer;
     FCaption: TCaption;
+    FFixedSize: Integer;
     FPositionOnMarks: Boolean;
     FWordwrap: Boolean;
 
@@ -50,6 +51,7 @@ type
     procedure SetAnchor(AValue: TChartTextAnchor);
     procedure SetAnchorDistance(AValue: Integer);
     procedure SetCaption(AValue: TCaption);
+    procedure SetFixedSize(AValue: Integer);
     procedure SetFont(AValue: TFont);
     procedure SetPositionOnMarks(AValue: Boolean);
     procedure SetWordwrap(AValue: Boolean);
@@ -63,6 +65,7 @@ type
       read FAnchorDistance write SetAnchorDistance default DEF_AXIS_TITLE_ANCHOR_DISTANCE;
     property Caption: TCaption read FCaption write SetCaption;
     property Distance default DEF_AXIS_TITLE_DISTANCE;
+    property FixedSize: Integer read FFixedSize write SetFixedSize default 0;
     property Frame;
     property LabelBrush;
     property PositionOnMarks: Boolean
@@ -649,6 +652,7 @@ begin
   FAnchor := ctaCenter;
   FAnchorDistance := DEF_AXIS_TITLE_ANCHOR_DISTANCE;
   FDistance := DEF_AXIS_TITLE_DISTANCE;
+  FFixedSize := 0;
   FLabelBrush.Style := bsClear;
   FVisible := false;
 end;
@@ -676,6 +680,13 @@ procedure TChartAxisTitle.SetCaption(AValue: TCaption);
 begin
   if FCaption = AValue then exit;
   FCaption := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxisTitle.SetFixedSize(AValue: Integer);
+begin
+  if FFixedSize = AValue then exit;
+  FFixedSize := AValue;
   StyleChanged(Self);
 end;
 
