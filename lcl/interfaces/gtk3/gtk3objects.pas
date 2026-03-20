@@ -1045,6 +1045,7 @@ var
   Weight: TPangoWeight;
   inkRect: TPangoRectangle;
   APangoMetrics: PPangoFontMetrics;
+  ADpi: gdouble;
 begin
   inherited Create;
   FLogFont := ALogFont;
@@ -1067,7 +1068,11 @@ begin
   end;
   FFontName := FHandle^.get_family;
   if ALogFont.lfHeight <> 0 then
-    FHandle^.set_absolute_size(Abs(ALogFont.lfHeight) * PANGO_SCALE);
+  begin
+    ADpi := gdk_screen_get_resolution(gdk_screen_get_default);
+    if ADpi <= 0 then ADpi := 96;
+    FHandle^.set_size(Round(Abs(ALogFont.lfHeight) * 72 / ADpi * PANGO_SCALE));
+  end;
   if ALogFont.lfItalic > 0 then
     FHandle^.set_style(PANGO_STYLE_ITALIC);
   if Stretch <> PANGO_STRETCH_NORMAL then
@@ -2264,6 +2269,7 @@ var
   SafeStr: String;
   OldDPI: gdouble;
   IsVectorSurface: Boolean;
+  AFontOpts: Pcairo_font_options_t;
 begin
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
 
@@ -2273,6 +2279,10 @@ begin
   OldDPI := 0;
   if IsVectorSurface then
   begin
+    AFontOpts := cairo_font_options_create;
+    cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_NONE);
+    pango_cairo_context_set_font_options(FCurrentFont.Layout^.get_context, AFontOpts);
+    cairo_font_options_destroy(AFontOpts);
     OldDPI := pango_cairo_context_get_resolution(FCurrentFont.Layout^.get_context);
     pango_cairo_context_set_resolution(FCurrentFont.Layout^.get_context, 72.0);
     FCurrentFont.Layout^.context_changed;

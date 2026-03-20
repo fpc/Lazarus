@@ -2954,6 +2954,7 @@ var
   I: PtrInt;
   OldStr: PChar;
   SafeStr: String;
+  AFontOpts: Pcairo_font_options_t;
 begin
   Result := False;
   if not IsValidDC(DC) then
@@ -2984,7 +2985,13 @@ begin
   if cairo_surface_get_type(cairo_get_target(TGtk3DeviceContext(DC).pcr)) in
      [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
       CAIRO_SURFACE_TYPE_SCRIPT] then
+  begin
+    AFontOpts := cairo_font_options_create;
+    cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_NONE);
+    cairo_set_font_options(TGtk3DeviceContext(DC).pcr, AFontOpts);
+    cairo_font_options_destroy(AFontOpts);
     pango_cairo_update_layout(TGtk3DeviceContext(DC).pcr, Layout);
+  end;
   Layout^.get_pixel_size(@Size.cx, @Size.cy);
 
   OldStr := pango_layout_get_text(Layout);
@@ -3033,6 +3040,7 @@ var
   OldStr: PChar;
   SafeStr: String;
   PangoLogRect: TPangoRectangle;
+  AFontOpts: Pcairo_font_options_t;
 begin
   Result := False;
   if not IsValidDC(DC) then
@@ -3062,9 +3070,12 @@ begin
      [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
       CAIRO_SURFACE_TYPE_SCRIPT] then
   begin
-    Layout^.get_extents(nil, @{%H-}PangoLogRect);
-    Size.Cx := (PangoLogRect.width  + PANGO_SCALE - 1) div PANGO_SCALE;
-    Size.CY := (PangoLogRect.height + PANGO_SCALE - 1) div PANGO_SCALE;
+    AFontOpts := cairo_font_options_create;
+    cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_NONE);
+    cairo_set_font_options(TGtk3DeviceContext(DC).pcr, AFontOpts);
+    cairo_font_options_destroy(AFontOpts);
+    pango_cairo_update_layout(TGtk3DeviceContext(DC).pcr, Layout);
+    Layout^.get_pixel_size(@Size.Cx, @Size.CY);
   end else
     Layout^.get_pixel_size(@Size.Cx, @Size.CY);
 
@@ -3088,6 +3099,7 @@ var
   aRect: TPangoRectangle;
   APangoWeight: TPangoWeight;
   lineH: Integer;
+  AFontOpts: Pcairo_font_options_t;
 begin
   Result := False;
   if IsValidDC(DC) then
@@ -3098,7 +3110,13 @@ begin
     if cairo_surface_get_type(cairo_get_target(TGtk3DeviceContext(DC).pcr)) in
        [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
       CAIRO_SURFACE_TYPE_SCRIPT] then
+    begin
+      AFontOpts := cairo_font_options_create;
+      cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_NONE);
+      cairo_set_font_options(TGtk3DeviceContext(DC).pcr, AFontOpts);
+      cairo_font_options_destroy(AFontOpts);
       pango_cairo_update_layout(TGtk3DeviceContext(DC).pcr, AFont.Layout);
+    end;
 
     APangoMetrics := pango_context_get_metrics(AFont.Layout^.get_context,
       AFont.Handle, AFont.Layout^.get_context^.get_language);
