@@ -18,21 +18,6 @@ type
 
   TCocoaAppOnOpenURLNotify = procedure (const url: NSURL) of object;
 
-  { TAppDelegate }
-
-  TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocolFix)
-  public
-    procedure application_openURLs(sender: NSApplication; urls: NSArray);
-    procedure applicationDidHide(notification: NSNotification);
-    procedure applicationDidUnhide(notification: NSNotification);
-    procedure applicationDidBecomeActive(notification: NSNotification);
-    procedure applicationDidResignActive(notification: NSNotification);
-    procedure applicationDidChangeScreenParameters(notification: NSNotification);
-    procedure applicationWillFinishLaunching(notification: NSNotification);
-    function applicationDockMenu(sender: NSApplication): NSMenu;
-    procedure handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor); message 'handleQuitAppEvent:withReplyEvent:';
-  end;
-
   { TCocoaApplication }
 
   TCocoaApplication = objcclass(NSApplication)
@@ -69,16 +54,32 @@ type
     procedure setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify );
       message 'lclSetOpenURLObserver:';
   public
-    class function InitApplication: TCocoaApplication;
+    class function initApplication: TCocoaApplication;
       message 'lclInitApplication';
   end;
 
+implementation
+
 type
-  AppClassMethod = objccategory external (NSObject)
+
+  TCocoaSharedApplicationExt = objccategory external (NSObject)
     function sharedApplication: NSApplication; message 'sharedApplication';
   end;
 
-implementation
+  { TAppDelegate }
+
+  TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocolFix)
+  public
+    procedure application_openURLs(sender: NSApplication; urls: NSArray);
+    procedure applicationDidHide(notification: NSNotification);
+    procedure applicationDidUnhide(notification: NSNotification);
+    procedure applicationDidBecomeActive(notification: NSNotification);
+    procedure applicationDidResignActive(notification: NSNotification);
+    procedure applicationDidChangeScreenParameters(notification: NSNotification);
+    procedure applicationWillFinishLaunching(notification: NSNotification);
+    function applicationDockMenu(sender: NSApplication): NSMenu;
+    procedure handleQuitAppEvent_withReplyEvent(event: NSAppleEventDescriptor; replyEvent: NSAppleEventDescriptor); message 'handleQuitAppEvent:withReplyEvent:';
+  end;
 
 // when the delegate implements application_openURLs(), macOS no longer calls
 // application_openFiles(). therefore, the action in application_openURLs is
@@ -595,15 +596,20 @@ end;
 // If principle class is not specified, then TCocoaApplication is used.
 // You should always specify either TCocoaApplication or
 // a class derived from TCocoaApplication, in order for LCL to fucntion properly
-class function TCocoaApplication.InitApplication: TCocoaApplication;
+class function TCocoaApplication.initApplication: TCocoaApplication;
 var
   bun : NSBundle;
+  appDelegate: TAppDelegate;
 begin
   bun := NSBundle.mainBundle;
   if Assigned(bun) and Assigned(bun.principalClass) then
     Result := TCocoaApplication(NSObject(bun.principalClass).sharedApplication)
   else
     Result := TCocoaApplication(TCocoaApplication.sharedApplication);
+
+  appDelegate:= TAppDelegate.new;
+  Result.setDelegate( NSApplicationDelegateProtocol(appDelegate) );
+  appDelegate.release;
 end;
 
 {$endif}

@@ -36,8 +36,7 @@ begin
   ScreenInfo.PixelsPerInchY := CocoaConfigGlobal.basePPI;
 
   { Creates the application NSApp object }
-  TCocoaApplication.InitApplication;
-  NSApp.setDelegate( TAppDelegate.new.autorelease );
+  TCocoaApplication.initApplication;
   {$ifdef COCOALOOPOVERRIDE}
   NSApp.finishLaunching;
   {$endif}
