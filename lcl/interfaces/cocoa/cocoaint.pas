@@ -71,8 +71,6 @@ type
 
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
 
-    // Sandboxing
-    SandboxingOn: Boolean;
     fClipboard: TCocoaWSClipboard;
 
     function nextEvent(const eventExpDate: NSDate): NSEvent;

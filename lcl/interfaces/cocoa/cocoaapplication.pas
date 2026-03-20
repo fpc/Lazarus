@@ -21,7 +21,11 @@ type
   { TCocoaApplication }
 
   TCocoaApplication = objcclass(NSApplication)
+  private
+    _isInSandbox: Boolean;
+  public
     aloop : TApplicationMainLoop;
+    // Sandboxing
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
     isrun : Boolean;
     Stopped : Boolean;
@@ -48,6 +52,8 @@ type
       object_: id; change: NSDictionary; context_: pointer); override;
 
     procedure onOpenURL( const url: NSURL ); message 'lclOnOpenURL:';
+
+    function isInSandbox: Boolean; message 'lclIsInSandbox';
   private
     _onOpenURLObserver: TCocoaAppOnOpenURLNotify;
   public
@@ -583,6 +589,11 @@ begin
     _onOpenURLObserver( url );
 end;
 
+function TCocoaApplication.isInSandbox: Boolean;
+begin
+  Result:= _isInSandbox;
+end;
+
 procedure TCocoaApplication.setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify);
 begin
   _onOpenURLObserver:= onOpenURLObserver;
@@ -600,6 +611,7 @@ class function TCocoaApplication.initApplication: TCocoaApplication;
 var
   bun : NSBundle;
   appDelegate: TAppDelegate;
+  lDict: NSDictionary;
 begin
   bun := NSBundle.mainBundle;
   if Assigned(bun) and Assigned(bun.principalClass) then
@@ -610,6 +622,9 @@ begin
   appDelegate:= TAppDelegate.new;
   Result.setDelegate( NSApplicationDelegateProtocol(appDelegate) );
   appDelegate.release;
+
+  lDict := NSProcessInfo.processInfo.environment;
+  Result._isInSandbox := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
 end;
 
 {$endif}

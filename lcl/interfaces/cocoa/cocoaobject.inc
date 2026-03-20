@@ -25,8 +25,6 @@
   Initialize Cocoa Widget Set
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
-var
-  lDict: NSDictionary;
 begin
   {$IFDEF VerboseObject}
     DebugLn('TCocoaWidgetSet.AppInit');
@@ -40,10 +38,6 @@ begin
   {$ifdef COCOALOOPOVERRIDE}
   NSApp.finishLaunching;
   {$endif}
-
-  // Sandboxing
-  lDict := NSProcessInfo.processInfo.environment;
-  SandboxingOn := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
 end;
 
 procedure TCocoaWidgetSet.SendCheckSynchronizeMessage;
