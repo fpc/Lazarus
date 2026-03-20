@@ -2275,6 +2275,7 @@ begin
   begin
     OldDPI := pango_cairo_context_get_resolution(FCurrentFont.Layout^.get_context);
     pango_cairo_context_set_resolution(FCurrentFont.Layout^.get_context, 72.0);
+    FCurrentFont.Layout^.context_changed;
   end;
 
   ornt := Self.FCurrentFont.FLogFont.lfOrientation;
@@ -2312,7 +2313,10 @@ begin
   pango_cairo_show_layout(pcr, FCurrentFont.Layout);
 
   if IsVectorSurface then
+  begin
     pango_cairo_context_set_resolution(FCurrentFont.Layout^.get_context, OldDPI);
+    FCurrentFont.Layout^.context_changed;
+  end;
 
   if ornt <> 0 then
     cairo_rotate(pcr, Pi * (ornt / 10) / 180);
