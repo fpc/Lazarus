@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="587">
+    <Files Count="588">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2892,6 +2892,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaApplication"/>
       </Item587>
+      <Item588>
+        <Filename Value="cocoa/cocoawsmodalservice.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cocoawsmodalservice"/>
+      </Item588>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

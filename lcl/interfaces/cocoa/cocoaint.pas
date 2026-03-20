@@ -31,7 +31,7 @@ uses
   CocoaWSService, CocoaApplication, CocoaConst, CocoaConfig, CocoaPrivate, CocoaCallback,
   CocoaUtils, Cocoa_Extra, CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows,
   CocoaScrollers, CocoaWSScrollers,
-  CocoaWSClipboard, CocoaTextEdits,
+  CocoaWSClipboard, CocoaTextEdits, CocoaWSModalService,
   LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus, ExtCtrls,
   IntfGraphics, Graphics;
@@ -46,23 +46,6 @@ type
     function initWithInterval_func(interval: integer; timerFunc: TWSTimerProc): id; message 'initWithInterval:func:';
     procedure invalidate; message 'invalidate';
     procedure timerFireMethod(atimer: NSTimer); message 'timerFireMethod:';
-  end;
-
-  { TModalSession }
-
-  TModalSession = class(TObject)
-    window : NSWindow;
-    sess   : NSModalSession;
-    // recording menu state for the modality stack
-    // there's no limitation for a modal window to have its own menu
-    // if it override the mainMenu, we still need the information
-    // to restore the previous state of the mainmenu
-    prevMenuEnabled: Boolean;
-    cocoaMenu : NSMenu;
-    lclMenu   : TMenu;
-    constructor Create(awin: NSWindow; asess: NSModalSession;
-      APrevMenuEnabled: Boolean;
-      amainmenu: NSMenu; ALCL: TMenu);
   end;
 
   { TCocoaWidgetSet }
@@ -242,19 +225,6 @@ begin
           LazarusApplicationDefinedSubtypeWakeup,
           0, 0);
   NSApp.postEvent_atStart(ev, false);
-end;
-
-{ TModalSession }
-
-constructor TModalSession.Create(awin: NSWindow; asess: NSModalSession;
-  APrevMenuEnabled: Boolean; amainmenu: NSMenu; ALCL: TMenu);
-begin
-  inherited Create;
-  window := awin;
-  sess := asess;
-  prevMenuEnabled := APrevMenuEnabled;
-  cocoaMenu := amainmenu;
-  lclMenu   := alcl;
 end;
 
 type
