@@ -207,7 +207,7 @@ function HwndFromGtkWidget(AWidget: PGtkWidget): HWND;
 implementation
 
 uses
-  gtk3boxes, gtk3caret, gtk3themes,
+  LazPangoCairo1, gtk3boxes, gtk3caret, gtk3themes,
   {%H-}Gtk3WSFactory{%H-};
 
 {------------------------------------------------------------------------------

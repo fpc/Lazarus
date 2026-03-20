@@ -2981,6 +2981,10 @@ begin
       Layout^.set_text(PChar(SafeStr), Length(SafeStr));
     end;
   end;
+  if cairo_surface_get_type(cairo_get_target(TGtk3DeviceContext(DC).pcr)) in
+     [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
+      CAIRO_SURFACE_TYPE_SCRIPT] then
+    pango_cairo_update_layout(TGtk3DeviceContext(DC).pcr, Layout);
   Layout^.get_pixel_size(@Size.cx, @Size.cy);
 
   OldStr := pango_layout_get_text(Layout);
@@ -3053,6 +3057,10 @@ begin
       Layout^.set_text(PChar(SafeStr), Length(SafeStr));
     end;
   end;
+  if cairo_surface_get_type(cairo_get_target(TGtk3DeviceContext(DC).pcr)) in
+     [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
+      CAIRO_SURFACE_TYPE_SCRIPT] then
+    pango_cairo_update_layout(TGtk3DeviceContext(DC).pcr, Layout);
   Layout^.get_pixel_size(@Size.Cx, @Size.CY);
 
   Result := True;
@@ -3082,6 +3090,10 @@ begin
     //TODO add metrics to cache of font, so if we have valid metrics just return.
     //or create metrics when font is created (like qt uses)
     AFont := TGtk3DeviceContext(DC).CurrentFont;
+    if cairo_surface_get_type(cairo_get_target(TGtk3DeviceContext(DC).pcr)) in
+       [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
+      CAIRO_SURFACE_TYPE_SCRIPT] then
+      pango_cairo_update_layout(TGtk3DeviceContext(DC).pcr, AFont.Layout);
 
     APangoMetrics := pango_context_get_metrics(AFont.Layout^.get_context,
       AFont.Handle, AFont.Layout^.get_context^.get_language);
