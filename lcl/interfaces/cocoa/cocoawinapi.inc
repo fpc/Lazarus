@@ -708,13 +708,13 @@ begin
     // It's possible that windows "disabled" by a another model window would be
     // re-enabled. This check verifies that only a window on the top of the modal stack
     // will be brought back active... what about other windows?
-    if bEnable and isModalSession and (obj.isKindOfClass(TCocoaWindowContent)) then begin
+    if bEnable and CocoaWidgetSetModalService.isModalSession and (obj.isKindOfClass(TCocoaWindowContent)) then begin
       if not (TCocoaWindowContent(obj).isembedded)
-        and not isTopModalWin(TCocoaWindowContent(obj).window) then Exit;
+        and not CocoaWidgetSetModalService.isTopModalWindow(TCocoaWindowContent(obj).window) then Exit;
     end;
     obj.lclSetEnabled(bEnable);
 
-    if (CaptureControl <> 0)
+    if (CocoaWidgetSetState.CaptureControl <> 0)
       and (not bEnable)
       and (obj.isKindOfClass(NSView))
       and TCocoaViewUtil.isLCLEnabled(NSView(obj)) then
@@ -1031,7 +1031,7 @@ end;
 
 function TCocoaWidgetSet.GetCapture: HWND;
 begin
-  Result:=FCaptureControl;
+  Result:= CocoaWidgetSetState.CaptureControl;
 end;
 
 function TCocoaWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
@@ -2318,12 +2318,12 @@ var
   lclobj : TObject;
 begin
   Result := 0;
-  if KillingFocus then
+  if CocoaWidgetSetState.KillingFocus then
     Exit;
 
   win := NSApp.keyWindow;
   if not Assigned(win) then
-    win := CocoaWidgetSet.KeyWindow;
+    win := CocoaWidgetSetState.KeyWindow;
   if not Assigned(win) then
     Exit;
 
@@ -2541,8 +2541,8 @@ end;
 
 function TCocoaWidgetSet.SetCapture(AHandle: HWND): HWND;
 begin
-  Result := FCaptureControl;
-  FCaptureControl := AHandle;
+  Result := CocoaWidgetSetState.CaptureControl;
+  CocoaWidgetSetState.CaptureControl := AHandle;
 end;
 
 function TCocoaWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
@@ -2581,7 +2581,7 @@ end;
 
 function TCocoaWidgetSet.ReleaseCapture : Boolean;
 begin
-  FCaptureControl:=0;
+  CocoaWidgetSetState.CaptureControl := 0;
   Result := True;
 end;
 
@@ -2700,7 +2700,7 @@ begin
   then
   begin
     if lWin.isKeyWindow or lWin.isMainWindow then
-      SetMainMenu(AMenuHandle, frm.Menu);
+      CocoaWidgetSetMenuService.SetMainMenu(AMenuHandle, frm.Menu);
     Result := True;
   end;
 end;

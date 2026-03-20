@@ -121,9 +121,6 @@ var
 
 implementation
 
-uses
-  CocoaInt;
-
 var
   isMenuEnabled : Boolean = true;
 
@@ -176,8 +173,6 @@ var
 
 procedure TCocoaMenu.dealloc;
 begin
-  if Assigned(CocoaWidgetSet) and (CocoaWidgetSet.MainFormMenu=self) then
-    CocoaWidgetSet.MainFormMenu:= nil;
   if appleMenu <> nil then begin
     if indexOfItem(appleMenu) >= 0 then
       removeItem(appleMenu);

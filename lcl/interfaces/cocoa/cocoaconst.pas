@@ -43,6 +43,10 @@ function NSSTR_EDIT_MENU_PASTE: NSSTRING;
 function NSSTR_EDIT_MENU_SELECTALL: NSSTRING;
 
 const
+  // Lack of documentation, provisional definition
+  LazarusApplicationDefinedSubtypeWakeup = 13579;
+
+const
   // if the height of NSButton with NSRegularSquareBezelStyle is too small,
   // a strange rectangular color block will be shown in the Button,
   // in dark mode.

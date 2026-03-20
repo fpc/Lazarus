@@ -26,12 +26,13 @@ uses
   // RTL,FCL
   Classes, SysUtils,
   // LCL
-  Controls, Forms, Graphics, LCLType, Messages, LMessages, LCLProc,
+  Controls, Forms, Graphics, LCLType, Messages, LMessages, LCLProc, GraphMath,
   // Widgetset
   WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
   MacOSAll, CocoaAll,
-  CocoaInt, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaWSCommon,
+  CocoaInt, CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate,
+  CocoaCallback, CocoaCommonCallback, CocoaWSCommon,
   CocoaGDIObjects, CocoaWindows, CocoaToolBar, CocoaCustomControl, CocoaScrollers,
   CocoaWSScrollers, CocoaUtils, CocoaMenus, Cocoa_Extra;
 
@@ -137,9 +138,6 @@ type
   end;
 
 implementation
-
-uses
-  GraphMath;
 
 type
   TControlScrollBarAccess = class(TControlScrollBar);
@@ -365,7 +363,7 @@ var
   isDesign: Boolean;
   focusedCb: ICommonCallback;
 begin
-  CocoaWidgetSet.KeyWindow:= window;
+  CocoaWidgetSetState.KeyWindow:= window;
 
   if not IsActivating then
   begin
@@ -387,13 +385,13 @@ begin
       begin
         if NSObject(ACustForm.Menu.Handle).isKindOfClass_(TCocoaMenu) then
         begin
-          CocoaWidgetSet.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
+          CocoaWidgetSetMenuService.SetMainMenu(ACustForm.Menu.Handle, ACustForm.Menu);
         end
         else
           debugln('Warning: Menu does not have a valid handle.');
       end
       else
-        CocoaWidgetSet.SetMainMenu(0, nil);
+        CocoaWidgetSetMenuService.SetMainMenu(0, nil);
     end;
 
     LCLSendActivateMsg(Target, WA_ACTIVE, false);
@@ -406,7 +404,7 @@ begin
 
     IsActivating:=False;
 
-    if CocoaWidgetSet.isModalSession then
+    if CocoaWidgetSetModalService.isModalSession then
       NSView(ACustForm.Handle).window.orderFront(nil);
   end;
 end;
@@ -415,7 +413,7 @@ procedure TLCLWindowCallback.Deactivate;
 var
   focusedCb: ICommonCallback;
 begin
-  CocoaWidgetSet.KeyWindow:= nil;
+  CocoaWidgetSetState.KeyWindow:= nil;
 
   focusedCb:= window.firstResponder.lclGetCallback;
   if Assigned(focusedCb) then begin
@@ -433,7 +431,7 @@ begin
   CanClose := LCLSendCloseQueryMsg(Target) > 0;
 
   // Special code for modal forms, which otherwise would get 0 here and not call Close
-  if (CocoaWidgetSet.CurModalForm = window) and
+  if (CocoaWidgetSetModalService.currentModal = window) and
     (TCustomForm(Target).ModalResult <> mrNone) then
   begin
     {$IFDEF COCOA_USE_NATIVE_MODAL}
@@ -1027,7 +1025,7 @@ end;
 
 class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
-  CocoaWidgetSet.EndModal(NSView(ACustomForm.Handle).window);
+  CocoaWidgetSetModalService.endModal(NSView(ACustomForm.Handle).window);
 end;
 
 function createWindowImageRep(win: NSWindow): NSBitmapImageRep;
@@ -1098,7 +1096,7 @@ begin
   //  disabling the other windows ourselves
   win := TCocoaWSCustomForm.GetWindowFromHandle(ACustomForm);
   if win = nil then Exit;
-  CocoaWidgetSet.StartModal(NSView(ACustomForm.Handle).window, Assigned(ACustomForm.Menu));
+  CocoaWidgetSetModalService.startModal(NSView(ACustomForm.Handle).window, Assigned(ACustomForm.Menu));
 
   // Another possible implementation is using runModalForWindow
   {$ifdef COCOA_USE_NATIVE_MODAL}
@@ -1112,7 +1110,7 @@ end;
 class procedure TCocoaWSCustomForm.SetModalResult(const ACustomForm: TCustomForm;
   ANewValue: TModalResult);
 begin
-  if (CocoaWidgetSet.CurModalForm = NSView(ACustomForm.Handle).window) and (ANewValue <> 0) then
+  if (CocoaWidgetSetModalService.currentModal = NSView(ACustomForm.Handle).window) and (ANewValue <> 0) then
     CloseModal(ACustomForm);
 end;
 
@@ -1338,7 +1336,7 @@ end;
 procedure TCocoaWSCustomFormHelper.doSetCollectionBehavior;
 begin
   try
-    if CocoaWidgetSet.isModalSession then
+    if CocoaWidgetSetModalService.isModalSession then
       exit;
     if (_window.styleMask and NSResizableWindowMask)=0 then
       exit;
