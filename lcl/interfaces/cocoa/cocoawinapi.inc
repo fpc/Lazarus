@@ -1908,26 +1908,8 @@ begin
 end;
 
 function TCocoaWidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
-var
-  point: NSPoint;
-  screen: NSScreen;
-  i: Integer;
 begin
-  Result:= 0;
-  point:= TCocoaScreenUtil.toCocoa( ptScreenCoords );
-  if point.y>=1 then         // NSPointInRect is (upper,left) inside
-    point.y:= point.y-1;     // (lower,right) outside
-
-  for i := 0 to NSScreen.screens.count - 1 do begin
-    screen:= NSScreen( NSScreen.screens.objectAtIndex(i) );
-    if NSPointInRect(point, screen.frame) then begin
-      Result:= TCocoaScreenUtil.indexToHMonitor( i );
-      Exit;
-    end;
-  end;
-
-  if dwFlags<>MONITOR_DEFAULTTONULL then
-    Result:= TCocoaScreenUtil.indexToHMonitor( 0 );
+  Result := TCocoaScreenUtil.getHMonitor(ptScreenCoords, dwFlags);
 end;
 
 function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
