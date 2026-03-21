@@ -60,14 +60,8 @@ type
     procedure SyncClipboard();
   protected
     _gdiObject: TCocoaWidgetSetGDIObject;
+    _clipboard: TCocoaWSClipboard;
 
-    fClipboard: TCocoaWSClipboard;
-
-    function PromptUser(const DialogCaption, DialogMessage: String;
-      DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
-      EscapeResult: Longint): Longint; override;
-    function MessageBox(HWnd: HWND; lpText, lpCaption: PChar;
-      uType: Cardinal): Integer; override;
     function GetAppHandle: TLCLHandle; override;
     function CreateThemeServices: TThemeServices; override;
   public
@@ -98,6 +92,12 @@ type
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;
     function DestroyTimer(TimerHandle: TLCLHandle): boolean; override;
+
+    function PromptUser(const DialogCaption, DialogMessage: String;
+      DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
+      EscapeResult: Longint): Longint; override;
+    function MessageBox(HWnd: HWND; lpText, lpCaption: PChar;
+      uType: Cardinal): Integer; override;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

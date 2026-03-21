@@ -158,8 +158,7 @@ begin
   ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
 
   _gdiObject:= TCocoaWidgetSetGDIObject.Create;
-
-  fClipboard := TCocoaWSClipboard.Create; // must be here otherwise clipboard calls before Application.Initialize crash
+  _clipboard := TCocoaWSClipboard.Create; // must be here otherwise clipboard calls before Application.Initialize crash
 end;
 
 {------------------------------------------------------------------------------
@@ -180,8 +179,7 @@ begin
   DefaultBrush.Free;
 
   _gdiObject.Free;
-
-  fClipboard.Free;
+  _clipboard.Free;
 
   // The CocoaCaret is based WidgetSet timer.
   // The GlobalCaret is freed in finalization section, which is called

@@ -261,7 +261,7 @@ begin
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardFormatToMimeType FormatID: ' + DbgS(FormatID));
   {$ENDIF}
-  Result := fClipboard.FormatToMimeType(FormatID);
+  Result := _clipboard.FormatToMimeType(FormatID);
 end;
 
 {------------------------------------------------------------------------------
@@ -279,7 +279,7 @@ begin
     DebugLn('TCocoaWidgetSet.ClipboardGetData ClipboardType=' +
       ClipboardTypeName[ClipboardType] + ' FormatID: ' + DbgS(FormatID));
   {$ENDIF}
-  Result := fClipboard.GetData(ClipboardType, FormatID, Stream);
+  Result := _clipboard.GetData(ClipboardType, FormatID, Stream);
 end;
 
 {------------------------------------------------------------------------------
@@ -301,7 +301,7 @@ begin
       ClipboardTypeName[ClipboardType]);
   {$ENDIF}
   fmt := nil;
-  Result := fClipboard.GetFormats(ClipboardType, Count, fmt);
+  Result := _clipboard.GetFormats(ClipboardType, Count, fmt);
   if Count > 0 then begin
     GetMem(List, Count * sizeof(TClipboardFormat));
     System.Move(fmt[0], List^, Count * sizeof(TClipboardFormat));
@@ -334,7 +334,7 @@ begin
     DebugLn('TCocoaWidgetSet.ClipboardGetOwnerShip ClipboardType=' +
       ClipboardTypeName[ClipboardType] + ' FormatCount: ' + DbgS(FormatCount));
   {$ENDIF}
-  Result := fClipboard.GetOwnership(ClipboardType, OnRequestProc, FormatCount, Formats);
+  Result := _clipboard.GetOwnership(ClipboardType, OnRequestProc, FormatCount, Formats);
 end;
 
 {------------------------------------------------------------------------------
@@ -345,7 +345,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
 begin
-  Result := fClipboard.RegisterFormat(AMimeType);
+  Result := _clipboard.RegisterFormat(AMimeType);
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardRegisterFormat AMimeType=' + AMimeType
       + ' Result='+DbgS(Result));

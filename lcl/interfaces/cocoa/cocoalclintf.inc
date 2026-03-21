@@ -149,7 +149,7 @@ end;
 
 procedure TCocoaWidgetSet.SyncClipboard();
 begin
-  fClipboard.Sync;
+  _clipboard.Sync;
 end;
 
 type
