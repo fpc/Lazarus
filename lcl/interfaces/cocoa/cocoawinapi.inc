@@ -451,59 +451,6 @@ begin
   Result := HFont(TCocoaFont.Create(LogFont, LongFontName));
 end;
 
-class function TCocoaWidgetSet.Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
-var
-  ARawImage: TRawImage;
-  Desc: TRawImageDescription absolute ARawimage.Description;
-
-  ImgHandle, ImgMaskHandle: HBitmap;
-  ImagePtr: PRawImage;
-  DevImage: TRawImage;
-  DevDesc: TRawImageDescription;
-  SrcImage, DstImage: TLazIntfImage;
-  W, H: Integer;
-begin
-  Result := nil;
-
-  if not LCLIntf.RawImage_FromBitmap(ARawImage, HBITMAP(ABitmap), HBITMAP(AMask)) then
-    Exit;
-
-  ImgMaskHandle := 0;
-
-  W := Desc.Width;
-  if W < 1 then W := 1;
-  H := Desc.Height;
-  if H < 1 then H := 1;
-
-  QueryDescription(DevDesc, [riqfRGB, riqfAlpha], W, H);
-
-  if DevDesc.IsEqual(Desc)
-  then begin
-    // image is compatible, so use it
-    DstImage := nil;
-    ImagePtr := @ARawImage;
-  end
-  else begin
-    // create compatible copy
-    SrcImage := TLazIntfImage.Create(ARawImage, False);
-    DstImage := TLazIntfImage.Create(0,0,[]);
-    DstImage.DataDescription := DevDesc;
-    DstImage.CopyPixels(SrcImage);
-    SrcImage.Free;
-    DstImage.GetRawImage(DevImage);
-    ImagePtr := @DevImage;
-  end;
-
-  try
-    if not LCLIntf.RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, True) then Exit;
-
-    Result := TCocoaBitmap(ImgHandle);
-  finally
-    ARawImage.FreeData;
-    DstImage.Free;
-  end;
-end;
-
 function TCocoaWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
 var
   ABitmap: TCocoaBitmap;
@@ -511,7 +458,7 @@ begin
   Result := 0;
   if IconInfo^.hbmColor = 0 then Exit;
 
-  ABitmap := Create32BitAlphaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
+  ABitmap := CocoaWidgetSetGDIService.create32BitAlphaCocoaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
 
   if IconInfo^.fIcon then
     Result := HICON(ABitmap)
