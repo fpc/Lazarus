@@ -1699,29 +1699,29 @@ begin
 
   case Value of
     BLACK_BRUSH:         // Black brush.
-      Result := FStockBlackBrush;
+      Result := _gdiObject.blackBrush;
     DKGRAY_BRUSH:        // Dark gray brush.
-      Result := FStockDKGrayBrush;
+      Result := _gdiObject.dkGrayBrush;
     GRAY_BRUSH:          // Gray brush.
-      Result := FStockGrayBrush;
+      Result := _gdiObject.grayBrush;
     LTGRAY_BRUSH:        // Light gray brush.
-      Result := FStockLtGrayBrush;
+      Result := _gdiObject.ltGrayBrush;
     NULL_BRUSH:          // Null brush (equivalent to HOLLOW_BRUSH).
-      Result := FStockNullBrush;
+      Result := _gdiObject.nullBrush;
     WHITE_BRUSH:         // White brush.
-      Result := FStockWhiteBrush;
+      Result := _gdiObject.whiteBrush;
 
     BLACK_PEN:           // Black pen.
-      Result := FStockBlackPen;
+      Result := _gdiObject.blackPen;
     NULL_PEN:            // Null pen.
-      Result := FStockNullPen;
+      Result := _gdiObject.nullPen;
     WHITE_PEN:           // White pen.
-      Result := FStockWhitePen;
+      Result := _gdiObject.whitePen;
 
     DEFAULT_GUI_FONT, SYSTEM_FONT:
-      Result := FStockSystemFont;
+      Result := _gdiObject.systemFont;
     SYSTEM_FIXED_FONT:
-      Result := FStockFixedFont;
+      Result := _gdiObject.fixedFont;
   end;
 end;
 
@@ -1755,15 +1755,15 @@ begin
     Result := 0;
     Exit;
   end;
-  if (FSysColorBrushes[nIndex] = 0) then
-    FSysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(TCocoaColorUtil.sysIndexToColor(nIndex), True))
+  if (_gdiObject.sysColorBrushes[nIndex] = 0) then
+    _gdiObject.sysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(TCocoaColorUtil.sysIndexToColor(nIndex), True))
   else
   begin
     // system wide can change the color on the fly
-    TCocoaBrush(FSysColorBrushes[nIndex]).Color := TCocoaColorUtil.sysIndexToColor(nIndex)
+    TCocoaBrush(_gdiObject.sysColorBrushes[nIndex]).Color := TCocoaColorUtil.sysIndexToColor(nIndex)
   end;
 
-  Result := FSysColorBrushes[nIndex];
+  Result := _gdiObject.sysColorBrushes[nIndex];
 end;
 
 function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
@@ -2920,10 +2920,10 @@ begin
     if (Element > MAX_SYS_COLORS) or (Element < 0) then 
       Exit;
     Color := TCocoaColorUtil.toColor(PDWord(@lpaRgbValues)[n]);
-    if (FSysColorBrushes[Element] <> 0) then
-      TCocoaBrush(FSysColorBrushes[Element]).Color := Color
+    if (_gdiObject.sysColorBrushes[Element] <> 0) then
+      TCocoaBrush(_gdiObject.sysColorBrushes[Element]).Color := Color
     else
-      FSysColorBrushes[Element] := HBrush(TCocoaBrush.Create(Color, True));
+      _gdiObject.sysColorBrushes[Element] := HBrush(TCocoaBrush.Create(Color, True));
   end;
 
   Result := True;

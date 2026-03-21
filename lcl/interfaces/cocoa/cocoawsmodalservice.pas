@@ -9,8 +9,8 @@ interface
 uses
   Classes, SysUtils,
   Forms, Menus, LCLType,
-  MacOSAll, CocoaAll,
-  CocoaWSService, CocoaMenus, CocoaConst, CocoaUtils, Cocoa_Extra;
+  CocoaAll,
+  CocoaWSService, CocoaMenus, CocoaConst, CocoaUtils;
 
 type
 

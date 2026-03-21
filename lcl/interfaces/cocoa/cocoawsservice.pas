@@ -26,6 +26,34 @@ type
     function isSendingScrollWheelFromInterface: Boolean;
   end;
 
+  { TCocoaWidgetSetGDIObject }
+
+  TCocoaWidgetSetGDIObject = class
+  public
+    nullBrush: HBRUSH;
+    blackBrush: HBRUSH;
+    ltGrayBrush: HBRUSH;
+    grayBrush: HBRUSH;
+    dkGrayBrush: HBRUSH;
+    whiteBrush: HBRUSH;
+
+    nullPen: HPEN;
+    blackPen: HPEN;
+    whitePen: HPEN;
+
+    systemFont: HFONT;
+    fixedFont: HFONT;
+
+    sysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+  private
+    procedure initStockItems;
+    procedure freeStockItems;
+    procedure freeSysColorBrushes;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
   { TCocoaWidgetSetService }
 
   TCocoaWidgetSetService = class
@@ -101,6 +129,106 @@ implementation
 function TCocoaWidgetSetState.isSendingScrollWheelFromInterface: Boolean;
 begin
   Result:= self.FSendingScrollWheelCount > 0;
+end;
+
+{ TCocoaWidgetSetGDIObject }
+
+procedure TCocoaWidgetSetGDIObject.initStockItems;
+var
+  LogBrush: TLogBrush;
+  logPen: TLogPen;
+  pool: NSAutoreleasePool;
+begin
+  FillChar(LogBrush, SizeOf(TLogBrush),0);
+  LogBrush.lbStyle := BS_NULL;
+  self.nullBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbStyle := BS_SOLID;
+  LogBrush.lbColor := $000000;
+  self.blackBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbColor := $C0C0C0;
+  self.ltGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbColor := $808080;
+  self.grayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbColor := $404040;
+  self.dkGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbColor := $FFFFFF;
+  self.whiteBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogPen.lopnStyle := PS_NULL;
+  LogPen.lopnWidth := Types.Point(0, 0); // create cosmetic pens
+  LogPen.lopnColor := $FFFFFF;
+  self.nullPen := HPen(TCocoaPen.Create(LogPen, True));
+
+  LogPen.lopnStyle := PS_SOLID;
+  self.whitePen := HPen(TCocoaPen.Create(LogPen, True));
+
+  LogPen.lopnColor := $000000;
+  self.blackPen := HPen(TCocoaPen.Create(LogPen, True));
+
+  self.systemFont := HFont(TCocoaFont.CreateDefault(True));
+  pool := NSAutoreleasePool.alloc.init;
+  self.fixedFont := HFont(TCocoaFont.Create(NSFont.userFixedPitchFontOfSize(0), True));
+  pool.release;
+end;
+
+procedure TCocoaWidgetSetGDIObject.freeStockItems;
+
+  procedure DeleteAndNilObject(var h: HGDIOBJ);
+  begin
+    if h <> 0 then
+      TCocoaGDIObject(h).Global := False;
+      CocoaWidgetSetService.deleteObject(h);
+    h := 0;
+  end;
+
+begin
+  DeleteAndNilObject(self.nullBrush);
+  DeleteAndNilObject(self.blackBrush);
+  DeleteAndNilObject(self.ltGrayBrush);
+  DeleteAndNilObject(self.grayBrush);
+  DeleteAndNilObject(self.dkGrayBrush);
+  DeleteAndNilObject(self.whiteBrush);
+
+  DeleteAndNilObject(self.nullPen);
+  DeleteAndNilObject(self.blackPen);
+  DeleteAndNilObject(self.whitePen);
+
+  DeleteAndNilObject(self.fixedFont);
+  DeleteAndNilObject(self.systemFont);
+end;
+
+procedure TCocoaWidgetSetGDIObject.freeSysColorBrushes;
+
+  procedure DeleteAndNilObject(var h: HBrush);
+  begin
+    if h <> 0 then
+    begin
+      TCocoaBrush(h).Free;
+      h := 0;
+    end;
+  end;
+
+var
+  i: integer;
+begin
+  for i := Low(self.sysColorBrushes) to High(self.sysColorBrushes) do
+    DeleteAndNilObject(self.sysColorBrushes[i]);
+end;
+
+constructor TCocoaWidgetSetGDIObject.Create;
+begin
+  self.initStockItems;
+end;
+
+destructor TCocoaWidgetSetGDIObject.Destroy;
+begin
+  self.freeStockItems;
+  self.freeSysColorBrushes;
 end;
 
 { TCocoaWidgetSetService }

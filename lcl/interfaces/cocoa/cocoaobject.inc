@@ -157,7 +157,7 @@ begin
 
   ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
 
-  InitStockItems;
+  _gdiObject:= TCocoaWidgetSetGDIObject.Create;
 
   fClipboard := TCocoaWSClipboard.Create; // must be here otherwise clipboard calls before Application.Initialize crash
 end;
@@ -172,8 +172,6 @@ begin
   CocoaWidgetSetService.releaseWaitingLCLObjects(0);
   inherited Destroy;
 
-  FreeStockItems;
-
   ScreenContext.Free;
   DefaultContext.Free;
   DefaultBitmap.Free;
@@ -181,7 +179,7 @@ begin
   DefaultPen.Free;
   DefaultBrush.Free;
 
-  FreeSysColorBrushes;
+  _gdiObject.Free;
 
   fClipboard.Free;
 
@@ -343,94 +341,6 @@ begin
   if not Result then Exit;
   TCocoaTimerObject(obj).invalidate;
   obj.release;
-end;
-
-procedure TCocoaWidgetSet.InitStockItems;
-var
-  LogBrush: TLogBrush;
-  logPen: TLogPen;
-  pool: NSAutoreleasePool;
-begin
-  FillChar(LogBrush, SizeOf(TLogBrush),0);
-  LogBrush.lbStyle := BS_NULL;
-  FStockNullBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbStyle := BS_SOLID;
-  LogBrush.lbColor := $000000;
-  FStockBlackBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbColor := $C0C0C0;
-  FStockLtGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbColor := $808080;
-  FStockGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbColor := $404040;
-  FStockDkGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbColor := $FFFFFF;
-  FStockWhiteBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogPen.lopnStyle := PS_NULL;
-  LogPen.lopnWidth := Types.Point(0, 0); // create cosmetic pens
-  LogPen.lopnColor := $FFFFFF;
-  FStockNullPen := HPen(TCocoaPen.Create(LogPen, True));
-
-  LogPen.lopnStyle := PS_SOLID;
-  FStockWhitePen := HPen(TCocoaPen.Create(LogPen, True));
-
-  LogPen.lopnColor := $000000;
-  FStockBlackPen := HPen(TCocoaPen.Create(LogPen, True));
-
-  FStockSystemFont := HFont(TCocoaFont.CreateDefault(True));
-  pool := NSAutoreleasePool.alloc.init;
-  FStockFixedFont := HFont(TCocoaFont.Create(NSFont.userFixedPitchFontOfSize(0), True));
-  pool.release;
-end;
-
-procedure TCocoaWidgetSet.FreeStockItems;
-
-  procedure DeleteAndNilObject(var h: HGDIOBJ);
-  begin
-    if h <> 0 then
-      TCocoaGDIObject(h).Global := False;
-    DeleteObject(h);
-    h := 0;
-  end;
-
-begin
-  DeleteAndNilObject(FStockNullBrush);
-  DeleteAndNilObject(FStockBlackBrush);
-  DeleteAndNilObject(FStockLtGrayBrush);
-  DeleteAndNilObject(FStockGrayBrush);
-  DeleteAndNilObject(FStockDkGrayBrush);
-  DeleteAndNilObject(FStockWhiteBrush);
-
-  DeleteAndNilObject(FStockNullPen);
-  DeleteAndNilObject(FStockBlackPen);
-  DeleteAndNilObject(FStockWhitePen);
-
-  DeleteAndNilObject(FStockFixedFont);
-  DeleteAndNilObject(FStockSystemFont);
-
-end;
-
-procedure TCocoaWidgetSet.FreeSysColorBrushes;
-
-  procedure DeleteAndNilObject(var h: HBrush);
-  begin
-    if h <> 0 then
-    begin
-      TCocoaBrush(h).Free;
-      h := 0;
-    end;
-  end;
-
-var
-  i: integer;
-begin
-  for i := Low(FSysColorBrushes) to High(FSysColorBrushes) do
-    DeleteAndNilObject(FSysColorBrushes[i]);
 end;
 
 {------------------------------------------------------------------------------

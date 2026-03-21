@@ -59,20 +59,7 @@ type
     function nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
     procedure SyncClipboard();
   protected
-    FStockNullBrush: HBRUSH;
-    FStockBlackBrush: HBRUSH;
-    FStockLtGrayBrush: HBRUSH;
-    FStockGrayBrush: HBRUSH;
-    FStockDkGrayBrush: HBRUSH;
-    FStockWhiteBrush: HBRUSH;
-
-    FStockNullPen: HPEN;
-    FStockBlackPen: HPEN;
-    FStockWhitePen: HPEN;
-    FStockSystemFont: HFONT;
-    FStockFixedFont: HFONT;
-
-    FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+    _gdiObject: TCocoaWidgetSetGDIObject;
 
     fClipboard: TCocoaWSClipboard;
 
@@ -111,10 +98,6 @@ type
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;
     function DestroyTimer(TimerHandle: TLCLHandle): boolean; override;
-
-    procedure InitStockItems;
-    procedure FreeStockItems;
-    procedure FreeSysColorBrushes;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
