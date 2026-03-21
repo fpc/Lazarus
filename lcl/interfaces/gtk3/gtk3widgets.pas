@@ -12682,6 +12682,8 @@ begin
         {$ENDIF}
         // ShadowW/H = allocation - get_size, updated each WSA. 0 on X11 (SSD).
         // resize() takes content size. AWidth/AHeight are in allocation space.
+        if (csDesigning in AForm.ComponentState) then
+          PGtkWindow(Widget)^.set_default_size(AWidth, AHeight);
         PGtkWindow(Widget)^.resize(
           AWidth - FResizeState.ShadowW,
           AHeight - FResizeState.ShadowH);
