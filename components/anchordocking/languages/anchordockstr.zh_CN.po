@@ -30,12 +30,12 @@ msgstr "开始拖动前鼠标必须拖动的像素数"
 #| msgid "AnchorDock Backup Recovery"
 msgctxt "anchordockstr.adrsanchordockbackuprecovery"
 msgid "Backup/Restore Anchordocking Layout"
-msgstr "Lazarus IDE布局备份恢复工具"
+msgstr "备份/恢复锚点停靠布局"
 
 #: anchordockstr.adrsanchordockbackuprecoverycaption
 msgctxt "anchordockstr.adrsanchordockbackuprecoverycaption"
 msgid "Backup/Restore Anchordocking Layout"
-msgstr ""
+msgstr "备份/恢复锚点停靠布局"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 #, object-pascal-format
@@ -81,7 +81,7 @@ msgstr "备份失败"
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Backup successful"
 msgid "Backup successful: %s"
-msgstr "备份成功"
+msgstr "备份成功: %s"
 
 #: anchordockstr.adrsbottom
 msgid "bottom"
@@ -374,7 +374,7 @@ msgstr "无法删除文件"
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Unable to read the file"
 msgid "Unable to read the file: %s"
-msgstr "无法读取文件"
+msgstr "无法读取文件: %s"
 
 #: anchordockstr.adrsundock
 msgid "Undock"
