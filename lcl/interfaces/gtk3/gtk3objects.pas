@@ -3258,8 +3258,8 @@ begin
     NewStr := RemoveAmpersands(Str, StrLength)
   else
     NewStr := Str;
-  if g_utf8_validate(NewStr, StrLen(NewStr), nil) then
-    TheFont.Layout^.set_text(NewStr, StrLen(NewStr))
+  if g_utf8_validate(NewStr, StrLength, nil) then
+    TheFont.Layout^.set_text(NewStr, StrLength)
   else
   begin
     SafeStr := NewStr;
