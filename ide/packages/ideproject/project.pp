@@ -59,12 +59,11 @@ uses
   CompOptsIntf, IDEOptionsIntf, LazMsgWorker, UnitResourceIntf,
   // IDEIntf
   EditorSyntaxHighlighterDef, SrcEditorIntf, IDEOptEditorIntf,
-  // IdeUtils
-  InputHistory,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   IDECmdLine, IDEProcs, CompOptsModes, ProjectBuildMode, ModeMatrixOpts,
-  ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon, IdeConfStrConsts,
+  ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon,
+  RecentListProcs, IdeConfStrConsts,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageSystem,
   // IdeProject

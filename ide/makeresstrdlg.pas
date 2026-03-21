@@ -473,9 +473,8 @@ var
   HistoryList: THistoryList;
 begin
   // get the Prefixes history list
-  HistoryList:=
-         InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true,
-                                             rltCaseSensitive);
+  HistoryList:=InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true,
+                                                   rltCaseSensitive);
   IdentPrefixComboBox.Items.Assign(HistoryList);
   if IdentPrefixComboBox.Items.Count>0 then
     IdentPrefixComboBox.Text:=IdentPrefixComboBox.Items[0]
