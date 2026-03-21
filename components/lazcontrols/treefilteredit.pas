@@ -780,7 +780,7 @@ function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Filter all tree branches recursively, setting Node.Visible as needed.
 // Returns True if Node or its siblings or child nodes have visible items.
 var
-  PassCapt, PassEvent, Done: Boolean;
+  PassCapt, PassEvent, ChildPass, Done: Boolean;
 begin
   Result := False;
   while Node<>nil do
@@ -799,14 +799,18 @@ begin
       PassCapt := DoDefaultFilterItem(Node.Text, Node.Data);
     if (PassCapt or PassEvent) and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
+    //DebugLn(['FilterTree: Pass Caption/Event=',PassCapt,'/',PassEvent, ', Done=', Done,
+    //  ', IsFirstUpdate=', fIsFirstUpdate, ', ShowChildrenOfMatch=', fShowChildrenOfMatch,
+    //  ', ExpandAllInitially=', fExpandAllInitially, ', Filter="', Filter, '", Node=',Node.Text]);
     // ShowChildrenOfMatch affects only if the Node.Text matched.
     if PassCapt and fShowChildrenOfMatch and (Filter<>'') then
       Result := ShowAllChildren(Node)
     else begin
       // Recursive call for child nodes.
-      Node.Visible := FilterTree(Node.GetFirstChild) or PassCapt or PassEvent;
+      ChildPass := FilterTree(Node.GetFirstChild);
+      Node.Visible := ChildPass or PassCapt or PassEvent;
       if Node.Visible then begin
-        if (Filter<>'') or (fExpandAllInitially and fIsFirstUpdate) then
+        if ChildPass or (fExpandAllInitially and fIsFirstUpdate) then
           Node.Expanded := True;
         Result := True;
       end;
