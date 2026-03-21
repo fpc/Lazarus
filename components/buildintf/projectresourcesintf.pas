@@ -13,9 +13,14 @@ interface
 uses
   Classes, SysUtils, resource,
   // BuildIntf
-  CompOptsIntf, ProjectIntf;
+  CompOptsIntf;
 
 type
+  TProjResourceType = (
+    rtLRS,   // lazarus resources
+    rtRes    // fpc resources
+  );
+
   TAbstractProjectResources = class;
 
   { TAbstractProjectResource }
@@ -47,15 +52,16 @@ type
 
   TAbstractProjectResources = class
   private
-    FProject: TLazProject;
-    FResourceType: TResourceType;
+    FResourceType: TProjResourceType;
   protected
     FMessages: TStringList;
-    procedure SetResourceType(const AValue: TResourceType); virtual;
+    procedure SetResourceType(const AValue: TProjResourceType); virtual;
     function GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource; virtual; abstract;
     class function GetRegisteredResources: TList;
   public
-    constructor Create(AProject: TLazProject); virtual;
+    constructor Create; virtual;
+    // Deprecated in Lazarus 4.99, March 2026
+    constructor Create(AProject: TObject); virtual; deprecated 'Call Create without parameters';
     destructor Destroy; override;
 
     procedure AddSystemResource(AResource: TAbstractResource); virtual; abstract;
@@ -63,8 +69,7 @@ type
                    const AResourceName, AResourceType: String); virtual; abstract;
 
     property Messages: TStringList read FMessages;
-    property Project: TLazProject read FProject;
-    property ResourceType: TResourceType read FResourceType write SetResourceType;
+    property ResourceType: TProjResourceType read FResourceType write SetResourceType;
     property Resource[AIndex: TAbstractProjectResourceClass]: TAbstractProjectResource read GetProjectResource; default;
   end;
 
@@ -110,7 +115,7 @@ end;
 
 { TAbstractProjectResources }
 
-procedure TAbstractProjectResources.SetResourceType(const AValue: TResourceType);
+procedure TAbstractProjectResources.SetResourceType(const AValue: TProjResourceType);
 begin
   FResourceType := AValue;
 end;
@@ -120,11 +125,15 @@ begin
   Result := FRegisteredProjectResources;
 end;
 
-constructor TAbstractProjectResources.Create(AProject: TLazProject);
+constructor TAbstractProjectResources.Create;
 begin
   inherited Create;
-  FProject := AProject;
   FMessages := TStringList.Create;
+end;
+
+constructor TAbstractProjectResources.Create(AProject: TObject);
+begin
+  Create;
 end;
 
 destructor TAbstractProjectResources.Destroy;

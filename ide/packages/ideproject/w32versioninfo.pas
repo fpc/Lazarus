@@ -38,8 +38,11 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, versionresource, versiontypes, versionconsts,
+  // LazUtils
   Laz2_DOM, Laz2_XMLCfg, LazLoggerBase,
+  // IdeConfig
   LazConf, TransferMacros,
+  // BuildIntf
   CompOptsIntf, ProjectResourcesIntf;
 
 type

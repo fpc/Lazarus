@@ -46,8 +46,8 @@ uses
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists, DirectoryCacher,
   // BuildIntf
-  NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf,
-  IDEExternToolIntf, ComponentReg, BaseIDEIntf, UnitResourceIntf,
+  NewItemIntf, ProjPackIntf, ProjectIntf, ProjectResourcesIntf, PackageIntf,
+  PackageDependencyIntf, IDEExternToolIntf, ComponentReg, BaseIDEIntf, UnitResourceIntf,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
@@ -2316,7 +2316,7 @@ var
   LFMCode: TCodeBuffer;
   AProject: TProject;
   LRSFilename: String;
-  ResType: TResourceType;
+  ResType: TProjResourceType;
   SrcNoteBook: TSourceNotebook;
   AShareEditor: TSourceEditor;
   DisableAutoSize: Boolean;
@@ -5507,7 +5507,7 @@ var
   UnitOwners: TFPList;
   LRSFilename: String;
   PropPath: String;
-  ResType: TResourceType;
+  ResType: TProjResourceType;
 begin
   Result:=mrCancel;
 
@@ -6343,7 +6343,7 @@ function LoadResourceFile(AnUnitInfo: TUnitInfo; var LFMCode, LRSCode: TCodeBuff
 var
   LFMFilename: string;
   LRSFilename: String;
-  ResType: TResourceType;
+  ResType: TProjResourceType;
 begin
   LFMCode:=nil;
   LRSCode:=nil;

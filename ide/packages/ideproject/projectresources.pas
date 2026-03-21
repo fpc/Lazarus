@@ -88,10 +88,12 @@ type
 
     procedure ResourceModified(Sender: TObject);
   protected
-    procedure SetResourceType(const AValue: TResourceType); override;
+    procedure SetResourceType(const AValue: TProjResourceType); override;
     function GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource; override;
   public
-    constructor Create(AProject: TLazProject); override;
+    constructor Create; override;
+    // Deprecated in Lazarus 4.99, March 2026
+    constructor Create(AProject: TObject); override; deprecated 'Call Create without parameters';
     destructor Destroy; override;
 
     procedure AddSystemResource(AResource: TAbstractResource); override;
@@ -120,26 +122,26 @@ type
     property UserResources: TProjectUserResources read GetProjectUserResources;
   end;
 
-function GuessResourceType(Code: TCodeBuffer; out Typ: TResourceType): boolean;
+function GuessResourceType(Code: TCodeBuffer; out Typ: TProjResourceType): boolean;
 
 const
-  ResourceTypeNames: array[TResourceType] of string = (
+  ResourceTypeNames: array[TProjResourceType] of string = (
     'lrs',
     'res'
   );
 
-function StrToResourceType(const s: string): TResourceType;
+function StrToResourceType(const s: string): TProjResourceType;
 
 implementation
 
 const
   LazResourcesUnit = 'LResources';
 
-function StrToResourceType(const s: string): TResourceType;
+function StrToResourceType(const s: string): TProjResourceType;
 var
-  t: TResourceType;
+  t: TProjResourceType;
 begin
-  for t := Low(TResourceType) to High(TResourceType) do
+  for t := Low(TProjResourceType) to High(TProjResourceType) do
     if SysUtils.CompareText(ResourceTypeNames[t], s) = 0 then exit(t);
   Result := rtLRS;
 end;
@@ -297,7 +299,7 @@ end;
 var
   ResourceTypesCache: TResourceTypesCache = nil;
 
-function GuessResourceType(Code: TCodeBuffer; out Typ: TResourceType): boolean;
+function GuessResourceType(Code: TCodeBuffer; out Typ: TProjResourceType): boolean;
 var
   HasLRSIncludeDirective, HasRDirective: Boolean;
 begin
@@ -324,6 +326,44 @@ begin
 end;
 
 { TProjectResources }
+
+constructor TProjectResources.Create;
+var
+  i: integer;
+  L: TList;
+  R: TAbstractProjectResource;
+begin
+  inherited Create;
+  inherited SetResourceType(rtRes); // set fpc resources by default
+
+  FInModified := False;
+  FLrsIncludeAllowed := False;
+  FSystemResources := TResources.Create;
+  FLazarusResources := TStringList.Create;
+  FResources := TResourceList.Create;
+  L := GetRegisteredResources;
+  for i := 0 to L.Count - 1 do
+  begin
+    R := TAbstractProjectResourceClass(L[i]).Create;
+    R.Modified := False;
+    R.OnModified := @ResourceModified;
+    FResources.Add(R);
+  end;
+end;
+
+constructor TProjectResources.Create(AProject: TObject);
+begin
+  Create;
+end;
+
+destructor TProjectResources.Destroy;
+begin
+  DeleteResourceBuffers;
+  FreeAndNil(FResources);
+  FreeAndNil(FSystemResources);
+  FreeAndNil(FLazarusResources);
+  inherited Destroy;
+end;
 
 procedure TProjectResources.SetFileNames(const MainFileName, TestDir: String);
 begin
@@ -364,7 +404,7 @@ begin
   Result := TProjectXPManifest(GetProjectResource(TProjectXPManifest));
 end;
 
-procedure TProjectResources.SetResourceType(const AValue: TResourceType);
+procedure TProjectResources.SetResourceType(const AValue: TProjResourceType);
 begin
   if ResourceType <> AValue then
   begin
@@ -412,43 +452,6 @@ procedure TProjectResources.ResourceModified(Sender: TObject);
 begin
   if TAbstractProjectResource(Sender).Modified then
     Modified := true;
-end;
-
-constructor TProjectResources.Create(AProject: TLazProject);
-var
-  i: integer;
-  L: TList;
-  R: TAbstractProjectResource;
-begin
-  inherited Create(AProject);
-  inherited SetResourceType(rtRes); // set fpc resources by default
-
-  FInModified := False;
-  FLrsIncludeAllowed := False;
-
-  FSystemResources := TResources.Create;
-  FLazarusResources := TStringList.Create;
-
-  FResources := TResourceList.Create;
-  L := GetRegisteredResources;
-  for i := 0 to L.Count - 1 do
-  begin
-    R := TAbstractProjectResourceClass(L[i]).Create;
-    R.Modified := False;
-    R.OnModified := @ResourceModified;
-    FResources.Add(R);
-  end;
-end;
-
-destructor TProjectResources.Destroy;
-begin
-  DeleteResourceBuffers;
-
-  FreeAndNil(FResources);
-  FreeAndNil(FSystemResources);
-  FreeAndNil(FLazarusResources);
-
-  inherited Destroy;
 end;
 
 procedure TProjectResources.AddSystemResource(AResource: TAbstractResource);

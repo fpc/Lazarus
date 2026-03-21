@@ -10,8 +10,10 @@ uses
   Forms, Dialogs, ExtCtrls, StdCtrls,
   // LazUtils
   FileUtil, LazFileUtils,
+  // BuildIntf
+  ProjectIntf, ProjectResourcesIntf, IDEOptionsIntf,
   // IdeIntf
-  ProjectIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptEditorIntf,
   // IDE
   Project, LazarusIDEStrConsts;
 

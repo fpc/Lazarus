@@ -79,8 +79,8 @@ uses
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter, SynHighlighterPas,
   SynEditTypes,
   // BuildIntf
-  BaseIDEIntf, MacroIntf, NewItemIntf, IDEExternToolIntf, LazMsgWorker,
-  PackageIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf, ComponentReg,
+  BaseIDEIntf, MacroIntf, NewItemIntf, IDEExternToolIntf, LazMsgWorker, ComponentReg,
+  PackageIntf, ProjectIntf, ProjectResourcesIntf, CompOptsIntf, IDEOptionsIntf,
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
   IDECommands, IDEWindowIntf, IDEDialogs, SrcEditorIntf, IDEMsgIntf,

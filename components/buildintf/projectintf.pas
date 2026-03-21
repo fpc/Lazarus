@@ -20,7 +20,8 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazMethodList, AvgLvlTree,
   // BuildIntf
-  IDEOptionsIntf, NewItemIntf, ProjPackIntf, CompOptsIntf, BuildStrConsts;
+  IDEOptionsIntf, NewItemIntf, ProjPackIntf, ProjectResourcesIntf,
+  CompOptsIntf, BuildStrConsts;
 
 const
   FileDescGroupName = 'File';
@@ -43,11 +44,6 @@ const
   ProjDescNameEmpty = 'Empty';
 
 type
-  TResourceType = (
-    rtLRS,   // lazarus resources
-    rtRes    // fpc resources
-  );
-
   { TLazProjectFile }
 
   TLazProjectFile = class(TIDEOwnedFile)
@@ -64,8 +60,7 @@ type
     function GetSourceText: string; virtual; abstract;
     procedure ClearModifieds; virtual; abstract;
   public
-    property IsPartOfProject: boolean read FIsPartOfProject
-                                      write SetIsPartOfProject;
+    property IsPartOfProject: boolean read FIsPartOfProject write SetIsPartOfProject;
     property CustomData: TStringToStringTree read FCustomData; // name,value pairs
     property CustomSessionData: TStringToStringTree read FCustomSessionData; // name,value pairs
   end;
@@ -185,7 +180,7 @@ type
   private
     FDeclareClassVariable: Boolean;
   protected
-    function GetResourceType: TResourceType; virtual;
+    function GetResourceType: TProjResourceType; virtual;
   public
     constructor Create; override;
 
@@ -582,7 +577,7 @@ type
     FSessionChangeStamp: integer;
     FFileVersion: Integer;
     FFlags: TProjectFlags;
-    FResources: TObject;
+    FResources: TAbstractProjectResources;
     FRunParameters: TAbstractRunParamsOptions;
     function GetActiveBuildModeID: string; virtual; abstract;
     function GetFileCount: integer; virtual; abstract;
@@ -662,7 +657,7 @@ type
     property CustomSessionData: TStringToStringTree read FCustomSessionData; // for machine specific data
     property UseAppBundle: Boolean read FUseAppBundle write SetUseAppBundle;
     property NSPrincipalClass: string read FNSPrincipalClass write SetNSPrincipalClass;
-    property Resources: TObject read FResources; // TAbstractProjectResources
+    property Resources: TAbstractProjectResources read FResources;
     property UseManifest: boolean read GetUseManifest write SetUseManifest;
     property RunParameters: TAbstractRunParamsOptions read FRunParameters;
   end;
@@ -1265,7 +1260,7 @@ end;
 
 { TFileDescPascalUnitWithResource }
 
-function TFileDescPascalUnitWithResource.GetResourceType: TResourceType;
+function TFileDescPascalUnitWithResource.GetResourceType: TProjResourceType;
 begin
   Result := rtRes;
 end;
@@ -1708,7 +1703,7 @@ type
     FUnits: string;
   public
     constructor Create(const Package: string; FormClass: TCustomFormClass; const Caption, Description, Units: string); reintroduce;
-    function GetResourceType: TResourceType; override;
+    function GetResourceType: TProjResourceType; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function GetInterfaceUsesSection: string; override;
@@ -1727,7 +1722,7 @@ begin
   FUnits := Units;
 end;
 
-function TCustomFormDescriptor.GetResourceType: TResourceType;
+function TCustomFormDescriptor.GetResourceType: TProjResourceType;
 begin
   Result := rtRes;
 end;

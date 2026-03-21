@@ -67,7 +67,7 @@ uses
   // LazUtils
   LazMethodList,
   // BuildIntf
-  ProjectIntf, CompOptsIntf,
+  ProjectIntf, ProjectResourcesIntf, CompOptsIntf,
   // IDEIntf
   ObjectInspector, MenuIntf, SrcEditorIntf, LazIDEIntf, IDEWindowIntf,
   // IDEUtils
@@ -232,7 +232,7 @@ type
 
   TFileDescPascalUnitWithProjectResource = class(TFileDescPascalUnitWithResource)
   protected
-    function GetResourceType: TResourceType; override;
+    function GetResourceType: TProjResourceType; override;
   end;
 
   { TFileDescPascalUnitWithForm }
@@ -618,7 +618,7 @@ end;
 
 { TFileDescPascalUnitWithProjectResource }
 
-function TFileDescPascalUnitWithProjectResource.GetResourceType: TResourceType;
+function TFileDescPascalUnitWithProjectResource.GetResourceType: TProjResourceType;
 begin
   Result := Project1.ProjResources.ResourceType;
 end;

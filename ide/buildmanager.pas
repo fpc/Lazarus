@@ -35,7 +35,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, Types, AVL_Tree, System.UITypes, StrUtils,
+  Classes, SysUtils, AVL_Tree, System.UITypes,
   // LCL
   InterfaceBase, LCLPlatformDef,
   // CodeTools
@@ -43,11 +43,11 @@ uses
   FileProcs, CodeToolsCfgScript, LinkScanner,
   // LazUtils
   FPCAdds, LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
-  Laz2_XMLCfg, LazUtilities, LazStringUtils, LazMethodList, LazVersion,
+  Laz2_XMLCfg, LazUtilities, LazMethodList, LazVersion,
   AvgLvlTree,
   // BuildIntf
-  BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, PublishModuleIntf,
-  IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
+  BaseIDEIntf, IDEOptionsIntf, ProjectIntf, ProjectResourcesIntf,
+  PublishModuleIntf, IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
   // IDEIntf
   IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   // IdeUtils
@@ -137,17 +137,14 @@ type
                     out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
     function CheckAmbiguousSources(const AFilename: string;
                                    Compiling: boolean): TModalResult; override;
-    function DeleteAmbiguousFiles(const Filename:string
-                                  ): TModalResult; override;
+    function DeleteAmbiguousFiles(const Filename:string): TModalResult; override;
     function CheckUnitPathForAmbiguousPascalFiles(const BaseDir, TheUnitPath,
-                                    CompiledExt, ContextDescription: string
-                                    ): TModalResult; override;
+                CompiledExt, ContextDescription: string): TModalResult; override;
     function CreateProjectApplicationBundle: Boolean; override;
     function BackupFileForWrite(const Filename: string): TModalResult; override;
 
-    function GetResourceType(AnUnitInfo: TUnitInfo): TResourceType;
-    function FindLRSFilename(AnUnitInfo: TUnitInfo;
-                             UseDefaultIfNotFound: boolean): string;
+    function GetResourceType(AnUnitInfo: TUnitInfo): TProjResourceType;
+    function FindLRSFilename(AnUnitInfo: TUnitInfo; UseDefaultIfNotFound: boolean): string;
     function GetDefaultLRSFilename(AnUnitInfo: TUnitInfo): string;
     function UpdateLRSFromLFM(AnUnitInfo: TUnitInfo; ShowAbort: boolean): TModalResult;
     function UpdateProjectAutomaticFiles(TestDir: string): TModalResult; override;
@@ -1500,11 +1497,11 @@ var
   TargetExeName: string;
 begin
   Result := False;
-  if Project1.MainUnitInfo = nil then
+  if LazProject1.MainFile = nil then
     Exit;
-  TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
+  TargetExeName := LazProject1.LazCompilerOptions.CreateTargetFilename;
 
-  if not (CreateApplicationBundle(TargetExeName, Project1.GetTitle, True, Project1) in
+  if not (CreateApplicationBundle(TargetExeName, LazProject1.GetTitle, True, Project1) in
     [mrOk, mrIgnore]) then
     Exit;
   if not (CreateAppBundleSymbolicLink(TargetExeName, True) in [mrOk, mrIgnore]) then
@@ -1525,8 +1522,8 @@ begin
   BackupFilename:='';
   if not (FileExistsUTF8(Filename)) then exit;
   // check if file in lpi
-  IsPartOfProject:=(Project1<>nil)
-               and (Project1.FindFile(Filename,[pfsfOnlyProjectFiles])<>nil);
+  IsPartOfProject:=(LazProject1<>nil)
+               and (LazProject1.FindFile(Filename,[pfsfOnlyProjectFiles])<>nil);
   // check if file in source directory of project
   if (not IsPartOfProject) and (Project1<>nil)
     and (SearchDirectoryInMaskedSearchPath(Project1.SourceDirectories.CreateSearchPathFromAllFiles,
@@ -1652,7 +1649,7 @@ begin
   until Result <> mrRetry;
 end;
 
-function TBuildManager.GetResourceType(AnUnitInfo: TUnitInfo): TResourceType;
+function TBuildManager.GetResourceType(AnUnitInfo: TUnitInfo): TProjResourceType;
 begin
   if AnUnitInfo.Source = nil then
     AnUnitInfo.Source := CodeToolBoss.LoadFile(AnUnitInfo.Filename, True, False);
