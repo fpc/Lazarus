@@ -40,10 +40,10 @@ uses
   Classes, SysUtils, TypInfo, versionresource, versiontypes, versionconsts,
   // LazUtils
   Laz2_DOM, Laz2_XMLCfg, LazLoggerBase,
-  // IdeConfig
-  LazConf, TransferMacros,
   // BuildIntf
-  CompOptsIntf, ProjectResourcesIntf;
+  CompOptsIntf, ProjectResourcesIntf,
+  // IdeConfig
+  TransferMacros;
 
 type
 

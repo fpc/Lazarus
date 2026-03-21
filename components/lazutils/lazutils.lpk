@@ -307,6 +307,10 @@
         <UnitName Value="PList2JSon"/>
       </Item>
       <Item>
+        <Filename Value="projresproc.pas"/>
+        <UnitName Value="ProjResProc"/>
+      </Item>
+      <Item>
         <Filename Value="stringhashlist.pas"/>
         <UnitName Value="StringHashList"/>
       </Item>

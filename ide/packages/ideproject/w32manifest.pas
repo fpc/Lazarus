@@ -38,10 +38,12 @@ interface
 
 uses
   SysUtils, resource,
+  // Laztils
   Laz2_XMLCfg,
-  Controls, LResources,
-  LazConf,
-  ProjectResourcesIntf;
+  // BuildIntf
+  ProjectResourcesIntf,
+  // IdeConfig
+  LazConf;
 
 const
   DefaultXPManifestTextName = 'CompanyName.ProductName.AppName';

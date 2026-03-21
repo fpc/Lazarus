@@ -19,8 +19,8 @@ uses
   LazLoggerProfiling, LazMemManager, LazMethodList, LazPasReadUtil, 
   LazStringUtils, LazSysUtils, LazTracer, LazUnicode, LazUTF16, LazUTF8, 
   LazUtilities, LazUtilsStrConsts, LazVersion, LConvEncoding, LCSVUtils, 
-  LookupStringList, Maps, Masks, ObjectLists, PList2JSon, StringHashList, 
-  TextStrings, Translations, UTF8Process, LazarusPackageIntf;
+  LookupStringList, Maps, Masks, ObjectLists, PList2JSon, ProjResProc, 
+  StringHashList, TextStrings, Translations, UTF8Process, LazarusPackageIntf;
 
 implementation
 

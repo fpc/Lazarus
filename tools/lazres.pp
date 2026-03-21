@@ -40,9 +40,12 @@ program LazRes;
 {$ENDIF}
 
 uses
-  Classes, SysUtils, LazLoggerBase, LResources, resource, reswriter,
+  Classes, SysUtils, resource, reswriter,
   bitmapresource, groupresource, groupiconresource, groupcursorresource,
-  LazFileUtils, LazUTF8;
+  // LCL
+  LResources,
+  // LazUtils
+  LazFileUtils, LazUTF8, ProjResProc, LazLoggerBase;
 
 type
   TOutputFileType = (ftLrs, ftRc, ftRes);

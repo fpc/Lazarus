@@ -759,7 +759,7 @@
       <Unit>
         <Filename Value="lfmunitresource.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lfmUnitResource"/>
+        <UnitName Value="LfmUnitResource"/>
       </Unit>
       <Unit>
         <Filename Value="sourcemarks.pas"/>

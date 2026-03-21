@@ -34,7 +34,7 @@ uses
   // LCL
   LResources,
   // LazUtils
-  LazFileCache, LazFileUtils, LazLoggerBase,
+  LazFileCache, LazFileUtils, LazLoggerBase, ProjResProc,
   // CodeTools
   CodeCache, CodeToolManager,
   // IdeConfig

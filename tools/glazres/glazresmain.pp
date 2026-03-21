@@ -33,9 +33,11 @@ interface
 
 uses
   Classes, SysUtils, Types, IniFiles,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtDlgs, EditBtn,
-  LResources, LCLProc, LCLType, ExtCtrls,
-  LazFileUtils, LazUTF8;
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, Buttons, ExtDlgs, EditBtn,
+  LResources, LCLType,
+  // LazUtils
+  LazFileUtils, ProjResProc, LazLoggerBase, LazUTF8;
 
 type
 

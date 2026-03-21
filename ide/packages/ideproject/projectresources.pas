@@ -37,14 +37,12 @@ unit ProjectResources;
 interface
 
 uses
-  Classes, SysUtils, resource, reswriter, fgl, AVL_Tree,
-  // LCL
-  Controls, LResources,
+  Classes, SysUtils, System.UITypes, resource, reswriter, fgl, AVL_Tree,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazFileCache,
+  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazFileCache, ProjResProc,
   // Codetools
   KeywordFuncLists, BasicCodeTools, CodeToolManager, CodeCache,
-  // IdeIntf
+  // BuildIntf
   ProjectIntf, ProjectResourcesIntf, CompOptsIntf,
   // IdeConfig
   DialogProcs,
@@ -125,7 +123,7 @@ type
 function GuessResourceType(Code: TCodeBuffer; out Typ: TProjResourceType): boolean;
 
 const
-  ResourceTypeNames: array[TProjResourceType] of string = (
+  ProjResourceTypeNames: array[TProjResourceType] of string = (
     'lrs',
     'res'
   );
@@ -142,7 +140,7 @@ var
   t: TProjResourceType;
 begin
   for t := Low(TProjResourceType) to High(TProjResourceType) do
-    if SysUtils.CompareText(ResourceTypeNames[t], s) = 0 then exit(t);
+    if SysUtils.CompareText(ProjResourceTypeNames[t], s) = 0 then exit(t);
   Result := rtLRS;
 end;
 
@@ -573,7 +571,7 @@ procedure TProjectResources.WriteToProjectFile(AConfig: TXMLConfig;
 var
   i: integer;
 begin
-  AConfig.SetDeleteValue(Path+'General/ResourceType/Value', ResourceTypeNames[ResourceType], ResourceTypeNames[rtLRS]);
+  AConfig.SetDeleteValue(Path+'General/ResourceType/Value', ProjResourceTypeNames[ResourceType], ProjResourceTypeNames[rtLRS]);
   for i := 0 to FResources.Count - 1 do
     FResources[i].WriteToProjectFile(AConfig, Path);
 end;
@@ -583,7 +581,7 @@ procedure TProjectResources.ReadFromProjectFile(AConfig: TXMLConfig;
 var
   i: integer;
 begin
-  ResourceType := StrToResourceType(AConfig.GetValue(Path+'General/ResourceType/Value', ResourceTypeNames[rtLRS]));
+  ResourceType := StrToResourceType(AConfig.GetValue(Path+'General/ResourceType/Value', ProjResourceTypeNames[rtLRS]));
   for i := 0 to FResources.Count - 1 do
     if ReadAll or FResources[i].IsDefaultOption then
       FResources[i].ReadFromProjectFile(AConfig, Path);

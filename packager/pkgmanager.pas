@@ -49,10 +49,11 @@ uses
   // RTL, FCL
   TypInfo, Math, Classes, SysUtils, Contnrs, AVL_Tree,
   // LCL
-  Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
+  Forms, Controls, Dialogs, Menus, ComCtrls,
   // LazUtils
   LazUTF8, Laz2_XMLCfg, LazTracer, LazUtilities, LazStringUtils,
-  LazFileUtils, LazFileCache, StringHashList, AvgLvlTree, ObjectLists, Translations,
+  LazFileUtils, LazFileCache, StringHashList, AvgLvlTree, ObjectLists,
+  Translations, ProjResProc,
   // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,
   FileProcs, CodeTree, CTUnitGraph,
