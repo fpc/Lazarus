@@ -1736,7 +1736,7 @@ msgstr "&Остановить"
 
 #: idedebuggerstringconstants.lismenucontinuelaststep
 msgid "Continue last Step"
-msgstr ""
+msgstr "Продолжить с последнего шага"
 
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
