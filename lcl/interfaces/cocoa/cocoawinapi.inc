@@ -216,11 +216,11 @@ const
   function SendMouseWheel(barFlag: Integer): LRESULT;
   begin
     Result:= 0;
-    inc( CocoaWidgetSetState.FSendingScrollWheelCount );
+    inc( CocoaWidgetSetState.SendingScrollWheelCount );
     try
       Result:= CallMouseWheelHandler( barFlag );
     finally
-      dec( CocoaWidgetSetState.FSendingScrollWheelCount );
+      dec( CocoaWidgetSetState.SendingScrollWheelCount );
     end;
   end;
 
@@ -2493,7 +2493,7 @@ end;
 
 function TCocoaWidgetSet.ReleaseCapture : Boolean;
 begin
-  CocoaWidgetSetState.CaptureControl := 0;
+  CocoaWidgetSetState.releaseCapture;
   Result := True;
 end;
 

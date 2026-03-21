@@ -11,7 +11,7 @@ uses
   Types, Classes, Controls, SysUtils,
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
-  CocoaPrivate, CocoaInt, CocoaWSService, CocoaCallback, CocoaGDIObjects,
+  CocoaPrivate, CocoaWSService, CocoaCallback, CocoaGDIObjects,
   CocoaCursor, CocoaCaret, CocoaConfig, CocoaUtils, Cocoa_Extra,
   CocoaWSCustomControl;
 
@@ -99,8 +99,8 @@ begin
   if not AWinControl.HandleAllocated then
     Exit;
 
-  if Assigned(CocoaWidgetSet) and (AWinControl.Handle = CocoaWidgetSet.GetCapture) then
-    CocoaWidgetSet.ReleaseCapture;
+  if Assigned(CocoaWidgetSetState) and (AWinControl.Handle = CocoaWidgetSetState.CaptureControl) then
+    CocoaWidgetSetState.releaseCapture;
 
   obj := NSObject(AWinControl.Handle);
   Callback := obj.lclGetCallback;
