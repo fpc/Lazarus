@@ -44,7 +44,7 @@ uses
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
   // IdeConfig
   LazConf, IDECmdLine, TransferMacros, EnvironmentOpts, ParsedCompilerOpts,
-  CompilerOptions, ModeMatrixOpts, BaseBuildManager,
+  CompilerOptions, ModeMatrixOpts, BaseBuildManager, ApplicationBundle,
   // IdeUtils
   IDETranslations,
   // IdePackager
@@ -52,7 +52,7 @@ uses
   // IdeProject
   Project,
   // IDE
-  InitialSetupProc, ExtToolsConsole, ApplicationBundle, LazarusIDEStrConsts, MiscOptions,
+  InitialSetupProc, ExtToolsConsole, LazarusIDEStrConsts, MiscOptions,
   InterPkgConflictFiles, BuildLazDialog, BuildProfileManager, BuildManager, ColorTTY;
 
 type

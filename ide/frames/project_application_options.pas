@@ -16,11 +16,11 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
   // IdeConfig
-  CompilerOptions, IdeConfStrConsts,
+  CompilerOptions, ApplicationBundle, IdeConfStrConsts,
   // IdeProject
   IdeProjectStrConsts,
   // IDE
-  LazarusIDEStrConsts, Project, ProjectIcon, ApplicationBundle, W32Manifest;
+  LazarusIDEStrConsts, Project, ProjectIcon, W32Manifest;
 
 type
 

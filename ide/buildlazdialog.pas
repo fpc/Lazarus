@@ -62,9 +62,9 @@ uses
   PackageIntf, IDEExternToolIntf, IDEDialogs, IDEUtils,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, ParsedCompilerOpts, CompilerOptions,
-  DialogProcs, IdeConfStrConsts,
+  DialogProcs, IdeConfStrConsts, ApplicationBundle,
   // IDE
-  LazarusIDEStrConsts, MainBar, ApplicationBundle, ModeMatrixOpts,
+  LazarusIDEStrConsts, MainBar, ModeMatrixOpts,
   BuildProfileManager, GenericListEditor, GenericCheckList, PackageSystem, PackageDefs;
 
 type

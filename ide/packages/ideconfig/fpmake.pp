@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeConfig 1.0
 
-   This file was generated on 20.03.2026
+   This file was generated on 21.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -48,6 +48,7 @@ begin
     P.IncludePath.Add('include/$(OS)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('ideconfig.pas');
+    t.Dependencies.AddUnit('applicationbundle');
     t.Dependencies.AddUnit('basebuildmanager');
     t.Dependencies.AddUnit('compiler');
     t.Dependencies.AddUnit('compileroptions');
@@ -78,6 +79,7 @@ begin
     t.Dependencies.AddUnit('toolbaroptionsbase');
     t.Dependencies.AddUnit('transfermacros');
 
+    T:=P.Targets.AddUnit('applicationbundle.pas');
     T:=P.Targets.AddUnit('basebuildmanager.pas');
     T:=P.Targets.AddUnit('compiler.pp');
     T:=P.Targets.AddUnit('compileroptions.pp');

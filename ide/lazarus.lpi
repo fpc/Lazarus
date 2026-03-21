@@ -823,11 +823,6 @@
         <UnitName Value="BuildManager"/>
       </Unit>
       <Unit>
-        <Filename Value="basebuildmanager.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="BaseBuildManager"/>
-      </Unit>
-      <Unit>
         <Filename Value="buildlazdialog.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ConfigureBuildLazarusDlg"/>
@@ -1127,11 +1122,6 @@
         <Filename Value="fpdocselectinherited.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="applicationbundle.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ApplicationBundle"/>
       </Unit>
       <Unit>
         <Filename Value="msgvieweditor.pas"/>

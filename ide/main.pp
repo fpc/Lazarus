@@ -92,7 +92,7 @@ uses
   IDEProtocol,
   // compile
   ParsedCompilerOpts, CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
-  BuildModesManager, ApplicationBundle, ExtTools, ExtToolsIDE,
+  BuildModesManager, ExtTools, ExtToolsIDE,
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg, PublishModuleDlg,
   ProjectInspector, PackageDefs, EditablePackage, ProjectDescriptorTypes,
@@ -123,7 +123,7 @@ uses
   InputHistory, IdeUtilsPkg, IdeUtilsPkgStrConsts,
   // IdeConfig
   LazConf, EnvironmentOpts, TransferMacros, IDECmdLine, IDEGuiCmdLine,
-  IDEProcs, IdeConfStrConsts,
+  IDEProcs, ApplicationBundle, IdeConfStrConsts,
   // IdePackager,
   IdePackager, IdePackagerStrConsts,
   // IdeProject,

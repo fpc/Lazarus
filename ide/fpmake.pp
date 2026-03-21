@@ -210,7 +210,6 @@ begin
     P.Sources.AddSrc('abstractsmethodsdlg.pas');
     P.Sources.AddSrc('addprofiledialog.pas');
     P.Sources.AddSrc('addtoprojectdlg.pas');
-    P.Sources.AddSrc('applicationbundle.pas');
     P.Sources.AddSrc('basedebugmanager.pas');
     P.Sources.AddSrc('buildfiledlg.pas');
     P.Sources.AddSrc('buildlazdialog.pas');

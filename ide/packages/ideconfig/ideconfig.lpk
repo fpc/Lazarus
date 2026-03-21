@@ -24,6 +24,10 @@ Files in this package are for the main configuration of the IDE."/>
     <Version Major="1"/>
     <Files>
       <Item>
+        <Filename Value="applicationbundle.pas"/>
+        <UnitName Value="ApplicationBundle"/>
+      </Item>
+      <Item>
         <Filename Value="basebuildmanager.pas"/>
         <UnitName Value="BaseBuildManager"/>
       </Item>

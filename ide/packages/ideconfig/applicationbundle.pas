@@ -34,22 +34,27 @@ unit ApplicationBundle;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Dialogs, FileUtil, LazFileUtils,
-  DialogProcs, Project;
+  Classes, SysUtils, System.UITypes,
+  // LazUtils
+  FileUtil, LazFileUtils,
+  // BuildIntf
+  ProjectIntf,
+  // IdeConfig
+  DialogProcs;
 
 type
   EApplicationBundleException = Exception;
-  
+
   { TApplicationPropertyList }
 
   TApplicationPropertyList = class(TStringList)
   public
-    constructor Create(const ExeName: String; Title: String = ''; const Version: String = '0.1'; AProject: TProject = nil);
+    constructor Create(const ExeName: String; Title: String = ''; const Version: String = '0.1'; AProject: TLazProject = nil);
   end;
 
-function CreateApplicationBundle(const Filename: String; Title: String = ''; Recreate: boolean = false; AProject: TProject = nil): TModalResult;
+function CreateApplicationBundle(const Filename: String; Title: String = ''; Recreate: boolean = false; AProject: TLazProject = nil): TModalResult;
 function CreateAppBundleSymbolicLink(const {%H-}Filename: String; {%H-}Recreate: boolean = false): TModalResult;
-  
+
 const
   ApplicationBundleExt = '.app';
   ContentsDirName = 'Contents';
@@ -58,18 +63,16 @@ const
   PropertyListFileName = 'Info.plist';
   PackageInfoFileName = 'PkgInfo';
   PackageInfoHeader = 'APPL????';
-  
+
 implementation
 
 { TApplicationPropertyList }
 
 constructor TApplicationPropertyList.Create(const ExeName: String;
-  Title: String; const Version: String; AProject: TProject);
+  Title: String; const Version: String; AProject: TLazProject);
 begin
   inherited Create;
-  
   if Title = '' then Title := ExeName;
-  
   Add('<?xml version="1.0" encoding="UTF-8"?>');
   Add('<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">');
   Add('<plist version="1.0">');
@@ -124,7 +127,7 @@ begin
 end;
 
 function CreateApplicationBundle(const Filename: String; Title: String;
-  Recreate: boolean; AProject: TProject): TModalResult;
+  Recreate: boolean; AProject: TLazProject): TModalResult;
 var
   AppBundleDir: String;
   ContentsDir: String;
