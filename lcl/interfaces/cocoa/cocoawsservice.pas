@@ -7,10 +7,10 @@ unit CocoaWSService;
 interface
 
 uses
-  Classes, SysUtils,
-  Forms, Menus, LCLType,
+  Classes, SysUtils, Types, LCLType, LCLProc,
+  Forms, Menus,
   MacOSAll, CocoaAll,
-  CocoaMenus, CocoaConst, CocoaUtils, Cocoa_Extra;
+  CocoaGDIObjects, CocoaMenus, CocoaConst, CocoaUtils, Cocoa_Extra;
 
 type
 
@@ -61,6 +61,11 @@ type
   public
     procedure initAutoreleaseMainPool;
     procedure finalAutoreleaseMainPool;
+
+  // util
+  public
+    function deleteObject(GDIObject: HGDIOBJ): Boolean;
+
   public
     constructor Create;
     destructor Destroy; override;
@@ -171,6 +176,41 @@ begin
     _autoreleaseMainPool.release;
     _autoreleaseMainPool := nil;
   end;
+end;
+
+function TCocoaWidgetSetService.deleteObject(GDIObject: HGDIOBJ): Boolean;
+const
+  SName = 'TCocoaWidgetSetService.deleteObject';
+var
+  gdi: TCocoaGDIObject;
+begin
+  Result := False;
+  if GDIObject = 0 then
+    Exit(True);
+
+  gdi := CheckGDIOBJ(GdiObject);
+
+  if not Assigned(gdi) then
+  begin
+    DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is unknown!');
+    Exit;
+  end;
+
+  if gdi.Global then
+  begin
+    // global brushes can be cached, so just exit here since we will free the resource later on
+    //DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is global!');
+    Exit;
+  end;
+
+  if gdi.RefCount <> 1 then
+  begin
+    DebugLn(SName, 'Error - GDIObject: ' + DbgSName(gdi) + ' is still selected!');
+    Exit;
+  end;
+
+  gdi.Destroy;
+  Result := True;
 end;
 
 constructor TCocoaWidgetSetService.Create;

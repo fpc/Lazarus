@@ -554,38 +554,8 @@ begin
 end;
 
 function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
-const
-  SName = 'TCocoaWidgetSet.DeleteObject';
-var
-  gdi: TCocoaGDIObject;
 begin
-  Result := False;
-  if GDIObject = 0 then
-    Exit(True);
-
-  gdi := CheckGDIOBJ(GdiObject);
-
-  if not Assigned(gdi) then
-  begin
-    DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is unknown!');
-    Exit;
-  end;
-
-  if gdi.Global then
-  begin
-    // global brushes can be cached, so just exit here since we will free the resource later on
-    //DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is global!');
-    Exit;
-  end;
-
-  if gdi.RefCount <> 1 then
-  begin
-    DebugLn(SName, 'Error - GDIObject: ' + DbgSName(gdi) + ' is still selected!');
-    Exit;
-  end;
-
-  gdi.Destroy;
-  Result := True;
+  Result := CocoaWidgetSetService.deleteObject(GDIObject);
 end;
 
 function TCocoaWidgetSet.DestroyCaret(Handle: HWND): Boolean;
