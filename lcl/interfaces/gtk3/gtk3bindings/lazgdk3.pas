@@ -3101,7 +3101,6 @@ type
   PPGdkMonitor = ^PGdkMonitor;
   PGdkMonitor = ^TGdkMonitor;
 
-
   { TGdkAtom }
   PPPGdkAtom = ^PPGdkAtom;
   PPGdkAtom = ^PGdkAtom;
@@ -5090,6 +5089,16 @@ procedure gdk_window_unfullscreen(window: PGdkWindow); cdecl; external LazGdk3_l
 procedure gdk_window_unmaximize(window: PGdkWindow); cdecl; external LazGdk3_library name 'gdk_window_unmaximize';
 procedure gdk_window_unstick(window: PGdkWindow); cdecl; external LazGdk3_library name 'gdk_window_unstick';
 procedure gdk_window_withdraw(window: PGdkWindow); cdecl; external LazGdk3_library name 'gdk_window_withdraw';
+
+//Needed by Lazarus gtk3.
+type
+  TGdkAtomRaw = Pointer;
+
+function gdk_atom_intern_raw(atom_name: PAnsiChar; only_if_exists: gboolean): TGdkAtomRaw; cdecl; external LazGdk3_library name 'gdk_atom_intern';
+function gdk_property_get_raw(window: PGdkWindow; property_: TGdkAtomRaw; type_: TGdkAtomRaw; offset: gulong; length: gulong; pdelete: gint; actual_property_type: Pointer; actual_format: PLongInt; actual_length: PLongInt; data: PPointer): gboolean; cdecl; external LazGdk3_library name 'gdk_property_get';
+function gdk_screen_get_active_window_raw(screen: PGdkScreen): PGdkWindow; cdecl; external LazGdk3_library name 'gdk_screen_get_active_window';
+
+
 implementation
 procedure TGdkAppLaunchContext.set_desktop(desktop: gint); cdecl;
 begin

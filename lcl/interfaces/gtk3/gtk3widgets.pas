@@ -1077,6 +1077,9 @@ type
     procedure SetTitle(const AValue: String);
     class procedure TrackWindowActivate(AObject: PGObject; APSpec: PGParamSpec;
       Data: gpointer); cdecl; static;
+    class function WindowFocusIn(AWidget: PGtkWidget; AEvent: PGdkEventFocus; AData: gpointer): gboolean; cdecl; static;
+    class function WindowFocusOut(AWidget: PGtkWidget; AEvent: PGdkEventFocus; AData: gpointer): gboolean; cdecl; static;
+    class procedure WindowHideSignal(AWidget: PGtkWidget; AData: gpointer); cdecl; static;
   strict private
     class function WindowMapEvent(awidget:PGtkWindow;AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl; static; //uses lcl-window-first-map data.
     class function WindowMoveEvent(awidget: PGtkWindow; AEvent: PGdkEventConfigure; adata: gpointer): gboolean; cdecl; static;
@@ -11561,6 +11564,123 @@ begin
     {%H-}PGtkWindow(FWidget)^.set_title(PGChar(AValue));
 end;
 
+{$IFDEF UNIX}
+
+//Returns True if the currently active X11 window (_NET_ACTIVE_WINDOW) belongs to our process.
+//We use deprecated gdk_screen_get_active_window which works correct on x11.
+function Gtk3X11ActiveWindowIsOurs: Boolean;
+var
+  ActiveWin: PGdkWindow;
+  PidAtom, NoneAtom, ActualType: TGdkAtomRaw;
+  DataFmt, DataLen: LongInt;
+  Data: Pointer;
+begin
+  Result := False;
+  ActiveWin := gdk_screen_get_active_window_raw(gdk_screen_get_default);
+  if ActiveWin = nil then Exit;
+  try
+    PidAtom := gdk_atom_intern_raw('_NET_WM_PID', True);
+    if PidAtom = nil then
+    begin
+      // _NET_WM_PID not supported
+      Result := True;
+      exit;
+    end;
+    NoneAtom := nil; // GDK_NONE = any type
+    Data := nil;
+    if gdk_property_get_raw(ActiveWin, PidAtom, NoneAtom, 0, 2,
+      0, @ActualType, @DataFmt, @DataLen, @Data) then
+    begin
+      if Data <> nil then
+      begin
+        Result := (Pgulong(Data)^ = gulong(GetProcessID));
+        g_free(Data);
+      end;
+    end;
+  finally
+    g_object_unref(PGObject(ActiveWin));
+  end;
+end;
+
+function Gtk3X11PollTimerCB(AData: gpointer): gboolean; cdecl;
+begin
+  Result := G_SOURCE_CONTINUE;
+  if not Assigned(Application) or Application.Terminated then
+  begin
+    Gtk3WidgetSet.X11PollTimerID := 0;
+    Result := G_SOURCE_REMOVE_;
+    Exit;
+  end;
+  if Gtk3WidgetSet.LastFocusIn <> nil then
+  begin
+    Gtk3WidgetSet.X11PollTimerID := 0;
+    Result := G_SOURCE_REMOVE_;
+    exit;
+  end;
+  if Gtk3X11ActiveWindowIsOurs then
+  begin
+    if not Application.Active then
+      Application.IntfAppActivate;
+  end else
+  begin
+    if Application.Active then
+      Application.IntfAppDeactivate;
+  end;
+end;
+{$ENDIF}
+
+//50ms timer, fires after a window loses focus with no other LCL window gaining focus.
+//Mirrors GTK2's gtkAppFocusTimer approach.
+function Gtk3AppFocusTimerCB(AData: gpointer): gboolean; cdecl;
+begin
+  Result := G_SOURCE_REMOVE_;
+  Gtk3WidgetSet.AppFocusTimerID := 0;
+  if not Assigned(Application) or Application.Terminated then
+    exit;
+  if Gtk3WidgetSet.LastFocusIn <> nil then
+    exit; // Another LCL window gained focus before the timer fired - no deactivation
+  {$IFDEF GTK3DEBUGACTIVATION}
+  DebugLn(['[', GetTickCount64, '] Gtk3AppFocusTimerCB: LastFocusIn=nil, AppActive=', Application.Active]);
+  {$ENDIF}
+  {$IFDEF UNIX}
+  if not Gtk3WidgetSet.IsWayland then
+  begin
+    if Gtk3X11ActiveWindowIsOurs then
+    begin
+      if Gtk3WidgetSet.X11PollTimerID = 0 then
+        Gtk3WidgetSet.X11PollTimerID := g_timeout_add(500, TGSourceFunc(@Gtk3X11PollTimerCB), nil);
+      exit;
+    end;
+  end;
+  {$ENDIF}
+  Application.IntfAppDeactivate;
+end;
+
+procedure Gtk3StopAppFocusTimer;
+begin
+  if Gtk3WidgetSet.AppFocusTimerID = 0 then Exit;
+  g_source_remove(Gtk3WidgetSet.AppFocusTimerID);
+  Gtk3WidgetSet.AppFocusTimerID := 0;
+end;
+
+procedure Gtk3StartAppFocusTimer;
+var
+  Timeout: guint;
+begin
+  Gtk3WidgetSet.LastFocusIn := nil;
+  if Gtk3WidgetSet.AppFocusTimerID <> 0 then
+    g_source_remove(Gtk3WidgetSet.AppFocusTimerID);
+  //On Wayland, keyboard_leave and keyboard_enter are delivered in separate
+  //compositor event flushes and can be >50ms apart. Use a longer timeout so
+  //focus-in-event (or notify::is-active) on the gaining window can cancel
+  //the timer before it fires, preventing spurious Deactivate+Activate on modal close.
+  if Gtk3WidgetSet.IsWayland then
+    Timeout := 200
+  else
+    Timeout := 50;
+  Gtk3WidgetSet.AppFocusTimerID := g_timeout_add(Timeout, TGSourceFunc(@Gtk3AppFocusTimerCB), nil);
+end;
+
 class function TGtk3Window.WindowStateSignal(AWidget: PGtkWidget;
   AEvent: PGdkEvent; AData: gPointer): gboolean; cdecl;
 var
@@ -11595,12 +11715,6 @@ begin
   end else
   if GDK_WINDOW_STATE_FOCUSED in msk then
   begin
-    {$IFDEF GTK3DEBUGWINDOWSTATE}
-    if GDK_WINDOW_STATE_FOCUSED in AState then
-      DebugLn('Gtk3WindowState: Focused')
-    else
-      DebugLn('Gtk3WindowState: Defocused');
-    {$ENDIF}
     exit;
   end else
   if GDK_WINDOW_STATE_WITHDRAWN in msk then
@@ -11946,6 +12060,19 @@ var
 begin
   g_object_get(AObject, 'is-active', [@IsActive, nil]);
 
+  {$IFDEF GTK3DEBUGACTIVATION}
+  DebugLn(['[', GetTickCount64, '] TrackWindowActivate: ', TGtk3Window(Data).LCLObject.ClassName,
+    ' IsActive=', IsActive,
+    ' AppActive=', Application.Active,
+    ' Parent=', TGtk3Window(Data).LCLObject.Parent <> nil]);
+  {$ENDIF}
+
+  if IsActive and Assigned(Application) and not Application.Terminated then
+  begin
+    Gtk3StopAppFocusTimer;
+    Gtk3WidgetSet.LastFocusIn := TGtk3Window(Data).Widget;
+  end;
+
   FillChar(MsgActivate{%H-}, SizeOf(MsgActivate), #0);
   AIsActivated := TCustomForm(TGtk3Window(Data).LCLObject).Active;
   if (IsActive = AIsActivated) or (TGtk3Window(Data).LCLObject.Parent <> nil) then
@@ -11959,6 +12086,58 @@ begin
   MsgActivate.ActiveWindow := HWND(TGtk3Window(Data).LCLObject.Handle);
 
   TGtk3Window(Data).DeliverMessage(MsgActivate);
+end;
+
+class function TGtk3Window.WindowFocusIn(AWidget: PGtkWidget; AEvent: PGdkEventFocus; AData: gpointer): gboolean; cdecl;
+begin
+  Result := gtk_false;
+  Gtk3StopAppFocusTimer;
+  Gtk3WidgetSet.LastFocusIn := AWidget;
+  {$IFDEF GTK3DEBUGACTIVATION}
+  DebugLn(['[', GetTickCount64, '] WindowFocusIn: ', TGtk3Window(AData).LCLObject.ClassName,
+    ' AppActive=', Assigned(Application) and Application.Active]);
+  {$ENDIF}
+  if Assigned(Application) and not Application.Terminated and not Application.Active then
+    Application.IntfAppActivate;
+end;
+
+class function TGtk3Window.WindowFocusOut(AWidget: PGtkWidget; AEvent: PGdkEventFocus; AData: gpointer): gboolean; cdecl;
+begin
+  Result := gtk_false;
+  Gtk3WidgetSet.LastFocusOut := AWidget;
+  {$IFDEF GTK3DEBUGACTIVATION}
+  DebugLn(['[', GetTickCount64, '] WindowFocusOut: ', TGtk3Window(AData).LCLObject.ClassName,
+    ' LastFocusIn=', PtrUInt(Gtk3WidgetSet.LastFocusIn),
+    ' LastFocusOut=', PtrUInt(Gtk3WidgetSet.LastFocusOut)]);
+  {$ENDIF}
+  if Gtk3WidgetSet.LastFocusOut = Gtk3WidgetSet.LastFocusIn then
+    Gtk3StartAppFocusTimer;
+end;
+
+class procedure TGtk3Window.WindowHideSignal(AWidget: PGtkWidget; AData: gpointer); cdecl;
+var
+  TransientFor: PGtkWindow;
+begin
+  if not (Assigned(Application) and Application.Active) then Exit;
+  if Gtk3WidgetSet.AppFocusTimerID <> 0 then Exit;
+  TransientFor := PGtkWindow(AWidget)^.get_transient_for;
+  if TransientFor <> nil then
+  begin
+    {$IFDEF GTK3DEBUGACTIVATION}
+    DebugLn(['[', GetTickCount64, '] WindowHideSignal: presetting LastFocusIn to transient parent']);
+    {$ENDIF}
+    Gtk3WidgetSet.LastFocusIn := PGtkWidget(TransientFor);
+    Exit;
+  end;
+  if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated and
+     Application.MainForm.Visible and
+     (TGtk3Window(Application.MainForm.Handle).Widget <> AWidget) then
+  begin
+    {$IFDEF GTK3DEBUGACTIVATION}
+    DebugLn(['[', GetTickCount64, '] WindowHideSignal: presetting LastFocusIn to MainForm']);
+    {$ENDIF}
+    Gtk3WidgetSet.LastFocusIn := TGtk3Window(Application.MainForm.Handle).Widget;
+  end;
 end;
 
 function TGtk3Window.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -12039,7 +12218,13 @@ begin
 
   g_signal_connect_data(Result,'window-state-event', TGCallback(@WindowStateSignal), Self, nil, G_CONNECT_DEFAULT);
 
+  //notify::is-active: dispatches LM_ACTIVATE for form-level activate/deactivate.
   g_signal_connect_data(Result, 'notify::is-active', TGCallback(@TrackWindowActivate), Self, nil, G_CONNECT_DEFAULT);
+  //focus-in/out: tracks app-level activation using GTK2-style 50ms timer.
+  //Works on both x11 and Wayland.
+  g_signal_connect_data(Result, 'focus-in-event', TGCallback(@WindowFocusIn), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'focus-out-event', TGCallback(@WindowFocusOut), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(Result, 'hide', TGCallback(@WindowHideSignal), Self, nil, G_CONNECT_DEFAULT);
 
   g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   gtk_layout_set_size(PGtkLayout(FCentralWidget), 1, 1);
@@ -12601,7 +12786,40 @@ begin
 end;
 
 destructor TGtk3Window.Destroy;
+var
+  NextFocus: PGtkWidget;
+  TransientFor: PGtkWindow;
 begin
+  if (Gtk3WidgetSet.LastFocusIn = FWidget) or (Gtk3WidgetSet.LastFocusOut = FWidget) then
+  begin
+    if Gtk3WidgetSet.LastFocusOut = FWidget then
+      Gtk3WidgetSet.LastFocusOut := nil;
+    if Assigned(Application) and Application.Active then
+    begin
+      NextFocus := nil;
+      TransientFor := PGtkWindow(FWidget)^.get_transient_for;
+      if TransientFor <> nil then
+        NextFocus := PGtkWidget(TransientFor)
+      else if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated and
+              Application.MainForm.Visible and (Application.MainForm.Handle <> HWND(Self)) then
+        NextFocus := TGtk3Window(Application.MainForm.Handle).Widget;
+      if NextFocus <> nil then
+      begin
+        Gtk3StopAppFocusTimer;
+        Gtk3WidgetSet.LastFocusIn := NextFocus;
+      end else
+      begin
+        if Gtk3WidgetSet.LastFocusIn = FWidget then
+          Gtk3WidgetSet.LastFocusIn := nil;
+        if Gtk3WidgetSet.AppFocusTimerID = 0 then
+          Gtk3WidgetSet.AppFocusTimerID := g_timeout_add(50, TGSourceFunc(@Gtk3AppFocusTimerCB), nil);
+      end;
+    end else
+    begin
+      if Gtk3WidgetSet.LastFocusIn = FWidget then
+        Gtk3WidgetSet.LastFocusIn := nil;
+    end;
+  end;
   if FResizeState.PendingResizeSource <> 0 then
   begin
     g_source_remove(FResizeState.PendingResizeSource);

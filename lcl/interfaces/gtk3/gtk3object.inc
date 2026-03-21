@@ -45,16 +45,6 @@ begin
   end;
 end;
 
-function IdleCallback(AData: gpointer): gboolean; cdecl;
-var
-  AWS: TGtk3WidgetSet;
-begin
-  AWS := TGtk3WidgetSet(AData);
-  if AWS.ActivityCounter <= 0 then
-    Application.IntfAppDeactivate;
-  Result := G_SOURCE_REMOVE_;
-end;
-
 {hook into gtk3 main event loop, used for testing purposes only atm.}
 procedure Gtk3MainEventLoop(AEvent: PGdkEvent; {%H-}AData: gPointer); cdecl;
 var
@@ -71,22 +61,16 @@ begin
     ETime := gdk_event_get_time(AEvent);
     if ETime <> 0 then
       AWS.LastUserEventTime := ETime;
-  end else
-  if (AEvent^.type_ = GDK_FOCUS_CHANGE) then
+  end;
+  if AEvent^.type_ = GDK_FOCUS_CHANGE then
   begin
-    if AEvent^.focus_change.in_ <> 0 then
-    begin
-      if AWS.ActivityCounter <= 0 then
-      begin
-        AWS.ActivityCounter := 0;
-        Application.IntfAppActivate;
-      end;
-      inc(AWS.FActivityCounter);
-    end else
-    begin
-      dec(AWS.FActivityCounter);
-      g_idle_add(TGSourceFunc(@IdleCallback), aData);
-    end;
+    {$IFDEF GTK3DEBUGACTIVATION}
+    DebugLn(['[', GetTickCount64, '] GDK_FOCUS_CHANGE in=', AEvent^.focus_change.in_,
+      ' AppActive=', Assigned(Application) and Application.Active]);
+    {$ENDIF}
+    if (AEvent^.focus_change.in_ <> 0) and
+       Assigned(Application) and not Application.Active and not Application.Terminated then
+      Application.IntfAppActivate;
   end;
   gtk_main_do_event(AEvent);
 end;

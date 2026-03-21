@@ -64,6 +64,12 @@ type
     FIsWayland: boolean;
     FActivityCounter: integer;
     FLastUserEventTime: guint32;
+    FAppFocusTimerID: guint;
+    FLastFocusIn: PGtkWidget;
+    FLastFocusOut: PGtkWidget;
+    {$IFDEF UNIX}
+    FX11PollTimerID: guint;
+    {$ENDIF}
     FMainPoll: PGPollFD;
     FGtk3Application: PGtkApplication;
     FDefaultAppFontName: String;
@@ -184,7 +190,13 @@ type
     function IsValidHandle(const AHandle: HWND): Boolean;
 
     property ActivityCounter: integer read FActivityCounter write FActivityCounter;
+    property AppFocusTimerID: guint read FAppFocusTimerID write FAppFocusTimerID;
     property AppIcon: PGdkPixbuf read FAppIcon;
+    property LastFocusIn: PGtkWidget read FLastFocusIn write FLastFocusIn;
+    property LastFocusOut: PGtkWidget read FLastFocusOut write FLastFocusOut;
+    {$IFDEF UNIX}
+    property X11PollTimerID: guint read FX11PollTimerID write FX11PollTimerID;
+    {$ENDIF}
     property DefaultAppFontName: String read FDefaultAppFontName;
     property Gtk3Application: PGtkApplication read FGtk3Application;
     property LastUserEventTime: guint32 read FLastUserEventTime write FLastUserEventTime;
