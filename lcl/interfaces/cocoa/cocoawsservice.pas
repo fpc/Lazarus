@@ -94,6 +94,10 @@ type
   public
     function deleteObject(GDIObject: HGDIOBJ): Boolean;
 
+  // callback
+  public
+    procedure OnWakeMainThread(Sender: TObject);
+
   public
     constructor Create;
     destructor Destroy; override;
@@ -339,6 +343,12 @@ begin
 
   gdi.Destroy;
   Result := True;
+end;
+
+procedure TCocoaWidgetSetService.OnWakeMainThread(Sender: TObject);
+begin
+  NSApp.performSelectorOnMainThread_withObject_waitUntilDone(
+       ObjCSelector('lclSyncCheck:'), nil, false);
 end;
 
 constructor TCocoaWidgetSetService.Create;
