@@ -615,12 +615,9 @@ end;
 { TCocoaFont }
 
 constructor TCocoaFont.CreateDefault(AGlobal: Boolean = False);
-var Pool: NSAutoreleasePool;
 begin
-  Pool := NSAutoreleasePool.alloc.init;
   FIsSystemFont := True;
   Create(NSFont.systemFontOfSize(0), AGlobal);
-  Pool.release;
 end;
 
 constructor TCocoaFont.Create(const ALogFont: TLogFont; AFontName: String; AGlobal: Boolean);
@@ -628,7 +625,6 @@ var
   FontName: NSString;
   Descriptor: NSFontDescriptor;
   Attributes: NSDictionary;
-  Pool: NSAutoreleasePool;
   Win32Weight, LoopCount: Integer;
   CocoaWeight: NSInteger;
   FTmpFont: NSFont;
@@ -636,125 +632,120 @@ var
 begin
   inherited Create(AGlobal);
 
-  Pool := NSAutoreleasePool.alloc.init;
-  try
-    FName := AFontName;
+  FName := AFontName;
 
-    // If we are using a "systemFont" font we need this complex shuffling,
-    // because otherwise the result is wrong in Mac OS X 10.11, see bug 30300
-    // Code used for 10.10 or inferior:
-    // FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
-    //
-    // There's a differnet issue with not using systemFont.
-    // NSComboBox, if assigned a manually created font have an odd ascending-offset
-    // (easily seen in Xcode interface builder as well). systemFonts()
-    // don't have such issue at all. see bug 33626
-    // the fix below (detecting "default" font and use systemFont()) is a potential
-    // regression for bug 30300.
-    //
-    // There might font properties (i.e. Transform Matrix) to adjust the position of
-    // the font. But at this time, it's safer to use systemFont() method
-    IsDefault := IsFontNameDefault(FName);
-    {if IsDefault then
+  // If we are using a "systemFont" font we need this complex shuffling,
+  // because otherwise the result is wrong in Mac OS X 10.11, see bug 30300
+  // Code used for 10.10 or inferior:
+  // FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
+  //
+  // There's a differnet issue with not using systemFont.
+  // NSComboBox, if assigned a manually created font have an odd ascending-offset
+  // (easily seen in Xcode interface builder as well). systemFonts()
+  // don't have such issue at all. see bug 33626
+  // the fix below (detecting "default" font and use systemFont()) is a potential
+  // regression for bug 30300.
+  //
+  // There might font properties (i.e. Transform Matrix) to adjust the position of
+  // the font. But at this time, it's safer to use systemFont() method
+  IsDefault := IsFontNameDefault(FName);
+  {if IsDefault then
+  begin
+    FTmpFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
+    FName := NSStringToString(FTmpFont.familyName);
+  end;}
+
+  if ALogFont.lfHeight = 0 then
+    FSize := Round(NSFont.systemFontSize)
+  else
+    FSize := Abs(ALogFont.lfHeight); // To-Do: emulate WinAPI difference between negative and absolute height values
+
+  // create font attributes
+  Win32Weight := ALogFont.lfWeight;
+  FStyle := [];
+  if ALogFont.lfItalic > 0 then
+    include(FStyle, cfs_Italic);
+  if Win32Weight > FW_NORMAL then
+    include(FStyle, cfs_Bold);
+  if ALogFont.lfUnderline > 0 then
+    include(FStyle, cfs_Underline);
+  if ALogFont.lfStrikeOut > 0 then
+    include(FStyle, cfs_StrikeOut);
+
+  // If this is not a "systemFont" Create the font ourselves
+  if IsDefault then
+  begin
+    if ALogFont.lfPitchAndFamily = FIXED_PITCH then
     begin
-      FTmpFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
-      FName := NSStringToString(FTmpFont.familyName);
-    end;}
-
-    if ALogFont.lfHeight = 0 then
-      FSize := Round(NSFont.systemFontSize)
-    else
-      FSize := Abs(ALogFont.lfHeight); // To-Do: emulate WinAPI difference between negative and absolute height values
-
-    // create font attributes
-    Win32Weight := ALogFont.lfWeight;
-    FStyle := [];
-    if ALogFont.lfItalic > 0 then
-      include(FStyle, cfs_Italic);
-    if Win32Weight > FW_NORMAL then
-      include(FStyle, cfs_Bold);
-    if ALogFont.lfUnderline > 0 then
-      include(FStyle, cfs_Underline);
-    if ALogFont.lfStrikeOut > 0 then
-      include(FStyle, cfs_StrikeOut);
-
-    // If this is not a "systemFont" Create the font ourselves
-    if IsDefault then
-    begin
-      if ALogFont.lfPitchAndFamily = FIXED_PITCH then
-      begin
-        if NSAppKitVersionNumber >= NSAppKitVersionNumber10_15 then
-          FFont := NSFont.monospacedSystemFontOfSize_weight(FSize, NSFontWeightRegular)
-        else
-          FFont := NSFont.fontWithName_size(NSSTR('Menlo'), FSize);
-        if cfs_Bold in Style then
-          FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask);
-      end
-      else if cfs_Bold in Style then
-        FFont := NSFont.boldSystemFontOfSize( FSize )
+      if NSAppKitVersionNumber >= NSAppKitVersionNumber10_15 then
+        FFont := NSFont.monospacedSystemFontOfSize_weight(FSize, NSFontWeightRegular)
       else
-        FFont := NSFont.systemFontOfSize( FSize );
-    end else begin
-      FontName := NSStringUTF8(FName);
-      FFont := NSFont.fontWithName_size(FontName, FSize);
-      FontName.release;
-    end;
-
-    if FFont = nil then
-    begin
-      // fallback to system font if not found (at least we can try to apply some of the other traits)
-      FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
-      FontName := NSStringUTF8(FName);
-      Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
-                 FontName, NSFontFamilyAttribute,
-                 NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
-                 nil);
-      FontName.release;
-      Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
-      FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
-      if FFont = nil then
-      begin
-        exit;
-      end;
-    end;
-    // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
-    // but in this case we may get NIL as result. This way is safer.
-    if cfs_Italic in Style then
-      FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask);
-    if not IsDefault then
-    begin
+        FFont := NSFont.fontWithName_size(NSSTR('Menlo'), FSize);
       if cfs_Bold in Style then
         FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask);
-      case ALogFont.lfPitchAndFamily and $F of
-        FIXED_PITCH, MONO_FONT:
-          FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSFixedPitchFontMask);
-      end;
-    end;
-    if (Win32Weight <> FW_DONTCARE) and (not IsDefault or (Win32Weight <> FW_BOLD)) then
-    begin
-      // currently if we request the desired weight by Attributes we may get a nil font
-      // so we need to get font weight and to convert it to lighter/heavier
-      LoopCount := 0;
-      repeat
-        // protection from endless loop
-        if LoopCount > 12 then
-          Break;
-        CocoaWeight := CocoaFontWeightToWin32FontWeight(NSFontManager.sharedFontManager.weightOfFont(FFont));
-        if CocoaWeight < Win32Weight then
-          FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(True, FFont)
-        else
-        if CocoaWeight > Win32Weight then
-          FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(False, FFont);
-        inc(LoopCount);
-      until CocoaWeight = Win32Weight;
-    end;
-    FFont.retain;
-    FAntialiased := ALogFont.lfQuality <> NONANTIALIASED_QUALITY;
-
-    FRotationDeg := ALogFont.lfEscapement / 10;
-  finally
-    Pool.release;
+    end
+    else if cfs_Bold in Style then
+      FFont := NSFont.boldSystemFontOfSize( FSize )
+    else
+      FFont := NSFont.systemFontOfSize( FSize );
+  end else begin
+    FontName := NSStringUTF8(FName);
+    FFont := NSFont.fontWithName_size(FontName, FSize);
+    FontName.release;
   end;
+
+  if FFont = nil then
+  begin
+    // fallback to system font if not found (at least we can try to apply some of the other traits)
+    FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
+    FontName := NSStringUTF8(FName);
+    Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
+               FontName, NSFontFamilyAttribute,
+               NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
+               nil);
+    FontName.release;
+    Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
+    FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
+    if FFont = nil then
+    begin
+      exit;
+    end;
+  end;
+  // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
+  // but in this case we may get NIL as result. This way is safer.
+  if cfs_Italic in Style then
+    FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSItalicFontMask);
+  if not IsDefault then
+  begin
+    if cfs_Bold in Style then
+      FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSBoldFontMask);
+    case ALogFont.lfPitchAndFamily and $F of
+      FIXED_PITCH, MONO_FONT:
+        FFont := NSFontManager.sharedFontManager.convertFont_toHaveTrait(FFont, NSFixedPitchFontMask);
+    end;
+  end;
+  if (Win32Weight <> FW_DONTCARE) and (not IsDefault or (Win32Weight <> FW_BOLD)) then
+  begin
+    // currently if we request the desired weight by Attributes we may get a nil font
+    // so we need to get font weight and to convert it to lighter/heavier
+    LoopCount := 0;
+    repeat
+      // protection from endless loop
+      if LoopCount > 12 then
+        Break;
+      CocoaWeight := CocoaFontWeightToWin32FontWeight(NSFontManager.sharedFontManager.weightOfFont(FFont));
+      if CocoaWeight < Win32Weight then
+        FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(True, FFont)
+      else
+      if CocoaWeight > Win32Weight then
+        FFont := NSFontManager.sharedFontManager.convertWeight_ofFont(False, FFont);
+      inc(LoopCount);
+    until CocoaWeight = Win32Weight;
+  end;
+  FFont.retain;
+  FAntialiased := ALogFont.lfQuality <> NONANTIALIASED_QUALITY;
+
+  FRotationDeg := ALogFont.lfEscapement / 10;
 end;
 
 constructor TCocoaFont.Create(const AFont: NSFont; AGlobal: Boolean = False);
@@ -795,14 +786,12 @@ end;
 
 procedure TCocoaFont.SetHandle(ANewHandle: NSFont; const AExtraStyle: TCocoaFontStyle = []);
 var
-  pool: NSAutoreleasePool;
   lsymTraits: NSFontSymbolicTraits;
 begin
   if FFont <> nil then
   begin
     FFont.release;
   end;
-  Pool := NSAutoreleasePool.alloc.init;
   FFont := ANewHandle;
   FFont.retain;
   FName := NSStringToString(FFont.familyName);
@@ -817,7 +806,6 @@ begin
   FStyle := FStyle + AExtraStyle;
 
   FAntialiased := True;
-  Pool.release;
 end;
 
 { TCocoaColorObject }
@@ -1104,9 +1092,7 @@ begin
   // Create the associated NSImage
   Assert(FImage = nil);
   FImage := NSImage.alloc.initWithSize(NSMakeSize(FWidth, FHeight));
-  //pool := NSAutoreleasePool.alloc.init;
   Image.addRepresentation(Imagerep);
-  //pool.release;
 end;
 
 procedure TCocoaBitmap.FreeHandle;
@@ -2627,7 +2613,6 @@ end;
 { TCocoaBitmapContext }
 
 procedure TCocoaBitmapContext.SetBitmap(const AValue: TCocoaBitmap);
-var pool:NSAutoReleasePool;
 begin
   if Assigned(ctx) then
   begin
@@ -2639,11 +2624,9 @@ begin
   FBitmap := AValue;
   if FBitmap <> nil then
   begin
-    pool:=NSAutoreleasePool.alloc.init;
     ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(Bitmap.ImageRep);
     ctx.retain; // extend life beyond NSAutoreleasePool
     InitDraw(Bitmap.Width, Bitmap.Height);
-    pool.release;
   end;
 end;
 

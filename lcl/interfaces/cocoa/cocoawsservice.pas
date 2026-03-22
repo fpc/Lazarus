@@ -160,7 +160,6 @@ procedure TCocoaWidgetSetGDIObject.initStockItems;
 var
   LogBrush: TLogBrush;
   logPen: TLogPen;
-  pool: NSAutoreleasePool;
 begin
   FillChar(LogBrush, SizeOf(TLogBrush),0);
   LogBrush.lbStyle := BS_NULL;
@@ -194,9 +193,7 @@ begin
   self.blackPen := HPen(TCocoaPen.Create(LogPen, True));
 
   self.systemFont := HFont(TCocoaFont.CreateDefault(True));
-  pool := NSAutoreleasePool.alloc.init;
   self.fixedFont := HFont(TCocoaFont.Create(NSFont.userFixedPitchFontOfSize(0), True));
-  pool.release;
 end;
 
 procedure TCocoaWidgetSetGDIObject.freeStockItems;
