@@ -2082,11 +2082,11 @@ value for the routine.
 
 <element name="FileAgeUTF8">
 <short>
-Returns the last modification time for the file in FileDate format.
+Returns the last modification time for the file as an Int64 value.
 </short>
 <descr>
 <p>
-<var>FileAgeUTF8</var> is a <var>Longint</var> function which returns the 
+<var>FileAgeUTF8</var> is an <var>Int64</var> function which returns the 
 last modification time for the file specified in <var>FileName</var>. 
 FileAgeUTF8 should not be used on directories; it returns <b>-1</b> if 
 FileName represents a directory instead of a file.
@@ -2099,17 +2099,37 @@ file. Its ftLastWriteTime value is converted using WinToDosTime to get the
 return value for the function.
 </p>
 <p>
-The return value is in FileDate format, and can be transformed to a TDateTime 
-value with the FileDateToDateTime function.
+The return value can be transformed to a TDateTime value with the 
+FileDateToDateTime function.
 </p>
 </descr>
+<version>
+Modified in LCL 5.0 to return an Int64 value instead of a LongInt value.
+</version>
 <seealso/>
 </element>
 <element name="FileAgeUTF8.Result">
-<short>Last modification time for the file in FileDate format.</short>
+<short>Last modification time for the file as an Int64 value.</short>
 </element>
 <element name="FileAgeUTF8.FileName">
 <short>File name examined in the function.</short>
+</element>
+
+<element name="UniversalFileAgeUtf8">
+<short>
+Gets the age for the specified file or directory name.
+</short>
+<descr>
+<p>
+<var>UniversalFileAgeUtf8</var> is an <var>Int64</var> function used to get the 
+age for the specified file or directory.
+</p>
+<p>
+The return value contains the result from the <var>FileAge</var> routine from 
+the <file>SysUtils.pp</file> unit in the <file>RTL</file>. The return value is -1 if the file or directory in <var>FileName</var> does not exist.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <element name="DirectoryExistsUTF8">
@@ -3111,6 +3131,58 @@ File attributes not found in Attrib are represented as '-' characters.
 </element>
 <element name="DbgSFileAttr.Attr">
 <short>File attributes examined in the routine.</short>
+</element>
+
+<element name="TUnicodeSearchRecHelper">
+<short>
+Record Helper for the TUnicodeSearchRec record type.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TUnicodeSearchRecHelper.UniversalTime">
+<short>
+Returns the Time from the search record as a Universal Time Code (UTC) value.
+</short>
+<descr>
+<p>
+For the Windows platform, the value represents the last time the file was 
+written.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TUnicodeSearchRecHelper.UniversalTime.Result">
+<short>
+Int64 value with the Universal Time Code (UTC) value for the search record.
+</short>
+</element>
+
+<element name="TRawbyteSearchRecHelper">
+<short>
+Record Helper for the TRawbyteSearchRecHelper record type.	
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TRawbyteSearchRecHelper.UniversalTime">
+<short>
+Returns the Time from the search record as a Universal Time Code (UTC) value.	
+</short>
+<descr>
+<p>
+For the Windows platform, the value represents the last time the file was 
+written.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TRawbyteSearchRecHelper.UniversalTime.Result">
+<short>
+Int64 value with the Universal Time Code (UTC) value for the search record.	
+</short>
 </element>
 
 <element name="TPhysicalFilenameOnError">
