@@ -135,11 +135,6 @@ begin
   end;
 end;
 
-function TCocoaWidgetSet.isSendingScrollWheelFromInterface(): Boolean;
-begin
-  Result:= self.FSendingScrollWheelCount > 0;
-end;
-
 procedure TCocoaWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
 var
   hnd : NSObject;
@@ -221,11 +216,11 @@ const
   function SendMouseWheel(barFlag: Integer): LRESULT;
   begin
     Result:= 0;
-    inc( self.FSendingScrollWheelCount );
+    inc( CocoaWidgetSetState.FSendingScrollWheelCount );
     try
       Result:= CallMouseWheelHandler( barFlag );
     finally
-      dec( self.FSendingScrollWheelCount );
+      dec( CocoaWidgetSetState.FSendingScrollWheelCount );
     end;
   end;
 
@@ -266,7 +261,7 @@ begin
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardFormatToMimeType FormatID: ' + DbgS(FormatID));
   {$ENDIF}
-  Result := fClipboard.FormatToMimeType(FormatID);
+  Result := _clipboard.FormatToMimeType(FormatID);
 end;
 
 {------------------------------------------------------------------------------
@@ -284,7 +279,7 @@ begin
     DebugLn('TCocoaWidgetSet.ClipboardGetData ClipboardType=' +
       ClipboardTypeName[ClipboardType] + ' FormatID: ' + DbgS(FormatID));
   {$ENDIF}
-  Result := fClipboard.GetData(ClipboardType, FormatID, Stream);
+  Result := _clipboard.GetData(ClipboardType, FormatID, Stream);
 end;
 
 {------------------------------------------------------------------------------
@@ -306,7 +301,7 @@ begin
       ClipboardTypeName[ClipboardType]);
   {$ENDIF}
   fmt := nil;
-  Result := fClipboard.GetFormats(ClipboardType, Count, fmt);
+  Result := _clipboard.GetFormats(ClipboardType, Count, fmt);
   if Count > 0 then begin
     GetMem(List, Count * sizeof(TClipboardFormat));
     System.Move(fmt[0], List^, Count * sizeof(TClipboardFormat));
@@ -339,7 +334,7 @@ begin
     DebugLn('TCocoaWidgetSet.ClipboardGetOwnerShip ClipboardType=' +
       ClipboardTypeName[ClipboardType] + ' FormatCount: ' + DbgS(FormatCount));
   {$ENDIF}
-  Result := fClipboard.GetOwnership(ClipboardType, OnRequestProc, FormatCount, Formats);
+  Result := _clipboard.GetOwnership(ClipboardType, OnRequestProc, FormatCount, Formats);
 end;
 
 {------------------------------------------------------------------------------
@@ -350,7 +345,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
 begin
-  Result := fClipboard.RegisterFormat(AMimeType);
+  Result := _clipboard.RegisterFormat(AMimeType);
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardRegisterFormat AMimeType=' + AMimeType
       + ' Result='+DbgS(Result));
@@ -456,59 +451,6 @@ begin
   Result := HFont(TCocoaFont.Create(LogFont, LongFontName));
 end;
 
-class function TCocoaWidgetSet.Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
-var
-  ARawImage: TRawImage;
-  Desc: TRawImageDescription absolute ARawimage.Description;
-
-  ImgHandle, ImgMaskHandle: HBitmap;
-  ImagePtr: PRawImage;
-  DevImage: TRawImage;
-  DevDesc: TRawImageDescription;
-  SrcImage, DstImage: TLazIntfImage;
-  W, H: Integer;
-begin
-  Result := nil;
-
-  if not LCLIntf.RawImage_FromBitmap(ARawImage, HBITMAP(ABitmap), HBITMAP(AMask)) then
-    Exit;
-
-  ImgMaskHandle := 0;
-
-  W := Desc.Width;
-  if W < 1 then W := 1;
-  H := Desc.Height;
-  if H < 1 then H := 1;
-
-  QueryDescription(DevDesc, [riqfRGB, riqfAlpha], W, H);
-
-  if DevDesc.IsEqual(Desc)
-  then begin
-    // image is compatible, so use it
-    DstImage := nil;
-    ImagePtr := @ARawImage;
-  end
-  else begin
-    // create compatible copy
-    SrcImage := TLazIntfImage.Create(ARawImage, False);
-    DstImage := TLazIntfImage.Create(0,0,[]);
-    DstImage.DataDescription := DevDesc;
-    DstImage.CopyPixels(SrcImage);
-    SrcImage.Free;
-    DstImage.GetRawImage(DevImage);
-    ImagePtr := @DevImage;
-  end;
-
-  try
-    if not LCLIntf.RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, True) then Exit;
-
-    Result := TCocoaBitmap(ImgHandle);
-  finally
-    ARawImage.FreeData;
-    DstImage.Free;
-  end;
-end;
-
 function TCocoaWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
 var
   ABitmap: TCocoaBitmap;
@@ -516,7 +458,7 @@ begin
   Result := 0;
   if IconInfo^.hbmColor = 0 then Exit;
 
-  ABitmap := Create32BitAlphaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
+  ABitmap := CocoaWidgetSetGDIService.create32BitAlphaCocoaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
 
   if IconInfo^.fIcon then
     Result := HICON(ABitmap)
@@ -559,38 +501,8 @@ begin
 end;
 
 function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
-const
-  SName = 'TCocoaWidgetSet.DeleteObject';
-var
-  gdi: TCocoaGDIObject;
 begin
-  Result := False;
-  if GDIObject = 0 then
-    Exit(True);
-
-  gdi := CheckGDIOBJ(GdiObject);
-
-  if not Assigned(gdi) then
-  begin
-    DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is unknown!');
-    Exit;
-  end;
-
-  if gdi.Global then
-  begin
-    // global brushes can be cached, so just exit here since we will free the resource later on
-    //DebugLn(SName, ' Error - GDIObject: ' +  DbgSName(gdi) + ' is global!');
-    Exit;
-  end;
-
-  if gdi.RefCount <> 1 then
-  begin
-    DebugLn(SName, 'Error - GDIObject: ' + DbgSName(gdi) + ' is still selected!');
-    Exit;
-  end;
-
-  gdi.Destroy;
-  Result := True;
+  Result := CocoaWidgetSetService.deleteObject(GDIObject);
 end;
 
 function TCocoaWidgetSet.DestroyCaret(Handle: HWND): Boolean;
@@ -1734,29 +1646,29 @@ begin
 
   case Value of
     BLACK_BRUSH:         // Black brush.
-      Result := FStockBlackBrush;
+      Result := _gdiObject.blackBrush;
     DKGRAY_BRUSH:        // Dark gray brush.
-      Result := FStockDKGrayBrush;
+      Result := _gdiObject.dkGrayBrush;
     GRAY_BRUSH:          // Gray brush.
-      Result := FStockGrayBrush;
+      Result := _gdiObject.grayBrush;
     LTGRAY_BRUSH:        // Light gray brush.
-      Result := FStockLtGrayBrush;
+      Result := _gdiObject.ltGrayBrush;
     NULL_BRUSH:          // Null brush (equivalent to HOLLOW_BRUSH).
-      Result := FStockNullBrush;
+      Result := _gdiObject.nullBrush;
     WHITE_BRUSH:         // White brush.
-      Result := FStockWhiteBrush;
+      Result := _gdiObject.whiteBrush;
 
     BLACK_PEN:           // Black pen.
-      Result := FStockBlackPen;
+      Result := _gdiObject.blackPen;
     NULL_PEN:            // Null pen.
-      Result := FStockNullPen;
+      Result := _gdiObject.nullPen;
     WHITE_PEN:           // White pen.
-      Result := FStockWhitePen;
+      Result := _gdiObject.whitePen;
 
     DEFAULT_GUI_FONT, SYSTEM_FONT:
-      Result := FStockSystemFont;
+      Result := _gdiObject.systemFont;
     SYSTEM_FIXED_FONT:
-      Result := FStockFixedFont;
+      Result := _gdiObject.fixedFont;
   end;
 end;
 
@@ -1790,15 +1702,15 @@ begin
     Result := 0;
     Exit;
   end;
-  if (FSysColorBrushes[nIndex] = 0) then
-    FSysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(TCocoaColorUtil.sysIndexToColor(nIndex), True))
+  if (_gdiObject.sysColorBrushes[nIndex] = 0) then
+    _gdiObject.sysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(TCocoaColorUtil.sysIndexToColor(nIndex), True))
   else
   begin
     // system wide can change the color on the fly
-    TCocoaBrush(FSysColorBrushes[nIndex]).Color := TCocoaColorUtil.sysIndexToColor(nIndex)
+    TCocoaBrush(_gdiObject.sysColorBrushes[nIndex]).Color := TCocoaColorUtil.sysIndexToColor(nIndex)
   end;
 
-  Result := FSysColorBrushes[nIndex];
+  Result := _gdiObject.sysColorBrushes[nIndex];
 end;
 
 function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
@@ -1878,7 +1790,7 @@ begin
     end;
 
     // if frame changed, another ScrollBar has been updated
-    if NOT self.isSendingScrollWheelFromInterface then begin
+    if NOT CocoaWidgetSetState.isSendingScrollWheelFromInterface then begin
       if ScrollInfo.fMask and SIF_ALL > 0 then
         sc.applyScrollInfo(SBStyle, ScrollInfo);
     end;
@@ -2955,10 +2867,10 @@ begin
     if (Element > MAX_SYS_COLORS) or (Element < 0) then 
       Exit;
     Color := TCocoaColorUtil.toColor(PDWord(@lpaRgbValues)[n]);
-    if (FSysColorBrushes[Element] <> 0) then
-      TCocoaBrush(FSysColorBrushes[Element]).Color := Color
+    if (_gdiObject.sysColorBrushes[Element] <> 0) then
+      TCocoaBrush(_gdiObject.sysColorBrushes[Element]).Color := Color
     else
-      FSysColorBrushes[Element] := HBrush(TCocoaBrush.Create(Color, True));
+      _gdiObject.sysColorBrushes[Element] := HBrush(TCocoaBrush.Create(Color, True));
   end;
 
   Result := True;

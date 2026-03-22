@@ -149,7 +149,7 @@ end;
 
 procedure TCocoaWidgetSet.SyncClipboard();
 begin
-  fClipboard.Sync;
+  _clipboard.Sync;
 end;
 
 type
@@ -513,7 +513,7 @@ var
   ADesc: TRawImageDescription absolute ARawImage.Description;
   bmpType: TCocoaBitmapType;
 begin
-  Result := RawImage_DescriptionToBitmapType(ADesc, bmpType);
+  Result := CocoaWidgetSetGDIService.getCocoaBitmapType(ADesc, bmpType);
   if not Result then begin
     debugln(['TCocoaWidgetSet.RawImage_CreateBitmaps TODO Depth=',ADesc.Depth,' alphaprec=',ADesc.AlphaPrec,' byteorder=',ord(ADesc.ByteOrder),' alpha=',ADesc.AlphaShift,' red=',ADesc.RedShift,' green=',adesc.GreenShift,' blue=',adesc.BlueShift]);
     exit;
@@ -539,7 +539,7 @@ end;
 function TCocoaWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
 begin
   if CheckBitmap(ABitmap, 'RawImage_DescriptionFromBitmap')
-  then Result := RawImage_DescriptionFromCocoaBitmap(ADesc, TCocoaBitmap(ABitmap))
+  then Result := CocoaWidgetSetGDIService.fillLCLImageDescription(ADesc, TCocoaBitmap(ABitmap))
   else Result := False;
 end;
 
@@ -582,86 +582,9 @@ function TCocoaWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, 
 begin
   if CheckBitmap(ABitmap, 'RawImage_FromBitmap')
   and ((AMask = 0) or CheckBitmap(AMask, 'RawImage_FromBitmap (mask)'))
-  then Result := RawImage_FromCocoaBitmap(ARawImage, TCocoaBitmap(ABitmap), TCocoaBitmap(AMask), ARect)
+  then Result := CocoaWidgetSetGDIService.createLCLRawImage(ARawImage, TCocoaBitmap(ABitmap), TCocoaBitmap(AMask), ARect)
   else Result := False;
 end;
-
-{------------------------------------------------------------------------------
-  Method:  TCocoaWidgetSet.GetImagePixelData
-
-  Used by RawImage_FromDevice. Copies the data from a CGImageRef into a local
-  buffer.
-
-  The buffer is created using GetMem, and the caller is responsible for using
-  FreeMem to free the returned pointer.
-
-  This function throws exceptions in case of errors and may return a nil pointer.
- ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
-var
-  bitmapData: Pointer;
-  context: CGContextRef = nil;
-  colorSpace: CGColorSpaceRef;
-  bitmapBytesPerRow, pixelsWide, pixelsHigh: PtrUInt;
-  imageRect: CGRect;
-begin
-  Result := nil;
-
-   // Get image width, height. The entire image is used.
-  pixelsWide := CGImageGetWidth(AImage);
-  pixelsHigh := CGImageGetHeight(AImage);
-  imageRect.origin.x := 0.0;
-  imageRect.origin.y := 0.0;
-  imageRect.size.width := pixelsWide;
-  imageRect.size.height := pixelsHigh;
-
-  // The target format is fixed in ARGB, DQWord alignment, with 32-bits depth and
-  // 8-bits per channel, the default image format on the LCL
-  bitmapBytesPerRow   := ((pixelsWide * 4) + $F) and not PtrUInt($F);
-  bitmapByteCount     := (bitmapBytesPerRow * pixelsHigh);
-
-  // Use the generic RGB color space.
-  colorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-  if (colorSpace = nil) then
-    raise Exception.Create('Unable to create CGColorSpaceRef');
-
-  // Allocate memory for image data. This is the destination in memory
-  // where any drawing to the bitmap context will be rendered.
-  bitmapData := System.GetMem( bitmapByteCount );
-  if (bitmapData = nil) then
-    raise Exception.Create('Unable to allocate memory');
-
-  { Creates the bitmap context.
-
-    Regardless of what the source image format is, it will be converted
-    over to the format specified here by CGBitmapContextCreate. }
-  context := CGBitmapContextCreate(bitmapData,
-                                   pixelsWide,
-                                   pixelsHigh,
-                                   8,      // bits per component
-                                   bitmapBytesPerRow,
-                                   colorSpace,
-                                   kCGImageAlphaNoneSkipFirst); // The function fails with kCGImageAlphaFirst
-  if (context = nil) then
-  begin
-    System.FreeMem(bitmapData);
-    raise Exception.Create('Unable to create CGContextRef');
-  end;
-
-  // Draw the image to the bitmap context. Once we draw, the memory
-  // allocated for the context for rendering will then contain the
-  // raw image data in the specified color space.
-  CGContextDrawImage(context, imageRect, AImage);
-
-  // Now we can get a pointer to the image data associated with the context.
-  // ToDo: Verify if we should copy this data to a new buffer
-  Result := CGBitmapContextGetData(context);
-
-  { Clean-up }
-  CGColorSpaceRelease(colorSpace);
-  CGContextRelease(context);
-end;
-
 
 {------------------------------------------------------------------------------
   Function: RawImage_FromDevice
@@ -707,7 +630,7 @@ begin
   // desktop DC
   if CheckDC(ADC, 'RawImage_FromDevice') and (CBC is TCocoaBitmapContext) then
   begin
-    Result := RawImage_FromCocoaBitmap(ARawImage, CBC.Bitmap, nil, @ARect);
+    Result := CocoaWidgetSetGDIService.createLCLRawImage(ARawImage, CBC.Bitmap, nil, @ARect);
     Exit;
   end;
 
@@ -728,7 +651,7 @@ begin
   if Assigned(ScreenImage) then begin
     ARawImage.Description.Height := CGImageGetHeight(ScreenImage);
     ARawImage.Description.Width := CGImageGetWidth(ScreenImage);
-    ARawImage.Data := GetImagePixelData(ScreenImage, ARawImage.DataSize);
+    ARawImage.Data := CocoaWidgetSetGDIService.getPixelData(ScreenImage, ARawImage.DataSize);
   end;
   ARawImage.Mask := nil;
 

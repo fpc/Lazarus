@@ -11,7 +11,7 @@ uses
   Classes, Controls, SysUtils,
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
-  CocoaInt, CocoaConfig, CocoaPrivate,
+  CocoaConfig, CocoaPrivate,
   CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, CocoaFullControlEdit,
   CocoaCursor, CocoaCaret,
   CocoaCommonCallback;
