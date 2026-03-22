@@ -26,11 +26,21 @@ program runtestscodetools;
 {$mode objfpc}{$H+}
 
 uses
+  {$IFDEF UNIX}
+  cthreads,
+  {$ENDIF}
+  {$IFDEF HASAMIGA}
+  athreads,
+  {$ENDIF}
   Classes, sysutils, dom,
   // FPCUnit
   fpcunit, consoletestrunner,
   // LazUtils
-  LazLogger, LazUTF8, LazFileUtils,
+  LazLogger, LazUTF8, LazStringUtils, LazFileUtils,
+  // IdeConfig
+  LazConf, EnvironmentOpts, TransferMacros, BaseBuildManager,
+  // BuildIntf
+  MacroIntf,
   // CodeTools
   CodeToolManager, CodeToolsConfig,
   // Test suites
@@ -66,6 +76,118 @@ type
   public
     destructor Destroy; override;
   end;
+
+{ Utils }
+
+// TODO: refactor this in Lazarus packages
+
+var
+  MyMacroConf: TMacroConfig;
+
+// code is based on the GetParamsAndCfgFile function of the IDECmdLine unit
+function ReadLazarusCfgFile(aContent: TStringList; aParams: array of string): string;
+var
+  lLine, lPar, s: string;
+begin
+  result := '';
+  if aContent = nil then exit;
+  for s in aContent do
+  begin
+    lLine := Trim(s); // Lazarus ignores extra spaces
+    if lLine = '' then continue;
+    {$IFDEF WINDOWS} // file created by the Windows installer may have a system codepage
+    if FindInvalidUTF8Codepoint(PChar(lLine), length(lLine), true) > 0 then
+      lLine := WinCPToUTF8(lLine);
+    {$ENDIF WINDOWS}
+    for lPar in aParams do
+      if LazStartsText(lPar, lLine) then
+        result := RightStr(lLine, length(lLine) - length(lPar)).DeQuotedString('"');
+  end;
+end;
+
+// code is based on the GetParamsAndCfgFile function of the IDECmdLine unit
+function ReadLazarusCfgFile(aFileName: string; aParams: array of string): string;
+var
+  lCfgDir: string;
+  lContent: TStringList;
+begin
+  result := '';
+  if not FileExistsUTF8(aFileName) then exit;
+  lCfgDir := ExtractFileDir(aFileName);
+  lContent := TStringList.Create;
+  try
+    lContent.LoadFromFile(aFileName);
+    result := ReadLazarusCfgFile(lContent, aParams);
+    // expand relative filenames in "lazarus.cfg" using the path of the config file
+    result := ExpandFileNameUTF8(result, lCfgDir);
+  finally
+    FreeAndNil(lContent);
+  end;
+end;
+
+// code is based on LazBuild
+procedure FreeIdeEnvOpt;
+begin
+  FreeAndNil(GlobalMacroList);
+  FreeAndNil(IDEMacros);
+  FreeAndNil(MyMacroConf);
+end;
+
+// code is based on LazBuild
+function LoadIdeEnvOpt(aLazDir: string): TEnvironmentOptions;
+const
+  cLazarusCfgName = 'lazarus.cfg';
+  cPCPOptLong  = '--primary-config-path=';
+  cPCPOptShort = '--pcp=';
+var
+  lExeDir, lLazDir, lCfgFile, lPCP: string;
+begin
+  if assigned(EnvironmentOptions) then FreeIdeEnvOpt;
+  result := nil;
+  try
+    lExeDir := ExtractFileDir(ParamStrUTF8(0));
+    lLazDir := ExpandFileNameUTF8(aLazDir, lExeDir);
+    lCfgFile := AppendPathDelim(lLazDir) + cLazarusCfgName;
+    // scp
+    SetSecondaryConfigPath(lLazDir);
+    // pcp
+    if FileExistsUTF8(lCfgFile) then
+    begin
+      lPCP := ReadLazarusCfgFile(lCfgFile, [cPCPOptLong, cPCPOptShort]);
+      if lPCP <> '' then
+        SetPrimaryConfigPath(lPCP);
+    end;
+    // macros
+    MyMacroConf := TMacroConfig.Create(nil); // creates EnvironmentOptions
+    MyMacroConf.SetupTransferMacros;
+    IDEMacros.LoadBuildMacros;
+    // env
+    EnvironmentOptions.CreateConfig;
+    EnvironmentOptions.Load(false);
+    result := EnvironmentOptions;
+  except
+    if result = nil then
+      FreeIdeEnvOpt;
+  end;
+end;
+
+function ReadFPCSrcFromIdeOpts(aLazDir: string): string;
+begin
+  result := '';
+  try
+    try
+      if LoadIdeEnvOpt(aLazDir) <> nil then
+        // first check the existence of the original value
+        if EnvironmentOptions.FPCSourceDirectory <> '' then
+          // then read the parsed value
+          result := EnvironmentOptions.GetParsedFPCSourceDirectory;
+    finally
+      FreeIdeEnvOpt;
+    end;
+  except
+    // ignore
+  end;
+end;
 
 { TCTTestRunner }
 
@@ -111,12 +233,13 @@ begin
   if HasOption('machine') then
     FMachine := GetOptionValue('machine');
 
-  if Options.FPCSrcDir='' then
-    Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
-
   // assume that the test executable is always inside the Lazarus folder
   if Options.LazarusSrcDir='' then
     Options.LazarusSrcDir:=ExpandFileNameUTF8(cLazarusSrcDir,ExtractFileDir(ParamStrUTF8(0)));
+
+  // read folder from Lazarus configuration if not specified
+  if Options.FPCSrcDir='' then
+    Options.FPCSrcDir:=ReadFPCSrcFromIdeOpts(Options.LazarusSrcDir);
 
   CodeToolBoss.Init(Options);
 
