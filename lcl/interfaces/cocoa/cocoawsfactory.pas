@@ -18,7 +18,6 @@ uses
   CocoaWSDialogs,
   CocoaWSTabControls,
   CocoaWSTextEdits,
-  CocoaWSSpin,
   CocoaWSComboBox,
   CocoaWSListBox,
   CocoaWSCheckLst,

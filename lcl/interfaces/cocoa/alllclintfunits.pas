@@ -22,7 +22,6 @@ uses
   cocoawsfactory{%H-},
   cocoawsforms{%H-},
   cocoawsmenus{%H-},
-  cocoawsspin{%H-},
   cocoawsstdctrls{%H-},
   interfaces{%H-};
 implementation
