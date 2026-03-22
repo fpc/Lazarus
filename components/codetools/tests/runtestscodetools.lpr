@@ -26,10 +26,14 @@ program runtestscodetools;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, sysutils, consoletestrunner, dom, fpcunit, LazLogger,
+  Classes, sysutils, dom,
+  // FPCUnit
+  fpcunit, consoletestrunner,
+  // LazUtils
+  LazLogger, LazUTF8, LazFileUtils,
+  // CodeTools
   CodeToolManager, CodeToolsConfig,
-  TestGlobals,
-  // non Pascal
+  // Test suites
   TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
@@ -80,6 +84,8 @@ begin
 end;
 
 function TCTTestRunner.ParseOptions: Boolean;
+const
+  cLazarusSrcDir = '..\..\..'; // only current installation
 begin
   Result:=inherited ParseOptions;
 
@@ -107,8 +113,10 @@ begin
 
   if Options.FPCSrcDir='' then
     Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
+
+  // assume that the test executable is always inside the Lazarus folder
   if Options.LazarusSrcDir='' then
-    Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
+    Options.LazarusSrcDir:=ExpandFileNameUTF8(cLazarusSrcDir,ExtractFileDir(ParamStrUTF8(0)));
 
   CodeToolBoss.Init(Options);
 
