@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, FormEditingIntf, ProjectIntf, NewItemIntf, LazIDEIntf,
-  Controls, Forms;
+  ProjectResourcesIntf, Controls, Forms;
 
 Type
 
