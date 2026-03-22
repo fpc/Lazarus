@@ -217,6 +217,7 @@ type
   public
     class function getWindow(const obj: NSObject): NSWindow;
     class function getWindowAtPos(const p: NSPoint): NSWindow;
+    class function showWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
   end;
 
 implementation
@@ -572,7 +573,66 @@ begin
     Result := window;
 end;
 
+{------------------------------------------------------------------------------
+  function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 
+  nCmdShow:
+    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED, SW_SHOWFULLSCREEN
+------------------------------------------------------------------------------}
+class function TCocoaWindowUtil.showWindow(
+  hWnd: HWND;
+  nCmdShow: Integer ): Boolean;
+var
+  win: NSWindow;
+  lCocoaWin: TCocoaWindow = nil;
+  lWinContent: TCocoaWindowContent = nil;
+  disableFS : Boolean;
+begin
+  Result:=true;
+  {$ifdef VerboseCocoaWinAPI}
+    DebugLn('TCocoaWidgetSet.ShowWindow');
+  {$endif}
+
+  // for regular controls (non-window or embedded window, acting as a control)
+  if (not NSObject(hWnd).isKindOfClass(TCocoaWindowContent)) or (TCocoaWindowContent(hWnd).isembedded) then
+  begin
+    NSObject(hWnd).lclSetVisible(nCmdSHow <> SW_HIDE);
+    Exit;
+  end;
+
+  // for windows
+  lWinContent := TCocoaWindowContent(hWnd);
+
+  //todo: should it be lclOwnWindow?
+  if Assigned(lWinContent.fswin) then
+    win := lWinContent.fswin
+  else
+    win := NSWindow(lWinContent.window);
+
+  disableFS := false;
+  if win.isKindOfClass(TCocoaWindow) then
+  begin
+    lCocoaWin := TCocoaWindow(win);
+    disableFS := Assigned(lCocoaWin) and (lCocoaWin.lclIsFullScreen) and (nCmdShow <> SW_SHOWFULLSCREEN);
+  end;
+
+  if disableFS and Assigned(lCocoaWin) then
+    lCocoaWin.lclSwitchFullScreen(false);
+
+  case nCmdShow of
+    SW_SHOW, SW_SHOWNORMAL:
+      win.orderFront(nil);
+    SW_HIDE:
+      win.orderOut(nil);
+    SW_MINIMIZE:
+      win.miniaturize(nil);
+    SW_MAXIMIZE:
+      if NOT win.isZoomed then win.zoom(nil);
+    SW_SHOWFULLSCREEN:
+      if Assigned(lCocoaWin) then
+        lCocoaWin.lclSwitchFullScreen(true);
+  end;
+end;
 
 { TCocoaPanel }
 

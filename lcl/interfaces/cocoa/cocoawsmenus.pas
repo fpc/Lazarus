@@ -33,7 +33,7 @@ uses
   // Widgetset
   WSMenus,
   // LCL Cocoa
-  CocoaPrivate, CocoaConfig, CocoaInt, CocoaMenus, CocoaCommonCallback, CocoaUtils;
+  CocoaPrivate, CocoaConfig, CocoaMenus, CocoaCommonCallback, CocoaUtils;
 
 type
 
@@ -494,7 +494,7 @@ begin
 
   menu := TCocoaMenu(APopupMenu.Handle);
   point:= TPoint.Create( x, y );
-  screen:= TCocoaScreenUtil.getScreenFromHMonitor( CocoaWidgetSet.MonitorFromPoint(point, MONITOR_DEFAULTTONULL) );
+  screen:= TCocoaScreenUtil.getScreenFromHMonitor( TCocoaScreenUtil.getHMonitor(point, MONITOR_DEFAULTTONULL) );
 
   mouseY:= TCocoaScreenUtil.globalScreenBottom - y;
   if Assigned(screen) then begin
