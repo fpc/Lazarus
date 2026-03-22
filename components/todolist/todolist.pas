@@ -338,14 +338,15 @@ begin
       Caption:=Format(lisToDoListForPackage,[TIDEPackage(FProjPack).IDAsString]);
       StartFN:=TIDEPackage(FProjPack).Filename;
     end;
-    Assert(StartFN<>'', 'TIDETodoWindow.UpdateTodos: No StartFN');
-    // Find a '.todo' file of the main source
-    St:=ChangeFileExt(StartFN,'.todo');
-    if FileExistsCached(St) then
-      ScanFile(St);
-    // Scan main source file
-    if FilenameIsPascalUnit(StartFN) then
-      ScanFile(StartFN);
+    if StartFN<>'' then begin
+      // Find a '.todo' file of the main source
+      St:=ChangeFileExt(StartFN,'.todo');
+      if FileExistsCached(St) then
+        ScanFile(St);
+      // Scan main source file
+      if FilenameIsPascalUnit(StartFN) then
+        ScanFile(StartFN);
+    end;
 
     Flags:=[];
     if ListedFilesMenuItem.Checked then
