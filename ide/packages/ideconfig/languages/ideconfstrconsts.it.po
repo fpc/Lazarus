@@ -551,3 +551,119 @@ msgstr "Errore XML"
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Errore del parser XML nel file%s%sErrore: %s"
 
+#: ideconfstrconsts.rslanguageafrikaans
+msgid "Afrikaans"
+msgstr "Afrikaans"
+
+#: ideconfstrconsts.rslanguagearabic
+msgid "Arabic"
+msgstr "Arabo"
+
+#: ideconfstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "Automatico (o inglese)"
+
+#: ideconfstrconsts.rslanguagecatalan
+msgid "Catalan"
+msgstr "Catalano"
+
+#: ideconfstrconsts.rslanguagechinese
+msgid "Chinese"
+msgstr "Cinese"
+
+#: ideconfstrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageczech
+msgid "Czech"
+msgstr "Ceco"
+
+#: ideconfstrconsts.rslanguagedutch
+msgid "Dutch"
+msgstr "Olandese"
+
+#: ideconfstrconsts.rslanguageenglish
+msgid "English"
+msgstr "Inglese"
+
+#: ideconfstrconsts.rslanguagefinnish
+msgid "Finnish"
+msgstr "Finnico"
+
+#: ideconfstrconsts.rslanguagefrench
+msgid "French"
+msgstr "Francese"
+
+#: ideconfstrconsts.rslanguagegerman
+msgid "German"
+msgstr "Tedesco"
+
+#: ideconfstrconsts.rslanguagehebrew
+msgid "Hebrew"
+msgstr "Ebraico"
+
+#: ideconfstrconsts.rslanguagehungarian
+msgid "Hungarian"
+msgstr "Ungherese"
+
+#: ideconfstrconsts.rslanguageindonesian
+msgid "Indonesian"
+msgstr "Indonesiano"
+
+#: ideconfstrconsts.rslanguageitalian
+msgid "Italian"
+msgstr "Italiano"
+
+#: ideconfstrconsts.rslanguagejapanese
+msgid "Japanese"
+msgstr "Giapponese"
+
+#: ideconfstrconsts.rslanguagekorean
+msgid "Korean"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagelao
+msgid "Lao"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagelithuanian
+msgid "Lithuanian"
+msgstr "Lituano"
+
+#: ideconfstrconsts.rslanguagepolish
+msgid "Polish"
+msgstr "Polacco"
+
+#: ideconfstrconsts.rslanguageportuguese
+msgid "Portuguese"
+msgstr "Portoghese"
+
+#: ideconfstrconsts.rslanguageportuguesebr
+msgid "Brazilian Portuguese"
+msgstr "Portoghese brasiliano"
+
+#: ideconfstrconsts.rslanguagerussian
+msgid "Russian"
+msgstr "Russo"
+
+#: ideconfstrconsts.rslanguagesinhala
+msgid "Sinhala"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageslovak
+msgid "Slovak"
+msgstr "Slovacco"
+
+#: ideconfstrconsts.rslanguagespanish
+msgid "Spanish"
+msgstr "Spagnolo"
+
+#: ideconfstrconsts.rslanguageturkish
+msgid "Turkish"
+msgstr "Turco"
+
+#: ideconfstrconsts.rslanguageukrainian
+msgid "Ukrainian"
+msgstr "Ucraino"
+

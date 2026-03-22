@@ -38,37 +38,6 @@ uses
 resourcestring
   lisErrorUpdatingFrom = 'Error updating'+LineEnding+'%s'+LineEnding+'from'+LineEnding+'%s.'+LineEnding+LineEnding+'Error message:'+LineEnding+'%s';
 
-  // Languages
-  rsLanguageAutomatic    = 'Automatic (or English)';
-  rsLanguageEnglish      = 'English';
-  rsLanguageGerman       = 'German';
-  rsLanguageSpanish      = 'Spanish';
-  rsLanguageFrench       = 'French';
-  rsLanguageRussian      = 'Russian';
-  rsLanguagePolish       = 'Polish';
-  rsLanguageItalian      = 'Italian';
-  rsLanguageCatalan      = 'Catalan';
-  rsLanguageFinnish      = 'Finnish';
-  rsLanguageHebrew       = 'Hebrew';
-  rsLanguageArabic       = 'Arabic';
-  rsLanguagePortugueseBr = 'Brazilian Portuguese';
-  rsLanguagePortuguese   = 'Portuguese';
-  rsLanguageUkrainian    = 'Ukrainian';
-  rsLanguageDutch        = 'Dutch';
-  rsLanguageJapanese     = 'Japanese';
-  rsLanguageChinese      = 'Chinese';
-  rsLanguageIndonesian   = 'Indonesian';
-  rsLanguageAfrikaans    = 'Afrikaans';
-  rsLanguageLithuanian   = 'Lithuanian';
-  rsLanguageSlovak       = 'Slovak';
-  rsLanguageTurkish      = 'Turkish';
-  rsLanguageCzech        = 'Czech';
-  rsLanguageHungarian    = 'Hungarian';
-  rsLanguageCorsican     = 'Corsican';
-  rsLanguageSinhala      = 'Sinhala';
-  rsLanguageKorean       = 'Korean';
-  rsLanguageLao          = 'Lao';
-
 implementation
 
 end.

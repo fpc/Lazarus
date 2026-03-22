@@ -345,6 +345,9 @@
     </i18n>
     <RequiredPkgs>
       <Item>
+        <PackageName Value="IdeUtilsPkg"/>
+      </Item>
+      <Item>
         <PackageName Value="SynEdit"/>
       </Item>
       <Item>

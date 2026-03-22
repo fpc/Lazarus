@@ -65,11 +65,11 @@ uses
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
   IdeIntfStrConsts, ComponentEditors, PropEdits, IDEDialogs,
   // IdeUtils
-  InputHistory, IDETranslations,
+  InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs, SearchPathProcs,
   TransferMacros, IDECmdLine, IDEProcs, DialogProcs, BaseBuildManager,
-  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts,
+  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts, IDETranslations,
   // IdePackager
   IdePackagerStrConsts, BasePkgManager, PackageDefs, EditablePackage,
   PackageLinks, PackageSystem,

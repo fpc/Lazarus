@@ -44,9 +44,7 @@ uses
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
   // IdeConfig
   LazConf, IDECmdLine, TransferMacros, EnvironmentOpts, ParsedCompilerOpts,
-  CompilerOptions, ModeMatrixOpts, BaseBuildManager, ApplicationBundle,
-  // IdeUtils
-  IDETranslations,
+  CompilerOptions, ModeMatrixOpts, BaseBuildManager, ApplicationBundle, IDETranslations,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageLinks, PackageSystem,
   // IdeProject

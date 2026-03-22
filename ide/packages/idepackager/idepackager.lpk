@@ -57,7 +57,10 @@ Files in this package are for the main configuration of the IDE."/>
     </i18n>
     <RequiredPkgs>
       <Item>
-        <PackageName Value="IdeUtilsPkg"/>
+        <PackageName Value="IdeConfig"/>
+      </Item>
+      <Item>
+        <PackageName Value="IDEIntf"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>

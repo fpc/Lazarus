@@ -73,7 +73,7 @@ type
 
 
   { TPkgComponent }
-  
+
   TPkgComponent = class(TRegisteredComponent)
   private
     FPkgFile: TPkgFile;
@@ -102,7 +102,7 @@ type
     pffReportedAsRemoved // file has been reported as removed
     );
   TPkgFileFlags = set of TPkgFileFlag;
-  
+
   { TPkgFile }
 
   TPkgFile = class(TLazPackageFile)
@@ -174,10 +174,10 @@ type
     property HasRegisterProc: boolean read GetHasRegisterProc write SetHasRegisterProc;
     property LazPackage: TLazPackage read FPackage;
   end;
-  
-  
+
+
   { TPkgUnitsTree - Tree of TPkgFile sorted for unitnames }
-  
+
   TPkgUnitsTree = class(TAVLTree)
   private
     FLazPackage: TLazPackage;
@@ -187,16 +187,16 @@ type
     constructor Create(ThePackage: TLazPackage);
     property LazPackage: TLazPackage read FLazPackage write FLazPackage;
   end;
-  
-  
+
+
   { TPkgDependency }
-  
+
   TPkgMarkerFlag = (
     pmfVisited,
     pmfMarked
     );
   TPkgMarkerFlags = set of TPkgMarkerFlag;
-  
+
   TPkgDependencyDirection = (
     pddRequires,
     pddUsedBy

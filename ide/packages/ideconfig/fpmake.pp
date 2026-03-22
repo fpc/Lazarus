@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeConfig 1.0
 
-   This file was generated on 21.03.2026
+   This file was generated on 22.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -68,6 +68,7 @@ begin
     t.Dependencies.AddUnit('ideguicmdline');
     t.Dependencies.AddUnit('ideoptiondefs');
     t.Dependencies.AddUnit('ideprocs');
+    t.Dependencies.AddUnit('idetranslations');
     t.Dependencies.AddUnit('idexmlconfigprocs');
     t.Dependencies.AddUnit('lazconf');
     t.Dependencies.AddUnit('modematrixopts');
@@ -99,6 +100,7 @@ begin
     T:=P.Targets.AddUnit('ideguicmdline.pas');
     T:=P.Targets.AddUnit('ideoptiondefs.pas');
     T:=P.Targets.AddUnit('ideprocs.pp');
+    T:=P.Targets.AddUnit('idetranslations.pas');
     T:=P.Targets.AddUnit('idexmlconfigprocs.pas');
     T:=P.Targets.AddUnit('lazconf.pp');
     T:=P.Targets.AddUnit('modematrixopts.pas');

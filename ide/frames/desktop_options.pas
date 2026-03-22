@@ -39,9 +39,9 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  EnvironmentOpts,
+  EnvironmentOpts, IDETranslations,
   // IDE
-  LazarusIDEStrConsts, IDETranslations, EnvGuiOptions;
+  LazarusIDEStrConsts, EnvGuiOptions;
 
 type
 

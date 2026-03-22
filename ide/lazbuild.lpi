@@ -79,7 +79,7 @@
         <PackageName Value="CodeTools"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="lazbuild.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -89,11 +89,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="BuildManager"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="basebuildmanager.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="BaseBuildManager"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

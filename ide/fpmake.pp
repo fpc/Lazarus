@@ -323,7 +323,6 @@ begin
     P.Sources.AddSrc('ideoptiondefs.pas');
     P.Sources.AddSrc('ideoptionsdlg.pas');
     P.Sources.AddSrc('ideprotocol.pas');
-    P.Sources.AddSrc('idetranslations.pas');
     P.Sources.AddSrc('idewindowhelp.pas');
     P.Sources.AddSrc('imexportcompileropts.pas');
     P.Sources.AddSrc('infobuild.pp');

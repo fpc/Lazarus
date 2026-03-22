@@ -27,10 +27,6 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="CheckerLfmBase"/>
       </Item>
       <Item>
-        <Filename Value="idetranslations.pas"/>
-        <UnitName Value="IDETranslations"/>
-      </Item>
-      <Item>
         <Filename Value="ideutilspkgstrconsts.pas"/>
         <UnitName Value="IdeUtilsPkgStrConsts"/>
       </Item>

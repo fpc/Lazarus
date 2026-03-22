@@ -58,11 +58,9 @@ uses
   LazIDEIntf,
   // Package registration
   LazarusPackageIntf,
-  // IdeUtils
-  IDETranslations,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, IDEProcs, DialogProcs, SearchPathProcs,
-  ParsedCompilerOpts, CompilerOptions, FppkgHelper, IdeConfStrConsts,
+  ParsedCompilerOpts, CompilerOptions, FppkgHelper, IdeConfStrConsts, IDETranslations,
   // IdePackager
   IdePackagerStrConsts, PackageLinks, PackageDefs, PkgSysBasePkgs, EditablePackage;
 

@@ -542,3 +542,119 @@ msgstr ""
 msgid "XML parser error in file %s%sError: %s"
 msgstr ""
 
+#: ideconfstrconsts.rslanguageafrikaans
+msgid "Afrikaans"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagearabic
+msgid "Arabic"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagecatalan
+msgid "Catalan"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagechinese
+msgid "Chinese"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageczech
+msgid "Czech"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagedutch
+msgid "Dutch"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageenglish
+msgid "English"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagefinnish
+msgid "Finnish"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagefrench
+msgid "French"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagegerman
+msgid "German"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagehebrew
+msgid "Hebrew"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagehungarian
+msgid "Hungarian"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageindonesian
+msgid "Indonesian"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageitalian
+msgid "Italian"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagejapanese
+msgid "Japanese"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagekorean
+msgid "Korean"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagelao
+msgid "Lao"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagelithuanian
+msgid "Lithuanian"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagepolish
+msgid "Polish"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageportuguese
+msgid "Portuguese"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageportuguesebr
+msgid "Brazilian Portuguese"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagerussian
+msgid "Russian"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagesinhala
+msgid "Sinhala"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageslovak
+msgid "Slovak"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagespanish
+msgid "Spanish"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageturkish
+msgid "Turkish"
+msgstr ""
+
+#: ideconfstrconsts.rslanguageukrainian
+msgid "Ukrainian"
+msgstr ""
+

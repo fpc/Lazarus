@@ -551,3 +551,119 @@ msgstr "XML 错误"
 msgid "XML parser error in file %s%sError: %s"
 msgstr "在文件 %s%s 中发现 XML 解析错误，错误：%s"
 
+#: ideconfstrconsts.rslanguageafrikaans
+msgid "Afrikaans"
+msgstr "南非荷兰语"
+
+#: ideconfstrconsts.rslanguagearabic
+msgid "Arabic"
+msgstr "阿拉伯语"
+
+#: ideconfstrconsts.rslanguageautomatic
+msgid "Automatic (or English)"
+msgstr "自动（或者英语）"
+
+#: ideconfstrconsts.rslanguagecatalan
+msgid "Catalan"
+msgstr "加泰罗尼亚语"
+
+#: ideconfstrconsts.rslanguagechinese
+msgid "Chinese"
+msgstr "汉语"
+
+#: ideconfstrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr "科西嘉语"
+
+#: ideconfstrconsts.rslanguageczech
+msgid "Czech"
+msgstr "捷克语"
+
+#: ideconfstrconsts.rslanguagedutch
+msgid "Dutch"
+msgstr "荷兰语"
+
+#: ideconfstrconsts.rslanguageenglish
+msgid "English"
+msgstr "英语"
+
+#: ideconfstrconsts.rslanguagefinnish
+msgid "Finnish"
+msgstr "芬兰语"
+
+#: ideconfstrconsts.rslanguagefrench
+msgid "French"
+msgstr "法语"
+
+#: ideconfstrconsts.rslanguagegerman
+msgid "German"
+msgstr "德语"
+
+#: ideconfstrconsts.rslanguagehebrew
+msgid "Hebrew"
+msgstr "希伯来语"
+
+#: ideconfstrconsts.rslanguagehungarian
+msgid "Hungarian"
+msgstr "匈牙利语"
+
+#: ideconfstrconsts.rslanguageindonesian
+msgid "Indonesian"
+msgstr "印度尼西亚语"
+
+#: ideconfstrconsts.rslanguageitalian
+msgid "Italian"
+msgstr "意大利语"
+
+#: ideconfstrconsts.rslanguagejapanese
+msgid "Japanese"
+msgstr "日语"
+
+#: ideconfstrconsts.rslanguagekorean
+msgid "Korean"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagelao
+msgid "Lao"
+msgstr ""
+
+#: ideconfstrconsts.rslanguagelithuanian
+msgid "Lithuanian"
+msgstr "立陶宛语"
+
+#: ideconfstrconsts.rslanguagepolish
+msgid "Polish"
+msgstr "波兰语"
+
+#: ideconfstrconsts.rslanguageportuguese
+msgid "Portuguese"
+msgstr "葡萄牙语"
+
+#: ideconfstrconsts.rslanguageportuguesebr
+msgid "Brazilian Portuguese"
+msgstr "巴西葡萄牙语"
+
+#: ideconfstrconsts.rslanguagerussian
+msgid "Russian"
+msgstr "俄罗斯语"
+
+#: ideconfstrconsts.rslanguagesinhala
+msgid "Sinhala"
+msgstr "斯里兰卡语"
+
+#: ideconfstrconsts.rslanguageslovak
+msgid "Slovak"
+msgstr "斯洛伐克语"
+
+#: ideconfstrconsts.rslanguagespanish
+msgid "Spanish"
+msgstr "西班牙语"
+
+#: ideconfstrconsts.rslanguageturkish
+msgid "Turkish"
+msgstr "土耳其语"
+
+#: ideconfstrconsts.rslanguageukrainian
+msgid "Ukrainian"
+msgstr "乌克兰语"
+

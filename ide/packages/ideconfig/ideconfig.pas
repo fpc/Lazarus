@@ -12,9 +12,10 @@ uses
   CompOptsModes, CoolBarOptions, DialogProcs, DiffPatch, EditDefineTree, 
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, 
   FppkgHelper, IDECmdLine, IdeConfigPckTest, IdeConfStrConsts, IDEGuiCmdLine, 
-  IDEOptionDefs, IDEProcs, IdeXmlConfigProcs, LazConf, ModeMatrixOpts, 
-  ParsedCompilerOpts, ProjectBuildMode, ProjPackCommon, RecentListProcs, 
-  SearchPathProcs, ToolBarOptionsBase, TransferMacros, LazarusPackageIntf;
+  IDEOptionDefs, IDEProcs, IDETranslations, IdeXmlConfigProcs, LazConf, 
+  ModeMatrixOpts, ParsedCompilerOpts, ProjectBuildMode, ProjPackCommon, 
+  RecentListProcs, SearchPathProcs, ToolBarOptionsBase, TransferMacros, 
+  LazarusPackageIntf;
 
 implementation
 

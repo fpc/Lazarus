@@ -58,10 +58,10 @@ uses
   // IdeDebugger
   IdeDebuggerOpts,
   // IdeConfig
-  LazConf, EnvironmentOpts, TransferMacros, IDEProcs, BaseBuildManager,
+  LazConf, EnvironmentOpts, TransferMacros, IDEProcs, BaseBuildManager, IDETranslations,
   // IDE
   LazarusPackageIntf,
-  LazarusIDEStrConsts, IDETranslations, InitialSetupProc,
+  LazarusIDEStrConsts, InitialSetupProc,
   GenerateFppkgConfigurationDlg, InitialSetupDlgDebuggerFrame;
   
 type

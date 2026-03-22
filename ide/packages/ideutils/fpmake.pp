@@ -3,7 +3,7 @@
 
    fpmake.pp for IdeUtilsPkg 1.0
 
-   This file was generated on 05.03.2026
+   This file was generated on 22.03.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -49,12 +49,10 @@ begin
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('ideutilspkg.pas');
     t.Dependencies.AddUnit('checkerlfmbase');
-    t.Dependencies.AddUnit('idetranslations');
     t.Dependencies.AddUnit('ideutilspkgstrconsts');
     t.Dependencies.AddUnit('inputhistory');
 
     T:=P.Targets.AddUnit('checkerlfmbase.pas');
-    T:=P.Targets.AddUnit('idetranslations.pas');
     T:=P.Targets.AddUnit('ideutilspkgstrconsts.pas');
     T:=P.Targets.AddUnit('inputhistory.pas');
 

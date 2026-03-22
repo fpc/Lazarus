@@ -153,6 +153,36 @@ resourcestring
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
   lisIgnoreAndContinue = 'Ignore and continue';
   lisTheCodetoolsFoundAnError = 'The Codetools found an error:%s%s';
+  // Human Languages
+  rsLanguageAutomatic    = 'Automatic (or English)';
+  rsLanguageEnglish      = 'English';
+  rsLanguageGerman       = 'German';
+  rsLanguageSpanish      = 'Spanish';
+  rsLanguageFrench       = 'French';
+  rsLanguageRussian      = 'Russian';
+  rsLanguagePolish       = 'Polish';
+  rsLanguageItalian      = 'Italian';
+  rsLanguageCatalan      = 'Catalan';
+  rsLanguageFinnish      = 'Finnish';
+  rsLanguageHebrew       = 'Hebrew';
+  rsLanguageArabic       = 'Arabic';
+  rsLanguagePortugueseBr = 'Brazilian Portuguese';
+  rsLanguagePortuguese   = 'Portuguese';
+  rsLanguageUkrainian    = 'Ukrainian';
+  rsLanguageDutch        = 'Dutch';
+  rsLanguageJapanese     = 'Japanese';
+  rsLanguageChinese      = 'Chinese';
+  rsLanguageIndonesian   = 'Indonesian';
+  rsLanguageAfrikaans    = 'Afrikaans';
+  rsLanguageLithuanian   = 'Lithuanian';
+  rsLanguageSlovak       = 'Slovak';
+  rsLanguageTurkish      = 'Turkish';
+  rsLanguageCzech        = 'Czech';
+  rsLanguageHungarian    = 'Hungarian';
+  rsLanguageCorsican     = 'Corsican';
+  rsLanguageSinhala      = 'Sinhala';
+  rsLanguageKorean       = 'Korean';
+  rsLanguageLao          = 'Lao';
 
 implementation
 
