@@ -76,6 +76,9 @@ function TCTTestRunner.ParseOptions: Boolean;
 begin
   Result:=inherited ParseOptions;
 
+  // CodeTools (tests) assume a working folder "components\codetools\tests"
+  SetCurrentDirUTF8(ExtractFileDir(ParamStrUTF8(0)));
+
   if Options=nil then
     Options:=TCodeToolsOptions.Create;
   if FileExists(ConfigFilename) then begin
