@@ -26,7 +26,7 @@ uses
   Classes, SysUtils, Types, LCLType, Controls,
   LMessages, LCLMessageGlue, WSLCLClasses, LazLoggerBase,
   MacOSAll, CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaUtils, Cocoa_Extra;
+  CocoaPrivate, CocoaCommonCallback, CocoaUtils, Cocoa_Extra;
 
 function LBackingScaleFactor(Handle: HWND): single;
 procedure LSetWantsBestResolutionOpenGLSurface(const AValue: boolean; Handle: HWND);
