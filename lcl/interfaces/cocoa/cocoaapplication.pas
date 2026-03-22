@@ -60,7 +60,7 @@ type
     procedure setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify );
       message 'lclSetOpenURLObserver:';
   public
-    class function initApplication: TCocoaApplication;
+    class function createApplication: TCocoaApplication;
       message 'lclInitApplication';
   end;
 
@@ -610,24 +610,21 @@ end;
 // If principle class is not specified, then TCocoaApplication is used.
 // You should always specify either TCocoaApplication or
 // a class derived from TCocoaApplication, in order for LCL to fucntion properly
-class function TCocoaApplication.initApplication: TCocoaApplication;
+class function TCocoaApplication.createApplication: TCocoaApplication;
 var
-  bun : NSBundle;
-  appDelegate: TAppDelegate;
-  lDict: NSDictionary;
+  bundle : NSBundle;
+  dict: NSDictionary;
 begin
-  bun := NSBundle.mainBundle;
-  if Assigned(bun) and Assigned(bun.principalClass) then
-    Result := TCocoaApplication(NSObject(bun.principalClass).sharedApplication)
+  bundle := NSBundle.mainBundle;
+  if Assigned(bundle) and Assigned(bundle.principalClass) then
+    Result := TCocoaApplication(NSObject(bundle.principalClass).sharedApplication)
   else
     Result := TCocoaApplication(TCocoaApplication.sharedApplication);
 
-  appDelegate:= TAppDelegate.new;
-  Result.setDelegate( NSApplicationDelegateProtocol(appDelegate) );
-  appDelegate.release;
+  Result.setDelegate( NSApplicationDelegateProtocol(TAppDelegate.new) );
 
-  lDict := NSProcessInfo.processInfo.environment;
-  Result._isInSandbox := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
+  dict := NSProcessInfo.processInfo.environment;
+  Result._isInSandbox := dict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
 
   WakeMainThread:= @CocoaWidgetSetBaseService.OnWakeMainThread;
 end;
