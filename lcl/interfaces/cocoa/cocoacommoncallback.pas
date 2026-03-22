@@ -10,7 +10,7 @@ uses
   Types, Classes, Controls, SysUtils, Math,
   LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
-  CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate, CocoaCallback, CocoaUtils,
+  CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate, CocoaUtils,
   CocoaApplication, CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, Cocoa_Extra;
 
 type

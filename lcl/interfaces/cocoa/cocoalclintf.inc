@@ -348,8 +348,6 @@ begin
   {$ENDIF}
 end;
 
-{TCocoaWidgetSet.PromptUser}
-
 { TCocoaAlertCancelAccessoryView }
 
 function TCocoaAlertCancelAccessoryView.performKeyEquivalent(theEvent: NSEvent): LCLObjCBoolean;
@@ -386,7 +384,7 @@ function TCocoaWidgetSet.PromptUser(const DialogCaption, DialogMessage: String;
 begin
   Result := TCocoaDialogUtil.promptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount,
     DefaultIndex, EscapeResult);
-end;  {TCocoaWidgetSet.PromptUser}
+end;
 
 {------------------------------------------------------------------------------
   Method:  MessageBox

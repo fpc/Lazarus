@@ -28,7 +28,7 @@ uses
   LCLType, LCLMessageGlue, LMessages, Controls, Graphics,
   ComCtrls, StdCtrls, ImgList, Forms,
   MacOSAll, CocoaAll,
-  CocoaPrivate, Cocoa_Extra, CocoaCallback, CocoaScrollers, CocoaListControl,
+  CocoaPrivate, Cocoa_Extra, CocoaScrollers, CocoaListControl,
   CocoaConst, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaListView, CocoaTextEdits;
 

@@ -30,7 +30,7 @@ uses
   Math, // needed for MinDouble, MaxDouble
   LCLType, Graphics, Controls,
   MacOSAll, CocoaAll, CocoaConfig, CocoaUtils, CocoaGDIObjects,
-  CocoaPrivate, CocoaCallback;
+  CocoaPrivate;
 
 type
 

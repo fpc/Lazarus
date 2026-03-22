@@ -10,7 +10,7 @@ uses
   Classes, SysUtils,
   LCLType, LMessages, LCLMessageGlue, ComCtrls,
   CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaGDIObjects,
+  CocoaPrivate, CocoaCommonCallback, CocoaGDIObjects,
   CocoaUtils, CocoaCustomControl, Cocoa_Extra;
 
 type

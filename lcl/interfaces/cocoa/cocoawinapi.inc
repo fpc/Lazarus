@@ -502,7 +502,7 @@ end;
 
 function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 begin
-  Result := CocoaWidgetSetService.deleteObject(GDIObject);
+  Result := CocoaWidgetSetBaseService.deleteObject(GDIObject);
 end;
 
 function TCocoaWidgetSet.DestroyCaret(Handle: HWND): Boolean;

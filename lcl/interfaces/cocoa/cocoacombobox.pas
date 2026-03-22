@@ -10,8 +10,8 @@ interface
 uses
   Types, Classes, SysUtils,
   LCLType, Graphics, Controls, StdCtrls,
-  MacOSAll, CocoaAll, CocoaConfig, CocoaUtils, CocoaGDIObjects,
-  CocoaPrivate, CocoaCallback;
+  MacOSAll, CocoaAll,
+  CocoaPrivate, CocoaConfig, CocoaUtils, CocoaGDIObjects;
 
 type
   TCocoaComboBox = objcclass;
