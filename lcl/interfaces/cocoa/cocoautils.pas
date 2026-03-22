@@ -784,12 +784,10 @@ class function TCocoaColorUtil.toColorRefWithAnyColor(const Color: NSColor): TCo
   end;
 
 var
-  LocalPool: NSAutoReleasePool;
   RGBColor, PatternColor: NSColor;
   ImageRep: NSImageRep;
   x, y: Integer;
 begin
-  LocalPool := NSAutoReleasePool.alloc.init;
   RGBColor := Color.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
   // if color is a pattern it can't be converted as is to a solid color value
   if RGBColor = nil then
@@ -828,7 +826,6 @@ begin
   end
   else
     Result := toColorRefWithRGBColor(RGBColor);
-  LocalPool.release;
 end;
 
 class procedure TCocoaColorUtil.toColorAlpha(const Color: NSColor; var lclColor: TColor;
