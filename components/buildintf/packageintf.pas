@@ -80,12 +80,22 @@ type
     property CustomOptions: TConfigStorage read FCustomOptions;
   end;
 
+  TPackageUpdatePolicy = (
+    pupManually,
+    pupOnRebuildingAll,
+    pupAsNeeded
+    );
+  TPackageUpdatePolicies = set of TPackageUpdatePolicy;
+
   TPkgDependencyType = (
     pdtLazarus,
     pdtFPMake
     );
 
 const
+  AutoUpdateNames: array[TPackageUpdatePolicy] of string = (
+    'Manually', 'OnRebuildingAll', 'AsNeeded');
+
   PkgDependencyTypeNames: array[TPkgDependencyType] of string = (
     'Lazarus',
     'FPMake'
@@ -425,6 +435,9 @@ type
     FChangeStamp: Int64;
   protected
     procedure IncChangeStamp; virtual;
+  public
+    function FindLCLDependency(FirstDependency: TPkgDependencyID
+                                          ): TPkgDependencyID; virtual; abstract;
   public
     property ChangeStamp: Int64 read FChangeStamp;
   end;

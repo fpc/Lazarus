@@ -58,13 +58,6 @@ type
   TPkgFile = class;
   TPkgDependency = class;
 
-  TPackageUpdatePolicy = (
-    pupManually,
-    pupOnRebuildingAll,
-    pupAsNeeded
-    );
-  TPackageUpdatePolicies = set of TPackageUpdatePolicy;
-
   TGetAllRequiredPackagesEvent =
     procedure(APackage: TLazPackage; // if not nil then ignore FirstDependency and do not add APackage to Result
               FirstDependency: TPkgDependency;
@@ -756,8 +749,6 @@ type
 
 const
   LazPkgXMLFileVersion = 5;
-  AutoUpdateNames: array[TPackageUpdatePolicy] of string = (
-    'Manually', 'OnRebuildingAll', 'AsNeeded');
 
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)

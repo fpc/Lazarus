@@ -343,11 +343,12 @@ type
     function FindPackageWithID(PkgID: TLazPackageID): TLazPackage;
     function FindPackageWithIDMask(PkgIDMask: TLazPackageID): TLazPackage;
     function FindPackageProvidingName(FirstDependency: TPkgDependency;
-                 const Name: string): TLazPackage;
+                                      const Name: string): TLazPackage;
     function FindDependencyRecursively(FirstDependency: TPkgDependency;
                                        PkgID: TLazPackageID): TPkgDependency;
     function FindDependencyRecursively(FirstDependency: TPkgDependency;
                                        const PkgName: string): TPkgDependency;
+    function FindLCLDependency(FirstDependency: TPkgDependencyID): TPkgDependencyID; override;
     function FindConflictRecursively(FirstDependency: TPkgDependency;
                                      PkgID: TLazPackageID): TPkgDependency;
     function FindRuntimePkgOnlyRecursively(FirstDependency: TPkgDependency
@@ -1702,6 +1703,12 @@ begin
   if FirstDependency=nil then exit(nil);
   MarkAllPackagesAsNotVisited;
   Result:=Find(FirstDependency);
+end;
+
+function TLazPackageGraph.FindLCLDependency(FirstDependency: TPkgDependencyID
+  ): TPkgDependencyID;
+begin
+  Result:=FindDependencyRecursively(TPkgDependency(FirstDependency), LCLPackage);
 end;
 
 function TLazPackageGraph.FindConflictRecursively(
