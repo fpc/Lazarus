@@ -331,7 +331,10 @@ begin
 
     StartFN:='';
     if FProjPack is TLazProject then begin
-      Caption:=Format(lisToDoListforProject,[TLazProject(FProjPack).MainFile.Unit_Name]);
+      if TLazProject(FProjPack).IsVirtual then
+        Caption:=lisToDoListforNewProject
+      else
+        Caption:=Format(lisToDoListforProject,[TLazProject(FProjPack).MainFile.Unit_Name]);
       StartFN:=TLazProject(FProjPack).ProjectInfoFile;
     end
     else if FProjPack is TIDEPackage then begin
