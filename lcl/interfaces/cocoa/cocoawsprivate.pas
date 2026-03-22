@@ -132,7 +132,7 @@ begin
     // and is performing a self destruction. Thus there might be a code performing
     // even after DestroyHandle() was called. The destruction needs to be delayed
     // until after the event processing is done
-    CocoaWidgetSetService.addToBeReleasedLCLObjects(CallbackObject);
+    CocoaWidgetSetBaseService.addToBeReleasedLCLObjects(CallbackObject);
   end;
   obj.release;
 end;

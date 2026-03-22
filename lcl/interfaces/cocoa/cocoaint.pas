@@ -196,8 +196,8 @@ begin
   if Assigned(ALoop) then
   begin
     TCocoaApplication(NSApp).aloop:=ALoop;
-    CocoaWidgetSetService.setReadyDropFiles;
-    CocoaWidgetSetService.dropWaitingFiles;
+    CocoaWidgetSetBaseService.setReadyDropFiles;
+    CocoaWidgetSetBaseService.dropWaitingFiles;
     NSApp.run();
   end;
 end;
@@ -316,7 +316,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCocoaWidgetSet.Destroy;
 begin
-  CocoaWidgetSetService.releaseWaitingLCLObjects(0);
+  CocoaWidgetSetBaseService.releaseWaitingLCLObjects(0);
   inherited Destroy;
 
   ScreenContext.Free;
@@ -343,7 +343,7 @@ begin
   // (i.e. images). If autorelease pool is released After the widgetset object
   // then it finalization of WS dependent objects would fail (suppressed AVs)
   // and would cause leaks. (see #35400)
-  CocoaWidgetSetService.finalAutoreleaseMainPool;
+  CocoaWidgetSetBaseService.finalAutoreleaseMainPool;
 
   CocoaWidgetSet := nil;
 end;
@@ -582,10 +582,10 @@ end;
 {$I cocoalclintf.inc}
 
 initialization
-  CocoaWidgetSetService.initAutoreleaseMainPool;   // MainPool Stage 1 init
+  CocoaWidgetSetBaseService.initAutoreleaseMainPool;   // MainPool Stage 1 init
 //  {$I Cocoaimages.lrs}
 
 finalization
-  CocoaWidgetSetService.finalAutoreleaseMainPool;  // MainPool Stage 2 Final
+  CocoaWidgetSetBaseService.finalAutoreleaseMainPool;  // MainPool Stage 2 Final
 
 end.
