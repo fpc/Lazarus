@@ -10863,26 +10863,50 @@ end;
 
 procedure TGtk3Button.SetSpacing(AValue: Integer);
 var
-  ATGValue: TGValue;
-  AImage: PGtkWidget;
+  Img: PGtkWidget;
+  Pos: TGtkPositionType;
+  MarginTop, MarginBottom, MarginLeft, MarginRight: Integer;
 begin
-  // if FSpacing=AValue then Exit;
-  FSpacing:=AValue;
+  // Normalize spacing
   if AValue < 0 then
-    FSpacing := 2;
-  ATGValue.g_type := G_TYPE_INT;
-  ATGValue.set_int(AValue);
+    AValue := 0;
 
-  // no way under gtk3 ... we cannot set style property image-spacing
-  // so we are using cheat
-  AImage := PGtkButton(FWidget)^.get_image;
-  if AImage <> nil then
-  begin
-    if AValue < 0 then
-      AVAlue := 0;
-    //TODO: margin depends on layout ! This is ok for left (default) layout
-    PGtkImage(AImage)^.set_margin_right(AValue);
+  FSpacing := AValue;
+
+  // Get the image widget
+  Img := PGtkButton(FWidget)^.get_image;
+  if Img = nil then
+    Exit;
+
+  // Get current image position
+  Pos := PGtkButton(FWidget)^.get_image_position;
+
+  // Reset all margins first
+  MarginTop := 0;
+  MarginBottom := 0;
+  MarginLeft := 0;
+  MarginRight := 0;
+
+  // Apply spacing depending on position
+  case Pos of
+    GTK_POS_LEFT:
+      MarginRight := AValue;
+
+    GTK_POS_RIGHT:
+      MarginLeft := AValue;
+
+    GTK_POS_TOP:
+      MarginBottom := AValue;
+
+    GTK_POS_BOTTOM:
+      MarginTop := AValue;
   end;
+
+  // Apply margins
+  PGtkWidget(Img)^.set_margin_top(MarginTop);
+  PGtkWidget(Img)^.set_margin_bottom(MarginBottom);
+  PGtkWidget(Img)^.set_margin_left(MarginLeft);
+  PGtkWidget(Img)^.set_margin_right(MarginRight);
 end;
 
 procedure TGtk3Button.SetImage(AImage: TBitmap);
