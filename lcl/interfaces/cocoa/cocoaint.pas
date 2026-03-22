@@ -53,38 +53,15 @@ type
   TCocoaWidgetSet = class(TWidgetSet)
   private
     FTerminating: Boolean;
-    FSendingScrollWheelCount: Integer;
 
-  protected
-    FStockNullBrush: HBRUSH;
-    FStockBlackBrush: HBRUSH;
-    FStockLtGrayBrush: HBRUSH;
-    FStockGrayBrush: HBRUSH;
-    FStockDkGrayBrush: HBRUSH;
-    FStockWhiteBrush: HBRUSH;
-
-    FStockNullPen: HPEN;
-    FStockBlackPen: HPEN;
-    FStockWhitePen: HPEN;
-    FStockSystemFont: HFONT;
-    FStockFixedFont: HFONT;
-
-    FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
-
-    fClipboard: TCocoaWSClipboard;
-
+    procedure AppRunMessages(onlyOne: Boolean; eventExpDate: NSDate);
     function nextEvent(const eventExpDate: NSDate): NSEvent;
     function nextEventBeforeRunLoop(const eventExpDate: NSDate): NSEvent;
-
-    function isSendingScrollWheelFromInterface(): Boolean;
-
     procedure SyncClipboard();
+  protected
+    _gdiObject: TCocoaWidgetSetGDIObject;
+    _clipboard: TCocoaWSClipboard;
 
-    function PromptUser(const DialogCaption, DialogMessage: String;
-      DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
-      EscapeResult: Longint): Longint; override;
-    function MessageBox(HWnd: HWND; lpText, lpCaption: PChar;
-      uType: Cardinal): Integer; override;
     function GetAppHandle: TLCLHandle; override;
     function CreateThemeServices: TThemeServices; override;
   public
@@ -95,7 +72,6 @@ type
 
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
-    procedure AppRunMessages(onlyOne: Boolean; eventExpDate: NSDate);
     procedure AppWaitMessage; override;
     procedure AppProcessMessages; override;
     procedure AppTerminate; override;
@@ -117,9 +93,11 @@ type
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;
     function DestroyTimer(TimerHandle: TLCLHandle): boolean; override;
 
-    procedure InitStockItems;
-    procedure FreeStockItems;
-    procedure FreeSysColorBrushes;
+    function PromptUser(const DialogCaption, DialogMessage: String;
+      DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
+      EscapeResult: Longint): Longint; override;
+    function MessageBox(HWnd: HWND; lpText, lpCaption: PChar;
+      uType: Cardinal): Integer; override;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -128,11 +106,6 @@ type
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
     procedure SetDesigning(AComponent: TComponent); override;
 
-    function RawImage_DescriptionFromCocoaBitmap(out ADesc: TRawImageDescription; ABitmap: TCocoaBitmap): Boolean;
-    function RawImage_FromCocoaBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCocoaBitmap; ARect: PRect = nil): Boolean;
-    function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCocoaBitmapType): Boolean;
-    function GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
-    class function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
     // the winapi compatibility methods
     {$I cocoawinapih.inc}
     // the extra LCL interface methods

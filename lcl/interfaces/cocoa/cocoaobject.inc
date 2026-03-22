@@ -157,9 +157,8 @@ begin
 
   ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
 
-  InitStockItems;
-
-  fClipboard := TCocoaWSClipboard.Create; // must be here otherwise clipboard calls before Application.Initialize crash
+  _gdiObject:= TCocoaWidgetSetGDIObject.Create;
+  _clipboard := TCocoaWSClipboard.Create; // must be here otherwise clipboard calls before Application.Initialize crash
 end;
 
 {------------------------------------------------------------------------------
@@ -172,8 +171,6 @@ begin
   CocoaWidgetSetService.releaseWaitingLCLObjects(0);
   inherited Destroy;
 
-  FreeStockItems;
-
   ScreenContext.Free;
   DefaultContext.Free;
   DefaultBitmap.Free;
@@ -181,9 +178,8 @@ begin
   DefaultPen.Free;
   DefaultBrush.Free;
 
-  FreeSysColorBrushes;
-
-  fClipboard.Free;
+  _gdiObject.Free;
+  _clipboard.Free;
 
   // The CocoaCaret is based WidgetSet timer.
   // The GlobalCaret is freed in finalization section, which is called
@@ -345,94 +341,6 @@ begin
   obj.release;
 end;
 
-procedure TCocoaWidgetSet.InitStockItems;
-var
-  LogBrush: TLogBrush;
-  logPen: TLogPen;
-  pool: NSAutoreleasePool;
-begin
-  FillChar(LogBrush, SizeOf(TLogBrush),0);
-  LogBrush.lbStyle := BS_NULL;
-  FStockNullBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbStyle := BS_SOLID;
-  LogBrush.lbColor := $000000;
-  FStockBlackBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbColor := $C0C0C0;
-  FStockLtGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbColor := $808080;
-  FStockGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbColor := $404040;
-  FStockDkGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogBrush.lbColor := $FFFFFF;
-  FStockWhiteBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
-
-  LogPen.lopnStyle := PS_NULL;
-  LogPen.lopnWidth := Types.Point(0, 0); // create cosmetic pens
-  LogPen.lopnColor := $FFFFFF;
-  FStockNullPen := HPen(TCocoaPen.Create(LogPen, True));
-
-  LogPen.lopnStyle := PS_SOLID;
-  FStockWhitePen := HPen(TCocoaPen.Create(LogPen, True));
-
-  LogPen.lopnColor := $000000;
-  FStockBlackPen := HPen(TCocoaPen.Create(LogPen, True));
-
-  FStockSystemFont := HFont(TCocoaFont.CreateDefault(True));
-  pool := NSAutoreleasePool.alloc.init;
-  FStockFixedFont := HFont(TCocoaFont.Create(NSFont.userFixedPitchFontOfSize(0), True));
-  pool.release;
-end;
-
-procedure TCocoaWidgetSet.FreeStockItems;
-
-  procedure DeleteAndNilObject(var h: HGDIOBJ);
-  begin
-    if h <> 0 then
-      TCocoaGDIObject(h).Global := False;
-    DeleteObject(h);
-    h := 0;
-  end;
-
-begin
-  DeleteAndNilObject(FStockNullBrush);
-  DeleteAndNilObject(FStockBlackBrush);
-  DeleteAndNilObject(FStockLtGrayBrush);
-  DeleteAndNilObject(FStockGrayBrush);
-  DeleteAndNilObject(FStockDkGrayBrush);
-  DeleteAndNilObject(FStockWhiteBrush);
-
-  DeleteAndNilObject(FStockNullPen);
-  DeleteAndNilObject(FStockBlackPen);
-  DeleteAndNilObject(FStockWhitePen);
-
-  DeleteAndNilObject(FStockFixedFont);
-  DeleteAndNilObject(FStockSystemFont);
-
-end;
-
-procedure TCocoaWidgetSet.FreeSysColorBrushes;
-
-  procedure DeleteAndNilObject(var h: HBrush);
-  begin
-    if h <> 0 then
-    begin
-      TCocoaBrush(h).Free;
-      h := 0;
-    end;
-  end;
-
-var
-  i: integer;
-begin
-  for i := Low(FSysColorBrushes) to High(FSysColorBrushes) do
-    DeleteAndNilObject(FSysColorBrushes[i]);
-end;
-
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.GetAppHandle
   Returns: Returns NSApp object, created via NSApplication.sharedApplication
@@ -520,210 +428,4 @@ begin
   if Assigned(func) then func;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap
-
-  Creates a rawimage description for a cocoabitmap
- ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap(out ADesc: TRawImageDescription; ABitmap: TCocoaBitmap): Boolean;
-var
-  Prec, Shift: Byte;
-  BPR: Integer;
-begin
-  ADesc.Init;
-
-  case ABitmap.BitmapType of
-    cbtMono, cbtGray: ADesc.Format := ricfGray;
-  else
-    ADesc.Format := ricfRGBA;
-  end;
-
-  ADesc.Width := Round(ABitmap.image.size.width);
-  ADesc.Height := Round(ABitmap.image.size.Height);
-
-  //ADesc.PaletteColorCount := 0;
-
-  ADesc.BitOrder := riboReversedBits;
-  ADesc.ByteOrder := riboMSBFirst;
-
-  BPR := ABitmap.BytesPerRow;
-  if BPR and $F = 0 then ADesc.LineEnd := rileDQWordBoundary     // 128bit aligned
-  else if BPR and $7 = 0 then ADesc.LineEnd := rileQWordBoundary //  64bit aligned
-  else if BPR and $3 = 0 then ADesc.LineEnd := rileWordBoundary  //  32bit aligned
-  else if BPR and $1 = 0 then ADesc.LineEnd := rileByteBoundary  //   8bit aligned
-  else ADesc.LineEnd := rileTight;
-
-  ADesc.LineOrder := riloTopToBottom;
-  ADesc.BitsPerPixel := ABitmap.BitsPerPixel;
-
-  ADesc.MaskBitOrder := riboReversedBits;
-  ADesc.MaskBitsPerPixel := 1;
-  ADesc.MaskLineEnd := rileByteBoundary;
-  // ADesc.MaskShift := 0;
-
-  ADesc.Depth := ABitmap.Depth;
-  Prec := ABitmap.BitsPerSample;
-
-  ADesc.RedPrec := Prec;
-  ADesc.GreenPrec := Prec;
-  ADesc.BluePrec := Prec;
-
-  // gray or mono
-  if ADesc.Format = ricfGray then begin
-    Result := true;
-    Exit;
-  end;
-
-  // alpha
-  if ABitmap.BitmapType in [cbtARGB, cbtRGBA] then
-    ADesc.AlphaPrec := Prec;
-
-  case ABitmap.BitmapType of
-    cbtRGB: begin
-      Shift := 24 - Prec;
-      ADesc.RedShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.GreenShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.BlueShift := Shift;
-    end;
-    cbtARGB: begin
-      Shift := 32 - Prec;
-      ADesc.AlphaShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.RedShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.GreenShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.BlueShift := Shift;
-    end;
-    cbtRGBA: begin
-      Shift := 32 - Prec;
-      ADesc.RedShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.GreenShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.BlueShift := Shift;
-      Dec(Shift, Prec);
-      ADesc.AlphaShift := Shift;
-    end;
-  end;
-
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCocoaWidgetSet.RawImage_FromCocoaBitmap
-
-  Creates a rawimage description for a cocoabitmap
- ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.RawImage_FromCocoaBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCocoaBitmap; ARect: PRect = nil): Boolean;
-var
-  lBitmapData: PByte;
-begin
-  FillChar(ARawImage, SizeOf(ARawImage), 0);
-  RawImage_DescriptionFromCocoaBitmap(ARawImage.Description, ABitmap);
-
-  ARawImage.DataSize := ABitmap.DataSize;
-  ReAllocMem(ARawImage.Data, ARawImage.DataSize);
-  lBitmapData := ABitmap.GetNonPreMultipliedData();
-  if ARawImage.DataSize > 0 then
-    System.Move(lBitmapData^, ARawImage.Data^, ARawImage.DataSize);
-
-  Result := True;
-  
-  if AMask = nil then
-  begin
-    ARawImage.Description.MaskBitsPerPixel := 0;
-    Exit;
-  end;
-
-  if AMask.Depth > 1
-  then begin
-    DebugLn('[WARNING] RawImage_FromCocoaBitmap: AMask.Depth > 1');
-    Exit;
-  end;
-
-  ARawImage.MaskSize := AMask.DataSize;
-  ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
-  if ARawImage.MaskSize > 0 then
-    System.Move(AMask.Data^, ARawImage.Mask^, ARawImage.MaskSize);
-end;
-
-function TCocoaWidgetSet.RawImage_DescriptionToBitmapType(
-  ADesc: TRawImageDescription;
-  out bmpType: TCocoaBitmapType): Boolean;
-begin
-  Result := False;
-
-  if ADesc.Format = ricfGray
-  then
-  begin
-    if ADesc.Depth = 1 then bmpType := cbtMono
-    else bmpType := cbtGray;
-  end
-  else if ADesc.Depth = 1
-  then bmpType := cbtMono
-  else if ADesc.AlphaPrec <> 0
-  then begin
-    if ADesc.ByteOrder = riboMSBFirst
-    then begin
-      if  (ADesc.AlphaShift = 24)
-      and (ADesc.RedShift   = 16)
-      and (ADesc.GreenShift = 8 )
-      and (ADesc.BlueShift  = 0 )
-      then bmpType := cbtARGB
-      else
-      if  (ADesc.AlphaShift = 24)
-      and (ADesc.RedShift   = 0 )
-      and (ADesc.GreenShift = 8 )
-      and (ADesc.BlueShift  = 16)
-      then bmpType := cbtABGR
-      else
-      if  (ADesc.AlphaShift = 0 )
-      and (ADesc.RedShift   = 24)
-      and (ADesc.GreenShift = 16)
-      and (ADesc.BlueShift  = 8 )
-      then bmpType := cbtRGBA
-      else
-      if  (ADesc.AlphaShift = 0 )
-      and (ADesc.RedShift   = 8 )
-      and (ADesc.GreenShift = 16)
-      and (ADesc.BlueShift  = 24)
-      then bmpType := cbtBGRA
-      else Exit;
-    end
-    else begin
-      if  (ADesc.AlphaShift = 0 )
-      and (ADesc.RedShift   = 8 )
-      and (ADesc.GreenShift = 16)
-      and (ADesc.BlueShift  = 24)
-      then bmpType := cbtARGB
-      else
-      if  (ADesc.AlphaShift = 0 )
-      and (ADesc.RedShift   = 24)
-      and (ADesc.GreenShift = 16)
-      and (ADesc.BlueShift  = 8 )
-      then bmpType := cbtABGR
-      else
-      if  (ADesc.AlphaShift = 24)
-      and (ADesc.RedShift   = 0 )
-      and (ADesc.GreenShift = 8 )
-      and (ADesc.BlueShift  = 16)
-      then bmpType := cbtRGBA
-      else
-      if  (ADesc.AlphaShift = 24)
-      and (ADesc.RedShift   = 16)
-      and (ADesc.GreenShift = 8 )
-      and (ADesc.BlueShift  = 0 )
-      then bmpType := cbtBGRA
-      else Exit;
-    end;
-  end
-  else begin
-    bmpType := cbtRGB;
-  end;
-
-  Result := True;
-end;
 
