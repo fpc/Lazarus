@@ -13,7 +13,7 @@ uses
   LCLType, Controls, ComCtrls, LCLMessageGlue, LMessages,
   WSComCtrls,
   CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaWSCommon, CocoaConfig,
+  CocoaPrivate, CocoaCallback, CocoaCommonCallback, CocoaWSPrivate, CocoaConfig,
   CocoaUtils, CocoaTabControls;
 
 type

@@ -432,9 +432,9 @@ end;"/>
         <Type Value="Include"/>
       </Item63>
       <Item64>
-        <Filename Value="cocoa/cocoawscommon.pas"/>
+        <Filename Value="cocoa/cocoawsprivate.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSCommon"/>
+        <UnitName Value="CocoaWSPrivate"/>
       </Item64>
       <Item65>
         <Filename Value="cocoa/cocoawsextctrls.pas"/>

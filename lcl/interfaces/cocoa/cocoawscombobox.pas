@@ -16,7 +16,7 @@ uses
   CocoaAll,
   CocoaConfig, CocoaUtils, CocoaGDIObjects, CocoaPrivate,
   CocoaComboBox, CocoaTextEdits,
-  CocoaCommonCallback, CocoaWSCommon, Cocoa_Extra;
+  CocoaCommonCallback, CocoaWSPrivate, Cocoa_Extra;
 
 type
 

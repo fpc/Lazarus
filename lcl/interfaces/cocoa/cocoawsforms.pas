@@ -32,7 +32,7 @@ uses
   // LCL Cocoa
   MacOSAll, CocoaAll,
   CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate,
-  CocoaCallback, CocoaCommonCallback, CocoaWSCommon,
+  CocoaCallback, CocoaCommonCallback, CocoaWSPrivate,
   CocoaGDIObjects, CocoaWindows, CocoaToolBar, CocoaCustomControl, CocoaScrollers,
   CocoaWSScrollers, CocoaUtils, CocoaMenus, Cocoa_Extra;
 

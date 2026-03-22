@@ -1,4 +1,4 @@
-unit CocoaWSCommon;
+unit CocoaWSPrivate;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
