@@ -11,7 +11,7 @@ uses
   Forms, Menus, GraphType,
   LCLIntf, IntfGraphics,
   MacOSAll, CocoaAll,
-  CocoaGDIObjects, CocoaMenus, CocoaConst, CocoaUtils, Cocoa_Extra;
+  CocoaGDIObjects, CocoaMenus, CocoaConst, CocoaUtils;
 
 type
 

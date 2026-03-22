@@ -7,8 +7,8 @@ interface
 
 uses
   Classes, SysUtils,
-  CocoaAll, CocoaUtils, CocoaPrivate, CocoaCallback, cocoa_extra;
-
+  CocoaAll,
+  CocoaPrivate, CocoaUtils, Cocoa_Extra;
 
 type
   { TCocoaDatePicker }

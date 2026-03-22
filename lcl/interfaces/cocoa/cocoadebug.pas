@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, Types, LCLType, LCLProc, Controls,
   CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaUtils, Cocoa_Extra;
+  CocoaPrivate, CocoaUtils, Cocoa_Extra;
 
 type
 

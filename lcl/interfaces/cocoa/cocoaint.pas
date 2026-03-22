@@ -28,7 +28,7 @@ uses
   Types, Classes, SysUtils, Math, GraphMath,
   LCLPlatformDef, InterfaceBase, GraphType,
   MacOSAll, CocoaAll,
-  CocoaWSService, CocoaApplication, CocoaConst, CocoaConfig, CocoaPrivate, CocoaCallback,
+  CocoaWSService, CocoaApplication, CocoaConst, CocoaConfig, CocoaPrivate,
   CocoaUtils, Cocoa_Extra, CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows,
   CocoaScrollers, CocoaWSScrollers,
   CocoaWSClipboard, CocoaTextEdits, CocoaWSModalService,

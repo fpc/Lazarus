@@ -12,7 +12,7 @@ uses
   // LCL
   Forms, Menus, Graphics, ImgList, LCLType, Classes, LCLStrConsts,
   // LCL Cocoa
-  CocoaAll, CocoaPrivate, CocoaGDIObjects, CocoaCallback, CocoaUtils, CocoaConfig, CocoaConst;
+  CocoaAll, CocoaPrivate, CocoaGDIObjects, CocoaUtils, CocoaConfig, CocoaConst;
 
 type
   IMenuItemCallback = interface(ICommonCallBack)

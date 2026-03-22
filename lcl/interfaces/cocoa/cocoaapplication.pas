@@ -11,7 +11,7 @@ uses
   Controls, Forms,
   InterfaceBase,
   MacOSAll, CocoaAll,
-  CocoaWSService, CocoaConst, CocoaConfig, CocoaPrivate, CocoaCallback,
+  CocoaWSService, CocoaConst, CocoaConfig, CocoaPrivate,
   CocoaThemes, CocoaCursor, CocoaMenus, CocoaWindows, CocoaUtils, Cocoa_Extra;
 
 type

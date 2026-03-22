@@ -9,7 +9,7 @@ interface
 uses
   Classes, SysUtils,
   CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaConfig;
+  CocoaPrivate, CocoaConfig;
 
 type
 

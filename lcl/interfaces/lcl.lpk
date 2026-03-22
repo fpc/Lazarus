@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="587">
+    <Files Count="586">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2660,239 +2660,234 @@ end;"/>
         <UnitName Value="CocoaWSListView"/>
       </Item538>
       <Item539>
-        <Filename Value="cocoa/cocoacallback.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaCallback"/>
-      </Item539>
-      <Item540>
         <Filename Value="cocoa/cocoalistcontrol.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoalistcontrol"/>
-      </Item540>
-      <Item541>
+      </Item539>
+      <Item540>
         <Filename Value="cocoa/cocoafullcontroledit.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoafullcontroledit"/>
-      </Item541>
-      <Item542>
+      </Item540>
+      <Item541>
         <Filename Value="cocoa/cocoacustomcontrol.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaCustomControl"/>
-      </Item542>
-      <Item543>
+      </Item541>
+      <Item542>
         <Filename Value="cocoa/cocoastatusbar.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaStatusBar"/>
-      </Item543>
-      <Item544>
+      </Item542>
+      <Item543>
         <Filename Value="cocoa/cocoatoolbar.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoatoolbar"/>
+      </Item543>
+      <Item544>
+        <Filename Value="cocoa/cocoaconfigfocusring.inc"/>
+        <Type Value="Include"/>
       </Item544>
       <Item545>
-        <Filename Value="cocoa/cocoaconfigfocusring.inc"/>
+        <Filename Value="cocoa/cocoaconfig.inc"/>
         <Type Value="Include"/>
       </Item545>
       <Item546>
-        <Filename Value="cocoa/cocoaconfig.inc"/>
+        <Filename Value="cocoa/cocoatoolbar.inc"/>
         <Type Value="Include"/>
       </Item546>
       <Item547>
-        <Filename Value="cocoa/cocoatoolbar.inc"/>
-        <Type Value="Include"/>
-      </Item547>
-      <Item548>
         <Filename Value="gtk3/gtk3caret.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="gtk3caret"/>
+      </Item547>
+      <Item548>
+        <Filename Value="gtk3/gtk3lclcombobox.inc"/>
+        <Type Value="Include"/>
       </Item548>
       <Item549>
-        <Filename Value="gtk3/gtk3lclcombobox.inc"/>
+        <Filename Value="gtk3/gtk3lclentry.inc"/>
         <Type Value="Include"/>
       </Item549>
       <Item550>
-        <Filename Value="gtk3/gtk3lclentry.inc"/>
+        <Filename Value="gtk3/gtk3lclbutton.inc"/>
         <Type Value="Include"/>
       </Item550>
       <Item551>
-        <Filename Value="gtk3/gtk3lclbutton.inc"/>
+        <Filename Value="gtk3/gtk3lclspinbutton.inc"/>
         <Type Value="Include"/>
       </Item551>
       <Item552>
-        <Filename Value="gtk3/gtk3lclspinbutton.inc"/>
+        <Filename Value="gtk3/gtk3lclframe.inc"/>
         <Type Value="Include"/>
       </Item552>
       <Item553>
-        <Filename Value="gtk3/gtk3lclframe.inc"/>
+        <Filename Value="gtk3/gtk3lclnotebook.inc"/>
         <Type Value="Include"/>
       </Item553>
       <Item554>
-        <Filename Value="gtk3/gtk3lclnotebook.inc"/>
-        <Type Value="Include"/>
-      </Item554>
-      <Item555>
         <Filename Value="gtk3/gtk3boxes.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk3Boxes"/>
-      </Item555>
-      <Item556>
+      </Item554>
+      <Item555>
         <Filename Value="testmock/alllclintfunits.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
-      </Item556>
-      <Item557>
+      </Item555>
+      <Item556>
         <Filename Value="testmock/interfaces.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Interfaces"/>
-      </Item557>
-      <Item558>
+      </Item556>
+      <Item557>
         <Filename Value="testmock/testmockint.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TestMockInt"/>
-      </Item558>
-      <Item559>
+      </Item557>
+      <Item558>
         <Filename Value="testmock/testmockwscontrols.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TestMockWSControls"/>
-      </Item559>
-      <Item560>
+      </Item558>
+      <Item559>
         <Filename Value="testmock/testmockwsfactory.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TestMockWSFactory"/>
-      </Item560>
-      <Item561>
+      </Item559>
+      <Item560>
         <Filename Value="testmock/testmockwsforms.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TestMockWSForms"/>
-      </Item561>
-      <Item562>
+      </Item560>
+      <Item561>
         <Filename Value="testmock/testmockwsmenus.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TestMockWSMenus"/>
-      </Item562>
-      <Item563>
+      </Item561>
+      <Item562>
         <Filename Value="testmock/mock_winapih.inc"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="mock_winapih"/>
-      </Item563>
-      <Item564>
+      </Item562>
+      <Item563>
         <Filename Value="testmock/mock_lclintfh.inc"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="mock_lclintfh"/>
-      </Item564>
-      <Item565>
+      </Item563>
+      <Item564>
         <Filename Value="testmock/mock_winapi.inc"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="mock_winapi"/>
-      </Item565>
-      <Item566>
+      </Item564>
+      <Item565>
         <Filename Value="testmock/mock_lclintf.inc"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="mock_lclintf"/>
-      </Item566>
-      <Item567>
+      </Item565>
+      <Item566>
         <Filename Value="testmock/testmockmiscclasses.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TestMockMiscClasses"/>
-      </Item567>
-      <Item568>
+      </Item566>
+      <Item567>
         <Filename Value="testmock/testmockmessages.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TestMockMessages"/>
-      </Item568>
-      <Item569>
+      </Item567>
+      <Item568>
         <Filename Value="cocoa/cocoawsdragimage.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSDragImage"/>
+      </Item568>
+      <Item569>
+        <Filename Value="gtk3/gtk3lclmenuitem.inc"/>
+        <Type Value="Include"/>
       </Item569>
       <Item570>
-        <Filename Value="gtk3/gtk3lclmenuitem.inc"/>
+        <Filename Value="gtk3/gtk3lclscrolledwindow.inc"/>
         <Type Value="Include"/>
       </Item570>
       <Item571>
-        <Filename Value="gtk3/gtk3lclscrolledwindow.inc"/>
-        <Type Value="Include"/>
-      </Item571>
-      <Item572>
         <Filename Value="gtk3/gtk3themes.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="gtk3themes"/>
-      </Item572>
-      <Item573>
+      </Item571>
+      <Item572>
         <Filename Value="gtk3/gtk3wssplitter.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk3WSSplitter"/>
-      </Item573>
-      <Item574>
+      </Item572>
+      <Item573>
         <Filename Value="cocoa/cocoagroupbox.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaGroupBox"/>
-      </Item574>
-      <Item575>
+      </Item573>
+      <Item574>
         <Filename Value="cocoa/cocoaprogressindicator.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaProgressIndicator"/>
-      </Item575>
-      <Item576>
+      </Item574>
+      <Item575>
         <Filename Value="cocoa/cocoaslider.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaSlider"/>
-      </Item576>
-      <Item577>
+      </Item575>
+      <Item576>
         <Filename Value="cocoa/cocoawslistbox.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSListBox"/>
-      </Item577>
-      <Item578>
+      </Item576>
+      <Item577>
         <Filename Value="cocoa/cocoawstextedits.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSTextEdits"/>
-      </Item578>
-      <Item579>
+      </Item577>
+      <Item578>
         <Filename Value="cocoa/cocoacombobox.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaComboBox"/>
-      </Item579>
-      <Item580>
+      </Item578>
+      <Item579>
         <Filename Value="cocoa/cocoawscombobox.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSComboBox"/>
-      </Item580>
-      <Item581>
+      </Item579>
+      <Item580>
         <Filename Value="cocoa/cocoawstabcontrols.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSTabControls"/>
-      </Item581>
-      <Item582>
+      </Item580>
+      <Item581>
         <Filename Value="cocoa/cocoacommoncallback.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaCommonCallback"/>
-      </Item582>
-      <Item583>
+      </Item581>
+      <Item582>
         <Filename Value="cocoa/cocoawscustomcontrol.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSCustomControl"/>
-      </Item583>
-      <Item584>
+      </Item582>
+      <Item583>
         <Filename Value="cocoa/cocoadebug.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaDebug"/>
-      </Item584>
-      <Item585>
+      </Item583>
+      <Item584>
         <Filename Value="cocoa/cocoawsservice.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoawsservice"/>
-      </Item585>
-      <Item586>
+      </Item584>
+      <Item585>
         <Filename Value="cocoa/cocoaapplication.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaApplication"/>
-      </Item586>
-      <Item587>
+      </Item585>
+      <Item586>
         <Filename Value="cocoa/cocoawsmodalservice.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoawsmodalservice"/>
-      </Item587>
+      </Item586>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

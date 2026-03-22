@@ -11,7 +11,7 @@ uses
   Types, Classes, Controls, SysUtils,
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
-  CocoaPrivate, CocoaWSService, CocoaCallback, CocoaGDIObjects,
+  CocoaPrivate, CocoaWSService, CocoaGDIObjects,
   CocoaCursor, CocoaCaret, CocoaConfig, CocoaUtils, Cocoa_Extra,
   CocoaWSCustomControl;
 
