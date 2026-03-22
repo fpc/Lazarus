@@ -159,12 +159,6 @@ begin
 
   AFixedWidthHeight := AForm.BorderStyle in [bsDialog, bsSingle, bsToolWindow];
 
-  if Gtk3WidgetSet.IsWayland and AFixedWidthHeight then
-  begin
-    PGtkWindow(AWidget.Widget)^.set_resizable(False);
-    Exit;
-  end;
-
   FillChar(Geometry, SizeOf(Geometry), 0);
   with Geometry do
   begin

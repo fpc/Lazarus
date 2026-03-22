@@ -12120,6 +12120,7 @@ var
 begin
   if not (Assigned(Application) and Application.Active) then Exit;
   if Gtk3WidgetSet.AppFocusTimerID <> 0 then Exit;
+  if not Gtk3IsGtkWindow(AWidget) then Exit;
   TransientFor := PGtkWindow(AWidget)^.get_transient_for;
   if TransientFor <> nil then
   begin
@@ -12216,6 +12217,9 @@ begin
   FScrollWin^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
   PGtkContainer(Result)^.add(FBox);
 
+  if Gtk3IsGtkWindow(Result) and (LCLObject.Width > 0) and (LCLObject.Height > 0) then
+    PGtkWindow(Result)^.set_default_size(LCLObject.Width, LCLObject.Height);
+
   g_signal_connect_data(Result,'window-state-event', TGCallback(@WindowStateSignal), Self, nil, G_CONNECT_DEFAULT);
 
   //notify::is-active: dispatches LM_ACTIVATE for form-level activate/deactivate.
@@ -12247,6 +12251,8 @@ begin
     if GTK3WidgetSet.IsWayland and (AForm.BorderStyle = bsNone) and
        not (wtHintWindow in FWidgetType) then
       PGtkWindow(Result)^.set_transient_for(GetActiveGtkWindow);
+    if (LCLObject.Width > 0) and (LCLObject.Height > 0) then
+      PGtkWindow(Result)^.set_default_size(LCLObject.Width, LCLObject.Height);
     gtk_widget_realize(Result);
   end;
 
@@ -12553,9 +12559,6 @@ begin
         and not (csDesigning in AForm.ComponentState) {and (AForm.Parent = nil) and (AForm.ParentWindow = 0)} then
     begin
       AFixedWidthHeight := (AForm.BorderStyle in [bsDialog, bsSingle, bsToolWindow]);
-      if AIsWayland and AFixedWidthHeight then
-        PGtkWindow(Widget)^.set_resizable(False)
-      else
       with Geometry do
       begin
         if not AFixedWidthHeight and (AForm.Constraints.MinWidth > 0) then
