@@ -240,6 +240,14 @@ begin
   // read folder from Lazarus configuration if not specified
   if Options.FPCSrcDir='' then
     Options.FPCSrcDir:=ReadFPCSrcFromIdeOpts(Options.LazarusSrcDir);
+  if Options.FPCSrcDir='' then begin
+    writeln('Error: The environment variable "','FPCDIR','" is not assigned');
+    halt(1);
+  end;
+  if not DirectoryExistsUTF8(Options.FPCSrcDir) then begin
+    writeln('Error: FPC source folder "',Options.FPCSrcDir,'" does not exist');
+    halt(1);
+  end;
 
   CodeToolBoss.Init(Options);
 
