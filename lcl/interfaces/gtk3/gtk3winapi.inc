@@ -4572,7 +4572,8 @@ var
           SB_HORZ:
           begin
             if (AHorzPolicy <> POLICY[IsScrollbarVis]) and
-              PGtkWidget(ScrollWin)^.get_mapped then
+              PGtkWidget(ScrollWin)^.get_mapped and
+              not ((AHorzPolicy = GTK_POLICY_NEVER) and IsScrollbarVis) then
               ScrollWin^.set_policy(POLICY[IsScrollbarVis], AVertPolicy);
             if Gtk3WidgetSet.OverlayScrolling and Gtk3IsWidget(Scrollbar) and
               ScrollBar^.get_visible then
