@@ -231,12 +231,10 @@ Contains status flags that have been tested for the cached item.
 <short>Timestamp for the cached item.</short>
 <descr>
 <p>
-<var>Timestamp</var> is an <var>Int64</var> property with a timestamp value 
-for
-an item in the state caching mechanism. It is not actually a time value; it is
-a counter that is assigned when the item is added to the TFileStateCache 
-class.
-It can be compared to the <var>Timestamp</var> value in the state cache to
+<var>Timestamp</var> is an <var>Int64</var> property with a timestamp value for 
+an item in the state caching mechanism. It is not actually a time value; it is 
+a counter that is assigned when the item is added to the TFileStateCache class. 
+It can be compared to the <var>Timestamp</var> value in the state cache to 
 determine when the item is potentially out-of-date.
 </p>
 <p>
@@ -255,14 +253,15 @@ invalid.
 <short>FileAge value for the file or directory.</short>
 <descr>
 <p>
-<var>Age</var> is a <var>LongInt</var> property with the file age for the 
-file or
-directory in the cache item. The value for the property is assigned when the
+<var>Age</var> is an <var>Int64</var> property with the file age for the file 
+or directory in the cache item. The value for the property is assigned when the 
 TFileStateCache.FileAgeCached method is called, and contains the value 
-returned
-from the FileAge routine in <file>SysUtils</file>.
+returned from the FileAge routine in <file>SysUtils</file>.
 </p>
 </descr>
+<version>
+Modified in LCL 5.0 to use the Int64 type instead of the LongInt type.
+</version>
 <seealso>
 <link id="TFileStateCache.FileAgeCached"/>
 <link id="#rtl.sysutils.FileAge">FileAge</link>
@@ -661,7 +660,7 @@ Ensures that the file age is up-to-date for a cache item.
 <descr>
 <p>
 <var>FileAgeCached</var> differs from the related methods in the class 
-instance. It returns a <var>LongInt</var> value instead of a 
+instance. It returns an <var>Int64</var> value instead of a 
 <var>Boolean</var>, and contains the value from the <var>FileAge</var> routine 
 in the RTL <file>SysUtils</file> unit. The value represents the last date that 
 the file was modified, and the integer value does not include any time-related 
@@ -675,6 +674,9 @@ FileAgeCached cannot be used for directory names; the value is always
 FileAge is not related to the <var>TimeStamp</var> property for the cache.
 </p>
 </descr>
+<version>
+Modified in LCL 5.0 to return an Int64 value instead of a LongInt value.
+</version>
 <seealso>
 <link id="#rtl.sysutils.FileAge">FileAge</link>
 </seealso>
@@ -1049,8 +1051,36 @@ Name for the file examined in the routine.
 <short>
 Gets the file age for the specified file or directory.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+FileAgeCached is an Int64 function used to get file age for the file specified 
+file name. The return is derived from one of three mechanisms:
+</p>
+<ul>
+<li>
+The OnFileAgeCached event handler for the unit (when assigned). This allows the 
+routine to be used for symbolic directory names (like '.' or '..') or virtual 
+file names in the IDE.
+</li>
+<li>
+The FileStateCache maintained in the unit (when assigned).
+</li>
+<li>
+Or, the UniversalFileAgeUTF8 routine from the <file>LazFileUtils.pas</file> 
+unit in the <file>LazUtils</file> package. This routine returns the value from 
+the <var>SysUtils.FileAge</var> routine in the <file>RTL</file>. This the 
+default mechanism used if the other two are not assigned.
+</li>
+</ul>
+<p>
+This routine is used primarily in the Lazarus IDE and its build manager.
+</p>
+</descr>
+<seealso>
+<link id="OnFileAgeCached"/>
+<link id="FileStateCache"/>
+<link id="#lazutils.lazfileutils.UniversalFileAgeUtf8">UniversalFileAgeUtf8</link>
+</seealso>
 </element>
 <element name="FileAgeCached.Result">
 <short>File age for the specified file or directory.</short>
@@ -1247,8 +1277,19 @@ in the cache.
 Specifies an event handler signalled to get the file age for an item in the 
 cache.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TOnFileAgeCached</var> is the type used for the <var>OnFileAgeCached</var> 
+handler routine in the unit, and used in the <var>FileAgeCached</var> routine.
+</p>
+</descr>
+<version>
+Modified in LCL 5.0 to return an Int64 type instead of a LongInt type.
+</version>
+<seealso>
+<link id="OnFileAgeCached"/>
+<link id="FileAgeCached"/>
+</seealso>
 </element>
 <element name="TOnFileAgeCached.Result">
 <short>File age for the specified file or directory.</short>
