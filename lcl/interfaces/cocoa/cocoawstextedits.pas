@@ -9,13 +9,13 @@ uses
   // Libs
   MacOSAll, CocoaAll, Classes, sysutils,
   // LCL
-  Graphics, Controls, StdCtrls, ComCtrls, LCLType,
+  Graphics, Controls, StdCtrls, ComCtrls, Spin, LCLType,
   // LazUtils
   LazUTF8, TextStrings,
   // Widgetset
-  WSStdCtrls, WSLCLClasses,
+  WSStdCtrls, WSSpin, WSLCLClasses,
   // LCL Cocoa
-  CocoaWSCommon, CocoaPrivate, CocoaCallback, CocoaCommonCallback,
+  CocoaWSPrivate, CocoaPrivate, CocoaCommonCallback,
   CocoaConst, CocoaConfig, CocoaUtils, Cocoa_Extra,
   CocoaTextEdits, CocoaScrollers, CocoaWSScrollers;
 
@@ -111,6 +111,17 @@ type
     class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+  end;
+
+  { TCocoaWSCustomFloatSpinEdit }
+
+  TCocoaWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
+  published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
+    class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   { TCocoaWSTextControlUtil }
@@ -988,6 +999,86 @@ begin
   Result := Assigned(txt);
   if Result then
     AText := NSStringToString(txt.string_);
+end;
+
+{ TCocoaWSCustomFloatSpinEdit }
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWSCustomFloatSpinEdit.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new spin edit in Carbon interface with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCocoaWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLHandle;
+var
+  lSpin: TCocoaSpinEdit;
+begin
+  lSpin := TCocoaSpinEdit.alloc.lclInitWithCreateParams(AParams);
+  Result := TLCLHandle(lSpin);
+  if Result = 0 then Exit;
+  lSpin.decimalPlaces := -1;
+  lSpin.lclCreateSubcontrols(AParams);
+  lSpin.callback := TLCLCommonCallback.Create(lSpin, AWinControl);
+  if (lSpin.Stepper.isKindOfClass(TCocoaSpinEditStepper)) then
+    TCocoaSpinEditStepper(lSpin.Stepper).callback:=lSpin.callback;
+  TCocoaViewUtil.updateFocusRing(lSpin, AWinControl);
+end;
+
+class procedure TCocoaWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
+begin
+  if not AWinControl.HandleAllocated then Exit;
+  TCocoaSpinEdit(AWinControl.Handle).lclReleaseSubcontrols;
+  TCocoaWSWinControl.DestroyHandle(AWinControl);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWSCustomFloatSpinEdit.GetValue
+  Params:  ACustomFloatSpinEdit - LCL custom float spin edit
+  Returns: The float spin edit value
+ ------------------------------------------------------------------------------}
+class function TCocoaWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;
+var
+  lSpin: TCocoaSpinEdit;
+begin
+  Result := 0;
+  if ACustomFloatSpinEdit = nil then Exit;
+  if not ACustomFloatSpinEdit.HandleAllocated then Exit;
+  lSpin := TCocoaSpinEdit(ACustomFloatSpinEdit.Handle);
+
+  Result := lSpin.Stepper.doubleValue();
+end;
+
+class procedure TCocoaWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
+var
+  lSpin: TCocoaSpinEdit;
+begin
+  if ACustomFloatSpinEdit = nil then Exit;
+  if not ACustomFloatSpinEdit.HandleAllocated then Exit;
+  lSpin := TCocoaSpinEdit(ACustomFloatSpinEdit.Handle);
+  lSpin.UpdateControl(
+    ACustomFloatSpinEdit.MinValue,
+    ACustomFloatSpinEdit.MaxValue,
+    ACustomFloatSpinEdit.Increment,
+    ACustomFloatSpinEdit.Value,
+    ACustomFloatSpinEdit.DecimalPlaces,
+    ACustomFloatSpinEdit.MinValue < ACustomFloatSpinEdit.MaxValue);
+end;
+
+class procedure TCocoaWSCustomFloatSpinEdit.SetBounds(
+  const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  lSpin: TCocoaSpinEdit;
+  ACustomFloatSpinEdit: TCustomFloatSpinEdit absolute AWinControl;
+begin
+  if ACustomFloatSpinEdit = nil then Exit;
+  if not ACustomFloatSpinEdit.HandleAllocated then Exit;
+  lSpin := TCocoaSpinEdit(ACustomFloatSpinEdit.Handle);
+
+  TCocoaWSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
+  lSpin.PositionSubcontrols(ALeft, ATop, AWidth, AHeight);
 end;
 
 { TCocoaWSTextControlUtil }

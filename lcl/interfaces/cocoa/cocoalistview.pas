@@ -12,7 +12,7 @@ uses
   Classes, LCLType, SysUtils, LCLMessageGlue, LMessages,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   // Cocoa WS
-  CocoaPrivate, CocoaCallback, CocoaListControl,
+  CocoaPrivate, CocoaListControl,
   CocoaScrollers, CocoaWSScrollers, CocoaTextEdits, CocoaGDIObjects, CocoaUtils;
 
 type

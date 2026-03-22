@@ -25,7 +25,7 @@ uses
   Math, Classes, SysUtils, LclType,
   Controls, StdCtrls, Forms,
   MacOSAll, CocoaAll,
-  CocoaPrivate, CocoaCallback, CocoaConst, CocoaConfig, CocoaUtils;
+  CocoaPrivate, CocoaConst, CocoaConfig, CocoaUtils;
 
 type
 

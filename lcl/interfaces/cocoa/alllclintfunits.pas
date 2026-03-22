@@ -16,13 +16,12 @@ uses
   cocoawsbuttons{%H-},
   cocoawschecklst{%H-},
   cocoawscomctrls{%H-},
-  cocoawscommon{%H-},
+  CocoaWSPrivate{%H-},
   cocoawsdialogs{%H-},
   cocoawsextctrls{%H-},
   cocoawsfactory{%H-},
   cocoawsforms{%H-},
   cocoawsmenus{%H-},
-  cocoawsspin{%H-},
   cocoawsstdctrls{%H-},
   interfaces{%H-};
 implementation

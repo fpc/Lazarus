@@ -11,7 +11,7 @@ uses
   Forms, Menus, GraphType,
   LCLIntf, IntfGraphics,
   MacOSAll, CocoaAll,
-  CocoaGDIObjects, CocoaMenus, CocoaConst, CocoaUtils, Cocoa_Extra;
+  CocoaGDIObjects, CocoaMenus, CocoaConst, CocoaUtils;
 
 type
 
@@ -56,9 +56,9 @@ type
     destructor Destroy; override;
   end;
 
-  { TCocoaWidgetSetService }
+  { TCocoaWidgetSetBaseService }
 
-  TCocoaWidgetSetService = class
+  TCocoaWidgetSetBaseService = class
 
   // on MacOS, the system notifies the APP to open the files by calling
   // TAppDelegate.application_openFiles(). for example, double-click
@@ -136,7 +136,7 @@ type
 
 var
   CocoaWidgetSetState: TCocoaWidgetSetState;
-  CocoaWidgetSetService: TCocoaWidgetSetService;
+  CocoaWidgetSetBaseService: TCocoaWidgetSetBaseService;
   CocoaWidgetSetGDIService: TCocoaWidgetSetGDIService;
   CocoaWidgetSetMenuService: TCocoaWidgetSetMenuService;
 
@@ -205,7 +205,7 @@ procedure TCocoaWidgetSetGDIObject.freeStockItems;
   begin
     if h <> 0 then
       TCocoaGDIObject(h).Global := False;
-      CocoaWidgetSetService.deleteObject(h);
+      CocoaWidgetSetBaseService.deleteObject(h);
     h := 0;
   end;
 
@@ -254,14 +254,14 @@ begin
   self.freeSysColorBrushes;
 end;
 
-{ TCocoaWidgetSetService }
+{ TCocoaWidgetSetBaseService }
 
-procedure TCocoaWidgetSetService.setReadyDropFiles;
+procedure TCocoaWidgetSetBaseService.setReadyDropFiles;
 begin
   _readyDropFiles:= True;
 end;
 
-procedure TCocoaWidgetSetService.dropWaitingFiles;
+procedure TCocoaWidgetSetBaseService.dropWaitingFiles;
 var
   lFiles: array of string;
   lNSStr: NSString;
@@ -283,21 +283,21 @@ begin
   _waitingDropFiles.removeAllObjects;
 end;
 
-procedure TCocoaWidgetSetService.tryDropFiles(const filenames: NSArray);
+procedure TCocoaWidgetSetBaseService.tryDropFiles(const filenames: NSArray);
 begin
   _waitingDropFiles.addObjectsFromArray(filenames);
   if _readyDropFiles then
     dropWaitingFiles;
 end;
 
-procedure TCocoaWidgetSetService.addToBeReleasedLCLObjects(const obj: TObject);
+procedure TCocoaWidgetSetBaseService.addToBeReleasedLCLObjects(const obj: TObject);
 begin
   // let's try to find an object. Do not add a duplicate
   if (_waitingReleasedLCLObjects.IndexOf(Obj)>=0) then Exit;
   _waitingReleasedLCLObjects.Add(obj);
 end;
 
-procedure TCocoaWidgetSetService.releaseWaitingLCLObjects(const fromIdx: integer);
+procedure TCocoaWidgetSetBaseService.releaseWaitingLCLObjects(const fromIdx: integer);
 var
   i  : integer;
 begin
@@ -309,19 +309,19 @@ begin
   _waitingReleasedLCLObjects.Pack;
 end;
 
-function TCocoaWidgetSetService.countWaitingReleasedLCLObjects: Integer;
+function TCocoaWidgetSetBaseService.countWaitingReleasedLCLObjects: Integer;
 begin
   Result := _waitingReleasedLCLObjects.Count;
 end;
 
-procedure TCocoaWidgetSetService.initAutoreleaseMainPool;
+procedure TCocoaWidgetSetBaseService.initAutoreleaseMainPool;
 begin
   // MacOSX 10.6 reports a lot of warnings during initialization process
   // adding the autorelease pool for the whole Cocoa widgetset
   _autoreleaseMainPool:= NSAutoreleasePool.alloc.init;
 end;
 
-procedure TCocoaWidgetSetService.finalAutoreleaseMainPool;
+procedure TCocoaWidgetSetBaseService.finalAutoreleaseMainPool;
 begin
   if Assigned(_autoreleaseMainPool) then begin
     _autoreleaseMainPool.release;
@@ -329,7 +329,7 @@ begin
   end;
 end;
 
-function TCocoaWidgetSetService.deleteObject(GDIObject: HGDIOBJ): Boolean;
+function TCocoaWidgetSetBaseService.deleteObject(GDIObject: HGDIOBJ): Boolean;
 const
   SName = 'TCocoaWidgetSetService.deleteObject';
 var
@@ -364,19 +364,19 @@ begin
   Result := True;
 end;
 
-procedure TCocoaWidgetSetService.OnWakeMainThread(Sender: TObject);
+procedure TCocoaWidgetSetBaseService.OnWakeMainThread(Sender: TObject);
 begin
   NSApp.performSelectorOnMainThread_withObject_waitUntilDone(
        ObjCSelector('lclSyncCheck:'), nil, false);
 end;
 
-constructor TCocoaWidgetSetService.Create;
+constructor TCocoaWidgetSetBaseService.Create;
 begin
   _waitingDropFiles:= NSMutableArray.new;
   _waitingReleasedLCLObjects := TList.Create;
 end;
 
-destructor TCocoaWidgetSetService.Destroy;
+destructor TCocoaWidgetSetBaseService.Destroy;
 begin
   _waitingDropFiles.release;
   _waitingReleasedLCLObjects.Free;
@@ -810,12 +810,12 @@ end;
 initialization
   CocoaWidgetSetState:= TCocoaWidgetSetState.Create;
   CocoaWidgetSetGDIService:= TCocoaWidgetSetGDIService.Create;
-  CocoaWidgetSetService:= TCocoaWidgetSetService.Create;
+  CocoaWidgetSetBaseService:= TCocoaWidgetSetBaseService.Create;
   CocoaWidgetSetMenuService:= TCocoaWidgetSetMenuService.Create;
 
 finalization
   FreeAndNil( CocoaWidgetSetMenuService );
-  FreeAndNil( CocoaWidgetSetService );
+  FreeAndNil( CocoaWidgetSetBaseService );
   FreeAndNil( CocoaWidgetSetGDIService );
   FreeAndNil( CocoaWidgetSetState );
 

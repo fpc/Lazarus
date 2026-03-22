@@ -11,7 +11,7 @@ uses
   Controls, Forms,
   InterfaceBase,
   MacOSAll, CocoaAll,
-  CocoaWSService, CocoaConst, CocoaConfig, CocoaPrivate, CocoaCallback,
+  CocoaWSService, CocoaConst, CocoaConfig, CocoaPrivate,
   CocoaThemes, CocoaCursor, CocoaMenus, CocoaWindows, CocoaUtils, Cocoa_Extra;
 
 type
@@ -107,7 +107,7 @@ begin
     end;
   end;
   if filenames.count > 0 then
-    CocoaWidgetSetService.tryDropFiles(filenames);
+    CocoaWidgetSetBaseService.tryDropFiles(filenames);
   filenames.release;
 end;
 
@@ -281,8 +281,8 @@ end;
 {$ifdef COCOALOOPOVERRIDE}
 procedure TCocoaApplication.run;
 begin
-  CocoaWidgetSetService.finalAutoreleaseMainPool;   // MainPool Stage 1 final
-  CocoaWidgetSetService.initAutoreleaseMainPool;    // MainPool Stage 2 init
+  CocoaWidgetSetBaseService.finalAutoreleaseMainPool;   // MainPool Stage 1 final
+  CocoaWidgetSetBaseService.initAutoreleaseMainPool;    // MainPool Stage 2 init
   {$ifdef COCOAPPRUNNING_SETINTPROPERTY}
   setValue_forKey(NSNumber.numberWithBool(true), NSSTR('_running'));
   {$endif}
@@ -355,7 +355,7 @@ begin
   {$ifdef COCOALOOPNATIVE}
   try
   {$endif}
-  idx := CocoaWidgetSetService.countWaitingReleasedLCLObjects;
+  idx := CocoaWidgetSetBaseService.countWaitingReleasedLCLObjects;
   win := theEvent.window;
   if not Assigned(win) then win := self.keyWindow;
 
@@ -436,7 +436,7 @@ begin
 
   finally
 
-    CocoaWidgetSetService.releaseWaitingLCLObjects(idx);
+    CocoaWidgetSetBaseService.releaseWaitingLCLObjects(idx);
 
   end;
   {$ifdef COCOALOOPNATIVE}
@@ -629,7 +629,7 @@ begin
   lDict := NSProcessInfo.processInfo.environment;
   Result._isInSandbox := lDict.valueForKey(NSStr('APP_SANDBOX_CONTAINER_ID')) <> nil;
 
-  WakeMainThread:= @CocoaWidgetSetService.OnWakeMainThread;
+  WakeMainThread:= @CocoaWidgetSetBaseService.OnWakeMainThread;
 end;
 
 end.
