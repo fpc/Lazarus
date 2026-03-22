@@ -167,12 +167,24 @@ begin
 end;
 
 procedure LCLGtkScrolledWindowGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
+var
+  AParent, AGrandParent: PGtkWidget;
+  ALCLWidget: TGtk3Widget;
 begin
-  { LCLGtkScrolledWindow: TRULY SOFT WIDTH }
-  { We force 10px to break the expansion loop. Child positions (e.g. x=1950) }
-  { in a docked IDE otherwise 'push' the window to be too wide. }
   min_width^ := 10;
   nat_width^ := 10;
+  AParent := widget^.get_parent;
+  if AParent <> nil then
+  begin
+    AGrandParent := AParent^.get_parent;
+    if AGrandParent <> nil then
+    begin
+      ALCLWidget := TGtk3Widget(g_object_get_data(PGObject(AGrandParent), 'lclwidget'));
+      if Assigned(ALCLWidget) and Assigned(ALCLWidget.LCLObject) and
+         (csDesigning in ALCLWidget.LCLObject.ComponentState) then
+        nat_width^ := ALCLWidget.LCLObject.Width;
+    end;
+  end;
 end;
 
 procedure LCLGtkScrolledWindowGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
