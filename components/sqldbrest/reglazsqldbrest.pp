@@ -5,7 +5,7 @@ unit reglazsqldbrest;
 interface
 
 uses
-  Classes, SysUtils, PropEdits, ComponentEditors, PropEditUtils, ProjectIntf,
+  Classes, SysUtils, PropEdits, ComponentEditors, PropEditUtils, ProjectIntf, ProjectResourcesIntf,
   sqldb, sqldbrestschema, sqldbrestcsv, sqldbrestxml, sqldbrestcds,
   sqldbrestado, sqldbrestio, sqldbrestauth, sqldbrestbridge, sqldbrestmodule;
 
