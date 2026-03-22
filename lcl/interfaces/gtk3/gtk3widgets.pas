@@ -3691,6 +3691,8 @@ begin
   AGtkFont^.set_style(APangoStyle);
 
   Font := AGtkFont;
+  if not IsFontNameDefault(AFont.Name) then
+    pango_font_description_free(AGtkFont);
   FontColor := AFont.Color;
 end;
 
