@@ -33,7 +33,7 @@ uses
   Controls, Dialogs, Forms,
   frmnewhttpapp,
   LazFileUtils,
-  IDEExternToolIntf, ProjectIntf,
+  IDEExternToolIntf, ProjectIntf, ProjectResourcesIntf,
   LazIDEIntf, SrcEditorIntf, IDEMsgIntf,
   fpWebStrConsts;
 
