@@ -5,7 +5,7 @@ unit lr_pdfexp_reg;
 interface
 
 uses
-  classes, LResources, lr_e_pdf;
+  classes, lr_e_pdf;
 
   procedure register;
 

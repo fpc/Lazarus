@@ -5,7 +5,7 @@ unit LR_PQConnection;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LR_Class, LR_DBComponent, sqldb,
+  Classes, SysUtils, Graphics, LR_Class,
   pqconnection, lr_SQLQuery;
 
 type

@@ -5,7 +5,8 @@ unit lr_SQLQuery;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LR_Class, LR_DBComponent, sqldb, DB, contnrs;
+  Classes, SysUtils, sqldb, DB, contnrs,
+  Graphics, LR_Class, LR_DBComponent;
 
 type
 

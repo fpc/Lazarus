@@ -5,9 +5,15 @@ unit lr_e_cairo;
 interface
 
 uses
-  Classes, SysUtils, types, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
-  Barcode, lr_class, lr_barc, lr_rrect, lr_shape, Cairo, CairoCanvas, CairoPrinter,
-  lr_chbox;
+  Classes, SysUtils, Types, Cairo,
+  Forms, Controls, Graphics, Dialogs,
+  LazLoggerBase,
+  Barcode, lr_class, lr_barc, lr_rrect, lr_shape, lr_chbox,
+  CairoCanvas, CairoPrinter
+  {$IFDEF LCLGtk3}
+  , Lazcairo1
+  {$ENDIF}
+  ;
 
 type
   TShapeData = record

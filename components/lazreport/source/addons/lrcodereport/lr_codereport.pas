@@ -19,7 +19,9 @@ unit LR_CodeReport;
 interface
 
 uses
-  Classes, SysUtils, LResources, Graphics, LR_Const, LR_Class, ExtCtrls, LR_Shape,
+  Classes, SysUtils,
+  Graphics,
+  LR_Const, LR_Class, ExtCtrls, LR_Shape,
   LR_BarC, Barcode, Printers{$IFDEF LCLNOGUI}, lr_ngcanvas{$ENDIF};
 
 type

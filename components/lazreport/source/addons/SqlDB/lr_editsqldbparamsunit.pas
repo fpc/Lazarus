@@ -5,8 +5,9 @@ unit lr_EditSQLDBParamsUnit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, Buttons, ExtCtrls, lr_SQLQuery, DB;
+  Classes, SysUtils, DB,
+  Forms, Controls, Dialogs, ButtonPanel, StdCtrls, Buttons, ExtCtrls,
+  lr_SQLQuery;
 
 type
 

@@ -5,8 +5,9 @@ unit LR_IBConnection;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LR_Class, LR_DBComponent, sqldb,
-  IBConnection, lr_SQLQuery;
+  Classes, SysUtils, sqldb, IBConnection,
+  Graphics, LR_Class, LR_DBComponent,
+  lr_SQLQuery;
 
 type
   TLR_IBConnection = class(TComponent)

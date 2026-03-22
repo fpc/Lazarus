@@ -5,7 +5,7 @@ unit lr_cairoexp_reg;
 interface
 
 uses
-  Classes, LResources, lr_e_cairo;
+  Classes, lr_e_cairo;
 
 procedure register;
 

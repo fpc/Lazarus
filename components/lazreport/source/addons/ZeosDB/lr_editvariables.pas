@@ -5,8 +5,9 @@ unit LR_EditVariables;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ButtonPanel, LR_Intrp;
+  Classes, SysUtils,
+  FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ButtonPanel,
+  LR_Intrp;
 
 type
 

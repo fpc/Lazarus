@@ -5,7 +5,7 @@ unit lrEmailExportFilterSetup;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, DividerBevel, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, DividerBevel, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, ComCtrls, StdCtrls, lrEmailExportFilter;
 
 type

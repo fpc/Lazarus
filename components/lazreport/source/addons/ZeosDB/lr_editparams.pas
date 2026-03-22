@@ -5,8 +5,10 @@ unit lr_EditParams;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, ExtCtrls, Buttons, LR_DB_Zeos, DB;
+  Classes, SysUtils, DB,
+  Forms, Controls, Dialogs, ButtonPanel,
+  StdCtrls, ExtCtrls, Buttons,
+  LR_DB_Zeos;
 
 type
 

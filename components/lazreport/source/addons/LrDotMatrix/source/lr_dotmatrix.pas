@@ -31,7 +31,6 @@ uses
   Classes,
   Forms,
   Controls,
-  LResources,
   // lazreport
   LR_Class,
   LR_Prntr,

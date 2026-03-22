@@ -5,8 +5,9 @@ unit LR_DB_Zeos;
 interface
 
 uses
-  Classes, SysUtils, Graphics, DB, LR_Class, ZDataset, LR_DBComponent,
-  LR_Intrp, ZConnection, contnrs;
+  Classes, SysUtils, contnrs, DB,
+  Graphics,
+  LR_Class, ZDataset, LR_DBComponent, LR_Intrp, ZConnection;
 
 type
   TlrZeosData = class(TComponent)
