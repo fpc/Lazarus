@@ -10563,15 +10563,26 @@ end;
 class procedure TGtk3ComboBox.ComboBoxChanged(ACombo: PGtkComboBox; AData: gpointer); cdecl;
 var
   Msg: TLMessage;
+  GtkIndex: Integer;
 begin
   if AData <> nil then
   begin
     if TGtk3Widget(AData).InUpdate then
       Exit;
+    GtkIndex := PGtkComboBox(ACombo)^.get_active;
     if not PGtkComboBox(ACombo)^.has_entry then
     begin
       FillChar(Msg{%H-}, SizeOf(Msg), #0);
       Msg.Msg := LM_CHANGED;
+      TGtk3Widget(AData).DeliverMessage(Msg);
+      FillChar(Msg{%H-}, SizeOf(Msg), #0);
+      Msg.Msg := LM_SELCHANGE;
+      TGtk3Widget(AData).DeliverMessage(Msg);
+    end else
+    if GtkIndex >= 0 then
+    begin
+      FillChar(Msg{%H-}, SizeOf(Msg), #0);
+      Msg.Msg := LM_SELCHANGE;
       TGtk3Widget(AData).DeliverMessage(Msg);
     end;
   end;
