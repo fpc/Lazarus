@@ -55,11 +55,11 @@ procedure TTestChangeDeclaration.TestCTAddProcedureModifier;
         then
           Fail('ExtractProcedureHeader failed: '+CodeToolBoss.ErrorMessage);
         if ProcHead<>Expected then begin
-          writeln('Test ProcCode="',ProcCode,'"');
+          debugln('Test ProcCode="',ProcCode,'"');
           Src:=Code.Source;
-          writeln('SrcSTART:======================');
-          writeln(Src);
-          writeln('SrcEND:========================');
+          debugln('SrcSTART:======================');
+          debugln(Src);
+          debugln('SrcEND:========================');
           AssertEquals('ProcHead',Expected,ProcHead);
         end;
       end;

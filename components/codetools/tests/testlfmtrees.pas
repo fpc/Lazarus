@@ -234,7 +234,7 @@ begin
   if LFMTree<>nil then begin
     LFMErr:=LFMTree.FirstError;
     while LFMErr<>nil do begin
-      writeln('LFM Error: (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage);
+      debugln(['LFM Error: (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage]);
       LFMErr:=LFMErr.NextError;
     end;
   end;
@@ -256,7 +256,7 @@ begin
   end;
   LFMErr:=LFMTree.FirstError;
   while LFMErr<>nil do begin
-    //writeln('LFM Error: (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage);
+    //debugln('LFM Error: (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage);
     if (CursorPos.Code=LFMErr.Source)
         and (CursorPos.X=LFMErr.Caret.X)
         and (CursorPos.Y=LFMErr.Caret.Y)
@@ -269,10 +269,10 @@ begin
     LFMErr:=LFMErr.NextError;
   end;
 
-  writeln('LFM Error Candidates:');
+  debugln('LFM Error Candidates:');
   LFMErr:=LFMTree.FirstError;
   while LFMErr<>nil do begin
-    writeln('LFM-Error: ',LFMErr.ErrorType,': (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage);
+    debugln(['LFM-Error: ',LFMErr.ErrorType,': (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage]);
     LFMErr:=LFMErr.NextError;
   end;
   Fail('TCustomTestLFMTrees.CheckLFMParseError Missing '+LFMErrorTypeNames[ErrorType]+': '+CursorPos.Code.Filename+'('+IntToStr(CursorPos.Y)+','+IntToStr(CursorPos.X)+'): '+ErrorMsg);
@@ -322,7 +322,7 @@ begin
   if LFMTree<>nil then begin
     LFMErr:=LFMTree.FirstError;
     while LFMErr<>nil do begin
-      writeln('LFM Error: (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage);
+      debugln(['LFM Error: (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage]);
       LFMErr:=LFMErr.NextError;
     end;
   end;
@@ -344,20 +344,20 @@ procedure TCustomTestLFMTrees.WriteSource(const CursorPos: TCodeXYPosition);
       end else begin
         if (CurCode=CursorPos.Code) then continue;
       end;
-      writeln('WriteSources ',i,'/',SourceCount,' ',CurCode.Filename);
+      debugln(['WriteSources ',i,'/',SourceCount,' ',CurCode.Filename]);
       for LineNo:=1 to CurCode.LineCount do begin
         Line:=CurCode.GetLine(LineNo-1,false);
         if (CurCode=CursorPos.Code) and (LineNo=CursorPos.Y) then begin
           write('*');
           Line:=LeftStr(Line,CursorPos.X-1)+'|'+copy(Line,CursorPos.X,length(Line));
         end;
-        writeln(Format('%:4d: ',[LineNo]),Line);
+        debugln(Format('%:4d: ',[LineNo]),Line);
       end;
     end;
   end;
 
 begin
-  writeln('TCustomTestLFMTrees.WriteSource CursorPos=',dbgs(CursorPos));
+  debugln('TCustomTestLFMTrees.WriteSource CursorPos=',dbgs(CursorPos));
   // write good sources
   MyWriteSources(false);
   // write error source

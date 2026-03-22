@@ -307,7 +307,7 @@ begin
       write('*');
       Line:=LeftStr(Line,CursorPos.X-1)+'|'+copy(Line,CursorPos.X,length(Line));
     end;
-    writeln(Format('%:4d: ',[i]),Line);
+    debugln(Format('%:4d: ',[i]),Line);
   end;
 end;
 
@@ -890,10 +890,10 @@ begin
   while Node<>nil do begin
     if Node.Desc=ctnProcedure then begin
       ResultNode:=Tool.GetProcResultNode(Node);
-      writeln('TTestPascalParser.TestGetProcResultNode Proc="',
+      debugln('TTestPascalParser.TestGetProcResultNode Proc="',
         Tool.ExtractProcHead(Node,[phpWithStart,phpWithVarModifiers,phpWithParameterNames,
                                    phpWithResultType,phpWithOfObject,phpWithCallingSpecs]),'"');
-      writeln('TTestPascalParser.TestGetProcResultNode Result=',ResultNode.DescAsString,'="',
+      debugln('TTestPascalParser.TestGetProcResultNode Result=',ResultNode.DescAsString,'="',
                Tool.ExtractNode(ResultNode,[]),'"');
     end;
     Node:=Node.Next;
