@@ -22,8 +22,9 @@ type
     KeyWindow: NSWindow;
     KillingFocus: Boolean;
     CaptureControl: HWND;
-    FSendingScrollWheelCount: Integer;
+    SendingScrollWheelCount: Integer;
   public
+    procedure releaseCapture;
     function isSendingScrollWheelFromInterface: Boolean;
   end;
 
@@ -143,9 +144,14 @@ implementation
 
 { TCocoaWidgetSetState }
 
+procedure TCocoaWidgetSetState.releaseCapture;
+begin
+  self.CaptureControl:= 0;
+end;
+
 function TCocoaWidgetSetState.isSendingScrollWheelFromInterface: Boolean;
 begin
-  Result:= self.FSendingScrollWheelCount > 0;
+  Result:= self.SendingScrollWheelCount > 0;
 end;
 
 { TCocoaWidgetSetGDIObject }

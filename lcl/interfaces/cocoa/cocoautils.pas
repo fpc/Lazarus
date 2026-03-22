@@ -155,6 +155,7 @@ type
     class function indexToHMonitor(i: NSUInteger): HMonitor;
     class function HMonitorToIndex(h: HMonitor): NSUInteger;
     class function getScreenFromHMonitor(h: HMonitor): NSScreen;
+    class function getHMonitor(screenPoint: TPoint; dwFlags: DWord): HMONITOR;
   end;
 
 function NSStringUtf8(s: PChar; len: Integer = -1): NSString;
@@ -1182,6 +1183,31 @@ begin
   if index>=NSScreen.screens.count then
     Exit;
   Result:= NSScreen( NSScreen.screens.objectAtIndex(index) );
+end;
+
+class function TCocoaScreenUtil.getHMonitor(
+  screenPoint: TPoint;
+  dwFlags: DWord ): HMONITOR;
+var
+  point: NSPoint;
+  screen: NSScreen;
+  i: Integer;
+begin
+  Result:= 0;
+  point:= TCocoaScreenUtil.toCocoa( screenPoint );
+  if point.y>=1 then         // NSPointInRect is (upper,left) inside
+    point.y:= point.y-1;     // (lower,right) outside
+
+  for i := 0 to NSScreen.screens.count - 1 do begin
+    screen:= NSScreen( NSScreen.screens.objectAtIndex(i) );
+    if NSPointInRect(point, screen.frame) then begin
+      Result:= TCocoaScreenUtil.indexToHMonitor( i );
+      Exit;
+    end;
+  end;
+
+  if dwFlags<>MONITOR_DEFAULTTONULL then
+    Result:= TCocoaScreenUtil.indexToHMonitor( 0 );
 end;
 
 { standalone functions }

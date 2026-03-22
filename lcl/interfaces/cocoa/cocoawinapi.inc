@@ -216,11 +216,11 @@ const
   function SendMouseWheel(barFlag: Integer): LRESULT;
   begin
     Result:= 0;
-    inc( CocoaWidgetSetState.FSendingScrollWheelCount );
+    inc( CocoaWidgetSetState.SendingScrollWheelCount );
     try
       Result:= CallMouseWheelHandler( barFlag );
     finally
-      dec( CocoaWidgetSetState.FSendingScrollWheelCount );
+      dec( CocoaWidgetSetState.SendingScrollWheelCount );
     end;
   end;
 
@@ -964,56 +964,8 @@ end;
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED, SW_SHOWFULLSCREEN
 ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-var
-  win: NSWindow;
-  lCocoaWin: TCocoaWindow = nil;
-  lWinContent: TCocoaWindowContent = nil;
-  disableFS : Boolean;
 begin
-  Result:=true;
-  {$ifdef VerboseCocoaWinAPI}
-    DebugLn('TCocoaWidgetSet.ShowWindow');
-  {$endif}
-
-  // for regular controls (non-window or embedded window, acting as a control)
-  if (not NSObject(hWnd).isKindOfClass(TCocoaWindowContent)) or (TCocoaWindowContent(hWnd).isembedded) then
-  begin
-    NSObject(hWnd).lclSetVisible(nCmdSHow <> SW_HIDE);
-    Exit;
-  end;
-
-  // for windows
-  lWinContent := TCocoaWindowContent(hWnd);
-
-  //todo: should it be lclOwnWindow?
-  if Assigned(lWinContent.fswin) then
-    win := lWinContent.fswin
-  else
-    win := NSWindow(lWinContent.window);
-
-  disableFS := false;
-  if win.isKindOfClass(TCocoaWindow) then
-  begin
-    lCocoaWin := TCocoaWindow(win);
-    disableFS := Assigned(lCocoaWin) and (lCocoaWin.lclIsFullScreen) and (nCmdShow <> SW_SHOWFULLSCREEN);
-  end;
-
-  if disableFS and Assigned(lCocoaWin) then
-    lCocoaWin.lclSwitchFullScreen(false);
-
-  case nCmdShow of
-    SW_SHOW, SW_SHOWNORMAL:
-      win.orderFront(nil);
-    SW_HIDE:
-      win.orderOut(nil);
-    SW_MINIMIZE:
-      win.miniaturize(nil);
-    SW_MAXIMIZE:
-      if NOT win.isZoomed then win.zoom(nil);
-    SW_SHOWFULLSCREEN:
-      if Assigned(lCocoaWin) then
-        lCocoaWin.lclSwitchFullScreen(true);
-  end;
+  Result := TCocoaWindowUtil.showWindow(hWNd, nCmdShow);
 end;
 
 function TCocoaWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
@@ -1908,26 +1860,8 @@ begin
 end;
 
 function TCocoaWidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
-var
-  point: NSPoint;
-  screen: NSScreen;
-  i: Integer;
 begin
-  Result:= 0;
-  point:= TCocoaScreenUtil.toCocoa( ptScreenCoords );
-  if point.y>=1 then         // NSPointInRect is (upper,left) inside
-    point.y:= point.y-1;     // (lower,right) outside
-
-  for i := 0 to NSScreen.screens.count - 1 do begin
-    screen:= NSScreen( NSScreen.screens.objectAtIndex(i) );
-    if NSPointInRect(point, screen.frame) then begin
-      Result:= TCocoaScreenUtil.indexToHMonitor( i );
-      Exit;
-    end;
-  end;
-
-  if dwFlags<>MONITOR_DEFAULTTONULL then
-    Result:= TCocoaScreenUtil.indexToHMonitor( 0 );
+  Result := TCocoaScreenUtil.getHMonitor(ptScreenCoords, dwFlags);
 end;
 
 function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
@@ -2493,7 +2427,7 @@ end;
 
 function TCocoaWidgetSet.ReleaseCapture : Boolean;
 begin
-  CocoaWidgetSetState.CaptureControl := 0;
+  CocoaWidgetSetState.releaseCapture;
   Result := True;
 end;
 

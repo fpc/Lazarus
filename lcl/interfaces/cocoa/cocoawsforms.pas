@@ -31,7 +31,7 @@ uses
   WSForms, WSLCLClasses, LCLMessageGlue,
   // LCL Cocoa
   MacOSAll, CocoaAll,
-  CocoaInt, CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate,
+  CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate,
   CocoaCallback, CocoaCommonCallback, CocoaWSCommon,
   CocoaGDIObjects, CocoaWindows, CocoaToolBar, CocoaCustomControl, CocoaScrollers,
   CocoaWSScrollers, CocoaUtils, CocoaMenus, Cocoa_Extra;
@@ -1237,7 +1237,7 @@ var
 begin
   if csDesigning in AWinControl.ComponentState then
   begin
-    CocoaWidgetSet.ShowWindow(AWinControl.Handle, SW_SHOWNORMAL);
+    TCocoaWindowUtil.showWindow(AWinControl.Handle, SW_SHOWNORMAL);
     exit;
   end;
 
@@ -1250,7 +1250,7 @@ begin
 
   if AWinControl.HandleObjectShouldBeVisible then
   begin
-    CocoaWidgetSet.ShowWindow(AWinControl.Handle, WindowStateToFlags[form.WindowState] );
+    TCocoaWindowUtil.showWindow(AWinControl.Handle, WindowStateToFlags[form.WindowState]);
     if form.WindowState<>wsMinimized then
       TCocoaWSWinControl.ShowHide(AWinControl);
     // ShowHide() also actives (sets focus to) the window
