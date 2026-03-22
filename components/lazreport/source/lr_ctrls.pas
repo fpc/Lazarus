@@ -17,7 +17,7 @@ interface
 uses
   Types, Classes, SysUtils,
   // LCL
-  LCLType, LCLIntf, LResources, LMessages, Messages, Forms, Controls, Graphics,
+  LCLType, LMessages, Messages, Forms, Controls, Graphics,
   Dialogs, ExtCtrls, Buttons, StdCtrls, Menus, ComCtrls,
   // LazUtils
   GraphType,

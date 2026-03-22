@@ -15,9 +15,8 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
-  Forms, Controls, Graphics, Dialogs,
-  StdCtrls,LCLType;
+  Classes, SysUtils,
+  LCLType, Forms, Controls, Dialogs, StdCtrls;
 
 type
 

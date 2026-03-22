@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Contnrs, Variants,
-  Controls, StdCtrls, Grids, LResources, Dialogs, LCLType, LCLStrConsts,
+  Controls, StdCtrls, Grids, Dialogs, LCLType, LCLStrConsts,
   Laz2_XMLCfg;
 
 type

@@ -41,8 +41,7 @@ uses
   // RTL+FCL
   Classes, SysUtils, TypInfo, Math, AVL_Tree,
   // LCL
-  LCLIntf, LCLType, LResources, Controls, Graphics,
-  Forms, Menus, Dialogs,
+  LCLIntf, LCLType, LResources, Controls, Graphics, Forms, Menus, Dialogs,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, CompWriterPas, LazLoggerBase, LazTracer,
   LazMemManager, LazUTF8, AvgLvlTree,

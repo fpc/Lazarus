@@ -16,9 +16,10 @@ interface
 {$COPERATORS on}
 
 uses
-  Classes, SysUtils, LResources,
-  Graphics, GraphType, Controls, Forms, Dialogs, LR_E_TXT,
-  LCLType, LCLIntf, LR_Class;
+  Classes, SysUtils,
+  Graphics, Controls, Forms, Dialogs,
+  GraphType,
+  LR_E_TXT, LR_Class;
 
 type
 

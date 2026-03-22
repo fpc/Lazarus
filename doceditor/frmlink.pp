@@ -27,8 +27,8 @@ unit FrmLink;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ButtonPanel;
+  Classes, SysUtils,
+  Forms, Controls, Dialogs, StdCtrls, ButtonPanel;
 
 type
   { TLinkForm }

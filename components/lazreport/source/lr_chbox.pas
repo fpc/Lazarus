@@ -15,11 +15,10 @@ interface
 {$I lr_vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
-  Graphics,GraphType, Controls, Forms, Dialogs,
-  Menus, LCLType, LCLIntf, LR_Class;
-
-
+  Classes, SysUtils,
+  LCLIntf, Graphics, Controls, Dialogs, Menus,
+  GraphType,
+  LR_Class;
 
 type
 

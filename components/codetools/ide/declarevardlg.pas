@@ -34,8 +34,7 @@ interface
 uses
   Classes, SysUtils, contnrs,
   // LCL
-  LCLProc, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  ButtonPanel,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ButtonPanel,
   // IdeIntf
   LazIDEIntf, SrcEditorIntf, IDEDialogs,
   // CodeTools

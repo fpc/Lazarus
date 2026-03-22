@@ -27,8 +27,8 @@ unit frmOptions;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Spin, EditBtn, ExtCtrls, ComCtrls, ButtonPanel;
+  SysUtils,
+  Forms, Controls, Dialogs, StdCtrls, Spin, EditBtn, ComCtrls, ButtonPanel;
 
 type
 

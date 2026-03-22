@@ -102,7 +102,7 @@ uses
   LazLoggerBase, LazTracer, GraphMath,
   // LCL
   LCLType, LCLIntf, Graphics, Controls, ExtCtrls, Forms,
-  Menus, Themes, ComCtrls, LMessages, LResources;
+  Menus, Themes, ComCtrls, LMessages;
 
 type
   TLazDockPages = class;

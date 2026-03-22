@@ -5,7 +5,8 @@ unit fraparams;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, db, Grids;
+  Classes, SysUtils, db,
+  Forms, Controls, Grids;
 
 type
 

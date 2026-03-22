@@ -9,7 +9,7 @@ uses
   // LazUtils
   FileUtil,
   // LCL
-  LResources, Forms, Controls, StdCtrls, ComCtrls, Spin,
+  Forms, Controls, StdCtrls, ComCtrls, Spin,
   // LazControls
   DividerBevel,
   // IdeIntf

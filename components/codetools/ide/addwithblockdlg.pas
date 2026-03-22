@@ -30,7 +30,7 @@ unit AddWithBlockDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls, Grids,
   // Codetools
   CodeCache, CodeToolManager, FileProcs, FindDeclarationTool,

@@ -32,11 +32,13 @@ unit CodyFrm;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, ComCtrls,
+  Classes, SysUtils,
+  Forms, Controls, Dialogs, ComCtrls,
   // codetools
   //FileProcs, CodeToolManager, SourceLog, CodeCache, EventCodeTool,
   //LinkScanner, PascalParserTool, CodeTree,
+  // LazUtils
+  LazLoggerBase,
   // IDEIntf
   LazIDEIntf, IDEWindowIntf,
   // cody

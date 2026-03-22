@@ -34,7 +34,7 @@ uses
   // LazUtils
   LazUTF8,
   // LCL
-  LResources, LCLProc, Controls, Forms,
+  Controls,
   // IdeIntf
   MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf,
   ProjectIntf, IDECommands,

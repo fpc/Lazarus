@@ -14,9 +14,7 @@ unit ChmDataProvider;
 interface
 
 uses
-  Classes, SysUtils, chmreader,
-  FPImage, FPReadgif, FPReadbmp, FPReadxpm, FPReadJPEG, FPReadpng, FPWritebmp,
-  FPWritePNG,
+  Classes, SysUtils, chmreader, FPImage, FPReadpng, FPWritePNG,
   // LCL
   Graphics, LCLType, Controls, IntFGraphics,
   // LazUtils
@@ -57,12 +55,12 @@ type
     procedure DoGetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture); override;
     function CanHandle(const URL: string): Boolean; override;
-    function BuildURL(const OldURL, NewURL: string): string; override;
     function GetDirsParents(ADir: String): TStringList;
-    function DoGetStream(const URL: string): TStream; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function BuildURL(const OldURL, NewURL: string): string; override;
+    function DoGetStream(const URL: string): TStream; override;
     function GetHtmlText(AURL: String): RawByteString;
     property Chms: TChmFileList read GetChms;
     procedure DoOpenChm ( const AFile: String; ACloseCurrent: Boolean );

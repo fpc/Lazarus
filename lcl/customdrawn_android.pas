@@ -11,7 +11,7 @@ uses
   // fpimage
   fpcanvas, fpimgcanv, fpimage,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
-  Graphics, Controls, LCLType, LCLIntf, IntfGraphics, LResources, Forms,
+  Graphics, Controls, LCLType, LCLIntf, IntfGraphics, Forms,
   //
   customdrawndrawers, customdrawn_common;
 

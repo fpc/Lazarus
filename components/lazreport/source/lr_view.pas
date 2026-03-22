@@ -17,7 +17,7 @@ interface
 uses
   Types, Classes, SysUtils,
   // LCL
-  LCLType, LCLIntf, LResources, LMessages, Forms, Controls, Graphics, Dialogs,
+  LCLType, LCLIntf, LMessages, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, StdCtrls, Menus,
   // LazUtils
   LazUTF8,
@@ -240,7 +240,6 @@ implementation
 uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, lr_PreviewToolsAbstract,LR_Dopt,LR_pgopt;
 
 {$R *.lfm}
-
 
 type
   THackControl = class(TWinControl)

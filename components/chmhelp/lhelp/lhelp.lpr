@@ -27,7 +27,7 @@ uses
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
   SysUtils, Classes, Controls, Dialogs, Forms,
-  SimpleIPC, lhelpcontrolpkg, LHelpCore, LHelpStrConsts, filecontentprovider;
+  lhelpcontrolpkg, LHelpCore, LHelpStrConsts, filecontentprovider;
 
 var
   X: Integer;

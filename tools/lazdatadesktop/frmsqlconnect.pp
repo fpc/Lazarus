@@ -25,8 +25,9 @@ unit frmSQLConnect;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, ComCtrls, ButtonPanel, lazdatadeskstr, dmImages;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls, ComCtrls, ButtonPanel,
+  lazdatadeskstr;
 
 type
   TTestConnectionEvent = Procedure (Sender : TObject;Const ADriver : String; Params : TStrings) of object;

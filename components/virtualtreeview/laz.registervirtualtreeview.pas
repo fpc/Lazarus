@@ -13,7 +13,7 @@ implementation
 
 
 uses
-  Classes, SysUtils, LResources, LazarusPackageIntf,
+  Classes, SysUtils, LazarusPackageIntf,
   laz.VirtualTrees, laz.VTHeaderPopup, laz.VTIDEEditors, ComponentEditors;
 
 

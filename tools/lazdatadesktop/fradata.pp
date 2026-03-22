@@ -5,8 +5,8 @@ unit fradata;
 interface
 
 uses
-  Classes, SysUtils, db, FileUtil, LResources, Forms, Controls, ExtCtrls,
-  DbCtrls, DBGrids, Buttons, dmImages;
+  Classes, SysUtils, db,
+  Forms, Controls, ExtCtrls, DbCtrls, DBGrids, Buttons;
 
 type
 

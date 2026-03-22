@@ -31,7 +31,7 @@ interface
 uses
   Types, SysUtils, Classes, Math,
   {$IFDEF VerboseCalenderSetDate}LazLoggerBase,{$ENDIF}
-  LCLType, LCLStrConsts, lMessages, Controls, LResources;
+  LCLType, LCLStrConsts, lMessages, Controls;
 
 type
   TDisplaySetting = (

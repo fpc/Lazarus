@@ -5,7 +5,8 @@ unit dmImages;
 interface
 
 uses
-  Classes, SysUtils, LResources, Controls;
+  Classes,
+  Controls;
 
 // Some selected image indices to simplify updating images.
 const

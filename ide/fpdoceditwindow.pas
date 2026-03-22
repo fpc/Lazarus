@@ -35,8 +35,7 @@ uses
   // LazUtils
   Laz2_DOM, Laz2_XMLRead, LazUtilities, LazStringUtils, LazTracer,
   // LCL
-  LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
-  ExtCtrls, Forms, Graphics, LCLType,
+  StdCtrls, Buttons, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics, LCLType,
   // Synedit
   SynEdit, SynHighlighterXML, SynEditFoldedView, SynEditWrappedView,
   // Codetools

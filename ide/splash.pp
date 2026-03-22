@@ -31,14 +31,8 @@ unit Splash;
 interface
 
 uses
-  Buttons,
-  Classes,
-  Controls,
-  ExtCtrls,
-  Forms,
-  Graphics,
-  LResources,
-  SysUtils,
+  Classes, SysUtils,
+  Buttons, Controls, ExtCtrls, Forms, Graphics,
   LazConf;
 
 var

@@ -5,8 +5,9 @@ unit frmselectconnectiontype;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ButtonPanel, lazdatadeskstr;
+  Classes, SysUtils,
+  Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
+  lazdatadeskstr;
 
 type
 

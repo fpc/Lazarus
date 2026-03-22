@@ -33,8 +33,7 @@ uses
   // RTL + FCL
   Classes, SysUtils, AVL_Tree, Contnrs,
   // LCL
-  LResources, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
-  LclIntf, Graphics,
+  Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel, LclIntf, Graphics,
   // CodeTools
   KeywordFuncLists, CTUnitGraph, LFMTrees, CodeTree, CodeAtom, LinkScanner,
   CustomCodeTool, CodeCache, FileProcs, BasicCodeTools, IdentCompletionTool, CodeToolManager,

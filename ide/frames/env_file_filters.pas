@@ -14,7 +14,7 @@ uses
   // LazUtils
   LazFileUtils, LazConfigStorage,
   // LCL
-  LCLType, LResources, Grids, Dialogs, Controls, StdCtrls, Menus,
+  LCLType, Grids, Dialogs, Controls, StdCtrls, Menus,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, BaseIDEIntf, IDEDialogs,
   // IDE

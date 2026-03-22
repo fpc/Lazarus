@@ -15,9 +15,8 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
-  Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ComCtrls, ButtonPanel, Spin,
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ButtonPanel, Spin,
   LR_Const;
 
 type

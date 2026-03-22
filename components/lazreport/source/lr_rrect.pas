@@ -27,11 +27,10 @@ interface
 {$Packset 1}
 
 uses
-  Classes, SysUtils, LResources, GraphMath,
-  Graphics, Controls, Forms, Dialogs,Buttons,
-  StdCtrls, Menus,ClipBrd,
-
-  LCLType,LR_Class, ExtCtrls,LCLIntf,LCLProc
+  Classes, SysUtils,
+  LCLType, LCLIntf, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, ClipBrd, ExtCtrls,
+  GraphMath, LazLoggerBase,
+  LR_Class
   {$IFDEF LCLNOGUI}
   ,lr_ngcanvas
   {$ENDIF}

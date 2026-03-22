@@ -26,8 +26,7 @@ uses
   // LCL
   LMessages, LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType,
   Forms, Controls, Themes, Graphics, Buttons, ButtonPanel, StdCtrls,
-  ExtCtrls, LCLClasses, ClipBrd, Menus, {LCLTaskDialog,} DialogRes,
-  ComCtrls,
+  ExtCtrls, LCLClasses, ClipBrd, Menus, ComCtrls, DialogRes,
   // LazUtils
   GraphType, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
 

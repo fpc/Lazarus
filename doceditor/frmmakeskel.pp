@@ -27,8 +27,8 @@ unit FrmMakeSkel;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, EditBtn, ButtonPanel, ExtCtrls;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, EditBtn, ButtonPanel, ExtCtrls;
 
 type
 

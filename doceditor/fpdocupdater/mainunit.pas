@@ -30,7 +30,7 @@ uses
   Classes, SysUtils, Process,
   // LCL
   Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls, EditBtn,
-  LResources, LCLIntf, LCLType,
+  LCLIntf, LCLType,
   // LazUtils
   UTF8Process, Laz_XMLCfg, LazUtf8, FileUtil, LazFileUtils, LazLoggerBase,
   FPDocFiles;

@@ -25,9 +25,10 @@ unit frmgeneratesql;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, Buttons, StdCtrls, ButtonPanel, RTTICtrls, fpdatadict,
-  lazdatadeskstr;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls, ButtonPanel,
+  RTTICtrls,
+  fpdatadict, lazdatadeskstr;
 
 type
 

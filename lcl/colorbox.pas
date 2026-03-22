@@ -20,7 +20,7 @@ unit ColorBox;
 interface
 
 uses
-  LResources, SysUtils, Types, Classes,
+  SysUtils, Types, Classes,
   LCLType, LCLStrConsts, Graphics, Controls, Forms, Dialogs, StdCtrls,
   LazStringUtils;
 

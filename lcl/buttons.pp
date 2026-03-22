@@ -33,7 +33,7 @@ interface
 uses
   Types, Classes, SysUtils, Math,
   // LCL
-  LCLType, LCLProc, LCLIntf, LCLStrConsts, LResources, Graphics, ImgList, ActnList,
+  LCLType, LCLProc, LCLIntf, LCLStrConsts, Graphics, ImgList, ActnList,
   Controls, StdCtrls, LMessages, Forms, Themes, Menus, ImageListCache,
   // LazUtils
   GraphType, LazUtilities;

@@ -43,7 +43,7 @@ uses
   SynHighlighterVB, SynHighlighterAny, SynHighlighterDiff, SynHighlighterBat, SynHighlighterIni,
   SynHighlighterPo, SynPluginSyncroEdit, SynPopupMenu, SynPropertyEditObjectList, SynHighlighterMarkdown,
   SynDesignStringConstants, SynHighlighterJScript, SynPluginExternalLink, LazarusPackageIntf,
-  LResources, PropEdits, ComponentEditors;
+  PropEdits, ComponentEditors;
 
 procedure Register;
 

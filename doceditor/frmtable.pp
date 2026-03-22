@@ -27,8 +27,7 @@ unit frmTable;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, Spin, ButtonPanel;
+  Forms, StdCtrls, Spin, ButtonPanel;
 
 type
 

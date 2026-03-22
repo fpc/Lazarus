@@ -27,8 +27,8 @@ unit UnitMove;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, LCLType, LCLIntf;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, LCLType, LCLIntf;
 
 type
 

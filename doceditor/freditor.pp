@@ -28,10 +28,10 @@ unit freditor;
 interface
 
 uses
-  SysUtils, Classes, StrUtils,
+  SysUtils, Classes, StrUtils, DOM, xmlread, xmlwrite, fpdeutil,
   Forms, Controls, ExtCtrls, Buttons, StdCtrls, Dialogs, Menus,
-  DOM, xmlread, xmlwrite, fpdeutil, Lazdemsg, Lazdeopts,
-  GraphType, ActnList, LResources, LazUTF8;
+  LazUTF8,
+  Lazdemsg, Lazdeopts;
 
 Type
 

@@ -25,8 +25,9 @@ unit frmimportdd;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, CheckLst,
-  Buttons, ActnList,fpdatadict, StdCtrls, ExtCtrls, lazdatadeskstr;
+  Classes, SysUtils,
+  Forms, Controls, Dialogs, CheckLst, ActnList, StdCtrls, ExtCtrls,
+  fpdatadict, lazdatadeskstr;
 
 type
 

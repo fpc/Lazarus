@@ -5,9 +5,9 @@ unit fraconnection;
 interface
 
 uses
-  fpdatadict, fraquery, Classes, SysUtils, FileUtil, LResources, Graphics, DB,
-  Forms, Controls, ComCtrls, ExtCtrls,
-  dmImages;
+  Classes, SysUtils, DB,
+  Forms, Graphics, Controls, ComCtrls, ExtCtrls,
+  fpdatadict, fraquery, dmImages;
 
 type
 

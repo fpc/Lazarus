@@ -30,8 +30,8 @@ unit ComboEx;
 interface
 
 uses
-  Classes, SysUtils, types,
-  LCLIntf, LCLType, LMessages, LResources, LazLoggerBase,
+  Classes, SysUtils, Types,
+  LCLIntf, LCLType, LMessages, LazLoggerBase,
   ImgList, Controls, StdCtrls, ComCtrls, ExtCtrls, Graphics, GraphUtil,
   Themes, Forms;
 

@@ -23,7 +23,7 @@ interface
 uses
   Types, Classes, SysUtils,
   // LCL
-  LResources, LCLType, LCLStrConsts, LCLPlatformDef, InterfaceBase, Controls,
+  LCLType, LCLStrConsts, LCLPlatformDef, InterfaceBase, Controls,
   Dialogs, Graphics, ExtCtrls, StdCtrls, Forms, Calendar, Buttons, CalcForm,
   // LazUtils
   GraphType, FileUtil, LazFileUtils, Masks;

@@ -32,12 +32,11 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   // LCL
-  LResources, Forms, Controls, Graphics,
-  Dialogs, ButtonPanel, StdCtrls, ComCtrls, Menus,
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls, ComCtrls, Menus,
   // LazUtils
-  FileUtil,
+  FileUtil, LazLoggerBase,
   // Codetools
-  CodeCache, CodeToolManager, FileProcs, PascalParserTool,
+  CodeCache, CodeToolManager, PascalParserTool,
   BasicCodeTools, CodeTree, FindDeclarationTool,
   // IDEIntf
   IDEDialogs, LazIDEIntf, SrcEditorIntf,

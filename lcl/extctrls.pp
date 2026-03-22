@@ -26,7 +26,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Types, Classes, contnrs, FGL,
+  SysUtils, Types, Classes, Contnrs, FGL,
   // LCL
   LCLStrConsts, LCLType, LCLProc, LResources, LMessages, Controls, Forms,
   StdCtrls, Graphics, LCLIntf, CustomTimer, Themes, LCLClasses, Menus,

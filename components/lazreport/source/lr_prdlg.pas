@@ -17,8 +17,7 @@ interface
 uses
   Types, Classes, SysUtils,
   // LCL
-  LCLIntf, LResources,
-  Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, Spin,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, Spin,
   // Printers
   PrintersDlgs;
 

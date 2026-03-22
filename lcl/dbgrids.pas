@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, SysUtils, Math, FileUtil, DB, LazUTF8, LazLoggerBase, LCLStrConsts,
-  LCLIntf, LCLType, LMessages, LResources, Controls, StdCtrls, Graphics, Grids,
+  LCLIntf, LCLType, LMessages, Controls, StdCtrls, Graphics, Grids,
   Dialogs, Themes, Variants, Clipbrd, ImgList, Laz2_XMLCfg;
 
 const

@@ -5,8 +5,9 @@ unit lr_funct_editor_unit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, LR_Class, Buttons, ButtonPanel, LR_Const;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, LR_Class, ButtonPanel,
+  LR_Const;
 
 type
 

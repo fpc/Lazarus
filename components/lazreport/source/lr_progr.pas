@@ -15,13 +15,9 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources, LMessages,
-  Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,LCLIntf,
-  
-  LCLProc,
-
-  LR_Const, LR_Class, ExtCtrls;
+  Classes, SysUtils, LMessages,
+  Forms, Controls, Dialogs, StdCtrls, ExtCtrls,
+  LR_Const, LR_Class;
 
 const
   CM_BeforeModal = WM_USER + 1;

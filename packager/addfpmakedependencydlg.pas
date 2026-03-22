@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LResources, Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls,
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls,
   // LazControls
   ListFilterEdit,
   // LazUtils

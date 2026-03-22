@@ -5,7 +5,7 @@ unit LR_Register;
 interface
 
 uses
-  Classes, SysUtils, LResources,
+  Classes, SysUtils,
   LR_Const,
   LR_Class,
   LR_Desgn,

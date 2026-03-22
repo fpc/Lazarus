@@ -28,7 +28,6 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs,
-  LResources,
   Printers, OsPrinters;
 
 type

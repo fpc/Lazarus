@@ -23,7 +23,7 @@ interface
 uses
   Classes, SysUtils, Math,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls, LResources,
+  Forms, Controls, Dialogs, StdCtrls,
   // LazUtils
   LazFileUtils, LazFileCache,
   // IdeIntf

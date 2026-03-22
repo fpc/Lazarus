@@ -5,8 +5,10 @@ unit lr_expres;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, ButtonPanel, SynEdit, LR_Const;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls, ButtonPanel,
+  SynEdit,
+  LR_Const;
 
 type
 

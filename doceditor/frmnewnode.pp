@@ -27,8 +27,7 @@ unit frmNewNode;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ButtonPanel;
+  Forms, StdCtrls, ButtonPanel;
 
 type
   { TNewNodeForm }

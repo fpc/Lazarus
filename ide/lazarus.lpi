@@ -1035,6 +1035,7 @@
       <Unit>
         <Filename Value="macropromptdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="MacroPromptDlg"/>
       </Unit>
       <Unit>
         <Filename Value="ide.pas"/>

@@ -5,8 +5,7 @@ unit TestQueueAsyncCall;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls;
 
 type
 

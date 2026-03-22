@@ -43,10 +43,10 @@ unit TaskDlgEmulation;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   LazUTF8,
-  LCLType, LCLStrConsts, LCLIntf, LMessages, InterfaceBase, ImgList, LCLProc, DateUtils, Math, ComCtrls,
-  LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, DialogRes,
+  LCLType, LCLStrConsts, LCLIntf, LMessages, ImgList, DateUtils, ComCtrls,
+  Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, DialogRes,
   LazLoggerBase;
 
 type

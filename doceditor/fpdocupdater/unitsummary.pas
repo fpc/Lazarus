@@ -5,8 +5,8 @@ unit UnitSummary;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, FPDocFiles, StdCtrls, ExtCtrls,
-  LCLIntf;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, FPDocFiles, StdCtrls, ExtCtrls, LCLIntf;
 
 type
 

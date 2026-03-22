@@ -27,8 +27,8 @@ unit frmSource;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, EditBtn, ButtonPanel;
+  Classes, SysUtils,
+  Forms, Controls, Dialogs, StdCtrls, EditBtn, ButtonPanel;
 
 type
 

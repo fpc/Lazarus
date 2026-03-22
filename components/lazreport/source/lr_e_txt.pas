@@ -15,8 +15,10 @@ interface
 {$I lr_vers.inc}
 
 uses
-  Classes, SysUtils, LazUTF8, LResources, Graphics, GraphType, Controls, Forms,
-  Dialogs, LCLType, LCLIntf, LR_Class
+  Classes, SysUtils,
+  LCLType, Graphics, Controls, Forms, Dialogs,
+  LazUTF8,
+  LR_Class
   {$IFDEF LCLNOGUI}
   , lr_ngcanvas
   {$ENDIF}

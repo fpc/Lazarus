@@ -15,13 +15,10 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
-  Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ClipBrd,ExtCtrls,
-
-  LCLType,LCLIntf,LCLProc,
-  
-  LR_Class, lr_propedit, SynEdit, SynHighlighterPas;
+  Classes, SysUtils,
+  LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ClipBrd, ExtCtrls,
+  LR_Class, lr_propedit,
+  SynEdit, SynHighlighterPas;
 
 type
 

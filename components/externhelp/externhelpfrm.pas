@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, Buttons, StdCtrls,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, Buttons, StdCtrls,
   ExtCtrls, ButtonPanel, HelpIntfs,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazConfigStorage, LazLoggerBase, LazUTF8,

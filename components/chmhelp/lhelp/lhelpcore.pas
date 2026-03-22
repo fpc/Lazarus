@@ -38,7 +38,7 @@ uses
   Classes, SysUtils, Types, SimpleIPC, Laz2_XMLCfg,
   // LCL
   Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, Menus, StdCtrls,
-  LCLType, LCLIntf, DefaultTranslator,
+  LCLType,
   // LazUtils
   LazFileUtils, LazUTF8, LazLoggerBase,
   // ChmHelp

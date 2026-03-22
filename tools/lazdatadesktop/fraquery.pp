@@ -6,9 +6,11 @@ unit fraquery;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SynHighlighterSQL, SynEdit, LResources, Forms,
-  DB, LCLType, Controls, ComCtrls, StdCtrls, ActnList, Dialogs, ExtCtrls, Menus, StdActns,
-  dmImages, fpDatadict, fradata, lazdatadeskstr, sqlscript, sqldb, fpddsqldb, lazddsqlutils, fraparams;
+  Classes, SysUtils, DB,
+  Forms, LCLType, Controls, ComCtrls, ActnList, Dialogs, ExtCtrls, Menus, StdActns,
+  FileUtil,
+  SynEdit, SynHighlighterSQL,
+  fpDatadict, fradata, lazdatadeskstr, sqlscript, sqldb, fpddsqldb, lazddsqlutils, fraparams;
 
 type
    TExecuteMode = (emSingle,emSelection,emScript,emSelectionScript);

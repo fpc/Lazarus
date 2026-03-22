@@ -15,9 +15,8 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
-  Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls, ButtonPanel,
+  SysUtils,
+  Forms, Graphics, Dialogs, Buttons, StdCtrls, ButtonPanel,
   LR_Const;
 
 type
@@ -57,7 +56,7 @@ implementation
 
 {$R *.lfm}
 
-uses LR_Desgn, LR_Class;
+uses LR_Desgn;
 
 procedure TfrHilightForm.SpeedButton1Click(Sender: TObject);
 begin

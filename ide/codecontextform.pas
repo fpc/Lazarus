@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Types,
   // LCL
-  LCLType, LCLIntf, LResources, LMessages, Forms, Controls,
+  LCLType, LCLIntf, LMessages, Forms, Controls,
   Graphics, Dialogs, Themes, Buttons,
   // LazUtils
   LazUtilities, LazStringUtils, GraphMath, LazLoggerBase,

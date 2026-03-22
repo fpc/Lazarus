@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, TypInfo, AVL_Tree,
   // LCL
-  Forms, Controls, Dialogs, LResources, LCLProc,
+  Forms, Controls, Dialogs, LResources,
   //LazUtils
   AvgLvlTree, LazUtilities, LazStringUtils, LazMemManager, LazLoggerBase, LazTracer,
   // CodeTools
@@ -56,7 +56,7 @@ uses
   // IdePproject
   Project,
   // IdeIntf
-  PropEditUtils, PropEdits, UnitResources, IDEDialogs,
+  PropEditUtils, PropEdits, IDEDialogs,
   // IDE
   {$IFDEF VerboseJITForms}DesignerProcs,{$ENDIF}
   EnvGuiOptions;

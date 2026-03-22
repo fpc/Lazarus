@@ -13,7 +13,9 @@ unit ChmSpecialParser;
 interface
 
 uses
-  Classes, Forms, SysUtils, Controls, ComCtrls, chmsitemap;
+  Classes, SysUtils,
+  Forms, Controls, ComCtrls,
+  chmsitemap;
   
 type
 

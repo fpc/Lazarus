@@ -5,9 +5,10 @@ interface
 {$I lr_vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
-  Graphics,GraphType, Controls, Forms, Dialogs,
-  LCLType,LCLIntf,LR_Class, LCLProc;
+  Classes, SysUtils,
+  Graphics, Controls, Forms, Dialogs,
+  LazLoggerBase,
+  LR_Class;
 
 type
 

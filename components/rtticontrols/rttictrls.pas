@@ -26,7 +26,7 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   // LCL
-  LResources, LCLType, LCLIntf, Forms,
+  LCLType, LCLIntf, Forms,
   Controls, Graphics, MaskEdit, Calendar, Spin, Dialogs, CheckLst, ComCtrls,
   StdCtrls, Buttons, ExtCtrls,
   // LazUtils
