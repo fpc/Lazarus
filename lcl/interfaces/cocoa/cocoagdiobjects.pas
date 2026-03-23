@@ -9,9 +9,10 @@ interface
 
 uses
   MacOSAll, // for CGContextRef
-  LCLtype, LCLProc, Graphics, Controls, fpcanvas, ImgList,
-  CocoaAll, CocoaUtils,
-  cocoa_extra,
+  LCLtype, LCLProc, Controls, fpcanvas, ImgList,
+  Graphics, GraphType, LCLIntf, IntfGraphics,
+  CocoaAll,
+  CocoaUtils, Cocoa_Extra,
   {$ifndef CocoaUseHITheme}
   customdrawndrawers, customdrawn_mac,
   {$endif}
@@ -377,6 +378,7 @@ type
     procedure SetROP2(AValue: Integer);
     procedure SetTextColor(AValue: TColor);
 
+    procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
     procedure UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
     procedure SetViewPortOfs(AValue: TPoint);
     procedure SetWindowOfs(AValue: TPoint);
@@ -483,20 +485,30 @@ type
     property Bitmap: TCocoaBitmap read FBitmap write SetBitmap;
   end;
 
+  { TCocoaDefaultGDIObject }
+
+  TCocoaDefaultGDIObject = class
+  private
+    _brush: TCocoaBrush;
+    _pen: TCocoaPen;
+    _font: TCocoaFont;
+    _bitmap: TCocoaBitmap;
+    _context: TCocoaBitmapContext;
+    _screenContext: TCocoaContext;
+  public
+    property brush: TCocoaBrush read _brush;
+    property pen: TCocoaPen read _pen;
+    property font: TCocoaFont read _font;
+    property bitmap: TCocoaBitmap read _bitmap;
+    property context: TCocoaBitmapContext read _context;
+    property screenContext: TCocoaContext read _screenContext;
+  private
+    procedure init;
+    destructor Destroy; override;
+  end;
+
 var
-  DefaultBrush: TCocoaBrush;
-  DefaultPen: TCocoaPen;
-  DefaultFont: TCocoaFont;
-  DefaultBitmap: TCocoaBitmap;
-  DefaultContext: TCocoaBitmapContext;
-  ScreenContext: TCocoaContext;
-
-function CheckDC(dc: HDC): TCocoaContext;
-function CheckDC(dc: HDC; Str: string): Boolean;
-function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
-function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
-
-function AllocMultiResImageFromImageList(lst: TCustomImageList; width, imgIdx: Integer): NSImage;
+  CocoaDefaultGDIObject: TCocoaDefaultGDIObject;
 
 type
 
@@ -506,7 +518,111 @@ type
     function lclCGContext: CGContextRef; message 'lclCGContext';
   end;
 
+  { TCocoaGDIUtil }
+
+  TCocoaGDIUtil = class
+  public
+    class function checkDC(const dc: HDC): TCocoaContext; overload;
+    class function checkDC(const dc: HDC; const Str: String): Boolean; overload;
+    class function checkGDIOBJ(const obj: HGDIOBJ): TCocoaGDIObject;
+    class function checkBitmap(const ABitmap: HBITMAP; const AStr: String): Boolean;
+
+    class function fillLCLImageDescription(
+      out ADesc: TRawImageDescription;
+      const ABitmap: TCocoaBitmap ): Boolean;
+    class function createLCLRawImage(
+      out ARawImage: TRawImage;
+      const ABitmap, AMask: TCocoaBitmap;
+      const ARect: PRect = nil ): Boolean;
+    class function getCocoaBitmapType(
+      const ADesc: TRawImageDescription;
+      out bmpType: TCocoaBitmapType ): Boolean;
+    class function getPixelData(
+      const AImage: CGImageRef;
+      out bitmapByteCount: PtrUInt ): Pointer;
+    class function create32BitAlphaCocoaBitmap(
+      const ABitmap, AMask: TCocoaBitmap ): TCocoaBitmap;
+
+    class procedure drawBackground(
+      const view: NSView;
+      const lclBrush: TBrush );
+    class function createMultiResImage(
+      const lst: TCustomImageList;
+      const width: Integer;
+      const imgIdx: Integer ): NSImage;
+  end;
+
 implementation
+
+type
+
+  { TCocoaContextUtil }
+
+  TCocoaContextUtil = class
+  public
+    class procedure addLCLPoints(
+      const cg: CGContextRef;
+      const Points: array of TPoint;
+      const NumPts:Integer );
+    class procedure addLCLRect(
+      const cg: CGContextRef;
+      const x1, y1, x2, y2: Integer;
+      const HalfPixel: boolean); overload;
+    class procedure addLCLRect(
+      const cg: CGContextRef;
+      const R: TRect;
+      const HalfPixel: boolean); overload;
+  end;
+
+{ TCocoaContextUtil }
+
+class procedure TCocoaContextUtil.addLCLPoints(
+  const cg: CGContextRef;
+  const Points: array of TPoint;
+  const NumPts: Integer );
+var
+  cp: array of CGPoint;
+  i: Integer;
+begin
+  SetLength(cp, NumPts);
+  for i:=0 to NumPts-1 do
+  begin
+    cp[i].x:=Points[i].X+0.5;
+    cp[i].y:=Points[i].Y+0.5;
+  end;
+  CGContextAddLines(cg, @cp[0], NumPts);
+end;
+
+class procedure TCocoaContextUtil.addLCLRect(
+  const cg: CGContextRef;
+  const x1, y1, x2, y2: Integer;
+  const HalfPixel: boolean );
+var
+  r: CGRect;
+begin
+  if HalfPixel then
+  begin
+    r.origin.x:=x1+0.5;
+    r.origin.y:=y1+0.5;
+    r.size.width:=x2-x1-1;
+    r.size.height:=y2-y1-1;
+  end else
+  begin
+    r.origin.x:=x1;
+    r.origin.y:=y1;
+    r.size.width:=x2-x1;
+    r.size.height:=y2-y1;
+  end;
+  CGContextAddRect(cg, r);
+end;
+
+class procedure TCocoaContextUtil.addLCLRect(
+  const cg: CGContextRef;
+  const R: TRect;
+  const HalfPixel: boolean );
+begin
+  addLCLRect(cg, r.Left, r.Top, r.Right, r.Bottom, HalfPixel);
+end;
 
 { LCLNSGraphicsContext }
 
@@ -518,9 +634,11 @@ begin
     Result := CGContextRef(graphicsPort);
 end;
 
+{ TCocoaGDIUtil }
+
 //todo: a better check!
 
-function CheckDC(dc: HDC): TCocoaContext;
+class function TCocoaGDIUtil.checkDC(const dc: HDC): TCocoaContext;
 begin
   //Result := TCocoaContext(dc);
   if TObject(dc) is TCocoaContext then
@@ -529,13 +647,13 @@ begin
     Result := nil;
 end;
 
-function CheckDC(dc: HDC; Str: string): Boolean;
+class function TCocoaGDIUtil.checkDC(const dc: HDC; const Str: string): Boolean;
 begin
   //Result := dc<>0;
   Result := (dc <> 0) and (TObject(dc) is TCocoaContext);
 end;
 
-function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
+class function TCocoaGDIUtil.checkGDIOBJ(const obj: HGDIOBJ): TCocoaGDIObject;
 begin
   //Result := TObject(obj) as TCocoaGDIObject;
   if TObject(obj) is TCocoaGDIObject then
@@ -544,13 +662,386 @@ begin
     Result := nil;
 end;
 
-function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
+class function TCocoaGDIUtil.checkBitmap(const ABitmap: HBITMAP; const AStr: string): Boolean;
 begin
   Result := ABitmap <> 0;
 end;
 
-function AllocMultiResImageFromImageList(lst: TCustomImageList;
-  width, imgIdx: Integer): NSImage;
+{ TCocoaWidgetSetGDIService }
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWidgetSetGDIService.fillLCLImageDescription
+
+  Creates a rawimage description for a cocoabitmap
+ ------------------------------------------------------------------------------}
+class function TCocoaGDIUtil.fillLCLImageDescription(
+  out ADesc: TRawImageDescription;
+  const ABitmap: TCocoaBitmap ): Boolean;
+var
+  Prec, Shift: Byte;
+  BPR: Integer;
+begin
+  ADesc.Init;
+
+  case ABitmap.BitmapType of
+    cbtMono, cbtGray: ADesc.Format := ricfGray;
+  else
+    ADesc.Format := ricfRGBA;
+  end;
+
+  ADesc.Width := Round(ABitmap.image.size.width);
+  ADesc.Height := Round(ABitmap.image.size.Height);
+
+  //ADesc.PaletteColorCount := 0;
+
+  ADesc.BitOrder := riboReversedBits;
+  ADesc.ByteOrder := riboMSBFirst;
+
+  BPR := ABitmap.BytesPerRow;
+  if BPR and $F = 0 then ADesc.LineEnd := rileDQWordBoundary     // 128bit aligned
+  else if BPR and $7 = 0 then ADesc.LineEnd := rileQWordBoundary //  64bit aligned
+  else if BPR and $3 = 0 then ADesc.LineEnd := rileWordBoundary  //  32bit aligned
+  else if BPR and $1 = 0 then ADesc.LineEnd := rileByteBoundary  //   8bit aligned
+  else ADesc.LineEnd := rileTight;
+
+  ADesc.LineOrder := riloTopToBottom;
+  ADesc.BitsPerPixel := ABitmap.BitsPerPixel;
+
+  ADesc.MaskBitOrder := riboReversedBits;
+  ADesc.MaskBitsPerPixel := 1;
+  ADesc.MaskLineEnd := rileByteBoundary;
+  // ADesc.MaskShift := 0;
+
+  ADesc.Depth := ABitmap.Depth;
+  Prec := ABitmap.BitsPerSample;
+
+  ADesc.RedPrec := Prec;
+  ADesc.GreenPrec := Prec;
+  ADesc.BluePrec := Prec;
+
+  // gray or mono
+  if ADesc.Format = ricfGray then begin
+    Result := true;
+    Exit;
+  end;
+
+  // alpha
+  if ABitmap.BitmapType in [cbtARGB, cbtRGBA] then
+    ADesc.AlphaPrec := Prec;
+
+  case ABitmap.BitmapType of
+    cbtRGB: begin
+      Shift := 24 - Prec;
+      ADesc.RedShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.GreenShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.BlueShift := Shift;
+    end;
+    cbtARGB: begin
+      Shift := 32 - Prec;
+      ADesc.AlphaShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.RedShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.GreenShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.BlueShift := Shift;
+    end;
+    cbtRGBA: begin
+      Shift := 32 - Prec;
+      ADesc.RedShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.GreenShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.BlueShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.AlphaShift := Shift;
+    end;
+  end;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWidgetSetGDIService.createLCLRawImage
+
+  Creates a rawimage description for a cocoabitmap
+ ------------------------------------------------------------------------------}
+class function TCocoaGDIUtil.createLCLRawImage(
+  out ARawImage: TRawImage;
+  const ABitmap, AMask: TCocoaBitmap;
+  const ARect: PRect ): Boolean;
+var
+  lBitmapData: PByte;
+begin
+  FillChar(ARawImage, SizeOf(ARawImage), 0);
+  fillLCLImageDescription(ARawImage.Description, ABitmap);
+
+  ARawImage.DataSize := ABitmap.DataSize;
+  ReAllocMem(ARawImage.Data, ARawImage.DataSize);
+  lBitmapData := ABitmap.GetNonPreMultipliedData();
+  if ARawImage.DataSize > 0 then
+    System.Move(lBitmapData^, ARawImage.Data^, ARawImage.DataSize);
+
+  Result := True;
+
+  if AMask = nil then
+  begin
+    ARawImage.Description.MaskBitsPerPixel := 0;
+    Exit;
+  end;
+
+  if AMask.Depth > 1
+  then begin
+    DebugLn('[WARNING] RawImage_FromCocoaBitmap: AMask.Depth > 1');
+    Exit;
+  end;
+
+  ARawImage.MaskSize := AMask.DataSize;
+  ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
+  if ARawImage.MaskSize > 0 then
+    System.Move(AMask.Data^, ARawImage.Mask^, ARawImage.MaskSize);
+end;
+
+class function TCocoaGDIUtil.getCocoaBitmapType(
+  const ADesc: TRawImageDescription;
+  out bmpType: TCocoaBitmapType ): Boolean;
+begin
+  Result := False;
+
+  if ADesc.Format = ricfGray
+  then
+  begin
+    if ADesc.Depth = 1 then bmpType := cbtMono
+    else bmpType := cbtGray;
+  end
+  else if ADesc.Depth = 1
+  then bmpType := cbtMono
+  else if ADesc.AlphaPrec <> 0
+  then begin
+    if ADesc.ByteOrder = riboMSBFirst
+    then begin
+      if  (ADesc.AlphaShift = 24)
+      and (ADesc.RedShift   = 16)
+      and (ADesc.GreenShift = 8 )
+      and (ADesc.BlueShift  = 0 )
+      then bmpType := cbtARGB
+      else
+      if  (ADesc.AlphaShift = 24)
+      and (ADesc.RedShift   = 0 )
+      and (ADesc.GreenShift = 8 )
+      and (ADesc.BlueShift  = 16)
+      then bmpType := cbtABGR
+      else
+      if  (ADesc.AlphaShift = 0 )
+      and (ADesc.RedShift   = 24)
+      and (ADesc.GreenShift = 16)
+      and (ADesc.BlueShift  = 8 )
+      then bmpType := cbtRGBA
+      else
+      if  (ADesc.AlphaShift = 0 )
+      and (ADesc.RedShift   = 8 )
+      and (ADesc.GreenShift = 16)
+      and (ADesc.BlueShift  = 24)
+      then bmpType := cbtBGRA
+      else Exit;
+    end
+    else begin
+      if  (ADesc.AlphaShift = 0 )
+      and (ADesc.RedShift   = 8 )
+      and (ADesc.GreenShift = 16)
+      and (ADesc.BlueShift  = 24)
+      then bmpType := cbtARGB
+      else
+      if  (ADesc.AlphaShift = 0 )
+      and (ADesc.RedShift   = 24)
+      and (ADesc.GreenShift = 16)
+      and (ADesc.BlueShift  = 8 )
+      then bmpType := cbtABGR
+      else
+      if  (ADesc.AlphaShift = 24)
+      and (ADesc.RedShift   = 0 )
+      and (ADesc.GreenShift = 8 )
+      and (ADesc.BlueShift  = 16)
+      then bmpType := cbtRGBA
+      else
+      if  (ADesc.AlphaShift = 24)
+      and (ADesc.RedShift   = 16)
+      and (ADesc.GreenShift = 8 )
+      and (ADesc.BlueShift  = 0 )
+      then bmpType := cbtBGRA
+      else Exit;
+    end;
+  end
+  else begin
+    bmpType := cbtRGB;
+  end;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWidgetSetGDIService.getPixelData
+
+  Used by RawImage_FromDevice. Copies the data from a CGImageRef into a local
+  buffer.
+
+  The buffer is created using GetMem, and the caller is responsible for using
+  FreeMem to free the returned pointer.
+
+  This function throws exceptions in case of errors and may return a nil pointer.
+ ------------------------------------------------------------------------------}
+class function TCocoaGDIUtil.getPixelData(
+  const AImage: CGImageRef;
+  out bitmapByteCount: PtrUInt ): Pointer;
+var
+  bitmapData: Pointer;
+  context: CGContextRef = nil;
+  colorSpace: CGColorSpaceRef;
+  bitmapBytesPerRow, pixelsWide, pixelsHigh: PtrUInt;
+  imageRect: CGRect;
+begin
+  Result := nil;
+
+   // Get image width, height. The entire image is used.
+  pixelsWide := CGImageGetWidth(AImage);
+  pixelsHigh := CGImageGetHeight(AImage);
+  imageRect.origin.x := 0.0;
+  imageRect.origin.y := 0.0;
+  imageRect.size.width := pixelsWide;
+  imageRect.size.height := pixelsHigh;
+
+  // The target format is fixed in ARGB, DQWord alignment, with 32-bits depth and
+  // 8-bits per channel, the default image format on the LCL
+  bitmapBytesPerRow   := ((pixelsWide * 4) + $F) and not PtrUInt($F);
+  bitmapByteCount     := (bitmapBytesPerRow * pixelsHigh);
+
+  // Use the generic RGB color space.
+  colorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+  if (colorSpace = nil) then
+    raise Exception.Create('Unable to create CGColorSpaceRef');
+
+  // Allocate memory for image data. This is the destination in memory
+  // where any drawing to the bitmap context will be rendered.
+  bitmapData := System.GetMem( bitmapByteCount );
+  if (bitmapData = nil) then
+    raise Exception.Create('Unable to allocate memory');
+
+  { Creates the bitmap context.
+
+    Regardless of what the source image format is, it will be converted
+    over to the format specified here by CGBitmapContextCreate. }
+  context := CGBitmapContextCreate(bitmapData,
+                                   pixelsWide,
+                                   pixelsHigh,
+                                   8,      // bits per component
+                                   bitmapBytesPerRow,
+                                   colorSpace,
+                                   kCGImageAlphaNoneSkipFirst); // The function fails with kCGImageAlphaFirst
+  if (context = nil) then
+  begin
+    System.FreeMem(bitmapData);
+    raise Exception.Create('Unable to create CGContextRef');
+  end;
+
+  // Draw the image to the bitmap context. Once we draw, the memory
+  // allocated for the context for rendering will then contain the
+  // raw image data in the specified color space.
+  CGContextDrawImage(context, imageRect, AImage);
+
+  // Now we can get a pointer to the image data associated with the context.
+  // ToDo: Verify if we should copy this data to a new buffer
+  Result := CGBitmapContextGetData(context);
+
+  { Clean-up }
+  CGColorSpaceRelease(colorSpace);
+  CGContextRelease(context);
+end;
+
+class function TCocoaGDIUtil.create32BitAlphaCocoaBitmap(
+  const ABitmap, AMask: TCocoaBitmap ): TCocoaBitmap;
+var
+  ARawImage: TRawImage;
+  Desc: TRawImageDescription absolute ARawimage.Description;
+
+  ImgHandle, ImgMaskHandle: HBitmap;
+  ImagePtr: PRawImage;
+  DevImage: TRawImage;
+  DevDesc: TRawImageDescription;
+  SrcImage, DstImage: TLazIntfImage;
+  W, H: Integer;
+begin
+  Result := nil;
+
+  if not LCLIntf.RawImage_FromBitmap(ARawImage, HBITMAP(ABitmap), HBITMAP(AMask)) then
+    Exit;
+
+  ImgMaskHandle := 0;
+
+  W := Desc.Width;
+  if W < 1 then W := 1;
+  H := Desc.Height;
+  if H < 1 then H := 1;
+
+  QueryDescription(DevDesc, [riqfRGB, riqfAlpha], W, H);
+
+  if DevDesc.IsEqual(Desc)
+  then begin
+    // image is compatible, so use it
+    DstImage := nil;
+    ImagePtr := @ARawImage;
+  end
+  else begin
+    // create compatible copy
+    SrcImage := TLazIntfImage.Create(ARawImage, False);
+    DstImage := TLazIntfImage.Create(0,0,[]);
+    DstImage.DataDescription := DevDesc;
+    DstImage.CopyPixels(SrcImage);
+    SrcImage.Free;
+    DstImage.GetRawImage(DevImage);
+    ImagePtr := @DevImage;
+  end;
+
+  try
+    if not LCLIntf.RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, True) then Exit;
+
+    Result := TCocoaBitmap(ImgHandle);
+  finally
+    ARawImage.FreeData;
+    DstImage.Free;
+  end;
+end;
+
+class procedure TCocoaGDIUtil.drawBackground(
+  const view: NSView;
+  const lclBrush: TBrush );
+var
+  ctx: TCocoaContext;
+  cocoaBrush: TCocoaBrush;
+  width: Integer;
+  height: Integer;
+begin
+  if lclBrush.Color = clWhite then   // see also TBrush.create
+    Exit;
+
+  width:= Round( view.bounds.size.width );
+  height:= Round( view.bounds.size.height );
+
+  ctx := TCocoaContext.Create( NSGraphicsContext.currentContext );
+  ctx.InitDraw( width, height );
+  try
+    cocoaBrush:= TCocoaBrush( lclBrush.Reference.Handle );
+    ctx.Rectangle( 0, 0, width, height, True, cocoaBrush );
+  finally
+    ctx.Free;
+  end;
+end;
+
+class function TCocoaGDIUtil.createMultiResImage(
+  const lst: TCustomImageList;
+  const width: Integer;
+  const imgIdx: Integer ): NSImage;
 var
   bmp : TBitmap;
   lstres: TCustomImageListResolution;
@@ -586,17 +1077,6 @@ begin
     bmp.Free;
   end;
   Result := img;
-end;
-
-procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
-begin
-  dx := AViewOfs.x - AWindowOfs.x;
-  dy := AViewOfs.y - AWindowOfs.y;
-end;
-
-function isSamePoint(const p1, p2: TPoint): Boolean; inline;
-begin
-  Result:=(p1.x=p2.x) and (p1.y=p2.y);
 end;
 
 procedure EnsureOrder(var X, Y: Integer);
@@ -1373,11 +1853,17 @@ begin
   FForegroundColor := AValue;
 end;
 
+procedure TCocoaContext.GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer);
+begin
+  dx := AViewOfs.x - AWindowOfs.x;
+  dy := AViewOfs.y - AWindowOfs.y;
+end;
+
 procedure TCocoaContext.UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
 var
   dx, dy: Integer;
 begin
-  if isSamePoint(AWindowOfs, FWindowOfs) and isSamePoint(AViewOfs, FViewPortOfs) then Exit;
+  if (AWindowOfs=FWindowOfs) and (AViewOfs=FViewPortOfs) then Exit;
   GetWindowViewTranslate(FWindowOfs, FViewPortOfs, dx{%H-}, dy{%H-});
   CGContextTranslateCTM(CGContext, -dx, -dy);
 
@@ -1470,11 +1956,11 @@ begin
 
   FBkBrush := TCocoaBrush.CreateDefault;
 
-  FBrush := DefaultBrush;
+  FBrush := CocoaDefaultGDIObject.brush;
   FBrush.AddRef;
-  FPen := DefaultPen;
+  FPen := CocoaDefaultGDIObject.pen;
   FPen.AddRef;
-  FFont := DefaultFont;
+  FFont := CocoaDefaultGDIObject.font;
   FRegion := TCocoaRegion.CreateDefault;
   FClipRegion := FRegion;
   FClipRegion.AddRef;
@@ -1592,7 +2078,7 @@ begin
   ctx.saveGraphicsState;
 {$endif}
   try
-    DefaultBrush.Apply(Self, False);
+    CocoaDefaultGDIObject.brush.Apply(Self, False);
     CGContextSetBlendMode(CGContext, kCGBlendModeDifference);
 
     CGContextFillRect(CGContext, TCocoaTypeUtil.toSortedRect(X1, Y1, X2, Y2));
@@ -1700,45 +2186,6 @@ begin
   AttachedBitmap_SetModified();
 end;
 
-procedure CGContextAddLCLPoints(cg: CGContextRef; const Points: array of TPoint;NumPts:Integer);
-var
-  cp: array of CGPoint;
-  i: Integer;
-begin
-  SetLength(cp, NumPts);
-  for i:=0 to NumPts-1 do
-  begin
-    cp[i].x:=Points[i].X+0.5;
-    cp[i].y:=Points[i].Y+0.5;
-  end;
-  CGContextAddLines(cg, @cp[0], NumPts);
-end;
-
-procedure CGContextAddLCLRect(cg: CGContextRef; x1, y1, x2, y2: Integer; HalfPixel: boolean); overload;
-var
-  r: CGRect;
-begin
-  if HalfPixel then
-  begin
-    r.origin.x:=x1+0.5;
-    r.origin.y:=y1+0.5;
-    r.size.width:=x2-x1-1;
-    r.size.height:=y2-y1-1;
-  end else
-  begin
-    r.origin.x:=x1;
-    r.origin.y:=y1;
-    r.size.width:=x2-x1;
-    r.size.height:=y2-y1;
-  end;
-  CGContextAddRect(cg, r);
-end;
-
-procedure CGContextAddLCLRect(cg: CGContextRef; const R: TRect; HalfPixel: boolean); overload;
-begin
-  CGContextAddLCLRect(cg, r.Left, r.Top, r.Right, r.Bottom, HalfPixel);
-end;
-
 procedure TCocoaContext.Polygon(const Points:array of TPoint;NumPts:Integer;
   Winding:boolean);
 var
@@ -1748,7 +2195,7 @@ begin
   if not Assigned(cg) or (NumPts<=0) then Exit;
 
   CGContextBeginPath(cg);
-  CGContextAddLCLPoints(cg, Points, NumPts);
+  TCocoaContextUtil.addLCLPoints(cg, Points, NumPts);
   CGContextClosePath(cg);
 
   if Winding then
@@ -1767,7 +2214,7 @@ begin
   if not Assigned(cg) or (NumPts<=0) then Exit;
 
   CGContextBeginPath(cg);
-  CGContextAddLCLPoints(cg, Points, NumPts);
+  TCocoaContextUtil.addLCLPoints(cg, Points, NumPts);
   CGContextStrokePath(cg);
 
   AttachedBitmap_SetModified();
@@ -1788,8 +2235,8 @@ end;
     and the start point of the next segment.
     For n segments there must be n*4 points in the array.
   Incomplete segments are ignored. }
-procedure TCocoaContext.PolyBezier(const Points: array of TPoint; NumPts: Integer;
-  Filled, Continuous: Boolean);
+procedure TCocoaContext.PolyBezier(const Points: array of TPoint;
+  NumPts: Integer; Filled, Continuous: boolean);
 var
   cg: CGContextRef;
   i, j: Integer;
@@ -1851,7 +2298,7 @@ begin
 
   if FillRect then
   begin
-    CGContextAddLCLRect(cg, X1, Y1, X2, Y2, false);
+    TCocoaContextUtil.addLCLRect(cg, X1, Y1, X2, Y2, false);
     //using the brush
     if Assigned(UseBrush) then
        UseBrush.Apply(Self);
@@ -1862,7 +2309,7 @@ begin
   end
   else
   begin
-    CGContextAddLCLRect(cg, X1, Y1, X2, Y2, true);
+    TCocoaContextUtil.addLCLRect(cg, X1, Y1, X2, Y2, true);
     // this is a "special" case, when UseBrush is provided
     // but "FillRect" is set to false. Use for FrameRect() function
     // (it deserves a redesign)
@@ -2639,7 +3086,7 @@ end;
 constructor TCocoaBitmapContext.Create;
 begin
   inherited Create(nil);
-  FBitmap := DefaultBitmap;
+  FBitmap := CocoaDefaultGDIObject.bitmap;
 end;
 
 destructor TCocoaBitmapContext.Destroy;
@@ -2662,6 +3109,29 @@ begin
   G := Round(color.greenComponent * $FF);
   B := Round(color.blueComponent * $FF);
   Result := Graphics.RGBToColor(R, G, B);
+end;
+
+{ TCocoaDefaultGDIObject }
+
+procedure TCocoaDefaultGDIObject.init;
+begin
+  _brush := TCocoaBrush.CreateDefault(True);
+  _pen := TCocoaPen.CreateDefault(True);
+  _font := TCocoaFont.CreateDefault(True);
+  _bitmap := TCocoaBitmap.CreateDefault;
+  _context := TCocoaBitmapContext.Create;
+  _context.Bitmap := _bitmap;
+  _screenContext := TCocoaContext.Create(_context.ctx);
+end;
+
+destructor TCocoaDefaultGDIObject.Destroy;
+begin
+  _screenContext.Free;
+  _context.Free;
+  _bitmap.Free;
+  _font.Free;
+  _pen.Free;
+  _brush.Free;
 end;
 
 { TCocoaRegion }
@@ -3594,9 +4064,10 @@ begin
 end;
 
 initialization
-
+  CocoaDefaultGDIObject:= TCocoaDefaultGDIObject.Create;
+  CocoaDefaultGDIObject.init;
 
 finalization
-
+  FreeAndNil( CocoaDefaultGDIObject );
 
 end.

@@ -511,7 +511,7 @@ var
   ADesc: TRawImageDescription absolute ARawImage.Description;
   bmpType: TCocoaBitmapType;
 begin
-  Result := CocoaWidgetSetGDIService.getCocoaBitmapType(ADesc, bmpType);
+  Result := TCocoaGDIUtil.getCocoaBitmapType(ADesc, bmpType);
   if not Result then begin
     debugln(['TCocoaWidgetSet.RawImage_CreateBitmaps TODO Depth=',ADesc.Depth,' alphaprec=',ADesc.AlphaPrec,' byteorder=',ord(ADesc.ByteOrder),' alpha=',ADesc.AlphaShift,' red=',ADesc.RedShift,' green=',adesc.GreenShift,' blue=',adesc.BlueShift]);
     exit;
@@ -536,8 +536,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
 begin
-  if CheckBitmap(ABitmap, 'RawImage_DescriptionFromBitmap')
-  then Result := CocoaWidgetSetGDIService.fillLCLImageDescription(ADesc, TCocoaBitmap(ABitmap))
+  if TCocoaGDIUtil.checkBitmap(ABitmap, 'RawImage_DescriptionFromBitmap')
+  then Result := TCocoaGDIUtil.fillLCLImageDescription(ADesc, TCocoaBitmap(ABitmap))
   else Result := False;
 end;
 
@@ -554,7 +554,7 @@ begin
   Result := False;
 
   TCocoaImageUtil.fillStandardDescription(ADesc);
-  if (ADC <> 0) and CheckDC(ADC, 'RawImage_DescriptionFromDevice') then
+  if (ADC <> 0) and TCocoaGDIUtil.checkDC(ADC, 'RawImage_DescriptionFromDevice') then
   begin
     with TCocoaContext(ADC).Size do
     begin
@@ -578,9 +578,9 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 begin
-  if CheckBitmap(ABitmap, 'RawImage_FromBitmap')
-  and ((AMask = 0) or CheckBitmap(AMask, 'RawImage_FromBitmap (mask)'))
-  then Result := CocoaWidgetSetGDIService.createLCLRawImage(ARawImage, TCocoaBitmap(ABitmap), TCocoaBitmap(AMask), ARect)
+  if TCocoaGDIUtil.checkBitmap(ABitmap, 'RawImage_FromBitmap')
+  and ((AMask = 0) or TCocoaGDIUtil.checkBitmap(AMask, 'RawImage_FromBitmap (mask)'))
+  then Result := TCocoaGDIUtil.createLCLRawImage(ARawImage, TCocoaBitmap(ABitmap), TCocoaBitmap(AMask), ARect)
   else Result := False;
 end;
 
@@ -626,9 +626,9 @@ begin
 
   // Verifies if we are getting the rawimage from a normal DC as opposed to a
   // desktop DC
-  if CheckDC(ADC, 'RawImage_FromDevice') and (CBC is TCocoaBitmapContext) then
+  if TCocoaGDIUtil.checkDC(ADC, 'RawImage_FromDevice') and (CBC is TCocoaBitmapContext) then
   begin
-    Result := CocoaWidgetSetGDIService.createLCLRawImage(ARawImage, CBC.Bitmap, nil, @ARect);
+    Result := TCocoaGDIUtil.createLCLRawImage(ARawImage, CBC.Bitmap, nil, @ARect);
     Exit;
   end;
 
@@ -649,7 +649,7 @@ begin
   if Assigned(ScreenImage) then begin
     ARawImage.Description.Height := CGImageGetHeight(ScreenImage);
     ARawImage.Description.Width := CGImageGetWidth(ScreenImage);
-    ARawImage.Data := CocoaWidgetSetGDIService.getPixelData(ScreenImage, ARawImage.DataSize);
+    ARawImage.Data := TCocoaGDIUtil.getPixelData(ScreenImage, ARawImage.DataSize);
   end;
   ARawImage.Mask := nil;
 
@@ -665,7 +665,7 @@ procedure TCocoaWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleFactor: doub
 var
   ctx: TCocoaContext;
 begin
-  ctx := CheckDC(DC);
+  ctx := TCocoaGDIUtil.checkDC(DC);
   if Assigned(ctx) and (ctx is TCocoaBitmapContext) then
     CGContextScaleCTM(ctx.CGContext, AScaleFactor, AScaleFactor);
 end;
