@@ -34,7 +34,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="8">
       <Unit0>
         <Filename Value="HighlighterTutorial.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -62,6 +62,21 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="FoldHl"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="simplehlwithrange.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SimpleHlWithRange"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="simplehlwithfold.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SimpleHlWithFold"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="contexthlwithfold.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ContextHLWithFold"/>
+      </Unit7>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -87,6 +102,11 @@
         <UseHeaptrc Value="True"/>
       </Debugging>
     </Linking>
+    <Other>
+      <CompilerMessages>
+        <IgnoredMessages idx5024="True"/>
+      </CompilerMessages>
+    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

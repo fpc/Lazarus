@@ -6,7 +6,7 @@ unit FoldHl;
   - The token -(- and -)- (must be surrounded by space or line-begin/end to be
     a token of their own) will add foldable sections
 
-    Multply -(- and -)- can be nested.
+    Multiply -(- and -)- can be nested.
 
   See comments below and http://wiki.lazarus.freepascal.org/SynEdit_Highlighter
 
@@ -17,95 +17,14 @@ unit FoldHl;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase,
-  LazEditTextAttributes, LazEditHighlighter, ContextHL;
+  Classes, SysUtils, Graphics,
+  LazEditHighlighter,
+  SynEditHighlighterFoldBase,
+  ContextHLWithFold;
 
 type
 
-  (*   This is an EXACT COPY of SynEditHighlighter
-
-       ONLY the base class is changed to add support for folding
-
-       The new code follows below
-  *)
-
-  { TSynDemoHlFoldBase }
-
-  TSynDemoHlFoldBase = class(TSynCustomFoldHighlighter)
-  private
-    FNotAttri: TLazEditHighlighterAttributes;
-    fSpecialAttri: TLazEditHighlighterAttributes;
-    fIdentifierAttri: TLazEditHighlighterAttributes;
-    fSpaceAttri: TLazEditHighlighterAttributes;
-    procedure SetIdentifierAttri(AValue: TLazEditHighlighterAttributes);
-    procedure SetNotAttri(AValue: TLazEditHighlighterAttributes);
-    procedure SetSpaceAttri(AValue: TLazEditHighlighterAttributes);
-    procedure SetSpecialAttri(AValue: TLazEditHighlighterAttributes);
-  protected
-    // accesible for the other examples
-    FTokenPos, FTokenEnd: Integer;
-    FLineText: String;
-  public
-    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
-    procedure Next; override;
-    function  GetEol: Boolean; override;
-    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    function  GetTokenAttribute: TLazEditTextAttribute; override;
-  public
-    function GetToken: String; override;
-    function GetTokenPos: Integer; override;
-    function GetTokenKind: integer; override;
-    function GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
-      ATkDetails: TLazEditTokenDetails = []): TLazEditTextAttribute; override;
-    constructor Create(AOwner: TComponent); override;
-  published
-    (* Define 4 Attributes, for the different highlights. *)
-    property SpecialAttri: TLazEditHighlighterAttributes read fSpecialAttri
-      write SetSpecialAttri;
-    property NotAttri: TLazEditHighlighterAttributes read FNotAttri
-      write SetNotAttri;
-    property IdentifierAttri: TLazEditHighlighterAttributes read fIdentifierAttri
-      write SetIdentifierAttri;
-    property SpaceAttri: TLazEditHighlighterAttributes read fSpaceAttri
-      write SetSpaceAttri;
-  end;
-
-  (*   This is a COPY of SynEditHighlighter
-
-       ONLY the base class is changed to add support for folding
-
-       The new code follows below
-  *)
-
-  TSynDemoHlContextFoldBase = class(TSynDemoHlFoldBase)
-  protected
-    FCurRange: Integer;
-  public
-    procedure Next; override;
-    function GetTokenAttribute: TLazEditTextAttribute; override;
-  public
-  (* The below needed to be changed and are in TSynDemoHlFold
-     TSynDemoHlContextFoldBase uses Ranges itself.
-     The Range needed here is therefore stored in a diff location
-  *)
-    //procedure SetRange(Value: Pointer); override;
-    //procedure ResetRange; override;
-    //function GetRange: Pointer; override;
-  end;
-
-  { TSynDemoHlContext }
-
-  (* You can base this on either
-     TSynDemoHlFoldBase or TSynDemoHlContextFoldBase
-
-     Using ranges is NOT a condition for fold.
-     (If changing, remove Range related code)
-
-     Note that ranges to change.
-  *)
-
-  //TSynDemoHlFold = class(TSynDemoHlFoldBase)
-  TSynDemoHlFold = class(TSynDemoHlContextFoldBase)
+  TSynDemoHlFold = class(ContextHLWithFold.TSynDemoHlContext)
   public
     procedure Next; override;
   public
@@ -121,15 +40,16 @@ implementation
 procedure TSynDemoHlFold.Next;
 begin
   inherited Next;
-  if (copy(FLineText, FTokenPos, FTokenEnd - FTokenPos) = '-(-') then
+  if (copy(CurrentLineText, FTokenPos, FTokenEnd - FTokenPos) = '-(-') then
     StartCodeFoldBlock(nil);
-  if (copy(FLineText, FTokenPos, FTokenEnd - FTokenPos) = '-)-') then
+  if (copy(CurrentLineText, FTokenPos, FTokenEnd - FTokenPos) = '-)-') then
     EndCodeFoldBlock;
 end;
 
 procedure TSynDemoHlFold.SetRange(Value: Pointer);
 begin
   // must call the SetRange in TSynCustomFoldHighlighter
+  // manage the range for TSynDemoHlContext
   inherited SetRange(Value);
   FCurRange := PtrInt(CodeFoldRange.RangeType);
  end;
@@ -147,177 +67,6 @@ begin
   Result := inherited GetRange;
 end;
 
-
-(*   This is an EXACT COPY of SynEditHighlighter
-
-     ONLY the base class is changed to add support for folding
-*)
-
-constructor TSynDemoHlFoldBase.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-
-  (* Create and initialize the attributes *)
-  fSpecialAttri := TLazEditHighlighterAttributes.Create('special', 'special');
-  AddAttribute(fSpecialAttri);
-  fSpecialAttri.Style := [fsBold];
-
-  FNotAttri := TLazEditHighlighterAttributes.Create('not', 'not');
-  AddAttribute(FNotAttri);
-  FNotAttri.Background := clRed;
-
-  fIdentifierAttri := TLazEditHighlighterAttributes.Create('ident', 'ident');
-  AddAttribute(fIdentifierAttri);
-
-  fSpaceAttri := TLazEditHighlighterAttributes.Create('space', 'space');
-  AddAttribute(fSpaceAttri);
-  fSpaceAttri.FrameColor := clSilver;
-  fSpaceAttri.FrameEdges := sfeAround;
-
-  // Ensure the HL reacts to changes in the attributes. Do this once, if all attributes are created
-  SetAttributesOnChange(@DefHighlightChange);
-end;
-
-(* Setters for attributes / This allows using in Object inspector*)
-procedure TSynDemoHlFoldBase.SetIdentifierAttri(AValue: TLazEditHighlighterAttributes);
-begin
-  fIdentifierAttri.Assign(AValue);
-end;
-
-procedure TSynDemoHlFoldBase.SetNotAttri(AValue: TLazEditHighlighterAttributes);
-begin
-  FNotAttri.Assign(AValue);
-end;
-
-procedure TSynDemoHlFoldBase.SetSpaceAttri(AValue: TLazEditHighlighterAttributes);
-begin
-  fSpaceAttri.Assign(AValue);
-end;
-
-procedure TSynDemoHlFoldBase.SetSpecialAttri(AValue: TLazEditHighlighterAttributes);
-begin
-  fSpecialAttri.Assign(AValue);
-end;
-
-procedure TSynDemoHlFoldBase.SetLine(const NewValue: String; LineNumber: Integer);
-begin
-  inherited;
-  FLineText := NewValue;
-  // Next will start at "FTokenEnd", so set this to 1
-  FTokenEnd := 1;
-  Next;
-end;
-
-procedure TSynDemoHlFoldBase.Next;
-var
-  l: Integer;
-begin
-  // FTokenEnd should be at the start of the next Token (which is the Token we want)
-  FTokenPos := FTokenEnd;
-  // assume empty, will only happen for EOL
-  FTokenEnd := FTokenPos;
-
-  // Scan forward
-  // FTokenEnd will be set 1 after the last char. That is:
-  // - The first char of the next token
-  // - or past the end of line (which allows GetEOL to work)
-
-  l := length(FLineText);
-  If FTokenPos > l then
-    // At line end
-    exit
-  else
-  if FLineText[FTokenEnd] in [#9, ' '] then
-    // At Space? Find end of spaces
-    while (FTokenEnd <= l) and (FLineText[FTokenEnd] in [#0..#32]) do inc (FTokenEnd)
-  else
-    // At None-Space? Find end of None-spaces
-    while (FTokenEnd <= l) and not(FLineText[FTokenEnd] in [#9, ' ']) do inc (FTokenEnd)
-end;
-
-function TSynDemoHlFoldBase.GetEol: Boolean;
-begin
-  Result := FTokenPos > length(FLineText);
-end;
-
-procedure TSynDemoHlFoldBase.GetTokenEx(out TokenStart: PChar; out TokenLength: integer);
-begin
-  TokenStart := @FLineText[FTokenPos];
-  TokenLength := FTokenEnd - FTokenPos;
-end;
-
-function TSynDemoHlFoldBase.GetTokenAttribute: TLazEditTextAttribute;
-begin
-  // Match the text, specified by FTokenPos and FTokenEnd
-
-  if FLineText[FTokenPos] in [#9, ' '] then
-    Result := SpaceAttri
-  else
-  if LowerCase(FLineText[FTokenPos]) in ['a', 'e', 'i', 'o', 'u'] then
-    Result := SpecialAttri
-  else
-  if LowerCase(copy(FLineText, FTokenPos, FTokenEnd - FTokenPos)) = 'not' then
-    Result := NotAttri
-  else
-    Result := IdentifierAttri;
-end;
-
-function TSynDemoHlFoldBase.GetToken: String;
-begin
-  Result := copy(FLineText, FTokenPos, FTokenEnd - FTokenPos);
-end;
-
-function TSynDemoHlFoldBase.GetTokenPos: Integer;
-begin
-  Result := FTokenPos - 1;
-end;
-
-function TSynDemoHlFoldBase.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
-  ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
-begin
-  // Some default attributes
-  case ATkClass of
-    tcComment: Result := fSpecialAttri;
-    tcIdentifier: Result := fIdentifierAttri;
-    tcWhiteSpace: Result := fSpaceAttri;
-    else Result := nil;
-  end;
-end;
-
-function TSynDemoHlFoldBase.GetTokenKind: integer;
-var
-  a: TLazEditTextAttribute;
-begin
-  // Map Attribute into a unique number
-  a := GetTokenAttribute;
-  Result := 0;
-  if a = fSpaceAttri then Result := 1;
-  if a = fSpecialAttri then Result := 2;
-  if a = fIdentifierAttri then Result := 3;
-  if a = FNotAttri then Result := 4;
-end;
-
-
-(*   This is an EXACT COPY of SynEditHighlighter
-
-     ONLY the base class is changed to add support for folding
-*)
-
-procedure TSynDemoHlContextFoldBase.Next;
-begin
-  inherited Next;
-  if (copy(FLineText, FTokenPos, FTokenEnd - FTokenPos) = '--') then
-    inc(FCurRange);
-  if (copy(FLineText, FTokenPos, FTokenEnd - FTokenPos) = '++') and (FCurRange > 0) then
-    dec(FCurRange);
-end;
-
-function TSynDemoHlContextFoldBase.GetTokenAttribute: TLazEditTextAttribute;
-begin
-  Result := inherited GetTokenAttribute;
-  if (Result = SpecialAttri) and (FCurRange > 0) then
-    Result := IdentifierAttribute;
-end;
 
 
 end.

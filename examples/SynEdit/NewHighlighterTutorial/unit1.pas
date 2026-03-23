@@ -7,9 +7,9 @@ This is an example how to write a highlighter from scratch.
 
 This is NOT about extending the IDE. This is about SynEdit and it's Highlighter only.
 Therefore this does not include:
-- registration in the component pallette.
+- registration in the component palette.
 - Using the Object Inspector
-Those steps are the same as they would be for any other self writen componont.
+Those steps are the same as they would be for any other self written component.
 
 *)
 {$mode objfpc}{$H+}

@@ -6,8 +6,8 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 443
   ClientWidth = 655
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
   inline SynEdit1: TSynEdit
     Left = 0
     Height = 383
@@ -19,6 +19,7 @@ object Form1: TForm1
     Font.Name = 'Courier New'
     Font.Pitch = fpFixed
     Font.Quality = fqNonAntialiased
+    Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
     TabOrder = 0
@@ -448,16 +449,31 @@ object Form1: TForm1
         ShortCut = 57379
       end>
     MouseActions = <>
+    MouseTextActions = <>
     MouseSelActions = <>
     Lines.Strings = (
       'This is an example how to write a highlighter from scratch.'
       'See the units for each example highlighter.'
+      ''
+      '* SimpleHl:'
+      '- Spaces: Are dotted underlined clFuchsia'
+      '- Identifier starting with a vowel: Are bold'
+      '- The word "not": is shown in red'
+      ''
+      '* ContextHl:'
+      '- inherits SimpleHl'
+      '- any text between -- up to a matching count of ++:  will be faded towards grey'
+      '  such text will also NOT highlight identifier starting with a vowel'
+      ''
+      '* FoldHl'
+      '- Text between -(- and -)-  can be folded'
+      ''
       '--'
       'This is NOT about extending the IDE. This is about SynEdit and it''s Highlighter only.'
       'Therefore this does not include: ++'
-      '- registration in the component pallette.'
+      '- registration in the component palette.'
       '- Using the Object Inspector'
-      'Those steps are the same as they would be for any other self wriiten componont.'
+      'Those steps are the same as they would be for any other self written component.'
       ''
       '-(-'
       'Lorem ipsum dolor sit amet, '
@@ -482,27 +498,42 @@ object Form1: TForm1
       ''
     )
     VisibleSpecialChars = [vscSpace, vscTabAtLast]
+    SelectedColor.ForePriority = 50
+    SelectedColor.BackPriority = 50
+    SelectedColor.FramePriority = 50
+    SelectedColor.BoldPriority = 50
+    SelectedColor.ItalicPriority = 50
+    SelectedColor.UnderlinePriority = 50
+    SelectedColor.StrikeOutPriority = 50
+    SelectedColor.ExtendPastEol = True
+    IncrementColor.ExtendPastEol = False
     BracketHighlightStyle = sbhsBoth
-    BracketMatchColor.Background = clNone
     BracketMatchColor.Foreground = clNone
+    BracketMatchColor.Background = clNone
     BracketMatchColor.Style = [fsBold]
-    FoldedCodeColor.Background = clNone
     FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.Background = clNone
     FoldedCodeColor.FrameColor = clGray
-    MouseLinkColor.Background = clNone
     MouseLinkColor.Foreground = clBlue
-    LineHighlightColor.Background = clNone
+    MouseLinkColor.Background = clNone
     LineHighlightColor.Foreground = clNone
+    LineHighlightColor.Background = clNone
     inline SynLeftGutterPartList1: TSynGutterPartList
       object SynGutterMarks1: TSynGutterMarks
         Width = 24
         MouseActions = <>
+        MaxExtraMarksColums = 0
+        Options = [sgmoDeDuplicateMarksOnOverflow]
+        MarkupInfo.Background = clBtnFace
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
         Width = 17
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
-        MarkupInfo.Foreground = clNone
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
         DigitCount = 2
         ShowOnlyLineNumbersMultiplesOf = 1
         ZeroStart = False
@@ -513,15 +544,24 @@ object Form1: TForm1
         MouseActions = <>
         ModifiedColor = 59900
         SavedColor = clGreen
+        MarkupInfo.Foreground = clGreen
+        MarkupInfo.FrameColor = 59900
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
       end
       object SynGutterSeparator1: TSynGutterSeparator
         Width = 2
         MouseActions = <>
+        MarkupInfo.Foreground = clGray
+        MarkupInfo.Background = clWhite
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
       end
       object SynGutterCodeFolding1: TSynGutterCodeFolding
         MouseActions = <>
-        MarkupInfo.Background = clNone
         MarkupInfo.Foreground = clGray
+        MarkupInfoCurrentLine.Foreground = clNone
+        MarkupInfoCurrentLine.Background = clNone
         MouseActionsExpanded = <>
         MouseActionsCollapsed = <>
       end
@@ -534,8 +574,8 @@ object Form1: TForm1
     Width = 75
     Anchors = [akLeft, akBottom]
     Caption = 'SimpleHl'
-    OnClick = Button1Click
     TabOrder = 1
+    OnClick = Button1Click
   end
   object Button2: TButton
     Left = 136
@@ -544,8 +584,8 @@ object Form1: TForm1
     Width = 75
     Anchors = [akLeft, akBottom]
     Caption = 'ContextHl'
-    OnClick = Button2Click
     TabOrder = 2
+    OnClick = Button2Click
   end
   object Button3: TButton
     Left = 256
@@ -554,7 +594,7 @@ object Form1: TForm1
     Width = 75
     Anchors = [akLeft, akBottom]
     Caption = 'FoldHl'
-    OnClick = Button3Click
     TabOrder = 3
+    OnClick = Button3Click
   end
 end

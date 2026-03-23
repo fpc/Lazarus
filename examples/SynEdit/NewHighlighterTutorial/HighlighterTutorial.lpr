@@ -7,13 +7,14 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, Unit1, SimpleHl, ContextHL, FoldHl
+  Forms, Unit1, SimpleHl, ContextHL, FoldHl, SimpleHlWithRange, SimpleHlWithFold, ContextHLWithFold
   { you can add units after this };
 
 {$R *.res}
 
 begin
   RequireDerivedFormResource := True;
+  Application.Title := 'project1';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
