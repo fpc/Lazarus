@@ -295,16 +295,6 @@ begin
   CocoaWidgetSet := Self;
   inherited Create;
   FTerminating := False;
-
-  DefaultBrush := TCocoaBrush.CreateDefault(True);
-  DefaultPen := TCocoaPen.CreateDefault(True);
-  DefaultFont := TCocoaFont.CreateDefault(True);
-  DefaultBitmap := TCocoaBitmap.CreateDefault;
-  DefaultContext := TCocoaBitmapContext.Create;
-  DefaultContext.Bitmap := DefaultBitmap;
-
-  ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
-
   _gdiObject:= TCocoaWidgetSetGDIObject.Create;
   _clipboard := TCocoaWSClipboard.Create; // must be here otherwise clipboard calls before Application.Initialize crash
 end;
@@ -318,13 +308,6 @@ destructor TCocoaWidgetSet.Destroy;
 begin
   CocoaWidgetSetBaseService.releaseWaitingLCLObjects(0);
   inherited Destroy;
-
-  ScreenContext.Free;
-  DefaultContext.Free;
-  DefaultBitmap.Free;
-  DefaultFont.Free;
-  DefaultPen.Free;
-  DefaultBrush.Free;
 
   _gdiObject.Free;
   _clipboard.Free;

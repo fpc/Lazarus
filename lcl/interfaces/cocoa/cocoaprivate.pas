@@ -25,9 +25,8 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLType, Controls, Forms, Graphics,
-  LazUTF8,
   MacOSAll, CocoaAll,
-  CocoaGDIObjects, CocoaCursor, CocoaConfig, Cocoa_Extra, CocoaUtils;
+  CocoaConfig, Cocoa_Extra, CocoaUtils;
 
 type
 
@@ -49,9 +48,6 @@ type
       const ctrl: NSView;
       const newHeight, miniHeight, smallHeight: Integer;
       const AutoChangeFont: Boolean );
-    class procedure drawBackground(
-      const view: NSView;
-      const lclBrush: TBrush );
     class procedure lclOffsetWithEnclosingScrollView(
       const view: NSView;
       var x: Integer;
@@ -126,7 +122,7 @@ type
     // non event methods
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
-    function GetContext: TCocoaContext;
+    function GetContext: HDC;
     function GetTarget: TObject;
     function GetHasCaret: Boolean;
     function GetCallbackObject: TObject;
@@ -374,31 +370,6 @@ begin
   end;
   if AutoChangeFont and (ctrl.respondsToSelector(ObjCSelector('setFont:'))) then
     ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
-end;
-
-class procedure TCocoaViewUtil.drawBackground(
-  const view: NSView;
-  const lclBrush: TBrush );
-var
-  ctx: TCocoaContext;
-  cocoaBrush: TCocoaBrush;
-  width: Integer;
-  height: Integer;
-begin
-  if lclBrush.Color = clWhite then   // see also TBrush.create
-    Exit;
-
-  width:= Round( view.bounds.size.width );
-  height:= Round( view.bounds.size.height );
-
-  ctx := TCocoaContext.Create( NSGraphicsContext.currentContext );
-  ctx.InitDraw( width, height );
-  try
-    cocoaBrush:= TCocoaBrush( lclBrush.Reference.Handle );
-    ctx.Rectangle( 0, 0, width, height, True, cocoaBrush );
-  finally
-    ctx.Free;
-  end;
 end;
 
 class procedure TCocoaViewUtil.lclOffsetWithEnclosingScrollView(
@@ -744,7 +715,7 @@ end;
 
 function LCLViewExtension.lclIsPainting: Boolean;
 begin
-  Result := Assigned(lclGetCallback) and Assigned(lclGetCallback.GetContext);
+  Result := Assigned(lclGetCallback) and (lclGetCallback.GetContext<>0);
 end;
 
 procedure LCLViewExtension.lclInvalidateRect(const r:TRect);

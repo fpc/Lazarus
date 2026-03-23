@@ -353,7 +353,7 @@ begin
     if Assigned(self.tableView.lclGetPorcessor) then
       self.tableView.lclGetPorcessor.onOwnerDrawItem( self );
   end else begin
-    TCocoaViewUtil.drawBackground( self, tableView.lclGetCanvas.Brush );
+    TCocoaGDIUtil.drawBackground( self, tableView.lclGetCanvas.Brush );
     inherited drawRect( dirtyRect );
   end;
 end;
@@ -576,7 +576,7 @@ begin
     // we can only hide the SubviewViews to get the same effect.
     TCocoaViewUtil.hideAllSubviews( self );
   end else begin
-    TCocoaViewUtil.drawBackground( self, self.lclGetCanvas.Brush );
+    TCocoaGDIUtil.drawBackground( self, self.lclGetCanvas.Brush );
     inherited;
   end;
 end;
