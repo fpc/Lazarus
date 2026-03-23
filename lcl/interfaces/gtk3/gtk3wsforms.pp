@@ -41,7 +41,8 @@ uses
   Classes, Graphics, Controls, Forms, LCLType, LCLProc, LMessages,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSForms, WSProc,
-  LazGtk3, LazGdk3, LazGLib2, gtk3widgets, gtk3int, gtk3objects;
+  LazGtk3, LazGdk3, LazGLib2, gtk3widgets, gtk3int, gtk3objects,
+  gtk3wscontrols;
 
 type
   { TWSScrollingWinControl }
@@ -524,6 +525,15 @@ begin
     end;
   end;
   AGtk3Widget.EndUpdate;
+
+  if ShouldBeVisible and Gtk3WidgetSet.IsWayland and (AWindow <> nil) and
+     (AForm.BorderStyle in [bsDialog, bsSingle, bsToolWindow]) then
+  begin
+    while gtk_events_pending do
+      gtk_main_iteration;
+    TGtk3WSWinControl.ConstraintsChange(AWinControl);
+  end;
+
   {$IFDEF GTK3DEBUGCORE}
   writeln('<==== TGtk3WSCustomForm.ShowHide end ');
   {$ENDIF}

@@ -3373,8 +3373,13 @@ begin
     aWidget:= TGtk3Widget(Handle).Widget;
     if aWidget<>nil then
     begin
-      Width := aWidget^.get_allocated_width;
-      Height := aWidget^.get_allocated_Height;
+      if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(aWidget) then
+        PGtkWindow(aWidget)^.get_size(@Width, @Height)
+      else
+      begin
+        Width := aWidget^.get_allocated_width;
+        Height := aWidget^.get_allocated_Height;
+      end;
       Result := True;
     end;
   end;

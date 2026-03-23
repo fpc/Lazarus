@@ -188,9 +188,11 @@ begin
   end;
 
   if AFixedWidthHeight then
-    PGtkWindow(AWidget.Widget)^.set_geometry_hints(nil, @Geometry,
-      [GDK_HINT_POS, GDK_HINT_MIN_SIZE, GDK_HINT_MAX_SIZE])
-  else
+  begin
+    if not (Gtk3WidgetSet.IsWayland and not AWidget.Widget^.get_mapped) then
+      PGtkWindow(AWidget.Widget)^.set_geometry_hints(nil, @Geometry,
+        [GDK_HINT_POS, GDK_HINT_MIN_SIZE, GDK_HINT_MAX_SIZE]);
+  end else
   begin
     if AForm.BorderStyle <> bsNone then
     begin
