@@ -981,8 +981,8 @@ var
         if ConsoleVerbosity>=0 then
           DebugLn(DbgCap,'Editor unit in project''s unit path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
         Note+='Editor unit "'+AnUnitInfo.Filename+'" in project''s unit search path is newer than state file:'+LineEnding
-          +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
-          +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+          +'  File age="'+UniversalFileAgeToLocalStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
+          +'  State file age="'+UniversalFileAgeToLocalStr(StateFileAge)+'"'+LineEnding
           +'  State file='+StateFilename+LineEnding;
         exit(true);
       end;
@@ -994,8 +994,8 @@ var
       if ConsoleVerbosity>=0 then
         DebugLn(DbgCap,'Editor file in project''s include path has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
       Note+='Editor file "'+AnUnitInfo.Filename+'" in project''s include search path is newer than state file:'+LineEnding
-        +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
-        +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+        +'  File age="'+UniversalFileAgeToLocalStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
+        +'  State file age="'+UniversalFileAgeToLocalStr(StateFileAge)+'"'+LineEnding
         +'  State file='+StateFilename+LineEnding;
       exit(true);
     end;
@@ -1065,8 +1065,8 @@ begin
       if ConsoleVerbosity>=0 then
         DebugLn(DbgCap,'SrcFile outdated ',AProject.IDAsString);
       Note+='Source file "'+SrcFilename+'" of '+AProject.IDAsString+' outdated:'+LineEnding
-        +'  Source age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
-        +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+        +'  Source age='+UniversalFileAgeToLocalStr(FileAgeCached(SrcFilename))+LineEnding
+        +'  State file age='+UniversalFileAgeToLocalStr(StateFileAge)+LineEnding
         +'  State file='+StateFilename+LineEnding;
       exit(mrYes);
     end;
@@ -1098,8 +1098,8 @@ begin
         DebugLn('  File="',CompilerFilename,'"');
       end;
       Note+='Compiler file "'+CompilerFilename+'" for '+AProject.IDAsString+' changed:'+LineEnding
-        +'  Old="'+FileAgeToStr(AProject.LastCompilerFileDate)+'"'+LineEnding
-        +'  Now="'+FileAgeToStr(FileAgeCached(CompilerFilename))+'"'+LineEnding
+        +'  Old="'+UniversalFileAgeToLocalStr(AProject.LastCompilerFileDate)+'"'+LineEnding
+        +'  Now="'+UniversalFileAgeToLocalStr(FileAgeCached(CompilerFilename))+'"'+LineEnding
         +'  State file='+StateFilename+LineEnding;
       exit(mrYes);
     end;
@@ -1150,8 +1150,8 @@ begin
           if ConsoleVerbosity>=0 then
             DebugLn(DbgCap,'Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
           Note+='File "'+AnUnitInfo.Filename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
-            +'  File age="'+FileAgeToStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
-            +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+            +'  File age="'+UniversalFileAgeToLocalStr(FileAgeCached(AnUnitInfo.Filename))+'"'+LineEnding
+            +'  State file age="'+UniversalFileAgeToLocalStr(StateFileAge)+'"'+LineEnding
             +'  State file='+StateFilename+LineEnding;
           exit(mrYes);
         end;
@@ -1162,8 +1162,8 @@ begin
             if ConsoleVerbosity>=0 then
               DebugLn(DbgCap,'LFM has changed ',AProject.IDAsString,' ',LFMFilename);
             Note+='File "'+LFMFilename+'" of '+AProject.IDAsString+' is newer than state file:'+LineEnding
-              +'  File age="'+FileAgeToStr(FileAgeCached(LFMFilename))+'"'+LineEnding
-              +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+              +'  File age="'+UniversalFileAgeToLocalStr(FileAgeCached(LFMFilename))+'"'+LineEnding
+              +'  State file age="'+UniversalFileAgeToLocalStr(StateFileAge)+'"'+LineEnding
               +'  State file='+StateFilename+LineEnding;
             exit(mrYes);
           end;
@@ -1188,8 +1188,8 @@ begin
         debugln([DbgCap,'icon has changed ',
           AProject.IDAsString,' "',IcoRes.IcoFileName,'"']);
       Note+='Project''s ico file "'+IcoRes.IcoFileName+'" is newer than state file:'+LineEnding
-        +'  File age="'+FileAgeToStr(FileAgeCached(IcoRes.IcoFileName))+'"'+LineEnding
-        +'  State file age="'+FileAgeToStr(StateFileAge)+'"'+LineEnding
+        +'  File age="'+UniversalFileAgeToLocalStr(FileAgeCached(IcoRes.IcoFileName))+'"'+LineEnding
+        +'  State file age="'+UniversalFileAgeToLocalStr(StateFileAge)+'"'+LineEnding
         +'  State file='+StateFilename+LineEnding;
       exit(mrYes);
     end;

@@ -60,7 +60,7 @@ type
     FOnSetFilename: TNotifyEvent;
     FFileChangeStep: integer;
     FLoadDateValid: boolean;
-    FLoadDate: longint;
+    FLoadDate: int64;
     FLastIncludedByFile: string;
     FCodeCache: TCodeCache;
     FIsVirtual: boolean;
@@ -88,7 +88,7 @@ type
     function Revert: boolean; // ignore changes and reload source
     function SaveToFile(const AFilename: string): boolean; override;
     function Save: boolean;
-    function FileDateOnDisk: longint;
+    function FileDateOnDisk: int64;
     function FileNeedsUpdate(IgnoreModifiedFlag: Boolean = False): boolean; // needs loading
     function FileOnDiskNeedsUpdate: boolean;
     function FileOnDiskHasChanged: boolean;
@@ -110,7 +110,7 @@ type
     property IsVirtual: boolean read FIsVirtual;
     property LastIncludedByFile: string read GetLastIncludedByFile
                                         write FLastIncludedByFile;
-    property LoadDate: longint read FLoadDate; // Note: can be -1 (file does not exist) even if LoadDateValid=true
+    property LoadDate: int64 read FLoadDate; // Note: can be -1 (file does not exist) even if LoadDateValid=true
     property LoadDateValid: boolean read FLoadDateValid;
     property FileChangeStep: integer read FFileChangeStep; // last loaded/saved changestep, only valid if LoadDateValid=true
     property OnSetFilename: TNotifyEvent read FOnSetFilename write FOnSetFilename;
@@ -151,7 +151,7 @@ type
     FGlobalWriteLockIsSet: boolean;
     FGlobalWriteLockStep: integer;
     fLastIncludeLinkFile: string;
-    fLastIncludeLinkFileAge: integer;
+    fLastIncludeLinkFileAge: int64;
     fLastIncludeLinkFileValid: boolean;
     fLastIncludeLinkFileChangeStep: integer;
     fChangeStep: integer;
@@ -1558,7 +1558,7 @@ begin
   Result:=true;
 end;
 
-function TCodeBuffer.FileDateOnDisk: longint;
+function TCodeBuffer.FileDateOnDisk: int64;
 begin
   Result:=FileAgeCached(Filename);
 end;

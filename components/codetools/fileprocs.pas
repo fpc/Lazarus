@@ -153,7 +153,7 @@ function SimpleFormat(const Fmt: String; const Args: Array of const): String;
 
 // misc
 function FileAgeToStr(aFileAge: int64): string;
-function UniversalFileAgeToStr(aFileAge: TCTFileAgeTime): string;
+function UniversalFileAgeToLocalStr(aFileAge: TCTFileAgeTime): string;
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
 // debugging
@@ -1881,10 +1881,34 @@ begin
     Result:=Default;
 end;
 
-function UniversalFileAgeToStr(aFileAge: TCTFileAgeTime): string;
+{$if FPC_FULLVERSION <= 030202}
+function UniversalFileAgeToLocalStr(aFileAge: TCTFileAgeTime): string;
+var
+  TZInfo: TTimeZoneInformation;
+  LDate: TDateTime;
 begin
-  Result:=DateTimeToStr(UniversalFileDateToDateTimeDef(aFileAge));
+  LDate := UniversalFileDateToDateTimeDef(aFileAge);
+  {$ifdef Windows}
+  if GetTimeZoneInformation(TZInfo) <> TIME_ZONE_ID_INVALID then
+    LDate := LDate - TZInfo.Bias;
+  {$endif}
+  Result:=DateTimeToStr(LDate);
 end;
+{$else}
+function UniversalFileAgeToLocalStr(aFileAge: TCTFileAgeTime): string;
+var
+  LDate: TDateTime;
+  LOffset: integer;
+  {$if FPC_FULLVERSION>=030300}
+  InDST: Boolean;
+  {$endif}
+begin
+  LDate := UniversalFileDateToDateTimeDef(aFileAge);
+  if GetLocalTimeOffset(LDate, true, LOffset {$if FPC_FULLVERSION>=030300},InDST{$endif}) then
+    LDate := LDate - (LOffset/MinsPerDay);
+  Result:=DateTimeToStr(LDate);
+end;
+{$endif}
 
 //------------------------------------------------------------------------------
 

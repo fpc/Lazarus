@@ -864,7 +864,7 @@ type
     WorkingDir: string;
     // values
     Kind: TPascalCompiler;
-    CompilerDate: longint;
+    CompilerDate: int64;
     RealCompiler: string; // when Compiler is fpc.exe, this is the real compiler (e.g. ppc386.exe)
     RealCompilerDate: longint;
     RealTargetOS: string;

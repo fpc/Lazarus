@@ -102,7 +102,7 @@ type
 
     FRCFilename: string;
     FRCFileParsed: boolean;
-    FRCFileAge: integer;
+    FRCFileAge: int64;
     FGTKToolTips: PGtkToolTips;
 
     FLogHandlerID: guint; // ID returend by set_handler
