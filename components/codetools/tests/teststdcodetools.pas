@@ -108,11 +108,11 @@ var
   begin
     if WroteBoth then exit;
     WroteBoth:=true;
-    writeln('DiffFound Actual:-----------------------');
-    writeln(Actual);
-    writeln('DiffFound Expected:---------------------');
-    writeln(Expected);
-    writeln('DiffFound ------------------------------');
+    debugln('DiffFound Actual:-----------------------');
+    debugln(Actual);
+    debugln('DiffFound Expected:---------------------');
+    debugln(Expected);
+    debugln('DiffFound ------------------------------');
   end;
 
   procedure DiffFound;
@@ -121,7 +121,7 @@ var
     ExpLine, ActLine: String;
     i: Integer;
   begin
-    writeln('Diff found "',Msg,'". Lines:');
+    debugln('Diff found "',Msg,'". Lines:');
     // write correct lines
     p:=PChar(Expected);
     repeat
@@ -135,19 +135,19 @@ var
           inc(p);
       end;
       if (p<=ExpectedP) and (p^<>#0) then begin
-        writeln('= ',ExpLine);
+        debugln('= ',ExpLine);
       end else begin
         // diff line
         // write actual line
         ActLineStartP:=FindLineStart(ActualP,PChar(Actual));
         ActLineEndP:=FindLineEnd(ActualP);
         ActLine:=copy(Actual,ActLineStartP-PChar(Actual)+1,ActLineEndP-ActLineStartP);
-        writeln('- ',ActLine);
+        debugln('- ',ActLine);
         // write expected line
-        writeln('+ ',ExpLine);
+        debugln('+ ',ExpLine);
         // write empty line with pointer ^
         for i:=1 to 2+ExpectedP-StartPos do write(' ');
-        writeln('^');
+        debugln('^');
         WriteBoth;
         AssertEquals(Msg,ExpLine,ActLine);
         break;
@@ -168,7 +168,7 @@ begin
   ExpectedP:=PChar(Expected);
   ActualP:=PChar(Actual);
   repeat
-    //writeln('TTestCodeCompletion.CheckDiff Exp="',ExpectedP^,'" Act="',ActualP^,'"');
+    //debugln('TTestCodeCompletion.CheckDiff Exp="',ExpectedP^,'" Act="',ActualP^,'"');
     case ExpectedP^ of
     #0:
       begin
@@ -211,7 +211,7 @@ var
   s: String;
   i: Integer;
 begin
-  writeln('Testcode:-File="',aFilename,'"----------------------------------:');
+  debugln('Testcode:-File="',aFilename,'"----------------------------------:');
 
   Code:=CodeToolBoss.FindFile(aFilename);
   if Code=nil then
@@ -624,18 +624,18 @@ procedure TTestCTStdCodetools.TestCTSetApplicationTitleStatement;
       Code.Source:=OldSrc;
       if not CodeToolBoss.SetApplicationTitleStatement(Code,NewTitle) then
       begin
-        writeln('Src=[');
-        writeln(OldSrc,']');
+        debugln('Src=[');
+        debugln(OldSrc,']');
         AssertEquals('SetApplicationTitleStatement failed: '+CodeToolBoss.ErrorMessage,true,false);
       end else begin
         ActualSrc:=Code.Source;
         if ActualSrc=ExpectedSrc then exit;
-        writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement OldSrc:');
-        writeln(OldSrc);
-        writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement NewTitle="',NewTitle,'" ExpectedSrc:');
-        writeln(ExpectedSrc);
-        writeln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement But found NewSrc:');
-        writeln(ActualSrc);
+        debugln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement OldSrc:');
+        debugln(OldSrc);
+        debugln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement NewTitle="',NewTitle,'" ExpectedSrc:');
+        debugln(ExpectedSrc);
+        debugln('TTestCTStdCodetools.TestCTSetApplicationTitleStatement But found NewSrc:');
+        debugln(ActualSrc);
         Fail('SetApplicationTitleStatement with Title="'+NewTitle+'"');
       end;
     finally

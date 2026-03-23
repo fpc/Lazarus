@@ -89,7 +89,7 @@ begin
     if not CodeToolBoss.GetValuesOfCaseVariable(Code,8,4,List) then begin
       Fail('GetValuesOfCaseVariable failed on case enum');
     end;
-    //writeln('TTestIdentCompletion.Test_GetValuesOfCaseVariable_Enum ',List.Text);
+    //debugln('TTestIdentCompletion.Test_GetValuesOfCaseVariable_Enum ',List.Text);
     AssertEquals('case enum count',2,List.Count);
     AssertEquals('case enum[0]','red',List[0]);
     AssertEquals('case enum[1]','green',List[1]);
@@ -114,7 +114,7 @@ begin
     if not CodeToolBoss.GetValuesOfCaseVariable(Code,8,4,List) then begin
       Fail('GetValuesOfCaseVariable failed on case enum');
     end;
-    //writeln('TTestIdentCompletion.Test_GetValuesOfCaseVariable_Enum ',List.Text);
+    //debugln('TTestIdentCompletion.Test_GetValuesOfCaseVariable_Enum ',List.Text);
     AssertEquals('case enum count',4,List.Count);
     AssertEquals('case enum[0]','abc',List[0]);
     AssertEquals('case enum[1]','&array',List[1]);

@@ -29,13 +29,16 @@
         <Mode0 Name="default"/>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="3">
       <Item1>
         <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
+      <Item3>
+        <PackageName Value="IdeConfig"/>
+      </Item3>
     </RequiredPackages>
     <Units Count="21">
       <Unit0>

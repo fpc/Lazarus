@@ -235,7 +235,7 @@ begin
       write('*');
       Line:=LeftStr(Line,CursorPos.X-1)+'|'+copy(Line,CursorPos.X,length(Line));
     end;
-    writeln(Format('%:4d: ',[i]),Line);
+    debugln(Format('%:4d: ',[i]),Line);
   end;
 end;
 
