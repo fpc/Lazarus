@@ -1884,7 +1884,9 @@ end;
 {$if FPC_FULLVERSION <= 030202}
 function UniversalFileAgeToLocalStr(aFileAge: TCTFileAgeTime): string;
 var
+  {$ifdef Windows}
   TZInfo: TTimeZoneInformation;
+  {$endif}
   LDate: TDateTime;
 begin
   LDate := UniversalFileDateToDateTimeDef(aFileAge);
