@@ -331,21 +331,25 @@ begin
 
     StartFN:='';
     if FProjPack is TLazProject then begin
-      Caption:=Format(lisToDoListforProject,[TLazProject(FProjPack).MainFile.Unit_Name]);
+      if TLazProject(FProjPack).IsVirtual then
+        Caption:=lisToDoListforNewProject
+      else
+        Caption:=Format(lisToDoListforProject,[TLazProject(FProjPack).MainFile.Unit_Name]);
       StartFN:=TLazProject(FProjPack).ProjectInfoFile;
     end
     else if FProjPack is TIDEPackage then begin
       Caption:=Format(lisToDoListForPackage,[TIDEPackage(FProjPack).IDAsString]);
       StartFN:=TIDEPackage(FProjPack).Filename;
     end;
-    Assert(StartFN<>'', 'TIDETodoWindow.UpdateTodos: No StartFN');
-    // Find a '.todo' file of the main source
-    St:=ChangeFileExt(StartFN,'.todo');
-    if FileExistsCached(St) then
-      ScanFile(St);
-    // Scan main source file
-    if FilenameIsPascalUnit(StartFN) then
-      ScanFile(StartFN);
+    if StartFN<>'' then begin
+      // Find a '.todo' file of the main source
+      St:=ChangeFileExt(StartFN,'.todo');
+      if FileExistsCached(St) then
+        ScanFile(St);
+      // Scan main source file
+      if FilenameIsPascalUnit(StartFN) then
+        ScanFile(StartFN);
+    end;
 
     Flags:=[];
     if ListedFilesMenuItem.Checked then
