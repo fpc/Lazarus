@@ -536,7 +536,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
 begin
-  if CheckBitmap(ABitmap, 'RawImage_DescriptionFromBitmap')
+  if TCocoaGDIUtil.checkBitmap(ABitmap, 'RawImage_DescriptionFromBitmap')
   then Result := CocoaWidgetSetGDIService.fillLCLImageDescription(ADesc, TCocoaBitmap(ABitmap))
   else Result := False;
 end;
@@ -554,7 +554,7 @@ begin
   Result := False;
 
   TCocoaImageUtil.fillStandardDescription(ADesc);
-  if (ADC <> 0) and CheckDC(ADC, 'RawImage_DescriptionFromDevice') then
+  if (ADC <> 0) and TCocoaGDIUtil.checkDC(ADC, 'RawImage_DescriptionFromDevice') then
   begin
     with TCocoaContext(ADC).Size do
     begin
@@ -578,8 +578,8 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 begin
-  if CheckBitmap(ABitmap, 'RawImage_FromBitmap')
-  and ((AMask = 0) or CheckBitmap(AMask, 'RawImage_FromBitmap (mask)'))
+  if TCocoaGDIUtil.checkBitmap(ABitmap, 'RawImage_FromBitmap')
+  and ((AMask = 0) or TCocoaGDIUtil.checkBitmap(AMask, 'RawImage_FromBitmap (mask)'))
   then Result := CocoaWidgetSetGDIService.createLCLRawImage(ARawImage, TCocoaBitmap(ABitmap), TCocoaBitmap(AMask), ARect)
   else Result := False;
 end;
@@ -626,7 +626,7 @@ begin
 
   // Verifies if we are getting the rawimage from a normal DC as opposed to a
   // desktop DC
-  if CheckDC(ADC, 'RawImage_FromDevice') and (CBC is TCocoaBitmapContext) then
+  if TCocoaGDIUtil.checkDC(ADC, 'RawImage_FromDevice') and (CBC is TCocoaBitmapContext) then
   begin
     Result := CocoaWidgetSetGDIService.createLCLRawImage(ARawImage, CBC.Bitmap, nil, @ARect);
     Exit;
@@ -665,7 +665,7 @@ procedure TCocoaWidgetSet.SetCanvasScaleFactor(DC: HDC; const AScaleFactor: doub
 var
   ctx: TCocoaContext;
 begin
-  ctx := CheckDC(DC);
+  ctx := TCocoaGDIUtil.checkDC(DC);
   if Assigned(ctx) and (ctx is TCocoaBitmapContext) then
     CGContextScaleCTM(ctx.CGContext, AScaleFactor, AScaleFactor);
 end;

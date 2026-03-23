@@ -336,7 +336,7 @@ begin
   if GDIObject = 0 then
     Exit(True);
 
-  gdi := CheckGDIOBJ(GdiObject);
+  gdi := TCocoaGDIUtil.checkGDIOBJ(GdiObject);
 
   if not Assigned(gdi) then
   begin

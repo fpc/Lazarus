@@ -705,7 +705,7 @@ procedure TCocoaThemeServices.DrawElement(DC: HDC;
 var
   Context: TCocoaContext absolute DC;
 begin
-  if CheckDC(DC, 'TCocoaThemeServices.DrawElement') then
+  if TCocoaGDIUtil.checkDC(DC, 'TCocoaThemeServices.DrawElement') then
   begin
     case Details.Element of
       //teComboBox: DrawComboBoxElement(Context, Details, R, ClipRect);

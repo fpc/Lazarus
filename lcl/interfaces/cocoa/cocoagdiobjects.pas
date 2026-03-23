@@ -491,13 +491,6 @@ var
   DefaultContext: TCocoaBitmapContext;
   ScreenContext: TCocoaContext;
 
-function CheckDC(dc: HDC): TCocoaContext;
-function CheckDC(dc: HDC; Str: string): Boolean;
-function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
-function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
-
-function AllocMultiResImageFromImageList(lst: TCustomImageList; width, imgIdx: Integer): NSImage;
-
 type
 
   { LCLNSGraphicsContext }
@@ -510,9 +503,18 @@ type
 
   TCocoaGDIUtil = class
   public
+    class function checkDC(const dc: HDC): TCocoaContext; overload;
+    class function checkDC(const dc: HDC; const Str: String): Boolean; overload;
+    class function checkGDIOBJ(const obj: HGDIOBJ): TCocoaGDIObject;
+    class function checkBitmap(const ABitmap: HBITMAP; const AStr: String): Boolean;
+
     class procedure drawBackground(
       const view: NSView;
       const lclBrush: TBrush );
+    class function createMultiResImage(
+      const lst: TCustomImageList;
+      const width: Integer;
+      const imgIdx: Integer ): NSImage;
   end;
 
 implementation
@@ -528,6 +530,37 @@ begin
 end;
 
 { TCocoaGDIUtil }
+
+//todo: a better check!
+
+class function TCocoaGDIUtil.checkDC(const dc: HDC): TCocoaContext;
+begin
+  //Result := TCocoaContext(dc);
+  if TObject(dc) is TCocoaContext then
+    Result := TCocoaContext(dc)
+  else
+    Result := nil;
+end;
+
+class function TCocoaGDIUtil.checkDC(const dc: HDC; const Str: string): Boolean;
+begin
+  //Result := dc<>0;
+  Result := (dc <> 0) and (TObject(dc) is TCocoaContext);
+end;
+
+class function TCocoaGDIUtil.checkGDIOBJ(const obj: HGDIOBJ): TCocoaGDIObject;
+begin
+  //Result := TObject(obj) as TCocoaGDIObject;
+  if TObject(obj) is TCocoaGDIObject then
+    Result := TCocoaGDIObject(obj)
+  else
+    Result := nil;
+end;
+
+class function TCocoaGDIUtil.checkBitmap(const ABitmap: HBITMAP; const AStr: string): Boolean;
+begin
+  Result := ABitmap <> 0;
+end;
 
 class procedure TCocoaGDIUtil.drawBackground(
   const view: NSView;
@@ -554,39 +587,10 @@ begin
   end;
 end;
 
-//todo: a better check!
-
-function CheckDC(dc: HDC): TCocoaContext;
-begin
-  //Result := TCocoaContext(dc);
-  if TObject(dc) is TCocoaContext then
-    Result := TCocoaContext(dc)
-  else
-    Result := nil;
-end;
-
-function CheckDC(dc: HDC; Str: string): Boolean;
-begin
-  //Result := dc<>0;
-  Result := (dc <> 0) and (TObject(dc) is TCocoaContext);
-end;
-
-function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
-begin
-  //Result := TObject(obj) as TCocoaGDIObject;
-  if TObject(obj) is TCocoaGDIObject then
-    Result := TCocoaGDIObject(obj)
-  else
-    Result := nil;
-end;
-
-function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
-begin
-  Result := ABitmap <> 0;
-end;
-
-function AllocMultiResImageFromImageList(lst: TCustomImageList;
-  width, imgIdx: Integer): NSImage;
+class function TCocoaGDIUtil.createMultiResImage(
+  const lst: TCustomImageList;
+  const width: Integer;
+  const imgIdx: Integer ): NSImage;
 var
   bmp : TBitmap;
   lstres: TCustomImageListResolution;
@@ -628,11 +632,6 @@ procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy:
 begin
   dx := AViewOfs.x - AWindowOfs.x;
   dy := AViewOfs.y - AWindowOfs.y;
-end;
-
-function isSamePoint(const p1, p2: TPoint): Boolean; inline;
-begin
-  Result:=(p1.x=p2.x) and (p1.y=p2.y);
 end;
 
 procedure EnsureOrder(var X, Y: Integer);
@@ -1413,7 +1412,7 @@ procedure TCocoaContext.UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
 var
   dx, dy: Integer;
 begin
-  if isSamePoint(AWindowOfs, FWindowOfs) and isSamePoint(AViewOfs, FViewPortOfs) then Exit;
+  if (AWindowOfs=FWindowOfs) and (AViewOfs=FViewPortOfs) then Exit;
   GetWindowViewTranslate(FWindowOfs, FViewPortOfs, dx{%H-}, dy{%H-});
   CGContextTranslateCTM(CGContext, -dx, -dy);
 

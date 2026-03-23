@@ -469,7 +469,7 @@ begin
   else
     lst:= TCustomListViewAccess(listView).SmallImages;
 
-  Result := AllocMultiResImageFromImageList(lst, lst.Width, imgIdx);
+  Result := TCocoaGDIUtil.createMultiResImage(lst, lst.Width, imgIdx);
 end;
 
 procedure TLCLListViewCallback.SetItemTextAt(ARow, ACol: Integer;
