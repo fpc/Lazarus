@@ -26,8 +26,8 @@ unit SynEditMarkupSpecialLine;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, SynEditHighlighter,
-  LazEditTextAttributes;
+  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses,
+  LazEditTextAttributes, LazEditHighlighter;
 
 type
   TSpecialLineMarkupExInfo = record
@@ -46,7 +46,7 @@ type
 
   TSynEditMarkupSpecialLine = class(TSynEditMarkup)
   private
-    FMarkupLineHighlightInfo: TSynHighlighterAttributesModifier;
+    FMarkupLineHighlightInfo: TLazEditHighlighterAttributesModifier;
     FInternalEventColors: TSynSelectedColor;
     FOnSpecialLineColors: TSpecialLineColorsEvent;
     FOnSpecialLineMarkup: TSpecialLineMarkupEvent;
@@ -80,7 +80,7 @@ type
 
     procedure InvalidateLineHighlight;
 
-    property MarkupLineHighlightInfo: TSynHighlighterAttributesModifier read FMarkupLineHighlightInfo;
+    property MarkupLineHighlightInfo: TLazEditHighlighterAttributesModifier read FMarkupLineHighlightInfo;
 
     property OnSpecialLineColors: TSpecialLineColorsEvent
       read FOnSpecialLineColors write FOnSpecialLineColors;

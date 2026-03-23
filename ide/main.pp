@@ -76,7 +76,7 @@ uses
   {$IFDEF LCLWin} Win32Proc, {$ENDIF}
   {$IFDEF LCLCocoa} CocoaConfig, CocoaIDEFormConfig,{$ENDIF}
   // SynEdit
-  SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter, SynHighlighterPas,
+  SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynHighlighterPas,
   SynEditTypes,
   // BuildIntf
   BaseIDEIntf, MacroIntf, NewItemIntf, IDEExternToolIntf, LazMsgWorker, ComponentReg,

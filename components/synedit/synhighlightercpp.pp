@@ -126,16 +126,16 @@ type
     FTokenID: TtkTokenKind;
     FExtTokenID: TxtkTokenKind;
     fIdentFuncTable: array[0..206] of TIdentFuncTableFunc;
-    fAsmAttri: TSynHighlighterAttributes;
-    fCommentAttri: TSynHighlighterAttributes;
-    fDirecAttri: TSynHighlighterAttributes;
-    fIdentifierAttri: TSynHighlighterAttributes;
-    fInvalidAttri: TSynHighlighterAttributes;
-    fKeyAttri: TSynHighlighterAttributes;
-    fNumberAttri: TSynHighlighterAttributes;
-    fSpaceAttri: TSynHighlighterAttributes;
-    fStringAttri: TSynHighlighterAttributes;
-    fSymbolAttri: TSynHighlighterAttributes;
+    fAsmAttri: TLazEditHighlighterAttributes;
+    fCommentAttri: TLazEditHighlighterAttributes;
+    fDirecAttri: TLazEditHighlighterAttributes;
+    fIdentifierAttri: TLazEditHighlighterAttributes;
+    fInvalidAttri: TLazEditHighlighterAttributes;
+    fKeyAttri: TLazEditHighlighterAttributes;
+    fNumberAttri: TLazEditHighlighterAttributes;
+    fSpaceAttri: TLazEditHighlighterAttributes;
+    fStringAttri: TLazEditHighlighterAttributes;
+    fSymbolAttri: TLazEditHighlighterAttributes;
     function KeyHash(ToHash: PChar): Integer;
     function KeyComp(const aKey: String): Boolean;
     function Func17: TtkTokenKind;
@@ -220,7 +220,7 @@ type
     procedure RoundCloseProc;
     procedure RoundOpenProc;
     procedure SemiColonProc;
-    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
     procedure SlashProc;
     procedure SpaceProc;
     procedure SquareCloseProc;
@@ -261,16 +261,16 @@ type
     procedure EnumUserSettings(settings: TStrings); override;
     property ExtTokenID: TxtkTokenKind read GetExtTokenID;
   published
-    property AsmAttri: TSynHighlighterAttributes index attribAsm read fAsmAttri write SetAttribute;
-    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
-    property DirecAttri: TSynHighlighterAttributes index attribDirec read fDirecAttri write SetAttribute;
-    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
-    property InvalidAttri: TSynHighlighterAttributes index attribInvalid read fInvalidAttri write SetAttribute;
-    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
-    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
-    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
-    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
-    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property AsmAttri: TLazEditHighlighterAttributes index attribAsm read fAsmAttri write SetAttribute;
+    property CommentAttri: TLazEditHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property DirecAttri: TLazEditHighlighterAttributes index attribDirec read fDirecAttri write SetAttribute;
+    property IdentifierAttri: TLazEditHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property InvalidAttri: TLazEditHighlighterAttributes index attribInvalid read fInvalidAttri write SetAttribute;
+    property KeyAttri: TLazEditHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri: TLazEditHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property SpaceAttri: TLazEditHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TLazEditHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TLazEditHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
   end;
 
 implementation
@@ -784,28 +784,28 @@ end;
 constructor TSynCppSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fAsmAttri := TSynHighlighterAttributes.Create(@SYNS_AttrAssembler, SYNS_XML_AttrAssembler);
+  fAsmAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrAssembler, SYNS_XML_AttrAssembler);
   AddAttribute(fAsmAttri);
-  fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
+  fCommentAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style:= [fsItalic];
   AddAttribute(fCommentAttri);
-  fIdentifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
+  fIdentifierAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   AddAttribute(fIdentifierAttri);
-  fInvalidAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIllegalChar, SYNS_XML_AttrIllegalChar);
+  fInvalidAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrIllegalChar, SYNS_XML_AttrIllegalChar);
   AddAttribute(fInvalidAttri);
-  fKeyAttri := TSynHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
+  fKeyAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
   fKeyAttri.Style:= [fsBold];
   AddAttribute(fKeyAttri);
-  fNumberAttri := TSynHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
+  fNumberAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
   AddAttribute(fNumberAttri);
-  fSpaceAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
+  fSpaceAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
   fSpaceAttri.Foreground := clWindow;
   AddAttribute(fSpaceAttri);
-  fStringAttri := TSynHighlighterAttributes.Create(@SYNS_AttrString, SYNS_XML_AttrString);
+  fStringAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrString, SYNS_XML_AttrString);
   AddAttribute(fStringAttri);
-  fSymbolAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
+  fSymbolAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
-  fDirecAttri := TSynHighlighterAttributes.Create(@SYNS_AttrPreprocessor, SYNS_XML_AttrPreprocessor);
+  fDirecAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrPreprocessor, SYNS_XML_AttrPreprocessor);
   AddAttribute(fDirecAttri);
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
@@ -1267,7 +1267,7 @@ begin
   if fRange = rsAsm then fRange := rsUnknown;
 end;
 
-procedure TSynCppSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+procedure TSynCppSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
 begin
   case AnIndex of
     attribAsm:        FAsmAttri.Assign(AValue);
@@ -1604,9 +1604,9 @@ function TSynCppSyn.UseUserSettings(settingIndex: integer): boolean;
 
   function ReadCPPBSettings(settingIndex: integer): boolean;
 
-    function ReadCPPBSetting(settingTag: string; attri: TSynHighlighterAttributes; key: string): boolean;
+    function ReadCPPBSetting(settingTag: string; attri: TLazEditHighlighterAttributes; key: string): boolean;
 
-      function ReadCPPB1(settingTag: string; attri: TSynHighlighterAttributes; name: string): boolean;
+      function ReadCPPB1(settingTag: string; attri: TLazEditHighlighterAttributes; name: string): boolean;
       var
         i: integer;
       begin
@@ -1616,7 +1616,7 @@ function TSynCppSyn.UseUserSettings(settingIndex: integer): boolean;
              '\SOFTWARE\Borland\C++Builder\'+settingTag+'\Highlight',name,true);
       end; { ReadCPPB1 }
 
-      function ReadCPPB3OrMore(settingTag: string; attri: TSynHighlighterAttributes; key: string): boolean;
+      function ReadCPPB3OrMore(settingTag: string; attri: TLazEditHighlighterAttributes; key: string): boolean;
       begin
         Result := attri.LoadFromBorlandRegistry(HKEY_CURRENT_USER,
                  '\Software\Borland\C++Builder\'+settingTag+'\Editor\Highlight',
@@ -1632,16 +1632,16 @@ function TSynCppSyn.UseUserSettings(settingIndex: integer): boolean;
     end; { ReadCPPBSetting }
 
   var
-    tmpStringAttri    : TSynHighlighterAttributes;
-    tmpNumberAttri    : TSynHighlighterAttributes;
-    tmpKeyAttri       : TSynHighlighterAttributes;
-    tmpSymbolAttri    : TSynHighlighterAttributes;
-    tmpAsmAttri       : TSynHighlighterAttributes;
-    tmpCommentAttri   : TSynHighlighterAttributes;
-    tmpIdentifierAttri: TSynHighlighterAttributes;
-    tmpInvalidAttri   : TSynHighlighterAttributes;
-    tmpSpaceAttri     : TSynHighlighterAttributes;
-    tmpDirecAttri     : TSynHighlighterAttributes;
+    tmpStringAttri    : TLazEditHighlighterAttributes;
+    tmpNumberAttri    : TLazEditHighlighterAttributes;
+    tmpKeyAttri       : TLazEditHighlighterAttributes;
+    tmpSymbolAttri    : TLazEditHighlighterAttributes;
+    tmpAsmAttri       : TLazEditHighlighterAttributes;
+    tmpCommentAttri   : TLazEditHighlighterAttributes;
+    tmpIdentifierAttri: TLazEditHighlighterAttributes;
+    tmpInvalidAttri   : TLazEditHighlighterAttributes;
+    tmpSpaceAttri     : TLazEditHighlighterAttributes;
+    tmpDirecAttri     : TLazEditHighlighterAttributes;
     s                 : TStringList;
 
   begin { ReadCPPBSettings }
@@ -1650,16 +1650,16 @@ function TSynCppSyn.UseUserSettings(settingIndex: integer): boolean;
       EnumUserSettings(s);
       if settingIndex >= s.Count then Result := false
       else begin
-        tmpStringAttri    := TSynHighlighterAttributes.Create(nil);
-        tmpNumberAttri    := TSynHighlighterAttributes.Create(nil);
-        tmpKeyAttri       := TSynHighlighterAttributes.Create(nil);
-        tmpSymbolAttri    := TSynHighlighterAttributes.Create(nil);
-        tmpAsmAttri       := TSynHighlighterAttributes.Create(nil);
-        tmpCommentAttri   := TSynHighlighterAttributes.Create(nil);
-        tmpIdentifierAttri:= TSynHighlighterAttributes.Create(nil);
-        tmpInvalidAttri   := TSynHighlighterAttributes.Create(nil);
-        tmpSpaceAttri     := TSynHighlighterAttributes.Create(nil);
-        tmpDirecAttri     := TSynHighlighterAttributes.Create(nil);
+        tmpStringAttri    := TLazEditHighlighterAttributes.Create(nil);
+        tmpNumberAttri    := TLazEditHighlighterAttributes.Create(nil);
+        tmpKeyAttri       := TLazEditHighlighterAttributes.Create(nil);
+        tmpSymbolAttri    := TLazEditHighlighterAttributes.Create(nil);
+        tmpAsmAttri       := TLazEditHighlighterAttributes.Create(nil);
+        tmpCommentAttri   := TLazEditHighlighterAttributes.Create(nil);
+        tmpIdentifierAttri:= TLazEditHighlighterAttributes.Create(nil);
+        tmpInvalidAttri   := TLazEditHighlighterAttributes.Create(nil);
+        tmpSpaceAttri     := TLazEditHighlighterAttributes.Create(nil);
+        tmpDirecAttri     := TLazEditHighlighterAttributes.Create(nil);
         tmpStringAttri    .Assign(fStringAttri);
         tmpNumberAttri    .Assign(fNumberAttri);
         tmpKeyAttri       .Assign(fKeyAttri);

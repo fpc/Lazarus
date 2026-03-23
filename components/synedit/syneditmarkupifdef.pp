@@ -31,7 +31,7 @@ uses
   // SynEdit
   SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll,
   SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText, SynEditMiscProcs,
-  SynEditMarkup, SynEditPointClasses, SynEditHighlighter, LazEditTextAttributes;
+  SynEditMarkup, SynEditPointClasses, LazEditTextAttributes, LazEditHighlighter;
 
 type
 
@@ -405,10 +405,10 @@ type
 
   TSynEditMarkupIfDefNodes = class(TSynEditMarkupIfDefBase)
   private
-    FMarkupInfoEnabled: TSynHighlighterAttributesModifier;
-    FMarkupInfoTempDisabled: TSynHighlighterAttributesModifier;
-    FMarkupInfoTempEnabled: TSynHighlighterAttributesModifier;
-    function GetMarkupInfo: TSynHighlighterAttributesModifier;
+    FMarkupInfoEnabled: TLazEditHighlighterAttributesModifier;
+    FMarkupInfoTempDisabled: TLazEditHighlighterAttributesModifier;
+    FMarkupInfoTempEnabled: TLazEditHighlighterAttributesModifier;
+    function GetMarkupInfo: TLazEditHighlighterAttributesModifier;
   protected
     function MarkupIdForMatch(Idx: Integer): Integer; override;
     function HasEnabledMarkup: Boolean; override;
@@ -419,10 +419,10 @@ type
       AEndCol: TLazSynDisplayTokenBound; const AnRtlInfo: TLazSynDisplayRtlInfo;
       AMarkup: TLazEditTextAttributeMergeResult); override;
 
-    property MarkupInfoEnabled:      TSynHighlighterAttributesModifier read FMarkupInfoEnabled;
-    property MarkupInfoDisabled:     TSynHighlighterAttributesModifier read GetMarkupInfo; // alias for MarkupInfo
-    property MarkupInfoTempEnabled:  TSynHighlighterAttributesModifier read FMarkupInfoTempEnabled;
-    property MarkupInfoTempDisabled: TSynHighlighterAttributesModifier read FMarkupInfoTempDisabled;
+    property MarkupInfoEnabled:      TLazEditHighlighterAttributesModifier read FMarkupInfoEnabled;
+    property MarkupInfoDisabled:     TLazEditHighlighterAttributesModifier read GetMarkupInfo; // alias for MarkupInfo
+    property MarkupInfoTempEnabled:  TLazEditHighlighterAttributesModifier read FMarkupInfoTempEnabled;
+    property MarkupInfoTempDisabled: TLazEditHighlighterAttributesModifier read FMarkupInfoTempDisabled;
   end;
 
   { TSynEditMarkupIfDef }
@@ -443,14 +443,14 @@ type
     FMarkupEnabled: TSynEditMarkupIfDefBase;
     FMarkupTemp, FMarkupEnabledTemp: TSynEditMarkupIfDefBase;
 
-    function GetMarkupInfoDisabled: TSynHighlighterAttributesModifier;
-    function GetMarkupInfoEnabled: TSynHighlighterAttributesModifier;
-    function GetMarkupInfoNodeDisabled: TSynHighlighterAttributesModifier;
-    function GetMarkupInfoNodeEnabled: TSynHighlighterAttributesModifier;
-    function GetMarkupInfoTempDisabled: TSynHighlighterAttributesModifier;
-    function GetMarkupInfoTempEnabled: TSynHighlighterAttributesModifier;
-    function GetMarkupInfoTempNodeDisabled: TSynHighlighterAttributesModifier;
-    function GetMarkupInfoTempNodeEnabled: TSynHighlighterAttributesModifier;
+    function GetMarkupInfoDisabled: TLazEditHighlighterAttributesModifier;
+    function GetMarkupInfoEnabled: TLazEditHighlighterAttributesModifier;
+    function GetMarkupInfoNodeDisabled: TLazEditHighlighterAttributesModifier;
+    function GetMarkupInfoNodeEnabled: TLazEditHighlighterAttributesModifier;
+    function GetMarkupInfoTempDisabled: TLazEditHighlighterAttributesModifier;
+    function GetMarkupInfoTempEnabled: TLazEditHighlighterAttributesModifier;
+    function GetMarkupInfoTempNodeDisabled: TLazEditHighlighterAttributesModifier;
+    function GetMarkupInfoTempNodeEnabled: TLazEditHighlighterAttributesModifier;
     procedure SetFoldView(AValue: TSynEditFoldedView);
     procedure SetHighlighter(AValue: TSynPasSyn);
     procedure DoBufferChanging(Sender: TObject);
@@ -502,15 +502,15 @@ type
 
     property MarkOnlyOpeningNodes: Boolean read FMarkOnlyOpeningNodes write SetMarkOnlyOpeningNodes;
 
-    property MarkupInfoDisabled:  TSynHighlighterAttributesModifier read GetMarkupInfoDisabled; // alias for MarkupInfo
-    property MarkupInfoEnabled:  TSynHighlighterAttributesModifier read GetMarkupInfoEnabled;
-    property MarkupInfoNodeDisabled: TSynHighlighterAttributesModifier read GetMarkupInfoNodeDisabled;
-    property MarkupInfoNodeEnabled:  TSynHighlighterAttributesModifier read GetMarkupInfoNodeEnabled;
+    property MarkupInfoDisabled:  TLazEditHighlighterAttributesModifier read GetMarkupInfoDisabled; // alias for MarkupInfo
+    property MarkupInfoEnabled:  TLazEditHighlighterAttributesModifier read GetMarkupInfoEnabled;
+    property MarkupInfoNodeDisabled: TLazEditHighlighterAttributesModifier read GetMarkupInfoNodeDisabled;
+    property MarkupInfoNodeEnabled:  TLazEditHighlighterAttributesModifier read GetMarkupInfoNodeEnabled;
 
-    property MarkupInfoTempDisabled:     TSynHighlighterAttributesModifier read GetMarkupInfoTempDisabled;
-    property MarkupInfoTempEnabled:      TSynHighlighterAttributesModifier read GetMarkupInfoTempEnabled;
-    property MarkupInfoTempNodeDisabled: TSynHighlighterAttributesModifier read GetMarkupInfoTempNodeDisabled;
-    property MarkupInfoTempNodeEnabled:  TSynHighlighterAttributesModifier read GetMarkupInfoTempNodeEnabled;
+    property MarkupInfoTempDisabled:     TLazEditHighlighterAttributesModifier read GetMarkupInfoTempDisabled;
+    property MarkupInfoTempEnabled:      TLazEditHighlighterAttributesModifier read GetMarkupInfoTempEnabled;
+    property MarkupInfoTempNodeDisabled: TLazEditHighlighterAttributesModifier read GetMarkupInfoTempNodeDisabled;
+    property MarkupInfoTempNodeEnabled:  TLazEditHighlighterAttributesModifier read GetMarkupInfoTempNodeEnabled;
   end;
 
 function dbgs(AFlag: SynMarkupIfDefLineFlag): String; overload;
@@ -612,7 +612,7 @@ end;
 
 { TSynEditMarkupIfDefNodes }
 
-function TSynEditMarkupIfDefNodes.GetMarkupInfo: TSynHighlighterAttributesModifier;
+function TSynEditMarkupIfDefNodes.GetMarkupInfo: TLazEditHighlighterAttributesModifier;
 begin
   Result := MarkupInfo;
 end;
@@ -667,7 +667,7 @@ procedure TSynEditMarkupIfDefNodes.MergeMarkupAttributeAtRowCol(const aRow: Inte
   AMarkup: TLazEditTextAttributeMergeResult);
 var
   i, s, e: Integer;
-  c: TSynHighlighterAttributesModifier;
+  c: TLazEditHighlighterAttributesModifier;
 begin
   i := GetMarkupAttrIdAtRowCol(aRow, aStartCol, s, e);
   if i < 0 then
@@ -3790,42 +3790,42 @@ begin
   FFoldView := AValue;
 end;
 
-function TSynEditMarkupIfDef.GetMarkupInfoDisabled: TSynHighlighterAttributesModifier;
+function TSynEditMarkupIfDef.GetMarkupInfoDisabled: TLazEditHighlighterAttributesModifier;
 begin
   Result := MarkupInfo;
 end;
 
-function TSynEditMarkupIfDef.GetMarkupInfoEnabled: TSynHighlighterAttributesModifier;
+function TSynEditMarkupIfDef.GetMarkupInfoEnabled: TLazEditHighlighterAttributesModifier;
 begin
   Result := FMarkupEnabled.MarkupInfo;
 end;
 
-function TSynEditMarkupIfDef.GetMarkupInfoNodeDisabled: TSynHighlighterAttributesModifier;
+function TSynEditMarkupIfDef.GetMarkupInfoNodeDisabled: TLazEditHighlighterAttributesModifier;
 begin
   Result := FMarkupNodes.MarkupInfoDisabled;
 end;
 
-function TSynEditMarkupIfDef.GetMarkupInfoNodeEnabled: TSynHighlighterAttributesModifier;
+function TSynEditMarkupIfDef.GetMarkupInfoNodeEnabled: TLazEditHighlighterAttributesModifier;
 begin
   Result := FMarkupNodes.MarkupInfoEnabled;
 end;
 
-function TSynEditMarkupIfDef.GetMarkupInfoTempDisabled: TSynHighlighterAttributesModifier;
+function TSynEditMarkupIfDef.GetMarkupInfoTempDisabled: TLazEditHighlighterAttributesModifier;
 begin
   Result := FMarkupTemp.MarkupInfo;
 end;
 
-function TSynEditMarkupIfDef.GetMarkupInfoTempEnabled: TSynHighlighterAttributesModifier;
+function TSynEditMarkupIfDef.GetMarkupInfoTempEnabled: TLazEditHighlighterAttributesModifier;
 begin
   Result := FMarkupEnabledTemp.MarkupInfo;
 end;
 
-function TSynEditMarkupIfDef.GetMarkupInfoTempNodeDisabled: TSynHighlighterAttributesModifier;
+function TSynEditMarkupIfDef.GetMarkupInfoTempNodeDisabled: TLazEditHighlighterAttributesModifier;
 begin
   Result := FMarkupNodes.MarkupInfoTempDisabled;
 end;
 
-function TSynEditMarkupIfDef.GetMarkupInfoTempNodeEnabled: TSynHighlighterAttributesModifier;
+function TSynEditMarkupIfDef.GetMarkupInfoTempNodeEnabled: TLazEditHighlighterAttributesModifier;
 begin
   Result := FMarkupNodes.MarkupInfoTempEnabled;
 end;

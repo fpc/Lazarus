@@ -10,7 +10,7 @@ uses
   IdeDebuggerWatchValueIntf, SrcEditorIntf, EditorSyntaxHighlighterDef,
   IDEOptEditorIntf, SynEdit, DbgIntfDebuggerBase, LazClasses, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes, LazDebuggerUtils, DebuggerDlg, BaseDebugManager, Debugger,
-  IdeDebuggerStringConstants, SynGutterLineNumber, SynEditHighlighter,
+  IdeDebuggerStringConstants, SynGutterLineNumber,
   LazNumEdit;
 
 type

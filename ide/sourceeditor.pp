@@ -58,7 +58,7 @@ uses
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree, SourceChanger, IdentCompletionTool,
   // synedit
-  SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynEditHighlighter, SynEditAutoComplete,
+  SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion, SynEditMarkupHighAll, SynEditMarks, SynBeautifier,
   SynPluginMultiCaret, SynPluginSyncronizedEditBase, SourceSynEditor, SynExportHTML,
   SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef, SynBeautifierPascal,
@@ -2488,6 +2488,7 @@ var
   NewStr: String;
   Template: TTemplate;
   A: TIdentComplSortMethod;
+  IdentAttr: TLazEditTextAttribute;
 Begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditCompletion.ccExecute START']);
@@ -2529,14 +2530,13 @@ Begin
 
   if Editor.Highlighter<>nil
   then begin
-    with Editor.Highlighter do begin
-      if IdentifierAttribute<>nil
-      then begin
-        if IdentifierAttribute.ForeGround<>clNone then
-          FColors.Color[ahaIdentComplWindow].Foreground := IdentifierAttribute.ForeGround;
-        if IdentifierAttribute.BackGround<>clNone then
-          FColors.Color[ahaIdentComplWindow].Background := IdentifierAttribute.BackGround;
-      end;
+    IdentAttr := Editor.Highlighter.GetTokenClassAttribute(tcIdentifier);
+    if IdentAttr<>nil
+    then begin
+      if IdentAttr.ForeGround<>clNone then
+        FColors.Color[ahaIdentComplWindow].Foreground := IdentAttr.ForeGround;
+      if IdentAttr.BackGround<>clNone then
+        FColors.Color[ahaIdentComplWindow].Background := IdentAttr.BackGround;
     end;
   end;
 
@@ -5123,10 +5123,10 @@ begin
       if AHighlighterId < 0 then begin
         if FDefaultSyntaxHighlighterId = IdeHighlighterNotSpecifiedId then
           UpdateDefaultDefaultSyntaxHighlighterId(True);
-        FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[FDefaultSyntaxHighlighterId] as TSynCustomHighlighter;
+        FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[FDefaultSyntaxHighlighterId];
       end
       else
-        FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[AHighlighterId] as TSynCustomHighlighter;
+        FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[AHighlighterId];
       HlIsPas := FEditor.Highlighter is TSynPasSyn;
     end
     else

@@ -27,14 +27,14 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls,
-  SynEditMarkup, SynEditMiscClasses, SynEditMarks, SynEditHighlighter, LazEditTextAttributes;
+  SynEditMarkup, SynEditMiscClasses, SynEditMarks, LazEditTextAttributes, LazEditHighlighter;
 
 type
 
   TMarkSection = record
     StartX, EndX: Integer;  // Physical
     Priority: Integer;
-    Markup: TSynHighlighterAttributesModifier;
+    Markup: TLazEditHighlighterAttributesModifier;
   end;
   PMarkSection = ^TMarkSection;
 
@@ -42,9 +42,9 @@ type
 
   TSynEditMarkupMark = class(TSynEditMark)
   private
-    FSourceMarkup: TSynHighlighterAttributesModifier;
+    FSourceMarkup: TLazEditHighlighterAttributesModifier;
   public
-    property SourceMarkup: TSynHighlighterAttributesModifier read FSourceMarkup write FSourceMarkup;
+    property SourceMarkup: TLazEditHighlighterAttributesModifier read FSourceMarkup write FSourceMarkup;
   end;
 
 

@@ -174,7 +174,7 @@ type
     function GetMarksObj: TObject; virtual; abstract;
     function GetSelText: string;
     function GetSelAvail: Boolean;
-    function GetSelectedColor: TSynHighlighterAttributesModifier; virtual; abstract;
+    function GetSelectedColor: TLazEditHighlighterAttributesModifier; virtual; abstract;
     function GetTextViewsManager: TSynTextViewsManager; virtual; abstract;
     procedure SetLines(Value: TStrings); virtual; abstract;
     function GetViewedTextBuffer: TSynEditStringsLinked; virtual; abstract;
@@ -187,7 +187,7 @@ type
     procedure StatusChanged(AChanges: TSynStatusChanges); virtual; abstract;
     procedure SetOptions(AOptions: TSynEditorOptions); virtual; abstract;
     procedure SetOptions2(AOptions2: TSynEditorOptions2); virtual; abstract;
-    procedure SetSelectedColor(const aSelectedColor: TSynHighlighterAttributesModifier); virtual; abstract;
+    procedure SetSelectedColor(const aSelectedColor: TLazEditHighlighterAttributesModifier); virtual; abstract;
 
     function GetCharsInWindow: Integer; virtual; abstract;
     function GetCharWidth: integer; virtual; abstract;
@@ -395,7 +395,7 @@ type
 
     property TextViewsManager: TSynTextViewsManager read GetTextViewsManager; experimental; // Only use to Add/remove views
 
-    property SelectedColor: TSynHighlighterAttributesModifier read GetSelectedColor write SetSelectedColor;
+    property SelectedColor: TLazEditHighlighterAttributesModifier read GetSelectedColor write SetSelectedColor;
     property SelAvail: Boolean read GetSelAvail;
     property HideSelection: boolean read fHideSelection write SetHideSelection default false;
 
@@ -501,7 +501,7 @@ type
 
   { TSynSelectedColor }
 
-  TSynSelectedColor = class(TSynHighlighterAttributesModifier)
+  TSynSelectedColor = class(TLazEditHighlighterAttributesModifier)
   protected
     procedure Init; override;
   end;

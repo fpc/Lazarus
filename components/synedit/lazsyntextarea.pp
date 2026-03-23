@@ -13,8 +13,8 @@ uses
   LazMethodList,
   // SynEdit
   SynEditTypes, SynEditMiscProcs, SynEditMiscClasses, LazSynEditText, SynEditMarkup,
-  SynEditHighlighter, LazEditMiscProcs, LazEditTextAttributes,
-  LazEditTextGridPainter, LazEditHighlighterUtils;
+  LazEditMiscProcs, LazEditTextAttributes,
+  LazEditTextGridPainter, LazEditHighlighterUtils, LazEditHighlighter;
 
 
 type
@@ -126,7 +126,7 @@ type
     FTextDrawer: TLazEditTextGridPainter;
     FEtoBuf: TEtoBuffer;
     FTheLinesView: TSynEditStrings;
-    FHighlighter: TSynCustomHighlighter;
+    FHighlighter: TLazEditCustomHighlighter;
     FMarkupManager: TSynEditMarkupManager;
     FTokenBreaker: TLazSynPaintTokenBreaker;
     FPaintLineColor, FPaintLineColor2: TLazEditTextAttributeModifier;
@@ -189,7 +189,7 @@ type
     property LeftChar: Integer read FLeftChar write SetLeftChar;
 
     property TheLinesView:  TSynEditStrings       read FTheLinesView  write FTheLinesView;
-    property Highlighter:   TSynCustomHighlighter read FHighlighter   write FHighlighter;
+    property Highlighter:   TLazEditCustomHighlighter read FHighlighter   write FHighlighter;
     property MarkupManager: TSynEditMarkupManager read FMarkupManager write FMarkupManager;
     property TextDrawer: TLazEditTextGridPainter read FTextDrawer;
   public
@@ -243,7 +243,7 @@ type
     procedure SetRightEdgeColumn(AValue: integer); virtual;
     procedure SetRightEdgeVisible(AValue: boolean); virtual;
     procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars); virtual;
-    procedure SetHighlighter(AValue: TSynCustomHighlighter); virtual;
+    procedure SetHighlighter(AValue: TLazEditCustomHighlighter); virtual;
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
     procedure DoDisplayViewChanged; override;
@@ -269,7 +269,7 @@ type
     property RightEdgeColumn: integer  write SetRightEdgeColumn;
     property RightEdgeVisible: boolean write SetRightEdgeVisible;
     property RightEdgeColor: TColor    write SetRightEdgeColor;
-    property Highlighter:   TSynCustomHighlighter write SetHighlighter;
+    property Highlighter:   TLazEditCustomHighlighter write SetHighlighter;
   end;
 
 
@@ -1282,7 +1282,7 @@ begin
   FTextArea.VisibleSpecialChars := AValue;
 end;
 
-procedure TLazSynSurfaceManager.SetHighlighter(AValue: TSynCustomHighlighter);
+procedure TLazSynSurfaceManager.SetHighlighter(AValue: TLazEditCustomHighlighter);
 begin
   FTextArea.Highlighter := AValue;
 end;

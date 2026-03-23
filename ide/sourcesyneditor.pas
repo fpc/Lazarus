@@ -52,7 +52,7 @@ uses
   Controls, LCLType, Graphics, Menus, ImgList,
   LazLoggerBase,
   // LazEdit
-  LazEditHighlighterUtils, LazEditTextAttributes, LazEditTextGridPainter,
+  LazEditHighlighterUtils, LazEditTextAttributes, LazEditTextGridPainter, LazEditHighlighter,
   // synedit
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks,
@@ -129,7 +129,7 @@ type
     procedure SetRightEdgeColumn(AValue: integer); override;
     procedure SetRightEdgeVisible(AValue: boolean); override;
     procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars); override;
-    procedure SetHighlighter(AValue: TSynCustomHighlighter); override;
+    procedure SetHighlighter(AValue: TLazEditCustomHighlighter); override;
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
     procedure DoDisplayViewChanged; override;
@@ -320,7 +320,7 @@ type
     procedure DoOnStatusChange(Changes: TSynStatusChanges); override;
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TLazEditTextGridPainter): TSynGutter; override;
-    procedure SetHighlighter(const Value: TSynCustomHighlighter); override;
+    procedure SetHighlighter(const Value: TLazEditCustomHighlighter); override;
     procedure AddLineWrapView;
     procedure RemoveLineWrapView;
 
@@ -383,7 +383,7 @@ type
 
   { TSynHighlighterLazCustomPasAttribute }
 
-  TSynHighlighterLazCustomPasAttribute = class(TSynHighlighterAttributesModifier)
+  TSynHighlighterLazCustomPasAttribute = class(TLazEditHighlighterAttributesModifier)
   private
     FCustomWords: TStrings;
     FCustomWordTokenKind: TtkTokenKindEx;
@@ -1492,7 +1492,7 @@ begin
   FExtraManager.VisibleSpecialChars := AValue;
 end;
 
-procedure TSourceLazSynSurfaceManager.SetHighlighter(AValue: TSynCustomHighlighter);
+procedure TSourceLazSynSurfaceManager.SetHighlighter(AValue: TLazEditCustomHighlighter);
 begin
   FOriginalManager.Highlighter := AValue;
   FExtraManager.Highlighter := AValue;
@@ -2028,7 +2028,7 @@ begin
   Result := TIDESynGutter.Create(AOwner, ASide, ATextDrawer);
 end;
 
-procedure TIDESynEditor.SetHighlighter(const Value: TSynCustomHighlighter);
+procedure TIDESynEditor.SetHighlighter(const Value: TLazEditCustomHighlighter);
 var
   i: Integer;
 begin

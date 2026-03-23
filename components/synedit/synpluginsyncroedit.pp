@@ -28,7 +28,7 @@ interface
 uses
   Classes, Controls, SysUtils, Forms, Graphics, SynEditMiscClasses, LCLType,
   SynEdit, SynPluginSyncronizedEditBase, SynEditMiscProcs,
-  SynEditMouseCmds, SynEditKeyCmds, SynEditTypes, SynEditHighlighter, LCLIntf,
+  SynEditMouseCmds, SynEditKeyCmds, SynEditTypes, LCLIntf,
   LazUTF8, LazLoggerBase, LazEditMiscProcs;
 
 type

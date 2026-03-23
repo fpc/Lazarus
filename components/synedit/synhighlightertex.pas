@@ -72,22 +72,22 @@ type
     Run:                    LongInt;
     fTokenPos:              Integer;
     fTokenID:               TtkTokenKind;
-    fTextAttri:             TSynHighlighterAttributes;
-    fControlSequenceAttri:  TSynHighlighterAttributes;
-    fMathmodeAttri:         TSynHighlighterAttributes;
-    fCommentAttri:          TSynHighlighterAttributes;
-    fSpaceAttri:            TSynHighlighterAttributes;
-    fBracketAttri:          TSynHighlighterAttributes;
-    fBraceAttri:            TSynHighlighterAttributes;
+    fTextAttri:             TLazEditHighlighterAttributes;
+    fControlSequenceAttri:  TLazEditHighlighterAttributes;
+    fMathmodeAttri:         TLazEditHighlighterAttributes;
+    fCommentAttri:          TLazEditHighlighterAttributes;
+    fSpaceAttri:            TLazEditHighlighterAttributes;
+    fBracketAttri:          TLazEditHighlighterAttributes;
+    fBraceAttri:            TLazEditHighlighterAttributes;
 
     function CreateHighlighterAttributes(AName:PString; Foreground,
                                          Background: TColor;
                                          FontStyles: TFontStyles) :
-                                         TSynHighlighterAttributes;
+                                         TLazEditHighlighterAttributes;
     //Procedures
     procedure MakeMethodTables;
     procedure CRProc;
-    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
     procedure TextProc;
     procedure LFProc;
     procedure NullProc;
@@ -120,13 +120,13 @@ type
     function GetTokenPos: Integer; override;
     procedure Next; override;
   published
-    property CommentAttri : TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
-    property TextAttri: TSynHighlighterAttributes index attribText read fTextAttri write SetAttribute;
-    property ControlSequenceAttri: TSynHighlighterAttributes index attribControlSequence read fControlSequenceAttri write SetAttribute;
-    property MathmodeAttri: TSynHighlighterAttributes index attribMathmode read fMathmodeAttri write SetAttribute;
-    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
-    property BraceAttri: TSynHighlighterAttributes index attribBrace read fBraceAttri write SetAttribute;
-    property BracketAttri: TSynHighlighterAttributes index attribBracket read fBracketAttri write SetAttribute;
+    property CommentAttri : TLazEditHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property TextAttri: TLazEditHighlighterAttributes index attribText read fTextAttri write SetAttribute;
+    property ControlSequenceAttri: TLazEditHighlighterAttributes index attribControlSequence read fControlSequenceAttri write SetAttribute;
+    property MathmodeAttri: TLazEditHighlighterAttributes index attribMathmode read fMathmodeAttri write SetAttribute;
+    property SpaceAttri: TLazEditHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property BraceAttri: TLazEditHighlighterAttributes index attribBrace read fBraceAttri write SetAttribute;
+    property BracketAttri: TLazEditHighlighterAttributes index attribBracket read fBracketAttri write SetAttribute;
   end;
 
 implementation
@@ -200,7 +200,7 @@ begin
   end;
 end;  { CRProc }
 
-procedure TSynTeXSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+procedure TSynTeXSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
 begin
   case AnIndex of
     attribComment:         FCommentAttri.Assign(AValue);
@@ -381,9 +381,9 @@ end;  { GetLanguageName }
 function TSynTeXSyn.CreateHighlighterAttributes(AName:PString; Foreground,
                                                 Background: TColor;
                                                 FontStyles: TFontStyles) :
-TSynHighlighterAttributes;
+TLazEditHighlighterAttributes;
 begin
-  Result:=TSynHighlighterAttributes.Create(AName);
+  Result:=TLazEditHighlighterAttributes.Create(AName);
   if Foreground<>clNone then Result.Foreground:=ForeGround;
   if Background<>clNone then Result.Background:=Background;
   Result.Style:=FontStyles;

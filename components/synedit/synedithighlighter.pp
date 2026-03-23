@@ -45,10 +45,10 @@ type
   TSynHighlighterRangeList = TLazHighlighterLineRangeList deprecated 'use TLazHighlighterLineRangeList or TLazHighlighterLineRangeShiftList / to be removed in 5.99';
 
   TLazSynCustomTextAttributes = TLazEditTextAttribute deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
-  TSynHighlighterAttributes = TLazEditHighlighterAttributes;
-  TSynHighlighterAttributesModifier = TLazEditHighlighterAttributesModifier;
-  TSynHighlighterAttributes_Eol = TLazEditHighlighterAttributes_Eol;
-  TSynHighlighterAttributesModifier_Eol = TLazEditHighlighterAttributesModifier_Eol;
+  TSynHighlighterAttributes = TLazEditHighlighterAttributes deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
+  TSynHighlighterAttributesModifier = TLazEditHighlighterAttributesModifier deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
+  TSynHighlighterAttributes_Eol = TLazEditHighlighterAttributes_Eol deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
+  TSynHighlighterAttributesModifier_Eol = TLazEditHighlighterAttributesModifier_Eol deprecated 'use TLazEditTextAttribute // to be removed in 5.99';
 
   { TSynHighlighterAttributesHelper }
 
@@ -121,7 +121,7 @@ type
     fDefaultFilter: string deprecated 'Use GetInitialDefaultFileFilterMask / to be removed in 5.99';
     fDefaultFilterInitialValue: string deprecated 'Use GetInitialDefaultFileFilterMask / to be removed in 5.99';
     fUpdateChange: boolean;                                                     //mh 2001-09-13
-    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+    function GetDefaultAttribute(Index: integer): TLazEditHighlighterAttributes;
       virtual; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     function GetDefaultFilter: string; virtual; deprecated'to be removed in 5.99';
     procedure SetWordBreakChars(AChars: TSynIdentChars); virtual;
@@ -188,24 +188,35 @@ type
     property Capabilities: TSynHighlighterCapabilities read FCapabilities;  deprecated 'to be removed in 5.99 / no replacement';
     property SampleSource: string read GetSampleSource write SetSampleSource; deprecated 'to become read-only in 5.99';
     // The below should be depricated and moved to those HL that actually implement them.
-    property CommentAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_COMMENT read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
-    property IdentifierAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_IDENTIFIER read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
-    property KeywordAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_KEYWORD read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
-    property StringAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_STRING read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
-    property SymbolAttribute: TSynHighlighterAttributes                         //mh 2001-09-13
-      index SYN_ATTR_SYMBOL read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
-    property WhitespaceAttribute: TSynHighlighterAttributes
-      index SYN_ATTR_WHITESPACE read GetDefaultAttribute; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
   public
     property Enabled: boolean read fEnabled write SetEnabled default TRUE;      //DDH 2001-10-23
         deprecated 'to be removed in 5.99 / no replacement - was never implemented';
   end;
 
   TSynCustomHighlighterClass = class of TSynCustomHighlighter;
+
+  { TSynCustomHighlighterLazEditHelper }
+
+  TSynCustomHighlighterLazEditHelper = class helper for TLazEditCustomHighlighter
+  private
+    function GetAttributeChangeNeedScan: Boolean;
+    function GetDefaultAttrib(AIndex: Integer): TLazEditHighlighterAttributes;
+  public
+    property  AttributeChangeNeedScan: Boolean read GetAttributeChangeNeedScan; deprecated 'use RequestFullRescan // to be removed in 5.99';
+
+    property CommentAttribute: TLazEditHighlighterAttributes
+      index SYN_ATTR_COMMENT read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+    property IdentifierAttribute: TLazEditHighlighterAttributes
+      index SYN_ATTR_IDENTIFIER read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+    property KeywordAttribute: TLazEditHighlighterAttributes
+      index SYN_ATTR_KEYWORD read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+    property StringAttribute: TLazEditHighlighterAttributes
+      index SYN_ATTR_STRING read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+    property SymbolAttribute: TLazEditHighlighterAttributes                         //mh 2001-09-13
+      index SYN_ATTR_SYMBOL read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+    property WhitespaceAttribute: TLazEditHighlighterAttributes
+      index SYN_ATTR_WHITESPACE read GetDefaultAttrib; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
+  end;
 
   TSynHighlighterList = class(TList)
   private
@@ -738,14 +749,14 @@ end;
 function TSynCustomHighlighter.AddSpecialAttribute(const aCaption: string;
   const aStoredName: String): TLazEditTextAttribute;
 begin
-  result := TSynHighlighterAttributes.Create(aCaption,aStoredName);
+  result := TLazEditHighlighterAttributes.Create(aCaption,aStoredName);
   AddAttribute(result);
 end;
 
 function TSynCustomHighlighter.AddSpecialAttribute(const aCaption: PString;
   const aStoredName: String): TLazEditTextAttribute;
 begin
-  Result := TSynHighlighterAttributes.Create(aCaption,aStoredName);
+  Result := TLazEditHighlighterAttributes.Create(aCaption,aStoredName);
   AddAttribute(result);
 end;
 
@@ -960,21 +971,38 @@ begin
   Result := AttachedLines;
 end;
 
-function TSynCustomHighlighter.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynCustomHighlighter.GetDefaultAttribute(Index: integer): TLazEditHighlighterAttributes;
 begin
   case Index of
-    SYN_ATTR_COMMENT:    Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcComment));
-    SYN_ATTR_IDENTIFIER: Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcIdentifier));
-    SYN_ATTR_KEYWORD:    Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcKeyword));
-    SYN_ATTR_STRING:     Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcString));
-    SYN_ATTR_WHITESPACE: Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcWhiteSpace));
-    SYN_ATTR_SYMBOL:     Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcSymbol));
-    SYN_ATTR_NUMBER:     Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcNumber));
-    SYN_ATTR_DIRECTIVE:  Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcDirective));
-    SYN_ATTR_ASM:        Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcEmbedded));
-    SYN_ATTR_VARIABLE:   Result := TSynHighlighterAttributes(GetTokenClassAttribute(tcVariable));
+    SYN_ATTR_COMMENT:    Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcComment));
+    SYN_ATTR_IDENTIFIER: Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcIdentifier));
+    SYN_ATTR_KEYWORD:    Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcKeyword));
+    SYN_ATTR_STRING:     Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcString));
+    SYN_ATTR_WHITESPACE: Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcWhiteSpace));
+    SYN_ATTR_SYMBOL:     Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcSymbol));
+    SYN_ATTR_NUMBER:     Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcNumber));
+    SYN_ATTR_DIRECTIVE:  Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcDirective));
+    SYN_ATTR_ASM:        Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcEmbedded));
+    SYN_ATTR_VARIABLE:   Result := TLazEditHighlighterAttributes(GetTokenClassAttribute(tcVariable));
     otherwise Result := nil;
   end;
+end;
+
+{ TSynCustomHighlighterLazEditHelper }
+
+function TSynCustomHighlighterLazEditHelper.GetAttributeChangeNeedScan: Boolean;
+begin
+  Result := False;
+  if Self is TSynCustomHighlighter then
+    Result := TSynCustomHighlighter(Self).FAttributeChangeNeedScan;
+end;
+
+function TSynCustomHighlighterLazEditHelper.GetDefaultAttrib(AIndex: Integer
+  ): TLazEditHighlighterAttributes;
+begin
+  Result := nil;
+  if Self is TSynCustomHighlighter then
+    Result := TSynCustomHighlighter(Self).GetDefaultAttribute(AIndex);
 end;
 
 initialization

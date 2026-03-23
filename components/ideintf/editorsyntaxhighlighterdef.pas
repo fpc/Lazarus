@@ -47,7 +47,7 @@ type
     function GetCaptions(AnID: TIdeSyntaxHighlighterID): String;
     function GetNames(AnID: TIdeSyntaxHighlighterID): String;
     function GetSharedInstances(AnID: TIdeSyntaxHighlighterID): TLazEditCustomHighlighter;
-    function GetSynHlClasses(AnID: TIdeSyntaxHighlighterID): TClass;
+    function GetSynHlClasses(AnID: TIdeSyntaxHighlighterID): TLazEditCustomHighlighterClass;
 
     function GetIdForLazSyntaxHighlighter(AnHighlighterType: TLazSyntaxHighlighter): TIdeSyntaxHighlighterID;
     function GetIdForFileExtension(Ext: String): TIdeSyntaxHighlighterID;
@@ -57,8 +57,8 @@ type
     property Count: integer read GetCount;
     property Captions       [AnID: TIdeSyntaxHighlighterID]: String  read GetCaptions;
     property Names          [AnID: TIdeSyntaxHighlighterID]: String  read GetNames;
-    property SynHlClasses   [AnID: TIdeSyntaxHighlighterID]: TClass  read GetSynHlClasses;     // class of TSynCustomHighlighter
-    property SharedInstances[AnID: TIdeSyntaxHighlighterID]: TLazEditCustomHighlighter read GetSharedInstances; // TSynCustomHighlighter
+    property SynHlClasses   [AnID: TIdeSyntaxHighlighterID]: TLazEditCustomHighlighterClass read GetSynHlClasses;
+    property SharedInstances[AnID: TIdeSyntaxHighlighterID]: TLazEditCustomHighlighter read GetSharedInstances;
   end;
 
 const
@@ -134,8 +134,8 @@ type
   IColorSchemeLanguage = interface ['{40A0F5E1-ADD5-4E0E-BD14-583E244C4ACC}']
     function GetName: String;
     function AttributeCount: Integer;
-    function GetAttributeIntf(AnIndex: integer): IColorSchemeAttribute;  //TSynHighlighterAttributesModifier
-    function GetAttributeIntf(const AStoredName: string): IColorSchemeAttribute;  //TSynHighlighterAttributesModifier
+    function GetAttributeIntf(AnIndex: integer): IColorSchemeAttribute;  //TLazEditHighlighterAttributesModifier
+    function GetAttributeIntf(const AStoredName: string): IColorSchemeAttribute;  //TLazEditHighlighterAttributesModifier
   end;
 
   IColorScheme = interface ['{121AB166-7458-4AD8-8122-C9AD4A259521}']

@@ -49,7 +49,7 @@ interface
 
 uses
   Classes, SysUtils,
-  SynEditHighlighter, SynEditTextBase, SynEditTextBuffer,
+  SynEditTextBase, SynEditTextBuffer,
   FileUtil, LazUTF8, FPCAdds, LCLType,
   Graphics, Clipbrd,
   SynEditMiscProcs, SynEditStrConst, LazEditTextAttributes, LazEditHighlighter;
@@ -76,7 +76,7 @@ type
     fImmediateAttrWrite: Boolean;
     procedure AssignFont(Value: TFont);
     procedure SetFont(Value: TFont);
-    procedure SetHighlighter(Value: TSynCustomHighlighter);
+    procedure SetHighlighter(Value: TLazEditCustomHighlighter);
     procedure SetTitle(const Value: string);
   protected
     fBackgroundColor: TColor;
@@ -84,7 +84,7 @@ type
     fDefaultFilter: string;
     fExportAsText: boolean;
     fFont: TFont;
-    fHighlighter: TSynCustomHighlighter;
+    fHighlighter: TLazEditCustomHighlighter;
     fLastBG: TColor;
     fLastFG: TColor;
     fLastStyle: TFontStyles;
@@ -201,7 +201,7 @@ type
     { The output format of the exporter. } 
     property FormatName: string read GetFormatName;
     { The highlighter to use for exporting. }
-    property Highlighter: TSynCustomHighlighter
+    property Highlighter: TLazEditCustomHighlighter
       read fHighlighter write SetHighlighter;
     property ImmediateAttrWrite: Boolean read fImmediateAttrWrite write fImmediateAttrWrite default false;
     { The title to embedd into the output header. }
@@ -543,7 +543,7 @@ begin
   AssignFont(Value);
 end;
 
-procedure TSynCustomExporter.SetHighlighter(Value: TSynCustomHighlighter);
+procedure TSynCustomExporter.SetHighlighter(Value: TLazEditCustomHighlighter);
 begin
   if fHighlighter <> Value then begin
     fHighlighter := Value;

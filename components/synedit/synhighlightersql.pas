@@ -254,24 +254,24 @@ type
     fKeywords: TSynSqlHashEntryList;
     fTableNames: TStrings;
     fDialect: TSQLDialect;
-    fCommentAttri: TSynHighlighterAttributes;
-    fDataTypeAttri: TSynHighlighterAttributes;
-    fDefaultPackageAttri: TSynHighlighterAttributes;                            // DJLP 2000-08-11
-    fExceptionAttri: TSynHighlighterAttributes;
-    fFunctionAttri: TSynHighlighterAttributes;
-    fIdentifierAttri: TSynHighlighterAttributes;
-    fKeyAttri: TSynHighlighterAttributes;
-    fNumberAttri: TSynHighlighterAttributes;
-    fPLSQLAttri: TSynHighlighterAttributes;                                     // DJLP 2000-08-11
-    fSpaceAttri: TSynHighlighterAttributes;
-    fSQLPlusAttri: TSynHighlighterAttributes;                                   // DJLP 2000-09-05
-    fStringAttri: TSynHighlighterAttributes;
-    fSymbolAttri: TSynHighlighterAttributes;
-    fTableNameAttri: TSynHighlighterAttributes;
-    fVariableAttri: TSynHighlighterAttributes;
-    fClientKeywordAttri: TSynHighlighterAttributesModifier;
-    fCharSetAttri: TSynHighlighterAttributesModifier;
-    fCollationAttri: TSynHighlighterAttributesModifier;
+    fCommentAttri: TLazEditHighlighterAttributes;
+    fDataTypeAttri: TLazEditHighlighterAttributes;
+    fDefaultPackageAttri: TLazEditHighlighterAttributes;                            // DJLP 2000-08-11
+    fExceptionAttri: TLazEditHighlighterAttributes;
+    fFunctionAttri: TLazEditHighlighterAttributes;
+    fIdentifierAttri: TLazEditHighlighterAttributes;
+    fKeyAttri: TLazEditHighlighterAttributes;
+    fNumberAttri: TLazEditHighlighterAttributes;
+    fPLSQLAttri: TLazEditHighlighterAttributes;                                     // DJLP 2000-08-11
+    fSpaceAttri: TLazEditHighlighterAttributes;
+    fSQLPlusAttri: TLazEditHighlighterAttributes;                                   // DJLP 2000-09-05
+    fStringAttri: TLazEditHighlighterAttributes;
+    fSymbolAttri: TLazEditHighlighterAttributes;
+    fTableNameAttri: TLazEditHighlighterAttributes;
+    fVariableAttri: TLazEditHighlighterAttributes;
+    fClientKeywordAttri: TLazEditHighlighterAttributesModifier;
+    fCharSetAttri: TLazEditHighlighterAttributesModifier;
+    fCollationAttri: TLazEditHighlighterAttributesModifier;
     fIdentifiersPtr: PIdentifierTable;
     fmHashTablePtr: PHashTable;
     function GetSqlCodeFoldRange: TSynSqlSynRange;
@@ -291,8 +291,8 @@ type
     procedure OrSymbolProc;
     procedure PlusProc;
     procedure SetAttributeEx(AnIndex: TSynPasAttribute; AValue: TLazEditTextAttribute);
-    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
-    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributesModifier);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributesModifier);
     procedure SlashProc;
     procedure SpaceProc;
     procedure StringProc;
@@ -358,25 +358,25 @@ type
     procedure InitForScanningLine; override;
     procedure SetRange(Value: Pointer); override;
   published
-    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
-    property DataTypeAttri: TSynHighlighterAttributes index attribDataType read fDataTypeAttri write SetAttribute;
-    property DefaultPackageAttri: TSynHighlighterAttributes index attribDefaultPackage read fDefaultPackageAttri write SetAttribute;
-    property ExceptionAttri: TSynHighlighterAttributes index attribException read fExceptionAttri write SetAttribute;
-    property FunctionAttri: TSynHighlighterAttributes index attribFunction read fFunctionAttri write SetAttribute;
-    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
-    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
-    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
-    property PLSQLAttri: TSynHighlighterAttributes index attribPLSQL read fPLSQLAttri write SetAttribute;
-    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
-    property SQLPlusAttri: TSynHighlighterAttributes index attribSQLPlus read fSQLPlusAttri write SetAttribute;
-    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
-    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
-    property TableNameAttri: TSynHighlighterAttributes index attribTableName read fTableNameAttri write SetAttribute;
+    property CommentAttri: TLazEditHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property DataTypeAttri: TLazEditHighlighterAttributes index attribDataType read fDataTypeAttri write SetAttribute;
+    property DefaultPackageAttri: TLazEditHighlighterAttributes index attribDefaultPackage read fDefaultPackageAttri write SetAttribute;
+    property ExceptionAttri: TLazEditHighlighterAttributes index attribException read fExceptionAttri write SetAttribute;
+    property FunctionAttri: TLazEditHighlighterAttributes index attribFunction read fFunctionAttri write SetAttribute;
+    property IdentifierAttri: TLazEditHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TLazEditHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri: TLazEditHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property PLSQLAttri: TLazEditHighlighterAttributes index attribPLSQL read fPLSQLAttri write SetAttribute;
+    property SpaceAttri: TLazEditHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property SQLPlusAttri: TLazEditHighlighterAttributes index attribSQLPlus read fSQLPlusAttri write SetAttribute;
+    property StringAttri: TLazEditHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TLazEditHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property TableNameAttri: TLazEditHighlighterAttributes index attribTableName read fTableNameAttri write SetAttribute;
     property TableNames: TStrings read fTableNames write SetTableNames;
-    property VariableAttri: TSynHighlighterAttributes index attribVariable read fVariableAttri write SetAttribute;
-    property ClientKeywordAttri: TSynHighlighterAttributesModifier index attribClientKeyword read fClientKeywordAttri write SetAttribute;
-    property CharSetAttri: TSynHighlighterAttributesModifier index attribCharSet read fCharSetAttri write SetAttribute;
-    property CollationAttri: TSynHighlighterAttributesModifier index attribCollation read fCollationAttri write SetAttribute;
+    property VariableAttri: TLazEditHighlighterAttributes index attribVariable read fVariableAttri write SetAttribute;
+    property ClientKeywordAttri: TLazEditHighlighterAttributesModifier index attribClientKeyword read fClientKeywordAttri write SetAttribute;
+    property CharSetAttri: TLazEditHighlighterAttributesModifier index attribCharSet read fCharSetAttri write SetAttribute;
+    property CollationAttri: TLazEditHighlighterAttributesModifier index attribCollation read fCollationAttri write SetAttribute;
     property SQLDialect: TSQLDialect read fDialect write SetDialect;
   end;
 
@@ -1679,56 +1679,56 @@ begin
   fKeywords := TSynSqlHashEntryList.Create;
   fTableNames := TStringList.Create;
   TStringList(fTableNames).OnChange := @TableNamesChanged;
-  fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
+  fCommentAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style := [fsItalic];
   AddAttribute(fCommentAttri);
-  fDataTypeAttri := TSynHighlighterAttributes.Create(@SYNS_AttrDataType, SYNS_XML_AttrDataType);
+  fDataTypeAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrDataType, SYNS_XML_AttrDataType);
   fDataTypeAttri.Style := [fsBold];
   AddAttribute(fDataTypeAttri);
 {begin}                                                                         // DJLP 2000-08-11
   fDefaultPackageAttri :=
-    TSynHighlighterAttributes.Create(@SYNS_AttrDefaultPackage, SYNS_XML_AttrDefaultPackage);
+    TLazEditHighlighterAttributes.Create(@SYNS_AttrDefaultPackage, SYNS_XML_AttrDefaultPackage);
   fDefaultPackageAttri.Style := [fsBold];
   AddAttribute(fDefaultPackageAttri);
 {end}                                                                           // DJLP 2000-08-11
-  fExceptionAttri := TSynHighlighterAttributes.Create(@SYNS_AttrException, SYNS_XML_AttrException);
+  fExceptionAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrException, SYNS_XML_AttrException);
   fExceptionAttri.Style := [fsItalic];
   AddAttribute(fExceptionAttri);
-  fFunctionAttri := TSynHighlighterAttributes.Create(@SYNS_AttrFunction, SYNS_XML_AttrFunction);
+  fFunctionAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrFunction, SYNS_XML_AttrFunction);
   fFunctionAttri.Style := [fsBold];
   AddAttribute(fFunctionAttri);
-  fIdentifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
+  fIdentifierAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   AddAttribute(fIdentifierAttri);
-  fKeyAttri := TSynHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
+  fKeyAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
   fKeyAttri.Style := [fsBold];
   AddAttribute(fKeyAttri);
-  fNumberAttri := TSynHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
+  fNumberAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
   AddAttribute(fNumberAttri);
 {begin}                                                                         // DJLP 2000-08-11
-  fPLSQLAttri := TSynHighlighterAttributes.Create(@SYNS_AttrPLSQL, SYNS_XML_AttrPLSQL);
+  fPLSQLAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrPLSQL, SYNS_XML_AttrPLSQL);
   fPLSQLAttri.Style := [fsBold];
   AddAttribute(fPLSQLAttri);
 {end}                                                                           // DJLP 2000-08-11
-  fSpaceAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
+  fSpaceAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
   AddAttribute(fSpaceAttri);
 {begin}                                                                         // DJLP 2000-09-05
-  fSQLPlusAttri:=TSynHighlighterAttributes.Create(@SYNS_AttrSQLPlus, SYNS_XML_AttrSQLPlus);
+  fSQLPlusAttri:=TLazEditHighlighterAttributes.Create(@SYNS_AttrSQLPlus, SYNS_XML_AttrSQLPlus);
   fSQLPlusAttri.Style := [fsBold];
   AddAttribute(fSQLPlusAttri);
 {end}                                                                           // DJLP 2000-09-05
-  fStringAttri := TSynHighlighterAttributes.Create(@SYNS_Attrstring, SYNS_XML_Attrstring);
+  fStringAttri := TLazEditHighlighterAttributes.Create(@SYNS_Attrstring, SYNS_XML_Attrstring);
   AddAttribute(fStringAttri);
-  fSymbolAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
+  fSymbolAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
-  fTableNameAttri := TSynHighlighterAttributes.Create(@SYNS_AttrTableName, SYNS_XML_AttrTableName);
+  fTableNameAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrTableName, SYNS_XML_AttrTableName);
   AddAttribute(fTableNameAttri);
-  fVariableAttri := TSynHighlighterAttributes.Create(@SYNS_AttrVariable, SYNS_XML_AttrVariable);
+  fVariableAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrVariable, SYNS_XML_AttrVariable);
   AddAttribute(fVariableAttri);
-  fClientKeywordAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrClientKeyword, SYNS_XML_AttrClientKeyword);
+  fClientKeywordAttri := TLazEditHighlighterAttributesModifier.Create(@SYNS_AttrClientKeyword, SYNS_XML_AttrClientKeyword);
   AddAttribute(fClientKeywordAttri);
-  fCharSetAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCharSet, SYNS_XML_AttrCharSet);
+  fCharSetAttri := TLazEditHighlighterAttributesModifier.Create(@SYNS_AttrCharSet, SYNS_XML_AttrCharSet);
   AddAttribute(fCharSetAttri);
-  fCollationAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCollation, SYNS_XML_AttrCollation);
+  fCollationAttri := TLazEditHighlighterAttributesModifier.Create(@SYNS_AttrCollation, SYNS_XML_AttrCollation);
   AddAttribute(fCollationAttri);
   SetAttributesOnChange(@DefHighlightChange);
   MakeMethodTables;
@@ -2108,13 +2108,13 @@ begin
   end;
 end;
 
-procedure TSynSQLSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+procedure TSynSQLSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
 begin
   SetAttributeEx(AnIndex, AValue);
 end;
 
 procedure TSynSQLSyn.SetAttribute(AnIndex: TSynPasAttribute;
-  AValue: TSynHighlighterAttributesModifier);
+  AValue: TLazEditHighlighterAttributesModifier);
 begin
   SetAttributeEx(AnIndex, AValue);
 end;

@@ -37,7 +37,7 @@ uses
   // TurboPower_IPro
   IpHtml, Ipfilebroker, IpHtmlNodes,
   // Wiki
-  WikiHelpManager, WikiSearchOptions, WikiParser, WikiFormat;
+  WikiHelpManager, WikiSearchOptions, WikiParser, WikiFormat, LazEditHighlighter;
 
 type
 
@@ -142,7 +142,7 @@ type
     procedure LoadWikiPage(Documentname, Anchor: string; AddToHistory: boolean);
     procedure LoadHTML(Target: TIpHtmlPanel; HTML: string; Anchor: string = ''); overload;
     procedure LoadHTML(Target: TIpHtmlPanel; aStream: TStream; Anchor: string = ''); overload;
-    procedure ViewSource(aTitle, aSource: string; aHighlighter: TSynCustomHighlighter);
+    procedure ViewSource(aTitle, aSource: string; aHighlighter: TLazEditCustomHighlighter);
     procedure WikiSearchOptsWndOptionsChanged(Sender: TObject);
     procedure WikiHelpScanned(Sender: TObject);
     procedure WikiHelpSearched(Sender: TObject);
@@ -682,7 +682,7 @@ begin
 end;
 
 procedure TWikiSearchDemoForm.ViewSource(aTitle, aSource: string;
-  aHighlighter: TSynCustomHighlighter);
+  aHighlighter: TLazEditCustomHighlighter);
 var
   SrcEdit: TSynEdit;
   ViewSrcForm: TForm;

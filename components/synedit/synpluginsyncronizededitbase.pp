@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, Graphics, StrUtils, SynEditMiscClasses, SynEdit, SynEditMarkup,
   SynEditMiscProcs, LazSynEditText, SynEditTextTrimmer, SynEditKeyCmds, SynEditTextBase,
-  SynEditHighlighter, LazUTF8, LazEditMiscProcs, LazEditTextAttributes;
+  LazUTF8, LazEditMiscProcs, LazEditTextAttributes, LazEditHighlighter;
 
 type
 
@@ -105,8 +105,8 @@ type
   TSynPluginSyncronizedEditMarkup = class(TSynPluginSyncronizedEditMarkupBase)
   private
     FCurrentCell: Integer;
-    fMarkupInfoCurrent: TSynHighlighterAttributesModifier;
-    fMarkupInfoSync: TSynHighlighterAttributesModifier;
+    fMarkupInfoCurrent: TLazEditHighlighterAttributesModifier;
+    fMarkupInfoSync: TLazEditHighlighterAttributesModifier;
     FPreparedRow: Integer;
     FPreparedCellFrom, FPreparedCellTo: Integer;
     FPreparedCellTop, FPreparedCellBottom: Integer;
@@ -127,8 +127,8 @@ type
     Procedure PrepareMarkupForRow(aRow : Integer); override;
     Procedure EndMarkup; override;
 
-    property MarkupInfoCurrent: TSynHighlighterAttributesModifier read fMarkupInfoCurrent;
-    property MarkupInfoSync: TSynHighlighterAttributesModifier read fMarkupInfoSync;
+    property MarkupInfoCurrent: TLazEditHighlighterAttributesModifier read fMarkupInfoCurrent;
+    property MarkupInfoSync: TLazEditHighlighterAttributesModifier read fMarkupInfoSync;
   end;
 
   { TSynPluginSyncronizedEditMarkupArea }
@@ -210,10 +210,10 @@ type
     FOwnPaintLock: Integer;
     FTextBufferChanging: Boolean;
 
-    fMarkupInfo: TSynHighlighterAttributesModifier;
-    fMarkupInfoSync: TSynHighlighterAttributesModifier;
-    fMarkupInfoCurrent: TSynHighlighterAttributesModifier;
-    fMarkupInfoArea: TSynHighlighterAttributesModifier;
+    fMarkupInfo: TLazEditHighlighterAttributesModifier;
+    fMarkupInfoSync: TLazEditHighlighterAttributesModifier;
+    fMarkupInfoCurrent: TLazEditHighlighterAttributesModifier;
+    fMarkupInfoArea: TLazEditHighlighterAttributesModifier;
     FOnActivate: TNotifyEvent;
     FOnDeactivate: TNotifyEvent;
     FPreActive: Boolean;
@@ -226,10 +226,10 @@ type
     procedure SetAreaMarkupEnabled(const AValue: Boolean);
     procedure SetEnabled(const AValue: Boolean);
     procedure SetMarkupEnabled(const AValue: Boolean);
-    procedure SetMarkupInfo(AValue: TSynHighlighterAttributesModifier);
-    procedure SetMarkupInfoArea(AValue: TSynHighlighterAttributesModifier);
-    procedure SetMarkupInfoCurrent(AValue: TSynHighlighterAttributesModifier);
-    procedure SetMarkupInfoSync(AValue: TSynHighlighterAttributesModifier);
+    procedure SetMarkupInfo(AValue: TLazEditHighlighterAttributesModifier);
+    procedure SetMarkupInfoArea(AValue: TLazEditHighlighterAttributesModifier);
+    procedure SetMarkupInfoCurrent(AValue: TLazEditHighlighterAttributesModifier);
+    procedure SetMarkupInfoSync(AValue: TLazEditHighlighterAttributesModifier);
     function IsCellFromCaretAmbigious: Boolean;
   protected
     FMarkup: TSynPluginSyncronizedEditMarkup;
@@ -267,10 +267,10 @@ type
     property Active: Boolean read GetActive write SetActive;
     property PreActive: Boolean read FPreActive write FPreActive;           // e.g. collecting words => Reacts to LinesEdited
 
-    property MarkupInfo: TSynHighlighterAttributesModifier read FMarkupInfo write SetMarkupInfo;
-    property MarkupInfoCurrent: TSynHighlighterAttributesModifier read FMarkupInfoCurrent write SetMarkupInfoCurrent;
-    property MarkupInfoSync: TSynHighlighterAttributesModifier read FMarkupInfoSync write SetMarkupInfoSync;
-    property MarkupInfoArea: TSynHighlighterAttributesModifier read FMarkupInfoArea write SetMarkupInfoArea;
+    property MarkupInfo: TLazEditHighlighterAttributesModifier read FMarkupInfo write SetMarkupInfo;
+    property MarkupInfoCurrent: TLazEditHighlighterAttributesModifier read FMarkupInfoCurrent write SetMarkupInfoCurrent;
+    property MarkupInfoSync: TLazEditHighlighterAttributesModifier read FMarkupInfoSync write SetMarkupInfoSync;
+    property MarkupInfoArea: TLazEditHighlighterAttributesModifier read FMarkupInfoArea write SetMarkupInfoArea;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
   end;
@@ -1029,7 +1029,7 @@ begin
     FMarkup.Enabled := (Active or PreActive) and FMarkupEnabled;
 end;
 
-procedure TSynPluginSyncronizedEditBase.SetMarkupInfo(AValue: TSynHighlighterAttributesModifier
+procedure TSynPluginSyncronizedEditBase.SetMarkupInfo(AValue: TLazEditHighlighterAttributesModifier
   );
 begin
   if FMarkupInfo=AValue then Exit;
@@ -1037,21 +1037,21 @@ begin
 end;
 
 procedure TSynPluginSyncronizedEditBase.SetMarkupInfoArea(
-  AValue: TSynHighlighterAttributesModifier);
+  AValue: TLazEditHighlighterAttributesModifier);
 begin
   if FMarkupInfoArea=AValue then Exit;
   FMarkupInfoArea.Assign(AValue);
 end;
 
 procedure TSynPluginSyncronizedEditBase.SetMarkupInfoCurrent(
-  AValue: TSynHighlighterAttributesModifier);
+  AValue: TLazEditHighlighterAttributesModifier);
 begin
   if FMarkupInfoCurrent=AValue then Exit;
   FMarkupInfoCurrent.Assign(AValue);
 end;
 
 procedure TSynPluginSyncronizedEditBase.SetMarkupInfoSync(
-  AValue: TSynHighlighterAttributesModifier);
+  AValue: TLazEditHighlighterAttributesModifier);
 begin
   if FMarkupInfoSync=AValue then Exit;
   FMarkupInfoSync.Assign(AValue);

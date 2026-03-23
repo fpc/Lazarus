@@ -13,10 +13,10 @@ uses
   // IdeIntf
   SrcEditorIntf, EditorSyntaxHighlighterDef,
   // LazEdit
-  LazEditMiscProcs, LazEditTextAttributes,
+  LazEditMiscProcs, LazEditTextAttributes, LazEditHighlighter,
   // SynEdit
   SynEditMarkup, SynHighlighterPas, SynEditMiscProcs, SynEdit, SynEditMiscClasses, SynEditTypes,
-  SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditHighlighterFoldBase;
 
 type
   TFoundTodo = record
@@ -192,7 +192,7 @@ begin
   inherited BeginMarkup;
 
   FPasHl := TSynPasSyn(TSynEdit(SynEdit).Highlighter);
-  if (FPasHl <> nil) and not(TSynCustomHighlighter(FPasHl) is TSynPasSyn) then
+  if (FPasHl <> nil) and not(TLazEditCustomHighlighter(FPasHl) is TSynPasSyn) then
     FPasHl := nil;
 
   if not (CommentAttribTodo.IsEnabled or
@@ -489,7 +489,7 @@ begin
   FFoundPos := nil;
   FSkipStartLine := -1;
   FPasHl := TSynPasSyn(TSynEdit(SynEdit).Highlighter);
-  if (FPasHl <> nil) and not(TSynCustomHighlighter(FPasHl) is TSynPasSyn) then exit;
+  if (FPasHl <> nil) and not(TLazEditCustomHighlighter(FPasHl) is TSynPasSyn) then exit;
 
   PrepareMarkupForRow(aSrcPos.Y);
   if Length(FFoundPos) > 0 then begin

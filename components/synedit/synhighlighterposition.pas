@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditStrConst, SynEditTypes,
-  SynEditHighlighter, SynEditTextBuffer, LazEditTextAttributes;
+  SynEditHighlighter, SynEditTextBuffer, LazEditTextAttributes, LazEditHighlighter;
 
 const
   tkNone   = 0;
@@ -61,13 +61,13 @@ type
     fCopiedAttributes: TList;
     fLineLen: integer;
     fTokenEnd: LongInt; // end of current token
-    fTextAttri: TSynHighlighterAttributes;
+    fTextAttri: TLazEditHighlighterAttributes;
     fTokenPos: Integer;
     fTokenArrayPos: integer;
     FTokenKind: TtkTokenKind;
     fTokens: TList; // list of PPositionTokens
     function GetTokens(TheLineNumber: integer): PPositionTokens;
-    procedure SetTextAttri(AValue: TSynHighlighterAttributes);
+    procedure SetTextAttri(AValue: TLazEditHighlighterAttributes);
   protected
     function GetIdentChars: TSynIdentChars; override;
     function GetPositionTokensSize(ItemCount: integer): integer;
@@ -108,7 +108,7 @@ type
     function GetCopiedAttribute(TokenID: TtkTokenKind): TLazEditTextAttribute;
     property Tokens[TheLineNumber: integer]: PPositionTokens read GetTokens;
   published
-    property TextAttri: TSynHighlighterAttributes read fTextAttri write SetTextAttri;
+    property TextAttri: TLazEditHighlighterAttributes read fTextAttri write SetTextAttri;
   end;
 
 implementation
@@ -124,7 +124,7 @@ begin
     Result:=nil;
 end;
 
-procedure TSynPositionHighlighter.SetTextAttri(AValue: TSynHighlighterAttributes);
+procedure TSynPositionHighlighter.SetTextAttri(AValue: TLazEditHighlighterAttributes);
 begin
   fTextAttri.Assign(AValue);
 end;
@@ -150,7 +150,7 @@ begin
   inherited Create(TheOwner);
   fTokens:=TList.Create;
   fCopiedAttributes:=TList.Create;
-  fTextAttri := TSynHighlighterAttributes.Create(@SYNS_AttrText, SYNS_XML_AttrText);
+  fTextAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrText, SYNS_XML_AttrText);
   AddAttribute(fTextAttri);
   SetAttributesOnChange(@DefHighlightChange);
 end;

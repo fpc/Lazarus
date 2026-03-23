@@ -5,8 +5,8 @@ unit TestPaintColorMerging;
 interface
 
 uses
-  testregistry, TestBase, SynEditHighlighter, SynEditMiscClasses, SynEditTypes,
-  LazEditTextAttributes, Graphics, sysutils;
+  testregistry, TestBase, SynEditMiscClasses, SynEditTypes,
+  LazEditTextAttributes, LazEditHighlighter, Graphics, sysutils;
 
 type
 
@@ -57,7 +57,7 @@ procedure TTestPaintColorMerging.MergeAttrib;
 
 var
   Merger: TLazEditTextAttributeMergeResult;
-  Base: TSynHighlighterAttributes;
+  Base: TLazEditHighlighterAttributes;
   Modifier: TLazEditTextAttributeModifier;
   b1, b2: TLazSynDisplayTokenBound;
 begin
@@ -67,7 +67,7 @@ begin
   b2.Physical := 7;
 
   Merger := TLazEditTextAttributeMergeResult.Create;
-  Base := TSynHighlighterAttributes.Create;
+  Base := TLazEditHighlighterAttributes.Create;
   Modifier := TSynSelectedColor.Create;
 
   SetAttrib(Base, clRed, clYellow, clNone);

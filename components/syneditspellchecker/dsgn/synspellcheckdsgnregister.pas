@@ -28,8 +28,8 @@ uses
   // IdeIntf
   SrcEditorIntf, EditorSyntaxHighlighterDef,
   // SynEdit, LazEdit
-  LazEditTextAttributes,
-  SynEdit, SynEditMiscClasses, SynEditHighlighter,
+  LazEditTextAttributes, LazEditHighlighter,
+  SynEdit, SynEditMiscClasses,
   // SynSpellChecker
   SynSpellCheckPlugin, SynSpellCheckWordBreaker, SynSpellDictionary,
   // SynSpellCheckerDsgn
@@ -96,7 +96,7 @@ end;
 
 procedure ApplySettings(ASrcEdit: TSourceEditorInterface);
 var
-  hl: TSynCustomHighlighter;
+  hl: TLazEditCustomHighlighter;
   cs: IColorScheme;
   csl: IColorSchemeLanguage;
   attr: IColorSchemeAttribute;

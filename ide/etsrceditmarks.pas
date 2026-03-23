@@ -42,10 +42,10 @@ uses
   // BuildIntf
   IDEExternToolIntf,
   // LazEdit
-  LazEditTextAttributes,
+  LazEditTextAttributes, LazEditHighlighter,
   // SynEdit
   SynEditMarkupGutterMark, SynEditMarks, SynEditMiscClasses, SynEdit,
-  LazSynEditText, SynEditHighlighter;
+  LazSynEditText;
 
 type
 
@@ -55,7 +55,7 @@ type
   private
     FColor: TColor;
     FImageIndex: integer;
-    FSourceMarkup: TSynHighlighterAttributesModifier;
+    FSourceMarkup: TLazEditHighlighterAttributesModifier;
     FUrgency: TMessageLineUrgency;
     procedure SetColor(AValue: TColor);
   public
@@ -64,7 +64,7 @@ type
     property Urgency: TMessageLineUrgency read FUrgency;
     property Color: TColor read FColor write SetColor;
     property ImageIndex: integer read FImageIndex write FImageIndex;
-    property SourceMarkup: TSynHighlighterAttributesModifier read FSourceMarkup;
+    property SourceMarkup: TLazEditHighlighterAttributesModifier read FSourceMarkup;
   end;
 
   TETMarks = class;

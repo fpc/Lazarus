@@ -11,7 +11,7 @@ uses
   // LazUtils
   LazMethodList,
   // SynEdit
-  SynEditMarks, SynEditMiscClasses, SynEditMouseCmds, LazSynTextArea, SynEditHighlighter,
+  SynEditMarks, SynEditMiscClasses, SynEditMouseCmds, LazSynTextArea,
   SynEditTypes, LazSynEditMouseCmdsTypes, LazEditTextGridPainter, LazEditTextAttributes;
 
 type

@@ -67,7 +67,7 @@ uses
   SynEditHighlighter,
   SynUniHighlighter,
   synunistrconst,
-  LazEditTextAttributes;
+  LazEditTextAttributes, LazEditHighlighter;
 
 type
   TNodeText = String;
@@ -177,7 +177,7 @@ Procedure TSynUniDesigner.AddingKeyWord(Node:TTreeNode);
       kw:TSynSymbolGroup;
 begin
   n:=Tree.Items.AddChild(Node, _NewRange);
-  kw:=TSynSymbolGroup.Create('',TSynHighlighterAttributes.Create('unknown'));
+  kw:=TSynSymbolGroup.Create('',TLazEditHighlighterAttributes.Create('unknown'));
   kw.Name:=_NewRange;
   n.Data:=kw;
   n.ImageIndex:=2;

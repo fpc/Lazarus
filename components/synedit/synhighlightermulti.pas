@@ -170,7 +170,7 @@ type
     FStartLineSet, FEndLineSet: Boolean;
     FLastMatchLen: Integer;
     FHighlighter: TSynCustomHighLighter;
-    fMarkerAttri: TSynHighlighterAttributes;
+    fMarkerAttri: TLazEditHighlighterAttributes;
     fSchemeName: TComponentName;
     fCaseSensitive: Boolean;
     fOnCheckStartMarker: TOnCheckMarker;
@@ -180,7 +180,7 @@ type
     function  GetConvertedEndExpr: String;
     function  GetConvertedStartExpr: String;
     procedure MarkerAttriChanged(Sender: TObject);
-    procedure SetMarkerAttri(const Value: TSynHighlighterAttributes);
+    procedure SetMarkerAttri(const Value: TLazEditHighlighterAttributes);
     procedure SetHighlighter(const Value: TSynCustomHighlighter);
     procedure SetEndExpr(const Value: string);
     procedure SetStartExpr(const Value: string);
@@ -208,7 +208,7 @@ type
     property EndExpr: string read fEndExpr write SetEndExpr;
     property Highlighter: TSynCustomHighlighter read fHighlighter
              write SetHighlighter;
-    property MarkerAttri: TSynHighlighterAttributes read fMarkerAttri
+    property MarkerAttri: TLazEditHighlighterAttributes read fMarkerAttri
              write SetMarkerAttri;
     property SchemeName: TComponentName read fSchemeName write fSchemeName;
     property OnCheckStartMarker: TOnCheckMarker read fOnCheckStartMarker write fOnCheckStartMarker;
@@ -1888,7 +1888,7 @@ begin
   FStartExprScanner := TRegExpr.Create;
   FEndExprScanner := TRegExpr.Create;
   fCaseSensitive := True;
-  fMarkerAttri := TSynHighlighterAttributes.Create(@SYNS_AttrMarker, SYNS_XML_AttrMarker);
+  fMarkerAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrMarker, SYNS_XML_AttrMarker);
   fMarkerAttri.AddChangeHandler(@MarkerAttriChanged);
   MarkerAttri.Background := clYellow;
   MarkerAttri.Style := [fsBold];
@@ -2062,7 +2062,7 @@ begin
   end;
 end;
 
-procedure TSynHighlighterMultiScheme.SetMarkerAttri(const Value: TSynHighlighterAttributes);
+procedure TSynHighlighterMultiScheme.SetMarkerAttri(const Value: TLazEditHighlighterAttributes);
 begin
   fMarkerAttri.Assign(Value);
 end;

@@ -5,9 +5,10 @@ unit TestHighlightMulti;
 interface
 
 uses
-  Classes, SysUtils, Math, testregistry, TestBase, Forms, SynEditHighlighter, SynHighlighterMulti,
+  Classes, SysUtils, Math, testregistry, TestBase, Forms, SynHighlighterMulti,
   SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds, LazSynEditText,
-  SynEditTextBuffer, SynEditTypes, LazLoggerBase, LazEditTextAttributes, LazEditHighlighterUtils;
+  SynEditTextBuffer, SynEditTypes, LazLoggerBase, LazEditTextAttributes, LazEditHighlighterUtils,
+  LazEditHighlighter;
 
 type
 
@@ -41,7 +42,7 @@ type
     procedure DumpSections(ASectList: TSynHLightMultiSectionList);
     procedure DumpRanges(ARangeList: TLazHighlighterLineRangeList);
     procedure DumpAll(Hl: TSynMultiSyn);
-    procedure CheckTokensForLine(Name: String; HL: TSynCustomHighlighter;
+    procedure CheckTokensForLine(Name: String; HL: TLazEditCustomHighlighter;
                                  LineIdx: Integer; const ExpAttr: Array of TLazEditTextAttribute);
   published
     procedure TestSectionList;
@@ -260,7 +261,7 @@ begin  // ensure CurrentLines are set
   DebugLnExit('<<');
 end;
 
-procedure TTestHighlightMulti.CheckTokensForLine(Name: String; HL: TSynCustomHighlighter;
+procedure TTestHighlightMulti.CheckTokensForLine(Name: String; HL: TLazEditCustomHighlighter;
   LineIdx: Integer; const ExpAttr: array of TLazEditTextAttribute);
 var
   c: Integer;

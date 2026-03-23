@@ -47,7 +47,7 @@ interface
 uses
   Classes, SysUtils,
   LCLIntf, LCLType, Graphics, ClipBrd,
-  SynEditHighlighter, SynEditExport, LazUtf8, SynEditStrConst, LazEditTextAttributes;
+  SynEditExport, LazUtf8, SynEditStrConst, LazEditTextAttributes;
 
 type
   THTMLFontSize = (fs01, fs02, fs03, fs04, fs05, fs06, fs07, fsDefault);        //eb 2000-10-12

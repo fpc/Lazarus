@@ -29,8 +29,8 @@ interface
 
 uses
   Graphics, LCLIntf, Clipbrd, SysUtils, Classes,
-  SynEdit, SynEditMarkupCtrlMouseLink, SynEditTypes, SynEditHighlighter, SynEditMouseCmds,
-  LazEditTextAttributes, SynEditStrConst;
+  SynEdit, SynEditMarkupCtrlMouseLink, SynEditTypes, SynEditMouseCmds,
+  LazEditTextAttributes, LazEditHighlighter, SynEditStrConst;
 
 const
   emcPluginExternalLinkDefaultOpen = emcPluginExternalLink + 0;
@@ -58,7 +58,7 @@ type
   TSynPluginExternalLink = class(TLazSynEditPlugin, IFPObserver)
   private
     FEnabled: boolean;
-    FMarkupInfo: TSynHighlighterAttributesModifier; // for caching colors, while TSynEditMarkupMouseLink = nil
+    FMarkupInfo: TLazEditHighlighterAttributesModifier; // for caching colors, while TSynEditMarkupMouseLink = nil
     FMarkupLink: TSynEditMarkupMouseLink;
     FMouseActions: TSynPluginExternalLinkMouseActions;
     FOnLinkOpen: TSynPluginExternalLinkOnLinkOpen;
@@ -69,7 +69,7 @@ type
     procedure DoMarkupInfoChanged(Sender: TObject);
     procedure DoGetShiftStateInfo(ASender: TObject; AShift: TShiftState; out AShouldShow,
       ACanClick: boolean);
-    procedure SetMarkupInfo(AValue: TSynHighlighterAttributesModifier);
+    procedure SetMarkupInfo(AValue: TLazEditHighlighterAttributesModifier);
     function DoHandleMouseAction(AnAction: TSynEditMouseAction; var AnInfo: TSynEditMouseActionInfo): boolean;
     function DoMouseActionSearch(var AnInfo: TSynEditMouseActionInfo;
       HandleActionProc: TSynEditMouseActionHandler): Boolean;
@@ -85,7 +85,7 @@ type
     destructor Destroy; override;
     property Enabled: boolean read FEnabled write SetEnabled;
     property CurrentLinkText: string read GetCurrentLinkText;
-    property MarkupInfo : TSynHighlighterAttributesModifier read FMarkupInfo write SetMarkupInfo;
+    property MarkupInfo : TLazEditHighlighterAttributesModifier read FMarkupInfo write SetMarkupInfo;
     property MouseActions: TSynPluginExternalLinkMouseActions read FMouseActions;
     property OnLinkOpen: TSynPluginExternalLinkOnLinkOpen read FOnLinkOpen write FOnLinkOpen;
   end;
@@ -388,7 +388,7 @@ begin
   end;
 end;
 
-procedure TSynPluginExternalLink.SetMarkupInfo(AValue: TSynHighlighterAttributesModifier);
+procedure TSynPluginExternalLink.SetMarkupInfo(AValue: TLazEditHighlighterAttributesModifier);
 begin
   FMarkupInfo.Assign(AValue);
 end;
@@ -430,7 +430,7 @@ begin
   FMouseActions.ResetDefaults;
   FMouseActions.FPOAttachObserver(Self);
 
-  FMarkupInfo := TSynHighlighterAttributesModifier.Create;
+  FMarkupInfo := TLazEditHighlighterAttributesModifier.Create;
   FMarkupInfo.Clear;
   FMarkupInfo.FrameColor := clBlue;
   FMarkupInfo.FrameEdges := sfeBottom;

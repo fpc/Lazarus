@@ -33,14 +33,14 @@ type
 
   TSynDemoHlFoldBase = class(TSynCustomFoldHighlighter)
   private
-    FNotAttri: TSynHighlighterAttributes;
-    fSpecialAttri: TSynHighlighterAttributes;
-    fIdentifierAttri: TSynHighlighterAttributes;
-    fSpaceAttri: TSynHighlighterAttributes;
-    procedure SetIdentifierAttri(AValue: TSynHighlighterAttributes);
-    procedure SetNotAttri(AValue: TSynHighlighterAttributes);
-    procedure SetSpaceAttri(AValue: TSynHighlighterAttributes);
-    procedure SetSpecialAttri(AValue: TSynHighlighterAttributes);
+    FNotAttri: TLazEditHighlighterAttributes;
+    fSpecialAttri: TLazEditHighlighterAttributes;
+    fIdentifierAttri: TLazEditHighlighterAttributes;
+    fSpaceAttri: TLazEditHighlighterAttributes;
+    procedure SetIdentifierAttri(AValue: TLazEditHighlighterAttributes);
+    procedure SetNotAttri(AValue: TLazEditHighlighterAttributes);
+    procedure SetSpaceAttri(AValue: TLazEditHighlighterAttributes);
+    procedure SetSpecialAttri(AValue: TLazEditHighlighterAttributes);
   protected
     // accesible for the other examples
     FTokenPos, FTokenEnd: Integer;
@@ -60,13 +60,13 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     (* Define 4 Attributes, for the different highlights. *)
-    property SpecialAttri: TSynHighlighterAttributes read fSpecialAttri
+    property SpecialAttri: TLazEditHighlighterAttributes read fSpecialAttri
       write SetSpecialAttri;
-    property NotAttri: TSynHighlighterAttributes read FNotAttri
+    property NotAttri: TLazEditHighlighterAttributes read FNotAttri
       write SetNotAttri;
-    property IdentifierAttri: TSynHighlighterAttributes read fIdentifierAttri
+    property IdentifierAttri: TLazEditHighlighterAttributes read fIdentifierAttri
       write SetIdentifierAttri;
-    property SpaceAttri: TSynHighlighterAttributes read fSpaceAttri
+    property SpaceAttri: TLazEditHighlighterAttributes read fSpaceAttri
       write SetSpaceAttri;
   end;
 
@@ -158,18 +158,18 @@ begin
   inherited Create(AOwner);
 
   (* Create and initialize the attributes *)
-  fSpecialAttri := TSynHighlighterAttributes.Create('special', 'special');
+  fSpecialAttri := TLazEditHighlighterAttributes.Create('special', 'special');
   AddAttribute(fSpecialAttri);
   fSpecialAttri.Style := [fsBold];
 
-  FNotAttri := TSynHighlighterAttributes.Create('not', 'not');
+  FNotAttri := TLazEditHighlighterAttributes.Create('not', 'not');
   AddAttribute(FNotAttri);
   FNotAttri.Background := clRed;
 
-  fIdentifierAttri := TSynHighlighterAttributes.Create('ident', 'ident');
+  fIdentifierAttri := TLazEditHighlighterAttributes.Create('ident', 'ident');
   AddAttribute(fIdentifierAttri);
 
-  fSpaceAttri := TSynHighlighterAttributes.Create('space', 'space');
+  fSpaceAttri := TLazEditHighlighterAttributes.Create('space', 'space');
   AddAttribute(fSpaceAttri);
   fSpaceAttri.FrameColor := clSilver;
   fSpaceAttri.FrameEdges := sfeAround;
@@ -179,22 +179,22 @@ begin
 end;
 
 (* Setters for attributes / This allows using in Object inspector*)
-procedure TSynDemoHlFoldBase.SetIdentifierAttri(AValue: TSynHighlighterAttributes);
+procedure TSynDemoHlFoldBase.SetIdentifierAttri(AValue: TLazEditHighlighterAttributes);
 begin
   fIdentifierAttri.Assign(AValue);
 end;
 
-procedure TSynDemoHlFoldBase.SetNotAttri(AValue: TSynHighlighterAttributes);
+procedure TSynDemoHlFoldBase.SetNotAttri(AValue: TLazEditHighlighterAttributes);
 begin
   FNotAttri.Assign(AValue);
 end;
 
-procedure TSynDemoHlFoldBase.SetSpaceAttri(AValue: TSynHighlighterAttributes);
+procedure TSynDemoHlFoldBase.SetSpaceAttri(AValue: TLazEditHighlighterAttributes);
 begin
   fSpaceAttri.Assign(AValue);
 end;
 
-procedure TSynDemoHlFoldBase.SetSpecialAttri(AValue: TSynHighlighterAttributes);
+procedure TSynDemoHlFoldBase.SetSpecialAttri(AValue: TLazEditHighlighterAttributes);
 begin
   fSpecialAttri.Assign(AValue);
 end;

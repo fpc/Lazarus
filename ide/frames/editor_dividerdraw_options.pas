@@ -31,7 +31,7 @@ uses
   // IdeIntf
   EditorSyntaxHighlighterDef, IDEOptionsIntf, IDEOptEditorIntf,
   // SynEdit
-  SynEditHighlighter, LazEditHighlighterUtils,
+  LazEditHighlighterUtils,
   // IDE
   EditorOptions, LazarusIDEStrConsts;
 

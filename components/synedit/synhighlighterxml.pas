@@ -149,7 +149,7 @@ type
       {$error range storage needs fixing}
     {$endif}
   private
-    fCommentSymbolAttri: TSynHighlighterAttributes;
+    fCommentSymbolAttri: TLazEditHighlighterAttributes;
     FQuotesUseAttribValueAttri: Boolean;
     fRange: TRangeState;
     fRangeFlags: TRangeFlags;
@@ -159,30 +159,30 @@ type
     fTokenID: TtkTokenKind;
     fTokenDecorator: TtkTokenDecorator;
     fLineLen: Integer;
-    fElementAttri: TSynHighlighterAttributes;
-    fSpaceAttri: TSynHighlighterAttributes;
-    fTextAttri: TSynHighlighterAttributes;
-    fEntityRefAttri: TSynHighlighterAttributes;
-    fProcessingInstructionAttri: TSynHighlighterAttributesModifier;
-    fNamespaceColonAttri: TSynHighlighterAttributesModifier;
-    fNamespaceDefinitionAttri: TSynHighlighterAttributesModifier;
-    fNamespacePrefixAttri: TSynHighlighterAttributesModifier;
-    fProcessingInstructionSymbolAttri: TSynHighlighterAttributes;
-    fCDATAAttri: TSynHighlighterAttributes;
-    fCommentAttri: TSynHighlighterAttributes;
-    fDocTypeAttri: TSynHighlighterAttributes;
-    fAttributeAttri: TSynHighlighterAttributes;
-    fNameSpaceAttributeAttri: TSynHighlighterAttributes;
-    fAttributeValueAttri: TSynHighlighterAttributes;
-    fNameSpaceAttributeValueAttri: TSynHighlighterAttributes;
-    fSymbolAttri: TSynHighlighterAttributes;
+    fElementAttri: TLazEditHighlighterAttributes;
+    fSpaceAttri: TLazEditHighlighterAttributes;
+    fTextAttri: TLazEditHighlighterAttributes;
+    fEntityRefAttri: TLazEditHighlighterAttributes;
+    fProcessingInstructionAttri: TLazEditHighlighterAttributesModifier;
+    fNamespaceColonAttri: TLazEditHighlighterAttributesModifier;
+    fNamespaceDefinitionAttri: TLazEditHighlighterAttributesModifier;
+    fNamespacePrefixAttri: TLazEditHighlighterAttributesModifier;
+    fProcessingInstructionSymbolAttri: TLazEditHighlighterAttributes;
+    fCDATAAttri: TLazEditHighlighterAttributes;
+    fCommentAttri: TLazEditHighlighterAttributes;
+    fDocTypeAttri: TLazEditHighlighterAttributes;
+    fAttributeAttri: TLazEditHighlighterAttributes;
+    fNameSpaceAttributeAttri: TLazEditHighlighterAttributes;
+    fAttributeValueAttri: TLazEditHighlighterAttributes;
+    fNameSpaceAttributeValueAttri: TLazEditHighlighterAttributes;
+    fSymbolAttri: TLazEditHighlighterAttributes;
     fProcTable: array[#0..#255] of TProcTableProc;
     FWantBracesParsed: Boolean;
     procedure NullProc;
     procedure CarriageReturnProc;
     procedure LineFeedProc;
-    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
-    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributesModifier);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributesModifier);
     procedure SetAttributeEx(AnIndex: TSynPasAttribute; AValue: TLazEditTextAttribute);
     procedure SpaceProc;
     procedure QuestionMarkProc;
@@ -246,24 +246,24 @@ type
       AContext, ANestLevel: Integer; var InternalInfo: PtrUInt): Boolean; override;
     property IdentChars;
   published
-    property ElementAttri: TSynHighlighterAttributes index attribElement read fElementAttri write SetAttribute;
-    property AttributeAttri: TSynHighlighterAttributes index attribAttribute  read fAttributeAttri write SetAttribute;
-    property NamespaceAttributeAttri: TSynHighlighterAttributes index attribNameSpaceAttribute read fNameSpaceAttributeAttri write SetAttribute;
-    property AttributeValueAttri: TSynHighlighterAttributes index attribAttributeValue  read fAttributeValueAttri write SetAttribute;
-    property NamespaceAttributeValueAttri: TSynHighlighterAttributes index attribNameSpaceAttributeValue read fNameSpaceAttributeValueAttri write SetAttribute;
-    property NamespaceDefinitionAttri: TSynHighlighterAttributesModifier index attribNamespaceDefinition read fNamespaceDefinitionAttri write SetAttribute;
-    property NamespacePrefixAttri: TSynHighlighterAttributesModifier index attribNamespacePrefix read fNamespacePrefixAttri write SetAttribute;
-    property NamespaceColonAttri: TSynHighlighterAttributesModifier index attribNamespaceColon read fNamespaceColonAttri write SetAttribute;
-    property TextAttri: TSynHighlighterAttributes index attribText read fTextAttri write SetAttribute;
-    property CDATAAttri: TSynHighlighterAttributes index attribCDATA read fCDATAAttri write SetAttribute;
-    property EntityRefAttri: TSynHighlighterAttributes index attribEntityRef read fEntityRefAttri write SetAttribute;
-    property ProcessingInstructionAttri: TSynHighlighterAttributesModifier index attribProcessingInstruction read fProcessingInstructionAttri write SetAttribute;
-    property ProcessingInstructionSymbolAttri: TSynHighlighterAttributes index attribProcessingInstructionSymbol read fProcessingInstructionSymbolAttri write SetAttribute;
-    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
-    property CommentSymbolAttri: TSynHighlighterAttributes index attribCommentSymbol read fCommentSymbolAttri write SetAttribute;
-    property DocTypeAttri: TSynHighlighterAttributes index attribDocType read fDocTypeAttri write SetAttribute;
-    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
-    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property ElementAttri: TLazEditHighlighterAttributes index attribElement read fElementAttri write SetAttribute;
+    property AttributeAttri: TLazEditHighlighterAttributes index attribAttribute  read fAttributeAttri write SetAttribute;
+    property NamespaceAttributeAttri: TLazEditHighlighterAttributes index attribNameSpaceAttribute read fNameSpaceAttributeAttri write SetAttribute;
+    property AttributeValueAttri: TLazEditHighlighterAttributes index attribAttributeValue  read fAttributeValueAttri write SetAttribute;
+    property NamespaceAttributeValueAttri: TLazEditHighlighterAttributes index attribNameSpaceAttributeValue read fNameSpaceAttributeValueAttri write SetAttribute;
+    property NamespaceDefinitionAttri: TLazEditHighlighterAttributesModifier index attribNamespaceDefinition read fNamespaceDefinitionAttri write SetAttribute;
+    property NamespacePrefixAttri: TLazEditHighlighterAttributesModifier index attribNamespacePrefix read fNamespacePrefixAttri write SetAttribute;
+    property NamespaceColonAttri: TLazEditHighlighterAttributesModifier index attribNamespaceColon read fNamespaceColonAttri write SetAttribute;
+    property TextAttri: TLazEditHighlighterAttributes index attribText read fTextAttri write SetAttribute;
+    property CDATAAttri: TLazEditHighlighterAttributes index attribCDATA read fCDATAAttri write SetAttribute;
+    property EntityRefAttri: TLazEditHighlighterAttributes index attribEntityRef read fEntityRefAttri write SetAttribute;
+    property ProcessingInstructionAttri: TLazEditHighlighterAttributesModifier index attribProcessingInstruction read fProcessingInstructionAttri write SetAttribute;
+    property ProcessingInstructionSymbolAttri: TLazEditHighlighterAttributes index attribProcessingInstructionSymbol read fProcessingInstructionSymbolAttri write SetAttribute;
+    property CommentAttri: TLazEditHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property CommentSymbolAttri: TLazEditHighlighterAttributes index attribCommentSymbol read fCommentSymbolAttri write SetAttribute;
+    property DocTypeAttri: TLazEditHighlighterAttributes index attribDocType read fDocTypeAttri write SetAttribute;
+    property SpaceAttri: TLazEditHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property SymbolAttri: TLazEditHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
     property QuotesUseAttribValueAttri: Boolean read FQuotesUseAttribValueAttri write FQuotesUseAttribValueAttri default False;
     property WantBracesParsed : Boolean read FWantBracesParsed
       write FWantBracesParsed default True;
@@ -279,25 +279,25 @@ constructor TSynXMLSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  fElementAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrElementName, SYNS_XML_AttrElementName);
-  fTextAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrText, SYNS_XML_AttrText);
-  fSpaceAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrWhitespace, SYNS_XML_AttrWhitespace);
-  fEntityRefAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrEntityReference, SYNS_XML_AttrEntityReference);
-  fProcessingInstructionAttri:= TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcessingInstr, SYNS_XML_AttrProcessingInstr);
-  fProcessingInstructionSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrProcessingInstrSym, SYNS_XML_AttrProcessingInstrSym);
-  fCDATAAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCDATASection, SYNS_XML_AttrCDATASection);
-  fCommentAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
-  fCommentSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrCommentSym, SYNS_XML_AttrCommentSym);
-  fDocTypeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrDOCTYPESection, SYNS_XML_AttrDOCTYPESection);
-  fAttributeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrAttributeName, SYNS_XML_AttrAttributeName);
-  fNameSpaceAttributeAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrName, SYNS_XML_AttrNamespaceAttrName);
-  fAttributeValueAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrAttributeValue, SYNS_XML_AttrAttributeValue);
-  fNameSpaceAttributeValueAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrValue, SYNS_XML_AttrNamespaceAttrValue);
-  fSymbolAttri:= TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
+  fElementAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrElementName, SYNS_XML_AttrElementName);
+  fTextAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrText, SYNS_XML_AttrText);
+  fSpaceAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrWhitespace, SYNS_XML_AttrWhitespace);
+  fEntityRefAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrEntityReference, SYNS_XML_AttrEntityReference);
+  fProcessingInstructionAttri:= TLazEditHighlighterAttributesModifier.Create(@SYNS_AttrProcessingInstr, SYNS_XML_AttrProcessingInstr);
+  fProcessingInstructionSymbolAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrProcessingInstrSym, SYNS_XML_AttrProcessingInstrSym);
+  fCDATAAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrCDATASection, SYNS_XML_AttrCDATASection);
+  fCommentAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
+  fCommentSymbolAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrCommentSym, SYNS_XML_AttrCommentSym);
+  fDocTypeAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrDOCTYPESection, SYNS_XML_AttrDOCTYPESection);
+  fAttributeAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrAttributeName, SYNS_XML_AttrAttributeName);
+  fNameSpaceAttributeAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrName, SYNS_XML_AttrNamespaceAttrName);
+  fAttributeValueAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrAttributeValue, SYNS_XML_AttrAttributeValue);
+  fNameSpaceAttributeValueAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrNamespaceAttrValue, SYNS_XML_AttrNamespaceAttrValue);
+  fSymbolAttri:= TLazEditHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
 
-  fNamespaceColonAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrNamespaceIdentDef, SYNS_XML_AttrNamespaceIdentDef);
-  fNamespaceDefinitionAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrNamespaceIdentPrefix, SYNS_XML_AttrNamespaceIdentPrefix);
-  fNamespacePrefixAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrNamespaceColon, SYNS_XML_AttrNamespaceColon);
+  fNamespaceColonAttri := TLazEditHighlighterAttributesModifier.Create(@SYNS_AttrNamespaceIdentDef, SYNS_XML_AttrNamespaceIdentDef);
+  fNamespaceDefinitionAttri := TLazEditHighlighterAttributesModifier.Create(@SYNS_AttrNamespaceIdentPrefix, SYNS_XML_AttrNamespaceIdentPrefix);
+  fNamespacePrefixAttri := TLazEditHighlighterAttributesModifier.Create(@SYNS_AttrNamespaceColon, SYNS_XML_AttrNamespaceColon);
 
   fElementAttri.Foreground:= clMaroon;
   fElementAttri.Style:= [fsBold];
@@ -434,7 +434,7 @@ begin
   Inc(Run);
 end;
 
-procedure TSynXMLSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+procedure TSynXMLSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
 begin
   case AnIndex of
     attribElement:                     FElementAttri.Assign(AValue);
@@ -459,7 +459,7 @@ begin
 end;
 
 procedure TSynXMLSyn.SetAttribute(AnIndex: TSynPasAttribute;
-  AValue: TSynHighlighterAttributesModifier);
+  AValue: TLazEditHighlighterAttributesModifier);
 begin
   SetAttributeEx(AnIndex, AValue);
 end;

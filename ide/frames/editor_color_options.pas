@@ -34,7 +34,7 @@ uses
   DividerBevel,
   // SynEdit
   SynEdit, SynEditMiscClasses, SynGutterCodeFolding, SynGutterLineNumber, SynEditTypes,
-  SynGutterChanges, SynEditMouseCmds, SynEditHighlighter, SynEditStrConst,
+  SynGutterChanges, SynEditMouseCmds, SynEditStrConst,
   SynEditMarkupSpecialLine, SynEditMarkup, SynCompletion,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
@@ -1608,10 +1608,8 @@ begin
       PreviewEdits[a].BeginUpdate;
     try
       for a := Low(PreviewEdits) to High(PreviewEdits) do begin
-        if UseSyntaxHighlightCheckBox.Down
-        and (FCurrentHighlighter is TSynCustomHighlighter)
-        then
-          PreviewEdits[a].Highlighter := FCurrentHighlighter as TSynCustomHighlighter
+        if UseSyntaxHighlightCheckBox.Down then
+          PreviewEdits[a].Highlighter := FCurrentHighlighter
         else
           PreviewEdits[a].Highlighter := nil;
         PreviewEdits[a].Lines.Text := EditorOpts.HighlighterList[CurLanguageID].SampleSource;

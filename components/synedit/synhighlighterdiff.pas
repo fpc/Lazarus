@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, Graphics, math, SynEditStrConst,
-  SynEditHighlighter, SynEditHighlighterFoldBase, LazEditTextAttributes;
+  SynEditHighlighter, SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter;
 
 type
   TtkTokenKind = (tkNull, tkUnknown, tkSpace,
@@ -123,19 +123,19 @@ type
     procedure AtProc;
     procedure SpaceProc;
   private
-    FChunkMarkerAttri: TSynHighlighterAttributes;
-    FChunkMixedAttri: TSynHighlighterAttributes;
-    FChunkNewAttri: TSynHighlighterAttributes;
-    FChunkOldAttri: TSynHighlighterAttributes;
-    FLineAddedAttri: TSynHighlighterAttributes;
-    FLineChangedAttri: TSynHighlighterAttributes;
-    FLineContextAttri: TSynHighlighterAttributes;
-    FLineRemovedAttri: TSynHighlighterAttributes;
-    FNewFileAttri: TSynHighlighterAttributes;
-    FOrigFileAttri: TSynHighlighterAttributes;
-    FSpaceAttri: TSynHighlighterAttributes;
-    FUnknownAttri: TSynHighlighterAttributes;
-    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+    FChunkMarkerAttri: TLazEditHighlighterAttributes;
+    FChunkMixedAttri: TLazEditHighlighterAttributes;
+    FChunkNewAttri: TLazEditHighlighterAttributes;
+    FChunkOldAttri: TLazEditHighlighterAttributes;
+    FLineAddedAttri: TLazEditHighlighterAttributes;
+    FLineChangedAttri: TLazEditHighlighterAttributes;
+    FLineContextAttri: TLazEditHighlighterAttributes;
+    FLineRemovedAttri: TLazEditHighlighterAttributes;
+    FNewFileAttri: TLazEditHighlighterAttributes;
+    FOrigFileAttri: TLazEditHighlighterAttributes;
+    FSpaceAttri: TLazEditHighlighterAttributes;
+    FUnknownAttri: TLazEditHighlighterAttributes;
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
   protected
     function GetSampleSource : String; override;
   public
@@ -170,18 +170,18 @@ type
     function GetFoldConfigCount: Integer; override;
     function GetFoldConfigInternalCount: Integer; override;
   published
-    property UnknownAttri: TSynHighlighterAttributes index attribUnknown read FUnknownAttri write SetAttribute;
-    property SpaceAttri: TSynHighlighterAttributes index attribSpace read FSpaceAttri write SetAttribute;
-    property OrigFileAttri: TSynHighlighterAttributes index attribOrigFile read FOrigFileAttri write SetAttribute;
-    property NewFileAttri: TSynHighlighterAttributes index attribNewFile read FNewFileAttri write SetAttribute;
-    property ChunkMarkerAttri: TSynHighlighterAttributes index attribChunkMarker read FChunkMarkerAttri write SetAttribute;
-    property ChunkNewAttri: TSynHighlighterAttributes index attribChunkNew read FChunkNewAttri write SetAttribute;
-    property ChunkOldAttri: TSynHighlighterAttributes index attribChunkOld read FChunkOldAttri write SetAttribute;
-    property ChunkMixedAttri: TSynHighlighterAttributes index attribChunkMixed read FChunkMixedAttri write SetAttribute;
-    property LineAddedAttri: TSynHighlighterAttributes index attribLineAdded read FLineAddedAttri write SetAttribute;
-    property LineRemovedAttri: TSynHighlighterAttributes index attribLineRemoved read FLineRemovedAttri write SetAttribute;
-    property LineChangedAttri: TSynHighlighterAttributes index attribLineChanged read FLineChangedAttri write SetAttribute;
-    property LineContextAttri: TSynHighlighterAttributes index attribLineContext read FLineContextAttri write SetAttribute;
+    property UnknownAttri: TLazEditHighlighterAttributes index attribUnknown read FUnknownAttri write SetAttribute;
+    property SpaceAttri: TLazEditHighlighterAttributes index attribSpace read FSpaceAttri write SetAttribute;
+    property OrigFileAttri: TLazEditHighlighterAttributes index attribOrigFile read FOrigFileAttri write SetAttribute;
+    property NewFileAttri: TLazEditHighlighterAttributes index attribNewFile read FNewFileAttri write SetAttribute;
+    property ChunkMarkerAttri: TLazEditHighlighterAttributes index attribChunkMarker read FChunkMarkerAttri write SetAttribute;
+    property ChunkNewAttri: TLazEditHighlighterAttributes index attribChunkNew read FChunkNewAttri write SetAttribute;
+    property ChunkOldAttri: TLazEditHighlighterAttributes index attribChunkOld read FChunkOldAttri write SetAttribute;
+    property ChunkMixedAttri: TLazEditHighlighterAttributes index attribChunkMixed read FChunkMixedAttri write SetAttribute;
+    property LineAddedAttri: TLazEditHighlighterAttributes index attribLineAdded read FLineAddedAttri write SetAttribute;
+    property LineRemovedAttri: TLazEditHighlighterAttributes index attribLineRemoved read FLineRemovedAttri write SetAttribute;
+    property LineChangedAttri: TLazEditHighlighterAttributes index attribLineChanged read FLineChangedAttri write SetAttribute;
+    property LineContextAttri: TLazEditHighlighterAttributes index attribLineContext read FLineContextAttri write SetAttribute;
   end;
 
 implementation
@@ -480,7 +480,7 @@ begin
   FTokenID := tkChunkMixedMark;
 end;
 
-procedure TSynDiffSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+procedure TSynDiffSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
 begin
   case AnIndex of
     attribUnknown:     FUnknownAttri.Assign(AValue);
@@ -508,55 +508,55 @@ constructor TSynDiffSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FUnknownAttri := TSynHighlighterAttributes.Create(@SYNS_AttrUnknownWord, SYNS_XML_AttrUnknownWord);
+  FUnknownAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrUnknownWord, SYNS_XML_AttrUnknownWord);
   FUnknownAttri.Style := [fsItalic];
   AddAttribute(FUnknownAttri);
 
-  FSpaceAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
+  FSpaceAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
   AddAttribute(FSpaceAttri);
 
-  FOrigFileAttri := TSynHighlighterAttributes.Create(@SYNS_AttrOrigFile, SYNS_XML_AttrOrigFile);
+  FOrigFileAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrOrigFile, SYNS_XML_AttrOrigFile);
   FOrigFileAttri.Style := [fsBold];
   FOrigFileAttri.Background := clRed;
   AddAttribute(FOrigFileAttri);
 
-  FNewFileAttri := TSynHighlighterAttributes.Create(@SYNS_AttrNewFile, SYNS_XML_AttrNewFile);
+  FNewFileAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrNewFile, SYNS_XML_AttrNewFile);
   FNewFileAttri.Style := [fsBold];
   FNewFileAttri.Background := clGreen;
   AddAttribute(FNewFileAttri);
 
-  FChunkMarkerAttri := TSynHighlighterAttributes.Create(@SYNS_AttrChunkMarker, SYNS_XML_AttrChunkMarker);
+  FChunkMarkerAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrChunkMarker, SYNS_XML_AttrChunkMarker);
   FChunkMarkerAttri.Style := [fsBold];
   AddAttribute(FChunkMarkerAttri);
 
-  FChunkNewAttri := TSynHighlighterAttributes.Create(@SYNS_AttrChunkNew, SYNS_XML_AttrChunkNew);
+  FChunkNewAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrChunkNew, SYNS_XML_AttrChunkNew);
   FChunkNewAttri.Style := [fsBold];
   FChunkNewAttri.Foreground := clGreen;
   AddAttribute(FChunkNewAttri);
 
-  FChunkOldAttri := TSynHighlighterAttributes.Create(@SYNS_AttrChunkOrig, SYNS_XML_AttrChunkOrig);
+  FChunkOldAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrChunkOrig, SYNS_XML_AttrChunkOrig);
   FChunkOldAttri.Style := [fsBold];
   FChunkOldAttri.Foreground := clRed;
   AddAttribute(FChunkOldAttri);
 
-  FChunkMixedAttri := TSynHighlighterAttributes.Create(@SYNS_AttrChunkMixed, SYNS_XML_AttrChunkMixed);
+  FChunkMixedAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrChunkMixed, SYNS_XML_AttrChunkMixed);
   FChunkMixedAttri.Style := [fsBold];
   FChunkMixedAttri.Foreground := clPurple;
   AddAttribute(FChunkMixedAttri);
 
-  FLineAddedAttri := TSynHighlighterAttributes.Create(@SYNS_AttrLineAdded, SYNS_XML_AttrLineAdded);
+  FLineAddedAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrLineAdded, SYNS_XML_AttrLineAdded);
   FLineAddedAttri.Foreground := clGreen;
   AddAttribute(FLineAddedAttri);
 
-  FLineRemovedAttri := TSynHighlighterAttributes.Create(@SYNS_AttrLineRemoved, SYNS_XML_AttrLineRemoved);
+  FLineRemovedAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrLineRemoved, SYNS_XML_AttrLineRemoved);
   FLineRemovedAttri.Foreground := clRed;
   AddAttribute(FLineRemovedAttri);
 
-  FLineChangedAttri := TSynHighlighterAttributes.Create(@SYNS_AttrLineChanged, SYNS_XML_AttrLineChanged);
+  FLineChangedAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrLineChanged, SYNS_XML_AttrLineChanged);
   FLineChangedAttri.Foreground := clPurple;
   AddAttribute(FLineChangedAttri);
 
-  FLineContextAttri := TSynHighlighterAttributes.Create(@SYNS_AttrLineContext, SYNS_XML_AttrLineContext);
+  FLineContextAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrLineContext, SYNS_XML_AttrLineContext);
   AddAttribute(FLineContextAttri);
 
   SetAttributesOnChange(@DefHighlightChange);

@@ -367,6 +367,8 @@ type
 
   end;
 
+  TLazEditCustomHighlighterClass = class of TLazEditCustomHighlighter;
+
   { TLazEditCustomRangesHighlighter }
 
   TLazEditCustomRangesHighlighter = class(TLazEditCustomHighlighter)

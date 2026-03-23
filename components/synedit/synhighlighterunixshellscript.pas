@@ -98,16 +98,16 @@ type
     Run: LongInt;
     fTokenPos: Integer;
     FTokenID: TtkTokenKind;
-    fStringAttri: TSynHighlighterAttributes;
-    fSymbolAttri: TSynHighlighterAttributes;
-    fKeyAttri: TSynHighlighterAttributes;
-    fSecondKeyAttri: TSynHighlighterAttributes;
-    fNumberAttri: TSynHighlighterAttributes;
-    fCommentAttri: TSynHighlighterAttributes;
-    fSpaceAttri: TSynHighlighterAttributes;
-    fIdentifierAttri: TSynHighlighterAttributes;
-    fVarAttri: TSynHighlighterAttributes;
-    fUnknownAttri: TSynHighlighterAttributes;
+    fStringAttri: TLazEditHighlighterAttributes;
+    fSymbolAttri: TLazEditHighlighterAttributes;
+    fKeyAttri: TLazEditHighlighterAttributes;
+    fSecondKeyAttri: TLazEditHighlighterAttributes;
+    fNumberAttri: TLazEditHighlighterAttributes;
+    fCommentAttri: TLazEditHighlighterAttributes;
+    fSpaceAttri: TLazEditHighlighterAttributes;
+    fIdentifierAttri: TLazEditHighlighterAttributes;
+    fVarAttri: TLazEditHighlighterAttributes;
+    fUnknownAttri: TLazEditHighlighterAttributes;
     fKeyWords: TStrings;
     fSecondKeys: TStrings;
     procedure BraceOpenProc;
@@ -118,7 +118,7 @@ type
     procedure NullProc;
     procedure NumberProc;
     procedure RoundOpenProc;
-    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
     procedure SlashProc;
     procedure BackSlashProc;
     procedure SpaceProc;
@@ -157,17 +157,17 @@ type
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
   published
-    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
-    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
-    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
-    property SecondKeyAttri: TSynHighlighterAttributes index attribSecondKey read fSecondKeyAttri write SetAttribute;
+    property CommentAttri: TLazEditHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property IdentifierAttri: TLazEditHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property KeyAttri: TLazEditHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property SecondKeyAttri: TLazEditHighlighterAttributes index attribSecondKey read fSecondKeyAttri write SetAttribute;
     property SecondKeyWords: TStrings read fSecondKeys write SetSecondKeys;
-    property NumberAttri: TSynHighlighterAttributes index attribNumber read FNumberAttri write SetAttribute;
-    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
-    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
-    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
-    property VarAttri: TSynHighlighterAttributes index attribVar read fVarAttri write SetAttribute;
-    property UnknownAttri: TSynHighlighterAttributes index attribUnknown read fUnknownAttri write SetAttribute;
+    property NumberAttri: TLazEditHighlighterAttributes index attribNumber read FNumberAttri write SetAttribute;
+    property SpaceAttri: TLazEditHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TLazEditHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TLazEditHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property VarAttri: TLazEditHighlighterAttributes index attribVar read fVarAttri write SetAttribute;
+    property UnknownAttri: TLazEditHighlighterAttributes index attribUnknown read fUnknownAttri write SetAttribute;
   end;
 
 implementation
@@ -301,32 +301,32 @@ begin
       fSecondKeys.Add(ShellScriptSecondKeys[i]);
   end;
 
-  fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
+  fCommentAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Foreground := clGreen;
   AddAttribute(fCommentAttri);
-  fIdentifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
+  fIdentifierAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   AddAttribute(fIdentifierAttri);
-  fKeyAttri := TSynHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
+  fKeyAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
   fKeyAttri.Foreground := clNavy;
   fKeyAttri.Style := [fsBold];
   AddAttribute(fKeyAttri);
-  fSecondKeyAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSecondReservedWord, SYNS_XML_AttrSecondReservedWord);
+  fSecondKeyAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSecondReservedWord, SYNS_XML_AttrSecondReservedWord);
   AddAttribute(fSecondKeyAttri);
-  fNumberAttri := TSynHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
+  fNumberAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
   fNumberAttri.Foreground := clBlue;
   AddAttribute(fNumberAttri);
-  fSpaceAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
+  fSpaceAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
   AddAttribute(fSpaceAttri);
-  fStringAttri := TSynHighlighterAttributes.Create(@SYNS_AttrString, SYNS_XML_AttrString);
+  fStringAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrString, SYNS_XML_AttrString);
   fStringAttri.Foreground := clMaroon;
   AddAttribute(fStringAttri);
-  fSymbolAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
+  fSymbolAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   fSymbolAttri.Foreground := clRed;
   AddAttribute(fSymbolAttri);
-  fVarAttri := TSynHighlighterAttributes.Create(@SYNS_AttrVariable, SYNS_XML_AttrVariable);
+  fVarAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrVariable, SYNS_XML_AttrVariable);
   fVarAttri.Foreground := clPurple;
   AddAttribute(fVarAttri);
-  fUnknownAttri := TSynHighlighterAttributes.Create(@SYNS_AttrUnknownWord, SYNS_XML_AttrUnknownWord);
+  fUnknownAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrUnknownWord, SYNS_XML_AttrUnknownWord);
   fUnknownAttri.Foreground := clDkGray;
   AddAttribute(fUnknownAttri);
   SetAttributesOnChange(@DefHighlightChange);   ////TL 2003-06-11: added the @prefix to DefHighlightChange
@@ -564,7 +564,7 @@ begin
 end;
 
 procedure TSynUNIXShellScriptSyn.SetAttribute(AnIndex: TSynPasAttribute;
-  AValue: TSynHighlighterAttributes);
+  AValue: TLazEditHighlighterAttributes);
 begin
   case AnIndex of
     attribComment:    FCommentAttri.Assign(AValue);

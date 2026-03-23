@@ -5,8 +5,8 @@ unit TestHighlightFoldBase;
 interface
 
 uses
-  SysUtils, TestBase, SynEdit, SynEditHighlighterFoldBase, SynEditHighlighter,
-  SynEditMiscClasses, LazLoggerBase, LazEditTextAttributes;
+  SysUtils, TestBase, SynEdit, SynEditHighlighterFoldBase,
+  SynEditMiscClasses, LazLoggerBase, LazEditTextAttributes, LazEditHighlighter;
 
 type
 
@@ -233,9 +233,9 @@ begin
         AttrVal(e.ExpAttr), AttrVal(GotAttr));
     end
     else begin
-      if not( (GotAttr=nil) or (not (GotAttr is TSynHighlighterAttributesModifier)) ) then
+      if not( (GotAttr=nil) or (not (GotAttr is TLazEditHighlighterAttributesModifier)) ) then
       AssertTrue('%s Attr is NOT modifier @ TokenId Line=%d pos=%d Src=%s @ %d', [Name, LineIdx, c, FTheHighLighter.GetToken, FTheHighLighter.GetTokenPos],
-        (GotAttr=nil) or (not (GotAttr is TSynHighlighterAttributesModifier)) );
+        (GotAttr=nil) or (not (GotAttr is TLazEditHighlighterAttributesModifier)) );
     end;
 
     FTheHighLighter.Next;

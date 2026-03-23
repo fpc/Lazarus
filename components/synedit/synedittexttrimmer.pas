@@ -27,7 +27,7 @@ unit SynEditTextTrimmer;
 interface
 
 uses
-  Classes, SysUtils, LazSynEditText, SynEditTextBase, SynEditTypes, SynEditHighlighter,
+  Classes, SysUtils, LazSynEditText, SynEditTextBase, SynEditTypes,
   SynEditPointClasses, SynEditMiscProcs, LazLoggerBase;
 
 type

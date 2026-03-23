@@ -47,9 +47,9 @@ uses
   // Codetools
   BasicCodeTools,
   // SynEdit
-  SynEdit, SynEditHighlighter,
+  SynEdit,
   // IdeIntf
-  TextTools, IDEWindowIntf,
+  TextTools, IDEWindowIntf, LazEditHighlighter,
   // IDE
   LazarusIDEStrConsts, EditorOptions, MiscOptions, SourceMarks;
   
@@ -103,7 +103,7 @@ type
   end;
   
 function ShowSortSelectionDialog(const TheText: string;
-  Highlighter: TSynCustomHighlighter;
+  Highlighter: TLazEditCustomHighlighter;
   out SortedText: string): TModalResult;
 function SortText(const TheText: string; Direction: TSortDirection;
   Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
@@ -113,7 +113,7 @@ implementation
 {$R *.lfm}
 
 function ShowSortSelectionDialog(const TheText: string;
-  Highlighter: TSynCustomHighlighter; out SortedText: string): TModalResult;
+  Highlighter: TLazEditCustomHighlighter; out SortedText: string): TModalResult;
 var
   SortSelectionDialog: TSortSelectionDialog;
 begin
@@ -139,7 +139,7 @@ end;
 function ShowSortSelectionDialogBase(const TheText: string;
   Highlighter: TObject; var SortedText: string): TModalResult;
 begin
-  Result:=ShowSortSelectionDialog(TheText,Highlighter as TSynCustomHighlighter,
+  Result:=ShowSortSelectionDialog(TheText,Highlighter as TLazEditCustomHighlighter,
                                   SortedText);
 end;
 

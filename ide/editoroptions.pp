@@ -61,7 +61,7 @@ uses
   // LazEdit
   TextMateGrammar, LazEditTextAttributes, LazEditHighlighter, LazEditHighlighterUtils,
   // SynEdit Highlighters
-  SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterCPP, SynHighlighterHTML,
+  SynEditHighlighterFoldBase, SynHighlighterCPP, SynHighlighterHTML,
   SynHighlighterJava, SynHighlighterLFM, SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP,
   SynHighlighterSQL, SynHighlighterCss, SynHighlighterPython, SynHighlighterUNIXShellScript,
   SynHighlighterXML, SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat,
@@ -564,9 +564,9 @@ type
 
   { TIDESynTextSyn }
 
-  TIDESynTextSyn = class(TSynCustomHighlighter)
+  TIDESynTextSyn = class(TLazEditCustomRangesHighlighter)
   private
-//    fTextAttri: TSynHighlighterAttributes;
+//    fTextAttri: TLazEditHighlighterAttributes;
     FPos: Integer;
   public
     class function GetLanguageName: string; override;
@@ -988,7 +988,7 @@ type
     function GetCaptions(AnID: TIdeSyntaxHighlighterID): String;
     function GetNames(AnID: TIdeSyntaxHighlighterID): String;
     function GetSharedInstances(AnID: TIdeSyntaxHighlighterID): TLazEditCustomHighlighter;
-    function GetSynHlClasses(AnID: TIdeSyntaxHighlighterID): TClass;
+    function GetSynHlClasses(AnID: TIdeSyntaxHighlighterID): TLazEditCustomHighlighterClass;
 
     function GetIdForLazSyntaxHighlighter(AnHighlighterType: TLazSyntaxHighlighter): TIdeSyntaxHighlighterID;
   public
@@ -1011,7 +1011,7 @@ type
 
     property Captions       [AnID: TIdeSyntaxHighlighterID]: String  read GetCaptions;
     property Names          [AnID: TIdeSyntaxHighlighterID]: String  read GetNames;
-    property SynHlClasses   [AnID: TIdeSyntaxHighlighterID]: TClass  read GetSynHlClasses;     // class of TLazEditCustomHighlighter
+    property SynHlClasses   [AnID: TIdeSyntaxHighlighterID]: TLazEditCustomHighlighterClass  read GetSynHlClasses;     // class of TLazEditCustomHighlighter
 deprecated 'NONOONONONONONOONON only create ONE ????';
     property SharedInstances[AnID: TIdeSyntaxHighlighterID]: TLazEditCustomHighlighter read GetSharedInstances;
     property SharedSynInstances[AnID: TIdeSyntaxHighlighterID]: TSrcIDEHighlighter read GetSharedSynInstances;
@@ -3469,11 +3469,11 @@ begin
 end;
 
 function TEditOptLangList.GetSynHlClasses(AnID: TIdeSyntaxHighlighterID
-  ): TClass;
+  ): TLazEditCustomHighlighterClass;
 begin
   if AnID < 0 then // lshNone;
     exit(nil);
-  Result := Items[AnID].SynInstance.ClassType;
+  Result := TLazEditCustomHighlighterClass(Items[AnID].SynInstance.ClassType);
 end;
 
 function TEditOptLangList.GetIdForLazSyntaxHighlighter(

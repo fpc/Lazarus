@@ -102,16 +102,16 @@ type
     FTokenID: TtkTokenKind;
     FExtTokenID: TxtkTokenKind;
     fEol: Boolean;
-    fCommentAttri: TSynHighlighterAttributes;
-    fDocumentAttri: TSynHighlighterAttributes;
-    fIdentifierAttri: TSynHighlighterAttributes;
-    fInvalidAttri: TSynHighlighterAttributes;
-    fKeyAttri: TSynHighlighterAttributes;
-    fNumberAttri: TSynHighlighterAttributes;
-    fSpaceAttri: TSynHighlighterAttributes;
-    fStringAttri: TSynHighlighterAttributes;
-    fSymbolAttri: TSynHighlighterAttributes;
-    fAnnotationAttri: TSynHighlighterAttributes;
+    fCommentAttri: TLazEditHighlighterAttributes;
+    fDocumentAttri: TLazEditHighlighterAttributes;
+    fIdentifierAttri: TLazEditHighlighterAttributes;
+    fInvalidAttri: TLazEditHighlighterAttributes;
+    fKeyAttri: TLazEditHighlighterAttributes;
+    fNumberAttri: TLazEditHighlighterAttributes;
+    fSpaceAttri: TLazEditHighlighterAttributes;
+    fStringAttri: TLazEditHighlighterAttributes;
+    fSymbolAttri: TLazEditHighlighterAttributes;
+    fAnnotationAttri: TLazEditHighlighterAttributes;
     function Func17: TtkTokenKind;
     function Func21: TtkTokenKind;
     function Func32: TtkTokenKind;
@@ -185,7 +185,7 @@ type
     procedure RoundCloseProc;
     procedure RoundOpenProc;
     procedure SemiColonProc;
-    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+    procedure SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
     procedure SlashProc;
     procedure SpaceProc;
     procedure SquareCloseProc;
@@ -226,16 +226,16 @@ type
     procedure ResetRange; override;
     property ExtTokenID: TxtkTokenKind read GetExtTokenID;
   published
-    property AnnotationAttri: TSynHighlighterAttributes index attribAnnotation read fAnnotationAttri write SetAttribute;
-    property CommentAttri: TSynHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
-    property DocumentAttri: TSynHighlighterAttributes index attribDocument read fDocumentAttri write SetAttribute;
-    property IdentifierAttri: TSynHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
-    property InvalidAttri: TSynHighlighterAttributes index attribInvalid read fInvalidAttri write SetAttribute;
-    property KeyAttri: TSynHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
-    property NumberAttri: TSynHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
-    property SpaceAttri: TSynHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
-    property StringAttri: TSynHighlighterAttributes index attribString read fStringAttri write SetAttribute;
-    property SymbolAttri: TSynHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
+    property AnnotationAttri: TLazEditHighlighterAttributes index attribAnnotation read fAnnotationAttri write SetAttribute;
+    property CommentAttri: TLazEditHighlighterAttributes index attribComment read fCommentAttri write SetAttribute;
+    property DocumentAttri: TLazEditHighlighterAttributes index attribDocument read fDocumentAttri write SetAttribute;
+    property IdentifierAttri: TLazEditHighlighterAttributes index attribIdentifier read fIdentifierAttri write SetAttribute;
+    property InvalidAttri: TLazEditHighlighterAttributes index attribInvalid read fInvalidAttri write SetAttribute;
+    property KeyAttri: TLazEditHighlighterAttributes index attribKey read fKeyAttri write SetAttribute;
+    property NumberAttri: TLazEditHighlighterAttributes index attribNumber read fNumberAttri write SetAttribute;
+    property SpaceAttri: TLazEditHighlighterAttributes index attribSpace read fSpaceAttri write SetAttribute;
+    property StringAttri: TLazEditHighlighterAttributes index attribString read fStringAttri write SetAttribute;
+    property SymbolAttri: TLazEditHighlighterAttributes index attribSymbol read fSymbolAttri write SetAttribute;
   end;
 
 implementation
@@ -655,29 +655,29 @@ end;
 constructor TSynJavaSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fAnnotationAttri := TSynHighlighterAttributes.Create(@SYNS_AttrAnnotation, SYNS_XML_AttrAnnotation);
+  fAnnotationAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrAnnotation, SYNS_XML_AttrAnnotation);
   AddAttribute(fAnnotationAttri);
-  fCommentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
+  fCommentAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrComment, SYNS_XML_AttrComment);
   fCommentAttri.Style := [fsItalic];
   AddAttribute(fCommentAttri);
-  fDocumentAttri := TSynHighlighterAttributes.Create(@SYNS_AttrDocumentation, SYNS_XML_AttrDocumentation);
+  fDocumentAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrDocumentation, SYNS_XML_AttrDocumentation);
   fDocumentAttri.Style := [fsItalic];
   AddAttribute(fDocumentAttri);
-  fIdentifierAttri := TSynHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
+  fIdentifierAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrIdentifier, SYNS_XML_AttrIdentifier);
   AddAttribute(fIdentifierAttri);
-  fInvalidAttri := TSynHighlighterAttributes.Create(@SYNS_AttrInvalidSymbol, SYNS_XML_AttrInvalidSymbol);
+  fInvalidAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrInvalidSymbol, SYNS_XML_AttrInvalidSymbol);
   AddAttribute(fInvalidAttri);
-  fKeyAttri := TSynHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
+  fKeyAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrReservedWord, SYNS_XML_AttrReservedWord);
   fKeyAttri.Style := [fsBold];
   AddAttribute(fKeyAttri);
-  fNumberAttri := TSynHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
+  fNumberAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrNumber, SYNS_XML_AttrNumber);
   AddAttribute(fNumberAttri);
-  fSpaceAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
+  fSpaceAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSpace, SYNS_XML_AttrSpace);
   fSpaceAttri.Foreground := clWindow;
   AddAttribute(fSpaceAttri);
-  fStringAttri := TSynHighlighterAttributes.Create(@SYNS_AttrString, SYNS_XML_AttrString);
+  fStringAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrString, SYNS_XML_AttrString);
   AddAttribute(fStringAttri);
-  fSymbolAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
+  fSymbolAttri := TLazEditHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
   fRange := rsUnknown;
   SetAttributesOnChange(@DefHighlightChange);
@@ -1128,7 +1128,7 @@ begin
   FExtTokenID := xtkSemiColon;
 end;
 
-procedure TSynJavaSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TSynHighlighterAttributes);
+procedure TSynJavaSyn.SetAttribute(AnIndex: TSynPasAttribute; AValue: TLazEditHighlighterAttributes);
 begin
   case AnIndex of
     attribAnnotation: FAnnotationAttri.Assign(AValue);

@@ -53,8 +53,8 @@ uses
   LazLoggerBase, LazMethodList,
   // SynEdit
   LazSynEditText, SynEditTypes, SynEditMiscClasses, SynEditMiscProcs,
-  SynEditPointClasses, SynEditHighlighter, SynEditHighlighterFoldBase,
-  SynEditKeyCmds, LazEditTextAttributes;
+  SynEditPointClasses, SynEditHighlighterFoldBase,
+  SynEditKeyCmds, LazEditTextAttributes, LazEditHighlighter;
 
 type
 
@@ -357,7 +357,7 @@ type
   private
     FFoldView: TSynEditFoldedView;
     FLineState: integer;
-    FTokenAttr: TSynHighlighterAttributesModifier;
+    FTokenAttr: TLazEditHighlighterAttributesModifier;
     FMarkupLine: TLazEditTextAttributeMergeResult;
     FLineFlags, FLineFlags2: TSynEditFoldLineCapabilities;
   public
@@ -388,9 +388,9 @@ type
     fCaret: TSynEditCaret;
     FFoldProvider: TSynEditFoldProvider;
     fFoldTree : TSynTextFoldAVLTree;   // Folds are stored 1-based (the 1st line is 1)
-    FMarkupInfoFoldedCode: TSynHighlighterAttributesModifier;
-    FMarkupInfoFoldedCodeLine: TSynHighlighterAttributesModifier;
-    FMarkupInfoHiddenCodeLine: TSynHighlighterAttributesModifier;
+    FMarkupInfoFoldedCode: TLazEditHighlighterAttributesModifier;
+    FMarkupInfoFoldedCodeLine: TLazEditHighlighterAttributesModifier;
+    FMarkupInfoHiddenCodeLine: TLazEditHighlighterAttributesModifier;
     fTopViewPos : TLinePos;
     fLinesInWindow : Integer;          // there may be an additional part visible line
     fFoldTypeList : Array of TSynEditFoldLineMapInfo; // Index 0 means one line *above* fTopViewPos
@@ -401,7 +401,7 @@ type
     FDisplayView: TLazSynDisplayFold;
 
     function GetFoldClasifications(index : Integer): TFoldNodeClassifications;
-    function GetHighLighter: TSynCustomHighlighter;
+    function GetHighLighter: TLazEditCustomHighlighter;
     function GetDisplayNumber(index : Integer) : Integer; deprecated 'To be removed in 5.99 / Use DisplayView.ViewToTextIndex';
     function GetTextIndex(index : Integer) : Integer; deprecated 'To be removed in 5.99 / Use ScreenLineToTextIndex';
     function GetFoldType(index : Integer) : TSynEditFoldLineCapabilities;
@@ -409,7 +409,7 @@ type
     procedure ProcessMySynCommand(Sender: TObject; AfterProcessing: boolean;
       var Handled: boolean; var Command: TSynEditorCommand;
       var AChar: TUTF8Char; Data: pointer; HandlerData: pointer);
-    procedure SetHighLighter(AValue: TSynCustomHighlighter);
+    procedure SetHighLighter(AValue: TLazEditCustomHighlighter);
     procedure SetTopViewPos(const ALine : integer);
     function  GetTopTextIndex : integer;
     procedure SetTopTextIndex(AIndex : integer);
@@ -481,9 +481,9 @@ type
     property LinesInWindow : integer                    (* Fully Visible lines in Window; There may be one half visible line *)
       read fLinesInWindow write SetLinesInWindow;
 
-    property MarkupInfoFoldedCode: TSynHighlighterAttributesModifier read FMarkupInfoFoldedCode;
-    property MarkupInfoFoldedCodeLine: TSynHighlighterAttributesModifier read FMarkupInfoFoldedCodeLine;
-    property MarkupInfoHiddenCodeLine: TSynHighlighterAttributesModifier read FMarkupInfoHiddenCodeLine;
+    property MarkupInfoFoldedCode: TLazEditHighlighterAttributesModifier read FMarkupInfoFoldedCode;
+    property MarkupInfoFoldedCodeLine: TLazEditHighlighterAttributesModifier read FMarkupInfoFoldedCodeLine;
+    property MarkupInfoHiddenCodeLine: TLazEditHighlighterAttributesModifier read FMarkupInfoHiddenCodeLine;
   public
     procedure Lock;
     procedure UnLock;
@@ -550,7 +550,7 @@ type
     function  IsFoldedAtTextIndex(AStartIndex, ColIndex: Integer): Boolean;      (* Checks xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
     property FoldedAtTextIndex [index : integer] : Boolean read IsFolded;
 
-    property HighLighter: TSynCustomHighlighter read GetHighLighter
+    property HighLighter: TLazEditCustomHighlighter read GetHighLighter
                                                 write SetHighLighter;
     property FoldProvider: TSynEditFoldProvider read FFoldProvider;
   end;
@@ -714,7 +714,7 @@ constructor TLazSynDisplayFold.Create(AFoldView: TSynEditFoldedView);
 begin
   inherited Create;
   FFoldView := AFoldView;
-  FTokenAttr := TSynHighlighterAttributesModifier.Create(nil);
+  FTokenAttr := TLazEditHighlighterAttributesModifier.Create(nil);
   FMarkupLine := TLazEditTextAttributeMergeResult.Create;
 end;
 
@@ -3331,7 +3331,7 @@ begin
   Result := fFoldTypeList[index+1].Classifications;
 end;
 
-function TSynEditFoldedView.GetHighLighter: TSynCustomHighlighter;
+function TSynEditFoldedView.GetHighLighter: TLazEditCustomHighlighter;
 begin
   Result := FFoldProvider.HighLighter;
   if assigned(Result) then
@@ -3650,7 +3650,7 @@ begin
   end;
 end;
 
-procedure TSynEditFoldedView.SetHighLighter(AValue: TSynCustomHighlighter);
+procedure TSynEditFoldedView.SetHighLighter(AValue: TLazEditCustomHighlighter);
 begin
   if not(AValue is TSynCustomFoldHighlighter) then
     AValue := nil;

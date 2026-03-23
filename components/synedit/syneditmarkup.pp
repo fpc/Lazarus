@@ -27,7 +27,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, LazLoggerBase, SynEditTypes, LazSynEditText,
-  SynEditPointClasses, SynEditMiscClasses, SynEditHighlighter, LazEditTextAttributes;
+  SynEditPointClasses, SynEditMiscClasses, LazEditTextAttributes,
+  LazEditHighlighter;
 
 type
   TLazSynDisplayRtlInfo = record
@@ -42,7 +43,7 @@ type
 
   TSynEditMarkup = class(TObject)
   private
-    FMarkupInfo : TSynHighlighterAttributesModifier;
+    FMarkupInfo : TLazEditHighlighterAttributesModifier;
     FLines : TSynEditStringsLinked;
     FCaret : TSynEditCaret;
     FTopLine, FLinesInWindow : Integer;
@@ -87,7 +88,7 @@ type
     function RowToScreenRow(aRow : Integer) : Integer;
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
     function PhysicalToLogicalPos(const p: TPoint): TPoint;
-    function Highlighter: TSynCustomHighlighter;
+    function Highlighter: TLazEditCustomHighlighter;
     function OwnedByMgr: Boolean; virtual; // overwrite, do prevent destruction by mgr
 
     // Merge with results from others
@@ -136,7 +137,7 @@ type
     procedure DecPaintLock; virtual;
     function  RealEnabled: Boolean; virtual;
 
-    property MarkupInfo : TSynHighlighterAttributesModifier read fMarkupInfo;
+    property MarkupInfo : TLazEditHighlighterAttributesModifier read fMarkupInfo;
     property FGColor : TColor read GetFGColor;
     property BGColor : TColor read GetBGColor;
     property FrameColor: TColor read GetFrameColor;
@@ -383,9 +384,9 @@ begin
   Result := FLines.PhysicalToLogicalPos(p);
 end;
 
-function TSynEditMarkup.Highlighter : TSynCustomHighlighter;
+function TSynEditMarkup.Highlighter : TLazEditCustomHighlighter;
 begin
-  Result := SynEdit.Highlighter as TSynCustomHighlighter;
+  Result := SynEdit.Highlighter as TLazEditCustomHighlighter;
 end;
 
 function TSynEditMarkup.OwnedByMgr: Boolean;

@@ -9,8 +9,8 @@ uses
   Graphics, LCLType, Forms, LazLoggerBase,
   // SynEdit
   LazSynEditText, SynEdit, SynEditViewedLineMap, SynEditTypes, SynEditMiscProcs,
-  SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView, SynEditHighlighter, LazEditMiscProcs,
-  LazEditTextAttributes;
+  SynEditMiscClasses, SynEditKeyCmds, SynEditFoldedView, LazEditMiscProcs,
+  LazEditTextAttributes, LazEditHighlighter;
 
 type
   TLazSynEditLineWrapPlugin = class;
@@ -75,9 +75,9 @@ type
     FCurrentWrapColumn: Integer;
     FCaretWrapPos: TLazSynEditWrapCaretPos;
     FKeyStrokes: TSynEditLineMapKeyStrokes;
-    FMarkupInfoWrapEol: TSynHighlighterAttributesModifier;
-    FMarkupInfoWrapIndent: TSynHighlighterAttributesModifier;
-    FMarkupInfoWrapSubLine: TSynHighlighterAttributesModifier;
+    FMarkupInfoWrapEol: TLazEditHighlighterAttributesModifier;
+    FMarkupInfoWrapIndent: TLazEditHighlighterAttributesModifier;
+    FMarkupInfoWrapSubLine: TLazEditHighlighterAttributesModifier;
 
     FMinWrapWidth: Integer;
     FMaxWrapWidth: Integer;
@@ -170,9 +170,9 @@ type
     property WrapIndentMaxAbs: Integer read FWrapIndentMaxAbs write SetWrapIndentMaxAbs;
     property WrapIndentMaxRel: Integer read FWrapIndentMaxRel write SetWrapIndentMaxRel;
 
-    property MarkupInfoWrapSubLine: TSynHighlighterAttributesModifier read FMarkupInfoWrapSubLine;
-    property MarkupInfoWrapIndent:  TSynHighlighterAttributesModifier read FMarkupInfoWrapIndent;
-    property MarkupInfoWrapEol:     TSynHighlighterAttributesModifier read FMarkupInfoWrapEol;
+    property MarkupInfoWrapSubLine: TLazEditHighlighterAttributesModifier read FMarkupInfoWrapSubLine;
+    property MarkupInfoWrapIndent:  TLazEditHighlighterAttributesModifier read FMarkupInfoWrapIndent;
+    property MarkupInfoWrapEol:     TLazEditHighlighterAttributesModifier read FMarkupInfoWrapEol;
   end;
 
 const

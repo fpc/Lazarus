@@ -51,10 +51,9 @@ interface
 uses
   Classes, SysUtils, Graphics, Controls,
   SynEditMarkup, SynEditMiscClasses,
-  SynEditHighlighter,
   SynEditHighlighterFoldBase, LazSynEditText, SynEditTextBase, SynEditTypes,
   {$IFDEF WithSynMarkupFoldColorDebugGutter}SynGutterBase, SynTextDrawer,{$ENDIF}
-  SynEditMiscProcs, LazEditMiscProcs, LazEditTextAttributes,
+  SynEditMiscProcs, LazEditMiscProcs, LazEditTextAttributes, LazEditHighlighter,
   {$IFDEF SynEditMarkupFoldColoringDebug}
   SynHighlighterPas,
   strutils,
@@ -148,7 +147,7 @@ type
   private
     FColorCount: Integer;
     fHighlighter: TSynCustomFoldHighlighter;
-    fMarkupColors: array of TSynHighlighterAttributesModifier;
+    fMarkupColors: array of TLazEditHighlighterAttributesModifier;
     fLineColors : array of TMarkupFoldColorsLineColor;
     fNestList, fNestList2: TLazSynEditNestedFoldsList;
 
@@ -168,7 +167,7 @@ type
 
     procedure DoMarkupParentFoldAtRow(pRow: Integer);
     procedure DoMarkupParentCloseFoldAtRow(pRow: Integer);
-    function  GetColor(pIndex: Integer): TSynHighlighterAttributesModifier;
+    function  GetColor(pIndex: Integer): TLazEditHighlighterAttributesModifier;
     function  GetLineColor(pIndex: Integer): TMarkupFoldColorsLineColor;
     procedure SetColorCount(AValue: Integer);
     procedure SetDefaultGroup(pValue: integer);
@@ -198,7 +197,7 @@ type
     procedure PrepareMarkupForRow(pRow : Integer); override;
     property DefaultGroup : integer read fDefaultGroup write SetDefaultGroup;
     property ColorCount: Integer read FColorCount write SetColorCount;
-    property Color[pIndex: Integer]: TSynHighlighterAttributesModifier read GetColor;
+    property Color[pIndex: Integer]: TLazEditHighlighterAttributesModifier read GetColor;
     property LineColor[pIndex: Integer]: TMarkupFoldColorsLineColor read GetLineColor;
   end;
 
@@ -938,7 +937,7 @@ begin
   end;
 end;
 
-function TSynEditMarkupFoldColors.GetColor(pIndex: Integer): TSynHighlighterAttributesModifier;
+function TSynEditMarkupFoldColors.GetColor(pIndex: Integer): TLazEditHighlighterAttributesModifier;
 begin
   Assert((pIndex >= 0) and (pIndex < FColorCount), 'Index out of range');
   Result := fMarkupColors[pIndex];

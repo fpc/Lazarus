@@ -17,7 +17,7 @@ uses
 
 type
 
-  TNameAttributesMap   = specialize TFPGMapObject<string, TSynHighlighterAttributes>;
+  TNameAttributesMap   = specialize TFPGMapObject<string, TLazEditHighlighterAttributes>;
   TGrammarLoadEvent = procedure(AGrammarFile, AGrammarPath: String; out AGrammarDef: String);
 
  TSynTextMateRangeInfo = record
@@ -149,14 +149,14 @@ end;
 
 function TSynTextMateSyn.GetOrCreateAttribIdxForName(AName: String): integer;
 var
-  attr: TSynHighlighterAttributes;
+  attr: TLazEditHighlighterAttributes;
 begin
   if AName = '' then
     exit(-1);
   Result := FAttriMap.IndexOf(AName);
   if Result >= 0 then
     exit;
-  attr := TSynHighlighterAttributes.Create(AName, AName);
+  attr := TLazEditHighlighterAttributes.Create(AName, AName);
   AddAttribute(attr);
   Result := FAttriMap.Add(AName, attr);
 end;

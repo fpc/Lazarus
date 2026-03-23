@@ -60,7 +60,7 @@ type
   private
     fRange: TRangeState;
     fTokenID: TtkTokenKind;
-    fAttrs: array[0..MaxAttrs] of TSynHighlighterAttributes;
+    fAttrs: array[0..MaxAttrs] of TLazEditHighlighterAttributes;
     fLine: PChar;
     Run: LongInt;
     fTokenPos: Integer;
@@ -79,10 +79,10 @@ type
     procedure NullProc;
     procedure SpaceProc;
     procedure TextProc;
-    function GetAttr(AIndex: Integer): TSynHighlighterAttributes;
-    procedure SetAttr(AIndex: Integer; const aValue: TSynHighlighterAttributes);
+    function GetAttr(AIndex: Integer): TLazEditHighlighterAttributes;
+    procedure SetAttr(AIndex: Integer; const aValue: TLazEditHighlighterAttributes);
 
-    procedure SetAttribute(var AAttri: TSynHighlighterAttributes; AValue: TSynHighlighterAttributes);
+    procedure SetAttribute(var AAttri: TLazEditHighlighterAttributes; AValue: TLazEditHighlighterAttributes);
 
   protected
     function GetIdentChars: TSynIdentChars; override;
@@ -115,16 +115,16 @@ type
     function GetTokenAttribute: TLazEditTextAttribute; override;
     function GetTokenKind: integer; override;
   published
-    property TextAttri: TSynHighlighterAttributes Index 0 read GetAttr write SetAttr;
-    property HeaderAttri: TSynHighlighterAttributes Index 1 read GetAttr write SetAttr;
-    property BoldAttri: TSynHighlighterAttributes Index 2 read GetAttr write SetAttr;
-    property ItalicAttri: TSynHighlighterAttributes Index 3 read GetAttr write SetAttr;
-    property CodeInlineAttri: TSynHighlighterAttributes Index 4 read GetAttr write SetAttr;
-    property CodeBlockAttri: TSynHighlighterAttributes Index 5 read GetAttr write SetAttr;
-    property ListAttri: TSynHighlighterAttributes Index 6 read GetAttr write SetAttr;
-    property BlockQuoteAttri: TSynHighlighterAttributes Index 7 read GetAttr write SetAttr;
-    property LinkAttri: TSynHighlighterAttributes Index 8 read GetAttr write SetAttr;
-    property SpaceAttri: TSynHighlighterAttributes Index 9 read GetAttr write SetAttr;
+    property TextAttri: TLazEditHighlighterAttributes Index 0 read GetAttr write SetAttr;
+    property HeaderAttri: TLazEditHighlighterAttributes Index 1 read GetAttr write SetAttr;
+    property BoldAttri: TLazEditHighlighterAttributes Index 2 read GetAttr write SetAttr;
+    property ItalicAttri: TLazEditHighlighterAttributes Index 3 read GetAttr write SetAttr;
+    property CodeInlineAttri: TLazEditHighlighterAttributes Index 4 read GetAttr write SetAttr;
+    property CodeBlockAttri: TLazEditHighlighterAttributes Index 5 read GetAttr write SetAttr;
+    property ListAttri: TLazEditHighlighterAttributes Index 6 read GetAttr write SetAttr;
+    property BlockQuoteAttri: TLazEditHighlighterAttributes Index 7 read GetAttr write SetAttr;
+    property LinkAttri: TLazEditHighlighterAttributes Index 8 read GetAttr write SetAttr;
+    property SpaceAttri: TLazEditHighlighterAttributes Index 9 read GetAttr write SetAttr;
   end;
 
 implementation
@@ -140,16 +140,16 @@ var
 begin
   inherited Create(AOwner);
 
-  fAttrs[0] := TSynHighlighterAttributes.Create('Text', 'Text');
-  fAttrs[1] := TSynHighlighterAttributes.Create('Header', 'Header');
-  fAttrs[2] := TSynHighlighterAttributes.Create('Bold', 'Bold');
-  fAttrs[3] := TSynHighlighterAttributes.Create('Italic', 'Italic');
-  fAttrs[4] := TSynHighlighterAttributes.Create('Code Inline', 'CodeInline');
-  fAttrs[5] := TSynHighlighterAttributes.Create('Code Block', 'CodeBlock');
-  fAttrs[6] := TSynHighlighterAttributes.Create('List', 'List');
-  fAttrs[7] := TSynHighlighterAttributes.Create('BlockQuote', 'BlockQuote');
-  fAttrs[8] := TSynHighlighterAttributes.Create('Link', 'Link');
-  fAttrs[9] := TSynHighlighterAttributes.Create('Space', 'Space');
+  fAttrs[0] := TLazEditHighlighterAttributes.Create('Text', 'Text');
+  fAttrs[1] := TLazEditHighlighterAttributes.Create('Header', 'Header');
+  fAttrs[2] := TLazEditHighlighterAttributes.Create('Bold', 'Bold');
+  fAttrs[3] := TLazEditHighlighterAttributes.Create('Italic', 'Italic');
+  fAttrs[4] := TLazEditHighlighterAttributes.Create('Code Inline', 'CodeInline');
+  fAttrs[5] := TLazEditHighlighterAttributes.Create('Code Block', 'CodeBlock');
+  fAttrs[6] := TLazEditHighlighterAttributes.Create('List', 'List');
+  fAttrs[7] := TLazEditHighlighterAttributes.Create('BlockQuote', 'BlockQuote');
+  fAttrs[8] := TLazEditHighlighterAttributes.Create('Link', 'Link');
+  fAttrs[9] := TLazEditHighlighterAttributes.Create('Space', 'Space');
 
   // Attributes registered with AddAttribute are freed automatically.
   For I:=0 to MaxAttrs do
@@ -180,7 +180,7 @@ begin
 end;
 
 
-procedure TSynMarkdownSyn.SetAttribute(var AAttri: TSynHighlighterAttributes; AValue: TSynHighlighterAttributes);
+procedure TSynMarkdownSyn.SetAttribute(var AAttri: TLazEditHighlighterAttributes; AValue: TLazEditHighlighterAttributes);
 begin
   AAttri.Assign(AValue);
 end;
@@ -315,7 +315,7 @@ begin
   fTokenID := tkNull;
 end;
 
-procedure TSynMarkdownSyn.SetAttr(AIndex: Integer; const aValue: TSynHighlighterAttributes);
+procedure TSynMarkdownSyn.SetAttr(AIndex: Integer; const aValue: TLazEditHighlighterAttributes);
 begin
   fAttrs[AIndex].Assign(aValue);
 end;
@@ -334,7 +334,7 @@ begin
   if fLine[Run] = #10 then Inc(Run);
 end;
 
-function TSynMarkdownSyn.GetAttr(AIndex: Integer): TSynHighlighterAttributes;
+function TSynMarkdownSyn.GetAttr(AIndex: Integer): TLazEditHighlighterAttributes;
 begin
   Result:=fAttrs[AIndex];
 end;

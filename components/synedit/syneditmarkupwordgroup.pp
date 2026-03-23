@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls,
-  SynEditHighlighter, SynEditHighlighterFoldBase, LazEditTextAttributes;
+  SynEditHighlighterFoldBase, LazEditTextAttributes, LazEditHighlighter;
 
 type
 
@@ -44,10 +44,10 @@ type
     FHighlightPos1: TWordPoint;
     FHighlightPos2: TWordPoint;
     FHighlightPos3: TWordPoint;
-    FHighlighter: TSynCustomHighlighter;
+    FHighlighter: TLazEditCustomHighlighter;
     FNeedInvalidate: Boolean;
     FForceInvalidate: Boolean;
-    procedure SetHighlighter(const AValue: TSynCustomHighlighter);
+    procedure SetHighlighter(const AValue: TLazEditCustomHighlighter);
   protected
     procedure FindMatchingWords(LogCaret: TPoint;
       out Word1, Word2, Word3: TWordPoint);
@@ -71,7 +71,7 @@ type
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
 
-    property  Highlighter: TSynCustomHighlighter
+    property  Highlighter: TLazEditCustomHighlighter
       read FHighlighter write SetHighlighter;
   end;
 
@@ -116,7 +116,7 @@ begin
     InvalidateCurrentHighlight;
 end;
 
-procedure TSynEditMarkupWordGroup.SetHighlighter(const AValue: TSynCustomHighlighter);
+procedure TSynEditMarkupWordGroup.SetHighlighter(const AValue: TLazEditCustomHighlighter);
 begin
   FHighlighter := AValue;
 end;

@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, SynEditMarkup, SynEditMiscClasses, SynEditPointClasses,
-  SynEditTypes, SynEditHighlighter, LazEditTextAttributes;
+  SynEditTypes, LazEditTextAttributes, LazEditHighlighter;
 
 type
 
@@ -37,8 +37,8 @@ type
   private
     FSelection: TSynEditSelection;
     FColorTillEol: boolean; // colorize selection only till EOL
-    FMarkupInfoIncr: TSynHighlighterAttributesModifier_Eol; // Markup during incremental search
-    FMarkupInfoSelection: TSynHighlighterAttributesModifier_Eol; // Markup for normal Selection
+    FMarkupInfoIncr: TLazEditHighlighterAttributesModifier_Eol; // Markup during incremental search
+    FMarkupInfoSelection: TLazEditHighlighterAttributesModifier_Eol; // Markup for normal Selection
     FUseIncrementalColor : Boolean;
     nSelStart, nSelEnd: integer; // start, end of selected area in current line (physical)
     procedure SetColorTillEol(AValue: boolean);
@@ -64,9 +64,9 @@ type
 
     property ColorTillEol: boolean read FColorTillEol write SetColorTillEol;
     property UseIncrementalColor : Boolean read FUseIncrementalColor write SetUseIncrementalColor;
-    property MarkupInfoSeletion : TSynHighlighterAttributesModifier_Eol read FMarkupInfoSelection; deprecated 'use MarkupInfoSelection';
-    property MarkupInfoSelection : TSynHighlighterAttributesModifier_Eol read FMarkupInfoSelection;
-    property MarkupInfoIncr : TSynHighlighterAttributesModifier_Eol read FMarkupInfoIncr;
+    property MarkupInfoSeletion : TLazEditHighlighterAttributesModifier_Eol read FMarkupInfoSelection; deprecated 'use MarkupInfoSelection';
+    property MarkupInfoSelection : TLazEditHighlighterAttributesModifier_Eol read FMarkupInfoSelection;
+    property MarkupInfoIncr : TLazEditHighlighterAttributesModifier_Eol read FMarkupInfoIncr;
   end;
 
 implementation
@@ -118,7 +118,7 @@ constructor TSynEditMarkupSelection.Create(ASynEdit : TSynEditBase; ASelection: 
 begin
   inherited Create(ASynEdit);
   FSelection := ASelection;
-  FMarkupInfoSelection := TSynHighlighterAttributesModifier_Eol.Create([lafPastEOL]);
+  FMarkupInfoSelection := TLazEditHighlighterAttributesModifier_Eol.Create([lafPastEOL]);
   FMarkupInfoSelection.Features := [lafPastEOL];
   FMarkupInfoSelection.Background := clHighLight;
   FMarkupInfoSelection.Foreground := clHighLightText;
@@ -128,7 +128,7 @@ begin
   FMarkupInfoSelection.InternalSaveDefaultValues;
   FMarkupInfoSelection.AddChangeHandler(@MarkupChangedIntern);
 
-  FMarkupInfoIncr := TSynHighlighterAttributesModifier_Eol.Create;
+  FMarkupInfoIncr := TLazEditHighlighterAttributesModifier_Eol.Create;
   FMarkupInfoIncr.Background := clHighLight;
   FMarkupInfoIncr.Foreground := clHighLightText;
   FMarkupInfoIncr.FrameColor := clNone;

@@ -33,7 +33,7 @@ unit LazSynEditText;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLProc, SynEditTypes, SynEditMiscProcs, SynEditHighlighter,
+  Classes, SysUtils, Graphics, LCLProc, SynEditTypes, SynEditMiscProcs,
   SynEditKeyCmds, SynEditTextBase, LazEditTextAttributes, LazEditLineItemLists, LazEditHighlighter,
   LazEditHighlighterUtils;
 
@@ -228,7 +228,7 @@ type
     constructor Create;
     property NextView: TLazSynDisplayView read FNextView write FNextView;
   public
-    procedure InitHighlighterTokens(AHighlighter: TSynCustomHighlighter); virtual;
+    procedure InitHighlighterTokens(AHighlighter: TLazEditCustomHighlighter); virtual;
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx; out ASubLineIdx, AStartBytePos, AStartPhysPos, ALineByteLen: Integer); virtual;
     procedure FinishHighlighterTokens; virtual;
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; virtual;
@@ -245,16 +245,16 @@ type
   TLazSynDisplayViewEx = class(TLazSynDisplayView)
   private
     FInitialized: boolean;
-    FCurrentTokenHighlighter: TSynCustomHighlighter;
+    FCurrentTokenHighlighter: TLazEditCustomHighlighter;
     FCurrentTokenLine: TLineIdx;
     procedure SetCurrentTokenLine(AValue: TLineIdx);
   protected
     property Initialized: boolean read FInitialized;
-    property CurrentTokenHighlighter: TSynCustomHighlighter read FCurrentTokenHighlighter;
+    property CurrentTokenHighlighter: TLazEditCustomHighlighter read FCurrentTokenHighlighter;
     property CurrentTokenLine: TLineIdx read FCurrentTokenLine write SetCurrentTokenLine;
   public
     constructor Create;
-    procedure InitHighlighterTokens(AHighlighter: TSynCustomHighlighter); override;
+    procedure InitHighlighterTokens(AHighlighter: TLazEditCustomHighlighter); override;
     procedure FinishHighlighterTokens; override;
   end;
 
@@ -619,7 +619,7 @@ begin
   FInitialized := False;
 end;
 
-procedure TLazSynDisplayViewEx.InitHighlighterTokens(AHighlighter: TSynCustomHighlighter);
+procedure TLazSynDisplayViewEx.InitHighlighterTokens(AHighlighter: TLazEditCustomHighlighter);
 begin
   {$IFDEF SynAssert}
   if FInitialized then
@@ -645,7 +645,7 @@ begin
   FNextView := nil;
 end;
 
-procedure TLazSynDisplayView.InitHighlighterTokens(AHighlighter: TSynCustomHighlighter);
+procedure TLazSynDisplayView.InitHighlighterTokens(AHighlighter: TLazEditCustomHighlighter);
 begin
   if assigned(FNextView) then
     FNextView.InitHighlighterTokens(AHighlighter);

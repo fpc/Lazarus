@@ -98,23 +98,23 @@ type
 
   TSynSymbol=class
   private
-    Attr:TSynHighlighterAttributes;
+    Attr:TLazEditHighlighterAttributes;
     fOpenRule:TSynRange;
     FBrakeType:TSymbBrakeType;
   public
     Symbol:string;
     property BrakeType:TSymbBrakeType read FBrakeType write FBrakeType;
-    property Attributes:TSynHighlighterAttributes read Attr write Attr;
-    constructor Create(s:string;attribs:TSynHighlighterAttributes); virtual;
+    property Attributes:TLazEditHighlighterAttributes read Attr write Attr;
+    constructor Create(s:string;attribs:TLazEditHighlighterAttributes); virtual;
     destructor Destroy; override;
   end;
 
   TSynSymbolGroup=class
-    Attribs:TSynHighlighterAttributes;
+    Attribs:TLazEditHighlighterAttributes;
     KeywordsList:TStringList;
     GroupName:string;
     Name:string;
-    constructor Create(s:string; attr:TSynHighlighterAttributes);
+    constructor Create(s:string; attr:TLazEditHighlighterAttributes);
     destructor Destroy; override;
   end;
 
@@ -219,8 +219,8 @@ type
     fDefaultSymbols:TDefaultSymbols;
     fDefaultTermSymbol:TDefaultTermSymbols;
 
-    fDefaultAttri: TSynHighlighterAttributes;
-    fNumberAttri: TSynHighlighterAttributes;
+    fDefaultAttri: TLazEditHighlighterAttributes;
+    fNumberAttri: TLazEditHighlighterAttributes;
     fAttribs:TList;
 
     fTermSymbols:SymbolsSet;
@@ -258,9 +258,9 @@ type
     procedure DeleteSymbolGroup(index:integer); overload;
     procedure DeleteSymbolGroup(SymbolGroup:TSynSymbolGroup); overload;
     ////TL FPC errored with duplicate id... changed to Name1 in the following 2 functions
-    function AddNewAttribs(Name1:String):TSynHighlighterAttributes;
-    function AttribsByName(Name1:string):TSynHighlighterAttributes;
-    function AddAttribs(Attri:TSynHighlighterAttributes):integer;
+    function AddNewAttribs(Name1:String):TLazEditHighlighterAttributes;
+    function AttribsByName(Name1:string):TLazEditHighlighterAttributes;
+    function AddAttribs(Attri:TLazEditHighlighterAttributes):integer;
     procedure DeleteAttribs(Idx:integer); overload;
     ////TL FPC errored with duplicate id... changed to Name1
     procedure DeleteAttribs(Name1:string); overload;
@@ -284,8 +284,8 @@ type
     property SymbolGroups[Index:integer]:TSynSymbolGroup read GetSynSymbolGroup;
     property SymbolGroupCount:Integer read GetSymbolGroupCount;
 
-    property NumberAttri: TSynHighlighterAttributes read fNumberAttri;
-    property DefaultAttri: TSynHighlighterAttributes read fDefaultAttri;
+    property NumberAttri: TLazEditHighlighterAttributes read fNumberAttri;
+    property DefaultAttri: TLazEditHighlighterAttributes read fDefaultAttri;
 
     property CaseSensitive:boolean read GetCaseSensitive write SetCaseSensitive;
     property Prepared:boolean read fPrepared;
@@ -554,7 +554,7 @@ end;
 
 { TSynSymbolGroup }
 
-constructor TSynSymbolGroup.Create(s: string; attr: TSynHighlighterAttributes);
+constructor TSynSymbolGroup.Create(s: string; attr: TLazEditHighlighterAttributes);
 begin
   Attribs:=attr;
   KeywordsList:=TStringList.Create;
@@ -571,7 +571,7 @@ end;
 { TSynSymbol }
 
 constructor TSynSymbol.Create(s: string;
-  attribs: TSynHighlighterAttributes);
+  attribs: TLazEditHighlighterAttributes);
 begin
  attr:=attribs;
  Symbol:=s;
@@ -615,8 +615,8 @@ begin
   fOpenSymbol:=TSynSymbol.Create(OpenSymbs,nil);
   fCloseSymbol:=TSynSymbol.Create(CloseSymbs,nil);
 
-  fDefaultAttri :=TSynHighlighterAttributes.Create(SYNS_AttrDefaultPackage);
-  fNumberAttri := TSynHighlighterAttributes.Create(SYNS_AttrNumber);
+  fDefaultAttri :=TLazEditHighlighterAttributes.Create(SYNS_AttrDefaultPackage);
+  fNumberAttri := TLazEditHighlighterAttributes.Create(SYNS_AttrNumber);
 
   FillChar(SymbolList,sizeof(SymbolList),0);
   ////TL Added @ prefix
@@ -733,7 +733,7 @@ var
    end;
  end;
 
- function SafeInsertSymbol(Symb:TSynSymbol; Rules:TSynRange; Attribs:TSynHighlighterAttributes):TSynSymbol;
+ function SafeInsertSymbol(Symb:TSynSymbol; Rules:TSynRange; Attribs:TLazEditHighlighterAttributes):TSynSymbol;
  begin
    Result:=Rules.FindSymbol(Symb.Symbol);
    if Result=nil then
@@ -848,39 +848,39 @@ begin
 end;
 
 
-function TSynRange.AddAttribs(Attri: TSynHighlighterAttributes): integer;
+function TSynRange.AddAttribs(Attri: TLazEditHighlighterAttributes): integer;
 begin
  Result:=fAttribs.Add(Attri);
 end;
 
-function TSynRange.AddNewAttribs(Name1: String): TSynHighlighterAttributes;
+function TSynRange.AddNewAttribs(Name1: String): TLazEditHighlighterAttributes;
 begin
- Result:=TSynHighlighterAttributes.Create(Name1);
+ Result:=TLazEditHighlighterAttributes.Create(Name1);
  fAttribs.Add(Result);
 end;
 
-function TSynRange.AttribsByName(Name1: string): TSynHighlighterAttributes;
+function TSynRange.AttribsByName(Name1: string): TLazEditHighlighterAttributes;
 var
  i:integer;
 begin
  Result:=nil;
  for i:=0 to fAttribs.Count-1 do
-   if TSynHighlighterAttributes(fAttribs[i]).Name=Name1 then
+   if TLazEditHighlighterAttributes(fAttribs[i]).Name=Name1 then
    begin
-     Result:=TSynHighlighterAttributes(fAttribs[i]);
+     Result:=TLazEditHighlighterAttributes(fAttribs[i]);
      exit;
    end;
 end;
 
 procedure TSynRange.DeleteAttribs(Idx: integer);
 begin
- TSynHighlighterAttributes(fAttribs[Idx]).Free;
+ TLazEditHighlighterAttributes(fAttribs[Idx]).Free;
  fAttribs.Delete(Idx);
 end;
 
 procedure TSynRange.DeleteAttribs(Name1:string);
 var
-  p:TSynHighlighterAttributes;
+  p:TLazEditHighlighterAttributes;
 begin
   p:=AttribsByName(Name1);
   p.Free;
@@ -1813,7 +1813,7 @@ begin
   r.OpenSymbol.BrakeType:=btAny;
   self.MainRules.AddRange(r);
 
-  kw:=TSynSymbolGroup.Create('',TSynHighlighterAttributes.Create('unknown'));
+  kw:=TSynSymbolGroup.Create('',TLazEditHighlighterAttributes.Create('unknown'));
   kw.Name:='Key words';
   kw.Attribs.Foreground:=clGreen;
   kw.Attribs.Background:=clWhite;
@@ -2128,7 +2128,7 @@ procedure TSynUniSyn.LoadFromStream(aSrc: TStream);
 
       if isPresent(s,'<KW Name="') then
         begin
-          kw:=TSynSymbolGroup.Create('',TSynHighlighterAttributes.Create('unknown'));
+          kw:=TSynSymbolGroup.Create('',TLazEditHighlighterAttributes.Create('unknown'));
           kw.Name:=GetName(s);
           R.AddSymbolGroup(kw);
           repeat

@@ -17,7 +17,7 @@ uses
   // LazEdit
   LazEditTextAttributes, LazEditHighlighter,
   // SynEdit
-  SynEdit, SynEditHighlighter, SynEditMiscClasses, SynHighlighterPosition,
+  SynEdit, SynEditMiscClasses, SynHighlighterPosition,
   // IdeIntf
   IDEWindowIntf, IDECommands, IDEImagesIntf, SrcEditorIntf, EditorOptionsIntf,
   IdeIntfStrConsts, EditorSyntaxHighlighterDef,
@@ -164,8 +164,8 @@ type
     FImageTarget: Integer;
 
     FHighLigther: TLazEditCustomHighlighter;
-    FDefAttrib, FSrcCodeAttrib, FSrcFuncAttrib: TSynHighlighterAttributes;
-    FSelAttrib, FCurLineAttrib, FJmpLinkAttrib, FJmpTargetAttrib: TSynHighlighterAttributesModifier;
+    FDefAttrib, FSrcCodeAttrib, FSrcFuncAttrib: TLazEditHighlighterAttributes;
+    FSelAttrib, FCurLineAttrib, FJmpLinkAttrib, FJmpTargetAttrib: TLazEditHighlighterAttributesModifier;
     FMergeCol: TLazEditTextAttributeMergeResult;
 
     function LineForAddr(AnAddr: TDBGPtr):Integer;
@@ -239,13 +239,13 @@ constructor TIDEAsmWinHighlighter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FreeHighlighterAttributes;
-  AddAttribute( TSynHighlighterAttributes.Create(@dlgAddHiAttrDefault, 'ahaDefault')  );
-  AddAttribute( TSynHighlighterAttributes.Create(@dbgAsmWindowSourceLine, 'ahaAsmSourceLine')  );
-  AddAttribute( TSynHighlighterAttributes.Create(@dbgAsmWindowSourceFunc, 'ahaAsmSourceFunc')  );
-  AddAttribute( TSynHighlighterAttributesModifier.Create(@dlgAddHiAttrTextBlock, 'ahaTextBlock') );
-  AddAttribute( TSynHighlighterAttributesModifier.Create(@dlgAddHiAttrLineHighlight, 'ahaLineHighlight') );
-  AddAttribute( TSynHighlighterAttributesModifier.Create(@dlgAddHiAttrMouseLink, 'ahaMouseLink') );
-  AddAttribute( TSynHighlighterAttributesModifier.Create(@dbgAsmWindowLinkTarget, 'ahaAsmLinkTarget') );
+  AddAttribute( TLazEditHighlighterAttributes.Create(@dlgAddHiAttrDefault, 'ahaDefault')  );
+  AddAttribute( TLazEditHighlighterAttributes.Create(@dbgAsmWindowSourceLine, 'ahaAsmSourceLine')  );
+  AddAttribute( TLazEditHighlighterAttributes.Create(@dbgAsmWindowSourceFunc, 'ahaAsmSourceFunc')  );
+  AddAttribute( TLazEditHighlighterAttributesModifier.Create(@dlgAddHiAttrTextBlock, 'ahaTextBlock') );
+  AddAttribute( TLazEditHighlighterAttributesModifier.Create(@dlgAddHiAttrLineHighlight, 'ahaLineHighlight') );
+  AddAttribute( TLazEditHighlighterAttributesModifier.Create(@dlgAddHiAttrMouseLink, 'ahaMouseLink') );
+  AddAttribute( TLazEditHighlighterAttributesModifier.Create(@dbgAsmWindowLinkTarget, 'ahaAsmLinkTarget') );
 end;
 
 class function TIDEAsmWinHighlighter.GetLanguageName: string;
@@ -376,13 +376,13 @@ begin
   FHistory := TDBGPtrList.Create;
   FLinkLine := -1;
 
-  FDefAttrib       := TSynHighlighterAttributes.Create;
-  FSrcCodeAttrib   := TSynHighlighterAttributes.Create;
-  FSrcFuncAttrib   := TSynHighlighterAttributes.Create;
-  FSelAttrib       := TSynHighlighterAttributesModifier.Create;
-  FCurLineAttrib   := TSynHighlighterAttributesModifier.Create;
-  FJmpLinkAttrib   := TSynHighlighterAttributesModifier.Create;
-  FJmpTargetAttrib := TSynHighlighterAttributesModifier.Create;
+  FDefAttrib       := TLazEditHighlighterAttributes.Create;
+  FSrcCodeAttrib   := TLazEditHighlighterAttributes.Create;
+  FSrcFuncAttrib   := TLazEditHighlighterAttributes.Create;
+  FSelAttrib       := TLazEditHighlighterAttributesModifier.Create;
+  FCurLineAttrib   := TLazEditHighlighterAttributesModifier.Create;
+  FJmpLinkAttrib   := TLazEditHighlighterAttributesModifier.Create;
+  FJmpTargetAttrib := TLazEditHighlighterAttributesModifier.Create;
   FMergeCol:= TLazEditTextAttributeMergeResult.Create;
 
   inherited Create(AOwner);
