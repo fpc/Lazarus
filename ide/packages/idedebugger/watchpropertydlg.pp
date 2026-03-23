@@ -223,6 +223,7 @@ begin
   if s = '' then begin
     lblSrchParentErr1.Visible := False;
     lblSrchParentErr2.Visible := False;
+    exit;
   end;
 
   l := ParseWatchParentSearchLimit(s);
@@ -245,6 +246,7 @@ begin
   if s = '' then begin
     lblSrchParentErr1.Visible := False;
     lblSrchParentErr2.Visible := False;
+    exit;
   end;
 
   l := ParseWatchParentSearchLimit(s);
