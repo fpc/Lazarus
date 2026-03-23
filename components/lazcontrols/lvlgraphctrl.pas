@@ -760,7 +760,6 @@ type
 
   TMinXGraph = class
   private
-    FGraphNodeToNode: TPointerToPointerTree; // TLvlGraphNode to TMinXNode
     PairsChangedSinceBestStored: TMinXPair;
     procedure InitPairs;
     procedure UnbindPairs;
@@ -795,7 +794,6 @@ type
     procedure SwitchAndShuffle(MaxSingleRun, MaxTotalRun: int64);
     procedure SwitchPair(Pair: TMinXPair);
     procedure Apply; // reorder Graph nodes
-    function GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode; inline;
     procedure ConsistencyCheck;
   end;
 
@@ -1584,9 +1582,9 @@ end;
 
 constructor TMinXGraph.Create(aGraph: TLvlGraph);
 var
-  GraphNode: TLvlGraphNode;
+  GraphNode, ConnectedGraphNode: TLvlGraphNode;
   i: Integer;
-  Level: TMinXLevel;
+  Level, NeighbourLevel: TMinXLevel;
   n: Integer;
   e: Integer;
   Node: TMinXNode;
@@ -1594,14 +1592,6 @@ var
   OtherNode: TMinXNode;
 begin
   Graph:=aGraph;
-
-  // create nodes
-  FGraphNodeToNode:=TPointerToPointerTree.Create;
-  for i:=0 to Graph.NodeCount-1 do begin
-    GraphNode:=Graph.Nodes[i];
-    Node:=TMinXNode.Create(GraphNode);
-    FGraphNodeToNode[GraphNode]:=Node;
-  end;
 
   // create levels
   SetLength(Levels,aGraph.LevelCount);
@@ -1617,7 +1607,9 @@ begin
       SetLength(Node.OutEdges,GraphNode.OutEdgeCount);
       Cnt:=0;
       for e:=0 to GraphNode.OutEdgeCount-1 do begin
-        OtherNode:=GraphNodeToNode(GraphNode.OutEdges[e].Target);
+        ConnectedGraphNode := GraphNode.OutEdges[e].Target;
+        NeighbourLevel := Levels[ConnectedGraphNode.Level.Index];
+        OtherNode:=NeighbourLevel.Nodes[ConnectedGraphNode.IndexInLevel];
         if Node.Level.Index+1<>OtherNode.Level.Index then continue;
         Node.OutEdges[Cnt]:=OtherNode;
         Cnt+=1;
@@ -1635,7 +1627,9 @@ begin
       SetLength(Node.InEdges,GraphNode.InEdgeCount);
       Cnt:=0;
       for e:=0 to GraphNode.InEdgeCount-1 do begin
-        OtherNode:=GraphNodeToNode(GraphNode.InEdges[e].Source);
+        ConnectedGraphNode := GraphNode.InEdges[e].Source;
+        NeighbourLevel := Levels[ConnectedGraphNode.Level.Index];
+        OtherNode:=NeighbourLevel.Nodes[ConnectedGraphNode.IndexInLevel];
         if Node.Level.Index-1<>OtherNode.Level.Index then continue;
         Node.InEdges[Cnt]:=OtherNode;
         Cnt+=1;
@@ -1663,7 +1657,6 @@ begin
     Pairs[i].Free;
   SetLength(Pairs,0);
   SetLength(SameSwitchDiffPairs,0);
-  FreeAndNil(FGraphNodeToNode);
   inherited Destroy;
 end;
 
@@ -2041,11 +2034,6 @@ begin
   end;
 end;
 
-function TMinXGraph.GraphNodeToNode(GraphNode: TLvlGraphNode): TMinXNode;
-begin
-  Result:=TMinXNode(FGraphNodeToNode[GraphNode]);
-end;
-
 procedure TMinXGraph.ConsistencyCheck;
 
   procedure Err(Msg: string = '');
@@ -2062,23 +2050,7 @@ var
   e: Integer;
   OtherNode: TMinXNode;
   k: Integer;
-  AVLNode: TAvlTreeNode;
-  P2PItem: PPointerToPointerItem;
 begin
-  AVLNode:=FGraphNodeToNode.Tree.FindLowest;
-  while AVLNode<>nil do begin
-    P2PItem:=PPointerToPointerItem(AVLNode.Data);
-    if not (TObject(P2PItem^.Key) is TLvlGraphNode) then
-      Err(DbgSName(TObject(P2PItem^.Key)));
-    if not (TObject(P2PItem^.Value) is TMinXNode) then
-      Err(DbgSName(TObject(P2PItem^.Value)));
-    if TMinXNode(P2PItem^.Value).GraphNode=nil then
-      Err(dbgs(TMinXNode(P2PItem^.Value).IndexInLevel));
-    if TLvlGraphNode(P2PItem^.Key)<>TMinXNode(P2PItem^.Value).GraphNode then
-      Err;
-    AVLNode:=FGraphNodeToNode.Tree.FindSuccessor(AVLNode);
-  end;
-
   if length(Levels)<>Graph.LevelCount then
     Err;
   for i:=0 to length(Levels)-1 do begin
@@ -2171,7 +2143,7 @@ begin
   SetLength(BestNodes,length(Nodes));
   for i:=0 to length(Nodes)-1 do begin
     GraphNode:=GraphLevel[i];
-    Node:=Graph.GraphNodeToNode(GraphNode);
+    Node := TMinXNode.Create(GraphNode);
     Node.Level:=Self;
     Node.IndexInLevel:=i;
     Nodes[i]:=Node;
