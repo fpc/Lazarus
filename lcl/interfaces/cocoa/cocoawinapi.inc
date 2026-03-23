@@ -2063,7 +2063,7 @@ var
   lCallback: ICommonCallback;
 begin
   if hWnd = 0 then
-    Result := HDC(ScreenContext)
+    Result := HDC(CocoaDefaultGDIObject.screenContext)
   else
   begin
     lCallback := NSObject(hWnd).lclGetCallback;
@@ -2072,8 +2072,8 @@ begin
 
     if ctx = nil then
     begin
-      ctx := TCocoaContext.Create(DefaultContext.ctx);
-      ctx.InitDraw(DefaultContext.size.cx, DefaultContext.size.cy);
+      ctx := TCocoaContext.Create(CocoaDefaultGDIObject.context.ctx);
+      ctx.InitDraw(CocoaDefaultGDIObject.context.size.cx, CocoaDefaultGDIObject.context.size.cy);
     end;
     Result := HDC(ctx);
   end;
@@ -2439,7 +2439,7 @@ begin
   ctx := TCocoaGDIUtil.checkDC(DC);
   if not Assigned(ctx) then
     Exit;
-  if (ctx <> DefaultContext) and (ctx<>ScreenContext) and (not ctx.isControlDC) then
+  if (ctx <> CocoaDefaultGDIObject.context) and (ctx<>CocoaDefaultGDIObject.screenContext) and (not ctx.isControlDC) then
     ctx.Free;
   Result := 1;
 end;

@@ -484,13 +484,30 @@ type
     property Bitmap: TCocoaBitmap read FBitmap write SetBitmap;
   end;
 
+  { TCocoaDefaultGDIObject }
+
+  TCocoaDefaultGDIObject = class
+  private
+    _brush: TCocoaBrush;
+    _pen: TCocoaPen;
+    _font: TCocoaFont;
+    _bitmap: TCocoaBitmap;
+    _context: TCocoaBitmapContext;
+    _screenContext: TCocoaContext;
+  public
+    property brush: TCocoaBrush read _brush;
+    property pen: TCocoaPen read _pen;
+    property font: TCocoaFont read _font;
+    property bitmap: TCocoaBitmap read _bitmap;
+    property context: TCocoaBitmapContext read _context;
+    property screenContext: TCocoaContext read _screenContext;
+  private
+    procedure init;
+    destructor Destroy; override;
+  end;
+
 var
-  DefaultBrush: TCocoaBrush;
-  DefaultPen: TCocoaPen;
-  DefaultFont: TCocoaFont;
-  DefaultBitmap: TCocoaBitmap;
-  DefaultContext: TCocoaBitmapContext;
-  ScreenContext: TCocoaContext;
+  CocoaDefaultGDIObject: TCocoaDefaultGDIObject;
 
 type
 
@@ -1576,11 +1593,11 @@ begin
 
   FBkBrush := TCocoaBrush.CreateDefault;
 
-  FBrush := DefaultBrush;
+  FBrush := CocoaDefaultGDIObject.brush;
   FBrush.AddRef;
-  FPen := DefaultPen;
+  FPen := CocoaDefaultGDIObject.pen;
   FPen.AddRef;
-  FFont := DefaultFont;
+  FFont := CocoaDefaultGDIObject.font;
   FRegion := TCocoaRegion.CreateDefault;
   FClipRegion := FRegion;
   FClipRegion.AddRef;
@@ -1698,7 +1715,7 @@ begin
   ctx.saveGraphicsState;
 {$endif}
   try
-    DefaultBrush.Apply(Self, False);
+    CocoaDefaultGDIObject.brush.Apply(Self, False);
     CGContextSetBlendMode(CGContext, kCGBlendModeDifference);
 
     CGContextFillRect(CGContext, TCocoaTypeUtil.toSortedRect(X1, Y1, X2, Y2));
@@ -2706,7 +2723,7 @@ end;
 constructor TCocoaBitmapContext.Create;
 begin
   inherited Create(nil);
-  FBitmap := DefaultBitmap;
+  FBitmap := CocoaDefaultGDIObject.bitmap;
 end;
 
 destructor TCocoaBitmapContext.Destroy;
@@ -2729,6 +2746,29 @@ begin
   G := Round(color.greenComponent * $FF);
   B := Round(color.blueComponent * $FF);
   Result := Graphics.RGBToColor(R, G, B);
+end;
+
+{ TCocoaDefaultGDIObject }
+
+procedure TCocoaDefaultGDIObject.init;
+begin
+  _brush := TCocoaBrush.CreateDefault(True);
+  _pen := TCocoaPen.CreateDefault(True);
+  _font := TCocoaFont.CreateDefault(True);
+  _bitmap := TCocoaBitmap.CreateDefault;
+  _context := TCocoaBitmapContext.Create;
+  _context.Bitmap := _bitmap;
+  _screenContext := TCocoaContext.Create(_context.ctx);
+end;
+
+destructor TCocoaDefaultGDIObject.Destroy;
+begin
+  _screenContext.Free;
+  _context.Free;
+  _bitmap.Free;
+  _font.Free;
+  _pen.Free;
+  _brush.Free;
 end;
 
 { TCocoaRegion }
@@ -3660,31 +3700,11 @@ begin
     Dec(FRefCount);
 end;
 
-procedure initDefault;
-begin
-  DefaultBrush := TCocoaBrush.CreateDefault(True);
-  DefaultPen := TCocoaPen.CreateDefault(True);
-  DefaultFont := TCocoaFont.CreateDefault(True);
-  DefaultBitmap := TCocoaBitmap.CreateDefault;
-  DefaultContext := TCocoaBitmapContext.Create;
-  DefaultContext.Bitmap := DefaultBitmap;
-  ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
-end;
-
-procedure destroyDefault;
-begin
-  ScreenContext.Free;
-  DefaultContext.Free;
-  DefaultBitmap.Free;
-  DefaultFont.Free;
-  DefaultPen.Free;
-  DefaultBrush.Free;
-end;
-
 initialization
-  initDefault;
+  CocoaDefaultGDIObject:= TCocoaDefaultGDIObject.Create;
+  CocoaDefaultGDIObject.init;
 
 finalization
-  destroyDefault;
+  FreeAndNil( CocoaDefaultGDIObject );
 
 end.
