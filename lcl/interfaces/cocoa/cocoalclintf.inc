@@ -511,7 +511,7 @@ var
   ADesc: TRawImageDescription absolute ARawImage.Description;
   bmpType: TCocoaBitmapType;
 begin
-  Result := CocoaWidgetSetGDIService.getCocoaBitmapType(ADesc, bmpType);
+  Result := TCocoaGDIUtil.getCocoaBitmapType(ADesc, bmpType);
   if not Result then begin
     debugln(['TCocoaWidgetSet.RawImage_CreateBitmaps TODO Depth=',ADesc.Depth,' alphaprec=',ADesc.AlphaPrec,' byteorder=',ord(ADesc.ByteOrder),' alpha=',ADesc.AlphaShift,' red=',ADesc.RedShift,' green=',adesc.GreenShift,' blue=',adesc.BlueShift]);
     exit;
@@ -537,7 +537,7 @@ end;
 function TCocoaWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
 begin
   if TCocoaGDIUtil.checkBitmap(ABitmap, 'RawImage_DescriptionFromBitmap')
-  then Result := CocoaWidgetSetGDIService.fillLCLImageDescription(ADesc, TCocoaBitmap(ABitmap))
+  then Result := TCocoaGDIUtil.fillLCLImageDescription(ADesc, TCocoaBitmap(ABitmap))
   else Result := False;
 end;
 
@@ -580,7 +580,7 @@ function TCocoaWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, 
 begin
   if TCocoaGDIUtil.checkBitmap(ABitmap, 'RawImage_FromBitmap')
   and ((AMask = 0) or TCocoaGDIUtil.checkBitmap(AMask, 'RawImage_FromBitmap (mask)'))
-  then Result := CocoaWidgetSetGDIService.createLCLRawImage(ARawImage, TCocoaBitmap(ABitmap), TCocoaBitmap(AMask), ARect)
+  then Result := TCocoaGDIUtil.createLCLRawImage(ARawImage, TCocoaBitmap(ABitmap), TCocoaBitmap(AMask), ARect)
   else Result := False;
 end;
 
@@ -628,7 +628,7 @@ begin
   // desktop DC
   if TCocoaGDIUtil.checkDC(ADC, 'RawImage_FromDevice') and (CBC is TCocoaBitmapContext) then
   begin
-    Result := CocoaWidgetSetGDIService.createLCLRawImage(ARawImage, CBC.Bitmap, nil, @ARect);
+    Result := TCocoaGDIUtil.createLCLRawImage(ARawImage, CBC.Bitmap, nil, @ARect);
     Exit;
   end;
 
@@ -649,7 +649,7 @@ begin
   if Assigned(ScreenImage) then begin
     ARawImage.Description.Height := CGImageGetHeight(ScreenImage);
     ARawImage.Description.Width := CGImageGetWidth(ScreenImage);
-    ARawImage.Data := CocoaWidgetSetGDIService.getPixelData(ScreenImage, ARawImage.DataSize);
+    ARawImage.Data := TCocoaGDIUtil.getPixelData(ScreenImage, ARawImage.DataSize);
   end;
   ARawImage.Mask := nil;
 

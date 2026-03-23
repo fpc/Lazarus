@@ -458,7 +458,7 @@ begin
   Result := 0;
   if IconInfo^.hbmColor = 0 then Exit;
 
-  ABitmap := CocoaWidgetSetGDIService.create32BitAlphaCocoaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
+  ABitmap := TCocoaGDIUtil.create32BitAlphaCocoaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
 
   if IconInfo^.fIcon then
     Result := HICON(ABitmap)
