@@ -506,6 +506,15 @@ type
     function lclCGContext: CGContextRef; message 'lclCGContext';
   end;
 
+  { TCocoaGDIUtil }
+
+  TCocoaGDIUtil = class
+  public
+    class procedure drawBackground(
+      const view: NSView;
+      const lclBrush: TBrush );
+  end;
+
 implementation
 
 { LCLNSGraphicsContext }
@@ -516,6 +525,33 @@ begin
     Result := CGContext
   else
     Result := CGContextRef(graphicsPort);
+end;
+
+{ TCocoaGDIUtil }
+
+class procedure TCocoaGDIUtil.drawBackground(
+  const view: NSView;
+  const lclBrush: TBrush );
+var
+  ctx: TCocoaContext;
+  cocoaBrush: TCocoaBrush;
+  width: Integer;
+  height: Integer;
+begin
+  if lclBrush.Color = clWhite then   // see also TBrush.create
+    Exit;
+
+  width:= Round( view.bounds.size.width );
+  height:= Round( view.bounds.size.height );
+
+  ctx := TCocoaContext.Create( NSGraphicsContext.currentContext );
+  ctx.InitDraw( width, height );
+  try
+    cocoaBrush:= TCocoaBrush( lclBrush.Reference.Handle );
+    ctx.Rectangle( 0, 0, width, height, True, cocoaBrush );
+  finally
+    ctx.Free;
+  end;
 end;
 
 //todo: a better check!

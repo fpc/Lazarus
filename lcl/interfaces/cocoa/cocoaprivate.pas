@@ -49,9 +49,6 @@ type
       const ctrl: NSView;
       const newHeight, miniHeight, smallHeight: Integer;
       const AutoChangeFont: Boolean );
-    class procedure drawBackground(
-      const view: NSView;
-      const lclBrush: TBrush );
     class procedure lclOffsetWithEnclosingScrollView(
       const view: NSView;
       var x: Integer;
@@ -374,31 +371,6 @@ begin
   end;
   if AutoChangeFont and (ctrl.respondsToSelector(ObjCSelector('setFont:'))) then
     ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
-end;
-
-class procedure TCocoaViewUtil.drawBackground(
-  const view: NSView;
-  const lclBrush: TBrush );
-var
-  ctx: TCocoaContext;
-  cocoaBrush: TCocoaBrush;
-  width: Integer;
-  height: Integer;
-begin
-  if lclBrush.Color = clWhite then   // see also TBrush.create
-    Exit;
-
-  width:= Round( view.bounds.size.width );
-  height:= Round( view.bounds.size.height );
-
-  ctx := TCocoaContext.Create( NSGraphicsContext.currentContext );
-  ctx.InitDraw( width, height );
-  try
-    cocoaBrush:= TCocoaBrush( lclBrush.Reference.Handle );
-    ctx.Rectangle( 0, 0, width, height, True, cocoaBrush );
-  finally
-    ctx.Free;
-  end;
 end;
 
 class procedure TCocoaViewUtil.lclOffsetWithEnclosingScrollView(
