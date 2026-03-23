@@ -11,8 +11,13 @@ unit ParserTBase;
 interface
 
 uses
-  Classes, SysUtils, CodeToolManager, ExprEval, CodeCache, LazFileUtils,
-  LazLogger, fpcunit, testregistry;
+  Classes, SysUtils,
+  // FPCUnit
+  FPCUnit, TestRegistry,
+  // LazUtils
+  LazLoggerBase, LazFileUtils,
+  // CodeTools
+  CodeToolManager, CodeCache, ExprEval;
 
 type
 

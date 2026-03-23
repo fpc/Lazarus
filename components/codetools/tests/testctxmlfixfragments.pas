@@ -13,8 +13,11 @@ unit TestCTXMLFixFragments;
 interface
 
 uses
-  fpcunit, testregistry, Classes, SysUtils, FileProcs,
-  CTXMLFixFragment;
+  Classes, SysUtils,
+  // FPCUnit
+  FPCUnit, TestRegistry,
+  // CodeTools
+  CTXMLFixFragment, FileProcs;
 
 type
 

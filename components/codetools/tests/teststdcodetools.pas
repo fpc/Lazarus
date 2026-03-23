@@ -11,7 +11,12 @@ unit TestStdCodetools;
 interface
 
 uses
-  Classes, SysUtils, LazLoggerBase, fpcunit, testregistry,
+  Classes, SysUtils,
+  // FPCUnit
+  FPCUnit, TestRegistry,
+  // LazUtils
+  LazLoggerBase,
+  // CodeTools
   CodeToolManager, StdCodeTools, CodeCache, LinkScanner, SourceChanger, CodeTree;
 
 type

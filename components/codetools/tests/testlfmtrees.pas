@@ -5,8 +5,15 @@ unit TestLFMTrees;
 interface
 
 uses
-  Classes, SysUtils, CodeToolManager, CodeCache, LFMTrees,
-  LazLogger, fpcunit, testregistry, TestGlobals;
+  Classes, SysUtils,
+  // FPCUnit
+  FPCUnit, TestRegistry,
+  // LazUtils
+  LazLoggerBase,
+  // CodeTools
+  CodeToolManager, CodeCache, LFMTrees,
+  // (project)
+  TestGlobals;
 
 type
 

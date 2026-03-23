@@ -28,9 +28,15 @@ unit TestIdentCompletion;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, FileProcs, LazFileUtils, LazLogger,
-  CodeToolManager, ExprEval, CustomCodeTool, FindDeclarationTool,
-  KeywordFuncLists, CodeCache, IdentCompletionTool, CodeTree,
+  Classes, SysUtils,
+  // FPCUnit
+  TestRegistry,
+  // LazUtils
+  LazLoggerBase, LazFileUtils,
+  // CodeTools
+  CodeToolManager, ExprEval, CustomCodeTool, CodeCache, CodeTree, FileProcs,
+  FindDeclarationTool, KeywordFuncLists, IdentCompletionTool,
+  // (project)
   TestFindDeclaration;
 
 type

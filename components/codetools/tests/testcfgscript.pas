@@ -13,8 +13,11 @@ unit TestCfgScript;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, FileProcs,
-  CodeToolsCfgScript;
+  Classes, SysUtils,
+  // FPCUnit
+  FPCUnit, TestRegistry,
+  // CodeTools
+  CodeToolsCfgScript, FileProcs;
 
 type
 

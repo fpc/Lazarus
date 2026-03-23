@@ -5,8 +5,14 @@ unit TestCodeCompletion;
 interface
 
 uses
-  Classes, SysUtils, CodeToolManager, CodeCache,
-  LazLogger, LazFileUtils, fpcunit, testregistry,
+  Classes, SysUtils,
+  // FPCUnit
+  TestRegistry,
+  // LazUtils
+  LazLoggerBase, LazFileUtils,
+  // CodeTools
+  CodeToolManager, CodeCache,
+  // (project)
   TestFinddeclaration, TestStdCodetools;
 
 type

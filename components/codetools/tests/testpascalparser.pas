@@ -12,8 +12,15 @@ unit TestPascalParser;
 interface
 
 uses
-  Classes, SysUtils, math, CodeToolManager, CodeCache, CodeAtom, DefineTemplates, ExprEval,
-  CodeTree, PascalParserTool, LazLogger, fpcunit, testregistry, TestGlobals;
+  Classes, SysUtils, math,
+  // FPCUnit
+  FPCUnit, TestRegistry,
+  // LazUtils
+  LazLoggerBase,
+  // CodeTools
+  CodeToolManager, CodeCache, CodeAtom, CodeTree, PascalParserTool, DefineTemplates, ExprEval,
+  // (project)
+  TestGlobals;
 
 type
 

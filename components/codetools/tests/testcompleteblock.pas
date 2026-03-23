@@ -18,8 +18,13 @@ unit TestCompleteBlock;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, FileProcs,
-  CodeToolManager, CodeCache, CustomCodeTool, TestStdCodetools, TestGlobals;
+  Classes, SysUtils,
+  // FPCUnit
+  TestRegistry,
+  // CodeTools
+  CodeToolManager, CodeCache, CustomCodeTool, FileProcs,
+  // (project)
+  TestStdCodetools, TestGlobals;
 
 type
 

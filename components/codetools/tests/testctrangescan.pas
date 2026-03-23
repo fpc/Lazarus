@@ -21,8 +21,11 @@ unit TestCTRangeScan;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testregistry, FileProcs,
-  CodeToolManager, CodeCache, CustomCodeTool, LinkScanner, CodeTree,
+  Classes, SysUtils,
+  // FPCUnit
+  FPCUnit, TestRegistry,
+  // CodeTools
+  CodeToolManager, CodeCache, CustomCodeTool, LinkScanner, CodeTree, FileProcs,
   EventCodeTool, PascalParserTool, BasicCodeTools;
 
 const

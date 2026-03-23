@@ -20,7 +20,12 @@ program parsertest;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, sysutils, consoletestrunner, dom, fpcunit,
+  Classes, SysUtils, DOM,
+  // FPCUnit
+  ConsoleTestRunner,
+  // LazUtils
+  LazLogger,
+  // CodeTools
   CodeToolManager, CodeToolsConfig, ParserTBase;
 
 const

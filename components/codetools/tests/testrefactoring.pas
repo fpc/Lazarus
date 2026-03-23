@@ -10,11 +10,16 @@ unit TestRefactoring;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, fpcunit, AVL_Tree,
-  LazLogger, LazFileUtils, testregistry,
-  CodeToolManager, CodeCache, CodeTree, BasicCodeTools, CTUnitGraph,
-  FindDeclarationTool, ChangeDeclarationTool, CustomCodeTool, LinkScanner, TestGlobals,
-  TestFinddeclaration;
+  Classes, SysUtils, Contnrs, AVL_Tree,
+  // FPCUnit
+  TestRegistry,
+  // LazUtils
+  LazLoggerBase, LazFileUtils,
+  // CodeTools
+  CodeToolManager, CodeCache, CodeTree, CustomCodeTool, LinkScanner,
+  CTUnitGraph, BasicCodeTools, FindDeclarationTool, ChangeDeclarationTool,
+  // (project)
+  TestFindDeclaration, TestGlobals;
 
 const
   ExplodeWithMarker = 'explodewith:';

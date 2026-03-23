@@ -5,9 +5,16 @@ unit TestDesignerFormTools;
 interface
 
 uses
-  Classes, SysUtils, CodeToolManager, CodeCache, DefineTemplates,
-  LazLogger, LazFileUtils, AvgLvlTree, AVL_Tree, fpcunit, testregistry,
-  TestFinddeclaration, TestStdCodetools,
+  Classes, SysUtils, AVL_Tree,
+  // FPCUnit
+  TestRegistry,
+  // LazUtils
+  LazLoggerBase, LazFileUtils, AvgLvlTree,
+  // CodeTools
+  CodeToolManager, CodeCache, DefineTemplates,
+  // (project)
+  TestStdCodetools,
+  // (project/moduletests)
   Dsgn_AmbigBearBtn, Dsgn_BearControls, Dsgn_BearButtons;
 
 type
