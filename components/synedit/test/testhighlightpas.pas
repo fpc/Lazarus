@@ -169,6 +169,10 @@ begin
   PasHighLighter.DeclarationValueAttr.Clear;
   PasHighLighter.GotoLabelAttr.Clear;
   PasHighLighter.StructMemberAttr.Clear;
+  PasHighLighter.StringBacktickAttri.Clear;
+  PasHighLighter.StringSingleAttri.Clear;
+  PasHighLighter.StringCaretAttri.Clear;
+  PasHighLighter.StringHashAttri.Clear;
 end;
 
 procedure TTestBaseHighlighterPas.EnableFolds(AEnbledTypes: TPascalCodeFoldBlockTypes;
