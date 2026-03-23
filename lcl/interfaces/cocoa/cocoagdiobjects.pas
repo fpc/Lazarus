@@ -520,6 +520,76 @@ type
 
 implementation
 
+type
+
+  { TCocoaContextUtil }
+
+  TCocoaContextUtil = class
+  public
+    class procedure addLCLPoints(
+      const cg: CGContextRef;
+      const Points: array of TPoint;
+      const NumPts:Integer );
+    class procedure addLCLRect(
+      const cg: CGContextRef;
+      const x1, y1, x2, y2: Integer;
+      const HalfPixel: boolean); overload;
+    class procedure addLCLRect(
+      const cg: CGContextRef;
+      const R: TRect;
+      const HalfPixel: boolean); overload;
+  end;
+
+{ TCocoaContextUtil }
+
+class procedure TCocoaContextUtil.addLCLPoints(
+  const cg: CGContextRef;
+  const Points: array of TPoint;
+  const NumPts: Integer );
+var
+  cp: array of CGPoint;
+  i: Integer;
+begin
+  SetLength(cp, NumPts);
+  for i:=0 to NumPts-1 do
+  begin
+    cp[i].x:=Points[i].X+0.5;
+    cp[i].y:=Points[i].Y+0.5;
+  end;
+  CGContextAddLines(cg, @cp[0], NumPts);
+end;
+
+class procedure TCocoaContextUtil.addLCLRect(
+  const cg: CGContextRef;
+  const x1, y1, x2, y2: Integer;
+  const HalfPixel: boolean );
+var
+  r: CGRect;
+begin
+  if HalfPixel then
+  begin
+    r.origin.x:=x1+0.5;
+    r.origin.y:=y1+0.5;
+    r.size.width:=x2-x1-1;
+    r.size.height:=y2-y1-1;
+  end else
+  begin
+    r.origin.x:=x1;
+    r.origin.y:=y1;
+    r.size.width:=x2-x1;
+    r.size.height:=y2-y1;
+  end;
+  CGContextAddRect(cg, r);
+end;
+
+class procedure TCocoaContextUtil.addLCLRect(
+  const cg: CGContextRef;
+  const R: TRect;
+  const HalfPixel: boolean );
+begin
+  addLCLRect(cg, r.Left, r.Top, r.Right, r.Bottom, HalfPixel);
+end;
+
 { LCLNSGraphicsContext }
 
 function LCLNSGraphicsContext.lclCGcontext: CGContextRef;
@@ -1736,45 +1806,6 @@ begin
   AttachedBitmap_SetModified();
 end;
 
-procedure CGContextAddLCLPoints(cg: CGContextRef; const Points: array of TPoint;NumPts:Integer);
-var
-  cp: array of CGPoint;
-  i: Integer;
-begin
-  SetLength(cp, NumPts);
-  for i:=0 to NumPts-1 do
-  begin
-    cp[i].x:=Points[i].X+0.5;
-    cp[i].y:=Points[i].Y+0.5;
-  end;
-  CGContextAddLines(cg, @cp[0], NumPts);
-end;
-
-procedure CGContextAddLCLRect(cg: CGContextRef; x1, y1, x2, y2: Integer; HalfPixel: boolean); overload;
-var
-  r: CGRect;
-begin
-  if HalfPixel then
-  begin
-    r.origin.x:=x1+0.5;
-    r.origin.y:=y1+0.5;
-    r.size.width:=x2-x1-1;
-    r.size.height:=y2-y1-1;
-  end else
-  begin
-    r.origin.x:=x1;
-    r.origin.y:=y1;
-    r.size.width:=x2-x1;
-    r.size.height:=y2-y1;
-  end;
-  CGContextAddRect(cg, r);
-end;
-
-procedure CGContextAddLCLRect(cg: CGContextRef; const R: TRect; HalfPixel: boolean); overload;
-begin
-  CGContextAddLCLRect(cg, r.Left, r.Top, r.Right, r.Bottom, HalfPixel);
-end;
-
 procedure TCocoaContext.Polygon(const Points:array of TPoint;NumPts:Integer;
   Winding:boolean);
 var
@@ -1784,7 +1815,7 @@ begin
   if not Assigned(cg) or (NumPts<=0) then Exit;
 
   CGContextBeginPath(cg);
-  CGContextAddLCLPoints(cg, Points, NumPts);
+  TCocoaContextUtil.addLCLPoints(cg, Points, NumPts);
   CGContextClosePath(cg);
 
   if Winding then
@@ -1803,7 +1834,7 @@ begin
   if not Assigned(cg) or (NumPts<=0) then Exit;
 
   CGContextBeginPath(cg);
-  CGContextAddLCLPoints(cg, Points, NumPts);
+  TCocoaContextUtil.addLCLPoints(cg, Points, NumPts);
   CGContextStrokePath(cg);
 
   AttachedBitmap_SetModified();
@@ -1887,7 +1918,7 @@ begin
 
   if FillRect then
   begin
-    CGContextAddLCLRect(cg, X1, Y1, X2, Y2, false);
+    TCocoaContextUtil.addLCLRect(cg, X1, Y1, X2, Y2, false);
     //using the brush
     if Assigned(UseBrush) then
        UseBrush.Apply(Self);
@@ -1898,7 +1929,7 @@ begin
   end
   else
   begin
-    CGContextAddLCLRect(cg, X1, Y1, X2, Y2, true);
+    TCocoaContextUtil.addLCLRect(cg, X1, Y1, X2, Y2, true);
     // this is a "special" case, when UseBrush is provided
     // but "FillRect" is set to false. Use for FrameRect() function
     // (it deserves a redesign)
