@@ -377,6 +377,7 @@ type
     procedure SetROP2(AValue: Integer);
     procedure SetTextColor(AValue: TColor);
 
+    procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
     procedure UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
     procedure SetViewPortOfs(AValue: TPoint);
     procedure SetWindowOfs(AValue: TPoint);
@@ -626,12 +627,6 @@ begin
     bmp.Free;
   end;
   Result := img;
-end;
-
-procedure GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer); inline;
-begin
-  dx := AViewOfs.x - AWindowOfs.x;
-  dy := AViewOfs.y - AWindowOfs.y;
 end;
 
 procedure EnsureOrder(var X, Y: Integer);
@@ -1408,6 +1403,12 @@ begin
   FForegroundColor := AValue;
 end;
 
+procedure TCocoaContext.GetWindowViewTranslate(const AWindowOfs, AViewOfs: TPoint; out dx, dy: Integer);
+begin
+  dx := AViewOfs.x - AWindowOfs.x;
+  dy := AViewOfs.y - AWindowOfs.y;
+end;
+
 procedure TCocoaContext.UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
 var
   dx, dy: Integer;
@@ -1823,8 +1824,8 @@ end;
     and the start point of the next segment.
     For n segments there must be n*4 points in the array.
   Incomplete segments are ignored. }
-procedure TCocoaContext.PolyBezier(const Points: array of TPoint; NumPts: Integer;
-  Filled, Continuous: Boolean);
+procedure TCocoaContext.PolyBezier(const Points: array of TPoint;
+  NumPts: Integer; Filled, Continuous: boolean);
 var
   cg: CGContextRef;
   i, j: Integer;
