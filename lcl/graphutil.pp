@@ -415,7 +415,7 @@ var
 begin
   // what is fScale?
   ColorToHLS(clrRGB, H, L, S);
-  Result := HLStoColor(H, L + n, S);
+  Result := HLStoColor(H, EnsureRange(L+n, 0, High(Byte)), S);
 end;
 
 function GetHighLightColor(const Color: TColor; Luminance: Integer): TColor;
