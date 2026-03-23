@@ -2521,12 +2521,95 @@ function TCodeCompletionCodeTool.CompleteIdentifierByParameter(CleanCursorPos,
     then
       RaiseException(20170421201617,'CompleteIdentifierByParameter.AddProcedure JumpToMethod failed');
   end;
+type
+
+  { OverloadedProc }
+
+  OverloadedProc = record
+    Tool: TFindDeclarationTool;
+    ProcNode: TCodeTreeNode;
+    ParamNode: TCodeTreeNode;
+    PTypeName: PChar;
+  end;
+
+  ArrOfOverloadedProc = array of OverloadedProc;
+
+  procedure SetTypeName(var rec: OverloadedProc;  N: integer);
+  var i: integer;
+    Node: TCodeTreeNode;
+    p:PChar;
+  begin
+    with rec do begin
+      PTypeName:=nil;
+      ParamNode:=nil;
+      if ProcNode=nil then exit;
+      if (ProcNode.FirstChild=nil) then exit;
+      if (ProcNode.FirstChild.FirstChild=nil) then exit;
+      if (ProcNode.FirstChild.ChildCount<N+1) then exit;
+      i:=0;
+      Node:=ProcNode.FirstChild.FirstChild;
+      while (Node<>nil) and (i<N) do begin
+        Node:=Node.NextBrother;
+        inc(i);
+      end;
+      if Node<>nil then begin
+        i:=Node.EndPos-1;
+        while (i>1) and ((IsIdentChar[Tool.Src[i-1]]) or (Tool.Src[i-1]='.')) do dec(i);
+        // type name prefixed with a unit name should be allowed
+        // a limitation for open arrays - will be created variable of type of
+        // an array element type
+
+        // debugln([GetIdentifier(PChar(@Tool.Src[i]))]);
+
+        //note, code completion will work only at parameters without inserted comments
+
+        if IsIdentStartChar[Tool.Src[i]] then begin
+          PTypeName:=@Tool.Src[i];
+          ParamNode:=Node;
+        end;
+      end;
+    end;
+  end;
+
+  function GetCommonTypeForParameter(var arr: ArrOfOverloadedProc;
+    out ParamNode: TCodeTreeNode; out ATool: TFindDeclarationTool): string;
+  var
+    i:integer;
+    s: string;
+  begin
+    Result:='';
+    ParamNode:=nil;
+    ATool:=nil;
+    i:=0;
+    while i<=high(arr) do begin
+      if (arr[i].PTypeName<>nil) and (Result='') then begin
+        Result:=GetIdentifier(arr[i].PTypeName, true, true);  // "SourceName.ClassName.TypeName" possible
+        ParamNode:=arr[i].ParamNode;
+        ATool:=arr[i].Tool;
+      end;
+      if Result<>'' then begin
+        inc(i);
+        while i<=high(arr) do begin
+          if (arr[i].PTypeName<>nil) and
+            (CompareDottedIdentifiers(arr[i].PTypeName, PChar(Result))<>0) then begin
+            //different type names at N-th - parameter detected
+              Result:='';
+              ParamNode:=nil;
+              ATool:=nil;
+              exit;
+            end;
+          inc(i);
+        end;
+      end;
+      inc(i);
+    end;
+  end;
 
 var
   VarNameRange, ProcNameAtom: TAtomPosition;
-  ParameterIndex: integer;
+  ParameterIndex, i, APos: integer;
   Params: TFindDeclarationParams;
-  ParameterNode: TCodeTreeNode;
+  ParameterNode, ANode: TCodeTreeNode;
   TypeNode: TCodeTreeNode;
   NewType: String;
   IgnorePos: TCodePosition;
@@ -2535,12 +2618,15 @@ var
   ExprType: TExpressionType;
   Context: TFindContext;
   HasAtOperator: Boolean;
-  TypeTool: TFindDeclarationTool;
+  TypeTool, ATool: TFindDeclarationTool;
   AliasType: TFindContext;
   Identifier: String;
+  CodeXYPos: TCodeXYPosition;
+  FPL: TFPList;
+  ProcArray: ArrOfOverloadedProc;
 begin
   Result:=false;
-
+  ProcArray:=nil;
   {$IFDEF CTDEBUG}
   DebugLn('  CompleteIdentifierByParameter: A');
   {$ENDIF}
@@ -2636,7 +2722,32 @@ begin
         debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter searching ',GetIdentifier(Params.Identifier),' [',dbgs(Params.Flags),'] in ',FindContextToString(Context)]);
         {$ENDIF}
         if not Context.Tool.FindIdentifierInContext(Params) then exit;
+
+        // find best matching overloaded proc
+        FPL:=nil;
+        if not Params.NewCodeTool.CleanPosToCaret(
+          Params.NewNode.FirstChild.StartPos,CodeXYPos) then
+        exit;
+        if not Context.Tool.FindDeclarationAndOverload(CodeXYPos,FPL,
+          [fdlfWithoutEmptyProperties]) then
+        exit;
+        if FPL<>nil then
+          for i:=0 to FPL.Count-1 do begin
+            CodeXYPos:=TCodeXYPosition(FPL[i]^);
+            ATool:= FindCodeToolForUsedUnit(CodeXYPos.Code.Scanner.SourceName,
+              CodeXYPos.Code.Filename,false);
+            if ATool<>nil then begin
+              SetLength(ProcArray, Length(ProcArray)+1);
+              ATool.CaretToCleanPos(CodeXYPos,Apos);
+              ANode:=ATool.FindDeepestNodeAtPos(APos,false);
+              ProcArray[high(ProcArray)].Tool:=Atool;
+              ProcArray[high(ProcArray)].ProcNode:=ANode;
+              SetTypeName(ProcArray[high(ProcArray)],ParameterIndex);  // get N-th parameter type name
+              //debugln(['pos=',Apos]);
+            end;
+          end;
       finally
+        FreeListOfPCodeXYPosition(FPL);
         ClearIgnoreErrorAfter;
       end;
     end else
@@ -2665,23 +2776,9 @@ begin
       except
       end;
     end;
-    ParameterNode:=Params.NewCodeTool.FindNthParameterNode(Params.NewNode,
-                                                           ParameterIndex);
-    if (ParameterNode=nil)
-    and (Params.NewNode.Desc in [ctnProperty,ctnProcedure]) then begin
-      DebugLn(['  CompleteIdentifierByParameter Procedure has less than ',ParameterIndex+1,' parameters']);
-      exit;
-    end;
+    NewType:= GetCommonTypeForParameter(ProcArray, ParameterNode, TypeTool);
     if ParameterNode=nil then exit;
-    //DebugLn('TCodeCompletionCodeTool.CompleteIdentifierByParameter ParameterNode=',ParameterNode.DescAsString,' ',copy(Params.NewCodeTool.Src,ParameterNode.StartPos,50));
-    TypeTool:=Params.NewCodeTool;
     TypeNode:=FindTypeNodeOfDefinition(ParameterNode);
-    if TypeNode=nil then begin
-      DebugLn('  CompleteIdentifierByParameter Parameter has no type');
-      exit;
-    end;
-    // default: copy the type
-    NewType:=TypeTool.ExtractCode(TypeNode.StartPos,TypeNode.EndPos,[]);
 
     // search type
     Params.Clear;
