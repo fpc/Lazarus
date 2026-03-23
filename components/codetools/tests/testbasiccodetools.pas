@@ -26,7 +26,9 @@ unit TestBasicCodetools;
 interface
 
 uses
-  fpcunit, testregistry, contnrs, Classes, SysUtils,
+  Classes, SysUtils, contnrs,
+  // FPCUnit
+  FPCUnit, TestRegistry,
   // LazUtils
   LazStringUtils, LazConfigStorage,
   // CodeTools

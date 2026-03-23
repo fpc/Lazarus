@@ -12,9 +12,15 @@ unit TestCTPas2js;
 interface
 
 uses
-  Classes, SysUtils, CodeToolManager, FileProcs, DefineTemplates, LinkScanner,
-  CodeCache, ExprEval, TestGlobals, LazLogger, LazFileUtils, LazUTF8, fpcunit,
-  testregistry, TestFindDeclaration;
+  Classes, SysUtils,
+  // FPCUnit
+  TestRegistry,
+  // LazUtils
+  LazUTF8, LazLoggerBase, LazFileUtils,
+  // CodeTools
+  CodeToolManager, DefineTemplates, LinkScanner, CodeCache, ExprEval, FileProcs,
+  // (project)
+  TestGlobals, TestFindDeclaration;
 
 type
 

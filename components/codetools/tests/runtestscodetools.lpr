@@ -32,27 +32,23 @@ uses
   {$IFDEF HASAMIGA}
   athreads,
   {$ENDIF}
-  Classes, sysutils, dom,
+  Classes, SysUtils, DOM,
   // FPCUnit
-  fpcunit, consoletestrunner,
+  ConsoleTestRunner,
   // LazUtils
-  LazLogger, LazUTF8, LazStringUtils, LazFileUtils,
+  LazStringUtils, LazUTF8, LazLogger, LazFileUtils,
   // IdeConfig
   LazConf, EnvironmentOpts, TransferMacros, BaseBuildManager,
   // BuildIntf
   MacroIntf,
   // CodeTools
   CodeToolManager, CodeToolsConfig,
-  // Test suites
+  // (test suites)
   TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
-  {$IFDEF Darwin}
-  fdt_objccategory, fdt_objcclass,
-  {$ENDIF}
   TestBasicCodetools, TestCTRangeScan, TestPascalParser, TestMethodJumpTool,
   TestStdCodetools, TestFindDeclaration, TestIdentCompletion, TestCompleteBlock,
   TestRefactoring, TestCodeCompletion, TestCompReaderWriterPas,
-  fdt_arrays, TestCTPas2js, TestChangeDeclaration, TestLFMTrees, 
-  TestDesignerFormTools;
+  TestCTPas2js, TestChangeDeclaration, TestLFMTrees, TestDesignerFormTools;
 
 const
   ConfigFilename = 'codetools.config';

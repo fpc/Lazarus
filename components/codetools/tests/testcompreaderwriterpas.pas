@@ -28,10 +28,15 @@ unit TestCompReaderWriterPas;
 interface
 
 uses
-  Classes, SysUtils, typinfo, LazLoggerBase, LazUTF8, LazLogger, CompWriterPas,
-  LazPasReadUtil, fpcunit, testregistry, CodeToolManager, LinkScanner,
-  CodeToolsStructs, TestStdCodetools,
-  variants;
+  Classes, SysUtils, variants, typinfo,
+  // FPCUnit
+  TestRegistry,
+  // LazUtils
+  LazUTF8, LazLoggerBase, LazPasReadUtil, CompWriterPas,
+  // CodeTools
+  CodeToolManager, LinkScanner, CodeToolsStructs,
+  // (project)
+  TestStdCodetools;
 
 // Tests =======================================================================
 const

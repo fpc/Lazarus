@@ -5,10 +5,15 @@ unit TestChangeDeclaration;
 interface
 
 uses
-  Classes, SysUtils,
-  LazLogger, LazFileUtils, fpcunit, testregistry, AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
+  // FPCUnit
+  TestRegistry,
+  // LazUtils
+  LazLoggerBase, LazFileUtils,
+  // CodeTools
   CodeToolManager, CodeCache, PascalParserTool,
-  TestFinddeclaration, TestStdCodetools;
+  // (project)
+  TestStdCodetools;
 
 type
 

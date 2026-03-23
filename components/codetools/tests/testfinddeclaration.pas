@@ -81,12 +81,17 @@ unit TestFindDeclaration;
 interface
 
 uses
-  Classes, SysUtils, contnrs, fpcunit, testregistry, StrUtils,
-  FileProcs, LazFileUtils, LazLogger,
-  CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
+  Classes, SysUtils, StrUtils, contnrs,
+  // FPCUnit
+  TestRegistry,
+  // LazUtils
+  LazLoggerBase, LazFileUtils,
+  // CodeTools
+  CodeToolManager, ExprEval, CodeCache, BasicCodeTools, FileProcs,
   CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
   IdentCompletionTool, DefineTemplates, DirectoryCacher, CTUnitGraph,
-  TestGlobals, TestPascalParser;
+  // (project)
+  TestPascalParser, TestGlobals;
 
 const
   MarkDecl = '#'; // a declaration, must be unique
