@@ -10,8 +10,9 @@ uses
   Types, Classes, Controls, SysUtils, Math,
   LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
-  CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate, CocoaUtils,
-  CocoaApplication, CocoaWindows, CocoaGDIObjects, CocoaCursor, CocoaCaret, Cocoa_Extra;
+  CocoaPrivate, CocoaWSService, CocoaWSModalService,
+  CocoaApplication, CocoaWindows,  Cocoa_Extra, CocoaConfig, CocoaUtils,
+  CocoaGDIObjects, CocoaCursor, CocoaCaret;
 
 type
 
@@ -72,7 +73,7 @@ type
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
     function GetPropStorage: TStringList;
-    function GetContext: TCocoaContext;
+    function GetContext: HDC;
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
     function GetCaptureControlCallback: ICommonCallBack;
@@ -294,9 +295,9 @@ begin
   Result := FPropStorage;
 end;
 
-function TLCLCommonCallback.GetContext: TCocoaContext;
+function TLCLCommonCallback.GetContext: HDC;
 begin
-  Result := FContext;
+  Result := HDC( FContext );
 end;
 
 function TLCLCommonCallback.GetTarget: TObject;

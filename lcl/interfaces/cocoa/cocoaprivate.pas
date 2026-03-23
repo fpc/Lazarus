@@ -25,9 +25,8 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLType, Controls, Forms, Graphics,
-  LazUTF8,
   MacOSAll, CocoaAll,
-  CocoaGDIObjects, CocoaCursor, CocoaConfig, Cocoa_Extra, CocoaUtils;
+  CocoaConfig, Cocoa_Extra, CocoaUtils;
 
 type
 
@@ -123,7 +122,7 @@ type
     // non event methods
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
-    function GetContext: TCocoaContext;
+    function GetContext: HDC;
     function GetTarget: TObject;
     function GetHasCaret: Boolean;
     function GetCallbackObject: TObject;
@@ -716,7 +715,7 @@ end;
 
 function LCLViewExtension.lclIsPainting: Boolean;
 begin
-  Result := Assigned(lclGetCallback) and Assigned(lclGetCallback.GetContext);
+  Result := Assigned(lclGetCallback) and (lclGetCallback.GetContext<>0);
 end;
 
 procedure LCLViewExtension.lclInvalidateRect(const r:TRect);

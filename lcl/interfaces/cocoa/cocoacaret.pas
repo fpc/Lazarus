@@ -29,7 +29,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // Widgetset
-  CocoaGDIObjects, CocoaPrivate;
+  CocoaPrivate, CocoaGDIObjects;
 
 type
 
@@ -266,17 +266,18 @@ begin
 end;
 
 procedure TEmulatedCaret.DrawCaret;
+var
+  context: TCocoaContext;
 begin
   //DebugLn('DrawCaret ' + DbgSName(FView.LCLObject) + ' ' + DbgS(FPos) + ' ' + DbgS(FVisible) + ' ' + DbgS(FVisibleState));
   //writeln('draw ', FHideCount);
   if IsValid and FVisible and FVisibleState and FView.lclIsPainting and (FHideCount = 0) then
   begin
+    context := TCocoaContext( FView.lclGetCallback.GetContext );
     if FBitmap = nil then
-      FView.lclGetCallback.GetContext.InvertRectangle(FPos.X, FPos.Y,
-        FPos.X + FWidth, FPos.Y + FHeight)
+      context.InvertRectangle(FPos.X, FPos.Y, FPos.X + FWidth, FPos.Y + FHeight)
     else
-      FView.lclGetCallback.GetContext.DrawBitmap(FPos.X, FPos.Y,
-        FBitmap);
+      context.DrawBitmap(FPos.X, FPos.Y, FBitmap);
   end;
 end;
 

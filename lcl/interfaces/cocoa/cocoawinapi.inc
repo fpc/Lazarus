@@ -2068,7 +2068,7 @@ begin
   begin
     lCallback := NSObject(hWnd).lclGetCallback;
     if lCallback <> nil then
-      ctx := lCallback.GetContext;
+      ctx := TCocoaContext( lCallback.GetContext );
 
     if ctx = nil then
     begin

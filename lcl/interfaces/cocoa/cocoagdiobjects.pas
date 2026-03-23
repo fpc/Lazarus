@@ -10,8 +10,8 @@ interface
 uses
   MacOSAll, // for CGContextRef
   LCLtype, LCLProc, Graphics, Controls, fpcanvas, ImgList,
-  CocoaAll, CocoaUtils,
-  cocoa_extra,
+  CocoaAll,
+  CocoaUtils, Cocoa_Extra,
   {$ifndef CocoaUseHITheme}
   customdrawndrawers, customdrawn_mac,
   {$endif}
