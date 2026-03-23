@@ -3660,10 +3660,31 @@ begin
     Dec(FRefCount);
 end;
 
-initialization
+procedure initDefault;
+begin
+  DefaultBrush := TCocoaBrush.CreateDefault(True);
+  DefaultPen := TCocoaPen.CreateDefault(True);
+  DefaultFont := TCocoaFont.CreateDefault(True);
+  DefaultBitmap := TCocoaBitmap.CreateDefault;
+  DefaultContext := TCocoaBitmapContext.Create;
+  DefaultContext.Bitmap := DefaultBitmap;
+  ScreenContext := TCocoaContext.Create(DefaultContext.ctx);
+end;
 
+procedure destroyDefault;
+begin
+  ScreenContext.Free;
+  DefaultContext.Free;
+  DefaultBitmap.Free;
+  DefaultFont.Free;
+  DefaultPen.Free;
+  DefaultBrush.Free;
+end;
+
+initialization
+  initDefault;
 
 finalization
-
+  destroyDefault;
 
 end.
