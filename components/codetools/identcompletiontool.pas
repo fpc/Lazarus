@@ -425,6 +425,7 @@ type
     FIDTTreeOfUnitFiles_CaseInsensitive: Boolean;
     FIDTTreeOfNamespaces: TAVLTree;// tree of TNameSpaceInfo
     FOnGatherUserIdentifiers: TOnGatherUserIdentifiers;
+    FStartAtProc: boolean; // predefined self and result must be oferred only once at gathering all identifiers
     procedure AddToTreeOfUnitFileInfo(const AFilename: string);
     procedure AddBaseConstant(const BaseName: PChar);
     procedure AddBaseType(const BaseName: PChar);
@@ -1372,7 +1373,7 @@ var
   
 var
   NewItem: TIdentifierListItem;
-  Node, SubNode, InnerClass: TCodeTreeNode;
+  Node, SubNode, InnerClass, FuncNode, ProcNode: TCodeTreeNode;
   ProtectedForeignClass: Boolean;
   Lvl: LongInt;
   HasLowerVisibility: Boolean;
@@ -1381,7 +1382,7 @@ var
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
-
+  if FoundContext.Node=nil then exit;
   {$IFDEF ShowFoundIdents}
   if FoundContext.Tool=Self then
   DebugLn('::: COLLECT IDENT ',FoundContext.Node.DescAsString,
@@ -1401,9 +1402,79 @@ begin
 
   ProtectedForeignClass:=false;
   Node:=FoundContext.Node;
-  if Node=nil then exit; // may it happen?
   if FoundContext.Tool=Self then begin
     // identifier is in the same unit
+    if FStartAtProc then begin // add result & self if applicable
+      if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) then begin
+        // note - assumed that inside functions / methods those identifiers are pre-defined
+        // TODO: analize special cases with conflicting identifiers
+        ProcNode:=
+            CurrentIdentifierList.StartContext.Node.GetNodeOfType(ctnProcedure);
+        FuncNode:=nil;
+        while ProcNode<>nil do begin // find top outer procedure in a nesting chain
+          if ProcNode.Desc=ctnProcedure then
+            FuncNode:=ProcNode
+          else
+            break;
+          ProcNode:=ProcNode.Parent;
+        end;
+        if NodeIsMethodDecl(FuncNode) then
+          FuncNode:=FoundContext.Tool.FindCorrespondingProcNode(FuncNode);
+
+        if FoundContext.Tool.NodeIsMethodBody(FuncNode) and
+        not FoundContext.Tool.NodeIsClassMethod(FuncNode) and
+        not CurrentIdentifierList.HasIdentifier(PChar('Self'),'') then begin
+          // method -> add 'Self' (except class method)
+          NewItem:=CIdentifierListItem.Create(
+              icompUnknown,
+              true,
+              0,
+              'Self',
+              1,
+              nil,
+              nil,
+              ctnVarDefinition);
+          NewItem.ResultType:= FoundContext.Tool.ExtractClassNameOfProcNode(FuncNode,false);
+          CurrentIdentifierList.Add(NewItem);
+        end;
+
+        if (cmsResult in Scanner.CompilerModeSwitches) and
+        not CurrentIdentifierList.HasIdentifier(PChar('Result'),'') then begin
+
+          ProcNode:=
+            CurrentIdentifierList.StartContext.Node.GetNodeOfType(ctnProcedure);
+
+          while ProcNode<>nil do begin
+            if FoundContext.Tool.NodeIsFunction(ProcNode) or
+            FoundContext.Tool.NodeIsOperator(ProcNode) then
+              break;
+            ProcNode:=ProcNode.Parent;
+          end;
+
+          if (ProcNode<>nil) then begin
+            // function body -> add 'Result'
+            FuncNode:= FoundContext.Tool.GetProcResultNode(ProcNode);
+
+            NewItem:=CIdentifierListItem.Create(
+                icompUnknown,
+                true,
+                0,
+                'Result',
+                1,
+                nil,
+                nil,
+                ctnVarDefinition);
+
+            if FuncNode<>nil then
+              NewItem.ResultType:=
+                CurrentIdentifierList.StartContext.Tool.ExtractIdentifier(FuncNode.StartPos);
+            CurrentIdentifierList.Add(NewItem);
+          end;
+        end;
+      end;
+      FStartAtProc:=false;
+    end; // self & result
+
     //DebugLn('::: COLLECT IDENT in SELF ',FoundContext.Node.DescAsString,
     //  ' "',dbgstr(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"'
     //  ,' fdfIgnoreUsedUnits='+dbgs(fdfIgnoreUsedUnits in Params.Flags));
@@ -1415,6 +1486,7 @@ begin
       // => do not show it
       exit;
     end;
+
     Node:=Node.Parent;
     if (Node<>nil) and (Node.Desc in AllClassSubSections) then
       Node:=Node.Parent;
@@ -1651,7 +1723,7 @@ begin
                             ctnNone,
                             IsDottedIdent);
 
-  // Add the '&' character to prefixed identifiers
+  // '&' prefixed identifiers
   if (Ident^='&') and (IsIdentStartChar[Ident[1]]) then
     Include(NewItem.Flags,iliNeedsAmpersand);
 
@@ -1709,7 +1781,7 @@ procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
 
 var
   NewItem: TIdentifierListItem;
-  ProcNode: TCodeTreeNode;
+  ProcNode, FuncNode, ResNode: TCodeTreeNode;
   HiddenUnits: String;
   p: PChar;
   SystemTool: TFindDeclarationTool;
@@ -1813,44 +1885,6 @@ begin
       AddCompilerFunction('AWait','aType; p: TJSPromise','aType');
     end;
   end;
-
-  if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags) and
-     (Context.Node.Desc in AllPascalStatements)
-  then
-  begin
-    if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags)
-    and Context.Tool.NodeIsInAMethod(Context.Node)
-    and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
-      // method body -> add 'Self'
-      NewItem:=CIdentifierListItem.Create(
-          icompUnknown,
-          true,
-          1,
-          'Self',
-          StatementLevel,
-          nil,
-          nil,
-          ctnVarDefinition);
-      CurrentIdentifierList.Add(NewItem);
-    end;
-    ProcNode:=Context.Node.GetNodeOfType(ctnProcedure);
-    if (ilcfStartOfOperand in CurrentIdentifierList.ContextFlags)
-    and Context.Tool.NodeIsFunction(ProcNode)
-    and (not CurrentIdentifierList.HasIdentifier('Result','')) then begin
-      // function body -> add 'Result'
-      NewItem:=CIdentifierListItem.Create(
-          icompUnknown,
-          true,
-          1,
-          'Result',
-          StatementLevel,
-          nil,
-          nil,
-          ctnVarDefinition);
-      CurrentIdentifierList.Add(NewItem);
-    end;
-  end;
-
   // system types
   if InSystemContext then
   begin
@@ -3483,7 +3517,8 @@ begin
               end;
               // check if procedure is allowed
               if (CurPos.Flag in [cafEdgedBracketOpen, cafEqual, cafOtherOperator])
-              or ((Scanner.CompilerMode<>cmDelphi) and (CurPos.Flag in [cafAssignment, cafComma, cafRoundBracketOpen])) // "MyEvent := MyProc;" and "o.Test(MyProc)" is supported only in Delphi mode
+              or (not(Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) and
+              (CurPos.Flag in [cafAssignment, cafComma, cafRoundBracketOpen])) // "MyEvent := MyProc;" and "o.Test(MyProc)" is supported only in Delphi mode
               then
                 CurrentIdentifierList.ContextFlags:=
                   CurrentIdentifierList.ContextFlags+[ilcfDontAllowProcedures];
@@ -3576,6 +3611,7 @@ begin
             // gather all identifiers in context
             Params.ContextNode:=GatherContext.Node;
             Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
+            FStartAtProc:=true;
             Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable,fdfSearchInHelpers];
             if (Params.ContextNode.Desc=ctnInterface) and StartInSubContext then
               Include(Params.Flags,fdfIgnoreUsedUnits);

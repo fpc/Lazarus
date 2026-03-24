@@ -708,7 +708,7 @@ begin
   //debugln(['TPascalParserTool.BuildTree "',Src,'"']);
 
   // parse code and build codetree
-  if Scanner.CompilerMode=cmDELPHI then
+  if Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE] then
     WordIsKeyWordFuncList:=WordIsDelphiKeyWord
   else if Scanner.CompilerMode=cmMacPas then
     WordIsKeyWordFuncList:=WordIsMacPasKeyWord

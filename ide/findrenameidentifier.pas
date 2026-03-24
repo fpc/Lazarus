@@ -662,12 +662,22 @@ begin
     LazarusIDE.DoJumpToCodeToolBossError;
     exit(mrCancel);
   end;
-  DeclTool:=nil;
+  DeclTool:=CodeToolBoss.FindCodeToolForSource(StartSrcCode);
+  if DeclTool=nil then
+    exit(mrCancel);
   Kind:=friDeclaration;
-  if not UpdateCodeNode then exit;
-  if not CheckUsesNode then exit; // also allows source name
+  if DeclTool.TruePredefinedResult or DeclTool.TrueSelf then begin  // stay where you are
+    DeclCodeXY.X:=StartCaretXY.X;
+    DeclCodeXY.Y:=StartCaretXY.Y;
+    DeclTool.CaretToCleanPos(DeclCodeXY,DeclCleanPos);
+    DeclNode:=DeclTool.FindDeepestNodeAtPos(DeclCleanPos,false);
+    DeclTool.CleanPosToCaret(DeclCleanPos,DeclCodeXY);
+    DeclTopLine:=DeclCodeXY.Y;
+  end else begin
+    if not UpdateCodeNode then exit;
+    if not CheckUsesNode then exit; // also allows source name
+  end;
   CodeToolBoss.GetIdentifierAt(DeclCodeXY.Code,DeclCodeXY.X,DeclCodeXY.Y,Identifier);
-
   DeclXY:=Point(DeclCodeXY.X,DeclCodeXY.Y);
   Result:=LazarusIDE.DoOpenFileAndJumpToPos(DeclCodeXY.Code.Filename, DeclXY,
     DeclTopLine,-1,-1,[ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
@@ -829,6 +839,8 @@ begin
     FindRefFlags:=[];
     if Options.Rename then
       Include(FindRefFlags,frfRename);
+    if DeclTool.TruePredefinedResult or DeclTool.TrueSelf then
+      Include(FindRefFlags,frfPredefinedIdentifiers);
     if Options.Overrides then
       Include(FindRefFlags,frfMethodOverrides);
     if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
@@ -1842,6 +1854,10 @@ begin
     NewIdentifierPosition.X,NewIdentifierPosition.Y,FOldIdentifier,FNode) then
   begin
     CurrentGroupBox.Caption:= Format(lisFRIIdentifier,[''])+LCLEncodeAmps(FOldIdentifier);
+    if (FNode<>nil) then begin
+      if (FNode.Desc=ctnBeginBlock) then // 'Result', 'Self'
+        IsPrivate:=true;
+    end;
   end else
     FOldIdentifier:='';
   FNodesDeletedChangeStep:=FTool.NodesDeletedChangeStep;

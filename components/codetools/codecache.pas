@@ -572,7 +572,8 @@ end;
 
 procedure TCodeCache.Clear;
 begin
-  FItems.FreeAndClear;
+  if (FItems<>nil) then
+    FItems.FreeAndClear;
 end;
 
 procedure TCodeCache.ClearAllSourceLogEntries;
@@ -637,7 +638,10 @@ end;
 
 function TCodeCache.Count: integer;
 begin
-  Result:=FItems.Count;
+  if FItems=nil then
+    Result:=0
+  else
+    Result:=FItems.Count;
 end;
 
 constructor TCodeCache.Create;

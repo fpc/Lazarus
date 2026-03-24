@@ -804,6 +804,11 @@ begin
           if IdentItem is TCodeTemplateIdentifierListItem then
             s:=' - '+TCodeTemplateIdentifierListItem(IdentItem).Comment;
         end;
+      ctnVarDefinition:
+        // predefined Result or Self (instance)
+        begin
+          s := s + ': ' + IdentItem.ResultType;   // "Result: TypeOfResult"
+        end;
       end;
     end;
     

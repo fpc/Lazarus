@@ -2372,7 +2372,7 @@ begin
     RaiseUnhandableExceptions:=true;
     {$ENDIF}
     Result:=FCurCodeTool.FindDeclaration(CursorPos,Flags,NewTool,NewNode,
-                                         NewPos,NewTopLine,BlockTopLine,BlockBottomLine);
+              NewPos,NewTopLine,BlockTopLine,BlockBottomLine);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
@@ -2953,22 +2953,28 @@ begin
     debugln(['TCodeToolManager.FindReferences A SearchInCode=',SearchInCode.Filename]);
   {$ENDIF}
   ListOfPCodeXYPosition:=nil;
-
-  if not UpdateFindIdentifierRefCache(IdentifierCode,X,Y,Cache)
-      or (Cache.NewNode=nil) then begin
-    DebugLn('TCodeToolManager.FindReferences unable to FindDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
-    exit;
+  if not (frfPredefinedIdentifiers in Flags) then begin
+    if not UpdateFindIdentifierRefCache(IdentifierCode,X,Y,Cache)
+        or (Cache.NewNode=nil) then begin
+      DebugLn('TCodeToolManager.FindReferences unable to FindDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
+      exit;
+    end;
+    Result:=true;
+    if not InitCurCodeTool(SearchInCode) then exit;
+    if Cache.IsPrivate and (FCurCodeTool<>Cache.NewTool) then begin
+      {$IFDEF VerboseFindReferences}
+      debugln(['TCodeToolManager.FindReferences identifier is not reachable from this unit => skipping search']);
+      {$ENDIF}
+      exit(true);
+    end;
+    CursorPos:=Cache.NewPos;
+  end else begin
+    Result:=true;
+    if not InitCurCodeTool(SearchInCode) then exit;
+    CursorPos.X:=X;
+    CursorPos.Y:=Y;
+    CursorPos.Code:=IdentifierCode;
   end;
-  Result:=true;
-  if not InitCurCodeTool(SearchInCode) then exit;
-  if Cache.IsPrivate and (FCurCodeTool<>Cache.NewTool) then begin
-    {$IFDEF VerboseFindReferences}
-    debugln(['TCodeToolManager.FindReferences identifier is not reachable from this unit => skipping search']);
-    {$ENDIF}
-    exit(true);
-  end;
-
-  CursorPos:=Cache.NewPos;
   {$IF defined(CTDEBUG) or defined(VerboseFindReferences)}
   DebugLn('TCodeToolManager.FindReferences Searching "',SearchInCode.Filename,'" for reference to x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' ',CursorPos.Code.Filename);
   {$ENDIF}

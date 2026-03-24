@@ -7796,7 +7796,7 @@ var
     AFilename:=OldFilename;
     if ExtractFileExt(AFilename)='' then begin
       // add default extension
-      if (Scanner.CompilerMode=cmDELPHI) then
+      if (Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE]) then
         AFilename:=AFilename+'.pas'
       else
         AFilename:=AFilename+'.pp';

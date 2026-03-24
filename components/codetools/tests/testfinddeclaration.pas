@@ -478,10 +478,10 @@ procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
 
 var
   CommentP: Integer;
-  p: Integer;
+  p, aTop: Integer;
   Src, ExpectedPath, FoundPath: String;
   PathPos: Integer;
-  CursorPos, FoundCursorPos: TCodeXYPosition;
+  CursorPos, FoundCursorPos, AmdPos: TCodeXYPosition;
   FoundTopLine: integer;
   FoundTool: TFindDeclarationTool;
   FoundCleanPos: Integer;
@@ -499,6 +499,7 @@ var
   NewExprType: TExpressionType;
   ListOfPCodeXYPosition: TFPList;
   Cache: TFindIdentifierReferenceCache;
+  SearchFlags: TFindRefsFlags;
 begin
   FMainCode:=aCode;
   DoParseModule(MainCode,FMainTool);
@@ -815,11 +816,22 @@ begin
           if ExpComment then delete(ExpectedPath, 1, 2);
           ListOfPCodeXYPosition:=nil;
           Cache:=nil;
+          SearchFlags:=[];
+
           MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
+
+          if (CompareIdentifiers(PChar(@Src[IdentifierStartPos]),'Result')=0) or
+          (CompareIdentifiers(PChar(@Src[IdentifierStartPos]),'Self')=0) then
+          begin
+            if MainTool.FindDeclaration(CursorPos,AmdPos,aTop) then
+              if MainTool.TruePredefinedResult or MainTool.TrueSelf then
+            SearchFlags:=[frfPredefinedIdentifiers]; // this forces checking result & self
+          end;
+
           if not CodeToolBoss.FindReferences(
             aCode,CursorPos.X,CursorPos.Y,
             aCode {TODO: iterate multiple files}, not ExpComment,
-            ListOfPCodeXYPosition, Cache)
+            ListOfPCodeXYPosition, Cache, SearchFlags)
           then
             AssertTrue('FindReferences failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true), False);
 

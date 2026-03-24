@@ -355,6 +355,7 @@ type
     procedure ConsistencyCheck;
     procedure WriteDebugReport(const Prefix: string; WithChilds: boolean);
   end;
+  PTCodeTreeNode = ^TCodeTreeNode;
   TCodeTreeNodeArray = array of TCodeTreeNode;
 
   { TCodeTree }

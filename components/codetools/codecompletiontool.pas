@@ -1443,7 +1443,7 @@ begin
   if GetIdentLen(AnUnitName)=0 then exit;
   if CompareDottedIdentifiers(AnUnitName,'System')=0 then exit;
   if (CompareDottedIdentifiers(AnUnitName,'ObjPas')=0)
-  and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
+  and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC]) //  cmDELPHIUNICODE ?
   and (Scanner.PascalCompiler=pcFPC) then
     exit;
   if (CompareDottedIdentifiers(AnUnitName,'MacPas')=0)
@@ -2793,7 +2793,7 @@ begin
     TypeTool:=ExprType.Context.Tool;
     TypeNode:=ExprType.Context.Node;
     if HasAtOperator
-    or ((Scanner.CompilerMode=cmDelphi) and (ExprType.Desc=xtContext) // procedures in delphi mode without @
+    or ((Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE]) and (ExprType.Desc=xtContext) // procedures in delphi mode without @
         and (TypeNode<>nil) and (TypeNode.Desc in AllProcTypes)) then
     begin
       debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter HasAtOperator ExprType=',ExprTypeToString(ExprType)]);
@@ -7678,7 +7678,8 @@ var
             begin
               ProcBody:=
                 'procedure '
-                +ExtractClassName(PropNode.Parent.Parent,false,true,Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE])+'.'+AccessParam
+                +ExtractClassName(PropNode.Parent.Parent,false,true,
+                Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE])+'.'+AccessParam
                 +'('+AccessVariableNameParam+':'+PropType+');'
                 +BeautifyCodeOpts.LineEnd
                 +'begin'+BeautifyCodeOpts.LineEnd
@@ -9292,7 +9293,8 @@ begin
     {$IF defined(CTDEBUG) or defined(VerboseCreateMissingClassProcBodies)}
     DebugLn('TCodeCompletionCodeTool.CreateMissingClassProcBodies Gather existing method declarations ... ');
     {$ENDIF}
-    TheClassName:=ExtractClassName(CodeCompleteClassNode,false,true,Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]);
+    TheClassName:=ExtractClassName(CodeCompleteClassNode,false,true,
+      Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]);
 
     // check for double defined methods in ClassProcs
     CheckForDoubleDefinedMethods;

@@ -199,8 +199,10 @@ type
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsMethodDecl(ProcNode: TCodeTreeNode): boolean;
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
+    function NodeIsClassMethod(ProcNode: TCodeTreeNode): boolean;
     function GetMethodOfBody(Node: TCodeTreeNode): TCodeTreeNode;
     function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
+    function NodeIsInsideFunction(ProcNode: TCodeTreeNode): boolean;
     function NodeIsClassConstructorOrDestructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsDestructor(ProcNode: TCodeTreeNode): boolean;
@@ -1316,7 +1318,6 @@ begin
     ProcNode:=ProcNode.Parent;
 
   LastGood:=nil;
-
   while ProcNode<>nil do begin
     if ProcNode.Desc=ctnProcedure then
       LastGood:=ProcNode
@@ -3127,6 +3128,23 @@ begin
   Result:=true;
 end;
 
+function TPascalReaderTool.NodeIsClassMethod(ProcNode: TCodeTreeNode
+  ): boolean;
+begin
+  Result:=false;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)  then
+    exit;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  ReadPriorAtom;
+  if not UpAtomIs('CLASS') then exit;
+  ReadNextAtom;
+  if not (UpAtomIs('FUNCTION') or UpAtomIs('PROCEDURE')) then exit;
+  ReadNextAtom;
+  if not AtomIsIdentifier then exit;
+  Result:=true;
+end;
+
 function TPascalReaderTool.GetMethodOfBody(Node: TCodeTreeNode): TCodeTreeNode;
 begin
   Result:=Node;
@@ -3135,13 +3153,38 @@ begin
 end;
 
 function TPascalReaderTool.NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
+var BackTo: integer;
+    ErrPos: boolean;
+    AFlag: TCommonAtomFlag;
 begin
+// this function can be safely used by routines relying on unchanged cursor position
   Result:=false;
   if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then exit;
+  BackTo:=CurPos.StartPos;
+  ErrPos:=(BackTo<1) or (BackTo>SrcLen);
+  AFlag:=CurPos.Flag;
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom;
+
+  if UpAtomIs('GENERIC') and (Scanner.CompilerMode in [cmOBJFPC]) then
+    ReadNextAtom;
   if UpAtomIs('CLASS') then ReadNextAtom;
   Result:=UpAtomIs('FUNCTION');
+  if not ErrPos then begin
+    MoveCursorToCleanPos(BackTo);
+    if AFlag<>cafNone then
+      ReadNextAtom;
+  end;
+end;
+
+function TPascalReaderTool.NodeIsInsideFunction(ProcNode: TCodeTreeNode
+  ): boolean;
+begin
+  while ProcNode<>nil do begin
+    if NodeIsFunction(ProcNode) then break;
+    ProcNode:=ProcNode.Parent;
+  end;
+  Result:= ProcNode<>nil;
 end;
 
 function TPascalReaderTool.NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
@@ -3198,21 +3241,34 @@ end;
 function TPascalReaderTool.NodeIsNestedProc(ProcNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
+  if ProcNode=nil then exit;
+  if ProcNode.Desc<>ctnProcedure then exit;
   if ProcNode.Parent.Desc=ctnProcedure then
     Result:=true;
 end;
 
 function TPascalReaderTool.NodeIsOperator(ProcNode: TCodeTreeNode): boolean;
+var BackTo: integer;
+    ErrPos: boolean;
+    AFlag: TCommonAtomFlag;
 begin
   Result:=false;
   if (ProcNode=nil) then exit;
   if ProcNode.Desc=ctnProcedureHead then
     ProcNode:=ProcNode.Parent;
   if ProcNode.Desc<>ctnProcedure then exit;
+  BackTo:=CurPos.StartPos;
+  AFlag:=CurPos.Flag;
+  ErrPos:=(BackTo<1) or (BackTo>SrcLen);
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom;
   if UpAtomIs('CLASS') then ReadNextAtom;
   Result:=UpAtomIs('OPERATOR');
+  if not ErrPos then begin
+    MoveCursorToCleanPos(BackTo);
+    if AFlag<>cafNone then
+      ReadNextAtom;
+  end;
 end;
 
 function TPascalReaderTool.NodeIsResultIdentifier(Node: TCodeTreeNode): boolean;
@@ -3789,7 +3845,7 @@ function TPascalReaderTool.GetProcResultNode(ProcNode: TCodeTreeNode
   ): TCodeTreeNode;
 // procedure: none
 // operator: ctnVarDefinition,ctnIdentifier
-// function: ctnIdentifier
+// function: ctnIdentifier, ctnSpecialize
 begin
   Result:=nil;
   if ProcNode=nil then exit;
@@ -3800,7 +3856,7 @@ begin
   if ProcNode.Desc<>ctnProcedureHead then exit;
   Result:=ProcNode.FirstChild;
   while Result<>nil do begin
-    if Result.Desc in [ctnVarDefinition,ctnIdentifier] then exit;
+    if Result.Desc in [ctnVarDefinition,ctnIdentifier,ctnSpecialize] then exit;
     Result:=Result.NextBrother;
   end;
 end;
