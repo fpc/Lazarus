@@ -2295,8 +2295,6 @@ begin
   end;
 
   ornt := Self.FCurrentFont.FLogFont.lfOrientation;
-  if ornt <> 0 then
-    cairo_rotate(pcr, -Pi * (ornt / 10) / 180);
 
   //Skip set_text when unchanged, g_utf8_validate guards Pango
   //only broken input allocates.
@@ -2314,28 +2312,46 @@ begin
     end;
   end;
 
-  if ABgFilled then
+  if ornt <> 0 then
   begin
-    FCurrentFont.Layout^.get_pixel_size(@tw, nil);
-    ColorToCairoRGB(ColorToRgb(TColor(FBgBrush.Color)), R, G, B);
+    cairo_save(pcr);
+    cairo_translate(pcr, x - WindowOrg.X, y - WindowOrg.Y);
+    cairo_rotate(pcr, -Pi * (ornt / 10) / 180);
+    if ABgFilled then
+    begin
+      FCurrentFont.Layout^.get_pixel_size(@tw, nil);
+      ColorToCairoRGB(ColorToRgb(TColor(FBgBrush.Color)), R, G, B);
+      cairo_set_source_rgb(pcr, R, G, B);
+      cairo_rectangle(pcr, 0, 0, tw, FCurrentFont.FMetricsHeight + FCurrentFont.FInternalLeading);
+      cairo_fill(pcr);
+    end;
+    cairo_move_to(pcr, 0, 0);
+    ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
     cairo_set_source_rgb(pcr, R, G, B);
-    cairo_rectangle(pcr, x - WindowOrg.X, y - WindowOrg.Y, tw, FCurrentFont.FMetricsHeight + FCurrentFont.FInternalLeading);
-    cairo_fill(pcr);
+    pango_cairo_show_layout(pcr, FCurrentFont.Layout);
+    cairo_restore(pcr);
+  end
+  else
+  begin
+    if ABgFilled then
+    begin
+      FCurrentFont.Layout^.get_pixel_size(@tw, nil);
+      ColorToCairoRGB(ColorToRgb(TColor(FBgBrush.Color)), R, G, B);
+      cairo_set_source_rgb(pcr, R, G, B);
+      cairo_rectangle(pcr, x - WindowOrg.X, y - WindowOrg.Y, tw, FCurrentFont.FMetricsHeight + FCurrentFont.FInternalLeading);
+      cairo_fill(pcr);
+    end;
+    cairo_move_to(pcr, x - WindowOrg.X, y - WindowOrg.Y);
+    ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
+    cairo_set_source_rgb(pcr, R, G, B);
+    pango_cairo_show_layout(pcr, FCurrentFont.Layout);
   end;
-
-  cairo_move_to(pcr, x - WindowOrg.X, y - WindowOrg.Y);
-  ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
-  cairo_set_source_rgb(pcr, R, G, B);
-  pango_cairo_show_layout(pcr, FCurrentFont.Layout);
 
   if IsVectorSurface then
   begin
     pango_cairo_context_set_resolution(FCurrentFont.Layout^.get_context, OldDPI);
     FCurrentFont.Layout^.context_changed;
   end;
-
-  if ornt <> 0 then
-    cairo_rotate(pcr, Pi * (ornt / 10) / 180);
 end;
 
 procedure TGtk3DeviceContext.drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
