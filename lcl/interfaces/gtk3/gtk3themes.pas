@@ -426,7 +426,9 @@ begin
   //if (Details.Element = teButton) and (Details.Part in [BP_CHECKBOX, BP_RADIOBUTTON]) then
   //  inherited DrawElement(DC, Details, R, ClipRect)
   //else
-    Self.DrawElement(GtkDC.pcr, Details, R.Left, R.Top, R.Width, R.Height, AScreen);
+    Self.DrawElement(GtkDC.pcr, Details,
+      R.Left - GtkDC.WindowOrg.X, R.Top - GtkDC.WindowOrg.Y,
+      R.Width, R.Height, AScreen);
 end;
 
 function GetThemeColor(Ctx: PGtkStyleContext; const Name: PChar; Default: TGdkRGBA): TGdkRGBA;
