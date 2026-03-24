@@ -317,7 +317,7 @@ begin
   // after the destruction of the widgetset and will cause a failure.
   // Need to destroy the caret here.. or CustomTimer must be verified.
   // or CocoaCaret should not use TTimer at all (use raw cocoa timer)
-  DestroyGlobalCaret;
+  TCocoaCaretUtil.destroyGlobalCaret;
 
   // NSApp.terminate(nil);   // causes app to quit immediately, which is undesirable
 

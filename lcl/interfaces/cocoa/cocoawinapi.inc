@@ -415,7 +415,7 @@ function TCocoaWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width,
 begin
   Result := (Handle <> 0);
   if Result then
-    Result := CocoaCaret.CreateCaret(NSView(Handle).lclContentView, Bitmap, Width, Height)
+    Result := TCocoaCaretUtil.createCaret(NSView(Handle).lclContentView, Bitmap, Width, Height)
 end;
 
 function TCocoaWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
@@ -507,7 +507,7 @@ end;
 
 function TCocoaWidgetSet.DestroyCaret(Handle: HWND): Boolean;
 begin
-  Result := CocoaCaret.DestroyCaret( NSView(Handle).lclContentView );
+  Result := TCocoaCaretUtil.destroyCaret( NSView(Handle).lclContentView );
 end;
 
 function TCocoaWidgetSet.DestroyIcon(Handle: HICON): Boolean;
@@ -948,7 +948,7 @@ end;
 
 function TCocoaWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
-  Result := CocoaCaret.GetCaretPos(lpPoint);
+  Result := TCocoaCaretUtil.getCaretPos(lpPoint);
 end;
 
 function TCocoaWidgetSet.GetCaretRespondToFocus(handle: HWND;
@@ -1359,7 +1359,7 @@ begin
     then lView := nil
     else lView := NSView(Handle).lclContentView;
 
-  Result := CocoaCaret.HideCaret(lView);
+  Result := TCocoaCaretUtil.hideCaret(lView);
 end;
 
 function TCocoaWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
@@ -2393,12 +2393,12 @@ end;
 
 function TCocoaWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 begin
-  Result := CocoaCaret.SetCaretPos(X, Y);
+  Result := TCocoaCaretUtil.setCaretPos(X, Y);
 end;
 
 function TCocoaWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 begin
-  Result := CocoaCaret.SetCaretPos(X, Y);
+  Result := TCocoaCaretUtil.setCaretPos(X, Y);
 end;
 
 function TCocoaWidgetSet.SetCaretRespondToFocus(handle: HWND;
@@ -2605,7 +2605,7 @@ begin
   if (Handle = 0) then lView := nil
   else lView := NSView(Handle).lclContentView;
 
-  Result := CocoaCaret.ShowCaret(lView)
+  Result := TCocoaCaretUtil.showCaret(lView)
 end;
 
 {------------------------------------------------------------------------------

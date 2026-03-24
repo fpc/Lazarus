@@ -123,7 +123,8 @@ begin
   // destroy the callback
   if Assigned(Callback) then
   begin
-    if Callback.HasCaret then DestroyCaret(nil);
+    if Callback.HasCaret then
+      TCocoaCaretUtil.destroyCaret(nil);
     CallbackObject := Callback.GetCallbackObject;
     Callback.RemoveTarget;
     Callback := nil;

@@ -1351,7 +1351,7 @@ begin
       PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(FContext), @PS);
       if FHasCaret then
-        DrawCaret;
+        TCocoaCaretUtil.drawCaret;
     end;
   finally
     FreeAndNil(FContext);
