@@ -177,6 +177,10 @@ msgstr "Uvedený"
 msgid "Edit selected item"
 msgstr "Upraviť vybratú položku"
 
+#: todoliststrconsts.listodolistfornewproject
+msgid "ToDo List for new Project"
+msgstr ""
+
 #: todoliststrconsts.listodolistforpackage
 #, object-pascal-format
 msgid "ToDo List for Package \"%s\""

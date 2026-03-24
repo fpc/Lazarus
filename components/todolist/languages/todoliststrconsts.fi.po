@@ -163,6 +163,10 @@ msgstr "Luetteloidut"
 msgid "Edit selected item"
 msgstr ""
 
+#: todoliststrconsts.listodolistfornewproject
+msgid "ToDo List for new Project"
+msgstr ""
+
 #: todoliststrconsts.listodolistforpackage
 #, object-pascal-format
 msgid "ToDo List for Package \"%s\""
