@@ -732,6 +732,13 @@ type
     constructor Create(aGraph: TMinXGraph; aIndex: integer);
     destructor Destroy; override;
     procedure GetCrossingCount(Node1, Node2: TMinXNode; out Crossing, SwitchCrossing: integer);
+    (* TryToSwitchOverGap:
+       ** Pairs MUST be unbound **
+       This performs a more expensive search when "SwitchPair" is exhausted.
+       Returns amount of crossings saved
+    *)
+    function TryToSwitchOverGap(AnIndexOfNodeInLevel: Integer): integer;
+    function TryToSwitchOverGap: integer;
   end;
 
   { TMinXPair }
@@ -790,7 +797,8 @@ type
     procedure InitSearch;
     function FindBestPair: TMinXPair;
     procedure SwitchCrossingPairs(MaxRun: int64; var Run: int64; ZeroRunLimit: int64);
-    procedure Shuffle;
+    procedure Shuffle(AnIsUnbound: boolean = false);
+    function TryToSwitchOverGap(AnIsUnbound: boolean = false): integer;
     procedure SwitchAndShuffle(MaxSingleRun, MaxTotalRun: int64);
     procedure SwitchPair(Pair: TMinXPair);
     procedure Apply; // reorder Graph nodes
@@ -1904,7 +1912,7 @@ begin
   end;
 end;
 
-procedure TMinXGraph.Shuffle;
+procedure TMinXGraph.Shuffle(AnIsUnbound: boolean);
 var
   l, i: Integer;
   Level: TMinXLevel;
@@ -1915,7 +1923,8 @@ begin
   {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
   {$ENDIF}
-  UnbindPairs;
+  if not AnIsUnbound then
+    UnbindPairs;
   for l:=0 to length(Levels)-1 do begin
     Level:=Levels[l];
     for i:=0 to 1 do begin
@@ -1929,11 +1938,28 @@ begin
       Level.Nodes[n2].IndexInLevel:=n2;
     end;
   end;
-  BindPairs;
-  StoreAsBest(true);
+  if not AnIsUnbound then begin
+    BindPairs;
+    StoreAsBest(true);
+  end;
   {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
   {$ENDIF}
+end;
+
+function TMinXGraph.TryToSwitchOverGap(AnIsUnbound: boolean): integer;
+var
+  i: Integer;
+begin
+  if not AnIsUnbound then
+    UnbindPairs;
+  Result := 0;
+  for i := 0 to Length(Levels) - 1 do
+    Result := Result + Levels[i].TryToSwitchOverGap;
+  if not AnIsUnbound then begin
+    BindPairs;
+    StoreAsBest(True);
+  end;
 end;
 
 procedure TMinXGraph.SwitchAndShuffle(MaxSingleRun, MaxTotalRun: int64);
@@ -1946,7 +1972,11 @@ begin
     SwitchCrossingPairs(MaxSingleRun,Run,Graph.NodeCount div 2);
     if Run = LastRun then exit;
     if Run>MaxTotalRun then break;
-    Shuffle;
+    UnbindPairs;
+    if TryToSwitchOverGap(True) = 0 then
+      Shuffle(True);
+    BindPairs;
+    StoreAsBest(True);
     LastRun := Run;
   end;
   SwitchCrossingPairs(MaxSingleRun,Run, MaxTotalRun);
@@ -2198,6 +2228,82 @@ begin
       else
         SwitchCrossing+=1;
     end;
+  end;
+end;
+
+function TMinXLevel.TryToSwitchOverGap(AnIndexOfNodeInLevel: Integer): integer;
+var
+  TestNode: TMinXNode;
+  BestIdx, BestSaved, CurSaved, NewCross, NewSwitch, i: Integer;
+  //m: SizeInt;
+begin
+  Result := 0;
+  TestNode := Nodes[AnIndexOfNodeInLevel];
+  BestIdx := AnIndexOfNodeInLevel;
+  BestSaved := 0;
+
+  CurSaved := 0;
+  if AnIndexOfNodeInLevel > 1 then
+  for i := AnIndexOfNodeInLevel - 1 downto 0 do begin
+    GetCrossingCount(TestNode, Nodes[i], NewCross, NewSwitch);
+    CurSaved := CurSaved + (NewSwitch - NewCross);
+    if CurSaved < BestSaved then begin
+      BestSaved := CurSaved;
+      BestIdx   := i;
+    end;
+  end;
+  CurSaved := 0;
+  if AnIndexOfNodeInLevel < Length(Nodes) - 2 then
+  for i := AnIndexOfNodeInLevel + 1 to Length(Nodes) - 1 do begin
+    GetCrossingCount(TestNode, Nodes[i], NewCross, NewSwitch);
+    CurSaved := CurSaved + (NewSwitch - NewCross);
+    if (CurSaved < BestSaved) //or
+       //( (CurSaved = BestSaved) and (abs(m-i)) )
+    then begin
+      BestSaved := CurSaved;
+      BestIdx   := i;
+    end;
+  end;
+
+  if (BestSaved < 0) then begin
+    if BestIdx < AnIndexOfNodeInLevel then begin
+      for i := AnIndexOfNodeInLevel - 1 downto BestIdx do begin
+        inc(Nodes[i].IndexInLevel);
+        Nodes[i+1] := Nodes[i]
+      end;
+      TestNode.IndexInLevel := BestIdx;
+      Nodes[BestIdx] := TestNode;
+    end
+    else begin
+      for i := AnIndexOfNodeInLevel + 1 to BestIdx do begin
+        dec(Nodes[i].IndexInLevel);
+        Nodes[i-1] := Nodes[i]
+      end;
+      TestNode.IndexInLevel := BestIdx;
+      Nodes[BestIdx] := TestNode;
+    end;
+    Result := BestSaved;
+  end;
+end;
+
+function TMinXLevel.TryToSwitchOverGap: integer;
+var
+  Idx, n, i, r: Integer;
+begin
+  Result := 0;
+  n := 5;
+  Idx := Random(Length(Nodes));
+  for i := Idx to Length(Nodes) - 1 do begin
+    r := TryToSwitchOverGap(i);
+    Result := Result + r;
+    if r < 0 then dec(n);
+    if n = 0 then exit;
+  end;
+  for i := 0 to Idx-1 do begin
+    r := TryToSwitchOverGap(i);
+    Result := Result + r;
+    if r < 0 then dec(n);
+    if n = 0 then exit;
   end;
 end;
 
