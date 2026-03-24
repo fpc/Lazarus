@@ -11257,6 +11257,7 @@ var
   DC: TGtk3DeviceContext;
   NColor: TColor;
   P: TPoint;
+  CR: TRect;
 begin
   inherited DoBeforeLCLPaint;
   if not Visible then
@@ -11265,8 +11266,8 @@ begin
   DC := TGtk3DeviceContext(Context);
   NColor := LCLObject.Color;
   P := DC.ScrollbarsOffset;
-  // Clip to the full viewport
-  cairo_rectangle(FCairoContext, P.X, P.Y, LCLObject.ClientWidth, LCLObject.ClientHeight);
+  CR := getClientRect;
+  cairo_rectangle(FCairoContext, P.X, P.Y, CR.Width, CR.Height);
   cairo_clip(FCairoContext);
   if (NColor <> clNone) and (NColor <> clDefault) then
   begin
