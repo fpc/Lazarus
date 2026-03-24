@@ -493,14 +493,25 @@ type
 
 implementation
 
-type
-  TAccessComp = class(TComponent);
-
 function CreateRootName(aComponent: TComponent): string;
 begin
   Result:=aComponent.ClassName;
   Delete(Result,1,1);
   Result:=Result+'1';
+end;
+
+{ TComponentAccessHelper }
+
+type
+  // helper for accessing protected methods
+  TComponentAccessHelper = class helper for TComponent
+  public
+    procedure _SetInline(Value: Boolean);
+  end;
+
+procedure TComponentAccessHelper._SetInline(Value: Boolean);
+begin
+  SetInline(Value);
 end;
 
 { TSimpleControlWithInterface }
@@ -1882,7 +1893,7 @@ begin
       Parent:=aRoot;
     end;
     Frame1:=TSimpleControl.Create(aRoot);
-    TAccessComp(TComponent(Frame1)).SetInline(true);
+    Frame1._SetInline(true); // access via TComponentAccessHelper
     InitFrame(Frame1);
     with Frame1 do begin
       Name:='Frame1';
@@ -1949,7 +1960,7 @@ procedure TTestCompReaderWriterPas.TestAncestorWithInline;
       end;
       // add a frame
       Frame1:=TSimpleControl.Create(Form);
-      TAccessComp(TComponent(Frame1)).SetInline(true);
+      Frame1._SetInline(true); // access via TComponentAccessHelper
       InitFrame(Frame1);
       with Frame1 do begin
         Name:='Frame1';
@@ -2060,7 +2071,7 @@ procedure TTestCompReaderWriterPas.TestInlineDescendant;
       end;
       // add a frame
       Frame1:=TSimpleControl.Create(Form);
-      TAccessComp(TComponent(Frame1)).SetInline(true);
+      Frame1._SetInline(true); // access via TComponentAccessHelper
       InitFrame(Frame1);
       with Frame1 do begin
         Name:='Frame1';
