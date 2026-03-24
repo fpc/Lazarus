@@ -162,13 +162,18 @@ end;
 
 procedure TUNBPages.Move(CurIndex, NewIndex: Integer);
 var
-  CurPage: TPage;
+  ActivePage: TPage;
 begin
   // Get active page
-  CurPage := FNotebook.Page[FNotebook.FPageIndex];
+  if FNotebook.FPageIndex >= 0 then
+    ActivePage := FNotebook.Page[FNotebook.FPageIndex]
+  else
+    ActivePage := nil;
+  // Actually move a page
   FPageList.Move(CurIndex,NewIndex);
   // Restore active page
-  FNotebook.SetPageIndex(IndexOfObject(CurPage));
+  if Assigned(ActivePage) then
+    FNotebook.SetPageIndex(IndexOfObject(ActivePage));
 end;
 
 {******************************************************************************
