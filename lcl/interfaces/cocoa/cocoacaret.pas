@@ -31,6 +31,17 @@ uses
   // Widgetset
   CocoaPrivate, CocoaGDIObjects;
 
+function CreateCaret(View: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean; overload;
+function HideCaret(View: NSView): Boolean;
+function ShowCaret(View: NSView): Boolean;
+function SetCaretPos(X, Y: Integer): Boolean;
+function GetCaretPos(var P: TPoint): Boolean;
+function DestroyCaret(View: NSView): Boolean;
+procedure DrawCaret;
+procedure DestroyGlobalCaret;
+
+implementation
+
 type
 
   { TEmulatedCaret }
@@ -58,7 +69,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    
+
     function CreateCaret(AView: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean;
     function DestroyCaret: Boolean;
 
@@ -68,25 +79,6 @@ type
     function Hide: Boolean;
 
     property Pos: TPoint read FPos write SetPos;
-  end;
-
-function CreateCaret(View: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean; overload;
-function HideCaret(View: NSView): Boolean;
-function ShowCaret(View: NSView): Boolean;
-function SetCaretPos(X, Y: Integer): Boolean;
-function GetCaretPos(var P: TPoint): Boolean;
-function DestroyCaret(View: NSView): Boolean;
-procedure DrawCaret;
-procedure DestroyGlobalCaret;
-
-implementation
-
-type
-  { TCaretTimerTarget }
-
-  TCaretTimerTarget = objcclass(NSObject)
-    fCaret: TEmulatedCaret;
-    procedure CaretEvent(sender: id); message 'CaretEvent:';
   end;
 
 var
@@ -129,7 +121,7 @@ function HideCaret(View: NSView): Boolean;
 begin
   Result := False;
   GlobalCaretNeeded;
-  
+
   if Assigned(GlobalCaret) then
   begin
     Result := not Assigned(View) or (View = GlobalCaret.FView);
@@ -164,7 +156,7 @@ function GetCaretPos(var P: TPoint): Boolean;
 begin
   Result := True;
   GlobalCaretNeeded;
-  
+
   if Assigned(GlobalCaret) then
   begin
     with GlobalCaret.Pos do
@@ -178,7 +170,7 @@ end;
 function DestroyCaret(View: NSView): Boolean;
 begin
   Result := False;
-   
+
   if Assigned(GlobalCaret) then
   begin
     Result := not Assigned(View) or (GlobalCaret.FView = View);
@@ -199,6 +191,14 @@ begin
   Result:=NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
     GetCaretBlinkTime / 1000, trg, ObjCSelector('CaretEvent:'), nil, true);
 end;
+
+type
+  { TCaretTimerTarget }
+
+  TCaretTimerTarget = objcclass(NSObject)
+    fCaret: TEmulatedCaret;
+    procedure CaretEvent(sender: id); message 'CaretEvent:';
+  end;
 
 { TCaretTimerTarget }
 
