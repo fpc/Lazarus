@@ -28,13 +28,15 @@ uses
   Types, Classes, SysUtils, Math, GraphMath,
   LCLPlatformDef, InterfaceBase, GraphType,
   MacOSAll, CocoaAll,
-  CocoaWSService, CocoaApplication, CocoaConst, CocoaConfig, CocoaPrivate,
-  CocoaUtils, Cocoa_Extra, CocoaGDIObjects, CocoaCursor, CocoaMenus, CocoaWindows,
+  CocoaPrivate, CocoaWSService, CocoaWSModalService, CocoaGDIObjects, CocoaThemes,
+  CocoaApplication, CocoaWindows, CocoaMenus, CocoaCursor, CocoaCaret,
+  CocoaConst, CocoaConfig, CocoaUtils, Cocoa_Extra,
   CocoaScrollers, CocoaWSScrollers,
-  CocoaWSClipboard, CocoaTextEdits, CocoaWSModalService,
+  CocoaWSClipboard, CocoaTextEdits,
   LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus, ExtCtrls,
-  IntfGraphics, Graphics;
+  IntfGraphics, Graphics,
+  dl, dynlibs;
 
 type
 
@@ -110,10 +112,6 @@ implementation
 // NSCursor doesn't support any wait cursor, so we need to use a non-native one
 // Not supporting it at all would result in crashes in Screen.Cursor := crHourGlass;
 {$R ../../cursor_hourglass.res}
-
-uses
-  dl,dynlibs,
-  CocoaCaret, CocoaThemes;
 
 type
 
