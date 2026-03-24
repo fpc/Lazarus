@@ -1045,7 +1045,9 @@ begin
       SetOfEnum:=[];
       DefSetOfEnum:=[red];
       SetOfEnumRg:=[];
+      {$PUSH}{$R-}
       DefSetOfEnumRg:=[red];
+      {$POP}
       SetOfBool:=[];
       DefSetOfBool:=[true];
       MyInt:={%H-}TMyInt(0);
@@ -1137,7 +1139,9 @@ begin
       SetOfEnum:=[];
       DefSetOfEnum:=[red];
       SetOfEnumRg:=[];
+      {$PUSH}{$R-}
       DefSetOfEnumRg:=[red];
+      {$POP}
       SetOfBool:=[];
       DefSetOfBool:=[true];
       MyInt:=low(TMyInt);
@@ -1234,7 +1238,9 @@ begin
       SetOfEnum:=[low(SetOfEnum)..high(SetOfEnum)];
       DefSetOfEnum:=[red];
       SetOfEnumRg:=[low(SetOfEnumRg)..high(SetOfEnumRg)];
+      {$PUSH}{$R-}
       DefSetOfEnumRg:=[red];
+      {$POP}
       SetOfBool:=[low(Boolean)..high(Boolean)];
       DefSetOfBool:=[true];
       MyInt:=high(TMyInt);
