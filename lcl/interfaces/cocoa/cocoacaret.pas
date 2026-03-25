@@ -18,6 +18,7 @@
 }
 
 unit CocoaCaret;
+
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
 
@@ -30,6 +31,27 @@ uses
   Classes, SysUtils, Types,
   // Widgetset
   CocoaPrivate, CocoaGDIObjects;
+
+type
+
+  { TCocoaCaretUtil }
+
+  TCocoaCaretUtil = class
+  public
+    class function createCaret(
+      const View: NSView;
+      const Bitmap: PtrUInt;
+      const Width, Height: Integer ): Boolean;
+    class function hideCaret(const View: NSView): Boolean;
+    class function showCaret(const View: NSView): Boolean;
+    class function setCaretPos(const X, Y: Integer): Boolean;
+    class function getCaretPos(var P: TPoint): Boolean;
+    class function destroyCaret(const View: NSView): Boolean;
+    class procedure drawCaret;
+    class procedure destroyGlobalCaret;
+  end;
+
+implementation
 
 type
 
@@ -58,7 +80,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    
+
     function CreateCaret(AView: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean;
     function DestroyCaret: Boolean;
 
@@ -70,54 +92,8 @@ type
     property Pos: TPoint read FPos write SetPos;
   end;
 
-function CreateCaret(View: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean; overload;
-function HideCaret(View: NSView): Boolean;
-function ShowCaret(View: NSView): Boolean;
-function SetCaretPos(X, Y: Integer): Boolean;
-function GetCaretPos(var P: TPoint): Boolean;
-function DestroyCaret(View: NSView): Boolean;
-procedure DrawCaret;
-procedure DestroyGlobalCaret;
-
-implementation
-
-type
-  { TCaretTimerTarget }
-
-  TCaretTimerTarget = objcclass(NSObject)
-    fCaret: TEmulatedCaret;
-    procedure CaretEvent(sender: id); message 'CaretEvent:';
-  end;
-
 var
   GlobalCaret: TEmulatedCaret = nil;
-
-procedure GlobalCaretNeeded;
-begin
-  if GlobalCaret = nil then GlobalCaret := TEmulatedCaret.Create;
-end;
-
-procedure DrawCaret;
-begin
-  GlobalCaretNeeded;
-  if Assigned(GlobalCaret) then
-    GlobalCaret.DrawCaret;
-end;
-
-procedure DestroyGlobalCaret;
-begin
-  FreeAndNil(GlobalCaret);
-end;
-
-function CreateCaret(View: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean;
-begin
-  GlobalCaretNeeded;
-
-  if Assigned(GlobalCaret) then
-    Result := GlobalCaret.CreateCaret(View, Bitmap, Width, Height)
-  else
-    Result := false;
-end;
 
 function GetCaretBlinkTime: Cardinal;
 begin
@@ -125,11 +101,56 @@ begin
   Result := 600; // our default value
 end;
 
-function HideCaret(View: NSView): Boolean;
+procedure globalCaretNeeded;
+begin
+  if GlobalCaret = nil then GlobalCaret := TEmulatedCaret.Create;
+end;
+
+procedure disableTimer(var ATimer: NSTimer);
+begin
+  if not Assigned(ATimer) then Exit;
+  ATimer.invalidate;
+  ATimer := nil;
+end;
+
+function enableTimer(trg: id): NSTimer;
+begin
+  Result:=NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
+    GetCaretBlinkTime / 1000, trg, ObjCSelector('CaretEvent:'), nil, true);
+end;
+
+{ TCocoaCaretUtil }
+
+class procedure TCocoaCaretUtil.drawCaret;
+begin
+  globalCaretNeeded;
+  if Assigned(GlobalCaret) then
+    GlobalCaret.DrawCaret;
+end;
+
+class procedure TCocoaCaretUtil.destroyGlobalCaret;
+begin
+  FreeAndNil(GlobalCaret);
+end;
+
+class function TCocoaCaretUtil.createCaret(
+  const View: NSView;
+  const Bitmap: PtrUInt;
+  const Width, Height: Integer ): Boolean;
+begin
+  globalCaretNeeded;
+
+  if Assigned(GlobalCaret) then
+    Result := GlobalCaret.CreateCaret(View, Bitmap, Width, Height)
+  else
+    Result := false;
+end;
+
+class function TCocoaCaretUtil.hideCaret(const View: NSView): Boolean;
 begin
   Result := False;
-  GlobalCaretNeeded;
-  
+  globalCaretNeeded;
+
   if Assigned(GlobalCaret) then
   begin
     Result := not Assigned(View) or (View = GlobalCaret.FView);
@@ -138,11 +159,11 @@ begin
   end;
 end;
 
-function ShowCaret(View: NSView): Boolean;
+class function TCocoaCaretUtil.showCaret(const View: NSView): Boolean;
 begin
   //writeln('ShowCaret: ', PtrUInt(View));
   Result := False;
-  GlobalCaretNeeded;
+  globalCaretNeeded;
 
   if Assigned(GlobalCaret) then
   begin
@@ -152,19 +173,19 @@ begin
   end;
 end;
 
-function SetCaretPos(X, Y: Integer): Boolean;
+class function TCocoaCaretUtil.setCaretPos(const X, Y: Integer): Boolean;
 begin
   Result := True;
-  GlobalCaretNeeded;
+  globalCaretNeeded;
   if Assigned(GlobalCaret) then
     GlobalCaret.Pos := Classes.Point(X, Y);
 end;
 
-function GetCaretPos(var P: TPoint): Boolean;
+class function TCocoaCaretUtil.getCaretPos(var P: TPoint): Boolean;
 begin
   Result := True;
-  GlobalCaretNeeded;
-  
+  globalCaretNeeded;
+
   if Assigned(GlobalCaret) then
   begin
     with GlobalCaret.Pos do
@@ -175,10 +196,10 @@ begin
   end;
 end;
 
-function DestroyCaret(View: NSView): Boolean;
+class function TCocoaCaretUtil.destroyCaret(const View: NSView): Boolean;
 begin
   Result := False;
-   
+
   if Assigned(GlobalCaret) then
   begin
     Result := not Assigned(View) or (GlobalCaret.FView = View);
@@ -187,18 +208,13 @@ begin
   end;
 end;
 
-procedure CocoaDisableTimer(var ATimer: NSTimer);
-begin
-  if not Assigned(ATimer) then Exit;
-  ATimer.invalidate;
-  ATimer := nil;
-end;
+type
+  { TCaretTimerTarget }
 
-function CocoaEnableTimer(trg: id): NSTimer;
-begin
-  Result:=NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
-    GetCaretBlinkTime / 1000, trg, ObjCSelector('CaretEvent:'), nil, true);
-end;
+  TCaretTimerTarget = objcclass(NSObject)
+    fCaret: TEmulatedCaret;
+    procedure CaretEvent(sender: id); message 'CaretEvent:';
+  end;
 
 { TCaretTimerTarget }
 
@@ -256,7 +272,7 @@ begin
       FView.lclGetCallback.SetHasCaret(false);
   end;
 
-  CocoaDisableTimer(FTimer);
+  disableTimer(FTimer);
   
   FreeAndNil(FBitmap);
   FView := nil;
@@ -311,7 +327,7 @@ begin
 
   if FVisible then
   begin
-    CocoaDisableTimer(FTimer);
+    disableTimer(FTimer);
     FVisible := False;
     InvalidateView;
   end;
@@ -353,9 +369,9 @@ procedure TEmulatedCaret.SetView(AView: NSView);
 begin
   FView := AView;
   if FView <> nil then FView.lclGetCallback.HasCaret := True;
-  CocoaDisableTimer(FTimer);
+  disableTimer(FTimer);
   if Assigned(FView) then
-    FTimer:=CocoaEnableTimer(FTimerTarget);
+    FTimer:=enableTimer(FTimerTarget);
 end;
 
 procedure TEmulatedCaret.InvalidateView;
@@ -380,11 +396,11 @@ end;
 
 procedure TEmulatedCaret.ResetTimer;
 begin
-  CocoaDisableTimer(FTimer);
-  FTimer:=CocoaEnableTimer(FTimerTarget);
+  disableTimer(FTimer);
+  FTimer:=enableTimer(FTimerTarget);
 end;
 
 finalization
-  DestroyGlobalCaret;
+  TCocoaCaretUtil.destroyGlobalCaret;
 
 end.

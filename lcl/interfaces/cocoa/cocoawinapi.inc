@@ -216,11 +216,11 @@ const
   function SendMouseWheel(barFlag: Integer): LRESULT;
   begin
     Result:= 0;
-    inc( CocoaWidgetSetState.SendingScrollWheelCount );
+    CocoaWidgetSetState.lclBeginSendingScrollWheel;
     try
       Result:= CallMouseWheelHandler( barFlag );
     finally
-      dec( CocoaWidgetSetState.SendingScrollWheelCount );
+      CocoaWidgetSetState.lclEndSendingScrollWheel;
     end;
   end;
 
@@ -415,7 +415,7 @@ function TCocoaWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width,
 begin
   Result := (Handle <> 0);
   if Result then
-    Result := CocoaCaret.CreateCaret(NSView(Handle).lclContentView, Bitmap, Width, Height)
+    Result := TCocoaCaretUtil.createCaret(NSView(Handle).lclContentView, Bitmap, Width, Height)
 end;
 
 function TCocoaWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
@@ -507,7 +507,7 @@ end;
 
 function TCocoaWidgetSet.DestroyCaret(Handle: HWND): Boolean;
 begin
-  Result := CocoaCaret.DestroyCaret( NSView(Handle).lclContentView );
+  Result := TCocoaCaretUtil.destroyCaret( NSView(Handle).lclContentView );
 end;
 
 function TCocoaWidgetSet.DestroyIcon(Handle: HICON): Boolean;
@@ -626,7 +626,7 @@ begin
     end;
     obj.lclSetEnabled(bEnable);
 
-    if (CocoaWidgetSetState.CaptureControl <> 0)
+    if (CocoaWidgetSetState.captureControl <> 0)
       and (not bEnable)
       and (obj.isKindOfClass(NSView))
       and TCocoaViewUtil.isLCLEnabled(NSView(obj)) then
@@ -943,12 +943,12 @@ end;
 
 function TCocoaWidgetSet.GetCapture: HWND;
 begin
-  Result:= CocoaWidgetSetState.CaptureControl;
+  Result:= CocoaWidgetSetState.captureControl;
 end;
 
 function TCocoaWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
-  Result := CocoaCaret.GetCaretPos(lpPoint);
+  Result := TCocoaCaretUtil.getCaretPos(lpPoint);
 end;
 
 function TCocoaWidgetSet.GetCaretRespondToFocus(handle: HWND;
@@ -1359,7 +1359,7 @@ begin
     then lView := nil
     else lView := NSView(Handle).lclContentView;
 
-  Result := CocoaCaret.HideCaret(lView);
+  Result := TCocoaCaretUtil.hideCaret(lView);
 end;
 
 function TCocoaWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
@@ -1742,7 +1742,7 @@ begin
     end;
 
     // if frame changed, another ScrollBar has been updated
-    if NOT CocoaWidgetSetState.isSendingScrollWheelFromInterface then begin
+    if NOT CocoaWidgetSetState.isLCLSendingScrollWheel then begin
       if ScrollInfo.fMask and SIF_ALL > 0 then
         sc.applyScrollInfo(SBStyle, ScrollInfo);
     end;
@@ -2164,12 +2164,12 @@ var
   lclobj : TObject;
 begin
   Result := 0;
-  if CocoaWidgetSetState.KillingFocus then
+  if CocoaWidgetSetState.killingFocus then
     Exit;
 
   win := NSApp.keyWindow;
   if not Assigned(win) then
-    win := CocoaWidgetSetState.KeyWindow;
+    win := CocoaWidgetSetState.currentKeyWindow;
   if not Assigned(win) then
     Exit;
 
@@ -2387,18 +2387,18 @@ end;
 
 function TCocoaWidgetSet.SetCapture(AHandle: HWND): HWND;
 begin
-  Result := CocoaWidgetSetState.CaptureControl;
-  CocoaWidgetSetState.CaptureControl := AHandle;
+  Result := CocoaWidgetSetState.captureControl;
+  CocoaWidgetSetState.captureControl := AHandle;
 end;
 
 function TCocoaWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 begin
-  Result := CocoaCaret.SetCaretPos(X, Y);
+  Result := TCocoaCaretUtil.setCaretPos(X, Y);
 end;
 
 function TCocoaWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 begin
-  Result := CocoaCaret.SetCaretPos(X, Y);
+  Result := TCocoaCaretUtil.setCaretPos(X, Y);
 end;
 
 function TCocoaWidgetSet.SetCaretRespondToFocus(handle: HWND;
@@ -2605,7 +2605,7 @@ begin
   if (Handle = 0) then lView := nil
   else lView := NSView(Handle).lclContentView;
 
-  Result := CocoaCaret.ShowCaret(lView)
+  Result := TCocoaCaretUtil.showCaret(lView)
 end;
 
 {------------------------------------------------------------------------------

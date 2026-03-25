@@ -11,7 +11,7 @@ uses
   LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
   CocoaPrivate, CocoaWSService, CocoaWSModalService,
-  CocoaApplication, CocoaWindows,  Cocoa_Extra, CocoaConfig, CocoaUtils,
+  CocoaWindows,  Cocoa_Extra, CocoaConfig, CocoaUtils,
   CocoaGDIObjects, CocoaCursor, CocoaCaret;
 
 type
@@ -35,7 +35,7 @@ type
     procedure SetIsOpaque(AValue: Boolean);
     function GetShouldBeEnabled: Boolean;
   protected
-    FTarget: TWinControl;
+    _target    : TWinControl;
     _KeyMsg    : TLMKey;
     _CharMsg   : TLMKey;
     _SendChar  : Boolean;
@@ -117,7 +117,7 @@ type
     procedure SetHandleFrame( AHandleFrame: NSView );
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
-    property Target: TWinControl read FTarget;
+    property Target: TWinControl read _target;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
 
@@ -269,7 +269,7 @@ begin
     _handleFrame := AHandleFrame
   else if Owner.isKindOfClass(NSView) then
     _handleFrame := NSView(AOwner);
-  FTarget := ATarget;
+  _target := ATarget;
   FContext := nil;
   FHasCaret := False;
   FPropStorage := TStringList.Create;
@@ -286,7 +286,7 @@ destructor TLCLCommonCallback.Destroy;
 begin
   FContext.Free;
   FPropStorage.Free;
-  FTarget := nil;
+  _target := nil;
   inherited Destroy;
 end;
 
@@ -316,8 +316,8 @@ var
   lCaptureView: NSView;
 begin
   Result := nil;
-  if CocoaWidgetSetState.CaptureControl = 0 then Exit;
-  obj := NSObject(CocoaWidgetSetState.CaptureControl);
+  if CocoaWidgetSetState.captureControl = 0 then Exit;
+  obj := NSObject(CocoaWidgetSetState.captureControl);
   lCaptureView := obj.lclContentView;
   if (obj <> Owner) and (lCaptureView <> Owner) and not FIsEventRouting then
   begin
@@ -401,7 +401,7 @@ begin
   _SendChar := False;
   CurMod := Event.modifierFlags;
   //see what changed. we only care of bits 16 through 20
-  Diff := (TCocoaApplication(NSAPP).PrevKeyModifiers xor CurMod) and cModifiersOfInterest;
+  Diff := (CocoaWidgetSetState.prevKeyModifiers xor CurMod) and cModifiersOfInterest;
 
   case Diff of
     0                  : VKKeyCode := VK_UNKNOWN; //nothing (that we cared of) changed
@@ -416,7 +416,7 @@ begin
   //diff is now equal to the mask of the bit that changed, so we can determine
   //if this change is a keydown (PrevKeyModifiers didn't have the bit set) or
   //a keyup (PrevKeyModifiers had the bit set)
-  _IsKeyDown := ((TCocoaApplication(NSAPP).PrevKeyModifiers and Diff) = 0);
+  _IsKeyDown := ((CocoaWidgetSetState.prevKeyModifiers and Diff) = 0);
 
   FillChar(_KeyMsg, SizeOf(_KeyMsg), 0);
   _KeyMsg.KeyData := KeyData;
@@ -865,8 +865,8 @@ begin
     NSRightMouseDown,
     NSOtherMouseDown:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),FTarget,LastMouse,
-        FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,True);
+      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),_target,LastMouse,
+        _target.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,True);
 
       case LastMouse.ClickCount of
         2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
@@ -882,8 +882,8 @@ begin
     NSRightMouseUp,
     NSOtherMouseUp:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),FTarget,LastMouse,
-        FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,False);
+      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),_target,LastMouse,
+        _target.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,False);
       case LastMouse.ClickCount of
         2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
         3: Msg.Keys := msg.Keys or MK_TRIPLECLICK;
@@ -1221,11 +1221,11 @@ end;
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
   if not Assigned(Target) then Exit;
-  CocoaWidgetSetState.KillingFocus:= true;
+  CocoaWidgetSetState.killingFocus:= true;
   try
     LCLSendKillFocusMsg(Target);
   finally
-    CocoaWidgetSetState.KillingFocus:= false;
+    CocoaWidgetSetState.killingFocus:= false;
   end;
 end;
 
@@ -1328,7 +1328,7 @@ begin
   if Assigned(FContext) then
     Exit;
   FContext := TCocoaContext.Create(ControlContext);
-  FContext.Control := FTarget;
+  FContext.Control := _target;
   FContext.isControlDC := True;
   try
     // debugln('Draw '+Target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
@@ -1351,7 +1351,7 @@ begin
       PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(FContext), @PS);
       if FHasCaret then
-        DrawCaret;
+        TCocoaCaretUtil.drawCaret;
     end;
   finally
     FreeAndNil(FContext);
@@ -1406,7 +1406,7 @@ end;
 
 procedure TLCLCommonCallback.RemoveTarget;
 begin
-  FTarget := nil;
+  _target := nil;
 end;
 
 procedure TLCLCommonCallback.InputClientInsertText(const utf8: string);
@@ -1421,7 +1421,7 @@ begin
   begin
     c := Utf8CodePointLen(@utf8[i], length(utf8)-i+1, false);
     ch := Copy(utf8, i, c);
-    FTarget.IntfUTF8KeyPress(ch, 1, false);
+    _target.IntfUTF8KeyPress(ch, 1, false);
     inc(i, c);
   end;
 
@@ -1449,7 +1449,7 @@ end;
 
 function TLCLCommonCallback.GetShouldBeEnabled: Boolean;
 begin
-  Result := Assigned(FTarget) and FTarget.Enabled;
+  Result := Assigned(_target) and _target.Enabled;
 end;
 
 end.
