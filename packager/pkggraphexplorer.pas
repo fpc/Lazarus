@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, Contnrs, AVL_Tree,
   // LCL
   LCLType, LCLIntf, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
-  Menus, ButtonPanel,
+  Menus, ButtonPanel, Graphics,
   // LazUtils
   LazLoggerBase, LazTracer, LazStringUtils,
   // LazControls
@@ -399,6 +399,11 @@ begin
   LvlGraphControl1.Images:=IDEImages.Images_16;
   LvlGraphControl1.NodeStyle.DefaultImageIndex:=ImgIndexPackage;
   LvlGraphControl1.Caption:='';
+  LvlGraphControl1.EdgeStyle.BackColor := $5870FF;
+  LvlGraphControl1.EdgeStyle.BackHighlightColor := clRed;
+  LvlGraphControl1.EdgeStyle.BackNodeSelectedColor := clFuchsia;
+  LvlGraphControl1.EdgeStyle.NodeSelectedColor := clBlue;
+
 end;
 
 function TPkgGraphExplorerDlg.GetPackageImageIndex(Pkg: TLazPackage;

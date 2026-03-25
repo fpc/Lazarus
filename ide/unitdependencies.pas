@@ -39,7 +39,7 @@ uses
   Classes, SysUtils, Types, Math, AVL_Tree,
   // LCL
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus,
-  Clipbrd, CheckLst,
+  Clipbrd, CheckLst, Graphics,
   // CodeTools
   CodeToolManager, DefineTemplates, CTUnitGraph, CTUnitGroupGraph,
   FileProcs, CodeCache, AvgLvlTree,
@@ -1862,6 +1862,10 @@ begin
     OnSelectionChanged:=@GroupsLvlGraphSelectionChanged;
     Images:=IDEImages.Images_16;
     PopupMenu := GraphPopupMenu;
+    EdgeStyle.BackColor := $5870FF;
+    EdgeStyle.BackHighlightColor := clRed;
+    EdgeStyle.BackNodeSelectedColor := clFuchsia;
+    EdgeStyle.NodeSelectedColor := clBlue;
   end;
 
   GroupsSplitter.Top:=GroupsLvlGraph.Height;
@@ -1879,6 +1883,10 @@ begin
     OnMouseDown:=@UnitsLvlGraphMouseDown;
     Images:=IDEImages.Images_16;
     PopupMenu := GraphPopupMenu;
+    EdgeStyle.BackColor := $5870FF;
+    EdgeStyle.BackHighlightColor := clRed;
+    EdgeStyle.BackNodeSelectedColor := clFuchsia;
+    EdgeStyle.NodeSelectedColor := clBlue;
   end;
 end;
 
