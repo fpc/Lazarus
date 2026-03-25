@@ -129,7 +129,11 @@ type
   { TLvlGraphEdge }
 
   TLvlGraphEdge = class(TPersistent)
+  private type
+    TLvlGraphEdgeDrawStyle = ({edsHighlighted,} edsNodeSelected);
+    TLvlGraphEdgeDrawStyles = set of TLvlGraphEdgeDrawStyle;
   private
+    FDrawStyles: TLvlGraphEdgeDrawStyles;
     FBackEdge: boolean;
     FNoGapCircle: boolean; // a circle between 2 nodes, with no levels between => both edges paint in the same location
     FDrawnAt: TRect;
@@ -137,8 +141,10 @@ type
     FSource: TLvlGraphNode;
     FTarget: TLvlGraphNode;
     FWeight: single;
+    procedure SetDrawStyles(AValue: TLvlGraphEdgeDrawStyles);
     procedure SetHighlighted(AValue: boolean);
     procedure SetWeight(AValue: single);
+    property DrawStyles: TLvlGraphEdgeDrawStyles read FDrawStyles write SetDrawStyles;
   protected
     procedure RevertDirection;
   public
@@ -371,8 +377,11 @@ const
   DefaultLvlGraphEdgeWidth              = 1;
   DefaultLvlGraphEdgeHighlightColor     = clBlack;
   DefaultLvlGraphEdgeHighlightWidth     = 3;
+  DefaultLvlGraphEdgeNodeSelectedColor  = clAqua;
+  DefaultLvlGraphEdgeNodeSelectedWidth  = 1;
   DefaultLvlGraphEdgeBackColor          = clRed;
   DefaultLvlGraphEdgeBackHighlightColor = clBlue;
+  DefaultLvlGraphEdgeBackNodeSelectedColor= clFuchsia;
   DefaultMaxLevelHeightAbs              = 0;
   DefaultMaxLevelHeightRel              = single(1.5);
 
@@ -430,21 +439,27 @@ type
   TLvlGraphEdgeStyle = class(TPersistent)
   private
     FBackColor: TColor;
+    FBackNodeSelectedColor: TColor;
     FColor: TColor;
     FControl: TCustomLvlGraphControl;
     FBackHighlightColor: TColor;
     FHighlightColor: TColor;
     FHighlightWidth: integer;
     FMouseDistMax: integer;
+    FNodeSelectedColor: TColor;
+    FNodeSelectedWidth: integer;
     FShape: TLvlGraphEdgeShape;
     FSplitMode: TLvlGraphEdgeSplitMode;
     FWidth: integer;
     procedure SetBackColor(AValue: TColor);
     procedure SetBackHighlightColor(AValue: TColor);
+    procedure SetBackNodeSelectedColor(AValue: TColor);
     procedure SetColor(AValue: TColor);
     procedure SetHighlightColor(AValue: TColor);
     procedure SetHighlightWidth(const AValue: integer);
     procedure SetMouseDistMax(AValue: integer);
+    procedure SetNodeSelectedColor(AValue: TColor);
+    procedure SetNodeSelectedWidth(AValue: integer);
     procedure SetShape(AValue: TLvlGraphEdgeShape);
     procedure SetSplitMode(AValue: TLvlGraphEdgeSplitMode);
     procedure SetWidth(const AValue: integer);
@@ -457,9 +472,12 @@ type
   published
     property BackColor: TColor read FBackColor write SetBackColor default DefaultLvlGraphEdgeBackColor;
     property BackHighlightColor: TColor read FBackHighlightColor write SetBackHighlightColor default DefaultLvlGraphEdgeBackHighlightColor;
+    property BackNodeSelectedColor: TColor read FBackNodeSelectedColor write SetBackNodeSelectedColor default DefaultLvlGraphEdgeBackNodeSelectedColor;
     property Color: TColor read FColor write SetColor default DefaultLvlGraphEdgeColor;
     property HighlightColor: TColor read FHighlightColor write SetHighlightColor default DefaultLvlGraphEdgeHighlightColor;
     property HighlightWidth: integer read FHighlightWidth write SetHighlightWidth default DefaultLvlGraphEdgeHighlightWidth;
+    property NodeSelectedColor: TColor read FNodeSelectedColor write SetNodeSelectedColor default DefaultLvlGraphEdgeNodeSelectedColor;
+    property NodeSelectedWidth: integer read FNodeSelectedWidth write SetNodeSelectedWidth default DefaultLvlGraphEdgeNodeSelectedWidth;
     property MouseDistMax: integer read FMouseDistMax write SetMouseDistMax default DefaultLvlGraphEdgeNearMouseDistMax;
     property Shape: TLvlGraphEdgeShape read FShape write SetShape default DefaultLvlGraphEdgeShape;
     property SplitMode: TLvlGraphEdgeSplitMode read FSplitMode write SetSplitMode default DefaultLvlGraphEdgeSplitMode;
@@ -584,6 +602,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure CreateWnd; override;
+    procedure HighlightEdgesConnectedToSelection;
     procedure HighlightConnectedEgdes(Element: TObject);
     procedure DoOnShowHint(HintInfo: PHintInfo); override;
   public
@@ -1394,6 +1413,20 @@ begin
   FMouseDistMax:=AValue;
 end;
 
+procedure TLvlGraphEdgeStyle.SetNodeSelectedColor(AValue: TColor);
+begin
+  if FNodeSelectedColor = AValue then Exit;
+  FNodeSelectedColor := AValue;
+  Control.Invalidate;
+end;
+
+procedure TLvlGraphEdgeStyle.SetNodeSelectedWidth(AValue: integer);
+begin
+  if FNodeSelectedWidth = AValue then Exit;
+  FNodeSelectedWidth := AValue;
+  Control.Invalidate;
+end;
+
 procedure TLvlGraphEdgeStyle.SetBackColor(AValue: TColor);
 begin
   if FBackColor=AValue then Exit;
@@ -1412,6 +1445,13 @@ procedure TLvlGraphEdgeStyle.SetBackHighlightColor(AValue: TColor);
 begin
   if FBackHighlightColor=AValue then Exit;
   FBackHighlightColor:=AValue;
+  Control.Invalidate;
+end;
+
+procedure TLvlGraphEdgeStyle.SetBackNodeSelectedColor(AValue: TColor);
+begin
+  if FBackNodeSelectedColor = AValue then Exit;
+  FBackNodeSelectedColor := AValue;
   Control.Invalidate;
 end;
 
@@ -1459,8 +1499,11 @@ begin
   FColor:=DefaultLvlGraphEdgeColor;
   FHighlightColor:=DefaultLvlGraphEdgeHighlightColor;
   FHighlightWidth:=DefaultLvlGraphEdgeHighlightWidth;
+  FNodeSelectedColor:=DefaultLvlGraphEdgeNodeSelectedColor;
+  FNodeSelectedWidth:=DefaultLvlGraphEdgeNodeSelectedWidth;
   FBackColor:=DefaultLvlGraphEdgeBackColor;
   FBackHighlightColor:=DefaultLvlGraphEdgeBackHighlightColor;
+  FBackNodeSelectedColor:=DefaultLvlGraphEdgeBackNodeSelectedColor;
   FWidth:=DefaultLvlGraphEdgeWidth;
 end;
 
@@ -1482,8 +1525,11 @@ begin
     Color:=Src.Color;
     HighlightColor:=Src.HighlightColor;
     HighlightWidth:=Src.HighlightWidth;
+    NodeSelectedColor:=Src.NodeSelectedColor;
+    NodeSelectedWidth:=Src.NodeSelectedWidth;
     BackColor:=Src.BackColor;
     BackHighlightColor:=Src.BackHighlightColor;
+    BackNodeSelectedColor:=Src.BackNodeSelectedColor;
     Width:=Src.Width;
   end else
     inherited Assign(Source);
@@ -1503,8 +1549,11 @@ begin
         and (Color=Src.Color)
         and (HighlightColor=Src.HighlightColor)
         and (HighlightWidth=Src.HighlightWidth)
+        and (NodeSelectedColor=Src.NodeSelectedColor)
+        and (NodeSelectedWidth=Src.NodeSelectedWidth)
         and (BackColor=Src.BackColor)
         and (BackHighlightColor=Src.BackHighlightColor)
+        and (BackNodeSelectedColor=Src.BackNodeSelectedColor)
         and (Width=Src.Width);
   end;
 end;
@@ -2606,6 +2655,9 @@ begin
         if Edge.Highlighted then
           Canvas.Pen.Width:=EdgeStyle.HighlightWidth
         else
+        if edsNodeSelected in Edge.DrawStyles then
+          Canvas.Pen.Width:=EdgeStyle.NodeSelectedWidth
+        else
           Canvas.Pen.Width:=EdgeStyle.Width;
         if (TargetNode.Level.Index>Level.Index) and (not Edge.BackEdge) then begin
           // normal dependency
@@ -2613,12 +2665,18 @@ begin
           if Edge.Highlighted then
             Canvas.Pen.Color:=EdgeStyle.HighlightColor
           else
+          if edsNodeSelected in Edge.DrawStyles then
+            Canvas.Pen.Color:=EdgeStyle.NodeSelectedColor
+          else
             Canvas.Pen.Color:=EdgeStyle.Color;
         end else begin
           // cycle dependency
           // => draw line from left of Node to right of TargetNode
           if Edge.Highlighted then
             Canvas.Pen.Color:=EdgeStyle.BackHighlightColor
+          else
+          if edsNodeSelected in Edge.DrawStyles then
+            Canvas.Pen.Color:=EdgeStyle.BackNodeSelectedColor
           else
             Canvas.Pen.Color:=EdgeStyle.BackColor;
         end;
@@ -2631,6 +2689,7 @@ end;
 
 procedure TCustomLvlGraphControl.GraphSelectionChanged(Sender: TObject);
 begin
+  HighlightEdgesConnectedToSelection;
   if OnSelectionChanged<>nil then
     OnSelectionChanged(Self);
 end;
@@ -3305,6 +3364,38 @@ procedure TCustomLvlGraphControl.CreateWnd;
 begin
   inherited CreateWnd;
   UpdateScrollBars;
+end;
+
+procedure TCustomLvlGraphControl.HighlightEdgesConnectedToSelection;
+var
+  n: Integer;
+  CurNode: TLvlGraphNode;
+  e: Integer;
+  HighlightedElements: TAvlTree;
+  Edge: TLvlGraphEdge;
+begin
+  BeginUpdate;
+  HighlightedElements:=TAvlTree.Create;
+  try
+    CurNode := SelectedNode;
+    while CurNode <> nil do begin
+      LvlGraphHighlightNode(CurNode, HighlightedElements,true,true);
+      CurNode := CurNode.NextSelected;
+    end;
+    for n:=0 to Graph.NodeCount-1 do begin
+      CurNode:=Graph.Nodes[n];
+      for e:=0 to CurNode.OutEdgeCount-1 do begin
+        Edge:=CurNode.OutEdges[e];
+        if HighlightedElements.Find(Edge)<>nil then
+          Edge.DrawStyles := Edge.DrawStyles + [edsNodeSelected]
+        else
+          Edge.DrawStyles := Edge.DrawStyles - [edsNodeSelected];
+      end;
+    end;
+  finally
+    HighlightedElements.Free;
+  end;
+  EndUpdate;
 end;
 
 procedure TCustomLvlGraphControl.HighlightConnectedEgdes(Element: TObject);
@@ -5392,6 +5483,13 @@ begin
   Source.FOutWeight+=Diff;
   Target.FInWeight+=Diff;
   FWeight:=AValue;
+  Source.Invalidate;
+end;
+
+procedure TLvlGraphEdge.SetDrawStyles(AValue: TLvlGraphEdgeDrawStyles);
+begin
+  if FDrawStyles = AValue then Exit;
+  FDrawStyles := AValue;
   Source.Invalidate;
 end;
 
