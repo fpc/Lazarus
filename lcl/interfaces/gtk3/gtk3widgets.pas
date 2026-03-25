@@ -68,6 +68,22 @@ type
     function GTK3MeasureItem(ACanvas: TCanvas; var AWidth, AHeight: Integer): Boolean;
   end;
 
+  { LCLSpinEdit data record, used by TGtk3SpinEdit and gtk3lclspinedit.inc }
+  PLCLSpinEditData = ^TLCLSpinEditData;
+  TLCLSpinEditData = record
+    Entry: PGtkEntry;
+    BtnUp: PGtkButton;
+    BtnDown: PGtkButton;
+    BtnBox: PGtkBox;
+    Adjustment: PGtkAdjustment;
+    Digits: guint;
+    Numeric: gboolean;
+    UpdatingEntry: Boolean;
+    IsReadOnly: Boolean;     //ReadOnly=True, no changes at all
+    EditorEnabled: Boolean;  //EditorEnabled=False, no typing, updown/scroll still works
+    MouseInside: Boolean;    //Tracks mouse inside whole composite widget.
+  end;
+
   { TGtk3Widget }
 
   TGtk3Widget = class(TGtk3Object, IUnknown)
@@ -122,6 +138,7 @@ type
   protected
     FCentralWidget: PGtkWidget;
     FHasPaint: Boolean;
+    FInHWEvent: Boolean;
     FKeysToEat: TByteSet;
     FParams: TCreateParams;
     fText: string;
@@ -245,8 +262,8 @@ type
 
   TGtk3Editable = class(TGtk3Widget)
   private
-    function GetReadOnly: Boolean;
-    procedure SetReadOnly(AValue: Boolean);
+    function GetReadOnly: Boolean; virtual;
+    procedure SetReadOnly(AValue: Boolean); virtual;
   protected
     PrivateCursorPos: Integer; // used only for delayed selStart and selLength
     PrivateSelection: Integer;
@@ -265,9 +282,8 @@ type
 
   TGtk3Entry = class(TGtk3Editable)
   private
-    function GetAlignment: TAlignment;
-    procedure SetAlignment(AValue: TAlignment);
-  strict private
+    function GetAlignment: TAlignment; virtual;
+    procedure SetAlignment(AValue: TAlignment); virtual;
     class procedure EntryChanged({%H-}AEntry: PGtkEntryBuffer; AData: GPointer); cdecl; static;
     class procedure InsertText(editable: PGtkEditable; aNewText: PgChar; anewtextlen: gint;
       var pos:Pgint; data: gpointer);cdecl; static;
@@ -281,13 +297,13 @@ type
   public
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
     procedure InitializeWidget; override;
-    procedure SetEchoMode(AVisible: Boolean);
-    procedure SetMaxLength(AMaxLength: Integer);
-    procedure SetPasswordChar(APasswordChar: Char);
+    procedure SetEchoMode(AVisible: Boolean); virtual;
+    procedure SetMaxLength(AMaxLength: Integer); virtual;
+    procedure SetPasswordChar(APasswordChar: Char); virtual;
     procedure SetNumbersOnly(ANumbersOnly:boolean);
     procedure SetTextHint(const AHint:string);
-    procedure SetFrame(const aborder:boolean);
-    procedure SetSelText(const ASelText: string);
+    procedure SetFrame(const aborder:boolean); virtual;
+    procedure SetSelText(const ASelText: string); virtual;
     function GetTextHint:string;
     function IsWidgetOk: Boolean; override;
     property Alignment: TAlignment read GetAlignment write SetAlignment;
@@ -297,9 +313,11 @@ type
   { TGtk3SpinEdit }
 
   TGtk3SpinEdit = class(TGtk3Entry)
-  strict  private
-    class procedure SpinValueChanged({%H-}aSpin: PGtkSpinButton; aData: gpointer); cdecl; static;
+  strict private
+    class procedure SpinValueChanged({%H-}AAdj: PGtkAdjustment; AData: gpointer); cdecl; static;
   private
+    function GetAdjustment: PGtkAdjustment;
+    function GetSpinData: PLCLSpinEditData;
     function GetMaximum: Double;
     function GetMinimum: Double;
     function GetNumDigits: Integer;
@@ -313,10 +331,31 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
     function EatArrowKeys(const {%H-}AKey: Word): Boolean; override;
+    function getText: String; override;
+    procedure setText(const AValue: String); override;
+    function getCaretPos: TPoint; override;
+    procedure SetCaretPos(AValue: TPoint); override;
+    function GetReadOnly: Boolean; override;
+    procedure SetReadOnly(AValue: Boolean); override;
   public
+    function GetInternalEntry: PGtkEntry;
+    function getSelStart: Integer; override;
+    function getSelLength: Integer; override;
+    procedure setSelStart(AValue: Integer); override;
+    procedure setSelLength(AValue: Integer); override;
     procedure InitializeWidget; override;
+    procedure DestroyWidget; override;
+    function CanFocus: Boolean; override;
     function IsWidgetOk: Boolean; override;
+    procedure SetEchoMode(AVisible: Boolean); override;
+    procedure SetMaxLength(AMaxLength: Integer); override;
+    procedure SetPasswordChar(APasswordChar: Char); override;
+    procedure SetFrame(const aborder: boolean); override;
+    procedure SetSelText(const ASelText: string); override;
+    function GetAlignment: TAlignment; override;
+    procedure SetAlignment(AValue: TAlignment); override;
     procedure SetRange(AMin, AMax: Double);
+    procedure SetEditorEnabled(AValue: Boolean);
     property Minimum: Double read GetMinimum;
     property Maximum: Double read GetMaximum;
     property Numeric: Boolean read GetNumeric write SetNumeric;
@@ -1228,6 +1267,7 @@ uses {$IFDEF GTK3DEBUGKEYPRESS}TypInfo,{$ENDIF}gtk3int, gtk3caret, imglist,
 {$i gtk3lclentry.inc}
 {$i gtk3lclbutton.inc}
 {$i gtk3lclspinbutton.inc}
+{$i gtk3lclspinedit.inc}
 {$i gtk3lclframe.inc}
 {$i gtk3lclnotebook.inc}
 {$i gtk3lclmenuitem.inc}
@@ -1399,7 +1439,14 @@ begin
         begin
           AFocusedLCL := TGtk3Widget(HwndFromGtkWidget(AFocusedWidget));
           if Assigned(AFocusedLCL) and (AFocusedLCL = TGtk3Widget(Data)) then
-            AFocusedLCL := nil;
+          begin
+            //Focused widget maps to same TGtk3Widget as window, e.g. form's own
+            //FCentralWidget, but for composite widgets like SpinEdit, the focused
+            //child (GtkEntry) has lclwidget = SpinEdit, not the window. Check if the
+            //focused GTK widget is actually a child of Data's FWidget.
+            if not AFocusedWidget^.is_ancestor(TGtk3Widget(Data).Widget) then
+              AFocusedLCL := nil;
+          end;
         end;
         // Only fire from window level when no focused LCL child exists.
         if not Assigned(AFocusedLCL) then
@@ -1418,7 +1465,10 @@ begin
         begin
           AFocusedLCL := TGtk3Widget(HwndFromGtkWidget(AFocusedWidget));
           if Assigned(AFocusedLCL) and (AFocusedLCL = TGtk3Widget(Data)) then
-            AFocusedLCL := nil;
+          begin
+            if not AFocusedWidget^.is_ancestor(TGtk3Widget(Data).Widget) then
+              AFocusedLCL := nil;
+          end;
         end;
         if not Assigned(AFocusedLCL) then
           Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
@@ -2229,7 +2279,7 @@ begin
   end;
 
   IsEditableWidget := AKeyPress and
-    (([wtEntry, wtMemo] * WidgetType <> []) or
+    (([wtEntry, wtMemo, wtSpinEdit] * WidgetType <> []) or
      ((wtComboBox in WidgetType) and (Self is TGtk3ComboBox) and
       PGtkComboBox(Widget)^.has_entry));
   TextBeforeKey := '';
@@ -2283,10 +2333,7 @@ begin
     else
     if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = 0) then
     begin
-      if IsEditableWidget and (Self.getText <> TextBeforeKey) then
-        Result := True
-      else
-        Result := (Msg.CharCode = 0) or IsArrowKey;
+      Result := (Msg.CharCode = 0) or IsArrowKey;
       {$IFDEF GTK3DEBUGKEYPRESS}
       writeln('<=== LM_KeyDownMsgs handled ... exiting ',dbgs(ACharCode),' Result=',dbgs(Result),' AKeyPress=',dbgs(AKeyPress));
       {$ENDIF}
@@ -3042,6 +3089,10 @@ begin
   //Skip synthetic crossing events generated by GDK/GTK grab setup and teardown.
   if aEvent^.mode <> GDK_CROSSING_NORMAL then
     Exit;
+  //wtSpinEdit must skip inferior crossing (mouse moving between HBox children).
+  if (wtSpinEdit in TGtk3Widget(aData).WidgetType) and
+     (aEvent^.detail = GDK_NOTIFY_INFERIOR) then
+    Exit;
   Msg.Msg := LM_MOUSEENTER;
   TGtk3Widget(aData).DeliverMessage(Msg, True);
   if Assigned(TGtk3Widget(aData).LCLObject) and (csDesigning in TGtk3Widget(aData).LCLObject.ComponentState) then
@@ -3057,6 +3108,10 @@ begin
 
   //Skip synthetic crossing events from GDK/GTK grab setup and teardown.
   if aEvent^.mode <> GDK_CROSSING_NORMAL then
+    Exit;
+  //wtSpinEdit must skip inferior crossing (mouse moving between HBox children)
+  if (wtSpinEdit in TGtk3Widget(aData).WidgetType) and
+     (aEvent^.detail = GDK_NOTIFY_INFERIOR) then
     Exit;
 
   if Gtk3IsLayout(aWidget) and (aWidget^.get_parent = TGtk3Widget(aData).Widget) then
@@ -5172,16 +5227,16 @@ begin
       begin
         if TryStrToInt(S, I) then
         begin
-          if (I >= Round(TGtk3SpinEdit(adata).Minimum)) and (I<= Round(TGtk3SpinEdit(adata).Maximum)) then
-            PGtkSpinButton(TGtk3SpinEdit(adata).Widget)^.set_value(I);
+          if (I >= Round(ASpin.Minimum)) and (I <= Round(ASpin.Maximum)) then
+            ASpin.Value := I;
         end;
       end else
       begin
         fl := 0;
         if TryStrToFloat(S, fl) then
         begin
-          if (fl >= TGtk3SpinEdit(adata).Minimum) and (fl<= TGtk3SpinEdit(adata).Maximum) then
-            PGtkSpinButton(TGtk3SpinEdit(adata).Widget)^.set_value(fl);
+          if (fl >= ASpin.Minimum) and (fl <= ASpin.Maximum) then
+            ASpin.Value := fl;
         end;
       end;
     end;
@@ -5331,6 +5386,12 @@ begin
   inherited InitializeWidget;
 
   Widget^.set_size_request(fParams.Width,fParams.Height);
+
+  //TGtk3SpinEdit overrides CreateWidget to return a PGtkBox, not PGtkEntry.
+  //Skip Entry-specific calls for non-Entry widgets.
+  if not Gtk3IsEntry(PGObject(Widget)) then
+    Exit;
+
   PgtkEntry(Widget)^.set_text(PgChar(fParams.Caption));
 
   Self.SetTextHint(TCustomEdit(Self.LCLObject).TextHint);
@@ -5427,84 +5488,113 @@ end;
 
 { TGtk3SpinEdit }
 
+function TGtk3SpinEdit.GetAdjustment: PGtkAdjustment;
+begin
+  Result := LCLSpinEditGetAdjustment(Widget);
+end;
+
+function TGtk3SpinEdit.GetSpinData: PLCLSpinEditData;
+begin
+  Result := LCLSpinEditGetData(Widget);
+end;
+
 function TGtk3SpinEdit.GetMaximum: Double;
 var
-  AFloat: gdouble;
+  Adj: PGtkAdjustment;
 begin
   Result := 0;
-  if IsWidgetOk then
-    PGtkSpinButton(Widget)^.get_range(@AFloat ,@Result);
+  Adj := GetAdjustment;
+  if Assigned(Adj) then
+    Result := Adj^.get_upper;
 end;
 
 function TGtk3SpinEdit.GetMinimum: Double;
 var
-  AFloat: gdouble;
+  Adj: PGtkAdjustment;
 begin
   Result := 0;
-  if IsWidgetOk then
-    PGtkSpinButton(Widget)^.get_range(@Result ,@AFloat);
+  Adj := GetAdjustment;
+  if Assigned(Adj) then
+    Result := Adj^.get_lower;
 end;
 
 function TGtk3SpinEdit.GetNumDigits: Integer;
+var
+  Data: PLCLSpinEditData;
 begin
   Result := 0;
-  if IsWidgetOk then
-    Result := Integer(PGtkSpinButton(Widget)^.get_digits);
+  Data := GetSpinData;
+  if Assigned(Data) then
+    Result := Integer(Data^.Digits);
 end;
 
 function TGtk3SpinEdit.GetNumeric: Boolean;
+var
+  Data: PLCLSpinEditData;
 begin
   Result := False;
-  if IsWidgetOk then
-    Result := PGtkSpinButton(Widget)^.get_numeric;
+  Data := GetSpinData;
+  if Assigned(Data) then
+    Result := Data^.Numeric;
 end;
 
 function TGtk3SpinEdit.GetStep: Double;
 var
-  AFloat: Double;
+  Adj: PGtkAdjustment;
 begin
   Result := 0;
-  if IsWidgetOk then
-    PGtkSpinButton(Widget)^.get_increments(@Result, @AFloat);
+  Adj := GetAdjustment;
+  if Assigned(Adj) then
+    Result := Adj^.get_step_increment;
 end;
 
 function TGtk3SpinEdit.GetValue: Double;
+var
+  Adj: PGtkAdjustment;
 begin
   Result := 0;
-  if IsWidgetOk then
-    Result := PGtkSpinButton(Widget)^.get_value;
+  Adj := GetAdjustment;
+  if Assigned(Adj) then
+    Result := Adj^.get_value;
 end;
 
 procedure TGtk3SpinEdit.SetNumDigits(AValue: Integer);
+var
+  Data: PLCLSpinEditData;
 begin
-  if IsWidgetOk then
-    PGtkSpinButton(Widget)^.set_digits(GUint(AValue));
+  Data := GetSpinData;
+  if Assigned(Data) then
+  begin
+    Data^.Digits := guint(AValue);
+    LCLSpinUpdateEntryFromAdj(Data);
+  end;
 end;
 
 procedure TGtk3SpinEdit.SetNumeric(AValue: Boolean);
+var
+  Data: PLCLSpinEditData;
 begin
-  if IsWidgetOk then
-    PGtkSpinButton(Widget)^.set_numeric(AValue);
+  Data := GetSpinData;
+  if Assigned(Data) then
+    Data^.Numeric := AValue;
 end;
 
 procedure TGtk3SpinEdit.SetStep(AValue: Double);
 var
-  AStep: gdouble;
-  APage: gdouble;
+  Adj: PGtkAdjustment;
 begin
-  if IsWidgetOk then
-  begin
-    PGtkSpinButton(Widget)^.get_increments(@AStep, @APage);
-    PGtkSpinButton(Widget)^.set_increments(AValue, APage);
-  end;
+  Adj := GetAdjustment;
+  if Assigned(Adj) then
+    Adj^.set_step_increment(AValue);
 end;
 
 procedure TGtk3SpinEdit.SetValue(AValue: Double);
+var
+  Adj: PGtkAdjustment;
 begin
-  if IsWidgetOk then
-  begin
-    PGtkSpinButton(Widget)^.set_value(AValue);
-  end;
+  Adj := GetAdjustment;
+  if Assigned(Adj) then
+    Adj^.set_value(AValue);
 end;
 
 function TGtk3SpinEdit.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -5515,9 +5605,7 @@ begin
   PrivateSelection := -1;
   ASpin := TCustomSpinEdit(LCLObject);
   FWidgetType := FWidgetType + [wtSpinEdit];
-  Result := LCLGtkSpinButtonNew;
-  PGtkSpinButton(Result)^.set_range(ASpin.MinValue, ASpin.MaxValue);
-  PGtkSpinButton(Result)^.set_increments(ASpin.Increment, ASpin.Increment * 10); //page param gtk default is 10 * step.
+  Result := PGtkWidget(LCLSpinEditNew(ASpin.MinValue, ASpin.MaxValue, ASpin.Increment));
 end;
 
 function TGtk3SpinEdit.EatArrowKeys(const AKey: Word): Boolean;
@@ -5525,8 +5613,41 @@ begin
   Result := False;
 end;
 
-class procedure TGtk3SpinEdit.SpinValueChanged(aSpin:PGtkSpinButton;aData:
-  gpointer);cdecl;
+function TGtk3SpinEdit.getText: String;
+var
+  Data: PLCLSpinEditData;
+begin
+  Data := GetSpinData;
+  if Assigned(Data) and Assigned(Data^.Entry) then
+    Result := Data^.Entry^.get_text
+  else
+    Result := '';
+end;
+
+procedure TGtk3SpinEdit.setText(const AValue: String);
+var
+  Data: PLCLSpinEditData;
+  V: Double;
+  S: String;
+begin
+  Data := GetSpinData;
+  if not Assigned(Data) or not Assigned(Data^.Entry) then
+    Exit;
+  // Validate: try to parse as number, if invalid use current value
+  if TryStrToFloat(AValue, V) then
+    S := AValue
+  else
+    S := LCLSpinFormatValue(Data^.Adjustment^.get_value, Data^.Digits);
+  Data^.UpdatingEntry := True;
+  try
+    Data^.Entry^.set_text(PgChar(S));
+  finally
+    Data^.UpdatingEntry := False;
+  end;
+end;
+
+class procedure TGtk3SpinEdit.SpinValueChanged(AAdj: PGtkAdjustment;
+  AData: gpointer); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -5537,20 +5658,282 @@ begin
 end;
 
 procedure TGtk3SpinEdit.InitializeWidget;
+var
+  Adj: PGtkAdjustment;
+  Data: PLCLSpinEditData;
 begin
+  //TGtk3Entry.InitializeWidget has a guard, so exits early when Widget is not GtkEntry.
   inherited InitializeWidget;
-  g_signal_connect_data(Widget, 'value-changed', TGCallback(@SpinValueChanged), Self, nil, G_CONNECT_DEFAULT);
+
+  //HBox is the container, GtkEntry is the central focusable widget,
+  //idea taken from Qt's focusProxy behaviour.
+  Data := GetSpinData;
+  if Assigned(Data) then
+  begin
+    FCentralWidget := PGtkWidget(Data^.Entry);
+
+    Widget^.set_can_focus(False);
+    g_object_set_data(PGObject(Data^.Entry), 'lclwidget', Self);
+
+    g_signal_connect_data(PGObject(Data^.Entry), 'event',
+      TGCallback(@TGtk3Widget.WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
+
+    g_signal_connect_data(PGObject(Data^.Entry), 'changed',
+      TGCallback(@TGtk3Entry.EntryChanged), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.Entry), 'insert-text',
+      TGCallback(@TGtk3Entry.InsertText), Self, nil, G_CONNECT_DEFAULT);
+
+    g_signal_connect_data(PGObject(Data^.BtnUp), 'enter-notify-event',
+      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.BtnUp), 'leave-notify-event',
+      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.BtnDown), 'enter-notify-event',
+      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.BtnDown), 'leave-notify-event',
+      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.BtnBox), 'enter-notify-event',
+      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.BtnBox), 'leave-notify-event',
+      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
+
+    g_signal_connect_data(PGObject(Data^.Entry), 'enter-notify-event',
+      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.Entry), 'leave-notify-event',
+      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
+  end;
+
+  Widget^.set_size_request(fParams.Width, fParams.Height);
+
+  Adj := GetAdjustment;
+  if Assigned(Adj) then
+    g_signal_connect_data(PGObject(Adj), 'value-changed',
+      TGCallback(@SpinValueChanged), Self, nil, G_CONNECT_DEFAULT);
+end;
+
+procedure TGtk3SpinEdit.DestroyWidget;
+begin
+  LCLSpinEditFreeData(Widget);
+  inherited DestroyWidget;
+end;
+
+function TGtk3SpinEdit.CanFocus: Boolean;
+var
+  AEntry: PGtkEntry;
+begin
+  AEntry := GetInternalEntry;
+  Result := Assigned(AEntry) and PGtkWidget(AEntry)^.get_can_focus;
 end;
 
 function TGtk3SpinEdit.IsWidgetOk: Boolean;
 begin
-  Result := (Widget <> nil) and Gtk3IsSpinButton(Widget);
+  Result := (Widget <> nil) and Gtk3IsWidget(Widget) and
+    Assigned(LCLSpinEditGetData(Widget));
 end;
 
 procedure TGtk3SpinEdit.SetRange(AMin, AMax: Double);
+var
+  Adj: PGtkAdjustment;
 begin
-  if IsWidgetOk then
-    PGtkSpinButton(Widget)^.set_range(AMin, AMax);
+  Adj := GetAdjustment;
+  if Assigned(Adj) then
+  begin
+    Adj^.set_lower(AMin);
+    Adj^.set_upper(AMax);
+  end;
+end;
+
+procedure TGtk3SpinEdit.SetEditorEnabled(AValue: Boolean);
+var
+  Data: PLCLSpinEditData;
+begin
+  Data := GetSpinData;
+  if Assigned(Data) then
+  begin
+    Data^.EditorEnabled := AValue;
+    PGtkEditable(Data^.Entry)^.set_editable(AValue and not Data^.IsReadOnly);
+  end;
+end;
+
+function TGtk3SpinEdit.GetInternalEntry: PGtkEntry;
+var
+  Data: PLCLSpinEditData;
+begin
+  Data := GetSpinData;
+  if Assigned(Data) then
+    Result := Data^.Entry
+  else
+    Result := nil;
+end;
+
+function TGtk3SpinEdit.getSelStart: Integer;
+var
+  AEntry: PGtkEntry;
+  AStart, AStop: gint;
+begin
+  Result := 0;
+  AEntry := GetInternalEntry;
+  if AEntry = nil then Exit;
+  if gtk_editable_get_selection_bounds(PGtkEditable(AEntry), @AStart, @AStop) then
+    Result := AStart
+  else
+    Result := gtk_editable_get_position(PGtkEditable(AEntry));
+end;
+
+function TGtk3SpinEdit.getSelLength: Integer;
+var
+  AEntry: PGtkEntry;
+  AStart, AStop: gint;
+begin
+  Result := 0;
+  AEntry := GetInternalEntry;
+  if AEntry = nil then Exit;
+  if PGtkEditable(AEntry)^.get_selection_bounds(@AStart, @AStop) then
+    Result := AStop - AStart;
+end;
+
+procedure TGtk3SpinEdit.setSelStart(AValue: Integer);
+var
+  AEntry: PGtkEntry;
+begin
+  AEntry := GetInternalEntry;
+  if AEntry = nil then Exit;
+  PGtkEditable(AEntry)^.set_position(AValue);
+end;
+
+procedure TGtk3SpinEdit.setSelLength(AValue: Integer);
+var
+  AEntry: PGtkEntry;
+  AStart: gint;
+begin
+  AEntry := GetInternalEntry;
+  if AEntry = nil then Exit;
+  AStart := PGtkEditable(AEntry)^.get_position;
+  PGtkEditable(AEntry)^.select_region(AStart, AStart + AValue);
+end;
+
+function TGtk3SpinEdit.getCaretPos: TPoint;
+var
+  AEntry: PGtkEntry;
+begin
+  Result := Point(0, 0);
+  AEntry := GetInternalEntry;
+  if AEntry <> nil then
+    Result.X := PGtkEditable(AEntry)^.get_position;
+end;
+
+procedure TGtk3SpinEdit.SetCaretPos(AValue: TPoint);
+var
+  AEntry: PGtkEntry;
+begin
+  AEntry := GetInternalEntry;
+  if AEntry <> nil then
+    PGtkEditable(AEntry)^.set_position(AValue.X);
+end;
+
+procedure TGtk3SpinEdit.SetEchoMode(AVisible: Boolean);
+var
+  AEntry: PGtkEntry;
+begin
+  AEntry := GetInternalEntry;
+  if AEntry <> nil then
+    AEntry^.set_visibility(AVisible);
+end;
+
+procedure TGtk3SpinEdit.SetMaxLength(AMaxLength: Integer);
+var
+  AEntry: PGtkEntry;
+begin
+  AEntry := GetInternalEntry;
+  if AEntry <> nil then
+    AEntry^.set_max_length(gint(AMaxLength));
+end;
+
+procedure TGtk3SpinEdit.SetPasswordChar(APasswordChar: Char);
+var
+  AEntry: PGtkEntry;
+  PWChar: Integer;
+begin
+  AEntry := GetInternalEntry;
+  if AEntry = nil then Exit;
+  PWChar := Ord(APasswordChar);
+  if (PWChar < 192) or (PWChar = Ord('*')) then
+    PWChar := 9679;
+  AEntry^.set_invisible_char(PWChar);
+end;
+
+procedure TGtk3SpinEdit.SetFrame(const aborder: boolean);
+var
+  AEntry: PGtkEntry;
+begin
+  AEntry := GetInternalEntry;
+  if AEntry <> nil then
+    AEntry^.set_has_frame(aborder);
+end;
+
+procedure TGtk3SpinEdit.SetSelText(const ASelText: string);
+var
+  AEntry: PGtkEntry;
+  AEditable: PGtkEditable;
+  APos: gint;
+begin
+  AEntry := GetInternalEntry;
+  if AEntry = nil then Exit;
+  AEditable := PGtkEditable(AEntry);
+  AEditable^.delete_selection;
+  APos := AEditable^.get_position;
+  AEditable^.insert_text(PgChar(ASelText), Length(ASelText), @APos);
+  AEditable^.set_position(APos);
+end;
+
+function TGtk3SpinEdit.GetReadOnly: Boolean;
+var
+  Data: PLCLSpinEditData;
+begin
+  Data := GetSpinData;
+  if Assigned(Data) then
+    Result := Data^.IsReadOnly
+  else
+    Result := False;
+end;
+
+procedure TGtk3SpinEdit.SetReadOnly(AValue: Boolean);
+var
+  Data: PLCLSpinEditData;
+begin
+  Data := GetSpinData;
+  if Assigned(Data) then
+  begin
+    Data^.IsReadOnly := AValue;
+    PGtkEditable(Data^.Entry)^.set_editable(not AValue and Data^.EditorEnabled);
+    PGtkWidget(Data^.BtnUp)^.set_sensitive(not AValue);
+    PGtkWidget(Data^.BtnDown)^.set_sensitive(not AValue);
+  end;
+end;
+
+function TGtk3SpinEdit.GetAlignment: TAlignment;
+var
+  AEntry: PGtkEntry;
+  AFloat: gfloat;
+begin
+  Result := taLeftJustify;
+  AEntry := GetInternalEntry;
+  if AEntry = nil then Exit;
+  AFloat := AEntry^.get_alignment;
+  if AFloat >= 0.9 then
+    Result := taRightJustify
+  else if AFloat >= 0.4 then
+    Result := taCenter;
+end;
+
+procedure TGtk3SpinEdit.SetAlignment(AValue: TAlignment);
+const
+  AGtkAlign: array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
+var
+  AEntry: PGtkEntry;
+begin
+  AEntry := GetInternalEntry;
+  if AEntry <> nil then
+    AEntry^.set_alignment(AGtkAlign[AValue]);
 end;
 
 { TGtk3Range }

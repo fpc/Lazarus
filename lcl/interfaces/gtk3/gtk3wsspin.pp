@@ -43,6 +43,7 @@ type
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; ReadOnly: boolean); override;
+    class procedure SetEditorEnabled(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean); override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
@@ -127,6 +128,14 @@ begin
   TGtk3Editable(ACustomEdit.Handle).EndUpdate;
 end;
 
+class procedure TGtk3WSCustomFloatSpinEdit.SetEditorEnabled(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean);
+begin
+  if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'SetEditorEnabled') then
+    Exit;
+  TGtk3SpinEdit(ACustomFloatSpinEdit.Handle).SetEditorEnabled(AValue);
+end;
+
 class procedure TGtk3WSCustomFloatSpinEdit.UpdateControl(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 var
@@ -138,7 +147,7 @@ begin
     Exit;
   ASpin := TGtk3SpinEdit(ACustomFloatSpinEdit.Handle);
 
-  if ACustomFloatSpinEdit.MaxValue >= ACustomFloatSpinEdit.MinValue then
+  if ACustomFloatSpinEdit.MaxValue > ACustomFloatSpinEdit.MinValue then
   begin
     AMin := ACustomFloatSpinEdit.MinValue;
     AMax := ACustomFloatSpinEdit.MaxValue;
@@ -155,6 +164,7 @@ begin
     ASpin.Step := ACustomFloatSpinEdit.Increment;
     ASpin.Value := ACustomFloatSpinEdit.Value;
 
+    ASpin.SetEditorEnabled(ACustomFloatSpinEdit.EditorEnabled);
     ASpin.ReadOnly := ACustomFloatSpinEdit.ReadOnly;
   finally
     ASpin.EndUpdate;

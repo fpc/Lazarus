@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="586">
+    <Files Count="587">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2814,80 +2814,84 @@ end;"/>
         <UnitName Value="gtk3themes"/>
       </Item571>
       <Item572>
+        <Filename Value="gtk3/gtk3lclspinedit.inc"/>
+        <Type Value="Include"/>
+      </Item572>
+      <Item573>
         <Filename Value="gtk3/gtk3wssplitter.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk3WSSplitter"/>
-      </Item572>
-      <Item573>
+      </Item573>
+      <Item574>
         <Filename Value="cocoa/cocoagroupbox.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaGroupBox"/>
-      </Item573>
-      <Item574>
+      </Item574>
+      <Item575>
         <Filename Value="cocoa/cocoaprogressindicator.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaProgressIndicator"/>
-      </Item574>
-      <Item575>
+      </Item575>
+      <Item576>
         <Filename Value="cocoa/cocoaslider.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaSlider"/>
-      </Item575>
-      <Item576>
+      </Item576>
+      <Item577>
         <Filename Value="cocoa/cocoawslistbox.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSListBox"/>
-      </Item576>
-      <Item577>
+      </Item577>
+      <Item578>
         <Filename Value="cocoa/cocoawstextedits.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSTextEdits"/>
-      </Item577>
-      <Item578>
+      </Item578>
+      <Item579>
         <Filename Value="cocoa/cocoacombobox.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaComboBox"/>
-      </Item578>
-      <Item579>
+      </Item579>
+      <Item580>
         <Filename Value="cocoa/cocoawscombobox.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSComboBox"/>
-      </Item579>
-      <Item580>
+      </Item580>
+      <Item581>
         <Filename Value="cocoa/cocoawstabcontrols.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSTabControls"/>
-      </Item580>
-      <Item581>
+      </Item581>
+      <Item582>
         <Filename Value="cocoa/cocoacommoncallback.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaCommonCallback"/>
-      </Item581>
-      <Item582>
+      </Item582>
+      <Item583>
         <Filename Value="cocoa/cocoawscustomcontrol.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSCustomControl"/>
-      </Item582>
-      <Item583>
+      </Item583>
+      <Item584>
         <Filename Value="cocoa/cocoadebug.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaDebug"/>
-      </Item583>
-      <Item584>
+      </Item584>
+      <Item585>
         <Filename Value="cocoa/cocoawsservice.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoawsservice"/>
-      </Item584>
-      <Item585>
+      </Item585>
+      <Item586>
         <Filename Value="cocoa/cocoaapplication.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaApplication"/>
-      </Item585>
-      <Item586>
+      </Item586>
+      <Item587>
         <Filename Value="cocoa/cocoawsmodalservice.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoawsmodalservice"/>
-      </Item586>
+      </Item587>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
