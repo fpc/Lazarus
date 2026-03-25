@@ -15,7 +15,6 @@
 unit CocoaButtons;
 
 {$mode objfpc}{$H+}
-{$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
 {$include cocoadefines.inc}
@@ -25,7 +24,7 @@ interface
 uses
   Types, Classes, SysUtils, Graphics, Controls,
   MacOSAll, CocoaAll,
-  CocoaConst, CocoaPrivate, CocoaUtils;
+  CocoaPrivate, CocoaConst, CocoaUtils;
 
 type
 
@@ -124,6 +123,8 @@ type
   end;
 
 implementation
+
+{ TCocoaButtonUtil }
 
 class function TCocoaButtonUtil.adjustSizeIfNecessary(
   const button: NSButton;

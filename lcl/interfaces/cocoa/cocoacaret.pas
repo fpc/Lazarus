@@ -18,6 +18,7 @@
 }
 
 unit CocoaCaret;
+
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
 

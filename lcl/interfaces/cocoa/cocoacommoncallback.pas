@@ -35,7 +35,7 @@ type
     procedure SetIsOpaque(AValue: Boolean);
     function GetShouldBeEnabled: Boolean;
   protected
-    FTarget: TWinControl;
+    _target    : TWinControl;
     _KeyMsg    : TLMKey;
     _CharMsg   : TLMKey;
     _SendChar  : Boolean;
@@ -117,7 +117,7 @@ type
     procedure SetHandleFrame( AHandleFrame: NSView );
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
-    property Target: TWinControl read FTarget;
+    property Target: TWinControl read _target;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
 
@@ -269,7 +269,7 @@ begin
     _handleFrame := AHandleFrame
   else if Owner.isKindOfClass(NSView) then
     _handleFrame := NSView(AOwner);
-  FTarget := ATarget;
+  _target := ATarget;
   FContext := nil;
   FHasCaret := False;
   FPropStorage := TStringList.Create;
@@ -286,7 +286,7 @@ destructor TLCLCommonCallback.Destroy;
 begin
   FContext.Free;
   FPropStorage.Free;
-  FTarget := nil;
+  _target := nil;
   inherited Destroy;
 end;
 
@@ -865,8 +865,8 @@ begin
     NSRightMouseDown,
     NSOtherMouseDown:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),FTarget,LastMouse,
-        FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,True);
+      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),_target,LastMouse,
+        _target.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,True);
 
       case LastMouse.ClickCount of
         2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
@@ -882,8 +882,8 @@ begin
     NSRightMouseUp,
     NSOtherMouseUp:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),FTarget,LastMouse,
-        FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,False);
+      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),_target,LastMouse,
+        _target.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,False);
       case LastMouse.ClickCount of
         2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
         3: Msg.Keys := msg.Keys or MK_TRIPLECLICK;
@@ -1328,7 +1328,7 @@ begin
   if Assigned(FContext) then
     Exit;
   FContext := TCocoaContext.Create(ControlContext);
-  FContext.Control := FTarget;
+  FContext.Control := _target;
   FContext.isControlDC := True;
   try
     // debugln('Draw '+Target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
@@ -1406,7 +1406,7 @@ end;
 
 procedure TLCLCommonCallback.RemoveTarget;
 begin
-  FTarget := nil;
+  _target := nil;
 end;
 
 procedure TLCLCommonCallback.InputClientInsertText(const utf8: string);
@@ -1421,7 +1421,7 @@ begin
   begin
     c := Utf8CodePointLen(@utf8[i], length(utf8)-i+1, false);
     ch := Copy(utf8, i, c);
-    FTarget.IntfUTF8KeyPress(ch, 1, false);
+    _target.IntfUTF8KeyPress(ch, 1, false);
     inc(i, c);
   end;
 
@@ -1449,7 +1449,7 @@ end;
 
 function TLCLCommonCallback.GetShouldBeEnabled: Boolean;
 begin
-  Result := Assigned(FTarget) and FTarget.Enabled;
+  Result := Assigned(_target) and _target.Enabled;
 end;
 
 end.

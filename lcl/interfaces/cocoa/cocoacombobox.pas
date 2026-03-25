@@ -11,7 +11,7 @@ uses
   Types, Classes, SysUtils,
   LCLType, Graphics, Controls, StdCtrls,
   MacOSAll, CocoaAll,
-  CocoaPrivate, CocoaConfig, CocoaUtils, CocoaGDIObjects;
+  CocoaPrivate, CocoaGDIObjects, CocoaConfig, CocoaUtils;
 
 type
   TCocoaComboBox = objcclass;
