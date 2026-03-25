@@ -99,7 +99,7 @@ begin
   if not AWinControl.HandleAllocated then
     Exit;
 
-  if Assigned(CocoaWidgetSetState) and (AWinControl.Handle = CocoaWidgetSetState.CaptureControl) then
+  if Assigned(CocoaWidgetSetState) and (AWinControl.Handle = CocoaWidgetSetState.captureControl) then
     CocoaWidgetSetState.releaseCapture;
 
   obj := NSObject(AWinControl.Handle);

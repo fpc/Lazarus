@@ -17,19 +17,23 @@ type
   { TCocoaWidgetSetState }
 
   TCocoaWidgetSetState = class
+  private
+    _lclSendingScrollWheelCount: Integer;
   public
-    KeyWindow: NSWindow;
-    KillingFocus: Boolean;
-    CaptureControl: HWND;
-    SendingScrollWheelCount: Integer;
+    currentKeyWindow: NSWindow;
+    killingFocus: Boolean;
+    captureControl: HWND;
 
     // Store state of key modifiers so that we can emulate keyup/keydown
     // of keys like control, option, command, caps lock, shift
-    PrevKeyModifiers : NSUInteger;
-    SavedKeyModifiers : NSUInteger;
+    prevKeyModifiers : NSUInteger;
+    savedKeyModifiers : NSUInteger;
   public
     procedure releaseCapture;
-    function isSendingScrollWheelFromInterface: Boolean;
+
+    procedure lclBeginSendingScrollWheel;
+    procedure lclEndSendingScrollWheel;
+    function isLCLSendingScrollWheel: Boolean;
   end;
 
   { TCocoaWidgetSetGDIObject }
@@ -138,12 +142,22 @@ implementation
 
 procedure TCocoaWidgetSetState.releaseCapture;
 begin
-  self.CaptureControl:= 0;
+  self.captureControl:= 0;
 end;
 
-function TCocoaWidgetSetState.isSendingScrollWheelFromInterface: Boolean;
+procedure TCocoaWidgetSetState.lclBeginSendingScrollWheel;
 begin
-  Result:= self.SendingScrollWheelCount > 0;
+  inc( _lclSendingScrollWheelCount );
+end;
+
+procedure TCocoaWidgetSetState.lclEndSendingScrollWheel;
+begin
+  dec( _lclSendingScrollWheelCount );
+end;
+
+function TCocoaWidgetSetState.isLCLSendingScrollWheel: Boolean;
+begin
+  Result:= _lclSendingScrollWheelCount > 0;
 end;
 
 { TCocoaWidgetSetGDIObject }

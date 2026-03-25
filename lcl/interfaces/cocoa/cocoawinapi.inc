@@ -216,11 +216,11 @@ const
   function SendMouseWheel(barFlag: Integer): LRESULT;
   begin
     Result:= 0;
-    inc( CocoaWidgetSetState.SendingScrollWheelCount );
+    CocoaWidgetSetState.lclBeginSendingScrollWheel;
     try
       Result:= CallMouseWheelHandler( barFlag );
     finally
-      dec( CocoaWidgetSetState.SendingScrollWheelCount );
+      CocoaWidgetSetState.lclEndSendingScrollWheel;
     end;
   end;
 
@@ -626,7 +626,7 @@ begin
     end;
     obj.lclSetEnabled(bEnable);
 
-    if (CocoaWidgetSetState.CaptureControl <> 0)
+    if (CocoaWidgetSetState.captureControl <> 0)
       and (not bEnable)
       and (obj.isKindOfClass(NSView))
       and TCocoaViewUtil.isLCLEnabled(NSView(obj)) then
@@ -943,7 +943,7 @@ end;
 
 function TCocoaWidgetSet.GetCapture: HWND;
 begin
-  Result:= CocoaWidgetSetState.CaptureControl;
+  Result:= CocoaWidgetSetState.captureControl;
 end;
 
 function TCocoaWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
@@ -1742,7 +1742,7 @@ begin
     end;
 
     // if frame changed, another ScrollBar has been updated
-    if NOT CocoaWidgetSetState.isSendingScrollWheelFromInterface then begin
+    if NOT CocoaWidgetSetState.isLCLSendingScrollWheel then begin
       if ScrollInfo.fMask and SIF_ALL > 0 then
         sc.applyScrollInfo(SBStyle, ScrollInfo);
     end;
@@ -2164,12 +2164,12 @@ var
   lclobj : TObject;
 begin
   Result := 0;
-  if CocoaWidgetSetState.KillingFocus then
+  if CocoaWidgetSetState.killingFocus then
     Exit;
 
   win := NSApp.keyWindow;
   if not Assigned(win) then
-    win := CocoaWidgetSetState.KeyWindow;
+    win := CocoaWidgetSetState.currentKeyWindow;
   if not Assigned(win) then
     Exit;
 
@@ -2387,8 +2387,8 @@ end;
 
 function TCocoaWidgetSet.SetCapture(AHandle: HWND): HWND;
 begin
-  Result := CocoaWidgetSetState.CaptureControl;
-  CocoaWidgetSetState.CaptureControl := AHandle;
+  Result := CocoaWidgetSetState.captureControl;
+  CocoaWidgetSetState.captureControl := AHandle;
 end;
 
 function TCocoaWidgetSet.SetCaretPos(X, Y: Integer): Boolean;

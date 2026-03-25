@@ -316,8 +316,8 @@ var
   lCaptureView: NSView;
 begin
   Result := nil;
-  if CocoaWidgetSetState.CaptureControl = 0 then Exit;
-  obj := NSObject(CocoaWidgetSetState.CaptureControl);
+  if CocoaWidgetSetState.captureControl = 0 then Exit;
+  obj := NSObject(CocoaWidgetSetState.captureControl);
   lCaptureView := obj.lclContentView;
   if (obj <> Owner) and (lCaptureView <> Owner) and not FIsEventRouting then
   begin
@@ -401,7 +401,7 @@ begin
   _SendChar := False;
   CurMod := Event.modifierFlags;
   //see what changed. we only care of bits 16 through 20
-  Diff := (CocoaWidgetSetState.PrevKeyModifiers xor CurMod) and cModifiersOfInterest;
+  Diff := (CocoaWidgetSetState.prevKeyModifiers xor CurMod) and cModifiersOfInterest;
 
   case Diff of
     0                  : VKKeyCode := VK_UNKNOWN; //nothing (that we cared of) changed
@@ -416,7 +416,7 @@ begin
   //diff is now equal to the mask of the bit that changed, so we can determine
   //if this change is a keydown (PrevKeyModifiers didn't have the bit set) or
   //a keyup (PrevKeyModifiers had the bit set)
-  _IsKeyDown := ((CocoaWidgetSetState.PrevKeyModifiers and Diff) = 0);
+  _IsKeyDown := ((CocoaWidgetSetState.prevKeyModifiers and Diff) = 0);
 
   FillChar(_KeyMsg, SizeOf(_KeyMsg), 0);
   _KeyMsg.KeyData := KeyData;
@@ -1221,11 +1221,11 @@ end;
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
   if not Assigned(Target) then Exit;
-  CocoaWidgetSetState.KillingFocus:= true;
+  CocoaWidgetSetState.killingFocus:= true;
   try
     LCLSendKillFocusMsg(Target);
   finally
-    CocoaWidgetSetState.KillingFocus:= false;
+    CocoaWidgetSetState.killingFocus:= false;
   end;
 end;
 
