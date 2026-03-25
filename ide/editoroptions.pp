@@ -581,6 +581,7 @@ type
     function GetTokenPos: Integer; override;
     function GetTokenKind: integer; override;
     procedure Next; override;
+    function GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override;
   end;
 
@@ -9013,6 +9014,11 @@ end;
 procedure TIDESynTextSyn.Next;
 begin
   inc(FPos);
+end;
+
+function TIDESynTextSyn.GetRange: Pointer;
+begin
+  Result:=nil;
 end;
 
 procedure TIDESynTextSyn.SetRange(Value: Pointer);
