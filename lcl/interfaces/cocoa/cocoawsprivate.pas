@@ -99,7 +99,7 @@ begin
   if not AWinControl.HandleAllocated then
     Exit;
 
-  if Assigned(CocoaWidgetSetState) and (AWinControl.Handle = CocoaWidgetSetState.CaptureControl) then
+  if Assigned(CocoaWidgetSetState) and (AWinControl.Handle = CocoaWidgetSetState.captureControl) then
     CocoaWidgetSetState.releaseCapture;
 
   obj := NSObject(AWinControl.Handle);
@@ -123,7 +123,8 @@ begin
   // destroy the callback
   if Assigned(Callback) then
   begin
-    if Callback.HasCaret then DestroyCaret(nil);
+    if Callback.HasCaret then
+      TCocoaCaretUtil.destroyCaret(nil);
     CallbackObject := Callback.GetCallbackObject;
     Callback.RemoveTarget;
     Callback := nil;

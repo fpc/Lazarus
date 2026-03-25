@@ -11,8 +11,8 @@ uses
   Controls, Forms,
   InterfaceBase,
   MacOSAll, CocoaAll,
-  CocoaWSService, CocoaConst, CocoaConfig, CocoaPrivate,
-  CocoaThemes, CocoaCursor, CocoaMenus, CocoaWindows, CocoaUtils, Cocoa_Extra;
+  CocoaPrivate, CocoaWSService, CocoaConst, CocoaConfig,
+  CocoaWindows, CocoaMenus, CocoaThemes, CocoaCursor, CocoaUtils, Cocoa_Extra;
 
 type
 
@@ -23,40 +23,37 @@ type
   TCocoaApplication = objcclass(NSApplication)
   private
     _isInSandbox: Boolean;
-  public
-    aloop : TApplicationMainLoop;
+    _lclMainLoop: TApplicationMainLoop;
+    _onOpenURLObserver: TCocoaAppOnOpenURLNotify;
     // Sandboxing
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
-    isrun : Boolean;
-    Stopped : Boolean;
+    _isRunning : Boolean;
+    _stopped : Boolean;
     {$endif}
-
-    // Store state of key modifiers so that we can emulate keyup/keydown
-    // of keys like control, option, command, caps lock, shift
-    PrevKeyModifiers : NSUInteger;
-    SavedKeyModifiers : NSUInteger;
+  private
+    procedure onOpenURL( const url: NSURL );
+      message 'lclOnOpenURL:';
+    procedure lclSyncCheck(arg: id);
+      message 'lclSyncCheck:';
+  public
+    procedure sendEvent(theEvent: NSEvent); override;
+    function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
+    procedure observeValueForKeyPath_ofObject_change_context(keyPath: NSString;
+      object_: id; change: NSDictionary; context_: pointer); override;
 
     {$ifdef COCOALOOPOVERRIDE}
     procedure run; override;
     {$endif}
-    procedure sendEvent(theEvent: NSEvent); override;
-    function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
 
-    procedure lclSyncCheck(arg: id); message 'lclSyncCheck:';
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
     function isRunning: objc.ObjCBOOL; override;
     procedure stop(sender: id); override;
     {$endif}
-
-    procedure observeValueForKeyPath_ofObject_change_context(keyPath: NSString;
-      object_: id; change: NSDictionary; context_: pointer); override;
-
-    procedure onOpenURL( const url: NSURL ); message 'lclOnOpenURL:';
-
-    function isInSandbox: Boolean; message 'lclIsInSandbox';
-  private
-    _onOpenURLObserver: TCocoaAppOnOpenURLNotify;
   public
+    function isInSandbox: Boolean; message 'lclIsInSandbox';
+    function hasLCLMainLoop: Boolean; message 'lclHasLCLMainLoop';
+    procedure setLCLMainLoop( const mainLoop: TApplicationMainLoop );
+      message 'lclSetLCLMainLoop:';
     procedure setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify );
       message 'lclSetOpenURLObserver:';
   public
@@ -286,7 +283,7 @@ begin
   {$ifdef COCOAPPRUNNING_SETINTPROPERTY}
   setValue_forKey(NSNumber.numberWithBool(true), NSSTR('_running'));
   {$endif}
-  aloop();
+  _lclMainLoop();
 end;
 {$endif}
 
@@ -468,7 +465,7 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
-  PrevKeyModifiers  := SavedKeyModifiers;
+  CocoaWidgetSetState.prevKeyModifiers  := CocoaWidgetSetState.savedKeyModifiers;
 
   {$ifdef COCOALOOPHIJACK}
   if not isrun and Assigned(aloop) then begin
@@ -513,7 +510,7 @@ begin
     Exit;
   end;
 
-  SavedKeyModifiers := Result.modifierFlags;
+  CocoaWidgetSetState.savedKeyModifiers := Result.modifierFlags;
 
   if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)
@@ -561,12 +558,12 @@ end;
 {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
 function TCocoaApplication.isRunning: objc.ObjCBOOL;
 begin
-  Result:=not Stopped;
+  Result:=not _stopped;
 end;
 
 procedure TCocoaApplication.stop(sender: id);
 begin
-  Stopped := true;
+  _stopped := true;
   inherited stop(sender);
 end;
 {$endif}
@@ -595,6 +592,16 @@ end;
 function TCocoaApplication.isInSandbox: Boolean;
 begin
   Result:= _isInSandbox;
+end;
+
+function TCocoaApplication.hasLCLMainLoop: Boolean;
+begin
+  Result:= Assigned( _lclMainLoop );
+end;
+
+procedure TCocoaApplication.setLCLMainLoop( const mainLoop: TApplicationMainLoop );
+begin
+  _lclMainLoop:= mainLoop;
 end;
 
 procedure TCocoaApplication.setOpenURLObserver( const onOpenURLObserver: TCocoaAppOnOpenURLNotify);
