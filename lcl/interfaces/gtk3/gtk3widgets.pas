@@ -1440,11 +1440,9 @@ begin
           AFocusedLCL := TGtk3Widget(HwndFromGtkWidget(AFocusedWidget));
           if Assigned(AFocusedLCL) and (AFocusedLCL = TGtk3Widget(Data)) then
           begin
-            //Focused widget maps to same TGtk3Widget as window, e.g. form's own
-            //FCentralWidget, but for composite widgets like SpinEdit, the focused
-            //child (GtkEntry) has lclwidget = SpinEdit, not the window. Check if the
-            //focused GTK widget is actually a child of Data's FWidget.
-            if not AFocusedWidget^.is_ancestor(TGtk3Widget(Data).Widget) then
+            //for composite widgets eg wtSpinEdit, focused child has lclwidget = parent,
+            //not the window. Keep AFocusedLCL set to prevent duplicate key dispatch.
+            if not (wtSpinEdit in AFocusedLCL.WidgetType) then
               AFocusedLCL := nil;
           end;
         end;
@@ -1466,7 +1464,7 @@ begin
           AFocusedLCL := TGtk3Widget(HwndFromGtkWidget(AFocusedWidget));
           if Assigned(AFocusedLCL) and (AFocusedLCL = TGtk3Widget(Data)) then
           begin
-            if not AFocusedWidget^.is_ancestor(TGtk3Widget(Data).Widget) then
+            if not (wtSpinEdit in AFocusedLCL.WidgetType) then
               AFocusedLCL := nil;
           end;
         end;
