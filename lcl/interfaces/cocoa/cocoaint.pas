@@ -193,7 +193,7 @@ procedure TCocoaWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
   if Assigned(ALoop) then
   begin
-    TCocoaApplication(NSApp).aloop:=ALoop;
+    TCocoaApplication(NSApp).setLCLMainLoop(ALoop);
     CocoaWidgetSetBaseService.setReadyDropFiles;
     CocoaWidgetSetBaseService.dropWaitingFiles;
     NSApp.run();
@@ -235,7 +235,7 @@ var
 begin
   repeat
     pool := NSAutoreleasePool.alloc.init;
-    if Assigned(TCocoaApplication(NSApp).aloop) or Assigned(eventExpDate) then
+    if TCocoaApplication(NSApp).hasLCLMainLoop or Assigned(eventExpDate) then
       event := nextEvent(eventExpDate)
     else
       event := nextEventBeforeRunLoop(eventExpDate);
