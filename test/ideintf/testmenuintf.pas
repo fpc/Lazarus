@@ -46,9 +46,6 @@ type
     procedure TestPopupMenuClearHiddenSection;
   end;
 
-var
-  TestMenuIntfDlg: TTestMenuIntfDlg;
-
 implementation
 
 {$R *.lfm}
