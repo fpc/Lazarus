@@ -599,6 +599,7 @@ type
     procedure Paint; override;
     function Draw(Step: TLvlGraphDrawStep): boolean; virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseLeave; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure CreateWnd; override;
@@ -3330,6 +3331,13 @@ begin
     EdgeNearMouse:=Edge
   else
     EdgeNearMouse:=nil;
+end;
+
+procedure TCustomLvlGraphControl.MouseLeave;
+begin
+  inherited MouseLeave;
+  NodeUnderMouse:=nil;
+  EdgeNearMouse:=nil;
 end;
 
 procedure TCustomLvlGraphControl.MouseDown(Button: TMouseButton;
