@@ -12251,7 +12251,7 @@ begin
   begin
     Result := PGtkScrolledWindow(LCLGtkScrolledWindowNew); // PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
     PGtkScrolledWindow(Result)^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-    FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl];
+    FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtScrollingWinControl];
   end;
   Text := Params.Caption;
 
