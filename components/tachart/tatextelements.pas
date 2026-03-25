@@ -691,8 +691,15 @@ const
     ctaStart, ctaEnd, ctaCenter);
 var
   titleAnchor: TChartTextAnchor;
+  scaledOwnerWidth: Integer;
+  scaledLeftMargin: Integer;
+  scaledRightMargin: Integer;
 begin
   Result := inherited;
+
+  scaledOwnerWidth := ADrawer.Scale(FOwner.Width);
+  scaledLeftMargin := ADrawer.Scale(Margins.Left);
+  scaledRightMargin := ADrawer.Scale(Margins.Right);
 
   if FullWidth then
     titleAnchor := ALIGNMENT_ANCHORS[Alignment]
@@ -702,21 +709,21 @@ begin
   case titleAnchor of
     ctaStart:
       begin
-        Result.Left := -ATextSize.X div 2 - Margins.Left;
-        Result.Right := Result.Left + FOwner.Width - 1;
-        FCenter.X := ATextSize.X div 2 + Margins.Left;
+        Result.Left := -ATextSize.X div 2 - scaledLeftMargin;
+        Result.Right := Result.Left + ATextSize.X + scaledLeftMargin + scaledRightMargin;
+        FCenter.X := ATextSize.X div 2 + scaledLeftMargin;
       end;
     ctaCenter:
       begin
-        Result.Left := -FOwner.Width div 2;
-        Result.Right := +FOwner.Width div 2 - 1;
-        FCenter.X := FOwner.Width div 2;
+        Result.Left := -ATextSize.X div 2 - scaledLeftMargin;
+        Result.Right := ATextSize.X div 2 + scaledRightMargin;
+        FCenter.X := scaledOwnerWidth div 2;
       end;
     ctaEnd:
       begin
-        Result.Right := ATextSize.X div 2 + Margins.Right - 1;
-        Result.Left := Result.Right - FOwner.Width + 1;
-        FCenter.X := FOwner.Width - ATextSize.X div 2 - Margins.Right;
+        Result.Right := ATextSize.X div 2 + scaledRightMargin - 1;
+        Result.Left := Result.Right - ATextSize.X - scaledLeftMargin - scaledRightMargin;
+        FCenter.X := scaledOwnerWidth - ATextSize.X div 2 - scaledRightMargin;
       end;
   end;
 end;
