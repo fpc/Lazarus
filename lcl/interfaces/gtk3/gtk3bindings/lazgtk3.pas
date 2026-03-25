@@ -17562,6 +17562,8 @@ procedure gtk_container_propagate_draw(container: PGtkContainer; child: PGtkWidg
 procedure gtk_container_remove(container: PGtkContainer; widget: PGtkWidget); cdecl; external LazGtk3_library name 'gtk_container_remove';
 procedure gtk_container_resize_children(container: PGtkContainer); cdecl; external;
 procedure gtk_container_set_border_width(container: PGtkContainer; border_width: guint); cdecl; external LazGtk3_library name 'gtk_container_set_border_width';
+//zeljan addon ! it is deprecated in 3.24, but we don't mind since it'll live with gtk3 until EOL.
+procedure gtk_container_set_focus_chain(container: PGtkContainer; focusable_widgets: PGList); cdecl; external LazGtk3_library name 'gtk_container_set_focus_chain';
 procedure gtk_container_set_focus_child(container: PGtkContainer; child: PGtkWidget); cdecl; external LazGtk3_library name 'gtk_container_set_focus_child';
 procedure gtk_container_set_focus_hadjustment(container: PGtkContainer; adjustment: PGtkAdjustment); cdecl; external LazGtk3_library name 'gtk_container_set_focus_hadjustment';
 procedure gtk_container_set_focus_vadjustment(container: PGtkContainer; adjustment: PGtkAdjustment); cdecl; external LazGtk3_library name 'gtk_container_set_focus_vadjustment';
