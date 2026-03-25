@@ -2154,9 +2154,16 @@ begin
   end;
   if Assigned(FClipStack) then
   begin
-    for i := 0 to FClipStack.Count - 1 do
+    {Stack layout per save, [region_or_nil, WindowOrg.X, WindowOrg.Y]
+     Only every 3rd entry (starting at 0) is a cairo_region, the other two
+     are WindowOrg integer values cast to Pointer. zeljan}
+    i := 0;
+    while i < FClipStack.Count do
+    begin
       if FClipStack[i] <> nil then
         cairo_region_destroy(Pcairo_region_t(FClipStack[i]));
+      Inc(i, 3); // skip WindowOrg.X and WindowOrg.Y entries
+    end;
     FClipStack.Clear;
     FreeAndNil(FClipStack);
   end;
@@ -2251,7 +2258,10 @@ begin
   if AFill then
   begin
     ApplyBrush;
-    cairo_fill_preserve(pcr);
+    if ABorder then
+      cairo_fill_preserve(pcr)
+    else
+      cairo_fill(pcr);
   end;
   if ABorder then
   begin
@@ -2363,6 +2373,7 @@ begin
   scale_x := w / 2.0;
   scale_y := h / 2.0;
 
+  cairo_save(pcr);
   cairo_translate(pcr, x - WindowOrg.X + scale_x + PixelOffset, y - WindowOrg.Y + scale_y + PixelOffset);
   cairo_scale(pcr, scale_x, scale_y);
 
@@ -2373,17 +2384,19 @@ begin
   if AFill then
   begin
     ApplyBrush;
-    cairo_fill_preserve(pcr);
+    if ABorder then
+      cairo_fill_preserve(pcr)
+    else
+      cairo_fill(pcr);
   end;
-
-  cairo_scale(pcr, 1 / scale_x, 1 / scale_y);
-  cairo_translate(pcr, -(x - WindowOrg.X + scale_x + PixelOffset), -(y - WindowOrg.Y + scale_y + PixelOffset));
 
   if ABorder then
   begin
+    cairo_scale(pcr, 1 / scale_x, 1 / scale_y);
     ApplyPen;
     cairo_stroke(pcr);
   end;
+  cairo_restore(pcr);
 end;
 
 procedure SwapRedBlueChannels(PixBuf: PGdkPixbuf);
@@ -2592,7 +2605,10 @@ begin
   begin
     ApplyBrush;
     cairo_set_fill_rule(pcr, Tcairo_fill_rule_t(FillRule));
-    cairo_fill_preserve(pcr);
+    if ABorder then
+      cairo_fill_preserve(pcr)
+    else
+      cairo_fill(pcr);
   end;
 
   if ABorder then
@@ -2680,7 +2696,14 @@ begin
 
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
 
-  cairo_stroke(pcr);  //issue #42082 flush thick-pen accumulated sub-paths with pen colour
+  //Real fix for issue #42082 flush thick-pen accumulated sub-paths with pen colour
+  if (fCurrentPen.Width > 1) and (cairo_has_current_point(pcr) <> 0) then
+  begin
+    ApplyPen;
+    cairo_stroke(pcr);
+  end
+  else
+    cairo_new_path(pcr);
   if ABrush <> 0 then
   begin
     ATempBrush := FCurrentBrush;
@@ -2740,8 +2763,8 @@ begin
 
   cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
 
-  cairo_translate(pcr, SX(CX), SY(CY));
-  cairo_scale(pcr, SX2(RX), SY2(RY));
+  cairo_translate(pcr, CX, CY);
+  cairo_scale(pcr, RX, RY);
 
   if not Continuous then
     cairo_move_to(pcr, cos(Angle1), sin(Angle1));
@@ -2751,8 +2774,8 @@ begin
   else
     cairo_arc_negative(pcr, 0, 0, 1, Angle1, Angle2);
 
-  cairo_scale(pcr, 1 / SX2(RX), 1 / SY2(RY));
-  cairo_translate(pcr, -SX(CX), -SY(CY));
+  cairo_scale(pcr, 1 / RX, 1 / RY);
+  cairo_translate(pcr, -CX, -CY);
 end;
 
 function TGtk3DeviceContext.RoundRect(X1, Y1, X2, Y2: Integer; RX, RY: Integer): Boolean;
