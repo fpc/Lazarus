@@ -1065,7 +1065,7 @@ begin
       FTitleSize := Max(TitleSize(txtLen), FTitleSize)
     else
     begin
-      FTitleSize := Title.FixedSize;
+      FTitleSize := Drawer.Scale(Title.FixedSize);
       case Alignment of
         calLeft:
           if Title.LabelFont.Orientation = 0 then
