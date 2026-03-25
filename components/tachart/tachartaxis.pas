@@ -765,7 +765,7 @@ var
   p: TPoint;
   d: Integer;
 begin
-  if not Visible or (ASize = 0) or (FTitlePos = MaxInt) then exit;
+  if not Visible or not Title.Visible or (ASize = 0) or (FTitlePos = MaxInt) then exit;
   if Title.DistanceToCenter then
     d := Title.Distance
   else
