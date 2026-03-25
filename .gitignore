@@ -12,6 +12,7 @@
 **/*.~*
 **/*.*~
 **/*.fpcunit.ini
+**/testdefaults.ini
 **/*.lps
 **/*.compiled
 !**/Makefile.compiled
