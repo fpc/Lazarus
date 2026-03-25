@@ -4670,7 +4670,7 @@ begin
     Gap:=0;
     DrawHeight:=HardMaxTotal;
     for j:=0 to Level.Count-1 do begin
-      // ToDo: Node is probably uninitialized.
+      Node := Level.Nodes[j];
       LvlWeight+=Max(Node.InWeight,Node.OutWeight);
       Gap+=NodeGapAbove+NodeGapBelow;
     end;
