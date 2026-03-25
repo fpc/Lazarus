@@ -254,17 +254,18 @@ end;
 procedure TCTTestRunner.WriteCustomHelp;
 begin
   inherited WriteCustomHelp;
-  writeln('Environment variables:');
-  writeln('  PP=path of the compiler');
-  writeln('  FPCDIR=path of the fpc sources');
-  writeln('  LAZARUSDIR=path of the lazarus sources');
-  writeln('  FPCTARGET=target OS');
-  writeln('  FPCTARGETCPU=target cpu');
   writeln;
-  writeln('Command line parameters:');
-  writeln('  --submitter=SubmitterName     name of sumbitter of the test results');
-  writeln('  --machine=MachineName         name of the machine the test runs on');
-  writeln('  --verbose                     display debug output of tests');
+  writeln('Additional options:');
+  writeln('  --verbose           Display debug output of tests');
+  writeln('  --submitter=<name>  Name of submitter of the test results');
+  writeln('  --machine=<name>    Name of the machine the test runs on');
+  writeln;
+  writeln('Environment variables:');
+  writeln('  LAZARUSDIR=<dir>    Path to Lazarus sources, default is the current IDE installation');
+  writeln('  FPCDIR=<dir>        Path to FPC sources, default value is read from the IDE configuration');
+  writeln('  PP=<file>           Path to the compiler file');
+  writeln('  FPCTARGET=<OS>      Target OS');
+  writeln('  FPCTARGETCPU=<CPU>  Target CPU');
 end;
 
 destructor TCTTestRunner.Destroy;
@@ -302,7 +303,7 @@ begin
   DefaultRunAllTests:=True;
   App := TCTTestRunner.Create(nil);
   App.Initialize;
-  App.Title := 'FPCUnit Console runner for the CodeTools Find Declaration Suite.';
+  App.Title := 'FPCUnit runner for the CodeTools suites';
   App.Run;
   App.Free;
 end.

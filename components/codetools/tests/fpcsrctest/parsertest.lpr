@@ -91,16 +91,17 @@ end;
 procedure TCTTestRunner.WriteCustomHelp;
 begin
   inherited WriteCustomHelp;
-  writeln('Environment variables:');
-  writeln('  PP=path of the compiler');
-  writeln('  FPCDIR=path of the fpc sources');
-  writeln('  LAZARUSDIR=path of the lazarus sources');
-  writeln('  FPCTARGET=target OS');
-  writeln('  FPCTARGETCPU=target cpu');
   writeln;
-  writeln('Command line parameters:');
-  writeln('  --submitter=SubmitterName     name of sumbitter of the test results');
-  writeln('  --machine=MachineName         name of the machine the test runs on');
+  writeln('Additional options:');
+  writeln('  --submitter=<name>  Name of submitter of the test results');
+  writeln('  --machine=<name>    Name of the machine the test runs on');
+  writeln;
+  writeln('Environment variables:');
+  writeln('  LAZARUSDIR=<dir>    Path to Lazarus sources');
+  writeln('  FPCDIR=<dir>        Path to FPC sources');
+  writeln('  PP=<file>           Path to the compiler file');
+  writeln('  FPCTARGET=<OS>      Target OS');
+  writeln('  FPCTARGETCPU=<CPU>  Target CPU');
 end;
 
 destructor TCTTestRunner.Destroy;
@@ -136,7 +137,7 @@ var
 begin
   App := TCTTestRunner.Create(nil);
   App.Initialize;
-  App.Title := 'FPCUnit Console runner for the CodeTools Parser Suite.';
+  App.Title := 'FPCUnit runner for the CodeTools parser suite';
   App.Run;
   App.Free;
 end.
