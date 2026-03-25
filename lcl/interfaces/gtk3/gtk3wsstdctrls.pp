@@ -838,9 +838,7 @@ class procedure TGtk3WSCustomEdit.SetSelText(const ACustomEdit: TCustomEdit;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelText') then
     Exit;
-  TGtk3Entry(ACustomEdit.Handle).BeginUpdate;
   TGtk3Entry(ACustomEdit.Handle).SetSelText(NewSelText);
-  TGtk3Entry(ACustomEdit.Handle).EndUpdate;
 end;
 
 class procedure TGtk3WSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
