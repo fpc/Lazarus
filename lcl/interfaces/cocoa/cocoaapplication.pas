@@ -36,11 +36,6 @@ type
     procedure lclSyncCheck(arg: id);
       message 'lclSyncCheck:';
   public
-    // Store state of key modifiers so that we can emulate keyup/keydown
-    // of keys like control, option, command, caps lock, shift
-    PrevKeyModifiers : NSUInteger;
-    SavedKeyModifiers : NSUInteger;
-  public
     procedure sendEvent(theEvent: NSEvent); override;
     function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
     procedure observeValueForKeyPath_ofObject_change_context(keyPath: NSString;
@@ -470,7 +465,7 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
-  PrevKeyModifiers  := SavedKeyModifiers;
+  CocoaWidgetSetState.PrevKeyModifiers  := CocoaWidgetSetState.SavedKeyModifiers;
 
   {$ifdef COCOALOOPHIJACK}
   if not isrun and Assigned(aloop) then begin
@@ -515,7 +510,7 @@ begin
     Exit;
   end;
 
-  SavedKeyModifiers := Result.modifierFlags;
+  CocoaWidgetSetState.SavedKeyModifiers := Result.modifierFlags;
 
   if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)

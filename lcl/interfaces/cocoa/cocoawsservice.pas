@@ -22,6 +22,11 @@ type
     KillingFocus: Boolean;
     CaptureControl: HWND;
     SendingScrollWheelCount: Integer;
+
+    // Store state of key modifiers so that we can emulate keyup/keydown
+    // of keys like control, option, command, caps lock, shift
+    PrevKeyModifiers : NSUInteger;
+    SavedKeyModifiers : NSUInteger;
   public
     procedure releaseCapture;
     function isSendingScrollWheelFromInterface: Boolean;

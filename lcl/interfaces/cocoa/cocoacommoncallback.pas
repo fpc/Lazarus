@@ -11,7 +11,7 @@ uses
   LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
   CocoaPrivate, CocoaWSService, CocoaWSModalService,
-  CocoaApplication, CocoaWindows,  Cocoa_Extra, CocoaConfig, CocoaUtils,
+  CocoaWindows,  Cocoa_Extra, CocoaConfig, CocoaUtils,
   CocoaGDIObjects, CocoaCursor, CocoaCaret;
 
 type
@@ -401,7 +401,7 @@ begin
   _SendChar := False;
   CurMod := Event.modifierFlags;
   //see what changed. we only care of bits 16 through 20
-  Diff := (TCocoaApplication(NSAPP).PrevKeyModifiers xor CurMod) and cModifiersOfInterest;
+  Diff := (CocoaWidgetSetState.PrevKeyModifiers xor CurMod) and cModifiersOfInterest;
 
   case Diff of
     0                  : VKKeyCode := VK_UNKNOWN; //nothing (that we cared of) changed
@@ -416,7 +416,7 @@ begin
   //diff is now equal to the mask of the bit that changed, so we can determine
   //if this change is a keydown (PrevKeyModifiers didn't have the bit set) or
   //a keyup (PrevKeyModifiers had the bit set)
-  _IsKeyDown := ((TCocoaApplication(NSAPP).PrevKeyModifiers and Diff) = 0);
+  _IsKeyDown := ((CocoaWidgetSetState.PrevKeyModifiers and Diff) = 0);
 
   FillChar(_KeyMsg, SizeOf(_KeyMsg), 0);
   _KeyMsg.KeyData := KeyData;
