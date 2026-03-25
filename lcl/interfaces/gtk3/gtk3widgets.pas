@@ -2126,6 +2126,8 @@ var
   UTF8Char: TUTF8Char;
   AChar: Char;
   IsArrowKey: Boolean;
+  IsEditableWidget: Boolean;
+  TextBeforeKey: String;
   TempWidget: HWND;
   {$IFDEF GTK3DEBUGKEYPRESS}
   Info: PTypeInfo;
@@ -2226,6 +2228,14 @@ begin
     end;
   end;
 
+  IsEditableWidget := AKeyPress and
+    (([wtEntry, wtMemo] * WidgetType <> []) or
+     ((wtComboBox in WidgetType) and (Self is TGtk3ComboBox) and
+      PGtkComboBox(Widget)^.has_entry));
+  TextBeforeKey := '';
+  if IsEditableWidget then
+    TextBeforeKey := Self.getText;
+
   if (ACharCode <> VK_UNKNOWN) then
   begin
     if AKeyPress then
@@ -2245,8 +2255,10 @@ begin
       {$IFDEF GTK3DEBUGKEYPRESS}
       writeln('<==== CN_KeyDownMsgs handled ... exiting');
       {$ENDIF}
-      if ([wtEntry,wtMemo] * WidgetType <>[]) then
-        exit(false)
+      if IsEditableWidget and (Self.getText <> TextBeforeKey) then
+        exit(True)
+      else if [wtEntry,wtMemo] * WidgetType <> [] then
+        exit(False)
       else
         exit(True);
     end;
@@ -2271,7 +2283,10 @@ begin
     else
     if (DeliverMessage(Msg, True) <> 0) or (Msg.CharCode = 0) then
     begin
-      Result := (Msg.CharCode = 0) or IsArrowKey;
+      if IsEditableWidget and (Self.getText <> TextBeforeKey) then
+        Result := True
+      else
+        Result := (Msg.CharCode = 0) or IsArrowKey;
       {$IFDEF GTK3DEBUGKEYPRESS}
       writeln('<=== LM_KeyDownMsgs handled ... exiting ',dbgs(ACharCode),' Result=',dbgs(Result),' AKeyPress=',dbgs(AKeyPress));
       {$ENDIF}
@@ -2343,13 +2358,14 @@ begin
   begin
     {$IFDEF GTK3DEBUGKEYPRESS}
     if (Msg.CharCode in FKeysToEat) then
-    begin
-      writeln('EVENT: ******* KeyPress charcode is in keys to eat (FKeysToEat), charcode=',dbgs(Msg.CharCode),' window ? ',Sender^.window = Self.GetWindow);
-    end else
+      writeln('EVENT: ******* KeyPress charcode is in keys to eat (FKeysToEat), charcode=',dbgs(Msg.CharCode),' window ? ',Sender^.window = Self.GetWindow)
+    else
       writeln('EVENT: KeyPress Result = False Window ? ', Sender^.window = Self.GetWindow);
     {$ENDIF}
-    Result := gtk_false;
-    // (TempWidget = GetFocus) and (Msg.CharCode in FKeysToEat);
+    if IsEditableWidget and (Self.getText <> TextBeforeKey) then
+      Result := True
+    else
+      Result := gtk_false;
   end;
 end;
 
@@ -5376,6 +5392,7 @@ begin
   AEditable^.delete_selection;
   APos := AEditable^.get_position;
   AEditable^.insert_text(PgChar(ASelText), Length(ASelText), @APos);
+  AEditable^.set_position(APos);
 end;
 
 function TGtk3Entry.GetTextHint:string;
