@@ -16,9 +16,9 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
     Height = 409
     Top = 0
     Width = 620
-    ActivePage = UnitsTabSheet
+    ActivePage = GroupsTabSheet
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object UnitsTabSheet: TTabSheet
       Caption = 'UnitsTabSheet'
@@ -42,7 +42,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Left = 2
           Height = 19
           Top = 4
-          Width = 170
+          Width = 171
           BorderSpacing.Around = 2
           Caption = 'SearchCustomFilesCheckBox'
           ParentShowHint = False
@@ -71,10 +71,10 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ScopePanel
           AnchorSideRight.Control = SearchCustomFilesBrowseButton
-          Left = 174
+          Left = 175
           Height = 23
           Top = 2
-          Width = 372
+          Width = 371
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 2
           ItemHeight = 15
@@ -89,7 +89,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Left = 2
           Height = 19
           Top = 27
-          Width = 130
+          Width = 131
           BorderSpacing.Around = 2
           Caption = 'SearchPkgsCheckBox'
           TabOrder = 3
@@ -100,10 +100,10 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = SearchPkgsCheckBox
           AnchorSideTop.Side = asrCenter
-          Left = 149
+          Left = 150
           Height = 19
           Top = 27
-          Width = 141
+          Width = 142
           BorderSpacing.Left = 15
           BorderSpacing.Around = 2
           Caption = 'SearchSrcEditCheckBox'
@@ -352,24 +352,39 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           ClientHeight = 376
           ClientWidth = 140
           TabOrder = 0
-          object UnitGraphFilter: TCheckListBox
-            AnchorSideLeft.Control = UnitGraphOptionPanel
-            AnchorSideTop.Control = UnitGraphOptionPanel
-            AnchorSideRight.Control = UnitGraphOptionPanel
-            AnchorSideRight.Side = asrBottom
-            AnchorSideBottom.Control = UnitGraphOptionPanel
-            AnchorSideBottom.Side = asrBottom
+          object UnitGraphFilter: TLazVirtualStringTree
             Left = 0
-            Height = 373
+            Height = 348
             Top = 3
             Width = 140
-            Anchors = [akTop, akLeft, akRight, akBottom]
+            Align = alClient
             BorderSpacing.Top = 3
-            ItemHeight = 0
-            Sorted = True
+            DefaultText = 'Node'
+            Header.AutoSizeIndex = 0
+            Header.Columns = <>
+            Header.MainColumn = -1
+            Header.Options = [hoColumnResize, hoShowSortGlyphs]
+            NodeDataSize = 8
             TabOrder = 0
-            OnItemClick = UnitGraphFilterItemClick
-            OnSelectionChange = UnitGraphFilterSelectionChange
+            TreeOptions.MiscOptions = [toAcceptOLEDrop, toCheckSupport, toFullRepaintOnResize, toInitOnSave, toToggleOnDblClick, toWheelPanning, toEditOnClick]
+            TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toAlwaysSelectNode]
+            OnAddToSelection = UnitGraphFilterAddToSelection
+            OnChecked = UnitGraphFilterChecked
+            OnCompareNodes = UnitGraphFilterCompareNodes
+            OnFreeNode = UnitGraphFilterFreeNode
+            OnGetText = UnitGraphFilterGetText
+            OnRemoveFromSelection = UnitGraphFilterAddToSelection
+          end
+          object btnUpdateGraph: TButton
+            Left = 0
+            Height = 25
+            Top = 351
+            Width = 140
+            Align = alBottom
+            Caption = 'btnUpdateGraph'
+            TabOrder = 1
+            Visible = False
+            OnClick = btnUpdateGraphClick
           end
         end
         object UnitGraphOptionSplitter: TSplitter
