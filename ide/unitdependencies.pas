@@ -158,6 +158,7 @@ type
     AllUnitsShowGroupNodesSpeedButton: TSpeedButton;
     AllUnitsTreeView: TTreeView; // Node.Data is TUDNode
     btnUpdateGraph: TButton;
+    chkShowRequiredPkg: TCheckBox;
     GraphPopupMenu: TPopupMenu;
     GraphOptsMenuItem: TMenuItem;
     PopupMenu1: TPopupMenu;
@@ -199,6 +200,7 @@ type
     procedure AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
     procedure AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
     procedure btnUpdateGraphClick(Sender: TObject);
+    procedure chkShowRequiredPkgChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure GraphOptsMenuItemClick(Sender: TObject);
@@ -333,7 +335,7 @@ type
     procedure CreateUsesGraph(out TheUsesGraph: TUsesGraph; out TheGroups: TUGGroups);
   public
     GroupsLvlGraph: TLvlGraphControl; // Nodes.Data are TUGGroup of Groups
-    UnitsLvlGraph: TLvlGraphControl; // Nodes.Data are Units in Groups
+    UnitsLvlGraph: TLvlGraphControl; // Nodes.Data are either: Units in Groups or TUGGroup
   public
     destructor Destroy; override;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -615,6 +617,7 @@ begin
   RefreshButton.Caption:=dlgUnitDepRefresh;
   GraphOptsMenuItem.Caption := ShowOptions;
   btnUpdateGraph.Caption := UpdateLvlGraph;
+  chkShowRequiredPkg.Caption := LvlGraphShowRequiredPkg;
 
   UnitGraphFilter.Colors.UnfocusedSelectionColor := UnitGraphFilter.Colors.FocusedSelectionColor;
   UnitGraphFilter.Colors.UnfocusedSelectionBorderColor := UnitGraphFilter.Colors.FocusedSelectionBorderColor;
@@ -670,6 +673,11 @@ procedure TUnitDependenciesWindow.btnUpdateGraphClick(Sender: TObject);
 begin
   UpdateUnitsLvlGraph;
   btnUpdateGraph.Visible := False;
+end;
+
+procedure TUnitDependenciesWindow.chkShowRequiredPkgChange(Sender: TObject);
+begin
+  UpdateUnitsLvlGraph;
 end;
 
 procedure TUnitDependenciesWindow.FormShow(Sender: TObject);
@@ -815,7 +823,9 @@ var
 begin
   GraphNode:=UnitsLvlGraph.GetNodeAt(X,Y);
   if (Button=mbLeft) and (ssDouble in Shift) then begin
-    if (GraphNode<>nil) and (GraphNode.Data<>nil) then begin
+    if (GraphNode<>nil) and (GraphNode.Data<>nil) and
+       (TObject(GraphNode.Data) is TUGUnit)
+    then begin
       UGUnit:=TUGUnit(GraphNode.Data);
       LazarusIDE.DoOpenEditorFile(UGUnit.Filename,-1,-1,[ofAddToRecent]);
     end;
@@ -2163,7 +2173,7 @@ procedure TUnitDependenciesWindow.UpdateUnitsLvlGraph;
 var
   NewUnitNodeMap: TUnitNodeMap;
 
-  function FindOrCreateTextNode(AName: string; out ANode: PVirtualNode): boolean;
+  function FindOrCreateTextNode(AName: string; out ANode: PVirtualNode; AnWithCheckbox: Boolean = True): boolean;
   var
     i: Integer;
     c: String;
@@ -2181,15 +2191,18 @@ var
     if (ANode = nil) then begin
       ANode :=  NewUnitNodeMap[AName];
       if (ANode <> nil) then begin
-        Result := UnitGraphFilter.CheckState[ANode] = csCheckedNormal;
+        if AnWithCheckbox then
+          Result := UnitGraphFilter.CheckState[ANode] = csCheckedNormal;
         exit;
       end;
 
       c := AName;
       ANode := UnitGraphFilter.AddChild(nil, pointer(c));
       Pointer(c) := nil;
-      UnitGraphFilter.CheckType[ANode] := ctCheckBox;
-      UnitGraphFilter.CheckState[ANode] := csCheckedNormal;
+      if AnWithCheckbox then begin
+        UnitGraphFilter.CheckType[ANode] := ctCheckBox;
+        UnitGraphFilter.CheckState[ANode] := csCheckedNormal;
+      end;
     end
     else
       Result := UnitGraphFilter.CheckState[ANode] = csCheckedNormal;
@@ -2197,14 +2210,16 @@ var
     NewUnitNodeMap.Add(AName, ANode);
   end;
 
+const
+  ZWSPACE = #$E2#$80#$8B;
 var
   GraphGroup: TLvlGraphNode;
   NewUnits: TFilenameToPointerTree;
-  UnitGroup: TUGGroup;
+  UnitGroup, RequiredGroup: TUGGroup;
   AVLNode: TAVLTreeNode;
   GroupUnit: TUDUnit;
   i, j: Integer;
-  HasChanged: Boolean;
+  HasChanged, ShowRequiredPkg: Boolean;
   Graph: TLvlGraph;
   CurUses: TUDUses;
   SourceGraphNode: TLvlGraphNode;
@@ -2251,6 +2266,7 @@ begin
       StartParsing;
 
     // check if something changed
+    ShowRequiredPkg := chkShowRequiredPkg.Checked;
     Graph:=UnitsLvlGraph.Graph;
     HasChanged:=false;
     i:=0;
@@ -2294,8 +2310,18 @@ begin
         for i:=0 to GroupUnit.UsesUnits.Count-1 do begin
           CurUses:=TUDUses(GroupUnit.UsesUnits[i]);
           UsedUnit:=TUDUnit(CurUses.UsesUnit);
-          if UsedUnit.Group=nil then continue;
-          if not NewGroups.Contains(UsedUnit.Group.Name) then continue;
+          RequiredGroup := UsedUnit.Group;
+          if RequiredGroup=nil then continue;
+          if not NewGroups.Contains(RequiredGroup.Name) then begin
+            if ShowRequiredPkg then begin
+              FindOrCreateTextNode(ZWSPACE+RequiredGroup.Name, nd, False);
+              TargetGraphNode:=Graph.GetNode(ZWSPACE+RequiredGroup.Name,true);
+              TargetGraphNode.Data:=RequiredGroup;
+              TargetGraphNode.ImageIndex := fImgIndexPackage;
+              Graph.GetEdge(SourceGraphNode,TargetGraphNode,true);
+            end;
+            continue;
+          end;
           c := UnitToCaption(UsedUnit);
           if not FindOrCreateTextNode(c, nd) then
             Continue;

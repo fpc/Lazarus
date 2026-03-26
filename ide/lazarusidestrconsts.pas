@@ -6179,6 +6179,7 @@ resourcestring
     +'Limit = min(3, val*sqrt(NodeCount))';
   ShowOptions = 'Show options';
   UpdateLvlGraph = 'Update graph';
+  LvlGraphShowRequiredPkg = 'Required packages';
   UnitDepOptionsForPackage = 'Options for Package graph';
   UnitDepOptionsForUnit = 'Options for Unit graph';
   LvlGraphReduceBackedges = 'Reduce backedges';

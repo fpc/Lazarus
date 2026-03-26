@@ -354,8 +354,8 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           TabOrder = 0
           object UnitGraphFilter: TLazVirtualStringTree
             Left = 0
-            Height = 348
-            Top = 3
+            Height = 329
+            Top = 22
             Width = 140
             Align = alClient
             BorderSpacing.Top = 3
@@ -385,6 +385,16 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
             TabOrder = 1
             Visible = False
             OnClick = btnUpdateGraphClick
+          end
+          object chkShowRequiredPkg: TCheckBox
+            Left = 0
+            Height = 19
+            Top = 0
+            Width = 140
+            Align = alTop
+            Caption = 'chkShowRequiredPkg'
+            TabOrder = 2
+            OnChange = chkShowRequiredPkgChange
           end
         end
         object UnitGraphOptionSplitter: TSplitter
