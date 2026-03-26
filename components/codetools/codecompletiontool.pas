@@ -2522,9 +2522,6 @@ function TCodeCompletionCodeTool.CompleteIdentifierByParameter(CleanCursorPos,
       RaiseException(20170421201617,'CompleteIdentifierByParameter.AddProcedure JumpToMethod failed');
   end;
 type
-
-  { OverloadedProc }
-
   OverloadedProc = record
     Tool: TFindDeclarationTool;
     ProcNode: TCodeTreeNode;
@@ -2552,21 +2549,27 @@ type
         Node:=Node.NextBrother;
         inc(i);
       end;
-      if Node<>nil then begin
-        i:=Node.EndPos-1;
-        while (i>1) and ((IsIdentChar[Tool.Src[i-1]]) or (Tool.Src[i-1]='.')) do dec(i);
-        // type name prefixed with a unit name should be allowed
-        // a limitation for open arrays - will be created variable of type of
-        // an array element type
 
-        // debugln([GetIdentifier(PChar(@Tool.Src[i]))]);
-
-        //note, code completion will work only at parameters without inserted comments
-
-        if IsIdentStartChar[Tool.Src[i]] then begin
-          PTypeName:=@Tool.Src[i];
-          ParamNode:=Node;
+      rec.Tool.MoveCursorToNodeStart(Node);
+      i:=0;
+      repeat
+        rec.Tool.ReadNextAtom;
+        if rec.Tool.CurPos.Flag = cafColon then begin // type name starts after
+          rec.Tool.ReadNextAtom;
+          i:=rec.Tool.CurPos.StartPos;
+          break;
         end;
+        if (rec.Tool.CurPos.Flag = cafSemicolon) or
+        (rec.Tool.CurPos.EndPos>=rec.Tool.SrcLen) then //failure
+          break;
+      until false;
+
+      if (i>0) and IsIdentStartChar[Tool.Src[i]] then begin
+        PTypeName:=@Tool.Src[i];
+        ParamNode:=Node;
+      end else begin
+        PTypeName:=nil;
+        ParamNode:=Node;
       end;
     end;
   end;
@@ -2707,7 +2710,6 @@ begin
     if Assigned(Context.Tool) and Assigned(Context.Node) then
     begin
       // find declaration of parameter list
-      // ToDo: search in all overloads for the best fit
       Params.ContextNode:=Context.Node;
       Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);
       Params.Flags:=fdfDefaultForExpressions+[fdfFindVariable];
@@ -2723,7 +2725,7 @@ begin
         {$ENDIF}
         if not Context.Tool.FindIdentifierInContext(Params) then exit;
 
-        // find best matching overloaded proc
+        // gather overloaded procs
         FPL:=nil;
         if not Params.NewCodeTool.CleanPosToCaret(
           Params.NewNode.FirstChild.StartPos,CodeXYPos) then
@@ -2743,7 +2745,6 @@ begin
               ProcArray[high(ProcArray)].Tool:=Atool;
               ProcArray[high(ProcArray)].ProcNode:=ANode;
               SetTypeName(ProcArray[high(ProcArray)],ParameterIndex);  // get N-th parameter type name
-              //debugln(['pos=',Apos]);
             end;
           end;
       finally
