@@ -511,7 +511,8 @@ type
     lgcNeedAutoLayout,
     lgcIgnoreGraphInvalidate,
     lgcUpdatingScrollBars,
-    lgcFocusedPainting
+    lgcFocusedPainting,
+    lgcPendingSelectionChanged
     );
   TLvlGraphControlFlags = set of TLvlGraphControlFlag;
 
@@ -617,6 +618,7 @@ type
     procedure InvalidateAutoLayout;
     procedure BeginUpdate;
     procedure EndUpdate;
+    function  IsUpdating: boolean;
     function GetNodeAt(X,Y: integer): TLvlGraphNode;
     function GetEdgeAt(X,Y: integer; out Distance: integer): TLvlGraphEdge;
     class function GetControlClassDefaultSize: TSize; override;
@@ -2690,6 +2692,12 @@ end;
 
 procedure TCustomLvlGraphControl.GraphSelectionChanged(Sender: TObject);
 begin
+  if IsUpdating then begin
+    Include(FFlags, lgcPendingSelectionChanged);
+    exit;
+  end;
+  Exclude(FFlags, lgcPendingSelectionChanged);
+
   HighlightEdgesConnectedToSelection;
   if OnSelectionChanged<>nil then
     OnSelectionChanged(Self);
@@ -3627,7 +3635,14 @@ begin
   if fUpdateLock=0 then begin
     if [lgcNeedAutoLayout,lgcNeedInvalidate]*FFlags<>[] then
       Invalidate;
+    if lgcPendingSelectionChanged in FFlags then
+      GraphSelectionChanged(Self);
   end;
+end;
+
+function TCustomLvlGraphControl.IsUpdating: boolean;
+begin
+  Result := fUpdateLock > 0;
 end;
 
 function TCustomLvlGraphControl.GetNodeAt(X, Y: integer): TLvlGraphNode;
