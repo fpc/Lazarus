@@ -1759,8 +1759,15 @@ begin
     if (Word(NewSize.cx) = Word(ACtl.LCLObject.Width)) and
        (Word(NewSize.cy) = Word(ACtl.LCLObject.Height)) then
       exit;
-    Msg.Width := ACtl.LCLObject.Width;
-    Msg.Height := ACtl.LCLObject.Height;
+    if csDesigning in ACtl.LCLObject.ComponentState then
+    begin
+      Msg.Width := Word(NewSize.cx);
+      Msg.Height := Word(NewSize.cy);
+    end else
+    begin
+      Msg.Width := ACtl.LCLObject.Width;
+      Msg.Height := ACtl.LCLObject.Height;
+    end;
   end;
 
   ACtl.DeliverMessage(Msg);
@@ -3599,6 +3606,7 @@ var
   ARect: TGdkRectangle;
   Alloc: TGtkAllocation;
   CurW, CurH: gint;
+  SizeMsg: TLMSize;
 begin
   if (Widget=nil) then
     exit;
@@ -3723,6 +3731,32 @@ begin
       Widget^.set_size_request(AWidth, AHeight);
     end;
     Move(ALeft, ATop);
+    if Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState) and
+       Widget^.get_realized then
+    begin
+      Widget^.get_preferred_width(@CurW, @CurH);
+      if LCLWidth < CurW then
+      begin
+        LCLWidth := CurW;
+        FillChar(SizeMsg{%H-}, SizeOf(SizeMsg), 0);
+        SizeMsg.Msg := LM_SIZE;
+        SizeMsg.SizeType := SIZE_RESTORED;
+        SizeMsg.Width := LCLWidth;
+        SizeMsg.Height := LCLHeight;
+        DeliverMessage(TLMessage(SizeMsg));
+      end;
+      Widget^.get_preferred_height(@CurW, @CurH);
+      if LCLHeight < CurW then
+      begin
+        LCLHeight := CurW;
+        FillChar(SizeMsg{%H-}, SizeOf(SizeMsg), 0);
+        SizeMsg.Msg := LM_SIZE;
+        SizeMsg.SizeType := SIZE_RESTORED;
+        SizeMsg.Width := LCLWidth;
+        SizeMsg.Height := LCLHeight;
+        DeliverMessage(TLMessage(SizeMsg));
+      end;
+    end;
   finally
     EndUpdate;
   end;
