@@ -121,6 +121,9 @@ type
     procedure setWidth(p1: Integer);
   public
     LogPen: TLogPen;
+    ExtPenStyle: DWord;
+    ExtPenBrush: TLogBrush;
+    Dashes: array of DWord;
     constructor Create; override;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject; override;
     function Get(szbuf:integer;pbuf:pointer):integer; override;
@@ -1443,10 +1446,29 @@ begin
 end;
 
 function TGtk3Pen.Get(szbuf: integer; pbuf: pointer): integer;
+var
+  ExtPen: PExtLogPen;
+  I: Integer;
 begin
-  Result:=sizeof(LogPen);
-  if pbuf=nil then exit;
-  move(LogPen,pbuf^,min(result,szbuf));
+  if not FIsExtPen then
+  begin
+    Result := SizeOf(TLogPen);
+    if pbuf = nil then Exit;
+    Move(LogPen, pbuf^, Min(Result, szbuf));
+  end else
+  begin
+    Result := SizeOf(TExtLogPen) + (Max(0, Length(Dashes) - 1)) * SizeOf(DWord);
+    if pbuf = nil then Exit;
+    ExtPen := PExtLogPen(pbuf);
+    ExtPen^.elpPenStyle := ExtPenStyle;
+    ExtPen^.elpWidth := FWidth;
+    ExtPen^.elpColor := LogPen.lopnColor;
+    ExtPen^.elpBrushStyle := ExtPenBrush.lbStyle;
+    ExtPen^.elpHatch := ExtPenBrush.lbHatch;
+    ExtPen^.elpNumEntries := Length(Dashes);
+    for I := 0 to High(Dashes) do
+      ExtPen^.elpStyleEntry[I] := Dashes[I];
+  end;
 end;
 
 procedure TGtk3Pen.setCosmetic(b: Boolean);

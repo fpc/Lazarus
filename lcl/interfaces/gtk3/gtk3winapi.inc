@@ -1642,10 +1642,16 @@ begin
 
   if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
   begin
-    //TODO: APen.setDashPattern
+    if (dwStyleCount > 0) and Assigned(lpStyle) then
+    begin
+      SetLength(APen.Dashes, dwStyleCount);
+      Move(lpStyle^, APen.Dashes[0], dwStyleCount * SizeOf(DWord));
+    end;
   end;
 
-  APen.Color := TColor(lplb.lbColor);  // ColorToRGB() ?
+  APen.Color := TColor(lplb.lbColor);
+  APen.ExtPenStyle := dwPenStyle;
+  APen.ExtPenBrush := lplb;
   APen.LogPen.lopnColor := lplb.lbColor;
   APen.LogPen.lopnStyle := (dwPenStyle and PS_STYLE_MASK) or (dwPenStyle and PS_JOIN_MASK) or (dwPenStyle and PS_ENDCAP_MASK);
   APen.LogPen.lopnWidth.X := dwWidth;
