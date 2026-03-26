@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-03-06 01:56+0300\n"
+"PO-Revision-Date: 2026-03-26 23:12+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -19411,6 +19411,10 @@ msgstr "Узлы"
 msgid "Straight"
 msgstr "Прямая"
 
+#: lazarusidestrconsts.lvlgraphshowrequiredpkg
+msgid "Required packages"
+msgstr "Требуемые пакеты"
+
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
 msgstr "Объединять в наивысшем"
@@ -21548,6 +21552,10 @@ msgstr "Параметры диаграммы пакетов"
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
 msgstr "Параметры диаграммы модулей"
+
+#: lazarusidestrconsts.updatelvlgraph
+msgid "Update graph"
+msgstr "Обновить диаграмму"
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

@@ -19654,6 +19654,10 @@ msgstr "Nós"
 msgid "Straight"
 msgstr "Retilínea"
 
+#: lazarusidestrconsts.lvlgraphshowrequiredpkg
+msgid "Required packages"
+msgstr ""
+
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
 msgstr "Mesclar no mais alto"
@@ -21853,6 +21857,10 @@ msgstr "Opções para o gráfico de pacotes"
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
 msgstr "Opções para o gráfico de unidades"
+
+#: lazarusidestrconsts.updatelvlgraph
+msgid "Update graph"
+msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

@@ -19627,6 +19627,10 @@ msgstr "Csomópontok"
 msgid "Straight"
 msgstr "Egyenes"
 
+#: lazarusidestrconsts.lvlgraphshowrequiredpkg
+msgid "Required packages"
+msgstr ""
+
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
 msgstr "Egyesítés a legfelsőnél"
@@ -21822,6 +21826,10 @@ msgstr "Csomag-fa beállításai"
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
 msgstr "Unit-fa beállítása"
+
+#: lazarusidestrconsts.updatelvlgraph
+msgid "Update graph"
+msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

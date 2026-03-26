@@ -19824,6 +19824,10 @@ msgstr "Nodos"
 msgid "Straight"
 msgstr "Derecho"
 
+#: lazarusidestrconsts.lvlgraphshowrequiredpkg
+msgid "Required packages"
+msgstr ""
+
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
 msgstr "Fusionarse en lo más alto"
@@ -22017,6 +22021,10 @@ msgstr "Opciones para el gráfico de paquete"
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
 msgstr "Opciones para el gráfico de unidades"
+
+#: lazarusidestrconsts.updatelvlgraph
+msgid "Update graph"
+msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

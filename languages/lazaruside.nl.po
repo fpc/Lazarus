@@ -19987,6 +19987,10 @@ msgstr ""
 msgid "Straight"
 msgstr ""
 
+#: lazarusidestrconsts.lvlgraphshowrequiredpkg
+msgid "Required packages"
+msgstr ""
+
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
 msgstr ""
@@ -22227,6 +22231,10 @@ msgstr ""
 
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
+msgstr ""
+
+#: lazarusidestrconsts.updatelvlgraph
+msgid "Update graph"
 msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle

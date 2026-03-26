@@ -19420,6 +19420,10 @@ msgstr "Düğümler"
 msgid "Straight"
 msgstr "Düzgün"
 
+#: lazarusidestrconsts.lvlgraphshowrequiredpkg
+msgid "Required packages"
+msgstr ""
+
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
 msgstr "En yükseğe birleştirme"
@@ -21609,6 +21613,10 @@ msgstr "Paket grafiği için seçenekler"
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
 msgstr "Birim grafiği için seçenekler"
+
+#: lazarusidestrconsts.updatelvlgraph
+msgid "Update graph"
+msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

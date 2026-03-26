@@ -19588,6 +19588,10 @@ msgstr "Вузли"
 msgid "Straight"
 msgstr "Прямі"
 
+#: lazarusidestrconsts.lvlgraphshowrequiredpkg
+msgid "Required packages"
+msgstr ""
+
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
 msgstr "З'єднувати в найвищому"
@@ -21788,6 +21792,10 @@ msgstr "Параметри діаграми пакунків"
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
 msgstr "Параметри діаграми модулів"
+
+#: lazarusidestrconsts.updatelvlgraph
+msgid "Update graph"
+msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"

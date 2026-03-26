@@ -19425,6 +19425,10 @@ msgstr "Nodes"
 msgid "Straight"
 msgstr "ຊື່"
 
+#: lazarusidestrconsts.lvlgraphshowrequiredpkg
+msgid "Required packages"
+msgstr ""
+
 #: lazarusidestrconsts.lvlgraphsplitmergeathighe
 msgid "Merge at highest"
 msgstr "ລວມກັນຢູ່ຈຸດສູງສຸດ"
@@ -21562,6 +21566,10 @@ msgstr "ຕົວເລືອກສຳລັບກຣາບ Package"
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
 msgstr "ຕົວເລືອກສຳລັບກຣາບ Unit"
+
+#: lazarusidestrconsts.updatelvlgraph
+msgid "Update graph"
+msgstr ""
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
