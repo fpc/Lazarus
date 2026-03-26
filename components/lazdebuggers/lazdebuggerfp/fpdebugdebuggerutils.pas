@@ -112,6 +112,9 @@ type
     FForceNewConsole: boolean;
     {$endif windows}
     FHandleDebugBreakInstruction: TFpInt3DebugBreakOptions;
+    {$ifdef windows}
+    FHandleThreadNameException: Boolean;
+    {$endif windows}
     FIntrinsicPrefix: TFpIntrinsicPrefix;
     FMemLimits: TFpDebugDebuggerPropertiesMemLimits;
     FNextOnlyStopOnStartLine: boolean;
@@ -133,6 +136,9 @@ type
 
     property MemLimits: TFpDebugDebuggerPropertiesMemLimits read FMemLimits write SetMemLimits;
     property HandleDebugBreakInstruction: TFpInt3DebugBreakOptions read FHandleDebugBreakInstruction write FHandleDebugBreakInstruction default [dboIgnoreAll];
+    {$ifdef windows}
+    property HandleThreadNameException: Boolean read FHandleThreadNameException write FHandleThreadNameException default True;
+    {$endif windows}
     property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix default ipColon;
     property AutoDeref: Boolean read FAutoDeref write FAutoDeref default False;
     property BreakpointSearchMaxLines: integer read FBreakpointSearchMaxLines write SetBreakpointSearchMaxLines default 3;
@@ -420,6 +426,9 @@ begin
   {$endif windows}
   FMemLimits := TFpDebugDebuggerPropertiesMemLimits.Create;
   FHandleDebugBreakInstruction := [dboIgnoreAll];
+  {$ifdef windows}
+  FHandleThreadNameException := True;
+  {$endif windows}
   FIntrinsicPrefix := ipColon;
   FAutoDeref := False;
   FBreakpointSearchMaxLines := 3;
@@ -442,6 +451,9 @@ begin
     {$endif windows}
     FMemLimits.Assign(TFpDebugDebuggerProperties(Source).MemLimits);
     FHandleDebugBreakInstruction:=TFpDebugDebuggerProperties(Source).FHandleDebugBreakInstruction;
+    {$ifdef windows}
+    FHandleThreadNameException:=TFpDebugDebuggerProperties(Source).FHandleThreadNameException;
+    {$endif windows}
     FIntrinsicPrefix:=TFpDebugDebuggerProperties(Source).FIntrinsicPrefix;
     FAutoDeref:=TFpDebugDebuggerProperties(Source).FAutoDeref;
     FBreakpointSearchMaxLines:=TFpDebugDebuggerProperties(Source).FBreakpointSearchMaxLines;

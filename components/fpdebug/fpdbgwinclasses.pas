@@ -210,6 +210,7 @@ type
 
   TDbgWinProcess = class(TDbgx86Process)
   private
+    FHandleThreadNameException: Boolean;
     FInfo: TCreateProcessDebugInfo;
     FProcProcess: TProcessWithRedirect;
     FJustStarted, FTerminated: boolean;
@@ -261,6 +262,8 @@ type
 
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
     procedure RemoveLib(const AInfo: TUnloadDLLDebugInfo);
+
+    property HandleThreadNameException: Boolean read FHandleThreadNameException write FHandleThreadNameException default True;
   end;
   TDbgWinProcessClass = class of TDbgWinProcess;
 
@@ -1582,12 +1585,16 @@ begin
               t := AThread;
               with MDebugEvent.Exception.ExceptionRecord do begin
                 if (NumberParameters >= 3) and
-                   ((ExceptionInformation[0] and $ffffffff) = $1000) and
-                   (TThreadID(ExceptionInformation[2]) <> 0) and
-                   (TThreadID(ExceptionInformation[2]) <> TThreadID(-1))
+                   ((ExceptionInformation[0] and $ffffffff) = $1000)
                 then begin
-                  if not GetThread(Integer(ExceptionInformation[2]), t) then
-                    t := nil;
+                  if HandleThreadNameException then
+                    AThread.ClearExceptionSignal;
+                  if (TThreadID(ExceptionInformation[2]) <> 0) and
+                     (TThreadID(ExceptionInformation[2]) <> TThreadID(-1))
+                  then begin
+                    if not GetThread(Integer(ExceptionInformation[2]), t) then
+                      t := nil;
+                  end;
                 end;
               end;
               if t <> nil then begin
