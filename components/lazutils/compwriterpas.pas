@@ -242,9 +242,9 @@ var
   E: TDefinePropertiesPas;
 begin
   if not Assigned(OnDefineProperties) then
-    raise Exception.Create('');
+    raise Exception.Create('RegisterDefinePropertiesPas: "OnDefineProperties" is nil');
   if not Assigned(aClass) then
-    raise Exception.Create('');
+    raise Exception.Create('RegisterDefinePropertiesPas: "aClass" is nil');
   if DefinePropertiesEvents=nil then
     DefinePropertiesEvents:=TObjectList.Create(true);
   Cnt:=DefinePropertiesEvents.Count;

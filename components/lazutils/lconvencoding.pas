@@ -586,7 +586,7 @@ begin
   end;
   len:={%H-}PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
-    raise Exception.Create('');
+    raise Exception.Create('UCS2LEToUTF8: Error');
   SetLength(Result,len);
   SetCodePage(RawByteString(Result), CP_UTF8, False);
 end;
@@ -622,7 +622,7 @@ begin
   end;
   len:={%H-}PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
-    raise Exception.Create('');
+    raise Exception.Create('UCS2BEToUTF8: Error');
   SetLength(Result,len);
   SetCodePage(RawByteString(Result), CP_UTF8, False);
 end;
@@ -2769,7 +2769,7 @@ begin
   end;
   len:={%H-}PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
-    raise Exception.Create('');
+    raise Exception.Create('UTF8ToUCS2LE: Error');
   SetLength(Result,len);
 end;
 
@@ -2806,7 +2806,7 @@ begin
   end;
   len:={%H-}PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
-    raise Exception.Create('');
+    raise Exception.Create('UTF8ToUCS2BE: Error');
   SetLength(Result,len);
 end;
 

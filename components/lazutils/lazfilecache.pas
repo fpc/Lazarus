@@ -343,7 +343,7 @@ begin
   SetFlag(AFile,fsciExists,Result);
   {if not Check(Filename,fsciExists,AFile,Result) then begin
     WriteDebugReport;
-    raise Exception.Create('');
+    raise Exception.Create('TFileStateCache.FileExistsCached: Error');
   end;}
 end;
 
@@ -482,7 +482,7 @@ begin
                       @CompareFilenameWithFileStateCacheItem)=nil
     then begin
       //DebugLn(format('FileStateCache.FindFile: "%s"',[FileName]));
-      raise Exception.Create('');
+      raise Exception.Create('TFileStateCache.FindFile: Error');
     end;
   end else
     Result:=nil;
