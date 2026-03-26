@@ -1303,7 +1303,7 @@ begin
       while Assigned(VarNode) and not Assigned(VarTypeNode) do
       begin
         if (VarNode.Desc = ctnVarDefinition) and Assigned(VarNode.LastChild) and
-           (VarNode.LastChild.Desc = ctnIdentifier) and
+           (VarNode.LastChild.Desc in [ctnIdentifier, ctnOpenArrayType, ctnRangedArrayType]) and
            (CompareTextIgnoringSpace(VariableType,ExtractNode(VarNode.LastChild,[phpCommentsToSpace]),False) = 0)
         then
           VarTypeNode := VarNode;

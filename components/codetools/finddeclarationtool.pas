@@ -15652,6 +15652,7 @@ function TFindDeclarationTool.FindExprTypeAsString(
   const ExprType: TExpressionType; TermCleanPos: integer;
   AliasType: PFindContext): string;
 
+
   procedure RaiseTermNotSimple(id: int64);
   begin
     if TermCleanPos<1 then
@@ -15659,10 +15660,32 @@ function TFindDeclarationTool.FindExprTypeAsString(
     MoveCursorToCleanPos(TermCleanPos);
     RaiseException(id,ctsTermNotSimple);
   end;
+  function FindStartOfArrayDefinition(Node: TCodeTreeNode;
+    Tool: TFindDeclarationTool; out stop: integer): integer;
+  begin
+    Result:=0;
+    stop:=0;
+    if (Node=nil) then
+      exit;
+    Tool.MoveCursorToNodeStart(Node);
+    repeat
+      Tool.ReadNextAtom;
+      if (Result=0) and (Tool.CurPos.Flag = cafColon) then begin
+        Tool.ReadNextAtom;
+        Result:=Tool.CurPos.StartPos;
+      end;
+      if (Result>0) and (Tool.CurPos.Flag in [cafSemicolon, cafRoundBracketClose])
+      then begin
+        stop:= Tool.CurPos.StartPos-1;
+        break;
+      end;
+    until Tool.CurPos.EndPos>=Tool.SrcLen;
+  end;
 
 var
   FindContext: TFindContext;
   ANode: TCodeTreeNode;
+  start,stop: integer;
 begin
   {$IFDEF ShowExprEval}
   DebugLn('TFindDeclarationTool.FindExprTypeAsString ExprType=',
@@ -15690,6 +15713,7 @@ begin
            (FindContext.Node.Parent.Desc=ctnTypeDefinition)
         then
           FindContext.Node:=FindContext.Node.Parent;
+
         case FindContext.Node.Desc of
 
         ctnTypeDefinition:
@@ -15759,6 +15783,13 @@ begin
             Result:=FindContext.Tool.ExtractNode(ANode,[]);
           end;
 
+        ctnOpenArrayType, ctnRangedArrayType:
+          begin
+            ANode:= FindContext.Node.Parent;
+            start:=FindStartOfArrayDefinition(ANode, FindContext.Tool, stop);
+            if start>0 then
+              Result:= FindContext.Tool.ExtractCode(start,stop,[]);
+          end;
         end;
 
         if Result='' then begin
