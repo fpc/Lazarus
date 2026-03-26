@@ -4,6 +4,8 @@ unit CocoaEvent;
 {$modeswitch objectivec2}
 {$include cocoadefines.inc}
 
+{ Currently, only one tap is supported at a time }
+
 interface
 
 uses
@@ -20,11 +22,14 @@ type
     _port: CFMachPortRef;
   public
     procedure createTap; virtual; abstract;
+    procedure releaseTap; virtual;
     function hasTap: Boolean; virtual;
     procedure enableTap; virtual;
     procedure disableTap; virtual;
     function authorized: Boolean; virtual;
     function promptAuthorization: Boolean; virtual;
+  public
+    destructor Destroy; override;
   end;
 
   TCocoaEventTapClass = class of TCocoaEventTap;
@@ -33,7 +38,8 @@ type
 
   TCocoaEventTapUtil = class
   public
-    class procedure createTap( const tapClass: TCocoaEventTapClass );
+    class procedure installTap( const tapClass: TCocoaEventTapClass );
+    class procedure uninstallTap;
     class procedure enableTap;
     class procedure disableTap;
     class function promptAuthorization: Boolean;
@@ -45,6 +51,14 @@ var
   eventTap: TCocoaEventTap;
 
 { TCocoaEventTap }
+
+procedure TCocoaEventTap.releaseTap;
+begin
+  if self.hasTap then begin
+    CFRelease( _port );
+    _port:= nil;
+  end;
+end;
 
 function TCocoaEventTap.hasTap: Boolean;
 begin
@@ -78,13 +92,25 @@ begin
   Result:= AXIsProcessTrustedWithOptions( CFDictionaryRef(options) );
 end;
 
+destructor TCocoaEventTap.Destroy;
+begin
+  self.releaseTap;
+end;
+
 { TCocoaEventTapUtil }
 
-class procedure TCocoaEventTapUtil.createTap( const tapClass: TCocoaEventTapClass );
+class procedure TCocoaEventTapUtil.installTap( const tapClass: TCocoaEventTapClass );
 begin
   if NOT Assigned(eventTap) then
     eventTap:= tapClass.Create;
   eventTap.createTap;
+end;
+
+class procedure TCocoaEventTapUtil.uninstallTap;
+begin
+  if NOT Assigned(eventTap) then
+    Exit;
+  FreeAndNil( eventTap );
 end;
 
 class function TCocoaEventTapUtil.promptAuthorization: Boolean;
