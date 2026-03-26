@@ -2050,7 +2050,16 @@ begin
   if Event^.focus_change.in_ <> 0 then
     Msg.Msg := LM_SETFOCUS
   else
+  begin
+    if Sender^.get_toplevel^.is_toplevel then
+    begin
+      if not PGtkWindow(Sender^.get_toplevel)^.is_active then
+        Exit;
+      if PGtkWindow(Sender^.get_toplevel)^.get_focus = Sender then
+        Exit;
+    end;
     Msg.Msg := LM_KILLFOCUS;
+  end;
 
   if HasCaret then
   begin
