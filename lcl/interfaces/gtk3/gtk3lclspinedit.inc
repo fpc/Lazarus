@@ -261,7 +261,12 @@ var
   ACtl: TGtk3Widget;
   Data: PLCLSpinEditData;
   Msg: TLMessage;
-  WasInside: Boolean;
+  SubWidgetPtr: gpointer;
+  Alloc: TGtkAllocation;
+  mx, my: gint;
+  ADevice: PGdkDevice;
+  Inside: Boolean;
+  P: TPoint;
 begin
   Result := False;
   if AEvent^.mode <> GDK_CROSSING_NORMAL then
@@ -272,25 +277,46 @@ begin
   Data := LCLSpinEditGetData(ACtl.Widget);
   if not Assigned(Data) then Exit;
 
-  WasInside := Data^.MouseInside;
-
   if AEvent^.type_ = GDK_ENTER_NOTIFY then
   begin
-    if not WasInside then
+    if not Data^.MouseInside then
     begin
       Data^.MouseInside := True;
       FillChar(Msg{%H-}, SizeOf(Msg), 0);
-      Msg.Msg := LM_MOUSEENTER;
+      Msg.Msg := CM_MOUSEENTER;
       ACtl.DeliverMessage(Msg, True);
     end;
-  end else // GDK_LEAVE_NOTIFY
+  end
+  else // GDK_LEAVE_NOTIFY
   begin
-    if WasInside and
-       (AEvent^.detail in [GDK_NOTIFY_NONLINEAR, GDK_NOTIFY_NONLINEAR_VIRTUAL]) then
+    if Data^.MouseInside then
     begin
+      // Try subwindow check first (X11 may set it)
+      if Assigned(AEvent^.subwindow) then
+      begin
+        SubWidgetPtr := nil;
+        gdk_window_get_user_data(AEvent^.subwindow, @SubWidgetPtr);
+        if Assigned(SubWidgetPtr) and
+           gtk_widget_is_ancestor(PGtkWidget(SubWidgetPtr), ACtl.Widget) then
+          Exit;
+      end;
+      // Use ScreenToClient then HBox allocation for bounds check
+      ADevice := gdk_event_get_device(PGdkEvent(AEvent));
+      if Assigned(ADevice) then
+      begin
+        gdk_device_get_position(ADevice, nil, @mx, @my);
+        P.X := mx;
+        P.Y := my;
+        P := ACtl.LCLObject.ScreenToClient(P);
+        ACtl.Widget^.get_allocation(@Alloc);
+        Inside := (P.X >= 0) and (P.Y >= 0) and
+                  (P.X < Alloc.width) and (P.Y < Alloc.height);
+        if Inside then
+          Exit;
+      end;
       Data^.MouseInside := False;
       FillChar(Msg{%H-}, SizeOf(Msg), 0);
-      Msg.Msg := LM_MOUSELEAVE;
+      Msg.Msg := CM_MOUSELEAVE;
       ACtl.DeliverMessage(Msg, True);
     end;
   end;
@@ -338,7 +364,6 @@ begin
     PGtkWidget(Data^.Entry)^.get_preferred_height(@EntryMinH, @EntryNatH);
     min_height^ := EntryMinH;
     nat_height^ := EntryNatH;
-    //writeln('LCLSpinEdit PrefHeight: entryMin=', EntryMinH, ' entryNat=', EntryNatH);
   end else
   begin
     with PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class))^ do
@@ -375,7 +400,6 @@ begin
   begin
     BtnW := Max(16, allocation^.height div 4);
     PGtkWidget(Data^.BtnBox)^.set_size_request(BtnW, -1);
-    //writeln('LCLSpinEdit SizeAllocate: w=', allocation^.width, ' h=', allocation^.height, ' btnW=', BtnW);
   end;
 
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
@@ -550,10 +574,14 @@ begin
   g_signal_connect_data(PGObject(Adj), 'value-changed',
     TGCallback(@LCLSpinEditAdjValueChanged), Data, nil, G_CONNECT_DEFAULT);
 
-  Entry^.add_events(1 shl Ord(GDK_SCROLL_MASK));
-  PGtkWidget(BtnBox)^.add_events(1 shl Ord(GDK_SCROLL_MASK));
-  PGtkWidget(BtnUp)^.add_events(1 shl Ord(GDK_SCROLL_MASK));
-  PGtkWidget(BtnDown)^.add_events(1 shl Ord(GDK_SCROLL_MASK));
+  Entry^.add_events(1 shl Ord(GDK_SCROLL_MASK) or
+    1 shl Ord(GDK_ENTER_NOTIFY_MASK) or 1 shl Ord(GDK_LEAVE_NOTIFY_MASK));
+  PGtkWidget(BtnBox)^.add_events(1 shl Ord(GDK_SCROLL_MASK) or
+    1 shl Ord(GDK_ENTER_NOTIFY_MASK) or 1 shl Ord(GDK_LEAVE_NOTIFY_MASK));
+  PGtkWidget(BtnUp)^.add_events(1 shl Ord(GDK_SCROLL_MASK) or
+    1 shl Ord(GDK_ENTER_NOTIFY_MASK) or 1 shl Ord(GDK_LEAVE_NOTIFY_MASK));
+  PGtkWidget(BtnDown)^.add_events(1 shl Ord(GDK_SCROLL_MASK) or
+    1 shl Ord(GDK_ENTER_NOTIFY_MASK) or 1 shl Ord(GDK_LEAVE_NOTIFY_MASK));
   g_signal_connect_data(PGObject(BtnBox), 'scroll-event',
     TGCallback(@LCLSpinEditEntryScroll), Data, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(PGObject(BtnUp), 'scroll-event',

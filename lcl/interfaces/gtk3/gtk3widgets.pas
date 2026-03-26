@@ -5672,6 +5672,9 @@ begin
 
     Widget^.set_can_focus(False);
     g_object_set_data(PGObject(Data^.Entry), 'lclwidget', Self);
+    g_object_set_data(PGObject(Data^.BtnUp), 'lclwidget', Self);
+    g_object_set_data(PGObject(Data^.BtnDown), 'lclwidget', Self);
+    g_object_set_data(PGObject(Data^.BtnBox), 'lclwidget', Self);
 
     g_signal_connect_data(PGObject(Data^.Entry), 'event',
       TGCallback(@TGtk3Widget.WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
@@ -5689,11 +5692,6 @@ begin
       TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(PGObject(Data^.BtnDown), 'leave-notify-event',
       TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(PGObject(Data^.BtnBox), 'enter-notify-event',
-      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
-    g_signal_connect_data(PGObject(Data^.BtnBox), 'leave-notify-event',
-      TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
-
     g_signal_connect_data(PGObject(Data^.Entry), 'enter-notify-event',
       TGCallback(@LCLSpinEditChildEnterLeave), Self, nil, G_CONNECT_DEFAULT);
     g_signal_connect_data(PGObject(Data^.Entry), 'leave-notify-event',
