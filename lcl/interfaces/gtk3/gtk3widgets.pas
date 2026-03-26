@@ -12877,7 +12877,6 @@ begin
   begin
     AViewPort^.get_view_window^.get_geometry(@x, @y, @w, @h);
     Result := Rect(0, 0, AViewPort^.get_view_window^.get_width, AViewPort^.get_view_window^.get_height);
-    // DebugLn('GetClientRect via Viewport ',dbgsName(LCLObject),' Result ',dbgs(Result));
     exit;
   end else
   begin
@@ -12893,7 +12892,7 @@ begin
           MenuSize := 0;
         Allocation.x := LCLObject.Left;
         Allocation.y := LCLObject.Top;
-        if Assigned(LCLObject.Parent) then
+        if Assigned(LCLObject.Parent) or (wtHintWindow in WidgetType) then
         begin
           Allocation.width := LCLObject.Width;
           Allocation.Height := LCLObject.Height - MenuSize;
