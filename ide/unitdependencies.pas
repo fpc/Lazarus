@@ -2235,6 +2235,9 @@ begin
   Exclude(FFlags,udwNeedUpdateUnitsLvlGraph);
   NewGroups:=TStringToPointerTree.Create(false);
   NewUnits:=TFilenameToPointerTree.Create(false);
+
+  UnitsLvlGraph.BeginUpdate;
+  UnitGraphFilter.BeginUpdate;
   try
     // fetch new list of units
     GraphGroup:=GroupsLvlGraph.Graph.FirstSelected;
@@ -2286,8 +2289,6 @@ begin
 
     // units changed -> update level graph of units
     NewUnitNodeMap := TUnitNodeMap.Create;
-    UnitsLvlGraph.BeginUpdate;
-    UnitGraphFilter.BeginUpdate;
     Graph.Clear;
     AVLNode:=NewUnits.Tree.FindLowest;
     while AVLNode<>nil do begin
@@ -2348,9 +2349,9 @@ begin
       m.Destroy;
     end;
 
+    FUnitNodeMap := NewUnitNodeMap;
     UnitGraphFilter.SortTree(0, sdAscending);
   finally
-    FUnitNodeMap := NewUnitNodeMap;
     UnitsLvlGraph.EndUpdate;
     UnitGraphFilter.EndUpdate;
     NewGroups.Free;
