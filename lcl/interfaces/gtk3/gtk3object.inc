@@ -645,7 +645,7 @@ begin
   {$IFDEF GTK3USEDEFERREDRESIZING}
   Gtk3DrainResizeQueue;
   {$ENDIF GTK3USEDEFERREDRESIZING}
-  if IsMultiThread then
+  if IsMultiThread and (GetCurrentThreadId = MainThreadID) then
     CheckSynchronize; //ref.to issue #27662
 end;
 
