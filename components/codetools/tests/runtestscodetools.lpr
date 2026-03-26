@@ -32,7 +32,7 @@ uses
   {$IFDEF HASAMIGA}
   athreads,
   {$ENDIF}
-  Classes, SysUtils, DOM,
+  Classes, SysUtils, DOM, IniFiles,
   // FPCUnit
   ConsoleTestRunner,
   // LazUtils
@@ -59,17 +59,24 @@ type
 
   TCTTestRunner = class(TTestRunner)
   private
+    FVerbose: boolean;
     FSubmitter: string;
     FMachine: string;
     procedure DummyLog(Sender: TObject; {%H-}S: string; var Handled: Boolean);
   protected
     Options: TCodeToolsOptions;
     procedure AppendLongOpts; override;
+    {$IF FPC_FULLVERSION >= 30301}
+    procedure ReadCustomDefaults(Ini: TMemIniFile; Section: string); override;
+    {$ELSE}
+    procedure ReadCustomDefaults(Ini: TMemIniFile; Section: string);
+    procedure ReadDefaults; override;
+    {$ENDIF}
     function ParseOptions: Boolean; override;
     procedure WriteCustomHelp; override;
-
     procedure ExtendXmlDocument(Doc: TXMLDocument); override;
   public
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
@@ -201,11 +208,52 @@ begin
   LongOpts.Add('verbose');
 end;
 
+procedure TCTTestRunner.ReadCustomDefaults(Ini: TMemIniFile; Section: string);
+begin
+  {$IF FPC_FULLVERSION >= 30301}
+  inherited;
+  {$ENDIF}
+  FVerbose   := Ini.ReadBool  (Section, 'verbose'  , FVerbose  );
+  FMachine   := Ini.ReadString(Section, 'machine'  , FMachine  );
+  FSubmitter := Ini.ReadString(Section, 'submitter', FSubmitter);
+end;
+
+{$IF FPC_FULLVERSION < 30301}
+procedure TCTTestRunner.ReadDefaults;
+const
+  CDefaultsFileIniSection = 'defaults';
+var
+  lFileName: string;
+  lConf: TMemIniFile = nil;
+begin
+  inherited ReadDefaults;
+
+  lFileName := DefaultsFileName;
+  if FileExists(lFileName) then
+  begin
+    lConf := TMemIniFile.Create(lFileName);
+    try
+      lConf.Options := lConf.Options + [ifoStripQuotes];
+      lConf.SetBoolStringValues(true , ['1', 'true' , 'y', 'yes', 'on' ]);
+      lConf.SetBoolStringValues(false, ['0', 'false', 'n', 'no' , 'off']);
+
+      ReadCustomDefaults(lConf, CDefaultsFileIniSection);
+    finally
+      FreeAndNil(lConf);
+    end;
+  end;
+end;
+{$ENDIF}
+
 function TCTTestRunner.ParseOptions: Boolean;
 const
   cLazarusSrcDir = '..\..\..'; // only current installation
 begin
   Result:=inherited ParseOptions;
+
+  // do not initialize anything and do not pollute the help output
+  if HasOption('h','help') then
+    exit;
 
   // CodeTools (tests) assume a working folder "components\codetools\tests"
   SetCurrentDirUTF8(ExtractFileDir(ParamStrUTF8(0)));
@@ -218,12 +266,8 @@ begin
   end;
   Options.InitWithEnvironmentVariables;
 
-  if not HasOption('verbose') then
-  begin
-    LazLogger.DebugLogger.OnDebugLn:=@DummyLog;
-    LazLogger.DebugLogger.OnDbgOut:=@DummyLog;
-  end;
-
+  if HasOption('verbose') then
+    FVerbose:=true;
   if HasOption('submitter') then
     FSubmitter := GetOptionValue('submitter');
   if HasOption('machine') then
@@ -249,6 +293,13 @@ begin
 
   // save the options and the FPC unit links results.
   Options.SaveToFile(ConfigFilename);
+
+  // disable debug output of test suites (don't do this before initialization above)
+  if not FVerbose then
+  begin
+    LazLogger.DebugLogger.OnDebugLn:=@DummyLog;
+    LazLogger.DebugLogger.OnDbgOut:=@DummyLog;
+  end;
 end;
 
 procedure TCTTestRunner.WriteCustomHelp;
@@ -266,6 +317,14 @@ begin
   writeln('  PP=<file>           Path to the compiler file');
   writeln('  FPCTARGET=<OS>      Target OS');
   writeln('  FPCTARGETCPU=<CPU>  Target CPU');
+end;
+
+constructor TCTTestRunner.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FVerbose:=false;
+  FSubmitter:='';
+  FMachine:='';
 end;
 
 destructor TCTTestRunner.Destroy;
