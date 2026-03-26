@@ -1696,7 +1696,6 @@ begin
   NewSize.cx := AGdkRect^.width;
   NewSize.cy := AGdkRect^.height;
 
-  //writeln(format('Gkt3SizeAllocate w=%d h=%d',[NewSize.cx,NewSize.cy]));
 
   if not Assigned(ACtl.LCLObject) then exit;
 
@@ -3611,6 +3610,7 @@ begin
   if (Widget=nil) then
     exit;
 
+
   {$IFDEF GTK3DEBUGRESIZE}
   if Assigned(LCLObject) then
     writeln(Format('SetBounds %s l=%d t=%d w=%d h=%d (LCLObj w=%d h=%d wt=%d)',
@@ -4000,6 +4000,10 @@ begin
   if IsWidgetOK then
   begin
     if [wtComboBox] * WidgetType <> [] then
+      AWidget := Widget
+    else if ([wtScrollingWin] * WidgetType <> []) and
+            ([wtWindow, wtDialog, wtHintWindow] * WidgetType = []) and
+            (Widget <> getContainerWidget) then
       AWidget := Widget
     else
       AWidget := getContainerWidget;
@@ -8213,6 +8217,7 @@ var
   uWidth, uHeight: guint;
   aCtl: TGtk3Widget;
   ViewportChanged: boolean;
+  hpolicy2, vpolicy2: TGtkPolicyType;
 begin
 
   if not AWidget^.get_mapped then Exit;
@@ -8231,12 +8236,22 @@ begin
   hadj := PGtkScrollable(aWidget)^.get_hadjustment;
   vadj := PGtkScrollable(aWidget)^.get_vadjustment;
 
-  HSize := Max(AGdkRect^.Width, Round(hAdj^.upper));
-  VSize := Max(AGdkRect^.Height, Round(vAdj^.upper));
+  aCtl := TGtk3Widget(Data);
+  hpolicy2 := GTK_POLICY_AUTOMATIC;
+  vpolicy2 := GTK_POLICY_AUTOMATIC;
+  if Gtk3IsScrolledWindow(PGObject(aCtl.Widget)) then
+    gtk_scrolled_window_get_policy(PGtkScrolledWindow(aCtl.Widget),
+      @hpolicy2, @vpolicy2);
+  if hpolicy2 = GTK_POLICY_NEVER then
+    HSize := AGdkRect^.Width
+  else
+    HSize := Max(AGdkRect^.Width, Round(hAdj^.upper));
+  if vpolicy2 = GTK_POLICY_NEVER then
+    VSize := AGdkRect^.Height
+  else
+    VSize := Max(AGdkRect^.Height, Round(vAdj^.upper));
 
   PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
-
-  aCtl := TGtk3Widget(Data);
 
   ViewportChanged := (AGdkRect^.height <> Round(vadj^.page_size)) or
                     (AGdkRect^.width  <> Round(hadj^.page_size));
