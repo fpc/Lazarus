@@ -2359,8 +2359,8 @@ begin
     end;
     ColorToCairoRGB(ColorToRgb(TColor(CurrentTextColor)), R, G, B);
     cairo_set_source_rgb(pcr, R, G, B);
-    cairo_move_to(pcr, 0, FCurrentFont.FInternalLeading);
-    pango_cairo_show_layout_line(pcr, FCurrentFont.Layout^.get_line_readonly(0));
+    cairo_move_to(pcr, 0, 0);
+    pango_cairo_show_layout(pcr, FCurrentFont.Layout);
     cairo_restore(pcr);
   end
   else
