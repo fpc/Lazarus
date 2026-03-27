@@ -2020,7 +2020,7 @@ begin
        deBreakpoint: begin
            b := FCurrentProcess.GetAndClearPauseRequested;
            AExit := (FCurrentProcess.CurrentBreakpoint <> nil) or
-                    ( (FCurrentProcess.CurrentWatchpoint <> nil) and (FCurrentProcess.CurrentWatchpoint <> Pointer(-1)) ) or
+                    ( (FCurrentProcess.CurrentWatchpoint <> nil) and (FCurrentProcess.CurrentWatchpoint <> TFpInternalWatchpoint(-1)) ) or
                     ( (FCurrentThread <> nil) and FCurrentThread.PausedAtHardcodeBreakPoint) or
                     (b and (InterLockedExchangeAdd(FPauseRequest, 0) = 1));
          end;
@@ -2070,8 +2070,8 @@ begin
   // reset pause request. If Pause() is called after this, it will be seen in the next loop
   HasPauseRequest := InterLockedExchange(FPauseRequest, 0) = 1;
   CurWatch := nil;
-  if (FCurrentProcess.CurrentWatchpoint <> nil) and (FCurrentProcess.CurrentWatchpoint <> Pointer(-1)) then
-    CurWatch := TFpInternalWatchpoint(FCurrentProcess.CurrentWatchpoint);
+  if (FCurrentProcess.CurrentWatchpoint <> nil) and (FCurrentProcess.CurrentWatchpoint <> TFpInternalWatchpoint(-1)) then
+    CurWatch := FCurrentProcess.CurrentWatchpoint;
 
   case FPDEvent of
     deCreateProcess:

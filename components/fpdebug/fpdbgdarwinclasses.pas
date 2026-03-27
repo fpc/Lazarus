@@ -118,7 +118,7 @@ type
   public
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
-    function DetectHardwareWatchpoint: Pointer; override;
+    function DetectHardwareWatchpoint: TFpInternalWatchpoint; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
 
@@ -438,7 +438,7 @@ begin
   FDebugStateChanged:=true;
 end;
 
-function TDbgDarwinThread.DetectHardwareWatchpoint: Pointer;
+function TDbgDarwinThread.DetectHardwareWatchpoint: TFpInternalWatchpoint;
 var
   dr6: DWord;
   wd: TFpIntelWatchPointData;
@@ -459,7 +459,7 @@ begin
     else if dr6 and 4 = 4 then result := wd.Owner[2]
     else if dr6 and 8 = 8 then result := wd.Owner[3];
     if (Result = nil) and ((dr6 and 15) <> 0) then
-      Result := Pointer(-1); // not owned watchpoint
+      Result := TFpInternalWatchpoint(-1); // not owned watchpoint
     end;
 end;
 

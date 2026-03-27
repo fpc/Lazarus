@@ -53,7 +53,7 @@ type
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); override;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
-    function DetectHardwareWatchpoint: Pointer; override;
+    function DetectHardwareWatchpoint: TFpInternalWatchpoint; override;
     procedure BeforeContinue; override;
     procedure SetRegisterValue(AName: string; AValue: QWord); override;
     procedure StoreRegisters; override;
@@ -112,7 +112,7 @@ type
   { TFpRspWatchPointData }
 
   TRspBreakWatchPoint = record
-    Owner: Pointer;
+    Owner: TFpInternalWatchpoint;
     Address: TDBGPtr;
     Size: Cardinal;
     Kind: TDBGWatchPointKind;
@@ -124,9 +124,9 @@ type
     function BreakWatchPoint(AnIndex: Integer): TRspBreakWatchPoint;
     function DataCount: integer;
   public
-    function AddOwnedWatchpoint(AnOwner: Pointer; AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean; override;
-    function RemoveOwnedWatchpoint(AnOwner: Pointer): boolean; override;
-    function FindOwner(AnAddr: TDBGPtr): Pointer;
+    function AddOwnedWatchpoint(AnOwner: TFpInternalWatchpoint; AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean; override;
+    function RemoveOwnedWatchpoint(AnOwner: TFpInternalWatchpoint): boolean; override;
+    function FindOwner(AnAddr: TDBGPtr): TFpInternalWatchpoint;
     property Data[AnIndex: Integer]: TRspBreakWatchPoint read BreakWatchPoint;
     property Count: integer read DataCount;
   end;
@@ -159,7 +159,7 @@ begin
   result := length(FData);
 end;
 
-function TFpRspWatchPointData.FindOwner(AnAddr: TDBGPtr): Pointer;
+function TFpRspWatchPointData.FindOwner(AnAddr: TDBGPtr): TFpInternalWatchpoint;
 var
   i: integer;
 begin
@@ -174,7 +174,7 @@ begin
     Result := nil;
 end;
 
-function TFpRspWatchPointData.AddOwnedWatchpoint(AnOwner: Pointer;
+function TFpRspWatchPointData.AddOwnedWatchpoint(AnOwner: TFpInternalWatchpoint;
   AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean;
 var
   idx: integer;
@@ -190,7 +190,7 @@ begin
   Result := true;
 end;
 
-function TFpRspWatchPointData.RemoveOwnedWatchpoint(AnOwner: Pointer): boolean;
+function TFpRspWatchPointData.RemoveOwnedWatchpoint(AnOwner: TFpInternalWatchpoint): boolean;
 var
   i, j: integer;
 begin
@@ -362,7 +362,7 @@ begin
   end;
 end;
 
-function TDbgRspThread.DetectHardwareWatchpoint: Pointer;
+function TDbgRspThread.DetectHardwareWatchpoint: TFpInternalWatchpoint;
 begin
   if TDbgRspProcess(Process).RspConnection.LastStatusEvent.stopReason in [srAnyWatchPoint, srReadWatchPoint, srWriteWatchPoint] then
   begin

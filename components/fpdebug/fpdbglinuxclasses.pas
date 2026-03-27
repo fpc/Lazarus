@@ -292,7 +292,7 @@ type
     destructor Destroy; override;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
-    function DetectHardwareWatchpoint: Pointer; override;
+    function DetectHardwareWatchpoint: TFpInternalWatchpoint; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
     procedure SetRegisterValue(AName: string; AValue: QWord); override;
@@ -756,7 +756,7 @@ begin
   WriteDebugReg(7, dr7);
 end;
 
-function TDbgLinuxThread.DetectHardwareWatchpoint: Pointer;
+function TDbgLinuxThread.DetectHardwareWatchpoint: TFpInternalWatchpoint;
 var
   dr6: PtrUInt;
   wd: TFpIntelWatchPointData;
@@ -770,7 +770,7 @@ begin
     else if dr6 and 4 = 4 then result := wd.Owner[2]
     else if dr6 and 8 = 8 then result := wd.Owner[3];
     if (Result = nil) and ((dr6 and 15) <> 0) then
-      Result := Pointer(-1); // not owned watchpoint
+      Result := TFpInternalWatchpoint(-1); // not owned watchpoint
   end;
 end;
 

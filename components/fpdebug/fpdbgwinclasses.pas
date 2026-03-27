@@ -167,7 +167,7 @@ type
     procedure EndSingleStepOverBreakPoint;
     procedure SetSingleStep;
     procedure ApplyWatchPoints(AWatchPointData: TFpWatchPointData); override;
-    function DetectHardwareWatchpoint: Pointer; override;
+    function DetectHardwareWatchpoint: TFpInternalWatchpoint; override;
     procedure BeforeContinue; override;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function ReadThreadState: boolean;
@@ -2302,7 +2302,7 @@ DebugLn(DBG_VERBOSE, '### WATCH ADDED   dr0 %x  dr1 %x  dr2 %x  dr3 %x      dr7 
   FThreadContextChanged:=true;
 end;
 
-function TDbgWinThread.DetectHardwareWatchpoint: Pointer;
+function TDbgWinThread.DetectHardwareWatchpoint: TFpInternalWatchpoint;
 var
   Dr6: DWORD64;
   wd: TFpIntelWatchPointData;
@@ -2329,7 +2329,7 @@ begin
   else if dr6 and 4 = 4 then result := wd.Owner[2]
   else if dr6 and 8 = 8 then result := wd.Owner[3];
   if (Result = nil) and ((dr6 and 15) <> 0) then
-    Result := Pointer(-1); // not owned watchpoint
+    Result := TFpInternalWatchpoint(-1); // not owned watchpoint
 end;
 
 procedure TDbgWinThread.BeforeContinue;
