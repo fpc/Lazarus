@@ -2133,15 +2133,13 @@ begin
      [CAIRO_SURFACE_TYPE_XLIB, CAIRO_SURFACE_TYPE_XCB] then
   begin
     ACanvasScale := gtk_widget_get_scale_factor(AWidget);
-    W := AGdkRect.width;
-    H := AGdkRect.height;
-    if (W <= 0) and (AWidget <> nil) then W := AWidget^.get_allocated_width;
-    if (H <= 0) and (AWidget <> nil) then H := AWidget^.get_allocated_height;
+    W := AWidget^.get_allocated_width;
+    H := AWidget^.get_allocated_height;
     if W <= 0 then W := 1;
     if H <= 0 then H := 1;
     FBackTarget  := ACairo;
-    FBackOriginX := AGdkRect.x;
-    FBackOriginY := AGdkRect.y;
+    FBackOriginX := 0;
+    FBackOriginY := 0;
     CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, W * ACanvasScale, H * ACanvasScale);
     cairo_surface_set_device_scale(CairoSurface, ACanvasScale, ACanvasScale);
     FCairo       := cairo_create(CairoSurface);
