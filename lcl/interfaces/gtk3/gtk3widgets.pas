@@ -4003,7 +4003,8 @@ begin
       AWidget := Widget
     else if ([wtScrollingWin] * WidgetType <> []) and
             ([wtWindow, wtDialog, wtHintWindow] * WidgetType = []) and
-            (Widget <> getContainerWidget) then
+            (Widget <> getContainerWidget) and
+            not (LCLObject is TCustomForm) then
       AWidget := Widget
     else
       AWidget := getContainerWidget;
@@ -8217,7 +8218,6 @@ var
   uWidth, uHeight: guint;
   aCtl: TGtk3Widget;
   ViewportChanged: boolean;
-  hpolicy2, vpolicy2: TGtkPolicyType;
 begin
 
   if not AWidget^.get_mapped then Exit;
@@ -8237,19 +8237,8 @@ begin
   vadj := PGtkScrollable(aWidget)^.get_vadjustment;
 
   aCtl := TGtk3Widget(Data);
-  hpolicy2 := GTK_POLICY_AUTOMATIC;
-  vpolicy2 := GTK_POLICY_AUTOMATIC;
-  if Gtk3IsScrolledWindow(PGObject(aCtl.Widget)) then
-    gtk_scrolled_window_get_policy(PGtkScrolledWindow(aCtl.Widget),
-      @hpolicy2, @vpolicy2);
-  if hpolicy2 = GTK_POLICY_NEVER then
-    HSize := AGdkRect^.Width
-  else
-    HSize := Max(AGdkRect^.Width, Round(hAdj^.upper));
-  if vpolicy2 = GTK_POLICY_NEVER then
-    VSize := AGdkRect^.Height
-  else
-    VSize := Max(AGdkRect^.Height, Round(vAdj^.upper));
+  HSize := Max(AGdkRect^.Width, Round(hAdj^.upper));
+  VSize := Max(AGdkRect^.Height, Round(vAdj^.upper));
 
   PGtkLayout(aWidget)^.get_size(@uWidth, @uHeight);
 
