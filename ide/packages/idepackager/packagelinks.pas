@@ -40,8 +40,6 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree,
-  // LCL
-  Forms,
   // LazUtils
   Laz2_XMLCfg, LazFileCache, LazFileUtils, FileUtil, LazUtilities, LazTracer,
   LazConfigStorage, AvgLvlTree,
@@ -76,8 +74,6 @@ type
 
   { TLazPackageLinks }
   
-  TLazPackageLinks = class;
-
   TPkgLinksState = (
     plsUserLinksNeedUpdate,
     plsGlobalLinksNeedUpdate
@@ -94,8 +90,6 @@ type
     FUserLinksSortID: TAvlTree;
     // tree of user TPackageLink sorted for Filename and FileDate
     FUserLinksSortFile: TAvlTree;
-    //
-    FQueueSaveUserLinks: boolean;
     FChangeStamp: integer;
     FSavedChangeStamp: integer;
     fUpdateLock: integer;
@@ -115,8 +109,6 @@ type
     procedure IteratePackagesInTree(MustExist: boolean; LinkTree: TAvlTree;
       Event: TIteratePackagesEvent);
     procedure SetModified(const AValue: boolean);
-    procedure SetQueueSaveUserLinks(AValue: boolean);
-    procedure OnAsyncSaveUserLinks({%H-}Data: PtrInt);
     function GetNewerLink(Link1, Link2: TLazPackageLink): TLazPackageLink;
     function GetNewestLink(Link1, Link2, Link3: TLazPackageLink): TLazPackageLink;
   public
@@ -158,9 +150,18 @@ type
   public
     property Modified: boolean read GetModified write SetModified;
     property ChangeStamp: integer read FChangeStamp;
-    property QueueSaveUserLinks: boolean read FQueueSaveUserLinks write SetQueueSaveUserLinks;
   end;
-  
+
+  { TSaveUserLinksThread }
+
+  TSaveUserLinksThread = class(TThread)
+  private
+    FPkgLinks: TLazPackageLinks;
+    FConfigFN: String;
+  protected
+    procedure Execute; override;
+  end;
+
 var
   LazPackageLinks: TLazPackageLinks = nil; // set by the PkgBoss
 
@@ -168,6 +169,9 @@ function ComparePackageLinks(Data1, Data2: Pointer): integer;
 
 
 implementation
+
+var
+  CritSec: TRTLCriticalSection;
 
 function ComparePackageIDAndLink(Key, Data: Pointer): integer;
 var
@@ -289,11 +293,6 @@ end;
 
 { TLazPackageLinks }
 
-procedure TLazPackageLinks.OnAsyncSaveUserLinks(Data: PtrInt);
-begin
-  SaveUserLinks(true);
-end;
-
 function TLazPackageLinks.GetNewerLink(Link1, Link2: TLazPackageLink): TLazPackageLink;
 begin
   if Link1=nil then
@@ -359,7 +358,6 @@ end;
 
 procedure TLazPackageLinks.Clear;
 begin
-  QueueSaveUserLinks:=false;
   FGlobalLinks.FreeAndClear;
   FOnlineLinks.FreeAndClear;
   FUserLinksSortID.FreeAndClear;
@@ -826,55 +824,35 @@ begin
   Result:=fUpdateLock>0;
 end;
 
-procedure TLazPackageLinks.SaveUserLinks(Immediately: boolean);
+procedure SaveUserLinksSub(PkgLinks: TLazPackageLinks; ConfigFilename: String);
+// Actually save UserLinks. Called from a thread or from SaveUserLinks directly.
 var
-  ConfigFilename: String;
-  Path: String;
   CurPkgLink: TLazPackageLink;
   XMLConfig: TXMLConfig;
   ANode: TAvlTreeNode;
-  ItemPath: String;
+  Path, ItemPath, LazSrcDir, AFilename: String;
   i: Integer;
-  LazSrcDir: String;
-  AFilename: String;
 begin
-  //debugln(['TPackageLinks.SaveUserLinks ']);
-  if (FUserLinksSortFile=nil) or (FUserLinksSortFile.Count=0) then exit;
-  ConfigFilename:=GetUserLinkFile;
-  
-  // check if file needs saving
-  if not NeedSaveUserLinks(ConfigFilename) then exit;
-  if ConsoleVerbosity>1 then
-    DebugLn(['Hint: (lazarus) TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,' ',UniversalFileAgeUTF8(ConfigFilename)=UserLinkLoadTime,' Immediately=',Immediately]);
-
-  if Immediately then begin
-    QueueSaveUserLinks:=false;
-  end else begin
-    QueueSaveUserLinks:=true;
-    exit;
-  end;
-
+  //debugln(['SaveUserLinksSub']);
   LazSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
-
   XMLConfig:=nil;
+  EnterCriticalsection(CritSec);
+  try
   try
     XMLConfig:=TXMLConfig.CreateClean(ConfigFilename);
-
     // store user links
     Path:='UserPkgLinks/';
     XMLConfig.SetValue(Path+'Version',PkgLinksFileVersion);
-    ANode:=FUserLinksSortID.FindLowest;
+    ANode:=PkgLinks.FUserLinksSortID.FindLowest;
     i:=0;
     while ANode<>nil do begin
       CurPkgLink:=TLazPackageLink(ANode.Data);
-      ANode:=FUserLinksSortID.FindSuccessor(ANode);
-
+      ANode:=PkgLinks.FUserLinksSortID.FindSuccessor(ANode);
       inc(i);
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
       XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
       //debugln(['TPackageLinks.SaveUserLinks ',CurPkgLink.Name,' ',dbgs(Pointer(CurPkgLink))]);
       PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
-
       // save package files in lazarus directory relative
       AFilename:=CurPkgLink.LPKFilename;
       if (LazSrcDir<>'') and FileIsInPath(AFilename,LazSrcDir) then begin
@@ -882,22 +860,19 @@ begin
         //DebugLn(['TPackageLinks.SaveUserLinks ',AFilename]);
       end;
       XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',AFilename,'');
-
       XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
                    DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
     end;
     XMLConfig.SetDeleteValue(Path+'Count',i,0);
-
     // store LastUsed dates of global links
     Path:='GlobalPkgLinks/';
     XMLConfig.SetValue(Path+'Version',PkgLinksFileVersion);
     i:=0;
-    ANode:=FGlobalLinks.FindLowest;
+    ANode:=PkgLinks.FGlobalLinks.FindLowest;
     while ANode<>nil do begin
       CurPkgLink:=TLazPackageLink(ANode.Data);
-      ANode:=FGlobalLinks.FindSuccessor(ANode);
+      ANode:=PkgLinks.FGlobalLinks.FindSuccessor(ANode);
       if CurPkgLink.LastUsed<=0 then continue;
-
       inc(i);
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
       XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
@@ -906,20 +881,46 @@ begin
                    DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
     end;
     XMLConfig.SetDeleteValue(Path+'Count',i,0);
-
     InvalidateFileStateCache(ConfigFilename);
     XMLConfig.Flush;
     XMLConfig.Free;
-
-    UserLinkLoadTime:=FileAgeCached(ConfigFilename);
-    UserLinkLoadTimeValid:=true;
+    PkgLinks.UserLinkLoadTime:=FileAgeCached(ConfigFilename);
+    PkgLinks.UserLinkLoadTimeValid:=true;
   except
     on E: Exception do begin
       DebugLn('Note: (lazarus) unable to read ',ConfigFilename,' ',E.Message);
       exit;
     end;
   end;
-  Modified:=false;
+  finally
+    LeaveCriticalSection(CritSec);
+  end;
+  PkgLinks.Modified:=false;
+end;
+
+procedure TLazPackageLinks.SaveUserLinks(Immediately: boolean);
+var
+  ConfigFilename: String;
+  Thread: TSaveUserLinksThread;
+begin
+  if (FUserLinksSortFile=nil) or (FUserLinksSortFile.Count=0) then exit;
+  ConfigFilename:=GetUserLinkFile;
+  // check if file needs saving
+  if not NeedSaveUserLinks(ConfigFilename) then exit;
+  if ConsoleVerbosity>1 then
+    DebugLn(['Hint: (lazarus) TPackageLinks.SaveUserLinks saving ... ',ConfigFilename,
+      ' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,
+      ' ',UniversalFileAgeUTF8(ConfigFilename)=UserLinkLoadTime,' Immediately=',Immediately]);
+
+  if Immediately then begin
+    SaveUserLinksSub(Self, ConfigFilename); //QueueSaveUserLinks:=false;
+  end else begin
+    Thread:=TSaveUserLinksThread.Create(True); //QueueSaveUserLinks:=true;
+    Thread.FreeOnTerminate:=True;
+    Thread.FPkgLinks:=Self;
+    Thread.FConfigFN:=ConfigFilename;
+    Thread.Start;
+  end;
 end;
 
 function TLazPackageLinks.NeedSaveUserLinks(const ConfigFilename: string): boolean;
@@ -1105,17 +1106,6 @@ begin
     FSavedChangeStamp:=FChangeStamp
   else
     IncreaseChangeStamp;
-end;
-
-procedure TLazPackageLinks.SetQueueSaveUserLinks(AValue: boolean);
-begin
-  if FQueueSaveUserLinks=AValue then Exit;
-  FQueueSaveUserLinks:=AValue;
-  if Application=nil then exit;
-  if FQueueSaveUserLinks then
-    Application.QueueAsyncCall(@OnAsyncSaveUserLinks,0)
-  else
-    Application.RemoveAsyncCalls(Self);
 end;
 
 function TLazPackageLinks.FindLinkWithPkgName(const PkgName: string): TPackageLink;
@@ -1359,6 +1349,13 @@ end;
 procedure TLazPackageLinks.IncreaseChangeStamp;
 begin
   CTIncreaseChangeStamp(FChangeStamp);
+end;
+
+{ TSaveUserLinksThread }
+
+procedure TSaveUserLinksThread.Execute;
+begin
+  SaveUserLinksSub(FPkgLinks, FConfigFN);
 end;
 
 initialization
