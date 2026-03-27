@@ -742,6 +742,10 @@ var
   dr7: PtrUInt;
   addr: PtrUInt;
 begin
+  if (udeKeepExternalWatchPointData in Process.HandleUserDebugEvents) and
+     (TFpIntelWatchPointData(AWatchPointData).Dr7 = 0)
+  then
+    exit;
   if not ReadDebugReg(7, dr7) then
     Exit;
 

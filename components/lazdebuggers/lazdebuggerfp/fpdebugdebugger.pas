@@ -4310,11 +4310,8 @@ begin
       FDbgController.CurrentProcess.Config.FileOverwriteStdErr := FileOverwriteStdErr;
 
       FDbgController.CurrentProcess.Config.BreakpointSearchMaxLines := TFpDebugDebuggerProperties(GetProperties).BreakpointSearchMaxLines;
-      {$ifdef windows}
-      if FDbgController.CurrentProcess is TDbgWinProcess then
-        TDbgWinProcess(FDbgController.CurrentProcess).HandleThreadNameException :=
-          TFpDebugDebuggerProperties(GetProperties).HandleThreadNameException;
-      {$endif windows}
+      FDbgController.CurrentProcess.HandleUserDebugEvents :=
+        TFpDebugDebuggerProperties(GetProperties).HandleUserDebugEvents;
 
       FWorkQueue.Clear;
       FWorkQueue.ThreadCount := 1;

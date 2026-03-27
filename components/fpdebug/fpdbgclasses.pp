@@ -58,6 +58,13 @@ type
     deFailed);
   TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo, dcsiZeroLine);
 
+  TFpHandleUserDebugEvent = (
+    udeReRaiseWin32ThreadNameException,
+    udeReRaiseExternalWatchPoint,
+    udeKeepExternalWatchPointData
+  );
+  TFpHandleUserDebugEvents = set of TFpHandleUserDebugEvent;
+
   TGDbgRegisterValueList = specialize TFPGObjectList<TDbgRegisterValue>;
 
   { TDbgRegisterValueList }
@@ -880,6 +887,7 @@ type
     FProcessConfig: TDbgProcessConfig;
     FConfig: TDbgConfig;
     FGlobalCache: TFpDbgDataCache;
+    FHandleUserDebugEvents: TFpHandleUserDebugEvents;
     function DoGetCfiFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDBGPtr;
     function DoGetFrameBase(AContext: TFpDbgLocationContext; out AnError: TFpError): TDBGPtr;
     function GetDisassembler: TDbgAsmDecoder;
@@ -1055,6 +1063,7 @@ type
     property ThreadMap: TThreadMap read FThreadMap;
     property Config: TDbgConfig read FConfig;
     property GlobalCache: TFpDbgDataCache read FGlobalCache write FGlobalCache;
+    property HandleUserDebugEvents: TFpHandleUserDebugEvents read FHandleUserDebugEvents write FHandleUserDebugEvents;
   end;
   TDbgProcessClass = class of TDbgProcess;
 
