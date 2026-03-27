@@ -2550,16 +2550,36 @@ type
         rec.Tool.ReadNextAtom;
         if rec.Tool.CurPos.Flag = cafWord then begin
           if rec.Tool.UpAtomIs('CONST') then exit; // "array of const" not supported (yet)
-          rec.ProceedArray:=s+' '+rec.Tool.GetAtom;
+          s:=s+' '+rec.Tool.GetAtom;
+          rec.Tool.ReadNextAtom;
+          if rec.Tool.CurPos.Flag = cafPoint then begin
+            repeat // fully qualified identifier possible
+              if rec.Tool.CurPos.Flag = cafPoint then
+                s:=s+'.'
+              else
+                break;
+              rec.Tool.ReadNextAtom;
+              if rec.Tool.CurPos.Flag = cafWord then
+                s:=s+rec.Tool.GetAtom;
+              rec.Tool.ReadNextAtom;
+              if rec.Tool.CurPos.Flag in [cafSemicolon, cafRoundBracketClose] then
+              begin
+                rec.ProceedArray:=s;
+                break;
+              end;
+            until false;
+          end else begin
+            rec.ProceedArray:=s;
+          end;
         end;
       end;
     end;
   end;
 
   procedure SetTypeName(var rec: OverloadedProc;  N: integer);
-  var i: integer;
+  var
+    i: integer;
     Node: TCodeTreeNode;
-    p:PChar;
   begin
     with rec do begin
       PTypeName:=nil;
