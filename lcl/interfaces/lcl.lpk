@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="7"/>
-    <Files Count="545">
+    <Files Count="546">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2691,6 +2691,11 @@ end;"/>
         <Filename Value="cocoa/cocoatoolbar.inc"/>
         <Type Value="Include"/>
       </Item545>
+      <Item546>
+        <Filename Value="cocoa/cocoaevent.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaEvent"/>
+      </Item546>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
