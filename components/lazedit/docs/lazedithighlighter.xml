@@ -98,9 +98,9 @@ A highlighter will then be able to access the "Ranges" storage that it may have 
         <descr>
           <p>Start working on a line. The line will be retrieved from <link id="TLazEditCustomRangesHighlighter.CurrentRanges"/>. This can be either for scanning the line when building the highlighters "ranges" or building any state that a highlighter might keep about the lines. Or it can be for retrieving info like TokenKind and Attribute for each token on that line.</p>
           <p>StartAtLineIndex will set the properties <link id="TLazEditCustomHighlighter.LineIndex"/>, <link id="TLazEditCustomHighlighter.LinePtr"/> and <link id="TLazEditCustomHighlighter.CurrentLineText"/>. It will call <link id="TLazEditCustomRangesHighlighter.SetRange"/> or <link id="TLazEditCustomRangesHighlighter.ResetRange"/> with the start range for the line.</p>
-          <p>Inherited Highlighters may also overwrite <link id="TLazEditCustomHighlighter.InitForScaningLine"/> to get notified. 
+          <p>Inherited Highlighters may also overwrite <link id="TLazEditCustomHighlighter.InitForScanningLine"/> to get notified.
 Inherited Highlighters can also overwrite <link id="TLazEditCustomRangesHighlighter.SetRange"/>. <br/>
-The difference between SetRange and InitForScaningLine is that the former is only called by StartAtLineIndex, but not by <link id="TLazEditCustomHighlighter.ContinueNextLine"/>. The latter is always called by both.
+The difference between SetRange and InitForScanningLine is that the former is only called by StartAtLineIndex, but not by <link id="TLazEditCustomHighlighter.ContinueNextLine"/>. The latter is always called by both.
 </p>
           <p>After the call the Highlighter is expected to be on the first token of the line. (For GetToken.... calls)</p>
         </descr>
@@ -109,7 +109,7 @@ The difference between SetRange and InitForScaningLine is that the former is onl
           <link id="TLazEditCustomHighlighter.LinePtr"/>
           <link id="TLazEditCustomHighlighter.CurrentLineText"/>
           <link id="TLazEditCustomHighlighter.ContinueNextLine"/>
-          <link id="TLazEditCustomHighlighter.InitForScaningLine"/>
+          <link id="TLazEditCustomHighlighter.InitForScanningLine"/>
           <link id="TLazEditCustomRangesHighlighter.SetRange"/>
           <link id="TLazEditCustomRangesHighlighter.ResetRange"/>
           <link id="TLazEditCustomHighlighter.CurrentLines"/>
@@ -121,7 +121,7 @@ The difference between SetRange and InitForScaningLine is that the former is onl
         <descr>
           <p>Like TLazEditCustomHighlighter.StartAtLineIndex this can be either for scanning or for retrieving info on tokens.</p>
           <p>Unlike StartAtLineIndex this will not not call <link id="TLazEditCustomRangesHighlighter.SetRange"/> or <link id="TLazEditCustomRangesHighlighter.ResetRange"/>. ContinueNextLine is an optimised way to go to the next line. It will keep the existing range info as it is. It must therefore only be called if the current line has reached its EOL. In that case the range info will already be as it needs to be for the next line.</p>
-          <p>ContinueNextLine  will call <link id="TLazEditCustomHighlighter.InitForScaningLine"/>. So any initialisations that are needed on top of the range can be made by inherited highlighters.</p>
+          <p>ContinueNextLine  will call <link id="TLazEditCustomHighlighter.InitForScanningLine"/>. So any initialisations that are needed on top of the range can be made by inherited highlighters.</p>
           <p>After the call the Highlighter is expected to be on the first token of the line. (For GetToken.... calls)
 </p>
         </descr>
@@ -130,14 +130,14 @@ The difference between SetRange and InitForScaningLine is that the former is onl
           <link id="TLazEditCustomHighlighter.LineIndex"/>
           <link id="TLazEditCustomHighlighter.LinePtr"/>
           <link id="TLazEditCustomHighlighter.CurrentLineText"/>
-          <link id="TLazEditCustomHighlighter.InitForScaningLine"/>
+          <link id="TLazEditCustomHighlighter.InitForScanningLine"/>
           <link id="TLazEditCustomRangesHighlighter.SetRange"/>
           <link id="TLazEditCustomRangesHighlighter.ResetRange"/>
           <link id="TLazEditCustomHighlighter.CurrentLines"/>
           <link id="TLazEditCustomRangesHighlighter.CurrentRanges"/>
         </seealso>
       </element>
-      <element name="TLazEditCustomHighlighter.InitForScaningLine">
+      <element name="TLazEditCustomHighlighter.InitForScanningLine">
         <short>Event for inherited Highlighters to initialise for scanning a line</short>
         <seealso>
           <link id="TLazEditCustomHighlighter.StartAtLineIndex"/>
