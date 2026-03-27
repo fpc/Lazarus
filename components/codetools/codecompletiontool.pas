@@ -2527,9 +2527,34 @@ type
     ProcNode: TCodeTreeNode;
     ParamNode: TCodeTreeNode;
     PTypeName: PChar;
+    ProceedArray: string;
   end;
 
   ArrOfOverloadedProc = array of OverloadedProc;
+
+  procedure CheckIfArray(var rec: OverloadedProc);
+  var
+    s: string;
+  begin
+    rec.ProceedArray:='';
+    if rec.PTypeName = nil then exit;
+    s:='';
+    rec.Tool.MoveCursorToCleanPos(rec.PTypeName);
+    rec.Tool.ReadNextAtom;
+    if rec.Tool.UpAtomIs('ARRAY') then
+      s:=rec.Tool.GetAtom;
+    if s<>'' then begin
+      rec.Tool.ReadNextAtom;
+      if rec.Tool.UpAtomIs('OF') then begin
+        s:=s+' '+rec.Tool.GetAtom;
+        rec.Tool.ReadNextAtom;
+        if rec.Tool.CurPos.Flag = cafWord then begin
+          if rec.Tool.UpAtomIs('CONST') then exit; // "array of const" not supported (yet)
+          rec.ProceedArray:=s+' '+rec.Tool.GetAtom;
+        end;
+      end;
+    end;
+  end;
 
   procedure SetTypeName(var rec: OverloadedProc;  N: integer);
   var i: integer;
@@ -2539,6 +2564,7 @@ type
     with rec do begin
       PTypeName:=nil;
       ParamNode:=nil;
+      ProceedArray:='';
       if ProcNode=nil then exit;
       if (ProcNode.FirstChild=nil) then exit;
       if (ProcNode.FirstChild.FirstChild=nil) then exit;
@@ -2572,13 +2598,13 @@ type
         ParamNode:=Node;
       end;
     end;
+    CheckIfArray(rec);
   end;
 
   function GetCommonTypeForParameter(var arr: ArrOfOverloadedProc;
     out ParamNode: TCodeTreeNode; out ATool: TFindDeclarationTool): string;
   var
     i:integer;
-    s: string;
   begin
     Result:='';
     ParamNode:=nil;
@@ -2586,21 +2612,34 @@ type
     i:=0;
     while i<=high(arr) do begin
       if (arr[i].PTypeName<>nil) and (Result='') then begin
-        Result:=GetIdentifier(arr[i].PTypeName, true, true);  // "SourceName.ClassName.TypeName" possible
+        if arr[i].ProceedArray<>'' then
+          Result:=arr[i].ProceedArray
+        else
+          Result:=GetIdentifier(arr[i].PTypeName, true, true);  // "SourceName.ClassName.TypeName" possible
         ParamNode:=arr[i].ParamNode;
         ATool:=arr[i].Tool;
       end;
       if Result<>'' then begin
         inc(i);
         while i<=high(arr) do begin
-          if (arr[i].PTypeName<>nil) and
-            (CompareDottedIdentifiers(arr[i].PTypeName, PChar(Result))<>0) then begin
-            //different type names at N-th - parameter detected
+          if (arr[i].ProceedArray<>'') then begin
+            if CompareTextIgnoringSpace(Result, arr[i].ProceedArray, false)<>0 then
+            begin
+              //different type names at N-th - parameter detected (open arrays expected)
               Result:='';
               ParamNode:=nil;
               ATool:=nil;
               exit;
             end;
+          end else
+          if (arr[i].PTypeName<>nil) and
+          (CompareDottedIdentifiers(arr[i].PTypeName, PChar(Result))<>0) then begin
+            //different type names at N-th - parameter detected
+            Result:='';
+            ParamNode:=nil;
+            ATool:=nil;
+            exit;
+          end;
           inc(i);
         end;
       end;
