@@ -11,7 +11,7 @@ uses
   Controls, Forms,
   InterfaceBase,
   MacOSAll, CocoaAll,
-  CocoaPrivate, CocoaWSService, CocoaConst, CocoaConfig,
+  CocoaPrivate, CocoaWSService, CocoaEvent, CocoaConst, CocoaConfig,
   CocoaWindows, CocoaMenus, CocoaThemes, CocoaCursor, CocoaUtils, Cocoa_Extra;
 
 type
@@ -126,6 +126,8 @@ var
   style: TFormStyle;
   i: Integer;
 begin
+  TCocoaEventTapUtil.enableTap;
+
   windows := NSApp.orderedWindows;
   for i:= windows.count-1 downto 0 do begin
     window:= NSWindow( windows.objectAtIndex(i) );
@@ -158,6 +160,8 @@ var
   state: TFormState;
   i: Integer;
 begin
+  TCocoaEventTapUtil.disableTap;
+
   // no window in this space
   if NSWindow.windowNumbersWithOptions(0).count = 0 then
     Exit;
