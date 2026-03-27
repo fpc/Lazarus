@@ -551,6 +551,7 @@ type
     function GetDirectory: string; override;
     function GetDefineTemplates: TProjPackDefineTemplates;
     function GetFileCount: integer; override;
+    function GetHasEditor: boolean; virtual;
     function GetPkgFiles(Index: integer): TLazPackageFile; override;
     function GetDirectoryExpanded: string; override;
     function GetModified: boolean; override;
@@ -586,6 +587,8 @@ type
     procedure CheckInnerDependencies;
     function IsMakingSense: boolean;
     procedure ConsistencyCheck;
+    procedure PushEditor; virtual;
+    procedure PopEditor; virtual;
     // paths, define templates
     function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
     function ExtendIncSearchPath(NewIncPaths: string): boolean;
@@ -712,6 +715,7 @@ type
     property FirstUsedByDependency: TPkgDependency read FFirstUsedByDependency;
     property Flags: TLazPackageFlags read FFlags write SetFlags;
     property HoldPackageCount: integer read FHoldPackageCount;
+    property HasEditor: boolean read GetHasEditor;
     property IconFile: string read FIconFile write SetIconFile;
     property IDEOptions: TPackageIDEOptions read GetIDEOptions;
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
@@ -745,6 +749,7 @@ type
   end;
 
   PLazPackage = ^TLazPackage;
+  TLazPackageClass = class of TLazPackage;
 
 
 const
@@ -2293,6 +2298,11 @@ begin
   Result:=FFiles.Count;
 end;
 
+function TLazPackage.GetHasEditor: boolean;
+begin
+  Result:=False;
+end;
+
 function TLazPackage.GetPkgFiles(Index: integer): TLazPackageFile;
 begin
   Result:=GetFiles(Index);
@@ -2346,6 +2356,16 @@ procedure TLazPackage.SetAutoInstall(AValue: TPackageInstallType);
 begin
   if FAutoInstall=AValue then exit;
   FAutoInstall:=AValue;
+end;
+
+procedure TLazPackage.PushEditor;
+begin
+  ;  // Do nothing.
+end;
+
+procedure TLazPackage.PopEditor;
+begin
+  ;  // Do nothing.
 end;
 
 procedure TLazPackage.SetAutoUpdate(const AValue: TPackageUpdatePolicy);

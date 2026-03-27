@@ -8,8 +8,8 @@ unit IdePackager;
 interface
 
 uses
-  BasePkgManager, EditablePackage, IdePackagerStrConsts, PackageDefs, 
-  PackageLinks, PackageSystem, PkgSysBasePkgs, LazarusPackageIntf;
+  BasePkgManager, IdePackagerStrConsts, PackageDefs, PackageLinks, 
+  PackageSystem, PkgSysBasePkgs, LazarusPackageIntf;
 
 implementation
 

@@ -27,10 +27,6 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="BasePkgManager"/>
       </Item>
       <Item>
-        <Filename Value="editablepackage.pas"/>
-        <UnitName Value="EditablePackage"/>
-      </Item>
-      <Item>
         <Filename Value="idepackagerstrconsts.pas"/>
         <UnitName Value="IdePackagerStrConsts"/>
       </Item>
@@ -58,9 +54,6 @@ Files in this package are for the main configuration of the IDE."/>
     <RequiredPkgs>
       <Item>
         <PackageName Value="IdeConfig"/>
-      </Item>
-      <Item>
-        <PackageName Value="IDEIntf"/>
       </Item>
     </RequiredPkgs>
     <UsageOptions>
