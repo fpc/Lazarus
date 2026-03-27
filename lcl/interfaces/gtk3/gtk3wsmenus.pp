@@ -119,7 +119,7 @@ begin
   if (not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu) then
   begin
     AForm := TCustomForm(AMenuItem.GetParentMenu.Parent);
-    PGtkMenuBar(TGtk3Window(AForm.Handle).GetMenuBar)^.append(PGtkMenuItem(MenuItem.Widget));
+    PGtkMenuShell(TGtk3Window(AForm.Handle).GetMenuBar)^.insert(PGtkMenuItem(MenuItem.Widget), AMenuItem.MenuVisibleIndex);
   end else
   begin
     if Gtk3IsMenu(ParentMenuWidget) then
