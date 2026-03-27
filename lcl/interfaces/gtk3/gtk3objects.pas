@@ -229,6 +229,7 @@ type
     FBkMode: integer;
     FCanvasScaleFactor: double;
     FXorMode: boolean;
+    FXorROP: Integer;
     //Accumulated clip region, mirrors what we set via SetClipRegion/ResetClip.
     //Needed because gdk_cairo_get_clip_rectangle returns only the bounding box,
     //causing ExcludeClipRect accumulation to lose intermediate holes.
@@ -249,6 +250,7 @@ type
     function SY(const y: double): Double;
     function SX2(const x: double): Double;
     function SY2(const y: double): Double;
+    procedure EnsureDefaultOperator;
     procedure ApplyBrush;
     procedure ApplyFont;
     procedure ApplyPen;
@@ -1650,7 +1652,7 @@ end;
 function TGtk3DeviceContext.GetRasterOp: integer;
 begin
   if FXorMode then
-    Result := R2_XORPEN
+    Result := FXorROP
   else
     Result := MapCairoRasterOpToRasterOp(cairo_get_operator(pcr));
 end;
@@ -1710,7 +1712,10 @@ begin
   if FXorMode and ((AValue <> R2_XORPEN) and (AValue <> R2_NOTXORPEN)) then
   begin
     FXorMode := False;
-    ApplyXorDrawing(FXorSurface, cairo_get_operator(FXorCairo));
+    if FXorROP = R2_NOTXORPEN then
+      ApplyXorDrawing(FXorSurface, CAIRO_OPERATOR_DIFFERENCE)
+    else
+      ApplyXorDrawing(FXorSurface, CAIRO_OPERATOR_XOR);
     if FXorCairo <> nil then
     begin
       cairo_destroy(FXorCairo);
@@ -1723,13 +1728,14 @@ begin
     end;
   end;
   AMap := MapRasterOpToCairo(AValue);
-  if AMap <> CAIRO_OPERATOR_XOR then
-    cairo_set_operator(pcr, MapRasterOpToCairo(AValue))
+  if (AMap <> CAIRO_OPERATOR_XOR) and (AValue <> R2_NOTXORPEN) then
+    cairo_set_operator(pcr, AMap)
   else
   begin
     if FXorMode then
       exit;
     FXorMode := True;
+    FXorROP := AValue;
     if FXorSurface <> nil then
     begin
       if FXorCairo <> nil then
@@ -1739,7 +1745,7 @@ begin
       FXorSurface := nil;
     end;
     if AValue = R2_NOTXORPEN then
-      AMap := CAIRO_OPERATOR_OVER;
+      AMap := CAIRO_OPERATOR_DIFFERENCE;
     SetXorMode(FXorSurface, AMap);
   end;
 end;
@@ -1761,7 +1767,8 @@ begin
   cairo_set_source_rgba(FXorCairo, 0, 0, 0, 0);
   cairo_set_operator(FXorCairo, CAIRO_OPERATOR_CLEAR);
   cairo_paint(FXorCairo);
-  cairo_set_operator(FXorCairo, AMap);
+  cairo_set_operator(FXorCairo, CAIRO_OPERATOR_OVER);
+  cairo_set_antialias(FXorCairo, CAIRO_ANTIALIAS_NONE);
 end;
 
 procedure TGtk3DeviceContext.ApplyXorDrawing(xorSurface: Pcairo_surface_t;
@@ -1769,18 +1776,89 @@ procedure TGtk3DeviceContext.ApplyXorDrawing(xorSurface: Pcairo_surface_t;
 var
   R: TGdkRectangle;
   AOperator: Tcairo_operator_t;
+  TargetSurface, TempSurface: Pcairo_surface_t;
+  SrcData, TmpData: PByte;
+  SrcStride, DstStride, TmpStride: Integer;
+  SrcW, SrcH: Integer;
+  X, Y, SrcOff, DstOff: Integer;
+  TempCairo: Pcairo_t;
+  IsNotXor: Boolean;
 begin
-  AOperator := cairo_get_operator(FCairo);
   cairo_surface_flush(xorSurface);
-  //Composite at the clip origin to match the translate in SetXorMode
   gdk_cairo_get_clip_rectangle(FCairo, @R);
-  cairo_set_source_surface(FCairo, xorSurface, R.x, R.y);
-  if aMap = CAIRO_OPERATOR_XOR then
-    cairo_set_operator(FCairo, CAIRO_OPERATOR_DIFFERENCE)
-  else
-    cairo_set_operator(FCairo, CAIRO_OPERATOR_OVER);
-  cairo_paint(FCairo);
-  cairo_set_operator(FCairo, AOperator);
+
+  SrcW := cairo_image_surface_get_width(xorSurface);
+  SrcH := cairo_image_surface_get_height(xorSurface);
+  SrcData := PByte(cairo_image_surface_get_data(xorSurface));
+  SrcStride := cairo_image_surface_get_stride(xorSurface);
+
+  if (SrcW <= 0) or (SrcH <= 0) or (SrcData = nil) then
+    Exit;
+
+  IsNotXor := (AMap = CAIRO_OPERATOR_DIFFERENCE);
+
+  TargetSurface := cairo_get_target(FCairo);
+
+  if not FOwnsSurface then
+    Exit;
+
+  //Image surface path,pixel level bitwise XOR
+  cairo_surface_flush(TargetSurface);
+
+  TempSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, SrcW, SrcH);
+  TempCairo := cairo_create(TempSurface);
+  cairo_set_source_surface(TempCairo, TargetSurface, -R.x, -R.y);
+  cairo_set_operator(TempCairo, CAIRO_OPERATOR_SOURCE);
+  cairo_paint(TempCairo);
+  cairo_destroy(TempCairo);
+  cairo_surface_flush(TempSurface);
+
+  TmpData := PByte(cairo_image_surface_get_data(TempSurface));
+  TmpStride := cairo_image_surface_get_stride(TempSurface);
+
+  if TmpData <> nil then
+  begin
+    //Pixel-level XOR. For each pixel where src alpha > 0, XOR with dst
+    for Y := 0 to SrcH - 1 do
+    begin
+      for X := 0 to SrcW - 1 do
+      begin
+        SrcOff := Y * SrcStride + X * 4;
+        DstOff := Y * TmpStride + X * 4;
+        //Only XOR pixels that were actually drawn src alpha > 0.
+        if SrcData[SrcOff + 3] > 0 then
+        begin
+          if IsNotXor then
+          begin
+            //NOT(src XOR dst) = NOT XOR
+            TmpData[DstOff + 0] := not (SrcData[SrcOff + 0] xor TmpData[DstOff + 0]); // B
+            TmpData[DstOff + 1] := not (SrcData[SrcOff + 1] xor TmpData[DstOff + 1]); // G
+            TmpData[DstOff + 2] := not (SrcData[SrcOff + 2] xor TmpData[DstOff + 2]); // R
+            TmpData[DstOff + 3] := 255; //A
+          end else
+          begin
+            //src XOR dst
+            TmpData[DstOff + 0] := SrcData[SrcOff + 0] xor TmpData[DstOff + 0]; // B
+            TmpData[DstOff + 1] := SrcData[SrcOff + 1] xor TmpData[DstOff + 1]; // G
+            TmpData[DstOff + 2] := SrcData[SrcOff + 2] xor TmpData[DstOff + 2]; // R
+            TmpData[DstOff + 3] := 255; //A
+          end;
+        end;
+      end;
+    end;
+    cairo_surface_mark_dirty(TempSurface);
+
+    //Blit result back to target.
+    AOperator := cairo_get_operator(FCairo);
+    cairo_save(FCairo);
+    cairo_set_source_surface(FCairo, TempSurface, R.x, R.y);
+    cairo_set_operator(FCairo, CAIRO_OPERATOR_SOURCE);
+    cairo_rectangle(FCairo, R.x, R.y, SrcW, SrcH);
+    cairo_fill(FCairo);
+    cairo_restore(FCairo);
+  end;
+
+  cairo_surface_destroy(TempSurface);
 end;
 
 
@@ -1809,6 +1887,12 @@ end;
 function TGtk3DeviceContext.SY2(const y: double): Double;
 begin
   Result := y;
+end;
+
+procedure TGtk3DeviceContext.EnsureDefaultOperator;
+begin
+  if not FXorMode then
+    cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
 end;
 
 procedure TGtk3DeviceContext.ApplyBrush;
@@ -1853,35 +1937,29 @@ var
   w: Double;
 begin
   SetSourceColor(FCurrentPen.Color);
-  (*
   case FCurrentPen.Mode of
     pmBlack: begin
       SetSourceColor(clBlack);
-      cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+      if not FXorMode then
+        cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
     end;
     pmWhite: begin
       SetSourceColor(clWhite);
-      cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+      if not FXorMode then
+        cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
     end;
-    pmCopy: cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
-    pmXor: cairo_set_operator(pcr, CAIRO_OPERATOR_XOR);
-    pmNotXor: cairo_set_operator(pcr, CAIRO_OPERATOR_DIFFERENCE);
-    {pmNop,
-    pmNot,
-    pmCopy,
-    pmNotCopy,
-    pmMergePenNot,
-    pmMaskPenNot,
-    pmMergeNotPen,
-    pmMaskNotPen,
-    pmMerge,
-    pmNotMerge,
-    pmMask,
-    pmNotMask,}
-    else
-      cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+    pmNot: begin
+      SetSourceColor(clWhite);
+      if not FXorMode then
+        cairo_set_operator(pcr, CAIRO_OPERATOR_DIFFERENCE);
+    end;
+    pmXor:
+      if not FXorMode then
+        cairo_set_operator(pcr, CAIRO_OPERATOR_XOR);
+    pmNotXor:
+      if not FXorMode then
+        cairo_set_operator(pcr, CAIRO_OPERATOR_DIFFERENCE);
   end;
-  *)
 
   if FCurrentPen.Cosmetic then
     cairo_set_line_width(pcr, 1.0)
@@ -2275,7 +2353,7 @@ procedure TGtk3DeviceContext.drawRect(x1, y1, w, h: Integer; const AFill, ABorde
 var
   aOp: Tcairo_operator_t;
 begin
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
   cairo_rectangle(pcr, x1 - WindowOrg.X + PixelOffset, y1 - WindowOrg.Y + PixelOffset, w - 2*PixelOffset, h - 2*PixelOffset);
   if AFill then
   begin
@@ -2309,7 +2387,7 @@ var
   IsVectorSurface: Boolean;
   AFontOpts: Pcairo_font_options_t;
 begin
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
 
   IsVectorSurface := cairo_surface_get_type(cairo_get_target(pcr)) in
     [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
@@ -2390,7 +2468,7 @@ procedure TGtk3DeviceContext.drawEllipse(x, y, w, h: Integer; AFill, ABorder: Bo
 var
   scale_x, scale_y: Double;
 begin
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
 
   scale_x := w / 2.0;
   scale_y := h / 2.0;
@@ -2474,7 +2552,7 @@ begin
    TODO: test on wayland}
   cairo_save(pcr);
 
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
 
   //Apply WindowOrg to target rect, convert logical to device coords
   with targetRect^ do
@@ -2512,7 +2590,7 @@ begin
   DebugLn('TGtk3DeviceContext.DrawImage ');
   {$ENDIF}
 
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
 
   gdk_cairo_set_source_pixbuf(pcr, Image, 0, 0);
 
@@ -2535,7 +2613,7 @@ begin
   //preserve existing clip, see drawSurface comment
   cairo_save(pcr);
 
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
   gdk_cairo_set_source_pixbuf(pcr, Image, 0, 0);
 
   //No PixelOffset for image rendering - causes sub-pixel blur at integer coords,
@@ -2575,7 +2653,7 @@ begin
   if pm = nil then
     Exit;
 
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
 
   AData := PByte(gdk_pixbuf_get_pixels(pm));
 
@@ -2599,7 +2677,7 @@ procedure TGtk3DeviceContext.drawPolyLine(P: PPoint; NumPts: Integer);
 var
   i: Integer;
 begin
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
   ApplyPen;
   cairo_move_to(pcr, P[0].X - WindowOrg.X + PixelOffset, P[0].Y - WindowOrg.Y + PixelOffset);
   for i := 1 to NumPts-1 do
@@ -2612,7 +2690,7 @@ procedure TGtk3DeviceContext.drawPolygon(P: PPoint; NumPts: Integer;
 var
   i: Integer;
 begin
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
 
   cairo_new_path(pcr);
 
@@ -2654,7 +2732,7 @@ begin
 
   MaxIndex := NumPoints - 3 - Ord(not Continuous);
 
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
 
   // Start drawing
   i := 0;
@@ -2716,7 +2794,7 @@ begin
   //DebugLn('TGtk3DeviceContext.fillRect ',Format('x %d y %d w %d h %d',[x, y, w, h]));
   {$endif}
 
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
 
   //Real fix for issue #42082 flush thick-pen accumulated sub-paths with pen colour
   if (fCurrentPen.Width > 1) and (cairo_has_current_point(pcr) <> 0) then
@@ -2783,7 +2861,7 @@ begin
   if (RX = 0) or (RY = 0) then // Avoid zero scale issues
     Exit;
 
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
 
   cairo_translate(pcr, CX, CY);
   cairo_scale(pcr, RX, RY);
@@ -2865,7 +2943,7 @@ begin
 
   if not Assigned(w) then exit;
 
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
   Context:=w^.get_style_context;
   Context^.save;
 
@@ -3008,8 +3086,20 @@ begin
     exit(False);
   X := X - WindowOrg.X;
   Y := Y - WindowOrg.Y;
-  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+  EnsureDefaultOperator;
   ApplyPen;
+
+  if FXorMode then
+  begin
+    cairo_new_path(pcr);
+    cairo_move_to(pcr, FLastPenX, FLastPenY);
+    cairo_line_to(pcr, X + PixelOffset, Y + PixelOffset);
+    cairo_stroke(pcr);
+    FLastPenX := X + PixelOffset;
+    FLastPenY := Y + PixelOffset;
+    Result := True;
+    Exit;
+  end;
 
   if fCurrentPen.Width<=1 then // optimizations
   begin
@@ -3077,7 +3167,7 @@ begin
   if cairo_has_current_point(pcr)<>0 then
     cairo_get_current_point(pcr, @fLastPenX, @fLastPenY);
   //issue #42082, stroke with pens width <= 1
-  if fCurrentPen.Width <= 1 then
+  if FXorMode or (fCurrentPen.Width <= 1) then
     cairo_stroke(pcr)
   else
     cairo_stroke_preserve(pcr);
