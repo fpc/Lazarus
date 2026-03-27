@@ -4860,7 +4860,7 @@ begin
   FCentralWidget := TGtkLayout.new(nil, nil);
   PGtkBin(Result)^.add(FCentralWidget);
   FCentralWidget^.set_has_window(True);
-  PGtkFrame(result)^.set_label_align(0.1,0.5);
+  //PGtkFrame(result)^.set_label_align(0.1,0.5);
   if not (csDesigning in LCLObject.ComponentState) then
     g_object_set(PGObject(FCentralWidget), 'resize-mode', [GTK_RESIZE_QUEUE, nil]);
   PGtkLayout(FCentralWidget)^.set_size(1, 1);
