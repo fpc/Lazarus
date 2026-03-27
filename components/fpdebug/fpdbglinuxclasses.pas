@@ -770,7 +770,7 @@ begin
     else if dr6 and 4 = 4 then result := wd.Owner[2]
     else if dr6 and 8 = 8 then result := wd.Owner[3];
     if (Result = nil) and ((dr6 and 15) <> 0) then
-      Result := TFpInternalWatchpoint(-1); // not owned watchpoint
+      FHitExternalWatchPoint := True; // not set by the debugger
   end;
 end;
 

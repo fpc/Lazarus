@@ -256,6 +256,7 @@ type
     FStoreStepSrcLineNo: integer;
     FStoreStepFuncAddr: TDBGPtr;
     FStackBeforeAlloc: TDBGPtr;
+    FHitExternalWatchPoint: boolean; // a WatchPoint was triggered that was never requested by FpDebug (probably set be the user code)
 
     procedure StoreHasBreakpointInfoForAddress(AnAddr: TDBGPtr); inline;
     procedure ClearHasBreakpointInfoForAddressMismatch(AKeepOnlyForAddr: TDBGPtr); inline;
@@ -2955,8 +2956,18 @@ begin
     // Determine the address where the execution has stopped
     CurrentAddr:=AThread.GetInstructionPointerRegisterValue;
     FCurrentWatchpoint:=AThread.DetectHardwareWatchpoint;
-    if (FCurrentWatchpoint <> nil) and (FWatchPointList.IndexOf(TFpInternalWatchpoint(FCurrentWatchpoint)) < 0) then
-      FCurrentWatchpoint := TFpInternalWatchpoint(-1);
+    if (FCurrentWatchpoint <> nil) and (FWatchPointList.IndexOf(TFpInternalWatchpoint(FCurrentWatchpoint)) < 0) then begin
+      FCurrentWatchpoint := nil;
+      // TODO: different codes for "hit int3" and "ended single step"
+      (* Stopped at a WatchPoint that has been removed in the meantime.
+         - If we hit an int3 (set by debugger, or user placed in code) then no data
+           was changed.
+         - The only "false positive" is, if we had a read WatchPoint on the
+           address of the code. Then we would now skip the int3.
+       *)
+      if not AThread.NextIsSingleStep then
+        Result := deInternalContinue; // if there is a breakpoint, then this will be set back to deBreakpoint;
+    end;
     FCurrentBreakpoint:=nil;
     FCurrentBreakpointList := nil;
     AThread.NextIsSingleStep:=false;
@@ -3873,6 +3884,7 @@ begin
   FNoSymbolAtCurrentInstructionPtr := False;
 
   FPausedAtHardcodeBreakPoint := False;
+  FHitExternalWatchPoint := False;
   ClearHasBreakpointInfoForAddress;
 end;
 
