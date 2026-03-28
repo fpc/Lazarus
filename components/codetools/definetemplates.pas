@@ -111,7 +111,7 @@ const
   VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
-  FPCOperatingSystemNames: array[1..43] of shortstring =(
+  FPCOperatingSystemNames: array[1..44] of shortstring =(
      'linux',
      'win32','win64','wince',
      'darwin','macos',
@@ -148,9 +148,10 @@ const
      'wasip1',
      'wasip1threads',
      'wasip2',
-     'wasix'
+     'wasix',
+     'zxspectrum'
     );
-  FPCOperatingSystemCaptions: array[1..43] of shortstring =(
+  FPCOperatingSystemCaptions: array[1..44] of shortstring =(
      'AIX',
      'Amiga',
      'Android',
@@ -193,7 +194,8 @@ const
      'Wasip1',
      'Wasip1threads',
      'Wasip2',
-     'Wasix'
+     'Wasix',
+     'ZXSpectrum'
     );
 
   FPCOperatingSystemAlternativeNames: array[1..2] of shortstring =(
@@ -202,7 +204,7 @@ const
   FPCOperatingSystemAlternative2Names: array[1..2] of shortstring =(
       'bsd', 'linux' // see GetDefaultSrcOS2ForTargetOS
     );
-  FPCProcessorNames: array[1..18] of shortstring =(
+  FPCProcessorNames: array[1..19] of shortstring =(
       'aarch64',
       'arm',
       'avr',
@@ -220,7 +222,8 @@ const
       'riscv32',
       'riscv64',
       'xtensa',
-      'wasm32'
+      'wasm32',
+      'z80'
     );
   FPCSyntaxModes: array[1..8] of shortstring = (
     'FPC',
