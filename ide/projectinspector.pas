@@ -67,9 +67,10 @@ uses
   CodeToolsStructs, CodeToolManager, FileProcs, CodeCache, CodeTree, FindDeclarationTool,
   // BuildIntf
   ProjPackIntf, ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
+  IDEOptionsIntf,
   // IDEIntf
   IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
-  IdeIntfStrConsts, MenuIntf, FormEditingIntf, SrcEditorIntf,
+  IdeIntfStrConsts, MenuIntf, FormEditingIntf, SrcEditorIntf, IDEOptEditorIntf,
   // IdeUtils
   InputHistory,
   // IdeConfig
@@ -2138,6 +2139,8 @@ end;
 
 initialization
   ProjectIcon.OnLoadProjectMainIcon := @LoadProjectMainIcon2Stream;
+  RegisterIDEOptionsGroup(GroupProject, TProjectIDEOptions);
+  RegisterIDEOptionsGroup(GroupCompiler, TProjectCompilerOptions);
 
 end.
 

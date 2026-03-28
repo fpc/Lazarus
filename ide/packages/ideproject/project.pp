@@ -58,7 +58,7 @@ uses
   BaseIDEIntf, ProjPackIntf, ProjectIntf, PackageIntf, MacroIntf, MacroDefIntf,
   CompOptsIntf, IDEOptionsIntf, LazMsgWorker, UnitResourceIntf,
   // IDEIntf
-  EditorSyntaxHighlighterDef, SrcEditorIntf, IDEOptEditorIntf,
+  EditorSyntaxHighlighterDef, SrcEditorIntf,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   IDECmdLine, IDEProcs, CompOptsModes, ProjectBuildMode, ModeMatrixOpts,
@@ -6998,11 +6998,6 @@ begin
   UsedByPropPath:=SrcPath;
   RequiresPropPath:=DestPath;
 end;
-
-
-initialization
-  RegisterIDEOptionsGroup(GroupProject, TProjectIDEOptions);
-  RegisterIDEOptionsGroup(GroupCompiler, TProjectCompilerOptions);
 
 end.
 
