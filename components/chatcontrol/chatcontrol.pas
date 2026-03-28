@@ -582,6 +582,7 @@ end;
 procedure TChatControl.SetLeftTyping(AValue: Boolean);
 begin
   FTyping[tsLeft].Visible:=aValue;
+  FTyping[tsLeft].Active:=aValue;
 end;
 
 procedure TChatControl.SetRightBackground(AValue: TColor);
@@ -600,6 +601,7 @@ end;
 procedure TChatControl.SetRightTyping(AValue: Boolean);
 begin
   FTyping[tsRight].Visible:=aValue;
+  FTyping[tsRight].Active:=aValue;
 end;
 
 procedure TChatControl.SetMarkDownStringsOnItems(aIndex: Integer);

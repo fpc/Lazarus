@@ -155,7 +155,8 @@ end;
 procedure TTypingDotIndicatorSettings.SetDotColor(AIndex: Integer; AValue: TColor);
 begin
   if FDotColors[aIndex]=aValue then exit;
-
+  FDotColors[aIndex] := aValue;
+  Changed;
 end;
 
 procedure TTypingDotIndicatorSettings.SetDotRadius(AValue: Integer);
