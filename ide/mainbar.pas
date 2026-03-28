@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, Math,
   // LCL
   Forms, Controls, Menus, ComCtrls, ExtCtrls, LMessages,
-{$IF DEFINED(LCLGtk) OR DEFINED(LCLQt)}
+{$IF DEFINED(LCLGtk) OR DEFINED(LCLQt) OR DEFINED(LCLGtk3)}
   LCLIntf,
 {$ENDIF}
   // LazUtils
@@ -449,13 +449,11 @@ begin
         if ANewHeight <= 0 then
           ANewHeight := CalcMainIDEHeight;
         Inc(ANewHeight, CalcNonClientHeight);
-        {$IFnDEF LCLGtk3}
         if ANewHeight <> Constraints.MaxHeight then
         begin
           Constraints.MaxHeight := ANewHeight;
           Constraints.MinHeight := ANewHeight;
         end;
-        {$ENDIF}
         ClientHeight := ANewHeight;
       end else
       if Constraints.MaxHeight <> 0 then
@@ -519,7 +517,7 @@ begin
 end;
 
 function TMainIDEBar.CalcNonClientHeight: Integer;
-{$IF DEFINED(LCLGtk) OR DEFINED(LCLQt)}
+{$IF DEFINED(LCLGtk) OR DEFINED(LCLQt) OR DEFINED(LCLGtk3)}
 var
   WindowRect, WindowClientRect: TRect;
 {$ENDIF}
@@ -540,8 +538,8 @@ begin
   if not Showing then
     Exit(0);
 
-  {$IF DEFINED(LCLGtk) OR DEFINED(LCLQt)}
-  //Gtk + Qt
+  {$IF DEFINED(LCLGtk) OR DEFINED(LCLQt) OR DEFINED(LCLGtk3)}
+  //Gtk + Qt + Gtk3
   //retrieve real main menu height because
   // - Gtk, Qt:  SM_CYMENU does not work
   LclIntf.GetWindowRect(Handle, WindowRect{%H-});
