@@ -35,7 +35,7 @@ type
     property LoadedFileAge: int64 read FLoadedFileAge;
     function GetMsg(ID: integer): TFPCMsgItem;
     property MsgFile: TFPCMsgFile read FMsgFile;
-    property UseCount: integer read fUseCount;
+    //property UseCount: integer read fUseCount;
   end;
 
   TETLoadFileEvent = procedure(aFilename: string; out s: string) of object;
@@ -364,12 +364,9 @@ begin
     //log('TFPCMsgFilePool.UnloadFile '+aFile.Filename+' UseCount='+dbgs(aFile.fUseCount),aThread);
     if aFile.fUseCount>0 then exit;
     // not used anymore
-    if not FileExistsUTF8(aFile.Filename) then begin
-      Keep:=false;
-    end else begin
-      // file still exist on disk
-      // => check if it is the newest version
-      Keep:=true;
+    Keep:=FileExistsUTF8(aFile.Filename);
+    if Keep then begin
+      // file still exist on disk => check if it is the newest version
       for i:=FFiles.Count-1 downto 0 do begin
         Item:=TFPCMsgFilePoolItem(FFiles[i]);
         if Item=aFile then break;
