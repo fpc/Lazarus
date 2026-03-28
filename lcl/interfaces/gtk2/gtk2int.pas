@@ -31,7 +31,7 @@ uses
   {$ifdef Unix}
   BaseUnix, Unix,
   {$endif}
-  Types, Classes, SysUtils, Math,
+  Types, Classes, SysUtils, Math, System.UITypes,
   {$IfNDef GTK2_2}
     {$IfDef HasX}
      XLib, xatom, X, gdk2x,

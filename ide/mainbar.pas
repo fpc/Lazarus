@@ -38,7 +38,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Math,
+  Classes, SysUtils, Math, System.UITypes,
   // LCL
   Forms, Controls, Menus, ComCtrls, ExtCtrls, LMessages,
 {$IF DEFINED(LCLGtk) OR DEFINED(LCLQt) OR DEFINED(LCLGtk3)}

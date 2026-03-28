@@ -56,7 +56,7 @@ uses
   MemCheck,
   {$ENDIF}
   // RTL + FCL
-  Classes, SysUtils, Types, Math,
+  Classes, SysUtils, Types, Math, System.UITypes,
   // LCL
   Buttons, Menus, ComCtrls, Controls, Graphics, Dialogs, Forms, ImgList, LCLProc,
   // LazUtils

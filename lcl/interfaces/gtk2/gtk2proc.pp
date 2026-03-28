@@ -30,7 +30,7 @@ uses
   {$IFDEF Unix}
     unix,
   {$ENDIF}
-  SysUtils, Classes,
+  SysUtils, Classes, System.UITypes,
   {$IFDEF HasX}
     XAtom, // clipboard
     X, XLib, // Font retrieval and Keyboard handling

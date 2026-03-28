@@ -22,9 +22,10 @@ interface
 {$I qtdefines.inc}
 
 uses
+  System.UITypes,
   // Bindings
   qt5,
-  qtobjects, qtwidgets, qtproc,
+  qtobjects, qtwidgets,
   // RTL
   SysUtils, Classes, Types,
   // LCL

@@ -30,7 +30,7 @@ unit IDEOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, System.UITypes,
   // LCL
   LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel, ExtCtrls, StdCtrls,
   Dialogs, Graphics,

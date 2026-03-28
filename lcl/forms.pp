@@ -59,19 +59,24 @@ type
     poWorkAreaCenter   // center form on working area (depends on DefaultMonitor)
     );
 
-  TWindowState = (wsNormal, wsMinimized, wsMaximized, wsFullScreen);
-  {$IF FPC_FULLVERSION >= 30300}
+  {$IF FPC_FULLVERSION >= 30203}
   TCloseAction = System.UITypes.TCloseAction;
+  TWindowState = System.UITypes.TWindowState;
   {$ELSE}
   TCloseAction = (caNone, caHide, caFree, caMinimize);
+  TWindowState = (wsNormal, wsMinimized, wsMaximized, wsFullScreen);
   {$ENDIF}
 
-{$IF FPC_FULLVERSION >= 30300}
+{$IF FPC_FULLVERSION >= 30203}
 const
   caNone = System.UITypes.caNone;
   caHide = System.UITypes.caHide;
   caFree = System.UITypes.caFree;
   caMinimize = System.UITypes.caMinimize;
+  wsNormal = System.UITypes.wsNormal;
+  wsMinimized = System.UITypes.wsMinimized;
+  wsMaximized = System.UITypes.wsMaximized;
+  wsFullScreen = System.UITypes.wsFullScreen;
 {$ENDIF}
 
 type

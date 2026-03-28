@@ -22,7 +22,7 @@ unit Gtk3Widgets;
 interface
 
 uses
-  Classes, SysUtils, StrUtils, types, math,
+  Classes, SysUtils, Types, Math, System.UITypes,
   // LCL
   Controls, StdCtrls, ExtCtrls, Buttons, ComCtrls, Graphics, Dialogs, Forms, Menus, ExtDlgs,
   Spin, CheckLst, PairSplitter, LCLType, LMessages, LCLMessageGlue, LCLIntf,

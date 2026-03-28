@@ -22,9 +22,10 @@ interface
 {$I qtdefines.inc}
 
 uses
+  System.UITypes,
   // Bindings
   qt6,
-  qtobjects, qtwidgets, qtproc,
+  qtobjects, qtwidgets,
   // LCL
   SysUtils, Classes, types, Controls, LCLType, Forms,
   // Widgetset

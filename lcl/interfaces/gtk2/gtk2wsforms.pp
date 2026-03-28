@@ -21,7 +21,7 @@ interface
 
 uses
   // RTL
-  Gtk2, Glib2, Gdk2, Gdk2Pixbuf,
+  Gtk2, Glib2, Gdk2, Gdk2Pixbuf, System.UITypes,
   {$IFDEF HASX}
   Gdk2x, X, XLib,
   {$ENDIF}

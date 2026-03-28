@@ -59,7 +59,7 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, TypInfo, Types, StrUtils, Contnrs, process, AVL_Tree,
+  Math, Classes, SysUtils, TypInfo, Types, StrUtils, Contnrs, process, AVL_Tree, System.UITypes,
   // LCL
   LCLProc, LCLType, LCLIntf, LMessages, LResources, HelpIntfs, InterfaceBase, LCLPlatformDef,
   ComCtrls, Forms, Buttons, Menus, Controls, Graphics, ExtCtrls, Dialogs, LclStrConsts, StdCtrls,
