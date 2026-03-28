@@ -130,9 +130,7 @@ type
     function GetPropStorage: TStringList;
     function GetContext: HDC;
     function GetTarget: TObject;
-    function GetHasCaret: Boolean;
     function GetCallbackObject: TObject;
-    procedure SetHasCaret(const AValue: Boolean);
     function GetIsOpaque: Boolean;
     procedure SetIsOpaque(const AValue: Boolean);
     function GetShouldBeEnabled: Boolean;
@@ -148,7 +146,6 @@ type
     function HandleFrame: NSView;
 
     // properties
-    property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
     property CocoaOnlyState: Boolean read IsCocoaOnlyState write SetCocoaOnlyState;
   end;

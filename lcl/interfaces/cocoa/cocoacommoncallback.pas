@@ -23,14 +23,11 @@ type
     var
       FPropStorage: TStringList;
       FContext: TCocoaContext;
-      FHasCaret: Boolean;
       FBoundsReportedToChildren: boolean;
       FIsOpaque:boolean;
       FIsEventRouting:boolean;
       FLastWheelWasHorz:boolean;
   protected
-    function GetHasCaret: Boolean; inline;
-    procedure SetHasCaret(const AValue: Boolean); inline;
     function GetIsOpaque: Boolean; inline;
     procedure SetIsOpaque(const AValue: Boolean); inline;
     function GetShouldBeEnabled: Boolean; inline;
@@ -122,7 +119,6 @@ type
     function HandleFrame: NSView; inline;
     procedure SetHandleFrame(const AHandleFrame: NSView ); inline;
 
-    property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property Target: TWinControl read _target;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
@@ -200,16 +196,6 @@ end;
 
 { TLCLCommonCallback }
 
-function TLCLCommonCallback.GetHasCaret: Boolean;
-begin
-  Result := FHasCaret;
-end;
-
-procedure TLCLCommonCallback.SetHasCaret(const AValue: Boolean);
-begin
-  FHasCaret := AValue;
-end;
-
 procedure TLCLCommonCallback.OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint);
 var
   lView: NSView;
@@ -279,7 +265,6 @@ begin
     _handleFrame := NSView(AOwner);
   _target := ATarget;
   FContext := nil;
-  FHasCaret := False;
   FPropStorage := TStringList.Create;
   FPropStorage.Sorted := True;
   FPropStorage.Duplicates := dupAccept;
@@ -1365,8 +1350,7 @@ begin
       PS.hdc := HDC(FContext);
       PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(FContext), @PS);
-      if FHasCaret then
-        TCocoaCaretUtil.drawCaret;
+      TCocoaCaretUtil.drawCaret( Owner.lclContentView );
     end;
   finally
     FreeAndNil(FContext);

@@ -47,7 +47,7 @@ type
     class function setCaretPos(const X, Y: Integer): Boolean;
     class function getCaretPos(var P: TPoint): Boolean;
     class function destroyCaret(const View: NSView): Boolean;
-    class procedure drawCaret;
+    class procedure drawCaret(const view: NSView);
     class procedure destroyGlobalCaret;
   end;
 
@@ -121,11 +121,13 @@ end;
 
 { TCocoaCaretUtil }
 
-class procedure TCocoaCaretUtil.drawCaret;
+class procedure TCocoaCaretUtil.drawCaret(const view: NSView);
 begin
-  globalCaretNeeded;
-  if Assigned(GlobalCaret) then
-    GlobalCaret.DrawCaret;
+  if NOT Assigned(GlobalCaret) then
+    Exit;
+  if view <> GlobalCaret.FView then
+    Exit;
+  GlobalCaret.DrawCaret;
 end;
 
 class procedure TCocoaCaretUtil.destroyGlobalCaret;
@@ -265,13 +267,7 @@ end;
 
 function TEmulatedCaret.DestroyCaret: Boolean;
 begin
-  if Assigned(FView) then
-  begin
-    InvalidateView;
-    if Assigned(FView.lclGetCallback) then
-      FView.lclGetCallback.SetHasCaret(false);
-  end;
-
+  InvalidateView;
   disableTimer(FTimer);
   
   FreeAndNil(FBitmap);
@@ -368,7 +364,6 @@ end;
 procedure TEmulatedCaret.SetView(AView: NSView);
 begin
   FView := AView;
-  if FView <> nil then FView.lclGetCallback.HasCaret := True;
   disableTimer(FTimer);
   if Assigned(FView) then
     FTimer:=enableTimer(FTimerTarget);
