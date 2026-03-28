@@ -42,12 +42,12 @@ uses
   LazFileUtils, LazUTF8, Laz2_XMLCfg, LazLoggerBase,
   // BuildIntf
   ProjectResourcesIntf, MacroIntf, IDEExternToolIntf,
-  // IdeIntf
-  IDEMsgIntf,
   // IDE
   IdeProjectStrConsts;
 
 type
+  TAddIDEMessageEvent = procedure(Urgency: TMessageLineUrgency; Msg: string);
+
   TUserResourceType = (
     rtIcon,    // maps to RT_GROUP_ICON
     rtCursor,  // maps to RT_GROUP_CURSOR
@@ -108,7 +108,11 @@ const
  { rtRCData } 'RCDATA'
   );
 
-  function StrToResourceType(const AStr: String): TUserResourceType;
+var
+  OnAddIDEMessage: TAddIDEMessageEvent;
+
+function StrToResourceType(const AStr: String): TUserResourceType;
+
 
 implementation
 
@@ -191,8 +195,8 @@ begin
       Stream.Free;
     end;
   end
-  else
-    AddIDEMessage(mluError,Format(lisFileNotFound2, [Filename]));
+  else if Assigned(OnAddIDEMessage) then
+    OnAddIDEMessage(mluError, Format(lisFileNotFound2,[Filename]));
 end;
 
 function TResourceItem.GetRealFileName(const ProjectDirectory: String): String;

@@ -67,9 +67,9 @@ uses
   CodeToolsStructs, CodeToolManager, FileProcs, CodeCache, CodeTree, FindDeclarationTool,
   // BuildIntf
   ProjPackIntf, ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
-  IDEOptionsIntf,
+  IDEOptionsIntf, IDEExternToolIntf,
   // IDEIntf
-  IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
+  IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf, IDEMsgIntf,
   IdeIntfStrConsts, MenuIntf, FormEditingIntf, SrcEditorIntf, IDEOptEditorIntf,
   // IdeUtils
   InputHistory,
@@ -79,7 +79,7 @@ uses
   // IdePackager
   PackageDefs, BasePkgManager,
   // IdeProject
-  Project, ProjectIcon,
+  Project, ProjectIcon, ProjectUserResources,
   // IDE
   LazarusIDEStrConsts, MainBase, MainBar, BuildManager, AddToProjectDlg, EnvGuiOptions,
   ProjPackChecks, ProjPackEditing, ProjPackFilePropGui,
@@ -533,6 +533,11 @@ begin
   finally
     Icon.Free;
   end;
+end;
+
+procedure AddProjectIDEMessage(Urgency: TMessageLineUrgency; Msg: string);
+begin
+  AddIDEMessage(Urgency, Msg);
 end;
 
 { TProjectInspectorForm }
@@ -2139,6 +2144,7 @@ end;
 
 initialization
   ProjectIcon.OnLoadProjectMainIcon := @LoadProjectMainIcon2Stream;
+  ProjectUserResources.OnAddIDEMessage := @AddProjectIDEMessage;
   RegisterIDEOptionsGroup(GroupProject, TProjectIDEOptions);
   RegisterIDEOptionsGroup(GroupCompiler, TProjectCompilerOptions);
 
