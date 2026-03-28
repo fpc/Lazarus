@@ -393,7 +393,7 @@ type
 
   { TSynCustomFoldHighlighter }
 
-  TSynCustomFoldHighlighter = class(TSynCustomHighlighter)
+  TSynCustomFoldHighlighter = class(TSynCustomHighlighterFoldBase)
   private const
     MAX_UFOLD_CAPACITY = 16;
   private type

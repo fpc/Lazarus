@@ -101,6 +101,7 @@ type
   private
     FFirstHLChangedLine: Integer;
     FLastHLChangedLine: Integer;
+    FOnSendHighlightAttributeChanged: TNotifyEvent;
     FRangeList: TLazEditChildLineItemsList;
     FRealLines: TLazEditStringsBase;
     FScheme: TSynHighlighterMultiScheme;
@@ -143,6 +144,7 @@ type
     property  SectionList: TSynHLightMultiSectionList read FSectionList;
     property  Scheme: TSynHighlighterMultiScheme
               read FScheme write FScheme;
+    property OnSendHighlightAttributeChanged: TNotifyEvent read FOnSendHighlightAttributeChanged write FOnSendHighlightAttributeChanged;
   end;
 
   { TSynHLightMultiVirtualLinesList }
@@ -169,7 +171,7 @@ type
     FStartExprScanner, FEndExprScanner: TRegExpr;
     FStartLineSet, FEndLineSet: Boolean;
     FLastMatchLen: Integer;
-    FHighlighter: TSynCustomHighLighter;
+    FHighlighter: TLazEditCustomRangesHighlighter;
     fMarkerAttri: TLazEditHighlighterAttributes;
     fSchemeName: TComponentName;
     fCaseSensitive: Boolean;
@@ -181,7 +183,7 @@ type
     function  GetConvertedStartExpr: String;
     procedure MarkerAttriChanged(Sender: TObject);
     procedure SetMarkerAttri(const Value: TLazEditHighlighterAttributes);
-    procedure SetHighlighter(const Value: TSynCustomHighlighter);
+    procedure SetHighlighter(const Value: TLazEditCustomRangesHighlighter);
     procedure SetEndExpr(const Value: string);
     procedure SetStartExpr(const Value: string);
     procedure SetCaseSensitive(const Value: Boolean);
@@ -206,7 +208,7 @@ type
       default True;
     property StartExpr: string read fStartExpr write SetStartExpr;
     property EndExpr: string read fEndExpr write SetEndExpr;
-    property Highlighter: TSynCustomHighlighter read fHighlighter
+    property Highlighter: TLazEditCustomRangesHighlighter read fHighlighter
              write SetHighlighter;
     property MarkerAttri: TLazEditHighlighterAttributes read fMarkerAttri
              write SetMarkerAttri;
@@ -246,7 +248,9 @@ type
   private
     FLines: TLazEditStringsBase;
     FDefaultVirtualLines: TSynHLightMultiVirtualLines;
+    FOnSendHighlightAttributeChanged: TNotifyEvent;
     FVirtualLines: TSynHLightMultiVirtualLinesList;
+    procedure DoSendHighlightAttributeChanged(Sender: TObject);
     function GetVirtualLines(Index: TSynHighlighterMultiScheme): TSynHLightMultiVirtualLines;
   protected
     procedure LineTextChanged(AIndex: Integer; ACount: Integer = 1); override;
@@ -262,6 +266,7 @@ type
     property DefaultVirtualLines: TSynHLightMultiVirtualLines read FDefaultVirtualLines;
     property VirtualLines[Index: TSynHighlighterMultiScheme]: TSynHLightMultiVirtualLines
              read GetVirtualLines; // write SetVirtualLines;
+    property OnSendHighlightAttributeChanged: TNotifyEvent read FOnSendHighlightAttributeChanged write FOnSendHighlightAttributeChanged;
   end;
 
   TRunSectionInfo = record
@@ -280,12 +285,12 @@ type
     function GetCurrentRanges: TSynHighlighterMultiRangeList;
     function GetDefaultVirtualLines: TSynHLightMultiVirtualLines;
     function GetKnownMultiRanges(Index: Integer): TSynHighlighterMultiRangeList;
-    procedure SetDefaultHighlighter(const Value: TSynCustomHighLighter);
+    procedure SetDefaultHighlighter(const Value: TLazEditCustomRangesHighlighter);
     procedure SetSchemes(const Value: TSynHighlighterMultiSchemeList);
     function CurrentVirtualLines: TSynHLightMultiVirtualLines;
   protected
     FSchemes: TSynHighlighterMultiSchemeList;
-    FDefaultHighlighter: TSynCustomHighLighter;
+    FDefaultHighlighter: TLazEditCustomRangesHighlighter;
     FLineLen: Integer;
     FTokenPos: integer;
     FTokenKind: integer;
@@ -300,15 +305,13 @@ type
     function GetSampleSource: string; override;
     procedure SetSampleSource(Value: string); override;
 
-    procedure HookHighlighter(aHL: TSynCustomHighlighter);
-    procedure UnhookHighlighter(aHL: TSynCustomHighlighter);
     procedure Notification(aComp: TComponent; aOp: TOperation); override;
     function  CreateRangeList(ALines: TLazEditStringsBase): TLazHighlighterLineRangeList; override;
     procedure DoCurrentLinesChanged; override;
     procedure SchemeItemChanged(Item: TObject);
     procedure SchemeChanged;
-    procedure DetachHighlighter(AHighlighter: TSynCustomHighlighter; AScheme: TSynHighlighterMultiScheme);
-    procedure AttachHighlighter(AHighlighter: TSynCustomHighlighter; AScheme: TSynHighlighterMultiScheme);
+    procedure DetachHighlighter(AHighlighter: TLazEditCustomRangesHighlighter; AScheme: TSynHighlighterMultiScheme);
+    procedure AttachHighlighter(AHighlighter: TLazEditCustomRangesHighlighter; AScheme: TSynHighlighterMultiScheme);
     function DoPrepareLines(AFirstLineIdx: IntIdx; AMinimumRequiredLineIdx: IntIdx = - 1;
       AMaxTime: integer = 0): integer; override;
     property CurrentRanges: TSynHighlighterMultiRangeList read GetCurrentRanges;
@@ -338,7 +341,7 @@ type
     property DefaultVirtualLines: TSynHLightMultiVirtualLines read GetDefaultVirtualLines;
   published
     property Schemes: TSynHighlighterMultiSchemeList read fSchemes write SetSchemes;
-    property DefaultHighlighter: TSynCustomHighLighter read fDefaultHighlighter
+    property DefaultHighlighter: TLazEditCustomRangesHighlighter read fDefaultHighlighter
       write SetDefaultHighlighter;
     property DefaultLanguageName: String read fDefaultLanguageName
       write fDefaultLanguageName;
@@ -632,6 +635,8 @@ end;
 
 procedure TSynHLightMultiVirtualLines.SendHighlightAttributeChanged;
 begin
+  if FOnSendHighlightAttributeChanged <> nil then
+    FOnSendHighlightAttributeChanged(Self);
   FRealLines.SendHighlightAttributeChanged;
 end;
 
@@ -976,6 +981,12 @@ begin
       exit(FVirtualLines[i]);
 end;
 
+procedure TSynHighlighterMultiRangeList.DoSendHighlightAttributeChanged(Sender: TObject);
+begin
+  if FOnSendHighlightAttributeChanged <> nil then
+    FOnSendHighlightAttributeChanged(Sender);
+end;
+
 procedure TSynHighlighterMultiRangeList.LineTextChanged(AIndex: Integer; ACount: Integer);
 var
   i: Integer;
@@ -1040,11 +1051,14 @@ begin
       FVirtualLines[i].Destroy;
       FVirtualLines.Delete(i);
     end;
-  if FDefaultVirtualLines = nil then
+  if FDefaultVirtualLines = nil then begin
     FDefaultVirtualLines := TSynHLightMultiVirtualLines.Create(FLines);
+    FDefaultVirtualLines.OnSendHighlightAttributeChanged := @DoSendHighlightAttributeChanged;
+  end;
   for i := 0 to AScheme.Count - 1 do
     if VirtualLines[AScheme[i]] = nil then begin
       NewVline := TSynHLightMultiVirtualLines.Create(FLines);
+      NewVline.OnSendHighlightAttributeChanged := @DoSendHighlightAttributeChanged;
       NewVline.Scheme := AScheme[i];
       FVirtualLines.Add(NewVline);
       if AScheme[i].Highlighter <> nil then
@@ -1325,7 +1339,7 @@ end;
 function TSynMultiSyn.GetTokenClassAttribute(ATkClass: TLazEditTokenClass;
   ATkDetails: TLazEditTokenDetails): TLazEditTextAttribute;
 var
-  iHL: TSynCustomHighlighter;
+  iHL: TLazEditCustomRangesHighlighter;
 begin
   if (FCurScheme <> nil) and (FCurScheme.Highlighter <> nil) then
     iHL := FCurScheme.Highlighter
@@ -1398,11 +1412,6 @@ begin
   Result := fTokenPos - 1;
 end;
 
-procedure TSynMultiSyn.HookHighlighter(aHL: TSynCustomHighlighter);
-begin
-  aHL.HookAttrChangeEvent( @DefHighlightChange );
-end;
-
 procedure TSynMultiSyn.Next;
   procedure NextRunSection(ASchemeIdx: Integer);
   var
@@ -1455,7 +1464,7 @@ procedure TSynMultiSyn.Next;
 var
   idx: Integer;
   RSect: TRunSectionInfo;
-  HL: TSynCustomHighlighter;
+  HL: TLazEditCustomRangesHighlighter;
   dummy: PChar;
   tkpos, tklen: Integer;
 begin
@@ -1563,6 +1572,7 @@ var
   NewRangeList: TSynHighlighterMultiRangeList;
 begin
   NewRangeList := TSynHighlighterMultiRangeList.Create(ALines);
+  NewRangeList.OnSendHighlightAttributeChanged := @DefHighlightChange;
   NewRangeList.UpdateForScheme(Schemes);
   NewRangeList.CopyToScheme(Schemes);
   if FDefaultHighlighter <> nil then
@@ -1589,7 +1599,7 @@ begin
 end;
 
 procedure TSynMultiSyn.SetDefaultHighlighter(
-  const Value: TSynCustomHighLighter);
+  const Value: TLazEditCustomRangesHighlighter);
 const
   sDefaultHlSetToSelf = 'Not allowed';
 var
@@ -1600,13 +1610,11 @@ begin
     raise Exception.Create( sDefaultHlSetToSelf );
   if DefaultHighlighter <> nil then begin
     DefaultHighlighter.RemoveFreeNotification(Self);
-    UnhookHighlighter( DefaultHighlighter );
     for i := 0 to AttachedLines.Count - 1 do
       DefaultHighlighter.DetachFromLines(KnownRanges[i].DefaultVirtualLines);
   end;
   fDefaultHighlighter := Value;
   if DefaultHighlighter <> nil then begin
-    HookHighlighter( DefaultHighlighter );
     DefaultHighlighter.FreeNotification(Self);
     for i := 0 to AttachedLines.Count - 1 do
       DefaultHighlighter.AttachToLines(KnownRanges[i].DefaultVirtualLines);
@@ -1637,7 +1645,7 @@ procedure TSynMultiSyn.InitForScanningLine;
   procedure InitRunSection(ASchemeIdx: Integer);
   var
     VLines: TSynHLightMultiVirtualLines;
-    HL: TSynCustomHighlighter;
+    HL: TLazEditCustomRangesHighlighter;
     s: TSynHLightMultiVirtualSection;
     idx, x1, x2, tx1, tx2: Integer;
   begin
@@ -1728,13 +1736,6 @@ begin
   fSchemes.Assign(Value);
 end;
 
-procedure TSynMultiSyn.UnhookHighlighter(aHL: TSynCustomHighlighter);
-begin
-  if csDestroying in aHL.ComponentState then
-    Exit;
-  aHL.UnhookAttrChangeEvent( @DefHighlightChange );
-end;
-
 function TSynMultiSyn.GetSampleSource: string;
 begin
   Result := fSampleSource;
@@ -1771,7 +1772,7 @@ begin
   SchemeItemChanged(nil);
 end;
 
-procedure TSynMultiSyn.DetachHighlighter(AHighlighter: TSynCustomHighlighter;
+procedure TSynMultiSyn.DetachHighlighter(AHighlighter: TLazEditCustomRangesHighlighter;
   AScheme: TSynHighlighterMultiScheme);
 var
   i: Integer;
@@ -1780,7 +1781,7 @@ begin
     AHighlighter.DetachFromLines(KnownRanges[i].VirtualLines[AScheme]);
 end;
 
-procedure TSynMultiSyn.AttachHighlighter(AHighlighter: TSynCustomHighlighter;
+procedure TSynMultiSyn.AttachHighlighter(AHighlighter: TLazEditCustomRangesHighlighter;
   AScheme: TSynHighlighterMultiScheme);
 var
   i: Integer;
@@ -2034,7 +2035,7 @@ begin
   end;
 end;
 
-procedure TSynHighlighterMultiScheme.SetHighlighter(const Value: TSynCustomHighlighter);
+procedure TSynHighlighterMultiScheme.SetHighlighter(const Value: TLazEditCustomRangesHighlighter);
 var
   ParentHLighter: TSynMultiSyn;
 begin
@@ -2046,7 +2047,6 @@ begin
     ParentHLighter := TSynHighlighterMultiSchemeList(Collection).Owner;
     if Highlighter <> nil then begin
       Highlighter.RemoveFreeNotification(ParentHLighter);
-      ParentHLighter.UnhookHighlighter(Highlighter);
       ParentHLighter.DetachHighlighter(Highlighter, Self);
     end;
     fHighlighter := Value;
