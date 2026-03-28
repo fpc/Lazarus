@@ -38,8 +38,6 @@ interface
 
 uses
   Classes, SysUtils,
-  // LCL
-  Controls, Forms,
   // Codetools
   FileProcs,
   // LazUtils

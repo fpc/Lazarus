@@ -116,8 +116,8 @@ type
       AReason: TCompileReason; {%H-}SaveToTestDir: boolean); override;
     function UpdateResources(AResources: TAbstractProjectResources;
       const {%H-}MainFilename: string): boolean; override;
-    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; const Path: string); override;
-    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; const Path: string); override;
+    procedure WriteToProjectFile(AConfig: TXMLConfig; const Path: string); override;
+    procedure ReadFromProjectFile(AConfig: TXMLConfig; const Path: string); override;
 
     property UseVersionInfo: boolean read FUseVersionInfo write SetUseVersionInfo;
     property AutoIncrementBuild: boolean read FAutoIncrementBuild write SetAutoIncrementBuild;
@@ -423,13 +423,13 @@ begin
   end;
 end;
 
-procedure TProjectVersionInfo.WriteToProjectFile(AConfig: TObject; const Path: string);
+procedure TProjectVersionInfo.WriteToProjectFile(AConfig: TXMLConfig; const Path: string);
 var
   i: integer;
   Key: string;
   attr: TProjectVersionAttribute;
 begin
-  with TXMLConfig(AConfig) do
+  with AConfig do
   begin
     SetDeleteValue(Path + 'VersionInfo/UseVersionInfo/Value', UseVersionInfo, False);
     SetDeleteValue(Path + 'VersionInfo/AutoIncrementBuild/Value', AutoIncrementBuild, False);
@@ -455,13 +455,13 @@ begin
   end;
 end;
 
-procedure TProjectVersionInfo.ReadFromProjectFile(AConfig: TObject; const Path: string);
+procedure TProjectVersionInfo.ReadFromProjectFile(AConfig: TXMLConfig; const Path: string);
 var
   i: integer;
   Node: TDomNode;
   attrs: TProjectVersionAttributes;
 begin
-  with TXMLConfig(AConfig) do
+  with AConfig do
   begin
     UseVersionInfo := GetValue(Path + 'VersionInfo/UseVersionInfo/Value', False);
     AutoIncrementBuild := GetValue(Path + 'VersionInfo/AutoIncrementBuild/Value', False);

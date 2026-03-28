@@ -78,7 +78,7 @@ uses
   // IdePackager
   PackageDefs, BasePkgManager,
   // IdeProject
-  Project,
+  Project, ProjectIcon,
   // IDE
   LazarusIDEStrConsts, MainBase, MainBar, BuildManager, AddToProjectDlg, EnvGuiOptions,
   ProjPackChecks, ProjPackEditing, ProjPackFilePropGui,
@@ -521,6 +521,18 @@ begin
   ProjInspAddMenuFPMakeDependency:=RegisterIDEMenuCommand(AParent,'Add fpmake dependency',lisProjAddNewFPMakeRequirement);
 end;
 
+procedure LoadProjectMainIcon2Stream(AStream: TMemoryStream);
+var
+  Icon: TIcon;
+begin
+  Icon := TIcon.Create;
+  try
+    Icon.LoadFromResourceName(HInstance, 'MAINICONPROJECT');
+    Icon.SaveToStream(AStream);
+  finally
+    Icon.Free;
+  end;
+end;
 
 { TProjectInspectorForm }
 
@@ -2123,6 +2135,9 @@ begin
   DropdownMenu := TBuildModeMenu.Create(Self);
   Style := tbsDropDown;
 end;
+
+initialization
+  ProjectIcon.OnLoadProjectMainIcon := @LoadProjectMainIcon2Stream;
 
 end.
 

@@ -87,8 +87,8 @@ type
   public
     constructor Create; override;
     function UpdateResources(AResources: TAbstractProjectResources; const {%H-}MainFilename: string): Boolean; override;
-    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); override;
-    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); override;
+    procedure WriteToProjectFile(AConfig: TXMLConfig; const Path: String); override;
+    procedure ReadFromProjectFile(AConfig: TXMLConfig; const Path: String); override;
 
     property UseManifest: boolean read FUseManifest write SetUseManifest;
     property DpiAware: TXPManifestDpiAware read FDpiAware write SetDpiAware;
@@ -289,47 +289,42 @@ begin
   end;
 end;
 
-procedure TProjectXPManifest.WriteToProjectFile(AConfig: TObject;
-  const Path: String);
+procedure TProjectXPManifest.WriteToProjectFile(AConfig: TXMLConfig; const Path: String);
 begin
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/UseXPManifest/Value', UseManifest, False);
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/DpiAware/Value', ManifestDpiAwareValues[DpiAware], ManifestDpiAwareValues[xmdaFalse]);
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/ExecutionLevel/Value', ExecutionLevelToStr[ExecutionLevel], ExecutionLevelToStr[xmelAsInvoker]);
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/UIAccess/Value', UIAccess, False);
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/LongPathAware/Value', LongPathAware, False);
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/AnsiUTF8/Value', AnsiUTF8, False);
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextName/Value', TextName, DefaultXPManifestTextName);
-  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextDesc/Value', TextDesc, DefaultXPManifestTextDesc);
+  AConfig.SetDeleteValue(Path+'General/UseXPManifest/Value', UseManifest, False);
+  AConfig.SetDeleteValue(Path+'General/XPManifest/DpiAware/Value', ManifestDpiAwareValues[DpiAware], ManifestDpiAwareValues[xmdaFalse]);
+  AConfig.SetDeleteValue(Path+'General/XPManifest/ExecutionLevel/Value', ExecutionLevelToStr[ExecutionLevel], ExecutionLevelToStr[xmelAsInvoker]);
+  AConfig.SetDeleteValue(Path+'General/XPManifest/UIAccess/Value', UIAccess, False);
+  AConfig.SetDeleteValue(Path+'General/XPManifest/LongPathAware/Value', LongPathAware, False);
+  AConfig.SetDeleteValue(Path+'General/XPManifest/AnsiUTF8/Value', AnsiUTF8, False);
+  AConfig.SetDeleteValue(Path+'General/XPManifest/TextName/Value', TextName, DefaultXPManifestTextName);
+  AConfig.SetDeleteValue(Path+'General/XPManifest/TextDesc/Value', TextDesc, DefaultXPManifestTextDesc);
 end;
 
-procedure TProjectXPManifest.ReadFromProjectFile(AConfig: TObject;
-  const Path: String);
-var
-  Cfg: TXMLConfig;
+procedure TProjectXPManifest.ReadFromProjectFile(AConfig: TXMLConfig; const Path: String);
 begin
-  Cfg := TXMLConfig(AConfig);
-  UseManifest := Cfg.GetValue(Path+'General/UseXPManifest/Value', False);
+  UseManifest := AConfig.GetValue(Path+'General/UseXPManifest/Value', False);
 
   //support prev values "True/False"
-  if Cfg.GetValue(Path+'Version/Value',0)<=9 then
+  if AConfig.GetValue(Path+'Version/Value',0)<=9 then
   begin
-    if Cfg.GetValue(Path+'General/XPManifest/DpiAware/Value', False) then
+    if AConfig.GetValue(Path+'General/XPManifest/DpiAware/Value', False) then
       DpiAware := xmdaTrue
     else
       DpiAware := xmdaFalse;
   end else
-    DpiAware := StrToXPManifestDpiAware(Cfg.GetValue(Path+'General/XPManifest/DpiAware/Value', ''));
+    DpiAware := StrToXPManifestDpiAware(AConfig.GetValue(Path+'General/XPManifest/DpiAware/Value', ''));
 
-  if Cfg.GetValue(Path+'Version/Value',0)<=9 then
-    ExecutionLevel := TXPManifestExecutionLevel(Cfg.GetValue(Path+'General/XPManifest/ExecutionLevel/Value', 0))
+  if AConfig.GetValue(Path+'Version/Value',0)<=9 then
+    ExecutionLevel := TXPManifestExecutionLevel(AConfig.GetValue(Path+'General/XPManifest/ExecutionLevel/Value', 0))
   else
-    ExecutionLevel := StrToXPManifestExecutionLevel(Cfg.GetValue(Path+'General/XPManifest/ExecutionLevel/Value', ''));
+    ExecutionLevel := StrToXPManifestExecutionLevel(AConfig.GetValue(Path+'General/XPManifest/ExecutionLevel/Value', ''));
 
-  UIAccess := Cfg.GetValue(Path+'General/XPManifest/UIAccess/Value', False);
-  LongPathAware := Cfg.GetValue(Path+'General/XPManifest/LongPathAware/Value', False);
-  AnsiUTF8 := Cfg.GetValue(Path+'General/XPManifest/AnsiUTF8/Value', False);
-  TextName := Cfg.GetValue(Path+'General/XPManifest/TextName/Value', TextName);
-  TextDesc := Cfg.GetValue(Path+'General/XPManifest/TextDesc/Value', TextDesc);
+  UIAccess := AConfig.GetValue(Path+'General/XPManifest/UIAccess/Value', False);
+  LongPathAware := AConfig.GetValue(Path+'General/XPManifest/LongPathAware/Value', False);
+  AnsiUTF8 := AConfig.GetValue(Path+'General/XPManifest/AnsiUTF8/Value', False);
+  TextName := AConfig.GetValue(Path+'General/XPManifest/TextName/Value', TextName);
+  TextDesc := AConfig.GetValue(Path+'General/XPManifest/TextDesc/Value', TextDesc);
 end;
 
 initialization

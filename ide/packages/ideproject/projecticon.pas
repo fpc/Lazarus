@@ -36,8 +36,6 @@ interface
 uses
   // RTL + LCL
   Classes, SysUtils, resource, groupiconresource,
-  // LCL
-  Graphics,
   // LazUtils
   LazFileUtils, LazFileCache, Laz2_XMLCfg, LazLoggerBase,
   // BuildIntf
@@ -67,8 +65,8 @@ type
 
     function UpdateResources(AResources: TAbstractProjectResources;
                              const MainFilename: string): Boolean; override;
-    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); override;
-    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); override;
+    procedure WriteToProjectFile(AConfig: TXMLConfig; const Path: String); override;
+    procedure ReadFromProjectFile(AConfig: TXMLConfig; const Path: String); override;
 
     function SaveIconFile: Boolean;
 
@@ -76,6 +74,11 @@ type
     property IsEmpty: Boolean read GetIsEmpry write SetIsEmpty;
     property IcoFileName: String read FIcoFileName write SetIcoFileName;
   end;
+
+  TLoadProjectMainIconEvent = procedure(AStream: TMemoryStream);
+
+var
+  OnLoadProjectMainIcon: TLoadProjectMainIconEvent;
 
 implementation
 
@@ -105,21 +108,18 @@ begin
 end;
 
 procedure TProjectIcon.LoadDefaultIcon;
+// Load default icon. Use a callback to break LCL dependency.
 var
   ResStream: TMemoryStream;
-  Icon: TIcon;
 begin
-  // Load default icon
-  Icon := TIcon.Create;
   ResStream := TMemoryStream.Create;
   try
-    Icon.LoadFromResourceName(HInstance, 'MAINICONPROJECT');
-    Icon.SaveToStream(ResStream);
+    Assert(Assigned(OnLoadProjectMainIcon), 'TProjectIcon.LoadDefaultIcon: No OnLoadProjectMainIcon');
+    OnLoadProjectMainIcon(ResStream);
     ResStream.Position := 0;
     SetStream(ResStream);
   finally
     ResStream.Free;
-    Icon.Free;
   end;
 end;
 
@@ -167,12 +167,12 @@ begin
   AResources.AddSystemResource(ARes);
 end;
 
-procedure TProjectIcon.WriteToProjectFile(AConfig: TObject; const Path: String);
+procedure TProjectIcon.WriteToProjectFile(AConfig: TXMLConfig; const Path: String);
 begin
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/Icon/Value', BoolToStr(IsEmpty), BoolToStr(true));
 end;
 
-procedure TProjectIcon.ReadFromProjectFile(AConfig: TObject; const Path: String);
+procedure TProjectIcon.ReadFromProjectFile(AConfig: TXMLConfig; const Path: String);
 begin
   with TXMLConfig(AConfig) do
   begin

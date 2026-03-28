@@ -12,6 +12,8 @@ interface
 
 uses
   Classes, SysUtils, resource,
+  // LazUtils
+  Laz2_XMLCfg,
   // BuildIntf
   CompOptsIntf;
 
@@ -38,8 +40,8 @@ type
     procedure DoAfterBuild({%H-}AResources: TAbstractProjectResources; {%H-}AReason: TCompileReason; {%H-}SaveToTestDir: boolean); virtual;
     procedure DoBeforeBuild({%H-}AResources: TAbstractProjectResources; {%H-}AReason: TCompileReason; {%H-}SaveToTestDir: boolean); virtual;
     function UpdateResources(AResources: TAbstractProjectResources; const MainFilename: string): Boolean; virtual; abstract;
-    procedure WriteToProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); virtual; abstract;
-    procedure ReadFromProjectFile(AConfig: {TXMLConfig}TObject; const Path: String); virtual; abstract;
+    procedure WriteToProjectFile(AConfig: TXMLConfig; const Path: String); virtual; abstract;
+    procedure ReadFromProjectFile(AConfig: TXMLConfig; const Path: String); virtual; abstract;
 
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -70,7 +72,8 @@ type
 
     property Messages: TStringList read FMessages;
     property ResourceType: TProjResourceType read FResourceType write SetResourceType;
-    property Resource[AIndex: TAbstractProjectResourceClass]: TAbstractProjectResource read GetProjectResource; default;
+    property Resource[AIndex: TAbstractProjectResourceClass]: TAbstractProjectResource
+                                                      read GetProjectResource; default;
   end;
 
 procedure RegisterProjectResource(AResource: TAbstractProjectResourceClass);

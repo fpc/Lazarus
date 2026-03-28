@@ -188,12 +188,12 @@ function CompareUnitNameAndUnitFile(UnitName: PChar; UnitFile: PUnitFile): integ
 begin
   Result:=CompareIdentifiers(PChar(UnitName),PChar(UnitFile^.FileUnitName));
 end;
-
+{
 procedure OnCompilerParseStampIncreased;
 begin
   CodeToolBoss.DefineTree.ClearCache;
 end;
-
+}
 { TBuildManager }
 
 constructor TBuildManager.Create(AOwner: TComponent);
