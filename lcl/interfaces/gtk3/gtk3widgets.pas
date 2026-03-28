@@ -1095,8 +1095,6 @@ type
     // allocation-space (what LCL tracks) to content-space (what resize() takes).
     ShadowW: gint;
     ShadowH: gint;
-    LastAllocW: gint;
-    LastAllocH: gint;
   end;
 
   { TGtk3Window }
@@ -12283,16 +12281,6 @@ begin
   NewSize.cy := AGdkRect^.height;
 
   if not Assigned(ACtl.LCLObject) then exit;
-
-  if Gtk3WidgetSet.IsWayland then
-  begin
-    if ACtl.WidgetMapped and
-       (NewSize.cx = ACtl.FResizeState.LastAllocW) and
-       (NewSize.cy = ACtl.FResizeState.LastAllocH) then
-      exit;
-    ACtl.FResizeState.LastAllocW := NewSize.cx;
-    ACtl.FResizeState.LastAllocH := NewSize.cy;
-  end;
 
   // do not loop with LCL  !
   if not (csDesigning in ACtl.LCLObject.ComponentState) and ACtl.InUpdate then
