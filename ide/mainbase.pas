@@ -80,7 +80,7 @@ uses
   // IDE
   LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, Project,
   SourceEditor, SourceSynEditor, FindInFilesDlg, Splash, MainBar, MainIntf,
-  Designer, Debugger, RunParamsOpts, FindInFilesWnd, RunParamOptions;
+  Designer, Debugger, FindInFilesWnd, RunParamOptions;
 
 type
   TResetToolFlag = (

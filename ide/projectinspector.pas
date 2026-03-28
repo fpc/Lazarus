@@ -540,6 +540,11 @@ begin
   AddIDEMessage(Urgency, Msg);
 end;
 
+function HasDesigner(APersistent: TPersistent): boolean;
+begin
+  Result:=Assigned(FindRootDesigner(APersistent));
+end;
+
 { TProjectInspectorForm }
 
 // inline
@@ -2143,6 +2148,7 @@ begin
 end;
 
 initialization
+  Project.OnHasDesigner := @HasDesigner;
   ProjectIcon.OnLoadProjectMainIcon := @LoadProjectMainIcon2Stream;
   ProjectUserResources.OnAddIDEMessage := @AddProjectIDEMessage;
   RegisterIDEOptionsGroup(GroupProject, TProjectIDEOptions);

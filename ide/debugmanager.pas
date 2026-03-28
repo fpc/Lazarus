@@ -64,7 +64,7 @@ uses
   {$ENDIF}
   DbgIntfDebuggerBase, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes, LazDebuggerIntfExcludedRoutines,
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDEDebugger
   IdeDebuggerStringConstants, DebuggerDlg, WatchesDlg, BreakPointsdlg,
   BreakPropertyDlg, LocalsDlg, WatchPropertyDlg, CallStackDlg, EvaluateDlg,
@@ -81,7 +81,7 @@ uses
   ProjectDebugLink, IdeDebuggerExcludedRoutines,
   // IDE
   DebugEventsForm, LazarusIDEStrConsts, SourceEditor, SourceMarks, MemViewerDlg,
-  MainBar, MainIntf, MainBase, EnvGuiOptions, RunParamsOpts;
+  MainBar, MainIntf, MainBase, EnvGuiOptions;
 
 type
 
