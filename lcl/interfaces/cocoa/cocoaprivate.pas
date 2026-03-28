@@ -73,9 +73,12 @@ type
 
   ICommonCallback = interface
     // mouse events
-    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean;
+    function MouseUpDownEvent(
+      const Event: NSEvent;
+      const AForceAsMouseUp: Boolean = False;
+      const AOverrideBlock: Boolean = False): Boolean;
     procedure MouseClick;
-    function MouseMove(Event: NSEvent): Boolean;
+    function MouseMove(const Event: NSEvent): Boolean;
 
     // KeyEvXXX methods were introduced to allow a better control
     // over when Cocoa keys processing is being called.
@@ -91,25 +94,25 @@ type
     // If the flag returned "False", you should not call inherited.
     //
     // No matter what the flag value was you should call KeyEvAfter.
-    procedure KeyEvBefore(Event: NSEvent; out AllowCocoaHandle: boolean);
+    procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
     procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
     procedure KeyEvHandled;
-    procedure SetTabSuppress(ASuppress: Boolean);
+    procedure SetTabSuppress(const ASuppress: Boolean);
 
     // only Cocoa Event Mechanism (no LCL Event), if the IME is in use
     function IsCocoaOnlyState: Boolean;
-    procedure SetCocoaOnlyState( state:Boolean );
+    procedure SetCocoaOnlyState( const state:Boolean );
 
-    function scrollWheel(Event: NSEvent): Boolean;
+    function scrollWheel(const Event: NSEvent): Boolean;
     function CanFocus: Boolean;
     // size, pos events
-    procedure frameDidChange(sender: id);
-    procedure boundsDidChange(sender: id);
+    procedure frameDidChange(const sender: id);
+    procedure boundsDidChange(const sender: id);
     // misc events
-    procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure DrawOverlay(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    procedure Draw(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    procedure DrawBackground(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    procedure DrawOverlay(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure BecomeFirstResponder;
     procedure ResignFirstResponder;
     procedure DidBecomeKeyNotification;
@@ -118,7 +121,10 @@ type
     function SendOnEditPaste: Boolean;
     procedure SendOnChange;
     procedure SendOnTextChanged;
-    procedure scroll(isVert: Boolean; Pos: Integer; AScrollPart: NSScrollerPart = NSScrollerNoPart);
+    procedure scroll(
+      const isVert: Boolean;
+      const Pos: Integer;
+      const AScrollPart: NSScrollerPart = NSScrollerNoPart);
     // non event methods
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
@@ -126,9 +132,9 @@ type
     function GetTarget: TObject;
     function GetHasCaret: Boolean;
     function GetCallbackObject: TObject;
-    procedure SetHasCaret(AValue: Boolean);
+    procedure SetHasCaret(const AValue: Boolean);
     function GetIsOpaque: Boolean;
-    procedure SetIsOpaque(AValue: Boolean);
+    procedure SetIsOpaque(const AValue: Boolean);
     function GetShouldBeEnabled: Boolean;
     // the method is called, when handle is being destroyed.
     // the callback object to stay alive a little longer than LCL object (Target)

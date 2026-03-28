@@ -29,11 +29,11 @@ type
       FIsEventRouting:boolean;
       FLastWheelWasHorz:boolean;
   protected
-    function GetHasCaret: Boolean;
-    procedure SetHasCaret(AValue: Boolean);
-    function GetIsOpaque: Boolean;
-    procedure SetIsOpaque(AValue: Boolean);
-    function GetShouldBeEnabled: Boolean;
+    function GetHasCaret: Boolean; inline;
+    procedure SetHasCaret(const AValue: Boolean); inline;
+    function GetIsOpaque: Boolean; inline;
+    procedure SetIsOpaque(const AValue: Boolean); inline;
+    function GetShouldBeEnabled: Boolean; inline;
   protected
     _target    : TWinControl;
     _KeyMsg    : TLMKey;
@@ -72,29 +72,32 @@ type
 
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
-    function GetPropStorage: TStringList;
-    function GetContext: HDC;
-    function GetTarget: TObject;
-    function GetCallbackObject: TObject;
+    function GetPropStorage: TStringList; inline;
+    function GetContext: HDC; inline;
+    function GetTarget: TObject; inline;
+    function GetCallbackObject: TObject; inline;
     function GetCaptureControlCallback: ICommonCallBack;
     procedure SendContextMenu(Event: NSEvent; out ContextMenuHandled: Boolean);
-    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean; virtual;
+    function MouseUpDownEvent(
+      const Event: NSEvent;
+      const AForceAsMouseUp: Boolean = False;
+      const AOverrideBlock: Boolean = False): Boolean; virtual;
 
     procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
-    procedure KeyEvBefore(Event: NSEvent; out AllowCocoaHandle: boolean);
+    procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
-    procedure KeyEvHandled;
-    procedure SetTabSuppress(ASuppress: Boolean);
+    procedure KeyEvHandled; inline;
+    procedure SetTabSuppress(const ASuppress: Boolean); inline;
     function CanFocus: Boolean; virtual;
 
-    function IsCocoaOnlyState: Boolean;
-    procedure SetCocoaOnlyState(state: Boolean);
+    function IsCocoaOnlyState: Boolean; inline;
+    procedure SetCocoaOnlyState(const state: Boolean); inline;
 
     procedure MouseClick; virtual;
-    function MouseMove(Event: NSEvent): Boolean; virtual;
-    function scrollWheel(Event: NSEvent): Boolean; virtual;
-    procedure frameDidChange(sender: id); virtual;
-    procedure boundsDidChange(sender: id); virtual;
+    function MouseMove(const Event: NSEvent): Boolean; virtual;
+    function scrollWheel(const Event: NSEvent): Boolean; virtual;
+    procedure frameDidChange(const sender: id); virtual;
+    procedure boundsDidChange(const sender: id); virtual;
     procedure BecomeFirstResponder; virtual;
     procedure ResignFirstResponder; virtual;
     procedure DidBecomeKeyNotification; virtual;
@@ -103,18 +106,21 @@ type
     function SendOnEditPaste: Boolean; virtual;
     procedure SendOnChange; virtual;
     procedure SendOnTextChanged; virtual; // text controls (like spin) respond to OnChange for this event, but not for SendOnChange
-    procedure scroll(isVert: Boolean; Pos: Integer; AScrollPart: NSScrollerPart); virtual;
+    procedure scroll(
+      const isVert: Boolean;
+      const Pos: Integer;
+      const AScrollPart: NSScrollerPart); virtual;
     function DeliverMessage(var Msg): LRESULT; virtual; overload;
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
-    procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
-    procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
-    procedure DrawOverlay(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
+    procedure Draw(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
+    procedure DrawBackground(const ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
+    procedure DrawOverlay(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     procedure RemoveTarget; virtual;
 
     procedure InputClientInsertText(const utf8: string);
 
-    function HandleFrame: NSView;
-    procedure SetHandleFrame( AHandleFrame: NSView );
+    function HandleFrame: NSView; inline;
+    procedure SetHandleFrame(const AHandleFrame: NSView ); inline;
 
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property Target: TWinControl read _target;
@@ -129,7 +135,9 @@ var
   LastMouse: TLastMouseInfo;
   LastMouseLeftButtonAsRight: Boolean;
 
-function CocoaModifiersToShiftState(AModifiers: NSUInteger; AMouseButtons: NSUInteger): TShiftState;
+function CocoaModifiersToShiftState(
+  const AModifiers: NSUInteger;
+  const AMouseButtons: NSUInteger): TShiftState;
 begin
   Result := [];
   if AModifiers and NSShiftKeyMask <> 0 then Include(Result, ssShift);
@@ -197,7 +205,7 @@ begin
   Result := FHasCaret;
 end;
 
-procedure TLCLCommonCallback.SetHasCaret(AValue: Boolean);
+procedure TLCLCommonCallback.SetHasCaret(const AValue: Boolean);
 begin
   FHasCaret := AValue;
 end;
@@ -687,7 +695,8 @@ begin
   end;
 end;
 
-procedure TLCLCommonCallback.KeyEvBefore(Event: NSEvent;
+procedure TLCLCommonCallback.KeyEvBefore(
+  const  Event: NSEvent;
   out AllowCocoaHandle: boolean);
 begin
   _keyHandled := False;
@@ -733,12 +742,12 @@ begin
   Result := _isCocoaOnlyState;
 end;
 
-procedure TLCLCommonCallback.SetCocoaOnlyState( state:Boolean );
+procedure TLCLCommonCallback.SetCocoaOnlyState(const state:Boolean );
 begin
   _isCocoaOnlyState := state;
 end;
 
-procedure TLCLCommonCallback.SetTabSuppress(ASuppress: Boolean);
+procedure TLCLCommonCallback.SetTabSuppress(const ASuppress: Boolean);
 begin
   SuppressTabDown := ASuppress;
 end;
@@ -753,7 +762,10 @@ begin
   LCLSendClickedMsg(Target);
 end;
 
-function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean;
+function TLCLCommonCallback.MouseUpDownEvent(
+  const Event: NSEvent;
+  const AForceAsMouseUp: Boolean = False;
+  const AOverrideBlock: Boolean = False): Boolean;
 const
   MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
 var
@@ -931,7 +943,7 @@ begin
     end;
 end;
 
-function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;
+function TLCLCommonCallback.MouseMove(const Event: NSEvent): Boolean;
 var
   Msg: TLMMouseMove;
   MousePos: NSPoint;
@@ -1059,7 +1071,7 @@ begin
   CursorHelper.SetScreenCursorWhenNotDefault;
 end;
 
-function TLCLCommonCallback.scrollWheel(Event: NSEvent): Boolean;
+function TLCLCommonCallback.scrollWheel(const Event: NSEvent): Boolean;
 var
   Msg: TLMMouseEvent;
   MousePos: NSPoint;
@@ -1132,12 +1144,12 @@ begin
   Result := DeliverMessage(Msg) <> 0;
 end;
 
-procedure TLCLCommonCallback.frameDidChange(sender: id);
+procedure TLCLCommonCallback.frameDidChange(const sender: id);
 begin
   boundsDidChange(sender);
 end;
 
-procedure TLCLCommonCallback.boundsDidChange(sender: id);
+procedure TLCLCommonCallback.boundsDidChange(const sender: id);
 var
   NewBounds, OldBounds: TRect;
   PosMsg: TLMWindowPosChanged;
@@ -1269,8 +1281,10 @@ begin
   SendSimpleMessage(Target, CM_TEXTCHANGED);
 end;
 
-procedure TLCLCommonCallback.scroll(isVert: Boolean; Pos: Integer;
-  AScrollPart: NSScrollerPart);
+procedure TLCLCommonCallback.scroll(
+  const isVert: Boolean;
+  const Pos: Integer;
+  const AScrollPart: NSScrollerPart);
 var
   LMScroll: TLMScroll;
   b: Boolean;
@@ -1318,7 +1332,8 @@ begin
   Result := DeliverMessage(Message);
 end;
 
-procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
+procedure TLCLCommonCallback.Draw(
+  const ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
   PS: TPaintStruct;
@@ -1358,7 +1373,9 @@ begin
   end;
 end;
 
-procedure TLCLCommonCallback.DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect);
+procedure TLCLCommonCallback.DrawBackground(
+  const ctx: NSGraphicsContext;
+  const bounds, dirtyRect: NSRect);
 var
   lTarget: TWinControl;
 begin
@@ -1374,7 +1391,8 @@ begin
   end;
 end;
 
-procedure TLCLCommonCallback.DrawOverlay(ControlContext: NSGraphicsContext;
+procedure TLCLCommonCallback.DrawOverlay(
+  const ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
   PS  : TPaintStruct;
@@ -1432,7 +1450,7 @@ begin
   Result:= _handleFrame;
 end;
 
-procedure TLCLCommonCallback.SetHandleFrame(AHandleFrame: NSView);
+procedure TLCLCommonCallback.SetHandleFrame(const AHandleFrame: NSView);
 begin
   _handleFrame:= AHandleFrame;
 end;
@@ -1442,7 +1460,7 @@ begin
   Result:= FIsOpaque;
 end;
 
-procedure TLCLCommonCallback.SetIsOpaque(AValue: Boolean);
+procedure TLCLCommonCallback.SetIsOpaque(const AValue: Boolean);
 begin
   FIsOpaque:=AValue;
 end;
