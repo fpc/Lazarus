@@ -13055,20 +13055,28 @@ begin
       begin
         if not AFixedWidthHeight and (AForm.Constraints.MinWidth > 0) then
           min_width := AForm.Constraints.MinWidth
+        else if AFixedWidthHeight then
+          min_width := AForm.Width
         else
-          min_width := AForm.Width;
+          min_width := 1;
         if not AFixedWidthHeight and (AForm.Constraints.MaxWidth > 0) then
           max_width := AForm.Constraints.MaxWidth
+        else if AFixedWidthHeight then
+          max_width := AForm.Width
         else
-          max_width := AForm.Width;
+          max_width := 32767;
         if not AFixedWidthHeight and (AForm.Constraints.MinHeight > 0) then
           min_height := AForm.Constraints.MinHeight
+        else if AFixedWidthHeight then
+          min_height := AForm.Height
         else
-          min_height := AForm.Height;
+          min_height := 1;
         if not AFixedWidthHeight and (AForm.Constraints.MaxHeight > 0) then
           max_height := AForm.Constraints.MaxHeight
+        else if AFixedWidthHeight then
+          max_height := AForm.Height
         else
-          max_height := AForm.Height;
+          max_height := 32767;
 
         base_width := AForm.Width;
         base_height := AForm.Height;
@@ -13111,7 +13119,9 @@ begin
         Exit;
       end;
       PGtkWindow(Widget)^.set_resizable(true);
-      if not AFixedWidthHeight then
+      if not AFixedWidthHeight and
+         (AForm.Constraints.MinWidth = 0) and (AForm.Constraints.MaxWidth = 0) and
+         (AForm.Constraints.MinHeight = 0) and (AForm.Constraints.MaxHeight = 0) then
       begin
         FillChar(Geometry, SizeOf(Geometry), 0);
         Geometry.min_width := 1;

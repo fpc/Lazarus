@@ -3817,8 +3817,10 @@ begin
     ACairoRegion := gdk_window_get_visible_region(TGtk3DeviceContext(DC).Parent^.window);
   end else
     ACairoRegion := gdk_window_get_visible_region(gdk_get_default_root_window);
-  ACairoRect.x := ARect.Left;
-  ACairoRect.y := ARect.Top;
+  ACairoRect.x := ARect.Left - TGtk3DeviceContext(DC).WindowOrg.X
+    - TGtk3DeviceContext(DC).ScrollbarsOffset.X;
+  ACairoRect.y := ARect.Top - TGtk3DeviceContext(DC).WindowOrg.Y
+    - TGtk3DeviceContext(DC).ScrollbarsOffset.Y;
   ACairoRect.width := ARect.Right - ARect.Left;
   ACairoRect.height := ARect.Bottom - ARect.Top;
   Result := cairo_region_contains_rectangle(ACairoRegion, @ACairoRect) <> CAIRO_REGION_OVERLAP_OUT;
