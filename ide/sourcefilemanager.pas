@@ -1196,7 +1196,7 @@ function TFileOpener.ResolvePossibleSymlink: TModalResult;
 // Compiler never resolves symlinks, files in compiler search path must not be resolved.
 // If there already is an editor with a "physical" target of a symlink, use it.
 var
-  SPath, Target: String;  // Search path and target file for the symlink.
+  SPath, Target, aFilePath, aTargetPath: String;  // Search path and target file for the symlink.
 begin
   Result := mrOK;
   if ofProjectLoading in FFlags then Exit; // Use the given name when project loads.
@@ -1205,14 +1205,18 @@ begin
   // ToDo: Check if there is an editor with a symlink for this "physical" file.
 
   SPath := CodeToolBoss.GetCompleteSrcPathForDirectory('');
+
   // Check if symlink is found in search path or in editor.
-  if (SearchDirectoryInMaskedSearchPath(SPath, ExtractFilePath(FFileName)) > 0)
+  aFilePath:=ExtractFilePath(FFileName);
+  if (SearchDirectoryInMaskedSearchPath(SPath, aFilePath) > 0)
   or Assigned(SourceEditorManager.SourceEditorIntfWithFilename(FFileName))
   then
     Exit;       // Symlink found -> use it.
+
   // Check if "physical" target for a symlink is found in search path or in editor.
-  if ((ExtractFilePath(FFileName)<>ExtractFilePath(Target))
-      and (SearchDirectoryInMaskedSearchPath(SPath, ExtractFilePath(Target)) > 0))
+  aTargetPath:=ExtractFilePath(Target);
+  if ((aFilePath<>aTargetPath)
+      and (SearchDirectoryInMaskedSearchPath(SPath, aTargetPath) > 0))
   or Assigned(SourceEditorManager.SourceEditorIntfWithFilename(Target))
   then          // Target found -> use Target name.
     FFileName := Target

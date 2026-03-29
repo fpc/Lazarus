@@ -29,7 +29,7 @@ uses
   // LCL
   Forms, StdCtrls, Dialogs, Controls, ExtCtrls, Spin,
   // LazUtils
-  FileUtil, LazUTF8, LazLoggerBase, Translations,
+  FileUtil, LazUTF8, LazLoggerBase, Translations, LazFileCache,
   // LazControls
   DividerBevel,
   // BuildIntf
@@ -39,7 +39,7 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  EnvironmentOpts, IDETranslations,
+  EnvironmentOpts, IDETranslations, DialogProcs,
   // IDE
   LazarusIDEStrConsts, EnvGuiOptions;
 
@@ -64,6 +64,8 @@ type
     lblHints: TDividerBevel;
     lblLanguage: TDividerBevel;
     lblMouseAction: TDividerBevel;
+    lblOpenSymlinkPolicy: TLabel;
+    pnlOpenSymlinkPolicy: TPanel;
     PreferDoubleClickCheckBox: TCheckBox;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
     lblButtons: TLabel;
@@ -80,6 +82,9 @@ type
     rbBtnGlyphShowNever: TRadioButton;
     rbBtnGlyphShowSystem: TRadioButton;
     ExportDesktopButton: TButton;
+    rbOSPAsk: TRadioButton;
+    rbOSPTarget: TRadioButton;
+    rbOSPSymlink: TRadioButton;
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
     spDropDownCount: TSpinEdit;
@@ -181,6 +186,19 @@ begin
   spDropDownCount.Hint := lisDropDownCountHint;
 
   checkWheel.Caption := SynSpellOptMouseWheelChangesTabs;
+
+  {$IFDEF Unix}
+  lblOpenSymlinkPolicy.Caption:=lisWhenOpeningSymlink;
+  rbOSPAsk.Hint:=lisWhenOpeningASymlinkFileOpenTheTargetFileTheSymlink;
+  rbOSPAsk.Caption:=dlgEnvAsk;
+  rbOSPTarget.Hint:=rbOSPAsk.Hint;
+  rbOSPTarget.Caption:=lisAlwaysOpenTarget;
+  rbOSPSymlink.Hint:=rbOSPAsk.Hint;
+  rbOSPSymlink.Caption:=lisAlwaysOpenSymlink;
+  {$ELSE}
+  lblOpenSymlinkPolicy.Visible:=false;
+  pnlOpenSymlinkPolicy.Visible:=false;
+  {$ENDIF}
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -230,6 +248,15 @@ begin
 
   end;
   checkWheel.Checked := EnvOpt.WheelSelectTab;
+
+  {$IFDEF Unix}
+  case EnvOpt.OpenSymlinkPolicy of
+    ospTarget: rbOSPTarget.Checked:=true;
+    ospSymlink: rbOSPAsk.Checked:=true;
+  else
+    rbOSPAsk.Checked:=true;
+  end;
+  {$ENDIF}
 end;
 
 procedure TDesktopOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -281,6 +308,15 @@ begin
     EnvOpt.DropDownCount := spDropDownCount.Value;
     EnvOpt.WheelSelectTab := checkWheel.Checked;
   end;
+
+  {$IFDEF Unix}
+  if rbOSPTarget.Checked then
+    EnvOpt.OpenSymlinkPolicy:=ospTarget
+  else if rbOSPSymlink.Checked then
+    EnvOpt.OpenSymlinkPolicy:=ospSymlink
+  else
+    EnvOpt.OpenSymlinkPolicy:=ospAsk;
+  {$ENDIF}
 end;
 
 procedure TDesktopOptionsFrame.ExportDesktopButtonClick(Sender: TObject);

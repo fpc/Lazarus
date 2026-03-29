@@ -46,7 +46,7 @@ uses
   // BuildIntf
   ProjectIntf, IDEOptionsIntf, IDEExternToolIntf,
   // IdeConfig
-  IDEOptionDefs, RecentListProcs, SearchPathProcs, LazConf, TransferMacros,
+  IDEOptionDefs, RecentListProcs, DialogProcs, SearchPathProcs, LazConf, TransferMacros,
   ModeMatrixOpts;
 
 const
@@ -249,6 +249,7 @@ type
   TEnvironmentOptions = class(TIDEEnvironmentOptions)
   private
     FFppkgCheck: boolean;
+    FCheckDiskChangesWithLoading: boolean;
     fRegisteredSubConfig: TObjectList;
     // config file
     FFilename: string;
@@ -265,6 +266,7 @@ type
     FAutoSaveEditorFiles: boolean;
     FAutoSaveProject: boolean;
     FAutoSaveIntervalInSecs: integer;
+    FAskSaveSessionOnly: boolean;
     FLastSavedProjectFile: string;
     FLastOpenPackages: TLastOpenPackagesList;//list of filenames with open packages
     // comboboxes
@@ -280,8 +282,6 @@ type
     FPackageEditorShowProps: boolean;
     // procedure list
     FProcedureListFilterStart: boolean;
-    FAskSaveSessionOnly: boolean;
-    FCheckDiskChangesWithLoading: boolean;
     // compiler + lazarus files
     FParseValues: array[TEnvOptParseType] of TParseString;
     FLazarusDirHistory: TStringList;
@@ -345,6 +345,7 @@ type
     function GetFPDocPaths: string;
     function GetLazarusDirectory: string;
     function GetMakeFilename: string;
+    function GetOpenSymlinkPolicy: TOpenSymlinkPolicy;
     function GetSubConfig(Index: Integer): TIDESubOptions;
     function GetTestBuildDirectory: string;
     function GetFppkgConfigFile: string;
@@ -358,6 +359,7 @@ type
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
     procedure SetFppkgConfigFile(AValue: string);
+    procedure SetOpenSymlinkPolicy(const AValue: TOpenSymlinkPolicy);
     procedure SetParseValue(o: TEnvOptParseType; const NewValue: string);
 
     procedure SetFileName(const NewFilename: string);
@@ -423,8 +425,11 @@ type
     // procedure list
     property ProcedureListFilterStart: boolean read FProcedureListFilterStart
                                               write FProcedureListFilterStart;
+
     property CheckDiskChangesWithLoading: boolean read FCheckDiskChangesWithLoading
                                                  write FCheckDiskChangesWithLoading;
+    property OpenSymlinkPolicy: TOpenSymlinkPolicy read GetOpenSymlinkPolicy write SetOpenSymlinkPolicy;
+
     // files
     property LazarusDirectory: string read GetLazarusDirectory write SetLazarusDirectory;
     property LazarusDirHistory: TStringList read FLazarusDirHistory write FLazarusDirHistory;
@@ -571,8 +576,15 @@ const
     'FppkgConfig' // eopFppkgConfigFile
   );
 
+  OpenSymlinkPolicyNames: array[TOpenSymlinkPolicy] of string = (
+    'Ask',
+    'Target',
+    'Symlink'
+    );
+
 function dbgs(o: TEnvOptParseType): string; overload;
 function dbgs(u: TMessageLineUrgency): string; overload;
+function StrToOpenSymlinkPolicy(const s: string): TOpenSymlinkPolicy;
 
 implementation
 
@@ -643,6 +655,13 @@ begin
   WriteStr(Result, u);
 end;
 
+function StrToOpenSymlinkPolicy(const s: string): TOpenSymlinkPolicy;
+begin
+  for Result in TOpenSymlinkPolicy do
+    if SameText(s,OpenSymlinkPolicyNames[Result]) then exit;
+  Result:=ospAsk;
+end;
+
 { TIDESubOptions }
 
 procedure TIDESubOptions.InitConfig;
@@ -687,6 +706,8 @@ begin
     FParseValues[o].ParseStamp:=CTInvalidChangeStamp;
 
   FFilename:='';
+  FCheckDiskChangesWithLoading:=false;
+  DialogProcs.OpenSymlinkPolicy:=ospAsk;
   // language
   LanguageID:='';
   // auto save
@@ -705,7 +726,6 @@ begin
   FPackageEditorShowProps:=true;
   // procedure list
   FProcedureListFilterStart:=false;
-  FCheckDiskChangesWithLoading:=false;
   // comboboxes
   FDropDownCount:=DefaultDropDownCount;
   // files
@@ -1014,6 +1034,9 @@ begin
 
     FXMLCfg.ReadObject(Path, Self);
 
+    FCheckDiskChangesWithLoading:=FXMLCfg.GetValue(Path+'CheckDiskChangesWithLoading/Value',false);
+    OpenSymlinkPolicy:=StrToOpenSymlinkPolicy(FXMLCfg.GetValue(Path+'OpenSymlinkPolicy/Value',''));
+
     // auto save
     FAskSaveSessionOnly:=FXMLCfg.GetValue(Path+'AutoSave/AskSaveSessionOnly',false);
     FAutoSaveEditorFiles:=FXMLCfg.GetValue(Path+'AutoSave/EditorFiles',true);
@@ -1042,7 +1065,6 @@ begin
     FPackageEditorShowProps:=FXMLCfg.GetValue(Path+'PackageEditorShowPropsPanel/Value',true);
     // procedure list
     FProcedureListFilterStart:=FXMLCfg.GetValue(Path+'ProcedureListFilterStart/Value',false);
-    FCheckDiskChangesWithLoading:=FXMLCfg.GetValue(Path+'CheckDiskChangesWithLoading/Value',false);
     // comboboxes
     FDropDownCount:=FXMLCfg.GetValue(Path+'ComboBoxes/DropDownCount',DefaultDropDownCount);
     // messages view
@@ -1224,6 +1246,9 @@ begin
     // language
     FXMLCfg.SetDeleteValue(Path+'Language/ID',LanguageID,'');
 
+    FXMLCfg.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',FCheckDiskChangesWithLoading,false);
+    FXMLCfg.SetDeleteValue(Path+'OpenSymlinkPolicy/Value',OpenSymlinkPolicyNames[OpenSymlinkPolicy],OpenSymlinkPolicyNames[ospAsk]);
+
     // auto save
     FXMLCfg.SetDeleteValue(Path+'AutoSave/AskSaveSessionOnly',FAskSaveSessionOnly,false);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/EditorFiles',FAutoSaveEditorFiles,true);
@@ -1245,7 +1270,6 @@ begin
     FXMLCfg.SetDeleteValue(Path+'PackageEditorShowPropsPanel/Value',FPackageEditorShowProps,true);
     // procedure list
     FXMLCfg.SetDeleteValue(Path+'ProcedureListFilterStart/Value',FProcedureListFilterStart,false);
-    FXMLCfg.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',FCheckDiskChangesWithLoading,false);
     // comboboxes
     FXMLCfg.SetDeleteValue(Path+'ComboBoxes/DropDownCount',FDropDownCount,DefaultDropDownCount);
     // messages view
@@ -1684,6 +1708,11 @@ begin
   Result:=FParseValues[eopMakeFilename].UnparsedValue;
 end;
 
+function TEnvironmentOptions.GetOpenSymlinkPolicy: TOpenSymlinkPolicy;
+begin
+  Result:=DialogProcs.OpenSymlinkPolicy;
+end;
+
 function TEnvironmentOptions.GetSubConfig(Index: Integer): TIDESubOptions;
 begin
   Result := TIDESubOptions(fRegisteredSubConfig[Index]);
@@ -1712,6 +1741,11 @@ end;
 procedure TEnvironmentOptions.SetFppkgConfigFile(AValue: string);
 begin
   SetParseValue(eopFppkgConfigFile,UTF8Trim(AValue));
+end;
+
+procedure TEnvironmentOptions.SetOpenSymlinkPolicy(const AValue: TOpenSymlinkPolicy);
+begin
+  DialogProcs.OpenSymlinkPolicy:=AValue;
 end;
 
 end.

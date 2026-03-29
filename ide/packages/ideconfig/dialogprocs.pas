@@ -57,11 +57,20 @@ type
     lbfIgnoreMissing
     );
   TLoadBufferFlags = set of TLoadBufferFlag;
-  
+
+  TOpenSymlinkPolicy = (
+    ospAsk,
+    ospTarget,
+    ospSymlink
+    );
+  TOpenSymlinkPolicies = set of TOpenSymlinkPolicy;
+
   TOnBackupFileInteractive = function(const Filename: string): TModalResult of object;
-                       
+
 var
   OnBackupFileInteractive: TOnBackupFileInteractive = nil;
+  OpenSymlinkPolicy: TOpenSymlinkPolicy = ospAsk;
+
 
 function BackupFileInteractive(const Filename: string): TModalResult;
 function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
@@ -475,16 +484,21 @@ end;
 
 function ChooseSymlink(var Filename: string; const TargetFilename: string): TModalResult;
 begin
-  // ask which filename to use
-  case LazQuestionWorker(lisFileIsSymlink,
-    Format(lisTheFileIsASymlinkOpenInstead,[Filename,LineEnding+LineEnding,TargetFilename]),
-    mtConfirmation, [mrYes, lisOpenTarget,
-                     mrNo, lisOpenSymlink,
-                     mrCancel])
-  of
-    mrYes: Filename:=TargetFilename;
-    mrNo: ;
-    else exit(mrCancel);
+  case OpenSymlinkPolicy of
+  ospTarget: Filename:=TargetFilename;
+  ospSymlink: ;
+  else
+    // ask which filename to use
+    case LazQuestionWorker(lisFileIsSymlink,
+      Format(lisTheFileIsASymlinkOpenInstead,[Filename,LineEnding+LineEnding,TargetFilename]),
+      mtConfirmation, [mrYes, lisOpenTarget,
+                       mrNo, lisOpenSymlink,
+                       mrCancel])
+    of
+      mrYes: Filename:=TargetFilename;
+      mrNo: ;
+      else exit(mrCancel);
+    end;
   end;
   Result:=mrOk;
 end;

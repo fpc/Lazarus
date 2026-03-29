@@ -192,9 +192,6 @@ type
     property CleanOutputFileMask: string read FCleanOutputFileMask write FCleanOutputFileMask;
     property CleanSourcesFileMask: string read FCleanSourcesFileMask write FCleanSourcesFileMask;
 
-    // various history lists
-    property HistoryLists: THistoryLists read FHistoryLists;
-    
     // diff dialog
     property DiffFlags: TTextDiffFlags read FDiffFlags write FDiffFlags;
     property DiffText2: string read FDiffText2 write FDiffText2;
@@ -219,6 +216,8 @@ type
     // file encodings
     property FileEncodings: TStringToStringTree read fFileEncodings write fFileEncodings;
 
+    // various history lists
+    property HistoryLists: THistoryLists read FHistoryLists;
     // ignores
     property Ignores: TIHIgnoreIDEQuestionList read FIgnores;
   end;

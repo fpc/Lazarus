@@ -1385,6 +1385,8 @@ resourcestring
   dlgCharCaseFileAct = 'Save As - auto rename Pascal files lower case';
   dlgAmbigFileAct = 'Ambiguous file action:';
   dlgEnvAsk = 'Ask';
+  lisAlwaysOpenTarget = 'Always Open Target';
+  lisAlwaysOpenSymlink = 'Always Open Symlink';
   dlgAutoDel = 'Auto delete file';
   dlgAutoRen = 'Auto rename file lowercase';
   dlgnoAutomaticRenaming = 'No automatic renaming';
@@ -6321,6 +6323,9 @@ resourcestring
     +'dot ".".';
   lisFailedToSaveMacro = 'Failed to save macro.';
   SynSpellOptMouseWheelChangesTabs = 'Mouse-wheel changes tabs';
+  lisWhenOpeningASymlinkFileOpenTheTargetFileTheSymlink = 'When opening a symlink file, open the '
+    +'target file, the symlink file, or ask';
+  lisWhenOpeningSymlink = 'When opening a Symlink';
 
 implementation
 
