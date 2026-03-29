@@ -5686,6 +5686,14 @@ msgstr "選択されているアイテムを常にフォーカスするように
 msgid "Always ignore"
 msgstr "常に無視"
 
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
 msgstr "この名前のマクロが既に存在します"
@@ -19605,6 +19613,14 @@ msgstr "ユニットが名称変更されたとき、参照を更新"
 #| msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "許可されるとき、現在のオプションはテンプレートに保存されます。そして、新しいプロジェクトをつくるとき、それが使われます"
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"

@@ -5575,6 +5575,14 @@ msgstr "Näytä aina valitut kohdat fokusoituna"
 msgid "Always ignore"
 msgstr "Jätä aina huomiotta"
 
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
 msgstr "Tämän niminen makro on jo olemassa."
@@ -19274,6 +19282,14 @@ msgstr "Käännösyksikön nimeä muutettaessa päivitetään viittaukset"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "Kun sallittu, nykyiset asetukset talletetaan malliksi, mitä käytetään luotaessa uusia projekteja"
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"

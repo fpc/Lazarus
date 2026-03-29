@@ -5686,6 +5686,14 @@ msgstr "Zawsze rysuj zaznaczenie wybranych elementów"
 msgid "Always ignore"
 msgstr "Zawsze ignoruj"
 
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
 msgstr "Makro o tej nazwie już istnieje."
@@ -19533,6 +19541,14 @@ msgstr "Gdy zmieniana jest nazwa modułu, zmieniaj odnośniki"
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed

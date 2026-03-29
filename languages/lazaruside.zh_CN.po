@@ -5530,6 +5530,14 @@ msgstr "总是集中绘制选定的项目"
 msgid "Always ignore"
 msgstr "始终忽略"
 
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
 msgstr "带有这个名称的宏已经存在."
@@ -19215,6 +19223,14 @@ msgstr "当一个单元被重命名时，更新相关的引用"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "启用后，当前选项将保存到创建新项目时使用的模板中"
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"

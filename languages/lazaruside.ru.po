@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-03-26 23:12+0300\n"
+"PO-Revision-Date: 2026-03-29 22:03+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -5514,6 +5514,14 @@ msgstr "Всегда отрисовывать выделенное как нах
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr "Всегда игнорировать"
+
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr "Всегда открывать символическую ссылку"
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr "Всегда открывать целевой файл"
 
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
@@ -19178,6 +19186,14 @@ msgstr "Обновление ссылок на модуль при его пер
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "Если включено, текущие параметры сохраняются в шаблон, используемый при создании новых проектов"
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr "При открытии файла символической ссылки спросить, либо всегда открывать целевой файл, либо всегда открывать файл ссылки"
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
+msgstr "При открытии символической ссылки"
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"

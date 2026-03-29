@@ -5624,6 +5624,14 @@ msgstr "Vybrané položky se vždy vykreslí zaměřené"
 msgid "Always ignore"
 msgstr "Vždy ignorovat"
 
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
 msgstr "Makro s tímto názvem již existuje."
@@ -19467,6 +19475,14 @@ msgstr "Aktualizuj odkazy, pokud je jednotka přejmenována"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "Pokud je povoleno, aktuální nastavení jsou uloženy do šablony, která je použita při vytváření projektů"
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"

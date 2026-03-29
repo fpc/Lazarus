@@ -5527,6 +5527,14 @@ msgstr "Daima seçili öğeleri odaklı çiz"
 msgid "Always ignore"
 msgstr "Her zaman yoksay"
 
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
 msgstr "Bu ada sahip bir makro zaten var."
@@ -19187,6 +19195,14 @@ msgstr "Bir birim yeniden adlandırıldığında, referansları güncelleyin"
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "Etkinleştirildiğinde, mevcut seçenekler yeni proje oluştururken kullanılan şablona kaydedilir"
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"

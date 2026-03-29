@@ -5699,6 +5699,14 @@ msgstr "Disegna sempre l'elemento selezionato"
 msgid "Always ignore"
 msgstr "Ignora sempre"
 
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
 msgstr "Esiste già una macro con questo nome."
@@ -19617,6 +19625,14 @@ msgstr "Quando si rinomina una unit, aggiorna riferimenti..."
 #| msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "Quando abilitata le opzioni attuali vengono salvate nel modello, che sarà usato quando verranno creati nuovi progetti"
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"

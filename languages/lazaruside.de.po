@@ -5544,6 +5544,14 @@ msgstr "Gewählte Elemente immer fokussiert darstellen"
 msgid "Always ignore"
 msgstr "Immer ignorieren"
 
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
 msgstr "Ein Makro mit diesem Namen existiert bereits."
@@ -19193,6 +19201,14 @@ msgstr "Wenn eine Unit umbenannt wird, Referenzen aktualisieren ..."
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "Wenn eingeschaltet, werden die derzeit gewählten Optionen in ein Template für das Anlegen neuer Projekte gespeichert"
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"

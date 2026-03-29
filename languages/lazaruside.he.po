@@ -5819,6 +5819,14 @@ msgstr ""
 msgid "Always ignore"
 msgstr "התעלם תמיד"
 
+#: lazarusidestrconsts.lisalwaysopensymlink
+msgid "Always Open Symlink"
+msgstr ""
+
+#: lazarusidestrconsts.lisalwaysopentarget
+msgid "Always Open Target"
+msgstr ""
+
 #: lazarusidestrconsts.lisamacrowiththisnamealreadyexists
 msgid "A macro with this name already exists."
 msgstr ""
@@ -20203,6 +20211,14 @@ msgstr "כששם היחידה משתנה, עדכן את המקורות"
 #| msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "כאשר מופעל - האפשרויות הנוכחיות נשמרות בתבנית, אשר משתמשים בה ביצירת פרוייקט חדש"
+
+#: lazarusidestrconsts.liswhenopeningasymlinkfileopenthetargetfilethesymlink
+msgid "When opening a symlink file, open the target file, the symlink file, or ask"
+msgstr ""
+
+#: lazarusidestrconsts.liswhenopeningsymlink
+msgid "When opening a Symlink"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
 msgid "When there is only one possible completion item use it immediately, without showing the completion box"
