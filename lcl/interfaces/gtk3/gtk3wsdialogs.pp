@@ -24,7 +24,7 @@ uses
   // Bindings
   LazGtk3, LazGlib2, LazGdk3, LazGObject2, LazPango1,
   // RTL, FCL and LCL
-  SysUtils, Classes, Graphics, Controls, Dialogs, ExtDlgs, LCLType,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtDlgs, LCLType,
   LazFileUtils, LCLStrConsts, LCLProc, LazLogger,
   // Widgetset
   gtk3int, gtk3widgets,
@@ -1527,30 +1527,17 @@ begin
   if not ACommonDialog.HandleAllocated then
     exit;
   AGtkWindow := TGtk3Dialog(ACommonDialog.Handle).Widget;
-  DebugLn('TGtk3WSCommonDialog.ShowModal widget ',dbgHex({%H-}PtrUInt(AGtkWindow)));
+  // DebugLn('TGtk3WSCommonDialog.ShowModal widget ',dbgHex({%H-}PtrUInt(AGtkWindow)));
   if not Gtk3IsWidget(AGtkWindow) then
     raise Exception.Create('TGtk3WSCommonDialog.ShowModal error');
   // ReleaseMouseCapture;
   // GtkWindow^.set_title(PChar(ACommonDialog.Title));
   PGtkDialog(AGtkWindow)^.set_position(GTK_WIN_POS_CENTER);
-  PGtkDialog(AGtkWindow)^.set_application(GTK3WidgetSet.Gtk3Application);
+  PGtkDialog(AGtkWindow)^.set_transient_for(Gtk3WidgetSet.Gtk3Application^.get_active_window);
   PGtkDialog(AGtkWindow)^.set_modal(True);
+  PGtkDialog(AGtkWindow)^.set_type_hint(GDK_WINDOW_TYPE_HINT_DIALOG);
   PGtkDialog(AGtkWindow)^.show_all;
   PGtkDialog(AGtkWindow)^.present;
-  (*
-  GtkWindow:={%H-}PGtkWindow(ACommonDialog.Handle);
-  gtk_window_set_title(GtkWindow,PChar(ACommonDialog.Title));
-  if ACommonDialog is TColorDialog then
-  begin
-    SetColorDialogColor(PGtkColorSelectionDialog(GtkWindow),
-                        TColorDialog(ACommonDialog).Color);
-    SetColorDialogPalette(PGtkColorSelectionDialog(GtkWindow),
-      TColorDialog(ACommonDialog).CustomColors);
-  end;
-
-  gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);
-  GtkWindowShowModal(nil, GtkWindow);
-  *)
 end;
 
 class procedure TGtk3WSCommonDialog.DestroyHandle(
