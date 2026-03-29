@@ -39,7 +39,6 @@ type
     _IsSysKey  : Boolean;
     _IsKeyDown : Boolean;
     _KeyHandled: Boolean;
-    _isCocoaOnlyState: Boolean;
     _UTF8Character : array [0..7] of TUTF8Char;
     _UTF8Charcount : Integer;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
@@ -86,9 +85,6 @@ type
     procedure KeyEvHandled; inline;
     procedure SetTabSuppress(const ASuppress: Boolean); inline;
     function CanFocus: Boolean; virtual;
-
-    function IsCocoaOnlyState: Boolean; inline;
-    procedure SetCocoaOnlyState(const state: Boolean); inline;
 
     procedure MouseClick; virtual;
     function MouseMove(const Event: NSEvent): Boolean; virtual;
@@ -720,16 +716,6 @@ end;
 procedure TLCLCommonCallback.KeyEvHandled;
 begin
   _KeyHandled := True;
-end;
-
-function TLCLCommonCallback.IsCocoaOnlyState: Boolean;
-begin
-  Result := _isCocoaOnlyState;
-end;
-
-procedure TLCLCommonCallback.SetCocoaOnlyState(const state:Boolean );
-begin
-  _isCocoaOnlyState := state;
 end;
 
 procedure TLCLCommonCallback.SetTabSuppress(const ASuppress: Boolean);

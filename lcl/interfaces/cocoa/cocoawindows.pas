@@ -25,7 +25,8 @@ interface
 uses
   Types, Classes, SysUtils,
   LCLType, LCLProc,
-  MacOSAll, CocoaAll, CocoaPrivate, cocoa_extra, CocoaUtils,
+  MacOSAll, CocoaAll,
+  CocoaPrivate, CocoaWSService, Cocoa_Extra, CocoaUtils,
   CocoaCursor, CocoaCustomControl, CocoaTextEdits, CocoaScrollers;
 
 type
@@ -936,7 +937,7 @@ var
   mn : NSMenu;
   allowcocoa : Boolean;
 begin
-  if Assigned(_keyEvCallback) and _keyEvCallback.IsCocoaOnlyState then
+  if CocoaWidgetSetState.CocoaOnlyState then
   begin
     inherited keyDown(event);
     Exit;

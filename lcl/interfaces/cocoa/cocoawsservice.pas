@@ -19,6 +19,7 @@ type
   TCocoaWidgetSetState = class
   private
     _lclSendingScrollWheelCount: Integer;
+    _isCocoaOnlyState: Boolean;
   public
     currentKeyWindow: NSWindow;
     killingFocus: Boolean;
@@ -34,6 +35,9 @@ type
     procedure lclBeginSendingScrollWheel;
     procedure lclEndSendingScrollWheel;
     function isLCLSendingScrollWheel: Boolean;
+
+    // only Cocoa Event Mechanism (no LCL Event), if the IME is in use
+    property CocoaOnlyState: Boolean read _isCocoaOnlyState write _isCocoaOnlyState;
   end;
 
   { TCocoaWidgetSetGDIObject }
