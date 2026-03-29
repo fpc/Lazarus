@@ -46,6 +46,8 @@ uses
   {$ENDIF}
   // RTL + FCL
   Classes, SysUtils, TypInfo, System.UITypes,
+  // LCL
+  Forms,
   // CodeTools
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
   LinkScanner, CodeToolManager, CodeCache, CodeTree, StdCodeTools,
@@ -71,17 +73,18 @@ type
   TUnitInfo = class;
   TProject = class;
 
-  THasDesignerEvent = function(APersistent: TPersistent): boolean;
-  TFileBackupEvent = function(const FileToBackup: string):TModalResult of object;
-  TUnitNameChangeEvent = procedure(AnUnitInfo: TUnitInfo;
-                           const OldUnitName, NewUnitName: string;
-                           CheckIfAllowed: boolean; var Allowed: boolean) of object;
-  TLoadProjectInfoEvent = procedure(TheProject: TProject; XMLConfig: TXMLConfig;
-                                    Merge: boolean) of object;
-  TSaveProjectInfoEvent = procedure(TheProject: TProject;
-                 XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
-  TChangeProjectInfoFileEvent = procedure(TheProject: TProject) of object;
-  TSaveUnitSessionInfoEvent = procedure(AUnitInfo: TUnitInfo) of object;
+  TOnFileBackup = function(const FileToBackup: string):TModalResult of object;
+  TOnUnitNameChange = procedure(AnUnitInfo: TUnitInfo;
+       const OldUnitName, NewUnitName: string;
+       CheckIfAllowed: boolean;
+       var Allowed: boolean) of object;
+  TOnLoadProjectInfo = procedure(TheProject: TProject; XMLConfig: TXMLConfig;
+                                 Merge: boolean) of object;
+  TOnSaveProjectInfo = procedure(TheProject: TProject;
+               XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
+  TOnChangeProjectInfoFile = procedure(TheProject: TProject) of object;
+
+  TOnSaveUnitSessionInfoInfo = procedure(AUnitInfo: TUnitInfo) of object;
 
   TUnitInfoList = (
     uilPartOfProject,
@@ -220,8 +223,7 @@ type
     property CursorPos: TPoint read FCursorPos write SetCursorPos;
     property FoldState: String read FFoldState write SetFoldState;
     property IsLocked: Boolean read FIsLocked  write SetIsLocked;
-    property CustomSyntaxHighlighter: TIdeSyntaxHighlighterID read FCustomSyntaxHighlighter
-               write SetCustomSyntaxHighlighter; // User-set HL to override default
+    property CustomSyntaxHighlighter: TIdeSyntaxHighlighterID read FCustomSyntaxHighlighter write SetCustomSyntaxHighlighter; // User-set HL to override default
   end;
 
   { TUnitEditorInfoList }
@@ -282,9 +284,9 @@ type
     FFirstUsedByComponent: TUnitComponentDependency;
     FFlags: TUnitInfoFlags;
     fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
-    fOnFileBackup: TFileBackupEvent;
+    fOnFileBackup: TOnFileBackup;
     fOnLoadSaveFilename: TOnLoadSaveFilename;
-    FOnUnitNameChange: TUnitNameChangeEvent;
+    FOnUnitNameChange: TOnUnitNameChange;
     FProject: TProject;
     FResourceBaseClassname: string;
     FRevertLockCount: integer;// >0 means IDE is currently reverting this unit
@@ -450,10 +452,10 @@ type
     property LoadingComponent: boolean read GetLoadingComponent write SetLoadingComponent;
     property Modified: boolean read GetModified write SetModified;// not Session data
     property SessionModified: boolean read GetSessionModified write SetSessionModified;
-    property OnFileBackup: TFileBackupEvent read fOnFileBackup write fOnFileBackup;
+    property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OnLoadSaveFilename: TOnLoadSaveFilename
                              read fOnLoadSaveFilename write fOnLoadSaveFilename;
-    property OnUnitNameChange: TUnitNameChangeEvent
+    property OnUnitNameChange: TOnUnitNameChange
                                  read FOnUnitNameChange write FOnUnitNameChange;
     property Project: TProject read FProject write SetProject;
     property RunFileIfActive: boolean read GetRunFileIfActive write SetRunFileIfActive;
@@ -680,12 +682,12 @@ type
     FMainProject: boolean;
     fMainUnitID: Integer;
     FOnBeginUpdate: TNotifyEvent;
-    FOnChangeProjectInfoFile: TChangeProjectInfoFileEvent;
+    FOnChangeProjectInfoFile: TOnChangeProjectInfoFile;
     FOnEndUpdate: TEndUpdateProjectEvent;
-    fOnFileBackup: TFileBackupEvent;
-    FOnLoadProjectInfo: TLoadProjectInfoEvent;
-    FOnSaveProjectInfo: TSaveProjectInfoEvent;
-    FOnSaveUnitSessionInfo: TSaveUnitSessionInfoEvent;
+    fOnFileBackup: TOnFileBackup;
+    FOnLoadProjectInfo: TOnLoadProjectInfo;
+    FOnSaveProjectInfo: TOnSaveProjectInfo;
+    FOnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo;
     fPathDelimChanged: boolean; // PathDelim in system and current config differ (see StorePathDelim and SessionStorePathDelim)
     FPOOutputDirectory: string;
     fProjectDirectory: string;
@@ -1034,15 +1036,15 @@ type
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
-    property OnChangeProjectInfoFile: TChangeProjectInfoFileEvent read FOnChangeProjectInfoFile
+    property OnChangeProjectInfoFile: TOnChangeProjectInfoFile read FOnChangeProjectInfoFile
                                                  write FOnChangeProjectInfoFile;
     property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
-    property OnFileBackup: TFileBackupEvent read fOnFileBackup write fOnFileBackup;
-    property OnLoadProjectInfo: TLoadProjectInfoEvent read FOnLoadProjectInfo
+    property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
+    property OnLoadProjectInfo: TOnLoadProjectInfo read FOnLoadProjectInfo
                                                    write FOnLoadProjectInfo;
-    property OnSaveProjectInfo: TSaveProjectInfoEvent read FOnSaveProjectInfo
+    property OnSaveProjectInfo: TOnSaveProjectInfo read FOnSaveProjectInfo
                                                    write FOnSaveProjectInfo;
-    property OnSaveUnitSessionInfo: TSaveUnitSessionInfoEvent
+    property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
       read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
     property OnLoadSafeCustomData: TLazLoadSaveCustomDataEvent read FOnLoadSafeCustomData write FOnLoadSafeCustomData;
     property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
@@ -1080,7 +1082,6 @@ const
 
 var
   Project1: TProject absolute LazProject1;// the main project
-  OnHasDesigner: THasDesignerEvent;
   
 function AddCompileReasonsDiff(const PropertyName: string;
        const Old, New: TCompileReasons; Tool: TCompilerDiffTool = nil): boolean;
@@ -4935,7 +4936,8 @@ procedure TProject.UpdateUnitComponentDependencies;
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TProject.UpdateUnitComponentDependencies inline component found: ',DbgSName(AComponent),' ',AnUnitInfo.Filename,' -> ',ReferenceUnit.Filename]);
         {$ENDIF}
-        AnUnitInfo.AddRequiresComponentDependency(ReferenceUnit,[ucdtInlineClass]);
+        AnUnitInfo.AddRequiresComponentDependency(
+                             ReferenceUnit,[ucdtInlineClass]);
       end;
     end;
   
@@ -5045,8 +5047,7 @@ begin
     for TLazProjectFile(AnUnitInfo) in UnitsWithComponent do begin
       AnUnitInfo.FFlags:=AnUnitInfo.FFlags-
         [uifMarked,uifComponentIndirectlyUsedByDesigner,uifComponentUsedByDesigner];
-      if Assigned(OnHasDesigner) and OnHasDesigner(AnUnitInfo.Component) then
-      begin
+      if FindRootDesigner(AnUnitInfo.Component)<>nil then begin
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TProject.UpdateUnitComponentDependencies used by designer: ',AnUnitInfo.Filename]);
         {$ENDIF}
