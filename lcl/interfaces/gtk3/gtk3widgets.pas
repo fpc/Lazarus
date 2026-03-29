@@ -1033,7 +1033,7 @@ type
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
     function getClientRect:TRect; override;
-    procedure InitializeWidget; override;
+    procedure SetParent(AParent: TGtk3Widget; const ALeft, ATop: Integer); override;
   end;
 
   { TGtk3CustomControl }
@@ -11563,11 +11563,8 @@ var
   w: PGtkWidget;
   ctl, Parent: TWinControl;
   rb: TRadioButton;
-  //pl: PGsList;
   i: Integer;
 begin
-  if Self.LCLObject.Name='HiddenRadioButton' then
-    exit;
   btn := TGtkRadioButton.new(nil);
   btn^.use_underline := True;
   Result := PGtkWidget(btn);
@@ -11575,61 +11572,40 @@ begin
   if Assigned(ctl) then
   begin
     Parent := ctl.Parent;
-    if (Parent is TRadioGroup) then
-    begin
-      if (TRadioGroup(Parent).Items.Count>0) then
+    for i := 0 to Parent.ControlCount - 1 do
+      if (Parent.Controls[i] is TRadioButton) and
+         (Parent.Controls[i] <> ctl) and
+         TWinControl(Parent.Controls[i]).HandleAllocated then
       begin
-        rb := TRadioButton(Parent.Controls[0]);
-        if rb<>ctl then
-        begin
-          w := TGtk3RadioButton(rb.Handle).Widget;
-          //pl := PGtkRadioButton(w)^.get_group;
-          //PGtkRadioButton(Result)^.set_group(pl);
+        w := TGtk3RadioButton(TWinControl(Parent.Controls[i]).Handle).Widget;
+        if w <> nil then
           PGtkRadioButton(Result)^.join_group(PGtkRadioButton(w));
-        end;
-      end
-    end
-    else
-    begin
-      for i := 0 to Parent.ControlCount - 1 do
-        if (Parent.Controls[i] is TRadioButton) and
-           TWinControl(Parent.Controls[i]).HandleAllocated then
-        begin
-          rb := TRadioButton(Parent.Controls[i]);
-          w := TGtk3RadioButton(rb.Handle).Widget;
-          //pl := PGtkRadioButton(w)^.get_group;
-          //PGtkRadioButton(Result)^.set_group(pl);
-          PGtkRadioButton(Result)^.join_group(PGtkRadioButton(w));
-          Break;
-        end;
-    end;
+        break;
+      end;
   end;
-end;
-
-procedure TGtk3RadioButton.InitializeWidget;
-begin
-  if Self.LCLObject.Name='HiddenRadioButton' then
-  begin
-    exit;
-   { PGtkRadioButton(Self.Widget)^.set_group(nil);
-   // PGtkRadioButton(Self.Widget)^.set_inconsistent(true);
-    PGtkRadioButton(Self.Widget)^.set_visible(false);}
-  end;
-  inherited InitializeWidget;
 end;
 
 function TGtk3RadioButton.getClientRect:TRect;
 var
   Alloc:TGtkAllocation;
-  R: TRect;
 begin
   Result := Rect(0, 0, 0, 0);
-  //Famous "HiddenRadioButton"
   if (Widget = nil) then
     exit;
   Widget^.get_allocation(@Alloc);
   Result := Bounds(Alloc.x, Alloc.y, Alloc.Width, Alloc.Height);
   Types.OffsetRect(Result, -Result.Left, -Result.Top);
+end;
+
+procedure TGtk3RadioButton.SetParent(AParent: TGtk3Widget; const ALeft, ATop: Integer);
+begin
+  inherited SetParent(AParent, ALeft, ATop);
+  if (LCLObject <> nil) and (LCLObject.Name = 'HiddenRadioButton') then
+  begin
+    FWidget^.set_visible(False);
+    FWidget^.set_no_show_all(True);
+    FWidget^.hide;
+  end;
 end;
 
 
