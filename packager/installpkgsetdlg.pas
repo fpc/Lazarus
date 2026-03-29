@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, Contnrs, AVL_Tree,
   // LCL
   LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  ExtCtrls, ComCtrls, ImgList,
+  ExtCtrls, ComCtrls, ImgList, Themes,
   // LazControls
   TreeFilterEdit,
   // Codetools
@@ -497,6 +497,7 @@ var
   Unknown: Boolean;
   PackageLink: TPackageLink;
   ImagesRes: TScaledImageListResolution;
+  Details: TThemedElementDetails;
 begin
   Tree:=Sender as TTreeView;
   if Stage=cdPostPaint then begin
@@ -539,6 +540,14 @@ begin
       ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayDesigntimePackage);
     if Unknown then
       ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayUnknown);
+    // draw base package nodes as disabled
+    if IsBase and not (cdsSelected in State) then begin
+      NodeRect := Node.DisplayRect(True);
+      NodeRect.Offset(Scale96ToFont(2), 0);
+      Details := ThemeServices.GetElementDetails(ttItemDisabled);
+      CurCanvas.FillRect(NodeRect); // paint over the original text
+      ThemeServices.DrawText(CurCanvas, Details, Node.Text, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0);
+    end;
   end;
   PaintImages:=false;
 end;
