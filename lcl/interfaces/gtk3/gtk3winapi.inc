@@ -3293,10 +3293,7 @@ begin
     if [wtWindow, wtHintWindow] * TGtk3Widget(Handle).WidgetType <> [] then
     begin
       AWindow := PGtkWindow(TGtk3Widget(Handle).Widget);
-      if not TGtk3Window(Handle).WidgetMapped then
-        AWindow := nil;
-
-      if AWindow <> nil then
+      if TGtk3Window(Handle).WidgetMapped then
         AGdkWindow := AWindow^.get_window
       else
         AGdkWindow := nil;
@@ -5128,7 +5125,15 @@ begin
     if FreshSrcPixbuf <> SrcContext.CurrentImage.Handle then
       g_object_unref(FreshSrcPixbuf);
   end else
-    DestContext.drawSurface(@ATargetRect, SrcContext.CairoSurface, @ASrcRect, nil, nil, nil);
+  begin
+    case Rop of
+      SRCAND, SRCPAINT, SRCINVERT, DSTINVERT,
+      NOTSRCCOPY, SRCERASE, NOTSRCERASE, MERGEPAINT:
+        DestContext.ApplyBitBltROP(SrcContext.CairoSurface, ATargetRect, ASrcRect, Rop);
+    else
+      DestContext.drawSurface(@ATargetRect, SrcContext.CairoSurface, @ASrcRect, nil, nil, nil);
+    end;
+  end;
 
   {$ifdef VerboseGtk3DeviceContext}
     DebugLn('Trace:< [TGtk3WidgetSet.StretchMaskBlt]');

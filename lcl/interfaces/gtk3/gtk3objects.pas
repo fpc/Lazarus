@@ -279,6 +279,7 @@ type
     procedure CreateObjects;
     procedure DeleteObjects;
   public
+    procedure ApplyBitBltROP(SrcSurface: Pcairo_surface_t; const ADestRect, ASrcRect: TRect; Rop: DWORD);
     procedure drawPixel(x, y: Integer; AColor: TColor);
     function pcr: Pcairo_t;
     function getPixel(x, y: Integer): TColor;
@@ -1861,6 +1862,186 @@ begin
   cairo_surface_destroy(TempSurface);
 end;
 
+procedure TGtk3DeviceContext.ApplyBitBltROP(SrcSurface: Pcairo_surface_t;
+  const ADestRect, ASrcRect: TRect; Rop: DWORD);
+var
+  DestSurface, TempSurface: Pcairo_surface_t;
+  DstData, SrcData, TmpData: PByte;
+  DstStride, SrcStride, TmpStride: Integer;
+  DstW, DstH, SrcW, SrcH: Integer;
+  CopyW, CopyH: Integer;
+  X, Y, SrcOff, DstOff: Integer;
+  TempCairo: Pcairo_t;
+begin
+  if not FOwnsSurface then
+    exit;
+
+  DestSurface := cairo_get_target(FCairo);
+  if DestSurface = nil then
+    exit;
+  if cairo_surface_get_type(DestSurface) <> CAIRO_SURFACE_TYPE_IMAGE then
+    exit;
+
+  cairo_surface_flush(DestSurface);
+
+  DstW := cairo_image_surface_get_width(DestSurface);
+  DstH := cairo_image_surface_get_height(DestSurface);
+  DstData := PByte(cairo_image_surface_get_data(DestSurface));
+  DstStride := cairo_image_surface_get_stride(DestSurface);
+  if DstData = nil then
+    exit;
+
+  //For DSTINVERT we only need destination, no source
+  if Rop = DSTINVERT then
+  begin
+    CopyW := ADestRect.Right - ADestRect.Left;
+    CopyH := ADestRect.Bottom - ADestRect.Top;
+    if (CopyW <= 0) or (CopyH <= 0) then
+      exit;
+    for Y := 0 to CopyH - 1 do
+    begin
+      if (ADestRect.Top + Y < 0) or (ADestRect.Top + Y >= DstH) then
+        continue;
+      for X := 0 to CopyW - 1 do
+      begin
+        if (ADestRect.Left + X < 0) or (ADestRect.Left + X >= DstW) then
+          continue;
+        DstOff := (ADestRect.Top + Y) * DstStride + (ADestRect.Left + X) * 4;
+        //BGRA
+        DstData[DstOff + 0] := not DstData[DstOff + 0];
+        DstData[DstOff + 1] := not DstData[DstOff + 1];
+        DstData[DstOff + 2] := not DstData[DstOff + 2];
+        DstData[DstOff + 3] := 255;
+      end;
+    end;
+    cairo_surface_mark_dirty(DestSurface);
+    exit;
+  end;
+
+  if SrcSurface = nil then
+    exit;
+  cairo_surface_flush(SrcSurface);
+
+  if cairo_surface_get_type(SrcSurface) <> CAIRO_SURFACE_TYPE_IMAGE then
+  begin
+    SrcW := ASrcRect.Right - ASrcRect.Left;
+    SrcH := ASrcRect.Bottom - ASrcRect.Top;
+    TempSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, SrcW, SrcH);
+    TempCairo := cairo_create(TempSurface);
+    cairo_set_source_surface(TempCairo, SrcSurface, -ASrcRect.Left, -ASrcRect.Top);
+    cairo_set_operator(TempCairo, CAIRO_OPERATOR_SOURCE);
+    cairo_paint(TempCairo);
+    cairo_destroy(TempCairo);
+    cairo_surface_flush(TempSurface);
+    SrcData := PByte(cairo_image_surface_get_data(TempSurface));
+    SrcStride := cairo_image_surface_get_stride(TempSurface);
+    SrcW := cairo_image_surface_get_width(TempSurface);
+    SrcH := cairo_image_surface_get_height(TempSurface);
+  end else
+  begin
+    TempSurface := nil;
+    SrcData := PByte(cairo_image_surface_get_data(SrcSurface));
+    SrcStride := cairo_image_surface_get_stride(SrcSurface);
+    SrcW := cairo_image_surface_get_width(SrcSurface);
+    SrcH := cairo_image_surface_get_height(SrcSurface);
+  end;
+
+  if SrcData = nil then
+  begin
+    if TempSurface <> nil then
+      cairo_surface_destroy(TempSurface);
+    exit;
+  end;
+
+  CopyW := ADestRect.Right - ADestRect.Left;
+  CopyH := ADestRect.Bottom - ADestRect.Top;
+  if CopyW <= 0 then
+    CopyW := 0;
+  if CopyH <= 0 then
+    CopyH := 0;
+
+  for Y := 0 to CopyH - 1 do
+  begin
+    if (ADestRect.Top + Y < 0) or (ADestRect.Top + Y >= DstH) then
+      continue;
+    if (ASrcRect.Top + Y < 0) or (ASrcRect.Top + Y >= SrcH) then
+      continue;
+    for X := 0 to CopyW - 1 do
+    begin
+      if (ADestRect.Left + X < 0) or (ADestRect.Left + X >= DstW) then
+        continue;
+      if (ASrcRect.Left + X < 0) or (ASrcRect.Left + X >= SrcW) then
+        continue;
+      DstOff := (ADestRect.Top + Y) * DstStride + (ADestRect.Left + X) * 4;
+      if TempSurface <> nil then
+        SrcOff := Y * SrcStride + X * 4
+      else
+        SrcOff := (ASrcRect.Top + Y) * SrcStride + (ASrcRect.Left + X) * 4;
+      //BGRA
+      case Rop of
+        SRCAND:
+        begin
+          DstData[DstOff + 0] := DstData[DstOff + 0] and SrcData[SrcOff + 0];
+          DstData[DstOff + 1] := DstData[DstOff + 1] and SrcData[SrcOff + 1];
+          DstData[DstOff + 2] := DstData[DstOff + 2] and SrcData[SrcOff + 2];
+          DstData[DstOff + 3] := 255;
+        end;
+        SRCPAINT:
+        begin
+          DstData[DstOff + 0] := DstData[DstOff + 0] or SrcData[SrcOff + 0];
+          DstData[DstOff + 1] := DstData[DstOff + 1] or SrcData[SrcOff + 1];
+          DstData[DstOff + 2] := DstData[DstOff + 2] or SrcData[SrcOff + 2];
+          DstData[DstOff + 3] := 255;
+        end;
+        SRCINVERT:
+        begin
+          DstData[DstOff + 0] := DstData[DstOff + 0] xor SrcData[SrcOff + 0];
+          DstData[DstOff + 1] := DstData[DstOff + 1] xor SrcData[SrcOff + 1];
+          DstData[DstOff + 2] := DstData[DstOff + 2] xor SrcData[SrcOff + 2];
+          DstData[DstOff + 3] := 255;
+        end;
+        NOTSRCCOPY:
+        begin
+          DstData[DstOff + 0] := not SrcData[SrcOff + 0];
+          DstData[DstOff + 1] := not SrcData[SrcOff + 1];
+          DstData[DstOff + 2] := not SrcData[SrcOff + 2];
+          DstData[DstOff + 3] := 255;
+        end;
+        SRCERASE:
+        begin
+          DstData[DstOff + 0] := SrcData[SrcOff + 0] and (not DstData[DstOff + 0]);
+          DstData[DstOff + 1] := SrcData[SrcOff + 1] and (not DstData[DstOff + 1]);
+          DstData[DstOff + 2] := SrcData[SrcOff + 2] and (not DstData[DstOff + 2]);
+          DstData[DstOff + 3] := 255;
+        end;
+        NOTSRCERASE:
+        begin
+          DstData[DstOff + 0] := not (DstData[DstOff + 0] or SrcData[SrcOff + 0]);
+          DstData[DstOff + 1] := not (DstData[DstOff + 1] or SrcData[SrcOff + 1]);
+          DstData[DstOff + 2] := not (DstData[DstOff + 2] or SrcData[SrcOff + 2]);
+          DstData[DstOff + 3] := 255;
+        end;
+        MERGEPAINT:
+        begin
+          DstData[DstOff + 0] := DstData[DstOff + 0] or (not SrcData[SrcOff + 0]);
+          DstData[DstOff + 1] := DstData[DstOff + 1] or (not SrcData[SrcOff + 1]);
+          DstData[DstOff + 2] := DstData[DstOff + 2] or (not SrcData[SrcOff + 2]);
+          DstData[DstOff + 3] := 255;
+        end;
+      else
+        //SRCCOPY
+        DstData[DstOff + 0] := SrcData[SrcOff + 0];
+        DstData[DstOff + 1] := SrcData[SrcOff + 1];
+        DstData[DstOff + 2] := SrcData[SrcOff + 2];
+        DstData[DstOff + 3] := SrcData[SrcOff + 3];
+      end;
+    end;
+  end;
+  cairo_surface_mark_dirty(DestSurface);
+
+  if TempSurface <> nil then
+    cairo_surface_destroy(TempSurface);
+end;
 
 procedure TGtk3DeviceContext.SetvImage(AValue: TGtk3Image);
 begin
