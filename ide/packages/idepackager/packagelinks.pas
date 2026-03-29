@@ -344,11 +344,13 @@ begin
   FUserLinksSortFile:=TAvlTree.Create(@CompareLinksForFilenameAndFileAge);
   FSavedChangeStamp:=CTInvalidChangeStamp;
   FChangeStamp:=CTInvalidChangeStamp;
+  InitCriticalSection(CritSec);   // For protecting FFileList.
 end;
 
 destructor TLazPackageLinks.Destroy;
 begin
   Clear;
+  DoneCriticalsection(CritSec);
   FreeAndNil(FUserLinksSortFile);
   FreeAndNil(FUserLinksSortID);
   FreeAndNil(FOnlineLinks);
@@ -834,64 +836,63 @@ var
   i: Integer;
 begin
   //debugln(['SaveUserLinksSub']);
-  LazSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
-  XMLConfig:=nil;
   EnterCriticalsection(CritSec);
   try
-  try
-    XMLConfig:=TXMLConfig.CreateClean(ConfigFilename);
-    // store user links
-    Path:='UserPkgLinks/';
-    XMLConfig.SetValue(Path+'Version',PkgLinksFileVersion);
-    ANode:=PkgLinks.FUserLinksSortID.FindLowest;
-    i:=0;
-    while ANode<>nil do begin
-      CurPkgLink:=TLazPackageLink(ANode.Data);
-      ANode:=PkgLinks.FUserLinksSortID.FindSuccessor(ANode);
-      inc(i);
-      ItemPath:=Path+'Item'+IntToStr(i)+'/';
-      XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
-      //debugln(['TPackageLinks.SaveUserLinks ',CurPkgLink.Name,' ',dbgs(Pointer(CurPkgLink))]);
-      PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
-      // save package files in lazarus directory relative
-      AFilename:=CurPkgLink.LPKFilename;
-      if (LazSrcDir<>'') and FileIsInPath(AFilename,LazSrcDir) then begin
-        AFilename:=CreateRelativePath(AFilename,LazSrcDir);
-        //DebugLn(['TPackageLinks.SaveUserLinks ',AFilename]);
+    LazSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+    try
+      XMLConfig:=TXMLConfig.CreateClean(ConfigFilename);
+      // store user links
+      Path:='UserPkgLinks/';
+      XMLConfig.SetValue(Path+'Version',PkgLinksFileVersion);
+      ANode:=PkgLinks.FUserLinksSortID.FindLowest;
+      i:=0;
+      while ANode<>nil do begin
+        CurPkgLink:=TLazPackageLink(ANode.Data);
+        ANode:=PkgLinks.FUserLinksSortID.FindSuccessor(ANode);
+        inc(i);
+        ItemPath:=Path+'Item'+IntToStr(i)+'/';
+        XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
+        //debugln(['TPackageLinks.SaveUserLinks ',CurPkgLink.Name,' ',dbgs(Pointer(CurPkgLink))]);
+        PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
+        // save package files in lazarus directory relative
+        AFilename:=CurPkgLink.LPKFilename;
+        if (LazSrcDir<>'') and FileIsInPath(AFilename,LazSrcDir) then begin
+          AFilename:=CreateRelativePath(AFilename,LazSrcDir);
+          //DebugLn(['TPackageLinks.SaveUserLinks ',AFilename]);
+        end;
+        XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',AFilename,'');
+        XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
+                     DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
       end;
-      XMLConfig.SetDeleteValue(ItemPath+'Filename/Value',AFilename,'');
-      XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
-                   DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
+      XMLConfig.SetDeleteValue(Path+'Count',i,0);
+      // store LastUsed dates of global links
+      Path:='GlobalPkgLinks/';
+      XMLConfig.SetValue(Path+'Version',PkgLinksFileVersion);
+      i:=0;
+      ANode:=PkgLinks.FGlobalLinks.FindLowest;
+      while ANode<>nil do begin
+        CurPkgLink:=TLazPackageLink(ANode.Data);
+        ANode:=PkgLinks.FGlobalLinks.FindSuccessor(ANode);
+        if CurPkgLink.LastUsed<=0 then continue;
+        inc(i);
+        ItemPath:=Path+'Item'+IntToStr(i)+'/';
+        XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
+        PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
+        XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
+                     DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
+      end;
+      XMLConfig.SetDeleteValue(Path+'Count',i,0);
+      InvalidateFileStateCache(ConfigFilename);
+      XMLConfig.Flush;
+      XMLConfig.Free;
+      PkgLinks.UserLinkLoadTime:=FileAgeCached(ConfigFilename);
+      PkgLinks.UserLinkLoadTimeValid:=true;
+    except
+      on E: Exception do begin
+        DebugLn('Note: (lazarus) unable to read ',ConfigFilename,' ',E.Message);
+        exit;
+      end;
     end;
-    XMLConfig.SetDeleteValue(Path+'Count',i,0);
-    // store LastUsed dates of global links
-    Path:='GlobalPkgLinks/';
-    XMLConfig.SetValue(Path+'Version',PkgLinksFileVersion);
-    i:=0;
-    ANode:=PkgLinks.FGlobalLinks.FindLowest;
-    while ANode<>nil do begin
-      CurPkgLink:=TLazPackageLink(ANode.Data);
-      ANode:=PkgLinks.FGlobalLinks.FindSuccessor(ANode);
-      if CurPkgLink.LastUsed<=0 then continue;
-      inc(i);
-      ItemPath:=Path+'Item'+IntToStr(i)+'/';
-      XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
-      PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
-      XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
-                   DateToCfgStr(CurPkgLink.LastUsed,DateTimeAsCfgStrFormat),'');
-    end;
-    XMLConfig.SetDeleteValue(Path+'Count',i,0);
-    InvalidateFileStateCache(ConfigFilename);
-    XMLConfig.Flush;
-    XMLConfig.Free;
-    PkgLinks.UserLinkLoadTime:=FileAgeCached(ConfigFilename);
-    PkgLinks.UserLinkLoadTimeValid:=true;
-  except
-    on E: Exception do begin
-      DebugLn('Note: (lazarus) unable to read ',ConfigFilename,' ',E.Message);
-      exit;
-    end;
-  end;
   finally
     LeaveCriticalSection(CritSec);
   end;
