@@ -72,12 +72,12 @@ type
     procedure BeforeReadProject; override;
     procedure AfterReadProject; override;
     procedure LoadFromLPI(aXMLConfig: TRttiXMLConfig; Path: string); override;
-    procedure LoadFromSession(aXMLConfig: TRttiXMLConfig; Path: string); override;
     procedure SaveToLPI(aXMLConfig: TRttiXMLConfig; Path: string); override;
     procedure SaveToSession(aXMLConfig: TRttiXMLConfig; Path: string); override;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure LoadFromSession(aXMLConfig: TRttiXMLConfig; Path: string); override;
   public
     function DebuggerPropertiesConfigList: TDebuggerPropertiesConfigList;
     function CurrentDebuggerClass: TDebuggerClass;

@@ -54,9 +54,11 @@ uses
   InputHistory,
   // IdeConfig
   RecentListProcs, IdeConfStrConsts,
+  // IdeProject
+  Project,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, MiscOptions, MainBase, SourceEditor,
-  Project;
+  LazarusIDEStrConsts,
+  EditorOptions, MiscOptions, MainBase, SourceEditor, EditableProject;
 
 type
 
@@ -203,7 +205,7 @@ end;
 function DoMakeResourceString: TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
+  ActiveUnitInfo: TEditableUnitInfo;
   SelectedStartPos, SelectedEndPos: TPoint;
   StartPos, EndPos, SectionCaretXY, CursorXY: TPoint;
   StartCode, EndCode, SectionCode, CursorCode: TCodeBuffer;

@@ -52,7 +52,7 @@ uses
   // IdePackager
   PackageDefs, BasePkgManager,
   // IDE
-  LazarusIDEStrConsts,
+  LazarusIDEStrConsts, EditableProject,
   // Converter
   ConvertBase, ConvertDelphi, ConvertSettings, UsedUnits, MissingUnits;
 
@@ -63,7 +63,7 @@ type
   TConvertSettingsPlugin = class(TConvertSettingsGui)
   private
   public
-    constructor Create(const ATitle: string);
+    constructor Create(const ATitle: string); override;
     destructor Destroy; override;
 
     function BeginCodeTools: boolean; override;
@@ -103,7 +103,8 @@ implementation
 
 procedure InitConversion;
 begin
-  TheSettingsClass:=TConvertSettingsPlugin;
+  ConvertBase.TheSettingsClass:=TConvertSettingsPlugin;
+  ConvertDelphi.UnitInfoClass:=TEditableUnitInfo;
 end;
 
 function RunConvertUnit: TModalResult;
@@ -258,7 +259,8 @@ begin
     Flags:=[cfQuiet]
   else
     Flags:=[];
-  Result:=LazarusIDE.DoCloseEditorFile(AUnitInfo.OpenEditorInfo[0].EditorComponent, Flags);
+  Result:=LazarusIDE.DoCloseEditorFile(
+           TEditableUnitInfo(AUnitInfo).OpenEditorInfo[0].EditorComponent, Flags);
 end;
 
 function TConvertSettingsPlugin.OpenEditorFile(AFileName: string): TModalResult;
@@ -280,7 +282,8 @@ begin
     Flags:=[sfCheckAmbiguousFiles,sfQuietUnitCheck]
   else
     Flags:=[];
-  Result:=LazarusIDE.DoSaveEditorFile(AUnitInfo.OpenEditorInfo[0].EditorComponent, Flags);
+  Result:=LazarusIDE.DoSaveEditorFile(
+           TEditableUnitInfo(AUnitInfo).OpenEditorInfo[0].EditorComponent, Flags);
 end;
 
 function TConvertSettingsPlugin.NewProject(AInfoFilename: string): iProjPack;

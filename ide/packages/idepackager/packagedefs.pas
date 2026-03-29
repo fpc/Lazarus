@@ -312,7 +312,7 @@ type
     procedure SetOutputDirectoryOverride(const AValue: string); override;
     procedure SetConditionals(AValue: string); override;
   public
-    constructor Create(const AOwner: TObject); override;
+    constructor Create(AOwner: TObject); override;
     // IDE options
     class function GetGroupCaption: string; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -4175,7 +4175,7 @@ begin
   inherited SetConditionals(AValue);
 end;
 
-constructor TPkgCompilerOptions.Create(const AOwner: TObject);
+constructor TPkgCompilerOptions.Create(AOwner: TObject);
 begin
   inherited Create(AOwner);
   if AOwner<>nil then

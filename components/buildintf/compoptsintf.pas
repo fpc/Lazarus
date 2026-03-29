@@ -336,7 +336,9 @@ type
     procedure SetUnitPaths(const AValue: String); virtual; abstract;
     procedure SetWriteConfigFilePath(AValue: String); virtual; abstract;
   public
-    constructor Create(const TheOwner: TObject); virtual;
+    constructor Create(TheOwner: TObject); virtual;
+    constructor Create(AOwner: TObject;
+                       AToolClass: TLazCompilationToolClass); virtual; abstract;
     destructor Destroy; override;
     function IsActive: boolean; virtual;
     function TrimCustomOptions(o: string): string; virtual; abstract;
@@ -1005,7 +1007,7 @@ begin
        or (FSavedChangeStamp<>FChangeStamp);
 end;
 
-constructor TLazCompilerOptions.Create(const TheOwner: TObject);
+constructor TLazCompilerOptions.Create(TheOwner: TObject);
 begin
   inherited Create;
   fOnChanged:=TMethodList.Create;

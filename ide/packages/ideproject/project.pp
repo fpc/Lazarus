@@ -46,24 +46,19 @@ uses
   {$ENDIF}
   // RTL + FCL
   Classes, SysUtils, TypInfo, System.UITypes,
-  // LCL
-  Forms,
   // CodeTools
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
   LinkScanner, CodeToolManager, CodeCache, CodeTree, StdCodeTools,
   // LazUtils
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache,
-  LazLoggerBase, LazTracer, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps, AvgLvlTree,
+  LazLoggerBase, LazTracer, FileReferenceList, LazUTF8, Laz2_XMLCfg, AvgLvlTree,
   // BuildIntf
   BaseIDEIntf, ProjPackIntf, ProjectIntf, PackageIntf, MacroIntf, MacroDefIntf,
   CompOptsIntf, IDEOptionsIntf, LazMsgWorker, UnitResourceIntf,
-  // IDEIntf
-  EditorSyntaxHighlighterDef, SrcEditorIntf,
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   IDECmdLine, IDEProcs, CompOptsModes, ProjectBuildMode, ModeMatrixOpts,
-  ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon,
-  RecentListProcs, IdeConfStrConsts,
+  ParsedCompilerOpts, CompilerOptions, EditDefineTree, ProjPackCommon, IdeConfStrConsts,
   // IdePackager
   IdePackagerStrConsts, PackageDefs,
   // IdeProject
@@ -73,18 +68,17 @@ type
   TUnitInfo = class;
   TProject = class;
 
-  TOnFileBackup = function(const FileToBackup: string):TModalResult of object;
-  TOnUnitNameChange = procedure(AnUnitInfo: TUnitInfo;
-       const OldUnitName, NewUnitName: string;
-       CheckIfAllowed: boolean;
-       var Allowed: boolean) of object;
-  TOnLoadProjectInfo = procedure(TheProject: TProject; XMLConfig: TXMLConfig;
-                                 Merge: boolean) of object;
-  TOnSaveProjectInfo = procedure(TheProject: TProject;
-               XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
-  TOnChangeProjectInfoFile = procedure(TheProject: TProject) of object;
-
-  TOnSaveUnitSessionInfoInfo = procedure(AUnitInfo: TUnitInfo) of object;
+  THasDesignerEvent = function(APersistent: TPersistent): boolean;
+  TFileBackupEvent = function(const FileToBackup: string):TModalResult of object;
+  TUnitNameChangeEvent = procedure(AnUnitInfo: TUnitInfo;
+                           const OldUnitName, NewUnitName: string;
+                           CheckIfAllowed: boolean; var Allowed: boolean) of object;
+  TLoadProjectInfoEvent = procedure(TheProject: TProject; XMLConfig: TXMLConfig;
+                                    Merge: boolean) of object;
+  TSaveProjectInfoEvent = procedure(TheProject: TProject;
+                 XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
+  TChangeProjectInfoFileEvent = procedure(TheProject: TProject) of object;
+  TSaveUnitSessionInfoEvent = procedure(AUnitInfo: TUnitInfo) of object;
 
   TUnitInfoList = (
     uilPartOfProject,
@@ -158,7 +152,7 @@ type
                             const PropName: string = ''): string;
   end;
 
-  //---------------------------------------------------------------------------
+  { TUnitInfo }
 
   TUnitInfoFlag = (
     uifAutoReferenceSourceDir,
@@ -181,94 +175,12 @@ type
     );
   TUnitInfoFlags = set of TUnitInfoFlag;
 
-  { TUnitEditorInfo }
-
-  TUnitEditorInfo = class
-  private
-    FEditorComponent: TSourceEditorInterface;
-    FUnitInfo: TUnitInfo;
-    procedure SetEditorComponent(const AValue: TSourceEditorInterface);
-  private
-    FIsLocked: Boolean;
-    FIsVisibleTab: Boolean;
-    FPageIndex: integer;
-    FWindowID: integer;
-    FTopLine: integer;
-    FCursorPos: TPoint;  // physical (screen) position
-    FFoldState: String;
-    FCustomSyntaxHighlighter: TIdeSyntaxHighlighterID;
-    procedure SetCursorPos(const AValue: TPoint);
-    procedure SetFoldState(AValue: String);
-    procedure SetIsLocked(const AValue: Boolean);
-    procedure SetPageIndex(const AValue: Integer);
-    procedure SetIsVisibleTab(const AValue: Boolean);
-    procedure SetCustomSyntaxHighlighter(AValue: TIdeSyntaxHighlighterID);
-    procedure SetTopLine(const AValue: Integer);
-    procedure SetWindowIndex(const AValue: Integer);
-  protected
-    procedure Clear;
-  public
-    constructor Create(aUnitInfo: TUnitInfo);
-    destructor Destroy; override;
-    property UnitInfo: TUnitInfo read FUnitInfo;
-    property EditorComponent: TSourceEditorInterface
-             read FEditorComponent write SetEditorComponent;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; SaveFold: Boolean);
-  public
-    property IsVisibleTab: Boolean read FIsVisibleTab write SetIsVisibleTab;
-    property PageIndex: Integer read FPageIndex write SetPageIndex;
-    property WindowID: Integer read FWindowID write SetWindowIndex;
-    property TopLine: Integer read FTopLine write SetTopLine;
-    property CursorPos: TPoint read FCursorPos write SetCursorPos;
-    property FoldState: String read FFoldState write SetFoldState;
-    property IsLocked: Boolean read FIsLocked  write SetIsLocked;
-    property CustomSyntaxHighlighter: TIdeSyntaxHighlighterID read FCustomSyntaxHighlighter write SetCustomSyntaxHighlighter; // User-set HL to override default
-  end;
-
-  { TUnitEditorInfoList }
-
-  TUnitEditorInfoList = class
-  private
-    FList: TFPList;
-    FUnitInfo: TUnitInfo;
-    function GetClosedEditorInfos(Index: Integer): TUnitEditorInfo;
-    function GetEditorInfos(Index: Integer): TUnitEditorInfo;
-    function GetOpenEditorInfos(Index: Integer): TUnitEditorInfo;
-  protected
-    procedure ClearEachInfo;
-    procedure SortByPageIndex;
-    procedure SetLastUsedEditor(AEditor:TSourceEditorInterface);
-    procedure MakeUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
-    procedure MakeUnUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
-    procedure Clear;
-  public
-    constructor Create(aUnitInfo: TUnitInfo);
-    destructor Destroy; override;
-    property EditorInfos[Index: Integer]: TUnitEditorInfo read GetEditorInfos; default;
-    property OpenEditorInfos[Index: Integer]: TUnitEditorInfo read GetOpenEditorInfos;
-    property ClosedEditorInfos[Index: Integer]: TUnitEditorInfo read GetClosedEditorInfos;
-    function Count: Integer;
-    function OpenCount: Integer;
-    function ClosedCount: Integer;
-    function IndexOfEditorComponent(anEditor: TSourceEditorInterface): Integer;
-    function NewEditorInfo: TUnitEditorInfo;
-    procedure Add(AEditorInfo: TUnitEditorInfo);
-    procedure Delete(Index: Integer);
-    procedure Remove(AEditorInfo: TUnitEditorInfo);
-  end;
-
-  { TUnitInfo }
-
   TUnitInfo = class(TLazProjectFile)
   private
     FComponentTypesToClasses: TStringToPointerTree;
     FComponentVarsToClasses: TStringToPointerTree;
-    FEditorInfoList: TUnitEditorInfoList;
     fAutoRevertLockCount: integer;// =0 means, codetools can auto update from disk
-    fBookmarks: TFileBookmarks;
     fComponent: TComponent;
-    FComponentState: TWindowState; // state of component when we save it
     FResourceBaseClass: TPFComponentBaseClass;
     fComponentName: string; { classname is always T<ComponentName>
          this attribute contains the component name,
@@ -284,26 +196,23 @@ type
     FFirstUsedByComponent: TUnitComponentDependency;
     FFlags: TUnitInfoFlags;
     fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
-    fOnFileBackup: TOnFileBackup;
+    fOnFileBackup: TFileBackupEvent;
     fOnLoadSaveFilename: TOnLoadSaveFilename;
-    FOnUnitNameChange: TOnUnitNameChange;
-    FProject: TProject;
+    FOnUnitNameChange: TUnitNameChangeEvent;
     FResourceBaseClassname: string;
     FRevertLockCount: integer;// >0 means IDE is currently reverting this unit
     fSource: TCodeBuffer;
     FSourceLFM: TCodeBuffer;
-    fUsageCount: extended;
+    fUsageCount: Extended;
     fSourceChangeStep: LongInt;
     FSourceDirectoryReferenced: boolean;
     fLastDirectoryReferenced: string;
-    FSetBookmarkLock: Integer;
     FUnitResourceFileformat: TUnitResourcefileFormatClass;
 
     function ComponentLFMOnDiskHasChanged: boolean;
     function GetAutoReferenceSourceDir: boolean;
     function GetBuildFileIfActive: boolean;
     function GetDisableI18NForLFM: boolean;
-    function GetEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetFileReadOnly: Boolean;
     function GetHasErrorInLFM: boolean;
     function GetHasResources: boolean;
@@ -312,7 +221,6 @@ type
     function GetLoadedDesigner: Boolean;
     function GetLoadingComponent: boolean;
     function GetModified: boolean;
-    function GetOpenEditorInfo(Index: Integer): TUnitEditorInfo;
     function GetRunFileIfActive: boolean;
     function GetSessionModified: boolean;
     function GetUnitResourceFileformat: TUnitResourcefileFormatClass;
@@ -329,7 +237,6 @@ type
     procedure SetLoadedDesigner(const AValue: Boolean);
     procedure SetLoadingComponent(AValue: boolean);
     procedure SetModified(const AValue: boolean);
-    procedure SetProject(const AValue: TProject);
     procedure SetRunFileIfActive(const AValue: boolean);
     procedure SetSessionModified(const AValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
@@ -337,20 +244,20 @@ type
     procedure SetTimeStamps;
     procedure SetUserReadOnly(const NewValue: boolean);
   protected
+    FProject: TProject;
     function GetFileName: string; override;
     procedure SetFilename(const AValue: string); override;
     procedure SetIsPartOfProject(const AValue: boolean); override;
-    procedure UpdateList(ListType: TUnitInfoList; Add: boolean);
     procedure SetInternalFilename(const NewFilename: string);
     procedure SetUnitName(const AValue: string); override;
-
-    procedure UpdatePageIndex;
+    procedure SetProject(const AValue: TProject); virtual;
+    procedure UpdateList(ListType: TUnitInfoList; Add: boolean);
   public
-    constructor Create(ACodeBuffer: TCodeBuffer);
+    constructor Create(ACodeBuffer: TCodeBuffer); virtual;
     destructor Destroy; override;
     function GetFileOwner: TObject; override;
     function GetFileOwnerName: string; override;
-
+    function HasOpenEditors: boolean; virtual;
     function IsChangedOnDisk(CheckLFM: boolean): boolean;
     function IsAutoRevertLocked: boolean;
     function IsReverting: boolean;
@@ -365,7 +272,7 @@ type
     function ShortFilename: string;
     function WriteUnitSource: TModalResult;
     function WriteUnitSourceToFile(const AFileName: string): TModalResult;
-    procedure Clear;
+    procedure Clear; virtual;
     procedure ClearModifieds; override;
     procedure ClearComponentDependencies;
     procedure WriteDebugReportUnitComponentDependencies(Prefix: string);
@@ -377,10 +284,10 @@ type
     function CreateUnitName: string;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 Merge, IgnoreIsPartOfProject: boolean;
-                                FileVersion: integer);
+                                FileVersion: integer); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               SaveData, SaveSession: boolean;
-                              UsePathDelim: TPathDelimSwitch);
+                              UsePathDelim: TPathDelimSwitch); virtual;
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: TDateTime);
     procedure UpdateSourceDirectoryReference;
@@ -402,22 +309,9 @@ type
                                      ): TUnitComponentDependency;
     function FindAncestorUnit: TUnitInfo;
     procedure ClearUnitComponentDependencies(ClearTypes: TUnitCompDependencyTypes);
-    // Bookmarks
-    function  AddBookmark(X, Y, ID: integer):integer;
-    function  AddBookmark(X, Y, ALeft, ATop, ID: integer):integer;
-    procedure DeleteBookmark(ID: integer);
-    // EditorInfo
-    // At any time, any UnitInfo has at least one EditorInfo
-    function EditorInfoCount: Integer;
-    property EditorInfo[Index: Integer]: TUnitEditorInfo read GetEditorInfo;
-    function OpenEditorInfoCount: Integer; // with EditorComponent assigned
-    property OpenEditorInfo[Index: Integer]: TUnitEditorInfo read GetOpenEditorInfo;
-    function GetClosedOrNewEditorInfo: TUnitEditorInfo;
-    procedure SetLastUsedEditor(AEditor:TSourceEditorInterface);
   public
     { Properties }
     property UnitResourceFileformat: TUnitResourcefileFormatClass read GetUnitResourceFileformat;
-    property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
     property BuildFileIfActive: boolean read GetBuildFileIfActive
                                         write SetBuildFileIfActive;
     property Component: TComponent read fComponent write SetComponent;
@@ -428,7 +322,6 @@ type
       write FComponentTypesToClasses; // classname to TComponentClass, for not registered and ambiguous classes in lfm
     property ComponentVarsToClasses: TStringToPointerTree read FComponentVarsToClasses
       write FComponentVarsToClasses; // variablename to TComponentClass, for ambiguous classes in lfm
-    property ComponentState: TWindowState read FComponentState write FComponentState;
     property ResourceBaseClass: TPFComponentBaseClass read FResourceBaseClass
                                                       write FResourceBaseClass;
     property ResourceBaseClassname: string read FResourceBaseClassname write FResourceBaseClassname;
@@ -452,10 +345,10 @@ type
     property LoadingComponent: boolean read GetLoadingComponent write SetLoadingComponent;
     property Modified: boolean read GetModified write SetModified;// not Session data
     property SessionModified: boolean read GetSessionModified write SetSessionModified;
-    property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
+    property OnFileBackup: TFileBackupEvent read fOnFileBackup write fOnFileBackup;
     property OnLoadSaveFilename: TOnLoadSaveFilename
                              read fOnLoadSaveFilename write fOnLoadSaveFilename;
-    property OnUnitNameChange: TOnUnitNameChange
+    property OnUnitNameChange: TUnitNameChangeEvent
                                  read FOnUnitNameChange write FOnUnitNameChange;
     property Project: TProject read FProject write SetProject;
     property RunFileIfActive: boolean read GetRunFileIfActive write SetRunFileIfActive;
@@ -465,6 +358,7 @@ type
     property AutoReferenceSourceDir: boolean read GetAutoReferenceSourceDir
                                              write SetAutoReferenceSourceDir;
   end;
+  TUnitInfoClass = class of TUnitInfo;
 
 
   { TIdeLazProjectFileList }
@@ -509,7 +403,6 @@ type
     FDefaultCompileReasons: TCompileReasons;
     procedure SetDefaultCompileReasons(const AValue: TCompileReasons);
   protected
-    procedure DoClearErrorLines; override;
     procedure SetCompileReasons(const AValue: TCompileReasons); override;
     procedure SubstituteMacros(var s: string); override;
   public
@@ -550,7 +443,8 @@ type
     function SubstituteProjectMacros(s: string;
                                      PlatformIndependent: boolean): string;
   public
-    constructor Create(const AOwner: TObject); override;
+    constructor Create(AOwner: TObject); override;
+    constructor Create(AOwner: TObject; AToolClass: TLazCompilationToolClass); override;
     destructor Destroy; override;
     function IsActive: boolean; override;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -618,12 +512,11 @@ type
     procedure BeforeReadProject; virtual; abstract;
     procedure AfterReadProject; virtual; abstract;
     procedure LoadFromLPI(aXMLConfig: TRttiXMLConfig; Path: string); virtual; abstract;
-    procedure LoadFromSession(aXMLConfig: TRttiXMLConfig; Path: string); virtual; abstract;
     procedure SaveToLPI(aXMLConfig: TRttiXMLConfig; Path: string); virtual; abstract;
+  public
+    procedure LoadFromSession(aXMLConfig: TRttiXMLConfig; Path: string); virtual; abstract;
     procedure SaveToSession(aXMLConfig: TRttiXMLConfig; Path: string); virtual; abstract;
   public
-    //constructor Create;
-    //destructor Destroy; override;
     property Project: TProject write SetProject;
   end;
 
@@ -645,34 +538,25 @@ type
   private
     FActiveBuildMode: TProjectBuildMode;
     FActiveBuildModeBackup: integer;
-    FActiveWindowIndexAtStart: integer;
     FBuildModes: TProjectBuildModes;
     FBuildModesBackup: TProjectBuildModes;
-    FAllEditorsInfoList: TUnitEditorInfoList;
-    FAllEditorsInfoMap: TMap;
     FAutoCreateForms: boolean;
-    FDebuggerLink: TProjectDebugLinkBase;
     FChangeStampSaved: integer;
     FEnableI18NForLFM: boolean;
-    FHistoryLists: THistoryLists;
     FLastCompileComplete: boolean;
     FMacroEngine: TTransferMacroList;
     FOnLoadSafeCustomData: TLazLoadSaveCustomDataEvent;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
-    FBookmarks: TProjectBookmarkList;
     fChanged: boolean;
-    fCurStorePathDelim: TPathDelimSwitch; // used by OnLoadSaveFilename
     FDefineTemplates: TProjectDefineTemplates;
     fDestroying: boolean;
     FEnableI18N: boolean;
     FI18NExcludedIdentifiers: TStrings;
     FI18NExcludedOriginals: TStrings;
     FForceUpdatePoFiles: Boolean;
-    fFirst, fLast: array[TUnitInfoList] of TUnitInfo;
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
-    FJumpHistory: TProjectJumpHistory;
     FLastCompilerFileDate: int64;
     FLastCompilerFilename: string;
     FLastCompilerParams: TStrings;
@@ -682,13 +566,12 @@ type
     FMainProject: boolean;
     fMainUnitID: Integer;
     FOnBeginUpdate: TNotifyEvent;
-    FOnChangeProjectInfoFile: TOnChangeProjectInfoFile;
+    FOnChangeProjectInfoFile: TChangeProjectInfoFileEvent;
     FOnEndUpdate: TEndUpdateProjectEvent;
-    fOnFileBackup: TOnFileBackup;
-    FOnLoadProjectInfo: TOnLoadProjectInfo;
-    FOnSaveProjectInfo: TOnSaveProjectInfo;
-    FOnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo;
-    fPathDelimChanged: boolean; // PathDelim in system and current config differ (see StorePathDelim and SessionStorePathDelim)
+    fOnFileBackup: TFileBackupEvent;
+    FOnLoadProjectInfo: TLoadProjectInfoEvent;
+    FOnSaveProjectInfo: TSaveProjectInfoEvent;
+    FOnSaveUnitSessionInfo: TSaveUnitSessionInfoEvent;
     FPOOutputDirectory: string;
     fProjectDirectory: string;
     fProjectDirectoryReferenced: string;
@@ -700,7 +583,6 @@ type
     FRevertLockCount: integer;
     FSessionModifiedBackup: boolean;
     FSessionStorePathDelim: TPathDelimSwitch;
-    FSkipCheckLCLInterfaces: boolean;
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: int64;
     FStateFlags: TLazProjectStateFlags;
@@ -710,13 +592,8 @@ type
     FUpdateLock: integer;
     FUseAsDefault: Boolean;
     // Variables used by ReadProject / WriteProject
-    FXMLConfig: TRttiXMLConfig;
-    FLoadAllOptions: Boolean; // All options / just options used as default for new projects
-    FNewMainUnitID: LongInt;
-    FProjectWriteFlags: TProjectWriteFlags;
     FSaveSessionInLPI: Boolean;
     procedure ClearBuildModes;
-    function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
     function GetCompilerOptions: TProjectCompilerOptions;
     function GetBaseCompilerOptions: TBaseCompilerOptions;
     function GetFilesBelongingToProject: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
@@ -724,7 +601,6 @@ type
     function GetFilesWithComponent: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
     function GetFilesWithEditorIndex: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
     function GetFilesWithRevertLock: TIdeLazProjectFileList.TLazProjectFileListEnumeration;
-    function GetFirstUnitWithEditorIndex: TUnitInfo;
     function GetIDEOptions: TProjectIDEOptions;
     function GetMainFilename: String;
     function GetMainUnitInfo: TUnitInfo;
@@ -734,12 +610,9 @@ type
     function GetTargetFilename: string;
     function GetUnits(Index: integer): TUnitInfo;
     function GetUseLegacyLists: Boolean;
-    function JumpHistoryCheckPosition(
-                                APosition:TProjectJumpHistoryPosition): boolean;
     procedure ClearSourceDirectories;
     procedure EmbeddedObjectModified(Sender: TObject);
     function FileBackupHandler(const Filename: string): TModalResult;
-    procedure LoadSaveFilenameHandler(var AFilename: string; Load: boolean);
     procedure UnitNameChangeHandler(AnUnitInfo: TUnitInfo;
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
@@ -763,34 +636,23 @@ type
     procedure UpdateUsageCounts(const ConfigFilename: string);
     function UnitMustBeSaved(UnitInfo: TUnitInfo; WriteFlags: TProjectWriteFlags;
                              SaveSession: boolean): boolean;
-    procedure UpdateVisibleEditor(PgIndex: integer);
-    procedure LoadDefaultSession;
-    procedure EditorInfoAdd(EdInfo: TUnitEditorInfo);
-    procedure EditorInfoRemove(EdInfo: TUnitEditorInfo);
+    //procedure LoadDefaultSession;
     procedure MacroEngineSubstitution({%H-}TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
       const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
     // Methods for ReadProject
     function LoadOldProjectType(const Path: string): TOldProjectType;
     procedure LoadFlags(const Path: string);
-    procedure LoadOtherDefines(const Path: string);
     procedure LoadCustomData(Sender: TObject; Data: TStringToStringTree;
       XMLConfig: TXMLConfig; const Path: string);
-    procedure LoadSessionInfo(const Path: string; Merge: boolean);
     procedure LoadFromLPI;
-    procedure LoadFromSession;
     function DoLoadLPI(Filename: String): TModalResult;
-    function DoLoadSession(Filename: String): TModalResult;
     function DoLoadLPR(Revert: boolean): TModalResult;
     // Methods for WriteProject
     procedure SaveFlags(const Path: string);
-    procedure SaveUnits(const Path: string; SaveSession: boolean);
-    procedure SaveOtherDefines(const Path: string);
     procedure SaveCustomData(Sender: TObject; Data: TStringToStringTree;
       XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveSessionInfo(const Path: string);
     procedure SaveToLPI;
-    procedure SaveToSession;
     function DoWrite(Filename: String; IsLpi: Boolean): TModalResult;
   protected
     function GetDirectory: string; override;
@@ -812,16 +674,37 @@ type
     procedure SetSessionModified(const AValue: boolean); override;
     procedure SetSessionStorage(const AValue: TProjectSessionStorage); override;
     procedure SetUseManifest(AValue: boolean); override;
-    //function GetCurrentDebuggerBackend: String; override;
   protected
+    fFirst, fLast: array[TUnitInfoList] of TUnitInfo;
+    FDebuggerLink: TProjectDebugLinkBase;
+    FSkipCheckLCLInterfaces: boolean;
+    // Variables used by ReadProject / WriteProject
+    FXMLConfig: TRttiXMLConfig;
+    FLoadAllOptions: Boolean; // All options / just options used as default for new projects
+    FNewMainUnitID: LongInt;
+    // PathDelim in system and current config differ (see StorePathDelim and SessionStorePathDelim)
+    FPathDelimChanged: boolean;
+    FCurStorePathDelim: TPathDelimSwitch; // used by OnLoadSaveFilename
+    FProjectWriteFlags: TProjectWriteFlags;
     // special unit lists
     procedure AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
     procedure RemoveFromList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
-
     procedure AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
+    procedure LoadSaveFilenameHandler(var AFilename: string; Load: boolean);
+    procedure LoadUnits(const Path: string; Merge: boolean);
+    procedure SortEditors; virtual;
+    // Session
+    procedure LoadSessionInfo(const {%H-}Path: string); virtual;
+    procedure LoadFromSession; virtual;
+    function DoLoadSession({%H-}Filename: String): TModalResult; virtual;
+    procedure LoadOtherDefines(const Path: string);
+    procedure SaveSessionInfo(const Path: string); virtual;
+    procedure SaveOtherDefines(const Path: string);
+    procedure SaveToSession; virtual;
+    procedure SaveUnits(const Path: string; SaveSession: boolean);
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
@@ -844,11 +727,11 @@ type
     function HasProjectInfoFileChangedOnDisk: boolean;
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
-                         GlobalMatrixOptions: TBuildMatrixOptions;
-                         LoadAllOptions: Boolean = True): TModalResult;
+        GlobalMatrixOptions: TBuildMatrixOptions;
+        LoadAllOptions: Boolean = True): TModalResult; virtual;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
-                          const OverrideProjectInfoFile: string;
-                          GlobalMatrixOptions: TBuildMatrixOptions): TModalResult;
+        const OverrideProjectInfoFile: string;
+        GlobalMatrixOptions: TBuildMatrixOptions): TModalResult; virtual;
     procedure UpdateExecutableType; override;
     procedure BackupSession;
     procedure RestoreSession;
@@ -873,16 +756,9 @@ type
     // true if something changed
     function RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true): boolean;
     function CreateProjectFile(const Filename: string): TLazProjectFile; override;
-    function GetAndUpdateVisibleUnit(AnEditor: TSourceEditorInterface;
-                                     AWindowID: Integer): TUnitInfo;
-    procedure UpdateAllVisibleUnits;
     // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
     function IndexOfUnitWithName(const AnUnitName: string;
-                      OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
-    function IndexOfUnitWithComponent(AComponent: TComponent;
-                      OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
-    function IndexOfUnitWithComponentName(const AComponentName: string;
                       OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfFilename(const AFilename: string): integer;
     function IndexOfFilename(const AFilename: string;
@@ -891,7 +767,6 @@ type
     function ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
     function ProjectUnitWithShortFilename(const ShortFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
-    function UnitWithEditorComponent(AEditor:TSourceEditorInterface): TUnitInfo;
     function UnitWithComponent(AComponent: TComponent): TUnitInfo;
     function UnitWithComponentClass(AClass: TComponentClass): TUnitInfo;
     function UnitWithComponentClassName(const AClassName: string): TUnitInfo;
@@ -908,9 +783,6 @@ type
                     SearchFlags: TProjectFileSearchFlags): TUnitInfo;
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
     function UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo; // only currently open lfm (SourceLFM<>nil)
-    function AllEditorsInfoCount: Integer;
-    property AllEditorsInfo[Index: Integer]: TUnitEditorInfo read GetAllEditorsInfo;
-    function EditorInfoWithEditorComponent({%H-}AEditor:TSourceEditorInterface): TUnitEditorInfo;
     function SearchFile(const ShortFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TUnitInfo;
     function FindFile(const AFilename: string;
@@ -986,26 +858,15 @@ type
     function LoadStateFile(IgnoreErrors: boolean): TModalResult;
     function SaveStateFile(const CompilerFilename: string; CompilerParams: TStrings;
                            Complete: boolean): TModalResult;
-
     // i18n
     function GetPOOutDirectory: string;
-
-    // bookmarks
-    function  AddBookmark(X, Y, ID: Integer; AUnitInfo:TUnitInfo):integer;
-    function  AddBookmark(X, Y, ALeft, ATop, ID: Integer; AUnitInfo:TUnitInfo):integer;
-    procedure DeleteBookmark(ID: Integer);
   public
     property ActiveBuildMode: TProjectBuildMode read FActiveBuildMode
                                                 write SetActiveBuildMode;
-    property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
-                                               write FActiveWindowIndexAtStart;
     property AutoCreateForms: boolean read FAutoCreateForms write FAutoCreateForms; // add CreateForm for new forms
     property AutoOpenDesignerFormsDisabled: boolean read FAutoOpenDesignerFormsDisabled
                                                     write SetAutoOpenDesignerFormsDisabled;
-    property Bookmarks: TProjectBookmarkList read FBookmarks write FBookmarks;
     property BuildModes: TProjectBuildModes read FBuildModes;
-    property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
-                                             write SetSkipCheckLCLInterfaces;
     property CompilerOptions: TProjectCompilerOptions read GetCompilerOptions;
     property DebuggerLink: TProjectDebugLinkBase read FDebuggerLink write FDebuggerLink;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
@@ -1018,11 +879,9 @@ type
     property ForceUpdatePoFiles: Boolean read FForceUpdatePoFiles write FForceUpdatePoFiles;
     property FirstRemovedDependency: TPkgDependency read FFirstRemovedDependency;
     property FirstRequiredDependency: TPkgDependency read FFirstRequiredDependency;
-    property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
     property IDAsString: string read GetIDAsString;
     property IDAsWord: string read GetIDAsWord;
     property IDEOptions: TProjectIDEOptions read GetIDEOptions;
-    property JumpHistory: TProjectJumpHistory read FJumpHistory write FJumpHistory;
     property LastCompilerFileDate: int64 read FLastCompilerFileDate
                                           write FLastCompilerFileDate;
     property LastCompilerFilename: string read FLastCompilerFilename
@@ -1036,15 +895,15 @@ type
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
-    property OnChangeProjectInfoFile: TOnChangeProjectInfoFile read FOnChangeProjectInfoFile
+    property OnChangeProjectInfoFile: TChangeProjectInfoFileEvent read FOnChangeProjectInfoFile
                                                  write FOnChangeProjectInfoFile;
     property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
-    property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
-    property OnLoadProjectInfo: TOnLoadProjectInfo read FOnLoadProjectInfo
+    property OnFileBackup: TFileBackupEvent read fOnFileBackup write fOnFileBackup;
+    property OnLoadProjectInfo: TLoadProjectInfoEvent read FOnLoadProjectInfo
                                                    write FOnLoadProjectInfo;
-    property OnSaveProjectInfo: TOnSaveProjectInfo read FOnSaveProjectInfo
+    property OnSaveProjectInfo: TSaveProjectInfoEvent read FOnSaveProjectInfo
                                                    write FOnSaveProjectInfo;
-    property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
+    property OnSaveUnitSessionInfo: TSaveUnitSessionInfoEvent
       read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
     property OnLoadSafeCustomData: TLazLoadSaveCustomDataEvent read FOnLoadSafeCustomData write FOnLoadSafeCustomData;
     property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
@@ -1052,7 +911,8 @@ type
     property ProjResources: TProjectResources read GetProjResources;
 
     property RunParameterOptions: TRunParamsOptions read GetRunParameterOptions;
-    property HistoryLists: THistoryLists read FHistoryLists;
+    property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
+                                             write SetSkipCheckLCLInterfaces;
     property SourceDirectories: TFileReferenceList read GetSourceDirectories;
     property StateFileDate: int64 read FStateFileDate write FStateFileDate;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
@@ -1078,11 +938,14 @@ const
   OldProjectTypeNames : array[TOldProjectType] of string = (
       'Application', 'Program', 'Custom program'
     );
+  ProjectInfoFileVersion = 12;
   mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];  // Same as in LCL Dialogs.
 
 var
   Project1: TProject absolute LazProject1;// the main project
-  
+  OnHasDesigner: THasDesignerEvent;
+  UnitInfoClass: TUnitInfoClass;
+
 function AddCompileReasonsDiff(const PropertyName: string;
        const Old, New: TCompileReasons; Tool: TCompilerDiffTool = nil): boolean;
 function dbgs(aType: TUnitCompDependencyType): string; overload;
@@ -1090,10 +953,10 @@ function dbgs(Types: TUnitCompDependencyTypes): string; overload;
 function dbgs(Flag: TUnitInfoFlag): string; overload;
 function dbgs(Flags: TUnitInfoFlags): string; overload;
 
+
 implementation
 
 const
-  ProjectInfoFileVersion = 12;
   ProjOptionsPath = 'ProjectOptions/';
 
 
@@ -1149,331 +1012,12 @@ begin
   Result:='['+Result+']';
 end;
 
-{ TUnitEditorInfo }
-
-procedure TUnitEditorInfo.SetEditorComponent(const AValue: TSourceEditorInterface);
-begin
-  if FEditorComponent = AValue then exit;
-  if AValue = nil then begin
-    fUnitInfo.Project.FAllEditorsInfoMap.Delete(FEditorComponent);
-    FEditorComponent := AValue;
-    UnitInfo.FEditorInfoList.MakeUnUsedEditorInfo(Self);
-    PageIndex := -1; // calls UnitInfo.UpdatePageIndex
-    IsLocked := False;
-  end
-  else begin
-    PageIndex := -1;
-    with fUnitInfo.Project do             // Map for lookup: Editor -> EditorInfo
-      if not FAllEditorsInfoMap.HasId(AValue) then
-        FAllEditorsInfoMap.Add(AValue, Self);
-    FEditorComponent := AValue;
-    UnitInfo.FEditorInfoList.MakeUsedEditorInfo(Self);
-    AValue.UpdateProjectFile; // Set EditorIndex / calls UnitInfo.UpdatePageIndex
-  end;
-  FUnitInfo.SessionModified:=true;
-end;
-
-procedure TUnitEditorInfo.SetPageIndex(const AValue: Integer);
-begin
-  if FPageIndex = AValue then exit;
-  FPageIndex := AValue;
-  FUnitInfo.UpdatePageIndex;
-  FUnitInfo.SessionModified := True;
-end;
-
-procedure TUnitEditorInfo.SetFoldState(AValue: String);
-begin
-  if FFoldState = AValue then Exit;
-  FFoldState := AValue;
-  FUnitInfo.SessionModified := True;
-end;
-
-procedure TUnitEditorInfo.SetIsLocked(const AValue: Boolean);
-begin
-  if FIsLocked=AValue then Exit;
-  FIsLocked:=AValue;
-  FUnitInfo.SessionModified := True;
-end;
-
-procedure TUnitEditorInfo.SetCursorPos(const AValue: TPoint);
-begin
-  if ComparePoints(FCursorPos,AValue)=0 then Exit;
-  FCursorPos:=AValue;
-  FUnitInfo.SessionModified := True;
-end;
-
-procedure TUnitEditorInfo.SetIsVisibleTab(const AValue: Boolean);
-begin
-  if FIsVisibleTab = AValue then exit;
-  FIsVisibleTab := AValue;
-  FUnitInfo.SessionModified := True;
-end;
-
-procedure TUnitEditorInfo.SetCustomSyntaxHighlighter(AValue: TIdeSyntaxHighlighterID);
-begin
-  if FCustomSyntaxHighlighter = AValue then Exit;
-  FCustomSyntaxHighlighter := AValue;
-  FUnitInfo.SessionModified := True;
-end;
-
-procedure TUnitEditorInfo.SetTopLine(const AValue: Integer);
-begin
-  if FTopLine=AValue then Exit;
-  FTopLine:=AValue;
-  FUnitInfo.SessionModified := True;
-end;
-
-procedure TUnitEditorInfo.SetWindowIndex(const AValue: Integer);
-begin
-  if FWindowID = AValue then exit;
-  FWindowID := AValue;
-  FUnitInfo.SessionModified := True;
-end;
-
-procedure TUnitEditorInfo.Clear;
-begin
-  FIsVisibleTab := False;
-  FPageIndex := -1;
-  FWindowID := -1;
-  FTopLine := -1;
-  FCursorPos.X := -1;
-  FCursorPos.Y := -1;
-  FFoldState := '';
-  FCustomSyntaxHighlighter := IdeHighlighterNotSpecifiedId;
-end;
-
-constructor TUnitEditorInfo.Create(aUnitInfo: TUnitInfo);
-begin
-  FUnitInfo := aUnitInfo;
-  Clear;
-  if FUnitInfo.Project <> nil then
-    FUnitInfo.Project.EditorInfoAdd(Self);
-end;
-
-destructor TUnitEditorInfo.Destroy;
-begin
-  if FUnitInfo.Project <> nil then
-    FUnitInfo.Project.EditorInfoRemove(Self);
-  inherited Destroy;
-end;
-
-procedure TUnitEditorInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-begin
-  IsVisibleTab := XMLConfig.GetValue(Path+'IsVisibleTab/Value', False);
-  FPageIndex    := XMLConfig.GetValue(Path+'EditorIndex/Value',0);
-  WindowID  := XMLConfig.GetValue(Path+'WindowIndex/Value',0);
-  // update old data
-  if (FPageIndex >= 0) and (FWindowID < 0) then
-    WindowID := 1;
-  FTopLine  := XMLConfig.GetValue(Path+'TopLine/Value',1);
-  FCursorPos := Point(XMLConfig.GetValue(Path+'CursorPos/X',1),
-                     XMLConfig.GetValue(Path+'CursorPos/Y',1));
-  FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
-  FIsLocked := XMLConfig.GetValue(Path+'IsLocked/Value', False);
-  if IdeSyntaxHighlighters <> nil then
-    FCustomSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForName(
-                     XMLConfig.GetValue(Path+'SyntaxHighlighter/Value',
-                     IdeSyntaxHighlighters.Names[IdeHighlighterNotSpecifiedId]))
-  else
-    FCustomSyntaxHighlighter := IdeHighlighterUnknownId;
-end;
-
-procedure TUnitEditorInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  SaveFold: Boolean);
-begin
-  XMLConfig.SetDeleteValue(Path+'IsVisibleTab/Value', FIsVisibleTab, False);
-  XMLConfig.SetDeleteValue(Path+'EditorIndex/Value', FPageIndex, 0);
-  XMLConfig.SetDeleteValue(Path+'WindowIndex/Value', FWindowID, 0);
-  XMLConfig.SetDeleteValue(Path+'TopLine/Value', FTopLine, 1);
-  XMLConfig.SetDeleteValue(Path+'CursorPos/X', FCursorPos.X, 1);
-  XMLConfig.SetDeleteValue(Path+'CursorPos/Y', FCursorPos.Y, 1);
-  XMLConfig.SetDeleteValue(Path+'IsLocked/Value', FIsLocked, False);
-  if SaveFold then
-    XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '')
-  else
-    XMLConfig.DeletePath(Path+'FoldState');
-  if (FCustomSyntaxHighlighter <> IdeHighlighterUnknownId) and // Don't overwrite, if the value is currently not registerd
-     (IdeSyntaxHighlighters <> nil)
-  then
-    XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
-                             IdeSyntaxHighlighters.Names[FCustomSyntaxHighlighter], '');
-end;
-
-{ TUnitEditorInfoList }
-
-function TUnitEditorInfoList.GetEditorInfos(Index: Integer): TUnitEditorInfo;
-begin
-  Result := TUnitEditorInfo(FList[Index]);
-end;
-
-function TUnitEditorInfoList.GetClosedEditorInfos(Index: Integer): TUnitEditorInfo;
-var
-  i: Integer;
-begin
-  i := 0;
-  while (i < Count) and (Index >= 0) do begin
-    Result := EditorInfos[i];
-    if Result.EditorComponent = nil then dec(Index);
-    inc(i);
-  end;
-  if Index >= 0 then
-    Result := nil;
-end;
-
-function TUnitEditorInfoList.GetOpenEditorInfos(Index: Integer): TUnitEditorInfo;
-var
-  i: Integer;
-begin
-  i := 0;
-  while (i < Count) and (Index >= 0) do begin
-    Result := EditorInfos[i];
-    if Result.EditorComponent <> nil then dec(Index);
-    inc(i);
-  end;
-  if Index >= 0 then
-    Result := nil;
-end;
-
-procedure TUnitEditorInfoList.ClearEachInfo;
-var
-  i: Integer;
-begin
-  for i := 0 to Count - 1 do
-    EditorInfos[i].Clear;
-end;
-
-function CompareEditorInfoByPageIndex(EditorInfo1, EditorInfo2: TUnitEditorInfo): integer;
-begin
-  Result := EditorInfo1.WindowID - EditorInfo2.WindowID;
-  if Result = 0 then
-    Result := EditorInfo1.PageIndex - EditorInfo2.PageIndex;
-end;
-
-procedure TUnitEditorInfoList.SortByPageIndex;
-begin
-  FList.Sort(TListSortCompare(@CompareEditorInfoByPageIndex));
-end;
-
-procedure TUnitEditorInfoList.SetLastUsedEditor(AEditor: TSourceEditorInterface);
-var
-  i: Integer;
-begin
-  i := IndexOfEditorComponent(AEditor);
-  if i <> 0 then
-    FList.Move(i, 0);
-end;
-
-procedure TUnitEditorInfoList.MakeUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
-var
-  i, j: Integer;
-begin
-  i := FList.IndexOf(AEditorInfo);
-  j := OpenCount;
-  if (i > j) and (j < Count) then
-    FList.Move(i, j);
-end;
-
-procedure TUnitEditorInfoList.MakeUnUsedEditorInfo(AEditorInfo: TUnitEditorInfo);
-var
-  i: Integer;
-begin
-  i := FList.IndexOf(AEditorInfo);
-  if i <> FList.Count - 1 then
-    FList.Move(i, FList.Count - 1);
-end;
-
-procedure TUnitEditorInfoList.Clear;
-begin
-  while Count > 0 do begin
-    EditorInfos[0].Free;
-    Delete(0);
-  end;
-end;
-
-constructor TUnitEditorInfoList.Create(aUnitInfo: TUnitInfo);
-begin
-  FUnitInfo := aUnitInfo;
-  FList := TFPList.Create;
-end;
-
-destructor TUnitEditorInfoList.Destroy;
-begin
-  Clear;
-  FreeAndNil(FList);
-  inherited Destroy;
-end;
-
-function TUnitEditorInfoList.Count: Integer;
-begin
-  Result := FList.Count;
-end;
-
-function TUnitEditorInfoList.OpenCount: Integer;
-var
-  i: Integer;
-begin
-  i := Count - 1;
-  Result := 0;
-  while i >= 0 do begin
-    if EditorInfos[i].EditorComponent <> nil then inc(Result);
-    dec(i);
-  end;
-end;
-
-function TUnitEditorInfoList.ClosedCount: Integer;
-var
-  i: Integer;
-begin
-  i := Count - 1;
-  Result := 0;
-  while i >= 0 do begin
-    if EditorInfos[i].EditorComponent = nil then inc(Result);
-    dec(i);
-  end;
-end;
-
-function TUnitEditorInfoList.IndexOfEditorComponent(anEditor: TSourceEditorInterface): Integer;
-begin
-  Result := Count - 1;
-  while (Result >= 0) and (EditorInfos[Result].EditorComponent <> anEditor) do
-    dec(Result);
-end;
-
-function TUnitEditorInfoList.NewEditorInfo: TUnitEditorInfo;
-begin
-  Result := TUnitEditorInfo.Create(FUnitInfo);
-  FList.Add(Result);
-end;
-
-procedure TUnitEditorInfoList.Add(AEditorInfo: TUnitEditorInfo);
-begin
-  FList.Add(AEditorInfo);
-end;
-
-procedure TUnitEditorInfoList.Delete(Index: Integer);
-begin
-  Flist.Delete(Index);
-end;
-
-procedure TUnitEditorInfoList.Remove(AEditorInfo: TUnitEditorInfo);
-var
-  i: LongInt;
-begin
-  i := FList.IndexOf(AEditorInfo);
-  if i >= 0 then
-    Delete(i);
-end;
-
 {------------------------------------------------------------------------------
   TUnitInfo Constructor
  ------------------------------------------------------------------------------}
 constructor TUnitInfo.Create(ACodeBuffer: TCodeBuffer);
 begin
   inherited Create;
-  //DebugLn('Trace:Project Unit Info Class Created');
-  FEditorInfoList := TUnitEditorInfoList.Create(Self);
-  FEditorInfoList.NewEditorInfo;
-  FBookmarks:=TFileBookmarks.Create;
   Clear;
   Source := ACodeBuffer;
   if Source=nil then
@@ -1487,9 +1031,7 @@ destructor TUnitInfo.Destroy;
 begin
   Component:=nil;
   Source:=nil;
-  FreeAndNil(FBookmarks);
   Project:=nil;
-  FreeAndNil(FEditorInfoList);
   FreeAndNil(FComponentTypesToClasses);
   FreeAndNil(FComponentVarsToClasses);
   inherited Destroy;
@@ -1642,15 +1184,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.Clear;
 begin
-  FBookmarks.Clear;
-  FSetBookmarkLock := 0;
   BuildFileIfActive:=false;
   fComponent := nil;
   fComponentName := '';
   fComponentResourceName := '';
-  FComponentState := wsNormal;
   DisableI18NForLFM:=false;
-  FEditorInfoList.ClearEachInfo;
   fFilename := '';
   FileReadOnly := false;
   HasResources := false;
@@ -1660,7 +1198,7 @@ begin
   SessionModified := false;
   RunFileIfActive:=false;
   FUnitName := '';
-  fUsageCount:=-1;
+  fUsageCount := -1;
   UserReadOnly := false;
   if fSource<>nil then fSource.Clear;
   Loaded := false;
@@ -1713,9 +1251,7 @@ procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   SaveData, SaveSession: boolean; UsePathDelim: TPathDelimSwitch);
 var
   AFilename: String;
-  i, X, Y, L, T: Integer;
   s: String;
-  BM: TFileBookmark;
 begin
   // global data
   AFilename:=Filename;
@@ -1752,38 +1288,12 @@ begin
   // session data
   if SaveSession then 
   begin
-    FEditorInfoList[0].SaveToXMLConfig(XMLConfig, Path, pfSaveFoldState in Project.Flags);
-    XMLConfig.SetDeleteValue(Path+'ExtraEditorCount/Value', FEditorInfoList.Count-1, 0);
-    for i := 1 to FEditorInfoList.Count - 1 do
-      FEditorInfoList[i].SaveToXMLConfig(XMLConfig, Path + 'ExtraEditor'+IntToStr(i)+'/',
-                                         pfSaveFoldState in Project.Flags);
-
-    XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
-
-    XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
-    if OpenEditorInfoCount > 0 then
-      for i := Bookmarks.Count - 1 downto 0 do
-      begin
-        BM := Bookmarks[i];
-        if (Project.Bookmarks.BookmarkWithID(BM.ID) = nil) or
-           (Project.Bookmarks.BookmarkWithID(BM.ID).UnitInfo <> self)
-        then
-          Bookmarks.Delete(i)
-        else
-        if OpenEditorInfo[0].EditorComponent.GetBookMark(BM.ID, X, Y, L, T) then begin
-          BM.CursorPos := Point(X, Y);
-          BM.Top  := T;
-          BM.Left := L;
-        end;
-      end;
-    FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
     XMLConfig.SetDeleteValue(Path+'Loaded/Value',Loaded,false);
     XMLConfig.SetDeleteValue(Path+'LoadedDesigner/Value',LoadedDesigner,false);
     XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',UserReadOnly,false);
-    XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',
-                             BuildFileIfActive,false);
-    XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
-                             RunFileIfActive,false);
+    XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',BuildFileIfActive,false);
+    XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',RunFileIfActive,false);
+    XMLConfig.SetDeleteValue(Path+'UsageCount/Value',RoundToInt(fUsageCount),-1);
     // save custom session data
     SaveStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
   end;
@@ -1797,7 +1307,6 @@ procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   FileVersion: integer);
 var
   AFilename: string;
-  c, i: Integer;
 begin
   // project data
   if not Merge then begin
@@ -1810,7 +1319,6 @@ begin
     fComponentName:=XMLConfig.GetValue(Path+'ComponentName/Value','');
     if fComponentName='' then
       fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
-    FComponentState := TWindowState(XMLConfig.GetValue(Path+'ComponentState/Value',0));
     DisableI18NForLFM:=XMLConfig.GetValue(Path+'DisableI18NForLFM/Value',false);
     HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
     FResourceBaseClass:=StrToComponentBaseClass(
@@ -1833,19 +1341,11 @@ begin
     end else
       FUnitName:='';
 
-    // save custom data
+    // load custom data
     Project.LoadCustomData(Self,CustomData,XMLConfig,Path+'CustomData/');
   end;
 
   // session data
-  FEditorInfoList.Clear;
-  FEditorInfoList.NewEditorInfo;
-  FEditorInfoList[0].LoadFromXMLConfig(XMLConfig, Path);
-  c := XMLConfig.GetValue(Path+'ExtraEditorCount/Value', 0);
-  for i := 1 to c do
-    FEditorInfoList.NewEditorInfo.LoadFromXMLConfig(XMLConfig, Path + 'ExtraEditor'+IntToStr(i)+'/');
-  UpdatePageIndex;
-
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
   if Loaded then
     LoadedDesigner:=XMLConfig.GetValue(Path+'LoadedDesigner/Value',FileVersion<8)
@@ -1860,7 +1360,6 @@ begin
     if IsPartOfProject then
       UpdateUsageCount(uuIsPartOfProject,1);
   end;
-  FBookmarks.LoadFromXMLConfig(XMLConfig,Path+'Bookmarks/');
   // load custom session data
   LoadStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
 end;
@@ -1893,6 +1392,11 @@ begin
   end;
 end;
 
+function TUnitInfo.HasOpenEditors: boolean;
+begin
+  Result:=false;
+end;
+
 procedure TUnitInfo.UpdateList(ListType: TUnitInfoList; Add: boolean);
 begin
   if Project<>nil then begin
@@ -1921,43 +1425,6 @@ begin
   
   fFileName:=NewFilename;
   UpdateSourceDirectoryReference;
-end;
-
-procedure TUnitInfo.UpdatePageIndex;
-var
-  HasPageIndex: Boolean;
-  i, j: integer;
-  BM: TFileBookmark;
-begin
-  HasPageIndex := False;
-  i := FEditorInfoList.Count - 1;
-  while (i >= 0) and not HasPageIndex do begin
-    if EditorInfo[i].PageIndex >= 0 then
-      HasPageIndex := True;
-    dec(i);
-  end;
-  UpdateList(uilWithEditorIndex, HasPageIndex);
-
-  if Assigned(Project1) and Assigned(Project1.Bookmarks) then
-  begin
-    if OpenEditorInfoCount > 0 then begin
-      inc(FSetBookmarkLock);
-      try
-        // Adjust bookmarks
-        for i := Bookmarks.Count-1 downto 0 do
-        begin
-          BM := Bookmarks[i];
-          j := Project1.Bookmarks.IndexOfID(BM.ID);
-          if (j < 0) then
-            OpenEditorInfo[0].EditorComponent.SetBookMark(BM.ID, BM.CursorPos.X, BM.CursorPos.Y, BM.Left, BM.Top);
-        end;
-      finally
-        dec(FSetBookmarkLock);
-      end;
-    end
-    else // OpenEditorInfoCount = 0
-      Project1.Bookmarks.DeleteAllWithUnitInfo(Self);
-  end;
 end;
 
 function TUnitInfo.GetFileName: string;
@@ -2157,13 +1624,9 @@ begin
 end;
 
 procedure TUnitInfo.SetSourceText(const SourceText: string; Beautify: boolean);
-var
-  Src: String;
 begin
-  Src:=SourceText;
-  if Beautify then
-    Src:=SourceEditorManagerIntf.Beautify(Src);
-  Source.Source:=Src;
+  // Ignore Beautify here. Inherited class TEditableUnitInfo implements it.
+  Source.Source:=SourceText;
 end;
 
 function TUnitInfo.GetSourceText: string;
@@ -2272,61 +1735,6 @@ begin
   end;
 end;
 
-function TUnitInfo.AddBookmark(X, Y, ID: integer): integer;
-begin
-  if FSetBookmarkLock = 0 then
-    Result := Bookmarks.Add(X, Y, ID)
-  else
-    Result := -1;
-  SessionModified := True;
-  Project1.AddBookmark(X, Y, ID, Self);
-end;
-
-function TUnitInfo.AddBookmark(X, Y, ALeft, ATop, ID: integer): integer;
-begin
-  if FSetBookmarkLock = 0 then
-    Result := Bookmarks.Add(X, Y, ALeft, ATop, ID)
-  else
-    Result := -1;
-  SessionModified := True;
-  Project1.AddBookmark(X, Y, ALeft, ATop, ID, Self);
-end;
-
-procedure TUnitInfo.DeleteBookmark(ID: integer);
-var
-  i: Integer;
-begin
-  i := Bookmarks.IndexOfID(ID);
-  if i >= 0 then begin
-    Bookmarks.Delete(i);
-    SessionModified := True;
-  end;
-  Project1.DeleteBookmark(ID);
-end;
-
-function TUnitInfo.EditorInfoCount: Integer;
-begin
-  Result := FEditorInfoList.Count;
-end;
-
-function TUnitInfo.OpenEditorInfoCount: Integer;
-begin
-  Result := FEditorInfoList.OpenCount;
-end;
-
-function TUnitInfo.GetClosedOrNewEditorInfo: TUnitEditorInfo;
-begin
-  if FEditorInfoList.ClosedCount > 0 then
-    Result := FEditorInfoList.ClosedEditorInfos[0]
-  else
-    Result := FEditorInfoList.NewEditorInfo;
-end;
-
-procedure TUnitInfo.SetLastUsedEditor(AEditor: TSourceEditorInterface);
-begin
-  FEditorInfoList.SetLastUsedEditor(AEditor);
-end;
-
 function TUnitInfo.ReadOnly: boolean;
 begin
   Result:=UserReadOnly or FileReadOnly;
@@ -2395,11 +1803,6 @@ begin
   Result:=uifLoadingComponent in FFlags;
 end;
 
-function TUnitInfo.GetEditorInfo(Index: Integer): TUnitEditorInfo;
-begin
-  Result:=FEditorInfoList[Index];
-end;
-
 function TUnitInfo.GetFileReadOnly: Boolean;
 begin
   Result:=uifFileReadOnly in FFlags;
@@ -2414,11 +1817,6 @@ function TUnitInfo.GetModified: boolean;
 begin
   Result:=(uifModified in FFlags)
     or ((Source<>nil) and (Source.ChangeStep<>fSourceChangeStep));
-end;
-
-function TUnitInfo.GetOpenEditorInfo(Index: Integer): TUnitEditorInfo;
-begin
-  Result := FEditorInfoList.OpenEditorInfos[Index];
 end;
 
 function TUnitInfo.GetRunFileIfActive: boolean;
@@ -2619,12 +2017,9 @@ begin
   if FProject<>nil then begin
     for ListType:=Low(TUnitInfoList) to High(TUnitInfoList) do
       Project.RemoveFromList(Self,ListType);
-    for i := 0 to FEditorInfoList.Count - 1 do
-      FProject.EditorInfoRemove(FEditorInfoList[i]);
   end;
   FProject:=AValue;
   if FProject<>nil then begin
-    UpdatePageIndex;
     if Component<>nil then
       Project.AddToList(Self,uilWithComponent);
     if Loaded then
@@ -2633,8 +2028,6 @@ begin
       Project.AddToList(Self,uilAutoRevertLocked);
     if IsPartOfProject then
       Project.AddToList(Self,uilPartOfProject);
-    for i := 0 to FEditorInfoList.Count - 1 do
-      FProject.EditorInfoAdd(FEditorInfoList[i]);
   end;
   UpdateSourceDirectoryReference;
 end;
@@ -2781,14 +2174,8 @@ end;
 constructor TProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create(ProjectDescription);
-
-  FActiveWindowIndexAtStart := 0;
-  FSkipCheckLCLInterfaces:=false;
+  UnitInfoClass := TUnitInfo;
   FAutoCreateForms := true;
-  FAllEditorsInfoList := TUnitEditorInfoList.Create(nil);
-  FAllEditorsInfoMap := TMap.Create(ituPtrSize, SizeOf(TObject));
-  FBookmarks := TProjectBookmarkList.Create;
-
   FMacroEngine:=TTransferMacroList.Create;
   FMacroEngine.OnSubstitution:=@MacroEngineSubstitution;
   FBuildModes:=TProjectBuildModes.Create(nil);
@@ -2800,9 +2187,6 @@ begin
 
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
-  FJumpHistory:=TProjectJumpHistory.Create;
-  FJumpHistory.OnCheckPosition:=@JumpHistoryCheckPosition;
-  FJumpHistory.OnLoadSaveFilename:=@LoadSaveFilenameHandler;
   fMainUnitID := -1;
   fProjectInfoFile := '';
   ProjectSessionFile:='';
@@ -2819,11 +2203,8 @@ begin
   FEnableI18NForLFM := True;
   FI18NExcludedIdentifiers := TStringList.Create;
   FI18NExcludedOriginals := TStringList.Create;
-
   FResources := TProjectResources.Create;
   ProjResources.OnModified := @EmbeddedObjectModified;
-
-  FHistoryLists := THistoryLists.Create;
   FLastCompilerParams := TStringListUTF8Fast.Create;
 end;
 
@@ -2842,20 +2223,15 @@ begin
   FreeAndNil(FBuildModesBackup);
   FreeAndNil(FBuildModes);
   FreeAndNil(FMacroEngine);
-  FreeAndNil(FAllEditorsInfoMap);
-  FreeAndNil(FAllEditorsInfoList);
   FreeThenNil(FResources);
-  FreeThenNil(FBookmarks);
   FreeThenNil(FI18NExcludedOriginals);
   FreeThenNil(FI18NExcludedIdentifiers);
   FreeThenNil(FOtherDefines);
   FreeThenNil(FUnitList);
-  FreeThenNil(FJumpHistory);
   FreeThenNil(FSourceDirectories);
   FreeThenNil(FPublishOptions);
   FreeThenNil(FRunParameters);
   FreeThenNil(FDefineTemplates);
-  FreeAndNil(FHistoryLists);
   FreeAndNil(FLastCompilerParams);
   inherited Destroy;
 end;
@@ -2938,18 +2314,16 @@ procedure TProject.LoadCustomData(Sender: TObject; Data: TStringToStringTree;
 begin
   LoadStringToStringTree(XMLConfig,Data,Path);
   if Assigned(OnLoadSafeCustomData) and (Data.Count>0) then
-    OnLoadSafeCustomData(Sender,true,Data,fPathDelimChanged);
+    OnLoadSafeCustomData(Sender,true,Data,FPathDelimChanged);
 end;
 
-procedure TProject.LoadSessionInfo(const Path: string; Merge: boolean);
+procedure TProject.LoadUnits(const Path: string; Merge: boolean);
 // Note: the session can be stored in the lpi as well
 // So this method is used for loading the lpi units as well
 var
-  NewUnitInfo: TUnitInfo;
+  OldUnitInfo, NewUnitInfo: TUnitInfo;
   NewUnitCount, i: integer;
-  SubPath: String;
-  NewUnitFilename: String;
-  OldUnitInfo: TUnitInfo;
+  SubPath, NewUnitFilename: String;
   MergeUnitInfo, LegacyList: Boolean;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
@@ -2972,7 +2346,7 @@ begin
         continue;
       end;
     end else begin
-      NewUnitInfo:=TUnitInfo.Create(nil);
+      NewUnitInfo:=UnitInfoClass.Create(nil);
       AddFile(NewUnitInfo,false);
       MergeUnitInfo:=false;
     end;
@@ -2983,22 +2357,16 @@ begin
       FNewMainUnitID:=-1;
     end;
   end;
-
-  // load editor info
-  i := FXMLConfig.GetValue(Path+'General/ActiveEditorIndexAtStart/Value', -1);
-  if (i >= 0) then
-    UpdateVisibleEditor(i);     // Load old Config => No WindowIndex
-
-  ActiveWindowIndexAtStart := FXMLConfig.GetValue(Path+'General/ActiveWindowIndexAtStart/Value', 0);
   FSkipCheckLCLInterfaces:=FXMLConfig.GetValue(Path+'SkipCheckLCLInterfaces/Value',false);
-  FJumpHistory.LoadFromXMLConfig(FXMLConfig,Path+'');
   CleanOutputFileMask:=FXMLConfig.GetValue(Path+'Build/CleanOutputFileMask/Value',
                DefaultProjectCleanOutputFileMask);
   CleanSourcesFileMask:=FXMLConfig.GetValue(Path+'Build/CleanSourcesFileMask/Value',
                DefaultProjectCleanSourcesFileMask);
+end;
 
-  // load custom session data
-  LoadStringToStringTree(FXMLConfig,CustomSessionData,Path+'CustomSessionData/');
+procedure TProject.LoadSessionInfo(const Path: string);
+begin
+  ; // Do nothing.
 end;
 
 procedure TProject.LoadFromLPI;
@@ -3029,19 +2397,19 @@ begin
   AutoCreateForms := FXMLConfig.GetValue(Path+'General/AutoCreateForms/Value', true);
 
   // fpdoc
-  FPDocPaths:=SwitchPathDelims(FXMLConfig.GetValue(Path+'LazDoc/Paths',''),fPathDelimChanged);
+  FPDocPaths:=SwitchPathDelims(FXMLConfig.GetValue(Path+'LazDoc/Paths',''),FPathDelimChanged);
   FPDocPackageName:=FXMLConfig.GetValue(Path+'LazDoc/PackageName','');
 
   // i18n
   if FFileVersion<6 then begin
     POOutputDirectory := SwitchPathDelims(
-               FXMLConfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
+               FXMLConfig.GetValue(Path+'RST/OutDir', ''),FPathDelimChanged);
     EnableI18N := POOutputDirectory <> '';
   end else begin
     EnableI18N := FXMLConfig.GetValue(Path+'i18n/EnableI18N/Value', False);
     EnableI18NForLFM := FXMLConfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
     POOutputDirectory := SwitchPathDelims(
-         FXMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
+         FXMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),FPathDelimChanged);
     LoadStringList(FXMLConfig, FI18NExcludedIdentifiers, Path+'i18n/ExcludedIdentifiers/');
     LoadStringList(FXMLConfig, FI18NExcludedOriginals, Path+'i18n/ExcludedOriginals/');
   end;
@@ -3058,15 +2426,16 @@ begin
   // load the Run and Build parameter Options
   RunParameterOptions.Clear;
   if FFileVersion<11 then
-    RunParameterOptions.LegacyLoad(FXMLConfig,Path,fPathDelimChanged)
+    RunParameterOptions.LegacyLoad(FXMLConfig,Path,FPathDelimChanged)
   else
-    RunParameterOptions.Load(FXMLConfig,Path+'RunParams/',fPathDelimChanged,rpsLPI);
+    RunParameterOptions.Load(FXMLConfig,Path+'RunParams/',FPathDelimChanged,rpsLPI);
   // load the Publish Options
-  PublishOptions.LoadFromXMLConfig(FXMLConfig,Path+'PublishOptions/',fPathDelimChanged);
+  PublishOptions.LoadFromXMLConfig(FXMLConfig,Path+'PublishOptions/',FPathDelimChanged);
   // load defines used for custom options
   LoadOtherDefines(Path);
-  // load session info
-  LoadSessionInfo(Path,false);
+  // load units and session info
+  LoadUnits(Path,false);
+  LoadSessionInfo(Path);
 
   if Assigned(FDebuggerLink) then
     FDebuggerLink.LoadFromLPI(FXMLConfig, Path);
@@ -3076,37 +2445,8 @@ begin
 end;
 
 procedure TProject.LoadFromSession;
-const
-  Path = 'ProjectSession/';
-var
-  pds: TPathDelimSwitch;
 begin
-  pds:=CheckPathDelim(FXMLConfig.GetValue(Path+'PathDelim/Value', '/'),
-                      fPathDelimChanged);
-  SessionStorePathDelim:=pds;
-  fCurStorePathDelim:=pds;
-
-  FFileVersion:=FXMLConfig.GetValue(Path+'Version/Value',0);
-
-  // load MacroValues and compiler options
-  BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, FLoadAllOptions);
-
-  // load defines used for custom options
-  LoadOtherDefines(Path);
-  // load session info
-  LoadSessionInfo(Path,true);
-
-  if FFileVersion>=11 then
-    RunParameterOptions.Load(FXMLConfig,Path+'RunParams/',fPathDelimChanged,rpsLPS);
-  HistoryLists.Clear;
-  if FFileVersion>=12 then
-    HistoryLists.LoadFromXMLConfig(FXMLConfig,Path+'HistoryLists/');
-
-  if Assigned(FDebuggerLink) then
-    FDebuggerLink.LoadFromSession(FXMLConfig, Path);
-  // call hooks to read their info (e.g. DebugBoss)
-  if Assigned(OnLoadProjectInfo) then
-    OnLoadProjectInfo(Self,FXMLConfig,true);
+  ; // Do nothing
 end;
 
 function TProject.DoLoadLPI(Filename: String): TModalResult;
@@ -3164,8 +2504,8 @@ begin
   try
     // get format
     fStorePathDelim:=CheckPathDelim(FXMLConfig.GetValue(ProjOptionsPath+'PathDelim/Value','/'),
-                                    fPathDelimChanged);
-    fCurStorePathDelim:=StorePathDelim;
+                                    FPathDelimChanged);
+    FCurStorePathDelim:=StorePathDelim;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
     FFileVersion:= FXMLConfig.GetValue(ProjOptionsPath+'Version/Value',0);
     UseAppBundle := FXMLConfig.GetValue(ProjOptionsPath+'General/UseAppBundle/Value', True);
@@ -3182,7 +2522,7 @@ begin
                               ProjOptionsPath+'BuildModes/SharedMatrixOptions/');
   finally
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
-    fPathDelimChanged:=false;
+    FPathDelimChanged:=false;
     try
       FXMLConfig.Modified:=false;
       FXMLConfig.Free;
@@ -3195,31 +2535,6 @@ end;
 function TProject.DoLoadSession(Filename: String): TModalResult;
 begin
   Result:=mrOK;
-  if FileExistsUTF8(Filename) then
-  begin
-    //DebugLn('TProject.ReadProject loading Session Filename=',Filename);
-    try
-      FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename);
-      LoadFromSession;
-    except
-      LazMessageWorker(lisCCOErrorCaption,
-        Format(lisUnableToReadTheProjectInfoFile, [LineEnding,Filename]),
-        mtError,[mbOk]);
-      Result:=mrCancel;
-      exit;
-    end;
-
-    fPathDelimChanged:=false;
-    try
-      FXMLConfig.Modified:=false;
-      FXMLConfig.Free;
-    except
-    end;
-    fCurStorePathDelim:=StorePathDelim;
-    FXMLConfig:=nil;
-  end else
-    // there is no .lps file -> create some defaults
-    LoadDefaultSession;
 end;
 
 function TProject.DoLoadLPR(Revert: boolean): TModalResult;
@@ -3270,7 +2585,7 @@ begin
 
   finally
     EndUpdate;
-    FAllEditorsInfoList.SortByPageIndex;
+    SortEditors;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject END');{$ENDIF}
   if Assigned(FDebuggerLink) then
@@ -3300,7 +2615,8 @@ begin
   for i:=0 to UnitCount-1 do
     if UnitMustBeSaved(Units[i],FProjectWriteFlags,SaveSession) then begin
       Units[i].SaveToXMLConfig(FXMLConfig,
-        Path+'Units/'+FXMLConfig.GetListItemXPath('Unit', SaveUnitCount, UseLegacyLists)+'/',True,SaveSession,fCurStorePathDelim);
+        Path+'Units/'+FXMLConfig.GetListItemXPath('Unit',SaveUnitCount,UseLegacyLists)+'/',
+                                                  True,SaveSession,FCurStorePathDelim);
       inc(SaveUnitCount);
     end;
   FXMLConfig.SetListItemCount(Path+'Units/',SaveUnitCount,UseLegacyLists);
@@ -3326,7 +2642,7 @@ begin
     NewData:=TStringToStringTree.Create(Data.CompareItemsFunc,Data.CompareKeyItemFunc,Data.CaseSensitive);
     try
       NewData.Assign(Data);
-      OnLoadSafeCustomData(Sender,false,NewData,fPathDelimChanged);
+      OnLoadSafeCustomData(Sender,false,NewData,FPathDelimChanged);
       SaveStringToStringTree(XMLConfig,NewData,Path);
     finally
       NewData.Free;
@@ -3338,28 +2654,7 @@ end;
 
 procedure TProject.SaveSessionInfo(const Path: string);
 begin
-  FXMLConfig.DeleteValue(Path+'General/ActiveEditorIndexAtStart/Value');
-  FXMLConfig.SetDeleteValue(Path+'General/ActiveWindowIndexAtStart/Value',
-                         ActiveWindowIndexAtStart,0);
-  FXMLConfig.SetDeleteValue('SkipCheckLCLInterfaces/Value',
-                         FSkipCheckLCLInterfaces,false);
-  FXMLConfig.SetDeleteValue(Path+'Build/CleanOutputFileMask/Value',
-               CleanOutputFileMask,DefaultProjectCleanOutputFileMask);
-  FXMLConfig.SetDeleteValue(Path+'Build/CleanSourcesFileMask/Value',
-               CleanSourcesFileMask,DefaultProjectCleanSourcesFileMask);
-
-  if (not (pfSaveOnlyProjectUnits in Flags))
-  and (not (pwfSkipJumpPoints in FProjectWriteFlags)) then begin
-    if (pfSaveJumpHistory in Flags) then begin
-      FJumpHistory.DeleteInvalidPositions;
-      FJumpHistory.SaveToXMLConfig(FXMLConfig,Path,UseLegacyLists);
-    end
-    else
-      FXMLConfig.DeletePath(Path+'JumpHistory');
-  end;
-
-  // save custom session data
-  SaveStringToStringTree(FXMLConfig,CustomSessionData,Path+'CustomSessionData/');
+  ; // Do nothing
 end;
 
 procedure TProject.SaveToLPI;
@@ -3371,7 +2666,7 @@ begin
   FFileVersion:=ProjectInfoFileVersion;
   // format
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
-  FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
+  FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[FCurStorePathDelim],'/');
   SaveFlags(Path);
   FXMLConfig.SetDeleteValue(Path+'General/SessionStorage/Value',
                            ProjectSessionStorageNames[SessionStorage],
@@ -3388,7 +2683,7 @@ begin
   // fpdoc
   FXMLConfig.SetDeleteValue(Path+'LazDoc/Paths',
      SwitchPathDelims(CreateRelativeSearchPath(FPDocPaths,Directory),
-                      fCurStorePathDelim), '');
+                      FCurStorePathDelim), '');
   FXMLConfig.SetDeleteValue(Path+'LazDoc/PackageName',FPDocPackageName,'');
 
   // i18n
@@ -3396,7 +2691,7 @@ begin
   FXMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/LFM', EnableI18NForLFM, true);
   FXMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',
      SwitchPathDelims(CreateRelativePath(POOutputDirectory,Directory),
-                      fCurStorePathDelim), '');
+                      FCurStorePathDelim), '');
   SaveStringList(FXMLConfig, FI18NExcludedIdentifiers, Path+'i18n/ExcludedIdentifiers/');
   SaveStringList(FXMLConfig, FI18NExcludedOriginals, Path+'i18n/ExcludedOriginals/');
 
@@ -3410,14 +2705,14 @@ begin
   if FSaveSessionInLPI then
     BuildModes.SaveSessionData(Path);
   // save the Publish Options
-  PublishOptions.SaveToXMLConfig(FXMLConfig,Path+'PublishOptions/',fCurStorePathDelim);
+  PublishOptions.SaveToXMLConfig(FXMLConfig,Path+'PublishOptions/',FCurStorePathDelim);
   // save the Run and Build parameter options
   if pfCompatibilityMode in Flags then
-    RunParameterOptions.LegacySave(FXMLConfig,Path,fCurStorePathDelim);
-  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPI, UseLegacyLists);
+    RunParameterOptions.LegacySave(FXMLConfig,Path,FCurStorePathDelim);
+  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',FCurStorePathDelim,rpsLPI, UseLegacyLists);
   // save dependencies
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
-    FFirstRequiredDependency,pddRequires,fCurStorePathDelim,pfCompatibilityMode in FFlags);
+    FFirstRequiredDependency,pddRequires,FCurStorePathDelim,pfCompatibilityMode in FFlags);
   // save units
   SaveUnits(Path,FSaveSessionInLPI);
 
@@ -3463,36 +2758,8 @@ begin
 end;
 
 procedure TProject.SaveToSession;
-const
-  Path = 'ProjectSession/';
 begin
-  FFileVersion:=ProjectInfoFileVersion;
-  fCurStorePathDelim:=SessionStorePathDelim;
-  FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',
-                          PathDelimSwitchToDelim[fCurStorePathDelim],'/');
-  FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
-
-  // Save the session build modes
-  BuildModes.SaveSessionOptsToXMLConfig(FXMLConfig, Path, True, UseLegacyLists);
-  BuildModes.SaveSessionData(Path);
-  // save all units
-  SaveUnits(Path,true);
-
-  if Assigned(FDebuggerLink) then
-    FDebuggerLink.SaveToSession(FXMLConfig, Path);
-
-  // save defines used for custom options
-  SaveOtherDefines(Path);
-  // save session info
-  SaveSessionInfo(Path);
-  // save the Run and Build parameter options
-  RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPS, UseLegacyLists);
-  // save history lists
-  HistoryLists.SaveToXMLConfig(FXMLConfig,Path+'HistoryLists/', UseLegacyLists);
-
-  // Notifiy hooks
-  if Assigned(OnSaveProjectInfo) then
-    OnSaveProjectInfo(Self,FXMLConfig,FProjectWriteFlags+[pwfSkipProjectInfo]);
+  ; // Do nothing
 end;
 
 function TProject.DoWrite(Filename: String; IsLpi: Boolean): TModalResult;
@@ -3555,7 +2822,7 @@ var
   WriteLPI, WriteLPS: Boolean;
 begin
   Result := mrCancel;
-  fCurStorePathDelim:=StorePathDelim;
+  FCurStorePathDelim:=StorePathDelim;
 
   if OverrideProjectInfoFile<>'' then
     CfgFilename := OverrideProjectInfoFile
@@ -3772,7 +3039,6 @@ begin
   if (Index=MainUnitID) then begin
     raise Exception.Create('ERROR: TProject.RemoveUnit index = MainUnit');
   end;
-
   BeginUpdate(true);
   OldUnitInfo:=Units[Index];
   UnitModified(OldUnitInfo);
@@ -3792,13 +3058,8 @@ begin
       end;
     end;
   end;
-
-  // delete bookmarks of this unit
-  Bookmarks.DeleteAllWithUnitInfo(OldUnitInfo);
-
   // adjust MainUnit
   if MainUnitID>=Index then dec(fMainUnitID);
-
   // delete unitinfo instance
   OldUnitInfo.Free;
   FUnitList.Delete(Index);
@@ -3811,40 +3072,10 @@ var
   AnUnitInfo: TUnitInfo;
 begin
   NewBuf:=CodeToolBoss.CreateFile(Filename);
-  AnUnitInfo:=TUnitInfo.Create(NewBuf);
+  if UnitInfoClass=nil then
+    UnitInfoClass:=TUnitInfo;
+  AnUnitInfo:=UnitInfoClass.Create(NewBuf);
   Result:=AnUnitInfo;
-end;
-
-function TProject.GetAndUpdateVisibleUnit(AnEditor: TSourceEditorInterface;
-  AWindowID: Integer): TUnitInfo;
-var
-  i: Integer;
-  AnEditorInfo: TUnitEditorInfo;
-begin
-  for i := 0 to AllEditorsInfoCount - 1 do
-    with AllEditorsInfo[i] do
-      if AllEditorsInfo[i].WindowID = AWindowID then
-        IsVisibleTab := (EditorComponent = AnEditor);
-  AnEditorInfo := EditorInfoWithEditorComponent(AnEditor);
-  if AnEditorInfo = nil then Exit(nil);
-  Result := AnEditorInfo.UnitInfo;
-  if Assigned(Result) then
-    Result.SetLastUsedEditor(AnEditor);
-end;
-
-procedure TProject.UpdateAllVisibleUnits;
-var
-  i, j: Integer;
-  aWndId: LongInt;
-  Info: TUnitEditorInfo;
-begin
-  for i := 0 to AllEditorsInfoCount - 1 do begin
-    Info:=AllEditorsInfo[i];
-    aWndId:=Info.WindowID;
-    j := SourceEditorManagerIntf.IndexOfSourceWindowWithID(aWndId);
-    Info.IsVisibleTab := (aWndId>=0) and (j >= 0)
-      and (Info.EditorComponent = SourceEditorManagerIntf.SourceWindows[j].ActiveEditor);
-  end;
 end;
 
 function TProject.RemoveNonExistingFiles(RemoveFromUsesSection: boolean): boolean;
@@ -3885,22 +3116,19 @@ begin
     DeleteRequiredDependency(FFirstRequiredDependency);
 
   // delete files
-  for i:=0 to UnitCount-1 do Units[i].Free;
+  for i:=0 to UnitCount-1 do
+    Units[i].Free;
   FUnitList.Clear;
   
   RunParameters.Clear;
-
-  FActiveWindowIndexAtStart := -1;
-  FSkipCheckLCLInterfaces:=false;
   FAutoOpenDesignerFormsDisabled := false;
+  FSkipCheckLCLInterfaces:=false;
   FEnableI18N:=false;
   FEnableI18NForLFM:=true;
   FI18NExcludedOriginals.Clear;
   FI18NExcludedIdentifiers.Clear;
-  FBookmarks.Clear;
   ClearBuildModes;
   FDefineTemplates.Clear;
-  FJumpHistory.Clear;
   fMainUnitID := -1;
   fProjectInfoFile := '';
   ProjectSessionFile:='';
@@ -4178,53 +3406,6 @@ begin
   end;
 end;
 
-function TProject.IndexOfUnitWithComponent(AComponent: TComponent;
-  OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
-var
-  lUnit: TUnitInfo;
-begin
-  Result:=UnitCount-1;
-  while (Result>=0) do begin
-    lUnit := Units[Result];
-    if (lUnit.IsPartOfProject or not OnlyProjectUnits)
-    and (IgnoreUnit<>lUnit) then begin
-      if lUnit.Component=AComponent then
-        exit;
-    end;
-    dec(Result);
-  end;
-end;
-
-function TProject.IndexOfUnitWithComponentName(const AComponentName: string;
-  OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
-var
-  lUnit: TUnitInfo;
-begin
-  Result:=UnitCount-1;
-  while (Result>=0) do begin
-    lUnit := Units[Result];
-    if (lUnit.IsPartOfProject or not OnlyProjectUnits)
-    and (IgnoreUnit<>lUnit) then begin
-      if (CompareText(lUnit.ComponentName,AComponentName)=0)
-      or ((lUnit.Component<>nil)
-        and (CompareText(lUnit.Component.Name,AComponentName)=0))
-      then
-        exit;
-    end;
-    dec(Result);
-  end;
-end;
-
-function TProject.UnitWithEditorComponent(AEditor: TSourceEditorInterface): TUnitInfo;
-var
-  AnEditorInfo: TUnitEditorInfo;
-begin
-  if AEditor = nil then exit(nil);
-  AnEditorInfo := EditorInfoWithEditorComponent(AEditor);
-  if AnEditorInfo = nil then exit(nil);
-  Result := AnEditorInfo.UnitInfo;
-end;
-
 function TProject.GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer): TCodeBuffer;
 var
   i, LinkIndex: integer;
@@ -4367,6 +3548,11 @@ begin
   end;
 end;
 
+procedure TProject.SortEditors;
+begin
+  ; // Do nothing.
+end;
+
 function TProject.GetTargetFilename: string;
 begin
   Result:=FLazCompilerOptions.TargetFilename;
@@ -4410,11 +3596,6 @@ procedure TProject.EmbeddedObjectModified(Sender: TObject);
 begin
   if ProjResources.Modified then
     Modified := True;
-end;
-
-function TProject.GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
-begin
-  Result := FAllEditorsInfoList[Index];
 end;
 
 function TProject.GetCompilerOptions: TProjectCompilerOptions;
@@ -4464,11 +3645,6 @@ end;
 function TProject.GetActiveBuildModeID: string;
 begin
   Result := ActiveBuildMode.Identifier;
-end;
-
-function TProject.GetFirstUnitWithEditorIndex: TUnitInfo;
-begin
-  Result:=fFirst[uilWithEditorIndex];
 end;
 
 function TProject.GetIDEOptions: TProjectIDEOptions;
@@ -4573,8 +3749,8 @@ var
   
 begin
   if AFileName='' then exit;
-  //debugln(['TProject.OnLoadSaveFilename A "',AFilename,'" fPathDelimChanged=',fPathDelimChanged,' Load=',Load]);
-  if Load and fPathDelimChanged then begin
+  //debugln(['TProject.OnLoadSaveFilename A "',AFilename,'" fPathDelimChanged=',FPathDelimChanged,' Load=',Load]);
+  if Load and FPathDelimChanged then begin
     {$IFDEF MSWindows}
     // PathDelim changed from '/' to '\'
     FileWasAbsolute:=FilenameIsUnixAbsolute(AFileName);
@@ -4602,7 +3778,7 @@ begin
   end;
 
   if (not Load) then begin
-    if (not IsCurrentPathDelim(fCurStorePathDelim))
+    if (not IsCurrentPathDelim(FCurStorePathDelim))
     and (FilenameIsAbsolute(AFileName))
     and (ProjectPath<>'') then begin
       // the lpi file is saved with different pathdelims
@@ -4610,7 +3786,7 @@ begin
       // => force it relative
       AFileName:=ExtractRelativepath(ProjectPath,AFilename);
     end;
-    AFilename:=SwitchPathDelims(AFileName,fCurStorePathDelim);
+    AFilename:=SwitchPathDelims(AFileName,FCurStorePathDelim);
   end;
   //debugln('TProject.OnLoadSaveFilename END "',AFilename,'" FileWasAbsolute=',dbgs(FileWasAbsolute));
 end;
@@ -4936,8 +4112,7 @@ procedure TProject.UpdateUnitComponentDependencies;
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TProject.UpdateUnitComponentDependencies inline component found: ',DbgSName(AComponent),' ',AnUnitInfo.Filename,' -> ',ReferenceUnit.Filename]);
         {$ENDIF}
-        AnUnitInfo.AddRequiresComponentDependency(
-                             ReferenceUnit,[ucdtInlineClass]);
+        AnUnitInfo.AddRequiresComponentDependency(ReferenceUnit,[ucdtInlineClass]);
       end;
     end;
   
@@ -5047,7 +4222,8 @@ begin
     for TLazProjectFile(AnUnitInfo) in UnitsWithComponent do begin
       AnUnitInfo.FFlags:=AnUnitInfo.FFlags-
         [uifMarked,uifComponentIndirectlyUsedByDesigner,uifComponentUsedByDesigner];
-      if FindRootDesigner(AnUnitInfo.Component)<>nil then begin
+      if Assigned(OnHasDesigner) and OnHasDesigner(AnUnitInfo.Component) then
+      begin
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TProject.UpdateUnitComponentDependencies used by designer: ',AnUnitInfo.Filename]);
         {$ENDIF}
@@ -5388,28 +4564,6 @@ begin
     Result := nil;
 end;
 
-function TProject.AddBookmark(X, Y, ID: Integer; AUnitInfo:TUnitInfo): integer;
-begin
-  Result := Bookmarks.Add(X, Y, ID, AUnitInfo);
-  SessionModified := true;
-end;
-
-function TProject.AddBookmark(X, Y, ALeft, ATop, ID: Integer; AUnitInfo: TUnitInfo): integer;
-begin
-  Result := Bookmarks.Add(X, Y, ALeft, ATop, ID, AUnitInfo);
-  SessionModified := true;
-end;
-
-procedure TProject.DeleteBookmark(ID: Integer);
-var
-  i: Integer;
-begin
-  i := Bookmarks.IndexOfID(ID);
-  if i < 0 then exit;
-  Bookmarks.Delete(i);
-  SessionModified := true;
-end;
-
 procedure TProject.UnitNameChangeHandler(AnUnitInfo: TUnitInfo;
   const OldUnitName, NewUnitName: string; CheckIfAllowed: boolean;
   var Allowed: boolean);
@@ -5520,14 +4674,6 @@ begin
   debugln(['TProject.SetStorePathDelim ']);
   {$ENDIF}
   Modified:=true;
-end;
-
-function TProject.JumpHistoryCheckPosition(
-  APosition: TProjectJumpHistoryPosition): boolean;
-var i: integer;
-begin
-  i:=IndexOfFilename(APosition.Filename);
-  Result:=(i>=0) and (Units[i].OpenEditorInfoCount > 0);
 end;
 
 function TProject.SomethingModified(CheckData, CheckSession: boolean;
@@ -5765,31 +4911,6 @@ begin
     Result:=nil;
 end;
 
-function TProject.AllEditorsInfoCount: Integer;
-begin
-  Result := FAllEditorsInfoList.Count;
-end;
-
-function TProject.EditorInfoWithEditorComponent(AEditor: TSourceEditorInterface): TUnitEditorInfo;
-begin
-  Result := Nil;
-  FAllEditorsInfoMap.GetData(AEditor, Result);
-end;
-
-procedure TProject.EditorInfoAdd(EdInfo: TUnitEditorInfo);
-begin
-  FAllEditorsInfoList.Add(EdInfo);
-  Assert(not Assigned(EdInfo.EditorComponent),
-         'TUnitEditorInfo.EditorComponent should not be assigned. It is set later.');
-end;
-
-procedure TProject.EditorInfoRemove(EdInfo: TUnitEditorInfo);
-begin
-  FAllEditorsInfoList.Remove(EdInfo);
-  if Assigned(EdInfo.EditorComponent) then
-    FAllEditorsInfoMap.Delete(EdInfo.EditorComponent);
-end;
-
 procedure TProject.MacroEngineSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s: string; const Data: PtrInt; var Handled,
   Abort: boolean; Depth: integer);
@@ -5901,7 +5022,9 @@ begin
         if ConsoleVerbosity>=0 then
           debugln(['Note: (lazarus) [TProject.UpdateIsPartOfProjectFromMainUnit] used unit ',FoundInUnits[i],' not marked in lpi. Setting IsPartOfProject flag.']);
         if AnUnitInfo=nil then begin
-          NewUnitInfo:=TUnitInfo.Create(nil);
+          if UnitInfoClass=nil then
+            UnitInfoClass:=TUnitInfo;
+          NewUnitInfo:=UnitInfoClass.Create(nil);
           NewUnitInfo.Filename:=CurFilename;
           NewUnitInfo.IsPartOfProject:=true;
           NewUnitInfo.Source:=Code;
@@ -5945,7 +5068,7 @@ begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
     if (pfsfOnlyEditorFiles in SearchFlags)
-    and (Units[Result].OpenEditorInfoCount = 0) then begin
+    and not Units[Result].HasOpenEditors then begin
       dec(Result);
       continue;
     end;
@@ -6105,61 +5228,6 @@ begin
   Result:=true;
 end;
 
-procedure TProject.UpdateVisibleEditor(PgIndex: integer);
-var
-  i: Integer;
-begin
-  i := AllEditorsInfoCount - 1;
-  while i >= 0 do begin
-    if (AllEditorsInfo[i].PageIndex = PgIndex) then
-      AllEditorsInfo[i].IsVisibleTab := True;
-    dec(i);
-  end;
-end;
-
-procedure TProject.LoadDefaultSession;
-var
-  AnUnitInfo: TUnitInfo;
-  BestUnitInfo: TUnitInfo;
-begin
-  BestUnitInfo:=FirstUnitWithEditorIndex;
-  if (BestUnitInfo<>nil) and (BestUnitInfo.Loaded)
-  and FileExistsCached(BestUnitInfo.Filename) then
-    exit;
-  BestUnitInfo:=nil;
-
-  if (MainUnitID>=0) then begin
-    if (PackageGraphInterface.FindLCLDependency(FFirstRequiredDependency)<>nil)
-    and (Flags*[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,
-                pfMainUnitHasScaledStatement]<>[])
-    then begin
-      // this is a probably a LCL project where the main source only contains
-      // automatic code
-    end else
-      BestUnitInfo:=MainUnitInfo;
-  end;
-
-  if BestUnitInfo=nil then begin
-    for TLazProjectFile(AnUnitInfo) in UnitsBelongingToProject do begin
-      if FileExistsCached(AnUnitInfo.Filename) then begin
-        if (BestUnitInfo=nil)
-        or (FilenameHasPascalExt(AnUnitInfo.Filename)
-             and (not FilenameHasPascalExt(BestUnitInfo.Filename)))
-        then begin
-          BestUnitInfo:=AnUnitInfo;
-        end;
-      end;
-    end;
-  end;
-  if BestUnitInfo<>nil then begin
-    BestUnitInfo.EditorInfo[0].PageIndex := 0;
-    BestUnitInfo.EditorInfo[0].WindowID := 0;
-    BestUnitInfo.EditorInfo[0].IsVisibleTab := True;
-    ActiveWindowIndexAtStart:=0;
-    BestUnitInfo.Loaded:=true;
-  end;
-end;
-
 procedure TProject.ClearSourceDirectories;
 begin
   FSourceDirectories.Clear;
@@ -6249,12 +5317,6 @@ begin
                                 CompOpts.CompileReasons, Tool);
   if Result then exit;
   if inherited CreateDiff(CompOpts, Tool) then Result:=true;
-end;
-
-procedure TProjectCompilationToolOptions.DoClearErrorLines;
-begin
-  if Assigned(SourceEditorManagerIntf) then
-    SourceEditorManagerIntf.ClearErrorLines;
 end;
 
 procedure TProjectCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -6480,10 +5542,16 @@ begin
   Result := dlgCompilerOptions;
 end;
 
-constructor TProjectCompilerOptions.Create(const AOwner: TObject);
+constructor TProjectCompilerOptions.Create(AOwner: TObject);
+begin
+  Create(AOwner, TProjectCompilationToolOptions);
+end;
+
+constructor TProjectCompilerOptions.Create(AOwner: TObject;
+  AToolClass: TLazCompilationToolClass);
 begin
   FCompileReasons := crAll;
-  inherited Create(AOwner, TProjectCompilationToolOptions);
+  inherited Create(AOwner, AToolClass);
   if AOwner <> nil then
     FProject := AOwner as TProject;
   ParsedOpts.OnLocalSubstitute:=@SubstituteProjectMacros;

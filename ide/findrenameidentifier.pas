@@ -47,9 +47,11 @@ uses
   InputHistory,
   // IdeConfig
   TransferMacros, IDEProcs, DialogProcs, SearchPathProcs, EnvironmentOpts,
+  // IdeProject
+  Project,
   // IDE
   LazarusIDEStrConsts, MiscOptions, CustomFormEditor, CodeToolsOptions, SearchResultView,
-  CodeHelp, SourceFileManager, Project;
+  CodeHelp, SourceFileManager, EditableProject;
 
 type
   TFRIdentifierKind = (
@@ -228,7 +230,7 @@ end;
 function RenameIdentifier_UnitFile(const OldFileName, NewFilename, NewUnitName: string;
   ListOfSrcNameRefs: TObjectList; out OldRefs: TSrcNameRefs; UpdateOldRefs: boolean): TModalResult;
 var
-  anUnitInfo: TUnitInfo;
+  anUnitInfo: TEditableUnitInfo;
   LFMCode, LRSCode, OldCode, NewCode: TCodeBuffer;
   i: Integer;
   Refs: TSrcNameRefs;
@@ -240,7 +242,7 @@ begin
       and (ExtractFileName(OldFileName)=ExtractFilename(NewFilename)) then exit;
   anUnitInfo:=nil;
   if Assigned(Project1) then
-    anUnitInfo:=Project1.UnitInfoWithFilename(OldFileName);
+    anUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(OldFileName));
   if anUnitInfo=nil then begin
     debugln(['Error: RenameIdentifier_UnitFile missing unitinfo "',OldFileName,'"']);
     exit(mrCancel);
@@ -644,7 +646,7 @@ var
   FindRefFlags: TFindRefsFlags;
   TreeOfPCodeXYPosition, LFMTreeOfPCodeXYPosition: TAVLTree;
   Refs, OldRefs: TSrcNameRefs;
-  AUnitInfo: TUnitInfo;
+  AUnitInfo: TEditableUnitInfo;
 begin
   Result:=mrCancel;
   if not LazarusIDE.BeginCodeTools then exit(mrCancel);
@@ -953,7 +955,7 @@ begin
               AUnitInfo:=nil;
               for j:=low(PascalSourceExt) to high(PascalSourceExt) do begin
                 PasFilename:=ExtractFileNameWithoutExt(Code.Filename)+PascalSourceExt[j];
-                AUnitInfo:=Project1.UnitInfoWithFilename(PasFilename);
+                AUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(PasFilename));
                 if AUnitInfo<>nil then
                   break;
               end;

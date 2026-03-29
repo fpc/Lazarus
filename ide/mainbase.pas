@@ -77,10 +77,12 @@ uses
   IdeDebuggerStringConstants,
   // IdeConfig
   LazConf, EnvironmentOpts, CompilerOptions,
+  // IdeProject
+  Project,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, Project,
+  LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, EditableProject,
   SourceEditor, SourceSynEditor, FindInFilesDlg, Splash, MainBar, MainIntf,
-  Designer, Debugger, RunParamsOpts, FindInFilesWnd, RunParamOptions;
+  Designer, Debugger, FindInFilesWnd, RunParamOptions;
 
 type
   TResetToolFlag = (
@@ -162,12 +164,9 @@ type
     procedure CreateOftenUsedForms; virtual; abstract;
     function GetMainBar: TForm; override;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-                           out ActiveUnitInfo: TUnitInfo;
-                           Flags: TCodeToolsFlags): boolean;
-    function BeginCodeTool(ADesigner: TDesigner;
-                           var ActiveSrcEdit: TSourceEditor;
-                           out ActiveUnitInfo: TUnitInfo;
-                           Flags: TCodeToolsFlags): boolean;
+      out ActiveUnitInfo: TEditableUnitInfo; Flags: TCodeToolsFlags): boolean;
+    function BeginCodeTool(ADesigner: TDesigner; var ActiveSrcEdit: TSourceEditor;
+      out ActiveUnitInfo: TEditableUnitInfo; Flags: TCodeToolsFlags): boolean;
     procedure ActivateCodeToolAbortableMode;
     procedure DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean); virtual; abstract;
     function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
@@ -175,26 +174,25 @@ type
     procedure UpdateSaveMenuItemsAndButtons(UpdateSaveAll: boolean); virtual; abstract;
 
     procedure DoMergeDefaultProjectOptions;
-    procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
-      var ActiveUnitInfo:TUnitInfo);
+    procedure DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
+      var ActiveUnitInfo: TEditableUnitInfo);
     procedure DoSwitchToFormSrc(ADesigner: TIDesigner;
-      var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+      var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TEditableUnitInfo);
 
-    procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;
-                              out ActiveSourceEditor: TSourceEditorInterface;
-                              out ActiveUnitInfo: TUnitInfo); override;
+    procedure GetUnitInfoForDesigner(ADesigner: TIDesigner; out
+      ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TEditableUnitInfo); override;
     procedure GetCurrentUnitInfo(out ActiveSourceEditor: TSourceEditorInterface;
-                              out ActiveUnitInfo: TUnitInfo); override;
+                                 out ActiveUnitInfo: TEditableUnitInfo); override;
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
-                             out ActiveUnitInfo: TUnitInfo); virtual; abstract;
+                             out ActiveUnitInfo: TEditableUnitInfo); virtual; abstract;
     procedure GetDesignerUnit(ADesigner: TDesigner;
-          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); virtual; abstract;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TEditableUnitInfo); virtual; abstract;
     procedure GetObjectInspectorUnit(
-          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); virtual; abstract;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TEditableUnitInfo); virtual; abstract;
     procedure GetUnitWithForm(AForm: TCustomForm;
-          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); virtual; abstract;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TEditableUnitInfo); virtual; abstract;
     procedure GetUnitWithPersistent(APersistent: TPersistent;
-          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TUnitInfo); virtual; abstract;
+          out ActiveSourceEditor: TSourceEditor; out ActiveUnitInfo: TEditableUnitInfo); virtual; abstract;
     procedure DoShowComponentList(State: TIWGetFormState = iwgfShowOnTop); virtual; abstract;
 
     function DoOpenMacroFile(Sender: TObject; const AFilename: string): TModalResult; override;
@@ -735,7 +733,7 @@ begin
 end;
 
 procedure TMainIDEBase.GetUnitInfoForDesigner(ADesigner: TIDesigner;
-  out ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TUnitInfo);
+  out ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TEditableUnitInfo);
 var
   SrcEdit: TSourceEditor;
 begin
@@ -747,11 +745,11 @@ begin
   end;
 end;
 
-procedure TMainIDEBase.GetCurrentUnitInfo(
-  out ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TUnitInfo);
+procedure TMainIDEBase.GetCurrentUnitInfo(out ActiveSourceEditor: TSourceEditorInterface;
+  out ActiveUnitInfo: TEditableUnitInfo);
 var
   ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
 begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
   ActiveSourceEditor:=ASrcEdit;
@@ -764,21 +762,20 @@ begin
 end;
 
 function TMainIDEBase.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-  out ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
+  out ActiveUnitInfo: TEditableUnitInfo; Flags: TCodeToolsFlags): boolean;
 begin
   Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,Flags);
 end;
 
-function TMainIDEBase.BeginCodeTool(ADesigner: TDesigner;
-  var ActiveSrcEdit: TSourceEditor; out ActiveUnitInfo: TUnitInfo;
-  Flags: TCodeToolsFlags): boolean;
+function TMainIDEBase.BeginCodeTool(ADesigner: TDesigner; var ActiveSrcEdit: TSourceEditor;
+  out ActiveUnitInfo: TEditableUnitInfo; Flags: TCodeToolsFlags): boolean;
 var
   Edit: TIDESynEditor;
 begin
   Result:=false;
   if (ctfUseGivenSourceEditor in Flags) and (Project1<>nil)
   and (ActiveSrcEdit<>nil) then begin
-    ActiveUnitInfo := Project1.EditorInfoWithEditorComponent(ActiveSrcEdit).UnitInfo;
+    ActiveUnitInfo := EditableProject1.EditorInfoWithEditorComponent(ActiveSrcEdit).UnitInfo;
   end
   else begin
     ActiveSrcEdit:=nil;
@@ -867,20 +864,23 @@ begin
 end;
 
 procedure TMainIDEBase.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
-  var ActiveUnitInfo: TUnitInfo);
+  var ActiveUnitInfo: TEditableUnitInfo);
 begin
   DoSwitchToFormSrc(nil,ActiveSourceEditor,ActiveUnitInfo);
 end;
 
 procedure TMainIDEBase.DoSwitchToFormSrc(ADesigner: TIDesigner;
-  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TEditableUnitInfo);
+var
+  UInfo: TUnitInfo;
 begin
   if (ADesigner<>nil) then
-    ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot)
+    UInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot)
   else if GlobalDesignHook.LookupRoot is TComponent then
-    ActiveUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot))
+    UInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot))
   else
-    ActiveUnitInfo:=nil;
+    UInfo:=nil;
+  ActiveUnitInfo:=TEditableUnitInfo(UInfo);
   if (ActiveUnitInfo<>nil) and (ActiveUnitInfo.OpenEditorInfoCount > 0) then begin
     ActiveSourceEditor := TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
     SourceEditorManagerIntf.ActiveEditor := ActiveSourceEditor;
@@ -1766,7 +1766,7 @@ begin
     if Project1<>nil then begin
       for i := 0 to SourceEditorManager.SourceEditorCount - 1 do begin
         ASrcEdit := SourceEditorManager.SourceEditors[i];
-        AnEditorInfo:=Project1.EditorInfoWithEditorComponent(ASrcEdit);
+        AnEditorInfo:=EditableProject1.EditorInfoWithEditorComponent(ASrcEdit);
         if AnEditorInfo <> nil then
           ASrcEdit.SyntaxHighlighterId := AnEditorInfo.CustomSyntaxHighlighter;
       end;
@@ -1781,7 +1781,7 @@ begin
   Include(FIdleIdeActions, iiaUpdateDefineTemplates);
 end;
 
-procedure TMainIDEBase.FindInFiles(aProject: TProject);
+procedure TMainIDEBase.FindInFiles(AProject: TProject);
 begin
   FindInFilesDialog.FindInFiles(aProject);
 end;

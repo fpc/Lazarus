@@ -34,8 +34,10 @@ uses
   CodeToolManager, CodeCache,
   // IdeConfig
   IDEOptionDefs,
+  // IdeProject
+  Project, ProjectDefs,
   // IDE
-  LazarusIDEStrConsts, Project, ProjectDefs, EnvGuiOptions;
+  LazarusIDEStrConsts, EditableProject, EnvGuiOptions;
 
 type
 
@@ -101,7 +103,7 @@ end;
 procedure TJumpHistoryViewWin.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   if (Project1<>nil)
-  and (Project1.JumpHistory.ChangeStamp<>fProjectChangeStamp) then
+  and (EditableProject1.JumpHistory.ChangeStamp<>fProjectChangeStamp) then
     InitDisplay;
 end;
 
@@ -118,13 +120,13 @@ var
   CodeBuf: TCodeBuffer;
 begin
   if (Project1<>nil)
-  and (fProjectChangeStamp=Project1.JumpHistory.ChangeStamp) then exit;
+  and (fProjectChangeStamp=EditableProject1.JumpHistory.ChangeStamp) then exit;
   listHistory.Items.BeginUpdate;
   listHistory.Clear;
   if (Project1<>nil) then begin
-    fProjectChangeStamp:=Project1.JumpHistory.ChangeStamp;
-    for i := 0 to Project1.JumpHistory.Count -1 do begin
-      jh_item := Project1.JumpHistory.Items[i];
+    fProjectChangeStamp:=EditableProject1.JumpHistory.ChangeStamp;
+    for i := 0 to EditableProject1.JumpHistory.Count -1 do begin
+      jh_item := EditableProject1.JumpHistory.Items[i];
       SrcLine:='';
       CodeBuf:=CodeToolBoss.LoadFile(jh_item.Filename,true,false);
       if CodeBuf<>nil then
@@ -137,14 +139,14 @@ begin
         );
     end;
     //DebugLn(['TJumpHistoryViewWin.InitDisplay Project1.JumpHistory.HistoryIndex=',Project1.JumpHistory.HistoryIndex]);
-    listHistory.ItemIndex := Project1.JumpHistory.HistoryIndex;
+    listHistory.ItemIndex := EditableProject1.JumpHistory.HistoryIndex;
   end;
   listHistory.Items.EndUpdate;
 end;
 
 procedure TJumpHistoryViewWin.IndexChanged(Sender : TObject; Index : Integer);
 begin
-  listHistory.ItemIndex := Project1.JumpHistory.HistoryIndex;
+  listHistory.ItemIndex := EditableProject1.JumpHistory.HistoryIndex;
 end;
 
 procedure TJumpHistoryViewWin.ListChanged(Sender : TObject; Index : Integer);

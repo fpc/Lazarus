@@ -217,6 +217,10 @@ type
     property LazPackage: TLazPackage read GetLazPackage write SetLazPackage;
   end;
 
+var
+  UnitInfoClass: TUnitInfoClass;
+
+
 implementation
 
 function ConvertDelphiAbsoluteToRelativeFile(const Filename: string;
@@ -1296,7 +1300,7 @@ var
 begin
   if LazProject.MainUnitInfo=nil then begin
     // add .lpr file to project as main unit
-    MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fPascalBuffer);
+    MainUnitInfo:=UnitInfoClass.Create(fMainUnitConverter.fPascalBuffer);
     MainUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(MainUnitInfo,false);
     LazProject.MainFileID:=0;
@@ -1352,7 +1356,7 @@ begin
         Assert(OutUnitInfo=nil,
           Format('TConvertDelphiProject.AddUnit: Unitname %s exists twice',[PureUnitName]));
       end;
-      OutUnitInfo:=TUnitInfo.Create(nil);
+      OutUnitInfo:=UnitInfoClass.Create(nil);
       OutUnitInfo.Filename:=AFileName;
       LazProject.AddFile(OutUnitInfo,false);
     end;
@@ -1561,7 +1565,7 @@ begin
   UnitIndex:=LazProject.IndexOfFilename(Filename, [pfsfOnlyEditorFiles]);
   if UnitIndex<0 then exit;
   AUnitInfo:=LazProject.Units[UnitIndex];
-  if AUnitInfo.OpenEditorInfoCount=0 then exit;
+  if not AUnitInfo.HasOpenEditors then exit;
   Result:=Settings.SaveEditorFile(AUnitInfo, True);
   // The main form has UnitIndex = 1. Don't close it.
   if (UnitIndex<>1) and not Settings.KeepFileOpen then

@@ -186,7 +186,7 @@ type
     function GetMainPath: String;
     //procedure SetEnabled(const AValue: Boolean);
   public
-    constructor Create(const ATitle: string);
+    constructor Create(const ATitle: string); virtual;
     destructor Destroy; override;
     procedure Load;
     procedure LoadFuncReplacements;

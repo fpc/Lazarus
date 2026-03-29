@@ -64,7 +64,7 @@ uses
   {$ENDIF}
   DbgIntfDebuggerBase, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
   // LazDebuggerIntf
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes, LazDebuggerIntfExcludedRoutines,
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDEDebugger
   IdeDebuggerStringConstants, DebuggerDlg, WatchesDlg, BreakPointsdlg,
   BreakPropertyDlg, LocalsDlg, WatchPropertyDlg, CallStackDlg, EvaluateDlg,
@@ -81,7 +81,7 @@ uses
   ProjectDebugLink, IdeDebuggerExcludedRoutines,
   // IDE
   DebugEventsForm, LazarusIDEStrConsts, SourceEditor, SourceMarks, MemViewerDlg,
-  MainBar, MainIntf, MainBase, EnvGuiOptions, RunParamsOpts;
+  MainBar, MainIntf, MainBase, EditableProject, EnvGuiOptions;
 
 type
 
@@ -240,7 +240,7 @@ type
                                       Merge: boolean);
     procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig;
                                       Flags: TProjectWriteFlags);
-    procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo);
+    procedure DoRestoreDebuggerMarks(AnUnitInfo: TEditableUnitInfo);
     procedure ClearDebugOutputLog;
     procedure ClearDebugEventsLog;
 
@@ -2525,7 +2525,7 @@ begin
   end;
 end;
 
-procedure TDebugManager.DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo);
+procedure TDebugManager.DoRestoreDebuggerMarks(AnUnitInfo: TEditableUnitInfo);
 var
   ASrcEdit: TSourceEditor;
   i: Integer;
@@ -3467,7 +3467,7 @@ end;
 function TDebugManager.DoStepToCursor: TModalResult;
 var
   ActiveSrcEdit: TSourceEditorInterface;
-  ActiveUnitInfo: TUnitInfo;
+  ActiveUnitInfo: TEditableUnitInfo;
   UnitFilename: string;
 begin
 {$ifdef VerboseDebugger}
@@ -3520,7 +3520,7 @@ end;
 function TDebugManager.DoRunToCursor: TModalResult;
 var
   ActiveSrcEdit: TSourceEditorInterface;
-  ActiveUnitInfo: TUnitInfo;
+  ActiveUnitInfo: TEditableUnitInfo;
   UnitFilename: string;
 begin
   if (MainIDE.DoInitProjectRun <> mrOK)
@@ -3649,7 +3649,7 @@ function TDebugManager.CanRunDebugger: Boolean;
 var
   DebuggerIsValid: Boolean;
   SrcEdit: TSourceEditorInterface;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
 begin
   DebuggerIsValid:=(MainIDE.ToolStatus in [itNone, itDebugger]);
   // For 'run' and 'step' bypass 'idle', so we can set the filename later

@@ -296,8 +296,8 @@ type
     procedure ClearInheritedOptions;
     procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
   public
-    constructor Create(const AOwner: TObject); override;
-    constructor Create(const AOwner: TObject; const AToolClass: TLazCompilationToolClass);
+    constructor Create(AOwner: TObject); override;
+    constructor Create(AOwner: TObject; AToolClass: TLazCompilationToolClass); override;
     destructor Destroy; override;
     procedure Clear; virtual;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -825,8 +825,8 @@ end;
 {------------------------------------------------------------------------------
   TBaseCompilerOptions Constructor
 ------------------------------------------------------------------------------}
-constructor TBaseCompilerOptions.Create(const AOwner: TObject;
-  const AToolClass: TLazCompilationToolClass);
+constructor TBaseCompilerOptions.Create(AOwner: TObject;
+  AToolClass: TLazCompilationToolClass);
 begin
   inherited Create(AOwner);
   FParsedOpts := TParsedCompilerOptions.Create(Self);
@@ -839,7 +839,7 @@ begin
   Clear;
 end;
 
-constructor TBaseCompilerOptions.Create(const AOwner: TObject);
+constructor TBaseCompilerOptions.Create(AOwner: TObject);
 begin
   Create(AOwner, TCompilationToolOptions);
 end;

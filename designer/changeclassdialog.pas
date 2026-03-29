@@ -51,7 +51,7 @@ uses
   // IdeIntf
   PropEdits, ComponentEditors, FormEditingIntf, SrcEditorIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, CheckerLFM, MainIntf;
+  LazarusIDEStrConsts, CheckerLFM, EditableProject, MainIntf;
 
 type
 
@@ -127,7 +127,7 @@ var
   UnitCode: TCodeBuffer;
   LFMBuffer: TCodeBuffer;
   LFMTree: TLFMTree;
-  UnitInfo: TUnitInfo;
+  UnitInfo: TEditableUnitInfo;
 
   procedure ShowAbortMessage(const Msg: string);
   begin

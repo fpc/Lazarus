@@ -80,7 +80,7 @@ uses
   // IDE
   LazarusIDEStrConsts, MiscOptions, AddToPackageDlg, ProjPackEditing,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
-  BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector,
+  BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector, EditableProject,
   PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg,
   PublishModuleDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,
   ConfirmPkgListDlg, NewPkgComponentDlg, MainBar, MainIntf, MainBase;
@@ -715,7 +715,7 @@ end;
 procedure TPkgManager.MainIDEitmPkgOpenPackageOfCurUnitClicked(Sender: TObject);
 var
   ActiveSourceEditor: TSourceEditorInterface;
-  ActiveUnitInfo: TUnitInfo;
+  ActiveUnitInfo: TEditableUnitInfo;
   PkgFile: TPkgFile;
 begin
   MainIDE.GetCurrentUnitInfo(ActiveSourceEditor,ActiveUnitInfo);
@@ -2659,7 +2659,7 @@ var
 
       NewProjFile:=TargetProject.UnitInfoWithFilename(NewFilename);
       if NewProjFile=nil then begin
-        NewProjFile:=TUnitInfo.Create(nil);
+        NewProjFile:=TEditableUnitInfo.Create(nil);
         NewProjFile.Filename:=NewFilename;
         TargetProject.AddFile(NewProjFile,false);
       end;
@@ -5289,7 +5289,7 @@ end;
 function TPkgManager.DoAddActiveUnitToAPackage: TModalResult;
 var
   ActiveSourceEditor: TSourceEditorInterface;
-  ActiveUnitInfo: TUnitInfo;
+  ActiveUnitInfo: TEditableUnitInfo;
   PkgFile: TPkgFile;
   Filename: String;
 begin

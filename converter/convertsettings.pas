@@ -51,7 +51,7 @@ type
   TConvertSettingsGui = class(TConvertSettings)
   private
   public
-    constructor Create(const ATitle: string);
+    constructor Create(const ATitle: string); override;
     destructor Destroy; override;
     function RunSettingsForm(ACacheUnitsThread: TCacheUnitsThread): TModalResult; override;
   end;

@@ -65,7 +65,7 @@ uses
   IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf,
   ProjectInspector, SourceSynEditor, SourceEditor,
-  EditorOptions, CustomFormEditor, ControlSelection,
+  EditorOptions, CustomFormEditor, ControlSelection, EditableProject,
   FormEditor, EmptyMethodsDlg, BaseDebugManager, BuildManager,
   EditorMacroListViewer, BuildModesManager, ViewUnit_Dlg, CheckerLFM,
   etMessagesWnd, DebugManager, EnvGuiOptions, Designer, DesignerProcs;
@@ -144,14 +144,14 @@ type
     FNewEditorInfo: TUnitEditorInfo;
     FFlags: TOpenFlags;
     FUnknownFile: boolean;
-    FNewUnitInfo: TUnitInfo;
+    FNewUnitInfo: TEditableUnitInfo;
     // Used by OpenFileAtCursor
     FActiveSrcEdit: TSourceEditor;
-    FActiveUnitInfo: TUnitInfo;
+    FActiveUnitInfo: TEditableUnitInfo;
     FIsIncludeDirective: boolean;
     function OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo): TModalResult;
     // Used by GetAvailableUnitEditorInfo
-    function AvailSrcWindowIndex(AnUnitInfo: TUnitInfo): Integer;
+    function AvailSrcWindowIndex(AnUnitInfo: TEditableUnitInfo): Integer;
     // Used by OpenEditorFile
     function OpenResource: TModalResult;
     function ChangeEditorPage: TModalResult;
@@ -170,8 +170,8 @@ type
     function GetFilenameAtRowCol(XY: TPoint): string;
   public
     // These methods have a global wrapper
-    function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
-      ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
+    function GetAvailableUnitEditorInfo(AnUnitInfo: TEditableUnitInfo;
+      ACaretPoint: TPoint; WantedTopLine: integer): TUnitEditorInfo;
     function OpenEditorFile(APageIndex, AWindowIndex: integer;
       AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags): TModalResult;
     function OpenFileAtCursor: TModalResult;
@@ -223,12 +223,12 @@ procedure UpdateDefaultPasFileExt;
 
 // Wrappers for TFileOpener methods.
 // WindowIndex is WindowID
-function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
+function GetAvailableUnitEditorInfo(AnUnitInfo: TEditableUnitInfo;
   ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
 function OpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
 function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo): TModalResult;
+  ActiveUnitInfo: TEditableUnitInfo): TModalResult;
 function OpenMainUnit(PageIndex, WindowIndex: integer;
   Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
 function RevertMainUnit: TModalResult;
@@ -291,11 +291,10 @@ function UpdateAppAutoCreateForms: boolean;
 // designer
 function DesignerUnitIsVirtual(aLookupRoot: TComponent): Boolean;
 function CheckLFMInEditor(LFMUnitInfo: TUnitInfo; Quiet: boolean): TModalResult;
-function LoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
+function LoadLFM(AnUnitInfo: TEditableUnitInfo; OpenFlags: TOpenFlags;
                    CloseFlags: TCloseFlags): TModalResult;
-function LoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
-                   OpenFlags: TOpenFlags;
-                   CloseFlags: TCloseFlags): TModalResult;
+function LoadLFM(AnUnitInfo: TEditableUnitInfo; LFMBuf: TCodeBuffer;
+                 OpenFlags: TOpenFlags; CloseFlags: TCloseFlags): TModalResult;
 function ResolveAmbiguousLFMClasses(AnUnitInfo: TUnitInfo;
   const LFMClassName: string;
   AmbiguousClasses: TFPList; // list of TPkgComponent
@@ -305,8 +304,8 @@ function ResolveAmbiguousLFMClasses(AnUnitInfo: TUnitInfo;
   ): TModalResult;
 function OpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
     CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
-function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags): TModalResult;
-function ReloadUnitComponent(AnUnitInfo: TUnitInfo): TModalResult; experimental;
+function CloseUnitComponent(AnUnitInfo: TEditableUnitInfo; Flags: TCloseFlags): TModalResult;
+function ReloadUnitComponent(AnUnitInfo: TEditableUnitInfo): TModalResult; experimental;
 function CloseDependingUnitComponents(AnUnitInfo: TUnitInfo;
                                       Flags: TCloseFlags): TModalResult;
 function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
@@ -331,14 +330,15 @@ function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
       UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
   function NewUniqueComponentName(Prefix: string): string;
 //save unit
-  function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
+  function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TEditableUnitInfo;
       var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean; Flags: TSaveFlags=[]): TModalResult;
   function SaveUnitComponent(AnUnitInfo: TUnitInfo;
       LRSCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
   function RemoveLooseEvents(AnUnitInfo: TUnitInfo; Flags: TSaveFlags =[]): TModalResult;
-  function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
+  function RenameUnit(AnUnitInfo: TEditableUnitInfo; NewFilename, NewUnitName: string;
       var LFMCode, LRSCode: TCodeBuffer; AutoRemoveOldFile: boolean = False): TModalResult;
-  function RenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser, AutoRemoveOldFile: boolean): TModalresult;
+  function RenameUnitLowerCase(AnUnitInfo: TEditableUnitInfo; AskUser,
+                               AutoRemoveOldFile: boolean): TModalResult;
   function ReplaceUnitUse(OldFilename, OldUnitName, NewFilename, NewUnitName: string;
                           IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
 //designer
@@ -348,20 +348,20 @@ function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
 //      DescendantClassName: string; out AComponentClass: TComponentClass): boolean;
   function LoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
       const aComponentClassName: string; OpenFlags: TOpenFlags;
-      out AncestorClass: TComponentClass; out AncestorUnitInfo: TUnitInfo): TModalResult;
+      out AncestorClass: TComponentClass; out AncestorUnitInfo: TEditableUnitInfo): TModalResult;
 //  function SearchComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName: string;
 //      Quiet: boolean; out ComponentUnitInfo: TUnitInfo; out AComponentClass: TComponentClass;
 //      out LFMFilename: string; out AncestorClass: TComponentClass): TModalResult;
   function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
       const AComponentClassName: string; Flags: TOpenFlags; MustHaveLFM: boolean;
-      out AComponentClass: TComponentClass; out ComponentUnitInfo: TUnitInfo;
+      out AComponentClass: TComponentClass; out ComponentUnitInfo: TEditableUnitInfo;
       out AncestorClass: TComponentClass; const IgnoreBtnText: string = ''): TModalResult;
   function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
       const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
 //save project
   function ShowSaveProjectAsDialog(Flags: TSaveFlags=[]): TModalResult;
   function SaveProjectInfo(var Flags: TSaveFlags): TModalResult;
-  procedure GetMainUnit(out MainUnitInfo: TUnitInfo; out MainUnitSrcEdit: TSourceEditor);
+  procedure GetMainUnit(out MainUnitInfo: TEditableUnitInfo; out MainUnitSrcEdit: TSourceEditor);
   procedure SaveSrcEditorProjectSpecificSettings(AnEditorInfo: TUnitEditorInfo);
   procedure SaveSourceEditorProjectSpecificSettings;
   procedure UpdateProjectResourceInfo;
@@ -389,7 +389,7 @@ end;
 
 // Wrappers for TFileOpener methods.
 
-function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
+function GetAvailableUnitEditorInfo(AnUnitInfo: TEditableUnitInfo;
   ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
 var
   Opener: TFileOpener;
@@ -417,7 +417,8 @@ begin
   end;
 end;
 
-function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo): TModalResult;
+function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TEditableUnitInfo): TModalResult;
 var
   Opener: TFileOpener;
 begin
@@ -603,7 +604,7 @@ var
   NewExecutionLine: LongInt;
   FoldState: String;
   SrcNotebook: TSourceNotebook;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
   AShareEditor: TSourceEditor;
 begin
   //debugln(['TFileOpener.OpenFileInSourceEditor ',AnEditorInfo.UnitInfo.Filename,' Window=',WindowIndex,'/',SourceEditorManager.SourceWindowCount,' Page=',PageIndex]);
@@ -702,7 +703,7 @@ begin
   Result:=mrOk;
 end;
 
-function TFileOpener.AvailSrcWindowIndex(AnUnitInfo: TUnitInfo): Integer;
+function TFileOpener.AvailSrcWindowIndex(AnUnitInfo: TEditableUnitInfo): Integer;
 var
   i: Integer;
 begin
@@ -718,7 +719,7 @@ begin
     Result := SourceEditorManager.IndexOfSourceWindow(SourceEditorManager.SourceWindowByLastFocused[i]);
 end;
 
-function TFileOpener.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
+function TFileOpener.GetAvailableUnitEditorInfo(AnUnitInfo: TEditableUnitInfo;
   ACaretPoint: TPoint; WantedTopLine: integer): TUnitEditorInfo;
 
   function EditorMatches(AEditInfo: TUnitEditorInfo;
@@ -925,11 +926,11 @@ begin
       NewBuf := CodeToolBoss.SourceCache.CreateFile(FFileName);
       if MacroListViewer.MacroByFullName(FFileName) <> nil then
         NewBuf.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
-      FNewUnitInfo:=TUnitInfo.Create(NewBuf);
+      FNewUnitInfo:=TEditableUnitInfo.Create(NewBuf);
       Project1.AddFile(FNewUnitInfo,false);
     end
     else begin
-      FNewUnitInfo:=Project1.Units[FUnitIndex];
+      FNewUnitInfo:=EditableProject1.Units[FUnitIndex];
     end;
     FNewUnitInfo.InternalFile := True;
 
@@ -958,7 +959,7 @@ begin
     FFlags := FFlags - [ofRevert];    // No editor exists yet, don't try to revert.
   FUnitIndex:=Project1.IndexOfFilename(FFilename);
   if (FUnitIndex > 0) then begin
-    FNewUnitInfo:=Project1.Units[FUnitIndex];
+    FNewUnitInfo:=EditableProject1.Units[FUnitIndex];
     if (uifInternalFile in FNewUnitInfo.Flags) then
     begin
       if (FNewUnitInfo.OpenEditorInfoCount > 0) then begin
@@ -988,7 +989,7 @@ begin
   else
     WInd:=FWindowIndex;
   ed := SourceEditorManager.SourceEditorsByPage[WInd, FPageIndex];
-  FNewEditorInfo := Project1.EditorInfoWithEditorComponent(ed);
+  FNewEditorInfo := EditableProject1.EditorInfoWithEditorComponent(ed);
   FNewUnitInfo := FNewEditorInfo.UnitInfo;
   FUnitIndex:=Project1.IndexOf(FNewUnitInfo);
   FFilename:=FNewUnitInfo.Filename;
@@ -1010,7 +1011,7 @@ begin
   FUnknownFile := (FUnitIndex < 0);
   FNewEditorInfo := nil;
   if not FUnknownFile then begin
-    FNewUnitInfo := Project1.Units[FUnitIndex];
+    FNewUnitInfo := EditableProject1.Units[FUnitIndex];
     if FEditorInfo <> nil then
       FNewEditorInfo := FEditorInfo
     else if (ofProjectLoading in FFlags) then
@@ -1038,7 +1039,7 @@ var
   LoadBufferFlags: TLoadBufferFlags;
   NewBuf: TCodeBuffer;
 begin
-  FNewUnitInfo:=Project1.Units[FUnitIndex];
+  FNewUnitInfo:=EditableProject1.Units[FUnitIndex];
   LoadBufferFlags:=[lbfCheckIfText];
   if FilenameIsAbsolute(FFilename) then begin
     if (not (ofUseCache in FFlags)) then
@@ -1138,7 +1139,7 @@ begin
       end;
     end;
   end;
-  FNewUnitInfo:=TUnitInfo.Create(PreReadBuf);
+  FNewUnitInfo:=TEditableUnitInfo.Create(PreReadBuf);
   if FilenameIsPascalSource(FNewUnitInfo.Filename) then
     FNewUnitInfo.ReadUnitNameFromSource(true);
   Project1.AddFile(FNewUnitInfo,false);
@@ -1709,14 +1710,14 @@ end;
 
 function TFileOpener.OpenMainUnit: TModalResult;
 var
-  MainUnitInfo: TUnitInfo;
+  MainUnitInfo: TEditableUnitInfo;
 begin
   {$IFDEF IDE_VERBOSE}
   debugln(['[TFileOpener.OpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
   {$ENDIF}
   Result:=mrCancel;
   if (Project1=nil) or (Project1.MainUnitID<0) then exit;
-  MainUnitInfo:=Project1.MainUnitInfo;
+  MainUnitInfo:=EditableProject1.MainUnitInfo;
   // check if main unit is already open in source editor
   if (MainUnitInfo.OpenEditorInfoCount > 0) and (not (ofProjectLoading in FFlags)) then
   begin
@@ -1733,15 +1734,18 @@ begin
 end;
 
 function TFileOpener.RevertMainUnit: TModalResult;
+var
+  uei: TUnitEditorInfo;
 begin
   Result:=mrOk;
   if Project1.MainUnitID<0 then exit;
   FFileName:='';
   FUseWindowID:=True;
-  if Project1.MainUnitInfo.OpenEditorInfoCount > 0 then
+  if EditableProject1.MainUnitInfo.OpenEditorInfoCount > 0 then begin
     // main unit is loaded, so we can just revert
-    Result:=OpenEditorFile(Project1.MainUnitInfo.EditorInfo[0].PageIndex,
-                           Project1.MainUnitInfo.EditorInfo[0].WindowID, nil, [ofRevert])
+    uei := EditableProject1.MainUnitInfo.EditorInfo[0];
+    Result:=OpenEditorFile(uei.PageIndex, uei.WindowID, nil, [ofRevert])
+  end
   else begin
     // main unit is only loaded in background
     // -> just reload the source and update the source name
@@ -1774,7 +1778,7 @@ function TProjectUnitFileSelector.Select: TModalResult;
 var
   i: integer;
   AName: string;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
   UEntry: TViewUnitsEntry;
 Begin
   Result:=mrOK;
@@ -1782,7 +1786,7 @@ Begin
   Project1.UpdateIsPartOfProjectFromMainUnit;
   for i:=0 to Project1.UnitCount-1 do
   begin
-    AnUnitInfo:=Project1.Units[i];
+    AnUnitInfo:=EditableProject1.Units[i];
     if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then
     begin
       AName:=Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
@@ -1799,7 +1803,7 @@ Begin
     if vufSelected in UEntry.Flags then
     begin
       if UEntry.ID<0 then continue;
-      AnUnitInfo:=Project1.Units[UEntry.ID];
+      AnUnitInfo:=EditableProject1.Units[UEntry.ID];
       if AnUnitInfo.IsPartOfProject then
         fUnitInfos.Add(AnUnitInfo);
     end;
@@ -1939,13 +1943,13 @@ end;
 function TRenameFilesSelector.ActionForFiles: TModalResult;
 var
   i: Integer;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
 begin
   Assert(fUnitInfos.Count > 0, 'TRemoveFilesSelector.ActionForFiles: No files');
   Result:=SaveProject([sfDoNotSaveVirtualFiles,sfCanAbort]);
   for i:=0 to fUnitInfos.Count-1 do
   begin
-    AnUnitInfo:=TUnitInfo(fUnitInfos[i]);
+    AnUnitInfo:=TEditableUnitInfo(fUnitInfos[i]);
     Assert(AnUnitInfo.IsPartOfProject, 'TRenameFilesSelector.ActionForFiles: '
          + AnUnitInfo.Unit_Name + ' is not part of project');
     if AnUnitInfo.Source=nil then
@@ -1967,7 +1971,7 @@ var
 begin
   Result:=mrOk;
   if (Project1=nil) then exit;
-  if Project1.SkipCheckLCLInterfaces then exit;
+  if EditableProject1.SkipCheckLCLInterfaces then exit;
   MainUnitInfo:=Project1.MainUnitInfo;
   if (MainUnitInfo=nil) or (MainUnitInfo.Source=nil) then exit;
   if PackageGraph.FindDependencyRecursively(Project1.FirstRequiredDependency,
@@ -1999,7 +2003,7 @@ begin
                     mrCancel]);
       case MsgResult of
         mrNo: exit;
-        mrNoToAll: begin Project1.SkipCheckLCLInterfaces:=true; exit; end;
+        mrNoToAll: begin EditableProject1.SkipCheckLCLInterfaces:=true; exit; end;
         mrCancel: exit(mrCancel);
       end;
     end;
@@ -2061,7 +2065,7 @@ end;
 function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
 var
   ActiveSourceEditor: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
+  ActiveUnitInfo: TEditableUnitInfo;
   s, ShortUnitName: string;
   OkToAdd, IsPascal: boolean;
   Owners: TFPList;
@@ -2180,7 +2184,7 @@ var
 begin
   for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
     AEditor := SourceEditorManager.SourceEditors[i];
-    AUnitInfo := Project1.UnitWithEditorComponent(AEditor);
+    AUnitInfo := EditableProject1.UnitWithEditorComponent(AEditor);
     if AUnitInfo=nil then continue;
     if FilenameIsPascalUnit(AUnitInfo.Filename) then
       S := AUnitInfo.Unit_Name
@@ -2195,11 +2199,11 @@ function CheckEditorNeedsSave(AEditor: TSourceEditorInterface;
   IgnoreSharedEdits: Boolean): Boolean;
 var
   AnEditorInfo: TUnitEditorInfo;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
 begin
   Result := False;
   if AEditor = nil then exit;
-  AnEditorInfo := Project1.EditorInfoWithEditorComponent(AEditor);
+  AnEditorInfo := EditableProject1.EditorInfoWithEditorComponent(AEditor);
   if AnEditorInfo = nil then exit;
 
   AnUnitInfo := AnEditorInfo.UnitInfo;
@@ -2307,7 +2311,7 @@ function NewFile(NewFileDescriptor: TProjectFileDescriptor;
   var NewFilename: string; NewSource: string;
   NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
 var
-  NewUnitInfo: TUnitInfo;
+  NewUnitInfo: TEditableUnitInfo;
   NewSrcEdit: TSourceEditor;
   NewUnitName: string;
   NewBuffer: TCodeBuffer;
@@ -2317,7 +2321,7 @@ var
   SearchFlags: TProjectFileSearchFlags;
   LFMSourceText: String;
   LFMCode: TCodeBuffer;
-  AProject: TProject;
+  AProject: TEditableProject;
   LRSFilename: String;
   ResType: TProjResourceType;
   SrcNoteBook: TSourceNotebook;
@@ -2340,10 +2344,10 @@ begin
     if not GlobalMacroList.SubstituteStr(NewFilename) then
       exit(mrCancel);
 
-  if NewOwner is TProject then
-    AProject:=TProject(NewOwner)
+  if NewOwner is TEditableProject then
+    AProject:=TEditableProject(NewOwner)
   else
-    AProject:=Project1;
+    AProject:=EditableProject1;
   if NewOwner is TLazPackage then
     APackage:=TLazPackage(NewOwner)
   else
@@ -2435,7 +2439,7 @@ begin
     // assign source
     NewUnitInfo.Source:=NewBuffer;
   end else
-    NewUnitInfo:=TUnitInfo.Create(NewBuffer);
+    NewUnitInfo:=TEditableUnitInfo.Create(NewBuffer);
   //debugln(['NewFile ',NewUnitInfo.Filename,' ',NewFilename]);
   if (CompareText(NewUnitInfo.Unit_Name,NewUnitName)<>0) then
     NewUnitInfo.Unit_Name:=NewUnitName;
@@ -2705,7 +2709,7 @@ end;
 
 function SaveEditorFile(AEditor: TSourceEditorInterface; Flags: TSaveFlags): TModalResult;
 var
-  AnUnitInfo, MainUnitInfo: TUnitInfo;
+  AnUnitInfo, MainUnitInfo: TEditableUnitInfo;
   TestFilename, DestFilename: string;
   LRSCode, LFMCode: TCodeBuffer;
   OldUnitName, OldFilename: String;
@@ -2720,7 +2724,7 @@ begin
   if not (MainIDE.ToolStatus in [itNone,itDebugger]) then
     exit(mrAbort);
   if AEditor=nil then exit(mrCancel);
-  AnUnitInfo := Project1.UnitWithEditorComponent(AEditor);
+  AnUnitInfo := EditableProject1.UnitWithEditorComponent(AEditor);
   if AnUnitInfo=nil then exit(mrCancel);
 
   // do not save a unit which is currently reverting
@@ -2773,7 +2777,7 @@ begin
   //   Changing the main source file without the .lpi is possible only by
   //   manually editing the lpi file, because this is only needed in
   //   special cases (rare functions don't need front ends).
-  MainUnitInfo:=AnUnitInfo.Project.MainUnitInfo;
+  MainUnitInfo:=AnUnitInfo.EditableProject.MainUnitInfo;
   if (sfSaveAs in Flags) and (not (sfProjectSaving in Flags)) and (AnUnitInfo=MainUnitInfo)
   then
     exit(SaveProject([sfSaveAs]));
@@ -2934,14 +2938,14 @@ end;
 function SaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult;
 var
   UnitIndex: Integer;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
   i: Integer;
 begin
   Result:=mrOk;
   if Filename='' then exit;
   UnitIndex:=Project1.IndexOfFilename(TrimFilename(Filename),[pfsfOnlyEditorFiles]);
   if UnitIndex<0 then exit;
-  AnUnitInfo:=Project1.Units[UnitIndex];
+  AnUnitInfo:=EditableProject1.Units[UnitIndex];
   for i := 0 to AnUnitInfo.OpenEditorInfoCount-1 do begin
     Result:=SaveEditorFile(AnUnitInfo.OpenEditorInfo[i].EditorComponent, Flags);
     if Result <> mrOK then Break;
@@ -2951,7 +2955,7 @@ end;
 
 function CloseEditorFile(AEditor: TSourceEditorInterface; Flags: TCloseFlags): TModalResult;
 var
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
   ACaption, AText: string;
   i: integer;
   AnEditorInfo: TUnitEditorInfo;
@@ -2963,7 +2967,7 @@ begin
   {$ENDIF}
   Result:=mrCancel;
   if AEditor = nil then exit;
-  AnEditorInfo := Project1.EditorInfoWithEditorComponent(AEditor);
+  AnEditorInfo := EditableProject1.EditorInfoWithEditorComponent(AEditor);
   //AnUnitInfo := Project1.UnitWithEditorComponent(AEditor);
   if AnEditorInfo = nil then begin
     // we need to close the page anyway or else we might enter a loop
@@ -3079,13 +3083,13 @@ end;
 function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
 var
   UnitIndex: Integer;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
 begin
   Result:=mrOk;
   if Filename='' then exit;
   UnitIndex:=Project1.IndexOfFilename(TrimFilename(Filename),[pfsfOnlyEditorFiles]);
   if UnitIndex<0 then exit;
-  AnUnitInfo:=Project1.Units[UnitIndex];
+  AnUnitInfo:=EditableProject1.Units[UnitIndex];
   while (AnUnitInfo.OpenEditorInfoCount > 0) and (Result = mrOK) do
     Result:=CloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent, Flags);
 end;
@@ -3853,15 +3857,9 @@ function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectIte
 var
   i: integer;
   AUnitName, DlgCaption: string;
-  MainUnitInfo: TUnitInfo;
+  LFMFilename, LFMType, LFMComponentName, LFMClassName: String;
+  MainUnitInfo, ActiveUnitInfo, CurUnitInfo: TEditableUnitInfo;
   ActiveSourceEditor: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  CurUnitInfo: TUnitInfo;
-  LFMFilename: String;
-  LFMType: String;
-  LFMComponentName: String;
-  LFMClassName: String;
-  anUnitName: String;
   LFMCode: TCodeBuffer;
   AlreadyOpen: Boolean;
 begin
@@ -3869,7 +3867,7 @@ begin
   MainIDE.GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
   for i := 0 to Project1.UnitCount - 1 do
   begin
-    CurUnitInfo:=Project1.Units[i];
+    CurUnitInfo:=EditableProject1.Units[i];
     if not CurUnitInfo.IsPartOfProject then
       Continue;
     AlreadyOpen := CurUnitInfo.OpenEditorInfoCount > 0;
@@ -3894,9 +3892,9 @@ begin
         begin
           ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
           if LFMComponentName<>'' then begin
-            anUnitName:=CurUnitInfo.Unit_Name;
-            if anUnitName='' then
-              anUnitName:=ExtractFileNameOnly(LFMFilename);
+            AUnitName:=CurUnitInfo.Unit_Name;
+            if AUnitName='' then
+              AUnitName:=ExtractFileNameOnly(LFMFilename);
             ItemList.Add(LFMComponentName, CurUnitInfo.Filename,
               i, CurUnitInfo = ActiveUnitInfo, AlreadyOpen);
           end;
@@ -3915,14 +3913,14 @@ begin
       else
       if Project1.MainUnitID = i then
       begin
-        MainUnitInfo := Project1.MainUnitInfo;
+        MainUnitInfo := EditableProject1.MainUnitInfo;
         if pfMainUnitIsPascalSource in Project1.Flags then
         begin
           AUnitName := ExtractFileName(MainUnitInfo.Filename);
           if (AUnitName <> '') and (ItemList.Find(AUnitName) = nil) then
           begin
-            ItemList.Add(AUnitName, MainUnitInfo.Filename,
-                         i, MainUnitInfo = ActiveUnitInfo, MainUnitInfo.OpenEditorInfoCount > 0);
+            ItemList.Add(AUnitName, MainUnitInfo.Filename, i,
+                MainUnitInfo = ActiveUnitInfo, MainUnitInfo.OpenEditorInfoCount > 0);
           end;
         end;
       end;
@@ -3941,7 +3939,7 @@ function SelectUnitComponents(DlgCaption: string; ItemType: TIDEProjectItem;
   Files: TStringList): TModalResult;
 var
   ActiveSourceEditor: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
+  ActiveUnitInfo: TEditableUnitInfo;
   UnitToFilename: TStringToStringTree;
   UnitPath: String;
 
@@ -4126,7 +4124,7 @@ begin
         debugln('InitNewProject ProjectDesc.CreateStartFiles failed');
       end;
       if (Project1.MainUnitInfo<>nil)
-      and ((Project1.FirstUnitWithEditorIndex=nil)
+      and ((EditableProject1.FirstUnitWithEditorIndex=nil)
        or ([pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement,pfMainUnitHasScaledStatement]*Project1.Flags=[]))
       then begin
         // the project has not created any secondary files
@@ -4147,7 +4145,7 @@ begin
     Result:=mrOk;
   finally
     // set all modified to false
-    Project1.UpdateAllVisibleUnits;
+    EditableProject1.UpdateAllVisibleUnits;
     for i:=0 to Project1.UnitCount-1 do
       Project1.Units[i].ClearModifieds;
     Project1.Modified:=false;
@@ -4165,7 +4163,7 @@ var
   EditorInfoIndex, i, j: Integer;
   NewBuf: TCodeBuffer;
   LastDesigner: TIDesigner;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
   HandlerResult: TModalResult;
   AnEditorInfo: TUnitEditorInfo;
 begin
@@ -4203,9 +4201,9 @@ begin
     IncreaseCompilerParseStamp;
 
     // restore files
-    while EditorInfoIndex < Project1.AllEditorsInfoCount do begin
+    while EditorInfoIndex < EditableProject1.AllEditorsInfoCount do begin
       // TProject.ReadProject sorts all UnitEditorInfos
-      AnEditorInfo := Project1.AllEditorsInfo[EditorInfoIndex];
+      AnEditorInfo := EditableProject1.AllEditorsInfo[EditorInfoIndex];
       AnUnitInfo := AnEditorInfo.UnitInfo;
       if (not AnUnitInfo.Loaded) or (AnEditorInfo.PageIndex < 0) then begin
         inc(EditorInfoIndex);
@@ -4239,8 +4237,8 @@ begin
     //debugln('InitOpenedProjectFile D');
 
     // set active editor source editor
-    for i := 0 to Project1.AllEditorsInfoCount - 1 do begin
-      AnEditorInfo := Project1.AllEditorsInfo[i];
+    for i := 0 to EditableProject1.AllEditorsInfoCount - 1 do begin
+      AnEditorInfo := EditableProject1.AllEditorsInfo[i];
       if AnEditorInfo.IsVisibleTab then
       begin
         if (AnEditorInfo.WindowID < 0) then continue;
@@ -4256,17 +4254,17 @@ begin
           SourceEditorManager.SourceWindows[j].PageIndex := AnEditorInfo.PageIndex;
       end;
     end;
-    if (Project1.ActiveWindowIndexAtStart<0)
-    or (Project1.ActiveWindowIndexAtStart >= SourceEditorManager.SourceWindowCount)
+    if (EditableProject1.ActiveWindowIndexAtStart < 0)
+    or (EditableProject1.ActiveWindowIndexAtStart >= SourceEditorManager.SourceWindowCount)
     then begin
       // session info is invalid (buggy lps file?) => auto fix
-      Project1.ActiveWindowIndexAtStart := 0;
+      EditableProject1.ActiveWindowIndexAtStart := 0;
     end;
-    if (Project1.ActiveWindowIndexAtStart >= 0) and
-       (Project1.ActiveWindowIndexAtStart < SourceEditorManager.SourceWindowCount)
+    if (EditableProject1.ActiveWindowIndexAtStart >= 0) and
+       (EditableProject1.ActiveWindowIndexAtStart < SourceEditorManager.SourceWindowCount)
     then begin
       SourceEditorManager.ActiveSourceWindow :=
-        SourceEditorManager.SourceWindows[Project1.ActiveWindowIndexAtStart];
+        SourceEditorManager.SourceWindows[EditableProject1.ActiveWindowIndexAtStart];
       SourceEditorManager.ShowActiveWindowOnTop(True);
     end;
 
@@ -4276,7 +4274,7 @@ begin
     and (SourceEditorManager.ActiveEditor<>nil)
     then begin
       // auto open form of active unit
-      AnUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
+      AnUnitInfo:=EditableProject1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
       if AnUnitInfo<>nil then
         Result:=LoadLFM(AnUnitInfo,[ofProjectLoading,ofMultiOpen,ofOnlyIfExists],
                           [cfSaveDependencies]);
@@ -4290,7 +4288,7 @@ begin
       LastDesigner.SelectOnlyThisComponent(LastDesigner.LookupRoot);
     end;
 
-    Project1.UpdateAllVisibleUnits;
+    EditableProject1.UpdateAllVisibleUnits;
     IncreaseCompilerParseStamp;
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
     Result:=mrOk;
@@ -4299,8 +4297,8 @@ begin
     SourceEditorManager.DecUpdateLock;
     if (Result<>mrOk) and (Project1<>nil) then begin
       // mark all files, that are left to open as unloaded:
-      for i := EditorInfoIndex to Project1.AllEditorsInfoCount - 1 do begin
-        AnEditorInfo := Project1.AllEditorsInfo[i];
+      for i := EditorInfoIndex to EditableProject1.AllEditorsInfoCount - 1 do begin
+        AnEditorInfo := EditableProject1.AllEditorsInfo[i];
         AnEditorInfo.PageIndex := -1;
         AnUnitInfo := AnEditorInfo.UnitInfo;
         if AnUnitInfo.Loaded and (AnUnitInfo.OpenEditorInfoCount = 0) then
@@ -4428,7 +4426,7 @@ end;
 function SaveProject(Flags: TSaveFlags):TModalResult;
 var
   i, j: integer;
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
   SaveFileFlags: TSaveFlags;
   SrcEdit: TSourceEditor;
 begin
@@ -4467,7 +4465,7 @@ begin
     // check that all new units are saved first to get valid filenames
     // Note: this can alter the mainunit: e.g. used unit names
     for i:=0 to Project1.UnitCount-1 do begin
-      AnUnitInfo:=Project1.Units[i];
+      AnUnitInfo:=EditableProject1.Units[i];
       if AnUnitInfo.Loaded and AnUnitInfo.IsVirtual and AnUnitInfo.IsPartOfProject
       and (Project1.MainUnitID<>i)
       and (AnUnitInfo.OpenEditorInfoCount > 0) then
@@ -4495,7 +4493,7 @@ begin
   // save all editor files
   for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
     SrcEdit:=SourceEditorManager.SourceEditors[i];
-    AnUnitInfo:=Project1.UnitWithEditorComponent(SrcEdit);
+    AnUnitInfo:=EditableProject1.UnitWithEditorComponent(SrcEdit);
     if (Project1.MainUnitID>=0) and (Project1.MainUnitInfo = AnUnitInfo) then
       continue;
     SaveFileFlags:=[sfProjectSaving]+Flags*[sfCheckAmbiguousFiles];
@@ -5078,7 +5076,7 @@ begin
   until IdentifierIsOk(Result);
 end;
 
-function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
+function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TEditableUnitInfo;
   var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean; Flags: TSaveFlags = []): TModalResult;
 var
   SaveDialog: TSaveDialog;
@@ -5814,7 +5812,7 @@ function RemoveLooseEvents(AnUnitInfo: TUnitInfo; Flags: TSaveFlags =[]): TModal
 var
   ComponentModified: boolean;
   ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
+  ActiveUnitInfo: TEditableUnitInfo;
 begin
   Result:=mrOk;
   if (AnUnitInfo.Component=nil) then exit;
@@ -5954,7 +5952,7 @@ begin
   end;
 end;
 
-function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string; var LFMCode,
+function RenameUnit(AnUnitInfo: TEditableUnitInfo; NewFilename, NewUnitName: string; var LFMCode,
   LRSCode: TCodeBuffer; AutoRemoveOldFile: boolean): TModalResult;
 var
   NewSource: TCodeBuffer;
@@ -6217,8 +6215,8 @@ begin
   Result:=mrOk;
 end;
 
-function RenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser, AutoRemoveOldFile: boolean
-  ): TModalresult;
+function RenameUnitLowerCase(AnUnitInfo: TEditableUnitInfo;
+  AskUser, AutoRemoveOldFile: boolean): TModalResult;
 var
   OldFilename: String;
   OldShortFilename: String;
@@ -6393,7 +6391,7 @@ begin
   Result:=mrOk;
 end;
 
-function LoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
+function LoadLFM(AnUnitInfo: TEditableUnitInfo; OpenFlags: TOpenFlags;
   CloseFlags: TCloseFlags): TModalResult;
 // if there is a .lfm file, open the resource
 var
@@ -6421,7 +6419,7 @@ begin
   Result:=LoadLFM(AnUnitInfo,LFMBuf,OpenFlags,CloseFlags);
 end;
 
-function LoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
+function LoadLFM(AnUnitInfo: TEditableUnitInfo; LFMBuf: TCodeBuffer;
   OpenFlags: TOpenFlags; CloseFlags: TCloseFlags): TModalResult;
 const
   BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
@@ -6438,7 +6436,7 @@ var
   LFMType: String;
   ACaption, AText: String;
   NewUnitName: String;
-  AncestorUnitInfo, NestedUnitInfo, LFMUnitInfo: TUnitInfo;
+  AncestorUnitInfo, NestedUnitInfo, LFMUnitInfo: TEditableUnitInfo;
   ReferencesLocked: Boolean;
   LCLVersion: string;
   MissingClasses: TStrings;
@@ -6729,7 +6727,7 @@ begin
             DebugLn(['LoadLFM DoOpenEditorFile failed']);
             exit;
           end;
-          LFMUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
+          LFMUnitInfo:=EditableProject1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
           Result:=CheckLFMInEditor(LFMUnitInfo, true);
           if Result=mrOk then begin
             AnUnitInfo.HasErrorInLFM:=False;
@@ -7062,7 +7060,7 @@ end;
 function OpenComponent(const UnitFilename: string;
   OpenFlags: TOpenFlags; CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
 var
-  AnUnitInfo: TUnitInfo;
+  AnUnitInfo: TEditableUnitInfo;
   AFilename, LFMFilename: String;
   UnitCode, LFMCode: TCodeBuffer;
 begin
@@ -7070,7 +7068,7 @@ begin
   // try to find a unit name without expanding the path. this is required if unit is virtual
   // in other case file name will be expanded with the wrong path
   AFilename:=UnitFilename;
-  AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
+  AnUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(AFilename));
   if AnUnitInfo = nil then
   begin
     AFilename:=TrimAndExpandFilename(UnitFilename);
@@ -7078,7 +7076,7 @@ begin
       DebugLn(['OpenComponent file not found ',AFilename]);
       exit(mrCancel);
     end;
-    AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
+    AnUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(AFilename));
   end;
   if (not (ofRevert in OpenFlags))
   and (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then begin
@@ -7109,7 +7107,7 @@ begin
 
   // create unit info
   if AnUnitInfo=nil then begin
-    AnUnitInfo:=TUnitInfo.Create(UnitCode);
+    AnUnitInfo:=TEditableUnitInfo.Create(UnitCode);
     AnUnitInfo.ReadUnitNameFromSource(true);
     Project1.AddFile(AnUnitInfo,false);
   end;
@@ -7183,7 +7181,7 @@ end;
 function LoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
   const aComponentClassName: string; OpenFlags: TOpenFlags;
   out AncestorClass: TComponentClass;
-  out AncestorUnitInfo: TUnitInfo): TModalResult;
+  out AncestorUnitInfo: TEditableUnitInfo): TModalResult;
 var
   AncestorClsName, IgnoreBtnText, ClsName: String;
   CodeBuf: TCodeBuffer;
@@ -7288,7 +7286,7 @@ begin
 end;
 
 function SearchComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName: string;
-  Quiet: boolean; out ComponentUnitInfo: TUnitInfo; out AComponentClass: TComponentClass;
+  Quiet: boolean; out ComponentUnitInfo: TEditableUnitInfo; out AComponentClass: TComponentClass;
   out LFMFilename: string; out AncestorClass: TComponentClass): TModalResult;
 { Possible results:
   mrOk:
@@ -7332,7 +7330,7 @@ var
   // returns true if the unit contains the component class and sets
   // TheModalResult to the result of the loading
   var
-    CurUnitInfo: TUnitInfo;
+    CurUnitInfo: TEditableUnitInfo;
   begin
     {$IFDEF VerboseLFMSearch}
     debugln(['  TryUnitComponent UnitFilename="',UnitFilename,'"']);
@@ -7341,7 +7339,7 @@ var
     TheModalResult:=mrCancel;
     if not FilenameIsPascalUnit(UnitFilename) then exit;
 
-    CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
+    CurUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(UnitFilename));
     if (CurUnitInfo=nil) or (CurUnitInfo.Component=nil) then exit;
     // unit with loaded component found -> check if it is the right one
     //DebugLn(['SearchComponentClass unit with a component found CurUnitInfo=',CurUnitInfo.Filename,' ',dbgsName(CurUnitInfo.Component)]);
@@ -7453,10 +7451,10 @@ var
   procedure StoreComponentClassDeclaration(UnitFilename: string);
   begin
     // The Unit declaring AComponentClassName was located, save UnitInfo for return regardless of AComponentClass instance
-    ComponentUnitInfo:= Project1.UnitInfoWithFilename(UnitFilename);
+    ComponentUnitInfo:= TEditableUnitInfo(Project1.UnitInfoWithFilename(UnitFilename));
     if not Assigned(ComponentUnitInfo) then begin
       // File was not previously loaded, add reference to project (without loading source for now)
-      ComponentUnitInfo:=TUnitInfo.Create(nil);
+      ComponentUnitInfo:=TEditableUnitInfo.Create(nil);
       ComponentUnitInfo.Filename:=UnitFilename;
       ComponentUnitInfo.IsPartOfProject:=false;
       Project1.AddFile(ComponentUnitInfo,false);
@@ -7731,7 +7729,7 @@ end;
 
 function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
   const AComponentClassName: string; Flags: TOpenFlags; MustHaveLFM: boolean;
-  out AComponentClass: TComponentClass; out ComponentUnitInfo: TUnitInfo;
+  out AComponentClass: TComponentClass; out ComponentUnitInfo: TEditableUnitInfo;
   out AncestorClass: TComponentClass; const IgnoreBtnText: string): TModalResult;
 { Possible results:
   mrOk:
@@ -7754,7 +7752,7 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
   function TryDepLFM(LFMFilename: string): TModalResult;
   var
     UnitFilename: String;
-    CurUnitInfo: TUnitInfo;
+    CurUnitInfo: TEditableUnitInfo;
     LFMCode: TCodeBuffer;
     LFMClassName: String;
     LFMType: String;
@@ -7770,10 +7768,10 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     end;
     // check if the unit component is already loaded
     UnitFilename:=ChangeFileExt(LFMFilename,'.pas');
-    CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
+    CurUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(UnitFilename));
     if CurUnitInfo=nil then begin
       UnitFilename:=ChangeFileExt(LFMFilename,'.pp');
-      CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
+      CurUnitInfo:=TEditableUnitInfo(Project1.UnitInfoWithFilename(UnitFilename));
     end;
     ReadLFMHeader(LFMCode.Source,LFMClassName,LFMType);
     if CurUnitInfo=nil then
@@ -7786,7 +7784,7 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
       if Result<>mrOk then
         exit;
       // create unit info
-      CurUnitInfo:=TUnitInfo.Create(UnitCode);
+      CurUnitInfo:=TEditableUnitInfo.Create(UnitCode);
       CurUnitInfo.ReadUnitNameFromSource(true);
       Project1.AddFile(CurUnitInfo,false);
     end
@@ -7909,11 +7907,11 @@ begin
   Result:=LoadCodeBuffer(ACodeBuffer,AFilename,Flags,ShowAbort);
 end;
 
-function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags): TModalResult;
+function CloseUnitComponent(AnUnitInfo: TEditableUnitInfo; Flags: TCloseFlags): TModalResult;
 
   procedure FreeUnusedComponents;
   var
-    CompUnitInfo: TUnitInfo;
+    CompUnitInfo: TEditableUnitInfo;
   begin
     Project1.UpdateUnitComponentDependencies;
     for TLazProjectFile(CompUnitInfo) in Project1.UnitsWithComponent do begin
@@ -8025,7 +8023,7 @@ begin
   Result:=mrOk;
 end;
 
-function ReloadUnitComponent(AnUnitInfo: TUnitInfo): TModalResult;
+function ReloadUnitComponent(AnUnitInfo: TEditableUnitInfo): TModalResult;
 var
   PageIdx, WinID: integer;
 begin
@@ -8061,12 +8059,12 @@ var
   function CloseNext(var ModResult: TModalresult;
     Types: TUnitCompDependencyTypes): boolean;
   var
-    DependingUnitInfo: TUnitInfo;
+    DependingUnitInfo: TEditableUnitInfo;
     DependenciesFlags: TCloseFlags;
   begin
     ModResult:=mrOk;
     repeat
-      DependingUnitInfo:=Project1.UnitUsingComponentUnit(AnUnitInfo,Types);
+      DependingUnitInfo:=TEditableUnitInfo(Project1.UnitUsingComponentUnit(AnUnitInfo,Types));
       if DependingUnitInfo=nil then break;
       if (not UserAsked) and (not (cfQuiet in Flags))
       and (not DependingUnitInfo.IsReverting) then begin
@@ -8242,13 +8240,13 @@ end;
 
 function SaveProjectInfo(var Flags: TSaveFlags): TModalResult;
 var
-  MainUnitInfo: TUnitInfo;
+  MainUnitInfo: TEditableUnitInfo;
   MainUnitSrcEdit: TSourceEditor;
   DestFilename: String;
   SaveMainSrc: Boolean;
 begin
   Result:=mrOk;
-  Project1.ActiveWindowIndexAtStart := SourceEditorManager.ActiveSourceWindowIndex;
+  EditableProject1.ActiveWindowIndexAtStart := SourceEditorManager.ActiveSourceWindowIndex;
 
   // update source notebook page names
   //UpdateSourceNames;
@@ -8330,11 +8328,11 @@ begin
   end;
 end;
 
-procedure GetMainUnit(out MainUnitInfo: TUnitInfo; out MainUnitSrcEdit: TSourceEditor);
+procedure GetMainUnit(out MainUnitInfo: TEditableUnitInfo; out MainUnitSrcEdit: TSourceEditor);
 begin
   MainUnitSrcEdit:=nil;
   if Project1.MainUnitID>=0 then begin
-    MainUnitInfo:=Project1.MainUnitInfo;
+    MainUnitInfo:=EditableProject1.MainUnitInfo;
     if MainUnitInfo.OpenEditorInfoCount > 0 then begin
       MainUnitSrcEdit := TSourceEditor(MainUnitInfo.OpenEditorInfo[0].EditorComponent);
       if MainUnitSrcEdit.Modified then
@@ -8359,8 +8357,8 @@ procedure SaveSourceEditorProjectSpecificSettings;
 var
   i: Integer;
 begin
-  for i := 0 to Project1.AllEditorsInfoCount - 1 do
-    SaveSrcEditorProjectSpecificSettings(Project1.AllEditorsInfo[i]);
+  for i := 0 to EditableProject1.AllEditorsInfoCount - 1 do
+    SaveSrcEditorProjectSpecificSettings(EditableProject1.AllEditorsInfo[i]);
 end;
 
 procedure UpdateProjectResourceInfo;
@@ -8389,7 +8387,7 @@ function FinalizeSavingProject(AProgramName, AProgramFilename, AnLPIFilename,
 // Called from ShowSaveProjectAsDialog. Set up the project with new names and paths.
 var
   MainUnitSrcEdit: TSourceEditor;
-  MainUnitInfo: TUnitInfo;
+  MainUnitInfo: TEditableUnitInfo;
   TitleWasDefault: Boolean;
   NewBuf, OldBuf: TCodeBuffer;
   OldSourceCode, prDir: string;
@@ -8681,9 +8679,9 @@ function SaveEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
 
   procedure SaveChanges(SaveEditor: TSourceEditorInterface);
   var
-    AnUnitInfo: TUnitInfo;
+    AnUnitInfo: TEditableUnitInfo;
   begin
-    AnUnitInfo := Project1.UnitWithEditorComponent(SaveEditor);
+    AnUnitInfo := EditableProject1.UnitWithEditorComponent(SaveEditor);
     if (AnUnitInfo<>nil) then
     begin
       //debugln(['SaveChanges ',AnUnitInfo.Filename,' ',SaveEditor.NeedsUpdateCodeBuffer]);
@@ -8883,7 +8881,7 @@ end;
 function DesignerUnitIsVirtual(aLookupRoot: TComponent): Boolean;
 var
   ActiveSourceEditor: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
+  ActiveUnitInfo: TEditableUnitInfo;
 begin
   Assert(Assigned(aLookupRoot),'DesignerUnitIsVirtual: aLookupRoot is not assigned');
   MainIDE.GetUnitWithPersistent(aLookupRoot, ActiveSourceEditor, ActiveUnitInfo);
