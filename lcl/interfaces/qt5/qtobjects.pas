@@ -472,6 +472,7 @@ type
     procedure setRegion(ARegion: TQtRegion);
     procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect;
       mask: QImageH; maskRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
+    procedure ApplyDstInvert(const ARect: TRect);
     function PaintEngine: QPaintEngineH;
     procedure rotate(a: Double);
     procedure setRenderHint(AHint: QPainterRenderHint; AValue: Boolean);
@@ -3676,6 +3677,59 @@ begin
         if ARenderHint then
           QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, not ARenderHint);
       end;
+    end;
+  end;
+end;
+
+procedure TQtDeviceContext.ApplyDstInvert(const ARect: TRect);
+var
+  ImgHandle: QImageH;
+  Bits: PByte;
+  ImgW, ImgH, BytesPerLine: Integer;
+  X, Y, W, H, Off: Integer;
+  X1, Y1, X2, Y2: Integer;
+begin
+  if vImage = nil then
+    exit;
+  ImgHandle := vImage.Handle;
+  if ImgHandle = nil then
+    exit;
+
+  Bits := QImage_bits(ImgHandle);
+  if Bits = nil then
+    exit;
+
+  ImgW := QImage_width(ImgHandle);
+  ImgH := QImage_height(ImgHandle);
+  BytesPerLine := QImage_bytesPerLine(ImgHandle);
+
+  X1 := ARect.Left;
+  Y1 := ARect.Top;
+  X2 := ARect.Right;
+  Y2 := ARect.Bottom;
+  if X1 < 0 then
+    X1 := 0;
+  if Y1 < 0 then
+    Y1 := 0;
+  if X2 > ImgW then
+    X2 := ImgW;
+  if Y2 > ImgH then
+    Y2 := ImgH;
+
+  W := X2 - X1;
+  H := Y2 - Y1;
+  if (W <= 0) or (H <= 0) then
+    exit;
+  //BGRA
+  for Y := Y1 to Y2 - 1 do
+  begin
+    for X := X1 to X2 - 1 do
+    begin
+      Off := Y * BytesPerLine + X * 4;
+      Bits[Off + 0] := not Bits[Off + 0];
+      Bits[Off + 1] := not Bits[Off + 1];
+      Bits[Off + 2] := not Bits[Off + 2];
+      Bits[Off + 3] := 255;
     end;
   end;
 end;
