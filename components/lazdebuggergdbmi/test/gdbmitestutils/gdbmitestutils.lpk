@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="GdbmiTestUtils"/>
-    <Type Value="RunAndDesignTime"/>
+    <Type Value="RunTimeOnly"/>
     <Author Value="M Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -33,6 +33,7 @@
         <UnitName Value="TestWatchUtils"/>
       </Item2>
     </Files>
+    <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="4">
       <Item1>
         <PackageName Value="LazDebugTestBase"/>
