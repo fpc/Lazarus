@@ -281,14 +281,12 @@ end;
 
 procedure TCocoaWindowContentDocument.didBecomeKeyNotification(sender: NSNotification);
 begin
-  if Assigned(callback) then
-    callback.DidBecomeKeyNotification;
+  TCocoaLCLMessageUtil.DidBecomeKeyNotification(self);
 end;
 
 procedure TCocoaWindowContentDocument.didResignKeyNotification(sender: NSNotification);
 begin
-  if Assigned(callback) then
-    callback.DidResignKeyNotification;
+  TCocoaLCLMessageUtil.DidResignKeyNotification(self);
 end;
 
 { TCocoaWindowContent }
@@ -1058,7 +1056,7 @@ begin
     // 2st: send SetFocus Message
     // TCocoaWindow.makeFirstResponder() may be triggered reentrant here
     if Assigned(newCb) then
-      newCb.BecomeFirstResponder;
+      TCocoaLCLMessageUtil.BecomeFirstResponder(newCb);
 
     newRespsonderClassName:= newResponder.lclClassName;
   finally

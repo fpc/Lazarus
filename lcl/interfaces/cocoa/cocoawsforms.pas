@@ -397,7 +397,7 @@ begin
     LCLSendActivateMsg(Target, WA_ACTIVE, false);
     focusedCb := window.firstResponder.lclGetCallback;
     if Assigned(focusedCb) then
-      focusedCb.BecomeFirstResponder;
+      TCocoaLCLMessageUtil.BecomeFirstResponder(focusedCb);
     // The only way to update Forms.ActiveCustomForm for the main form
     // is calling TCustomForm.SetFocusedControl, see bug 31056
     ACustForm.SetFocusedControl(ACustForm.ActiveControl);

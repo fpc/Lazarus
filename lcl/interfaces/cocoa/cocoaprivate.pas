@@ -25,6 +25,7 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLType, Controls, Forms, Graphics,
+  LCLMessageGlue, LMessages,
   MacOSAll, CocoaAll,
   CocoaConfig, Cocoa_Extra, CocoaUtils;
 
@@ -109,14 +110,7 @@ type
     procedure Draw(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure DrawBackground(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure DrawOverlay(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure BecomeFirstResponder;
     procedure ResignFirstResponder;
-    procedure DidBecomeKeyNotification;
-    procedure DidResignKeyNotification;
-    function SendOnEditCut: Boolean;
-    function SendOnEditPaste: Boolean;
-    procedure SendOnChange;
-    procedure SendOnTextChanged;
     procedure scroll(
       const isVert: Boolean;
       const Pos: Integer;
@@ -143,6 +137,20 @@ type
 
     // properties
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
+  end;
+
+  { TCocoaLCLMessageUtil }
+
+  TCocoaLCLMessageUtil = class
+  public
+    class procedure BecomeFirstResponder( const cb: ICommonCallback ); overload;
+    class procedure BecomeFirstResponder( const control: NSObject ); overload;
+    class procedure DidBecomeKeyNotification( const control: NSObject );
+    class procedure DidResignKeyNotification( const control: NSObject );
+    class function SendOnEditCut( const control: NSObject ): Boolean;
+    class function SendOnEditPaste( const control: NSObject ): Boolean;
+    class procedure SendOnChange( const control: NSObject );
+    class procedure SendOnTextChanged( const control: NSObject );
   end;
 
   { LCLObjectExtension }
@@ -416,8 +424,8 @@ var
 begin
   TCocoaControlUtil.setStringValue(ctrl, text);
   cb:= ctrl.lclGetcallback;
-  if Assigned(cb) then // cb.SendOnChange;
-    cb.SendOnTextChanged;
+  if Assigned(cb) then
+    TCocoaLCLMessageUtil.SendOnTextChanged(ctrl);
 end;
 
 class function TCocoaControlUtil.getStringValue(const c: NSControl): String; inline;
@@ -448,6 +456,104 @@ begin
     Result:= NSString.string_ // empty string
   else
     Result:= NSString.stringWithUTF8String( @t[1] );
+end;
+
+{ TCocoaLCLMessageUtil }
+
+class procedure TCocoaLCLMessageUtil.BecomeFirstResponder( const cb: ICommonCallback);
+var
+  target: TControl;
+begin
+  if NOT Assigned(cb) then
+    Exit;
+
+  target:= TControl( cb.GetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  // LCL is unable to determine the "already focused" message
+  // thus Cocoa related code is doing that.
+
+  //if not Target.Focused then
+    LCLSendSetFocusMsg(target);
+end;
+
+class procedure TCocoaLCLMessageUtil.BecomeFirstResponder( const control: NSObject );
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  LCLSendSetFocusMsg(target);
+end;
+
+class procedure TCocoaLCLMessageUtil.DidBecomeKeyNotification( const control: NSObject );
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  LCLSendActivateMsg(target, WA_ACTIVE, false);
+  LCLSendSetFocusMsg(target);
+end;
+
+class procedure TCocoaLCLMessageUtil.DidResignKeyNotification( const control: NSObject );
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  if not Assigned(Target) then Exit;
+  LCLSendActivateMsg(Target, WA_INACTIVE, false);
+  LCLSendKillFocusMsg(Target);
+end;
+
+class function TCocoaLCLMessageUtil.SendOnEditCut(const control: NSObject): Boolean;
+var
+  target: TControl;
+begin
+  Result:= false;
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  Result:= SendSimpleMessage(target, LM_CUT)=0;
+end;
+
+class function TCocoaLCLMessageUtil.SendOnEditPaste(const control: NSObject): Boolean;
+var
+  target: TControl;
+begin
+  Result:= false;
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  Result:= SendSimpleMessage(target, LM_PASTE)=0;
+end;
+
+class procedure TCocoaLCLMessageUtil.SendOnChange(const control: NSObject);
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  SendSimpleMessage(target, LM_CHANGED);
+end;
+
+class procedure TCocoaLCLMessageUtil.SendOnTextChanged(const control: NSObject);
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  SendSimpleMessage(target, CM_TEXTCHANGED);
 end;
 
 { LCLObjectExtension }

@@ -361,7 +361,8 @@ var
 begin
   ch := astate<>state;
   inherited setState(astate);
-  if Assigned(callback) and ch then callback.SendOnChange;
+  if ch then
+    TCocoaLCLMessageUtil.SendOnChange(self);
 end;
 
 procedure TCocoaButton.actionButtonClick(sender: NSObject);

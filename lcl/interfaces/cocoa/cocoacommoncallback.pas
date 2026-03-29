@@ -91,14 +91,7 @@ type
     function scrollWheel(const Event: NSEvent): Boolean; virtual;
     procedure frameDidChange(const sender: id); virtual;
     procedure boundsDidChange(const sender: id); virtual;
-    procedure BecomeFirstResponder; virtual;
     procedure ResignFirstResponder; virtual;
-    procedure DidBecomeKeyNotification; virtual;
-    procedure DidResignKeyNotification; virtual;
-    function SendOnEditCut: Boolean; virtual;
-    function SendOnEditPaste: Boolean; virtual;
-    procedure SendOnChange; virtual;
-    procedure SendOnTextChanged; virtual; // text controls (like spin) respond to OnChange for this event, but not for SendOnChange
     procedure scroll(
       const isVert: Boolean;
       const Pos: Integer;
@@ -1192,15 +1185,6 @@ begin
 
 end;
 
-procedure TLCLCommonCallback.BecomeFirstResponder;
-begin
-  if not Assigned(Target) then Exit;
-  // LCL is unable to determine the "already focused" message
-  // thus Cocoa related code is doing that.
-  //if not Target.Focused then
-    LCLSendSetFocusMsg(Target);
-end;
-
 procedure TLCLCommonCallback.ResignFirstResponder;
 begin
   if not Assigned(Target) then Exit;
@@ -1210,46 +1194,6 @@ begin
   finally
     CocoaWidgetSetState.killingFocus:= false;
   end;
-end;
-
-procedure TLCLCommonCallback.DidBecomeKeyNotification;
-begin
-  if not Assigned(Target) then Exit;
-  LCLSendActivateMsg(Target, WA_ACTIVE, false);
-  LCLSendSetFocusMsg(Target);
-end;
-
-procedure TLCLCommonCallback.DidResignKeyNotification;
-begin
-  if not Assigned(Target) then Exit;
-  LCLSendActivateMsg(Target, WA_INACTIVE, false);
-  LCLSendKillFocusMsg(Target);
-end;
-
-function TLCLCommonCallback.SendOnEditCut: Boolean;
-begin
-  Result:= false;
-  if Assigned(Target) then
-    Result:= SendSimpleMessage(Target, LM_CUT)=0;
-end;
-
-function TLCLCommonCallback.SendOnEditPaste: Boolean;
-begin
-  Result:= false;
-  if Assigned(Target) then
-    Result:= SendSimpleMessage(Target, LM_PASTE)=0;
-end;
-
-procedure TLCLCommonCallback.SendOnChange;
-begin
-  if not Assigned(Target) then Exit;
-  SendSimpleMessage(Target, LM_CHANGED);
-end;
-
-procedure TLCLCommonCallback.SendOnTextChanged;
-begin
-  if not Assigned(Target) then Exit;
-  SendSimpleMessage(Target, CM_TEXTCHANGED);
 end;
 
 procedure TLCLCommonCallback.scroll(

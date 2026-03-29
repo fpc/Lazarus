@@ -59,8 +59,8 @@ begin
       // After mouse event, has our date changed
       newDate:= TCocoaTypeUtil.toDateTime(Self.dateValue);
       dateClicked:= (oldDate <> newDate);
-      if dateClicked and Assigned(callback) then
-        callback.SendOnChange;
+      if dateClicked then
+        TCocoaLCLMessageUtil.SendOnChange(self);
 
       // This also calls OnClick....
       if Assigned(callback) then
