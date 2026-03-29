@@ -7091,6 +7091,11 @@ begin
         DstQDC.Rop2 := OldRop;
       end;
     end else
+    if (Rop = DSTINVERT) and (DstQDC.vImage <> nil) and (DstQDC.vImage.Handle <> nil) then
+    begin
+      //DSTINVERT = NOT dst, pixel level inversion on QImage, Qt does not have implementation as we want.
+      DstQDC.ApplyDstInvert(DstRect);
+    end else
     begin
       OldRop := DstQDC.Rop2;
       if Rop <> SRCCOPY then
