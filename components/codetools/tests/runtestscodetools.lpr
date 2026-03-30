@@ -174,16 +174,21 @@ begin
   end;
 end;
 
-function ReadFPCSrcFromIdeOpts(aLazDir: string): string;
+function ReadFPCPathsFromIdeOpts(aLazDir: string; out aFPCSrc, aFPCExe: string): boolean;
 begin
-  result := '';
+  result := false;
+  aFPCSrc := '';
+  aFPCExe := '';
   try
     try
-      if LoadIdeEnvOpt(aLazDir) <> nil then
-        // first check the existence of the original value
-        if EnvironmentOptions.FPCSourceDirectory <> '' then
-          // then read the parsed value
-          result := EnvironmentOptions.GetParsedFPCSourceDirectory;
+      if LoadIdeEnvOpt(aLazDir) = nil then
+        exit;
+      // first check the existence of the original value, then read the parsed value
+      if EnvironmentOptions.FPCSourceDirectory <> '' then
+        aFPCSrc := EnvironmentOptions.GetParsedFPCSourceDirectory;
+      if EnvironmentOptions.CompilerFilename <> '' then
+        aFPCExe := EnvironmentOptions.GetParsedCompilerFilename;
+      result := true;
     finally
       FreeIdeEnvOpt;
     end;
@@ -248,6 +253,8 @@ end;
 function TCTTestRunner.ParseOptions: Boolean;
 const
   cLazarusSrcDir = '..\..\..'; // only current installation
+var
+  lFPCSrc, lFPCExe: string;
 begin
   Result:=inherited ParseOptions;
 
@@ -277,9 +284,13 @@ begin
   if Options.LazarusSrcDir='' then
     Options.LazarusSrcDir:=ExpandFileNameUTF8(cLazarusSrcDir,ExtractFileDir(ParamStrUTF8(0)));
 
-  // read folder from Lazarus configuration if not specified
+  // read paths from Lazarus configuration if not specified
+  if (Options.FPCSrcDir='') or (Options.FPCPath='') then
+    ReadFPCPathsFromIdeOpts(Options.LazarusSrcDir, lFPCSrc, lFPCExe); // ignore error
+
+  // FPC source path
   if Options.FPCSrcDir='' then
-    Options.FPCSrcDir:=ReadFPCSrcFromIdeOpts(Options.LazarusSrcDir);
+    Options.FPCSrcDir:=lFPCSrc;
   if Options.FPCSrcDir='' then begin
     writeln('Error: The environment variable "','FPCDIR','" is not assigned');
     halt(1);
@@ -288,6 +299,10 @@ begin
     writeln('Error: FPC source folder "',Options.FPCSrcDir,'" does not exist');
     halt(1);
   end;
+
+  // FPC file name (replace the current value obtained from the $PATH environment variable)
+  if (GetEnvironmentVariableUTF8('PP')='') and (lFPCExe<>'') then
+    Options.FPCPath:=lFPCExe;
 
   CodeToolBoss.Init(Options);
 
