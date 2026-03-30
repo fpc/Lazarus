@@ -121,6 +121,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="Test_DpiScaling"/>
       </Unit>
+      <Unit>
+        <Filename Value="testnotebook.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestNotebook"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

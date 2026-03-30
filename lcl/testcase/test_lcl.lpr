@@ -8,8 +8,10 @@ uses
   consoletestrunner,
   // LCL
   Interfaces, Forms,
-  // Test suites
-  Test_ChildSizing, Test_DpiScaling;
+  // (test suites - common)
+  Test_ChildSizing, Test_DpiScaling,
+  // (test suites - components)
+  TestNotebook;
 
 type
 
