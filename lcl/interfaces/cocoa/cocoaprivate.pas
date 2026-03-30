@@ -135,7 +135,6 @@ type
     procedure Draw(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure DrawBackground(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure DrawOverlay(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure ResignFirstResponder;
     procedure scroll(
       const isVert: Boolean;
       const Pos: Integer;
@@ -176,6 +175,8 @@ type
 
     class procedure BecomeFirstResponder( const cb: ICommonCallback ); overload;
     class procedure BecomeFirstResponder( const control: NSObject ); overload;
+    class procedure ResignFirstResponder( const cb: ICommonCallback ); overload;
+    class procedure ResignFirstResponder( const control: NSObject ); overload;
     class procedure DidBecomeKeyNotification( const control: NSObject );
     class procedure DidResignKeyNotification( const control: NSObject );
     class function SendOnEditCut( const control: NSObject ): Boolean;
@@ -575,6 +576,30 @@ begin
     Exit;
 
   LCLSendSetFocusMsg(target);
+end;
+
+class procedure TCocoaLCLMessageUtil.ResignFirstResponder( const cb: ICommonCallback );
+var
+  target: TControl;
+begin
+  if NOT Assigned(cb) then
+    Exit;
+
+  target:= TControl( cb.GetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  CocoaWidgetSetState.killingFocus:= true;
+  try
+    LCLSendKillFocusMsg(target);
+  finally
+    CocoaWidgetSetState.killingFocus:= false;
+  end;
+end;
+
+class procedure TCocoaLCLMessageUtil.ResignFirstResponder( const control: NSObject );
+begin
+  TCocoaLCLMessageUtil.ResignFirstResponder( control.lclGetCallback );
 end;
 
 class procedure TCocoaLCLMessageUtil.DidBecomeKeyNotification( const control: NSObject );

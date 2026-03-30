@@ -418,7 +418,7 @@ begin
   focusedCb:= window.firstResponder.lclGetCallback;
   if Assigned(focusedCb) then begin
     if not (csDestroying in TComponent(focusedCb.GetTarget).ComponentState) then
-      focusedCb.ResignFirstResponder;
+      TCocoaLCLMessageUtil.ResignFirstResponder(focusedCb);
   end;
   LCLSendActivateMsg(Target, WA_INACTIVE, false);
 end;

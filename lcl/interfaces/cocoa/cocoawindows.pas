@@ -1051,7 +1051,7 @@ begin
 
     // 1st: send KillFocus Message first
     if Assigned(lastCb) then
-      lastCb.ResignFirstResponder;
+      TCocoaLCLMessageUtil.ResignFirstResponder(lastCb);
 
     // 2st: send SetFocus Message
     // TCocoaWindow.makeFirstResponder() may be triggered reentrant here

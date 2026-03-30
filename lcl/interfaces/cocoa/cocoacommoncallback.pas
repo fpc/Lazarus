@@ -92,7 +92,6 @@ type
     function scrollWheel(const Event: NSEvent): Boolean; virtual;
     procedure frameDidChange(const sender: id); virtual;
     procedure boundsDidChange(const sender: id); virtual;
-    procedure ResignFirstResponder; virtual;
     procedure scroll(
       const isVert: Boolean;
       const Pos: Integer;
@@ -1175,17 +1174,6 @@ begin
     FBoundsReportedToChildren:=true;
   end;
 
-end;
-
-procedure TLCLCommonCallback.ResignFirstResponder;
-begin
-  if not Assigned(Target) then Exit;
-  CocoaWidgetSetState.killingFocus:= true;
-  try
-    LCLSendKillFocusMsg(Target);
-  finally
-    CocoaWidgetSetState.killingFocus:= false;
-  end;
 end;
 
 procedure TLCLCommonCallback.scroll(

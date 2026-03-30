@@ -106,7 +106,7 @@ begin
   Callback := obj.lclGetCallback;
 
   if Focused(AWinControl) and Assigned(Callback) then
-    Callback.ResignFirstResponder;   // dont' call LCLSendKillFocusMsg
+    TCocoaLCLMessageUtil.ResignFirstResponder(obj);   // dont' call LCLSendKillFocusMsg
   LCLSendDestroyMsg( AWinControl );
 
   if obj.isKindOfClass_(NSView) then
