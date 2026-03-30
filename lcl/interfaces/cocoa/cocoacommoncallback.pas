@@ -102,8 +102,6 @@ type
     procedure DrawOverlay(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     procedure RemoveTarget; virtual;
 
-    procedure InputClientInsertText(const utf8: string);
-
     function HandleFrame: NSView; inline;
     procedure SetHandleFrame(const AHandleFrame: NSView ); inline;
 
@@ -1314,24 +1312,6 @@ end;
 procedure TLCLCommonCallback.RemoveTarget;
 begin
   _target := nil;
-end;
-
-procedure TLCLCommonCallback.InputClientInsertText(const utf8: string);
-var
-  i : integer;
-  c : integer;
-  ch : TUTF8Char;
-begin
-  if (utf8 = '') then Exit;
-  i:=1;
-  while (i<=length(utf8)) do
-  begin
-    c := Utf8CodePointLen(@utf8[i], length(utf8)-i+1, false);
-    ch := Copy(utf8, i, c);
-    _target.IntfUTF8KeyPress(ch, 1, false);
-    inc(i, c);
-  end;
-
 end;
 
 function TLCLCommonCallback.HandleFrame: NSView;

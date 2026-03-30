@@ -129,8 +129,6 @@ type
     // forwarded to LCL target
     procedure RemoveTarget;
 
-    procedure InputClientInsertText(const utf8: string);
-
     function HandleFrame: NSView;
 
     // properties
@@ -158,6 +156,10 @@ type
     class function SendOnEditPaste( const control: NSObject ): Boolean;
     class procedure SendOnChange( const control: NSObject );
     class procedure SendOnTextChanged( const control: NSObject );
+
+    class procedure InputClientInsertText(
+      const control: NSObject;
+      const utf8: string);
   end;
 
   { LCLObjectExtension }
@@ -587,6 +589,30 @@ begin
   if NOT Assigned(target) then
     Exit;
   SendSimpleMessage(target, CM_TEXTCHANGED);
+end;
+
+class procedure TCocoaLCLMessageUtil.InputClientInsertText(
+  const control: NSObject;
+  const utf8: string );
+var
+  target: TWinControl;
+  i : integer;
+  c : integer;
+  ch : TUTF8Char;
+begin
+  target:= TWinControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  if (utf8 = '') then Exit;
+  i:=1;
+  while (i<=length(utf8)) do
+  begin
+    c := Utf8CodePointLen(@utf8[i], length(utf8)-i+1, false);
+    ch := Copy(utf8, i, c);
+    target.IntfUTF8KeyPress(ch, 1, false);
+    inc(i, c);
+  end;
 end;
 
 { LCLObjectExtension }

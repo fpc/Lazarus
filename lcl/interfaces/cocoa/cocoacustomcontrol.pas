@@ -327,7 +327,7 @@ end;
 procedure TCocoaCustomControlWithBaseInputClient.DoCallInputClientInsertText(nsText:NSString);
 begin
   if Assigned(callback) then
-    callback.InputClientInsertText(nsText.UTF8String);
+    TCocoaLCLMessageUtil.InputClientInsertText(self, nsText.UTF8String);
   nsText.release;
 end;
 
