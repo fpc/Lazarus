@@ -378,7 +378,7 @@ begin
           if Assigned(MaxVerTest) then
             NewDependency.MaxVersion.Assign(MaxVerTest);
           NewDependency.Flags := NewDependency.Flags + MinMaxVerFlags;
-          case CheckAddingDependency(fProjPack, NewDependency, false) of
+          case CheckAddingDependency(fProjPack, NewDependency, true) of
             mrOK: fResultDependencies.Add(NewDependency);
             mrIgnore: NewDependency.Free; // already exists
           else
