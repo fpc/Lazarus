@@ -4159,17 +4159,18 @@ begin
   if Result <> AHandle then
   begin
     if Result <> 0 then
-      ReleaseCapture;
-    if IsValidHandle(AHandle) then
     begin
-      TGtk3Widget(AHandle).SetCapture;
-      Message.Msg := 0;
-      FillChar(Message, SizeOf(Message), 0);
-      Message.msg := LM_CAPTURECHANGED;
-      Message.wParam := 0;
-      Message.lParam := PtrInt(Result);
-      LCLMessageGlue.DeliverMessage(TGtk3Widget(AHandle).LCLObject, Message);
+      ReleaseCapture;
+      if IsValidHandle(Result) then
+      begin
+        FillChar(Message{%H-}, SizeOf(Message), 0);
+        Message.msg := LM_CAPTURECHANGED;
+        Message.lParam := PtrInt(AHandle);
+        LCLMessageGlue.DeliverMessage(TGtk3Widget(Result).LCLObject, Message);
+      end;
     end;
+    if IsValidHandle(AHandle) then
+      TGtk3Widget(AHandle).SetCapture;
   end;
 end;
 

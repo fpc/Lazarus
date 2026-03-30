@@ -7343,7 +7343,7 @@ begin
     ' ATabIndex=',ATabIndex,' ATabSheet=',DbgSName(ATabSheet),
     ' NoteBook=',DbgSName(LCLObject));
   {$ENDIF}
-  if Assigned(ATabSheet) then
+  if Assigned(ATabSheet) and (gtk_grab_get_current <> GetContainerWidget) then
   begin
     NotifyApplicationUserInput(ATabSheet, PLMessage(@Msg)^);
     if Widget^.get_parent <> nil then

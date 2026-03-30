@@ -1796,11 +1796,11 @@ class function TGtk3WSCustomTabControl.GetTabRect(
   const ATabControl: TCustomTabControl; const AIndex: Integer): TRect;
 var
   NoteBookWidget: PGtkNotebook;
-  TabWidget, PageWidget: PGtkWidget;
+  TabWidget, PageWidget, ActivePage: PGtkWidget;
   Count: guint;
   AList: PGList;
   Allocation: TGtkAllocation;
-  gx, gy: gint;
+  gx, gy, cx, cy: gint;
 begin
   Result := inherited;
   if (ATabControl is TTabControl) then
@@ -1809,6 +1809,15 @@ begin
 
   NoteBookWidget := PGtkNotebook(TGtk3NoteBook(ATabControl.Handle).GetContainerWidget);
   if (NotebookWidget=nil) then exit;
+
+  cx := 0;
+  cy := 0;
+  if NoteBookWidget^.get_n_pages > 0 then
+  begin
+    ActivePage := NoteBookWidget^.get_nth_page(NoteBookWidget^.get_current_page);
+    if Assigned(ActivePage) then
+      ActivePage^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @cx, @cy);
+  end;
 
   AList := NoteBookWidget^.get_children;
   try
@@ -1823,7 +1832,7 @@ begin
         gx := 0;
         gy := 0;
         TabWidget^.translate_coordinates(PGtkWidget(NoteBookWidget), 0, 0, @gx, @gy);
-        Result := Rect(gx, gy, gx + Allocation.width, gy + Allocation.height);
+        Result := Rect(gx - cx, gy - cy, gx - cx + Allocation.width, gy - cy + Allocation.height);
       end;
     end;
   finally
