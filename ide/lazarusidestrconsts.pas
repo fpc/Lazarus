@@ -6047,6 +6047,9 @@ resourcestring
   lisUpdateOtherProcedureSignaturesWhenOnlyLetterCaseHa = 'Update other '
     +'procedure signatures when only letter case has changed';
   lisTemplateFile = 'Template file';
+  lisFailedToCreateTheConfigurationDirectory = 'Failed to create the configuration directory:' + LineEnding + '%s'
+    + LineEnding + LineEnding + 'The path may contain reserved characters or you may not have permissions.'
+    + LineEnding + LineEnding + 'It can be specified by the command line parameter "--pcp" or in the file "lazarus.cfg".';
   lisIncorrectConfigurationDirectoryFound = 'Incorrect configuration directory found';
   lisIDEConficurationFoundMayBelongToOtherLazarus = 'Welcome to Lazarus.%0:s'
     + 'The IDE configuration found was previously used by another '
