@@ -158,6 +158,7 @@ type
   private
     FPkgLinks: TLazPackageLinks;
     FConfigFN: String;
+    FLazSrcDir: String;
   protected
     procedure Execute; override;
   end;
@@ -826,19 +827,19 @@ begin
   Result:=fUpdateLock>0;
 end;
 
-procedure SaveUserLinksSub(PkgLinks: TLazPackageLinks; ConfigFilename: String);
+procedure SaveUserLinksSub(PkgLinks: TLazPackageLinks;
+                           const ConfigFilename, LazSrcDir: String);
 // Actually save UserLinks. Called from a thread or from SaveUserLinks directly.
 var
   CurPkgLink: TLazPackageLink;
   XMLConfig: TXMLConfig;
   ANode: TAvlTreeNode;
-  Path, ItemPath, LazSrcDir, AFilename: String;
+  Path, ItemPath, AFilename: String;
   i: Integer;
 begin
   //debugln(['SaveUserLinksSub']);
   EnterCriticalsection(CritSec);
   try
-    LazSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
     try
       XMLConfig:=TXMLConfig.CreateClean(ConfigFilename);
       // store user links
@@ -889,7 +890,7 @@ begin
       PkgLinks.UserLinkLoadTimeValid:=true;
     except
       on E: Exception do begin
-        DebugLn('Note: (lazarus) unable to read ',ConfigFilename,' ',E.Message);
+        DebugLn('Note: (lazarus) unable to write ',ConfigFilename,' ',E.Message);
         exit;
       end;
     end;
@@ -901,7 +902,7 @@ end;
 
 procedure TLazPackageLinks.SaveUserLinks(Immediately: boolean);
 var
-  ConfigFilename: String;
+  ConfigFilename, LazSrcDir: String;
   Thread: TSaveUserLinksThread;
 begin
   if (FUserLinksSortFile=nil) or (FUserLinksSortFile.Count=0) then exit;
@@ -913,13 +914,15 @@ begin
       ' Modified=',Modified,' UserLinkLoadTimeValid=',UserLinkLoadTimeValid,
       ' ',UniversalFileAgeUTF8(ConfigFilename)=UserLinkLoadTime,' Immediately=',Immediately]);
 
+  LazSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
   if Immediately then begin
-    SaveUserLinksSub(Self, ConfigFilename); //QueueSaveUserLinks:=false;
+    SaveUserLinksSub(Self, ConfigFilename, LazSrcDir); //QueueSaveUserLinks:=false;
   end else begin
     Thread:=TSaveUserLinksThread.Create(True); //QueueSaveUserLinks:=true;
     Thread.FreeOnTerminate:=True;
     Thread.FPkgLinks:=Self;
     Thread.FConfigFN:=ConfigFilename;
+    Thread.FLazSrcDir:=LazSrcDir;
     Thread.Start;
   end;
 end;
@@ -1356,7 +1359,7 @@ end;
 
 procedure TSaveUserLinksThread.Execute;
 begin
-  SaveUserLinksSub(FPkgLinks, FConfigFN);
+  SaveUserLinksSub(FPkgLinks, FConfigFN, FLazSrcDir);
 end;
 
 initialization
