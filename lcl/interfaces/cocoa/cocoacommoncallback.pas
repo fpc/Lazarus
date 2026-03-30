@@ -49,6 +49,8 @@ type
     procedure send_CN_CHAR_Message();
     procedure send_LM_KEYDOWN_Message();
     procedure send_LM_CHAR_Message();
+    function getCaptureControlCallback: ICommonCallBack;
+    procedure sendContextMenu(Event: NSEvent; out ContextMenuHandled: Boolean);
   protected
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
@@ -74,8 +76,6 @@ type
     function GetContext: HDC; inline;
     function GetTarget: TObject; inline;
     function GetCallbackObject: TObject; inline;
-    function GetCaptureControlCallback: ICommonCallBack;
-    procedure SendContextMenu(Event: NSEvent; out ContextMenuHandled: Boolean);
     function MouseUpDownEvent(
       const Event: NSEvent;
       const AForceAsMouseUp: Boolean = False;
@@ -291,7 +291,7 @@ begin
   Result := Self;
 end;
 
-function TLCLCommonCallback.GetCaptureControlCallback: ICommonCallBack;
+function TLCLCommonCallback.getCaptureControlCallback: ICommonCallBack;
 var
   obj: NSObject;
   lCaptureView: NSView;
@@ -309,7 +309,7 @@ end;
 { If a window does not display a shortcut menu it should pass
   this message to the DefWindowProc function. If a window is
   a child window, DefWindowProc sends the message to the parent. }
-procedure TLCLCommonCallback.SendContextMenu(Event: NSEvent; out
+procedure TLCLCommonCallback.sendContextMenu(Event: NSEvent; out
   ContextMenuHandled: Boolean);
 var
   MsgContext: TLMContextMenu;
@@ -767,7 +767,7 @@ begin
   // do anything with it. (Result=true)
   Result := shouldBypassCocoa();
 
-  lCaptureControlCallback := GetCaptureControlCallback();
+  lCaptureControlCallback := getCaptureControlCallback();
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [Target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
@@ -868,7 +868,7 @@ begin
       //       http://sound-of-silence.com/?article=20150923
       if (GetTarget is TControl) and isContextMenuEvent(Event) then
       begin
-        SendContextMenu(Event, menuHandled);
+        sendContextMenu(Event, menuHandled);
         if menuHandled then Result := true;
       end;
     end;
@@ -940,7 +940,7 @@ begin
     rect:=Owner.lclClientFrame;
     targetControl:=nil;
 
-    callback := GetCaptureControlCallback();
+    callback := getCaptureControlCallback();
     if callback <> nil then
     begin
       FIsEventRouting:=true;
