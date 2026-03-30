@@ -299,6 +299,7 @@ begin
       With TMemInifile.Create(FN) do
         try
           // INI options
+          Options:=Options+[ifoStripQuotes];
           SetBoolStringValues(true,['1','true','y','yes','on']);
           SetBoolStringValues(false,['0','false','n','no','off']);
           // read parameters
