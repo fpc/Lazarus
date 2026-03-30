@@ -68,6 +68,7 @@ type
     procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode); virtual; abstract;
     procedure ConfigureNewSubItem(AWatchAble: TObject); virtual;
 
+    function  CompareExpandingWatchAbleResult(ACurrent, AnExpanding: TObject): boolean; virtual;
     procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord); virtual;
     procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord); virtual;
     procedure DoUpdateArraySubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord);
@@ -171,6 +172,12 @@ end;
 procedure TDbgTreeViewWatchDataMgr.ConfigureNewSubItem(AWatchAble: TObject);
 begin
   //
+end;
+
+function TDbgTreeViewWatchDataMgr.CompareExpandingWatchAbleResult(ACurrent, AnExpanding: TObject
+  ): boolean;
+begin
+  Result := ACurrent = AnExpanding;
 end;
 
 procedure TDbgTreeViewWatchDataMgr.UpdateSubItemsLocked(AWatchAble: TObject;
@@ -515,7 +522,7 @@ end;
 procedure TDbgTreeViewWatchDataMgr.TreeViewInitChildren(
   Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
 var
-  AWatchAble: TObject;
+  AWatchAble, OldExpanding: TObject;
   AWatchAbleResult: IWatchAbleResultIntf;
 begin
   ChildCount := 0;
@@ -527,11 +534,12 @@ begin
     exit;
   end;
 
+  OldExpanding := FExpandingWatchAbleResult;
   FExpandingWatchAbleResult := AWatchAble;
   FTreeView.BeginUpdate;
   UpdateSubItemsLocked(AWatchAble, AWatchAbleResult, Node, ChildCount);
   FTreeView.EndUpdate;
-  FExpandingWatchAbleResult := nil;
+  FExpandingWatchAbleResult := OldExpanding;
 end;
 
 procedure TDbgTreeViewWatchDataMgr.DoItemRemovedFromView(Sender: TDbgTreeView;
@@ -659,7 +667,7 @@ begin
           FTreeView.Expanded[AVNode] := True;
         end
         else
-        if AWatchAble <> FExpandingWatchAbleResult then begin
+        if not CompareExpandingWatchAbleResult(AWatchAble, FExpandingWatchAbleResult) then begin
           FTreeView.DeleteChildren(AVNode, False);
           FTreeView.NodeControl[AVNode] := nil
         end;

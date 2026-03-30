@@ -266,6 +266,7 @@ type
       AVNode: PVirtualNode; out ChildCount: LongWord); override;
     procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
       AVNode: PVirtualNode; out ChildCount: LongWord); override;
+    function CompareExpandingWatchAbleResult(ACurrent, AnExpanding: TObject): boolean; override;
   end;
 
 
@@ -2030,6 +2031,16 @@ begin
       Application.QueueAsyncCall(@DoUnLockCommandProcessing, 0);
     FQueuedUnLockCommandProcessing := True;
   end;
+end;
+
+function TDbgTreeViewWatchValueMgr.CompareExpandingWatchAbleResult(ACurrent, AnExpanding: TObject
+  ): boolean;
+begin
+  Result := ACurrent = AnExpanding;
+  if (not Result) and
+     (ACurrent is TIdeWatch) and (AnExpanding is TIdeWatch)
+  then
+    Result := TIdeWatch(ACurrent).TopParentWatch = TIdeWatch(AnExpanding).TopParentWatch;
 end;
 
 initialization
