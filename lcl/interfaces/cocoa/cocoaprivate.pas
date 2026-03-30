@@ -31,6 +31,32 @@ uses
 
 type
 
+  { TCocoaWidgetSetState }
+
+  TCocoaWidgetSetState = class
+  private
+    _lclSendingScrollWheelCount: Integer;
+    _isCocoaOnlyState: Boolean;
+  public
+    currentKeyWindow: NSWindow;
+    killingFocus: Boolean;
+    captureControl: HWND;
+
+    // Store state of key modifiers so that we can emulate keyup/keydown
+    // of keys like control, option, command, caps lock, shift
+    prevKeyModifiers : NSUInteger;
+    savedKeyModifiers : NSUInteger;
+  public
+    procedure releaseCapture;
+
+    procedure lclBeginSendingScrollWheel;
+    procedure lclEndSendingScrollWheel;
+    function isLCLSendingScrollWheel: Boolean;
+
+    // only Cocoa Event Mechanism (no LCL Event), if the IME is in use
+    property CocoaOnlyState: Boolean read _isCocoaOnlyState write _isCocoaOnlyState;
+  end;
+
   { TCocoaViewUtil }
 
   TCocoaViewUtil = class
@@ -233,6 +259,9 @@ type
   end;
 
 var
+
+  CocoaWidgetSetState: TCocoaWidgetSetState;
+
   // todo: this should be a threadvar
   TrackedControl : NSObject = nil;
 
@@ -246,6 +275,30 @@ implementation
 
 type
   TWinControlAccess = class(TWinControl);
+
+{ TCocoaWidgetSetState }
+
+procedure TCocoaWidgetSetState.releaseCapture;
+begin
+  self.captureControl:= 0;
+end;
+
+procedure TCocoaWidgetSetState.lclBeginSendingScrollWheel;
+begin
+  inc( _lclSendingScrollWheelCount );
+end;
+
+procedure TCocoaWidgetSetState.lclEndSendingScrollWheel;
+begin
+  dec( _lclSendingScrollWheelCount );
+end;
+
+function TCocoaWidgetSetState.isLCLSendingScrollWheel: Boolean;
+begin
+  Result:= _lclSendingScrollWheelCount > 0;
+end;
+
+{ TCocoaViewUtil }
 
 class function TCocoaViewUtil.isLCLEnabled(obj: NSObject): Boolean;
 begin
@@ -1034,6 +1087,12 @@ begin
   Point.X := Point.X - dlt.Left;
   Point.Y := Point.Y - dlt.Top;
 end;
+
+initialization
+  CocoaWidgetSetState:= TCocoaWidgetSetState.Create;
+
+finalization
+  FreeAndNil( CocoaWidgetSetState );
 
 end.
 
