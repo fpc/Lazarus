@@ -46,8 +46,10 @@ uses
   LazUTF8, LazFileUtils, LazFileCache,
   // IdeIntf
   IdeIntfStrConsts, PackageLinkIntf, PackageIntf, IDEDialogs,
+  // IdePackager
+  PackageLinks, LPKCache,
   // IDE
-  LazarusIDEStrConsts, PackageLinks, LPKCache;
+  LazarusIDEStrConsts;
 
 type
 

@@ -57,10 +57,12 @@ uses
   IdeConfStrConsts,
   // IdeProject
   IdeProjectStrConsts,
+  // IdePackager
+  PackageDefs, PackageSystem, LPKCache, PackageLinks,
   // IdeConfig
   LazConf,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, PackageSystem, LPKCache, PackageLinks;
+  LazarusIDEStrConsts;
 
 type
 

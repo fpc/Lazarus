@@ -6,8 +6,6 @@ interface
 
 uses
   Classes, SysUtils, System.UITypes,
-  // LCL
-  Forms, Dialogs,
   // LazUtils
   FileUtil, LazLoggerBase, LazFileUtils,
   // Codetools
@@ -18,8 +16,12 @@ uses
   IDEDialogs,
   // IdeConfig
   ProjPackCommon,
+  // IdeProject
+  Project,
+  // IdePackage
+  PackageSystem, PackageDefs,
   // IDE
-  LazarusIDEStrConsts, IDEDefs, Project, PackageSystem, PackageDefs;
+  LazarusIDEStrConsts, IDEDefs;
 
 type
 

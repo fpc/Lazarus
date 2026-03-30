@@ -111,7 +111,7 @@ uses
   DbgIntfDebuggerBase, DbgIntfProcess, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBase,
   // packager
-  PackageSystem, PkgManager, BasePkgManager, LPKCache, LazarusPackageIntf, PackageEditor,
+  PkgManager, LazarusPackageIntf, PackageEditor,
   // source editing
   SourceEditor, CodeToolsOptions, IDEOptionDefs,
   CodeToolsDefines, DiffDialog, UnitInfoDlg, EditorOptions,
@@ -125,7 +125,7 @@ uses
   LazConf, EnvironmentOpts, TransferMacros, IDECmdLine, IDEGuiCmdLine,
   IDEProcs, ApplicationBundle, IdeConfStrConsts,
   // IdePackager,
-  IdePackager, IdePackagerStrConsts,
+  IdePackager, IdePackagerStrConsts, PackageSystem, BasePkgManager, LPKCache,
   // IdeProject,
   IdeProject, RunParamOptions,
   // environment option frames

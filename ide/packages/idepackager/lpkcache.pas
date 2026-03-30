@@ -54,10 +54,12 @@ uses
   Classes, SysUtils, AVL_Tree,
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazTracer, LazMethodList,
-  // IdeIntf
-  PackageDependencyIntf, PackageIntf, PackageLinkIntf,
-  // IDE
-  EnvironmentOpts, PackageLinks, PackageDefs, PackageSystem;
+  // BuildIntf
+  PackageDependencyIntf, PackageIntf,
+  // IdeConfig
+  EnvironmentOpts,
+  // IdePackager
+  PackageLinks, PackageDefs, PackageSystem;
 
 type
   TLPKInfoState = (
