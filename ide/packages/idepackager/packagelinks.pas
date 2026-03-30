@@ -153,7 +153,7 @@ type
   end;
 
   { TSaveUserLinksThread }
-
+  {$IFDEF SaveUserLinksInThread}
   TSaveUserLinksThread = class(TThread)
   private
     FPkgLinks: TLazPackageLinks;
@@ -162,6 +162,7 @@ type
   protected
     procedure Execute; override;
   end;
+  {$ENDIF}
 
 var
   LazPackageLinks: TLazPackageLinks = nil; // set by the PkgBoss
@@ -171,8 +172,9 @@ function ComparePackageLinks(Data1, Data2: Pointer): integer;
 
 implementation
 
-var
-  CritSec: TRTLCriticalSection;
+{$IFDEF SaveUserLinksInThread}
+var CritSec: TRTLCriticalSection;
+{$ENDIF}
 
 function ComparePackageIDAndLink(Key, Data: Pointer): integer;
 var
@@ -345,13 +347,17 @@ begin
   FUserLinksSortFile:=TAvlTree.Create(@CompareLinksForFilenameAndFileAge);
   FSavedChangeStamp:=CTInvalidChangeStamp;
   FChangeStamp:=CTInvalidChangeStamp;
+  {$IFDEF SaveUserLinksInThread}
   InitCriticalSection(CritSec);   // For protecting FFileList.
+  {$ENDIF}
 end;
 
 destructor TLazPackageLinks.Destroy;
 begin
   Clear;
+  {$IFDEF SaveUserLinksInThread}
   DoneCriticalsection(CritSec);
+  {$ENDIF}
   FreeAndNil(FUserLinksSortFile);
   FreeAndNil(FUserLinksSortID);
   FreeAndNil(FOnlineLinks);
@@ -605,8 +611,10 @@ begin
   FUserLinksSortFile.Clear;
   IncreaseChangeStamp;
   FileVersion:=PkgLinksFileVersion;
+  {$IFDEF SaveUserLinksInThread}
   EnterCriticalsection(CritSec);
   try
+  {$ENDIF}
   try
     XMLConfig:=TXMLConfig.Create(ConfigFilename);
 
@@ -770,9 +778,11 @@ begin
       exit;
     end;
   end;
+  {$IFDEF SaveUserLinksInThread}
   finally
     LeaveCriticalSection(CritSec);
   end;
+  {$ENDIF}
   RemoveOldUserLinks;
   Modified:=FileVersion<>PkgLinksFileVersion;
 end;
@@ -842,8 +852,10 @@ var
   i: Integer;
 begin
   //debugln(['SaveUserLinksSub']);
+  {$IFDEF SaveUserLinksInThread}
   EnterCriticalsection(CritSec);
   try
+  {$ENDIF}
     try
       XMLConfig:=TXMLConfig.CreateClean(ConfigFilename);
       // store user links
@@ -898,16 +910,21 @@ begin
         exit;
       end;
     end;
+  {$IFDEF SaveUserLinksInThread}
   finally
     LeaveCriticalSection(CritSec);
   end;
+  {$ENDIF}
   PkgLinks.Modified:=false;
 end;
 
 procedure TLazPackageLinks.SaveUserLinks(Immediately: boolean);
+// Immediately is ignored when SaveUserLinksInThread is not defined.
 var
   ConfigFilename, LazSrcDir: String;
+  {$IFDEF SaveUserLinksInThread}
   Thread: TSaveUserLinksThread;
+  {$ENDIF}
 begin
   if (FUserLinksSortFile=nil) or (FUserLinksSortFile.Count=0) then exit;
   ConfigFilename:=GetUserLinkFile;
@@ -919,8 +936,11 @@ begin
       ' ',UniversalFileAgeUTF8(ConfigFilename)=UserLinkLoadTime,' Immediately=',Immediately]);
 
   LazSrcDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+  {$IFDEF SaveUserLinksInThread}
   if Immediately then begin
+  {$ENDIF}
     SaveUserLinksSub(Self, ConfigFilename, LazSrcDir); //QueueSaveUserLinks:=false;
+  {$IFDEF SaveUserLinksInThread}
   end else begin
     Thread:=TSaveUserLinksThread.Create(True); //QueueSaveUserLinks:=true;
     Thread.FreeOnTerminate:=True;
@@ -929,6 +949,7 @@ begin
     Thread.FLazSrcDir:=LazSrcDir;
     Thread.Start;
   end;
+  {$ENDIF}
 end;
 
 function TLazPackageLinks.NeedSaveUserLinks(const ConfigFilename: string): boolean;
@@ -1360,11 +1381,12 @@ begin
 end;
 
 { TSaveUserLinksThread }
-
+{$IFDEF SaveUserLinksInThread}
 procedure TSaveUserLinksThread.Execute;
 begin
   SaveUserLinksSub(FPkgLinks, FConfigFN, FLazSrcDir);
 end;
+{$ENDIF}
 
 initialization
   LazPackageLinks:=nil;
