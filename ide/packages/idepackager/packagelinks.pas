@@ -605,7 +605,8 @@ begin
   FUserLinksSortFile.Clear;
   IncreaseChangeStamp;
   FileVersion:=PkgLinksFileVersion;
-  XMLConfig:=nil;
+  EnterCriticalsection(CritSec);
+  try
   try
     XMLConfig:=TXMLConfig.Create(ConfigFilename);
 
@@ -768,6 +769,9 @@ begin
       DebugLn('Note: (lazarus) unable to read ',ConfigFilename,' ',E.Message);
       exit;
     end;
+  end;
+  finally
+    LeaveCriticalSection(CritSec);
   end;
   RemoveOldUserLinks;
   Modified:=FileVersion<>PkgLinksFileVersion;
