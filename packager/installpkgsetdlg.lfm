@@ -214,6 +214,18 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 2
       OnClick = SaveAndRebuildButtonClick
     end
+    object LegendButton: TButton
+      AnchorSideLeft.Control = HelpButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SaveAndRebuildButton
+      Left = 87
+      Height = 25
+      Top = 6
+      Width = 75
+      Caption = 'LegendButton'
+      TabOrder = 4
+      OnClick = LegendButtonClick
+    end
   end
   object Splitter1: TSplitter
     Cursor = crVSplit
@@ -469,6 +481,31 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ExportMenuItem: TMenuItem
       Caption = 'ExportMenuItem'
       OnClick = ExportMenuItemClick
+    end
+  end
+  object LegendPopupMenu: TPopupMenu
+    Left = 112
+    Top = 496
+    object legInstallPackage: TMenuItem
+      Caption = 'legInstallPackage'
+    end
+    object legUninstallPackage: TMenuItem
+      Caption = 'legUninstallPackage'
+    end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object legRunDesignPackage: TMenuItem
+      Caption = 'legRunDesignPackage'
+    end
+    object legDesignPackage: TMenuItem
+      Caption = 'legDesignPackage'
+    end
+    object legBasePackage: TMenuItem
+      Caption = 'legBasePackage'
+    end
+    object legLazarusPackage: TMenuItem
+      Caption = 'legLazarusPackage'
     end
   end
 end

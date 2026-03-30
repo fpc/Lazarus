@@ -72,6 +72,13 @@ type
     AddToInstallButton: TBitBtn;
     AvailableTreeView: TTreeView;
     AvailablePkgGroupBox: TGroupBox;
+    LegendButton: TButton;
+    legBasePackage: TMenuItem;
+    legDesignPackage: TMenuItem;
+    legInstallPackage: TMenuItem;
+    legUninstallPackage: TMenuItem;
+    legLazarusPackage: TMenuItem;
+    legRunDesignPackage: TMenuItem;
     MoreButton: TButton;
     ImportMenuItem: TMenuItem;
     ExportMenuItem: TMenuItem;
@@ -88,10 +95,12 @@ type
     PkgInfoGroupBox: TGroupBox;
     PkgInfoMemoLicense: TMemo;
     MorePopupMenu: TPopupMenu;
+    LegendPopupMenu: TPopupMenu;
     SaveAndExitButton: TBitBtn;
     InstallPkgGroupBox: TGroupBox;
     SaveAndRebuildButton: TBitBtn;
     InstalledFilterEdit: TTreeFilterEdit;
+    Separator1: TMenuItem;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     UninstallButton: TBitBtn;
@@ -104,6 +113,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure InstallTreeViewKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure LegendButtonClick(Sender: TObject);
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
@@ -245,15 +255,16 @@ begin
   SaveAndExitButton   .Caption := lisSaveAndExitDialog;
   CancelButton        .Caption := lisCancel;
   HelpButton          .Caption := lisMenuHelp;
+  LegendButton        .Caption := lisLegend;
   ImportMenuItem      .Caption := lisImportPackageListXml;
   ExportMenuItem      .Caption := lisExportPackageListXml;
-
 
   { Images }
 
   InstallTreeView  .Images := IDEImages.Images_16;
   AvailableTreeView.Images := IDEImages.Images_16;
   MorePopupMenu    .Images := IDEImages.Images_16;
+  LegendPopupMenu  .Images := IDEImages.Images_16;
 
   IDEImages.AssignImage(AddToInstallButton, 'arrow__darkgreen_left');
   IDEImages.AssignImage(UninstallButton   , 'arrow__darkred_right');
@@ -273,6 +284,21 @@ begin
   ImgIndexOverlayRunTimePackage    := IDEImages.LoadImage('pkg_runtime_overlay');
   ImportMenuItem.ImageIndex        := IDEImages.LoadImage('pkg_import');
   ExportMenuItem.ImageIndex        := IDEImages.LoadImage('pkg_export');
+
+  { Icon legend }
+
+  legInstallPackage   .Caption := 'Package will be installed with next IDE rebuild.';
+  legUninstallPackage .Caption := 'Package will be uninstalled with next IDE rebuild.';
+  legBasePackage      .Caption := 'Base package, cannot be uninstalled';
+  legLazarusPackage   .Caption := 'Package distributed with Lazarus';
+  legDesignPackage    .Caption := 'Designtime package';
+  legRunDesignPackage .Caption := '(no overlay) Designtime and runtime package';
+  legInstallPackage   .ImageIndex := ImgIndexInstallPackage;
+  legUninstallPackage .ImageIndex := ImgIndexUninstallPackage;
+  legBasePackage      .ImageIndex := ImgIndexOverlayBasePackage;
+  legLazarusPackage   .ImageIndex := ImgIndexOverlayLazarusPackage;
+  legDesignPackage    .ImageIndex := ImgIndexOverlayDesignTimePackage;
+  legRunDesignPackage .ImageIndex := -1;  // no overlay
 
   {}
 
@@ -475,6 +501,14 @@ begin
     AddToUninstall(Sender);
     Key := 0;
   end;
+end;
+
+procedure TInstallPkgSetDialog.LegendButtonClick(Sender: TObject);
+var
+  P: TPoint;
+begin
+  P := LegendButton.ClientToScreen(Point(0, 0));
+  LegendPopupMenu.Popup(P.X + LegendButton.Width, P.Y);
 end;
 
 procedure TInstallPkgSetDialog.LPKParsingTimerTimer(Sender: TObject);

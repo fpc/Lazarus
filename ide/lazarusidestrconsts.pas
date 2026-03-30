@@ -4996,6 +4996,7 @@ resourcestring
   lisPackageInfo = 'Package info';
   lisSaveAndRebuildIDE = 'Rebuild IDE';
   lisSaveAndExitDialog = 'Only Save';
+  lisLegend = 'Legend';
   lisAlignment = 'Alignment';
   lisHorizontal = 'Horizontal';
   lisNoChange = 'No change';
