@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, Contnrs, AVL_Tree,
   // LCL
   LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  ExtCtrls, ComCtrls, ImgList, Themes,
+  ExtCtrls, ComCtrls, ImgList, Themes, Menus,
   // LazControls
   TreeFilterEdit,
   // Codetools
@@ -72,21 +72,22 @@ type
     AddToInstallButton: TBitBtn;
     AvailableTreeView: TTreeView;
     AvailablePkgGroupBox: TGroupBox;
+    MoreButton: TButton;
+    ImportMenuItem: TMenuItem;
+    ExportMenuItem: TMenuItem;
     MiddleBevel: TBevel;
     HelpButton: TBitBtn;
     CancelButton: TBitBtn;
-    ExportButton: TButton;
     BtnPanel: TPanel;
     InstallTreeView: TTreeView;
     AvailableFilterEdit: TTreeFilterEdit;
     LPKParsingTimer: TTimer;
     NoteLabel: TLabel;
     Panel1: TPanel;
-    Panel2: TPanel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
-    ImportButton: TButton;
     PkgInfoMemoLicense: TMemo;
+    MorePopupMenu: TPopupMenu;
     SaveAndExitButton: TBitBtn;
     InstallPkgGroupBox: TGroupBox;
     SaveAndRebuildButton: TBitBtn;
@@ -110,8 +111,9 @@ type
       Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
       var PaintImages, {%H-}DefaultDraw: Boolean);
     procedure AvailableTreeViewSelectionChanged(Sender: TObject);
-    procedure ExportButtonClick(Sender: TObject);
-    procedure ImportButtonClick(Sender: TObject);
+    procedure ExportMenuItemClick(Sender: TObject);
+    procedure ImportMenuItemClick(Sender: TObject);
+    procedure MoreButtonClick(Sender: TObject);
     procedure SaveAndRebuildButtonClick(Sender: TObject);
     procedure InstallPkgSetDialogCreate(Sender: TObject);
     procedure InstallPkgSetDialogDestroy(Sender: TObject);
@@ -158,6 +160,8 @@ type
     function NewInstalledPackagesContains(APackageID: TLazPackageID): boolean;
     function IndexOfNewInstalledPackageID(APackageID: TLazPackageID): integer;
     function IndexOfNewInstalledPkgByName(const APackageName: string): integer;
+    procedure ExportPackageList;
+    procedure ImportPackageList;
     procedure SavePackageListToFile(const AFilename: string);
     procedure LoadPackageListFromFile(const AFilename: string);
     function ExtractNameFromPkgID(ID: string): string;
@@ -233,8 +237,6 @@ begin
   Self                .Caption := lisInstallUninstallPackages;
   NoteLabel           .Caption := lisIDECompileAndRestart;
   AvailablePkgGroupBox.Caption := lisAvailableForInstallation;
-  ExportButton        .Caption := lisExport;
-  ImportButton        .Caption := lisImport;
   UninstallButton     .Caption := lisUninstallSelection;
   InstallPkgGroupBox  .Caption := lisPckEditInstall;
   AddToInstallButton  .Caption := lisInstallSelection;
@@ -243,11 +245,15 @@ begin
   SaveAndExitButton   .Caption := lisSaveAndExitDialog;
   CancelButton        .Caption := lisCancel;
   HelpButton          .Caption := lisMenuHelp;
+  ImportMenuItem      .Caption := lisImportPackageListXml;
+  ExportMenuItem      .Caption := lisExportPackageListXml;
+
 
   { Images }
 
   InstallTreeView  .Images := IDEImages.Images_16;
   AvailableTreeView.Images := IDEImages.Images_16;
+  MorePopupMenu    .Images := IDEImages.Images_16;
 
   IDEImages.AssignImage(AddToInstallButton, 'arrow__darkgreen_left');
   IDEImages.AssignImage(UninstallButton   , 'arrow__darkred_right');
@@ -265,6 +271,8 @@ begin
   ImgIndexOverlayLazarusPackage    := IDEImages.LoadImage('pkg_lazarus_overlay');
   ImgIndexOverlayDesignTimePackage := IDEImages.LoadImage('pkg_design_overlay');
   ImgIndexOverlayRunTimePackage    := IDEImages.LoadImage('pkg_runtime_overlay');
+  ImportMenuItem.ImageIndex        := IDEImages.LoadImage('pkg_import');
+  ExportMenuItem.ImageIndex        := IDEImages.LoadImage('pkg_export');
 
   {}
 
@@ -290,7 +298,6 @@ begin
   InstalledFilterEdit.ResetFilter;    // (filter) - TextHint is shown after this.
   AvailableFilterEdit.ResetFilter;
   SetControlsWidthOnMax([UninstallButton, AddToInstallButton]);
-  SetControlsWidthOnMax([ImportButton, ExportButton]);
 end;
 
 procedure TInstallPkgSetDialog.SaveAndRebuildButtonClick(Sender: TObject);
@@ -308,7 +315,12 @@ begin
   UpdatePackageInfo(AvailableTreeView);
 end;
 
-procedure TInstallPkgSetDialog.ExportButtonClick(Sender: TObject);
+procedure TInstallPkgSetDialog.ExportMenuItemClick(Sender: TObject);
+begin
+  ExportPackageList;
+end;
+
+procedure TInstallPkgSetDialog.ExportPackageList;
 var
   SaveDialog: TSaveDialog;
   AFilename: string;
@@ -332,7 +344,12 @@ begin
   end;
 end;
 
-procedure TInstallPkgSetDialog.ImportButtonClick(Sender: TObject);
+procedure TInstallPkgSetDialog.ImportMenuItemClick(Sender: TObject);
+begin
+  ImportPackageList;
+end;
+
+procedure TInstallPkgSetDialog.ImportPackageList;
 var
   OpenDialog: TOpenDialog;
   AFilename: string;
@@ -420,12 +437,12 @@ begin
   // import and export
   else if (Key = VK_E) and (Shift = [ssCtrl]) then
   begin
-    ExportButtonClick(Sender);
+    ExportPackageList;
     Key := 0;
   end
   else if (Key = VK_I) and (Shift = [ssCtrl]) then
   begin
-    ImportButtonClick(Sender);
+    ImportPackageList;
     Key := 0;
   end
   // scroll description
@@ -464,6 +481,14 @@ procedure TInstallPkgSetDialog.LPKParsingTimerTimer(Sender: TObject);
 begin
   UpdateNewInstalledPackages;
   UpdateAvailablePackages;
+end;
+
+procedure TInstallPkgSetDialog.MoreButtonClick(Sender: TObject);
+var
+  P: TPoint;
+begin
+  P := MoreButton.ClientToScreen(Point(0, 0));
+  MorePopupMenu.Popup(P.X + MoreButton.Width, P.Y);
 end;
 
 procedure TInstallPkgSetDialog.OnAllLPKParsed(Sender: TObject);

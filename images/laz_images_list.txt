@@ -1014,6 +1014,9 @@ packages/pkg_core_overlay_200.png
 packages/pkg_design_overlay.png
 packages/pkg_design_overlay_150.png
 packages/pkg_design_overlay_200.png
+packages/pkg_export.png
+packages/pkg_export_150.png
+packages/pkg_export_200.png
 packages/pkg_files.png
 packages/pkg_files_150.png
 packages/pkg_files_200.png
@@ -1026,6 +1029,9 @@ packages/pkg_graph_200.png
 packages/pkg_hierarchical.png
 packages/pkg_hierarchical_150.png
 packages/pkg_hierarchical_200.png
+packages/pkg_import.png
+packages/pkg_import_150.png
+packages/pkg_import_200.png
 packages/pkg_include.png
 packages/pkg_include_150.png
 packages/pkg_include_200.png
