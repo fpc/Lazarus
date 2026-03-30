@@ -28,6 +28,8 @@ type
       FIsEventRouting:boolean;
       FLastWheelWasHorz:boolean;
   protected
+    function deliverMessage(var msg): LRESULT;
+
     function GetIsOpaque: Boolean; inline;
     procedure SetIsOpaque(const AValue: Boolean); inline;
     function GetShouldBeEnabled: Boolean; inline;
@@ -96,8 +98,6 @@ type
       const isVert: Boolean;
       const Pos: Integer;
       const AScrollPart: NSScrollerPart); virtual;
-    function DeliverMessage(var Msg): LRESULT; virtual; overload;
-    function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
     procedure Draw(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     procedure DrawBackground(const ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
     procedure DrawOverlay(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
@@ -539,7 +539,7 @@ begin
     _KeyMsg.Msg := CN_KEYDOWN;
 
   NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
-  if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+  if (self.deliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     // the LCL handled the key
     KeyEvHandled;
 end;
@@ -555,7 +555,7 @@ begin
   if _KeyMsg.CharCode <> VK_UNKNOWN then
   begin
     NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
-    if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+    if (self.deliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
       KeyEvHandled;
@@ -600,7 +600,7 @@ begin
   else
     _CharMsg.Msg := CN_CHAR;
 
-  if (DeliverMessage(_CharMsg) <> 0) or (_CharMsg.CharCode=VK_UNKNOWN) then
+  if (self.deliverMessage(_CharMsg) <> 0) or (_CharMsg.CharCode=VK_UNKNOWN) then
     KeyEvHandled;
 end;
 
@@ -613,7 +613,7 @@ begin
   else
     _KeyMsg.Msg := LM_KEYDOWN;
 
-  if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+  if (self.deliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     KeyEvHandled;
 end;
 
@@ -626,7 +626,7 @@ begin
   else
     _CharMsg.Msg := LM_CHAR;
 
-  if DeliverMessage(_CharMsg) <> 0 then
+  if self.deliverMessage(_CharMsg) <> 0 then
     KeyEvHandled;
 end;
 
@@ -661,7 +661,7 @@ begin
   else
     _KeyMsg.Msg := LM_KEYUP;
 
-  if DeliverMessage(_KeyMsg) <> 0 then
+  if self.deliverMessage(_KeyMsg) <> 0 then
   begin
     // the LCL handled the key
     NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
@@ -851,7 +851,7 @@ begin
       end;
 
       NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
-      DeliverMessage(Msg);
+      self.deliverMessage(Msg);
 
     end;
     NSLeftMouseUp,
@@ -867,7 +867,7 @@ begin
       end;
 
       NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
-      DeliverMessage(Msg);
+      self.deliverMessage(Msg);
 
       // TODO: Check if Cocoa has special context menu check event
       //       it does (menuForEvent:), but it doesn't work all the time
@@ -1020,7 +1020,7 @@ begin
 
   NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
   // LCL/LM_MOUSEMOVE always return false, so we should discard return value
-  DeliverMessage(Msg);
+  self.deliverMessage(Msg);
   // 1. for MouseMove Event, it has been processed by LCL,
   //    and does not need Cocoa to continue processing.
   // 2. for MouseDragged Event, it needs Cocoa to continue processing
@@ -1105,7 +1105,7 @@ begin
   Msg.WheelDelta := wheelDelta;
 
   NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
-  Result := DeliverMessage(Msg) <> 0;
+  Result := self.deliverMessage(Msg) <> 0;
 end;
 
 procedure TLCLCommonCallback.frameDidChange(const sender: id);
@@ -1228,25 +1228,6 @@ begin
   LCLMessageGlue.DeliverMessage(Target, LMScroll);
 end;
 
-function TLCLCommonCallback.DeliverMessage(var Msg): LRESULT;
-begin
-  if Assigned(Target) then
-    Result := LCLMessageGlue.DeliverMessage(Target, Msg)
-  else
-    Result := 0;
-end;
-
-function TLCLCommonCallback.DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
-var
-  Message: TLMessage;
-begin
-  Message.Msg := Msg;
-  Message.WParam := WParam;
-  Message.LParam := LParam;
-  Message.Result := 0;
-  Result := DeliverMessage(Message);
-end;
-
 procedure TLCLCommonCallback.Draw(
   const ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
@@ -1367,6 +1348,11 @@ end;
 procedure TLCLCommonCallback.SetHandleFrame(const AHandleFrame: NSView);
 begin
   _handleFrame:= AHandleFrame;
+end;
+
+function TLCLCommonCallback.deliverMessage(var msg): LRESULT;
+begin
+  Result:= LCLMessageGlue.DeliverMessage(Target, msg);
 end;
 
 function TLCLCommonCallback.GetIsOpaque: Boolean;

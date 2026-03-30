@@ -116,7 +116,6 @@ type
       const Pos: Integer;
       const AScrollPart: NSScrollerPart = NSScrollerNoPart);
     // non event methods
-    function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
     function GetContext: HDC;
     function GetTarget: TObject;
@@ -143,6 +142,15 @@ type
 
   TCocoaLCLMessageUtil = class
   public
+    class function deliverMessage(
+      const control: NSObject;
+      var msg ): LRESULT;
+    class function deliverMessage(
+      const control: NSObject;
+      const msg: Cardinal;
+      const WParam: WParam;
+      const LParam: LParam ): LResult;
+
     class procedure BecomeFirstResponder( const cb: ICommonCallback ); overload;
     class procedure BecomeFirstResponder( const control: NSObject ); overload;
     class procedure DidBecomeKeyNotification( const control: NSObject );
@@ -187,7 +195,6 @@ type
     procedure lclClearCallback; message 'lclClearCallback';
     function lclGetPropStorage: TStringList; message 'lclGetPropStorage';
     function lclGetTarget: TObject; message 'lclGetTarget';
-    function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
     function lclContentView: NSView; message 'lclContentView';
     procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:';
     procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); message 'lclExpectedKeys::::';
@@ -460,6 +467,33 @@ end;
 
 { TCocoaLCLMessageUtil }
 
+class function TCocoaLCLMessageUtil.deliverMessage(
+  const control: NSObject;
+  var msg ): LRESULT;
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  Result:= LCLMessageGlue.DeliverMessage(target, msg);
+end;
+
+class function TCocoaLCLMessageUtil.deliverMessage(
+  const control: NSObject;
+  const msg: Cardinal;
+  const WParam: WParam;
+  const LParam: LParam): LResult;
+var
+  message: TLMessage;
+begin
+  Message.Msg := Msg;
+  Message.WParam := WParam;
+  Message.LParam := LParam;
+  Message.Result := 0;
+  Result := TCocoaLCLMessageUtil.deliverMessage(control, message);
+end;
+
 class procedure TCocoaLCLMessageUtil.BecomeFirstResponder( const cb: ICommonCallback);
 var
   target: TControl;
@@ -658,17 +692,6 @@ begin
     Result := Callback.GetTarget
   else
     Result := nil;
-end;
-
-function LCLObjectExtension.lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
-var
-  Callback: ICommonCallback;
-begin
-  Callback := lclGetCallback;
-  if Assigned(Callback) then
-    Result := Callback.DeliverMessage(Msg, WParam, LParam)
-  else
-    Result := 0;
 end;
 
 function LCLObjectExtension.lclContentView: NSView;
