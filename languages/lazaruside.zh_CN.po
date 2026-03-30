@@ -11988,6 +11988,10 @@ msgstr "左边"
 msgid "Left space equally"
 msgstr "左侧空间相等"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

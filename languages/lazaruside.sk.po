@@ -12016,6 +12016,10 @@ msgstr "Ľavé strany"
 msgid "Left space equally"
 msgstr "Rovnaká ľavá vzdialenosť"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

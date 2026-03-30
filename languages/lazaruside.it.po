@@ -12274,6 +12274,10 @@ msgstr "Lato sinistro"
 msgid "Left space equally"
 msgstr "Spazia a sinistra equidistante"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

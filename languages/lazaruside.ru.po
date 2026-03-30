@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-03-29 22:03+0300\n"
+"PO-Revision-Date: 2026-03-30 23:09+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -11948,6 +11948,10 @@ msgstr "Левые края"
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
 msgstr "Равномерно по левым краям"
+
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr "Легенда"
 
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"

@@ -12151,6 +12151,10 @@ msgstr "Lados Esquerdos"
 msgid "Left space equally"
 msgstr "Justificar a esquerda"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

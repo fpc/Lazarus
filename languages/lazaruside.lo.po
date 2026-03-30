@@ -11963,6 +11963,10 @@ msgstr "ດ້ານຊ້າຍ"
 msgid "Left space equally"
 msgstr "ຈັດໄລຍະຫ່າງຊ້າຍເທົ່າກັນ"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

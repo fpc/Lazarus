@@ -12271,6 +12271,10 @@ msgstr "Sutapdinti kairiuosius kraštus"
 msgid "Left space equally"
 msgstr "Tolygiai rikiuoti pagal kairiuosius kraštus"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

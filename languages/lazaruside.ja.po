@@ -12240,6 +12240,10 @@ msgstr "左側"
 msgid "Left space equally"
 msgstr "左側の間隔を均等に"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

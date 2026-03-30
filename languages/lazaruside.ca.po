@@ -12172,6 +12172,10 @@ msgstr "Costats esquerres"
 msgid "Left space equally"
 msgstr "Iguala l'espai esquerra"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

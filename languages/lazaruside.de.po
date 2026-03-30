@@ -11989,6 +11989,10 @@ msgstr "Linke Seiten"
 msgid "Left space equally"
 msgstr "Linker Abstand gleich"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

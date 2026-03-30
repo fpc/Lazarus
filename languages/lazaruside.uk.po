@@ -12103,6 +12103,10 @@ msgstr "Ліві краї"
 msgid "Left space equally"
 msgstr "Рівномірно ліві краї"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

@@ -12222,6 +12222,10 @@ msgstr "Linker zijden"
 msgid "Left space equally"
 msgstr "Linker kant evenredig verdelen"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgctxt "lazarusidestrconsts.lisless"
 msgid "Less"

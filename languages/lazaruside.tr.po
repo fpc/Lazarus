@@ -12006,6 +12006,10 @@ msgstr "Sol taraf"
 msgid "Left space equally"
 msgstr "Sol boşluk eşit"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 msgid "Less"
 msgstr "Az"

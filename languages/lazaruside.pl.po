@@ -12243,6 +12243,10 @@ msgstr "Lewe strony"
 msgid "Left space equally"
 msgstr "Rozmieść równomiernie lewe krawędzie"
 
+#: lazarusidestrconsts.lislegend
+msgid "Legend"
+msgstr ""
+
 #: lazarusidestrconsts.lisless
 #, fuzzy
 msgctxt "lazarusidestrconsts.lisless"
