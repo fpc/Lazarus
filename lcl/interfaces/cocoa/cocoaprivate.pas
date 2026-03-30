@@ -78,7 +78,6 @@ type
       const Event: NSEvent;
       const AForceAsMouseUp: Boolean = False;
       const AOverrideBlock: Boolean = False): Boolean;
-    procedure MouseClick;
     function MouseMove(const Event: NSEvent): Boolean;
 
     // KeyEvXXX methods were introduced to allow a better control
