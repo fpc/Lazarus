@@ -195,7 +195,6 @@ type
     UsePopupMenu: TPopupMenu;
     ItemsPopupMenu: TPopupMenu;
     MorePopupMenu: TPopupMenu;
-    procedure AddToProjectClick(Sender: TObject);
     procedure ChangeFileTypeMenuItemClick(Sender: TObject);
     procedure CleanDependenciesMenuItemClick(Sender: TObject);
     procedure ClearDependencyFilenameMenuItemClick(Sender: TObject);
@@ -280,6 +279,7 @@ type
     FOptionsShownOfFile: TPkgFile;
     fUpdateLock: integer;
     fForcedFlags: TPEFlags;
+    procedure AddToProjectClick(Sender: TObject);
     procedure DoAddNewFile(NewItem: TNewIDEItemTemplate);
     function CreateToolButton(AName, ACaption, AHint, AImageName: String;
       AOnClick: TNotifyEvent): TToolButton;
@@ -1074,21 +1074,18 @@ procedure TPackageEditorForm.mnuAddNewDiskFilesClick(Sender: TObject);
 
 var
   Files: TFilenameToStringTree;
-  aFilename, NewUnitName, Msg: String;
+  FileList: TStringList;
+  aFilename, Msg: String;
   Item: PStringToStringItem;
-  Code: TCodeBuffer;
-  NewFileType: TPkgFileType;
-  NewFlags: TPkgFileFlags;
 begin
   if LazPackage.IsVirtual then exit;
   if TPkgFileCheck.ReadOnlyOk(LazPackage)<>mrOK then exit;
-
+  FileList:=Nil;
   Files:=TFilenameToStringTree.Create(true);
   try
     // collect all units from unit and include paths
     CollectFilesInSearchPath(LazPackage.GetUnitPath(false),Files,'Unit');
     CollectFilesInSearchPath(LazPackage.GetIncludePath(false),Files,'Include');
-
     // collect new files
     Msg:='';
     for Item in Files do
@@ -1099,41 +1096,24 @@ begin
       else
         Item^.Value:='';
     end;
-
     if Msg='' then
     begin
       IDEMessageDialog(lisNoNewFileFound,
-        lisAllPasPpPIncInUnitIncludePathAreAlreadyInAProjectP, mtInformation, [
-        mbOk]
-          );
+        lisAllPasPpPIncInUnitIncludePathAreAlreadyInAProjectP, mtInformation, [mbOk]);
       exit;
     end;
-
     // ask user
     Msg:=lisAddTheFollowingFiles+Msg;
-    if IDEMessageDialog(lisAddNewDiskFiles, Msg, mtConfirmation, [mbOk, mbCancel
-        ])<>mrOk then
+    if IDEMessageDialog(lisAddNewDiskFiles,Msg,mtConfirmation,[mbOk,mbCancel])<>mrOk then
       exit;
-
     // add files
-    for Item in Files do begin
-      if Item^.Value='' then continue;
-      aFilename:=Item^.Name;
-      NewFlags:=[];
-      Code:=CodeToolBoss.LoadFile(aFilename,true,false);
-      NewUnitName:='';
-      if FilenameIsPascalUnit(aFilename) then
-        NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
-      if NewUnitName<>'' then
-        NewFileType:=pftUnit
-      else
-        NewFileType:=pftInclude;
-      if CodeToolBoss.HasInterfaceRegisterProc(Code) then
-        Include(NewFlags,pffHasRegisterProc);
-      LazPackage.AddFile(aFilename,NewUnitName,NewFileType,NewFlags,cpNormal);
-    end;
-
+    FileList:=TStringList.Create;
+    for Item in Files do
+      if Item^.Value<>'' then
+        FileList.Add(Item^.Name);
+    AddUserFiles(FileList);
   finally
+    FileList.Free;
     Files.Free;
   end;
 end;

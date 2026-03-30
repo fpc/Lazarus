@@ -3402,7 +3402,8 @@ begin
     Code:=CodeToolBoss.LoadFile(aFilename,true,false);
     if Code<>nil then begin
       NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
-      if NewUnitName='' then NewUnitName:=ExtractFileNameOnly(aFilename);
+      if NewUnitName='' then
+        NewUnitName:=ExtractFileNameOnly(aFilename);
       if FindUsedUnit(NewUnitName)=nil then
         Include(NewFlags,pffAddToPkgUsesSection);
       if CodeToolBoss.HasInterfaceRegisterProc(Code) then
