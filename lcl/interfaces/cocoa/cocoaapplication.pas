@@ -373,16 +373,16 @@ begin
         NSKeyDown:
           // when NSKeyDown, always reset CocoaOnlyState
           if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-            cb.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText
+            CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText
           else
-            cb.CocoaOnlyState := false;
+            CocoaWidgetSetState.CocoaOnlyState := false;
         NSKeyUp:
           // when NSKeyUp, reset CocoaOnlyState only if it's false (last KeyDown set)
           // keep true if CocoaOnlyState=true
-          if not cb.CocoaOnlyState then
+          if not CocoaWidgetSetState.CocoaOnlyState then
           begin
             if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-              cb.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
+              CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
           end;
       end;
     end;
@@ -401,7 +401,7 @@ begin
           else
             wnd := nil;
 
-          if cb.IsCocoaOnlyState then
+          if CocoaWidgetSetState.CocoaOnlyState then
           begin
             // in IME state
             inherited sendEvent(theEvent);
@@ -415,9 +415,9 @@ begin
               inherited sendEvent(theEvent);
             // retest IME state
             if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-              cb.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
+              CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
             // if in IME state, pass KeyEvAfter
-            if not cb.CocoaOnlyState then
+            if not CocoaWidgetSetState.CocoaOnlyState then
               cb.KeyEvAfter;
           end;
         finally

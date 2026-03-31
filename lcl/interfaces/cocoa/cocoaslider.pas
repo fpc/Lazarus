@@ -166,8 +166,7 @@ begin
   if newval <> intval then begin
     intval := newval;
     // OnChange event
-    if callback <> nil then
-      callback.SendOnChange();
+    TCocoaLCLMessageUtil.SendOnChange(self);
   end;
 end;
 

@@ -502,8 +502,8 @@ begin
 
   inherited setStringValue(avalue);
 
-  if ch and userSel and Assigned(callback) then
-    callback.SendOnChange;
+  if ch and userSel then
+    TCocoaLCLMessageUtil.SendOnChange(self);
 end;
 
 function TCocoaComboBox.lclGetFrameToLayoutDelta: TRect;
@@ -540,8 +540,7 @@ end;
 procedure TCocoaComboBox.textDidChange(notification: NSNotification);
 begin
   inherited textDidChange(notification);
-  if Assigned(callback) then
-    callback.SendOnChange;
+  TCocoaLCLMessageUtil.SendOnChange(self);
 end;
 
 function TCocoaComboBox.comboBox_objectValueForItemAtIndex_(combo:TCocoaComboBox;
@@ -821,8 +820,7 @@ end;
 procedure TCocoaReadOnlyComboBox.comboboxAction(sender: id);
 begin
   //setTitle(NSSTR(PChar(Format('%d=%d', [indexOfSelectedItem, lastSelectedItemIndex])))); // <= for debugging
-  if Assigned(callback) then
-    callback.SendOnChange;
+  TCocoaLCLMessageUtil.SendOnChange(self);
   if (indexOfSelectedItem <> lastSelectedItemIndex) and (callback <> nil) then
     callback.ComboBoxSelectionDidChange;
   lastSelectedItemIndex := indexOfSelectedItem;

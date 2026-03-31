@@ -23,17 +23,15 @@ type
     var
       FPropStorage: TStringList;
       FContext: TCocoaContext;
-      FHasCaret: Boolean;
       FBoundsReportedToChildren: boolean;
       FIsOpaque:boolean;
       FIsEventRouting:boolean;
       FLastWheelWasHorz:boolean;
   protected
-    function GetHasCaret: Boolean;
-    procedure SetHasCaret(AValue: Boolean);
-    function GetIsOpaque: Boolean;
-    procedure SetIsOpaque(AValue: Boolean);
-    function GetShouldBeEnabled: Boolean;
+    function deliverMessage(var msg): LRESULT;
+
+    function GetIsOpaque: Boolean; inline;
+    procedure SetIsOpaque(const AValue: Boolean); inline;
   protected
     _target    : TWinControl;
     _KeyMsg    : TLMKey;
@@ -42,7 +40,6 @@ type
     _IsSysKey  : Boolean;
     _IsKeyDown : Boolean;
     _KeyHandled: Boolean;
-    _isCocoaOnlyState: Boolean;
     _UTF8Character : array [0..7] of TUTF8Char;
     _UTF8Charcount : Integer;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
@@ -51,6 +48,8 @@ type
     procedure send_CN_CHAR_Message();
     procedure send_LM_KEYDOWN_Message();
     procedure send_LM_CHAR_Message();
+    function getCaptureControlCallback: ICommonCallBack;
+    procedure sendContextMenu(Event: NSEvent; out ContextMenuHandled: Boolean);
   protected
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
@@ -72,51 +71,36 @@ type
 
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
-    function GetPropStorage: TStringList;
-    function GetContext: HDC;
-    function GetTarget: TObject;
-    function GetCallbackObject: TObject;
-    function GetCaptureControlCallback: ICommonCallBack;
-    procedure SendContextMenu(Event: NSEvent; out ContextMenuHandled: Boolean);
-    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean; virtual;
+    function GetPropStorage: TStringList; inline;
+    function GetContext: HDC; inline;
+    function GetTarget: TObject; inline;
+    function GetCallbackObject: TObject; inline;
+    function MouseUpDownEvent(
+      const Event: NSEvent;
+      const AForceAsMouseUp: Boolean = False;
+      const AOverrideBlock: Boolean = False): Boolean; virtual;
 
     procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
-    procedure KeyEvBefore(Event: NSEvent; out AllowCocoaHandle: boolean);
+    procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
-    procedure KeyEvHandled;
-    procedure SetTabSuppress(ASuppress: Boolean);
-    function CanFocus: Boolean; virtual;
+    procedure KeyEvHandled; inline;
+    procedure SetTabSuppress(const ASuppress: Boolean); inline;
 
-    function IsCocoaOnlyState: Boolean;
-    procedure SetCocoaOnlyState(state: Boolean);
-
-    procedure MouseClick; virtual;
-    function MouseMove(Event: NSEvent): Boolean; virtual;
-    function scrollWheel(Event: NSEvent): Boolean; virtual;
-    procedure frameDidChange(sender: id); virtual;
-    procedure boundsDidChange(sender: id); virtual;
-    procedure BecomeFirstResponder; virtual;
-    procedure ResignFirstResponder; virtual;
-    procedure DidBecomeKeyNotification; virtual;
-    procedure DidResignKeyNotification; virtual;
-    function SendOnEditCut: Boolean; virtual;
-    function SendOnEditPaste: Boolean; virtual;
-    procedure SendOnChange; virtual;
-    procedure SendOnTextChanged; virtual; // text controls (like spin) respond to OnChange for this event, but not for SendOnChange
-    procedure scroll(isVert: Boolean; Pos: Integer; AScrollPart: NSScrollerPart); virtual;
-    function DeliverMessage(var Msg): LRESULT; virtual; overload;
-    function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
-    procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
-    procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
-    procedure DrawOverlay(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
+    function MouseMove(const Event: NSEvent): Boolean; virtual;
+    function scrollWheel(const Event: NSEvent): Boolean; virtual;
+    procedure frameDidChange(const sender: id); virtual;
+    procedure boundsDidChange(const sender: id); virtual;
+    procedure scroll(
+      const isVert: Boolean;
+      const Pos: Integer;
+      const AScrollPart: NSScrollerPart); virtual;
+    procedure Draw(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
+    procedure DrawOverlay(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     procedure RemoveTarget; virtual;
 
-    procedure InputClientInsertText(const utf8: string);
+    function HandleFrame: NSView; inline;
+    procedure SetHandleFrame(const AHandleFrame: NSView ); inline;
 
-    function HandleFrame: NSView;
-    procedure SetHandleFrame( AHandleFrame: NSView );
-
-    property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property Target: TWinControl read _target;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
@@ -129,7 +113,9 @@ var
   LastMouse: TLastMouseInfo;
   LastMouseLeftButtonAsRight: Boolean;
 
-function CocoaModifiersToShiftState(AModifiers: NSUInteger; AMouseButtons: NSUInteger): TShiftState;
+function CocoaModifiersToShiftState(
+  const AModifiers: NSUInteger;
+  const AMouseButtons: NSUInteger): TShiftState;
 begin
   Result := [];
   if AModifiers and NSShiftKeyMask <> 0 then Include(Result, ssShift);
@@ -191,16 +177,6 @@ begin
 end;
 
 { TLCLCommonCallback }
-
-function TLCLCommonCallback.GetHasCaret: Boolean;
-begin
-  Result := FHasCaret;
-end;
-
-procedure TLCLCommonCallback.SetHasCaret(AValue: Boolean);
-begin
-  FHasCaret := AValue;
-end;
 
 procedure TLCLCommonCallback.OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint);
 var
@@ -271,7 +247,6 @@ begin
     _handleFrame := NSView(AOwner);
   _target := ATarget;
   FContext := nil;
-  FHasCaret := False;
   FPropStorage := TStringList.Create;
   FPropStorage.Sorted := True;
   FPropStorage.Duplicates := dupAccept;
@@ -310,7 +285,7 @@ begin
   Result := Self;
 end;
 
-function TLCLCommonCallback.GetCaptureControlCallback: ICommonCallBack;
+function TLCLCommonCallback.getCaptureControlCallback: ICommonCallBack;
 var
   obj: NSObject;
   lCaptureView: NSView;
@@ -328,7 +303,7 @@ end;
 { If a window does not display a shortcut menu it should pass
   this message to the DefWindowProc function. If a window is
   a child window, DefWindowProc sends the message to the parent. }
-procedure TLCLCommonCallback.SendContextMenu(Event: NSEvent; out
+procedure TLCLCommonCallback.sendContextMenu(Event: NSEvent; out
   ContextMenuHandled: Boolean);
 var
   MsgContext: TLMContextMenu;
@@ -557,7 +532,7 @@ begin
     _KeyMsg.Msg := CN_KEYDOWN;
 
   NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
-  if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+  if (self.deliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     // the LCL handled the key
     KeyEvHandled;
 end;
@@ -573,7 +548,7 @@ begin
   if _KeyMsg.CharCode <> VK_UNKNOWN then
   begin
     NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
-    if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+    if (self.deliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     begin
       // the LCL has handled the key
       KeyEvHandled;
@@ -618,7 +593,7 @@ begin
   else
     _CharMsg.Msg := CN_CHAR;
 
-  if (DeliverMessage(_CharMsg) <> 0) or (_CharMsg.CharCode=VK_UNKNOWN) then
+  if (self.deliverMessage(_CharMsg) <> 0) or (_CharMsg.CharCode=VK_UNKNOWN) then
     KeyEvHandled;
 end;
 
@@ -631,7 +606,7 @@ begin
   else
     _KeyMsg.Msg := LM_KEYDOWN;
 
-  if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+  if (self.deliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
     KeyEvHandled;
 end;
 
@@ -644,7 +619,7 @@ begin
   else
     _CharMsg.Msg := LM_CHAR;
 
-  if DeliverMessage(_CharMsg) <> 0 then
+  if self.deliverMessage(_CharMsg) <> 0 then
     KeyEvHandled;
 end;
 
@@ -679,7 +654,7 @@ begin
   else
     _KeyMsg.Msg := LM_KEYUP;
 
-  if DeliverMessage(_KeyMsg) <> 0 then
+  if self.deliverMessage(_KeyMsg) <> 0 then
   begin
     // the LCL handled the key
     NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
@@ -687,7 +662,8 @@ begin
   end;
 end;
 
-procedure TLCLCommonCallback.KeyEvBefore(Event: NSEvent;
+procedure TLCLCommonCallback.KeyEvBefore(
+  const  Event: NSEvent;
   out AllowCocoaHandle: boolean);
 begin
   _keyHandled := False;
@@ -728,32 +704,15 @@ begin
   _KeyHandled := True;
 end;
 
-function TLCLCommonCallback.IsCocoaOnlyState: Boolean;
-begin
-  Result := _isCocoaOnlyState;
-end;
-
-procedure TLCLCommonCallback.SetCocoaOnlyState( state:Boolean );
-begin
-  _isCocoaOnlyState := state;
-end;
-
-procedure TLCLCommonCallback.SetTabSuppress(ASuppress: Boolean);
+procedure TLCLCommonCallback.SetTabSuppress(const ASuppress: Boolean);
 begin
   SuppressTabDown := ASuppress;
 end;
 
-function TLCLCommonCallback.CanFocus: Boolean;
-begin
-  Result := not Assigned(Target) or not (csDesigning in Target.ComponentState);
-end;
-
-procedure TLCLCommonCallback.MouseClick;
-begin
-  LCLSendClickedMsg(Target);
-end;
-
-function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean;
+function TLCLCommonCallback.MouseUpDownEvent(
+  const Event: NSEvent;
+  const AForceAsMouseUp: Boolean = False;
+  const AOverrideBlock: Boolean = False): Boolean;
 const
   MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
 var
@@ -797,7 +756,7 @@ begin
   // do anything with it. (Result=true)
   Result := shouldBypassCocoa();
 
-  lCaptureControlCallback := GetCaptureControlCallback();
+  lCaptureControlCallback := getCaptureControlCallback();
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [Target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
@@ -875,7 +834,7 @@ begin
       end;
 
       NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
-      DeliverMessage(Msg);
+      self.deliverMessage(Msg);
 
     end;
     NSLeftMouseUp,
@@ -891,14 +850,14 @@ begin
       end;
 
       NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
-      DeliverMessage(Msg);
+      self.deliverMessage(Msg);
 
       // TODO: Check if Cocoa has special context menu check event
       //       it does (menuForEvent:), but it doesn't work all the time
       //       http://sound-of-silence.com/?article=20150923
       if (GetTarget is TControl) and isContextMenuEvent(Event) then
       begin
-        SendContextMenu(Event, menuHandled);
+        sendContextMenu(Event, menuHandled);
         if menuHandled then Result := true;
       end;
     end;
@@ -931,7 +890,7 @@ begin
     end;
 end;
 
-function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;
+function TLCLCommonCallback.MouseMove(const Event: NSEvent): Boolean;
 var
   Msg: TLMMouseMove;
   MousePos: NSPoint;
@@ -970,7 +929,7 @@ begin
     rect:=Owner.lclClientFrame;
     targetControl:=nil;
 
-    callback := GetCaptureControlCallback();
+    callback := getCaptureControlCallback();
     if callback <> nil then
     begin
       FIsEventRouting:=true;
@@ -1044,7 +1003,7 @@ begin
 
   NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
   // LCL/LM_MOUSEMOVE always return false, so we should discard return value
-  DeliverMessage(Msg);
+  self.deliverMessage(Msg);
   // 1. for MouseMove Event, it has been processed by LCL,
   //    and does not need Cocoa to continue processing.
   // 2. for MouseDragged Event, it needs Cocoa to continue processing
@@ -1059,7 +1018,7 @@ begin
   CursorHelper.SetScreenCursorWhenNotDefault;
 end;
 
-function TLCLCommonCallback.scrollWheel(Event: NSEvent): Boolean;
+function TLCLCommonCallback.scrollWheel(const Event: NSEvent): Boolean;
 var
   Msg: TLMMouseEvent;
   MousePos: NSPoint;
@@ -1129,15 +1088,15 @@ begin
   Msg.WheelDelta := wheelDelta;
 
   NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
-  Result := DeliverMessage(Msg) <> 0;
+  Result := self.deliverMessage(Msg) <> 0;
 end;
 
-procedure TLCLCommonCallback.frameDidChange(sender: id);
+procedure TLCLCommonCallback.frameDidChange(const sender: id);
 begin
   boundsDidChange(sender);
 end;
 
-procedure TLCLCommonCallback.boundsDidChange(sender: id);
+procedure TLCLCommonCallback.boundsDidChange(const sender: id);
 var
   NewBounds, OldBounds: TRect;
   PosMsg: TLMWindowPosChanged;
@@ -1209,68 +1168,10 @@ begin
 
 end;
 
-procedure TLCLCommonCallback.BecomeFirstResponder;
-begin
-  if not Assigned(Target) then Exit;
-  // LCL is unable to determine the "already focused" message
-  // thus Cocoa related code is doing that.
-  //if not Target.Focused then
-    LCLSendSetFocusMsg(Target);
-end;
-
-procedure TLCLCommonCallback.ResignFirstResponder;
-begin
-  if not Assigned(Target) then Exit;
-  CocoaWidgetSetState.killingFocus:= true;
-  try
-    LCLSendKillFocusMsg(Target);
-  finally
-    CocoaWidgetSetState.killingFocus:= false;
-  end;
-end;
-
-procedure TLCLCommonCallback.DidBecomeKeyNotification;
-begin
-  if not Assigned(Target) then Exit;
-  LCLSendActivateMsg(Target, WA_ACTIVE, false);
-  LCLSendSetFocusMsg(Target);
-end;
-
-procedure TLCLCommonCallback.DidResignKeyNotification;
-begin
-  if not Assigned(Target) then Exit;
-  LCLSendActivateMsg(Target, WA_INACTIVE, false);
-  LCLSendKillFocusMsg(Target);
-end;
-
-function TLCLCommonCallback.SendOnEditCut: Boolean;
-begin
-  Result:= false;
-  if Assigned(Target) then
-    Result:= SendSimpleMessage(Target, LM_CUT)=0;
-end;
-
-function TLCLCommonCallback.SendOnEditPaste: Boolean;
-begin
-  Result:= false;
-  if Assigned(Target) then
-    Result:= SendSimpleMessage(Target, LM_PASTE)=0;
-end;
-
-procedure TLCLCommonCallback.SendOnChange;
-begin
-  if not Assigned(Target) then Exit;
-  SendSimpleMessage(Target, LM_CHANGED);
-end;
-
-procedure TLCLCommonCallback.SendOnTextChanged;
-begin
-  if not Assigned(Target) then Exit;
-  SendSimpleMessage(Target, CM_TEXTCHANGED);
-end;
-
-procedure TLCLCommonCallback.scroll(isVert: Boolean; Pos: Integer;
-  AScrollPart: NSScrollerPart);
+procedure TLCLCommonCallback.scroll(
+  const isVert: Boolean;
+  const Pos: Integer;
+  const AScrollPart: NSScrollerPart);
 var
   LMScroll: TLMScroll;
   b: Boolean;
@@ -1299,26 +1200,8 @@ begin
   LCLMessageGlue.DeliverMessage(Target, LMScroll);
 end;
 
-function TLCLCommonCallback.DeliverMessage(var Msg): LRESULT;
-begin
-  if Assigned(Target) then
-    Result := LCLMessageGlue.DeliverMessage(Target, Msg)
-  else
-    Result := 0;
-end;
-
-function TLCLCommonCallback.DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
-var
-  Message: TLMessage;
-begin
-  Message.Msg := Msg;
-  Message.WParam := WParam;
-  Message.LParam := LParam;
-  Message.Result := 0;
-  Result := DeliverMessage(Message);
-end;
-
-procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
+procedure TLCLCommonCallback.Draw(
+  const ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
   PS: TPaintStruct;
@@ -1350,31 +1233,15 @@ begin
       PS.hdc := HDC(FContext);
       PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(FContext), @PS);
-      if FHasCaret then
-        TCocoaCaretUtil.drawCaret;
+      TCocoaCaretUtil.drawCaret( Owner.lclContentView );
     end;
   finally
     FreeAndNil(FContext);
   end;
 end;
 
-procedure TLCLCommonCallback.DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect);
-var
-  lTarget: TWinControl;
-begin
-  // Implement Color property
-  lTarget := TWinControl(GetTarget());
-  if (lTarget.Color <> clDefault) and (lTarget.Color <> clBtnFace)  and (lTarget.Color <> clNone) then
-  begin
-    TCocoaColorUtil.toColor(ColorToRGB(lTarget.Color)).set_();
-    // NSRectFill() always requires the coordinate system of the lower left corner
-    // of the origin, contrary to the Rect provided to LCL in
-    // TLCLCommonCallback.Draw() and TLCLCommonCallback.DrawOverlay()
-    NSRectFill(dirtyRect);
-  end;
-end;
-
-procedure TLCLCommonCallback.DrawOverlay(ControlContext: NSGraphicsContext;
+procedure TLCLCommonCallback.DrawOverlay(
+  const ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
   PS  : TPaintStruct;
@@ -1409,32 +1276,19 @@ begin
   _target := nil;
 end;
 
-procedure TLCLCommonCallback.InputClientInsertText(const utf8: string);
-var
-  i : integer;
-  c : integer;
-  ch : TUTF8Char;
-begin
-  if (utf8 = '') then Exit;
-  i:=1;
-  while (i<=length(utf8)) do
-  begin
-    c := Utf8CodePointLen(@utf8[i], length(utf8)-i+1, false);
-    ch := Copy(utf8, i, c);
-    _target.IntfUTF8KeyPress(ch, 1, false);
-    inc(i, c);
-  end;
-
-end;
-
 function TLCLCommonCallback.HandleFrame: NSView;
 begin
   Result:= _handleFrame;
 end;
 
-procedure TLCLCommonCallback.SetHandleFrame(AHandleFrame: NSView);
+procedure TLCLCommonCallback.SetHandleFrame(const AHandleFrame: NSView);
 begin
   _handleFrame:= AHandleFrame;
+end;
+
+function TLCLCommonCallback.deliverMessage(var msg): LRESULT;
+begin
+  Result:= LCLMessageGlue.DeliverMessage(Target, msg);
 end;
 
 function TLCLCommonCallback.GetIsOpaque: Boolean;
@@ -1442,14 +1296,9 @@ begin
   Result:= FIsOpaque;
 end;
 
-procedure TLCLCommonCallback.SetIsOpaque(AValue: Boolean);
+procedure TLCLCommonCallback.SetIsOpaque(const AValue: Boolean);
 begin
   FIsOpaque:=AValue;
-end;
-
-function TLCLCommonCallback.GetShouldBeEnabled: Boolean;
-begin
-  Result := Assigned(_target) and _target.Enabled;
 end;
 
 end.

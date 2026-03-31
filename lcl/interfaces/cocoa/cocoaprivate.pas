@@ -25,10 +25,37 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLType, Controls, Forms, Graphics,
+  LCLMessageGlue, LMessages,
   MacOSAll, CocoaAll,
   CocoaConfig, Cocoa_Extra, CocoaUtils;
 
 type
+
+  { TCocoaWidgetSetState }
+
+  TCocoaWidgetSetState = class
+  private
+    _lclSendingScrollWheelCount: Integer;
+    _isCocoaOnlyState: Boolean;
+  public
+    currentKeyWindow: NSWindow;
+    killingFocus: Boolean;
+    captureControl: HWND;
+
+    // Store state of key modifiers so that we can emulate keyup/keydown
+    // of keys like control, option, command, caps lock, shift
+    prevKeyModifiers : NSUInteger;
+    savedKeyModifiers : NSUInteger;
+  public
+    procedure releaseCapture;
+
+    procedure lclBeginSendingScrollWheel;
+    procedure lclEndSendingScrollWheel;
+    function isLCLSendingScrollWheel: Boolean;
+
+    // only Cocoa Event Mechanism (no LCL Event), if the IME is in use
+    property CocoaOnlyState: Boolean read _isCocoaOnlyState write _isCocoaOnlyState;
+  end;
 
   { TCocoaViewUtil }
 
@@ -73,9 +100,11 @@ type
 
   ICommonCallback = interface
     // mouse events
-    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean;
-    procedure MouseClick;
-    function MouseMove(Event: NSEvent): Boolean;
+    function MouseUpDownEvent(
+      const Event: NSEvent;
+      const AForceAsMouseUp: Boolean = False;
+      const AOverrideBlock: Boolean = False): Boolean;
+    function MouseMove(const Event: NSEvent): Boolean;
 
     // KeyEvXXX methods were introduced to allow a better control
     // over when Cocoa keys processing is being called.
@@ -91,45 +120,30 @@ type
     // If the flag returned "False", you should not call inherited.
     //
     // No matter what the flag value was you should call KeyEvAfter.
-    procedure KeyEvBefore(Event: NSEvent; out AllowCocoaHandle: boolean);
+    procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
     procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
     procedure KeyEvHandled;
-    procedure SetTabSuppress(ASuppress: Boolean);
+    procedure SetTabSuppress(const ASuppress: Boolean);
 
-    // only Cocoa Event Mechanism (no LCL Event), if the IME is in use
-    function IsCocoaOnlyState: Boolean;
-    procedure SetCocoaOnlyState( state:Boolean );
-
-    function scrollWheel(Event: NSEvent): Boolean;
-    function CanFocus: Boolean;
+    function scrollWheel(const Event: NSEvent): Boolean;
     // size, pos events
-    procedure frameDidChange(sender: id);
-    procedure boundsDidChange(sender: id);
+    procedure frameDidChange(const sender: id);
+    procedure boundsDidChange(const sender: id);
     // misc events
-    procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure DrawOverlay(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure BecomeFirstResponder;
-    procedure ResignFirstResponder;
-    procedure DidBecomeKeyNotification;
-    procedure DidResignKeyNotification;
-    function SendOnEditCut: Boolean;
-    function SendOnEditPaste: Boolean;
-    procedure SendOnChange;
-    procedure SendOnTextChanged;
-    procedure scroll(isVert: Boolean; Pos: Integer; AScrollPart: NSScrollerPart = NSScrollerNoPart);
+    procedure Draw(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    procedure DrawOverlay(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    procedure scroll(
+      const isVert: Boolean;
+      const Pos: Integer;
+      const AScrollPart: NSScrollerPart = NSScrollerNoPart);
     // non event methods
-    function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
     function GetContext: HDC;
     function GetTarget: TObject;
-    function GetHasCaret: Boolean;
     function GetCallbackObject: TObject;
-    procedure SetHasCaret(AValue: Boolean);
     function GetIsOpaque: Boolean;
-    procedure SetIsOpaque(AValue: Boolean);
-    function GetShouldBeEnabled: Boolean;
+    procedure SetIsOpaque(const AValue: Boolean);
     // the method is called, when handle is being destroyed.
     // the callback object to stay alive a little longer than LCL object (Target)
     // thus it needs to know that LCL object has been destroyed.
@@ -137,14 +151,39 @@ type
     // forwarded to LCL target
     procedure RemoveTarget;
 
-    procedure InputClientInsertText(const utf8: string);
-
     function HandleFrame: NSView;
 
     // properties
-    property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
-    property CocoaOnlyState: Boolean read IsCocoaOnlyState write SetCocoaOnlyState;
+  end;
+
+  { TCocoaLCLMessageUtil }
+
+  TCocoaLCLMessageUtil = class
+  public
+    class function deliverMessage(
+      const control: NSObject;
+      var msg ): LRESULT;
+    class function deliverMessage(
+      const control: NSObject;
+      const msg: Cardinal;
+      const WParam: WParam;
+      const LParam: LParam ): LResult;
+
+    class procedure BecomeFirstResponder( const cb: ICommonCallback ); overload;
+    class procedure BecomeFirstResponder( const control: NSObject ); overload;
+    class procedure ResignFirstResponder( const cb: ICommonCallback ); overload;
+    class procedure ResignFirstResponder( const control: NSObject ); overload;
+    class procedure DidBecomeKeyNotification( const control: NSObject );
+    class procedure DidResignKeyNotification( const control: NSObject );
+    class function SendOnEditCut( const control: NSObject ): Boolean;
+    class function SendOnEditPaste( const control: NSObject ): Boolean;
+    class procedure SendOnChange( const control: NSObject );
+    class procedure SendOnTextChanged( const control: NSObject );
+
+    class procedure InputClientInsertText(
+      const control: NSObject;
+      const utf8: string);
   end;
 
   { LCLObjectExtension }
@@ -181,7 +220,6 @@ type
     procedure lclClearCallback; message 'lclClearCallback';
     function lclGetPropStorage: TStringList; message 'lclGetPropStorage';
     function lclGetTarget: TObject; message 'lclGetTarget';
-    function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
     function lclContentView: NSView; message 'lclContentView';
     procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:';
     procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); message 'lclExpectedKeys::::';
@@ -219,6 +257,9 @@ type
   end;
 
 var
+
+  CocoaWidgetSetState: TCocoaWidgetSetState;
+
   // todo: this should be a threadvar
   TrackedControl : NSObject = nil;
 
@@ -232,6 +273,44 @@ implementation
 
 type
   TWinControlAccess = class(TWinControl);
+
+function RectToViewCoord(view: NSView; const r: TRect): NSRect;
+var
+  b: NSRect;
+begin
+  b := view.bounds;
+  Result.origin.x := r.Left;
+  Result.size.width := r.Right - r.Left;
+  Result.size.height := r.Bottom - r.Top;
+  if Assigned(view) and (view.isFlipped) then
+    Result.origin.y := r.Top
+  else
+    Result.origin.y := b.size.height - r.Bottom;
+end;
+
+{ TCocoaWidgetSetState }
+
+procedure TCocoaWidgetSetState.releaseCapture;
+begin
+  self.captureControl:= 0;
+end;
+
+procedure TCocoaWidgetSetState.lclBeginSendingScrollWheel;
+begin
+  inc( _lclSendingScrollWheelCount );
+end;
+
+procedure TCocoaWidgetSetState.lclEndSendingScrollWheel;
+begin
+  dec( _lclSendingScrollWheelCount );
+end;
+
+function TCocoaWidgetSetState.isLCLSendingScrollWheel: Boolean;
+begin
+  Result:= _lclSendingScrollWheelCount > 0;
+end;
+
+{ TCocoaViewUtil }
 
 class function TCocoaViewUtil.isLCLEnabled(obj: NSObject): Boolean;
 begin
@@ -256,18 +335,18 @@ end;
 
 class function TCocoaViewUtil.canLCLFocus(v: NSView): Boolean;
 var
-  cb: ICommonCallback;
+  target: TControl;
 begin
-  if Assigned(v) then
-  begin
-    cb := v.lclGetCallback;
-    if Assigned(cb) then
-      Result := cb.CanFocus
-    else
-      Result := true;
-  end
-  else
-    Result := false;
+  Result:= False;
+  if NOT Assigned(v) then
+    Exit;
+
+  Result:= True;
+  target:= TControl( v.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  Result:= NOT (csDesigning in Target.ComponentState);
 end;
 
 class function TCocoaViewUtil.getSuperViewHeight(const view: NSView
@@ -418,8 +497,8 @@ var
 begin
   TCocoaControlUtil.setStringValue(ctrl, text);
   cb:= ctrl.lclGetcallback;
-  if Assigned(cb) then // cb.SendOnChange;
-    cb.SendOnTextChanged;
+  if Assigned(cb) then
+    TCocoaLCLMessageUtil.SendOnTextChanged(ctrl);
 end;
 
 class function TCocoaControlUtil.getStringValue(const c: NSControl): String; inline;
@@ -450,6 +529,179 @@ begin
     Result:= NSString.string_ // empty string
   else
     Result:= NSString.stringWithUTF8String( @t[1] );
+end;
+
+{ TCocoaLCLMessageUtil }
+
+class function TCocoaLCLMessageUtil.deliverMessage(
+  const control: NSObject;
+  var msg ): LRESULT;
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  Result:= LCLMessageGlue.DeliverMessage(target, msg);
+end;
+
+class function TCocoaLCLMessageUtil.deliverMessage(
+  const control: NSObject;
+  const msg: Cardinal;
+  const WParam: WParam;
+  const LParam: LParam): LResult;
+var
+  message: TLMessage;
+begin
+  Message.Msg := Msg;
+  Message.WParam := WParam;
+  Message.LParam := LParam;
+  Message.Result := 0;
+  Result := TCocoaLCLMessageUtil.deliverMessage(control, message);
+end;
+
+class procedure TCocoaLCLMessageUtil.BecomeFirstResponder( const cb: ICommonCallback);
+var
+  target: TControl;
+begin
+  if NOT Assigned(cb) then
+    Exit;
+
+  target:= TControl( cb.GetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  // LCL is unable to determine the "already focused" message
+  // thus Cocoa related code is doing that.
+
+  //if not Target.Focused then
+    LCLSendSetFocusMsg(target);
+end;
+
+class procedure TCocoaLCLMessageUtil.BecomeFirstResponder( const control: NSObject );
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  LCLSendSetFocusMsg(target);
+end;
+
+class procedure TCocoaLCLMessageUtil.ResignFirstResponder( const cb: ICommonCallback );
+var
+  target: TControl;
+begin
+  if NOT Assigned(cb) then
+    Exit;
+
+  target:= TControl( cb.GetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  CocoaWidgetSetState.killingFocus:= true;
+  try
+    LCLSendKillFocusMsg(target);
+  finally
+    CocoaWidgetSetState.killingFocus:= false;
+  end;
+end;
+
+class procedure TCocoaLCLMessageUtil.ResignFirstResponder( const control: NSObject );
+begin
+  TCocoaLCLMessageUtil.ResignFirstResponder( control.lclGetCallback );
+end;
+
+class procedure TCocoaLCLMessageUtil.DidBecomeKeyNotification( const control: NSObject );
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  LCLSendActivateMsg(target, WA_ACTIVE, false);
+  LCLSendSetFocusMsg(target);
+end;
+
+class procedure TCocoaLCLMessageUtil.DidResignKeyNotification( const control: NSObject );
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  if not Assigned(Target) then Exit;
+  LCLSendActivateMsg(Target, WA_INACTIVE, false);
+  LCLSendKillFocusMsg(Target);
+end;
+
+class function TCocoaLCLMessageUtil.SendOnEditCut(const control: NSObject): Boolean;
+var
+  target: TControl;
+begin
+  Result:= false;
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  Result:= SendSimpleMessage(target, LM_CUT)=0;
+end;
+
+class function TCocoaLCLMessageUtil.SendOnEditPaste(const control: NSObject): Boolean;
+var
+  target: TControl;
+begin
+  Result:= false;
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  Result:= SendSimpleMessage(target, LM_PASTE)=0;
+end;
+
+class procedure TCocoaLCLMessageUtil.SendOnChange(const control: NSObject);
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  SendSimpleMessage(target, LM_CHANGED);
+end;
+
+class procedure TCocoaLCLMessageUtil.SendOnTextChanged(const control: NSObject);
+var
+  target: TControl;
+begin
+  target:= TControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+  SendSimpleMessage(target, CM_TEXTCHANGED);
+end;
+
+class procedure TCocoaLCLMessageUtil.InputClientInsertText(
+  const control: NSObject;
+  const utf8: string );
+var
+  target: TWinControl;
+  i : integer;
+  c : integer;
+  ch : TUTF8Char;
+begin
+  target:= TWinControl( control.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  if (utf8 = '') then Exit;
+  i:=1;
+  while (i<=length(utf8)) do
+  begin
+    c := Utf8CodePointLen(@utf8[i], length(utf8)-i+1, false);
+    ch := Copy(utf8, i, c);
+    target.IntfUTF8KeyPress(ch, 1, false);
+    inc(i, c);
+  end;
 end;
 
 { LCLObjectExtension }
@@ -556,17 +808,6 @@ begin
     Result := nil;
 end;
 
-function LCLObjectExtension.lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
-var
-  Callback: ICommonCallback;
-begin
-  Callback := lclGetCallback;
-  if Assigned(Callback) then
-    Result := Callback.DeliverMessage(Msg, WParam, LParam)
-  else
-    Result := 0;
-end;
-
 function LCLObjectExtension.lclContentView: NSView;
 begin
   Result := nil;
@@ -599,36 +840,7 @@ begin
   Result := false;
 end;
 
-{ LCLControlExtension }
-
-function RectToViewCoord(view: NSView; const r: TRect): NSRect;
-var
-  b: NSRect;
-begin
-  b := view.bounds;
-  Result.origin.x := r.Left;
-  Result.size.width := r.Right - r.Left;
-  Result.size.height := r.Bottom - r.Top;
-  if Assigned(view) and (view.isFlipped) then
-    Result.origin.y := r.Top
-  else
-    Result.origin.y := b.size.height - r.Bottom;
-end;
-
-function LCLControlExtension.lclIsEnabled:Boolean;
-begin
-  Result := IsEnabled;
-end;
-
-procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
-begin
-  {$ifdef BOOLFIX}
-  SetEnabled_( Ord(AEnabled and NSViewIsLCLEnabled(self.superview) ));
-  {$else}
-  SetEnabled( AEnabled and TCocoaViewUtil.isLCLEnabled(self.superview) );
-  {$endif}
-  inherited lclSetEnabled(AEnabled);
-end;
+{ LCLViewExtension }
 
 function LCLViewExtension.lclInitWithCreateParams(const AParams: TCreateParams): id;
 var
@@ -686,12 +898,18 @@ end;
 
 procedure LCLViewExtension.lclSetEnabled(AEnabled: Boolean);
 var
-  cb : ICommonCallback;
-  obj : NSObject;
+  v: NSView;
+  target: TControl;
+  newEnabled: Boolean;
 begin
-  for obj in subviews do begin
-    cb := obj.lclGetCallback;
-    obj.lclSetEnabled(AEnabled and ((not Assigned(cb)) or cb.GetShouldBeEnabled) );
+  for v in subviews do begin
+    newEnabled:= AEnabled;
+    if newEnabled then begin
+      target:= TControl( v.lclGetTarget );
+      if Assigned(target) and NOT target.Enabled then
+        newEnabled:= False;
+    end;
+    v.lclSetEnabled( newEnabled );
   end;
 end;
 
@@ -882,6 +1100,29 @@ begin
   Point.X := Point.X - dlt.Left;
   Point.Y := Point.Y - dlt.Top;
 end;
+
+{ LCLControlExtension }
+
+function LCLControlExtension.lclIsEnabled:Boolean;
+begin
+  Result := IsEnabled;
+end;
+
+procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
+begin
+  {$ifdef BOOLFIX}
+  SetEnabled_( Ord(AEnabled and NSViewIsLCLEnabled(self.superview) ));
+  {$else}
+  SetEnabled( AEnabled and TCocoaViewUtil.isLCLEnabled(self.superview) );
+  {$endif}
+  inherited lclSetEnabled(AEnabled);
+end;
+
+initialization
+  CocoaWidgetSetState:= TCocoaWidgetSetState.Create;
+
+finalization
+  FreeAndNil( CocoaWidgetSetState );
 
 end.
 

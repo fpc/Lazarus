@@ -39,7 +39,7 @@ type
   TLCLButtonCallback = class(TLCLCommonCallback, IButtonCallback)
   public
     procedure ButtonClick; virtual;
-    procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
+    procedure Draw(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
     procedure GetAllowMixedState(var allowed: Boolean); virtual;
   end;
   TLCLButtonCallBackClass = class of TLCLButtonCallBack;
@@ -214,7 +214,8 @@ begin
   SendSimpleMessage(Target, LM_CLICKED);
 end;
 
-procedure TLCLButtonCallback.Draw(ControlContext: NSGraphicsContext;
+procedure TLCLButtonCallback.Draw(
+  const ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
   PS: PPaintStruct;

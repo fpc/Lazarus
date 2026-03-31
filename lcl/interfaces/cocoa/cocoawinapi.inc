@@ -1925,7 +1925,7 @@ type
 
 procedure TLCLEventMessage.lclRunEvent(sender: id);
 begin
-  res := NSObject(handle).lclDeliverMessage(msg, wp, lp);
+  res := TCocoaLCLMessageUtil.deliverMessage(NSObject(handle), msg, wp, lp);
   if releaseAfterRun then self.release;
 end;
 
