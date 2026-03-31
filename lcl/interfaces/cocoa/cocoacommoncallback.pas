@@ -86,7 +86,6 @@ type
     procedure KeyEvAfter;
     procedure KeyEvHandled; inline;
     procedure SetTabSuppress(const ASuppress: Boolean); inline;
-    function CanFocus: Boolean; virtual;
 
     function MouseMove(const Event: NSEvent): Boolean; virtual;
     function scrollWheel(const Event: NSEvent): Boolean; virtual;
@@ -710,11 +709,6 @@ end;
 procedure TLCLCommonCallback.SetTabSuppress(const ASuppress: Boolean);
 begin
   SuppressTabDown := ASuppress;
-end;
-
-function TLCLCommonCallback.CanFocus: Boolean;
-begin
-  Result := not Assigned(Target) or not (csDesigning in Target.ComponentState);
 end;
 
 function TLCLCommonCallback.MouseUpDownEvent(

@@ -127,7 +127,6 @@ type
     procedure SetTabSuppress(const ASuppress: Boolean);
 
     function scrollWheel(const Event: NSEvent): Boolean;
-    function CanFocus: Boolean;
     // size, pos events
     procedure frameDidChange(const sender: id);
     procedure boundsDidChange(const sender: id);
@@ -324,18 +323,18 @@ end;
 
 class function TCocoaViewUtil.canLCLFocus(v: NSView): Boolean;
 var
-  cb: ICommonCallback;
+  target: TControl;
 begin
-  if Assigned(v) then
-  begin
-    cb := v.lclGetCallback;
-    if Assigned(cb) then
-      Result := cb.CanFocus
-    else
-      Result := true;
-  end
-  else
-    Result := false;
+  Result:= False;
+  if NOT Assigned(v) then
+    Exit;
+
+  Result:= True;
+  target:= TControl( v.lclGetTarget );
+  if NOT Assigned(target) then
+    Exit;
+
+  Result:= NOT (csDesigning in Target.ComponentState);
 end;
 
 class function TCocoaViewUtil.getSuperViewHeight(const view: NSView
