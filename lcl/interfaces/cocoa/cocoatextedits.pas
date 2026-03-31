@@ -432,24 +432,18 @@ end;
 
 procedure TCocoaFieldEditor.cut(sender: id);
 var
-  callback: ICommonCallback;
   accept: Boolean = False;
 begin
-  callback:= self.lclGetCallback;
-  if Assigned(callback) then
-    accept:= callback.SendOnEditCut;
+  accept:= TCocoaLCLMessageUtil.SendOnEditCut(self);
   if accept then
     inherited cut(sender);
 end;
 
 procedure TCocoaFieldEditor.paste(sender: id);
 var
-  callback: ICommonCallback;
   accept: Boolean = False;
 begin
-  callback:= self.lclGetCallback;
-  if Assigned(callback) then
-    accept:= callback.SendOnEditPaste;
+  accept:= TCocoaLCLMessageUtil.SendOnEditPaste(self);
   if accept then
     inherited paste(sender);
 end;
@@ -761,8 +755,7 @@ procedure TCocoaTextField.textDidChange(notification: NSNotification);
 begin
   if (maxLength>0) and Assigned(stringValue) and (stringValue.length > maxLength) then
     setStringValue(stringValue.substringWithRange(NSMakeRange(0,maxLength)));
-  if callback <> nil then
-    callback.SendOnTextChanged;
+  TCocoaLCLMessageUtil.SendOnTextChanged(self);
 end;
 
 // detect and remove line-break when entering text
@@ -859,20 +852,18 @@ end;
 
 procedure TCocoaTextView.cut(sender: id);
 var
-  accept: Boolean = False;
+  accept: Boolean;
 begin
-  if Assigned(callback) then
-    accept:= callback.SendOnEditCut;
+  accept:= TCocoaLCLMessageUtil.SendOnEditCut(self);
   if accept then
     inherited cut(sender);
 end;
 
 procedure TCocoaTextView.paste(sender: id);
 var
-  accept: Boolean = False;
+  accept: Boolean;
 begin
-  if Assigned(callback) then
-    accept:= callback.SendOnEditPaste;
+  accept:= TCocoaLCLMessageUtil.SendOnEditPaste(self);
   if accept then
     inherited paste(sender);
 end;
@@ -987,8 +978,8 @@ end;
 
 procedure TCocoaTextView.textDidChange(notification: NSNotification);
 begin
-  if (callback <> nil) and (supressTextChangeEvent = 0) then
-    callback.SendOnTextChanged;
+  if supressTextChangeEvent = 0 then
+    TCocoaLCLMessageUtil.SendOnTextChanged(self);
 end;
 
 procedure TCocoaTextView.lclExpectedKeys(var wantTabs, wantArrows, wantReturn,
@@ -1029,8 +1020,7 @@ begin
   inherited;
   if (maxLength>0) and Assigned(stringValue) and (stringValue.length > maxLength) then
     setStringValue(stringValue.substringWithRange(NSMakeRange(0,maxLength)));
-  if callback <> nil then
-    callback.SendOnTextChanged;
+  TCocoaLCLMessageUtil.SendOnTextChanged(self);
 end;
 
 procedure TCocoaSecureTextField.mouseDown(event: NSEvent);
@@ -1407,8 +1397,8 @@ begin
   setStringValue(lNSStr);
   lNSStr.release;
   // This implements OnChange for both user and code changes
-  if (callback <> nil) and (avoidChangeEvent=0) then
-    callback.SendOnTextChanged();
+  if avoidChangeEvent=0 then
+    TCocoaLCLMessageUtil.SendOnTextChanged(self);
 end;
 
 procedure TCocoaSpinEdit.textDidChange(notification: NSNotification);
@@ -1423,8 +1413,8 @@ begin
   begin
     anyChange:=true;
     updateStepper; // just update float value, keep text as is!
-    if (callback <> nil) and (avoidChangeEvent=0) then
-      callback.SendOnTextChanged();
+    if avoidChangeEvent=0 then
+      TCocoaLCLMessageUtil.SendOnTextChanged(self);
   end
   else
   begin

@@ -14,28 +14,6 @@ uses
 
 type
 
-  { TCocoaWidgetSetState }
-
-  TCocoaWidgetSetState = class
-  private
-    _lclSendingScrollWheelCount: Integer;
-  public
-    currentKeyWindow: NSWindow;
-    killingFocus: Boolean;
-    captureControl: HWND;
-
-    // Store state of key modifiers so that we can emulate keyup/keydown
-    // of keys like control, option, command, caps lock, shift
-    prevKeyModifiers : NSUInteger;
-    savedKeyModifiers : NSUInteger;
-  public
-    procedure releaseCapture;
-
-    procedure lclBeginSendingScrollWheel;
-    procedure lclEndSendingScrollWheel;
-    function isLCLSendingScrollWheel: Boolean;
-  end;
-
   { TCocoaWidgetSetGDIObject }
 
   TCocoaWidgetSetGDIObject = class
@@ -132,33 +110,10 @@ type
   end;
 
 var
-  CocoaWidgetSetState: TCocoaWidgetSetState;
   CocoaWidgetSetBaseService: TCocoaWidgetSetBaseService;
   CocoaWidgetSetMenuService: TCocoaWidgetSetMenuService;
 
 implementation
-
-{ TCocoaWidgetSetState }
-
-procedure TCocoaWidgetSetState.releaseCapture;
-begin
-  self.captureControl:= 0;
-end;
-
-procedure TCocoaWidgetSetState.lclBeginSendingScrollWheel;
-begin
-  inc( _lclSendingScrollWheelCount );
-end;
-
-procedure TCocoaWidgetSetState.lclEndSendingScrollWheel;
-begin
-  dec( _lclSendingScrollWheelCount );
-end;
-
-function TCocoaWidgetSetState.isLCLSendingScrollWheel: Boolean;
-begin
-  Result:= _lclSendingScrollWheelCount > 0;
-end;
 
 { TCocoaWidgetSetGDIObject }
 
@@ -470,14 +425,12 @@ begin
 end;
 
 initialization
-  CocoaWidgetSetState:= TCocoaWidgetSetState.Create;
   CocoaWidgetSetBaseService:= TCocoaWidgetSetBaseService.Create;
   CocoaWidgetSetMenuService:= TCocoaWidgetSetMenuService.Create;
 
 finalization
   FreeAndNil( CocoaWidgetSetMenuService );
   FreeAndNil( CocoaWidgetSetBaseService );
-  FreeAndNil( CocoaWidgetSetState );
 
 end.
 

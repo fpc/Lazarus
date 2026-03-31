@@ -248,7 +248,7 @@ end;
   send final Text to LCL Edit Control which has IME Handler
   Key step for IME (such as Chinese/Japanese/Korean and DeadKeys)
   1. if in IME input state, handle text via imeHandler.IMEInsertFinalText()
-  2. otherwise via lclGetCallback.InputClientInsertText,
+  2. otherwise via TCocoaLCLMessageUtil.InputClientInsertText,
      mainly for maximum forward compatibility with TCocoaCustomControl
 }
 procedure TCocoaFullControlEdit.insertText_replacementRange(aString: id;
@@ -274,7 +274,7 @@ begin
     imeHandler.IMEInsertFinalText( params )
   else
     // insert normal text (without IME) by LCLControl.IntfUTF8KeyPress()
-    lclGetCallback.InputClientInsertText( params.text );
+    TCocoaLCLMessageUtil.InputClientInsertText( self, params.text );
 
   if not params.isFirstCall then
   begin

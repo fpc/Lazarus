@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Forms,
+  Controls, Forms, Graphics,
   MacOSAll, CocoaAll, CocoaPrivate,
   CocoaCursor, Cocoa_Extra, CocoaUtils;
 
@@ -151,14 +151,30 @@ begin
 end;
 
 procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
+
+  procedure drawBackgroundIfNecessary(const ctx: NSGraphicsContext; const dirty: NSRect);
+  var
+    target: TWinControl;
+  begin
+    // Implement Color property
+    target := TWinControl( self.lclGetTarget);
+    if NOT Assigned(target) then
+      Exit;
+
+    if (target.Color <> clDefault) and (target.Color <> clBtnFace) and (target.Color <> clNone) then
+    begin
+      TCocoaColorUtil.toColor(ColorToRGB(target.Color)).set_();
+      NSRectFill(dirtyRect);
+    end;
+  end;
+
 begin
   if isdrawing=0 then faileddraw:=false;
   inc(isdrawing);
   inherited drawRect(dirtyRect);
 
   // Implement Color property
-  if Assigned(callback) then
-    callback.DrawBackground(NSGraphicsContext.currentContext, bounds, dirtyRect);
+  drawBackgroundIfNecessary(NSGraphicsContext.currentContext, dirtyRect);
 
   if TCocoaApplicationUtil.isMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
@@ -327,7 +343,7 @@ end;
 procedure TCocoaCustomControlWithBaseInputClient.DoCallInputClientInsertText(nsText:NSString);
 begin
   if Assigned(callback) then
-    callback.InputClientInsertText(nsText.UTF8String);
+    TCocoaLCLMessageUtil.InputClientInsertText(self, nsText.UTF8String);
   nsText.release;
 end;
 

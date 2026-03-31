@@ -25,7 +25,8 @@ interface
 uses
   Types, Classes, SysUtils,
   LCLType, LCLProc,
-  MacOSAll, CocoaAll, CocoaPrivate, cocoa_extra, CocoaUtils,
+  MacOSAll, CocoaAll,
+  CocoaPrivate, CocoaWSService, Cocoa_Extra, CocoaUtils,
   CocoaCursor, CocoaCustomControl, CocoaTextEdits, CocoaScrollers;
 
 type
@@ -280,14 +281,12 @@ end;
 
 procedure TCocoaWindowContentDocument.didBecomeKeyNotification(sender: NSNotification);
 begin
-  if Assigned(callback) then
-    callback.DidBecomeKeyNotification;
+  TCocoaLCLMessageUtil.DidBecomeKeyNotification(self);
 end;
 
 procedure TCocoaWindowContentDocument.didResignKeyNotification(sender: NSNotification);
 begin
-  if Assigned(callback) then
-    callback.DidResignKeyNotification;
+  TCocoaLCLMessageUtil.DidResignKeyNotification(self);
 end;
 
 { TCocoaWindowContent }
@@ -936,7 +935,7 @@ var
   mn : NSMenu;
   allowcocoa : Boolean;
 begin
-  if Assigned(_keyEvCallback) and _keyEvCallback.IsCocoaOnlyState then
+  if CocoaWidgetSetState.CocoaOnlyState then
   begin
     inherited keyDown(event);
     Exit;
@@ -1052,12 +1051,12 @@ begin
 
     // 1st: send KillFocus Message first
     if Assigned(lastCb) then
-      lastCb.ResignFirstResponder;
+      TCocoaLCLMessageUtil.ResignFirstResponder(lastCb);
 
     // 2st: send SetFocus Message
     // TCocoaWindow.makeFirstResponder() may be triggered reentrant here
     if Assigned(newCb) then
-      newCb.BecomeFirstResponder;
+      TCocoaLCLMessageUtil.BecomeFirstResponder(newCb);
 
     newRespsonderClassName:= newResponder.lclClassName;
   finally

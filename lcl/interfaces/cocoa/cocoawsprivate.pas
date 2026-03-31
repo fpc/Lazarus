@@ -106,7 +106,7 @@ begin
   Callback := obj.lclGetCallback;
 
   if Focused(AWinControl) and Assigned(Callback) then
-    Callback.ResignFirstResponder;   // dont' call LCLSendKillFocusMsg
+    TCocoaLCLMessageUtil.ResignFirstResponder(obj);   // dont' call LCLSendKillFocusMsg
   LCLSendDestroyMsg( AWinControl );
 
   if obj.isKindOfClass_(NSView) then
@@ -120,11 +120,11 @@ begin
   if obj.isKindOfClass_(NSWindow) then
     NSWindow(obj).close;
 
+  TCocoaCaretUtil.destroyCaret( obj.lclContentView );
+
   // destroy the callback
   if Assigned(Callback) then
   begin
-    if Callback.HasCaret then
-      TCocoaCaretUtil.destroyCaret(nil);
     CallbackObject := Callback.GetCallbackObject;
     Callback.RemoveTarget;
     Callback := nil;
