@@ -95,7 +95,6 @@ type
       const Pos: Integer;
       const AScrollPart: NSScrollerPart); virtual;
     procedure Draw(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
-    procedure DrawBackground(const ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
     procedure DrawOverlay(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     procedure RemoveTarget; virtual;
 
@@ -1238,24 +1237,6 @@ begin
     end;
   finally
     FreeAndNil(FContext);
-  end;
-end;
-
-procedure TLCLCommonCallback.DrawBackground(
-  const ctx: NSGraphicsContext;
-  const bounds, dirtyRect: NSRect);
-var
-  lTarget: TWinControl;
-begin
-  // Implement Color property
-  lTarget := TWinControl(GetTarget());
-  if (lTarget.Color <> clDefault) and (lTarget.Color <> clBtnFace)  and (lTarget.Color <> clNone) then
-  begin
-    TCocoaColorUtil.toColor(ColorToRGB(lTarget.Color)).set_();
-    // NSRectFill() always requires the coordinate system of the lower left corner
-    // of the origin, contrary to the Rect provided to LCL in
-    // TLCLCommonCallback.Draw() and TLCLCommonCallback.DrawOverlay()
-    NSRectFill(dirtyRect);
   end;
 end;
 

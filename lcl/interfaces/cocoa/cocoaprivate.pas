@@ -132,7 +132,6 @@ type
     procedure boundsDidChange(const sender: id);
     // misc events
     procedure Draw(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure DrawBackground(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure DrawOverlay(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure scroll(
       const isVert: Boolean;
