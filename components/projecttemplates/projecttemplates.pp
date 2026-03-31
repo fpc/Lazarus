@@ -441,7 +441,7 @@ begin
       FindCloseUTF8(Info);
     end;
   if Recurse then
-    If (FindFirstUTF8(Dir+GetAllFilesMask,0,Info)=0) then
+    If FindFirstUTF8(Dir+GetAllFilesMask,faDirectory,Info)=0 then
       try
         repeat
           if ((Info.attr and faDirectory)<>0) and
@@ -486,7 +486,7 @@ begin
       FindCloseUTF8(Info);
     end;
   if Recurse then
-    If (FindFirstUTF8(D1+GetAllFilesMask,0,Info)<>0) then
+    If FindFirstUTF8(D1+GetAllFilesMask,faDirectory,Info)=0 then
       try
         repeat
           if ((Info.attr and faDirectory)<>0) and
