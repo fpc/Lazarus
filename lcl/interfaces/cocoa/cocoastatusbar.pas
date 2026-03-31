@@ -88,16 +88,22 @@ begin
 
     if not barcallback.GetBarItem(i, txt, w, al) then Continue;
 
-    if i = cnt - 1 then w := r.Right - x;
+    if i = cnt - 1 then
+      w := r.Right - x;
     nr.size.width := w;
     nr.origin.x := x;
 
-    // dr - draw rect. should be 1 pixel wider
-    // and 1 pixel taller, than the actual rect.
-    // to produce a better visual effect
+    {
+      dr - draw rect. should be 1 pixel wider
+      and 1 pixel taller, than the actual rect.
+      to produce a better visual effect.  However
+      don't increase width of final panel, or its
+      right hand edge will be mistakenly clipped.
+    }
     dr := nr;
-    dr.size.width := dr.size.width + 1;
-    dr.size.height := dr.size.height + 1;
+    if i < cnt - 1 then
+      dr.size.width := dr.size.width + 1;
+    dr.size.height := dr.size.height + 2;
     dr.origin.y := dr.origin.y-1;
 
     cs := NSStringUtf8(txt);
