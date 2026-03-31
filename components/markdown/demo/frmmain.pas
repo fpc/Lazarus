@@ -15,11 +15,9 @@ type
   TMainForm = class(TForm)
     btnFile: TButton;
     ODMarkDown: TOpenDialog;
-    sbMarkdown: TScrollBox;
     procedure btnFileClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure sbMarkdownResize(Sender: TObject);
   private
     FRender:TMarkDownCanvasRenderer;
     PMarkDown: TMarkDownControl;
@@ -57,13 +55,11 @@ procedure TMainForm.FormCreate(Sender: TObject);
 
 begin
   PMarkDown:=TMarkDownControl.Create(Self);
-  PMarkDown.Parent:=SBMarkDown;
-  PMarkDown.Left:=0;
-  PMarkDown.Top:=0;
-  PMarkDown.Width:=SBMarkDown.ClientWidth-GetSystemMetrics(SM_CXVSCROLL);
-  // initial height
-  PMarkDown.Height:=SBMarkDown.ClientHeight;
-//  PMarkDown.Anchors:=[akTop,akLeft,akBottom,akRight];
+  PMarkDown.Parent:=Self;
+  PMarkDown.Left:=16;
+  PMarkDown.Top:=16;
+  PMarkDown.AnchorParallel(akRight,16,Self);
+  PMarkDown.AnchorToNeighbour(akBottom,16,btnFile);
   PMarkDown.OnGetImage:=@DoGetImage;
   PMarkDown.OnOpenURL:=@DoOpenURL;
   PMarkDown.Visible:=True;
@@ -81,12 +77,6 @@ begin
     PMarkDown.CopySelectionToClipBoard;
     ShowMessage('Selection copied to clipboard');
     end;
-end;
-
-procedure TMainForm.sbMarkdownResize(Sender: TObject);
-begin
-  PMarkDown.Width:=SBMarkDown.ClientWidth-GetSystemMetrics(SM_CXVSCROLL);
-  SBMarkDown.Repaint;
 end;
 
 procedure TMainForm.RenderFile(const aFileName : string);

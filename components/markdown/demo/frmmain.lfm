@@ -20,18 +20,6 @@ object MainForm: TMainForm
     TabOrder = 0
     OnClick = btnFileClick
   end
-  object sbMarkdown: TScrollBox
-    Left = 16
-    Height = 536
-    Top = 16
-    Width = 771
-    HorzScrollBar.Page = 1
-    HorzScrollBar.Visible = False
-    VertScrollBar.Page = 1
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    TabOrder = 1
-    OnResize = sbMarkdownResize
-  end
   object ODMarkDown: TOpenDialog
     DefaultExt = '.md'
     Filter = 'MarkDown files|*.md|All files|*.*'

@@ -16,7 +16,7 @@
 {
   Text Layout routine was inspired on the algorithm found in https://github.com/BeRo1985/pashtmldown
 }
-unit markdown.canvasrender;
+unit MarkDown.CanvasRender;
 {$mode objfpc}
 {$h+}
 {$codepage UTF8}
