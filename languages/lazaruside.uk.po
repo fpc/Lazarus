@@ -5826,6 +5826,10 @@ msgstr "Резервування не вдалося"
 msgid "Creates a Backup directory under project directory"
 msgstr "Створює резервний каталог в каталозі проєкту"
 
+#: lazarusidestrconsts.lisbasepkg
+msgid "Base package, cannot be uninstalled"
+msgstr ""
+
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 #, object-pascal-format
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
@@ -9007,9 +9011,17 @@ msgstr "Роздільник - крапка з комою."
 msgid "Delphi compatible resources. Recommended."
 msgstr "Сирці, сумісні з Delphi. Рекомендовано."
 
+#: lazarusidestrconsts.lisdesigntimeonlypkg
+msgid "Designtime-only package"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "Пакунки часу розробки додають компоненти і елементи меню в ІСР. Вони можуть використовуватися проєктами, але не компілюватися з ними. Компілятор не знайде модулів такого пакунка під час компілювання проєкту."
+
+#: lazarusidestrconsts.lisdesigntimeruntimepkg
+msgid "Designtime/runtime package"
+msgstr ""
 
 #: lazarusidestrconsts.lisdesktops
 msgid "Desktops ..."
@@ -9974,6 +9986,17 @@ msgstr "Не вдалось додати неунікальні ресурси (
 #, object-pascal-format
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr "Не вдалось створити теку застосунку (Application Bundle) для \"%s\""
+
+#: lazarusidestrconsts.lisfailedtocreatetheconfigurationdirectory
+#, object-pascal-format
+msgid ""
+"Failed to create the configuration directory:\n"
+"%s\n"
+"\n"
+"The path may contain reserved characters or you may not have permissions.\n"
+"\n"
+"It can be specified by the command line parameter \"--pcp\" or in the file \"lazarus.cfg\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
@@ -12045,6 +12068,10 @@ msgstr "Оновити дані про ревізію в діалозі \"Про
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
 msgid "Clean Up + Build all"
 msgstr "Очистити + Зібрати все"
+
+#: lazarusidestrconsts.lislazpkg
+msgid "Package distributed with Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -15898,6 +15925,10 @@ msgctxt "lazarusidestrconsts.lispkgmgrremove"
 msgid "remove"
 msgstr "видалити"
 
+#: lazarusidestrconsts.lispkgoverlayinfo
+msgid "Additional information is indicated by the following overlays:"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Виберіть пакунок"
@@ -15914,6 +15945,14 @@ msgstr "Проєкт перекриває вихідні теки переліч
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Цього файлу немає у всіх завантажених пакунках."
+
+#: lazarusidestrconsts.lispkgtobeinstalled
+msgid "Package will be installed with next IDE rebuild"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgtobeuninstalled
+msgid "Package will be uninstalled with next IDE rebuild (unless needed by an installed package)"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 #, object-pascal-format

@@ -5954,6 +5954,10 @@ msgstr "Backup file fallito"
 msgid "Creates a Backup directory under project directory"
 msgstr "Crea una sottocartella di backup nella cartella del progetto"
 
+#: lazarusidestrconsts.lisbasepkg
+msgid "Base package, cannot be uninstalled"
+msgstr ""
+
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 #, object-pascal-format
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
@@ -9161,11 +9165,19 @@ msgstr "Delimitatore punto e virgola."
 msgid "Delphi compatible resources. Recommended."
 msgstr "Risorse compatibili con Delphi. Raccomandato."
 
+#: lazarusidestrconsts.lisdesigntimeonlypkg
+msgid "Designtime-only package"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 #, fuzzy
 #| msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "I pacchetti \"Design time\" aggiungono componenti e voci di menu all'IDE. Possono essere usati dai progetti, ma non vengono compilati nei progetti. Il compilatore non troverà le units di questo pacchetto durante la compilazione del progetto."
+
+#: lazarusidestrconsts.lisdesigntimeruntimepkg
+msgid "Designtime/runtime package"
+msgstr ""
 
 #: lazarusidestrconsts.lisdesktops
 msgid "Desktops ..."
@@ -10136,6 +10148,17 @@ msgstr "Impossibile aggiungere %d risorse: non uniche"
 #, object-pascal-format
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr "Non posso creare l'Application bundle per \"%s\""
+
+#: lazarusidestrconsts.lisfailedtocreatetheconfigurationdirectory
+#, object-pascal-format
+msgid ""
+"Failed to create the configuration directory:\n"
+"%s\n"
+"\n"
+"The path may contain reserved characters or you may not have permissions.\n"
+"\n"
+"It can be specified by the command line parameter \"--pcp\" or in the file \"lazarus.cfg\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
@@ -12214,6 +12237,10 @@ msgstr "Aggiorna informazioni di revisione nella dialog \"Informazioni su Lazaru
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
 msgid "Clean Up + Build all"
 msgstr "Pulisci e costruisci tutto"
+
+#: lazarusidestrconsts.lislazpkg
+msgid "Package distributed with Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
@@ -16129,6 +16156,10 @@ msgctxt "lazarusidestrconsts.lispkgmgrremove"
 msgid "remove"
 msgstr "rimuovere"
 
+#: lazarusidestrconsts.lispkgoverlayinfo
+msgid "Additional information is indicated by the following overlays:"
+msgstr ""
+
 #: lazarusidestrconsts.lispkgselectapackage
 msgid "Select a package"
 msgstr "Selezionare un pacchetto"
@@ -16148,6 +16179,14 @@ msgstr "Il progetto scavalca la cartella di uscita dei seguenti pacchetti%sVedi 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr "Questo file non è in nessun pacchetto caricato."
+
+#: lazarusidestrconsts.lispkgtobeinstalled
+msgid "Package will be installed with next IDE rebuild"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgtobeuninstalled
+msgid "Package will be uninstalled with next IDE rebuild (unless needed by an installed package)"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
 #, object-pascal-format
