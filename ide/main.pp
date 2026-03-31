@@ -1576,7 +1576,14 @@ begin
   FEnvOptsCfgExisted := FileExistsCached(EnvironmentOptions.GetDefaultConfigFilename);
 
   // load options
-  CreatePrimaryConfigPath;
+  if not CreatePrimaryConfigPath then
+  begin
+    IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
+      Format(lisFailedToCreateTheConfigurationDirectory, [GetPrimaryConfigPath]),
+      mtError, [mrOK, lisQuit]);
+    Application.Terminate;
+    exit;
+  end;
   StartProtocol;
   LoadGlobalOptions;
   if Application.Terminated then exit;
