@@ -32,7 +32,6 @@ type
 
     function GetIsOpaque: Boolean; inline;
     procedure SetIsOpaque(const AValue: Boolean); inline;
-    function GetShouldBeEnabled: Boolean; inline;
   protected
     _target    : TWinControl;
     _KeyMsg    : TLMKey;
@@ -1319,11 +1318,6 @@ end;
 procedure TLCLCommonCallback.SetIsOpaque(const AValue: Boolean);
 begin
   FIsOpaque:=AValue;
-end;
-
-function TLCLCommonCallback.GetShouldBeEnabled: Boolean;
-begin
-  Result := Assigned(_target) and _target.Enabled;
 end;
 
 end.

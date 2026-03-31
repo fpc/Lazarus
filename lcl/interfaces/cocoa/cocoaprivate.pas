@@ -145,7 +145,6 @@ type
     function GetCallbackObject: TObject;
     function GetIsOpaque: Boolean;
     procedure SetIsOpaque(const AValue: Boolean);
-    function GetShouldBeEnabled: Boolean;
     // the method is called, when handle is being destroyed.
     // the callback object to stay alive a little longer than LCL object (Target)
     // thus it needs to know that LCL object has been destroyed.
@@ -275,6 +274,20 @@ implementation
 
 type
   TWinControlAccess = class(TWinControl);
+
+function RectToViewCoord(view: NSView; const r: TRect): NSRect;
+var
+  b: NSRect;
+begin
+  b := view.bounds;
+  Result.origin.x := r.Left;
+  Result.size.width := r.Right - r.Left;
+  Result.size.height := r.Bottom - r.Top;
+  if Assigned(view) and (view.isFlipped) then
+    Result.origin.y := r.Top
+  else
+    Result.origin.y := b.size.height - r.Bottom;
+end;
 
 { TCocoaWidgetSetState }
 
@@ -828,36 +841,7 @@ begin
   Result := false;
 end;
 
-{ LCLControlExtension }
-
-function RectToViewCoord(view: NSView; const r: TRect): NSRect;
-var
-  b: NSRect;
-begin
-  b := view.bounds;
-  Result.origin.x := r.Left;
-  Result.size.width := r.Right - r.Left;
-  Result.size.height := r.Bottom - r.Top;
-  if Assigned(view) and (view.isFlipped) then
-    Result.origin.y := r.Top
-  else
-    Result.origin.y := b.size.height - r.Bottom;
-end;
-
-function LCLControlExtension.lclIsEnabled:Boolean;
-begin
-  Result := IsEnabled;
-end;
-
-procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
-begin
-  {$ifdef BOOLFIX}
-  SetEnabled_( Ord(AEnabled and NSViewIsLCLEnabled(self.superview) ));
-  {$else}
-  SetEnabled( AEnabled and TCocoaViewUtil.isLCLEnabled(self.superview) );
-  {$endif}
-  inherited lclSetEnabled(AEnabled);
-end;
+{ LCLViewExtension }
 
 function LCLViewExtension.lclInitWithCreateParams(const AParams: TCreateParams): id;
 var
@@ -915,12 +899,18 @@ end;
 
 procedure LCLViewExtension.lclSetEnabled(AEnabled: Boolean);
 var
-  cb : ICommonCallback;
-  obj : NSObject;
+  v: NSView;
+  target: TControl;
+  newEnabled: Boolean;
 begin
-  for obj in subviews do begin
-    cb := obj.lclGetCallback;
-    obj.lclSetEnabled(AEnabled and ((not Assigned(cb)) or cb.GetShouldBeEnabled) );
+  for v in subviews do begin
+    newEnabled:= AEnabled;
+    if newEnabled then begin
+      target:= TControl( v.lclGetTarget );
+      if Assigned(target) and NOT target.Enabled then
+        newEnabled:= False;
+    end;
+    v.lclSetEnabled( newEnabled );
   end;
 end;
 
@@ -1110,6 +1100,23 @@ begin
   dlt := lclGetFrameToLayoutDelta;
   Point.X := Point.X - dlt.Left;
   Point.Y := Point.Y - dlt.Top;
+end;
+
+{ LCLControlExtension }
+
+function LCLControlExtension.lclIsEnabled:Boolean;
+begin
+  Result := IsEnabled;
+end;
+
+procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
+begin
+  {$ifdef BOOLFIX}
+  SetEnabled_( Ord(AEnabled and NSViewIsLCLEnabled(self.superview) ));
+  {$else}
+  SetEnabled( AEnabled and TCocoaViewUtil.isLCLEnabled(self.superview) );
+  {$endif}
+  inherited lclSetEnabled(AEnabled);
 end;
 
 initialization
