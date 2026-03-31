@@ -6495,9 +6495,9 @@ begin
     SB_LINERIGHT:  ScrolledLeft := ScrolledLeft + FDefItemHeight div 2;
     SB_LINELEFT:   ScrolledLeft := ScrolledLeft - FDefItemHeight div 2;
       // Scrolls one page of lines left / right
-    SB_PAGERIGHT:  ScrolledLeft := ScrolledLeft + ClientHeight
+    SB_PAGERIGHT:  ScrolledLeft := ScrolledLeft + ClientWidth
                                        - FDefItemHeight;
-    SB_PAGELEFT:   ScrolledLeft := ScrolledLeft - ClientHeight
+    SB_PAGELEFT:   ScrolledLeft := ScrolledLeft - ClientWidth
                                        + FDefItemHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
