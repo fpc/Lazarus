@@ -148,7 +148,7 @@ type
     ImgIndexCirclePackage: integer;
     ImgIndexMissingPackage: integer;
     ImgIndexAvailableOnline: integer;
-    ImgIndexOverlayUnknown: integer;
+    ImgIndexUnknown: integer;
     ImgIndexOverlayBasePackage: integer;
     ImgIndexOverlayFPCPackage: integer;
     ImgIndexOverlayLazarusPackage: integer;
@@ -276,7 +276,7 @@ begin
   ImgIndexCirclePackage            := IDEImages.LoadImage('pkg_package_circle');
   ImgIndexMissingPackage           := IDEImages.LoadImage('pkg_conflict');
   ImgIndexAvailableOnline          := IDEImages.LoadImage('pkg_install');
-  ImgIndexOverlayUnknown           := IDEImages.LoadImage('state_unknown');
+  ImgIndexUnknown                  := IDEImages.LoadImage('state_unknown');
   ImgIndexOverlayBasePackage       := IDEImages.LoadImage('pkg_core_overlay');
   ImgIndexOverlayFPCPackage        := IDEImages.LoadImage('pkg_fpc_overlay');
   ImgIndexOverlayLazarusPackage    := IDEImages.LoadImage('pkg_lazarus_overlay');
@@ -565,17 +565,18 @@ begin
     LPKInfoCache.EnterCritSection;
     try
       Info:=LPKInfoCache.FindPkgInfoWithIDAsString(Node.Text);
-      if Info=nil then exit;
-      PkgName:=Info.ID.Name;
-      Unknown:=not (Info.LPKParsed in [lpkiParsed,lpkiParsedError]);
-      InLazSrc:=Info.InLazSrc;
-      IsBase:=Info.Base;
-      PkgType:=Info.PkgType;
-      Installed:=Info.Installed;
+      Unknown:=(Info=nil) or (not (Info.LPKParsed in [lpkiParsed,lpkiParsedError]));
+      if Info<>nil then begin
+        PkgName:=Info.ID.Name;
+        InLazSrc:=Info.InLazSrc;
+        IsBase:=Info.Base;
+        PkgType:=Info.PkgType;
+        Installed:=Info.Installed;
+      end;
     finally
       LPKInfoCache.LeaveCritSection;
     end;
-    if Sender = InstallTreeView then
+    if (Sender = InstallTreeView) or (Info = nil) then
       PackageLink := nil
     else
       PackageLink := FindOnlinePackageLink(Info.ID.Name);
@@ -588,26 +589,28 @@ begin
     x:=Node.DisplayIconLeft+1;
     y:=(NodeRect.Top+NodeRect.Bottom-ImagesRes.Height) div 2;
     // draw image
-    ImgIndex:=GetPkgImgIndex(Installed,PackageInInstallList(PkgName), PackageLink <> nil);
-    ImagesRes.Draw(CurCanvas,x,y,ImgIndex);
-    // draw overlays
-    if InLazSrc then
-      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayLazarusPackage);
-    if IsBase then
-      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayBasePackage);
-    if PkgType=lptRunTimeOnly then
-      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayRuntimePackage);
-    if PkgType=lptDesignTime then
-      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayDesigntimePackage);
     if Unknown then
-      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayUnknown);
-    // draw base package nodes as disabled
-    if IsBase and not (cdsSelected in State) then begin
-      NodeRect := Node.DisplayRect(True);
-      NodeRect.Offset(Scale96ToFont(2), 0);
-      Details := ThemeServices.GetElementDetails(ttItemDisabled);
-      CurCanvas.FillRect(NodeRect); // paint over the original text
-      ThemeServices.DrawText(CurCanvas, Details, Node.Text, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0);
+      ImagesRes.Draw(CurCanvas,x,y,ImgIndexUnknown)
+    else begin
+      ImgIndex:=GetPkgImgIndex(Installed,PackageInInstallList(PkgName), PackageLink <> nil);
+      ImagesRes.Draw(CurCanvas,x,y,ImgIndex);
+      // draw overlays
+      if InLazSrc then
+        ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayLazarusPackage);
+      if IsBase then
+        ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayBasePackage);
+      if PkgType=lptRunTimeOnly then
+        ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayRuntimePackage);
+      if PkgType=lptDesignTime then
+        ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayDesigntimePackage);
+      // draw base package nodes as disabled
+      if IsBase and not (cdsSelected in State) then begin
+        NodeRect := Node.DisplayRect(True);
+        NodeRect.Offset(Scale96ToFont(2), 0);
+        Details := ThemeServices.GetElementDetails(ttItemDisabled);
+        CurCanvas.FillRect(NodeRect); // paint over the original text
+        ThemeServices.DrawText(CurCanvas, Details, Node.Text, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0);
+      end;
     end;
   end;
   PaintImages:=false;
