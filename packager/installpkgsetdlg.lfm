@@ -488,24 +488,33 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     Top = 496
     object legInstallPackage: TMenuItem
       Caption = 'legInstallPackage'
+      GlyphShowMode = gsmAlways
     end
     object legUninstallPackage: TMenuItem
       Caption = 'legUninstallPackage'
+      GlyphShowMode = gsmAlways
+    end
+    object legRunDesignPackage: TMenuItem
+      Caption = 'legRunDesignPackage'
+      GlyphShowMode = gsmAlways
     end
     object Separator1: TMenuItem
       Caption = '-'
     end
-    object legRunDesignPackage: TMenuItem
-      Caption = 'legRunDesignPackage'
+    object legOverlays: TMenuItem
+      Caption = 'legOverlays'
     end
     object legDesignPackage: TMenuItem
       Caption = 'legDesignPackage'
+      GlyphShowMode = gsmAlways
     end
     object legBasePackage: TMenuItem
       Caption = 'legBasePackage'
+      GlyphShowMode = gsmAlways
     end
     object legLazarusPackage: TMenuItem
       Caption = 'legLazarusPackage'
+      GlyphShowMode = gsmAlways
     end
   end
 end

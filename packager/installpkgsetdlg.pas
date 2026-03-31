@@ -79,6 +79,7 @@ type
     legUninstallPackage: TMenuItem;
     legLazarusPackage: TMenuItem;
     legRunDesignPackage: TMenuItem;
+    legOverlays: TMenuItem;
     MoreButton: TButton;
     ImportMenuItem: TMenuItem;
     ExportMenuItem: TMenuItem;
@@ -287,18 +288,19 @@ begin
 
   { Icon legend }
 
-  legInstallPackage   .Caption := 'Package will be installed with next IDE rebuild.';
-  legUninstallPackage .Caption := 'Package will be uninstalled with next IDE rebuild.';
-  legBasePackage      .Caption := 'Base package, cannot be uninstalled';
-  legLazarusPackage   .Caption := 'Package distributed with Lazarus';
-  legDesignPackage    .Caption := 'Designtime package';
-  legRunDesignPackage .Caption := '(no overlay) Designtime and runtime package';
+  legInstallPackage   .Caption := lisPkgToBeInstalled;
+  legUninstallPackage .Caption := lisPkgToBeUninstalled;
+  legRunDesignPackage .Caption := lisDesignTimeRunTimePkg;
+  legOverlays         .Caption := lisPkgOverlayInfo;
+  legBasePackage      .Caption := lisBasePkg;
+  legLazarusPackage   .Caption := lisLazPkg;
+  legDesignPackage    .Caption := lisDesignTimeOnlyPkg;
   legInstallPackage   .ImageIndex := ImgIndexInstallPackage;
   legUninstallPackage .ImageIndex := ImgIndexUninstallPackage;
+  legRunDesignPackage .ImageIndex := ImgIndexPackage;
   legBasePackage      .ImageIndex := ImgIndexOverlayBasePackage;
   legLazarusPackage   .ImageIndex := ImgIndexOverlayLazarusPackage;
   legDesignPackage    .ImageIndex := ImgIndexOverlayDesignTimePackage;
-  legRunDesignPackage .ImageIndex := -1;  // no overlay
 
   {}
 

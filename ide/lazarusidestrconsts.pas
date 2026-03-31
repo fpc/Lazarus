@@ -4636,6 +4636,14 @@ resourcestring
     +'the size of the IDE and may even make it unstable.'
     +'%sHint: If you want to use a package in your project, use the "Add to project" menu item.';
   lisInstallItILikeTheFat = 'Install it, I like the fat';
+  lisPkgToBeInstalled = 'Package will be installed with next IDE rebuild';
+  lisPkgToBeUninstalled = 'Package will be uninstalled with next IDE rebuild ' +
+    '(unless needed by an installed package)';
+  lisDesignTimeRunTimePkg = 'Designtime/runtime package';
+  lisPkgOverlayInfo = 'Additional information is indicated by the following overlays:';
+  lisBasePkg = 'Base package, cannot be uninstalled';
+  lisLazPkg = 'Package distributed with Lazarus';
+  lisDesigntimeOnlyPkg = 'Designtime-only package';
 
   // package options dialog
   lisPckOptsUsage = 'Usage';
