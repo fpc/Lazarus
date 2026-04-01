@@ -512,6 +512,8 @@ begin
 end;
 
 procedure TCocoaMenuItem_Quit.lclItemSelected(sender: id);
+var
+  canClose: Boolean;
 begin
   {$ifdef COCOALOOPHIJACK}
   // see bug #36265. if hot-key (Cmd+Q) is used the menu item
@@ -519,17 +521,15 @@ begin
   // The following if statement prevents "double" form close
   if LoopHiJackEnded then Exit;
   {$endif}
-  // Should be used instead of Application.Terminate when possible
-  // to allow events to be sent, see bug 32148
-  if Assigned(CocoaConfigApplication.events.onQuitApp) then
-    { Don't call directly since key/mouse events need to unwind in case
-      OnQuitApp frees the caller }
-    Application.QueueAsyncCall(
-      TDataEvent(CocoaConfigApplication.events.onQuitApp), PtrInt(nil))
-  else if Assigned(Application.MainForm) then
-    Application.MainForm.Close
-  else
-    Application.Terminate;
+
+  canClose:= True;
+  if Assigned(Application.MainForm) then
+    canClose:= Application.MainForm.CloseQuery;
+
+  if canClose then begin
+    if NOT Application.Terminated then
+      Application.Terminate;
+  end;
 end;
 
 { TCocoaMenuUtil }

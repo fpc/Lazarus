@@ -247,31 +247,27 @@ var
   Cancel: Boolean;
   Reason: NSAppleEventDescriptor;
 begin
-  Cancel := False;
+  Cancel:= False;
   // Check if it's a system-wide event
-  Reason := event.attributeDescriptorForKeyword(kEventParamReason);
-  if (Reason <> nil) and
-     ((Reason.typeCodeValue = kAEQuitAll) or
+  Reason := event.paramDescriptorForKeyword(kEventParamReason);
+  if (Reason = nil) or
+     (((Reason.typeCodeValue = kAEQuitAll) or
       (reason.typeCodeValue = kAEReallyLogOut) or
       (reason.typeCodeValue = kAERestart) or
-      (reason.typeCodeValue = kAEShutDown)) then
+      (reason.typeCodeValue = kAEShutDown))) then
   begin
     Application.IntfQueryEndSession(Cancel);
     if not Cancel then
       Application.IntfEndSession;
   end;
-  // Try to quit
-  if not Cancel then
-  begin
-    if Assigned(CocoaConfigApplication.events.onQuitApp) then
-      CocoaConfigApplication.events.onQuitApp(PtrInt(nil))
-    else if Assigned(Application.MainForm) then
-      Application.MainForm.Close
-    else
+
+  if NOT Cancel then begin
+    if NOT Application.Terminated then
       Application.Terminate;
     if Assigned(WakeMainThread) then
       WakeMainThread(nil);
   end;
+
   // Let caller know if the shutdown was cancelled
   if (not Application.Terminated) and (replyEvent.descriptorType <> typeNull) then
     replyEvent.setParamDescriptor_forKeyword(NSAppleEventDescriptor.descriptorWithInt32(userCanceledErr), keyErrorNumber);
