@@ -233,8 +233,8 @@ var
 begin
   Result:=inherited ParseOptions;
 
-  // do not initialize anything and do not pollute the help output
-  if HasOption('h','help') then
+  // do not initialize anything and do not pollute the output
+  if HasOption('h','help') or HasOption('l', 'list') then
     exit;
 
   // CodeTools (tests) assume a working folder "components\codetools\tests"
