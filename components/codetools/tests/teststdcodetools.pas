@@ -151,7 +151,7 @@ var
         // write expected line
         debugln('+ ',ExpLine);
         // write empty line with pointer ^
-        for i:=1 to 2+ExpectedP-StartPos do write(' ');
+        for i:=1 to 2+ExpectedP-StartPos do dbgout(' ');
         debugln('^');
         WriteBoth;
         AssertEquals(Msg,ExpLine,ActLine);
@@ -224,12 +224,12 @@ begin
   for i:=1 to Code.LineCount do begin
     s:=Code.GetLine(i-1,true);
     if i=Line then begin
-      write('*');
+      dbgout('*');
       s:=LeftStr(s,Col-1)+'|'+copy(s,Col,length(s));
     end;
     if (s='') or not (s[length(s)] in [#10,#13]) then
       s+=LineEnding;
-    write(Format('%:4d: ',[i]),s);
+    dbgout(Format('%:4d: ',[i]),s);
   end;
 end;
 
