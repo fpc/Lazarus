@@ -243,7 +243,7 @@ type
     constructor Create;
     destructor Destroy; override;
     
-    procedure Init(Config: TCodeToolsOptions);
+    procedure Init(Config: TCodeToolsOptions; const Phases: TCodeToolsOptionsPhases = ctopAll);
     procedure SimpleInit(const ConfigFilename: string);
 
     procedure ActivateWriteLock;
@@ -1202,77 +1202,78 @@ begin
   {$ENDIF}
 end;
 
-procedure TCodeToolManager.Init(Config: TCodeToolsOptions);
+procedure TCodeToolManager.Init(Config: TCodeToolsOptions; const Phases: TCodeToolsOptionsPhases);
 var
   FPCDefines: TDefineTemplate;
   FPCSrcDefines: TDefineTemplate;
   LazarusSrcDefines: TDefineTemplate;
-  CurFPCOptions, WorkDir: String;
+  WorkDir: String;
   UnitSetCache: TFPCUnitSetCache;
   //CfgCache: TPCTargetConfigCache;
-
-  procedure AddFPCOption(s: string);
-  begin
-    if s='' then exit;
-    if CurFPCOptions<>'' then
-      CurFPCOptions:=CurFPCOptions+' ';
-    CurFPCOptions:=CurFPCOptions+s;
-  end;
-
 begin
-  // set global values
-  with GlobalValues do begin
-    Variables[ExternalMacroStart+'LazarusSrcDir']:=Config.LazarusSrcDir;
-    Variables[ExternalMacroStart+'FPCSrcDir']:=Config.FPCSrcDir;
-    Variables[ExternalMacroStart+'LCLWidgetType']:=Config.LCLWidgetType;
-    Variables[ExternalMacroStart+'ProjectDir']:=Config.ProjectDir;
+  if ctopSetVariables in Phases then begin
+    // set global values
+    with GlobalValues do begin
+      Variables[ExternalMacroStart+'LazarusSrcDir']:=Config.LazarusSrcDir;
+      Variables[ExternalMacroStart+'FPCSrcDir']:=Config.FPCSrcDir;
+      Variables[ExternalMacroStart+'LCLWidgetType']:=Config.LCLWidgetType;
+      Variables[ExternalMacroStart+'ProjectDir']:=Config.ProjectDir;
+    end;
+    CompilerDefinesCache.TestFilename:=Config.TestPascalFile;
+    if CompilerDefinesCache.TestFilename='' then
+      CompilerDefinesCache.TestFilename:=GetTempFilename('fpctest.pas','');
   end;
 
-  CompilerDefinesCache.ConfigCaches.Assign(Config.ConfigCaches);
-  CompilerDefinesCache.SourceCaches.Assign(Config.SourceCaches);
-  CompilerDefinesCache.TestFilename:=Config.TestPascalFile;
-  if CompilerDefinesCache.TestFilename='' then
-    CompilerDefinesCache.TestFilename:=GetTempFilename('fpctest.pas','');
+  if ctopLoadCaches in Phases then begin
+    CompilerDefinesCache.ConfigCaches.Assign(Config.ConfigCaches);
+    CompilerDefinesCache.SourceCaches.Assign(Config.SourceCaches);
+  end;
 
-  WorkDir:='';
-  if FilenameIsAbsolute(Config.ProjectDir) and HasFPCParamsRelativeFilename(Config.FPCOptions) then
-    WorkDir:=Config.ProjectDir;
+  if ctopScanFPCSrc in Phases then begin
+    WorkDir:='';
+    if FilenameIsAbsolute(Config.ProjectDir) and HasFPCParamsRelativeFilename(Config.FPCOptions) then
+      WorkDir:=Config.ProjectDir;
 
-  UnitSetCache:=CompilerDefinesCache.FindUnitSet(Config.FPCPath,
-    Config.TargetOS,Config.TargetProcessor,Config.Subtarget,
-    Config.FPCOptions,Config.FPCSrcDir,WorkDir,
-    true);
-  // parse compiler settings, fpc sources
-  UnitSetCache.Init;
-  //CfgCache:=UnitSetCache.GetConfigCache(false);
-  //if CfgCache.TargetOS<>CfgCache.RealTargetOS then
-  //  debugln(['TCodeToolManager.Init TargetOS=',CfgCache.TargetOS,' RealTargetOS=',CfgCache.RealTargetOS]);
-  //if CfgCache.TargetCPU<>CfgCache.RealTargetCPU then
-  //  debugln(['TCodeToolManager.Init TargetCPU=',CfgCache.TargetCPU,' RealTargetCPU=',CfgCache.RealTargetCPU]);
+    UnitSetCache:=CompilerDefinesCache.FindUnitSet(Config.FPCPath,
+      Config.TargetOS,Config.TargetProcessor,Config.Subtarget,
+      Config.FPCOptions,Config.FPCSrcDir,WorkDir,
+      true);
+    // parse compiler settings, fpc sources
+    UnitSetCache.Init;
+    //CfgCache:=UnitSetCache.GetConfigCache(false);
+    //if CfgCache.TargetOS<>CfgCache.RealTargetOS then
+    //  debugln(['TCodeToolManager.Init TargetOS=',CfgCache.TargetOS,' RealTargetOS=',CfgCache.RealTargetOS]);
+    //if CfgCache.TargetCPU<>CfgCache.RealTargetCPU then
+    //  debugln(['TCodeToolManager.Init TargetCPU=',CfgCache.TargetCPU,' RealTargetCPU=',CfgCache.RealTargetCPU]);
+  end;
 
-  // save
-  Config.ConfigCaches.Assign(CompilerDefinesCache.ConfigCaches);
-  Config.SourceCaches.Assign(CompilerDefinesCache.SourceCaches);
+  if ctopSaveCaches in Phases then begin
+    // save
+    Config.ConfigCaches.Assign(CompilerDefinesCache.ConfigCaches);
+    Config.SourceCaches.Assign(CompilerDefinesCache.SourceCaches);
+  end;
 
-  // create template for FPC settings
-  FPCDefines:=CreateFPCTemplate(UnitSetCache,nil);
-  DefineTree.Add(FPCDefines);
+  if ctopAddDefines in Phases then begin
+    // create template for FPC settings
+    FPCDefines:=CreateFPCTemplate(UnitSetCache,nil);
+    DefineTree.Add(FPCDefines);
 
-  // create template for FPC source directory
-  FPCSrcDefines:=CreateFPCSourceTemplate(UnitSetCache,nil);
-  DefineTree.Add(FPCSrcDefines);
+    // create template for FPC source directory
+    FPCSrcDefines:=CreateFPCSourceTemplate(UnitSetCache,nil);
+    DefineTree.Add(FPCSrcDefines);
 
-  // create template for lazarus source directory
-  LazarusSrcDefines:=DefinePool.CreateLazarusSrcTemplate('$(#LazarusSrcDir)',
-                              '$(#LCLWidgetType)',Config.LazarusSrcOptions,nil);
-  DefineTree.Add(LazarusSrcDefines);
+    // create template for lazarus source directory
+    LazarusSrcDefines:=DefinePool.CreateLazarusSrcTemplate('$(#LazarusSrcDir)',
+                                '$(#LCLWidgetType)',Config.LazarusSrcOptions,nil);
+    DefineTree.Add(LazarusSrcDefines);
 
-  // create template for LCL project
-  DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
-                 '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)',nil));
+    // create template for LCL project
+    DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
+                   '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)',nil));
 
-  //debugln(['TCodeToolManager.Init defines: ',DefineTree.GetDefinesForVirtualDirectory.AsString]);
-  //debugln(['TCodeToolManager.Init inc path rtl/system: ',GetIncludePathForDirectory(UnitSetCache.FPCSourceDirectory+'/rtl/bsd')]);
+    //debugln(['TCodeToolManager.Init defines: ',DefineTree.GetDefinesForVirtualDirectory.AsString]);
+    //debugln(['TCodeToolManager.Init inc path rtl/system: ',GetIncludePathForDirectory(UnitSetCache.FPCSourceDirectory+'/rtl/bsd')]);
+  end;
 end;
 
 procedure TCodeToolManager.SimpleInit(const ConfigFilename: string);

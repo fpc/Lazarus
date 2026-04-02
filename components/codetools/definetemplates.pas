@@ -8652,6 +8652,9 @@ begin
       if FullVersion<>'' then begin
         // run fpc/pas2js and parse output
 
+        if TestFilename='' then
+          TestFilename:=GetTempFilename(WorkingDir,'fpctest.pas');
+
         if (Pos('-Fr',ExtraOptions)<1) and (Pos('-Fr',Caches.ExtraOptions)>0) then
           ExtraOptions:=Trim(ExtraOptions+' '+Caches.ExtraOptions);
         if FilenameIsAbsolute(WorkingDir) then

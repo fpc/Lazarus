@@ -78,6 +78,18 @@ var
   DefaultConfigCodeCache: TCodeCache = nil; // set by CodeToolBoss
 
 type
+  TCodeToolsOptionsPhase = (
+    ctopSetVariables,
+    ctopLoadCaches,
+    ctopScanFPCSrc,
+    ctopSaveCaches,
+    ctopAddDefines
+  );
+  TCodeToolsOptionsPhases = set of TCodeToolsOptionsPhase;
+const
+  ctopAll = [low(TCodeToolsOptionsPhase)..high(TCodeToolsOptionsPhase)];
+
+type
 
   { TCodeToolsOptions }
 
