@@ -138,7 +138,7 @@ begin
   begin
     AImages := FImages;
     if AImages<>nil then
-      AImageResolution := AImages.ResolutionForPPI[0, 96, 1]
+      AImageResolution := AImages.ResolutionForPPI[FExternalImageWidth, APPI, ACanvasScaleFactor]
     else
       AImageResolution := TScaledImageListResolution.Create(nil, 1);
     AStoredState := bsUp;
