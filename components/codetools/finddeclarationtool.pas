@@ -5423,13 +5423,6 @@ begin
   Result:=false;
   InitNodesAndCacheAccess;
 
-  DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Start Ident=',
-  '"'+GetIdentifier(Params.Identifier)+'"',
-  ' Context="'+ContextNode.DescAsString+'" "'+StringToPascalConst(copy(Src,ContextNode.StartPos,20)),'"',
-  ' at '+CleanPosToStr(ContextNode.StartPos,true),
-  ' Flags=['+dbgs(Flags)+']'
-  );
-
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindIdentifierInContext] Start Ident=',
   '"'+GetIdentifier(Params.Identifier)+'"',
