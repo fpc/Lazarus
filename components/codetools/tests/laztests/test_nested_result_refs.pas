@@ -30,7 +30,7 @@ function Simple: boolean;
      begin
        if Result{findrefs:11,14;9,17;11,31;4,42} then ;
      end;
-   var Result{findrefs:8,33;11,36;6,39}: integer;
+   var Result{ todo findrefs:8,33;11,36;6,39}: integer;
      procedure Sub_sub3_2;
      begin
        if Result{findrefs:8,33;11,36;6,39}>1 then ;

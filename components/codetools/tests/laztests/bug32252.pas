@@ -19,9 +19,9 @@ type
   TOpenAddressingLP<TKey, TValue, THashFactory> = class(TOpenAddressingLP<TKey, TValue, THashFactory, TDummy>);
   TOpenAddressingLP<TKey, TValue>  = class(TOpenAddressingLP<TKey, TValue, TDummy, TDummy>);
   TDictionary<TKey, TValue> = class(TOpenAddressingLP<TKey, TValue>);
-
-  // This would be a user defined type when using Generics.Collections.
-  // In mode Delphi there is no "specialize" keyword but it makes no difference for the error.
+  //
+  //// This would be a user defined type when using Generics.Collections.
+  //// In mode Delphi there is no "specialize" keyword but it makes no difference for the error.
   TestType = TDictionary<string,string>;
   TestType2 = bug32252.TDictionary<string,string>;
 var

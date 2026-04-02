@@ -96,6 +96,7 @@ uses
 const
   MarkDecl = '#'; // a declaration, must be unique
   MarkRef = '@'; // a reference to a declaration
+  fmparam = '--filemask=';
 
 type
 
@@ -160,19 +161,26 @@ type
     procedure TestFindDeclaration_ProcNested;
     procedure TestFindDeclaration_ExceptOnDotted;
 
+    // function Result variable
     procedure TestFindDeclaration_ResultType;
     procedure TestFindDeclaration_ResultField;
+    procedure TestFindDeclaration_ResultLocalVar;
     procedure TestFindDeclaration_With;
     procedure TestFindDeclaration_WithResult; // todo
     procedure TestFindDeclaration_DelphiNoImplResultType; // todo
 
+    // method Self variable
     procedure TestFindDeclaration_WithSelfFPC;
     procedure TestFindDeclaration_WithSelfDelphi; // todo
 
     procedure TestFindDeclaration_ClassOf;
+
+    // nested classes
+    procedure TestFindDeclaration_NestedClass_Dot;
     procedure TestFindDeclaration_NestedClasses;
     procedure TestFindDeclaration_NestedAliasClass;
 
+    // helpers
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
 
@@ -825,7 +833,7 @@ begin
           begin
             if MainTool.FindDeclaration(CursorPos,AmdPos,aTop) then
               if MainTool.TruePredefinedResult or MainTool.TrueSelf then
-            SearchFlags:=[frfPredefinedIdentifiers]; // this forces checking result & self
+                SearchFlags:=[frfPredefinedIdentifiers]; // this forces checking result & self
           end;
 
           if not CodeToolBoss.FindReferences(
@@ -867,8 +875,6 @@ end;
 
 procedure TCustomTestFindDeclaration.TestFiles(Directory: string;
   ADefaultFileMask: String);
-const
-  fmparam = '--filemask=';
 var
   Info: TSearchRec;
   aFilename, Param, aFileMask: String;
@@ -1200,6 +1206,27 @@ begin
   FindDeclarations(Code);
 end;
 
+procedure TTestFindDeclaration.TestFindDeclaration_ResultLocalVar;
+begin
+  StartProgram;
+  Add([
+  '{$mode objfpc}',
+  'function Fly: word;',
+  '  procedure Sub;',
+  '  var Result: boolean;',
+  '  begin',
+  '    if Result{declaration:Fly.Sub.Result} then ;',
+  '  end;',
+  'begin',
+  '  Result{declaration:Fly}:=4;',
+  'end;',
+  '',
+  'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
 procedure TTestFindDeclaration.TestFindDeclaration_With;
 begin
   FindDeclarations('moduletests/fdt_with.pas');
@@ -1306,6 +1333,46 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_ClassOf;
 begin
   FindDeclarations('moduletests/fdt_classof.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_NestedClass_Dot;
+var
+  Unit2: TCodeBuffer;
+begin
+  Unit2:=nil;
+  try
+    Unit2:=CodeToolBoss.CreateFile('unit2.pp');
+    Unit2.Source:='unit unit2;'+LineEnding
+      +'{$mode objfpc}'+LineEnding
+      +'interface'+LineEnding
+      +'type'+LineEnding
+      +'  TBird = class'+LineEnding
+      +'  public'+LineEnding
+      +'    type'+LineEnding
+      +'      TWing = record'+LineEnding
+      +'        Size: word;'+LineEnding
+      +'      end;'+LineEnding
+      +'  end;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+
+    StartProgram;
+    Add([
+    '{$mode objfpc}',
+    'uses Unit2;',
+    'procedure Fly;',
+    'var Wing: TBird.TWing;',
+    'begin',
+    '  Wing.Size{declaration:Unit2.TBird.TWing.Size}:=3;',
+    'end;',
+    'begin',
+    'end.',
+    '']);
+    FindDeclarations(Code);
+  finally
+    if Unit2<>nil then
+      Unit2.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_NestedClasses;

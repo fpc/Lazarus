@@ -82,8 +82,6 @@ type
 
 { Utils }
 
-// TODO: refactor this in Lazarus packages
-
 var
   MyMacroConf: TMacroConfig;
 
@@ -326,6 +324,7 @@ begin
   writeln('  --verbose           Display debug output of tests');
   writeln('  --submitter=<name>  Name of submitter of the test results');
   writeln('  --machine=<name>    Name of the machine the test runs on');
+  writeln('  ',fmparam,'=<filemask>, e.g. ''bug32252.pas'', or ''bug32*.pas''');
   writeln;
   writeln('Environment variables:');
   writeln('  LAZARUSDIR=<dir>    Path to Lazarus sources, default is the current IDE installation');
