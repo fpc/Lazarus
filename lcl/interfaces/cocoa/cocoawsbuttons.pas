@@ -100,7 +100,7 @@ type
 
   TCocoaWSBitBtn = class(TWSBitBtn)
   private
-    class function  LCLGlyphPosToCocoa(ALayout: TButtonLayout): NSCellImagePosition;
+    class function  LCLGlyphPosToCocoa(const ABitBtn: TCustomBitBtn): NSCellImagePosition;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     //
@@ -504,16 +504,23 @@ end;
 
 { TCocoaWSBitBtn }
 
-class function TCocoaWSBitBtn.LCLGlyphPosToCocoa(ALayout: TButtonLayout
-  ): NSCellImagePosition;
+class function TCocoaWSBitBtn.LCLGlyphPosToCocoa(
+  const ABitBtn: TCustomBitBtn ): NSCellImagePosition;
 begin
-  case ALayout of
-  blGlyphLeft:   Result := NSImageLeft;
-  blGlyphRight:  Result := NSImageRight;
-  blGlyphTop:    Result := NSImageAbove;
-  blGlyphBottom: Result := NSImageBelow;
-  else
-    Result := NSNoImage;
+  Result:= NSNoImage;
+
+  if NOT ABitBtn.CanShowGlyph(True) then
+    Exit;
+
+  if ABitBtn.Caption = EmptyStr then begin
+    Result:= NSImageOnly;
+  end else begin
+    case ABitBtn.Layout of
+      blGlyphLeft:   Result := NSImageLeft;
+      blGlyphRight:  Result := NSImageRight;
+      blGlyphTop:    Result := NSImageAbove;
+      blGlyphBottom: Result := NSImageBelow;
+    end;
   end;
 end;
 
@@ -591,7 +598,7 @@ begin
     end;
     lButtonHandle := TCocoaButton(ABitBtn.Handle);
     lButtonHandle.setImage(Img);
-    lButtonHandle.setImagePosition(LCLGlyphPosToCocoa(ABitBtn.Layout));
+    lButtonHandle.setImagePosition(LCLGlyphPosToCocoa(ABitBtn));
     lButtonHandle.setImageScaling(NSImageScaleNone); // do not scale - retina scaling is done above with Img.setSize
     if Assigned(lButtonHandle.Glyph) then
       FreeAndNil(lButtonHandle.Glyph);
@@ -611,11 +618,7 @@ class procedure TCocoaWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
 var
   ImagePos: NSCellImagePosition;
 begin
-
-  if ABitBtn.CanShowGlyph(True) then
-    ImagePos := LCLGlyphPosToCocoa(AValue)
-  else
-    ImagePos := NSNoImage;
+  ImagePos := LCLGlyphPosToCocoa(ABitBtn);
   NSButton(ABitBtn.Handle).SetImagePosition(ImagePos);
 end;
 
