@@ -250,6 +250,7 @@ var
   VarCnt, i: Integer;
   p: SizeInt;
 begin
+  xEnv:=nil;
   SetLength(xEnv, 0);
   if TheMacro=nil then begin
     if s='' then begin
