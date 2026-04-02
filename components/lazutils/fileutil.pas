@@ -175,7 +175,7 @@ type
   protected
     procedure DoFileFound; override;
   public
-    constructor Create(AList: TStrings);
+    constructor Create(AList: TStrings); reintroduce;
   end;
 
   { TListDirectoriesSearcher }
@@ -186,7 +186,7 @@ type
   protected
     procedure DoDirectoryFound; override;
   public
-    constructor Create(AList: TStrings);
+    constructor Create(AList: TStrings); reintroduce;
   end;
 
 function FindAllFiles(const SearchPath: String; const SearchMask: String = '';

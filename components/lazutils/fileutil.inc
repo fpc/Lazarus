@@ -400,6 +400,7 @@ begin
     if len > MaxLongint then
       len := 0;           // A big file (>2GB) does not fit. Return empty array.
     {$ENDIF};
+    Bytes:=nil;
     SetLength(Bytes, len);
     if Length(Bytes) = 0 then exit;
     InStream := TFileStream.Create(Filename, fmOpenRead);
@@ -444,6 +445,7 @@ begin
     if len > MaxLongint then
       len := 0;           // A big file (>2GB) does not fit. Return empty string.
     {$ENDIF};
+    s:='';
     Setlength(s, len);
     if Length(s) = 0 then exit;
     InStream := TFileStream.Create(Filename, fmOpenRead);

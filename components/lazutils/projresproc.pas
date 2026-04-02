@@ -151,7 +151,7 @@ begin
   CurLine:=1;
   RightMargin:=80;
   if ReadBufLen>0 then begin
-    while ReadChar(c) do begin
+    while ReadChar(c{%H-}) do begin
       NewRangeString:=(ord(c)>=32) and (ord(c)<127);
       // check if new char fits into line or if a new line must be started
       if NewRangeString then begin
