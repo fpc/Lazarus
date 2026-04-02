@@ -1780,8 +1780,6 @@ procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
   end;
 
 var
-  NewItem: TIdentifierListItem;
-  ProcNode, FuncNode, ResNode: TCodeTreeNode;
   HiddenUnits: String;
   p: PChar;
   SystemTool: TFindDeclarationTool;

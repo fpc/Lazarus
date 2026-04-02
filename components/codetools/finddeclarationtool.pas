@@ -2153,7 +2153,7 @@ function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition; out NewTopLine, BlockTopLine,
   BlockBottomLine: integer): boolean;
 var
-  CleanCursorPos, iCleanCursorPos: integer;
+  CleanCursorPos: integer;
   CursorNode, ClassNode, iDefaultResultNode, iResultTypeNode: TCodeTreeNode;
   DirectSearch, SkipChecks, SearchForward, PredefinedResult: boolean;
 
@@ -7076,7 +7076,7 @@ var
   var
     NewExprType: TExpressionType;
     NewPos,TmpPos:TCodeXYPosition;
-    NewTopLine, FoundDeclarationAt: integer;
+    NewTopLine: integer;
   begin
     Result:=false;
     TruePredefinedResult:=false;
@@ -11146,7 +11146,6 @@ var
   var
     ProcNode: TCodeTreeNode;
     Node: TCodeTreeNode;
-    OldFlags: TFindDeclarationFlags;
     ResultNode: TCodeTreeNode;
     IsStart: Boolean;
     Context: TFindContext;
