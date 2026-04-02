@@ -396,13 +396,13 @@ end;
 function TCocoaOpenGLView.becomeFirstResponder: LCLObjCBoolean;
 begin
   Result:=inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
+  TCocoaLCLMessageUtil.BecomeFirstResponder(self);
 end;
 
 function TCocoaOpenGLView.resignFirstResponder: LCLObjCBoolean;
 begin
   Result:=inherited resignFirstResponder;
-  callback.ResignFirstResponder;
+  TCocoaLCLMessageUtil.ResignFirstResponder(self);
 end;
 
 procedure TCocoaOpenGLView.dealloc;
