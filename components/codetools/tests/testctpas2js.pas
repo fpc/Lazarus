@@ -238,7 +238,7 @@ begin
   for i:=1 to CurCode.LineCount do begin
     Line:=CurCode.GetLine(i-1,false);
     if (i=CursorPos.Y) then begin
-      write('*');
+      dbgout('*');
       Line:=LeftStr(Line,CursorPos.X-1)+'|'+copy(Line,CursorPos.X,length(Line));
     end;
     debugln(Format('%:4d: ',[i]),Line);

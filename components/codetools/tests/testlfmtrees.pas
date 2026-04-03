@@ -355,7 +355,7 @@ procedure TCustomTestLFMTrees.WriteSource(const CursorPos: TCodeXYPosition);
       for LineNo:=1 to CurCode.LineCount do begin
         Line:=CurCode.GetLine(LineNo-1,false);
         if (CurCode=CursorPos.Code) and (LineNo=CursorPos.Y) then begin
-          write('*');
+          dbgout('*');
           Line:=LeftStr(Line,CursorPos.X-1)+'|'+copy(Line,CursorPos.X,length(Line));
         end;
         debugln(Format('%:4d: ',[LineNo]),Line);
