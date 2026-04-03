@@ -40,12 +40,22 @@ type
   public
     currentKeyWindow: NSWindow;
     killingFocus: Boolean;
+
     captureControl: HWND;
+
+    // todo: this should be a threadvar
+    trackedControl: NSObject;
 
     // Store state of key modifiers so that we can emulate keyup/keydown
     // of keys like control, option, command, caps lock, shift
     prevKeyModifiers : NSUInteger;
     savedKeyModifiers : NSUInteger;
+
+    {$ifdef COCOALOOPHIJACK}
+    // The flag is set to true once hi-jacked loop is finished (at the end of app)
+    // The flag is checked in Menus to avoid "double" Cmd+Q menu
+    LoopHiJackEnded: Boolean;
+    {$endif}
   public
     procedure releaseCapture; inline;
 
@@ -257,17 +267,7 @@ type
   end;
 
 var
-
   CocoaWidgetSetState: TCocoaWidgetSetState;
-
-  // todo: this should be a threadvar
-  TrackedControl : NSObject = nil;
-
-  {$ifdef COCOALOOPHIJACK}
-  // The flag is set to true once hi-jacked loop is finished (at the end of app)
-  // The flag is checked in Menus to avoid "double" Cmd+Q menu
-  LoopHiJackEnded : Boolean = false;
-  {$endif}
 
 implementation
 
