@@ -44,6 +44,7 @@ type
 
     class procedure toRect(const ns: NSRect; ParentHeight: Double; out lcl: TRect); overload;
     class procedure toRect(const lcl: TRect; ParentHeight: Double; out ns: NSRect); overload;
+    class function toRect(const rect: NSRect; const view: NSView): TRect; overload;
     class function toRect(const lclRect: TRect; const view: NSView): NSRect; overload;
 
     class function toRect(const params: TCreateParams): NSRect; overload;
@@ -281,16 +282,23 @@ begin
 end;
 
 class function TCocoaTypeUtil.toRect(
+  const rect: NSRect;
+  const view: NSView ): TRect;
+begin
+  if Assigned(view) and NOT view.isFlipped then
+    TCocoaTypeUtil.toRect( rect, view.frame.size.height, Result )
+  else
+    Result:= TCocoaTypeUtil.toRect( rect );
+end;
+
+class function TCocoaTypeUtil.toRect(
   const lclRect: TRect;
   const view: NSView ): NSRect;
 begin
-  Result.origin.x := lclRect.Left;
-  Result.size.width := lclRect.Right - lclRect.Left;
-  Result.size.height := lclRect.Bottom - lclRect.Top;
-  if Assigned(view) and (view.isFlipped) then
-    Result.origin.y := lclRect.Top
+  if Assigned(view) and NOT view.isFlipped then
+    TCocoaTypeUtil.toRect( lclRect, view.frame.size.height, Result )
   else
-    Result.origin.y := view.bounds.size.height - lclRect.Bottom;
+    Result:= TCocoaTypeUtil.toRect( lclRect );
 end;
 
 class function TCocoaTypeUtil.toDateTime(const aDateTime : TDateTime): NSDate;
