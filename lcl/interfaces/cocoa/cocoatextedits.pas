@@ -1469,24 +1469,16 @@ end;
 procedure TCocoaSpinEdit.lclSetFrame(const r: TRect);
 var
   ns, lStepperNS: NSRect;
-  svHeight: CGFloat;
   lRect, lStepperRect: TRect;
 begin
   lRect := r;
   lStepperRect := r;
   lRect.Right := lRect.Right - CocoaConfigSpinEdit.stepperDefaultWidth;
   lStepperRect.Left := lRect.Right;
-  svHeight := TCocoaViewUtil.getSuperViewHeight(Self);
-  if Assigned(superview) and NOT superview.isFlipped then
-  begin
-    TCocoaTypeUtil.toRect(lRect, svHeight, ns);
-    TCocoaTypeUtil.toRect(lStepperRect, svHeight, lStepperNS);
-  end
-  else
-  begin
-    ns := TCocoaTypeUtil.toRect(lRect);
-    lStepperNS := TCocoaTypeUtil.toRect(lStepperRect);
-  end;
+
+  ns := TCocoaTypeUtil.toRect(lRect, superview);
+  lStepperNS := TCocoaTypeUtil.toRect(lStepperRect, superview);
+
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   WriteLn(Format('LCLViewExtension.lclSetFrame: %s Bounds=%s height=%d ns_pos=%d %d ns_size=%d %d',
     [NSStringToString(Self.ClassName), dbgs(r), Round(svHeight),

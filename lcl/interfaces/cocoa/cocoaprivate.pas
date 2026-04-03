@@ -840,11 +840,9 @@ begin
   if (AParams.WndParent <> 0) then
     p := NSView(AParams.WndParent).lclContentView;
 
-  if Assigned(p) and p.isFlipped then
-    TCocoaTypeUtil.toRect(Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
-      p.frame.size.height, ns)
-  else
-    ns := NSMakeRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+  ns:= TCocoaTypeUtil.toRect(
+    Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
+    p );
 
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   if Assigned(p) then
@@ -926,11 +924,10 @@ procedure LCLViewExtension.lclInvalidateRect(const r:TRect);
 var
   view : NSView;
 begin
-  view:=lclContentView;
-  if Assigned(view) then
-    view.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, view) )
-  else
-    self.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, Self) );
+  view:= self.lclContentView;
+  if NOT Assigned(view) then
+    view:= Self;
+  view.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, view) )
   //todo: it might be necessary to always invalidate self
   //      just need to get offset of the contentView relative for self
 end;
@@ -1023,20 +1020,12 @@ end;
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
 var
   ns: NSRect;
-  svHeight: CGFloat;
   rr : TRect;
 begin
   rr := r;
   TCocoaViewUtil.subLayoutDelta( lclGetFrameToLayoutDelta, rr);
 
-  svHeight := TCocoaViewUtil.getSuperViewHeight(Self);
-  if Assigned(superview) and not superview.isFlipped then
-  begin
-    TCocoaTypeUtil.toRect(rr, svHeight, ns)
-  end
-  else
-    ns := TCocoaTypeUtil.toRect(rr);
-
+  ns := TCocoaTypeUtil.toRect(rr, superview);
   if ns.size.width<1 then ns.size.width:=1;
   if ns.size.height<1 then ns.size.height:=1;
 
