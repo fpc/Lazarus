@@ -47,11 +47,11 @@ type
     prevKeyModifiers : NSUInteger;
     savedKeyModifiers : NSUInteger;
   public
-    procedure releaseCapture;
+    procedure releaseCapture; inline;
 
-    procedure lclBeginSendingScrollWheel;
-    procedure lclEndSendingScrollWheel;
-    function isLCLSendingScrollWheel: Boolean;
+    procedure lclBeginSendingScrollWheel; inline;
+    procedure lclEndSendingScrollWheel; inline;
+    function isLCLSendingScrollWheel: Boolean; inline;
 
     // only Cocoa Event Mechanism (no LCL Event), if the IME is in use
     property CocoaOnlyState: Boolean read _isCocoaOnlyState write _isCocoaOnlyState;
@@ -85,7 +85,7 @@ type
 
   TCocoaControlUtil = class
   public
-    class procedure setStringValue(const c: NSControl; const S: String); inline;
+    class procedure setStringValue(const c: NSControl; const S: String);
     class procedure setStringValueAndSendEvent(const ctrl: NSControl; const text: String);
     class function getStringValue(const c: NSControl): String; inline;
     class function toMacOSTitle(const ATitle: String): NSString;
@@ -473,7 +473,7 @@ end;
 
 { TCocoaControlUtil }
 
-class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String); inline;
+class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String);
 var
   ns: NSString;
 begin
