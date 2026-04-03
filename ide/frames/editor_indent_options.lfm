@@ -5,10 +5,11 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
   Width = 518
   ClientHeight = 536
   ClientWidth = 518
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   Visible = False
-  DesignLeft = 532
-  DesignTop = 34
+  DesignLeft = 544
+  DesignTop = 79
   object CenterLabel: TLabel
     AnchorSideLeft.Side = asrCenter
     Left = 259
@@ -65,7 +66,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Left = 112
     Height = 15
     Top = 31
-    Width = 83
+    Width = 84
     BorderSpacing.Around = 6
     Caption = 'TabWidthsLabel'
     ParentColor = False
@@ -119,7 +120,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Left = 365
     Height = 15
     Top = 56
-    Width = 128
+    Width = 129
     BorderSpacing.Around = 6
     Caption = 'ElastTabMinWidthsLabel'
     ParentColor = False
@@ -148,7 +149,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Left = 6
     Height = 19
     Top = 102
-    Width = 144
+    Width = 145
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 10
@@ -270,7 +271,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Left = 365
     Height = 15
     Top = 178
-    Width = 109
+    Width = 110
     BorderSpacing.Around = 6
     Caption = 'BlockTabIndentLabel'
     ParentColor = False
@@ -346,7 +347,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
     Left = 6
     Height = 19
     Top = 228
-    Width = 131
+    Width = 130
     BorderSpacing.Left = 6
     BorderSpacing.Right = 10
     Caption = 'AutoIndentCheckBox'
@@ -476,7 +477,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         Left = 6
         Height = 15
         Top = 104
-        Width = 63
+        Width = 62
         BorderSpacing.Left = 6
         Caption = 'lbAnsiPrefix'
         ParentColor = False
@@ -488,10 +489,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = tbAnsi
         AnchorSideRight.Side = asrBottom
-        Left = 75
+        Left = 74
         Height = 23
         Top = 100
-        Width = 425
+        Width = 426
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 16
@@ -522,10 +523,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = tbAnsi
         AnchorSideRight.Side = asrBottom
-        Left = 75
+        Left = 74
         Height = 23
         Top = 129
-        Width = 425
+        Width = 426
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         BorderSpacing.Right = 10
@@ -552,11 +553,13 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         AnchorSideLeft.Control = tbAnsi
         AnchorSideTop.Control = cbAnsiIndentMode
         AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = cbAnsiIndentMode
         AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 15
         Top = 162
-        Width = 84
+        Width = 494
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 10
         Caption = 'lbAnsiAlignMax'
@@ -618,7 +621,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         Left = 6
         Height = 15
         Top = 104
-        Width = 68
+        Width = 67
         BorderSpacing.Left = 6
         Caption = 'lbCurlyPrefix'
         ParentColor = False
@@ -630,10 +633,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = tbCurly
         AnchorSideRight.Side = asrBottom
-        Left = 80
+        Left = 79
         Height = 23
         Top = 100
-        Width = 420
+        Width = 421
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 16
@@ -663,10 +666,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = tbCurly
         AnchorSideRight.Side = asrBottom
-        Left = 80
+        Left = 79
         Height = 23
         Top = 129
-        Width = 420
+        Width = 421
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         BorderSpacing.Right = 10
@@ -697,7 +700,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         Left = 6
         Height = 15
         Top = 162
-        Width = 89
+        Width = 88
         BorderSpacing.Left = 6
         BorderSpacing.Top = 10
         Caption = 'lbCurlyAlignMax'
@@ -759,7 +762,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         Left = 6
         Height = 15
         Top = 136
-        Width = 67
+        Width = 66
         BorderSpacing.Left = 6
         Caption = 'lbSlashPrefix'
         ParentColor = False
@@ -771,10 +774,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = tbShlash
         AnchorSideRight.Side = asrBottom
-        Left = 79
+        Left = 78
         Height = 23
         Top = 132
-        Width = 421
+        Width = 422
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 16
@@ -804,10 +807,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = tbShlash
         AnchorSideRight.Side = asrBottom
-        Left = 79
+        Left = 78
         Height = 23
         Top = 161
-        Width = 421
+        Width = 422
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         BorderSpacing.Right = 10
@@ -855,7 +858,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         Left = 6
         Height = 15
         Top = 194
-        Width = 88
+        Width = 87
         BorderSpacing.Left = 6
         BorderSpacing.Top = 10
         Caption = 'lbSlashAlignMax'
@@ -916,7 +919,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         Left = 6
         Height = 15
         Top = 61
-        Width = 97
+        Width = 96
         BorderSpacing.Left = 6
         Caption = 'lbStringAutoPrefix'
         ParentColor = False
@@ -928,10 +931,10 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = tbString
         AnchorSideRight.Side = asrBottom
-        Left = 109
+        Left = 108
         Height = 23
         Top = 57
-        Width = 395
+        Width = 396
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -991,7 +994,7 @@ object EditorIndentOptionsFrame: TEditorIndentOptionsFrame
         Left = 6
         Height = 15
         Top = 119
-        Width = 92
+        Width = 91
         BorderSpacing.Left = 6
         BorderSpacing.Top = 10
         Caption = 'lbStringAlignMax'
