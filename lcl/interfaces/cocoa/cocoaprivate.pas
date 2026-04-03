@@ -274,20 +274,6 @@ implementation
 type
   TWinControlAccess = class(TWinControl);
 
-function RectToViewCoord(view: NSView; const r: TRect): NSRect;
-var
-  b: NSRect;
-begin
-  b := view.bounds;
-  Result.origin.x := r.Left;
-  Result.size.width := r.Right - r.Left;
-  Result.size.height := r.Bottom - r.Top;
-  if Assigned(view) and (view.isFlipped) then
-    Result.origin.y := r.Top
-  else
-    Result.origin.y := b.size.height - r.Bottom;
-end;
-
 { TCocoaWidgetSetState }
 
 procedure TCocoaWidgetSetState.releaseCapture;
@@ -942,9 +928,9 @@ var
 begin
   view:=lclContentView;
   if Assigned(view) then
-    view.setNeedsDisplayInRect(RectToViewCoord(view, r))
+    view.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, view) )
   else
-    self.setNeedsDisplayInRect(RectToViewCoord(Self, r));
+    self.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, Self) );
   //todo: it might be necessary to always invalidate self
   //      just need to get offset of the contentView relative for self
 end;
