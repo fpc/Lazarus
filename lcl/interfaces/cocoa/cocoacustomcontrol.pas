@@ -215,7 +215,7 @@ end;
 
 procedure TCocoaCustomControl.mouseDown(event: NSEvent);
 begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  if NOT self.lclIsEnabled or NOT Assigned(callback) or NOT callback.MouseUpDownEvent(event) then
     inherited mouseDown(event);
 end;
 
