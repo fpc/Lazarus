@@ -24,7 +24,7 @@ interface
 uses
   Math, Classes, SysUtils, LclType,
   Controls, StdCtrls, Forms,
-  MacOSAll, CocoaAll,
+  MacOSAll, CocoaAll, CocoaCursor,
   CocoaPrivate, CocoaConst, CocoaConfig, CocoaUtils;
 
 type
@@ -202,6 +202,7 @@ type
     // the Scroller to enable NSView.Layer, leading to various problems.
     // class function isCompatibleWithOverlayScrollers: ObjCBOOL; override;
 
+    procedure resetCursorRects; override;
     procedure drawKnob; override;
     procedure drawKnobSlotInRect_highlight(slotRect: NSRect; flag: ObjCBOOL); override;
     procedure setDoubleValue(newValue: double); override;
@@ -1331,6 +1332,12 @@ begin
   end;
 end;
 
+procedure TCocoaScrollBar.resetCursorRects;
+begin
+  inherited resetCursorRects;
+  TCocoaCursorUtil.setCursorByCurrentPos;
+end;
+
 procedure TCocoaScrollBar.drawKnob;
 begin
   _manager.onDrawKnob(self);
@@ -2149,9 +2156,6 @@ end;
 
 procedure TCocoaScrollStyleManagerOverlay.showScrollBar(
   scroller: NSScroller; now:Boolean );
-var
-  scrollBar: TCocoaScrollBar Absolute scroller;
-  effect: TCocoaScrollBarEffectOverlay;
 begin
   if NOT isAvailableScrollBar(scroller) then
     Exit;
