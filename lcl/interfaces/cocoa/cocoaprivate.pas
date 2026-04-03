@@ -1006,14 +1006,8 @@ begin
 end;
 
 function LCLViewExtension.lclFrame: TRect;
-var
-  v: NSView;
 begin
-  v := superview;
-  if Assigned(v) and not v.isFlipped then
-    TCocoaTypeUtil.toRect(frame, v.frame.size.height, Result)
-  else
-    Result := TCocoaTypeUtil.toRect(frame);
+  Result:= TCocoaTypeUtil.toRect(self.frame, superview);
   TCocoaViewUtil.addLayoutDelta( lclGetFrameToLayoutDelta, Result);
 end;
 
