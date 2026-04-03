@@ -4005,9 +4005,10 @@ msgid "Report"
 msgstr "Report"
 
 #: lazarusidestrconsts.dlgreset
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgreset"
 msgid "Reset"
-msgstr ""
+msgstr "Zurücksetzen"
 
 #: lazarusidestrconsts.dlgresetactivedesktopbtncaption
 msgid "Restore active"
@@ -14559,7 +14560,7 @@ msgid "Open the file as normal source"
 msgstr "Datei als normalen Quelltext öffnen"
 
 #: lazarusidestrconsts.lisopenthepackage
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Open the package %s?"
 msgid ""
 "Open the package \"%s\"?\n"
@@ -14568,7 +14569,7 @@ msgid ""
 msgstr "Package %s öffnen?"
 
 #: lazarusidestrconsts.lisopentheproject
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid "Open the project %s?"
 msgid ""
 "Open the project \"%s\"?\n"
@@ -21618,3 +21619,4 @@ msgstr "Graph aktualisieren"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+
