@@ -14773,7 +14773,7 @@ var
   EdgedBracketsStartPos : integer;
   SetNode, ClassNode, ExprClassNode: TCodeTreeNode;
   SetTool: TFindDeclarationTool;
-  AliasType: TFindContext;
+  AliasType, ProcContext: TFindContext;
 begin
   //debugln(['TFindDeclarationTool.FindTermTypeAsString START']);
   {$IFDEF CheckNodeTool}CheckNodeTool(Params.ContextNode);{$ENDIF}
@@ -14812,6 +14812,8 @@ begin
     end;
   end;
 
+  ProcContext:=CleanFindContext;
+
   // check if TermPos is @Name and a pointer (= ^Name) can be found
   if IsTermNamedPointer(TermPos,ExprType) then begin
     // pointer type
@@ -14822,6 +14824,21 @@ begin
                   +Params.Flags*[fdfOverrideStringTypesWithFirstParamType];
     ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos,
                                        @AliasType);
+
+    if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure)  then begin
+      // a type (in parameters or result) known at proc header can be redeclared,
+      // needed checking if not
+
+      ProcContext.Node:=Params.NewNode;
+      ProcContext.Tool:=Params.NewCodeTool;
+
+      DebugLn(['proc header start = ',Params.NewNode.FirstChild.StartPos]);
+      if AliasType.Node<>nil then
+      DebugLn(['alias node desc = ', AliasType.Node.Desc,' ',
+        GetIdentifier(@AliasType.Tool.Src[AliasType.Node.FirstChild.StartPos],true,true)]);
+    end;
+
+
     if (ExprType.Desc=xtContext) and
     (ExprType.Context.Node.Desc=ctnProcedureType) and
     (ExprType.Context.Node.FirstChild.FirstChild<>nil) and
@@ -14834,6 +14851,8 @@ begin
 
       AliasType.Node:=ExprType.Context.Node.FirstChild.FirstChild;
     end;
+
+
   end;
 
   if AliasType.Node<>nil then begin

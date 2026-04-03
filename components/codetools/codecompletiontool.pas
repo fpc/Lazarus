@@ -1882,28 +1882,13 @@ function TCodeCompletionCodeTool.CompleteVariableAssignment(CleanCursorPos,
   OldTopLine: integer; CursorNode: TCodeTreeNode; var NewPos: TCodeXYPosition;
   var NewTopLine: integer; SourceChangeCache: TSourceChangeCache; Interactive: Boolean
   ): boolean;
-
-  function IsInCommaSeparated(Item:string; List: string):boolean;
-  var i: integer;
-  begin
-    Result:=false;
-    i:=1;
-    repeat
-      if CompareDottedIdentifiers(PChar(@List[i]),PChar(Item))=0 then  // ready for dotted
-        exit (true);
-      while (List[i]<>',') and (i<Length(List)) do inc(i);
-      if i>=Length(List) then exit;
-      inc(i); // skip ','
-    until false;
-  end;
-
 var
   VarNameAtom, AssignmentOperator, TermAtom: TAtomPosition;
   NewType: string;
   Params: TFindDeclarationParams;
   ExprType: TExpressionType;
-  MissingUnit, NewName, DeclSourceName, HiddenUnits: String;
-  ResExprContext, OrigExprContext: TFindContext;
+  MissingUnit, NewName: String;
+  ResExprContext {, OrigExprContext}: TFindContext;
   ProcNode, ClassNode: TCodeTreeNode;
   CCOptions: TCodeCreationDlgResult;
   AddSourceName: boolean;
@@ -1971,35 +1956,27 @@ begin
       begin
         ResExprContext:=Params.NewCodeTool.FindBaseTypeOfNode(
           Params,Params.NewNode);
-        OrigExprContext:=ExprType.Context.Tool.FindBaseTypeOfNode(
-          Params,ExprType.Context.Node);
+        //OrigExprContext:=ExprType.Context.Tool.FindBaseTypeOfNode(
+        //  Params,ExprType.Context.Node);
 
-        AddSourceName:=true; // will be validated
-        if (ResExprContext.Tool <> OrigExprContext.Tool) then begin // check simple types
-          DeclSourceName:=OrigExprContext.Tool.ExtractSourceName;
-          HiddenUnits:=ResExprContext.Tool.Scanner.GetHiddenUsedUnits;
-          AddSourceName := not IsInCommaSeparated(DeclSourceName, HiddenUnits);
-          //debugln(['source=',DeclSourceName]);
-          //debugln(['hidden=',HiddenUnits]);
-          //debugln(['add source name = ', AddSourceName]);
-        end;
-        if AddSourceName then begin // check if declaration isn't shadowed
-          Params.SetIdentifier(Self, PChar(NewType),nil);
-          Params.ContextNode := CursorNode;
-          Params.Flags := fdfDefaultForExpressions;
-          if FindIdentifierInContext(Params) then begin
-            if ((Params.NewNode.Desc=ctnTypeDefinition) and
-            (ExprType.Context.Node.Desc=ctnTypeDefinition) and
-            (Params.NewNode=ExprType.Context.Node))
-            or
-            ((Params.NewNode.Desc=ctnTypeDefinition) and
-            (ExprType.Context.Node.Desc in AllClasses) and
-            (Params.NewNode.FirstChild=ExprType.Context.Node)) then
-            // the same decl nodes =  not shadowed, may be in other unit also
-              AddSourceName:=false;
+        // check if declaration isn't shadowed
+        Params.SetIdentifier(Self, PChar(NewType),nil);
+        Params.ContextNode := CursorNode;
+        Params.Flags := fdfDefaultForExpressions;
+        if FindIdentifierInContext(Params) then begin
+          AddSourceName:=true;
+          if ((Params.NewNode.Desc=ctnTypeDefinition) and
+          (ExprType.Context.Node.Desc=ctnTypeDefinition) and
+          (Params.NewNode=ExprType.Context.Node))
+          or
+          ((Params.NewNode.Desc=ctnTypeDefinition) and
+          (ExprType.Context.Node.Desc in AllClasses) and
+          (Params.NewNode.FirstChild=ExprType.Context.Node)) then
+          // the same decl nodes =  not shadowed, may be in other unit also
+            AddSourceName:=false;
+        end else
+          AddSourceName:=false;
 
-          end;
-        end;
         if AddSourceName then // -> add unit to the type
           NewType := ExprType.Context.Tool.ExtractSourceName + '.' + NewType
         else
@@ -2527,52 +2504,45 @@ type
     ProcNode: TCodeTreeNode;
     ParamNode: TCodeTreeNode;
     PTypeName: PChar;
-    ProceedArray: string;
+    ArrayElementType: string;
   end;
 
   ArrOfOverloadedProc = array of OverloadedProc;
 
   procedure CheckIfArray(var rec: OverloadedProc);
   var
-    s: string;
+    el: string;
   begin
-    rec.ProceedArray:='';
+    rec.ArrayElementType:='';
     if rec.PTypeName = nil then exit;
-    s:='';
     rec.Tool.MoveCursorToCleanPos(rec.PTypeName);
     rec.Tool.ReadNextAtom;
-    if rec.Tool.UpAtomIs('ARRAY') then
-      s:=rec.Tool.GetAtom;
-    if s<>'' then begin
-      rec.Tool.ReadNextAtom;
-      if rec.Tool.UpAtomIs('OF') then begin
-        s:=s+' '+rec.Tool.GetAtom;
+    if not rec.Tool.UpAtomIs('ARRAY') then exit;
+    rec.Tool.ReadNextAtom;
+    if not rec.Tool.UpAtomIs('OF') then exit;
+    rec.Tool.ReadNextAtom;
+    if rec.Tool.CurPos.Flag <> cafWord then exit;
+    if rec.Tool.UpAtomIs('CONST') then exit; // "array of const" not supported (yet)
+    el:= rec.Tool.GetAtom;
+    rec.Tool.ReadNextAtom;
+    if rec.Tool.CurPos.Flag = cafPoint then begin
+      repeat // fully qualified identifier possible
+        if rec.Tool.CurPos.Flag = cafPoint then
+          el:=el+'.'
+        else
+          break;
         rec.Tool.ReadNextAtom;
-        if rec.Tool.CurPos.Flag = cafWord then begin
-          if rec.Tool.UpAtomIs('CONST') then exit; // "array of const" not supported (yet)
-          s:=s+' '+rec.Tool.GetAtom;
-          rec.Tool.ReadNextAtom;
-          if rec.Tool.CurPos.Flag = cafPoint then begin
-            repeat // fully qualified identifier possible
-              if rec.Tool.CurPos.Flag = cafPoint then
-                s:=s+'.'
-              else
-                break;
-              rec.Tool.ReadNextAtom;
-              if rec.Tool.CurPos.Flag = cafWord then
-                s:=s+rec.Tool.GetAtom;
-              rec.Tool.ReadNextAtom;
-              if rec.Tool.CurPos.Flag in [cafSemicolon, cafRoundBracketClose] then
-              begin
-                rec.ProceedArray:=s;
-                break;
-              end;
-            until false;
-          end else begin
-            rec.ProceedArray:=s;
-          end;
+        if rec.Tool.CurPos.Flag = cafWord then
+          el:=el+rec.Tool.GetAtom;
+        rec.Tool.ReadNextAtom;
+        if rec.Tool.CurPos.Flag in [cafSemicolon, cafRoundBracketClose] then
+        begin
+          rec.ArrayElementType:=el;
+          break;
         end;
-      end;
+      until false;
+    end else begin
+      rec.ArrayElementType:=el;
     end;
   end;
 
@@ -2584,7 +2554,7 @@ type
     with rec do begin
       PTypeName:=nil;
       ParamNode:=nil;
-      ProceedArray:='';
+      ArrayElementType:='';
       if ProcNode=nil then exit;
       if (ProcNode.FirstChild=nil) then exit;
       if (ProcNode.FirstChild.FirstChild=nil) then exit;
@@ -2606,8 +2576,10 @@ type
           break;
         end;
         if (rec.Tool.CurPos.Flag = cafSemicolon) or
-        (rec.Tool.CurPos.EndPos>=rec.Tool.SrcLen) then //failure
+        (rec.Tool.CurPos.EndPos>=rec.Tool.SrcLen) then begin //failure
+          i:=-1;
           break;
+        end;
       until false;
 
       if (i>0) and IsIdentStartChar[Tool.Src[i]] then begin
@@ -2620,33 +2592,100 @@ type
     end;
     CheckIfArray(rec);
   end;
+  procedure ExtractStartEndOfArrayElement(Tool:TFindDeclarationTool; Node: TCodeTreeNode;
+    out StartPos, EndPos: integer);
+  begin
+    StartPos:=0;
+    EndPos:=0;
+    if Tool=nil then exit;
+    if Node=nil then exit;
+    Tool.MoveCursorToNodeStart(Node);
+    Tool.ReadNextAtom;
+    if not UpAtomIs('ARRAY') then exit;
+    Tool.ReadNextAtom;
+    if not UpAtomIs('OF') then exit;
+    Tool.ReadNextAtom;
+    if UpAtomIs('CONST') then exit;
+    if Tool.CurPos.Flag<>cafWord then exit;
+    StartPos:=Tool.CurPos.StartPos;
+    EndPos:=Tool.CurPos.EndPos;
+    repeat
+      Tool.ReadNextAtom;
+      if Tool.CurPos.Flag=cafPoint then begin
+        Tool.ReadNextAtom;
+        if Tool.CurPos.Flag=cafWord then
+          EndPos:=Tool.CurPos.EndPos
+        else
+          break;
+      end else
+        break;
+    until false;
+  end;
 
   function GetCommonTypeForParameter(var arr: ArrOfOverloadedProc;
-    out ParamNode: TCodeTreeNode; out ATool: TFindDeclarationTool): string;
+    out ParamNode: TCodeTreeNode; out ATool: TFindDeclarationTool;
+    out IsArray: boolean;  QualifiedPrefix: string = '';
+    OnlyArrayElement: boolean = true): string;
+
+    function Fits(prefix, elType: string): boolean;
+      var i, j: integer;
+    begin
+      result:=false;
+      j:=length(prefix);
+      if j > length(elType) then  exit;
+      i:=1;
+      while i<=j do begin
+        if UpCase(prefix[i])<>UpCase(elType[i]) then exit;
+        inc(i);
+      end;
+      Result:=true;
+    end;
   var
     i:integer;
   begin
     Result:='';
     ParamNode:=nil;
     ATool:=nil;
+    IsArray:=false;;
     i:=0;
     while i<=high(arr) do begin
       if (arr[i].PTypeName<>nil) and (Result='') then begin
-        if arr[i].ProceedArray<>'' then
-          Result:=arr[i].ProceedArray
-        else
-          Result:=GetIdentifier(arr[i].PTypeName, true, true);  // "SourceName.ClassName.TypeName" possible
-        ParamNode:=arr[i].ParamNode;
-        ATool:=arr[i].Tool;
+        if arr[i].ArrayElementType<>'' then begin
+          IsArray:=true;
+          ParamNode:=arr[i].ParamNode;
+          ATool:=arr[i].Tool;
+          if not OnlyArrayElement then
+            Result:='array of ';
+          if QualifiedPrefix='' then
+            Result:=Result+arr[i].ArrayElementType
+          else begin
+            if Fits(QualifiedPrefix, arr[i].ArrayElementType) then
+              // prefix was already added in declaration
+              Result:=Result+arr[i].ArrayElementType
+            else
+              Result:=Result+QualifiedPrefix+'.'+arr[i].ArrayElementType;
+          end;
+        end else begin
+          ParamNode:=arr[i].ParamNode;
+          ATool:=arr[i].Tool;
+          Result:=GetIdentifier(arr[i].PTypeName, true, true); // "SourceName.ClassName.TypeName" possible
+          if QualifiedPrefix<>'' then begin
+            if Fits(QualifiedPrefix, Result) then
+              // prefix was already added in declaration
+            else
+              Result:=QualifiedPrefix+'.'+Result;
+          end;
+        end;
       end;
       if Result<>'' then begin
         inc(i);
         while i<=high(arr) do begin
-          if (arr[i].ProceedArray<>'') then begin
-            if CompareTextIgnoringSpace(Result, arr[i].ProceedArray, false)<>0 then
+          if (arr[i].ArrayElementType<>'') then begin
+            if CompareDottedIdentifiers(PChar(Result), PChar(arr[i].ArrayElementType))<>0 then
             begin
               //different type names at N-th - parameter detected (open arrays expected)
               Result:='';
+              IsArray:=false;
               ParamNode:=nil;
               ATool:=nil;
               exit;
@@ -2669,7 +2708,7 @@ type
 
 var
   VarNameRange, ProcNameAtom: TAtomPosition;
-  ParameterIndex, i, APos: integer;
+  ParameterIndex, i, j, APos: integer;
   Params: TFindDeclarationParams;
   ParameterNode, ANode: TCodeTreeNode;
   TypeNode: TCodeTreeNode;
@@ -2686,6 +2725,8 @@ var
   CodeXYPos: TCodeXYPosition;
   FPL: TFPList;
   ProcArray: ArrOfOverloadedProc;
+  ParamIsArray: boolean;
+  QualifiedPrefix: string;
 begin
   Result:=false;
   ProcArray:=nil;
@@ -2729,9 +2770,15 @@ begin
     // check if identifier exists
     Result:=IdentifierIsDefined(VarNameRange,CursorNode,Params);
     if Result then begin
-      MoveCursorToCleanPos(VarNameRange.StartPos);
-      ReadNextAtom;
-      RaiseExceptionFmt(20170421201619,ctsIdentifierAlreadyDefined,[GetAtom]);
+      if Params.StartNode.HasParentOfType(ctnProcedure) and
+      (Params.NewNode.StartPos < Params.StartNode.GetNodeOfType(ctnProcedure).StartPos)
+      then // local variable declaration is possible
+        debugln('local variable declaration is possible')
+      else begin
+        MoveCursorToCleanPos(VarNameRange.StartPos);
+        ReadNextAtom;
+        RaiseExceptionFmt(20170421201619,ctsIdentifierAlreadyDefined,[GetAtom]);
+      end;
     end;
 
     {$IFDEF CTDEBUG}
@@ -2768,7 +2815,7 @@ begin
     end;
     if Assigned(Context.Tool) and Assigned(Context.Node) then
     begin
-      // find declaration of parameter list
+      // find declaration of a parameter
       Params.ContextNode:=Context.Node;
       Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);
       Params.Flags:=fdfDefaultForExpressions+[fdfFindVariable];
@@ -2836,7 +2883,8 @@ begin
       except
       end;
     end;
-    NewType:= GetCommonTypeForParameter(ProcArray, ParameterNode, TypeTool);
+    NewType:=
+      GetCommonTypeForParameter(ProcArray,ParameterNode,TypeTool,ParamIsArray);
     if ParameterNode=nil then exit;
     TypeNode:=FindTypeNodeOfDefinition(ParameterNode);
 
@@ -2846,12 +2894,47 @@ begin
     Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,
                    fdfTopLvlResolving];
     AliasType:=CleanFindContext;
-    ExprType:=TypeTool.FindExpressionResultType(Params,
+    if ParamIsArray then
+      ExtractStartEndOfArrayElement(TypeTool,TypeNode,i,j)
+    else
+      i:=0;
+    if i<>0 then
+      ExprType:=TypeTool.FindExpressionResultType(Params,i,j,@AliasType)
+    else
+      ExprType:=TypeTool.FindExpressionResultType(Params,
                               TypeNode.StartPos,TypeNode.EndPos,@AliasType);
     //debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter parameter type: AliasType=',FindContextToString(AliasType)]);
 
     TypeTool:=ExprType.Context.Tool;
     TypeNode:=ExprType.Context.Node;
+
+    if ExprType.Desc=xtNone then exit; // type not found
+
+    if (ExprType.Desc in xtAllIdentPredefinedTypes) then begin
+      // check if declaration of simple type isn't shadowed
+      Params.SetIdentifier(Self, PChar(NewType),nil);
+      Params.ContextNode := CursorNode;
+      Params.Flags := fdfDefaultForExpressions;
+      if FindIdentifierInContext(Params) then begin // shadowed, use prefix
+        if AliasType.Tool<>nil then
+          QualifiedPrefix:=AliasType.Tool.ExtractSourceName
+        else
+          QualifiedPrefix:=Params.NewCodeTool.ExtractSourceName;
+        NewType:=GetCommonTypeForParameter(ProcArray, ParameterNode, TypeTool,
+                                           ParamIsArray, QualifiedPrefix, false);
+      end;
+    end else
+    if (ExprType.Desc=xtContext) then begin
+      Params.SetIdentifier(Self, PChar(NewType),nil);
+      Params.ContextNode := CursorNode;
+      Params.Flags := fdfDefaultForExpressions;
+      if FindIdentifierInContext(Params) then begin // shadowed, use prefix
+        QualifiedPrefix:=Params.NewCodeTool.ExtractSourceName;
+        NewType:=GetCommonTypeForParameter(ProcArray, ParameterNode, TypeTool,
+                                           ParamIsArray, QualifiedPrefix,false);
+      end;
+    end;
+
     if HasAtOperator
     or ((Scanner.CompilerMode in [cmDELPHI, cmDELPHIUNICODE]) and (ExprType.Desc=xtContext) // procedures in delphi mode without @
         and (TypeNode<>nil) and (TypeNode.Desc in AllProcTypes)) then
