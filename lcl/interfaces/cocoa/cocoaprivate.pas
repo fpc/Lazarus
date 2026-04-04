@@ -957,11 +957,7 @@ var
 begin
   // Convert from View-lcl to View-cocoa
   rect.size:= NSZeroSize;
-  rect.origin.x:= X;
-  if isFlipped then
-    rect.origin.y:= Y
-  else
-    rect.origin.y:= frame.size.height - y;
+  rect.origin:= TCocoaTypeUtil.toPoint( TPoint.Create(X,Y), self );
 
   // Convert from View-cocoa to Window-cocoa
   rect.origin:= self.convertPoint_ToView( rect.origin, nil );
@@ -980,6 +976,7 @@ end;
 procedure LCLViewExtension.lclScreenToLocal(var X, Y: Integer);
 var
   P: NSPoint;
+  lclPoint: TPoint;
 begin
   // 1. convert from screen to window
   // use window function to onvert from Screen-lcl to Window-lcl
@@ -993,11 +990,9 @@ begin
   P := convertPoint_FromView(P, nil);
 
   // Convert from View-cocoa to View-lcl
-  X := Round(P.x);
-  if isFlipped then
-    Y := Round(p.y)
-  else
-    Y := Round(frame.size.height-P.y);   // convert to Cocoa system
+  lclPoint:= TCocoaTypeUtil.toPoint( P, self );
+  X:= lclPoint.X;
+  Y:= lclPoint.Y;
 end;
 
 function LCLViewExtension.lclParent:id;
