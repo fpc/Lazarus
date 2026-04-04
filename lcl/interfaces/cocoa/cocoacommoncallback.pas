@@ -878,12 +878,13 @@ begin
       NSLeftMouseDown,
       NSRightMouseDown,
       NSOtherMouseDown:
-        TrackedControl := Owner;
+        CocoaWidgetSetState.trackedControl := Owner;
       NSLeftMouseUp,
       NSRightMouseUp,
       NSOtherMouseUp:
       begin
-        if TrackedControl = Owner then TrackedControl := nil;
+        if CocoaWidgetSetState.trackedControl = Owner then
+          CocoaWidgetSetState.trackedControl := nil;
         if lEventType = NSLeftMouseUp then
           BlockCocoaMouseMove := false;
       end;

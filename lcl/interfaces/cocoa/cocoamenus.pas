@@ -519,7 +519,7 @@ begin
   // see bug #36265. if hot-key (Cmd+Q) is used the menu item
   // would be called once. 1) in LCL controlled loop 2) after the loop finished
   // The following if statement prevents "double" form close
-  if LoopHiJackEnded then Exit;
+  if CocoaWidgetSetState.LoopHiJackEnded then Exit;
   {$endif}
 
   canClose:= True;

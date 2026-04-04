@@ -473,7 +473,7 @@ begin
     Result := nil;
     aloop();
     stop(nil); // this should stop the main loop
-    LoopHiJackEnded := true;
+    CocoaWidgetSetState.LoopHiJackEnded := true;
     exit;
   end;
   {$endif}
@@ -513,18 +513,18 @@ begin
   CocoaWidgetSetState.savedKeyModifiers := Result.modifierFlags;
 
   if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
-    and Assigned(TrackedControl)
+    and Assigned(CocoaWidgetSetState.trackedControl)
   then
   begin
     if Result.type_ = NSLeftMouseUp then
     begin
       //todo: send callback!
-      TrackedControl := nil;
+      CocoaWidgetSetState.trackedControl := nil;
     end
     else
     if isMouseMoveEvent(Result.type_) then
     begin
-      cb := TrackedControl.lclGetCallback;
+      cb := CocoaWidgetSetState.trackedControl.lclGetCallback;
       if Assigned(cb) then begin
         // if the mouse event was handled by LCL - just don't return it back to Cocoa
         // i.e. needed for LCL to handle MouseMove events during DragAndDrop

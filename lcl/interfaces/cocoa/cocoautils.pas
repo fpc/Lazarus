@@ -44,6 +44,7 @@ type
 
     class procedure toRect(const ns: NSRect; ParentHeight: Double; out lcl: TRect); overload;
     class procedure toRect(const lcl: TRect; ParentHeight: Double; out ns: NSRect); overload;
+    class function toRect(const lclRect: TRect; const view: NSView): NSRect; overload;
 
     class function toRect(const params: TCreateParams): NSRect; overload;
   end;
@@ -277,6 +278,19 @@ begin
   ns.origin.y:=ParentHeight-lcl.bottom;
   ns.size.width:=lcl.Right-lcl.Left;
   ns.size.height:=lcl.Bottom-lcl.Top;
+end;
+
+class function TCocoaTypeUtil.toRect(
+  const lclRect: TRect;
+  const view: NSView ): NSRect;
+begin
+  Result.origin.x := lclRect.Left;
+  Result.size.width := lclRect.Right - lclRect.Left;
+  Result.size.height := lclRect.Bottom - lclRect.Top;
+  if Assigned(view) and (view.isFlipped) then
+    Result.origin.y := lclRect.Top
+  else
+    Result.origin.y := view.bounds.size.height - lclRect.Bottom;
 end;
 
 class function TCocoaTypeUtil.toDateTime(const aDateTime : TDateTime): NSDate;

@@ -40,18 +40,28 @@ type
   public
     currentKeyWindow: NSWindow;
     killingFocus: Boolean;
+
     captureControl: HWND;
+
+    // todo: this should be a threadvar
+    trackedControl: NSObject;
 
     // Store state of key modifiers so that we can emulate keyup/keydown
     // of keys like control, option, command, caps lock, shift
     prevKeyModifiers : NSUInteger;
     savedKeyModifiers : NSUInteger;
-  public
-    procedure releaseCapture;
 
-    procedure lclBeginSendingScrollWheel;
-    procedure lclEndSendingScrollWheel;
-    function isLCLSendingScrollWheel: Boolean;
+    {$ifdef COCOALOOPHIJACK}
+    // The flag is set to true once hi-jacked loop is finished (at the end of app)
+    // The flag is checked in Menus to avoid "double" Cmd+Q menu
+    LoopHiJackEnded: Boolean;
+    {$endif}
+  public
+    procedure releaseCapture; inline;
+
+    procedure lclBeginSendingScrollWheel; inline;
+    procedure lclEndSendingScrollWheel; inline;
+    function isLCLSendingScrollWheel: Boolean; inline;
 
     // only Cocoa Event Mechanism (no LCL Event), if the IME is in use
     property CocoaOnlyState: Boolean read _isCocoaOnlyState write _isCocoaOnlyState;
@@ -85,7 +95,7 @@ type
 
   TCocoaControlUtil = class
   public
-    class procedure setStringValue(const c: NSControl; const S: String); inline;
+    class procedure setStringValue(const c: NSControl; const S: String);
     class procedure setStringValueAndSendEvent(const ctrl: NSControl; const text: String);
     class function getStringValue(const c: NSControl): String; inline;
     class function toMacOSTitle(const ATitle: String): NSString;
@@ -257,36 +267,12 @@ type
   end;
 
 var
-
   CocoaWidgetSetState: TCocoaWidgetSetState;
-
-  // todo: this should be a threadvar
-  TrackedControl : NSObject = nil;
-
-  {$ifdef COCOALOOPHIJACK}
-  // The flag is set to true once hi-jacked loop is finished (at the end of app)
-  // The flag is checked in Menus to avoid "double" Cmd+Q menu
-  LoopHiJackEnded : Boolean = false;
-  {$endif}
 
 implementation
 
 type
   TWinControlAccess = class(TWinControl);
-
-function RectToViewCoord(view: NSView; const r: TRect): NSRect;
-var
-  b: NSRect;
-begin
-  b := view.bounds;
-  Result.origin.x := r.Left;
-  Result.size.width := r.Right - r.Left;
-  Result.size.height := r.Bottom - r.Top;
-  if Assigned(view) and (view.isFlipped) then
-    Result.origin.y := r.Top
-  else
-    Result.origin.y := b.size.height - r.Bottom;
-end;
 
 { TCocoaWidgetSetState }
 
@@ -473,7 +459,7 @@ end;
 
 { TCocoaControlUtil }
 
-class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String); inline;
+class procedure TCocoaControlUtil.setStringValue(const c: NSControl; const S: String);
 var
   ns: NSString;
 begin
@@ -942,9 +928,9 @@ var
 begin
   view:=lclContentView;
   if Assigned(view) then
-    view.setNeedsDisplayInRect(RectToViewCoord(view, r))
+    view.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, view) )
   else
-    self.setNeedsDisplayInRect(RectToViewCoord(Self, r));
+    self.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, Self) );
   //todo: it might be necessary to always invalidate self
   //      just need to get offset of the contentView relative for self
 end;
