@@ -30,7 +30,7 @@ type
 
   TCocoaTypeUtil = class
   public
-    class function toAlignment( lclAlignment: TAlignment ): NSTextAlignment;
+    class function toAlignment( const lclAlignment: TAlignment ): NSTextAlignment;
 
     class function toDateTime(const aDateTime : TDateTime): NSDate; overload;
     class function toDateTime(const aDateTime: NSDate): TDateTime; overload;
@@ -38,14 +38,14 @@ type
     class function toPoint(const lclPoint: TPoint): NSPoint; overload; inline;
     class function toPoint(const point: NSPoint): TPoint; overload; inline;
 
-    class function toPoint(APt: TPoint; ParentHeight: Double): NSPoint; overload;
-    class function toPoint(APt: NSPoint; ParentHeight: Double): TPoint; overload;
-    class function toPoint(const APt: TPoint; const view: NSView): NSPoint; overload;
-    class function toPoint(const APt: NSPoint; const view: NSView): TPoint; overload;
+    class function toPoint(const lclPoint: TPoint; const ParentHeight: Double): NSPoint; overload;
+    class function toPoint(const point: NSPoint; const ParentHeight: Double): TPoint; overload;
+    class function toPoint(const lclPoint: TPoint; const view: NSView): NSPoint; overload;
+    class function toPoint(const point: NSPoint; const view: NSView): TPoint; overload;
 
-    class function toRect(const R: TRect): CGRect; overload;
-    class function toRect(const c: CGRect): TRect; overload;
-    class function toSortedRect(const X1, Y1, X2, Y2: Integer): CGRect;
+    class function toRect(const lclRect: TRect): NSRect; overload;
+    class function toRect(const rect: NSRect): TRect; overload;
+    class function toSortedRect(const X1, Y1, X2, Y2: Integer): NSRect;
 
     class function toRect(const lclRect: TRect; const ParentHeight: Double): NSRect; overload;
     class function toRect(const rect: NSRect; const ParentHeight: Double): TRect; overload;
@@ -224,39 +224,45 @@ begin
   Result.Y:= Round( point.y );
 end;
 
-class function TCocoaTypeUtil.toPoint(APt: TPoint; ParentHeight: Double): NSPoint;
+class function TCocoaTypeUtil.toPoint(const lclPoint: TPoint; const ParentHeight: Double): NSPoint;
 begin
-  Result.X := APt.X;
-  Result.Y := ParentHeight - APt.Y;
+  Result.X := lclPoint.X;
+  Result.Y := ParentHeight - lclPoint.Y;
 end;
 
-class function TCocoaTypeUtil.toPoint(APt: NSPoint; ParentHeight: Double): TPoint;
+class function TCocoaTypeUtil.toPoint(const point: NSPoint; const ParentHeight: Double): TPoint;
 begin
-  Result.X := Round(APt.X);
-  Result.Y := Round(ParentHeight - APt.Y);
+  Result.X := Round(point.X);
+  Result.Y := Round(ParentHeight - point.Y);
 end;
 
 class function TCocoaTypeUtil.toPoint(
-  const APt: TPoint;
+  const lclPoint: TPoint;
   const view: NSView ): NSPoint;
 begin
   if Assigned(view) and NOT view.isFlipped then
-    Result:= TCocoaTypeUtil.toPoint( APt, view.frame.size.height )
+    Result:= TCocoaTypeUtil.toPoint( lclPoint, view.frame.size.height )
   else
-    Result:= TCocoaTypeUtil.toPoint( APt );
+    Result:= TCocoaTypeUtil.toPoint( lclPoint );
 end;
 
 class function TCocoaTypeUtil.toPoint(
-  const APt: NSPoint;
+  const point: NSPoint;
   const view: NSView ): TPoint;
 begin
   if Assigned(view) and NOT view.isFlipped then
-    Result:= TCocoaTypeUtil.toPoint( APt, view.frame.size.height )
+    Result:= TCocoaTypeUtil.toPoint( point, view.frame.size.height )
   else
-    Result:= TCocoaTypeUtil.toPoint( APt );
+    Result:= TCocoaTypeUtil.toPoint( point );
 end;
 
-class function TCocoaTypeUtil.toSortedRect(const X1, Y1, X2, Y2: Integer): CGRect;
+class function TCocoaTypeUtil.toRect(const lclRect: TRect): NSRect;
+begin
+  with lclRect do
+    Result := NSMakeRect(Left, Top, Width, Height);
+end;
+
+class function TCocoaTypeUtil.toSortedRect(const X1, Y1, X2, Y2: Integer): NSRect;
 begin
   if X1 <= X2 then
   begin
@@ -281,23 +287,17 @@ begin
   end;
 end;
 
-class function TCocoaTypeUtil.toRect(const R: TRect): CGRect;
+class function TCocoaTypeUtil.toRect(const rect: NSRect): TRect;
 begin
-  with R do
-    Result := NSMakeRect(Left, Top, Width, Height);
-end;
-
-class function TCocoaTypeUtil.toRect(const c: CGRect): TRect;
-begin
-  if CGRectIsEmpty(c) <> 0 then
-    Result := Rect(0,0,0,0)
-  else if CGRectIsInfinite(c) <> 0 then
-    Result:= Rect(Low(Integer), Low(Integer), High(Integer), High(Integer))
+  if CGRectIsEmpty(rect) <> 0 then
+    Result := Types.Rect(0,0,0,0)
+  else if CGRectIsInfinite(rect) <> 0 then
+    Result:= Types.Rect(Low(Integer), Low(Integer), High(Integer), High(Integer))
   else begin
-    Result.Left := Round(c.origin.x);
-    Result.Top := Round(c.origin.y);
-    Result.Right := Round(c.origin.x + c.size.width);
-    Result.Bottom := Round(c.origin.y + c.size.height);
+    Result.Left := Round(rect.origin.x);
+    Result.Top := Round(rect.origin.y);
+    Result.Right := Round(rect.origin.x + rect.size.width);
+    Result.Bottom := Round(rect.origin.y + rect.size.height);
   end;
 end;
 
@@ -389,7 +389,7 @@ begin
   Result := Result + mn;
 end;
 
-class function TCocoaTypeUtil.toAlignment( lclAlignment: TAlignment ): NSTextAlignment;
+class function TCocoaTypeUtil.toAlignment( const lclAlignment: TAlignment ): NSTextAlignment;
 begin
   case lclAlignment of
     taRightJustify:
