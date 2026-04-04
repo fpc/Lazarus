@@ -20,7 +20,7 @@ uses
   // IDEIntf
   EditorSyntaxHighlighterDef, SrcEditorIntf,
   // IdeProject
-  Project, ProjectDefs, RunParamOptions, IdeProjectStrConsts;
+  Project, ProjectDefs, IdeBookmark, RunParamOptions, IdeProjectStrConsts;
 
 type
   TEditableUnitInfo = class;
@@ -127,7 +127,7 @@ type
 
   TEditableUnitInfo = class(TUnitInfo)
   private
-    FBookmarks: TFileBookmarks;
+    FBookmarks: TFileBookmarkList;
     FComponentState: TWindowState; // state of component when we save it
     FEditorInfoList: TUnitEditorInfoList;
     FSetBookmarkLock: Integer;
@@ -158,7 +158,7 @@ type
         SaveData, SaveSession: boolean; UsePathDelim: TPathDelimSwitch); override;
     procedure SetSourceText(const SourceText: string; Beautify: boolean = false); override;
   public
-    property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
+    property Bookmarks: TFileBookmarkList read FBookmarks write FBookmarks;
     property ComponentState: TWindowState read FComponentState write FComponentState;
     property EditorInfo[Index: Integer]: TUnitEditorInfo read GetEditorInfo;
     property OpenEditorInfo[Index: Integer]: TUnitEditorInfo read GetOpenEditorInfo;
@@ -210,8 +210,8 @@ type
     function IndexOfUnitWithComponentName(const AComponentName: string;
       OnlyProjectUnits: boolean; IgnoreUnit: TEditableUnitInfo): integer;
     // bookmarks
-    function  AddBookmark(X, Y, ID: Integer; AUnitInfo:TUnitInfo):integer;
-    function  AddBookmark(X, Y, ALeft, ATop, ID: Integer; AUnitInfo:TUnitInfo):integer;
+    function  AddBookmark(X, Y, ID: Integer; AUnitInfo: TUnitInfo): integer;
+    function  AddBookmark(X, Y, ALeft, ATop, ID: Integer; AUnitInfo: TUnitInfo): integer;
     procedure DeleteBookmark(ID: Integer);
   public
     property ActiveWindowIndexAtStart: integer read FActiveWindowIndexAtStart
@@ -576,7 +576,7 @@ end;
 
 constructor TEditableUnitInfo.Create(ACodeBuffer: TCodeBuffer);
 begin
-  FBookmarks := TFileBookmarks.Create;
+  FBookmarks := TFileBookmarkList.Create;
   FEditorInfoList := TUnitEditorInfoList.Create(Self);
   FEditorInfoList.NewEditorInfo;
   inherited Create(ACodeBuffer);

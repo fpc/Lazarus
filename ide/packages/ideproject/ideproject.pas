@@ -8,8 +8,9 @@ unit IdeProject;
 interface
 
 uses
-  RunParamOptions, ProjectIcon, W32Manifest, W32VersionInfo, ProjectUserResources, 
-  IdeProjectStrConsts, ProjectResources, Project, ProjectDefs, LazarusPackageIntf;
+  RunParamOptions, ProjectIcon, W32Manifest, W32VersionInfo, 
+  ProjectUserResources, IdeProjectStrConsts, ProjectResources, Project, 
+  ProjectDefs, IdeBookmark, LazarusPackageIntf;
 
 implementation
 

@@ -58,6 +58,10 @@ Files in this package are for the main configuration of the IDE."/>
         <Filename Value="projectdefs.pas"/>
         <UnitName Value="ProjectDefs"/>
       </Item>
+      <Item>
+        <Filename Value="idebookmark.pas"/>
+        <UnitName Value="idebookmark"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

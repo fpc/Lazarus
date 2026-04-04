@@ -94,7 +94,7 @@ uses
   ParsedCompilerOpts, CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
   BuildModesManager, ExtTools, ExtToolsIDE,
   // projects
-  ProjectResources, Project, ProjectDefs, NewProjectDlg, PublishModuleDlg,
+  ProjectResources, Project, ProjectDefs, IdeBookmark, NewProjectDlg, PublishModuleDlg,
   ProjectInspector, PackageDefs, EditablePackage, ProjectDescriptorTypes,
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, IdeDebuggerWatchValueIntf, IDEHelpManager,
@@ -11231,30 +11231,32 @@ var
     UInf: TEditableUnitInfo;
     i, j: Integer;
   begin
-    if AMark.UnitInfo is TSourceEditor
-    then Result := TSourceEditor(AMark.UnitInfo)
-    else begin        // find the nearest open View
-      UInf := TEditableUnitInfo(AMark.UnitInfo);
-      Result := TSourceEditor(UInf.OpenEditorInfo[0].EditorComponent);
-      j := 0;
-      while (j < UInf.OpenEditorInfoCount) and
-            (Result.IsLocked) and (not Result.IsCaretOnScreen(AMark.CursorPos))
-      do begin
-        inc(j);
-        if j < UInf.OpenEditorInfoCount then
-          Result := TSourceEditor(UInf.OpenEditorInfo[j].EditorComponent);
-      end;
-      if j >= UInf.OpenEditorInfoCount then
-        exit(nil);
-      for i := j + 1 to UInf.OpenEditorInfoCount - 1 do
-      begin
-        if (not Backward) and
-           (GetWinForEdit(Result) > GetWinForEdit(TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent)) )
-        then Result := TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent);
-        if (Backward) and
-           (GetWinForEdit(Result) < GetWinForEdit(TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent)) )
-        then Result := TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent);
-      end;
+    Result := TSourceEditor(AMark.GetStoredSourceEditor);
+    if Assigned(Result) then begin
+      debugln(['GetSrcEdit: Found SourceEditor in AMark.UnitInfo. ', Result.FileName]);
+      exit;
+    end;
+    // find the nearest open View
+    UInf := TEditableUnitInfo(AMark.UnitInfo);
+    Result := TSourceEditor(UInf.OpenEditorInfo[0].EditorComponent);
+    j := 0;
+    while (j < UInf.OpenEditorInfoCount) and
+          (Result.IsLocked) and (not Result.IsCaretOnScreen(AMark.CursorPos))
+    do begin
+      inc(j);
+      if j < UInf.OpenEditorInfoCount then
+        Result := TSourceEditor(UInf.OpenEditorInfo[j].EditorComponent);
+    end;
+    if j >= UInf.OpenEditorInfoCount then
+      exit(nil);
+    for i := j + 1 to UInf.OpenEditorInfoCount - 1 do
+    begin
+      if (not Backward) and
+         (GetWinForEdit(Result) > GetWinForEdit(TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent)) )
+      then Result := TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent);
+      if (Backward) and
+         (GetWinForEdit(Result) < GetWinForEdit(TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent)) )
+      then Result := TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent);
     end;
   end;
 
