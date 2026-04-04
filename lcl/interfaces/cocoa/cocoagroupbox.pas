@@ -39,9 +39,9 @@ begin
     Result := inherited lclClientFrame
   else
     if v.isFlipped then
-      Result := TCocoaTypeUtil.toRect( v.frame )
+      Result:= TCocoaTypeUtil.toRect( v.frame )
     else
-      TCocoaTypeUtil.toRect(v.frame, frame.size.height, Result);
+      Result:= TCocoaTypeUtil.toRect( v.frame, self.frame.size.height );
 end;
 
 function TCocoaGroupBox.lclContentView: NSView;

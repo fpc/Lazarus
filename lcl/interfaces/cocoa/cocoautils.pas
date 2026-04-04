@@ -40,10 +40,10 @@ type
 
     class function toRect(const R: TRect): CGRect; overload;
     class function toRect(const c: CGRect): TRect; overload;
-    class function toSortedRect(X1, Y1, X2, Y2: Integer): CGRect;
+    class function toSortedRect(const X1, Y1, X2, Y2: Integer): CGRect;
 
-    class procedure toRect(const ns: NSRect; ParentHeight: Double; out lcl: TRect); overload;
-    class procedure toRect(const lcl: TRect; ParentHeight: Double; out ns: NSRect); overload;
+    class function toRect(const rect: NSRect; const ParentHeight: Double): TRect; overload;
+    class function toRect(const lclRect: TRect; const ParentHeight: Double): NSRect; overload;
     class function toRect(const rect: NSRect; const view: NSView): TRect; overload;
     class function toRect(const lclRect: TRect; const view: NSView): NSRect; overload;
 
@@ -220,7 +220,7 @@ begin
   Result.Y := Round(ParentHeight - APt.Y);
 end;
 
-class function TCocoaTypeUtil.toSortedRect(X1, Y1, X2, Y2: Integer): CGRect;
+class function TCocoaTypeUtil.toSortedRect(const X1, Y1, X2, Y2: Integer): CGRect;
 begin
   if X1 <= X2 then
   begin
@@ -258,27 +258,31 @@ begin
   else if CGRectIsInfinite(c) <> 0 then
     Result:= Rect(Low(Integer), Low(Integer), High(Integer), High(Integer))
   else begin
-  Result.Left := Round(c.origin.x);
-  Result.Top := Round(c.origin.y);
-  Result.Right := Round(c.origin.x + c.size.width);
-  Result.Bottom := Round(c.origin.y + c.size.height);
-end;
-end;
-
-class procedure TCocoaTypeUtil.toRect(const ns: NSRect; ParentHeight: Double; out lcl: TRect);
-begin
-  lcl.Left := Round(ns.origin.x);
-  lcl.Top := Round(ParentHeight - ns.size.height - ns.origin.y);
-  lcl.Right := Round(ns.origin.x + ns.size.width);
-  lcl.Bottom := Round(lcl.Top + ns.size.height);
+    Result.Left := Round(c.origin.x);
+    Result.Top := Round(c.origin.y);
+    Result.Right := Round(c.origin.x + c.size.width);
+    Result.Bottom := Round(c.origin.y + c.size.height);
+  end;
 end;
 
-class procedure TCocoaTypeUtil.toRect(const lcl: TRect; ParentHeight: Double; out ns: NSRect);
+class function TCocoaTypeUtil.toRect(
+  const rect: NSRect;
+  const ParentHeight: Double ): TRect;
 begin
-  ns.origin.x:=lcl.left;
-  ns.origin.y:=ParentHeight-lcl.bottom;
-  ns.size.width:=lcl.Right-lcl.Left;
-  ns.size.height:=lcl.Bottom-lcl.Top;
+  Result.Left := Round(rect.origin.x);
+  Result.Top := Round(ParentHeight - rect.size.height - rect.origin.y);
+  Result.Right := Round(rect.origin.x + rect.size.width);
+  Result.Bottom := Round(Result.Top + rect.size.height);
+end;
+
+class function TCocoaTypeUtil.toRect(
+  const lclRect: TRect;
+  const ParentHeight: Double ): NSRect;
+begin
+  Result.origin.x:= lclRect.Left;
+  Result.origin.y:= ParentHeight - lclRect.Bottom;
+  Result.size.width:= lclRect.Width;
+  Result.size.height:= lclRect.Height;
 end;
 
 class function TCocoaTypeUtil.toRect(
@@ -286,7 +290,7 @@ class function TCocoaTypeUtil.toRect(
   const view: NSView ): TRect;
 begin
   if Assigned(view) and NOT view.isFlipped then
-    TCocoaTypeUtil.toRect( rect, view.frame.size.height, Result )
+    Result:= TCocoaTypeUtil.toRect( rect, view.frame.size.height )
   else
     Result:= TCocoaTypeUtil.toRect( rect );
 end;
@@ -296,7 +300,7 @@ class function TCocoaTypeUtil.toRect(
   const view: NSView ): NSRect;
 begin
   if Assigned(view) and NOT view.isFlipped then
-    TCocoaTypeUtil.toRect( lclRect, view.frame.size.height, Result )
+    Result:= TCocoaTypeUtil.toRect( lclRect, view.frame.size.height )
   else
     Result:= TCocoaTypeUtil.toRect( lclRect );
 end;

@@ -368,7 +368,7 @@ begin
   end else begin
     rect:= getLookupWordBound;
   end;
-  TCocoaTypeUtil.toRect( rect, TCocoaScreenUtil.globalScreenBottom, Result );
+  Result:= TCocoaTypeUtil.toRect( rect, TCocoaScreenUtil.globalScreenBottom );
 end;
 
 procedure TCocoaFullControlEdit.unmarkText;

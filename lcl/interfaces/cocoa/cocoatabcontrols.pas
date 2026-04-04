@@ -493,13 +493,13 @@ begin
   lParent := tabView;
   if lParent <> nil then
   begin
-    svh := lParent.contentRect.size.height;
-    TCocoaTypeUtil.toRect(lParent.contentRect, svh, Result);
+    svh:= lParent.contentRect.size.height;
+    Result:= TCocoaTypeUtil.toRect(lParent.contentRect, svh);
   end
   else
   begin
-    svh := tabView.frame.size.height;
-    TCocoaTypeUtil.toRect(tabView.contentRect, svh, Result);
+    svh:= tabView.frame.size.height;
+    Result:= TCocoaTypeUtil.toRect(tabView.contentRect, svh);
   end;
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaTabPage.lclFrame] '+dbgs(Result)+' '+NSStringToString(Self.label_));
