@@ -3378,74 +3378,79 @@ begin
   GlobalMacroList.SubstituteStr(BaseDir);
   BaseDir:=AppendPathDelim(TrimFilename(BaseDir));
 
-  // search file in base directory
-  if FilenameIsAbsolute(BaseDir) then begin
-    Result:=TrimFilename(BaseDir+AFilename);
-    {$IFDEF VerboseFindSourceFile}
-    debugln(['FindSourceFile trying Base "',Result,'"']);
-    {$ENDIF}
-    if FileExistsCached(Result) then exit;
-    MarkPathAsSearched(BaseDir);
-  end else if Project1<>nil then begin
-    // search in virtual files
-    Result:=TrimFilename(BaseDir+AFilename);
-    ProjFile:=Project1.FindFile(Result,[pfsfOnlyVirtualFiles]);
-    if ProjFile<>nil then
-      exit;
-  end;
-
-  // search file in debug path
-  if (fsfUseDebugPath in Flags) and (Project1<>nil) then begin
-    SearchPath:=EnvironmentOptions.GetParsedDebuggerSearchPath;
-    SearchPath:=MergeSearchPaths(Project1.CompilerOptions.GetDebugPath(false),
-                                 SearchPath);
-    SearchPath:=TrimSearchPath(SearchPath,BaseDir);
-    if SearchInPath(SearchPath,AFilename,Result) then exit;
-  end;
-
-  CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
-  StartUnitPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(BaseDir);
-  StartUnitPath:=TrimSearchPath(StartUnitPath,BaseDir);
-
-  // if file is a pascal unit, search via unit and src paths
-  if FilenameIsPascalUnit(AFilename) then begin
-    // first search file in unit path
-    if SearchInPath(StartUnitPath,AFilename,Result) then exit;
-
-    // search unit in fpc source directory
-    Result:=CodeToolBoss.FindUnitInUnitSet(BaseDir,
-                                           ExtractFilenameOnly(AFilename));
-    {$IFDEF VerboseFindSourceFile}
-    debugln(['FindSourceFile tried unitset Result=',Result]);
-    {$ENDIF}
-    if Result<>'' then exit;
-  end;
-
-  if fsfUseIncludePaths in Flags then begin
-    // search in include path
-    if (fsfSearchForProject in Flags) then
-      SearchPath:=Project1.CompilerOptions.GetIncludePath(false)
-    else
-      SearchPath:=CodeToolBoss.GetIncludePathForDirectory(BaseDir);
-    SearchPath:=TrimSearchPath(SearchPath,BaseDir);
-    if SearchInPath(SearchPath,AFilename,Result) then exit;
-
-    if not (fsfSkipPackages in Flags) then begin
-      // search include file in source directories of all required packages
-      SearchFile:=ExtractFilename(AFilename);
-      Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
-      CheckSubPath(AFilename,Result);
+  try
+    // search file in base directory
+    if FilenameIsAbsolute(BaseDir) then begin
+      Result:=TrimFilename(BaseDir+AFilename);
       {$IFDEF VerboseFindSourceFile}
-      debugln(['FindSourceFile trying packages "',SearchPath,'" Result=',Result]);
+      debugln(['FindSourceFile trying Base "',Result,'"']);
       {$ENDIF}
+      if FileExistsCached(Result) then exit;
+      MarkPathAsSearched(BaseDir);
+    end else if Project1<>nil then begin
+      // search in virtual files
+      Result:=TrimFilename(BaseDir+AFilename);
+      ProjFile:=Project1.FindFile(Result,[pfsfOnlyVirtualFiles]);
+      if ProjFile<>nil then
+        exit;
     end;
-    if Result<>'' then exit;
 
-    Result:=SearchIndirectIncludeFile;
-    if Result<>'' then exit;
+    // search file in debug path
+    if (fsfUseDebugPath in Flags) and (Project1<>nil) then begin
+      SearchPath:=EnvironmentOptions.GetParsedDebuggerSearchPath;
+      SearchPath:=MergeSearchPaths(Project1.CompilerOptions.GetDebugPath(false),
+                                   SearchPath);
+      SearchPath:=TrimSearchPath(SearchPath,BaseDir);
+      if SearchInPath(SearchPath,AFilename,Result) then exit;
+    end;
+
+    CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
+    StartUnitPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(BaseDir);
+    StartUnitPath:=TrimSearchPath(StartUnitPath,BaseDir);
+
+    // if file is a pascal unit, search via unit and src paths
+    if FilenameIsPascalUnit(AFilename) then begin
+      // first search file in unit path
+      if SearchInPath(StartUnitPath,AFilename,Result) then exit;
+
+      // search unit in fpc source directory
+      Result:=CodeToolBoss.FindUnitInUnitSet(BaseDir,
+                                             ExtractFilenameOnly(AFilename));
+      {$IFDEF VerboseFindSourceFile}
+      debugln(['FindSourceFile tried unitset Result=',Result]);
+      {$ENDIF}
+      if Result<>'' then exit;
+    end;
+
+    if fsfUseIncludePaths in Flags then begin
+      // search in include path
+      if (fsfSearchForProject in Flags) then
+        SearchPath:=Project1.CompilerOptions.GetIncludePath(false)
+      else
+        SearchPath:=CodeToolBoss.GetIncludePathForDirectory(BaseDir);
+      SearchPath:=TrimSearchPath(SearchPath,BaseDir);
+      if SearchInPath(SearchPath,AFilename,Result) then exit;
+
+      if not (fsfSkipPackages in Flags) then begin
+        // search include file in source directories of all required packages
+        SearchFile:=ExtractFilename(AFilename);
+        Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
+        CheckSubPath(AFilename,Result);
+        {$IFDEF VerboseFindSourceFile}
+        debugln(['FindSourceFile trying packages "',SearchPath,'" Result=',Result]);
+        {$ENDIF}
+      end;
+      if Result<>'' then exit;
+
+      Result:=SearchIndirectIncludeFile;
+      if Result<>'' then exit;
+    end;
+
+    Result:='';
+  finally
+    if (Result = '') and (fsfWrongLeftPath in Flags) then
+      Result:=FindSourceFileLeftPathWrong(AFilename,BaseDirectory,Flags)
   end;
-
-  Result:='';
 end;
 
 function FindSourceFileLeftPathWrong(AFilename, BaseDirectory: string; Flags: TFindSourceFlags
@@ -3497,7 +3502,10 @@ var
       if CurMatch>BestFolderMatch then
       begin
         BestFolderMatch:=CurMatch;
-        FindSourceFileLeftPathWrong:=CurFilename;
+        if fsReturnFullPath in Flags then
+          FindSourceFileLeftPathWrong:=AppendPathDelim(CurDir)+CurFilename
+        else
+          FindSourceFileLeftPathWrong:=CurFilename;
       end;
     until false;
   end;

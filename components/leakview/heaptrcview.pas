@@ -528,15 +528,20 @@ end;
 procedure THeapTrcViewForm.LazarusJump(Sender: TObject;
   const SourceFile: string; Line, Column: Integer);
 var
-  nm  : string;
+  nm  , SrcFile: string;
 begin
-  if not FileExistsUTF8(SourceFile) then begin
-    nm := LazarusIDE.FindSourceFile(SourceFile, '', [fsfUseIncludePaths] );
+  SrcFile := SourceFile;
+  if not FileExistsUTF8(SrcFile) then begin
+    nm := LazarusIDE.FindSourceFile(SrcFile, '', [fsfUseIncludePaths, fsfWrongLeftPath, fsReturnFullPath] );
+
     if nm = '' then
-      nm := SourceFile;
+      nm := SrcFile;
   end else
-    nm := SourceFile;
-  LazarusIDE.DoOpenFileAndJumpToPos(nm, Point(Column, Line), -1, -1, -1, [ofOnlyIfExists, ofRegularFile]);
+    nm := SrcFile;
+  try
+    LazarusIDE.DoOpenFileAndJumpToPos(nm, Point(Column, Line), -1, -1, -1, [ofOnlyIfExists, ofRegularFile]);
+  except
+  end;
 end;
 
 destructor THeapTrcViewForm.Destroy;

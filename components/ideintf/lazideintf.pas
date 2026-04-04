@@ -183,7 +183,8 @@ type
     fsfUseDebugPath,
     fsfMapTempToVirtualFiles,
     fsfSkipPackages,
-    fsfWrongLeftPath // the absolute path might be wrong, e.g. debug info from another system, search the longest right side match
+    fsfWrongLeftPath, // the absolute path might be wrong, e.g. debug info from another system, search the longest right side match
+    fsReturnFullPath
     );
   TFindSourceFlags = set of TFindSourceFlag;
 
