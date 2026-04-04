@@ -2952,12 +2952,14 @@ var
   tfb: TPascalCodeFoldBlockType;
 begin
   tfb := TopPascalCodeFoldBlockType;
-  if KeyCompU('STATIC') and (tfb in [cfbtClass, cfbtClassSection, cfbtClassConstBlock, cfbtClassTypeBlock]) and
+  if KeyCompU('STATIC') and (tfb in [cfbtClass, cfbtClassSection, cfbtRecord, cfbtClassConstBlock, cfbtClassTypeBlock]) and
      (fRange * [rsAfterEqualOrColon, rsInProcHeader, rsProperty] = []) and
      (fRange * [rsAfterClassMembers, rsAfterClassField] <> []) and
      (PasCodeFoldRange.BracketNestLevel = 0)
-  then
-    Result := tkModifier
+  then begin
+    if rsWasInProcHeader in fRange then fRange := fRange + [rsInProcHeader]; // there may be inline, noinline, overload, message, cdecl
+    Result := tkModifier;
+  end
   else
   if IsCallingConventionModifier('WINAPI', tfb) then
     Result := DoCallingConventionModifier

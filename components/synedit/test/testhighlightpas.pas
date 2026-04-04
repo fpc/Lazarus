@@ -3567,7 +3567,7 @@ var
 begin
   ReCreateEdit;
   SetLines
-    ([ 'Unit A; interface',
+    ([ 'Unit A; interface {$ModeSwitch advancedrecords}',
        'type',
        'static=class end;',
        'TFoo=class(static)',
@@ -3575,11 +3575,16 @@ begin
        '  static: static; static;',  // static as var-name can be first in list, IF previous was static modifier
        '  function static(static:static): static; static;',
        '  property static[static:static]: static read static write static;',
-       'public',
+       'public',  // line 8
        '  Ffoo,static: static; static;',
        '  static: static; static;',  // static as var-name can be first in list, IF previous was static modifier
        '  function static(static:static): static; static;',
+       '  function static(static:static): static; static; inline;',
+       '  function static(static:static): static; inline; static; inline;',
        '  property static[static:static]: static read static write static;',
+       'end;',  // line 15
+       'TFoo = record;',
+       '  function static(static:static): static; inline; static; inline;',
        'end;',
        ''
     ]);
@@ -3620,12 +3625,31 @@ begin
                         tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
                         tkSpace, tkModifier, tkSymbol                   // #32 static ;
                        ]);
-    CheckTokensForLine('pup property',       12,
+    CheckTokensForLine('pup function  static; inline',       12,
+                       [tkSpace, tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                        tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
+                        tkSpace, tkModifier, tkSymbol,                  // #32 static ;
+                        tkSpace, tkModifier, tkSymbol                   // #32 inline ;
+                       ]);
+    CheckTokensForLine('pup function  static; inline',       13,
+                       [tkSpace, tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                        tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
+                        tkSpace, tkModifier, tkSymbol,                  // #32 inline ;
+                        tkSpace, tkModifier, tkSymbol                   // #32 static ;
+                       ]);
+    CheckTokensForLine('pup property',       14,
                        [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
                         tkSymbol, tkSpace, tkIdentifier,           // : #32 static
                         tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 read static
                         tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 write static
                         tkSymbol                   // ;
+                       ]);
+
+    CheckTokensForLine('recurd  function  static; inline',       17,
+                       [tkSpace, tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                        tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
+                        tkSpace, tkModifier, tkSymbol,                  // #32 static ;
+                        tkSpace, tkModifier, tkSymbol                   // #32 inline ;
                        ]);
   end;
 end;
