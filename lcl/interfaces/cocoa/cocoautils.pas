@@ -35,17 +35,22 @@ type
     class function toDateTime(const aDateTime : TDateTime): NSDate; overload;
     class function toDateTime(const aDateTime: NSDate): TDateTime; overload;
 
+    class function toPoint(const lclPoint: TPoint): NSPoint; overload; inline;
+    class function toPoint(const point: NSPoint): TPoint; overload; inline;
+
     class function toPoint(APt: TPoint; ParentHeight: Double): NSPoint; overload;
     class function toPoint(APt: NSPoint; ParentHeight: Double): TPoint; overload;
+    class function toPoint(const APt: TPoint; const view: NSView): NSPoint; overload;
+    class function toPoint(const APt: NSPoint; const view: NSView): TPoint; overload;
 
     class function toRect(const R: TRect): CGRect; overload;
     class function toRect(const c: CGRect): TRect; overload;
     class function toSortedRect(const X1, Y1, X2, Y2: Integer): CGRect;
 
-    class function toRect(const rect: NSRect; const ParentHeight: Double): TRect; overload;
     class function toRect(const lclRect: TRect; const ParentHeight: Double): NSRect; overload;
-    class function toRect(const rect: NSRect; const view: NSView): TRect; overload;
+    class function toRect(const rect: NSRect; const ParentHeight: Double): TRect; overload;
     class function toRect(const lclRect: TRect; const view: NSView): NSRect; overload;
+    class function toRect(const rect: NSRect; const view: NSView): TRect; overload;
 
     class function toRect(const params: TCreateParams): NSRect; overload;
   end;
@@ -208,6 +213,17 @@ end;
 
 { TCocoaTypeUtil }
 
+class function TCocoaTypeUtil.toPoint(const lclPoint: TPoint): NSPoint;
+begin
+  Result:= NSMakePoint( lclPoint.X, lclPoint.y );
+end;
+
+class function TCocoaTypeUtil.toPoint(const point: NSPoint): TPoint;
+begin
+  Result.X:= Round( point.x );
+  Result.Y:= Round( point.y );
+end;
+
 class function TCocoaTypeUtil.toPoint(APt: TPoint; ParentHeight: Double): NSPoint;
 begin
   Result.X := APt.X;
@@ -218,6 +234,26 @@ class function TCocoaTypeUtil.toPoint(APt: NSPoint; ParentHeight: Double): TPoin
 begin
   Result.X := Round(APt.X);
   Result.Y := Round(ParentHeight - APt.Y);
+end;
+
+class function TCocoaTypeUtil.toPoint(
+  const APt: TPoint;
+  const view: NSView ): NSPoint;
+begin
+  if Assigned(view) and NOT view.isFlipped then
+    Result:= TCocoaTypeUtil.toPoint( APt, view.frame.size.height )
+  else
+    Result:= TCocoaTypeUtil.toPoint( APt );
+end;
+
+class function TCocoaTypeUtil.toPoint(
+  const APt: NSPoint;
+  const view: NSView ): TPoint;
+begin
+  if Assigned(view) and NOT view.isFlipped then
+    Result:= TCocoaTypeUtil.toPoint( APt, view.frame.size.height )
+  else
+    Result:= TCocoaTypeUtil.toPoint( APt );
 end;
 
 class function TCocoaTypeUtil.toSortedRect(const X1, Y1, X2, Y2: Integer): CGRect;
@@ -266,16 +302,6 @@ begin
 end;
 
 class function TCocoaTypeUtil.toRect(
-  const rect: NSRect;
-  const ParentHeight: Double ): TRect;
-begin
-  Result.Left := Round(rect.origin.x);
-  Result.Top := Round(ParentHeight - rect.size.height - rect.origin.y);
-  Result.Right := Round(rect.origin.x + rect.size.width);
-  Result.Bottom := Round(Result.Top + rect.size.height);
-end;
-
-class function TCocoaTypeUtil.toRect(
   const lclRect: TRect;
   const ParentHeight: Double ): NSRect;
 begin
@@ -287,12 +313,12 @@ end;
 
 class function TCocoaTypeUtil.toRect(
   const rect: NSRect;
-  const view: NSView ): TRect;
+  const ParentHeight: Double ): TRect;
 begin
-  if Assigned(view) and NOT view.isFlipped then
-    Result:= TCocoaTypeUtil.toRect( rect, view.frame.size.height )
-  else
-    Result:= TCocoaTypeUtil.toRect( rect );
+  Result.Left := Round(rect.origin.x);
+  Result.Top := Round(ParentHeight - rect.size.height - rect.origin.y);
+  Result.Right := Round(rect.origin.x + rect.size.width);
+  Result.Bottom := Round(Result.Top + rect.size.height);
 end;
 
 class function TCocoaTypeUtil.toRect(
@@ -303,6 +329,16 @@ begin
     Result:= TCocoaTypeUtil.toRect( lclRect, view.frame.size.height )
   else
     Result:= TCocoaTypeUtil.toRect( lclRect );
+end;
+
+class function TCocoaTypeUtil.toRect(
+  const rect: NSRect;
+  const view: NSView ): TRect;
+begin
+  if Assigned(view) and NOT view.isFlipped then
+    Result:= TCocoaTypeUtil.toRect( rect, view.frame.size.height )
+  else
+    Result:= TCocoaTypeUtil.toRect( rect );
 end;
 
 class function TCocoaTypeUtil.toDateTime(const aDateTime : TDateTime): NSDate;
