@@ -2408,7 +2408,7 @@ begin
     tested before the 2nd y axis. }
   for ax in FChart.AxisList do
   begin
-    FHitTest := ax.GetHitTestInfoAt(APoint, FGrabRadius, [ahtLine, ahtAxisStart, ahtAxisCenter, ahtAxisEnd]);
+    FHitTest := ax.GetHitTestInfoAt(APoint, FGrabRadius, [ahtLine, ahtAxisStart, ahtAxisCenter, ahtAxisEnd, ahtLabels]);
     if FHitTest <> [] then
     begin
       FAxis := ax;

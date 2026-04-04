@@ -574,8 +574,8 @@ begin
   end;
 
   if (ahtLine in ATest) and IsPointInRect(APoint, Rline) then
-    Include(Result, ahtLine)
-  else
+    Include(Result, ahtLine);
+
   if (ahtLabels in ATest) then
   begin
     for t in FMarkValues do
@@ -584,12 +584,8 @@ begin
         Include(Result, ahtLabels);
         break;
       end;
-  end
-  (*
-  if (ahtLabels in ATest) and IsPointInside(APoint) then
-    Include(Result, ahtLabels)
-    *)
-  else
+  end;
+
   if (ahtGrid in ATest) then
   begin
     R := Rax;
@@ -623,7 +619,7 @@ begin
     end;
   end;
 
-  if Result = [] then
+  if (Result = []) and not IsPointInside(APoint) then
     exit;
 
   if [ahtAxisStart, ahtAxisCenter, ahtAxisEnd] * ATest <> [] then
