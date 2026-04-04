@@ -1013,13 +1013,12 @@ function TCocoaWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
 begin
   Result := True;
   case uiAction of
-    SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 1;
+    SPI_GETWHEELSCROLLLINES:
+      PDword(pvPAram)^ := 1;
     SPI_GETWORKAREA:
-    begin
-      TCocoaTypeUtil.toRect( TCocoaScreenUtil.primaryScreen.visibleFrame,
-                   TCocoaScreenUtil.primaryScreenFrame.size.height,
-                   TRect(pvParam^) );
-    end;
+      PRect(pvParam)^ := TCocoaTypeUtil.toRect(
+                           TCocoaScreenUtil.primaryScreen.visibleFrame,
+                           TCocoaScreenUtil.primaryScreenFrame.size.height );
   else
     Result := False;
   end

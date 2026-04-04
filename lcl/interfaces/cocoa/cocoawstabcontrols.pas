@@ -385,13 +385,7 @@ begin
   pt.x := Round(AClientPos.x + lTabControl.contentRect.origin.x);
   pt.y := Round(AClientPos.y + lTabControl.contentRect.origin.y);
 
-  if lTabControl.isFlipped then
-  begin
-    lClientPos.x := pt.X;
-    lClientPos.y := pt.Y;
-  end
-  else
-    lClientPos := TCocoaTypeUtil.toPoint(pt, lTabControl.frame.size.height);
+  lClientPos:= TCocoaTypeUtil.toPoint(pt, lTabControl);
 
   lTabPage := lTabControl.tabViewItemAtPoint(lClientPos);
   if not Assigned(lTabPage) then

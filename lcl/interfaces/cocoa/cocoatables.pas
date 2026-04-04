@@ -281,6 +281,7 @@ class function TCocoaTableUtil.getRowOfLCLCoord(
   const tbl: NSTableView;
   const X,Y: Integer ): Integer;
 var
+  lclPoint: TPoint;
   pt : NSPoint;
   sc : NSScrollView;
   vr : NSRect;
@@ -296,10 +297,9 @@ begin
     vr := sc.documentVisibleRect
   else
     vr := tbl.visibleRect;
-  pt.x := X;
-  if tbl.isFlipped
-    then pt.y := Y + vr.origin.y
-    else pt.y := tbl.frame.size.height - Y - vr.origin.y;
+
+  lclPoint:= TPoint.Create( X, Y+Round(vr.origin.y) );
+  pt:= TCocoaTypeUtil.toPoint( lclPoint, tbl );
 
   Result := tbl.rowAtPoint(pt);
 end;

@@ -1069,7 +1069,7 @@ end;
 
 function TCocoaScrollView.lclClientFrame: TRect;
 begin
-  TCocoaTypeUtil.toRect(contentView.frame, frame.size.height, Result);
+  Result:= TCocoaTypeUtil.toRect(contentView.frame, frame.size.height);
 end;
 
 function TCocoaScrollView.lclContentView: NSView;

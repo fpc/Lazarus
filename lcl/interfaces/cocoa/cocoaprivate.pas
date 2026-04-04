@@ -840,11 +840,9 @@ begin
   if (AParams.WndParent <> 0) then
     p := NSView(AParams.WndParent).lclContentView;
 
-  if Assigned(p) and p.isFlipped then
-    TCocoaTypeUtil.toRect(Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
-      p.frame.size.height, ns)
-  else
-    ns := NSMakeRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+  ns:= TCocoaTypeUtil.toRect(
+    Types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
+    p );
 
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   if Assigned(p) then
@@ -926,11 +924,10 @@ procedure LCLViewExtension.lclInvalidateRect(const r:TRect);
 var
   view : NSView;
 begin
-  view:=lclContentView;
-  if Assigned(view) then
-    view.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, view) )
-  else
-    self.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, Self) );
+  view:= self.lclContentView;
+  if NOT Assigned(view) then
+    view:= Self;
+  view.setNeedsDisplayInRect( TCocoaTypeUtil.toRect(r, view) )
   //todo: it might be necessary to always invalidate self
   //      just need to get offset of the contentView relative for self
 end;
@@ -960,11 +957,7 @@ var
 begin
   // Convert from View-lcl to View-cocoa
   rect.size:= NSZeroSize;
-  rect.origin.x:= X;
-  if isFlipped then
-    rect.origin.y:= Y
-  else
-    rect.origin.y:= frame.size.height - y;
+  rect.origin:= TCocoaTypeUtil.toPoint( TPoint.Create(X,Y), self );
 
   // Convert from View-cocoa to Window-cocoa
   rect.origin:= self.convertPoint_ToView( rect.origin, nil );
@@ -983,6 +976,7 @@ end;
 procedure LCLViewExtension.lclScreenToLocal(var X, Y: Integer);
 var
   P: NSPoint;
+  lclPoint: TPoint;
 begin
   // 1. convert from screen to window
   // use window function to onvert from Screen-lcl to Window-lcl
@@ -996,11 +990,9 @@ begin
   P := convertPoint_FromView(P, nil);
 
   // Convert from View-cocoa to View-lcl
-  X := Round(P.x);
-  if isFlipped then
-    Y := Round(p.y)
-  else
-    Y := Round(frame.size.height-P.y);   // convert to Cocoa system
+  lclPoint:= TCocoaTypeUtil.toPoint( P, self );
+  X:= lclPoint.X;
+  Y:= lclPoint.Y;
 end;
 
 function LCLViewExtension.lclParent:id;
@@ -1009,34 +1001,20 @@ begin
 end;
 
 function LCLViewExtension.lclFrame: TRect;
-var
-  v: NSView;
 begin
-  v := superview;
-  if Assigned(v) and not v.isFlipped then
-    TCocoaTypeUtil.toRect(frame, v.frame.size.height, Result)
-  else
-    Result := TCocoaTypeUtil.toRect(frame);
+  Result:= TCocoaTypeUtil.toRect(self.frame, superview);
   TCocoaViewUtil.addLayoutDelta( lclGetFrameToLayoutDelta, Result);
 end;
 
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
 var
   ns: NSRect;
-  svHeight: CGFloat;
   rr : TRect;
 begin
   rr := r;
   TCocoaViewUtil.subLayoutDelta( lclGetFrameToLayoutDelta, rr);
 
-  svHeight := TCocoaViewUtil.getSuperViewHeight(Self);
-  if Assigned(superview) and not superview.isFlipped then
-  begin
-    TCocoaTypeUtil.toRect(rr, svHeight, ns)
-  end
-  else
-    ns := TCocoaTypeUtil.toRect(rr);
-
+  ns := TCocoaTypeUtil.toRect(rr, superview);
   if ns.size.width<1 then ns.size.width:=1;
   if ns.size.height<1 then ns.size.height:=1;
 

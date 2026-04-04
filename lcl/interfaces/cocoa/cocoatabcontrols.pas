@@ -416,7 +416,6 @@ class function TCocoaTabControlUtil.getTabsRect(
 var
   i  : integer;
   sv : NSView;
-  f  : NSRect;
 begin
   Result:=Assigned(tabs);
   if not Result then Exit;
@@ -430,11 +429,7 @@ begin
        or (sv.isKindOfClass(TCocoaTabPageView))
     then Continue;
 
-    f := sv.frame;
-    if tabs.isFlipped then
-      r := TCocoaTypeUtil.toRect( f )
-    else
-      TCocoaTypeUtil.toRect( f, tabs.frame.size.height, r );
+    r:= TCocoaTypeUtil.toRect(sv.frame, tabs);
     Result := true;
     Exit;
   end;
@@ -474,7 +469,7 @@ begin
   inherited;
   newValue.origin:= NSZeroPoint;
   newValue.size.height:= newValue.size.height + 4;
-  TCocoaTypeUtil.toRect( newValue, self.frame.size.height, lclRect );
+  lclRect:= TCocoaTypeUtil.toRect( newValue, self );
   _boxView.lclSetFrame( lclRect );
 end;
 
@@ -498,13 +493,13 @@ begin
   lParent := tabView;
   if lParent <> nil then
   begin
-    svh := lParent.contentRect.size.height;
-    TCocoaTypeUtil.toRect(lParent.contentRect, svh, Result);
+    svh:= lParent.contentRect.size.height;
+    Result:= TCocoaTypeUtil.toRect(lParent.contentRect, svh);
   end
   else
   begin
-    svh := tabView.frame.size.height;
-    TCocoaTypeUtil.toRect(tabView.contentRect, svh, Result);
+    svh:= tabView.frame.size.height;
+    Result:= TCocoaTypeUtil.toRect(tabView.contentRect, svh);
   end;
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaTabPage.lclFrame] '+dbgs(Result)+' '+NSStringToString(Self.label_));
@@ -644,10 +639,7 @@ begin
       Result := TCocoaTypeUtil.toRect( f );
     end;
   else
-    if isFlipped then
-      Result:=TCocoaTypeUtil.toRect( contentRect )
-    else
-      TCocoaTypeUtil.toRect( contentRect, frame.size.height, Result );
+    Result:= TCocoaTypeUtil.toRect( contentRect, self );
   end;
 
   //if tabs are hidden, frame layout should not be taken into account

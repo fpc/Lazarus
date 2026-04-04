@@ -981,7 +981,7 @@ begin
   if NOT dst.ctx.isFlipped then begin
     CGContextTranslateCTM(dst.ctx.CGContext, 0, dst.Size.cy);
     CGContextScaleCTM(dst.ctx.CGContext, 1, -1);
-    TCocoaTypeUtil.toRect(R, dst.size.cy, dstRect);
+    dstRect:= TCocoaTypeUtil.toRect(R, dst.size.cy);
   end else begin
     dstRect:= TCocoaTypeUtil.toRect(R);
   end;
