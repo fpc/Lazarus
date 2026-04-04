@@ -243,6 +243,7 @@ type
     FAxisTransf: TTransformFunc;
     FClipRangeDelta: Integer;
     FClipRect: ^TRect;
+    FCurrLabelPoly: TPointArray;
     FDrawer: IChartDrawer;
     FPrevCoord: Integer;
     FScaledTickInnerLength: Integer;
@@ -371,7 +372,7 @@ end;
 procedure TAxisDrawHelper.DrawLabel(ALabelCenter: TPoint; const AText: String);
 begin
   ALabelCenter += FZOffset;
-  FAxis.Marks.DrawLabel(FDrawer, ALabelCenter, ALabelCenter, AText, FPrevLabelPoly);
+  FAxis.Marks.DrawLabel(FDrawer, ALabelCenter, ALabelCenter, AText, FPrevLabelPoly, FCurrLabelPoly);
 end;
 
 procedure TAxisDrawHelper.DrawCenteredMark(

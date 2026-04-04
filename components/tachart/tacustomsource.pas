@@ -81,6 +81,7 @@ type
   TChartValueText = record
     FText: String;
     FValue: Double;
+    FPolygon: TPointArray;
   end;
   PChartValueText = ^TChartValueText;
 

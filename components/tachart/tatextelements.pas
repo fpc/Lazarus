@@ -96,6 +96,9 @@ type
     procedure DrawLabel(
       ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
       const AText: String; var APrevLabelPoly: TPointArray);
+    procedure DrawLabel(
+      ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
+      const AText: String; var APrevLabelPoly, ACurrLabelPoly: TPointArray);
     function GetLabelPolygon(
       ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
     function IsPointInLabel(ADrawer: IChartDrawer; 
@@ -362,7 +365,15 @@ procedure TChartTextElement.DrawLabel(
   ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
   const AText: String; var APrevLabelPoly: TPointArray);
 var
-  labelPoly: TPointArray;
+  poly: TPointArray;
+begin
+  DrawLabel(ADrawer, ADataPoint, ALabelCenter, AText, APrevLabelPoly, poly);
+end;
+
+procedure TChartTextElement.DrawLabel(
+  ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
+  const AText: String; var APrevLabelPoly, ACurrLabelPoly: TPointArray);
+var
   ptText, P: TPoint;
   i, w: Integer;
   clr: TColor;
@@ -370,18 +381,20 @@ begin
   ApplyLabelFont(ADrawer);
   ptText := ADrawer.TextExtent(AText, FTextFormat);
   w := ptText.X;
-  labelPoly := GetLabelPolygon(ADrawer, ptText);
-  for i := 0 to High(labelPoly) do
-    labelPoly[i] += ALabelCenter;
+  ACurrLabelPoly := GetLabelPolygon(ADrawer, ptText);
+  for i := 0 to High(ACurrLabelPoly) do
+    ACurrLabelPoly[i] += ALabelCenter;
   if CalloutAngle > 0 then
-    labelPoly := MakeCallout(
-      labelPoly, ALabelCenter, ADataPoint, OrientToRad(CalloutAngle));
+    ACurrLabelPoly := MakeCallout(
+      ACurrLabelPoly, ALabelCenter, ADataPoint, OrientToRad(CalloutAngle));
 
   if (OverlapPolicy = opHideNeighbour) and
-    IsPolygonIntersectsPolygon(APrevLabelPoly, labelPoly)
-  then
+    IsPolygonIntersectsPolygon(APrevLabelPoly, ACurrLabelPoly) then
+  begin
+    ACurrLabelPoly := nil;
     exit;
-  APrevLabelPoly := labelPoly;
+  end;
+  APrevLabelPoly := ACurrLabelPoly;
 
   if not Clipped then
     ADrawer.ClippingStop;
@@ -401,7 +414,7 @@ begin
       ADrawer.SetPenColor(GetFrame.Color)
     else
       ADrawer.SetPenParams(psClear, clTAColor);
-    ADrawer.Polygon(labelPoly, 0, Length(labelPoly));
+    ADrawer.Polygon(ACurrLabelPoly, 0, Length(ACurrLabelPoly));
   end;
 
   case FRotationCenter of
