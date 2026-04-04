@@ -963,9 +963,16 @@ begin
 end;
 
 procedure TWatchesDlg.SnapshotAnyChanged(Sender: TObject);
+var
+  t: TIdeWatches;
 begin
-  if SnapshotManager.Snapshots.Count = 0 then
+  if SnapshotManager.Snapshots.Count = 0 then begin
+    t := FWatchesInView;
+    FWatchesInView := WatchesMonitor.CurrentWatches;
     FWatchTreeMgr.ClearOutdatedTrackingIdData;
+    if FWatchesInView <> t then
+      FWatchesInView := nil;
+  end;
 end;
 
 procedure TWatchesDlg.actEnableSelectedExecute(Sender: TObject);
