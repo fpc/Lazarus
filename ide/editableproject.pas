@@ -955,7 +955,7 @@ begin
   // load defines used for custom options
   LoadOtherDefines(Path);
   // load unit and session info
-  LoadUnits(Path,false);
+  LoadUnits(Path,true);
   LoadSessionInfo(Path);
 
   if FFileVersion>=11 then
