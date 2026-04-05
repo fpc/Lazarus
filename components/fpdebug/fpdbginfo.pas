@@ -314,6 +314,21 @@ type
     constructor Create(AValue: QWord; ASigned: Boolean = True);
   end;
 
+  { TFpValueRegister }
+
+  TFpValueRegister = class(TFpValueConstNumber)
+  private
+    FRegNum: integer;  // DwarfIdx
+    FValSize: integer;
+    FContext: TFpDbgSimpleLocationContext;
+  protected
+    function DoGetSize(out ASize: TFpDbgValueSize): Boolean; override;
+    procedure SetAsInteger(AValue: Int64); override;
+    procedure SetAsCardinal(AValue: QWord); override;
+  public
+    constructor Create(AValue: QWord; ASize: integer; ARegNum: integer; ASigned: Boolean = True; AContext: TFpDbgSimpleLocationContext = nil);
+  end;
+
   { TFpValueConstChar }
 
   TFpValueConstChar = class(TFpValueConstWithType) // skChar / Not for strings
@@ -1475,6 +1490,37 @@ begin
   inherited Create;
   FValue := AValue;
   FSigned := ASigned;
+end;
+
+{ TFpValueRegister }
+
+function TFpValueRegister.DoGetSize(out ASize: TFpDbgValueSize): Boolean;
+begin
+  Result := True;
+  ASize := SizeVal(FValSize);
+end;
+
+procedure TFpValueRegister.SetAsInteger(AValue: Int64);
+begin
+  if not FContext.WriteSignedInt(RegisterLoc(FRegNum), SizeVal(FValSize), AValue) then begin
+    SetLastError(FContext.LastMemError);
+  end;
+end;
+
+procedure TFpValueRegister.SetAsCardinal(AValue: QWord);
+begin
+  if not FContext.WriteSignedInt(RegisterLoc(FRegNum), SizeVal(FValSize), AValue) then begin
+    SetLastError(FContext.LastMemError);
+  end;
+end;
+
+constructor TFpValueRegister.Create(AValue: QWord; ASize: integer; ARegNum: integer;
+  ASigned: Boolean; AContext: TFpDbgSimpleLocationContext);
+begin
+  inherited Create(AValue, ASigned);
+  FValSize := ASize;
+  FRegNum := ARegNum;
+  FContext := AContext;
 end;
 
 { TFpValueConstFloat }

@@ -4404,7 +4404,7 @@ begin
   if (RSize <= 8) and
      FScope.LocationContext.ReadUnsignedInt(RegisterLoc(RNum), SizeVal(RSize), RVal)
   then begin
-    Result := TFpValueConstNumber.Create(RVal, False);
+    Result := TFpValueRegister.Create(RVal, RSize, RNum, False, FScope.LocationContext);
   end
   else begin
     Reg := FScope.LocationContext.GetRegister(RNum);
