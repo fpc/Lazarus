@@ -234,7 +234,6 @@ type
     procedure GridLine(ACoord: Integer); virtual; abstract;
     procedure InternalAxisLine(
       APen: TChartPen; const AStart, AEnd: TPoint; AAngle: Double);
-    function IsInClipRange(ACoord: Integer): Boolean;
     procedure LineZ(AP1, AP2: TPoint); inline;
     function TryApplyStripes: Boolean; inline;
   public
@@ -270,6 +269,7 @@ type
     procedure GetClipRange(out AMin, AMax: Integer); virtual; abstract;
     function GetDefaultPenColor: TColor;
     function GraphToImage(AGraph: Double): Integer; virtual; abstract;
+    function IsInClipRange(ACoord: Integer): Boolean;
     property MaxForMarks: Double read FMaxForMarks;
     property MinForMarks: Double read FMinForMarks;
   end;

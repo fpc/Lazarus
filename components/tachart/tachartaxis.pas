@@ -177,6 +177,8 @@ type
     procedure DrawAxisLine;
     procedure DrawTitle(ASize: Integer);
     function GetChart: TCustomChart; inline;
+    function GetIndexOfFirstVisibleMark: Integer;
+    function GetIndexOfLastVisibleMark: Integer;
     function GetOrthogonalAxis: TChartAxis;
     function GetTransform: TChartAxisTransformations;
     function IsDefaultPosition: Boolean;
@@ -810,6 +812,30 @@ begin
   if not Visible then Result := Result + ', ' + rsHidden;
   if IsFlipped then Result := Result + ', ' + rsInverted;
   Result := Result + FormatIfNotEmpty(' (%s)', Title.Caption);
+end;
+
+function TChartAxis.GetIndexOfFirstVisibleMark: Integer;
+var
+  coord: Integer;
+begin
+  for Result := 0 to High(FMarkValues) do begin
+    coord := FHelper.GraphToImage(FMarkValues[Result].FValue);
+    if FHelper.IsInClipRange(coord) then
+      exit;
+  end;
+  Result := -1;
+end;
+
+function TChartAxis.GetIndexOfLastVisibleMark: Integer;
+var
+  coord: Integer;
+begin
+  for Result := High(FMarkValues) downto 0 do begin
+    coord := FHelper.GraphToImage(FMarkValues[Result].FValue);
+    if FHelper.IsInClipRange(coord) then
+      exit;
+  end;
+  Result := -1;
 end;
 
 function TChartAxis.GetMarks: TChartAxisMarks;
