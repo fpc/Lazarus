@@ -665,8 +665,13 @@ begin
     exit(mrCancel);
   end;
   DeclTool:=CodeToolBoss.FindCodeToolForSource(StartSrcCode);
-  if DeclTool=nil then
-    exit(mrCancel);
+  if DeclTool=nil then begin
+    if StartSrcCode.LastIncludedByFile<>'' then
+      DeclTool:=CodeToolBoss.FindCodeToolForSource(
+        CodeToolBoss.FindFile(StartSrcCode.LastIncludedByFile));
+    if DeclTool=nil then
+      exit(mrCancel);
+  end;
   Kind:=friDeclaration;
   if DeclTool.TruePredefinedResult or DeclTool.TrueSelf then begin  // stay where you are
     DeclCodeXY.X:=StartCaretXY.X;
