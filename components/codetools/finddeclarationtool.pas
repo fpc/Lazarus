@@ -2502,6 +2502,26 @@ begin
         {$ENDIF}
       end;
       exit;
+    end else begin
+      if (cmsResult in CursorPos.Code.Scanner.CompilerModeSwitches) and
+      (CursorNode.Desc  = ctnVarDefinition) and
+      (CursorNode.FirstChild<>nil) and
+      not CursorNode.HasParentOfType(ctnParameterList) and
+      NodeIsInsideFunction(CursorNode) and
+      (CompareIdentifiers(PChar('Result'),PChar(@Src[CursorNode.StartPos]))=0)
+      then begin
+      // var Result declared inside a function e.g. in a nested procedure cannot be
+      // re-declaration of predefined Result, stop searching in previous declarations
+        NewExprType.Desc:=xtContext;
+        NewExprType.Context.Node:=CursorNode;
+        NewExprType.Context.Tool:=Self;
+        CleanPosToCaret(CursorNode.StartPos, NewPos);
+        NewTopLine := NewPos.Y;
+        BlockTopLine := NewTopLine;
+        BlockBottomLine := NewPos.Y;
+        Result := True;
+        exit;
+      end;
     end;
 
     PredefinedResult:=MaybePredefinedResult(CursorNode,CleanCursorPos,
