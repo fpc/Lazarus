@@ -726,7 +726,7 @@ begin
       exit;
 
     ResValue := APasExpr.ResultValue;
-    if ResValue = nil then
+    if (ResValue = nil) or IsError(ResValue.LastError) then
       exit;
 
     FSuccess := True;
@@ -755,6 +755,8 @@ begin
         otherwise
           FSuccess := False;
       end;
+      if FSuccess then
+        FSuccess := not IsError(ResValue.LastError);
     except
       FSuccess := False;
     end;
