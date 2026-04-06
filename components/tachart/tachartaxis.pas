@@ -179,6 +179,7 @@ type
     function GetChart: TCustomChart; inline;
     function GetIndexOfFirstVisibleMark: Integer;
     function GetIndexOfLastVisibleMark: Integer;
+    function GetMarkIndexAt(APoint: TPoint): Integer;
     function GetOrthogonalAxis: TChartAxis;
     function GetTransform: TChartAxisTransformations;
     function IsDefaultPosition: Boolean;
@@ -530,6 +531,7 @@ var
   dist, loc: Integer;
   p, prev: Integer;
   pt: Double;
+  idx: Integer;
   t: TChartValueText;
 begin
   Result := [];
@@ -580,12 +582,9 @@ begin
 
   if (ahtLabels in ATest) then
   begin
-    for t in FMarkValues do
-      if IsPointInPolygon(APoint, t.FPolygon) then
-      begin
-        Include(Result, ahtLabels);
-        break;
-      end;
+    idx := GetMarkIndexAt(APoint);
+    if idx > -1 then
+      Include(Result, ahtLabels);
   end;
 
   if (ahtGrid in ATest) then
@@ -835,6 +834,16 @@ begin
     if FHelper.IsInClipRange(coord) then
       exit;
   end;
+  Result := -1;
+end;
+
+function TChartAxis.GetMarkIndexAt(APoint: TPoint): Integer;
+var
+  t: TChartValueText;
+begin
+  for Result := 0 to High(FMarkValues) do
+    if IsPointInPolygon(APoint, FMarkValues[Result].FPolygon) then
+      exit;
   Result := -1;
 end;
 

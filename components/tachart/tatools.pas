@@ -647,6 +647,7 @@ type
   TAxisClickTool = class(TChartTool)
   private
     FAxis: TChartAxis;
+    FClickedLabelIndex: Integer;
     FGrabRadius: Integer;
     FHitTest: TChartAxisHitTests;
     FOnClick: TAxisClickEvent;
@@ -656,6 +657,8 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
+    property ClickedAxis: TChartAxis read FAxis;
+    property ClickedLabelIndex: Integer read FClickedLabelIndex;
   published
     property GrabRadius: Integer read FGrabRadius write FGrabRadius default 4;
     property OnClick: TAxisClickEvent read FOnClick write FOnClick;
@@ -2396,12 +2399,15 @@ begin
   inherited Create(AOwner);
   SetPropDefaults(Self, ['GrabRadius']);
   FIgnoreClipRect := true;      // Allow mousedown outside cliprect
+  FClickedLabelIndex := -1;
 end;
 
 function TAxisClickTool.GetHitTestInfo(APoint: TPoint): Boolean;
 var
   ax: TChartAxis;
 begin
+  FClickedLabelIndex := -1;
+
   { We must test the axes twice because some positions may be misinterpreted
     to belong to other axes. A click on the axis line of an additional left axis
     may be interpreted as a click on the bottom axis since the bottom axis usually
@@ -2412,6 +2418,8 @@ begin
     if FHitTest <> [] then
     begin
       FAxis := ax;
+      if (ahtLabels in FHitTest) then
+        FClickedLabelIndex := ax.GetMarkIndexAt(APoint);
       Result := true;
       exit;
     end;
@@ -2421,6 +2429,8 @@ begin
     FHitTest := ax.GetHitTestInfoAt(APoint, FGrabRadius, ALL_CHARTAXIS_HITTESTS - [ahtLine]);
     if FHitTest <> [] then begin
       FAxis := ax;
+      if (ahtLabels in FHitTest) then
+        FClickedLabelIndex := ax.GetMarkIndexAt(APoint);
       Result := true;
       exit;
     end;
