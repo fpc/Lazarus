@@ -1,4 +1,4 @@
-unit CocoaWSScrollers;
+unit CocoaWSScrolling;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}

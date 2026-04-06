@@ -12,7 +12,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit CocoaScrollers;
+unit CocoaScrollerImpl;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec2}

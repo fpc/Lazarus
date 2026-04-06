@@ -31,7 +31,7 @@ uses
   CocoaPrivate, CocoaWSService, CocoaWSModalService, CocoaGDIObjects, CocoaThemes,
   CocoaApplication, CocoaWindows, CocoaMenus, CocoaCursor, CocoaCaret,
   CocoaConst, CocoaConfig, CocoaUtils, Cocoa_Extra,
-  CocoaScrolling, CocoaWSScrollers,
+  CocoaScrolling, CocoaWSScrolling,
   CocoaWSClipboard, CocoaTextEdits,
   LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus, ExtCtrls,

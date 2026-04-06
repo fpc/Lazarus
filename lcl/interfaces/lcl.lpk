@@ -2396,9 +2396,9 @@ end;"/>
         <UnitName Value="CocoaTextEdits"/>
       </Item483>
       <Item484>
-        <Filename Value="cocoa/cocoascrollers.pas"/>
+        <Filename Value="cocoa/cocoascrollerimpl.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaScrollers"/>
+        <UnitName Value="cocoascrollerimpl"/>
       </Item484>
       <Item485>
         <Filename Value="cocoa/cocoawsclipboard.pas"/>
@@ -2640,9 +2640,9 @@ end;"/>
         <UnitName Value="Cocoa_Extra"/>
       </Item534>
       <Item535>
-        <Filename Value="cocoa/cocoawsscrollers.pas"/>
+        <Filename Value="cocoa/cocoawsscrolling.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSScrollers"/>
+        <UnitName Value="cocoawsscrolling"/>
       </Item535>
       <Item536>
         <Filename Value="cocoa/cocoacollectionview.pas"/>

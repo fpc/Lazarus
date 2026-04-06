@@ -15,7 +15,7 @@ uses
   // LCL Cocoa
   CocoaPrivate, CocoaGDIObjects,
   CocoaListControl, CocoaTables, CocoaScrolling,
-  CocoaWSListView, CocoaWSScrollers;
+  CocoaWSListView, CocoaWSScrolling;
 
 type
 
