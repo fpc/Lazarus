@@ -63,6 +63,10 @@
         <UnitName Value="CodepagesCommon"/>
       </Item>
       <Item>
+        <Filename Value="colortty.pas"/>
+        <UnitName Value="ColorTTY"/>
+      </Item>
+      <Item>
         <Filename Value="commoncodepages.inc"/>
         <Type Value="Include"/>
       </Item>
@@ -249,6 +253,10 @@
       <Item>
         <Filename Value="laztracer.pas"/>
         <UnitName Value="LazTracer"/>
+      </Item>
+      <Item>
+        <Filename Value="laztty.pas"/>
+        <UnitName Value="LazTTY"/>
       </Item>
       <Item>
         <Filename Value="lazunicode.pas"/>

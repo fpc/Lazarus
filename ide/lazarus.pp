@@ -59,7 +59,7 @@ uses
   SysUtils,
   Interfaces,
   IDEInstances,//keep IDEInstances up so that it will be initialized soon
-  Forms, LazUtilities, LazLoggerBase,
+  Forms, LazUtilities, LazLoggerBase, ColorTTY,
   IDEOptionsIntf,
   LazConf, IDEGuiCmdLine,
   Splash,
@@ -85,8 +85,7 @@ uses
     SimpleWebServerGUI, LazProjectGroups, Pas2jsDsgn, charactermap_ide_pkg,
     AnchorDockingDsgn, DockedFormEditor,
   {$ENDIF}
-  MainBase,
-  ColorTTY;
+  MainBase;
 
 {$I revision.inc}
 {$R lazarus.res}

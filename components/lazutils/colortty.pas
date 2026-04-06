@@ -19,7 +19,8 @@
  ***************************************************************************
 
  Abstract:
-   Unit for coloring Lazarus and LazBuild messages in LazLogger
+   Unit for coloring LazLogger messages. Used also in Lazarus and LazBuild.
+   Just add this unit to a uses section and it registers itself for LazLogger.
 }
 unit ColorTTY;
 
