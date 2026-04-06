@@ -22,10 +22,13 @@ unit CocoaScrollerImpl;
 interface
 
 uses
-  Math, Classes, SysUtils, LclType,
-  Controls, StdCtrls, Forms,
+  Classes, SysUtils,
   MacOSAll, CocoaAll,
-  CocoaPrivate, CocoaScrolling, CocoaCursor, CocoaConst, CocoaConfig, CocoaUtils;
+  CocoaScrolling, CocoaConfig;
+
+function CocoaScrollStyleManagerCreatorImpl(
+  const sv: NSView;
+  const style: NSScrollerStyle ): TCocoaScrollStyleManager;
 
 implementation
 
@@ -119,6 +122,22 @@ type
     procedure showScrollBar( scroller:NSScroller; now:Boolean=True ); override;
     procedure tempHideScrollBar( scroller:NSScroller ); override;
   end;
+
+function CocoaScrollStyleManagerCreatorImpl(
+  const sv: NSView;
+  const style: NSScrollerStyle ): TCocoaScrollStyleManager;
+var
+  manualScrollView: TCocoaManualScrollView Absolute sv;
+begin
+  if style = NSScrollerStyleLegacy then begin
+    if Assigned(sv) then
+      Result:= TCocoaScrollStyleManagerLegacy.createForScrollView( manualScrollView )
+    else
+      Result:= TCocoaScrollStyleManagerLegacy.createForScrollBar;
+  end else begin
+    Result:= TCocoaScrollStyleManagerOverlay.createForScrollView( manualScrollView );
+  end;
+end;
 
 { TCocoaScrollBarEffectAlpha }
 

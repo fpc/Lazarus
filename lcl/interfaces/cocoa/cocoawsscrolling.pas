@@ -1,12 +1,13 @@
 unit CocoaWSScrolling;
 
 {$mode objfpc}{$H+}
-{$modeswitch objectivec1}
+{$modeswitch objectivec2}
 
 interface
 
 uses
-  Classes, SysUtils, LCLType, Controls, Forms,
+  Classes, SysUtils,
+  LCLType, Controls, Forms,
   WSForms,
   CocoaAll, CocoaPrivate, CocoaCommonCallback, CocoaCustomControl,
   CocoaScrolling, CocoaScrollerImpl;
@@ -214,6 +215,7 @@ begin
 end;
 
 initialization
+  CocoaScrollStyleManagerCreator:= @CocoaScrollStyleManagerCreatorImpl;
   ASyncLCLControlAdjustSizer:= TASyncLCLControlAdjustSizer.Create;
 
 finalization

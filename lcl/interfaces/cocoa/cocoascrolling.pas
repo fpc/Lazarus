@@ -8,10 +8,10 @@ unit CocoaScrolling;
 interface
 
 uses
-  Math, Classes, SysUtils, LclType,
-  Controls, StdCtrls, Forms,
-  MacOSAll, CocoaAll, CocoaCursor,
-  CocoaPrivate, CocoaConst, CocoaConfig, CocoaUtils;
+  Classes, SysUtils, Math,
+  LCLType, Controls, StdCtrls, Forms,
+  MacOSAll, CocoaAll,
+  CocoaPrivate, CocoaCursor, CocoaConst, CocoaConfig, CocoaUtils;
 
 type
 
