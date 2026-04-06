@@ -1931,7 +1931,7 @@ end;
 procedure TCocoaWSListView_TableViewHandler.SetScrollBars(
   const AValue: TScrollStyle);
 begin
-  TCocoaScrollUtil.setScrollStyle(_listView.scrollView, AValue);
+  TCocoaScrollingUtil.setScrollStyle(_listView.scrollView, AValue);
 
   {$ifdef BOOLFIX}
   _listView.setNeedsDisplay__(Ord(true));

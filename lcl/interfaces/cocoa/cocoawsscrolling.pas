@@ -22,9 +22,9 @@ type
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
-  { TCocoaWSScrollerUtil }
+  { TCocoaWSScrollingUtil }
 
-  TCocoaWSScrollerUtil = class
+  TCocoaWSScrollingUtil = class
   public
     class function embedInScrollView(
       const AView: NSView;
@@ -55,9 +55,9 @@ type
 var
   ASyncLCLControlAdjustSizer: TASyncLCLControlAdjustSizer;
 
-{ TCocoaWSScrollerUtil }
+{ TCocoaWSScrollingUtil }
 
-class function TCocoaWSScrollerUtil.embedInScrollView(
+class function TCocoaWSScrollingUtil.embedInScrollView(
   const AView: NSView;
   const AReleaseView: Boolean ): TCocoaScrollView;
 var
@@ -87,7 +87,7 @@ begin
   TCocoaViewUtil.setDefaultMargin(Result);
 end;
 
-class function TCocoaWSScrollerUtil.embedInManualScrollView(
+class function TCocoaWSScrollingUtil.embedInManualScrollView(
   const AView: NSView ): TCocoaManualScrollView;
 var
   r: TRect;
@@ -123,7 +123,7 @@ begin
     TCocoaCustomControl(AView).auxMouseByParent := true;
 end;
 
-class function TCocoaWSScrollerUtil.embedInManualScrollHost(
+class function TCocoaWSScrollingUtil.embedInManualScrollHost(
   const AView: TCocoaManualScrollView ): TCocoaManualScrollHost;
 var
   r: TRect;
@@ -155,7 +155,7 @@ begin
   TCocoaViewUtil.setDefaultMargin(Result);
 end;
 
-class procedure TCocoaWSScrollerUtil.asyncAdjustSize(
+class procedure TCocoaWSScrollingUtil.asyncAdjustSize(
   const control: TWinControl);
 begin
   if NSScroller.preferredScrollerStyle = NSScrollerStyleOverlay then
@@ -189,7 +189,7 @@ var
   lcl : TLCLCommonCallback;
 begin
   scrollcon:= TCocoaScrollView.alloc.lclInitWithCreateParams(AParams);
-  TCocoaScrollUtil.setBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
+  TCocoaScrollingUtil.setBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
   scrollcon.setDrawsBackground(false); // everything is covered anyway
   scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
   scrollcon.setAutohidesScrollers(True);
@@ -211,7 +211,7 @@ class procedure TCocoaWSScrollingWinControl.SetBorderStyle(
   const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
   if not Assigned(AWinControl) or not AWincontrol.HandleAllocated then Exit;
-  TCocoaScrollUtil.setBorderStyle( NSScrollView(AWinControl.Handle), ABorderStyle);
+  TCocoaScrollingUtil.setBorderStyle( NSScrollView(AWinControl.Handle), ABorderStyle);
 end;
 
 initialization

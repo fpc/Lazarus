@@ -163,7 +163,7 @@ begin
 
   TCocoaWSListBoxUtil.setStyle(list, TCustomListBox(AWinControl).Style);
 
-  scroll := TCocoaWSScrollerUtil.embedInScrollView(list);
+  scroll := TCocoaWSScrollingUtil.embedInScrollView(list);
   if not Assigned(scroll) then
   begin
     Result := 0;
@@ -173,7 +173,7 @@ begin
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
 
-  TCocoaScrollUtil.setBorderStyle(scroll, lclCheckListBox.BorderStyle);
+  TCocoaScrollingUtil.setBorderStyle(scroll, lclCheckListBox.BorderStyle);
   TCocoaViewUtil.updateFocusRing(list, AWinControl);
 
   Result := TLCLHandle(scroll);
