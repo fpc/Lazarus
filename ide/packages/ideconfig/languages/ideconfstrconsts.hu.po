@@ -9,10 +9,24 @@ msgstr ""
 msgid "FPC message file"
 msgstr "FPC üzenetfájl"
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr "Megszakítva"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "A(z) \"%s\" fájl már létezik.%sLecseréli?"
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr "nem futtatható: \"%s\""
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr "nem található a program \"%s\""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -142,6 +156,25 @@ msgstr "Hiba %s innen történő betöltése közben:%s%s%s%s"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "Hiba %s ide történő mentése közben:%s%s%s%s"
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr "a(z) \"%s\" állomány egy könyvtár"
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr "a \"%s\" állománynak nincs futási engedélye"
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr "Kilépési kód: %s"
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr "a makrók feloldása sikertelen"
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -190,6 +223,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr "felszabadított puffersorok: %s"
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal források könyvtára"
@@ -201,6 +239,16 @@ msgstr "IDE építési beállítások"
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "Kihagyás és folytatás"
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr "Érvényytelen makrók ebben: \"%s\""
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr "Érvénytelen makrók \"%s\" a külső eszközben: \"%s\""
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -231,6 +279,16 @@ msgstr "LCL vezérlőkészlet típusa"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Futtatható fájl készítése"
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr "hiányzó könyvtár: \"%s\""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr "hiányzó futtatható állomány: \"%s\""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
@@ -278,6 +336,11 @@ msgstr "Felülírja a fájlt?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Lemezen lévő fájl felülírása"
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
+msgstr "\"%s\" elemző: %s"
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -365,6 +428,10 @@ msgstr "Forrás OS"
 msgid "Subtarget"
 msgstr ""
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "Sikerült"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -438,6 +505,11 @@ msgstr "Művelet: fájl elérési útjának kibontása"
 msgid "(unknown macro: %s)"
 msgstr "(ismeretlen makró: %s)"
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr "a(z) \"%s\" eszköz nem tartalmaz futtatható állományt"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "A fájl másolása nem lehetséges"
@@ -471,6 +543,11 @@ msgstr "A fájl nem hozható létre:%s\"%s\""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "A(z) \"%s\" hivatkozás nem hozható létre erre: \"%s\""
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr "nem futtatható: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "A fájl olvasása nem lehetséges"
@@ -484,6 +561,10 @@ msgstr "Nem olvasható a fájl: \"%s\"."
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "Nem olvasható a fájl: \"%s\"%sHiba: %s"
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr "Nem olvasható a folyamat kilépési állapota (ExitStatus)"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

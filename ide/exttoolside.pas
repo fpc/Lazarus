@@ -12,7 +12,7 @@ uses
   LazLoggerBase,
   // IDEIntf
   IDEExternToolIntf, IDEMsgIntf, PackageIntf, LazIDEIntf,
-  // IDE
+  // IdeConfig
   ExtTools;
 
 type

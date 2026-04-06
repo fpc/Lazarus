@@ -55,9 +55,9 @@ uses
   IdeIntfStrConsts, PropEdits, IDEDialogs, IDECommands, IDEUtils,
   IDEMsgIntf, MenuIntf, SrcEditorIntf, LazIDEIntf,
   // IdeConfig
-  TransferMacros, EnvironmentOpts,
+  TransferMacros, EnvironmentOpts, ExtTools,
   // IDE
-  LazarusIDEStrConsts, ExtTools, KeyMapping, EditorOptions;
+  LazarusIDEStrConsts, KeyMapping, EditorOptions;
 
 const
   ExternalToolOptionsVersion = 3;

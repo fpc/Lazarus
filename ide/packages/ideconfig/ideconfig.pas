@@ -11,11 +11,11 @@ uses
   ApplicationBundle, BaseBuildManager, Compiler, CompilerOptions, 
   CompOptsModes, CoolBarOptions, DialogProcs, DiffPatch, EditDefineTree, 
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, 
-  FppkgHelper, IDECmdLine, IdeConfigPckTest, IdeConfStrConsts, IDEGuiCmdLine, 
-  IDEOptionDefs, IDEProcs, IDETranslations, IdeXmlConfigProcs, LazConf, 
-  ModeMatrixOpts, ParsedCompilerOpts, ProjectBuildMode, ProjPackCommon, 
-  RecentListProcs, SearchPathProcs, ToolBarOptionsBase, TransferMacros, 
-  LazarusPackageIntf;
+  ExtTools, ExtToolsConsole, FppkgHelper, IDECmdLine, IdeConfigPckTest, 
+  IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, IDETranslations, 
+  IdeXmlConfigProcs, LazConf, ModeMatrixOpts, ParsedCompilerOpts, 
+  ProjectBuildMode, ProjPackCommon, RecentListProcs, SearchPathProcs, 
+  ToolBarOptionsBase, TransferMacros, LazarusPackageIntf;
 
 implementation
 

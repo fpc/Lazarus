@@ -5247,10 +5247,6 @@ msgstr "Változások elvetése?"
 msgid "Abort all loading"
 msgstr "Minden betöltés megszakítása"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "Megszakítva"
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Projekt betöltés megszakítása"
@@ -6091,20 +6087,10 @@ msgstr "A fájl nem hozható létre: \"%s\""
 msgid "Cannot delete last mode."
 msgstr "Az utolsó mód nem törölhető."
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "nem futtatható: \"%s\""
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "Nem található: %s"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "nem található a program \"%s\""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -9863,16 +9849,6 @@ msgstr "%s kihagyva futásidőben"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "a(z) \"%s\" állomány egy könyvtár"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "a \"%s\" állománynak nincs futási engedélye"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr ""
@@ -9894,11 +9870,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "Kilépés"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "Kilépési kód: %s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -10031,10 +10002,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Összecsukási állapot betöltése sikertelen"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "a makrók feloldása sikertelen"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10536,11 +10503,6 @@ msgstr "Keret"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "Keresés visszafelé"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "felszabadított puffersorok: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11364,16 +11326,6 @@ msgstr "Érvénytelen szűrő"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "Érvénytelen sor, oszlop az üzenetben: %s%s"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "Érvényytelen makrók ebben: \"%s\""
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "Érvénytelen makrók \"%s\" a külső eszközben: \"%s\""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -13851,19 +13803,9 @@ msgstr "Üzenetek ablaka"
 msgid "Method class not found"
 msgstr "Metódus osztálya nem található"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "hiányzó könyvtár: \"%s\""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Hiányzó események"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "hiányzó futtatható állomány: \"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -14951,11 +14893,6 @@ msgstr "Pánik"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", elemezve: "
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "\"%s\" elemző: %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17693,10 +17630,6 @@ msgstr "Al-eljárás"
 msgid "Sub Procedure on same level"
 msgstr "Al-eljárás azonos szinten"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "Sikerült"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18509,11 +18442,6 @@ msgstr "Útvonal:"
 msgid "Toolbar Configuration"
 msgstr "Eszköztár beállítása"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "a(z) \"%s\" eszköz nem tartalmaz futtatható állományt"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "Eszköz-fejléc: Sikertelen"
@@ -18912,11 +18840,6 @@ msgstr "Átmeneti .lfm puffer létrehozása nem lehetséges."
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "A megtévesztő fájl nem törölhető: \"%s\""
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "nem futtatható: %s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "Nem található ResourceString szakasz ebben, vagy bármelyik használt unit-ban."
@@ -18996,10 +18919,6 @@ msgstr "A tervező megnyitása nem lehetséges.%sA(z) %s osztály nem olyan szer
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "A(z) %s olvasása nem lehetséges"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "Nem olvasható a folyamat kilépési állapota (ExitStatus)"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format

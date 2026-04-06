@@ -5351,10 +5351,6 @@ msgstr "Pamiršti pakeitimus?"
 msgid "Abort all loading"
 msgstr "Nutraukti visą įkėlimo procesą"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "Nutraukta"
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Nutraukti projekto įkrovą"
@@ -6200,20 +6196,10 @@ msgstr "Nepavyksta sukurti failą „%s“"
 msgid "Cannot delete last mode."
 msgstr ""
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "nepavyksta paleisti „%s“"
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "Nepavyko rasti „%s“"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "nepavyko rasti vykdomojo failo „%s“"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -9980,16 +9966,6 @@ msgstr "„%s“ išbrauktas vykdymo metu"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "vykdomasis failas „%s“ yra aplankas"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "nėra leidimo paleisti vykdomąjį failą „%s“"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr ""
@@ -10011,11 +9987,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "Išeiti"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "Baigimo kodas „%s“"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -10148,10 +10119,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Nepavyko įkelti suskleidimo būsenos"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "nepavyko nustatyti makrokomandų"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10652,11 +10619,6 @@ msgstr "Rėmelis"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "Ieškoti a&tgal"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "valomos buferio eilutės: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11490,16 +11452,6 @@ msgstr "Klaidingas filtras"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "Klaidinga eilutė, stulpelis pranešime%s%s"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "„%s“ turi klaidingą makrokomandą"
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format, fuzzy, badformat
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "Išorės įrankyje „%1:s“ yra klaidingų makrokomandų „%0:s“"
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -14016,19 +13968,9 @@ msgstr "Pranešimų langas"
 msgid "Method class not found"
 msgstr "Nerasta metodo klasė"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "trūkstamas aplankas „%s“"
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Trūksta įvykių"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "trūkstamas vykdomasis failas „%s“"
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -15145,11 +15087,6 @@ msgstr "Panika"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", nagrinėtas "
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "analizatorius „%s“: %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17925,10 +17862,6 @@ msgstr "Vidinė procedūra"
 msgid "Sub Procedure on same level"
 msgstr "Vidinė procedūra tame pačiame lygyje"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "Tvarka"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18749,11 +18682,6 @@ msgstr "Failas:"
 msgid "Toolbar Configuration"
 msgstr "Įrankių juostos konfiguracija"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "įrankis „%s“ neturi vykdomojo failo"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "Įrankio antraštė: nepavyko"
@@ -19162,11 +19090,6 @@ msgstr "Nepavyko sukurti laikino lfm buferio."
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "Nepavyko ištrinti neaiškųjį failą „%s“"
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "nepavyko įvykdyti: %s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "Nepavyko rasti „ResourceString“ sekcijos šiame ir kituose naudojamuose moduliuose."
@@ -19247,10 +19170,6 @@ msgstr "Konstruktorių atverti neis.%s Klasė %s nepaveldi vizualinės klasės, 
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "Nepavyksta skaityti %s"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "nepavyko skaityti proceso „ExitStatus“"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format

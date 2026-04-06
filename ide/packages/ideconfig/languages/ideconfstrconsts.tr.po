@@ -9,10 +9,24 @@ msgstr ""
 msgid "FPC message file"
 msgstr "FPC mesaj dosyası"
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr "Yoksay"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "\"%s\" dosyası zaten var.%s Değiştirilsin mi?"
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr "\"%s\" çalıştırılamıyor"
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr "\"%s\" çalıştırılabilir dosyası bulamıyor"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -142,6 +156,25 @@ msgstr "%s%s%s%s adresinden %s yüklenirken hata oluştu"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "%s, %s %s %s %s'ye kaydedilirken hata oluştu"
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr "çalıştırılabilir \"%s\" bir dizin"
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr "çalıştırılabilir \"%s\" çalıştırılacak izin yok"
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr "Çıkış kodu %s"
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr "makroları çözemedi"
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -190,6 +223,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr "arabellek satırlarını boşaltma: %s"
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal kaynak dizini"
@@ -201,6 +239,16 @@ msgstr "IDE kurulum seçenekleri"
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "Yoksay ve devam et"
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr "\"%s\" daki geçersiz makrolar"
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr "Harici araç \"%s\" daki \"%s\" geçersiz makrolar"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -231,6 +279,16 @@ msgstr "LCL widget türü"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Yürütülebilir Dosyayı Yap"
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr "eksik dizin \"%s\""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr "eksik çalıştırılabilir \"%s\""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
@@ -278,6 +336,11 @@ msgstr "Dosyanın üzerine yazılsın mı?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Diskdeki dosya üzerine yaz"
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
+msgstr "ayrıştırıcı \"%s\": %s"
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -365,6 +428,10 @@ msgstr "Src OS"
 msgid "Subtarget"
 msgstr "Althedef"
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "Başarılı"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -438,6 +505,11 @@ msgstr "Fonksiyon: dosya yolunu ayıkla"
 msgid "(unknown macro: %s)"
 msgstr "(Bilinmeyen makro: %s)"
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr "\"%s\" aracının yürütülebilir dosyası yok"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "Dosya kopyalanamıyor"
@@ -471,6 +543,11 @@ msgstr "%s dosyası \" %s\" dosyası oluşturulamadı."
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Hedef \"%s\"\" ile \" %s \" bağlantısı oluşturulamadı"
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr "yürütemedi: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Dosyayı okunamıyor"
@@ -484,6 +561,10 @@ msgstr "Dosya \"%s\" okunamadı."
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "Dosya okunamıyor \"%s\"%sHata: %s"
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr "süreç ExitStatus'u okuyamıyor"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

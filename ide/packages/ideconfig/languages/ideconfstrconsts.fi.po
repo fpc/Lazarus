@@ -9,10 +9,24 @@ msgstr ""
 msgid "FPC message file"
 msgstr "FPC viestitiedosto"
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr "Keskeytetty "
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Tiedosto \"%s\" on jo olemassa.%sKorvataanko se? "
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr "ei voi suorittaa \"%s\""
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr "ei löydy ohjelmaa \"%s\""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -142,6 +156,25 @@ msgstr "Virhe ladattaessa %s täältä:%s%s%s%s"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "Virhe tallennettaessa %s tänne:%s%s%s%s"
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr "Suoritettava ohjelma \"%s\" onkin hakemisto"
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr "ohjelmalla \"%s\" ei ole suoritusoikeutta"
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr "Lopetuskoodi %s"
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr "makrojen selvitys epäonnistui"
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -190,6 +223,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr "vapauttaa puskurin rivit: %s"
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal -lähdehakemisto"
@@ -201,6 +239,16 @@ msgstr "IDEn kokoamisen asetukset"
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "Jätä huomiotta ja jatka"
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr "Kelvottomia makroja \"%s\":ssa"
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr "Kelvottomia makroja \"%s\" ulkoisessa työkalussa \"%s\""
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -231,6 +279,16 @@ msgstr "LCL-käyttöliittymäkirjasto"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Make-ohjelma"
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr "puuttuva hakemisto \"%s\""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr "puuttuva ohjelma \"%s\""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
@@ -278,6 +336,11 @@ msgstr "Korvataanko tiedosto?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Korvaa tällä tiedostolla"
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
+msgstr "jäsentäjä \"%s\": %s"
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -365,6 +428,10 @@ msgstr ""
 msgid "Subtarget"
 msgstr ""
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "Onnistui"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -438,6 +505,11 @@ msgstr "Funktio: erota tiedoston polku"
 msgid "(unknown macro: %s)"
 msgstr "(tuntematon makro: %s)"
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr "työkalulla \"%s\" ei ole suoritettavaa ohjelmaa"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "Tiedoston kopiointi ei onnistunut"
@@ -471,6 +543,11 @@ msgstr "Tiedoston%s\"%s\" luominen ei onnistu"
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Linkin \"%s\" luominen kohteeseen \"%s\" ei onnistu"
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr "ei voi suorittaa: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Tiedoston lukeminen ei onnistu"
@@ -484,6 +561,10 @@ msgstr "Tiedoston \"%s\" lukeminen ei onnistu."
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "Tiedoston \"%s\" lukeminen ei onnistu%sVirhe: %s"
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr "Prosessin ExitStatus lukeminen ei onnistu"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

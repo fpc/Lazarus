@@ -45,10 +45,10 @@ uses
   // IDEIntf
   IDEImagesIntf, MenuIntf, IDECommands, IDEDialogs, LazIDEIntf, IdeIntfStrConsts,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, CompilerOptions, IdeConfStrConsts,
+  EnvironmentOpts, IDEOptionDefs, CompilerOptions, ExtTools, IdeConfStrConsts,
   // IDE
   LazarusIDEStrConsts, HelpFPCMessages, etSrcEditMarks,
-  MsgWnd_Options, etQuickFixes, ExtTools, EnvGuiOptions;
+  MsgWnd_Options, etQuickFixes, EnvGuiOptions;
 
 const
   CustomViewCaption = '------------------------------';

@@ -5193,10 +5193,6 @@ msgstr "Değişikliklerden vazgeçilsin mi?"
 msgid "Abort all loading"
 msgstr "Tüm yüklemeyi iptal et"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "Yoksay"
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Projeyi yüklemeyi iptal et"
@@ -6022,20 +6018,10 @@ msgstr "Dosya \"%s\" oluşturulamıyor"
 msgid "Cannot delete last mode."
 msgstr "Son mod silinemiyor."
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "\"%s\" çalıştırılamıyor"
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "%s  bulunamadı"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "\"%s\" çalıştırılabilir dosyası bulamıyor"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -9772,16 +9758,6 @@ msgstr "%s çalışma zamanında hariç tutuldu"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr "Birimdeki * ve ** hariç tutulur ve arama yolları dahil edilir"
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "çalıştırılabilir \"%s\" bir dizin"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "çalıştırılabilir \"%s\" çalıştırılacak izin yok"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr ""
@@ -9803,11 +9779,6 @@ msgstr "%1:d ($%2:s) çıkış koduyla yürütme durduruldu"
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "Çıkış"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "Çıkış kodu %s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -9936,10 +9907,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Katlama durumu yüklenemedi"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "makroları çözemedi"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10424,11 +10391,6 @@ msgstr "Frame"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "&Öncekini ara"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "arabellek satırlarını boşaltma: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11248,16 +11210,6 @@ msgstr "Geçersiz filtre"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "Geçersiz satır, ileti %s %s sütundaki sütun"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "\"%s\" daki geçersiz makrolar"
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "Harici araç \"%s\" daki \"%s\" geçersiz makrolar"
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -13703,19 +13655,9 @@ msgstr "Mesajlar Penceresi"
 msgid "Method class not found"
 msgstr "Yöntem sınıfı bulunamadı"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "eksik dizin \"%s\""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Eksik Etkinlikler"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "eksik çalıştırılabilir \"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -14789,11 +14731,6 @@ msgstr "Panik"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", ayrıştırılmış "
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "ayrıştırıcı \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17494,10 +17431,6 @@ msgstr "Alt Prosedür"
 msgid "Sub Procedure on same level"
 msgstr "Aynı seviyedeki Alt Prosedür"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "Başarılı"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18308,11 +18241,6 @@ msgstr "Yol:"
 msgid "Toolbar Configuration"
 msgstr "Araç Çubuğunu Yapılandır"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "\"%s\" aracının yürütülebilir dosyası yok"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "Araç Başlığı: Başarısız"
@@ -18710,11 +18638,6 @@ msgstr "Geçici lfm tamponu oluşturulamıyor."
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "Belirsiz dosya \"%s\" silinemiyor"
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "yürütemedi: %s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "Bu veya kullanılan birimlerden herhangi birinde bir ResourceString bölümü bulunamıyor."
@@ -18794,10 +18717,6 @@ msgstr "Tasarımcı açılamıyor.%s%s sınıfı TForm veya TDataModule gibi tas
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "%s  okunamadı"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "süreç ExitStatus'u okuyamıyor"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format

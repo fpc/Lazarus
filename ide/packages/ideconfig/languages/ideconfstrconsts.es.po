@@ -10,10 +10,24 @@ msgstr ""
 msgid "FPC message file"
 msgstr "Archivo mensaje FPC"
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr "Abortado"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Ya existe el archivo \"%s\".%s¿Reemplazarlo?"
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr "no puedo ejecutar \"%s\""
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr "no puedo encontrar el ejecutable \"%s\""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -143,6 +157,25 @@ msgstr "Error cargando %s desde%s%s%s%s"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "Error guardando %s a%s%s%s%s"
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr "ejecutable \"%s\" es un directorio"
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr "ejecutable \"%s\" carece de permiso para arrancar"
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr "Código de salida %s"
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr "resolución de macros fallida"
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -191,6 +224,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr "liberando líneas del buffer: %s"
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Directorio de las fuentes de Free Pascal"
@@ -202,6 +240,16 @@ msgstr "Opciones de construcción del IDE"
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "Ignorar y continuar"
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr "Macros no válidos en \"%s\""
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr "Macros no válidas \"%s\" en utilidad externa \"%s\""
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -232,6 +280,16 @@ msgstr "Tipo de Widget LCL"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Hacer ejecutable"
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr "directorio desaparecido \"%s\""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr "ejecutable desaparecido \"%s\""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
@@ -279,6 +337,11 @@ msgstr "¿Sobreescribir archivo?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Sobreescribir archivo en disco"
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
+msgstr "analizador \"%s\": %s"
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -366,6 +429,10 @@ msgstr "OS Fuente"
 msgid "Subtarget"
 msgstr ""
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "Éxito"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -439,6 +506,11 @@ msgstr "Función: extraer ruta del archivo"
 msgid "(unknown macro: %s)"
 msgstr "(macro desconocida: %s)"
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr "la utilidad \"%s\" no tiene ejecutable"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "No se puede copiar el archivo"
@@ -472,6 +544,11 @@ msgstr "No se puede crear el archivoe%s\"%s\""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "No se puede crear el enlace \"%s\" con destino \"%s\""
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr "incapaz de ejecutar: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "No se ha podido leer el archivo"
@@ -485,6 +562,10 @@ msgstr "No se ha podido leer el archivo \"%s\"."
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "No se ha podido leer el archivo \"%s\"%s Error: %s"
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr "incapaz de leer el ExitStatus del proceso"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

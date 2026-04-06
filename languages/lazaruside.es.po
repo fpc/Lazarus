@@ -5361,10 +5361,6 @@ msgstr "¿Abandonar cambios?"
 msgid "Abort all loading"
 msgstr "Abortar toda la carga"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "Abortado"
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Abortar la carga del proyecto"
@@ -6210,20 +6206,10 @@ msgstr "No se puede crear el archivo \"%s\""
 msgid "Cannot delete last mode."
 msgstr "No se puede borrar el último modo."
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "no puedo ejecutar \"%s\""
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "No puedo encontrar %s"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "no puedo encontrar el ejecutable \"%s\""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -10003,16 +9989,6 @@ msgstr "%s excluido en tiempo de ejecución"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "ejecutable \"%s\" es un directorio"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "ejecutable \"%s\" carece de permiso para arrancar"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr ""
@@ -10034,11 +10010,6 @@ msgstr "Ejecución detenida con exit-code %1:d ($%2:s)"
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "Salir"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "Código de salida %s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -10169,10 +10140,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Ha fallado La carga del estado de plegado de código"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "resolución de macros fallida"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10671,11 +10638,6 @@ msgstr "Frame (marco de trabajo)"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "&Buscar hacia atrás"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "liberando líneas del buffer: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11504,16 +11466,6 @@ msgstr "Filtro no válido"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "Línea no válida, columna en mensaje%s%s"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "Macros no válidos en \"%s\""
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "Macros no válidas \"%s\" en utilidad externa \"%s\""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -14017,19 +13969,9 @@ msgstr "Ventana de Mensajes"
 msgid "Method class not found"
 msgstr "Método de clase no hallado"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "directorio desaparecido \"%s\""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Eventos desaparecidos"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "ejecutable desaparecido \"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -15126,11 +15068,6 @@ msgstr "Pánico"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", analizado "
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "analizador \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17877,10 +17814,6 @@ msgstr "Subprocedimiento"
 msgid "Sub Procedure on same level"
 msgstr "Subprocedimiento en el mismo nivel"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "Éxito"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18702,11 +18635,6 @@ msgstr "Ruta:"
 msgid "Toolbar Configuration"
 msgstr "Configuración de barra de herramienta"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "la utilidad \"%s\" no tiene ejecutable"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "Cabecera de utilidad: Fallida"
@@ -19107,11 +19035,6 @@ msgstr "No se ha podido crear el buffer temporal lfm."
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "No se ha podido borrar el archivo ambiguo \"%s\""
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "incapaz de ejecutar: %s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "No se encontró una sección ResourceString en ésta o en cualquier de las Unidades usadas."
@@ -19191,10 +19114,6 @@ msgstr "No se ha podido abrir el diseñador.%sLa clase %s no desciende de una cl
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "No se puede leer %s"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "incapaz de leer el ExitStatus del proceso"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format

@@ -5,9 +5,23 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "FPC message file"
 msgstr ""
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr ""
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
+msgstr ""
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
@@ -136,6 +150,25 @@ msgstr ""
 msgid "Error saving %s to%s%s%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr ""
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr ""
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr ""
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr ""
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -184,6 +217,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr ""
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr ""
@@ -194,6 +232,16 @@ msgstr ""
 
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
+msgstr ""
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr ""
 
 #: ideconfstrconsts.lislaunchingcmdline
@@ -222,6 +270,16 @@ msgstr ""
 
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
+msgstr ""
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
 msgstr ""
 
 #: ideconfstrconsts.lismode
@@ -269,6 +327,11 @@ msgstr ""
 
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
+msgstr ""
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
 msgstr ""
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
@@ -357,6 +420,10 @@ msgstr ""
 msgid "Subtarget"
 msgstr ""
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -430,6 +497,11 @@ msgstr ""
 msgid "(unknown macro: %s)"
 msgstr ""
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr ""
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr ""
@@ -463,6 +535,11 @@ msgstr ""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr ""
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr ""
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr ""
@@ -475,6 +552,10 @@ msgstr ""
 #: ideconfstrconsts.lisunabletoreadfileerror
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
+msgstr ""
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
 msgstr ""
 
 #: ideconfstrconsts.lisunabletorenamefile

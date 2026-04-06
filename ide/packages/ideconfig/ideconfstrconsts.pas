@@ -14,6 +14,9 @@ uses
   Classes, SysUtils;
 
 resourcestring
+  // general
+  lisSuccess = 'Success';
+  lisAborted = 'Aborted';
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
   lisCompilerHintYouCanSetTheCompilerPath = 'Hint: you can set the compiler '
@@ -79,6 +82,22 @@ resourcestring
   lisPrimaryConfigPath = 'Primary config path';
   lisSecondaryConfigPath = 'Secondary config path';
   lisFileExtensionOfPrograms = 'File extension of programs';
+  // External tools
+  lisExitCode = 'Exit code %s';
+  lisParser = 'parser "%s": %s';
+  lisFailedToResolveMacros = 'failed to resolve macros';
+  lisToolHasNoExecutable = 'tool "%s" has no executable';
+  lisCanNotFindExecutable = 'cannot find executable "%s"';
+  lisCanNotExecute = 'cannot execute "%s"';
+  lisMissingExecutable = 'missing executable "%s"';
+  lisMissingDirectory = 'missing directory "%s"';
+  lisExecutableIsADirectory = 'executable "%s" is a directory';
+  lisExecutableLacksThePermissionToRun = 'executable "%s" lacks the permission to run';
+  lisInvalidMacrosIn = 'Invalid macros in "%s"';
+  lisInvalidMacrosInExternalTool = 'Invalid macros "%s" in external tool "%s"';
+  lisUnableToExecute = 'unable to execute: %s';
+  lisUnableToReadProcessExitStatus = 'unable to read process ExitStatus';
+  lisFreeingBufferLines = 'freeing buffer lines: %s';
   // Component Name Validity
   lisComponentNameIsNotAValidIdentifier = 'Component name "%s" is not a valid identifier';
   lisComponentNameIsAPascalKeyword = 'Component name "%s" is a Pascal keyword.';

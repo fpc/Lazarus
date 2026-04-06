@@ -5188,10 +5188,6 @@ msgstr "ປະຖິ້ມການປ່ຽນແປງບໍ່?"
 msgid "Abort all loading"
 msgstr "ຍົກເລີກການໂຫຼດທັງໝົດ"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "ຖືກຍົກເລີກ"
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "ຍົກເລີກການໂຫຼດໂປຣເຈັກ"
@@ -6010,20 +6006,10 @@ msgstr "ບໍ່ສາມາດສ້າງຟາຍລ໌ \"%s\""
 msgid "Cannot delete last mode."
 msgstr "ບໍ່ສາມາດລຶບໂໝດສຸດທ້າຍໄດ້."
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "ບໍ່ສາມາດປະຕິບັດການ \"%s\""
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "ບໍ່ສາມາດຊອກຫາ %s"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "ບໍ່ສາມາດຊອກຫາຟາຍລ໌ໂປຣແກຣມ \"%s\""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -9750,16 +9736,6 @@ msgstr "%s ຖືກຍົກເວັ້ນໃນ run time"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr "ສິ່ງທີ່ຍົກເວັ້ນສຳລັບ * ແລະ ** ໃນ unit ແລະ include search paths"
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "executable \"%s\" ແມ່ນໄດເຣັກທໍຣີ"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "executable \"%s\" ຂາດສິດທິໃນການຮັນ"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr "Execute ຫຼັງຈາກ"
@@ -9781,11 +9757,6 @@ msgstr "ການເຮັດວຽກຢຸດລົງດ້ວຍ exit-code %
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "ອອກ"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "Exit code %s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -9914,10 +9885,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "ບໍ່ສາມາດໂຫຼດສະຖານະການພັບ (fold state) ໄດ້"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "ບໍ່ສາມາດແກ້ໄຂ macros ໄດ້"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10403,11 +10370,6 @@ msgstr "Frame"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "ຄົ້ນຫາກັບຫຼັງ"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "ກຳລັງ free buffer lines: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11223,16 +11185,6 @@ msgstr "Filter ບໍ່ຖືກຕ້ອງ"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "ແຖວ, ຖັນ ໃນຂໍ້ຄວາມບໍ່ຖືກຕ້ອງ%s%s"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "Macros ບໍ່ຖືກຕ້ອງໃນ \"%s\""
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "Macros ບໍ່ຖືກຕ້ອງ \"%s\" ໃນ external tool \"%s\""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -13677,19 +13629,9 @@ msgstr "ປ່ອງຢ້ຽມຂໍ້ຄວາມ"
 msgid "Method class not found"
 msgstr "ບໍ່ພົບ Method class"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "ບໍ່ພົບໄດເຣັກທໍຣີ \"%s\""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "ເຫດການທີ່ຂາດຫາຍໄປ"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "ບໍ່ພົບ executable \"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -14770,11 +14712,6 @@ msgstr "Panic"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", ວິເຄາະແລ້ວ "
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "ຕົວວິເຄາະ \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17495,10 +17432,6 @@ msgstr "ໂປຣຊີເຈີຍ່ອຍ"
 msgid "Sub Procedure on same level"
 msgstr "ໂປຣຊີເຈີຍ່ອຍໃນລະດັບດຽວກັນ"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "ສຳເລັດ"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18307,11 +18240,6 @@ msgstr "ເສັ້ນທາງ:"
 msgid "Toolbar Configuration"
 msgstr "ການຕັ້ງຄ່າແຖບເຄື່ອງມື"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "ເຄື່ອງມື \"%s\" ບໍ່ມີ executable"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "Tool Header: ລົ້ມເຫຼວ"
@@ -18710,11 +18638,6 @@ msgstr "ບໍ່ສາມາດສ້າງ lfm buffer ຊົ່ວຄາວໄ
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "ບໍ່ສາມາດລຶບໄຟລ໌ທີ່ກຳກວມ \"%s\""
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "ບໍ່ສາມາດ execute: %s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "ບໍ່ພົບພາກສ່ວນ ResourceString ໃນ unit ນີ້ ຫຼື unit ອື່ນໆທີ່ໃຊ້."
@@ -18794,10 +18717,6 @@ msgstr "ບໍ່ສາມາດເປີດ designer ໄດ້.%sຄລາສ %
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "ບໍ່ສາມາດອ່ານ %s"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "ບໍ່ສາມາດອ່ານ process ExitStatus"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format

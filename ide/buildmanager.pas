@@ -56,14 +56,14 @@ uses
   LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
   IDEProcs, DialogProcs, etMakeMsgParser, etFPCMsgFilePool, EditDefineTree,
   ParsedCompilerOpts, CompilerOptions, Compiler, SearchPathProcs, BaseBuildManager,
-  ApplicationBundle,
+  ApplicationBundle, ExtTools,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageSystem,
   // IdeProject
   Project, ProjectResources, ProjectIcon,
   // IDE
   LazarusIDEStrConsts, LfmUnitResource, MiscOptions, etFPCMsgParser, etPas2jsMsgParser,
-  FPCSrcScan, IdeTransferMacros, ExtTools;
+  FPCSrcScan, IdeTransferMacros;
 
 type
 

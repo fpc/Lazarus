@@ -5348,10 +5348,6 @@ msgstr "変更を破棄しますか？"
 msgid "Abort all loading"
 msgstr "すべての読み込みを中止"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "中止"
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "プロジェクトの読み込みを中止"
@@ -6194,20 +6190,10 @@ msgstr "ファイルを作成できません：\"%s\""
 msgid "Cannot delete last mode."
 msgstr ""
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "\"%s\"を実行できません"
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "%sが見つかりません"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "実行ファイル\"%s\"が見つかりません"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -9975,16 +9961,6 @@ msgstr "%s 実行時に除外"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "実行ファイル\"%s\"はディレクトリです"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "実行ファイル\"%s\"は実行が許可されていません"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr ""
@@ -10006,11 +9982,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "終了"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "コード%sを終了"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -10143,10 +10114,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "折りたたみ状態の読み込みに失敗"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "マクロの解決に失敗しました"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10647,11 +10614,6 @@ msgstr "フレーム"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "後方検索(&B)"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "バッファ行を解放: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11461,16 +11423,6 @@ msgstr "無効なフィルタ"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "メッセージ%s%sに無効な列、行があります"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "\"%s\"における無効なマクロ"
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "無効なマクロ\"%s\"（外部ツール\"%s\"内）"
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -13985,19 +13937,9 @@ msgstr "メッセージウィンドウ"
 msgid "Method class not found"
 msgstr "メソッドクラスが見つかりません"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "見つからないディレクトリ \"%s\""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "見つからないイベント"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "見つからない実行ファイル \"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -15108,11 +15050,6 @@ msgstr "パニック"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", 構文解析済み"
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "パーサ \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17884,10 +17821,6 @@ msgstr "サブ手続き"
 msgid "Sub Procedure on same level"
 msgstr "同じレベルのサブ手続き"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "成功"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18708,11 +18641,6 @@ msgstr "パス："
 msgid "Toolbar Configuration"
 msgstr "ツールバー設定"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "\"%s\"ツールは実行ファイルをもちません"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "ツールヘッダ：失敗"
@@ -19120,11 +19048,6 @@ msgstr "一時的なlfmバッファを作成できません。"
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "紛らわしいファイル\"%s\"を削除できません。"
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "実行できません: %s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "このユニットもしくは使われているどのユニットにもリソース文字列セクションが見つかりません。"
@@ -19205,10 +19128,6 @@ msgstr "デザイナを開くことができません。%sクラス%sはTFormや
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "%sを読めません"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "ExitStatusプロセスを読めません。"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format

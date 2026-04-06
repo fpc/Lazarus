@@ -9,10 +9,24 @@ msgstr ""
 msgid "FPC message file"
 msgstr ""
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr "ຖືກຍົກເລີກ"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr ""
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr "ບໍ່ສາມາດປະຕິບັດການ \"%s\""
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr "ບໍ່ສາມາດຊອກຫາຟາຍລ໌ໂປຣແກຣມ \"%s\""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -140,6 +154,25 @@ msgstr ""
 msgid "Error saving %s to%s%s%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr "executable \"%s\" ແມ່ນໄດເຣັກທໍຣີ"
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr "executable \"%s\" ຂາດສິດທິໃນການຮັນ"
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr "Exit code %s"
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr "ບໍ່ສາມາດແກ້ໄຂ macros ໄດ້"
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -188,6 +221,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr "ກຳລັງ free buffer lines: %s"
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr ""
@@ -199,6 +237,16 @@ msgstr ""
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr ""
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr "Macros ບໍ່ຖືກຕ້ອງໃນ \"%s\""
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr "Macros ບໍ່ຖືກຕ້ອງ \"%s\" ໃນ external tool \"%s\""
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -227,6 +275,16 @@ msgstr ""
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr ""
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr "ບໍ່ພົບໄດເຣັກທໍຣີ \"%s\""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr "ບໍ່ພົບ executable \"%s\""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
@@ -274,6 +332,11 @@ msgstr ""
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr ""
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
+msgstr "ຕົວວິເຄາະ \"%s\": %s"
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -361,6 +424,10 @@ msgstr ""
 msgid "Subtarget"
 msgstr "ເປົ້າໝາຍຍ່ອຍ"
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "ສຳເລັດ"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -434,6 +501,11 @@ msgstr ""
 msgid "(unknown macro: %s)"
 msgstr ""
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr "ເຄື່ອງມື \"%s\" ບໍ່ມີ executable"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr ""
@@ -467,6 +539,11 @@ msgstr ""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr ""
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr "ບໍ່ສາມາດ execute: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr ""
@@ -480,6 +557,10 @@ msgstr ""
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr ""
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr "ບໍ່ສາມາດອ່ານ process ExitStatus"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

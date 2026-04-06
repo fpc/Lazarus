@@ -5195,10 +5195,6 @@ msgstr "放弃修改？"
 msgid "Abort all loading"
 msgstr "中止所有加载"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "中止"
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "取消加载项目"
@@ -6021,20 +6017,10 @@ msgstr "不能创建文件\"%s\""
 msgid "Cannot delete last mode."
 msgstr "不能最后的模式."
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "不能执行\"%s\""
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "不能找到%s"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "不能找到可执行的\"%s\""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -9765,16 +9751,6 @@ msgstr "在运行时%s被排除"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr "排除单元和包含搜索路径中的 * 和 **"
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "可执行的\"%s\"是一个目录"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "可执行的\"%s\"缺少权限来运行"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr "执行后"
@@ -9796,11 +9772,6 @@ msgstr "执行因退出代码 %1:d ($%2:s) 而停止"
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "退出"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "退出代码%s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -9931,10 +9902,6 @@ msgid "Failed to load fold state"
 msgstr ""
 "加载折叠状态\n"
 "失败"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "解决(resolve)宏失败"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10420,11 +10387,6 @@ msgstr "框架"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "向后搜索(&B)"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "释放缓冲器行: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11240,16 +11202,6 @@ msgstr "无效的过滤器"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "无效的行,列在信息%s%s"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "无效的宏命令在\"%s\""
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "无效的宏命令\"%s\"在外部工具\"%s\""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -13701,19 +13653,9 @@ msgstr "信息窗口"
 msgid "Method class not found"
 msgstr "方法类未找到"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "缺少目录\"%s\""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "缺少事件"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "缺少可执行的\"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -14794,11 +14736,6 @@ msgstr "Panic(恐慌)"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ",解析 "
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "解析\"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17518,10 +17455,6 @@ msgstr "子程序"
 msgid "Sub Procedure on same level"
 msgstr "同级子程序"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "成功"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18330,11 +18263,6 @@ msgstr "路径:"
 msgid "Toolbar Configuration"
 msgstr "工具栏配置"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "工具 \"%s\" 没有可执行程序"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "工具标头：失败"
@@ -18733,11 +18661,6 @@ msgstr "无法创建临时的lfm缓冲区。"
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "无法删除不明确的文件 \"%s\""
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "无法执行：%s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "无法在这个或任何使用的单元中找到 ResourceString 部分。"
@@ -18817,10 +18740,6 @@ msgstr "无法打开设计器，%s 类 %s 没有从一个可设计的类（如TF
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "无法读取 %s"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "无法读取进程的退出状态码"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format

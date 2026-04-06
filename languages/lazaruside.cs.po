@@ -5287,10 +5287,6 @@ msgstr "Zrušit změny?"
 msgid "Abort all loading"
 msgstr "Přerušit celé načítání"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "Zrušeno"
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Přerušit načítání projektu"
@@ -6131,20 +6127,10 @@ msgstr "Nelze vytvořit soubor \"%s\""
 msgid "Cannot delete last mode."
 msgstr "Nelze odstranit poslední režim."
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "nelze spustit \"%s\""
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "Nelze najít %s"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "nelze najít spustitelný \"%s\""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -9907,16 +9893,6 @@ msgstr "%s vyjmuto za běhu"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "spustitelný soubor \"%s\" je adresář"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "spustitelný soubor \"%s\" postrádá oprávnění ke spuštění"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr ""
@@ -9938,11 +9914,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "Ukončit"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "Exit kód %s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -10075,10 +10046,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Načtení stavu složení selhalo"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "selhalo řešení maker"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10579,11 +10546,6 @@ msgstr "Rámec"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "&Hledat pozpátku"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "uvolňování řádků zásobníku: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11396,16 +11358,6 @@ msgstr "Neplatný filtr"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "Chybný řádek, sloupec ve zprávě%s%s"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "Neplatná makra v \"%s\""
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "Neplatná makra \"%s\" v externím nástroji \"%s\""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -13904,19 +13856,9 @@ msgstr "Okno zpráv"
 msgid "Method class not found"
 msgstr "Třída metody nenalezena"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "chybějící adresář \"%s\""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Chybějící události"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "chybějící spustitelný soubor \"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -15026,11 +14968,6 @@ msgstr "Panika"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", zanalyzovný "
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "parser \"%s\":%s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17766,10 +17703,6 @@ msgstr "Podprocedure"
 msgid "Sub Procedure on same level"
 msgstr "Vnořená procedura na stejné úrovni"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "Úspěch"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18582,11 +18515,6 @@ msgstr "Cesta:"
 msgid "Toolbar Configuration"
 msgstr "Nastavení nástrojového panelu"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "nástroj \"%s\" nemá spustitelný soubor"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "Hlavička Nástroje: Selhalo"
@@ -18985,11 +18913,6 @@ msgstr "Nelze vytvořit dočasnou paměť pro lfm."
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "Nelze odstranit mnohoznačný soubor \"%s\""
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "nemožno spustit: %s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "Nelze najít sekci ResourceString v této nebo některé z použitých jednotek."
@@ -19069,10 +18992,6 @@ msgstr "Nelze otevřít návrhář.%sTřída %s není potomek návrhářské tř
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "Nelze přečíst %s"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "nelze číst proces ExitStatus"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format

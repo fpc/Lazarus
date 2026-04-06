@@ -10,10 +10,24 @@ msgstr ""
 msgid "FPC message file"
 msgstr "FPC メッセージファイル"
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr "中止"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "ファイル \"%s\" は既に存在します。%s置き換えますか？"
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr "\"%s\"を実行できません"
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr "実行ファイル\"%s\"が見つかりません"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -143,6 +157,25 @@ msgstr "%s%s%s%sからの%sの読み込み中にエラー"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "%s%s%s%sを%sに保存中にエラー"
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr "実行ファイル\"%s\"はディレクトリです"
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr "実行ファイル\"%s\"は実行が許可されていません"
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr "コード%sを終了"
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr "マクロの解決に失敗しました"
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -191,6 +224,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr "バッファ行を解放: %s"
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal ソースディレクトリ"
@@ -202,6 +240,16 @@ msgstr "IDE 構築オプション"
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "無視して継続"
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr "\"%s\"における無効なマクロ"
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr "無効なマクロ\"%s\"（外部ツール\"%s\"内）"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -232,6 +280,16 @@ msgstr "LCLウィジェットタイプ"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "実行ファイルを作成"
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr "見つからないディレクトリ \"%s\""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr "見つからない実行ファイル \"%s\""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
@@ -279,6 +337,11 @@ msgstr "ファイルを上書きしますか?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "ディスク上のファイルを上書き"
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
+msgstr "パーサ \"%s\": %s"
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -366,6 +429,10 @@ msgstr "ソースOS"
 msgid "Subtarget"
 msgstr ""
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "成功"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -439,6 +506,11 @@ msgstr "機能：ファイルのパス（フォルダ名）を抽出"
 msgid "(unknown macro: %s)"
 msgstr "(不明マクロ: %S)"
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr "\"%s\"ツールは実行ファイルをもちません"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "ファイルをコピーできません。"
@@ -472,6 +544,11 @@ msgstr "ファイル%s\"%s\"を作成できません。"
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "リンク\"%s\"をターゲット\"%s\"で作成できません。"
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr "実行できません: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "ファイルを読めません。"
@@ -485,6 +562,10 @@ msgstr "ファイル\"%s\"を読めません！"
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "ファイル\"%s\"%sを読めません。エラー: %s"
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr "ExitStatusプロセスを読めません。"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

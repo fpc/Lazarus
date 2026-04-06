@@ -9,10 +9,24 @@ msgstr ""
 msgid "FPC message file"
 msgstr ""
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr "Prerušená"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Súbor \"%s\" už existuje.%sNahradiť ho?"
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr ""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -143,6 +157,25 @@ msgstr "Chyba načítania %s z%s%s%s%s"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "Chyba pri ukladaní %s do%s%s%s%s"
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr ""
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr ""
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr ""
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr ""
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -192,6 +225,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr ""
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Zdrojový adresár FreePascal"
@@ -203,6 +241,16 @@ msgstr ""
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "Ignorovať a pokračovať"
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr ""
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -231,6 +279,16 @@ msgstr "Typ LCL &Widgetu"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Urobiť spustiteľné"
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr ""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
@@ -278,6 +336,11 @@ msgstr "Prepísať súbor?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Prepísať súbor na disku"
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
+msgstr ""
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -365,6 +428,10 @@ msgstr "Zdrojový OS"
 msgid "Subtarget"
 msgstr "Podcieľ"
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "Úspešné"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -442,6 +509,11 @@ msgstr "Funkcia: vybrať cestu súboru"
 msgid "(unknown macro: %s)"
 msgstr "(neznáme makro: %s)"
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr ""
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "Nemožno kopírovať súbor"
@@ -476,6 +548,11 @@ msgstr ""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Nemožno vytvoriť odkaz \"%s\" s cieľom \"%s\""
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr ""
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Nemožno čítať súbor"
@@ -489,6 +566,10 @@ msgstr "Nemožno čítať súbor \"%s\"."
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "Nemožno čítať súbor \"%s\"%sChyba: %s"
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

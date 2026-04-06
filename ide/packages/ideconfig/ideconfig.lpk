@@ -76,6 +76,14 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="etMakeMsgParser"/>
       </Item>
       <Item>
+        <Filename Value="exttools.pas"/>
+        <UnitName Value="ExtTools"/>
+      </Item>
+      <Item>
+        <Filename Value="exttoolsconsole.pas"/>
+        <UnitName Value="ExtToolsConsole"/>
+      </Item>
+      <Item>
         <Filename Value="fppkghelper.pas"/>
         <UnitName Value="FppkgHelper"/>
       </Item>

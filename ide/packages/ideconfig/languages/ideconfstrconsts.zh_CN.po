@@ -12,10 +12,24 @@ msgstr ""
 msgid "FPC message file"
 msgstr "FPC 消息文件"
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr "中止"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "文件 \"%s\" 已存在%s是否替换？"
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr "不能执行\"%s\""
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr "不能找到可执行的\"%s\""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -145,6 +159,25 @@ msgstr "加载 %s 时出错从 %s%s%s%s"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "保存 %s 到 %s 时出错 %s%s%s"
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr "可执行的\"%s\"是一个目录"
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr "可执行的\"%s\"缺少权限来运行"
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr "退出代码%s"
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr "解决(resolve)宏失败"
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -193,6 +226,11 @@ msgstr "未能找到为 Fppkg 配置的编译器 [%s]。"
 msgid "Fppkg reports that the RTL is not installed."
 msgstr "Fppkg 报告说 RTL 未安装。"
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr "释放缓冲器行: %s"
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal源代码目录"
@@ -204,6 +242,16 @@ msgstr "IDE构建选项"
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "忽略并继续"
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr "无效的宏命令在\"%s\""
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr "无效的宏命令\"%s\"在外部工具\"%s\""
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -232,6 +280,16 @@ msgstr "LCL &控件类型"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "生成可执行的"
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr "缺少目录\"%s\""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr "缺少可执行的\"%s\""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
@@ -279,6 +337,11 @@ msgstr "覆盖文件?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "覆盖磁盘上的文件"
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
+msgstr "解析\"%s\": %s"
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -366,6 +429,10 @@ msgstr "源代码操作系统"
 msgid "Subtarget"
 msgstr "子目标"
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "成功"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -439,6 +506,11 @@ msgstr "功能：提取文件路径"
 msgid "(unknown macro: %s)"
 msgstr "(未知宏：%s)"
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr "工具 \"%s\" 没有可执行程序"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "无法复制文件"
@@ -472,6 +544,11 @@ msgstr "无法创建文件%s\"%s\""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "无法创建链接 \"%s\" 目标为 \"%s\""
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr "无法执行：%s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "无法读取文件"
@@ -485,6 +562,10 @@ msgstr "无法读取文件 \"%s\"。"
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "无法读取文件 \"%s\"%s 错误：%s"
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr "无法读取进程的退出状态码"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

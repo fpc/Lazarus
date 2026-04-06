@@ -5235,10 +5235,6 @@ msgstr "Скасувати зміни?"
 msgid "Abort all loading"
 msgstr "Перервати всі завантаження"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "Перервано"
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Перервати завантаження проєкту"
@@ -6078,20 +6074,10 @@ msgstr "Неможливо створити файл \"%s\""
 msgid "Cannot delete last mode."
 msgstr "Неможливо видалити останній режим."
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "неможливо виконати \"%s\""
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "Не вдалось знайти %s"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "не вдалось знайти виконуваний файл \"%s\""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -9835,16 +9821,6 @@ msgstr "%s виключений під час виконання"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "виконуваний файл \"%s\" є текою"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "виконуваний файл \"%s\" не має прав на запуск"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr ""
@@ -9866,11 +9842,6 @@ msgstr "Виконання зупинено з кодом виходу %1:d ($%2
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "Вихід"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "Код завершення %s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -10001,10 +9972,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Не вдалось завантажити стан згортки"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "не вдалось розкрити макрос"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10506,11 +10473,6 @@ msgstr "Фрейм"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "Пошук на&зад"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "вивільнення рядків буфера: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11334,16 +11296,6 @@ msgstr "Неправильний фільтр"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "Неприпустимий рядок, стовпець в повідомленні%s%s"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "Неправильний макрос у \"%s\""
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "Неправильний макрос \"%s\" у зовнішньому засобі \"%s\""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -13813,19 +13765,9 @@ msgstr "Вікно повідомлень"
 msgid "Method class not found"
 msgstr "Клас методу не знайдено"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "відсутня тека \"%s\""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Пропущені події"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "відсутній виконуваний файл \"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -14910,11 +14852,6 @@ msgstr "Паніка"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", проаналізовано "
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "аналізатор \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17654,10 +17591,6 @@ msgstr "Підпроцедура"
 msgid "Sub Procedure on same level"
 msgstr "Підпроцедура того ж рівня"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "Успішно"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18470,11 +18403,6 @@ msgstr "Шлях:"
 msgid "Toolbar Configuration"
 msgstr "Конфігурація панелі інструментів"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "засіб \"%s\" не має виконуваного файлу"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "Заголовок засобу: Невдача"
@@ -18873,11 +18801,6 @@ msgstr "Неможливо створити тимчасовий lfm буфер"
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "Неможливо видалити двозначний файл \"%s\""
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "неможливо виконати: %s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "Неможливо знайти секцію ResourceString в цьому чи будь-якому з використовуваних модулів."
@@ -18957,10 +18880,6 @@ msgstr "Неможливо відкрити дизайнер.%sКлас %s не 
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "Неможливо прочитати %s"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "неможливо прочитати код завершення процесу"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format

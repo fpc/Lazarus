@@ -5472,10 +5472,6 @@ msgstr "לזנוח שינויים ?"
 msgid "Abort all loading"
 msgstr "בטל את כל הטעינות"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr ""
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "בטל את טעינת הפרויקט"
@@ -6341,19 +6337,9 @@ msgstr "לא יכול לצור את הקובץ s%s%s%"
 msgid "Cannot delete last mode."
 msgstr ""
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr ""
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
-msgstr ""
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -10206,16 +10192,6 @@ msgstr ""
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr ""
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr ""
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr ""
@@ -10237,11 +10213,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "יציאה"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr ""
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -10372,10 +10343,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "נכשל בטעינת מצב מקופל"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr ""
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10881,11 +10848,6 @@ msgstr "מסגרת"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "חפש אחורנית"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11699,16 +11661,6 @@ msgstr "מסנן לא חוקי"
 #, object-pascal-format, fuzzy, badformat
 msgid "Invalid line, column in message%s%s"
 msgstr "שורה לא חוקית, עמודה בהודעה s%s%"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr ""
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -14429,19 +14381,9 @@ msgstr ""
 msgid "Method class not found"
 msgstr "מחלקת המתודה לא נמצאה"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr ""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "ארועים חסרים"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr ""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -15544,11 +15486,6 @@ msgstr ""
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr "פרוש"
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr ""
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -18417,10 +18354,6 @@ msgstr "תת שגרה"
 msgid "Sub Procedure on same level"
 msgstr "תת שגרה באותה רמה"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "הצלחה"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -19282,11 +19215,6 @@ msgstr "נתיב:"
 msgid "Toolbar Configuration"
 msgstr ""
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr ""
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr ""
@@ -19700,11 +19628,6 @@ msgstr "לא ניתן ליצור חוצץ זמני לlfm."
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "לא ניתן למחוק את הקובץ הרב משמעי %s%s%s"
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr ""
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "לא יכול למצוא את סעיף המשאבים ביחידה זאת או כל יחידה אחרת שבשימוש."
@@ -19790,10 +19713,6 @@ msgstr "לא ניתן לפתוח את המתכנן. %s המחלקה %s אינה 
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "לא ניתן לקרוא את הקובץ %s"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format, fuzzy, badformat

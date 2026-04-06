@@ -9,10 +9,24 @@ msgstr ""
 msgid "FPC message file"
 msgstr "Plik z komunikatami FPC"
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr "Przerwany"
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Plik \"%s\" już istnieje.%sCzy chcesz go zastąpić?"
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr "nie można uruchomić  \"%s\""
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr "nie można znaleźć pliku uruchomieniowego\"%s\""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -142,6 +156,26 @@ msgstr "Błąd ładowania %s z%s%s%s%s"
 msgid "Error saving %s to%s%s%s%s"
 msgstr "Błąd zapisu %s do%s%s%s%s"
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format, fuzzy
+msgid "executable \"%s\" is a directory"
+msgstr "Wybierz plik wykonywalny kompilatora (%s)"
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr ""
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr "Kod wyjścia %s"
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+#, fuzzy
+msgid "failed to resolve macros"
+msgstr "Makra"
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -190,6 +224,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr ""
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Katalog ze źródłami Free Pascala"
@@ -201,6 +240,16 @@ msgstr "Opcje budowania IDE"
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
 msgstr "Ignoruj i kontynuuj"
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format, fuzzy, badformat
+msgid "Invalid macros in \"%s\""
+msgstr "niedozwolony znak \"%s\" w %s"
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr ""
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -231,6 +280,16 @@ msgstr "Typ widżetu LCL"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Utwórz plik wykonywalny"
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr "brak katalogu \"%s\""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr "brak pliku wykonywalnego \"%s\""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format, fuzzy
@@ -278,6 +337,11 @@ msgstr "Zastąpić plik?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Zastąpić plik na dysku"
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format, fuzzy
+msgid "parser \"%s\": %s"
+msgstr "%s nie istnieje: %s"
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 #, fuzzy
@@ -369,6 +433,10 @@ msgstr "ścieżka źródłowa dla kompilowanych modułów"
 msgid "Subtarget"
 msgstr ""
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "Zakończony powodzeniem"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -442,6 +510,11 @@ msgstr "Funkcja: wyodrębnij ścieżkę pliku"
 msgid "(unknown macro: %s)"
 msgstr "(nieznane makro: %s)"
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format, fuzzy
+msgid "tool \"%s\" has no executable"
+msgstr "brak pliku wykonywalnego \"%s\""
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "Nie można skopiować pliku"
@@ -475,6 +548,11 @@ msgstr "Nie można utworzyć pliku%s\"%s\""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Nie można utworzyć katalogu z kopią zapasową \"%s\"."
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr "nie można uruchomić: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Nie można czytać pliku"
@@ -488,6 +566,11 @@ msgstr "Nie można odczytać pliku \"%s\"."
 #, object-pascal-format
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "Nie można odczytać pliku \"%s\"%sBład: %s"
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+#, fuzzy
+msgid "unable to read process ExitStatus"
+msgstr "Nie można pobrać wersji raportu"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

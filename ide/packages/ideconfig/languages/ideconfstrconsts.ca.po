@@ -9,11 +9,25 @@ msgstr ""
 msgid "FPC message file"
 msgstr ""
 
+#: ideconfstrconsts.lisaborted
+msgid "Aborted"
+msgstr ""
+
 #: ideconfstrconsts.lisafilealreadyexistsreplaceit
 #, object-pascal-format, fuzzy, badformat
 #| msgid "A file %s%s%s already exists.%sReplace it?"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Ja existeix un fitxer %s%s%s. %sVoleu que el substitueixi?"
+
+#: ideconfstrconsts.liscannotexecute
+#, object-pascal-format
+msgid "cannot execute \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.liscannotfindexecutable
+#, object-pascal-format
+msgid "cannot find executable \"%s\""
+msgstr ""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -144,6 +158,25 @@ msgstr ""
 msgid "Error saving %s to%s%s%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lisexecutableisadirectory
+#, object-pascal-format
+msgid "executable \"%s\" is a directory"
+msgstr ""
+
+#: ideconfstrconsts.lisexecutablelacksthepermissiontorun
+#, object-pascal-format
+msgid "executable \"%s\" lacks the permission to run"
+msgstr ""
+
+#: ideconfstrconsts.lisexitcode
+#, object-pascal-format
+msgid "Exit code %s"
+msgstr ""
+
+#: ideconfstrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr ""
+
 #: ideconfstrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 #, object-pascal-format, fuzzy, badformat
 #| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
@@ -193,6 +226,11 @@ msgstr ""
 msgid "Fppkg reports that the RTL is not installed."
 msgstr ""
 
+#: ideconfstrconsts.lisfreeingbufferlines
+#, object-pascal-format
+msgid "freeing buffer lines: %s"
+msgstr ""
+
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 #, fuzzy
 #| msgid "Freepascal source directory"
@@ -205,6 +243,16 @@ msgstr ""
 
 #: ideconfstrconsts.lisignoreandcontinue
 msgid "Ignore and continue"
+msgstr ""
+
+#: ideconfstrconsts.lisinvalidmacrosin
+#, object-pascal-format
+msgid "Invalid macros in \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisinvalidmacrosinexternaltool
+#, object-pascal-format
+msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr ""
 
 #: ideconfstrconsts.lislaunchingcmdline
@@ -236,6 +284,16 @@ msgstr "Tipus de giny LCL"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Fes executable"
+
+#: ideconfstrconsts.lismissingdirectory
+#, object-pascal-format
+msgid "missing directory \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lismissingexecutable
+#, object-pascal-format
+msgid "missing executable \"%s\""
+msgstr ""
 
 #: ideconfstrconsts.lismode
 #, object-pascal-format
@@ -285,6 +343,11 @@ msgstr "Voleu sobrescriure el fitxer?"
 #: ideconfstrconsts.lisoverwritefileondisk
 msgid "Overwrite file on disk"
 msgstr "Sobreescriu arxiu al disc"
+
+#: ideconfstrconsts.lisparser
+#, object-pascal-format
+msgid "parser \"%s\": %s"
+msgstr ""
 
 #: ideconfstrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -373,6 +436,10 @@ msgstr ""
 msgid "Subtarget"
 msgstr ""
 
+#: ideconfstrconsts.lissuccess
+msgid "Success"
+msgstr "Correcte!"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -448,6 +515,11 @@ msgstr "Funció: extreure la trajectòria del fitxer"
 msgid "(unknown macro: %s)"
 msgstr "(macroinstrucció desconeguda: %s)"
 
+#: ideconfstrconsts.listoolhasnoexecutable
+#, object-pascal-format
+msgid "tool \"%s\" has no executable"
+msgstr ""
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "No es pot copiar el fitxer"
@@ -484,6 +556,11 @@ msgstr ""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr ""
 
+#: ideconfstrconsts.lisunabletoexecute
+#, object-pascal-format
+msgid "unable to execute: %s"
+msgstr ""
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "No es pot llegir el fitxer"
@@ -499,6 +576,10 @@ msgstr "No es pot llegir el fitxer %s%s%s!"
 #| msgid "Unable to read file %s%s%s%sError: %s"
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "No es pot llegir el fitxer %s%s%s%sError: %s"
+
+#: ideconfstrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr ""
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

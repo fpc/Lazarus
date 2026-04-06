@@ -5238,10 +5238,6 @@ msgstr "Hylkää muutokset?"
 msgid "Abort all loading"
 msgstr "Keskeytä kaikki lataus"
 
-#: lazarusidestrconsts.lisaborted
-msgid "Aborted"
-msgstr "Keskeytetty "
-
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Keskeytä projektin lataaminen"
@@ -6082,20 +6078,10 @@ msgstr "Ei voi luoda tiedostoa \"%s\""
 msgid "Cannot delete last mode."
 msgstr ""
 
-#: lazarusidestrconsts.liscannotexecute
-#, object-pascal-format
-msgid "cannot execute \"%s\""
-msgstr "ei voi suorittaa \"%s\""
-
 #: lazarusidestrconsts.liscannotfind
 #, object-pascal-format
 msgid "Cannot find %s"
 msgstr "Ei löydy %s"
-
-#: lazarusidestrconsts.liscannotfindexecutable
-#, object-pascal-format
-msgid "cannot find executable \"%s\""
-msgstr "ei löydy ohjelmaa \"%s\""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
@@ -9834,16 +9820,6 @@ msgstr "%s sivuutetaan ajon akana"
 msgid "Excludes for * and ** in unit and include search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutableisadirectory
-#, object-pascal-format
-msgid "executable \"%s\" is a directory"
-msgstr "Suoritettava ohjelma \"%s\" onkin hakemisto"
-
-#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
-#, object-pascal-format
-msgid "executable \"%s\" lacks the permission to run"
-msgstr "ohjelmalla \"%s\" ei ole suoritusoikeutta"
-
 #: lazarusidestrconsts.lisexecuteafter
 msgid "Execute After"
 msgstr ""
@@ -9865,11 +9841,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "Lopeta"
-
-#: lazarusidestrconsts.lisexitcode
-#, object-pascal-format
-msgid "Exit code %s"
-msgstr "Lopetuskoodi %s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
@@ -10002,10 +9973,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Laskostuksen lataaminen epäonnistui"
-
-#: lazarusidestrconsts.lisfailedtoresolvemacros
-msgid "failed to resolve macros"
-msgstr "makrojen selvitys epäonnistui"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -10505,11 +10472,6 @@ msgstr "Kehys"
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
 msgstr "&Taaksepäin haku"
-
-#: lazarusidestrconsts.lisfreeingbufferlines
-#, object-pascal-format
-msgid "freeing buffer lines: %s"
-msgstr "vapauttaa puskurin rivit: %s"
 
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
@@ -11300,16 +11262,6 @@ msgstr "Kelvoton suodatin"
 #, object-pascal-format
 msgid "Invalid line, column in message%s%s"
 msgstr "Kelvoton rivi, sarake viestissä%s%s"
-
-#: lazarusidestrconsts.lisinvalidmacrosin
-#, object-pascal-format
-msgid "Invalid macros in \"%s\""
-msgstr "Kelvottomia makroja \"%s\":ssa"
-
-#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
-#, object-pascal-format
-msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr "Kelvottomia makroja \"%s\" ulkoisessa työkalussa \"%s\""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #, object-pascal-format
@@ -13767,19 +13719,9 @@ msgstr "Viesti-ikkuna"
 msgid "Method class not found"
 msgstr "Metodin luokkaa ei löydy"
 
-#: lazarusidestrconsts.lismissingdirectory
-#, object-pascal-format
-msgid "missing directory \"%s\""
-msgstr "puuttuva hakemisto \"%s\""
-
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Puuttuvia tapahtumia"
-
-#: lazarusidestrconsts.lismissingexecutable
-#, object-pascal-format
-msgid "missing executable \"%s\""
-msgstr "puuttuva ohjelma \"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -14846,11 +14788,6 @@ msgstr "Paniikki"
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", jäsennetty "
-
-#: lazarusidestrconsts.lisparser
-#, object-pascal-format
-msgid "parser \"%s\": %s"
-msgstr "jäsentäjä \"%s\": %s"
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
@@ -17574,10 +17511,6 @@ msgstr "Aliohjelman sisäinen aliohjelma"
 msgid "Sub Procedure on same level"
 msgstr "Aliohjelma samalla tasolla"
 
-#: lazarusidestrconsts.lissuccess
-msgid "Success"
-msgstr "Onnistui"
-
 #: lazarusidestrconsts.lissuccessfullyexported
 #, object-pascal-format
 msgid "Successfully exported to \"%s\"."
@@ -18390,11 +18323,6 @@ msgstr "Polku:"
 msgid "Toolbar Configuration"
 msgstr "Työkalupalkin asetukset"
 
-#: lazarusidestrconsts.listoolhasnoexecutable
-#, object-pascal-format
-msgid "tool \"%s\" has no executable"
-msgstr "työkalulla \"%s\" ei ole suoritettavaa ohjelmaa"
-
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
 msgstr "Työkalu otsikko: Epäonnistui"
@@ -18793,11 +18721,6 @@ msgstr "Väliaikaisen lfm bufferin luominen ei onnistu."
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "Ristiriitaisen tiedoston \"%s\" poistaminen ei onnistu"
 
-#: lazarusidestrconsts.lisunabletoexecute
-#, object-pascal-format
-msgid "unable to execute: %s"
-msgstr "ei voi suorittaa: %s"
-
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "Resurssitekstin osiota ei löydy tästä eikä muista käännösyksiköistä."
@@ -18877,10 +18800,6 @@ msgstr "Lomake-editorin avaaminen ei onnistu.%sLuokka %s ei periydy sopivasta lu
 #, object-pascal-format
 msgid "Unable to read %s"
 msgstr "%s:n lukeminen ei onnistu"
-
-#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
-msgid "unable to read process ExitStatus"
-msgstr "Prosessin ExitStatus lukeminen ei onnistu"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
 #, object-pascal-format
