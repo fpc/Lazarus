@@ -309,7 +309,7 @@ type
     procedure ThreadProcessLoopCycle(var AFinishLoopAndSendEvents: boolean;
       var AnEventType: TFPDEvent; var ACurCommand: TDbgControllerCmd; var AnIsFinished: boolean);
     function  BreakpointHit(var &continue: boolean; const Breakpoint: TFpDbgBreakpoint): boolean;
-    procedure UserCommandRequested(var ACommand: TDBGCommand; IsContinueLastStep: Boolean);
+    procedure UserCommandRequested(var ACommand: TDBGCommand; ALastCommand: TDBGCommand);
 
 //    procedure ClearState;
   end;
@@ -3501,11 +3501,13 @@ begin
 end;
 
 procedure TFpDebugExceptionStepping.UserCommandRequested(var ACommand: TDBGCommand;
-  IsContinueLastStep: Boolean);
+  ALastCommand: TDBGCommand);
 var
   st: TExceptStepState;
 begin
   // This only runs if the debugloop is paused
+  if ACommand <> dcContinueLastStep then
+    ALastCommand := ACommand;
   st := FState;
   FState := esNone;
   DisableBreaks([bplPopExcept, bplCatches, bplReRaise,
@@ -3519,7 +3521,7 @@ begin
     {$ENDIF}
     bplStepOut]);
 
-  if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo, dcStepOverInstr{, dcStepIntoInstr}] then
+  if ALastCommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo, dcStepOverInstr{, dcStepIntoInstr}] then
     EnableBreaks([bplReRaise
       {$IFDEF MSWINDOWS}
       {$IFDEF WIN64} , bplRtlRestoreContext, bplFpcSpecific {$ENDIF}
@@ -3528,12 +3530,12 @@ begin
       {$ENDIF}
       ]);
 
-  if IsContinueLastStep then
+  if ACommand = dcContinueLastStep then
     exit;
 
   case st of
     esStoppedAtRaise: begin
-      if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo] then begin
+      if ALastCommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo] then begin
         FState := esStepToFinally;
         ACommand := dcRun;
         FDebugger.FDbgController.&ContinueRun;
@@ -4363,7 +4365,7 @@ begin
      not(FLastStepCommand in [dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcRunTo, dcJumpto, dcStepOverInstr, dcStepIntoInstr])
   then
     FLastStepCommand := Cmd;
-  FExceptionStepper.UserCommandRequested(FLastStepCommand, Cmd = dcContinueLastStep);
+  FExceptionStepper.UserCommandRequested(Cmd, FLastStepCommand);
   case Cmd of
     dcRun:
       begin
