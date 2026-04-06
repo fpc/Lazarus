@@ -289,21 +289,11 @@ type
   public
     class function createScroller(
       const parent: TCocoaManualScrollView;
-      const dst: NSRect;
-      const aVisible: Boolean ): TCocoaScrollBar;
-
-    class function createLegacyScroller: TCocoaScrollBar;
+      const dst: NSRect ): TCocoaScrollBar;
 
     class function isMouseEventInScrollBar(
       const host: TCocoaManualScrollView;
       const event: NSEvent ): Boolean;
-
-    class function getFromScrollInfo(
-      const bar: TCocoaScrollBar;
-      const scrollInfo: TScrollInfo ): Integer;
-    class function setToScrollInfo(
-      const bar: TCocoaScrollBar;
-      var scrollInfo: TScrollInfo ): Boolean;
 
     class procedure setBorderStyle(
       const sv: NSScrollView;
@@ -1338,7 +1328,7 @@ begin
     w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
            _horzScrollBar.controlSize, _horzScrollBar.preferredScrollerStyle);
     r := NSMakeRect(0, 0, Max(f.size.width,w+1), w); // width<height to create a horizontal scroller
-    _horzScrollBar := TCocoaScrollingUtil.createScroller( self, r, avisible);
+    _horzScrollBar := TCocoaScrollingUtil.createScroller( self, r );
         _horzScrollBar.setAutoresizingMask(NSViewWidthSizable);
     Result := _horzScrollBar;
     _manager.updateLayout;
@@ -1359,7 +1349,7 @@ begin
     w := NSScroller.scrollerWidthForControlSize_scrollerStyle(
            _vertScrollBar.controlSize, _vertScrollBar.preferredScrollerStyle);
     r := NSMakeRect(0, 0, w, Max(f.size.height,w+1)); // height<width to create a vertical scroller
-    _vertScrollBar := TCocoaScrollingUtil.createScroller( self, r, avisible);
+    _vertScrollBar := TCocoaScrollingUtil.createScroller( self, r );
     if self.isFlipped then
       _vertScrollBar.setAutoresizingMask(NSViewHeightSizable or NSViewMaxXMargin)
     else
@@ -1424,83 +1414,6 @@ end;
 
 { TCocoaScrollingUtil }
 
-class function TCocoaScrollingUtil.getFromScrollInfo(
-  const bar: TCocoaScrollBar;
-  const scrollInfo: TScrollInfo ): Integer;
-var
-  pg  : Integer;
-  mn  : Integer;
-  mx  : Integer;
-  dl  : Integer;
-begin
-  if not Assigned(bar) then
-  begin
-    Result := 0;
-    Exit;
-  end;
-
-  if scrollInfo.fMask and SIF_PAGE>0 then
-  begin
-    pg:=scrollInfo.nPage;
-  end
-  else pg:=bar.pageInt;
-
-  if scrollInfo.fMask and SIF_RANGE>0 then
-  begin
-    mn:=scrollInfo.nMin;
-    mx:=scrollInfo.nMax;
-  end
-  else
-  begin
-    mn:=bar.minInt;
-    mx:=bar.maxInt;
-  end;
-
-  dl:=mx-mn;
-  {$ifdef BOOLFIX}
-  bar.setEnabled_(Ord(dl<>0));
-  {$else}
-  bar.SetEnabled(dl<>0);
-  {$endif}
-
-  // if changed page or range, the knob changes
-  if scrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then
-  begin
-    if dl<>0 then
-      bar.setKnobProportion(pg/dl)
-    else
-      bar.setKnobProportion(1);
-    bar.pageInt:=pg;
-    bar.minInt:=mn;
-    bar.maxInt:=mx;
-  end;
-
-  if scrollInfo.fMask and SIF_POS > 0 then
-    bar.lclSetPos( scrollInfo.nPos );
-
-  Result:=bar.lclPos;
-end;
-
-class function TCocoaScrollingUtil.setToScrollInfo(
-  const bar: TCocoaScrollBar;
-  var scrollInfo: TScrollInfo ): Boolean;
-var
-  l : integer;
-begin
-  Result:=Assigned(bar);
-  if not Result then Exit;
-
-  FillChar(scrollInfo, sizeof(scrollInfo), 0);
-  scrollInfo.cbSize:=sizeof(scrollInfo);
-  scrollInfo.fMask:=SIF_ALL;
-  scrollInfo.nMin:=bar.minInt;
-  scrollInfo.nMax:=bar.maxInt;
-  scrollInfo.nPage:=bar.pageInt;
-  scrollInfo.nPos:=bar.lclPos;
-  scrollInfo.nTrackPos:=scrollInfo.nPos;
-  Result:=true;
-end;
-
 class procedure TCocoaScrollingUtil.setBorderStyle(
   const sv: NSScrollView;
   const astyle: TBorderStyle );
@@ -1522,24 +1435,9 @@ begin
   AScroll.setAutohidesScrollers(SCROLLER_AUTO_HIDE_STYLE[AStyles]);
 end;
 
-// for the Scroller created separately through TCocoaWSScrollBar.CreateHandle(),
-// due to the lack of the control over the Layout by TCocoaManualScrollView,
-// only the Legacy Style can be used for compatibility.
-// it's the same logical relationship as NSScrollView and NSScroller.
-class function TCocoaScrollingUtil.createLegacyScroller: TCocoaScrollBar;
-var
-  scrollBar: TCocoaScrollBar Absolute Result;
-  manager: TCocoaScrollStyleManager;
-begin
-  scrollBar:= TCocoaScrollBar(TCocoaScrollBar.alloc);
-  manager:= CocoaScrollStyleManagerCreator( nil, NSScrollerStyleLegacy );
-  scrollBar.setManager( manager );
-end;
-
 class function TCocoaScrollingUtil.createScroller(
   const parent: TCocoaManualScrollView;
-  const dst: NSRect;
-  const aVisible: Boolean ): TCocoaScrollBar;
+  const dst: NSRect ): TCocoaScrollBar;
 var
   scrollBar: TCocoaScrollBar Absolute Result;
 begin

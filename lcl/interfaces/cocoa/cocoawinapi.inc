@@ -1577,14 +1577,14 @@ begin
     obj := TCocoaManualScrollHost(obj).documentView;
 
   if obj.isKindOfClass(TCocoaScrollBar) then
-    Result := TCocoaScrollingUtil.setToScrollInfo(TCocoaScrollBar(obj), scrollInfo)
+    Result := TCocoaWSScrollingUtil.setToScrollInfo(TCocoaScrollBar(obj), scrollInfo)
   else
   if obj.isKindOfClass(TCocoaManualScrollView) then
   begin
     if BarFlag = SB_Vert then
-      Result := TCocoaScrollingUtil.setToScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller), scrollInfo)
+      Result := TCocoaWSScrollingUtil.setToScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).verticalScroller), scrollInfo)
     else
-      Result := TCocoaScrollingUtil.setToScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller), scrollInfo);
+      Result := TCocoaWSScrollingUtil.setToScrollInfo( TCocoaScrollBar(TCocoaManualScrollView(obj).horizontalScroller), scrollInfo);
   end else if obj.isKindOfClass(TCocoaScrollView) then
     TCocoaScrollView(obj).fillScrollInfo(BarFlag, scrollInfo)
   else
@@ -1757,7 +1757,7 @@ begin
 
     if Assigned(bar) then
     begin
-      Result := TCocoaScrollingUtil.getFromScrollInfo(bar, ScrollInfo);
+      Result := TCocoaWSScrollingUtil.getFromScrollInfo(bar, ScrollInfo);
       //debugln('TCocoaWidgetSet.SetScrollInfo page=',bar.pageInt,' min=',bar.minInt,' max=',bar.maxInt,' ',bar.lclPos);
       ShowScrollBar(Handle, SBStyle, bar.pageInt < bar.maxInt-bar.minInt);
     end
@@ -1769,7 +1769,7 @@ begin
 
   end else if obj.isKindOfClass(TCocoaScrollBar) then
   begin
-    Result := TCocoaScrollingUtil.getFromScrollInfo(TCocoaScrollBar(obj), ScrollInfo);
+    Result := TCocoaWSScrollingUtil.getFromScrollInfo(TCocoaScrollBar(obj), ScrollInfo);
   end
   else
     Result := 0;

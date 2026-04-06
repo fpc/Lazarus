@@ -34,6 +34,15 @@ type
     class function embedInManualScrollHost(
       const AView: TCocoaManualScrollView ): TCocoaManualScrollHost;
 
+    class function createLegacyScroller: TCocoaScrollBar;
+
+    class function getFromScrollInfo(
+      const bar: TCocoaScrollBar;
+      const scrollInfo: TScrollInfo ): Integer;
+    class function setToScrollInfo(
+      const bar: TCocoaScrollBar;
+      var scrollInfo: TScrollInfo ): Boolean;
+
     class procedure asyncAdjustSize(const control: TWinControl);
   end;
 
@@ -153,6 +162,97 @@ begin
   AView.setHidden(false);
   {$endif}
   TCocoaViewUtil.setDefaultMargin(Result);
+end;
+
+// for the Scroller created separately through TCocoaWSScrollBar.CreateHandle(),
+// due to the lack of the control over the Layout by TCocoaManualScrollView,
+// only the Legacy Style can be used for compatibility.
+// it's the same logical relationship as NSScrollView and NSScroller.
+class function TCocoaWSScrollingUtil.createLegacyScroller: TCocoaScrollBar;
+var
+  scrollBar: TCocoaScrollBar Absolute Result;
+  manager: TCocoaScrollStyleManager;
+begin
+  scrollBar:= TCocoaScrollBar(TCocoaScrollBar.alloc);
+  manager:= CocoaScrollStyleManagerCreator( nil, NSScrollerStyleLegacy );
+  scrollBar.setManager( manager );
+end;
+
+class function TCocoaWSScrollingUtil.getFromScrollInfo(
+  const bar: TCocoaScrollBar;
+  const scrollInfo: TScrollInfo ): Integer;
+var
+  pg  : Integer;
+  mn  : Integer;
+  mx  : Integer;
+  dl  : Integer;
+begin
+  if not Assigned(bar) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  if scrollInfo.fMask and SIF_PAGE>0 then
+  begin
+    pg:=scrollInfo.nPage;
+  end
+  else pg:=bar.pageInt;
+
+  if scrollInfo.fMask and SIF_RANGE>0 then
+  begin
+    mn:=scrollInfo.nMin;
+    mx:=scrollInfo.nMax;
+  end
+  else
+  begin
+    mn:=bar.minInt;
+    mx:=bar.maxInt;
+  end;
+
+  dl:=mx-mn;
+  {$ifdef BOOLFIX}
+  bar.setEnabled_(Ord(dl<>0));
+  {$else}
+  bar.SetEnabled(dl<>0);
+  {$endif}
+
+  // if changed page or range, the knob changes
+  if scrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then
+  begin
+    if dl<>0 then
+      bar.setKnobProportion(pg/dl)
+    else
+      bar.setKnobProportion(1);
+    bar.pageInt:=pg;
+    bar.minInt:=mn;
+    bar.maxInt:=mx;
+  end;
+
+  if scrollInfo.fMask and SIF_POS > 0 then
+    bar.lclSetPos( scrollInfo.nPos );
+
+  Result:=bar.lclPos;
+end;
+
+class function TCocoaWSScrollingUtil.setToScrollInfo(
+  const bar: TCocoaScrollBar;
+  var scrollInfo: TScrollInfo ): Boolean;
+var
+  l : integer;
+begin
+  Result:=Assigned(bar);
+  if not Result then Exit;
+
+  FillChar(scrollInfo, sizeof(scrollInfo), 0);
+  scrollInfo.cbSize:=sizeof(scrollInfo);
+  scrollInfo.fMask:=SIF_ALL;
+  scrollInfo.nMin:=bar.minInt;
+  scrollInfo.nMax:=bar.maxInt;
+  scrollInfo.nPage:=bar.pageInt;
+  scrollInfo.nPos:=bar.lclPos;
+  scrollInfo.nTrackPos:=scrollInfo.nPos;
+  Result:=true;
 end;
 
 class procedure TCocoaWSScrollingUtil.asyncAdjustSize(
