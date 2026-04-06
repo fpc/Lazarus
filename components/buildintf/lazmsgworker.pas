@@ -5,8 +5,9 @@ unit LazMsgWorker;
 interface
 
 uses
-  // LazUtils
-  System.UITypes;
+  System.UITypes,
+  // BuildIntf
+  IDEExternToolIntf;
 
 type
   TLazMessageWorker = function(const aCaption, aMsg: string;
@@ -15,10 +16,17 @@ type
   TLazQuestionWorker = function(const aCaption, aMsg: string;
                                 DlgType: TMsgDlgType; Buttons: array of const;
                                 const HelpKeyword: string = ''): Integer of object;
+  TShowMessageEvent = function(aUrgency: TMessageLineUrgency; aMsg: string;
+              aSrcFilename: string=''; aLineNumber: integer=0; aColumn: integer=0;
+              aViewCaption: string=''): TMessageLine of object;
 
 var  // set by the IDE
   LazMessageWorker: TLazMessageWorker = nil;
   LazQuestionWorker: TLazQuestionWorker = nil;
+
+  // In the IDE this is the same as IDEMessagesWindow.AddCustomMessage.
+  // A cmd line program can also set a handler for printing messages.
+  OnShowMessage: TShowMessageEvent;
 
 function LazMessageDialogAb(const aCaption, aMsg: string;
                    DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
@@ -70,7 +78,6 @@ begin
   SetLength(NewButtons,j);
   Result:=LazQuestionWorker(aCaption,aMsg,DlgType,NewButtons,HelpKeyword);
 end;
-
 
 end.
 

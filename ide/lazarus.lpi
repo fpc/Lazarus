@@ -714,11 +714,6 @@
         <UnitName Value="MsgWnd_Options"/>
       </Unit>
       <Unit>
-        <Filename Value="exttools.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="ExtTools"/>
-      </Unit>
-      <Unit>
         <Filename Value="exttooldialog.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
@@ -1363,10 +1358,15 @@
       <Unit>
         <Filename Value="../packager/interpkgconflictfiles.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="InterPkgConflictFiles"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../packager/interpkgconflictfiledlg.pas"/>
+        <IsPartOfProject Value="True"/>
         <ComponentName Value="PGIPConflictsDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="InterPkgConflictFiles"/>
+        <UnitName Value="InterPkgConflictFileDlg"/>
       </Unit>
       <Unit>
         <Filename Value="encloseifdef.pas"/>

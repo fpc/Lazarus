@@ -221,7 +221,6 @@ type
     FOnDeletePackage: TPkgDeleteEvent;
     FOnDependencyModified: TDependencyModifiedEvent;
     FOnEndUpdate: TPkgGraphEndUpdateEvent;
-    FOnShowMessage: TShowMsgEvent;
     FOnSrcEditFileIsModified: TSrcEditFileIsModifiedEvent;
     FOnTranslatePackage: TPkgTranslateEvent;
     FOnUninstallPackage: TPkgUninstallEvent;
@@ -537,7 +536,6 @@ type
     property OnDependencyModified: TDependencyModifiedEvent
                          read FOnDependencyModified write FOnDependencyModified;
     property OnEndUpdate: TPkgGraphEndUpdateEvent read FOnEndUpdate write FOnEndUpdate;
-    property OnShowMessage: TShowMsgEvent read FOnShowMessage write FOnShowMessage;
     property OnSrcEditFileIsModified: TSrcEditFileIsModifiedEvent read FOnSrcEditFileIsModified
                                                  write FOnSrcEditFileIsModified;
     property OnTranslatePackage: TPkgTranslateEvent read FOnTranslatePackage
@@ -1154,8 +1152,8 @@ end;
 procedure TLazPackageGraph.AddMessage(TheUrgency: TMessageLineUrgency;
   const Msg, Filename: string);
 begin
-  if Assigned(FOnShowMessage) then
-    FOnShowMessage(TheUrgency, Msg, Filename, 0, 0, '')
+  if Assigned(OnShowMessage) then
+    OnShowMessage(TheUrgency, Msg, Filename, 0, 0, '')
   else
     DebugLn([MessageLineUrgencyNames[TheUrgency],': (lazarus) ',Msg,' Filename="',Filename,'"']);
 end;
@@ -2204,7 +2202,8 @@ begin
         PkgCompileTool.ErrorMessage:=Data.ErrorMessage;
         DebugLn('Error: (lazarus) failed to update .po files: ',APackage.IDAsString);
         SrcF:=Format(lisUpdatingPoFilesFailedForPackage, [APackage.IDAsString]);
-        FOnShowMessage(mluError, SrcF, '', 0, 0, '');
+        if Assigned(OnShowMessage) then
+          OnShowMessage(mluError, SrcF, '', 0, 0, '');
         exit;
       end;
     end;
@@ -2611,7 +2610,7 @@ var
   Param: TFPCParamValue;
   Msg: String;
 begin
-  if FOnShowMessage=nil then exit;
+  if OnShowMessage=nil then exit;
   ParsedParams:=TObjectList.Create(true);
   try
     ParseFPCParameters(CompilerParams,ParsedParams);
@@ -2627,7 +2626,7 @@ begin
           Msg:=Format(lisPassingCompilerDefineTwiceWithDifferentValues, [Param.Name]);
         if Msg='' then continue;
         if Target<>'' then Msg:=Target+' '+Msg;
-        FOnShowMessage(mluNote, Msg, '', 0, 0, ViewCaption);
+        OnShowMessage(mluNote, Msg, '', 0, 0, ViewCaption);
       end;
     end;
   finally

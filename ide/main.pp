@@ -443,6 +443,9 @@ type
     function IDEQuestionDialogHandler(const aCaption, aMsg: string;
                                  DlgType: TMsgDlgType; Buttons: array of const;
                                  const HelpKeyword: string): Integer;
+    function ShowMessageHandler(aUrgency: TMessageLineUrgency;
+                         aMsg, aSrcFilename: string; aLineNumber, aColumn: integer;
+                         aViewCaption: string): TMessageLine;
     procedure LayoutChangeHandler(Sender: TObject);
     procedure ToolBarOptionsClick(Sender: TObject);
   public
@@ -2241,6 +2244,7 @@ begin
   StoreIDEFileDialog:=@StoreIDEFileDialogHandler;
   LazMessageWorker:=@IDEMessageDialogHandler;
   LazQuestionWorker:=@IDEQuestionDialogHandler;
+  LazMsgWorker.OnShowMessage:=@ShowMessageHandler;
   TestCompilerOptions:=@CompilerOptionsDialogTest;
   CheckCompOptsAndMainSrcForNewUnitEvent:=@CheckForNewUnit;
 end;
@@ -3792,6 +3796,14 @@ function TMainIDE.IDEQuestionDialogHandler(const aCaption, aMsg: string;
 begin
   Result:=QuestionDlg{ !!! DO NOT REPLACE WITH IDEQuestionDialog }
             (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
+end;
+
+function TMainIDE.ShowMessageHandler(aUrgency: TMessageLineUrgency;
+  aMsg, aSrcFilename: string; aLineNumber, aColumn: integer; aViewCaption: string
+  ): TMessageLine;
+begin
+  Assert(Assigned(IDEMessagesWindow), 'TMainIDE.ShowMessageHandler: IDEMessagesWindow=Nil');
+  Result:=IDEMessagesWindow.AddCustomMessage(aUrgency, aMsg, aSrcFilename, aLineNumber, aColumn, aViewCaption);
 end;
 
 procedure TMainIDE.ExecuteIDEShortCutHandler(Sender: TObject; var Key: word;

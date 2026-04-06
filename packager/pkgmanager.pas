@@ -78,12 +78,16 @@ uses
   // FCL registration
   LazarusPackageIntf,
   // IDE
+  MainBar, MainIntf, MainBase,
   LazarusIDEStrConsts, MiscOptions, AddToPackageDlg, ProjPackEditing,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
   BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector, EditableProject,
-  PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg,
-  PublishModuleDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,
-  ConfirmPkgListDlg, NewPkgComponentDlg, MainBar, MainIntf, MainBase;
+  PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg, PublishModuleDlg,
+  PkgLinksDlg, InstallPkgSetDlg, ConfirmPkgListDlg, InterPkgConflictFiles,
+  {$IFDEF EnableCheckInterPkgFiles}
+  InterPkgConflictFileDlg,  // This adds a GUI for InterPkgConflictFiles.
+  {$ENDIF}
+  NewPkgComponentDlg;
 
 type
 
@@ -146,9 +150,6 @@ type
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure PackageGraphFindFPCUnit(const AUnitName, Directory: string;
                                       var Filename: string);
-    function ShowMessageHandler(aUrgency: TMessageLineUrgency;
-                         aMsg, aSrcFilename: string; aLineNumber, aColumn: integer;
-                         aViewCaption: string): TMessageLine;
     function MainTitleChanged(const ATitle: string): boolean;
     // menu
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
@@ -1094,14 +1095,6 @@ begin
     RaiseGDBException(Directory);
   //DebugLn('TPkgManager.PackageGraphFindFPCUnit "',Directory,'"');
   Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks(Directory, AUnitName);
-end;
-
-function TPkgManager.ShowMessageHandler(aUrgency: TMessageLineUrgency;
-  aMsg, aSrcFilename: string; aLineNumber, aColumn: integer; aViewCaption: string
-  ): TMessageLine;
-begin
-  Assert(Assigned(IDEMessagesWindow), 'TPkgManager.ShowMessageHandler: IDEMessagesWindow=Nil');
-  Result:=IDEMessagesWindow.AddCustomMessage(aUrgency, aMsg, aSrcFilename, aLineNumber, aColumn, aViewCaption);
 end;
 
 function TPkgManager.MainTitleChanged(const ATitle: string): boolean;
@@ -2965,7 +2958,6 @@ begin
   PackageGraph.OnTranslatePackage:=@DoTranslatePackage;
   PackageGraph.OnUninstallPackage:=@DoUninstallPackage;
   PackageGraph.OnSrcEditFileIsModified:=@PackageGraphSrcEditFileIsModified;
-  PackageGraph.OnShowMessage:=@ShowMessageHandler;
   PackageGraph.OnMainTitleChange:=@MainTitleChanged;
 
   // package editors

@@ -11,8 +11,8 @@ object PGIPConflictsDialog: TPGIPConflictsDialog
   OnCreate = FormCreate
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 384
+    Height = 37
+    Top = 381
     Width = 457
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -27,7 +27,7 @@ object PGIPConflictsDialog: TPGIPConflictsDialog
   end
   object ConflictsTreeView: TTreeView
     Left = 6
-    Height = 372
+    Height = 369
     Top = 6
     Width = 457
     Align = alClient
