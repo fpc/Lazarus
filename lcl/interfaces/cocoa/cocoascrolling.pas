@@ -149,7 +149,7 @@ type
     procedure updateLayout; virtual;
   public
     constructor createForScrollBar;
-    constructor createForScrollView( scrollView:TCocoaManualScrollView );
+    constructor createForScrollView( const scrollView: TCocoaManualScrollView );
   end;
 
   { TCocoaScrollBar }
@@ -634,8 +634,8 @@ constructor TCocoaScrollStyleManager.createForScrollBar;
 begin
 end;
 
-constructor TCocoaScrollStyleManager.createForScrollView(scrollView: TCocoaManualScrollView
-  );
+constructor TCocoaScrollStyleManager.createForScrollView(
+  const scrollView: TCocoaManualScrollView );
 begin
   _scrollView:= scrollView;
 end;

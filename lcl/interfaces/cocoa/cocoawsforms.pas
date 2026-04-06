@@ -69,14 +69,6 @@ type
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
-  { TCocoaWSScrollingWinControl }
-
-  TCocoaWSScrollingWinControl = class(TWSScrollingWinControl)
-  published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
-    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
-  end;
-
   { TCocoaWSCustomForm }
   TCocoaWSCustomFormClass = class of TCocoaWSCustomForm;
   TCocoaWSCustomForm = class(TWSCustomForm)
@@ -540,41 +532,6 @@ begin
   else
     Result := False;
 end;
-
-{ TCocoaWSScrollingWinControl}
-
-class function  TCocoaWSScrollingWinControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
-var
-  scrollcon: TCocoaScrollView;
-  docview: TCocoaCustomControl;
-  lcl : TLCLCommonCallback;
-begin
-  scrollcon:= TCocoaScrollView.alloc.lclInitWithCreateParams(AParams);
-  TCocoaScrollUtil.setBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
-  scrollcon.setDrawsBackground(false); // everything is covered anyway
-  scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
-  scrollcon.setAutohidesScrollers(True);
-  scrollcon.isCustomRange := true;
-
-  docview:= TCocoaCustomControl.alloc.init;
-  docview.setFrameSize( scrollcon.contentSize );
-  scrollcon.setDocumentView(docview);
-
-  lcl := TLCLCommonCallback.Create(docview, AWinControl, scrollcon);
-  lcl.BlockCocoaUpDown := true;
-  scrollcon.callback := lcl;
-  docview.callback := lcl;
-
-  Result := TLCLHandle(scrollcon);
-end;
-
-class procedure TCocoaWSScrollingWinControl.SetBorderStyle(
-  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
-begin
-  if not Assigned(AWinControl) or not AWincontrol.HandleAllocated then Exit;
-  TCocoaScrollUtil.setBorderStyle( NSScrollView(AWinControl.Handle), ABorderStyle);
-end;
-
 
 { TCocoaWSCustomForm }
 

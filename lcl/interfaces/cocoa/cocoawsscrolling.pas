@@ -7,10 +7,19 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Controls, Forms,
-  CocoaAll, CocoaPrivate, CocoaCustomControl,
-  CocoaScrolling;
+  WSForms,
+  CocoaAll, CocoaPrivate, CocoaCommonCallback, CocoaCustomControl,
+  CocoaScrolling, CocoaScrollerImpl;
 
 type
+
+  { TCocoaWSScrollingWinControl }
+
+  TCocoaWSScrollingWinControl = class(TWSScrollingWinControl)
+  published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+  end;
 
   { TCocoaWSScrollerUtil }
 
@@ -168,6 +177,40 @@ begin
   if NOT _doing then
     Application.QueueAsyncCall(@doAdjustSize, 0);
   _doing:= True;
+end;
+
+{ TCocoaWSScrollingWinControl}
+
+class function  TCocoaWSScrollingWinControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
+var
+  scrollcon: TCocoaScrollView;
+  docview: TCocoaCustomControl;
+  lcl : TLCLCommonCallback;
+begin
+  scrollcon:= TCocoaScrollView.alloc.lclInitWithCreateParams(AParams);
+  TCocoaScrollUtil.setBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
+  scrollcon.setDrawsBackground(false); // everything is covered anyway
+  scrollcon.setBackgroundColor(NSColor.windowBackgroundColor);
+  scrollcon.setAutohidesScrollers(True);
+  scrollcon.isCustomRange := true;
+
+  docview:= TCocoaCustomControl.alloc.init;
+  docview.setFrameSize( scrollcon.contentSize );
+  scrollcon.setDocumentView(docview);
+
+  lcl := TLCLCommonCallback.Create(docview, AWinControl, scrollcon);
+  lcl.BlockCocoaUpDown := true;
+  scrollcon.callback := lcl;
+  docview.callback := lcl;
+
+  Result := TLCLHandle(scrollcon);
+end;
+
+class procedure TCocoaWSScrollingWinControl.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  if not Assigned(AWinControl) or not AWincontrol.HandleAllocated then Exit;
+  TCocoaScrollUtil.setBorderStyle( NSScrollView(AWinControl.Handle), ABorderStyle);
 end;
 
 initialization
