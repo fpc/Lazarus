@@ -12288,18 +12288,27 @@ begin
   Msg.Width := Word(NewSize.cx);
   Msg.Height := Word(NewSize.cy);
 
+  if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(AWidget) then
+  begin
+    SzW := 0;
+    SzH := 0;
+    PGtkWindow(AWidget)^.get_size(@SzW, @SzH);
+    if (SzW > 0) and (SzH > 0) and
+       (SzW = ACtl.LCLObject.Width) and (SzH = ACtl.LCLObject.Height) then
+      exit;
+    NewSize.cx := SzW;
+    NewSize.cy := SzH;
+    Msg.Width := Word(NewSize.cx);
+    Msg.Height := Word(NewSize.cy);
+  end else
   if not (GDK_WINDOW_STATE_ICONIFIED  in AState) and
      not (GDK_WINDOW_STATE_MAXIMIZED  in AState) and
      not (GDK_WINDOW_STATE_FULLSCREEN in AState) and
      (NewSize.cx = ACtl.LCLObject.Width) and
      (NewSize.cy = ACtl.LCLObject.Height) then
   begin
-    //If the client rect cache is stale, fall through to deliver LM_SIZE
-    //so WMSize->AlignControls runs with the correct client reect.
     if not ACtl.LCLObject.ClientRectNeedsInterfaceUpdate then
-    begin
       exit;
-    end;
   end;
 
   {$IFDEF GTK3DEBUGSCROLLEDWIN}
@@ -12926,13 +12935,15 @@ begin
   if not Gtk3IsWidget(AWin.Widget) then
     exit;
 
-  // Use get_allocation(), NOT gtk_window_get_size(), for the comparison.
-  // On Wayland with CSD, get_size() subtracts shadow margin but size-allocate
-  // includes it — get_allocation() keeps both in the same coordinate space.
-  // On X11 (SSD, shadow_width=0): get_allocation() == get_size().
-  AWin.Widget^.get_allocation(@Alloc);
-  WinW := Alloc.width;
-  WinH := Alloc.height;
+  if Gtk3WidgetSet.IsWayland and Gtk3IsGtkWindow(AWin.Widget) then
+  begin
+    PGtkWindow(AWin.Widget)^.get_size(@WinW, @WinH);
+  end else
+  begin
+    AWin.Widget^.get_allocation(@Alloc);
+    WinW := Alloc.width;
+    WinH := Alloc.height;
+  end;
 
   // Skip if the WM has already given us what we want.
   if (AWin.FResizeState.PendingResizeW = WinW) and (AWin.FResizeState.PendingResizeH = WinH) then
@@ -12944,15 +12955,16 @@ begin
     // GTK to re-layout from the current allocation so children get the right size.
     if Gtk3IsGtkWindow(AWin.Widget) then
     begin
-      PGtkWindow(AWin.Widget)^.get_size(@SizeW, @SizeH);
-      if (SizeW <> WinW) or (SizeH <> WinH) then
+      if not Gtk3WidgetSet.IsWayland then
       begin
-        PGtkWindow(AWin.Widget)^.queue_resize;
-        // Explicitly request the layout phase so GTK processes queue_resize
-        // at the next VSync tick rather than waiting for a natural frame.
-        AFrameClock := AWin.Widget^.get_frame_clock;
-        if Assigned(AFrameClock) then
-          AFrameClock^.request_phase([GDK_FRAME_CLOCK_PHASE_LAYOUT]);
+        PGtkWindow(AWin.Widget)^.get_size(@SizeW, @SizeH);
+        if (SizeW <> WinW) or (SizeH <> WinH) then
+        begin
+          PGtkWindow(AWin.Widget)^.queue_resize;
+          AFrameClock := AWin.Widget^.get_frame_clock;
+          if Assigned(AFrameClock) then
+            AFrameClock^.request_phase([GDK_FRAME_CLOCK_PHASE_LAYOUT]);
+        end;
       end;
     end;
     Exit;
@@ -12968,9 +12980,14 @@ begin
   AWin.FResizeState.LastResizeW := AWin.FResizeState.PendingResizeW;
   AWin.FResizeState.LastResizeH := AWin.FResizeState.PendingResizeH;
   if not Gtk3IsGtkWindow(AWin.Widget) then Exit;
-  PGtkWindow(AWin.Widget)^.resize(
-    AWin.FResizeState.PendingResizeW - AWin.FResizeState.ShadowW,
-    AWin.FResizeState.PendingResizeH - AWin.FResizeState.ShadowH);
+  if Gtk3WidgetSet.IsWayland then
+    PGtkWindow(AWin.Widget)^.resize(
+      AWin.FResizeState.PendingResizeW,
+      AWin.FResizeState.PendingResizeH)
+  else
+    PGtkWindow(AWin.Widget)^.resize(
+      AWin.FResizeState.PendingResizeW - AWin.FResizeState.ShadowW,
+      AWin.FResizeState.PendingResizeH - AWin.FResizeState.ShadowH);
   AFrameClock := AWin.Widget^.get_frame_clock;
   if Assigned(AFrameClock) then
     AFrameClock^.request_phase([GDK_FRAME_CLOCK_PHASE_LAYOUT]);
@@ -13010,7 +13027,14 @@ begin
 
     if not ((AForm.BorderStyle = bsNone) and Widget^.get_realized) then
       if Gtk3IsGtkWindow(fWidget) or ((ARect.width >= 2) and (ARect.height >= 2)) then
+      begin
+        if AIsWayland and Gtk3IsGtkWindow(fWidget) then
+        begin
+          ARect.width := ARect.width + FResizeState.ShadowW;
+          ARect.height := ARect.height + FResizeState.ShadowH;
+        end;
         Widget^.size_allocate(@ARect);
+      end;
     if Gtk3IsGtkWindow(fWidget)
         and not (csDesigning in AForm.ComponentState) {and (AForm.Parent = nil) and (AForm.ParentWindow = 0)} then
     begin
@@ -13149,13 +13173,14 @@ begin
           [AWidth, AHeight, GetTickCount64,
            FResizeState.ShadowW, FResizeState.ShadowH]));
         {$ENDIF}
-        // ShadowW/H = allocation - get_size, updated each WSA. 0 on X11 (SSD).
-        // resize() takes content size. AWidth/AHeight are in allocation space.
         if (csDesigning in AForm.ComponentState) then
           PGtkWindow(Widget)^.set_default_size(AWidth, AHeight);
-        PGtkWindow(Widget)^.resize(
-          AWidth - FResizeState.ShadowW,
-          AHeight - FResizeState.ShadowH);
+        if AIsWayland then
+          PGtkWindow(Widget)^.resize(AWidth, AHeight)
+        else
+          PGtkWindow(Widget)^.resize(
+            AWidth - FResizeState.ShadowW,
+            AHeight - FResizeState.ShadowH);
         {Must apply transient window origin here. Not sure if this is needed for
          decorated windows, but non decorated with popupparent must align.}
         x := 0;

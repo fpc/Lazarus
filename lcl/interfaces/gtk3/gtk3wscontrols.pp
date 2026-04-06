@@ -190,8 +190,21 @@ begin
   if AFixedWidthHeight then
   begin
     if not (Gtk3WidgetSet.IsWayland and not AWidget.Widget^.get_mapped) then
+    begin
+      if Gtk3WidgetSet.IsWayland then
+      begin
+        Geometry.min_width := PGtkWidget(AWidget.Widget)^.get_allocated_width;
+        Geometry.max_width := Geometry.min_width;
+        Geometry.min_height := PGtkWidget(AWidget.Widget)^.get_allocated_height;
+        Geometry.max_height := Geometry.min_height;
+        Geometry.base_width := Geometry.min_width;
+        Geometry.base_height := Geometry.min_height;
+
+
+      end;
       PGtkWindow(AWidget.Widget)^.set_geometry_hints(nil, @Geometry,
         [GDK_HINT_POS, GDK_HINT_MIN_SIZE, GDK_HINT_MAX_SIZE]);
+    end;
   end else
   begin
     if AForm.BorderStyle <> bsNone then
