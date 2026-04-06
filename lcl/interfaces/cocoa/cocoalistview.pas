@@ -13,7 +13,8 @@ uses
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   // Cocoa WS
   CocoaPrivate, CocoaListControl,
-  CocoaScrollers, CocoaWSScrollers, CocoaTextEdits, CocoaGDIObjects, CocoaUtils;
+  CocoaScrolling, CocoaScrollers, CocoaWSScrollers,
+  CocoaTextEdits, CocoaGDIObjects, CocoaUtils;
 
 type
   {

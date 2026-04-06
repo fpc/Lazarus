@@ -33,7 +33,8 @@ uses
   MacOSAll, CocoaAll,
   CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate,
   CocoaCommonCallback, CocoaWSPrivate,
-  CocoaGDIObjects, CocoaWindows, CocoaToolBar, CocoaCustomControl, CocoaScrollers,
+  CocoaGDIObjects, CocoaWindows, CocoaToolBar, CocoaCustomControl,
+  CocoaScrolling, CocoaScrollers,
   CocoaWSScrollers, CocoaUtils, CocoaMenus, Cocoa_Extra;
 
 type

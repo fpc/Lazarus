@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="588">
+    <Files Count="589">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2897,6 +2897,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaEvent"/>
       </Item588>
+      <Item589>
+        <Filename Value="cocoa/cocoascrolling.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaScrolling"/>
+      </Item589>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

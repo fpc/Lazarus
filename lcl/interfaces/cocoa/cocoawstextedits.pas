@@ -17,7 +17,7 @@ uses
   // LCL Cocoa
   CocoaWSPrivate, CocoaPrivate, CocoaCommonCallback,
   CocoaConst, CocoaConfig, CocoaUtils, Cocoa_Extra,
-  CocoaTextEdits, CocoaScrollers, CocoaWSScrollers;
+  CocoaTextEdits, CocoaScrolling, CocoaScrollers, CocoaWSScrollers;
 
 type
   { TCocoaWSCustomEdit }
@@ -80,9 +80,9 @@ type
   { TCocoaWSCustomMemo }
 
   TCocoaWSCustomMemo = class(TWSCustomMemo)
-  public
+  private
     class function GetTextView(AWinControl: TWinControl): TCocoaTextView;
-    class function GetScrollView(AWinControl: TWinControl): TCocoaScrollView;
+    class function GetScrollView(AWinControl: TWinControl): NSScrollView;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
@@ -672,7 +672,7 @@ end;
 
 class function TCocoaWSCustomMemo.GetTextView(AWinControl: TWinControl): TCocoaTextView;
 var
-  lScroll: TCocoaScrollView;
+  lScroll: NSScrollView;
 begin
   lScroll := GetScrollView(AWinControl);
   if not Assigned(lScroll) then
@@ -683,14 +683,14 @@ begin
   Result := TCocoaTextView(lScroll.documentView);
 end;
 
-class function TCocoaWSCustomMemo.GetScrollView(AWinControl: TWinControl): TCocoaScrollView;
+class function TCocoaWSCustomMemo.GetScrollView(AWinControl: TWinControl): NSScrollView;
 begin
   if not Assigned(AWinControl) or (not AWinControl.HandleAllocated) or (AWinControl.Handle=0) then
   begin
     Exit(nil);
   end;
 
-  Result := TCocoaScrollView(AWinControl.Handle);
+  Result := NSScrollView(AWinControl.Handle);
 end;
 
 class function TCocoaWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
@@ -819,7 +819,7 @@ end;
 class procedure TCocoaWSCustomMemo.SetBorderStyle(
   const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 var
-  sv: TCocoaScrollView;
+  sv: NSScrollView;
 begin
   sv := GetScrollView(AWinControl);
   if not Assigned(sv) then Exit;
@@ -973,7 +973,7 @@ end;
 class procedure  TCocoaWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
 var
   txt: TCocoaTextView;
-  lScroll: TCocoaScrollView;
+  lScroll: NSScrollView;
 begin
   txt := GetTextView(ACustomMemo);
   lScroll := GetScrollView(ACustomMemo);
