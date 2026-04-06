@@ -2510,12 +2510,12 @@ begin
       NodeIsInsideFunction(CursorNode) and
       (CompareIdentifiers(PChar('Result'),PChar(@Src[CursorNode.StartPos]))=0)
       then begin
-      // var Result declared inside a function e.g. in a nested procedure cannot be
-      // re-declaration of predefined Result, stop searching in previous declarations
-        NewExprType.Desc:=xtContext;
-        NewExprType.Context.Node:=CursorNode;
-        NewExprType.Context.Tool:=Self;
-        CleanPosToCaret(CursorNode.StartPos, NewPos);
+      // var Result declared inside a function, search for Result type is enabled,
+      // <Ctrl>+[lmb] jumps to type of variable Result
+        NewExprType.Desc := xtContext;
+        NewExprType.Context.Node := CursorNode.FirstChild;
+        NewExprType.Context.Tool := Self;
+        CleanPosToCaret(CursorNode.FirstChild.StartPos, NewPos);
         NewTopLine := NewPos.Y;
         BlockTopLine := NewTopLine;
         BlockBottomLine := NewPos.Y;
