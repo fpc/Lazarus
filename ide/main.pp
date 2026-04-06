@@ -166,7 +166,7 @@ uses
   IdeOptionsDlg, EditDefineTree, KeyMapping,
   IDETranslations, ExtToolDialog, ExtToolEditDlg, JumpHistoryView,
   DesktopManager, DiskDiffsDialog, BuildLazDialog, BuildProfileManager,
-  BuildManager, CheckCompOptsForNewUnitDlg, MiscOptions,
+  BuildManager, IdeBuildManager, CheckCompOptsForNewUnitDlg, MiscOptions,
   InputhistoryWithSearchOpt, UnitDependencies, IDEFPCInfo, IDEInfoDlg,
   IDEInfoNeedBuild, ProcessList, IdeDebuggerOpts, IdeDebuggerWatchResPrinter,
   IdeDebuggerWatchResult, InitialSetupDlgs, InitialSetupProc, NewDialog,
@@ -1565,7 +1565,7 @@ begin
   FWaitForClose := False;
   SetupDialogs;
 
-  MainBuildBoss:=TBuildManager.Create(nil);
+  MainBuildBoss:=TIdeBuildManager.Create(nil);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
   // setup macros before loading options
   MainBuildBoss.SetupTransferMacros;
