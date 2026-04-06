@@ -34,8 +34,8 @@ uses
   CocoaWSService, CocoaWSModalService, CocoaConfig, CocoaPrivate,
   CocoaCommonCallback, CocoaWSPrivate,
   CocoaGDIObjects, CocoaWindows, CocoaToolBar, CocoaCustomControl,
-  CocoaScrolling, CocoaScrollers,
-  CocoaWSScrollers, CocoaUtils, CocoaMenus, Cocoa_Extra;
+  CocoaScrolling,
+  CocoaUtils, CocoaMenus, Cocoa_Extra;
 
 type
   { TLCLWindowCallback }

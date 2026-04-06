@@ -28,7 +28,7 @@ uses
   MacOSAll, CocoaAll,
   CocoaPrivate, CocoaWSService, Cocoa_Extra, CocoaUtils,
   CocoaCursor, CocoaCustomControl, CocoaTextEdits,
-  CocoaScrolling, CocoaScrollers;
+  CocoaScrolling;
 
 type
 

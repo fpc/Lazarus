@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, LCLType, Controls, Forms,
   CocoaAll, CocoaPrivate, CocoaCustomControl,
-  CocoaScrolling, CocoaScrollers;
+  CocoaScrolling;
 
 type
 

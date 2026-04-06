@@ -12,9 +12,8 @@ uses
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
   CocoaConfig, CocoaPrivate,
-  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, CocoaFullControlEdit,
-  CocoaCursor, CocoaCaret,
-  CocoaCommonCallback;
+  CocoaCustomControl, CocoaScrolling, CocoaWSScrollers,
+  CocoaFullControlEdit, CocoaCursor, CocoaCaret, CocoaCommonCallback;
 
 type
 

@@ -31,7 +31,7 @@ uses
   WSExtCtrls, WSLCLClasses,
   // LCL Cocoa
   CocoaPrivate, CocoaCommonCallback, CocoaGDIObjects, CocoaConfig,
-  Cocoa_Extra, CocoaCustomControl, CocoaScrollers, CocoaMenus, CocoaUtils;
+  Cocoa_Extra, CocoaCustomControl, CocoaMenus, CocoaUtils;
 
 type
 
@@ -226,7 +226,6 @@ class function TCocoaWSCustomSplitter.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   ctrl : TCocoaSplitterOwnerControl;
-  sl   : TCocoaManualScrollView;
   lcl  : TLCLCommonCallback;
 begin
   ctrl := TCocoaSplitterOwnerControl(TCocoaSplitterOwnerControl.alloc.lclInitWithCreateParams(AParams));

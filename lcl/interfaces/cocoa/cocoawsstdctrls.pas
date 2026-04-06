@@ -33,7 +33,7 @@ uses
   CocoaPrivate, CocoaCommonCallback, CocoaGroupBox,
   CocoaConst, CocoaConfig, CocoaWSButtons, CocoaUtils,
   CocoaGDIObjects, CocoaTextEdits, CocoaWSTextEdits,
-  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers;
+  CocoaCustomControl, CocoaScrolling;
 
 type
 

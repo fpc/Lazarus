@@ -14,7 +14,7 @@ uses
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
   CocoaPrivate, CocoaGDIObjects,
-  CocoaListControl, CocoaTables, CocoaScrolling, CocoaScrollers,
+  CocoaListControl, CocoaTables, CocoaScrolling,
   CocoaWSListView, CocoaWSScrollers;
 
 type

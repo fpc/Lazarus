@@ -17,7 +17,7 @@ uses
   // LCL Cocoa
   CocoaWSPrivate, CocoaPrivate, CocoaCommonCallback,
   CocoaConst, CocoaConfig, CocoaUtils, Cocoa_Extra,
-  CocoaTextEdits, CocoaScrolling, CocoaScrollers, CocoaWSScrollers;
+  CocoaTextEdits, CocoaScrolling;
 
 type
   { TCocoaWSCustomEdit }
