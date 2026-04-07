@@ -4120,7 +4120,7 @@ begin
   if IsWidgetOk then
   begin
     if ACursor = 0 then
-      LCursor := ACursor
+      LCursor := 0
     else
       LCursor := HCURSOR(TGtk3Cursor(ACursor).Handle);
     LCursorIsDefault := ACursor = Screen.Cursors[crDefault];
