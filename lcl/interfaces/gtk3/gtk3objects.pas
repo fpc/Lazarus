@@ -1759,6 +1759,15 @@ begin
   if xorSurface <> nil  then
     raise Exception.Create('TGtk3DeviceContext: xorSurface <> nil !');
 
+  if FBackTarget <> nil then
+  begin
+    cairo_save(FCairo);
+    cairo_set_source_surface(FCairo, cairo_get_target(FBackTarget), FBackOriginX, FBackOriginY);
+    cairo_set_operator(FCairo, CAIRO_OPERATOR_DEST_OVER);
+    cairo_paint(FCairo);
+    cairo_restore(FCairo);
+  end;
+
   gdk_cairo_get_clip_rectangle(FCairo, @R);
 
   xorSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, R.width, R.height);
