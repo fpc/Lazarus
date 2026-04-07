@@ -11375,6 +11375,11 @@ begin
   if IsWidgetOk then
   begin
     {%H-}PGtkButton(FWidget)^.set_label(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
+    if LCLObject.AutoSize then
+    begin
+      FWidget^.set_size_request(-1, -1);
+      FWidget^.queue_resize;
+    end;
   end;
 end;
 

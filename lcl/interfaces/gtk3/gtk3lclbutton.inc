@@ -34,8 +34,7 @@ begin
     Exit;
   end;
 
-  // we respect ws width of button if autosize is true.
-  if AControl.LCLObject.AutoSize and (AControl.LCLWidth = 0) then
+  if AControl.LCLObject.AutoSize then
     exit;
   // Custom width handling
   if AControl.LCLWidth = 0 then
@@ -83,8 +82,7 @@ begin
     Exit;
   end;
 
- // we respect ws height if autosize is true.
-  if AControl.LCLObject.AutoSize and (AControl.LCLObject.BorderSpacing.InnerBorder = 0) then
+  if AControl.LCLObject.AutoSize then
     exit;
 
   // Custom height handling
