@@ -3345,11 +3345,9 @@ begin
 
   if cairo_has_current_point(pcr)<>0 then
     cairo_get_current_point(pcr, @fLastPenX, @fLastPenY);
-  //issue #42082, stroke with pens width <= 1
-  if FXorMode or (fCurrentPen.Width <= 1) then
-    cairo_stroke(pcr)
-  else
-    cairo_stroke_preserve(pcr);
+  cairo_stroke(pcr);
+  if (not FXorMode) and (fCurrentPen.Width > 1) then
+    cairo_move_to(pcr, fLastPenX, fLastPenY);
   Result := True;
 end;
 
