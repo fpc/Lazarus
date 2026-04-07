@@ -4119,7 +4119,10 @@ var
 begin
   if IsWidgetOk then
   begin
-    LCursor := HCURSOR(TGtk3Cursor(ACursor).Handle);
+    if ACursor = 0 then
+      LCursor := ACursor
+    else
+      LCursor := HCURSOR(TGtk3Cursor(ACursor).Handle);
     LCursorIsDefault := ACursor = Screen.Cursors[crDefault];
     if (wtLayout in WidgetType) and Gtk3IsLayout(GetContainerWidget)
       and Gtk3IsGdkWindow(PGtkLayout(GetContainerWidget)^.get_bin_window) then
