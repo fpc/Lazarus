@@ -13,7 +13,7 @@ uses
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList, Forms,
   // Cocoa WS
   CocoaPrivate, CocoaListControl,
-  CocoaScrollers, CocoaWSScrollers, CocoaTextEdits, CocoaGDIObjects, CocoaUtils;
+  CocoaScrolling, CocoaTextEdits, CocoaGDIObjects, CocoaUtils;
 
 type
   {
@@ -318,7 +318,7 @@ begin
   _scrollView.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable );
   _scrollView.callback:= self.callback;
   self.addSubview_positioned_relativeTo( _scrollView, NSWindowBelow, nil );
-  TCocoaScrollUtil.setBorderStyle( _scrollView, callback.getBorderStyle );
+  TCocoaScrollingUtil.setBorderStyle( _scrollView, callback.getBorderStyle );
   _scrollView.setFocusRingType( NSFocusRingTypeExterior );
   TCocoaViewUtil.updateFocusRing( _backendControl, TWinControl(self.lclGetTarget) );
 

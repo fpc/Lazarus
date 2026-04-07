@@ -12,9 +12,8 @@ uses
   WSControls, LCLType, LCLMessageGlue, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaAll,
   CocoaConfig, CocoaPrivate,
-  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers, CocoaFullControlEdit,
-  CocoaCursor, CocoaCaret,
-  CocoaCommonCallback;
+  CocoaCustomControl, CocoaScrolling, CocoaWSScrolling,
+  CocoaFullControlEdit, CocoaCursor, CocoaCaret, CocoaCommonCallback;
 
 type
 
@@ -128,10 +127,10 @@ begin
   lcl.BlockCocoaKeyBeep := true; // prevent "dings" on keyDown for custom controls (i.e. SynEdit)
   ctrl.callback := lcl;
 
-  sl := TCocoaWSScrollerUtil.embedInManualScrollView(ctrl);
+  sl := TCocoaWSScrollingUtil.embedInManualScrollView(ctrl);
   sl.callback := ctrl.callback;
 
-  hs := TCocoaWSScrollerUtil.embedInManualScrollHost(sl);
+  hs := TCocoaWSScrollingUtil.embedInManualScrollHost(sl);
   hs.callback := ctrl.callback;
   lcl.SetHandleFrame(hs);
 

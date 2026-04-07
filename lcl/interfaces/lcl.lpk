@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="4" Minor="99"/>
-    <Files Count="588">
+    <Files Count="589">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2396,9 +2396,9 @@ end;"/>
         <UnitName Value="CocoaTextEdits"/>
       </Item483>
       <Item484>
-        <Filename Value="cocoa/cocoascrollers.pas"/>
+        <Filename Value="cocoa/cocoascrollerimpl.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaScrollers"/>
+        <UnitName Value="cocoascrollerimpl"/>
       </Item484>
       <Item485>
         <Filename Value="cocoa/cocoawsclipboard.pas"/>
@@ -2640,9 +2640,9 @@ end;"/>
         <UnitName Value="Cocoa_Extra"/>
       </Item534>
       <Item535>
-        <Filename Value="cocoa/cocoawsscrollers.pas"/>
+        <Filename Value="cocoa/cocoawsscrolling.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="CocoaWSScrollers"/>
+        <UnitName Value="cocoawsscrolling"/>
       </Item535>
       <Item536>
         <Filename Value="cocoa/cocoacollectionview.pas"/>
@@ -2897,6 +2897,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaEvent"/>
       </Item588>
+      <Item589>
+        <Filename Value="cocoa/cocoascrolling.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaScrolling"/>
+      </Item589>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>

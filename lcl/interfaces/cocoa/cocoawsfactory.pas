@@ -11,6 +11,7 @@ uses
   CocoaWSPrivate,
   CocoaWSButtons,
   CocoaWSExtCtrls,
+  CocoaWSScrolling,
   CocoaWSForms,
   CocoaWSMenus,
   CocoaWSStdCtrls,

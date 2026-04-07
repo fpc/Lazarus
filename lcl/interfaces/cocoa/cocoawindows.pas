@@ -27,7 +27,8 @@ uses
   LCLType, LCLProc,
   MacOSAll, CocoaAll,
   CocoaPrivate, CocoaWSService, Cocoa_Extra, CocoaUtils,
-  CocoaCursor, CocoaCustomControl, CocoaTextEdits, CocoaScrollers;
+  CocoaCursor, CocoaCustomControl, CocoaTextEdits,
+  CocoaScrolling;
 
 type
 

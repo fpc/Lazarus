@@ -28,7 +28,7 @@ uses
   LCLType, LCLMessageGlue, LMessages, Controls, Graphics,
   ComCtrls, StdCtrls, ImgList, Forms,
   MacOSAll, CocoaAll,
-  CocoaPrivate, Cocoa_Extra, CocoaScrollers, CocoaListControl,
+  CocoaPrivate, Cocoa_Extra, CocoaScrolling, CocoaListControl,
   CocoaConst, CocoaConfig, CocoaUtils, CocoaGDIObjects,
   CocoaListView, CocoaTextEdits;
 
@@ -1931,7 +1931,7 @@ end;
 procedure TCocoaWSListView_TableViewHandler.SetScrollBars(
   const AValue: TScrollStyle);
 begin
-  TCocoaScrollUtil.setScrollStyle(_listView.scrollView, AValue);
+  TCocoaScrollingUtil.setScrollStyle(_listView.scrollView, AValue);
 
   {$ifdef BOOLFIX}
   _listView.setNeedsDisplay__(Ord(true));

@@ -30,10 +30,10 @@ uses
   // Widgetset
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate, CocoaCommonCallback, CocoaGroupBox,
-  CocoaConst, CocoaConfig, CocoaWSButtons, CocoaUtils,
-  CocoaGDIObjects, CocoaTextEdits, CocoaWSTextEdits,
-  CocoaCustomControl, CocoaScrollers, CocoaWSScrollers;
+  CocoaPrivate, CocoaCommonCallback, CocoaGDIObjects,
+  CocoaConst, CocoaConfig, CocoaUtils,
+  CocoaScrolling, CocoaTextEdits, CocoaCustomControl, CocoaGroupBox,
+  CocoaWSScrolling, CocoaWSTextEdits, CocoaWSButtons;
 
 type
 
@@ -147,7 +147,7 @@ begin
   // due to the lack of the control over the Layout by TCocoaManualScrollView,
   // only the Legacy Style can be used for compatibility.
   // it's the same logical relationship as NSScrollView and NSScroller.
-  scr:= TCocoaScrollUtil.createLegacyScroller;
+  scr:= TCocoaWSScrollingUtil.createLegacyScroller;
   scr.lclInitWithCreateParams(prm);
   scr.callback:=TLCLCommonCallback.Create(scr, AWinControl);
 

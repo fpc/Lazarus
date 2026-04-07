@@ -14,8 +14,8 @@ uses
   WSStdCtrls, WSLCLClasses,
   // LCL Cocoa
   CocoaPrivate, CocoaGDIObjects,
-  CocoaListControl, CocoaTables, CocoaScrollers,
-  CocoaWSListView, CocoaWSScrollers;
+  CocoaListControl, CocoaTables, CocoaScrolling,
+  CocoaWSListView, CocoaWSScrolling;
 
 type
 
@@ -381,7 +381,7 @@ begin
 
   TCocoaWSListBoxUtil.setStyle(list, TCustomListBox(AWinControl).Style);
 
-  scroll := TCocoaWSScrollerUtil.embedInScrollView(list);
+  scroll := TCocoaWSScrollingUtil.embedInScrollView(list);
   if not Assigned(scroll) then
   begin
     Result := 0;
@@ -392,7 +392,7 @@ begin
   scroll.setHasVerticalScroller(true);
   scroll.setHasHorizontalScroller(true);
   scroll.setAutohidesScrollers(true);
-  TCocoaScrollUtil.setBorderStyle(scroll, lclListBox.BorderStyle);
+  TCocoaScrollingUtil.setBorderStyle(scroll, lclListBox.BorderStyle);
   TCocoaViewUtil.updateFocusRing(list, lclListBox);
 
   Result := TLCLHandle(scroll);
@@ -515,7 +515,7 @@ begin
   list := TCocoaWSListBoxUtil.getTableListView( TCustomListBox(AWinControl) );
   if not Assigned(list) then Exit;
 
-  TCocoaScrollUtil.setBorderStyle(list.enclosingScrollView, ABorderStyle);
+  TCocoaScrollingUtil.setBorderStyle(list.enclosingScrollView, ABorderStyle);
   TCocoaViewUtil.updateFocusRing(list, AWinControl);
 end;
 
