@@ -930,6 +930,7 @@ begin
   Desc.Width := WorkImage.width;
   Desc.Height := WorkImage.height;
 
+  Image.UpdatePixbufFromSurface;
   // copy data
   ARawImage.DataSize := WorkImage.numBytes;
   ReAllocMem(ARawImage.Data, ARawImage.DataSize);

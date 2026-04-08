@@ -184,6 +184,7 @@ type
     function numBytes: LongWord;
     function bytesPerLine: Integer;
     property Format: Tcairo_format_t read FFormat;
+    procedure UpdatePixbufFromSurface;
     property Handle: PGdkPixbuf read FHandle;
   end;
 
@@ -1406,6 +1407,25 @@ end;
 function TGtk3Image.bytesPerLine: Integer;
 begin
   Result := FHandle^.rowstride;
+end;
+
+procedure TGtk3Image.UpdatePixbufFromSurface;
+var
+  ANewPixbuf: PGdkPixbuf;
+begin
+  if not Assigned(fContext) or not Assigned(fContext.CairoSurface) then
+    exit;
+  if cairo_surface_get_type(fContext.CairoSurface) <> CAIRO_SURFACE_TYPE_IMAGE then
+    exit;
+  cairo_surface_flush(fContext.CairoSurface);
+  ANewPixbuf := gdk_pixbuf_get_from_surface(fContext.CairoSurface, 0, 0,
+    cairo_image_surface_get_width(fContext.CairoSurface), cairo_image_surface_get_height(fContext.CairoSurface));
+  if ANewPixbuf <> nil then
+  begin
+    if FHandle <> nil then
+      FHandle^.unref;
+    FHandle := ANewPixbuf;
+  end;
 end;
 
 { TGtk3Pen }
