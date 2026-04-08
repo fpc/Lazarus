@@ -286,57 +286,26 @@ begin
 end;
 {$endif}
 
-procedure ForwardMouseMove(app: NSApplication; theEvent: NSEvent);
+procedure forwardMouseMovedEventToTheWindowAtPos( const windowAtPos: NSWindow; const originalEvent: NSEvent );
 var
-  w   : NSWindow;
-  ev  : NSEvent;
-  p   : NSPoint;
-  wfr : NSRect;
+  location: NSPoint;
+  newEvent: NSEvent;
 begin
-  if not app.isActive then
-    exit;
-
-  p := theEvent.mouseLocation;
-  w := TCocoaWindowUtil.getWindowAtPos(p);;
-
-  if Assigned(w) then
-  begin
-    wfr := w.contentRectForFrameRect(w.frame);
-    // if mouse outside of ClientFrame of Window,
-    // Cursor should be forced to default.
-    // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
-    if not NSPointInRect(p, wfr) then
-    begin
-      if Screen.Cursor=crDefault then
-        CursorHelper.ForceSetDefaultCursor
-      else
-        CursorHelper.SetScreenCursor;
-      Application.DoBeforeMouseMessage( nil );
-    end;
-  end
-  else
-  begin
-    Application.DoBeforeMouseMessage( nil );
-    Exit;
-  end;
-
-  if (not Assigned(theEvent.window)) or (w=theEvent.window) then
-    Exit;
-
-  p.x := p.x - w.frame.origin.x;
-  p.y := p.y - w.frame.origin.y;
-  ev := NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
-    theEvent.type_,
-    p,
-    theEvent.modifierFlags,
-    theEvent.timestamp,
-    w.windowNumber,
-    theEvent.context,
-    theEvent.eventNumber,
-    theEvent.clickCount,
-    theEvent.pressure
+  location:= originalEvent.mouseLocation;
+  location.x := location.x - windowAtPos.frame.origin.x;
+  location.y := location.y - windowAtPos.frame.origin.y;
+  newEvent := NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
+    originalEvent.type_,
+    location,
+    originalEvent.modifierFlags,
+    originalEvent.timestamp,
+    windowAtPos.windowNumber,
+    originalEvent.context,
+    originalEvent.eventNumber,
+    originalEvent.clickCount,
+    originalEvent.pressure
   );
-  w.sendEvent(ev);
+  windowAtPos.sendEvent( newEvent );
 end;
 
 procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
@@ -423,6 +392,46 @@ var
     end;
   end;
 
+  procedure handelMouseMovedEventForLCL;
+  var
+    mousePos: NSPoint;
+    windowAtPos: NSWindow;
+    windowClientFrame: NSRect;
+  begin
+    if (theEvent.type_ <> NSMouseMoved) then
+      Exit;
+
+    if NOT self.isActive then
+      Exit;
+
+    mousePos:= theEvent.mouseLocation;
+    windowAtPos:= TCocoaWindowUtil.getWindowAtPos( mousePos );;
+    if NOT Assigned(windowAtPos) then begin
+      Application.DoBeforeMouseMessage( nil );
+      Exit;
+    end;
+
+    windowClientFrame := windowAtPos.contentRectForFrameRect(windowAtPos.frame);
+    // if mouse outside of ClientFrame of Window,
+    // Cursor should be forced to default.
+    // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
+    if not NSPointInRect(mousePos, windowClientFrame) then begin
+      if Screen.Cursor=crDefault then
+        CursorHelper.ForceSetDefaultCursor
+      else
+        CursorHelper.SetScreenCursor;
+      Application.DoBeforeMouseMessage( nil );
+    end;
+
+    // mouse in the keyWindow, complete, Exit
+    if (NOT Assigned(theEvent.window)) or (windowAtPos=theEvent.window) then
+      Exit;
+
+    // mouse NOT in the keyWindow, forward the Mouse Moved Event to
+    // the Window at Mouse Cursor Pos, according the LCL specification
+    forwardMouseMovedEventToTheWindowAtPos( windowAtPos, theEvent );
+  end;
+
 begin
   {$ifdef COCOALOOPNATIVE}
   try
@@ -441,7 +450,7 @@ begin
 
     inherited sendEvent(theEvent);
 
-    if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
+    handelMouseMovedEventForLCL;
 
      // todo: this should be called for "Default" or "Modal" loops
      NSApp.updateWindows;
