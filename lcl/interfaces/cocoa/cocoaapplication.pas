@@ -343,11 +343,87 @@ end;
 procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
 var
   cb : ICommonCallback;
-  wnd: TCocoaWindow;
   allowcocoa : Boolean;
   idx: integer;
   win : NSWindow;
   responder : NSResponder;
+
+  procedure setCocoaOnlyStateForKeyEvent;
+  begin
+    if NOT Assigned(win) then
+      Exit;
+
+    responder := win.firstResponder;
+    cb := responder.lclGetCallback;
+    if NOT Assigned(cb) then
+      Exit;
+
+    case theEvent.type_ of
+      NSKeyDown:
+        // when NSKeyDown, always reset CocoaOnlyState
+        if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+          CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText
+        else
+          CocoaWidgetSetState.CocoaOnlyState := false;
+      NSKeyUp:
+        // when NSKeyUp, reset CocoaOnlyState only if it's false (last KeyDown set)
+        // keep true if CocoaOnlyState=true
+        if not CocoaWidgetSetState.CocoaOnlyState then
+        begin
+          if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+            CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
+        end;
+    end;
+  end;
+
+  function handleKeyEvent: Boolean;
+  var
+    wnd: TCocoaWindow;
+  begin
+    Result:= False;
+
+    case theEvent.type_ of
+      NSKeyDown,
+      NSKeyUp,
+      NSFlagsChanged: ;
+      else
+        Exit;
+    end;
+
+    if NOT Assigned(cb) then
+      Exit;
+
+    Result:= True;
+
+    if win.isKindOfClass_(TCocoaWindow) then begin
+      wnd := TCocoaWindow(win);
+      wnd._keyEvCallback := cb;
+    end else
+      wnd := nil;
+
+    try
+      if CocoaWidgetSetState.CocoaOnlyState then begin
+        // in IME state
+        inherited sendEvent(theEvent);
+      end else begin
+        // not in IME state
+        cb.KeyEvBefore(theEvent, allowcocoa);
+        // may be triggered into IME state
+        if allowcocoa then
+          inherited sendEvent(theEvent);
+        // retest IME state
+        if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+          CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
+        // if in IME state, pass KeyEvAfter
+        if not CocoaWidgetSetState.CocoaOnlyState then
+          cb.KeyEvAfter;
+      end;
+    finally
+      if Assigned(wnd) then
+        wnd._keyEvCallback := nil;
+    end;
+  end;
+
 begin
   {$ifdef COCOALOOPNATIVE}
   try
@@ -359,70 +435,10 @@ begin
   responder := nil;
   cb := nil;
 
-  if Assigned(win) then
-  begin
-    responder := win.firstResponder;
-    cb := responder.lclGetCallback;
-    if Assigned(cb) then
-    begin
-      case theEvent.type_ of
-        NSKeyDown:
-          // when NSKeyDown, always reset CocoaOnlyState
-          if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-            CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText
-          else
-            CocoaWidgetSetState.CocoaOnlyState := false;
-        NSKeyUp:
-          // when NSKeyUp, reset CocoaOnlyState only if it's false (last KeyDown set)
-          // keep true if CocoaOnlyState=true
-          if not CocoaWidgetSetState.CocoaOnlyState then
-          begin
-            if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-              CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
-          end;
-      end;
-    end;
-  end;
-
   try
-    if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
-       (theEvent.type_ = NSFlagsChanged) then begin
-      if Assigned(cb) then
-      begin
-        try
-          if win.isKindOfClass_(TCocoaWindow) then begin
-            wnd := TCocoaWindow(win);
-            wnd._keyEvCallback := cb;
-          end
-          else
-            wnd := nil;
-
-          if CocoaWidgetSetState.CocoaOnlyState then
-          begin
-            // in IME state
-            inherited sendEvent(theEvent);
-          end
-          else
-          begin
-            // not in IME state
-            cb.KeyEvBefore(theEvent, allowcocoa);
-            // may be triggered into IME state
-            if allowcocoa then
-              inherited sendEvent(theEvent);
-            // retest IME state
-            if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-              CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
-            // if in IME state, pass KeyEvAfter
-            if not CocoaWidgetSetState.CocoaOnlyState then
-              cb.KeyEvAfter;
-          end;
-        finally
-          if Assigned(wnd) then
-            wnd._keyEvCallback := nil;
-        end;
-        Exit;
-      end;
-    end;
+    setCocoaOnlyStateForKeyEvent;
+    if handleKeyEvent then
+      Exit;
 
     inherited sendEvent(theEvent);
 
