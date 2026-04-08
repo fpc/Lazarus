@@ -27,7 +27,6 @@ type
     _onOpenURLObserver: TCocoaAppOnOpenURLNotify;
     // Sandboxing
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
-    _isRunning : Boolean;
     _stopped : Boolean;
     {$endif}
   private
