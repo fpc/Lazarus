@@ -1454,7 +1454,15 @@ begin
   GDK_KEY_RELEASE:
     begin
       if Widget^.has_focus then
-        Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False)
+      begin
+        Result := TGtk3Widget(Data).GtkEventKey(Widget, Event, False);
+        if not Result and (Event^.key.keyval = GDK_KEY_space) and
+           (TGtk3Widget(Data).LCLObject is TButtonControl) then
+        begin
+          LCLSendClickedMsg(TGtk3Widget(Data).LCLObject);
+          Result := True;
+        end;
+      end
       else if Widget^.is_toplevel then
       begin
         AFocusedWidget := PGtkWindow(Widget)^.get_focus;
