@@ -513,6 +513,7 @@ end;
 
 procedure TCocoaMenuItem_Quit.lclItemSelected(sender: id);
 var
+  mainForm: TCustomForm;
   canClose: Boolean;
 begin
   {$ifdef COCOALOOPHIJACK}
@@ -522,13 +523,18 @@ begin
   if CocoaWidgetSetState.LoopHiJackEnded then Exit;
   {$endif}
 
+  mainForm:= Application.MainForm;
   canClose:= True;
-  if Assigned(Application.MainForm) then
-    canClose:= Application.MainForm.CloseQuery;
+  if Assigned(mainForm) then
+    canClose:= mainForm.CloseQuery;
 
-  if canClose then begin
-    if NOT Application.Terminated then
-      Application.Terminate;
+  if NOT canClose then
+    Exit;
+
+  if NOT Application.Terminated then begin
+    if Assigned(mainForm) then
+      mainForm.Close;
+    Application.Terminate;
   end;
 end;
 
