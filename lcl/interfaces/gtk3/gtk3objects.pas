@@ -231,6 +231,7 @@ type
     FCanvasScaleFactor: double;
     FXorMode: boolean;
     FXorROP: Integer;
+    FXorSnapshot: Pcairo_surface_t;
     //Accumulated clip region, mirrors what we set via SetClipRegion/ResetClip.
     //Needed because gdk_cairo_get_clip_rectangle returns only the bounding box,
     //causing ExcludeClipRect accumulation to lose intermediate holes.
@@ -1747,6 +1748,11 @@ begin
       cairo_surface_destroy(FXorSurface);
       FXorSurface := nil;
     end;
+    if FXorSnapshot <> nil then
+    begin
+      cairo_surface_destroy(FXorSnapshot);
+      FXorSnapshot := nil;
+    end;
   end;
   AMap := MapRasterOpToCairo(AValue);
   if (AMap <> CAIRO_OPERATOR_XOR) and (AValue <> R2_NOTXORPEN) then
@@ -1775,6 +1781,7 @@ procedure TGtk3DeviceContext.SetXorMode(var xorSurface: Pcairo_surface_t;
   AMap: Tcairo_operator_t);
 var
   R: TGdkRectangle;
+  TempCairo: Pcairo_t;
 begin
   if xorSurface <> nil  then
     raise Exception.Create('TGtk3DeviceContext: xorSurface <> nil !');
@@ -1786,6 +1793,25 @@ begin
     cairo_set_operator(FCairo, CAIRO_OPERATOR_DEST_OVER);
     cairo_paint(FCairo);
     cairo_restore(FCairo);
+  end
+  else
+  begin
+    if FXorSnapshot <> nil then
+    begin
+      cairo_surface_destroy(FXorSnapshot);
+      FXorSnapshot := nil;
+    end;
+    gdk_cairo_get_clip_rectangle(FCairo, @R);
+    if (R.width > 0) and (R.height > 0) then
+    begin
+      FXorSnapshot := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, R.width, R.height);
+      TempCairo := cairo_create(FXorSnapshot);
+      cairo_set_source_surface(TempCairo, cairo_get_target(FCairo), -R.x, -R.y);
+      cairo_set_operator(TempCairo, CAIRO_OPERATOR_SOURCE);
+      cairo_paint(TempCairo);
+      cairo_destroy(TempCairo);
+      cairo_surface_flush(FXorSnapshot);
+    end;
   end;
 
   gdk_cairo_get_clip_rectangle(FCairo, @R);
@@ -1829,15 +1855,21 @@ begin
 
   TargetSurface := cairo_get_target(FCairo);
 
-  if not FOwnsSurface then
-    Exit;
-
-  //Image surface path,pixel level bitwise XOR
-  cairo_surface_flush(TargetSurface);
-
   TempSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, SrcW, SrcH);
   TempCairo := cairo_create(TempSurface);
-  cairo_set_source_surface(TempCairo, TargetSurface, -R.x, -R.y);
+  if FOwnsSurface then
+  begin
+    cairo_surface_flush(TargetSurface);
+    cairo_set_source_surface(TempCairo, TargetSurface, -R.x, -R.y);
+  end
+  else if FXorSnapshot <> nil then
+    cairo_set_source_surface(TempCairo, FXorSnapshot, 0, 0)
+  else
+  begin
+    cairo_destroy(TempCairo);
+    cairo_surface_destroy(TempSurface);
+    Exit;
+  end;
   cairo_set_operator(TempCairo, CAIRO_OPERATOR_SOURCE);
   cairo_paint(TempCairo);
   cairo_destroy(TempCairo);
@@ -2232,6 +2264,7 @@ begin
   {$endif}
   inherited Create;
   FXorSurface := nil;
+  FXorSnapshot := nil;
   FCanvasScaleFactor := 1;
   FvClipRect := Rect(0, 0, 0, 0);
   Window := nil;
@@ -2289,6 +2322,7 @@ begin
   inherited Create;
   FDCSaveCounter := 0;
   FXorSurface := nil;
+  FXorSnapshot := nil;
   FCanvasScaleFactor := 1;
   FvClipRect := Rect(0, 0, 0, 0);
   Parent := nil;
@@ -2322,6 +2356,7 @@ begin
   inherited Create;
   FDCSaveCounter := 0;
   FXorSurface := nil;
+  FXorSnapshot := nil;
   FCanvasScaleFactor := 1;
   FOwnsCairo := False;
   Window := nil;
@@ -2390,9 +2425,13 @@ begin
 
   if FXorCairo <> nil then
   begin
-    //never should happen
     cairo_destroy(FXorCairo);
     FXorCairo := nil;
+  end;
+  if FXorSnapshot <> nil then
+  begin
+    cairo_surface_destroy(FXorSnapshot);
+    FXorSnapshot := nil;
   end;
   if (ParentPixmap <> nil) then
     g_object_unref(ParentPixmap);
