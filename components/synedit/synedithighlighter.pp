@@ -125,6 +125,7 @@ type
       virtual; deprecated 'Use GetTokenClassAttribute / to be removed in 5.99';
     function GetDefaultFilter: string; virtual; deprecated'to be removed in 5.99';
     procedure SetWordBreakChars(AChars: TSynIdentChars); virtual;
+    function GetWordBreakChars: TCharSet; override;
     function IsFilterStored: boolean; virtual; deprecated'to be removed in 5.99';
     function __OLD_FileFilterDefaultMask: string; override; deprecated'to be removed in 5.99';
     procedure SetDefaultFilter(Value: string); virtual; deprecated'to be removed in 5.99';
@@ -817,6 +818,11 @@ end;
 procedure TSynCustomHighlighter.SetWordBreakChars(AChars: TSynIdentChars);
 begin
   fWordBreakChars := AChars;
+end;
+
+function TSynCustomHighlighter.GetWordBreakChars: TCharSet;
+begin
+  Result := fWordBreakChars;
 end;
 
 function TSynCustomHighlighter.GetRange: Pointer;
