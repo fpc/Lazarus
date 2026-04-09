@@ -1467,7 +1467,7 @@ begin
 
             if FuncNode<>nil then
               NewItem.ResultType:=
-                CurrentIdentifierList.StartContext.Tool.ExtractIdentifier(FuncNode.StartPos);
+                CurrentIdentifierList.StartContext.Tool.ExtractIdentifier(FuncNode.StartPos,false); // allow &type
             CurrentIdentifierList.Add(NewItem);
           end;
         end;

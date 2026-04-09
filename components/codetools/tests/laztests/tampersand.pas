@@ -1,4 +1,4 @@
-program &tampersand{ TODO findrefs:0,0};
+program &tampersand{findrefs:9,1;10,61;11,62;4,63;5,94;6,117};
 {$mode ObjFPC}{$H+}
 uses
   &procedure {completion:procedure|completion:-1=procedure|completion:+1=procedure|declaration:procedure/procedure}
