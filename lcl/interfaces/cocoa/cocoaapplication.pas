@@ -447,18 +447,10 @@ begin
     setCocoaOnlyStateForKeyEvent;
     if handleKeyEvent then
       Exit;
-
     inherited sendEvent(theEvent);
-
     handelMouseMovedEventForLCL;
-
-     // todo: this should be called for "Default" or "Modal" loops
-     NSApp.updateWindows;
-
   finally
-
     CocoaWidgetSetBaseService.releaseWaitingLCLObjects(idx);
-
   end;
   {$ifdef COCOALOOPNATIVE}
     if CocoaWidgetSet.FTerminating then stop(nil);
