@@ -184,7 +184,7 @@ type
     function SaveToFile(AFileName: String): boolean;                            //DDH 10/16/01
     procedure HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);  deprecated 'use senrHighlightRescanNeeded // to be removed in 5.99';
     procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);  deprecated 'use senrHighlightRescanNeeded // to be removed in 5.99';
-    property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;  deprecated 'to become read-only in 5.99';
+    property WordBreakChars: TSynIdentChars read GetWordBreakChars write SetWordBreakChars;  deprecated 'to become read-only in 5.99';
   public
     property Capabilities: TSynHighlighterCapabilities read FCapabilities;  deprecated 'to be removed in 5.99 / no replacement';
     property SampleSource: string read GetSampleSource write SetSampleSource; deprecated 'to become read-only in 5.99';
