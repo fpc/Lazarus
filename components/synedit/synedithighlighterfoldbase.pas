@@ -342,27 +342,19 @@ type
 
   { TSynCustomCodeFoldBlock }
 
-  TSynCustomCodeFoldBlock = class
+  TSynCustomCodeFoldBlock = class(TLazHighlighterRangeForDictionary)
   private
     FBlockType: Pointer;
-    FParent, FChildren: TSynCustomCodeFoldBlock;
-    FRight, FLeft: TSynCustomCodeFoldBlock;
-    FBalance: Integer;
-    function GetChild(ABlockType: Pointer): TSynCustomCodeFoldBlock;
-  protected
-    function GetOrCreateSibling(ABlockType: Pointer): TSynCustomCodeFoldBlock;
-    property Right: TSynCustomCodeFoldBlock read FRight;
-    property Left: TSynCustomCodeFoldBlock read FLeft;
-    property Children: TSynCustomCodeFoldBlock read FChildren;
+    FParent: TSynCustomCodeFoldBlock;
   public
-    destructor Destroy; override;
-    procedure WriteDebugReport;
+    constructor Create; overload;
+    procedure Assign(Src: TLazHighlighterRange); override;
   public
     procedure InitRootBlockType(AType: Pointer);
     property BlockType: Pointer read FBlockType;
     property Parent: TSynCustomCodeFoldBlock read FParent;
-    property Child[ABlockType: Pointer]: TSynCustomCodeFoldBlock read GetChild;
   end;
+  TSynCustomCodeFoldBlockClass = class of TSynCustomCodeFoldBlock;
 
   { TSynCustomHighlighterRange }
 
@@ -379,9 +371,9 @@ type
     constructor Create(Template: TLazHighlighterRange); override;
     destructor Destroy; override;
     function Compare(Range: TLazHighlighterRange): integer; override;
-    function Add(ABlockType: Pointer = nil; IncreaseLevel: Boolean = True):
-        TSynCustomCodeFoldBlock; virtual;
-    procedure Pop(DecreaseLevel: Boolean = True); virtual;
+    function Push(ABlock: TSynCustomCodeFoldBlock; IncreaseLevel: Boolean = True):
+        TSynCustomCodeFoldBlock; inline;
+    procedure Pop(DecreaseLevel: Boolean = True); inline;
     function MaxFoldLevel: Integer; virtual;
     procedure Clear; virtual;
     procedure Assign(ASrc: TLazHighlighterRange); override;
@@ -426,8 +418,9 @@ type
     FUncommittedFolds: array of TUncommittedFold;
     FUncommittedFoldStackCount, FUncommittedFoldNestCount: integer;
     FIsCollectingNodeInfo: boolean;
-    fRanges: TLazHighlighterRangesDictionary;
-    FRootCodeFoldBlock: TSynCustomCodeFoldBlock;
+    FRanges: TLazHighlighterRangesDictionary;
+    FFoldBlockRanges: TLazHighlighterRangesDictionary;
+    FRootCodeFoldBlock, FTepmCodeFoldBlock: TSynCustomCodeFoldBlock;
     FFoldNodeInfoList: TLazSynFoldNodeInfoList;
     FCollectingNodeInfoList: TLazSynFoldNodeInfoList;
     procedure ClearFoldNodeList;
@@ -1693,7 +1686,15 @@ begin
     GetHighlighterRangesForHighlighter(TSynCustomHighlighterClass(ClassType), TLazHighlighterRangesDictionary)
   );
   fRanges.AddReference;
+
+  FFoldBlockRanges := TLazHighlighterRangesDictionary(
+    GetHighlighterRangesForHighlighter(TSynCustomHighlighterClass(pointer(ClassType)+1), TLazHighlighterRangesDictionary)
+  );
+  FFoldBlockRanges.AddReference;
+
   CreateRootCodeFoldBlock;
+  FTepmCodeFoldBlock := FRootCodeFoldBlock;
+  FRootCodeFoldBlock := TSynCustomCodeFoldBlock(FFoldBlockRanges.GetEqual(FRootCodeFoldBlock));
   inherited Create(AOwner);
   FCodeFoldRange:=TSynCustomHighlighterRange(GetRangeClass.Create(nil));
   FCodeFoldRange.FoldRoot := FRootCodeFoldBlock;
@@ -1707,9 +1708,10 @@ begin
   inherited Destroy;
   DestroyFoldConfig;
   FreeAndNil(FCodeFoldRange);
-  FreeAndNil(FRootCodeFoldBlock);
+  FreeAndNil(FTepmCodeFoldBlock);
   ReleaseRefAndNil(FFoldNodeInfoList);
   fRanges.ReleaseReference;
+  FFoldBlockRanges.ReleaseReference;
   FFoldConfig := nil;
 end;
 
@@ -2075,9 +2077,16 @@ end;
 procedure TSynCustomFoldHighlighter.CommitUncommittedFolds;
 var
   i: Integer;
+  b, p: TSynCustomCodeFoldBlock;
 begin
-  for i := 0 to FUncommittedFoldNestCount - 1 do
-    FCodeFoldRange.Add(FUncommittedFolds[i].FBlockType, FUncommittedFolds[i].FIncreaseLevel);
+  p := FCodeFoldRange.FTop;
+  for i := 0 to FUncommittedFoldNestCount - 1 do begin
+    FTepmCodeFoldBlock.FBlockType := FUncommittedFolds[i].FBlockType;
+    FTepmCodeFoldBlock.FParent := p;
+    p := TSynCustomCodeFoldBlock(FFoldBlockRanges.GetEqual(FTepmCodeFoldBlock));
+    FCodeFoldRange.Push(p, FUncommittedFolds[i].FIncreaseLevel);  // TODO: may fail
+  end;
+
   FUncommittedFoldStackCount := 0;
   FUncommittedFoldNestCount := 0;
 end;
@@ -2320,187 +2329,19 @@ end;
 
 { TSynCustomCodeFoldBlock }
 
-function TSynCustomCodeFoldBlock.GetChild(ABlockType: Pointer): TSynCustomCodeFoldBlock;
+constructor TSynCustomCodeFoldBlock.Create;
 begin
-  if assigned(FChildren) then
-    Result := FChildren.GetOrCreateSibling(ABlockType)
-  else begin
-    Result := TSynCustomCodeFoldBlock(self.ClassType.Create);
-    Result.FBlockType := ABlockType;
-    Result.FParent := self;
-    FChildren := Result;
-  end;
+  inherited Create(nil);
 end;
 
+procedure TSynCustomCodeFoldBlock.Assign(Src: TLazHighlighterRange);
 var
-  CreateSiblingBalanceList: Array of TSynCustomCodeFoldBlock;
-
-function TSynCustomCodeFoldBlock.GetOrCreateSibling(ABlockType: Pointer): TSynCustomCodeFoldBlock;
-  procedure BalanceNode(TheNode: TSynCustomCodeFoldBlock);
-  var
-    i, l: Integer;
-    t: Pointer;
-    N, P, C: TSynCustomCodeFoldBlock;
-  begin
-    l := length(CreateSiblingBalanceList);
-    i := 0;
-    t := TheNode.FBlockType;
-    N := self;
-    while N.FBlockType <> t do begin
-      if i >= l then begin
-        inc(l, 20);
-        SetLength(CreateSiblingBalanceList, l);
-      end;
-      CreateSiblingBalanceList[i] := N; // Record all parents
-      inc(i);
-      if t < N.FBlockType
-      then N := N.FLeft
-      else N := N.FRight;
-    end;
-    if i >= l then begin
-      inc(l, 20);
-      SetLength(CreateSiblingBalanceList, l);
-    end;
-    CreateSiblingBalanceList[i] := TheNode;
-    while i >= 0 do begin
-      if CreateSiblingBalanceList[i].FBalance = 0
-        then exit;
-      if (CreateSiblingBalanceList[i].FBalance = -1) or
-         (CreateSiblingBalanceList[i].FBalance = 1) then begin
-        if i = 0 then
-          exit;
-        dec(i);
-        if CreateSiblingBalanceList[i+1] = CreateSiblingBalanceList[i].FLeft
-        then dec(CreateSiblingBalanceList[i].FBalance)
-        else inc(CreateSiblingBalanceList[i].FBalance);
-        continue;
-      end;
-      // rotate
-      P := CreateSiblingBalanceList[i];
-      if P.FBalance = -2 then begin
-        N := P.FLeft;
-        if N.FBalance < 0 then begin
-          (* ** single rotate ** *)
-          (*  []\[]_     _C                []_      C_    _[]
-                    N(-1)_     _[]    =>      []_    _P(0)
-                          P(-2)                  N(0)           *)
-          C := N.FRight;
-          N.FRight := P;
-          P.FLeft := C;
-          N.FBalance := 0;
-          P.FBalance := 0;
-        end else begin
-          (* ** double rotate ** *)
-          (*          x1 x2
-               []_     _C                  x1    x2
-                  N(+1)_     _[]    =>    N _    _ P
-                        P(-2)                 C           *)
-          C := N.FRight;
-          N.FRight := C.FLeft;
-          P.FLeft  := C.FRight;
-          C.FLeft  := N;
-          C.FRight := P;
-          // balance
-          if (C.FBalance <= 0)
-          then N.FBalance := 0
-          else N.FBalance := -1;
-          if (C.FBalance = -1)
-          then P.FBalance := 1
-          else P.FBalance := 0;
-          C.FBalance := 0;
-          N := C;
-        end;
-      end else begin // *******************
-        N := P.FRight;
-        if N.FBalance > 0 then begin
-          (* ** single rotate ** *)
-          C := N.FLeft;
-          N.FLeft := P;
-          P.FRight := C;
-          N.FBalance := 0;
-          P.FBalance := 0;
-        end else begin
-          (* ** double rotate ** *)
-          C := N.FLeft;
-          N.FLeft := C.FRight;
-          P.FRight  := C.FLeft;
-          C.FRight  := N;
-          C.FLeft := P;
-          // balance
-          if (C.FBalance >= 0)
-          then N.FBalance := 0
-          else N.FBalance := +1;
-          if (C.FBalance = +1)
-          then P.FBalance := -1
-          else P.FBalance := 0;
-          C.FBalance := 0;
-          N := C;
-        end;
-      end;
-      // update parent
-      dec(i);
-      if i < 0 then begin
-        if assigned(self.FParent) then
-          self.FParent.FChildren := N
-      end else
-        if CreateSiblingBalanceList[i].FLeft = P
-        then CreateSiblingBalanceList[i].FLeft := N
-        else CreateSiblingBalanceList[i].FRight := N;
-      break;
-    end
-  end;
-var
-  P: TSynCustomCodeFoldBlock;
+  TheSrc: TSynCustomCodeFoldBlock absolute Src;
 begin
-  Result := self;
-  while (assigned(Result)) do begin
-    if Result.FBlockType = ABlockType then
-      exit;
-    P := Result;
-    if ABlockType < Result.FBlockType
-    then Result := Result.FLeft
-    else Result := Result.FRight;
+  if Src is TSynCustomCodeFoldBlock then begin
+    FBlockType := TheSrc.FBlockType;
+    FParent := TheSrc.FParent;
   end;
-  // Not Found
-  Result := TSynCustomCodeFoldBlock(self.ClassType.Create);
-  Result.FBlockType := ABlockType;
-  Result.FParent := self.FParent;
-
-  if ABlockType < P.FBlockType then begin
-    P.FLeft := Result;
-    dec(P.FBalance);
-  end else begin
-    P.FRight := Result;
-    inc(P.FBalance);
-  end;
-
-  // Balance
-  if P.FBalance <> 0 then
-    BalanceNode(P);
-
-end;
-
-destructor TSynCustomCodeFoldBlock.Destroy;
-begin
-  FreeAndNil(FRight);
-  FreeAndNil(FLeft);
-  FreeAndNil(FChildren);
-  inherited Destroy;
-end;
-
-procedure TSynCustomCodeFoldBlock.WriteDebugReport;
-  procedure debugout(n: TSynCustomCodeFoldBlock; s1, s: String; p: TSynCustomCodeFoldBlock);
-  begin
-    if n = nil then exit;
-    if n.FParent <> p then
-      DebugLn([s1, 'Wrong Parent for', ' (', PtrInt(n), ')']);
-    DebugLn([s1, PtrUInt(n.BlockType), ' (', PtrInt(n), ')']);
-    debugout(n.FLeft, s+'L: ', s+'   ', p);
-    debugout(n.FRight, s+'R: ', s+'   ', p);
-    debugout(n.FChildren, s+'C: ', s+'   ', n);
-  end;
-begin
-  debugout(self, '', '', nil);
 end;
 
 procedure TSynCustomCodeFoldBlock.InitRootBlockType(AType: Pointer);
@@ -2532,8 +2373,8 @@ begin
   Result := DoCompare(Range, TSynCustomHighlighterRange.InstanceSize);
 end;
 
-function TSynCustomHighlighterRange.Add(ABlockType: Pointer;
-  IncreaseLevel: Boolean = True): TSynCustomCodeFoldBlock;
+function TSynCustomHighlighterRange.Push(ABlock: TSynCustomCodeFoldBlock; IncreaseLevel: Boolean
+  ): TSynCustomCodeFoldBlock;
 var
   i: LongInt;
 begin
@@ -2542,11 +2383,11 @@ begin
     //debugln('Reached MaxFoldLevel, ignoring folds');
     exit(nil);
   end;
-  Result := FTop.Child[ABlockType];
   inc(FNestFoldStackSize);
   if IncreaseLevel then
     inc(FCodeFoldStackSize);
-  FTop:=Result;
+  FTop:=ABlock;
+  Result := ABlock;
 end;
 
 procedure TSynCustomHighlighterRange.Pop(DecreaseLevel: Boolean = True);
@@ -2608,7 +2449,6 @@ begin
   debugln('TSynCustomHighlighterRange.WriteDebugReport ',DbgSName(Self),
     ' RangeType=',dbgs(RangeType),' StackSize=',dbgs(CodeFoldStackSize));
   debugln(' Block=',dbgs(PtrInt(FTop)));
-  FTop.WriteDebugReport;
 end;
 
 { TSynCustomHighlighterRangeTree }
