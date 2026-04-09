@@ -8943,6 +8943,10 @@ msgstr "Sınırlayıcı noktalı virgüldür."
 msgid "Delphi compatible resources. Recommended."
 msgstr "Delphi uyumlu kaynaklar. Önerilir."
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -16797,6 +16801,11 @@ msgstr "Değişiklikler %s projesine kaydedilsin mi?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Geçerli düzenleyici dosyasını kaydet"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

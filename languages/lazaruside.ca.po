@@ -9140,6 +9140,10 @@ msgstr ""
 msgid "Delphi compatible resources. Recommended."
 msgstr ""
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -17228,6 +17232,11 @@ msgstr "Voleu desar els canvis del projecte %s?"
 #| msgid "save current editor file"
 msgid "Save current editor file"
 msgstr "desa el fitxer editor actual"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

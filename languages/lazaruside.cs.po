@@ -9066,6 +9066,10 @@ msgstr "Oddělovačem je středník."
 msgid "Delphi compatible resources. Recommended."
 msgstr "Zdroj kompatibilní s Delphi. Doporučeno."
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -17057,6 +17061,11 @@ msgstr "Uložit změny projektu %s?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Uložit aktuální editovaný soubor"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

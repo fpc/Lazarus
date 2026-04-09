@@ -8919,6 +8919,10 @@ msgstr "ຕົວຂັ້ນແມ່ນຈຸດຈຸດ (;)."
 msgid "Delphi compatible resources. Recommended."
 msgstr "ຊັບພະຍາກອນທີ່ເຂົ້າກັນໄດ້ກັບ Delphi. ແນະນຳໃຫ້ໃຊ້."
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -16797,6 +16801,11 @@ msgstr "ບັນທຶກການປ່ຽນແປງໃສ່ໂຄງກາ
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "ບັນທຶກໄຟລ໌ບັນນາທິການປັດຈຸບັນ"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

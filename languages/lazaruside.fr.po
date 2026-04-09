@@ -8963,6 +8963,10 @@ msgstr "Le délimiteur est le point-virgule."
 msgid "Delphi compatible resources. Recommended."
 msgstr "Ressources compatibles avec Delphi. Recommandées."
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -16862,6 +16866,11 @@ msgstr "Voulez-vous enregistrer les modifications apportées au projet %s ?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Enregistrer le fichier d'édition courant"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

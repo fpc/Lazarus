@@ -9037,6 +9037,10 @@ msgstr "Delimitador é ponto-e-vírgula"
 msgid "Delphi compatible resources. Recommended."
 msgstr "Recursos compatíveis com Delphi. Recomendado."
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -17000,6 +17004,11 @@ msgstr "Salvar alterações no projeto \"%s\"?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Salvar o arquivo atual do editor"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

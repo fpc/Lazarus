@@ -9143,6 +9143,10 @@ msgstr "Separatorem jest średnik."
 msgid "Delphi compatible resources. Recommended."
 msgstr "Zasoby zgodne z Delphi. Zalecane."
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -17105,6 +17109,11 @@ msgstr "Chcesz zapisać zmiany w projekcie %s?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Zapisz edytowany plik"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

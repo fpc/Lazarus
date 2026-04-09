@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-03-31 23:25+0300\n"
+"PO-Revision-Date: 2026-04-09 23:22+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -8908,6 +8908,10 @@ msgstr "Разделителем является точка с запятой"
 msgid "Delphi compatible resources. Recommended."
 msgstr "Ресурсы, совместимые с Delphi. Рекомендуется использовать именно их."
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr "Редактор форм содержит несохранённые изменения"
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr "Пакет только времени разработки"
@@ -16789,6 +16793,11 @@ msgstr "Сохранить изменения в проект %s?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Сохранить файл в текущем редакторе"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr "Сохранить изменения редактора форм в \"%s\"?"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

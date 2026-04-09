@@ -9025,6 +9025,10 @@ msgstr "Elválasztás pontosvesszővel."
 msgid "Delphi compatible resources. Recommended."
 msgstr "Delphi kompatibilis erőforrások. Ajánlott."
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -16984,6 +16988,11 @@ msgstr "Menti a(z) %s projekt változásait?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "A jelenleg szerkesztett fájl mentése"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

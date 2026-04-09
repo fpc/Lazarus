@@ -9133,6 +9133,10 @@ msgstr "区切り文字はセミコロン"
 msgid "Delphi compatible resources. Recommended."
 msgstr "Delphiと互換性のあるリソース。推奨。"
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -17169,6 +17173,11 @@ msgstr "プロジェクト %s の変更を保存しますか?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "現在のエディタファイルを保存"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

@@ -8997,6 +8997,10 @@ msgstr "Роздільник - крапка з комою."
 msgid "Delphi compatible resources. Recommended."
 msgstr "Сирці, сумісні з Delphi. Рекомендовано."
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -16943,6 +16947,11 @@ msgstr "Зберегти зміни в проєкт %s?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Зберегти поточний файл редактора"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

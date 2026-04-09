@@ -9173,6 +9173,10 @@ msgstr ""
 msgid "Delphi compatible resources. Recommended."
 msgstr ""
 
+#: lazarusidestrconsts.lisdesignerhasunsavedchanges
+msgid "Designer has unsaved changes"
+msgstr ""
+
 #: lazarusidestrconsts.lisdesigntimeonlypkg
 msgid "Designtime-only package"
 msgstr ""
@@ -17292,6 +17296,11 @@ msgstr "Wijzigingen in project %s opslaan?"
 #| msgid "save current editor file"
 msgid "Save current editor file"
 msgstr "huidige bestanden in de bewerker opslaan"
+
+#: lazarusidestrconsts.lissavedesignerchangestofile
+#, object-pascal-format
+msgid "Save designer changes to \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
