@@ -377,10 +377,6 @@ begin
 
   if not DeclarationCanBeInLFM(DeclTool,DeclNode) then exit;
 
-  {$IFNDEF EnableFindLFMRefs}
-  exit;
-  {$ENDIF}
-
   debugln(['GatherLFMsReferences Files.Count=',Files.Count]);
   // Note: this only supports lfm, not other form formats like dfm or fmx
 
@@ -973,7 +969,21 @@ begin
                   CloseEditorFile(AUnitInfo.EditorInfo[j].EditorComponent,[cfQuiet,
                     cfCloseDependencies]);
 
-              //force dumb saving
+              // save or skip saving in lfm,
+              // dialog to skip saving is opened if there are pending designer changes
+
+              if AUnitInfo.EditorInfo[0].EditorComponent.ModifiedDesign then begin
+                if IDEMessageDialog('  '+lisGUIdesignerHasPendingChangesForLFMfile,
+                  Format(lisDoOverwriteDesignersChangesInTheFile,[Code.Filename]),
+                  mtWarning, [mbYes, mbNo]) <> mrYes then
+                begin
+                  debugln('Changes by a designer detected, lfm file left unsaved');
+                  //the project will be inconsistent but possibly valuable work
+                  //via designer will be preserved
+                  continue;
+                end;
+              end;
+
               ReloadUnitComponent(AUnitInfo);
 
             end;
@@ -1758,12 +1768,9 @@ begin
   ShowResultCheckBox.Checked:=Options.RenameShowResult;
   ScopeCommentsCheckBox.Checked:=Options.SearchInComments;
   ScopeOverridesCheckBox.Checked:=Options.Overrides;
-  {$IFDEF EnableFindLFMRefs}
+
   ScopeIncludeLFMs.Checked:=Options.IncludeLFMs;
-  {$ELSE}
-  ScopeIncludeLFMs.Checked:=false;
-  ScopeIncludeLFMs.Visible:=false;
-  {$ENDIF}
+
   case Options.Scope of
   frCurrentUnit: ScopeRadioGroup.ItemIndex:=0;
   frProject: ScopeRadioGroup.ItemIndex:=1;

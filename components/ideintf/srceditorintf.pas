@@ -98,6 +98,7 @@ type
     function GetLineText: string; virtual; abstract;
     function GetLinesInWindow: Integer; virtual; abstract;
     function GetModified: Boolean; virtual; abstract;
+    function GetModifiedDesign: Boolean; virtual; abstract;
     function GetPageCaption: string; virtual; abstract;
     function GetPageName: string; virtual; abstract;
     function GetReadOnly: Boolean; virtual; abstract;
@@ -113,6 +114,7 @@ type
     procedure SetLines(const AValue: TStrings); virtual; abstract;
     procedure SetLineText(const AValue: string); virtual; abstract;
     procedure SetModified(const NewValue: Boolean); virtual; abstract;
+    procedure SetModifiedDesign(const NewValue: Boolean); virtual; abstract;
     procedure SetReadOnly(const AValue: Boolean); virtual; abstract;
     procedure SetSelection(const AValue: string); virtual; abstract;
     procedure SetSelEnd(const AValue: Integer); virtual; abstract;
@@ -200,6 +202,7 @@ type
     property TopLine: Integer read GetTopLine write SetTopLine;// first visible line
     property LinesInWindow: Integer read GetLinesInWindow;
     property Modified: Boolean read GetModified write SetModified;
+    property ModifiedDesign: Boolean read GetModifiedDesign write SetModifiedDesign; // pending designer changes
   end;
 
   { TSourceEditorCompletionPlugin }

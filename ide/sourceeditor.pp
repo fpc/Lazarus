@@ -203,6 +203,7 @@ type
   private
     FInGlobalUpdate: Integer;
     FModified: boolean;
+    FModified2: boolean;
     FIgnoreCodeBufferLock: integer;
     FEditorStampCommitedToCodetools: int64;
     FCodeBuffer: TCodeBuffer;
@@ -210,13 +211,16 @@ type
     FMainLinkScanner: TLinkScanner;
     FLastWarnedMainLinkFilename: string;
     function GetModified: Boolean;
+    function GetModifiedDesign: Boolean; // pending designer changes
     procedure SetCodeBuffer(const AValue: TCodeBuffer);
     procedure SetModified(const AValue: Boolean);
+    procedure SetModifiedDesign(const AValue: Boolean); // pending designer changes
     procedure OnCodeBufferChanged(Sender: TSourceLog; SrcLogEntry: TSourceLogEntry);
   public
     procedure BeginGlobalUpdate;
     procedure EndGlobalUpdate;
     property Modified: Boolean read GetModified write SetModified;
+    property ModifiedDesign: Boolean read GetModifiedDesign write SetModifiedDesign; // pending designer changes
     property  IgnoreCodeBufferLock: Integer read FIgnoreCodeBufferLock;
     procedure IncreaseIgnoreCodeBufferLock;
     procedure DecreaseIgnoreCodeBufferLock;
@@ -352,7 +356,9 @@ type
          var Special: boolean; Markup: TLazEditTextAttributeModifier);
     function RefreshEditorSettings: Boolean;
     function GetModified: Boolean; override;
+    function GetModifiedDesign: Boolean; override;
     procedure SetModified(const NewValue: Boolean); override;
+    procedure SetModifiedDesign(const NewValue: Boolean); override;
     procedure SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlighterID);
     procedure SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlighterID;
                                      ASkipEditorOpts: boolean);
@@ -3297,6 +3303,11 @@ begin
   Result := FModified or SynEditor.Modified;
 end;
 
+function TSourceEditorSharedValues.GetModifiedDesign: Boolean;
+begin
+  Result := FModified2;
+end;
+
 procedure TSourceEditorSharedValues.SetModified(const AValue: Boolean);
 var
   OldModified: Boolean;
@@ -3316,6 +3327,12 @@ begin
       SharedEditors[i].UpdatePageName;
       SharedEditors[i].SourceNotebook.UpdateStatusBar;
     end;
+end;
+
+procedure TSourceEditorSharedValues.SetModifiedDesign(const AValue: Boolean);
+begin
+  if AValue<>FModified2 then
+    FModified2 := AValue;
 end;
 
 procedure TSourceEditorSharedValues.OnCodeBufferChanged(Sender: TSourceLog;
@@ -5785,9 +5802,19 @@ Begin
   Result := FSharedValues.Modified;
 end;
 
+function TSourceEditor.GetModifiedDesign: Boolean;
+Begin
+  Result := FSharedValues.ModifiedDesign;
+end;
+
 procedure TSourceEditor.SetModified(const NewValue: Boolean);
 begin
   FSharedValues.SetModified(NewValue);
+end;
+
+procedure TSourceEditor.SetModifiedDesign(const NewValue: Boolean);
+begin
+  FSharedValues.SetModifiedDesign(NewValue);
 end;
 
 function TSourceEditor.GetInsertMode: Boolean;

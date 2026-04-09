@@ -5412,6 +5412,8 @@ resourcestring
     +'%sProceed anyway?';
   lisRenamingAborted = 'Renaming aborted';
   lisRenamingConflict = 'Renaming conflict';
+  lisGUIdesignerHasPendingChangesForLFMfile = 'GUI designer has pending changes for LFM file!';
+  lisDoOverwriteDesignersChangesInTheFile = 'Do overwrite designer''s changes in the file "%s"?';
   lisFileAlreadyExists = 'File "%s" already exists.';
   lisIdentifierIsAlreadyUsed = 'Identifier "%s" is already used';
   lisIdentifierIsAlreadyUsed2 = 'Identifier "%s" is already used.';

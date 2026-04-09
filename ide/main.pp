@@ -9727,6 +9727,7 @@ begin
     begin
       SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
       SrcEdit.Modified := True;
+      SrcEdit.ModifiedDesign := True;
       {$IFDEF VerboseDesignerModified}
       DumpStack;
       {$ENDIF}

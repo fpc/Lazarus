@@ -698,6 +698,8 @@ begin
     SourceEditorManager.ActiveEditor := NewSrcEdit;
     SourceEditorManager.ShowActiveWindowOnTop(True);
   end;
+  NewSrcEdit.ModifiedDesign:=false;
+  SrcNoteBook.UpdateStatusBar;
   SrcNotebook.BringToFront;
 
   Result:=mrOk;
@@ -1414,8 +1416,10 @@ begin
       exit;
     end;
     // open resource component (designer, form, datamodule, ...)
-    if FNewUnitInfo.OpenEditorInfoCount = 1 then
+    if FNewUnitInfo.OpenEditorInfoCount = 1 then begin
       Result:=OpenResource;
+      FNewUnitInfo.EditorInfo[0].EditorComponent.ModifiedDesign:=false;
+    end;
     if Result<>mrOk then begin
       DebugLn(['TFileOpener.OpenEditorFile failed OpenResource: ',FFilename]);
       exit;
@@ -2903,6 +2907,7 @@ begin
   if not (sfSaveToTestDir in Flags) then begin
     AnUnitInfo.ClearModifieds;
     AEditor.Modified:=false;
+    AEditor.ModifiedDesign:=false;
     MainIDE.UpdateSaveMenuItemsAndButtons(not (sfProjectSaving in Flags));
   end;
   TSourceEditor(AEditor).SourceNotebook.UpdateStatusBar;
