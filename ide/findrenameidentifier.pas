@@ -973,8 +973,8 @@ begin
               // dialog to skip saving is opened if there are pending designer changes
 
               if AUnitInfo.EditorInfo[0].EditorComponent.ModifiedDesign then begin
-                if IDEMessageDialog('  '+lisGUIdesignerHasPendingChangesForLFMfile,
-                  Format(lisDoOverwriteDesignersChangesInTheFile,[Code.Filename]),
+                if IDEMessageDialog(lisDesignerHasUnsavedChanges,
+                  Format(lisSaveDesignerChangesToFile,[Code.Filename]),
                   mtWarning, [mbYes, mbNo]) <> mrYes then
                 begin
                   debugln('Changes by a designer detected, lfm file left unsaved');
