@@ -13,9 +13,19 @@ uses
 
 type
 
+  TExceptStepState = (esNone,
+    esStoppedAtRaise,  // Enter dsPause, next step is "stop to finally"
+    esIgnoredRaise,    // Keep dsRun, stop at finally/except *IF* outside current stepping frame
+    esStepToFinally,
+    esStepSehFinallyProloque,
+    esSteppingFpcSpecialHandler,
+    esAtWSehExcept
+  );
+
   { TFpDebugDebuggerBase }
 
   TFpDebugDebuggerBase = class(TDebuggerIntf)
+  private
   private type
     TCachedDbgPtrMap = specialize TFPGMap<Pointer, TDbgPtr>;
   protected
@@ -33,6 +43,7 @@ type
     FCached_FPC_WIDESTR_SETLENGTH: TDbgPtr;
     FCached_Data: TCachedDbgPtrMap;
 
+    function GetExceptionState: TExceptStepState; virtual;
     function GetCached_FPC_Func_Addr(var ACacheVar: TDbgPtr; const AName: String): TDbgPtr;
   public
     destructor Destroy; override;
@@ -75,12 +86,18 @@ type
     property MemConverter:  TFpDbgMemConvertor read FMemConverter;
     property LockList:      TFpDbgLockList read FLockList;
     property WorkQueue:     TFpThreadPriorityWorkerQueue read FWorkQueue;
+    property ExceptionState: TExceptStepState read GetExceptionState;
   end;
 
 
 implementation
 
 { TFpDebugDebuggerBase }
+
+function TFpDebugDebuggerBase.GetExceptionState: TExceptStepState;
+begin
+  Result := esNone;
+end;
 
 function TFpDebugDebuggerBase.GetCached_FPC_Func_Addr(var ACacheVar: TDbgPtr;
   const AName: String): TDbgPtr;

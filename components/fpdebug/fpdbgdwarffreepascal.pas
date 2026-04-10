@@ -376,9 +376,24 @@ type
     function ReturnsVariant: boolean; override;
   end;
 
+  { TFpPascalExpressionPartIntrinsicExceptObject }
+
+  TFpPascalExpressionPartIntrinsicExceptObject = class(TFpPascalExpressionPartIntrinsicBase)
+  private
+    FCurrentProcess: TDbgProcess;
+    FIsAtException: boolean;
+    FChildClassCastType: TFpValue;
+  protected
+    function DoGetResultValue: TFpValue; override;
+  public
+    constructor Create(AnExpressionData: TFpPascalExpressionSharedData; AStartChar: PChar; AnEndChar: PChar;
+      ACurrentProcess: TDbgProcess; AnIsAtException: boolean);
+    destructor Destroy; override;
+  end;
+
 function GetCompilerVersion(ADbgInfoObj: TFpSymbolDwarf): integer; inline;
 function GetCompilerVersion(ADbgInfoObj: TDwarfCompilationUnit): integer; inline;
-function GetCompilerVersion(ADbgInfoObj: TDwarfCompilationUnit; ADbgInfo: TDbgInfo): integer; inline;
+function GetCompilerVersion(ADbgInfoObj: TFpSymbolDwarf; ADbgInfo: TDbgInfo): integer; inline;
 
 function ReadAnsiStringFromTarget(ADbgProcess: TDbgProcess; AStringAddr: TDBGPtr; out AString: String): boolean;
 
@@ -424,16 +439,17 @@ begin
     Result := TFpDwarfFreePascalSymbolClassMap(ADbgInfoObj.DwarfSymbolClassMap).FCompilerVersion;
 end;
 
-function GetCompilerVersion(ADbgInfoObj: TDwarfCompilationUnit; ADbgInfo: TDbgInfo): integer;
+function GetCompilerVersion(ADbgInfoObj: TFpSymbolDwarf; ADbgInfo: TDbgInfo): integer;
 var
   m: TFpDwarfFreePascalSymbolClassMap;
 begin
   Result := FALLBACK_CompilerVersion;
   if (ADbgInfoObj <> nil) and
-     (ADbgInfoObj.DwarfSymbolClassMap <> nil) and
-     (ADbgInfoObj.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMap)
+     (ADbgInfoObj.CompilationUnit <> nil) and
+     (ADbgInfoObj.CompilationUnit.DwarfSymbolClassMap <> nil) and
+     (ADbgInfoObj.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMap)
   then
-    Result := TFpDwarfFreePascalSymbolClassMap(ADbgInfoObj.DwarfSymbolClassMap).FCompilerVersion
+    Result := TFpDwarfFreePascalSymbolClassMap(ADbgInfoObj.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion
   else begin
     m := TFpDwarfFreePascalSymbolClassMap.GetInstanceForDbgInfo(ADbgInfo);
     if m <> nil then
@@ -2834,6 +2850,134 @@ begin
 end;
 
 destructor TFpPascalExpressionPartIntrinsicIntfToObj.Destroy;
+begin
+  inherited Destroy;
+  FChildClassCastType.ReleaseReference;
+end;
+
+{ TFpPascalExpressionPartIntrinsicExceptObject }
+
+function TFpPascalExpressionPartIntrinsicExceptObject.DoGetResultValue: TFpValue;
+var
+  Scope: TFpDbgSymbolScope;
+  Ctx: TFpDbgSimpleLocationContext;
+  ExceptLoc: TFpDbgMemLocation;
+  ExceptAddr: TDBGPtr;
+  AClassName, AnUnitName, cn: String;
+  AnErr: TFpError;
+  Sym: TFpSymbol;
+  CompVer: Integer;
+  ClassMap: TFpDwarfFreePascalSymbolClassMap;
+  AnTObjSize: Int64;
+  ExceptionMessage: string;
+  TmpAddr: TFpValueConstAddress;
+  StrAddr: DbgIntfBaseTypes.TDBGPtr;
+  m: TFpValueConstString;
+begin
+  Result := nil;
+  if not FIsAtException then begin
+    SetError('Not at exception');
+    exit;
+  end;
+
+  // always use top frame
+  Scope := FCurrentProcess.FindSymbolScope(FCurrentProcess.ThreadID, 0);
+  try
+    Ctx := Scope.LocationContext;
+    ExceptLoc := FCurrentProcess.CallParamDefaultLocation(0);
+    if IsNilLoc(ExceptLoc) then begin
+      Result := TFpValueConstStruct.Create;
+      TFpValueConstStruct(Result).SetAddress(NilLoc);
+      exit;
+    end;
+
+    if not Ctx.ReadUnsignedInt(ExceptLoc, SizeVal(SizeOf(ExceptAddr)), ExceptAddr) then
+      exit;
+
+    Sym := Scope.SymbolAtAddress;
+    CompVer := GetCompilerVersion(TFpSymbolDwarf(Sym), FCurrentProcess.DbgInfo);
+
+    if not TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(
+      ExceptAddr,Ctx, Ctx.SizeOfAddress, @AClassName, @AnUnitName, AnErr, 0, CompVer
+    )
+    then
+      AClassName := 'TObject';
+    cn := AClassName;
+
+    FChildClassCastType.ReleaseReference;
+    FChildClassCastType := Scope.FindSymbol(AClassName, '', []);
+
+    if (FChildClassCastType = nil) and (LowerCase(AClassName) <> 'exception') then begin
+      // Try base class
+      if TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt(
+        ExceptAddr,Ctx, Ctx.SizeOfAddress,
+        @AClassName, @AnUnitName, AnErr, 1, CompVer
+      )
+      then
+        FChildClassCastType := Scope.FindSymbol(AClassName, '', []);
+    end;
+
+    if FChildClassCastType = nil then begin
+      if (LowerCase(AClassName) = 'exception') and (LowerCase(AnUnitName) = 'sysutils') then begin
+        ClassMap := nil;
+        if (Sym <> nil) and (Sym is TFpSymbolDwarf) and (TFpSymbolDwarf(Sym).CompilationUnit <> nil) and
+           (TFpSymbolDwarf(Sym).CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMap)
+        then
+          ClassMap := TFpDwarfFreePascalSymbolClassMap(TFpSymbolDwarf(Sym).CompilationUnit.DwarfSymbolClassMap);
+        if ClassMap = nil then
+          ClassMap := TFpDwarfFreePascalSymbolClassMap.GetInstanceForDbgInfo(FCurrentProcess.DbgInfo);
+        if (ClassMap <> nil) then begin
+          if ClassMap.GetInstanceSizeFromPVmt(ExceptAddr, Ctx, DBGPTRSIZE[FCurrentProcess.Mode], AnTObjSize, AnErr, -1)
+          then begin
+            // create artificial object / exception is missing in debug info
+            {$PUSH}{$Q-}{$R-}
+            if FCurrentProcess.ReadAddress(ExceptAddr+AnTObjSize, StrAddr) and
+               ReadAnsiStringFromTarget(FCurrentProcess, StrAddr, ExceptionMessage)
+            then begin
+            {$POP}
+              Result := TFpValueConstStruct.Create;
+              m := TFpValueConstString.Create(ExceptionMessage);
+              TFpValueConstStruct(Result).AddMember('Message', m);
+              m.ReleaseReference;
+              m := TFpValueConstString.Create(cn);
+              TFpValueConstStruct(Result).AddMember('Class', m);
+              m.ReleaseReference;
+              exit;
+            end;
+          end;
+        end;
+      end;
+
+      FChildClassCastType := Scope.FindSymbol('TObject', '', []);
+    end;
+
+    if (FChildClassCastType = nil) or (FChildClassCastType.DbgSymbol = nil) or
+       (FChildClassCastType.DbgSymbol.SymbolType <> stType) or
+       (FChildClassCastType.DbgSymbol.Kind <> skClass)
+    then begin
+      SetError('Couldn''t find debug info for class: '+AClassName);
+      ReleaseRefAndNil(FChildClassCastType);
+      exit;
+    end;
+
+    TmpAddr := TFpValueConstAddress.Create(ExceptLoc);
+    Result := FChildClassCastType.GetTypeCastedValue(TmpAddr);
+    TmpAddr.ReleaseReference;
+  finally
+    Scope.ReleaseReference;
+  end;
+end;
+
+constructor TFpPascalExpressionPartIntrinsicExceptObject.Create(
+  AnExpressionData: TFpPascalExpressionSharedData; AStartChar: PChar; AnEndChar: PChar;
+  ACurrentProcess: TDbgProcess; AnIsAtException: boolean);
+begin
+  inherited Create(AnExpressionData, AStartChar, AnEndChar);
+  FCurrentProcess := ACurrentProcess;
+  FIsAtException := AnIsAtException;
+end;
+
+destructor TFpPascalExpressionPartIntrinsicExceptObject.Destroy;
 begin
   inherited Destroy;
   FChildClassCastType.ReleaseReference;

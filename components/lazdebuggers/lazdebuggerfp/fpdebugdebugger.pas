@@ -231,14 +231,6 @@ type
       bplStepOut  // Step out of Pop/Catches
     );
     TBreakPointLocs = set of TBreakPointLoc;
-    TExceptStepState = (esNone,
-      esStoppedAtRaise,  // Enter dsPause, next step is "stop to finally"
-      esIgnoredRaise,    // Keep dsRun, stop at finally/except *IF* outside current stepping frame
-      esStepToFinally,
-      esStepSehFinallyProloque,
-      esSteppingFpcSpecialHandler,
-      esAtWSehExcept
-    );
 
     { TFrameList }
 
@@ -450,6 +442,7 @@ type
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope; inline;
     procedure StopAllWorkers(AWait: Boolean = False);
     function IsPausedAndValid: boolean; // ready for eval watches/stack....
+    function GetExceptionState: TExceptStepState; override;
 
     procedure DoProcessMessages;
     property DebugInfo: TDbgInfo read GetDebugInfo;
@@ -2813,8 +2806,8 @@ begin
       end;
     False:
       begin
-        FDebugger.EnterPause(AnExceptionLocation);
         FState := esStoppedAtRaise;
+        FDebugger.EnterPause(AnExceptionLocation);
       end;
   end;
 end;
@@ -4868,6 +4861,11 @@ begin
   Result := (State in [dsPause, dsInternalPause]) and
             (FDbgController <> nil) and
             (FDbgController.CurrentProcess <> nil);
+end;
+
+function TFpDebugDebugger.GetExceptionState: TExceptStepState;
+begin
+  Result := FExceptionStepper.FState;
 end;
 
 procedure TFpDebugDebugger.DoProcessMessages;

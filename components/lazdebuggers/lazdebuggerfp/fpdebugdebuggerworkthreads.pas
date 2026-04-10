@@ -195,6 +195,8 @@ type
   protected
     FLocals: IDbgLocalsListIntf;
     FThreadId, FStackFrame: Integer;
+    function DoFindIntrinsic(AnExpression: TFpPascalExpression; AStart: PChar; ALen: Integer
+      ): TFpPascalExpressionPartIntrinsicBase;
     procedure UpdateLocals_DecRef(Data: PtrInt = 0); virtual; abstract;
     procedure DoExecute; override;
   end;
@@ -654,13 +656,26 @@ end;
 
 { TFpThreadWorkerLocals }
 
+function TFpThreadWorkerLocals.DoFindIntrinsic(AnExpression: TFpPascalExpression; AStart: PChar;
+  ALen: Integer): TFpPascalExpressionPartIntrinsicBase;
+begin
+  Result := nil;
+  if (ALen = 1) and (strlicomp(AStart, pchar('e'), 1) = 0) then
+    Result := TFpPascalExpressionPartIntrinsicExceptObject.Create(AnExpression.SharedData,
+      AStart, AStart+ALen,
+      FDebugger.DbgController.CurrentProcess,
+      FDebugger.ExceptionState = esStoppedAtRaise
+    );
+end;
+
 procedure TFpThreadWorkerLocals.DoExecute;
 var
   LocalScope: TFpDbgSymbolScope;
-  ProcVal, m: TFpValue;
+  ProcVal, m, ResValue: TFpValue;
   i: Integer;
   WatchResConv: TFpLazDbgWatchResultConvertor;
   ResData: IDbgWatchDataIntf;
+  APasExpr: TFpPascalExpression;
 begin
   LocalScope := FDebugger.DbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
   if (LocalScope = nil) or (LocalScope.SymbolAtAddress = nil) then begin
@@ -692,6 +707,24 @@ begin
     end;
     if StopRequested then
       Break;
+  end;
+
+  if FDebugger.ExceptionState = esStoppedAtRaise then begin
+    ResData := FLocals.Add(':e');
+    APasExpr := TFpPascalExpression.Create(':e', LocalScope, True);
+    APasExpr.IntrinsicPrefix := ipColon;
+    APasExpr.OnFindIntrinsc := @DoFindIntrinsic;
+    APasExpr.Parse;
+    if APasExpr.Valid then
+      ResValue := APasExpr.ResultValue;
+    if not APasExpr.Valid then begin
+      ErrorHandler.OnErrorTextLookup := @GetErrorText;
+      ResData.CreateError(ErrorHandler.ErrorAsString(APasExpr.Error), APasExpr.ErrorKind);
+    end
+    else begin
+      WatchResConv.WriteWatchResultData(ResValue, ResData);
+    end;
+    APasExpr.Destroy;
   end;
 
   WatchResConv.Free;
@@ -1126,6 +1159,13 @@ function TFpThreadWorkerEvaluate.DoFindIntrinsic(AnExpression: TFpPascalExpressi
   ALen: Integer): TFpPascalExpressionPartIntrinsicBase;
 begin
   Result := nil;
+  if (ALen = 1) and (strlicomp(AStart, pchar('e'), 1) = 0) then
+    Result := TFpPascalExpressionPartIntrinsicExceptObject.Create(AnExpression.SharedData,
+      AStart, AStart+ALen,
+      FDebugger.DbgController.CurrentProcess,
+      FDebugger.ExceptionState = esStoppedAtRaise
+    )
+  else
   if (ALen = 3) and (strlicomp(AStart, pchar('i2o'), 3) = 0) and
      (FDebugger.DbgController.CurrentProcess.Disassembler is TX86AsmDecoder)
   then
