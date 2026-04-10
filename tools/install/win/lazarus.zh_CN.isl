@@ -1,4 +1,4 @@
-#include "ChineseSimplified_from_inno_6_0.isl"
+#include "ChineseSimplified.isl"
 ; Last-Translator: ACTom <i@actom.me>\n"
 [CustomMessages]
 
