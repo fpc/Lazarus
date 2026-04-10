@@ -376,6 +376,10 @@ type
     function ReturnsVariant: boolean; override;
   end;
 
+function GetCompilerVersion(ADbgInfoObj: TFpSymbolDwarf): integer; inline;
+function GetCompilerVersion(ADbgInfoObj: TDwarfCompilationUnit): integer; inline;
+function GetCompilerVersion(ADbgInfoObj: TDwarfCompilationUnit; ADbgInfo: TDbgInfo): integer; inline;
+
 implementation
 
 uses
@@ -383,6 +387,57 @@ uses
 
 var
   FPDBG_DWARF_VERBOSE: PLazLoggerLogGroup;
+
+const
+  FALLBACK_CompilerVersion =
+  {$IF FPC_FULLVERSION < 030202}  $030200 {$ELSE}
+  {$IF FPC_FULLVERSION = 030202}  $030202 {$ELSE}
+  {$IF FPC_FULLVERSION = 030203}  $030203 {$ELSE}
+  {$IF FPC_FULLVERSION = 030204}  $030204 {$ELSE}
+  {$IF FPC_FULLVERSION = 030205}  $030205 {$ELSE}
+  {$IF FPC_FULLVERSION >=030400}  $030400 {$ELSE}
+                                  $030301 {$ENDIF}
+  {$ENDIF}{$ENDIF}{$ENDIF}{$ENDIF}{$ENDIF}
+  ;
+
+function GetCompilerVersion(ADbgInfoObj: TFpSymbolDwarf): integer;
+begin
+  Result := FALLBACK_CompilerVersion;
+  if (ADbgInfoObj <> nil) and
+     (ADbgInfoObj.CompilationUnit <> nil) and
+     (ADbgInfoObj.CompilationUnit.DwarfSymbolClassMap <> nil) and
+     (ADbgInfoObj.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMap)
+  then
+    Result := TFpDwarfFreePascalSymbolClassMap(ADbgInfoObj.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion;
+end;
+
+function GetCompilerVersion(ADbgInfoObj: TDwarfCompilationUnit): integer;
+begin
+  Result := FALLBACK_CompilerVersion;
+  if (ADbgInfoObj <> nil) and
+     (ADbgInfoObj.DwarfSymbolClassMap <> nil) and
+     (ADbgInfoObj.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMap)
+  then
+    Result := TFpDwarfFreePascalSymbolClassMap(ADbgInfoObj.DwarfSymbolClassMap).FCompilerVersion;
+end;
+
+function GetCompilerVersion(ADbgInfoObj: TDwarfCompilationUnit; ADbgInfo: TDbgInfo): integer;
+var
+  m: TFpDwarfFreePascalSymbolClassMap;
+begin
+  Result := FALLBACK_CompilerVersion;
+  if (ADbgInfoObj <> nil) and
+     (ADbgInfoObj.DwarfSymbolClassMap <> nil) and
+     (ADbgInfoObj.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMap)
+  then
+    Result := TFpDwarfFreePascalSymbolClassMap(ADbgInfoObj.DwarfSymbolClassMap).FCompilerVersion
+  else begin
+    m := TFpDwarfFreePascalSymbolClassMap.GetInstanceForDbgInfo(ADbgInfo);
+    if m <> nil then
+      Result := m.FCompilerVersion;
+  end;
+end;
+
 
 function ObtainDynamicCodePage(Addr: TFpDbgMemLocation; AContext: TFpDbgLocationContext;
   TypeInfo: TFpSymbolDwarfType; out Codepage: TSystemCodePage): Boolean;
@@ -396,7 +451,7 @@ begin
     exit;
 
   // Only AnsiStrings in fpc 3.0.0 and higher have a dynamic codepage.
-  v := TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion;
+  v := GetCompilerVersion(TypeInfo);
   if (v >= $030000) then begin
     // Too bad the debug-information does not deliver this information. So we
     // use these hardcoded information, and hope that FPC does not change and
@@ -1184,7 +1239,7 @@ begin
   Result := GetInstanceClassNameFromPVmt(LocToAddrOrNil(AValueObj.DataAddress),
     TFpValueDwarf(AValueObj).Context, TFpValueDwarf(AValueObj).Context.SizeOfAddress,
     AClassName, AUnitName, AnErr, AParentClassIndex,
-    TFpDwarfFreePascalSymbolClassMap(CompilationUnit.DwarfSymbolClassMap).FCompilerVersion
+    GetCompilerVersion(CompilationUnit)
   );
 
   if not Result then
@@ -1611,7 +1666,7 @@ end;
 function TFpValueDwarfFreePascalArray.DoGetStride(out AStride: TFpDbgValueSize
   ): Boolean;
 begin
-  if (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
+  if (GetCompilerVersion(TypeInfo) >= $030300)
   then
     Result := inherited DoGetStride(AStride)
   else
@@ -1621,7 +1676,7 @@ end;
 function TFpValueDwarfFreePascalArray.DoGetDimStride(AnIndex: integer; out
   AStride: TFpDbgValueSize): Boolean;
 begin
-  if (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300)
+  if (GetCompilerVersion(TypeInfo) >= $030300)
   then
     Result := inherited DoGetDimStride(AnIndex, AStride)
   else
@@ -1805,7 +1860,7 @@ begin
   if not MemManager.MemModel.IsReadableLocation(Addr) then
     exit;
 
-  if TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030301
+  if GetCompilerVersion(TypeInfo) >= $030301
   then begin
     {$PUSH}{$R-}{$Q-}
     Addr:= Addr - AddressSize - 4;
@@ -2263,7 +2318,7 @@ begin
   if not MemManager.MemModel.IsReadableLocation(Addr) then
     exit;
 
-  if TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030301
+  if GetCompilerVersion(TypeInfo) >= $030301
   then begin
     {$PUSH}{$R-}{$Q-}
     Addr:= Addr - AddressSize - 4;
@@ -2282,6 +2337,7 @@ var
   i: Int64;
   Addr, Addr2: TFpDbgMemLocation;
   AttrData: TDwarfAttribData;
+  v: Integer;
 begin
   if FBoundsDone then
     exit;
@@ -2310,9 +2366,8 @@ begin
     exit;
 
   assert((TypeInfo <> nil) and (TypeInfo.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3), 'TFpValueDwarfV3FreePascalString.CalcBounds: (Owner <> nil) and (Owner.CompilationUnit <> nil) and (TypeInfo.CompilationUnit.DwarfSymbolClassMap is TFpDwarfFreePascalSymbolClassMapDwarf3)');
-  if (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion > 0) and
-     (TFpDwarfFreePascalSymbolClassMap(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion < $030100)
-  then begin
+  v := GetCompilerVersion(TypeInfo);
+  if (v > 0) and (v < $030100) then begin
     if t.Kind = skWideString then begin
       if (t2 is TFpSymbolDwarfTypeSubRange) and (FLowBound = 1) then begin
         if (TFpSymbolDwarfTypeSubRange(t2).InformationEntry.GetAttribData(DW_AT_upper_bound, AttrData)) and
@@ -2698,11 +2753,8 @@ begin
       exit;
     end;
 
-    CompVer := $030300;
     Sym := ExpressionData.Scope.SymbolAtAddress;
-    if (Sym <> nil) and (Sym is TFpSymbolDwarf) and (TFpSymbolDwarf(Sym).CompilationUnit <> nil)
-    then
-      CompVer := TFpDwarfFreePascalSymbolClassMap(TFpSymbolDwarf(Sym).CompilationUnit.DwarfSymbolClassMap).FCompilerVersion;
+    CompVer := GetCompilerVersion(TFpSymbolDwarf(Sym));
 
     Addr := Addr - OpVal;
     R := TFpSymbolDwarfFreePascalTypeStructure.GetInstanceClassNameFromPVmt
