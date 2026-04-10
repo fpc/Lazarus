@@ -28,6 +28,10 @@ EnableISX=true
 #define IDEWidgetSet GetEnv('IDE_WidgetSet')
 #define OutputFileName GetEnv('OutputFileName')
 #define CHMHELPFILES GetEnv('CHMHELPFILES')
+#define CurrentYear GetDateTimeString('yyyy','','')
+#define AppAuthor "Lazarus Team"
+#define AppURL "https://www.lazarus-ide.org/"
+
 [Setup]
 AllowNoIcons=yes
 AppName={#AppName}
@@ -35,10 +39,10 @@ AppName={#AppName}
 AppId={code:GetAppId}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
-AppPublisher=Lazarus Team
-AppPublisherURL=https://www.lazarus-ide.org/
-AppSupportURL=https://www.lazarus-ide.org/
-AppUpdatesURL=https://www.lazarus-ide.org/
+AppPublisher={#AppAuthor}
+AppPublisherURL={#AppURL}
+AppSupportURL={#AppURL}
+AppUpdatesURL={#AppURL}
 #if FPCTargetCPU=="x86_64"
 ArchitecturesInstallIn64BitMode=x64
 ArchitecturesAllowed=x64
@@ -55,6 +59,7 @@ LZMADictionarySize=131072
 LZMAUseSeparateProcess=yes
 LZMANumFastBytes=270
 SolidCompression=yes
+VersionInfoDescription={#AppName} Installer
 VersionInfoVersion={#FileVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
 ShowLanguageDialog=yes
@@ -72,7 +77,7 @@ UsePreviousLanguage=no
 UninstallDisplayIcon={app}\lazarus.exe
 DisableWelcomePage=no
 DisableDirPage=no
-
+AppCopyright=1999-{#CurrentYear} {#AppAuthor}
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
