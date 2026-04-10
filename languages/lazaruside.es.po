@@ -14985,6 +14985,11 @@ msgstr ""
 msgid "Override the project widgetset. For example: %s. Default: %s."
 msgstr ""
 
+#: lazarusidestrconsts.lisoverwritedesignerchangesanyway
+#, object-pascal-format
+msgid "Unsaved designer changes for file \"%s\" will be lost. Overwrite anyway?"
+msgstr ""
+
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
 msgstr "'Propietario' ya es usado por TReader/TWriter. Por favor, escoja otro nombre."
@@ -17167,11 +17172,6 @@ msgstr "¿Guardar cambios al proyecto %s?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Guardar el archivo actual del editor"
-
-#: lazarusidestrconsts.lissavedesignerchangestofile
-#, object-pascal-format
-msgid "Save designer changes to \"%s\"?"
-msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

@@ -14653,6 +14653,11 @@ msgstr "覆盖项目子目标。"
 msgid "Override the project widgetset. For example: %s. Default: %s."
 msgstr "覆盖项目的小部件集。例如：%s。默认：%s。"
 
+#: lazarusidestrconsts.lisoverwritedesignerchangesanyway
+#, object-pascal-format
+msgid "Unsaved designer changes for file \"%s\" will be lost. Overwrite anyway?"
+msgstr ""
+
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
 msgstr "'Owner'已经被TReader/TWriter使用.请选择另一个名称."
@@ -16824,11 +16829,6 @@ msgstr "项目 %s 已修改，是否保存?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "保存当前编辑器文件"
-
-#: lazarusidestrconsts.lissavedesignerchangestofile
-#, object-pascal-format
-msgid "Save designer changes to \"%s\"?"
-msgstr ""
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"

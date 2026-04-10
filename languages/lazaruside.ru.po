@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-09 23:22+0300\n"
+"PO-Revision-Date: 2026-04-10 23:04+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -14621,6 +14621,11 @@ msgstr "Перекрыть подцель проекта."
 msgid "Override the project widgetset. For example: %s. Default: %s."
 msgstr "Перекрыть библиотеку виджетов проекта. Например: %s. Значение по умолчанию: %s."
 
+#: lazarusidestrconsts.lisoverwritedesignerchangesanyway
+#, object-pascal-format
+msgid "Unsaved designer changes for file \"%s\" will be lost. Overwrite anyway?"
+msgstr "Несохранённые изменения в редакторе форм для файла \"%s\" будут утеряны. Перезаписать всё равно?"
+
 #: lazarusidestrconsts.lisownerisalreadyusedbytreadertwriterpleasechooseanot
 msgid "'Owner' is already used by TReader/TWriter. Please choose another name."
 msgstr "'Owner' уже используется классами TReader/TWriter. Выберите другое имя."
@@ -16793,11 +16798,6 @@ msgstr "Сохранить изменения в проект %s?"
 #: lazarusidestrconsts.lissavecurrenteditorfile
 msgid "Save current editor file"
 msgstr "Сохранить файл в текущем редакторе"
-
-#: lazarusidestrconsts.lissavedesignerchangestofile
-#, object-pascal-format
-msgid "Save designer changes to \"%s\"?"
-msgstr "Сохранить изменения редактора форм в \"%s\"?"
 
 #: lazarusidestrconsts.lissavedwithidesettings
 msgid "Saved with IDE settings"
