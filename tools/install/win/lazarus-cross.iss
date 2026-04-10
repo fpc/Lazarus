@@ -29,6 +29,10 @@ EnableISX=true
 #define OutputFileName GetEnv('OutputFileName')
 #define CrossTargetCPU GetEnv('TARGETCPU')
 #define CrossTagetOs GetEnv('TARGETOS')
+#define CurrentYear GetDateTimeString('yyyy','','')
+#define AppAuthor "Lazarus Team"
+#define AppURL "https://www.lazarus-ide.org/"
+
 [Setup]
 #if CrossTagetOs!=""
 AppName={#AppName} - Addon for target {#CrossTagetOs}-{#CrossTargetCPU}
@@ -41,10 +45,10 @@ UpdateUninstallLogAppName=no
 AppId={code:GetAppId}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
-AppPublisher=Lazarus Team
-AppPublisherURL=https://www.lazarus-ide.org/
-AppSupportURL=https://www.lazarus-ide.org/
-AppUpdatesURL=https://www.lazarus-ide.org/
+AppPublisher={#AppAuthor}
+AppPublisherURL={#AppURL}
+AppSupportURL={#AppURL}
+AppUpdatesURL={#AppURL}
 ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|{sd}\lazarus}
 DefaultGroupName={#AppName}
@@ -58,6 +62,7 @@ LZMADictionarySize=131072
 LZMAUseSeparateProcess=yes
 LZMANumFastBytes=270
 SolidCompression=yes
+VersionInfoDescription={#AppName} Installer
 VersionInfoVersion={#FileVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
 ShowLanguageDialog=yes
@@ -82,6 +87,28 @@ Filename: {app}\{#FPCDIR}\{#FPCVersion}\bin\{#FPCFullTarget}\fpcmkcfg.exe; Param
 Filename: {app}\Lazarus Home Page.url; Section: InternetShortcut; Key: URL; String: https://www.lazarus-ide.org/
 Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String: http://www.lazarus.freepascal.org/index.php?action=forum
 Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://wiki.lazarus.freepascal.org/
+
+[Languages]
+Name: default; MessagesFile: lazarus.def.isl
+Name: ca;      MessagesFile: compiler:Languages\Catalan.isl
+Name: cs;      MessagesFile: compiler:Languages\Czech.isl
+Name: de;      MessagesFile: lazarus.de.isl
+Name: es;      MessagesFile: lazarus.es.isl
+Name: fi;      MessagesFile: compiler:Languages\Finnish.isl
+Name: fr;      MessagesFile: lazarus.fr.isl
+Name: hu;      MessagesFile: lazarus.hu.isl
+Name: it;      MessagesFile: lazarus.it.isl
+Name: nl;      MessagesFile: compiler:Languages\Dutch.isl
+Name: no;      MessagesFile: compiler:Languages\Norwegian.isl
+Name: pl;      MessagesFile: compiler:Languages\Polish.isl
+Name: pt;      MessagesFile: compiler:Languages\Portuguese.isl
+Name: pt_BR;   MessagesFile: lazarus.pt_BR.isl
+Name: ru;      MessagesFile: lazarus.ru.isl
+;Slovak.isl not avail with latest inno setup
+;Name: sk; MessagesFile: compiler:Languages\Slovak.isl
+Name: sl;      MessagesFile: compiler:Languages\Slovenian.isl
+Name: zh_CN;   MessagesFile: lazarus.zh_CN.isl
+
 [Code]
 
 var
