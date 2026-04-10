@@ -2826,13 +2826,13 @@ begin
       CleanPosToCodePos(VarNameRange.StartPos,IgnorePos);
       IgnoreErrorAfter:=IgnorePos;
       try
+        FPL:=nil;
         {$IFDEF CTDEBUG}
         debugln(['TCodeCompletionCodeTool.CompleteIdentifierByParameter searching ',GetIdentifier(Params.Identifier),' [',dbgs(Params.Flags),'] in ',FindContextToString(Context)]);
         {$ENDIF}
         if not Context.Tool.FindIdentifierInContext(Params) then exit;
 
         // gather overloaded procs
-        FPL:=nil;
         if not Params.NewCodeTool.CleanPosToCaret(
           Params.NewNode.FirstChild.StartPos,CodeXYPos) then
         exit;
