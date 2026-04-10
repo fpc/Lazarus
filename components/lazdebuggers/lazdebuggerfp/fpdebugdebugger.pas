@@ -368,6 +368,7 @@ type
     procedure DoThreadDebugOutput(Sender: TObject; ProcessId,
       ThreadId: Integer; AMessage: String);
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
+    procedure DoReadAnsiString;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
     procedure HandleSoftwareException(out AnExceptionLocation: TDBGLocationRec; var continue: boolean);
     // HandleBreakError: Default handler for range-check etc
@@ -444,7 +445,6 @@ type
     function AddBreak(const AFuncName: String; ALib: TDbgLibrary = nil; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; inline;
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData; out ABytesRead: Cardinal): Boolean; inline;
-    function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
     function SetStackFrameForBasePtr(ABasePtr: TDBGPtr; ASearchAssert: boolean = False;
       CurAddr: TDBGPtr = 0): TDBGPtr;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope; inline;
@@ -3848,26 +3848,26 @@ begin
   end;
 end;
 
-function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;
+procedure TFpDebugDebugger.DoReadAnsiString;
 var
   StrAddr: TDBGPtr;
-  len: TDBGPtr;
 begin
-  result := '';
-  if not ReadAddress(AnAddr, StrAddr) then
+  FCacheFileName := '';
+  if not FDbgController.CurrentProcess.ReadAddress(FCacheLocation, StrAddr) then
     Exit;
-  if StrAddr = 0 then
-    exit;
-  ReadAddress(StrAddr-DBGPTRSIZE[FDbgController.CurrentProcess.Mode], len);
-  // len > max len ....
-  if (len = 0) or (len > MaxInt) then // MaxInt: not a valid string
-    exit;
-  if len > 16 * 1024 then
-    len := 16 * 1024; // reading exception name/msg
 
-  setlength(result, len);
-  if not ReadData(StrAddr, len, result[1]) then
-    result := '';
+  FpDbgDwarfFreePascal.ReadAnsiStringFromTarget(FDbgController.CurrentProcess, StrAddr, FCacheFileName);
+end;
+
+function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;
+begin
+  FCacheLocation := AnAddr;
+  if ThreadID = FWorkerThreadId then
+    DoReadAnsiString
+  else
+    ExecuteInDebugThread(@DoReadAnsiString);
+
+  result := FCacheFileName;
 end;
 
 procedure TFpDebugDebugger.HandleSoftwareException(out
@@ -4778,25 +4778,6 @@ begin
   ExecuteInDebugThread(@DoReadPartialData);
   result := FCacheBoolean;
   ABytesRead := FCacheBytesRead;
-end;
-
-function TFpDebugDebugger.ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
-var
-  dw: DWord;
-  qw: QWord;
-begin
-  case FDbgController.CurrentProcess.Mode of
-    dm32:
-      begin
-        result := ReadData(AAdress, sizeof(dw), dw);
-        AData:=dw;
-      end;
-    dm64:
-      begin
-        result := ReadData(AAdress, sizeof(qw), qw);
-        AData:=qw;
-      end;
-  end;
 end;
 
 function TFpDebugDebugger.SetStackFrameForBasePtr(ABasePtr: TDBGPtr;

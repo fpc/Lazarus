@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, fgl, Math, FPDbgController, FpdMemoryTools, FpDbgClasses,
-  FpDbgUtil, FpDbgInfo, FpDbgCallContextInfo, DbgIntfDebuggerBase,
+  FpDbgUtil, FpDbgInfo, FpDbgCallContextInfo, FpDbgDwarfFreePascal, DbgIntfDebuggerBase,
   DbgIntfBaseTypes, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, FpDebugDebuggerUtils,
   LazDebuggerIntfBaseTypes;
 
@@ -271,36 +271,8 @@ end;
 
 function TFpDebugDebuggerBase.ReadAnsiStringFromTarget(AStringAddr: TDBGPtr;
   out AString: String): boolean;
-var
-  CurProcess: TDbgProcess;
-  l: TDBGPtr;
-  r: Cardinal;
 begin
-  AString := '';
-  Result := AStringAddr = 0;
-  if Result then
-    exit;
-
-  CurProcess := DbgController.CurrentProcess;
-  Result := CurProcess <> nil;
-  if not Result then
-    exit;
-
-  {$PUSH}{$Q-}{$R-}
-  Result := CurProcess.ReadAddress(AStringAddr - CurProcess.PointerSize, l);
-  if not Result then
-    exit;
-
-  l := Min(l, MemManager.MemLimits.MaxStringLen);
-  if (not MemManager.CheckDataSize(l)) then
-    exit;
-
-  SetLength(AString, l);
-  if l > 0 then begin
-    Result := CurProcess.ReadData(AStringAddr, l, AString[1], r);
-    SetLength(AString,r);
-  end;
-  {$POP}
+  FpDbgDwarfFreePascal.ReadAnsiStringFromTarget(DbgController.CurrentProcess, AStringAddr, AString);
 end;
 
 end.

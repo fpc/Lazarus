@@ -380,6 +380,9 @@ function GetCompilerVersion(ADbgInfoObj: TFpSymbolDwarf): integer; inline;
 function GetCompilerVersion(ADbgInfoObj: TDwarfCompilationUnit): integer; inline;
 function GetCompilerVersion(ADbgInfoObj: TDwarfCompilationUnit; ADbgInfo: TDbgInfo): integer; inline;
 
+function ReadAnsiStringFromTarget(ADbgProcess: TDbgProcess; AStringAddr: TDBGPtr; out AString: String): boolean;
+
+
 implementation
 
 uses
@@ -436,6 +439,40 @@ begin
     if m <> nil then
       Result := m.FCompilerVersion;
   end;
+end;
+
+function ReadAnsiStringFromTarget(ADbgProcess: TDbgProcess; AStringAddr: TDBGPtr; out
+  AString: String): boolean;
+var
+  StrLen: TDBGPtr;
+  r: Cardinal;
+begin
+  AString := '';
+  Result := AStringAddr = 0;
+  if Result then
+    exit;
+
+  Result := ADbgProcess <> nil;
+  if not Result then
+    exit;
+
+  {$PUSH}{$Q-}{$R-}
+  Result := ADbgProcess.ReadAddress(AStringAddr - ADbgProcess.PointerSize, StrLen);
+  if not Result then
+    exit;
+
+  if ADbgProcess.MemManager <> nil then begin
+    StrLen := Min(StrLen, ADbgProcess.MemManager.MemLimits.MaxStringLen);
+    if (not ADbgProcess.MemManager.CheckDataSize(StrLen)) then
+      exit;
+  end;
+
+  SetLength(AString, StrLen);
+  if StrLen > 0 then begin
+    Result := ADbgProcess.ReadData(AStringAddr, StrLen, AString[1], r);
+    SetLength(AString,r);
+  end;
+  {$POP}
 end;
 
 
