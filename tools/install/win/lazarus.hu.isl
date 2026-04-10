@@ -1,4 +1,4 @@
-#include "compiler:Hungarian.isl"
+#include "compiler:Languages\Hungarian.isl"
 
 [CustomMessages]
 
