@@ -974,7 +974,7 @@ begin
 
               if AUnitInfo.EditorInfo[0].EditorComponent.ModifiedDesign then begin
                 if IDEMessageDialog(lisDesignerHasUnsavedChanges,
-                  Format(lisSaveDesignerChangesToFile,[Code.Filename]),
+                  Format(lisOverwriteDesignerChangesAnyway,[Code.Filename]),
                   mtWarning, [mbYes, mbNo]) <> mrYes then
                 begin
                   debugln('Changes by a designer detected, lfm file left unsaved');
