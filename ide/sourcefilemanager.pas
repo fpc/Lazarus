@@ -1418,7 +1418,8 @@ begin
     // open resource component (designer, form, datamodule, ...)
     if FNewUnitInfo.OpenEditorInfoCount = 1 then begin
       Result:=OpenResource;
-      FNewUnitInfo.EditorInfo[0].EditorComponent.ModifiedDesign:=false;
+      if Result=mrOK then
+        FNewUnitInfo.OpenEditorInfo[0].EditorComponent.ModifiedDesign:=false;
     end;
     if Result<>mrOk then begin
       DebugLn(['TFileOpener.OpenEditorFile failed OpenResource: ',FFilename]);

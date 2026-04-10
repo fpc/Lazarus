@@ -2503,7 +2503,7 @@ begin
       end;
       exit;
     end else begin
-      if (cmsResult in CursorPos.Code.Scanner.CompilerModeSwitches) and
+      if (cmsResult in Scanner.CompilerModeSwitches) and  // self.Scanner includes *.inc file
       (CursorNode.Desc  = ctnVarDefinition) and
       (CursorNode.FirstChild<>nil) and
       not CursorNode.HasParentOfType(ctnParameterList) and
