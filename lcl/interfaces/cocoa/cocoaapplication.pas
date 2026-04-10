@@ -316,16 +316,31 @@ var
   win : NSWindow;
   responder : NSResponder;
 
-  procedure setCocoaOnlyStateForKeyEvent;
+  procedure init;
   begin
+    idx := CocoaWidgetSetBaseService.countWaitingReleasedLCLObjects;
+
+    responder := nil;
+    cb := nil;
+
+    win:= theEvent.window;
+    if NOT Assigned(win) then
+      win := self.keyWindow;
+
     if NOT Assigned(win) then
       Exit;
 
-    responder := win.firstResponder;
-    cb := responder.lclGetCallback;
-    if NOT Assigned(cb) then
-      Exit;
+    responder:= win.firstResponder;
+    cb:= responder.lclGetCallback;
+  end;
 
+  procedure deinit;
+  begin
+    CocoaWidgetSetBaseService.releaseWaitingLCLObjects(idx);
+  end;
+
+  procedure setCocoaOnlyStateBeforeCocoa;
+  begin
     case theEvent.type_ of
       NSKeyDown:
         // when NSKeyDown, always reset CocoaOnlyState
@@ -336,17 +351,34 @@ var
       NSKeyUp:
         // when NSKeyUp, reset CocoaOnlyState only if it's false (last KeyDown set)
         // keep true if CocoaOnlyState=true
-        if not CocoaWidgetSetState.CocoaOnlyState then
-        begin
+        if NOT CocoaWidgetSetState.CocoaOnlyState then begin
           if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
             CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
         end;
     end;
   end;
 
-  function handleKeyEvent: Boolean;
+  procedure setCocoaOnlyStateAfterCocoa;
   begin
-    Result:= False;
+    case theEvent.type_ of
+      NSKeyDown,
+      NSKeyUp,
+      NSFlagsChanged: ;
+      else
+        Exit;
+    end;
+
+    if CocoaWidgetSetState.CocoaOnlyState then
+      Exit;
+
+    // retest IME state
+    if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+      CocoaWidgetSetState.CocoaOnlyState:= NSTextInputClientProtocol(responder).hasMarkedText;
+  end;
+
+  function handleEventBeforeCocoa: Boolean;
+  begin
+    Result:= True;
 
     case theEvent.type_ of
       NSKeyDown,
@@ -356,38 +388,28 @@ var
         Exit;
     end;
 
-    if NOT Assigned(cb) then
+    // in IME state
+    if CocoaWidgetSetState.CocoaOnlyState then
       Exit;
 
-    Result:= True;
-
-    if CocoaWidgetSetState.CocoaOnlyState then begin
-      // in IME state
-      inherited sendEvent(theEvent);
-    end else begin
-      // not in IME state
-      cb.KeyEvBefore(theEvent, allowcocoa);
-      // may be triggered into IME state
-      if allowcocoa then
-        inherited sendEvent(theEvent);
-      // retest IME state
-      if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-        CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
-      // if in IME state, pass KeyEvAfter
-      if not CocoaWidgetSetState.CocoaOnlyState then
-        cb.KeyEvAfter;
-    end;
+    // not in IME state
+    cb.KeyEvBefore(theEvent, allowcocoa);
+    Result:= allowcocoa;
   end;
 
-  procedure handelMouseMovedEventForLCL;
+  procedure handleKeyEventAfterCocoa;
+  begin
+    // if in IME state, pass KeyEvAfter
+    if NOT CocoaWidgetSetState.CocoaOnlyState then
+      cb.KeyEvAfter;
+  end;
+
+  procedure handleMouseMovedEventAfterCocoa;
   var
     mousePos: NSPoint;
     windowAtPos: NSWindow;
     windowClientFrame: NSRect;
   begin
-    if (theEvent.type_ <> NSMouseMoved) then
-      Exit;
-
     if NOT self.isActive then
       Exit;
 
@@ -419,25 +441,37 @@ var
     forwardMouseMovedEventToTheWindowAtPos( windowAtPos, theEvent );
   end;
 
+  procedure handleEventAfterCocoa;
+  begin
+    case theEvent.type_ of
+      NSKeyDown,
+      NSKeyUp,
+      NSFlagsChanged:
+        handleKeyEventAfterCocoa;
+      NSMouseMoved:
+        handleMouseMovedEventAfterCocoa;
+    end;
+  end;
+
 begin
   {$ifdef COCOALOOPNATIVE}
   try
   {$endif}
-  idx := CocoaWidgetSetBaseService.countWaitingReleasedLCLObjects;
-  win := theEvent.window;
-  if not Assigned(win) then win := self.keyWindow;
-
-  responder := nil;
-  cb := nil;
-
+  init;
   try
-    setCocoaOnlyStateForKeyEvent;
-    if handleKeyEvent then
-      Exit;
-    inherited sendEvent(theEvent);
-    handelMouseMovedEventForLCL;
+    if Assigned(cb) then begin
+      setCocoaOnlyStateBeforeCocoa;
+      allowCocoa:= handleEventBeforeCocoa;
+      // may be triggered into IME state
+      if allowCocoa then
+        inherited sendEvent(theEvent);
+      setCocoaOnlyStateAfterCocoa;
+      handleEventAfterCocoa;
+    end else begin
+      inherited sendEvent(theEvent);
+    end;
   finally
-    CocoaWidgetSetBaseService.releaseWaitingLCLObjects(idx);
+    deinit;
   end;
   {$ifdef COCOALOOPNATIVE}
     if CocoaWidgetSet.FTerminating then stop(nil);
