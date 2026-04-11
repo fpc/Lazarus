@@ -286,28 +286,6 @@ begin
 end;
 {$endif}
 
-procedure forwardMouseMovedEventToTheWindowAtPos( const windowAtPos: NSWindow; const originalEvent: NSEvent );
-var
-  location: NSPoint;
-  newEvent: NSEvent;
-begin
-  location:= originalEvent.mouseLocation;
-  location.x := location.x - windowAtPos.frame.origin.x;
-  location.y := location.y - windowAtPos.frame.origin.y;
-  newEvent := NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
-    originalEvent.type_,
-    location,
-    originalEvent.modifierFlags,
-    originalEvent.timestamp,
-    windowAtPos.windowNumber,
-    originalEvent.context,
-    originalEvent.eventNumber,
-    originalEvent.clickCount,
-    originalEvent.pressure
-  );
-  windowAtPos.sendEvent( newEvent );
-end;
-
 procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
 var
   cb : ICommonCallback;
@@ -376,83 +354,6 @@ var
       CocoaWidgetSetState.CocoaOnlyState:= NSTextInputClientProtocol(responder).hasMarkedText;
   end;
 
-  function handleEventBeforeCocoa: Boolean;
-  begin
-    Result:= True;
-
-    case theEvent.type_ of
-      NSKeyDown,
-      NSKeyUp,
-      NSFlagsChanged: ;
-      else
-        Exit;
-    end;
-
-    // in IME state
-    if CocoaWidgetSetState.CocoaOnlyState then
-      Exit;
-
-    // not in IME state
-    cb.KeyEvBefore(theEvent, allowcocoa);
-    Result:= allowcocoa;
-  end;
-
-  procedure handleKeyEventAfterCocoa;
-  begin
-    // if in IME state, pass KeyEvAfter
-    if NOT CocoaWidgetSetState.CocoaOnlyState then
-      cb.KeyEvAfter;
-  end;
-
-  procedure handleMouseMovedEventAfterCocoa;
-  var
-    mousePos: NSPoint;
-    windowAtPos: NSWindow;
-    windowClientFrame: NSRect;
-  begin
-    if NOT self.isActive then
-      Exit;
-
-    mousePos:= theEvent.mouseLocation;
-    windowAtPos:= TCocoaWindowUtil.getWindowAtPos( mousePos );;
-    if NOT Assigned(windowAtPos) then begin
-      Application.DoBeforeMouseMessage( nil );
-      Exit;
-    end;
-
-    windowClientFrame := windowAtPos.contentRectForFrameRect(windowAtPos.frame);
-    // if mouse outside of ClientFrame of Window,
-    // Cursor should be forced to default.
-    // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
-    if not NSPointInRect(mousePos, windowClientFrame) then begin
-      if Screen.Cursor=crDefault then
-        CursorHelper.ForceSetDefaultCursor
-      else
-        CursorHelper.SetScreenCursor;
-      Application.DoBeforeMouseMessage( nil );
-    end;
-
-    // mouse in the keyWindow, complete, Exit
-    if (NOT Assigned(theEvent.window)) or (windowAtPos=theEvent.window) then
-      Exit;
-
-    // mouse NOT in the keyWindow, forward the Mouse Moved Event to
-    // the Window at Mouse Cursor Pos, according the LCL specification
-    forwardMouseMovedEventToTheWindowAtPos( windowAtPos, theEvent );
-  end;
-
-  procedure handleEventAfterCocoa;
-  begin
-    case theEvent.type_ of
-      NSKeyDown,
-      NSKeyUp,
-      NSFlagsChanged:
-        handleKeyEventAfterCocoa;
-      NSMouseMoved:
-        handleMouseMovedEventAfterCocoa;
-    end;
-  end;
-
 begin
   {$ifdef COCOALOOPNATIVE}
   try
@@ -461,12 +362,12 @@ begin
   try
     if Assigned(cb) then begin
       setCocoaOnlyStateBeforeCocoa;
-      allowCocoa:= handleEventBeforeCocoa;
+      allowCocoa:= cb.handleEventBeforeCocoa( theEvent );
       // may be triggered into IME state
       if allowCocoa then
         inherited sendEvent(theEvent);
       setCocoaOnlyStateAfterCocoa;
-      handleEventAfterCocoa;
+      cb.handleEventAfterCocoa( theEvent );
     end else begin
       inherited sendEvent(theEvent);
     end;

@@ -75,6 +75,10 @@ type
     function GetContext: HDC; inline;
     function GetTarget: TObject; inline;
     function GetCallbackObject: TObject; inline;
+
+    function handleEventBeforeCocoa( const theEvent: NSEvent ): Boolean; virtual;
+    procedure handleEventAfterCocoa( const theEvent: NSEvent ); virtual;
+
     function MouseUpDownEvent(
       const Event: NSEvent;
       const AForceAsMouseUp: Boolean = False;
@@ -283,6 +287,109 @@ end;
 function TLCLCommonCallback.GetCallbackObject: TObject;
 begin
   Result := Self;
+end;
+
+function TLCLCommonCallback.handleEventBeforeCocoa(const theEvent: NSEvent
+  ): Boolean;
+var
+  allowcocoa: Boolean;
+begin
+  Result:= True;
+
+  case theEvent.type_ of
+    NSKeyDown,
+    NSKeyUp,
+    NSFlagsChanged: ;
+    else
+      Exit;
+  end;
+
+  // in IME state
+  if CocoaWidgetSetState.CocoaOnlyState then
+    Exit;
+
+  // not in IME state
+  self.KeyEvBefore(theEvent, allowcocoa);
+  Result:= allowcocoa;
+end;
+
+procedure TLCLCommonCallback.handleEventAfterCocoa(const theEvent: NSEvent);
+
+  procedure forwardMouseMovedEventToTheWindowAtPos( const windowAtPos: NSWindow; const originalEvent: NSEvent );
+  var
+    location: NSPoint;
+    newEvent: NSEvent;
+  begin
+    location:= originalEvent.mouseLocation;
+    location.x := location.x - windowAtPos.frame.origin.x;
+    location.y := location.y - windowAtPos.frame.origin.y;
+    newEvent := NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
+      originalEvent.type_,
+      location,
+      originalEvent.modifierFlags,
+      originalEvent.timestamp,
+      windowAtPos.windowNumber,
+      originalEvent.context,
+      originalEvent.eventNumber,
+      originalEvent.clickCount,
+      originalEvent.pressure
+    );
+    windowAtPos.sendEvent( newEvent );
+  end;
+
+  procedure handleKeyEventAfterCocoa;
+  begin
+    // if in IME state, pass KeyEvAfter
+    if NOT CocoaWidgetSetState.CocoaOnlyState then
+      self.KeyEvAfter;
+  end;
+
+  procedure handleMouseMovedEventAfterCocoa;
+  var
+    mousePos: NSPoint;
+    windowAtPos: NSWindow;
+    windowClientFrame: NSRect;
+  begin
+    if NOT NSAPP.isActive then
+      Exit;
+
+    mousePos:= theEvent.mouseLocation;
+    windowAtPos:= TCocoaWindowUtil.getWindowAtPos( mousePos );;
+    if NOT Assigned(windowAtPos) then begin
+      Application.DoBeforeMouseMessage( nil );
+      Exit;
+    end;
+
+    windowClientFrame := windowAtPos.contentRectForFrameRect(windowAtPos.frame);
+    // if mouse outside of ClientFrame of Window,
+    // Cursor should be forced to default.
+    // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
+    if not NSPointInRect(mousePos, windowClientFrame) then begin
+      if Screen.Cursor=crDefault then
+        CursorHelper.ForceSetDefaultCursor
+      else
+        CursorHelper.SetScreenCursor;
+      Application.DoBeforeMouseMessage( nil );
+    end;
+
+    // mouse in the keyWindow, complete, Exit
+    if (NOT Assigned(theEvent.window)) or (windowAtPos=theEvent.window) then
+      Exit;
+
+    // mouse NOT in the keyWindow, forward the Mouse Moved Event to
+    // the Window at Mouse Cursor Pos, according the LCL specification
+    forwardMouseMovedEventToTheWindowAtPos( windowAtPos, theEvent );
+  end;
+
+begin
+  case theEvent.type_ of
+    NSKeyDown,
+    NSKeyUp,
+    NSFlagsChanged:
+      handleKeyEventAfterCocoa;
+    NSMouseMoved:
+      handleMouseMovedEventAfterCocoa;
+  end;
 end;
 
 function TLCLCommonCallback.getCaptureControlCallback: ICommonCallBack;
