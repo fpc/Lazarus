@@ -767,7 +767,7 @@ var
 begin
   Result := True;
   RootNode.Visible := True;
-  RootNode.Expanded := True;
+  //RootNode.Expanded := True;
   Node := RootNode.GetFirstChild;
   while Node<>nil do
   begin
@@ -810,7 +810,7 @@ begin
       ChildPass := FilterTree(Node.GetFirstChild);
       Node.Visible := ChildPass or PassCapt or PassEvent;
       if Node.Visible then begin
-        if ChildPass or (fExpandAllInitially and fIsFirstUpdate) then
+        if fExpandAllInitially and fIsFirstUpdate then
           Node.Expanded := True;
         Result := True;
       end;

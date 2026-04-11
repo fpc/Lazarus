@@ -271,8 +271,6 @@ function TEditorKeymappingOptionsFrame.FilterEditFilterItem(ItemData: Pointer;
 var
   KeyRel: TKeyCommandRelation;
 begin
-  Done:=True;
-  Result:=False;
   if TObject(ItemData) is TKeyCommandRelation then
   begin
     KeyRel:=TKeyCommandRelation(ItemData);      // Tree item is actual key command.
@@ -283,6 +281,10 @@ begin
       Result:=(CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutA)=0)
            or (CompareIDEShortCutKey1s(@KeyMapKeyFilter,@KeyRel.ShortcutB)=0);
     end;
+  end
+  else begin          // Header item
+    Done:=False;
+    Result:=False;
   end;
 end;
 
