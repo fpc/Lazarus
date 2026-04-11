@@ -120,8 +120,6 @@ type
       const AOverrideBlock: Boolean = False): Boolean;
     function MouseMove(const Event: NSEvent): Boolean;
 
-    procedure SetTabSuppress(const ASuppress: Boolean);
-
     function scrollWheel(const Event: NSEvent): Boolean;
     // size, pos events
     procedure frameDidChange(const sender: id);

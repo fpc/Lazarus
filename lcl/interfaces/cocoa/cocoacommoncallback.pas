@@ -88,7 +88,6 @@ type
     procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
     procedure KeyEvHandled; inline;
-    procedure SetTabSuppress(const ASuppress: Boolean); inline;
 
     function MouseMove(const Event: NSEvent): Boolean; virtual;
     function scrollWheel(const Event: NSEvent): Boolean; virtual;
@@ -809,11 +808,6 @@ end;
 procedure TLCLCommonCallback.KeyEvHandled;
 begin
   _KeyHandled := True;
-end;
-
-procedure TLCLCommonCallback.SetTabSuppress(const ASuppress: Boolean);
-begin
-  SuppressTabDown := ASuppress;
 end;
 
 function TLCLCommonCallback.MouseUpDownEvent(

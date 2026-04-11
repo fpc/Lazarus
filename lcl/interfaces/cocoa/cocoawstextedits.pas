@@ -702,7 +702,7 @@ var
   nr:NSRect;
   r:TRect;
   layoutSize: NSSize;
-  lcl: TLCLCommonCallback;
+  cb: TLCLCommonCallback;
 begin
   scr := TCocoaScrollView(NSView(TCocoaScrollView.alloc).lclInitWithCreateParams(AParams));
 
@@ -725,6 +725,7 @@ begin
   // (MaxSize is also changed automatically, if NSViewText size is changed)
   txt.setMaxSize(NSMakeSize(10000000, 10000000));
   scr.setDocumentView(txt);
+  txt.release;
 
   scr.setHasVerticalScroller(VERT_SCROLLER_VISIBLE[TMemo(AWinControl).ScrollBars]);
   scr.setHasHorizontalScroller(HORZ_SCROLLER_VISIBLE[TMemo(AWinControl).ScrollBars]);
@@ -757,20 +758,18 @@ begin
   txt.setBackgroundColor(NSColor.textBackgroundColor);
   TCocoaViewUtil.updateFocusRing(txt, AWinControl);
 
-  lcl := TLCLCommonCallback.Create(txt, AWinControl);
-  lcl.ForceReturnKeyDown := true;
-  txt.callback := lcl;
   txt.setDelegate(txt);
-
   TCocoaTextControlUtil.setStringValue(txt, AParams.Caption);
-
-  scr.callback := txt.callback;
-
   TCocoaTextControlUtil.setWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
   TCocoaTextControlUtil.setAllignment(txt, TCustomMemo(AWinControl).Alignment);
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
-  txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
-  txt.release;
+
+  cb := TLCLCommonCallback.Create(txt, AWinControl);
+  cb.ForceReturnKeyDown := true;
+  cb.SuppressTabDown := not TCustomMemo(AWinControl).WantTabs;
+  txt.callback := cb;
+  scr.callback := cb;
+
   Result := TLCLHandle(scr);
 end;
 
@@ -953,10 +952,15 @@ class procedure TCocoaWSCustomMemo.SetWantTabs(const ACustomMemo: TCustomMemo;
   const NewWantTabs: boolean);
 var
   txt: TCocoaTextView;
+  cb: TLCLCommonCallback;
 begin
   txt := GetTextView(ACustomMemo);
-  if (not Assigned(txt)) then Exit;
-  txt.callback.SetTabSuppress(not NewWantTabs);
+  if NOT Assigned(txt) then
+    Exit;
+  if NOT Assigned(txt.callback) then
+    Exit;
+  cb:= TLCLCommonCallback( txt.callback.GetCallbackObject );
+  cb.SuppressTabDown:= not NewWantTabs;
 end;
 
 
