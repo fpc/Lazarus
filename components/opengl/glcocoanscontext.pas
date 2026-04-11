@@ -189,11 +189,9 @@ begin
   p := nil;
   if (AParams.WndParent <> 0) then
     p := NSObject(AParams.WndParent).lclContentView;
-  if Assigned(p) then
-    TCocoaTypeUtil.toRect(types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
-      p.frame.size.height, ns)
-  else
-    ns := NSMakeRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
+  ns := TCocoaTypeUtil.toRect(
+          types.Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height),
+          p );
   Attrs:=CreateOpenGLContextAttrList(DoubleBuffered,MajorVersion,MinorVersion, MultiSampling,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
     PixFmt:=NSOpenGLPixelFormat(NSOpenGLPixelFormat.alloc).initWithAttributes(Attrs);
