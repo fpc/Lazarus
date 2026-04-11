@@ -846,7 +846,7 @@ begin
       {$endif}
     end;
 
-    cnt.callback.IsOpaque:=true;
+    cb.IsOpaque:=true;
     cnt.wincallback := TCocoaWindow(win).callback;
     win.setContentView(cnt);
 
@@ -866,7 +866,7 @@ begin
       //cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
       if cnt.window <> nil then
          cnt.window.setAcceptsMouseMovedEvents(True);
-      cnt.callback.IsOpaque:=true;
+      cb.IsOpaque:=true;
       //  todo: We have to find a way to remove the following notifications save before cnt will be released
       //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);
       //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didResignKeyNotification:'), NSWindowDidResignKeyNotification, cnt.window);

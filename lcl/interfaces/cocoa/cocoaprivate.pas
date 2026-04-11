@@ -119,36 +119,29 @@ type
       const AForceAsMouseUp: Boolean = False;
       const AOverrideBlock: Boolean = False): Boolean;
     function MouseMove(const Event: NSEvent): Boolean;
-
     function scrollWheel(const Event: NSEvent): Boolean;
-    // size, pos events
-    procedure frameDidChange(const sender: id);
-    procedure boundsDidChange(const sender: id);
-    // misc events
-    procedure Draw(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure DrawOverlay(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure scroll(
       const isVert: Boolean;
       const Pos: Integer;
       const AScrollPart: NSScrollerPart = NSScrollerNoPart);
-    // non event methods
+
+    procedure frameDidChange(const sender: id);
+    procedure boundsDidChange(const sender: id);
+
+    procedure Draw(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    procedure DrawOverlay(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+
     function GetPropStorage: TStringList;
     function GetContext: HDC;
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
-    function GetIsOpaque: Boolean;
-    procedure SetIsOpaque(const AValue: Boolean);
+    function HandleFrame: NSView;
     // the method is called, when handle is being destroyed.
     // the callback object to stay alive a little longer than LCL object (Target)
     // thus it needs to know that LCL object has been destroyed.
     // After this called has been removed, any Cocoa events should not be
     // forwarded to LCL target
     procedure RemoveTarget;
-
-    function HandleFrame: NSView;
-
-    // properties
-    property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
 
   { TCocoaLCLMessageUtil }

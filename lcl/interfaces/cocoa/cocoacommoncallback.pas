@@ -24,14 +24,10 @@ type
       FPropStorage: TStringList;
       FContext: TCocoaContext;
       FBoundsReportedToChildren: boolean;
-      FIsOpaque:boolean;
       FIsEventRouting:boolean;
       FLastWheelWasHorz:boolean;
   protected
     function deliverMessage(var msg): LRESULT;
-
-    function GetIsOpaque: Boolean; inline;
-    procedure SetIsOpaque(const AValue: Boolean); inline;
   protected
     _target    : TWinControl;
     _KeyMsg    : TLMKey;
@@ -65,6 +61,8 @@ type
     BlockCocoaMouseMove: Boolean;
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
     ForceReturnKeyDown: Boolean; // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
+
+    IsOpaque: Boolean;
 
     lastMouseDownUp: NSTimeInterval; // the last processed mouse Event
     lastMouseWithForce: Boolean;
@@ -105,7 +103,6 @@ type
     procedure SetHandleFrame(const AHandleFrame: NSView ); inline;
 
     property Target: TWinControl read _target;
-    property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
 
   TLCLCommonCallBackClass = class of TLCLCommonCallBack;
@@ -254,7 +251,6 @@ begin
   FPropStorage.Sorted := True;
   FPropStorage.Duplicates := dupAccept;
   FBoundsReportedToChildren:=false;
-  FIsOpaque:=false;
   FIsEventRouting:=false;
   SuppressTabDown := true; // by default all Tabs would not be allowed for Cocoa.
                            // it should be enabled, i.e. for TMemo with WantTabs=true
@@ -1323,7 +1319,7 @@ begin
       if NOT Owner.isKindOfClass(NSView) or NOT NSView(Owner).isFlipped then
          nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
 
-      if FIsOpaque and (Target.Color<>clDefault) then
+      if IsOpaque and (Target.Color<>clDefault) then
       begin
         FContext.BkMode:=OPAQUE;
         FContext.BkColor:=Target.Color;
@@ -1391,16 +1387,6 @@ end;
 function TLCLCommonCallback.deliverMessage(var msg): LRESULT;
 begin
   Result:= LCLMessageGlue.DeliverMessage(Target, msg);
-end;
-
-function TLCLCommonCallback.GetIsOpaque: Boolean;
-begin
-  Result:= FIsOpaque;
-end;
-
-procedure TLCLCommonCallback.SetIsOpaque(const AValue: Boolean);
-begin
-  FIsOpaque:=AValue;
 end;
 
 end.
