@@ -118,7 +118,6 @@ type
     procedure DoMakeFirstResponder(aResponder: NSResponder); message 'DoMakeFirstResponder:';
   protected
     fieldEditor: TCocoaFieldEditor;
-    firedMouseEvent: Boolean;
     isInFullScreen: Boolean;
     orderOutAfterFS : Boolean;
     fsview: TCocoaWindowContent;
@@ -137,7 +136,6 @@ type
     procedure windowDidEnterFullScreen(notification: NSNotification); message 'windowDidEnterFullScreen:';
     procedure windowDidExitFullScreen(notification: NSNotification); message 'windowDidExitFullScreen:';
   public
-    _keyEvCallback: ICommonCallback;
     callback: IWindowCallback;
     keepWinLevel : NSInteger;
     //LCLForm: TCustomForm;
@@ -147,11 +145,13 @@ type
     function canBecomeKeyWindow: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+
     // mouse
     procedure scrollWheel(event: NSEvent); override;
-    procedure sendEvent(event: NSEvent); override;
-    // key
-    procedure keyDown(event: NSEvent); override;
+
+    // key，it‘s no longer in use, see the description below
+    // procedure keyDown(event: NSEvent); override;
+
     // menu support
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
 
@@ -895,42 +895,30 @@ begin
     inherited scrollWheel(event);
 end;
 
-procedure TCocoaWindow.sendEvent(event: NSEvent);
-var
-  Epos: NSPoint;
-  cr : NSRect;
-  fr : NSRect;
-  prc: Boolean;
-begin
-  if event.type_ = NSLeftMouseUp then
-  // This code is introduced here for an odd cocoa feature.
-  // mouseUp is not fired, if pressed on Window's title.
-  // (even though mouseDown, mouseMove and mouseDragged are fired)
-  // (there are some information in the internet, that mouseDown is not firing as well)
-  // (however this is not true for macOS 10.12)
-  // The logic below is as following. If mouseUp event arrived
-  // and mouse position is on the title of the form.
-  // then try to process the event. If event was not processed, call mouseUp()
-  // specifically.
-  begin
-    Epos:=event.locationInWindow;
-    fr := frame;
-    fr.origin.x:=0;
-    fr.origin.y:=0;
-    cr := contentRectForFrameRect(fr);
-    if NSPointInRect(Epos, fr) and not NSPointInRect(Epos, cr) then
-    begin
-      firedMouseEvent := false;
-      inherited sendEvent(event);
-      if not firedMouseEvent then mouseUp(event);
-    end
-    else
-      inherited sendEvent(event);
-  end
-  else
-    inherited sendEvent(event);
-end;
-
+// according to the current key handling logic, TCocoaWindow.keyDown() will
+// no longer be executed.
+//
+// because TCocoaWindowContentDocument was changed to inherit from
+// TCocoaCustomControlWithBaseInputClient in 2024.
+// in TCocoaCustomControlWithBaseInputClient.keyDown(), only NSTextInputContext
+// is called, and inherited keyDown() is not called.
+// one reason is that calling inherited keyDown() does not actually prevent beeping.
+//
+// although this results in the loss of shortcut conversion via performKeyEquivalent()
+// when the Command/Control Modifier Key is not held down.
+// but there is practically no noticeable difference from 2024, as the LCL
+// shortcut does not rely on performKeyEquivalent().
+// if really needed, we can add TCocoaWindowContentDocument.keyDown() to
+// achieve this, but it doesn't seem necessary at the moment.
+//
+// regarding the handling of the Space Key in Buttons and CheckBoxes,
+// TCocoaButton.keyDown() has been added, avoiding the need to execute
+// NSWindow.keyDown() to achieve the magic.
+//
+// Zoë Peterson provides a detailed explanation of the complete logic for
+// Cocoa Key handling:
+// https://gitlab.com/freepascal.org/lazarus/lazarus/-/work_items/35449
+{
 procedure TCocoaWindow.keyDown(event: NSEvent);
 var
   mn : NSMenu;
@@ -959,6 +947,7 @@ begin
 
   inherited keyDown(event);
 end;
+}
 
 // return proper focused responder by kind of class of NSResponder
 function getProperFocusedResponder( const win : NSWindow; const aResponder : NSResponder ): NSResponder;

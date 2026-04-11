@@ -109,62 +109,39 @@ type
   { ICommonCallback }
 
   ICommonCallback = interface
+    // core event handle
+    function handleEventBeforeCocoa( const theEvent: NSEvent ): Boolean;
+    procedure handleEventAfterCocoa( const theEvent: NSEvent );
+
     // mouse events
     function MouseUpDownEvent(
       const Event: NSEvent;
       const AForceAsMouseUp: Boolean = False;
       const AOverrideBlock: Boolean = False): Boolean;
     function MouseMove(const Event: NSEvent): Boolean;
-
-    // KeyEvXXX methods were introduced to allow a better control
-    // over when Cocoa keys processing is being called.
-    // (The initial KeyEvent() replicates Carbon implementation, and it's not
-    // suitable for Cocoa, due to the use of OOP and the extual "inherited Key..."needs to be called
-    // where for Carbon there's a special fucntion to call the "next event handler" present)
-    //
-    // The desired use is as following:
-    // Call KeyEvPrepare and pass NSEvent object
-    // after that call KeyEvBefore and pass a flag if AllowCocoaHandle
-    //
-    // The call would populate the flag. If it's "True" you should call "inherited" method (to let Cocoa handle the key).
-    // If the flag returned "False", you should not call inherited.
-    //
-    // No matter what the flag value was you should call KeyEvAfter.
-    procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
-    procedure KeyEvAfter;
-    procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
-    procedure KeyEvHandled;
-    procedure SetTabSuppress(const ASuppress: Boolean);
-
     function scrollWheel(const Event: NSEvent): Boolean;
-    // size, pos events
-    procedure frameDidChange(const sender: id);
-    procedure boundsDidChange(const sender: id);
-    // misc events
-    procedure Draw(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    procedure DrawOverlay(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure scroll(
       const isVert: Boolean;
       const Pos: Integer;
       const AScrollPart: NSScrollerPart = NSScrollerNoPart);
-    // non event methods
+
+    procedure frameDidChange(const sender: id);
+    procedure boundsDidChange(const sender: id);
+
+    procedure Draw(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    procedure DrawOverlay(const ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+
     function GetPropStorage: TStringList;
     function GetContext: HDC;
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
-    function GetIsOpaque: Boolean;
-    procedure SetIsOpaque(const AValue: Boolean);
+    function HandleFrame: NSView;
     // the method is called, when handle is being destroyed.
     // the callback object to stay alive a little longer than LCL object (Target)
     // thus it needs to know that LCL object has been destroyed.
     // After this called has been removed, any Cocoa events should not be
     // forwarded to LCL target
     procedure RemoveTarget;
-
-    function HandleFrame: NSView;
-
-    // properties
-    property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
 
   { TCocoaLCLMessageUtil }

@@ -27,7 +27,6 @@ type
     _onOpenURLObserver: TCocoaAppOnOpenURLNotify;
     // Sandboxing
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
-    _isRunning : Boolean;
     _stopped : Boolean;
     {$endif}
   private
@@ -287,154 +286,93 @@ begin
 end;
 {$endif}
 
-procedure ForwardMouseMove(app: NSApplication; theEvent: NSEvent);
-var
-  w   : NSWindow;
-  ev  : NSEvent;
-  p   : NSPoint;
-  wfr : NSRect;
-begin
-  if not app.isActive then
-    exit;
-
-  p := theEvent.mouseLocation;
-  w := TCocoaWindowUtil.getWindowAtPos(p);;
-
-  if Assigned(w) then
-  begin
-    wfr := w.contentRectForFrameRect(w.frame);
-    // if mouse outside of ClientFrame of Window,
-    // Cursor should be forced to default.
-    // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
-    if not NSPointInRect(p, wfr) then
-    begin
-      if Screen.Cursor=crDefault then
-        CursorHelper.ForceSetDefaultCursor
-      else
-        CursorHelper.SetScreenCursor;
-      Application.DoBeforeMouseMessage( nil );
-    end;
-  end
-  else
-  begin
-    Application.DoBeforeMouseMessage( nil );
-    Exit;
-  end;
-
-  if (not Assigned(theEvent.window)) or (w=theEvent.window) then
-    Exit;
-
-  p.x := p.x - w.frame.origin.x;
-  p.y := p.y - w.frame.origin.y;
-  ev := NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
-    theEvent.type_,
-    p,
-    theEvent.modifierFlags,
-    theEvent.timestamp,
-    w.windowNumber,
-    theEvent.context,
-    theEvent.eventNumber,
-    theEvent.clickCount,
-    theEvent.pressure
-  );
-  w.sendEvent(ev);
-end;
-
 procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
 var
   cb : ICommonCallback;
-  wnd: TCocoaWindow;
   allowcocoa : Boolean;
   idx: integer;
   win : NSWindow;
   responder : NSResponder;
+
+  procedure init;
+  begin
+    idx := CocoaWidgetSetBaseService.countWaitingReleasedLCLObjects;
+
+    responder := nil;
+    cb := nil;
+
+    win:= theEvent.window;
+    if NOT Assigned(win) then
+      win := self.keyWindow;
+
+    if NOT Assigned(win) then
+      Exit;
+
+    responder:= win.firstResponder;
+    cb:= responder.lclGetCallback;
+  end;
+
+  procedure deinit;
+  begin
+    CocoaWidgetSetBaseService.releaseWaitingLCLObjects(idx);
+  end;
+
+  procedure setCocoaOnlyStateBeforeCocoa;
+  begin
+    case theEvent.type_ of
+      NSKeyDown:
+        // when NSKeyDown, always reset CocoaOnlyState
+        if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+          CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText
+        else
+          CocoaWidgetSetState.CocoaOnlyState := false;
+      NSKeyUp:
+        // when NSKeyUp, reset CocoaOnlyState only if it's false (last KeyDown set)
+        // keep true if CocoaOnlyState=true
+        if NOT CocoaWidgetSetState.CocoaOnlyState then begin
+          if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+            CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
+        end;
+    end;
+  end;
+
+  procedure setCocoaOnlyStateAfterCocoa;
+  begin
+    case theEvent.type_ of
+      NSKeyDown,
+      NSKeyUp,
+      NSFlagsChanged: ;
+      else
+        Exit;
+    end;
+
+    if CocoaWidgetSetState.CocoaOnlyState then
+      Exit;
+
+    // retest IME state
+    if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+      CocoaWidgetSetState.CocoaOnlyState:= NSTextInputClientProtocol(responder).hasMarkedText;
+  end;
+
 begin
   {$ifdef COCOALOOPNATIVE}
   try
   {$endif}
-  idx := CocoaWidgetSetBaseService.countWaitingReleasedLCLObjects;
-  win := theEvent.window;
-  if not Assigned(win) then win := self.keyWindow;
-
-  responder := nil;
-  cb := nil;
-
-  if Assigned(win) then
-  begin
-    responder := win.firstResponder;
-    cb := responder.lclGetCallback;
-    if Assigned(cb) then
-    begin
-      case theEvent.type_ of
-        NSKeyDown:
-          // when NSKeyDown, always reset CocoaOnlyState
-          if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-            CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText
-          else
-            CocoaWidgetSetState.CocoaOnlyState := false;
-        NSKeyUp:
-          // when NSKeyUp, reset CocoaOnlyState only if it's false (last KeyDown set)
-          // keep true if CocoaOnlyState=true
-          if not CocoaWidgetSetState.CocoaOnlyState then
-          begin
-            if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-              CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
-          end;
-      end;
-    end;
-  end;
-
+  init;
   try
-    if (theEvent.type_ = NSKeyDown) or (theEvent.type_ = NSKeyUp) or
-       (theEvent.type_ = NSFlagsChanged) then begin
-      if Assigned(cb) then
-      begin
-        try
-          if win.isKindOfClass_(TCocoaWindow) then begin
-            wnd := TCocoaWindow(win);
-            wnd._keyEvCallback := cb;
-          end
-          else
-            wnd := nil;
-
-          if CocoaWidgetSetState.CocoaOnlyState then
-          begin
-            // in IME state
-            inherited sendEvent(theEvent);
-          end
-          else
-          begin
-            // not in IME state
-            cb.KeyEvBefore(theEvent, allowcocoa);
-            // may be triggered into IME state
-            if allowcocoa then
-              inherited sendEvent(theEvent);
-            // retest IME state
-            if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-              CocoaWidgetSetState.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
-            // if in IME state, pass KeyEvAfter
-            if not CocoaWidgetSetState.CocoaOnlyState then
-              cb.KeyEvAfter;
-          end;
-        finally
-          if Assigned(wnd) then
-            wnd._keyEvCallback := nil;
-        end;
-        Exit;
-      end;
+    if Assigned(cb) then begin
+      setCocoaOnlyStateBeforeCocoa;
+      allowCocoa:= cb.handleEventBeforeCocoa( theEvent );
+      // may be triggered into IME state
+      if allowCocoa then
+        inherited sendEvent(theEvent);
+      setCocoaOnlyStateAfterCocoa;
+      cb.handleEventAfterCocoa( theEvent );
+    end else begin
+      inherited sendEvent(theEvent);
     end;
-
-    inherited sendEvent(theEvent);
-
-    if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
-
-     // todo: this should be called for "Default" or "Modal" loops
-     NSApp.updateWindows;
-
   finally
-
-    CocoaWidgetSetBaseService.releaseWaitingLCLObjects(idx);
-
+    deinit;
   end;
   {$ifdef COCOALOOPNATIVE}
     if CocoaWidgetSet.FTerminating then stop(nil);

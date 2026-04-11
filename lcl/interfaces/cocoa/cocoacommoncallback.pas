@@ -24,14 +24,10 @@ type
       FPropStorage: TStringList;
       FContext: TCocoaContext;
       FBoundsReportedToChildren: boolean;
-      FIsOpaque:boolean;
       FIsEventRouting:boolean;
       FLastWheelWasHorz:boolean;
   protected
     function deliverMessage(var msg): LRESULT;
-
-    function GetIsOpaque: Boolean; inline;
-    procedure SetIsOpaque(const AValue: Boolean); inline;
   protected
     _target    : TWinControl;
     _KeyMsg    : TLMKey;
@@ -66,6 +62,8 @@ type
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
     ForceReturnKeyDown: Boolean; // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
 
+    IsOpaque: Boolean;
+
     lastMouseDownUp: NSTimeInterval; // the last processed mouse Event
     lastMouseWithForce: Boolean;
 
@@ -75,6 +73,10 @@ type
     function GetContext: HDC; inline;
     function GetTarget: TObject; inline;
     function GetCallbackObject: TObject; inline;
+
+    function handleEventBeforeCocoa( const theEvent: NSEvent ): Boolean; virtual;
+    procedure handleEventAfterCocoa( const theEvent: NSEvent ); virtual;
+
     function MouseUpDownEvent(
       const Event: NSEvent;
       const AForceAsMouseUp: Boolean = False;
@@ -84,7 +86,6 @@ type
     procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
     procedure KeyEvHandled; inline;
-    procedure SetTabSuppress(const ASuppress: Boolean); inline;
 
     function MouseMove(const Event: NSEvent): Boolean; virtual;
     function scrollWheel(const Event: NSEvent): Boolean; virtual;
@@ -102,7 +103,6 @@ type
     procedure SetHandleFrame(const AHandleFrame: NSView ); inline;
 
     property Target: TWinControl read _target;
-    property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
   end;
 
   TLCLCommonCallBackClass = class of TLCLCommonCallBack;
@@ -251,7 +251,6 @@ begin
   FPropStorage.Sorted := True;
   FPropStorage.Duplicates := dupAccept;
   FBoundsReportedToChildren:=false;
-  FIsOpaque:=false;
   FIsEventRouting:=false;
   SuppressTabDown := true; // by default all Tabs would not be allowed for Cocoa.
                            // it should be enabled, i.e. for TMemo with WantTabs=true
@@ -283,6 +282,109 @@ end;
 function TLCLCommonCallback.GetCallbackObject: TObject;
 begin
   Result := Self;
+end;
+
+function TLCLCommonCallback.handleEventBeforeCocoa(const theEvent: NSEvent
+  ): Boolean;
+var
+  allowcocoa: Boolean;
+begin
+  Result:= True;
+
+  case theEvent.type_ of
+    NSKeyDown,
+    NSKeyUp,
+    NSFlagsChanged: ;
+    else
+      Exit;
+  end;
+
+  // in IME state
+  if CocoaWidgetSetState.CocoaOnlyState then
+    Exit;
+
+  // not in IME state
+  self.KeyEvBefore(theEvent, allowcocoa);
+  Result:= allowcocoa;
+end;
+
+procedure TLCLCommonCallback.handleEventAfterCocoa(const theEvent: NSEvent);
+
+  procedure forwardMouseMovedEventToTheWindowAtPos( const windowAtPos: NSWindow; const originalEvent: NSEvent );
+  var
+    location: NSPoint;
+    newEvent: NSEvent;
+  begin
+    location:= originalEvent.mouseLocation;
+    location.x := location.x - windowAtPos.frame.origin.x;
+    location.y := location.y - windowAtPos.frame.origin.y;
+    newEvent := NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
+      originalEvent.type_,
+      location,
+      originalEvent.modifierFlags,
+      originalEvent.timestamp,
+      windowAtPos.windowNumber,
+      originalEvent.context,
+      originalEvent.eventNumber,
+      originalEvent.clickCount,
+      originalEvent.pressure
+    );
+    windowAtPos.sendEvent( newEvent );
+  end;
+
+  procedure handleKeyEventAfterCocoa;
+  begin
+    // if in IME state, pass KeyEvAfter
+    if NOT CocoaWidgetSetState.CocoaOnlyState then
+      self.KeyEvAfter;
+  end;
+
+  procedure handleMouseMovedEventAfterCocoa;
+  var
+    mousePos: NSPoint;
+    windowAtPos: NSWindow;
+    windowClientFrame: NSRect;
+  begin
+    if NOT NSAPP.isActive then
+      Exit;
+
+    mousePos:= theEvent.mouseLocation;
+    windowAtPos:= TCocoaWindowUtil.getWindowAtPos( mousePos );;
+    if NOT Assigned(windowAtPos) then begin
+      Application.DoBeforeMouseMessage( nil );
+      Exit;
+    end;
+
+    windowClientFrame := windowAtPos.contentRectForFrameRect(windowAtPos.frame);
+    // if mouse outside of ClientFrame of Window,
+    // Cursor should be forced to default.
+    // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40515
+    if not NSPointInRect(mousePos, windowClientFrame) then begin
+      if Screen.Cursor=crDefault then
+        CursorHelper.ForceSetDefaultCursor
+      else
+        CursorHelper.SetScreenCursor;
+      Application.DoBeforeMouseMessage( nil );
+    end;
+
+    // mouse in the keyWindow, complete, Exit
+    if (NOT Assigned(theEvent.window)) or (windowAtPos=theEvent.window) then
+      Exit;
+
+    // mouse NOT in the keyWindow, forward the Mouse Moved Event to
+    // the Window at Mouse Cursor Pos, according the LCL specification
+    forwardMouseMovedEventToTheWindowAtPos( windowAtPos, theEvent );
+  end;
+
+begin
+  case theEvent.type_ of
+    NSKeyDown,
+    NSKeyUp,
+    NSFlagsChanged:
+      handleKeyEventAfterCocoa;
+    NSMouseMoved:
+      handleMouseMovedEventAfterCocoa;
+  end;
 end;
 
 function TLCLCommonCallback.getCaptureControlCallback: ICommonCallBack;
@@ -702,11 +804,6 @@ end;
 procedure TLCLCommonCallback.KeyEvHandled;
 begin
   _KeyHandled := True;
-end;
-
-procedure TLCLCommonCallback.SetTabSuppress(const ASuppress: Boolean);
-begin
-  SuppressTabDown := ASuppress;
 end;
 
 function TLCLCommonCallback.MouseUpDownEvent(
@@ -1222,7 +1319,7 @@ begin
       if NOT Owner.isKindOfClass(NSView) or NOT NSView(Owner).isFlipped then
          nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
 
-      if FIsOpaque and (Target.Color<>clDefault) then
+      if IsOpaque and (Target.Color<>clDefault) then
       begin
         FContext.BkMode:=OPAQUE;
         FContext.BkColor:=Target.Color;
@@ -1290,16 +1387,6 @@ end;
 function TLCLCommonCallback.deliverMessage(var msg): LRESULT;
 begin
   Result:= LCLMessageGlue.DeliverMessage(Target, msg);
-end;
-
-function TLCLCommonCallback.GetIsOpaque: Boolean;
-begin
-  Result:= FIsOpaque;
-end;
-
-procedure TLCLCommonCallback.SetIsOpaque(const AValue: Boolean);
-begin
-  FIsOpaque:=AValue;
 end;
 
 end.
