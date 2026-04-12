@@ -44,7 +44,7 @@ uses
   FpPascalParser,
   FPDbgController,
   FpPascalBuilder,
-  FpErrorMessages, LazStringUtils;
+  FpErrorMessages, FpdMemoryTools, LazStringUtils;
 
 procedure HandleCommand(ACommand: String; out CallProcessLoop: boolean);
 
@@ -59,7 +59,7 @@ uses
 
 type
   TFPDCommandHandler = procedure(AParams: String; out CallProcessLoop: boolean);
-  TBreakPointIdMap = class(specialize TFPGMapObject<Integer, TFpDbgBreakpoint>)
+  TBreakPointIdMap = class(specialize TFPGMap<Integer, TFpDbgBreakpoint>)
   public
     function DoBreakPointCompare(Key1, Key2: Pointer): Integer;
   end;
@@ -233,7 +233,7 @@ begin
     if (e = 0) and BreakPointIdMap.TryGetData(Id, bp) then begin
       GController.CurrentProcess.RemoveBreak(bp);
       BreakPointIdMap.Remove(Id);
-      bp.Destroy;
+      bp.Free;
       WriteLn(format(sRemoveBreakpoint,[S]))
     end
     else
@@ -558,7 +558,7 @@ begin
   P := GetPart([], [' ', #9], S);
 
   AContext := GController.CurrentProcess.DbgInfo.FindSymbolScope(
-    GController.DefaultContext,
+    GController.DefaultContext as TFpDbgSimpleLocationContext,
     GController.CurrentThread.GetInstructionPointerRegisterValue
   );
   if AContext = nil then begin

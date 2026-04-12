@@ -1489,7 +1489,8 @@ var
 begin
   if (FInternalBreakpoint <> nil) then begin
     FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
-    FreeAndNil(FInternalBreakpoint);
+    FInternalBreakpoint.Free;
+    FInternalBreakpoint := nil;
   end;
 
   if InterlockedExchange(FResetBreakPoint, 0) = 0 then begin
@@ -1521,7 +1522,8 @@ begin
   if InterlockedExchange(FResetBreakPoint, 0) = 1 then begin
     if (FInternalBreakpoint <> nil) then begin
       FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
-      FreeAndNil(FInternalBreakpoint);
+      FInternalBreakpoint.Free;
+      FInternalBreakpoint := nil;
     end;
   end;
   Queue(@UpdateBrkPoint_DecRef);
@@ -1563,7 +1565,8 @@ procedure TFpThreadWorkerBreakPointRemove.DoExecute;
 begin
   if (FDebugger.DbgController <> nil) and (FDebugger.DbgController.CurrentProcess <> nil) then
     FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
-  FreeAndNil(FInternalBreakpoint);
+  FInternalBreakpoint.Free;
+  FInternalBreakpoint := nil;
 end;
 
 constructor TFpThreadWorkerBreakPointRemove.Create(

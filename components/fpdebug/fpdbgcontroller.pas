@@ -374,7 +374,7 @@ type
                                   // Returned value indicated, if the debugger should continue running.
                                   // I.e., the current Command (e.g. Stepping) will be kept for continuation, if possible.
                                   // Returned value may be ignored (treated as "False") where indicated.
-         const Breakpoint: TFpDbgBreakpoint; // Break or Watch, if avail
+         const Breakpoint: TFpDbgBreakpointBase; // Break or Watch, if avail
          AnEventType: TFPDEvent;             // reason: See below
          AMoreHitEventsPending: Boolean      // The debugger stopped for more than one reason.
                                              // There will be further calls to OnHitBreakpointEvent

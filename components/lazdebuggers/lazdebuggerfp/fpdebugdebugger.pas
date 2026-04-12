@@ -676,6 +676,14 @@ begin
   //RegisterDebugger(TFpDebugDebugger);
 end;
 
+procedure FreeBreakPoint(var ABrk: TFpDbgBreakpoint);
+begin
+  if ABrk <> nil then begin
+    ABrk.Free;
+    ABrk := nil;
+  end;
+end;
+
 { TFpDebugExceptionStepping.TFrameList }
 
 procedure TFpDebugExceptionStepping.TFrameList.RemoveOutOfScopeFrames(
@@ -2786,7 +2794,7 @@ end;
 
 procedure TFpDebugExceptionStepping.SetStepOutAddrDirect(AnAddr: TDBGPtr);
 begin
-  FreeAndNil(FBreakPoints[bplStepOut]);
+  FreeBreakPoint(FBreakPoints[bplStepOut]);
   FBreakPoints[bplStepOut] := CurrentProcess.AddBreak(AnAddr);
 end;
 
@@ -2904,9 +2912,9 @@ begin
   if CurrentProcess.Mode = dm64 then begin
     debugln(DBG_BREAKPOINTS, ['SetSoftwareExceptionBreakpoint RtlUnwind']);
     DisableBreaksDirect([bplRtlUnwind, bplRtlRestoreContext]);
-    FreeAndNil(FBreakPoints[bplRtlRestoreContext]);
+    FreeBreakPoint(FBreakPoints[bplRtlRestoreContext]);
     FBreakPoints[bplRtlRestoreContext] := FDebugger.AddBreak('RtlRestoreContext', ALib, False);
-    FBreakPoints[bplRtlUnwind].Free;
+    FreeBreakPoint(FBreakPoints[bplRtlUnwind]);
     FBreakPoints[bplRtlUnwind] := FDebugger.AddBreak('RtlUnwindEx', ALib, False);
   end;
   {$ENDIF}
@@ -2918,7 +2926,7 @@ var
 begin
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFpDebugDebugger.FDbgControllerProcessExitEvent fpc_Raiseexception' ]);
   for a in TBreakPointLoc do
-    FreeAndNil(FBreakPoints[a]);
+    FreeBreakPoint(FBreakPoints[a]);
   debuglnExit(DBG_BREAKPOINTS, ['<< TFpDebugDebugger.FDbgControllerProcessExitEvent ' ]);
 end;
 
@@ -3174,7 +3182,7 @@ begin
     AFinishLoopAndSendEvents := AnIsFinished;
     AnEventType := deFinishedStep;
     CurrentProcess.RemoveBreak(FBreakPoints[bplStepOut]);
-    FreeAndNil(FBreakPoints[bplStepOut]);
+    FreeBreakPoint(FBreakPoints[bplStepOut]);
   end
   else
   // bplReRaise

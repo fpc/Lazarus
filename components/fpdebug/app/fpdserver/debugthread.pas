@@ -99,7 +99,13 @@ type
 
   TFpServerDbgController = class(TDbgController)
   private type
-    TBreakPointIdMap = specialize TFPGMap<Integer, TFpDbgBreakpoint>;
+
+    { TBreakPointIdMap }
+
+    TBreakPointIdMap = class(specialize TFPGMap<Integer, TFpDbgBreakpoint>)
+    protected
+      procedure Deref(Item: Pointer); override;
+    end;
   function DoBreakPointCompare(Key1, Key2: Pointer): Integer;
   private
     FBreakPointIdCnt: Integer;
@@ -286,6 +292,15 @@ end;
 procedure TFpServerDbgController.ClearInternalBreakPoint;
 begin
   FBreakPointIdMap.Clear;
+end;
+
+{ TFpServerDbgController.TBreakPointIdMap }
+
+procedure TFpServerDbgController.TBreakPointIdMap.Deref(Item: Pointer);
+begin
+  inherited Deref(Item);
+  if Assigned(PPointer(PByte(Item)+KeySize)^) then
+    TFpDbgBreakpoint(Pointer(PByte(Item)+KeySize)^).Free;
 end;
 
 constructor TFpWaitForConsoleOutputThread.Create(ADebugThread: TFpDebugThread);
