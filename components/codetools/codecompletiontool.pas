@@ -1888,7 +1888,7 @@ var
   Params: TFindDeclarationParams;
   ExprType: TExpressionType;
   MissingUnit, NewName: String;
-  ResExprContext {, OrigExprContext}: TFindContext;
+  ResExprContext, OrigExprContext : TFindContext;
   ProcNode, ClassNode: TCodeTreeNode;
   CCOptions: TCodeCreationDlgResult;
   AddSourceName: boolean;
@@ -1956,8 +1956,8 @@ begin
       begin
         ResExprContext:=Params.NewCodeTool.FindBaseTypeOfNode(
           Params,Params.NewNode);
-        //OrigExprContext:=ExprType.Context.Tool.FindBaseTypeOfNode(
-        //  Params,ExprType.Context.Node);
+        OrigExprContext:=ExprType.Context.Tool.FindBaseTypeOfNode(
+          Params,ExprType.Context.Node);
 
         // check if declaration isn't shadowed
         Params.SetIdentifier(Self, PChar(NewType),nil);
@@ -2719,7 +2719,7 @@ var
   ExprType: TExpressionType;
   Context: TFindContext;
   HasAtOperator: Boolean;
-  TypeTool, ATool: TFindDeclarationTool;
+  StartTypeTool, TypeTool, ATool: TFindDeclarationTool;
   AliasType: TFindContext;
   Identifier: String;
   CodeXYPos: TCodeXYPosition;
@@ -2920,7 +2920,7 @@ begin
           QualifiedPrefix:=AliasType.Tool.ExtractSourceName
         else
           QualifiedPrefix:=Params.NewCodeTool.ExtractSourceName;
-        NewType:=GetCommonTypeForParameter(ProcArray, ParameterNode, TypeTool,
+        NewType:=GetCommonTypeForParameter(ProcArray, ParameterNode, StartTypeTool,
                                            ParamIsArray, QualifiedPrefix, false);
       end;
     end else
@@ -2928,9 +2928,12 @@ begin
       Params.SetIdentifier(Self, PChar(NewType),nil);
       Params.ContextNode := CursorNode;
       Params.Flags := fdfDefaultForExpressions;
-      if FindIdentifierInContext(Params) then begin // shadowed, use prefix
-        QualifiedPrefix:=Params.NewCodeTool.ExtractSourceName;
-        NewType:=GetCommonTypeForParameter(ProcArray, ParameterNode, TypeTool,
+      if FindIdentifierInContext(Params) then begin
+        if TypeTool=Params.NewCodeTool then
+          QualifiedPrefix:='' // not shadowed
+        else
+          QualifiedPrefix:=Params.NewCodeTool.ExtractSourceName;
+        NewType:=GetCommonTypeForParameter(ProcArray, ParameterNode, StartTypeTool,
                                            ParamIsArray, QualifiedPrefix,false);
       end;
     end;
