@@ -36,8 +36,7 @@ type
     _IsSysKey  : Boolean;
     _IsKeyDown : Boolean;
     _KeyHandled: Boolean;
-    _UTF8Character : array [0..7] of TUTF8Char;
-    _UTF8Charcount : Integer;
+    _UTF8Character : TUTF8Char;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
   private
     procedure send_UTF8KeyPress();
@@ -511,7 +510,6 @@ var
   IsSysKey: Boolean;       // Is alt (option) key down?
   KeyData: PtrInt;         // Modifiers (ctrl, alt, mouse buttons...)
   ignModChr: NSString;
-  i,c,j : integer;
 begin
   SendChar := False;
 
@@ -582,35 +580,14 @@ begin
     end;
   end;
 
+  _UTF8Character:= UTF8Character;
+
   FillChar(_KeyMsg, SizeOf(_KeyMsg), 0);
   _KeyMsg.KeyData := KeyData;
   _KeyMsg.CharCode := VKKeyCode;
   _SendChar := SendChar;
   _IsSysKey := IsSysKey;
   _IsKeyDown := (Event.type_ = NSKeyDown);
-
-  c:=0;
-  i:=1;
-  j:=0;
-  while (i<=length(UTF8Character)) and (j<length(_UTF8Character)) do
-  begin
-    c := Utf8CodePointLen(@UTF8Character[i], length(UTF8Character)-i+1, false);
-    if (j=0) and (c = length(UTF8Character)) then
-    begin
-      _UTF8Character[0] := UTF8Character;
-      j := 1;
-      break;
-    end
-    else if (c > 0) then
-    begin
-      _UTF8Character[j] := Copy(UTF8Character, i, c);
-      inc(i,c);
-      inc(j);
-    end else
-      break;
-  end;
-  if (j = 0) then _UTF8Character[0] := '';
-  _UTF8Charcount := j;
 
   FillChar(_CharMsg, SizeOf(_CharMsg), 0);
   _CharMsg.KeyData := _KeyMsg.KeyData;
@@ -661,24 +638,17 @@ end;
 
 procedure TLCLCommonCallback.send_UTF8KeyPress();
 var
-  i: integer;
   lclHandled: Boolean;
 begin
-  if not _sendChar then exit;
+  if not _sendChar then
+    Exit;
 
-  // send the UTF8 keypress
-  i := 0;
-  lclHandled := false;
-  for i := 0 to _UTF8Charcount -1 do
-  begin
-    lclHandled := false;
-    if Target.IntfUTF8KeyPress(_UTF8Character[i], 1, _IsSysKey) then
-      lclHandled := true;
-  end;
+  lclHandled:= TCocoaLCLMessageUtil.IntfUTF8KeyPress(
+                 Owner,
+                 _UTF8Character,
+                 _IsSysKey );
 
-  if lclHandled then
-  begin
-    // the LCL has handled the key
+  if lclHandled then begin
     if ForceReturnKeyDown and (_KeyMsg.CharCode = VK_RETURN) then
       _SendChar := False
     else
