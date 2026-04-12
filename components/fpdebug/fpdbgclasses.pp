@@ -960,6 +960,7 @@ type
 
     function  AddInternalBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
     function  AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
+    function  AddInternalBreak(const AFuncName: String; AnEnabled: Boolean = True; ASymInstance: TDbgInstance = nil; AIgnoreCase: Boolean = False): TFpInternalBreakpoint; overload;
     (* ASymInstance: nil = anywhere / TDbgProcess or TDbgLibrary to limit *)
     function  AddBreak(const ALocation: TDBGPtr; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtrArray; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
@@ -2742,6 +2743,13 @@ end;
 function TDbgProcess.AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint;
 begin
   Result := TFpInternalBreakpoint(AddBreak(ALocation));
+  Result.FInternal := True;
+end;
+
+function TDbgProcess.AddInternalBreak(const AFuncName: String; AnEnabled: Boolean;
+  ASymInstance: TDbgInstance; AIgnoreCase: Boolean): TFpInternalBreakpoint;
+begin
+  Result := TFpInternalBreakpoint(AddBreak(AFuncName, AnEnabled, ASymInstance, AIgnoreCase));
   Result.FInternal := True;
 end;
 
