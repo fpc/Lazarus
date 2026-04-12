@@ -168,9 +168,10 @@ type
     class procedure SendOnChange( const control: NSObject );
     class procedure SendOnTextChanged( const control: NSObject );
 
-    class procedure InputClientInsertText(
+    class function IntfUTF8KeyPress(
       const control: NSObject;
-      const utf8: string);
+      const str: string;
+      const isSysKey: Boolean ): Boolean;
   end;
 
   { LCLObjectExtension }
@@ -643,26 +644,29 @@ begin
   SendSimpleMessage(target, CM_TEXTCHANGED);
 end;
 
-class procedure TCocoaLCLMessageUtil.InputClientInsertText(
+class function TCocoaLCLMessageUtil.IntfUTF8KeyPress(
   const control: NSObject;
-  const utf8: string );
+  const str: String;
+  const isSysKey: Boolean ): Boolean;
 var
   target: TWinControl;
   i : integer;
   c : integer;
   ch : TUTF8Char;
 begin
+  Result:= False;
   target:= TWinControl( control.lclGetTarget );
   if NOT Assigned(target) then
     Exit;
 
-  if (utf8 = '') then Exit;
+  if (str = '') then
+    Exit;
+
   i:=1;
-  while (i<=length(utf8)) do
-  begin
-    c := Utf8CodePointLen(@utf8[i], length(utf8)-i+1, false);
-    ch := Copy(utf8, i, c);
-    target.IntfUTF8KeyPress(ch, 1, false);
+  while (i<=length(str)) do begin
+    c := Utf8CodePointLen(@str[i], length(str)-i+1, False);
+    ch := Copy(str, i, c);
+    Result:= target.IntfUTF8KeyPress(ch, 1, isSysKey);
     inc(i, c);
   end;
 end;
