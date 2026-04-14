@@ -191,6 +191,17 @@ type
     procedure FreeLockFor(AnId: TObject);
   end;
 
+  { TFpDbgSpinLock - For very low frequently entered locks, with very short duration }
+
+  TFpDbgSpinLock = object
+  strict private
+    FLock: integer;
+  public
+    procedure Init;
+    procedure Enter;
+    procedure Leave; inline;
+  end;
+
 const
   DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
 
@@ -1378,6 +1389,40 @@ procedure TFpThreadWorkerQueue.WaitForItem(const AItem: TFpThreadWorkerItem;
   AWaitForExecInThread: Boolean);
 begin
   AItem.WaitForFinish(Self, AWaitForExecInThread);
+end;
+
+{ TFpDbgSpinLock }
+
+procedure TFpDbgSpinLock.Init;
+begin
+  FLock := 0;
+end;
+
+procedure TFpDbgSpinLock.Enter;
+var
+  i: Integer;
+begin
+  if InterlockedCompareExchange(FLock, 1, 0) = 0 then
+    exit;
+  {$PUSH}{$OPTIMIZATION OFF}
+  for i := 0 to 99 do
+    if FLock * 2 = 0 then break;
+  {$POP}
+  while InterlockedCompareExchange(FLock, 1, 0) <> 0 do begin
+    i := 16;
+    while (i > 0) and (FLock <> 0) do begin
+      dec(i);
+      if (i and 3) = 0 then
+        sleep(1)
+      else
+        sleep(0);
+    end;
+  end;
+end;
+
+procedure TFpDbgSpinLock.Leave;
+begin
+  InterLockedExchange(FLock, 0);
 end;
 
 initialization

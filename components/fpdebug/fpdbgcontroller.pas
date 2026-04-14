@@ -1862,6 +1862,8 @@ begin
   if MaybeDetach then
     exit;
 
+  FCurrentProcess.ProcessBreakpointUpdates;
+
   // Do not clear callstack of threads: TDbgControllerCallRoutineCmd is considered remaining in pause.
   // TODO: if the IP of another thread changes, send notifications
   if (FCommand = nil) or not (FCommand is TDbgControllerCallRoutineCmd) then
@@ -2059,6 +2061,7 @@ begin
       FreeAndNil(FCommand);
 
   until AExit or (InterLockedExchangeAdd(FPauseRequest, 0) = 1);
+  FCurrentProcess.ProcessBreakpointUpdates;
 end;
 
 procedure TDbgController.SendEvents(out continue: boolean);

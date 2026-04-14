@@ -307,7 +307,7 @@ type
 
   TFpThreadWorkerBreakPointSet = class(TFpThreadWorkerBreakPoint)
   private
-    FInternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint;
+    FInternalBreakpoint: TFpDbgBreakpoint;
     FKind: TDBGBreakPointKind;
     FAddress: TDBGPtr;
     FSource: String;
@@ -326,18 +326,7 @@ type
     constructor Create(ADebugger: TFpDebugDebuggerBase;
       AWatchData: String; AWatchScope: TDBGWatchPointScope; AWatchKind: TDBGWatchPointKind;
       AStackFrame, AThreadId: Integer);
-    property InternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint read FInternalBreakpoint write FInternalBreakpoint;
-  end;
-
-  { TFpThreadWorkerBreakPointRemove }
-
-  TFpThreadWorkerBreakPointRemove = class(TFpThreadWorkerBreakPoint)
-  protected
-    FInternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint;
-    procedure DoExecute; override;
-  public
-    constructor Create(ADebugger: TFpDebugDebuggerBase; AnInternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint);
-    property InternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint read FInternalBreakpoint;
+    property InternalBreakpoint: TFpDbgBreakpoint read FInternalBreakpoint write FInternalBreakpoint;
   end;
 
 implementation
@@ -1556,24 +1545,6 @@ begin
   FWatchKind  := AWatchKind;
   FStackFrame := AStackFrame;
   FThreadId   := AThreadId;
-  inherited Create(ADebugger, twpUser);
-end;
-
-{ TFpThreadWorkerBreakPointRemove }
-
-procedure TFpThreadWorkerBreakPointRemove.DoExecute;
-begin
-  if (FDebugger.DbgController <> nil) and (FDebugger.DbgController.CurrentProcess <> nil) then
-    FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
-  FInternalBreakpoint.Free;
-  FInternalBreakpoint := nil;
-end;
-
-constructor TFpThreadWorkerBreakPointRemove.Create(
-  ADebugger: TFpDebugDebuggerBase;
-  AnInternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint);
-begin
-  FInternalBreakpoint := AnInternalBreakpoint;
   inherited Create(ADebugger, twpUser);
 end;
 

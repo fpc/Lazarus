@@ -156,15 +156,6 @@ type
     property DbgBreakPoint: TFPBreakpoint read FDbgBreakPoint;
   end;
 
-  { TFpThreadWorkerBreakPointRemoveUpdate }
-
-  TFpThreadWorkerBreakPointRemoveUpdate = class(TFpThreadWorkerBreakPointRemove)
-  protected
-    procedure DoUnQueued; override;
-  public
-    constructor Create(ADebugger: TFpDebugDebuggerBase; ADbgBreakPoint: TFPBreakpoint); overload;
-  end;
-
   { TDbgControllerStepOverOrFinallyCmd
     Step over with detection for finally blocks
   }
@@ -588,7 +579,7 @@ type
     FSetBreakFlag: boolean;
     FResetBreakFlag: boolean;
     FLocationChanged: boolean;
-    FInternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint;
+    FInternalBreakpoint: TFpDbgBreakpoint;
     FIsSet: boolean;
     FBrkLogStackLimit: Integer;
     FBrkLogStackResult: array of String;
@@ -616,7 +607,7 @@ type
 
   TFPBreakpoints = class(TDBGBreakPoints)
   public
-    function Find(AIntBReakpoint: FpDbgClasses.TFpDbgBreakpoint): TDBGBreakPoint;
+    function Find(AIntBReakpoint: TFpDbgBreakpoint): TDBGBreakPoint;
   end;
 
 procedure Register;
@@ -1128,8 +1119,6 @@ end;
 
 procedure TFpThreadWorkerBreakPointSetUpdate.UpdateBrkPoint_DecRef(Data: PtrInt
   );
-var
-  WorkItem: TFpThreadWorkerBreakPointRemoveUpdate;
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerBreakPointSetUpdate.UpdateBrkPoint_DecRef: system.ThreadID = classes.MainThreadID');
 
@@ -1143,9 +1132,7 @@ begin
 
   if FResetBreakPoint <> 0 then begin
     if InternalBreakpoint <> nil then begin
-      WorkItem := TFpThreadWorkerBreakPointRemoveUpdate.Create(FDebugger, InternalBreakpoint);
-      FpDebugger.FWorkQueue.PushItem(WorkItem);
-      WorkItem.DecRef;
+      InternalBreakpoint.SetAutoDestroy;
     end;
   end
   else
@@ -1189,22 +1176,6 @@ procedure TFpThreadWorkerBreakPointSetUpdate.AbortSetBreak;
 begin
   InterLockedExchange(FResetBreakPoint, 1);
   FDbgBreakPoint := nil;
-end;
-
-{ TFpThreadWorkerBreakPointRemoveUpdate }
-
-procedure TFpThreadWorkerBreakPointRemoveUpdate.DoUnQueued;
-begin
-  if FInternalBreakpoint = nil then
-    exit;
-  FInternalBreakpoint.FreeByDbgProcess := True;
-  inherited DoUnQueued;
-end;
-
-constructor TFpThreadWorkerBreakPointRemoveUpdate.Create(
-  ADebugger: TFpDebugDebuggerBase; ADbgBreakPoint: TFPBreakpoint);
-begin
-  inherited Create(ADebugger, ADbgBreakPoint.FInternalBreakpoint);
 end;
 
 { TDbgControllerStepOverFirstFinallyLineCmd }
@@ -1906,7 +1877,7 @@ end;
 
 { TFPBreakpoints }
 
-function TFPBreakpoints.Find(AIntBReakpoint: FpDbgClasses.TFpDbgBreakpoint): TDBGBreakPoint;
+function TFPBreakpoints.Find(AIntBReakpoint: TFpDbgBreakpoint): TDBGBreakPoint;
 var
   i: integer;
 begin
@@ -1954,8 +1925,6 @@ begin
 end;
 
 procedure TFPBreakpoint.ResetBreak;
-var
-  WorkItem: TFpThreadWorkerBreakPointRemoveUpdate;
 begin
   FIsSet:=false;
   if FThreadWorker <> nil then begin
@@ -1971,9 +1940,7 @@ begin
     begin
     FInternalBreakpoint.On_Thread_StateChange := nil;
     debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.ResetBreak  REMOVE ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
-    WorkItem := TFpThreadWorkerBreakPointRemoveUpdate.Create(TFpDebugDebugger(Debugger), Self);
-    TFpDebugDebugger(Debugger).FWorkQueue.PushItem(WorkItem);
-    WorkItem.DecRef;
+    FInternalBreakpoint.SetAutoDestroy;
     FInternalBreakpoint := nil;
     debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.ResetBreak ' ]);
     end;

@@ -570,6 +570,9 @@ type
     procedure SetOn_Thread_StateChange(AValue: TFpDbgBreakpointStateChangeEvent);
     procedure SetFreeByDbgProcess(AValue: Boolean); virtual;
 
+    procedure SetAutoDisable;
+    procedure SetAutoDestroy;
+
     procedure Free;
     procedure SetBreak;
     procedure ResetBreak;
@@ -588,9 +591,17 @@ type
   { TFpDbgBreakpointBase }
 
   TFpDbgBreakpointBase = class(TObject, TFpDbgBreakpoint)
+  protected type
+    TFpBreakUpdateFlag = (
+      bufDisable,
+      bufDestroy
+    );
+    TFpBreakUpdateFlags = set of TFpBreakUpdateFlag;
   strict private
     FProcess: TDbgProcess;
   private
+    FUpdateFlags: TFpBreakUpdateFlags; // managed by update-list inside lock
+
     FFreeByDbgProcess: Boolean;
     FEnabled: boolean;
     FOn_Thread_StateChange: TFpDbgBreakpointStateChangeEvent;
@@ -601,6 +612,7 @@ type
     function GetEnabled: boolean;
     procedure SetProcessToNil;
   protected
+    procedure ProcessAutoUpdate;
     procedure SetFreeByDbgProcess(AValue: Boolean); virtual;
     procedure SetEnabled(AValue: boolean);
     function GetState: TFpDbgBreakpointState; virtual;
@@ -610,7 +622,12 @@ type
 
     property Process: TDbgProcess read FProcess;
   public
+    // Actions that will happen the next time the loop does an event, or pauses
+    procedure SetAutoDisable;
+    procedure SetAutoDestroy;
+  public
     constructor Create(const AProcess: TDbgProcess); virtual;
+    destructor Destroy; override;
 
     function Hit(const AThreadID: Integer; ABreakpointAddress: TDBGPtr): Boolean; virtual; abstract;
     function HasLocation(const ALocation: TDBGPtr): Boolean; virtual; abstract;
@@ -633,6 +650,21 @@ type
   end;
 
   TFpInternalBreakpointList = specialize TFPGObjectList<TFpDbgBreakpointBase>;
+
+  { TFpInternalBreakpointUpdateList }
+
+  TFpInternalBreakpointUpdateList = class
+  strict private
+    FLock: TFpDbgSpinLock;
+    FList: TFpInternalBreakpointList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure SetProcessToNil(ABreakPoint: TFpDbgBreakpointBase; var TheProcessField: TDbgProcess);
+    function Add(ABreakPoint: TFpDbgBreakpointBase; AFlags: TFpDbgBreakpointBase.TFpBreakUpdateFlags): boolean;
+    function  Remove(ABreakPoint: TFpDbgBreakpointBase): boolean;
+    procedure RunUpdates;
+  end;
 
   { TFpInternalBreakpoint }
 
@@ -931,6 +963,7 @@ type
     procedure ThreadDestroyed(const AThread: TDbgThread);
   protected
     FBreakpointList, FWatchPointList: TFpInternalBreakpointList;
+    FBreakpointUpdateList: TFpInternalBreakpointUpdateList;
     FCurrentBreakpoint: TFpInternalBreakpoint;  // set if we are executing the code at the break
                                          // if the singlestep is done, set the break again
     FCurrentBreakpointList: TFpInternalBreakpointArray; // further current breakpoint
@@ -1021,6 +1054,7 @@ type
     property  LastLibrariesUnloaded: TDbgLibraryArr read GetLastLibrariesUnloaded;
     procedure UpdateBreakpointsForLibraryLoaded(ALib: TDbgLibrary);
     procedure UpdateBreakpointsForLibraryUnloaded(ALib: TDbgLibrary);
+    procedure ProcessBreakpointUpdates;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     procedure RemoveBreak(const ABreakPoint: TFpDbgBreakpoint);
     procedure DoBeforeBreakLocationMapChange;
@@ -2662,6 +2696,7 @@ begin
   FGlobalCache := TFpDbgDataCache.Create;
   FBreakpointList := TFpInternalBreakpointList.Create(False);
   FWatchPointList := TFpInternalBreakpointList.Create(False);
+  FBreakpointUpdateList := TFpInternalBreakpointUpdateList.Create;
   FThreadMap := TThreadMap.Create(itu4, SizeOf(TDbgThread));
   FLibMap := TLibraryMap.Create(MAP_ID_SIZE, SizeOf(TDbgLibrary));
   FWatchPointData := CreateWatchPointData;
@@ -2714,6 +2749,7 @@ begin
     FWatchPointList[i].SetProcessToNil;
   FreeAndNil(FBreakpointList);
   FreeAndNil(FWatchPointList);
+  FBreakpointUpdateList.Destroy;
   //Assert(FBreakMap.Count=0, 'No breakpoints left');
   //FreeItemsInMap(FBreakMap);
   FreeItemsInMap(FThreadMap);
@@ -2947,6 +2983,11 @@ begin
   finally debuglnExit(DBG_BREAKPOINTS,['< TDbgProcess.UpdateBreakpointsForLibraryUnloaded ' ]); end;
 end;
 
+procedure TDbgProcess.ProcessBreakpointUpdates;
+begin
+  FBreakpointUpdateList.RunUpdates;
+end;
+
 function TDbgProcess.GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
 var
   Thread: TDbgThread;
@@ -3055,6 +3096,7 @@ function TDbgProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
 var
   CurrentAddr: TDBGPtr;
 begin
+  ProcessBreakpointUpdates;
   if AThread <> nil then
     AThread.ValidateRemovedBreakPointInfo;
   result := AnalyseDebugEvent(AThread);
@@ -3206,7 +3248,7 @@ end;
 procedure TDbgProcess.RemoveBreak(const ABreakPoint: TFpDbgBreakpoint);
 var
   i: SizeInt;
-  b: FpDbgClasses.TFpDbgBreakpointBase;
+  b: TFpDbgBreakpointBase;
 begin
   b := ABreakPoint.__FpDbgBrk;
   if b=FCurrentBreakpoint then begin
@@ -4299,10 +4341,42 @@ begin
   //
 end;
 
+procedure TFpDbgBreakpointBase.SetAutoDisable;
+var
+  p: TDbgProcess;
+begin
+  p := Process;
+  if p <> nil then
+    p.FBreakpointUpdateList.Add(Self, [bufDisable]);
+end;
+
+procedure TFpDbgBreakpointBase.SetAutoDestroy;
+var
+  p: TDbgProcess;
+begin
+  assert(not FFreeByDbgProcess, 'TFpDbgBreakpointBase.SetAutoDestroy: not FFreeByDbgProcess');
+  p := Process;
+  if p <> nil then begin
+    if not p.FBreakpointUpdateList.Add(Self, [bufDestroy]) then begin
+      assert(Process=nil, 'TFpDbgBreakpointBase.SetAutoDisable: Process=nil');
+      Destroy;
+    end;
+  end
+  else
+    Destroy;
+end;
+
 constructor TFpDbgBreakpointBase.Create(const AProcess: TDbgProcess);
 begin
   inherited Create;
   FProcess := AProcess;
+end;
+
+destructor TFpDbgBreakpointBase.Destroy;
+begin
+  if (FUpdateFlags <> []) and (Process <> nil) then
+    Process.FBreakpointUpdateList.Remove(Self);
+  inherited Destroy;
 end;
 
 function TFpDbgBreakpointBase.__FpDbgBrk: TFpDbgBreakpointBase;
@@ -4322,14 +4396,35 @@ end;
 
 function TFpDbgBreakpointBase.GetEnabled: boolean;
 begin
-  Result := FEnabled;
+  Result := FEnabled and not(bufDisable in FUpdateFlags);
 end;
 
 procedure TFpDbgBreakpointBase.SetProcessToNil;
+var
+  p: TDbgProcess;
 begin
-  FProcess := nil;
+  p := Process;
+  if p <> nil then
+    p.FBreakpointUpdateList.SetProcessToNil(Self, FProcess);
+  if bufDestroy in FUpdateFlags then
+    FFreeByDbgProcess := True;
+
   if FFreeByDbgProcess then
     Destroy;
+end;
+
+procedure TFpDbgBreakpointBase.ProcessAutoUpdate;
+begin
+  if bufDestroy in FUpdateFlags then begin
+    FUpdateFlags := [];
+    Destroy;
+    exit;
+  end;
+
+  if bufDisable in FUpdateFlags then begin
+    ResetBreak;
+  end;
+  FUpdateFlags := [];
 end;
 
 procedure TFpDbgBreakpointBase.SetFreeByDbgProcess(AValue: Boolean);
@@ -4345,6 +4440,77 @@ begin
     SetBreak
   else
     ResetBreak;
+end;
+
+{ TFpInternalBreakpointUpdateList }
+
+constructor TFpInternalBreakpointUpdateList.Create;
+begin
+  FLock.Init;
+  FList := TFpInternalBreakpointList.Create(False);
+end;
+
+destructor TFpInternalBreakpointUpdateList.Destroy;
+begin
+  inherited Destroy;
+  FList.Destroy;
+end;
+
+procedure TFpInternalBreakpointUpdateList.SetProcessToNil(ABreakPoint: TFpDbgBreakpointBase;
+  var TheProcessField: TDbgProcess);
+begin
+  FLock.Enter;
+  try
+    TheProcessField := nil;
+    if ABreakPoint.FUpdateFlags <> [] then
+      FList.Remove(ABreakPoint);
+  finally
+    FLock.Leave;
+  end;
+end;
+
+function TFpInternalBreakpointUpdateList.Add(ABreakPoint: TFpDbgBreakpointBase;
+  AFlags: TFpDbgBreakpointBase.TFpBreakUpdateFlags): boolean;
+begin
+  Result := True;
+  FLock.Enter;
+  try
+    if ABreakPoint.Process = nil then
+      exit(False);
+    if ABreakPoint.FUpdateFlags = [] then
+      FList.Add(ABreakPoint);
+    ABreakPoint.FUpdateFlags := ABreakPoint.FUpdateFlags + AFlags;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+function TFpInternalBreakpointUpdateList.Remove(ABreakPoint: TFpDbgBreakpointBase): boolean;
+var
+  i: Integer;
+begin
+  FLock.Enter;
+  try
+    i := FList.IndexOf(ABreakPoint);
+    Result := i >= 0;
+    FList.Delete(i);
+  finally
+    FLock.Leave;
+  end;
+end;
+
+procedure TFpInternalBreakpointUpdateList.RunUpdates;
+var
+  i: Integer;
+begin
+  FLock.Enter;
+  try
+    for i := 0 to FList.Count-1 do
+      FList[i].ProcessAutoUpdate;
+    FList.Clear;
+  finally
+    FLock.Leave;
+  end;
 end;
 
 { TDbgBreak }
