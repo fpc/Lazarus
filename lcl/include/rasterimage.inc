@@ -462,7 +462,7 @@ begin
       AStream.Position := OldPos + NewSize;
       WorkStream.SetSize(NewSize);
     end;
-    // Store our worstream as savestream
+    // Store our workstream as savestream
     FSharedImage.SaveStream := WorkStream;
     WorkStream := nil;
   finally
