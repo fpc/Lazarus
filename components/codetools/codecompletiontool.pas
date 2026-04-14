@@ -1954,8 +1954,7 @@ begin
       Params.Flags := [fdfSearchInAncestors..fdfIgnoreCurContextNode,fdfTypeType,fdfSearchInHelpers];
       if FindIdentifierInContext(Params) then
       begin
-        ResExprContext:=Params.NewCodeTool.FindBaseTypeOfNode(
-          Params,Params.NewNode);
+        ResExprContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
         OrigExprContext:=ExprType.Context.Tool.FindBaseTypeOfNode(
           Params,ExprType.Context.Node);
 
@@ -1964,7 +1963,8 @@ begin
         Params.ContextNode := CursorNode;
         Params.Flags := fdfDefaultForExpressions;
         if FindIdentifierInContext(Params) then begin
-          AddSourceName:=true;
+          AddSourceName:= (ResExprContext.Node<>ExprType.Context.Node) and
+                          (ResExprContext.Tool<>OrigExprContext.Tool);
           if ((Params.NewNode.Desc=ctnTypeDefinition) and
           (ExprType.Context.Node.Desc=ctnTypeDefinition) and
           (Params.NewNode=ExprType.Context.Node))
@@ -3232,20 +3232,37 @@ var
   ParamNames: TStringToStringTree;
   
   function CreateParamName(ExprStartPos, ExprEndPos: integer;
-    const ParamType: string): string;
+    const ParamType: string; out IsArraySlice: boolean): string;
   var
     i: Integer;
+    // out IsArraySlice:  boolean  // allow e.g. varname[3..7] to detect an array slice
   begin
     Result:='';
+    IsArraySlice:=false;
     // use the last identifier of expression as name
     MoveCursorToCleanPos(ExprStartPos);
     repeat
       ReadNextAtom;
-      if AtomIsIdentifier then
-        Result:=GetAtom
-      else
+      if (Result='') and AtomIsIdentifier then begin
+        Result:=GetAtom;
+        ReadNextAtom;
+        if AtomIs('[') then
+        begin
+          ReadNextAtom; // low
+          ReadNextAtom;
+          if not AtomIs('..') then break;
+          ReadNextAtom; // high
+          ReadNextAtom;
+          if AtomIs(']') then begin
+            IsArraySlice:=true;
+            break;
+          end;
+          Result:='';
+        end;
+      end else
         Result:='';
     until CurPos.EndPos>=ExprEndPos;
+
     // otherwise use ParamType
     if Result='' then
       Result:=ParamType;
@@ -3275,6 +3292,7 @@ var
   ExprEndPos: LongInt;
   Params: TFindDeclarationParams;
   ParamName: String;
+  IsArraySlice: boolean;
   // create param list without brackets
   {$IFDEF EnableCodeCompleteTemplates}
   Colon : String;
@@ -3315,7 +3333,8 @@ begin
       ParamExprType:=ExprList.Items[i];
       ParamType:=FindExprTypeAsString(ParamExprType,ExprStartPos);
       // create a nice parameter name
-      ParamName:=CreateParamName(ExprStartPos,ExprEndPos,ParamType);
+      ParamName:=CreateParamName(ExprStartPos,ExprEndPos,ParamType, IsArraySlice);
+      if IsArraySlice then ParamType:= 'array of '+ParamType;
       //DebugLn(['TCodeCompletionCodeTool.CreateParamListFromStatement ',i,' ',ParamName,':',ParamType]);
       if Result<>'' then begin
         Result:=Result+';';
