@@ -2580,7 +2580,7 @@ begin
   end else
   if st=CAIRO_SURFACE_TYPE_IMAGE then
   begin
-    pixels := cairo_image_surface_get_data(CAirosurface);
+    pixels := cairo_image_surface_get_data(CairoSurface);
     if Assigned(pixels) then
     begin
      stride := cairo_image_surface_get_stride(CairoSurface);

@@ -2164,6 +2164,7 @@ end;
 function CreateBitmapFromLazarusResource(AStream: TLazarusResourceStream; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
 var
   GraphicClass: TGraphicClass;
+  ok: Boolean;
 begin
   Result := nil;
   if AStream = nil then Exit;
@@ -2173,12 +2174,16 @@ begin
   if not GraphicClass.InheritsFrom(AMinimumClass) then Exit;
   
   Result := TCustomBitmap(GraphicClass.Create);
+  ok:=false;
   try
     Result.LoadFromStream(AStream);
-  except
-    Result.Free;
-    Result := nil;
-    raise;
+    ok:=true;
+  finally
+    if not ok then
+    begin
+      Result.Free;
+      Result := nil;
+    end;
   end;
 end;
 

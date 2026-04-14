@@ -46,6 +46,7 @@ function GetDefaultGlyph(ResourceName: string; ScalePercent: Integer;
   IgnoreMissingResource: Boolean): TCustomBitmap;
 var
   LRes: TLResource;
+  aColor: TColor;
 begin
   if ScalePercent<>100 then
     ResourceName := ResourceName+'_'+IntToStr(ScalePercent);
@@ -60,9 +61,10 @@ begin
   if (Result is TBitmap) and not Result.Transparent // BMP left-bottom transparency
   and (Result.Width>0) and (Result.Height>0) then
   begin
+    aColor:=Result.Canvas.Pixels[0, Result.Height-1];
     Result.Transparent := True;
     Result.TransparentMode := tmFixed;
-    Result.TransparentColor := Result.Canvas.Pixels[0, Result.Height-1];
+    Result.TransparentColor := aColor;
   end;
   if (Result=nil) and not IgnoreMissingResource then
     raise EResNotFound.CreateFmt(SResNotFound,[ResourceName]);
