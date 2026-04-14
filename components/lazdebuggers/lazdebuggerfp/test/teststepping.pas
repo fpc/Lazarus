@@ -1034,6 +1034,12 @@ procedure TTestStepping.DoTestStepTryBlocks(ANextOnlyStopOnStartLine: Boolean);
     IsDone: Boolean;
     CurTstName: String;
   begin
+    (*
+      Error: Control flow statements are not allowed in a finally block
+    *)
+    {$IFnDEF WINDOWS}
+    exit;
+    {$ENDIF}
     if (Compiler.Version < 030000) or
        ( (Compiler.CpuBitType = cpu32) and (Compiler.Version < 030200) )
     then

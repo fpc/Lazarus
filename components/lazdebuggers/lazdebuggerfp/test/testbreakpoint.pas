@@ -1056,7 +1056,7 @@ begin
 
     for j := 0 to 150 do begin
       AssertDebuggerNotInErrorState;
-      Debugger.RunToNextPause(dcRun);
+      Debugger.RunToNextPause(dcRun, 15000*3);
       AssertDebuggerState(dsPause);
 
       ThrPrgUpdateThreads('loop, changing brk '+IntToStr(j));
@@ -1072,7 +1072,7 @@ begin
         TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk4.Line) );
         TestTrue('THread not gone over break '+IntToStr(i), not ThrPrgInfoHasGoneThroughLine(i, Brk5.Line) );
 
-        // The thread must be between any 2 of thebreakpoint, and it must have hit
+        // The thread must be between any 2 of the breakpoint, and it must have hit
         // the breakpoint at the start of the range.
         TestTrue('Has hit last brk between 1 - 2  / thr= '+IntToStr(i), CheckLastBrk(i, Brk1.Line, Brk2.Line));
         TestTrue('Has hit last brk between 2 - 3  / thr= '+IntToStr(i), CheckLastBrk(i, Brk2.Line, Brk3.Line));

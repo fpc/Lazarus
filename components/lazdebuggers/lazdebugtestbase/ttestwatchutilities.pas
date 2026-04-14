@@ -1452,6 +1452,7 @@ var
 begin
   Result := False;
   CurBaseName := FTest.TestBaseName;
+  Context := Default(TWatchExpTestCurrentData);
   Context.WatchExp := AnWatchExp;
   Context.Expectation := AnWatchExp.TstExpected;
   Context.HasTypeInfo := False;
