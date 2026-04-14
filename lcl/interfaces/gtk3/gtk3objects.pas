@@ -2542,7 +2542,7 @@ function TGtk3DeviceContext.getPixel(x, y: Integer): TColor;
 var
   APixbuf: PGdkPixbuf;
   AData: PByte;
-  APixelValue: Longword;
+  APixelValue: Longint;
   ASurfaceWidth, ASurfaceHeight, ARowStride: Integer;
   AOutSize: Tcairo_rectangle_int_t;
   ARegion: Pcairo_region_t;
@@ -2592,7 +2592,6 @@ begin
   Result := ((APixelValue and $FF0000) shr 16) or
               (APixelValue and $00FF00) or
               ((APixelValue and $0000FF) shl 16);
-
 end;
 
 
