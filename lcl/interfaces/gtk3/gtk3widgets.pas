@@ -2154,7 +2154,9 @@ end;
 
 procedure TGtk3Widget.stackUnder(AWidget: PGtkWidget);
 begin
-  // FWidget^.
+  if not Gtk3IsGdkWindow(FWidget^.window) then exit;
+  if not Gtk3IsGdkWindow(AWidget^.window) then exit;
+  FWidget^.window^.restack(AWidget^.window, False);
 end;
 
 function TGtk3Widget.GetCapture: TGtk3Widget;
@@ -3706,15 +3708,16 @@ begin
       begin
         //Normal allocation, width>=1 and height>=2. Restore child visibility
         //if it was suppressed by a prior collapse, then allocate.
-        if not Widget^.get_child_visible then
-        begin
-          {$IFDEF GTK3DEBUGHEIGHTZERO}
-          if Assigned(LCLObject) then
-            writeln(Format('SetBounds W>0 H>1: restoring set_child_visible(True) for %s w=%d h=%d',
-              [LCLObject.Name + ':' + LCLObject.ClassName, AWidth, AHeight]));
-          {$ENDIF}
-          Widget^.set_child_visible(True);
-        end;
+        //Always restore child visibility on positive allocation.
+        //get_child_visible returns True on unrealized widgets even if False was
+        //queued, so the guard misses the restore after startup-layout replay.
+        {$IFDEF GTK3DEBUGHEIGHTZERO}
+        if Assigned(LCLObject) then
+          writeln(Format('SetBounds W>0 H>1: restoring set_child_visible(True) for %s w=%d h=%d (was=%s)',
+            [LCLObject.Name + ':' + LCLObject.ClassName, AWidth, AHeight,
+             BoolToStr(Widget^.get_child_visible, True)]));
+        {$ENDIF}
+        Widget^.set_child_visible(True);
         Widget^.size_allocate(@ARect);
       end;
     end
