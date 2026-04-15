@@ -256,7 +256,7 @@ type
     property BackupFiles: Boolean read fBackupFiles write fBackupFiles;
     property KeepFileOpen: Boolean read fKeepFileOpen write fKeepFileOpen;
     property ScanParentDir: Boolean read fScanParentDir write fScanParentDir;
-    property FuncReplaceComment: Boolean read fFuncReplaceComment write fScanParentDir;
+    property FuncReplaceComment: Boolean read fFuncReplaceComment write fFuncReplaceComment;
     property UnitsReplaceMode: TReplaceModeLong read fUnitsReplaceMode write fUnitsReplaceMode;
     property PropReplaceMode: TReplaceModeLong read fPropReplaceMode write fPropReplaceMode;
     property TypeReplaceMode: TReplaceModeAllow read fTypeReplaceMode write fTypeReplaceMode;
@@ -1189,9 +1189,7 @@ begin
     fSettings.AddLogLine(mluImportant, lisConvDelphiConversionReady)
   else begin
     if fErrorMsg<>'' then
-      fSettings.AddLogLine(mluError, Format(lisConvDelphiError,[fErrorMsg]))
-    else if CodeToolBoss.ErrorMessage<>'' then
-      fSettings.AddLogLine(mluError, Format(lisConvDelphiError,[CodeToolBoss.ErrorMessage]));
+      fSettings.AddLogLine(mluError, fErrorMsg);
     fSettings.AddLogLine(mluFatal, lisConvDelphiConversionAborted);
   end;
   // Save log messages to file.

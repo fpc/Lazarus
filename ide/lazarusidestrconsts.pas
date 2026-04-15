@@ -600,15 +600,12 @@ resourcestring
   lisConvDelphiConversionReady = 'Conversion Ready.';
   lisConvDelphiConversionAborted = 'Conversion Aborted.';
   lisConvDelphiBeginCodeToolsFailed = 'BeginCodeTools failed!';
-  lisConvDelphiError = 'Error="%s"';
+  lisConvDelphiConvertingUnit = 'Converting unit "%s"';
   lisConvDelphiFailedConvertingUnit = 'Failed converting unit';
   lisConvDelphiFailedToConvertUnit = 'Failed to convert unit "%s"';
-  lisConvDelphiExceptionDuringConversion = 'Exception happened during unit conversion.'
-    +' Continuing with form files of already converted units...';
   lisConvDelphiUnitnameExistsInLCL = 'Unitname exists in LCL';
   lisConvDelphiUnitWithNameExistsInLCL = 'LCL already has a unit with name %s.'
     +' Delete local file %s?';
-  //lisConvDelphiPackageNameExists = 'Package name already exists';
   lisConvDelphiProjOmittedUnit = 'Omitted unit %s from project';
   lisConvDelphiAddedPackageDependency = 'Added Package %s as a dependency.';
   lisConvDelphiPackageRequired = 'Package %s is required but not installed in Lazarus! Install it later.';

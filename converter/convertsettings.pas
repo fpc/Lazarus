@@ -38,11 +38,11 @@ uses
   // CodeTools
   CodeToolManager,
   // IdeIntf
-  IdeIntfStrConsts, IDEImagesIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs,
+  IdeIntfStrConsts, IDEImagesIntf, LazIDEIntf,
   // IDE
   LazarusIDEStrConsts,
   // Converter
-  ConvertBase, MissingUnits, ReplaceNamesUnit, ReplaceFuncsUnit;
+  ConvertBase, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 type
 

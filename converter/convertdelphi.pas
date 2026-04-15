@@ -356,10 +356,10 @@ begin
   Result:=CheckFileIsWritable(fOrigUnitFilename,[mbAbort]);
   if Result<>mrOK then exit;
   // close Delphi unit file in editor.
+  Assert(Assigned(fOwnerConverter), 'TDelphiUnit.CopyAndLoadFile: fOwnerConverter not assigned.');
   Result:=fOwnerConverter.Settings.CloseEditorFile(fOrigUnitFilename);
   if Result<>mrOK then exit;
   // Copy/rename fLazUnitFilename based on fOrigUnitFilename.
-  Assert(Assigned(fOwnerConverter), 'TDelphiUnit.CopyAndLoadFile: fOwnerConverter not assigned.');
   Result:=fOwnerConverter.Settings.RenameDelphiToLazFile(fOrigUnitFilename,
                   fLazFileExt, fLazUnitFilename, cdtlufRenameLowercase in fFlags);
   if Result<>mrOK then exit;
@@ -368,7 +368,9 @@ begin
                          [lbfCheckIfText,lbfUpdateFromDisk],true);
   if Result<>mrOK then exit;
   // Change encoding to UTF-8
-  if fPascalBuffer.DiskEncoding<>EncodingUTF8 then begin
+  if (fPascalBuffer.DiskEncoding<>EncodingUTF8)
+  and (fPascalBuffer.DiskEncoding<>EncodingUTF8BOM) then
+  begin
     fOwnerConverter.Settings.AddLogLine(mluNote,
       Format(lisConvDelphiChangedEncodingToUTF8, [fPascalBuffer.DiskEncoding]),
       fLazUnitFilename);
@@ -463,7 +465,8 @@ begin
     Result:=LoadCodeBuffer(TempLFMBuffer,LfmFilename,
                            [lbfCheckIfText,lbfUpdateFromDisk],true);
     // Change encoding to UTF-8
-    if TempLFMBuffer.DiskEncoding<>EncodingUTF8 then
+    if (TempLFMBuffer.DiskEncoding<>EncodingUTF8)
+    and (TempLFMBuffer.DiskEncoding<>EncodingUTF8BOM) then
     begin
       fOwnerConverter.Settings.AddLogLine(mluNote,
         Format(lisConvDelphiChangedEncodingToUTF8, [TempLFMBuffer.DiskEncoding]),
@@ -682,13 +685,10 @@ begin
         end;
       end;
     except
-      on e: EDelphiConverterError do begin
-        ErrorMsg:=e.Message;
+      on E: Exception do begin
+        ErrorMsg:=E.Message;
+        Result:=mrAbort;
       end;
-      else begin
-        ErrorMsg:=CodeToolBoss.ErrorMessage;
-      end;
-      Result:=mrAbort;
     end;
     finally
       EndConvert(Result);
@@ -766,13 +766,10 @@ begin
       Result:=ConvertSub;
     end;
   except
-    on e: EDelphiConverterError do begin
-      ErrorMsg:=e.Message;
+    on E: Exception do begin
+      ErrorMsg:=E.Message;
+      Result:=mrAbort;
     end;
-    else begin
-      ErrorMsg:=CodeToolBoss.ErrorMessage;
-    end;
-    Result:=mrAbort;
   end;
   finally
     CacheUnitsThread.Free;
@@ -1434,6 +1431,7 @@ var
   var
     Converter: TDelphiUnit;
   begin
+    Settings.AddLogLine(mluNote, Format(lisConvDelphiConvertingUnit,[AUnitInfo.Filename]), AUnitInfo.Filename);
     Converter:=TDelphiUnit.Create(Self, AUnitInfo.Filename,[]);
     try
       Converter.fUnitInfo:=AUnitInfo;
@@ -1444,8 +1442,6 @@ var
       if Result<>mrOK then exit;
       Result:=Converter.ConvertUnitFile;
     except
-      DebugLn(['TConvertDelphiProject.ConvertAllUnits: Exception happened while converting ',
-               Converter.fLazUnitFilename]);
       ConvUnits.Remove(Converter);
       raise;
     end;
@@ -1496,10 +1492,11 @@ begin
       end;
     end;
   except
-    Settings.AddLogLine(mluImportant, '');
-    Settings.AddLogLine(mluError, lisConvDelphiExceptionDuringConversion);
-    DebugLn(lisConvDelphiExceptionDuringConversion);
-    raise;
+    on E: Exception do begin
+      DebugLn(E.Message);
+      Result:=mrAbort;
+      raise;
+    end;
   end;
   finally
     if Result=mrOK then begin
@@ -1507,7 +1504,8 @@ begin
       // Unit name replacements etc. are implemented there.
       Result:=ConvertAllFormFiles(ConvUnits);
       // Finally save project once more
-      Result:=Settings.SaveProject(True);
+      if Result=mrOK then
+        Result:=Settings.SaveProject(True);
     end;
   end;
   finally
@@ -1746,6 +1744,7 @@ var
   var
     Converter: TDelphiUnit;
   begin
+    Settings.AddLogLine(mluNote, Format(lisConvDelphiConvertingUnit,[APkgFile.Filename]), APkgFile.Filename);
     Converter:=TDelphiUnit.Create(Self, APkgFile.Filename,[]);
     try
       ConvUnits.Add(Converter);
@@ -1755,8 +1754,6 @@ var
       if Result<>mrOK then exit;
       Result:=Converter.ConvertUnitFile;
     except
-      DebugLn(['TConvertDelphiProject.ConvertAllUnits: Exception happened while converting ',
-               Converter.fLazUnitFilename]);
       ConvUnits.Remove(Converter);
       raise;
     end;
@@ -1800,10 +1797,11 @@ begin
     end;
 }
   except
-    Settings.AddLogLine(mluImportant, '');
-    Settings.AddLogLine(mluError, lisConvDelphiExceptionDuringConversion);
-    DebugLn(lisConvDelphiExceptionDuringConversion);
-    raise;
+    on E: Exception do begin
+      DebugLn(E.Message);
+      Result:=mrAbort;
+      raise;
+    end;
   end;
   finally
     if Result=mrOK then begin
@@ -1811,7 +1809,8 @@ begin
       // Unit name replacements etc. are implemented there.
       Result:=ConvertAllFormFiles(ConvUnits);
       // Finally save the package once more
-      Result:=PkgBoss.DoSavePackage(LazPackage,[])  // save .lpk file
+      if Result=mrOK then
+        Result:=PkgBoss.DoSavePackage(LazPackage,[])  // save .lpk file
     end;
   end;
   finally
