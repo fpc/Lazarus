@@ -301,6 +301,7 @@ type
   TFpThreadWorkerBreakPoint = class(TFpDbgDebggerThreadWorkerItem)
   public
     procedure AbortSetBreak; virtual;
+    procedure DisableSetBreak; virtual;
   end;
 
   { TFpThreadWorkerBreakPointSet }
@@ -318,9 +319,12 @@ type
     FWatchKind: TDBGWatchPointKind;
   protected
     FResetBreakPoint: longint;
+    FDisableBreakPoint: longint;
+    FOnlyEnableExistingBreak: boolean;
     procedure UpdateBrkPoint_DecRef(Data: PtrInt = 0); virtual; abstract;
     procedure DoExecute; override;
   public
+    constructor CreateForEnable(ADebugger: TFpDebugDebuggerBase);
     constructor Create(ADebugger: TFpDebugDebuggerBase; AnAddress: TDBGPtr);
     constructor Create(ADebugger: TFpDebugDebuggerBase; ASource: String; ALine: Integer);
     constructor Create(ADebugger: TFpDebugDebuggerBase;
@@ -1467,6 +1471,11 @@ begin
   //
 end;
 
+procedure TFpThreadWorkerBreakPoint.DisableSetBreak;
+begin
+  //
+end;
+
 { TFpThreadWorkerBreakPointSet }
 
 procedure TFpThreadWorkerBreakPointSet.DoExecute;
@@ -1476,6 +1485,21 @@ var
   R: TFpValue;
   s: TFpDbgValueSize;
 begin
+  if FOnlyEnableExistingBreak then begin
+    assert(FInternalBreakpoint <> nil, 'TFpThreadWorkerBreakPointSet.DoExecute: FInternalBreakpoint <> nil');
+
+    if InterlockedExchange(FResetBreakPoint, 0) = 1 then begin
+      FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
+      FInternalBreakpoint.Free;
+      FInternalBreakpoint := nil;
+    end
+    else
+      FInternalBreakpoint.Enabled := InterlockedExchange(FDisableBreakPoint, 0) = 0;
+
+    Queue(@UpdateBrkPoint_DecRef);
+    exit;
+  end;
+
   if (FInternalBreakpoint <> nil) then begin
     FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
     FInternalBreakpoint.Free;
@@ -1506,16 +1530,27 @@ begin
         end;
       end;
     end;
-  end;
 
-  if InterlockedExchange(FResetBreakPoint, 0) = 1 then begin
-    if (FInternalBreakpoint <> nil) then begin
-      FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
-      FInternalBreakpoint.Free;
-      FInternalBreakpoint := nil;
+    if InterlockedExchange(FResetBreakPoint, 0) = 1 then begin
+      if (FInternalBreakpoint <> nil) then begin
+        FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
+        FInternalBreakpoint.Free;
+        FInternalBreakpoint := nil;
+      end;
+    end
+    else
+    if InterlockedExchange(FDisableBreakPoint, 0) = 1 then begin
+      if FInternalBreakpoint <> nil then
+        FInternalBreakpoint.Enabled := False;
     end;
   end;
   Queue(@UpdateBrkPoint_DecRef);
+end;
+
+constructor TFpThreadWorkerBreakPointSet.CreateForEnable(ADebugger: TFpDebugDebuggerBase);
+begin
+  FOnlyEnableExistingBreak := True;
+  inherited Create(ADebugger, twpUser);
 end;
 
 constructor TFpThreadWorkerBreakPointSet.Create(ADebugger: TFpDebugDebuggerBase; AnAddress: TDBGPtr);
