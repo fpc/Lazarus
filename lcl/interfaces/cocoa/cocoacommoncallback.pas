@@ -42,14 +42,7 @@ type
   protected
     function deliverMessage(var msg): LRESULT;
   protected
-    _target    : TWinControl;
-    _KeyMsg    : TLMKey;
-    _CharMsg   : TLMKey;
-    _SendChar  : Boolean;
-    _IsSysKey  : Boolean;
-    _IsKeyDown : Boolean;
-    _KeyHandled: Boolean;
-    _UTF8Character : TUTF8Char;
+    _target: TWinControl;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     _keyState: TCocoaKeyEventState;
   private
@@ -78,8 +71,9 @@ type
     procedure KeyEvBeforeDown;
     procedure KeyEvBeforeUp;
     procedure KeyEvAfterUp;
-    procedure KeyEvFlagsChanged(Event: NSEvent);
-    procedure KeyEvPrepare(Event: NSEvent); virtual;
+    procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
+    procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
+    procedure KeyEvAfter;
   public
     Owner: NSObject;
     BlockCocoaUpDown: Boolean;
@@ -107,11 +101,6 @@ type
       const Event: NSEvent;
       const AForceAsMouseUp: Boolean = False;
       const AOverrideBlock: Boolean = False): Boolean; virtual;
-
-    procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
-    procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
-    procedure KeyEvAfter;
-    procedure KeyEvHandled; inline;
 
     function MouseMove(const Event: NSEvent): Boolean; virtual;
     function scrollWheel(const Event: NSEvent): Boolean; virtual;
@@ -618,294 +607,177 @@ begin
   ContextMenuHandled := Res <> 0;
 end;
 
-procedure TLCLCommonCallback.KeyEvFlagsChanged(Event: NSEvent);
-const
-  cModifiersOfInterest: NSUInteger = (NSControlKeyMask or NSShiftKeyMask or NSAlphaShiftKeyMask or NSAlternateKeyMask or NSCommandKeyMask);
-var
-  CurMod, Diff: NSUInteger;
-  VKKeyCode: word; // VK_ code
-  KeyData: PtrInt; // Modifiers (ctrl, alt, mouse buttons...)
-begin
-  _SendChar := False;
-  CurMod := Event.modifierFlags;
-  //see what changed. we only care of bits 16 through 20
-  Diff := (CocoaWidgetSetState.prevKeyModifiers xor CurMod) and cModifiersOfInterest;
-
-  case Diff of
-    0                  : VKKeyCode := VK_UNKNOWN; //nothing (that we cared of) changed
-    NSControlKeyMask   : VKKeyCode := VK_CONTROL; //command mapped to control
-    NSShiftKeyMask     : VKKeyCode := VK_SHIFT;
-    NSAlphaShiftKeyMask: VKKeyCode := VK_CAPITAL; //caps lock
-    NSAlternateKeyMask : VKKeyCode := VK_MENU;    //option is alt
-    NSCommandKeyMask   : VKKeyCode := VK_LWIN;    //meta... map to left Windows Key?
-  end;
-  KeyData := CocoaModifiersToKeyState(CurMod);
-
-  //diff is now equal to the mask of the bit that changed, so we can determine
-  //if this change is a keydown (PrevKeyModifiers didn't have the bit set) or
-  //a keyup (PrevKeyModifiers had the bit set)
-  _IsKeyDown := ((CocoaWidgetSetState.prevKeyModifiers and Diff) = 0);
-
-  FillChar(_KeyMsg, SizeOf(_KeyMsg), 0);
-  _KeyMsg.KeyData := KeyData;
-  _KeyMsg.CharCode := VKKeyCode;
-  _IsSysKey := (VKKeyCode = VK_LWIN);
-end;
-
-procedure TLCLCommonCallback.KeyEvPrepare(Event: NSEvent);
-var
-  KeyCode: word;
-  UTF8Character: TUTF8Char;   // char to send via IntfUtf8KeyPress
-  KeyChar : char;          // Ascii char, when possible (xx_(SYS)CHAR)
-  SendChar: boolean;       // Should we send char?
-  VKKeyCode: word;         // VK_ code
-  IsSysKey: Boolean;       // Is alt (option) key down?
-  KeyData: PtrInt;         // Modifiers (ctrl, alt, mouse buttons...)
-  ignModChr: NSString;
-begin
-  SendChar := False;
-
-  UTF8Character := '';
-  KeyChar := #0;
-
-  IsSysKey := (Event.modifierFlags and NSCommandKeyMask) <> 0;
-  KeyData := (Ord(Event.isARepeat) + 1) or Event.keyCode shl 16;
-  if (Event.modifierFlags and NSAlternateKeyMask) <> 0 then
-    KeyData := KeyData or MK_ALT;   // So that MsgKeyDataToShiftState recognizes Alt key, see bug 30129
-  KeyCode := Event.keyCode;
-
-  ignModChr := Event.charactersIgnoringModifiers;
-  if Assigned(ignModChr)
-    and (ignModChr.length=1)
-    and ((Event.modifierFlags and NSNumericPadKeyMask) = 0) // num pad should be checked by KeyCode
-  then
-  begin
-    VKKeyCode := TCocoaKeyUtil.charToVK(ignModChr.characterAtIndex(0));
-    if VKKeyCode = VK_UNKNOWN then
-      VKKeyCode := TCocoaKeyUtil.codeToVK(KeyCode); // fallback
-  end
-  else
-    VKKeyCode := TCocoaKeyUtil.codeToVK(KeyCode);
-
-  if Assigned(CocoaConfigApplication.events.keyEventToVK) then
-    VKKeyCode := CocoaConfigApplication.events.keyEventToVK(Event);
-
-  case VKKeyCode of
-    // for sure, these are "non-printable" keys (see http://wiki.lazarus.freepascal.org/LCL_Key_Handling)
-    VK_F1..VK_F24,                     // Function keys (F1-F12)
-    VK_PRINT, VK_SCROLL, VK_PAUSE,     // Print Screen, Scroll Lock, Pause
-    VK_CAPITAL, VK_TAB,                // Caps Lock, Tab
-    VK_INSERT, VK_DELETE,              // Insert,  Delete
-    VK_HOME, VK_END,                   // Home, End
-    VK_PRIOR,VK_NEXT,                  // Page Up,Down
-    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN, // Arrow Keys
-    VK_NUMLOCK,                        // Num Lock
-    VK_SLEEP, VK_APPS  // power/sleep, context menu
-    :
-      SendChar := false;
-
-    // for sure, these are "printable" keys
-    VK_ESCAPE,
-    VK_BACK,
-    VK_RETURN:
-    begin
-      SendChar := true;
-      KeyChar := char(VKKeyCode);
-      UTF8Character := KeyChar;
-    end;
-  else
-    //printable keys
-    //for these keys, send char or UTF8KeyPress
-    UTF8Character := NSStringToString(Event.characters);
-
-    if Length(UTF8Character) > 0 then
-    begin
-      SendChar := True;
-      if Length(UTF8Character)=1 then
-        // ANSI layout character
-        KeyChar := Utf8Character[1]
-      else
-        // it's non ANSI character. KeyChar must be assinged anything but #0
-        // otherise the message could be surpressed.
-        // In Windows world this would be an "Ansi" char in current locale
-        KeyChar := '?';
-    end;
-  end;
-
-  _UTF8Character:= UTF8Character;
-
-  FillChar(_KeyMsg, SizeOf(_KeyMsg), 0);
-  _KeyMsg.KeyData := KeyData;
-  _KeyMsg.CharCode := VKKeyCode;
-  _SendChar := SendChar;
-  _IsSysKey := IsSysKey;
-  _IsKeyDown := (Event.type_ = NSKeyDown);
-
-  FillChar(_CharMsg, SizeOf(_CharMsg), 0);
-  _CharMsg.KeyData := _KeyMsg.KeyData;
-  _CharMsg.CharCode := ord(KeyChar);
-end;
-
 procedure TLCLCommonCallback.KeyEvBeforeDown;
+var
+  msg: Cardinal;
+  ret: PtrInt;
 begin
   // is the key combination help key (Cmd + ?)
-  if _SendChar and _IsSysKey and (_UTF8Character[0] = '?') then
+  if _keyState.shouldSendCharMessage and _keyState.isSysKey and (_keyState.utf8Character[0] = '?') then
     Application.ShowHelpForObject(Target);
 
-  //Send message to LCL
-  if _KeyMsg.CharCode = VK_UNKNOWN then
-    exit;
+  if _keyState.keyCode = VK_UNKNOWN then
+    Exit;
 
-  // create the CN_KEYDOWN message
-  if _IsSysKey then
-    _KeyMsg.Msg := CN_SYSKEYDOWN
+  if _keyState.isSysKey then
+    msg := CN_SYSKEYDOWN
   else
-    _KeyMsg.Msg := CN_KEYDOWN;
+    msg := CN_KEYDOWN;
 
-  NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
-  if (self.deliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
-    // the LCL handled the key
-    KeyEvHandled;
+  ret:= self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, True );
+  if (ret<>0) or (_keyState.keyCode=VK_UNKNOWN) then
+    _keyState.handled:= True;
 end;
 
 procedure TLCLCommonCallback.KeyEvBeforeUp;
+var
+  msg: Cardinal;
+  ret: PtrInt;
 begin
-  if _IsSysKey then
-    _KeyMsg.Msg := CN_SYSKEYUP
-  else
-    _KeyMsg.Msg := CN_KEYUP;
+  if _keyState.keyCode = VK_UNKNOWN then
+    Exit;
 
-  //Send message to LCL
-  if _KeyMsg.CharCode <> VK_UNKNOWN then
-  begin
-    NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
-    if (self.deliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
-    begin
-      // the LCL has handled the key
-      KeyEvHandled;
-      Exit;
-    end;
-  end;
+  if _keyState.isSysKey then
+    msg := CN_SYSKEYUP
+  else
+    msg := CN_KEYUP;
+
+  ret:= self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, True );
+  if (ret<>0) or (_keyState.keyCode=VK_UNKNOWN) then
+    _keyState.handled:= True;
 end;
 
 procedure TLCLCommonCallback.send_UTF8KeyPress();
 var
   lclHandled: Boolean;
 begin
-  if not _sendChar then
+  if not _keyState.shouldSendCharMessage then
     Exit;
 
   lclHandled:= TCocoaLCLMessageUtil.IntfUTF8KeyPress(
                  Owner,
-                 _UTF8Character,
-                 _IsSysKey );
+                 _keyState.utf8Character,
+                 _keyState.isSysKey );
 
   if lclHandled then begin
-    if ForceReturnKeyDown and (_KeyMsg.CharCode = VK_RETURN) then
-      _SendChar := False
+    if ForceReturnKeyDown and (_keyState.keyCode=VK_RETURN) then
+      _keyState.shouldSendCharMessage:= False
     else
-      KeyEvHandled;
+      _keyState.handled:= True;
   end;
 end;
 
 procedure TLCLCommonCallback.send_CN_CHAR_Message();
+var
+  msg: Cardinal;
+  ret: PtrInt;
 begin
-  if not _SendChar then exit;
+  if NOT _keyState.shouldSendCharMessage then
+    Exit;
 
-  if _IsSysKey then
-    _CharMsg.Msg := CN_SYSCHAR
+  if _keyState.isSysKey then
+    msg := CN_SYSCHAR
   else
-    _CharMsg.Msg := CN_CHAR;
+    msg := CN_CHAR;
 
-  if (self.deliverMessage(_CharMsg) <> 0) or (_CharMsg.CharCode=VK_UNKNOWN) then
-    KeyEvHandled;
+  ret:= self.doSendKeyMessage( msg, _keyState.charCode, _keyState.keyData, False );
+  if (ret<>0) or (_keyState.charCode=VK_UNKNOWN) then
+    _keyState.handled:= True;
 end;
 
 procedure TLCLCommonCallback.send_LM_KEYDOWN_Message();
+var
+  msg: Cardinal;
+  ret: PtrInt;
 begin
-  if _KeyMsg.CharCode = VK_UNKNOWN then exit;
+  if _keyState.keyCode = VK_UNKNOWN then
+    Exit;
 
-  if _IsSysKey then
-    _KeyMsg.Msg := LM_SYSKEYDOWN
+  if _keyState.isSysKey then
+    msg := LM_SYSKEYDOWN
   else
-    _KeyMsg.Msg := LM_KEYDOWN;
+    msg := LM_KEYDOWN;
 
-  if (self.deliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
-    KeyEvHandled;
+  ret:= self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, False );
+  if (ret<>0) or (_keyState.keyCode=VK_UNKNOWN) then
+    _keyState.handled:= True;
 end;
 
 procedure TLCLCommonCallback.send_LM_CHAR_Message();
+var
+  msg: Cardinal;
+  ret: PtrInt;
 begin
-  if not _SendChar then exit;
+  if NOT _keyState.shouldSendCharMessage then
+    Exit;
 
-  if _IsSysKey then
-    _CharMsg.Msg := LM_SYSCHAR
+  if _keyState.isSysKey then
+    msg := LM_SYSCHAR
   else
-    _CharMsg.Msg := LM_CHAR;
+    msg := LM_CHAR;
 
-  if self.deliverMessage(_CharMsg) <> 0 then
-    KeyEvHandled;
+  ret:= self.doSendKeyMessage( msg, _keyState.charCode, _keyState.keyData, False );
+  if ret <> 0 then
+    _keyState.handled:= True;
 end;
 
 procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
 begin
   AllowCocoaHandle:= false;
 
-  if _KeyHandled then exit;
+  if _keyState.handled then exit;
   send_UTF8KeyPress;
 
-  if _KeyHandled then exit;
+  if _keyState.handled then exit;
   send_CN_CHAR_Message;
 
-  if _KeyHandled then exit;
+  if _keyState.handled then exit;
   send_LM_KEYDOWN_Message;
 
-  if _KeyHandled then exit;
+  if _keyState.handled then exit;
   send_LM_CHAR_Message;
 
-  if _KeyHandled then exit;
+  if _keyState.handled then exit;
   AllowCocoaHandle:= not BlockCocoaKeyBeep;
 end;
 
 procedure TLCLCommonCallback.KeyEvAfterUp;
+var
+  msg: Cardinal;
+  ret: PtrInt;
 begin
-  if _KeyHandled then Exit;
-  KeyEvHandled;
-
-  //Send a LM_(SYS)KEYUP
-  if _IsSysKey then
-    _KeyMsg.Msg := LM_SYSKEYUP
-  else
-    _KeyMsg.Msg := LM_KEYUP;
-
-  if self.deliverMessage(_KeyMsg) <> 0 then
-  begin
-    // the LCL handled the key
-    NotifyApplicationUserInput(Target, PLMessage(@_KeyMsg)^);
+  if _keyState.handled then
     Exit;
-  end;
+  _keyState.handled:= True;
+
+  if _keyState.isSysKey then
+    msg := LM_SYSKEYUP
+  else
+    msg := LM_KEYUP;
+
+  ret:= self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, True );
 end;
 
 procedure TLCLCommonCallback.KeyEvBefore(
   const  Event: NSEvent;
   out AllowCocoaHandle: boolean);
 begin
-  _keyHandled := False;
+  _keyState.handled:= False;
   AllowCocoaHandle := true;
 
   if Event.type_ = NSFlagsChanged then
-    KeyEvFlagsChanged(Event)
+    createKeyStateFromFlagsChanged( Event, _keyState )
   else
-    KeyEvPrepare(Event);
+    createKeyStateFromKeyUpDown( Event, _keyState );
 
-  if _IsKeyDown then begin
+  if _keyState.isKeyDown then begin
     KeyEvBeforeDown;
-    if SuppressTabDown and (_KeyMsg.CharCode = VK_TAB) then
+    if SuppressTabDown and (_keyState.keyCode = VK_TAB) then
       AllowCocoaHandle := false;
   end else
     KeyEvBeforeUp;
 
-  if _keyHandled then
+  if _keyState.handled then
     AllowCocoaHandle := false;
 
   // flagsChanged always needs to be passed on to Cocoa
@@ -919,13 +791,10 @@ var
 begin
   if NOT Assigned(self.Target) then
     Exit;
-  if _IsKeyDown then KeyEvAfterDown(AllowCocoaHandle)
-  else KeyEvAfterUp;
-end;
-
-procedure TLCLCommonCallback.KeyEvHandled;
-begin
-  _KeyHandled := True;
+  if _keyState.isKeyDown then
+    KeyEvAfterDown(AllowCocoaHandle)
+  else
+    KeyEvAfterUp;
 end;
 
 function TLCLCommonCallback.MouseUpDownEvent(

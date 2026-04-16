@@ -22,7 +22,9 @@ type
   // CallBack for LCL Full Control Edit (such as SynEdit/ATSynEdit)
   TLCLFullControlEditCallBack = class(TLCLCommonCallBack)
   protected
-    procedure KeyEvPrepare(Event: NSEvent); override;
+    procedure createKeyStateFromKeyUpDown(
+      const event: NSEvent;
+      var state: TCocoaKeyEventState ); override;
   end;
 
   { TCocoaWSCustomControl }
@@ -89,10 +91,12 @@ end;
      and NSInputContext.sendEvent() will be called in it,
      and function in NSTextInputClient will be called.
 }
-procedure TLCLFullControlEditCallback.KeyEvPrepare(Event: NSEvent);
+procedure TLCLFullControlEditCallBack.createKeyStateFromKeyUpDown(
+  const event: NSEvent;
+  var state: TCocoaKeyEventState );
 begin
-  inherited;
-  _sendChar := false;
+  inherited createKeyStateFromKeyUpDown( event, state );
+  state.shouldSendCharMessage:= False;
 end;
 
 { TCocoaWSCustomControl }
