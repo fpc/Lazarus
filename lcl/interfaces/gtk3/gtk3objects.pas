@@ -3074,6 +3074,7 @@ begin
       // Must paint border, filling is not enough
       SetSourceColor(FCurrentBrush.Color);
       cairo_set_line_width(pcr, 1);
+      cairo_set_dash(pcr, nil, 0, 0);
       cairo_stroke(pcr);
     end;
   end;
