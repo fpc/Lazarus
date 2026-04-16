@@ -8107,14 +8107,10 @@ msgstr "*** 変換中に見つかったユニットファイルを変換中 ***"
 msgid "*** Converting unit files belonging to project/package ***"
 msgstr "*** プロジェクト／パッケージに属するユニットファイルを変換中 ***"
 
-#: lazarusidestrconsts.lisconvdelphierror
+#: lazarusidestrconsts.lisconvdelphiconvertingunit
 #, object-pascal-format
-msgid "Error=\"%s\""
-msgstr "エラー：\"%s\""
-
-#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
-msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
-msgstr "ユニット変換中にエラーが発生しました。既に変換されたユニットのフォームファイルとともに継続中..."
+msgid "Converting unit \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"

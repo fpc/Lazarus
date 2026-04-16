@@ -7941,14 +7941,10 @@ msgstr "*** Conversion des fichiers d'unités trouvés lors de la conversion ***
 msgid "*** Converting unit files belonging to project/package ***"
 msgstr "*** Conversion des fichiers unités appartenant au projet/paquet **"
 
-#: lazarusidestrconsts.lisconvdelphierror
+#: lazarusidestrconsts.lisconvdelphiconvertingunit
 #, object-pascal-format
-msgid "Error=\"%s\""
-msgstr "Erreur = \"%s\""
-
-#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
-msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
-msgstr "Une exception s'est produite lors de la conversion de l'unité. Poursuite avec les fichiers fiches des unités déjà converties..."
+msgid "Converting unit \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"

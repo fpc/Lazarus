@@ -7914,14 +7914,10 @@ msgstr "***在转换期间转换单元文件找到***"
 msgid "*** Converting unit files belonging to project/package ***"
 msgstr "***转换单元文件属于项目/软件包***"
 
-#: lazarusidestrconsts.lisconvdelphierror
+#: lazarusidestrconsts.lisconvdelphiconvertingunit
 #, object-pascal-format
-msgid "Error=\"%s\""
-msgstr "错误=\"%s\""
-
-#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
-msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
-msgstr "在单位转换期间发生了异常。继续处理已转换单位的表单文件..."
+msgid "Converting unit \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"

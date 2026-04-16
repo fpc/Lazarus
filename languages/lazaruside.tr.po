@@ -7921,14 +7921,10 @@ msgstr "*** Dönüştürme sırasında bulunan birim dosyalarını dönüştürm
 msgid "*** Converting unit files belonging to project/package ***"
 msgstr "*** Proje/pakete ait birim dosyalarının dönüştürülmesi ***"
 
-#: lazarusidestrconsts.lisconvdelphierror
+#: lazarusidestrconsts.lisconvdelphiconvertingunit
 #, object-pascal-format
-msgid "Error=\"%s\""
-msgstr "Hata = \"%s\""
-
-#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
-msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
-msgstr "Birim dönüştürme sırasında istisna oluştu. Halihazırda dönüştürülmüş birimlerin form dosyalarıyla devam ediliyor..."
+msgid "Converting unit \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"

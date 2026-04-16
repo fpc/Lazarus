@@ -8002,14 +8002,10 @@ msgstr "*** Az átalakítás közben talált unit fájlok átalakítása ***"
 msgid "*** Converting unit files belonging to project/package ***"
 msgstr "*** A csomaghoz/projekthez tartozó unit fájlok átalakítása ***"
 
-#: lazarusidestrconsts.lisconvdelphierror
+#: lazarusidestrconsts.lisconvdelphiconvertingunit
 #, object-pascal-format
-msgid "Error=\"%s\""
-msgstr "Hiba=\"%s\""
-
-#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
-msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
-msgstr "Kivétel keletkezett a unit átalakítása közben. Folytatás a már átalakított unitok form fájljaival..."
+msgid "Converting unit \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"

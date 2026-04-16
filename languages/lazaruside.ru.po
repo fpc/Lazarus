@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-04-10 23:04+0300\n"
+"PO-Revision-Date: 2026-04-16 23:11+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -7888,14 +7888,10 @@ msgstr "*** Преобразование вновь обнаруженных ф�
 msgid "*** Converting unit files belonging to project/package ***"
 msgstr "*** Преобразование файлов модулей, принадлежащих проекту/пакету ***"
 
-#: lazarusidestrconsts.lisconvdelphierror
+#: lazarusidestrconsts.lisconvdelphiconvertingunit
 #, object-pascal-format
-msgid "Error=\"%s\""
-msgstr "Ошибка=\"%s\""
-
-#: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
-msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
-msgstr "Во время преобразования модулей возникло исключение. Работа продолжается с файлами форм уже преобразованных модулей..."
+msgid "Converting unit \"%s\""
+msgstr "Преобразование модуля \"%s\""
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
