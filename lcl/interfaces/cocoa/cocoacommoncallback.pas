@@ -16,6 +16,19 @@ uses
 
 type
 
+  { TCocoaKeyEventState }
+
+  TCocoaKeyEventState = record
+    keyCode: Word;             // Key Code
+    charCode: Word;            // Ascii char, when possible (xx_(SYS)CHAR)
+    keyData: PtrInt;           // Modifiers (ctrl, alt, mouse buttons...)
+    utf8Character: TUTF8Char;  // char to send via IntfUtf8KeyPress
+    shouldSendCharMessage: Boolean;   // Should we send char?
+    isSysKey: Boolean;         // Is alt (option) key down?
+    isKeyDown : Boolean;
+    handled: Boolean;
+  end;
+
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
@@ -39,6 +52,11 @@ type
     _UTF8Character : TUTF8Char;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
   private
+    function doSendKeyMessage(
+      const msg: Cardinal;
+      var charCode: Word;
+      const keyData: PtrInt;
+      const notifyUserInput: Boolean ): PtrInt;
     procedure send_UTF8KeyPress();
     procedure send_CN_CHAR_Message();
     procedure send_LM_KEYDOWN_Message();
@@ -1357,6 +1375,35 @@ end;
 function TLCLCommonCallback.deliverMessage(var msg): LRESULT;
 begin
   Result:= LCLMessageGlue.DeliverMessage(Target, msg);
+end;
+
+function TLCLCommonCallback.doSendKeyMessage(
+  const msg: Cardinal;
+  var charCode: Word;
+  const keyData: PtrInt;
+  const notifyUserInput: Boolean ): PtrInt;
+var
+  message: TLMKey;
+begin
+  Result:= 0;
+  if charCode = VK_UNKNOWN then
+    Exit;
+
+  FillChar( message, SizeOf(message), 0 );
+  message.Msg:= msg;
+  message.CharCode:= charCode;
+  message.KeyData := keyData;
+
+  if notifyUserInput then
+    NotifyApplicationUserInput( Target, PLMessage(@message)^ );
+
+  if message.CharCode = VK_UNKNOWN then begin
+    Result:= 1;
+    Exit;
+  end;
+
+  Result:= self.DeliverMessage( message );
+  charCode:= message.CharCode;
 end;
 
 end.
