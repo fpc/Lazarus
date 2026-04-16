@@ -1806,7 +1806,7 @@ begin
     begin
       FXorSnapshot := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, R.width, R.height);
       TempCairo := cairo_create(FXorSnapshot);
-      cairo_set_source_surface(TempCairo, cairo_get_target(FCairo), -R.x, -R.y);
+      cairo_set_source_surface(TempCairo, cairo_get_target(FCairo), -R.x-Self.fncOrigin.X, -R.y-Self.fncOrigin.Y);
       cairo_set_operator(TempCairo, CAIRO_OPERATOR_SOURCE);
       cairo_paint(TempCairo);
       cairo_destroy(TempCairo);
