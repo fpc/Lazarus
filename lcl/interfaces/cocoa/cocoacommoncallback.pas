@@ -51,6 +51,7 @@ type
     _KeyHandled: Boolean;
     _UTF8Character : TUTF8Char;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
+    _keyState: TCocoaKeyEventState;
   private
     function doSendKeyMessage(
       const msg: Cardinal;
@@ -66,6 +67,14 @@ type
   protected
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
+
+    procedure createKeyStateFromKeyUpDown(
+      const event: NSEvent;
+      var state: TCocoaKeyEventState ); virtual;
+    procedure createKeyStateFromFlagsChanged(
+      const event: NSEvent;
+      var state: TCocoaKeyEventState ); virtual;
+
     procedure KeyEvBeforeDown;
     procedure KeyEvBeforeUp;
     procedure KeyEvAfterUp;
@@ -252,6 +261,131 @@ begin
     Point.x := Point.x + f.origin.x;
     Point.y := TCocoaScreenUtil.globalScreenBottom - ( Point.y + f.origin.y );
   end;
+end;
+
+procedure TLCLCommonCallback.createKeyStateFromKeyUpDown(
+  const event: NSEvent;
+  var state: TCocoaKeyEventState );
+var
+  KeyCode: word;
+  UTF8Character: TUTF8Char;   // char to send via IntfUtf8KeyPress
+  KeyChar : char;          // Ascii char, when possible (xx_(SYS)CHAR)
+  SendChar: boolean;       // Should we send char?
+  VKKeyCode: word;         // VK_ code
+  IsSysKey: Boolean;       // Is alt (option) key down?
+  KeyData: PtrInt;         // Modifiers (ctrl, alt, mouse buttons...)
+  ignModChr: NSString;
+begin
+  SendChar := False;
+
+  UTF8Character := '';
+  KeyChar := #0;
+
+  IsSysKey := (Event.modifierFlags and NSCommandKeyMask) <> 0;
+  KeyData := (Ord(Event.isARepeat) + 1) or Event.keyCode shl 16;
+  if (Event.modifierFlags and NSAlternateKeyMask) <> 0 then
+    KeyData := KeyData or MK_ALT;   // So that MsgKeyDataToShiftState recognizes Alt key, see bug 30129
+  KeyCode := Event.keyCode;
+
+  ignModChr := Event.charactersIgnoringModifiers;
+  if Assigned(ignModChr)
+    and (ignModChr.length=1)
+    and ((Event.modifierFlags and NSNumericPadKeyMask) = 0) // num pad should be checked by KeyCode
+  then
+  begin
+    VKKeyCode := TCocoaKeyUtil.charToVK(ignModChr.characterAtIndex(0));
+    if VKKeyCode = VK_UNKNOWN then
+      VKKeyCode := TCocoaKeyUtil.codeToVK(KeyCode); // fallback
+  end
+  else
+    VKKeyCode := TCocoaKeyUtil.codeToVK(KeyCode);
+
+  if Assigned(CocoaConfigApplication.events.keyEventToVK) then
+    VKKeyCode := CocoaConfigApplication.events.keyEventToVK(Event);
+
+  case VKKeyCode of
+    // for sure, these are "non-printable" keys (see http://wiki.lazarus.freepascal.org/LCL_Key_Handling)
+    VK_F1..VK_F24,                     // Function keys (F1-F12)
+    VK_PRINT, VK_SCROLL, VK_PAUSE,     // Print Screen, Scroll Lock, Pause
+    VK_CAPITAL, VK_TAB,                // Caps Lock, Tab
+    VK_INSERT, VK_DELETE,              // Insert,  Delete
+    VK_HOME, VK_END,                   // Home, End
+    VK_PRIOR,VK_NEXT,                  // Page Up,Down
+    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN, // Arrow Keys
+    VK_NUMLOCK,                        // Num Lock
+    VK_SLEEP, VK_APPS  // power/sleep, context menu
+    :
+      SendChar := false;
+
+    // for sure, these are "printable" keys
+    VK_ESCAPE,
+    VK_BACK,
+    VK_RETURN:
+    begin
+      SendChar := true;
+      KeyChar := char(VKKeyCode);
+      UTF8Character := KeyChar;
+    end;
+  else
+    //printable keys
+    //for these keys, send char or UTF8KeyPress
+    UTF8Character := NSStringToString(Event.characters);
+
+    if Length(UTF8Character) > 0 then
+    begin
+      SendChar := True;
+      if Length(UTF8Character)=1 then
+        // ANSI layout character
+        KeyChar := Utf8Character[1]
+      else
+        // it's non ANSI character. KeyChar must be assinged anything but #0
+        // otherise the message could be surpressed.
+        // In Windows world this would be an "Ansi" char in current locale
+        KeyChar := '?';
+    end;
+  end;
+
+  _keyState.keyCode:= VKKeyCode;
+  _keyState.charCode:= Word(KeyChar);
+  _keyState.keyData:= KeyData;
+  _keyState.utf8Character:= UTF8Character;
+  _keyState.isKeyDown:= (Event.type_ = NSKeyDown);
+  _keyState.isSysKey:= IsSysKey;
+  _keyState.shouldSendCharMessage:= SendChar;
+end;
+
+procedure TLCLCommonCallback.createKeyStateFromFlagsChanged(
+  const event: NSEvent;
+  var state: TCocoaKeyEventState );
+const
+  cModifiersOfInterest: NSUInteger = (NSControlKeyMask or NSShiftKeyMask or NSAlphaShiftKeyMask or NSAlternateKeyMask or NSCommandKeyMask);
+var
+  CurMod, Diff: NSUInteger;
+  VKKeyCode: word; // VK_ code
+  KeyData: PtrInt; // Modifiers (ctrl, alt, mouse buttons...)
+begin
+  _keyState.shouldSendCharMessage:= False;
+  CurMod := Event.modifierFlags;
+  //see what changed. we only care of bits 16 through 20
+  Diff := (CocoaWidgetSetState.prevKeyModifiers xor CurMod) and cModifiersOfInterest;
+
+  case Diff of
+    0                  : VKKeyCode := VK_UNKNOWN; //nothing (that we cared of) changed
+    NSControlKeyMask   : VKKeyCode := VK_CONTROL; //command mapped to control
+    NSShiftKeyMask     : VKKeyCode := VK_SHIFT;
+    NSAlphaShiftKeyMask: VKKeyCode := VK_CAPITAL; //caps lock
+    NSAlternateKeyMask : VKKeyCode := VK_MENU;    //option is alt
+    NSCommandKeyMask   : VKKeyCode := VK_LWIN;    //meta... map to left Windows Key?
+  end;
+  KeyData:= CocoaModifiersToKeyState(CurMod);
+
+  //diff is now equal to the mask of the bit that changed, so we can determine
+  //if this change is a keydown (PrevKeyModifiers didn't have the bit set) or
+  //a keyup (PrevKeyModifiers had the bit set)
+  _keyState.isKeyDown := ((CocoaWidgetSetState.prevKeyModifiers and Diff) = 0);
+  _keyState.keyData := KeyData;
+  _keyState.keyCode := VKKeyCode;
+  _keyState.isSysKey := (VKKeyCode = VK_LWIN);
 end;
 
 constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView);
