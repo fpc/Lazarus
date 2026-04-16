@@ -21,11 +21,11 @@ unit GraphUtil;
 interface
 
 uses
-  SysUtils, Types, Math,
+  SysUtils, Classes, Types, Math,
   // LCL
   Graphics, LCLType, LCLIntf,
   // LazUtils
-  GraphType;
+  GraphType, GraphMath;
 
 function ColorToGray(const AColor: TColor): Byte;
 procedure ColorToHLS(const AColor: TColor; out H, L, S: Byte);
@@ -85,6 +85,14 @@ function GetShadowColor(const Color: TColor; Luminance: Integer = -50): TColor;
 // misc
 function NormalizeRect(const R: TRect): TRect;
 procedure WaveTo(ADC: HDC; X, Y, R: Integer);
+
+// Rotated text
+procedure WordWrap(AFont: TFont; const AText: String;
+  const AMaxWidth: Integer; ALines: TStrings);
+procedure DrawRotatedText(ACanvas: TCanvas; AText: String; AFlags: Integer;
+  AMaxLineLength: Integer; var ARect: TRect);
+procedure DrawRotatedText(ACanvas: TCanvas; ALines: TStrings; AFlags: Integer;
+  var ARect: TRect);
 
 
 implementation
@@ -863,5 +871,257 @@ begin
   RGBToHSVRange(GetRValue(Color), GetGValue(Color), GetBValue(Color), h, s, Result);
 end;
 
+{ Word-wraps the given text so that no line is longer than the specified
+  AMaxWidth (in pixels). The resulting lines are returned in the ALines
+  parameter. }
+procedure WordWrap(AFont: TFont; const AText: String; const AMaxWidth: Integer;
+  ALines: TStrings);
+var
+  bmp: TBitmap;
+
+  function TextIsTooWide(P: PChar; ALength: Integer): Boolean;
+  var
+    R: TRect;
+  begin
+    R := Rect(0, 0, AMaxWidth, 9999);
+    DrawText(bmp.Canvas.Handle, P, ALength, R, DT_CALCRECT);
+    Result := R.Right > AMaxWidth;
+  end;
+
+  procedure AddLineToList(ALineStart, ALineEnd: PChar);
+  var
+    len: Integer;
+    sLine: String = '';
+  begin
+    len := ALineEnd - ALineStart;
+    SetLength(sLine, len);
+    Move(ALineStart^, sLine[1], len);
+    ALines.Add(sLine);
+  end;
+
+var
+  P, PTextEnd, PLineStart, PWordStart: PChar;
+begin
+  Assert(ALines <> nil);
+
+  ALines.Clear;
+  if AText = '' then
+    exit;
+
+  bmp := TBitmap.Create;
+  try
+    bmp.Canvas.Font.Assign(AFont);
+    bmp.Canvas.Font.Orientation := 0;
+
+    P := PChar(AText);             // points to currently tested character
+    PTextEnd := P + Length(AText); // points to end of the text
+    PLineStart := P;               // points to start of current line
+    PWordStart := P;               // points to start of current word
+    while P < PTextEnd do
+    begin
+      if P^ in [' ', #9] then
+      begin
+        if TextIsTooWide(PLineStart, P - PLineStart) then
+        begin
+          AddLineToList(PLineStart, PWordStart);
+          PLineStart := PWordStart; // Next line begins at position of previous word
+          PWordStart := P + 1;      // Skip white space for word start
+        end else
+          PWordStart := P + 1;      // Skip white space for word start
+      end else
+      if P^ in [#13, #10] then
+      begin
+        if TextIsTooWide(PLineStart, P - PLineStart) then
+        begin
+          AddLineToList(PLineStart, PWordStart);
+          AddLineToList(PWordStart, P);
+        end else
+          AddLineToList(PLineStart, P);
+        if (P^ = #13) and ((P + 1)^ = #10) then inc(P);
+        PWordStart := P+1;
+        PLineStart := PWordStart;
+      end;
+      inc(P);
+    end;
+
+    if TextIsTooWide(PLineStart, P - PLineStart) then
+    begin
+      AddLineToList(PLineStart, PWordStart);
+      PLineStart := PWordStart;
+    end;
+    AddLineToList(PLineStart, P);
+  finally
+    bmp.Free;
+  end;
+end;
+
+{ Draws the given text rotated by ACanvas.Font.Orientation angle
+  (in counter-clockwise direction, starting at 3 o'clock, in 10*degrees) around
+  a center calculated from the Alignment and Layout elements in the AFlags.
+
+  When DT_WORDWRAP is set in AFlags the text is wrapped into several lines
+  if its length exceeds the ATextWidth parameter. ATextWidth usually should be
+  smaller than the width of ARect to avoid truncation of the rotated text.
+
+  ARect, on input, is the rectangle in which the text is painted. On output, it
+  returns the boundary that encloses the rotated text (as a standard TRect).
+
+  When DT_CALCRECT is contained in the AFlags, then only these values are
+  returned, nothing is drawn. }
+procedure DrawRotatedText(ACanvas: TCanvas; AText: String; AFlags: Integer;
+  AMaxLineLength: Integer; var ARect: TRect);
+var
+  lines: TStrings;
+begin
+  lines := TStringList.Create;
+  try
+    lines.SkipLastLineBreak := true;
+    if AFlags and DT_WORDBREAK <> 0 then
+      WordWrap(ACanvas.Font, AText, AMaxLineLength, lines)  // wrap too-long lines
+    else
+    if AFlags and DT_SINGLELINE <> 0 then
+      lines.Add(AText)     // ignore linefeed characters
+    else
+      lines.Text := AText; // respect linefeeds
+
+    DrawRotatedText(ACanvas, lines, AFlags, ARect);
+  finally
+    lines.Free;
+  end;
+end;
+
+procedure DrawRotatedText(ACanvas: TCanvas; ALines: TStrings; AFlags: Integer;
+  var ARect: TRect);
+type
+  TRectArray = array of TRect;
+const
+  DT_HOR_ALIGN = DT_RIGHT or DT_CENTER;
+  DT_VERT_ALIGN = DT_BOTTOM or DT_VCENTER;
+
+  { Measures the rectangles around each (horizontal) line }
+  function MeasureHorizontalLines(ALines: TStrings): TRectArray;
+  var
+    bmp: TBitmap;
+    y, i: Integer;
+  begin
+    Result := nil;
+    SetLength(Result, ALines.Count);
+    bmp := TBitmap.Create;
+    try
+      bmp.Canvas.Font.Assign(ACanvas.Font);
+      // At least on Windows, the text height is not correct when font is rotated.
+      bmp.Canvas.Font.Orientation := 0;
+      y := 0;
+      for i := 0 to ALines.Count-1 do
+      begin
+        Result[i].TopLeft := Point(0, y);
+        Result[i].BottomRight := Result[i].TopLeft + TPoint(bmp.Canvas.TextExtent(ALines[i]));
+        inc(y, Result[i].Height);
+      end;
+    finally
+      bmp.Free;
+    end;
+  end;
+
+  procedure GetRotatedBoundingRect(var ALineRects: TRectArray; ARotAngle: Double;
+    ALeftAlign, AVertAlign: Integer; var ABoundingRect: TRect; ATextOrigins: TPointArray);
+  var
+    R: TRect;
+    h: Integer;
+    cornerPts: Array[0..3] of TPoint;
+    cp: TPoint;
+    i: Integer;
+  begin
+    h := ALineRects[High(ALineRects)].Bottom;
+    R := Rect(0, 0, 0, 0);
+    for i := 0 to High(ALineRects) do
+    begin
+      case ALeftAlign of
+        DT_LEFT: ;
+        DT_CENTER: OffsetRect(ALineRects[i], -ALineRects[i].Width div 2, 0);
+        DT_RIGHT: OffsetRect(ALineRects[i], -ALineRects[i].Width, 0);
+      end;
+      case AVertAlign of
+        DT_TOP: ;
+        DT_VCENTER: OffsetRect(ALineRects[i], 0, -h div 2);
+        DT_BOTTOM: OffsetRect(ALineRects[i], 0, -h);
+      end;
+      cornerPts[0] := RotatePoint(ALineRects[i].TopLeft, ARotAngle);
+      cornerPts[1] := RotatePoint(Point(ALineRects[i].Right, ALineRects[i].Top), ARotAngle);
+      cornerPts[2] := RotatePoint(ALineRects[i].BottomRight, ARotAngle);
+      cornerPts[3] := cornerPts[0] + (cornerPts[2] - cornerPts[1]);
+
+      ATextOrigins[i] := cornerPts[0];
+
+      for cp in cornerPts do
+      begin
+        if cp.X < R.Left then R.Left := cp.X;
+        if cp.X > R.Right then R.Right := cp.X;
+        if cp.Y < R.Top then R.Top := cp.Y;
+        if cp.Y > R.Bottom then R.Bottom := cp.Y;
+      end;
+    end;
+
+    for i := 0 to High(ATextOrigins) do
+      ATextOrigins[i] := ATextOrigins[i] - R.TopLeft + ABoundingRect.TopLeft;
+
+    OffsetRect(R, -R.Left, -R.Top);
+    ABoundingRect.BottomRight := ABoundingRect.TopLeft + R.BottomRight;
+  end;
+
+  procedure DrawRotatedLines(ALines: TStrings; ATextOrigins: TPointArray);
+  var
+    i: Integer;
+    line: String;
+    P: TPoint;
+    R: TRect;
+  begin
+    ACanvas.Brush.Style := bsClear;
+    for i := 0 to ALines.Count-1 do
+    begin
+      line := ALines[i];
+      P := ATextOrigins[i];
+      ACanvas.TextOut(P.X, P.Y, line);
+    end;
+  end;
+
+var
+  lineRects: TRectArray = nil;
+  txtOrigins: TPointArray = nil;
+  phi: Double;
+  txt: String;
+begin
+  if (ALines = nil) or (ALines.Count = 0) then
+  begin
+    ARect.BottomRight := ARect.TopLeft;
+    exit;
+  end;
+
+  // Standard procedure when there is no rotation
+  if ACanvas.Font.Orientation = 0 then
+  begin
+    txt := ALines.Text;
+    DrawText(ACanvas.Handle, PChar(txt), Length(txt), ARect, AFlags);
+    exit;
+  end;
+
+  // Rectangles enclosing unrotated text lines
+  lineRects := MeasureHorizontalLines(ALines);
+
+  // Rotate these rectangles and find overall bounding rectangle
+  phi := DegToRad(ACanvas.Font.Orientation * 0.1);
+  SetLength(txtOrigins, Length(lineRects));
+  GetRotatedBoundingRect(lineRects, phi,
+    AFlags and DT_HOR_ALIGN, AFlags and DT_VERT_ALIGN,
+    ARect, txtOrigins
+  );
+
+  // No painting if in measuring mode
+  if AFlags and DT_CALCRECT <> 0 then
+    exit;
+
+  // Draw the rotated text lines at the pre-calculated starting points.
+  DrawRotatedLines(ALines, txtOrigins);
+end;
 
 end.
