@@ -26,6 +26,7 @@ begin
         ctx^.get_border(GTK_STATE_FLAG_NORMAL, @border);
         ctx^.get_padding(GTK_STATE_FLAG_NORMAL, @padding);
         ctx^.get_margin(GTK_STATE_FLAG_NORMAL, @margin);
+        //writeln('LCLGtkScrolledWindowComputeExtents margin=',margin.top,' ',margin.bottom,' border=',border.top,' ',border.bottom,' padding=',padding.top,' ',padding.bottom);
         extents := gint(border.top)  + gint(border.bottom)
                  + gint(padding.top) + gint(padding.bottom)
                  + gint(margin.top)  + gint(margin.bottom);
@@ -105,26 +106,31 @@ begin
   vscroll := PGtkScrolledWindow(widget)^.get_vscrollbar;
   hscroll := PGtkScrolledWindow(widget)^.get_hscrollbar;
 
-  { MINIMUM THRESHOLDS (Correct Orientation) }
-  
-  // threshH: Needs horizontal scrollbar thickness + CSS extents
+  { MINIMUM THRESHOLDS widget's frame + scrollbars }
+
   threshH := LCLScrolledWinExtentsH;
+  threshW := LCLScrolledWinExtentsW;
+  { add vscrollbar's own minimum preferred size }
+  if vActive and Assigned(vscroll) and Gtk3IsWidget(vscroll) then
+  begin
+    minSize := 0;
+    gtk_widget_get_preferred_height(vscroll, @minSize, nil);
+    if minSize > 0 then
+      inc(threshH,minSize);
+    gtk_widget_get_preferred_width(vscroll, @minSize, nil);
+    if minSize > 0 then
+      inc(threshW,minSize);
+  end;
+  { add hscrollbar's own minimum preferred size }
   if hActive and Assigned(hscroll) and Gtk3IsWidget(hscroll) then
   begin
     minSize := 0;
     gtk_widget_get_preferred_height(hscroll, @minSize, nil);
     if minSize > 0 then
-      inc(threshH, minSize);
-  end;
-
-  // threshW: Needs vertical scrollbar thickness + CSS extents
-  threshW := LCLScrolledWinExtentsW;
-  if vActive and Assigned(vscroll) and Gtk3IsWidget(vscroll) then
-  begin
-    minSize := 0;
-    gtk_widget_get_preferred_width(vscroll, @minSize, nil);
+      inc(threshH,minSize);
+    gtk_widget_get_preferred_width(hscroll, @minSize, nil);
     if minSize > 0 then
-      inc(threshW, minSize);
+      inc(threshW,minSize);
   end;
 
   { SURGICAL PROTECTION }
@@ -149,6 +155,7 @@ begin
     if allocation^.height < threshH then allocation^.height := threshH;
   end;
 
+  //writeln('LCLGtkScrolledWindowSizeAllocate ',threshW,' ',threshH,' ',allocation^.width,',',allocation^.height);
   ParentClass^.size_allocate(widget, allocation);
 end;
 
