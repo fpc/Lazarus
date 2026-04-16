@@ -1270,9 +1270,7 @@ begin
   IsHotTrack := AValue <> [];
 
   if TGtk3ListView(ALV.Handle).IsTreeView then
-    g_object_set(PGObject(Widget), 'hover-selection', [IsHotTrack, nil])
-  else
-    g_object_set(PGObject(Widget), 'hover-selection', [IsHotTrack, nil]);
+    gtk_tree_view_set_hover_selection(PGtkTreeView(Widget),IsHotTrack);
 end;
 
 class procedure TGtk3WSCustomListView.SetHoverTime(const ALV: TCustomListView;
