@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, FpPascalParser,
-  FpErrorMessages, FpDbgInfo, FpdMemoryTools, LazLogger;
+  FpErrorMessages, FpDbgInfo, FpdMemoryTools, FpDbgCommon, LazLogger;
 
 type
 
