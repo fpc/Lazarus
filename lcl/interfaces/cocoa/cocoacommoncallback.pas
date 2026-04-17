@@ -29,6 +29,15 @@ type
     handled: Boolean;
   end;
 
+  { TCocoaMouseEventState }
+
+  TCocoaMouseEventState = record
+    isRouting: Boolean;
+    isLastWheelHorz: Boolean;
+    lastDownUpTime: NSTimeInterval; // the last processed mouse Event
+    lastMouseWithForce: Boolean;
+  end;
+
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
@@ -37,14 +46,13 @@ type
       FPropStorage: TStringList;
       FContext: TCocoaContext;
       FBoundsReportedToChildren: boolean;
-      FIsEventRouting:boolean;
-      FLastWheelWasHorz:boolean;
   protected
     function deliverMessage(var msg): LRESULT;
   protected
     _target: TWinControl;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     _keyState: TCocoaKeyEventState;
+    _mouseState: TCocoaMouseEventState;
   private
     function doSendKeyMessage(
       const msg: Cardinal;
@@ -81,11 +89,7 @@ type
     BlockCocoaMouseMove: Boolean;
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
     ForceReturnKeyDown: Boolean; // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
-
     IsOpaque: Boolean;
-
-    lastMouseDownUp: NSTimeInterval; // the last processed mouse Event
-    lastMouseWithForce: Boolean;
 
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
@@ -391,7 +395,6 @@ begin
   FPropStorage.Sorted := True;
   FPropStorage.Duplicates := dupAccept;
   FBoundsReportedToChildren:=false;
-  FIsEventRouting:=false;
   SuppressTabDown := true; // by default all Tabs would not be allowed for Cocoa.
                            // it should be enabled, i.e. for TMemo with WantTabs=true
 end;
@@ -536,7 +539,7 @@ begin
   if CocoaWidgetSetState.captureControl = 0 then Exit;
   obj := NSObject(CocoaWidgetSetState.captureControl);
   lCaptureView := obj.lclContentView;
-  if (obj <> Owner) and (lCaptureView <> Owner) and not FIsEventRouting then
+  if (obj <> Owner) and (lCaptureView <> Owner) and not _mouseState.isRouting then
   begin
     Result := lCaptureView.lclGetCallback;
   end;
@@ -844,9 +847,9 @@ begin
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [Target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
-    FIsEventRouting:=true;
+    _mouseState.isRouting:= True;
     Result := lCaptureControlCallback.MouseUpDownEvent(Event, AForceAsMouseUp);
-    FIsEventRouting:=false;
+    _mouseState.isRouting:= False;
     exit;
   end;
 
@@ -855,12 +858,12 @@ begin
   // For example NSTextField (TEdit) may contains NSTextView and BOTH
   // will signal mouseDown when the field is selected by mouse the first time.
   // In this case only 1 mouseDown should be passed to LCL
-  if (lastMouseDownUp = Event.timestamp) then begin
+  if (_mouseState.lastDownUpTime = Event.timestamp) then begin
     if not AForceAsMouseUp then Exit; // the same mouse event from a composite child
-    if lastMouseWithForce then Exit; // the same forced mouseUp event from a composite child
+    if _mouseState.lastMouseWithForce then Exit; // the same forced mouseUp event from a composite child
   end;
-  lastMouseDownUp := Event.timestamp;
-  lastMouseWithForce := AForceAsMouseUp;
+  _mouseState.lastDownUpTime := Event.timestamp;
+  _mouseState.lastMouseWithForce := AForceAsMouseUp;
 
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -1017,9 +1020,9 @@ begin
     callback := getCaptureControlCallback();
     if callback <> nil then
     begin
-      FIsEventRouting:=true;
+      _mouseState.isRouting:= True;
       Result := callback.MouseMove(Event);
-      FIsEventRouting:=false;
+      _mouseState.isRouting:= False;
       exit;
     end
     else
@@ -1051,17 +1054,17 @@ begin
         end;
     end;
 
-    if assigned(targetControl) and not FIsEventRouting then
+    if assigned(targetControl) and not _mouseState.isRouting then
     begin
       if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
-      FIsEventRouting:=true;
+      _mouseState.isRouting:= True;
        //debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
       obj := NSObject(targetControl.Handle).lclContentView;
       if obj = nil then Exit;
       callback := obj.lclGetCallback;
       if callback = nil then Exit; // Avoids crashes
       result := callback.MouseMove(Event);
-      FIsEventRouting := false;
+      _mouseState.isRouting:= False;
       exit;
     end;
 
@@ -1137,7 +1140,7 @@ begin
   // https://developer.apple.com/library/mac/releasenotes/AppKit/RN-AppKitOlderNotes/
   // It says that deltaY=1 means 1 line, and in the LCL 1 line is 120
   if (event.scrollingDeltaY <> 0) and
-     ((event.scrollingDeltaX = 0) or not FLastWheelWasHorz) then
+     ((event.scrollingDeltaX = 0) or not _mouseState.isLastWheelHorz) then
   begin
     Msg.Msg := LM_MOUSEWHEEL;
     if event.hasPreciseScrollingDeltas then
@@ -1163,7 +1166,7 @@ begin
   end;
 
   // Filter scrolls that affect both X and Y towards whatever the last scroll was
-  FLastWheelWasHorz := (Msg.Msg = LM_MOUSEHWHEEL);
+  _mouseState.isLastWheelHorz := (Msg.Msg = LM_MOUSEHWHEEL);
 
   // Avoid overflow/underflow in message
   if wheelDelta > High(SmallInt) then
