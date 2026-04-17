@@ -196,8 +196,6 @@ end;
 
 procedure TTreeViewItemsEditorForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
-var
-  lWasEdited: Boolean;
 begin
   // form actions
   if (Key = VK_RETURN) and (Shift = [ssCtrl]) then

@@ -43,7 +43,7 @@ uses
   // LazUtils
   LazFileUtils, LazLoggerBase, LazUTF8, Laz2_XMLCfg,
   // IdeIntf
-  LazIDEIntf;
+  PropEdits;
 
 const
   DefaultFilename = 'propeditconfig.xml';
@@ -78,23 +78,19 @@ implementation
 
 { TPropEditConfigs }
 
-procedure TPropEditConfigs.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+procedure TPropEditConfigs.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 begin
   FSampleEditMaskFilename := XMLConfig.GetValue(Path + pSampleMaskEditFile,'');
 end;
 
-procedure TPropEditConfigs.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+procedure TPropEditConfigs.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 begin
   XMLConfig.SetValue(Path + pSampleMaskEditFile,FSampleEditMaskFilename);
 end;
 
 constructor TPropEditConfigs.Create;
 begin
-   if Assigned(LazarusIDE) then
-     FFilename := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)  + DefaultFilename;
-   //if IDE does not exist, FFilename will be empty string, in effect making Load and Save silently fail
+  FFilename := GlobalDesignHook.GetPrivateDirectory + DefaultFilename;
 end;
 
 procedure TPropEditConfigs.Load;
@@ -134,7 +130,6 @@ begin
 end;
 
 finalization
-  if Assigned(PropEditConfigs) then
-    FreeandNil(PropEditConfigs);
+  FreeandNil(PropEditConfigs);
 
 end.

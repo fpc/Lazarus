@@ -23,7 +23,7 @@ uses
   // LazControls
   ListFilterEdit,
   // IdeIntf
-  ObjInspStrConsts, PropEditUtils, IDEImagesIntf, IDEWindowIntf;
+  ObjInspStrConsts, PropEditUtils, IDEWindowIntf;
 
 type
 
