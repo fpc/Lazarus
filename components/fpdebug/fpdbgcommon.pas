@@ -23,6 +23,8 @@ type
     OS: TOperatingSystem;
   end;
 
+  TFpIntrinsicPrefix = (ipColon, ipExclamation, ipNoPrefix);
+
 // This function returns the host descriptor
 // Use when target information not yet loaded - assumes that debug target is the same as host
 function hostDescriptor: TTargetDescriptor;

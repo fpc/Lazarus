@@ -1168,6 +1168,7 @@ var
   CurThreadId, CurStackFrame: Integer;
 begin
   FDbgBreakPoint := ADbgBreakPoint;
+  Condition := ADbgBreakPoint.Expression;
   InternalBreakpoint := ADbgBreakPoint.FInternalBreakpoint;
   case ADbgBreakPoint.Kind of
     bpkAddress: inherited Create(ADebugger, ADbgBreakPoint.Address);
@@ -2116,6 +2117,9 @@ begin
      (ADebugger = nil) or not(ADebugger.State in [dsRun, dsPause, dsInternalPause, dsInit])
   then
     exit;
+
+  if (ciCondition in AChanged) and (FInternalBreakpoint <> nil) then
+    FInternalBreakpoint.SetAutoUpdateCondition(Expression);
 
   if (ciEnabled in AChanged) and Enabled and (not FIsSet) then
     Include(FBreakChangeFlags, bcEnabled);
@@ -4074,31 +4078,6 @@ begin
     if assigned(Breakpoint) then begin
       ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
       if (ABreakPoint <> nil) and (ABreakPoint.Enabled) then begin
-
-        // TODO: parse expression when breakpoin is created / so invalid expressions do not need to be handled here
-        if ABreakPoint.Expression <> '' then begin
-          Context := GetContextForEvaluate(FDbgController.CurrentThreadId, 0);
-          if Context <> nil then begin
-            PasExpr := nil;
-            try
-              PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context, True);
-              PasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(GetProperties).IntrinsicPrefix;
-              PasExpr.Parse;
-              PasExpr.ResultValue; // trigger full validation
-              if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) and
-                 (not PasExpr.ResultValue.AsBool) // false => do not pause
-              then
-                &continue := True;
-            finally
-              PasExpr.Free;
-              Context.ReleaseReference;
-            end;
-
-            if &continue then
-              exit;
-          end;
-        end;
-
         ALocationAddr := GetLocation;
         if Assigned(EventLogHandler) then
           EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
@@ -4311,6 +4290,7 @@ begin
       FDbgController.CurrentProcess.Config.FileOverwriteStdErr := FileOverwriteStdErr;
 
       FDbgController.CurrentProcess.Config.BreakpointSearchMaxLines := TFpDebugDebuggerProperties(GetProperties).BreakpointSearchMaxLines;
+      FDbgController.CurrentProcess.Config.IntrinsicPrefix := TFpDebugDebuggerProperties(GetProperties).IntrinsicPrefix;
       FDbgController.CurrentProcess.HandleUserDebugEvents :=
         TFpDebugDebuggerProperties(GetProperties).HandleUserDebugEvents;
 

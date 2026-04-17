@@ -46,12 +46,12 @@ unit FpDebugDebuggerWorkThreads;
 interface
 
 uses
-  FpDebugDebuggerUtils, FpDebugValueConvertors, DbgIntfDebuggerBase,
-  DbgIntfBaseTypes, FpDbgClasses, FpDbgUtil, FPDbgController, FpPascalBuilder,
-  FpdMemoryTools, FpDbgInfo, FpPascalParser, FpErrorMessages,
-  FpDebugDebuggerBase, FpDebuggerResultData, FpDbgCallContextInfo, FpDbgDwarf,
-  FpDbgDwarfDataClasses, FpWatchResultData, FpDbgDwarfFreePascal, FpDbgDisasX86, LazDebuggerIntf,
-  LazDebuggerValueConverter, Forms, fgl, math, Classes, sysutils, LazClasses,
+  FpDebugDebuggerUtils, FpDebugValueConvertors, DbgIntfDebuggerBase, DbgIntfBaseTypes,
+  FpDbgClasses, FpDbgUtil, FPDbgController, FpPascalBuilder, FpdMemoryTools, FpDbgInfo,
+  FpPascalParser, FpErrorMessages, FpDebugDebuggerBase, FpDebuggerResultData, FpDbgCallContextInfo,
+  FpDbgDwarf, FpDbgDwarfDataClasses, FpWatchResultData, FpDbgDwarfFreePascal, FpDbgDisasX86,
+  FpDbgCommon, LazDebuggerIntf, LazDebuggerValueConverter, Forms, fgl, math, Classes, sysutils,
+  LazClasses,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 type
@@ -308,6 +308,7 @@ type
 
   TFpThreadWorkerBreakPointSet = class(TFpThreadWorkerBreakPoint)
   private
+    FCondition: String;
     FInternalBreakpoint: TFpDbgBreakpoint;
     FKind: TDBGBreakPointKind;
     FAddress: TDBGPtr;
@@ -330,6 +331,7 @@ type
     constructor Create(ADebugger: TFpDebugDebuggerBase;
       AWatchData: String; AWatchScope: TDBGWatchPointScope; AWatchKind: TDBGWatchPointKind;
       AStackFrame, AThreadId: Integer);
+    property Condition: String read FCondition write FCondition;
     property InternalBreakpoint: TFpDbgBreakpoint read FInternalBreakpoint write FInternalBreakpoint;
   end;
 
@@ -1530,6 +1532,7 @@ begin
         end;
       end;
     end;
+    FInternalBreakpoint.SetCondition(Condition);
 
     if InterlockedExchange(FResetBreakPoint, 0) = 1 then begin
       if (FInternalBreakpoint <> nil) then begin

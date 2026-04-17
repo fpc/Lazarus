@@ -36,7 +36,7 @@ interface
 uses
   Classes, sysutils, math, fgl, DbgIntfBaseTypes, LazDebuggerIntfFloatTypes, LazDebuggerIntf,
   FpDbgInfo, FpdMemoryTools, FpErrorMessages,
-  FpDbgDwarf, FpWatchResultData, FpDbgClasses,
+  FpDbgDwarf, FpWatchResultData, FpDbgClasses, FpDbgCommon,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   LazClasses;
 
@@ -62,7 +62,6 @@ type
 
   TSeparatorType = (ppstComma);
 
-  TFpIntrinsicPrefix = (ipColon, ipExclamation, ipNoPrefix);
   TFpIntrinsicFunc = (
     ifErrorNotFound,
     ifChildClass,

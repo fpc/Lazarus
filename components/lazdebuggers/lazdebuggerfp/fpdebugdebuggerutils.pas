@@ -30,7 +30,7 @@ unit FpDebugDebuggerUtils;
 interface
 
 uses
-  FpDbgUtil, FpdMemoryTools, FpPascalParser, FpErrorMessages, FpDbgClasses,
+  FpDbgUtil, FpdMemoryTools, FpPascalParser, FpErrorMessages, FpDbgClasses, FpDbgCommon,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
   DbgIntfDebuggerBase, sysutils, Classes, Math, syncobjs, Forms, FpDebugStringConstants;
 

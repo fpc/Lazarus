@@ -572,6 +572,7 @@ type
 
     procedure SetAutoDisable;
     procedure SetAutoDestroy;
+    procedure SetAutoUpdateCondition(ANewCondition: String);
 
     procedure Free;
     procedure SetBreak;
@@ -580,6 +581,7 @@ type
     procedure RemoveAddress(const ALocation: TDBGPtr);
     procedure RemoveAllAddresses;
     function HasLocation(const ALocation: TDBGPtr): Boolean;
+    procedure SetCondition(ANewCondition: String);
 
     property State: TFpDbgBreakpointState read GetState;
     property Enabled: boolean read GetEnabled write SetEnabled;
@@ -594,16 +596,19 @@ type
   protected type
     TFpBreakUpdateFlag = (
       bufDisable,
-      bufDestroy
+      bufDestroy,
+      bufNewCondition
     );
     TFpBreakUpdateFlags = set of TFpBreakUpdateFlag;
   strict private
     FProcess: TDbgProcess;
   private
     FUpdateFlags: TFpBreakUpdateFlags; // managed by update-list inside lock
+    FNewCondition: String;
 
     FFreeByDbgProcess: Boolean;
     FEnabled: boolean;
+    FCondition: String;
     FOn_Thread_StateChange: TFpDbgBreakpointStateChangeEvent;
 
     function GetOn_Thread_StateChange: TFpDbgBreakpointStateChangeEvent;
@@ -625,11 +630,12 @@ type
     // Actions that will happen the next time the loop does an event, or pauses
     procedure SetAutoDisable;
     procedure SetAutoDestroy;
+    procedure SetAutoUpdateCondition(ANewCondition: String);
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
 
-    function Hit(const AThreadID: Integer; ABreakpointAddress: TDBGPtr): Boolean; virtual; abstract;
+    function IsValidHit(const AThreadID: Integer): Boolean; virtual;
     function HasLocation(const ALocation: TDBGPtr): Boolean; virtual; abstract;
     // A breakpoint could also be inside/part of a library.
 
@@ -639,6 +645,8 @@ type
 
     procedure SetBreak; virtual; abstract;
     procedure ResetBreak; virtual; abstract;
+
+    procedure SetCondition(ANewCondition: String);
 
     // FreeByDbgProcess: The breakpoint will be freed by TDbgProcess.Destroy
     // If the breakpoint does not have a process, it will be destroyed immediately
@@ -662,6 +670,7 @@ type
     destructor Destroy; override;
     procedure SetProcessToNil(ABreakPoint: TFpDbgBreakpointBase; var TheProcessField: TDbgProcess);
     function Add(ABreakPoint: TFpDbgBreakpointBase; AFlags: TFpDbgBreakpointBase.TFpBreakUpdateFlags): boolean;
+    function AddForCondition(ABreakPoint: TFpDbgBreakpointBase; ACond: String): boolean;
     function  Remove(ABreakPoint: TFpDbgBreakpointBase): boolean;
     procedure RunUpdates;
   end;
@@ -690,7 +699,6 @@ type
   public
     constructor Create(const AProcess: TDbgProcess; const ALocation: TDBGPtrArray; AnEnabled: Boolean); virtual;
     destructor Destroy; override;
-    function Hit(const AThreadID: Integer; ABreakpointAddress: TDBGPtr): Boolean; override;
     function HasLocation(const ALocation: TDBGPtr): Boolean; override;
 
     procedure AddAddress(const ALocation: TDBGPtr); override;
@@ -769,7 +777,7 @@ type
     constructor Create(const AProcess: TDbgProcess; const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
                       AScope: TDBGWatchPointScope); virtual;
     destructor Destroy; override;
-    function IsValidHit(const AThreadID: Integer): Boolean;
+    function IsValidHit(const AThreadID: Integer): Boolean; override;
 
     procedure SetBreak; override;
     procedure ResetBreak; override;
@@ -784,6 +792,7 @@ type
   TDbgConfig = class
   private
     FBreakpointSearchMaxLines: integer;
+    FIntrinsicPrefix: TFpIntrinsicPrefix;
     // WindowBounds
     FUseConsoleWinPos: boolean;
     FUseConsoleWinSize: boolean;
@@ -815,6 +824,7 @@ type
     property FileOverwriteStdErr: Boolean read FFileOverwriteStdErr write FFileOverwriteStdErr;
     // Breakpoints
     property BreakpointSearchMaxLines: integer read FBreakpointSearchMaxLines  write FBreakpointSearchMaxLines;
+    property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix;
   end;
 
   { TDbgInstance }
@@ -1211,7 +1221,8 @@ implementation
 
 uses
   FpDbgDwarfDataClasses,
-  FpDbgDwarf;
+  FpDbgDwarf,
+  FpPascalParser;
 
 type
   TOSDbgClassesList = class(specialize TFPGObjectList<TOSDbgClasses>)
@@ -3455,15 +3466,15 @@ begin
   SetLength(FCurrentBreakpointList, Length(BList));
   xtra := 0;
   for i := 0 to Length(BList) - 1 do begin
-    if not BList[0].FInternal then begin
-      BList[i].Hit(AThreadId, BreakpointAddress);
+    if (not BList[i].FInternal) and
+       (BList[i]).IsValidHit(AThreadID)
+    then begin
       if (FCurrentBreakpoint = nil) then begin
         FCurrentBreakpoint := BList[i];
       end
       else begin
         FCurrentBreakpointList[xtra] := BList[i];
         inc(xtra);
-        BList[i].Hit(AThreadId, BreakpointAddress);
       end;
     end;
   end;
@@ -4373,6 +4384,15 @@ begin
     Destroy;
 end;
 
+procedure TFpDbgBreakpointBase.SetAutoUpdateCondition(ANewCondition: String);
+var
+  p: TDbgProcess;
+begin
+  p := Process;
+  if p <> nil then
+    p.FBreakpointUpdateList.AddForCondition(Self, ANewCondition);
+end;
+
 constructor TFpDbgBreakpointBase.Create(const AProcess: TDbgProcess);
 begin
   inherited Create;
@@ -4384,6 +4404,37 @@ begin
   if (FUpdateFlags <> []) and (Process <> nil) then
     Process.FBreakpointUpdateList.Remove(Self);
   inherited Destroy;
+end;
+
+function TFpDbgBreakpointBase.IsValidHit(const AThreadID: Integer): Boolean;
+var
+  Context: TFpDbgSymbolScope;
+  PasExpr: TFpPascalExpression;
+begin
+  Result := True;
+  if FCondition <> '' then begin
+    // TODO: parse expression when breakpoint is created
+    Context := Process.FindSymbolScope(AThreadID, 0);
+    if Context <> nil then begin
+      PasExpr := nil;
+      try
+        PasExpr := TFpPascalExpression.Create(FCondition, Context, True);
+        PasExpr.IntrinsicPrefix := Process.Config.IntrinsicPrefix;
+        PasExpr.Parse;
+        PasExpr.ResultValue; // trigger full validation
+        if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) then
+          Result := PasExpr.ResultValue.AsBool; // false => do not pause
+      finally
+        PasExpr.Free;
+        Context.ReleaseReference;
+      end;
+    end;
+  end;
+end;
+
+procedure TFpDbgBreakpointBase.SetCondition(ANewCondition: String);
+begin
+  FCondition := ANewCondition;
 end;
 
 function TFpDbgBreakpointBase.__FpDbgBrk: TFpDbgBreakpointBase;
@@ -4430,6 +4481,9 @@ begin
 
   if bufDisable in FUpdateFlags then begin
     ResetBreak;
+  end;
+  if bufNewCondition in FUpdateFlags then begin
+    FCondition := FNewCondition;
   end;
   FUpdateFlags := [];
 end;
@@ -4487,6 +4541,23 @@ begin
     if ABreakPoint.FUpdateFlags = [] then
       FList.Add(ABreakPoint);
     ABreakPoint.FUpdateFlags := ABreakPoint.FUpdateFlags + AFlags;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+function TFpInternalBreakpointUpdateList.AddForCondition(ABreakPoint: TFpDbgBreakpointBase;
+  ACond: String): boolean;
+begin
+  Result := True;
+  FLock.Enter;
+  try
+    if ABreakPoint.Process = nil then
+      exit(False);
+    if ABreakPoint.FUpdateFlags = [] then
+      FList.Add(ABreakPoint);
+    ABreakPoint.FUpdateFlags := ABreakPoint.FUpdateFlags + [bufNewCondition];
+    ABreakPoint.FNewCondition := ACond;
   finally
     FLock.Leave;
   end;
@@ -4620,20 +4691,6 @@ begin
     Process.FBreakpointList.Remove(Self);
   ResetBreak;
   inherited;
-end;
-
-function TFpInternalBreakpoint.Hit(const AThreadID: Integer;
-  ABreakpointAddress: TDBGPtr): Boolean;
-begin
-  Result := False;
-  assert(Process<>nil, 'TFpInternalBreakpoint.Hit: Process<>nil');
-  if //Process.FBreakMap.HasId(ABreakpointAddress) and
-     (Process.FBreakTargetHandler.IsHardcodeBreakPoint(ABreakpointAddress))
-  then
-    exit; // breakpoint on a hardcoded breakpoint
-          // no need to jump back and restore instruction
-
-  Result := true;
 end;
 
 function TFpInternalBreakpoint.HasLocation(const ALocation: TDBGPtr): Boolean;
@@ -5003,6 +5060,9 @@ begin
     if Process.ReadData(FLocation, FSize, buf[0]) then
       Result := (CompareByte(FOrigValue[0], buf[0], FSize) <> 0);
   end;
+
+  if Result then
+    Result := inherited IsValidHit(AThreadID);
 end;
 
 procedure TFpInternalWatchpoint.SetBreak;
