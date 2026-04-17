@@ -8749,9 +8749,9 @@ begin
     else
       CursorNode := nil;
 
-    if CursorNode = nil then begin
-      // raise exception
+    if CursorNode = nil then begin // last chance attempt
       CursorNode := FindDeepestNodeAtPos(CleanCursorPos, True);
+      if CursorNode = nil then exit;
     end;
     if CursorNode.Desc = ctnBeginBlock then begin
       CursorNode := FindDeepestNodeAtPos(CursorNode, CleanCursorPos, True);
