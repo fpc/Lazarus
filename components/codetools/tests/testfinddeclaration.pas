@@ -206,6 +206,9 @@ type
     procedure TestFindDeclaration_ObjCCategory;
     procedure TestFindDeclaration_CBlocks;
 
+    // find overloads
+    procedure TestFindDeclaration_Overloads;
+
     // generics
     procedure TestFindDeclaration_GenericFunction;
     procedure TestFindDeclaration_Generics_Enumerator;
@@ -1800,6 +1803,96 @@ begin
     'end.',
   '']);
   ParseModule;
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_Overloads;
+var
+  ListOfPCodeXYPosition: TFPList;
+
+  procedure CheckOverload(Code: TCodeBuffer; const Marker: string);
+  var
+    p: integer;
+    CodeXY: TCodeXYPosition;
+    s: String;
+  begin
+    CodeXY.Code:=Code;
+    s:='{'+Marker+'}';
+    p:=Pos(s,Code.Source);
+    if p<1 then
+      Fail('Marker '+Marker+' in "'+Code.Filename+'" not found');
+
+    inc(p,length(s));
+    CodeXY.Code.AbsoluteToLineCol(p,CodeXY.Y,CodeXY.X);
+    if CodeXY.Y<1 then
+      Fail('Marker '+Marker+' in "'+Code.Filename+'" not found');
+
+    //writeln('CheckOverload ',dbgs(CodeXY),' ',Marker);
+    if IndexOfCodePosition(ListOfPCodeXYPosition,@CodeXY)<0 then
+      Fail('Overload '+Marker+' at '+dbgs(CodeXY)+' not found');
+  end;
+
+var
+  IncFile, Unit2File: TCodeBuffer;
+  p, i: integer;
+  CodeXY: TCodeXYPosition;
+begin
+  IncFile:=CodeToolBoss.CreateFile('sub.inc');
+  Unit2File:=CodeToolBoss.CreateFile('unit2.pas');
+  ListOfPCodeXYPosition:=nil;
+  try
+    Unit2File.Source:='unit unit2;'+LineEnding
+      +'{$mode objfpc}{$H+}'+LineEnding
+      +'interface'+LineEnding
+      +'{#Overload4}procedure Fly(c: char); overload;'+LineEnding
+      +'implementation'+LineEnding
+      +'procedure Fly(c: char); overload;'+LineEnding
+      +'begin end;'+LineEnding
+      +'end.'+LineEnding;
+
+    IncFile.Source:='{#Overload3}procedure Fly(s: string); overload;'+LineEnding
+      +'begin end;'+LineEnding;
+
+    StartProgram;
+    Add([
+      '{$mode objfpc}{$H+}',
+      'uses Unit2;',
+      '{#Overload2}procedure Fly(b: boolean); overload;',
+      'begin',
+      'end;',
+      '{$I sub.inc}',
+      '{#Overload1}procedure Fly(w: word); overload;',
+      'begin',
+      'end;',
+      'begin',
+      '  Fly{#a}();',
+      'end.',
+    '']);
+    ParseModule;
+
+    CodeXY.Code:=Code;
+    p:=Pos('{#a}',Code.Source)-1;
+    if p<1 then
+      Fail('Marker #a not found');
+    Code.AbsoluteToLineCol(p,CodeXY.Y,CodeXY.X);
+
+    if not CodeToolBoss.FindDeclarationAndOverload(Code,CodeXY.X,CodeXY.Y,ListOfPCodeXYPosition,[]) then
+      Fail('FindDeclarationAndOverload failed');
+
+    for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+      CodeXY:=PCodeXYPosition(ListOfPCodeXYPosition[i])^;
+      //debugln(['TTestFindDeclaration.TestFindDeclaration_Overloads Found: ',i,' ',dbgs(CodeXY)]);
+    end;
+
+    CheckOverload(Code,'#Overload1');
+    CheckOverload(Code,'#Overload2');
+    CheckOverload(IncFile,'#Overload3');
+    CheckOverload(Unit2File,'#Overload4');
+
+  finally
+    FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    Unit2File.IsDeleted:=true;
+    IncFile.IsDeleted:=true;
+  end;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_Arrays;

@@ -2708,9 +2708,9 @@ type
 
 var
   VarNameRange, ProcNameAtom: TAtomPosition;
-  ParameterIndex, i, j, APos: integer;
+  ParameterIndex, i, j: integer;
   Params: TFindDeclarationParams;
-  ParameterNode, ANode: TCodeTreeNode;
+  ParameterNode: TCodeTreeNode;
   TypeNode: TCodeTreeNode;
   NewType: String;
   IgnorePos: TCodePosition;
@@ -2719,8 +2719,8 @@ var
   ExprType: TExpressionType;
   Context: TFindContext;
   HasAtOperator: Boolean;
-  StartTypeTool, TypeTool, ATool: TFindDeclarationTool;
-  AliasType: TFindContext;
+  StartTypeTool, TypeTool: TFindDeclarationTool;
+  AliasType, aFindContext: TFindContext;
   Identifier: String;
   CodeXYPos: TCodeXYPosition;
   FPL: TFPList;
@@ -2836,25 +2836,19 @@ begin
         if not Params.NewCodeTool.CleanPosToCaret(
           Params.NewNode.FirstChild.StartPos,CodeXYPos) then
         exit;
-        if not Context.Tool.FindDeclarationAndOverload(CodeXYPos,FPL,
-          [fdlfWithoutEmptyProperties]) then
-        exit;
+        if not Context.Tool.FindDeclarationAndOverloadNodes(CodeXYPos,FPL,
+            [fdlfWithoutEmptyProperties]) then
+          exit;
         if FPL<>nil then
           for i:=0 to FPL.Count-1 do begin
-            CodeXYPos:=TCodeXYPosition(FPL[i]^);
-            ATool:= FindCodeToolForUsedUnit(CodeXYPos.Code.Scanner.SourceName,
-              CodeXYPos.Code.Filename,false);
-            if ATool<>nil then begin
-              SetLength(ProcArray, Length(ProcArray)+1);
-              ATool.CaretToCleanPos(CodeXYPos,Apos);
-              ANode:=ATool.FindDeepestNodeAtPos(APos,false);
-              ProcArray[high(ProcArray)].Tool:=Atool;
-              ProcArray[high(ProcArray)].ProcNode:=ANode;
-              SetTypeName(ProcArray[high(ProcArray)],ParameterIndex);  // get N-th parameter type name
-            end;
+            aFindContext:=PFindContext(FPL[i])^;
+            SetLength(ProcArray, Length(ProcArray)+1);
+            ProcArray[high(ProcArray)].Tool:=aFindContext.Tool;
+            ProcArray[high(ProcArray)].ProcNode:=aFindContext.Node;
+            SetTypeName(ProcArray[high(ProcArray)],ParameterIndex);  // get N-th parameter type name
           end;
       finally
-        FreeListOfPCodeXYPosition(FPL);
+        FreeListOfPFindContext(FPL);
         ClearIgnoreErrorAfter;
       end;
     end else

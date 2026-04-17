@@ -1076,6 +1076,9 @@ type
     function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
       out ListOfPCodeXYPosition: TFPList;
       Flags: TFindDeclarationListFlags): boolean;
+    function FindDeclarationAndOverloadNodes(const CursorPos: TCodeXYPosition;
+      out ListOfPFindContext: TFPList;
+      Flags: TFindDeclarationListFlags): boolean;
     function FindIdentifierContextsAtStatement(CleanPos: integer;
       out IsSubIdentifier: boolean; out ListOfPFindContext: TFPList;
       WithPriorSelf: boolean = false): boolean;
@@ -6338,26 +6341,55 @@ function TFindDeclarationTool.FindDeclarationAndOverload(
   const CursorPos: TCodeXYPosition; out ListOfPCodeXYPosition: TFPList;
   Flags: TFindDeclarationListFlags): boolean;
 var
+  ListOfPFindContext: TFPList;
+  aFindContext: PFindContext;
+  NewPos: TCodeXYPosition;
+  i: Integer;
+begin
+  Result:=false;
+  ListOfPCodeXYPosition:=nil;
+  try
+    if not FindDeclarationAndOverloadNodes(CursorPos,ListOfPFindContext,Flags) then
+      exit;
+    Result:=true;
+
+    if (ListOfPFindContext=nil) or (ListOfPFindContext.Count=0) then exit;
+    for i:=0 to ListOfPFindContext.Count-1 do begin
+      aFindContext:=PFindContext(ListOfPFindContext[i]);
+      if not aFindContext^.Tool.CleanPosToCaret(aFindContext^.Node.StartPos,NewPos) then
+        continue;
+      AddCodePosition(ListOfPCodeXYPosition,NewPos);
+    end;
+  finally
+    FreeListOfPFindContext(ListOfPFindContext);
+  end;
+end;
+
+function TFindDeclarationTool.FindDeclarationAndOverloadNodes(const CursorPos: TCodeXYPosition; out
+  ListOfPFindContext: TFPList; Flags: TFindDeclarationListFlags): boolean;
+var
   CurCursorPos: TCodeXYPosition;
   NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode;
   NewPos: TCodeXYPosition;
   NewTopLine: integer;
   CurTool: TFindDeclarationTool;
-  OldPositions: TFPList;
+  AllPositions: TFPList;
   NodeList: TFPList;
   CleanPos: integer;
   AtDefinition: Boolean;
 
   procedure AddPos;
+  var
+    aContext: TFindContext;
   begin
-    AddCodePosition(OldPositions,NewPos);
     if (NodeList.IndexOf(NewNode)>=0) then begin
       {$IFDEF VerboseFindDeclarationAndOverload}
       debugln(['AddPos skip, because Node already in NodList']);
       {$ENDIF}
       exit;
     end;
+    AddCodePosition(AllPositions,NewPos);
 
     if (fdlfOneOverloadPerUnit in Flags)
     and (NodeList.Count>0)
@@ -6396,9 +6428,11 @@ var
       end;
     end;
 
-    AddCodePosition(ListOfPCodeXYPosition,NewPos);
+    aContext.Tool:=NewTool;
+    aContext.Node:=NewNode;
+    AddFindContext(ListOfPFindContext,aContext);
   end;
-  
+
   function StartPositionAtDefinition: boolean;
   begin
     if (NewNode.Desc in AllIdentifierDefinitions)
@@ -6441,13 +6475,13 @@ var
 
 begin
   {$IFDEF VerboseFindDeclarationAndOverload}
-  debugln(['TFindDeclarationTool.FindDeclarationAndOverload START']);
+  debugln(['TFindDeclarationTool.FindDeclarationAndOverload START ',dbgs(CursorPos)]);
   {$ENDIF}
   Result:=true;
-  ListOfPCodeXYPosition:=nil;
+  ListOfPFindContext:=nil;
   NewTool:=nil;
   NewNode:=nil;
-  OldPositions:=nil;
+  AllPositions:=nil;
   NodeList:=nil;
 
   ActivateGlobalWriteLock;
@@ -6491,7 +6525,7 @@ begin
         +[fsfSearchSourceName],
         NewTool,NewNode,NewPos,NewTopLine) do
       begin
-        if IndexOfCodePosition(OldPositions,@NewPos)>=0 then break;
+        if IndexOfCodePosition(AllPositions,@NewPos)>=0 then break;
         AddPos;
         CurCursorPos:=NewPos;
         CurTool:=NewTool;
@@ -6510,7 +6544,7 @@ begin
       on E: ELinkScannerError do ;
     end;
   finally
-    FreeListOfPCodeXYPosition(OldPositions);
+    FreeListOfPCodeXYPosition(AllPositions);
     NodeList.Free;
     DeactivateGlobalWriteLock;
   end;
