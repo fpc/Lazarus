@@ -702,6 +702,7 @@ begin
   //
   FDebugger.Locals.TriggerInvalidateLocalsValues;
   FDebugger.Watches.TriggerInvalidateWatchValues;
+  FDebugger.Registers.TriggerInvalidateRegisterValues;
   FDebugger.CallStack.CurrentCallStackList.Clear;
 
   UnQueue_DecRef;

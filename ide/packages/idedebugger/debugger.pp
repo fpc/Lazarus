@@ -1341,6 +1341,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure InvalidateItems;
+    procedure InvalidateRegisterValues; override;
     procedure AddNotification(const ANotification: TRegistersNotification);
     procedure RemoveNotification(const ANotification: TRegistersNotification);
     property  CurrentRegistersList: TCurrentIDERegistersList read GetCurrentRegistersList;
@@ -8729,6 +8730,11 @@ end;
 procedure TIdeRegistersMonitor.InvalidateItems;
 begin
   CurrentRegistersList.InvalidateItems;
+end;
+
+procedure TIdeRegistersMonitor.InvalidateRegisterValues;
+begin
+  CurrentRegistersList.Clear;
 end;
 
 procedure TIdeRegistersMonitor.AddNotification(const ANotification: TRegistersNotification);
