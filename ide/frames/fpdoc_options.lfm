@@ -5,6 +5,7 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
   Width = 476
   ClientHeight = 380
   ClientWidth = 476
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   Visible = False
   DesignLeft = 452
@@ -14,26 +15,28 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 0
-    Height = 207
+    Left = 6
+    Height = 213
     Top = 0
-    Width = 476
+    Width = 470
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
+    BorderSpacing.Left = 6
     Caption = 'LazDocPathsGroupBox'
-    ClientHeight = 188
-    ClientWidth = 472
+    ClientHeight = 187
+    ClientWidth = 464
     TabOrder = 0
     object LazDocListBox: TListBox
       Left = 6
       Height = 108
       Top = 6
-      Width = 460
+      Width = 452
       Align = alTop
       BorderSpacing.Around = 6
       ItemHeight = 0
-      OnSelectionChange = LazDocListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
+      OnSelectionChange = LazDocListBoxSelectionChange
     end
     object LazDocAddPathButton: TBitBtn
       AnchorSideLeft.Control = LazDocPathsGroupBox
@@ -42,28 +45,28 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       Left = 6
       Height = 29
       Top = 120
-      Width = 166
+      Width = 146
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'LazDocAddPathButton'
       Enabled = False
-      OnClick = LazDocAddPathButtonClick
       TabOrder = 1
+      OnClick = LazDocAddPathButtonClick
     end
     object LazDocDeletePathButton: TBitBtn
       AnchorSideLeft.Control = LazDocAddPathButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LazDocAddPathButton
-      Left = 182
+      Left = 162
       Height = 29
       Top = 120
-      Width = 182
+      Width = 159
       AutoSize = True
       BorderSpacing.Left = 10
       Caption = 'LazDocDeletePathButton'
       Enabled = False
-      OnClick = LazDocDeletePathButtonClick
       TabOrder = 2
+      OnClick = LazDocDeletePathButtonClick
     end
     object LazDocPathEdit: TDirectoryEdit
       AnchorSideLeft.Control = LazDocPathsGroupBox
@@ -72,9 +75,9 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       AnchorSideRight.Control = LazDocListBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 27
+      Height = 26
       Top = 155
-      Width = 460
+      Width = 452
       Directory = 'LazDocPathEdit'
       DialogOptions = [ofPathMustExist, ofEnableSizing, ofViewDetail]
       ShowHidden = False
@@ -86,8 +89,8 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       BorderSpacing.Bottom = 6
       MaxLength = 0
       TabOrder = 3
-      OnChange = LazDocPathEditChange
       Text = 'LazDocPathEdit'
+      OnChange = LazDocPathEditChange
     end
   end
 end

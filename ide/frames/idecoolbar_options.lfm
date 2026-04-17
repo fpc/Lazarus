@@ -5,6 +5,7 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
   Width = 520
   ClientHeight = 451
   ClientWidth = 520
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 744
   DesignTop = 282
@@ -17,13 +18,13 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 264
-    Top = 187
+    Height = 228
+    Top = 223
     Width = 520
     Align = alClient
     BorderSpacing.Top = 6
     BevelOuter = bvNone
-    ClientHeight = 264
+    ClientHeight = 228
     ClientWidth = 520
     Constraints.MinHeight = 115
     TabOrder = 1
@@ -34,7 +35,7 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
       AnchorSideBottom.Control = lblNoAutoSaveActiveDesktop
       Left = 0
       Height = 35
-      Top = 210
+      Top = 169
       Width = 520
       Anchors = [akLeft, akRight, akBottom]
       AutoSize = True
@@ -48,67 +49,67 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
         AnchorSideBottom.Control = pnButtons
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 23
-        Top = 6
-        Width = 45
+        Height = 29
+        Top = 0
+        Width = 38
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
         BorderSpacing.Bottom = 6
         Caption = 'Add'
-        OnClick = bAddClick
         TabOrder = 0
+        OnClick = bAddClick
       end
       object bDelete: TBitBtn
         AnchorSideLeft.Control = bConfig
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = pnButtons
         AnchorSideBottom.Side = asrBottom
-        Left = 120
-        Height = 23
-        Top = 6
-        Width = 57
+        Left = 108
+        Height = 29
+        Top = 0
+        Width = 51
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
         BorderSpacing.Bottom = 6
         Caption = 'Delete'
-        OnClick = bDeleteClick
         TabOrder = 2
+        OnClick = bDeleteClick
       end
       object bConfig: TBitBtn
         AnchorSideLeft.Control = bAdd
         AnchorSideLeft.Side = asrBottom
         AnchorSideBottom.Control = pnButtons
         AnchorSideBottom.Side = asrBottom
-        Left = 57
-        Height = 23
-        Top = 6
-        Width = 57
+        Left = 50
+        Height = 29
+        Top = 0
+        Width = 52
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
         BorderSpacing.Bottom = 6
         Caption = 'Config'
-        OnClick = bConfigClick
         TabOrder = 1
+        OnClick = bConfigClick
       end
       object bDefaultToolbar: TBitBtn
         AnchorSideRight.Control = pnButtons
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = pnButtons
         AnchorSideBottom.Side = asrBottom
-        Left = 453
-        Height = 23
-        Top = 6
-        Width = 61
+        Left = 458
+        Height = 29
+        Top = 0
+        Width = 56
         Anchors = [akRight, akBottom]
         AutoSize = True
         BorderSpacing.Right = 6
         BorderSpacing.Bottom = 6
         Caption = 'Default'
-        OnClick = bDefaultToolbarClick
         TabOrder = 3
+        OnClick = bDefaultToolbarClick
       end
     end
     object sbCoolBar: TScrollBox
@@ -118,7 +119,7 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnButtons
       Left = 0
-      Height = 198
+      Height = 157
       Top = 0
       Width = 520
       HorzScrollBar.Page = 75
@@ -126,7 +127,7 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Bottom = 12
       BorderStyle = bsNone
-      ClientHeight = 198
+      ClientHeight = 157
       ClientWidth = 520
       Constraints.MinHeight = 75
       TabOrder = 0
@@ -158,11 +159,12 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 0
-      Height = 13
-      Top = 245
-      Width = 520
+      Left = 6
+      Height = 18
+      Top = 204
+      Width = 514
       Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Left = 6
       BorderSpacing.Bottom = 6
       Caption = 'lblNoAutoSaveActiveDesktop'
       Font.Color = clInactiveCaption
@@ -173,25 +175,25 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
   end
   object pnTop: TPanel
     Left = 0
-    Height = 168
+    Height = 196
     Top = 0
     Width = 520
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 168
+    ClientHeight = 196
     ClientWidth = 520
     Constraints.MinWidth = 350
     TabOrder = 0
     object dbGeneralSettings: TDividerBevel
       Left = 0
-      Height = 13
-      Top = 5
+      Height = 18
+      Top = 6
       Width = 520
       Caption = 'General Coolbars Settings'
       Align = alTop
-      BorderSpacing.Top = 5
-      BorderSpacing.Bottom = 5
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 3
       Font.Style = [fsBold]
       ParentColor = False
       ParentFont = False
@@ -201,26 +203,27 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
       AnchorSideTop.Control = spCoolBarWidth
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnTopCenterLabel
-      Left = 0
-      Height = 78
-      Top = 55
-      Width = 257
+      Left = 6
+      Height = 97
+      Top = 58
+      Width = 248
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 6
-      BorderSpacing.Right = 3
+      BorderSpacing.Right = 6
       Caption = 'Grab Style'
-      ClientHeight = 60
-      ClientWidth = 253
+      ClientHeight = 71
+      ClientWidth = 242
       TabOrder = 1
       object lbGrabWidth: TLabel
         AnchorSideTop.Control = spGrabWidth
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = spGrabWidth
-        Left = 107
-        Height = 13
-        Top = 37
-        Width = 58
+        Left = 86
+        Height = 18
+        Top = 42
+        Width = 68
         Anchors = [akTop, akRight]
         BorderSpacing.Around = 6
         Caption = 'Grab Width:'
@@ -231,17 +234,17 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = gbGrabStyle
         AnchorSideRight.Side = asrBottom
-        Left = 171
-        Height = 21
-        Top = 33
+        Left = 160
+        Height = 27
+        Top = 38
         Width = 76
         Anchors = [akTop, akRight]
         BorderSpacing.Around = 6
         MaxValue = 50
         MinValue = 1
-        OnChange = spGrabWidthChange
         TabOrder = 1
         Value = 5
+        OnChange = spGrabWidthChange
       end
       object cbGrabStyle: TComboBox
         AnchorSideLeft.Control = gbGrabStyle
@@ -249,12 +252,12 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
         AnchorSideRight.Control = gbGrabStyle
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 21
+        Height = 26
         Top = 6
-        Width = 241
+        Width = 230
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
-        ItemHeight = 13
+        ItemHeight = 18
         ItemIndex = 1
         Items.Strings = (
           'gsSimple'
@@ -264,10 +267,10 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
           'gsGripper'
           'gsButton'
         )
-        OnChange = cbGrabStyleChange
         Style = csDropDownList
         TabOrder = 0
         Text = 'gsDouble'
+        OnChange = cbGrabStyleChange
       end
     end
     object bDefaultGeneral: TBitBtn
@@ -277,29 +280,29 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnTop
       AnchorSideBottom.Side = asrBottom
-      Left = 453
-      Height = 23
-      Top = 139
-      Width = 61
+      Left = 458
+      Height = 29
+      Top = 161
+      Width = 56
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Default'
-      OnClick = bDefaultGeneralClick
       TabOrder = 3
+      OnClick = bDefaultGeneralClick
     end
     object cbCoolBarVisible: TCheckBox
       AnchorSideLeft.Control = pnTop
       AnchorSideTop.Control = dbGeneralSettings
       AnchorSideTop.Side = asrBottom
-      Left = 0
-      Height = 17
-      Top = 30
-      Width = 97
-      BorderSpacing.Top = 12
+      Left = 6
+      Height = 23
+      Top = 27
+      Width = 123
+      BorderSpacing.Left = 6
       Caption = 'Coolbar is visible'
-      OnClick = cbCoolBarVisibleClick
       TabOrder = 0
+      OnClick = cbCoolBarVisibleClick
     end
     object gbBorderStyle: TGroupBox
       AnchorSideLeft.Control = gbGrabStyle
@@ -309,16 +312,16 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = gbGrabStyle
       AnchorSideBottom.Side = asrBottom
-      Left = 263
-      Height = 78
-      Top = 55
-      Width = 257
+      Left = 260
+      Height = 97
+      Top = 58
+      Width = 260
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoSize = True
       BorderSpacing.Left = 6
       Caption = 'Band Border Style'
-      ClientHeight = 60
-      ClientWidth = 253
+      ClientHeight = 71
+      ClientWidth = 254
       TabOrder = 2
       object cbBorderStyle: TComboBox
         AnchorSideLeft.Control = gbBorderStyle
@@ -326,21 +329,21 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
         AnchorSideRight.Control = gbBorderStyle
         AnchorSideRight.Side = asrBottom
         Left = 6
-        Height = 21
+        Height = 26
         Top = 6
-        Width = 241
+        Width = 242
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
-        ItemHeight = 13
+        ItemHeight = 18
         ItemIndex = 1
         Items.Strings = (
           'None'
           'Single'
         )
-        OnChange = cbBorderStyleChange
         Style = csDropDownList
         TabOrder = 0
         Text = 'Single'
+        OnChange = cbBorderStyleChange
       end
     end
     object lbCoolBarWidth: TLabel
@@ -348,10 +351,10 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cbCoolBarVisible
       AnchorSideTop.Side = asrCenter
-      Left = 129
-      Height = 13
-      Top = 32
-      Width = 66
+      Left = 161
+      Height = 18
+      Top = 29
+      Width = 81
       Alignment = taRightJustify
       BorderSpacing.Left = 32
       Caption = 'Coolbar width'
@@ -362,15 +365,16 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = lbCoolBarWidth
       AnchorSideTop.Side = asrCenter
-      Left = 201
-      Height = 21
-      Top = 28
+      Left = 248
+      Height = 27
+      Top = 25
       Width = 64
       BorderSpacing.Left = 6
+      BorderSpacing.Bottom = 6
       MaxValue = 5000
-      OnChange = spCoolBarWidthChange
       TabOrder = 4
       Value = 230
+      OnChange = spCoolBarWidthChange
     end
     object pnTopCenterLabel: TLabel
       AnchorSideLeft.Control = pnTop
@@ -390,23 +394,24 @@ object IdeCoolbarOptionsFrame: TIdeCoolbarOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 13
-    Top = 168
+    Height = 18
+    Top = 199
     Width = 520
     Caption = 'Add/Config/Delete Toolbar(s)'
     Align = alTop
+    BorderSpacing.Top = 3
     BorderSpacing.Bottom = 6
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
   end
   object imButtons: TImageList
-    left = 472
+    Left = 472
   end
   object tmWait: TTimer
     Enabled = False
     Interval = 100
     OnTimer = tmWaitTimer
-    left = 408
+    Left = 408
   end
 end

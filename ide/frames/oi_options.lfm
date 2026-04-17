@@ -1,10 +1,11 @@
 object OIOptionsFrame: TOIOptionsFrame
   Left = 0
-  Height = 484
+  Height = 432
   Top = 0
   Width = 678
-  ClientHeight = 484
+  ClientHeight = 432
   ClientWidth = 678
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   Visible = False
   DesignLeft = 479
@@ -13,17 +14,18 @@ object OIOptionsFrame: TOIOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 0
-    Height = 236
+    Left = 6
+    Height = 240
     Top = 0
-    Width = 294
+    Width = 292
     AutoSize = True
+    BorderSpacing.Left = 6
     Caption = 'ObjectInspectorColorsGroupBox'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
     ChildSizing.HorizontalSpacing = 2
     ChildSizing.VerticalSpacing = 2
-    ClientHeight = 215
+    ClientHeight = 214
     ClientWidth = 286
     TabOrder = 0
     object ColorsListBox: TColorListBox
@@ -39,6 +41,7 @@ object OIOptionsFrame: TOIOptionsFrame
       ItemHeight = 0
       OnSelectionChange = ColorsListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
     end
     object ColorBox: TColorBox
       AnchorSideLeft.Control = ObjectInspectorColorsGroupBox
@@ -47,15 +50,15 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideRight.Control = ColorsListBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 27
+      Height = 26
       Top = 182
       Width = 274
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       ItemHeight = 16
-      OnChange = ColorBoxChange
       TabOrder = 1
+      OnChange = ColorBoxChange
     end
   end
   object OIOptionsGroupBox: TGroupBox
@@ -64,24 +67,25 @@ object OIOptionsFrame: TOIOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 0
-    Height = 167
-    Top = 243
-    Width = 678
+    Left = 6
+    Height = 177
+    Top = 246
+    Width = 672
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
-    BorderSpacing.Top = 7
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'OIOptionsGroupBox'
-    ClientHeight = 146
-    ClientWidth = 670
+    ClientHeight = 151
+    ClientWidth = 666
     TabOrder = 3
     object OICheckboxForBooleanCheckBox: TCheckBox
       AnchorSideLeft.Control = OIOptsCenterLabel
       AnchorSideTop.Control = OIOptionsGroupBox
-      Left = 335
-      Height = 22
+      Left = 333
+      Height = 23
       Top = 6
-      Width = 251
+      Width = 219
       BorderSpacing.Top = 6
       Caption = 'OICheckboxForBooleanCheckBox'
       ParentShowHint = False
@@ -92,9 +96,9 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideLeft.Control = OIOptionsGroupBox
       AnchorSideTop.Control = OIOptionsGroupBox
       Left = 6
-      Height = 22
+      Height = 23
       Top = 6
-      Width = 177
+      Width = 155
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'OIAutoShowCheckBox'
@@ -106,10 +110,10 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideLeft.Control = OIOptsCenterLabel
       AnchorSideTop.Control = OICheckboxForBooleanCheckBox
       AnchorSideTop.Side = asrBottom
-      Left = 335
-      Height = 22
-      Top = 34
-      Width = 215
+      Left = 333
+      Height = 23
+      Top = 35
+      Width = 187
       BorderSpacing.Top = 6
       Caption = 'OIBoldNonDefaultCheckBox'
       ParentShowHint = False
@@ -120,10 +124,10 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideLeft.Control = OIOptsCenterLabel
       AnchorSideTop.Control = OIShowGutterCheckBox
       AnchorSideTop.Side = asrBottom
-      Left = 335
-      Height = 22
-      Top = 90
-      Width = 207
+      Left = 333
+      Height = 23
+      Top = 93
+      Width = 180
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       Caption = 'OIDrawGridLinesCheckBox'
@@ -135,10 +139,10 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideLeft.Control = OIOptsCenterLabel
       AnchorSideTop.Control = OIBoldNonDefaultCheckBox
       AnchorSideTop.Side = asrBottom
-      Left = 335
-      Height = 22
-      Top = 62
-      Width = 189
+      Left = 333
+      Height = 23
+      Top = 64
+      Width = 163
       BorderSpacing.Top = 6
       Caption = 'OIShowGutterCheckBox'
       ParentShowHint = False
@@ -150,9 +154,9 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideTop.Control = OIShowInfoBoxCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 90
-      Width = 211
+      Height = 23
+      Top = 93
+      Width = 184
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'OIShowStatusBarCheckBox'
@@ -165,9 +169,9 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideTop.Control = OIShowComponentTreeCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 62
-      Width = 196
+      Height = 23
+      Top = 64
+      Width = 172
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'OIShowInfoBoxCheckBox'
@@ -180,9 +184,9 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideTop.Control = OIAutoShowCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 34
-      Width = 251
+      Height = 23
+      Top = 35
+      Width = 220
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'OIShowComponentTreeCheckBox'
@@ -194,7 +198,7 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideLeft.Control = OIOptionsGroupBox
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = OIOptionsGroupBox
-      Left = 335
+      Left = 333
       Height = 1
       Top = 0
       Width = 1
@@ -205,9 +209,9 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideTop.Control = OIShowStatusBarCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 118
-      Width = 173
+      Height = 23
+      Top = 122
+      Width = 152
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
@@ -220,10 +224,10 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideLeft.Control = OIOptsCenterLabel
       AnchorSideTop.Control = OIDrawGridLinesCheckBox
       AnchorSideTop.Side = asrBottom
-      Left = 335
-      Height = 22
-      Top = 118
-      Width = 207
+      Left = 333
+      Height = 23
+      Top = 122
+      Width = 206
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       Caption = 'OIShowPropertyFilterCheckBox'
@@ -239,32 +243,32 @@ object OIOptionsFrame: TOIOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = OIMiscGroupBox
-    Left = 297
-    Height = 166
+    Left = 304
+    Height = 171
     Top = 0
-    Width = 381
+    Width = 374
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Left = 3
-    BorderSpacing.Bottom = 7
+    BorderSpacing.Left = 6
+    BorderSpacing.Bottom = 6
     Caption = 'ObjectInspectorSpeedSettingsGroupBox'
     ClientHeight = 145
-    ClientWidth = 373
+    ClientWidth = 368
     TabOrder = 1
     object BtnUseDefaultLazarusSettings: TBitBtn
       AnchorSideLeft.Control = ObjectInspectorSpeedSettingsGroupBox
       AnchorSideTop.Control = ObjectInspectorSpeedSettingsGroupBox
-      Left = 3
+      Left = 6
       Height = 29
       Top = 6
-      Width = 214
+      Width = 191
       AutoSize = True
-      BorderSpacing.Left = 3
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'BtnUseDefaultLazarusSettings'
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
-      OnClick = BtnUseDefaultLazarusSettingsClick
       TabOrder = 0
+      OnClick = BtnUseDefaultLazarusSettingsClick
     end
     object BtnUseDefaultDelphiSettings: TBitBtn
       AnchorSideLeft.Control = ObjectInspectorSpeedSettingsGroupBox
@@ -272,19 +276,19 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BtnUseDefaultLazarusSettings
       AnchorSideRight.Side = asrBottom
-      Left = 3
+      Left = 6
       Height = 29
       Top = 41
-      Width = 214
+      Width = 191
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
-      BorderSpacing.Left = 3
+      BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'BtnUseDefaultDelphiSettings'
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
-      OnClick = BtnUseDefaultDelphiSettingsClick
       TabOrder = 1
+      OnClick = BtnUseDefaultDelphiSettingsClick
     end
   end
   object OIMiscGroupBox: TGroupBox
@@ -294,24 +298,24 @@ object OIOptionsFrame: TOIOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ObjectInspectorColorsGroupBox
     AnchorSideBottom.Side = asrBottom
-    Left = 301
+    Left = 304
     Height = 63
-    Top = 173
-    Width = 377
+    Top = 177
+    Width = 374
     Anchors = [akLeft, akRight, akBottom]
-    BorderSpacing.Left = 7
+    BorderSpacing.Left = 6
     Caption = 'OIMiscGroupBox'
-    ClientHeight = 42
-    ClientWidth = 369
+    ClientHeight = 37
+    ClientWidth = 368
     TabOrder = 2
     object OIDefaultItemHeightLabel: TLabel
       AnchorSideLeft.Control = OIMiscGroupBox
       AnchorSideTop.Control = OIDefaultItemHeightSpinEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 11
-      Width = 174
+      Height = 18
+      Top = 10
+      Width = 150
       BorderSpacing.Around = 6
       Caption = 'OIDefaultItemHeightLabel'
       ParentColor = False
@@ -320,7 +324,7 @@ object OIOptionsFrame: TOIOptionsFrame
       AnchorSideLeft.Control = OIDefaultItemHeightLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = OIMiscGroupBox
-      Left = 186
+      Left = 162
       Height = 27
       Top = 6
       Width = 53

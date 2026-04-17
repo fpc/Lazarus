@@ -5,6 +5,7 @@ object IdeStartupFrame: TIdeStartupFrame
   Width = 589
   ClientHeight = 470
   ClientWidth = 589
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 706
   DesignTop = 369
@@ -16,7 +17,7 @@ object IdeStartupFrame: TIdeStartupFrame
     Left = 6
     Height = 23
     Top = 91
-    Width = 212
+    Width = 220
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'OpenLastProjectAtStartCheckBox'
@@ -25,8 +26,8 @@ object IdeStartupFrame: TIdeStartupFrame
   object divFileAssociation: TDividerBevel
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 15
-    Top = 2
+    Height = 18
+    Top = 0
     Width = 597
     Caption = 'Opening Files from OS'
     Anchors = [akLeft, akRight]
@@ -38,8 +39,8 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Control = LazarusInstancesCB
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 15
-    Top = 70
+    Height = 18
+    Top = 67
     Width = 597
     Caption = 'Project to Open or Create'
     Anchors = [akTop, akLeft, akRight]
@@ -52,13 +53,12 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LazarusInstancesCB
     AnchorSideTop.Side = asrCenter
-    Left = 3
-    Height = 15
-    Top = 33
-    Width = 121
-    BorderSpacing.Left = 3
+    Left = 6
+    Height = 18
+    Top = 30
+    Width = 134
+    BorderSpacing.Left = 6
     Caption = 'LazarusInstancesLabel'
-    Color = clDefault
     ParentColor = False
   end
   object LazarusInstancesCB: TComboBox
@@ -68,14 +68,14 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 132
-    Height = 30
-    Top = 25
-    Width = 457
+    Left = 148
+    Height = 26
+    Top = 26
+    Width = 441
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 8
     BorderSpacing.Top = 8
-    ItemHeight = 0
+    ItemHeight = 26
     Style = csDropDownList
     TabOrder = 0
   end
@@ -86,15 +86,15 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 109
-    Height = 30
+    Left = 115
+    Height = 26
     Top = 125
-    Width = 480
+    Width = 474
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 8
     BorderSpacing.Top = 11
     DropDownCount = 20
-    ItemHeight = 0
+    ItemHeight = 26
     Style = csDropDownList
     TabOrder = 2
   end
@@ -102,13 +102,12 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ProjectTypeCB
     AnchorSideTop.Side = asrCenter
-    Left = 3
-    Height = 15
-    Top = 133
-    Width = 98
-    BorderSpacing.Left = 3
+    Left = 6
+    Height = 18
+    Top = 129
+    Width = 101
+    BorderSpacing.Left = 6
     Caption = 'New Project Type'
-    Color = clDefault
     ParentColor = False
   end
   object CheckFPPkgCheckBox: TCheckBox
@@ -117,8 +116,8 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 191
-    Width = 146
+    Top = 190
+    Width = 156
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'CheckFPPkgCheckBox'
@@ -128,8 +127,8 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Control = ProjectTypeCB
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 15
-    Top = 170
+    Height = 18
+    Top = 166
     Width = 597
     Caption = 'Initial Checks'
     Anchors = [akTop, akLeft, akRight]

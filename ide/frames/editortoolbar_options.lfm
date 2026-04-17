@@ -5,6 +5,7 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
   Width = 503
   ClientHeight = 342
   ClientWidth = 503
+  LCLVersion = '4.99.0.0'
   TabOrder = 0
   DesignLeft = 521
   DesignTop = 251
@@ -21,13 +22,13 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
     TabOrder = 0
     object dbGeneralSettings: TDividerBevel
       Left = 0
-      Height = 13
-      Top = 5
+      Height = 18
+      Top = 6
       Width = 503
       Caption = 'Editor Toolbars Settings'
       Align = alTop
-      BorderSpacing.Top = 5
-      BorderSpacing.Bottom = 5
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
       Font.Style = [fsBold]
       ParentColor = False
       ParentFont = False
@@ -36,14 +37,15 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
       AnchorSideLeft.Control = pnTop
       AnchorSideTop.Control = dbGeneralSettings
       AnchorSideTop.Side = asrBottom
-      Left = 0
-      Height = 17
+      Left = 6
+      Height = 23
       Top = 30
-      Width = 96
-      BorderSpacing.Top = 12
+      Width = 121
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
       Caption = 'Toolbar is visible'
-      OnClick = cbCoolBarVisibleClick
       TabOrder = 0
+      OnClick = cbCoolBarVisibleClick
     end
     object pnTopCenterLabel: TLabel
       AnchorSideLeft.Control = pnTop
@@ -60,15 +62,15 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
       AnchorSideTop.Control = cbCoolBarVisible
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 0
-      Height = 23
+      Left = 6
+      Height = 29
       Top = 65
-      Width = 73
+      Width = 70
       AutoSize = True
-      BorderSpacing.Top = 18
+      BorderSpacing.Top = 12
       Caption = 'Configure'
-      OnClick = bConfigClick
       TabOrder = 2
+      OnClick = bConfigClick
     end
     object bDefaultToolbar: TBitBtn
       AnchorSideLeft.Side = asrBottom
@@ -77,26 +79,26 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
       AnchorSideRight.Control = cbPos
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 155
-      Height = 23
+      Left = 192
+      Height = 29
       Top = 65
-      Width = 106
+      Width = 109
       Anchors = [akTop, akRight]
       AutoSize = True
-      BorderSpacing.Top = 6
+      BorderSpacing.Top = 12
       Caption = 'Restore defaults'
-      OnClick = bDefaultToolbarClick
       TabOrder = 3
+      OnClick = bDefaultToolbarClick
     end
     object lblpos: TLabel
       AnchorSideLeft.Control = cbCoolBarVisible
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cbCoolBarVisible
       AnchorSideTop.Side = asrCenter
-      Left = 128
-      Height = 13
+      Left = 159
+      Height = 18
       Top = 32
-      Width = 27
+      Width = 36
       BorderSpacing.Left = 32
       BorderSpacing.Right = 6
       Caption = 'lblpos'
@@ -108,12 +110,12 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
       AnchorSideTop.Control = lblpos
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
-      Left = 161
-      Height = 21
+      Left = 201
+      Height = 26
       Top = 28
       Width = 100
       BorderSpacing.Bottom = 6
-      ItemHeight = 13
+      ItemHeight = 18
       ItemIndex = 0
       Items.Strings = (
         'Top'
@@ -121,10 +123,10 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
         'Right'
         'Left'
       )
-      OnChange = cbPosChange
       Style = csDropDownList
       TabOrder = 1
       Text = 'Top'
+      OnChange = cbPosChange
     end
     object lblNoAutoSaveActiveDesktop: TLabel
       AnchorSideLeft.Control = cbCoolBarVisible
@@ -132,10 +134,10 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnTop
       AnchorSideRight.Side = asrBottom
-      Left = 0
-      Height = 13
-      Top = 94
-      Width = 503
+      Left = 6
+      Height = 18
+      Top = 100
+      Width = 497
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
@@ -147,6 +149,6 @@ object EditorToolbarOptionsFrame: TEditorToolbarOptionsFrame
     end
   end
   object imButtons: TImageList
-    left = 304
+    Left = 304
   end
 end
