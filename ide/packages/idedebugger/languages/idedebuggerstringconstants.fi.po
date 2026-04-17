@@ -1994,7 +1994,7 @@ msgid "Write"
 msgstr "Kirjoita"
 
 #: idedebuggerstringconstants.liswatchkindwritechanged
-msgid "Change(Write)"
+msgid "Change (Write)"
 msgstr ""
 
 #: idedebuggerstringconstants.liswatchpoint

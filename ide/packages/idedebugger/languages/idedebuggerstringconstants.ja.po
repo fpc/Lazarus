@@ -2001,7 +2001,7 @@ msgid "Write"
 msgstr "書き込み"
 
 #: idedebuggerstringconstants.liswatchkindwritechanged
-msgid "Change(Write)"
+msgid "Change (Write)"
 msgstr ""
 
 #: idedebuggerstringconstants.liswatchpoint

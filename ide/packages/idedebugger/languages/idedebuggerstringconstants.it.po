@@ -2003,7 +2003,7 @@ msgid "Write"
 msgstr "Scrittura"
 
 #: idedebuggerstringconstants.liswatchkindwritechanged
-msgid "Change(Write)"
+msgid "Change (Write)"
 msgstr ""
 
 #: idedebuggerstringconstants.liswatchpoint

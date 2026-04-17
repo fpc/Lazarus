@@ -1965,7 +1965,7 @@ msgstr "Наблюдать:"
 
 #: idedebuggerstringconstants.liswatchkind
 msgid "Watch action"
-msgstr "Действие наблюдения"
+msgstr "Наблюдаемое действие"
 
 #: idedebuggerstringconstants.liswatchkindread
 msgid "Read"
@@ -1980,8 +1980,8 @@ msgid "Write"
 msgstr "Запись"
 
 #: idedebuggerstringconstants.liswatchkindwritechanged
-msgid "Change(Write)"
-msgstr ""
+msgid "Change (Write)"
+msgstr "Изменение (запись)"
 
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
