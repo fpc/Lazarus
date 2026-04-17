@@ -1632,6 +1632,7 @@ type
     FActionHandle: QActionH;
     FMenuItem: TMenuItem;
     FTrackButton: QtMouseButtons;
+    FInActionEventFilter: Boolean;
     procedure setActionGroups(AItem: TMenuItem);
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
@@ -16897,6 +16898,10 @@ var
 begin
   Result := False;
   QEvent_accept(Event);
+
+  if FInActionEventFilter then
+    exit;
+
   if Assigned(FMenuItem) and (QEvent_type(Event) = QEventActionChanged) then
   begin
     {qt shouldn't change checkables in any case, LCL should do that !}
@@ -16915,7 +16920,12 @@ begin
       end else
         QObject_blockSignals(TempAction, True);
 
-      QAction_setChecked(TempAction, FMenuItem.Checked);
+      FInActionEventFilter := True;
+      try
+        QAction_setChecked(TempAction, FMenuItem.Checked);
+      finally
+        FInActionEventFilter := False;
+      end;
 
       if QObject_signalsBlocked(TempAction) then
       begin
