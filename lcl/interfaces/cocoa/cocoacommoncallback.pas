@@ -612,10 +612,6 @@ var
   msg: Cardinal;
   ret: PtrInt;
 begin
-  // is the key combination help key (Cmd + ?)
-  if _keyState.shouldSendCharMessage and _keyState.isSysKey and (_keyState.utf8Character[0] = '?') then
-    Application.ShowHelpForObject(Target);
-
   if _keyState.keyCode = VK_UNKNOWN then
     Exit;
 
