@@ -41,19 +41,16 @@ type
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
-  private
-    var
-      FPropStorage: TStringList;
-      FContext: TCocoaContext;
-      FBoundsReportedToChildren: boolean;
-  protected
-    function deliverMessage(var msg): LRESULT;
   protected
     _target: TWinControl;
+    _propStorage: TStringList;
+    _context: TCocoaContext;
+    _boundsReportedToChildren: Boolean;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     _keyState: TCocoaKeyEventState;
     _mouseState: TCocoaMouseEventState;
-  private
+  protected
+    function deliverMessage(var msg): LRESULT;
     function doSendKeyMessage(
       const msg: Cardinal;
       var charCode: Word;
@@ -65,16 +62,9 @@ type
     procedure send_LM_CHAR_Message();
     function getCaptureControlCallback: ICommonCallBack;
     procedure sendContextMenu(Event: NSEvent; out ContextMenuHandled: Boolean);
-  protected
+
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
-
-    procedure createKeyStateFromKeyUpDown(
-      const event: NSEvent;
-      var state: TCocoaKeyEventState ); virtual;
-    procedure createKeyStateFromFlagsChanged(
-      const event: NSEvent;
-      var state: TCocoaKeyEventState ); virtual;
 
     procedure KeyEvBeforeDown;
     procedure KeyEvBeforeUp;
@@ -82,6 +72,13 @@ type
     procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
     procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
+  protected
+    procedure createKeyStateFromKeyUpDown(
+      const event: NSEvent;
+      var state: TCocoaKeyEventState ); virtual;
+    procedure createKeyStateFromFlagsChanged(
+      const event: NSEvent;
+      var state: TCocoaKeyEventState ); virtual;
   public
     Owner: NSObject;
     BlockCocoaUpDown: Boolean;
@@ -390,31 +387,31 @@ begin
   else if Owner.isKindOfClass(NSView) then
     _handleFrame := NSView(AOwner);
   _target := ATarget;
-  FContext := nil;
-  FPropStorage := TStringList.Create;
-  FPropStorage.Sorted := True;
-  FPropStorage.Duplicates := dupAccept;
-  FBoundsReportedToChildren:=false;
+  _context := nil;
+  _propStorage := TStringList.Create;
+  _propStorage.Sorted := True;
+  _propStorage.Duplicates := dupAccept;
+  _boundsReportedToChildren:=false;
   SuppressTabDown := true; // by default all Tabs would not be allowed for Cocoa.
                            // it should be enabled, i.e. for TMemo with WantTabs=true
 end;
 
 destructor TLCLCommonCallback.Destroy;
 begin
-  FContext.Free;
-  FPropStorage.Free;
+  _context.Free;
+  _propStorage.Free;
   _target := nil;
   inherited Destroy;
 end;
 
 function TLCLCommonCallback.GetPropStorage: TStringList;
 begin
-  Result := FPropStorage;
+  Result := _propStorage;
 end;
 
 function TLCLCommonCallback.GetContext: HDC;
 begin
-  Result := HDC( FContext );
+  Result := HDC( _context );
 end;
 
 function TLCLCommonCallback.GetTarget: TObject;
@@ -1248,10 +1245,10 @@ begin
       NewBounds.Top, Move_SourceIsInterface);
   end;
 
-  if not FBoundsReportedToChildren then // first time we need this to update non cocoa based client rects
+  if not _boundsReportedToChildren then // first time we need this to update non cocoa based client rects
   begin
     Target.InvalidateClientRectCache(true);
-    FBoundsReportedToChildren:=true;
+    _boundsReportedToChildren:=true;
   end;
 
 end;
@@ -1296,14 +1293,14 @@ var
   nsr:NSRect;
 begin
   // todo: think more about draw call while previous draw still active
-  if Assigned(FContext) then
+  if Assigned(_context) then
     Exit;
-  FContext := TCocoaContext.Create(ControlContext);
-  FContext.Control := _target;
-  FContext.isControlDC := True;
+  _context := TCocoaContext.Create(ControlContext);
+  _context.Control := _target;
+  _context.isControlDC := True;
   try
     // debugln('Draw '+Target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
-    if FContext.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
+    if _context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
       nsr:=dirty;
       if NOT Owner.isKindOfClass(NSView) or NOT NSView(Owner).isFlipped then
@@ -1311,20 +1308,20 @@ begin
 
       if IsOpaque and (Target.Color<>clDefault) then
       begin
-        FContext.BkMode:=OPAQUE;
-        FContext.BkColor:=Target.Color;
-        FContext.BackgroundFill(nsr);
+        _context.BkMode:=OPAQUE;
+        _context.BkColor:=Target.Color;
+        _context.BackgroundFill(nsr);
         //debugln('Background '+Target.name+Dbgs(NSRectToRect(dirty)));
       end;
 
       FillChar(PS, SizeOf(TPaintStruct), 0);
-      PS.hdc := HDC(FContext);
+      PS.hdc := HDC(_context);
       PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
-      LCLSendPaintMsg(Target, HDC(FContext), @PS);
+      LCLSendPaintMsg(Target, HDC(_context), @PS);
       TCocoaCaretUtil.drawCaret( Owner.lclContentView );
     end;
   finally
-    FreeAndNil(FContext);
+    FreeAndNil(_context);
   end;
 end;
 
@@ -1336,26 +1333,26 @@ var
   nsr : NSRect;
 begin
   // todo: think more about draw call while previous draw still active
-  if Assigned(FContext) then
+  if Assigned(_context) then
     Exit;
-  FContext := TCocoaContext.Create(ControlContext);
-  FContext.isControlDC := True;
-  FContext.isDesignDC := True;
+  _context := TCocoaContext.Create(ControlContext);
+  _context.isControlDC := True;
+  _context.isDesignDC := True;
   try
     // debugln('Draw '+Target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
-    if FContext.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
+    if _context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
       nsr:=dirty;
       if NOT Owner.isKindOfClass(NSView) or NOT NSView(Owner).isFlipped then
          nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
 
       FillChar(PS, SizeOf(TPaintStruct), 0);
-      PS.hdc := HDC(FContext);
+      PS.hdc := HDC(_context);
       PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
-      LCLSendPaintMsg(Target, HDC(FContext), @PS);
+      LCLSendPaintMsg(Target, HDC(_context), @PS);
     end;
   finally
-    FreeAndNil(FContext);
+    FreeAndNil(_context);
   end;
 end;
 
