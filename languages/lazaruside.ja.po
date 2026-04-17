@@ -7778,11 +7778,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "コンパイラ"
 
-#: lazarusidestrconsts.liscompilercfgismissing
-#, object-pascal-format
-msgid "%s is missing."
-msgstr ""
-
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9234,11 +9229,6 @@ msgstr "ディレクトリ: "
 msgid "Directory \"%s\" not found."
 msgstr "フォルダ \"%s\" が見つかりません。"
 
-#: lazarusidestrconsts.lisdirectorynotfound2
-#, object-pascal-format
-msgid "directory %s not found"
-msgstr "ディレクトリ %s が見つかりません"
-
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "IDEがpoファイルを置いたディレクトリ"
@@ -10187,14 +10177,6 @@ msgstr "ファイル\"%s\"は変更されています。保存しますか？"
 msgid "File has no project"
 msgstr "ファイルはプロジェクトを有していません"
 
-#: lazarusidestrconsts.lisfileisdirectory
-msgid "File is directory"
-msgstr "ファイルはディレクトリです"
-
-#: lazarusidestrconsts.lisfileisnotanexecutable
-msgid "File is not an executable"
-msgstr "ファイルは実行可能ではありません"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -10203,19 +10185,6 @@ msgstr "ファイル \"%s\" は仮想ファイルです"
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "ファイル名スタイル"
-
-#: lazarusidestrconsts.lisfilenotfound
-msgid "File not found"
-msgstr "ファイルが見つかりません"
-
-#: lazarusidestrconsts.lisfilenotfound3
-#, object-pascal-format
-msgid "file %s not found"
-msgstr "ファイル %s は見つかりません"
-
-#: lazarusidestrconsts.lisfilenotfound4
-msgid "file not found"
-msgstr "ファイルは見つかりません"
 
 #: lazarusidestrconsts.lisfilenotfound5
 #, object-pascal-format
@@ -10457,11 +10426,6 @@ msgstr "フォーマットエラー"
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
 msgstr "Windows向け"
-
-#: lazarusidestrconsts.lisfoundversionexpected
-#, object-pascal-format
-msgid "Found version %s, expected %s"
-msgstr "バージョン %sが見つかりましたが、%sが期待されています"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11472,11 +11436,6 @@ msgstr "無効な発行ディレクトリ"
 msgid "Invalid selection"
 msgstr "無効な選択"
 
-#: lazarusidestrconsts.lisinvalidversionin
-#, object-pascal-format
-msgid "invalid version in %s"
-msgstr " %sに無効なバージョン"
-
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
@@ -11491,10 +11450,6 @@ msgstr "\"%s\" は無効なプロジェクト名です.%s 別の(例 project1.lp
 #, object-pascal-format
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr "%s は%s です。%s この循環参照は許されません。"
-
-#: lazarusidestrconsts.lisisddirectorynotfound
-msgid "directory not found"
-msgstr "依存関係が見つかりません"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
@@ -16250,11 +16205,6 @@ msgstr "%s (ソースの外側の位置)"
 msgid "ppu in wrong directory=%s."
 msgstr "間違ったディレクトリのppu=%s"
 
-#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, object-pascal-format
-msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr "%s.ppuが見つかりません。fpc.cfgをチェックして下さい。"
-
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "先行する単語"
@@ -17889,10 +17839,6 @@ msgstr "コンポーネント名を尋ねた後にお好みタブを切り替え
 msgid "Syntax mode"
 msgstr "構文モード"
 
-#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
-msgid "system.ppu not found. Check your fpc.cfg."
-msgstr "system.ppuが見つかりません。fpc.cfgをチェックして下さい"
-
 #: lazarusidestrconsts.listab
 msgid "Tab"
 msgstr "タブ"
@@ -18443,11 +18389,6 @@ msgstr "既に\"%s\"という名前のユニットがあります。Pascal識別
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "プロジェクトに\"%s\"という名前のユニットがあります。%s別の名前を選んでください。"
-
-#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
-#, object-pascal-format
-msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr "%sのディレクトリにfpc.exeがありません。ふつうmake実行ファイルはFPCコンパイラと一緒にインストールされます。"
 
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
@@ -19099,11 +19040,6 @@ msgstr "エディタの変更点を集めることができません。"
 msgid "Unable to get source for designer."
 msgstr "デザイナのソースを取得できません。"
 
-#: lazarusidestrconsts.lisunabletoloadfile2
-#, object-pascal-format
-msgid "unable to load file %s: %s"
-msgstr "ファイル%sを読み込めません。%s"
-
 #: lazarusidestrconsts.lisunabletoloadpackage
 #, object-pascal-format
 msgid "Unable to load package \"%s\""
@@ -19311,14 +19247,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Unused units of %s"
 msgstr "%sの使われていないユニット"
-
-#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
-msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr "普通でないコンパイラ名。ふつうfpc, ppc あるいは ppcrossで始まります。"
-
-#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
-msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
@@ -19664,11 +19592,6 @@ msgstr ""
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
 msgstr ""
-
-#: lazarusidestrconsts.liswrongversionin
-#, object-pascal-format
-msgid "wrong version in %s: %s"
-msgstr "%sに間違ったバージョン: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

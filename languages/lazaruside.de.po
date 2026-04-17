@@ -7576,11 +7576,6 @@ msgstr "Package zweimal kompilieren und prüfen, ob irgendeine Unit erneut kompi
 msgid "Compiler"
 msgstr "Compiler"
 
-#: lazarusidestrconsts.liscompilercfgismissing
-#, object-pascal-format
-msgid "%s is missing."
-msgstr "%s fehlt."
-
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9023,11 +9018,6 @@ msgstr "Verzeichnis: "
 msgid "Directory \"%s\" not found."
 msgstr "Verzeichnis \"%s\" nicht gefunden."
 
-#: lazarusidestrconsts.lisdirectorynotfound2
-#, object-pascal-format
-msgid "directory %s not found"
-msgstr "Verzeichnis %s nicht gefunden"
-
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "Verzeichnis wo die IDE die .po-Dateien ablegt"
@@ -9959,14 +9949,6 @@ msgstr "Datei \"%s\" wurde geändert. Speichern?"
 msgid "File has no project"
 msgstr "Datei gehört zu keinem Projekt"
 
-#: lazarusidestrconsts.lisfileisdirectory
-msgid "File is directory"
-msgstr "Datei ist Verzeichnis"
-
-#: lazarusidestrconsts.lisfileisnotanexecutable
-msgid "File is not an executable"
-msgstr "Datei ist keine ausführbare Datei"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -9975,19 +9957,6 @@ msgstr "Die Datei \"%s\" wurde noch nicht gespeichert."
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "Dateinamen-Stil"
-
-#: lazarusidestrconsts.lisfilenotfound
-msgid "File not found"
-msgstr "Datei nicht gefunden"
-
-#: lazarusidestrconsts.lisfilenotfound3
-#, object-pascal-format
-msgid "file %s not found"
-msgstr "Datei %s nicht gefunden"
-
-#: lazarusidestrconsts.lisfilenotfound4
-msgid "file not found"
-msgstr "Datei nicht gefunden"
 
 #: lazarusidestrconsts.lisfilenotfound5
 #, object-pascal-format
@@ -10214,11 +10183,6 @@ msgstr "Formatfehler"
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
 msgstr "Für Windows"
-
-#: lazarusidestrconsts.lisfoundversionexpected
-#, object-pascal-format
-msgid "Found version %s, expected %s"
-msgstr "Version %s gefunden, erwartet wurde %s"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11212,11 +11176,6 @@ msgstr "Ungültiges Ausgabeverzeichnis"
 msgid "Invalid selection"
 msgstr "Ungültige Auswahl"
 
-#: lazarusidestrconsts.lisinvalidversionin
-#, object-pascal-format
-msgid "invalid version in %s"
-msgstr "ungültige Version in %s"
-
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
@@ -11231,10 +11190,6 @@ msgstr "\"%s\" ist als Projektname ungültig.%sBitte wählen Sie einen anderen (
 #, object-pascal-format
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr "%s ist ein %s.%sDiese zirkuläre Abhängigkeit ist nicht erlaubt."
-
-#: lazarusidestrconsts.lisisddirectorynotfound
-msgid "directory not found"
-msgstr "Verzeichnis nicht gefunden"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
@@ -15866,11 +15821,6 @@ msgstr "%s (Position außerhalb des Quelltexts)"
 msgid "ppu in wrong directory=%s."
 msgstr "ppu im falschen Verzeichnis=%s."
 
-#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, object-pascal-format
-msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr "%s.ppu nicht gefunden. Prüfen Sie ihre fpc.cfg."
-
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Vorheriges Wort"
@@ -17453,10 +17403,6 @@ msgstr ""
 msgid "Syntax mode"
 msgstr "Syntax-Modus"
 
-#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
-msgid "system.ppu not found. Check your fpc.cfg."
-msgstr "system.ppu nicht gefunden. Prüfen Sie ihre fpc.cfg."
-
 #: lazarusidestrconsts.listab
 msgid "Tab"
 msgstr "Tab"
@@ -18001,11 +17947,6 @@ msgstr "Es gibt bereits eine Unit mit dem Namen \"%s\". Pascal-Bezeichner müsse
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Es gibt schon eine Unit mit dem Namen \"%s\" im Projekt.%sBitte wählen Sie einen anderen Namen."
-
-#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
-#, object-pascal-format
-msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr "Es gibt keine fpc.exe im Verzeichnis von %s. Üblicherweise wird \"make\" zusammen mit dem FPC-Compiler installiert."
 
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
@@ -18644,11 +18585,6 @@ msgstr "Kann Editoränderungen nicht sammeln."
 msgid "Unable to get source for designer."
 msgstr "Quelltexte des Designers können nicht geholt werden."
 
-#: lazarusidestrconsts.lisunabletoloadfile2
-#, object-pascal-format
-msgid "unable to load file %s: %s"
-msgstr "kann Datei %s: %s nicht laden"
-
 #: lazarusidestrconsts.lisunabletoloadpackage
 #, object-pascal-format
 msgid "Unable to load package \"%s\""
@@ -18855,14 +18791,6 @@ msgstr "Units nicht gefunden in Datei %s"
 #, object-pascal-format
 msgid "Unused units of %s"
 msgstr "Ungenutzte Units von %s"
-
-#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
-msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr "Unüblicher Compiler-Dateiname. Üblicherweise startet er mit fpc, ppc oder ppcross."
-
-#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
-msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
@@ -19206,11 +19134,6 @@ msgstr ""
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
 msgstr ""
-
-#: lazarusidestrconsts.liswrongversionin
-#, object-pascal-format
-msgid "wrong version in %s: %s"
-msgstr "falsche Version in %s: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

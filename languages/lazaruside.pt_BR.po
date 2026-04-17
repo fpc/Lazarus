@@ -7686,11 +7686,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Compilador"
 
-#: lazarusidestrconsts.liscompilercfgismissing
-#, object-pascal-format
-msgid "%s is missing."
-msgstr "%s está faltando."
-
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9136,11 +9131,6 @@ msgstr "Diretório:"
 msgid "Directory \"%s\" not found."
 msgstr "Diretório \"%s\" não encontrado."
 
-#: lazarusidestrconsts.lisdirectorynotfound2
-#, object-pascal-format
-msgid "directory %s not found"
-msgstr "diretório %s não encontrado"
-
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "Diretório onde a IDE coloca os arquivos .po"
@@ -10089,14 +10079,6 @@ msgstr "Arquivo \"%s\" foi alterado. Salvar?"
 msgid "File has no project"
 msgstr "Arquivo não tem projeto"
 
-#: lazarusidestrconsts.lisfileisdirectory
-msgid "File is directory"
-msgstr "Arquivo é um diretório"
-
-#: lazarusidestrconsts.lisfileisnotanexecutable
-msgid "File is not an executable"
-msgstr "Arquivo não é um executável"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -10105,19 +10087,6 @@ msgstr "Arquivo \"%s\" é virtual."
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "Estilo nome de arquivo"
-
-#: lazarusidestrconsts.lisfilenotfound
-msgid "File not found"
-msgstr "Arquivo não encontrado"
-
-#: lazarusidestrconsts.lisfilenotfound3
-#, object-pascal-format
-msgid "file %s not found"
-msgstr "arquivo %s não encontrado"
-
-#: lazarusidestrconsts.lisfilenotfound4
-msgid "file not found"
-msgstr "arquivo não encontrado"
 
 #: lazarusidestrconsts.lisfilenotfound5
 #, object-pascal-format
@@ -10360,11 +10329,6 @@ msgstr "Erro formatação"
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
 msgstr "Para Windows"
-
-#: lazarusidestrconsts.lisfoundversionexpected
-#, object-pascal-format
-msgid "Found version %s, expected %s"
-msgstr "Versão encontrada %s, esperada %s"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11388,11 +11352,6 @@ msgstr "Diretório de publicação inválido"
 msgid "Invalid selection"
 msgstr "Seleção inválida"
 
-#: lazarusidestrconsts.lisinvalidversionin
-#, object-pascal-format
-msgid "invalid version in %s"
-msgstr "versão inválida em %s"
-
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
@@ -11407,10 +11366,6 @@ msgstr "\"%s\" é um nome de projeto inválido.%sFavor escolher outro nome (ex. 
 #, object-pascal-format
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr "%s é um %s.%sEsta dependência circular não é permitida."
-
-#: lazarusidestrconsts.lisisddirectorynotfound
-msgid "directory not found"
-msgstr "diretório não encontrado"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
@@ -16094,11 +16049,6 @@ msgstr "%s (posição fora do fonte)"
 msgid "ppu in wrong directory=%s."
 msgstr "ppu em diretório errado=%s"
 
-#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, object-pascal-format
-msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr "%s.ppu não encontrado. Verificar seu fpc.cfg."
-
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Palavra precedente"
@@ -17720,10 +17670,6 @@ msgstr "Mudar para aba favoritos após perguntar pelo nome do componente."
 msgid "Syntax mode"
 msgstr "Modo sintaxe"
 
-#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
-msgid "system.ppu not found. Check your fpc.cfg."
-msgstr "system.ppu não encontrado. Verificar fpc.cfg"
-
 #: lazarusidestrconsts.listab
 msgid "Tab"
 msgstr "Tabulação"
@@ -18268,11 +18214,6 @@ msgstr "Já existe uma unidade com o nome \"%s\". Identificadores Pascal devem s
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Há uma unidade com o nome \"%s\" no projeto.%sFavor escolher um nome diferente"
-
-#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
-#, object-pascal-format
-msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr "Não há nenhum fpc.exe no diretório de %s. Geralmente o executável make é instalado juntamente com o compilador FPC."
 
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
@@ -18918,11 +18859,6 @@ msgstr "Incapaz de coletar alterações do editor."
 msgid "Unable to get source for designer."
 msgstr "Incapaz de obter o fonte para o editor."
 
-#: lazarusidestrconsts.lisunabletoloadfile2
-#, object-pascal-format
-msgid "unable to load file %s: %s"
-msgstr "incapaz de carregar o arquivo %s: %s"
-
 #: lazarusidestrconsts.lisunabletoloadpackage
 #, object-pascal-format
 msgid "Unable to load package \"%s\""
@@ -19129,14 +19065,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Unused units of %s"
 msgstr "Unidades não usadas de %s"
-
-#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
-msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr "Nome de arquivo de compilador incomum. Usualmente ele inicia-se por fpc, ppc ou ppcross."
-
-#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
-msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr "Nome de arquivo incomum do compilador pas2js. Usualmente se inicia com pas2js."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
@@ -19480,11 +19408,6 @@ msgstr "Falha ao gravar arquivo de informação do projeto."
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
 msgstr ""
-
-#: lazarusidestrconsts.liswrongversionin
-#, object-pascal-format
-msgid "wrong version in %s: %s"
-msgstr "versão incorreta em %s: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

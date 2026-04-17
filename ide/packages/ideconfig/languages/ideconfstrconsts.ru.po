@@ -54,6 +54,11 @@ msgstr "Параметры командной строки программы"
 msgid "Compile Project"
 msgstr "Компиляция проекта"
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr "%s отсутствует."
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -89,6 +94,11 @@ msgstr ", процессор: %s"
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Удаление файла не удалось"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr "каталог %s не найден"
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -188,6 +198,14 @@ msgstr "Файл \"%s\"%sне похож на текстовый.%sВсё рав
 msgid "File extension of programs"
 msgstr "Расширение файлов программ"
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "Файл является каталогом"
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr "Файл не является исполнимым"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Файл недоступен для записи"
@@ -196,9 +214,27 @@ msgstr "Файл недоступен для записи"
 msgid "File is symlink"
 msgstr "Файл является символической ссылкой"
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "Файл не найден"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr "файл %s не найден"
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "файл не найден"
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "Файл не текстовый"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr "Найдена версия %s, хотя ожидалась %s"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -253,6 +289,15 @@ msgstr "Некорректный макрос в \"%s\""
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr "Некорректный макрос \"%s\" внешнего средства \"%s\""
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr "в файле %s указана некорректная версия"
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "каталог не найден"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -314,6 +359,10 @@ msgstr "Не реализовано"
 msgid "Not implemented yet:%s%s"
 msgstr "Ещё не реализовано:%s%s"
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr "Открыть символическую ссылку"
@@ -360,6 +409,11 @@ msgstr "Невозможно создать каталог"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Невозможно удалить файл \"%s\"."
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr "%s.ppu не найден. Проверьте файл fpc.cfg."
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -434,6 +488,10 @@ msgstr "Подцель"
 msgid "Success"
 msgstr "Успешно"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr "не найден system.ppu. Проверьте, что файл fpc.cfg корректен."
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -473,6 +531,11 @@ msgstr "Каталог \"%s\" недоступен для записи."
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Файл \"%s\" является символической ссылкой.%sОткрыть \"%s\" вместо него?"
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr "В каталоге с %s отсутствует fpc.exe. Обычно исполнимый файл make установлен вместе с компилятором FPC."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -550,6 +613,11 @@ msgstr "Невозможно создать ссылку \"%s\" на \"%s\""
 msgid "unable to execute: %s"
 msgstr "ошибка процесса исполнения: %s"
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr "невозможно загрузить файл %s: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Невозможно прочитать файл"
@@ -611,6 +679,14 @@ msgstr "Невозможно произвести запись в файл \"%s\
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Невозможно записать поток XML в %s%sОшибка: %s"
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "Необычное имя файла компилятора. Как правило, оно начинается с fpc, ppc либо ppcross."
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr "Необычное имя файла компилятора pas2js. Как правило, оно начинается с pas2js."
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Домашний каталог пользователя"
@@ -623,6 +699,11 @@ msgstr "Ошибка записи"
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Ошибка записи: %s%sФайл: %s%s%s"
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr "некорректная версия в %s: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"

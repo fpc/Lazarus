@@ -7593,11 +7593,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Derleyici"
 
-#: lazarusidestrconsts.liscompilercfgismissing
-#, object-pascal-format
-msgid "%s is missing."
-msgstr "%s kayıp."
-
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9042,11 +9037,6 @@ msgstr "Dizin: "
 msgid "Directory \"%s\" not found."
 msgstr "Dizin \"%s\" bulunamadı."
 
-#: lazarusidestrconsts.lisdirectorynotfound2
-#, object-pascal-format
-msgid "directory %s not found"
-msgstr "dizin %s bulunamadı"
-
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "IDE'nin .po dosyalarını koyduğu dizin"
@@ -9980,14 +9970,6 @@ msgstr "Dosya \"%s\" değiştirildi.Değişiklikler kaydedilsin mi?"
 msgid "File has no project"
 msgstr "Dosyanın projesi yok"
 
-#: lazarusidestrconsts.lisfileisdirectory
-msgid "File is directory"
-msgstr "Dosya dizin"
-
-#: lazarusidestrconsts.lisfileisnotanexecutable
-msgid "File is not an executable"
-msgstr "Dosya yürütülebilir değil"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -9996,19 +9978,6 @@ msgstr "Dosya \"%s\" sanal."
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "Dosya Adı Stili"
-
-#: lazarusidestrconsts.lisfilenotfound
-msgid "File not found"
-msgstr "Dosya bulunamadı"
-
-#: lazarusidestrconsts.lisfilenotfound3
-#, object-pascal-format
-msgid "file %s not found"
-msgstr "dosya %s bulunamadı"
-
-#: lazarusidestrconsts.lisfilenotfound4
-msgid "file not found"
-msgstr "dosya bulunamadı"
 
 #: lazarusidestrconsts.lisfilenotfound5
 #, object-pascal-format
@@ -10235,11 +10204,6 @@ msgstr "Format hatası"
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
 msgstr "Windows için"
-
-#: lazarusidestrconsts.lisfoundversionexpected
-#, object-pascal-format
-msgid "Found version %s, expected %s"
-msgstr "%s sürümü bulundu, %s bekleniyor"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11259,11 +11223,6 @@ msgstr "Geçersiz yayınlama Dizini"
 msgid "Invalid selection"
 msgstr "Geçersiz seçim"
 
-#: lazarusidestrconsts.lisinvalidversionin
-#, object-pascal-format
-msgid "invalid version in %s"
-msgstr "%s sürümü geçersiz"
-
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
@@ -11278,10 +11237,6 @@ msgstr "\"%s\" geçersiz bir proje adı %sLütfen başka birini seçin (ör. Pro
 #, object-pascal-format
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr "%s bir %s.%sBu döngüsel bağımlılığa izin verilmedi."
-
-#: lazarusidestrconsts.lisisddirectorynotfound
-msgid "directory not found"
-msgstr "dizin bulunamadı"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
@@ -15911,11 +15866,6 @@ msgstr "%s  (kaynak dışındaki konum)"
 msgid "ppu in wrong directory=%s."
 msgstr "ppu yanlış dizinde = %s."
 
-#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, object-pascal-format
-msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr "%s .ppu bulunamadı. Fpc.cfg dosyanızı kontrol edin."
-
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Önceden geçen kelime"
@@ -17499,10 +17449,6 @@ msgstr "Bileşen adını sorduktan sonra Favoriler sekmesine geçin."
 msgid "Syntax mode"
 msgstr "Sözdizimi modu"
 
-#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
-msgid "system.ppu not found. Check your fpc.cfg."
-msgstr "system.ppu bulunamadı. Fpc.cfg dosyanızı kontrol edin."
-
 #: lazarusidestrconsts.listab
 msgid "Tab"
 msgstr "Sekme"
@@ -18047,11 +17993,6 @@ msgstr "Zaten \"%s\" adında bir birim var. Pascal tanımlayıcıları benzersiz
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Projede \"%s\" adında bir birim var.%sLütfen farklı bir ad seçin"
-
-#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
-#, object-pascal-format
-msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr "%s dizininde fpc.exe dosyası yok. Genellikle make çalıştırılabilir dosyası FPC derleyicisi ile birlikte yüklenir."
 
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
@@ -18689,11 +18630,6 @@ msgstr "Editör değişiklikleri alınamadı."
 msgid "Unable to get source for designer."
 msgstr "Tasarımcı için kaynak bulunamadı."
 
-#: lazarusidestrconsts.lisunabletoloadfile2
-#, object-pascal-format
-msgid "unable to load file %s: %s"
-msgstr "%s  dosyası yüklenemedi: %s"
-
 #: lazarusidestrconsts.lisunabletoloadpackage
 #, object-pascal-format
 msgid "Unable to load package \"%s\""
@@ -18899,14 +18835,6 @@ msgstr "Birimler %s dosyasında bulunamadı"
 #, object-pascal-format
 msgid "Unused units of %s"
 msgstr "%s kullanılmayan birimler"
-
-#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
-msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr "Alışılmadık derleyici dosya adı Genellikle fpc, ppc veya ppcross ile başlar."
-
-#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
-msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr "Olağandışı pas2js derleyici dosya adı. Genellikle pas2js ile başlar."
 
 #: lazarusidestrconsts.lisup
 msgid "Up"
@@ -19246,11 +19174,6 @@ msgstr "Proje bilgi dosyası yazılamadı."
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
 msgstr "Hangi paket dosyalarının arandığını ve bulunduğunu yazın."
-
-#: lazarusidestrconsts.liswrongversionin
-#, object-pascal-format
-msgid "wrong version in %s: %s"
-msgstr "%s  içindeki yanlış sürüm: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

@@ -7783,11 +7783,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Kompiliatorius"
 
-#: lazarusidestrconsts.liscompilercfgismissing
-#, object-pascal-format
-msgid "%s is missing."
-msgstr ""
-
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9239,11 +9234,6 @@ msgstr "Aplankas: "
 msgid "Directory \"%s\" not found."
 msgstr "Nepavyko rasti aplanko „%s“."
 
-#: lazarusidestrconsts.lisdirectorynotfound2
-#, object-pascal-format
-msgid "directory %s not found"
-msgstr "nepavyko rasti aplanko „%s“"
-
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "Aplankas, kuriame IKA talpins „.po“ failus"
@@ -10192,14 +10182,6 @@ msgstr "Failas „%s“ pakeistas. Įrašyti?"
 msgid "File has no project"
 msgstr "Objekto faile nėra"
 
-#: lazarusidestrconsts.lisfileisdirectory
-msgid "File is directory"
-msgstr "Failas yra aplankas"
-
-#: lazarusidestrconsts.lisfileisnotanexecutable
-msgid "File is not an executable"
-msgstr "Failas nėra vykdomasis"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -10208,19 +10190,6 @@ msgstr "Failas „%s“ yra virtualus."
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "Failo pavadinimo stilius"
-
-#: lazarusidestrconsts.lisfilenotfound
-msgid "File not found"
-msgstr "Failas nerastas"
-
-#: lazarusidestrconsts.lisfilenotfound3
-#, object-pascal-format
-msgid "file %s not found"
-msgstr "failas „%s“ nerastas"
-
-#: lazarusidestrconsts.lisfilenotfound4
-msgid "file not found"
-msgstr "failas nerastas"
 
 #: lazarusidestrconsts.lisfilenotfound5
 #, object-pascal-format
@@ -10462,11 +10431,6 @@ msgstr "Formato klaida"
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
 msgstr "Dėl „Windows“"
-
-#: lazarusidestrconsts.lisfoundversionexpected
-#, object-pascal-format
-msgid "Found version %s, expected %s"
-msgstr "Rasta versija „%s“, tikėtasi „%s“"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11501,11 +11465,6 @@ msgstr "Klaidingas skelbimo aplankas"
 msgid "Invalid selection"
 msgstr "Klaidingas žymėjimas"
 
-#: lazarusidestrconsts.lisinvalidversionin
-#, object-pascal-format
-msgid "invalid version in %s"
-msgstr "„%s“ nurodyta klaidinga laida"
-
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
@@ -11520,10 +11479,6 @@ msgstr "Projekto pavadinimas „%s“ yra klaidingas.%sNurodykite kitokį pavadi
 #, object-pascal-format
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr "„%s“ yra „%s“.%sŠio priklausomybių rato neturi būti."
-
-#: lazarusidestrconsts.lisisddirectorynotfound
-msgid "directory not found"
-msgstr "aplankas nerastas"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
@@ -16287,11 +16242,6 @@ msgstr "%s (pozicija už pirminio kodo ribų)"
 msgid "ppu in wrong directory=%s."
 msgstr "„ppu“ ne tame aplanke „%s“."
 
-#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, object-pascal-format
-msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr "Nepavyko rasti „%s.ppu“. Patikrinkite failą „fpc.cfg“."
-
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Pirmesnis žodis"
@@ -17930,10 +17880,6 @@ msgstr "Po komponentės pavadinimo užklausimo perjungti į parankinių kortelę
 msgid "Syntax mode"
 msgstr "Sintaksės veiksena"
 
-#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
-msgid "system.ppu not found. Check your fpc.cfg."
-msgstr "Nerastas „system.ppu“. Patikrinkite ar geras „fpc.cfg“."
-
 #: lazarusidestrconsts.listab
 msgid "Tab"
 msgstr "Tab"
@@ -18484,11 +18430,6 @@ msgstr "Modulis tokiu pavadinimu „%s“ jau yra. Paskalio identifikatoriai tur
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Projekte jau yra modulis „%s“ tokiu pat pavadinimu.%sParinkite kitokį pavadinimą."
-
-#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
-#, object-pascal-format
-msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr "„%s“ aplanke nėra failo „fpc.exe“. Įprastai darymo vykdomasis failas būna įdiegiamas kartu su FPC kompiliatoriumi."
 
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
@@ -19141,11 +19082,6 @@ msgstr "Nepavyko susekti pokyčių rengyklėje."
 msgid "Unable to get source for designer."
 msgstr "Nepavyko gauti pirminio kodo, skirto konstruktoriui."
 
-#: lazarusidestrconsts.lisunabletoloadfile2
-#, object-pascal-format
-msgid "unable to load file %s: %s"
-msgstr "nepavyko įkelti failo %s: %s"
-
 #: lazarusidestrconsts.lisunabletoloadpackage
 #, object-pascal-format
 msgid "Unable to load package \"%s\""
@@ -19353,14 +19289,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Unused units of %s"
 msgstr "„%s“ nenaudojami moduliai"
-
-#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
-msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr "Neįprastas kompiliatoriaus failo pavadinimas. Įprastai jis prasideda „fpc“, „ppc“ ar „ppcross“."
-
-#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
-msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
@@ -19706,11 +19634,6 @@ msgstr ""
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
 msgstr ""
-
-#: lazarusidestrconsts.liswrongversionin
-#, object-pascal-format
-msgid "wrong version in %s: %s"
-msgstr "„%s“ nurodyta klaidinga laida: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

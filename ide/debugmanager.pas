@@ -74,7 +74,7 @@ uses
   IdeDebuggerBackendValueConv, Debugger, BaseDebugManager,
   IdeDebuggerValueFormatter, IdeDebuggerDisplayFormats,
   // IdeConfig
-  LazConf, CompilerOptions, BaseBuildManager,
+  LazConf, CompilerOptions, BaseBuildManager, IdeConfStrConsts,
   // IdeProject
   ProjectDefs, Project, RunParamOptions,
   // IdeDebugger

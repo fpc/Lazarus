@@ -49,6 +49,11 @@ msgstr "Command line parameters van het programma"
 msgid "Compile Project"
 msgstr ""
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr ""
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -87,6 +92,11 @@ msgstr ""
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Verwijderen bestand mislukt"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr ""
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -187,6 +197,14 @@ msgstr "Bestand \"%s\"%slijkt niet op een tekst bestand.%sToch openen?"
 msgid "File extension of programs"
 msgstr ""
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr ""
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr ""
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Bestand is niet wijzigbaar"
@@ -195,9 +213,27 @@ msgstr "Bestand is niet wijzigbaar"
 msgid "File is symlink"
 msgstr ""
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "Bestand niet gevonden"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr ""
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr ""
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "Bestand is geen tekst"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr ""
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -253,6 +289,15 @@ msgstr ""
 #: ideconfstrconsts.lisinvalidmacrosinexternaltool
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr ""
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
 msgstr ""
 
 #: ideconfstrconsts.lislaunchingcmdline
@@ -319,6 +364,10 @@ msgstr ""
 msgid "Not implemented yet:%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr ""
@@ -366,6 +415,11 @@ msgstr "Kan de directory niet maken"
 #| msgid "Unable to delete file %s%s%s."
 msgid "Unable to delete file \"%s\"."
 msgstr "Kan het bestand \"%s\" niet verwijderen."
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr ""
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -440,6 +494,10 @@ msgstr ""
 msgid "Success"
 msgstr "Succes!"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -478,6 +536,11 @@ msgstr ""
 #: ideconfstrconsts.listhefileisasymlinkopeninstead
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
+msgstr ""
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
@@ -561,6 +624,11 @@ msgstr ""
 msgid "unable to execute: %s"
 msgstr ""
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr ""
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Kan het bestand niet lezen"
@@ -627,6 +695,14 @@ msgstr ""
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr ""
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr ""
@@ -638,6 +714,11 @@ msgstr "Schrijffout"
 #: ideconfstrconsts.liswriteerrorfile
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
 msgstr ""
 
 #: ideconfstrconsts.lisxmlerror

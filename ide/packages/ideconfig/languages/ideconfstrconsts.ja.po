@@ -49,6 +49,11 @@ msgstr "プログラムのコマンドライン引数"
 msgid "Compile Project"
 msgstr "プロジェクトをコンパイル"
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr ""
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -86,6 +91,11 @@ msgstr ", CPU: %s"
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "ファイル削除に失敗"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr "ディレクトリ %s が見つかりません"
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -185,6 +195,14 @@ msgstr "ファイル \"%s\"%sはテキストファイルではないようです
 msgid "File extension of programs"
 msgstr "プログラムのファイル拡張子"
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "ファイルはディレクトリです"
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr "ファイルは実行可能ではありません"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "ファイルは書き込み不可です"
@@ -193,9 +211,27 @@ msgstr "ファイルは書き込み不可です"
 msgid "File is symlink"
 msgstr "ファイルはシンボリックリンクです"
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "ファイルが見つかりません"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr "ファイル %s は見つかりません"
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "ファイルは見つかりません"
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "ファイルはテキストでない"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr "バージョン %sが見つかりましたが、%sが期待されています"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -250,6 +286,15 @@ msgstr "\"%s\"における無効なマクロ"
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr "無効なマクロ\"%s\"（外部ツール\"%s\"内）"
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr " %sに無効なバージョン"
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "依存関係が見つかりません"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -313,6 +358,10 @@ msgstr "実装されていません"
 msgid "Not implemented yet:%s%s"
 msgstr "まだ実装されていません:%s%s"
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr "シンボリックリンクを開く"
@@ -359,6 +408,11 @@ msgstr "ディレクトリを作成できません。"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "ファイル\"%s\"を削除できません。"
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr "%s.ppuが見つかりません。fpc.cfgをチェックして下さい。"
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -433,6 +487,10 @@ msgstr ""
 msgid "Success"
 msgstr "成功"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr "system.ppuが見つかりません。fpc.cfgをチェックして下さい"
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -472,6 +530,11 @@ msgstr "フォルダ \"%s\" は、書き込み可能ではありません。"
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "ファイル\"%s\"はシンボリックリンクです。%s \"%s\"を代わりに開きますか？ "
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr "%sのディレクトリにfpc.exeがありません。ふつうmake実行ファイルはFPCコンパイラと一緒にインストールされます。"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -549,6 +612,11 @@ msgstr "リンク\"%s\"をターゲット\"%s\"で作成できません。"
 msgid "unable to execute: %s"
 msgstr "実行できません: %s"
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr "ファイル%sを読み込めません。%s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "ファイルを読めません。"
@@ -610,6 +678,14 @@ msgstr "ファイル \"%s\" に書き込めません。"
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "xmlストリームを%s%sに書き込めません。エラー：%s"
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "普通でないコンパイラ名。ふつうfpc, ppc あるいは ppcrossで始まります。"
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "ユーザーのhomeディレクトリ"
@@ -623,6 +699,11 @@ msgstr "書き込みエラー"
 #| msgid "Write error: %s%sFile: \"%s\""
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "書き込みエラー: %s%sファイル: \"%s\""
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr "%sに間違ったバージョン: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"

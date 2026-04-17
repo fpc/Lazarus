@@ -516,6 +516,7 @@
         <Filename Value="inspectchksumchangeddlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="InspectChksumChgDialog"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="InspectChksumChangedDlg"/>
       </Unit>

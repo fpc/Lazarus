@@ -40,9 +40,9 @@ uses
   // Ideintf
   IDEDialogs,
   // IdeConfig
-  IDEProcs, LazConf, EnvironmentOpts, FppkgHelper,
+  IDEProcs, LazConf, EnvironmentOpts, FppkgHelper, InitialSetupProc, IdeConfStrConsts,
   // IDE
-  LazarusIDEStrConsts, InitialSetupProc;
+  LazarusIDEStrConsts;
 
 type
 

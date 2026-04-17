@@ -15,7 +15,7 @@ uses
   // IDEIntf
   IDEDialogs,
   // IdeConfig
-  ProjPackCommon,
+  ProjPackCommon, IdeConfStrConsts,
   // IdeProject
   Project,
   // IdePackage

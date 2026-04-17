@@ -48,6 +48,11 @@ msgstr "Parametry wiersza poleceń programu"
 msgid "Compile Project"
 msgstr "Kompilowany projekt"
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr "brak %s."
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -85,6 +90,11 @@ msgstr ", CPU: %s"
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Nie można usunąć pliku"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr "nie znaleziono katalogu \"%s\""
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -185,6 +195,14 @@ msgstr "Plik \"%s\"%snie wygląda na tekstowy.%sCzy pomimo tego chcesz go otworz
 msgid "File extension of programs"
 msgstr "Rozszerzenie nazwy pliku dla programów"
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "Plik jest katalogiem"
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr "Plik nie jest wykonywalny"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Nie można zapisywać do pliku"
@@ -193,9 +211,27 @@ msgstr "Nie można zapisywać do pliku"
 msgid "File is symlink"
 msgstr "Plik jest dowiązaniem symbolicznym"
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "Nie znaleziono pliku"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr "nie znaleziono pliku %s"
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "nie znaleziono pliku"
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "To nie jest plik tekstowy"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format, fuzzy, badformat
+msgid "Found version %s, expected %s"
+msgstr "zamiast końca programu \"end.\" znaleziono %s"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -250,6 +286,15 @@ msgstr "niedozwolony znak \"%s\" w %s"
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr ""
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format, fuzzy, badformat
+msgid "invalid version in %s"
+msgstr "Nieodpowiednia wersja"
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "nie znaleziono katalogu"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -313,6 +358,10 @@ msgstr "Nie zaimplementowane"
 msgid "Not implemented yet:%s%s"
 msgstr "Jeszcze nie zaimplementowane: %s%s"
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr "Otwórz dowiązanie symboliczne"
@@ -360,6 +409,11 @@ msgstr "Nie można utworzyć katalogu"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Nie można usunąć pliku \"%s\"."
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr ""
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -437,6 +491,10 @@ msgstr ""
 msgid "Success"
 msgstr "Zakończony powodzeniem"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -475,6 +533,11 @@ msgstr "Brak prawa zapisu w katalogu \"%s\"."
 #: ideconfstrconsts.listhefileisasymlinkopeninstead
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
+msgstr ""
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
@@ -553,6 +616,11 @@ msgstr "Nie można utworzyć katalogu z kopią zapasową \"%s\"."
 msgid "unable to execute: %s"
 msgstr "nie można uruchomić: %s"
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr "nie można załadować pliku %s:%s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Nie można czytać pliku"
@@ -615,6 +683,14 @@ msgstr "Nie można zapisywać do pliku \"%s\"."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Nie można zapisać do pliku \"%s\"%sBłąd: %s"
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "Nietypowa nazwa kompilatora. Zwykle zaczyna się od fpc, ppc lub ppcross."
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr "Nietypowa nazwa kompilatora pas2js. Zwykle zaczyna się od pas2js."
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Katalog domowy użytkownika"
@@ -627,6 +703,11 @@ msgstr "Błąd zapisu"
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Błąd zapisu: %s%sPlik: %s%s%s"
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr "zła wersja w %s: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"

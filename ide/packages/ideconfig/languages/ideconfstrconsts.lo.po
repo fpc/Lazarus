@@ -48,6 +48,11 @@ msgstr ""
 msgid "Compile Project"
 msgstr ""
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr "%s ຂາດຫາຍໄປ."
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -83,6 +88,11 @@ msgstr ""
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr ""
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr "ບໍ່ພົບໄດເຣັກທໍຣີ %s"
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -182,6 +192,14 @@ msgstr ""
 msgid "File extension of programs"
 msgstr ""
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "ໄຟລ໌ແມ່ນໄດເຣັກທໍຣີ"
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr "ໄຟລ໌ບໍ່ແມ່ນ executable"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr ""
@@ -190,9 +208,27 @@ msgstr ""
 msgid "File is symlink"
 msgstr ""
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "ບໍ່ພົບໄຟລ໌"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr "ບໍ່ພົບໄຟລ໌ %s"
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "ບໍ່ພົບໄຟລ໌"
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr ""
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr "ພົບເວີຊັນ %s, ຄາດຫວັງ %s"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -247,6 +283,15 @@ msgstr "Macros ບໍ່ຖືກຕ້ອງໃນ \"%s\""
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr "Macros ບໍ່ຖືກຕ້ອງ \"%s\" ໃນ external tool \"%s\""
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr "ເວີຊັນບໍ່ຖືກຕ້ອງໃນ %s"
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "ບໍ່ພົບໄດເຣັກທໍຣີ"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -308,6 +353,10 @@ msgstr ""
 msgid "Not implemented yet:%s%s"
 msgstr ""
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr ""
@@ -354,6 +403,11 @@ msgstr ""
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr ""
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr "ບໍ່ພົບ %s.ppu. ກວດເບິ່ງ fpc.cfg ຂອງເຈົ້າ."
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -428,6 +482,10 @@ msgstr "ເປົ້າໝາຍຍ່ອຍ"
 msgid "Success"
 msgstr "ສຳເລັດ"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr "ບໍ່ພົບ system.ppu. ກວດເບິ່ງ fpc.cfg ຂອງທ່ານ."
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -467,6 +525,11 @@ msgstr ""
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr ""
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr "ບໍ່ມີ fpc.exe ໃນໄດເຣັກທໍຣີຂອງ %s. ໂດຍທົ່ວໄປ make executable ຈະຖືກຕິດຕັ້ງພ້ອມກັບ FPC compiler."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -544,6 +607,11 @@ msgstr ""
 msgid "unable to execute: %s"
 msgstr "ບໍ່ສາມາດ execute: %s"
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr "ບໍ່ສາມາດໂຫຼດໄຟລ໌ %s: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr ""
@@ -605,6 +673,14 @@ msgstr ""
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr ""
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "ຊື່ໄຟລ໌ compiler ຜິດປົກກະຕິ. ໂດຍທົ່ວໄປມັນເລີ່ມຕົ້ນດ້ວຍ fpc, ppc ຫຼື ppcross."
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr "ຊື່ໄຟລ໌ compiler pas2js ຜິດປົກກະຕິ. ໂດຍທົ່ວໄປມັນເລີ່ມຕົ້ນດ້ວຍ pas2js."
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr ""
@@ -617,6 +693,11 @@ msgstr ""
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr ""
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr "ເວີຊັນຜິດພາດໃນ %s: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"

@@ -48,6 +48,11 @@ msgstr "Ohjelman komentorivi-parametrit"
 msgid "Compile Project"
 msgstr "Käännä projekti"
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr ""
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -85,6 +90,11 @@ msgstr ""
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Tiedoston poistaminen epäonnistui"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr "hakemistoa %s ei löydy"
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -184,6 +194,14 @@ msgstr "Tiedosto \"%s\"%s ei näytä olevan tekstitiedosto.%s Yritetäänkö sil
 msgid "File extension of programs"
 msgstr "Ohjelmien tiedostopääte"
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "Tiedosto on hakemisto"
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr "Tiedosto ei ole suoritettava"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Tiedoston tallentaminen ei onnistunut"
@@ -192,9 +210,27 @@ msgstr "Tiedoston tallentaminen ei onnistunut"
 msgid "File is symlink"
 msgstr "Tiedosto on symbolinen linkki"
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "Tiedostoa ei löytynyt"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr "tiedostoa %s ei löytynyt"
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "tiedostoa ei löytynyt"
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "Tiedosto ei ole tekstiä"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr "Versio %s löytyi, odotettiin versiota %s"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -249,6 +285,15 @@ msgstr "Kelvottomia makroja \"%s\":ssa"
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr "Kelvottomia makroja \"%s\" ulkoisessa työkalussa \"%s\""
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr "kelvoton versio %s:ssa"
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "hakemistoa ei löydy"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -312,6 +357,10 @@ msgstr "Ei toteutettu"
 msgid "Not implemented yet:%s%s"
 msgstr "Ei toteutettu vielä:%s%s"
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr "Avaa symlink"
@@ -358,6 +407,11 @@ msgstr "Kansion luonti epäonnistui"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Tiedoston \"%s\" poistaminen ei onnistu."
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr "%s.ppu ei löydy. Tarkista fpc.cfg."
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -432,6 +486,10 @@ msgstr ""
 msgid "Success"
 msgstr "Onnistui"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr "system.ppu ei löydy. Tarkista fpc.cfg."
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -471,6 +529,11 @@ msgstr "Hakemistoon \"%s\" ei voi kirjoittaa."
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Tiedosto \"%s\" symbolinen linkki.%sAvataanko \"%s\" sen sijaan?"
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr "fpc.exe ei ole %s:n hakemistossa. Yleensä make ohjelma asennetaan yhdessä FPC:n kanssa."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -548,6 +611,11 @@ msgstr "Linkin \"%s\" luominen kohteeseen \"%s\" ei onnistu"
 msgid "unable to execute: %s"
 msgstr "ei voi suorittaa: %s"
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr "Tiedoston %s: %s lataaminen ei onnistu"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Tiedoston lukeminen ei onnistu"
@@ -609,6 +677,14 @@ msgstr "Kirjoittaminen tiedostoon \"%s\" ei onnistu."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Xml vuon kirjoittaminen tiedostoon %s ei onnistu%sVirhe: %s"
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "Epätavallinen kääntäjän nimi. Yleensä se alkaa fpc, ppc tai ppcross."
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr "Epätavallinen pas2js kääntäjän nimi. Yleensä se alkaa pas2js."
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Käyttäjän kotihakemisto"
@@ -621,6 +697,11 @@ msgstr "Tiedoston tallentaminen ei onnistunut"
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Virhe kirjoittaessa: %s%sTiedosto: %s%s%s"
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr "väärä versio %s: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"

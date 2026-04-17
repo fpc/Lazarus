@@ -15,6 +15,7 @@ uses
 
 resourcestring
   // general
+  lisOk = 'OK';
   lisSuccess = 'Success';
   lisAborted = 'Aborted';
   // compiler
@@ -82,6 +83,30 @@ resourcestring
   lisPrimaryConfigPath = 'Primary config path';
   lisSecondaryConfigPath = 'Secondary config path';
   lisFileExtensionOfPrograms = 'File extension of programs';
+
+  //Initial setup
+  lisFoundVersionExpected = 'Found version %s, expected %s';
+  lisInvalidVersionIn = 'invalid version in %s';
+  lisWrongVersionIn = 'wrong version in %s: %s';
+  lisFileIsNotAnExecutable = 'File is not an executable';
+  lisUnusualPas2jsCompilerFileNameUsuallyItStartsWithPa = 'Unusual pas2js '
+    +'compiler file name. Usually it starts with pas2js.';
+  lisThereIsNoFpcExeInTheDirectoryOfUsuallyTheMakeExecu = 'There is no fpc.exe'
+    +' in the directory of %s. Usually the make executable is installed '
+    +'together with the FPC compiler.';
+  lisUnusualCompilerFileNameUsuallyItStartsWithFpcPpcOr = 'Unusual compiler '
+    +'file name. Usually it starts with fpc, ppc or ppcross.';
+  lisCompilerCfgIsMissing = '%s is missing.';
+  lisSystemPpuNotFoundCheckYourFpcCfg = 'system.ppu not found. Check your fpc.cfg.';
+  lisUnableToLoadFile2 = 'unable to load file %s: %s';
+  lisFileIsDirectory = 'File is directory';
+  lisISDDirectoryNotFound = 'directory not found';
+  lisDirectoryNotFound2 = 'directory %s not found';
+  lisFileNotFound = 'File not found';
+  lisFileNotFound3 = 'file %s not found';
+  lisFileNotFound4 = 'file not found';
+  lisPpuNotFoundCheckYourFpcCfg = '%s.ppu not found. Check your fpc.cfg.';
+
   // External tools
   lisExitCode = 'Exit code %s';
   lisParser = 'parser "%s": %s';

@@ -48,6 +48,11 @@ msgstr "Programın komut satırı parametreleri"
 msgid "Compile Project"
 msgstr "Projeyi Derle"
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr "%s kayıp."
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -85,6 +90,11 @@ msgstr ", CPU: %s"
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Dosya silinemedi"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr "dizin %s bulunamadı"
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -184,6 +194,14 @@ msgstr "\"%s\"%s dosyası bir metin dosyasına benzemiyor.%s Yine de açılsın 
 msgid "File extension of programs"
 msgstr "Programların dosya uzantıları"
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "Dosya dizin"
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr "Dosya yürütülebilir değil"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Dosya yazılabilir değil"
@@ -192,9 +210,27 @@ msgstr "Dosya yazılabilir değil"
 msgid "File is symlink"
 msgstr "Dosya sembolik bağ"
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "Dosya bulunamadı"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr "dosya %s bulunamadı"
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "dosya bulunamadı"
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "Metin değil dosya"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr "%s sürümü bulundu, %s bekleniyor"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -249,6 +285,15 @@ msgstr "\"%s\" daki geçersiz makrolar"
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr "Harici araç \"%s\" daki \"%s\" geçersiz makrolar"
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr "%s sürümü geçersiz"
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "dizin bulunamadı"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -312,6 +357,10 @@ msgstr "Uygulanmadı"
 msgid "Not implemented yet:%s%s"
 msgstr "Henüz uygulanmadı: %s %s"
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr "Sembolik bağı aç"
@@ -358,6 +407,11 @@ msgstr "Dizin oluşturulamadı"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Dosya \"%s\" silinemiyor."
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr "%s .ppu bulunamadı. Fpc.cfg dosyanızı kontrol edin."
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -432,6 +486,10 @@ msgstr "Althedef"
 msgid "Success"
 msgstr "Başarılı"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr "system.ppu bulunamadı. Fpc.cfg dosyanızı kontrol edin."
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -471,6 +529,11 @@ msgstr "\"%s\"dizini yazılabilir değil."
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "\"%s\"dosyası bir sembolik bağ.%s \"%s\" yerine Aç?"
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr "%s dizininde fpc.exe dosyası yok. Genellikle make çalıştırılabilir dosyası FPC derleyicisi ile birlikte yüklenir."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -548,6 +611,11 @@ msgstr "Hedef \"%s\"\" ile \" %s \" bağlantısı oluşturulamadı"
 msgid "unable to execute: %s"
 msgstr "yürütemedi: %s"
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr "%s  dosyası yüklenemedi: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Dosyayı okunamıyor"
@@ -609,6 +677,14 @@ msgstr "\"%s\" dosyasına yazılamıyor."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "%s%s xml akışı yazılamadı Hata:%s"
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "Alışılmadık derleyici dosya adı Genellikle fpc, ppc veya ppcross ile başlar."
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr "Olağandışı pas2js derleyici dosya adı. Genellikle pas2js ile başlar."
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Kullanıcının ana dizini"
@@ -621,6 +697,11 @@ msgstr "Yazma Hatası"
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Yazma hatası: %s%sDosya: %s%s%s"
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr "%s  içindeki yanlış sürüm: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"

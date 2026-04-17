@@ -7674,11 +7674,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Fordító"
 
-#: lazarusidestrconsts.liscompilercfgismissing
-#, object-pascal-format
-msgid "%s is missing."
-msgstr "%s nem található."
-
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9124,11 +9119,6 @@ msgstr "Könyvtár:"
 msgid "Directory \"%s\" not found."
 msgstr "A(z) \"%s\" könyvtár nem található."
 
-#: lazarusidestrconsts.lisdirectorynotfound2
-#, object-pascal-format
-msgid "directory %s not found"
-msgstr "A(z) %s könyvtár nem található."
-
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "A könyvtár, ahová az IDE a .po fájlokat írja"
@@ -10075,14 +10065,6 @@ msgstr "A(z) \"%s\" fájl megváltozott. Mentés?"
 msgid "File has no project"
 msgstr "A fájl nem tartozik projekthez"
 
-#: lazarusidestrconsts.lisfileisdirectory
-msgid "File is directory"
-msgstr "A fájl egy könyvtár"
-
-#: lazarusidestrconsts.lisfileisnotanexecutable
-msgid "File is not an executable"
-msgstr "A fájl nem futtatható"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -10091,19 +10073,6 @@ msgstr "A(z) \"%s\" fájl virtuális."
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "Fájlnév stílusa"
-
-#: lazarusidestrconsts.lisfilenotfound
-msgid "File not found"
-msgstr "A fájl nem található"
-
-#: lazarusidestrconsts.lisfilenotfound3
-#, object-pascal-format
-msgid "file %s not found"
-msgstr "A fájl nem található: %s"
-
-#: lazarusidestrconsts.lisfilenotfound4
-msgid "file not found"
-msgstr "A fájl nem található"
 
 #: lazarusidestrconsts.lisfilenotfound5
 #, object-pascal-format
@@ -10346,11 +10315,6 @@ msgstr "Formátum hiba"
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
 msgstr "Windows esetén"
-
-#: lazarusidestrconsts.lisfoundversionexpected
-#, object-pascal-format
-msgid "Found version %s, expected %s"
-msgstr "A talált változat: %s, a szükséges: %s"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11375,11 +11339,6 @@ msgstr "Érvénytelen közzétételi könyvtár"
 msgid "Invalid selection"
 msgstr "Érvénytelen kijelölés"
 
-#: lazarusidestrconsts.lisinvalidversionin
-#, object-pascal-format
-msgid "invalid version in %s"
-msgstr "Érvénytelen változat a(z) %s fájlban"
-
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
@@ -11394,10 +11353,6 @@ msgstr "A(z) \"%s\" egy érvénytelen projekt név.%sVálasszon egy másikat! (p
 #, object-pascal-format
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr "%s egy %sz.%sEz a körkörös függőség nem megengedett."
-
-#: lazarusidestrconsts.lisisddirectorynotfound
-msgid "directory not found"
-msgstr "Könyvtár nem található"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
@@ -16083,11 +16038,6 @@ msgstr "%s (a pozíció a forráson kívül van)"
 msgid "ppu in wrong directory=%s."
 msgstr "ppu egy nem megfelelő könyvtárban: \"%s\""
 
-#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, object-pascal-format
-msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr "A(z) %s.ppu nem található. Ellenőrizze az fpc.cfg fájlt!"
-
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Megelőző szó"
@@ -17698,10 +17648,6 @@ msgstr "Váltás a Kedvencek lapra komponensnév kérése után."
 msgid "Syntax mode"
 msgstr "Szintaxis mód"
 
-#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
-msgid "system.ppu not found. Check your fpc.cfg."
-msgstr "A system.ppu nem található. Ellenőrizze az fpc.cfg fájlt!"
-
 #: lazarusidestrconsts.listab
 msgid "Tab"
 msgstr "Tab"
@@ -18246,11 +18192,6 @@ msgstr "Már létezik \"%s\" nevű unit. A Pascal azonosítóknak egyedinek kell
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Létezik \"%s\" nevű unit a projektben.%sVálasszon egy eltérő nevet!"
-
-#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
-#, object-pascal-format
-msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr "Nincs fpc.exe a(z) %s könyvtárában. Általában a make program együtt van telepítve az FPC fordítóval."
 
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
@@ -18891,11 +18832,6 @@ msgstr "A szerkesztőben történt változások begyűjtése nem lehetséges."
 msgid "Unable to get source for designer."
 msgstr "A tervező forrásának megszerzése nem lehetséges."
 
-#: lazarusidestrconsts.lisunabletoloadfile2
-#, object-pascal-format
-msgid "unable to load file %s: %s"
-msgstr "Nem tölthető be a fájl %s: %s"
-
 #: lazarusidestrconsts.lisunabletoloadpackage
 #, object-pascal-format
 msgid "Unable to load package \"%s\""
@@ -19102,14 +19038,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Unused units of %s"
 msgstr "%s nem használt unit-jai"
-
-#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
-msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr "Szokásos fordító-fájlnév. Általában így kezdődik: fpc, ppc vagy ppcross"
-
-#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
-msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr "A pas2js fordító fájlneve nem szokványos. A név eleje általában pas2js."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
@@ -19453,11 +19381,6 @@ msgstr "A projektinformációs fájl írása nem sikerült."
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
 msgstr ""
-
-#: lazarusidestrconsts.liswrongversionin
-#, object-pascal-format
-msgid "wrong version in %s: %s"
-msgstr "a(z) %s rossz változatot tartalmaz: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

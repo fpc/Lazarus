@@ -48,6 +48,11 @@ msgstr "Kommandozeilenparameter des Programms"
 msgid "Compile Project"
 msgstr "Projekt kompilieren"
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr "%s fehlt."
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -85,6 +90,11 @@ msgstr ""
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Löschen der Datei fehlgeschlagen"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr "Verzeichnis %s nicht gefunden"
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -184,6 +194,14 @@ msgstr "Datei \"%s\"%s sieht nicht aus wie eine Textdatei.%sTrotzdem öffnen?"
 msgid "File extension of programs"
 msgstr "Dateiendung des Programms"
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "Datei ist Verzeichnis"
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr "Datei ist keine ausführbare Datei"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Datei ist schreibgeschützt"
@@ -192,9 +210,27 @@ msgstr "Datei ist schreibgeschützt"
 msgid "File is symlink"
 msgstr "Datei ist ein symbolischer Link"
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "Datei nicht gefunden"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr "Datei %s nicht gefunden"
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "Datei nicht gefunden"
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "Keine Textdatei"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr "Version %s gefunden, erwartet wurde %s"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -249,6 +285,15 @@ msgstr "Ungültige Makros in \"%s\""
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr "Ungültige Makros \"%s\" in externem Werkzeug \"%s\""
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr "ungültige Version in %s"
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "Verzeichnis nicht gefunden"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -312,6 +357,10 @@ msgstr "Nicht implementiert"
 msgid "Not implemented yet:%s%s"
 msgstr "Noch nicht implementiert:%s%s"
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr "Offener symbolischer Link"
@@ -358,6 +407,11 @@ msgstr "Unfähig, das Verzeichnis anzulegen"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Die Datei \"%s\" kann nicht gelöscht werden."
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr "%s.ppu nicht gefunden. Prüfen Sie ihre fpc.cfg."
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -432,6 +486,10 @@ msgstr ""
 msgid "Success"
 msgstr "Erfolg"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr "system.ppu nicht gefunden. Prüfen Sie ihre fpc.cfg."
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -471,6 +529,11 @@ msgstr "Im Verzeichnis \"%s\" kann nicht geschrieben werden."
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Die Datei \"%s\" ist ein Symlink.%sStatt dessen \"%s\" öffnen?"
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr "Es gibt keine fpc.exe im Verzeichnis von %s. Üblicherweise wird \"make\" zusammen mit dem FPC-Compiler installiert."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -548,6 +611,11 @@ msgstr "Kann den Link \"%s\" zum Ziel \"%s\" nicht anlegen"
 msgid "unable to execute: %s"
 msgstr "kann %s nicht ausführen"
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr "kann Datei %s: %s nicht laden"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Die Datei kann nicht gelesen werden"
@@ -609,6 +677,14 @@ msgstr "Kann nicht in Datei \"%s\" schreiben."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Kann XML-Stream nicht in %s%s schreiben. Fehler: %S"
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "Unüblicher Compiler-Dateiname. Üblicherweise startet er mit fpc, ppc oder ppcross."
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Heimatverzeichnis des Users"
@@ -621,6 +697,11 @@ msgstr "Schreibfehler"
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Schreibfehler: %s%sDatei: %s%s%s"
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr "falsche Version in %s: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"

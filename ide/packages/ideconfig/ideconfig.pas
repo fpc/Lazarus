@@ -13,9 +13,9 @@ uses
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, 
   ExtTools, ExtToolsConsole, FppkgHelper, IDECmdLine, IdeConfigPckTest, 
   IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, IDETranslations, 
-  IdeXmlConfigProcs, LazConf, ModeMatrixOpts, ParsedCompilerOpts, 
-  ProjectBuildMode, ProjPackCommon, RecentListProcs, SearchPathProcs, 
-  ToolBarOptionsBase, TransferMacros, LazarusPackageIntf;
+  IdeXmlConfigProcs, InitialSetupProc, LazConf, ModeMatrixOpts, 
+  ParsedCompilerOpts, ProjectBuildMode, ProjPackCommon, RecentListProcs, 
+  SearchPathProcs, ToolBarOptionsBase, TransferMacros, LazarusPackageIntf;
 
 implementation
 

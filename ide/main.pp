@@ -123,7 +123,7 @@ uses
   InputHistory, IdeUtilsPkg, IdeUtilsPkgStrConsts,
   // IdeConfig
   LazConf, EnvironmentOpts, TransferMacros, IDECmdLine, IDEGuiCmdLine,
-  IDEProcs, ApplicationBundle, IdeConfStrConsts,
+  IDEProcs, ApplicationBundle, InitialSetupProc, IdeConfStrConsts,
   // IdePackager,
   IdePackager, IdePackagerStrConsts, PackageSystem, BasePkgManager, LPKCache,
   // IdeProject,
@@ -169,7 +169,7 @@ uses
   BuildManager, IdeBuildManager, CheckCompOptsForNewUnitDlg, MiscOptions,
   InputhistoryWithSearchOpt, UnitDependencies, IDEFPCInfo, IDEInfoDlg,
   IDEInfoNeedBuild, ProcessList, IdeDebuggerOpts, IdeDebuggerWatchResPrinter,
-  IdeDebuggerWatchResult, InitialSetupDlgs, InitialSetupProc, NewDialog,
+  IdeDebuggerWatchResult, InitialSetupDlgs, NewDialog,
   MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg,
   CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
   FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,

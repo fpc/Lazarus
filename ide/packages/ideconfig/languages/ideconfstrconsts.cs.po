@@ -48,6 +48,11 @@ msgstr "Parametry příkazového řádku programu"
 msgid "Compile Project"
 msgstr "Přeložit projekt"
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr "chybí %s."
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -85,6 +90,11 @@ msgstr ", CPU: %s"
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Odstranění souboru selhalo"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr "adresář %s nenalezen"
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -184,6 +194,14 @@ msgstr "Soubor \"%s\"%snevypadá jako textový soubor.%sPřesto otevřít?"
 msgid "File extension of programs"
 msgstr "Přípona souboru programu"
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "Soubor je adresářem"
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr "Soubor není spustitelný"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Soubor není zapisovatelný"
@@ -192,9 +210,27 @@ msgstr "Soubor není zapisovatelný"
 msgid "File is symlink"
 msgstr "Soubor je symbolický odkaz"
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "Soubor nenalezen"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr "soubor %s nenalezen"
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "soubor nenalezen"
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "Soubor není textový"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr "Nalezena verze %s, očekávána %s"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -249,6 +285,15 @@ msgstr "Neplatná makra v \"%s\""
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr "Neplatná makra \"%s\" v externím nástroji \"%s\""
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr "neplatná verze v %s"
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "adresář nenalezen"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -312,6 +357,10 @@ msgstr "Doposud neimplementováno"
 msgid "Not implemented yet:%s%s"
 msgstr "Zatím neimplementováno:%s%s"
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr "Otevřít symbolický odkaz"
@@ -358,6 +407,11 @@ msgstr "Nelze vytvořit adresář"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Nelze smazat soubor \"%s\"."
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr "%s.ppu nenalezeno. Zkontrolujte vás fpc.cfg."
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -432,6 +486,10 @@ msgstr ""
 msgid "Success"
 msgstr "Úspěch"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr "system.ppu nenalezen. Zkontrolujte Váš fpc.cfg."
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -471,6 +529,11 @@ msgstr "Adresář \"%s\" není zapisovatelný."
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Soubor \"%s\" je symbolický odkaz.%sOtevřít místo něj \"%s\"?"
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr "V adresáři %s není fpc.exe. Obvykle je spouštěcí make soubor instalován společně s překladačem FPC."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -548,6 +611,11 @@ msgstr "Nelze vytvořit odkaz \"%s\" s cílem \"%s\""
 msgid "unable to execute: %s"
 msgstr "nemožno spustit: %s"
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr "nelze nahrát soubor %s: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Nelze přečíst soubor"
@@ -609,6 +677,14 @@ msgstr "Nelze zapsat do souboru \"%s\"."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Nelze zapsat xml proud do %s%sChyba: %s"
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "Neobvyklé jméno překladače. Obvykle začíná fpc, ppc nebo ppcross."
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr "Neobvyklé jméno pas2js překladače. Obvykle začíná s pas2js."
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Uživatelský domovský adresář"
@@ -621,6 +697,11 @@ msgstr "Chyba zápisu"
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Chyba zápisu: %s%sSoubor: %s%s%s"
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr "špatná verze v %s: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"

@@ -7618,11 +7618,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Prekladač"
 
-#: lazarusidestrconsts.liscompilercfgismissing
-#, object-pascal-format
-msgid "%s is missing."
-msgstr ""
-
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9067,11 +9062,6 @@ msgstr "Adresár: "
 msgid "Directory \"%s\" not found."
 msgstr ""
 
-#: lazarusidestrconsts.lisdirectorynotfound2
-#, object-pascal-format
-msgid "directory %s not found"
-msgstr ""
-
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr ""
@@ -10011,14 +10001,6 @@ msgstr ""
 msgid "File has no project"
 msgstr ""
 
-#: lazarusidestrconsts.lisfileisdirectory
-msgid "File is directory"
-msgstr ""
-
-#: lazarusidestrconsts.lisfileisnotanexecutable
-msgid "File is not an executable"
-msgstr ""
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -10026,19 +10008,6 @@ msgstr "Súbor \"%s\" je virtuálny."
 
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
-msgstr ""
-
-#: lazarusidestrconsts.lisfilenotfound
-msgid "File not found"
-msgstr "Súbor nenájdený"
-
-#: lazarusidestrconsts.lisfilenotfound3
-#, object-pascal-format
-msgid "file %s not found"
-msgstr ""
-
-#: lazarusidestrconsts.lisfilenotfound4
-msgid "file not found"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound5
@@ -10270,11 +10239,6 @@ msgstr "Chyba formátu"
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
 msgstr "Pre Windows"
-
-#: lazarusidestrconsts.lisfoundversionexpected
-#, object-pascal-format
-msgid "Found version %s, expected %s"
-msgstr ""
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11267,11 +11231,6 @@ msgstr "Neplatný adresár publikovania"
 msgid "Invalid selection"
 msgstr "Neplatný výber"
 
-#: lazarusidestrconsts.lisinvalidversionin
-#, object-pascal-format
-msgid "invalid version in %s"
-msgstr "neplatná verzia v %s"
-
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
@@ -11287,10 +11246,6 @@ msgstr "%s%s%s nie je platné meno projektu.%sProsím vyberte iné  (napr. proje
 #, object-pascal-format
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr ""
-
-#: lazarusidestrconsts.lisisddirectorynotfound
-msgid "directory not found"
-msgstr "adresár nenájdený"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
@@ -15967,11 +15922,6 @@ msgstr ""
 msgid "ppu in wrong directory=%s."
 msgstr ""
 
-#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, object-pascal-format
-msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr ""
-
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr ""
@@ -17558,10 +17508,6 @@ msgstr ""
 msgid "Syntax mode"
 msgstr "Mód syntaxe"
 
-#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
-msgid "system.ppu not found. Check your fpc.cfg."
-msgstr ""
-
 #: lazarusidestrconsts.listab
 msgid "Tab"
 msgstr "Tabulátor"
@@ -18121,11 +18067,6 @@ msgstr "Jednotka s menom %s%s%suž existuje. Identifikátory Pascal musia byť u
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Jednotka s menom \"%s\" už v projekte existuje.%sVyberte si prosím iné meno"
-
-#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
-#, object-pascal-format
-msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr ""
 
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
@@ -18775,11 +18716,6 @@ msgstr "Nemožno získať zmeny editora."
 msgid "Unable to get source for designer."
 msgstr "Nemožno získať zdrojový kód pre návrhára."
 
-#: lazarusidestrconsts.lisunabletoloadfile2
-#, object-pascal-format
-msgid "unable to load file %s: %s"
-msgstr ""
-
 #: lazarusidestrconsts.lisunabletoloadpackage
 #, object-pascal-format
 msgid "Unable to load package \"%s\""
@@ -18988,14 +18924,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Unused units of %s"
 msgstr "Nepoužité jednotky z %s"
-
-#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
-msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr ""
-
-#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
-msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr ""
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
@@ -19338,11 +19266,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
-msgstr ""
-
-#: lazarusidestrconsts.liswrongversionin
-#, object-pascal-format
-msgid "wrong version in %s: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed

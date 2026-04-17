@@ -39,14 +39,17 @@ uses
   // CodeTools
   CodeToolManager, DefineTemplates, LinkScanner,
   // IdeConfig
-  TransferMacros, EnvironmentOpts, LazConf,
+  TransferMacros, EnvironmentOpts, LazConf, InitialSetupProc,
   // BuildIntf
   MacroDefIntf, IDEExternToolIntf, ProjectIntf,
   // IdeIntf
   IDEHelpIntf, IDEWindowIntf, LazIDEIntf,
+  // IdeProject
+  Project,
+  // IdePackager
+  PackageSystem, PackageDefs,
   // IDE
-  LazarusIDEStrConsts, Project, SourceEditor, InitialSetupProc,
-  PackageSystem, PackageDefs;
+  LazarusIDEStrConsts, SourceEditor;
 
 type
 

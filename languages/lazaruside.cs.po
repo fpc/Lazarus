@@ -7714,11 +7714,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Překladač"
 
-#: lazarusidestrconsts.liscompilercfgismissing
-#, object-pascal-format
-msgid "%s is missing."
-msgstr "chybí %s."
-
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9165,11 +9160,6 @@ msgstr "Adresář: "
 msgid "Directory \"%s\" not found."
 msgstr "Adresář \"%s\" nenalezen."
 
-#: lazarusidestrconsts.lisdirectorynotfound2
-#, object-pascal-format
-msgid "directory %s not found"
-msgstr "adresář %s nenalezen"
-
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "Adresář, do nějž IDE dává soubory .po"
@@ -10119,14 +10109,6 @@ msgstr "Soubor \"%s\" byl pozměněn. Uložit?"
 msgid "File has no project"
 msgstr "Soubor nemá projekt"
 
-#: lazarusidestrconsts.lisfileisdirectory
-msgid "File is directory"
-msgstr "Soubor je adresářem"
-
-#: lazarusidestrconsts.lisfileisnotanexecutable
-msgid "File is not an executable"
-msgstr "Soubor není spustitelný"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -10135,19 +10117,6 @@ msgstr "Soubor \"%s\" je virtuální."
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "Styl jména souboru"
-
-#: lazarusidestrconsts.lisfilenotfound
-msgid "File not found"
-msgstr "Soubor nenalezen"
-
-#: lazarusidestrconsts.lisfilenotfound3
-#, object-pascal-format
-msgid "file %s not found"
-msgstr "soubor %s nenalezen"
-
-#: lazarusidestrconsts.lisfilenotfound4
-msgid "file not found"
-msgstr "soubor nenalezen"
 
 #: lazarusidestrconsts.lisfilenotfound5
 #, object-pascal-format
@@ -10389,11 +10358,6 @@ msgstr "Chyba formátování"
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
 msgstr "Pro Windows"
-
-#: lazarusidestrconsts.lisfoundversionexpected
-#, object-pascal-format
-msgid "Found version %s, expected %s"
-msgstr "Nalezena verze %s, očekávána %s"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11407,11 +11371,6 @@ msgstr "Neplatný adresář pro zveřejňování"
 msgid "Invalid selection"
 msgstr "Neplatný výběr"
 
-#: lazarusidestrconsts.lisinvalidversionin
-#, object-pascal-format
-msgid "invalid version in %s"
-msgstr "neplatná verze v %s"
-
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
@@ -11426,10 +11385,6 @@ msgstr "\"%s\" je chybné jméno projektu.%sProsím vyberte jiné (např. projek
 #, object-pascal-format
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr "%s je %s.%sTato kruhová závislost není povolena."
-
-#: lazarusidestrconsts.lisisddirectorynotfound
-msgid "directory not found"
-msgstr "adresář nenalezen"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
@@ -16161,11 +16116,6 @@ msgstr "%s (pozice vně zdroje)"
 msgid "ppu in wrong directory=%s."
 msgstr "ppu ve špatném adresáři=%s."
 
-#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, object-pascal-format
-msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr "%s.ppu nenalezeno. Zkontrolujte vás fpc.cfg."
-
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Předcházející slovo"
@@ -17771,10 +17721,6 @@ msgstr "Přepnout záložku Oblíbené po dotazu na jméno komponenty."
 msgid "Syntax mode"
 msgstr "Režim syntaxe"
 
-#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
-msgid "system.ppu not found. Check your fpc.cfg."
-msgstr "system.ppu nenalezen. Zkontrolujte Váš fpc.cfg."
-
 #: lazarusidestrconsts.listab
 msgid "Tab"
 msgstr "Tab"
@@ -18319,11 +18265,6 @@ msgstr "Jednotka se jménem \"%s\" již existuje. Identifikátory Pascalu musí 
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Jednotka se jménem \"%s\" již v projektu existuje.%sZvolte, prosím, jiné jméno"
-
-#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
-#, object-pascal-format
-msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr "V adresáři %s není fpc.exe. Obvykle je spouštěcí make soubor instalován společně s překladačem FPC."
 
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
@@ -18964,11 +18905,6 @@ msgstr "Nelze získat změny v editoru."
 msgid "Unable to get source for designer."
 msgstr "Nelze získat zdroj pro návrhář."
 
-#: lazarusidestrconsts.lisunabletoloadfile2
-#, object-pascal-format
-msgid "unable to load file %s: %s"
-msgstr "nelze nahrát soubor %s: %s"
-
 #: lazarusidestrconsts.lisunabletoloadpackage
 #, object-pascal-format
 msgid "Unable to load package \"%s\""
@@ -19175,14 +19111,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Unused units of %s"
 msgstr "Nepoužité jednotky z %s"
-
-#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
-msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr "Neobvyklé jméno překladače. Obvykle začíná fpc, ppc nebo ppcross."
-
-#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
-msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr "Neobvyklé jméno pas2js překladače. Obvykle začíná s pas2js."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
@@ -19526,11 +19454,6 @@ msgstr "Zápis projektových informací selhal."
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
 msgstr ""
-
-#: lazarusidestrconsts.liswrongversionin
-#, object-pascal-format
-msgid "wrong version in %s: %s"
-msgstr "špatná verze v %s: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

@@ -39,12 +39,8 @@ uses
   // LazUtils
   FPCAdds, LazFileCache, LazUTF8, LazFileUtils, FileUtil, LazLoggerBase,
   Laz2_XMLCfg,
-  // IDEIntf
-  IdeIntfStrConsts,
   // IDEConfig
-  LazConf, EnvironmentOpts, FppkgHelper,
-  // IDE
-  LazarusIDEStrConsts;
+  LazConf, EnvironmentOpts, FppkgHelper, IdeConfStrConsts;
 
 type
   TSDFilenameQuality = (

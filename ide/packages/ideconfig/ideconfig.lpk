@@ -120,6 +120,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="IdeXmlConfigProcs"/>
       </Item>
       <Item>
+        <Filename Value="initialsetupproc.pas"/>
+        <UnitName Value="InitialSetupProc"/>
+      </Item>
+      <Item>
         <Filename Value="lazconf.pp"/>
         <UnitName Value="LazConf"/>
       </Item>

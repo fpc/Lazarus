@@ -7655,11 +7655,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Kääntäjä"
 
-#: lazarusidestrconsts.liscompilercfgismissing
-#, object-pascal-format
-msgid "%s is missing."
-msgstr ""
-
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9101,11 +9096,6 @@ msgstr "Hakemisto: "
 msgid "Directory \"%s\" not found."
 msgstr "Hakemistoa \"%s\" ei löydy."
 
-#: lazarusidestrconsts.lisdirectorynotfound2
-#, object-pascal-format
-msgid "directory %s not found"
-msgstr "hakemistoa %s ei löydy"
-
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "Hakemisto mihin IDE laittaa .po-tiedostot"
@@ -10045,14 +10035,6 @@ msgstr "Tiedosto \"%s\" on muuttunut. Talletetaanko?"
 msgid "File has no project"
 msgstr "Tiedostolla ei ole projektia"
 
-#: lazarusidestrconsts.lisfileisdirectory
-msgid "File is directory"
-msgstr "Tiedosto on hakemisto"
-
-#: lazarusidestrconsts.lisfileisnotanexecutable
-msgid "File is not an executable"
-msgstr "Tiedosto ei ole suoritettava"
-
 #: lazarusidestrconsts.lisfileisvirtual
 #, object-pascal-format
 msgid "File \"%s\" is virtual."
@@ -10061,19 +10043,6 @@ msgstr "Tiedosto \"%s\" on virtuaalinen."
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
 msgstr "Tiedostonimen tyyli"
-
-#: lazarusidestrconsts.lisfilenotfound
-msgid "File not found"
-msgstr "Tiedostoa ei löytynyt"
-
-#: lazarusidestrconsts.lisfilenotfound3
-#, object-pascal-format
-msgid "file %s not found"
-msgstr "tiedostoa %s ei löytynyt"
-
-#: lazarusidestrconsts.lisfilenotfound4
-msgid "file not found"
-msgstr "tiedostoa ei löytynyt"
 
 #: lazarusidestrconsts.lisfilenotfound5
 #, object-pascal-format
@@ -10315,11 +10284,6 @@ msgstr "Muotoiluvirhe"
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
 msgstr "Windowsille"
-
-#: lazarusidestrconsts.lisfoundversionexpected
-#, object-pascal-format
-msgid "Found version %s, expected %s"
-msgstr "Versio %s löytyi, odotettiin versiota %s"
 
 #: lazarusidestrconsts.lisfpcmessagefile2
 msgid "FPC message file:"
@@ -11311,11 +11275,6 @@ msgstr "Kelvoton julkaisuhakemisto"
 msgid "Invalid selection"
 msgstr "Kelvoton valinta"
 
-#: lazarusidestrconsts.lisinvalidversionin
-#, object-pascal-format
-msgid "invalid version in %s"
-msgstr "kelvoton versio %s:ssa"
-
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 #, object-pascal-format
 msgid "%s is already part of the Project."
@@ -11330,10 +11289,6 @@ msgstr "\"%s\" on kelvoton projektin nimi.%sValitse joku muu (esim. projekti1.lp
 #, object-pascal-format
 msgid "%s is a %s.%sThis circular dependency is not allowed."
 msgstr "%s on %s.%sTämä kehäriippuvuus ei ole sallittu"
-
-#: lazarusidestrconsts.lisisddirectorynotfound
-msgid "directory not found"
-msgstr "hakemistoa ei löydy"
 
 #: lazarusidestrconsts.lisissues
 msgid "Issues"
@@ -15979,11 +15934,6 @@ msgstr "%s (sijainti lähdekoodin ulkopuolella)"
 msgid "ppu in wrong directory=%s."
 msgstr "ppu väärässä hakemistossa=%s."
 
-#: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
-#, object-pascal-format
-msgid "%s.ppu not found. Check your fpc.cfg."
-msgstr "%s.ppu ei löydy. Tarkista fpc.cfg."
-
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Edeltävä sana"
@@ -17579,10 +17529,6 @@ msgstr "Vaihda Suosikit-lehdelle kun komponentin nimi on kysytty."
 msgid "Syntax mode"
 msgstr "Kielioppimoodi"
 
-#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
-msgid "system.ppu not found. Check your fpc.cfg."
-msgstr "system.ppu ei löydy. Tarkista fpc.cfg."
-
 #: lazarusidestrconsts.listab
 msgid "Tab"
 msgstr ""
@@ -18127,11 +18073,6 @@ msgstr "Käännösyksikkö nimellä \"%s\" on jo olemassa. Pascal-tunnisteiden p
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Projektissa on käännösyksikkö nimeltään \"%s\".%sValitse toinen nimi"
-
-#: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
-#, object-pascal-format
-msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
-msgstr "fpc.exe ei ole %s:n hakemistossa. Yleensä make ohjelma asennetaan yhdessä FPC:n kanssa."
 
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
@@ -18772,11 +18713,6 @@ msgstr "Editorin muutosten kokoaminen ei onnistu."
 msgid "Unable to get source for designer."
 msgstr "Lomakkeen lähdekoodia ei löydy."
 
-#: lazarusidestrconsts.lisunabletoloadfile2
-#, object-pascal-format
-msgid "unable to load file %s: %s"
-msgstr "Tiedoston %s: %s lataaminen ei onnistu"
-
 #: lazarusidestrconsts.lisunabletoloadpackage
 #, object-pascal-format
 msgid "Unable to load package \"%s\""
@@ -18983,14 +18919,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Unused units of %s"
 msgstr "%s:n käyttämättömät yksiköt"
-
-#: lazarusidestrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
-msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
-msgstr "Epätavallinen kääntäjän nimi. Yleensä se alkaa fpc, ppc tai ppcross."
-
-#: lazarusidestrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
-msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
-msgstr "Epätavallinen pas2js kääntäjän nimi. Yleensä se alkaa pas2js."
 
 #: lazarusidestrconsts.lisup
 msgctxt "lazarusidestrconsts.lisup"
@@ -19333,11 +19261,6 @@ msgstr "Virhe kirjoittaessa projektin info tiedostoa."
 #: lazarusidestrconsts.liswritewhatpackagefilesares
 msgid "Write what package files are searched and found."
 msgstr ""
-
-#: lazarusidestrconsts.liswrongversionin
-#, object-pascal-format
-msgid "wrong version in %s: %s"
-msgstr "väärä versio %s: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

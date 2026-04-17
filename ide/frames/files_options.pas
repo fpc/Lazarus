@@ -43,9 +43,9 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  EnvironmentOpts, DialogProcs, LazConf, IdeConfStrConsts,
+  EnvironmentOpts, DialogProcs, LazConf, IdeConfStrConsts, InitialSetupProc,
   // IDE
-  LazarusIDEStrConsts, InitialSetupProc, EnvGuiOptions;
+  LazarusIDEStrConsts, EnvGuiOptions;
 
 type
 

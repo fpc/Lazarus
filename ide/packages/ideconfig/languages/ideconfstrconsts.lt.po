@@ -48,6 +48,11 @@ msgstr "Programos komandinės eilutės parametrai"
 msgid "Compile Project"
 msgstr "Kompiliuoti projektą"
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr ""
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -85,6 +90,11 @@ msgstr ", procesorius: %s"
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "Nepavyko ištrinti failą"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr "nepavyko rasti aplanko „%s“"
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -184,6 +194,14 @@ msgstr "Nepanašu kad failas „%s“%s yra teksto failas.%sVis tiek jį atverti
 msgid "File extension of programs"
 msgstr "Programų failų plėtinys"
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "Failas yra aplankas"
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr "Failas nėra vykdomasis"
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Failas tik skaitymui"
@@ -192,9 +210,27 @@ msgstr "Failas tik skaitymui"
 msgid "File is symlink"
 msgstr "Failas yra simbolinė nuoroda"
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "Failas nerastas"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr "failas „%s“ nerastas"
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "failas nerastas"
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "Ne teksto failas"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr "Rasta versija „%s“, tikėtasi „%s“"
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -249,6 +285,15 @@ msgstr "„%s“ turi klaidingą makrokomandą"
 #, object-pascal-format, fuzzy, badformat
 msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr "Išorės įrankyje „%1:s“ yra klaidingų makrokomandų „%0:s“"
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr "„%s“ nurodyta klaidinga laida"
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "aplankas nerastas"
 
 #: ideconfstrconsts.lislaunchingcmdline
 msgid "Launching target command line"
@@ -312,6 +357,10 @@ msgstr "Neįgyvendinta"
 msgid "Not implemented yet:%s%s"
 msgstr "Dar neįgyvendinta:%s%s"
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr "Atverti simbolinę nuorodą"
@@ -358,6 +407,11 @@ msgstr "Nepavyko sukurti aplanką"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Nepavyko ištrinti failą „%s“."
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr "Nepavyko rasti „%s.ppu“. Patikrinkite failą „fpc.cfg“."
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -432,6 +486,10 @@ msgstr ""
 msgid "Success"
 msgstr "Tvarka"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr "Nerastas „system.ppu“. Patikrinkite ar geras „fpc.cfg“."
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -471,6 +529,11 @@ msgstr "Aplanke „%s“ rašyti draudžiama."
 #, object-pascal-format
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Failas „%s“ yra simbolinė nuoroda.%sAr vietoj jo atverti „%s“?"
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr "„%s“ aplanke nėra failo „fpc.exe“. Įprastai darymo vykdomasis failas būna įdiegiamas kartu su FPC kompiliatoriumi."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -548,6 +611,11 @@ msgstr "Nepavyko sukurti saito „%s“, kurio paskirtis „%s“"
 msgid "unable to execute: %s"
 msgstr "nepavyko įvykdyti: %s"
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr "nepavyko įkelti failo %s: %s"
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "Nepavyko įkelti failą"
@@ -609,6 +677,14 @@ msgstr "Nepavyko rašyti į failą „%s“."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Neina rašyti xml srauto į %s%sKlaida: %s"
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr "Neįprastas kompiliatoriaus failo pavadinimas. Įprastai jis prasideda „fpc“, „ppc“ ar „ppcross“."
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Naudotojo pradžios aplankas"
@@ -621,6 +697,11 @@ msgstr "Rašymo klaida"
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Klaida rašant: %s%sFailas: %s%s%s"
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr "„%s“ nurodyta klaidinga laida: %s"
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"

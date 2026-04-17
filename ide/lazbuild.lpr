@@ -45,13 +45,13 @@ uses
   // IdeConfig
   LazConf, IDECmdLine, TransferMacros, EnvironmentOpts, ParsedCompilerOpts,
   CompilerOptions, ModeMatrixOpts, BaseBuildManager, ApplicationBundle,
-  IDETranslations, ExtToolsConsole,
+  IDETranslations, ExtToolsConsole, InitialSetupProc,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageLinks, PackageSystem,
   // IdeProject
   Project,
   // IDE
-  InitialSetupProc, LazarusIDEStrConsts, MiscOptions,
+  LazarusIDEStrConsts, MiscOptions,
   InterPkgConflictFiles, BuildLazDialog, BuildProfileManager, BuildManager, ColorTTY;
 
 type

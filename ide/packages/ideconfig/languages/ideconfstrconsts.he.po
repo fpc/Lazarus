@@ -49,6 +49,11 @@ msgstr "פרמטרים של שורת הפקודה של התוכנה"
 msgid "Compile Project"
 msgstr ""
 
+#: ideconfstrconsts.liscompilercfgismissing
+#, object-pascal-format
+msgid "%s is missing."
+msgstr ""
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format, fuzzy, badformat
 msgid "Error: invalid compiler: %s"
@@ -88,6 +93,11 @@ msgstr ""
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
 msgstr "מחיקת קובץ נכשלה"
+
+#: ideconfstrconsts.lisdirectorynotfound2
+#, object-pascal-format
+msgid "directory %s not found"
+msgstr ""
 
 #: ideconfstrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
@@ -188,6 +198,14 @@ msgstr "הקובץ s%s%s%s% לא נראה כמו קובץ טקסט. לפתוח �
 msgid "File extension of programs"
 msgstr "קובץ הרחבה של תכניות"
 
+#: ideconfstrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr ""
+
+#: ideconfstrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr ""
+
 #: ideconfstrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "הקובץ לא לכתיבה"
@@ -196,9 +214,27 @@ msgstr "הקובץ לא לכתיבה"
 msgid "File is symlink"
 msgstr "הקובץ הוא קישור סימבולי"
 
+#: ideconfstrconsts.lisfilenotfound
+msgid "File not found"
+msgstr "הקובץ לא נמצא"
+
+#: ideconfstrconsts.lisfilenotfound3
+#, object-pascal-format
+msgid "file %s not found"
+msgstr ""
+
+#: ideconfstrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr ""
+
 #: ideconfstrconsts.lisfilenottext
 msgid "File not text"
 msgstr "הקובץ אינו קובץ טקסט"
+
+#: ideconfstrconsts.lisfoundversionexpected
+#, object-pascal-format
+msgid "Found version %s, expected %s"
+msgstr ""
 
 #: ideconfstrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -254,6 +290,15 @@ msgstr ""
 #: ideconfstrconsts.lisinvalidmacrosinexternaltool
 #, object-pascal-format
 msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.lisinvalidversionin
+#, object-pascal-format
+msgid "invalid version in %s"
+msgstr ""
+
+#: ideconfstrconsts.lisisddirectorynotfound
+msgid "directory not found"
 msgstr ""
 
 #: ideconfstrconsts.lislaunchingcmdline
@@ -320,6 +365,10 @@ msgstr "לא ממומש"
 msgid "Not implemented yet:%s%s"
 msgstr "לא ממומש עדיין: %s%s"
 
+#: ideconfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
 msgstr "פתח symlink"
@@ -367,6 +416,11 @@ msgstr "לא ניתן ליצור את הספרייה"
 #| msgid "Unable to delete file %s%s%s."
 msgid "Unable to delete file \"%s\"."
 msgstr "לא ניתן למחוק את הקובץ %s%s%s."
+
+#: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
+#, object-pascal-format
+msgid "%s.ppu not found. Check your fpc.cfg."
+msgstr ""
 
 #: ideconfstrconsts.lisprimaryconfigpath
 msgid "Primary config path"
@@ -442,6 +496,10 @@ msgstr ""
 msgid "Success"
 msgstr "הצלחה"
 
+#: ideconfstrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr ""
+
 #: ideconfstrconsts.listarget2
 #, object-pascal-format
 msgid ", Target: %s"
@@ -484,6 +542,11 @@ msgstr "התיקייה %s%s%s%s אינה מורשה לכתיבה."
 #| msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "הקובץ %s%s%s הוא קישור סימבולי. לפתוח את %s%s%s במקומו?"
+
+#: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
+#, object-pascal-format
+msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -568,6 +631,11 @@ msgstr "לא ניתן ליצור את הקישור %s%s%s עם %s%s%s"
 msgid "unable to execute: %s"
 msgstr ""
 
+#: ideconfstrconsts.lisunabletoloadfile2
+#, object-pascal-format
+msgid "unable to load file %s: %s"
+msgstr ""
+
 #: ideconfstrconsts.lisunabletoreadfile
 msgid "Unable to read file"
 msgstr "לא ניתן לקרוא את הקובץ"
@@ -635,6 +703,14 @@ msgstr "לא יכול לכתוב לקובץ \"%s\" ."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "לא יכול לכתוב זרימת xml ל  %s%s שגיאה: %s"
 
+#: ideconfstrconsts.lisunusualcompilerfilenameusuallyitstartswithfpcppcor
+msgid "Unusual compiler file name. Usually it starts with fpc, ppc or ppcross."
+msgstr ""
+
+#: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
+msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
+
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "תיקיית הבית של המשתמש"
@@ -647,6 +723,11 @@ msgstr "שגיאת כתיבה"
 #, object-pascal-format
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "שגיאת כתיבה: %s%sקובץ: %s%s%s"
+
+#: ideconfstrconsts.liswrongversionin
+#, object-pascal-format
+msgid "wrong version in %s: %s"
+msgstr ""
 
 #: ideconfstrconsts.lisxmlerror
 msgid "XML Error"
