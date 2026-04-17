@@ -5057,8 +5057,10 @@ begin
   Result := True;
   if (FReadWrite = wpkWriteChange) and (FOrigValue <> nil) then begin
     SetLength(buf, FSize);
-    if Process.ReadData(FLocation, FSize, buf[0]) then
+    if Process.ReadData(FLocation, FSize, buf[0]) then begin
       Result := (CompareByte(FOrigValue[0], buf[0], FSize) <> 0);
+      FOrigValue := buf;
+    end;
   end;
 
   if Result then
