@@ -1978,6 +1978,10 @@ msgstr "读/写"
 msgid "Write"
 msgstr "写"
 
+#: idedebuggerstringconstants.liswatchkindwritechanged
+msgid "Change(Write)"
+msgstr ""
+
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
 msgstr "数据/监视断点(&D) ..."

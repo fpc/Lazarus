@@ -62,6 +62,7 @@ type
     lblGroup: TLabel;
     lblAutoContinue: TLabel;
     edtLogCallStack: TSpinEdit;
+    rbWriteChange: TRadioButton;
     rbWrite: TRadioButton;
     rbRead: TRadioButton;
     rbReadWrite: TRadioButton;
@@ -260,6 +261,8 @@ begin
           then wk := wpkRead;
           if rbReadWrite.Checked
           then wk := wpkReadWrite;
+          if rbWriteChange.Checked
+          then wk := wpkWriteChange;
           FBreakpoint.SetWatch(edtFilename.Text, ws, wk);
         end;
     end;
@@ -358,6 +361,7 @@ begin
         rbWrite.Checked := FBreakpoint.WatchKind = wpkWrite;
         rbRead.Checked := FBreakpoint.WatchKind = wpkRead;
         rbReadWrite.Checked := FBreakpoint.WatchKind = wpkReadWrite;
+        rbWriteChange.Checked := FBreakpoint.WatchKind = wpkWriteChange;
       end;
   end;
   // expression
@@ -443,6 +447,7 @@ begin
         rbWrite.Caption := lisWatchKindWrite;
         rbRead.Caption := lisWatchKindRead;
         rbReadWrite.Caption := lisWatchKindReadWrite;
+        rbWriteChange.Caption := lisWatchKindWriteChanged;
       end;
   end;
   chkEnabled.Caption := lisBPSEnabled;

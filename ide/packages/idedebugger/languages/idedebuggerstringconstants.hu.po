@@ -2000,6 +2000,10 @@ msgstr "Olvasás/Írás"
 msgid "Write"
 msgstr "Írás"
 
+#: idedebuggerstringconstants.liswatchkindwritechanged
+msgid "Change(Write)"
+msgstr ""
+
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
 msgstr "Figyelési töréspont ..."

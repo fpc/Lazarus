@@ -2000,6 +2000,10 @@ msgstr "読み/書き"
 msgid "Write"
 msgstr "書き込み"
 
+#: idedebuggerstringconstants.liswatchkindwritechanged
+msgid "Change(Write)"
+msgstr ""
+
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
 msgstr "データ/監視ブレークポイント (&D) ..."

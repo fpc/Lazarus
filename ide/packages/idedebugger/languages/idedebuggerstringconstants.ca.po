@@ -1968,6 +1968,10 @@ msgstr ""
 msgid "Write"
 msgstr ""
 
+#: idedebuggerstringconstants.liswatchkindwritechanged
+msgid "Change(Write)"
+msgstr ""
+
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
 msgstr ""

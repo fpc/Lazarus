@@ -1504,9 +1504,10 @@ begin
           end;
           s := s +' / ';
           case ABreakpoint.WatchKind of
-            wpkRead:      s := s + lisWatchKindRead;
-            wpkReadWrite: s := s + lisWatchKindReadWrite;
-            wpkWrite:     s := s + lisWatchKindWrite;
+            wpkRead:        s := s + lisWatchKindRead;
+            wpkReadWrite:   s := s + lisWatchKindReadWrite;
+            wpkWrite:       s := s + lisWatchKindWrite;
+            wpkWriteChange: s := s + lisWatchKindWriteChanged;
           end;
           tvBreakPoints.NodeText[AVNode, 2] := s;
         end;

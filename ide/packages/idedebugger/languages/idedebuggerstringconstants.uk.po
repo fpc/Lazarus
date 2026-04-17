@@ -1993,6 +1993,10 @@ msgstr "Читання/Запис"
 msgid "Write"
 msgstr "Запис"
 
+#: idedebuggerstringconstants.liswatchkindwritechanged
+msgid "Change(Write)"
+msgstr ""
+
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
 msgstr "Точка зупинки &даних/огляду ..."

@@ -253,6 +253,7 @@ type
 
   TDBGWatchPointKind = (
     wpkWrite,
+    wpkWriteChange,
     wpkRead,
     wpkReadWrite,
     wkpExec

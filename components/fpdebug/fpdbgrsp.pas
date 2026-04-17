@@ -730,7 +730,8 @@ var
 begin
   cmd := 'Z';
   case BreakWatchKind of
-    wpkWrite: cmd := cmd + '2,';
+    wpkWrite,wpkWriteChange:
+              cmd := cmd + '2,';
     wpkRead:  cmd := cmd + '3,';
     wpkReadWrite: cmd := cmd + '4,';
     // NOTE: Not sure whether hardware break is better than software break, depends on gdbserver implementation...
@@ -760,7 +761,8 @@ var
 begin
   cmd := 'z';
   case BreakWatchKind of
-    wpkWrite: cmd := cmd + '2,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
+    wpkWrite,wpkWriteChange:
+              cmd := cmd + '2,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     wpkRead:  cmd := cmd + '3,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     wpkReadWrite: cmd := cmd + '4,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     // NOTE: Not sure whether hardware break is better than software break, depends on gdbserver implementation...

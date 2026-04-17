@@ -2000,6 +2000,10 @@ msgstr "Skaityti/rašyti"
 msgid "Write"
 msgstr "Rašyti"
 
+#: idedebuggerstringconstants.liswatchkindwritechanged
+msgid "Change(Write)"
+msgstr ""
+
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
 msgstr "&Stebėjimo stabdos taškas…"

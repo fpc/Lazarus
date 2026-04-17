@@ -2002,6 +2002,10 @@ msgstr "Lettura/Scrittura"
 msgid "Write"
 msgstr "Scrittura"
 
+#: idedebuggerstringconstants.liswatchkindwritechanged
+msgid "Change(Write)"
+msgstr ""
+
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
 msgstr "Breakpoint &Dati/Osservazione ..."

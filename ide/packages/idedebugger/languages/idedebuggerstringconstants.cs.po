@@ -2000,6 +2000,10 @@ msgstr "Čtení/Zápis"
 msgid "Write"
 msgstr "Zápis"
 
+#: idedebuggerstringconstants.liswatchkindwritechanged
+msgid "Change(Write)"
+msgstr ""
+
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
 msgstr "Data/Sledovat bod přerušení ..."

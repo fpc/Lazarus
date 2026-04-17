@@ -951,7 +951,8 @@ constructor TLldbInstructionWatchSet.Create(AWatch: String;
   AKind: TDBGWatchPointKind);
 begin
   case AKind of
-  	wpkWrite:     inherited Create(Format('watchpoint set variable -w write %s', [AWatch]));
+  	wpkWrite,wpkWriteChange:
+  	              inherited Create(Format('watchpoint set variable -w write %s', [AWatch]));
     wpkRead:      inherited Create(Format('watchpoint set variable -w read %s', [AWatch]));
     wpkReadWrite: inherited Create(Format('watchpoint set variable -w read_write %s', [AWatch]));
   end;

@@ -2015,6 +2015,10 @@ msgstr "Odczyt/Zapis"
 msgid "Write"
 msgstr "Zapis"
 
+#: idedebuggerstringconstants.liswatchkindwritechanged
+msgid "Change(Write)"
+msgstr ""
+
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
 msgstr "Pułapka &danych/zmiennej ..."

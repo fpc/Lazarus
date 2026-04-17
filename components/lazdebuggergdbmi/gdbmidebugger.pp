@@ -10622,7 +10622,8 @@ begin
           WatchExpr := WatchDecl+'(' + WatchAddr + '^)';
         end;
         case FWatchKind of
-          wpkWrite:     Result := ExecuteCommand('-break-watch %s', [WatchExpr], R);
+          wpkWrite,wpkWriteChange:
+                        Result := ExecuteCommand('-break-watch %s', [WatchExpr], R);
           wpkRead:      Result := ExecuteCommand('-break-watch -r %s', [WatchExpr], R);
           wpkReadWrite: Result := ExecuteCommand('-break-watch -a %s', [WatchExpr], R);
         end;
@@ -10647,7 +10648,7 @@ begin
       end;
     bpkData:
       case FWatchKind of
-        wpkWrite: begin
+        wpkWrite,wpkWriteChange: begin
             if ResultList.IndexOf('hw-wpt') >= 0 then ResultList.SetPath('hw-wpt')
             else
             if ResultList.IndexOf('wpt') >= 0 then ResultList.SetPath('wpt');

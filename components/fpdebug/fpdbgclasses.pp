@@ -753,6 +753,7 @@ type
     FSize: Cardinal;
     FReadWrite: TDBGWatchPointKind;
     FScope: TDBGWatchPointScope;
+    FOrigValue: array of byte;
 
     FOtherWatchCount: Integer;
     FFirstWatchLocation: TDBGPtr;
@@ -768,6 +769,7 @@ type
     constructor Create(const AProcess: TDbgProcess; const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
                       AScope: TDBGWatchPointScope); virtual;
     destructor Destroy; override;
+    function IsValidHit(const AThreadID: Integer): Boolean;
 
     procedure SetBreak; override;
     procedure ResetBreak; override;
@@ -3106,7 +3108,11 @@ begin
     // Determine the address where the execution has stopped
     CurrentAddr:=AThread.GetInstructionPointerRegisterValue;
     FCurrentWatchpoint:=AThread.DetectHardwareWatchpoint;
-    if (FCurrentWatchpoint <> nil) and (FWatchPointList.IndexOf(TFpInternalWatchpoint(FCurrentWatchpoint)) < 0) then begin
+    if (FCurrentWatchpoint <> nil) and
+       ( (FWatchPointList.IndexOf(TFpInternalWatchpoint(FCurrentWatchpoint)) < 0) or
+         (not FCurrentWatchpoint.IsValidHit(AThread.ID))
+       )
+    then begin
       FCurrentWatchpoint := nil;
       // TODO: different codes for "hit int3" and "ended single step"
       (* Stopped at a WatchPoint that has been removed in the meantime.
@@ -4284,7 +4290,8 @@ begin
     else exit;
   end;
   case AReadWrite of
-    wpkWrite:     ModeBits := $10000;
+    wpkWrite,wpkWriteChange:
+                  ModeBits := $10000;
     wpkRead:      ModeBits := $30000; // caller must check
     wpkReadWrite: ModeBits := $30000;
     wkpExec:      ModeBits := $00000; // Size must be 1 (SizeBits=0)
@@ -4971,6 +4978,10 @@ begin
   debugln(DBG_VERBOSE, 'Wach at %x:%d TO First %x:%d Other %d (%d) Last %d',
     [FLocation, FSize, FFirstWatchLocation, FFirstWatchSize, FOtherWatchCount, FOtherWatchesSize, FLastWatchSize]);
 
+  SetLength(FOrigValue, FSize);
+  if not AProcess.ReadData(ALocation, FSize, FOrigValue[0]) then
+    FOrigValue := nil;
+
   SetBreak;
 end;
 
@@ -4980,6 +4991,18 @@ begin
     Process.FWatchPointList.Remove(Self);
   ResetBreak;
   inherited Destroy;
+end;
+
+function TFpInternalWatchpoint.IsValidHit(const AThreadID: Integer): Boolean;
+var
+  buf: array of byte;
+begin
+  Result := True;
+  if (FReadWrite = wpkWriteChange) and (FOrigValue <> nil) then begin
+    SetLength(buf, FSize);
+    if Process.ReadData(FLocation, FSize, buf[0]) then
+      Result := (CompareByte(FOrigValue[0], buf[0], FSize) <> 0);
+  end;
 end;
 
 procedure TFpInternalWatchpoint.SetBreak;
