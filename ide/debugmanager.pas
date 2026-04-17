@@ -319,7 +319,7 @@ type
                               BringToFront: Boolean = true;
                               Show: Boolean = true;
                               DoDisableAutoSizing: boolean = false;
-                              InitFromSourceEdit: boolean = True
+                              InitFromSourceEditOrLocation: boolean = True
                               ); override;
     procedure ViewDisassembler(AnAddr: TDBGPtr;
                               BringToFront: Boolean = True; Show: Boolean = true;
@@ -1848,7 +1848,7 @@ end;
 
 procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType;
   BringToFront: Boolean; Show: Boolean; DoDisableAutoSizing: boolean;
-  InitFromSourceEdit: boolean);
+  InitFromSourceEditOrLocation: boolean);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
@@ -1898,27 +1898,29 @@ begin
       if (Project1<>nil) then
         TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.Directory;
     end;
+  end;
+
+  if InitFromSourceEditOrLocation then begin
     if (CurDialog is TAssemblerDlg)
     then begin
       TAssemblerDlg(CurDialog).SetLocation(FDebugger, FCurrentLocation.Address);
     end;
-    if InitFromSourceEdit then begin
-      if (CurDialog is TIDEInspectDlg) and (SourceEditorManager.GetActiveSE <> nil)
-      then begin
-        if SourceEditorManager.GetActiveSE.SelectionAvailable then
-          TIDEInspectDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.Selection)
-        else
-          TIDEInspectDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
-      end;
-      if (CurDialog is TEvaluateDlg) and (SourceEditorManager.GetActiveSE <> nil)
-      then begin
-        if SourceEditorManager.GetActiveSE.SelectionAvailable then
-          TEvaluateDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.Selection)
-        else
-          TEvaluateDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
-      end;
+    if (CurDialog is TIDEInspectDlg) and (SourceEditorManager.GetActiveSE <> nil)
+    then begin
+      if SourceEditorManager.GetActiveSE.SelectionAvailable then
+        TIDEInspectDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.Selection)
+      else
+        TIDEInspectDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
+    end;
+    if (CurDialog is TEvaluateDlg) and (SourceEditorManager.GetActiveSE <> nil)
+    then begin
+      if SourceEditorManager.GetActiveSE.SelectionAvailable then
+        TEvaluateDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.Selection)
+      else
+        TEvaluateDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
     end;
   end;
+
   if not DoDisableAutoSizing then
     CurDialog.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDebugManager.ViewDebugDialog'){$ENDIF};
   if Show then
@@ -1935,7 +1937,7 @@ end;
 procedure TDebugManager.ViewDisassembler(AnAddr: TDBGPtr; BringToFront: Boolean;
   Show: Boolean; DoDisableAutoSizing: boolean);
 begin
-  ViewDebugDialog(ddtAssembler, BringToFront, Show, DoDisableAutoSizing);
+  ViewDebugDialog(ddtAssembler, BringToFront, Show, DoDisableAutoSizing, False);
   if FDialogs[ddtAssembler] <> nil
   then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, FCurrentLocation.Address, AnAddr);
 end;
@@ -2071,7 +2073,6 @@ begin
   TheDialog.BreakPoints := FBreakPoints;
   TheDialog.Disassembler := FDisassembler;
   TheDialog.DebugManager := Self;
-  TheDialog.SetLocation(FDebugger, FCurrentLocation.Address);
   TheDialog.EndUpdate;
 end;
 
@@ -2090,14 +2091,6 @@ var
   TheDialog: TIDEInspectDlg;
 begin
   TheDialog := TIDEInspectDlg(FDialogs[ddtInspect]);
-  if (SourceEditorManager.GetActiveSE = nil) then
-    exit;
-  //TheDialog.BeginUpdate;
-  if SourceEditorManager.GetActiveSE.SelectionAvailable then
-    TheDialog.Execute(SourceEditorManager.GetActiveSE.Selection)
-  else
-    TheDialog.Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
-  //TheDialog.EndUpdate;
 end;
 
 procedure TDebugManager.InitHistoryDlg;
@@ -2128,15 +2121,6 @@ var
   TheDialog: TEvaluateDlg;
 begin
   TheDialog := TEvaluateDlg(FDialogs[ddtEvaluate]);
-  if (SourceEditorManager.GetActiveSE = nil) then
-    exit;
-  //TheDialog.BeginUpdate;
-  if SourceEditorManager.GetActiveSE.SelectionAvailable
-  then
-    TheDialog.EvalExpression := SourceEditorManager.GetActiveSE.Selection
-  else
-    TheDialog.EvalExpression := SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret;
-  //TheDialog.EndUpdate;
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);
