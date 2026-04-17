@@ -150,7 +150,7 @@ resourcestring
   lisWatchKind = 'Watch action';
   lisWatchKindRead = 'Read';
   lisWatchKindWrite = 'Write';
-  lisWatchKindWriteChanged = 'Change(Write)';
+  lisWatchKindWriteChanged = 'Change (Write)';
   lisWatchKindReadWrite = 'Read/Write';
 
   lisLocals = 'Local Variables';
