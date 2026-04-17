@@ -2279,7 +2279,7 @@ begin
     mlfTargetMem:
       begin
         if (BitOffset = 0) and (ADestSize.BitSize = 0) and (ADestSize.Size > 0) then begin
-          FMemReader.WriteMemory(LocToAddr(ADestLocation), SizeToFullBytes(ADestSize), ASource);
+          Result := FMemReader.WriteMemory(LocToAddr(ADestLocation), SizeToFullBytes(ADestSize), ASource);
         end;
       end;
     mlfSelfMem:
