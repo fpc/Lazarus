@@ -361,7 +361,7 @@ msgstr "Ещё не реализовано:%s%s"
 
 #: ideconfstrconsts.lisok
 msgid "OK"
-msgstr ""
+msgstr "ОК"
 
 #: ideconfstrconsts.lisopensymlink
 msgid "Open symlink"
