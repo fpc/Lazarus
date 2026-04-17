@@ -18,11 +18,11 @@ interface
 uses
   SysUtils,
   // LCL
-  Forms, Controls, StdCtrls, ButtonPanel, Dialogs, LCLType,
+  Forms, Controls, StdCtrls, ButtonPanel, Dialogs, LCLType, TextTools,
   // LazUtils
   LazUTF8,
   // IdeIntf
-  TextTools, ObjInspStrConsts, IDEWindowIntf, Classes;
+  ObjInspStrConsts, IDEWindowIntf, Classes;
 
 type
 

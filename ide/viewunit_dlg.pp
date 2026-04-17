@@ -42,7 +42,7 @@ interface
 uses
   SysUtils, Classes, AVL_Tree,
   // LCL
-  LCLType, LCLIntf,
+  LCLType, LCLIntf, TextTools,
   Controls, Forms, Buttons, StdCtrls, ExtCtrls, ButtonPanel, Menus, ComCtrls,
   // LazUtils
   LazSysUtils, LazFileUtils, LazFileCache, AvgLvlTree,
@@ -53,7 +53,7 @@ uses
   // BuildIntf
   ProjPackIntf,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEImagesIntf, TextTools,
+  IdeIntfStrConsts, IDEWindowIntf, IDEImagesIntf,
   // IdeConfig
   SearchPathProcs,
   // IDE

@@ -21,7 +21,7 @@ uses
   ListViewPropEdit, MaskPropEdit, MenuIntf, NewField, ObjectInspector, 
   ObjInspStrConsts, OIFavoriteProperties, PropEditConfig, PropEdits, 
   PropEditUtils, selectdatasetdlg, SelEdits, SrcEditorIntf, StatusBarPropEdit, 
-  StringsPropEditDlg, TextTools, ToolBarIntf, TreeViewPropEdit, UnitResources, 
+  StringsPropEditDlg, ToolBarIntf, TreeViewPropEdit, UnitResources, 
   LazarusPackageIntf;
 
 implementation

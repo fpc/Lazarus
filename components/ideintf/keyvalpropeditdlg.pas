@@ -16,9 +16,9 @@ interface
 uses
   SysUtils,
   // LCL
-  Forms, StdCtrls, ButtonPanel, ValEdit,
+  Forms, StdCtrls, ButtonPanel, ValEdit, TextTools,
   // IdeIntf
-  TextTools, ObjInspStrConsts, IDEWindowIntf;
+  ObjInspStrConsts, IDEWindowIntf;
   
 type
 

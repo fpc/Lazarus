@@ -28,19 +28,19 @@ interface
 
 uses
   // RTL / FCL
-  Classes, TypInfo, SysUtils, types, RtlConsts, variants, Contnrs, strutils, FGL,
+  Classes, TypInfo, SysUtils, Types, RtlConsts, variants, Contnrs, StrUtils, FGL,
   Math, System.UITypes,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
-  FileCtrl, PropertyStorage, Themes,
+  FileCtrl, PropertyStorage, Themes, TextTools,
   // LazControls
   CheckBoxThemed,
   // LazUtils
   FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities,
   GraphType, FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
-  ObjInspStrConsts, PropEditUtils, TextTools,
+  ObjInspStrConsts, PropEditUtils,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
   FileFilterPropEditor, PagesPropEditDlg, IDEWindowIntf;

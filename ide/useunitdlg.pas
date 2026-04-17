@@ -33,6 +33,7 @@ uses
   Classes, SysUtils,
   // LCL
   LCLType, Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel, Dialogs, Graphics,
+  TextTools,
   // LazControls
   ListFilterEdit,
   // LazUtils
@@ -42,7 +43,7 @@ uses
   // BuildIntf
   ProjectIntf,
   // IdeIntf
-  IdeIntfStrConsts, LazIDEIntf, IDEImagesIntf, IDEWindowIntf, TextTools,
+  IdeIntfStrConsts, LazIDEIntf, IDEImagesIntf, IDEWindowIntf,
   // IDE
   LazarusIDEStrConsts, SourceEditor, Project, EnvironmentOpts, MainIntf;
 

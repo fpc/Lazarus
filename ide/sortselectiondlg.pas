@@ -41,7 +41,7 @@ interface
 uses
   SysUtils, AVL_Tree,
   // LCL
-  Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel,
+  Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel, TextTools,
   // LazUtils
   LazLoggerBase,
   // Codetools
@@ -49,7 +49,7 @@ uses
   // SynEdit
   SynEdit,
   // IdeIntf
-  TextTools, IDEWindowIntf, LazEditHighlighter,
+  IDEWindowIntf, LazEditHighlighter,
   // IDE
   LazarusIDEStrConsts, EditorOptions, MiscOptions, SourceMarks;
   

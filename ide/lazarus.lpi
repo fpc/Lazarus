@@ -839,6 +839,7 @@
         <Filename Value="procedurelist.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="ProcedureList"/>
       </Unit>
       <Unit>
         <Filename Value="abstractsmethodsdlg.pas"/>

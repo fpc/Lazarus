@@ -25,15 +25,15 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   // LCL
-  LResources, Forms, Controls, Dialogs, XMLPropStorage,
+  LResources, Forms, Controls, Dialogs, XMLPropStorage, TextTools,
   // LazUtils
   LazConfigStorage, FileUtil, LazFileUtils, LazFileCache, GraphMath,
   // CodeTools
   CodeAtom, CodeTree, KeywordFuncLists, NonPascalCodeTools, BasicCodeTools,
   FileProcs, CodeCache, SourceChanger, CodeToolManager,
   // IDEIntf
-  TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
-  IDEMsgIntf, IDETextConverter,
+  IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf, IDEMsgIntf,
+  IDETextConverter,
   // H2Pas
   H2PasStrConsts;
   

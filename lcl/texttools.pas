@@ -5,7 +5,7 @@
  *****************************************************************************
 
   Author: Mattias Gaertner
-  
+
   Abstract:
     Interface to various IDE tools manipulating text.
 }
@@ -35,10 +35,10 @@ var
   SortTextFunc: TSortTextFunc;
 
   { Regular expressions
-  
+
     This is a simple interface to regular expressions. The syntax is similar
     to Perl regular expressions. An illegal pattern will raise an Exception.
-    
+
     Important: These functions are not thread safe!
 
     REMatches - function to test a regular expression.
@@ -62,10 +62,10 @@ var
       if REMatches('Lazarus','a(.)a','i') then
         s:=REVar(1); // this will be the 'z'
   }
-  
+
 var
   REException: ExceptClass; // initialized by the IDE
-  
+
 function REMatches(const TheText, RegExpr: string;
                 const ModifierStr: string = ''; StartPos: integer = 1): boolean;
 function REVar(Index: Integer): string; // 1 is the first

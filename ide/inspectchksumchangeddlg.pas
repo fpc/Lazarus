@@ -43,13 +43,13 @@ uses
   // RTL + FCL
   Classes, SysUtils, Contnrs,
   // LCL
-  Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
+  Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel, TextTools,
   // CodeTools
   CodeToolManager, FileProcs, DirectoryCacher, DefineTemplates,
   // LazUtils
   LazFileUtils, LazFileCache,
   // IDEIntf
-  TextTools, IDEMsgIntf, PackageIntf, ProjectIntf, IDEExternToolIntf,
+  IDEMsgIntf, PackageIntf, ProjectIntf, IDEExternToolIntf,
   // IDE
   LazarusIDEStrConsts;
 

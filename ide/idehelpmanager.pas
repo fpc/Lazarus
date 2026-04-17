@@ -36,14 +36,14 @@ uses
   Classes, SysUtils, AVL_Tree,
   // LCL
   LCLIntf, LCLType, FileProcs, Forms, Controls, ComCtrls, StdCtrls,
-  Dialogs, Graphics, Buttons, ButtonPanel, LazHelpHTML, HelpIntfs,
+  Dialogs, Graphics, Buttons, ButtonPanel, LazHelpHTML, HelpIntfs, TextTools,
   // LazUtils
   LConvEncoding, LazUtilities, LazFileUtils, HTML2TextRender,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   // IDEIntf
-  PropEdits, ObjectInspector, TextTools, IDEDialogs, LazHelpIntf, MacroIntf,
+  PropEdits, ObjectInspector, IDEDialogs, LazHelpIntf, MacroIntf,
   IDEWindowIntf, IDEMsgIntf, PackageIntf, LazIDEIntf, HelpFPDoc, IDEHelpIntf,
   IdeIntfStrConsts, IDEExternToolIntf, IDEImagesIntf,
   // IdeConfig

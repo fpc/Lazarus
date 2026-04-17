@@ -35,7 +35,7 @@ uses
   Classes, SysUtils,
   // LCL
   LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls, ComCtrls, Menus, Buttons,
-  Dialogs, ImgList,
+  Dialogs, ImgList, TextTools,
   // LazUtils
   LazLoggerBase, LazUTF8, LazFileCache, AvgLvlTree,
   // LazControls
@@ -43,7 +43,7 @@ uses
   // BuildIntf
   ComponentReg,
   // IdeIntf
-  FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, LazIDEIntf, TextTools,
+  FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, ComponentPalette, PackageDefs, IDEOptionDefs, EnvGuiOptions,
   Designer;

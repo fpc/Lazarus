@@ -35,7 +35,7 @@ uses
   LazUtilities, LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
   // CodeTools
   CodeToolsStructs,
-  // IdeIntf
+  // LCL
   TextTools,
   // IdeConfig
   LazConf, IDEProcs, IdeXmlConfigProcs,

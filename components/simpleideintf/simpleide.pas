@@ -31,8 +31,10 @@ uses
   LazFileUtils,
   // Codetools
   FileProcs,
+  // LCL
+  TextTools,
   // IdeIntf
-  TextTools, IDETextConverter;
+  IDETextConverter;
 
 type
   { TLazyTextConverterToolClasses }

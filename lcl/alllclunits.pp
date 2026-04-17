@@ -22,12 +22,13 @@ uses
   LCLUnicodeData, LCLVersion, LDockTree, LMessages, LResources, MaskEdit, 
   Menus, PairSplitter, PopupNotifier, PostScriptCanvas, PostScriptPrinter, 
   PostScriptUnicode, Printers, PropertyStorage, RegisterLCL, RubberBand, 
-  ShellCtrls, Spin, StdActns, StdCtrls, TaskDlgEmulation, Themes, TmSchema, 
-  Toolwin, TreeStorage, UTrace, ValEdit, XMLPropStorage, CalcForm, TimePopup, 
-  Messages, WSButtons, WSCalendar, WSCheckLst, WSComCtrls, WSControls, 
-  WSDesigner, WSDialogs, WSExtCtrls, WSExtDlgs, WSFactory, WSForms, WSGrids, 
-  WSImgList, WSLazDeviceAPIS, WSLCLClasses, WSMenus, WSPairSplitter, WSProc, 
-  WSReferences, WSSpin, WSStdCtrls, WSToolwin, LazarusPackageIntf;
+  ShellCtrls, Spin, StdActns, StdCtrls, TaskDlgEmulation, TextTools, Themes, 
+  TmSchema, Toolwin, TreeStorage, UTrace, ValEdit, XMLPropStorage, CalcForm, 
+  TimePopup, Messages, WSButtons, WSCalendar, WSCheckLst, WSComCtrls, 
+  WSControls, WSDesigner, WSDialogs, WSExtCtrls, WSExtDlgs, WSFactory, 
+  WSForms, WSGrids, WSImgList, WSLazDeviceAPIS, WSLCLClasses, WSMenus, 
+  WSPairSplitter, WSProc, WSReferences, WSSpin, WSStdCtrls, WSToolwin, 
+  LazarusPackageIntf;
 
 implementation
 

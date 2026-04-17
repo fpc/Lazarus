@@ -41,13 +41,13 @@ uses
   Classes, SysUtils, Math,
   // LCL
   LCLType, Forms, Controls, Dialogs, ComCtrls, ExtCtrls, StdCtrls, Clipbrd,
-  Graphics, Grids,
+  Graphics, Grids, TextTools,
   // LazUtils
   LazStringUtils,
   // Codetools
   CodeTree, CodeToolManager, CodeCache, PascalParserTool, KeywordFuncLists,
   // IDEIntf
-  LazIDEIntf, IDEImagesIntf, SrcEditorIntf, IDEWindowIntf, TextTools,
+  LazIDEIntf, IDEImagesIntf, SrcEditorIntf, IDEWindowIntf,
   // IDE
   EnvironmentOpts, LazarusIDEStrConsts;
 

@@ -40,14 +40,14 @@ uses
   Classes, SysUtils, fgl,
   // LCL
   LCLIntf, Dialogs, Forms, Controls, StdCtrls, ExtCtrls, Graphics,
-  ButtonPanel, LazHelpHTML,
+  ButtonPanel, LazHelpHTML, TextTools,
   // LazUtils
   LazConfigStorage, LazFileUtils, LazFileCache, LazUTF8, LazLoggerBase,
   // CodeTools
   FileProcs, CodeToolsFPCMsgs, CodeToolManager, CodeCache, DefineTemplates,
   // IdeIntf
   BaseIDEIntf, MacroIntf, HelpIntfs, IDEHelpIntf, IDEMsgIntf,
-  IDEExternToolIntf, LazHelpIntf, IDEDialogs, TextTools,
+  IDEExternToolIntf, LazHelpIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts;
 

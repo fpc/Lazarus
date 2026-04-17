@@ -20,8 +20,7 @@ uses
   Classes, SysUtils,
   // LCL
   LMessages, LCLType, LCLIntf, Forms, Controls, Graphics, HelpIntfs, LazHelpIntf,
-  // IdeIntf
-  TextTools, LazMethodList;
+  TextTools;
 
 type
   { THelpDBIRegExprMessage

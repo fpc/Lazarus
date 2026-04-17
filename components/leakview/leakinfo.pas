@@ -12,8 +12,10 @@ uses
   CodeToolManager, CodeCache,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazClasses, LazLoggerBase,
+  // LCL
+  TextTools,
   // IDEIntf
-  TextTools, IDEDialogs,
+  IDEDialogs,
   // LeakView
   {$IFDEF LEAK_RESOLVE_USE_FPC}
   DbgInfoReader,

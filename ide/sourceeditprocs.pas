@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, RegExpr, Types, Math,
   // LCL
-  LCLType, Graphics, Controls, LCLIntf, ImgList,
+  LCLType, Graphics, Controls, LCLIntf, ImgList, TextTools,
   // LazUtils
   LazFileUtils, LazStringUtils,
   // SynEdit
@@ -48,7 +48,7 @@ uses
   CodeToolManager, PascalParserTool, KeywordFuncLists, FileProcs,
   IdentCompletionTool, PascalReaderTool,
   // IdeIntf
-  LazIDEIntf, IDEImagesIntf, TextTools, IDETextConverter,
+  LazIDEIntf, IDEImagesIntf, IDETextConverter,
   // IdeConfig
   DialogProcs,
   // IDE

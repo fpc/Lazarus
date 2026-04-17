@@ -317,10 +317,6 @@
         <Type Value="LFM"/>
       </Item>
       <Item>
-        <Filename Value="texttools.pas"/>
-        <UnitName Value="TextTools"/>
-      </Item>
-      <Item>
         <Filename Value="toolbarintf.pas"/>
         <UnitName Value="ToolBarIntf"/>
       </Item>
