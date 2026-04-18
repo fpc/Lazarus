@@ -126,6 +126,7 @@ implementation
 uses
   CodeToolManager,
   CodeCache,
+  ProjectResourcesIntf,
   MenuIntf,
   IDEMsgIntf,
   IDEExternToolIntf,
