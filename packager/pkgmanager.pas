@@ -69,7 +69,7 @@ uses
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs, SearchPathProcs,
   TransferMacros, IDECmdLine, IDEProcs, DialogProcs, BaseBuildManager,
-  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts, IDETranslations,
+  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts, IDETranslations, MiscOptions,
   // IdePackager
   IdePackagerStrConsts, BasePkgManager, PackageDefs, EditablePackage,
   PackageLinks, PackageSystem,
@@ -78,8 +78,7 @@ uses
   // FCL registration
   LazarusPackageIntf,
   // IDE
-  MainBar, MainIntf, MainBase,
-  LazarusIDEStrConsts, MiscOptions, AddToPackageDlg, ProjPackEditing,
+  MainBar, MainIntf, MainBase, LazarusIDEStrConsts, AddToPackageDlg, ProjPackEditing,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
   BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector, EditableProject,
   PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg, PublishModuleDlg,

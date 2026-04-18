@@ -11998,10 +11998,6 @@ msgstr "Prieš darant reikalauti patvirtinimo"
 msgid "Confirm deletion"
 msgstr "Trynimo patvirtinimas"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "Derinama IKA"
-
 #: lazarusidestrconsts.lislazbuilddefines
 #, fuzzy
 #| msgid "Defines"
@@ -12050,14 +12046,6 @@ msgstr "Įdėti naują profilį"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "Veikiamosios darymo parinktys bus susietos su:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "Įprasta IKA"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "Optimizuota IKA"
 
 #: lazarusidestrconsts.lislazbuildoptions
 #, fuzzy
@@ -12136,11 +12124,6 @@ msgstr "Naujinti „revision.inc“"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Naujinti dialoge „Apie Lazarus“ pateikiamą informaciją apie laidą"
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "Išvalyti + Daryti viską"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

@@ -12248,10 +12248,6 @@ msgstr "אשר לפני בנייה מחודשת של לזרוס"
 msgid "Confirm deletion"
 msgstr "אשר מחיקה"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "נפה שגיאות IDE"
-
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "&Defines"
 msgstr ""
@@ -12298,14 +12294,6 @@ msgstr "הוסף פרופיל חדש"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "אפשרויות הבנייה הנוכחיות יקושרו עם:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "במצב מיטבי  IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 #, fuzzy
@@ -12384,11 +12372,6 @@ msgstr "עדכן את revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "עדכן את מידע התיקון בדיאלוג \"About Lazarus\""
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "נקה ובנה הכל"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

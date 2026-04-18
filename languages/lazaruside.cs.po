@@ -11894,10 +11894,6 @@ msgstr "Potvrdit před sestavením"
 msgid "Confirm deletion"
 msgstr "Potvrdit smazání"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "Ladit IDE"
-
 #: lazarusidestrconsts.lislazbuilddefines
 #, fuzzy
 #| msgid "Defines"
@@ -11946,14 +11942,6 @@ msgstr "Přidat nový profil"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "Současné sestavovací volby budou spojeny s:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "Normální IDE"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "Optimalizované IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 #, fuzzy
@@ -12032,11 +12020,6 @@ msgstr "Aktualizovat revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Aktualizovat informace o revizi v dialogu \"O Lazarusu\""
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "Vyčistit + Sestavit vše"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

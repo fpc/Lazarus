@@ -313,6 +313,22 @@ msgstr "Identifikátor jazyka Lazarus (napr. en, de, sk)"
 msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr "Meno jazyka Lazarus (napr. english, slovak)"
 
+#: ideconfstrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr ""
+
+#: ideconfstrconsts.lislazbuildnormalide
+msgid "Normal IDE"
+msgstr "Normálne IDE"
+
+#: ideconfstrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr "Optimalizované IDE"
+
+#: ideconfstrconsts.lislazcleanupbuildall
+msgid "Clean Up + Build all"
+msgstr "Vyčistiť + Vybudovať všetko"
+
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr ""

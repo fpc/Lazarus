@@ -62,9 +62,9 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  EnvironmentOpts, RecentListProcs,
+  EnvironmentOpts, RecentListProcs, MiscOptions,
   // IDE
-  MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts
+  SysVarUserOverrideDlg, LazarusIDEStrConsts
   {$IFnDef LCLNoGui}, BaseDebugManager {$ENDIF} ;
 
 type

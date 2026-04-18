@@ -128,6 +128,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="LazConf"/>
       </Item>
       <Item>
+        <Filename Value="miscoptions.pas"/>
+        <UnitName Value="MiscOptions"/>
+      </Item>
+      <Item>
         <Filename Value="modematrixopts.pas"/>
         <UnitName Value="ModeMatrixOpts"/>
       </Item>

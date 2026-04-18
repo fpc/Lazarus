@@ -38,9 +38,7 @@ uses
   CodeToolsStructs, DefineTemplates,
   // IdeConfig
   LazConf, IDEProcs, TransferMacros, RecentListProcs, EnvironmentOpts,
-  IdeXmlConfigProcs, //IdeConfStrConsts,
-  // IDE
-  LazarusIDEStrConsts;
+  IdeXmlConfigProcs, IdeConfStrConsts;
 
 type
   TIdeBuildMode = (

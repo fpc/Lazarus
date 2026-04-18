@@ -27,6 +27,11 @@ resourcestring
   lisOS = ', OS: %s';
   lisCPU = ', CPU: %s';
   lisTarget2 = ', Target: %s';
+  // Misc Options, IDe Build Profiles
+  lisLazBuildNormalIDE = 'Normal IDE';
+  lisLazBuildDebugIDE = 'Debug IDE';
+  lisLazBuildOptimizedIDE = 'Optimized IDE';
+  lisLazCleanUpBuildAll = 'Clean Up + Build all';
   // Transfer Macros
   lisTMFunctionExtractFileExtension = 'Function: extract file extension';
   lisTMFunctionExtractFilePath = 'Function: extract file path';

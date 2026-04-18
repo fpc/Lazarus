@@ -314,6 +314,22 @@ msgstr "Lazarus 语言 ID (例如 en、de、br、fi)"
 msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr "Lazarus 语言名称 (例如 英语、德语)"
 
+#: ideconfstrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr "调试的 IDE"
+
+#: ideconfstrconsts.lislazbuildnormalide
+msgid "Normal IDE"
+msgstr "常规的 IDE"
+
+#: ideconfstrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr "优化的 IDE"
+
+#: ideconfstrconsts.lislazcleanupbuildall
+msgid "Clean Up + Build all"
+msgstr "清除+构建所有"
+
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr "Lazarus版本(例如1.2.4)"

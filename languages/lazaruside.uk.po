@@ -11832,10 +11832,6 @@ msgstr "Підтвердити перед збиранням"
 msgid "Confirm deletion"
 msgstr "Підтвердьте видалення"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "Зневадження ІСР"
-
 #: lazarusidestrconsts.lislazbuilddefines
 #, fuzzy
 #| msgid "Defines"
@@ -11884,14 +11880,6 @@ msgstr "Додати новий профіль"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "Поточні параметри збирання будуть пов'язані з:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "Звичайне ІСР"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "Оптимізований ІСР"
 
 #: lazarusidestrconsts.lislazbuildoptions
 #, fuzzy
@@ -11970,11 +11958,6 @@ msgstr "Оновити revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Оновити дані про ревізію в діалозі \"Про Lazarus\""
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "Очистити + Зібрати все"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

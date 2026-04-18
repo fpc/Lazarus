@@ -11798,10 +11798,6 @@ msgstr "Varmista ennen kokoamista"
 msgid "Confirm deletion"
 msgstr "Varmista poistaminen"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "Virheenjäljitys-IDE"
-
 #: lazarusidestrconsts.lislazbuilddefines
 #, fuzzy
 #| msgid "Defines"
@@ -11850,14 +11846,6 @@ msgstr "Lisää uusi profiili"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "Nykyiset koonta-asetukset liitetään:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "Normaali IDE"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "Optimoitu IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 #, fuzzy
@@ -11933,10 +11921,6 @@ msgstr "Päivitä revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Päivitä revisiokenttä \"Tietoja Lazaruksesta\" ikkunassa"
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgid "Clean Up + Build all"
-msgstr "Siivoa + kokoa kaikki"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

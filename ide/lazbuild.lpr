@@ -45,14 +45,14 @@ uses
   // IdeConfig
   LazConf, IDECmdLine, TransferMacros, EnvironmentOpts, ParsedCompilerOpts,
   CompilerOptions, ModeMatrixOpts, BaseBuildManager, ApplicationBundle,
-  IDETranslations, ExtToolsConsole, InitialSetupProc,
+  IDETranslations, ExtToolsConsole, InitialSetupProc, MiscOptions,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageLinks, PackageSystem,
   // IdeProject
   Project,
   // IDE
-  LazarusIDEStrConsts, MiscOptions,
-  InterPkgConflictFiles, BuildLazDialog, BuildProfileManager, BuildManager, ColorTTY;
+  LazarusIDEStrConsts, BuildLazDialog, BuildManager,
+  InterPkgConflictFiles, ColorTTY;
 
 type
   TPkgAction = (

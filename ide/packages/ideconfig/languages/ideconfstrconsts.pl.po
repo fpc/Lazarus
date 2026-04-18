@@ -312,6 +312,22 @@ msgstr "Identyfikator języka Lazarus (np. ep, pl, de)"
 msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr "Nazwa języka Lazarusa (np. english, polski)"
 
+#: ideconfstrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr "IDE Odpluskwiania"
+
+#: ideconfstrconsts.lislazbuildnormalide
+msgid "Normal IDE"
+msgstr "Normalne IDE"
+
+#: ideconfstrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr "Zoptymalizowane IDE"
+
+#: ideconfstrconsts.lislazcleanupbuildall
+msgid "Clean Up + Build all"
+msgstr "Czyść + Buduj wszystko"
+
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr "Wersja Lazarusa (np. 1.6.0)"

@@ -11969,10 +11969,6 @@ msgstr "構築する前に確認"
 msgid "Confirm deletion"
 msgstr "削除を確認"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "IDEをデバッグ"
-
 #: lazarusidestrconsts.lislazbuilddefines
 #, fuzzy
 #| msgid "Defines"
@@ -12021,14 +12017,6 @@ msgstr "新しいプロファイルを追加"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "現在の構築オプションは右と関連します："
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "通常のIDE"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "最適化されたIDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 #, fuzzy
@@ -12107,11 +12095,6 @@ msgstr "revision.inc を更新"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "\"Lazarusについて\"ダイアログの改訂情報を更新"
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "清掃 + すべて構築"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

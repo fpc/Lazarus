@@ -53,12 +53,11 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  RecentListProcs, IdeConfStrConsts,
+  RecentListProcs, MiscOptions, IdeConfStrConsts,
   // IdeProject
   Project,
   // IDE
-  LazarusIDEStrConsts,
-  EditorOptions, MiscOptions, MainBase, SourceEditor, EditableProject;
+  LazarusIDEStrConsts, MainBase, EditorOptions, SourceEditor, EditableProject;
 
 type
 

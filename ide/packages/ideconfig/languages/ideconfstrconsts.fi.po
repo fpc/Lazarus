@@ -311,6 +311,22 @@ msgstr "Lazarus kieli-ID (esim. en, de, br, fi)"
 msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr "Lazarus kieli-nimi (esim. english, deutsch)"
 
+#: ideconfstrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr "Virheenjäljitys-IDE"
+
+#: ideconfstrconsts.lislazbuildnormalide
+msgid "Normal IDE"
+msgstr "Normaali IDE"
+
+#: ideconfstrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr "Optimoitu IDE"
+
+#: ideconfstrconsts.lislazcleanupbuildall
+msgid "Clean Up + Build all"
+msgstr "Siivoa + kokoa kaikki"
+
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr "Lazarus Versio (esim. 1.2.4)"

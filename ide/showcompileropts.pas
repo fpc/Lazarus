@@ -42,13 +42,18 @@ uses
   LazFileUtils, LazUTF8, LazStringUtils,
   // CodeTools
   CodeToolsCfgScript,
+  // BuildIntf
+  BaseIDEIntf, CompOptsIntf, ProjectIntf, PackageIntf, MacroIntf,
   // IdeIntf
-  BaseIDEIntf, LazIDEIntf, IDEImagesIntf, CompOptsIntf, ProjectIntf,
-  PackageIntf, MacroIntf, ParsedCompilerOpts, CompilerOptions,
+  LazIDEIntf, IDEImagesIntf,
+  // IdeConfig
+  MiscOptions, ParsedCompilerOpts, CompilerOptions, ModeMatrixOpts,
+  // IdeProject
+  Project,
   // IdePackager
-  IdePackagerStrConsts,
+  PackageDefs, IdePackagerStrConsts,
   // IDE
-  LazarusIDEStrConsts, Project, PackageDefs, ModeMatrixOpts, MiscOptions;
+  LazarusIDEStrConsts;
 
 type
   TShowCompToolOpts = class

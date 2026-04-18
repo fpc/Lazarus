@@ -11955,10 +11955,6 @@ msgstr ""
 msgid "Confirm deletion"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "&Defines"
 msgstr ""
@@ -12004,14 +12000,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildoptions
@@ -12086,11 +12074,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
-msgstr ""
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
 msgstr ""
 
 #: lazarusidestrconsts.lislazpkg

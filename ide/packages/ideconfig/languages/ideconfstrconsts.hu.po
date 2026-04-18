@@ -311,6 +311,22 @@ msgstr "Lazarus nyelv azonosító (pl. en, de, br, fi)"
 msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr "Lazarus nyelv neve (pl. english, deutsch)"
 
+#: ideconfstrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr "Hibakereső IDE"
+
+#: ideconfstrconsts.lislazbuildnormalide
+msgid "Normal IDE"
+msgstr "Normál IDE"
+
+#: ideconfstrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr "Optimalizált IDE"
+
+#: ideconfstrconsts.lislazcleanupbuildall
+msgid "Clean Up + Build all"
+msgstr "Tisztítás és minden építése"
+
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr "Lazarus változat (pl. 1.2.4)"

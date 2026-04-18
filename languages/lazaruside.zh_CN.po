@@ -11726,10 +11726,6 @@ msgstr "构建前确认"
 msgid "Confirm deletion"
 msgstr "确认删除"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "调试的 IDE"
-
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "&Defines"
 msgstr "&定义"
@@ -11776,14 +11772,6 @@ msgstr "添加新配置文件"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "当前构建选项将被关联于:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "常规的 IDE"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "优化的 IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "&Options:"
@@ -11856,11 +11844,6 @@ msgstr "更新 revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "更新在\"关于 Lazarus\"对话框中的修订信息"
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "清除+构建所有"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

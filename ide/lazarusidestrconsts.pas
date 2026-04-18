@@ -3528,11 +3528,6 @@ resourcestring
   lisLazBuildProfile ='&Profile to build';
   lisLazBuildErrorWritingFile = 'Error writing file';
   lisLazBuildUnableToWriteFile = 'Unable to write file "%s":%s';
-  lisLazBuildNormalIDE = 'Normal IDE';
-  lisLazBuildDebugIDE = 'Debug IDE';
-  lisLazBuildOptimizedIDE = 'Optimized IDE';
-  lisLazCleanUpBuildAll = 'Clean Up + Build all';
-
   lisLazBuildABOChooseOutputDir = 'Choose output directory of the IDE executable ';
   lisLazBuildDefines = '&Defines';
   lisLazBuildEditDefines = 'Edit Defines';

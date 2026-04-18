@@ -311,6 +311,22 @@ msgstr "Lazarus dil kimliği (ör. En, de, tr, fi)"
 msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr "Lazarus dil adı (ör. Ingilizce, türkçe)"
 
+#: ideconfstrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr "IDE hata ayıklama"
+
+#: ideconfstrconsts.lislazbuildnormalide
+msgid "Normal IDE"
+msgstr "Normal IDE"
+
+#: ideconfstrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr "İyileştirilmiş IDE"
+
+#: ideconfstrconsts.lislazcleanupbuildall
+msgid "Clean Up + Build all"
+msgstr "Temizle + Hepsini kur"
+
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr "Lazarus Sürümü (ör. 1.2.4)"

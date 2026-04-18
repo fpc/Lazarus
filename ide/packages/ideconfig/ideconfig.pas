@@ -13,7 +13,7 @@ uses
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, 
   ExtTools, ExtToolsConsole, FppkgHelper, IDECmdLine, IdeConfigPckTest, 
   IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, IDETranslations, 
-  IdeXmlConfigProcs, InitialSetupProc, LazConf, ModeMatrixOpts, 
+  IdeXmlConfigProcs, InitialSetupProc, LazConf, MiscOptions, ModeMatrixOpts, 
   ParsedCompilerOpts, ProjectBuildMode, ProjPackCommon, RecentListProcs, 
   SearchPathProcs, ToolBarOptionsBase, TransferMacros, LazarusPackageIntf;
 

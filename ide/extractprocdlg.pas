@@ -41,8 +41,10 @@ uses
   BasicCodeTools, CodeTree, CodeCache, CodeToolManager, ExtractProcTool,
   // IdeIntf
   IDEDialogs,
+  // IdeConfig
+  MiscOptions, EnvironmentOpts,
   // IDE
-  LazarusIDEStrConsts, MiscOptions, EnvironmentOpts;
+  LazarusIDEStrConsts;
 
 type
 

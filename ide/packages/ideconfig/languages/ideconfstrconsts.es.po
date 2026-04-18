@@ -312,6 +312,22 @@ msgstr "ID de idioma de Lazarus (por ejemplo: en, de, br, fi)"
 msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr "Nombre de idioma de Lazarus (por ejemplo: inglés, holandés)"
 
+#: ideconfstrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr "IDE Depurador"
+
+#: ideconfstrconsts.lislazbuildnormalide
+msgid "Normal IDE"
+msgstr "IDE Normal"
+
+#: ideconfstrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr "IDE Optimizado"
+
+#: ideconfstrconsts.lislazcleanupbuildall
+msgid "Clean Up + Build all"
+msgstr "Limpiar + Construir todo"
+
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr "Versión de Lazarus (e.g. 1.2.4)"

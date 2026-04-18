@@ -50,8 +50,10 @@ uses
   SynEdit,
   // IdeIntf
   IDEWindowIntf, LazEditHighlighter,
+  // IdeConfig
+  MiscOptions,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, MiscOptions, SourceMarks;
+  LazarusIDEStrConsts, EditorOptions, SourceMarks;
   
 type
   TSortSelDlgState = (

@@ -123,7 +123,7 @@ uses
   InputHistory, IdeUtilsPkg, IdeUtilsPkgStrConsts,
   // IdeConfig
   LazConf, EnvironmentOpts, TransferMacros, IDECmdLine, IDEGuiCmdLine,
-  IDEProcs, ApplicationBundle, InitialSetupProc, IdeConfStrConsts,
+  IDEProcs, ApplicationBundle, InitialSetupProc, MiscOptions, IdeConfStrConsts,
   // IdePackager,
   IdePackager, IdePackagerStrConsts, PackageSystem, BasePkgManager, LPKCache,
   // IdeProject,
@@ -166,7 +166,7 @@ uses
   IdeOptionsDlg, EditDefineTree, KeyMapping,
   IDETranslations, ExtToolDialog, ExtToolEditDlg, JumpHistoryView,
   DesktopManager, DiskDiffsDialog, BuildLazDialog, BuildProfileManager,
-  BuildManager, IdeBuildManager, CheckCompOptsForNewUnitDlg, MiscOptions,
+  BuildManager, IdeBuildManager, CheckCompOptsForNewUnitDlg,
   InputhistoryWithSearchOpt, UnitDependencies, IDEFPCInfo, IDEInfoDlg,
   IDEInfoNeedBuild, ProcessList, IdeDebuggerOpts, IdeDebuggerWatchResPrinter,
   IdeDebuggerWatchResult, InitialSetupDlgs, NewDialog,

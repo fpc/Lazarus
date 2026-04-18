@@ -11739,10 +11739,6 @@ msgstr "İnşaa öncesi onaylayın"
 msgid "Confirm deletion"
 msgstr "Silmeyi onayla"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "IDE hata ayıklama"
-
 #: lazarusidestrconsts.lislazbuilddefines
 #, fuzzy
 #| msgid "Defines"
@@ -11790,14 +11786,6 @@ msgstr "Yeni Profil Ekle"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "Mevcut derleme seçenekleri şunlarla ilişkilendirilecektir:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "Normal IDE"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "İyileştirilmiş IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 #, fuzzy
@@ -11873,10 +11861,6 @@ msgstr "Güncelle revizyon.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "\"Lazarus Hakkında\" iletişim kutusundaki düzeltme bilgisini güncelle"
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgid "Clean Up + Build all"
-msgstr "Temizle + Hepsini kur"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

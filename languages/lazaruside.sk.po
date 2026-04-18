@@ -11751,10 +11751,6 @@ msgstr "Potvrdiť pred vybudovaním"
 msgid "Confirm deletion"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "&Defines"
 msgstr "&Definície"
@@ -11801,14 +11797,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "Normálne IDE"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "Optimalizované IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "&Options:"
@@ -11881,11 +11869,6 @@ msgstr "Aktualizovať revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr ""
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "Vyčistiť + Vybudovať všetko"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

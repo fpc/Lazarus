@@ -311,6 +311,22 @@ msgstr "Мова графічної оболонки Lazarus (напр. en, uk, 
 msgid "Lazarus language name (e.g. english, deutsch)"
 msgstr "Назва мови для Lazarus (напр. english, deutsch, ukrainain)"
 
+#: ideconfstrconsts.lislazbuilddebugide
+msgid "Debug IDE"
+msgstr "Зневадження ІСР"
+
+#: ideconfstrconsts.lislazbuildnormalide
+msgid "Normal IDE"
+msgstr "Звичайне ІСР"
+
+#: ideconfstrconsts.lislazbuildoptimizedide
+msgid "Optimized IDE"
+msgstr "Оптимізований ІСР"
+
+#: ideconfstrconsts.lislazcleanupbuildall
+msgid "Clean Up + Build all"
+msgstr "Очистити + Зібрати все"
+
 #: ideconfstrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr "Версія Lazarus (наприклад, 1.2.4)"

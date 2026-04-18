@@ -11685,10 +11685,6 @@ msgstr "Kompilieren von Lazarus bestätigen"
 msgid "Confirm deletion"
 msgstr "Löschung bestätigen"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "IDE mit Debugger-Informationen"
-
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "&Defines"
 msgstr "Definitionen"
@@ -11735,14 +11731,6 @@ msgstr "Neues Profil hinzufügen"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "Aktuelle Erstellungs-Optionen werden verbunden mit:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "Normale IDE"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "Optimierte IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "&Options:"
@@ -11815,11 +11803,6 @@ msgstr "Aktualisiere revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Aktualisiert die Revisions-Info im \"Über Lazarus\" Dialog"
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "Aufräumen und neu kompilieren"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

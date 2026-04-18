@@ -46,11 +46,11 @@ uses
   // IdeUtils
   InputHistory,
   // IdeConfig
-  TransferMacros, IDEProcs, DialogProcs, SearchPathProcs, EnvironmentOpts,
+  TransferMacros, IDEProcs, DialogProcs, SearchPathProcs, EnvironmentOpts, MiscOptions,
   // IdeProject
   Project,
   // IDE
-  LazarusIDEStrConsts, MiscOptions, CustomFormEditor, CodeToolsOptions, SearchResultView,
+  LazarusIDEStrConsts, CustomFormEditor, CodeToolsOptions, SearchResultView,
   CodeHelp, SourceFileManager, EditableProject;
 
 type

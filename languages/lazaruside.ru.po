@@ -11693,10 +11693,6 @@ msgstr "Спрашивать перед пересборкой"
 msgid "Confirm deletion"
 msgstr "Подтвердите удаление"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "IDE в режиме отладки"
-
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "&Defines"
 msgstr "О&пределения"
@@ -11743,14 +11739,6 @@ msgstr "Добавление нового профиля"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "Текущие параметры сборки будут сохранены в профиле:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "Обычная IDE"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "IDE с оптимизацией"
 
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "&Options:"
@@ -11823,11 +11811,6 @@ msgstr "Обновить revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Обновить сведения о ревизии в диалоге \"О проекте Lazarus\""
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "Очистить + Собрать все"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

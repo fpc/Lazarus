@@ -11701,10 +11701,6 @@ msgstr "ຢືນຢັນກ່ອນສ້າງ"
 msgid "Confirm deletion"
 msgstr "ຢືນຢັນການລຶບ"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "ດີບັກ IDE"
-
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "&Defines"
 msgstr "&Defines"
@@ -11751,14 +11747,6 @@ msgstr "ເພີ່ມໂປຣໄຟລ໌ໃໝ່"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "ຕົວເລືອກການສ້າງປັດຈຸບັນຈະຖືກເຊື່ອມໂຍງກັບ:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "IDE ປົກກະຕິ"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "IDE ທີ່ປັບແຕ່ງແລ້ວ"
 
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "&Options:"
@@ -11831,11 +11819,6 @@ msgstr "ອັບເດດ revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "ອັບເດດຂໍ້ມູນ revision ໃນກ່ອງໂຕ້ຕອບ \"ກ່ຽວກັບ Lazarus\""
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "ລ້າງຂໍ້ມູນ + ສ້າງທັງໝົດ"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

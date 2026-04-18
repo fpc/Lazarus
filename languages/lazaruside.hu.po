@@ -11862,10 +11862,6 @@ msgstr "Megerősítés építés előtt"
 msgid "Confirm deletion"
 msgstr "Törlés megerősítése"
 
-#: lazarusidestrconsts.lislazbuilddebugide
-msgid "Debug IDE"
-msgstr "Hibakereső IDE"
-
 #: lazarusidestrconsts.lislazbuilddefines
 #, fuzzy
 #| msgid "Defines"
@@ -11914,14 +11910,6 @@ msgstr "Új profil hozzáadása"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "A jelenlegi építési beállítások hozzá lesznek rendelve ehhez:"
-
-#: lazarusidestrconsts.lislazbuildnormalide
-msgid "Normal IDE"
-msgstr "Normál IDE"
-
-#: lazarusidestrconsts.lislazbuildoptimizedide
-msgid "Optimized IDE"
-msgstr "Optimalizált IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 #, fuzzy
@@ -12000,11 +11988,6 @@ msgstr "revision.inc frissítése"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Revízió infó frissítése a \"Lazarus névjegye\" ablakban"
-
-#: lazarusidestrconsts.lislazcleanupbuildall
-msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
-msgid "Clean Up + Build all"
-msgstr "Tisztítás és minden építése"
 
 #: lazarusidestrconsts.lislazpkg
 msgid "Package distributed with Lazarus"

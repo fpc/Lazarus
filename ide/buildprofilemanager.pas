@@ -42,9 +42,9 @@ uses
   // IdeIntf
   IdeIntfStrConsts, IDEImagesIntf, IDEDialogs,
   // IdeConfig
-  EnvironmentOpts, TransferMacros, RecentListProcs,
+  EnvironmentOpts, TransferMacros, RecentListProcs, MiscOptions,
   // IDE
-  MiscOptions, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
   { TBuildProfileManagerForm }
