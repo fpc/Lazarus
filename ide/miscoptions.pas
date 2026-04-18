@@ -30,19 +30,109 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Contnrs,
   // LazUtils
   LazUtilities, LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
   // CodeTools
-  CodeToolsStructs,
+  CodeToolsStructs, DefineTemplates,
   // LCL
-  TextTools,
+  TextTools, InterfaceBase, LCLPlatformDef,
   // IdeConfig
-  LazConf, IDEProcs, IdeXmlConfigProcs,
-  // IDE
-  BuildProfileManager;
+  LazConf, IDEProcs, TransferMacros, RecentListProcs, EnvironmentOpts,
+  IdeXmlConfigProcs, IdeConfStrConsts, LazarusIDEStrConsts;
 
 type
+  TIdeBuildMode = (
+    bmBuild,
+    bmCleanBuild, // obsolete since 2.3.0
+    bmCleanAllBuild
+  );
+
+  TBuildLazarusProfiles = class;
+
+  { TBuildLazarusProfile }
+
+  TBuildLazarusProfile = class
+  private
+    FCleanOnce: boolean;
+    fOwner: TBuildLazarusProfiles;
+    fName: string;
+    FSubtarget: string;
+    fTargetOS: string;
+    fTargetDirectory: string;
+    fTargetCPU: string;
+    fTargetPlatform: TLCLPlatform;
+    fIdeBuildMode: TIdeBuildMode;
+    fUpdateRevisionInc: boolean;
+    fOptions: TStringList;      // User defined options.
+    fDefines: TStringList;      // Defines selected for this profile.
+    fTargetDirHistory: TStringList; // History
+    function GetExtraOptions: string;
+    function GetTranslatedName: string;
+    procedure SetExtraOptions(const AValue: string);
+  public
+    constructor Create(AOwnerCnt: TBuildLazarusProfiles; AName: string);
+    destructor Destroy; override;
+    procedure Assign(Source: TBuildLazarusProfile; ACopyName: Boolean=True);
+    procedure Load(XMLConfig: TXMLConfig; const Path: string);
+    procedure Save(XMLConfig: TXMLConfig; const Path: string);
+    function FPCTargetOS: string;
+    function FPCTargetCPU: string;
+    function GetParsedTargetDirectory(Macros: TTransferMacroList): string;
+  public
+    property Name: string read fName write fName;
+    property TranslatedName: string read GetTranslatedName;
+    property ExtraOptions: string read GetExtraOptions write SetExtraOptions;
+    property TargetOS: string read fTargetOS write fTargetOS;
+    property TargetDirectory: string read fTargetDirectory write fTargetDirectory;
+    property TargetDirHistory: TStringList read fTargetDirHistory;
+    property TargetCPU: string read fTargetCPU write fTargetCPU;
+    property Subtarget: string read FSubtarget write FSubtarget;
+    property TargetPlatform: TLCLPlatform read fTargetPlatform write fTargetPlatform;
+    property IdeBuildMode: TIdeBuildMode read fIdeBuildMode write fIdeBuildMode;
+    property CleanOnce: boolean read FCleanOnce write FCleanOnce;
+    property UpdateRevisionInc: boolean read fUpdateRevisionInc write fUpdateRevisionInc;
+    property OptionsLines: TStringList read fOptions;
+    property Defines: TStringList read fDefines;
+  end;
+
+  { TBuildLazarusProfiles }
+
+  TBuildLazarusProfiles = class(TObjectList)
+  private
+    fRestartAfterBuild: boolean;
+    fConfirmBuild: boolean;
+    fAllDefines: TStringList;
+    fSelected: TStringList;
+    fStaticAutoInstallPackages: TStringList;
+    fCurrentIndex: integer;
+    function GetCurrentProfile: TBuildLazarusProfile;
+    function GetItems(Index: integer): TBuildLazarusProfile;
+  public
+    fTranslatedProfileNames: array[0..3] of string;
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear; override;
+    procedure Assign(Source: TBuildLazarusProfiles);
+    function IndexByName(AName: string): integer;
+    function CreateDefaults: integer;
+    procedure Load(XMLConfig: TXMLConfig; const Path: string; const FileVersion: integer);
+    procedure Save(XMLConfig: TXMLConfig; const Path: string);
+    procedure Move(CurIndex, NewIndex: Integer); // Replaces TList.Move
+    function Default2TranslatedProfile(aName: string): string;
+    //function Translated2DefaultProfile(aName: string): string;
+  public
+    property RestartAfterBuild: boolean read fRestartAfterBuild write fRestartAfterBuild;
+    property ConfirmBuild: boolean read fConfirmBuild write fConfirmBuild;
+    property AllDefines: TStringList read fAllDefines;
+    property Selected: TStringList read fSelected;
+    property StaticAutoInstallPackages: TStringList read fStaticAutoInstallPackages;
+    property CurrentIndex: integer read fCurrentIndex write fCurrentIndex;
+    property Current: TBuildLazarusProfile read GetCurrentProfile;
+    property Items[Index: integer]: TBuildLazarusProfile read GetItems; default;
+  end;
+
+
   { TFindRenameIdentifierOptions }
 
   TFindRenameScope = (
@@ -175,8 +265,37 @@ function FindRenameScopeNameToScope(const s: string): TFindRenameScope;
 implementation
 
 const
+  DefaultTargetDirectory = ''; // empty will be replaced by '$(ConfDir)/bin';
   MiscOptsFilename = 'miscellaneousoptions.xml';
   MiscOptsVersion = 4;
+
+  // Same names as in resourcestrings but not translated.
+  // Works together with TBuildLazarusProfiles.fTranslatedProfileNames.
+  DefaultProfileNames: array[0..3] of string = (
+    'Normal IDE',           // Matches lisLazBuildNormalIDE
+    'Debug IDE',            // Matches lisLazBuildDebugIDE
+    'Optimized IDE',        // Matches lisLazBuildOptimizedIDE
+    'Clean Up + Build all'  // Matches lisLazCleanUpBuildAll
+  );
+
+function IdeBuildModeToStr(BuildMode: TIdeBuildMode): string;
+begin
+  Result:='';
+  case BuildMode of
+    bmBuild:         Result:='Build';
+    bmCleanBuild:    Result:='Clean + Build';
+    bmCleanAllBuild: Result:='Clean All + Build';
+  end;
+end;
+
+function StrToIdeBuildMode(const s: string): TIdeBuildMode;
+begin
+  Result:=bmBuild;
+  if s='Clean + Build' then
+    Result:=bmCleanBuild
+  else if s='Clean All + Build' then
+    Result:=bmCleanAllBuild;
+end;
 
 function SortDirectionNameToType(const s: string): TSortDirection;
 begin
@@ -206,6 +325,362 @@ begin
   for Result:=Low(TFindRenameScope) to High(TFindRenameScope) do
     if CompareText(FindRenameScopeNames[Result],s)=0 then exit;
   Result:=frAllOpenProjectsAndPackages;
+end;
+
+{ TBuildLazarusProfile }
+
+constructor TBuildLazarusProfile.Create(AOwnerCnt: TBuildLazarusProfiles;
+                                        AName: string);
+begin
+  inherited Create;
+  fOwner:=AOwnerCnt;
+  fName:=AName;
+  fOptions:=TStringList.Create;
+  fDefines:=TStringList.Create;
+  fTargetDirHistory:=TStringList.Create;
+end;
+
+destructor TBuildLazarusProfile.Destroy;
+begin
+  fDefines.Free;
+  fOptions.Free;
+  fTargetDirHistory.Free;
+  inherited Destroy;
+end;
+
+procedure TBuildLazarusProfile.Load(XMLConfig: TXMLConfig; const Path: string);
+var
+  LCLPlatformStr: string;
+begin
+  TargetOS      :=XMLConfig.GetValue(Path+'TargetOS/Value','');
+  TargetCPU     :=XMLConfig.GetValue(Path+'TargetCPU/Value','');
+  Subtarget     :=XMLConfig.GetValue(Path+'Subtarget/Value','');
+  LCLPlatformStr:=XMLConfig.GetValue(Path+'LCLPlatform/Value','');
+  if LCLPlatformStr='' then
+    fTargetPlatform:=GetDefaultLCLWidgetType
+  else
+    fTargetPlatform  :=DirNameToLCLPlatform(LCLPlatformStr);
+  FTargetDirectory:=AppendPathDelim(SetDirSeparators(
+      XMLConfig.GetValue(Path+'TargetDirectory/Value', DefaultTargetDirectory)));
+  LoadRecentList(XMLConfig,fTargetDirHistory,Path+'TargetDirectory/History/',rltFile);
+
+  IdeBuildMode:=StrToIdeBuildMode(XMLConfig.GetValue(Path+'IdeBuildMode/Value',''));
+  CleanOnce:=XMLConfig.GetValue(Path+'CleanOnce/Value',false);
+  FUpdateRevisionInc :=XMLConfig.GetValue(Path+'UpdateRevisionInc/Value',true);
+  LoadStringList(XMLConfig,fOptions,Path+'Options/');
+  if fOptions.Count=0 then     // Support a syntax used earlier by profiles.
+    fOptions.Text:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
+  LoadStringList(XMLConfig,fDefines,Path+'Defines/');
+end;
+
+procedure TBuildLazarusProfile.Save(XMLConfig: TXMLConfig; const Path: string);
+begin
+  XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
+  XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
+  XMLConfig.SetDeleteValue(Path+'Subtarget/Value',Subtarget,'');
+  XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
+                           LCLPlatformDirNames[fTargetPlatform],
+                           '');
+  XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
+                           FTargetDirectory,DefaultTargetDirectory);
+  SaveRecentList(XMLConfig,fTargetDirHistory,Path+'TargetDirectory/History/');
+
+  XMLConfig.SetDeleteValue(Path+'IdeBuildMode/Value',IdeBuildModeToStr(IdeBuildMode),'');
+  XMLConfig.SetDeleteValue(Path+'CleanOnce/Value',CleanOnce,false);
+  XMLConfig.SetDeleteValue(Path+'UpdateRevisionInc/Value',FUpdateRevisionInc,true);
+  SaveStringList(XMLConfig,fOptions,Path+'Options/');
+  SaveStringList(XMLConfig,fDefines,Path+'Defines/');
+end;
+
+procedure TBuildLazarusProfile.Assign(Source: TBuildLazarusProfile; ACopyName: Boolean);
+begin
+  if (Source=nil) or (Source=Self) then exit;
+  if ACopyName then
+    fName           :=Source.Name;
+  TargetOS          :=Source.TargetOS;
+  TargetDirectory   :=Source.TargetDirectory;
+  fTargetDirHistory.Assign(Source.fTargetDirHistory);
+  TargetCPU         :=Source.TargetCPU;
+  Subtarget         :=Source.Subtarget;
+  TargetPlatform    :=Source.TargetPlatform;
+  IdeBuildMode      :=Source.IdeBuildMode;
+  CleanOnce         :=Source.CleanOnce;
+  UpdateRevisionInc :=Source.UpdateRevisionInc;
+  fOptions.Assign(Source.fOptions);
+  fDefines.Assign(Source.fDefines);
+end;
+
+function TBuildLazarusProfile.FPCTargetOS: string;
+begin
+  Result:=GetFPCTargetOS(TargetOS);
+end;
+
+function TBuildLazarusProfile.FPCTargetCPU: string;
+begin
+  Result:=GetFPCTargetCPU(TargetCPU);
+end;
+
+function TBuildLazarusProfile.GetParsedTargetDirectory(
+  Macros: TTransferMacroList): string;
+begin
+  Result:=TargetDirectory;
+  if Result='' then exit;
+  if not Macros.SubstituteStr(Result) then begin
+    DebugLn('TBuildLazarusProfile.GetParsedTargetDirectory macro aborted Options.TargetDirectory=',TargetDirectory);
+    exit('');
+  end;
+  Result:=TrimAndExpandDirectory(Result,EnvironmentOptions.GetParsedLazarusDirectory);
+end;
+
+function TBuildLazarusProfile.GetExtraOptions: string;
+var
+  i: Integer;
+begin
+  Result:='';
+  for i:=0 to fOptions.Count-1 do
+    Result:=Result+' '+fOptions[i];
+  Result:=Trim(Result);
+  for i:=0 to fDefines.Count-1 do
+    Result:=Result+' -d'+fDefines[i];
+  Result:=Trim(Result);
+end;
+
+function TBuildLazarusProfile.GetTranslatedName: string;
+begin
+  Result:=fOwner.Default2TranslatedProfile(fName);
+end;
+
+procedure TBuildLazarusProfile.SetExtraOptions(const AValue: string);
+begin
+  fOptions.Text:=AValue;
+end;
+
+{ TBuildLazarusProfiles }
+
+constructor TBuildLazarusProfiles.Create;
+begin
+  inherited Create;
+  fRestartAfterBuild:=True;
+  fConfirmBuild:=True;
+  fAllDefines:=TStringList.Create;
+  fSelected:=TStringList.Create;
+  fStaticAutoInstallPackages:=TStringList.Create;
+  // Works together with DefaultProfileNames
+  fTranslatedProfileNames[0]:=lisLazBuildNormalIDE;
+  fTranslatedProfileNames[1]:=lisLazBuildDebugIDE;
+  fTranslatedProfileNames[2]:=lisLazBuildOptimizedIDE;
+  fTranslatedProfileNames[3]:=lisLazCleanUpBuildAll;
+end;
+
+destructor TBuildLazarusProfiles.Destroy;
+begin
+  inherited Destroy;
+  // Clear is called by inherited Destroy. Must be freed later.
+  fStaticAutoInstallPackages.Free;
+  fSelected.Free;
+  fAllDefines.Free;
+end;
+
+procedure TBuildLazarusProfiles.Clear;
+begin
+  fAllDefines.Clear;
+  fSelected.Clear;
+  fStaticAutoInstallPackages.Clear;
+  inherited Clear;
+end;
+
+procedure TBuildLazarusProfiles.Assign(Source: TBuildLazarusProfiles);
+var
+  i: Integer;
+  SrcItem, NewItem: TBuildLazarusProfile;
+begin
+  Clear;
+  RestartAfterBuild :=Source.RestartAfterBuild;
+  ConfirmBuild:=Source.ConfirmBuild;
+  fAllDefines.Assign(Source.fAllDefines);
+  fSelected.Assign(Source.fSelected);
+  fStaticAutoInstallPackages.Assign(Source.fStaticAutoInstallPackages);
+  fCurrentIndex:=Source.fCurrentIndex;
+  for i:=0 to Source.Count-1 do begin
+    SrcItem:=Source.Items[i];
+    NewItem:=TBuildLazarusProfile.Create(Self, SrcItem.Name);
+    NewItem.Assign(SrcItem);
+    Add(NewItem);
+  end;
+end;
+
+function TBuildLazarusProfiles.IndexByName(AName: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (AnsiCompareText(Items[Result].Name,AName)<>0) do
+    dec(Result);
+end;
+
+function TBuildLazarusProfiles.CreateDefaults: integer;
+// Create a set of default profiles when none are saved.
+// Returns index for the default selected profile.
+var
+  Profile: TBuildLazarusProfile;
+  Platfrm: TLCLPlatform;
+begin
+  Platfrm:=GetDefaultLCLWidgetType;
+  // Build Normal IDE
+  Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[0]); //lisLazBuildNormalIDE
+  with Profile, fOwner do begin
+    fTargetPlatform:=Platfrm;
+    fIdeBuildMode:=bmBuild;
+    fUpdateRevisionInc:=True;
+  end;
+  // Return this one as default. Needed when building packages without saved profiles.
+  Result:=Add(Profile);
+
+  // Build Debug IDE
+  Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[1]); //lisLazBuildDebugIDE
+  with Profile, fOwner do begin
+    fTargetPlatform:=Platfrm;
+    fIdeBuildMode:=bmBuild;
+    fUpdateRevisionInc:=True;
+    {$IFDEF Darwin}
+    // FPC on darwin has a bug with -Cr
+    fOptions.Add('-gw -gl -godwarfsets -gh -gt -Co -Ci -Sa');
+    {$ELSE}
+    fOptions.Add('-gw3 -gl -gh -gt -Co -Cr -Ci -Sa');
+    {$ENDIF}
+  end;
+  Add(Profile);
+
+  // Build Optimised IDE
+  Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[2]); //lisLazBuildOptimizedIDE
+  with Profile, fOwner do begin
+    fTargetPlatform:=Platfrm;
+    fIdeBuildMode:=bmBuild;
+    fUpdateRevisionInc:=True;
+    fOptions.Add('-O3 -g- -Xs');
+  end;
+  Add(Profile);
+
+  // Clean Up + Build all
+  Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[3]); //lisLazCleanUpBuildAll
+  with Profile, fOwner do begin
+    fTargetPlatform:=Platfrm;
+    fIdeBuildMode:=bmCleanAllBuild;
+    fUpdateRevisionInc:=True;
+  end;
+  Add(Profile);
+end;
+
+procedure TBuildLazarusProfiles.Load(XMLConfig: TXMLConfig; const Path: string;
+                                     const FileVersion: integer);
+var
+  i, ProfCount, ProfInd: Integer;
+  ProfPath, ProfName: string;
+  Profile: TBuildLazarusProfile;
+begin
+  Clear;
+  if FileVersion<1 then
+  begin
+    ProfInd:=CreateDefaults;
+  end else if FileVersion=1 then
+  begin
+    // Older config file version.
+    CreateDefaults;         // Only one profile saved, create defaults always.
+    // Then create MyProfile.
+    Profile:=TBuildLazarusProfile.Create(Self, 'MyProfile');
+    Profile.Load(XMLConfig, Path);
+    Add(Profile);
+    FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
+    FConfirmBuild     :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
+    ProfInd:=Count-1;       // Go to last MyProfile.
+  end else begin
+    // Latest config file version.
+    ProfCount:=XMLConfig.GetValue(Path+'Profiles/Count',0);
+    if ProfCount = 0 then
+      ProfInd:=CreateDefaults    // No saved profiles were found, use defaults.
+    else begin
+      // Load list of profiles.
+      for i:=0 to ProfCount-1 do begin
+        ProfPath:=Path+'Profiles/Profile'+IntToStr(i)+'/';
+        ProfName:=XMLConfig.GetValue(ProfPath+'Name','Unknown');
+        Profile:=TBuildLazarusProfile.Create(Self, ProfName);
+        Profile.Load(XMLConfig, ProfPath);
+        Add(Profile);
+      end;
+      // Current profile ItemIndex.
+      ProfInd:=XMLConfig.GetValue(Path+'ProfileIndex/Value',0);
+      // Other global build values.
+      FRestartAfterBuild:=XMLConfig.GetValue(Path+'RestartAfterBuild/Value',true);
+      FConfirmBuild     :=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
+    end
+  end;
+  // Load defines, selected profiles and auto install packages.
+  LoadStringList(XMLConfig,fAllDefines,Path+'AllDefines/');
+  LoadStringList(XMLConfig,fSelected,Path+'SelectedProfiles/');
+
+  LoadStringList(XMLConfig,fStaticAutoInstallPackages,Path+'StaticAutoInstallPackages/');
+  if FileVersion<3 then begin
+    // the IDE part of synedit was split into a new package syneditdsgn
+    fStaticAutoInstallPackages.Add('syneditdsgn');
+  end;
+  fCurrentIndex:=ProfInd;
+end;
+
+procedure TBuildLazarusProfiles.Save(XMLConfig: TXMLConfig; const Path: string);
+var
+  i: Integer;
+  ProfPath: string;
+begin
+  // Save list of profiles.
+  XMLConfig.SetDeleteValue(Path+'Profiles/Count',Count,0);
+  for i:=0 to Count-1 do begin
+    ProfPath:=Path+'Profiles/Profile'+IntToStr(i)+'/';
+    XMLConfig.SetDeleteValue(ProfPath+'Name', Items[i].Name ,'');
+    Items[i].Save(XMLConfig, ProfPath);
+  end;
+  // Current profile ItemIndex.
+  XMLConfig.SetDeleteValue(Path+'ProfileIndex/Value',CurrentIndex,0);
+  // Other global build values.
+  XMLConfig.SetDeleteValue(Path+'RestartAfterBuild/Value',FRestartAfterBuild,true);
+  XMLConfig.SetDeleteValue(Path+'ConfirmBuild/Value',FConfirmBuild,true);
+  // Save defines, selected profiles and auto install packages.
+  SaveStringList(XMLConfig,fAllDefines,Path+'AllDefines/');
+  SaveStringList(XMLConfig,fSelected,Path+'SelectedProfiles/');
+  SaveStringList(XMLConfig,fStaticAutoInstallPackages,Path+'StaticAutoInstallPackages/');
+end;
+
+procedure TBuildLazarusProfiles.Move(CurIndex, NewIndex: Integer);
+begin
+  inherited Move(CurIndex, NewIndex);
+  fCurrentIndex:=NewIndex;
+end;
+
+function TBuildLazarusProfiles.Default2TranslatedProfile(aName: string): string;
+var
+  i: Integer;
+begin
+  for i:=Low(DefaultProfileNames) to High(DefaultProfileNames) do
+    if DefaultProfileNames[i]=aName then
+      exit(fTranslatedProfileNames[i]);
+  Result:=aName; // No translation, not a preconfigured profile.
+end;
+{
+function TBuildLazarusProfiles.Translated2DefaultProfile(aName: string): string;
+var
+  i: Integer;
+begin
+  for i:=Low(fTranslatedProfileNames) to High(fTranslatedProfileNames) do
+    if fTranslatedProfileNames[i]=aName then
+      exit(DefaultProfileNames[i]);
+  Result:=aName;  // Not a preconfigured profile.
+end;
+}
+function TBuildLazarusProfiles.GetCurrentProfile: TBuildLazarusProfile;
+begin
+  Result:=Items[fCurrentIndex];
+end;
+
+function TBuildLazarusProfiles.GetItems(Index: integer): TBuildLazarusProfile;
+begin
+  Result:=TBuildLazarusProfile(inherited Items[Index]);
 end;
 
 { TMiscellaneousOptions }

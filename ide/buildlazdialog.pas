@@ -66,7 +66,7 @@ uses
   // IdePackager
   PackageSystem, PackageDefs,
   // IDE
-  LazarusIDEStrConsts, MainBar, BuildProfileManager, GenericListEditor, GenericCheckList;
+  LazarusIDEStrConsts, MiscOptions, MainBar, BuildProfileManager, GenericListEditor, GenericCheckList;
 
 type
 
