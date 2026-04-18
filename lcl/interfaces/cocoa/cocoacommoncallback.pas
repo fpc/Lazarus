@@ -40,7 +40,11 @@ type
 
   {$scopedEnums on}
   TCocoaCbTrait = (
-    blockUpDown
+    blockKeyBeep,
+    blockUpDown,
+    treatTabAsChar,  // all tabs should be suppressed, so Cocoa would not switch focus
+    forceSendReturn, // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
+    opaque
   );
 
   TLCLCommonCallbackTraits = set of TCocoaCbTrait;
@@ -89,11 +93,7 @@ type
   public
     Owner: NSObject;
     traits: TLCLCommonCallbackTraits;
-    BlockCocoaKeyBeep: Boolean;
     BlockCocoaMouseMove: Boolean;
-    SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
-    ForceReturnKeyDown: Boolean; // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
-    IsOpaque: Boolean;
 
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
@@ -399,8 +399,6 @@ begin
   _propStorage.Sorted := True;
   _propStorage.Duplicates := dupAccept;
   _boundsReportedToChildren:=false;
-  SuppressTabDown := true; // by default all Tabs would not be allowed for Cocoa.
-                           // it should be enabled, i.e. for TMemo with WantTabs=true
 end;
 
 destructor TLCLCommonCallback.Destroy;
@@ -663,7 +661,7 @@ begin
                  _keyState.isSysKey );
 
   if lclHandled then begin
-    if ForceReturnKeyDown and (_keyState.keyCode=VK_RETURN) then
+    if (TCocoaCbTrait.forceSendReturn in self.traits) and (_keyState.keyCode=VK_RETURN) then
       _keyState.shouldSendCharMessage:= False
     else
       _keyState.handled:= True;
@@ -741,7 +739,7 @@ begin
   send_LM_CHAR_Message;
 
   if _keyState.handled then exit;
-  AllowCocoaHandle:= not BlockCocoaKeyBeep;
+  AllowCocoaHandle:= NOT (TCocoaCbTrait.blockKeyBeep in self.traits);
 end;
 
 procedure TLCLCommonCallback.KeyEvAfterUp;
@@ -775,7 +773,7 @@ begin
 
   if _keyState.isKeyDown then begin
     KeyEvBeforeDown;
-    if SuppressTabDown and (_keyState.keyCode = VK_TAB) then
+    if NOT (TCocoaCbTrait.treatTabAsChar in self.traits) and (_keyState.keyCode = VK_TAB) then
       AllowCocoaHandle := false;
   end else
     KeyEvBeforeUp;
@@ -1313,7 +1311,7 @@ begin
       if NOT Owner.isKindOfClass(NSView) or NOT NSView(Owner).isFlipped then
          nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
 
-      if IsOpaque and (Target.Color<>clDefault) then
+      if (TCocoaCbTrait.opaque in self.traits) and (Target.Color<>clDefault) then
       begin
         _context.BkMode:=OPAQUE;
         _context.BkColor:=Target.Color;

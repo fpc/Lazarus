@@ -765,8 +765,9 @@ begin
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
 
   cb := TLCLCommonCallback.Create(txt, AWinControl);
-  cb.ForceReturnKeyDown := true;
-  cb.SuppressTabDown := not TCustomMemo(AWinControl).WantTabs;
+  cb.traits:= [TCocoaCbTrait.forceSendReturn];
+  if TCustomMemo(AWinControl).WantTabs then
+    Include( cb.traits, TCocoaCbTrait.treatTabAsChar );
   txt.callback := cb;
   scr.callback := cb;
 
@@ -960,7 +961,10 @@ begin
   if NOT Assigned(txt.callback) then
     Exit;
   cb:= TLCLCommonCallback( txt.callback.GetCallbackObject );
-  cb.SuppressTabDown:= not NewWantTabs;
+  if NewWantTabs then
+    Include( cb.traits, TCocoaCbTrait.treatTabAsChar )
+  else
+    Exclude( cb.traits, TCocoaCbTrait.treatTabAsChar );
 end;
 
 

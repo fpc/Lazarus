@@ -127,8 +127,7 @@ begin
     ctrl := TCocoaCustomControlWithBaseInputClient.alloc.lclInitWithCreateParams(AParams);
     lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
   end;
-  lcl.traits:= [TCocoaCbTrait.blockUpDown];
-  lcl.BlockCocoaKeyBeep := true; // prevent "dings" on keyDown for custom controls (i.e. SynEdit)
+  lcl.traits:= [TCocoaCbTrait.blockUpDown, TCocoaCbTrait.blockKeyBeep];
   ctrl.callback := lcl;
 
   sl := TCocoaWSScrollingUtil.embedInManualScrollView(ctrl);
