@@ -32,14 +32,15 @@ interface
 uses
   Classes, SysUtils, Contnrs,
   // LazUtils
-  LazUtilities, LazFileUtils, LazStringUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
+  LazUtilities, LazFileUtils, LazStringUtils, Laz2_XMLCfg, LazFileCache,
+  LazLoggerBase, LazVersion,
   // CodeTools
   CodeToolsStructs, DefineTemplates,
-  // LCL
-  InterfaceBase, LCLPlatformDef,
   // IdeConfig
   LazConf, IDEProcs, TransferMacros, RecentListProcs, EnvironmentOpts,
-  IdeXmlConfigProcs, IdeConfStrConsts, LazarusIDEStrConsts;
+  IdeXmlConfigProcs, //IdeConfStrConsts,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
   TIdeBuildMode = (
@@ -255,11 +256,10 @@ const
 
 var MiscellaneousOptions: TMiscellaneousOptions = nil;
 
-function SortDirectionNameToType(const s: string): TSortDirection;
-function SortDomainNameToType(const s: string): TSortDomain;
-function ResourcestringInsertPolicyNameToType(
-  const s: string): TResourcestringInsertPolicy;
-function FindRenameScopeNameToScope(const s: string): TFindRenameScope;
+//function SortDirectionNameToType(const s: string): TSortDirection;
+//function SortDomainNameToType(const s: string): TSortDomain;
+//function ResourcestringInsertPolicyNameToType(const s: string): TResourcestringInsertPolicy;
+//function FindRenameScopeNameToScope(const s: string): TFindRenameScope;
 
 
 implementation
@@ -311,8 +311,7 @@ begin
   Result:=sdLines;
 end;
 
-function ResourcestringInsertPolicyNameToType(
-  const s: string): TResourcestringInsertPolicy;
+function ResourcestringInsertPolicyNameToType(const s: string): TResourcestringInsertPolicy;
 begin
   for Result:=Low(TResourcestringInsertPolicy)
   to High(TResourcestringInsertPolicy) do
@@ -357,9 +356,9 @@ begin
   Subtarget     :=XMLConfig.GetValue(Path+'Subtarget/Value','');
   LCLPlatformStr:=XMLConfig.GetValue(Path+'LCLPlatform/Value','');
   if LCLPlatformStr='' then
-    fTargetPlatform:=GetDefaultLCLWidgetType
+    fTargetPlatform:=GetLCLWidgetType
   else
-    fTargetPlatform  :=DirNameToLCLPlatform(LCLPlatformStr);
+    fTargetPlatform:=DirNameToLCLPlatform(LCLPlatformStr);
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
       XMLConfig.GetValue(Path+'TargetDirectory/Value', DefaultTargetDirectory)));
   LoadRecentList(XMLConfig,fTargetDirHistory,Path+'TargetDirectory/History/',rltFile);
@@ -523,7 +522,7 @@ var
   Profile: TBuildLazarusProfile;
   Platfrm: TLCLPlatform;
 begin
-  Platfrm:=GetDefaultLCLWidgetType;
+  Platfrm:=GetLCLWidgetType;
   // Build Normal IDE
   Profile:=TBuildLazarusProfile.Create(Self, DefaultProfileNames[0]); //lisLazBuildNormalIDE
   with Profile, fOwner do begin

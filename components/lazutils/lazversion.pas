@@ -19,10 +19,48 @@ unit LazVersion;
 
 interface
 
+uses sysutils;
+
 type
+  // Also cmd line programs may need the LCL Widgetset of an application.
+  TLCLPlatform = (
+    lpGtk,
+    lpGtk2,
+    lpGtk3,
+    lpWin32,
+    lpWinCE,
+    lpCarbon,
+    lpQT,
+    lpQt5,
+    lpQt6,
+    lpfpGUI,
+    lpNoGUI,
+    lpCocoa,
+    lpCustomDrawn,
+    lpMUI
+    );
+
+  TLCLWidgetTypeEvent = function(): TLCLPlatform;
   TLCLWidgetTypeNameEvent = function(): string;
 
 const
+  LCLPlatformDirNames: array[TLCLPlatform] of string = (
+    'gtk',
+    'gtk2',
+    'gtk3',
+    'win32',
+    'wince',
+    'carbon',
+    'qt',
+    'qt5',
+    'qt6',
+    'fpgui',
+    'nogui',
+    'cocoa',
+    'customdrawn',
+    'mui'
+    );
+
   laz_major = 4;
   laz_minor = 99;
   laz_release = 0;
@@ -31,11 +69,29 @@ const
   laz_version = '4.99.0.0';
 
 var
-  OnLCLWidgetTypeName: TLCLWidgetTypeNameEvent;  // Set by LCL
+  OnLCLWidgetType: TLCLWidgetTypeEvent;  // Set by LCL
+  OnLCLWidgetTypeName: TLCLWidgetTypeNameEvent;
 
+function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
+function GetLCLWidgetType: TLCLPlatform;
 function GetLCLWidgetTypeName: string;
 
 implementation
+
+function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
+begin
+  for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
+    if CompareText(ADirName,LCLPlatformDirNames[Result])=0 then exit;
+  Result:=lpGtk2;
+end;
+
+function GetLCLWidgetType: TLCLPlatform;
+begin
+  if Assigned(OnLCLWidgetType) then
+    Result := OnLCLWidgetType()
+  else
+    Result := lpGtk2;
+end;
 
 function GetLCLWidgetTypeName: string;
 begin

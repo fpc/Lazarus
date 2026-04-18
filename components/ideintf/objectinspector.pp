@@ -42,7 +42,7 @@ uses
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   TreeFilterEdit, ListFilterEdit,
   // LazUtils
-  GraphType, LazConfigStorage, LazLoggerBase, LazStringUtils, LazUTF8,
+  GraphType, LazConfigStorage, LazLoggerBase, LazStringUtils, LazVersion, LazUTF8,
   // IdeIntf
   IDEImagesIntf, IDEHelpIntf, ObjInspStrConsts,
   PropEdits, PropEditUtils, ComponentTreeView, OIFavoriteProperties,

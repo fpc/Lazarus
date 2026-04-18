@@ -61,7 +61,7 @@ uses
   // fpc packages
   Math, Classes, SysUtils, TypInfo, Types, StrUtils, Contnrs, process, AVL_Tree, System.UITypes,
   // LCL
-  LCLProc, LCLType, LCLIntf, LMessages, LResources, HelpIntfs, InterfaceBase, LCLPlatformDef,
+  LCLProc, LCLType, LCLIntf, LMessages, LResources, HelpIntfs, InterfaceBase,
   ComCtrls, Forms, Buttons, Menus, Controls, Graphics, ExtCtrls, Dialogs, LclStrConsts, StdCtrls,
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
@@ -71,7 +71,7 @@ uses
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process,
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
-  GraphType, LazStringUtils, LazTracer,
+  GraphType, LazStringUtils, LazVersion, LazTracer,
   LCLExceptionStacktrace,
   {$IFDEF LCLWin} Win32Proc, {$ENDIF}
   {$IFDEF LCLCocoa} CocoaConfig, CocoaIDEFormConfig,{$ENDIF}

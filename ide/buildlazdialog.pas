@@ -52,7 +52,7 @@ uses
   Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs,
   LCLPlatformDef, CheckLst, Menus, ComCtrls, LCLType,
   // LazUtils
-  FPCAdds, FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazFileCache,
+  FPCAdds, FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazFileCache, LazVersion,
   // Codetools
   CodeToolManager, DefineTemplates,
   // LazControls

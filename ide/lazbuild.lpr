@@ -34,7 +34,7 @@ uses
   Interfaces, // this includes the NoGUI widgetset
   // LazUtils
   Masks, LConvEncoding, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  LazUTF8, Laz2_XMLCfg, LazStringUtils, FPCAdds,
+  LazUTF8, Laz2_XMLCfg, LazStringUtils, LazVersion, FPCAdds,
   // LCL
   LCLPlatformDef,
   // Codetools

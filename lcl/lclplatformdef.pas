@@ -16,50 +16,28 @@ unit LCLPlatformDef;
 interface
 
 uses
-  SysUtils;
+  SysUtils,
+  LazVersion;
 
 type
-  TLCLPlatform = (
-    lpGtk,
-    lpGtk2,
-    lpGtk3,
-    lpWin32,
-    lpWinCE,
-    lpCarbon,
-    lpQT,
-    lpQt5,
-    lpQt6,
-    lpfpGUI,
-    lpNoGUI,
-    lpCocoa,
-    lpCustomDrawn,
-    lpMUI
-    );
-
+  TLCLPlatform = LazVersion.TLCLPlatform;
   TLCLPlatforms = set of TLCLPlatform;
 
-  function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
-  function DirNameToDisplayName(const ADirName: string): String;
-  function DisplayNameToDirName(const ADisplayName: String): String;
-  function GetBuildLCLWidgetType: TLCLPlatform;
-
 const
-  LCLPlatformDirNames: array[TLCLPlatform] of string = (
-    'gtk',
-    'gtk2',
-    'gtk3',
-    'win32',
-    'wince',
-    'carbon',
-    'qt',
-    'qt5',
-    'qt6',
-    'fpgui',
-    'nogui',
-    'cocoa',
-    'customdrawn',
-    'mui'
-    );
+  lpGtk    = LazVersion.lpGtk;
+  lpGtk2   = LazVersion.lpGtk2;
+  lpGtk3   = LazVersion.lpGtk3;
+  lpWin32  = LazVersion.lpWin32;
+  lpWinCE  = LazVersion.lpWinCE;
+  lpCarbon = LazVersion.lpCarbon;
+  lpQT     = LazVersion.lpQT;
+  lpQt5    = LazVersion.lpQt5;
+  lpQt6    = LazVersion.lpQt6;
+  lpfpGUI  = LazVersion.lpfpGUI;
+  lpNoGUI  = LazVersion.lpNoGUI;
+  lpCocoa  = LazVersion.lpCocoa;
+  lpCustomDrawn = LazVersion.lpCustomDrawn;
+  lpMUI    = LazVersion.lpMUI;
 
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
     'gtk (deprecated)',
@@ -97,15 +75,12 @@ const
     lpGtk2;
     {$ENDIF}
 
+function DirNameToDisplayName(const ADirName: string): String;
+function DisplayNameToDirName(const ADisplayName: String): String;
+function GetBuildLCLWidgetType: TLCLPlatform;
+
 
 implementation
-
-function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
-begin
-  for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
-    if CompareText(ADirName,LCLPlatformDirNames[Result])=0 then exit;
-  Result:=lpGtk2;
-end;
 
 function DirNameToDisplayName(const ADirName: string): String;
 begin

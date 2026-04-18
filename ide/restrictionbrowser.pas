@@ -34,7 +34,7 @@ uses
   // LCL
   LCLPlatformDef, Forms, StdCtrls, ComCtrls, ExtCtrls, Buttons,
   // LazUtils
-  LazUTF8, LazLoggerBase,
+  LazUTF8, LazLoggerBase, LazVersion,
   // LazControls
   TreeFilterEdit,
   // IdeIntf

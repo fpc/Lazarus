@@ -29,9 +29,9 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazLoggerBase, LazFileUtils, LazConfigStorage, UTF8Process, LazUTF8,
+  FileUtil, LazLoggerBase, LazFileUtils, LazVersion, LazConfigStorage, UTF8Process, LazUTF8,
   // LCL
-  Controls, Forms, Dialogs, LazHelpIntf, HelpIntfs, LCLPlatformDef, InterfaceBase,
+  Controls, Forms, Dialogs, LazHelpIntf, HelpIntfs, InterfaceBase,
   // IdeIntf
   PropEdits, IDEDialogs, MacroIntf, LazIDEIntf, IDEExternToolIntf, HelpFPDoc,
   IDEHelpIntf,

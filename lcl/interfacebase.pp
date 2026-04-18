@@ -357,6 +357,7 @@ end;
 {$I intfbaselcl.inc}
 
 initialization
+  LazVersion.OnLCLWidgetType := @GetDefaultLCLWidgetType;
   LazVersion.OnLCLWidgetTypeName := @GetLCLWidgetTypeName;
 
 end.
