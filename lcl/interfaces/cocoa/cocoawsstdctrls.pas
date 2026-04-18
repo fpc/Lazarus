@@ -202,13 +202,15 @@ var
   cap: NSString;
   lGroupBoxContents: TCocoaCustomControl;
   ns: NSRect;
+  cb: TLCLCommonCallback;
   //str: string;
 begin
   box := NSView(TCocoaGroupBox.alloc).lclInitWithCreateParams(AParams);
   if Assigned(box) then
   begin
-    box.callback := TLCLCommonCallback.Create(box, AWinControl);
-    TLCLCommonCallback(box.callback.GetCallbackObject).BlockCocoaUpDown := true;
+    cb:= TLCLCommonCallback.Create(box, AWinControl);
+    cb.traits:= [TCocoaCbTrait.blockUpDown];
+    box.callback:= cb;
     cap := NSStringUTF8(AParams.Caption);
     box.setTitle(cap);
     cap.release;
@@ -216,7 +218,7 @@ begin
     // set a content view in order to be able to customize drawing for labels/color
     ns := NSMakeRect(AParams.X, AParams.Y, AParams.Width, AParams.Height);
     lGroupBoxContents := TCocoaCustomControl.alloc.initWithFrame(ns);
-    lGroupBoxContents.callback := box.callback; //TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
+    lGroupBoxContents.callback:= box.callback; //TLCLCustomControlCallback.Create(lGroupBoxContents, AWinControl);
     //str := Format('%X=%X', [PtrUInt(box.callback), PtrUInt(lGroupBoxContents.callback)]);
     lGroupBoxContents.autorelease;
     box.setContentView(lGroupBoxContents);

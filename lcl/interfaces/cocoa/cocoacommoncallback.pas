@@ -38,6 +38,13 @@ type
     lastMouseWithForce: Boolean;
   end;
 
+  {$scopedEnums on}
+  TCocoaCbTrait = (
+    blockUpDown
+  );
+
+  TLCLCommonCallbackTraits = set of TCocoaCbTrait;
+
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
@@ -81,7 +88,7 @@ type
       var state: TCocoaKeyEventState ); virtual;
   public
     Owner: NSObject;
-    BlockCocoaUpDown: Boolean;
+    traits: TLCLCommonCallbackTraits;
     BlockCocoaKeyBeep: Boolean;
     BlockCocoaMouseMove: Boolean;
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
@@ -901,7 +908,7 @@ begin
     end;
   end;
 
-  Result := Result or (BlockCocoaUpDown and not AOverrideBlock);
+  Result := Result or ( (TCocoaCbTrait.blockUpDown in self.traits) and NOT AOverrideBlock);
   mc := CocoaWidgetSetModalService.count;
   case lEventType of
     NSLeftMouseDown,
@@ -957,7 +964,7 @@ begin
 
   //debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name+);
   if not Result then
-  //Result := Result or (BlockCocoaUpDown and not AOverrideBlock);
+  //Result := Result or (TCocoaCbTrait.blockUpDown and not AOverrideBlock);
     case lEventType of
       NSLeftMouseDown,
       NSRightMouseDown,

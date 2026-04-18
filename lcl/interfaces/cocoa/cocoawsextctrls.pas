@@ -235,7 +235,7 @@ begin
   //ctrl.splitter.setDividerStyle(NSSplitViewDividerStylePaneSplitter);
 
   lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
-  lcl.BlockCocoaUpDown := true;
+  lcl.traits:= [TCocoaCbTrait.blockUpDown];
   ctrl.callback := lcl;
 
   Result := TLCLHandle(ctrl);

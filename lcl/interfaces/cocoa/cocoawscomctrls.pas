@@ -181,7 +181,7 @@ begin
   cb := TStatusBarCallback.Create(lResult, AWinControl);
   lResult.callback := cb;
   lResult.barcallback := cb;
-  cb.BlockCocoaUpDown := true;
+  cb.traits:= [TCocoaCbTrait.blockUpDown];
   //lResult.StatusBar := TStatusBar(AWinControl);
 
   //todo: get rid of Cells and replace them with views!

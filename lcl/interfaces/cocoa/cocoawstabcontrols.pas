@@ -132,6 +132,7 @@ var
   lControl: TCocoaTabPage;
   tv: TCocoaTabPageView;
   tabview: TCocoaTabControl;
+  cb: TLCLCommonCallback;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaWSCustomPage.CreateHandle]');
@@ -140,7 +141,6 @@ begin
   Result := TLCLHandle(lControl);
   if Result <> 0 then
   begin
-    //lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
     SetProperties(TCustomPage(AWinControl), lControl);
 
     // Set a special view for the page
@@ -155,8 +155,9 @@ begin
     tv.setBorderType(NSNoBorder);}
     tv.tabView := tabview;
     tv.tabPage := lControl;
-    tv.callback := TLCLCommonCallback.Create(tv, AWinControl);
-    TLCLCommonCallback(tv.callback.GetCallbackObject).BlockCocoaUpDown := true;
+    cb:= TLCLCommonCallback.Create(tv, AWinControl);
+    cb.traits:= [TCocoaCbTrait.blockUpDown];
+    tv.callback:= cb;
     lControl.callback := tv.callback;
     lControl.setView(tv);
     TCocoaViewUtil.updateFocusRing( tabview, AWinControl );
