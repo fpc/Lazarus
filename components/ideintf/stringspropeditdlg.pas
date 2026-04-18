@@ -18,9 +18,9 @@ interface
 uses
   SysUtils,
   // LCL
-  Forms, Controls, StdCtrls, ButtonPanel, Dialogs, LCLType, TextTools,
+  Forms, Controls, StdCtrls, ButtonPanel, Dialogs, LCLType,
   // LazUtils
-  LazUTF8,
+  LazStringUtils, LazUTF8,
   // IdeIntf
   ObjInspStrConsts, IDEWindowIntf, Classes;
 

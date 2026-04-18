@@ -41,9 +41,9 @@ interface
 uses
   SysUtils, AVL_Tree,
   // LCL
-  Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel, TextTools,
+  Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel,
   // LazUtils
-  LazLoggerBase,
+  LazStringUtils, LazLoggerBase,
   // Codetools
   BasicCodeTools,
   // SynEdit
@@ -515,8 +515,8 @@ begin
 end;
 
 initialization
-  TextTools.ShowSortSelectionDialogFunc:=@ShowSortSelectionDialogBase;
-  TextTools.SortTextFunc:=@SortText;
+  ShowSortSelectionDialogFunc:=@ShowSortSelectionDialogBase;
+  SortTextFunc:=@SortText;
 
 end.
 

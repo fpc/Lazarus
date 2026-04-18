@@ -16,23 +16,20 @@ unit TextTools;
 interface
 
 uses
-  Classes, SysUtils, System.UITypes,
+  Classes, SysUtils, LazStringUtils,
   // LCL
   LCLType;
 
-  { Sorting }
 type
-  TSortDirection = (sdAscending, sdDescending);
-  TSortDomain = (sdWords, sdLines, sdParagraphs);
-
-  TShowSortSelectionDialogFunc = function(const TheText: string;
-    Highlighter: TObject; var SortedText: string): TModalResult;
-  TSortTextFunc = function(const TheText: string; Direction: TSortDirection;
-    Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
-
-var
-  ShowSortSelectionDialogFunc: TShowSortSelectionDialogFunc;
-  SortTextFunc: TSortTextFunc;
+  // Moved and deprecated in Lazarus 4.99 in April 2026.
+  TSortDirection = LazStringUtils.TSortDirection
+                    deprecated 'Use definition from unit LazStringUtils instead';
+  TSortDomain = LazStringUtils.TSortDomain
+                    deprecated 'Use definition from unit LazStringUtils instead';
+  TShowSortSelectionDialogFunc = LazStringUtils.TShowSortSelectionDialogFunc
+                    deprecated 'Use definition from unit LazStringUtils instead';
+  TSortTextFunc = LazStringUtils.TSortTextFunc
+                    deprecated 'Use definition from unit LazStringUtils instead';
 
   { Regular expressions
 
@@ -62,7 +59,6 @@ var
       if REMatches('Lazarus','a(.)a','i') then
         s:=REVar(1); // this will be the 'z'
   }
-
 var
   REException: ExceptClass; // initialized by the IDE
 

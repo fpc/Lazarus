@@ -32,11 +32,11 @@ interface
 uses
   Classes, SysUtils, Contnrs,
   // LazUtils
-  LazUtilities, LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
+  LazUtilities, LazFileUtils, LazStringUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
   // CodeTools
   CodeToolsStructs, DefineTemplates,
   // LCL
-  TextTools, InterfaceBase, LCLPlatformDef,
+  InterfaceBase, LCLPlatformDef,
   // IdeConfig
   LazConf, IDEProcs, TransferMacros, RecentListProcs, EnvironmentOpts,
   IdeXmlConfigProcs, IdeConfStrConsts, LazarusIDEStrConsts;

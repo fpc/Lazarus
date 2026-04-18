@@ -16,7 +16,7 @@ unit LazStringUtils;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, System.UITypes,
   // LazUtils
   LazUTF8, LazLoggerBase, LazTracer;
 
@@ -33,6 +33,19 @@ type
     comtHtml        // <!-- -->
     );
   TCommentTypes = set of TCommentType;
+
+  // Sorting
+  TSortDirection = (sdAscending, sdDescending);
+  TSortDomain = (sdWords, sdLines, sdParagraphs);
+
+  TShowSortSelectionDialogFunc = function(const TheText: string;
+    Highlighter: TObject; var SortedText: string): TModalResult;
+  TSortTextFunc = function(const TheText: string; Direction: TSortDirection;
+    Domain: TSortDomain; CaseSensitive, IgnoreSpace: boolean): string;
+
+var
+  ShowSortSelectionDialogFunc: TShowSortSelectionDialogFunc;
+  SortTextFunc: TSortTextFunc;
 
 const
   EndOfLine: shortstring = LineEnding;
