@@ -5921,20 +5921,12 @@ msgstr "إبن"
 msgid "Build Date"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "Build IDE with packages. Optional compiler options will be passed after the options from used build mode and can be specified here or with the --opt option."
 msgstr ""
 
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
-msgstr ""
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
@@ -6776,10 +6768,6 @@ msgstr ""
 #| msgid "Clean all"
 msgid "&Clean all"
 msgstr "نضّف الكلّ"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr ""
 
 #: lazarusidestrconsts.liscleanonlyonce
 msgid "Switch to \"automatic\" mode after building"
@@ -11709,11 +11697,6 @@ msgstr ""
 msgid "Edit list of defines which can be used by any profile"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -11797,11 +11780,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
@@ -12026,10 +12004,6 @@ msgstr ""
 #: lazarusidestrconsts.lismakecurrent
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
-msgstr ""
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
 msgstr ""
 
 #: lazarusidestrconsts.lismakeresourcestring
@@ -17789,11 +17763,6 @@ msgstr ""
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr ""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr ""
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr ""
@@ -18086,11 +18055,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
-msgstr ""
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode

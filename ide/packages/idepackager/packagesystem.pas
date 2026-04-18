@@ -115,7 +115,6 @@ type
   TOnCheckInterPkgFiles = function(IDEObject: TObject; PkgList: TFPList;
     out FilesChanged: boolean): boolean of object;
   TSrcEditFileIsModifiedEvent = function(const SrcFilename: string): boolean of object;
-  TMainTitleChangeEvent = function(const ATitle: string): boolean of object;
 
   { TLazPkgGraphBuildItem }
 
@@ -224,7 +223,6 @@ type
     FOnSrcEditFileIsModified: TSrcEditFileIsModifiedEvent;
     FOnTranslatePackage: TPkgTranslateEvent;
     FOnUninstallPackage: TPkgUninstallEvent;
-    FOnMainTitleChange: TMainTitleChangeEvent;
     //
     FQuietRegistration: boolean;
     FRegistrationFile: TPkgFile;
@@ -542,8 +540,6 @@ type
                                                    write FOnTranslatePackage;
     property OnUninstallPackage: TPkgUninstallEvent read FOnUninstallPackage
                                                    write FOnUninstallPackage;
-    property OnMainTitleChange: TMainTitleChangeEvent read FOnMainTitleChange
-                                                     write FOnMainTitleChange;
     // set during calling Register procedures
     property RegistrationFile: TPkgFile read FRegistrationFile;
     property RegistrationPackage: TLazPackage read FRegistrationPackage

@@ -18,6 +18,14 @@ msgstr "ຖືກຍົກເລີກ"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr ""
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr "ສ້າງ IDE"
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr "ການສ້າງ Lazarus ລົ້ມເຫຼວ"
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -35,6 +43,10 @@ msgstr ""
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr ""
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "ລ້າງຊອດໂຄດ Lazarus"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -313,6 +325,10 @@ msgstr ""
 msgid "Debug IDE"
 msgstr "ດີບັກ IDE"
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "ເກີດຂໍ້ຜິດພາດໃນການຂຽນໄຟລ໌"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr "IDE ປົກກະຕິ"
@@ -320,6 +336,11 @@ msgstr "IDE ປົກກະຕິ"
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "IDE ທີ່ປັບແຕ່ງແລ້ວ"
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format
+msgid "Unable to write file \"%s\":%s"
+msgstr "ບໍ່ສາມາດຂຽນໄຟລ໌ \"%s\":%s"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
@@ -336,6 +357,10 @@ msgstr ""
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr ""
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "ບໍ່ພົບ Make"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -542,10 +567,20 @@ msgstr ""
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr ""
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "ບໍ່ມີ fpc.exe ໃນໄດເຣັກທໍຣີຂອງ %s. ໂດຍທົ່ວໄປ make executable ຈະຖືກຕິດຕັ້ງພ້ອມກັບ FPC compiler."
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgstr "ຊຸດຕົວເລືອກນີ້ໃນການ build Lazarus ແມ່ນບໍ່ຮອງຮັບໂດຍການຕິດຕັ້ງນີ້.%sໄດເຣັກທໍຣີ \"%s\" ບໍ່ສາມາດຂຽນໄດ້.%sເບິ່ງເວັບໄຊ Lazarus ສຳລັບວິທີອື່ນໃນການຕິດຕັ້ງ Lazarus."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

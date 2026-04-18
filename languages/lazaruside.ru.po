@@ -5906,10 +5906,6 @@ msgstr "Сборка"
 msgid "Build Date"
 msgstr "Дата сборки"
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr "Сборка IDE"
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "Build IDE with packages. Optional compiler options will be passed after the options from used build mode and can be specified here or with the --opt option."
 msgstr "Собрать IDE с пакетами. Необязательные дополнительные параметры компиляции будут переданы после параметров используемого режима сборки и могут быть указаны здесь либо в --opt."
@@ -5917,10 +5913,6 @@ msgstr "Собрать IDE с пакетами. Необязательные д�
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
 msgstr "Сборка"
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
-msgstr "Сборка Lazarus не удалась"
 
 #: lazarusidestrconsts.lisbuildmode
 #, object-pascal-format
@@ -6757,10 +6749,6 @@ msgstr "Простой синтаксис (например, * вместо .*)"
 #: lazarusidestrconsts.liscleanall
 msgid "&Clean all"
 msgstr "Очищать &всё"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr "Очистка каталога исходного кода Lazarus"
 
 #: lazarusidestrconsts.liscleanonlyonce
 msgid "Switch to \"automatic\" mode after building"
@@ -11710,11 +11698,6 @@ msgstr "Редактировать определения"
 msgid "Edit list of defines which can be used by any profile"
 msgstr "Редактировать список определений для использования любым профилем"
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr "Ошибка записи файла"
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -11797,11 +11780,6 @@ msgstr "Каталог назначения:"
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
 msgstr "Целевая ОС:"
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
-msgstr "Невозможно записать файл \"%s\":%s"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -12035,10 +12013,6 @@ msgstr "Обнаружены значительные изменения"
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Текущий"
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
-msgstr "Не найден Make"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -17819,11 +17793,6 @@ msgstr "Пакет \"%s\" используется в"
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "Путь к \"Make\" некорректен: \"%s\""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "Программа \"make\" не найдена.%sОна требуется для сборки Lazarus."
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Параметры компилятора для проекта не соответствуют директивам в главном файле исходного кода. В новом модуле будут использованы режим синтаксиса и тип строк в соответствии с параметрами проекта:"
@@ -18117,11 +18086,6 @@ msgstr "Этот проект не имеет главного файла исх
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
 msgstr "Этот проект имеет только режим сборки по умолчанию."
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "Этот набор параметров сборки Lazarus не поддерживается установленным экземпляром.%sКаталог \"%s\" недоступен для записи.%sДругие методы установки смотрите на сайте Lazarus."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 #, object-pascal-format

@@ -34,7 +34,7 @@ uses
   Interfaces, // this includes the NoGUI widgetset
   // LazUtils
   Masks, LConvEncoding, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  LazUTF8, Laz2_XMLCfg, LazStringUtils, LazVersion, FPCAdds,
+  LazUTF8, Laz2_XMLCfg, LazStringUtils, LazVersion, FPCAdds, ColorTTY,
   // LCL
   LCLPlatformDef,
   // Codetools
@@ -45,14 +45,13 @@ uses
   // IdeConfig
   LazConf, IDECmdLine, TransferMacros, EnvironmentOpts, ParsedCompilerOpts,
   CompilerOptions, ModeMatrixOpts, BaseBuildManager, ApplicationBundle,
-  IDETranslations, ExtToolsConsole, InitialSetupProc, MiscOptions,
+  IDETranslations, ExtToolsConsole, InitialSetupProc, MiscOptions, IdeBuilder,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageLinks, PackageSystem,
   // IdeProject
   Project,
   // IDE
-  LazarusIDEStrConsts, BuildLazDialog, BuildManager,
-  InterPkgConflictFiles, ColorTTY;
+  LazarusIDEStrConsts, BuildManager, InterPkgConflictFiles;
 
 type
   TPkgAction = (

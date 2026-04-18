@@ -73,11 +73,13 @@ uses
   // IDEUtils
   InputHistory,
   // IdeConfig
-  LazConf,
+  LazConf, IdeBuilder,
+  // IdePackager
+  PackageDefs,
   // IdeProject
   Project,
   // IDE
-  LazarusIDEStrConsts, BuildLazDialog, ProgressDlg, IDEDefs, EditableProject, PackageDefs;
+  LazarusIDEStrConsts, ProgressDlg, IDEDefs, EditableProject;
 
 type
   // The IDE is at anytime in a specific state:

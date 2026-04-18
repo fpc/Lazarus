@@ -19,6 +19,14 @@ msgstr "Abortado"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Ya existe el archivo \"%s\".%s¿Reemplazarlo?"
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr "Construir IDE"
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr "Ha fallado la construcción de Lazarus"
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -36,6 +44,10 @@ msgstr ""
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr "Error"
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "Limpiar Código Fuente de Lazarus"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -316,6 +328,10 @@ msgstr "Nombre de idioma de Lazarus (por ejemplo: inglés, holandés)"
 msgid "Debug IDE"
 msgstr "IDE Depurador"
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "Error escribiendo archivo"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr "IDE Normal"
@@ -323,6 +339,11 @@ msgstr "IDE Normal"
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "IDE Optimizado"
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format
+msgid "Unable to write file \"%s\":%s"
+msgstr "No se ha podido escribir el archivo \"%s\":%s"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
@@ -341,6 +362,10 @@ msgstr "Tipo de Widget LCL"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Hacer ejecutable"
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "Make no encontrado"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -547,10 +572,20 @@ msgstr "El directorio \"%s\" no es escribible."
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "El archivo \"%s\" es un enlace simbólico.%s¿Abrir \"%s\" en su lugar?"
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "No hay fpc.exe en el directorio de %s. Por lo general, el ejecutable make se instala junto con el compilador FPC."
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgstr "Este conjunto de opciones para construir Lazarus no es compatible con esta instalación.%sEl directorio \"%s\" no tiene permisos de escritura.%sVisite el sitio web de Lazarus para conocer otras maneras de instalar Lazarus."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

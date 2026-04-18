@@ -18,6 +18,14 @@ msgstr "Перервано"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Файл \"%s\" вже існує.%s Замінити?"
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr "Зібрати ІСР"
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr "Не вдалось зібрати Lazarus"
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -35,6 +43,10 @@ msgstr ""
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr "Помилка"
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "Очистити коди Lazarus"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -315,6 +327,10 @@ msgstr "Назва мови для Lazarus (напр. english, deutsch, ukrainai
 msgid "Debug IDE"
 msgstr "Зневадження ІСР"
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "Помилка запису файлу"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr "Звичайне ІСР"
@@ -322,6 +338,11 @@ msgstr "Звичайне ІСР"
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "Оптимізований ІСР"
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format
+msgid "Unable to write file \"%s\":%s"
+msgstr "Неможливо записати файл \"%s\":%s"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
@@ -340,6 +361,10 @@ msgstr "Тип LCL widget"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Створити виконуваний"
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "Make не знайдено"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -546,10 +571,20 @@ msgstr "Тека \"%s\" недоступна для запису."
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Файл \"%s\" є символьним посиланням.%sВідкрити замість нього \"%s\"?"
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "У теці з %s немає fpc.exe. Зазвичай виконуваний файл make встановлюється разом з компілятором FPC."
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgstr "Цей набір параметрів для збирання Lazarus не підтримується встановленням.%sТека \"%s\" недоступна для запису.%sДивіться сайт Lazarus для інших способів встановлення."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

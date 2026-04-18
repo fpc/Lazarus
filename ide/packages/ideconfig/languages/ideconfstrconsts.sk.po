@@ -18,6 +18,14 @@ msgstr "Prerušená"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Súbor \"%s\" už existuje.%sNahradiť ho?"
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr "Vybudovať IDE"
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr ""
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -35,6 +43,10 @@ msgstr ""
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr "Chyba"
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "Vyčistiť zdrojové kódy Lazarus"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -317,6 +329,10 @@ msgstr "Meno jazyka Lazarus (napr. english, slovak)"
 msgid "Debug IDE"
 msgstr ""
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "Chyba zapisovania súboru"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr "Normálne IDE"
@@ -324,6 +340,11 @@ msgstr "Normálne IDE"
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "Optimalizované IDE"
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format
+msgid "Unable to write file \"%s\":%s"
+msgstr "Nemožno zapísať súbor \"%s\":%s"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
@@ -340,6 +361,10 @@ msgstr "Typ LCL &Widgetu"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Urobiť spustiteľné"
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "Make nenájdený"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -548,9 +573,19 @@ msgstr ""
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Súbor %s%s%s je symbolický odkaz. %s%sOtvoriť %s%s%s namiesto neho?"
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr ""
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter

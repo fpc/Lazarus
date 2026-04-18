@@ -69,7 +69,8 @@ uses
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs, SearchPathProcs,
   TransferMacros, IDECmdLine, IDEProcs, DialogProcs, BaseBuildManager,
-  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts, IDETranslations, MiscOptions,
+  ParsedCompilerOpts, CompilerOptions, IdeConfStrConsts, IDETranslations,
+  MiscOptions, IdeBuilder,
   // IdePackager
   IdePackagerStrConsts, BasePkgManager, PackageDefs, EditablePackage,
   PackageLinks, PackageSystem,
@@ -149,7 +150,6 @@ type
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure PackageGraphFindFPCUnit(const AUnitName, Directory: string;
                                       var Filename: string);
-    function MainTitleChanged(const ATitle: string): boolean;
     // menu
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
@@ -1094,11 +1094,6 @@ begin
     RaiseGDBException(Directory);
   //DebugLn('TPkgManager.PackageGraphFindFPCUnit "',Directory,'"');
   Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitLinks(Directory, AUnitName);
-end;
-
-function TPkgManager.MainTitleChanged(const ATitle: string): boolean;
-begin
-  LazarusIDE.MainBarSubTitle:=ATitle;
 end;
 
 function TPkgManager.PackageGraphExplorerUninstallPackage(Sender: TObject;
@@ -2957,7 +2952,6 @@ begin
   PackageGraph.OnTranslatePackage:=@DoTranslatePackage;
   PackageGraph.OnUninstallPackage:=@DoUninstallPackage;
   PackageGraph.OnSrcEditFileIsModified:=@PackageGraphSrcEditFileIsModified;
-  PackageGraph.OnMainTitleChange:=@MainTitleChanged;
 
   // package editors
   PackageEditors:=TPackageEditors.Create;

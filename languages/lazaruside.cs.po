@@ -6031,10 +6031,6 @@ msgstr "Sestavit"
 msgid "Build Date"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr "Sestavit IDE"
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 #, fuzzy
 #| msgid "build IDE with packages"
@@ -6044,10 +6040,6 @@ msgstr "sestavit IDE s balíčky"
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
 msgstr "Sestavování"
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
-msgstr "Sestavení Lazarusu selhalo"
 
 #: lazarusidestrconsts.lisbuildmode
 #, object-pascal-format
@@ -6889,10 +6881,6 @@ msgstr "Jednoduchá syntaxe (např. * namísto .*)"
 #| msgid "Clean all"
 msgid "&Clean all"
 msgstr "Vyčistit vše"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr "Vyčistit zdrojové soubory Lazarusu"
 
 #: lazarusidestrconsts.liscleanonlyonce
 #, fuzzy
@@ -11913,11 +11901,6 @@ msgstr "Upravit definice"
 msgid "Edit list of defines which can be used by any profile"
 msgstr "Upravit seznam definic použitelných libovolným profilem"
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr "Chyba zapisování souboru"
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -12006,11 +11989,6 @@ msgstr "Cílový adresář:"
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
 msgstr "Cílový OS:"
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
-msgstr "Nelze zapisovat do souboru \"%s\":%s"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -12257,10 +12235,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Aktuální"
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
-msgstr "Nenalezen Make"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -18098,11 +18072,6 @@ msgstr ""
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "Cesta \"make\" není správná: \"%s\""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "Program \"make\" nenalezen.%sTento nástroj je nutný k sestavení Lazarusu."
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Volby překladače projektu a příkazy v hlavním zdroji se liší. Nové jednotky použijí mód a řetězcový typ z voleb projektu:"
@@ -18398,11 +18367,6 @@ msgstr "Tento projekt nemá hlavní zdrojový soubor"
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
 msgstr "Tento projekt má pouze výchozí sestavovací mód."
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "Tato kombinace voleb sestavení Lazarusu není podporována touto instalací.%sAdresář \"%s\" není zapisovatelný.%sViz webové stránky Lazarusu pro jiné způsoby instalace Lazarusu."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 #, object-pascal-format

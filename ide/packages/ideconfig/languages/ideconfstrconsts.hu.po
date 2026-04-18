@@ -18,6 +18,14 @@ msgstr "Megszakítva"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "A(z) \"%s\" fájl már létezik.%sLecseréli?"
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr "IDE építése"
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr "A Lazarus építése nem sikerült"
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -35,6 +43,10 @@ msgstr ""
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr "Hiba"
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "Lazarus forráskód tisztítása"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -315,6 +327,10 @@ msgstr "Lazarus nyelv neve (pl. english, deutsch)"
 msgid "Debug IDE"
 msgstr "Hibakereső IDE"
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "Hiba a fájl írása közben"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr "Normál IDE"
@@ -322,6 +338,11 @@ msgstr "Normál IDE"
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "Optimalizált IDE"
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format
+msgid "Unable to write file \"%s\":%s"
+msgstr "A(z) \"%s\" fájl nem írható:%s"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
@@ -340,6 +361,10 @@ msgstr "LCL vezérlőkészlet típusa"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Futtatható fájl készítése"
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "Make nem található"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -546,10 +571,20 @@ msgstr "A(z) \"%s\" könyvtár nem írható."
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "A(z) \"%s\" fájl egy szimbolikus hivatkozás.%sMegnyitja a(z) \"%s\"-t helyette?"
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "Nincs fpc.exe a(z) %s könyvtárában. Általában a make program együtt van telepítve az FPC fordítóval."
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgstr "A Lazarus építésének ezen beállításai nincsenek támogatva e telepítésben.%sA(z) \"%s\" könyvtár nem írható.%sLásd a telepítés egyéb módjait a Lazarus weblapján."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

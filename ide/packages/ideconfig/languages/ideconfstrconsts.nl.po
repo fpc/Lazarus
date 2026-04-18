@@ -19,6 +19,14 @@ msgstr ""
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Een bestand \"%s\" bestaat al.%sOverschrijven?"
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr ""
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr ""
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -36,6 +44,10 @@ msgstr ""
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr "Fout"
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "Maak Lazarus-broncode schoon"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -320,12 +332,21 @@ msgstr "Lazarus taal naam (Engels, Duits, etc.)"
 msgid "Debug IDE"
 msgstr ""
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "Fout bij schrijven bestand"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr ""
 
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
+msgstr ""
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format
+msgid "Unable to write file \"%s\":%s"
 msgstr ""
 
 #: ideconfstrconsts.lislazcleanupbuildall
@@ -345,6 +366,10 @@ msgstr "LCL Widget Type"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Maak Executable"
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "make niet gevonden"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -554,9 +579,19 @@ msgstr ""
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr ""
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr ""
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr ""
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter

@@ -5991,10 +5991,6 @@ msgstr "Építés"
 msgid "Build Date"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr "IDE építése"
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 #, fuzzy
 #| msgid "build IDE with packages"
@@ -6004,10 +6000,6 @@ msgstr "IDE építése csomagokkal"
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
 msgstr "Építés"
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
-msgstr "A Lazarus építése nem sikerült"
 
 #: lazarusidestrconsts.lisbuildmode
 #, object-pascal-format
@@ -6849,10 +6841,6 @@ msgstr "Egyszerű szintaxis (pl. .* helyett *)"
 #| msgid "Clean all"
 msgid "&Clean all"
 msgstr "Minden tisztítása"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr "Lazarus forráskód tisztítása"
 
 #: lazarusidestrconsts.liscleanonlyonce
 #, fuzzy
@@ -11881,11 +11869,6 @@ msgstr "Definíciók szerkesztése"
 msgid "Edit list of defines which can be used by any profile"
 msgstr "Az összes profil által használható definíciók szerkesztése"
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr "Hiba a fájl írása közben"
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -11974,11 +11957,6 @@ msgstr "Célkönyvtár:"
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
 msgstr "Cél OS:"
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
-msgstr "A(z) \"%s\" fájl nem írható:%s"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -12215,10 +12193,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Aktuális"
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
-msgstr "Make nem található"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -18025,11 +17999,6 @@ msgstr ""
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "A \"make\" útvonala helytelen: \"%s\""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "A \"make\" program nem található.%sEz az eszköz szükséges a Lazarus építéséhez."
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "A projekt fordítóbeállításai és a direktívák a fő forrásban eltérnek. Az új unit-hoz a projekt módbeállítása és karakterlánctípusa lesz használva:"
@@ -18325,11 +18294,6 @@ msgstr "Ez a projekt nem tartalmaz fő forrásfájlt "
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
 msgstr "Ez a projekt csak az alapértelmezett építési módot tartalmazza."
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "A Lazarus építésének ezen beállításai nincsenek támogatva e telepítésben.%sA(z) \"%s\" könyvtár nem írható.%sLásd a telepítés egyéb módjait a Lazarus weblapján."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 #, object-pascal-format

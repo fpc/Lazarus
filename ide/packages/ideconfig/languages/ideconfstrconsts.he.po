@@ -19,6 +19,14 @@ msgstr ""
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "הקובץ %s%s%s כבר קיים.%sהאם להחליפו?"
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr ""
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr "בניית לזארוס נכשלה"
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -36,6 +44,10 @@ msgstr ""
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr "שגיאה"
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "נקה את קוד המקור של לזרוס"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -321,6 +333,10 @@ msgstr "שם השפה של לזרוס (למשל english, deutsch, hebrew)"
 msgid "Debug IDE"
 msgstr "נפה שגיאות IDE"
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "שגיאה בכתיבת קובץ"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr ""
@@ -328,6 +344,11 @@ msgstr ""
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "במצב מיטבי  IDE"
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format, fuzzy, badformat
+msgid "Unable to write file \"%s\":%s"
+msgstr "לא יכול לכתוב את הקובץ s%:%s"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
@@ -346,6 +367,10 @@ msgstr "עצם מסוג LCL"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "קובץ ריצה של Make"
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "קובץ Make לא נמצא"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -559,10 +584,21 @@ msgstr "התיקייה %s%s%s%s אינה מורשה לכתיבה."
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "הקובץ %s%s%s הוא קישור סימבולי. לפתוח את %s%s%s במקומו?"
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr ""
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format, fuzzy
+#| msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgstr "סט זה של אפשרויות הבניה של לזארוס לא נתמך ע\"י התקנה זאת. לא ניתן לכתוב לתיקייה %s%s%s. ראה באתר לזארוס על דרכים אחרות להתקין את לזארוס."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

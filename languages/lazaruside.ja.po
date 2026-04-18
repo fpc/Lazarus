@@ -6094,10 +6094,6 @@ msgstr "構築"
 msgid "Build Date"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr "IDEを構築"
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 #, fuzzy
 #| msgid "build IDE with packages"
@@ -6107,10 +6103,6 @@ msgstr "パッケージ付きのIDEを構築"
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
 msgstr "構築中"
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
-msgstr "Lazarusの構築の失敗"
 
 #: lazarusidestrconsts.lisbuildmode
 #, object-pascal-format
@@ -6953,10 +6945,6 @@ msgstr "簡単な表記法 (例 * instead of .*)"
 #| msgid "Clean all"
 msgid "&Clean all"
 msgstr "すべて掃除"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr "Lazarusソースを掃除"
 
 #: lazarusidestrconsts.liscleanonlyonce
 #, fuzzy
@@ -11988,11 +11976,6 @@ msgstr "Defineを編集"
 msgid "Edit list of defines which can be used by any profile"
 msgstr "どのプロファイルでも使えるdefineリストを編集"
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr "ファイルへの書き込み中にエラー"
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -12081,11 +12064,6 @@ msgstr "対象ディレクトリ"
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
 msgstr "対象 OS："
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
-msgstr "ファイル\"%s\":%sに書き込めません。"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -12334,10 +12312,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "現在"
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
-msgstr "Makeが見つかりません"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -18222,11 +18196,6 @@ msgstr ""
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "\"make\"のパスが正しくありません：\"%s\""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "プログラム \"make\" が見つかりませんでした。%sこのツールは Lazarus を構築するのに必要です。"
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "プロジェクトのコンパイラオプションとメインソース内の指令は異なります。新しいユニットについては、プロジェクトオプションのモードと文字列型が用いられます："
@@ -18524,11 +18493,6 @@ msgstr "このプロジェクトにはメインソースファイルがありま
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
 msgstr "このプロジェクトは既定の構築モードのみを持っています"
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "このLazarus構築オプションセットは、このインストール過程においてサポートされていません。%sフォルダ \"%s\" は書き込み可能ではありません。%s他の方法でLazarusをインストールするために、Lazarus ウェブサイトを見てください。"
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 #, object-pascal-format

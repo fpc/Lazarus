@@ -88,6 +88,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="FppkgHelper"/>
       </Item>
       <Item>
+        <Filename Value="idebuilder.pas"/>
+        <UnitName Value="IdeBuilder"/>
+      </Item>
+      <Item>
         <Filename Value="idecmdline.pas"/>
         <UnitName Value="IDECmdLine"/>
       </Item>

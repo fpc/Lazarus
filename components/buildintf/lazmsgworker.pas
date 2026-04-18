@@ -19,6 +19,7 @@ type
   TShowMessageEvent = function(aUrgency: TMessageLineUrgency; aMsg: string;
               aSrcFilename: string=''; aLineNumber: integer=0; aColumn: integer=0;
               aViewCaption: string=''): TMessageLine of object;
+  TMainTitleChangeEvent = function(const ATitle: string): boolean of object;
 
 var  // set by the IDE
   LazMessageWorker: TLazMessageWorker = nil;
@@ -27,6 +28,8 @@ var  // set by the IDE
   // In the IDE this is the same as IDEMessagesWindow.AddCustomMessage.
   // A cmd line program can also set a handler for printing messages.
   OnShowMessage: TShowMessageEvent;
+  // Typically the IDE's main title.
+  OnMainTitleChange: TMainTitleChangeEvent;
 
 function LazMessageDialogAb(const aCaption, aMsg: string;
                    DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;

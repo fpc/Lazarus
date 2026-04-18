@@ -5917,10 +5917,6 @@ msgstr "Neu kompilieren"
 msgid "Build Date"
 msgstr "Erstelldatum"
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr "IDE erstellen"
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "Build IDE with packages. Optional compiler options will be passed after the options from used build mode and can be specified here or with the --opt option."
 msgstr "IDE mit allen Packages kompilieren. Optionale Compiler-Optionen werden nach den Optionen des verwendeten Build-Modus übergeben und können hier oder mit der Option --opt angegeben werden."
@@ -5928,10 +5924,6 @@ msgstr "IDE mit allen Packages kompilieren. Optionale Compiler-Optionen werden n
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
 msgstr ""
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
-msgstr "Neukompilieren von Lazarus fehlgeschlagen"
 
 #: lazarusidestrconsts.lisbuildmode
 #, object-pascal-format
@@ -6768,10 +6760,6 @@ msgstr "Einfache Syntax (z.B. * statt .*)"
 #: lazarusidestrconsts.liscleanall
 msgid "&Clean all"
 msgstr "Alle aufräumen"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr "Lazarus-Quelltext aufräumen"
 
 #: lazarusidestrconsts.liscleanonlyonce
 msgid "Switch to \"automatic\" mode after building"
@@ -11702,11 +11690,6 @@ msgstr "Bearbeite Definitionen"
 msgid "Edit list of defines which can be used by any profile"
 msgstr "Bearbeiten der Liste von Definitionen, die von jedem Profil verwendet werden können"
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr "Fehler beim Schreiben der Datei"
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -11789,11 +11772,6 @@ msgstr "Zielverzeichnis:"
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
 msgstr "Zielsystem:"
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
-msgstr "Kann Datei \"%s\" nicht schreiben: %s"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -12027,10 +12005,6 @@ msgstr "Größere Änderungen festgestellt"
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Aktuell"
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
-msgstr "Make nicht gefunden"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -17780,11 +17754,6 @@ msgstr "Das Package \"%s\" wird verwendet von"
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "Der Pfad von \"make\" ist nicht korrekt: \"%s\""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "Das Programm \"make\" wurde nicht gefunden.%sEs wird für das Kompilieren von Lazarus benötigt."
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Die Projekt-Compilereinstellungen unterscheiden sich von den Direktiven in der Hauptquelldatei. Für die neue Unit werden der Modus und der String-Typ der Projekteinstellungen verwendet:"
@@ -18078,11 +18047,6 @@ msgstr "Das Projekt hat keine Haupt-Quelldatei"
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
 msgstr "Dieses Projekt besitzt nur den Vorgabe-Erstellmodus."
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "Diese Zusammenstellung von Optionen für das Kompilieren von Lazarus wird von dieser Installation nicht unterstützt.%sDas Verzeichnis \"%s\" ist nicht beschreibbar.%sSuchen Sie auf der Lazarus-Webseite nach anderen Möglichkeiten, Lazarus zu installieren."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 #, object-pascal-format

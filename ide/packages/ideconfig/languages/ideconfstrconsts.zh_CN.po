@@ -21,6 +21,14 @@ msgstr "中止"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "文件 \"%s\" 已存在%s是否替换？"
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr "构建 IDE"
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr "构建 Lazarus 失败"
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -38,6 +46,10 @@ msgstr "活动构建模式的标题"
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr "错误"
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "清理 Lazarus 源代码"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -318,6 +330,10 @@ msgstr "Lazarus 语言名称 (例如 英语、德语)"
 msgid "Debug IDE"
 msgstr "调试的 IDE"
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "写文件错误"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr "常规的 IDE"
@@ -325,6 +341,11 @@ msgstr "常规的 IDE"
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "优化的 IDE"
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format
+msgid "Unable to write file \"%s\":%s"
+msgstr "不能写入文件\"%s\":%s"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
@@ -341,6 +362,10 @@ msgstr "LCL &控件类型"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "生成可执行的"
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "Make未找到"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -547,10 +572,20 @@ msgstr "目录 \"%s\" 不可写。"
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "文件 \"%s\" 是一个符号链接。%s要打开 \"%s\" 吗？"
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "在%s目录中没有fpc.exe.make可执行文件通常与FPC编译器安装在一起."
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgstr "此安装不支持用于构建Lazarus的此组选项。%s目录“%s”不可写。%s请参阅Lazarus网站以了解其他安装Lazarus的方法。"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

@@ -19,6 +19,14 @@ msgstr "中止"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "ファイル \"%s\" は既に存在します。%s置き換えますか？"
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr "IDEを構築"
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr "Lazarusの構築の失敗"
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -36,6 +44,10 @@ msgstr ""
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr "エラー"
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "Lazarusソースを掃除"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -316,6 +328,10 @@ msgstr "Lazarus言語名(例: english, deutsch)"
 msgid "Debug IDE"
 msgstr "IDEをデバッグ"
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "ファイルへの書き込み中にエラー"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr "通常のIDE"
@@ -323,6 +339,11 @@ msgstr "通常のIDE"
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "最適化されたIDE"
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format
+msgid "Unable to write file \"%s\":%s"
+msgstr "ファイル\"%s\":%sに書き込めません。"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
@@ -341,6 +362,10 @@ msgstr "LCLウィジェットタイプ"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "実行ファイルを作成"
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "Makeが見つかりません"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -547,10 +572,20 @@ msgstr "フォルダ \"%s\" は、書き込み可能ではありません。"
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "ファイル\"%s\"はシンボリックリンクです。%s \"%s\"を代わりに開きますか？ "
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "%sのディレクトリにfpc.exeがありません。ふつうmake実行ファイルはFPCコンパイラと一緒にインストールされます。"
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgstr "このLazarus構築オプションセットは、このインストール過程においてサポートされていません。%sフォルダ \"%s\" は書き込み可能ではありません。%s他の方法でLazarusをインストールするために、Lazarus ウェブサイトを見てください。"
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

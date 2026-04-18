@@ -5924,10 +5924,6 @@ msgstr "Derle"
 msgid "Build Date"
 msgstr "Yapı Tarihi"
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr "IDE oluştur"
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 #, fuzzy
 #| msgid "Build IDE with packages."
@@ -5937,10 +5933,6 @@ msgstr "Paketlerle IDE oluşturun."
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
 msgstr "İnşa ediliyor"
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
-msgstr "Lazarus'u derlemek başarısız oldu"
 
 #: lazarusidestrconsts.lisbuildmode
 #, object-pascal-format
@@ -6782,10 +6774,6 @@ msgstr "Basit Sözdizimi (ör. *. * Yerine)"
 #| msgid "Clean all"
 msgid "&Clean all"
 msgstr "Hepsini temizle"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr "Lazarus Kaynağını Temizle"
 
 #: lazarusidestrconsts.liscleanonlyonce
 #, fuzzy
@@ -11757,11 +11745,6 @@ msgstr "Tanımları Düzenle"
 msgid "Edit list of defines which can be used by any profile"
 msgstr "Herhangi bir profil tarafından kullanılabilecek tanımların listesini düzenleyin"
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr "Dosya yazarken hata oluştu"
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -11848,11 +11831,6 @@ msgstr "Hedef klasör:"
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
 msgstr "Hedef İşletim Sistemi:"
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
-msgstr "Dosya \"%s\" yazamadı: %s"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgid "Update revision.inc"
@@ -12086,10 +12064,6 @@ msgstr "Büyük değişiklikler tespit edildi"
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Geçerli"
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
-msgstr "Make Bulunamadı"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -17827,11 +17801,6 @@ msgstr "\"%s\" paketi tarafından kullanılıyor"
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "\"make\" yolu doğru değil: \"%s\""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "\"make\" programı bulunamadı.%sBu araç Lazarus'u oluşturmak için gereklidir."
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Proje derleyici seçenekleri ve ana kaynaktaki direktifler farklıdır. Yeni birim için proje seçeneklerinin modu ve string tipi kullanılır:"
@@ -18125,11 +18094,6 @@ msgstr "Bu projenin ana kaynak dosyası yok"
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
 msgstr "Bu proje yalnızca varsayılan derleme moduna sahiptir."
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "Lazarus'u oluşturmak için bu seçenekler kümesi bu kurulum tarafından desteklenmiyor.%s\"%s\" dizini yazılabilir değil.%sLazarus'u kurmanın diğer yolları için Lazarus web sitesine bakın."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 #, object-pascal-format

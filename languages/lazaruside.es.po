@@ -6110,10 +6110,6 @@ msgstr "Construir"
 msgid "Build Date"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr "Construir IDE"
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 #, fuzzy
 #| msgid "build IDE with packages"
@@ -6123,10 +6119,6 @@ msgstr "construir IDE con paquetes"
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
 msgstr "Construyendo"
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
-msgstr "Ha fallado la construcción de Lazarus"
 
 #: lazarusidestrconsts.lisbuildmode
 #, object-pascal-format
@@ -6967,10 +6959,6 @@ msgstr "Sintaxis simple (e.j. * en vez de .*)"
 #| msgid "Clean all"
 msgid "&Clean all"
 msgstr "Limpiar todo"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr "Limpiar Código Fuente de Lazarus"
 
 #: lazarusidestrconsts.liscleanonlyonce
 #, fuzzy
@@ -12032,11 +12020,6 @@ msgstr "Editar Defines"
 msgid "Edit list of defines which can be used by any profile"
 msgstr "Editar la lista de defines que pueden ser usadas por cualquier perfil"
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr "Error escribiendo archivo"
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -12125,11 +12108,6 @@ msgstr "Directorio objetivo:"
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
 msgstr "OS objetivo:"
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
-msgstr "No se ha podido escribir el archivo \"%s\":%s"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -12369,10 +12347,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Actual"
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
-msgstr "Make no encontrado"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -18217,11 +18191,6 @@ msgstr "El paquete \"%s\" es utilizado por"
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "La ruta de \"make\" no es correcta: \"%s\""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "El programa \"make\" no se encuentra.%sEsta herramienta es necesaria para construir Lazarus."
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Las opciones de compilador del proyecto y las directivas en la fuente principal difieren. Para la nueva unidad el modo y el tipo de cadena del proyecto son usados:"
@@ -18518,11 +18487,6 @@ msgstr "El proyecto no tiene un archivo fuente principal"
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
 msgstr "Este proyecto sólo tiene por defecto un modo de construcción."
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "Este conjunto de opciones para construir Lazarus no es compatible con esta instalación.%sEl directorio \"%s\" no tiene permisos de escritura.%sVisite el sitio web de Lazarus para conocer otras maneras de instalar Lazarus."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 #, object-pascal-format

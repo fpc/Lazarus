@@ -18,6 +18,14 @@ msgstr "Keskeytetty "
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Tiedosto \"%s\" on jo olemassa.%sKorvataanko se? "
 
+#: ideconfstrconsts.lisbuildide
+msgid "Build IDE"
+msgstr "Kokoa IDE"
+
+#: ideconfstrconsts.lisbuildinglazarusfailed
+msgid "Building Lazarus failed"
+msgstr "Lazaruksen kokoaminen epäonnistui"
+
 #: ideconfstrconsts.liscannotexecute
 #, object-pascal-format
 msgid "cannot execute \"%s\""
@@ -35,6 +43,10 @@ msgstr ""
 #: ideconfstrconsts.lisccoerrorcaption
 msgid "Error"
 msgstr "Virhe"
+
+#: ideconfstrconsts.liscleanlazarussource
+msgid "Clean Lazarus Source"
+msgstr "Siivoa Lazaruksen lähdekoodi"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -315,6 +327,10 @@ msgstr "Lazarus kieli-nimi (esim. english, deutsch)"
 msgid "Debug IDE"
 msgstr "Virheenjäljitys-IDE"
 
+#: ideconfstrconsts.lislazbuilderrorwritingfile
+msgid "Error writing file"
+msgstr "Virhe kirjoitettaessa tiedostoa"
+
 #: ideconfstrconsts.lislazbuildnormalide
 msgid "Normal IDE"
 msgstr "Normaali IDE"
@@ -322,6 +338,11 @@ msgstr "Normaali IDE"
 #: ideconfstrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
 msgstr "Optimoitu IDE"
+
+#: ideconfstrconsts.lislazbuildunabletowritefile
+#, object-pascal-format
+msgid "Unable to write file \"%s\":%s"
+msgstr "Tiedoston \"%s\":%s tallennus epäonnistui"
 
 #: ideconfstrconsts.lislazcleanupbuildall
 msgid "Clean Up + Build all"
@@ -340,6 +361,10 @@ msgstr "LCL-käyttöliittymäkirjasto"
 #: ideconfstrconsts.lismakeexe
 msgid "Make Executable"
 msgstr "Make-ohjelma"
+
+#: ideconfstrconsts.lismakenotfound
+msgid "Make not found"
+msgstr "Make ei löydy"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -546,10 +571,20 @@ msgstr "Hakemistoon \"%s\" ei voi kirjoittaa."
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Tiedosto \"%s\" symbolinen linkki.%sAvataanko \"%s\" sen sijaan?"
 
+#: ideconfstrconsts.listheprogrammakewasnotfound
+#, object-pascal-format
+msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "fpc.exe ei ole %s:n hakemistossa. Yleensä make ohjelma asennetaan yhdessä FPC:n kanssa."
+
+#: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
+#, object-pascal-format
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgstr "Asennus ei tue näitä valintoja Lazaruksen kokoamiseksi%sHakemisto \"%s\" ei ole kirjoitettava.%sKatso Lazaruksen web-sivulta muita ohjeita Lazaruksen asentamiseen."
 
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

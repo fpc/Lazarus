@@ -5978,10 +5978,6 @@ msgstr "Зібрати"
 msgid "Build Date"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr "Зібрати ІСР"
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 #, fuzzy
 #| msgid "build IDE with packages"
@@ -5991,10 +5987,6 @@ msgstr "зібрати ІСР з пакунками"
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
 msgstr "Збирання"
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
-msgstr "Не вдалось зібрати Lazarus"
 
 #: lazarusidestrconsts.lisbuildmode
 #, object-pascal-format
@@ -6836,10 +6828,6 @@ msgstr "Простий синтаксис (напр., * замість .*)"
 #| msgid "Clean all"
 msgid "&Clean all"
 msgstr "Очистити все"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr "Очистити коди Lazarus"
 
 #: lazarusidestrconsts.liscleanonlyonce
 #, fuzzy
@@ -11851,11 +11839,6 @@ msgstr "Редагувати визначення"
 msgid "Edit list of defines which can be used by any profile"
 msgstr "Редагувати список визначень, які можуть бути використані будь-яким профілем"
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr "Помилка запису файлу"
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -11944,11 +11927,6 @@ msgstr "Цільова тека:"
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
 msgstr "Для ОС:"
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
-msgstr "Неможливо записати файл \"%s\":%s"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgctxt "lazarusidestrconsts.lislazbuildupdaterevinc"
@@ -12183,10 +12161,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Поточний"
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
-msgstr "Make не знайдено"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -17986,11 +17960,6 @@ msgstr ""
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "Шлях \"make\" є неправильним: \"%s\""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "Програму \"make\" не знайдено.%sЦей засіб потрібен, щоб зібрати Lazarus."
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Опції компілятора проєкту і директиви в основному коді відрізняються. Для нового модуля будуть використані такі режим і тип рядка проєкту:"
@@ -18286,11 +18255,6 @@ msgstr "Проєкт не має основного файлу з поч. код
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
 msgstr "Цей проєкт має лише типовий режим збирання."
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "Цей набір параметрів для збирання Lazarus не підтримується встановленням.%sТека \"%s\" недоступна для запису.%sДивіться сайт Lazarus для інших способів встановлення."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 #, object-pascal-format

@@ -27,7 +27,19 @@ resourcestring
   lisOS = ', OS: %s';
   lisCPU = ', CPU: %s';
   lisTarget2 = ', Target: %s';
-  // Misc Options, IDe Build Profiles
+  // IDE Builder and Build Profiles (Misc Options)
+  lisCleanLazarusSource = 'Clean Lazarus Source';
+  lisBuildIDE = 'Build IDE';
+  lisLazBuildErrorWritingFile = 'Error writing file';
+  lisLazBuildUnableToWriteFile = 'Unable to write file "%s":%s';
+  lisMakeNotFound = 'Make not found';
+  lisTheProgramMakeWasNotFound = 'The program "make" was not found.'
+    +'%sIt is needed to build Lazarus.';
+  lisBuildingLazarusFailed = 'Building Lazarus failed';
+  lisThisSetOfOptionsToBuildLazarusIsNotSupportedByThis = 'This set of '
+    +'options to build Lazarus is not supported by this installation.'
+    +'%sThe directory "%s" is not writable.'
+    +'%sSee the Lazarus website for other ways to install Lazarus.';
   lisLazBuildNormalIDE = 'Normal IDE';
   lisLazBuildDebugIDE = 'Debug IDE';
   lisLazBuildOptimizedIDE = 'Optimized IDE';

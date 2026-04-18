@@ -5982,10 +5982,6 @@ msgstr "Kokoa"
 msgid "Build Date"
 msgstr ""
 
-#: lazarusidestrconsts.lisbuildide
-msgid "Build IDE"
-msgstr "Kokoa IDE"
-
 #: lazarusidestrconsts.lisbuildidewithpackages
 #, fuzzy
 #| msgid "build IDE with packages"
@@ -5995,10 +5991,6 @@ msgstr "kokoa IDE paketteineen"
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
 msgstr "Kokoaminen"
-
-#: lazarusidestrconsts.lisbuildinglazarusfailed
-msgid "Building Lazarus failed"
-msgstr "Lazaruksen kokoaminen epäonnistui"
 
 #: lazarusidestrconsts.lisbuildmode
 #, object-pascal-format
@@ -6836,10 +6828,6 @@ msgstr "Yksinkertainen kielioppi (kuten * eikä .*)"
 #| msgid "Clean all"
 msgid "&Clean all"
 msgstr "Siivoa kaikki"
-
-#: lazarusidestrconsts.liscleanlazarussource
-msgid "Clean Lazarus Source"
-msgstr "Siivoa Lazaruksen lähdekoodi"
 
 #: lazarusidestrconsts.liscleanonlyonce
 #, fuzzy
@@ -11817,11 +11805,6 @@ msgstr "Muokkaa määritteitä"
 msgid "Edit list of defines which can be used by any profile"
 msgstr "Muokkaa määrite-luetteloa, mitä voidaan käyttää kaikille profiileille"
 
-#: lazarusidestrconsts.lislazbuilderrorwritingfile
-msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
-msgid "Error writing file"
-msgstr "Virhe kirjoitettaessa tiedostoa"
-
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 #, object-pascal-format
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -11908,11 +11891,6 @@ msgstr "Kohdehakemisto:"
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
 msgstr "Kohdekäyttöjärjestelmä"
-
-#: lazarusidestrconsts.lislazbuildunabletowritefile
-#, object-pascal-format
-msgid "Unable to write file \"%s\":%s"
-msgstr "Tiedoston \"%s\":%s tallennus epäonnistui"
 
 #: lazarusidestrconsts.lislazbuildupdaterevinc
 msgid "Update revision.inc"
@@ -12139,10 +12117,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Nykyinen"
-
-#: lazarusidestrconsts.lismakenotfound
-msgid "Make not found"
-msgstr "Make ei löydy"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -17907,11 +17881,6 @@ msgstr ""
 msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "\"make\" komennon polku on väärin: \"%s\""
 
-#: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, object-pascal-format
-msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr "\"make\" ohjelmaa ei löydy.%sSe tarvitaan Lazaruksen kokoamiseen."
-
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Projektin kääntäjän asetukset ja pää-lähdekoodissa olevat ohjeet eroavat. Uudelle käännösyksikölle käytetään projektin asetusten moodia ja string-tyyppiä:"
@@ -18207,11 +18176,6 @@ msgstr "Tällä projektilla ei ole päätiedostoa"
 #: lazarusidestrconsts.listhisprojecthasonlythedefaultbuildmode
 msgid "This project has only the default build mode."
 msgstr "Projektilla on vain oletus koontamoodi."
-
-#: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, object-pascal-format
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "Asennus ei tue näitä valintoja Lazaruksen kokoamiseksi%sHakemisto \"%s\" ei ole kirjoitettava.%sKatso Lazaruksen web-sivulta muita ohjeita Lazaruksen asentamiseen."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 #, object-pascal-format
