@@ -12,7 +12,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit MarkDown.Elements;
+unit Markdown.Elements;
 
 {$mode ObjFPC}
 {$h+}
@@ -21,18 +21,15 @@ interface
 
 uses
 {$IFDEF FPC_DOTTEDUNITS}
-  System.Classes, System.SysUtils, System.Contnrs, System.Regexpr, System.CodePages.unicodedata, 
-{$ELSE}  
-  Classes, SysUtils, Contnrs, RegExpr, UnicodeData, 
+  System.Classes, System.SysUtils, System.Contnrs, System.Regexpr, System.CodePages.unicodedata,
+{$ELSE}
+  Classes, SysUtils, Contnrs, RegExpr, UnicodeData,
 {$ENDIF}
-  MarkDown.Utils, 
+  Markdown.Utils,
   Markdown.HTMLEntities;
 
-const
-  GrowSize = 10;
-
 Type
-  EMarkDown = class(Exception);
+  EMarkdown = class(Exception);
 
   TWhitespaceMode = (wsLeave, wsTrim, wsStrip);
 
@@ -41,8 +38,8 @@ Type
     col : integer;
   end;
 
-  TMarkDownElement = class (TObject);
-  TMarkDownElementClass = class of TMarkDownElement;
+  TMarkdownElement = class (TObject);
+  TMarkdownElementClass = class of TMarkdownElement;
 
   TTextNodeKind = (nkNamed,nkLineBreak,nkText,nkCode,nkURI,nkEmail,nkImg);
   TTextNodeKinds = set of TTextNodeKind;
@@ -50,9 +47,9 @@ Type
   TNodeStyle = (nsStrong,nsEmph,nsDelete);
   TNodeStyles = Set of TNodeStyle;
 
-  { TMarkDownTextNode }
+  { TMarkdownTextNode }
 
-  TMarkDownTextNode = class(TMarkDownElement)
+  TMarkdownTextNode = class(TMarkdownElement)
   private
     FKind: TTextNodeKind;
     FName : Ansistring;
@@ -80,7 +77,7 @@ Type
     property HasAttrs : Boolean Read GetHasAttrs;
     property NodeText : ansistring read GetNodetext;
     procedure AddText(ch : char); overload;
-    procedure AddText(s : AnsiString); overload;
+    procedure AddText(const s : AnsiString); overload;
     procedure RemoveChars(count : integer);
     function IsEmpty : boolean;
     property Pos : TPosition Read FPos;
@@ -88,75 +85,98 @@ Type
     property Styles : TNodeStyles Read FStyles Write FStyles;
   end;
 
-  { TMarkDownTextNodeList }
+  { TMarkdownTextNodeList }
 
-  TMarkDownTextNodeList = class (specialize TGFPObjectList<TMarkDownTextNode>)
+  TMarkdownTextNodeList = class (specialize TGFPObjectList<TMarkdownTextNode>)
   private
     procedure ClearActive; inline;
   public
     // When the last block is active, add to that block. Otherwise, create a new text node
-    function AddText(aPos: TPosition; aContent: AnsiString): TMarkDownTextNode;
-    function AddTextNode(aPos: TPosition; aKind: TTextNodeKind; cnt: AnsiString; aDoClose: Boolean=True): TMarkDownTextNode; // always make a new node, and make it inactive
-    procedure RemoveAfter(node : TMarkDownTextNode);
-    function LastNode : TMarkDownTextNode;
-    procedure ApplyStyleBetween(aStart,aStop : TMarkDownTextNode; aStyle : TNodeStyle);
+    function AddText(aPos: TPosition; const aContent: AnsiString): TMarkdownTextNode;
+    function AddTextNode(aPos: TPosition; aKind: TTextNodeKind; const cnt: AnsiString; aDoClose: Boolean=True): TMarkdownTextNode; // always make a new node, and make it inactive
+    procedure RemoveAfter(node : TMarkdownTextNode);
+    function LastNode : TMarkdownTextNode;
+    procedure ApplyStyleBetween(aStart,aStop : TMarkdownTextNode; aStyle : TNodeStyle);
   end;
 
   { TMarkdownBlock }
 
-  TMarkdownBlock = class abstract (TMarkDownElement)
+  TMarkdownBlock = class abstract (TMarkdownElement)
   private
     FClosed: boolean;
     FLine : integer;
     FParent : TMarkdownBlock;
   protected
     procedure SetClosed(const aValue: boolean); virtual;
-    function GetChild(aIndex : Integer): TMarkDownBlock; virtual;
+    function GetChild(aIndex : Integer): TMarkdownBlock; virtual;
     function GetChildCount: Integer; virtual;
-    procedure AddChild(aChild : TMarkDownBlock); virtual;
-    function GetLastChild: TMarkDownBlock; virtual;
+    procedure AddChild(aChild : TMarkdownBlock); virtual;
+    function GetLastChild: TMarkdownBlock; virtual;
   public
-    constructor Create(aParent : TMarkDownBlock; aLine : Integer);  virtual; reintroduce;
+    constructor Create(aParent : TMarkdownBlock; aLine : Integer);  virtual; reintroduce;
     procedure Dump(const aIndent : string = '');
     Function GetFirstText : String;
     function WhitespaceMode : TWhitespaceMode; virtual;
     property Closed : boolean read FClosed write SetClosed;
     property Line : Integer read FLine;
-    property Parent : TMarkDownBlock read FParent;
-    property LastChild : TMarkDownBlock Read GetLastChild;
+    property Parent : TMarkdownBlock read FParent;
+    property LastChild : TMarkdownBlock Read GetLastChild;
     property ChildCount : Integer read GetChildCount;
-    property Children[aIndex : Integer] : TMarkDownBlock read GetChild; default;
+    property Children[aIndex : Integer] : TMarkdownBlock read GetChild; default;
   end;
   TMarkdownBlockClass = class of TMarkdownBlock;
 
-  { TMarkDownBlockList }
+  { TMarkdownBlockList }
 
-  TMarkDownBlockList = class(specialize TGFPObjectList<TMarkdownBlock>)
-    function lastblock : TMarkDownBlock;
+  TMarkdownBlockList = class(specialize TGFPObjectList<TMarkdownBlock>)
+    function lastblock : TMarkdownBlock;
   end;
 
-  { TMarkDownContainerBlock }
+  { TMarkdownContainerBlock }
 
-  TMarkDownContainerBlock = class (TMarkdownBlock)
+  TMarkdownContainerBlock = class (TMarkdownBlock)
   private
-    FBlocks: TMarkDownBlockList;
+    FBlocks: TMarkdownBlockList;
   protected
-    procedure AddChild(aChild : TMarkDownBlock); override;
-    function GetChild(aIndex : Integer): TMarkDownBlock; override;
+    procedure AddChild(aChild : TMarkdownBlock); override;
+    function GetChild(aIndex : Integer): TMarkdownBlock; override;
     function GetChildCount: Integer; override;
-    function GetLastChild: TMarkDownBlock; override;
+    function GetLastChild: TMarkdownBlock; override;
   public
-    constructor Create(aParent : TMarkDownBlock; aLine : Integer); override;
+    constructor Create(aParent : TMarkdownBlock; aLine : Integer); override;
     destructor Destroy; override;
     procedure DeleteChild(aIndex : Integer);
-    property Blocks : TMarkDownBlockList read FBlocks;
+    property Blocks : TMarkdownBlockList read FBlocks;
   end;
 
-  TMarkDownDocument = class (TMarkDownContainerBlock);
+  TFrontMatterType = (fmtYAML, fmtTOML, fmtJSON);
 
-  { TMarkDownParagraphBlock }
+  { TMarkdownFrontmatterBlock }
 
-  TMarkDownParagraphBlock = class (TMarkDownContainerBlock)
+  TMarkdownFrontmatterBlock = class (TMarkdownContainerBlock)
+  private
+    FFrontMatterType: TFrontMatterType;
+    FContent: TStringList;
+  public
+    constructor Create(aParent : TMarkdownBlock; aLine : Integer); override;
+    destructor Destroy; override;
+    function WhiteSpaceMode : TWhitespaceMode; override;
+    property FrontMatterType : TFrontMatterType read FFrontMatterType write FFrontMatterType;
+    property Content : TStringList read FContent;
+  end;
+
+  { TMarkdownDocument }
+
+  TMarkdownDocument = class (TMarkdownContainerBlock)
+  private
+    FFrontmatter: TMarkdownFrontmatterBlock;
+  public
+    property Frontmatter : TMarkdownFrontmatterBlock read FFrontmatter write FFrontmatter;
+  end;
+
+  { TMarkdownParagraphBlock }
+
+  TMarkdownParagraphBlock = class (TMarkdownContainerBlock)
   private
     FHeader: integer;
   public
@@ -164,12 +184,12 @@ Type
     property Header : integer read FHeader write FHeader;
   end;
 
-  TMarkDownQuoteBlock = class (TMarkDownParagraphBlock)
+  TMarkdownQuoteBlock = class (TMarkdownParagraphBlock)
   public
     function IsPlainPara : boolean; override;
   end;
 
-  TMarkDownListBlock = class (TMarkDownContainerBlock)
+  TMarkdownListBlock = class (TMarkdownContainerBlock)
   private
     FOrdered: boolean;
     FStart: integer;
@@ -189,20 +209,20 @@ Type
     property HasSeenEmptyLine : boolean read FHasSeenEmptyLine Write FHasSeenEmptyLine; // parser state
   end;
 
-  TMarkDownListItemBlock = class (TMarkDownParagraphBlock)
+  TMarkdownListItemBlock = class (TMarkdownParagraphBlock)
   public
     function isPlainPara : boolean; override;
   end;
 
-  TMarkDownHeadingBlock = class (TMarkDownContainerBlock)
+  TMarkdownHeadingBlock = class (TMarkdownContainerBlock)
   private
     FLevel: integer;
   public
-    constructor Create(aParent : TMarkDownBlock; aLine, alevel : Integer); reintroduce;
+    constructor Create(aParent : TMarkdownBlock; aLine, alevel : Integer); reintroduce;
     property Level : integer read FLevel write FLevel;
   end;
 
-  TMarkDownCodeBlock = class (TMarkDownContainerBlock)
+  TMarkdownCodeBlock = class (TMarkdownContainerBlock)
   private
     FFenced: boolean;
     FLang: AnsiString;
@@ -215,45 +235,49 @@ Type
   end;
 
 
-  TMarkDownTableRowBlock = class (TMarkDownContainerBlock);
+  TMarkdownTableRowBlock = class (TMarkdownContainerBlock);
 
   TCellAlign = (caLeft, caCenter, caRight);
   TCellAlignArray = array of TCellAlign;
 
-  { TMarkDownTableBlock }
+  { TMarkdownTableBlock }
 
-  TMarkDownTableBlock = class (TMarkDownContainerBlock)
+  TMarkdownTableBlock = class (TMarkdownContainerBlock)
   private
     FColumns: TCellAlignArray;
   public
     property Columns : TCellAlignArray read FColumns Write FColumns;
   end;
 
-  TMarkDownLeafBlock = class abstract (TMarkdownBlock);
+  TMarkdownLeafBlock = class abstract (TMarkdownBlock);
 
-  TMarkDownThematicBreakBlock = class (TMarkDownLeafBlock)
+  TMarkdownThematicBreakBlock = class (TMarkdownLeafBlock)
   end;
 
-  { TMarkDownTextBlock }
+  { TMarkdownTextBlock }
 
-  TMarkDownTextBlock = class (TMarkDownLeafBlock)
+  TMarkdownTextBlock = class (TMarkdownLeafBlock)
   private
     FText: AnsiString;
-    FNodes : TMarkDownTextNodeList;
+    FNodes : TMarkdownTextNodeList;
   protected
     procedure SetClosed(const aValue: boolean);override;
   public
-    constructor Create(aParent : TMarkDownBlock; aLine : integer; aText : AnsiString); reintroduce;
+    constructor Create(aParent : TMarkdownBlock; aLine : integer; const aText : AnsiString); reintroduce;
     destructor Destroy; override;
     property Text : AnsiString read FText write FText;
-    property Nodes : TMarkDownTextNodeList Read FNodes Write FNodes;
+    property Nodes : TMarkdownTextNodeList Read FNodes Write FNodes;
   end;
 
 implementation
 
-{ TMarkDownTextNode }
+const
+  GrowSize = 10;
 
-procedure TMarkDownTextNode.addText(s: AnsiString);
+
+{ TMarkdownTextNode }
+
+procedure TMarkdownTextNode.addText(const s: AnsiString);
 
 var
   len,AddLen,NewLen : Integer;
@@ -268,7 +292,7 @@ begin
   inc(FLength,AddLen);
 end;
 
-constructor TMarkDownTextNode.Create(aPos : TPosition; aKind : TTextNodeKind);
+constructor TMarkdownTextNode.Create(aPos : TPosition; aKind : TTextNodeKind);
 begin
   inherited Create;
   FActive:=True;
@@ -276,7 +300,7 @@ begin
   FKind:=aKind;
 end;
 
-procedure TMarkDownTextNode.addText(ch: char);
+procedure TMarkdownTextNode.addText(ch: char);
 var
   len : Integer;
 begin
@@ -287,46 +311,46 @@ begin
   FBuild[FLength]:=ch;
 end;
 
-destructor TMarkDownTextNode.Destroy;
+destructor TMarkdownTextNode.Destroy;
 begin
   FreeAndNil(FAttrs);
   inherited;
 end;
 
-procedure TMarkDownTextNode.AddStyle(aStyle: TNodeStyle);
+procedure TMarkdownTextNode.AddStyle(aStyle: TNodeStyle);
 begin
   include(FStyles,aStyle);
 end;
 
-procedure TMarkDownTextNode.IncCol(aCount: integer);
+procedure TMarkdownTextNode.IncCol(aCount: integer);
 begin
   Inc(FPos.Col,aCount);
 end;
 
-function TMarkDownTextNode.GetAttrs: THashTable;
+function TMarkdownTextNode.GetAttrs: THashTable;
 begin
   if FAttrs = nil then
     FAttrs:=THashTable.create;
   Result:=FAttrs;
 end;
 
-function TMarkDownTextNode.GetHasAttrs: Boolean;
+function TMarkdownTextNode.GetHasAttrs: Boolean;
 begin
   Result:=Assigned(FAttrs);
 end;
 
-function TMarkDownTextNode.getText: AnsiString;
+function TMarkdownTextNode.getText: AnsiString;
 begin
   Active:=False;
   Result:=FContent;
 end;
 
-function TMarkDownTextNode.GetNodetext: ansistring;
+function TMarkdownTextNode.GetNodetext: ansistring;
 begin
   Result:=Copy(FContent,1,Length(FContent));
 end;
 
-function TMarkDownTextNode.isEmpty: boolean;
+function TMarkdownTextNode.isEmpty: boolean;
 begin
   if Active then
     Result:=FBuild = ''
@@ -334,35 +358,35 @@ begin
     Result:=FContent = '';
 end;
 
-procedure TMarkDownTextNode.removeChars(count : integer);
+procedure TMarkdownTextNode.removeChars(count : integer);
 begin
   Active:=False;
   delete(FContent, 1, count);
 end;
 
 
-procedure TMarkDownTextNode.SetActive(const aValue: boolean);
+procedure TMarkdownTextNode.SetActive(const aValue: boolean);
 begin
   if FActive and not aValue then
     FContent:=Copy(FBuild,1,FLength);
   FActive:=aValue;
 end;
 
-procedure TMarkDownTextNode.SetName(const Value: AnsiString);
+procedure TMarkdownTextNode.SetName(const Value: AnsiString);
 begin
   FName:=Value;
   Active:=False;
 end;
 
-{ TMarkDownTextNodeList }
+{ TMarkdownTextNodeList }
 
-procedure TMarkDownTextNodeList.ClearActive;
+procedure TMarkdownTextNodeList.ClearActive;
 begin
   if count > 0 then
     Self[Count-1].Active:=False;
 end;
 
-procedure TMarkDownTextNodeList.ApplyStyleBetween(aStart,aStop : TMarkDownTextNode; aStyle : TNodeStyle);
+procedure TMarkdownTextNodeList.ApplyStyleBetween(aStart,aStop : TMarkdownTextNode; aStyle : TNodeStyle);
 
 var
   Idx,lStart,lStop : Integer;
@@ -376,16 +400,16 @@ begin
     end;
 end;
 
-function TMarkDownTextNodeList.addText(aPos : TPosition; aContent: AnsiString): TMarkDownTextNode;
+function TMarkdownTextNodeList.AddText(aPos: TPosition; const aContent: AnsiString): TMarkdownTextNode;
 var
-  lNode : TMarkDownTextNode;
+  lNode : TMarkdownTextNode;
 begin
   lNode:=Nil;
   if (Count>0) then
     lNode:=Elements[Count-1];
   if (lNode=Nil) or not lNode.Active then
     begin
-    Result:=TMarkDownTextNode.Create(aPos,nkText);
+    Result:=TMarkdownTextNode.Create(aPos,nkText);
     add(Result);
     end
   else
@@ -393,17 +417,18 @@ begin
   Result.addText(aContent);
 end;
 
-function TMarkDownTextNodeList.addTextNode(aPos : TPosition; aKind : TTextNodeKind; cnt: AnsiString; aDoClose : Boolean = True): TMarkDownTextNode;
+function TMarkdownTextNodeList.AddTextNode(aPos: TPosition; aKind: TTextNodeKind; const cnt: AnsiString; aDoClose: Boolean
+  ): TMarkdownTextNode;
 begin
   ClearActive;
-  Result:=TMarkDownTextNode.Create(aPos,aKind);
+  Result:=TMarkdownTextNode.Create(aPos,aKind);
   add(Result);
   Result.addText(cnt);
   if aDoClose then
     Result.Active:=False;
 end;
 
-procedure TMarkDownTextNodeList.removeAfter(node: TMarkDownTextNode);
+procedure TMarkdownTextNodeList.removeAfter(node: TMarkdownTextNode);
 var
   i, idx : integer;
 
@@ -413,7 +438,7 @@ begin
     Delete(i);
 end;
 
-function TMarkDownTextNodeList.lastNode: TMarkDownTextNode;
+function TMarkdownTextNodeList.lastNode: TMarkdownTextNode;
 begin
   Result:=Nil;
   if Count>0 then
@@ -422,7 +447,7 @@ end;
 
 { TMarkdownBlock }
 
-function TMarkdownBlock.GetLastChild: TMarkDownBlock;
+function TMarkdownBlock.GetLastChild: TMarkdownBlock;
 begin
   Result:=Nil;
 end;
@@ -435,7 +460,7 @@ begin
     Children[ChildCount-1].Closed:=True;
 end;
 
-function TMarkdownBlock.GetChild(aIndex : Integer): TMarkDownBlock;
+function TMarkdownBlock.GetChild(aIndex : Integer): TMarkdownBlock;
 begin
   if aIndex<0 then ; // Silence compiler warning
   Result:=Nil;
@@ -446,13 +471,13 @@ begin
   Result:=0;
 end;
 
-procedure TMarkdownBlock.AddChild(aChild: TMarkDownBlock);
+procedure TMarkdownBlock.AddChild(aChild: TMarkdownBlock);
 begin
   if (aChild<>Nil) then
   Raise Exception.Create('Cannot add child to simple block');
 end;
 
-constructor TMarkdownBlock.Create(aParent: TMarkDownBlock; aLine: Integer);
+constructor TMarkdownBlock.Create(aParent: TMarkdownBlock; aLine: Integer);
 begin
   Inherited Create;
   FParent:=aParent;
@@ -480,50 +505,50 @@ begin
   Result:=wsTrim;
 end;
 
-function TMarkDownBlock.GetFirstText: String;
+function TMarkdownBlock.GetFirstText: String;
 var
-  lText : TMarkDownTextBlock;
+  lText : TMarkdownTextBlock;
 begin
   Result:='';
   if ChildCount=0 then
     exit;
-  if not (Children[0] is TMarkDownTextBlock) then
+  if not (Children[0] is TMarkdownTextBlock) then
     exit;
-  lText:=TMarkDownTextBlock(Children[0]);
+  lText:=TMarkdownTextBlock(Children[0]);
   if lText.Nodes.Count=0 then
     exit;
   Result:=lText.Nodes[0].NodeText;
 end;
 
-{ TMarkDownBlockList }
+{ TMarkdownBlockList }
 
-function TMarkDownBlockList.lastblock: TMarkDownBlock;
+function TMarkdownBlockList.lastblock: TMarkdownBlock;
 begin
   Result:=nil;
   if Count>0 then
     Result:=Self[Count-1];
 end;
 
-{ TMarkDownContainerBlock }
+{ TMarkdownContainerBlock }
 
-procedure TMarkDownContainerBlock.AddChild(aChild: TMarkDownBlock);
+procedure TMarkdownContainerBlock.AddChild(aChild: TMarkdownBlock);
 begin
   if aChild=Nil then
-    Raise EMarkDown.CreateFmt('Cannot add nil child to block "%s"',[ClassName]);
+    Raise EMarkdown.CreateFmt('Cannot add nil child to block "%s"',[ClassName]);
   FBlocks.Add(aChild);
 end;
 
-function TMarkDownContainerBlock.GetChild(aIndex: Integer): TMarkDownBlock;
+function TMarkdownContainerBlock.GetChild(aIndex: Integer): TMarkdownBlock;
 begin
   Result:=FBlocks[aIndex];
 end;
 
-function TMarkDownContainerBlock.GetChildCount: Integer;
+function TMarkdownContainerBlock.GetChildCount: Integer;
 begin
   Result:=FBlocks.Count;
 end;
 
-function TMarkDownContainerBlock.GetLastChild: TMarkDownBlock;
+function TMarkdownContainerBlock.GetLastChild: TMarkdownBlock;
 begin
   if FBlocks.Count>0 then
     Result:=FBlocks[FBlocks.Count-1]
@@ -531,41 +556,60 @@ begin
     Result:=Nil;
 end;
 
-constructor TMarkDownContainerBlock.Create(aParent : TMarkDownBlock; aLine : Integer);
+constructor TMarkdownContainerBlock.Create(aParent : TMarkdownBlock; aLine : Integer);
 begin
   inherited create(aParent,aLine);
-  FBlocks:=TMarkDownBlockList.Create(true);
+  FBlocks:=TMarkdownBlockList.Create(true);
 end;
 
-destructor TMarkDownContainerBlock.Destroy;
+destructor TMarkdownContainerBlock.Destroy;
 begin
   FreeAndNil(FBlocks);
   inherited Destroy;
 end;
 
-procedure TMarkDownContainerBlock.DeleteChild(aIndex: Integer);
+procedure TMarkdownContainerBlock.DeleteChild(aIndex: Integer);
 begin
   FBlocks.Delete(aIndex);
 end;
 
-{ TMarkDownParagraphBlock }
+{ TMarkdownFrontmatterBlock }
 
-function TMarkDownParagraphBlock.IsPlainPara: boolean;
+constructor TMarkdownFrontmatterBlock.Create(aParent: TMarkdownBlock; aLine: Integer);
+begin
+  inherited Create(aParent, aLine);
+  FContent := TStringList.Create;
+end;
+
+destructor TMarkdownFrontmatterBlock.Destroy;
+begin
+  FreeAndNil(FContent);
+  inherited Destroy;
+end;
+
+function TMarkdownFrontmatterBlock.WhiteSpaceMode: TWhitespaceMode;
+begin
+  Result := wsLeave;
+end;
+
+{ TMarkdownParagraphBlock }
+
+function TMarkdownParagraphBlock.IsPlainPara: boolean;
 begin
   Result:=FHeader = 0;
 end;
 
 
-{ TMarkDownQuoteBlock }
+{ TMarkdownQuoteBlock }
 
-function TMarkDownQuoteBlock.isPlainPara: boolean;
+function TMarkdownQuoteBlock.isPlainPara: boolean;
 begin
   Result:=false;
 end;
 
-{ TMarkDownListBlock }
+{ TMarkdownListBlock }
 
-function TMarkDownListBlock.grace: integer;
+function TMarkdownListBlock.grace: integer;
 begin
   if ordered then
     Result:=2
@@ -573,47 +617,47 @@ begin
     Result:=1;
 end;
 
-{ TMarkDownListItemBlock }
+{ TMarkdownListItemBlock }
 
-function TMarkDownListItemBlock.isPlainPara: boolean;
+function TMarkdownListItemBlock.isPlainPara: boolean;
 begin
   Result:=false;
 end;
 
-{ TMarkDownHeadingBlock }
+{ TMarkdownHeadingBlock }
 
-constructor TMarkDownHeadingBlock.Create(aParent : TMarkDownBlock;aLine, aLevel: Integer);
+constructor TMarkdownHeadingBlock.Create(aParent : TMarkdownBlock;aLine, aLevel: Integer);
 begin
   Inherited Create(aParent,aLine);
   FLevel:=aLevel;
 end;
 
-{ TMarkDownCodeBlock }
+{ TMarkdownCodeBlock }
 
 
-function TMarkDownCodeBlock.WhiteSpaceMode: TWhitespaceMode;
+function TMarkdownCodeBlock.WhiteSpaceMode: TWhitespaceMode;
 begin
   Result:=wsLeave;
 end;
 
-{ TMarkDownTableBlock }
+{ TMarkdownTableBlock }
 
-{ TMarkDownTextBlock }
+{ TMarkdownTextBlock }
 
-procedure TMarkDownTextBlock.SetClosed(const aValue: boolean);
+procedure TMarkdownTextBlock.SetClosed(const aValue: boolean);
 begin
   inherited SetClosed(aValue);
   if assigned(FNodes) then
     FNodes.ClearActive;
 end;
 
-constructor TMarkDownTextBlock.Create(aParent: TMarkDownBlock; aLine: integer; aText: AnsiString);
+constructor TMarkdownTextBlock.Create(aParent: TMarkdownBlock; aLine: integer; const aText: AnsiString);
 begin
   inherited Create(aParent,aLine);
   FText:=aText;
 end;
 
-destructor TMarkDownTextBlock.Destroy;
+destructor TMarkdownTextBlock.Destroy;
 begin
   FreeAndNil(FNodes);
   inherited;

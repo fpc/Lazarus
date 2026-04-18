@@ -77,6 +77,8 @@ Type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
     procedure ParseMarkDown; virtual;
     procedure Resize; override;
     procedure ScrollView(DeltaX, DeltaY: Integer);
@@ -342,6 +344,14 @@ begin
   TabStop := True;
   BorderStyle := bsSingle;
   BorderWidth := 0;
+  AutoSize := True;
+end;
+
+procedure TCustomMarkDownControl.CalculatePreferredSize(
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PreferredWidth := 0;
+  PreferredHeight := FCalculatedHeight + 2*BorderWidth;
 end;
 
 procedure TCustomMarkDownControl.ParseMarkDown;
@@ -372,10 +382,12 @@ begin
     dec(FLastCalcClientWidth,GetSystemMetrics(SM_CXVSCROLL));
   if FLastCalcClientWidth<0 then FLastCalcClientWidth:=0;
 
-  FRenderer.CalculateLayout(Canvas,FLastCalcClientWidth,FLastCalcClientWidth,FCalculatedHeight);
+  FRenderer.CalculateLayout(Canvas,FLastCalcClientWidth,FCalculatedWidth,FCalculatedHeight);
 
   FScrollbarsNeedUpdate:=true;
   UpdateScrollBars;
+  InvalidatePreferredSize;
+  AdjustSize;
 end;
 
 procedure TCustomMarkDownControl.Click;

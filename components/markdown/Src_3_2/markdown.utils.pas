@@ -12,7 +12,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit MarkDown.Utils;
+unit Markdown.Utils;
 
 {$mode ObjFPC}{$H+}
 
@@ -20,9 +20,9 @@ interface
 
 uses
 {$IFDEF FPC_DOTTEDUNITS}
-  System.Classes, System.SysUtils, System.Contnrs, System.RegExpr;
+  System.Classes, System.SysUtils, System.Contnrs;
 {$ELSE}
-  Classes, SysUtils, Contnrs, RegExpr;
+  Classes, SysUtils, Contnrs;
 {$ENDIF}
 
 const
@@ -61,16 +61,16 @@ Type
     property Elements[aIndex: Integer] : T read GetElement Write SetElement; default;
   end;
 
-{ 
+{
   string operations
-  Tab characters are counted as tabstops every 4 characters, 
+  Tab characters are counted as tabstops every 4 characters,
   Note that this is *not* the same as saying that "a tab equals 4 space characters".
   so #32#9 and #32#32#9 are equivalent to 4 spaces, not 5 or 6 respectively...
-}  
+}
 
-// Is aChar a whitespace character ? 
+// Is aChar a whitespace character ?
 function IsWhitespaceChar(aChar: char): boolean;
-// Does S consist of only whitespace characters ? 
+// Does S consist of only whitespace characters ?
 function IsWhitespace(const S: String): boolean;
 // must character aChar be escaped ?
 function MustEscape(C : char) : boolean;
@@ -82,15 +82,15 @@ function CopyUpTo(const S : String; aExclude : TSysCharSet) : String;
 function CopySkipped(const S : String; aSkip : TSysCharSet) : String;
 // Copy from the start of S all characters that match
 function CopyMatching(const S : String; aMatches : TSysCharSet) : String;
-{ 
+{
   allows up to aWSLen whitespace characters before aMatch;
-  Returns true if a match was found. 
+  Returns true if a match was found.
   Additionally returns the number of whitespace characters to remove from the start to get to aMatch.
 }
 
 function StartsWithWhitespace(const S : String; aMatch : AnsiChar; out aLength : integer; aWSLen : integer = 3) : boolean; overload;
 function StartsWithWhitespace(const S : String; aMatch : TSysCharSet; out aLength : integer; aWSLen : integer = 3) : boolean; overload;
-function StartsWithWhitespace(const S : String; aMatch : String; out aLength : integer; aWSLen : integer = 3) : boolean; overload;
+function StartsWithWhitespace(const S : String; const aMatch : String; out aLength : integer; aWSLen : integer = 3) : boolean; overload;
 // Returns the number of space characters. Tab is a tabulator of 4
 function LeadingWhitespace(const S : String) : integer; inline;
 // Returns the number of space characters. Tab is a tabulator of 4.
@@ -114,13 +114,11 @@ function UrlEscape(const S : String) : String; overload;
 // Is the string S an absolute URI ?
 function isAbsoluteUri(const S : String) : boolean;
 // Is S a valid email address
-function IsValidEmail(const S : String) : boolean;
+function IsEmailLike(const S : String) : boolean;
 // Parse entity string
 function ParseEntityString(aEntities : TFPStringHashTable; const aEntity : String): String;
 // Check if S ends on an entity start character, and if so, return the length of the entity
 function CheckForTrailingEntity(Const S : String) : integer;
-// Return true if aContent is a match for regular expression aRegex
-function IsRegexMatch(const aContent, aRegex: String): boolean;
 // Is aChar a Unicode punctuation character ?
 function IsUnicodePunctuation(aChar : UnicodeChar) : boolean;
 // Count the number of characters aChar at the start of aLine
@@ -132,7 +130,7 @@ Function TransformTabs(const aLine : string) : string;
 
 implementation
 
-uses 
+uses
 {$IFDEF FPC_DOTTEDUNITS}
   System.StrUtils, System.CodePages.unicodedata;
 {$ELSE}
@@ -179,7 +177,7 @@ begin
   if not Result then
     Exit;
   Result:=(Ord(aChar)<128) or (Ord(aChar)>=LOW_SURROGATE_BEGIN);
-  if Result then 
+  if Result then
     exit;
   Cat:=GetProps(Ord(aChar))^.Category;
   Result:=(UGC_OtherNumber<Cat);
@@ -203,12 +201,49 @@ end;
 function HtmlEscape(const S: String): String;
 
 var
-  C : char;
-  
+  lPos,
+  lTotalLen,
+  lCharLen : Integer;
+  lChar : char;
+  lRepl : String[6];
+
 begin
   Result:='';
-  for C in S do
-    Result:=Result+HtmlEscape(C);
+  lTotalLen:=0;
+  lCharLen:=0;
+  for lChar in S do
+    begin
+    Case lChar of
+      '<',
+      '>' : lCharLen:=4;
+      '"' : lCharLen:=6;
+      '&' : lCharLen:=5;
+    else
+      lCharLen:=1;
+    end;
+    Inc(lTotalLen,lCharLen);
+    end;
+  SetLength(Result,lTotalLen);
+  lPos:=1;
+  for lChar in S do
+    begin
+    lCharLen:=0;
+    Case lChar of
+      '<' : lRepl:='&lt;';
+      '>' : lRepl:='&gt;';
+      '"' : lRepl:='&quot;';
+      '&' : lRepl:='&amp;';
+    else
+      Result[lPos]:=lChar;
+      lCharLen:=1;
+    end;
+    if lCharLen=0 then
+      begin
+      lCharlen:=Length(lRepl);
+      Move(lRepl[1],Result[lPos],lCharLen);
+      end;
+    Inc(lPos,lCharLen);
+    end;
 end;
 
 
@@ -216,7 +251,7 @@ function CopySkipped(const S: String; aSkip: TSysCharSet): String;
 
 var
   lLen,Idx : integer;
-  
+
 begin
   Result:=S;
   lLen:=Length(S);
@@ -266,7 +301,7 @@ function CopyMatching(const S: String; aMatches: TSysCharSet): String;
 
 var
   lLen, Idx : integer;
-  
+
 begin
   Idx:=1;
   lLen:=Length(S);
@@ -296,7 +331,7 @@ begin
       inc(aLength);
     end;
   Result:=S[aLength]=aMatch;
-  if Result then 
+  if Result then
     Dec(aLength);
 end;
 
@@ -320,7 +355,7 @@ begin
     Dec(aLength);
 end;
 
-function StartsWithWhitespace(const S: String; aMatch: String; out aLength: integer; aWSLen: integer): boolean;
+function StartsWithWhitespace(const S: String; const aMatch: String; out aLength: integer; aWSLen: integer): boolean;
 
 var
   Len, I : integer;
@@ -337,7 +372,7 @@ begin
       inc(aLength);
     end;
   Result:=Copy(s,aLength,Length(aMatch))=aMatch;
-  if Result then 
+  if Result then
     Dec(aLength);
 end;
 
@@ -422,7 +457,7 @@ begin
         Delta:=1
       else if s[Idx]=#9 then
         Delta:=4 - (lCount mod 4);
-      inc(lCount,Delta);  
+      inc(lCount,Delta);
       end
     else
       break;
@@ -522,13 +557,13 @@ var
   S : String;
   C : UnicodeChar;
   i, Len : integer;
-  
+
 begin
   S:=copy(aEntity,2,length(aEntity)-2); // Strip & and ;
   Result:=aEntities.Items[S];
   if Result<>'' then
     Exit;
-  Len:=Length(S);  
+  Len:=Length(S);
   if (Len>0) and (Len<=9) and (S[1]='#') and TryStrToInt(Copy(S,2,Len-1),i)  then
     begin
     if (I<=0) or (i>65535) then
@@ -545,35 +580,18 @@ var
   Tmp : String;
   C : char;
   p,Len : Integer;
-  
+
 begin
   Result:=0;
   P:=RPos('&',S);
   if P=0 then
     exit;
-  Len:=Length(S);  
+  Len:=Length(S);
   Tmp:=Copy(S,P+1,Len-P-1);
   for C in Tmp do
     if not CharInSet(C, ['a'..'z', 'A'..'Z', '0'..'9']) then
       exit;
    exit(Length(tmp)+2);
-end;
-
-function IsRegexMatch(const aContent, aRegex: String): boolean;
-
-var
-  lRegex : TRegExpr;
-  
-begin
-  Result:=False;
-  if aContent = '' then
-    Exit;
-  lRegex:=TRegExpr.create(aRegex);
-  try
-    Result:=lRegex.exec(aContent);
-  finally
-    lRegex.Free;
-  end;
 end;
 
 function TransformTabs(const aLine: string): string;
@@ -687,14 +705,14 @@ begin
   Result:=true;
 end;
 
-function IsValidEmail(const S : String) : boolean;
+function IsEmailLike(const S : String) : boolean;
 
 type
   TState = (sNeutral,sUser,sHost,sDomain);
 
 var
   lState : TState;
-  c : char;
+  c,prev : char;
 
 begin
   Result:=False;
@@ -702,6 +720,7 @@ begin
     Exit;
   lState:=sNeutral;
   for c in s do
+    begin
     Case lState of
     sNeutral:
       if c='@' then
@@ -713,10 +732,17 @@ begin
         lState:=sHost;
     else
       if c='.' then
-        lState:=sDomain
+        if prev='@' then
+          exit
+        else  
+          lState:=sDomain
       else if c='+' then
         Exit;
     end;
+    prev:=c;    
+    end;
+  if prev in ['@','.'] then
+    exit;
   Result:=lState=sDomain;
 end;
 

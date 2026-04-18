@@ -13,7 +13,7 @@
 
  **********************************************************************}
 
-unit MarkDown.Line;
+unit Markdown.Line;
 
 {$mode ObjFPC}{$H+}
 
@@ -22,16 +22,16 @@ interface
 uses Markdown.Utils;
 
 type
-  { TMarkDownLine }
+  { TMarkdownLine }
 
-  TMarkDownLine = class
+  TMarkdownLine = class
   private
     FLine : AnsiString;
     FLineNo : integer;
     FCursor : integer;
     FMark : integer;
   public
-    constructor create(aLine : AnsiString; aLineNo : integer);
+    constructor create(const aLine : AnsiString; aLineNo : integer);
     procedure Reset;
     procedure Mark;
     procedure Rewind;
@@ -53,7 +53,7 @@ type
     property LineNo : integer Read FLineNo;
     Property CursorPos : Integer Read FCursor;
   end;
-  TMarkDownLineList = class (specialize TGFPObjectList<TMarkDownLine>);
+  TMarkdownLineList = class (specialize TGFPObjectList<TMarkdownLine>);
 
 implementation
 
@@ -62,11 +62,11 @@ uses
   System.Classes, System.SysUtils;
 {$ELSE}
   Classes, SysUtils;
-{$ENDIF}  
+{$ENDIF}
 
-{ TMarkDownLine }
+{ TMarkdownLine }
 
-constructor TMarkDownLine.create(aLine: AnsiString; aLineNo: integer);
+constructor TMarkdownLine.create(const aLine: AnsiString; aLineNo: integer);
 
 begin
   inherited create;
@@ -76,33 +76,33 @@ begin
 end;
 
 
-procedure TMarkDownLine.Reset;
+procedure TMarkdownLine.Reset;
 
 begin
   FCursor:=1;
 end;
 
 
-procedure TMarkDownLine.Rewind;
+procedure TMarkdownLine.Rewind;
 begin
   FCursor:=FMark;
 end;
 
 
-procedure TMarkDownLine.Advance(len: integer);
+procedure TMarkdownLine.Advance(len: integer);
 begin
   inc(FCursor,len);
 end;
 
 
-function TMarkDownLine.isEmpty: boolean;
+function TMarkdownLine.isEmpty: boolean;
 
 begin
   Result:=FCursor>Length(FLine);
 end;
 
 
-function TMarkDownLine.isWhitespace: boolean;
+function TMarkdownLine.isWhitespace: boolean;
 
 var
   i,lLen: integer;
@@ -118,20 +118,20 @@ begin
     end;
 end;
 
-procedure TMarkDownLine.Mark;
+procedure TMarkdownLine.Mark;
 begin
   FMark:=FCursor;
 end;
 
 
-function TMarkDownLine.LeadingWhitespace : integer;
+function TMarkdownLine.LeadingWhitespace : integer;
 var
   lDummy : char;
 begin
   Result:=LeadingWhitespace(lDummy);
 end;
 
-function TMarkDownLine.LeadingWhitespace(out aFirstNonWhitespaceChar: Char) : integer;
+function TMarkdownLine.LeadingWhitespace(out aFirstNonWhitespaceChar: Char) : integer;
 
 var
   lIndex,lLen : integer;
@@ -152,14 +152,14 @@ begin
 end;
 
 
-function TMarkDownLine.Remainder: AnsiString;
+function TMarkdownLine.Remainder: AnsiString;
 
 begin
   Result:=Copy(FLine,FCursor,Length(FLine)-FCursor+1);
 end;
 
 
-function TMarkDownLine.SkipWhiteSpace: Char;
+function TMarkdownLine.SkipWhiteSpace: Char;
 
 var
   lLen : Integer;

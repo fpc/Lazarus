@@ -13,7 +13,7 @@
 
  **********************************************************************}
 
-Unit MarkDown.Parser;
+Unit Markdown.Parser;
 
 {$mode objfpc}
 {$h+}
@@ -24,46 +24,46 @@ uses
   System.CodePages.UnicodeData, System.SysUtils, System.Classes, System.Contnrs,
 {$ELSE}
   UnicodeData, SysUtils, Classes, Contnrs,
-{$ENDIF}  
-  MarkDown.Elements,
-  MarkDown.Utils,
-  MarkDown.Scanner,
-  MarkDown.Line,
-  MarkDown.InlineText,
-  MarkDown.HtmlEntities;
+{$ENDIF}
+  Markdown.Elements,
+  Markdown.Utils,
+  Markdown.Scanner,
+  Markdown.Line,
+  Markdown.InlineText,
+  Markdown.HtmlEntities;
 
 type
-  EMarkDown = class(Exception);
+  EMarkdown = class(Exception);
   // Forward definition
-  TMarkDownParser = class;
+  TMarkdownParser = class;
 
   // Options
-  TMarkDownOption = (mdoGithubFlavoured);
-  TMarkDownOptions = set of TMarkDownOption;
+  TMarkdownOption = (mdoGithubFlavoured);
+  TMarkdownOptions = set of TMarkdownOption;
 
   // Parent block context
-  TMarkDownBlockProcessingContext = (bpGeneral, bpCodeBlock, bpFencedCodeBlock);
+  TMarkdownBlockProcessingContext = (bpGeneral, bpCodeBlock, bpFencedCodeBlock);
 
-  { TMarkDownBlockProcessor }
-  TMarkDownBlockProcessor = class abstract (TObject)
+  { TMarkdownBlockProcessor }
+  TMarkdownBlockProcessor = class abstract (TObject)
   private
     FParser : TMarkdownParser;
-    function GetParentProcessor: TMarkDownBlockProcessor;
+    function GetParentProcessor: TMarkdownBlockProcessor;
   protected
     function inListOrQuote : boolean; virtual;
     // Access to parser methods
-    function PeekLine : TMarkDownLine;
-    function NextLine : TMarkDownLine;
+    function PeekLine : TMarkdownLine;
+    function NextLine : TMarkdownLine;
     function Done : Boolean;
     procedure RedoLine(aResetLine: Boolean);
-    function InList(aBlock : TMarkDownBlock; ordered : boolean; marker : String; indent : integer; grace : integer; out list : TMarkDownListBlock) : boolean;
-    function IsBlock(aBlock : TMarkDownBlock; blocks : TMarkDownBlockList; const aLine : String; wsLen : integer = 3) : boolean;
-    function CurrentLine : TMarkDownLine;
-    procedure Parse(aParent: TMarkDownContainerBlock; aPArentProcessor: TMarkDownBlockProcessor); overload;
+    function InList(aBlock : TMarkdownBlock; ordered : boolean; const marker : String; indent : integer; grace : integer; out list : TMarkdownListBlock) : boolean;
+    function IsBlock(aBlock : TMarkdownBlock; blocks : TMarkdownBlockList; const aLine : String; wsLen : integer = 3) : boolean;
+    function CurrentLine : TMarkdownLine;
+    procedure Parse(aParent: TMarkdownContainerBlock; aPArentProcessor: TMarkdownBlockProcessor); overload;
     // Our parser
-    Property parser : TMarkDownParser read FParser;
+    Property parser : TMarkdownParser read FParser;
     // Parent processor
-    property ParentProcessor : TMarkDownBlockProcessor Read GetParentProcessor;
+    property ParentProcessor : TMarkdownBlockProcessor Read GetParentProcessor;
 
   public
     // One instance is created for each block type.
@@ -71,54 +71,54 @@ type
     // Register for given block type
     class procedure register(const aBlockType : String);
     // This is called to see whether aLine closes the current block.
-    function LineEndsBlock(aBlock : TMarkDownContainerBlock; aLine: TMarkDownLine): Boolean; virtual;
+    function LineEndsBlock(aBlock : TMarkdownContainerBlock; aLine: TMarkdownLine): Boolean; virtual;
     // Return true if this processor handles the current line. Needs to handle state.
-    function HandlesLine(aParent : TMarkDownContainerBlock; aLine: TMarkDownLine): boolean; virtual; abstract;
+    function HandlesLine(aParent : TMarkdownContainerBlock; aLine: TMarkdownLine): boolean; virtual; abstract;
     // When HandlesLine returned true, ProcessLine is called.
     // If ProcessLine returned true, the next line is started.
     // If it is false, the line is given to another processor.
     // processline is where a new block is created and attached to the parent block.
-    function processLine(aParent : TMarkDownContainerBlock; aLine : TMarkDownLine; context : TMarkDownBlockProcessingContext) : boolean; virtual; abstract;
+    function processLine(aParent : TMarkdownContainerBlock; aLine : TMarkdownLine; context : TMarkdownBlockProcessingContext) : boolean; virtual; abstract;
   end;
-  TMarkDownBlockProcessorArray = array of TMarkDownBlockProcessor;
-  TMarkDownBlockProcessorClass = class of TMarkDownBlockProcessor;
-  TMarkDownBlockProcessorClassArray = array of TMarkDownBlockProcessorClass;
+  TMarkdownBlockProcessorArray = array of TMarkdownBlockProcessor;
+  TMarkdownBlockProcessorClass = class of TMarkdownBlockProcessor;
+  TMarkdownBlockProcessorClassArray = array of TMarkdownBlockProcessorClass;
 
-  { TMarkDownDocumentProcessor }
+  { TMarkdownDocumentProcessor }
 
   // We always need this one. It is not registered, but created hardcoded
-  TMarkDownDocumentProcessor = class (TMarkDownBlockProcessor)
+  TMarkdownDocumentProcessor = class (TMarkdownBlockProcessor)
   public
-    function processLine(aParent : TMarkDownContainerBlock; aLine : TMarkDownLine; aContext : TMarkDownBlockProcessingContext) : Boolean; override;
-    function HandlesLine(aParent : TMarkDownContainerBlock; aLine: TMarkDownLine): boolean; override;
+    function processLine(aParent : TMarkdownContainerBlock; aLine : TMarkdownLine; aContext : TMarkdownBlockProcessingContext) : Boolean; override;
+    function HandlesLine(aParent : TMarkdownContainerBlock; aLine: TMarkdownLine): boolean; override;
   end;
 
 
-  { TMarkDownParser }
+  { TMarkdownParser }
 
-  TMarkDownParser = class(TComponent)
+  TMarkdownParser = class(TComponent)
   private
     FLazy: Boolean;
-    FLines : TMarkDownLineList;
+    FLines : TMarkdownLineList;
     FCurrentLine : integer;
     FBuilder : TStringBuilder;
     FEntities : TFPStringHashTable;
-    FOptions : TMarkDownOptions;
-    FProcessors : TMarkDownBlockProcessorArray;
+    FOptions : TMarkdownOptions;
+    FProcessors : TMarkdownBlockProcessorArray;
     FProcessorStack : TStack;
-    function CreateScanner(const aText: String; aStartLine: Integer): TMarkDownTextScanner;
+    function CreateScanner(const aText: String; aStartLine: Integer): TMarkdownTextScanner;
   Protected
     // Collect all entitues
     procedure CollectEntities(aList: TFPStringHashTable);
     // aLine operations
-    // Convert strings in lines to TMarkDownLine instances
+    // Convert strings in lines to TMarkdownLine instances
     procedure ConvertLines(aLines : TStrings);
     // Get the current line (can be nil);
-    function CurrentLine : TMarkDownLine;
+    function CurrentLine : TMarkdownLine;
     // Get the next line (can be nil), but do not move the current line pointer
-    function PeekLine : TMarkDownLine;
+    function PeekLine : TMarkdownLine;
     // Get the next line (can be nil) and move the current line pointer
-    function NextLine : TMarkDownLine;
+    function NextLine : TMarkdownLine;
     // Should we re-process the current line ? Moves line pointer one back, optionally resets the line.
     procedure RedoLine(aResetLine : Boolean = True);
     // is there a line available for redo ?
@@ -128,18 +128,18 @@ type
     // status
     // Is the last block a list with the given properties ?
     // if yes, return the list
-    function InList(aBlock: TMarkDownBlock; aOrdered: boolean; const aMarker: String; aIndent: integer; aGrace: integer; out
-      aList: TMarkDownListBlock): boolean;
+    function InList(aBlock: TMarkdownBlock; aOrdered: boolean; const aMarker: String; aIndent: integer; aGrace: integer; out
+      aList: TMarkdownListBlock): boolean;
     // Does aLine start a new block (true) or can it be a continuation (false) ?
-    function IsBlock(aParent: TMarkDownBlock; aBlocks: TMarkDownBlockList; const aLine: String; aWhiteSpaceLen: integer): boolean;
+    function IsBlock(aParent: TMarkdownBlock; aBlocks: TMarkdownBlockList; const aLine: String; aWhiteSpaceLen: integer): boolean;
     // block parsing loop
-    procedure Parse(aParent: TMarkDownContainerBlock; aPArentProcessor: TMarkDownBlockProcessor); overload;
+    procedure Parse(aParent: TMarkdownContainerBlock; aPArentProcessor: TMarkdownBlockProcessor); overload;
     // Parent processor of current processor
-    function ParentProcessor : TMarkDownBlockProcessor;
+    function ParentProcessor : TMarkdownBlockProcessor;
     // process a text line
-    function ProcessText(const aText: String; wsMode: TWhitespaceMode; aStartLine: integer): TMarkDownTextNodeList;
+    function ProcessText(const aText: String; wsMode: TWhitespaceMode; aStartLine: integer): TMarkdownTextNodeList;
     // Recursively process inline text
-    procedure ProcessInlines(aBlock : TMarkDownBlock; wsMode : TWhitespaceMode);
+    procedure ProcessInlines(aBlock : TMarkdownBlock; wsMode : TWhitespaceMode);
     // Initialize processors
     Procedure InitProcessors;
     // Done with processors
@@ -147,44 +147,44 @@ type
     // To customize the Inline Text processor class, override this.
     function GetInlineTextProcessorClass : TInlineTextProcessorClass; virtual;
     // To customize top-level document class, override this.
-    function CreateDocument(aLine: integer): TMarkDownDocument; virtual;
+    function CreateDocument(aLine: integer): TMarkdownDocument; virtual;
     // To customize top-level document bloc k parser, override this.
-    function CreateDocumentProcessor: TMarkDownDocumentProcessor; virtual;
+    function CreateDocumentProcessor: TMarkdownDocumentProcessor; virtual;
   public
     Constructor Create(aOwner : TComponent); override;
     Destructor Destroy; override;
     // Utility function to handle parsing of inline text.
-    procedure ParseInline(aParent : TMarkDownContainerBlock; const aLine : String);
+    procedure ParseInline(aParent : TMarkdownContainerBlock; const aLine : String);
     // Parse the markDown in strings
-    function Parse(aSource: TStrings): TMarkDownDocument; overload;
+    function Parse(aSource: TStrings): TMarkdownDocument; overload;
     // Utility function: Parse the markDown in file aFileName.
-    function ParseFile(const aFilename : string): TMarkDownDocument;
+    function ParseFile(const aFilename : string): TMarkdownDocument;
     // Helper : is the last block a plain paragraph ?
-    class function InPara(blocks : TMarkDownBlockList; canBeQuote : boolean) : boolean;
+    class function InPara(blocks : TMarkdownBlockList; canBeQuote : boolean) : boolean;
     // Helper to quickly parse a stringlist into a markdown document
-    class function FastParse(aSource: TStrings; aOptions: TMarkDownOptions): TMarkDownDocument;
+    class function FastParse(aSource: TStrings; aOptions: TMarkdownOptions): TMarkdownDocument;
     // Helper to quickly parse a stringlist into a markdown document
-    class function FastParseFile(const aFileName : string; aOptions: TMarkDownOptions = []): TMarkDownDocument;
+    class function FastParseFile(const aFileName : string; aOptions: TMarkdownOptions = []): TMarkdownDocument;
     // State control in lazy continuation .
     property Lazy : Boolean Read FLazy Write FLazy;
     // HTML entities to convert
     Property Entities : TFPStringHashTable read FEntities;
   published
     // Options
-    Property Options : TMarkDownOptions Read FOptions Write FOptions;
+    Property Options : TMarkdownOptions Read FOptions Write FOptions;
   end;
 
-  { TMarkDownProcessorFactory }
+  { TMarkdownProcessorFactory }
 
-  TMarkDownProcessorFactory = class(TObject)
+  TMarkdownProcessorFactory = class(TObject)
   Private
-    class var _instance : TMarkDownProcessorFactory;
+    class var _instance : TMarkdownProcessorFactory;
   private
     Type
       TRegisteredProcessor = class(TObject)
         Name : string;
-        Processor : TMarkDownBlockProcessorClass;
-        constructor create(const aName : String; aProcessor : TMarkDownBlockProcessorClass);
+        Processor : TMarkdownBlockProcessorClass;
+        constructor create(const aName : String; aProcessor : TMarkdownBlockProcessorClass);
       end;
       TRegisteredProcessorList = class(Specialize TGFPObjectList<TRegisteredProcessor>);
   Private
@@ -196,21 +196,21 @@ type
     class constructor init;
     class destructor done;
     // Return an array with all known processors.
-    function All : TMarkDownBlockProcessorClassArray;
+    function All : TMarkdownBlockProcessorClassArray;
     // Find a processor for a block of type aBlockType
-    function FindProcessor(const aBlockType : string) : TMarkDownBlockProcessorClass;
+    function FindProcessor(const aBlockType : string) : TMarkdownBlockProcessorClass;
     // Register a processor for block type aBlockType. Existing processor will be overwritten
-    Procedure RegisterProcessor(const aBlockType : String; aProcessor : TMarkDownBlockProcessorClass);
+    Procedure RegisterProcessor(const aBlockType : String; aProcessor : TMarkdownBlockProcessorClass);
     // Singleton instance
-    class property Instance : TMarkDownProcessorFactory Read _instance;
+    class property Instance : TMarkdownProcessorFactory Read _instance;
   end;
 
 
 implementation
 
-{ TMarkDownBlockProcessor }
+{ TMarkdownBlockProcessor }
 
-constructor TMarkDownBlockProcessor.Create(aParser: TMarkdownParser);
+constructor TMarkdownBlockProcessor.Create(aParser: TMarkdownParser);
 
 begin
   inherited Create;
@@ -218,21 +218,21 @@ begin
 end;
 
 
-class procedure TMarkDownBlockProcessor.register(const aBlockType: String);
+class procedure TMarkdownBlockProcessor.register(const aBlockType: String);
 
 begin
-  TMarkDownProcessorFactory.Instance.RegisterProcessor(aBlockType,Self);
+  TMarkdownProcessorFactory.Instance.RegisterProcessor(aBlockType,Self);
 end;
 
 
-function TMarkDownBlockProcessor.LineEndsBlock(aBlock: TMarkDownContainerBlock; aLine: TMarkDownLine): Boolean;
+function TMarkdownBlockProcessor.LineEndsBlock(aBlock: TMarkdownContainerBlock; aLine: TMarkdownLine): Boolean;
 
 begin
   Result:=(aLine=Nil) or (aBlock=Nil);
 end;
 
 
-function TMarkDownBlockProcessor.inListOrQuote: boolean;
+function TMarkdownBlockProcessor.inListOrQuote: boolean;
 
 begin
   // Todo
@@ -240,43 +240,43 @@ begin
 end;
 
 
-function TMarkDownBlockProcessor.PeekLine: TMarkDownLine;
+function TMarkdownBlockProcessor.PeekLine: TMarkdownLine;
 
 begin
   Result:=FParser.PeekLine;
 end;
 
 
-function TMarkDownBlockProcessor.NextLine: TMarkDownLine;
+function TMarkdownBlockProcessor.NextLine: TMarkdownLine;
 
 begin
   Result:=FParser.NextLine;
 end;
 
 
-function TMarkDownBlockProcessor.Done: Boolean;
+function TMarkdownBlockProcessor.Done: Boolean;
 
 begin
   Result:=FParser.Done;
 end;
 
 
-procedure TMarkDownBlockProcessor.RedoLine(aResetLine: Boolean);
+procedure TMarkdownBlockProcessor.RedoLine(aResetLine: Boolean);
 
 begin
   FParser.RedoLine(aResetLine);
 end;
 
 
-function TMarkDownBlockProcessor.InList(aBlock: TMarkDownBlock; ordered: boolean; marker: String; indent: integer; grace: integer;
-  out list: TMarkDownListBlock): boolean;
+function TMarkdownBlockProcessor.InList(aBlock: TMarkdownBlock; ordered: boolean; const marker: String; indent: integer;
+  grace: integer; out list: TMarkdownListBlock): boolean;
 
 begin
   Result:=FParser.InList(aBlock,ordered,marker,indent,grace,list);
 end;
 
 
-function TMarkDownBlockProcessor.IsBlock(aBlock: TMarkDownBlock; blocks: TMarkDownBlockList; const aLine: String; wsLen: integer
+function TMarkdownBlockProcessor.IsBlock(aBlock: TMarkdownBlock; blocks: TMarkdownBlockList; const aLine: String; wsLen: integer
   ): boolean;
 
 begin
@@ -284,54 +284,54 @@ begin
 end;
 
 
-function TMarkDownBlockProcessor.CurrentLine: TMarkDownLine;
+function TMarkdownBlockProcessor.CurrentLine: TMarkdownLine;
 
 begin
   Result:=FParser.CurrentLine;
 end;
 
 
-procedure TMarkDownBlockProcessor.Parse(aParent: TMarkDownContainerBlock; aPArentProcessor: TMarkDownBlockProcessor);
+procedure TMarkdownBlockProcessor.Parse(aParent: TMarkdownContainerBlock; aPArentProcessor: TMarkdownBlockProcessor);
 
 begin
   FParser.Parse(aParent,aParentProcessor);
 end;
 
 
-function TMarkDownBlockProcessor.GetParentProcessor: TMarkDownBlockProcessor;
+function TMarkdownBlockProcessor.GetParentProcessor: TMarkdownBlockProcessor;
 
 begin
   Result:=FParser.ParentProcessor;
 end;
 
-{ TMarkDownDocumentProcessor }
+{ TMarkdownDocumentProcessor }
 
-function TMarkDownDocumentProcessor.processLine(aParent : TMarkDownContainerBlock; aLine: TMarkDownLine; aContext : TMarkDownBlockProcessingContext): Boolean;
-
-begin
-  Result:=False;
-end;
-
-
-function TMarkDownDocumentProcessor.HandlesLine(aParent: TMarkDownContainerBlock; aLine: TMarkDownLine): boolean;
+function TMarkdownDocumentProcessor.processLine(aParent : TMarkdownContainerBlock; aLine: TMarkdownLine; aContext : TMarkdownBlockProcessingContext): Boolean;
 
 begin
   Result:=False;
 end;
 
 
-{ TMarkDownParser }
+function TMarkdownDocumentProcessor.HandlesLine(aParent: TMarkdownContainerBlock; aLine: TMarkdownLine): boolean;
 
-class function TMarkDownParser.FastParse(aSource: TStrings; aOptions: TMarkDownOptions): TMarkDownDocument;
+begin
+  Result:=False;
+end;
+
+
+{ TMarkdownParser }
+
+class function TMarkdownParser.FastParse(aSource: TStrings; aOptions: TMarkdownOptions): TMarkdownDocument;
 
 var
-  lParser : TMarkDownParser;
+  lParser : TMarkdownParser;
   lDone : Boolean;
 
 begin
   Result:=Nil;
   lDone:=false;
-  lParser:=TMarkDownParser.Create(Nil);
+  lParser:=TMarkdownParser.Create(Nil);
   try
     lParser.Options:=aOptions;
     Result:=LParser.Parse(aSource);
@@ -343,7 +343,7 @@ begin
   end;
 end;
 
-class function TMarkDownParser.FastParseFile(const aFileName: string; aOptions: TMarkDownOptions): TMarkDownDocument;
+class function TMarkdownParser.FastParseFile(const aFileName: string; aOptions: TMarkdownOptions): TMarkdownDocument;
 var
   lFile : TStrings;
 begin
@@ -357,7 +357,7 @@ begin
 end;
 
 
-procedure TMarkDownParser.CollectEntities(aList :TFPStringHashTable);
+procedure TMarkdownParser.CollectEntities(aList :TFPStringHashTable);
 
 var
   Ent : THTMLEntityDef;
@@ -368,20 +368,20 @@ begin
 end;
 
 
-constructor TMarkDownParser.Create(aOwner : TComponent);
+constructor TMarkdownParser.Create(aOwner : TComponent);
 
 begin
   inherited ;
   FOptions:=[];
   FBuilder:=TStringBuilder.Create;
   FProcessorStack:=TStack.Create;
-  FLines:=TMarkDownLineList.create(true);
+  FLines:=TMarkdownLineList.create(true);
   FEntities:=TFPStringHashTable.create;
   CollectEntities(FEntities);
 end;
 
 
-destructor TMarkDownParser.Destroy;
+destructor TMarkdownParser.Destroy;
 
 begin
   FreeAndNil(FEntities);
@@ -392,23 +392,23 @@ begin
 end;
 
 
-function TMarkDownParser.CreateDocument(aLine : integer) : TMarkDownDocument;
+function TMarkdownParser.CreateDocument(aLine : integer) : TMarkdownDocument;
 
 begin
-  Result:=TMarkDownDocument.Create(Nil,aLine);
+  Result:=TMarkdownDocument.Create(Nil,aLine);
 end;
 
 
-function TMarkDownParser.CreateDocumentProcessor : TMarkDownDocumentProcessor;
+function TMarkdownParser.CreateDocumentProcessor : TMarkdownDocumentProcessor;
 
 begin
-  Result:=TMarkDownDocumentProcessor.Create(Self);
+  Result:=TMarkdownDocumentProcessor.Create(Self);
 end;
 
-function TMarkDownParser.Parse(aSource: TStrings): TMarkDownDocument;
+function TMarkdownParser.Parse(aSource: TStrings): TMarkdownDocument;
 
 var
-  lProc : TMarkDownDocumentProcessor;
+  lProc : TMarkdownDocumentProcessor;
   lDone : Boolean;
 
 begin
@@ -432,7 +432,7 @@ begin
   end;
 end;
 
-function TMarkDownParser.ParseFile(const aFilename: string): TMarkDownDocument;
+function TMarkdownParser.ParseFile(const aFilename: string): TMarkdownDocument;
 var
   lFile : TStrings;
 begin
@@ -446,7 +446,7 @@ begin
 end;
 
 
-function TMarkDownParser.NextLine: TMarkDownLine;
+function TMarkdownParser.NextLine: TMarkdownLine;
 
 begin
   Result:=Nil;
@@ -456,7 +456,7 @@ begin
 end;
 
 
-function TMarkDownParser.PeekLine: TMarkDownLine;
+function TMarkdownParser.PeekLine: TMarkdownLine;
 
 begin
   Result:=nil;
@@ -465,7 +465,7 @@ begin
 end;
 
 
-procedure TMarkDownParser.RedoLine(aResetLine: Boolean);
+procedure TMarkdownParser.RedoLine(aResetLine: Boolean);
 
 begin
   if aResetLine then
@@ -474,30 +474,30 @@ begin
 end;
 
 
-function TMarkDownParser.CanRedo: boolean;
+function TMarkdownParser.CanRedo: boolean;
 
 begin
   Result:=(FCurrentLine<FLines.Count);
 end;
 
 
-function TMarkDownParser.Done: boolean;
+function TMarkdownParser.Done: boolean;
 begin
   Result:=(FCurrentLine>=FLines.Count-1)
 end;
 
 
-function TMarkDownParser.InList(aBlock: TMarkDownBlock; aOrdered: boolean; const aMarker: String; aIndent: integer;
-  aGrace: integer; out aList: TMarkDownListBlock): boolean;
+function TMarkdownParser.InList(aBlock: TMarkdownBlock; aOrdered: boolean; const aMarker: String; aIndent: integer;
+  aGrace: integer; out aList: TMarkdownListBlock): boolean;
 var
-  lBlock: TMarkDownBlock;
-  lList : TMarkDownListBlock absolute lBlock;
+  lBlock: TMarkdownBlock;
+  lList : TMarkdownListBlock absolute lBlock;
 begin
   Result:=False;
   lBlock:=aBlock;
   While (Not Result) and Assigned(lBlock) do
     begin
-    Result:=lBlock is TMarkDownListBlock;
+    Result:=lBlock is TMarkdownListBlock;
     // Check for exact match: same type, marker, and base indentation level
     if Result then
       Result:=(lList.ordered=aOrdered)
@@ -511,28 +511,28 @@ begin
 end;
 
 
-class function TMarkDownParser.InPara(blocks: TMarkDownBlockList; canBeQuote: boolean): boolean;
+class function TMarkdownParser.InPara(blocks: TMarkdownBlockList; canBeQuote: boolean): boolean;
 
 begin
   Result:=(blocks.Count > 0)
-            and (blocks.Last is TMarkDownParagraphBlock)
-            and not (blocks.Last as TMarkDownParagraphBlock).closed
-            and ((blocks.Last as TMarkDownParagraphBlock).header = 0);
-  if Result and not canBeQuote and not (blocks.Last as TMarkDownParagraphBlock).isPlainPara then
+            and (blocks.Last is TMarkdownParagraphBlock)
+            and not (blocks.Last as TMarkdownParagraphBlock).closed
+            and ((blocks.Last as TMarkdownParagraphBlock).header = 0);
+  if Result and not canBeQuote and not (blocks.Last as TMarkdownParagraphBlock).isPlainPara then
     Result:=false;
 end;
 
 
-function TMarkDownParser.IsBlock(aParent: TMarkDownBlock; aBlocks: TMarkDownBlockList; const aLine: String; aWhiteSpaceLen: integer): boolean;
+function TMarkdownParser.IsBlock(aParent: TMarkdownBlock; aBlocks: TMarkdownBlockList; const aLine: String; aWhiteSpaceLen: integer): boolean;
 
   function inOrderedList : boolean;
   begin
-    Result:=(aParent is TMarkDownListBlock) and (aParent as TMarkDownListBlock).Ordered;
+    Result:=(aParent is TMarkdownListBlock) and (aParent as TMarkdownListBlock).Ordered;
   end;
 
   function IsOpenPara : boolean;
   begin
-    Result:=(aBlocks.count > 0) and (aBlocks.lastblock is TMarkDownParagraphBlock) and not (aBlocks.LastBlock.Closed)
+    Result:=(aBlocks.count > 0) and (aBlocks.lastblock is TMarkdownParagraphBlock) and not (aBlocks.LastBlock.Closed)
   end;
 
 var
@@ -575,27 +575,27 @@ begin
 end;
 
 
-procedure TMarkDownParser.ParseInline(aParent: TMarkDownContainerBlock; const aLine: String);
+procedure TMarkdownParser.ParseInline(aParent: TMarkdownContainerBlock; const aLine: String);
 
 var
-  lBlock : TMarkDownTextBlock;
+  lBlock : TMarkdownTextBlock;
 
 begin
-  if (aParent.blocks.Count > 0) and (aParent.blocks.Last is TMarkDownTextBlock) then
-    lBlock:=aParent.blocks.Last as TMarkDownTextBlock
+  if (aParent.blocks.Count > 0) and (aParent.blocks.Last is TMarkdownTextBlock) then
+    lBlock:=aParent.blocks.Last as TMarkdownTextBlock
   else
-    lBlock:=TMarkDownTextBlock.create(aParent,FCurrentLine,'');
+    lBlock:=TMarkdownTextBlock.create(aParent,FCurrentLine,'');
   if lBlock.Text<>'' then
     lBlock.Text:=lBlock.Text+#10;
   lBlock.Text:=lBlock.Text+aLine;
 end;
 
 
-procedure TMarkDownParser.Parse(aParent: TMarkDownContainerBlock; aPArentProcessor: TMarkDownBlockProcessor);
+procedure TMarkdownParser.Parse(aParent: TMarkdownContainerBlock; aPArentProcessor: TMarkdownBlockProcessor);
 
 var
-  lLine : TMarkDownLine;
-  lprocessor : TMarkDownBlockProcessor;
+  lLine : TMarkdownLine;
+  lprocessor : TMarkdownBlockProcessor;
   i,lProcCount : Integer;
   lProcessed : boolean;
 
@@ -621,7 +621,7 @@ begin
         inc(I);
         end;
       if not lProcessed then
-        Raise EMarkDown.CreateFmt('Line %s not processed',[lLine.LineNo]);
+        Raise EMarkdown.CreateFmt('Line %s not processed',[lLine.LineNo]);
       end;
     if aParent.ChildCount>0 then
       aParent[aParent.ChildCount-1].closed:=True;
@@ -631,7 +631,7 @@ begin
 end;
 
 
-procedure TMarkDownParser.ConvertLines(aLines: TStrings);
+procedure TMarkdownParser.ConvertLines(aLines: TStrings);
 
 var
   i : integer;
@@ -639,11 +639,11 @@ var
 begin
   FLines.Clear;
   For I:=0 to aLines.Count-1 do
-    FLines.Add(TMarkDownLine.Create(aLines[i],I+1));
+    FLines.Add(TMarkdownLine.Create(aLines[i],I+1));
   FCurrentLine:=-1;
 end;
 
-function TMarkDownParser.CurrentLine: TMarkDownLine;
+function TMarkdownParser.CurrentLine: TMarkdownLine;
 
 begin
   Result:=Nil;
@@ -652,25 +652,25 @@ begin
 end;
 
 
-function TMarkDownParser.ParentProcessor: TMarkDownBlockProcessor;
+function TMarkdownParser.ParentProcessor: TMarkdownBlockProcessor;
 
 begin
-  Result:=TMarkDownBlockProcessor(FProcessorStack.Peek);
+  Result:=TMarkdownBlockProcessor(FProcessorStack.Peek);
 end;
 
-function TMarkDownParser.CreateScanner(const aText : String; aStartLine : Integer) : TMarkDownTextScanner;
+function TMarkdownParser.CreateScanner(const aText : String; aStartLine : Integer) : TMarkdownTextScanner;
 begin
-  Result:=TMarkDownTextScanner.Create(aText,aStartLine);
+  Result:=TMarkdownTextScanner.Create(aText,aStartLine);
 end;
 
-function TMarkDownParser.ProcessText(const aText: String; wsMode: TWhitespaceMode; aStartLine: integer): TMarkDownTextNodeList;
+function TMarkdownParser.ProcessText(const aText: String; wsMode: TWhitespaceMode; aStartLine: integer): TMarkdownTextNodeList;
 
 var
-  Scanner : TMarkDownTextScanner;
+  Scanner : TMarkdownTextScanner;
   Processor : TInlineTextProcessor;
   lClass : TInlineTextProcessorClass;
 begin
-  Result:=TMarkDownTextNodeList.Create;
+  Result:=TMarkdownTextNodeList.Create;
   Scanner:=CreateScanner(aText,aStartLine);
   try
     lClass:=GetInlineTextProcessorClass;
@@ -684,33 +684,33 @@ begin
 end;
 
 
-procedure TMarkDownParser.ProcessInlines(aBlock: TMarkDownBlock; wsMode: TWhitespaceMode);
+procedure TMarkdownParser.ProcessInlines(aBlock: TMarkdownBlock; wsMode: TWhitespaceMode);
 
 var
   I : Integer;
-  lTextBlock : TMarkDownTextBlock absolute aBlock;
+  lTextBlock : TMarkdownTextBlock absolute aBlock;
 
 begin
-  if aBlock is TMarkDownTextBlock then
+  if aBlock is TMarkdownTextBlock then
     lTextBlock.Nodes:=processText(lTextBlock.Text,wsMode,aBlock.Line);
   for I:=0 to aBlock.ChildCount-1 do
     processInlines(aBlock.Children[i],aBlock.WhiteSpaceMode);
 end;
 
 
-procedure TMarkDownParser.InitProcessors;
+procedure TMarkdownParser.InitProcessors;
 
 var
-  lClasses : TMarkDownBlockProcessorClassArray;
-  lPar : TMarkDownBlockProcessorClass;
+  lClasses : TMarkdownBlockProcessorClassArray;
+  lPar : TMarkdownBlockProcessorClass;
   lCount,I : Integer;
 
 begin
   DoneProcessors;
-  lClasses:=TMarkDownProcessorFactory.Instance.All;
+  lClasses:=TMarkdownProcessorFactory.Instance.All;
   if Length(lClasses)=0 then
-    Raise EMarkDown.Create('No markdown processors registered');
-  lPar:=TMarkDownProcessorFactory.Instance.findprocessor('paragraph');
+    Raise EMarkdown.Create('No markdown processors registered');
+  lPar:=TMarkdownProcessorFactory.Instance.findprocessor('paragraph');
   SetLength(FProcessors,Length(lClasses));
   lCount:=0;
   For I:=0 to Length(lClasses)-1 do
@@ -725,7 +725,7 @@ begin
 end;
 
 
-procedure TMarkDownParser.DoneProcessors;
+procedure TMarkdownParser.DoneProcessors;
 
 var
   I : Integer;
@@ -736,16 +736,16 @@ begin
 end;
 
 
-function TMarkDownParser.GetInlineTextProcessorClass: TInlineTextProcessorClass;
+function TMarkdownParser.GetInlineTextProcessorClass: TInlineTextProcessorClass;
 
 begin
   Result:=TInlineTextProcessor;
 end;
 
 
-{ TMarkDownProcessorFactory }
+{ TMarkdownProcessorFactory }
 
-function TMarkDownProcessorFactory.Find(const aBlockType: String; aAllowCreate: Boolean): TRegisteredProcessor;
+function TMarkdownProcessorFactory.Find(const aBlockType: String; aAllowCreate: Boolean): TRegisteredProcessor;
 
 var
   Idx : integer;
@@ -768,14 +768,14 @@ begin
 end;
 
 
-constructor TMarkDownProcessorFactory.Create;
+constructor TMarkdownProcessorFactory.Create;
 
 begin
   FList:=TRegisteredProcessorList.Create(True);
 end;
 
 
-destructor TMarkDownProcessorFactory.Destroy;
+destructor TMarkdownProcessorFactory.Destroy;
 
 begin
   FreeAndNil(FList);
@@ -783,21 +783,21 @@ begin
 end;
 
 
-class constructor TMarkDownProcessorFactory.init;
+class constructor TMarkdownProcessorFactory.init;
 
 begin
-  _instance:=TMarkDownProcessorFactory.Create;
+  _instance:=TMarkdownProcessorFactory.Create;
 end;
 
 
-class destructor TMarkDownProcessorFactory.done;
+class destructor TMarkdownProcessorFactory.done;
 
 begin
   FreeAndNil(_instance);
 end;
 
 
-function TMarkDownProcessorFactory.All: TMarkDownBlockProcessorClassArray;
+function TMarkdownProcessorFactory.All: TMarkdownBlockProcessorClassArray;
 
 var
   i : integer;
@@ -810,7 +810,7 @@ begin
 end;
 
 
-function TMarkDownProcessorFactory.FindProcessor(const aBlockType: string): TMarkDownBlockProcessorClass;
+function TMarkdownProcessorFactory.FindProcessor(const aBlockType: string): TMarkdownBlockProcessorClass;
 
 var
   lReg : TRegisteredProcessor;
@@ -823,7 +823,7 @@ begin
 end;
 
 
-procedure TMarkDownProcessorFactory.RegisterProcessor(const aBlockType: String; aProcessor: TMarkDownBlockProcessorClass);
+procedure TMarkdownProcessorFactory.RegisterProcessor(const aBlockType: String; aProcessor: TMarkdownBlockProcessorClass);
 
 var
   lReg : TRegisteredProcessor;
@@ -834,9 +834,9 @@ begin
 end;
 
 
-{ TMarkDownProcessorFactory.TRegisteredProcessor }
+{ TMarkdownProcessorFactory.TRegisteredProcessor }
 
-constructor TMarkDownProcessorFactory.TRegisteredProcessor.create(const aName: String; aProcessor: TMarkDownBlockProcessorClass);
+constructor TMarkdownProcessorFactory.TRegisteredProcessor.create(const aName: String; aProcessor: TMarkdownBlockProcessorClass);
 
 begin
   Name:=aName;

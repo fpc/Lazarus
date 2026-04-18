@@ -18,7 +18,7 @@
   https://github.com/grahamegrieve/delphi-markdown
 }
 
-unit MarkDown.InlineText;
+unit Markdown.InlineText;
 
 {$mode ObjFPC}{$H+}
 
@@ -29,48 +29,48 @@ uses
   System.Classes, System.SysUtils, System.Contnrs,
 {$ELSE}
   Classes, SysUtils, Contnrs,
-{$ENDIF}  
-  MarkDown.Scanner,
-  MarkDown.Elements,
-  MarkDown.Utils;
+{$ENDIF}
+  Markdown.Scanner,
+  Markdown.Elements,
+  Markdown.Utils;
 
 Type
-  TMarkDownDelimiterMode = (dmOpen,dmClose);
-  TMarkDownDelimiterModes = Set of TMarkDownDelimiterMode;
+  TMarkdownDelimiterMode = (dmOpen,dmClose);
+  TMarkdownDelimiterModes = Set of TMarkdownDelimiterMode;
 
-  { TMarkDownDelimiter }
+  { TMarkdownDelimiter }
 
-  TMarkDownDelimiter = class
+  TMarkdownDelimiter = class
   private
-    FModes: TMarkDownDelimiterModes;
+    FModes: TMarkdownDelimiterModes;
     FDelimiter: String;
     FActive: boolean;
-    FNode: TMarkDownTextNode;
+    FNode: TMarkdownTextNode;
   public
-    constructor Create(aNode: TMarkDownTextNode; const aDelimiter: String; aModes: TMarkDownDelimiterModes);
+    constructor Create(aNode: TMarkdownTextNode; const aDelimiter: String; aModes: TMarkdownDelimiterModes);
     procedure RemoveLast(aCount : integer);
-    function CanClose(aDelim: TMarkDownDelimiter) : boolean;
+    function CanClose(aDelim: TMarkdownDelimiter) : boolean;
     function Opens : Boolean;
     function Closes : Boolean;
     function OpensCloses : Boolean;
-    property Node : TMarkDownTextNode read FNode;
+    property Node : TMarkdownTextNode read FNode;
     property Delimiter : String read FDelimiter write FDelimiter;
     property Active : Boolean read FActive write FActive;
-    property Modes : TMarkDownDelimiterModes read FModes write FModes;
+    property Modes : TMarkdownDelimiterModes read FModes write FModes;
     function IsEmph : Boolean;
   end;
-  TMarkDownDelimiterList = class (specialize TGFPObjectList<TMarkDownDelimiter>);
+  TMarkdownDelimiterList = class (specialize TGFPObjectList<TMarkdownDelimiter>);
 
   { TInlineTextProcessor }
 
   TInlineTextProcessor = class
   Private
     FGFMExtensions : Boolean;
-    FScanner : TMarkDownTextScanner;
-    FNodes: TMarkDownTextNodeList;
+    FScanner : TMarkdownTextScanner;
+    FNodes: TMarkdownTextNodeList;
     FWhiteSpaceMode: TWhitespaceMode;
     FEntities : TFPStringHashTable;
-    FStack : TMarkDownDelimiterList;
+    FStack : TMarkdownDelimiterList;
   protected
     // Reading
     function ReadInlineBracketedLink(aBuilder: TStringBuilder): Boolean;
@@ -79,8 +79,8 @@ Type
     function PeekEmailAddress(out len: integer): boolean; virtual;
     procedure AddTextTillNext(const aTerminal: String); virtual;
     // Handle various constructs
-    procedure HandleEmphasis(aTerminator: TMarkDownDelimiter); virtual;
-    function  HandleInlineLink(aDelim: TMarkDownDelimiter): boolean; virtual;
+    procedure HandleEmphasis(aTerminator: TMarkdownDelimiter); virtual;
+    function  HandleInlineLink(aDelim: TMarkdownDelimiter): boolean; virtual;
     procedure HandleBackTick; virtual;
     procedure HandleDelimiter(aAllowMulti: boolean); virtual;
     procedure HandleEntity; virtual;
@@ -94,12 +94,12 @@ Type
     procedure HandleGFMLinkEmail(aLength: integer); virtual;
     procedure HandleGFMLinkURL(aStartChars : integer; const aProtocol : string = ''); virtual;
   public
-    constructor Create(aLexer : TMarkDownTextScanner; aNodes: TMarkDownTextNodeList; aEntities : TFPStringHashTable; awsMode : TWhitespaceMode);
+    constructor Create(aLexer : TMarkdownTextScanner; aNodes: TMarkdownTextNodeList; aEntities : TFPStringHashTable; awsMode : TWhitespaceMode);
     destructor Destroy; override;
-    function process(aCloseLast : boolean = false): TMarkDownTextNodeList;
+    function process(aCloseLast : boolean = false): TMarkdownTextNodeList;
     procedure DumpNodes;
-    property Scanner : TMarkDownTextScanner read FScanner;
-    property Nodes : TMarkDownTextNodeList Read FNodes;
+    property Scanner : TMarkdownTextScanner read FScanner;
+    property Nodes : TMarkdownTextNodeList Read FNodes;
     property WhitespaceMode : TWhitespaceMode read FWhiteSpaceMode;
     Property GFMExtensions : Boolean Read FGFMExtensions Write FGFMExtensions;
   end;
@@ -116,9 +116,9 @@ uses StrUtils, Math;
 const
   dmOpenClose = [dmOpen,dmClose];
 
-{ TMarkDownDelimiter }
+{ TMarkdownDelimiter }
 
-constructor TMarkDownDelimiter.Create(aNode: TMarkDownTextNode; const aDelimiter : String; aModes: TMarkDownDelimiterModes);
+constructor TMarkdownDelimiter.Create(aNode: TMarkdownTextNode; const aDelimiter : String; aModes: TMarkdownDelimiterModes);
 begin
   inherited create;
   FNode:=aNode;
@@ -141,34 +141,34 @@ begin
 end;
 
 
-procedure TMarkDownDelimiter.RemoveLast(aCount: integer);
+procedure TMarkdownDelimiter.RemoveLast(aCount: integer);
 begin
   SetLength(FDelimiter,Length(FDelimiter)-aCount);
 end;
 
-function TMarkDownDelimiter.CanClose(aDelim: TMarkDownDelimiter): boolean;
+function TMarkdownDelimiter.CanClose(aDelim: TMarkdownDelimiter): boolean;
 begin
   Result:=(Delimiter[1]=aDelim.Delimiter[1]) and aDelim.Opens;
 end;
 
-function TMarkDownDelimiter.Closes: Boolean;
+function TMarkdownDelimiter.Closes: Boolean;
 begin
   Result:=dmClose in FModes;
 end;
 
-function TMarkDownDelimiter.OpensCloses: Boolean;
+function TMarkdownDelimiter.OpensCloses: Boolean;
 begin
   Result:=(FModes=dmOpenClose);
 end;
 
-function TMarkDownDelimiter.IsEmph: Boolean;
+function TMarkdownDelimiter.IsEmph: Boolean;
 
 begin
   Result:=(Delimiter<>'[') and (Delimiter<>'![');
 end;
 
 
-function TMarkDownDelimiter.Opens: Boolean;
+function TMarkdownDelimiter.Opens: Boolean;
 
 begin
   Result:=dmOpen in FModes;
@@ -176,14 +176,14 @@ end;
 
 { TInlineTextProcessor }
 
-constructor TInlineTextProcessor.Create(aLexer: TMarkDownTextScanner; aNodes: TMarkDownTextNodeList; aEntities: TFPStringHashTable; awsMode: TWhitespaceMode);
+constructor TInlineTextProcessor.Create(aLexer: TMarkdownTextScanner; aNodes: TMarkdownTextNodeList; aEntities: TFPStringHashTable; awsMode: TWhitespaceMode);
 
 begin
   FScanner:=aLexer;
   FNodes:=aNodes;
   FWhiteSpaceMode:=awsMode;
   FEntities:=aEntities;
-  FStack:=TMarkDownDelimiterList.Create;
+  FStack:=TMarkdownDelimiterList.Create;
 end;
 
 destructor TInlineTextProcessor.Destroy;
@@ -217,7 +217,7 @@ procedure TInlineTextProcessor.HandleAutoLink;
 
 var
   lText : String;
-  lNode : TMarkDownTextNode;
+  lNode : TMarkdownTextNode;
   lAdd : boolean;
   lNodeKind : TTextNodeKind;
   lURL : String;
@@ -237,7 +237,7 @@ begin
       end
     else
       begin
-      lAdd:=IsValidEmail(lText);
+      lAdd:=IsEmailLike(lText);
       if lAdd then
         begin
         lNodeKind:=nkEmail;
@@ -326,7 +326,7 @@ var
   lTilde : String;
   lLen : Integer;
   ldelete : boolean;
-  lNode : TMarkDownTextNode;
+  lNode : TMarkdownTextNode;
 
 begin
   lTilde:=Scanner.PeekRun(false);
@@ -425,8 +425,8 @@ var
   lDelim : String;
   lLeft,lRight : boolean;
   lPos : TPosition;
-  lModes : TMarkDownDelimiterModes;
-  lNode : TMarkDownTextNode;
+  lModes : TMarkdownDelimiterModes;
+  lNode : TMarkdownTextNode;
 
 begin
   if aAllowMulti then
@@ -452,7 +452,7 @@ begin
   else
     lModes:=[];
   lNode:=Nodes.addTextNode(lPos,nkText,'',False);
-  FStack.Add(TMarkDownDelimiter.Create(lNode,lDelim,lModes));
+  FStack.Add(TMarkdownDelimiter.Create(lNode,lDelim,lModes));
 end;
 
 function TInlineTextProcessor.ReadInlineBracketedLink(aBuilder : TStringBuilder) : Boolean;
@@ -565,7 +565,7 @@ begin
   Result:=Not Scanner.EOF;
 end;
 
-function TInlineTextProcessor.HandleInlineLink(aDelim : TMarkDownDelimiter): boolean;
+function TInlineTextProcessor.HandleInlineLink(aDelim : TMarkdownDelimiter): boolean;
 {
   There are 4 cases we want to handle:
   - inline link/image  [text](link title)
@@ -578,7 +578,7 @@ var
   lURL : String;
   lTitle : String;
   lBuilder : TStringBuilder;
-  lDelim : TMarkDownDelimiter;
+  lDelim : TMarkdownDelimiter;
 
 begin
   Result:=false;
@@ -642,7 +642,7 @@ begin
   end;
 end;
 
-procedure TInlineTextProcessor.HandleEmphasis(aTerminator : TMarkDownDelimiter);
+procedure TInlineTextProcessor.HandleEmphasis(aTerminator : TMarkdownDelimiter);
 
 const
   NodeStyles : Array[Boolean] of TNodeStyle = (nsEmph,nsStrong);
@@ -651,9 +651,9 @@ var
   lCount,lClose,lOpen,lBottom,lCurrBottom,lRemoveLen,lDelete :  integer;
   lStrong : boolean;
   lBottoms : Array[Boolean] of Integer; // False: strong or more, True: emph
-  lOpens,lCloses : TMarkDownDelimiter;
+  lOpens,lCloses : TMarkdownDelimiter;
 
-  function IsMatch(aDelim1,aDelim2 : TMarkDownDelimiter) : boolean;
+  function IsMatch(aDelim1,aDelim2 : TMarkdownDelimiter) : boolean;
 
   begin
     Result:=aDelim2.CanClose(aDelim1);
@@ -749,7 +749,7 @@ procedure TInlineTextProcessor.HandleCloseDelimiter();
 
 var
   I : integer;
-  lDelim : TMarkDownDelimiter;
+  lDelim : TMarkdownDelimiter;
 
 begin
   lDelim:=nil;
@@ -855,13 +855,13 @@ begin
     Exit;
   if cLast='.' then
     SetLength(S,lLen-1);
-  Result:=IsValidEmail(S);
+  Result:=IsEmailLike(S);
   if Result then
     Len:=Length(s);
 end;
 
 
-function TInlineTextProcessor.process(aCloseLast: boolean): TMarkDownTextNodeList;
+function TInlineTextProcessor.process(aCloseLast: boolean): TMarkdownTextNodeList;
 
 var
   c : Char;
@@ -917,7 +917,7 @@ procedure TInlineTextProcessor.HandleGFMLinkEmail(aLength : integer);
 
 var
   lEmail : String;
-  lNode : TMarkDownTextNode;
+  lNode : TMarkdownTextNode;
 
 begin
   lEmail:=Scanner.NextChars(aLength);
@@ -935,7 +935,7 @@ var
   lRewind : boolean;
   lRemove : Integer;
   lLink,lUrl,lText : string;
-  lNode : TMarkDownTextNode;
+  lNode : TMarkdownTextNode;
 
 begin
   Scanner.BookMark;

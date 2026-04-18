@@ -13,7 +13,7 @@
 
  *********************************************************************}
 
-unit MarkDown.LatexRender;
+unit Markdown.LatexRender;
 
 {$mode ObjFPC}{$H+}
 
@@ -21,20 +21,20 @@ interface
 
 uses
 {$IFDEF FPC_DOTTEDUNITS}
-  System.Classes, System.SysUtils, System.StrUtils, System.Contnrs, 
+  System.Classes, System.SysUtils, System.StrUtils, System.Contnrs,
 {$ELSE}
   Classes, SysUtils,  contnrs,
-{$ENDIF}  
-  MarkDown.Elements, 
-  MarkDown.Render, 
-  MarkDown.Utils;
+{$ENDIF}
+  Markdown.Elements,
+  Markdown.Render,
+  Markdown.Utils;
 
 type
-  { TMarkDownLaTeXRenderer }
+  { TMarkdownLaTeXRenderer }
   TLaTeXOption = (loEnvelope, loNumberedSections);
   TLaTeXOptions = set of TLaTeXOption;
 
-  TMarkDownLaTeXRenderer = class(TMarkDownRenderer)
+  TMarkdownLaTeXRenderer = class(TMarkdownRenderer)
   private
     FBuilder: TStringBuilder;
     FHead: TStrings;
@@ -51,13 +51,13 @@ type
   public
     constructor Create(aOwner : TComponent); override;
     destructor destroy; override;
-    Procedure RenderDocument(aDocument : TMarkDownDocument); override;overload;
-    Procedure RenderDocument(aDocument : TMarkDownDocument; aDest : TStrings); overload;
-    procedure RenderChildren(aBlock : TMarkDownContainerBlock; aAppendNewLine : Boolean); overload;
-    function RenderLaTeX(aDocument : TMarkDownDocument) : string;
-    Procedure RenderToFile(aDocument : TMarkDownDocument; aFileName : string);
-    class procedure FastRenderToFile(aDocument : TMarkDownDocument; const aFileName : string; aOptions : TLaTeXOptions = []; const aTitle : String = ''; const aAuthor : string = '');
-    class function FastRender(aDocument : TMarkDownDocument; aOptions : TLaTeXOptions = []; const aTitle : String = ''; const aAuthor : string = '') : string;
+    Procedure RenderDocument(aDocument : TMarkdownDocument); override;overload;
+    Procedure RenderDocument(aDocument : TMarkdownDocument; aDest : TStrings); overload;
+    procedure RenderChildren(aBlock : TMarkdownContainerBlock; aAppendNewLine : Boolean); overload;
+    function RenderLaTeX(aDocument : TMarkdownDocument) : string;
+    Procedure RenderToFile(aDocument : TMarkdownDocument; const aFileName : string);
+    class procedure FastRenderToFile(aDocument : TMarkdownDocument; const aFileName : string; aOptions : TLaTeXOptions = []; const aTitle : String = ''; const aAuthor : string = '');
+    class function FastRender(aDocument : TMarkdownDocument; aOptions : TLaTeXOptions = []; const aTitle : String = ''; const aAuthor : string = '') : string;
   published
     Property Options : TLaTeXOptions Read FOptions Write FOptions;
     property Title : String Read FTitle Write FTitle;
@@ -65,142 +65,151 @@ type
     property Head : TStrings Read FHead Write SetHead;
   end;
 
-  { TLaTeXMarkDownBlockRenderer }
+  { TLaTeXMarkdownBlockRenderer }
 
-  TLaTeXMarkDownBlockRenderer = Class (TMarkDownBlockRenderer)
+  TLaTeXMarkdownBlockRenderer = Class (TMarkdownBlockRenderer)
   Private
-    function GetLaTeXRenderer: TMarkDownLaTeXRenderer;
+    function GetLaTeXRenderer: TMarkdownLaTeXRenderer;
   protected
     procedure Append(const S : String); inline;
     procedure AppendNl(const S : String = ''); inline;
     function HasOption(aOption : TLaTeXOption) : Boolean;
     function Escape(const S: String): String;
   public
-    property LaTeXRenderer : TMarkDownLaTeXRenderer Read GetLaTeXRenderer;
+    property LaTeXRenderer : TMarkdownLaTeXRenderer Read GetLaTeXRenderer;
   end;
-  TLaTeXMarkDownBlockRendererClass = class of TLaTeXMarkDownBlockRenderer;
+  TLaTeXMarkdownBlockRendererClass = class of TLaTeXMarkdownBlockRenderer;
 
-  { TLaTeXMarkDownTextRenderer }
+  { TLaTeXMarkdownTextRenderer }
 
-  TLaTeXMarkDownTextRenderer = class(TMarkDownTextRenderer)
+  TLaTeXMarkdownTextRenderer = class(TMarkdownTextRenderer)
   Private
     FStyleStack: Array of TNodeStyle;
     FStyleStackLen : Integer;
     FLastStyles : TNodeStyles;
-    function GetLaTeXRenderer: TMarkDownLaTeXRenderer;
-    function GetNodeTag(aElement: TMarkDownTextNode; Closing: Boolean): string;
+    function GetLaTeXRenderer: TMarkdownLaTeXRenderer;
+    function GetNodeTag(aElement: TMarkdownTextNode; Closing: Boolean): string;
   protected
     procedure PushStyle(aStyle : TNodeStyle);
     function PopStyles(aStyle: TNodeStyles): TNodeStyle;
     procedure PopStyle(aStyle : TNodeStyle);
     procedure Append(const S : String); inline;
-    procedure DoRender(aElement: TMarkDownTextNode); override;
+    procedure DoRender(aElement: TMarkdownTextNode); override;
     function Escape(const S: String): String;
     procedure EmitStyleDiff(aStyles : TNodeStyles);
   Public
     procedure BeginBlock; override;
     procedure EndBlock; override;
-    property LaTeXRenderer : TMarkDownLaTeXRenderer Read GetLaTeXRenderer;
+    property LaTeXRenderer : TMarkdownLaTeXRenderer Read GetLaTeXRenderer;
   end;
-  TLaTeXMarkDownTextRendererClass = class of TLaTeXMarkDownTextRenderer;
+  TLaTeXMarkdownTextRendererClass = class of TLaTeXMarkdownTextRenderer;
 
   { TLaTeXParagraphBlockRenderer }
 
-  TLaTeXParagraphBlockRenderer = class (TLaTeXMarkDownBlockRenderer)
+  TLaTeXParagraphBlockRenderer = class (TLaTeXMarkdownBlockRenderer)
   protected
-    procedure DoRender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownQuoteBlockRenderer }
+  { TLaTeXMarkdownQuoteBlockRenderer }
 
-  TLaTeXMarkDownQuoteBlockRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownQuoteBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure dorender(aElement : TMarkDownBlock); override;
+    procedure dorender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownTextBlockRenderer }
+  { TLaTeXMarkdownTextBlockRenderer }
 
-  TLaTeXMarkDownTextBlockRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownTextBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure DoRender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownListBlockRenderer }
+  { TLaTeXMarkdownListBlockRenderer }
 
-  TLaTeXMarkDownListBlockRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownListBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure Dorender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownListItemBlockRenderer }
+  { TLaTeXMarkdownListItemBlockRenderer }
 
-  TLaTeXMarkDownListItemBlockRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownListItemBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure Dorender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownCodeBlockRenderer }
+  { TLaTeXMarkdownCodeBlockRenderer }
 
-  TLaTeXMarkDownCodeBlockRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownCodeBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure Dorender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownHeadingBlockRenderer }
+  { TLaTeXMarkdownHeadingBlockRenderer }
 
-  TLaTeXMarkDownHeadingBlockRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownHeadingBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure Dorender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownThematicBreakBlockRenderer }
+  { TLaTeXMarkdownThematicBreakBlockRenderer }
 
-  TLaTeXMarkDownThematicBreakBlockRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownThematicBreakBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure Dorender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownTableBlockRenderer }
+  { TLaTeXMarkdownTableBlockRenderer }
 
-  TLaTeXMarkDownTableBlockRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownTableBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure Dorender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownTableRowBlockRenderer }
+  { TLaTeXMarkdownTableRowBlockRenderer }
 
-  TLaTeXMarkDownTableRowBlockRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownTableRowBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure Dorender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
-  { TLaTeXMarkDownDocumentRenderer }
+  { TLaTeXMarkdownFrontmatterBlockRenderer }
 
-  TLaTeXMarkDownDocumentRenderer = class(TLaTeXMarkDownBlockRenderer)
+  TLaTeXMarkdownFrontmatterBlockRenderer = class(TLaTeXMarkdownBlockRenderer)
   protected
-    procedure Dorender(aElement : TMarkDownBlock); override;
+    procedure DoRender(aElement : TMarkdownBlock); override;
   public
-    class function BlockClass : TMarkDownBlockClass; override;
+    class function BlockClass : TMarkdownBlockClass; override;
+  end;
+
+  { TLaTeXMarkdownDocumentRenderer }
+
+  TLaTeXMarkdownDocumentRenderer = class(TLaTeXMarkdownBlockRenderer)
+  protected
+    procedure DoRender(aElement : TMarkdownBlock); override;
+  public
+    class function BlockClass : TMarkdownBlockClass; override;
   end;
 
 
@@ -211,80 +220,80 @@ type
   { TStringBuilderHelper }
 
   TStringBuilderHelper = class helper for TAnsiStringBuilder
-    function Append(aAnsiString : Ansistring) : TAnsiStringBuilder;
+    function Append(const aAnsiString : Ansistring) : TAnsiStringBuilder;
   end;
 
 
-function TStringBuilderHelper.Append(aAnsiString: Ansistring): TAnsiStringBuilder;
+function TStringBuilderHelper.Append(const aAnsiString: Ansistring): TAnsiStringBuilder;
 begin
   Result:=Inherited Append(aAnsiString,0,System.Length(aAnsistring))
 end;
 
-{ TLaTeXMarkDownBlockRenderer }
+{ TLaTeXMarkdownBlockRenderer }
 
-function TLaTeXMarkDownBlockRenderer.GetLaTeXRenderer: TMarkDownLaTeXRenderer;
+function TLaTeXMarkdownBlockRenderer.GetLaTeXRenderer: TMarkdownLaTeXRenderer;
 begin
-  if Renderer is TMarkDownLaTeXRenderer then
-    Result:=TMarkDownLaTeXRenderer(Renderer)
+  if Renderer is TMarkdownLaTeXRenderer then
+    Result:=TMarkdownLaTeXRenderer(Renderer)
   else
     Result:=Nil;
 end;
 
-procedure TLaTeXMarkDownBlockRenderer.Append(const S: String);
+procedure TLaTeXMarkdownBlockRenderer.Append(const S: String);
 begin
   LaTeXRenderer.Append(S);
 end;
 
-procedure TLaTeXMarkDownBlockRenderer.AppendNl(const S: String);
+procedure TLaTeXMarkdownBlockRenderer.AppendNl(const S: String);
 begin
   LaTeXRenderer.AppendNL(S);
 end;
 
-function TLaTeXMarkDownBlockRenderer.HasOption(aOption: TLaTeXOption): Boolean;
+function TLaTeXMarkdownBlockRenderer.HasOption(aOption: TLaTeXOption): Boolean;
 begin
-  Result:=(Self.Renderer is TMarkDownLaTeXRenderer);
+  Result:=(Self.Renderer is TMarkdownLaTeXRenderer);
   if Result then
-    Result:=aOption in TMarkDownLaTeXRenderer(Renderer).Options;
+    Result:=aOption in TMarkdownLaTeXRenderer(Renderer).Options;
 end;
 
-function TLaTeXMarkDownBlockRenderer.Escape(const S: String): String;
+function TLaTeXMarkdownBlockRenderer.Escape(const S: String): String;
 begin
   Result:=LaTeXRenderer.EscapeLaTeX(S);
 end;
 
-{ TMarkDownLaTeXRenderer }
+{ TMarkdownLaTeXRenderer }
 
-procedure TMarkDownLaTeXRenderer.SetHead(const aValue: TStrings);
+procedure TMarkdownLaTeXRenderer.SetHead(const aValue: TStrings);
 begin
   if FHead=aValue then Exit;
   FHead:=aValue;
 end;
 
-procedure TMarkDownLaTeXRenderer.Append(const aContent: String);
+procedure TMarkdownLaTeXRenderer.Append(const aContent: String);
 begin
   FBuilder.Append(aContent);
 end;
 
-procedure TMarkDownLaTeXRenderer.AppendNL(const aContent: String);
+procedure TMarkdownLaTeXRenderer.AppendNL(const aContent: String);
 begin
   if aContent<>'' then
     FBuilder.Append(aContent);
   FBuilder.Append(sLineBreak);
 end;
 
-constructor TMarkDownLaTeXRenderer.Create(aOwner: TComponent);
+constructor TMarkdownLaTeXRenderer.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FHead:=TStringList.Create;
 end;
 
-destructor TMarkDownLaTeXRenderer.destroy;
+destructor TMarkdownLaTeXRenderer.destroy;
 begin
   FreeAndNil(FHead);
   inherited destroy;
 end;
 
-procedure TMarkDownLaTeXRenderer.RenderDocument(aDocument: TMarkDownDocument);
+procedure TMarkdownLaTeXRenderer.RenderDocument(aDocument: TMarkdownDocument);
 begin
   FBuilder:=TStringBuilder.Create;
   try
@@ -295,12 +304,12 @@ begin
   end;
 end;
 
-procedure TMarkDownLaTeXRenderer.RenderDocument(aDocument: TMarkDownDocument; aDest: TStrings);
+procedure TMarkdownLaTeXRenderer.RenderDocument(aDocument: TMarkdownDocument; aDest: TStrings);
 begin
   aDest.Text:=RenderLaTeX(aDocument);
 end;
 
-procedure TMarkDownLaTeXRenderer.RenderChildren(aBlock: TMarkDownContainerBlock; aAppendNewLine: Boolean);
+procedure TMarkdownLaTeXRenderer.RenderChildren(aBlock: TMarkdownContainerBlock; aAppendNewLine: Boolean);
 var
   i,iMax : integer;
 begin
@@ -313,14 +322,14 @@ begin
     end;
 end;
 
-function TMarkDownLaTeXRenderer.RenderLaTeX(aDocument: TMarkDownDocument): string;
+function TMarkdownLaTeXRenderer.RenderLaTeX(aDocument: TMarkdownDocument): string;
 begin
   RenderDocument(aDocument);
   Result:=FLaTeX;
   FLaTeX:='';
 end;
 
-procedure TMarkDownLaTeXRenderer.RenderToFile(aDocument: TMarkDownDocument; aFileName: string);
+procedure TMarkdownLaTeXRenderer.RenderToFile(aDocument: TMarkdownDocument; const aFileName: string);
 var
   lTeX : String;
   lFile : THandle;
@@ -335,12 +344,12 @@ begin
   end;
 end;
 
-class procedure TMarkDownLaTeXRenderer.FastRenderToFile(aDocument: TMarkDownDocument; const aFileName: string; aOptions: TLaTeXOptions;
+class procedure TMarkdownLaTeXRenderer.FastRenderToFile(aDocument: TMarkdownDocument; const aFileName: string; aOptions: TLaTeXOptions;
   const aTitle: String; const aAuthor: string);
 var
-  lRender : TMarkDownLaTexRenderer;
+  lRender : TMarkdownLaTexRenderer;
 begin
-  lRender:=TMarkDownLaTexRenderer.Create(Nil);
+  lRender:=TMarkdownLaTexRenderer.Create(Nil);
   try
     lRender.Options:=aOptions;
     lRender.Title:=aTitle;
@@ -351,12 +360,12 @@ begin
   end;
 end;
 
-class function TMarkDownLaTeXRenderer.FastRender(aDocument: TMarkDownDocument; aOptions: TLaTeXOptions; const aTitle: String;
+class function TMarkdownLaTeXRenderer.FastRender(aDocument: TMarkdownDocument; aOptions: TLaTeXOptions; const aTitle: String;
   const aAuthor: string): string;
 var
-  lRender : TMarkDownLaTexRenderer;
+  lRender : TMarkdownLaTexRenderer;
 begin
-  lRender:=TMarkDownLaTexRenderer.Create(Nil);
+  lRender:=TMarkdownLaTexRenderer.Create(Nil);
   try
     lRender.Options:=aOptions;
     lRender.Title:=aTitle;
@@ -367,7 +376,7 @@ begin
   end;
 end;
 
-function TMarkDownLaTeXRenderer.EscapeLaTeX(const S: String): String;
+function TMarkdownLaTeXRenderer.EscapeLaTeX(const S: String): String;
 var
   i: Integer;
   c: Char;
@@ -393,27 +402,27 @@ begin
   end;
 end;
 
-{ TLaTeXMarkDownTextRenderer }
+{ TLaTeXMarkdownTextRenderer }
 
-procedure TLaTeXMarkDownTextRenderer.Append(const S: String);
+procedure TLaTeXMarkdownTextRenderer.Append(const S: String);
 begin
   LaTeXRenderer.Append(S);
 end;
 
-function TLaTeXMarkDownTextRenderer.Escape(const S: String): String;
+function TLaTeXMarkdownTextRenderer.Escape(const S: String): String;
 begin
   Result:=LaTeXRenderer.EscapeLaTeX(S);
 end;
 
-function TLaTeXMarkDownTextRenderer.GetLaTeXRenderer: TMarkDownLaTeXRenderer;
+function TLaTeXMarkdownTextRenderer.GetLaTeXRenderer: TMarkdownLaTeXRenderer;
 begin
-  if Renderer is TMarkDownLaTeXRenderer then
-    Result:=TMarkDownLaTeXRenderer(Renderer)
+  if Renderer is TMarkdownLaTeXRenderer then
+    Result:=TMarkdownLaTeXRenderer(Renderer)
   else
     Result:=Nil;
 end;
 
-function TLaTeXMarkDownTextRenderer.GetNodeTag(aElement: TMarkDownTextNode; Closing: Boolean): string;
+function TLaTeXMarkdownTextRenderer.GetNodeTag(aElement: TMarkdownTextNode; Closing: Boolean): string;
 var
   lUrl: String;
 begin
@@ -426,10 +435,10 @@ begin
         lUrl := '';
         if aElement.HasAttrs then
           aElement.Attrs.TryGet('href', lUrl);
-          
-        if Closing then 
-          Result := '}' 
-        else 
+
+        if Closing then
+          Result := '}'
+        else
           Result := '\href{' + lUrl + '}{';
       end;
     nkImg:
@@ -438,15 +447,15 @@ begin
         if aElement.HasAttrs then
           aElement.Attrs.TryGet('src', lUrl);
 
-        if Closing then 
-          Result := '}' 
-        else 
+        if Closing then
+          Result := '}'
+        else
           Result := '\includegraphics{' + lUrl + '}{';
       end;
   end;
 end;
 
-procedure TLaTeXMarkDownTextRenderer.PushStyle(aStyle: TNodeStyle);
+procedure TLaTeXMarkdownTextRenderer.PushStyle(aStyle: TNodeStyle);
 begin
   case aStyle of
     nsStrong: Append('\textbf{');
@@ -459,7 +468,7 @@ begin
   Inc(FStyleStackLen);
 end;
 
-function TLaTeXMarkDownTextRenderer.Popstyles(aStyle: TNodeStyles) : TNodeStyle;
+function TLaTeXMarkdownTextRenderer.Popstyles(aStyle: TNodeStyles) : TNodeStyle;
 begin
   if (FStyleStackLen>0) and (FStyleStack[FStyleStackLen-1] in aStyle) then
     begin
@@ -469,7 +478,7 @@ begin
     end;
 end;
 
-procedure TLaTeXMarkDownTextRenderer.PopStyle(aStyle: TNodeStyle);
+procedure TLaTeXMarkdownTextRenderer.PopStyle(aStyle: TNodeStyle);
 begin
   if (FStyleStackLen>0) and (FStyleStack[FStyleStackLen-1]=aStyle) then
     begin
@@ -478,7 +487,7 @@ begin
     end;
 end;
 
-procedure TLaTeXMarkDownTextRenderer.EmitStyleDiff(aStyles : TNodeStyles);
+procedure TLaTeXMarkdownTextRenderer.EmitStyleDiff(aStyles : TNodeStyles);
 var
   lRemove : TNodeStyles;
   lAdd : TNodeStyles;
@@ -504,7 +513,7 @@ begin
   Self.FLastStyles:=aStyles;
 end;
 
-procedure TLaTeXMarkDownTextRenderer.DoRender(aElement: TMarkDownTextNode);
+procedure TLaTeXMarkdownTextRenderer.DoRender(aElement: TMarkdownTextNode);
 var
   lTag : string;
 begin
@@ -528,18 +537,18 @@ begin
     lTag := Self.GetNodeTag(aElement, True);
     Append(lTag);
   end;
-  
+
   aElement.Active:=False;
 end;
 
-procedure TLaTeXMarkDownTextRenderer.BeginBlock;
+procedure TLaTeXMarkdownTextRenderer.BeginBlock;
 begin
   inherited BeginBlock;
   Self.FStyleStackLen:=0;
   Self.FLastStyles:=[];
 end;
 
-procedure TLaTeXMarkDownTextRenderer.EndBlock;
+procedure TLaTeXMarkdownTextRenderer.EndBlock;
 begin
   While (Self.FStyleStackLen>0) do
     Self.Popstyle(Self.FStyleStack[Self.FStyleStackLen-1]);
@@ -549,9 +558,9 @@ end;
 
 { TLaTeXParagraphBlockRenderer }
 
-procedure TLaTeXParagraphBlockRenderer.DoRender(aElement: TMarkDownBlock);
+procedure TLaTeXParagraphBlockRenderer.DoRender(aElement: TMarkdownBlock);
 var
-  lNode : TMarkDownParagraphBlock absolute aElement;
+  lNode : TMarkdownParagraphBlock absolute aElement;
 begin
   // LaTeX paragraphs are separated by blank lines.
   // No special environment needed usually, unless we want to enforce spacing.
@@ -560,29 +569,29 @@ begin
   AppendNl;
 end;
 
-class function TLaTeXParagraphBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXParagraphBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownParagraphBlock;
+  Result:=TMarkdownParagraphBlock;
 end;
 
-{ TLaTeXMarkDownTextBlockRenderer }
+{ TLaTeXMarkdownTextBlockRenderer }
 
-class function TLaTeXMarkDownTextBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownTextBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownTextBlock;
+  Result:=TMarkdownTextBlock;
 end;
 
-procedure TLaTeXMarkDownTextBlockRenderer.DoRender(aElement: TMarkDownBlock);
+procedure TLaTeXMarkdownTextBlockRenderer.DoRender(aElement: TMarkdownBlock);
 var
-  lNode : TMarkDownTextBlock absolute aElement;
+  lNode : TMarkdownTextBlock absolute aElement;
 begin
   if assigned(lNode) and assigned(lNode.Nodes) then
     Renderer.RenderTextNodes(lNode.Nodes);
 end;
 
-{ TLaTeXMarkDownQuoteBlockRenderer }
+{ TLaTeXMarkdownQuoteBlockRenderer }
 
-procedure TLaTeXMarkDownQuoteBlockRenderer.dorender(aElement: TMarkDownBlock);
+procedure TLaTeXMarkdownQuoteBlockRenderer.dorender(aElement: TMarkdownBlock);
 var
   lNode : TMarkdownQuoteBlock absolute aElement;
 begin
@@ -591,49 +600,49 @@ begin
   AppendNl('\end{quote}');
 end;
 
-class function TLaTeXMarkDownQuoteBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownQuoteBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownQuoteBlock;
+  Result:=TMarkdownQuoteBlock;
 end;
 
-{ TLaTeXMarkDownListBlockRenderer }
+{ TLaTeXMarkdownListBlockRenderer }
 
-procedure TLaTeXMarkDownListBlockRenderer.Dorender(aElement : TMarkDownBlock);
+procedure TLaTeXMarkdownListBlockRenderer.DoRender(aElement : TMarkdownBlock);
 var
-  lNode : TMarkDownListBlock absolute aElement;
+  lNode : TMarkdownListBlock absolute aElement;
 begin
   if not lNode.Ordered then
     AppendNl('\begin{itemize}')
   else
     AppendNl('\begin{enumerate}');
-    
+
   Renderer.RenderChildren(lNode);
-  
+
   if lNode.Ordered then
     AppendNl('\end{enumerate}')
   else
     AppendNl('\end{itemize}');
 end;
 
-class function TLaTeXMarkDownListBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownListBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownListBlock;
+  Result:=TMarkdownListBlock;
 end;
 
 
-{ TLaTeXMarkDownListItemBlockRenderer }
+{ TLaTeXMarkdownListItemBlockRenderer }
 
-procedure TLaTeXMarkDownListItemBlockRenderer.Dorender(aElement : TMarkDownBlock);
+procedure TLaTeXMarkdownListItemBlockRenderer.DoRender(aElement : TMarkdownBlock);
 var
-  lItemBlock : TMarkDownListItemBlock absolute aElement;
-  lBlock : TMarkDownBlock;
-  lPar : TMarkDownParagraphBlock absolute lBlock;
-  
-  function IsPlainBlock(aBlock : TMarkDownBlock) : boolean;
+  lItemBlock : TMarkdownListItemBlock absolute aElement;
+  lBlock : TMarkdownBlock;
+  lPar : TMarkdownParagraphBlock absolute lBlock;
+
+  function IsPlainBlock(aBlock : TMarkdownBlock) : boolean;
   begin
-    Result:=(aBlock is TMarkDownParagraphBlock)
-             and (aBlock as TMarkDownParagraphBlock).isPlainPara
-             and not (lItemblock.parent as TMarkDownListBlock).loose
+    Result:=(aBlock is TMarkdownParagraphBlock)
+             and (aBlock as TMarkdownParagraphBlock).isPlainPara
+             and not (lItemblock.parent as TMarkdownListBlock).loose
   end;
 
 begin
@@ -646,17 +655,17 @@ begin
   AppendNl;
 end;
 
-class function TLaTeXMarkDownListItemBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownListItemBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownListItemBlock;
+  Result:=TMarkdownListItemBlock;
 end;
 
-{ TLaTeXMarkDownCodeBlockRenderer }
+{ TLaTeXMarkdownCodeBlockRenderer }
 
-procedure TLaTeXMarkDownCodeBlockRenderer.Dorender(aElement : TMarkDownBlock);
+procedure TLaTeXMarkdownCodeBlockRenderer.DoRender(aElement : TMarkdownBlock);
 var
-  lNode : TMarkDownCodeBlock absolute aElement;
-  lBlock : TMarkDownBlock;
+  lNode : TMarkdownCodeBlock absolute aElement;
+  lBlock : TMarkdownBlock;
 begin
   AppendNl('\begin{verbatim}');
   for lBlock in LNode.Blocks do
@@ -667,30 +676,30 @@ begin
   AppendNl('\end{verbatim}');
 end;
 
-class function TLaTeXMarkDownCodeBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownCodeBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownCodeBlock;
+  Result:=TMarkdownCodeBlock;
 end;
 
-{ TLaTeXMarkDownThematicBreakBlockRenderer }
+{ TLaTeXMarkdownThematicBreakBlockRenderer }
 
-procedure TLaTeXMarkDownThematicBreakBlockRenderer.Dorender(aElement : TMarkDownBlock);
+procedure TLaTeXMarkdownThematicBreakBlockRenderer.DoRender(aElement : TMarkdownBlock);
 begin
   if Not Assigned(aElement) then
     exit;
   AppendNl('\hrule');
 end;
 
-class function TLaTeXMarkDownThematicBreakBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownThematicBreakBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownThematicBreakBlock;
+  Result:=TMarkdownThematicBreakBlock;
 end;
 
-{ TLaTeXMarkDownTableBlockRenderer }
+{ TLaTeXMarkdownTableBlockRenderer }
 
-procedure TLaTeXMarkDownTableBlockRenderer.Dorender(aElement: TMarkDownBlock);
+procedure TLaTeXMarkdownTableBlockRenderer.DoRender(aElement: TMarkdownBlock);
 var
-  lNode : TMarkDownTableBlock absolute aElement;
+  lNode : TMarkdownTableBlock absolute aElement;
   i : integer;
   lCols: String;
   c: TCellAlign;
@@ -710,11 +719,11 @@ begin
 
   AppendNl('\begin{tabular}{' + lCols + '}');
   AppendNl('\hline');
-  
+
   // Header
   Renderer.RenderBlock(lNode.blocks[0]);
   AppendNl('\hline');
-  
+
   if lNode.blocks.Count > 1 then
   begin
     for i := 1 to lNode.blocks.Count -1  do
@@ -724,16 +733,16 @@ begin
   AppendNl('\end{tabular}');
 end;
 
-class function TLaTeXMarkDownTableBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownTableBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownTableBlock;
+  Result:=TMarkdownTableBlock;
 end;
 
-{ TLaTeXMarkDownTableRowBlockRenderer }
+{ TLaTeXMarkdownTableRowBlockRenderer }
 
-procedure TLaTeXMarkDownTableRowBlockRenderer.Dorender(aElement : TMarkDownBlock);
+procedure TLaTeXMarkdownTableRowBlockRenderer.DoRender(aElement : TMarkdownBlock);
 var
-  lNode : TMarkDownTableRowBlock absolute aElement;
+  lNode : TMarkdownTableRowBlock absolute aElement;
   i, lCount : integer;
 begin
   lCount:=lNode.blocks.Count;
@@ -745,16 +754,16 @@ begin
   AppendNl(' \');
 end;
 
-class function TLaTeXMarkDownTableRowBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownTableRowBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownTableRowBlock;
+  Result:=TMarkdownTableRowBlock;
 end;
 
-{ TLaTeXMarkDownHeadingBlockRenderer }
+{ TLaTeXMarkdownHeadingBlockRenderer }
 
-procedure TLaTeXMarkDownHeadingBlockRenderer.Dorender(aElement : TMarkDownBlock);
+procedure TLaTeXMarkdownHeadingBlockRenderer.DoRender(aElement : TMarkdownBlock);
 var
-  lNode : TMarkDownHeadingBlock absolute aElement;
+  lNode : TMarkdownHeadingBlock absolute aElement;
   lSection: String;
   lNumbered: Boolean;
 begin
@@ -767,7 +776,7 @@ begin
     5: lSection := 'subparagraph';
     else lSection := 'textbf'; // Fallback
   end;
-  
+
   if not lNumbered then
     lSection := lSection + '*';
 
@@ -777,15 +786,27 @@ begin
   AppendNl;
 end;
 
-class function TLaTeXMarkDownHeadingBlockRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownHeadingBlockRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownHeadingBlock;
+  Result:=TMarkdownHeadingBlock;
 end;
 
 
-{ TLaTeXMarkDownDocumentRenderer }
+{ TLaTeXMarkdownFrontmatterBlockRenderer }
 
-procedure TLaTeXMarkDownDocumentRenderer.Dorender(aElement: TMarkDownBlock);
+procedure TLaTeXMarkdownFrontmatterBlockRenderer.DoRender(aElement: TMarkdownBlock);
+begin
+  // Frontmatter produces no visible output
+end;
+
+class function TLaTeXMarkdownFrontmatterBlockRenderer.BlockClass: TMarkdownBlockClass;
+begin
+  Result := TMarkdownFrontmatterBlock;
+end;
+
+{ TLaTeXMarkdownDocumentRenderer }
+
+procedure TLaTeXMarkdownDocumentRenderer.DoRender(aElement: TMarkdownBlock);
 var
   H : String;
 begin
@@ -796,46 +817,47 @@ begin
     AppendNL('\usepackage{graphicx}');
     AppendNL('\usepackage{hyperref}');
     AppendNL('\usepackage{ulem}'); // For strikethrough
-    
+
     if LaTeXRenderer.Title<>'' then
       AppendNL('\title{' + LaTeXRenderer.EscapeLaTeX(LaTeXRenderer.Title) + '}');
     if LaTeXRenderer.Author<>'' then
       AppendNL('\author{' + LaTeXRenderer.EscapeLaTeX(LaTeXRenderer.Author) + '}');
-      
+
     for H in LaTeXRenderer.Head do
       AppendNL(H);
-      
+
     AppendNL('\begin{document}');
-    
+
     if LaTeXRenderer.Title<>'' then
       AppendNL('\maketitle');
     end;
-    
-  Renderer.RenderChildren(aElement as TMarkDownDocument);
-  
+
+  Renderer.RenderChildren(aElement as TMarkdownDocument);
+
   if HasOption(loEnvelope) then
     begin
     AppendNL('\end{document}');
     end;
 end;
 
-class function TLaTeXMarkDownDocumentRenderer.BlockClass: TMarkDownBlockClass;
+class function TLaTeXMarkdownDocumentRenderer.BlockClass: TMarkdownBlockClass;
 begin
-  Result:=TMarkDownDocument
+  Result:=TMarkdownDocument
 end;
 
 
 initialization
-  TLaTeXMarkDownHeadingBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXParagraphBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownQuoteBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownTextBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownListBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownListItemBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownCodeBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownThematicBreakBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownTableBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownTableRowBlockRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownDocumentRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
-  TLaTeXMarkDownTextRenderer.RegisterRenderer(TMarkDownLaTeXRenderer);
+  TLaTeXMarkdownHeadingBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXParagraphBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownQuoteBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownTextBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownListBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownListItemBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownCodeBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownThematicBreakBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownTableBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownTableRowBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownFrontmatterBlockRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownDocumentRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
+  TLaTeXMarkdownTextRenderer.RegisterRenderer(TMarkdownLaTeXRenderer);
 end.
