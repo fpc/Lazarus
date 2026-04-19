@@ -532,8 +532,10 @@ begin
     Exit;
 
   if NOT Application.Terminated then begin
-    if Assigned(mainForm) then
+    if Assigned(mainForm) then begin
+      mainForm.OnCloseQuery:= nil;
       mainForm.Close;
+    end;
     Application.Terminate;
   end;
 end;
