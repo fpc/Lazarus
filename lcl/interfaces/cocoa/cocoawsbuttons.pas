@@ -211,7 +211,7 @@ end;
 procedure TLCLButtonCallback.ButtonClick;
 begin
   if not _owner.lclIsEnabled() then Exit;
-  SendSimpleMessage(Target, LM_CLICKED);
+  SendSimpleMessage(target, LM_CLICKED);
 end;
 
 procedure TLCLButtonCallback.Draw(
@@ -233,7 +233,7 @@ begin
       FillChar(PS^, SizeOf(TPaintStruct), 0);
       PS^.hdc := HDC(ctx);
       PS^.rcPaint := TCocoaTypeUtil.toRect(nsr);
-      LCLSendPaintMsg(Target, HDC(ctx), PS);
+      LCLSendPaintMsg(target, HDC(ctx), PS);
     finally
       Dispose(PS);
     end;
@@ -360,13 +360,13 @@ procedure TLCLCheckBoxCallback.ButtonClick;
 begin
   inherited;
   if not _owner.lclIsEnabled() then Exit;
-  SendSimpleMessage(Target, LM_CHANGED);
+  SendSimpleMessage(target, LM_CHANGED);
   // todo: win32 has something about dbcheckbox handling here. so maybe we need to handle it special too
 end;
 
 procedure TLCLCheckBoxCallback.GetAllowMixedState(var allowed: Boolean);
 begin
-  allowed := TCustomCheckBox(Target).AllowGrayed;
+  allowed := TCustomCheckBox(target).AllowGrayed;
 end;
 
 { TCocoaWSCustomCheckBox }

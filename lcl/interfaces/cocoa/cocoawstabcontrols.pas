@@ -85,7 +85,7 @@ implementation
 
 function TLCLTabControlCallback.shouldSelectTabViewItem(aTabIndex: Integer): Boolean;
 begin
-  Result:= NOT TTabControl(Target).Dragging;
+  Result:= NOT TTabControl(target).Dragging;
 end;
 
 procedure TLCLTabControlCallback.sengNotifyMsg(aTabIndex:Integer; aCode:Integer);
@@ -99,12 +99,12 @@ begin
   Msg.Msg := LM_NOTIFY;
   FillChar(Hdr, SizeOf(Hdr), 0);
 
-  Hdr.hwndFrom := Target.Handle;
+  Hdr.hwndFrom := target.Handle;
   Hdr.Code := aCode;
-  Hdr.idFrom := TTabControl(Target).TabToPageIndex(ATabIndex);
+  Hdr.idFrom := TTabControl(target).TabToPageIndex(ATabIndex);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
-  LCLMessageGlue.DeliverMessage(Target, Msg);
+  LCLMessageGlue.DeliverMessage(target, Msg);
 end;
 
 procedure TLCLTabControlCallback.willSelectTabViewItem(aTabIndex: Integer);

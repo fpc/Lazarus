@@ -57,10 +57,15 @@ type
     _target: TWinControl;
     _propStorage: TStringList;
     _context: TCocoaContext;
-    _boundsReportedToChildren: Boolean;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
+    _boundsReportedToChildren: Boolean;
     _keyState: TCocoaKeyEventState;
     _mouseState: TCocoaMouseEventState;
+  public
+    traits: TLCLCommonCallbackTraits;
+    property owner: NSObject read _owner;
+    property target: TWinControl read _target;
+
   protected
     function deliverMessage(var msg): LRESULT;
     function doSendKeyMessage(
@@ -72,11 +77,6 @@ type
     procedure send_CN_CHAR_Message();
     procedure send_LM_KEYDOWN_Message();
     procedure send_LM_CHAR_Message();
-    function getCaptureControlCallback: ICommonCallBack;
-    procedure sendContextMenu(Event: NSEvent; out ContextMenuHandled: Boolean);
-
-    procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
-    procedure ScreenMousePos(var Point: NSPoint);
 
     procedure KeyEvBeforeDown;
     procedure KeyEvBeforeUp;
@@ -84,6 +84,13 @@ type
     procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
     procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
+
+    function getCaptureControlCallback: ICommonCallBack;
+    procedure sendContextMenu(Event: NSEvent; out ContextMenuHandled: Boolean);
+
+    procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
+    procedure ScreenMousePos(var Point: NSPoint);
+
   protected
     procedure createKeyStateFromKeyUpDown(
       const event: NSEvent;
@@ -91,16 +98,18 @@ type
     procedure createKeyStateFromFlagsChanged(
       const event: NSEvent;
       var state: TCocoaKeyEventState ); virtual;
-  public
-    traits: TLCLCommonCallbackTraits;
 
+  public
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
     function GetPropStorage: TStringList; inline;
     function GetContext: HDC; inline;
     function GetTarget: TObject; inline;
     function GetCallbackObject: TObject; inline;
-
+    procedure RemoveTarget; inline;
+    function HandleFrame: NSView; inline;
+    procedure SetHandleFrame(const AHandleFrame: NSView ); inline;
+  public
     function handleEventBeforeCocoa( const theEvent: NSEvent ): Boolean; virtual;
     procedure handleEventAfterCocoa( const theEvent: NSEvent ); virtual;
 
@@ -108,24 +117,18 @@ type
       const Event: NSEvent;
       const AForceAsMouseUp: Boolean = False;
       const AOverrideBlock: Boolean = False): Boolean; virtual;
-
     function MouseMove(const Event: NSEvent): Boolean; virtual;
     function scrollWheel(const Event: NSEvent): Boolean; virtual;
-    procedure frameDidChange(const sender: id); virtual;
-    procedure boundsDidChange(const sender: id); virtual;
     procedure scroll(
       const isVert: Boolean;
       const Pos: Integer;
       const AScrollPart: NSScrollerPart); virtual;
+
+    procedure frameDidChange(const sender: id); virtual;
+    procedure boundsDidChange(const sender: id); virtual;
+
     procedure Draw(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     procedure DrawOverlay(const ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
-    procedure RemoveTarget; virtual;
-
-    function HandleFrame: NSView; inline;
-    procedure SetHandleFrame(const AHandleFrame: NSView ); inline;
-
-    property Owner: NSObject read _owner;
-    property Target: TWinControl read _target;
   end;
 
   TLCLCommonCallBackClass = class of TLCLCommonCallBack;
@@ -234,7 +237,7 @@ begin
     PtForChildCtrls.x := PtForChildCtrls.x + cr.Left;
     PtForChildCtrls.y := PtForChildCtrls.y + cr.Top;
 
-    if Target is TScrollingWinControl then
+    if target is TScrollingWinControl then
       TCocoaViewUtil.lclOffsetWithEnclosingScrollView(NSView(_owner), PtForChildCtrls.x, PtForChildCtrls.y);
 
   end else
@@ -421,7 +424,7 @@ end;
 
 function TLCLCommonCallback.GetTarget: TObject;
 begin
-  Result := Target;
+  Result := target;
 end;
 
 function TLCLCommonCallback.GetCallbackObject: TObject;
@@ -745,7 +748,6 @@ end;
 procedure TLCLCommonCallback.KeyEvAfterUp;
 var
   msg: Cardinal;
-  ret: PtrInt;
 begin
   if _keyState.handled then
     Exit;
@@ -756,7 +758,7 @@ begin
   else
     msg := LM_KEYUP;
 
-  ret:= self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, True );
+  self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, True );
 end;
 
 procedure TLCLCommonCallback.KeyEvBefore(
@@ -790,7 +792,7 @@ procedure TLCLCommonCallback.KeyEvAfter;
 var
   AllowCocoaHandle: Boolean;
 begin
-  if NOT Assigned(self.Target) then
+  if NOT Assigned(self.target) then
     Exit;
   if _keyState.isKeyDown then
     KeyEvAfterDown(AllowCocoaHandle)
@@ -822,9 +824,9 @@ var
     ret: id;
   begin
     Result:= False;
-    if NOT Assigned(Target) then
+    if NOT Assigned(target) then
       Exit;
-    if NOT (csDesigning in Target.ComponentState) then
+    if NOT (csDesigning in target.ComponentState) then
       Exit;
     Result:= True;
     if NOT _owner.respondsToSelector( ObjcSelector('lclBypassCocoa:') ) then
@@ -846,7 +848,7 @@ begin
   Result := shouldBypassCocoa();
 
   lCaptureControlCallback := getCaptureControlCallback();
-  //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [Target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
+  //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
     _mouseState.isRouting:= True;
@@ -922,7 +924,7 @@ begin
         4: Msg.Keys := msg.Keys or MK_QUADCLICK;
       end;
 
-      NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
+      NotifyApplicationUserInput(target, PLMessage(@Msg)^);
       self.deliverMessage(Msg);
 
     end;
@@ -938,7 +940,7 @@ begin
         4: Msg.Keys := msg.Keys or MK_QUADCLICK;
       end;
 
-      NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
+      NotifyApplicationUserInput(target, PLMessage(@Msg)^);
       self.deliverMessage(Msg);
 
       // TODO: Check if Cocoa has special context menu check event
@@ -960,7 +962,7 @@ begin
     Exit;
   end;
 
-  //debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name+);
+  //debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+target.name+);
   if not Result then
   //Result := Result or (TCocoaCbTrait.blockUpDown and not AOverrideBlock);
     case lEventType of
@@ -1002,12 +1004,12 @@ begin
   // If LCL control is provided and it's in designing state.
   // The default resolution: Notify LCL about event, but don't let Cocoa
   // do anything with it. (Result=true)
-  Result := Assigned(Target) and (csDesigning in Target.ComponentState);
+  Result := Assigned(target) and (csDesigning in target.ComponentState);
 
   MousePos := Event.locationInWindow;
   OffsetMousePos(MousePos, bndPt, clPt, srchPt);
 
-  // For "dragged" events, the same "Target" should be used
+  // For "dragged" events, the same "target" should be used
   MouseTargetLookup := Event.type_ = NSMouseMoved;
 
   if MouseTargetLookup then
@@ -1028,7 +1030,7 @@ begin
       if Event.window<>TCocoaWindowUtil.getWindowAtPos(TCocoaScreenUtil.getScreenPoint(Event)) then
         exit;
 
-      rect:=Target.BoundsRect;
+      rect:=target.BoundsRect;
       OffsetRect(rect, -rect.Left, -rect.Top);
       if (event.type_ = NSMouseMoved) and (not Types.PtInRect(rect, bndPt)) then
       begin
@@ -1036,13 +1038,13 @@ begin
         Exit;
       end;
 
-      if assigned(Target.Parent) and not Types.PtInRect(rect, bndPt) then
-         targetControl:=Target.Parent // outside myself then route to parent
+      if assigned(target.Parent) and not Types.PtInRect(rect, bndPt) then
+         targetControl:=target.Parent // outside myself then route to parent
       else
-      for i:=Target.ControlCount-1 downto 0  do // otherwise check, if over child and route to child
-        if Target.Controls[i] is TWinControl then
+      for i:=target.ControlCount-1 downto 0  do // otherwise check, if over child and route to child
+        if target.Controls[i] is TWinControl then
         begin
-          childControl:=TWinControl(Target.Controls[i]);
+          childControl:=TWinControl(target.Controls[i]);
           rect:=childControl.BoundsRect;
           if Types.PtInRect(rect, srchPt) and isValidMouseControl(childControl) then
           begin
@@ -1056,7 +1058,7 @@ begin
     begin
       if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
       _mouseState.isRouting:= True;
-       //debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
+       //debugln(target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
       obj := NSObject(targetControl.Handle).lclContentView;
       if obj = nil then Exit;
       callback := obj.lclGetCallback;
@@ -1077,7 +1079,7 @@ begin
     end;
   end;
 
-  // debugln('Send to: '+Target.name+' Point: '+dbgs(mp));
+  // debugln('Send to: '+target.name+' Point: '+dbgs(mp));
 
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_MOUSEMOVE;
@@ -1085,9 +1087,9 @@ begin
   Msg.XPos := clPt.X;
   Msg.YPos := clPt.Y;
 
-  //debugln('MouseMove x='+dbgs(MousePos.X)+' y='+dbgs(MousePos.Y)+' Target='+Target.Name);
+  //debugln('MouseMove x='+dbgs(MousePos.X)+' y='+dbgs(MousePos.Y)+' Target='+target.Name);
 
-  NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
+  NotifyApplicationUserInput(target, PLMessage(@Msg)^);
   // LCL/LM_MOUSEMOVE always return false, so we should discard return value
   self.deliverMessage(Msg);
   // 1. for MouseMove Event, it has been processed by LCL,
@@ -1097,7 +1099,7 @@ begin
   if Event.type_ = NSMouseMoved then
     Result:= True
   else
-    Result:= Target.Dragging;
+    Result:= target.Dragging;
 
   // if Screen.Cursor set, LCL won't call TCocoaWSWinControl.SetCursor().
   // we need to set the cursor ourselves
@@ -1115,8 +1117,8 @@ var
 begin
   Result := False; // allow cocoa to handle message
 
-  if Assigned(Target)
-    and not (csDesigning in Target.ComponentState)
+  if Assigned(target)
+    and not (csDesigning in target.ComponentState)
     and not TCocoaViewUtil.isLCLEnabled(_owner) then
     Exit;
 
@@ -1173,7 +1175,7 @@ begin
     wheelDelta := Low(SmallInt);
   Msg.WheelDelta := wheelDelta;
 
-  NotifyApplicationUserInput(Target, PLMessage(@Msg)^);
+  NotifyApplicationUserInput(target, PLMessage(@Msg)^);
   Result := self.deliverMessage(Msg) <> 0;
 end;
 
@@ -1189,7 +1191,7 @@ var
   Resized, Moved, ClientResized: Boolean;
   SizeType: Integer;
 begin
-  NewBounds := HandleFrame.lclFrame;
+  NewBounds := _handleFrame.lclFrame;
 
   //debugln('Newbounds='+ dbgs(newbounds));
   // send window pos changed
@@ -1206,13 +1208,13 @@ begin
       cy := NewBounds.Bottom - NewBounds.Top;
       flags := 0;
     end;
-    LCLMessageGlue.DeliverMessage(Target, PosMsg);
+    LCLMessageGlue.DeliverMessage(target, PosMsg);
   finally
     Dispose(PosMsg.WindowPos);
   end;
 
-  OldBounds := Target.BoundsRect;
-  //debugln('OldBounds Target='+Target.Name+':'+ dbgs(OldBounds));
+  OldBounds := target.BoundsRect;
+  //debugln('OldBounds Target='+target.Name+':'+ dbgs(OldBounds));
 
   Resized :=
     (OldBounds.Right - OldBounds.Left <> NewBounds.Right - NewBounds.Left) or
@@ -1222,33 +1224,33 @@ begin
     (OldBounds.Left <> NewBounds.Left) or
     (OldBounds.Top <> NewBounds.Top);
 
-  ClientResized := (sender <> HandleFrame)
-    and not EqualRect(Target.ClientRect, HandleFrame.lclClientFrame);
+  ClientResized := (sender <> _handleFrame)
+    and not EqualRect(target.ClientRect, _handleFrame.lclClientFrame);
 
   // update client rect
-  if ClientResized or Resized or Target.ClientRectNeedsInterfaceUpdate then
+  if ClientResized or Resized or target.ClientRectNeedsInterfaceUpdate then
   begin
-    Target.InvalidateClientRectCache(false);
+    target.InvalidateClientRectCache(false);
     ClientResized := True;
   end;
 
   // then send a LM_SIZE message
   if Resized or ClientResized then
   begin
-    LCLSendSizeMsg(Target, Max(NewBounds.Right - NewBounds.Left,0),
+    LCLSendSizeMsg(target, Max(NewBounds.Right - NewBounds.Left,0),
       Max(NewBounds.Bottom - NewBounds.Top,0), _owner.lclWindowState, True);
   end;
 
   // then send a LM_MOVE message
   if Moved then
   begin
-    LCLSendMoveMsg(Target, NewBounds.Left,
+    LCLSendMoveMsg(target, NewBounds.Left,
       NewBounds.Top, Move_SourceIsInterface);
   end;
 
   if not _boundsReportedToChildren then // first time we need this to update non cocoa based client rects
   begin
-    Target.InvalidateClientRectCache(true);
+    target.InvalidateClientRectCache(true);
     _boundsReportedToChildren:=true;
   end;
 
@@ -1265,7 +1267,7 @@ var
 begin
   FillChar(LMScroll{%H-}, SizeOf(LMScroll), #0);
   //todo: this should be a part of a parameter
-  //LMScroll.ScrollBar := Target.Handle;
+  //LMScroll.ScrollBar := target.Handle;
 
   if IsVert then
     LMScroll.Msg := LM_VSCROLL
@@ -1283,7 +1285,7 @@ begin
   end;
   LMScroll.ScrollCode := lclCode; //SIF_POS;
 
-  LCLMessageGlue.DeliverMessage(Target, LMScroll);
+  LCLMessageGlue.DeliverMessage(target, LMScroll);
 end;
 
 procedure TLCLCommonCallback.Draw(
@@ -1300,25 +1302,25 @@ begin
   _context.Control := _target;
   _context.isControlDC := True;
   try
-    // debugln('Draw '+Target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
+    // debugln('Draw '+target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
     if _context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
       nsr:=dirty;
       if NOT _owner.isKindOfClass(NSView) or NOT NSView(_owner).isFlipped then
          nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
 
-      if (TCocoaCbTrait.opaque in self.traits) and (Target.Color<>clDefault) then
+      if (TCocoaCbTrait.opaque in self.traits) and (target.Color<>clDefault) then
       begin
         _context.BkMode:=OPAQUE;
-        _context.BkColor:=Target.Color;
+        _context.BkColor:=target.Color;
         _context.BackgroundFill(nsr);
-        //debugln('Background '+Target.name+Dbgs(NSRectToRect(dirty)));
+        //debugln('Background '+target.name+Dbgs(NSRectToRect(dirty)));
       end;
 
       FillChar(PS, SizeOf(TPaintStruct), 0);
       PS.hdc := HDC(_context);
       PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
-      LCLSendPaintMsg(Target, HDC(_context), @PS);
+      LCLSendPaintMsg(target, HDC(_context), @PS);
       TCocoaCaretUtil.drawCaret( _owner.lclContentView );
     end;
   finally
@@ -1340,7 +1342,7 @@ begin
   _context.isControlDC := True;
   _context.isDesignDC := True;
   try
-    // debugln('Draw '+Target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
+    // debugln('Draw '+target.name+' bounds='+Dbgs(NSRectToRect(bounds))+' dirty='+Dbgs(NSRectToRect(dirty)));
     if _context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
       nsr:=dirty;
@@ -1350,7 +1352,7 @@ begin
       FillChar(PS, SizeOf(TPaintStruct), 0);
       PS.hdc := HDC(_context);
       PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
-      LCLSendPaintMsg(Target, HDC(_context), @PS);
+      LCLSendPaintMsg(target, HDC(_context), @PS);
     end;
   finally
     FreeAndNil(_context);
@@ -1374,7 +1376,7 @@ end;
 
 function TLCLCommonCallback.deliverMessage(var msg): LRESULT;
 begin
-  Result:= LCLMessageGlue.DeliverMessage(Target, msg);
+  Result:= LCLMessageGlue.DeliverMessage(target, msg);
 end;
 
 function TLCLCommonCallback.doSendKeyMessage(
@@ -1395,7 +1397,7 @@ begin
   message.KeyData := keyData;
 
   if notifyUserInput then
-    NotifyApplicationUserInput( Target, PLMessage(@message)^ );
+    NotifyApplicationUserInput( target, PLMessage(@message)^ );
 
   if message.CharCode = VK_UNKNOWN then begin
     Result:= 1;

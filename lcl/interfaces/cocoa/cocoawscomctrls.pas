@@ -82,8 +82,8 @@ type
 
 procedure TUpdownCommonCallback.BeforeChange(var Allowed: Boolean);
 begin
-  if Assigned( TAccessUpDown(Target).OnChanging ) then
-    TAccessUpDown(Target).OnChanging(Target, Allowed);
+  if Assigned( TAccessUpDown(target).OnChanging ) then
+    TAccessUpDown(target).OnChanging(target, Allowed);
 end;
 
 procedure TUpdownCommonCallback.Change(NewValue: Double; isUpPressed: Boolean;
@@ -91,8 +91,8 @@ procedure TUpdownCommonCallback.Change(NewValue: Double; isUpPressed: Boolean;
 const
   UpDownDir : array [Boolean] of TUpDownDirection = (updUp, updDown);
 begin
-  if Assigned( TAccessUpDown(Target).OnChangingEx ) then
-    TAccessUpDown(Target).OnChangingEx(Target, Allowed,
+  if Assigned( TAccessUpDown(target).OnChangingEx ) then
+    TAccessUpDown(target).OnChangingEx(target, Allowed,
       Round(NewValue), UpDownDir[isUpPressed]);
 end;
 
@@ -100,9 +100,9 @@ procedure TUpdownCommonCallback.UpdownClick(isUpPressed: Boolean);
 const
   UpDownBtn : array [Boolean] of TUDBtnType = (btPrev, btNext);
 begin
-  TAccessUpDown(Target).Position := NSStepper(_owner).intValue;
-  if Assigned( TAccessUpDown(Target).OnClick ) then
-    TAccessUpDown(Target).OnClick( Target, UpDownBtn[isUpPressed]);
+  TAccessUpDown(target).Position := NSStepper(_owner).intValue;
+  if Assigned( TAccessUpDown(target).OnClick ) then
+    TAccessUpDown(target).OnClick( target, UpDownBtn[isUpPressed]);
 end;
 
 { TCocoaWSCustomUpDown }
