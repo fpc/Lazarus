@@ -72,6 +72,12 @@ type
     class procedure register(const aBlockType : String);
     // This is called to see whether aLine closes the current block.
     function LineEndsBlock(aBlock : TMarkdownContainerBlock; aLine: TMarkdownLine): Boolean; virtual;
+    // Return true if a line this processor would handle should terminate an
+    // enclosing list (i.e. this block type "interrupts" a list per CommonMark).
+    // Override to True in heading, thematic-break, fenced-code, quote, etc.
+    // HandlesLine is consulted right after and must be side-effect-free on
+    // processors that override this to True.
+    function EndsList: Boolean; virtual;
     // Return true if this processor handles the current line. Needs to handle state.
     function HandlesLine(aParent : TMarkdownContainerBlock; aLine: TMarkdownLine): boolean; virtual; abstract;
     // When HandlesLine returned true, ProcessLine is called.
@@ -169,6 +175,8 @@ type
     property Lazy : Boolean Read FLazy Write FLazy;
     // HTML entities to convert
     Property Entities : TFPStringHashTable read FEntities;
+    // Registered block processors (read-only, parser-owned).
+    Property Processors : TMarkdownBlockProcessorArray Read FProcessors;
   published
     // Options
     Property Options : TMarkdownOptions Read FOptions Write FOptions;
@@ -229,6 +237,13 @@ function TMarkdownBlockProcessor.LineEndsBlock(aBlock: TMarkdownContainerBlock; 
 
 begin
   Result:=(aLine=Nil) or (aBlock=Nil);
+end;
+
+
+function TMarkdownBlockProcessor.EndsList: Boolean;
+
+begin
+  Result:=False;
 end;
 
 
