@@ -93,7 +93,6 @@ type
   public
     Owner: NSObject;
     traits: TLCLCommonCallbackTraits;
-    BlockCocoaMouseMove: Boolean;
 
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
@@ -971,12 +970,8 @@ begin
       NSLeftMouseUp,
       NSRightMouseUp,
       NSOtherMouseUp:
-      begin
         if CocoaWidgetSetState.trackedControl = Owner then
           CocoaWidgetSetState.trackedControl := nil;
-        if lEventType = NSLeftMouseUp then
-          BlockCocoaMouseMove := false;
-      end;
     end;
 end;
 

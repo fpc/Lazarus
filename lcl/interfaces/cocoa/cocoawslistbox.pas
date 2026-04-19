@@ -70,7 +70,6 @@ type
 
   TCocoaWSCustomListBox = class(TWSCustomListBox)
   published
-    class procedure DragStart(const ACustomListBox: TCustomListBox); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont ); override;
 
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
@@ -280,17 +279,6 @@ begin
 end;
 
 { TCocoaWSCustomListBox }
-
-class procedure TCocoaWSCustomListBox.DragStart(
-  const ACustomListBox: TCustomListBox);
-var
-  lclcb : TLCLListBoxCallback;
-begin
-  lclcb:= TCocoaWSListBoxUtil.getCallback( ACustomListBox );
-  if NOT Assigned(lclcb) then
-    Exit;
-  lclcb.BlockCocoaMouseMove:=true;
-end;
 
 function TCocoaTableListBoxProcessor.isInitializing(tv: NSTableView): Boolean;
 begin
