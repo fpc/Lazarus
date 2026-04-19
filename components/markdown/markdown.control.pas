@@ -349,9 +349,11 @@ end;
 
 procedure TCustomMarkDownControl.CalculatePreferredSize(
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+const
+  MaxWidgetSetHeight = 30000;
 begin
   PreferredWidth := 0;
-  PreferredHeight := FCalculatedHeight + 2*BorderWidth;
+  PreferredHeight := Min(FCalculatedHeight + 2*BorderWidth, MaxWidgetSetHeight);
 end;
 
 procedure TCustomMarkDownControl.ParseMarkDown;
