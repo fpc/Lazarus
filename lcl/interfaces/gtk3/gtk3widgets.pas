@@ -3642,11 +3642,6 @@ begin
     height := AHeight;
   end;
 
-  if Self is TGtk3Button then
-  begin
-    AWidth:=Max(1,AWidth-4);
-    AHeight:=Max(1,AHeight-4);
-  end;
 
   BeginUpdate;
   try
