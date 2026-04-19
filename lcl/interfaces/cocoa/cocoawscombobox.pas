@@ -176,7 +176,7 @@ begin
     exit;
   if not (cbactRetainPrefixCase in cmb.AutoCompleteText) then
     exit;
-  helper:= TComboBoxAsyncHelper.Create(Owner);
+  helper:= TComboBoxAsyncHelper.Create(_owner);
   helper._newText:= ANewText;
   Application.QueueAsyncCall(@helper.AsyncResetText, 0);
 end;

@@ -53,6 +53,7 @@ type
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
   protected
+    _owner: NSObject;
     _target: TWinControl;
     _propStorage: TStringList;
     _context: TCocoaContext;
@@ -91,7 +92,6 @@ type
       const event: NSEvent;
       var state: TCocoaKeyEventState ); virtual;
   public
-    Owner: NSObject;
     traits: TLCLCommonCallbackTraits;
 
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
@@ -124,6 +124,7 @@ type
     function HandleFrame: NSView; inline;
     procedure SetHandleFrame(const AHandleFrame: NSView ); inline;
 
+    property Owner: NSObject read _owner;
     property Target: TWinControl read _target;
   end;
 
@@ -206,35 +207,35 @@ var
   pt: NSPoint;
   cr: TRect;
 begin
-  if Owner.isKindOfClass(NSWindow) then
+  if _owner.isKindOfClass(NSWindow) then
   begin
     PtInBounds.x := Round(LocInWin.x);
-    PtInBounds.y := Round(NSWindow(Owner).contentView.bounds.size.height - LocInWin.y);
+    PtInBounds.y := Round(NSWindow(_owner).contentView.bounds.size.height - LocInWin.y);
     PtInClient := PtInBounds; // todo: it's different. But Owner is never NSWindow (it's TConentWindowView instead)
     PtForChildCtrls := PtInClient;
   end
-  else if Owner.isKindOfClass(NSView) then
+  else if _owner.isKindOfClass(NSView) then
   begin
     pt := LocInWin;
 
-    NSView(Owner).lclOffsetMousePos(pt);
+    NSView(_owner).lclOffsetMousePos(pt);
     PtInBounds.x := Round(pt.x);
     PtInBounds.y := Round(pt.y);
 
-    //pt := NSView(Owner).frame.origin;
-    //if NSView(Owner).frame.
-    cr := NSView(Owner).lclClientFrame;
+    //pt := NSView(_owner).frame.origin;
+    //if NSView(_owner).frame.
+    cr := NSView(_owner).lclClientFrame;
     PtInClient.x := Round({PtInBounds.x - }pt.x - cr.Left);
     PtInClient.y := Round({PtInBounds.y - }pt.y - cr.Top);
 
     // child ctrls need not LayoutDelta
-    cr := NSView(Owner).lclGetFrameToLayoutDelta;
+    cr := NSView(_owner).lclGetFrameToLayoutDelta;
     PtForChildCtrls := PtInClient;
     PtForChildCtrls.x := PtForChildCtrls.x + cr.Left;
     PtForChildCtrls.y := PtForChildCtrls.y + cr.Top;
 
     if Target is TScrollingWinControl then
-      TCocoaViewUtil.lclOffsetWithEnclosingScrollView(NSView(Owner), PtForChildCtrls.x, PtForChildCtrls.y);
+      TCocoaViewUtil.lclOffsetWithEnclosingScrollView(NSView(_owner), PtForChildCtrls.x, PtForChildCtrls.y);
 
   end else
   begin
@@ -250,7 +251,7 @@ var
   f: NSRect;
   lWindow: NSWindow;
 begin
-  lWindow := NSWindow(TCocoaWindowUtil.getWindow(Owner));
+  lWindow := NSWindow(TCocoaWindowUtil.getWindow(_owner));
   if lWindow <> nil then
   begin
     f := lWindow.frame;
@@ -387,10 +388,10 @@ end;
 constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView);
 begin
   inherited Create;
-  Owner := AOwner;
+  _owner := AOwner;
   if Assigned(AHandleFrame) then
     _handleFrame := AHandleFrame
-  else if Owner.isKindOfClass(NSView) then
+  else if _owner.isKindOfClass(NSView) then
     _handleFrame := NSView(AOwner);
   _target := ATarget;
   _context := nil;
@@ -540,7 +541,7 @@ begin
   if CocoaWidgetSetState.captureControl = 0 then Exit;
   obj := NSObject(CocoaWidgetSetState.captureControl);
   lCaptureView := obj.lclContentView;
-  if (obj <> Owner) and (lCaptureView <> Owner) and not _mouseState.isRouting then
+  if (obj <> _owner) and (lCaptureView <> _owner) and not _mouseState.isRouting then
   begin
     Result := lCaptureView.lclGetCallback;
   end;
@@ -570,7 +571,7 @@ begin
   ScreenMousePos(MousePos);
   MsgContext.XPos := Round(MousePos.X);
   MsgContext.YPos := Round(MousePos.Y);
-  Rcp := Owner;
+  Rcp := _owner;
   Res := 1;
   repeat
     cb := Rcp.lclGetCallback;
@@ -655,7 +656,7 @@ begin
     Exit;
 
   lclHandled:= TCocoaLCLMessageUtil.IntfUTF8KeyPress(
-                 Owner,
+                 _owner,
                  _keyState.utf8Character,
                  _keyState.isSysKey );
 
@@ -826,14 +827,14 @@ var
     if NOT (csDesigning in Target.ComponentState) then
       Exit;
     Result:= True;
-    if NOT Owner.respondsToSelector( ObjcSelector('lclBypassCocoa:') ) then
+    if NOT _owner.respondsToSelector( ObjcSelector('lclBypassCocoa:') ) then
       Exit;
-    ret:= Owner.performSelector_withObject( ObjcSelector('lclBypassCocoa:'), Event );
+    ret:= _owner.performSelector_withObject( ObjcSelector('lclBypassCocoa:'), Event );
     Result:= TCocoaNumberUtil.toBoolean( ret );
   end;
 
 begin
-  if Assigned(Owner) and not TCocoaViewUtil.isLCLEnabled(Owner) then
+  if Assigned(_owner) and not TCocoaViewUtil.isLCLEnabled(_owner) then
   begin
     Result := True; // Cocoa should not handle the message.
     Exit;           // LCL should not get the notification either, as the control is disabled.
@@ -912,7 +913,7 @@ begin
     NSRightMouseDown,
     NSOtherMouseDown:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),_target,LastMouse,
+      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(_owner),_target,LastMouse,
         _target.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,True);
 
       case LastMouse.ClickCount of
@@ -929,7 +930,7 @@ begin
     NSRightMouseUp,
     NSOtherMouseUp:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),_target,LastMouse,
+      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(_owner),_target,LastMouse,
         _target.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,False);
       case LastMouse.ClickCount of
         2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
@@ -966,11 +967,11 @@ begin
       NSLeftMouseDown,
       NSRightMouseDown,
       NSOtherMouseDown:
-        CocoaWidgetSetState.trackedControl := Owner;
+        CocoaWidgetSetState.trackedControl := _owner;
       NSLeftMouseUp,
       NSRightMouseUp,
       NSOtherMouseUp:
-        if CocoaWidgetSetState.trackedControl = Owner then
+        if CocoaWidgetSetState.trackedControl = _owner then
           CocoaWidgetSetState.trackedControl := nil;
     end;
 end;
@@ -995,7 +996,7 @@ begin
   if not NSApp.isActive then
     exit;
 
-  if Assigned(Owner) and not TCocoaViewUtil.isLCLEnabled(Owner) then
+  if Assigned(_owner) and not TCocoaViewUtil.isLCLEnabled(_owner) then
     exit;           // LCL should get the notification either.
 
   // If LCL control is provided and it's in designing state.
@@ -1011,7 +1012,7 @@ begin
 
   if MouseTargetLookup then
   begin
-    rect:=Owner.lclClientFrame;
+    rect:=_owner.lclClientFrame;
     targetControl:=nil;
 
     callback := getCaptureControlCallback();
@@ -1065,7 +1066,7 @@ begin
       exit;
     end;
 
-    if (Event.type_ = NSMouseMoved) and Owner.lclIsMouseInAuxArea(Event) then
+    if (Event.type_ = NSMouseMoved) and _owner.lclIsMouseInAuxArea(Event) then
     begin
       // mouse is over auxillary area that's "blind" to mouse moves
       // even though the mouse cursos is within the control bounds.
@@ -1116,7 +1117,7 @@ begin
 
   if Assigned(Target)
     and not (csDesigning in Target.ComponentState)
-    and not TCocoaViewUtil.isLCLEnabled(Owner) then
+    and not TCocoaViewUtil.isLCLEnabled(_owner) then
     Exit;
 
   MousePos := Event.locationInWindow;
@@ -1235,7 +1236,7 @@ begin
   if Resized or ClientResized then
   begin
     LCLSendSizeMsg(Target, Max(NewBounds.Right - NewBounds.Left,0),
-      Max(NewBounds.Bottom - NewBounds.Top,0), Owner.lclWindowState, True);
+      Max(NewBounds.Bottom - NewBounds.Top,0), _owner.lclWindowState, True);
   end;
 
   // then send a LM_MOVE message
@@ -1303,7 +1304,7 @@ begin
     if _context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
       nsr:=dirty;
-      if NOT Owner.isKindOfClass(NSView) or NOT NSView(Owner).isFlipped then
+      if NOT _owner.isKindOfClass(NSView) or NOT NSView(_owner).isFlipped then
          nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
 
       if (TCocoaCbTrait.opaque in self.traits) and (Target.Color<>clDefault) then
@@ -1318,7 +1319,7 @@ begin
       PS.hdc := HDC(_context);
       PS.rcPaint := TCocoaTypeUtil.toRect(nsr);
       LCLSendPaintMsg(Target, HDC(_context), @PS);
-      TCocoaCaretUtil.drawCaret( Owner.lclContentView );
+      TCocoaCaretUtil.drawCaret( _owner.lclContentView );
     end;
   finally
     FreeAndNil(_context);
@@ -1343,7 +1344,7 @@ begin
     if _context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
     begin
       nsr:=dirty;
-      if NOT Owner.isKindOfClass(NSView) or NOT NSView(Owner).isFlipped then
+      if NOT _owner.isKindOfClass(NSView) or NOT NSView(_owner).isFlipped then
          nsr.origin.y:=bounds.size.height-dirty.origin.y-dirty.size.height;
 
       FillChar(PS, SizeOf(TPaintStruct), 0);

@@ -210,7 +210,7 @@ end;
 
 procedure TLCLButtonCallback.ButtonClick;
 begin
-  if not Owner.lclIsEnabled() then Exit;
+  if not _owner.lclIsEnabled() then Exit;
   SendSimpleMessage(Target, LM_CLICKED);
 end;
 
@@ -359,7 +359,7 @@ end;
 procedure TLCLCheckBoxCallback.ButtonClick;
 begin
   inherited;
-  if not Owner.lclIsEnabled() then Exit;
+  if not _owner.lclIsEnabled() then Exit;
   SendSimpleMessage(Target, LM_CHANGED);
   // todo: win32 has something about dbcheckbox handling here. so maybe we need to handle it special too
 end;
@@ -473,9 +473,9 @@ procedure TLCLRadioButtonCallback.ButtonClick;
 var
   SubView: NSView;
 begin
-  if not Owner.lclIsEnabled() then Exit;
-  if NSButton(Owner).state = NSOnState then
-    TCocoaWSButtonUtil.switchRadioButton(NSButton(Owner));
+  if not _owner.lclIsEnabled() then Exit;
+  if NSButton(_owner).state = NSOnState then
+    TCocoaWSButtonUtil.switchRadioButton(NSButton(_owner));
   inherited ButtonClick;
 end;
 

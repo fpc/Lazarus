@@ -180,7 +180,7 @@ begin
     dr.itemID := idx;
     dr._hDC := HDC(ctx);
     dr.rcItem := r;
-    fr := NSView(Owner).lclFrame;
+    fr := NSView(_owner).lclFrame;
     ctx.InitDraw(fr.Right-fr.Left, fr.Bottom-fr.Top);
     LCLMessageGlue.DeliverMessage(Target, msg);
   finally

@@ -457,12 +457,12 @@ end;
 
 procedure TLCLWindowCallback.Resize;
 begin
-  boundsDidChange(Owner);
+  boundsDidChange(_owner);
 end;
 
 procedure TLCLWindowCallback.Move;
 begin
-  boundsDidChange(Owner);
+  boundsDidChange(_owner);
 end;
 
 procedure TLCLWindowCallback.WindowStateChanged;
@@ -471,17 +471,17 @@ var
 begin
   Bounds := HandleFrame.lclFrame;
   LCLSendSizeMsg(Target, Bounds.Right - Bounds.Left, Bounds.Bottom - Bounds.Top,
-    Owner.lclWindowState, True);
+    _owner.lclWindowState, True);
 end;
 
 function TLCLWindowCallback.GetEnabled: Boolean;
 begin
-  Result := Owner.lclIsEnabled;
+  Result := _owner.lclIsEnabled;
 end;
 
 procedure TLCLWindowCallback.SetEnabled(AValue: Boolean);
 begin
-  Owner.lclSetEnabled(AValue);
+  _owner.lclSetEnabled(AValue);
 end;
 
 function TLCLWindowCallback.AcceptFilesDrag: Boolean;
