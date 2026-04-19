@@ -85,7 +85,7 @@ implementation
 
 function TLCLTabControlCallback.shouldSelectTabViewItem(aTabIndex: Integer): Boolean;
 begin
-  Result:= NOT TTabControl(Target).Dragging;
+  Result:= NOT TTabControl(target).Dragging;
 end;
 
 procedure TLCLTabControlCallback.sengNotifyMsg(aTabIndex:Integer; aCode:Integer);
@@ -99,12 +99,12 @@ begin
   Msg.Msg := LM_NOTIFY;
   FillChar(Hdr, SizeOf(Hdr), 0);
 
-  Hdr.hwndFrom := Target.Handle;
+  Hdr.hwndFrom := target.Handle;
   Hdr.Code := aCode;
-  Hdr.idFrom := TTabControl(Target).TabToPageIndex(ATabIndex);
+  Hdr.idFrom := TTabControl(target).TabToPageIndex(ATabIndex);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
-  LCLMessageGlue.DeliverMessage(Target, Msg);
+  LCLMessageGlue.DeliverMessage(target, Msg);
 end;
 
 procedure TLCLTabControlCallback.willSelectTabViewItem(aTabIndex: Integer);
@@ -132,6 +132,7 @@ var
   lControl: TCocoaTabPage;
   tv: TCocoaTabPageView;
   tabview: TCocoaTabControl;
+  cb: TLCLCommonCallback;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaWSCustomPage.CreateHandle]');
@@ -140,7 +141,6 @@ begin
   Result := TLCLHandle(lControl);
   if Result <> 0 then
   begin
-    //lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
     SetProperties(TCustomPage(AWinControl), lControl);
 
     // Set a special view for the page
@@ -155,8 +155,9 @@ begin
     tv.setBorderType(NSNoBorder);}
     tv.tabView := tabview;
     tv.tabPage := lControl;
-    tv.callback := TLCLCommonCallback.Create(tv, AWinControl);
-    TLCLCommonCallback(tv.callback.GetCallbackObject).BlockCocoaUpDown := true;
+    cb:= TLCLCommonCallback.Create(tv, AWinControl);
+    cb.traits:= [TCocoaCbTrait.blockUpDown];
+    tv.callback:= cb;
     lControl.callback := tv.callback;
     lControl.setView(tv);
     TCocoaViewUtil.updateFocusRing( tabview, AWinControl );

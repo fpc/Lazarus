@@ -334,8 +334,8 @@ begin
   // All other Windows are disabled while modal is active.
   // Thus must check wcfUpdateShowing flag (which set when changing window visibility)
   // And if it's used, then we allow the window to become Key window
-  if not Result and (Target is TWinControl) then
-    Result := wcfUpdateShowing in TWinControlAccess(Target).FWinControlFlags;
+  if not Result and (target is TWinControl) then
+    Result := wcfUpdateShowing in TWinControlAccess(target).FWinControlFlags;
 end;
 
 constructor TLCLWindowCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
@@ -361,7 +361,7 @@ begin
   if not IsActivating then
   begin
     IsActivating:=True;
-    ACustForm := Target as TCustomForm;
+    ACustForm := target as TCustomForm;
 
     isDesign :=
       (csDesigning in ACustForm.ComponentState)
@@ -387,7 +387,7 @@ begin
         CocoaWidgetSetMenuService.SetMainMenu(0, nil);
     end;
 
-    LCLSendActivateMsg(Target, WA_ACTIVE, false);
+    LCLSendActivateMsg(target, WA_ACTIVE, false);
     focusedCb := window.firstResponder.lclGetCallback;
     if Assigned(focusedCb) then
       TCocoaLCLMessageUtil.BecomeFirstResponder(focusedCb);
@@ -413,7 +413,7 @@ begin
     if not (csDestroying in TComponent(focusedCb.GetTarget).ComponentState) then
       TCocoaLCLMessageUtil.ResignFirstResponder(focusedCb);
   end;
-  LCLSendActivateMsg(Target, WA_INACTIVE, false);
+  LCLSendActivateMsg(target, WA_INACTIVE, false);
 end;
 
 procedure TLCLWindowCallback.CloseQuery(var CanClose: Boolean);
@@ -421,11 +421,11 @@ var
   i: Integer;
 begin
   // Message results : 0 - do nothing, 1 - destroy window
-  CanClose := LCLSendCloseQueryMsg(Target) > 0;
+  CanClose := LCLSendCloseQueryMsg(target) > 0;
 
   // Special code for modal forms, which otherwise would get 0 here and not call Close
   if (CocoaWidgetSetModalService.currentModal = window) and
-    (TCustomForm(Target).ModalResult <> mrNone) then
+    (TCustomForm(target).ModalResult <> mrNone) then
   begin
     {$IFDEF COCOA_USE_NATIVE_MODAL}
     NSApp.stopModal();
@@ -452,17 +452,17 @@ end;
 
 procedure TLCLWindowCallback.Close;
 begin
-  LCLSendCloseUpMsg(Target);
+  LCLSendCloseUpMsg(target);
 end;
 
 procedure TLCLWindowCallback.Resize;
 begin
-  boundsDidChange(Owner);
+  boundsDidChange(_owner);
 end;
 
 procedure TLCLWindowCallback.Move;
 begin
-  boundsDidChange(Owner);
+  boundsDidChange(_owner);
 end;
 
 procedure TLCLWindowCallback.WindowStateChanged;
@@ -470,31 +470,31 @@ var
   Bounds: TRect;
 begin
   Bounds := HandleFrame.lclFrame;
-  LCLSendSizeMsg(Target, Bounds.Right - Bounds.Left, Bounds.Bottom - Bounds.Top,
-    Owner.lclWindowState, True);
+  LCLSendSizeMsg(target, Bounds.Right - Bounds.Left, Bounds.Bottom - Bounds.Top,
+    _owner.lclWindowState, True);
 end;
 
 function TLCLWindowCallback.GetEnabled: Boolean;
 begin
-  Result := Owner.lclIsEnabled;
+  Result := _owner.lclIsEnabled;
 end;
 
 procedure TLCLWindowCallback.SetEnabled(AValue: Boolean);
 begin
-  Owner.lclSetEnabled(AValue);
+  _owner.lclSetEnabled(AValue);
 end;
 
 function TLCLWindowCallback.AcceptFilesDrag: Boolean;
 begin
-  Result := Assigned(Target)
-    and TCustomForm(Target).AllowDropFiles
-    and Assigned(TCustomForm(Target).OnDropFiles);
+  Result := Assigned(target)
+    and TCustomForm(target).AllowDropFiles
+    and Assigned(TCustomForm(target).OnDropFiles);
 end;
 
 procedure TLCLWindowCallback.DropFiles(const FileNames: array of string);
 begin
-  if Assigned(Target) then
-    TCustomForm(Target).IntfDropFiles(FileNames);
+  if Assigned(target) then
+    TCustomForm(target).IntfDropFiles(FileNames);
 end;
 
 function TLCLWindowCallback.HasCancelControl: Boolean;
@@ -503,10 +503,10 @@ function TLCLWindowCallback.HasCancelControl: Boolean;
 var
   lControl: TControl;
 begin
-  if Assigned(Target) and
+  if Assigned(target) and
      (anoEscapeForCancelControl in Application.Navigation) then
   begin
-    lControl := TCustomForm(Target).CancelControl;
+    lControl := TCustomForm(target).CancelControl;
     Result := Assigned(lControl) and lControl.Enabled and lControl.Visible;
   end
   else
@@ -519,12 +519,12 @@ function TLCLWindowCallback.HasDefaultControl: Boolean;
 var
   lControl: TControl;
 begin
-  if Assigned(Target) and
+  if Assigned(target) and
      (anoReturnForDefaultControl in Application.Navigation) then
   begin
-    lControl := TCustomForm(Target).ActiveDefaultControl;
+    lControl := TCustomForm(target).ActiveDefaultControl;
     if lControl = nil then
-      lControl := TCustomForm(Target).DefaultControl;
+      lControl := TCustomForm(target).DefaultControl;
     Result := Assigned(lControl) and
       ((lControl.Parent = nil) or lControl.Parent.CanFocus) and
       lControl.Enabled and lControl.Visible;
@@ -846,7 +846,7 @@ begin
       {$endif}
     end;
 
-    cb.IsOpaque:=true;
+    cb.traits:= [TCocoaCbTrait.opaque];
     cnt.wincallback := TCocoaWindow(win).callback;
     win.setContentView(cnt);
 
@@ -866,7 +866,7 @@ begin
       //cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
       if cnt.window <> nil then
          cnt.window.setAcceptsMouseMovedEvents(True);
-      cb.IsOpaque:=true;
+      cb.traits:= [TCocoaCbTrait.opaque];
       //  todo: We have to find a way to remove the following notifications save before cnt will be released
       //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didBecomeKeyNotification:'), NSWindowDidBecomeKeyNotification, cnt.window);
       //  NSNotificationCenter.defaultCenter.addObserver_selector_name_object(cnt, objcselector('didResignKeyNotification:'), NSWindowDidResignKeyNotification, cnt.window);

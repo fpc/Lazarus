@@ -103,7 +103,7 @@ end;
 
 constructor TLCLMenuItemCallback.Create(AOwner: NSObject; AMenuItemTarget: TMenuItem);
 begin
-  Owner := AOwner;
+  _owner := AOwner;
   FMenuItemTarget := AMenuItemTarget;
 end;
 

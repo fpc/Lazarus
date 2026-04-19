@@ -300,7 +300,7 @@ begin
   scrollcon.setDocumentView(docview);
 
   lcl := TLCLCommonCallback.Create(docview, AWinControl, scrollcon);
-  lcl.BlockCocoaUpDown := true;
+  lcl.traits:= [TCocoaCbTrait.blockUpDown];
   scrollcon.callback := lcl;
   docview.callback := lcl;
 

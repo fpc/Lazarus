@@ -22,7 +22,9 @@ type
   // CallBack for LCL Full Control Edit (such as SynEdit/ATSynEdit)
   TLCLFullControlEditCallBack = class(TLCLCommonCallBack)
   protected
-    procedure KeyEvPrepare(Event: NSEvent); override;
+    procedure createKeyStateFromKeyUpDown(
+      const event: NSEvent;
+      var state: TCocoaKeyEventState ); override;
   end;
 
   { TCocoaWSCustomControl }
@@ -89,10 +91,12 @@ end;
      and NSInputContext.sendEvent() will be called in it,
      and function in NSTextInputClient will be called.
 }
-procedure TLCLFullControlEditCallback.KeyEvPrepare(Event: NSEvent);
+procedure TLCLFullControlEditCallBack.createKeyStateFromKeyUpDown(
+  const event: NSEvent;
+  var state: TCocoaKeyEventState );
 begin
-  inherited;
-  _sendChar := false;
+  inherited createKeyStateFromKeyUpDown( event, state );
+  state.shouldSendCharMessage:= False;
 end;
 
 { TCocoaWSCustomControl }
@@ -123,8 +127,7 @@ begin
     ctrl := TCocoaCustomControlWithBaseInputClient.alloc.lclInitWithCreateParams(AParams);
     lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
   end;
-  lcl.BlockCocoaUpDown := true;
-  lcl.BlockCocoaKeyBeep := true; // prevent "dings" on keyDown for custom controls (i.e. SynEdit)
+  lcl.traits:= [TCocoaCbTrait.blockUpDown, TCocoaCbTrait.blockKeyBeep];
   ctrl.callback := lcl;
 
   sl := TCocoaWSScrollingUtil.embedInManualScrollView(ctrl);

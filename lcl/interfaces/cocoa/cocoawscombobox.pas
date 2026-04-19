@@ -147,18 +147,18 @@ type
 procedure TLCLComboBoxCallback.ComboBoxWillPopUp;
 begin
   isShowPopup := true;
-  LCLSendDropDownMsg(Target);
+  LCLSendDropDownMsg(target);
 end;
 
 procedure TLCLComboBoxCallback.ComboBoxWillDismiss;
 begin
-  LCLSendCloseUpMsg(Target);
+  LCLSendCloseUpMsg(target);
   isShowPopup := false;
 end;
 
 procedure TLCLComboBoxCallback.ComboBoxSelectionDidChange;
 begin
-  SendSimpleMessage(Target, LM_SELCHANGE);
+  SendSimpleMessage(target, LM_SELCHANGE);
 end;
 
 procedure TLCLComboBoxCallback.ComboBoxSelectionIsChanging;
@@ -171,19 +171,19 @@ var
   helper: TComboBoxAsyncHelper;
   cmb: TCustomComboBox;
 begin
-  cmb:= TCustomComboBox(Target);
+  cmb:= TCustomComboBox(target);
   if not Assigned(cmb) then
     exit;
   if not (cbactRetainPrefixCase in cmb.AutoCompleteText) then
     exit;
-  helper:= TComboBoxAsyncHelper.Create(Owner);
+  helper:= TComboBoxAsyncHelper.Create(_owner);
   helper._newText:= ANewText;
   Application.QueueAsyncCall(@helper.AsyncResetText, 0);
 end;
 
 procedure TLCLComboBoxCallback.GetRowHeight(rowidx: integer; var h: Integer);
 begin
-  TCustomComboBoxAccess(Target).MeasureItem(rowidx, h);
+  TCustomComboBoxAccess(target).MeasureItem(rowidx, h);
 end;
 
 procedure TLCLComboBoxCallback.ComboBoxDrawItem(itemIndex: Integer;
@@ -200,7 +200,7 @@ begin
   if isSelected then Include(itemstruct.ItemState, odFocused);
   if backgroundPainted then Include(itemstruct.ItemState, odBackgroundPainted);
 
-  LCLSendDrawListItemMsg(Target, @itemstruct);
+  LCLSendDrawListItemMsg(target, @itemstruct);
 end;
 
 { TCocoaWSCustomComboBox }

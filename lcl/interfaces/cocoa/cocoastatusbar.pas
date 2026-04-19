@@ -127,9 +127,9 @@ end;
 
 function TStatusBarCallback.GetBarsCount: Integer;
 begin
-  if TStatusBar(Target).SimplePanel
+  if TStatusBar(target).SimplePanel
     then Result := 1
-    else Result := TStatusBar(Target).Panels.Count;
+    else Result := TStatusBar(target).Panels.Count;
 end;
 
 function TStatusBarCallback.GetBarItem(idx: Integer; var txt: String;
@@ -137,7 +137,7 @@ function TStatusBarCallback.GetBarItem(idx: Integer; var txt: String;
 var
   sb : TStatusBar;
 begin
-  sb := TStatusBar(Target);
+  sb := TStatusBar(target);
   if sb.SimplePanel then begin
     Result := idx = 0;
     if not Result then Exit;
@@ -164,7 +164,7 @@ var
   fr  : TRect;
   sv  : Integer;
 begin
-  sb := TStatusBar(Target);
+  sb := TStatusBar(target);
   if sb.SimplePanel then Exit;
   if (idx<0) or (idx >= sb.Panels.Count) then Exit;
   if sb.Panels[idx].Style <> psOwnerDraw then Exit;
@@ -174,15 +174,15 @@ begin
   try
     FillChar(msg, sizeof(msg), 0);
     FillChar(dr, sizeof(dr), 0);
-    msg.Ctl := Target.Handle;
+    msg.Ctl := target.Handle;
     msg.Msg := LM_DRAWITEM;
     msg.DrawItemStruct := @dr;
     dr.itemID := idx;
     dr._hDC := HDC(ctx);
     dr.rcItem := r;
-    fr := NSView(Owner).lclFrame;
+    fr := NSView(_owner).lclFrame;
     ctx.InitDraw(fr.Right-fr.Left, fr.Bottom-fr.Top);
-    LCLMessageGlue.DeliverMessage(Target, msg);
+    LCLMessageGlue.DeliverMessage(target, msg);
   finally
     ctx.RestoreDC(sv);
     ctx.Free;
