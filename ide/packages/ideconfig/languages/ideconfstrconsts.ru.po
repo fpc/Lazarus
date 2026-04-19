@@ -366,7 +366,7 @@ msgstr "Собрать исполнимый файл"
 
 #: ideconfstrconsts.lismakenotfound
 msgid "Make not found"
-msgstr "Не найден Make"
+msgstr "Не найдена Make"
 
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
@@ -576,7 +576,7 @@ msgstr "Файл \"%s\" является символической ссылко
 #: ideconfstrconsts.listheprogrammakewasnotfound
 #, object-pascal-format
 msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
-msgstr ""
+msgstr "Программа \"make\" не найдена.%sОна требуется для сборки Lazarus."
 
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
