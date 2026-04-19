@@ -152,6 +152,7 @@ Type
         procedure SetBackground(AValue: TShape); virtual;
         procedure SetMaxWidth(aMaxWidth : Integer); virtual;
         Procedure LayoutAt(aTop,aPadding,aMargin : Integer); virtual; abstract;
+        procedure SetItemText(const aText: String); virtual;
         procedure DoClick(Sender : TObject); virtual;
         procedure Invalidate; virtual;
       Public
@@ -173,6 +174,7 @@ Type
         procedure SetColors; override;
         procedure SetMaxWidth(aMaxWidth: Integer); override;
         procedure LayoutAt(aTop,aPadding,aMargin : Integer); override;
+        procedure SetItemText(const aText: String); override;
       public
         destructor destroy; override;
         Property TextLabel : TLabel Read FLabel Write SetLabel;
@@ -192,6 +194,7 @@ Type
         procedure SetColors; override;
         procedure SetMaxWidth(aMaxWidth: Integer); override;
         procedure LayoutAt(aTop,aPadding,aMargin : Integer); override;
+        procedure SetItemText(const aText: String); override;
         property MaxWidth : Integer Read FMaxWidth Write SetMaxWidth;
       public
         destructor destroy; override;
@@ -220,6 +223,8 @@ Type
     procedure Clear;
     procedure CopySelectionToClipBoard;
     procedure AddText(const aText: String; aSide: TTextSide; aMarkdown: Boolean = False);
+    procedure UpdateItemText(aIndex: Integer; const aText: String); overload;
+    procedure UpdateItemText(aItem: TChatItem; const aText: String); overload;
     Procedure SelectItem(aIndex : Integer; aAddToSelection : Boolean);
     Procedure DeleteItem(aItem : TChatItem);
     Procedure DeleteItem(aIndex : Integer);
@@ -713,8 +718,8 @@ begin
   C.Parent:=Self;
   P.FControl:=C;
   SetMarkDownProperties(P);
-  C.MarkDown.Text:=aText;
   P.MaxWidth:=Round(ClientWidth*0.75);
+  C.MarkDown.Text:=aText;
   S:=TShape.Create(Self);
   S.Parent:=Self;
   S.Shape:=stRoundRect;
@@ -872,6 +877,36 @@ begin
   SelectItem(ChatItems[aIndex] as TDisplayChatItem,True,aAddToSelection);
 end;
 
+procedure TChatControl.UpdateItemText(aIndex: Integer; const aText: String);
+var
+  Item : TDisplayChatItem;
+  lTop : Integer;
+begin
+  if (aIndex<0) or (aIndex>=FChatList.Count) then Exit;
+  Item:=TDisplayChatItem(FChatList[aIndex]);
+  Item.SetItemText(aText);
+  if aIndex>0 then
+    lTop:=TDisplayChatItem(FChatList[aIndex-1]).Bottom+ItemSpacing
+  else
+    lTop:=ItemSpacing;
+  while aIndex<FChatList.Count do
+    begin
+    lTop:=LayoutItem(aIndex,lTop)+ItemSpacing;
+    Inc(aIndex);
+    end;
+  LayoutTyping(lTop);
+  VertScrollbar.Position:=VertScrollbar.Range-1;
+end;
+
+procedure TChatControl.UpdateItemText(aItem: TChatItem; const aText: String);
+var
+  Idx : Integer;
+begin
+  Idx:=FChatList.IndexOf(aItem);
+  if Idx>=0 then
+    UpdateItemText(Idx,aText);
+end;
+
 procedure TChatControl.DeleteItem(aItem: TChatItem);
 begin
   FChatList.Remove(aItem);
@@ -996,6 +1031,11 @@ begin
   // Do nothing
 end;
 
+procedure TChatControl.TDisplayChatItem.SetItemText(const aText: String);
+begin
+  FText := aText;
+end;
+
 
 destructor TChatControl.TDisplayChatItem.Destroy;
 begin
@@ -1086,6 +1126,13 @@ begin
     end;
 end;
 
+procedure TChatControl.TPlainDisplayChatItem.SetItemText(const aText: String);
+begin
+  inherited SetItemText(aText);
+  if Assigned(FLabel) then
+    FLabel.Caption:=aText;
+end;
+
 destructor TChatControl.TPlainDisplayChatItem.destroy;
 begin
   FreeAndNil(FLabel);
@@ -1141,6 +1188,16 @@ procedure TChatControl.TMarkdownDisplayChatItem.SetMaxWidth(aMaxWidth: Integer);
 begin
   FControl.Width:=aMaxWidth;
   FControl.CalcLayout;
+end;
+
+procedure TChatControl.TMarkdownDisplayChatItem.SetItemText(const aText: String);
+begin
+  inherited SetItemText(aText);
+  if Assigned(FControl) then
+    begin
+    FControl.MarkDown.Text:=aText;
+    FControl.CalcLayout;
+    end;
 end;
 
 procedure TChatControl.TMarkdownDisplayChatItem.LayoutAt(aTop, aPadding, aMargin: Integer);
