@@ -47,11 +47,11 @@ uses
   CompilerOptions, ModeMatrixOpts, BaseBuildManager, ApplicationBundle,
   IDETranslations, ExtToolsConsole, InitialSetupProc, MiscOptions, IdeBuilder,
   // IdePackager
-  IdePackagerStrConsts, PackageDefs, PackageLinks, PackageSystem,
+  IdePackagerStrConsts, PackageDefs, PackageLinks, PackageSystem, InterPkgConflictFiles,
   // IdeProject
   Project,
   // IDE
-  LazarusIDEStrConsts, BuildManager, InterPkgConflictFiles;
+  LazarusIDEStrConsts, BuildManager;
 
 type
   TPkgAction = (

@@ -1426,7 +1426,7 @@ begin
   Assert(InputHistories = nil, 'TMainIDE.LoadGlobalOptions: InputHistories is already assigned.');
   InputHistoriesSO := TInputHistoriesWithSearchOpt.Create;
   InputHistories := InputHistoriesSO;
-  MainBuildBoss.SetupInputHistories(InputHistories);
+  TIdeBuildManager(MainBuildBoss).SetupInputHistories(InputHistories);
 
   CreateDirUTF8(GetProjectSessionsConfigPath);
   RunBootHandlers(libhEnvironmentOptionsLoaded);
@@ -1836,6 +1836,7 @@ begin
     DebugLn('Hint: (lazarus) [TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   FreeThenNil(MainBuildBoss);
+  FreeAndNil(InputHistories);
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
 
