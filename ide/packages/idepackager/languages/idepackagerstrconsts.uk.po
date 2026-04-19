@@ -23,6 +23,11 @@ msgstr "%s в %s"
 msgid "Deleting of file \"%s\" failed."
 msgstr "Видалити файл \"%s\" не вдалося."
 
+#: idepackagerstrconsts.lisduplicateunitin
+#, object-pascal-format
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr "Повторний модуль \"%s\" у \"%s\""
+
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Виконати команду після"

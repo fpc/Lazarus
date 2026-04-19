@@ -23,6 +23,11 @@ msgstr "%s %s:ssa"
 msgid "Deleting of file \"%s\" failed."
 msgstr "Tiedoston \"%s\" poistaminen epäonnistui."
 
+#: idepackagerstrconsts.lisduplicateunitin
+#, object-pascal-format
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr "Päällekkäinen käännösyksikkö \"%s\" \"%s\":ssa"
+
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Suorittaa komennon jälkeen"

@@ -9296,11 +9296,6 @@ msgstr "Yinelenen kaynaklar. Birini silin veya tüm arama yollarının doğru s�
 msgid "Duplicate Unit"
 msgstr "Birim Çoğalt"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "\"%s\" ile \"%s\" aynı birim"
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr "Kaydırılacak miktar"

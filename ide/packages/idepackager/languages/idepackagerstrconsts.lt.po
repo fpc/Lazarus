@@ -23,6 +23,11 @@ msgstr "%s, kuris randasi %s"
 msgid "Deleting of file \"%s\" failed."
 msgstr "Nepavyko ištrinti failą „%s“."
 
+#: idepackagerstrconsts.lisduplicateunitin
+#, object-pascal-format, fuzzy, badformat
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr "„%1:s“ rastas modulio „%0:s“ dublikatas"
+
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Startuojama komanda po"

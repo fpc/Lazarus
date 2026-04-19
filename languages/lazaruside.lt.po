@@ -9499,11 +9499,6 @@ msgstr "Dubliuojasi pirminiai kodai. Kažkurį reikia pašalinti arba užtikrint
 msgid "Duplicate Unit"
 msgstr "Modulis dubliuojais"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format, fuzzy, badformat
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "„%1:s“ rastas modulio „%0:s“ dublikatas"
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

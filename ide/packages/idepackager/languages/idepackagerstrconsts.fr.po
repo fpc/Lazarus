@@ -23,6 +23,11 @@ msgstr "%s dans %s"
 msgid "Deleting of file \"%s\" failed."
 msgstr "La suppression du fichier \"%s\" a échoué."
 
+#: idepackagerstrconsts.lisduplicateunitin
+#, object-pascal-format
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr "Dupliquer l'unité \"%s\" dans \"%s\""
+
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Exécution de la commande suivante"

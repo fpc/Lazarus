@@ -9555,11 +9555,6 @@ msgstr ""
 msgid "Duplicate Unit"
 msgstr ""
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr ""
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

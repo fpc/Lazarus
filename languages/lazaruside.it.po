@@ -9510,11 +9510,6 @@ msgstr "Files sorgenti duplicate. Cancellarne una, o assicurarsi che tutti i per
 msgid "Duplicate Unit"
 msgstr "Unit duplicata"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr ""
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

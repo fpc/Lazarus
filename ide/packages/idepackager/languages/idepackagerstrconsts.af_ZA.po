@@ -23,6 +23,11 @@ msgstr ""
 msgid "Deleting of file \"%s\" failed."
 msgstr ""
 
+#: idepackagerstrconsts.lisduplicateunitin
+#, object-pascal-format
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr ""

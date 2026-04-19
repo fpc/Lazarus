@@ -9356,11 +9356,6 @@ msgstr "Päällekkäiset lähdekoodit. Poista yksi tai varmista että hakupolut 
 msgid "Duplicate Unit"
 msgstr "Päällekkäinen käännösyksikkö"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Päällekkäinen käännösyksikkö \"%s\" \"%s\":ssa"
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

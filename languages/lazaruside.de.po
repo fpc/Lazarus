@@ -9277,11 +9277,6 @@ msgstr "Doppelte Quelldateien. Löschen sie eine oder stellen sie die richtige R
 msgid "Duplicate Unit"
 msgstr "Doppelte Unit"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Doppelte Unit \"%s\" in \"%s\" vorhanden"
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

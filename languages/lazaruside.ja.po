@@ -9494,11 +9494,6 @@ msgstr "ソースの重複。どちらかを削除するか、すべての検索
 msgid "Duplicate Unit"
 msgstr "ユニットの重複"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "ユニット\"%s\"が\"%s\"で重複"
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

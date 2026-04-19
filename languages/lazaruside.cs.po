@@ -9428,11 +9428,6 @@ msgstr "Duplicitní zdroje. Smažte jeden nebo se ujistěte, že všechny prohle
 msgid "Duplicate Unit"
 msgstr "Duplicitní Jednotka"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Zdvojená jednotka \"%s\" v \"%s\""
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

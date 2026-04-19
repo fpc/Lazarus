@@ -26,6 +26,11 @@ msgstr ""
 msgid "Deleting of file \"%s\" failed."
 msgstr "Verwijderen van bestand \"%s\" mislukt."
 
+#: idepackagerstrconsts.lisduplicateunitin
+#, object-pascal-format
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Voer het commando uit Na"

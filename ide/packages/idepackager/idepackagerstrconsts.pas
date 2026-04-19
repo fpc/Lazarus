@@ -125,7 +125,6 @@ resourcestring
     +'%sA broken dummy package was created.';
   lisSkipTheseWarnings = 'Skip these warnings';
 
-
   lisExecutingCommandBefore = 'Executing command before';
   lisExecutingCommandAfter = 'Executing command after';
 
@@ -144,6 +143,7 @@ resourcestring
   lisPkgMangUnableToDeleteOldStateFileForPackage = 'Unable to delete old '
     +'state file "%s"%sfor package %s.';
   lisPkgSysRegisterProcedureIsNil = 'Register procedure is nil';
+  lisDuplicateUnitIn = 'Duplicate unit "%s" in "%s"';
 
 implementation
 

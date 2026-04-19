@@ -23,6 +23,11 @@ msgstr "%s v %s"
 msgid "Deleting of file \"%s\" failed."
 msgstr "Odstranění souboru \"%s\" selhalo."
 
+#: idepackagerstrconsts.lisduplicateunitin
+#, object-pascal-format
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr "Zdvojená jednotka \"%s\" v \"%s\""
+
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Vykonávání příkazu po"

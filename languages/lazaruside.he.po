@@ -9721,11 +9721,6 @@ msgstr "מקורות כפולים.מחק אחד או שתבדוק שכל נתי�
 msgid "Duplicate Unit"
 msgstr ""
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr ""
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

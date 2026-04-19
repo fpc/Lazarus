@@ -73,7 +73,7 @@ uses
   MiscOptions, IdeBuilder,
   // IdePackager
   IdePackagerStrConsts, BasePkgManager, PackageDefs, EditablePackage,
-  PackageLinks, PackageSystem,
+  PackageLinks, PackageSystem, InterPkgConflictFiles,
   // IdeProject
   Project,
   // FCL registration
@@ -83,7 +83,7 @@ uses
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
   BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector, EditableProject,
   PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg, PublishModuleDlg,
-  PkgLinksDlg, InstallPkgSetDlg, ConfirmPkgListDlg, InterPkgConflictFiles,
+  PkgLinksDlg, InstallPkgSetDlg, ConfirmPkgListDlg,
   {$IFDEF EnableCheckInterPkgFiles}
   InterPkgConflictFileDlg,  // This adds a GUI for InterPkgConflictFiles.
   {$ENDIF}

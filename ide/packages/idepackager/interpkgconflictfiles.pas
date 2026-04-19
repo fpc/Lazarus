@@ -54,20 +54,16 @@ interface
 uses
   // RTL + FCL
   Classes, SysUtils, Contnrs, AVL_Tree,
-  // LCL
-  InterfaceBase,
   // CodeTools
   BasicCodeTools, DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
-  FPCAdds, LazFileUtils, LazTracer,
+  FPCAdds, LazFileUtils, LazVersion, LazTracer,
   // BuildIntf
   ProjectIntf, CompOptsIntf, IDEExternToolIntf, LazMsgWorker,
   // IdeConfig
   EnvironmentOpts, TransferMacros, SearchPathProcs, ParsedCompilerOpts, CompilerOptions,
   // IdePackager
-  PackageDefs, PackageSystem,
-  // IDE
-  LazarusIDEStrConsts;
+  PackageDefs, PackageSystem, IdePackagerStrConsts;//, LazarusIDEStrConsts;
 
 type
   TPGInterPkgOwnerInfo = class
@@ -591,14 +587,12 @@ var
           PPUFile:=FileGroup.CompiledFiles[i];
           if SrcFile<>nil then
           begin
-            Msg:=Format(lisDuplicateUnitIn, [SrcFile.AnUnitName, SrcFile.
-              OwnerInfo.Name]);
+            Msg:=Format(lisDuplicateUnitIn, [SrcFile.AnUnitName, SrcFile.OwnerInfo.Name]);
             if PPUFile<>nil then
               Msg+=', ppu="'+PPUFile.FullFilename+'"';
             Msg+=', source="'+SrcFile.FullFilename+'"';
           end else begin
-            Msg:=Format(lisDuplicateUnitIn, [PPUFile.AnUnitName, PPUFile.
-              OwnerInfo.Name]);
+            Msg:=Format(lisDuplicateUnitIn, [PPUFile.AnUnitName, PPUFile.OwnerInfo.Name]);
             Msg+=', orphaned ppu "'+PPUFile.FullFilename+'"';
           end;
           if Assigned(OnShowMessage) then

@@ -9500,11 +9500,6 @@ msgstr ""
 msgid "Duplicate Unit"
 msgstr "Zdublowane moduł"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format, fuzzy, badformat
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "zdublowany identyfikator: %s"
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

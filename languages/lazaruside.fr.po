@@ -9316,11 +9316,6 @@ msgstr "Codes sources dupliqués. Supprimez-en un ou assurez-vous que les chemin
 msgid "Duplicate Unit"
 msgstr "Dupliquer l'unité"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Dupliquer l'unité \"%s\" dans \"%s\""
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr "Quantité à faire défiler"

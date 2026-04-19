@@ -23,6 +23,11 @@ msgstr "%s w %s"
 msgid "Deleting of file \"%s\" failed."
 msgstr "Nie można usunąć pliku \"%s\"."
 
+#: idepackagerstrconsts.lisduplicateunitin
+#, object-pascal-format, fuzzy, badformat
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr "zdublowany identyfikator: %s"
+
 #: idepackagerstrconsts.lisexecutingcommandafter
 #, fuzzy
 msgid "Executing command after"

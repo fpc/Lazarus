@@ -9356,11 +9356,6 @@ msgstr "Дубльовані сирці. Видаліть один або пер
 msgid "Duplicate Unit"
 msgstr "Повторний модуль"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Повторний модуль \"%s\" у \"%s\""
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr "Відстань прокручування"

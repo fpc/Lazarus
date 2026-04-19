@@ -9384,11 +9384,6 @@ msgstr "Ismétlődő forrás. Töröljön egyet vagy győződjön meg róla, hog
 msgid "Duplicate Unit"
 msgstr "Ismétlődő unit"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Ismétlődő unit \"%s\" itt: \"%s\""
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr ""

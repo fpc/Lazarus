@@ -6077,7 +6077,6 @@ resourcestring
   synfMatchActionButtonOfMouseDown = 'Match action button of mouse down';
   synfMatchActionModifiersOfMouseDown = 'Match action modifiers of mouse down';
   synfContinueWithNextMouseUpAction = 'Continue with next mouse up action';
-  lisDuplicateUnitIn = 'Duplicate unit "%s" in "%s"';
 
   lismpMultiPaste = 'MultiPaste';
   lismpPasteOptions = 'Paste &options';

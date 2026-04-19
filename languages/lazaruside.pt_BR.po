@@ -9396,11 +9396,6 @@ msgstr "Fontes duplicados. Exclua um ou certifique-se de que todos os caminhos d
 msgid "Duplicate Unit"
 msgstr "Unidade duplicada"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Unidade duplicada \"%s\" em \"%s\""
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr "Quantidade para rolagem"

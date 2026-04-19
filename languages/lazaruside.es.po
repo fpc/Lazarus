@@ -9520,11 +9520,6 @@ msgstr "Fuentes duplicadas. Elimine una o asegúrese de que todas las rutas de b
 msgid "Duplicate Unit"
 msgstr "Unidad duplicada"
 
-#: lazarusidestrconsts.lisduplicateunitin
-#, object-pascal-format
-msgid "Duplicate unit \"%s\" in \"%s\""
-msgstr "Unidad duplicada \"%s\" en \"%s\""
-
 #: lazarusidestrconsts.lisdynpkgamounttoscrollin
 msgid "Amount to scroll in"
 msgstr "Cantidad para desplazamiento"

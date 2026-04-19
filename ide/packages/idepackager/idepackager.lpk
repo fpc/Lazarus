@@ -31,6 +31,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="IdePackagerStrConsts"/>
       </Item>
       <Item>
+        <Filename Value="interpkgconflictfiles.pas"/>
+        <UnitName Value="InterPkgConflictFiles"/>
+      </Item>
+      <Item>
         <Filename Value="lpkcache.pas"/>
         <UnitName Value="LPKCache"/>
       </Item>

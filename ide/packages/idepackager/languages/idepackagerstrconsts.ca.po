@@ -24,6 +24,11 @@ msgstr ""
 msgid "Deleting of file \"%s\" failed."
 msgstr "Ha fallat l'eliminació del fitxer %s%s%s."
 
+#: idepackagerstrconsts.lisduplicateunitin
+#, object-pascal-format
+msgid "Duplicate unit \"%s\" in \"%s\""
+msgstr ""
+
 #: idepackagerstrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Executa l'ordre després"
