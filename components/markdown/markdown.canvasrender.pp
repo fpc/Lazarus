@@ -1603,6 +1603,15 @@ end;
 procedure TMarkDownCanvasRenderer.Undent(aSize: integer);
 begin
   inc(aSize,fExtraIndent);
+  { Unwind any deferred indent first, so a matched Indent/Undent pair on a
+    single line leaves no phantom indent behind for the next line. }
+  if FNextLineIndent >= aSize then
+    begin
+    Dec(FNextLineIndent, aSize);
+    Exit;
+    end;
+  Dec(aSize, FNextLineIndent);
+  FNextLineIndent := 0;
   FLayout.CurrentIndent:=FLayout.CurrentIndent-aSize;
   if FLayout.CurrentIndent<0 then
     FLayout.CurrentIndent:=0;
