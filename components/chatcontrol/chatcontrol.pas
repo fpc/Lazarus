@@ -831,25 +831,30 @@ end;
 
 procedure TChatControl.CopySelectionToClipBoard;
 var
-  I,lCount : Integer;
-  S : String;
-
+  I : Integer;
+  S, Part : String;
+  Item : TDisplayChatItem;
 begin
-  lCount:=0;
-  For I:=0 to ChatCount-1 do
-    if DisplayItems[i].selected then
-      inc(lCount);
-  if lCount=0 then
-    exit;
-  S:='';
-  For I:=0 to ChatCount-1 do
-    if DisplayItems[i].selected then
+  S := '';
+  for I := 0 to ChatCount - 1 do
+    begin
+    Item := DisplayItems[i];
+    Part := '';
+    { In-markdown text selection wins over bubble selection }
+    if Item is TMarkdownDisplayChatItem then
+      if Assigned(TMarkdownDisplayChatItem(Item).FControl) then
+        Part := TMarkdownDisplayChatItem(Item).FControl.SelectedText;
+    if (Part = '') and Item.Selected then
+      Part := Item.Text;
+    if Part <> '' then
       begin
-      if S<>'' then
-        S:=S+sLineBreak+sLineBreak;
-      S:=S+DisplayItems[i].Text;
+      if S <> '' then
+        S := S + sLineBreak + sLineBreak;
+      S := S + Part;
       end;
-  ClipBoard.AsText:=S;
+    end;
+  if S <> '' then
+    ClipBoard.AsText := S;
 end;
 
 procedure TChatControl.AddText(const aText: String; aSide: TTextSide; aMarkdown: Boolean);
