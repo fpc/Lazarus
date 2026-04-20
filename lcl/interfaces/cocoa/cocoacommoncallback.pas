@@ -37,6 +37,7 @@ type
     _context: TCocoaContext;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     _boundsReportedToChildren: Boolean;
+    _isRouting: Boolean;
   public
     traits: TLCLCommonCallbackTraits;
     property owner: NSObject read _owner;
@@ -520,7 +521,7 @@ begin
   if CocoaWidgetSetState.lclCaptureControl = 0 then Exit;
   obj := NSObject(CocoaWidgetSetState.lclCaptureControl);
   lCaptureView := obj.lclContentView;
-  if (obj <> _owner) and (lCaptureView <> _owner) and not CocoaWidgetSetState.mouseEvent.isRouting then
+  if (obj <> _owner) and (lCaptureView <> _owner) and not _isRouting then
   begin
     Result := lCaptureView.lclGetCallback;
   end;
@@ -827,9 +828,9 @@ begin
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
-    CocoaWidgetSetState.mouseEvent.isRouting:= True;
+    _isRouting:= True;
     Result := lCaptureControlCallback.MouseUpDownEvent(Event, AForceAsMouseUp);
-    CocoaWidgetSetState.mouseEvent.isRouting:= False;
+    _isRouting:= False;
     exit;
   end;
 
@@ -993,9 +994,9 @@ begin
     callback := getCaptureControlCallback();
     if callback <> nil then
     begin
-      CocoaWidgetSetState.mouseEvent.isRouting:= True;
+      _isRouting:= True;
       Result := callback.MouseMove(Event);
-      CocoaWidgetSetState.mouseEvent.isRouting:= False;
+      _isRouting:= False;
       exit;
     end
     else
@@ -1027,17 +1028,17 @@ begin
         end;
     end;
 
-    if assigned(targetControl) and not CocoaWidgetSetState.mouseEvent.isRouting then
+    if assigned(targetControl) and not _isRouting then
     begin
       if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
-      CocoaWidgetSetState.mouseEvent.isRouting:= True;
+      _isRouting:= True;
        //debugln(target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
       obj := NSObject(targetControl.Handle).lclContentView;
       if obj = nil then Exit;
       callback := obj.lclGetCallback;
       if callback = nil then Exit; // Avoids crashes
       result := callback.MouseMove(Event);
-      CocoaWidgetSetState.mouseEvent.isRouting:= False;
+      _isRouting:= False;
       exit;
     end;
 

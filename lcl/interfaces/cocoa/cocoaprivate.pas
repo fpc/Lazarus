@@ -52,7 +52,6 @@ type
   { TCocoaMouseEventState }
 
   TCocoaMouseEventState = record
-    isRouting: Boolean;
     isLastWheelHorz: Boolean;
     lastDownUpTime: NSTimeInterval; // the last processed mouse Event
     lastMouseWithForce: Boolean;
