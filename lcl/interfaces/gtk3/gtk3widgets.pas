@@ -8227,7 +8227,7 @@ var
   HSize, VSize: integer;
   uWidth, uHeight: guint;
   aCtl: TGtk3Widget;
-  ViewportChanged: boolean;
+  ViewportChanged, ClientRectMismatch: boolean;
 begin
 
   if not AWidget^.get_mapped then Exit;
@@ -8272,7 +8272,11 @@ begin
   if (uWidth <> HSize) or (uHeight <> VSize) then
     PGtkLayout(aWidget)^.set_size(HSize, VSize);
 
-  if not aCtl.InUpdate and ViewportChanged then
+  ClientRectMismatch := (AGdkRect^.width > 1) and (AGdkRect^.height > 1) and
+    ((aCtl.LCLObject.ClientWidth <> AGdkRect^.width) or
+     (aCtl.LCLObject.ClientHeight <> AGdkRect^.height));
+
+  if not aCtl.InUpdate and (ViewportChanged or ClientRectMismatch) then
     aCtl.LCLObject.DoAdjustClientRectChange(True);
 end;
 
