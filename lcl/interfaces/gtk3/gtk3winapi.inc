@@ -3866,6 +3866,7 @@ begin
         gdk_seat_ungrab(ASeat);
       FDragSeatGrabActive := False;
     end;
+    FLCLCaptureWidget := nil;
   end;
 end;
 

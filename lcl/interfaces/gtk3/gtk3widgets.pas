@@ -2172,6 +2172,7 @@ function TGtk3Widget.SetCapture: HWND;
 begin
   Result := HWND(GetCapture);
   gtk_grab_add(GetContainerWidget);
+  Gtk3WidgetSet.FLCLCaptureWidget := GetContainerWidget;
 end;
 
 function TGtk3Widget.GtkEventKey(Sender: PGtkWidget; Event: PGdkEvent; AKeyPress: Boolean): Boolean;

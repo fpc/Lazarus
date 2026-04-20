@@ -1711,10 +1711,14 @@ begin
   DebugLn('SetGlobalCursor grab section: gtk_grab_get_current=',IntToStr(PtrUInt(AGrabWidget)),
     ' Gtk3WidgetSet.FDragGrabWidget=',IntToStr(PtrUInt(Gtk3WidgetSet.FDragGrabWidget)),
     ' SeatGrabActive=',IntToStr(Ord(Gtk3WidgetSet.FDragSeatGrabActive)),
+    ' FLCLCaptureWidget=',IntToStr(PtrUInt(Gtk3WidgetSet.FLCLCaptureWidget)),
     ' cursor=',IntToStr(PtrUInt(AGdkCursor)));
   {$ENDIF}
   if not Assigned(AGrabWidget) then
     AGrabWidget := Gtk3WidgetSet.FDragGrabWidget;
+  if Assigned(AGrabWidget) and (AGrabWidget <> Gtk3WidgetSet.FLCLCaptureWidget) and
+    not Gtk3WidgetSet.FDragSeatGrabActive then
+    AGrabWidget := nil;
   if Assigned(AGrabWidget) then
   begin
     if not Assigned(ASeat) then

@@ -127,6 +127,7 @@ type
     FDragSeatGrabActive: Boolean;
     FDragGrabWidget: PGtkWidget;
     FDragGrabBrokenHandlerID: gulong;
+    FLCLCaptureWidget: PGtkWidget;
     function IsWayland: boolean;
     function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow; cr: Pcairo_t): HDC;
     procedure AddWindow(AWindow: PGtkWindow);
