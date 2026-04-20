@@ -276,7 +276,7 @@ object MouseActionDialog: TMouseActionDialog
   end
   object ButtonBox: TComboBox
     AnchorSideLeft.Control = PriorSpin
-    AnchorSideTop.Control = chkUpRestrict
+    AnchorSideTop.Control = BtnLabel
     AnchorSideRight.Control = chkUpRestrict
     Left = 102
     Height = 23
