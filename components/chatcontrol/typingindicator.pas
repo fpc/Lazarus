@@ -353,6 +353,7 @@ end;
 destructor TTypingIndicator.Destroy;
 begin
   FreeAndNil(FTimer);
+  FreeAndNil(FSettings);
   inherited destroy;
 end;
 
