@@ -31,6 +31,19 @@ uses
 
 type
 
+  { TCocoaKeyEventState }
+
+  TCocoaKeyEventState = record
+    keyCode: Word;             // Key Code
+    charCode: Word;            // Ascii char, when possible (xx_(SYS)CHAR)
+    keyData: PtrInt;           // Modifiers (ctrl, alt, mouse buttons...)
+    utf8Character: TUTF8Char;  // char to send via IntfUtf8KeyPress
+    shouldSendCharMessage: Boolean;   // Should we send char?
+    isSysKey: Boolean;         // Is alt (option) key down?
+    isKeyDown : Boolean;
+    handled: Boolean;
+  end;
+
   { TCocoaWidgetSetState }
 
   TCocoaWidgetSetState = class
@@ -46,6 +59,7 @@ type
     // todo: this should be a threadvar
     trackedControl: NSObject;
 
+    keyEvent: TCocoaKeyEventState;
     // Store state of key modifiers so that we can emulate keyup/keydown
     // of keys like control, option, command, caps lock, shift
     prevKeyModifiers : NSUInteger;
