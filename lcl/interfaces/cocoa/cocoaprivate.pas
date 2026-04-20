@@ -56,6 +56,9 @@ type
     isLastWheelHorz: Boolean;
     lastDownUpTime: NSTimeInterval; // the last processed mouse Event
     lastMouseWithForce: Boolean;
+
+    // todo: this should be a threadvar
+    trackedControl: NSObject;
   end;
 
   { TCocoaWidgetSetState }
@@ -71,10 +74,7 @@ type
     currentKeyWindow: NSWindow;
     killingFocus: Boolean;
 
-    captureControl: HWND;
-
-    // todo: this should be a threadvar
-    trackedControl: NSObject;
+    lclCaptureControl: HWND;
 
     {$ifdef COCOALOOPHIJACK}
     // The flag is set to true once hi-jacked loop is finished (at the end of app)
@@ -281,7 +281,7 @@ type
 
 procedure TCocoaWidgetSetState.releaseCapture;
 begin
-  self.captureControl:= 0;
+  self.lclCaptureControl:= 0;
 end;
 
 procedure TCocoaWidgetSetState.lclBeginSendingScrollWheel;

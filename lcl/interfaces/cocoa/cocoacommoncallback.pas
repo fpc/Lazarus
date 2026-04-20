@@ -517,8 +517,8 @@ var
   lCaptureView: NSView;
 begin
   Result := nil;
-  if CocoaWidgetSetState.captureControl = 0 then Exit;
-  obj := NSObject(CocoaWidgetSetState.captureControl);
+  if CocoaWidgetSetState.lclCaptureControl = 0 then Exit;
+  obj := NSObject(CocoaWidgetSetState.lclCaptureControl);
   lCaptureView := obj.lclContentView;
   if (obj <> _owner) and (lCaptureView <> _owner) and not CocoaWidgetSetState.mouseEvent.isRouting then
   begin
@@ -942,12 +942,12 @@ begin
       NSLeftMouseDown,
       NSRightMouseDown,
       NSOtherMouseDown:
-        CocoaWidgetSetState.trackedControl := _owner;
+        CocoaWidgetSetState.mouseEvent.trackedControl:= _owner;
       NSLeftMouseUp,
       NSRightMouseUp,
       NSOtherMouseUp:
-        if CocoaWidgetSetState.trackedControl = _owner then
-          CocoaWidgetSetState.trackedControl := nil;
+        if CocoaWidgetSetState.mouseEvent.trackedControl = _owner then
+          CocoaWidgetSetState.mouseEvent.trackedControl:= nil;
     end;
 end;
 
