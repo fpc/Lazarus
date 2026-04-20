@@ -119,6 +119,9 @@ var
   resolution:TCustomImageListResolution;
   ScaleFactor: Double;
   raw:TRawImage;
+  AIndex: Integer;
+  AEffect: TGraphicsDrawEffect;
+  AImageRes: TScaledImageListResolution;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSBitBtn.SetGlyph');
@@ -145,6 +148,14 @@ begin
       AGlyph.BeginUpdate();
       AGlyph.LoadFromRawImage(AValue.Glyph.RawImage, false);
       AGlyph.EndUpdate();
+    end;
+
+    if AGlyph.Empty then
+    begin
+      AValue.GetImageIndexAndEffect(bsUp, ABitBtn.Font.PixelsPerInch,
+        ScaleFactor, AImageRes, AIndex, AEffect);
+      if (AIndex <> -1) and AImageRes.Valid then
+        AImageRes.GetBitmap(AIndex, AGlyph, AEffect);
     end;
 
     if not AGlyph.Empty then
