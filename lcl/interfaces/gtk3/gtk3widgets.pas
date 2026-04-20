@@ -2329,6 +2329,8 @@ begin
       {$IFDEF GTK3DEBUGKEYPRESS}
       writeln('<==== CN_KeyDownMsgs handled ... exiting');
       {$ENDIF}
+      if Gtk3WidgetFromGtkWidget(Sender) <> Self then
+        exit(True);
       if IsEditableWidget and (Self.getText <> TextBeforeKey) then
         exit(True)
       else if [wtEntry,wtMemo] * WidgetType <> [] then
@@ -3029,6 +3031,9 @@ begin
 
   if HasCaret and IsValidHandle then
     GTK3WidgetSet.DestroyCaret(HWND(Self));
+
+  if IsValidHandle then
+    g_object_set_data(PGObject(FWidget), 'lclwidget', nil);
 
   if IsValidHandle and FOwnWidget then
   begin
