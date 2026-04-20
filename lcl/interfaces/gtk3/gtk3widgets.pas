@@ -12592,6 +12592,9 @@ begin
 end;
 
 class function TGtk3Window.WindowFocusOut(AWidget: PGtkWidget; AEvent: PGdkEventFocus; AData: gpointer): gboolean; cdecl;
+var
+  I: Integer;
+  AForm: TCustomForm;
 begin
   Result := gtk_false;
   Gtk3WidgetSet.LastFocusOut := AWidget;
@@ -12600,6 +12603,15 @@ begin
     ' LastFocusIn=', PtrUInt(Gtk3WidgetSet.LastFocusIn),
     ' LastFocusOut=', PtrUInt(Gtk3WidgetSet.LastFocusOut)]);
   {$ENDIF}
+  if Assigned(Application) then
+    Application.CancelHint;
+  if Assigned(Screen) then
+    for I := Screen.CustomFormCount - 1 downto 0 do
+    begin
+      AForm := Screen.CustomForms[I];
+      if AForm.Visible and (AForm is THintWindow) then
+        AForm.Hide;
+    end;
   if Gtk3WidgetSet.LastFocusOut = Gtk3WidgetSet.LastFocusIn then
     Gtk3StartAppFocusTimer;
 end;

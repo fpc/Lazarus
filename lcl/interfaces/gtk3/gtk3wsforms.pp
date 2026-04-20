@@ -414,6 +414,15 @@ begin
 
     if (fsModal in AForm.FormState) then
     begin
+      if Assigned(Application) then
+        Application.CancelHint;
+      if Assigned(Screen) then
+        for I := Screen.CustomFormCount - 1 downto 0 do
+        begin
+          OtherForm := Screen.CustomForms[I];
+          if OtherForm.Visible and (OtherForm is THintWindow) then
+            OtherForm.Hide;
+        end;
       AWindow^.set_modal(True);
       AWindow^.window^.set_modal_hint(true);
     end;
