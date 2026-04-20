@@ -16,28 +16,6 @@ uses
 
 type
 
-  { TCocoaKeyEventState }
-
-  TCocoaKeyEventState = record
-    keyCode: Word;             // Key Code
-    charCode: Word;            // Ascii char, when possible (xx_(SYS)CHAR)
-    keyData: PtrInt;           // Modifiers (ctrl, alt, mouse buttons...)
-    utf8Character: TUTF8Char;  // char to send via IntfUtf8KeyPress
-    shouldSendCharMessage: Boolean;   // Should we send char?
-    isSysKey: Boolean;         // Is alt (option) key down?
-    isKeyDown : Boolean;
-    handled: Boolean;
-  end;
-
-  { TCocoaMouseEventState }
-
-  TCocoaMouseEventState = record
-    isRouting: Boolean;
-    isLastWheelHorz: Boolean;
-    lastDownUpTime: NSTimeInterval; // the last processed mouse Event
-    lastMouseWithForce: Boolean;
-  end;
-
   {$scopedEnums on}
   TCocoaCbTrait = (
     blockKeyBeep,
@@ -59,8 +37,6 @@ type
     _context: TCocoaContext;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     _boundsReportedToChildren: Boolean;
-    _keyState: TCocoaKeyEventState;
-    _mouseState: TCocoaMouseEventState;
   public
     traits: TLCLCommonCallbackTraits;
     property owner: NSObject read _owner;
@@ -345,13 +321,13 @@ begin
     end;
   end;
 
-  _keyState.keyCode:= VKKeyCode;
-  _keyState.charCode:= Word(KeyChar);
-  _keyState.keyData:= KeyData;
-  _keyState.utf8Character:= UTF8Character;
-  _keyState.isKeyDown:= (Event.type_ = NSKeyDown);
-  _keyState.isSysKey:= IsSysKey;
-  _keyState.shouldSendCharMessage:= SendChar;
+  CocoaWidgetSetState.keyEvent.keyCode:= VKKeyCode;
+  CocoaWidgetSetState.keyEvent.charCode:= Word(KeyChar);
+  CocoaWidgetSetState.keyEvent.keyData:= KeyData;
+  CocoaWidgetSetState.keyEvent.utf8Character:= UTF8Character;
+  CocoaWidgetSetState.keyEvent.isKeyDown:= (Event.type_ = NSKeyDown);
+  CocoaWidgetSetState.keyEvent.isSysKey:= IsSysKey;
+  CocoaWidgetSetState.keyEvent.shouldSendCharMessage:= SendChar;
 end;
 
 procedure TLCLCommonCallback.createKeyStateFromFlagsChanged(
@@ -364,10 +340,10 @@ var
   VKKeyCode: word; // VK_ code
   KeyData: PtrInt; // Modifiers (ctrl, alt, mouse buttons...)
 begin
-  _keyState.shouldSendCharMessage:= False;
+  CocoaWidgetSetState.keyEvent.shouldSendCharMessage:= False;
   CurMod := Event.modifierFlags;
   //see what changed. we only care of bits 16 through 20
-  Diff := (CocoaWidgetSetState.prevKeyModifiers xor CurMod) and cModifiersOfInterest;
+  Diff := (CocoaWidgetSetState.keyEvent.prevModifiers xor CurMod) and cModifiersOfInterest;
 
   case Diff of
     0                  : VKKeyCode := VK_UNKNOWN; //nothing (that we cared of) changed
@@ -382,10 +358,10 @@ begin
   //diff is now equal to the mask of the bit that changed, so we can determine
   //if this change is a keydown (PrevKeyModifiers didn't have the bit set) or
   //a keyup (PrevKeyModifiers had the bit set)
-  _keyState.isKeyDown := ((CocoaWidgetSetState.prevKeyModifiers and Diff) = 0);
-  _keyState.keyData := KeyData;
-  _keyState.keyCode := VKKeyCode;
-  _keyState.isSysKey := (VKKeyCode = VK_LWIN);
+  CocoaWidgetSetState.keyEvent.isKeyDown := ((CocoaWidgetSetState.keyEvent.prevModifiers and Diff) = 0);
+  CocoaWidgetSetState.keyEvent.keyData := KeyData;
+  CocoaWidgetSetState.keyEvent.keyCode := VKKeyCode;
+  CocoaWidgetSetState.keyEvent.isSysKey := (VKKeyCode = VK_LWIN);
 end;
 
 constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView);
@@ -541,10 +517,10 @@ var
   lCaptureView: NSView;
 begin
   Result := nil;
-  if CocoaWidgetSetState.captureControl = 0 then Exit;
-  obj := NSObject(CocoaWidgetSetState.captureControl);
+  if CocoaWidgetSetState.lclCaptureControl = 0 then Exit;
+  obj := NSObject(CocoaWidgetSetState.lclCaptureControl);
   lCaptureView := obj.lclContentView;
-  if (obj <> _owner) and (lCaptureView <> _owner) and not _mouseState.isRouting then
+  if (obj <> _owner) and (lCaptureView <> _owner) and not CocoaWidgetSetState.mouseEvent.isRouting then
   begin
     Result := lCaptureView.lclGetCallback;
   end;
@@ -620,17 +596,17 @@ var
   msg: Cardinal;
   ret: PtrInt;
 begin
-  if _keyState.keyCode = VK_UNKNOWN then
+  if CocoaWidgetSetState.keyEvent.keyCode = VK_UNKNOWN then
     Exit;
 
-  if _keyState.isSysKey then
+  if CocoaWidgetSetState.keyEvent.isSysKey then
     msg := CN_SYSKEYDOWN
   else
     msg := CN_KEYDOWN;
 
-  ret:= self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, True );
-  if (ret<>0) or (_keyState.keyCode=VK_UNKNOWN) then
-    _keyState.handled:= True;
+  ret:= self.doSendKeyMessage( msg, CocoaWidgetSetState.keyEvent.keyCode, CocoaWidgetSetState.keyEvent.keyData, True );
+  if (ret<>0) or (CocoaWidgetSetState.keyEvent.keyCode=VK_UNKNOWN) then
+    CocoaWidgetSetState.keyEvent.handled:= True;
 end;
 
 procedure TLCLCommonCallback.KeyEvBeforeUp;
@@ -638,36 +614,36 @@ var
   msg: Cardinal;
   ret: PtrInt;
 begin
-  if _keyState.keyCode = VK_UNKNOWN then
+  if CocoaWidgetSetState.keyEvent.keyCode = VK_UNKNOWN then
     Exit;
 
-  if _keyState.isSysKey then
+  if CocoaWidgetSetState.keyEvent.isSysKey then
     msg := CN_SYSKEYUP
   else
     msg := CN_KEYUP;
 
-  ret:= self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, True );
-  if (ret<>0) or (_keyState.keyCode=VK_UNKNOWN) then
-    _keyState.handled:= True;
+  ret:= self.doSendKeyMessage( msg, CocoaWidgetSetState.keyEvent.keyCode, CocoaWidgetSetState.keyEvent.keyData, True );
+  if (ret<>0) or (CocoaWidgetSetState.keyEvent.keyCode=VK_UNKNOWN) then
+    CocoaWidgetSetState.keyEvent.handled:= True;
 end;
 
 procedure TLCLCommonCallback.send_UTF8KeyPress();
 var
   lclHandled: Boolean;
 begin
-  if not _keyState.shouldSendCharMessage then
+  if not CocoaWidgetSetState.keyEvent.shouldSendCharMessage then
     Exit;
 
   lclHandled:= TCocoaLCLMessageUtil.IntfUTF8KeyPress(
                  _owner,
-                 _keyState.utf8Character,
-                 _keyState.isSysKey );
+                 CocoaWidgetSetState.keyEvent.utf8Character,
+                 CocoaWidgetSetState.keyEvent.isSysKey );
 
   if lclHandled then begin
-    if (TCocoaCbTrait.forceSendReturn in self.traits) and (_keyState.keyCode=VK_RETURN) then
-      _keyState.shouldSendCharMessage:= False
+    if (TCocoaCbTrait.forceSendReturn in self.traits) and (CocoaWidgetSetState.keyEvent.keyCode=VK_RETURN) then
+      CocoaWidgetSetState.keyEvent.shouldSendCharMessage:= False
     else
-      _keyState.handled:= True;
+      CocoaWidgetSetState.keyEvent.handled:= True;
   end;
 end;
 
@@ -676,17 +652,17 @@ var
   msg: Cardinal;
   ret: PtrInt;
 begin
-  if NOT _keyState.shouldSendCharMessage then
+  if NOT CocoaWidgetSetState.keyEvent.shouldSendCharMessage then
     Exit;
 
-  if _keyState.isSysKey then
+  if CocoaWidgetSetState.keyEvent.isSysKey then
     msg := CN_SYSCHAR
   else
     msg := CN_CHAR;
 
-  ret:= self.doSendKeyMessage( msg, _keyState.charCode, _keyState.keyData, False );
-  if (ret<>0) or (_keyState.charCode=VK_UNKNOWN) then
-    _keyState.handled:= True;
+  ret:= self.doSendKeyMessage( msg, CocoaWidgetSetState.keyEvent.charCode, CocoaWidgetSetState.keyEvent.keyData, False );
+  if (ret<>0) or (CocoaWidgetSetState.keyEvent.charCode=VK_UNKNOWN) then
+    CocoaWidgetSetState.keyEvent.handled:= True;
 end;
 
 procedure TLCLCommonCallback.send_LM_KEYDOWN_Message();
@@ -694,17 +670,17 @@ var
   msg: Cardinal;
   ret: PtrInt;
 begin
-  if _keyState.keyCode = VK_UNKNOWN then
+  if CocoaWidgetSetState.keyEvent.keyCode = VK_UNKNOWN then
     Exit;
 
-  if _keyState.isSysKey then
+  if CocoaWidgetSetState.keyEvent.isSysKey then
     msg := LM_SYSKEYDOWN
   else
     msg := LM_KEYDOWN;
 
-  ret:= self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, False );
-  if (ret<>0) or (_keyState.keyCode=VK_UNKNOWN) then
-    _keyState.handled:= True;
+  ret:= self.doSendKeyMessage( msg, CocoaWidgetSetState.keyEvent.keyCode, CocoaWidgetSetState.keyEvent.keyData, False );
+  if (ret<>0) or (CocoaWidgetSetState.keyEvent.keyCode=VK_UNKNOWN) then
+    CocoaWidgetSetState.keyEvent.handled:= True;
 end;
 
 procedure TLCLCommonCallback.send_LM_CHAR_Message();
@@ -712,36 +688,36 @@ var
   msg: Cardinal;
   ret: PtrInt;
 begin
-  if NOT _keyState.shouldSendCharMessage then
+  if NOT CocoaWidgetSetState.keyEvent.shouldSendCharMessage then
     Exit;
 
-  if _keyState.isSysKey then
+  if CocoaWidgetSetState.keyEvent.isSysKey then
     msg := LM_SYSCHAR
   else
     msg := LM_CHAR;
 
-  ret:= self.doSendKeyMessage( msg, _keyState.charCode, _keyState.keyData, False );
+  ret:= self.doSendKeyMessage( msg, CocoaWidgetSetState.keyEvent.charCode, CocoaWidgetSetState.keyEvent.keyData, False );
   if ret <> 0 then
-    _keyState.handled:= True;
+    CocoaWidgetSetState.keyEvent.handled:= True;
 end;
 
 procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
 begin
   AllowCocoaHandle:= false;
 
-  if _keyState.handled then exit;
+  if CocoaWidgetSetState.keyEvent.handled then exit;
   send_UTF8KeyPress;
 
-  if _keyState.handled then exit;
+  if CocoaWidgetSetState.keyEvent.handled then exit;
   send_CN_CHAR_Message;
 
-  if _keyState.handled then exit;
+  if CocoaWidgetSetState.keyEvent.handled then exit;
   send_LM_KEYDOWN_Message;
 
-  if _keyState.handled then exit;
+  if CocoaWidgetSetState.keyEvent.handled then exit;
   send_LM_CHAR_Message;
 
-  if _keyState.handled then exit;
+  if CocoaWidgetSetState.keyEvent.handled then exit;
   AllowCocoaHandle:= NOT (TCocoaCbTrait.blockKeyBeep in self.traits);
 end;
 
@@ -749,38 +725,38 @@ procedure TLCLCommonCallback.KeyEvAfterUp;
 var
   msg: Cardinal;
 begin
-  if _keyState.handled then
+  if CocoaWidgetSetState.keyEvent.handled then
     Exit;
-  _keyState.handled:= True;
+  CocoaWidgetSetState.keyEvent.handled:= True;
 
-  if _keyState.isSysKey then
+  if CocoaWidgetSetState.keyEvent.isSysKey then
     msg := LM_SYSKEYUP
   else
     msg := LM_KEYUP;
 
-  self.doSendKeyMessage( msg, _keyState.keyCode, _keyState.keyData, True );
+  self.doSendKeyMessage( msg, CocoaWidgetSetState.keyEvent.keyCode, CocoaWidgetSetState.keyEvent.keyData, True );
 end;
 
 procedure TLCLCommonCallback.KeyEvBefore(
   const  Event: NSEvent;
   out AllowCocoaHandle: boolean);
 begin
-  _keyState.handled:= False;
+  CocoaWidgetSetState.keyEvent.handled:= False;
   AllowCocoaHandle := true;
 
   if Event.type_ = NSFlagsChanged then
-    createKeyStateFromFlagsChanged( Event, _keyState )
+    createKeyStateFromFlagsChanged( Event, CocoaWidgetSetState.keyEvent )
   else
-    createKeyStateFromKeyUpDown( Event, _keyState );
+    createKeyStateFromKeyUpDown( Event, CocoaWidgetSetState.keyEvent );
 
-  if _keyState.isKeyDown then begin
+  if CocoaWidgetSetState.keyEvent.isKeyDown then begin
     KeyEvBeforeDown;
-    if NOT (TCocoaCbTrait.treatTabAsChar in self.traits) and (_keyState.keyCode = VK_TAB) then
+    if NOT (TCocoaCbTrait.treatTabAsChar in self.traits) and (CocoaWidgetSetState.keyEvent.keyCode = VK_TAB) then
       AllowCocoaHandle := false;
   end else
     KeyEvBeforeUp;
 
-  if _keyState.handled then
+  if CocoaWidgetSetState.keyEvent.handled then
     AllowCocoaHandle := false;
 
   // flagsChanged always needs to be passed on to Cocoa
@@ -794,7 +770,7 @@ var
 begin
   if NOT Assigned(self.target) then
     Exit;
-  if _keyState.isKeyDown then
+  if CocoaWidgetSetState.keyEvent.isKeyDown then
     KeyEvAfterDown(AllowCocoaHandle)
   else
     KeyEvAfterUp;
@@ -851,9 +827,9 @@ begin
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
-    _mouseState.isRouting:= True;
+    CocoaWidgetSetState.mouseEvent.isRouting:= True;
     Result := lCaptureControlCallback.MouseUpDownEvent(Event, AForceAsMouseUp);
-    _mouseState.isRouting:= False;
+    CocoaWidgetSetState.mouseEvent.isRouting:= False;
     exit;
   end;
 
@@ -862,21 +838,18 @@ begin
   // For example NSTextField (TEdit) may contains NSTextView and BOTH
   // will signal mouseDown when the field is selected by mouse the first time.
   // In this case only 1 mouseDown should be passed to LCL
-  if (_mouseState.lastDownUpTime = Event.timestamp) then begin
+  if (CocoaWidgetSetState.mouseEvent.lastDownUpTime = Event.timestamp) then begin
     if not AForceAsMouseUp then Exit; // the same mouse event from a composite child
-    if _mouseState.lastMouseWithForce then Exit; // the same forced mouseUp event from a composite child
+    if CocoaWidgetSetState.mouseEvent.lastMouseWithForce then Exit; // the same forced mouseUp event from a composite child
   end;
-  _mouseState.lastDownUpTime := Event.timestamp;
-  _mouseState.lastMouseWithForce := AForceAsMouseUp;
-
-
-  FillChar(Msg, SizeOf(Msg), #0);
+  CocoaWidgetSetState.mouseEvent.lastDownUpTime := Event.timestamp;
+  CocoaWidgetSetState.mouseEvent.lastMouseWithForce := AForceAsMouseUp;
 
   MousePos := Event.locationInWindow;
   OffsetMousePos(MousePos, bndPt, clPt, srchPt);
 
+  FillChar(Msg, SizeOf(Msg), #0);
   Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(NSEvent.pressedMouseButtons);
-
   Msg.XPos := clPt.X;
   Msg.YPos := clPt.Y;
 
@@ -969,12 +942,12 @@ begin
       NSLeftMouseDown,
       NSRightMouseDown,
       NSOtherMouseDown:
-        CocoaWidgetSetState.trackedControl := _owner;
+        CocoaWidgetSetState.mouseEvent.trackedControl:= _owner;
       NSLeftMouseUp,
       NSRightMouseUp,
       NSOtherMouseUp:
-        if CocoaWidgetSetState.trackedControl = _owner then
-          CocoaWidgetSetState.trackedControl := nil;
+        if CocoaWidgetSetState.mouseEvent.trackedControl = _owner then
+          CocoaWidgetSetState.mouseEvent.trackedControl:= nil;
     end;
 end;
 
@@ -1020,9 +993,9 @@ begin
     callback := getCaptureControlCallback();
     if callback <> nil then
     begin
-      _mouseState.isRouting:= True;
+      CocoaWidgetSetState.mouseEvent.isRouting:= True;
       Result := callback.MouseMove(Event);
-      _mouseState.isRouting:= False;
+      CocoaWidgetSetState.mouseEvent.isRouting:= False;
       exit;
     end
     else
@@ -1054,17 +1027,17 @@ begin
         end;
     end;
 
-    if assigned(targetControl) and not _mouseState.isRouting then
+    if assigned(targetControl) and not CocoaWidgetSetState.mouseEvent.isRouting then
     begin
       if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
-      _mouseState.isRouting:= True;
+      CocoaWidgetSetState.mouseEvent.isRouting:= True;
        //debugln(target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
       obj := NSObject(targetControl.Handle).lclContentView;
       if obj = nil then Exit;
       callback := obj.lclGetCallback;
       if callback = nil then Exit; // Avoids crashes
       result := callback.MouseMove(Event);
-      _mouseState.isRouting:= False;
+      CocoaWidgetSetState.mouseEvent.isRouting:= False;
       exit;
     end;
 
@@ -1140,7 +1113,7 @@ begin
   // https://developer.apple.com/library/mac/releasenotes/AppKit/RN-AppKitOlderNotes/
   // It says that deltaY=1 means 1 line, and in the LCL 1 line is 120
   if (event.scrollingDeltaY <> 0) and
-     ((event.scrollingDeltaX = 0) or not _mouseState.isLastWheelHorz) then
+     ((event.scrollingDeltaX = 0) or not CocoaWidgetSetState.mouseEvent.isLastWheelHorz) then
   begin
     Msg.Msg := LM_MOUSEWHEEL;
     if event.hasPreciseScrollingDeltas then
@@ -1166,7 +1139,7 @@ begin
   end;
 
   // Filter scrolls that affect both X and Y towards whatever the last scroll was
-  _mouseState.isLastWheelHorz := (Msg.Msg = LM_MOUSEHWHEEL);
+  CocoaWidgetSetState.mouseEvent.isLastWheelHorz := (Msg.Msg = LM_MOUSEHWHEEL);
 
   // Avoid overflow/underflow in message
   if wheelDelta > High(SmallInt) then

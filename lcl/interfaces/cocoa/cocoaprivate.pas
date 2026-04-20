@@ -31,6 +31,36 @@ uses
 
 type
 
+  { TCocoaKeyEventState }
+
+  TCocoaKeyEventState = record
+    keyCode: Word;                  // LCL Key Code
+    charCode: Word;                 // Ascii char, when possible (xx_(SYS)CHAR)
+    keyData: PtrInt;                // Modifiers (ctrl, alt, mouse buttons...)
+    utf8Character: TUTF8Char;       // char to send via IntfUtf8KeyPress
+    shouldSendCharMessage: Boolean; // Should we send char?
+    isSysKey: Boolean;              // Is alt (option) key down?
+    isKeyDown : Boolean;
+    handled: Boolean;
+
+    // Store state of key modifiers so that we can emulate keyup/keydown
+    // of keys like control, option, command, caps lock, shift
+    prevModifiers : NSUInteger;
+    savedModifiers : NSUInteger;
+  end;
+
+  { TCocoaMouseEventState }
+
+  TCocoaMouseEventState = record
+    isRouting: Boolean;
+    isLastWheelHorz: Boolean;
+    lastDownUpTime: NSTimeInterval; // the last processed mouse Event
+    lastMouseWithForce: Boolean;
+
+    // todo: this should be a threadvar
+    trackedControl: NSObject;
+  end;
+
   { TCocoaWidgetSetState }
 
   TCocoaWidgetSetState = class
@@ -38,18 +68,13 @@ type
     _lclSendingScrollWheelCount: Integer;
     _isCocoaOnlyState: Boolean;
   public
+    keyEvent: TCocoaKeyEventState;
+    mouseEvent: TCocoaMouseEventState;
+
     currentKeyWindow: NSWindow;
     killingFocus: Boolean;
 
-    captureControl: HWND;
-
-    // todo: this should be a threadvar
-    trackedControl: NSObject;
-
-    // Store state of key modifiers so that we can emulate keyup/keydown
-    // of keys like control, option, command, caps lock, shift
-    prevKeyModifiers : NSUInteger;
-    savedKeyModifiers : NSUInteger;
+    lclCaptureControl: HWND;
 
     {$ifdef COCOALOOPHIJACK}
     // The flag is set to true once hi-jacked loop is finished (at the end of app)
@@ -256,7 +281,7 @@ type
 
 procedure TCocoaWidgetSetState.releaseCapture;
 begin
-  self.captureControl:= 0;
+  self.lclCaptureControl:= 0;
 end;
 
 procedure TCocoaWidgetSetState.lclBeginSendingScrollWheel;

@@ -403,7 +403,7 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
-  CocoaWidgetSetState.prevKeyModifiers  := CocoaWidgetSetState.savedKeyModifiers;
+  CocoaWidgetSetState.keyEvent.prevModifiers:= CocoaWidgetSetState.keyEvent.savedModifiers;
 
   {$ifdef COCOALOOPHIJACK}
   if not isrun and Assigned(aloop) then begin
@@ -448,21 +448,21 @@ begin
     Exit;
   end;
 
-  CocoaWidgetSetState.savedKeyModifiers := Result.modifierFlags;
+  CocoaWidgetSetState.keyEvent.savedModifiers := Result.modifierFlags;
 
   if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
-    and Assigned(CocoaWidgetSetState.trackedControl)
+    and Assigned(CocoaWidgetSetState.mouseEvent.trackedControl)
   then
   begin
     if Result.type_ = NSLeftMouseUp then
     begin
       //todo: send callback!
-      CocoaWidgetSetState.trackedControl := nil;
+      CocoaWidgetSetState.mouseEvent.trackedControl := nil;
     end
     else
     if isMouseMoveEvent(Result.type_) then
     begin
-      cb := CocoaWidgetSetState.trackedControl.lclGetCallback;
+      cb := CocoaWidgetSetState.mouseEvent.trackedControl.lclGetCallback;
       if Assigned(cb) then begin
         // if the mouse event was handled by LCL - just don't return it back to Cocoa
         // i.e. needed for LCL to handle MouseMove events during DragAndDrop
