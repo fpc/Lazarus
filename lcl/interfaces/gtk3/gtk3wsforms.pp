@@ -248,31 +248,19 @@ begin
   TGtk3Widget(AWinControl.Handle).SetBounds(ALeft,ATop,AWidth,AHeight);
 end;
 
-{$IFDEF GTK3DEBUGCORE}
 procedure ReleaseInputGrab;
 var
   Display: PGdkDisplay;
   Seat: PGdkSeat;
 begin
-  // Get the default display
   Display := gdk_display_get_default();
   if not Assigned(Display) then
-  begin
-    WriteLn('Error: No default display available.');
     Exit;
-  end;
-
-  // Get the default seat
   Seat := gdk_display_get_default_seat(Display);
   if not Assigned(Seat) then
-  begin
-    WriteLn('Error: No default seat available.');
     Exit;
-  end;
-  Gtk3WidgetSet.SetCapture(0);
   gdk_seat_ungrab(Seat);
 end;
-{$ENDIF}
 
 function ModalFilter(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn;
 begin
@@ -423,6 +411,8 @@ begin
           if OtherForm.Visible and (OtherForm is THintWindow) then
             OtherForm.Hide;
         end;
+      if not Gtk3WidgetSet.IsWayland then
+        ReleaseInputGrab;
       AWindow^.set_modal(True);
       AWindow^.window^.set_modal_hint(true);
     end;
