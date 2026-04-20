@@ -49,6 +49,15 @@ type
     savedModifiers : NSUInteger;
   end;
 
+  { TCocoaMouseEventState }
+
+  TCocoaMouseEventState = record
+    isRouting: Boolean;
+    isLastWheelHorz: Boolean;
+    lastDownUpTime: NSTimeInterval; // the last processed mouse Event
+    lastMouseWithForce: Boolean;
+  end;
+
   { TCocoaWidgetSetState }
 
   TCocoaWidgetSetState = class
@@ -57,6 +66,7 @@ type
     _isCocoaOnlyState: Boolean;
   public
     keyEvent: TCocoaKeyEventState;
+    mouseEvent: TCocoaMouseEventState;
 
     currentKeyWindow: NSWindow;
     killingFocus: Boolean;

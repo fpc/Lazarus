@@ -16,15 +16,6 @@ uses
 
 type
 
-  { TCocoaMouseEventState }
-
-  TCocoaMouseEventState = record
-    isRouting: Boolean;
-    isLastWheelHorz: Boolean;
-    lastDownUpTime: NSTimeInterval; // the last processed mouse Event
-    lastMouseWithForce: Boolean;
-  end;
-
   {$scopedEnums on}
   TCocoaCbTrait = (
     blockKeyBeep,
@@ -46,7 +37,6 @@ type
     _context: TCocoaContext;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     _boundsReportedToChildren: Boolean;
-    _mouseState: TCocoaMouseEventState;
   public
     traits: TLCLCommonCallbackTraits;
     property owner: NSObject read _owner;
@@ -530,7 +520,7 @@ begin
   if CocoaWidgetSetState.captureControl = 0 then Exit;
   obj := NSObject(CocoaWidgetSetState.captureControl);
   lCaptureView := obj.lclContentView;
-  if (obj <> _owner) and (lCaptureView <> _owner) and not _mouseState.isRouting then
+  if (obj <> _owner) and (lCaptureView <> _owner) and not CocoaWidgetSetState.mouseEvent.isRouting then
   begin
     Result := lCaptureView.lclGetCallback;
   end;
@@ -837,9 +827,9 @@ begin
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
-    _mouseState.isRouting:= True;
+    CocoaWidgetSetState.mouseEvent.isRouting:= True;
     Result := lCaptureControlCallback.MouseUpDownEvent(Event, AForceAsMouseUp);
-    _mouseState.isRouting:= False;
+    CocoaWidgetSetState.mouseEvent.isRouting:= False;
     exit;
   end;
 
@@ -848,21 +838,18 @@ begin
   // For example NSTextField (TEdit) may contains NSTextView and BOTH
   // will signal mouseDown when the field is selected by mouse the first time.
   // In this case only 1 mouseDown should be passed to LCL
-  if (_mouseState.lastDownUpTime = Event.timestamp) then begin
+  if (CocoaWidgetSetState.mouseEvent.lastDownUpTime = Event.timestamp) then begin
     if not AForceAsMouseUp then Exit; // the same mouse event from a composite child
-    if _mouseState.lastMouseWithForce then Exit; // the same forced mouseUp event from a composite child
+    if CocoaWidgetSetState.mouseEvent.lastMouseWithForce then Exit; // the same forced mouseUp event from a composite child
   end;
-  _mouseState.lastDownUpTime := Event.timestamp;
-  _mouseState.lastMouseWithForce := AForceAsMouseUp;
-
-
-  FillChar(Msg, SizeOf(Msg), #0);
+  CocoaWidgetSetState.mouseEvent.lastDownUpTime := Event.timestamp;
+  CocoaWidgetSetState.mouseEvent.lastMouseWithForce := AForceAsMouseUp;
 
   MousePos := Event.locationInWindow;
   OffsetMousePos(MousePos, bndPt, clPt, srchPt);
 
+  FillChar(Msg, SizeOf(Msg), #0);
   Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(NSEvent.pressedMouseButtons);
-
   Msg.XPos := clPt.X;
   Msg.YPos := clPt.Y;
 
@@ -1006,9 +993,9 @@ begin
     callback := getCaptureControlCallback();
     if callback <> nil then
     begin
-      _mouseState.isRouting:= True;
+      CocoaWidgetSetState.mouseEvent.isRouting:= True;
       Result := callback.MouseMove(Event);
-      _mouseState.isRouting:= False;
+      CocoaWidgetSetState.mouseEvent.isRouting:= False;
       exit;
     end
     else
@@ -1040,17 +1027,17 @@ begin
         end;
     end;
 
-    if assigned(targetControl) and not _mouseState.isRouting then
+    if assigned(targetControl) and not CocoaWidgetSetState.mouseEvent.isRouting then
     begin
       if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
-      _mouseState.isRouting:= True;
+      CocoaWidgetSetState.mouseEvent.isRouting:= True;
        //debugln(target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
       obj := NSObject(targetControl.Handle).lclContentView;
       if obj = nil then Exit;
       callback := obj.lclGetCallback;
       if callback = nil then Exit; // Avoids crashes
       result := callback.MouseMove(Event);
-      _mouseState.isRouting:= False;
+      CocoaWidgetSetState.mouseEvent.isRouting:= False;
       exit;
     end;
 
@@ -1126,7 +1113,7 @@ begin
   // https://developer.apple.com/library/mac/releasenotes/AppKit/RN-AppKitOlderNotes/
   // It says that deltaY=1 means 1 line, and in the LCL 1 line is 120
   if (event.scrollingDeltaY <> 0) and
-     ((event.scrollingDeltaX = 0) or not _mouseState.isLastWheelHorz) then
+     ((event.scrollingDeltaX = 0) or not CocoaWidgetSetState.mouseEvent.isLastWheelHorz) then
   begin
     Msg.Msg := LM_MOUSEWHEEL;
     if event.hasPreciseScrollingDeltas then
@@ -1152,7 +1139,7 @@ begin
   end;
 
   // Filter scrolls that affect both X and Y towards whatever the last scroll was
-  _mouseState.isLastWheelHorz := (Msg.Msg = LM_MOUSEHWHEEL);
+  CocoaWidgetSetState.mouseEvent.isLastWheelHorz := (Msg.Msg = LM_MOUSEHWHEEL);
 
   // Avoid overflow/underflow in message
   if wheelDelta > High(SmallInt) then
