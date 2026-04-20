@@ -353,7 +353,7 @@ begin
   CocoaWidgetSetState.keyEvent.shouldSendCharMessage:= False;
   CurMod := Event.modifierFlags;
   //see what changed. we only care of bits 16 through 20
-  Diff := (CocoaWidgetSetState.prevKeyModifiers xor CurMod) and cModifiersOfInterest;
+  Diff := (CocoaWidgetSetState.keyEvent.prevModifiers xor CurMod) and cModifiersOfInterest;
 
   case Diff of
     0                  : VKKeyCode := VK_UNKNOWN; //nothing (that we cared of) changed
@@ -368,7 +368,7 @@ begin
   //diff is now equal to the mask of the bit that changed, so we can determine
   //if this change is a keydown (PrevKeyModifiers didn't have the bit set) or
   //a keyup (PrevKeyModifiers had the bit set)
-  CocoaWidgetSetState.keyEvent.isKeyDown := ((CocoaWidgetSetState.prevKeyModifiers and Diff) = 0);
+  CocoaWidgetSetState.keyEvent.isKeyDown := ((CocoaWidgetSetState.keyEvent.prevModifiers and Diff) = 0);
   CocoaWidgetSetState.keyEvent.keyData := KeyData;
   CocoaWidgetSetState.keyEvent.keyCode := VKKeyCode;
   CocoaWidgetSetState.keyEvent.isSysKey := (VKKeyCode = VK_LWIN);

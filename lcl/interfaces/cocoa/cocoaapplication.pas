@@ -403,7 +403,7 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
-  CocoaWidgetSetState.prevKeyModifiers  := CocoaWidgetSetState.savedKeyModifiers;
+  CocoaWidgetSetState.keyEvent.prevModifiers:= CocoaWidgetSetState.keyEvent.savedModifiers;
 
   {$ifdef COCOALOOPHIJACK}
   if not isrun and Assigned(aloop) then begin
@@ -448,7 +448,7 @@ begin
     Exit;
   end;
 
-  CocoaWidgetSetState.savedKeyModifiers := Result.modifierFlags;
+  CocoaWidgetSetState.keyEvent.savedModifiers := Result.modifierFlags;
 
   if ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(CocoaWidgetSetState.trackedControl)

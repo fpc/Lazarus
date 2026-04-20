@@ -34,14 +34,19 @@ type
   { TCocoaKeyEventState }
 
   TCocoaKeyEventState = record
-    keyCode: Word;             // Key Code
-    charCode: Word;            // Ascii char, when possible (xx_(SYS)CHAR)
-    keyData: PtrInt;           // Modifiers (ctrl, alt, mouse buttons...)
-    utf8Character: TUTF8Char;  // char to send via IntfUtf8KeyPress
-    shouldSendCharMessage: Boolean;   // Should we send char?
-    isSysKey: Boolean;         // Is alt (option) key down?
+    keyCode: Word;                  // LCL Key Code
+    charCode: Word;                 // Ascii char, when possible (xx_(SYS)CHAR)
+    keyData: PtrInt;                // Modifiers (ctrl, alt, mouse buttons...)
+    utf8Character: TUTF8Char;       // char to send via IntfUtf8KeyPress
+    shouldSendCharMessage: Boolean; // Should we send char?
+    isSysKey: Boolean;              // Is alt (option) key down?
     isKeyDown : Boolean;
     handled: Boolean;
+
+    // Store state of key modifiers so that we can emulate keyup/keydown
+    // of keys like control, option, command, caps lock, shift
+    prevModifiers : NSUInteger;
+    savedModifiers : NSUInteger;
   end;
 
   { TCocoaWidgetSetState }
@@ -51,6 +56,8 @@ type
     _lclSendingScrollWheelCount: Integer;
     _isCocoaOnlyState: Boolean;
   public
+    keyEvent: TCocoaKeyEventState;
+
     currentKeyWindow: NSWindow;
     killingFocus: Boolean;
 
@@ -58,12 +65,6 @@ type
 
     // todo: this should be a threadvar
     trackedControl: NSObject;
-
-    keyEvent: TCocoaKeyEventState;
-    // Store state of key modifiers so that we can emulate keyup/keydown
-    // of keys like control, option, command, caps lock, shift
-    prevKeyModifiers : NSUInteger;
-    savedKeyModifiers : NSUInteger;
 
     {$ifdef COCOALOOPHIJACK}
     // The flag is set to true once hi-jacked loop is finished (at the end of app)
