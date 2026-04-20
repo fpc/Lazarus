@@ -13,10 +13,10 @@ uses
   EditorToolBarOptions, EnvironmentOpts, etFPCMsgFilePool, etMakeMsgParser, 
   ExtTools, ExtToolsConsole, FppkgHelper, IdeBuilder, IDECmdLine, 
   IdeConfigPckTest, IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, 
-  IDETranslations, IdeXmlConfigProcs, InitialSetupProc, LazConf, MiscOptions, 
-  ModeMatrixOpts, ParsedCompilerOpts, ProjectBuildMode, ProjPackCommon, 
-  RecentListProcs, SearchPathProcs, ToolBarOptionsBase, TransferMacros, 
-  LazarusPackageIntf;
+  IdeTransferMacros, IDETranslations, IdeXmlConfigProcs, InitialSetupProc, 
+  LazConf, MiscOptions, ModeMatrixOpts, ParsedCompilerOpts, ProjectBuildMode, 
+  ProjPackCommon, RecentListProcs, SearchPathProcs, ToolBarOptionsBase, 
+  TransferMacros, LazarusPackageIntf;
 
 implementation
 

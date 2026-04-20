@@ -1067,11 +1067,6 @@
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="miscoptions.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="MiscOptions"/>
-      </Unit>
-      <Unit>
         <Filename Value="codeexplorer.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
@@ -1346,21 +1341,11 @@
         <UnitName Value="ImExportCompilerOpts"/>
       </Unit>
       <Unit>
-        <Filename Value="initialsetupproc.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="InitialSetupProc"/>
-      </Unit>
-      <Unit>
         <Filename Value="qfinitlocalvardlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="QFInitLocalVarDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../packager/interpkgconflictfiles.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="InterPkgConflictFiles"/>
       </Unit>
       <Unit>
         <Filename Value="../packager/interpkgconflictfiledlg.pas"/>
@@ -1419,11 +1404,6 @@
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
         <UnitName Value="FindInFilesWnd"/>
-      </Unit>
-      <Unit>
-        <Filename Value="idetransfermacros.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="IdeTransferMacros"/>
       </Unit>
       <Unit>
         <Filename Value="envguioptions.pas"/>

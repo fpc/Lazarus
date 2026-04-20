@@ -40,7 +40,7 @@ uses
   ProjectIntf, CompOptsIntf, MacroIntf, MacroDefIntf, IDEOptionsIntf,
   // IdeConfig
   LazConf, TransferMacros, ParsedCompilerOpts, CompilerOptions, EnvironmentOpts,
-  IdeConfStrConsts;
+  IdeTransferMacros, IdeConfStrConsts;
 
 type
 
@@ -984,10 +984,7 @@ begin
   GlobalMacroList.OnSubstitution:=@MacroSubstitution;
   IDEMacros:=TLazIDEMacros.Create;
   OnParseString:=@SubstituteCompilerOption;
-
-  // ToDo: Move IdeTransferMacros to IdeConfig package.
-  //TIdeTransferMarcros.InitMacros(GlobalMacroList);
-
+  TIdeTransferMarcros.InitMacros(GlobalMacroList);
   // project
   GlobalMacroList.Add(TTransferMacro.Create('Project','',
                       lisProjectMacroProperties,@MacroFuncProject,[]));

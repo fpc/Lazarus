@@ -57,7 +57,7 @@ uses
   Project, ProjectResources, ProjectIcon,
   // IDE
   LazarusIDEStrConsts, LfmUnitResource, etFPCMsgParser, etPas2jsMsgParser,
-  FPCSrcScan, IdeTransferMacros;
+  FPCSrcScan;
 
 type
 
@@ -236,8 +236,6 @@ begin
                       lisIDEBuildOptions, @MacroFuncIDEBuildOptions, []));
   GlobalMacroList.Add(TTransferMacro.Create('ProjPublishDir','',
                       lisPublishProjDir,@MacroFuncProjPublishDir,[]));
-  // Can be done in inherited method later.
-  TIdeTransferMarcros.InitMacros(GlobalMacroList);
 end;
 
 function TBuildManager.MacroFuncBuildModeCaption(const Param: string; const Data: PtrInt;
