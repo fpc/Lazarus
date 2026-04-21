@@ -17,6 +17,13 @@ uses
 type
 
   {$scopedEnums on}
+  TCocoaCbState = (
+    boundsReported,
+    mouseRouting
+  );
+
+  TLCLCommonCallbackStates = set of TCocoaCbState;
+
   TCocoaCbTrait = (
     blockKeyBeep,
     blockUpDown,
@@ -36,8 +43,7 @@ type
     _propStorage: TStringList;
     _context: TCocoaContext;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
-    _boundsReportedToChildren: Boolean;
-    _isRouting: Boolean;
+    _states: TLCLCommonCallbackStates;
   public
     traits: TLCLCommonCallbackTraits;
     property owner: NSObject read _owner;
@@ -378,7 +384,6 @@ begin
   _propStorage := TStringList.Create;
   _propStorage.Sorted := True;
   _propStorage.Duplicates := dupAccept;
-  _boundsReportedToChildren:=false;
 end;
 
 destructor TLCLCommonCallback.Destroy;
@@ -521,10 +526,13 @@ begin
   if CocoaWidgetSetState.lclCaptureControl = 0 then Exit;
   obj := NSObject(CocoaWidgetSetState.lclCaptureControl);
   lCaptureView := obj.lclContentView;
-  if (obj <> _owner) and (lCaptureView <> _owner) and not _isRouting then
-  begin
-    Result := lCaptureView.lclGetCallback;
-  end;
+  if obj = _owner then
+    Exit;
+  if lCaptureView = _owner then
+    Exit;
+  if TCocoaCbState.mouseRouting in _states then
+    Exit;
+  Result:= lCaptureView.lclGetCallback;
 end;
 
 { If a window does not display a shortcut menu it should pass
@@ -828,9 +836,9 @@ begin
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
-    _isRouting:= True;
+    Include( _states, TCocoaCbState.mouseRouting );
     Result := lCaptureControlCallback.MouseUpDownEvent(Event, AForceAsMouseUp);
-    _isRouting:= False;
+    Exclude( _states, TCocoaCbState.mouseRouting );
     exit;
   end;
 
@@ -994,9 +1002,9 @@ begin
     callback := getCaptureControlCallback();
     if callback <> nil then
     begin
-      _isRouting:= True;
+      Include( _states, TCocoaCbState.mouseRouting );
       Result := callback.MouseMove(Event);
-      _isRouting:= False;
+      Exclude( _states, TCocoaCbState.mouseRouting );
       exit;
     end
     else
@@ -1028,17 +1036,17 @@ begin
         end;
     end;
 
-    if assigned(targetControl) and not _isRouting then
+    if assigned(targetControl) and NOT (TCocoaCbState.mouseRouting in _states) then
     begin
       if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
-      _isRouting:= True;
+      Include( _states, TCocoaCbState.mouseRouting );
        //debugln(target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
       obj := NSObject(targetControl.Handle).lclContentView;
       if obj = nil then Exit;
       callback := obj.lclGetCallback;
       if callback = nil then Exit; // Avoids crashes
       result := callback.MouseMove(Event);
-      _isRouting:= False;
+      Exclude( _states, TCocoaCbState.mouseRouting );
       exit;
     end;
 
@@ -1202,32 +1210,28 @@ begin
     and not EqualRect(target.ClientRect, _handleFrame.lclClientFrame);
 
   // update client rect
-  if ClientResized or Resized or target.ClientRectNeedsInterfaceUpdate then
-  begin
+  if ClientResized or Resized or target.ClientRectNeedsInterfaceUpdate then begin
     target.InvalidateClientRectCache(false);
     ClientResized := True;
   end;
 
   // then send a LM_SIZE message
-  if Resized or ClientResized then
-  begin
+  if Resized or ClientResized then begin
     LCLSendSizeMsg(target, Max(NewBounds.Right - NewBounds.Left,0),
       Max(NewBounds.Bottom - NewBounds.Top,0), _owner.lclWindowState, True);
   end;
 
   // then send a LM_MOVE message
-  if Moved then
-  begin
+  if Moved then begin
     LCLSendMoveMsg(target, NewBounds.Left,
       NewBounds.Top, Move_SourceIsInterface);
   end;
 
-  if not _boundsReportedToChildren then // first time we need this to update non cocoa based client rects
-  begin
+  if NOT (TCocoaCbState.boundsReported in _states) then begin
+    // first time we need this to update non cocoa based client rects
     target.InvalidateClientRectCache(true);
-    _boundsReportedToChildren:=true;
+    Include( _states, TCocoaCbState.boundsReported );
   end;
-
 end;
 
 procedure TLCLCommonCallback.scroll(
