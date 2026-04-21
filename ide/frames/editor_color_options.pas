@@ -27,7 +27,7 @@ interface
 uses
   Classes, Controls, Math, Types, typinfo, fgl, sysutils,
   // LazUtils
-  Laz2_XMLCfg, LazFileUtils, LazUTF8, LazLoggerBase,
+  Laz2_XMLCfg, LazStringUtils, LazFileUtils, LazUTF8, LazLoggerBase,
   // LCL
   LCLType, LCLIntf, StdCtrls, ExtCtrls, Graphics, ComCtrls, Dialogs, Menus, LMessages,
   // LazControls

@@ -34,6 +34,7 @@ interface
 uses
   Classes, SysUtils, RegExpr,
   LCLType, Controls, StdCtrls, Forms, Buttons, ExtCtrls, Dialogs, Graphics, ButtonPanel,
+  LazStringUtils,
   SynEditTypes, SynEdit,
   IDEImagesIntf, IDEWindowIntf, IDEDialogs, IDEUtils,
   InputHistory,

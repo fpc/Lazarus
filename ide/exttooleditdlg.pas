@@ -46,13 +46,13 @@ uses
   LCLType, Controls, Forms, StdCtrls, Dialogs, LCLProc, ButtonPanel, EditBtn,
   CheckLst,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazConfigStorage,
+  FileUtil, LazFileUtils, LazStringUtils, LazUTF8, LazConfigStorage,
   // Codetools
   FileProcs,
   // BuilldIntf
   IDEExternToolIntf, BuildStrConsts,
   // IdeIntf
-  IdeIntfStrConsts, PropEdits, IDEDialogs, IDECommands, IDEUtils,
+  IdeIntfStrConsts, PropEdits, IDEDialogs, IDECommands,
   IDEMsgIntf, MenuIntf, SrcEditorIntf, LazIDEIntf,
   // IdeConfig
   TransferMacros, EnvironmentOpts, ExtTools,

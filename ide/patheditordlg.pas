@@ -21,7 +21,7 @@ unit PathEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, types,
+  Classes, SysUtils, Types,
   // LCL
   LCLType, Forms, Controls, Buttons, StdCtrls, Dialogs, Menus, Graphics,
   ButtonPanel, Clipbrd,
@@ -30,7 +30,7 @@ uses
   // LazControls
   ShortPathEdit,
   // IdeIntf
-  IdeIntfStrConsts, MacroIntf, IDEImagesIntf, IDEUtils,
+  IdeIntfStrConsts, MacroIntf, IDEImagesIntf,
   // IdeConfig
   TransferMacros,
   // IDE

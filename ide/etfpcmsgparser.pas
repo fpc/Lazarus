@@ -39,11 +39,11 @@ uses
   DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog, LinkScanner,
   // LazUtils
   LConvEncoding, LazUTF8, FileUtil, LazFileUtils, LazFileCache,
-  LazUtilities, AvgLvlTree,
+  LazStringUtils, LazUtilities, AvgLvlTree,
   // BuildIntf
   IDEExternToolIntf, PackageIntf, ProjectIntf, MacroIntf,
   // IDEIntf
-  LazIDEIntf, IDEUtils,
+  LazIDEIntf,
   // IdeConfig
   EnvironmentOpts, LazConf, IDECmdLine, SearchPathProcs,
   etMakeMsgParser, etFPCMsgFilePool,
@@ -753,7 +753,7 @@ begin
     TestBuildDir:=AppendPathDelim(ResolveDots(Tool.Process.CurrentDirectory));
     if VirtualProjectFiles=nil then
       VirtualProjectFiles:=TFilenameToPointerTree.Create(true);
-    aProject:=LazarusIDE.ActiveProject;
+    aProject:=LazProject1;
     for i:=0 to aProject.FileCount-1 do begin
       aProjFile:=aProject.Files[i];
       if aProjFile.IsPartOfProject and (not FilenameIsAbsolute(aProjFile.Filename)) then

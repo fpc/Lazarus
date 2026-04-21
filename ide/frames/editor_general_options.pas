@@ -28,6 +28,8 @@ uses
   Classes, SysUtils, math,
   // LCL
   LCLType, StdCtrls, Controls, Graphics, ImgList,
+  // LazUtils
+  LazStringUtils,
   // LazControls
   DividerBevel,
   // SynEdit

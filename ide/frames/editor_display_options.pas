@@ -28,6 +28,8 @@ uses
   Classes, SysUtils,
   // LCL
   Graphics, Dialogs, StdCtrls, Spin, LCLType, Controls, Buttons, ExtCtrls,
+  // LazUtils
+  LazStringUtils,
   // SynEdit
   SynEdit, SynEditMouseCmds, SynGutterLineNumber, SynGutterLineOverview,
   SynGutter, SynEditTypes, SynGutterBase, SynGutterMarks, SynGutterChanges,

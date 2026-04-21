@@ -26,15 +26,13 @@ unit ModeMatrixCtrl;
 interface
 
 uses
-  Classes, SysUtils, math, types, contnrs,
+  Classes, SysUtils, Math, Types, Contnrs,
   // LCL
   Controls, LCLType, LCLIntf, Grids, Graphics, StdCtrls, Menus,
   // LazUtils
-  LazLoggerBase,
+  LazStringUtils, LazLoggerBase,
   // Codetools
   FileProcs,
-  // IdeIntf
-  IDEUtils,
   // IDE
   LazarusIDEStrConsts;
 

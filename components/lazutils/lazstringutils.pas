@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, System.UITypes,
   // LazUtils
-  LazUTF8, LazLoggerBase, LazTracer;
+  LazFileUtils, LazUTF8, LazLoggerBase, LazTracer;
 
 type
   // comments
@@ -34,6 +34,8 @@ type
     );
   TCommentTypes = set of TCommentType;
 
+  // Comparing
+  TCmpStrType = (cstCaseSensitive, cstCaseInsensitive, cstFilename);
   // Sorting
   TSortDirection = (sdAscending, sdDescending);
   TSortDomain = (sdWords, sdLines, sdParagraphs);
@@ -90,6 +92,7 @@ function StringListPartToText(List: TStrings; FromIndex, ToIndex: integer;
 function StringListToString(List: TStrings; FromIndex, ToIndex: integer;
                             IgnoreEmptyLines: boolean = false): string;
 procedure StringToStringList(const s: string; List: TStrings);
+function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string): integer;
 
 // Text with delimiters
 function GetNextDelimitedItem(const List: string; Delimiter: char;
@@ -1152,6 +1155,20 @@ begin
       exit;
     end;
   end;
+end;
+
+function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string): integer;
+var
+  i: Integer;
+begin
+  for i:=0 to List.Count-1 do begin
+    case Cmp of
+    cstCaseSensitive:   if List[i]=s then exit(i);
+    cstCaseInsensitive: if AnsiCompareText(List[i],s)=0 then exit(i);
+    cstFilename:        if CompareFilenames(List[i],s)=0 then exit(i);
+    end;
+  end;
+  Result:=-1;
 end;
 
 function GetNextDelimitedItem(const List: string; Delimiter: char;

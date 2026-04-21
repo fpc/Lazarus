@@ -33,7 +33,7 @@ uses
   // LCL
   StdCtrls, Dialogs, Controls, Spin,
   // LazUtils
-  FileUtil, LazFileUtils,
+  FileUtil, LazFileUtils, LazStringUtils,
   // CodeTools
   CodeToolManager, DefineTemplates,
   // BuildIntf

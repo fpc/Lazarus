@@ -12,7 +12,7 @@ uses
   // CodeTools
   FileProcs, DefineTemplates, CodeToolManager, LinkScanner,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8,
+  FileUtil, LazFileUtils, LazStringUtils, LazUTF8,
   // BuildIntf
   IDEOptionsIntf, CompOptsIntf, IDEExternToolIntf, BuildStrConsts,
   // IDEIntf

@@ -52,7 +52,7 @@ uses
   Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs,
   LCLPlatformDef, CheckLst, Menus, ComCtrls, LCLType,
   // LazUtils
-  LazFileUtils, LazUTF8, LazLoggerBase, LazVersion,
+  LazFileUtils, LazStringUtils, LazUTF8, LazLoggerBase, LazVersion,
   // LazControls
   DividerBevel,
   // BuildIntf

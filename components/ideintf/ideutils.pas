@@ -18,16 +18,14 @@ uses
   // LCL
   StdCtrls, ImgList, Graphics,
   // LazUtils
-  LazFileUtils;
+  LazStringUtils, LazFileUtils;
 
 type
-  TCmpStrType = (
-    cstCaseSensitive,
-    cstCaseInsensitive,
-    cstFilename
-    );
+  // Moved and deprecated in Lazarus 4.99 in April 2026.
+  TCmpStrType = LazStringUtils.TCmpStrType deprecated 'Use from unit LazStringUtils instead.';
 
 function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string): integer;
+                              deprecated 'Use from unit LazStringUtils instead.';
 procedure SetComboBoxText(AComboBox: TComboBox; const AText: String;
                           Cmp: TCmpStrType; MaxCount: integer = 1000);
 function LoadProjectIconIntoImages(const ProjFile: string;
@@ -48,17 +46,8 @@ function GetValidDirectoryAndFilename(const aFileDirStr: string;
 implementation
 
 function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string): integer;
-var
-  i: Integer;
 begin
-  for i:=0 to List.Count-1 do begin
-    case Cmp of
-    cstCaseSensitive:   if List[i]=s then exit(i);
-    cstCaseInsensitive: if AnsiCompareText(List[i],s)=0 then exit(i);
-    cstFilename:        if CompareFilenames(List[i],s)=0 then exit(i);
-    end;
-  end;
-  Result:=-1;
+  Result := LazStringUtils.IndexInStringList(List, Cmp, s);
 end;
 
 procedure SetComboBoxText(AComboBox:TComboBox; const AText: String;

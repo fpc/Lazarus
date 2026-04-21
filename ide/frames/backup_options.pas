@@ -28,6 +28,8 @@ uses
   SysUtils,
   // LCL
   StdCtrls, ExtCtrls,
+  // LazUtils
+  LazStringUtils,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   // IDE
