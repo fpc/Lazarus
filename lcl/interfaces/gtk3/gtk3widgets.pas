@@ -2671,28 +2671,28 @@ begin
     if AValue = clDefault then
       RemoveColorProvider(GetContainerWidget)
     else
-      ApplyCSS(GetContainerWidget, Format('treeview.view { color: %s; }', [CSSColor]));
+      ApplyCSS(GetContainerWidget, Format('treeview.view:not(:disabled) { color: %s; }', [CSSColor]));
   end else
   if wtSpinEdit in WidgetType then
   begin
     if AValue = clDefault then
       RemoveColorProvider(FWidget)
     else
-      ApplyCSS(FWidget, Format('spinbutton { color: %s; }', [CSSColor]));
+      ApplyCSS(FWidget, Format('spinbutton:not(:disabled) { color: %s; }', [CSSColor]));
   end else
   if wtEntry in WidgetType then
   begin
     if AValue = clDefault then
       RemoveColorProvider(FWidget)
     else
-      ApplyCSS(FWidget, Format('entry { color: %s; }', [CSSColor]));
+      ApplyCSS(FWidget, Format('entry:not(:disabled) { color: %s; }', [CSSColor]));
   end else
   if wtMemo in WidgetType then
   begin
     if AValue = clDefault then
       RemoveColorProvider(GetContainerWidget)
     else
-      ApplyCSS(GetContainerWidget, Format('text { color: %s; }', [CSSColor]));
+      ApplyCSS(GetContainerWidget, Format('text:not(:disabled) { color: %s; }', [CSSColor]));
   end else
   if wtComboBox in WidgetType then
   begin
@@ -2702,9 +2702,9 @@ begin
     else
     begin
       if PGtkComboBox(FWidget)^.has_entry then
-        CSSData := Format('entry { color: %s; }', [CSSColor])
+        CSSData := Format('entry:not(:disabled) { color: %s; }', [CSSColor])
       else
-        CSSData := Format('combobox button.combo cellview { color: %s; }', [CSSColor]);
+        CSSData := Format('combobox:not(:disabled) button.combo cellview { color: %s; }', [CSSColor]);
       ApplyCSS(ATargetWidget, CSSData);
     end;
   end else
@@ -2716,7 +2716,7 @@ begin
       if AValue = clDefault then
         RemoveColorProvider(ATargetWidget)
       else
-        ApplyCSS(ATargetWidget, Format('* { color: %s; }', [CSSColor]));
+        ApplyCSS(ATargetWidget, Format('*:not(:disabled) { color: %s; }', [CSSColor]));
     end;
   end else
   if wtStaticText in WidgetType then
@@ -2724,7 +2724,7 @@ begin
     if AValue = clDefault then
       RemoveColorProvider(GetContainerWidget)
     else
-      ApplyCSS(GetContainerWidget, Format('* { color: %s; }', [CSSColor]));
+      ApplyCSS(GetContainerWidget, Format('*:not(:disabled) { color: %s; }', [CSSColor]));
   end else
   begin
     if AValue = clDefault then
@@ -2734,7 +2734,7 @@ begin
         RemoveColorProvider(FWidget);
     end else
     begin
-      CSSData := Format('* { color: %s; }', [CSSColor]);
+      CSSData := Format('*:not(:disabled) { color: %s; }', [CSSColor]);
       if FWidget <> GetContainerWidget then
         ApplyCSS(FWidget, CSSData);
       ApplyCSS(GetContainerWidget, CSSData);

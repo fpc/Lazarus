@@ -1180,181 +1180,180 @@ begin
   FillChar(Result^, SizeOf(TStyleObject), 0);
 end;
 
-{.-$DEFINE VerboseUpdateSysColorMap}
-procedure UpdateSysColorMap(Widget: PGtkWidget; Lgs: TLazGtkStyle);
-{$IFDEF VerboseUpdateSysColorMap}
-  function GdkColorAsString(c: TgdkColor): string;
-  begin
-    Result:='LCL='+DbgS(TGDKColorToTColor(c))
-             +' Pixel='+DbgS(c.Pixel)
-             +' Red='+DbgS(c.Red)
-             +' Green='+DbgS(c.Green)
-             +' Blue='+DbgS(c.Blue)
-             ;
-  end;
-{$ENDIF}
+function CompositeRGBAOverBg(const AFg, ABg: TGdkRGBA): TColor;
 var
-  MainStyle: PGtkStyle;
+  A, R, G, B: Double;
+begin
+  A := AFg.alpha;
+  if A >= 1 then
+  begin
+    Result := TGdkRGBAToTColor(AFg);
+    exit;
+  end;
+  if A <= 0 then
+  begin
+    Result := TGdkRGBAToTColor(ABg);
+    exit;
+  end;
+  R := AFg.red   * A + ABg.red   * (1 - A);
+  G := AFg.green * A + ABg.green * (1 - A);
+  B := AFg.blue  * A + ABg.blue  * (1 - A);
+  Result := Trunc(R * $FF) or (Trunc(G * $FF) shl 8) or (Trunc(B * $FF) shl 16);
+end;
+
+function LookupThemeRGBA(ACtx: PGtkStyleContext; const AName: string;
+  const ADefault: TGdkRGBA): TGdkRGBA;
+begin
+  Result := ADefault;
+  if ACtx = nil then
+    exit;
+  if gtk_style_context_lookup_color(ACtx, PChar(AName), @Result) then
+    exit;
+  if AName.StartsWith('theme_') then
+    gtk_style_context_lookup_color(ACtx, PChar(AName.Substring(6)), @Result);
+end;
+
+function LookupThemeColor(ACtx: PGtkStyleContext; const AName: string;
+  ADefault: TColor; const ABgName: string = 'theme_bg_color'): TColor;
+var
+  ARGBA, ABgRGBA, AWhite: TGdkRGBA;
+  AFound: Boolean;
+begin
+  Result := ADefault;
+  if ACtx = nil then exit;
+  ARGBA.red := 0; ARGBA.green := 0; ARGBA.blue := 0; ARGBA.alpha := 0;
+  AFound := gtk_style_context_lookup_color(ACtx, PChar(AName), @ARGBA);
+  if (not AFound) and AName.StartsWith('theme_') then
+    AFound := gtk_style_context_lookup_color(ACtx, PChar(AName.Substring(6)), @ARGBA);
+  if AFound and (ARGBA.alpha > 0) then
+  begin
+    AWhite.red := 1; AWhite.green := 1; AWhite.blue := 1; AWhite.alpha := 1;
+    if ABgName = '' then
+      ABgRGBA := AWhite
+    else
+      ABgRGBA := LookupThemeRGBA(ACtx, ABgName, AWhite);
+    Result := CompositeRGBAOverBg(ARGBA, ABgRGBA);
+  end;
+end;
+
+function GetLabelFgColor(AState: TGtkStateFlags; ADefault: TColor;
+  const ABgName: string = 'theme_bg_color'): TColor;
+var
+  AWin, AButton, AChild, ATarget: PGtkWidget;
+  ACtx: PGtkStyleContext;
+  ARGBA, ABgRGBA, AWhite: TGdkRGBA;
+begin
+  Result := ADefault;
+  AWin := PGtkWidget(gtk_offscreen_window_new());
+  if AWin = nil then
+    exit;
+  AButton := PGtkWidget(gtk_button_new_with_label('x'));
+  if AButton <> nil then
+  begin
+    gtk_container_add(PGtkContainer(AWin), AButton);
+    if GTK_STATE_FLAG_INSENSITIVE in AState then
+      gtk_widget_set_sensitive(AButton, False);
+    gtk_widget_show_all(AWin);
+    gtk_widget_realize(AWin);
+    gtk_widget_realize(AButton);
+    while gtk_events_pending do
+      gtk_main_iteration_do(False);
+
+    AChild := gtk_bin_get_child(PGtkBin(AButton));
+    if AChild <> nil then
+      ATarget := AChild
+    else
+      ATarget := AButton;
+
+    ACtx := ATarget^.get_style_context;
+    if ACtx <> nil then
+    begin
+      ARGBA.red := 0; ARGBA.green := 0; ARGBA.blue := 0; ARGBA.alpha := 0;
+      gtk_style_context_get_color(ACtx, AState, @ARGBA);
+      if ARGBA.alpha > 0 then
+      begin
+        AWhite.red := 1; AWhite.green := 1; AWhite.blue := 1; AWhite.alpha := 1;
+        ABgRGBA := LookupThemeRGBA(ACtx, ABgName, AWhite);
+        Result := CompositeRGBAOverBg(ARGBA, ABgRGBA);
+      end;
+    end;
+  end;
+  gtk_widget_destroy(AWin);
+end;
+
+procedure UpdateSysColorMap(Widget: PGtkWidget; Lgs: TLazGtkStyle);
+var
+  ACtx: PGtkStyleContext;
 begin
   if Widget = nil then exit;
   if not (Lgs in [lgsButton, lgsCheckbox, lgsRadiobutton, lgsWindow, lgsMenuBar, lgsMenuitem,
     lgsVerticalScrollbar, lgsHorizontalScrollbar, lgsTooltip, lgsMemo, lgsFrame]) then exit;
 
-  {$IFDEF NoStyle}
-  exit;
-  {$ENDIF}
-  //DebugLn('UpdateSysColorMap ',GetWidgetDebugReport(Widget));
-  // gtk_widget_set_rc_style(Widget);
-  MainStyle := Widget^.get_style;
-  if MainStyle = nil then exit;
-  with MainStyle^ do
-  begin
-    {$IFDEF VerboseUpdateSysColorMap}
-    if rc_style<>nil then
-    begin
-      with rc_style^ do
+  ACtx := Widget^.get_style_context;
+  if ACtx = nil then exit;
+
+  case Lgs of
+    lgsWindow:
       begin
-        DebugLn('rc_style:');
-        DebugLn(' FG GTK_STATE_NORMAL ',GdkColorAsString(fg[GTK_STATE_NORMAL]));
-        DebugLn(' FG GTK_STATE_ACTIVE ',GdkColorAsString(fg[GTK_STATE_ACTIVE]));
-        DebugLn(' FG GTK_STATE_PRELIGHT ',GdkColorAsString(fg[GTK_STATE_PRELIGHT]));
-        DebugLn(' FG GTK_STATE_SELECTED ',GdkColorAsString(fg[GTK_STATE_SELECTED]));
-        DebugLn(' FG GTK_STATE_INSENSITIVE ',GdkColorAsString(fg[GTK_STATE_INSENSITIVE]));
-        DebugLn('');
-        DebugLn(' BG GTK_STATE_NORMAL ',GdkColorAsString(bg[GTK_STATE_NORMAL]));
-        DebugLn(' BG GTK_STATE_ACTIVE ',GdkColorAsString(bg[GTK_STATE_ACTIVE]));
-        DebugLn(' BG GTK_STATE_PRELIGHT ',GdkColorAsString(bg[GTK_STATE_PRELIGHT]));
-        DebugLn(' BG GTK_STATE_SELECTED ',GdkColorAsString(bg[GTK_STATE_SELECTED]));
-        DebugLn(' BG GTK_STATE_INSENSITIVE ',GdkColorAsString(bg[GTK_STATE_INSENSITIVE]));
-        DebugLn('');
-        DebugLn(' TEXT GTK_STATE_NORMAL ',GdkColorAsString(text[GTK_STATE_NORMAL]));
-        DebugLn(' TEXT GTK_STATE_ACTIVE ',GdkColorAsString(text[GTK_STATE_ACTIVE]));
-        DebugLn(' TEXT GTK_STATE_PRELIGHT ',GdkColorAsString(text[GTK_STATE_PRELIGHT]));
-        DebugLn(' TEXT GTK_STATE_SELECTED ',GdkColorAsString(text[GTK_STATE_SELECTED]));
-        DebugLn(' TEXT GTK_STATE_INSENSITIVE ',GdkColorAsString(text[GTK_STATE_INSENSITIVE]));
-        DebugLn('');
+        SysColorMap[COLOR_BACKGROUND] := LookupThemeColor(ACtx, 'theme_bg_color', SysColorMap[COLOR_BACKGROUND], '');
+        SysColorMap[COLOR_FORM] := SysColorMap[COLOR_BACKGROUND];
+        SysColorMap[COLOR_APPWORKSPACE] := SysColorMap[COLOR_BACKGROUND];
+        SysColorMap[COLOR_WINDOW] := LookupThemeColor(ACtx, 'theme_base_color', SysColorMap[COLOR_WINDOW], '');
+        SysColorMap[COLOR_WINDOWTEXT] := LookupThemeColor(ACtx, 'theme_text_color', SysColorMap[COLOR_WINDOWTEXT], 'theme_base_color');
+        SysColorMap[COLOR_WINDOWFRAME] := LookupThemeColor(ACtx, 'borders', SysColorMap[COLOR_WINDOWFRAME], 'theme_bg_color');
+        SysColorMap[COLOR_ACTIVEBORDER] := SysColorMap[COLOR_WINDOWFRAME];
+        SysColorMap[COLOR_INACTIVEBORDER] := SysColorMap[COLOR_WINDOWFRAME];
+        SysColorMap[COLOR_GRAYTEXT] := LookupThemeColor(ACtx, 'insensitive_fg_color',
+          GetLabelFgColor([GTK_STATE_FLAG_INSENSITIVE], SysColorMap[COLOR_GRAYTEXT], 'theme_bg_color'),
+          'theme_bg_color');
+        SysColorMap[COLOR_HIGHLIGHT] := LookupThemeColor(ACtx, 'theme_selected_bg_color', SysColorMap[COLOR_HIGHLIGHT], 'theme_bg_color');
+        SysColorMap[COLOR_HIGHLIGHTTEXT] := LookupThemeColor(ACtx, 'theme_selected_fg_color', SysColorMap[COLOR_HIGHLIGHTTEXT], 'theme_selected_bg_color');
+        SysColorMap[COLOR_HOTLIGHT] := SysColorMap[COLOR_HIGHLIGHT];
+        SysColorMap[COLOR_ACTIVECAPTION] := SysColorMap[COLOR_HIGHLIGHT];
+        SysColorMap[COLOR_CAPTIONTEXT] := SysColorMap[COLOR_HIGHLIGHTTEXT];
+        SysColorMap[COLOR_INACTIVECAPTION] := LookupThemeColor(ACtx, 'theme_unfocused_bg_color', SysColorMap[COLOR_INACTIVECAPTION], '');
+        SysColorMap[COLOR_INACTIVECAPTIONTEXT] := LookupThemeColor(ACtx, 'theme_unfocused_fg_color', SysColorMap[COLOR_INACTIVECAPTIONTEXT], 'theme_unfocused_bg_color');
+        SysColorMap[COLOR_GRADIENTACTIVECAPTION] := SysColorMap[COLOR_ACTIVECAPTION];
+        SysColorMap[COLOR_GRADIENTINACTIVECAPTION] := SysColorMap[COLOR_INACTIVECAPTION];
       end;
-    end;
-
-    DebugLn('MainStyle:');
-    DebugLn(' FG GTK_STATE_NORMAL ',GdkColorAsString(fg[GTK_STATE_NORMAL]));
-    DebugLn(' FG GTK_STATE_ACTIVE ',GdkColorAsString(fg[GTK_STATE_ACTIVE]));
-    DebugLn(' FG GTK_STATE_PRELIGHT ',GdkColorAsString(fg[GTK_STATE_PRELIGHT]));
-    DebugLn(' FG GTK_STATE_SELECTED ',GdkColorAsString(fg[GTK_STATE_SELECTED]));
-    DebugLn(' FG GTK_STATE_INSENSITIVE ',GdkColorAsString(fg[GTK_STATE_INSENSITIVE]));
-    DebugLn('');
-    DebugLn(' BG GTK_STATE_NORMAL ',GdkColorAsString(bg[GTK_STATE_NORMAL]));
-    DebugLn(' BG GTK_STATE_ACTIVE ',GdkColorAsString(bg[GTK_STATE_ACTIVE]));
-    DebugLn(' BG GTK_STATE_PRELIGHT ',GdkColorAsString(bg[GTK_STATE_PRELIGHT]));
-    DebugLn(' BG GTK_STATE_SELECTED ',GdkColorAsString(bg[GTK_STATE_SELECTED]));
-    DebugLn(' BG GTK_STATE_INSENSITIVE ',GdkColorAsString(bg[GTK_STATE_INSENSITIVE]));
-    DebugLn('');
-    DebugLn(' TEXT GTK_STATE_NORMAL ',GdkColorAsString(text[GTK_STATE_NORMAL]));
-    DebugLn(' TEXT GTK_STATE_ACTIVE ',GdkColorAsString(text[GTK_STATE_ACTIVE]));
-    DebugLn(' TEXT GTK_STATE_PRELIGHT ',GdkColorAsString(text[GTK_STATE_PRELIGHT]));
-    DebugLn(' TEXT GTK_STATE_SELECTED ',GdkColorAsString(text[GTK_STATE_SELECTED]));
-    DebugLn(' TEXT GTK_STATE_INSENSITIVE ',GdkColorAsString(text[GTK_STATE_INSENSITIVE]));
-    DebugLn('');
-    DebugLn(' LIGHT GTK_STATE_NORMAL ',GdkColorAsString(light[GTK_STATE_NORMAL]));
-    DebugLn(' LIGHT GTK_STATE_ACTIVE ',GdkColorAsString(light[GTK_STATE_ACTIVE]));
-    DebugLn(' LIGHT GTK_STATE_PRELIGHT ',GdkColorAsString(light[GTK_STATE_PRELIGHT]));
-    DebugLn(' LIGHT GTK_STATE_SELECTED ',GdkColorAsString(light[GTK_STATE_SELECTED]));
-    DebugLn(' LIGHT GTK_STATE_INSENSITIVE ',GdkColorAsString(light[GTK_STATE_INSENSITIVE]));
-    DebugLn('');
-    DebugLn(' DARK GTK_STATE_NORMAL ',GdkColorAsString(dark[GTK_STATE_NORMAL]));
-    DebugLn(' DARK GTK_STATE_ACTIVE ',GdkColorAsString(dark[GTK_STATE_ACTIVE]));
-    DebugLn(' DARK GTK_STATE_PRELIGHT ',GdkColorAsString(dark[GTK_STATE_PRELIGHT]));
-    DebugLn(' DARK GTK_STATE_SELECTED ',GdkColorAsString(dark[GTK_STATE_SELECTED]));
-    DebugLn(' DARK GTK_STATE_INSENSITIVE ',GdkColorAsString(dark[GTK_STATE_INSENSITIVE]));
-    DebugLn('');
-    DebugLn(' MID GTK_STATE_NORMAL ',GdkColorAsString(mid[GTK_STATE_NORMAL]));
-    DebugLn(' MID GTK_STATE_ACTIVE ',GdkColorAsString(mid[GTK_STATE_ACTIVE]));
-    DebugLn(' MID GTK_STATE_PRELIGHT ',GdkColorAsString(mid[GTK_STATE_PRELIGHT]));
-    DebugLn(' MID GTK_STATE_SELECTED ',GdkColorAsString(mid[GTK_STATE_SELECTED]));
-    DebugLn(' MID GTK_STATE_INSENSITIVE ',GdkColorAsString(mid[GTK_STATE_INSENSITIVE]));
-    DebugLn('');
-    DebugLn(' BASE GTK_STATE_NORMAL ',GdkColorAsString(base[GTK_STATE_NORMAL]));
-    DebugLn(' BASE GTK_STATE_ACTIVE ',GdkColorAsString(base[GTK_STATE_ACTIVE]));
-    DebugLn(' BASE GTK_STATE_PRELIGHT ',GdkColorAsString(base[GTK_STATE_PRELIGHT]));
-    DebugLn(' BASE GTK_STATE_SELECTED ',GdkColorAsString(base[GTK_STATE_SELECTED]));
-    DebugLn(' BASE GTK_STATE_INSENSITIVE ',GdkColorAsString(base[GTK_STATE_INSENSITIVE]));
-    DebugLn('');
-    DebugLn(' BLACK ',GdkColorAsString(black));
-    DebugLn(' WHITE ',GdkColorAsString(white));
-    {$ENDIF}
-
-    {$IFNDEF DisableGtkSysColors}
-    // this map is taken from this research:
-    // http://www.endolith.com/wordpress/2008/08/03/wine-colors/
-    case Lgs of
-      lgsButton:
-        begin
-          SysColorMap[COLOR_ACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
-          SysColorMap[COLOR_INACTIVEBORDER] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
-          SysColorMap[COLOR_WINDOWFRAME] := TGDKColorToTColor(mid[GTK_STATE_SELECTED]);
-
-          SysColorMap[COLOR_BTNFACE] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
-          SysColorMap[COLOR_BTNSHADOW] := TGDKColorToTColor(dark[GTK_STATE_INSENSITIVE]);
-          SysColorMap[COLOR_BTNTEXT] := TGDKColorToTColor(fg[GTK_STATE_NORMAL]);
-          SysColorMap[COLOR_BTNHIGHLIGHT] := TGDKColorToTColor(light[GTK_STATE_INSENSITIVE]);
-          SysColorMap[COLOR_3DDKSHADOW] := TGDKColorToTColor(black);
-          SysColorMap[COLOR_3DLIGHT] := TGDKColorToTColor(bg[GTK_STATE_INSENSITIVE]);
-        end;
-      lgsMemo:
-        begin
-          SysColorMap[COLOR_HIGHLIGHT] := TGDKColorToTColor(base[GTK_STATE_SELECTED]);
-          SysColorMap[COLOR_HIGHLIGHTTEXT] := TGDKColorToTColor(fg[GTK_STATE_SELECTED]);
-          SysColorMap[COLOR_WINDOW] := TGDKColorToTColor(base[GTK_STATE_NORMAL]);
-          SysColorMap[COLOR_WINDOWTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
-        end;
-      lgsFrame:
-        begin
-          SysColorMap[COLOR_BACKGROUND] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-        end;
-      lgsWindow:
-        begin
-          // colors which can be only retrieved from the window manager (metacity)
-          SysColorMap[COLOR_ACTIVECAPTION] := TGDKColorToTColor(dark[GTK_STATE_SELECTED]);
-          SysColorMap[COLOR_INACTIVECAPTION] := TGDKColorToTColor(dark[GTK_STATE_NORMAL]);
-          SysColorMap[COLOR_GRADIENTACTIVECAPTION] := TGDKColorToTColor(light[GTK_STATE_SELECTED]);
-          SysColorMap[COLOR_GRADIENTINACTIVECAPTION] := TGDKColorToTColor(base[GTK_STATE_NORMAL]);
-          SysColorMap[COLOR_CAPTIONTEXT] := TGDKColorToTColor(white);
-          SysColorMap[COLOR_INACTIVECAPTIONTEXT] := TGDKColorToTColor(white);
-          // others
-          SysColorMap[COLOR_APPWORKSPACE] := TGDKColorToTColor(base[GTK_STATE_NORMAL]);
-          SysColorMap[COLOR_GRAYTEXT] := TGDKColorToTColor(fg[GTK_STATE_INSENSITIVE]);
-          (*
-          SysColorMap[COLOR_HIGHLIGHT] := TGDKColorToTColor(base[GTK_STATE_SELECTED]);
-          SysColorMap[COLOR_HIGHLIGHTTEXT] := TGDKColorToTColor(fg[GTK_STATE_SELECTED]);
-          SysColorMap[COLOR_WINDOW] := TGDKColorToTColor(base[GTK_STATE_NORMAL]);
-          SysColorMap[COLOR_WINDOWTEXT] := TGDKColorToTColor(text[GTK_STATE_NORMAL]);
-          *)
-          SysColorMap[COLOR_HOTLIGHT] := TGDKColorToTColor(light[GTK_STATE_NORMAL]);
-          // SysColorMap[COLOR_BACKGROUND] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
-          SysColorMap[COLOR_FORM] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-        end;
-      lgsMenuBar:
-        begin
-          SysColorMap[COLOR_MENUBAR] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-        end;
-      lgsMenuitem:
-        begin
-          SysColorMap[COLOR_MENU] := TGDKColorToTColor(light[GTK_STATE_ACTIVE]);
-          SysColorMap[COLOR_MENUTEXT] := TGDKColorToTColor(fg[GTK_STATE_NORMAL]);
-          SysColorMap[COLOR_MENUHILIGHT] := TGDKColorToTColor(bg[GTK_STATE_PRELIGHT]);
-        end;
-      lgsVerticalScrollbar,
-      lgsHorizontalScrollbar:
-        begin
-          SysColorMap[COLOR_SCROLLBAR] := TGDKColorToTColor(bg[GTK_STATE_ACTIVE]);
-        end;
-      lgsTooltip:
-        begin
-          SysColorMap[COLOR_INFOTEXT] := TGDKColorToTColor(fg[GTK_STATE_NORMAL]);
-          SysColorMap[COLOR_INFOBK] := TGDKColorToTColor(bg[GTK_STATE_NORMAL]);
-        end;
-    end;
-    {$ENDIF}
+    lgsButton:
+      begin
+        SysColorMap[COLOR_BTNFACE] := LookupThemeColor(ACtx, 'theme_bg_color', SysColorMap[COLOR_BTNFACE], '');
+        SysColorMap[COLOR_BTNTEXT] := LookupThemeColor(ACtx, 'theme_fg_color', SysColorMap[COLOR_BTNTEXT], 'theme_bg_color');
+        SysColorMap[COLOR_BTNSHADOW] := DecColor(SysColorMap[COLOR_BTNFACE], 60);
+        SysColorMap[COLOR_BTNHIGHLIGHT] := IncColor(SysColorMap[COLOR_BTNFACE], 40);
+        SysColorMap[COLOR_3DDKSHADOW] := DecColor(SysColorMap[COLOR_BTNFACE], 120);
+        SysColorMap[COLOR_3DLIGHT] := IncColor(SysColorMap[COLOR_BTNFACE], 20);
+      end;
+    lgsMemo:
+      begin
+        SysColorMap[COLOR_WINDOW] := LookupThemeColor(ACtx, 'theme_base_color', SysColorMap[COLOR_WINDOW], '');
+        SysColorMap[COLOR_WINDOWTEXT] := LookupThemeColor(ACtx, 'theme_text_color', SysColorMap[COLOR_WINDOWTEXT], 'theme_base_color');
+      end;
+    lgsFrame:
+      begin
+        SysColorMap[COLOR_BACKGROUND] := LookupThemeColor(ACtx, 'theme_bg_color', SysColorMap[COLOR_BACKGROUND], '');
+      end;
+    lgsMenuBar:
+      begin
+        SysColorMap[COLOR_MENUBAR] := LookupThemeColor(ACtx, 'theme_bg_color', SysColorMap[COLOR_MENUBAR], '');
+      end;
+    lgsMenuitem:
+      begin
+        SysColorMap[COLOR_MENU] := LookupThemeColor(ACtx, 'theme_bg_color', SysColorMap[COLOR_MENU], '');
+        SysColorMap[COLOR_MENUTEXT] := LookupThemeColor(ACtx, 'theme_fg_color', SysColorMap[COLOR_MENUTEXT], 'theme_bg_color');
+        SysColorMap[COLOR_MENUHILIGHT] := LookupThemeColor(ACtx, 'theme_selected_bg_color', SysColorMap[COLOR_MENUHILIGHT], 'theme_bg_color');
+      end;
+    lgsVerticalScrollbar,
+    lgsHorizontalScrollbar:
+      begin
+        SysColorMap[COLOR_SCROLLBAR] := LookupThemeColor(ACtx, 'theme_bg_color', SysColorMap[COLOR_SCROLLBAR], '');
+      end;
+    lgsTooltip:
+      begin
+        SysColorMap[COLOR_INFOBK] := LookupThemeColor(ACtx, 'theme_tooltip_bg_color', SysColorMap[COLOR_INFOBK], '');
+        SysColorMap[COLOR_INFOTEXT] := LookupThemeColor(ACtx, 'theme_tooltip_fg_color', SysColorMap[COLOR_INFOTEXT], 'theme_tooltip_bg_color');
+      end;
   end;
 end;
 
