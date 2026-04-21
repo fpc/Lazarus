@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls,
   Dialogs, Buttons, GDBMIDebugger, DbgIntfDebuggerBase, FileUtil, LazFileUtils,
-  IDEDialogs, IDEUtils, IDEImagesIntf, FileProcs, FpDebugDebugger,
+  IDEDialogs, IDEIntfUtils, IDEImagesIntf, FileProcs, FpDebugDebugger,
   {$Ifdef Darwin} FpLldbDebugger, {$ENDIF}
   IdeDebuggerOpts, LazarusIDEStrConsts, InitialSetupProc,
   EnvironmentOpts, LazConf, StrUtils;

@@ -70,7 +70,7 @@ uses
   // IDEIntf
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf, PackageIntf,
   IDECommands, IDEWindowIntf, ToolBarIntf, ObjectInspector,
-  PropEdits, IDEDialogs, IDEUtils, EditorSyntaxHighlighterDef, IdeIntfStrConsts,
+  PropEdits, IDEDialogs, IDEIntfUtils, EditorSyntaxHighlighterDef, IdeIntfStrConsts,
   // IdeUtils
   InputHistory,
   // IDEDebugger

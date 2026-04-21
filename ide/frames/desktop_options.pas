@@ -35,7 +35,7 @@ uses
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf
-  IdeIntfStrConsts, IDEOptEditorIntf, IDEWindowIntf, IDEUtils, IDEDialogs,
+  IdeIntfStrConsts, IDEOptEditorIntf, IDEWindowIntf, IDEIntfUtils, IDEDialogs,
   // IdeUtils
   InputHistory,
   // IdeConfig

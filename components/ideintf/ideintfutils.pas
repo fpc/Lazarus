@@ -7,7 +7,7 @@
  Abstract:
    Useful functions for IDE add ons.
 }
-unit IDEUtils;
+unit IDEIntfUtils;
 
 {$mode objfpc}{$H+}
 

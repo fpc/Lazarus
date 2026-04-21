@@ -25,9 +25,9 @@ uses
   {$IFDEF HasSSL}
   opensslsockets, ssockets, sslsockets, // opensslsockets is needed for https download on windows
   {$ENDIF}
-  LazFileUtils, FPCAdds, LazLoggerBase, FileUtil,
+  LazFileUtils, FileUtil, LazStringUtils, FPCAdds, LazLoggerBase,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
-  IDEUtils, IDEDialogs,
+  IDEIntfUtils, IDEDialogs,
   SimpleWebSrvController,
   StrPas2JSDesign, PJSDsgnOptions, PJSController, FrmPas2jsProgressDlg, DefineTemplates;
 

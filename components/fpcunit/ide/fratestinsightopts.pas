@@ -14,9 +14,9 @@ uses
   // LCL
   Forms, StdCtrls, Dialogs, Spin,
   // LazUtils
-  LazFileCache, LazFileUtils, FileUtil,
+  LazFileCache, LazFileUtils, FileUtil, LazStringUtils,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEIntfUtils,
   // FPCUnit
   TestInsightController, StrTestCaseOpts;
 

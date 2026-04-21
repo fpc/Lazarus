@@ -16,7 +16,7 @@ uses
   // BuildIntf
   IDEOptionsIntf, CompOptsIntf, IDEExternToolIntf, BuildStrConsts,
   // IDEIntf
-  IDEOptEditorIntf, IDEDialogs, IDEUtils,
+  IDEOptEditorIntf, IDEDialogs, IDEIntfUtils,
   // IdeUtils
   InputHistory,
   // IdeConfig

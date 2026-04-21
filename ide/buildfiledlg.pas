@@ -17,7 +17,7 @@ uses
   // BuildIntf
   MacroDefIntf,
   // IdeIntf
-  IdeIntfStrConsts, LazIDEIntf, IDEUtils,
+  IdeIntfStrConsts, LazIDEIntf, IDEIntfUtils,
   // IdeUtils
   InputHistory,
   // IdeConfig

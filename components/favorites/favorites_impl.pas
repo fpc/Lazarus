@@ -37,7 +37,7 @@ uses
   LazFileUtils, Laz2_XMLCfg, LazUTF8,
   // IdeIntf
   ToolBarIntf, IDEImagesIntf, LazIDEIntf, ProjectIntf, IDEOptionsIntf,
-  IDECommands, IDEUtils,
+  IDECommands, IDEIntfUtils,
   // Favorites
   favoritesstr;
 

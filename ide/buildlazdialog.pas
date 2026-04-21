@@ -58,7 +58,7 @@ uses
   // BuildIntf
   PackageIntf,
   // IDEIntf
-  IdeIntfStrConsts, IDEImagesIntf, IDEWindowIntf, IDEUtils,
+  IdeIntfStrConsts, IDEImagesIntf, IDEWindowIntf, IDEIntfUtils,
   // IdeConfig
   EnvironmentOpts, LazConf, ParsedCompilerOpts, MiscOptions, IdeBuilder, IdeConfStrConsts,
   // IdePackager

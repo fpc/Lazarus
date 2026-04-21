@@ -16,7 +16,7 @@ uses
   GraphicPropEdit, GraphPropEdits, HeaderControlPropEdit, HelpFPDoc, 
   IDECommands, IdeDebuggerValueFormatterIntf, IdeDebuggerWatchValueIntf, 
   IDEDialogs, IDEHelpIntf, IDEImagesIntf, IdeIntfStrConsts, IDEMsgIntf, 
-  IDEOptEditorIntf, IDETextConverter, IDEUtils, IDEWindowIntf, 
+  IDEOptEditorIntf, IDETextConverter, IDEIntfUtils, IDEWindowIntf, 
   ImageListEditor, KeyValPropEditDlg, LazIDEIntf, LazStringGridEdit, 
   ListViewPropEdit, MaskPropEdit, MenuIntf, NewField, ObjectInspector, 
   ObjInspStrConsts, OIFavoriteProperties, PropEditConfig, PropEdits, 

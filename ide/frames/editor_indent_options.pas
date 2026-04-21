@@ -35,7 +35,7 @@ uses
   // SynEdit
   SynEdit, SynBeautifier, SynHighlighterPas, SynEditKeyCmds, SynEditTypes,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, SrcEditorIntf, IDECommands,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEIntfUtils, SrcEditorIntf, IDECommands,
   // IDE
   EditorOptions, LazarusIDEStrConsts, KeyMapping,
   editor_keymapping_options, editor_general_options;

@@ -37,7 +37,7 @@ uses
   SynGutterChanges, SynEditMouseCmds, SynEditStrConst,
   SynEditMarkupSpecialLine, SynEditMarkup, SynCompletion,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEIntfUtils,
   EditorSyntaxHighlighterDef, LazEditTextAttributes, LazEditHighlighter,
   // IdeConfig
   IDEProcs, LazConf,

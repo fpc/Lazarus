@@ -9,7 +9,7 @@ uses
   // LazUtils
   LazFileCache, LazFileUtils, LazStringUtils, FileUtil,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEIntfUtils, IDEDialogs,
   DelphiOptions;
 
 type

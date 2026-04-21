@@ -1,4 +1,4 @@
-unit strtestcaseopts;
+unit StrTestCaseOpts;
 
 {$mode objfpc}{$H+}
 

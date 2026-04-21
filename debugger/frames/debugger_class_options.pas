@@ -35,7 +35,7 @@ uses
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf
-  PropEdits, ObjectInspector, IDEOptEditorIntf, IDEUtils, IdeIntfStrConsts,
+  PropEdits, ObjectInspector, IDEOptEditorIntf, IDEIntfUtils, IdeIntfStrConsts,
   // IdeUtils
   InputHistory,
   // IdeConfig

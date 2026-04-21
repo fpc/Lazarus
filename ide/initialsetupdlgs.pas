@@ -50,7 +50,7 @@ uses
   // LazUtils
   FPCAdds, FileUtil, LazUTF8, LazFileUtils, LazFileCache, LazLoggerBase,
   // IdeIntf
-  IdeIntfStrConsts, MacroDefIntf, IDEDialogs, IDEImagesIntf, IDEUtils,
+  IdeIntfStrConsts, MacroDefIntf, IDEDialogs, IDEImagesIntf, IDEIntfUtils,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi

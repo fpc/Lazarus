@@ -31,7 +31,7 @@ uses
   // LazUtils
   LazStringUtils,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEIntfUtils,
   // IDE
   EnvironmentOpts, LazarusIDEStrConsts;
 

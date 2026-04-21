@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 10.03.2026
+   This file was generated on 21.04.2026
 }
 
 {$ifndef ALLPACKAGES} 
@@ -83,7 +83,7 @@ begin
     t.Dependencies.AddUnit('idemsgintf');
     t.Dependencies.AddUnit('ideopteditorintf');
     t.Dependencies.AddUnit('idetextconverter');
-    t.Dependencies.AddUnit('ideutils');
+    t.Dependencies.AddUnit('ideintfutils');
     t.Dependencies.AddUnit('idewindowintf');
     t.Dependencies.AddUnit('imagelisteditor');
     t.Dependencies.AddUnit('keyvalpropeditdlg');
@@ -105,7 +105,6 @@ begin
     t.Dependencies.AddUnit('srceditorintf');
     t.Dependencies.AddUnit('statusbarpropedit');
     t.Dependencies.AddUnit('stringspropeditdlg');
-    t.Dependencies.AddUnit('texttools');
     t.Dependencies.AddUnit('toolbarintf');
     t.Dependencies.AddUnit('treeviewpropedit');
     t.Dependencies.AddUnit('unitresources');
@@ -143,7 +142,7 @@ begin
     T:=P.Targets.AddUnit('idemsgintf.pas');
     T:=P.Targets.AddUnit('ideopteditorintf.pas');
     T:=P.Targets.AddUnit('idetextconverter.pas');
-    T:=P.Targets.AddUnit('ideutils.pas');
+    T:=P.Targets.AddUnit('ideintfutils.pas');
     T:=P.Targets.AddUnit('idewindowintf.pas');
     T:=P.Targets.AddUnit('imagelisteditor.pp');
     T:=P.Targets.AddUnit('keyvalpropeditdlg.pas');
@@ -165,7 +164,6 @@ begin
     T:=P.Targets.AddUnit('srceditorintf.pas');
     T:=P.Targets.AddUnit('statusbarpropedit.pp');
     T:=P.Targets.AddUnit('stringspropeditdlg.pas');
-    T:=P.Targets.AddUnit('texttools.pas');
     T:=P.Targets.AddUnit('toolbarintf.pas');
     T:=P.Targets.AddUnit('treeviewpropedit.pas');
     T:=P.Targets.AddUnit('unitresources.pas');
