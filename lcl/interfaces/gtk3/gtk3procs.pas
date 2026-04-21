@@ -1256,8 +1256,6 @@ begin
     gtk_widget_show_all(AWin);
     gtk_widget_realize(AWin);
     gtk_widget_realize(AButton);
-    while gtk_events_pending do
-      gtk_main_iteration_do(False);
 
     AChild := gtk_bin_get_child(PGtkBin(AButton));
     if AChild <> nil then
@@ -1284,6 +1282,7 @@ end;
 procedure UpdateSysColorMap(Widget: PGtkWidget; Lgs: TLazGtkStyle);
 var
   ACtx: PGtkStyleContext;
+  ARGBA: TGdkRGBA;
 begin
   if Widget = nil then exit;
   if not (Lgs in [lgsButton, lgsCheckbox, lgsRadiobutton, lgsWindow, lgsMenuBar, lgsMenuitem,
@@ -1303,9 +1302,11 @@ begin
         SysColorMap[COLOR_WINDOWFRAME] := LookupThemeColor(ACtx, 'borders', SysColorMap[COLOR_WINDOWFRAME], 'theme_bg_color');
         SysColorMap[COLOR_ACTIVEBORDER] := SysColorMap[COLOR_WINDOWFRAME];
         SysColorMap[COLOR_INACTIVEBORDER] := SysColorMap[COLOR_WINDOWFRAME];
-        SysColorMap[COLOR_GRAYTEXT] := LookupThemeColor(ACtx, 'insensitive_fg_color',
-          GetLabelFgColor([GTK_STATE_FLAG_INSENSITIVE], SysColorMap[COLOR_GRAYTEXT], 'theme_bg_color'),
-          'theme_bg_color');
+        ARGBA.red := 0; ARGBA.green := 0; ARGBA.blue := 0; ARGBA.alpha := 0;
+        if not gtk_style_context_lookup_color(ACtx, 'insensitive_fg_color', @ARGBA) then
+          SysColorMap[COLOR_GRAYTEXT] := GetLabelFgColor([GTK_STATE_FLAG_INSENSITIVE], SysColorMap[COLOR_GRAYTEXT], 'theme_bg_color')
+        else
+          SysColorMap[COLOR_GRAYTEXT] := LookupThemeColor(ACtx, 'insensitive_fg_color', SysColorMap[COLOR_GRAYTEXT], 'theme_bg_color');
         SysColorMap[COLOR_HIGHLIGHT] := LookupThemeColor(ACtx, 'theme_selected_bg_color', SysColorMap[COLOR_HIGHLIGHT], 'theme_bg_color');
         SysColorMap[COLOR_HIGHLIGHTTEXT] := LookupThemeColor(ACtx, 'theme_selected_fg_color', SysColorMap[COLOR_HIGHLIGHTTEXT], 'theme_selected_bg_color');
         SysColorMap[COLOR_HOTLIGHT] := SysColorMap[COLOR_HIGHLIGHT];
