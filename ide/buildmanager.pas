@@ -56,8 +56,7 @@ uses
   // IdeProject
   Project, ProjectResources, ProjectIcon,
   // IDE
-  LazarusIDEStrConsts, LfmUnitResource, etFPCMsgParser, etPas2jsMsgParser,
-  FPCSrcScan;
+  LazarusIDEStrConsts, LfmUnitResource, etFPCMsgParser, etPas2jsMsgParser;
 
 type
 
@@ -68,8 +67,6 @@ type
     FUnitSetCache: TFPCUnitSetCache;
     fBuildLazExtraOptions: string; // last build lazarus extra options
     FUnitSetChangeStamp: integer;
-    FFPCSrcScans: TFPCSrcScans;
-    procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
     function GetBuildTarget: TProject;
     function MacroFuncBuildModeCaption(const {%H-}Param: string; const {%H-}Data: PtrInt;
                              var {%H-}Abort: boolean): string;
@@ -101,6 +98,7 @@ type
     function EditorUnitInfoModified(AnUnitInfo: TUnitInfo): boolean; virtual;
     function EnvironmentOptionsIsGlobalMode(const Identifier: string): boolean;
     procedure MaybeAddIgnorePath(const aPath: string); virtual;
+    procedure ScanFPCSource(Directory: string); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -152,8 +150,6 @@ type
     procedure SetBuildTargetProject1(Quiet: boolean; ScanFPCSrc: TScanModeFPCSources = smsfsBackground); overload;
     procedure SetBuildTargetIDE(aQuiet: boolean = false); override;
     function BuildTargetIDEIsDefault: boolean; override;
-
-    property FPCSrcScans: TFPCSrcScans read FFPCSrcScans;
     property BuildTarget: TProject read GetBuildTarget; // TProject or nil
   end;
 
@@ -201,7 +197,6 @@ begin
   GetBuildMacroValues:=@GetBuildMacroValuesHandler;
   OnAppendCustomOption:=@AppendMatrixCustomOption;
   OnGetMatrixOutputDirectoryOverride:=@GetMatrixOutputDirectoryOverride;
-  CodeToolBoss.OnRescanFPCDirectoryCache:=@DoOnRescanFPCDirectoryCache;
 end;
 
 destructor TBuildManager.Destroy;
@@ -211,15 +206,8 @@ begin
   GetBuildMacroValues:=nil;
   OnAppendCustomOption:=nil;
   OnBackupFileInteractive:=nil;
-
-  FreeAndNil(FFPCSrcScans);
   LazConfMacroFunc:=nil;
   FreeAndNil(DefaultCfgVars);
-
-  if SameMethod(TMethod(CodeToolBoss.OnRescanFPCDirectoryCache),
-                TMethod(@DoOnRescanFPCDirectoryCache)) then
-    CodeToolBoss.OnRescanFPCDirectoryCache:=nil;
-
   inherited Destroy;
   MainBuildBoss:=nil;
 end;
@@ -723,7 +711,7 @@ begin
   NeedUpdateFPCSrcCache:=false;
   //debugln(['TBuildManager.RescanCompilerDefines ',DirectoryExistsUTF8(FPCSrcDir),' ',(not WaitTillDone),' ',(not HasGUI)]);
   AsyncScanFPCSrcDir:='';
-  if DirectoryExistsUTF8(FPCSrcDir) and ((not WaitTillDone) or (not HasGUI)) then
+  if DirectoryExistsUTF8(FPCSrcDir) and not (WaitTillDone and HasGUI) then
   begin
     // FPC sources are not needed
     // => disable scan
@@ -816,16 +804,8 @@ begin
   end;
 
   CodeToolBoss.DefineTree.ClearCache;
-
-  if AsyncScanFPCSrcDir<>'' then begin
-    // start scanning the fpc source directory in the background
-    {$IFDEF VerboseFPCSrcScan}
-    debugln(['TBuildManager.RescanCompilerDefines scanning fpc sources:',AsyncScanFPCSrcDir]);
-    {$ENDIF}
-    if FPCSrcScans=nil then
-      FFPCSrcScans:=TFPCSrcScans.Create(Self);
-    FPCSrcScans.Scan(AsyncScanFPCSrcDir);
-  end;
+  if AsyncScanFPCSrcDir<>'' then
+    ScanFPCSource(AsyncScanFPCSrcDir);
 
   if not Quiet then begin
     // check for common installation mistakes
@@ -1175,21 +1155,6 @@ begin
   if not HasGUI then
     debugln(['Hint: (lazarus) Build Project: nothing to do.']);
   Result:=mrNo;
-end;
-
-procedure TBuildManager.DoOnRescanFPCDirectoryCache(Sender: TObject);
-var
-  Files: TStringList;
-  FPCSrcDir: string;
-begin
-  FPCSrcDir := EnvironmentOptions.GetParsedFPCSourceDirectory;
-  Files := GatherFilesInFPCSources(FPCSrcDir, nil);
-  if Files<>nil then
-    try
-      ApplyFPCSrcFiles(FPCSrcDir, Files);
-    finally
-      Files.Free;
-    end;
 end;
 
 function TBuildManager.GetBuildTarget: TProject;
@@ -2034,6 +1999,11 @@ begin
 end;
 
 procedure TBuildManager.MaybeAddIgnorePath(const aPath: string);
+begin
+  ;
+end;
+
+procedure TBuildManager.ScanFPCSource(Directory: string);
 begin
   ;
 end;

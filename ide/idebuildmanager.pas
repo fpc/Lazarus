@@ -28,15 +28,19 @@ uses
   // RTL + FCL
   Classes, SysUtils, AVL_Tree, System.UITypes,
   // LazUtils
-  LazUTF8, LazLoggerBase,
+  LazUTF8, LazMethodList, LazLoggerBase,
+  // CodeTools
+  CodeToolManager, DefineTemplates,
   // IdeIntf
   IDEDialogs, LazIDEIntf, SrcEditorIntf,
+  // IdeConfig
+  EnvironmentOpts,
   // IdeUtils
   InputHistory,
   // IdeProject
   Project,
   // IDE
-  LazarusIDEStrConsts, EditableProject, BuildManager;
+  LazarusIDEStrConsts, EditableProject, BuildManager, FPCSrcScan;
 
 type
 
@@ -44,12 +48,15 @@ type
 
   TIdeBuildManager = class(TBuildManager)
   private
+    FFPCSrcScans: TFPCSrcScans;
+    procedure DoRescanFPCDirectoryCache(Sender: TObject);
   protected
     function EditorUnitInfoModified(AnUnitInfo: TUnitInfo): boolean; override;
     procedure MaybeAddIgnorePath(const aPath: string); override;
+    procedure ScanFPCSource(Directory: string); override;
   public
-    //constructor Create(AOwner: TComponent); override;
-    //destructor Destroy; override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function GetFPCFrontEndOptions: string; override;
     procedure SetupInputHistories(aInputHist: TInputHistories);
     procedure SetupTransferMacros; override;
@@ -61,6 +68,37 @@ procedure RunBootHandlers(ht: TLazarusIDEBootHandlerType); external name 'ideint
 implementation
 
 { TIdeBuildManager }
+
+constructor TIdeBuildManager.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  CodeToolBoss.OnRescanFPCDirectoryCache:=@DoRescanFPCDirectoryCache;
+end;
+
+destructor TIdeBuildManager.Destroy;
+begin
+  FreeAndNil(FFPCSrcScans);
+  if SameMethod(TMethod(CodeToolBoss.OnRescanFPCDirectoryCache),
+                TMethod(@DoRescanFPCDirectoryCache))
+  then
+    CodeToolBoss.OnRescanFPCDirectoryCache:=nil;
+  inherited Destroy;
+end;
+
+procedure TIdeBuildManager.DoRescanFPCDirectoryCache(Sender: TObject);
+var
+  Files: TStringList;
+  FPCSrcDir: string;
+begin
+  FPCSrcDir := EnvironmentOptions.GetParsedFPCSourceDirectory;
+  Files := GatherFilesInFPCSources(FPCSrcDir, nil);
+  if Files<>nil then
+    try
+      ApplyFPCSrcFiles(FPCSrcDir, Files);
+    finally
+      Files.Free;
+    end;
+end;
 
 function TIdeBuildManager.EditorUnitInfoModified(AnUnitInfo: TUnitInfo): boolean;
 var
@@ -84,6 +122,17 @@ begin
     if MsgResult=mrIgnore then
       InputHistories.Ignores.Add(aPath,iiidIDERestart);
   end;
+end;
+
+procedure TIdeBuildManager.ScanFPCSource(Directory: string);
+begin
+  // start scanning the fpc source directory in the background
+  {$IFDEF VerboseFPCSrcScan}
+  debugln(['TBuildManager.RescanCompilerDefines scanning fpc sources:',Directory]);
+  {$ENDIF}
+  if FFPCSrcScans=nil then
+    FFPCSrcScans:=TFPCSrcScans.Create(Self);
+  FFPCSrcScans.Scan(Directory);
 end;
 
 function TIdeBuildManager.GetFPCFrontEndOptions: string;

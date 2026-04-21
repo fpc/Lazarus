@@ -35,7 +35,9 @@ uses
   FileProcs, DefineTemplates, CodeToolManager,
   LazFileUtils,
   BaseBuildManager,
+  // IDEIntf
   LazIDEIntf,
+  // IDE
   LazarusIDEStrConsts, ProgressWnd;
 
 type
