@@ -2257,6 +2257,11 @@ begin
   // this is just for testing purposes.
   ACharCode := GdkKeyToLCLKey(KeyValue);
 
+  if (KeyValue >= GDK_KEY_exclam) and (KeyValue <= GDK_KEY_parenleft) and
+     (ACharCode >= VK_0) and (ACharCode <= VK_9) and
+     ((LCLModifiers and MK_SHIFT) = 0) then
+    LCLModifiers := LCLModifiers or MK_SHIFT;
+
   if (ACharCode >= VK_F1) and (ACharCode <= VK_F24) and
      (gdk_keyval_to_unicode(AEvent.keyval) > 0) then
     ACharCode := VK_UNKNOWN;
