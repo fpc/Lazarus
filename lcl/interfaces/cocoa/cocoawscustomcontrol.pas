@@ -127,7 +127,7 @@ begin
     ctrl := TCocoaCustomControlWithBaseInputClient.alloc.lclInitWithCreateParams(AParams);
     lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
   end;
-  lcl.traits:= [TCocoaCbTrait.blockUpDown, TCocoaCbTrait.blockKeyBeep];
+  lcl.traits:= [TCocoaCbTrait.blockUpDown];
   ctrl.callback := lcl;
 
   sl := TCocoaWSScrollingUtil.embedInManualScrollView(ctrl);

@@ -25,7 +25,6 @@ type
   TLCLCommonCallbackStates = set of TCocoaCbState;
 
   TCocoaCbTrait = (
-    blockKeyBeep,
     blockUpDown,
     treatTabAsChar,  // all tabs should be suppressed, so Cocoa would not switch focus
     forceSendReturn, // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
@@ -64,8 +63,8 @@ type
     procedure KeyEvBeforeDown;
     procedure KeyEvBeforeUp;
     procedure KeyEvAfterUp;
-    procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
-    procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
+    procedure KeyEvAfterDown;
+    function KeyEvBefore(const Event: NSEvent): Boolean;
     procedure KeyEvAfter;
 
     function getCaptureControlCallback: ICommonCallBack;
@@ -416,8 +415,6 @@ end;
 
 function TLCLCommonCallback.handleEventBeforeCocoa(const theEvent: NSEvent
   ): Boolean;
-var
-  allowcocoa: Boolean;
 begin
   Result:= True;
 
@@ -434,8 +431,7 @@ begin
     Exit;
 
   // not in IME state
-  self.KeyEvBefore(theEvent, allowcocoa);
-  Result:= allowcocoa;
+  Result:= self.KeyEvBefore(theEvent);
 end;
 
 procedure TLCLCommonCallback.handleEventAfterCocoa(const theEvent: NSEvent);
@@ -710,10 +706,8 @@ begin
     CocoaWidgetSetState.keyEvent.handled:= True;
 end;
 
-procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
+procedure TLCLCommonCallback.KeyEvAfterDown;
 begin
-  AllowCocoaHandle:= false;
-
   if CocoaWidgetSetState.keyEvent.handled then exit;
   send_UTF8KeyPress;
 
@@ -725,9 +719,6 @@ begin
 
   if CocoaWidgetSetState.keyEvent.handled then exit;
   send_LM_CHAR_Message;
-
-  if CocoaWidgetSetState.keyEvent.handled then exit;
-  AllowCocoaHandle:= NOT (TCocoaCbTrait.blockKeyBeep in self.traits);
 end;
 
 procedure TLCLCommonCallback.KeyEvAfterUp;
@@ -746,12 +737,10 @@ begin
   self.doSendKeyMessage( msg, CocoaWidgetSetState.keyEvent.keyCode, CocoaWidgetSetState.keyEvent.keyData, True );
 end;
 
-procedure TLCLCommonCallback.KeyEvBefore(
-  const  Event: NSEvent;
-  out AllowCocoaHandle: boolean);
+function TLCLCommonCallback.KeyEvBefore( const Event: NSEvent ): Boolean;
 begin
+  Result := True;
   CocoaWidgetSetState.keyEvent.handled:= False;
-  AllowCocoaHandle := true;
 
   if Event.type_ = NSFlagsChanged then
     createKeyStateFromFlagsChanged( Event, CocoaWidgetSetState.keyEvent )
@@ -761,26 +750,24 @@ begin
   if CocoaWidgetSetState.keyEvent.isKeyDown then begin
     KeyEvBeforeDown;
     if NOT (TCocoaCbTrait.treatTabAsChar in self.traits) and (CocoaWidgetSetState.keyEvent.keyCode = VK_TAB) then
-      AllowCocoaHandle := false;
+      Result:= False;
   end else
     KeyEvBeforeUp;
 
   if CocoaWidgetSetState.keyEvent.handled then
-    AllowCocoaHandle := false;
+    Result:= False;
 
   // flagsChanged always needs to be passed on to Cocoa
   if Event.type_ = NSFlagsChanged then
-    AllowCocoaHandle := true;
+    Result:= True;
 end;
 
 procedure TLCLCommonCallback.KeyEvAfter;
-var
-  AllowCocoaHandle: Boolean;
 begin
   if NOT Assigned(self.target) then
     Exit;
   if CocoaWidgetSetState.keyEvent.isKeyDown then
-    KeyEvAfterDown(AllowCocoaHandle)
+    KeyEvAfterDown
   else
     KeyEvAfterUp;
 end;
