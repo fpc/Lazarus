@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, Graphics, Dialogs, Buttons, ButtonPanel, StdCtrls, ComCtrls, ExtCtrls,
+  Forms, Controls, Dialogs, Buttons, ButtonPanel, StdCtrls, ComCtrls, ExtCtrls,
   LCLType,
   // LazUtils
   LazLoggerBase,
@@ -178,7 +178,7 @@ begin
     exit;
   end;
   //debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',UnitControl.UnitName]);
-  FormFilename:=LazarusIDE.FindUnitFile(GetClassUnitName(UnitControl.ClassType),LazarusIDE);
+  FormFilename:=LazarusIDE.FindUnitFile(GetClassUnitName(UnitControl.ClassType),nil);
   //debugln(['FindDeclarationOfIDEControl FormFilename=',FormFilename]);
   if FormFilename='' then begin
     debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',GetClassUnitName(UnitControl.ClassType),': unit source not found']);

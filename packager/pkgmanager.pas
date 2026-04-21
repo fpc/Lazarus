@@ -2579,7 +2579,7 @@ var
         exit(true);
       end;
     end else if SrcProject<>nil then begin
-      OldProjFile:=SrcProject.UnitInfoWithFilename(OldFilename,[pfsfOnlyProjectFiles]);
+      OldProjFile:=TUnitInfo(SrcProject.UnitInfoWithFilename(OldFilename,[pfsfOnlyProjectFiles]));
       if OldProjFile=nil then begin
         {$IFDEF VerbosePkgEditDrag}
         debugln(['MoveOrCopyFile old file not in lpi: "',OldFilename,'"']);

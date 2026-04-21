@@ -618,8 +618,7 @@ begin
   Result:=IDETool<>nil;
 end;
 
-procedure TQuickFix_HideWithCompilerOption.CreateMenuItems(Fixes: TMsgQuickFixes
-  );
+procedure TQuickFix_HideWithCompilerOption.CreateMenuItems(Fixes: TMsgQuickFixes);
 var
   i: Integer;
   Msg: TMessageLine;

@@ -160,13 +160,6 @@ type
     );
   TProjectBuildFlags = set of TProjectBuildFlag;
 
-  // find unit flags
-  // Normally you don't need to pass any flags.
-  TFindUnitFileFlag = (
-    fuffIgnoreUninstallPackages
-    );
-  TFindUnitFileFlags = set of TFindUnitFileFlag;
-
   // selected part of IDE
   TTabDisplayState = (
     tdsNone,
@@ -324,7 +317,7 @@ type
 
     // find file
     function FindUnitFile(const AFilename: string; TheOwner: TObject = nil;
-                          Flags: TFindUnitFileFlags = []): string; virtual; abstract;
+                 IgnoreUninstallPkgs: boolean = false): string; virtual; abstract;
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string; virtual; abstract;
 

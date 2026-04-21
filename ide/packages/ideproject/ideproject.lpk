@@ -60,7 +60,7 @@ Files in this package are for the main configuration of the IDE."/>
       </Item>
       <Item>
         <Filename Value="idebookmark.pas"/>
-        <UnitName Value="idebookmark"/>
+        <UnitName Value="IdeBookmark"/>
       </Item>
     </Files>
     <i18n>

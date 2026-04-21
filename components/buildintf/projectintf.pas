@@ -650,6 +650,8 @@ type
     function GetTitle: string; virtual; abstract; // Title with macros resolved
     function GetDefaultTitle: string; // extract name from lpi file name
     function GetTitleOrName: string; // GetTitle, if this is '' then GetDefaultTitle
+    function UnitInfoWithFilename(const AFilename: string;
+        SearchFlags: TProjectFileSearchFlags): TLazProjectFile; virtual; abstract;
   public
     property ActiveBuildModeID: string read GetActiveBuildModeID
                                        write SetActiveBuildModeID;

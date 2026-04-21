@@ -196,6 +196,7 @@ type
     FFilename: string;
     FChangeStamp: integer;
     FCustomOptions: TConfigStorage;
+    FInstalled: TPackageInstallType;
     FPackageType: TLazPackageType;
     FBuildMethod: TBuildMethod;
     function GetDirectoryExpanded: string; virtual; abstract;
@@ -226,6 +227,7 @@ type
     property DirectoryExpanded: string read GetDirectoryExpanded;
     property FileCount: integer read GetFileCount;
     property Files[Index: integer]: TLazPackageFile read GetPkgFiles;
+    property Installed: TPackageInstallType read FInstalled write FInstalled;
     property Modified: boolean read GetModified write SetModified;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TLazPackageFile read GetRemovedPkgFiles;
@@ -434,12 +436,15 @@ type
   protected
     FChangeStamp: Int64;
   protected
+    function GetIdePkgs(Index: integer): TIDEPackage; virtual; abstract;
     procedure IncChangeStamp; virtual;
   public
+    function Count: integer; virtual; abstract;
     function FindLCLDependency(FirstDependency: TPkgDependencyID
                                           ): TPkgDependencyID; virtual; abstract;
   public
     property ChangeStamp: Int64 read FChangeStamp;
+    property IdePkgs[Index: integer]: TIdePackage read GetIdePkgs;
   end;
 
   TAbstractPackageIDEOptions = class(TAbstractIDEOptions)

@@ -44,6 +44,7 @@ uses
   IDEExternToolIntf, PackageIntf, ProjectIntf, MacroIntf, LazMsgWorker,
   // IdeConfig
   EnvironmentOpts, LazConf, SearchPathProcs, etMakeMsgParser, etFPCMsgFilePool,
+  FindProjPackUnit,
   // IDE
   LazarusIDEStrConsts;
 
@@ -476,6 +477,20 @@ begin
        or FileIsInPath(Filename,LazDir+'packager')
        or FileIsInPath(Filename,LazDir+'converter')
        or FileIsInPath(Filename,LazDir+'designer');
+end;
+
+function LocalGetIDEObject(ToolData: TIDEExternalToolData): TObject;
+// Modified from TExternalToolsIDE.GetIDEObject
+begin
+  Result:=nil;
+  if ToolData=nil then exit;
+  if ToolData.Kind=IDEToolCompileProject then
+    Result:=LazProject1
+  else if ToolData.Kind=IDEToolCompilePackage then
+    Result:=PackageEditingInterface.FindPackageWithName(ToolData.ModuleName)
+  //else if ToolData.Kind=IDEToolCompileIDE then begin
+  //  Result:=nil;  // Return nil here.
+  //end;
 end;
 
 procedure RegisterFPCParser;
@@ -1805,13 +1820,13 @@ begin
     if NewFilename='' then begin
       TheOwner:=nil;
       if Tool.Data is TIDEExternalToolData then begin
-        TheOwner:=ExternalToolList.GetIDEObject(TIDEExternalToolData(Tool.Data));
+        TheOwner:=LocalGetIDEObject(TIDEExternalToolData(Tool.Data));
       end else if Tool.Data=nil then begin
         {$IFDEF VerboseFPCMsgUnitNotFound}
         debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Tool.Data=nil, ProcDir=',Tool.Process.CurrentDirectory]);
         {$ENDIF}
       end;
-      NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit,TheOwner);
+      NewFilename:=FindProjPackUnitFile(UsedByUnit,TheOwner);
       if NewFilename='' then begin
         {$IFDEF VerboseFPCMsgUnitNotFound}
         debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unit not found: ',UsedByUnit]);

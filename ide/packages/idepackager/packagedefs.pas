@@ -485,7 +485,6 @@ type
     FHasStaticDirectory: boolean;
     FHoldPackageCount: integer;
     FIconFile: string;
-    FInstalled: TPackageInstallType;
     FFPDocPaths: string;
     FLicense: string;
     FLPKSource: TCodeBuffer;
@@ -528,7 +527,6 @@ type
     procedure SetFlags(const AValue: TLazPackageFlags);
     procedure SetFPDocPackageName(AValue: string);
     procedure SetIconFile(const AValue: string);
-    procedure SetInstalled(const AValue: TPackageInstallType);
     procedure SetFPDocPaths(const AValue: string);
     procedure SetLicense(const AValue: string);
     procedure SetLPKSource(const AValue: TCodeBuffer);
@@ -718,7 +716,6 @@ type
     property HasEditor: boolean read GetHasEditor;
     property IconFile: string read FIconFile write SetIconFile;
     property IDEOptions: TPackageIDEOptions read GetIDEOptions;
-    property Installed: TPackageInstallType read FInstalled write SetInstalled;
     property FPDocPaths: string read FFPDocPaths write SetFPDocPaths;
     property FPDocPackageName: string read FFPDocPackageName write SetFPDocPackageName;
     property License: string read FLicense write SetLicense;
@@ -2438,12 +2435,6 @@ begin
   if FIconFile=AValue then exit;
   FIconFile:=AValue;
   Modified:=true;
-end;
-
-procedure TLazPackage.SetInstalled(const AValue: TPackageInstallType);
-begin
-  if FInstalled=AValue then exit;
-  FInstalled:=AValue;
 end;
 
 procedure TLazPackage.SetFPDocPaths(const AValue: string);

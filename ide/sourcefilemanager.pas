@@ -263,8 +263,6 @@ function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectIte
 function SelectUnitComponents(DlgCaption: string; ItemType: TIDEProjectItem;
   Files: TStringList): TModalResult;
 // unit/include search
-function FindUnitFileImpl(const AFilename: string; TheOwner: TObject = nil;
-                          Flags: TFindUnitFileFlags = []): string;
 function FindSourceFileImpl(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string;
 function FindSourceFileLeftPathWrong(AFilename, BaseDirectory: string;
@@ -3097,122 +3095,6 @@ begin
   AnUnitInfo:=EditableProject1.Units[UnitIndex];
   while (AnUnitInfo.OpenEditorInfoCount > 0) and (Result = mrOK) do
     Result:=CloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent, Flags);
-end;
-
-function FindUnitFileImpl(const AFilename: string; TheOwner: TObject;
-  Flags: TFindUnitFileFlags): string;
-
-  function FindInBaseIDE: string;
-  var
-    AnUnitName: String;
-    BaseDir: String;
-    UnitInFilename: String;
-  begin
-    AnUnitName:=ExtractFileNameOnly(AFilename);
-    BaseDir:=EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+'ide';
-    UnitInFilename:='';
-    Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                                       BaseDir,AnUnitName,UnitInFilename,true);
-  end;
-
-  function FindInProject(AProject: TProject): string;
-  var
-    AnUnitInfo: TUnitInfo;
-    AnUnitName: String;
-    BaseDir: String;
-    UnitInFilename: String;
-  begin
-    // search in virtual (unsaved) files
-    AnUnitInfo:=AProject.UnitInfoWithFilename(AFilename,
-                                     [pfsfOnlyProjectFiles,pfsfOnlyVirtualFiles]);
-    if AnUnitInfo<>nil then begin
-      Result:=AnUnitInfo.Filename;
-      exit;
-    end;
-
-    // search in search path of project
-    AnUnitName:=ExtractFileNameOnly(AFilename);
-    BaseDir:=AProject.Directory;
-    UnitInFilename:='';
-    Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                                       BaseDir,AnUnitName,UnitInFilename,true);
-  end;
-
-  function FindInPackage(APackage: TLazPackage): string;
-  var
-    BaseDir: String;
-    AnUnitName: String;
-    UnitInFilename: String;
-  begin
-    Result:='';
-    BaseDir:=APackage.Directory;
-    if not FilenameIsAbsolute(BaseDir) then exit;
-    // search in search path of package
-    AnUnitName:=ExtractFileNameOnly(AFilename);
-    UnitInFilename:='';
-    Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                                       BaseDir,AnUnitName,UnitInFilename,true);
-  end;
-
-var
-  AProject: TProject;
-  i: Integer;
-begin
-  if FilenameIsAbsolute(AFilename) then begin
-    Result:=AFilename;
-    exit;
-  end;
-  Result:='';
-
-  // project
-  AProject:=nil;
-  if TheOwner=nil then begin
-    AProject:=Project1;
-  end else if (TheOwner is TProject) then
-    AProject:=TProject(TheOwner);
-
-  if AProject<>nil then
-  begin
-    Result:=FindInProject(AProject);
-    if Result<>'' then exit;
-  end;
-
-  // package
-  if TheOwner is TLazPackage then begin
-    Result:=FindInPackage(TLazPackage(TheOwner));
-    if Result<>'' then exit;
-  end;
-
-  if TheOwner=LazarusIDE then begin
-    // search in base IDE
-    Result:=FindInBaseIDE;
-    if Result<>'' then exit;
-
-    // search in installed packages
-    for i:=0 to PackageGraph.Count-1 do
-      if (PackageGraph[i].Installed<>pitNope)
-      and ((not (fuffIgnoreUninstallPackages in Flags))
-           or (PackageGraph[i].AutoInstall<>pitNope))
-      then begin
-        Result:=FindInPackage(PackageGraph[i]);
-        if Result<>'' then exit;
-      end;
-    // search in auto install packages
-    for i:=0 to PackageGraph.Count-1 do
-      if (PackageGraph[i].Installed=pitNope)
-      and (PackageGraph[i].AutoInstall<>pitNope) then begin
-        Result:=FindInPackage(PackageGraph[i]);
-        if Result<>'' then exit;
-      end;
-    // then search in all other open packages
-    for i:=0 to PackageGraph.Count-1 do
-      if (PackageGraph[i].Installed=pitNope)
-      and (PackageGraph[i].AutoInstall=pitNope) then begin
-        Result:=FindInPackage(PackageGraph[i]);
-        if Result<>'' then exit;
-      end;
-  end;
-  Result:='';
 end;
 
 function FindSourceFileImpl(const AFilename, BaseDirectory: string;

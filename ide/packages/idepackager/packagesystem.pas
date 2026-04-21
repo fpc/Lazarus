@@ -261,13 +261,14 @@ type
     procedure ExtToolBuildStopped(Sender: TObject);
     procedure PkgModify(Sender: TObject);
   protected
+    function GetIdePkgs(Index: integer): TIDEPackage; override;
     procedure IncChangeStamp; override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     procedure Delete(Index: integer);
-    function Count: integer; // number of Packages
+    function Count: integer; override;// number of Packages
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     function Updating: boolean;
@@ -1017,6 +1018,11 @@ procedure TLazPackageGraph.DoDependencyChanged(Dependency: TPkgDependency);
 begin
   fChanged:=true;
   if Assigned(OnDependencyModified) then OnDependencyModified(Dependency);
+end;
+
+function TLazPackageGraph.GetIdePkgs(Index: integer): TIDEPackage;
+begin
+  Result:=TIDEPackage(FItems[Index]);
 end;
 
 function TLazPackageGraph.GetPackages(Index: integer): TLazPackage;

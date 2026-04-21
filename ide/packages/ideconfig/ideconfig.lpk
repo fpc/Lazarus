@@ -84,6 +84,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="ExtToolsConsole"/>
       </Item>
       <Item>
+        <Filename Value="findprojpackunit.pas"/>
+        <UnitName Value="FindProjPackUnit"/>
+      </Item>
+      <Item>
         <Filename Value="fppkghelper.pas"/>
         <UnitName Value="FppkgHelper"/>
       </Item>

@@ -300,11 +300,10 @@ begin
   except
   end;
 
-
   FCurEntry.Display := s;
   FCurEntry.Comp := nil;
   FCurEntry.TheUnitName := GetClassUnitName(TObject(Method.Data).ClassType);
-  FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, LazarusIDE);
+  FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, nil);
   if MethName <> '' then
     FCurEntry.IdentifierName := TObject(Method.Data).ClassName + '.' + MethName
   else
@@ -723,7 +722,7 @@ begin
     FCurEntry.UpdateDisplayName;
     if FSelected <> nil then begin
       FCurEntry.TheUnitName := GetClassUnitName(FSelected.ClassType);
-      FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, LazarusIDE);
+      FCurEntry.FileName := LazarusIDE.FindUnitFile(FCurEntry.TheUnitName, nil);
       FCurEntry.IdentifierName := FSelected.ClassName;
       FCurEntry.Line := -1;
     end

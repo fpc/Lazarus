@@ -1105,7 +1105,7 @@ procedure TMacroListViewer.btnRenameClick(Sender: TObject);
 var
   s: String;
   M: TEditorMacro;
-  UnitInfo: TUnitInfo;
+  UnitInfo: TLazProjectFile;
 begin
   if lbMacroView.ItemIndex < 0 then exit;
   M := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
@@ -1123,7 +1123,8 @@ begin
       end;
     end;
     if s <> '' then begin
-      UnitInfo := Project1.UnitInfoWithFilename(InternalFilenameForMacro(CurrentEditorMacroList, M), [pfsfOnlyVirtualFiles]);
+      UnitInfo := Project1.UnitInfoWithFilename(InternalFilenameForMacro(CurrentEditorMacroList, M),
+                                                [pfsfOnlyVirtualFiles]);
       M.MacroName := s;
       if UnitInfo <> nil then begin
         UnitInfo.Filename := InternalFilenameForMacro(CurrentEditorMacroList, M);
@@ -1361,12 +1362,13 @@ procedure TMacroListViewer.tbMoveIDEClick(Sender: TObject);
 var
   i: Integer;
   M: TEditorMacro;
-  UnitInfo: TUnitInfo;
+  UnitInfo: TLazProjectFile;
 begin
   if (lbMacroView.ItemIndex < 0) or (CurrentEditorMacroList = EditorMacroListGlob) then exit;
   i := lbMacroView.ItemIndex;
   M := CurrentEditorMacroList.Macros[i];
-  UnitInfo := Project1.UnitInfoWithFilename(InternalFilenameForMacro(CurrentEditorMacroList, M), [pfsfOnlyVirtualFiles]);
+  UnitInfo := Project1.UnitInfoWithFilename(InternalFilenameForMacro(CurrentEditorMacroList, M),
+                                            [pfsfOnlyVirtualFiles]);
   EditorMacroListGlob.Add(M);
   CurrentEditorMacroList.Delete(i);
   if CurrentEditorMacroList = EditorMacroListProj then Project1.Modified := True;
@@ -1382,12 +1384,13 @@ procedure TMacroListViewer.tbMoveProjectClick(Sender: TObject);
 var
   i: Integer;
   M: TEditorMacro;
-  UnitInfo: TUnitInfo;
+  UnitInfo: TLazProjectFile;
 begin
   if (lbMacroView.ItemIndex < 0) or (CurrentEditorMacroList = EditorMacroListProj) then exit;
   i := lbMacroView.ItemIndex;
   M := CurrentEditorMacroList.Macros[i];
-  UnitInfo := Project1.UnitInfoWithFilename(InternalFilenameForMacro(CurrentEditorMacroList, M), [pfsfOnlyVirtualFiles]);
+  UnitInfo := Project1.UnitInfoWithFilename(InternalFilenameForMacro(CurrentEditorMacroList, M),
+                                            [pfsfOnlyVirtualFiles]);
   EditorMacroListProj.Add(M);
   CurrentEditorMacroList.Delete(i);
   Project1.Modified := True;

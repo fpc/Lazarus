@@ -124,7 +124,7 @@ uses
   // IdeConfig
   LazConf, EnvironmentOpts, TransferMacros, IDECmdLine, IDEGuiCmdLine,
   IDEProcs, ApplicationBundle, InitialSetupProc, MiscOptions, IdeBuilder,
-  IdeConfStrConsts,
+  FindProjPackUnit, IdeConfStrConsts,
   // IdePackager,
   IdePackager, IdePackagerStrConsts, PackageSystem, BasePkgManager, LPKCache,
   // IdeProject,
@@ -912,7 +912,7 @@ type
 
     // useful file methods
     function FindUnitFile(const AFilename: string; TheOwner: TObject = nil;
-                          Flags: TFindUnitFileFlags = []): string; override;
+                          IgnoreUninstallPkgs: boolean = false): string; override;
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string; override;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; override;
@@ -9380,7 +9380,7 @@ begin
     SearchedFilename := ExtractFileName(Filename);
     Include(OpenFlags,ofVirtualFile);
   end else begin
-    SearchedFilename := FindUnitFile(Filename);
+    SearchedFilename := FindUnitFile(Filename, Project1);
     if not FilenameIsAbsolute(SearchedFilename) then
       Include(OpenFlags,ofVirtualFile);
   end;
@@ -9467,7 +9467,7 @@ begin
       SearchedFilename := ExtractFileName(AFilename);
       Include(OpenFlags,ofVirtualFile);
     end else begin
-      SearchedFilename := FindUnitFile(AFilename);
+      SearchedFilename := FindUnitFile(AFilename, Project1);
     end;
     if SearchedFilename<>'' then begin
       JumpPointEditor := SourceEditorManager.ActiveEditor;
@@ -9576,9 +9576,9 @@ begin
 end;
 
 function TMainIDE.FindUnitFile(const AFilename: string; TheOwner: TObject;
-  Flags: TFindUnitFileFlags): string;
+  IgnoreUninstallPkgs: boolean): string;
 begin
-  Result:=FindUnitFileImpl(AFilename, TheOwner, Flags);
+  Result:=FindProjPackUnitFile(AFilename, TheOwner, IgnoreUninstallPkgs);
 end;
 
 {------------------------------------------------------------------------------

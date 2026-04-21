@@ -5,8 +5,10 @@ unit regfastopen;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, Dialogs, lclintf, LCLType,
-  LazIDEIntf, MenuIntf, IDECommands, IDEWindowIntf, BaseIDEIntf;
+  Classes, SysUtils,
+  Controls, Forms, Dialogs, LCLIntf, LCLType,
+  ProjectIntf,
+  LazIDEIntf, MenuIntf, IDECommands, IDEWindowIntf;
 
 procedure register;
 
@@ -25,7 +27,7 @@ var
 begin
   lUnitName:='';
   if not InputQuery(SFastOpenCaption,SEnterUnitName,lUnitName) then exit;
-  lFileName:=LazarusIDE.FindUnitFile(lUnitName);
+  lFileName:=LazarusIDE.FindUnitFile(lUnitName, LazProject1);
   if lFileName='' then
     MessageDlg(SFastOpenCaption,Format(SUnitNotFound,[lUnitName]),mtInformation,[mbOK],0)
   else

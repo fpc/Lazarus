@@ -780,7 +780,7 @@ type
                                  CheckHasDesigner: boolean): boolean;
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string;
-                    SearchFlags: TProjectFileSearchFlags): TUnitInfo;
+                    SearchFlags: TProjectFileSearchFlags): TLazProjectFile; override; //TUnitInfo;
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
     function UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo; // only currently open lfm (SourceLFM<>nil)
     function SearchFile(const ShortFilename: string;
@@ -4851,7 +4851,7 @@ begin
 end;
 
 function TProject.UnitInfoWithFilename(const AFilename: string;
-  SearchFlags: TProjectFileSearchFlags): TUnitInfo;
+  SearchFlags: TProjectFileSearchFlags): TLazProjectFile; //TUnitInfo;
 
   function MakeFilenameComparable(const TheFilename: string): string;
   begin
@@ -4875,8 +4875,6 @@ function TProject.UnitInfoWithFilename(const AFilename: string;
     end;
   end;
 
-var
-  i: Integer;
 begin
   if (SearchFlags-[pfsfResolveFileLinks]=[pfsfOnlyEditorFiles]) then
     // search only in list of Files with EditorIndex
@@ -4886,14 +4884,8 @@ begin
     // search only in list of project files
     // There is a list, so we can search much faster
     Result:=FindFileInList(uilPartOfProject)
-  else begin
-    // slow search
-    i:=IndexOfFilename(AFilename,SearchFlags);
-    if i>=0 then
-      Result:=Units[i]
-    else
-      Result:=nil;
-  end;
+  else
+    Result:=UnitInfoWithFilename(AFilename);  // slow search
 end;
 
 function TProject.UnitWithUnitname(const AnUnitname: string): TUnitInfo;
