@@ -994,6 +994,7 @@ type
     procedure InitializeWidget; override;
     function IsWidgetOk: Boolean; override;
     procedure SetDefault(const ADefault: Boolean);
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
     property Layout: Integer read getLayout write SetLayout;
     property Margin: Integer read getMargin write SetMargin;
     property Spacing: Integer read FSpacing write SetSpacing;
@@ -11393,7 +11394,8 @@ begin
     {%H-}PGtkButton(FWidget)^.set_label(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
     if LCLObject.AutoSize then
     begin
-      FWidget^.set_size_request(-1, -1);
+      LCLWidth := 0;
+      LCLHeight := 0;
       FWidget^.queue_resize;
     end;
   end;
@@ -11451,6 +11453,21 @@ procedure TGtk3Button.SetDefault(const ADefault: Boolean);
 begin
   if IsWidgetOk then
     GetContainerWidget^.set_can_default(ADefault);
+end;
+
+procedure TGtk3Button.preferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  AWidgetClass: PGtkWidgetClass;
+  AMinW, AMinH: gint;
+begin
+  if not IsWidgetOk then
+    exit;
+  AWidgetClass := PGtkWidgetClass(FWidget^.g_type_instance.g_class);
+  if Assigned(AWidgetClass) and Assigned(AWidgetClass^.get_preferred_width) then
+    AWidgetClass^.get_preferred_width(FWidget, @AMinW, @PreferredWidth);
+  if Assigned(AWidgetClass) and Assigned(AWidgetClass^.get_preferred_height) then
+    AWidgetClass^.get_preferred_height(FWidget, @AMinH, @PreferredHeight);
 end;
 
 { TGtk3ToggleButton }

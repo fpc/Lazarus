@@ -24,9 +24,6 @@ begin
     Exit;
   end;
 
-  // Call parent class implementation
-  ParentClass^.get_preferred_width(widget, min_width, nat_width);
-
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then
   begin
@@ -34,10 +31,17 @@ begin
     Exit;
   end;
 
+  ParentClass^.get_preferred_width(widget, min_width, nat_width);
+
   if AControl.LCLObject.AutoSize then
   begin
-    gtk_widget_set_size_request(widget, -1, -1);
-    ParentClass^.get_preferred_width(widget, min_width, nat_width);
+    if not Gtk3WidgetSet.IsWayland then
+    begin
+      if AControl.LCLWidth > nat_width^ then
+        nat_width^ := AControl.LCLWidth;
+      if AControl.LCLWidth > min_width^ then
+        min_width^ := AControl.LCLWidth;
+    end;
     exit;
   end;
   // Custom width handling
@@ -77,9 +81,6 @@ begin
     Exit;
   end;
 
-  // Call parent class implementation
-  ParentClass^.get_preferred_height(widget, min_height, nat_height);
-
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then
   begin
@@ -87,10 +88,17 @@ begin
     Exit;
   end;
 
+  ParentClass^.get_preferred_height(widget, min_height, nat_height);
+
   if AControl.LCLObject.AutoSize then
   begin
-    gtk_widget_set_size_request(widget, -1, -1);
-    ParentClass^.get_preferred_height(widget, min_height, nat_height);
+    if not Gtk3WidgetSet.IsWayland then
+    begin
+      if AControl.LCLHeight > nat_height^ then
+        nat_height^ := AControl.LCLHeight;
+      if AControl.LCLHeight > min_height^ then
+        min_height^ := AControl.LCLHeight;
+    end;
     exit;
   end;
 
