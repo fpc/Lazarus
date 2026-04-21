@@ -846,6 +846,8 @@ begin
       Include(FindRefFlags,frfPredefinedIdentifiers);
     if Options.Overrides then
       Include(FindRefFlags,frfMethodOverrides);
+    if Options.IncludeLFMs then
+      Include(FindRefFlags,frfIncludingLFM);
     if not GatherIdentifierReferences(Files,DeclCodeXY,DeclTool,DeclNode,
       Options.SearchInComments,PascalReferences,FindRefFlags) then
     begin
@@ -854,9 +856,6 @@ begin
     end;
 
     // search references in lfm files
-    if Options.IncludeLFMs then
-      Include(FindRefFlags,frfIncludingLFM);
-
     if (frfIncludingLFM in FindRefFlags)
         and (GatherLFMsReferences(Files, Identifier, DeclTool, DeclNode,
           LFMReferences, FindRefFlags)<>mrOk) then
@@ -900,6 +899,7 @@ begin
       LazarusIDE.OpenEditorsOnCodeToolChange:=true;
       try
         // todo: check for conflicts and show user list
+
         IsConflicted:=false;
         Result:=mrOk;
         if Kind=friSourceName then begin
@@ -1040,6 +1040,7 @@ var
   TreeOfPCodeXYPosition: TAVLTree;
   Refs: TSrcNameRefs;
   Filename: String;
+  SrcEditor: TSourceEditorInterface;
 begin
   Result:=false;
   ListOfSrcNameRefs:=nil;
@@ -1102,6 +1103,16 @@ begin
             TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
           CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
                                                 TreeOfPCodeXYPosition,true,false);
+          SrcEditor:=
+            SourceEditorManagerIntf.SourceEditorIntfWithFilename(Files[i]);
+
+          if (SrcEditor<>nil) and (SrcEditor.ModifiedDesign) then begin
+            debugln(['Modified designer of unit: ', Code.Scanner.SourceName]);
+            if (frfIncludingLFM in Flags) and (frfRename in Flags) then begin
+              debugln(['Saving unit to protect designer changes']);
+              SaveEditorFile(SrcEditor,[]); // experiment
+            end;
+          end;
         end;
       end;
       if TreeOfPCodeXYPosition<>nil then begin
