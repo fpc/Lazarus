@@ -72,8 +72,16 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="etFPCMsgFilePool"/>
       </Item>
       <Item>
+        <Filename Value="etfpcmsgparser.pas"/>
+        <UnitName Value="etFPCMsgParser"/>
+      </Item>
+      <Item>
         <Filename Value="etmakemsgparser.pas"/>
         <UnitName Value="etMakeMsgParser"/>
+      </Item>
+      <Item>
+        <Filename Value="etpas2jsmsgparser.pas"/>
+        <UnitName Value="etPas2jsMsgParser"/>
       </Item>
       <Item>
         <Filename Value="exttools.pas"/>

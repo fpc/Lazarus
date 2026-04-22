@@ -6079,11 +6079,6 @@ msgstr "A fájl nem hozható létre: \"%s\""
 msgid "Cannot delete last mode."
 msgstr "Az utolsó mód nem törölhető."
 
-#: lazarusidestrconsts.liscannotfind
-#, object-pascal-format
-msgid "Cannot find %s"
-msgstr "Nem található: %s"
-
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
@@ -6111,11 +6106,6 @@ msgstr "Nem tesztelhető a fordító hibakeresés vagy fordítás közben."
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "Csak TComponent-ek osztálya módosítható"
-
-#: lazarusidestrconsts.liscantfindavalidppu
-#, object-pascal-format
-msgid "Can't find a valid %s.ppu"
-msgstr "Nem található érvényes %s.ppu"
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
@@ -6615,17 +6605,6 @@ msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "A fájlok megváltozását a lemezen inkább a tartalom, mint az időbélyeg alapján figyelje"
 
-#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
-#, object-pascal-format
-msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ". Ellenőrizni kell, hogy a(z) %s csomag létrehozza-e a(z) %s.ppu-t, hogy semmi sem törli ezt a fájlt és hogy nem két csomag használja-e a unit forrását!"
-
-#: lazarusidestrconsts.lischeckifpackageisinthedependencies
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
-msgid ". Check if package %s is in the dependencies"
-msgstr ". Ellenőrizni kell, hogy a(z) %s csomag szerepel-e a függőségek között"
-
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Ellenőrizze, hogy a következő szimbólum a forrásban egy \"end\" és hogy nem ad-e vissza \"LineEnding + end; + LineEnding\" sorozatot."
@@ -6633,12 +6612,6 @@ msgstr "Ellenőrizze, hogy a következő szimbólum a forrásban egy \"end\" és
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Beállítások ellenőrzése"
-
-#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
-msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ". Ellenőrizze a(z) %s csomag keresési útvonalát, próbáljon tiszta újraépítést, ellenőrizze a kidolgozás uses szakaszát!"
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
@@ -6864,11 +6837,6 @@ msgstr ""
 #: lazarusidestrconsts.liscleanupmode
 msgid "Clean up mode"
 msgstr ""
-
-#: lazarusidestrconsts.liscleanuppackage
-#, object-pascal-format
-msgid "Clean up package \"%s\"."
-msgstr "Csomag tisztítása: \"%s\""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -7688,10 +7656,6 @@ msgstr "Fordítás"
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
 msgstr "Fordítás a projekt beállításaival"
-
-#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "A részletekért -vd használatával kell újrafordítani. Másolatokat kell keresni!"
 
 #: lazarusidestrconsts.liscompiling
 #, object-pascal-format
@@ -9564,11 +9528,6 @@ msgstr "A közzététel célkönyvtára vagy relatív útvonal vagy üres."
 msgid "Enabled only for packages."
 msgstr "Csak csomagok esetén engedélyezett."
 
-#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
-#, object-pascal-format
-msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ". Engedélyezze a(z) %s \"Unit használatát\" a(z) %s csomagban!"
-
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
 msgstr "I18N engedélyezése az LFM-hez"
@@ -11005,11 +10964,6 @@ msgstr "Include útvonalak"
 msgid "Include, recursive"
 msgstr ""
 
-#: lazarusidestrconsts.lisincompatibleppu
-#, object-pascal-format
-msgid ", incompatible ppu=%s"
-msgstr ", összeférhetetlen ppu=%s"
-
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Nem megfelelő beállítási könyvtár található"
@@ -12258,10 +12212,6 @@ msgstr "Karakterlánc konstans a forrásban"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Azonos értékű karakterláncok:"
-
-#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
-msgid "Make sure all ppu files of a package are in its output directory."
-msgstr "Győződjön meg róla, hogy az egyes csomagok ppu fájljai annak kimeneti könyvtárában találhatók!"
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
@@ -14095,10 +14045,6 @@ msgstr "Üzenetek színei"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Több könyvtárat pontosvesszővel kell elválasztani"
 
-#: lazarusidestrconsts.lismultiplepack
-msgid ", multiple packages: "
-msgstr ", többpéldányos csomagok: "
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Üzenetek szöveges fájlba (*.txt) mentése"
@@ -14387,15 +14333,6 @@ msgstr "objektum elérési út"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Váltás az Objektum felügyelő Kedvencek lapjára"
-
-#: lazarusidestrconsts.lisofpackage
-#, object-pascal-format
-msgid " of package %s"
-msgstr " a(z) %s csomagban"
-
-#: lazarusidestrconsts.lisoftheprojectinspector
-msgid " of the Project Inspector"
-msgstr " a Projektfelügyelőben"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -14731,11 +14668,6 @@ msgstr "Csomag"
 msgid "package %s"
 msgstr "%s csomag"
 
-#: lazarusidestrconsts.lispackage3
-#, object-pascal-format
-msgid ", package %s"
-msgstr ", %s csomag"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Csomag infó"
@@ -14752,10 +14684,6 @@ msgstr "Csomagnév kezdete ..."
 #: lazarusidestrconsts.lispackagenamecontains
 msgid "Package name contains ..."
 msgstr "Csomagnév tartalmazza ..."
-
-#: lazarusidestrconsts.lispackageneedsanoutputdirectory
-msgid "Package needs an output directory."
-msgstr "A csomag számára meg kell adni a kimeneti könyvtárat."
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -15984,11 +15912,6 @@ msgstr "Elhelyezés"
 #, object-pascal-format
 msgid "%s (position outside of source)"
 msgstr "%s (a pozíció a forráson kívül van)"
-
-#: lazarusidestrconsts.lisppuinwrongdirectory
-#, object-pascal-format
-msgid "ppu in wrong directory=%s."
-msgstr "ppu egy nem megfelelő könyvtárban: \"%s\""
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -19056,11 +18979,6 @@ msgstr "Jelölőnégyzet a Boolean értékekhez"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Megjegyzések használata az egyéni beállításoknál"
-
-#: lazarusidestrconsts.lisusedby
-#, object-pascal-format
-msgid " used by %s"
-msgstr ", melyet a(z) %s használ"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

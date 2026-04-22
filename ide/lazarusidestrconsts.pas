@@ -6028,29 +6028,6 @@ resourcestring
     ;
   lisUpdateInfo = 'Update info';
 
-  lisCanTFindAValidPpu = 'Can''t find a valid %s.ppu';
-  lisCannotFind = 'Cannot find %s';
-  lisUsedBy = ' used by %s';
-  lisCleanUpPackage = 'Clean up package "%s".';
-  lisPpuInWrongDirectory = 'ppu in wrong directory=%s.';
-  lisPackageNeedsAnOutputDirectory = 'Package needs an output directory.';
-  lisMakeSureAllPpuFilesOfAPackageAreInItsOutputDirecto = 'Make sure all ppu '
-    +'files of a package are in its output directory.';
-  lisCheckSearchPathPackageTryACleanRebuildCheckImpleme = '. Check search path of'
-    +' package %s, try a clean rebuild, check implementation uses sections.';
-  lisCheckIfPackageIsInTheDependencies = '. Check if package %s is in the '
-    +'dependencies';
-  lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil = '. Check if package '
-    +'%s creates %s.ppu, check nothing deletes this file and check that no two'
-    +' packages have access to the unit source.';
-  lisEnableFlagUseUnitOfUnitInPackage = '. Enable flag "Use Unit" of unit %s in package %s';
-  lisOfTheProjectInspector = ' of the Project Inspector';
-  lisOfPackage = ' of package %s';
-  lisCompileWithVdForMoreDetailsCheckForDuplicates = 'Compile with -vd '
-    +'for more details. Check for duplicates.';
-  lisIncompatiblePpu = ', incompatible ppu=%s';
-  lisPackage3 = ', package %s';
-  lisMultiplePack = ', multiple packages: ';
   lisQuickFixError = 'QuickFix error';
   lisPositionOutsideOfSource = '%s (position outside of source)';
   lisHideMessageByInsertingWarnOffToUnit = 'Hide message by inserting {$warn %'

@@ -6188,11 +6188,6 @@ msgstr "Nepavyksta sukurti failą „%s“"
 msgid "Cannot delete last mode."
 msgstr ""
 
-#: lazarusidestrconsts.liscannotfind
-#, object-pascal-format
-msgid "Cannot find %s"
-msgstr "Nepavyko rasti „%s“"
-
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
@@ -6220,11 +6215,6 @@ msgstr "Derinimo ar kompiliavimo metu negalima patikrinti kompiliatoriaus."
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "Galima keisti tik TComponent-ų klasę."
-
-#: lazarusidestrconsts.liscantfindavalidppu
-#, object-pascal-format
-msgid "Can't find a valid %s.ppu"
-msgstr "Nepavyko rasti tinkamo „%s.ppu“"
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
@@ -6724,17 +6714,6 @@ msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "Ar pakito failas diske spręsti pagal pakitusį jo turinį, o ne datą"
 
-#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
-#, object-pascal-format
-msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ". Patikrinit ar paketas „%s“ kuria „%s.ppu“, ar niekas netrina šio failo, du paketai neturi prieigos prie modulio pirminio kodo."
-
-#: lazarusidestrconsts.lischeckifpackageisinthedependencies
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
-msgid ". Check if package %s is in the dependencies"
-msgstr ". Patikrinkit ar paketas „%s“ yra priklausomybių sąraše"
-
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Tikrina ar tolimesnė leksema yra „end“, jei ne tai grąžina „LineEnding + end; + LineEnding“."
@@ -6742,12 +6721,6 @@ msgstr "Tikrina ar tolimesnė leksema yra „end“, jei ne tai grąžina „Lin
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Tikrinimo parinktys"
-
-#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
-msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ". Patikrinkit paketo „%s“ paieškos kelią, bandykite išvalyti ir daryti iš naujo, patikrinkite „uses“ sekcijas „implementation“ skyriuje."
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
@@ -6973,11 +6946,6 @@ msgstr ""
 #: lazarusidestrconsts.liscleanupmode
 msgid "Clean up mode"
 msgstr ""
-
-#: lazarusidestrconsts.liscleanuppackage
-#, object-pascal-format
-msgid "Clean up package \"%s\"."
-msgstr "Apvalyti paketą „%s“."
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -7797,10 +7765,6 @@ msgstr "Kompiliuojama"
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
 msgstr ""
-
-#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "Kompiliuokite naudodami raktą „-vd“, tuo būdų sužinosite daugiau informacijos. Patikrinkite ar nėra dublikatų."
 
 #: lazarusidestrconsts.liscompiling
 #, object-pascal-format
@@ -9681,11 +9645,6 @@ msgstr ""
 msgid "Enabled only for packages."
 msgstr "Įgalinti tik paketams."
 
-#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
-#, object-pascal-format, fuzzy, badformat
-msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ". Įgalinkit paketo „%1:s“ modulio „%0:s“ žymę „Naudoti modulį“"
-
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
 msgstr "„LFM“-ui įgalinti internacionalizaciją"
@@ -11133,11 +11092,6 @@ msgstr "Įterpimo keliai"
 msgid "Include, recursive"
 msgstr ""
 
-#: lazarusidestrconsts.lisincompatibleppu
-#, object-pascal-format
-msgid ", incompatible ppu=%s"
-msgstr ", nesuderinamas ppu=%s"
-
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Rastas klaidingos konfigūracijos aplankas"
@@ -12408,10 +12362,6 @@ msgstr "Teksto konstanta pirminiame kode"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Eilutės su tokia pat verte:"
-
-#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
-msgid "Make sure all ppu files of a package are in its output directory."
-msgstr "Pasirūpinkite, kad visi paketo „ppu“ failai būtų jo išvesties aplanke."
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
@@ -14287,10 +14237,6 @@ msgstr "Spalvos pranešimuose"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Aplankai atskiriami dvitaškiais"
 
-#: lazarusidestrconsts.lismultiplepack
-msgid ", multiple packages: "
-msgstr ", daugelis paketų:"
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Įrašyti pranešimus faile (*.txt)"
@@ -14579,15 +14525,6 @@ msgstr "kelias iki objekto"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Pereiti į objektų inspektoriaus kortelę „Mėgiamiausi“"
-
-#: lazarusidestrconsts.lisofpackage
-#, object-pascal-format
-msgid " of package %s"
-msgstr " paketo „%s“"
-
-#: lazarusidestrconsts.lisoftheprojectinspector
-msgid " of the Project Inspector"
-msgstr " projekto inspektoriaus"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -14925,11 +14862,6 @@ msgstr "Paketas"
 msgid "package %s"
 msgstr "paketas %s"
 
-#: lazarusidestrconsts.lispackage3
-#, object-pascal-format
-msgid ", package %s"
-msgstr ", paketas „%s“"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Informacija apie paketą"
@@ -14946,10 +14878,6 @@ msgstr "Paketo pavadinimas prasideda…"
 #: lazarusidestrconsts.lispackagenamecontains
 msgid "Package name contains ..."
 msgstr "Paketo pavadinime yra…"
-
-#: lazarusidestrconsts.lispackageneedsanoutputdirectory
-msgid "Package needs an output directory."
-msgstr "Paketui reikia išvesties aplanko."
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -16188,11 +16116,6 @@ msgstr "Pozicija"
 #, object-pascal-format
 msgid "%s (position outside of source)"
 msgstr "%s (pozicija už pirminio kodo ribų)"
-
-#: lazarusidestrconsts.lisppuinwrongdirectory
-#, object-pascal-format
-msgid "ppu in wrong directory=%s."
-msgstr "„ppu“ ne tame aplanke „%s“."
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -19307,11 +19230,6 @@ msgstr "„Boolean“ vertėms naudoti žymimąjį langelį"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Papildytose parinktyse naudoti komentarus"
-
-#: lazarusidestrconsts.lisusedby
-#, object-pascal-format
-msgid " used by %s"
-msgstr " naudoja „%s“"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

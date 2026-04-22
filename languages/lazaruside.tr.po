@@ -6010,11 +6010,6 @@ msgstr "Dosya \"%s\" oluşturulamıyor"
 msgid "Cannot delete last mode."
 msgstr "Son mod silinemiyor."
 
-#: lazarusidestrconsts.liscannotfind
-#, object-pascal-format
-msgid "Cannot find %s"
-msgstr "%s  bulunamadı"
-
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
@@ -6042,11 +6037,6 @@ msgstr "Hata ayıklama veya derleme yaparken derleyiciyi test edemiyor."
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "Sadece TComponent sınıfını değiştirebilirsin."
-
-#: lazarusidestrconsts.liscantfindavalidppu
-#, object-pascal-format
-msgid "Can't find a valid %s.ppu"
-msgstr "Geçerli bir %s.ppu bulunamadı"
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
@@ -6546,17 +6536,6 @@ msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "Disk dosyası değişikliklerini zaman damgası yerine içerik aracılığıyla kontrol edin"
 
-#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
-#, object-pascal-format
-msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ". %s paketinin %s.ppu dosyasını oluşturup oluşturmadığını kontrol edin, bu dosyayı hiçbir şeyin silmediğini kontrol edin ve iki paketin birim kaynağına erişimi olmadığını kontrol edin."
-
-#: lazarusidestrconsts.lischeckifpackageisinthedependencies
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
-msgid ". Check if package %s is in the dependencies"
-msgstr "%s paketinin bağımlılıklarda olup olmadığını kontrol edin"
-
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Kaynaktaki bir sonraki belirtecin \"end\" olup olmadığını ve \"LineEnding + end; + LineEnding \" döndürülmemesini sağlayın."
@@ -6564,11 +6543,6 @@ msgstr "Kaynaktaki bir sonraki belirtecin \"end\" olup olmadığını ve \"LineE
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Seçenekleri kontrol et"
-
-#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-#, object-pascal-format
-msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ". %s paketinin arama yolunu kontrol edin, temiz bir yeniden oluşturmayı deneyin, implementation uses bölümünü kontrol edin."
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
@@ -6797,11 +6771,6 @@ msgstr "Temizle + lazbuild"
 #: lazarusidestrconsts.liscleanupmode
 msgid "Clean up mode"
 msgstr ""
-
-#: lazarusidestrconsts.liscleanuppackage
-#, object-pascal-format
-msgid "Clean up package \"%s\"."
-msgstr "\"%s\" Paketini temizle ."
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -7607,10 +7576,6 @@ msgstr "Derle"
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
 msgstr "Proje ayarlarıyla derle"
-
-#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "Daha fazla ayrıntı için -vd ile derleyin.Yinelenenleri kontrol edin."
 
 #: lazarusidestrconsts.liscompiling
 #, object-pascal-format
@@ -9476,11 +9441,6 @@ msgstr "Yayımlama için hedef dizin göreceli bir yoldur veya boştur."
 msgid "Enabled only for packages."
 msgstr "Sadece paketler için etkin."
 
-#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
-#, object-pascal-format
-msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ". Paket %s içindeki %s birimi \" Birimi kullan\" bayrağını etkinleştir"
-
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
 msgstr "LFM için I18N'yi etkinleştir"
@@ -10891,11 +10851,6 @@ msgstr "Yolları ekle"
 msgid "Include, recursive"
 msgstr "Dahil et, tekrarlı"
 
-#: lazarusidestrconsts.lisincompatibleppu
-#, object-pascal-format
-msgid ", incompatible ppu=%s"
-msgstr ", Uyumsuz ppu = %s"
-
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Yanlış yapılandırma dizini bulundu"
@@ -12129,10 +12084,6 @@ msgstr "Kaynaktaki string sabiti"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Aynı değere sahip stringler:"
-
-#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
-msgid "Make sure all ppu files of a package are in its output directory."
-msgstr "Bir paketin tüm ppu dosyalarının çıkış dizininde olduğundan emin olun."
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
@@ -13945,10 +13896,6 @@ msgstr "Mesaj renkleri"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Birden çok dizin noktalı virgül ile ayrılır"
 
-#: lazarusidestrconsts.lismultiplepack
-msgid ", multiple packages: "
-msgstr ", Birden çok paket: "
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Mesajları dosyaya kaydet (*.txt)"
@@ -14237,15 +14184,6 @@ msgstr "nesne yolu"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Nesne Denetleyicisi Sık Kullanılanları sekmesine geç"
-
-#: lazarusidestrconsts.lisofpackage
-#, object-pascal-format
-msgid " of package %s"
-msgstr " %s paketinin"
-
-#: lazarusidestrconsts.lisoftheprojectinspector
-msgid " of the Project Inspector"
-msgstr " Proje denetleyicisinin"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -14570,11 +14508,6 @@ msgstr "Paket"
 msgid "package %s"
 msgstr "paket %s"
 
-#: lazarusidestrconsts.lispackage3
-#, object-pascal-format
-msgid ", package %s"
-msgstr ", paket %s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Paket bilgisi"
@@ -14591,10 +14524,6 @@ msgstr "Paket adı ile başlar ..."
 #: lazarusidestrconsts.lispackagenamecontains
 msgid "Package name contains ..."
 msgstr "Paket adı içeriyor ..."
-
-#: lazarusidestrconsts.lispackageneedsanoutputdirectory
-msgid "Package needs an output directory."
-msgstr "Paket bir çıkış dizinine ihtiyaç duyar."
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -15813,11 +15742,6 @@ msgstr "Konum"
 #, object-pascal-format
 msgid "%s (position outside of source)"
 msgstr "%s  (kaynak dışındaki konum)"
-
-#: lazarusidestrconsts.lisppuinwrongdirectory
-#, object-pascal-format
-msgid "ppu in wrong directory=%s."
-msgstr "ppu yanlış dizinde = %s."
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -18853,11 +18777,6 @@ msgstr "Boolean değerleri için CheckBox kullanın"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Özel seçeneklerdeki yorumları kullanın"
-
-#: lazarusidestrconsts.lisusedby
-#, object-pascal-format
-msgid " used by %s"
-msgstr " %s tarafından kullanılıyor"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

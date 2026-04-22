@@ -31,9 +31,19 @@ msgstr ""
 msgid "cannot execute \"%s\""
 msgstr ""
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr ""
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
 msgstr ""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
@@ -44,9 +54,29 @@ msgstr ""
 msgid "Error"
 msgstr "Chyba"
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ""
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr ""
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ""
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Vyčistiť zdrojové kódy Lazarus"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr "Vyčistiť balíček \"%s\"."
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -79,6 +109,10 @@ msgstr "Meno súboru prekladača"
 #| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Rada: cestu prekladača môžete nastaviť v Nástroje ->Voľby prostredia ->Súbory -> Spustiteľný súbor prekladača"
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr ""
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -155,6 +189,11 @@ msgstr ""
 
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
+msgstr ""
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ""
 
 #: ideconfstrconsts.lisendlessloopinmacros
@@ -290,6 +329,11 @@ msgstr ""
 msgid "Ignore and continue"
 msgstr "Ignorovať a pokračovať"
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr ""
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -366,6 +410,10 @@ msgstr "Urobiť spustiteľné"
 msgid "Make not found"
 msgstr "Make nenájdený"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr ""
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -380,6 +428,10 @@ msgstr ""
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Režim: %s"
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ""
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
@@ -397,6 +449,15 @@ msgstr "Neimplementované"
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr "Zatiaľ neimplementované:%s%s"
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr ""
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr ""
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -427,6 +488,15 @@ msgstr "Prepísať súbor?"
 msgid "Overwrite file on disk"
 msgstr "Prepísať súbor na disku"
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ", balíček %s"
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr ""
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -448,6 +518,11 @@ msgstr "Nemožno vytvoriť adresár"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Nemožno zmazať súbor \"%s\"."
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr ""
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -739,6 +814,11 @@ msgstr ""
 
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
 msgstr ""
 
 #: ideconfstrconsts.lisusershomedirectory

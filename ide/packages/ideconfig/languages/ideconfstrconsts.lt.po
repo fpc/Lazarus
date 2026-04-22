@@ -31,10 +31,20 @@ msgstr "Lazarus darymas nepavyko"
 msgid "cannot execute \"%s\""
 msgstr "nepavyksta paleisti „%s“"
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr "Nepavyko rasti „%s“"
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
 msgstr "nepavyko rasti vykdomojo failo „%s“"
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
+msgstr "Nepavyko rasti tinkamo „%s.ppu“"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -44,9 +54,29 @@ msgstr ""
 msgid "Error"
 msgstr "Klaida"
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ". Patikrinit ar paketas „%s“ kuria „%s.ppu“, ar niekas netrina šio failo, du paketai neturi prieigos prie modulio pirminio kodo."
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr ". Patikrinkit ar paketas „%s“ yra priklausomybių sąraše"
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ". Patikrinkit paketo „%s“ paieškos kelią, bandykite išvalyti ir daryti iš naujo, patikrinkite „uses“ sekcijas „implementation“ skyriuje."
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Apvalyti Lazarus aplankus"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr "Apvalyti paketą „%s“."
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -79,6 +109,10 @@ msgstr "Kompiliatoriaus failo pavadinimas"
 #| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Užuomina: kompiliatoriaus programą galite nurodyti „Aplinka -> Parinktys -> Failai -> Kompiliatoriaus programa“."
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr "Kompiliuokite naudodami raktą „-vd“, tuo būdų sužinosite daugiau informacijos. Patikrinkite ar nėra dublikatų."
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -155,6 +189,11 @@ msgstr ""
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr ""
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format, fuzzy, badformat
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
+msgstr ". Įgalinkit paketo „%1:s“ modulio „%0:s“ žymę „Naudoti modulį“"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -288,6 +327,11 @@ msgstr "IKA darymo parinktys"
 msgid "Ignore and continue"
 msgstr "Nepaisyti ir tęsti"
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr ", nesuderinamas ppu=%s"
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -366,6 +410,10 @@ msgstr "Daryti vykdomąjį failą"
 msgid "Make not found"
 msgstr "Nerastas Make"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr "Pasirūpinkite, kad visi paketo „ppu“ failai būtų jo išvesties aplanke."
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -380,6 +428,10 @@ msgstr "trūkstamas vykdomasis failas „%s“"
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Režimas: %s"
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ", daugelis paketų:"
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
@@ -397,6 +449,15 @@ msgstr "Neįgyvendinta"
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr "Dar neįgyvendinta:%s%s"
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr " paketo „%s“"
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr " projekto inspektoriaus"
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -427,6 +488,15 @@ msgstr "Perrašyti failą?"
 msgid "Overwrite file on disk"
 msgstr "Perrašyti failą diske"
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ", paketas „%s“"
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr "Paketui reikia išvesties aplanko."
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -448,6 +518,11 @@ msgstr "Nepavyko sukurti aplanką"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Nepavyko ištrinti failą „%s“."
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr "„ppu“ ne tame aplanke „%s“."
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -735,6 +810,11 @@ msgstr "Neįprastas kompiliatoriaus failo pavadinimas. Įprastai jis prasideda �
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr ""
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
+msgstr " naudoja „%s“"
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"

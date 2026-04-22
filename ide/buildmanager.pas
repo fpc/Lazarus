@@ -41,7 +41,7 @@ uses
   FileProcs,
   // LazUtils
   FPCAdds, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
-  Laz2_XMLCfg, LazUtilities, LazMethodList, LazVersion,
+  Laz2_XMLCfg, LazUtilities, LazVersion,
   AvgLvlTree,
   // BuildIntf
   BaseIDEIntf, IDEOptionsIntf, ProjectIntf, ProjectResourcesIntf, LazMsgWorker,
@@ -50,13 +50,13 @@ uses
   LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
   IDEProcs, DialogProcs, etMakeMsgParser, etFPCMsgFilePool, EditDefineTree,
   ParsedCompilerOpts, CompilerOptions, Compiler, SearchPathProcs, BaseBuildManager,
-  ApplicationBundle, ExtTools, MiscOptions,
+  ApplicationBundle, ExtTools, MiscOptions, etFPCMsgParser, etPas2jsMsgParser,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageSystem,
   // IdeProject
   Project, ProjectResources, ProjectIcon,
   // IDE
-  LazarusIDEStrConsts, LfmUnitResource, etFPCMsgParser, etPas2jsMsgParser;
+  LazarusIDEStrConsts, LfmUnitResource;
 
 type
 

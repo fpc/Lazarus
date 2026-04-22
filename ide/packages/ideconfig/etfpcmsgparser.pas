@@ -44,9 +44,9 @@ uses
   IDEExternToolIntf, PackageIntf, ProjectIntf, MacroIntf, LazMsgWorker,
   // IdeConfig
   EnvironmentOpts, LazConf, SearchPathProcs, etMakeMsgParser, etFPCMsgFilePool,
-  FindProjPackUnit,
+  FindProjPackUnit, IdeConfStrConsts;
   // IDE
-  LazarusIDEStrConsts;
+  //LazarusIDEStrConsts;
 
 const
   FPCMsgIDCompiling = 3104;

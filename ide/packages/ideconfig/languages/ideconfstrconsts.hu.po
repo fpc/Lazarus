@@ -31,10 +31,20 @@ msgstr "A Lazarus építése nem sikerült"
 msgid "cannot execute \"%s\""
 msgstr "nem futtatható: \"%s\""
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr "Nem található: %s"
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
 msgstr "nem található a program \"%s\""
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
+msgstr "Nem található érvényes %s.ppu"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -44,9 +54,29 @@ msgstr ""
 msgid "Error"
 msgstr "Hiba"
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ". Ellenőrizni kell, hogy a(z) %s csomag létrehozza-e a(z) %s.ppu-t, hogy semmi sem törli ezt a fájlt és hogy nem két csomag használja-e a unit forrását!"
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr ". Ellenőrizni kell, hogy a(z) %s csomag szerepel-e a függőségek között"
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ". Ellenőrizze a(z) %s csomag keresési útvonalát, próbáljon tiszta újraépítést, ellenőrizze a kidolgozás uses szakaszát!"
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Lazarus forráskód tisztítása"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr "Csomag tisztítása: \"%s\""
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -79,6 +109,10 @@ msgstr "Fordító fájlneve"
 #| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Tipp: A fordító útvonala beállítható a menüben: Eszközök -> Beállítások -> Fájlok -> Fordító útvonala"
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr "A részletekért -vd használatával kell újrafordítani. Másolatokat kell keresni!"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -155,6 +189,11 @@ msgstr ""
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr ""
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
+msgstr ". Engedélyezze a(z) %s \"Unit használatát\" a(z) %s csomagban!"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -288,6 +327,11 @@ msgstr "IDE építési beállítások"
 msgid "Ignore and continue"
 msgstr "Kihagyás és folytatás"
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr ", összeférhetetlen ppu=%s"
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -366,6 +410,10 @@ msgstr "Futtatható fájl készítése"
 msgid "Make not found"
 msgstr "Make nem található"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr "Győződjön meg róla, hogy az egyes csomagok ppu fájljai annak kimeneti könyvtárában találhatók!"
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -380,6 +428,10 @@ msgstr "hiányzó futtatható állomány: \"%s\""
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Mód: %s"
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ", többpéldányos csomagok: "
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
@@ -397,6 +449,15 @@ msgstr "Nincs megvalósítva"
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr "Egyelőre nincs megvalósítva: %s%s"
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr " a(z) %s csomagban"
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr " a Projektfelügyelőben"
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -427,6 +488,15 @@ msgstr "Felülírja a fájlt?"
 msgid "Overwrite file on disk"
 msgstr "Lemezen lévő fájl felülírása"
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ", %s csomag"
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr "A csomag számára meg kell adni a kimeneti könyvtárat."
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -448,6 +518,11 @@ msgstr "Könyvtár létrehozása nem lehetséges"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "A(z) \"%s\" fájl törlése nem lehetséges"
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr "ppu egy nem megfelelő könyvtárban: \"%s\""
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -735,6 +810,11 @@ msgstr "Szokásos fordító-fájlnév. Általában így kezdődik: fpc, ppc vagy
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr "A pas2js fordító fájlneve nem szokványos. A név eleje általában pas2js."
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
+msgstr ", melyet a(z) %s használ"
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"

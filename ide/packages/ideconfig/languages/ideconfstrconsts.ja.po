@@ -32,10 +32,20 @@ msgstr "Lazarusの構築の失敗"
 msgid "cannot execute \"%s\""
 msgstr "\"%s\"を実行できません"
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr "%sが見つかりません"
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
 msgstr "実行ファイル\"%s\"が見つかりません"
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
+msgstr "有効な%s.ppuが見つかりません"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -45,9 +55,29 @@ msgstr ""
 msgid "Error"
 msgstr "エラー"
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr "パッケージ%sが%s.ppuを作成し、そのファイルが削除されず、他のパッケージがそのユニットソースにアクセスしないかどうかをチェック"
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr "パッケージ%sが依存関係にあるかどうかをチェック"
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr "パッケージ%sの検索パスをチェックし、クリーン構築を試み、実装uses節をチェックする。"
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Lazarusソースを掃除"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr "パッケージ\"%s\"を掃除"
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -80,6 +110,10 @@ msgstr "コンパイラファイル名"
 #| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "ヒント: コンパイラパスの設定は、ツール→オプション→ファイル→コンパイラパスでできます。"
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr "より詳細は -vdを付けてコンパイル。重複をチェック"
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -156,6 +190,11 @@ msgstr ""
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr ""
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
+msgstr "ユニット%s（パッケージ%sの）\"Use Unit\"フラグを有効に"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -289,6 +328,11 @@ msgstr "IDE 構築オプション"
 msgid "Ignore and continue"
 msgstr "無視して継続"
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr "、互換性のないppu=%s"
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -367,6 +411,10 @@ msgstr "実行ファイルを作成"
 msgid "Make not found"
 msgstr "Makeが見つかりません"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr "あるパッケージのすべてのppuファイルがその出力ディレクトリにあることを確認して下さい。"
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -381,6 +429,10 @@ msgstr "見つからない実行ファイル \"%s\""
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Mode: %s"
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ", 複数のパッケージ"
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
@@ -398,6 +450,15 @@ msgstr "実装されていません"
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr "まだ実装されていません:%s%s"
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr ""
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr ""
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -428,6 +489,15 @@ msgstr "ファイルを上書きしますか?"
 msgid "Overwrite file on disk"
 msgstr "ディスク上のファイルを上書き"
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ", パッケージ %s"
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr "パッケージは出力ディレクトリを必要とします。"
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -449,6 +519,11 @@ msgstr "ディレクトリを作成できません。"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "ファイル\"%s\"を削除できません。"
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr "間違ったディレクトリのppu=%s"
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -736,6 +811,11 @@ msgstr "普通でないコンパイラ名。ふつうfpc, ppc あるいは ppcro
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr ""
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
+msgstr "%sに用いられている"
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"

@@ -31,10 +31,20 @@ msgstr "ການສ້າງ Lazarus ລົ້ມເຫຼວ"
 msgid "cannot execute \"%s\""
 msgstr "ບໍ່ສາມາດປະຕິບັດການ \"%s\""
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr "ບໍ່ສາມາດຊອກຫາ %s"
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
 msgstr "ບໍ່ສາມາດຊອກຫາຟາຍລ໌ໂປຣແກຣມ \"%s\""
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
+msgstr "ບໍ່ສາມາດຊອກຫາ %s.ppu ທີ່ຖືກຕ້ອງ"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -44,9 +54,29 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ". ກວດສອບວ່າແພັກເກດ %s ສ້າງ %s.ppu ຫຼື ບໍ່, ກວດສອບວ່າບໍ່ມີຫຍັງລຶບຟາຍລ໌ນີ້ ແລະ ກວດສອບວ່າບໍ່ມີສອງແພັກເກດເຂົ້າເຖິງຊອດໂຄດຂອງຢູນິດ."
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr ". ກວດສອບວ່າແພັກເກດ %s ຢູ່ໃນ dependencies ຫຼື ບໍ່"
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ". ກວດສອບ path ຄົ້ນຫາຂອງແພັກເກດ %s, ລອງ clean rebuild, ກວດສອບພາກສ່ວນ implementation uses."
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "ລ້າງຊອດໂຄດ Lazarus"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr "ລ້າງແພັກເກດ \"%s\"."
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -77,6 +107,10 @@ msgstr ""
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr ""
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr "ຄອມໄພລ໌ດ້ວຍ -vd ສຳລັບລາຍລະອຽດເພີ່ມເຕີມ. ກວດສອບຄວາມຊ້ຳຊ້ອນ."
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -153,6 +187,11 @@ msgstr ""
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr ""
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
+msgstr ". ເປີດໃຊ້ງານທຸງ \"Use Unit\" ຂອງ unit %s ໃນແພັກເກັດ %s"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -286,6 +325,11 @@ msgstr ""
 msgid "Ignore and continue"
 msgstr ""
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr ", ບໍ່ເຂົ້າກັນ ppu=%s"
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -362,6 +406,10 @@ msgstr ""
 msgid "Make not found"
 msgstr "ບໍ່ພົບ Make"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr "ໃຫ້ແນ່ໃຈວ່າໄຟລ໌ ppu ທັງໝົດຂອງແພັກເກັດຢູ່ໃນໄດເຣັກທໍຣີ output ຂອງມັນ."
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -376,6 +424,10 @@ msgstr "ບໍ່ພົບ executable \"%s\""
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ""
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ", ຫຼາຍແພັກເກັດ: "
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
@@ -393,6 +445,15 @@ msgstr ""
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr ""
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr " ຂອງແພັກເກັດ %s"
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr " ຂອງ ຜູ້ກວດສອບໂຄງການ"
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -423,6 +484,15 @@ msgstr ""
 msgid "Overwrite file on disk"
 msgstr ""
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ", ແພັກເກັດ %s"
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr "ແພັກເກັດຕ້ອງການໂຟນເດີຜົນລັບ."
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -444,6 +514,11 @@ msgstr ""
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr ""
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr "ppu ຢູ່ໃນໂຟນເດີຜິດ=%s."
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -731,6 +806,11 @@ msgstr "ຊື່ໄຟລ໌ compiler ຜິດປົກກະຕິ. ໂດຍ
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr "ຊື່ໄຟລ໌ compiler pas2js ຜິດປົກກະຕິ. ໂດຍທົ່ວໄປມັນເລີ່ມຕົ້ນດ້ວຍ pas2js."
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
+msgstr " ຖືກໃຊ້ໂດຍ %s"
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"

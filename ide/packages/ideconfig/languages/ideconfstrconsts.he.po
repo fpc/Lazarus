@@ -32,9 +32,19 @@ msgstr "בניית לזארוס נכשלה"
 msgid "cannot execute \"%s\""
 msgstr ""
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr ""
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
+msgstr ""
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
 msgstr ""
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
@@ -45,9 +55,29 @@ msgstr ""
 msgid "Error"
 msgstr "שגיאה"
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ""
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr ""
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ""
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "נקה את קוד המקור של לזרוס"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr ""
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -80,6 +110,10 @@ msgstr "שם הקובץ של המהדר"
 #| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "טיפ: אתה יכול להגדיר את נתיב המהדר ב Environment->Environment options->Files->Compiler Path"
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr ""
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format, fuzzy
@@ -157,6 +191,11 @@ msgstr ""
 
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
+msgstr ""
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ""
 
 #: ideconfstrconsts.lisendlessloopinmacros
@@ -294,6 +333,11 @@ msgstr "אפשרויות הבניה של ה IDE "
 msgid "Ignore and continue"
 msgstr "התעלם והמשך"
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr ""
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -372,6 +416,10 @@ msgstr "קובץ ריצה של Make"
 msgid "Make not found"
 msgstr "קובץ Make לא נמצא"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr ""
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -385,6 +433,10 @@ msgstr ""
 #: ideconfstrconsts.lismode
 #, object-pascal-format
 msgid ", Mode: %s"
+msgstr ""
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
 msgstr ""
 
 #: ideconfstrconsts.lisnameofactivebuildmode
@@ -405,6 +457,15 @@ msgstr "לא ממומש"
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr "לא ממומש עדיין: %s%s"
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr ""
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr ""
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -435,6 +496,15 @@ msgstr "האם לשכתב את הקובץ מחדש?"
 msgid "Overwrite file on disk"
 msgstr "משכתב את הקובץ מחדש על דיסק"
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ""
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr ""
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -457,6 +527,11 @@ msgstr "לא ניתן ליצור את הספרייה"
 #| msgid "Unable to delete file %s%s%s."
 msgid "Unable to delete file \"%s\"."
 msgstr "לא ניתן למחוק את הקובץ %s%s%s."
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr ""
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -761,6 +836,11 @@ msgstr ""
 
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
+msgstr ""
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
 msgstr ""
 
 #: ideconfstrconsts.lisusershomedirectory

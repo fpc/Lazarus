@@ -6182,11 +6182,6 @@ msgstr "ファイルを作成できません：\"%s\""
 msgid "Cannot delete last mode."
 msgstr ""
 
-#: lazarusidestrconsts.liscannotfind
-#, object-pascal-format
-msgid "Cannot find %s"
-msgstr "%sが見つかりません"
-
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
@@ -6214,11 +6209,6 @@ msgstr "デバッグ中あるいはコンパイル中はテストできません
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "TComponentのクラスしか変更できません。"
-
-#: lazarusidestrconsts.liscantfindavalidppu
-#, object-pascal-format
-msgid "Can't find a valid %s.ppu"
-msgstr "有効な%s.ppuが見つかりません"
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
@@ -6719,17 +6709,6 @@ msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "タイムスタンプよりも中身によってディスクファイルの変更をチェック"
 
-#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
-#, object-pascal-format
-msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr "パッケージ%sが%s.ppuを作成し、そのファイルが削除されず、他のパッケージがそのユニットソースにアクセスしないかどうかをチェック"
-
-#: lazarusidestrconsts.lischeckifpackageisinthedependencies
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
-msgid ". Check if package %s is in the dependencies"
-msgstr "パッケージ%sが依存関係にあるかどうかをチェック"
-
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "ソース内の次のトークンが \"end\" で lineend + end; + lineend を返さないかどうかチェックする。"
@@ -6737,12 +6716,6 @@ msgstr "ソース内の次のトークンが \"end\" で lineend + end; + lineen
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "オプションをチェック"
-
-#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
-msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr "パッケージ%sの検索パスをチェックし、クリーン構築を試み、実装uses節をチェックする。"
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
@@ -6968,11 +6941,6 @@ msgstr ""
 #: lazarusidestrconsts.liscleanupmode
 msgid "Clean up mode"
 msgstr ""
-
-#: lazarusidestrconsts.liscleanuppackage
-#, object-pascal-format
-msgid "Clean up package \"%s\"."
-msgstr "パッケージ\"%s\"を掃除"
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -7792,10 +7760,6 @@ msgstr "コンパイル"
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
 msgstr ""
-
-#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "より詳細は -vdを付けてコンパイル。重複をチェック"
 
 #: lazarusidestrconsts.liscompiling
 #, object-pascal-format
@@ -9676,11 +9640,6 @@ msgstr ""
 msgid "Enabled only for packages."
 msgstr "パッケージのためにのみ有効"
 
-#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
-#, object-pascal-format
-msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr "ユニット%s（パッケージ%sの）\"Use Unit\"フラグを有効に"
-
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
 msgstr " LFMの国際化を有効に"
@@ -11129,11 +11088,6 @@ msgstr "パスを含むインクルードパス"
 msgid "Include, recursive"
 msgstr ""
 
-#: lazarusidestrconsts.lisincompatibleppu
-#, object-pascal-format
-msgid ", incompatible ppu=%s"
-msgstr "、互換性のないppu=%s"
-
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "正しくない設定ディレクトリが見つかりました"
@@ -12377,10 +12331,6 @@ msgstr "ソース内の文字列定数"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "同じ値の文字列"
-
-#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
-msgid "Make sure all ppu files of a package are in its output directory."
-msgstr "あるパッケージのすべてのppuファイルがその出力ディレクトリにあることを確認して下さい。"
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
@@ -14249,10 +14199,6 @@ msgstr "メッセージ色"
 msgid "Multiple directories are separated with semicolons"
 msgstr "複数のディレクトリがセミコロンで区切られています"
 
-#: lazarusidestrconsts.lismultiplepack
-msgid ", multiple packages: "
-msgstr ", 複数のパッケージ"
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "メッセージをファイル(*.txt)に保存"
@@ -14541,15 +14487,6 @@ msgstr "オブジェクトパス"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "オブジェクトインスペクタのお気に入りのタブに切り替え"
-
-#: lazarusidestrconsts.lisofpackage
-#, object-pascal-format
-msgid " of package %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisoftheprojectinspector
-msgid " of the Project Inspector"
-msgstr ""
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -14888,11 +14825,6 @@ msgstr "パッケージ"
 msgid "package %s"
 msgstr "パッケージ %s"
 
-#: lazarusidestrconsts.lispackage3
-#, object-pascal-format
-msgid ", package %s"
-msgstr ", パッケージ %s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "パッケージ情報"
@@ -14909,10 +14841,6 @@ msgstr "パッケージ名が次で始まる ..."
 #: lazarusidestrconsts.lispackagenamecontains
 msgid "Package name contains ..."
 msgstr "パッケージ名が次を含む ..."
-
-#: lazarusidestrconsts.lispackageneedsanoutputdirectory
-msgid "Package needs an output directory."
-msgstr "パッケージは出力ディレクトリを必要とします。"
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -16151,11 +16079,6 @@ msgstr "位置"
 #, object-pascal-format
 msgid "%s (position outside of source)"
 msgstr "%s (ソースの外側の位置)"
-
-#: lazarusidestrconsts.lisppuinwrongdirectory
-#, object-pascal-format
-msgid "ppu in wrong directory=%s."
-msgstr "間違ったディレクトリのppu=%s"
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -19265,11 +19188,6 @@ msgstr "Boolean値のチェックボックスを使用"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "カスタムオプションでコメントを使用"
-
-#: lazarusidestrconsts.lisusedby
-#, object-pascal-format
-msgid " used by %s"
-msgstr "%sに用いられている"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

@@ -6001,11 +6001,6 @@ msgstr "Kann die Datei \"%s\" nicht anlegen"
 msgid "Cannot delete last mode."
 msgstr "Der letzte Modus kann nicht gelöscht werden."
 
-#: lazarusidestrconsts.liscannotfind
-#, object-pascal-format
-msgid "Cannot find %s"
-msgstr "Kann %s nicht finden"
-
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
@@ -6033,11 +6028,6 @@ msgstr "Kann den Compiler nicht testen während des Debuggens oder Kompilierens.
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "Kann nur die Klasse von TComponents ändern."
-
-#: lazarusidestrconsts.liscantfindavalidppu
-#, object-pascal-format
-msgid "Can't find a valid %s.ppu"
-msgstr "Kann keine gültige %s.ppu finden"
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
@@ -6537,17 +6527,6 @@ msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "Dateiänderungen eher über den Inhalt als über den Zeitstempel ermitteln"
 
-#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
-#, object-pascal-format
-msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ". Prüfen, ob Package %s die %s.ppu erzeugt, nichts prüfen löscht diese Datei und prüft, daß keine zwei Packages Zugriff auf die Unit-Quellen haben."
-
-#: lazarusidestrconsts.lischeckifpackageisinthedependencies
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
-msgid ". Check if package %s is in the dependencies"
-msgstr ". Prüfen, ob Package %s in den Abhängigkeiten ist"
-
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Prüfen, ob der nächste Token im Quelltext ein End ist und falls nicht, Zeilenende + End; + Zeilenende zurückgeben."
@@ -6555,12 +6534,6 @@ msgstr "Prüfen, ob der nächste Token im Quelltext ein End ist und falls nicht,
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Einstellungen prüfen"
-
-#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
-msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ". Den Suchpfad von Package %s prüfen, eine saubere Neuerstellung versuchen, die uses-Abschnitte (implementation) prüfen."
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
@@ -6781,11 +6754,6 @@ msgstr ""
 #: lazarusidestrconsts.liscleanupmode
 msgid "Clean up mode"
 msgstr "Aufräum-Modus"
-
-#: lazarusidestrconsts.liscleanuppackage
-#, object-pascal-format
-msgid "Clean up package \"%s\"."
-msgstr "Package \"%s\" aufräumen."
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -7590,10 +7558,6 @@ msgstr "Kompilieren"
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
 msgstr "Mit den Projekteinstellungen kompilieren"
-
-#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "Kompilieren Sie mit -vd für weitere Details. Prüfen Sie auf Duplikate."
 
 #: lazarusidestrconsts.liscompiling
 #, object-pascal-format
@@ -9457,11 +9421,6 @@ msgstr ""
 msgid "Enabled only for packages."
 msgstr "Nur für Packages aktiviert."
 
-#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
-#, object-pascal-format
-msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ""
-
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
 msgstr "i18n für .lfm-Dateien einschalten"
@@ -10869,11 +10828,6 @@ msgstr "Include-Pfade"
 msgid "Include, recursive"
 msgstr ""
 
-#: lazarusidestrconsts.lisincompatibleppu
-#, object-pascal-format
-msgid ", incompatible ppu=%s"
-msgstr ", inkompatible ppu=%s"
-
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Fehlerhaftes Konfigurationsverzeichnis gefunden"
@@ -12070,10 +12024,6 @@ msgstr "Stringkonstanten im Quelltext"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Strings mit gleichen Werten:"
-
-#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
-msgid "Make sure all ppu files of a package are in its output directory."
-msgstr "Stellen Sie sicher, daß alle .ppu-Dateien eines Packages sich in dessem Ausgabeverzeichnis befinden."
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
@@ -13886,10 +13836,6 @@ msgstr "Nachrichten-Farben"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Mehrfache Verzeichnisse werden mit Semikolons getrennt"
 
-#: lazarusidestrconsts.lismultiplepack
-msgid ", multiple packages: "
-msgstr ", mehrfache Packages: "
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Meldungen in eine Datei (*.txt) schreiben"
@@ -14178,15 +14124,6 @@ msgstr "Objektpfad"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Zum Favoriten-Reiter des Objektinspektors umschalten"
-
-#: lazarusidestrconsts.lisofpackage
-#, object-pascal-format
-msgid " of package %s"
-msgstr " von Package %s"
-
-#: lazarusidestrconsts.lisoftheprojectinspector
-msgid " of the Project Inspector"
-msgstr " des Projektinspektors"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -14514,11 +14451,6 @@ msgstr "Package"
 msgid "package %s"
 msgstr "Package %s"
 
-#: lazarusidestrconsts.lispackage3
-#, object-pascal-format
-msgid ", package %s"
-msgstr ", Package %s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Package-Info"
@@ -14535,10 +14467,6 @@ msgstr "Name des Packages beginnt mit ..."
 #: lazarusidestrconsts.lispackagenamecontains
 msgid "Package name contains ..."
 msgstr "Name des Packages enthält ..."
-
-#: lazarusidestrconsts.lispackageneedsanoutputdirectory
-msgid "Package needs an output directory."
-msgstr "Package benötigt ein Ausgabeverzeichnis."
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -15767,11 +15695,6 @@ msgstr "Position"
 #, object-pascal-format
 msgid "%s (position outside of source)"
 msgstr "%s (Position außerhalb des Quelltexts)"
-
-#: lazarusidestrconsts.lisppuinwrongdirectory
-#, object-pascal-format
-msgid "ppu in wrong directory=%s."
-msgstr "ppu im falschen Verzeichnis=%s."
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -18809,11 +18732,6 @@ msgstr "Verwende CheckBox für boolesche Werte"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr ""
-
-#: lazarusidestrconsts.lisusedby
-#, object-pascal-format
-msgid " used by %s"
-msgstr " verwendet von %s"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

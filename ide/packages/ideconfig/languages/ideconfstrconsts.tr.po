@@ -31,10 +31,20 @@ msgstr "Lazarus'u derlemek başarısız oldu"
 msgid "cannot execute \"%s\""
 msgstr "\"%s\" çalıştırılamıyor"
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr "%s  bulunamadı"
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
 msgstr "\"%s\" çalıştırılabilir dosyası bulamıyor"
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
+msgstr "Geçerli bir %s.ppu bulunamadı"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -44,9 +54,29 @@ msgstr ""
 msgid "Error"
 msgstr "Hata"
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ". %s paketinin %s.ppu dosyasını oluşturup oluşturmadığını kontrol edin, bu dosyayı hiçbir şeyin silmediğini kontrol edin ve iki paketin birim kaynağına erişimi olmadığını kontrol edin."
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr "%s paketinin bağımlılıklarda olup olmadığını kontrol edin"
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ". %s paketinin arama yolunu kontrol edin, temiz bir yeniden oluşturmayı deneyin, implementation uses bölümünü kontrol edin."
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Lazarus Kaynağını Temizle"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr "\"%s\" Paketini temizle ."
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -79,6 +109,10 @@ msgstr "Derleyici dosya adı"
 #| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "İpucu: Araçlar -> Seçenekler -> Dosyalar -> Derleyici Yolu'nda derleyici yolunu ayarlayabilirsiniz"
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr "Daha fazla ayrıntı için -vd ile derleyin.Yinelenenleri kontrol edin."
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -155,6 +189,11 @@ msgstr ""
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr ""
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
+msgstr ". Paket %s içindeki %s birimi \" Birimi kullan\" bayrağını etkinleştir"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -288,6 +327,11 @@ msgstr "IDE kurulum seçenekleri"
 msgid "Ignore and continue"
 msgstr "Yoksay ve devam et"
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr ", Uyumsuz ppu = %s"
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -366,6 +410,10 @@ msgstr "Yürütülebilir Dosyayı Yap"
 msgid "Make not found"
 msgstr "Make Bulunamadı"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr "Bir paketin tüm ppu dosyalarının çıkış dizininde olduğundan emin olun."
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -380,6 +428,10 @@ msgstr "eksik çalıştırılabilir \"%s\""
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Mod: %s"
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ", Birden çok paket: "
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
@@ -397,6 +449,15 @@ msgstr "Uygulanmadı"
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr "Henüz uygulanmadı: %s %s"
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr " %s paketinin"
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr " Proje denetleyicisinin"
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -427,6 +488,15 @@ msgstr "Dosyanın üzerine yazılsın mı?"
 msgid "Overwrite file on disk"
 msgstr "Diskdeki dosya üzerine yaz"
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ", paket %s"
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr "Paket bir çıkış dizinine ihtiyaç duyar."
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -448,6 +518,11 @@ msgstr "Dizin oluşturulamadı"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Dosya \"%s\" silinemiyor."
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr "ppu yanlış dizinde = %s."
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -735,6 +810,11 @@ msgstr "Alışılmadık derleyici dosya adı Genellikle fpc, ppc veya ppcross il
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr "Olağandışı pas2js derleyici dosya adı. Genellikle pas2js ile başlar."
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
+msgstr " %s tarafından kullanılıyor"
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"

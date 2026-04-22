@@ -31,10 +31,20 @@ msgstr "Не вдалось зібрати Lazarus"
 msgid "cannot execute \"%s\""
 msgstr "неможливо виконати \"%s\""
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr "Не вдалось знайти %s"
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
 msgstr "не вдалось знайти виконуваний файл \"%s\""
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
+msgstr "Неможливо знайти правильний %s.ppu"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -44,9 +54,29 @@ msgstr ""
 msgid "Error"
 msgstr "Помилка"
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ". Перевірте, що пакунок %s створює %s.ppu і цей файл ніщо не видаляє. Також переконайтесь, що два пакунки одночасно не мають доступу до сирців модуля."
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr ". Перевірте, чи є пакунок %s у списку залежностей"
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ". Перевірте список шляхів пошуку пакунка %s, спробуйте перезібрати з очищенням, перевірте вирази Uses у секціях Implementation."
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Очистити коди Lazarus"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr "Очистити пакунок \"%s\"."
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -79,6 +109,10 @@ msgstr "Назва файлу компілятора"
 #| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Довідка: Ви можете задати шлях до компілятора в Інструменти->Параметри->Файли->Шлях до компілятора"
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr "Для деталізації компілювати з -vd. Перевірка дублів."
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -155,6 +189,11 @@ msgstr ""
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr ""
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
+msgstr ". Встановіть прапорець \"Використовувати модуль\" для модуля %s у пакунку %s"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -288,6 +327,11 @@ msgstr "Параметри збирання ІСР"
 msgid "Ignore and continue"
 msgstr "Знехтувати і продовжити"
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr ", несумісний PPU=%s"
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -366,6 +410,10 @@ msgstr "Створити виконуваний"
 msgid "Make not found"
 msgstr "Make не знайдено"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr "Пакунку необхідна вихідна тека."
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -380,6 +428,10 @@ msgstr "відсутній виконуваний файл \"%s\""
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Режим: %s"
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ", декілька пакунків:"
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
@@ -397,6 +449,15 @@ msgstr "Не реалізовано"
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr "Ще не реалізовано:%s%s"
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr " пакунка %s"
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr " в інспекторі проєкту"
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -427,6 +488,15 @@ msgstr "Переписати файл?"
 msgid "Overwrite file on disk"
 msgstr "Переписати файл на диску"
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ", пакунок %s"
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr "Пакунку необхідна вихідна тека."
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -448,6 +518,11 @@ msgstr "Неможливо створити теку"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Неможливо видалити файл \"%s\"."
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr "PPU у неправильній теці=%s."
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -735,6 +810,11 @@ msgstr "Незвичайна назва компілятора. Зазвичай
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr "Незвична назва файлу компілятора pas2js. Зазвичай вона починається з pas2js."
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
+msgstr ", використаний в %s"
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"

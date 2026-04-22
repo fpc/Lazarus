@@ -27,6 +27,29 @@ resourcestring
   lisOS = ', OS: %s';
   lisCPU = ', CPU: %s';
   lisTarget2 = ', Target: %s';
+  // Parsers
+  lisCanTFindAValidPpu = 'Can''t find a valid %s.ppu';
+  lisCannotFind = 'Cannot find %s';
+  lisUsedBy = ' used by %s';
+  lisIncompatiblePpu = ', incompatible ppu=%s';
+  lisPackage3 = ', package %s';
+  lisMultiplePack = ', multiple packages: ';
+  lisPackageNeedsAnOutputDirectory = 'Package needs an output directory.';
+  lisMakeSureAllPpuFilesOfAPackageAreInItsOutputDirecto = 'Make sure all ppu '
+    +'files of a package are in its output directory.';
+  lisCleanUpPackage = 'Clean up package "%s".';
+  lisPpuInWrongDirectory = 'ppu in wrong directory=%s.';
+  lisCheckSearchPathPackageTryACleanRebuildCheckImpleme = '. Check search path of'
+    +' package %s, try a clean rebuild, check implementation uses sections.';
+  lisCheckIfPackageIsInTheDependencies = '. Check if package %s is in the dependencies';
+  lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil = '. Check if package '
+    +'%s creates %s.ppu, check nothing deletes this file and check that no two'
+    +' packages have access to the unit source.';
+  lisEnableFlagUseUnitOfUnitInPackage = '. Enable flag "Use Unit" of unit %s in package %s';
+  lisOfTheProjectInspector = ' of the Project Inspector';
+  lisOfPackage = ' of package %s';
+  lisCompileWithVdForMoreDetailsCheckForDuplicates = 'Compile with -vd '
+    +'for more details. Check for duplicates.';
   // IDE Builder and Build Profiles (Misc Options)
   lisCleanLazarusSource = 'Clean Lazarus Source';
   lisBuildIDE = 'Build IDE';
@@ -100,7 +123,6 @@ resourcestring
   lisPrimaryConfigPath = 'Primary config path';
   lisSecondaryConfigPath = 'Secondary config path';
   lisFileExtensionOfPrograms = 'File extension of programs';
-
   //Initial setup
   lisFoundVersionExpected = 'Found version %s, expected %s';
   lisInvalidVersionIn = 'invalid version in %s';
@@ -123,7 +145,6 @@ resourcestring
   lisFileNotFound3 = 'file %s not found';
   lisFileNotFound4 = 'file not found';
   lisPpuNotFoundCheckYourFpcCfg = '%s.ppu not found. Check your fpc.cfg.';
-
   // External tools
   lisExitCode = 'Exit code %s';
   lisParser = 'parser "%s": %s';

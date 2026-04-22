@@ -37,10 +37,20 @@ msgstr "Сборка Lazarus не удалась"
 msgid "cannot execute \"%s\""
 msgstr "невозможно запустить на исполнение \"%s\""
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr "Невозможно найти %s"
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
 msgstr "невозможно найти исполнимый файл \"%s\""
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
+msgstr "Невозможно найти корректный %s.ppu"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -50,9 +60,29 @@ msgstr "Заголовок активного режима сборки"
 msgid "Error"
 msgstr "Ошибка"
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ". Проверьте, что пакет %s создаёт %s.ppu и этот файл ничем не удаляется. Также убедитесь, что два пакета одновременно не имеют доступа к исходному коду модуля."
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr ". Проверьте, что пакет %s имеется в списке зависимостей"
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ". Проверьте список путей поиска пакета %s, попробуйте пересобрать с очисткой, проверьте выражения Uses в секциях Implementation."
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Очистка каталога исходного кода Lazarus"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr "Удалите пакет \"%s\"."
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -83,6 +113,10 @@ msgstr "Имя файла компилятора"
 #: ideconfstrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Подсказка: задать исполнимый файл компилятора можно в Сервис -> Параметры -> Файлы -> Исполнимый файл компилятора"
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr "Соберите с параметром -vd для получения подробностей. Убедитесь в отсутствии дубликатов."
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -159,6 +193,11 @@ msgstr "Использовать модуль HeapTrc"
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
 msgstr "Использовать модуль LineInfo"
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
+msgstr ". Включите флаг \"Использовать модуль\" для модуля %s в пакете %s"
 
 #: ideconfstrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -292,6 +331,11 @@ msgstr "Параметры сборки IDE"
 msgid "Ignore and continue"
 msgstr "Игнорировать и продолжить"
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr ", несовместимый PPU=%s"
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -368,6 +412,10 @@ msgstr "Собрать исполнимый файл"
 msgid "Make not found"
 msgstr "Не найдена Make"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr "Убедитесь, что все файлы PPU пакета находятся в его каталоге вывода."
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -382,6 +430,10 @@ msgstr "исполнимый файл \"%s\" отсутствует"
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", режим: %s"
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ", несколько пакетов: "
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
@@ -399,6 +451,15 @@ msgstr "Не реализовано"
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr "Ещё не реализовано:%s%s"
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr " пакета %s"
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr " в инспекторе проекта"
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -429,6 +490,15 @@ msgstr "Перезаписать файл?"
 msgid "Overwrite file on disk"
 msgstr "Перезаписать файл на диске"
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ", пакет %s"
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr "Пакету требуется каталог вывода."
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -450,6 +520,11 @@ msgstr "Невозможно создать каталог"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Невозможно удалить файл \"%s\"."
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr "PPU в неверном каталоге=%s."
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -737,6 +812,11 @@ msgstr "Необычное имя файла компилятора. Как пр
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr "Необычное имя файла компилятора pas2js. Как правило, оно начинается с pas2js."
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
+msgstr ", используемый в %s"
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"

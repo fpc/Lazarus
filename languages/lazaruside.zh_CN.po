@@ -6009,11 +6009,6 @@ msgstr "不能创建文件\"%s\""
 msgid "Cannot delete last mode."
 msgstr "不能最后的模式."
 
-#: lazarusidestrconsts.liscannotfind
-#, object-pascal-format
-msgid "Cannot find %s"
-msgstr "不能找到%s"
-
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
@@ -6041,11 +6036,6 @@ msgstr "不能测试编译器 当调试中或编译中."
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "仅能更改TComponents的类."
-
-#: lazarusidestrconsts.liscantfindavalidppu
-#, object-pascal-format
-msgid "Can't find a valid %s.ppu"
-msgstr "不能找到有效的%s.ppu"
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
@@ -6545,17 +6535,6 @@ msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "通过文件内容而不是时间戳来检查磁盘文件是否更改"
 
-#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
-#, object-pascal-format
-msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ". 检查包 %s 是否创建了 %s.ppu，检查没有任何操作会删除此文件，并检查没有两个包可以访问该单元源代码。"
-
-#: lazarusidestrconsts.lischeckifpackageisinthedependencies
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
-msgid ". Check if package %s is in the dependencies"
-msgstr ".检查是否软件包%s在依赖关系中"
-
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "检查源中的下一个标记是否为“end”，如果不是，则返回“LineEnding + end; + LineEnding”。"
@@ -6563,12 +6542,6 @@ msgstr "检查源中的下一个标记是否为“end”，如果不是，则返
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "检查选项"
-
-#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
-msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ". 核查软件包%s的搜索路径,尝试一次清理重新构建,核查implementation uses分句."
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
@@ -6791,11 +6764,6 @@ msgstr "清理 + 编译构建"
 #: lazarusidestrconsts.liscleanupmode
 msgid "Clean up mode"
 msgstr ""
-
-#: lazarusidestrconsts.liscleanuppackage
-#, object-pascal-format
-msgid "Clean up package \"%s\"."
-msgstr "清理软件包\"%s\"."
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -7600,10 +7568,6 @@ msgstr "编译"
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
 msgstr "编译 带有项目设置"
-
-#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "编译时使用-vd以获得更多详细信息.检查重复项."
 
 #: lazarusidestrconsts.liscompiling
 #, object-pascal-format
@@ -9469,11 +9433,6 @@ msgstr "发布的目标目录可以是相对路径或为空。"
 msgid "Enabled only for packages."
 msgstr "仅对软件包启用."
 
-#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
-#, object-pascal-format
-msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ". 启用单元 %s （软件包 %s） 的 \"Use Unit\" 标志"
-
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
 msgstr "禁用I18N(国际化)对于LFM"
@@ -10883,11 +10842,6 @@ msgstr "包含路径"
 msgid "Include, recursive"
 msgstr "包括，递归"
 
-#: lazarusidestrconsts.lisincompatibleppu
-#, object-pascal-format
-msgid ", incompatible ppu=%s"
-msgstr ",不兼容ppu=%s"
-
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "找到不正确的配置目录"
@@ -12111,10 +12065,6 @@ msgstr "字符串常量在源文件中"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "字符串带有相同的值:"
-
-#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
-msgid "Make sure all ppu files of a package are in its output directory."
-msgstr "确保员工软件包的所有ppu文件在它的输出目录中。"
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
@@ -13942,10 +13892,6 @@ msgstr "信息颜色"
 msgid "Multiple directories are separated with semicolons"
 msgstr "多个目录被使用分号分开"
 
-#: lazarusidestrconsts.lismultiplepack
-msgid ", multiple packages: "
-msgstr ",多个软件包: "
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "保存信息到文件 (*.txt)"
@@ -14234,15 +14180,6 @@ msgstr "对象路径"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "切换到 对象查看器 的收藏夹标签页"
-
-#: lazarusidestrconsts.lisofpackage
-#, object-pascal-format
-msgid " of package %s"
-msgstr " 属于软件包%s"
-
-#: lazarusidestrconsts.lisoftheprojectinspector
-msgid " of the Project Inspector"
-msgstr " 属于项目查看器"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -14574,11 +14511,6 @@ msgstr "软件包"
 msgid "package %s"
 msgstr "软件包%s"
 
-#: lazarusidestrconsts.lispackage3
-#, object-pascal-format
-msgid ", package %s"
-msgstr ",软件包%s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "软件包信息"
@@ -14595,10 +14527,6 @@ msgstr "软件包名称开头为 ..."
 #: lazarusidestrconsts.lispackagenamecontains
 msgid "Package name contains ..."
 msgstr "软件包名称包含 ..."
-
-#: lazarusidestrconsts.lispackageneedsanoutputdirectory
-msgid "Package needs an output directory."
-msgstr "软件包需要输出目录."
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -15827,11 +15755,6 @@ msgstr "位置"
 #, object-pascal-format
 msgid "%s (position outside of source)"
 msgstr "%s(位置在源代码外面)"
-
-#: lazarusidestrconsts.lisppuinwrongdirectory
-#, object-pascal-format
-msgid "ppu in wrong directory=%s."
-msgstr "ppu在错误目录=%s."
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -18877,11 +18800,6 @@ msgstr "为布尔值使用复选框"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "在自定义选项中使用注释"
-
-#: lazarusidestrconsts.lisusedby
-#, object-pascal-format
-msgid " used by %s"
-msgstr " 由 %s 使用"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

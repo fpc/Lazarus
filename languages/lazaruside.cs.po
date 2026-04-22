@@ -6119,11 +6119,6 @@ msgstr "Nelze vytvořit soubor \"%s\""
 msgid "Cannot delete last mode."
 msgstr "Nelze odstranit poslední režim."
 
-#: lazarusidestrconsts.liscannotfind
-#, object-pascal-format
-msgid "Cannot find %s"
-msgstr "Nelze najít %s"
-
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
@@ -6151,11 +6146,6 @@ msgstr "Nelze testovat překladač během ladění/překladu."
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "Změnit lze pouze třídu dědící TComponent."
-
-#: lazarusidestrconsts.liscantfindavalidppu
-#, object-pascal-format
-msgid "Can't find a valid %s.ppu"
-msgstr "Nelze najít validní %s.ppu"
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
@@ -6655,17 +6645,6 @@ msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "Kontrolovat změny v souborech na disku raději podle obsahu než podle času"
 
-#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
-#, object-pascal-format
-msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ". Zkontrolujte, jestli balíček %s vytváří %s.ppu, jestli tento soubor nic nemaže a jestli žádné dva balíčky nemají přístup k zdroji jednotky."
-
-#: lazarusidestrconsts.lischeckifpackageisinthedependencies
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
-msgid ". Check if package %s is in the dependencies"
-msgstr ". Zkontrolujte, jestli je balíček %s v seznamu závislostí"
-
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "Zkontrolovat zda další element ve zdrojovém kódu je \"end\". Pokud ne, vrať \"LineEnding + end; + LineEnding\"."
@@ -6673,12 +6652,6 @@ msgstr "Zkontrolovat zda další element ve zdrojovém kódu je \"end\". Pokud n
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Zkontrolovat nastavení"
-
-#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-#, object-pascal-format
-msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
-msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ". Zkontrolujte cestu pro balíčku %s, zkuste čisté sestavení, zkontrolujte sekci 'uses' sekce 'implementation'."
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
@@ -6904,11 +6877,6 @@ msgstr ""
 #: lazarusidestrconsts.liscleanupmode
 msgid "Clean up mode"
 msgstr ""
-
-#: lazarusidestrconsts.liscleanuppackage
-#, object-pascal-format
-msgid "Clean up package \"%s\"."
-msgstr "Vyčistit balíček \"%s\"."
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -7728,10 +7696,6 @@ msgstr "Přeložit"
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
 msgstr ""
-
-#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "Přeložit s -vd pro více podrobností. Kontroluje na duplicity."
 
 #: lazarusidestrconsts.liscompiling
 #, object-pascal-format
@@ -9608,11 +9572,6 @@ msgstr "Cílový adresář pro zveřejnění je buď relativní cesta nebo je pr
 msgid "Enabled only for packages."
 msgstr "Povolit pouze pro balíčky."
 
-#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
-#, object-pascal-format
-msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ". Povolit příznak \"Použít jednotku\" jednotky %s v balíčku %s"
-
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
 msgstr "Zapnout I18N pro LFM"
@@ -11059,11 +11018,6 @@ msgstr "Cesty pro začleněné soubory"
 msgid "Include, recursive"
 msgstr ""
 
-#: lazarusidestrconsts.lisincompatibleppu
-#, object-pascal-format
-msgid ", incompatible ppu=%s"
-msgstr ", nekompatibilní ppu=%s"
-
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Nalezen neplatný konfigurační adresář"
@@ -12300,10 +12254,6 @@ msgstr "Konstantní řetězec ve zdroji"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Řetězec se stejnou hodnotou:"
-
-#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
-msgid "Make sure all ppu files of a package are in its output directory."
-msgstr "Ujistěte se, že všechny ppu soubor balíčku jsou v jeho výstupním adresáři."
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
@@ -14170,10 +14120,6 @@ msgstr "Barvy zpráv"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Více adresářů je odděleno středníkem"
 
-#: lazarusidestrconsts.lismultiplepack
-msgid ", multiple packages: "
-msgstr ", více balíčků: "
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Uložit zprávy do souboru (*.txt)"
@@ -14462,15 +14408,6 @@ msgstr "cesta objektu"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Přepnout na záložku Oblíbené v Inspektoru Objektů"
-
-#: lazarusidestrconsts.lisofpackage
-#, object-pascal-format
-msgid " of package %s"
-msgstr " balíčku %s"
-
-#: lazarusidestrconsts.lisoftheprojectinspector
-msgid " of the Project Inspector"
-msgstr " Průzkumníka Projektu"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -14806,11 +14743,6 @@ msgstr "Balíček"
 msgid "package %s"
 msgstr "balíček %s"
 
-#: lazarusidestrconsts.lispackage3
-#, object-pascal-format
-msgid ", package %s"
-msgstr ", balíček %s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Informace balíčku"
@@ -14827,10 +14759,6 @@ msgstr "Jméno balíčku začíná s..."
 #: lazarusidestrconsts.lispackagenamecontains
 msgid "Package name contains ..."
 msgstr "Jméno balíčku obsahuje..."
-
-#: lazarusidestrconsts.lispackageneedsanoutputdirectory
-msgid "Package needs an output directory."
-msgstr "Balíček vyžaduje výstupní adresář."
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -16062,11 +15990,6 @@ msgstr "Pozice"
 #, object-pascal-format
 msgid "%s (position outside of source)"
 msgstr "%s (pozice vně zdroje)"
-
-#: lazarusidestrconsts.lisppuinwrongdirectory
-#, object-pascal-format
-msgid "ppu in wrong directory=%s."
-msgstr "ppu ve špatném adresáři=%s."
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -19129,11 +19052,6 @@ msgstr "Použijte zaškrtávátko pro boolovské hodnoty"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Použít komentáře ve vlastních volbách"
-
-#: lazarusidestrconsts.lisusedby
-#, object-pascal-format
-msgid " used by %s"
-msgstr " užito %s"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"

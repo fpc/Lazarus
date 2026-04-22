@@ -74,7 +74,7 @@ uses
   // IdeDebugger
   BaseDebugManager, Debugger, IdeDebuggerStringConstants,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, TransferMacros, IDECmdLine, IDEProcs,
+  EnvironmentOpts, IDEOptionDefs, TransferMacros, IDECmdLine, IDEProcs, IdeConfStrConsts,
   // IdeProject
   IdeProjectStrConsts,
   // IDE units

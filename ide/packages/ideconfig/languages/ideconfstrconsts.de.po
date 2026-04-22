@@ -31,10 +31,20 @@ msgstr "Neukompilieren von Lazarus fehlgeschlagen"
 msgid "cannot execute \"%s\""
 msgstr "kann \"%s\" nicht ausführen"
 
+#: ideconfstrconsts.liscannotfind
+#, object-pascal-format
+msgid "Cannot find %s"
+msgstr "Kann %s nicht finden"
+
 #: ideconfstrconsts.liscannotfindexecutable
 #, object-pascal-format
 msgid "cannot find executable \"%s\""
 msgstr "kann ausführbare Datei \"%s\" nicht finden"
+
+#: ideconfstrconsts.liscantfindavalidppu
+#, object-pascal-format
+msgid "Can't find a valid %s.ppu"
+msgstr "Kann keine gültige %s.ppu finden"
 
 #: ideconfstrconsts.liscaptionofactivebuildmode
 msgid "Caption of active build mode"
@@ -44,9 +54,29 @@ msgstr ""
 msgid "Error"
 msgstr "Fehler"
 
+#: ideconfstrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+#, object-pascal-format
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ". Prüfen, ob Package %s die %s.ppu erzeugt, nichts prüfen löscht diese Datei und prüft, daß keine zwei Packages Zugriff auf die Unit-Quellen haben."
+
+#: ideconfstrconsts.lischeckifpackageisinthedependencies
+#, object-pascal-format
+msgid ". Check if package %s is in the dependencies"
+msgstr ". Prüfen, ob Package %s in den Abhängigkeiten ist"
+
+#: ideconfstrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+#, object-pascal-format
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ". Den Suchpfad von Package %s prüfen, eine saubere Neuerstellung versuchen, die uses-Abschnitte (implementation) prüfen."
+
 #: ideconfstrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Lazarus-Quelltext aufräumen"
+
+#: ideconfstrconsts.liscleanuppackage
+#, object-pascal-format
+msgid "Clean up package \"%s\"."
+msgstr "Package \"%s\" aufräumen."
 
 #: ideconfstrconsts.liscodetoolsdefswriteerror
 msgid "Write error"
@@ -79,6 +109,10 @@ msgstr "Compilerdateiname"
 #| msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler executable in Tools -> Options-> Files -> Compiler executable"
 msgstr "Anmerkung: Sie können den Compilerpfad setzen unter Werkzeuge -> Einstellungen -> Umgebung -> Dateien -> Compilerpfad"
+
+#: ideconfstrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "Compile with -vd for more details. Check for duplicates."
+msgstr "Kompilieren Sie mit -vd für weitere Details. Prüfen Sie auf Duplikate."
 
 #: ideconfstrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -154,6 +188,11 @@ msgstr ""
 
 #: ideconfstrconsts.lisedtdefuselineinfounit
 msgid "use LineInfo unit"
+msgstr ""
+
+#: ideconfstrconsts.lisenableflaguseunitofunitinpackage
+#, object-pascal-format
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ""
 
 #: ideconfstrconsts.lisendlessloopinmacros
@@ -288,6 +327,11 @@ msgstr "Kompilieroptionen der IDE"
 msgid "Ignore and continue"
 msgstr "Übergehen und fortsetzen"
 
+#: ideconfstrconsts.lisincompatibleppu
+#, object-pascal-format
+msgid ", incompatible ppu=%s"
+msgstr ", inkompatible ppu=%s"
+
 #: ideconfstrconsts.lisinvalidmacrosin
 #, object-pascal-format
 msgid "Invalid macros in \"%s\""
@@ -366,6 +410,10 @@ msgstr "Erzeuge ausführbare Datei"
 msgid "Make not found"
 msgstr "Make nicht gefunden"
 
+#: ideconfstrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
+msgid "Make sure all ppu files of a package are in its output directory."
+msgstr "Stellen Sie sicher, daß alle .ppu-Dateien eines Packages sich in dessem Ausgabeverzeichnis befinden."
+
 #: ideconfstrconsts.lismissingdirectory
 #, object-pascal-format
 msgid "missing directory \"%s\""
@@ -380,6 +428,10 @@ msgstr "fehlende ausführbare Datei \"%s\""
 #, object-pascal-format
 msgid ", Mode: %s"
 msgstr ", Modus: %s"
+
+#: ideconfstrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ", mehrfache Packages: "
 
 #: ideconfstrconsts.lisnameofactivebuildmode
 msgid "Name of active build mode"
@@ -397,6 +449,15 @@ msgstr "Nicht implementiert"
 #, object-pascal-format
 msgid "Not implemented yet:%s%s"
 msgstr "Noch nicht implementiert:%s%s"
+
+#: ideconfstrconsts.lisofpackage
+#, object-pascal-format
+msgid " of package %s"
+msgstr " von Package %s"
+
+#: ideconfstrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr " des Projektinspektors"
 
 #: ideconfstrconsts.lisok
 msgid "OK"
@@ -427,6 +488,15 @@ msgstr "Datei überschreiben?"
 msgid "Overwrite file on disk"
 msgstr "Datei auf Datenträger überschreiben"
 
+#: ideconfstrconsts.lispackage3
+#, object-pascal-format
+msgid ", package %s"
+msgstr ", Package %s"
+
+#: ideconfstrconsts.lispackageneedsanoutputdirectory
+msgid "Package needs an output directory."
+msgstr "Package benötigt ein Ausgabeverzeichnis."
+
 #: ideconfstrconsts.lisparser
 #, object-pascal-format
 msgid "parser \"%s\": %s"
@@ -448,6 +518,11 @@ msgstr "Unfähig, das Verzeichnis anzulegen"
 #, object-pascal-format
 msgid "Unable to delete file \"%s\"."
 msgstr "Die Datei \"%s\" kann nicht gelöscht werden."
+
+#: ideconfstrconsts.lisppuinwrongdirectory
+#, object-pascal-format
+msgid "ppu in wrong directory=%s."
+msgstr "ppu im falschen Verzeichnis=%s."
 
 #: ideconfstrconsts.lisppunotfoundcheckyourfpccfg
 #, object-pascal-format
@@ -735,6 +810,11 @@ msgstr "Unüblicher Compiler-Dateiname. Üblicherweise startet er mit fpc, ppc o
 #: ideconfstrconsts.lisunusualpas2jscompilerfilenameusuallyitstartswithpa
 msgid "Unusual pas2js compiler file name. Usually it starts with pas2js."
 msgstr ""
+
+#: ideconfstrconsts.lisusedby
+#, object-pascal-format
+msgid " used by %s"
+msgstr " verwendet von %s"
 
 #: ideconfstrconsts.lisusershomedirectory
 msgid "User's home directory"

@@ -37,8 +37,6 @@ uses
   IDEExternToolIntf,
   // IdeConfig
   etFPCMsgFilePool, EnvironmentOpts, etFPCMsgParser;
-  // IDE
-
 
 type
 

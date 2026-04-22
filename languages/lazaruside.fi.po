@@ -6070,11 +6070,6 @@ msgstr "Ei voi luoda tiedostoa \"%s\""
 msgid "Cannot delete last mode."
 msgstr ""
 
-#: lazarusidestrconsts.liscannotfind
-#, object-pascal-format
-msgid "Cannot find %s"
-msgstr "Ei löydy %s"
-
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #, object-pascal-format
 msgid "Cannot find Lazarus starter:%s%s"
@@ -6102,11 +6097,6 @@ msgstr "Kääntäjää ei voi testata virheenjäljityksen tai käännöksen aika
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "Vain TComponent:sta periytyvän luokka voidaan vaihtaa."
-
-#: lazarusidestrconsts.liscantfindavalidppu
-#, object-pascal-format
-msgid "Can't find a valid %s.ppu"
-msgstr "Ei löydy kelvollista %s.ppu"
 
 #: lazarusidestrconsts.liscaptioncomparefiles
 msgid "Compare files (not for creating patches)"
@@ -6604,16 +6594,6 @@ msgstr ""
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "Tarkista tiedoston muutos sisällön eikä aikaleiman perusteella"
 
-#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
-#, object-pascal-format
-msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ". Tarkista luoko paketti %s %s.ppu:n, tarkista ettei mikään poista tätä tiedostoa ja tarkista ettei usealla paketilla ole oikeutta käännösyksikköön."
-
-#: lazarusidestrconsts.lischeckifpackageisinthedependencies
-#, object-pascal-format
-msgid ". Check if package %s is in the dependencies"
-msgstr ". Tarkista onko riippuvuus pakettiin %s määritelty"
-
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "Check if the next token in source is an \"end\" and if not return \"LineEnding + end; + LineEnding\"."
 msgstr "tarkista onko lähdekoodin seuraava tunnus 'end'. Jos ei, palauta rivinloppu + end; + rivinloppu."
@@ -6621,11 +6601,6 @@ msgstr "tarkista onko lähdekoodin seuraava tunnus 'end'. Jos ei, palauta rivinl
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Tarkista asetukset"
-
-#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-#, object-pascal-format
-msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ". Tarkista paketin %s hakupolku, yritä puhdasta uudelleen käännöstä, tarkista toteutuksen uses lauseet."
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
@@ -6851,11 +6826,6 @@ msgstr ""
 #: lazarusidestrconsts.liscleanupmode
 msgid "Clean up mode"
 msgstr ""
-
-#: lazarusidestrconsts.liscleanuppackage
-#, object-pascal-format
-msgid "Clean up package \"%s\"."
-msgstr "Siivoa paketti \"%s\"."
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -7669,10 +7639,6 @@ msgstr "Käännä"
 #: lazarusidestrconsts.liscompilewithprojectsettings
 msgid "Compile with project settings"
 msgstr ""
-
-#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
-msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "Käännä -vd option kanssa lisätietoa varten. Tarkista duplikaatit."
 
 #: lazarusidestrconsts.liscompiling
 #, object-pascal-format
@@ -9535,11 +9501,6 @@ msgstr ""
 msgid "Enabled only for packages."
 msgstr "Sallittu vain paketeille."
 
-#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
-#, object-pascal-format
-msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ". Salli lippu \"Käytä käännösyksikköä\" %s paketissa %s"
-
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
 msgstr "Salli I18N LFM:ssa"
@@ -10965,11 +10926,6 @@ msgstr "Include polut"
 msgid "Include, recursive"
 msgstr ""
 
-#: lazarusidestrconsts.lisincompatibleppu
-#, object-pascal-format
-msgid ", incompatible ppu=%s"
-msgstr ", ei-yhteensopiva ppu=%s"
-
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Löytyi väärä asetushakemisto"
@@ -12182,10 +12138,6 @@ msgstr "Tekstivakio lähdekoodissa"
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
 msgstr "Tekstit missä sama arvo:"
-
-#: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
-msgid "Make sure all ppu files of a package are in its output directory."
-msgstr "Varmista että paketin kaikki ppu tiedostot ovat käännöshakemistossa."
 
 #: lazarusidestrconsts.lismanagesourceeditors
 msgid "Manage Source Editors ..."
@@ -13993,10 +13945,6 @@ msgstr "Viestin värit"
 msgid "Multiple directories are separated with semicolons"
 msgstr "Hakemistot erotetaan puolipisteellä"
 
-#: lazarusidestrconsts.lismultiplepack
-msgid ", multiple packages: "
-msgstr ", monta pakettia: "
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Tallenna viestit tiedostoon (*.txt)"
@@ -14285,15 +14233,6 @@ msgstr "objektipolut"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Siirry muokkaimen suosikit-lehdelle"
-
-#: lazarusidestrconsts.lisofpackage
-#, object-pascal-format
-msgid " of package %s"
-msgstr " paketin %s"
-
-#: lazarusidestrconsts.lisoftheprojectinspector
-msgid " of the Project Inspector"
-msgstr "Projektinhallinnan"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -14627,11 +14566,6 @@ msgstr "Paketti"
 msgid "package %s"
 msgstr "Paketti %s"
 
-#: lazarusidestrconsts.lispackage3
-#, object-pascal-format
-msgid ", package %s"
-msgstr ", paketti %s"
-
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Paketin tietoja"
@@ -14648,10 +14582,6 @@ msgstr "Paketin nimi alkaa ..."
 #: lazarusidestrconsts.lispackagenamecontains
 msgid "Package name contains ..."
 msgstr "Paketin nimi sisältää ..."
-
-#: lazarusidestrconsts.lispackageneedsanoutputdirectory
-msgid "Package needs an output directory."
-msgstr "Paketti tarvitsee käännöshakemiston."
 
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
@@ -15881,11 +15811,6 @@ msgstr "Sijainti"
 #, object-pascal-format
 msgid "%s (position outside of source)"
 msgstr "%s (sijainti lähdekoodin ulkopuolella)"
-
-#: lazarusidestrconsts.lisppuinwrongdirectory
-#, object-pascal-format
-msgid "ppu in wrong directory=%s."
-msgstr "ppu väärässä hakemistossa=%s."
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -18938,11 +18863,6 @@ msgstr "Käytä CheckBox:ia Boolean tyypille"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Käytä kommentteja mukautetuissa asetuksissa"
-
-#: lazarusidestrconsts.lisusedby
-#, object-pascal-format
-msgid " used by %s"
-msgstr " %s käyttää"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
