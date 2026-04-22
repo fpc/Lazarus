@@ -1694,7 +1694,7 @@ var
   PkgName, Path, SubPath, CurFilename, BaseDir, BuildMode: String;
   xml: TXMLConfig;
   LazBuildMode: TLazProjectBuildMode;
-  LegacyList: Boolean;
+  LegacyList, CompatibilityMode, IsPartOfProjectDefValue: Boolean;
 begin
   if FFiles<>nil then exit; // already loaded
 
@@ -1743,13 +1743,15 @@ begin
         BaseDir:=ExtractFilePath(Filename);
         Path:='ProjectOptions/';
         ALPIFileVersion := xml.GetValue(Path+'Version/Value',0);
+        CompatibilityMode := xml.GetValue(Path+'General/Flags/CompatibilityMode/Value', pfCompatibilityMode in DefaultProjectFlags);
+        IsPartOfProjectDefValue := (ALPIFileVersion>=13) and not CompatibilityMode;
 
         Path:='ProjectOptions/Units/';
         LegacyList:=(ALPIFileVersion<=11) or xml.IsLegacyList(Path);
         Cnt:=xml.GetListItemCount(Path, 'Unit', LegacyList);
         for i := 0 to Cnt - 1 do begin
           SubPath:=Path+xml.GetListItemXPath('Unit', i, LegacyList)+'/';
-          if not xml.GetValue(SubPath+'IsPartOfProject/Value',False) then
+          if not xml.GetValue(SubPath+'IsPartOfProject/Value',IsPartOfProjectDefValue) then
             continue;
           CurFilename:=xml.GetValue(SubPath+'Filename/Value','');
           if CurFilename='' then continue;

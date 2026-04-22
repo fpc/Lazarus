@@ -283,10 +283,10 @@ type
     function GetUsesUnitName: string;
     function CreateUnitName: string;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                Merge, IgnoreIsPartOfProject: boolean;
+                                Merge, IsExternalSessionFile: boolean;
                                 FileVersion: integer); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                              SaveData, SaveSession: boolean;
+                              SaveData, SaveSession, IsExternalSessionFile: boolean;
                               UsePathDelim: TPathDelimSwitch); virtual;
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; const Factor: TDateTime);
@@ -704,7 +704,7 @@ type
     procedure SaveSessionInfo(const Path: string); virtual;
     procedure SaveOtherDefines(const Path: string);
     procedure SaveToSession; virtual;
-    procedure SaveUnits(const Path: string; SaveSession: boolean);
+    procedure SaveUnits(const Path: string; SaveSession, IsExternalSessionFile: boolean);
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
@@ -938,7 +938,7 @@ const
   OldProjectTypeNames : array[TOldProjectType] of string = (
       'Application', 'Program', 'Custom program'
     );
-  ProjectInfoFileVersion = 12;
+  ProjectInfoFileVersion = 13;
   mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];  // Same as in LCL Dialogs.
 
 var
@@ -1248,10 +1248,11 @@ end;
   TUnitInfo SaveToXMLConfig
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  SaveData, SaveSession: boolean; UsePathDelim: TPathDelimSwitch);
+  SaveData, SaveSession, IsExternalSessionFile: boolean; UsePathDelim: TPathDelimSwitch);
 var
   AFilename: String;
   s: String;
+  IsPartOfProjectDefValue: Boolean;
 begin
   // global data
   AFilename:=Filename;
@@ -1259,8 +1260,11 @@ begin
     fOnLoadSaveFilename(AFilename, False);
   XMLConfig.SetValue(Path+'Filename/Value',SwitchPathDelims(AFilename,UsePathDelim));
 
-  if SaveData then
-    XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
+  if SaveData and not IsExternalSessionFile then
+  begin
+    IsPartOfProjectDefValue:=not(pfCompatibilityMode in Project.Flags);
+    XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,IsPartOfProjectDefValue);
+  end;
 
   if SaveSession and Assigned(Project.OnSaveUnitSessionInfo) then
     Project.OnSaveUnitSessionInfo(Self);
@@ -1303,10 +1307,11 @@ end;
   TUnitInfo LoadFromXMLConfig
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; Merge, IgnoreIsPartOfProject: boolean;
+  const Path: string; Merge, IsExternalSessionFile: boolean;
   FileVersion: integer);
 var
   AFilename: string;
+  IsPartOfProjectDefValue: Boolean;
 begin
   // project data
   if not Merge then begin
@@ -1325,8 +1330,11 @@ begin
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
     FResourceBaseClassname:=XMLConfig.GetValue(Path+'ResourceBaseClassname/Value',
                           DefaultResourceBaseClassnames[FResourceBaseClass]);
-    if not IgnoreIsPartOfProject then
-      IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
+    if not IsExternalSessionFile then
+    begin
+      IsPartOfProjectDefValue:=(FileVersion>=13) and not(pfCompatibilityMode in Project.Flags);
+      IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',IsPartOfProjectDefValue);
+    end;
     AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
     if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
       fOnLoadSaveFilename(AFilename,true);
@@ -2607,7 +2615,7 @@ begin
   end;
 end;
 
-procedure TProject.SaveUnits(const Path: string; SaveSession: boolean);
+procedure TProject.SaveUnits(const Path: string; SaveSession,IsExternalSessionFile: boolean);
 var
   i, SaveUnitCount: integer;
 begin
@@ -2616,7 +2624,7 @@ begin
     if UnitMustBeSaved(Units[i],FProjectWriteFlags,SaveSession) then begin
       Units[i].SaveToXMLConfig(FXMLConfig,
         Path+'Units/'+FXMLConfig.GetListItemXPath('Unit',SaveUnitCount,UseLegacyLists)+'/',
-                                                  True,SaveSession,FCurStorePathDelim);
+                                                  True,SaveSession,IsExternalSessionFile,FCurStorePathDelim);
       inc(SaveUnitCount);
     end;
   FXMLConfig.SetListItemCount(Path+'Units/',SaveUnitCount,UseLegacyLists);
@@ -2714,7 +2722,7 @@ begin
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
     FFirstRequiredDependency,pddRequires,FCurStorePathDelim,pfCompatibilityMode in FFlags);
   // save units
-  SaveUnits(Path,FSaveSessionInLPI);
+  SaveUnits(Path,FSaveSessionInLPI,False);
 
   if Assigned(FDebuggerLink) then
     FDebuggerLink.SaveToLPI(FXMLConfig, Path);
