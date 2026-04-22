@@ -8911,12 +8911,36 @@ begin
 end;
 
 procedure TGtk3Memo.InitializeWidget;
+const
+  CDisabledCss: PChar = 'textview text:disabled, textview:disabled text { color: mix(@theme_fg_color, @theme_bg_color, 0.55); }';
 var
   ATextView: PGtkTextView;
+  AContext: PGtkStyleContext;
+  NormalColor, DisabledColor: TGdkRGBA;
+  ACssProvider: PGtkCssProvider;
+  ThemeHasDisabledColor: Boolean;
 begin
   inherited InitializeWidget;
   ATextView := PGtkTextView(getContainerWidget);
   g_signal_connect_data(ATextView^.get_buffer,'changed', TGCallBack(@MemoTextChanged), Self, nil, G_CONNECT_DEFAULT);
+
+  AContext := gtk_widget_get_style_context(PGtkWidget(ATextView));
+  gtk_style_context_get_color(AContext, GTK_STATE_FLAG_NORMAL, @NormalColor);
+  gtk_style_context_get_color(AContext, [GTK_STATE_FLAG_INSENSITIVE], @DisabledColor);
+
+  ThemeHasDisabledColor := (Abs(NormalColor.red   - DisabledColor.red)   > 0.01) or
+                           (Abs(NormalColor.green - DisabledColor.green) > 0.01) or
+                           (Abs(NormalColor.blue  - DisabledColor.blue)  > 0.01) or
+                           (Abs(NormalColor.alpha - DisabledColor.alpha) > 0.01);
+
+  if not ThemeHasDisabledColor then
+  begin
+    ACssProvider := gtk_css_provider_new();
+    gtk_css_provider_load_from_data(ACssProvider, CDisabledCss, -1, nil);
+    gtk_style_context_add_provider(AContext,
+      PGtkStyleProvider(ACssProvider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    g_object_unref(ACssProvider);
+  end;
 end;
 
 
