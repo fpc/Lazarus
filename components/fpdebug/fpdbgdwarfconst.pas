@@ -605,7 +605,26 @@ const
   // ---  ---
   DW_CFA_lo_user              = $1c;
   DW_CFA_hi_user              = $3f;
-  
+
+  (* DWARF-5 *)
+  DW_UT_compile           = 1;
+  DW_UT_type              = 2;
+  DW_UT_partial           = 3;
+  DW_UT_skeleton          = 4;
+  DW_UT_split_compile     = 5;
+  DW_UT_split_type        = 6;
+  DW_UT_lo_user           = $80;
+  DW_UT_hi_user           = $ff;
+
+  DW_LNCT_path            = 1;
+  DW_LNCT_directory_index = 2;
+  DW_LNCT_timestamp       = 3;
+  DW_LNCT_size            = 4;
+  DW_LNCT_MD5             = 5;
+  DW_LNCT_lo_user         = $2000;
+  DW_LNCT_hi_user         = $3fff;
+
+
 function DwarfTagToString(AValue: Integer): String;
 function DwarfChildrenToString(AValue: Integer): String;
 function DwarfAttributeToString(AValue: Integer): String;
