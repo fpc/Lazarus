@@ -4369,6 +4369,11 @@ begin
     Brush := QBrush_create(@Color, QtSolidPattern);
     try
       QPaintEvent_rect(QPaintEventH(Event), @R);
+      if QWidget_testAttribute(Widget, QtWA_LayoutOnEntireRect) then
+      begin
+        dec(R.Bottom, 1);
+        dec(R.Right, 1);
+      end;
       QPainter_fillRect(Painter, @R, Brush);
       QPainter_end(Painter);
     finally
