@@ -35,12 +35,10 @@ begin
 
   if AControl.LCLObject.AutoSize then
   begin
-    if not Gtk3WidgetSet.IsWayland then
+    if (AControl.LCLWidth > 0) and not Gtk3WidgetSet.IsWayland then
     begin
-      if AControl.LCLWidth > nat_width^ then
-        nat_width^ := AControl.LCLWidth;
-      if AControl.LCLWidth > min_width^ then
-        min_width^ := AControl.LCLWidth;
+      nat_width^ := AControl.LCLWidth;
+      min_width^ := AControl.LCLWidth;
     end;
     exit;
   end;
@@ -92,12 +90,10 @@ begin
 
   if AControl.LCLObject.AutoSize then
   begin
-    if not Gtk3WidgetSet.IsWayland then
+    if (AControl.LCLHeight > 0) and not Gtk3WidgetSet.IsWayland then
     begin
-      if AControl.LCLHeight > nat_height^ then
-        nat_height^ := AControl.LCLHeight;
-      if AControl.LCLHeight > min_height^ then
-        min_height^ := AControl.LCLHeight;
+      nat_height^ := AControl.LCLHeight;
+      min_height^ := AControl.LCLHeight;
     end;
     exit;
   end;
