@@ -32,27 +32,6 @@ begin
   end;
 
   ParentClass^.get_preferred_width(widget, min_width, nat_width);
-
-  if AControl.LCLObject.AutoSize then
-  begin
-    if (AControl.LCLWidth > 0) and not Gtk3WidgetSet.IsWayland then
-    begin
-      nat_width^ := AControl.LCLWidth;
-      min_width^ := AControl.LCLWidth;
-    end;
-    exit;
-  end;
-  // Custom width handling
-  if AControl.LCLWidth = 0 then
-  begin
-    min_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
-    nat_width^ := Max(min_width^, AControl.LCLObject.Width);
-  end else
-  begin
-    min_width^ := Max(min_width^ div 2, AControl.LCLWidth);
-    nat_width^ := Max(min_width^, AControl.LCLWidth);
-  end;
-
 end;
 
 procedure LCLGtkButtonGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
@@ -87,28 +66,6 @@ begin
   end;
 
   ParentClass^.get_preferred_height(widget, min_height, nat_height);
-
-  if AControl.LCLObject.AutoSize then
-  begin
-    if (AControl.LCLHeight > 0) and not Gtk3WidgetSet.IsWayland then
-    begin
-      nat_height^ := AControl.LCLHeight;
-      min_height^ := AControl.LCLHeight;
-    end;
-    exit;
-  end;
-
-  // Custom height handling
-  if AControl.LCLHeight = 0 then
-  begin
-    min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
-    nat_height^ := Max(min_height^, AControl.LCLObject.Height);
-  end else
-  begin
-    min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
-    nat_height^ := Max(min_height^, AControl.LCLHeight);
-  end;
-
 end;
 
 procedure LCLGtkButtonClassInit(klass: PGTypeClass; {%H-}data: Pointer); cdecl;

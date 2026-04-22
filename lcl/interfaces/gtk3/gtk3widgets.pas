@@ -11465,14 +11465,21 @@ procedure TGtk3Button.preferredSize(var PreferredWidth,
 var
   AWidgetClass: PGtkWidgetClass;
   AMinW, AMinH: gint;
+  SavedW, SavedH: gint;
 begin
   if not IsWidgetOk then
     exit;
-  AWidgetClass := PGtkWidgetClass(FWidget^.g_type_instance.g_class);
-  if Assigned(AWidgetClass) and Assigned(AWidgetClass^.get_preferred_width) then
-    AWidgetClass^.get_preferred_width(FWidget, @AMinW, @PreferredWidth);
-  if Assigned(AWidgetClass) and Assigned(AWidgetClass^.get_preferred_height) then
-    AWidgetClass^.get_preferred_height(FWidget, @AMinH, @PreferredHeight);
+  FWidget^.get_size_request(@SavedW, @SavedH);
+  FWidget^.set_size_request(-1, -1);
+  try
+    AWidgetClass := PGtkWidgetClass(FWidget^.g_type_instance.g_class);
+    if Assigned(AWidgetClass) and Assigned(AWidgetClass^.get_preferred_width) then
+      AWidgetClass^.get_preferred_width(FWidget, @AMinW, @PreferredWidth);
+    if Assigned(AWidgetClass) and Assigned(AWidgetClass^.get_preferred_height) then
+      AWidgetClass^.get_preferred_height(FWidget, @AMinH, @PreferredHeight);
+  finally
+    FWidget^.set_size_request(SavedW, SavedH);
+  end;
 end;
 
 { TGtk3ToggleButton }
