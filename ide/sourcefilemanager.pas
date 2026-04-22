@@ -313,6 +313,7 @@ function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
 procedure CompleteUnitComponent(AnUnitInfo: TUnitInfo;
   AComponent, AncestorComponent: TComponent);
 function AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
+function SaveAllEditorChanges: boolean;
 function SaveEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
 function GetDsgnComponentBaseClassname(aCompClass: TClass): string;
 
@@ -8676,6 +8677,11 @@ begin
       mtConfirmation, [mrOk, ContinueBtn, mrAbort]);
     if Result<>mrOk then exit(mrCancel);
   end;
+end;
+
+function SaveAllEditorChanges: boolean;
+begin
+  Result:=SaveEditorChangesToCodeCache(nil);
 end;
 
 function SaveEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;

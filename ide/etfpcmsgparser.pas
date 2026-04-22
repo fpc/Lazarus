@@ -41,12 +41,9 @@ uses
   LConvEncoding, LazUTF8, FileUtil, LazFileUtils, LazFileCache,
   LazStringUtils, LazUtilities, AvgLvlTree,
   // BuildIntf
-  IDEExternToolIntf, PackageIntf, ProjectIntf, MacroIntf,
-  // IDEIntf
-  LazIDEIntf,
+  IDEExternToolIntf, PackageIntf, ProjectIntf, MacroIntf, LazMsgWorker,
   // IdeConfig
-  EnvironmentOpts, LazConf, IDECmdLine, SearchPathProcs,
-  etMakeMsgParser, etFPCMsgFilePool,
+  EnvironmentOpts, LazConf, SearchPathProcs, etMakeMsgParser, etFPCMsgFilePool,
   // IDE
   LazarusIDEStrConsts;
 
@@ -1613,7 +1610,8 @@ procedure TIDEFPCParser.ImproveMsgUnitNotFound(aPhase: TExtToolParserSyncPhase;
     {$IFDEF VerboseFPCMsgUnitNotFound}
     debugln(['TIDEFPCParser.ImproveMsgUnitNotFound File=',CodeBuf.Filename]);
     {$ENDIF}
-    LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
+    if Assigned(OnSaveAllEditorChanges) then
+      OnSaveAllEditorChanges;
     if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
     then begin
       DebugLn('TIDEFPCParser.ImproveMsgUnitNotFound FindUnitInAllUsesSections failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
@@ -2897,8 +2895,8 @@ begin
         and (fIncludePathValidForWorkerDir=MsgWorkerDir) then begin
           // include path is valid and in worker thread
           // -> search file (todo: needs a thread safe function for star directories)
-          aFilename:=FileUtil.SearchFileInPath(aFilename,MsgWorkerDir,fIncludePath,';',
-                                 [FileUtil.sffSearchLoUpCase,sffFile]);
+          aFilename:=SearchFileInPath(aFilename,MsgWorkerDir,fIncludePath,';',
+                                      [sffSearchLoUpCase,sffFile]);
           if aFilename<>'' then
             MsgLine.Filename:=aFilename;
         end;

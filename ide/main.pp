@@ -166,7 +166,7 @@ uses
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, KeyMapping,
   IDETranslations, ExtToolDialog, ExtToolEditDlg, JumpHistoryView,
-  DesktopManager, DiskDiffsDialog, BuildLazDialog, BuildProfileManager,
+  DesktopManager, DiskDiffsDialog, BuildLazDialog,
   BuildManager, IdeBuildManager, CheckCompOptsForNewUnitDlg,
   InputhistoryWithSearchOpt, UnitDependencies, IDEFPCInfo, IDEInfoDlg,
   IDEInfoNeedBuild, ProcessList, IdeDebuggerOpts, IdeDebuggerWatchResPrinter,
@@ -205,7 +205,7 @@ type
     procedure HandleSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
     function FindHelpButton(lParent: TWinControl; out aHelpButton: TControl): boolean;
     procedure ForwardKeyToObjectInspector(Sender: TObject; Key: TUTF8Char);
-    function MainTitleChanged(const ATitle: string): boolean;
+    procedure MainTitleChanged(const ATitle: string);
     procedure OIChangedTimerTimer(Sender: TObject);
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
       var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
@@ -2249,6 +2249,7 @@ begin
   LazQuestionWorker:=@IDEQuestionDialogHandler;
   LazMsgWorker.OnShowMessage:=@ShowMessageHandler;
   LazMsgWorker.OnMainTitleChange:=@MainTitleChanged;
+  LazMsgWorker.OnSaveAllEditorChanges:=@SaveAllEditorChanges;
   TestCompilerOptions:=@CompilerOptionsDialogTest;
   CheckCompOptsAndMainSrcForNewUnitEvent:=@CheckForNewUnit;
 end;
@@ -12784,7 +12785,7 @@ begin
   end;
 end;
 
-function TMainIDE.MainTitleChanged(const ATitle: string): boolean;
+procedure TMainIDE.MainTitleChanged(const ATitle: string);
 begin
   LazarusIDE.MainBarSubTitle:=ATitle;
 end;
