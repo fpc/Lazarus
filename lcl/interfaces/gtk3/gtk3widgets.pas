@@ -11393,10 +11393,34 @@ begin
 end;
 
 procedure TGtk3Button.setText(const AValue: String);
+
+  procedure SetLabelJustifyRecursive(AWidget: PGtkWidget);
+  var
+    AChildList: PGList;
+    AItem: PGList;
+  begin
+    if not Gtk3IsWidget(AWidget) then
+      Exit;
+    if Gtk3WidgetIsA(AWidget, gtk_label_get_type) then
+      PGtkLabel(AWidget)^.set_justify(GTK_JUSTIFY_CENTER);
+    if Gtk3WidgetIsA(AWidget, gtk_container_get_type) then
+    begin
+      AChildList := PGtkContainer(AWidget)^.get_children;
+      AItem := AChildList;
+      while AItem <> nil do
+      begin
+        SetLabelJustifyRecursive(PGtkWidget(AItem^.data));
+        AItem := AItem^.next;
+      end;
+      g_list_free(AChildList);
+    end;
+  end;
+
 begin
   if IsWidgetOk then
   begin
     {%H-}PGtkButton(FWidget)^.set_label(PgChar({%H-}ReplaceAmpersandsWithUnderscores(AValue)));
+    SetLabelJustifyRecursive(FWidget);
     if LCLObject.AutoSize then
     begin
       LCLWidth := 0;
