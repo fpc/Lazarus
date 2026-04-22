@@ -11,10 +11,10 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazUtilities, Maps, Laz2_XMLCfg, LazLoggerBase,
   // CodeTools
-  CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
-  LinkScanner, CodeToolManager, CodeCache, CodeTree, StdCodeTools,
+  CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools,
+  LinkScanner, CodeToolManager, CodeCache, StdCodeTools,
   // BuildIntf
-  ProjectIntf, CompOptsIntf, PackageIntf, LazMsgWorker,
+  ProjectIntf, PackageIntf, LazMsgWorker,
   // IdeConfig
   ProjectBuildMode, IdeXmlConfigProcs, RecentListProcs, IdeConfStrConsts,
   // IDEIntf
@@ -756,7 +756,7 @@ begin
   begin
     XMLConfig.SetDeleteValue(Path+'ComponentState/Value',Ord(FComponentState),0);
     FEditorInfoList[0].SaveToXMLConfig(XMLConfig, Path, pfSaveFoldState in Project.Flags);
-    XMLConfig.SetDeleteValue(Path+'ExtraEditorCount/Value', FEditorInfoList.Count-1, 0);
+    XMLConfig.SetDeleteValue(Path+'ExtraEditorCount/Value', Int64(FEditorInfoList.Count)-1, 0);
     for i := 1 to FEditorInfoList.Count - 1 do
       FEditorInfoList[i].SaveToXMLConfig(XMLConfig, Path + 'ExtraEditor'+IntToStr(i)+'/',
                                          pfSaveFoldState in Project.Flags);

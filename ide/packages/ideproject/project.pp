@@ -2019,7 +2019,6 @@ end;
 procedure TUnitInfo.SetProject(const AValue: TProject);
 var
   ListType: TUnitInfoList;
-  i: Integer;
 begin
   if FProject=AValue then exit;
   if FProject<>nil then begin
