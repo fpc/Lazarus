@@ -53,13 +53,13 @@ uses
   FpDbgLoader, FpImgReaderBase, FpdMemoryTools, FpErrorMessages, DbgIntfBaseTypes;
 
 type
-  TDwarfSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr);
+  TDwarfSection = (dsAbbrev, dsARanges, dsFrame,  dsInfo, dsLine, dsLoc, dsMacinfo, dsPubNames, dsPubTypes, dsRanges, dsStr, dsLineStr);
 
 const
   DWARF_SECTION_NAME: array[TDwarfSection] of String = (
     '.debug_abbrev', '.debug_aranges', '.debug_frame', '.debug_info',
     '.debug_line', '.debug_loc', '.debug_macinfo', '.debug_pubnames',
-    '.debug_pubtypes', '.debug_ranges', '.debug_str'
+    '.debug_pubtypes', '.debug_ranges', '.debug_str', '.debug_line_str'
   );
 
 type
@@ -1110,6 +1110,8 @@ begin
       end;
     DW_FORM_ref_sig8 : Inc(AEntryData, 8);
     DW_FORM_strp,
+    DW_FORM_line_strp,  // DWARF-5
+    DW_FORM_strp_sup,   // DWARF-5
     DW_FORM_sec_offset: begin
         if IsDwarf64 then
           Inc(AEntryData, 8)
@@ -1138,6 +1140,23 @@ begin
         Result := SkipEntryDataForForm(AEntryData, AForm, AddrSize, IsDwarf64, Version);
       end;
     DW_FORM_flag_present: ; // No data
+    // DWARF-5
+    DW_FORM_ref_sup4: Inc(AEntryData, 4);
+    DW_FORM_ref_sup8: Inc(AEntryData, 8);
+    DW_FORM_data16:   Inc(AEntryData, 16);
+    DW_FORM_implicit_const: ; // no inc => the value is in the attrib-spec (after the form)
+    DW_FORM_loclistx,
+    DW_FORM_rnglistx: ULEB128toOrdinal(AEntryData);
+    DW_FORM_strx:     ULEB128toOrdinal(AEntryData);
+    DW_FORM_strx1:    inc(AEntryData, 1);
+    DW_FORM_strx2:    inc(AEntryData, 2);
+    DW_FORM_strx3:    inc(AEntryData, 3);
+    DW_FORM_strx4:    inc(AEntryData, 4);
+    DW_FORM_addrx:    ULEB128toOrdinal(AEntryData);
+    DW_FORM_addrx1:   inc(AEntryData, 1);
+    DW_FORM_addrx2:   inc(AEntryData, 2);
+    DW_FORM_addrx3:   inc(AEntryData, 3);
+    DW_FORM_addrx4:   inc(AEntryData, 4);
   else begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Unknown Form: ', AForm]);
       Result := False;
@@ -1718,6 +1737,8 @@ begin
         Include(f, dafHasAbstractOrigin);
 
       form := ULEB128toOrdinal(pbyte(AnAbbrevDataPtr));
+      if form = DW_FORM_implicit_const then
+        SLEB128toOrdinal(pbyte(AnAbbrevDataPtr)); // read the implicit constant
       if form > DW_FORM_MAX then begin
         DebugLn(FPDBG_DWARF_WARNINGS, ['Unknown FW_FORM: ', form, ' found. Aborting']);
         exit;
@@ -5215,8 +5236,8 @@ end;
 
 procedure TDwarfLineInfoStateMachine.SetFileName(AIndex: Cardinal);
 begin
-  if (Aindex > 0) and (AIndex <= FOwner.FLineInfo.FileNames.Count)
-  then FFileName := FOwner.FLineInfo.FileNames[AIndex - 1]
+  if (Aindex >= 0) and (AIndex < FOwner.FLineInfo.FileNames.Count)
+  then FFileName := FOwner.FLineInfo.FileNames[AIndex]
   else FFileName := Format('Unknown fileindex(%u)', [AIndex]);
 end;
 
@@ -5636,7 +5657,7 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
               exit;
             end;
             r := True;
-            FLineInfo.Directories.Add(s);
+            FLineInfo.Directories.Add(AppendPathDelim(s));
           end
           else
           if (FileDirFormatEncoding[i].ContentType <> DW_LNCT_size) and
@@ -5645,7 +5666,10 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
             debugln(FPDBG_DWARF_ERRORS or FPDBG_DWARF_VERBOSE, ['ReadDirectoryList unknown content type: ', FileDirFormatEncoding[i].ContentType]);
             exit;
           end;
-          SkipEntryDataForForm(AData, FileDirFormatEncoding[i].Form, FLineInfo.AddrSize, FIsDwarf64, FVersion);
+          if not SkipEntryDataForForm(AData, FileDirFormatEncoding[i].Form, FLineInfo.AddrSize, FIsDwarf64, FVersion) then begin
+            debugln(FPDBG_DWARF_ERRORS or FPDBG_DWARF_VERBOSE, ['ReadDirectoryList failed skip: ', FileDirFormatEncoding[i].Form]);
+            exit;
+          end;
         end;
         if not r then begin
           debugln(FPDBG_DWARF_ERRORS or FPDBG_DWARF_VERBOSE, ['ReadDirectoryList did not find path info']);
@@ -5706,7 +5730,10 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
             debugln(FPDBG_DWARF_ERRORS or FPDBG_DWARF_VERBOSE, ['ReadFileList unknown content type: ', FileDirFormatEncoding[i].ContentType]);
             exit;
           end;
-          SkipEntryDataForForm(AData, FileDirFormatEncoding[i].Form, FLineInfo.AddrSize, FIsDwarf64, FVersion);
+          if not SkipEntryDataForForm(AData, FileDirFormatEncoding[i].Form, FLineInfo.AddrSize, FIsDwarf64, FVersion) then begin
+            debugln(FPDBG_DWARF_ERRORS or FPDBG_DWARF_VERBOSE, ['ReadFileList failed skip: ', FileDirFormatEncoding[i].Form]);
+            exit;
+          end;
         end;
         if not (r and r2) then begin
           debugln(FPDBG_DWARF_ERRORS or FPDBG_DWARF_VERBOSE, ['ReadFileList did not find path info']);
@@ -5825,6 +5852,7 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
       Inc(Name);
 
       // filenames
+      FLineInfo.FileNames.Add(AppendPathDelim(FCompDir) + FileName);
       while Name^ <> #0 do
       begin
         S := String(Name);
@@ -6413,6 +6441,12 @@ begin
       else
         AValue := pchar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PDWord(AAttribute)^);
     end;
+    DW_FORM_line_strp:   begin
+      if IsDwarf64 then
+        AValue := pchar(PtrUInt(FDebugFile^.Sections[dsLineStr].RawData)+PQWord(AAttribute)^)
+      else
+        AValue := pchar(PtrUInt(FDebugFile^.Sections[dsLineStr].RawData)+PDWord(AAttribute)^);
+    end;
   else
     Result := False;
   end;
@@ -6476,6 +6510,12 @@ begin
       else
         AValue := pchar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PDWord(AAttribute)^);
     end;
+    DW_FORM_line_strp:   begin
+      if IsDwarf64 then
+        AValue := pchar(PtrUInt(FDebugFile^.Sections[dsLineStr].RawData)+PQWord(AAttribute)^)
+      else
+        AValue := pchar(PtrUInt(FDebugFile^.Sections[dsLineStr].RawData)+PDWord(AAttribute)^);
+    end;
   else
     Result := False;
   end;
@@ -6509,11 +6549,21 @@ begin
       Result := AnFormString;
       Size := 0;
       if Result then begin
-        mx := FDebugFile^.Sections[dsInfo].RawData +FDebugFile^.Sections[dsInfo].Size;
         if AForm = DW_FORM_strp then begin
-          AAttribute := FDebugFile^.Sections[dsStr].RawData+PDWord(AAttribute)^;
+          if IsDwarf64
+          then AAttribute := FDebugFile^.Sections[dsStr].RawData+PQWord(AAttribute)^
+          else AAttribute := FDebugFile^.Sections[dsStr].RawData+PDWord(AAttribute)^;
           mx := FDebugFile^.Sections[dsStr].RawData +FDebugFile^.Sections[dsStr].Size;
-        end;
+        end
+        else
+        if AForm = DW_FORM_line_strp then begin
+          if IsDwarf64
+          then AAttribute := FDebugFile^.Sections[dsLineStr].RawData+PQWord(AAttribute)^
+          else AAttribute := FDebugFile^.Sections[dsLineStr].RawData+PDWord(AAttribute)^;
+          mx := FDebugFile^.Sections[dsLineStr].RawData +FDebugFile^.Sections[dsStr].Size;
+        end
+        else
+          mx := FDebugFile^.Sections[dsInfo].RawData +FDebugFile^.Sections[dsInfo].Size;
         i := AAttribute;
         while (PByte(i)^ <> 0) and (i < mx) do Inc(i);
         if i = mx then begin
