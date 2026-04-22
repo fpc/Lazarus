@@ -6850,6 +6850,7 @@ begin
 
   while Info.HasValidScope do begin
     if (Info.AbbrevTag = DW_TAG_member) or (Info.AbbrevTag = DW_TAG_subprogram) or
+       (Info.AbbrevTag = DW_TAG_variable) or
        (Info.AbbrevTag = DW_TAG_variant_part)
     then begin
       Info2 := Info.Clone;
