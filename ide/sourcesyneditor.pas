@@ -3087,44 +3087,49 @@ var
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
   IsDisabled: Boolean;
 begin
-  CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
-  if TSynEdit(SynEdit).SelAvail then begin
-    y1 := TSynEdit(SynEdit).BlockBegin.Y;
-    y2 := TSynEdit(SynEdit).BlockEnd.Y;
-    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
-  end
-  else begin
-    y1 := 1;
-    y2 := TSynEdit(SynEdit).Lines.Count - 1;
-  end;
-  Tree := TIDESynEditor(SynEdit).FMarkupIfDef.IfDefTree;
-
-  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
-  for i := y1-1 to y2-1 do begin
-    j := FoldView.FoldProvider.FoldOpenCount(i);
-    while j > 0 do begin
-      dec(j);
-      if FoldView.IsFoldedAtTextIndex(i,j) then begin
-        FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
-        if TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in [cfbtIfDef]
-        then begin
-          if AInclDisabled and AInclEnabled then begin
-            FoldView.UnFoldAtTextIndex(i, j, 1, False, 1);
-          end
-          else begin
-            IfLineNode := Tree.FindNodeAtPosition(ToPos(i), afmNil);
-            k := IfLineNode.EntryCount - 1;
-            while (k >= 0) and (IfLineNode.Entry[k].StartColumn <> FldInf.LogXStart) do
-              dec(k);
-            IsDisabled := (k >= 0) and (IfLineNode.Entry[k].IsDisabled);
-            if (AInclDisabled and IsDisabled) or (AInclEnabled and not IsDisabled) then
-              FoldView.UnFoldAtTextIndex(i, j, 1, False, 1);
-          end;
-        end;
-      end; //FoldView.IsFoldedAtTextIndex(i,j)
+  TIDESynEditor(SynEdit).BeginUpdate(False);
+  try
+    CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
+    if TSynEdit(SynEdit).SelAvail then begin
+      y1 := TSynEdit(SynEdit).BlockBegin.Y;
+      y2 := TSynEdit(SynEdit).BlockEnd.Y;
+      if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+    end
+    else begin
+      y1 := 1;
+      y2 := TSynEdit(SynEdit).Lines.Count - 1;
     end;
+    Tree := TIDESynEditor(SynEdit).FMarkupIfDef.IfDefTree;
+
+    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+    for i := y1-1 to y2-1 do begin
+      j := FoldView.FoldProvider.FoldOpenCount(i);
+      while j > 0 do begin
+        dec(j);
+        if FoldView.IsFoldedAtTextIndex(i,j) then begin
+          FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
+          if TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in [cfbtIfDef]
+          then begin
+            if AInclDisabled and AInclEnabled then begin
+              FoldView.UnFoldAtTextIndex(i, j, 1, False, 1);
+            end
+            else begin
+              IfLineNode := Tree.FindNodeAtPosition(ToPos(i), afmNil);
+              k := IfLineNode.EntryCount - 1;
+              while (k >= 0) and (IfLineNode.Entry[k].StartColumn <> FldInf.LogXStart) do
+                dec(k);
+              IsDisabled := (k >= 0) and (IfLineNode.Entry[k].IsDisabled);
+              if (AInclDisabled and IsDisabled) or (AInclEnabled and not IsDisabled) then
+                FoldView.UnFoldAtTextIndex(i, j, 1, False, 1);
+            end;
+          end;
+        end; //FoldView.IsFoldedAtTextIndex(i,j)
+      end;
+    end;
+    TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
+  finally
+    TIDESynEditor(SynEdit).EndUpdate;
   end;
-  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.FoldIfdef(AInclTemp: Boolean);
@@ -3135,38 +3140,43 @@ var
   Tree: TSynMarkupHighIfDefLinesTree;
   IfLineNode: TSynMarkupHighIfDefLinesNodeInfo;
 begin
-  CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
-  if TSynEdit(SynEdit).SelAvail then begin
-    y1 := TSynEdit(SynEdit).BlockBegin.Y;
-    y2 := TSynEdit(SynEdit).BlockEnd.Y;
+  TIDESynEditor(SynEdit).BeginUpdate(False);
+  try
+    CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
+    if TSynEdit(SynEdit).SelAvail then begin
+      y1 := TSynEdit(SynEdit).BlockBegin.Y;
+      y2 := TSynEdit(SynEdit).BlockEnd.Y;
+      if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+    end
+    else begin
+      y1 := 1;
+      y2 := TSynEdit(SynEdit).Lines.Count - 1;
+    end;
+    Tree := TIDESynEditor(SynEdit).FMarkupIfDef.IfDefTree;
     if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
-  end
-  else begin
-    y1 := 1;
-    y2 := TSynEdit(SynEdit).Lines.Count - 1;
-  end;
-  Tree := TIDESynEditor(SynEdit).FMarkupIfDef.IfDefTree;
-  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
-  for i := y1-1 to y2-1 do begin
-    j := FoldView.FoldProvider.FoldOpenCount(i);
-    while j > 0 do begin
-      dec(j);
-      FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
-      if (TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in [cfbtIfDef]) and
-         (sfaFoldFold in FldInf.FoldAction)
-      then begin
-        IfLineNode := Tree.FindNodeAtPosition(ToPos(i), afmNil);
-        k := IfLineNode.EntryCount - 1;
-        while (k >= 0) and (IfLineNode.Entry[k].StartColumn <> FldInf.LogXStart) do
-          dec(k);
-        if (k >= 0) and (IfLineNode.Entry[k].IsDisabled) and
-           ( (not (IfLineNode.Entry[k].IsTemp)) or AInclTemp )
-        then
-          FoldView.FoldAtTextIndex(i, j, 1, False, 1);
+    for i := y1-1 to y2-1 do begin
+      j := FoldView.FoldProvider.FoldOpenCount(i);
+      while j > 0 do begin
+        dec(j);
+        FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
+        if (TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in [cfbtIfDef]) and
+           (sfaFoldFold in FldInf.FoldAction)
+        then begin
+          IfLineNode := Tree.FindNodeAtPosition(ToPos(i), afmNil);
+          k := IfLineNode.EntryCount - 1;
+          while (k >= 0) and (IfLineNode.Entry[k].StartColumn <> FldInf.LogXStart) do
+            dec(k);
+          if (k >= 0) and (IfLineNode.Entry[k].IsDisabled) and
+             ( (not (IfLineNode.Entry[k].IsTemp)) or AInclTemp )
+          then
+            FoldView.FoldAtTextIndex(i, j, 1, False, 1);
+        end;
       end;
     end;
+    TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
+  finally
+    TIDESynEditor(SynEdit).EndUpdate;
   end;
-  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.PopClickedUnfoldAll(Sender: TObject);
@@ -3174,18 +3184,23 @@ var
   i, y1, y2: Integer;
   CurTopLine: TSrcSynTopLineInfo;
 begin
-  CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
-  if not TSynEdit(SynEdit).SelAvail then begin
-    FoldView.UnfoldAll;
+  TIDESynEditor(SynEdit).BeginUpdate(False);
+  try
+    CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
+    if not TSynEdit(SynEdit).SelAvail then begin
+      FoldView.UnfoldAll;
+      TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
+      exit;
+    end;
+    y1 := TSynEdit(SynEdit).BlockBegin.Y;
+    y2 := TSynEdit(SynEdit).BlockEnd.Y;
+    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+    for i := y1-1 to y2-1 do
+      FoldView.UnFoldAtTextIndex(i);
     TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
-    exit;
+  finally
+    TIDESynEditor(SynEdit).EndUpdate;
   end;
-  y1 := TSynEdit(SynEdit).BlockBegin.Y;
-  y2 := TSynEdit(SynEdit).BlockEnd.Y;
-  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
-  for i := y1-1 to y2-1 do
-    FoldView.UnFoldAtTextIndex(i);
-  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.PopClickedUnfoldComment(Sender: TObject);
@@ -3194,33 +3209,38 @@ var
   CurTopLine: TSrcSynTopLineInfo;
   FldInf: TSynFoldNodeInfo;
 begin
-  CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
-  if TSynEdit(SynEdit).SelAvail then begin
-    y1 := TSynEdit(SynEdit).BlockBegin.Y;
-    y2 := TSynEdit(SynEdit).BlockEnd.Y;
-    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
-  end
-  else begin
-    y1 := 1;
-    y2 := TSynEdit(SynEdit).Lines.Count - 1;
-  end;
+  TIDESynEditor(SynEdit).BeginUpdate(False);
+  try
+    CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
+    if TSynEdit(SynEdit).SelAvail then begin
+      y1 := TSynEdit(SynEdit).BlockBegin.Y;
+      y2 := TSynEdit(SynEdit).BlockEnd.Y;
+      if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+    end
+    else begin
+      y1 := 1;
+      y2 := TSynEdit(SynEdit).Lines.Count - 1;
+    end;
 
-  for i := y1-1 to y2-1 do begin
-    j := FoldView.FoldProvider.FoldOpenCount(i);
-    while j > 0 do begin
-      dec(j);
-      if FoldView.IsFoldedAtTextIndex(i,j) then begin
-        FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
-        if TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in
-           [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]
-        then begin
-          FoldView.UnFoldAtTextIndex(i, j, 1, False, 0);
-          FoldView.UnFoldAtTextIndex(i, j, 1, False, 1);
+    for i := y1-1 to y2-1 do begin
+      j := FoldView.FoldProvider.FoldOpenCount(i);
+      while j > 0 do begin
+        dec(j);
+        if FoldView.IsFoldedAtTextIndex(i,j) then begin
+          FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
+          if TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in
+             [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]
+          then begin
+            FoldView.UnFoldAtTextIndex(i, j, 1, False, 0);
+            FoldView.UnFoldAtTextIndex(i, j, 1, False, 1);
+          end;
         end;
       end;
     end;
+    TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
+  finally
+    TIDESynEditor(SynEdit).EndUpdate;
   end;
-  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.PopClickedFoldComment(Sender: TObject);
@@ -3229,31 +3249,36 @@ var
   CurTopLine: TSrcSynTopLineInfo;
   FldInf: TSynFoldNodeInfo;
 begin
-  CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
-  if TSynEdit(SynEdit).SelAvail then begin
-    y1 := TSynEdit(SynEdit).BlockBegin.Y;
-    y2 := TSynEdit(SynEdit).BlockEnd.Y;
-    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
-  end
-  else begin
-    y1 := 1;
-    y2 := TSynEdit(SynEdit).Lines.Count - 1;
-  end;
+  TIDESynEditor(SynEdit).BeginUpdate(False);
+  try
+    CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
+    if TSynEdit(SynEdit).SelAvail then begin
+      y1 := TSynEdit(SynEdit).BlockBegin.Y;
+      y2 := TSynEdit(SynEdit).BlockEnd.Y;
+      if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+    end
+    else begin
+      y1 := 1;
+      y2 := TSynEdit(SynEdit).Lines.Count - 1;
+    end;
 
-  for i := y1-1 to y2-1 do begin
-    j := FoldView.FoldProvider.FoldOpenCount(i);
-    while j > 0 do begin
-      dec(j);
-      FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
-      if (TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in
-          [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) and
-         (sfaFoldFold in FldInf.FoldAction)
-      then begin
-        FoldView.FoldAtTextIndex(i, j, 1, False, 1);
+    for i := y1-1 to y2-1 do begin
+      j := FoldView.FoldProvider.FoldOpenCount(i);
+      while j > 0 do begin
+        dec(j);
+        FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
+        if (TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in
+            [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) and
+           (sfaFoldFold in FldInf.FoldAction)
+        then begin
+          FoldView.FoldAtTextIndex(i, j, 1, False, 1);
+        end;
       end;
     end;
+    TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
+  finally
+    TIDESynEditor(SynEdit).EndUpdate;
   end;
-  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.PopClickedHideComment(Sender: TObject);
@@ -3262,31 +3287,36 @@ var
   CurTopLine: TSrcSynTopLineInfo;
   FldInf: TSynFoldNodeInfo;
 begin
-  CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
-  if TSynEdit(SynEdit).SelAvail then begin
-    y1 := TSynEdit(SynEdit).BlockBegin.Y;
-    y2 := TSynEdit(SynEdit).BlockEnd.Y;
-    if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
-  end
-  else begin
-    y1 := 1;
-    y2 := TSynEdit(SynEdit).Lines.Count - 1;
-  end;
+  TIDESynEditor(SynEdit).BeginUpdate(False);
+  try
+    CurTopLine := TIDESynEditor(SynEdit).GetTopLineBeforeFold;
+    if TSynEdit(SynEdit).SelAvail then begin
+      y1 := TSynEdit(SynEdit).BlockBegin.Y;
+      y2 := TSynEdit(SynEdit).BlockEnd.Y;
+      if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+    end
+    else begin
+      y1 := 1;
+      y2 := TSynEdit(SynEdit).Lines.Count - 1;
+    end;
 
-  for i := y1-1 to y2-1 do begin
-    j := FoldView.FoldProvider.FoldOpenCount(i);
-    while j > 0 do begin
-      dec(j);
-      FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
-      if (TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in
-          [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) and
-         (sfaFoldHide in FldInf.FoldAction)
-      then begin
-        FoldView.FoldAtTextIndex(i, j, 1, False, 0);
+    for i := y1-1 to y2-1 do begin
+      j := FoldView.FoldProvider.FoldOpenCount(i);
+      while j > 0 do begin
+        dec(j);
+        FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
+        if (TPascalCodeFoldBlockType({%H-}PtrUInt(FldInf.FoldType)) in
+            [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) and
+           (sfaFoldHide in FldInf.FoldAction)
+        then begin
+          FoldView.FoldAtTextIndex(i, j, 1, False, 0);
+        end;
       end;
     end;
+    TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
+  finally
+    TIDESynEditor(SynEdit).EndUpdate;
   end;
-  TIDESynEditor(SynEdit).RestoreTopLineAfterFold(CurTopLine);
 end;
 
 procedure TIDESynGutterCodeFolding.CreatePopUpMenuEntries(var APopUp: TPopupMenu; ALine: Integer);
