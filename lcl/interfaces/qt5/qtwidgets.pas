@@ -6556,7 +6556,7 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   function PaintBtn: Boolean;
   var
     APainter: QPainterH;
-    R: TRect;
+    R, R4: TRect;
     R2: TRect;
     R3: TRect;
     BMargin, HMargin, VMargin, SHorz, SVert: Integer;
@@ -6569,6 +6569,8 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
     ContentSize: TSize;
     IconDistance: Integer;
     IconMargin: Integer;
+    F: Double;
+    NewW, NewH: Integer;
   begin
     Result := False;
     if (FIcon = nil) then
@@ -6702,8 +6704,29 @@ function TQtBitBtn.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
           if FGlyphLayout = 3 then
             dec(R.Bottom, CenterOffset);
         end;
-
-        QIcon_paint(FIcon, APainter, @R, IconAlign, IconMode);
+        {QIcon.paint scales the icon to fit the passed rect even at
+         devicePixelRatio > 1 (logical coords not respected for icon sizing),
+         so the glyph is drawn oversized. Qt6 handles this correctly.
+         Shrink R to logical size (R / DPR) while keeping the icon anchored
+         to the side IconAlign would place it on.}
+        F := QPaintDevice_devicePixelRatioF(QPaintEngine_paintDevice(QPainter_paintEngine(APainter)));
+        R4 := R;
+        if F > 1.0 then
+        begin
+          NewW := Round((R.Right - R.Left) / F);
+          NewH := Round((R.Bottom - R.Top) / F);
+          if (IconAlign and QtAlignRight) <> 0 then
+            R4.Left := R.Right - NewW
+          else if (IconAlign and QtAlignHCenter) <> 0 then
+            R4.Left := R.Left + ((R.Right - R.Left) - NewW) div 2;
+          R4.Right := R4.Left + NewW;
+          if (IconAlign and QtAlignBottom) <> 0 then
+            R4.Top := R.Bottom - NewH
+          else if (IconAlign and QtAlignVCenter) <> 0 then
+            R4.Top := R.Top + ((R.Bottom - R.Top) - NewH) div 2;
+          R4.Bottom := R4.Top + NewH;
+        end;
+        QIcon_paint(FIcon, APainter, @R4, IconAlign, IconMode);
 
         R := R2;
         if FGlyphLayout = 0 then
