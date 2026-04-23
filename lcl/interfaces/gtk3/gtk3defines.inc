@@ -3,6 +3,7 @@
 {. $DEFINE GTK3DEBUGSIZE}
 {. $DEFINE GTK3DEBUGRESIZE}  { Verbose resize tracing: SetBounds, SizeAllocate, WindowSizeAllocate }
 {. $DEFINE GTK3DEBUGSCROLLEDWIN}
+{. $DEFINE GTK3DEBUGSCROLL}
 {. $DEFINE VerboseGtk3DeviceContext}
 {. $DEFINE VerboseGtk3WinApi}
 {. $DEFINE GTK3DEBUGREPARENTING}

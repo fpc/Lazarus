@@ -4461,7 +4461,10 @@ var
   var
     ATarget: gdouble;
     uWidth, uHeight: guint;
+    SBAlloc: TGtkAllocation;
+    PosChanged: Boolean;
   begin
+    PosChanged := False;
     if AControl.InUpdate then
     begin
       {$IFDEF GTK3DEBUGSCROLL}
@@ -4509,7 +4512,10 @@ var
       ATarget := Max(ATarget, Adjustment^.lower);
       ATarget := Min(ATarget, Adjustment^.upper - Max(Adjustment^.page_size, 0));
       if Adjustment^.value <> ATarget then
+      begin
         Adjustment^.value := ATarget;
+        PosChanged := True;
+      end;
     end;
 
     if (ScrollInfo.FMask and SIF_UPDATEPOLICY <> 0) then
@@ -4556,6 +4562,15 @@ var
       end;
     end;
     Adjustment^.thaw_notify;
+    //Force synchronous slider gadget reallocation so queued GDK expose paints
+    //at the *new* thumb position instead of the stale pre-layout position.
+    if PosChanged and Assigned(ScrollBar) and
+       ScrollBar^.get_realized and ScrollBar^.get_mapped then
+    begin
+      ScrollBar^.queue_allocate;
+      ScrollBar^.get_allocation(@SBAlloc);
+      ScrollBar^.size_allocate(@SBAlloc);
+    end;
     {$IFDEF GTK3DEBUGSCROLL}
     DebugLn(Format('Updated Adjustment: lower=%.2f, upper=%.2f, page_size=%.2f, value=%.2f, page_increment=%.2f InUpdate %s %s Logical %s',
       [Adjustment^.lower, Adjustment^.upper, Adjustment^.page_size, Adjustment^.value, Adjustment^.page_increment, BoolToStr(AControl.InUpdate, True),
