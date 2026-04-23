@@ -46,7 +46,8 @@ uses
   // LCL
   Forms, Controls, Dialogs, LResources,
   //LazUtils
-  AvgLvlTree, LazUtilities, LazStringUtils, LazMemManager, LazLoggerBase, LazTracer,
+  AvgLvlTree, LazUtilities, LazStringUtils, LazMemManager, ProjResProc,
+  LazLoggerBase, LazTracer,
   // CodeTools
   BasicCodeTools,
   // BuildIntf
@@ -122,8 +123,7 @@ type
     FFlags: TJITCompListFlags;
     fRenameList: TStringToStringTree;
     fReadComponents: TFPList;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-         override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     // jit procedures
     function CreateNewJITClass(AncestorClass: TClass;

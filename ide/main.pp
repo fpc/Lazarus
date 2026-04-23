@@ -69,7 +69,7 @@ uses
   StdCodeTools, EventCodeTool, CodeCreationDlg, IdentCompletionTool,
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
-  FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process,
+  FileUtil, LazFileUtils, LazUtilities, LazUTF8, UTF8Process, ProjResProc,
   LConvEncoding, Laz2_XMLCfg, LazLoggerBase, LazLogger, LazFileCache, AvgLvlTree,
   GraphType, LazStringUtils, LazVersion, LazTracer,
   LCLExceptionStacktrace,

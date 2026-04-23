@@ -32,7 +32,7 @@ uses
   StdCtrls, Graphics, LCLIntf, CustomTimer, Themes, LCLClasses, Menus,
   PopupNotifier, ImgList,
   // LazUtils
-  GraphType, LazLoggerBase, LazTracer, LazUtilities;
+  GraphType, LazLoggerBase, LazTracer, LazUtilities, ProjResProc;
 
 type
 

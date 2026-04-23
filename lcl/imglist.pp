@@ -52,7 +52,7 @@ uses
   LCLStrConsts, LCLIntf, LResources, LCLType, LCLProc, LCLClasses,
   Graphics, IntfGraphics, WSReferences,
   // LazUtils
-  GraphType, FPCAdds, LazLoggerBase, LazTracer, LazUtilities, AvgLvlTree;
+  GraphType, FPCAdds, LazLoggerBase, LazTracer, LazUtilities, ProjResProc, AvgLvlTree;
 
 type
   TImageIndex = type integer;

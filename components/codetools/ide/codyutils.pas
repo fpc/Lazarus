@@ -33,9 +33,12 @@ uses
   Classes, SysUtils, Dialogs, Controls, LCLIntf, Clipbrd, LCLType, LResources,
   // IDEIntf
   IDEDialogs, LazIDEIntf, SrcEditorIntf,
+  // LazUtils
+  ProjResProc,
+  // Codetools
   FileProcs, LazFileUtils, CodeToolManager, CodeCache, SourceLog, BasicCodeTools,
-  EventCodeTool, LinkScanner, PascalParserTool, CodeTree, SourceChanger,
-  CodeBeautifier,
+  EventCodeTool, LinkScanner, PascalParserTool, CodeTree, SourceChanger, CodeBeautifier,
+  // Cody
   CodyStrConsts;
 
 type

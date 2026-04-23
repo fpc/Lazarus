@@ -31,8 +31,6 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, System.UITypes,
-  // LCL
-  LResources,
   // LazUtils
   LazFileCache, LazFileUtils, LazLoggerBase, ProjResProc,
   // CodeTools

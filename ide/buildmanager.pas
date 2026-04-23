@@ -41,8 +41,7 @@ uses
   FileProcs,
   // LazUtils
   FPCAdds, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
-  Laz2_XMLCfg, LazUtilities, LazVersion,
-  AvgLvlTree,
+  Laz2_XMLCfg, LazUtilities, LazVersion, AvgLvlTree,
   // BuildIntf
   BaseIDEIntf, IDEOptionsIntf, ProjectIntf, ProjectResourcesIntf, LazMsgWorker,
   PublishModuleIntf, IDEExternToolIntf, CompOptsIntf, MacroDefIntf,

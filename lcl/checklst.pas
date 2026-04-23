@@ -25,7 +25,7 @@ uses
   // LCL
   LCLType, LCLIntf, Graphics, LMessages, LResources, Controls, StdCtrls,
   // LazUtils
-  GraphType;
+  GraphType, ProjResProc;
   
 
 type
