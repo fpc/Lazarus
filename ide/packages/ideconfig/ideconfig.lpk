@@ -172,6 +172,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="RecentListProcs"/>
       </Item>
       <Item>
+        <Filename Value="resourceconvertproc.pas"/>
+        <UnitName Value="resourceconvertproc"/>
+      </Item>
+      <Item>
         <Filename Value="searchpathprocs.pas"/>
         <UnitName Value="SearchPathProcs"/>
       </Item>

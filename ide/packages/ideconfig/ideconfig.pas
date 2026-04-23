@@ -16,8 +16,8 @@ uses
   IdeConfStrConsts, IDEGuiCmdLine, IDEOptionDefs, IDEProcs, IdeTransferMacros, 
   IDETranslations, IdeXmlConfigProcs, InitialSetupProc, LazConf, MiscOptions, 
   ModeMatrixOpts, ParsedCompilerOpts, ProjectBuildMode, ProjPackCommon, 
-  RecentListProcs, SearchPathProcs, ToolBarOptionsBase, TransferMacros, 
-  LazarusPackageIntf;
+  RecentListProcs, ResourceConvertProc, SearchPathProcs, ToolBarOptionsBase, 
+  TransferMacros, LazarusPackageIntf;
 
 implementation
 

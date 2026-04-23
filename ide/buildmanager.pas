@@ -50,12 +50,13 @@ uses
   IDEProcs, DialogProcs, etMakeMsgParser, etFPCMsgFilePool, EditDefineTree,
   ParsedCompilerOpts, CompilerOptions, Compiler, SearchPathProcs, BaseBuildManager,
   ApplicationBundle, ExtTools, MiscOptions, etFPCMsgParser, etPas2jsMsgParser,
+  ResourceConvertProc,
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageSystem,
   // IdeProject
   Project, ProjectResources, ProjectIcon,
   // IDE
-  LazarusIDEStrConsts, LfmUnitResource;
+  LazarusIDEStrConsts;
 
 type
 
