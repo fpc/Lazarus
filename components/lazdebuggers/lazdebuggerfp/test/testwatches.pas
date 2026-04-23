@@ -2662,7 +2662,7 @@ var
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestWatchFunctStr) then exit;
-  if not (Compiler.SymbolType in [stDwarf3, stDwarf4]) then exit;
+  if not (Compiler.SymbolType in [stDwarf3, stDwarf4, stDwarf5]) then exit;
   if Compiler.HasFlag('SkipStringFunc') then exit;
   if Compiler.HasFlag('Dwarf2') then exit;
   tbn := TestBaseName;
@@ -2863,7 +2863,7 @@ var
 begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestWatchFunctRec) then exit;
-  //if not (Compiler.SymbolType in [stDwarf3, stDwarf4]) then exit;
+  //if not (Compiler.SymbolType in [stDwarf3, stDwarf4, stDwarf5]) then exit;
   //if Compiler.HasFlag('SkipStringFunc') then exit;
   tbn := TestBaseName;
 
