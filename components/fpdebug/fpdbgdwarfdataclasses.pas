@@ -4526,8 +4526,8 @@ var
     p: Pointer;
     Instructions: TDwarfCallFrameInformationInstructions;
   begin
-    if Version > 4 then
-      DebugLn(FPDBG_DWARF_WARNINGS, ['Unsupported DWARF CFI version (' +IntToStr(Version)+ '). Only versions 1-4 are supported.']);
+    if Version > 5 then
+      DebugLn(FPDBG_DWARF_WARNINGS, ['Unsupported DWARF CFI version (' +IntToStr(Version)+ '). Only versions 1-5 are supported.']);
 
     Result := TDwarfCIE.Create(Version, String(Augmentation));
     p := Augmentation;
