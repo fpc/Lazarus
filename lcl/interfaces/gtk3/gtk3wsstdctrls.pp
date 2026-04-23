@@ -658,8 +658,18 @@ end;
 
 class procedure TGtk3WSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox;
   NewStyle: TComboBoxStyle);
+var
+  Widget: TGtk3ComboBox;
+  CurHasEntry: Boolean;
 begin
-
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetStyle') then
+    exit;
+  Widget := TGtk3ComboBox(ACustomComboBox.Handle);
+  if not Gtk3IsComboBox(Widget.Widget) then
+    exit;
+  CurHasEntry := PGtkComboBox(Widget.Widget)^.has_entry;
+  if CurHasEntry <> NewStyle.HasEditBox then
+    RecreateWnd(ACustomComboBox);
 end;
 
 class function TGtk3WSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox

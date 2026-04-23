@@ -5528,6 +5528,35 @@ begin
   Result := (Widget <> nil) and Gtk3IsEntry(Widget);
 end;
 
+function disableMouseButtonEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
+begin
+  Result := TGtk3Widget(user_data).GtkEventMouse(Widget, Event);
+  if event^.type_ in [GDK_BUTTON_PRESS, GDK_BUTTON_RELEASE] then
+    Result := True;
+end;
+
+function motionNotifyEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
+begin
+  TGtk3Widget(user_data).GtkEventMouseMove(widget, event);
+  Result := True;
+end;
+
+function disableScrollEvent({%H-}widget: PGtkWidget; {%H-}event: PGdkEvent; {%H-}user_data: gpointer): gboolean; cdecl;
+begin
+  Result := True;
+end;
+
+procedure disableComboInternalButtonHandlers(combo: PGtkComboBox);
+var
+  button: PGtkWidget;
+begin
+  if combo = nil then exit;
+  button := combo^.priv3^.button;
+  if button = nil then exit;
+  g_signal_handlers_block_matched(PGObject(button),
+    [G_SIGNAL_MATCH_DATA], 0, 0, nil, nil, combo);
+end;
+
 { TGtk3SpinEdit }
 
 function TGtk3SpinEdit.GetAdjustment: PGtkAdjustment;
@@ -5748,6 +5777,45 @@ begin
   if Assigned(Adj) then
     g_signal_connect_data(PGObject(Adj), 'value-changed',
       TGCallback(@SpinValueChanged), Self, nil, G_CONNECT_DEFAULT);
+
+  if IsDesigning and Assigned(Data) then
+  begin
+    g_signal_connect_data(PGObject(Data^.BtnUp), 'button-press-event',
+      TGCallback(@disableMouseButtonEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.BtnUp), 'button-release-event',
+      TGCallback(@disableMouseButtonEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.BtnUp), 'motion-notify-event',
+      TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+
+    g_signal_connect_data(PGObject(Data^.BtnDown), 'button-press-event',
+      TGCallback(@disableMouseButtonEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.BtnDown), 'button-release-event',
+      TGCallback(@disableMouseButtonEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.BtnDown), 'motion-notify-event',
+      TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+
+    g_signal_connect_data(PGObject(Data^.Entry), 'button-press-event',
+      TGCallback(@disableMouseButtonEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.Entry), 'button-release-event',
+      TGCallback(@disableMouseButtonEvent), Self, nil, G_CONNECT_DEFAULT);
+    g_signal_connect_data(PGObject(Data^.Entry), 'motion-notify-event',
+      TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+    Data^.Entry^.set_can_focus(False);
+
+    g_signal_handlers_block_matched(PGObject(Data^.Entry),
+      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditEntryScroll, nil);
+    g_signal_handlers_block_matched(PGObject(Data^.BtnBox),
+      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditEntryScroll, nil);
+    g_signal_handlers_block_matched(PGObject(Data^.BtnUp),
+      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditEntryScroll, nil);
+    g_signal_handlers_block_matched(PGObject(Data^.BtnDown),
+      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditEntryScroll, nil);
+
+    g_signal_handlers_block_matched(PGObject(Data^.BtnUp),
+      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditUpClicked, nil);
+    g_signal_handlers_block_matched(PGObject(Data^.BtnDown),
+      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditDownClicked, nil);
+  end;
 end;
 
 procedure TGtk3SpinEdit.DestroyWidget;
@@ -6477,19 +6545,6 @@ begin
 end;
 
 { TGtk3Container }
-
-function disableMouseButtonEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
-begin
-  Result := TGtk3Widget(user_data).GtkEventMouse(Widget, Event);
-  if event^.type_ in [GDK_BUTTON_PRESS, GDK_BUTTON_RELEASE] then
-    Result := True;
-end;
-
-function motionNotifyEvent(widget: PGtkWidget; event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
-begin
-  TGtk3Widget(user_data).GtkEventMouseMove(widget, event);
-  Result := True;
-end;
 
 procedure TGtk3Container.SetVisible(AValue: Boolean);
 begin
@@ -10823,11 +10878,17 @@ begin
     if Assigned(PGtkComboBox(Result)^.priv3^.arrow) then
       g_object_set_data(PGObject(PGtkComboBox(Result)^.priv3^.arrow), 'lclwidget', Self);
 
-    //disable combo button in design mode.
     if IsDesigning then
     begin
       if Assigned(PGtkComboBox(Result)^.priv3^.button) then
-        PGtkComboBox(Result)^.priv3^.button^.set_sensitive(gtk_false);
+      begin
+        g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-press-event',
+          TGCallback(@disableMouseButtonEvent), Self, nil, G_CONNECT_DEFAULT);
+        g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-release-event',
+          TGCallback(@disableMouseButtonEvent), Self, nil, G_CONNECT_DEFAULT);
+        g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'motion-notify-event',
+          TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
+      end;
       if Assigned(PGtkComboBox(Result)^.priv3^.arrow) then
         PGtkComboBox(Result)^.priv3^.arrow^.set_sensitive(gtk_false);
     end;
@@ -10846,6 +10907,14 @@ begin
   end;
   g_object_unref(ListStore);
   PGtkComboBox(Result)^.set_id_column(0);
+  PGtkComboBox(Result)^.set_button_sensitivity(GTK_SENSITIVITY_ON);
+  if IsDesigning then
+  begin
+    disableComboInternalButtonHandlers(PGtkComboBox(Result));
+    Result^.add_events(LongInt(1) shl Ord(GDK_SCROLL_MASK));
+    g_signal_connect_data(Result, 'scroll-event',
+      TGCallback(@disableScrollEvent), Self, nil, G_CONNECT_DEFAULT);
+  end;
   Result^.show;
 end;
 
