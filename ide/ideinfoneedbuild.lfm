@@ -7,20 +7,20 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
   Caption = 'IDEInfoNeedBuildDlg'
   ClientHeight = 434
   ClientWidth = 655
+  Position = poScreenCenter
+  LCLVersion = '4.99.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
-  Position = poScreenCenter
-  LCLVersion = '1.5'
   object TargetLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = TargetComboBox
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 17
+    Height = 18
     Top = 13
-    Width = 80
+    Width = 72
     BorderSpacing.Around = 6
     Caption = 'TargetLabel'
     ParentColor = False
@@ -31,23 +31,23 @@ object IDEInfoNeedBuildDlg: TIDEInfoNeedBuildDlg
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 92
-    Height = 31
+    Left = 84
+    Height = 32
     Top = 6
-    Width = 557
+    Width = 565
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 0
-    OnChange = TargetComboBoxChange
+    ItemHeight = 24
     Style = csDropDownList
     TabOrder = 0
+    OnChange = TargetComboBoxChange
   end
   object MainMemo: TMemo
     AnchorSideTop.Control = TargetComboBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 350
-    Top = 43
+    Height = 349
+    Top = 44
     Width = 643
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]

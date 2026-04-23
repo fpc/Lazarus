@@ -43,8 +43,12 @@ uses
   InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEProcs,
+  // IdePackager
+  PackageDefs, PackageSystem,
+  // IdeProject
+  Project, BuildManager,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, PackageSystem, Project, BuildManager;
+  LazarusIDEStrConsts;
 
 type
   TINeedBuild = (

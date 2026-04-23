@@ -2150,7 +2150,7 @@ begin
   IgnoreAll:=mrLast+1;
   DlgResult:=LazQuestionWorker(lisPkgSysPackageRegistrationError, ErrorMsg,
                      mtError, [mrIgnore,
-                               IgnoreAll, lispIgnoreAll,
+                               IgnoreAll, lisIgnoreAll,
                                mrAbort]);
   if DlgResult=IgnoreAll then
     QuietRegistration:=true;

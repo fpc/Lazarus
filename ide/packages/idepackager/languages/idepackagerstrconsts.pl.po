@@ -68,6 +68,11 @@ msgstr ""
 msgid "Creating Makefile for package %s"
 msgstr "Tworzenie Makefile dla pakietu %s"
 
+#: idepackagerstrconsts.lisignoreall
+msgctxt "idepackagerstrconsts.lisignoreall"
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler define \"%s\" twice with different values"
@@ -90,10 +95,6 @@ msgstr ""
 #: idepackagerstrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Opcje pakietu"
-
-#: idepackagerstrconsts.lispignoreall
-msgid "Ignore all"
-msgstr ""
 
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"

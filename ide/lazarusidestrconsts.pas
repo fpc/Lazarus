@@ -782,23 +782,11 @@ resourcestring
   lisCleanUpLazbuild = 'Clean up + lazbuild';
   lisLazbuild = 'lazbuild';
   lisCompileNormally = 'Compile normally';
-  lisTheUnitExistsTwiceInTheUnitPathOfThe = 'The unit %s exists twice in the '
-    +'unit path of the %s:';
-  lisHintCheckIfTwoPackagesContainAUnitWithTheSameName = 'Hint: Check if two '
-    +'packages contain a unit with the same name.';
-  lisIgnoreAll = 'Ignore all';
-  lisUnableToRemoveOldBackupFile = 'Unable to remove old backup file "%s"!';
-  lisRenameFileFailed = 'Rename file failed';
-  lisBackupFileFailed = 'Backup file failed';
-  lisUnableToBackupFileTo = 'Unable to backup file "%s" to "%s"!';
   lisFileNotLowercase = 'File not lowercase';
   lisTheUnitIsNotLowercaseTheFreePascalCompiler = 'The unit filename "%s" is not lowercase.'
     +'%sThe Free Pascal compiler does not search for all cases.'
     +' It is recommended to use lowercase filename.'
     +'%sRename file lowercase?';
-  lisDeleteAmbiguousFile = 'Delete ambiguous file?';
-  lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
-    +'found: "%s"%sThis file can be mistaken with "%s"%sDelete the ambiguous file?';
   lisLazarusEditorV = 'Lazarus IDE v%s';
   liscompiling = '%s (compiling ...)';
   lisdebugging = '%s (debugging ...)';
@@ -811,8 +799,6 @@ resourcestring
     +' options. If this file belongs to Lazarus, make sure compiling clean.'
     +' If the file belongs to FPC then check fpc.cfg.'
     +' If unsure, check Project -> CompilerOptions -> Test';
-  lisNOTECouldNotCreateDefineTemplateForFreePascal = 'NOTE: Could not create '
-    +'Define Template for Free Pascal Sources';
   lisClassNotFound = 'Class not found';
   lisClassNotFoundAt = 'Class %s not found at %s(%s,%s)';
   lisRemoveUses = 'Remove uses "%s"';
@@ -835,8 +821,6 @@ resourcestring
   lisUnableToConvertToEncoding = 'Unable to convert to encoding "%s"';
   lisSavingFileAsLoosesCharactersAtLineColumn = 'Saving file "%s" as "%s" '
     +'looses characters at line %s, column %s.';
-  lisNOTECouldNotCreateDefineTemplateForLazarusSources = 'NOTE: Could not '
-    +'create Define Template for Lazarus Sources';
   lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot = '''Owner'' is '
     +'already used by TReader/TWriter. Please choose another name.';
   lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe = 'Duplicate name: A '
@@ -1120,7 +1104,6 @@ resourcestring
     +'SOFTWARE.';
 
   // Options dialog groups
-  dlgGroupEnvironment = 'Environment';
   dlgGroupEditor = 'Editor';
   dlgGroupCodetools = 'Codetools';
   dlgGroupCodeExplorer = 'Code Explorer';
@@ -2509,16 +2492,12 @@ resourcestring
     +'This typically means your %s has wrong unit paths. Or your installation is broken.';
   dlgCCOTestRTLUnits = 'Test: Checking RTL units ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
-  lisThereIsNoFreePascalCompilerEGFpcOrPpcCpuConfigured = 'There is no Free '
-    +'Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project '
-    +'options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s';
   lisFatal = 'Fatal';
   lisPanic = 'Panic';
   lisHideSearch = 'Hide Search';
   lisCompilerMessagesFileNotFound = 'Compiler messages file not found:%s%s';
   lisFppkgConfigurationFileNotFound = 'Fppkg configuration file not found:%s%s';
   lisUnableToOpen = 'Unable to open "%s"';
-  lisCompilerDoesNotSupportTarget = 'Compiler "%s" does not support target %s-%s';
   lisInvalidMode = 'Invalid mode %s';
   lisTheProjectCompilerOptionsAndTheDirectivesInTheMain = 'The project '
     +'compiler options and the directives in the main source differ. For the '
@@ -3958,18 +3937,10 @@ resourcestring
 
   // file checks
   lisCanNotCreateFile = 'Cannot create file "%s"';
-  lisErrorDeletingFile = 'Error deleting file';
   lisInvalidMask = 'Invalid Mask';
   lisTheFileMaskIsNotAValidRegularExpression = 'The file mask "%s" is not a '
     +'valid regular expression.';
   lisTheFileMaskIsInvalid = 'The file mask "%s" is invalid.';
-  lisUnableToDeleteAmbiguousFile = 'Unable to delete ambiguous file "%s"';
-  lisErrorRenamingFile = 'Error renaming file';
-  lisUnableToRenameAmbiguousFileTo = 'Unable to rename ambiguous file "%s"%sto "%s"';
-  lisAmbiguousFileFound = 'Ambiguous file found';
-  lisThereIsAFileWithTheSameNameAndASimilarExtension = 'There is a file with '
-    +'the same name and a similar extension on disk%sFile: %s%sAmbiguous '
-    +'File: %s%sDelete ambiguous file?';
 
   // add to project dialog
   lisProjAddInvalidMinMaxVersion = 'Invalid Min-Max version';
@@ -5441,11 +5412,6 @@ resourcestring
   lisCEStyleGroup = 'Style';
   lisCEOtherGroup = 'Other';
   lisCEWrongIndentation = 'Wrong indentation';
-  lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar = 'The project uses '
-    +'target OS=%s and CPU=%s.'
-    +'%sThe system.ppu for this target was not found in the FPC binary directories.'
-    +'%sMake sure fpc is installed correctly '
-    +'for this target and the fpc.cfg contains the right directories.';
   lisFailedToLoadFoldStat = 'Failed to load fold state';
   lisUppercaseString = 'uppercase string';
   lisUppercaseStringGivenAsParameter = 'Uppercase string given as parameter.';

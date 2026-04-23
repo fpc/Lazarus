@@ -49,9 +49,9 @@ uses
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageLinks, PackageSystem, InterPkgConflictFiles,
   // IdeProject
-  Project,
+  Project, BuildManager,
   // IDE
-  LazarusIDEStrConsts, BuildManager;
+  LazarusIDEStrConsts;
 
 type
   TPkgAction = (

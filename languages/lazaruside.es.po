@@ -2403,11 +2403,6 @@ msgstr "Depurador"
 msgid "Editor"
 msgstr "Editor"
 
-#: lazarusidestrconsts.dlggroupenvironment
-msgctxt "lazarusidestrconsts.dlggroupenvironment"
-msgid "Environment"
-msgstr "Entorno"
-
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
 msgstr "Deshacer en grupo"
@@ -5708,15 +5703,6 @@ msgstr ""
 msgid "A macro with this name already exists."
 msgstr "Una macro con ese nombre ya existe."
 
-#: lazarusidestrconsts.lisambiguousfilefound
-msgid "Ambiguous file found"
-msgstr "Encontrado archivo ambiguo"
-
-#: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
-#, object-pascal-format
-msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
-msgstr "Encontrado archivo ambiguo: \"%s\"%sEste archivo puede confundirse con \"%s\"%s¿Borrar el archivo ambiguo?"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Anclaje parte inferior a la parte inferior de los hermanos. Utilice BorderSpacing para establecer la distancia. BorderSpacing de hermano se ignora."
@@ -5942,10 +5928,6 @@ msgstr "Modos de Construccion del proyecto disponibles:"
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
 msgstr "Hacer una copia de seguridad de los archivos modificados"
-
-#: lazarusidestrconsts.lisbackupfilefailed
-msgid "Backup file failed"
-msgstr "Fallo al realizar la copia de seguridad del archivo"
 
 #: lazarusidestrconsts.lisbackuphint
 msgid "Creates a Backup directory under project directory"
@@ -7747,11 +7729,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Compilador"
 
-#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
-#, object-pascal-format
-msgid "Compiler \"%s\" does not support target %s-%s"
-msgstr "El compilador \"%s\" no soporta el objetivo %s-%s"
-
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
 msgid "Compiler messages file not found:%s%s"
@@ -9051,10 +9028,6 @@ msgstr "&Eliminar todo"
 msgid "Delete all these files?"
 msgstr "¿Borrar todos estos archivos?"
 
-#: lazarusidestrconsts.lisdeleteambiguousfile
-msgid "Delete ambiguous file?"
-msgstr "¿Borrar archivo ambiguo?"
-
 #: lazarusidestrconsts.lisdeletemacro
 #, object-pascal-format
 msgid "Delete macro \"%s\"?"
@@ -9757,10 +9730,6 @@ msgstr "Error: "
 msgid "Error creating file"
 msgstr "Error creando archivo"
 
-#: lazarusidestrconsts.liserrordeletingfile
-msgid "Error deleting file"
-msgstr "Error borrando archivo"
-
 #: lazarusidestrconsts.liserrorin
 #, object-pascal-format
 msgid "Error in %s"
@@ -9859,10 +9828,6 @@ msgstr "Error al leer XML"
 #, object-pascal-format
 msgid "Error reading xml file \"%s\"%s%s"
 msgstr "Error al leer el archivo xml \"%s\"%s%s"
-
-#: lazarusidestrconsts.liserrorrenamingfile
-msgid "Error renaming file"
-msgstr "Error renombrando archivo"
 
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
@@ -10791,10 +10756,6 @@ msgstr "Sugerencia: Se puede definir un valor predeterminado en los condicionale
 #: lazarusidestrconsts.lishintatpropertysnameshowsdescription
 msgid "A hint at property's name shows its description."
 msgstr "Una sugerencia en el nombre de propiedades muestra su descripción."
-
-#: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
-msgid "Hint: Check if two packages contain a unit with the same name."
-msgstr "Sugerencia: Compruebe si dos paquetes contienen una unidad con el mismo nombre."
 
 #: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
 msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
@@ -14450,14 +14411,6 @@ msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
 msgid "Top"
 msgstr "Arriba"
 
-#: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
-msgid "NOTE: Could not create Define Template for Free Pascal Sources"
-msgstr "NOTA: No se pudo crear la Plantilla de Defines para los Fuentes de Free Pascal"
-
-#: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
-msgid "NOTE: Could not create Define Template for Lazarus Sources"
-msgstr "NOTA: No se pudo crear la Plantilla de Defines para los fuentes de Lazarus"
-
 #: lazarusidestrconsts.lisnotemplateselected
 msgid "no template selected"
 msgstr "sin plantilla seleccionada"
@@ -16655,10 +16608,6 @@ msgstr "Renombrar ..."
 msgid "Rename file?"
 msgstr "¿Renombrar archivo?"
 
-#: lazarusidestrconsts.lisrenamefilefailed
-msgid "Rename file failed"
-msgstr "Fallo al renombrar archivo"
-
 #: lazarusidestrconsts.lisrenameshowresult
 msgid "Show list of renamed Identifiers"
 msgstr "Mostrar lista de Identificadores renombrados"
@@ -18167,11 +18116,6 @@ msgstr "El proyecto debe guardarse antes de construirlo%sSi establece el Directo
 msgid "The project uses FPC resources which require at least FPC 2.4"
 msgstr "El proyecto utiliza recursos de FPC que requieren al menos FPC 2.4"
 
-#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
-#, object-pascal-format
-msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
-msgstr "El proyecto usa OS objetivo=%s y CPU=%s.%sEl system.ppu para este objetivo no se encontró en los directorios de los binarios de FPC. %sAsegúrese de que FPC esta instalado correctamente para este objetivo y que el archivo fpc.cfg contiene los directorios correctos."
-
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 #, object-pascal-format
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
@@ -18191,11 +18135,6 @@ msgstr "%sHay notas adicionales para este mensaje en%s"
 #, object-pascal-format
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "Hay otros archivos en el directorio con el mismo nombre,%s difieren sólo en may/min:%s%s%s¿Borrarlos?"
-
-#: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-#, object-pascal-format
-msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
-msgstr "Hay un archivo con el mismo nombre y extensión similar en disco%sArchivo: %s%sArchivo Ambiguo: %s%s¿Borrar archivo ambiguo?"
 
 #: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
 msgid "There is already a build mode with this name."
@@ -18255,11 +18194,6 @@ msgstr "Ya existe una unidad con el nombre \"%s\". Los identificadores Pascal de
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Hay una unidad con el nombre \"%s\" en el proyecto.%sPor favor escoja un nombre diferente"
-
-#: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
-#, object-pascal-format
-msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
-msgstr "No hay ningún compilador de Free Pascal (por ejemplo, fpc%0:s o ppc<cpu>%0:s) configurado en las opciones del proyecto. CodeTools no funcionará correctamente.%1:s%1:sMensaje de error:%1:s%2:s"
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -18334,11 +18268,6 @@ msgstr "La unidad(unit) \"%s\" ya existe."
 #, object-pascal-format
 msgid "The unit belongs to package %s."
 msgstr "La unidad pertenece al paquete %s."
-
-#: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
-#, object-pascal-format
-msgid "The unit %s exists twice in the unit path of the %s:"
-msgstr "La unidad %s existe dos veces en la ruta de unidad de %s:"
 
 #: lazarusidestrconsts.listheunithasthisname
 msgid "The unit has this name"
@@ -18784,11 +18713,6 @@ msgstr "No se puede añadir la dependencia %s, ya que esto crearía una dependen
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "No se ha podido añadir %s al proyecto, porque en el Proyecto ya hay una unidad con el mismo nombre."
 
-#: lazarusidestrconsts.lisunabletobackupfileto
-#, object-pascal-format
-msgid "Unable to backup file \"%s\" to \"%s\"!"
-msgstr "¡No se ha podido hacer copia de seguridad del archivo \"%s\" a \"%s\"!"
-
 #: lazarusidestrconsts.lisunabletochangeclassofto
 #, object-pascal-format
 msgid "%s%sUnable to change class of %s to %s"
@@ -18840,11 +18764,6 @@ msgstr "No se puede crear archivo nuevo, porque ya existe un directorio con este
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
 msgstr "No se ha podido crear el buffer temporal lfm."
-
-#: lazarusidestrconsts.lisunabletodeleteambiguousfile
-#, object-pascal-format
-msgid "Unable to delete ambiguous file \"%s\""
-msgstr "No se ha podido borrar el archivo ambiguo \"%s\""
 
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
@@ -18921,11 +18840,6 @@ msgstr "No se ha podido abrir el diseñador.%sLa clase %s no desciende de una cl
 msgid "Unable to read %s"
 msgstr "No se puede leer %s"
 
-#: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-#, object-pascal-format
-msgid "Unable to remove old backup file \"%s\"!"
-msgstr "¡No se ha podido eliminar el archivo de copia de seguridad antiguo \"%s\"!"
-
 #: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
 #, object-pascal-format
 msgid "Unable to remove project scaled from source.%s%s"
@@ -18935,11 +18849,6 @@ msgstr "No se ha podido remover el proyecto escalado desde la fuente.%s%s"
 #, object-pascal-format
 msgid "Unable to remove project title from source.%s%s"
 msgstr "No se puede eliminar el título del proyecto de la fuente.%s%s"
-
-#: lazarusidestrconsts.lisunabletorenameambiguousfileto
-#, object-pascal-format
-msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
-msgstr "No se ha podido renombrar el archivo ambiguo \"%s\"%sa \"%s\""
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."

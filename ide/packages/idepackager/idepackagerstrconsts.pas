@@ -81,7 +81,7 @@ resourcestring
   lisPkgMacroPackageNameParameterIsPackageID = 'Package name. Parameter is package ID, e.g. "Name" or "Name 1.0"';
   lisPkgMacroPackageOutputDirectoryParameterIsPackageID = 'Package output directory. Parameter is package ID, e.g. "Name" or "Name 1.0"';
 
-  lispIgnoreAll = 'Ignore all';
+  lisIgnoreAll = 'Ignore all';
 
   // package system
   lisPkgSysInvalidUnitname = 'Invalid Unitname: %s';

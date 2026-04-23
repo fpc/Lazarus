@@ -9,6 +9,10 @@ msgstr ""
 msgid "FPC message file"
 msgstr ""
 
+#: ideconfstrconsts.dlggroupenvironment
+msgid "Environment"
+msgstr "Entorn"
+
 #: ideconfstrconsts.lisaborted
 msgid "Aborted"
 msgstr ""
@@ -18,6 +22,19 @@ msgstr ""
 #| msgid "A file %s%s%s already exists.%sReplace it?"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Ja existeix un fitxer %s%s%s. %sVoleu que el substitueixi?"
+
+#: ideconfstrconsts.lisambiguousfilefound
+msgid "Ambiguous file found"
+msgstr ""
+
+#: ideconfstrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
+#, object-pascal-format
+msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
+msgstr ""
+
+#: ideconfstrconsts.lisbackupfilefailed
+msgid "Backup file failed"
+msgstr "Ha fallat la còpia de seguretat"
 
 #: ideconfstrconsts.lisbuildide
 msgid "Build IDE"
@@ -96,6 +113,11 @@ msgstr ""
 msgid "%s is missing."
 msgstr ""
 
+#: ideconfstrconsts.liscompilerdoesnotsupporttarget
+#, object-pascal-format
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr ""
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -133,6 +155,10 @@ msgstr "Directori de configuració del Lazarus"
 #: ideconfstrconsts.liscpu
 #, object-pascal-format
 msgid ", CPU: %s"
+msgstr ""
+
+#: ideconfstrconsts.lisdeleteambiguousfile
+msgid "Delete ambiguous file?"
 msgstr ""
 
 #: ideconfstrconsts.lisdeletefilefailed
@@ -209,10 +235,18 @@ msgstr ""
 msgid "Directory not found"
 msgstr "No s'ha trobat el directori"
 
+#: ideconfstrconsts.liserrordeletingfile
+msgid "Error deleting file"
+msgstr "S'ha produït un error mentre s'eliminava el fitxer"
+
 #: ideconfstrconsts.liserrorloadingfrom
 #, object-pascal-format
 msgid "Error loading %s from%s%s%s%s"
 msgstr ""
+
+#: ideconfstrconsts.liserrorrenamingfile
+msgid "Error renaming file"
+msgstr "S'ha produït un error mentre es canviava el nom del fitxer"
 
 #: ideconfstrconsts.liserrorsavingto
 #, object-pascal-format
@@ -323,6 +357,10 @@ msgstr ""
 #| msgid "Freepascal source directory"
 msgid "Free Pascal source directory"
 msgstr "Directori del codi font del FreePascal"
+
+#: ideconfstrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
 
 #: ideconfstrconsts.lisidebuildoptions
 msgid "IDE build options"
@@ -447,6 +485,14 @@ msgstr ""
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "%s - (nou projecte)"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
+msgid "NOTE: Could not create Define Template for Free Pascal Sources"
+msgstr "Nota: No s'ha pogut crear la plantilla definida per les fonts del Free Pascal"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
+msgid "NOTE: Could not create Define Template for Lazarus Sources"
+msgstr "Nota: No s'ha pogut crear la plantilla definida per les fonts del Lazarus"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -585,6 +631,10 @@ msgstr "Publica el directori del projecte"
 msgid "Read Error"
 msgstr "S'ha produït un error de lectura"
 
+#: ideconfstrconsts.lisrenamefilefailed
+msgid "Rename file failed"
+msgstr "Ha fallat el canvi de nom del fitxer"
+
 #: ideconfstrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr ""
@@ -659,9 +709,29 @@ msgstr ""
 msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
 msgstr ""
 
+#: ideconfstrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+#, object-pascal-format
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr ""
+
+#: ideconfstrconsts.listhereisafilewiththesamenameandasimilarextension
+#, object-pascal-format
+msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
+msgstr ""
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
+msgstr ""
+
+#: ideconfstrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr ""
+
+#: ideconfstrconsts.listheunitexiststwiceintheunitpathofthe
+#, object-pascal-format
+msgid "The unit %s exists twice in the unit path of the %s:"
 msgstr ""
 
 #: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
@@ -709,6 +779,12 @@ msgstr "(macroinstrucció desconeguda: %s)"
 msgid "tool \"%s\" has no executable"
 msgstr ""
 
+#: ideconfstrconsts.lisunabletobackupfileto
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to backup file %s%s%s to %s%s%s!"
+msgid "Unable to backup file \"%s\" to \"%s\"!"
+msgstr "No es pot fer copia de seguretat del fitxer %s%s%s a %s%s%s!"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "No es pot copiar el fitxer"
@@ -745,6 +821,11 @@ msgstr ""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr ""
 
+#: ideconfstrconsts.lisunabletodeleteambiguousfile
+#, object-pascal-format
+msgid "Unable to delete ambiguous file \"%s\""
+msgstr ""
+
 #: ideconfstrconsts.lisunabletoexecute
 #, object-pascal-format
 msgid "unable to execute: %s"
@@ -773,6 +854,17 @@ msgstr "No es pot llegir el fitxer %s%s%s%sError: %s"
 
 #: ideconfstrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
+msgstr ""
+
+#: ideconfstrconsts.lisunabletoremoveoldbackupfile
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to remove old backup file %s%s%s!"
+msgid "Unable to remove old backup file \"%s\"!"
+msgstr "No es pot eliminar el fitxer de resguard antic %s%s%s!"
+
+#: ideconfstrconsts.lisunabletorenameambiguousfileto
+#, object-pascal-format
+msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr ""
 
 #: ideconfstrconsts.lisunabletorenamefile

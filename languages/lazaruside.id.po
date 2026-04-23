@@ -2385,11 +2385,6 @@ msgstr ""
 msgid "Editor"
 msgstr ""
 
-#: lazarusidestrconsts.dlggroupenvironment
-msgctxt "lazarusidestrconsts.dlggroupenvironment"
-msgid "Environment"
-msgstr "Lingkungan"
-
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
 msgstr "Undi Grup"
@@ -5725,16 +5720,6 @@ msgstr ""
 msgid "A macro with this name already exists."
 msgstr ""
 
-#: lazarusidestrconsts.lisambiguousfilefound
-msgid "Ambiguous file found"
-msgstr "File dwimakna ditemukan"
-
-#: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
-msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
-msgstr "File yang tidak jelas ditemukan: %s%s%s%sFile ini mungkin salah dengan %s%s%s%s%sHapus file tidak jelas?"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr ""
@@ -5955,10 +5940,6 @@ msgstr ""
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
 msgstr ""
-
-#: lazarusidestrconsts.lisbackupfilefailed
-msgid "Backup file failed"
-msgstr "Mem-backup file gagal"
 
 #: lazarusidestrconsts.lisbackuphint
 msgid "Creates a Backup directory under project directory"
@@ -7785,11 +7766,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Kompilator"
 
-#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
-#, object-pascal-format
-msgid "Compiler \"%s\" does not support target %s-%s"
-msgstr ""
-
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
 msgid "Compiler messages file not found:%s%s"
@@ -9094,10 +9070,6 @@ msgstr ""
 msgid "Delete all these files?"
 msgstr "Hapus semua file ini?"
 
-#: lazarusidestrconsts.lisdeleteambiguousfile
-msgid "Delete ambiguous file?"
-msgstr "Hapus file yang tidak jelas?"
-
 #: lazarusidestrconsts.lisdeletemacro
 #, object-pascal-format
 msgid "Delete macro \"%s\"?"
@@ -9788,10 +9760,6 @@ msgstr "Salah:"
 msgid "Error creating file"
 msgstr "Kesalahan pembuatan file"
 
-#: lazarusidestrconsts.liserrordeletingfile
-msgid "Error deleting file"
-msgstr "Kesalahan penghapusan file"
-
 #: lazarusidestrconsts.liserrorin
 #, object-pascal-format
 msgid "Error in %s"
@@ -9889,10 +9857,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Error reading xml file \"%s\"%s%s"
 msgstr ""
-
-#: lazarusidestrconsts.liserrorrenamingfile
-msgid "Error renaming file"
-msgstr "Kesalahan penggantian nama file"
 
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
@@ -10816,10 +10780,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lishintatpropertysnameshowsdescription
 msgid "A hint at property's name shows its description."
-msgstr ""
-
-#: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
-msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""
 
 #: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
@@ -14593,14 +14553,6 @@ msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
 msgid "Top"
 msgstr ""
 
-#: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
-msgid "NOTE: Could not create Define Template for Free Pascal Sources"
-msgstr "CATATAN: Tidak bisa membuat  Define Template untuk Sumber Free Pascal"
-
-#: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
-msgid "NOTE: Could not create Define Template for Lazarus Sources"
-msgstr "CATATAN: Tidak bisa membuat  Define Template untuk Sumber Lazarus"
-
 #: lazarusidestrconsts.lisnotemplateselected
 msgid "no template selected"
 msgstr ""
@@ -16882,10 +16834,6 @@ msgstr ""
 msgid "Rename file?"
 msgstr "Ganti nama file?"
 
-#: lazarusidestrconsts.lisrenamefilefailed
-msgid "Rename file failed"
-msgstr "Penggantian nama file gagal"
-
 #: lazarusidestrconsts.lisrenameshowresult
 msgid "Show list of renamed Identifiers"
 msgstr ""
@@ -18402,11 +18350,6 @@ msgstr "Proyek harus disimpan sebelum pembangunan%sJika anda menset Direktori Te
 msgid "The project uses FPC resources which require at least FPC 2.4"
 msgstr ""
 
-#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
-#, object-pascal-format
-msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
-msgstr ""
-
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 #, object-pascal-format
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
@@ -18426,12 +18369,6 @@ msgstr ""
 #, object-pascal-format
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "Ada file lain dalam direktori dengan nama yang sama, %syang beda hanya jenis hurufnya:%s%s%sHapus dulu?"
-
-#: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-#, object-pascal-format, fuzzy, badformat
-#| msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
-msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
-msgstr "Ada file dengan nama sama dan ekstensi mirip pada disk%File: %s%s%sHapus file dwimakna?"
 
 #: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
 msgid "There is already a build mode with this name."
@@ -18493,11 +18430,6 @@ msgstr "Sudah ada unit dengan nama%s%s%s. Pengenal Pascal harus unik."
 #| msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Ada unit dengan nama %s%s%s dalam proyek.%sSilahkan pilih nama yang berbeda"
-
-#: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
-#, object-pascal-format
-msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
-msgstr ""
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -18574,11 +18506,6 @@ msgstr ""
 #: lazarusidestrconsts.listheunitbelongstopackage
 #, object-pascal-format
 msgid "The unit belongs to package %s."
-msgstr ""
-
-#: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
-#, object-pascal-format
-msgid "The unit %s exists twice in the unit path of the %s:"
 msgstr ""
 
 #: lazarusidestrconsts.listheunithasthisname
@@ -19034,12 +18961,6 @@ msgstr ""
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "Tidak bisa menambah %s ke proyek, karena sudah ada unit dengan nama yang sama dalam Proyek."
 
-#: lazarusidestrconsts.lisunabletobackupfileto
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to backup file %s%s%s to %s%s%s!"
-msgid "Unable to backup file \"%s\" to \"%s\"!"
-msgstr "Tidak bisa mem-backup file %s%s%s to %s%s%s!"
-
 #: lazarusidestrconsts.lisunabletochangeclassofto
 #, object-pascal-format
 msgid "%s%sUnable to change class of %s to %s"
@@ -19094,12 +19015,6 @@ msgstr ""
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
 msgstr "Tidak bisa membuat bufer lfm sementara."
-
-#: lazarusidestrconsts.lisunabletodeleteambiguousfile
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to delete ambiguous file %s%s%s"
-msgid "Unable to delete ambiguous file \"%s\""
-msgstr "Tidak bisa menghapus file dwimakna %s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
@@ -19179,12 +19094,6 @@ msgstr "Tidak bisa membuka desainer.%sKelas %s bukan turunan dari kelas bisa did
 msgid "Unable to read %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to remove old backup file %s%s%s!"
-msgid "Unable to remove old backup file \"%s\"!"
-msgstr "Tidak bisa menghapus file backup lama %s%s%s!"
-
 #: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
 #, object-pascal-format
 msgid "Unable to remove project scaled from source.%s%s"
@@ -19194,12 +19103,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Unable to remove project title from source.%s%s"
 msgstr ""
-
-#: lazarusidestrconsts.lisunabletorenameambiguousfileto
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
-msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
-msgstr "Tidak bisa mengganti nama file dwimakna %s%s%s%ske %s%s%s"
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."

@@ -9,6 +9,10 @@ msgstr ""
 msgid "FPC message file"
 msgstr ""
 
+#: ideconfstrconsts.dlggroupenvironment
+msgid "Environment"
+msgstr "סביבה"
+
 #: ideconfstrconsts.lisaborted
 msgid "Aborted"
 msgstr ""
@@ -18,6 +22,20 @@ msgstr ""
 #| msgid "A file %s%s%s already exists.%sReplace it?"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "הקובץ %s%s%s כבר קיים.%sהאם להחליפו?"
+
+#: ideconfstrconsts.lisambiguousfilefound
+msgid "Ambiguous file found"
+msgstr "קובץ רב משמעי נמצא"
+
+#: ideconfstrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
+msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
+msgstr "נמצא קובץ רב משמעי: s%s%s% יכול להיות שהוא נלקח בטעות במקום s%s%s%s%s%. האם למחוק אותו?"
+
+#: ideconfstrconsts.lisbackupfilefailed
+msgid "Backup file failed"
+msgstr "קובץ הגיבוי נכשל"
 
 #: ideconfstrconsts.lisbuildide
 msgid "Build IDE"
@@ -96,6 +114,11 @@ msgstr ""
 msgid "%s is missing."
 msgstr ""
 
+#: ideconfstrconsts.liscompilerdoesnotsupporttarget
+#, object-pascal-format
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr "מהדר  \"%s\"  לא תומך ביעד %s-%s"
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format, fuzzy, badformat
 msgid "Error: invalid compiler: %s"
@@ -135,6 +158,10 @@ msgstr "ספריית הגדרות לזרוס"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ""
+
+#: ideconfstrconsts.lisdeleteambiguousfile
+msgid "Delete ambiguous file?"
+msgstr "מחק קובץ רב משמעי?"
 
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -210,10 +237,18 @@ msgstr "משתנה סביבה, תן שם כמו לפרמטר"
 msgid "Directory not found"
 msgstr "תיקייה לא נמצאה"
 
+#: ideconfstrconsts.liserrordeletingfile
+msgid "Error deleting file"
+msgstr "שגיאה במחיקת קובץ"
+
 #: ideconfstrconsts.liserrorloadingfrom
 #, object-pascal-format, fuzzy, badformat
 msgid "Error loading %s from%s%s%s%s"
 msgstr "שגיאה בטעינת s% מ s%s%s%s%"
+
+#: ideconfstrconsts.liserrorrenamingfile
+msgid "Error renaming file"
+msgstr "שגיאה במתן שם לקובץ"
 
 #: ideconfstrconsts.liserrorsavingto
 #, object-pascal-format, fuzzy, badformat
@@ -324,6 +359,10 @@ msgstr ""
 #| msgid "Freepascal source directory"
 msgid "Free Pascal source directory"
 msgstr "ספריית קוד המקור של Freepascal"
+
+#: ideconfstrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr "טיפ: בדוק אם יש שתי חבילות המכילות יחידות עם אותו שם."
 
 #: ideconfstrconsts.lisidebuildoptions
 msgid "IDE build options"
@@ -448,6 +487,14 @@ msgstr ""
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "פרוייקט חדש - s%"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
+msgid "NOTE: Could not create Define Template for Free Pascal Sources"
+msgstr "הערה: לא יכול להגדיר תבנית עבור קוד Free Pascal"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
+msgid "NOTE: Could not create Define Template for Lazarus Sources"
+msgstr "הערה: לא יכול להגדיר תבנית עבור קוד לזארוס"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -586,6 +633,10 @@ msgstr "פרסם את ספריית הפרויקט"
 msgid "Read Error"
 msgstr "שגיאת קריאה"
 
+#: ideconfstrconsts.lisrenamefilefailed
+msgid "Rename file failed"
+msgstr "שינוי שם הקובץ נכשל"
+
 #: ideconfstrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr ""
@@ -664,10 +715,32 @@ msgstr "הקובץ %s%s%s הוא קישור סימבולי. לפתוח את %s%s
 msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
 msgstr ""
 
+#: ideconfstrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+#, object-pascal-format, fuzzy, badformat
+#| msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr "הפרוייקט משתמש כמטרה במערכת ההפעלה = s% ובמעבד = s%. הקובץ system.ppu עבור מטרה זאת לא נמצא בתיקיית הקבצים הבינאריים של FPC.ודא ש fpc מותקו כראוי עבור מטרה זאת ושהקובץ fpc.cfg מכיל את התיקיות הנכונות."
+
+#: ideconfstrconsts.listhereisafilewiththesamenameandasimilarextension
+#, object-pascal-format, fuzzy
+#| msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
+msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
+msgstr "יש קובץ בעל אותו שם וסיומת דומה בדיסק קובץ: %s%s קובץ רב משמעי:  %s%s%s , האם למחוק את הבעייתי?"
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr ""
+
+#: ideconfstrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr ""
+
+#: ideconfstrconsts.listheunitexiststwiceintheunitpathofthe
+#, object-pascal-format, fuzzy, badformat
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr "היחידה s% קיימת פעמיים בנתיב היחידות של: s%"
 
 #: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 #, object-pascal-format, fuzzy
@@ -715,6 +788,12 @@ msgstr "(מאקרו לא מוכר: s%)"
 msgid "tool \"%s\" has no executable"
 msgstr ""
 
+#: ideconfstrconsts.lisunabletobackupfileto
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to backup file %s%s%s to %s%s%s!"
+msgid "Unable to backup file \"%s\" to \"%s\"!"
+msgstr "פעולת הגיבוי של הקובץ %s%s%s לקובץ %s%s%s לא הצליחה!"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "לא ניתן להעתיק את הקובץ"
@@ -753,6 +832,12 @@ msgstr "לא יכול ליצור את הקובץ %s%s%s%s"
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "לא ניתן ליצור את הקישור %s%s%s עם %s%s%s"
 
+#: ideconfstrconsts.lisunabletodeleteambiguousfile
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to delete ambiguous file %s%s%s"
+msgid "Unable to delete ambiguous file \"%s\""
+msgstr "לא ניתן למחוק את הקובץ הרב משמעי %s%s%s"
+
 #: ideconfstrconsts.lisunabletoexecute
 #, object-pascal-format
 msgid "unable to execute: %s"
@@ -782,6 +867,18 @@ msgstr "לא ניתן לקרוא את הקובץ %s%s%s%sשגיאה: %s"
 #: ideconfstrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr ""
+
+#: ideconfstrconsts.lisunabletoremoveoldbackupfile
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to remove old backup file %s%s%s!"
+msgid "Unable to remove old backup file \"%s\"!"
+msgstr "לא ניתן להסיר את קובץ הגיבויים  %s%s%s הישן!"
+
+#: ideconfstrconsts.lisunabletorenameambiguousfileto
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
+msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
+msgstr "לא ניתן לשנות את השם של קובץ רב משמעי %s%s%s%sל %s%s%s"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

@@ -12,6 +12,10 @@ msgstr ""
 msgid "FPC message file"
 msgstr "FPC 消息文件"
 
+#: ideconfstrconsts.dlggroupenvironment
+msgid "Environment"
+msgstr "环境"
+
 #: ideconfstrconsts.lisaborted
 msgid "Aborted"
 msgstr "中止"
@@ -20,6 +24,19 @@ msgstr "中止"
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "文件 \"%s\" 已存在%s是否替换？"
+
+#: ideconfstrconsts.lisambiguousfilefound
+msgid "Ambiguous file found"
+msgstr "多义文件找到"
+
+#: ideconfstrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
+#, object-pascal-format
+msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
+msgstr "多义文件找到: \"%s\"%s这个文件可能被\"%s\"%s弄错 删除多义文件?"
+
+#: ideconfstrconsts.lisbackupfilefailed
+msgid "Backup file failed"
+msgstr "备份文件失败"
 
 #: ideconfstrconsts.lisbuildide
 msgid "Build IDE"
@@ -98,6 +115,11 @@ msgstr "编译项目"
 msgid "%s is missing."
 msgstr "%s是丢失的."
 
+#: ideconfstrconsts.liscompilerdoesnotsupporttarget
+#, object-pascal-format
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr "编译器\"%s\"不支持目标%s-%s"
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -135,6 +157,10 @@ msgstr "Lazarus配置目录"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ", CPU: %s"
+
+#: ideconfstrconsts.lisdeleteambiguousfile
+msgid "Delete ambiguous file?"
+msgstr "删除多义文件？"
 
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -210,10 +236,18 @@ msgstr "环境变量,名称作为参数"
 msgid "Directory not found"
 msgstr "目录未找到"
 
+#: ideconfstrconsts.liserrordeletingfile
+msgid "Error deleting file"
+msgstr "删除文件错误"
+
 #: ideconfstrconsts.liserrorloadingfrom
 #, object-pascal-format
 msgid "Error loading %s from%s%s%s%s"
 msgstr "加载 %s 时出错从 %s%s%s%s"
+
+#: ideconfstrconsts.liserrorrenamingfile
+msgid "Error renaming file"
+msgstr "重命名文件错误"
 
 #: ideconfstrconsts.liserrorsavingto
 #, object-pascal-format
@@ -321,6 +355,10 @@ msgstr "释放缓冲器行: %s"
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal源代码目录"
+
+#: ideconfstrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr "提示:检查是否两个软件包软件包含了同名单元."
 
 #: ideconfstrconsts.lisidebuildoptions
 msgid "IDE build options"
@@ -441,6 +479,14 @@ msgstr "活动构建模式的名称"
 #: ideconfstrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(新建项目)"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
+msgid "NOTE: Could not create Define Template for Free Pascal Sources"
+msgstr "注意: 不能为Free Pascal源代码创建自定义模板"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
+msgid "NOTE: Could not create Define Template for Lazarus Sources"
+msgstr "注意:不能为Lazarus源代码创建自定义模板"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -578,6 +624,10 @@ msgstr "发布项目目录"
 msgid "Read Error"
 msgstr "读取错误"
 
+#: ideconfstrconsts.lisrenamefilefailed
+msgid "Rename file failed"
+msgstr "重命名文件失败"
+
 #: ideconfstrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "第二个配置路径"
@@ -652,10 +702,30 @@ msgstr "文件 \"%s\" 是一个符号链接。%s要打开 \"%s\" 吗？"
 msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
 msgstr ""
 
+#: ideconfstrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+#, object-pascal-format
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr "项目使用目标操作系统=%s 和 CPU=%s。%s未在 FPC 二进制目录中找到此目标的 system.ppu。%s请确保为此目标正确安装了 fpc，并且 fpc.cfg 包含正确的目录。"
+
+#: ideconfstrconsts.listhereisafilewiththesamenameandasimilarextension
+#, object-pascal-format
+msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
+msgstr "磁盘上有一个名称相同且扩展名相似的文件%s文件: %s%s不明确的文件: %s%s删除不明确的文件？"
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "在%s目录中没有fpc.exe.make可执行文件通常与FPC编译器安装在一起."
+
+#: ideconfstrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr "在项目选项中没有配置 Free Pascal 编译器（例如 fpc%0:s 或 ppc<cpu>%0:s）。CodeTools 将无法正常工作。%1:s%1:s错误信息：%1:s%2:s"
+
+#: ideconfstrconsts.listheunitexiststwiceintheunitpathofthe
+#, object-pascal-format
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr "单元%s在%s的单元路径在存在两个:"
 
 #: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 #, object-pascal-format
@@ -700,6 +770,11 @@ msgstr "(未知宏：%s)"
 msgid "tool \"%s\" has no executable"
 msgstr "工具 \"%s\" 没有可执行程序"
 
+#: ideconfstrconsts.lisunabletobackupfileto
+#, object-pascal-format
+msgid "Unable to backup file \"%s\" to \"%s\"!"
+msgstr "不能备份文件\"%s\"到\"%s\"!"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "无法复制文件"
@@ -733,6 +808,11 @@ msgstr "无法创建文件%s\"%s\""
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "无法创建链接 \"%s\" 目标为 \"%s\""
 
+#: ideconfstrconsts.lisunabletodeleteambiguousfile
+#, object-pascal-format
+msgid "Unable to delete ambiguous file \"%s\""
+msgstr "无法删除不明确的文件 \"%s\""
+
 #: ideconfstrconsts.lisunabletoexecute
 #, object-pascal-format
 msgid "unable to execute: %s"
@@ -760,6 +840,16 @@ msgstr "无法读取文件 \"%s\"%s 错误：%s"
 #: ideconfstrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "无法读取进程的退出状态码"
+
+#: ideconfstrconsts.lisunabletoremoveoldbackupfile
+#, object-pascal-format
+msgid "Unable to remove old backup file \"%s\"!"
+msgstr "无法删除旧的备份文件 \"%s\"！"
+
+#: ideconfstrconsts.lisunabletorenameambiguousfileto
+#, object-pascal-format
+msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
+msgstr "无法将不明确的文件 \"%s\"%s 重命名为 \"%s\""
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

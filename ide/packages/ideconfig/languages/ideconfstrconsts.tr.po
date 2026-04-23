@@ -9,6 +9,10 @@ msgstr ""
 msgid "FPC message file"
 msgstr "FPC mesaj dosyası"
 
+#: ideconfstrconsts.dlggroupenvironment
+msgid "Environment"
+msgstr "Ortam"
+
 #: ideconfstrconsts.lisaborted
 msgid "Aborted"
 msgstr "Yoksay"
@@ -17,6 +21,19 @@ msgstr "Yoksay"
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "\"%s\" dosyası zaten var.%s Değiştirilsin mi?"
+
+#: ideconfstrconsts.lisambiguousfilefound
+msgid "Ambiguous file found"
+msgstr "Belirsiz dosya bulundu"
+
+#: ideconfstrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
+#, object-pascal-format
+msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
+msgstr "Belirsiz dosya bulundu: \"%s\"%sBu dosya \"%s\" ile karıştırılabilir %sBelirsiz dosya silinsin mi?"
+
+#: ideconfstrconsts.lisbackupfilefailed
+msgid "Backup file failed"
+msgstr "Yedek dosyası başarısız oldu"
 
 #: ideconfstrconsts.lisbuildide
 msgid "Build IDE"
@@ -95,6 +112,11 @@ msgstr "Projeyi Derle"
 msgid "%s is missing."
 msgstr "%s kayıp."
 
+#: ideconfstrconsts.liscompilerdoesnotsupporttarget
+#, object-pascal-format
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr "Derleyici \"%s\" hedef %s- %s'yi desteklemez"
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -132,6 +154,10 @@ msgstr "Lazarus yapılandırma dizini"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ", CPU: %s"
+
+#: ideconfstrconsts.lisdeleteambiguousfile
+msgid "Delete ambiguous file?"
+msgstr "Belirsiz dosya silinsin mi?"
 
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -207,10 +233,18 @@ msgstr "Ortam değişkeni, parametrenin adı"
 msgid "Directory not found"
 msgstr "Dizin bulunamadı"
 
+#: ideconfstrconsts.liserrordeletingfile
+msgid "Error deleting file"
+msgstr "Dosya silinirken hata oluştu"
+
 #: ideconfstrconsts.liserrorloadingfrom
 #, object-pascal-format
 msgid "Error loading %s from%s%s%s%s"
 msgstr "%s%s%s%s adresinden %s yüklenirken hata oluştu"
+
+#: ideconfstrconsts.liserrorrenamingfile
+msgid "Error renaming file"
+msgstr "Dosya yeniden adlandırılırken bir hata oluştu"
 
 #: ideconfstrconsts.liserrorsavingto
 #, object-pascal-format
@@ -318,6 +352,10 @@ msgstr "arabellek satırlarını boşaltma: %s"
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal kaynak dizini"
+
+#: ideconfstrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr "İpucu: İki paketin aynı ada sahip bir birimi olup olmadığını kontrol edin."
 
 #: ideconfstrconsts.lisidebuildoptions
 msgid "IDE build options"
@@ -440,6 +478,14 @@ msgstr "Etkin yapı modunun adı"
 #: ideconfstrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(yeni proje)"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
+msgid "NOTE: Could not create Define Template for Free Pascal Sources"
+msgstr "NOT: Free Pascal Kaynakları için Şablon Tanımlama Oluşturulamadı"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
+msgid "NOTE: Could not create Define Template for Lazarus Sources"
+msgstr "NOT: Lazarus Kaynakları için Şablon Tanımlama Oluşturulamadı"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -577,6 +623,10 @@ msgstr "Proje dizini yayınla"
 msgid "Read Error"
 msgstr "Okuma hatası"
 
+#: ideconfstrconsts.lisrenamefilefailed
+msgid "Rename file failed"
+msgstr "Dosya yeniden adlandırılamadı"
+
 #: ideconfstrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "İkincil yapılandırma yolu"
@@ -651,10 +701,30 @@ msgstr "\"%s\"dosyası bir sembolik bağ.%s \"%s\" yerine Aç?"
 msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
 msgstr ""
 
+#: ideconfstrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+#, object-pascal-format
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr "Proje hedef OS=%s ve CPU=%s kullanıyor.%sBu hedef için system.ppu FPC ikili dizinlerinde bulunamadı.%sBu hedef için fpc'nin doğru yüklendiğinden ve fpc.cfg'nin doğru dizinleri içerdiğinden emin olun."
+
+#: ideconfstrconsts.listhereisafilewiththesamenameandasimilarextension
+#, object-pascal-format
+msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
+msgstr "%s diskinde aynı adı ve benzer bir uzantısı olan bir dosya var. Dosya:%s%s Belirsiz Dosya:%s%s Belirsiz dosyayı sil?"
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "%s dizininde fpc.exe dosyası yok. Genellikle make çalıştırılabilir dosyası FPC derleyicisi ile birlikte yüklenir."
+
+#: ideconfstrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr "Proje seçeneklerinde yapılandırılmış bir Free Pascal Derleyicisi (örn. fpc%0:s veya ppc<cpu>%0:s) yok. CodeTools düzgün çalışmayacaktır.%1:s%1:sHata mesajı:%1:s%2:s"
+
+#: ideconfstrconsts.listheunitexiststwiceintheunitpathofthe
+#, object-pascal-format
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr "%s  birimi %s birim yolunda iki kez var:"
 
 #: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 #, object-pascal-format
@@ -699,6 +769,11 @@ msgstr "(Bilinmeyen makro: %s)"
 msgid "tool \"%s\" has no executable"
 msgstr "\"%s\" aracının yürütülebilir dosyası yok"
 
+#: ideconfstrconsts.lisunabletobackupfileto
+#, object-pascal-format
+msgid "Unable to backup file \"%s\" to \"%s\"!"
+msgstr "\"%s\" dosyası \"%s\" dosyasına yedeklenemiyor!"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "Dosya kopyalanamıyor"
@@ -732,6 +807,11 @@ msgstr "%s dosyası \" %s\" dosyası oluşturulamadı."
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Hedef \"%s\"\" ile \" %s \" bağlantısı oluşturulamadı"
 
+#: ideconfstrconsts.lisunabletodeleteambiguousfile
+#, object-pascal-format
+msgid "Unable to delete ambiguous file \"%s\""
+msgstr "Belirsiz dosya \"%s\" silinemiyor"
+
 #: ideconfstrconsts.lisunabletoexecute
 #, object-pascal-format
 msgid "unable to execute: %s"
@@ -759,6 +839,16 @@ msgstr "Dosya okunamıyor \"%s\"%sHata: %s"
 #: ideconfstrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "süreç ExitStatus'u okuyamıyor"
+
+#: ideconfstrconsts.lisunabletoremoveoldbackupfile
+#, object-pascal-format
+msgid "Unable to remove old backup file \"%s\"!"
+msgstr "Eski yedekleme dosyası \"%s\" kaldırılamıyor!"
+
+#: ideconfstrconsts.lisunabletorenameambiguousfileto
+#, object-pascal-format
+msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
+msgstr "Belirsiz dosya \"%s\" %s dan \"%s\"\" olarak yeniden adlandıramıyor"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

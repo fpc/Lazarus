@@ -64,6 +64,11 @@ msgstr "Paketo modulių paieškos kelią „%s“ papildyti%s„%s“?"
 msgid "Creating Makefile for package %s"
 msgstr "Paketui „%s“ kuriamas „Makefile“"
 
+#: idepackagerstrconsts.lisignoreall
+msgctxt "idepackagerstrconsts.lisignoreall"
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler define \"%s\" twice with different values"
@@ -86,10 +91,6 @@ msgstr ""
 #: idepackagerstrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Paketo parinktys"
-
-#: idepackagerstrconsts.lispignoreall
-msgid "Ignore all"
-msgstr ""
 
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"

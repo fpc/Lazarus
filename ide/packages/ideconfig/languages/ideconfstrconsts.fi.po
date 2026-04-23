@@ -9,6 +9,10 @@ msgstr ""
 msgid "FPC message file"
 msgstr "FPC viestitiedosto"
 
+#: ideconfstrconsts.dlggroupenvironment
+msgid "Environment"
+msgstr "Käyttöympäristö"
+
 #: ideconfstrconsts.lisaborted
 msgid "Aborted"
 msgstr "Keskeytetty "
@@ -17,6 +21,19 @@ msgstr "Keskeytetty "
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Tiedosto \"%s\" on jo olemassa.%sKorvataanko se? "
+
+#: ideconfstrconsts.lisambiguousfilefound
+msgid "Ambiguous file found"
+msgstr "Ristiriitainen tiedosto löytyi"
+
+#: ideconfstrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
+#, object-pascal-format
+msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
+msgstr "Ristiriitainen tiedosto löytyi: \"%s\"%smikä voi sekoittua tähän: \"%s\"%sPoistetaanko?"
+
+#: ideconfstrconsts.lisbackupfilefailed
+msgid "Backup file failed"
+msgstr "Varmuuskopiointi epäonnistui"
 
 #: ideconfstrconsts.lisbuildide
 msgid "Build IDE"
@@ -95,6 +112,11 @@ msgstr "Käännä projekti"
 msgid "%s is missing."
 msgstr ""
 
+#: ideconfstrconsts.liscompilerdoesnotsupporttarget
+#, object-pascal-format
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr "Kääntäjä \"%s\" ei tue kohdetta %s-%s"
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -132,6 +154,10 @@ msgstr "Lazaruksen asetushakemisto"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ""
+
+#: ideconfstrconsts.lisdeleteambiguousfile
+msgid "Delete ambiguous file?"
+msgstr "Poista ristiriitainen tiedosto"
 
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -207,10 +233,18 @@ msgstr "Ympäristömuuttuja, nimi parametrina"
 msgid "Directory not found"
 msgstr "Kansiota ei löytynyt"
 
+#: ideconfstrconsts.liserrordeletingfile
+msgid "Error deleting file"
+msgstr "Virhe tuhottaessa tiedostoa"
+
 #: ideconfstrconsts.liserrorloadingfrom
 #, object-pascal-format
 msgid "Error loading %s from%s%s%s%s"
 msgstr "Virhe ladattaessa %s täältä:%s%s%s%s"
+
+#: ideconfstrconsts.liserrorrenamingfile
+msgid "Error renaming file"
+msgstr "Virhe uudelleennimettäessä tiedostoa"
 
 #: ideconfstrconsts.liserrorsavingto
 #, object-pascal-format
@@ -318,6 +352,10 @@ msgstr "vapauttaa puskurin rivit: %s"
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal -lähdehakemisto"
+
+#: ideconfstrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr "Vihje: Tarkista sisältääkö kaksi pakettia käännösyksikön samalla nimellä."
 
 #: ideconfstrconsts.lisidebuildoptions
 msgid "IDE build options"
@@ -440,6 +478,14 @@ msgstr "Aktiivisen koontamoodin nimi"
 #: ideconfstrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(uusi projekti)"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
+msgid "NOTE: Could not create Define Template for Free Pascal Sources"
+msgstr "Huom.: Ei voi luoda määritemallinetta Free Pascal -koodille"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
+msgid "NOTE: Could not create Define Template for Lazarus Sources"
+msgstr "Huom.: Ei voi luoda määritemallinetta Lazarus-koodille"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -577,6 +623,10 @@ msgstr "Julkaistavan projektin hakemisto"
 msgid "Read Error"
 msgstr "Lukuvirhe"
 
+#: ideconfstrconsts.lisrenamefilefailed
+msgid "Rename file failed"
+msgstr "Tiedoston uudelleennimeäminen epäonnistui"
+
 #: ideconfstrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "Toinen asetuspolku"
@@ -651,10 +701,30 @@ msgstr "Tiedosto \"%s\" symbolinen linkki.%sAvataanko \"%s\" sen sijaan?"
 msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
 msgstr ""
 
+#: ideconfstrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+#, object-pascal-format
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr "Projektin kohdekäyttöjärjestelmä=%s ja CPU=%s.%sKohteelle ei löydy system.ppu tiedostoa FPC:n binaari-hakemistoista.%sVarmista että fpc on asennettu oikein tälle kohteelle ja että fpc.cfg:ssa on oikeat hakemistot."
+
+#: ideconfstrconsts.listhereisafilewiththesamenameandasimilarextension
+#, object-pascal-format
+msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
+msgstr "Löytyy samanniminen tiedosto samantapaisella tiedostopäätteellä%sTiedosto: %s%sRistiriitainen tiedosto: %s%sPoistetaanko?"
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "fpc.exe ei ole %s:n hakemistossa. Yleensä make ohjelma asennetaan yhdessä FPC:n kanssa."
+
+#: ideconfstrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr ""
+
+#: ideconfstrconsts.listheunitexiststwiceintheunitpathofthe
+#, object-pascal-format
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr "Käännösyksikkö %s löytyy %s:n kahdesta eri hakupolusta:"
 
 #: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 #, object-pascal-format
@@ -699,6 +769,11 @@ msgstr "(tuntematon makro: %s)"
 msgid "tool \"%s\" has no executable"
 msgstr "työkalulla \"%s\" ei ole suoritettavaa ohjelmaa"
 
+#: ideconfstrconsts.lisunabletobackupfileto
+#, object-pascal-format
+msgid "Unable to backup file \"%s\" to \"%s\"!"
+msgstr "Ei voida tehdä varmuuskopiota tiedostosta \"%s\" tiedostoon \"%s\"!"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "Tiedoston kopiointi ei onnistunut"
@@ -732,6 +807,11 @@ msgstr "Tiedoston%s\"%s\" luominen ei onnistu"
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Linkin \"%s\" luominen kohteeseen \"%s\" ei onnistu"
 
+#: ideconfstrconsts.lisunabletodeleteambiguousfile
+#, object-pascal-format
+msgid "Unable to delete ambiguous file \"%s\""
+msgstr "Ristiriitaisen tiedoston \"%s\" poistaminen ei onnistu"
+
 #: ideconfstrconsts.lisunabletoexecute
 #, object-pascal-format
 msgid "unable to execute: %s"
@@ -759,6 +839,16 @@ msgstr "Tiedoston \"%s\" lukeminen ei onnistu%sVirhe: %s"
 #: ideconfstrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "Prosessin ExitStatus lukeminen ei onnistu"
+
+#: ideconfstrconsts.lisunabletoremoveoldbackupfile
+#, object-pascal-format
+msgid "Unable to remove old backup file \"%s\"!"
+msgstr "Vanhan varmuuskopion \"%s\" poisto ei onnistu!"
+
+#: ideconfstrconsts.lisunabletorenameambiguousfileto
+#, object-pascal-format
+msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
+msgstr "Ristiriitaisen tiedoston \"%s\"%s nimeäminen \"%s\":ksi ei onnistu"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

@@ -58,15 +58,14 @@ uses
   // IdePackager
   IdePackagerStrConsts, PackageDefs, PackageSystem, BasePkgManager,
   // IdeProject
-  IdeProjectStrConsts, Project, ProjectDefs,
+  IdeProjectStrConsts, Project, ProjectDefs, BuildManager,
   // Converter
   ConvCodeTool,
   // IDE
-  IDEProtocol, LazarusIDEStrConsts, NewDialog,
-  NewProjectDlg, MainBase, MainBar, MainIntf,
-  ProjectInspector, SourceSynEditor, SourceEditor,
+  LazarusIDEStrConsts, NewDialog, NewProjectDlg, MainBase, MainBar, MainIntf,
+  IDEProtocol, ProjectInspector, SourceSynEditor, SourceEditor,
   EditorOptions, CustomFormEditor, ControlSelection, EditableProject,
-  FormEditor, EmptyMethodsDlg, BaseDebugManager, BuildManager,
+  FormEditor, EmptyMethodsDlg, BaseDebugManager,
   EditorMacroListViewer, BuildModesManager, ViewUnit_Dlg, CheckerLFM,
   etMessagesWnd, DebugManager, EnvGuiOptions, Designer, DesignerProcs;
 

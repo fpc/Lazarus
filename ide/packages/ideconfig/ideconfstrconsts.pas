@@ -50,6 +50,39 @@ resourcestring
   lisOfPackage = ' of package %s';
   lisCompileWithVdForMoreDetailsCheckForDuplicates = 'Compile with -vd '
     +'for more details. Check for duplicates.';
+  // Build Manager
+  lisCompilerDoesNotSupportTarget = 'Compiler "%s" does not support target %s-%s';
+  lisThereIsNoFreePascalCompilerEGFpcOrPpcCpuConfigured = 'There is no Free '
+    +'Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project '
+    +'options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s';
+  lisNOTECouldNotCreateDefineTemplateForFreePascal = 'NOTE: Could not create '
+    +'Define Template for Free Pascal Sources';
+  lisNOTECouldNotCreateDefineTemplateForLazarusSources = 'NOTE: Could not '
+    +'create Define Template for Lazarus Sources';
+  lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar = 'The project uses '
+    +'target OS=%s and CPU=%s.'
+    +'%sThe system.ppu for this target was not found in the FPC binary directories.'
+    +'%sMake sure fpc is installed correctly '
+    +'for this target and the fpc.cfg contains the right directories.';
+  lisErrorDeletingFile = 'Error deleting file';
+  lisUnableToDeleteAmbiguousFile = 'Unable to delete ambiguous file "%s"';
+  lisErrorRenamingFile = 'Error renaming file';
+  lisUnableToRenameAmbiguousFileTo = 'Unable to rename ambiguous file "%s"%sto "%s"';
+  lisAmbiguousFileFound = 'Ambiguous file found';
+  lisThereIsAFileWithTheSameNameAndASimilarExtension = 'There is a file with '
+    +'the same name and a similar extension on disk%sFile: %s%sAmbiguous '
+    +'File: %s%sDelete ambiguous file?';
+  lisDeleteAmbiguousFile = 'Delete ambiguous file?';
+  lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
+    +'found: "%s"%sThis file can be mistaken with "%s"%sDelete the ambiguous file?';
+  lisTheUnitExistsTwiceInTheUnitPathOfThe = 'The unit %s exists twice in the '
+    +'unit path of the %s:';
+  lisHintCheckIfTwoPackagesContainAUnitWithTheSameName = 'Hint: Check if two '
+    +'packages contain a unit with the same name.';
+  lisUnableToRemoveOldBackupFile = 'Unable to remove old backup file "%s"!';
+  lisRenameFileFailed = 'Rename file failed';
+  lisBackupFileFailed = 'Backup file failed';
+  lisUnableToBackupFileTo = 'Unable to backup file "%s" to "%s"!';
   // IDE Builder and Build Profiles (Misc Options)
   lisCleanLazarusSource = 'Clean Lazarus Source';
   lisBuildIDE = 'Build IDE';
@@ -235,6 +268,8 @@ resourcestring
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
   lisIgnoreAndContinue = 'Ignore and continue';
   lisTheCodetoolsFoundAnError = 'The Codetools found an error:%s%s';
+  // Options dialog groups
+  dlgGroupEnvironment = 'Environment';
   // Human Languages
   rsLanguageAutomatic    = 'Automatic (or English)';
   rsLanguageEnglish      = 'English';

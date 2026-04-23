@@ -38,9 +38,9 @@ uses
   // IdeUtils
   InputHistory,
   // IdeProject
-  Project,
+  Project, BuildManager,
   // IDE
-  LazarusIDEStrConsts, EditableProject, BuildManager, FPCSrcScan;
+  LazarusIDEStrConsts, EditableProject, FPCSrcScan;
 
 type
 

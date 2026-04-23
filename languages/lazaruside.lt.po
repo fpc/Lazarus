@@ -2401,11 +2401,6 @@ msgstr "Derintuvė"
 msgid "Editor"
 msgstr "Rengyklė"
 
-#: lazarusidestrconsts.dlggroupenvironment
-msgctxt "lazarusidestrconsts.dlggroupenvironment"
-msgid "Environment"
-msgstr "Aplinka"
-
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
 msgstr "Grupinis grąžinimas"
@@ -5697,15 +5692,6 @@ msgstr ""
 msgid "A macro with this name already exists."
 msgstr "Jau yra makrokomanda tokiu pat pavadinimu."
 
-#: lazarusidestrconsts.lisambiguousfilefound
-msgid "Ambiguous file found"
-msgstr "Rastas neaiškus failas"
-
-#: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
-#, object-pascal-format
-msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
-msgstr "Rastas neaiškus failas: „%s“%sŠis failas gali būti supainiotas su „%s“%sIštrinti neaiškųjį failą?"
-
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
 msgstr "Apatinį kraštą pririšti prie kaimyno apatinio krašto. Atstumą lemia kraštinės plotis. Kaimyno kratinės plotis ignoruojamas."
@@ -5933,10 +5919,6 @@ msgstr "Galimos projekto darymo veiksenos:"
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
 msgstr "Daryti pakitusių failų rezervines kopijas"
-
-#: lazarusidestrconsts.lisbackupfilefailed
-msgid "Backup file failed"
-msgstr "Nepavyko padaryti failo atsarginę kopiją"
 
 #: lazarusidestrconsts.lisbackuphint
 msgid "Creates a Backup directory under project directory"
@@ -7739,11 +7721,6 @@ msgstr ""
 msgid "Compiler"
 msgstr "Kompiliatorius"
 
-#: lazarusidestrconsts.liscompilerdoesnotsupporttarget
-#, object-pascal-format
-msgid "Compiler \"%s\" does not support target %s-%s"
-msgstr "„%s“ kompiliatorius nepalaiko paskirties %s-%s"
-
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
 msgid "Compiler messages file not found:%s%s"
@@ -9036,10 +9013,6 @@ msgstr "&Pašalinti visus"
 msgid "Delete all these files?"
 msgstr "Pašalinti visus šiuos failus?"
 
-#: lazarusidestrconsts.lisdeleteambiguousfile
-msgid "Delete ambiguous file?"
-msgstr "Ištrinti neaiškųjį failą?"
-
 #: lazarusidestrconsts.lisdeletemacro
 #, object-pascal-format
 msgid "Delete macro \"%s\"?"
@@ -9734,10 +9707,6 @@ msgstr "Klaida: "
 msgid "Error creating file"
 msgstr "Klaida kuriant failą"
 
-#: lazarusidestrconsts.liserrordeletingfile
-msgid "Error deleting file"
-msgstr "Nepavyko ištrinti failą"
-
 #: lazarusidestrconsts.liserrorin
 #, object-pascal-format
 msgid "Error in %s"
@@ -9836,10 +9805,6 @@ msgstr "Klaida skaitant XML"
 #, object-pascal-format
 msgid "Error reading xml file \"%s\"%s%s"
 msgstr "Įvyko klaida skaitant XML failą „%s“%s%s"
-
-#: lazarusidestrconsts.liserrorrenamingfile
-msgid "Error renaming file"
-msgstr "Nepavyko pervadinti failą"
 
 #: lazarusidestrconsts.liserrors
 msgctxt "lazarusidestrconsts.liserrors"
@@ -10782,10 +10747,6 @@ msgstr "Užuomina: numatytąją vertę galima apibrėžti sąlygose"
 #: lazarusidestrconsts.lishintatpropertysnameshowsdescription
 msgid "A hint at property's name shows its description."
 msgstr "Ties savybe rodomas sufleris pateiks jos aprašymą."
-
-#: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
-msgid "Hint: Check if two packages contain a unit with the same name."
-msgstr "Užuomina: Tikrinti ar du paketai turi modulius tuo pačiu pavadinimu."
 
 #: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
 msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
@@ -14469,14 +14430,6 @@ msgctxt "lazarusidestrconsts.lisnotebooktabpostop"
 msgid "Top"
 msgstr "Viršun"
 
-#: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
-msgid "NOTE: Could not create Define Template for Free Pascal Sources"
-msgstr "Pastaba: nepavyko sukurti „Define“ šablono, skirto Free Pascal pirminiam kodui"
-
-#: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
-msgid "NOTE: Could not create Define Template for Lazarus Sources"
-msgstr "Pastaba: nepavyko sukurti „Define“ šablono, skirto Lazarus pirminiam kodui"
-
 #: lazarusidestrconsts.lisnotemplateselected
 msgid "no template selected"
 msgstr "šablonas nepažymėtas"
@@ -16674,10 +16627,6 @@ msgstr "Pervadinti…"
 msgid "Rename file?"
 msgstr "Pervadinti failą?"
 
-#: lazarusidestrconsts.lisrenamefilefailed
-msgid "Rename file failed"
-msgstr "Nepavyko pervadinti failą"
-
 #: lazarusidestrconsts.lisrenameshowresult
 msgid "Show list of renamed Identifiers"
 msgstr "Rodyti pervadintų identifikatorių sąrašą"
@@ -18213,11 +18162,6 @@ msgstr "Prieš darymą projektas turi būti įrašytas%sAplinkos parinktyse pari
 msgid "The project uses FPC resources which require at least FPC 2.4"
 msgstr ""
 
-#: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
-#, object-pascal-format
-msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
-msgstr "Projekto paskirties operacinė sistema yra „%s“, procesorius – „%s“.%s„FPC“ dvejetainių failų aplankuose nepavyko rasti šiai paskirčiai skirto „system.ppu“ failo. %s Pasirūpinkite kad šios paskirties tipui būtų tinkamai įdiegtas „FPC“, bei faile „fpc.cfg“ būtų įrašyti tinkamų aplankų pavadinimai."
-
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 #, object-pascal-format
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
@@ -18237,11 +18181,6 @@ msgstr "%sPapildomų pastabų apie šį pranešimą rasite adresu%s"
 #, object-pascal-format
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "Aplanke yra failų, kurių pavadinimai%sskiriasi tik raidžių lygiais:%s%s%sJuos ištrinti?"
-
-#: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-#, object-pascal-format
-msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
-msgstr "Rastas kitas failas tokiu pat pavadinimu bei panašiu plėtiniu.%sFailas: %s%sNeaiškusis failas: %s%sPašalinti neaiškųjį failą?"
 
 #: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
 msgid "There is already a build mode with this name."
@@ -18300,11 +18239,6 @@ msgstr "Modulis tokiu pavadinimu „%s“ jau yra. Paskalio identifikatoriai tur
 #, object-pascal-format
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Projekte jau yra modulis „%s“ tokiu pat pavadinimu.%sParinkite kitokį pavadinimą."
-
-#: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
-#, object-pascal-format
-msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
-msgstr ""
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -18379,11 +18313,6 @@ msgstr "Modulis „%s“ jau egzistuoja."
 #, object-pascal-format
 msgid "The unit belongs to package %s."
 msgstr "Modulis priklauso paketui „%s“."
-
-#: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
-#, object-pascal-format
-msgid "The unit %s exists twice in the unit path of the %s:"
-msgstr "Modulis %s dubliuojasi %s modulių kelyje:"
 
 #: lazarusidestrconsts.listheunithasthisname
 msgid "The unit has this name"
@@ -18837,11 +18766,6 @@ msgstr "Neina pridėti priklausomybės „%s“, nes nes tai sukurs priklausomyb
 msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "Nepavyko %s įdėti į projektą, nes projekte jau yra modulis tokiu pat pavadinimu."
 
-#: lazarusidestrconsts.lisunabletobackupfileto
-#, object-pascal-format
-msgid "Unable to backup file \"%s\" to \"%s\"!"
-msgstr "Nepavyko padaryti failo „%s“ atsarginę kopiją į „%s“!"
-
 #: lazarusidestrconsts.lisunabletochangeclassofto
 #, object-pascal-format
 msgid "%s%sUnable to change class of %s to %s"
@@ -18895,11 +18819,6 @@ msgstr "Nepavyko sukurti naujo failo, nes egzistuoja aplankas tokiu pat pavadini
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
 msgstr "Nepavyko sukurti laikino lfm buferio."
-
-#: lazarusidestrconsts.lisunabletodeleteambiguousfile
-#, object-pascal-format
-msgid "Unable to delete ambiguous file \"%s\""
-msgstr "Nepavyko ištrinti neaiškųjį failą „%s“"
 
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
@@ -18977,11 +18896,6 @@ msgstr "Konstruktorių atverti neis.%s Klasė %s nepaveldi vizualinės klasės, 
 msgid "Unable to read %s"
 msgstr "Nepavyksta skaityti %s"
 
-#: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-#, object-pascal-format
-msgid "Unable to remove old backup file \"%s\"!"
-msgstr "Nepavyko ištrinti seną atsarginės kopijos failą „%s“!"
-
 #: lazarusidestrconsts.lisunabletoremoveprojectscaledfromsource
 #, object-pascal-format
 msgid "Unable to remove project scaled from source.%s%s"
@@ -18991,11 +18905,6 @@ msgstr "Pirminiame kode nepavyko pašalinti projekto mastelio.%s%s"
 #, object-pascal-format
 msgid "Unable to remove project title from source.%s%s"
 msgstr "Pirminiame kode nepavyko pašalinti projekto antraštės.%s%s"
-
-#: lazarusidestrconsts.lisunabletorenameambiguousfileto
-#, object-pascal-format
-msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
-msgstr "Nepavyko neaiškųjį failą „%s“%spervadinti į „%s“"
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
 msgid "Unable to rename form in source."

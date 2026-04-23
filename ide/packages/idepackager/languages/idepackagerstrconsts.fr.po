@@ -64,6 +64,11 @@ msgstr "Faut-il étendre le chemin de recherche du paquet \"%s\" en%s\"%s\" ?"
 msgid "Creating Makefile for package %s"
 msgstr "Création du Makefile pour le paquet %s"
 
+#: idepackagerstrconsts.lisignoreall
+msgctxt "idepackagerstrconsts.lisignoreall"
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler define \"%s\" twice with different values"
@@ -86,10 +91,6 @@ msgstr "(fpmake)"
 #: idepackagerstrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Options du paquet"
-
-#: idepackagerstrconsts.lispignoreall
-msgid "Ignore all"
-msgstr ""
 
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"

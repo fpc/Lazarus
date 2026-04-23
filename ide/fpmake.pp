@@ -213,7 +213,6 @@ begin
     P.Sources.AddSrc('basedebugmanager.pas');
     P.Sources.AddSrc('buildfiledlg.pas');
     P.Sources.AddSrc('buildlazdialog.pas');
-    P.Sources.AddSrc('buildmanager.pas');
     P.Sources.AddSrc('buildmodediffdlg.pas');
     P.Sources.AddSrc('buildprofilemanager.pas');
 //    P.Sources.AddSrc('charactermapdlg.pas');

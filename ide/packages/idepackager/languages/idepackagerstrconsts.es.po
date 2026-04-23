@@ -64,6 +64,11 @@ msgstr "¿Extender trayecto de búsqueda de unidades del paquete \"%s\" con%s\"%
 msgid "Creating Makefile for package %s"
 msgstr "Creando Makefile para el paquete %s"
 
+#: idepackagerstrconsts.lisignoreall
+msgctxt "idepackagerstrconsts.lisignoreall"
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler define \"%s\" twice with different values"
@@ -86,10 +91,6 @@ msgstr "(fpmake)"
 #: idepackagerstrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Opciones de Paquete"
-
-#: idepackagerstrconsts.lispignoreall
-msgid "Ignore all"
-msgstr ""
 
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"

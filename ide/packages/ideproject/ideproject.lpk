@@ -23,32 +23,16 @@ Files in this package are for the main configuration of the IDE."/>
     <Version Major="1"/>
     <Files>
       <Item>
-        <Filename Value="runparamoptions.pas"/>
-        <UnitName Value="RunParamOptions"/>
+        <Filename Value="buildmanager.pas"/>
+        <UnitName Value="BuildManager"/>
       </Item>
       <Item>
-        <Filename Value="projecticon.pas"/>
-        <UnitName Value="ProjectIcon"/>
-      </Item>
-      <Item>
-        <Filename Value="w32manifest.pas"/>
-        <UnitName Value="W32Manifest"/>
-      </Item>
-      <Item>
-        <Filename Value="w32versioninfo.pas"/>
-        <UnitName Value="W32VersionInfo"/>
-      </Item>
-      <Item>
-        <Filename Value="projectuserresources.pas"/>
-        <UnitName Value="ProjectUserResources"/>
+        <Filename Value="idebookmark.pas"/>
+        <UnitName Value="IdeBookmark"/>
       </Item>
       <Item>
         <Filename Value="ideprojectstrconsts.pas"/>
         <UnitName Value="IdeProjectStrConsts"/>
-      </Item>
-      <Item>
-        <Filename Value="projectresources.pas"/>
-        <UnitName Value="ProjectResources"/>
       </Item>
       <Item>
         <Filename Value="project.pp"/>
@@ -59,8 +43,28 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="ProjectDefs"/>
       </Item>
       <Item>
-        <Filename Value="idebookmark.pas"/>
-        <UnitName Value="IdeBookmark"/>
+        <Filename Value="projecticon.pas"/>
+        <UnitName Value="ProjectIcon"/>
+      </Item>
+      <Item>
+        <Filename Value="projectresources.pas"/>
+        <UnitName Value="ProjectResources"/>
+      </Item>
+      <Item>
+        <Filename Value="projectuserresources.pas"/>
+        <UnitName Value="ProjectUserResources"/>
+      </Item>
+      <Item>
+        <Filename Value="runparamoptions.pas"/>
+        <UnitName Value="RunParamOptions"/>
+      </Item>
+      <Item>
+        <Filename Value="w32manifest.pas"/>
+        <UnitName Value="W32Manifest"/>
+      </Item>
+      <Item>
+        <Filename Value="w32versioninfo.pas"/>
+        <UnitName Value="W32VersionInfo"/>
       </Item>
     </Files>
     <i18n>

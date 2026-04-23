@@ -67,6 +67,12 @@ msgstr "扩展软件包 \"%s\" 的单元搜索路径为 %s\"%s\"？"
 msgid "Creating Makefile for package %s"
 msgstr "为软件包%s创建Makefile"
 
+#: idepackagerstrconsts.lisignoreall
+#, fuzzy
+msgctxt "idepackagerstrconsts.lisignoreall"
+msgid "Ignore all"
+msgstr "忽略所有"
+
 #: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler define \"%s\" twice with different values"
@@ -89,10 +95,6 @@ msgstr "(fpmake)"
 #: idepackagerstrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "软件包选项"
-
-#: idepackagerstrconsts.lispignoreall
-msgid "Ignore all"
-msgstr "忽略所有"
 
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"

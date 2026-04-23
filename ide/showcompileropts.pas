@@ -47,7 +47,7 @@ uses
   // IdeIntf
   LazIDEIntf, IDEImagesIntf,
   // IdeConfig
-  MiscOptions, ParsedCompilerOpts, CompilerOptions, ModeMatrixOpts,
+  MiscOptions, ParsedCompilerOpts, CompilerOptions, ModeMatrixOpts, IdeConfStrConsts,
   // IdeProject
   Project,
   // IdePackager

@@ -43,11 +43,12 @@ uses
   IdeIntfStrConsts, IDEImagesIntf, ProjectIntf,
   // IdeConfig
   EnvironmentOpts,
+  // IdePackager
+  PackageDefs,
+  // IdeProject
+  Project, BuildManager,
   // IDE
-  EditorOptions, EnvGuiOptions, Compiler_ModeMatrix, Project,
-  BuildModesManager, BuildManager, LazarusIDEStrConsts,
-  // Packager
-  PackageDefs;
+  EditorOptions, EnvGuiOptions, Compiler_ModeMatrix, BuildModesManager, LazarusIDEStrConsts;
 
 type
   TIDEOptsDlgAction = (

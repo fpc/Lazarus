@@ -79,9 +79,9 @@ uses
   // IdePackager
   PackageDefs, BasePkgManager,
   // IdeProject
-  Project, ProjectIcon, ProjectUserResources,
+  Project, ProjectIcon, ProjectUserResources, BuildManager,
   // IDE
-  LazarusIDEStrConsts, MainBase, MainBar, BuildManager, AddToProjectDlg, EnvGuiOptions,
+  LazarusIDEStrConsts, MainBase, MainBar, AddToProjectDlg, EnvGuiOptions,
   ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, EditableProject,
   AddPkgDependencyDlg, AddFPMakeDependencyDlg;
 

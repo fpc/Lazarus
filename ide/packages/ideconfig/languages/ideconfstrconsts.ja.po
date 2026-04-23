@@ -10,6 +10,10 @@ msgstr ""
 msgid "FPC message file"
 msgstr "FPC メッセージファイル"
 
+#: ideconfstrconsts.dlggroupenvironment
+msgid "Environment"
+msgstr "環境"
+
 #: ideconfstrconsts.lisaborted
 msgid "Aborted"
 msgstr "中止"
@@ -18,6 +22,19 @@ msgstr "中止"
 #, object-pascal-format
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "ファイル \"%s\" は既に存在します。%s置き換えますか？"
+
+#: ideconfstrconsts.lisambiguousfilefound
+msgid "Ambiguous file found"
+msgstr "曖昧なファイルが見つかりました"
+
+#: ideconfstrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
+#, object-pascal-format
+msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
+msgstr "曖昧なファイルが見つかりました。 \"%s\"%sこのファイルは \"%s\"%sと間違うかもしれません。曖昧なファイルを削除しますか？ "
+
+#: ideconfstrconsts.lisbackupfilefailed
+msgid "Backup file failed"
+msgstr "バックアップファイル失敗"
 
 #: ideconfstrconsts.lisbuildide
 msgid "Build IDE"
@@ -96,6 +113,11 @@ msgstr "プロジェクトをコンパイル"
 msgid "%s is missing."
 msgstr ""
 
+#: ideconfstrconsts.liscompilerdoesnotsupporttarget
+#, object-pascal-format
+msgid "Compiler \"%s\" does not support target %s-%s"
+msgstr "コンパイラ \"%s\" は対象 %s-%s をサポートしていません"
+
 #: ideconfstrconsts.liscompilererrorinvalidcompiler
 #, object-pascal-format
 msgid "Error: invalid compiler: %s"
@@ -133,6 +155,10 @@ msgstr "Lazarus 設定ディレクトリ"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ", CPU: %s"
+
+#: ideconfstrconsts.lisdeleteambiguousfile
+msgid "Delete ambiguous file?"
+msgstr "曖昧なファイルを削除しますか？"
 
 #: ideconfstrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -208,10 +234,18 @@ msgstr "環境変数、引数としての名前"
 msgid "Directory not found"
 msgstr "ディレクトリが見つかりません"
 
+#: ideconfstrconsts.liserrordeletingfile
+msgid "Error deleting file"
+msgstr "ファイル削除中にエラー"
+
 #: ideconfstrconsts.liserrorloadingfrom
 #, object-pascal-format
 msgid "Error loading %s from%s%s%s%s"
 msgstr "%s%s%s%sからの%sの読み込み中にエラー"
+
+#: ideconfstrconsts.liserrorrenamingfile
+msgid "Error renaming file"
+msgstr "ファイル名変更中にエラー"
 
 #: ideconfstrconsts.liserrorsavingto
 #, object-pascal-format
@@ -319,6 +353,10 @@ msgstr "バッファ行を解放: %s"
 #: ideconfstrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
 msgstr "Free Pascal ソースディレクトリ"
+
+#: ideconfstrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr "ヒント： ２つのパッケージが同じ名前のユニットを含んでいないかチェックしてください。"
 
 #: ideconfstrconsts.lisidebuildoptions
 msgid "IDE build options"
@@ -441,6 +479,14 @@ msgstr "アクティブ構築モードの名前"
 #: ideconfstrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(新規プロジェクト)"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
+msgid "NOTE: Could not create Define Template for Free Pascal Sources"
+msgstr "注意：Free Pascalソースのための宣言テンプレートを作成できませんでした。"
+
+#: ideconfstrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
+msgid "NOTE: Could not create Define Template for Lazarus Sources"
+msgstr "注意：ソースのための宣言テンプレートを作成できませんでした。"
 
 #: ideconfstrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -578,6 +624,10 @@ msgstr "プロジェクトを発行するディレクトリ"
 msgid "Read Error"
 msgstr "読み取りエラー"
 
+#: ideconfstrconsts.lisrenamefilefailed
+msgid "Rename file failed"
+msgstr "ファイル名の変更に失敗"
+
 #: ideconfstrconsts.lissecondaryconfigpath
 msgid "Secondary config path"
 msgstr "第2設定パス"
@@ -652,10 +702,30 @@ msgstr "ファイル\"%s\"はシンボリックリンクです。%s \"%s\"を代
 msgid "The program \"make\" was not found.%sIt is needed to build Lazarus."
 msgstr ""
 
+#: ideconfstrconsts.listheprojectusestargetosandcputhesystemppuforthistar
+#, object-pascal-format
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgstr "プロジェクトは、 ターゲット OS=%s と CPU=%s を使っています。%sこのターゲットのためのシステム.ppu は、 FPCバイナリフォルダ内で見つかりません。%sfpcは、 このターゲット用に正しくインストールされていますか。 またfpc.cfg には正しいフォルダ情報が含まれていますか。"
+
+#: ideconfstrconsts.listhereisafilewiththesamenameandasimilarextension
+#, object-pascal-format
+msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
+msgstr "ディスク上に同じ名前で類似した拡張子をもつファイルがあります。%sファイル： %s%s紛らわしいファイル: %s%s紛らわしいファイルを削除しますか？"
+
 #: ideconfstrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "%sのディレクトリにfpc.exeがありません。ふつうmake実行ファイルはFPCコンパイラと一緒にインストールされます。"
+
+#: ideconfstrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr ""
+
+#: ideconfstrconsts.listheunitexiststwiceintheunitpathofthe
+#, object-pascal-format
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr "ユニット%sは%sのユニットパスに２つ存在します。"
 
 #: ideconfstrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 #, object-pascal-format
@@ -700,6 +770,11 @@ msgstr "(不明マクロ: %S)"
 msgid "tool \"%s\" has no executable"
 msgstr "\"%s\"ツールは実行ファイルをもちません"
 
+#: ideconfstrconsts.lisunabletobackupfileto
+#, object-pascal-format
+msgid "Unable to backup file \"%s\" to \"%s\"!"
+msgstr "\"%s\"を\"%s\"にバックアップできません!"
+
 #: ideconfstrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
 msgstr "ファイルをコピーできません。"
@@ -733,6 +808,11 @@ msgstr "ファイル%s\"%s\"を作成できません。"
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "リンク\"%s\"をターゲット\"%s\"で作成できません。"
 
+#: ideconfstrconsts.lisunabletodeleteambiguousfile
+#, object-pascal-format
+msgid "Unable to delete ambiguous file \"%s\""
+msgstr "紛らわしいファイル\"%s\"を削除できません。"
+
 #: ideconfstrconsts.lisunabletoexecute
 #, object-pascal-format
 msgid "unable to execute: %s"
@@ -760,6 +840,16 @@ msgstr "ファイル\"%s\"%sを読めません。エラー: %s"
 #: ideconfstrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
 msgstr "ExitStatusプロセスを読めません。"
+
+#: ideconfstrconsts.lisunabletoremoveoldbackupfile
+#, object-pascal-format
+msgid "Unable to remove old backup file \"%s\"!"
+msgstr "古いバックアップファイル\"%s\"を削除できません！"
+
+#: ideconfstrconsts.lisunabletorenameambiguousfileto
+#, object-pascal-format
+msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
+msgstr "曖昧なファイル名\"%s\"%sを\"%s\"に変更できません。"
 
 #: ideconfstrconsts.lisunabletorenamefile
 msgid "Unable to rename file"

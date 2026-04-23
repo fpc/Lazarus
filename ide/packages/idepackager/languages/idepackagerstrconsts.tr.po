@@ -64,6 +64,11 @@ msgstr "Paketin birim arama yolunu \"%s\" %s \"%s\" ile uzat?"
 msgid "Creating Makefile for package %s"
 msgstr "%s paketi için Makefile oluşturuluyor"
 
+#: idepackagerstrconsts.lisignoreall
+msgctxt "idepackagerstrconsts.lisignoreall"
+msgid "Ignore all"
+msgstr ""
+
 #: idepackagerstrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler define \"%s\" twice with different values"
@@ -86,10 +91,6 @@ msgstr "(fpmake)"
 #: idepackagerstrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Paket Seçenekleri"
-
-#: idepackagerstrconsts.lispignoreall
-msgid "Ignore all"
-msgstr ""
 
 #: idepackagerstrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
