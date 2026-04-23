@@ -288,6 +288,7 @@ type
     procedure drawRect(x1, y1, w, h: Integer; const AFill, ABorder: Boolean);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
     procedure drawText(x, y: Integer; AText: PChar; ALen: Integer; const ABgFilled: boolean);
+    procedure ApplyFontQualityToLayout(ALayout: PPangoLayout);
     procedure drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
     procedure drawSurface(targetRect: PRect; Surface: Pcairo_surface_t; sourceRect: PRect;
       aPixBuf: PGdkPixBuf; mask: PGdkPixBuf; maskRect: PRect);
@@ -2621,6 +2622,50 @@ begin
   RoundRect(x, y, w, h, rx, ry);
 end;
 
+procedure TGtk3DeviceContext.ApplyFontQualityToLayout(ALayout: PPangoLayout);
+var
+  AFontOpts: Pcairo_font_options_t;
+  APangoContext: PPangoContext;
+begin
+  if not Assigned(ALayout) or not Assigned(FCurrentFont) then
+    Exit;
+  APangoContext := ALayout^.get_context;
+  AFontOpts := cairo_font_options_create;
+  case FCurrentFont.FLogFont.lfQuality of
+    DRAFT_QUALITY:
+    begin
+      cairo_font_options_set_antialias(AFontOpts, CAIRO_ANTIALIAS_FAST);
+      cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_SLIGHT);
+    end;
+    PROOF_QUALITY:
+    begin
+      cairo_font_options_set_antialias(AFontOpts, CAIRO_ANTIALIAS_GRAY);
+      cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_FULL);
+    end;
+    NONANTIALIASED_QUALITY:
+    begin
+      cairo_font_options_set_antialias(AFontOpts, CAIRO_ANTIALIAS_NONE);
+      cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_FULL);
+    end;
+    ANTIALIASED_QUALITY:
+    begin
+      cairo_font_options_set_antialias(AFontOpts, CAIRO_ANTIALIAS_DEFAULT);
+      cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_DEFAULT);
+    end;
+    CLEARTYPE_QUALITY, CLEARTYPE_NATURAL_QUALITY:
+    begin
+      cairo_font_options_set_antialias(AFontOpts, CAIRO_ANTIALIAS_SUBPIXEL);
+      cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_SLIGHT);
+    end;
+  else
+    cairo_font_options_set_antialias(AFontOpts, CAIRO_ANTIALIAS_DEFAULT);
+    cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_DEFAULT);
+  end;
+  pango_cairo_context_set_font_options(APangoContext, AFontOpts);
+  cairo_font_options_destroy(AFontOpts);
+  ALayout^.context_changed;
+end;
+
 procedure TGtk3DeviceContext.drawText(x, y: Integer; AText: PChar; ALen: Integer;
   const ABgFilled: Boolean);
 var
@@ -2632,6 +2677,7 @@ var
   OldDPI: gdouble;
   IsVectorSurface: Boolean;
   AFontOpts: Pcairo_font_options_t;
+  APangoContext: PPangoContext;
 begin
   EnsureDefaultOperator;
 
@@ -2639,16 +2685,19 @@ begin
     [CAIRO_SURFACE_TYPE_PDF, CAIRO_SURFACE_TYPE_PS, CAIRO_SURFACE_TYPE_SVG,
      CAIRO_SURFACE_TYPE_SCRIPT];
   OldDPI := 0;
+  APangoContext := FCurrentFont.Layout^.get_context;
   if IsVectorSurface then
   begin
     AFontOpts := cairo_font_options_create;
     cairo_font_options_set_hint_style(AFontOpts, CAIRO_HINT_STYLE_NONE);
-    pango_cairo_context_set_font_options(FCurrentFont.Layout^.get_context, AFontOpts);
+    pango_cairo_context_set_font_options(APangoContext, AFontOpts);
     cairo_font_options_destroy(AFontOpts);
-    OldDPI := pango_cairo_context_get_resolution(FCurrentFont.Layout^.get_context);
-    pango_cairo_context_set_resolution(FCurrentFont.Layout^.get_context, 72.0);
+    OldDPI := pango_cairo_context_get_resolution(APangoContext);
+    pango_cairo_context_set_resolution(APangoContext, 72.0);
     FCurrentFont.Layout^.context_changed;
-  end;
+  end
+  else
+    ApplyFontQualityToLayout(FCurrentFont.Layout);
 
   ornt := Self.FCurrentFont.FLogFont.lfOrientation;
 

@@ -1257,6 +1257,7 @@ begin
 
   FontDesc := GtkDC.CurrentFont.Handle;
   pango_layout_set_font_description(Layout, FontDesc);
+  GtkDC.ApplyFontQualityToLayout(Layout);
   cairo_move_to(GtkDc.pcr, X, Y);
   pango_cairo_show_layout(GtkDc.pcr, Layout);
   g_object_unref(Context);
