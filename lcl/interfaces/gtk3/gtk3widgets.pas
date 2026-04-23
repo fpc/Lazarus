@@ -2186,16 +2186,11 @@ const
   CN_CharMsg: array[Boolean] of UINT = (CN_CHAR, CN_SYSCHAR);
   LM_CharMsg: array[Boolean] of UINT = (LM_CHAR, LM_SYSCHAR);
 var
-  I: Integer;
   AEvent: TGdkEventKey;
   Msg: TLMKey;
   CharMsg: TLMChar;
   AEventString: String;
-  Keymap: PGdkKeymap;
-  KeymapKeys: PGdkKeymapKey = nil;
   KeyValue, ACharCode: Word;
-  KeySymCount: guint;
-  KeySyms: Pguint = nil;
   LCLModifiers: Word;
   IsSysKey: Boolean;
   UTF8Char: TUTF8Char;
@@ -2254,8 +2249,10 @@ begin
   // else
   //  writeln('KeyRelease: ',dbgsName(LCLObject),' Dump state=',AEvent.state,' hwkey=',KeyCode,' keyvalue=',KeyValue,' modifier=',AEvent.Bitfield0.is_modifier);
 
-  // this is just for testing purposes.
-  ACharCode := GdkKeyToLCLKey(KeyValue);
+  //Use hardware keycode table for layout-independent VK mapping.
+  ACharCode := Gtk3HwKeyToVKey(AEvent.hardware_keycode);
+  if ACharCode = VK_UNKNOWN then
+    ACharCode := GdkKeyToLCLKey(KeyValue);
 
   if (KeyValue >= GDK_KEY_exclam) and (KeyValue <= GDK_KEY_parenleft) and
      (ACharCode >= VK_0) and (ACharCode <= VK_9) and
@@ -2267,11 +2264,11 @@ begin
     ACharCode := VK_UNKNOWN;
 
   {$IFDEF GTK3DEBUGKEYPRESS}
-  writeln('==== ACharCode=',ACharCode,' KeyValue=',KeyValue);
+  writeln('==== ACharCode=',ACharCode,' KeyValue=',KeyValue,' HwKey=',AEvent.hardware_keycode);
   {$ENDIF}
 
   if KeyValue > VK_UNDEFINED then
-    KeyValue := ACharCode; // VK_UNKNOWN;
+    KeyValue := ACharCode;
 
   IsArrowKey := (AEventString='') and ((ACharCode = VK_UP) or (ACharCode = VK_DOWN) or (ACharCode = VK_LEFT) or (ACharCode = VK_RIGHT));
 
@@ -2285,28 +2282,6 @@ begin
     ' KeyValue ',KeyValue,' MODIFIERS ',LCLModifiers,' CharCode ',ACharCode,
     ' EAT ',EatArrowKeys(ACharCode));
   {$ENDIF}
-
-  //if (ACharCode = VK_UNKNOWN) and (MK_CONTROL and LCLModifiers <> 0) then
-  if (MK_CONTROL and LCLModifiers <> 0) and
-     ((ACharCode = VK_UNKNOWN) or
-      not (((ACharCode >= VK_0) and (ACharCode <= VK_9)) or
-        ((ACharCode >= VK_A) and (ACharCode <= VK_Z)) or
-      (ACharCode >= VK_F1))) then
-  begin
-    Keymap := gdk_keymap_get_for_display(gdk_display_get_default);
-    if gdk_keymap_get_entries_for_keycode(Keymap, AEvent.hardware_keycode, @KeymapKeys, @KeySyms, @KeySymCount) then
-    try
-      for I := 0 to KeySymCount - 1 do
-        if KeySyms[I] <> 0 then
-        begin
-          ACharCode := GdkKeyToLCLKey(KeySyms[I]);
-          Break;
-        end;
-    finally
-      g_free(KeymapKeys);
-      g_free(KeySyms);
-    end;
-  end;
 
   IsEditableWidget := AKeyPress and
     (([wtEntry, wtMemo, wtSpinEdit] * WidgetType <> []) or
@@ -8150,6 +8125,17 @@ begin
     VK_UP: GdkKey := GDK_KEY_Up;
     VK_DOWN: GdkKey := GDK_KEY_Down;
     VK_F1..VK_F24: GdkKey := GDK_KEY_F1 + (CurKey - VK_F1);
+    VK_OEM_1: GdkKey := GDK_KEY_semicolon;
+    VK_OEM_PLUS: GdkKey := GDK_KEY_plus;
+    VK_OEM_COMMA: GdkKey := GDK_KEY_comma;
+    VK_OEM_MINUS: GdkKey := GDK_KEY_minus;
+    VK_OEM_PERIOD: GdkKey := GDK_KEY_period;
+    VK_OEM_2: GdkKey := GDK_KEY_slash;
+    VK_OEM_3: GdkKey := GDK_KEY_grave;
+    VK_OEM_4: GdkKey := GDK_KEY_bracketleft;
+    VK_OEM_5: GdkKey := GDK_KEY_backslash;
+    VK_OEM_6: GdkKey := GDK_KEY_bracketright;
+    VK_OEM_7: GdkKey := GDK_KEY_apostrophe;
   else
     GdkKey := 0;
   end;

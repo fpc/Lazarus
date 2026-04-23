@@ -415,6 +415,7 @@ begin
   FreeSysColorBrushes;
   FCSSTheme.Free;
   FSystemMetricsList.Free;
+  DoneGtk3KeyboardTables;
   inherited Destroy;
 end;
 
@@ -558,6 +559,7 @@ begin
   FSystemMetricsList.Items[SM_CYCAPTION] := Max(MinH, PrefH);
 
   gtk_widget_destroy(window);
+  InitGtk3KeyboardTables;
 end;
 
 procedure TGtk3WidgetSet.LoadCSSTheme;

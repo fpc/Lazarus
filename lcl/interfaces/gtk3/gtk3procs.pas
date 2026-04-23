@@ -344,6 +344,17 @@ function GdkKeyToLCLKey(AValue: Word): Word;
 function GdkModifierStateToLCL(AState: TGdkModifierType; const AIsKeyEvent: Boolean): PtrInt;
 function GdkModifierStateToShiftState(AState: TGdkModifierType): TShiftState;
 
+type
+  TGtk3KeyCodeInfo = record
+    VKey1: Byte; //primary VK code for this hardware keycode
+    VKey2: Byte; //secondary VK code (numpad keys with numlock)
+    Flags: Byte; //EXTFLAG/MULTIFLAG bits
+  end;
+
+procedure InitGtk3KeyboardTables;
+procedure DoneGtk3KeyboardTables;
+function Gtk3HwKeyToVKey(AHwKeyCode: guint16): Word;
+
 procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor;
   ARecursive: Boolean; ASetDefault: Boolean);
 procedure SetGlobalCursor(Cursor: HCURSOR);
@@ -369,6 +380,9 @@ var
   CharSetEncodingList: TList;
   StandardStyles: array[TLazGtkStyle] of PStyleObject;
   Styles: TStrings;
+  Gtk3KeyCodeInfo: array[Byte] of TGtk3KeyCodeInfo;
+  Gtk3Keymap: PGdkKeymap;
+  Gtk3KeymapSignalID: gulong;
 
 {$IFDEF GTK3USEDEFERREDRESIZING}
   {Resize notification queues - filled by size-allocate signal handlers,
@@ -964,6 +978,241 @@ begin
     green := ((value shr 8) and $ff) * 257;
     blue  := ((value shr 16) and $ff) * 257;
   end;
+end;
+
+procedure Gtk3KeymapChangedCB(AKeymap: PGdkKeymap; AData: gpointer); cdecl; forward;
+
+//Map well-known keysym to VK code. Returns VK_UNKNOWN if not recognized.
+function Gtk3FindVKeyForKeySym(AKeySym: guint): Byte;
+var
+  ByteKey: Byte;
+begin
+  Result := VK_UNKNOWN;
+  //Some xkb layouts report keysyms as Unicode in 0x01000000..0x0110FFFF range
+  //(form: 0x01000000 | codepoint). Convert basic Latin Unicode back to the
+  //legacy 32..255 keysym range so the case below matches.
+  if (AKeySym >= $01000020) and (AKeySym <= $010000FF) then
+    AKeySym := AKeySym and $FF;
+  case AKeySym of
+    32..255:
+    begin
+      ByteKey := Byte(AKeySym);
+      case Chr(ByteKey) of
+        '0'..'9': Result := ByteKey;
+        ' ':      Result := ByteKey;
+        'a'..'z': Result := ByteKey - Ord('a') + Ord('A');
+        '+': Result := VK_OEM_PLUS;
+        ',': Result := VK_OEM_COMMA;
+        '-': Result := VK_OEM_MINUS;
+        '.': Result := VK_OEM_PERIOD;
+        ';': Result := VK_OEM_1;
+        '/': Result := VK_OEM_2;
+        '`': Result := VK_OEM_3;
+        '[': Result := VK_OEM_4;
+        '\': Result := VK_OEM_5;
+        ']': Result := VK_OEM_6;
+        '''': Result := VK_OEM_7;
+        '#': Result := VK_OEM_7;
+      end;
+    end;
+    GDK_KEY_Tab,
+    GDK_KEY_ISO_Left_Tab,
+    GDK_KEY_KP_Tab: Result := VK_TAB;
+    GDK_KEY_Return: Result := VK_RETURN;
+    GDK_KEY_KP_Enter: Result := VK_RETURN;
+    GDK_KEY_BackSpace: Result := VK_BACK;
+    GDK_KEY_Escape: Result := VK_ESCAPE;
+    GDK_KEY_Clear: Result := VK_CLEAR;
+    GDK_KEY_Pause: Result := VK_PAUSE;
+    GDK_KEY_Scroll_Lock: Result := VK_SCROLL;
+    GDK_KEY_Sys_Req: Result := VK_SNAPSHOT;
+    GDK_KEY_Caps_Lock: Result := VK_CAPITAL;
+    GDK_KEY_Num_Lock: Result := VK_NUMLOCK;
+    GDK_KEY_Insert: Result := VK_INSERT;
+    GDK_KEY_Delete: Result := VK_DELETE;
+    GDK_KEY_Home: Result := VK_HOME;
+    GDK_KEY_End: Result := VK_END;
+    GDK_KEY_Page_Up: Result := VK_PRIOR;
+    GDK_KEY_Page_Down: Result := VK_NEXT;
+    GDK_KEY_Left: Result := VK_LEFT;
+    GDK_KEY_Up: Result := VK_UP;
+    GDK_KEY_Right: Result := VK_RIGHT;
+    GDK_KEY_Down: Result := VK_DOWN;
+    GDK_KEY_Shift_L,
+    GDK_KEY_Shift_R: Result := VK_SHIFT;
+    GDK_KEY_Control_L,
+    GDK_KEY_Control_R: Result := VK_CONTROL;
+    GDK_KEY_Alt_L,
+    GDK_KEY_Alt_R: Result := VK_MENU;
+    GDK_KEY_Super_L: Result := VK_LWIN;
+    GDK_KEY_Super_R: Result := VK_RWIN;
+    GDK_KEY_Menu: Result := VK_APPS;
+    GDK_KEY_F1..GDK_KEY_F24: Result := VK_F1 + (AKeySym - GDK_KEY_F1);
+    //Numpad keys are intentionally omitted here. GdkKeyToLCLKey handles them
+    //via keyval so NumLock state is respected (VK_HOME vs VK_NUMPAD7 etc.)
+    GDK_KEY_3270_BackTab: Result := VK_TAB;
+    GDK_KEY_3270_Enter: Result := VK_RETURN;
+  end;
+end;
+
+procedure InitGtk3KeyboardTables;
+const
+  VK_FIRST_OEM = $92;
+var
+  NewKeymap: PGdkKeymap;
+  KeymapKeys: PGdkKeymapKey;
+  KeyVals: Pguint;
+  KeySymCount: gint;
+  KeyCode: Byte;
+  m: Integer;
+  VKey, FreeVK: Byte;
+  AlreadyClaimed: Boolean;
+
+  procedure NextFreeVK(var AFreeVK: Byte);
+  begin
+    case AFreeVK of
+      $96: AFreeVK := $E1;
+      $E1: AFreeVK := $E3;
+      $E4: AFreeVK := $E6;
+      $E6: AFreeVK := $E9;
+      $F5: AFreeVK := $88;
+      $8F: AFreeVK := $97;
+      $9F: AFreeVK := $D8;
+      $DA: AFreeVK := $E5;
+      $E5: AFreeVK := $E8;
+      $E8: AFreeVK := $FF;
+      $FF: AFreeVK := $FF;
+    else
+      Inc(AFreeVK);
+    end;
+  end;
+
+  //Returns True if VKey can be shared by multiple physical keys (modifiers etc.)
+  function VKeyIsShared(AVKey: Byte): Boolean;
+  begin
+    case AVKey of
+      VK_SHIFT, VK_CONTROL, VK_MENU,
+      VK_TAB, VK_RETURN, VK_BACK, VK_ESCAPE,
+      VK_HOME, VK_END, VK_INSERT, VK_DELETE,
+      VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN,
+      VK_PRIOR, VK_NEXT,
+      VK_NUMLOCK, VK_SCROLL, VK_CAPITAL: Result := True;
+    else
+      Result := False;
+    end;
+  end;
+
+  //Returns True if VKey already has a keycode assigned (for non-shared VKs only).
+  function VKeyInUse(AVKey: Byte): Boolean;
+  var
+    kc: Integer;
+  begin
+    if VKeyIsShared(AVKey) then
+      exit(False);
+    for kc := 0 to 255 do
+      if Gtk3KeyCodeInfo[kc].VKey1 = AVKey then
+        exit(True);
+    Result := False;
+  end;
+
+begin
+  NewKeymap := gdk_keymap_get_for_display(gdk_display_get_default);
+  if NewKeymap = nil then
+    exit;
+  if NewKeymap <> Gtk3Keymap then
+  begin
+    if (Gtk3Keymap <> nil) and (Gtk3KeymapSignalID <> 0) then
+    begin
+      g_signal_handler_disconnect(PGObject(Gtk3Keymap), Gtk3KeymapSignalID);
+      Gtk3KeymapSignalID := 0;
+    end;
+    Gtk3Keymap := NewKeymap;
+    Gtk3KeymapSignalID := g_signal_connect_data(PGObject(Gtk3Keymap),
+      'keys-changed', TGCallback(@Gtk3KeymapChangedCB), nil, nil, G_CONNECT_DEFAULT);
+  end;
+
+  FillChar(Gtk3KeyCodeInfo, SizeOf(Gtk3KeyCodeInfo), 0);
+
+  FreeVK := VK_FIRST_OEM;
+  KeymapKeys := nil;
+  KeyVals := nil;
+  for KeyCode := 1 to 255 do
+  begin
+    KeymapKeys := nil;
+    KeyVals := nil;
+    KeySymCount := 0;
+    if not gdk_keymap_get_entries_for_keycode(Gtk3Keymap, KeyCode,
+        @KeymapKeys, @KeyVals, @KeySymCount) then
+      continue;
+    if (KeySymCount <= 0) or (KeyVals = nil) then
+    begin
+      g_free(KeymapKeys);
+      g_free(KeyVals);
+      continue;
+    end;
+    try
+      //skip keycodes where no keysym is defined at any level
+      if KeyVals[0] = 0 then
+      begin
+        m := 1;
+        while (m < KeySymCount) and (KeyVals[m] = 0) do
+          Inc(m);
+        if m >= KeySymCount then
+          Continue;
+      end;
+
+      //Scan level-0 keysyms across all xkb groups (multi-layout support).
+      VKey := VK_UNKNOWN;
+      for m := 0 to KeySymCount - 1 do
+      begin
+        if KeyVals[m] = 0 then Continue;
+        if KeymapKeys[m].level <> 0 then Continue;
+        VKey := Gtk3FindVKeyForKeySym(KeyVals[m]);
+        if VKey <> VK_UNKNOWN then Break;
+      end;
+
+      //no known VK: assign a free OEM slot unless it is a numpad/modifier keysym
+      //that the fallback GdkKeyToLCLKey handles correctly via the keyval.
+      if (VKey = VK_UNKNOWN) and (KeyVals[0] <> 0) and
+         not ((KeyVals[0] >= GDK_KEY_KP_Space) and (KeyVals[0] <= GDK_KEY_KP_9)) then
+      begin
+        VKey := FreeVK;
+        NextFreeVK(FreeVK);
+      end;
+
+      if VKey <> VK_UNKNOWN then
+        Gtk3KeyCodeInfo[KeyCode].VKey1 := VKey;
+    finally
+      g_free(KeymapKeys);
+      g_free(KeyVals);
+    end;
+  end;
+end;
+
+procedure DoneGtk3KeyboardTables;
+begin
+  if (Gtk3Keymap <> nil) and (Gtk3KeymapSignalID <> 0) then
+  begin
+    g_signal_handler_disconnect(PGObject(Gtk3Keymap), Gtk3KeymapSignalID);
+    Gtk3KeymapSignalID := 0;
+  end;
+  Gtk3Keymap := nil;
+  FillChar(Gtk3KeyCodeInfo, SizeOf(Gtk3KeyCodeInfo), 0);
+end;
+
+procedure Gtk3KeymapChangedCB(AKeymap: PGdkKeymap; AData: gpointer); cdecl;
+begin
+  InitGtk3KeyboardTables;
+end;
+
+//Returns VK code for hardware keycode, or VK_UNKNOWN if not in table.
+function Gtk3HwKeyToVKey(AHwKeyCode: guint16): Word;
+begin
+  if (AHwKeyCode = 0) or (AHwKeyCode > 255) then
+    exit(VK_UNKNOWN);
+  Result := Gtk3KeyCodeInfo[AHwKeyCode].VKey1;
+  if Result = 0 then
+    Result := VK_UNKNOWN;
 end;
 
 function GdkKeyToLCLKey(AValue: Word): Word;
