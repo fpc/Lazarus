@@ -4495,7 +4495,7 @@ var
         begin
           Adjustment^.page_size := ATarget;
           ATarget := Adjustment^.page_increment;
-          SetGDouble(ATarget, Max(1, (Adjustment^.page_size / 6) + 1), HasChanged);
+          SetGDouble(ATarget, Max(1, Adjustment^.page_size), HasChanged);
           Adjustment^.page_increment := ATarget;
         end;
       end else
