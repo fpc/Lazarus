@@ -3388,11 +3388,21 @@ begin
   if FXorMode then
   begin
     cairo_new_path(pcr);
-    cairo_move_to(pcr, FLastPenX, FLastPenY);
-    cairo_line_to(pcr, X + PixelOffset, Y + PixelOffset);
-    cairo_stroke(pcr);
-    FLastPenX := X + PixelOffset;
-    FLastPenY := Y + PixelOffset;
+    if fCurrentPen.Width <= 1 then
+    begin
+      cairo_move_to(pcr, FLastPenX + PixelOffset, FLastPenY + PixelOffset);
+      cairo_line_to(pcr, X + PixelOffset, Y + PixelOffset);
+      cairo_stroke(pcr);
+      FLastPenX := X;
+      FLastPenY := Y;
+    end else
+    begin
+      cairo_move_to(pcr, FLastPenX, FLastPenY);
+      cairo_line_to(pcr, X + PixelOffset, Y + PixelOffset);
+      cairo_stroke(pcr);
+      FLastPenX := X + PixelOffset;
+      FLastPenY := Y + PixelOffset;
+    end;
     Result := True;
     Exit;
   end;
