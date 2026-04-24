@@ -135,6 +135,30 @@ begin
   end;
 end;
 
+procedure LCLGtkComboBoxGetPreferredHeightForWidth(widget: PGtkWidget; width: gint; min_height, nat_height: Pgint); cdecl;
+var
+  AControl: TGtk3Widget;
+  ParentClass: PGtkWidgetClass;
+begin
+  if not Assigned(min_height) or not Assigned(nat_height) then exit;
+  if not Gtk3IsWidget(widget) then exit;
+  ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
+  if not Assigned(ParentClass) or not Assigned(ParentClass^.get_preferred_height_for_width) then exit;
+  ParentClass^.get_preferred_height_for_width(widget, width, min_height, nat_height);
+  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
+  if not Assigned(AControl) then exit;
+  if AControl.LCLObject.AutoSize then exit;
+  if AControl.LCLHeight > 0 then
+  begin
+    min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
+    nat_height^ := AControl.LCLHeight;
+  end else
+  begin
+    min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
+    nat_height^ := AControl.LCLObject.Height;
+  end;
+end;
+
 function LCLGtkComboBoxDraw(widget: PGtkWidget; cairo: Pcairo_t): gboolean; cdecl;
 var
   ParentClass: PGtkWidgetClass;
@@ -176,6 +200,7 @@ begin
   AWidgetClass := PGtkWidgetClass(klass);
   AWidgetClass^.get_preferred_width := @LCLGtkComboBoxGetPreferredWidth;
   AWidgetClass^.get_preferred_height := @LCLGtkComboBoxGetPreferredHeight;
+  AWidgetClass^.get_preferred_height_for_width := @LCLGtkComboBoxGetPreferredHeightForWidth;
   AWidgetClass^.draw := @LCLGtkComboBoxDraw;
   {$IFDEF GTK3DEBUGCOMBOBOX}
   WalkParentClassHierarchy(klass);
