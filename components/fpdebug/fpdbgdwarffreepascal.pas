@@ -2477,9 +2477,10 @@ begin
   // First argument is SELF, and must be skipped
   for i := 1 to MemberCount - 1 do begin
     m := Member[i];
-    if (m.TypeInfo = nil) then
-      exit('');
-    n := m.TypeInfo.Name;
+    n := '';
+    if (m.TypeInfo <> nil) then
+      n := m.TypeInfo.Name;
+    m.ReleaseReference;
     if n = '' then
       exit('');
     Result := Result + '$' + n;
