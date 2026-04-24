@@ -11065,6 +11065,7 @@ end;
 procedure TGtk3ComboBox.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 var
   CurW, CurH: gint;
+  SizeMsg: TLMSize;
 begin
   if (Widget=nil) then
     exit;
@@ -11080,6 +11081,32 @@ begin
     if (CurW <> AWidth) or (CurH <> AHeight) then
       Widget^.set_size_request(AWidth, AHeight);
     Move(ALeft, ATop);
+    if Assigned(LCLObject) and (csDesigning in LCLObject.ComponentState) and
+       Widget^.get_realized then
+    begin
+      Widget^.get_preferred_width(@CurW, @CurH);
+      if LCLWidth < CurW then
+      begin
+        LCLWidth := CurW;
+        FillChar(SizeMsg{%H-}, SizeOf(SizeMsg), 0);
+        SizeMsg.Msg := LM_SIZE;
+        SizeMsg.SizeType := SIZE_RESTORED;
+        SizeMsg.Width := LCLWidth;
+        SizeMsg.Height := LCLHeight;
+        DeliverMessage(TLMessage(SizeMsg));
+      end;
+      Widget^.get_preferred_height(@CurW, @CurH);
+      if LCLHeight < CurW then
+      begin
+        LCLHeight := CurW;
+        FillChar(SizeMsg{%H-}, SizeOf(SizeMsg), 0);
+        SizeMsg.Msg := LM_SIZE;
+        SizeMsg.SizeType := SIZE_RESTORED;
+        SizeMsg.Width := LCLWidth;
+        SizeMsg.Height := LCLHeight;
+        DeliverMessage(TLMessage(SizeMsg));
+      end;
+    end;
   finally
     EndUpdate;
   end;

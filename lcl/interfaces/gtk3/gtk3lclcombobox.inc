@@ -32,13 +32,20 @@ begin
   if not Assigned(AControl) or not Assigned(AControl.LCLObject) then
     Exit;
 
+  if csDesigning in AControl.LCLObject.ComponentState then
+    Exit;
+
   if AControl.LCLWidth > 0 then
     LCLW := AControl.LCLWidth
   else
     LCLW := AControl.LCLObject.Width;
 
   if LCLW > 0 then
-    nat_width^ := Max(min_width^, LCLW);
+  begin
+    if min_width^ > LCLW then
+      min_width^ := LCLW;
+    nat_width^ := LCLW;
+  end;
 end;
 
 procedure LCLGtkComboBoxGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
