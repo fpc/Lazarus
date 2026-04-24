@@ -1,5 +1,6 @@
 {%MainUnit gtk3widgets.pas}
 
+procedure LCLGtkComboBoxSetShrinkClassRecursive(W: PGtkWidget; AAdd: Boolean); forward;
 
 procedure LCLGtkComboBoxGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
 var
@@ -82,6 +83,10 @@ begin
     exit;
   end;
 
+  AControl := TGtk3Widget(HwndFromGtkWidget(widget));
+  if Assigned(AControl) and Assigned(AControl.LCLObject) then
+    LCLGtkComboBoxSetShrinkClassRecursive(widget, not AControl.LCLObject.AutoSize);
+
   ParentClass^.get_preferred_height(widget, min_height, nat_height);
 
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
@@ -126,12 +131,22 @@ begin
 
   if AControl.LCLHeight = 0 then
   begin
-    min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
-    nat_height^ := Max(min_height^, AControl.LCLObject.Height);
+    if AControl.LCLObject.Height >= min_height^ then
+    begin
+      min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
+      nat_height^ := Max(min_height^, AControl.LCLObject.Height);
+    end
+    else
+      nat_height^ := min_height^;
   end else
   begin
-    min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
-    nat_height^ := Max(min_height^, AControl.LCLHeight);
+    if AControl.LCLHeight >= min_height^ then
+    begin
+      min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
+      nat_height^ := Max(min_height^, AControl.LCLHeight);
+    end
+    else
+      nat_height^ := min_height^;
   end;
 end;
 
@@ -144,18 +159,30 @@ begin
   if not Gtk3IsWidget(widget) then exit;
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
   if not Assigned(ParentClass) or not Assigned(ParentClass^.get_preferred_height_for_width) then exit;
-  ParentClass^.get_preferred_height_for_width(widget, width, min_height, nat_height);
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
+  if Assigned(AControl) and Assigned(AControl.LCLObject) then
+    LCLGtkComboBoxSetShrinkClassRecursive(widget, not AControl.LCLObject.AutoSize);
+  ParentClass^.get_preferred_height_for_width(widget, width, min_height, nat_height);
   if not Assigned(AControl) then exit;
   if AControl.LCLObject.AutoSize then exit;
   if AControl.LCLHeight > 0 then
   begin
-    min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
-    nat_height^ := AControl.LCLHeight;
+    if AControl.LCLHeight >= min_height^ then
+    begin
+      min_height^ := Max(min_height^ div 2, AControl.LCLHeight);
+      nat_height^ := AControl.LCLHeight;
+    end
+    else
+      nat_height^ := min_height^;
   end else
   begin
-    min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
-    nat_height^ := AControl.LCLObject.Height;
+    if AControl.LCLObject.Height >= min_height^ then
+    begin
+      min_height^ := Max(min_height^ div 2, AControl.LCLObject.Height);
+      nat_height^ := AControl.LCLObject.Height;
+    end
+    else
+      nat_height^ := min_height^;
   end;
 end;
 
@@ -224,6 +251,83 @@ begin
   AStyle := comboWidget^.get_style_context;
 end;
 
+const
+  LCL_COMBO_SHRINK_CLASS = 'lcl-combo-shrink';
+
+procedure LCLGtkComboBoxInstallAppCSS;
+const
+  CSS =
+    '.lcl-combo-shrink, .lcl-combo-shrink * {' +
+    ' transition: none;' +
+    ' min-height: 0px;' +
+    ' padding-top: 0px;' +
+    ' padding-bottom: 0px;' +
+    ' margin-top: 0px;' +
+    ' margin-bottom: 0px;' +
+    ' }';
+var
+  Provider: PGtkCssProvider;
+  Screen: PGdkScreen;
+begin
+  Provider := gtk_css_provider_new;
+  gtk_css_provider_load_from_data(Provider, CSS, -1, nil);
+  Screen := gdk_screen_get_default;
+  if Screen <> nil then
+    gtk_style_context_add_provider_for_screen(Screen,
+      PGtkStyleProvider(Provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+  g_object_unref(Provider);
+end;
+
+procedure LCLGtkComboBoxSetShrinkClassRecursive(W: PGtkWidget; AAdd: Boolean);
+
+  procedure ToggleOnContext(AW: PGtkWidget);
+  var
+    Ctx: PGtkStyleContext;
+  begin
+    if not Gtk3IsWidget(AW) then exit;
+    Ctx := AW^.get_style_context;
+    if Ctx = nil then exit;
+    if AAdd then
+    begin
+      if not gtk_style_context_has_class(Ctx, LCL_COMBO_SHRINK_CLASS) then
+        gtk_style_context_add_class(Ctx, LCL_COMBO_SHRINK_CLASS);
+    end
+    else
+    begin
+      if gtk_style_context_has_class(Ctx, LCL_COMBO_SHRINK_CLASS) then
+        gtk_style_context_remove_class(Ctx, LCL_COMBO_SHRINK_CLASS);
+    end;
+  end;
+
+var
+  Children, L: PGList;
+  Combo: PGtkComboBox;
+begin
+  if not Gtk3IsWidget(W) then exit;
+  ToggleOnContext(W);
+  if Gtk3IsContainer(W) then
+  begin
+    Children := PGtkContainer(W)^.get_children;
+    L := Children;
+    while L <> nil do
+    begin
+      LCLGtkComboBoxSetShrinkClassRecursive(PGtkWidget(L^.data), AAdd);
+      L := L^.next;
+    end;
+    if Children <> nil then g_list_free(Children);
+  end;
+  if Gtk3IsComboBox(W) then
+  begin
+    Combo := PGtkComboBox(W);
+    if Assigned(Combo^.priv3^.cell_view) then
+      ToggleOnContext(PGtkWidget(Combo^.priv3^.cell_view));
+    if Assigned(Combo^.priv3^.button) then
+      ToggleOnContext(Combo^.priv3^.button);
+    if Assigned(Combo^.priv3^.arrow) then
+      ToggleOnContext(Combo^.priv3^.arrow);
+  end;
+end;
+
 var
   lclCombotype: TGType = 0;
 
@@ -244,6 +348,7 @@ begin
     Info.instance_init := @LCLGtkComboBoxInit;
     lclCombotype := g_type_register_static(ParentType,
       'LCLGtkComboBox', @Info, G_TYPE_FLAG_NONE);
+    LCLGtkComboBoxInstallAppCSS;
   end;
   Result := lclCombotype;
 end;

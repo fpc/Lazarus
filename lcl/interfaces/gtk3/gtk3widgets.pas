@@ -10997,8 +10997,6 @@ begin
 end;
 
 procedure TGtk3ComboBox.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
-var
-  CurW, CurH: gint;
 begin
   if (Widget=nil) then
     exit;
@@ -11010,14 +11008,6 @@ begin
   try
     if not Widget^.get_realized and Gtk3IsGtkWindow(Widget^.get_toplevel) then
       Widget^.realize;
-
-    if Assigned(LCLObject) and not LCLObject.AutoSize then
-    begin
-      Widget^.get_size_request(@CurW, @CurH);
-      if (CurW <> AWidth) or (CurH <> AHeight) then
-        Widget^.set_size_request(AWidth, AHeight);
-    end;
-
     Move(ALeft, ATop);
   finally
     EndUpdate;

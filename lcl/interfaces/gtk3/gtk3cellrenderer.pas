@@ -601,6 +601,8 @@ var
   Ctx: PGtkStyleContext;
   Combo: TCustomCombobox;
   ComboWidget: PGtkComboBox;
+  ComboAlloc, CellViewAlloc: TGtkAllocation;
+  TargetY: gint;
 begin
   Result := False;
   Lw := TGtk3Widget(g_object_get_data(PGObject(cell), 'lclwidget'));
@@ -626,9 +628,12 @@ begin
     cell^.get_padding(@XPad, @YPad);
     Ctx := Widget^.get_style_context;
     if Ctx = nil then exit;
+    PGtkWidget(ComboWidget)^.get_allocation(@ComboAlloc);
+    Widget^.get_allocation(@CellViewAlloc);
+    TargetY := (ComboAlloc.height - TextH) div 2 - (CellViewAlloc.y - ComboAlloc.y);
     gtk_render_layout(Ctx, cr,
       cell_area^.x + XPad,
-      cell_area^.y + (cell_area^.height - TextH) div 2,
+      TargetY,
       Layout);
     Result := True;
   finally
