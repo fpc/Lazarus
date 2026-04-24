@@ -2117,6 +2117,27 @@ begin
 end;
 
 {$IFDEF GTK3USEDEFERREDRESIZING}
+function Gtk3LCLDepth(ACtrl: TWinControl): Integer;
+var
+  C: TWinControl;
+begin
+  Result := 0;
+  C := ACtrl;
+  while (C <> nil) and (C.Parent <> nil) do
+  begin
+    Inc(Result);
+    C := C.Parent;
+  end;
+end;
+
+function Gtk3CompareLCLDepth(Item1, Item2: Pointer): Integer;
+begin
+  //Sort ascending by LCL parent depth so root-most controls are processed first
+  //This matches GTK2 deferred resize semantics: parent LM_SIZE
+  //runs AlignControls before children receive their own LM_SIZE
+  Result := Gtk3LCLDepth(TWinControl(Item1)) - Gtk3LCLDepth(TWinControl(Item2));
+end;
+
 procedure Gtk3SaveSizeNotification(ALCLObject: TWinControl);
 begin
   if FWidgetsResized.IndexOf(ALCLObject) < 0 then
@@ -2222,6 +2243,10 @@ begin
     FixList.Assign(FFixWidgetsResized);
     FWidgetsResized.Clear;
     FFixWidgetsResized.Clear;
+
+    //Parent-first order. Matches GTK2 deferred semantics.
+    MainList.Sort(@Gtk3CompareLCLDepth);
+    FixList.Sort(@Gtk3CompareLCLDepth);
 
     // Phase 1: Invalidate client rect caches for layout/client widgets.
     for I := 0 to FixList.Count - 1 do
