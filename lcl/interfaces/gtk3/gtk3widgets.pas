@@ -1124,6 +1124,9 @@ type
     class function WindowMapEvent(awidget:PGtkWindow;AEvent: PGdkEventAny; adata: gpointer): gboolean; cdecl; static; //uses lcl-window-first-map data.
     class function WindowMoveEvent(awidget: PGtkWindow; AEvent: PGdkEventConfigure; adata: gpointer): gboolean; cdecl; static;
     class procedure WindowSizeAllocate(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
+    {$IFDEF GTK3USEDEFERREDRESIZING}
+    class procedure WindowSizeAllocateAfter(AWidget: PGtkWidget; AGdkRect: PGdkRectangle; Data: gpointer); cdecl; static;
+    {$ENDIF}
     class function WindowStateSignal(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: gPointer): gboolean; cdecl; static;
     class procedure WaylandPopupSetFocus(AWindow: PGtkWindow; AWidget: PGtkWidget;
       AData: gpointer); cdecl; static;
@@ -12609,6 +12612,18 @@ begin
     Result := gtk_false;
 end;
 
+{$IFDEF GTK3USEDEFERREDRESIZING}
+class procedure TGtk3Window.WindowSizeAllocateAfter(AWidget: PGtkWidget;
+  AGdkRect: PGdkRectangle; Data: gpointer); cdecl;
+begin
+  //match gtk2 size queue
+  if AWidget = nil then ;
+  if AGdkRect = nil then ;
+  if Data = nil then ;
+  Gtk3DrainResizeQueue;
+end;
+{$ENDIF}
+
 procedure TGtk3Window.ConnectSizeAllocateSignal(ToWidget:PGtkWidget);
 begin
   g_signal_connect_data(ToWidget,'size-allocate',TGCallback(@WindowSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
@@ -12616,6 +12631,9 @@ begin
   g_signal_connect_data(ToWidget,'configure-event',TGCallback(@WindowMoveEvent), Self, nil, G_CONNECT_DEFAULT);
   if Assigned(FCentralWidget) then
     g_signal_connect_data(FCentralWidget,'size-allocate',TGCallback(@ScrolledLayoutSizeAllocate), Self, nil, G_CONNECT_DEFAULT);
+  {$IFDEF GTK3USEDEFERREDRESIZING}
+  g_signal_connect_data(ToWidget,'size-allocate',TGCallback(@WindowSizeAllocateAfter), Self, nil, [G_CONNECT_AFTER]);
+  {$ENDIF}
 end;
 
 class function TGtk3Window.decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
