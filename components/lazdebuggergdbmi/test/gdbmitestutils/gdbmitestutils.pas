@@ -8,14 +8,8 @@ unit GdbmiTestUtils;
 interface
 
 uses
-  TestBase, TestWatchUtils, LazarusPackageIntf;
+  TestBase, TestWatchUtils;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-initialization
-  RegisterPackage('GdbmiTestUtils', @Register);
 end.

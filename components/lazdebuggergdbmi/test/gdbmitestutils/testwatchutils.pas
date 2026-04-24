@@ -80,6 +80,7 @@ const
                     IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw3,
                     IgnTpName,  IgnTpNameDw, IgnTpNameDw3
                    ],
+                   [],
                    []
     );
 
