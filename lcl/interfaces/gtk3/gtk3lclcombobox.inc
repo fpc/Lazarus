@@ -4,10 +4,10 @@ procedure LCLGtkComboBoxSetShrinkClassRecursive(W: PGtkWidget; AAdd: Boolean); f
 
 procedure LCLGtkComboBoxGetPreferredWidth(widget: PGtkWidget; min_width, nat_width: Pgint); cdecl;
 var
-  AControl:TGtk3Widget;
-  ParentClass:PGtkWidgetClass;
+  AControl: TGtk3Widget;
+  ParentClass: PGtkWidgetClass;
+  LCLW: Integer;
 begin
-
   if not Assigned(min_width) or not Assigned(nat_width) then
   begin
     DebugLn('Error: LCLGtkComboBoxGetPreferredWidth invalid params.');
@@ -17,37 +17,28 @@ begin
   if not Gtk3IsWidget(widget) then
   begin
     DebugLn('Error: LCLGtkComboBoxGetPreferredWidth widget param is not PGtkWidget.');
-    // WriteLn('Error: widget is not a valid GtkWidget');
     Exit;
   end;
 
   ParentClass := PGtkWidgetClass(g_type_class_peek_parent(widget^.g_type_instance.g_class));
-
   if not Assigned(ParentClass) then
   begin
     DebugLn('Error: LCLGtkComboBoxGetPreferredWidth cannot get ParentClass !');
-    exit;
+    Exit;
   end;
-  //check what parent class says about minimum and natural width.
   ParentClass^.get_preferred_width(widget, min_width, nat_width);
 
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
-  if not Assigned(AControl) then
-  begin
-    DebugLn('Error: LCLGtkComboBoxGetPreferredWidth cannot get TGtk3Widget for widget parameter.');
-    exit;
-  end;
+  if not Assigned(AControl) or not Assigned(AControl.LCLObject) then
+    Exit;
 
-  // we don't check autosize since combo width is free size
-  if AControl.LCLWidth = 0 then
-  begin
-    min_width^ := Max(min_width^ div 2, AControl.LCLObject.Width);
-    nat_width^ := Max(min_width^, AControl.LCLObject.Width);
-  end else
-  begin
-    min_width^ := Max(min_width^ div 2, AControl.LCLWidth);
-    nat_width^ := Max(min_width^, AControl.LCLWidth);
-  end;
+  if AControl.LCLWidth > 0 then
+    LCLW := AControl.LCLWidth
+  else
+    LCLW := AControl.LCLObject.Width;
+
+  if LCLW > 0 then
+    nat_width^ := Max(min_width^, LCLW);
 end;
 
 procedure LCLGtkComboBoxGetPreferredHeight(widget: PGtkWidget; min_height, nat_height: Pgint); cdecl;
