@@ -13350,9 +13350,17 @@ begin
       if (AForm.BorderStyle = bsNone) and Widget^.get_realized then
       begin
         Widget^.size_allocate(@ARect);
-        if (AWidth > 0) and (AHeight > 0) and
-           (PGtkWindow(Widget)^.get_window_type = GTK_WINDOW_POPUP) then
+        if (AWidth > 0) and (AHeight > 0) then
+        begin
           Widget^.set_size_request(AWidth, AHeight);
+          FillChar(Geometry{%H-}, SizeOf(Geometry), 0);
+          Geometry.min_width := AWidth;
+          Geometry.max_width := AWidth;
+          Geometry.min_height := AHeight;
+          Geometry.max_height := AHeight;
+          PGtkWindow(Widget)^.set_geometry_hints(nil, @Geometry,
+            [GDK_HINT_MIN_SIZE, GDK_HINT_MAX_SIZE]);
+        end;
         Widget^.window^.move_resize(ALeft, ATop, AWidth, AHeight);
         gdk_display_flush(gdk_window_get_display(Widget^.window));
         Exit;
