@@ -195,6 +195,7 @@ const
   // -- DWARF 4 --
   DW_AT_data_bit_offset      = $6b  ;    // constant // block, constant, reference
   DW_AT_enum_class           = $6d  ;
+  DW_AT_linkage_name         = $6E  ;    // string
   // ---  ---
   DW_AT_lo_user              = $2000;    // ---
   DW_AT_hi_user              = $3fff;    // ---

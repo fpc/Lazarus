@@ -1125,6 +1125,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
       AnAddress: TFpDbgMemLocation): Boolean; override;
     function GetEntryPCAddress(AValueObj: TFpValueDwarf; out
       AnAddress: TFpDbgMemLocation): Boolean;
+    function GetLinkageName: String;
 
     property DbgInfo: TFpDwarfInfo read FDwarf;
     property ProcAddress: TDBGPtr read FAddress;
@@ -1275,6 +1276,10 @@ begin
 end;
 
 function TFpValueDwarfSubroutine.GetEntryPCAddress: TFpDbgMemLocation;
+var
+  n: String;
+  SymTbl: TDbgInfo;
+  SymProc: TFpSymbol;
 begin
   Result := InvalidLoc;
   if (FDataSymbol = nil) then
@@ -1285,6 +1290,21 @@ begin
   end
   else
     Result := DataAddress;
+
+  if Not IsValidLoc(Result) then begin
+    n := TFpSymbolDwarfDataProc(FDataSymbol).GetLinkageName;
+    if n <> '' then begin
+      SymTbl := Context.SymbolTableInfo;
+      if SymTbl <> nil then begin
+        SymProc := SymTbl.FindProcSymbol(n, True);
+        if SymProc <> nil then begin
+          Result := SymProc.Address;
+          SymProc.ReleaseReference;
+          DebugLn(FPDBG_DWARF_VERBOSE, 'Using mangled address for method "%s": %s', [n, dbgs(Result)]);
+        end;
+      end;
+    end;
+  end;
 end;
 
 { TFpDwarfDefaultSymbolClassMap }
@@ -7343,6 +7363,17 @@ begin
       {$POP}
   //DW_AT_ranges
   Result := IsValidLoc(AnAddress);
+end;
+
+function TFpSymbolDwarfDataProc.GetLinkageName: String;
+var
+  AttrData: TDwarfAttribData;
+begin
+  Result := '';
+  if InformationEntry.GetAttribData(DW_AT_linkage_name, AttrData) then begin
+    if not InformationEntry.ReadValue(AttrData, Result) then
+      Result := '';
+  end;
 end;
 
 function TFpSymbolDwarfDataProc.StateMachineValid: Boolean;
