@@ -856,16 +856,67 @@ end;
 
 class procedure TGtk3WSCustomListView.ItemExchange(const ALV: TCustomListView;
   AItem: TListItem; const AIndex1, AIndex2: Integer);
+var
+  GtkWidget: PGtkWidget;
+  AModel: PGtkTreeModel;
+  Iter1, Iter2: TGtkTreeIter;
 begin
-  DebugLn('TGtk3WSCustomListView.ItemExchange ');
-  // inherited ItemExchange(ALV, AItem, AIndex1, AIndex2);
+  if not WSCheckHandleAllocated(ALV, 'ItemExchange') then
+    Exit;
+  if not TGtk3ListView(ALV.Handle).IsTreeView then
+  begin
+    GtkWidget := TGtk3ListView(ALV.Handle).GetContainerWidget;
+    if GtkWidget^.get_realized then
+      GtkWidget^.queue_draw;
+    Exit;
+  end;
+  GtkWidget := TGtk3ListView(ALV.Handle).GetContainerWidget;
+  AModel := PGtkTreeView(GtkWidget)^.get_model;
+  if AModel = nil then
+    Exit;
+  if not gtk_tree_model_iter_nth_child(AModel, @Iter1, nil, AIndex1) then Exit;
+  if not gtk_tree_model_iter_nth_child(AModel, @Iter2, nil, AIndex2) then Exit;
+  gtk_list_store_swap(PGtkListStore(AModel), @Iter1, @Iter2);
+  if GtkWidget^.get_realized then
+    GtkWidget^.queue_draw;
 end;
 
 class procedure TGtk3WSCustomListView.ItemMove(const ALV: TCustomListView;
   AItem: TListItem; const AFromIndex, AToIndex: Integer);
+var
+  GtkWidget: PGtkWidget;
+  AModel: PGtkTreeModel;
+  FromIter, TargetIter: TGtkTreeIter;
 begin
-  DebugLn('TGtk3WSCustomListView.ItemMove ');
-  // inherited ItemMove(ALV, AItem, AFromIndex, AToIndex);
+  if not WSCheckHandleAllocated(ALV, 'ItemMove') then
+    Exit;
+  if not TGtk3ListView(ALV.Handle).IsTreeView then
+  begin
+    GtkWidget := TGtk3ListView(ALV.Handle).GetContainerWidget;
+    if GtkWidget^.get_realized then
+      GtkWidget^.queue_draw;
+    Exit;
+  end;
+  if AFromIndex = AToIndex then Exit;
+  GtkWidget := TGtk3ListView(ALV.Handle).GetContainerWidget;
+  AModel := PGtkTreeView(GtkWidget)^.get_model;
+  if AModel = nil then
+    Exit;
+  if not gtk_tree_model_iter_nth_child(AModel, @FromIter, nil, AFromIndex) then Exit;
+  if AToIndex = 0 then
+    gtk_list_store_move_after(PGtkListStore(AModel), @FromIter, nil)
+  else if AToIndex > AFromIndex then
+  begin
+    if not gtk_tree_model_iter_nth_child(AModel, @TargetIter, nil, AToIndex) then Exit;
+    gtk_list_store_move_after(PGtkListStore(AModel), @FromIter, @TargetIter);
+  end
+  else
+  begin
+    if not gtk_tree_model_iter_nth_child(AModel, @TargetIter, nil, AToIndex) then Exit;
+    gtk_list_store_move_before(PGtkListStore(AModel), @FromIter, @TargetIter);
+  end;
+  if GtkWidget^.get_realized then
+    GtkWidget^.queue_draw;
 end;
 
 class function TGtk3WSCustomListView.ItemGetChecked(const ALV: TCustomListView;
@@ -1404,11 +1455,29 @@ end;
 class procedure TGtk3WSCustomListView.SetSort(const ALV: TCustomListView;
   const AType: TSortType; const AColumn: Integer;
   const ASortDirection: TSortDirection);
+var
+  GtkWidget: PGtkWidget;
+  AModel: PGtkTreeModel;
+  Iter: TGtkTreeIter;
+  I: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort') then
     Exit;
-  if TGtk3ListView(ALV.Handle).GetContainerWidget^.get_realized then
-    TGtk3ListView(ALV.Handle).GetContainerWidget^.queue_draw;
+  GtkWidget := TGtk3ListView(ALV.Handle).GetContainerWidget;
+  if TGtk3ListView(ALV.Handle).IsTreeView then
+  begin
+    AModel := PGtkTreeView(GtkWidget)^.get_model;
+    if AModel <> nil then
+    begin
+      for I := 0 to ALV.Items.Count - 1 do
+      begin
+        if gtk_tree_model_iter_nth_child(AModel, @Iter, nil, I) then
+          gtk_list_store_set(PGtkListStore(AModel), @Iter, [0, Pointer(ALV.Items[I]), -1]);
+      end;
+    end;
+  end;
+  if GtkWidget^.get_realized then
+    GtkWidget^.queue_draw;
 end;
 
 class procedure TGtk3WSCustomListView.SetViewOrigin(const ALV: TCustomListView;
