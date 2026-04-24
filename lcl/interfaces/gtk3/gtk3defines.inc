@@ -1,4 +1,5 @@
 {$DEFINE GTK3}
+{. $DEFINE GTK3USEDEFERREDRESIZING}
 {. $DEFINE GTK3DEBUGCORE}
 {. $DEFINE GTK3DEBUGSIZE}
 {. $DEFINE GTK3DEBUGRESIZE}  { Verbose resize tracing: SetBounds, SizeAllocate, WindowSizeAllocate }
