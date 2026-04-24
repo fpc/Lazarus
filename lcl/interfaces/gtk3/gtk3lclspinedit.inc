@@ -94,6 +94,24 @@ begin
     Data^.Adjustment^.set_value(AMin);
 end;
 
+function LCLSpinEditUpButtonPress(AWidget: PGtkWidget; AEvent: PGdkEventButton; AData: gpointer): gboolean; cdecl;
+begin
+  if (AEvent <> nil) and
+     (AEvent^.type_ in [GDK_BUTTON_PRESS, GDK_2BUTTON_PRESS, GDK_3BUTTON_PRESS]) and
+     (AEvent^.button = 1) then
+    LCLSpinEditUpClicked(PGtkButton(AWidget), AData);
+  Result := False;
+end;
+
+function LCLSpinEditDownButtonPress(AWidget: PGtkWidget; AEvent: PGdkEventButton; AData: gpointer): gboolean; cdecl;
+begin
+  if (AEvent <> nil) and
+     (AEvent^.type_ in [GDK_BUTTON_PRESS, GDK_2BUTTON_PRESS, GDK_3BUTTON_PRESS]) and
+     (AEvent^.button = 1) then
+    LCLSpinEditDownClicked(PGtkButton(AWidget), AData);
+  Result := False;
+end;
+
 procedure LCLSpinEditEntryChanged(AEditable: PGtkEditable; AData: gpointer); cdecl;
 var
   Data: PLCLSpinEditData;
@@ -558,10 +576,10 @@ begin
 
   g_object_set_data(PGObject(HBox), LCL_SPIN_DATA_KEY, Data);
 
-  g_signal_connect_data(PGObject(BtnUp), 'clicked',
-    TGCallback(@LCLSpinEditUpClicked), Data, nil, G_CONNECT_DEFAULT);
-  g_signal_connect_data(PGObject(BtnDown), 'clicked',
-    TGCallback(@LCLSpinEditDownClicked), Data, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(PGObject(BtnUp), 'button-press-event',
+    TGCallback(@LCLSpinEditUpButtonPress), Data, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(PGObject(BtnDown), 'button-press-event',
+    TGCallback(@LCLSpinEditDownButtonPress), Data, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(PGObject(Entry), 'changed',
     TGCallback(@LCLSpinEditEntryChanged), Data, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(PGObject(Entry), 'insert-text',

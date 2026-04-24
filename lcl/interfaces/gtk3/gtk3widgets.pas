@@ -5812,9 +5812,9 @@ begin
       [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditEntryScroll, nil);
 
     g_signal_handlers_block_matched(PGObject(Data^.BtnUp),
-      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditUpClicked, nil);
+      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditUpButtonPress, nil);
     g_signal_handlers_block_matched(PGObject(Data^.BtnDown),
-      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditDownClicked, nil);
+      [G_SIGNAL_MATCH_FUNC], 0, 0, nil, @LCLSpinEditDownButtonPress, nil);
   end;
 end;
 
