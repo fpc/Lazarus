@@ -1962,6 +1962,7 @@ function TGtk3Widget.GtkEventPaint(Sender: PGtkWidget; AContext: Pcairo_t
   ): Boolean; cdecl;
 var
   Msg: TLMPaint;
+  EraseMsg: TLMEraseBkgnd;
   AStruct: TPaintStruct;
   AClipRect: TGdkRectangle;
   localClip:TRect;
@@ -2039,6 +2040,13 @@ begin
         Msg.PaintStruct^.rcPaint := localClip;
       end;
       DoBeforeLCLPaint;
+      if LCLObject is TWinControl then
+      begin
+        FillChar(EraseMsg{%H-}, SizeOf(EraseMsg), 0);
+        EraseMsg.Msg := LM_ERASEBKGND;
+        EraseMsg.DC := Msg.DC;
+        LCLObject.WindowProc(TLMessage(EraseMsg));
+      end;
       LCLObject.WindowProc(TLMessage(Msg));
       if HasCaret and not (csDesigning in LCLObject.ComponentState) then
       begin

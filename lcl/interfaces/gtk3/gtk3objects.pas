@@ -1783,14 +1783,18 @@ procedure TGtk3DeviceContext.SetXorMode(var xorSurface: Pcairo_surface_t;
 var
   R: TGdkRectangle;
   TempCairo: Pcairo_t;
+  BackMatrix: Tcairo_matrix_t;
 begin
   if xorSurface <> nil  then
     raise Exception.Create('TGtk3DeviceContext: xorSurface <> nil !');
 
   if FBackTarget <> nil then
   begin
+    cairo_get_matrix(FBackTarget, @BackMatrix);
     cairo_save(FCairo);
-    cairo_set_source_surface(FCairo, cairo_get_target(FBackTarget), FBackOriginX, FBackOriginY);
+    cairo_set_source_surface(FCairo, cairo_get_target(FBackTarget),
+      FBackOriginX - Round(BackMatrix.x0),
+      FBackOriginY - Round(BackMatrix.y0));
     cairo_set_operator(FCairo, CAIRO_OPERATOR_DEST_OVER);
     cairo_paint(FCairo);
     cairo_restore(FCairo);
@@ -1919,6 +1923,9 @@ begin
     cairo_rectangle(FCairo, R.x, R.y, SrcW, SrcH);
     cairo_fill(FCairo);
     cairo_restore(FCairo);
+
+    if (Parent = nil) and (Window <> nil) then
+      gdk_window_invalidate_rect(Window, @R, False);
   end;
 
   cairo_surface_destroy(TempSurface);
