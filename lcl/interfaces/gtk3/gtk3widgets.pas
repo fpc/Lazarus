@@ -10902,22 +10902,23 @@ begin
     // catch all mouse events on gtkentry.
     if IsDesigning then
     begin
-      // maybe set disabled
-      {$note this does not work, must make search via children list}
-      (*
-      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-
-      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-      *)
-      PGtkComboBox(Result)^.priv3^.button^.set_sensitive(gtk_false);
-      PGtkComboBox(Result)^.priv3^.arrow^.set_sensitive(gtk_false);
+      if Assigned(PGtkComboBox(Result)^.priv3^.button) then
+      begin
+        g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-press-event',
+          TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+        g_signal_connect_data(PGtkComboBox(Result)^.priv3^.button, 'button-release-event',
+          TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      end;
+      if Assigned(PGtkComboBox(Result)^.priv3^.arrow) then
+      begin
+        g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'button-press-event',
+          TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+        g_signal_connect_data(PGtkComboBox(Result)^.priv3^.arrow, 'button-release-event',
+          TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
+      end;
 
       g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-press-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
       g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'button-release-event', TGCallback(@disableMouseButtonEvent), Self, Nil, G_CONNECT_DEFAULT);
-
-      // g_signal_connect_data(PGtkEntry(PGtkComboBox(Result)^.get_child), 'motion-notify-event', TGCallback(@motionNotifyEvent), Self, nil, G_CONNECT_DEFAULT);
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_can_focus(False);
     end else
       PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events(GDK_DEFAULT_EVENTS_MASK);
