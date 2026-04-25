@@ -253,6 +253,7 @@ type
     function SX2(const x: double): Double;
     function SY2(const y: double): Double;
     procedure EnsureDefaultOperator;
+    procedure FlushPendingXor;
     procedure ApplyBrush;
     procedure ApplyFont;
     procedure ApplyPen;
@@ -1730,7 +1731,7 @@ procedure TGtk3DeviceContext.SetRasterOp(AValue: integer);
 var
   AMap: Tcairo_operator_t;
 begin
-  if MapCairoRasterOpToRasterOp(cairo_get_operator(pcr)) = AValue then
+  if (not FXorMode) and (MapCairoRasterOpToRasterOp(cairo_get_operator(pcr)) = AValue) then
     exit;
   if FXorMode and ((AValue <> R2_XORPEN) and (AValue <> R2_NOTXORPEN)) then
   begin
@@ -2143,6 +2144,33 @@ procedure TGtk3DeviceContext.EnsureDefaultOperator;
 begin
   if not FXorMode then
     cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
+end;
+
+procedure TGtk3DeviceContext.FlushPendingXor;
+begin
+  if not FXorMode then
+    Exit;
+  FXorMode := False;
+  if FXorROP = R2_NOTXORPEN then
+    ApplyXorDrawing(FXorSurface, CAIRO_OPERATOR_DIFFERENCE)
+  else
+    ApplyXorDrawing(FXorSurface, CAIRO_OPERATOR_XOR);
+  if FXorCairo <> nil then
+  begin
+    cairo_destroy(FXorCairo);
+    FXorCairo := nil;
+  end;
+  if FXorSurface <> nil then
+  begin
+    cairo_surface_destroy(FXorSurface);
+    FXorSurface := nil;
+  end;
+  if FXorSnapshot <> nil then
+  begin
+    cairo_surface_destroy(FXorSnapshot);
+    FXorSnapshot := nil;
+  end;
+  cairo_set_operator(pcr, CAIRO_OPERATOR_OVER);
 end;
 
 procedure TGtk3DeviceContext.ApplyBrush;
@@ -2685,7 +2713,13 @@ var
   IsVectorSurface: Boolean;
   AFontOpts: Pcairo_font_options_t;
   APangoContext: PPangoContext;
+  SavedXorMode: Boolean;
+  SavedXorROP: Integer;
+  XorAMap: Tcairo_operator_t;
 begin
+  SavedXorMode := FXorMode;
+  SavedXorROP := FXorROP;
+  FlushPendingXor;
   EnsureDefaultOperator;
 
   IsVectorSurface := cairo_surface_get_type(cairo_get_target(pcr)) in
@@ -2763,6 +2797,17 @@ begin
   begin
     pango_cairo_context_set_resolution(FCurrentFont.Layout^.get_context, OldDPI);
     FCurrentFont.Layout^.context_changed;
+  end;
+
+  if SavedXorMode then
+  begin
+    FXorROP := SavedXorROP;
+    if SavedXorROP = R2_NOTXORPEN then
+      XorAMap := CAIRO_OPERATOR_DIFFERENCE
+    else
+      XorAMap := CAIRO_OPERATOR_XOR;
+    FXorMode := True;
+    SetXorMode(FXorSurface, XorAMap);
   end;
 end;
 
