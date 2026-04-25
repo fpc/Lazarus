@@ -32,9 +32,6 @@ begin
   if not Assigned(AControl) or not Assigned(AControl.LCLObject) then
     Exit;
 
-  if csDesigning in AControl.LCLObject.ComponentState then
-    Exit;
-
   if AControl.LCLWidth > 0 then
     LCLW := AControl.LCLWidth
   else
