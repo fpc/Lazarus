@@ -31,12 +31,9 @@ uses
   cthreads,
   {$ENDIF}
   Classes, SysUtils, Math, CustApp, System.UITypes,
-  Interfaces, // this includes the NoGUI widgetset
   // LazUtils
   Masks, LConvEncoding, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
   LazUTF8, Laz2_XMLCfg, LazStringUtils, LazVersion, FPCAdds, ColorTTY,
-  // LCL
-  LCLPlatformDef,
   // Codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   // BuildIntf

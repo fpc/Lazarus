@@ -75,8 +75,30 @@ var
 function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
 function GetLCLWidgetType: TLCLPlatform;
 function GetLCLWidgetTypeName: string;
+function GetBuildLCLWidgetType: TLCLPlatform;
+
 
 implementation
+
+const
+  // Used by GetDefaultLCLWidgetType in InterfaceBase.
+  BuildLCLWidgetType: TLCLPlatform =
+    {$IFDEF MSWindows}{$DEFINE WidgetSetDefined}
+    lpWin32;
+    {$ENDIF}
+    {$IFDEF darwin}{$DEFINE WidgetSetDefined}
+      {$IFDEF CPUPOWERPC}
+      lpCarbon;
+      {$ELSE}
+      lpCocoa;
+      {$ENDIF}
+    {$ENDIF}
+    {$IFDEF HASAMIGA}{$DEFINE WidgetSetDefined}
+    lpMUI;
+    {$ENDIF}
+    {$IFNDEF WidgetSetDefined}
+    lpGtk2;
+    {$ENDIF}
 
 function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
 begin
@@ -99,6 +121,11 @@ begin
     Result := OnLCLWidgetTypeName()
   else
     Result := '';
+end;
+
+function GetBuildLCLWidgetType: TLCLPlatform;
+begin
+  Result:=BuildLCLWidgetType;
 end;
 
 end.

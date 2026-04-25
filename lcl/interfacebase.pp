@@ -239,7 +239,7 @@ begin
   if (WidgetSet<>nil) and (WidgetSet.LCLPlatform<>lpNoGUI) then
     Result:=WidgetSet.LCLPlatform
   else
-    Result:=BuildLCLWidgetType;
+    Result:=GetBuildLCLWidgetType;
 end;
 
 function GetLCLWidgetTypeName: string;

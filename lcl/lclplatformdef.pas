@@ -56,25 +56,6 @@ const
     'MUI'
     );
 
-  // Used by GetDefaultLCLWidgetType
-  BuildLCLWidgetType: TLCLPlatform =
-    {$IFDEF MSWindows}{$DEFINE WidgetSetDefined}
-    lpWin32;
-    {$ENDIF}
-    {$IFDEF darwin}{$DEFINE WidgetSetDefined}
-      {$IFDEF CPUPOWERPC}
-      lpCarbon;
-      {$ELSE}
-      lpCocoa;
-      {$ENDIF}
-    {$ENDIF}
-    {$IFDEF HASAMIGA}{$DEFINE WidgetSetDefined}
-    lpMUI;
-    {$ENDIF}
-    {$IFNDEF WidgetSetDefined}
-    lpGtk2;
-    {$ENDIF}
-
 function DirNameToDisplayName(const ADirName: string): String;
 function DisplayNameToDirName(const ADisplayName: String): String;
 function GetBuildLCLWidgetType: TLCLPlatform;
@@ -99,7 +80,7 @@ end;
 
 function GetBuildLCLWidgetType: TLCLPlatform;
 begin
-  Result:=BuildLCLWidgetType;
+  Result:=LazVersion.GetBuildLCLWidgetType;
 end;
 
 end.
