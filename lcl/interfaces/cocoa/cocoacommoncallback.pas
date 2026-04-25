@@ -17,8 +17,14 @@ uses
 type
 
   {$scopedEnums on}
+  TCocoaCbState = (
+    boundsReported,
+    mouseRouting
+  );
+
+  TLCLCommonCallbackStates = set of TCocoaCbState;
+
   TCocoaCbTrait = (
-    blockKeyBeep,
     blockUpDown,
     treatTabAsChar,  // all tabs should be suppressed, so Cocoa would not switch focus
     forceSendReturn, // send keyDown/LM_KEYDOWN for Return even if handled by IntfUTF8KeyPress/CN_CHAR
@@ -36,8 +42,7 @@ type
     _propStorage: TStringList;
     _context: TCocoaContext;
     _handleFrame: NSView; // HWND and "frame" (rectangle) of the a control
-    _boundsReportedToChildren: Boolean;
-    _isRouting: Boolean;
+    _states: TLCLCommonCallbackStates;
   public
     traits: TLCLCommonCallbackTraits;
     property owner: NSObject read _owner;
@@ -58,8 +63,8 @@ type
     procedure KeyEvBeforeDown;
     procedure KeyEvBeforeUp;
     procedure KeyEvAfterUp;
-    procedure KeyEvAfterDown(out AllowCocoaHandle: boolean);
-    procedure KeyEvBefore(const Event: NSEvent; out AllowCocoaHandle: boolean);
+    procedure KeyEvAfterDown;
+    function KeyEvBefore(const Event: NSEvent): Boolean;
     procedure KeyEvAfter;
 
     function getCaptureControlCallback: ICommonCallBack;
@@ -378,7 +383,6 @@ begin
   _propStorage := TStringList.Create;
   _propStorage.Sorted := True;
   _propStorage.Duplicates := dupAccept;
-  _boundsReportedToChildren:=false;
 end;
 
 destructor TLCLCommonCallback.Destroy;
@@ -411,8 +415,6 @@ end;
 
 function TLCLCommonCallback.handleEventBeforeCocoa(const theEvent: NSEvent
   ): Boolean;
-var
-  allowcocoa: Boolean;
 begin
   Result:= True;
 
@@ -429,8 +431,7 @@ begin
     Exit;
 
   // not in IME state
-  self.KeyEvBefore(theEvent, allowcocoa);
-  Result:= allowcocoa;
+  Result:= self.KeyEvBefore(theEvent);
 end;
 
 procedure TLCLCommonCallback.handleEventAfterCocoa(const theEvent: NSEvent);
@@ -521,10 +522,13 @@ begin
   if CocoaWidgetSetState.lclCaptureControl = 0 then Exit;
   obj := NSObject(CocoaWidgetSetState.lclCaptureControl);
   lCaptureView := obj.lclContentView;
-  if (obj <> _owner) and (lCaptureView <> _owner) and not _isRouting then
-  begin
-    Result := lCaptureView.lclGetCallback;
-  end;
+  if obj = _owner then
+    Exit;
+  if lCaptureView = _owner then
+    Exit;
+  if TCocoaCbState.mouseRouting in _states then
+    Exit;
+  Result:= lCaptureView.lclGetCallback;
 end;
 
 { If a window does not display a shortcut menu it should pass
@@ -702,10 +706,8 @@ begin
     CocoaWidgetSetState.keyEvent.handled:= True;
 end;
 
-procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
+procedure TLCLCommonCallback.KeyEvAfterDown;
 begin
-  AllowCocoaHandle:= false;
-
   if CocoaWidgetSetState.keyEvent.handled then exit;
   send_UTF8KeyPress;
 
@@ -717,9 +719,6 @@ begin
 
   if CocoaWidgetSetState.keyEvent.handled then exit;
   send_LM_CHAR_Message;
-
-  if CocoaWidgetSetState.keyEvent.handled then exit;
-  AllowCocoaHandle:= NOT (TCocoaCbTrait.blockKeyBeep in self.traits);
 end;
 
 procedure TLCLCommonCallback.KeyEvAfterUp;
@@ -738,12 +737,10 @@ begin
   self.doSendKeyMessage( msg, CocoaWidgetSetState.keyEvent.keyCode, CocoaWidgetSetState.keyEvent.keyData, True );
 end;
 
-procedure TLCLCommonCallback.KeyEvBefore(
-  const  Event: NSEvent;
-  out AllowCocoaHandle: boolean);
+function TLCLCommonCallback.KeyEvBefore( const Event: NSEvent ): Boolean;
 begin
+  Result := True;
   CocoaWidgetSetState.keyEvent.handled:= False;
-  AllowCocoaHandle := true;
 
   if Event.type_ = NSFlagsChanged then
     createKeyStateFromFlagsChanged( Event, CocoaWidgetSetState.keyEvent )
@@ -753,26 +750,24 @@ begin
   if CocoaWidgetSetState.keyEvent.isKeyDown then begin
     KeyEvBeforeDown;
     if NOT (TCocoaCbTrait.treatTabAsChar in self.traits) and (CocoaWidgetSetState.keyEvent.keyCode = VK_TAB) then
-      AllowCocoaHandle := false;
+      Result:= False;
   end else
     KeyEvBeforeUp;
 
   if CocoaWidgetSetState.keyEvent.handled then
-    AllowCocoaHandle := false;
+    Result:= False;
 
   // flagsChanged always needs to be passed on to Cocoa
   if Event.type_ = NSFlagsChanged then
-    AllowCocoaHandle := true;
+    Result:= True;
 end;
 
 procedure TLCLCommonCallback.KeyEvAfter;
-var
-  AllowCocoaHandle: Boolean;
 begin
   if NOT Assigned(self.target) then
     Exit;
   if CocoaWidgetSetState.keyEvent.isKeyDown then
-    KeyEvAfterDown(AllowCocoaHandle)
+    KeyEvAfterDown
   else
     KeyEvAfterUp;
 end;
@@ -828,9 +823,9 @@ begin
   //Str := (Format('MouseUpDownEvent Target=%s Self=%x CaptureControlCallback=%x', [target.name, PtrUInt(Self), PtrUInt(lCaptureControlCallback)]));
   if lCaptureControlCallback <> nil then
   begin
-    _isRouting:= True;
+    Include( _states, TCocoaCbState.mouseRouting );
     Result := lCaptureControlCallback.MouseUpDownEvent(Event, AForceAsMouseUp);
-    _isRouting:= False;
+    Exclude( _states, TCocoaCbState.mouseRouting );
     exit;
   end;
 
@@ -994,9 +989,9 @@ begin
     callback := getCaptureControlCallback();
     if callback <> nil then
     begin
-      _isRouting:= True;
+      Include( _states, TCocoaCbState.mouseRouting );
       Result := callback.MouseMove(Event);
-      _isRouting:= False;
+      Exclude( _states, TCocoaCbState.mouseRouting );
       exit;
     end
     else
@@ -1028,17 +1023,17 @@ begin
         end;
     end;
 
-    if assigned(targetControl) and not _isRouting then
+    if assigned(targetControl) and NOT (TCocoaCbState.mouseRouting in _states) then
     begin
       if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
-      _isRouting:= True;
+      Include( _states, TCocoaCbState.mouseRouting );
        //debugln(target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
       obj := NSObject(targetControl.Handle).lclContentView;
       if obj = nil then Exit;
       callback := obj.lclGetCallback;
       if callback = nil then Exit; // Avoids crashes
       result := callback.MouseMove(Event);
-      _isRouting:= False;
+      Exclude( _states, TCocoaCbState.mouseRouting );
       exit;
     end;
 
@@ -1202,32 +1197,28 @@ begin
     and not EqualRect(target.ClientRect, _handleFrame.lclClientFrame);
 
   // update client rect
-  if ClientResized or Resized or target.ClientRectNeedsInterfaceUpdate then
-  begin
+  if ClientResized or Resized or target.ClientRectNeedsInterfaceUpdate then begin
     target.InvalidateClientRectCache(false);
     ClientResized := True;
   end;
 
   // then send a LM_SIZE message
-  if Resized or ClientResized then
-  begin
+  if Resized or ClientResized then begin
     LCLSendSizeMsg(target, Max(NewBounds.Right - NewBounds.Left,0),
       Max(NewBounds.Bottom - NewBounds.Top,0), _owner.lclWindowState, True);
   end;
 
   // then send a LM_MOVE message
-  if Moved then
-  begin
+  if Moved then begin
     LCLSendMoveMsg(target, NewBounds.Left,
       NewBounds.Top, Move_SourceIsInterface);
   end;
 
-  if not _boundsReportedToChildren then // first time we need this to update non cocoa based client rects
-  begin
+  if NOT (TCocoaCbState.boundsReported in _states) then begin
+    // first time we need this to update non cocoa based client rects
     target.InvalidateClientRectCache(true);
-    _boundsReportedToChildren:=true;
+    Include( _states, TCocoaCbState.boundsReported );
   end;
-
 end;
 
 procedure TLCLCommonCallback.scroll(
