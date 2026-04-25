@@ -56,13 +56,13 @@ var
   a: integer;
 begin
   if AText<>'' then begin
-    a := IndexInStringList(AComboBox.Items,Cmp,AText);
+    a := LazStringUtils.IndexInStringList(AComboBox.Items,Cmp,AText);
     if a >= 0 then
       AComboBox.ItemIndex := a
     else
     begin
       AComboBox.Items.Insert(0,AText);
-      AComboBox.ItemIndex:=IndexInStringList(AComboBox.Items,Cmp,AText);
+      AComboBox.ItemIndex:=LazStringUtils.IndexInStringList(AComboBox.Items,Cmp,AText);
       if MaxCount<2 then MaxCount:=2;
       while AComboBox.Items.Count>MaxCount do
         AComboBox.Items.Delete(AComboBox.Items.Count-1);
