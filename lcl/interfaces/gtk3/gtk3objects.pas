@@ -3472,10 +3472,16 @@ begin
         cairo_line_to(pcr,X+PixelOffset, Y+PixelOffset);
       end;
     end else
+    begin
+      cairo_move_to(pcr, FLastPenX, FLastPenY);
       cairo_line_to(pcr,X+PixelOffset, Y+PixelOffset);
+    end;
 
   end else
+  begin
+    cairo_move_to(pcr, FLastPenX, FLastPenY);
     cairo_line_to(pcr,X+PixelOffset, Y+PixelOffset);
+  end;
 
   if cairo_has_current_point(pcr)<>0 then
     cairo_get_current_point(pcr, @fLastPenX, @fLastPenY);
