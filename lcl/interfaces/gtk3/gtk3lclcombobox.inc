@@ -54,6 +54,7 @@ var
   aPangoLayout: PPangoLayout;
   ABorder, AMargin, APadding: TGtkBorder;
   w, h, xpad, ypad: gint;
+  SavedW, SavedH: gint;
   aList: PGList;
 begin
 
@@ -82,7 +83,14 @@ begin
   if Assigned(AControl) and Assigned(AControl.LCLObject) then
     LCLGtkComboBoxSetShrinkClassRecursive(widget, not AControl.LCLObject.AutoSize);
 
-  ParentClass^.get_preferred_height(widget, min_height, nat_height);
+  if Assigned(AControl) and Assigned(AControl.LCLObject) and AControl.LCLObject.AutoSize then
+  begin
+    widget^.get_size_request(@SavedW, @SavedH);
+    widget^.set_size_request(-1, -1);
+    ParentClass^.get_preferred_height(widget, min_height, nat_height);
+    widget^.set_size_request(SavedW, SavedH);
+  end else
+    ParentClass^.get_preferred_height(widget, min_height, nat_height);
 
   AControl := TGtk3Widget(HwndFromGtkWidget(widget));
   if not Assigned(AControl) then
@@ -92,37 +100,7 @@ begin
   end;
 
   if AControl.LCLObject.AutoSize then
-  begin
-    //seem that gtk is off by 1 pixel, csDropDown and csDropDownList should have same height'
-    //writeln('==============>',dbgsName(AControl.LCLObject),' preferred height=',min_height^, ' nat=',nat_height^);
-    if not (TCustomComboBox(AControl.LCLObject).Style in [csDropDown, csSimple]) then
-    begin
-      aCombo := PGtkComboBox(widget);
-
-      aList := PGtkCellLayout(aCombo)^.get_cells;
-      xpad := 0;
-      ypad := 0;
-      if aList = nil then
-        exit;
-      PGtkCellRenderer(g_list_nth_data(aList, 0))^.get_padding(@xpad, @ypad);
-      g_list_free(aList);
-
-      GetStyleContextSizes(aCombo^.priv3^.button, ABorder, AMargin, APadding, w, h);
-      aContext := PGtkCellView(ACombo^.priv3^.cell_view)^.get_pango_context;
-      if aContext = nil then
-        exit;
-      aPangoLayout := pango_layout_new(aContext);
-      aPangoLayout^.set_text('Wj', -1);
-      aPangoLayout^.get_size(@w, @h);
-      w := w div PANGO_SCALE;
-      h := (h div PANGO_SCALE) + 1;
-      min_height^ := h + ABorder.Top + ABorder.Bottom + AMargin.Top + AMargin.Bottom + APadding.Top + APadding.Bottom + (ypad * 2);
-      if Assigned(nat_height) then
-        nat_height^ := min_height^;
-      aPangoLayout^.unref;
-    end;
-    exit; // keep gtk calculated height.
-  end;
+    exit;
 
   if AControl.LCLHeight = 0 then
   begin
