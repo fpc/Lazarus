@@ -3335,8 +3335,11 @@ begin
       if AGdkWindow <> nil then
       begin
         AGdkWindow^.get_origin(@x, @y);
-        ARect := Bounds(x + Allocation.x, y + Allocation.y,
-          Allocation.width, Allocation.height);
+        if TGtk3Widget(Handle).Widget^.get_has_window then
+          ARect := Bounds(x, y, Allocation.width, Allocation.height)
+        else
+          ARect := Bounds(x + Allocation.x, y + Allocation.y,
+            Allocation.width, Allocation.height);
       end else
         ARect := Bounds(Allocation.x, Allocation.y,
           Allocation.width, Allocation.height);
