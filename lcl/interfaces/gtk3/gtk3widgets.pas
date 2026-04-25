@@ -11659,7 +11659,7 @@ end;
 procedure TGtk3Button.preferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 var
-  AWidgetClass: PGtkWidgetClass;
+  AWidgetClass, AQueryClass: PGtkWidgetClass;
   AMinW, AMinH: gint;
   SavedW, SavedH: gint;
 begin
@@ -11669,10 +11669,16 @@ begin
   FWidget^.set_size_request(-1, -1);
   try
     AWidgetClass := PGtkWidgetClass(FWidget^.g_type_instance.g_class);
-    if Assigned(AWidgetClass) and Assigned(AWidgetClass^.get_preferred_width) then
-      AWidgetClass^.get_preferred_width(FWidget, @AMinW, @PreferredWidth);
-    if Assigned(AWidgetClass) and Assigned(AWidgetClass^.get_preferred_height) then
-      AWidgetClass^.get_preferred_height(FWidget, @AMinH, @PreferredHeight);
+    if g_type_check_instance_is_a(PGTypeInstance(FWidget), LCLGtkButtonGetType()) then
+      AQueryClass := PGtkWidgetClass(g_type_class_peek_parent(PGTypeClass(AWidgetClass)))
+    else
+      AQueryClass := AWidgetClass;
+    if not Assigned(AQueryClass) then
+      AQueryClass := AWidgetClass;
+    if Assigned(AQueryClass^.get_preferred_width) then
+      AQueryClass^.get_preferred_width(FWidget, @AMinW, @PreferredWidth);
+    if Assigned(AQueryClass^.get_preferred_height) then
+      AQueryClass^.get_preferred_height(FWidget, @AMinH, @PreferredHeight);
   finally
     FWidget^.set_size_request(SavedW, SavedH);
   end;
