@@ -10513,6 +10513,7 @@ begin
   if not IsWidgetOK then
     exit;
 
+  FillChar(ItemRect, SizeOf(ItemRect), 0);
   if IsTreeView then
   begin
     Path := gtk_tree_path_new_from_indices(AIndex, [-1]);
@@ -10540,6 +10541,7 @@ begin
   if not IsWidgetOK then
     exit;
 
+  FillChar(ItemRect, SizeOf(ItemRect), 0);
   if IsTreeView then
   begin
     Path := gtk_tree_path_new_from_indices(AIndex, [-1]);
