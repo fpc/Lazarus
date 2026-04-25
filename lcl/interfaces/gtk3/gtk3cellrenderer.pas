@@ -419,9 +419,9 @@ begin
     g_object_unref(APangoLayout);
 
     if Assigned(minimum_size) then
-      minimum_size^ := aCombo^.get_allocated_width - W - xpad;
+      minimum_size^ := 1;
     if Assigned(natural_size) then
-      natural_size^ := aCombo^.get_allocated_width - W - xpad;
+      natural_size^ := APangoWidth + 2 * xpad;
 
     //sometimes only way to have properly sized and painted csDropDownList and owner drawn for combos on modal windows.
     //leave this commented code here, I need it for testing various cases.
