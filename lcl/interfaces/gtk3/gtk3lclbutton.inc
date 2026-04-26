@@ -32,7 +32,12 @@ begin
     Exit;
 
   if AControl.LCLObject.AutoSize then
+  begin
+    if (AControl.LCLWidth > 0) and (nat_width^ > AControl.LCLWidth) then
+      nat_width^ := AControl.LCLWidth;
+    min_width^ := 1;
     Exit;
+  end;
 
   if AControl.LCLWidth > 0 then
     LCLW := AControl.LCLWidth
