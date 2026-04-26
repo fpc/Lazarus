@@ -276,6 +276,7 @@ type
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
     class procedure SetAlignment(const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight); override;
+    class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar: Boolean); override;
   end;
   TGtk3WSCustomCheckBoxClass = class of TGtk3WSCustomCheckBox;
 
@@ -1178,13 +1179,36 @@ begin
 end;
 
 class procedure TGtk3WSCustomCheckBox.SetAlignment(const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight);
+var
+  WantRTL: Boolean;
 begin
   if not WSCheckHandleAllocated(ACustomCheckBox, 'SetAlignment') then
-    Exit;
-  if NewAlignment = taLeftJustify then
+    exit;
+  WantRTL := ACustomCheckBox.UseRightToLeftAlignment xor (NewAlignment = taLeftJustify);
+  if WantRTL then
     gtk_widget_set_direction(TGtk3Widget(ACustomCheckBox.Handle).Widget, GTK_TEXT_DIR_RTL)
   else
     gtk_widget_set_direction(TGtk3Widget(ACustomCheckBox.Handle).Widget, GTK_TEXT_DIR_LTR);
+end;
+
+class procedure TGtk3WSCustomCheckBox.SetBiDiMode(const AWinControl: TWinControl;
+  UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar: Boolean);
+const
+  WidgetDirection: array[Boolean] of TGtkTextDirection = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
+var
+  AWidget: TGtk3Widget;
+  ADir: TGtkTextDirection;
+begin
+  {$IFDEF GTK3DEBUGCORE}
+  DebugLn('TGtk3WSCustomCheckBox.SetBiDiMode');
+  {$ENDIF}
+  if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
+    Exit;
+  AWidget := TGtk3Widget(AWinControl.Handle);
+  ADir := WidgetDirection[UseRightToLeftAlign];
+  gtk_widget_set_direction(AWidget.Widget, ADir);
+  if TCustomCheckBox(AWinControl).Alignment <> taRightJustify then
+    SetAlignment(TCustomCheckBox(AWinControl), TCustomCheckBox(AWinControl).Alignment);
 end;
 
 { TGtk3WSButtonControl }
