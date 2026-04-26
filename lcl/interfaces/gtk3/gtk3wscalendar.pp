@@ -53,38 +53,6 @@ type
 
 implementation
 uses gtk3widgets;
-(* use private from gtk3 unit
-type
-  TGtkCalendarPrivate = record
-    header_win: PGdkWindow;
-    day_name_win: PGdkWindow;
-    main_win: PGdkWindow;
-    week_win: PGdkWindow;
-    arrow_win: array[0..3] of PGdkWindow;
-
-    header_h: guint;
-    day_name_h: guint;
-    main_h: guint;
-
-    arrow_state: array[0..3] of guint;
-    arrow_width: guint;
-    max_month_width: guint;
-    max_year_width: guint;
-
-    day_width: guint;
-    week_width: guint;
-
-    min_day_width: guint;
-    max_day_char_width: guint;
-    max_day_char_ascent: guint;
-    max_day_char_descent: guint;
-    max_label_char_ascent: guint;
-    max_label_char_descent: guint;
-    max_week_char_width: guint;
-  end;
-  PGtkCalendarPrivate = ^TGtkCalendarPrivate;
-
-  *)
 
 { TGtk3WSCustomCalendar }
 
@@ -165,47 +133,48 @@ end;
 
 class function TGtk3WSCustomCalendar.HitTest(const ACalendar: TCustomCalendar;
   const APoint: TPoint): TCalendarPart;
-(*
+{ Reads the private struct of GtkCalendar directly (same approach as the Gtk2
+  WS). Layout filled in lazgtk3.pas, stable across Gtk 3.x. }
 var
-  GtkCalendar: PGtkCalendar;
-  Style: PGtkStyle;
-  FrameW, FrameH, BodyY, BodyX, DayH, ArrowW: Integer;
+  GtkCal: PGtkCalendar;
+  Priv: PGtkCalendarPrivate;
+  AllocW: gint;
   Options: TGtkCalendarDisplayOptions;
+  BodyY, BodyX, DayH, ArrowW: Integer;
   R: TRect;
-  *)
 begin
   Result := cpNoWhere;
   if not WSCheckHandleAllocated(ACalendar, 'HitTest') then
     Exit;
-  (*
-  GtkCalendar := GetCalendar(ACalendar);
-  Style := gtk_widget_get_style({%H-}PGtkWidget(ACalendar.Handle));
-  FrameW := gtk_widget_get_xthickness(Style);
-  FrameH := gtk_widget_get_Ythickness(Style);
+  GtkCal := PGtkCalendar(TGtk3Calendar(ACalendar.Handle).GetContainerWidget);
+  if not Assigned(GtkCal) then
+    Exit;
+  Priv := GtkCal^.priv1;
+  if not Assigned(Priv) then
+    Exit;
+  Options := GtkCal^.get_display_options;
 
-  Options := gtk_calendar_get_display_options(GtkCalendar);
-
-  if Ord(Options) and Ord(GTK_CALENDAR_SHOW_HEADING) <> 0 then
-    BodyY := PGtkCalendarPrivate(GtkCalendar^.private_data)^.header_h
+  if GTK_CALENDAR_SHOW_HEADING in Options then
+    BodyY := Priv^.header_h
   else
     BodyY := 0;
 
-  if Ord(Options) and Ord(GTK_CALENDAR_SHOW_WEEK_NUMBERS) <> 0 then
-    BodyX := PGtkCalendarPrivate(GtkCalendar^.private_data)^.week_width
+  if GTK_CALENDAR_SHOW_WEEK_NUMBERS in Options then
+    BodyX := Priv^.week_width
   else
     BodyX := 0;
 
-  if APoint.Y >= BodyY + FrameH then
+  if APoint.Y >= BodyY then
   begin
-    // we are in the body
-    if Ord(Options) and Ord(GTK_CALENDAR_SHOW_DAY_NAMES) <> 0 then
-      DayH := PGtkCalendarPrivate(GtkCalendar^.private_data)^.day_name_h
+    // body
+    if GTK_CALENDAR_SHOW_DAY_NAMES in Options then
+      DayH := Priv^.day_name_h
     else
       DayH := 0;
 
-    if (APoint.Y - BodyY - DayH - FrameH >= 0) then
+    if (APoint.Y - BodyY - DayH) >= 0 then
     begin
-      if APoint.X >= BodyX + FrameW then
+      if APoint.X >= BodyX then
         Result := cpDate
       else
         Result := cpWeekNumber;
@@ -214,34 +183,33 @@ begin
   else
   if BodyY > 0 then
   begin
-    Result := cpTitle; // we are in the header at least
+    Result := cpTitle; // at least in the heading
 
-    ArrowW := PGtkCalendarPrivate(GtkCalendar^.private_data)^.arrow_width;
+    ArrowW := Priv^.arrow_width;
+    AllocW := PGtkWidget(GtkCal)^.get_allocated_width;
 
-    R.Top := 3 + FrameH;
-    R.Bottom := BodyY - 7 + FrameH;
-    R.Left := 3 + FrameW;
-    // check month + buttons
+    R.Top := 3;
+    R.Bottom := BodyY - 7;
+    R.Left := 3;
+    // month + side buttons
     R.Right := R.Left + ArrowW + 1;
     if PtInRect(R, APoint) then
       Exit(cpTitleBtn);
     R.Left := R.Right + 1;
-    R.Right := FrameW + ArrowW + integer(PGtkCalendarPrivate(GtkCalendar^.private_data)^.max_month_width) + 1;
+    R.Right := ArrowW + Integer(Priv^.max_month_width) + 1;
     if PtInRect(R, APoint) then
       Exit(cpTitleMonth);
     R.Left := R.Right;
     R.Right := R.Left + ArrowW;
     if PtInRect(R, APoint) then
       Exit(cpTitleBtn);
-    // check year + buttons
-    Style := gtk_widget_get_style(PGtkWidget(GtkCalendar));
-    R.Right := PGtkWidget(GtkCalendar)^.allocation.width - 3 -
-      2 * gtk_widget_get_xthickness(Style) + FrameW + 1;
+    // year + side buttons
+    R.Right := AllocW - 3 + 1;
     R.Left := R.Right - ArrowW;
     if PtInRect(R, APoint) then
       Exit(cpTitleBtn);
     R.Right := R.Left;
-    R.Left := R.Right - PGtkCalendarPrivate(GtkCalendar^.private_data)^.max_year_width;
+    R.Left := R.Right - Integer(Priv^.max_year_width);
     if PtInRect(R, APoint) then
       Exit(cpTitleYear);
     R.Right := R.Left;
@@ -249,23 +217,19 @@ begin
     if PtInRect(R, APoint) then
       Exit(cpTitleBtn);
   end;
-  *)
 end;
 
 class procedure TGtk3WSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
 var
   Year, Month, Day: Word;
-  GtkCalendar: PGtkCalendar;
 begin
   if not WSCheckHandleAllocated(ACalendar, 'SetDateTime') then
     Exit;
-  // GtkCalendar := GetCalendar(ACalendar);
   Year := StrToInt(FormatDateTime('yyyy', ADateTime));
   Month := StrToInt(FormatDateTime('mm', ADateTime));
   Day := StrToInt(FormatDateTime('dd', ADateTime));
-  TGtk3Calendar(ACalendar.Handle).SetDate(Year, Month, Day);
-  // gtk_calendar_select_month(GtkCalendar, StrtoInt(Month) - 1, StrToInt(Year));
-  // gtk_calendar_select_day(GtkCalendar, StrToInt(Day));
+  // gtk_calendar_select_month expects month in 0..11 range.
+  TGtk3Calendar(ACalendar.Handle).SetDate(Year, Month - 1, Day);
 end;
 
 class procedure TGtk3WSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
