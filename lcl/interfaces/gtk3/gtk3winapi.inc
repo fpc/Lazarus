@@ -3541,11 +3541,16 @@ begin
 end;
 
 function TGtk3WidgetSet.IsZoomed(handle: HWND): boolean;
+var
+  W: TGtk3Widget;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.IsZoomed not implemented ...');
-  {$ENDIF}
-  Result:=inherited IsZoomed(handle);
+  Result := False;
+  if not IsValidHandle(handle) then
+    Exit;
+  W := TGtk3Widget(handle);
+  if not Gtk3IsGtkWindow(W.Widget) then
+    Exit;
+  Result := gtk_window_is_maximized(PGtkWindow(W.Widget));
 end;
 
 procedure TGtk3WidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection
