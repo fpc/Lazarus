@@ -652,10 +652,19 @@ begin
   end
   else
   begin
-    Pixbuf := Img.Handle;
-    if Pixbuf = nil then Exit;
-    Surface := gdk_cairo_surface_create_from_pixbuf(Pixbuf, 0, nil);
-    if Surface = nil then Exit;
+    if Assigned(Img.Context) and Assigned(Img.Context.CairoSurface) and
+       (cairo_surface_get_type(Img.Context.CairoSurface) = CAIRO_SURFACE_TYPE_IMAGE) then
+    begin
+      cairo_surface_flush(Img.Context.CairoSurface);
+      Surface := cairo_surface_reference(Img.Context.CairoSurface);
+    end
+    else
+    begin
+      Pixbuf := Img.Handle;
+      if Pixbuf = nil then Exit;
+      Surface := gdk_cairo_surface_create_from_pixbuf(Pixbuf, 0, nil);
+      if Surface = nil then Exit;
+    end;
   end;
 
   Pattern := cairo_pattern_create_for_surface(Surface);

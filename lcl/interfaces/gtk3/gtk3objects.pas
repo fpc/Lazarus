@@ -183,6 +183,7 @@ type
     function bits: PByte;
     function numBytes: LongWord;
     function bytesPerLine: Integer;
+    property Context: TGtk3DeviceContext read fContext;
     property Data: PByte read FData;
     property Format: Tcairo_format_t read FFormat;
     procedure UpdatePixbufFromSurface;
