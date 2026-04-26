@@ -872,7 +872,7 @@ msgid "Symbols defined for conditional compilation:"
 msgstr "为条件编译定义的符号："
 
 #: jcfuiconsts.lisreplacecstyleoperators
-msgid "Replace C-style operators  +=, -=, *=, and /=. Example:   x+=y;  -->  x := x + y;"
+msgid "Replace C-style operators (+=, -=, *=, and /=), for example transform x+=y; to x:=x+y;"
 msgstr ""
 
 #: jcfuiconsts.lisreturnsafteruses

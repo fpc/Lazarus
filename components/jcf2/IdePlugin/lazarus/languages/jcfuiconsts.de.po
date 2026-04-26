@@ -871,7 +871,7 @@ msgid "Symbols defined for conditional compilation:"
 msgstr "Für bedingte Kompilierung definierte Symbole:"
 
 #: jcfuiconsts.lisreplacecstyleoperators
-msgid "Replace C-style operators  +=, -=, *=, and /=. Example:   x+=y;  -->  x := x + y;"
+msgid "Replace C-style operators (+=, -=, *=, and /=), for example transform x+=y; to x:=x+y;"
 msgstr ""
 
 #: jcfuiconsts.lisreturnsafteruses
