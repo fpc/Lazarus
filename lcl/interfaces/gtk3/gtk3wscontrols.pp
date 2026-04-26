@@ -365,10 +365,22 @@ begin
 end;
 
 class procedure TGtk3WSWinControl.SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign, UseRightToLeftReading, UseRightToLeftScrollBar : Boolean);
+const
+  WidgetDirection: array[Boolean] of TGtkTextDirection = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
+var
+  AWidget: TGtk3Widget;
+  ADir: TGtkTextDirection;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSWinControl.SetBiDiMode');
   {$ENDIF}
+  if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
+    Exit;
+  AWidget := TGtk3Widget(AWinControl.Handle);
+  ADir := WidgetDirection[UseRightToLeftAlign];
+  gtk_widget_set_direction(AWidget.Widget, ADir);
+  if (AWidget.GetContainerWidget <> nil) and (AWidget.GetContainerWidget <> AWidget.Widget) then
+    gtk_widget_set_direction(AWidget.GetContainerWidget, ADir);
 end;
 
 class procedure TGtk3WSWinControl.GetPreferredSize(const AWinControl: TWinControl;
