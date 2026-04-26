@@ -539,10 +539,13 @@ begin
 end;
 
 procedure TColorToRGB(AColor: TColor; out R, G, B: double);
+var
+  ARGB: TColorRef;
 begin
-  R := (AColor and $FF) / 255;
-  G := ((AColor shr 8) and $FF) / 255;
-  B := ((AColor shr 16) and $FF) / 255;
+  ARGB := ColorToRGB(AColor);
+  R := (ARGB and $FF) / 255;
+  G := ((ARGB shr 8) and $FF) / 255;
+  B := ((ARGB shr 16) and $FF) / 255;
 end;
 
 {Map winapi ROP to Tcairo_operator_t}
