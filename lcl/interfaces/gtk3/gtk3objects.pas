@@ -2611,7 +2611,6 @@ begin
 end;
 
 procedure TGtk3DeviceContext.drawPixel(x, y: Integer; AColor: TColor);
-// Seems that painting line from (a-1, b-1) to (a,b) gives one pixel
 var
   cx, cy: Integer;
 begin
@@ -2619,10 +2618,8 @@ begin
   cy := y - WindowOrg.Y;
   SetSourceColor(AColor);
   cairo_new_path(pcr);
-  cairo_set_line_width(pcr, 1);
-  cairo_move_to(pcr, cx - PixelOffset, cy - PixelOffset);
-  cairo_line_to(pcr, cx + PixelOffset, cy + PixelOffset);
-  cairo_stroke(pcr);
+  cairo_rectangle(pcr, cx, cy, 1, 1);
+  cairo_fill(pcr);
 end;
 
 function TGtk3DeviceContext.pcr: Pcairo_t;
