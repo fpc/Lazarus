@@ -10713,10 +10713,6 @@ msgstr "ຖ້າມີພຽງຂໍ້ມູນ session ປ່ຽນແປງ
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "ຖ້າເຈົ້າຕ້ອງການໃຊ້ Lazarus ສອງເວີຊັນທີ່ແຕກຕ່າງກັນ ເຈົ້າຕ້ອງເລີ່ມ Lazarus ໂຕທີສອງດ້ວຍ command line parameter primary-config-path ຫຼື pcp.%sຕົວຢ່າງ:"
 
-#: lazarusidestrconsts.lisignoreall
-msgid "Ignore all"
-msgstr "ບໍ່ສົນໃຈທັງໝົດ"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"

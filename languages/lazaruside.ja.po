@@ -10974,10 +10974,6 @@ msgstr "セッション情報が変更された場合にのみそれを保存す
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Lazarus の異なる 2 つのバージョンを共に使用されたいのであれば、2 つ目の Lazarus を primary-config-path あるいは pcp のコマンドライン引数で開始しなければなりません。%s例："
 
-#: lazarusidestrconsts.lisignoreall
-msgid "Ignore all"
-msgstr "すべて無視"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"

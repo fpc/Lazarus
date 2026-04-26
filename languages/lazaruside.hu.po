@@ -10850,10 +10850,6 @@ msgstr "Kérdés a mentésről ha csak a munkamenet információ változtak meg.
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Ha különböző Lazarus változatokat akar használni, a második Lazarus-t a primary-config-path vagy a pcp parancssori paraméterrel kell indítani.%sPéldául:"
 
-#: lazarusidestrconsts.lisignoreall
-msgid "Ignore all"
-msgstr "Összes kihagyása"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"

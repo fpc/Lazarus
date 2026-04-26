@@ -10978,10 +10978,6 @@ msgstr "Atsiklausti ar įrašyti sesijos informaciją tik jei ji pakito."
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Naudojant dvi „Lazarus“ laidas, antrasis „Lazarus“ turi būti startuojamas naudojant komandinės eilutės parametrą „primary-config-path“ (arba „pcp“).%sPavyzdžiui:"
 
-#: lazarusidestrconsts.lisignoreall
-msgid "Ignore all"
-msgstr "Visada ignoruoti"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"

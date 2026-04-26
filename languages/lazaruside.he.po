@@ -11200,10 +11200,6 @@ msgstr ""
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
 
-#: lazarusidestrconsts.lisignoreall
-msgid "Ignore all"
-msgstr "התעלם מהכל"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"

@@ -10904,10 +10904,6 @@ msgstr "Pokud jsou změněny pouze informace sezení, zeptej se na uložení."
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Pokud chcete používat dvě rozdílné verze Lazarusu, musíte spustit druhou verzi s parametrem příkazové řádky primary-config-path nebo pcp.%sNapříklad:"
 
-#: lazarusidestrconsts.lisignoreall
-msgid "Ignore all"
-msgstr "Ignorovat vše"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"

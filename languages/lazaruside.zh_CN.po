@@ -10730,10 +10730,6 @@ msgstr "如果仅仅会话信息更改,询问是否保存它."
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "如果您想使用两个不同版本的 Lazarus，您必需使用命令行参数 --primary-config-path 或 --pcp 来启动第二个 Lazarus。%s例如："
 
-#: lazarusidestrconsts.lisignoreall
-msgid "Ignore all"
-msgstr "忽略所有"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"

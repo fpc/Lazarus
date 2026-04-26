@@ -10812,10 +10812,6 @@ msgstr "Jos vain istunnon tiedot muuttuivat, kysy niiden tallentamisesta."
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Haluttaessa kaksi eri Lazarus versiota, pitää toinen käynnistää parametrin primary-config-path tai pcp kanssa.%sEsimerkiksi:"
 
-#: lazarusidestrconsts.lisignoreall
-msgid "Ignore all"
-msgstr "Ohita kaikki"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"
