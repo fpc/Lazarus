@@ -2523,19 +2523,19 @@ begin
         if MButton = GTK3_LEFT_BUTTON then
         begin
           Msg.Msg := LM_LBUTTONUP;
-          Msg.Keys := Msg.Keys or MK_LBUTTON;
+          Msg.Keys := Msg.Keys and not MK_LBUTTON;
         end
         else
         if MButton = GTK3_RIGHT_BUTTON then
         begin
           Msg.Msg := LM_RBUTTONUP;
-          Msg.Keys := Msg.Keys or MK_RBUTTON;
+          Msg.Keys := Msg.Keys and not MK_RBUTTON;
         end
         else
         if MButton = GTK3_MIDDLE_BUTTON then
         begin
           Msg.Msg := LM_MBUTTONUP;
-          Msg.Keys := Msg.Keys or MK_MBUTTON;
+          Msg.Keys := Msg.Keys and not MK_MBUTTON;
         end;
       end;
     else
