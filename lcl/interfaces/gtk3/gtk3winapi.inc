@@ -789,11 +789,117 @@ end;
 
 function TGtk3WidgetSet.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
   grfFlags: Cardinal): Boolean;
+const
+  PixelOffset = 0.5;
+var
+  R: TRect;
+  cr: Pcairo_t;
+  InnerTL, OuterTL, InnerBR, OuterBR: TGdkRGBA;
+  BInner, BOuter: Boolean;
+  Mid: TGdkRGBA;
+
+  procedure SetSrc(const C: TGdkRGBA);
+  begin
+    cairo_set_source_rgb(cr, C.red, C.green, C.blue);
+  end;
+
+  procedure DrawSides(var R: TRect; const TL, BR: TGdkRGBA);
+  begin
+    SetSrc(TL);
+    if (grfFlags and BF_TOP) = BF_TOP then
+    begin
+      cairo_move_to(cr, R.Left + PixelOffset, R.Top + PixelOffset);
+      cairo_line_to(cr, R.Right + PixelOffset, R.Top + PixelOffset);
+      cairo_stroke(cr);
+      Inc(R.Top);
+    end;
+    if (grfFlags and BF_LEFT) = BF_LEFT then
+    begin
+      cairo_move_to(cr, R.Left + PixelOffset, R.Top + PixelOffset);
+      cairo_line_to(cr, R.Left + PixelOffset, R.Bottom + PixelOffset);
+      cairo_stroke(cr);
+      Inc(R.Left);
+    end;
+    SetSrc(BR);
+    if (grfFlags and BF_BOTTOM) = BF_BOTTOM then
+    begin
+      cairo_move_to(cr, R.Left + PixelOffset, R.Bottom - 1 + PixelOffset);
+      cairo_line_to(cr, R.Right + PixelOffset, R.Bottom - 1 + PixelOffset);
+      cairo_stroke(cr);
+      Dec(R.Bottom);
+    end;
+    if (grfFlags and BF_RIGHT) = BF_RIGHT then
+    begin
+      cairo_move_to(cr, R.Right - 1 + PixelOffset, R.Top + PixelOffset);
+      cairo_line_to(cr, R.Right - 1 + PixelOffset, R.Bottom + PixelOffset);
+      cairo_stroke(cr);
+      Dec(R.Right);
+    end;
+  end;
+
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.DrawEdge not implemented ...');
-  {$ENDIF}
-  Result := False; // inherited DrawEdge(DC, ARect, Edge, grfFlags);
+  Result := False;
+  if not IsValidDC(DC) then
+    exit;
+  R := ARect;
+
+  OffsetRect(R, -TGtk3DeviceContext(DC).WindowOrg.X, -TGtk3DeviceContext(DC).WindowOrg.Y);
+  cr := TGtk3DeviceContext(DC).pcr;
+  cairo_save(cr);
+  try
+    cairo_set_line_width(cr, 1);
+    cairo_set_line_cap(cr, Tcairo_line_cap_t.CAIRO_LINE_CAP_BUTT);
+    cairo_set_operator(cr, Tcairo_operator_t.CAIRO_OPERATOR_OVER);
+
+    BInner := False;
+    BOuter := False;
+    if (Edge and BDR_RAISEDINNER) = BDR_RAISEDINNER then
+    begin
+      InnerTL := TColorToTGdkRGBA(ColorToRGB(clBtnHighlight));
+      InnerBR := TColorToTGdkRGBA(ColorToRGB(clBtnShadow));
+      BInner := True;
+    end;
+    if (Edge and BDR_SUNKENINNER) = BDR_SUNKENINNER then
+    begin
+      InnerTL := TColorToTGdkRGBA(ColorToRGB(clBtnShadow));
+      InnerBR := TColorToTGdkRGBA(ColorToRGB(clBtnHighlight));
+      BInner := True;
+    end;
+    if (Edge and BDR_RAISEDOUTER) = BDR_RAISEDOUTER then
+    begin
+      OuterTL := TColorToTGdkRGBA(ColorToRGB(clBtnHighlight));
+      OuterBR := TColorToTGdkRGBA(ColorToRGB(cl3DDkShadow));
+      BOuter := True;
+    end;
+    if (Edge and BDR_SUNKENOUTER) = BDR_SUNKENOUTER then
+    begin
+      OuterTL := TColorToTGdkRGBA(ColorToRGB(cl3DDkShadow));
+      OuterBR := TColorToTGdkRGBA(ColorToRGB(clBtnHighlight));
+      BOuter := True;
+    end;
+
+    if BOuter then
+      DrawSides(R, OuterTL, OuterBR);
+    if BInner then
+      DrawSides(R, InnerTL, InnerBR);
+
+    if (grfFlags and BF_MIDDLE) = BF_MIDDLE then
+    begin
+      Mid := TColorToTGdkRGBA(ColorToRGB(clBtnFace));
+      SetSrc(Mid);
+      cairo_rectangle(cr, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
+      cairo_fill(cr);
+    end;
+
+    if (grfFlags and BF_ADJUST) = BF_ADJUST then
+    begin
+      OffsetRect(R, TGtk3DeviceContext(DC).WindowOrg.X, TGtk3DeviceContext(DC).WindowOrg.Y);
+      ARect := R;
+    end;
+    Result := True;
+  finally
+    cairo_restore(cr);
+  end;
 end;
 
 function TGtk3WidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
@@ -2150,10 +2256,16 @@ end;
 
 function TGtk3WidgetSet.GetCmdLineParamDescForInterface: TStringList;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.GetCmdLineParamDescForInterface not implemented ...');
-  {$ENDIF}
-  Result:=inherited GetCmdLineParamDescForInterface;
+  Result := TStringList.Create;
+  AddCmdLineParamDesc(Result, ['--gtk-module <module>'], rsgtkOptionModule);
+  AddCmdLineParamDesc(Result, ['--g-fatal-warnings'], rsgOptionFatalWarnings);
+  AddCmdLineParamDesc(Result, ['--gtk-debug <flags>'], rsgtkOptionDebug);
+  AddCmdLineParamDesc(Result, ['--gtk-no-debug <flags>'], rsgtkOptionNoDebug);
+  AddCmdLineParamDesc(Result, ['--gdk-debug <flags>'], rsgdkOptionDebug);
+  AddCmdLineParamDesc(Result, ['--gdk-no-debug <flags>'], rsgdkOptionNoDebug);
+  AddCmdLineParamDesc(Result, ['--display <h:s:d>'], rsgtkOptionDisplay);
+  AddCmdLineParamDesc(Result, ['--name <progname>'], rsgtkOptionName);
+  AddCmdLineParamDesc(Result, ['--class <classname>'], rsgtkOptionClass);
 end;
 
 function TGtk3WidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
