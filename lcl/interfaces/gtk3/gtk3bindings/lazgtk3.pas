@@ -4254,6 +4254,63 @@ type
   end;
 
   TGtkCalendarPrivate = record
+    display_flags: TGtkCalendarDisplayOptions;
+
+    main_win: PGdkWindow;
+    arrow_win: array[0..3] of PGdkWindow;
+
+    grow_space: array[0..31] of gchar;
+
+    month: gint;
+    year: gint;
+    selected_day: gint;
+
+    day_month: array[0..5, 0..6] of gint;
+    day: array[0..5, 0..6] of gint;
+
+    num_marked_dates: gint;
+    marked_date: array[0..30] of gint;
+
+    focus_row: gint;
+    focus_col: gint;
+
+    header_h: guint;
+    day_name_h: guint;
+    main_h: guint;
+
+    arrow_prelight: guint;
+    arrow_width: guint;
+    max_month_width: guint;
+    max_year_width: guint;
+
+    day_width: guint;
+    week_width: guint;
+
+    min_day_width: guint;
+    max_day_char_width: guint;
+    max_day_char_ascent: guint;
+    max_day_char_descent: guint;
+    max_label_char_ascent: guint;
+    max_label_char_descent: guint;
+    max_week_char_width: guint;
+
+    flags: guint;
+
+    timer: guint32;
+    click_child: gint;
+
+    week_start: gint;
+
+    drag_start_x: gint;
+    drag_start_y: gint;
+
+    detail_func: TGtkCalendarDetailFunc;
+    detail_func_user_data: gpointer;
+    detail_func_destroy: TGDestroyNotify;
+
+    detail_height_rows: gint;
+    detail_width_chars: gint;
+    detail_overflow: array[0..5] of gint;
   end;
 
 
