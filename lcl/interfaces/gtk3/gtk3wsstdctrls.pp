@@ -275,6 +275,7 @@ type
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
+    class procedure SetAlignment(const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight); override;
   end;
   TGtk3WSCustomCheckBoxClass = class of TGtk3WSCustomCheckBox;
 
@@ -333,6 +334,8 @@ var
   ARadioButton: TGtk3RadioButton;
 begin
   ARadioButton := TGtk3RadioButton.Create(AWinControl, AParams);
+  if TCustomCheckBox(AWinControl).Alignment = taLeftJustify then
+    gtk_widget_set_direction(ARadioButton.Widget, GTK_TEXT_DIR_RTL);
   Result := TLCLHandle(ARadioButton);
 end;
 
@@ -355,6 +358,8 @@ var
   ACheckBox: TGtk3CheckBox;
 begin
   ACheckBox := TGtk3CheckBox.Create(AWinControl, AParams);
+  if TCustomCheckBox(AWinControl).Alignment = taLeftJustify then
+    gtk_widget_set_direction(ACheckBox.Widget, GTK_TEXT_DIR_RTL);
   Result := TLCLHandle(ACheckBox);
 end;
 
@@ -1137,7 +1142,8 @@ var
   ACheckBox: TGtk3CheckBox;
 begin
   ACheckBox := TGtk3CheckBox.Create(AWinControl, AParams);
-
+  if TCustomCheckBox(AWinControl).Alignment = taLeftJustify then
+    gtk_widget_set_direction(ACheckBox.Widget, GTK_TEXT_DIR_RTL);
   Result := TLCLHandle(ACheckBox);
 end;
 
@@ -1169,6 +1175,16 @@ begin
   if not WSCheckHandleAllocated(ACustomCheckBox, 'SetState') then
     Exit;
   TGtk3CheckBox(ACustomCheckBox.Handle).State := NewState;
+end;
+
+class procedure TGtk3WSCustomCheckBox.SetAlignment(const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight);
+begin
+  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetAlignment') then
+    Exit;
+  if NewAlignment = taLeftJustify then
+    gtk_widget_set_direction(TGtk3Widget(ACustomCheckBox.Handle).Widget, GTK_TEXT_DIR_RTL)
+  else
+    gtk_widget_set_direction(TGtk3Widget(ACustomCheckBox.Handle).Widget, GTK_TEXT_DIR_LTR);
 end;
 
 { TGtk3WSButtonControl }
