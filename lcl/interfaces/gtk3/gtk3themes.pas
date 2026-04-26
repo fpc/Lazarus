@@ -235,8 +235,13 @@ end;
 
 procedure TGTK3ThemeServices.DrawEdge(DC: HDC; Details: TThemedElementDetails;
   const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect);
+var
+  ARect: TRect;
 begin
-
+  ARect := R;
+  if Gtk3WidgetSet.DrawEdge(DC, ARect, Edge, Flags or BF_ADJUST) and
+     Assigned(AContentRect) then
+    AContentRect^ := ARect;
 end;
 
 procedure TGTK3ThemeServices.DrawIcon(DC: HDC; Details: TThemedElementDetails;
@@ -794,6 +799,18 @@ begin
       begin
         if Details.Part = BP_CHECKBOX then
         begin
+          if Width <> Height then
+          begin
+            if Width < Height then
+            begin
+              Y := Y + (Height - Width) div 2;
+              Height := Width;
+            end else
+            begin
+              X := X + (Width - Height) div 2;
+              Width := Height;
+            end;
+          end;
           Context := MakeIndicatorContext(gtk_check_button_get_type(), 'checkbutton', 'check', State, AScreen);
           gtk_render_background(Context, Cr, X, Y, Width, Height);
           gtk_render_frame(Context, Cr, X, Y, Width, Height);
@@ -804,6 +821,18 @@ begin
         end else
         if Details.Part = BP_RADIOBUTTON then
         begin
+          if Width <> Height then
+          begin
+            if Width < Height then
+            begin
+              Y := Y + (Height - Width) div 2;
+              Height := Width;
+            end else
+            begin
+              X := X + (Width - Height) div 2;
+              Width := Height;
+            end;
+          end;
           Context := MakeIndicatorContext(gtk_radio_button_get_type(), 'radiobutton', 'radio', State, AScreen);
           gtk_render_background(Context, Cr, X, Y, Width, Height);
           gtk_render_frame(Context, Cr, X, Y, Width, Height);
