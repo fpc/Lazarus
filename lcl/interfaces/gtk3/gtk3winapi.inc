@@ -811,11 +811,29 @@ begin
 end;
 
 function TGtk3WidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+var
+  cr: PCairo_t;
+  P: PPoint;
+  dx, dy: Double;
+  DevCtx: TGtk3DeviceContext absolute DC;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.DPToLP not implemented ...');
-  {$ENDIF}
-  Result:=inherited DPtoLP(DC, Points, Count);
+  Result := False;
+  if not IsValidDC(DC) then
+    exit;
+  cr := DevCtx.pcr;
+
+  P := @Points;
+  while Count > 0 do
+  begin
+    Dec(Count);
+    DX := P^.X + DevCtx.fncOrigin.x;
+    DY := P^.Y + DevCtx.fncOrigin.y;
+    cairo_device_to_user(cr, @dx, @dy);
+    P^.X := Round(DX) + DevCtx.WindowOrg.X;
+    P^.Y := Round(DY) + DevCtx.WindowOrg.Y;
+    Inc(P);
+  end;
+  Result := True;
 end;
 
 function TGtk3WidgetSet.DrawFrameControl(DC: HDC; const aRect: TRect; uType,
@@ -3617,28 +3635,28 @@ end;
 
 function TGtk3WidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
 var
-  //Matrix: Tcairo_matrix_t;
   cr: PCairo_t;
   P: PPoint;
   dx, dy: Double;
+  DevCtx: TGtk3DeviceContext absolute DC;
 begin
   Result := False;
   if not IsValidDC(DC) then
     exit;
-  cr := TGtk3DeviceContext(DC).pcr;
+  cr := DevCtx.pcr;
 
   P := @Points;
   while Count > 0 do
   begin
     Dec(Count);
-    DX := P^.X;
-    DY := P^.Y;
-    cairo_user_to_device(cr,@dx,@dy);
-    P^.X := Round(DX)-TGtk3DeviceContext(DC).fncOrigin.x;
-    P^.Y := Round(DY)-TGtk3DeviceContext(DC).fncOrigin.y;
+    DX := P^.X - DevCtx.WindowOrg.X;
+    DY := P^.Y - DevCtx.WindowOrg.Y;
+    cairo_user_to_device(cr, @dx, @dy);
+    P^.X := Round(DX) - DevCtx.fncOrigin.x;
+    P^.Y := Round(DY) - DevCtx.fncOrigin.y;
     Inc(P);
   end;
-  Result:=true;
+  Result := True;
 end;
 
 function TGtk3WidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
