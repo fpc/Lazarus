@@ -3648,28 +3648,13 @@ begin
 end;
 
 function TGtk3DeviceContext.SetClipRegion(ARgn: TGtk3Region): Integer;
-var
-  DevRgn: Pcairo_region_t;
 begin
   Result := SimpleRegion;
   if Assigned(pcr) then
   begin
     cairo_reset_clip(pcr);
-    {Apply WindowOrg offset to clip region, same as drawing functions do,
-     so clip and drawing land at the same device position. eg issue #42162,
-     now gtk3 works even better than gtk2 since it does not need
-     gtk define in virtualtrees, so more winapi compatible. zeljan}
-    if (WindowOrg.X <> 0) or (WindowOrg.Y <> 0) then
-    begin
-      DevRgn := cairo_region_copy(ARgn.FHandle);
-      cairo_region_translate(DevRgn, -WindowOrg.X, -WindowOrg.Y);
-      gdk_cairo_region(pcr, DevRgn);
-      cairo_region_destroy(DevRgn);
-    end
-    else
-      gdk_cairo_region(pcr, ARgn.FHandle);
+    gdk_cairo_region(pcr, ARgn.FHandle);
     cairo_clip(pcr);
-    //Mirror the clip region so GetClipRGN can return the exact region
     if FClipRegion <> nil then
       cairo_region_destroy(FClipRegion);
     FClipRegion := cairo_region_copy(ARgn.FHandle);
