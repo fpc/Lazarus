@@ -1892,6 +1892,81 @@ var
   ProcNode, ClassNode: TCodeTreeNode;
   CCOptions: TCodeCreationDlgResult;
   AddSourceName: boolean;
+
+  function PositionForInsertion(): integer;
+  var
+    CleanLevelPos: integer;
+    OldCodePos: TCodePosition;
+    Node,CursorNode,VarSectionNode,OtherSectionNode,HeaderNode,ParentNode: TCodeTreeNode;
+  begin
+    // insertion according logic from AddLocalVariable()
+    Result:=1;
+    CleanLevelPos:=CleanCursorPos;
+    if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then exit;
+    Node:=Tree.Root;
+    CursorNode:=nil;
+    VarSectionNode:=nil;
+    OtherSectionNode:=nil;
+    HeaderNode:=nil;
+    ParentNode:=nil;
+    while Node<>nil do begin
+      if Node.StartPos>CleanCursorPos then break;
+      CursorNode:=Node;
+      if Node.Desc in [ctnProcedureHead,ctnUsesSection] then
+        HeaderNode:=Node
+      else if Node.Desc=ctnVarSection then
+        VarSectionNode:=Node
+      else if Node.Desc in AllDefinitionSections then
+        OtherSectionNode:=Node;
+      if (Node.StartPos<=CleanLevelPos)
+      and ((Node.EndPos>CleanLevelPos)
+        or ((Node.EndPos=CleanLevelPos)
+           and ((Node.NextBrother=nil) or (Node.NextBrother.StartPos>CleanLevelPos))))
+      then begin
+        if Node.Desc in [ctnInterface,ctnImplementation,ctnProgram,ctnLibrary,
+          ctnPackage,ctnProcedure]
+        then begin
+          // this node can have a var section
+          VarSectionNode:=nil;
+          OtherSectionNode:=nil;
+          HeaderNode:=nil;
+          ParentNode:=Node;
+        end else if Node.Desc=ctnUnit then begin
+          // the grand children can have a var section
+        end else begin
+          break;
+        end;
+        Node:=Node.FirstChild;
+      end else
+        Node:=Node.NextBrother;
+    end;
+
+    if ParentNode=nil then exit;
+    if VarSectionNode<>nil then
+      Result:= VarSectionNode.EndPos else
+    if OtherSectionNode<>nil then
+      Result:= OtherSectionNode.EndPos else
+    begin
+      // there is no var/type/const section in front
+      if (ParentNode.Desc=ctnProcedure) and (HeaderNode=nil) then
+        HeaderNode:=ParentNode.FirstChild;
+      if (HeaderNode=nil) then
+        HeaderNode:=FindUsesNode(ParentNode);
+      if CursorNode.Desc in [ctnBeginBlock,ctnAsmBlock] then begin
+        // add the var section directly in front of the begin
+        Result:=CursorNode.StartPos;
+      end else if HeaderNode<>nil then begin
+        // put the var section below the header
+        Result:=HeaderNode.EndPos;
+      end else begin
+        // insert behind section keyword
+        MoveCursorToNodeStart(ParentNode);
+        ReadNextAtom;
+        Result:=CurPos.EndPos;
+      end;
+    end;
+  end;
+
 begin
   Result:=false;
 
@@ -1963,7 +2038,7 @@ begin
         Params.ContextNode := CursorNode;
         Params.Flags := fdfDefaultForExpressions;
         if FindIdentifierInContext(Params) then begin
-          AddSourceName:= (ResExprContext.Node<>ExprType.Context.Node) and
+          AddSourceName:= (ResExprContext.Node<>ExprType.Context.Node) or
                           (ResExprContext.Tool<>OrigExprContext.Tool);
           if ((Params.NewNode.Desc=ctnTypeDefinition) and
           (ExprType.Context.Node.Desc=ctnTypeDefinition) and
@@ -1972,10 +2047,22 @@ begin
           ((Params.NewNode.Desc=ctnTypeDefinition) and
           (ExprType.Context.Node.Desc in AllClasses) and
           (Params.NewNode.FirstChild=ExprType.Context.Node)) then
-          // the same decl nodes =  not shadowed, may be in other unit also
+          // the same decl nodes =  not shadowed, may be located in other unit
             AddSourceName:=false;
         end else
           AddSourceName:=false;
+        if AddSourceName and (self=ResExprContext.Tool) then begin
+          FindProcAndClassNode(CursorNode, ProcNode, ClassNode);
+          if not Interactive or (ClassNode=nil) then begin
+          //  debugln(['shadowing type at pos = ',ResExprContext.Node.StartPos]);
+            // maybe shadowing declaration is behind the position where
+            // completion code is to be inserted?
+            // if so than adding a unit name as prefix is not needed
+            AddSourceName:=
+              (ResExprContext.Node.EndPos < PositionForInsertion());
+          end;
+        end else
+          AddSourceName:=false; // different units don't need a prefix
 
         if AddSourceName then // -> add unit to the type
           NewType := ExprType.Context.Tool.ExtractSourceName + '.' + NewType
@@ -2909,11 +2996,20 @@ begin
       Params.SetIdentifier(Self, PChar(NewType),nil);
       Params.ContextNode := CursorNode;
       Params.Flags := fdfDefaultForExpressions;
-      if FindIdentifierInContext(Params) then begin // shadowed, use prefix
-        if AliasType.Tool<>nil then
-          QualifiedPrefix:=AliasType.Tool.ExtractSourceName
+      if FindIdentifierInContext(Params) then begin
+        if (AliasType.Tool<>nil) and (AliasType.Tool=Params.NewCodeTool) and
+        (AliasType.Node=Params.NewNode) then begin
+          if CompareIdentifiers(PChar(Identifier), PChar(NewType))=0 then begin
+          // varname = typename, use prefix for type
+            QualifiedPrefix:=Params.NewCodeTool.ExtractSourceName;
+          end else
+            QualifiedPrefix:='' // the same decl, not shadowed
+        end
+        else if (AliasType.Tool<>nil) and (AliasType.Tool<>Params.NewCodeTool) then
+          QualifiedPrefix:=AliasType.Tool.ExtractSourceName // shadowed, use prefix
         else
-          QualifiedPrefix:=Params.NewCodeTool.ExtractSourceName;
+          QualifiedPrefix:=Params.NewCodeTool.ExtractSourceName; // shadowed, use prefix
+
         NewType:=GetCommonTypeForParameter(ProcArray, ParameterNode, StartTypeTool,
                                            ParamIsArray, QualifiedPrefix, false);
       end;

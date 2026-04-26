@@ -2418,6 +2418,9 @@ begin
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
+      if CursorNode=nil then // prevent AV at this stage
+        CleanPosInFront:=1
+      else
       if (fsfFindMainDeclaration in SearchSmartFlags)
           and CleanPosIsDeclarationIdentifier(CleanCursorPos,CursorNode) then
       begin
@@ -2436,7 +2439,10 @@ begin
         {$ENDIF}
         exit;
       end;
-      CleanPosInFront:=CursorNode.StartPos;
+      if CursorNode=nil then // prevent AV at this stage
+        CleanPosInFront:=1
+      else
+        CleanPosInFront:=CursorNode.StartPos;
     end else begin
       CleanPosInFront:=1;
       CursorNode:=nil;
