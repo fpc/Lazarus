@@ -1921,6 +1921,11 @@ end;"/>
         <UnitName Value="Gtk3WSStdCtrls"/>
       </Item>
       <Item>
+        <Filename Value="gtk3/gtk3wstrayicon.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSTrayIcon"/>
+      </Item>
+      <Item>
         <Filename Value="gtk3/interfaces.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="interfaces"/>
