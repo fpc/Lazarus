@@ -1571,7 +1571,8 @@ begin
         SysColorMap[COLOR_BTNFACE] := LookupThemeColor(ACtx, 'theme_bg_color', SysColorMap[COLOR_BTNFACE], '');
         SysColorMap[COLOR_BTNTEXT] := LookupThemeColor(ACtx, 'theme_fg_color', SysColorMap[COLOR_BTNTEXT], 'theme_bg_color');
         SysColorMap[COLOR_BTNSHADOW] := DecColor(SysColorMap[COLOR_BTNFACE], 60);
-        SysColorMap[COLOR_BTNHIGHLIGHT] := IncColor(SysColorMap[COLOR_BTNFACE], 40);
+        SysColorMap[COLOR_BTNHIGHLIGHT] := LookupThemeColor(ACtx, 'theme_base_color',
+          IncColor(SysColorMap[COLOR_BTNFACE], 40), '');
         SysColorMap[COLOR_3DDKSHADOW] := DecColor(SysColorMap[COLOR_BTNFACE], 120);
         SysColorMap[COLOR_3DLIGHT] := IncColor(SysColorMap[COLOR_BTNFACE], 20);
       end;
