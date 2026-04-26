@@ -41,6 +41,7 @@ type
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
     class function GetPosition(const {%H-}ATrayIcon: TCustomTrayIcon): TPoint; override;
+    class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
   end;
 
 implementation
@@ -189,6 +190,89 @@ begin
   Result := Point(0, 0);
 end;
 
+{$IFDEF UNIX}
+const
+  // SONAME .so.4 is the current libnotify since 2010.
+  libnotify_so = 'libnotify.so.4';
+  libnotify_so_unver = 'libnotify.so';
+
+var
+  notify_loaded: Boolean = False;
+  notify_initialized: Boolean = False;
+  notify_init: function(app_name: PChar): gboolean; cdecl;
+  notify_uninit: procedure; cdecl;
+  notify_notification_new: function(summary, body, icon: PChar): Pointer; cdecl;
+  notify_notification_set_timeout: procedure(notification: Pointer; timeout: gint); cdecl;
+  notify_notification_set_image_from_pixbuf: procedure(notification, pixbuf: Pointer); cdecl;
+  notify_notification_show: function(notification: Pointer; error: PPGError): gboolean; cdecl;
+
+function Gtk3LibNotifyInit: Boolean;
+var
+  Module: HModule;
+  AppName: string;
+
+  function TryLoad(const ProcName: string; var Proc: Pointer): Boolean;
+  begin
+    Proc := GetProcAddress(Module, ProcName);
+    Result := Proc <> nil;
+  end;
+
+begin
+  if notify_loaded then
+    exit(notify_initialized);
+  notify_loaded := True;
+  Module := LoadLibrary(libnotify_so);
+  if Module = 0 then
+    Module := LoadLibrary(libnotify_so_unver);
+  if Module = 0 then
+    exit(False);
+  Result := TryLoad('notify_init', @notify_init) and TryLoad('notify_uninit', @notify_uninit) and
+    TryLoad('notify_notification_new', @notify_notification_new) and
+    TryLoad('notify_notification_set_timeout', @notify_notification_set_timeout) and
+    TryLoad('notify_notification_set_image_from_pixbuf', @notify_notification_set_image_from_pixbuf) and
+    TryLoad('notify_notification_show', @notify_notification_show);
+  if Result then
+  begin
+    AppName := Application.Title;
+    if AppName = '' then
+      AppName := ExtractFileName(Application.ExeName);
+    Result := notify_init(PChar(AppName));
+  end;
+  notify_initialized := Result;
+end;
+{$ENDIF}
+
+class function TGtk3WSTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
+{$IFDEF UNIX}
+var
+  Notif: Pointer;
+  Err: PGError;
+  IconPxb: Pointer;
+{$ENDIF}
+begin
+  Result := False;
+  {$IFDEF UNIX}
+  if not Gtk3LibNotifyInit then
+    exit;
+  Notif := notify_notification_new(PChar(ATrayIcon.BalloonTitle),
+    PChar(ATrayIcon.BalloonHint), nil);
+  if Notif = nil then
+    exit;
+  if Assigned(ATrayIcon.Icon) and (ATrayIcon.Icon.HandleAllocated) then
+  begin
+    IconPxb := Pointer(TGtk3Image(ATrayIcon.Icon.Handle).Handle);
+    if IconPxb <> nil then
+      notify_notification_set_image_from_pixbuf(Notif, IconPxb);
+  end;
+  notify_notification_set_timeout(Notif, ATrayIcon.BalloonTimeout);
+  Err := nil;
+  Result := notify_notification_show(Notif, @Err);
+  if Assigned(Err) then
+    g_error_free(Err);
+  g_object_unref(Notif);
+  {$ENDIF}
+end;
+
 { AppIndicatorInit }
 
 var
@@ -256,4 +340,8 @@ finalization
     DeleteFile(GlobalIconPath);
   if GlobalAppIndicator <> nil then
     g_object_unref(GlobalAppIndicator);
+  {$IFDEF UNIX}
+  if notify_initialized and Assigned(notify_uninit) then
+    notify_uninit;
+  {$ENDIF}
 end.
