@@ -1607,9 +1607,6 @@ function TGtk3WidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
 var
   APen: TGtk3Pen;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.ExtCreatePen not implemented ...');
-  {$ENDIF}
   APen := TGtk3Pen.Create;
   APen.IsExtPen := True;
   case dwPenStyle and PS_STYLE_MASK of
@@ -1669,9 +1666,6 @@ var
   Clip: HRGN;
   Tmp: HRGN;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.ExtSelectClipRGN not implemented ...');
-  {$ENDIF}
   if not IsValidDC(DC) then
   begin
     Result := ERROR;
@@ -2166,10 +2160,6 @@ function TGtk3WidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
 var
   GtkDC: TGtk3DeviceContext absolute DC;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.GetCurrentObject not implemented ...');
-  {$ENDIF}
-  // Result:=inherited GetCurrentObject(DC, uObjectType);
   Result := 0;
   if not IsValidDC(DC) then
     Exit;
@@ -2272,11 +2262,7 @@ function TGtk3WidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 var
   pscr: PGdkScreen;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  if (Index <> BITSPIXEL) and (Index <> LOGPIXELSX) and (Index <> LOGPIXELSY) then
-    DebugLn('WARNING: TGtk3WidgetSet.GetDeviceCaps not implemented ...Index=',dbgs(Index),' DC=',dbgs(DC));
-  {$ENDIF}
-  Result := 0; // inherited GetDeviceCaps(DC, Index);
+  Result := 0;
   case Index of
 
     HORZRES : { Horizontal width in pixels }
@@ -3264,9 +3250,6 @@ end;
 
 function TGtk3WidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.GetWindowOrgEx not implemented ...');
-  {$ENDIF}
   Result := 0;
   if not IsValidDC(DC) then
   begin
@@ -3475,13 +3458,8 @@ var
   cr: PCairo_t;
   P: PPoint;
   dx, dy: Double;
-  //Pt: TPoint;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.LPtoDP not implemented ...');
-  {$ENDIF}
   Result := False;
-  // inherited LPtoDP(DC, Points, Count);
   if not IsValidDC(DC) then
     exit;
   cr := TGtk3DeviceContext(DC).pcr;
@@ -3492,11 +3470,7 @@ begin
     Dec(Count);
     DX := P^.X;
     DY := P^.Y;
-    // DebugLn('LPTODP INPUT ',Format('dx %2.2n dy %2.2n',[dx, dy]));
-    //cairo_matrix_translate(@Matrix, Dx, Dy);
-    //cairo_matrix_transform_point(@Matrix, @Dx, @Dy);
     cairo_user_to_device(cr,@dx,@dy);
-    // DebugLn('LPTODP Output ',Format('dx %2.2n dy %2.2n',[dx, dy]));
     P^.X := Round(DX)-TGtk3DeviceContext(DC).fncOrigin.x;
     P^.Y := Round(DY)-TGtk3DeviceContext(DC).fncOrigin.y;
     Inc(P);
@@ -3803,9 +3777,6 @@ var
   ACairoRegion: Pcairo_region_t;
   ACairoRect: Tcairo_rectangle_int_t;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.RectVisible not implemented ...');
-  {$ENDIF}
   Result := False;
   if not IsValidDC(DC) then
     exit;
@@ -3902,9 +3873,6 @@ end;
 
 function TGtk3WidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.RestoreDC not implemented ...');
-  {$ENDIF}
   Result := False;
   if not IsValidDC(DC) then
     exit;
@@ -3926,9 +3894,6 @@ end;
 
 function TGtk3WidgetSet.SaveDC(DC: HDC): Integer;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.SaveDC not implemented ...');
-  {$ENDIF}
   Result := 0;
   if not IsValidDC(DC) then
     exit;
@@ -4133,9 +4098,6 @@ end;
 
 function TGtk3WidgetSet.SetBkColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.SetBkColor not implemented ...');
-  {$ENDIF}
   Result := clNone;
   if not IsValidDC(DC) then
     exit;
@@ -4273,9 +4235,6 @@ function TGtk3WidgetSet.SetForegroundWindow(hWnd: HWND): boolean;
 var
   AWindow: TGtk3Window;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.SetForegroundWindow not implemented ...');
-  {$ENDIF}
   if not IsValidHandle(HWnd) then
     exit(False);
   Result := wtWindow in TGtk3Widget(HWND).WidgetType;
@@ -4859,9 +4818,6 @@ end;
 
 function TGtk3WidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.SetTextColor not implemented ...');
-  {$ENDIF}
   Result := CLR_INVALID;
   if IsValidDC(DC) then
   begin
